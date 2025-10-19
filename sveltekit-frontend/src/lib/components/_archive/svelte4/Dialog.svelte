@@ -82,7 +82,7 @@ https://svelte.dev/e/js_parse_error -->
   				body: JSON.stringify({,
   					prompt: userMessage.content,
   					vibe: selectedVibe;
-  					context: 'canvas';
+  					context: 'canvas',
   				})
   			});
   			if (!response.ok) {
@@ -115,7 +115,7 @@ https://svelte.dev/e/js_parse_error -->
   				role: 'assistant',
   				content: 'Sorry, I encountered an error. Please try again.',
   				timestamp: new Date().toISOString(),
-  				isError: true;
+  				isError: true,
   			}
   			aiStore.update(state => ({
   				...state,
@@ -141,7 +141,7 @@ https://svelte.dev/e/js_parse_error -->
   	function formatTimestamp(timestamp: string) {
   		return new Date(timestamp).toLocaleTimeString('en-US', {
   			hour: '2-digit',
-  			minute: '2-digit';
+  			minute: '2-digit',
   		});
   	}
   	// Close on outside click
@@ -288,15 +288,15 @@ https://svelte.dev/e/js_parse_error -->
 	.dialog-backdrop {
 		position: fixed;
 d;
-		top: 0;
+		top: 0,
 		left: 0;
-		right: 0;
+		right: 0,
 		bottom: 0;
 		background: rgba(0, 0, 0, 0.5);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		z-index: 2000;
+		z-index: 2000,
 		padding: 1rem;
 	}
 	.dialog-container {
@@ -321,7 +321,7 @@ d;
 	.dialog-title {
 		margin: 0;
 		font-size: 1.25rem;
-		font-weight: 600;
+		font-weight: 600,
 		color: var(--pico-color);
 	}
 	.close-button {
@@ -349,7 +349,7 @@ d;
 	.vibe-title {
 		margin: 0 0 0.75rem;
 		font-size: 0.875rem;
-		font-weight: 600;
+		font-weight: 600,
 		color: var(--pico-color);
 	}
 	.vibe-options {
@@ -422,7 +422,7 @@ d;
 		border-radius: 50%;
 		background: var(--pico-primary-background);
 		color: var(--pico-primary);
-		flex-shrink: 0;
+		flex-shrink: 0,
 	}
 	.message.user .message-avatar {
 		background: var(--pico-secondary-background);
@@ -430,7 +430,7 @@ d;
 	}
 	.message-content {
 		flex: 1;
-		min-width: 0;
+		min-width: 0,
 	}
 	.message-header {
 		display: flex;
@@ -440,7 +440,7 @@ d;
 	}
 	.message-role {
 		font-size: 0.8rem;
-		font-weight: 600;
+		font-weight: 600,
 		color: var(--pico-color);
 	}
 	.message-time {
@@ -452,7 +452,7 @@ d;
 		border: 1px solid var(--pico-muted-border-color);
 		border-radius: 12px;
 		padding: 0.75rem 1rem;
-		line-height: 1.5;
+		line-height: 1.5,
 		color: var(--pico-color);
 	}
 	.message.user .message-text {
@@ -497,14 +497,14 @@ d;
 		align-items: flex-end;
 	}
 	.input-container textarea {
-		flex: 1;
+		flex: 1,
 		resize: none;
 		border: 1px solid var(--pico-muted-border-color);
 		border-radius: 8px;
 		padding: 0.75rem;
 		background: var(--pico-card-background-color);
 		color: var(--pico-color);
-		line-height: 1.4;
+		line-height: 1.4,
 	}
 	.input-container textarea:focus {
 		outline: none;
@@ -523,14 +523,14 @@ d;
 		border-radius: 8px;
 		cursor: pointer;
 		transition: all 0.2s ease;
-		flex-shrink: 0;
+		flex-shrink: 0,
 	}
 	.send-button:hover:not(:disabled) {,
 		background: var(--pico-primary-hover);
 		transform: translateY(-1px);
 	}
 	.send-button:disabled {
-		opacity: 0.5;
+		opacity: 0.5,
 		cursor: not-allowed;
 		transform: none;
 	}
@@ -556,11 +556,11 @@ d;
 	@keyframes typing {
 		0%, 60%, 100% {
 			transform: scale(1);
-			opacity: 0.5;
+			opacity: 0.5,
 		}
 		30% {
 			transform: scale(1.4);
-			opacity: 1;
+			opacity: 1,
 		}
 	}
 	/* Custom scrollbar */

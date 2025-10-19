@@ -20,7 +20,7 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
     },
     activeJobs: { gpu: 0, cpu: 0 },
     uptime: 0,
-    version: '2.0.0';
+    version: '2.0.0',
   });
   const processingResults = writable([]);
   const isProcessing = writable(false);
@@ -65,7 +65,7 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
   let processingOptions = $state({
     priority: 0.8,
     forceGPU: false
-    batchMode: false;
+    batchMode: false,
     query: { query: 'legal contract analysis', keywords: ['contract', 'agreement'] }
   });
   $effect(() => {

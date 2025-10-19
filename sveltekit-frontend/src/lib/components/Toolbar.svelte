@@ -288,7 +288,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .tool-group {
     display: flex;
@@ -331,7 +331,7 @@
 	.format-button: disabled
 	.align-button: disabled
 	.action-button:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .color-input {
@@ -340,7 +340,7 @@
   }
   .color-input input[type='color'] {
     position: absolute;
-    opacity: 0;
+    opacity: 0,
     width: 100%;
     height: 100%;
     cursor: pointer;
@@ -386,14 +386,14 @@
     color: var(--text-primary);
     min-width: 45px;
     text-align: center;
-    font-weight: 500;
+    font-weight: 500,
   }
   .toolbar-separator {
     width: 1px;
     height: 32px;
     background: var(--border-light);
     margin: 0 0.5rem;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   /* Responsive */
   @media (max-width: 768px) {

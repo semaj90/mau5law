@@ -48,7 +48,7 @@
   			session: null as ChatSession | null
   			error: null as string | null;
   			confidence: 0,
-  			model: 'gemma3-legal';
+  			model: 'gemma3-legal',
   		},
   		states: {
   			idle: {
@@ -81,7 +81,7 @@
   			},
   			sending: {
   				entry: assign({
-  					isLoading: true;
+  					isLoading: true,
   					error: null;
   				}),
   				invoke: {
@@ -155,7 +155,7 @@
   					model: 'gemma3-legal',
   					metadata: {
   						userAgent: navigator.userAgent,
-  						context: 'legal-ai-chat';
+  						context: 'legal-ai-chat',
   					}
   				}
   				// Initialize session in database
@@ -185,13 +185,13 @@
   					body: JSON.stringify({,
   						model: context.model,
   						prompt: event.message,
-  						stream: false;
+  						stream: false,
   						options: {
   							temperature: 0.7,
   							max_tokens: 1000,
-  							top_p: 0.9;
+  							top_p: 0.9,
   						},
-  						system: "You are a helpful legal AI assistant. Provide accurate, professional responses about legal matters. Always include appropriate disclaimers that your advice should not replace professional legal counsel.";
+  						system: "You are a helpful legal AI assistant. Provide accurate, professional responses about legal matters. Always include appropriate disclaimers that your advice should not replace professional legal counsel.",
   					})
   				});
   				if (!response.ok) {
@@ -410,13 +410,13 @@ send({ type: 'CLEAR_ERROR' })}
 </div>
 <style>
 	.typing-indicator div:nth-child(1) {
-		animation-delay: 0;
+		animation-delay: 0,
 	}
 	.typing-indicator div:nth-child(2) {
-		animation-delay: 0.1;
+		animation-delay: 0.1,
 	}
 	.typing-indicator div:nth-child(3) {
-		animation-delay: 0.2;
+		animation-delay: 0.2,
 	}
 	/* Custom scrollbar */
 	.messages-container::-webkit-scrollbar {

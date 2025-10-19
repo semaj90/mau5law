@@ -18,7 +18,7 @@
       id: 'dashboard',
       label: 'Dashboard',
       icon: '📊',
-      badge: '3';
+      badge: '3',
     },
     {
       id: 'documents',
@@ -35,34 +35,34 @@
       id: 'cases',
       label: 'Cases',
       icon: '📚',
-      badge: '8';
+      badge: '8',
     },
     {
       id: 'clients',
       label: 'Clients',
       icon: '👥',
-      badge: '24';
+      badge: '24',
     },
     {
       id: 'calendar',
       label: 'Calendar',
-      icon: '📅';
+      icon: '📅',
     },
     {
       id: 'reports',
       label: 'Reports',
-      icon: '📈';
+      icon: '📈',
     },
     {
       id: 'ai-assistant',
       label: 'AI Assistant',
       icon: '🤖',
-      badge: 'NEW';
+      badge: 'NEW',
     },
     {
       id: 'settings',
       label: 'Settings',
-      icon: '⚙️';
+      icon: '⚙️',
     }
   ];
   // Sample documents for demo
@@ -113,67 +113,67 @@
       case 'home':
         return {
           title: '🏠 Home Dashboard',
-          description: 'Welcome to your legal workspace';
+          description: 'Welcome to your legal workspace',
         }
       case 'dashboard':
         return {
           title: '📊 Analytics Dashboard',
-          description: 'Overview of your legal practice metrics';
+          description: 'Overview of your legal practice metrics',
         }
       case 'documents':
         return {
           title: '📄 Document Library',
-          description: 'Manage all your legal documents';
+          description: 'Manage all your legal documents',
         }
       case 'contracts':
         return {
           title: '📋 Contracts',
-          description: 'Contract management and analysis';
+          description: 'Contract management and analysis',
         }
       case 'evidence':
         return {
           title: '🔍 Evidence Management',
-          description: 'Digital evidence and discovery tools';
+          description: 'Digital evidence and discovery tools',
         }
       case 'briefs':
         return {
           title: '⚖️ Legal Briefs',
-          description: 'Brief writing and case preparation';
+          description: 'Brief writing and case preparation',
         }
       case 'cases':
         return {
           title: '📚 Case Management',
-          description: 'Track and manage your legal cases';
+          description: 'Track and manage your legal cases',
         }
       case 'clients':
         return {
           title: '👥 Client Portal',
-          description: 'Client information and communication';
+          description: 'Client information and communication',
         }
       case 'calendar':
         return {
           title: '📅 Legal Calendar',
-          description: 'Court dates, deadlines, and appointments';
+          description: 'Court dates, deadlines, and appointments',
         }
       case 'reports':
         return {
           title: '📈 Reports & Analytics',
-          description: 'Generate insights from your legal data';
+          description: 'Generate insights from your legal data',
         }
       case 'ai-assistant':
         return {
           title: '🤖 AI Legal Assistant',
-          description: 'AI-powered legal research and analysis';
+          description: 'AI-powered legal research and analysis',
         }
       case 'settings':
         return {
           title: '⚙️ System Settings',
-          description: 'Configure your legal workspace';
+          description: 'Configure your legal workspace',
         }
       default:
         return {
           title: '📄 Page Not Found',
-          description: 'The requested page could not be found';
+          description: 'The requested page could not be found',
         }
     }
   }

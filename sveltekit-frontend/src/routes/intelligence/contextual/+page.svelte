@@ -627,7 +627,7 @@
     font-size: 2.25rem;
     font-weight: bold;
     color: #1e293b;
-    margin: 0;
+    margin: 0,
   }
   .dashboard-subtitle {
     margin: 0.5rem 0 0 0;
@@ -679,9 +679,9 @@
   }
   .metric-name {
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
-    margin: 0;
+    margin: 0,
   }
   .metric-trend {
     padding: 0.25rem;
@@ -777,15 +777,15 @@
     align-items: center;
     justify-content: center;
     color: white;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .insight-meta {
     flex: 1;
-    min-width: 0;
+    min-width: 0,
   }
   .insight-title {
     display: block;
-    font-weight: 600;
+    font-weight: 600,
     color: #1e293b;
     margin-bottom: 0.25rem;
   }
@@ -839,7 +839,7 @@
   .status-pending { color: #d97706, }
   .task-name {
     flex: 1;
-    font-weight: 500;
+    font-weight: 500,
     color: #1e293b;
   }
   .task-eta {
@@ -905,7 +905,7 @@
     align-items: center;
     justify-content: center;
     color: white;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .modal-title {
     font-size: 1.5rem;
@@ -927,13 +927,13 @@
   }
   .insight-description-full {
     font-size: 1rem;
-    line-height: 1.6;
+    line-height: 1.6,
     color: #4b5563;
     margin-bottom: 1.5rem;
   }
   .sources-title {
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
     margin: 0 0 0.5rem 0;
   }

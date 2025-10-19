@@ -44,7 +44,7 @@
     onmousedown,
     onmouseup,
     children,
-    ...restProps;
+    ...restProps
   }: Props = $props();
   const dispatch = createEventDispatcher();
   // N64 button color scheme
@@ -240,7 +240,7 @@
   }
   .n64-button__content {
     position: relative;
-    z-index: 2;
+    z-index: 2,
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -308,7 +308,7 @@
   }
 /* Disabled state */ {}
   .n64-button--disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
     pointer-events: none;
   }
@@ -359,11 +359,11 @@ box-shadow: {}
   }
   @keyframes priority-pulse {
     0% {
-      opacity: 1;
+      opacity: 1,
       transform: scale(1);
     }
     100% {
-      opacity: 0;
+      opacity: 0,
       transform: scale(1.2);
     }
   }
@@ -391,7 +391,7 @@ box-shadow: {}
     padding: 2px 4px;
     border-radius: 4px;
     font-weight: normal;
-    z-index: 3;
+    z-index: 3,
   }
 /* Evidence action icon */ {}
   .n64-button__evidence-icon {
@@ -406,7 +406,7 @@ box-shadow: {}
     align-items: center;
     justify-content: center;
     font-size: 0.7rem;
-    z-index: 3;
+    z-index: 3,
   }
 /* Hover effects */ {}
   .n64-button:hover:not(.n64-button--disabled) .n64-button__surface {

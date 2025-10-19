@@ -30,7 +30,7 @@
     error: 'border-red-500/30 bg-red-500/10 text-red-400 ring-red-500/20',
     warning: 'border-yellow-500/30 bg-yellow-500/10 text-yellow-400 ring-yellow-500/20',
     info: 'border-blue-500/30 bg-blue-500/10 text-blue-400 ring-blue-500/20',
-    legal: 'border-yorha-primary/30 bg-yorha-primary/10 text-yorha-primary ring-yorha-primary/20';
+    legal: 'border-yorha-primary/30 bg-yorha-primary/10 text-yorha-primary ring-yorha-primary/20',
   }
   const iconMap = {
     success: CheckCircle

@@ -210,7 +210,7 @@
   .card-title {
     margin: 0;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .card-content {
     padding: 1rem;

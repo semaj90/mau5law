@@ -22,28 +22,28 @@
       title: 'Legal AI System',
       description: 'Advanced neural networks for legal analysis',
       status: 'online',
-      icon: '⚖️';
+      icon: '⚖️',
     },
     {
       id: 'evidence',
       title: 'Evidence Processing',
       description: 'Blockchain-verified evidence management',
       status: 'processing',
-      icon: '🔍';
+      icon: '🔍',
     },
     {
       id: 'knowledge',
       title: 'Knowledge Graph',
       description: 'Connected legal precedent database',
       status: 'online',
-      icon: '🧠';
+      icon: '🧠',
     },
     {
       id: 'gpu-cluster',
       title: 'GPU Cluster',
       description: 'High-performance tensor operations',
       status: 'warning',
-      icon: '⚡';
+      icon: '⚡',
     }
   ];
   function handleCardSelect(cardId: string) {
@@ -243,7 +243,7 @@
   }
   .showcase-title {
     font-size: 1.25rem;
-    margin: 0;
+    margin: 0,
     color: theme('colors.nes.yellow');
     text-shadow: 2px 2px 0px theme('colors.nes.black');
     letter-spacing: 0.05em;
@@ -265,7 +265,7 @@
   }
   .stat-label {
     font-size: 0.5rem;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .stat-value {
     font-size: 0.75rem;
@@ -380,31 +380,31 @@
   @keyframes status-blink {
     0%,
     50% {
-      opacity: 1;
+      opacity: 1,
     }
     51%,
     100% {
-      opacity: 0.6;
+      opacity: 0.6,
     }
   }
   @keyframes status-pulse {
     0%,
     100% {
-      opacity: 1;
+      opacity: 1,
       transform: scale(1);
     }
     50% {
-      opacity: 0.7;
+      opacity: 0.7,
       transform: scale(1.05);
     }
   }
   @keyframes status-urgent {
     0%,
     100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.3;
+      opacity: 0.3,
     }
   }
   /* Responsive Design */

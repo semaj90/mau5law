@@ -189,7 +189,7 @@
     resize: none;
     font-family: inherit;
     font-size: 0.875rem;
-    line-height: 1.5;
+    line-height: 1.5,
     color: var(--text-primary, #1e293b);
     overflow-y: auto;
     scrollbar-width: thin;
@@ -211,7 +211,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .character-count {
     font-size: 0.75rem;
@@ -223,7 +223,7 @@
   }
   .character-count.at-limit {
     color: var(--text-error, #dc2626);
-    font-weight: 600;
+    font-weight: 600,
   }
   .send-button {
     display: flex;
@@ -250,7 +250,7 @@
     background: var(--accent-hover, #2563eb);
   }
   .send-button:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .input-hint {

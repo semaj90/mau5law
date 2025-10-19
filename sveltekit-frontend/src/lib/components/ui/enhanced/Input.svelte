@@ -22,7 +22,7 @@ https://svelte.dev/e/js_parse_error -->
   		class: className = '',
   		id = crypto.randomUUID(),
   		value = $bindable(''),
-  		...prop;
+  		...prop
   	}: Props = $props();
   	let inputClasses = $derived([
   		'yorha-input bits-input',

@@ -90,10 +90,10 @@
   let goldenProportions = $derived(
     direction === 'horizontal' ? {
       primary: `${PHI}fr`,
-      secondary: '1fr';
+      secondary: '1fr',
     } : direction === 'vertical' ? {
       primary: `${PHI}fr`,
-      secondary: '1fr';
+      secondary: '1fr',
     } : {
       primary: `${PHI}fr`,
       secondary: '1fr',
@@ -196,18 +196,18 @@
   :global(.golden-sidebar) {
     grid-area: sidebar;
     overflow-y: auto;
-    min-width: 0;
+    min-width: 0,
   }
   :global(.golden-main) {
     grid-area: mai;
     overflow-y: auto;
     min-width: 0;
-    min-height: 0;
+    min-height: 0,
   }
   :global(.golden-secondary) {
     grid-area: secondary;
     overflow-y: auto;
-    min-width: 0;
+    min-width: 0,
   }
   :global(.golden-footer) {
     grid-area: footer;
@@ -252,9 +252,9 @@ background-position: {}
   :global($1) {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     height: 4px;
 background: linear-gradient( {}
 90deg, {}
@@ -262,7 +262,7 @@ var(--color-nier-accent-cool), {}
 var(--color-nier-accent-warm), {}
 var(--color-nier-accent-cool) {}
     );
-    z-index: 1;
+    z-index: 1,
   }
 /* Case Management Layout */ {}
   :global(.yorha-case-grid .golden-sidebar) {

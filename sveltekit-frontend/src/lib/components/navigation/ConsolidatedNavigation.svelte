@@ -98,9 +98,9 @@
 <style>
   .consolidated-navigation {
     position: fixed;
-    top: 0;
+    top: 0,
     left: 0;
-    z-index: 1000;
+    z-index: 1000,
     background: var(--surface-primary, #0a0a0a);
     border-right: 1px solid var(--border-primary, #333333);
     height: 100vh;

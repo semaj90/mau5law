@@ -40,7 +40,7 @@
     height = '600px',
     background = 'light',
     class: className = '',
-    ...restProp;
+    ...restProp
   }: Props = $props();
   let boardElement: HTMLDivElement;
   let isFullscreen = $state(false);
@@ -55,7 +55,7 @@
       light: 'bg-white',
       dark: 'bg-gray-900 text-white',
       blueprint: 'bg-blue-100',
-      legal: 'bg-gray-50';
+      legal: 'bg-gray-50',
     }
     return [
       base,

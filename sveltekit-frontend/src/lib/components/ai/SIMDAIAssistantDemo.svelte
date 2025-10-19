@@ -22,7 +22,7 @@ export default ;
     useWebWorker?: boolean;
   }
   let {
-    initialContext = ,
+    initialContext = {},
     enableSIMD = true,
     useWebWorker = true
   }: Props = $props();
@@ -33,7 +33,7 @@ export default ;
       response: '',
       conversationHistory: [],
       sessionId: `simd-session-${Date.now()}`,
-      isProcessing: false;
+      isProcessing: false,
       model: 'gemma3-legal:latest',
       temperature: 0.7,
       maxTokens: 2048,
@@ -102,7 +102,7 @@ export default ;
           generate_ui_components: true
           use_web_worker: useWorker
           session_id: context.sessionId,
-          task_type: 'legal-analysis';
+          task_type: 'legal-analysis',
         })
       });
       if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {

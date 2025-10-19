@@ -54,19 +54,19 @@
     gap: 12px;
   }
   .alert-icon {
-    flex-shrink: 0;
+    flex-shrink: 0,
     width: 20px;
     height: 20px;
   }
   .alert-body {
-    flex: 1;
+    flex: 1,
   }
   .alert-title {
     font-weight: 600;
     margin-bottom: 4px;
   }
   .alert-message {
-    line-height: 1.5;
+    line-height: 1.5,
   }
   .alert-dismiss {
     position: absolute;
@@ -75,15 +75,15 @@
     background: none;
     border: none;
     font-size: 20px;
-    line-height: 1;
+    line-height: 1,
     cursor: pointer;
     padding: 4px;
     border-radius: 4px;
-    opacity: 0.6;
+    opacity: 0.6,
     transition: opacity 0.2s ease;
   }
   .alert-dismiss:hover {
-    opacity: 1;
+    opacity: 1,
   }
 /* Variants */ {}
   .alert-info {

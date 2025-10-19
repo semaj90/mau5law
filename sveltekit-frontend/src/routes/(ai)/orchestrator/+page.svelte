@@ -71,7 +71,7 @@ Showcases the service worker-based AI orchestration system
   ];
   $effect(() => {
         capabilities: ['legal-analysis', 'case-research', 'document-review'],
-        endpoint: 'http://localhost:11434';
+        endpoint: 'http://localhost:11434',
       }
     }
   });
@@ -90,7 +90,7 @@ Showcases the service worker-based AI orchestration system
           {
             priority: 'high',
             temperature: 0.1,
-            maxTokens: 512;
+            maxTokens: 512,
           }
         )
       );
@@ -133,7 +133,7 @@ Showcases the service worker-based AI orchestration system
         {
           priority: 'high',
           temperature: 0.1,
-          maxTokens: 1024;
+          maxTokens: 1024,
         }
       );
       demoResults = [{ task }];

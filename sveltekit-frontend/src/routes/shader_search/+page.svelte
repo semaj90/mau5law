@@ -508,7 +508,7 @@ if (!browser) return;
     margin-bottom: 1rem;
   }
   .search-input {
-    flex: 1;
+    flex: 1,
     padding: 0.75rem;
     border: 2px solid #e5e7eb;
     border-radius: 8px;
@@ -525,7 +525,7 @@ if (!browser) return;
     padding: 0.75rem 1.5rem;
     border-radius: 8px;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 500,
   }
   .search-button:disabled {
     background: #9ca3af;
@@ -543,7 +543,7 @@ if (!browser) return;
     gap: 0.5rem;
   }
   .filter-group label {
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
   }
   .filter-group select {
@@ -671,7 +671,7 @@ if (!browser) return;
     margin-bottom: 1rem;
   }
   .shader-header h3 {
-    margin: 0;
+    margin: 0,
     color: #1f2937;
   }
   .shader-badges {
@@ -689,7 +689,7 @@ if (!browser) return;
     padding: 0.25rem 0.75rem;
     border-radius: 15px;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .platform-badge.webgpu {
     background: #10b981;
@@ -698,7 +698,7 @@ if (!browser) return;
   .platform-badge.webgl {
     background: #f59e0b;
     color: white;
-    font-weight: 500;
+    font-weight: 500,
   }
   .shader-meta {
     display: grid;
@@ -735,7 +735,7 @@ if (!browser) return;
     overflow: hidden;
   }
   .shader-preview pre {
-    margin: 0;
+    margin: 0,
     color: #d1d5db;
     font-size: 0.8rem;
     white-space: pre-wrap;
@@ -743,15 +743,15 @@ if (!browser) return;
   }
   .modal-backdrop {
     position: fixed;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 1000,
   }
   .modal {
     background: white;
@@ -771,7 +771,7 @@ if (!browser) return;
     border-bottom: 1px solid #e5e7eb;
   }
   .modal-header h2 {
-    margin: 0;
+    margin: 0,
   }
   .close-button {
     background: none;
@@ -818,7 +818,7 @@ if (!browser) return;
     overflow-x: auto;
   }
   .code-container pre {
-    margin: 0;
+    margin: 0,
     color: #d1d5db;
     font-size: 0.9rem;
     white-space: pre-wrap;

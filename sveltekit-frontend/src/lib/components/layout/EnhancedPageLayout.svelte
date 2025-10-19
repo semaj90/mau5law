@@ -4,7 +4,8 @@ https://svelte.dev/e/expected_token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import type { Snippet } from 'svelte';
-  import * as Card from '$lib/components/ui/card';
+  // use the canonical, case-stable module name
+  // import * as Card from '$lib/components/ui/CardComponent';
 
   interface Props {
     title: string;
@@ -61,11 +62,12 @@ https://svelte.dev/e/expected_token -->
   <!-- GPU Status Indicator -->
   {#if showGpuStatus && pageLoaded}
     <div class="gpu-status-overlay">
-      <Card.Root class="gpu-status-nier-bits-card">
-        <Card.Header>
-          <Card.Title class="gpu-title">🚀 {gpuStatus.gpu}</Card.Title>
-        </Card.Header>
-        <Card.Content>
+      <div class="gpu-status-nier-bits-card card-root">
+        <div class="card-header">
+          <!-- replaced Card.Title with semantic element to avoid missing export errors -->
+          <h3 class="gpu-title">🚀 {gpuStatus.gpu}</h3>
+        </div>
+        <div class="card-content">
           <div class="gpu-metrics">
             <div class="metric">
               <span class="label">Status</span>
@@ -80,22 +82,23 @@ https://svelte.dev/e/expected_token -->
               <span class="value">{gpuStatus.temperature}</span>
             </div>
           </div>
-        </Card.Content>
-      </Card.Root>
+        </div>
+      </div>
     </div>
   {/if}
 
   <!-- Welcome Banner -->
   {#if showWelcome && pageLoaded}
     <div class="welcome-overlay">
-      <Card.Root class="welcome-nier-bits-card animate-slide-in">
-        <Card.Header>
-          <Card.Title>✨ {title}</Card.Title>
+      <div class="welcome-nier-bits-card animate-slide-in card-root">
+        <div class="card-header">
+          <!-- replaced Card.Title and Card.Description with semantic elements -->
+          <h3 class="welcome-title">✨ {title}</h3>
           {#if description}
-            <Card.Description>{description}</Card.Description>
+            <p class="card-description">{description}</p>
           {/if}
-        </Card.Header>
-        <Card.Content>
+        </div>
+        <div class="card-content">
           <div class="welcome-features">
             <div class="feature">
               <span class="feature-icon">⚡</span>
@@ -110,8 +113,8 @@ https://svelte.dev/e/expected_token -->
               <span>Vector Search</span>
             </div>
           </div>
-        </Card.Content>
-      </Card.Root>
+        </div>
+      </div>
     </div>
   {/if}
 
@@ -222,6 +225,18 @@ https://svelte.dev/e/expected_token -->
   }
   .page-content.with-overlays {
     padding-top: 20px;
+  }
+  /* small additions for the replaced elements */
+  .welcome-title {
+    font-size: 14px;
+    color: #00ff41;
+    margin: 0;
+  }
+
+  .card-description {
+    margin: 6px 0 0;
+    font-size: 12px;
+    color: #cfcfcf;
   }
   @media (max-width: 768px) {
     .gpu-status-overlay,

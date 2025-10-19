@@ -313,7 +313,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 1px solid rgb(209 213 219);
     border-radius: 0.5rem;
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
     color: rgb(55 65 81);
     transition: all 0.15s;
   }
@@ -334,7 +334,7 @@ https://svelte.dev/e/js_parse_error -->
     background-color: rgb(249 250 251);
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 10,
   }
   .header-row {
     border-bottom: 1px solid rgb(229 231 235);
@@ -348,7 +348,7 @@ https://svelte.dev/e/js_parse_error -->
   .header-cell {
     padding: 0;
     text-align: left;
-    font-weight: 600;
+    font-weight: 600,
     color: rgb(55 65 81);
   }
   .header-button {
@@ -372,7 +372,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: default;
   }
   .header-text {
-    font-weight: 600;
+    font-weight: 600,
     color: rgb(55 65 81);
   }
   .sort-icons {
@@ -414,7 +414,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .cell-content {
     color: rgb(55 65 81);
-    line-height: 1.5;
+    line-height: 1.5,
   }
   .checkbox-input {
     width: 1rem;
@@ -450,11 +450,11 @@ https://svelte.dev/e/js_parse_error -->
   }
   .loading-text,
   .empty-text {
-    font-weight: 500;
+    font-weight: 500,
   }
   .empty-icon {
     font-size: 2rem;
-    opacity: 0.5;
+    opacity: 0.5,
   }
   @keyframes spin {
     to {

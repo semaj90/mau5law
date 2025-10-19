@@ -349,7 +349,7 @@
 
   .results-header h3 {
     color: var(--text-primary, #00ccff);
-    margin: 0;
+    margin: 0,
   }
 
   .results-meta {
@@ -438,7 +438,7 @@
 
   .tips-list {
     color: var(--text-secondary, #888888);
-    line-height: 1.6;
+    line-height: 1.6,
   }
 
   .tips-list li {

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute nam;
+<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name;
 https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <script lang="ts">
@@ -7,9 +7,8 @@ https://svelte.dev/e/attribute_invalid_name -->
     onsuccess?: () => void;
     open?: boolean;
   }
-  let { onsuccess, open = true }: Props = $props();
-  // Bits UI dialog primitives
-  import { Root, Content, Title, Portal, Overlay, Close } from '$lib/components/ui/dialog';
+  let { onsuccess, open = $bindable() }: Props = $props();
+  // We'll use a lightweight HTML/CSS modal fallback to avoid missing dialog primitives
   // State (Svelte 5 runes)
   let email = $state('');
   let password = $state('');
@@ -22,7 +21,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     loading = true;
     error = '';
     try {
-      const res = await fetch('/api/register', {
+      const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, confirmPassword }),
@@ -37,39 +36,47 @@ https://svelte.dev/e/attribute_invalid_name -->
       loading = false;
     }
   }
+  function closeModal() {
+    open = false;
+  }
 </script>
 
-<Root bind:open>
-  <!-- Optional external trigger could go here -->
-  <Portal>
-    <Overlay class="overlay" />
-    <Content class="content">
-      <Title class="title">Register</Title>
-      {#if error}<div class="error">{error}</div>{/if}
-      <form onsubmit={handleRegister} class="form">
-        <!-- Changed to onsubmit -->
-        <label>
-          <span>Email</span>
-          <input type="email" bind:value={email} required autocomplete="email" />
-        </label>
-        <label>
-          <span>Password</span>
-          <input type="password" bind:value={password} required autocomplete="new-password" />
-        </label>
-        <label>
-          <span>Confirm Password</span>
-          <input type="password" bind:value={confirmPassword} required autocomplete="new-password" />
-        </label>
-        <div class="actions">
-          <button type="submit" disabled={loading}>
-            {loading ? 'Registering...' : 'Register'}
-          </button>
-          <Close class="close-btn" type="button">Cancel</Close>
-        </div>
-      </form>
-    </Content>
-  </Portal>
-</Root>
+<!-- Simple modal fallback -->
+<div class="modal-root" aria-hidden={!open} class:show={open} onkeydown={(e) => e.key === 'Escape' && (open = false)} tabindex="-1">
+  <!-- use a real button for the overlay so it is keyboard-accessible -->
+  <button
+    type="button"
+    class="overlay"
+    aria-label="Close registration modal"
+    onclick={closeModal}
+  ></button>
+  <div class="content" role="dialog" aria-modal="true" aria-label="Register dialog">
+    <h2 class="title">Register</h2>
+    {#if error}
+      <div class="error">{error}</div>
+    {/if}
+  <form onsubmit={handleRegister} class="form">
+      <label>
+        <span>Email</span>
+        <input type="email" bind:value={email} required autocomplete="email" />
+      </label>
+      <label>
+        <span>Password</span>
+        <input type="password" bind:value={password} required autocomplete="new-password" />
+      </label>
+      <label>
+        <span>Confirm Password</span>
+        <input type="password" bind:value={confirmPassword} required autocomplete="new-password" />
+      </label>
+      <div class="actions">
+        <button type="submit" disabled={loading}>
+          {loading ? 'Registering...' : 'Register'}
+        </button>
+        <button type="button" class="close-btn" onclick={closeModal}>Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 <style>
   .error {
@@ -118,7 +125,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   }
   button[disabled] {
     opacity: 0.6;
-    cursor: progres;
+    cursor: progress;
   }
   .close-btn {
     background: #e5e7eb;

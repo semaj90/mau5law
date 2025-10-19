@@ -116,7 +116,7 @@
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
-    line-height: 1;
+    line-height: 1,
   }
   .yorha-brand-version {
     color: var(--yorha-text-muted, #808080);
@@ -164,9 +164,9 @@
   }
   .active-bar {
     position: absolute;
-    bottom: 0;
+    bottom: 0,
     left: 0;
-    right: 0;
+    right: 0,
     height: 2px;
     background: var(--yorha-secondary, #ffd700);
     box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
@@ -199,7 +199,7 @@
   }
   .btn-icon {
     font-size: 18px;
-    line-height: 1;
+    line-height: 1,
   }
   .btn-label {
     font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
@@ -207,7 +207,7 @@
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
-    line-height: 1;
+    line-height: 1,
   }
   /* Responsive Design */
   @media (max-width: 768px) {

@@ -128,7 +128,7 @@ let layout = $derived(mobile.matches ? 'mobile' : 'desktop');`}</code
   .examples-content pre code {
     background: none;
     color: inherit;
-    padding: 0;
+    padding: 0,
   }
   .live-example {
     background: #f0f9ff;
@@ -143,7 +143,7 @@ let layout = $derived(mobile.matches ? 'mobile' : 'desktop');`}</code
   }
   nav ul {
     list-style: none;
-    padding: 0;
+    padding: 0,
   }
   nav li {
     margin: 0.5rem 0;

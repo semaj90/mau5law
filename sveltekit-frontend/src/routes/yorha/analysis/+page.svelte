@@ -335,7 +335,7 @@
     font-size: 18px;
     font-weight: bold;
     color: #d4af37;
-    line-height: 1;
+    line-height: 1,
   }
   .yorha-subtext {
     font-size: 10px;
@@ -343,7 +343,7 @@
     margin-top: 5px;
   }
   .yorha-nav {
-    flex: 1;
+    flex: 1,
     padding: 15px 0;
     display: flex;
     flex-direction: column;
@@ -398,7 +398,7 @@
     color: #d4af37;
   }
   .yorha-main {
-    flex: 1;
+    flex: 1,
     display: flex;
     flex-direction: column;
     background: #2a2a2a;
@@ -429,14 +429,14 @@
     font-size: 24px;
     font-weight: bold;
     color: #d4af37;
-    margin: 0;
+    margin: 0,
   }
   .analysis-subtitle {
     font-size: 12px;
     color: #888;
   }
   .analysis-dashboard {
-    flex: 1;
+    flex: 1,
     padding: 20px;
     overflow-y: auto;
     display: flex;
@@ -623,7 +623,7 @@
     font-size: 12px;
     color: #ccc;
     margin: 10px 0;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .analysis-footer {
     display: flex;

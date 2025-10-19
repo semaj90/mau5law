@@ -277,7 +277,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    z-index: 1000;
+    z-index: 1000,
 }
   .command-header {
     display: flex;
@@ -288,7 +288,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
     background: #f8fafc;
 }
   .command-input {
-    flex: 1;
+    flex: 1,
     border: none;
     outline: none;
     background: transparent;
@@ -307,11 +307,11 @@ https://svelte.dev/e/rune_missing_parentheses -->
     margin-bottom: 0.75rem;
 }
   .command-category:last-child {
-    margin-bottom: 0;
+    margin-bottom: 0,
 }
   .category-header {
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #6b7280;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -338,7 +338,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
 }
   .command-label {
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
 }
   .command-footer {
     border-top: 1px solid #e5e7eb;
@@ -358,7 +358,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
     border-radius: 0.25rem;
     padding: 0.125rem 0.375rem;
     font-size: 0.625rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #111827;
 }
   .no-results {

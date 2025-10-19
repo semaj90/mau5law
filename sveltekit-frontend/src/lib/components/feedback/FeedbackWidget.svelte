@@ -15,7 +15,7 @@
     interactionId,
     sessionId,
     userId,
-    context = ,
+    context = {},
     show = false,
     ratingType = 'response_quality'
   }: Props = $props();
@@ -99,7 +99,7 @@
     search_relevance: 'Search Relevance',
     ui_experience: 'User Experience',
     ai_accuracy: 'AI Accuracy',
-    performance: 'Performance';
+    performance: 'Performance',
   }
 </script>
 
@@ -180,9 +180,9 @@
   .feedback-overlay {
     position: fixed;
 d;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
     display: flex;
@@ -208,10 +208,10 @@ d;
     margin-bottom: 20px;
   }
   .feedback-title {
-    margin: 0;
+    margin: 0,
     color: #333;
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 600,
   }
   .close-button {
     background: none;
@@ -270,7 +270,7 @@ d;
   .feedback-textarea-label {
     color: #555;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 500,
   }
   .feedback-textarea {
     border: 2px solid #e1e1e1;
@@ -297,7 +297,7 @@ d;
     padding: 12px 24px;
     border-radius: 8px;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 600,
     cursor: pointer;
     transition: background-color 0.2s, transform 0.1;
   }
@@ -323,10 +323,10 @@ d;
     margin: 0 0 8px 0;
     color: #333;
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 600,
   }
   .success-message {
-    margin: 0;
+    margin: 0,
     color: #666;
     font-size: 14px;
   }

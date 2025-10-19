@@ -61,7 +61,7 @@ https://svelte.dev/e/js_parse_error -->
   		canvas: null;
   		context: null
   		isSupported: false
-  		isInitialized: false;
+  		isInitialized: false,
   	});
   	const tensorOperations = writable<TensorOperation[]>([]);
   	const attentionData = writable<AttentionHeatmap | null>(null);
@@ -339,7 +339,7 @@ https://svelte.dev/e/js_parse_error -->
   			context.configure({
   				device,
   				format: 'bgra8unorm',
-  				alphaMode: 'premultiplied';
+  				alphaMode: 'premultiplied',
   			});
   			webgpuContext.set({
   				device,
@@ -368,7 +368,7 @@ https://svelte.dev/e/js_parse_error -->
   				layout: 'auto',
   				compute: {
   					module: embeddingModule
-  					entryPoint: 'main';
+  					entryPoint: 'main',
   				}
   			});
   			computePipelines.set('embedding', embeddingPipeline);
@@ -380,7 +380,7 @@ https://svelte.dev/e/js_parse_error -->
   				layout: 'auto',
   				compute: {
   					module: attentionModule
-  					entryPoint: 'main';
+  					entryPoint: 'main',
   				}
   			});
   			computePipelines.set('attention', attentionPipeline);
@@ -392,7 +392,7 @@ https://svelte.dev/e/js_parse_error -->
   				layout: 'auto',
   				compute: {
   					module: somModule
-  					entryPoint: 'main';
+  					entryPoint: 'main',
   				}
   			});
   			computePipelines.set('som_update', somPipeline);
@@ -486,7 +486,7 @@ https://svelte.dev/e/js_parse_error -->
   				...metadata,
   				timestamp: performance.now();
   			},
-  			status: 'pending';
+  			status: 'pending',
   		}
   		tensorOperations.update(ops => [...ops, operation]);
   		processingQueue.update(queue => [...queue, operation]);
@@ -563,7 +563,7 @@ https://svelte.dev/e/js_parse_error -->
   				const attentionInput = new Float32Array(doc.content.length).map(() => Math.random());
   				queueOperation('attention', attentionInput, [1, doc.content.length], {
   					documentId: doc.id || `doc_${index}`,
-  					type: 'content_attention';
+  					type: 'content_attention',
   				});
   			}
   		});

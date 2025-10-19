@@ -84,7 +84,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   		maxTokens: 512,
   		topP: 0.9,
   		systemPrompt:
-  			'You are a specialized Legal AI Assistant powered by Gemma 3. You excel at contract analysis, legal research, and providing professional legal guidance.';
+  			'You are a specialized Legal AI Assistant powered by Gemma 3. You excel at contract analysis, legal research, and providing professional legal guidance.',
   	});
   	// Elements (nullable for binds)
   let messagesContainer = $state<HTMLDivElement | null >(null);
@@ -192,7 +192,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     console.error('API call failed:', error);
     throw error;
   },
-  					stream: false;
+  					stream: false,
   					options: {
   						temperature: settings.temperature,
   						num_predict: settings.maxTokens,
@@ -536,7 +536,7 @@ https://svelte.dev/e/attribute_invalid_name -->
         (_event: SubmitEvent) => e) => { e.preventDefault(); sendMessage();(event);
       } catch (error) {
         console.error('Form submission error:', error);
-        errorMessage = error instanceof Error ? error.message: 'Form submission failed';
+        errorMessage = error instanceof Error ? error.message: 'Form submission failed',
       }
     }}} role="search" aria-label="Send message to AI">
 					<textarea
@@ -579,17 +579,17 @@ https://svelte.dev/e/attribute_invalid_name -->
 	@keyframes float {
 		0%, 100% {
 			transform: translateY(0) rotate(0deg);
-			opacity: 0;
+			opacity: 0,
 		}
 		10% {
-			opacity: 1;
+			opacity: 1,
 		}
 		90% {
-			opacity: 1;
+			opacity: 1,
 		}
 		100% {
 			transform: translateY(-100%) rotate(360deg);
-			opacity: 0;
+			opacity: 0,
 		}
 	}
 	@keyframes scan {

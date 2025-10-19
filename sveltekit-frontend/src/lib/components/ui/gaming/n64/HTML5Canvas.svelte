@@ -92,7 +92,7 @@
     targetFPS = 60,
     maxPixelRatio = 2,
     enableFabricJS = false,
-    fabricConfig = ,
+    fabricConfig = {},
     onCanvasReady,
     onDraw,
     onResize,
@@ -106,7 +106,7 @@
     fps: 60,
     frameTime: 16.67,
     lastFrame: 0,
-    frameCount: 0;
+    frameCount: 0,
   });
   // WebGL/shader specific state
   let shaderProgram = $state<WebGLProgram | null>(null);
@@ -343,7 +343,7 @@
         ...effectiveRenderOptions,
         blur: textureQuality === 'draft' ? 0.5 : 0,
         contrast: 1.1,
-        brightness: 1.05;
+        brightness: 1.05,
       });
       ondispatch?.({ fabricCanvas });
     } catch (error) {
@@ -527,9 +527,9 @@
   /* Post-processing overlay for additional effects */
   .post-processing-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     pointer-events: none;
     /* N64-style atmospheric overlay */
@@ -547,14 +547,14 @@
       rgba(0, 0, 0, 0.02) 4px
     );
     mix-blend-mode: multiply;
-    opacity: 0.6;
+    opacity: 0.6,
   }
   /* Loading overlay */
   .canvas-loading {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
@@ -564,7 +564,7 @@
     gap: 16px;
     color: white;
     font-family: 'Rajdhani', sans-serif;
-    z-index: 10;
+    z-index: 10,
   }
   .n64-spinner {
     width: 32px;
@@ -597,11 +597,11 @@
     font-size: 11px;
     border-radius: 4px;
     z-index: 20;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   /* Disabled state */
   .n64-canvas-container.disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     filter: grayscale(0.8);
     pointer-events: none;
   }

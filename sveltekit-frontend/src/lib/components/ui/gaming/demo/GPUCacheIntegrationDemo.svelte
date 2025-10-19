@@ -345,10 +345,10 @@
   }
   @keyframes pulse {
     from {
-      opacity: 0.8;
+      opacity: 0.8,
     }
     to {
-      opacity: 1;
+      opacity: 1,
     }
   }
   /* Cache status indicator using global classes */
@@ -381,7 +381,7 @@
   }
   .quantum-effect-container {
     position: relative;
-    z-index: 2;
+    z-index: 2,
   }
   .yorha-quantum-button {
     background: linear-gradient(45deg, var(--yorha-quantum-primary), var(--yorha-quantum-secondary));
@@ -402,9 +402,9 @@
   }
   .quantum-particles {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background:
       radial-gradient(circle at 20% 30%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),

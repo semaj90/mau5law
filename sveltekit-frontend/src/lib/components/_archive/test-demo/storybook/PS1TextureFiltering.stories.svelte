@@ -19,31 +19,31 @@ https://svelte.dev/e/expected_token -->
       id: 'nearest',
       name: 'Nearest (Pixelated)',
       desc: 'Sharp, pixelated look - authentic PS1',
-      cssClass: 'ps1-texture-nearest';
+      cssClass: 'ps1-texture-nearest',
     },
     {
       id: 'linear',
       name: 'Linear (Smooth)',
       desc: 'Basic smoothing filter',
-      cssClass: 'ps1-texture-linear';
+      cssClass: 'ps1-texture-linear',
     },
     {
       id: 'bilinear',
       name: 'Bilinear',
       desc: 'Better quality smoothing',
-      cssClass: 'ps1-texture-bilinear';
+      cssClass: 'ps1-texture-bilinear',
     },
     {
       id: 'trilinear',
       name: 'Trilinear',
       desc: 'Smooth between mipmap levels',
-      cssClass: 'ps1-texture-trilinear';
+      cssClass: 'ps1-texture-trilinear',
     },
     {
       id: 'anisotropic',
       name: 'Anisotropic',
       desc: 'High quality at angles - modern GPU',
-      cssClass: 'ps1-anisotropic-16x ps1-nvidia-optimized';
+      cssClass: 'ps1-anisotropic-16x ps1-nvidia-optimized',
     }
   ];
   let performanceMetrics = $state({
@@ -58,7 +58,7 @@ https://svelte.dev/e/expected_token -->
     perspective: 45,
     zoom: 1,
     offsetX: 0,
-    offsetY: 0;
+    offsetY: 0,
   });
   $effect(() =&gt; {
     updateFilteringProperties();
@@ -215,7 +215,7 @@ https://svelte.dev/e/expected_token -->
     flex-direction: column;
     gap: 6px;
     color: var(--ps1-text);
-    font-weight: 600;
+    font-weight: 600,
   }
   .toggle-controls {
     display: flex;
@@ -399,7 +399,7 @@ https://svelte.dev/e/expected_token -->
   }
   .metric span:last-child {
     color: var(--ps1-text);
-    font-weight: 600;
+    font-weight: 600,
   }
   .metric .warning {
     color: var(--ps1-accent-2);
@@ -415,7 +415,7 @@ https://svelte.dev/e/expected_token -->
   .technique-description p {
     color: var(--ps1-text);
     margin: 0 0 12px 0;
-    line-height: 1.5;
+    line-height: 1.5,
   }
   .technique-description ul {
     margin: 0;

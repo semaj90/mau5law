@@ -45,27 +45,27 @@
     suspect: {
       color: 'bg-red-100 text-red-800 border-red-200',
       icon: '🚨',
-      label: 'Suspect';
+      label: 'Suspect',
     },
     witness: {
       color: 'bg-blue-100 text-blue-800 border-blue-200',
       icon: '👁️',
-      label: 'Witness';
+      label: 'Witness',
     },
     victim: {
       color: 'bg-purple-100 text-purple-800 border-purple-200',
       icon: '💔',
-      label: 'Victim';
+      label: 'Victim',
     },
     associate: {
       color: 'bg-orange-100 text-orange-800 border-orange-200',
       icon: '🤝',
-      label: 'Associate';
+      label: 'Associate',
     },
     unknown: {
       color: 'bg-gray-100 text-gray-800 border-gray-200',
       icon: '❓',
-      label: 'Unknown Role';
+      label: 'Unknown Role',
     }
   } as const;
   const roleInfo = $derived(roleConfig[person.role] ?? roleConfig.unknown);

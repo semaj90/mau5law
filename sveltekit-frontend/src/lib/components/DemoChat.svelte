@@ -216,7 +216,7 @@ Tests the demo RAG functionality with a working interface
     border-bottom: 2px solid #495057;
   }
   .chat-header h3 {
-    margin: 0;
+    margin: 0,
   }
   .sample-queries {
     margin-bottom: 1rem;
@@ -304,7 +304,7 @@ Tests the demo RAG functionality with a working interface
     border-radius: 4px;
   }
   .source-item:last-child {
-    margin-bottom: 0;
+    margin-bottom: 0,
   }
   .source-relevance {
     font-size: 0.8em;
@@ -329,7 +329,7 @@ Tests the demo RAG functionality with a working interface
   }
   .reasoning-list {
     margin: 0.5rem 0 0 1rem;
-    padding: 0;
+    padding: 0,
   }
   .reasoning-list li {
     margin-bottom: 0.25rem;
@@ -357,16 +357,16 @@ Tests the demo RAG functionality with a working interface
   @keyframes pulse {
     0%,
     100% {
-      opacity: 0.4;
+      opacity: 0.4,
     }
     50% {
-      opacity: 1;
+      opacity: 1,
     }
   }
   .empty-chat {
     text-align: center;
     padding: 3rem 2rem;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .chat-input {
     display: flex;
@@ -374,7 +374,7 @@ Tests the demo RAG functionality with a working interface
     align-items: flex-end;
   }
   .chat-input .nes-field {
-    flex: 1;
+    flex: 1,
   }
   .chat-input textarea {
     resize: vertical;

@@ -43,7 +43,7 @@ if (open && personId && !foafData) {
         if (!response.ok) throw new Error('Failed to load recommendations');
         foafData = await response.json();
       } catch (err) {
-        error = err instanceof Error ? err.message: 'Unknown error';
+        error = err instanceof Error ? err.message: 'Unknown error',
       } finally {
         loading = false;
       }

@@ -68,7 +68,7 @@ let gpuMetrics = $state({
   utilization: 0,
   memory_usage: 0,
   temperature: 0,
-  active_streams: 0;
+  active_streams: 0,
 });
 // Performance tracking
 let performanceHistory = $state<Array<{
@@ -111,7 +111,7 @@ async function performSearch() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({,
         text: query;
-        model: 'embeddinggemma:latest';
+        model: 'embeddinggemma:latest',
       })
     });
     if (!embeddingResponse.ok) {
@@ -162,7 +162,7 @@ async function performSearch() {
             utilization: cudaResults.stats.gpu_utilization || 0,
             memory_usage: cudaResults.stats.memory_usage_mb || 0,
             temperature: 65, // Simulated
-            active_streams: 1;
+            active_streams: 1,
           }
         }
       }
@@ -177,7 +177,7 @@ async function performSearch() {
           limit: maxResults
           legal_domain: legalDomain
           search_type: searchType
-          use_embeddings: true;
+          use_embeddings: true,
         })
       });
       if (fallbackResponse.ok) {

@@ -89,7 +89,7 @@ await initializeUnifiedSystems();
   				body: JSON.stringify({,
   					evidenceId: evidenceItem.id,
   					content: evidenceItem.description || evidenceItem.title,
-  					forceReanalyze: false;
+  					forceReanalyze: false,
   				})
   			});
   			const analysisResult = await (response as { json?: unknown }).json();

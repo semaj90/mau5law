@@ -48,7 +48,7 @@
     content: '',
     tags: [],
     x: 100,
-    y: 100;
+    y: 100,
   });
   let originalEvidence = $state<Evidence | null>(null);
   let isLoading = $state(false);
@@ -98,7 +98,7 @@
       content: '',
       tags: [],
       x: 100,
-      y: 100;
+      y: 100,
     }
     originalEvidence = null;
     uploadedFile = null;
@@ -280,7 +280,7 @@
     isDeleting = true;
     try {
       const response = await fetch(`/api/evidence/${evidenceId}`, {
-        method: 'DELETE';
+        method: 'DELETE',
       });
       if (!response.ok) {
         throw new Error('Failed to delete evidence');
@@ -626,21 +626,21 @@
   }
   @keyframes scaleIn {
     from {
-      opacity: 0;
+      opacity: 0,
       transform: scale(0.95);
     }
     to {
-      opacity: 1;
+      opacity: 1,
       transform: scale(1);
     }
   }
   @keyframes scaleOut {
     from {
-      opacity: 1;
+      opacity: 1,
       transform: scale(1);
     }
     to {
-      opacity: 0;
+      opacity: 0,
       transform: scale(0.95);
     }
   }

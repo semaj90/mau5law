@@ -240,7 +240,7 @@
       small: '12px',
       medium: '20px',
       large: '28px',
-      xl: '36px';
+      xl: '36px',
     }
     return paddingMap[padding as keyof typeof paddingMap] || paddingMap.medium;
   }
@@ -416,22 +416,22 @@
     font-size: 0.9em;
   }
   .card-content {
-    flex: 1;
+    flex: 1,
     position: relative;
-    z-index: 2;
+    z-index: 2,
   }
   .card-footer {
     padding-top: 16px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     margin-top: 16px;
     font-size: 0.9em;
-    opacity: 0.8;
+    opacity: 0.8,
   }
 /* Loading overlay */ .loading-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
@@ -439,7 +439,7 @@
     align-items: center;
     justify-content: center;
     gap: 16px;
-    z-index: 10;
+    z-index: 10,
   }
   .n64-spinner {
     width: 32px;
@@ -479,9 +479,9 @@
   }
 /* Lighting overlay */ .lighting-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
 background: linear-gradient( 135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 30%, transparent 60%, rgba(0, 0, 0, 0.2) 100% );
     pointer-events: none;
@@ -497,14 +497,14 @@ background: linear-gradient( 135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255,
 background: linear-gradient( 45deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100% );
     border-radius: 3px;
     pointer-events: none;
-    z-index: 3;
+    z-index: 3,
     opacity: 0.7;
   }
 /* Atmosphere overlay for depth */ .atmosphere-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
 background: radial-gradient( ellipse at center, transparent 0%, var(--fog-color, #404040) 100% );
     opacity: 0.1;
@@ -524,7 +524,7 @@ background: linear-gradient( to bottom, rgba(0, 0, 0, 0.4) 0%, transparent 100% 
     pointer-events: none;
     z-index: -1;
     filter: blur(8px);
-    opacity: 0.6;
+    opacity: 0.6,
   }
 /* Material type variations */ .n64-card.pbr {
     background-blend-mode: overlay, normal;
@@ -543,7 +543,7 @@ background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 40%
     background: linear-gradient(145deg, #4a5568 0%, #2d3748 50%, #1a202c 100%);
     color: #a0aec0;
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: 0.6,
     transform: perspective(1000px) scale(0.95);
 box-shadow: 0 4px 0 #1a202c, inset 0 1px 0 rgba(255,255,255,0.05), 0 6px 12px rgba(0,0,0,0.2);
   }
@@ -576,9 +576,9 @@ filter: contrast(1.02) brightness(1.01) saturate(1.05);
 /* Fog effects */ .n64-card::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
 background: radial-gradient( ellipse at center bottom, var(--fog-color, #404040) 0%, transparent 70% );
     opacity: 0.2;

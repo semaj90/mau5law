@@ -394,7 +394,7 @@ https://svelte.dev/e/js_parse_error -->
     color: #9ca3af;
     max-width: 600px;
     margin: 0 auto;
-    line-height: 1.6;
+    line-height: 1.6,
   }
   .system-status {
     margin-bottom: 3rem;
@@ -468,7 +468,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .control-group label {
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
     color: #d1d5db;
   }
   .control-group select,
@@ -492,7 +492,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 8px;
     padding: 0.75rem 1.5rem;
     color: white;
-    font-weight: 500;
+    font-weight: 500,
     cursor: pointer;
     transition: all 0.2s;
     font-size: 0.875rem;
@@ -547,7 +547,7 @@ https://svelte.dev/e/js_parse_error -->
     min-width: 120px;
   }
   .log-message {
-    flex: 1;
+    flex: 1,
   }
   .log-info .log-message {
     color: #e5e7eb;
@@ -609,6 +609,6 @@ https://svelte.dev/e/js_parse_error -->
   .feature-description {
     font-size: 0.875rem;
     color: #9ca3af;
-    line-height: 1.5;
+    line-height: 1.5,
   }
 </style>

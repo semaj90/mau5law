@@ -143,7 +143,7 @@ https://svelte.dev/e/js_parse_error -->
         body: JSON.stringify({,
           model: "gemma:3b",
           prompt: userMessage.content,
-          stream: true;
+          stream: true,
         }),
       });
       if (!response.ok || !response.body) {

@@ -357,20 +357,20 @@ dismissAll()}
   /* Animations for notification entrance/exit */
   @keyframes notification-enter {
     from {
-      opacity: 0;
+      opacity: 0,
       transform: translateY(-1rem) scale(0.95);
 }
     to {
-      opacity: 1;
+      opacity: 1,
       transform: translateY(0) scale(1);
 }}
   @keyframes notification-exit {
     from {
-      opacity: 1;
+      opacity: 1,
       transform: translateY(0) scale(1);
 }
     to {
-      opacity: 0;
+      opacity: 0,
       transform: translateY(-1rem) scale(0.95);
 }}
   .notification-item {
@@ -399,11 +399,11 @@ dismissAll()}
     position: absolute;
     width: 1px;
     height: 1px;
-    padding: 0;
+    padding: 0,
     margin: -1px;
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
-    border: 0;
+    border: 0,
 }
 </style>

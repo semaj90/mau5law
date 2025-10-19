@@ -35,10 +35,10 @@
   let isStreaming = $state(false);
   let isTyping = $state(false);
   let gpuStatus = $state({
-    available: false;
+    available: false,
     utilization: 0,
     model: 'none',
-    queue_length: 0;
+    queue_length: 0,
   });
   let chatContainer = $state<HTMLDivElement>();
   let messageInput = $state<HTMLInputElement>();
@@ -120,7 +120,7 @@ await initializeAssistant();
       type: 'assistant',
       content,
       timestamp: Date.now(),
-      streaming: true;
+      streaming: true,
     }
     messages = [...messages, message];
     scrollToBottom();
@@ -246,7 +246,7 @@ await initializeAssistant();
   function formatTimestamp(timestamp: number): string {
     return new Date(timestamp).toLocaleTimeString([], {
       hour: '2-digit',
-      minute: '2-digit';
+      minute: '2-digit',
     });
   }
   function getGPUStatusColor(): string {

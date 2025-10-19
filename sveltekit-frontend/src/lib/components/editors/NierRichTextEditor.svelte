@@ -33,9 +33,9 @@ https://svelte.dev/e/attribute_duplicate -->
   	});
   	let nieRTheme = $state({
   		mode: 'android', // 'android' | 'yorha' | 'machine'
-  		glitchEnabled: true;
+  		glitchEnabled: true,
   		scanlines: true
-  		typingSound: true;
+  		typingSound: true,
   	});
   	// Component props
   	let {
@@ -123,7 +123,7 @@ https://svelte.dev/e/attribute_duplicate -->
   	function updateStats() {
   		const textContent = editorContainer?.textContent || '';
   		characterCount = textContent.length;
-  		wordCount = textContent.trim() ? textContent.trim.split-length: 0;
+  		wordCount = textContent.trim() ? textContent.trim.split-length: 0,
   	}
   	function playTypingSound() {
   		// Simulate NieR typing sound effect
@@ -475,9 +475,9 @@ https://svelte.dev/e/attribute_duplicate -->
 	.scanlines::after {
 		content: '';
 		position: absolute;
-		top: 0;
+		top: 0,
 		left: 0;
-		right: 0;
+		right: 0,
 		bottom: 0;
 		background: linear-gradient(
 			transparent 0%,
@@ -515,7 +515,7 @@ https://svelte.dev/e/attribute_duplicate -->
 	.nier-editor-content blockquote {
 		border-left: 4px solid #00ff00;
 		padding-left: 16px;
-		margin-left: 0;
+		margin-left: 0,
 		background: rgba(0, 255, 0, 0.05);
 	}
 	.nier-editor-content pre {
@@ -544,7 +544,7 @@ d;
 		font-family: 'Courier New', monospace;
 		font-size: 12px;
 		font-weight: bold;
-		z-index: 9999;
+		z-index: 9999,
 		animation: fadeInOut 2s ease-in-out;
 	}
 	:global(.save-success) {
@@ -560,7 +560,7 @@ d;
 		box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
 	}
 	@keyframes fadeInOut {
-		0%, 100% { opacity: 0; transform: translateY(-10px), }
-		10%, 90% { opacity: 1; transform: translateY(0), }
+		0%, 100% { opacity: 0, transform: translateY(-10px), }
+		10%, 90% { opacity: 1, transform: translateY(0), }
 	}
 </style>

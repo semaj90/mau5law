@@ -41,7 +41,7 @@
     useCache: true
     useGPU: true
     ragMode: "enhanced",
-    includeContext: true;
+    includeContext: true,
   });
   // Practice areas options with proper mapping
   const practiceAreas = [

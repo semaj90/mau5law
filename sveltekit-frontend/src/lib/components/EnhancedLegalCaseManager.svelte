@@ -74,7 +74,7 @@ https://svelte.dev/e/js_parse_error -->
             createdAt: new Date(),
             updatedAt: new Date(),
             version: 1,
-            workflow: 'standard';
+            workflow: 'standard',
         }
     });
     // Step configuration
@@ -85,7 +85,7 @@ https://svelte.dev/e/js_parse_error -->
             description: 'Basic case details and client information',
             component: CaseInfoForm;
             required: true
-            estimatedTime: 5;
+            estimatedTime: 5,
         },
         {
             id: 'document-upload',
@@ -93,7 +93,7 @@ https://svelte.dev/e/js_parse_error -->
             description: 'Upload and process case documents',
             component: DocumentUploadForm;
             required: true
-            estimatedTime: 10;
+            estimatedTime: 10,
         },
         {
             id: 'evidence-analysis',
@@ -101,7 +101,7 @@ https://svelte.dev/e/js_parse_error -->
             description: 'Analyze and categorize evidence',
             component: EvidenceAnalysisForm;
             required: false
-            estimatedTime: 15;
+            estimatedTime: 15,
         },
         {
             id: 'ai-analysis',
@@ -109,7 +109,7 @@ https://svelte.dev/e/js_parse_error -->
             description: 'AI-powered case analysis and recommendations',
             component: AIAnalysisForm;
             required: false
-            estimatedTime: 8;
+            estimatedTime: 8,
         },
         {
             id: 'review-submit',
@@ -117,7 +117,7 @@ https://svelte.dev/e/js_parse_error -->
             description: 'Final review and case submission',
             component: ReviewSubmitForm;
             required: true
-            estimatedTime: 5;
+            estimatedTime: 5,
         }
     ];
     // Derived stores converted to Svelte 5 $derived
@@ -147,7 +147,7 @@ https://svelte.dev/e/js_parse_error -->
                 type: 'info',
                 title: 'Auto-save',
                 message: 'Progress auto-saved',
-                duration: 2000;
+                duration: 2000,
             });
         } catch (error) {
             console.error('Auto-save failed:', error);
@@ -155,16 +155,16 @@ https://svelte.dev/e/js_parse_error -->
                 type: 'error',
                 title: 'Auto-save Error',
                 message: 'Auto-save failed. Please save manually.',
-                duration: 5000;
+                duration: 5000,
             });
         }
     }
     async function validateCurrentStep(): Promise<ValidationResult> {
         const stepConfig = currentStepConfig;
         const result: ValidationResult = {
-            isValid: true;
+            isValid: true,
             errors: [],
-            warnings: [];
+            warnings: [],
         }
         switch (stepConfig.id) {
             case 'case-info':
@@ -215,7 +215,7 @@ https://svelte.dev/e/js_parse_error -->
                     type: 'error',
                     title: 'Validation Error',
                     message: `Please fix errors: ${validation.errors.join(', ')}`,
-                    duration: 5000;
+                    duration: 5000,
                 });
                 return;
             }
@@ -225,7 +225,7 @@ https://svelte.dev/e/js_parse_error -->
                     type: 'warning',
                     title: 'Validation Warning',
                     message: `Warnings: ${validation.warnings.join(', ')}`,
-                    duration: 4000;
+                    duration: 4000,
                 });
             }
             // Save progress
@@ -250,7 +250,7 @@ https://svelte.dev/e/js_parse_error -->
                 type: 'error',
                 title: 'Step Error',
                 message: 'Failed to advance to next step',
-                duration: 5000;
+                duration: 5000,
             });
         } finally {
             isProcessing = false;
@@ -275,7 +275,7 @@ https://svelte.dev/e/js_parse_error -->
                         type: 'error',
                         title: 'Step Required',
                         message: `Cannot skip required step: ${steps[i].title}`,
-                        duration: 5000;
+                        duration: 5000,
                     });
                     canJump = false;
                     break;
@@ -325,7 +325,7 @@ https://svelte.dev/e/js_parse_error -->
                 type: 'success',
                 title: 'Success',
                 message: 'Case submitted successfully!',
-                duration: 5000;
+                duration: 5000,
             });
             // Redirect to case view
             await goto(`/cases/${(result as { errors?: unknown; warnings?: unknown; isValid?: unknown; id?: unknown; metadata?: unknown }).id}`);
@@ -335,7 +335,7 @@ https://svelte.dev/e/js_parse_error -->
                 type: 'error',
                 title: 'Submission Error',
                 message: 'Failed to submit case. Please try again.',
-                duration: 5000;
+                duration: 5000,
             });
         } finally {
             isProcessing = false;
@@ -362,7 +362,7 @@ https://svelte.dev/e/js_parse_error -->
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 version: 1,
-                workflow: 'standard';
+                workflow: 'standard',
             }
             currentStep = 0;
             validationResults = {}
@@ -370,7 +370,7 @@ https://svelte.dev/e/js_parse_error -->
                 type: 'info',
                 title: 'Reset',
                 message: 'Case data reset',
-                duration: 3000;
+                duration: 3000,
             });
         }
     }
@@ -470,7 +470,7 @@ https://svelte.dev/e/js_parse_error -->
                         type: 'info',
                         title: 'Case Loaded',
                         message: 'Loaded existing case for editing',
-                        duration: 3000;
+                        duration: 3000,
                     });
                 }
             } catch (error) {

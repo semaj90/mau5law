@@ -214,7 +214,7 @@
   .sidebar-container {
     position: fixed;
     top: 60px; /* Header height */
-    left: 0;
+    left: 0,
     bottom: 0;
     width: 320px;
     z-index: 20;
@@ -228,13 +228,13 @@
   }
   .hover-trigger {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
     width: 20px;
     height: 100%;
     background: transparent;
     pointer-events: all;
-    z-index: 1;
+    z-index: 1,
   }
   .sidebar-content {
     width: 100%;
@@ -280,7 +280,7 @@
     background: var(--bg-primary);
   }
   .tab-trigger {
-    flex: 1;
+    flex: 1,
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -301,13 +301,13 @@
     border-bottom: 2px solid var(--harvard-crimson);
   }
   .tab-content {
-    flex: 1;
+    flex: 1,
     overflow: hidden;
     display: flex;
     flex-direction: column;
   }
   .tabs-container {
-    flex: 1;
+    flex: 1,
     display: flex;
     flex-direction: column;
     overflow: hidden;

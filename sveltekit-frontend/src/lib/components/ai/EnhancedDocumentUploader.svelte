@@ -643,7 +643,7 @@
   }
   .drop-zone-title {
     font-size: 1.125rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .drop-zone-description {
     font-size: 0.875rem;
@@ -669,7 +669,7 @@
     gap: 1rem;
   }
   .file-preview {
-    flex-shrink: 0;
+    flex-shrink: 0,
     width: 3rem;
     height: 3rem;
     border-radius: 0.5rem;
@@ -686,7 +686,7 @@
   }
   .file-details {
     flex: 1 1 0%;
-    min-width: 0;
+    min-width: 0,
   }
   .file-name {
     font-weight: 500;

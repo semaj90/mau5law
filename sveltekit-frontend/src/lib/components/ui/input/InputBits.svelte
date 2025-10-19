@@ -26,18 +26,18 @@
     description,
     errorMessage,
     class: className = '',
-    ...restProp;
+    ...restProp
   }: Props = $props();
   const baseClasses = "legal-ai-input w-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
   const variantClasses = {
     default: "bg-slate-800/60 border border-slate-600/50 focus:border-amber-500 focus:ring-amber-500/20",
     filled: "bg-slate-800/80 border-0 focus:ring-amber-500/30",
-    outlined: "bg-transparent border-2 border-slate-600/50 focus:border-amber-500";
+    outlined: "bg-transparent border-2 border-slate-600/50 focus:border-amber-500",
   }
   const sizeClasses = {
     sm: "px-3 py-2 text-sm rounded-md",
     md: "px-4 py-3 text-base rounded-lg",
-    lg: "px-6 py-4 text-lg rounded-xl";
+    lg: "px-6 py-4 text-lg rounded-xl",
   }
   const stateClasses = error
     ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"

@@ -318,7 +318,7 @@ if (browser) {
           query,
           userId,
           caseId: caseId || null;
-          limit: 5;
+          limit: 5,
         })
       });
       if ((response as { ok?: any; json?: any; status?: any; statusText?: any; body?: any }).ok) {
@@ -429,7 +429,7 @@ if (browser) {
           options: {
             temperature: 0.4,
             num_ctx: 4096,
-            top_p: 0.9;
+            top_p: 0.9,
           }
         }),
       });
@@ -612,11 +612,11 @@ if (browser) {
       body: JSON.stringify({,
         model: 'gemma3-legal',
         prompt: enhancedPrompt;
-        stream: false;
+        stream: false,
         options: {
           temperature: 0.4,
           num_ctx: 4096,
-          top_p: 0.9;
+          top_p: 0.9,
         }
       }),
     });
@@ -712,10 +712,10 @@ if (browser) {
   5. Recommendations for ${userRole}
   Text to analyze: "${text}"
   Provide a structured analysis:`,
-          stream: false;
+          stream: false,
           options: {
             temperature: 0.2,
-            num_ctx: 4096;
+            num_ctx: 4096,
           }
         })
       });
@@ -761,10 +761,10 @@ if (browser) {
   4. Practical implications
   5. Recommendations
   Topic: ${topic}`,
-          stream: false;
+          stream: false,
           options: {
             temperature: 0.3,
-            num_ctx: 2048;
+            num_ctx: 2048,
           }
         })
       });
@@ -950,12 +950,12 @@ if (browser) {
         body: JSON.stringify({,
           model: 'gemma3-legal',
           prompt,
-          stream: true;
+          stream: true,
           options: {
             temperature: 0.3,
             num_ctx: 4096,
             top_p: 0.9,
-            top_k: 40;
+            top_k: 40,
           }
         })
       });
@@ -1384,10 +1384,10 @@ copyToClipboard(message.content)}>
   }
   @keyframes blink {
     0%, 50% {
-      opacity: 1;
+      opacity: 1,
     }
     51%, 100% {
-      opacity: 0;
+      opacity: 0,
     }
   }
   /* Streaming message container */
@@ -1397,32 +1397,32 @@ copyToClipboard(message.content)}>
   }
   /* Character reveal animation */
   .streaming-character {
-    opacity: 0;
+    opacity: 0,
     animation: characterReveal 0.1s ease-in forward;
   }
   @keyframes characterReveal {
     from {
-      opacity: 0;
+      opacity: 0,
       transform: translateY(10px);
     }
     to {
-      opacity: 1;
+      opacity: 1,
       transform: translateY(0);
     }
   }
   /* Chunk streaming effect */
   .streaming-chunk {
     display: inline-block;
-    opacity: 0;
+    opacity: 0,
     animation: chunkFadeIn 0.3s ease-out forward;
   }
   @keyframes chunkFadeIn {
     from {
-      opacity: 0;
+      opacity: 0,
       transform: translateX(5px);
     }
     to {
-      opacity: 1;
+      opacity: 1,
       transform: translateX(0);
     }
   }
@@ -1445,11 +1445,11 @@ copyToClipboard(message.content)}>
   }
   @keyframes pulse {
     0%, 100% {
-      opacity: 0.4;
+      opacity: 0.4,
       transform: scale(1);
     }
     50% {
-      opacity: 1;
+      opacity: 1,
       transform: scale(1.2);
     }
   }
@@ -1504,11 +1504,11 @@ copyToClipboard(message.content)}>
   }
   @keyframes messageSlideIn {
     from {
-      opacity: 0;
+      opacity: 0,
       transform: translateY(20px);
     }
     to {
-      opacity: 1;
+      opacity: 1,
       transform: translateY(0);
     }
   }

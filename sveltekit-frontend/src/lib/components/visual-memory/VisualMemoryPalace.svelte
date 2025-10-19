@@ -374,7 +374,7 @@
   }
   .room-capacity {
     font-size: 0.75rem;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .palace-viewport {
     position: relative;

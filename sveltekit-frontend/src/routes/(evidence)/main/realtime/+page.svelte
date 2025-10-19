@@ -36,7 +36,7 @@
     pending: 0,
     failed: 0,
     total: 0,
-    inProgress: false;
+    inProgress: false,
   });
   $effect(() => {
     // Update stats when evidence changes

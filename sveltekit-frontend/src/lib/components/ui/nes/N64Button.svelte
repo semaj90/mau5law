@@ -235,14 +235,14 @@ inset 0 -1px 0 rgba(0, 0, 0, 0.4), {}
       0 2px 4px rgba(0, 0, 0, 0.3);
   }
   .n64-button--disabled {
-    opacity: 0.6;
+    opacity: 0.6,
     cursor: not-allowed;
     transform: none !important;
     filter: grayscale(50%);
   }
   .n64-button--loading {
     pointer-events: none;
-    opacity: 0.8;
+    opacity: 0.8,
   }
 /* Content */ {}
   .n64-button__content {
@@ -250,7 +250,7 @@ inset 0 -1px 0 rgba(0, 0, 0, 0.4), {}
     align-items: center;
     gap: 8px;
     position: relative;
-    z-index: 1;
+    z-index: 1,
   }
   .n64-button__icon {
     font-size: 1.2em;
@@ -290,13 +290,13 @@ inset 0 -1px 0 rgba(0, 0, 0, 0.4), {}
   @keyframes n64-ripple {
     to {
       transform: translate(-50%, -50%) scale(4);
-      opacity: 0;
+      opacity: 0,
     }
   }
 /* Pressed Overlay */ {}
   .n64-button__pressed-overlay {
     position: absolute;
-    inset: 0;
+    inset: 0,
     background: rgba(0, 0, 0, 0.1);
     pointer-events: none;
   }
@@ -320,11 +320,11 @@ transform 0.15s ease, {}
     inset: 1px;
     background: inherit;
     border-radius: inherit;
-    opacity: 0;
+    opacity: 0,
     transition: opacity 0.15s ease;
   }
   .n64-button:hover::before {
-    opacity: 0.1;
+    opacity: 0.1,
     background: radial-gradient(circle at center, rgba(255, 255, 255, 0.3), transparent);
   }
 /* Console theme integration */ {}

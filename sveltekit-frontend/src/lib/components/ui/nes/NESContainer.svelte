@@ -210,7 +210,7 @@ inset 0 0 0 2px var(--console-secondary, #0084ff), {}
     min-width: unset;
     min-height: unset;
     font-size: 16px;
-    z-index: 1000;
+    z-index: 1000,
   }
 /* Variant Styling */ {}
   .nes-container--window {
@@ -227,7 +227,7 @@ inset 0 0 0 2px var(--console-secondary, #0084ff), {}
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 1000;
+    z-index: 1000,
   }
   .nes-container--card {
     background: #1a1a1a;
@@ -324,7 +324,7 @@ background-size: {}
 /* Scanlines Effect */ {}
   .nes-container__scanlines {
     position: absolute;
-    inset: 0;
+    inset: 0,
 background: repeating-linear-gradient( {}
 0deg, {}
 transparent 0px, {}
@@ -382,7 +382,7 @@ rgba(0, 255, 0, 0.02) 4px {}
   .nes-container--dragging {
     cursor: mov;
     user-select: none;
-    z-index: 1001;
+    z-index: 1001,
   }
 /* Console Theme Adaptations */ {}
   .theme-nes .nes-container {

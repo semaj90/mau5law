@@ -401,10 +401,10 @@
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.5;
+      opacity: 0.5,
     }
   }
   .processing-spinner {
@@ -413,7 +413,7 @@
     justify-content: center;
   }
   .prose {
-    line-height: 1.6;
+    line-height: 1.6,
   }
   @media (max-width: 768px) {
     .realtime-rag-interface {

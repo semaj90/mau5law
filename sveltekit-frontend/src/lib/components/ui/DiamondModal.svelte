@@ -187,16 +187,16 @@
 <style>
   .modal-overlay {
     position: fixed;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
+    z-index: 9999,
     padding: 1rem;
   }
   .modal-container {
@@ -217,7 +217,7 @@
   }
   .diamond-canvas {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
     width: 100%;
     height: 100%;
@@ -226,9 +226,9 @@
   }
   .gradient-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background:
       radial-gradient(ellipse at top left, rgba(138, 43, 226, 0.2), transparent 40%),
@@ -238,7 +238,7 @@
   }
   .modal-content {
     position: relative;
-    z-index: 1;
+    z-index: 1,
     display: flex;
     flex-direction: column;
     min-height: 200px;
@@ -257,14 +257,14 @@
     font-weight: bold;
     color: #fff;
     text-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
-    margin: 0;
+    margin: 0,
     flex: 1;
     text-align: center;
   }
   .modal-body {
     padding: 2rem;
     overflow-y: auto;
-    flex: 1;
+    flex: 1,
     color: rgba(255, 255, 255, 0.9);
   }
   .modal-footer {
@@ -291,12 +291,12 @@
   }
   .suit {
     font-size: 1.2rem;
-    line-height: 1;
+    line-height: 1,
   }
   .rank {
     font-size: 0.9rem;
     font-weight: bold;
-    line-height: 1;
+    line-height: 1,
   }
   .modal-close {
     position: absolute;
@@ -314,7 +314,7 @@
     justify-content: center;
     cursor: pointer;
     transition: all 0.2;
-    z-index: 2;
+    z-index: 2,
   }
   .modal-close:hover {
     background: rgba(255, 64, 64, 0.3);
@@ -327,7 +327,7 @@
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 8px;
     color: #fff;
-    font-weight: 500;
+    font-weight: 500,
     cursor: pointer;
     transition: all 0.3;
   }

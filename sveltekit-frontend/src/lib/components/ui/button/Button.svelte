@@ -96,12 +96,12 @@
 
 <style>
   :global(.nier-btn[disabled]) {
-    opacity: 0.6;
+    opacity: 0.6,
     cursor: not-allowed;
   }
 
   :global(.nier-btn.btn-loading) {
-    opacity: 0.6;
+    opacity: 0.6,
     cursor: not-allowed;
     background: #23272e;
     color: #bcbcbc;

@@ -99,7 +99,7 @@
         filters: {
           document_types: Array.from(selectedTypes),
           similarity_threshold: similarityThreshold;
-          limit: 20;
+          limit: 20,
         },
         options: {
           include_highlights: true
@@ -126,7 +126,7 @@
       console.log('Vector search results:', data);
     } catch (err) {
       console.error('Search error:', err);
-      error = err instanceof Error ? err.message: 'Search failed';
+      error = err instanceof Error ? err.message: 'Search failed',
     } finally {
       loading = false;
     }

@@ -48,7 +48,7 @@
       liveRegion.setAttribute('aria-atomic', 'true');
       liveRegion.className = 'sr-only';
       liveRegion.style.cssText =
-        'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0';
+        'position:absolute;width:1px;height:1px;padding:0,margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0';
       document.body.appendChild(liveRegion);
       liveRegion.textContent = messag;
       // Clean up after announcement
@@ -264,12 +264,12 @@
     position: absolute;
     width: 1px;
     height: 1px;
-    padding: 0;
+    padding: 0,
     margin: -1px;
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
-    border: 0;
+    border: 0,
   }
 /* Route-specific accessibility enhancements */ {}
 :global(.accessibility-enhanced-essential), {}

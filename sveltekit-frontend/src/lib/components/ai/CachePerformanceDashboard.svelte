@@ -586,7 +586,7 @@
     background-clip: text;
   }
   .title-section p {
-    margin: 0;
+    margin: 0,
     opacity: 0.7;
     font-size: 0.9rem;
   }
@@ -603,7 +603,7 @@
     padding: 0.5rem 1rem;
     border-radius: 6px;
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   .system-health.healthy {
     background: rgba(34, 197, 94, 0.1);
@@ -640,7 +640,7 @@
     border-color: rgba(255, 255, 255, 0.3);
   }
   .control-buttons button:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .auto-refresh-btn.active {
@@ -677,7 +677,7 @@
   }
   .metric-icon {
     color: #3b82f6;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .metric-content h3 {
     margin: 0 0 0.5rem 0;
@@ -696,7 +696,7 @@
   }
   .grade {
     font-size: 1rem;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .dashboard-grid {
     display: grid;
@@ -734,13 +734,13 @@
     gap: 1rem;
   }
   .stat-bar {
-    flex: 1;
+    flex: 1,
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
   .bar {
-    flex: 1;
+    flex: 1,
     height: 8px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
@@ -769,7 +769,7 @@
   }
   .stat-item .label {
     font-size: 0.8rem;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .stat-item .value {
     font-weight: bold;
@@ -812,7 +812,7 @@
     display: flex;
     justify-content: space-between;
     font-size: 0.8rem;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .memory-hierarchy {
     display: flex;
@@ -848,10 +848,10 @@
   }
   .layer-info span {
     font-size: 0.7rem;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .usage-bar {
-    flex: 1;
+    flex: 1,
     height: 6px;
     background: rgba(255, 255, 255, 0.2);
     border-radius: 3px;
@@ -867,7 +867,7 @@
     min-width: 50px;
     text-align: right;
     font-size: 0.8rem;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .query-list {
     display: flex;
@@ -897,7 +897,7 @@
     display: flex;
     justify-content: space-between;
     font-size: 0.8rem;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .cache-status.hit {
     color: #22c55e;

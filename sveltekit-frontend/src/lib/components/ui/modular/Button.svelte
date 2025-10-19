@@ -23,7 +23,7 @@
     children,
     disabled,
     type = 'button',
-    ...restProp;
+    ...restProp
   }: Props = $props()
   const buttonVariants = cva(
     'inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap hover-lift',
@@ -47,12 +47,12 @@
           sm: 'h-8 px-3 py-1.5 text-xs rounded',
           lg: 'h-12 px-6 py-3 text-base rounded-lg',
           icon: 'h-10 w-10 p-0 rounded-md',
-          xs: 'h-6 px-2 py-1 text-xs rounded';
+          xs: 'h-6 px-2 py-1 text-xs rounded',
         }
       },
       defaultVariants: {
         variant: 'default',
-        size: 'default';
+        size: 'default',
       }
     }
   )

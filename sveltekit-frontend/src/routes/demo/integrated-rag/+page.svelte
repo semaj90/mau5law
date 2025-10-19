@@ -205,7 +205,7 @@
   }
 
   h1 {
-    margin: 0;
+    margin: 0,
     color: #1a1a1a;
     font-size: 2.5rem;
   }
@@ -275,7 +275,7 @@
     display: block;
     color: #007bff;
     font-size: 1.25rem;
-    font-weight: 700;
+    font-weight: 700,
   }
 
   .integration-status {
@@ -317,7 +317,7 @@
   }
 
   .status-item p {
-    margin: 0;
+    margin: 0,
     color: #666;
     font-size: 0.875rem;
   }

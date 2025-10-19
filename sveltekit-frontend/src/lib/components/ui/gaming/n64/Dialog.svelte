@@ -434,15 +434,15 @@ https://svelte.dev/e/attribute_duplicate -->
 <style>/* Backdrop styling */ .n64-dialog-backdrop {
     position: fixed;
 d;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 1000,
     padding: 20px;
 /* 3D perspective for dialog */ perspective: var(--perspective);
     perspective-origin: center center;
@@ -453,9 +453,9 @@ d;
   }
   .atmosphere-layer {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
 background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(74, 144, 226, 0.1) 0%, transparent 60%), radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.3) 0%, transparent 70%);
     opacity: var(--atmosphere-intensity);
@@ -509,7 +509,7 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     max-height: 100vh;
     width: 100vw;
     height: 100vh;
-    border-radius: 0;
+    border-radius: 0,
   }
 /* Entrance animations */ .n64-dialog.entrance-zoom {
     animation: dialogZoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -529,57 +529,57 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
   @keyframes dialogZoomIn {
     0% {
       transform: scale(0.8) rotateY(-15deg) rotateX(15deg);
-      opacity: 0;
+      opacity: 0,
     }
     100% {
       transform: scale(1) rotateY(0deg) rotateX(0deg);
-      opacity: 1;
+      opacity: 1,
     }
   }
   @keyframes dialogSlideUp {
     0% {
       transform: translateY(50px) rotateX(10deg);
-      opacity: 0;
+      opacity: 0,
     }
     100% {
       transform: translateY(0) rotateX(0deg);
-      opacity: 1;
+      opacity: 1,
     }
   }
   @keyframes dialogSlideDown {
     0% {
       transform: translateY(-50px) rotateX(-10deg);
-      opacity: 0;
+      opacity: 0,
     }
     100% {
       transform: translateY(0) rotateX(0deg);
-      opacity: 1;
+      opacity: 1,
     }
   }
   @keyframes dialogFadeIn {
     0% {
-      opacity: 0;
+      opacity: 0,
       transform: scale(0.95);
     }
     100% {
-      opacity: 1;
+      opacity: 1,
       transform: scale(1);
     }
   }
   @keyframes dialogPortal {
     0% {
       transform: scale(0.3) rotateY(90deg) rotateX(45deg);
-      opacity: 0;
+      opacity: 0,
       filter: blur(10px);
     }
     50% {
       transform: scale(1.1) rotateY(45deg) rotateX(22deg);
-      opacity: 0.7;
+      opacity: 0.7,
       filter: blur(2px);
     }
     100% {
       transform: scale(1) rotateY(0deg) rotateX(0deg);
-      opacity: 1;
+      opacity: 1,
       filter: blur(0px);
     }
   }
@@ -594,7 +594,7 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
   }
   .dialog-title {
     font-size: 1.5em;
-    font-weight: 700;
+    font-weight: 700,
     margin: 0;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -630,11 +630,11 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     outline-offset: 2px;
   }
   .dialog-content {
-    flex: 1;
+    flex: 1,
     padding: 28px;
     overflow-y: auto;
     position: relative;
-    z-index: 2;
+    z-index: 2,
   }
   .dialog-footer {
     padding: 16px 28px 24px;
@@ -646,9 +646,9 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
   }
 /* Loading overlay */ .loading-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
@@ -656,7 +656,7 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     align-items: center;
     justify-content: center;
     gap: 20px;
-    z-index: 10;
+    z-index: 10,
   }
   .n64-spinner {
     width: 40px;
@@ -696,9 +696,9 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
   }
 /* Lighting overlay */ .lighting-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
 background: linear-gradient( 135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 30%, transparent 60%, rgba(0, 0, 0, 0.3) 100% );
     pointer-events: none;
@@ -714,17 +714,17 @@ background: linear-gradient( 135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255,
 background: linear-gradient( 45deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100% );
     border-radius: 6px;
     pointer-events: none;
-    z-index: 3;
+    z-index: 3,
     opacity: 0.8;
   }
 /* Particle overlay */ .particle-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     pointer-events: none;
-    z-index: 4;
+    z-index: 4,
     overflow: hidden;
     border-radius: 8px;
   }
@@ -740,7 +740,7 @@ background: linear-gradient( 45deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 
   .particle-overlay::before {
     top: 20%;
     left: 10%;
-    animation-delay: 0;
+    animation-delay: 0,
   }
   .particle-overlay::after {
     top: 60%;
@@ -750,15 +750,15 @@ background: linear-gradient( 45deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 
   @keyframes floatParticles {
     0%, 100% {
       transform: translateY(0px) translateX(0px) scale(1);
-      opacity: 0.6;
+      opacity: 0.6,
     }
     33% {
       transform: translateY(-20px) translateX(10px) scale(1.2);
-      opacity: 1;
+      opacity: 1,
     }
     66% {
       transform: translateY(10px) translateX(-5px) scale(0.8);
-      opacity: 0.4;
+      opacity: 0.4,
     }
   }
 /* Material type variations */ .n64-dialog.pbr {
@@ -791,9 +791,9 @@ filter: contrast(1.03) brightness(1.02) saturate(1.08);
 /* Fog effects */ .n64-dialog::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
 background: radial-gradient( ellipse at center, transparent 0%, var(--fog-color, #404040) 100% );
     opacity: 0.1;

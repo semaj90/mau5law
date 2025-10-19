@@ -193,7 +193,7 @@
     background-color: var(--button-color);
     color: white;
     border: 2px solid #000000;
-    border-radius: 0;
+    border-radius: 0,
     padding: var(--button-padding);
     font-size: var(--button-font-size);
     min-height: var(--button-min-height);
@@ -252,7 +252,7 @@
     background-color: #7c7c7c;
     --button-color: #7c7c7c;
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: 0.6,
     transform: none !important;
     box-shadow: 1px 1px 0px #000000;
   }
@@ -307,7 +307,7 @@
     :global(.nes-8bit-button.enable-scanlines)::before {
       content: '';
       position: absolute;
-      inset: 0;
+      inset: 0,
       background: repeating-linear-gradient(
         0deg,
         transparent,

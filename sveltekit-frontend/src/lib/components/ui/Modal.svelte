@@ -108,7 +108,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 1000,
     padding: 1rem;
   }
   .modal-content {
@@ -130,9 +130,9 @@
   }
   .modal-title {
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #111827;
-    margin: 0;
+    margin: 0,
   }
   .modal-close {
     background: none;
@@ -148,7 +148,7 @@
   .modal-body {
     padding: 1.5rem;
     overflow-y: auto;
-    flex: 1;
+    flex: 1,
   }
   .modal-footer {
     padding: 1.5rem;

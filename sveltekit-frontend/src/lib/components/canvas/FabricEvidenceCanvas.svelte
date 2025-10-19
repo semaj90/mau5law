@@ -130,7 +130,7 @@
       imageSmoothingEnabled: true
       allowTouchScrolling: false
       moveCursor: 'grab',
-      hoverCursor: 'pointer';
+      hoverCursor: 'pointer',
     });
     // Enable high DPI support
     const devicePixelRatio = window.devicePixelRatio || 1;
@@ -158,9 +158,9 @@
     const gridOptions = {
       stroke: '#e2e8f0',
       strokeWidth: 1,
-      selectable: false;
+      selectable: false,
       evented: false
-      excludeFromExport: true;
+      excludeFromExport: true,
     }
     // Vertical lines
     for (let i = 0; i <= width / gridSize; i++) {
@@ -288,8 +288,8 @@
       strokeDashArray: [10, 10],
       selectable: false
       evented: false
-      excludeFromExport: true;
-      opacity: 0.8;
+      excludeFromExport: true,
+      opacity: 0.8,
     });
     const dropText = new fabric.Text('Drop Evidence Here', {
       left: width / 2,
@@ -300,9 +300,9 @@
       textAlign: 'center',
       originX: 'center',
       originY: 'center',
-      selectable: false;
+      selectable: false,
       evented: false
-      excludeFromExport: true;
+      excludeFromExport: true,
     });
     overlay.set('dropOverlay', true);
     dropText.set('dropOverlay', true);
@@ -334,7 +334,7 @@
             {
               caseId: 'current-case', // You can get this from context
               tags: ['uploaded', 'evidence'],
-              processingStatus: 'pending';
+              processingStatus: 'pending',
             },
             position
           );
@@ -355,7 +355,7 @@
       x: position.x,
       y: position.y,
       files: processedFiles.filter(Boolean),
-      processingMethod: 'minio-webgpu-concurrent';
+      processingMethod: 'minio-webgpu-concurrent',
     });
   }
   // Dynamic script loader for public directory WASM files
@@ -398,7 +398,7 @@
             const result = wasmParser.parseForCanvas(bytes, {
               maxChunkSize: 3000,
               overlap: 200,
-              enableEntityExtraction: true;
+              enableEntityExtraction: true,
             });
             // Create enhanced file object
             const enhancedFile = Object.assign(file, {
@@ -506,7 +506,7 @@
       stroke: evidence.status === 'ready' ? '#10b981' : '#6b7280',
       strokeWidth: 2,
       rx: 8,
-      ry: 8;
+      ry: 8,
     });
     // File icon
     const iconText = getEvidenceIcon(evidence.type);
@@ -515,14 +515,14 @@
       fill: 'white',
       left: 15,
       top: 15,
-      fontFamily: 'Arial';
+      fontFamily: 'Arial',
     });
     // Status indicator
     const statusIcon = new fabric.Text(getStatusIcon(evidence.status), {
       fontSize: 16,
       left: cardWidth - 25,
       top: 10,
-      fontFamily: 'Arial';
+      fontFamily: 'Arial',
     });
     // File name
     const fileName = new fabric.Text(truncateFileName(evidence.filename, 18), {
@@ -531,7 +531,7 @@
       left: 15,
       top: 55,
       fontFamily: 'Arial',
-      fontWeight: 'bold';
+      fontWeight: 'bold',
     });
     // File size
     const fileSize = new fabric.Text(`${(evidence.size / 1024).toFixed(1)} KB`, {
@@ -539,7 +539,7 @@
       fill: 'rgba(255, 255, 255, 0.8)',
       left: 15,
       top: 75,
-      fontFamily: 'Arial';
+      fontFamily: 'Arial',
     });
     // AI confidence score (if available)
     let confidenceText;
@@ -551,7 +551,7 @@
         left: 15,
         top: 90,
         fontFamily: 'Arial',
-        fontWeight: 'bold';
+        fontWeight: 'bold',
       });
     }
     const objects = confidenceText
@@ -583,7 +583,7 @@
       top: 160,
       left: 0,
       fontFamily: 'Arial',
-      textAlign: 'center';
+      textAlign: 'center',
     });
   }
   function updateEvidenceObject(evidence: EvidenceItem) {
@@ -608,7 +608,7 @@
       image: '#059669',
       video: '#dc2626',
       audio: '#7c3aed',
-      other: '#6b7280';
+      other: '#6b7280',
     }
     return colors[evidence.type] || colors.other;
   }
@@ -618,7 +618,7 @@
       image: '🖼️',
       video: '🎥',
       audio: '🎵',
-      other: '📎';
+      other: '📎',
     }
     return icons[type] || icons.other;
   }
@@ -627,7 +627,7 @@
       uploading: '⬆️',
       processing: '🔄',
       ready: '✅',
-      error: '❌';
+      error: '❌',
     }
     return icons[status] || '❓';
   }
@@ -722,7 +722,7 @@
         stroke: '#d1d5db',
         strokeWidth: 2,
         rx: 8,
-        ry: 8;
+        ry: 8,
       }),
       new fabric.Text(evidenceFile.name.length > 20 ? evidenceFile.name.substring(0, 17) + '...' : evidenceFile.name, {
         left: 100,
@@ -731,7 +731,7 @@
         fontWeight: 'bold',
         textAlign: 'center',
         originX: 'center',
-        fill: '#374151';
+        fill: '#374151',
       }),
       new fabric.Text('Processing...', {
         left: 100,
@@ -739,7 +739,7 @@
         fontSize: 12,
         textAlign: 'center',
         originX: 'center',
-        fill: '#6b7280';
+        fill: '#6b7280',
       }),
       new fabric.Rect({
         width: 160,
@@ -749,7 +749,7 @@
         originX: 'center',
         fill: '#e5e7eb',
         rx: 3,
-        ry: 3;
+        ry: 3,
       }),
       new fabric.Rect({
         width: 32, // 20% progress initially
@@ -758,14 +758,14 @@
         top: 90,
         fill: '#3b82f6',
         rx: 3,
-        ry: 3;
+        ry: 3,
       })
     ], {
       left: position.x,
       top: position.y,
       selectable: true
       hasControls: true
-      hasBorders: true;
+      hasBorders: true,
       data: {
         evidenceId: evidenceFile.id,
         type: 'processing-evidence',
@@ -864,7 +864,7 @@
           color: 'rgba(0,0,0,0.1)',
           blur: 10,
           offsetX: 2,
-          offsetY: 2;
+          offsetY: 2,
         })
       }),
       // Title
@@ -875,7 +875,7 @@
         fontWeight: 'bold',
         textAlign: 'center',
         originX: 'center',
-        fill: '#1f2937';
+        fill: '#1f2937',
       }),
       // Processing method badge
       new fabric.Rect({
@@ -886,7 +886,7 @@
         originX: 'center',
         fill: methodColor
         rx: 10,
-        ry: 10;
+        ry: 10,
       }),
       new fabric.Text(processingResult.processingMethod.toUpperCase(), {
         left: cardWidth / 2,
@@ -896,7 +896,7 @@
         textAlign: 'center',
         originX: 'center',
         originY: 'center',
-        fill: '#ffffff';
+        fill: '#ffffff',
       }),
       // Stats
       new fabric.Text(`📊 ${(evidenceFile.size / 1024).toFixed(1)}KB • ⏱️ ${processingResult.processingTime || 0}ms`, {
@@ -905,7 +905,7 @@
         fontSize: 11,
         textAlign: 'center',
         originX: 'center',
-        fill: '#6b7280';
+        fill: '#6b7280',
       }),
       // Quantization info if available
       processingResult.quantizationApplied ? new fabric.Text(
@@ -916,7 +916,7 @@
           fontSize: 10,
           textAlign: 'center',
           originX: 'center',
-          fill: '#059669';
+          fill: '#059669',
         }
       ) : null
       // Ready indicator
@@ -926,7 +926,7 @@
         radius: 8,
         fill: '#10b981',
         originX: 'center',
-        originY: 'center';
+        originY: 'center',
       }),
       new fabric.Text('✓', {
         left: cardWidth - 25,
@@ -936,14 +936,14 @@
         textAlign: 'center',
         originX: 'center',
         originY: 'center',
-        fill: '#ffffff';
+        fill: '#ffffff',
       })
     ].filter(Boolean), {
       left: position.left,
       top: position.top,
       selectable: true
       hasControls: true
-      hasBorders: true;
+      hasBorders: true,
       data: {
         evidenceId: evidenceFile.id,
         type: 'completed-evidence',
@@ -1023,7 +1023,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    z-index: 10;
+    z-index: 10,
   }
   .control-group {
     display: flex;
@@ -1041,7 +1041,7 @@
     border-radius: 4px;
     cursor: pointer;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 500,
     transition: background-color 0.2s;
   }
   .control-btn:hover {
@@ -1096,7 +1096,7 @@
     }
   }
   .canvas-loading p {
-    margin: 0;
+    margin: 0,
     color: #6b7280;
     font-size: 14px;
   }

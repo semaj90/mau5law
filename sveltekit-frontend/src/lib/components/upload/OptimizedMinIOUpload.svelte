@@ -1030,7 +1030,7 @@
   }
   .drop-zone.uploading {
     cursor: not-allowed;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .upload-prompt {
     display: flex;
@@ -1047,7 +1047,7 @@
   .upload-text h3 {
     margin: 0;
     font-size: 1.125rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
   }
   .file-list {
@@ -1077,7 +1077,7 @@
     border-radius: 4px;
     cursor: pointer;
     font-size: 0.75rem;
-    line-height: 1;
+    line-height: 1,
   }
   .action-btn:hover {
     background: #e5e7eb;
@@ -1104,23 +1104,23 @@
     position: absolute;
     width: 1px;
     height: 1px;
-    padding: 0;
+    padding: 0,
     margin: -1px;
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
-    border: 0;
+    border: 0,
   }
   .file-icon {
-    flex-shrink: 0;
+    flex-shrink: 0,
     color: #6b7280;
   }
   .file-info {
     flex: 1;
-    min-width: 0;
+    min-width: 0,
   }
   .file-name {
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
     word-break: break-word;
   }
@@ -1163,7 +1163,7 @@
   /* NES.css theme compatibility (activate by adding .nes-theme class to a parent) */
   :global(.nes-theme) .upload-progress {
     background: #fff;
-    border-radius: 0;
+    border-radius: 0,
     padding: 0.75rem 0.85rem 0.9rem;
     border: 4px solid #212529;
     box-shadow:
@@ -1177,7 +1177,7 @@
   :global(.nes-theme) .progress-track {
     background: #d7d7d7;
     border: 2px solid #212529;
-    border-radius: 0;
+    border-radius: 0,
     position: relative;
     box-shadow: inset 0 0 0 2px #fff;
   }
@@ -1192,7 +1192,7 @@
     border-right: 2px solid #2d6a4f;
   }
   :global(.nes-theme) .file-item {
-    border-radius: 0;
+    border-radius: 0,
     border: 4px solid #212529;
     box-shadow:
       0 0 0 4px #fff,
@@ -1229,7 +1229,7 @@
     background: #e0e0e0;
   }
   :global(.nes-theme) .performance-metrics {
-    border-radius: 0;
+    border-radius: 0,
     border: 4px solid #212529;
     box-shadow:
       0 0 0 4px #fff,
@@ -1240,7 +1240,7 @@
     color: #212529;
   }
   :global(.nes-theme) .metric-item {
-    border-radius: 0;
+    border-radius: 0,
     border: 2px solid #212529;
     background: #f8f8f8;
   }
@@ -1256,7 +1256,7 @@
     gap: 0.75rem;
   }
   .upload-button {
-    flex: 1;
+    flex: 1,
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1266,7 +1266,7 @@
     color: white;
     border: none;
     border-radius: 8px;
-    font-weight: 500;
+    font-weight: 500,
     cursor: pointer;
     transition: background-color 0.2;
   }
@@ -1274,7 +1274,7 @@
     background: #2563eb;
   }
   .upload-button:disabled {
-    opacity: 0.6;
+    opacity: 0.6,
     cursor: not-allowed;
   }
   .clear-button {
@@ -1283,7 +1283,7 @@
     color: #374151;
     border: 1px solid #d1d5db;
     border-radius: 8px;
-    font-weight: 500;
+    font-weight: 500,
     cursor: pointer;
     transition: all 0.2;
   }
@@ -1339,7 +1339,7 @@
   .metric-label {
     font-size: 0.75rem;
     color: #0369a1;
-    font-weight: 500;
+    font-weight: 500,
   }
   .metric-value {
     font-size: 0.8rem;
@@ -1356,7 +1356,7 @@
   .gpu-indicator {
     font-size: 0.75rem;
     color: #15803d;
-    font-weight: 600;
+    font-weight: 600,
   }
   /* Animation for performance metrics */
   .performance-metrics {
@@ -1365,11 +1365,11 @@
   @keyframes slideInUp {
     from {
       transform: translateY(20px);
-      opacity: 0;
+      opacity: 0,
     }
     to {
       transform: translateY(0);
-      opacity: 1;
+      opacity: 1,
     }
   }
   /* Responsive adjustments for metrics */

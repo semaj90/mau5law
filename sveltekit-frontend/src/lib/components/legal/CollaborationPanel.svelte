@@ -480,11 +480,11 @@ Real-time collaboration interface for multiple investigators working on evidence
   @keyframes typing {
     0%, 60%, 100% {
       transform: translateY(0);
-      opacity: 0.4;
+      opacity: 0.4,
     }
     30% {
       transform: translateY(-8px);
-      opacity: 1;
+      opacity: 1,
     }
   }
   /* Custom scrollbar for chat */

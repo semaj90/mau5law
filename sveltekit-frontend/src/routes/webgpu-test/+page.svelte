@@ -269,7 +269,7 @@
     border: none;
     padding: 0.75rem 1.5rem;
     border-radius: 8px;
-    font-weight: 500;
+    font-weight: 500,
     cursor: pointer;
     margin-bottom: 1.5rem;
   }
@@ -287,7 +287,7 @@
   }
   .details ul {
     list-style: none;
-    padding: 0;
+    padding: 0,
   }
   .details li {
     padding: 0.25rem 0;
@@ -356,7 +356,7 @@
     font-size: 0.9rem;
   }
   .value {
-    font-weight: 600;
+    font-weight: 600,
     color: #1f2937;
   }
 </style>

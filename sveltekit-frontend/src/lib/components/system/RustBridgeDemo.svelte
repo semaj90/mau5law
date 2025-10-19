@@ -278,7 +278,7 @@
     border-bottom: 2px solid #333;
   }
   .demo-header h2 {
-    margin: 0;
+    margin: 0,
     color: #f39c12;
   }
   .status-indicator {
@@ -302,7 +302,7 @@
     margin-bottom: 2rem;
   }
   .error-panel h3 {
-    margin-top: 0;
+    margin-top: 0,
     color: #e74c3c;
   }
   .error-help {
@@ -327,7 +327,7 @@
     padding: 1.5rem;
   }
   .demo-section h3 {
-    margin-top: 0;
+    margin-top: 0,
     color: #f39c12;
     border-bottom: 1px solid #333;
     padding-bottom: 0.5rem;

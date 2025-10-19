@@ -560,7 +560,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .demo-header h2 {
     font-size: 2.5rem;
-    font-weight: 800;
+    font-weight: 800,
     background: linear-gradient(135deg, #3b82f6, #8b5cf6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -570,7 +570,7 @@ https://svelte.dev/e/js_parse_error -->
   .demo-subtitle {
     color: #64748b;
     font-size: 1rem;
-    line-height: 1.5;
+    line-height: 1.5,
   }
   .topology-status-grid {
     display: grid;
@@ -617,7 +617,7 @@ https://svelte.dev/e/js_parse_error -->
     padding: 12px 24px;
     border: none;
     border-radius: 8px;
-    font-weight: 600;
+    font-weight: 600,
     cursor: pointer;
     transition: all 0.3s ease;
   }
@@ -635,7 +635,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .demo-progress h3 {
     margin-bottom: 10px;
-    font-weight: 600;
+    font-weight: 600,
   }
   .progress-bar {
     width: 300px;
@@ -668,11 +668,11 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.9rem;
     color: #6b7280;
     margin-bottom: 8px;
-    font-weight: 500;
+    font-weight: 500,
   }
   .metric-value {
     font-size: 2rem;
-    font-weight: 800;
+    font-weight: 800,
     color: #1f2937;
     margin-bottom: 5px;
   }
@@ -704,16 +704,16 @@ https://svelte.dev/e/js_parse_error -->
   }
   .prediction-details {
     color: #059669;
-    font-weight: 500;
+    font-weight: 500,
   }
   .animation-type {
     color: #7c3aed;
-    font-weight: 500;
+    font-weight: 500,
   }
   .compressed {
     color: #059669;
     font-size: 0.8rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .performance-summary {
     margin-top: 30px;
@@ -724,7 +724,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .performance-summary h3 {
     margin-bottom: 20px;
-    font-weight: 600;
+    font-weight: 600,
   }
   .summary-grid {
     display: grid;

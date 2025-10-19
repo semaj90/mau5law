@@ -22,7 +22,7 @@ https://svelte.dev/e/expected_token -->
       currentState: 'authenticated',
       transitions: ['logout', 'refresh', 'profile'],
       lastUpdated: new Date().toISOString(),
-      instances: 3;
+      instances: 3,
     },
     {
       id: 'case-management-machine',
@@ -31,7 +31,7 @@ https://svelte.dev/e/expected_token -->
       currentState: 'reviewing',
       transitions: ['submit', 'save-draft', 'archive'],
       lastUpdated: new Date().toISOString(),
-      instances: 1;
+      instances: 1,
     },
     {
       id: 'rag-pipeline-machine',
@@ -40,7 +40,7 @@ https://svelte.dev/e/expected_token -->
       currentState: 'waiting',
       transitions: ['process', 'reset', 'configure'],
       lastUpdated: new Date().toISOString(),
-      instances: 0;
+      instances: 0,
     },
     {
       id: 'gpu-allocation-machine',
@@ -49,7 +49,7 @@ https://svelte.dev/e/expected_token -->
       currentState: 'allocated',
       transitions: ['release', 'extend', 'optimize'],
       lastUpdated: new Date().toISOString(),
-      instances: 2;
+      instances: 2,
     }
   ];
   $effect(() => {
@@ -228,7 +228,7 @@ https://svelte.dev/e/expected_token -->
   .stat-number {
     display: block;
     font-size: 2rem;
-    font-weight: 700;
+    font-weight: 700,
     color: #1f2937;
   }
   .stat-label {
@@ -276,7 +276,7 @@ https://svelte.dev/e/expected_token -->
   .machine-id {
     font-size: 0.875rem;
     color: #6b7280;
-    margin: 0;
+    margin: 0,
   }
   .status-badge {
     padding: 0.25rem 0.75rem;
@@ -297,7 +297,7 @@ https://svelte.dev/e/expected_token -->
     border-bottom: 1px solid #f1f5f9;
   }
   .label {
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
   }
   .value {
@@ -309,7 +309,7 @@ https://svelte.dev/e/expected_token -->
     padding: 0.25rem 0.75rem;
     border-radius: 6px;
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   .transitions {
     margin-top: 1rem;

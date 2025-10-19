@@ -80,7 +80,7 @@
         description: 'Sighting reported via POI card',
         reportedBy: 'System User',
         reliability: 0.5,
-        verified: false;
+        verified: false,
       });
     } catch (error) {
       console.error('Failed to record sighting:', error);
@@ -252,7 +252,7 @@
     gap: 1rem;
   }
   .poi-identity {
-    flex: 1;
+    flex: 1,
   }
   .aliases {
     font-size: 0.875rem;
@@ -418,7 +418,7 @@
   }
   .warrant-count {
     color: var(--enhanced-bits-error);
-    font-weight: 600;
+    font-weight: 600,
   }
   .last-updated {
     color: var(--enhanced-bits-textMuted);
@@ -429,10 +429,10 @@
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.7;
+      opacity: 0.7,
     }
   }
 </style>

@@ -89,11 +89,11 @@ https://svelte.dev/e/js_parse_error -->
   		device: null
   		shaders: new Map(),
   		buffers: new Map(),
-  		active: false;
+  		active: false,
   		performance: {
   			computeTime: 0,
   			memoryUsage: 0,
-  			throughput: 0;
+  			throughput: 0,
   		}
   	});
   	const threeStore = writable({
@@ -240,7 +240,7 @@ https://svelte.dev/e/js_parse_error -->
   			layout: 'auto',
   			compute: {
   				module: shaderModule
-  				entryPoint: 'main';
+  				entryPoint: 'main',
   			}
   		});
   		// Create bind group layout
@@ -272,7 +272,7 @@ https://svelte.dev/e/js_parse_error -->
   		const renderer = new THREE.WebGLRenderer({
   			canvas,
   			antialias: true
-  			powerPreference: 'high-performance';
+  			powerPreference: 'high-performance',
   		});
   		renderer.setSize(canvas.clientWidth, canvas.clientHeight);
   		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -293,7 +293,7 @@ https://svelte.dev/e/js_parse_error -->
   			material: new THREE.MeshStandardMaterial({ ,
   				color: 0x00ff88,
   				roughness: 0.3,
-  				metalness: 0.7;
+  				metalness: 0.7,
   			}),
   			polyCount: baseGeometry.attributes.position.count / 3,
   			textureSize: 1024
@@ -307,7 +307,7 @@ https://svelte.dev/e/js_parse_error -->
   			material: new THREE.MeshStandardMaterial({ ,
   				color: 0x0088ff,
   				roughness: 0.5,
-  				metalness: 0.5;
+  				metalness: 0.5,
   			}),
   			polyCount: Math.floor(baseGeometry.attributes.position.count / 6),
   			textureSize: 512
@@ -333,7 +333,7 @@ https://svelte.dev/e/js_parse_error -->
   		}
   		try {
   			const registration = await navigator.serviceWorker.register('/sw-webgpu.js', {
-  				scope: '/webgpu/';
+  				scope: '/webgpu/',
   			});
   			console.log('✅ Service Worker registered:', registration.scope);
   			// Setup message channel
@@ -346,7 +346,7 @@ https://svelte.dev/e/js_parse_error -->
   			// Send port to service worker
   			if (registration.active) {
   				registration.active.postMessage({
-  					type: 'INIT_PORT' ;
+  					type: 'INIT_PORT',
   				}, [messageChannel.port2]);
   			}
   			return registratio;
@@ -428,7 +428,7 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
   				webgpuStore.update(store => ({
   					...store,
   					device: webgpuDevice;
-  					active: true;
+  					active: true,
   				}));
   				// Create compute shaders
   				const matrixShader = await createComputeShader(
@@ -650,7 +650,7 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
     gap: 1rem;
   }
   .controls h3 {
-    margin: 0;
+    margin: 0,
     color: #00ff88;
     font-family: 'Courier New', monospace;
   }
@@ -711,7 +711,7 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
   }
   .three-canv.loading-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
     width: 100%;
     height: 100%;

@@ -278,7 +278,7 @@
       <button
         use:accessibleClick={{,
           handler: clearLog;
-          label: 'Clear test log';
+          label: 'Clear test log',
         }}
         class="test-btn secondary"
       >
@@ -388,7 +388,7 @@
     margin: 0 auto;
     padding: 2rem;
     font-family: system-ui, sans-serif;
-    line-height: 1.6;
+    line-height: 1.6,
   }
   header {
     text-align: center;
@@ -406,7 +406,7 @@
     background: #fafafa;
   }
   section h2 {
-    margin-top: 0;
+    margin-top: 0,
     color: #333;
     border-bottom: 2px solid #0066cc;
     padding-bottom: 0.5rem;
@@ -458,7 +458,7 @@
     border: 1px solid #ddd;
   }
   .data-card h3 {
-    margin-top: 0;
+    margin-top: 0,
     color: #0066cc;
   }
   .session-item {
@@ -562,7 +562,7 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   }
   .test-btn:disabled {
-    opacity: 0.6;
+    opacity: 0.6,
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
@@ -586,7 +586,7 @@
     animation: spin 1s linear infinite;
   }
   .progress-bar {
-    flex: 1;
+    flex: 1,
     height: 8px;
     background: #f0f0f0;
     border-radius: 4px;
@@ -624,7 +624,7 @@
     border-radius: 4px;
   }
   .result-item label {
-    font-weight: 600;
+    font-weight: 600,
     color: #555;
   }
   .result-item code {
@@ -636,7 +636,7 @@
   }
   .cache-status.hit {
     color: #28a745;
-    font-weight: 600;
+    font-weight: 600,
   }
   .result-content {
     margin-top: 2rem;

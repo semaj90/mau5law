@@ -527,7 +527,7 @@ https://svelte.dev/e/expected_token -->
     background-color: #f6e05e; /* fallback color */
     padding: 0.125rem 0.25rem;
     border-radius: 0.25rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   :global(.dark .instant-legal-search mark) {
     background-color: #92400e;

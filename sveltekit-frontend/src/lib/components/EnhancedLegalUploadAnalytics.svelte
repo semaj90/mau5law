@@ -1052,7 +1052,7 @@
   }
   .upload-icon {
     font-size: 4rem;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .file-constraints {
     display: flex;
@@ -1098,10 +1098,10 @@
     border-color: #ffd700;
   }
   .file-info {
-    flex: 1;
+    flex: 1,
   }
   .file-name {
-    font-weight: 500;
+    font-weight: 500,
     color: #e8e8e8;
     margin-bottom: 0.25rem;
   }
@@ -1113,7 +1113,7 @@
   }
   .ai-confidence {
     color: #51cf66;
-    font-weight: 500;
+    font-weight: 500,
   }
   .ai-preview {
     display: flex;
@@ -1122,7 +1122,7 @@
   }
   .privilege-warning {
     color: #ff6b6b;
-    font-weight: 500;
+    font-weight: 500,
   }
   .entity-count {
     color: #339af0;
@@ -1149,7 +1149,7 @@
     gap: 0.5rem;
   }
   .setting-item label {
-    font-weight: 500;
+    font-weight: 500,
     color: #e8e8e8;
     font-size: 0.875rem;
   }
@@ -1202,7 +1202,7 @@
   .stage-progress {
     font-size: 0.75rem;
     color: #ffd700;
-    font-weight: 500;
+    font-weight: 500,
   }
   .processing-insights {
     background: rgba(16, 16, 16, 0.8);
@@ -1274,7 +1274,7 @@
     margin-bottom: 1rem;
   }
   .result-filename {
-    font-weight: 500;
+    font-weight: 500,
     color: #e8e8e8;
   }
   .result-document-id {
@@ -1284,11 +1284,11 @@
   }
   .status-success {
     color: #51cf66;
-    font-weight: 500;
+    font-weight: 500,
   }
   .status-error {
     color: #ff6b6b;
-    font-weight: 500;
+    font-weight: 500,
   }
   .yorha-insights {
     background: rgba(16, 16, 16, 0.8);
@@ -1306,7 +1306,7 @@
   }
   .insights-summary {
     margin-bottom: 1rem;
-    line-height: 1.5;
+    line-height: 1.5,
     color: #e8e8e8;
   }
   .entities {
@@ -1356,7 +1356,7 @@
     color: #999;
   }
   .confidence-bar {
-    flex: 1;
+    flex: 1,
     height: 0.5rem;
     background: rgba(64, 64, 64, 0.3);
     border-radius: 0.25rem;
@@ -1369,7 +1369,7 @@
   }
   .confidence-value {
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
     color: #ffd700;
   }
   .yorha-error {
@@ -1401,7 +1401,7 @@
   }
   .prompt-category {
     font-size: 0.75rem;
-    font-weight: 500;
+    font-weight: 500,
     color: #ffd700;
   }
   .prompt-confidence {
@@ -1410,7 +1410,7 @@
   }
   .prompt-content {
     margin-bottom: 1rem;
-    line-height: 1.5;
+    line-height: 1.5,
     color: #e8e8e8;
   }
   .prompt-actions {
@@ -1438,7 +1438,7 @@
   }
   .behavior-pattern {
     text-transform: capitaliz;
-    font-weight: 500;
+    font-weight: 500,
     color: #339af0;
     font-size: 1.125rem;
   }
@@ -1453,7 +1453,7 @@
   }
   .recommendations-list {
     list-style: none;
-    padding: 0;
+    padding: 0,
     margin: 0;
   }
   .recommendations-list li {

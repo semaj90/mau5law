@@ -81,7 +81,7 @@ https://svelte.dev/e/js_parse_error -->
     memoryUsage: 0,
     cacheEfficiency: 0,
     filteringQuality: 0,
-    gpuUtilization: 0;
+    gpuUtilization: 0,
   });
   // Animation state
   let animationId = $state<number | null >(null);
@@ -476,7 +476,7 @@ if (preloadTextures) {
   }
   /* Canvas states */
   .n64-texture-canvas.loading {
-    opacity: 0.6;
+    opacity: 0.6,
     filter: blur(1px);
   }
   .n64-texture-canvas.error {
@@ -488,7 +488,7 @@ if (preloadTextures) {
     position: absolute;
     top: 8px;
     right: 8px;
-    z-index: 10;
+    z-index: 10,
   }
   .cache-indicator {
     display: flex;
@@ -516,7 +516,7 @@ if (preloadTextures) {
   }
   .cache-hit-rate {
     font-size: 8px;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   /* Performance Overlay */
   .performance-overlay {
@@ -524,7 +524,7 @@ if (preloadTextures) {
     bottom: 8px;
     left: 8px;
     right: 8px;
-    z-index: 10;
+    z-index: 10,
   }
   .metrics-grid {
     display: grid;
@@ -568,12 +568,12 @@ if (preloadTextures) {
   /* Loading Overlay */
   .loading-overlay {
     position: absolute;
-    inset: 0;
+    inset: 0,
     display: flex;
     align-items: center;
     justify-content: center;
     background: rgba(0, 0, 0, 0.8);
-    z-index: 20;
+    z-index: 20,
   }
   .n64-spinner {
     display: flex;
@@ -601,7 +601,7 @@ if (preloadTextures) {
   /* Error Overlay */
   .error-overlay {
     position: absolute;
-    inset: 0;
+    inset: 0,
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -610,7 +610,7 @@ if (preloadTextures) {
     background: rgba(139, 0, 0, 0.9);
     color: white;
     text-align: center;
-    z-index: 20;
+    z-index: 20,
   }
   .error-icon {
     font-size: 32px;
@@ -619,7 +619,7 @@ if (preloadTextures) {
   .error-message {
     font-size: 10px;
     max-width: 200px;
-    line-height: 1.3;
+    line-height: 1.3,
   }
   .retry-button {
     background: rgba(255, 255, 255, 0.2);
@@ -640,7 +640,7 @@ if (preloadTextures) {
   .debug-panel {
     position: absolute;
     top: 100%;
-    left: 0;
+    left: 0,
     right: 0;
     background: rgba(0, 0, 0, 0.95);
     color: #00ff00;
@@ -648,7 +648,7 @@ if (preloadTextures) {
     font-size: 10px;
     border: 1px solid #00ff00;
     border-top: none;
-    z-index: 15;
+    z-index: 15,
   }
   .debug-panel h4 {
     margin: 0 0 6px 0;
@@ -693,11 +693,11 @@ if (preloadTextures) {
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1;
+      opacity: 1,
       transform: scale(1);
     }
     50% {
-      opacity: 0.7;
+      opacity: 0.7,
       transform: scale(1.05);
     }
   }

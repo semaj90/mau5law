@@ -835,7 +835,7 @@
   }
   .title {
     font-size: 1.5rem;
-    font-weight: 600;
+    font-weight: 600,
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -909,7 +909,7 @@
     color: #000;
     border-radius: 0.25rem;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .room-status {
     display: flex;
@@ -973,7 +973,7 @@
     border: none;
     border-radius: 0.5rem;
     color: #000;
-    font-weight: 600;
+    font-weight: 600,
     cursor: pointer;
     transition: all 0.3s ease;
   }
@@ -982,7 +982,7 @@
   }
   /* Messages */
   .messages-container {
-    flex: 1;
+    flex: 1,
     overflow: hidden;
     padding: 2rem;
   }
@@ -1010,7 +1010,7 @@
     align-items: center;
     margin-bottom: 0.5rem;
     font-size: 0.875rem;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .message-content {
     background: rgba(255, 255, 255, 0.05);
@@ -1038,7 +1038,7 @@
     gap: 0.75rem;
     margin-top: 0.5rem;
     font-size: 0.75rem;
-    opacity: 0.6;
+    opacity: 0.6,
   }
   .metadata-item {
     padding: 0.25rem 0.5rem;
@@ -1067,10 +1067,10 @@
     animation: typing 1.4s infinite;
   }
   .typing-indicator span:nth-child(2) {
-    animation-delay: 0.2;
+    animation-delay: 0.2,
   }
   .typing-indicator span:nth-child(3) {
-    animation-delay: 0.4;
+    animation-delay: 0.4,
   }
   /* Speaking Indicator */
   .speaking-indicator {
@@ -1112,7 +1112,7 @@
     border: none;
     border-radius: 0.5rem;
     color: #000;
-    font-weight: 600;
+    font-weight: 600,
     cursor: pointer;
     transition: all 0.3s ease;
   }
@@ -1150,7 +1150,7 @@
     width: 100%;
   }
   .message-input {
-    flex: 1;
+    flex: 1,
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 0.75rem;
@@ -1196,27 +1196,27 @@
     box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
   }
   .send-button:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   /* Animations */
   @keyframes slideIn {
     from {
-      opacity: 0;
+      opacity: 0,
       transform: translateY(10px);
     }
     to {
-      opacity: 1;
+      opacity: 1,
       transform: translateY(0);
     }
   }
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.5;
+      opacity: 0.5,
     }
   }
   @keyframes typing {
@@ -1224,11 +1224,11 @@
     60%,
     100% {
       transform: translateY(0);
-      opacity: 0.5;
+      opacity: 0.5,
     }
     30% {
       transform: translateY(-10px);
-      opacity: 1;
+      opacity: 1,
     }
   }
   /* Scrollbar Styling */

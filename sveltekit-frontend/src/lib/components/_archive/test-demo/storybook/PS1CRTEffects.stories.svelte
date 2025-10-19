@@ -137,7 +137,7 @@ https://svelte.dev/e/expected_token -->
     flex-direction: column;
     gap: 6px;
     color: var(--ps1-text);
-    font-weight: 600;
+    font-weight: 600,
   }
   .button-row {
     display: flex;
@@ -186,7 +186,7 @@ https://svelte.dev/e/expected_token -->
     letter-spacing: 1px;
   }
   .text-content {
-    flex: 1;
+    flex: 1,
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -200,7 +200,7 @@ https://svelte.dev/e/expected_token -->
   }
   .phosphor-trail {
     margin: 12px 0;
-    line-height: 1.2;
+    line-height: 1.2,
     color: #00ff88;
     font-family: monospace;
     text-shadow: 0 0 10px currentColor;
@@ -208,9 +208,9 @@ https://svelte.dev/e/expected_token -->
   }
   .glitch-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     display: flex;
     flex-direction: column;
@@ -221,7 +221,7 @@ https://svelte.dev/e/expected_token -->
     font-family: var(--ps1-mono);
     font-weight: bold;
     text-shadow: 2px 2px 0 #00ff40;
-    opacity: 0;
+    opacity: 0,
     animation: glitchFlicker 3s infinite;
   }
   .performance-panel {
@@ -246,7 +246,7 @@ https://svelte.dev/e/expected_token -->
   }
   .metric span:last-child {
     color: var(--ps1-text);
-    font-weight: 600;
+    font-weight: 600,
   }
   .metric .warning {
     color: var(--ps1-accent-2);

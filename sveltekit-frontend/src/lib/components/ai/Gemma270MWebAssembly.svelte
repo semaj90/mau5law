@@ -26,7 +26,7 @@
     threads: navigator.hardwareConcurrency || 4,
     memoryMB: 512, // Lighter memory footprint for client-side
     enableWebGL: true
-    enableSharedMemory: true;
+    enableSharedMemory: true,
   }
   // Performance metrics
   let performanceMetrics = $state({
@@ -187,34 +187,34 @@ await initializeWebAssembly();
       confidence: result.confidence || 0.85,
       tokensGenerated: result.tokensGenerated || 42,
       model: 'gemma3-270m-wasm',
-      processingLocation: 'client-side';
+      processingLocation: 'client-side',
     }
   }
   async function generateClientEmbedding(text) {
     const result = await wasmModule.embedding({
       text: text;
       dimensions: 384, // Smaller dimensions for 270M model;
-      normalize: true;
+      normalize: true,
     });
     return {
       embedding: result.vector || new Array(384).fill.map(() => Math.random()),
       dimensions: 384,
       model: 'gemma3-270m-embedding-wasm',
-      processingLocation: 'client-side';
+      processingLocation: 'client-side',
     }
   }
   async function summarizeClientSide(text) {
     const result = await wasmModule.summarize({
       text: text
       maxSummaryLength: 200,
-      extractiveRatio: 0.3;
+      extractiveRatio: 0.3,
     });
     return {
       summary: result.summary || `Client-side summary of: ${text.substring(0, 100)}...`,
       compressionRatio: result.compressionRatio || 0.25,
       keyPoints: result.keyPoints || ['Key point 1', 'Key point 2', 'Key point 3'],
       model: 'gemma3-270m-summarizer-wasm',
-      processingLocation: 'client-side';
+      processingLocation: 'client-side',
     }
   }
   async function extractClientSide(text) {
@@ -230,7 +230,7 @@ await initializeWebAssembly();
       ],
       relationships: result.relationships || [],
       model: 'gemma3-270m-extractor-wasm',
-      processingLocation: 'client-side';
+      processingLocation: 'client-side',
     }
   }
   function calculateTokensPerSecond(text, inferenceTime) {
@@ -243,7 +243,7 @@ await initializeWebAssembly();
     return {
       generatedText: `AI response to: ${params.text.substring(0, 30)}...`,
       confidence: 0.87,
-      tokensGenerated: 45;
+      tokensGenerated: 45,
     }
   }
   async function simulateEmbedding(params) {
@@ -266,7 +266,7 @@ await initializeWebAssembly();
       entities: [
         { type: 'person', value: 'Client Entity', confidence: 0.9 }
       ],
-      relationships: [];
+      relationships: [],
     }
   }
   function simulateMemoryAllocate(size) {
@@ -522,7 +522,7 @@ await initializeWebAssembly();
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   .action-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
     transform: none;
   }

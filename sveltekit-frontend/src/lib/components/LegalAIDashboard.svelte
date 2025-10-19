@@ -85,7 +85,7 @@ try {
         error = response.error || 'Failed to create case';
       }
     } catch (err) {
-      error = err instanceof Error ? err.message: 'Failed to create case';
+      error = err instanceof Error ? err.message: 'Failed to create case',
     }
   }
   async function uploadEvidence(caseId: number): Promise<void> {
@@ -107,7 +107,7 @@ try {
           }
         }
       } catch (err) {
-        error = err instanceof Error ? err.message: 'Failed to upload evidence';
+        error = err instanceof Error ? err.message: 'Failed to upload evidence',
       }
     }
     input.click();
@@ -442,7 +442,7 @@ try {
   }
   @keyframes pulse {
     0%, 100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
       opacity: .5;

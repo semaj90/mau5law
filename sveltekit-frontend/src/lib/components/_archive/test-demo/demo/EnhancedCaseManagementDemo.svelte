@@ -69,7 +69,7 @@
       title: '',
       description: '',
       priority: 'medium',
-      status: 'open';
+      status: 'open',
     }
   }
   function searchCases() {
@@ -77,7 +77,7 @@
       actor.send({
         type: 'SEARCH_CASES_COGNITIVE',
         query: searchQuery
-        useML: true;
+        useML: true,
       });
     }
   }

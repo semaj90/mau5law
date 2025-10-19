@@ -46,14 +46,14 @@
       ghost: 'bg-transparent text-yorha-text-secondary border-transparent hover:bg-yorha-bg-hover hover:text-yorha-text-primary',
       outline: 'bg-transparent text-yorha-accent-gold border-yorha-accent-gold hover:bg-yorha-accent-gold hover:text-yorha-bg-primary',
       danger: 'bg-yorha-error text-white border-yorha-error hover:bg-red-600',
-      success: 'bg-yorha-success text-yorha-bg-primary border-yorha-success hover:bg-green-400';
+      success: 'bg-yorha-success text-yorha-bg-primary border-yorha-success hover:bg-green-400',
     }
     const sizes = {
       xs: 'px-golden-sm py-golden-xs text-xs rounded-md',
       sm: 'px-golden-md py-golden-sm text-sm rounded-md',
       md: 'px-golden-lg py-golden-sm text-base rounded-lg',
       lg: 'px-golden-xl py-golden-md text-lg rounded-lg',
-      xl: 'px-golden-2xl py-golden-lg text-xl rounded-xl';
+      xl: 'px-golden-2xl py-golden-lg text-xl rounded-xl',
     }
     const state = disabled || loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer';
     return `${base} ${variants[variant]} ${sizes[size]} ${state} border`;

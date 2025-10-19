@@ -51,7 +51,7 @@ mounted = true;
     ctx = canvasElement.getContext('2d')!;
     canvas.set(toString)(),
       nodes: [],
-      connections: [];
+      connections: [],
     });
     renderCanvas();
   }
@@ -158,7 +158,7 @@ mounted = true;
       width: 200,
       height: 80,
       content: 'New Node',
-      type: 'text';
+      type: 'text',
     }
     canvas.update(c => {
       if (c) {
@@ -232,7 +232,7 @@ mounted = true;
     if (readonly) return;
     canvas.set(toString)(),
       nodes: [],
-      connections: [];
+      connections: [],
     });
     renderCanvas();
   }
@@ -314,7 +314,7 @@ mounted = true;
   .node-counter {
     font-size: 0.875rem;
     color: hsl(220 9% 46%);
-    font-weight: 500;
+    font-weight: 500,
   }
   .canvas-workspace {
     display: grid;
@@ -335,10 +335,10 @@ mounted = true;
     overflow-y: auto;
   }
   .evidence-panel h3 {
-    margin: 0;
+    margin: 0,
     padding: 1rem;
     font-size: 0.9rem;
-    font-weight: 600;
+    font-weight: 600,
     color: hsl(220 9% 46%);
     border-bottom: 1px solid hsl(220 13% 91%);
     display: flex;
@@ -346,7 +346,7 @@ mounted = true;
     justify-content: space-between;
   }
   .count {
-    font-weight: 400;
+    font-weight: 400,
     opacity: 0.7;
   }
   .evidence-item {
@@ -359,7 +359,7 @@ mounted = true;
   }
   .filename {
     display: block;
-    font-weight: 500;
+    font-weight: 500,
     color: hsl(220 20% 14%);
     margin-bottom: 0.25rem;
   }
@@ -377,13 +377,13 @@ mounted = true;
   }
   .hint {
     font-size: 0.875rem;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .status {
     display: inline-flex;
     align-items: center;
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
     color: hsl(0 84% 60%);
   }
   .status::before {
@@ -407,7 +407,7 @@ mounted = true;
     background: white;
     color: hsl(220 20% 14%);
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
     cursor: pointer;
     transition: all 0.2s ease;
   }
@@ -419,7 +419,7 @@ mounted = true;
     background: hsl(220 13% 95%);
   }
   button:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   @media (max-width: 768px) {

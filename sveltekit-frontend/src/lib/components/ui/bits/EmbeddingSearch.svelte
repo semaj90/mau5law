@@ -303,7 +303,7 @@
     align-items: flex-end;
   }
   .search-input-group :global(input) {
-    flex: 1;
+    flex: 1,
   }
   .advanced-controls {
     display: grid;
@@ -355,7 +355,7 @@
   }
   .result-content {
     margin: 1rem 0;
-    line-height: 1.6;
+    line-height: 1.6,
   }
   .result-metadata {
     display: flex;

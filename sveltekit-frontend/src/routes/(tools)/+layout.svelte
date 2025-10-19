@@ -110,7 +110,7 @@
     font-size: 1.5rem;
     font-weight: bold;
     color: var(--nier-accent-cool, #87ceeb);
-    margin: 0;
+    margin: 0,
   }
 
   .tools-badge {

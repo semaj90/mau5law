@@ -447,7 +447,7 @@
   .header-title h2 {
     margin: 0;
     font-size: 1.5rem;
-    font-weight: 700;
+    font-weight: 700,
     color: #1e293b;
   }
   .header-controls {
@@ -461,7 +461,7 @@
     background: white;
     cursor: pointer;
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
     transition: all 0.2;
   }
   .control-btn:hover {
@@ -495,7 +495,7 @@
   .card-header h3 {
     margin: 0;
     font-size: 1.125rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .card-content {
     display: flex;
@@ -517,7 +517,7 @@
     color: #64748b;
   }
   .metric-value {
-    font-weight: 600;
+    font-weight: 600,
     color: #1e293b;
   }
   .metric-value.error {
@@ -538,7 +538,7 @@
     padding: 0.125rem 0.375rem;
     border-radius: 4px;
     font-size: 0.75rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   .backend-metrics {
     display: flex;
@@ -569,10 +569,10 @@
   .point-time {
     min-width: 40px;
     color: #64748b;
-    font-weight: 500;
+    font-weight: 500,
   }
   .point-metrics {
-    flex: 1;
+    flex: 1,
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
@@ -587,10 +587,10 @@
     font-size: 0.625rem;
     color: #64748b;
     text-transform: uppercase;
-    font-weight: 600;
+    font-weight: 600,
   }
   .bar {
-    flex: 1;
+    flex: 1,
     height: 8px;
     background: #f1f5f9;
     border-radius: 4px;
@@ -609,7 +609,7 @@
   .bar-value {
     min-width: 20px;
     text-align: right;
-    font-weight: 500;
+    font-weight: 500,
   }
   .no-data {
     text-align: center;
@@ -626,7 +626,7 @@
   .backend-details h3 {
     margin: 0 0 1rem 0;
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #1e293b;
   }
   .backend-tabs {
@@ -652,7 +652,7 @@
   .backend-header h4 {
     margin: 0;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #1e293b;
   }
   .status-badge {
@@ -682,7 +682,7 @@
   }
   .info-value {
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #1e293b;
   }
   /* Color utilities */

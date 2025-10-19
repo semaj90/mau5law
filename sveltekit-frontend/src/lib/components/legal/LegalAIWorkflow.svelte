@@ -376,7 +376,7 @@
         font-size: 0.875rem;
     }
     .status-indicator {
-        font-weight: 500;
+        font-weight: 500,
     }
     .status-indicator.online {
         color: #059669;
@@ -401,15 +401,15 @@
         flex-direction: column;
         align-items: center;
         gap: 0.5rem;
-        opacity: 0.5;
+        opacity: 0.5,
         transition: opacity 0.3;
     }
     .step.active {
-        opacity: 1;
+        opacity: 1,
         color: #3b82f6;
     }
     .step.completed {
-        opacity: 1;
+        opacity: 1,
         color: #059669;
     }
     .step-number {
@@ -489,7 +489,7 @@
         padding: 1rem 2rem;
         border-radius: 0.5rem;
         font-size: 1.1rem;
-        font-weight: 600;
+        font-weight: 600,
         cursor: pointer;
         width: 100%;
         transition: background 0.2;
@@ -545,11 +545,11 @@
         border-radius: 0.5rem;
     }
     .label {
-        font-weight: 500;
+        font-weight: 500,
         color: #6b7280;
     }
     .value {
-        font-weight: 600;
+        font-weight: 600,
         color: #111827;
     }
     .entity-tags,
@@ -567,7 +567,7 @@
         padding: 0.25rem 0.75rem;
         border-radius: 1rem;
         font-size: 0.875rem;
-        font-weight: 500;
+        font-weight: 500,
     }
     .concept-tag.small {
         font-size: 0.75rem;
@@ -598,7 +598,7 @@
         margin-bottom: 0.5rem;
     }
     .case-title {
-        font-weight: 600;
+        font-weight: 600,
         color: #111827;
         margin-bottom: 0.25rem;
     }
@@ -627,7 +627,7 @@
     }
     .recommendation-title {
         color: #111827;
-        margin: 0;
+        margin: 0,
     }
     .recommendation-type {
         background: #f3f4f6;
@@ -641,7 +641,7 @@
     .recommendation-description {
         color: #6b7280;
         margin-bottom: 1rem;
-        line-height: 1.6;
+        line-height: 1.6,
     }
     .recommendation-details {
         display: grid;
@@ -659,7 +659,7 @@
     .secondary-btn {
         padding: 1rem 2rem;
         border-radius: 0.5rem;
-        font-weight: 600;
+        font-weight: 600,
         cursor: pointer;
         border: none;
         transition: all 0.2;

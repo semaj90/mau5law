@@ -491,7 +491,7 @@ https://svelte.dev/e/props_duplicate -->
   .report-title-input {
     flex: 1;
     font-size: 20px;
-    font-weight: 600;
+    font-weight: 600,
     border: none;
     background: transparent;
     outline: none;
@@ -542,7 +542,7 @@ https://svelte.dev/e/props_duplicate -->
     background: #2563eb;
 }
   .btn-primary:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
 }
   .btn-secondary {
@@ -554,7 +554,7 @@ https://svelte.dev/e/props_duplicate -->
     background: #f9fafb;
 }
   .editor-main {
-    flex: 1;
+    flex: 1,
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -586,12 +586,12 @@ https://svelte.dev/e/props_duplicate -->
     margin: 0 8px;
 }
   .content-editor {
-    flex: 1;
+    flex: 1,
     padding: 24px;
     overflow-y: auto;
     font-family: "Georgia", serif;
     font-size: 16px;
-    line-height: 1.6;
+    line-height: 1.6,
     outline: none;
     background: white;
 }
@@ -616,13 +616,13 @@ https://svelte.dev/e/props_duplicate -->
 }
   .citation-sidebar {
     position: absolute;
-    right: 0;
+    right: 0,
     top: 0;
     width: 300px;
     height: 100%;
     border-left: 1px solid #e2e8f0;
     background: white;
-    z-index: 10;
+    z-index: 10,
 }
   .sidebar-header {
     display: flex;
@@ -671,13 +671,13 @@ https://svelte.dev/e/props_duplicate -->
 }
   .ai-suggestions-panel {
     position: absolute;
-    bottom: 0;
+    bottom: 0,
     left: 0;
-    right: 0;
+    right: 0,
     height: 200px;
     border-top: 1px solid #e2e8f0;
     background: white;
-    z-index: 10;
+    z-index: 10,
 }
   .panel-header {
     display: flex;
@@ -734,7 +734,7 @@ https://svelte.dev/e/props_duplicate -->
     color: #6b7280;
     cursor: pointer;
     font-size: 14px;
-    line-height: 1;
+    line-height: 1,
 }
   .loading {
     text-align: center;

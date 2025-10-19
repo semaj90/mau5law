@@ -116,7 +116,7 @@
   }
   .search-input-container {
     position: relative;
-    flex: 1;
+    flex: 1,
   }
   .search-input {
     width: 100%;
@@ -183,7 +183,7 @@
   }
   .filter-group label {
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #333;
   }
   .filter-select {

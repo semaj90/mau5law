@@ -49,7 +49,7 @@
     onclick,
     onload,
     children,
-    ...restProps;
+    ...restProps
   }: Props = $props();
   let container: HTMLElement;
   let isLoaded = $state(false);
@@ -99,7 +99,7 @@
     physical: '🔍',
     digital: '💾',
     audio: '🎵',
-    video: '🎬';
+    video: '🎬',
   }
   // Processing status indicators
   const statusIcons = {
@@ -107,7 +107,7 @@
     processing: '⚙️',
     complete: '✅',
     error: '❌',
-    review: '👀';
+    review: '👀',
   }
   // Dynamic classes
   let containerClasses = $derived(() => {
@@ -318,7 +318,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
   .nes-container--screen {
-    border-radius: 0;
+    border-radius: 0,
     background: #000000;
     border: 6px solid var(--nes-primary);
     box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.3);
@@ -341,7 +341,7 @@
   }
 /* Padding variants */ {}
   .nes-container--padding-none .nes-container__content {
-    padding: 0;
+    padding: 0,
   }
   .nes-container--padding-sm .nes-container__content {
     padding: 0.5rem;
@@ -385,7 +385,7 @@
   }
   .nes-container--unpowered {
     filter: brightness(0.3) grayscale(1);
-    opacity: 0.6;
+    opacity: 0.6,
   }
 /* Processing states */ {}
   .nes-container--processing {
@@ -472,12 +472,12 @@
   }
   .nes-container__case-id {
     font-size: 0.6rem;
-    opacity: 0.8;
+    opacity: 0.8,
   }
 /* Content area */ {}
   .nes-container__content {
     position: relative;
-    z-index: 2;
+    z-index: 2,
     width: 100%;
     height: 100%;
     display: flex;
@@ -488,9 +488,9 @@
 /* Status bar */ {}
   .nes-container__status-bar {
     position: absolute;
-    bottom: 0;
+    bottom: 0,
     left: 0;
-    right: 0;
+    right: 0,
     background: rgba(0, 0, 0, 0.8);
     color: var(--nes-accent);
     padding: 0.25rem 0.5rem;
@@ -560,9 +560,9 @@
 /* Scan lines for screen variant */ {}
   .nes-container__scanlines {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
 background: repeating-linear-gradient( {}
 0deg, {}

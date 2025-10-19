@@ -46,7 +46,7 @@
     includeMatches: true
     minMatchCharLength: 2,
     shouldSort: true
-    findAllMatches: false;
+    findAllMatches: false,
   }
   const fuse = new Fuse(legalDocuments, fuseOptions);
   // Perform search
@@ -289,7 +289,7 @@
     background-color: rgb(254 240 138 / 0.5);
     padding: 0.125rem 0.25rem;
     border-radius: 0.25rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   :global(.dark mark) {
     background-color: rgb(133 77 14 / 0.8);

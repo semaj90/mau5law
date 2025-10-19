@@ -38,11 +38,11 @@ https://svelte.dev/e/attribute_duplicate -->
         border: '#D3D3D3',
         accent: '#FC0F0F',
         text: '#FFFFFF',
-        selected: '#00D4AA';
+        selected: '#00D4AA',
       },
       pixelSize: '4px',
       fontFamily: '"Courier New", monospace',
-      shadow: '4px 4px 0px #000000';
+      shadow: '4px 4px 0px #000000',
     },
     snes: {
       colors: {
@@ -50,11 +50,11 @@ https://svelte.dev/e/attribute_duplicate -->
         border: '#E4E4FF',
         accent: '#FF6B9D',
         text: '#FFFFFF',
-        selected: '#FFE066';
+        selected: '#FFE066',
       },
       pixelSize: '2px',
       fontFamily: '"Press Start 2P", monospace',
-      shadow: '2px 2px 4px rgba(0,0,0,0.7)';
+      shadow: '2px 2px 4px rgba(0,0,0,0.7)',
     },
     n64: {
       colors: {
@@ -62,11 +62,11 @@ https://svelte.dev/e/attribute_duplicate -->
         border: '#60A5FA',
         accent: '#F59E0B',
         text: '#FFFFFF',
-        selected: '#10B981';
+        selected: '#10B981',
       },
       pixelSize: '1px',
       fontFamily: '"Orbitron", monospace',
-      shadow: '0 0 20px rgba(96, 165, 250, 0.5)';
+      shadow: '0 0 20px rgba(96, 165, 250, 0.5)',
     },
     ps1: {
       colors: {
@@ -74,11 +74,11 @@ https://svelte.dev/e/attribute_duplicate -->
         border: '#6B7280',
         accent: '#EF4444',
         text: '#F3F4F6',
-        selected: '#3B82F6';
+        selected: '#3B82F6',
       },
       pixelSize: '1px',
       fontFamily: '"Share Tech Mono", monospace',
-      shadow: '0 4px 8px rgba(0,0,0,0.6)';
+      shadow: '0 4px 8px rgba(0,0,0,0.6)',
     },
     ps2: {
       colors: {
@@ -86,11 +86,11 @@ https://svelte.dev/e/attribute_duplicate -->
         border: '#3B82F6',
         accent: '#F97316',
         text: '#FFFFFF',
-        selected: '#10B981';
+        selected: '#10B981',
       },
       pixelSize: '0px',
       fontFamily: '"Exo 2", sans-serif',
-      shadow: '0 0 30px rgba(59, 130, 246, 0.6)';
+      shadow: '0 0 30px rgba(59, 130, 246, 0.6)',
     },
     yorha: {
       colors: {
@@ -98,11 +98,11 @@ https://svelte.dev/e/attribute_duplicate -->
         border: '#D4AF37',
         accent: '#00FF41',
         text: '#E0E0E0',
-        selected: '#D4AF37';
+        selected: '#D4AF37',
       },
       pixelSize: '0px',
       fontFamily: '"Rajdhani", sans-serif',
-      shadow: '0 0 40px rgba(212, 175, 55, 0.4)';
+      shadow: '0 0 40px rgba(212, 175, 55, 0.4)',
     }
   }
   let currentTheme = $derived(consoleThemes[consoleStyle]);
@@ -174,7 +174,7 @@ https://svelte.dev/e/attribute_duplicate -->
       low: '●',
       medium: '◆',
       high: '▲',
-      critical: '⚠';
+      critical: '⚠',
     }
     return icons[priority as keyof typeof icons] || '●';
   }
@@ -183,7 +183,7 @@ https://svelte.dev/e/attribute_duplicate -->
       detective: currentTheme.colors.accent,
       legal: '#10B981',
       evidence: '#F59E0B',
-      ai: '#8B5CF6';
+      ai: '#8B5CF6',
     }
     return colors[type as keyof typeof colors] || currentTheme.colors.text;
   }
@@ -325,9 +325,9 @@ https://svelte.dev/e/attribute_duplicate -->
   .modal-backdrop {
     position: fixed;
 d;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     z-index: 1000;
     backdrop-filter: blur(4px);
@@ -338,7 +338,7 @@ d;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 1001;
+    z-index: 1001,
     width: min(90vw, 600px);
     max-height: 80vh;
     border: 3px solid;
@@ -409,11 +409,11 @@ d;
     font-size: 2rem;
     cursor: pointer;
     padding: 0;
-    line-height: 1;
+    line-height: 1,
     transition: opacity 0.2;
   }
   .close-button:hover {
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .modal-content {
     flex: 1;
@@ -459,7 +459,7 @@ d;
   }
   .rec-content {
     flex: 1;
-    min-width: 0;
+    min-width: 0,
   }
   .rec-header {
     display: flex;
@@ -478,7 +478,7 @@ d;
     margin: 0;
     font-size: 0.9rem;
     opacity: 0.9;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .action-indicator {
     font-size: 1.5rem;
@@ -496,7 +496,7 @@ d;
     display: flex;
     justify-content: space-betwee;
     font-size: 0.8rem;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   /* Animation classes */
   .recommendation-item {
@@ -504,11 +504,11 @@ d;
   }
   @keyframes slideIn {
     from {
-      opacity: 0;
+      opacity: 0,
       transform: translateX(-20px);
     }
     to {
-      opacity: 1;
+      opacity: 1,
       transform: translateX(0);
     }
   }

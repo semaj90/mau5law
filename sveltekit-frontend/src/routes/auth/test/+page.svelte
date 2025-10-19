@@ -31,7 +31,7 @@
   const testCredentials = {
     login: {
       email: 'prosecutor@legal-ai.com',
-      password: 'SecurePass123!@#';
+      password: 'SecurePass123!@#',
     },
     register: {
       email: 'investigator@police.gov',
@@ -45,7 +45,7 @@
       badgeNumber: 'MPD-4567',
       enableTwoFactor: true
       agreeToTerms: true
-      agreeToPrivacy: true;
+      agreeToPrivacy: true,
     }
   }
   $effect(() => {
@@ -61,7 +61,7 @@ await runInitialTests();
       console.log('🧪 Testing GPU cluster status...');
       const clusterTest = await mcpGPUOrchestrator.getClusterStatus();
       testResults.cluster = {
-        success: true;
+        success: true,
         data: clusterTest;
         timestamp: new Date().toISOString();
       }
@@ -93,12 +93,12 @@ await runInitialTests();
         },
         context: {
           action: 'test_analysis',
-          enhancedSecurity: true;
+          enhancedSecurity: true,
         },
         config: {
-          useGPU: true;
+          useGPU: true,
           model: 'gemma3-legal',
-          protocol: 'auto';
+          protocol: 'auto',
         }
       });
       testResults.security = {
@@ -119,16 +119,16 @@ await runInitialTests();
           role: 'prosecutor',
           department: 'District Attorney Office',
           jurisdiction: 'Los Angeles County',
-          badgeNumber: 'DA-123';
+          badgeNumber: 'DA-123',
         },
         context: {
           action: 'test_validation',
-          legalProfessionalCheck: true;
+          legalProfessionalCheck: true,
         },
         config: {
-          useGPU: true;
+          useGPU: true,
           model: 'gemma3-legal',
-          protocol: 'auto';
+          protocol: 'auto',
         }
       });
       testResults.validation = {
@@ -139,7 +139,7 @@ await runInitialTests();
     } catch (error) {
       console.error('Test failed:', error);
       testResults.error = {
-        success: false;
+        success: false,
         error: error instanceof Error ? error.message: 'Unknown error',
         timestamp: new Date().toISOString();
       }
@@ -164,7 +164,7 @@ await runInitialTests();
       email: '', firstName: '', lastName: '', password: '',
       confirmPassword: '', role: 'prosecutor', department: '',
       jurisdiction: '', badgeNumber: '', enableTwoFactor: false
-      agreeToTerms: false, agreeToPrivacy: false;
+      agreeToTerms: false, agreeToPrivacy: false,
     }
   }
   function populateTestData(form: 'login' | 'register') {

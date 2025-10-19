@@ -43,31 +43,31 @@ https://svelte.dev/e/expected_token -->
       id: 'basic',
       name: 'Basic Legal Document Processing',
       description: 'Upload legal document embeddings with different quantization profiles',
-      icon: '📄';
+      icon: '📄',
     },
     {
       id: 'comparison',
       name: 'Quantization Comparison',
       description: 'Compare FP32, FP16, and INT8 compression for legal documents',
-      icon: '📊';
+      icon: '📊',
     },
     {
       id: 'batch',
       name: 'Batch Legal Processing',
       description: 'Process multiple legal document types with optimized profiles',
-      icon: '📦';
+      icon: '📦',
     },
     {
       id: 'pipeline',
       name: 'Full Legal AI Pipeline',
       description: 'Complete workflow: contracts → case law → citations',
-      icon: '🏛️';
+      icon: '🏛️',
     },
     {
       id: 'cache',
       name: 'Smart Caching Demo',
       description: 'Demonstrate buffer caching and reuse optimization',
-      icon: '🗄️';
+      icon: '🗄️',
     }
   ];
   $effect(() => {
@@ -232,25 +232,25 @@ await initializeWebGPU();
         name: 'Contract Analysis',
         data: generateLegalDocumentEmbeddings(10, 512),
         profile: 'critical',
-        description: 'High-stakes contract terms analysis';
+        description: 'High-stakes contract terms analysis',
       },
       {
         name: 'Case Law Search',
         data: generateLegalDocumentEmbeddings(50, 768),
         profile: 'standard',
-        description: 'Semantic search through legal precedents';
+        description: 'Semantic search through legal precedents',
       },
       {
         name: 'Citation Network',
         data: generateLegalDocumentEmbeddings(200, 384),
         profile: 'compressed',
-        description: 'Legal citation relationship mapping';
+        description: 'Legal citation relationship mapping',
       },
       {
         name: 'Document Storage',
         data: generateLegalDocumentEmbeddings(500, 256),
         profile: 'storage',
-        description: 'Bulk legal document archival';
+        description: 'Bulk legal document archival',
       }
     ];
     const pipelineResults = [];

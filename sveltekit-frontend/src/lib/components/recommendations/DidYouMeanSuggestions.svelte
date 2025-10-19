@@ -412,10 +412,10 @@ https://svelte.dev/e/attribute_invalid_name -->
 <style>
   /* Ensure proper z-index stacking */
   :global(.melt-dialog-overlay) {
-    z-index: 50;
+    z-index: 50,
   }
   :global(.melt-dialog-content) {
-    z-index: 51;
+    z-index: 51,
   }
   /* Custom scrollbar for suggestions */
   .suggestions-scroll::-webkit-scrollbar {

@@ -32,7 +32,7 @@
   // TinyMCE configuration
   const editorConfig = {
     height,
-    menubar: true;
+    menubar: true,
     plugins: [
       'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
       'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
@@ -54,7 +54,7 @@
       body {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         font-size: 14px;
-        line-height: 1.6;
+        line-height: 1.6,
         color: #374151;
         background: #ffffff;
   }
@@ -98,7 +98,7 @@
   }
       th {
         background: #F9FAFB;
-        font-weight: 600;
+        font-weight: 600,
   }
     `,
     placeholder,
@@ -187,7 +187,7 @@
           characterCount: getCharCount(),
           lastModified: new Date().toISOString(),
           author: 'Current User',
-          version: '1.0';
+          version: '1.0',
         },
         cacheTimestamp: Date.now(),
         accessCount: 1,
@@ -233,7 +233,7 @@
           content,
           textHash,
           model: 'legal-bert',
-          embedModel: 'nomic-embed-text';
+          embedModel: 'nomic-embed-text',
         })
       });
       if (jobResponse.ok) {
@@ -554,7 +554,7 @@
     padding: 0.2em 0.5em;
     border-radius: 12px;
     font-size: 0.8em;
-    font-weight: 500;
+    font-weight: 500,
   }
   :global(.evidence-description) {
     margin: 0.5em 0;

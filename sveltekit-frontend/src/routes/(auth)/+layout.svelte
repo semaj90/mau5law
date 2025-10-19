@@ -67,7 +67,7 @@
 
   .main-content {
     flex: 1;
-    margin-left: 0;
+    margin-left: 0,
     transition: margin-left 0.3s ease;
     overflow-y: auto;
     background: var(--console-gradient-main, linear-gradient(135deg, #0f0f23, #1a1a2e));
@@ -86,7 +86,7 @@
 /* Responsive design */ {}
   @media (max-width: 1024px) {
     .main-content.sidebar-open {
-      margin-left: 0;
+      margin-left: 0,
     }
   }
 

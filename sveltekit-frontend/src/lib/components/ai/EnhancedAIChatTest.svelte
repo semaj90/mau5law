@@ -123,7 +123,7 @@ if (browser) {
       role: 'assistant' as const,
       content: 'Thinking...',
       timestamp: new Date(),
-      loading: true;
+      loading: true,
     }
     // Add messages and clear input
     messages = [...messages, userMessage, loadingMessage];
@@ -217,7 +217,7 @@ if (browser) {
           role: 'assistant',
           content: `I apologize, but I encountered an error: ${error.message}. Please check that the Ollama service is running and try again.`,
           timestamp: new Date(),
-          error: true;
+          error: true,
         },
       ];
     } finally {
@@ -446,13 +446,13 @@ if (browser) {
 <style>
 /* Custom styles for enhanced appearance */ {}
   :global(.chat-message-content) {
-    line-height: 1.6;
+    line-height: 1.6,
   }
   :global(.chat-message-content p) {
     margin-bottom: 0.5rem;
   }
   :global(.chat-message-content p:last-child) {
-    margin-bottom: 0;
+    margin-bottom: 0,
   }
   :global(.chat-message-content ul, .chat-message-content ol) {
     margin: 0.5rem 0;
@@ -469,6 +469,6 @@ if (browser) {
     border-left: 4px solid currentColor;
     padding-left: 1rem;
     margin: 0.5rem 0;
-    opacity: 0.8;
+    opacity: 0.8,
   }
 </style>

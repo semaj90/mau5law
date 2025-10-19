@@ -43,7 +43,7 @@
       },
       options: {
         responsive: true
-        maintainAspectRatio: false;
+        maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
           tooltip: {
@@ -71,12 +71,12 @@
           data: entityCounts
           backgroundColor: 'rgba(99, 102, 241, 0.8)',
           borderColor: 'rgba(99, 102, 241, 1)',
-          borderWidth: 1;
+          borderWidth: 1,
         }]
       },
       options: {
         responsive: true
-        maintainAspectRatio: false;
+        maintainAspectRatio: false,
         scales: {
           y: {
             beginAtZero: true
@@ -106,15 +106,15 @@
           borderColor: 'rgba(168, 85, 247, 1)',
           backgroundColor: 'rgba(168, 85, 247, 0.1)',
           tension: 0.3,
-          fill: true;
+          fill: true,
         }]
       },
       options: {
         responsive: true
-        maintainAspectRatio: false;
+        maintainAspectRatio: false,
         scales: {
           y: {
-            beginAtZero: true;
+            beginAtZero: true,
             max: 100,
             title: { display: true, text: 'Confidence %' }
           }
@@ -148,15 +148,15 @@
           pointBackgroundColor: 'rgba(34, 197, 94, 1)',
           pointBorderColor: '#fff',
           pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: 'rgba(34, 197, 94, 1)';
+          pointHoverBorderColor: 'rgba(34, 197, 94, 1)',
         }]
       },
       options: {
         responsive: true
-        maintainAspectRatio: false;
+        maintainAspectRatio: false,
         scales: {
           r: {
-            beginAtZero: true;
+            beginAtZero: true,
             max: 100,
             ticks: { stepSize: 20 }
           }
@@ -183,16 +183,16 @@
             'rgba(236, 72, 153, 0.7)',   // surprise - pink
             'rgba(34, 197, 94, 0.7)'     // trust - green
           ],
-          borderWidth: 1;
+          borderWidth: 1,
         }]
       },
       options: {
         responsive: true
-        maintainAspectRatio: false;
+        maintainAspectRatio: false,
         scales: {
           r: {
-            beginAtZero: true;
-            max: 100;
+            beginAtZero: true,
+            max: 100,
           }
         },
         plugins: {

@@ -12,7 +12,7 @@
     children,
     onSearch,
     onUpload,
-    ...restProp;
+    ...restProp
   }: Props = $props();
   let activeTab = $state<'search' | 'upload' | 'settings'>('search');
   let searchQuery = $state('');

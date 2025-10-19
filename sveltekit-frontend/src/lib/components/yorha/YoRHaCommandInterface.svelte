@@ -534,15 +534,15 @@ https://svelte.dev/e/js_parse_error -->
   }
   .scanlines {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: linear-gradient(transparent 50%, rgba(0, 255, 136, 0.03) 50%);
     background-size: 100% 2px;
     animation: scanline-scroll 0.1s linear infinite;
     pointer-events: none;
-    z-index: 1;
+    z-index: 1,
   }
   @keyframes scanline-scroll {
     0% {
@@ -594,13 +594,13 @@ https://svelte.dev/e/js_parse_error -->
   }
   @keyframes hologram-flicker {
     0% {
-      opacity: 0.8;
+      opacity: 0.8,
     }
     50% {
-      opacity: 1;
+      opacity: 1,
     }
     100% {
-      opacity: 0.9;
+      opacity: 0.9,
     }
   }
   .module-panel {
@@ -638,13 +638,13 @@ https://svelte.dev/e/js_parse_error -->
   }
   @keyframes status-pulse {
     0% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.5;
+      opacity: 0.5,
     }
     100% {
-      opacity: 1;
+      opacity: 1,
     }
   }
   .data-stream {
@@ -658,14 +658,14 @@ https://svelte.dev/e/js_parse_error -->
   @keyframes data-flow {
     0% {
       transform: translateY(-100%);
-      opacity: 0;
+      opacity: 0,
     }
     50% {
-      opacity: 1;
+      opacity: 1,
     }
     100% {
       transform: translateY(100vh);
-      opacity: 0;
+      opacity: 0,
     }
   }
   /* Unused CSS classes removed - using Tailwind/UnoCSS classes in template instead */

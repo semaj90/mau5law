@@ -52,7 +52,7 @@
       console.error('Failed to initialize GPU:', error);
       messages.push({
         role: 'system',
-        content: 'GPU initialization failed. Falling back to CPU mode.';
+        content: 'GPU initialization failed. Falling back to CPU mode.',
     })();
   });
     }
@@ -297,7 +297,7 @@
     gap: 1rem;
   }
   .messages-wrapper {
-    flex: 1;
+    flex: 1,
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -330,7 +330,7 @@
     gap: 0.5rem;
     margin-bottom: 0.5rem;
     font-size: 0.875rem;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .role-icon {
     display: inline-flex;
@@ -359,7 +359,7 @@
     align-items: center;
     gap: 0.25rem;
     font-size: 0.75rem;
-    opacity: 0.5;
+    opacity: 0.5,
   }
   .similar-docs {
     width: 300px;
@@ -389,7 +389,7 @@
     flex: 1;
     font-size: 0.75rem;
     opacity: 0.8;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .input-area {
     padding: 1rem;
@@ -401,7 +401,7 @@
     gap: 1rem;
   }
   .chat-input {
-    flex: 1;
+    flex: 1,
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: #fff;
@@ -416,7 +416,7 @@
     background: rgba(255, 255, 255, 0.08);
   }
   .chat-input:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .button-group {
@@ -444,7 +444,7 @@
     background: #2563eb;
   }
   .btn-send:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .btn-stop {

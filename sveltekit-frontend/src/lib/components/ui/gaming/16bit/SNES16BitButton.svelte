@@ -177,13 +177,13 @@
   :global(.snes-16bit-button.layer-effects::before) {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%, rgba(0, 0, 0, 0.1) 100%);
     pointer-events: none;
-    opacity: 0.6;
+    opacity: 0.6,
   }
 
   :global(.snes-16bit-button.plasma) {
@@ -228,7 +228,7 @@
     background: linear-gradient(to bottom, #7c7c7c, #5c5c5c, #3c3c3c);
     color: #bcbcbc;
     cursor: not-allowed;
-    opacity: 0.7;
+    opacity: 0.7,
     transform: none !important;
     box-shadow:
       0 1px 0px rgba(0, 0, 0, 0.2),

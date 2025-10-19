@@ -22,22 +22,22 @@ https://svelte.dev/e/expected_token -->
     {
       title: 'Legal Contract Analysis',
       text: 'Software License Agreement grants licensee non-exclusive rights to use proprietary software. The license fee is $50,000 annually with maintenance support included. Reverse engineering and redistribution are prohibited without written consent. This agreement includes confidentiality clauses and performance guarantees.',
-      type: 'legal';
+      type: 'legal',
     },
     {
       title: 'Technical Documentation',
       text: 'The SIMD GPU tiling engine processes text embeddings using 7-bit NES-style compression, achieving ratios of 109:1. WebGPU compute shaders enable parallel processing across multiple GPU cores, with vertex buffer caching for instantaneous UI component generation.',
-      type: 'technical';
+      type: 'technical',
     },
     {
       title: 'Medical Report Extract',
       text: 'Patient presents with acute symptoms including elevated blood pressure (150/90 mmHg), irregular heartbeat, and chest pain. Recommended treatment includes beta-blockers, lifestyle modifications, and follow-up examination in 2 weeks. Laboratory results show elevated troponin levels.',
-      type: 'medical';
+      type: 'medical',
     },
     {
       title: 'Financial Analysis',
       text: 'Quarterly revenue increased 23% to $45.2M, driven by strong software license sales and recurring subscription revenue. Operating margin improved to 18.5%, with EBITDA of $8.3M. Cash flow from operations was $12.1M, supporting continued investment in R&D and market expansion.',
-      type: 'financial';
+      type: 'financial',
     }
   ];
   let systemStats = $state({

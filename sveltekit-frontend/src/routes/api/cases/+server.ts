@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { withApiHandler, parseRequestBody, createPagination, CommonErrors } from '$lib/server/api/response';
 import { DbCaseOperations as CaseOperations } from '$lib/server/db/enhanced-operations';
-import { createClient } from 'redis';
+import * as redis from 'redis'; // Change to namespace import
+import type { RedisClientType } from 'redis'; // Keep type import separate
 import type { RequestHandler } from './$types.js';
 import { resolveUser, getMetaEnv, isDevBypassEnabled } from '$lib/server/auth/utils';
 
@@ -10,7 +11,7 @@ const metaEnv = getMetaEnv();
 
 // Redis client for worker communication
 // Use an inferred client type to avoid relying on package-exported type names
-type LocalRedisClient = ReturnType<typeof createClient>;
+type LocalRedisClient = RedisClientType; // Use RedisClientType directly
 
 let redisClient: LocalRedisClient | null = null;
 let redisUnavailable = false;
@@ -18,8 +19,17 @@ async function getRedisClient(): Promise<LocalRedisClient | null> {
   if (redisUnavailable) return null;
   if (!redisClient) {
     try {
-      redisClient = createClient({
-        url: metaEnv.REDIS_URL || 'redis://localhost:6379',
+      // Resolve runtime Redis config: prefer metaEnv (Vite), fall back to process.env
+      const resolvedRedisUrl = metaEnv.REDIS_URL || process.env.REDIS_URL || 'redis://127.0.0.1:6379';
+      const resolvedRedisPassword = metaEnv.REDIS_PASSWORD || process.env.REDIS_PASSWORD || undefined;
+      console.log('DEBUG: Resolved Redis URL:', resolvedRedisUrl);
+      console.log('DEBUG: Redis password present?', !!resolvedRedisPassword);
+      // 'redis' namespace may not have precise typings for createClient in our environment;
+      // cast to any to avoid TS 'possibly undefined' invocation error while preserving runtime behavior.
+      const redisNs: any = redis;
+      redisClient = redisNs.createClient({
+        url: resolvedRedisUrl,
+        password: resolvedRedisPassword,
         socket: { connectTimeout: 5000 },
       });
       await redisClient.connect();
@@ -78,7 +88,22 @@ const createCaseSchema = z.object({
   }, z.date().optional()),
   location: z.string().optional(),
   jurisdiction: z.string().optional(),
+  // caseType is optional, but fallback is 'civil' if not provided.
+  // Allowed values: 'civil', 'criminal', 'family', 'administrative', 'other'
+  caseType: z
+    .enum(['civil', 'criminal', 'family', 'administrative', 'other'])
+    .optional()
+    .describe('Defaults to "civil" if not provided'),
 });
+
+// Define a type for the *output* of the schema after defaults are applied.
+// This ensures 'priority' and 'status' are non-optional for downstream use,
+// as Zod's .default() guarantees their presence at runtime.
+type CreateCaseValidatedData = Omit<z.infer<typeof createCaseSchema>, 'priority' | 'status'> & {
+  priority: 'low' | 'medium' | 'high' | 'critical';
+  status: 'open' | 'investigating' | 'pending' | 'closed' | 'archived';
+};
+
 const searchCasesSchema = z.object({
   query: z.string().optional(),
   status: z.array(z.string()).optional(),
@@ -172,30 +197,40 @@ export const POST: RequestHandler = async event => {
     if (!user) throw CommonErrors.Unauthorized('User authentication required');
     // Parse and validate request body
     const caseData = await parseRequestBody(request, createCaseSchema);
+    // Cast the parsed data to the refined type, as Zod's default() ensures these are present at runtime.
+    const validatedCaseData: CreateCaseValidatedData = caseData as CreateCaseValidatedData;
     try {
       // Create case using enhanced operations
       const newCase = await CaseOperations.create({
-        ...caseData,
+        ...validatedCaseData,
+        // incidentDate is already a Date | undefined due to schema preprocessing
+        incidentDate: validatedCaseData.incidentDate,
         createdBy: user.id,
       });
-      console.log(`✅ Case created successfully: ${newCase.caseNumber} by user ${user.id}`);
+
+      console.log(`✅ Case created successfully: ID=${newCase.id}, Number=${newCase.caseNumber}, User=${user.id}`);
+
       // Trigger PostgreSQL-first worker for auto-tagging and processing
       try {
         await triggerWorkerProcessing(newCase.id, {
-          priority: caseData.priority,
-          caseType: 'civil', // Default case type, could be enhanced
+          priority: validatedCaseData.priority, // No 'as string' needed, type is correct
+          caseType: validatedCaseData.caseType || 'civil', // No 'as string' needed, type is correct
           userId: user.id,
           trigger: 'api-case-creation',
           metadata: {
             caseNumber: newCase.caseNumber,
-            title: caseData.title,
-            status: caseData.status,
-            location: caseData.location,
-            jurisdiction: caseData.jurisdiction,
+            title: validatedCaseData.title,
+            status: validatedCaseData.status,
+            location: validatedCaseData.location,
+            // Simplified incidentDate handling, relying on schema preprocessing
+            incidentDate: validatedCaseData.incidentDate?.toISOString() ?? null,
+            description: validatedCaseData.description,
+            // Removed duplicate incidentDate property
           },
         });
         console.log(`🚀 Worker processing triggered for case: ${newCase.id}`);
-      } catch (workerError) {
+      } catch (workerError: unknown) {
+        // Corrected: Added type for workerError
         console.warn(`⚠️ Worker trigger failed for case ${newCase.id}:`, workerError);
         // Don't fail the case creation if worker trigger fails
       }
@@ -213,7 +248,7 @@ export const POST: RequestHandler = async event => {
       }
       throw error;
     }
-  }, event);
+  }, event); // Corrected: Added 'event' as the second argument
 };
 // Additional endpoints
 // PUT - Update existing case

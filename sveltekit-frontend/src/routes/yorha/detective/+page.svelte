@@ -455,9 +455,9 @@ https://svelte.dev/e/js_parse_error -->
   .nav-item::before {
     content: '';
     position: absolute;
-    left: 0;
+    left: 0,
     top: 0;
-    bottom: 0;
+    bottom: 0,
     width: 2px;
     background: rgba(251, 191, 36, 0.5);
     transform: scaleY(0);
@@ -496,7 +496,7 @@ https://svelte.dev/e/js_parse_error -->
   .action-button::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: -100%;
     width: 100%;
     height: 100%;
@@ -512,10 +512,10 @@ https://svelte.dev/e/js_parse_error -->
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.8;
+      opacity: 0.8,
     }
   }
   /* Responsive design */

@@ -47,26 +47,26 @@
   const sizeClasses = {
     sm: "text-sm px-3 py-2",
     md: "text-base px-4 py-3",
-    lg: "text-lg px-6 py-4";
+    lg: "text-lg px-6 py-4",
   }
   const variantClasses = {
     default: {
       list: "bg-slate-800/40 rounded-xl p-1",
       trigger: "rounded-lg transition-all duration-300",
       triggerActive: "bg-amber-500 text-slate-900 shadow-lg shadow-amber-500/25",
-      triggerInactive: "text-slate-400 hover:text-amber-400 hover:bg-slate-700/50";
+      triggerInactive: "text-slate-400 hover:text-amber-400 hover:bg-slate-700/50",
     },
     pills: {
       list: "space-x-2",
       trigger: "rounded-full border border-slate-600/50 transition-all duration-300",
       triggerActive: "bg-amber-500 text-slate-900 border-amber-500 shadow-lg shadow-amber-500/25",
-      triggerInactive: "text-slate-400 hover:text-amber-400 hover:bg-slate-800/50 hover:border-amber-500/50";
+      triggerInactive: "text-slate-400 hover:text-amber-400 hover:bg-slate-800/50 hover:border-amber-500/50",
     },
     underline: {
       list: "border-b border-slate-700 space-x-1",
       trigger: "border-b-2 border-transparent pb-3 transition-all duration-300",
       triggerActive: "border-amber-500 text-amber-400",
-      triggerInactive: "text-slate-400 hover:text-amber-400 hover:border-slate-500";
+      triggerInactive: "text-slate-400 hover:text-amber-400 hover:border-slate-500",
     }
   }
   function handleValueChange(newValue: string) {
@@ -128,11 +128,11 @@
   }
   @keyframes legal-ai-fade-in {
     from {
-      opacity: 0;
+      opacity: 0,
       transform: translateY(4px);
     }
     to {
-      opacity: 1;
+      opacity: 1,
       transform: translateY(0);
     }
   }

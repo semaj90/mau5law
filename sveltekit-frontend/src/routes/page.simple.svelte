@@ -72,7 +72,7 @@
   .subtitle {
     font-size: 1.2rem;
     color: #b0b0b0;
-    margin-bottom: 0;
+    margin-bottom: 0,
   }
   .quick-stats {
     display: grid;
@@ -120,7 +120,7 @@
   .action-card::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: -100%;
     width: 100%;
     height: 100%;
@@ -141,8 +141,8 @@
     font-size: 1.2rem;
   }
   .action-card p {
-    margin: 0;
+    margin: 0,
     color: #b0b0b0;
-    line-height: 1.5;
+    line-height: 1.5,
   }
 </style>

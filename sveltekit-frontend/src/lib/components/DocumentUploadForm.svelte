@@ -6,9 +6,9 @@
   import type { DocumentUploadFormProps } from '$lib/types/component-props.js';
   // Outbound component events (modern callback props)
   interface DocumentUploadEvents {
-    next: { step: 'documents'; data: InternalFormData }
+    next: { step: 'documents', data: InternalFormData }
     previous: { step: 'documents' }
-    saveDraft: { step: 'documents'; data: InternalFormData }
+    saveDraft: { step: 'documents', data: InternalFormData }
   }
   // SvelteKit 2 / Svelte 5 helpers (before $props() destructure)
   type ProcessingStatus = 'pending' | 'processing' | 'completed' | 'error';

@@ -51,14 +51,14 @@
   }
 
   .admin-main {
-    flex: 1;
+    flex: 1,
     padding: 1.5rem;
     overflow-x: auto;
   }
 
   /* Admin-specific security indicators */
   .admin-main::after {
-    content: '🔒 ADMIN ACCESS';
+    content: '🔒 ADMIN ACCESS',
     position: fixed;
     top: 70px;
     right: 20px;
@@ -66,7 +66,7 @@
     color: var(--text-secondary, #ff6600);
     opacity: 0.6;
     pointer-events: none;
-    z-index: 1000;
+    z-index: 1000,
   }
 
   @media (max-width: 768px) {

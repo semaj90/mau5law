@@ -186,7 +186,7 @@ https://svelte.dev/e/expected_token -->
     flex-direction: column;
     gap: 6px;
     color: var(--ps1-text);
-    font-weight: 600;
+    font-weight: 600,
   }
   .button-row {
     display: flex;
@@ -273,7 +273,7 @@ https://svelte.dev/e/expected_token -->
   }
   .grid-line {
     position: absolute;
-    left: 0;
+    left: 0,
     right: 0;
     height: 1px;
     background: rgba(108, 124, 255, 0.1);
@@ -308,7 +308,7 @@ https://svelte.dev/e/expected_token -->
   }
   .ps1-stereo-sidebyside {
     display: flex;
-    border-radius: 0;
+    border-radius: 0,
   }
   .ps1-stereo-sidebyside .stereo-scene {
     width: 50%;
@@ -342,7 +342,7 @@ https://svelte.dev/e/expected_token -->
   }
   .metric span:last-child {
     color: var(--ps1-text);
-    font-weight: 600;
+    font-weight: 600,
   }
   .metric .warning {
     color: var(--ps1-accent-2);

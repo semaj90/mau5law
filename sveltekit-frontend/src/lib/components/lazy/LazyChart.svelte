@@ -185,7 +185,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
     width: 100%;
   }
   .chart-content {
-    flex: 1;
+    flex: 1,
     position: relative;
   }
   /* Mock chart styles (replace with your actual chart styling) */
@@ -205,7 +205,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
   }
   .chart-data-info {
     font-size: 12px;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   /* Placeholder styles */
   .chart-placeholder-content {
@@ -254,7 +254,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
     gap: 8px;
   }
   .placeholder-bar {
-    flex: 1;
+    flex: 1,
     background: rgba(255, 255, 255, 0.2);
     border-radius: 2px 2px 0 0;
     animation: bar-grow 1.5s ease-out infinite;
@@ -306,7 +306,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
     gap: 12px;
   }
   .generic-bar {
-    flex: 1;
+    flex: 1,
     background: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
     animation: bar-pulse 2s ease-in-out infinite;

@@ -85,7 +85,7 @@ Manages AutoGen and CrewAI multi-agent workflows
       description: 'Comprehensive case analysis with multiple legal experts',
       icon: Gavel;
       providers: ['autogen', 'crewai'],
-      estimatedTime: '2-3 minutes';
+      estimatedTime: '2-3 minutes',
     },
     {
       id: 'evidence_review',
@@ -93,7 +93,7 @@ Manages AutoGen and CrewAI multi-agent workflows
       description: 'Forensic evidence analysis and admissibility assessment',
       icon: Shield;
       providers: ['autogen', 'crewai'],
-      estimatedTime: '1-2 minutes';
+      estimatedTime: '1-2 minutes',
     },
     {
       id: 'legal_research',
@@ -101,7 +101,7 @@ Manages AutoGen and CrewAI multi-agent workflows
       description: 'Precedent research and statute analysis',
       icon: Search;
       providers: ['autogen'],
-      estimatedTime: '2-4 minutes';
+      estimatedTime: '2-4 minutes',
     },
     {
       id: 'contract_analysis',
@@ -109,7 +109,7 @@ Manages AutoGen and CrewAI multi-agent workflows
       description: 'Contract review, risk assessment, and negotiation strategy',
       icon: FileText;
       providers: ['crewai'],
-      estimatedTime: '1-2 minutes';
+      estimatedTime: '1-2 minutes',
     }
   ];
   $effect(() => {
@@ -180,7 +180,7 @@ if (autoStartServices) {
             recipient: 'legal_researcher',
             content: 'Please research precedents for this case type.',
             timestamp: Date.now() - 60000,
-            messageType: 'text';
+            messageType: 'text',
           },
           {
             id: '2',
@@ -188,7 +188,7 @@ if (autoStartServices) {
             recipient: 'prosecutor',
             content: 'I found several relevant precedents. The strongest cases support prosecution.',
             timestamp: Date.now() - 30000,
-            messageType: 'text';
+            messageType: 'text',
           },
           {
             id: '3',
@@ -196,7 +196,7 @@ if (autoStartServices) {
             recipient: 'all',
             content: caseResult.content,
             timestamp: Date.now(),
-            messageType: 'text';
+            messageType: 'text',
           }
         ];
         lastUpdate = 'Case analysis completed';
@@ -213,7 +213,7 @@ if (autoStartServices) {
             recipient: 'prosecutor',
             content: evidenceResult.content,
             timestamp: Date.now(),
-            messageType: 'text';
+            messageType: 'text',
           }
         ];
         lastUpdate = 'Evidence review completed';
@@ -229,7 +229,7 @@ if (autoStartServices) {
             recipient: 'coordinator',
             content: researchResult.content,
             timestamp: Date.now(),
-            messageType: 'text';
+            messageType: 'text',
           }
         ];
         lastUpdate = 'Legal research completed';
@@ -252,28 +252,28 @@ if (autoStartServices) {
             agentId: 'case-investigator',
             output: 'Initial investigation completed. Key evidence identified and timeline established.',
             executionTime: 45000,
-            status: 'completed';
+            status: 'completed',
           },
           {
             taskId: 'legal-research',
             agentId: 'legal-analyst',
             output: 'Legal research completed. Found 5 relevant precedents and applicable statutes.',
             executionTime: 60000,
-            status: 'completed';
+            status: 'completed',
           },
           {
             taskId: 'evidence-analysis',
             agentId: 'evidence-specialist',
             output: 'Evidence analysis completed. All evidence meets admissibility standards.',
             executionTime: 30000,
-            status: 'completed';
+            status: 'completed',
           },
           {
             taskId: 'final-report',
             agentId: 'report-writer',
             output: caseResult.content,
             executionTime: 25000,
-            status: 'completed';
+            status: 'completed',
           }
         ];
         lastUpdate = 'Legal investigation completed';
@@ -289,21 +289,21 @@ if (autoStartServices) {
             agentId: 'contract-reviewer',
             output: 'Contract review completed. Identified 3 high-risk clauses and 2 missing provisions.',
             executionTime: 40000,
-            status: 'completed';
+            status: 'completed',
           },
           {
             taskId: 'compliance-check',
             agentId: 'compliance-officer',
             output: 'Compliance analysis completed. Contract meets regulatory requirements with minor updates needed.',
             executionTime: 35000,
-            status: 'completed';
+            status: 'completed',
           },
           {
             taskId: 'negotiation-strategy',
             agentId: 'negotiation-advisor',
             output: contractResult.content,
             executionTime: 20000,
-            status: 'completed';
+            status: 'completed',
           }
         ];
         lastUpdate = 'Contract analysis completed';
@@ -351,7 +351,7 @@ if (autoStartServices) {
       ? conversationMessages
       : executionResult;
     const blob = new Blob([JSON.stringify(results, null, 2)], {
-      type: 'application/json';
+      type: 'application/json',
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

@@ -104,7 +104,7 @@ https://svelte.dev/e/expected_token -->
     // Renderer setup with NES-style pixelation
     renderer = new THREE.WebGLRenderer({
       antialias: false, // Keep pixels sharp for NES aesthetic;
-      alpha: true ;
+      alpha: true,
     });
     renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
     renderer.setPixelRatio(1); // Maintain pixel-perfect rendering
@@ -126,7 +126,7 @@ https://svelte.dev/e/expected_token -->
     // Create main analysis container
     const mainContainer = createNESContainer({
       title: "Legal AI Analysis Engine",
-      dark: true;
+      dark: true,
     });
     mainContainer.position.set(0, 2, 0);
     scene.add(mainContainer);
@@ -139,7 +139,7 @@ https://svelte.dev/e/expected_token -->
       renderMode: 'hybrid-sync',
       backgroundColor: NES_YORHA_PALETTE.nesBlack,
       pixelPerfect: true
-      crtEffect: true;
+      crtEffect: true,
       scanlines: true;
     });
     statusPanel.position.set(0, -2, 0);
@@ -150,7 +150,7 @@ https://svelte.dev/e/expected_token -->
       const docNode = createNESButton({
         text: `Doc ${index + 1}`,
         variant: 'is-primary',
-        size: 'small';
+        size: 'small',
       });
       // Position in circle around center
       const angle = (index / documents.length) * Math.PI * 2;
@@ -252,7 +252,7 @@ https://svelte.dev/e/expected_token -->
               model: embeddingModel
               useGPU: true
               practiceArea: 'legal',
-              jurisdiction: 'us-federal';
+              jurisdiction: 'us-federal',
             }
           );
           // Create analysis result
@@ -457,7 +457,7 @@ https://svelte.dev/e/expected_token -->
       notifications.add({
         type: "warning",
         title: "No Documents",
-        message: "Load documents first before generating embeddings";
+        message: "Load documents first before generating embeddings",
       });
       return;
     }
@@ -470,13 +470,13 @@ https://svelte.dev/e/expected_token -->
       notifications.add({
         type: "success",
         title: "3D Visualization Active",
-        message: "3D semantic space visualization is now running";
+        message: "3D semantic space visualization is now running",
       });
     } else {
       notifications.add({
         type: "info",
         title: "3D Visualization Ready",
-        message: "Generate embeddings first to populate the 3D space";
+        message: "Generate embeddings first to populate the 3D space",
       });
     }
   }
@@ -682,7 +682,7 @@ enable3DVisualization = !enable3DVisualization}
     background: rgba(212, 197, 169, 0.05);
   }
   .analysis-main {
-    flex: 1;
+    flex: 1,
     display: flex;
     gap: 1rem;
     overflow: hidden;
@@ -738,7 +738,7 @@ enable3DVisualization = !enable3DVisualization}
   }
   .doc-title {
     font-weight: bold;
-    flex: 1;
+    flex: 1,
   }
   .confidence-badge {
     background: #d4af00;

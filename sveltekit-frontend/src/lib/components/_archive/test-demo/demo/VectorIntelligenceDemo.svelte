@@ -50,7 +50,7 @@ await context7Service.initialize();
     if (!searchQuery.trim()) return;
     await context7Service.vectorSearch(searchQuery, {
       filters: selectedFilters;
-      limit: 10;
+      limit: 10,
     });
     // Add to search history
     if (!searchHistory.includes(searchQuery)) {

@@ -33,7 +33,7 @@
     onsearch,
     onclear,
     onfilter,
-    ...restProp;
+    ...restProp
   }: Props = $props();
   let isSearching = $state(false);
   let showSuggestions = $state(false);
@@ -45,12 +45,12 @@
   let sizeClasses = $derived({
     sm: 'h-8 text-sm px-8',
     md: 'h-10 text-base px-10',
-    lg: 'h-12 text-lg px-12';
+    lg: 'h-12 text-lg px-12',
   });
   let iconSizes = $derived({
     sm: 'w-3 h-3',
     md: 'w-4 h-4',
-    lg: 'w-5 h-5';
+    lg: 'w-5 h-5',
   });
   // Variant styling
   let variantClasses = $derived(() => {
@@ -300,10 +300,10 @@
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.5;
+      opacity: 0.5,
     }
   }
   /* Suggestion hover animation */

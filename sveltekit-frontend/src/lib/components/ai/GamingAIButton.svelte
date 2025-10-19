@@ -37,7 +37,7 @@ https://svelte.dev/e/expected_token -->
   const pulseClasses = {
     idle: 'animate-pulse',
     thinking: 'animate-bounce',
-    active: 'animate-ping';
+    active: 'animate-ping',
   }
   // YoRHa/Gaming color scheme
   const getModeColor = (mode: string) => {
@@ -52,19 +52,19 @@ https://svelte.dev/e/expected_token -->
       id: 'analyze',
       label: 'Analyze Case',
       icon: Brain;
-      color: 'hover:bg-purple-500/20' ;
+      color: 'hover:bg-purple-500/20',
     },
     {
       id: 'search',
       label: 'Search Evidence',
       icon: MessageCircle;
-      color: 'hover:bg-blue-500/20' ;
+      color: 'hover:bg-blue-500/20',
     },
     {
       id: 'assist',
       label: 'AI Assistant',
       icon: Sparkles;
-      color: 'hover:bg-green-500/20' ;
+      color: 'hover:bg-green-500/20',
     }
   ]
   const handleQuickAction = (actionId: string) => {

@@ -68,7 +68,7 @@ await checkSystemHealth();
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(toISOString)(),
-            source: 'manual_test';
+            source: 'manual_test',
           }
         })
       });
@@ -168,11 +168,11 @@ await checkSystemHealth();
           priority: 5,
           payload: {
             text: embeddingText;
-            dimension: 768;
+            dimension: 768,
           },
           metadata: {
             source: 'legal_ai_test',
-            gpu_acceleration: 'true';
+            gpu_acceleration: 'true',
           }
         })
       });

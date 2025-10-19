@@ -25,7 +25,7 @@
     priority: 'critical',
     created: '2025-07-16',
     evidence: 12,
-    witnesses: 5;
+    witnesses: 5,
   }
   const statuses = ['active', 'pending', 'closed', 'archived']
   const priorities = ['critical', 'high', 'medium', 'low']

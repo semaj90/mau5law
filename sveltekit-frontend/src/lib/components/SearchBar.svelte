@@ -199,7 +199,7 @@
     display: flex;
     gap: 0.5rem;
     align-items: center;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .sort-container {
     position: relative;
@@ -262,7 +262,7 @@
   .filter-group .filter-label {
     display: block;
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 600,
     color: var(--text-primary);
     margin-bottom: 0.5rem;
   }
@@ -276,11 +276,11 @@
     align-items: center;
     gap: 0.5rem;
     font-weight: normal;
-    margin-bottom: 0;
+    margin-bottom: 0,
     cursor: pointer;
   }
   .filter-checkbox input {
-    margin: 0;
+    margin: 0,
   }
   .date-range {
     display: flex;

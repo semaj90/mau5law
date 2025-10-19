@@ -15,33 +15,33 @@
       label: 'AI Document Demo',
       href: '/demo/document-ai',
       description: 'Document upload with AI processing',
-      icon: '🤖';
+      icon: '🤖',
     },
     {
       label: 'AI Service Test',
       href: 'http://localhost:8081/test',
       description: 'Go microservice test interface',
       icon: '🧪',
-      external: true;
+      external: true,
     },
     {
       label: 'Service Health',
       href: 'http://localhost:8081/api/health',
       description: 'System health API endpoint',
       icon: '💚',
-      external: true;
+      external: true,
     },
     {
       label: 'Dev Tools',
       href: '/dev/mcp-tools',
       description: 'MCP and development tools',
-      icon: '🛠️';
+      icon: '🛠️',
     },
     {
       label: 'Legal AI Cases',
       href: '/cases',
       description: 'Case management interface',
-      icon: '⚖️';
+      icon: '⚖️',
     }
   ];
   let isOpen = $state(false);
@@ -179,11 +179,11 @@
   }
   @keyframes slideIn {
     from {
-      opacity: 0;
+      opacity: 0,
       transform: translateY(-10px);
     }
     to {
-      opacity: 1;
+      opacity: 1,
       transform: translateY(0);
     }
   }
@@ -195,7 +195,7 @@
     appearance: none;
     -webkit-appearance: none;
     border: none;
-    padding: 0;
+    padding: 0,
     margin: 0;
     display: block;
     width: 100%;

@@ -195,11 +195,11 @@
     width: 1.25rem;
     height: 1.25rem;
     color: rgba(6, 182, 212, 0.6);
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
 
   .search-input {
-    flex: 1;
+    flex: 1,
     background: transparent;
     border: none;
     outline: none;
@@ -213,12 +213,12 @@
   }
 
   .search-input:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
 
   .search-button {
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
 
   .error-message {
@@ -236,7 +236,7 @@
 
   .results-header {
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 600,
     color: rgba(6, 182, 212, 0.9);
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -270,7 +270,7 @@
 
   .result-filename {
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #06b6d4;
     font-family: 'Courier New', monospace;
   }

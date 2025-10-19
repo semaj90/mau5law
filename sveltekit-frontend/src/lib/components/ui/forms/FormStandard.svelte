@@ -23,7 +23,7 @@
   }
   let {
     onSubmit,
-    validationErrors = ,
+    validationErrors = {},
     isSubmitting = false,
     variant = 'default',
     size = 'md',
@@ -34,22 +34,22 @@
     footer,
     children,
     class: className = '',
-    ...formProp;
+    ...formProp
   }: Props = $props();
   const variantClasses = {
     default: '',
     card: 'bg-white rounded-lg border border-gray-200 shadow-sm p-6',
-    inline: 'flex flex-row items-center gap-4';
+    inline: 'flex flex-row items-center gap-4'
   }
   const sizeClasses = {
     sm: 'text-sm',
     md: 'text-base',
-    lg: 'text-lg';
+    lg: 'text-lg'
   }
   const spacingClasses = {
     compact: 'space-y-2',
     normal: 'space-y-4',
-    relaxed: 'space-y-6';
+    relaxed: 'space-y-6'
   }
   // Enhanced submit function with error handling
   const enhancedSubmit: SubmitFunction = ({ formElement, formData, action, cancel, submitter, controller }) => {

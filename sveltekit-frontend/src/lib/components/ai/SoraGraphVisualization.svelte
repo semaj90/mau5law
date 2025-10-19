@@ -32,7 +32,7 @@ https://svelte.dev/e/js_parse_error -->
     query = '',
     startNodeId = '',
     neo4jDriver = null,
-    config = ,
+    config = {},
     mode = '2d',
     width = 800,
     height = 600,
@@ -72,7 +72,7 @@ https://svelte.dev/e/js_parse_error -->
         evidence: '#FF5722',
         entity: '#9C27B0',
         concept: '#FFC107',
-        relationship: '#607D8B';
+        relationship: '#607D8B',
       },
       edgeColors: {
         cites: '#FF9800',
@@ -80,7 +80,7 @@ https://svelte.dev/e/js_parse_error -->
         related: '#03DAC6',
         similar: '#E91E63',
         references: '#00BCD4',
-        contradicts: '#F44336';
+        contradicts: '#F44336',
       }
     },
     light: {
@@ -91,7 +91,7 @@ https://svelte.dev/e/js_parse_error -->
         evidence: '#D32F2F',
         entity: '#7B1FA2',
         concept: '#F57C00',
-        relationship: '#455A64';
+        relationship: '#455A64',
       },
       edgeColors: {
         cites: '#E65100',
@@ -99,7 +99,7 @@ https://svelte.dev/e/js_parse_error -->
         related: '#00695C',
         similar: '#AD1457',
         references: '#0097A7',
-        contradicts: '#C62828';
+        contradicts: '#C62828',
       }
     },
     legal: {
@@ -110,7 +110,7 @@ https://svelte.dev/e/js_parse_error -->
         evidence: '#f7931e',
         entity: '#c77dff',
         concept: '#06ffa5',
-        relationship: '#87ceeb';
+        relationship: '#87ceeb',
       },
       edgeColors: {
         cites: '#ff9f40',
@@ -118,7 +118,7 @@ https://svelte.dev/e/js_parse_error -->
         related: '#ff6384',
         similar: '#36a2eb',
         references: '#9966ff',
-        contradicts: '#ff4757';
+        contradicts: '#ff4757',
       }
     }
   }
@@ -135,7 +135,7 @@ https://svelte.dev/e/js_parse_error -->
       enabled: enableReinforcementLearning
       explorationRate: 0.1,
       learningRate: 0.01,
-      discountFactor: 0.95;
+      discountFactor: 0.95,
     },
     ...config
   } as SoraTraversalOptions);
@@ -156,14 +156,14 @@ https://svelte.dev/e/js_parse_error -->
       gravity: 0.1,
       repulsion: 100,
       attraction: 0.05,
-      damping: 0.9;
+      damping: 0.9,
     },
     reinforcementLearning: {
       enabled: enableReinforcementLearning
       showTrainingProgress: true
       highlightOptimalPaths: true
       showRewardHeatmap: true
-      qValueVisualization: true;
+      qValueVisualization: true,
     },
     useWebGL: true
     useWasm: true
@@ -199,7 +199,7 @@ try {
         documents: 1000,
         chunks: 10000,
         representations: 100,
-        maxLOD: 4;
+        maxLOD: 4,
       });
       somCache = new SOMWebGPUCache();
       reranker = new LegalAIReranker();
@@ -528,16 +528,16 @@ try {
   }
   .loading-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(15, 20, 25, 0.95);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    z-index: 100;
+    z-index: 100,
     color: #4a9eff;
   }
   .spinner {
@@ -562,7 +562,7 @@ try {
     gap: 16px;
     margin-top: 8px;
     font-size: 12px;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .loading-detail {
     background: rgba(74, 158, 255, 0.2);
@@ -592,7 +592,7 @@ try {
     display: none;
   }
   .visualization-canv.visualization-canvas:hover {
-    opacity: 0.95;
+    opacity: 0.95,
   }
   .canvas-controls {
     position: absolute;
@@ -600,7 +600,7 @@ try {
     right: 8px;
     display: flex;
     gap: 4px;
-    z-index: 10;
+    z-index: 10,
   }
   .control-btn {
     background: rgba(42, 42, 42, 0.9);
@@ -625,7 +625,7 @@ try {
     background: rgba(42, 42, 42, 0.9);
     border-radius: 6px;
     padding: 2px;
-    z-index: 10;
+    z-index: 10,
   }
   .mode-btn {
     background: transparent;
@@ -652,13 +652,13 @@ try {
     max-width: 300px;
     max-height: 200px;
     overflow-y: auto;
-    z-index: 10;
+    z-index: 10,
   }
   .path-explorer h4 {
     margin: 0 0 8px 0;
     color: #4a9eff;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 600,
   }
   .path-list {
     display: flex;
@@ -689,16 +689,16 @@ try {
     color: #87ceeb;
   }
   .path-score {
-    font-weight: 600;
+    font-weight: 600,
   }
   .path-length {
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .path-preview {
     color: #c77dff;
     font-family: monospace;
     font-size: 10px;
-    opacity: 0.9;
+    opacity: 0.9,
   }
   .stats-panel {
     position: absolute;
@@ -709,13 +709,13 @@ try {
     border-radius: 6px;
     padding: 12px;
     min-width: 200px;
-    z-index: 10;
+    z-index: 10,
   }
   .stats-panel h4 {
     margin: 0 0 8px 0;
     color: #4a9eff;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 600,
   }
   .stat-grid {
     display: grid;
@@ -730,7 +730,7 @@ try {
   .stat-label {
     font-size: 10px;
     color: #87ceeb;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .stat-value {
     font-size: 12px;

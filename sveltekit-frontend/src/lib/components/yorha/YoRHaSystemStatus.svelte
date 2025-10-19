@@ -71,14 +71,14 @@ https://svelte.dev/e/js_parse_error -->
       hour12: false
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit';
+      second: '2-digit',
     });
   }
   function formatDate(date: Date): string {
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: '2-digit';
+      day: '2-digit',
     });
   }
 </script>
@@ -263,10 +263,10 @@ https://svelte.dev/e/js_parse_error -->
   @keyframes pulse-critical {
     0%,
     100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.5;
+      opacity: 0.5,
     }
   }
   .status-dot.bg-red-400 {

@@ -55,7 +55,7 @@
       critical: '#cc0000',
       high: '#cccc00',
       medium: '#0066cc',
-      low: '#00cc66';
+      low: '#00cc66',
     }
   }
   $effect(() => {
@@ -276,18 +276,18 @@ if (!canvas) return;
   .glyph-engine-container {
     background: var(--yorha-black);
     border: 2px solid var(--n64-blue);
-    border-radius: 0;
+    border-radius: 0,
     position: relative;
   }
   .glyph-engine-canv.sr-only {
     position: absolute;
     width: 1px;
     height: 1px;
-    padding: 0;
+    padding: 0,
     margin: -1px;
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
-    border: 0;
+    border: 0,
   }
 </style>

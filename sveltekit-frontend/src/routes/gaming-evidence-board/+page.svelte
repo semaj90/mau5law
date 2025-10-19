@@ -33,12 +33,12 @@
 <style>
   .loading-screen {
     position: fixed;
-    inset: 0;
+    inset: 0,
     background: linear-gradient(145deg, #1a1a1a 0%, #000000 100%);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 1000,
   }
   .loading-content {
     text-align: center;
@@ -79,10 +79,10 @@
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.5;
+      opacity: 0.5,
     }
   }
   @keyframes loading-progress {

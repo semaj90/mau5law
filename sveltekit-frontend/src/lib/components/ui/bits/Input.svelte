@@ -123,7 +123,7 @@
   }
   /* Additional NES.css enhancements */
   :global(.nes-field) {
-    margin-bottom: 0;
+    margin-bottom: 0,
   }
   /* Legal AI specific input glow effect */
   input:focus {

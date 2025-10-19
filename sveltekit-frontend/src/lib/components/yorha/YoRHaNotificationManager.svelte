@@ -61,7 +61,7 @@
   .notification-group {
     position: fixed;
 d;
-    z-index: 9999;
+    z-index: 9999,
     display: flex;
     flex-direction: column;
     gap: 12px;

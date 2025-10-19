@@ -406,11 +406,11 @@ https://svelte.dev/e/props_duplicate -->
   label {
     display: block;
     margin-bottom: 0.5rem;
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
 }
   label.required::after {
-    content: "*";
+    content: "*",
     color: #ef4444;
     margin-left: 0.25rem;
 }
@@ -448,7 +448,7 @@ https://svelte.dev/e/props_duplicate -->
     margin-bottom: 0.5rem;
 }
   .tag-input input {
-    flex: 1;
+    flex: 1,
 }
   .tag-input button {
     padding: 0.75rem 1rem;
@@ -484,7 +484,7 @@ https://svelte.dev/e/props_duplicate -->
     cursor: pointer;
     font-size: 1rem;
     color: #6b7280;
-    padding: 0;
+    padding: 0,
     width: 1rem;
     height: 1rem;
     display: flex;
@@ -528,7 +528,7 @@ https://svelte.dev/e/props_duplicate -->
     border-color: #2563eb;
 }
   .form-actions button:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
 }
   @media (max-width: 768px) {

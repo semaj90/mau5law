@@ -136,7 +136,7 @@
       id: `${Date.now()}-${Math.random()}`,
       file,
       progress: 0,
-      status: 'pending';
+      status: 'pending',
     }));
     files = uploadFile;
     performanceStats.totalFiles = files.length;
@@ -258,7 +258,7 @@
     if (!(response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
       const errorData = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
       return {
-        success: false;
+        success: false,
         error: errorData.error?.message || 'Upload failed';
       }
     }
@@ -266,7 +266,7 @@
     const processingTime = Date.now() - startTime;
     if ((result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).success && (result as { success?: unknown; data?: unknown; error?: unknown; processedFile?: unknown; metadata?: unknown }).data?.[0]) {
       return {
-        success: true;
+        success: true,
         data: {
           ...result.data[0],
           cudaOptimized: cudaProcessed
@@ -275,8 +275,8 @@
       }
     }
     return {
-      success: false;
-      error: 'Invalid response from upload service';
+      success: false,
+      error: 'Invalid response from upload service',
     }
   }
   async function publishMinIOSyncEvent(uploadResult: UploadResult, caseId: string) {
@@ -496,7 +496,7 @@
     /* @apply border-blue-300 bg-blue-25; */
   }
   .drop-overlay {
-    z-index: 10;
+    z-index: 10,
   }
   .file-item {
     /* @apply transition-all duration-200; */

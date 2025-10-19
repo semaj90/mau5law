@@ -69,7 +69,7 @@
     onclick,
     onhover,
     children,
-    ...restProps;
+    ...restProps
   }: Props = $props();
   let card: HTMLElement;
   let isHovered = $state(false);
@@ -133,7 +133,7 @@
     medium: '🟡',
     high: '🟠',
     critical: '🔴',
-    urgent: '🚨';
+    urgent: '🚨',
   }
   // Classification badges
   const classificationBadges = {
@@ -503,16 +503,16 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
 /* Layout sections */ {}
   .pixel-card__status-bar {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     background: rgba(0, 0, 0, 0.8);
     padding: calc(var(--pixel-size) / 2);
     display: flex;
     justify-content: space-betwee;
     align-items: center;
     font-size: 0.6rem;
-    z-index: 10;
+    z-index: 10,
   }
   .pixel-card__status-indicator {
     display: flex;
@@ -523,7 +523,7 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
     width: calc(var(--pixel-size) * 1.5);
     height: calc(var(--pixel-size) * 1.5);
     background: var(--pixel-status-color);
-    border-radius: 0;
+    border-radius: 0,
     animation: pixel-dot-blink 1s infinite;
   }
   @keyframes pixel-dot-blink {
@@ -545,7 +545,7 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
   }
   .pixel-card__icon {
     font-size: calc(var(--pixel-size) * 6);
-    line-height: 1;
+    line-height: 1,
   }
   .pixel-card__title {
     margin: 0 0 calc(var(--pixel-size) / 2) 0;
@@ -555,7 +555,7 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
   .pixel-card__subtitle {
     margin: 0;
     font-size: 0.9em;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .pixel-card__evidence-id {
     font-size: 0.7em;
@@ -574,9 +574,9 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
   }
   .pixel-card__image-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
 background: linear-gradient( {}
 45deg, {}
@@ -590,7 +590,7 @@ transparent 52% {}
   }
   .pixel-card__content {
     padding: calc(var(--pixel-size) * 2);
-    flex: 1;
+    flex: 1,
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -636,9 +636,9 @@ transparent 52% {}
 /* Pixel effects */ {}
   .pixel-card__scanlines {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
 background: linear-gradient( {}
 0deg, {}
@@ -647,13 +647,13 @@ rgba(0, 255, 0, 0.1) calc(var(--scanline-position) * 1% + 2px), {}
 transparent calc(var(--scanline-position) * 1% + 4px) {}
     );
     pointer-events: none;
-    z-index: 5;
+    z-index: 5,
   }
   .pixel-card__crt-effect {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
 background: {}
 radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.3) 100%), {}
@@ -665,13 +665,13 @@ rgba(0, 0, 0, 0.1) calc(var(--pixel-size) * 2), {}
 rgba(0, 0, 0, 0.1) calc(var(--pixel-size) * 4) {}
       );
     pointer-events: none;
-    z-index: 5;
+    z-index: 5,
   }
   .pixel-card__pixel-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
 background: {}
 repeating-linear-gradient( {}
@@ -689,7 +689,7 @@ rgba(255, 255, 255, 0.03) var(--pixel-size), {}
 rgba(255, 255, 255, 0.03) calc(var(--pixel-size) * 2) {}
       );
     pointer-events: none;
-    z-index: 1;
+    z-index: 1,
   }
   .pixel-card__glow {
     position: absolute;

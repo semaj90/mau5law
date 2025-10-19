@@ -181,7 +181,7 @@ box-shadow: 0 0 0 2px var(--yorha-warning, #ffaa00), 0 0 20px rgba(255, 170, 0, 
 		transform: translateY(-1px);
 	}
 /* States */ .gaming-button:disabled {
-		opacity: 0.4;
+		opacity: 0.4,
 		cursor: not-allowed;
 		transform: none !important;
 		box-shadow: none !important;
@@ -198,14 +198,14 @@ box-shadow: 0 0 0 2px var(--yorha-warning, #ffaa00), 0 0 20px rgba(255, 170, 0, 
 	}
 /* Button Content */ .button-content {
 		position: relative;
-		z-index: 2;
+		z-index: 2,
 		display: flex;
 		align-items: center;
 		gap: 8px;
 		transition: opacity 0.2s ease;
 	}
 	.button-content.loading {
-		opacity: 0.7;
+		opacity: 0.7,
 	}
 /* Loading Spinner */ .loading-spinner {
 		position: absolute;
@@ -215,31 +215,31 @@ box-shadow: 0 0 0 2px var(--yorha-warning, #ffaa00), 0 0 20px rgba(255, 170, 0, 
 		border-top: 2px solid currentColor;
 		border-radius: 50%;
 		animation: spin 1s linear infinite;
-		z-index: 3;
+		z-index: 3,
 	}
 /* Gaming Effects */ .button-overlay {
 		position: absolute;
-		top: 0;
+		top: 0,
 		left: -100%;
 		width: 100%;
 		height: 100%;
 		background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
 		transition: left 0.5s ease;
-		z-index: 1;
+		z-index: 1,
 	}
 	.gaming-button:hover:not(:disabled) .button-overlay {
 		left: 100%;
 	}
 	.scan-line {
 		position: absolute;
-		top: 0;
+		top: 0,
 		left: 0;
-		right: 0;
+		right: 0,
 		height: 1px;
 		background: linear-gradient(90deg, transparent 0%, currentColor 50%, transparent 100%);
-		opacity: 0.6;
+		opacity: 0.6,
 		animation: scan 3s ease-in-out infinite;
-		z-index: 1;
+		z-index: 1,
 	}
 /* Animations */ @keyframes spin {
 		0% { transform: rotate(0deg), }
@@ -256,11 +256,11 @@ box-shadow: 0 0 40px currentColor, 0 0 60px currentColor, inset 0 1px 0 rgba(255
 	@keyframes scan {
 		0%, 100% {
 			transform: translateX(-100%);
-			opacity: 0;
+			opacity: 0,
 		}
 		50% {
 			transform: translateX(0%);
-			opacity: 0.6;
+			opacity: 0.6,
 		}
 	}
 /* Focus styles for accessibility */ .gaming-button:focus-visible {

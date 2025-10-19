@@ -312,7 +312,7 @@
     border: none;
     padding: 0.75rem;
     border-radius: 0.5rem;
-    font-weight: 600;
+    font-weight: 600,
     transition: all 0.3s ease;
   }
 
@@ -345,7 +345,7 @@
   }
 
   .activity-type {
-    font-weight: 600;
+    font-weight: 600,
     color: #d4af37;
   }
 
@@ -355,12 +355,12 @@
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 600,
   }
 
   .activity-title {
     font-size: 1.1rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #fff;
     margin-bottom: 0.75rem;
   }
@@ -377,12 +377,12 @@
   .verified,
   .score {
     color: #d4af37;
-    font-weight: 600;
+    font-weight: 600,
   }
 
   .issues {
     color: #ef4444;
-    font-weight: 600;
+    font-weight: 600,
   }
 
   @media (max-width: 768px) {

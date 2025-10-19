@@ -305,7 +305,7 @@
   }
 
   .quick-button:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
 
@@ -345,7 +345,7 @@
     align-items: center;
     justify-content: center;
     font-size: 1.2rem;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
 
   .message.user .message-icon {
@@ -394,10 +394,10 @@
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.5;
+      opacity: 0.5,
     }
   }
 
@@ -411,7 +411,7 @@
   }
 
   .message-input {
-    flex: 1;
+    flex: 1,
     background: var(--surface-primary, #0a0a0a);
     border: 1px solid rgba(0, 204, 255, 0.3);
     border-radius: 4px;
@@ -448,7 +448,7 @@
   }
 
   .send-button:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
 
@@ -495,7 +495,7 @@
   .capability-card p {
     color: var(--text-secondary, #888888);
     font-size: 0.9rem;
-    line-height: 1.4;
+    line-height: 1.4,
   }
 
   @media (max-width: 768px) {

@@ -30,7 +30,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     warning: '#fcfc54',
     error: '#fc5454',
     background: '#0f0f23',
-    surface: '#1e1e3f';
+    surface: '#1e1e3f',
   }
   $effect(() => {
     (async () => {
@@ -416,7 +416,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     font-size: 3em;
     font-weight: bold;
     color: #00d800;
-    line-height: 1;
+    line-height: 1,
   }
   .metric-label {
     color: #3cbcfc;
@@ -474,10 +474,10 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   }
   .grid-line {
     stroke: #333;
-    stroke-width: 1;
+    stroke-width: 1,
   }
   .performance-line {
-    stroke-width: 3;
+    stroke-width: 3,
   }
   .redis-line {
     stroke: #fc5454;

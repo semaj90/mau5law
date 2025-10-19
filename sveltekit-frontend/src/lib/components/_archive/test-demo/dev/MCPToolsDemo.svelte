@@ -131,7 +131,7 @@
       const mockResponse = generateMockResponse(request);
       result = formatMCPResponse(mockResponse);
     } catch (err) {
-      error = err instanceof Error ? err.message: 'Unknown error occurred';
+      error = err instanceof Error ? err.message: 'Unknown error occurred',
     } finally {
       loading = false;
     }
@@ -307,8 +307,8 @@
   // Legal AI specific configuration
   const config = {
   security: 'high',
-  auditLogging: true;
-  encryption: 'AES-256';
+  auditLogging: true,
+  encryption: 'AES-256',
   }
   \`\`\`
   ### Best Practices

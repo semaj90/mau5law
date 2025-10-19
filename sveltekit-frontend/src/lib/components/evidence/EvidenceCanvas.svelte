@@ -250,7 +250,7 @@ await embeddingsService.initialize();
       }
     }
     const blob = new Blob([JSON.stringify(canvasData, null, 2)], {
-      type: 'application/json';
+      type: 'application/json',
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

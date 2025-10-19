@@ -16,7 +16,7 @@
   let cacheStats = $state({
     hits: 0,
     misses: 0,
-    totalProcessingTime: 0;
+    totalProcessingTime: 0,
   });
   // Performance metrics
   let performanceMetrics = $state({
@@ -66,7 +66,7 @@ try {
       // Process the image
       const result = await ocrTensorProcessor.processImage(uploadedFile, {
         language: 'eng',
-        useCache: true;
+        useCache: true,
       });
       results = [result, ...results];
       // Update performance metrics
@@ -370,7 +370,7 @@ try {
     border-radius: 2rem;
     background: #f3f4f6;
     color: #6b7280;
-    font-weight: 500;
+    font-weight: 500,
   }
   .status-bar.initialized {
     background: #d1fae5;
@@ -431,12 +431,12 @@ try {
     padding: 0.75rem 1.5rem;
     border: none;
     border-radius: 0.5rem;
-    font-weight: 500;
+    font-weight: 500,
     cursor: pointer;
     transition: all 0.2;
   }
   .action-buttons button:disabled {
-    opacity: 0.6;
+    opacity: 0.6,
     cursor: not-allowed;
   }
   .action-buttons button:first-child {
@@ -466,7 +466,7 @@ try {
   .metric span,
   .stat span {
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #1f2937;
   }
   .hits {
@@ -500,7 +500,7 @@ try {
     margin-bottom: 0.75rem;
   }
   .result-index {
-    font-weight: 600;
+    font-weight: 600,
     color: #1f2937;
   }
   .cache-indicator {
@@ -545,10 +545,10 @@ try {
   }
   @keyframes pulse {
     0%, 100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.5;
+      opacity: 0.5,
     }
   }
 </style>

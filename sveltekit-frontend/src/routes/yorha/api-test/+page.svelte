@@ -112,8 +112,8 @@ https://svelte.dev/e/js_parse_error -->
         context: 'legal_analysis',
         options: {
           maxResults: 5,
-          includeMetadata: true;
-          model: 'gemma3-legal';
+          includeMetadata: true,
+          model: 'gemma3-legal',
         }
       },
       description: 'AI-powered legal document analysis and retrieval',
@@ -138,7 +138,7 @@ https://svelte.dev/e/js_parse_error -->
         limit: 10,
         offset: 0,
         sortBy: 'relevance',
-        includeMetadata: true;
+        includeMetadata: true,
       },
       description: 'Semantic legal document search with vector similarity',
       validation: {
@@ -192,7 +192,7 @@ https://svelte.dev/e/js_parse_error -->
         query: 'Employment law discrimination case precedents',
         limit: 20,
         threshold: 0.7,
-        includeEmbeddings: false;
+        includeEmbeddings: false,
       },
       description: 'PostgreSQL pgvector similarity search',
       headers: { 'Content-Type': 'application/json' },
@@ -215,7 +215,7 @@ https://svelte.dev/e/js_parse_error -->
         prompt: 'Analyze the legal implications of this contract clause regarding force majeure',
         model: 'gemma3-legal',
         temperature: 0.3,
-        maxTokens: 1000;
+        maxTokens: 1000,
       },
       description: 'Ollama AI model inference with legal specialization',
       headers: { 'Content-Type': 'application/json' },
@@ -259,7 +259,7 @@ https://svelte.dev/e/js_parse_error -->
         data: {
           type: 'api_test',
           timestamp: new Date().toISOString(),
-          payload: 'Test message from YoRHa API interface';
+          payload: 'Test message from YoRHa API interface',
         }
       },
       description: 'NATS messaging system publication test',
@@ -295,7 +295,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: TestTube
       endpoints: ['system-status', 'cluster-health', 'database-health', 'context7-status'],
       timeout: 30000,
-      parallel: true;
+      parallel: true,
     },
     {
       id: 'ai-pipeline',
@@ -304,7 +304,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: Cpu
       endpoints: ['enhanced-rag', 'vector-search', 'ai-inference', 'context7-status'],
       timeout: 120000,
-      parallel: false;
+      parallel: false,
     },
     {
       id: 'data-layer',
@@ -313,7 +313,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: Database
       endpoints: ['legal-data-search', 'vector-search', 'graph-query', 'database-health'],
       timeout: 60000,
-      parallel: true;
+      parallel: true,
     },
     {
       id: 'infrastructure',
@@ -322,7 +322,7 @@ https://svelte.dev/e/js_parse_error -->
       icon: Server
       endpoints: ['system-status', 'cluster-health', 'database-health', 'nats-publish'],
       timeout: 45000,
-      parallel: true;
+      parallel: true,
     },
     {
       id: 'performance-test',
@@ -331,8 +331,8 @@ https://svelte.dev/e/js_parse_error -->
       icon: BarChart3
       endpoints: ['system-status', 'enhanced-rag', 'legal-data-search'],
       timeout: 180000,
-      parallel: true;
-      iterations: 10;
+      parallel: true,
+      iterations: 10,
     }
   ];
   // Performance monitoring intervals
@@ -356,7 +356,7 @@ https://svelte.dev/e/js_parse_error -->
       status: 'pending',
       results: [],
       lastRun: null;
-      duration: 0;
+      duration: 0,
     });
     // Subscribe to real-time API events
     startRealTimeMonitoring();
@@ -444,8 +444,8 @@ https://svelte.dev/e/js_parse_error -->
       responseSize: 0,
       headers: ,
       validation: {
-        passed: false;
-        errors: [];
+        passed: false,
+        errors: [],
       }
     }
     testResults = [testResult, ...testResults.slice(0, 199)]; // Keep last 200 results
@@ -644,7 +644,7 @@ https://svelte.dev/e/js_parse_error -->
       }))
     }
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-      type: 'application/json';
+      type: 'application/json',
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -1345,10 +1345,10 @@ https://svelte.dev/e/js_parse_error -->
   @keyframes glow {
     0%,
     100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.5;
+      opacity: 0.5,
     }
   }
 </style>

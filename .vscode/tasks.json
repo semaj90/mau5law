@@ -64,7 +64,7 @@
       "command": "npx",
       "args": ["tsc", "--noEmit", "--skipLibCheck"],
       "isBackground": false,
-      "problemMatcher": ["$tsc - stylish"],
+      "problemMatcher": ["$tsc"],
       "group": "test"
     },
     {
@@ -73,7 +73,7 @@
       "command": "npx",
       "args": ["tsc", "--noEmit", "--skipLibCheck", "-p", "sveltekit-frontend"],
       "isBackground": false,
-      "problemMatcher": ["$tsc - stylish"],
+      "problemMatcher": ["$tsc"],
       "group": "test"
     },
     {
@@ -524,9 +524,7 @@
       "label": "🚀 Start MCP Context7 SIMD Server",
       "type": "shell",
       "command": "node",
-      "args": [
-        "${workspaceFolder}\\scripts\\mcp-context7-optimized.mjs"
-      ],
+      "args": ["${workspaceFolder}\\scripts\\mcp-context7-optimized.mjs"],
       "options": {
         "cwd": "${workspaceFolder}",
         "env": {
@@ -617,9 +615,7 @@
       "label": "🎨 Demo: SharedArrayBuffer + WebGPU Pattern",
       "type": "shell",
       "command": "node",
-      "args": [
-        "${workspaceFolder}\\scripts\\mcp-webgpu-shared-buffer.mjs"
-      ],
+      "args": ["${workspaceFolder}\\scripts\\mcp-webgpu-shared-buffer.mjs"],
       "group": "test",
       "presentation": {
         "echo": true,

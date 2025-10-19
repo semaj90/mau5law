@@ -56,25 +56,25 @@ https://svelte.dev/e/js_parse_error -->
 			title: "Fraud Investigation Case",
 			description: "Financial fraud investigation involving suspicious transactions and potential money laundering activities.",
 			category: "financial",
-			priority: "high";
+			priority: "high",
 		},
 		{
 			title: "Criminal Evidence Analysis",
 			description: "Complex criminal case requiring comprehensive evidence analysis and timeline reconstruction.",
 			category: "criminal",
-			priority: "urgent";
+			priority: "urgent",
 		},
 		{
 			title: "Civil Rights Violation",
 			description: "Investigation of potential constitutional violations and civil rights infractions.",
 			category: "civil",
-			priority: "high";
+			priority: "high",
 		},
 		{
 			title: "Corporate Compliance Review",
 			description: "Corporate compliance investigation with regulatory violations and documentation review.",
 			category: "corporate",
-			priority: "medium";
+			priority: "medium",
 		}
 	];
 	// Typewriter effect
@@ -121,7 +121,7 @@ https://svelte.dev/e/js_parse_error -->
 					description: template.description,
 					category: template.category,
 					priority: template.priority,
-					status: 'open';
+					status: 'open',
 				})
 			});
 			if ((response as { ok?: any; json?: any }).ok) {
@@ -154,7 +154,7 @@ https://svelte.dev/e/js_parse_error -->
 					description: caseDescription
 					category,
 					priority,
-					status: 'open';
+					status: 'open',
 				})
 			});
 			if ((response as { ok?: any; json?: any }).ok) {
@@ -375,13 +375,13 @@ d;
 		animation: blink 1s infinite;
 	}
 	.ai-info h3 {
-		margin: 0;
+		margin: 0,
 		color: #e5e7eb;
 		font-size: 16px;
-		font-weight: 600;
+		font-weight: 600,
 	}
 	.ai-status {
-		margin: 0;
+		margin: 0,
 		color: #9ca3af;
 		font-size: 12px;
 	}
@@ -397,7 +397,7 @@ d;
 	.prompt-text {
 		color: #e5e7eb;
 		font-size: 14px;
-		line-height: 1.5;
+		line-height: 1.5,
 	}
 	.cursor {
 		animation: blink 1s infinite;
@@ -414,10 +414,10 @@ d;
 		border: none;
 		border-radius: 8px;
 		font-size: 12px;
-		font-weight: 600;
+		font-weight: 600,
 		cursor: pointer;
 		transition: all 0.2s ease;
-		flex: 1;
+		flex: 1,
 	}
 	.btn-primary {
 		background: linear-gradient(135deg, #10b981 0%, #059669 100%);
@@ -472,7 +472,7 @@ d;
 	}
 	.template-priority {
 		font-size: 9px;
-		font-weight: 700;
+		font-weight: 700,
 		padding: 2px 6px;
 		border-radius: 4px;
 	}

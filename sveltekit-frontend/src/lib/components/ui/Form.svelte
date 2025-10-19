@@ -21,7 +21,7 @@
     onchange?: (_event: { values: { [key: string]: any } }) => void;
   }
   let { children,
-    options = ,
+    options = {},
     submitText = "Submit",
     submitVariant = "primary",
     showSubmitButton = true,

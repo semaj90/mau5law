@@ -326,7 +326,7 @@
   }
   .metric-label {
     font-size: 0.9rem;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .metric-value {
     font-weight: bold;
@@ -380,7 +380,7 @@
     padding: 0.75rem 1.5rem;
     border-radius: 6px;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 600,
     transition: all 0.3s ease;
   }
   .analyze-all-btn:hover {

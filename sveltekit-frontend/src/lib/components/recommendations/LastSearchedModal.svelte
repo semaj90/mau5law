@@ -352,7 +352,7 @@
     margin-bottom: 1rem;
   }
   .search-input {
-    flex: 1;
+    flex: 1,
     padding: 0.75rem;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -434,13 +434,13 @@
     text-align: center;
   }
   .search-info {
-    flex: 1;
+    flex: 1,
   }
   .search-query {
     margin: 0 0 0.5rem 0;
     color: rgba(255, 255, 255, 0.9);
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   .search-meta {
     display: flex;
@@ -559,7 +559,7 @@
   .empty-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
-    opacity: 0.5;
+    opacity: 0.5,
   }
   @keyframes spin {
     0% {

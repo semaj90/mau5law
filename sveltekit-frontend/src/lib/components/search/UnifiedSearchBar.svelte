@@ -84,7 +84,7 @@ await initializeSearchServices();
         includeMatches: true
         minMatchCharLength: 2,
         useExtendedSearch: true
-        ignoreLocation: true;
+        ignoreLocation: true,
       }
       fuseIndex = new Fuse(evidenceData, fuseOptions);
       console.log('✅ Fuse.js initialized with', evidenceData.length, 'evidence items');
@@ -212,7 +212,7 @@ await initializeSearchServices();
         body: JSON.stringify({
           query,
           filters: selectedFilters;
-          limit: 5 ;
+          limit: 5,
         })
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -237,7 +237,7 @@ await initializeSearchServices();
         body: JSON.stringify({
           query,
           filters: selectedFilters;
-          limit: 5;
+          limit: 5,
         })
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {

@@ -307,7 +307,7 @@
     border: 3px solid var(--yorha-secondary, #ffd700);
     font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
     font-size: 14px;
-    line-height: 1.4;
+    line-height: 1.4,
     color: var(--yorha-text-primary, #e0e0e0);
     height: 600px;
     display: flex;
@@ -338,7 +338,7 @@
   .dot {
     width: 12px;
     height: 12px;
-    border-radius: 0;
+    border-radius: 0,
     border: 1px solid var(--yorha-text-muted, #808080);
   }
   .dot.red {
@@ -351,7 +351,7 @@
     background: var(--yorha-accent, #00ff41);
   }
   .terminal-title {
-    font-weight: 700;
+    font-weight: 700,
     color: var(--yorha-secondary, #ffd700);
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -395,7 +395,7 @@
     min-height: 20px;
   }
   .terminal-line pre {
-    margin: 0;
+    margin: 0,
     padding: 0;
     font-family: inherit;
     font-size: inherit;
@@ -414,7 +414,7 @@
   .prompt-text {
     color: var(--yorha-secondary, #ffd700);
     font-weight: 600;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .command-input {
     background: transparent;
@@ -432,7 +432,7 @@
     animation: blink 1s infinite;
   }
   .cursor.blink {
-    opacity: 1;
+    opacity: 1,
   }
   .processing-indicator {
     color: var(--yorha-warning, #ffaa00);
@@ -445,20 +445,20 @@
   @keyframes blink {
     0%,
     50% {
-      opacity: 1;
+      opacity: 1,
     }
     51%,
     100% {
-      opacity: 0;
+      opacity: 0,
     }
   }
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.5;
+      opacity: 0.5,
     }
   }
   /* Responsive Design */

@@ -103,7 +103,7 @@ if (!browser) return;
       const evidence = await detectiveAnalysisEngine.analyzeEvidence(file, {
         type: file.type.startsWith('image/') ? 'image' : 'document',
         userId: 'detective_user',
-        caseId: 'case_2024_001';
+        caseId: 'case_2024_001',
       });
       clearInterval(progressInterval);
       textureStreamingProgress = 100;
@@ -214,7 +214,7 @@ if (!browser) return;
       const enhanced = await detectiveAnalysisEngine.analyzeEvidence(mockScreenshot, {
         type: 'screenshot',
         userId: 'detective_user',
-        caseId: 'case_2024_001';
+        caseId: 'case_2024_001',
       });
       currentEvidence = enhanced;
       console.log('✅ Screenshot enhanced and analyzed');
@@ -581,9 +581,9 @@ if (!browser) return;
   .n64-detective-ui.scanlines::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: repeating-linear-gradient(
       transparent,
@@ -592,7 +592,7 @@ if (!browser) return;
       rgba(0, 255, 65, 0.03) 4px
     );
     pointer-events: none;
-    z-index: 1000;
+    z-index: 1000,
   }
   .n64-detective-ui.crt-glow {
     box-shadow:
@@ -624,7 +624,7 @@ if (!browser) return;
   }
   .status-label {
     font-size: 0.75rem;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .status-value {
     font-weight: bold;
@@ -724,7 +724,7 @@ if (!browser) return;
   }
   .scan-line {
     position: absolute;
-    top: 0;
+    top: 0,
     left: -100%;
     width: 100%;
     height: 2px;
@@ -754,7 +754,7 @@ if (!browser) return;
   }
   .drop-icon {
     font-size: 3rem;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .drop-text {
     font-size: 1.25rem;
@@ -762,7 +762,7 @@ if (!browser) return;
   }
   .drop-subtext {
     font-size: 0.875rem;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .n64-button {
     background: transparent;
@@ -898,7 +898,7 @@ if (!browser) return;
     color: #ff4444;
   }
   .conflicts-panel {
-    padding: 0;
+    padding: 0,
   }
   .no-conflicts {
     text-align: center;
@@ -958,7 +958,7 @@ if (!browser) return;
   .conflict-description {
     margin-bottom: 1rem;
     font-size: 0.875rem;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .conflict-llm-response {
     background: rgba(0, 0, 0, 0.3);
@@ -981,7 +981,7 @@ if (!browser) return;
     margin-bottom: 2rem;
   }
   .n64-input {
-    flex: 1;
+    flex: 1,
     background: rgba(0, 0, 0, 0.5);
     border: 2px solid #00ff41;
     color: #00ff41;
@@ -1027,11 +1027,11 @@ if (!browser) return;
     gap: 1rem;
     margin-bottom: 0.25rem;
     font-size: 0.75rem;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .suggestion-explanation {
     font-size: 0.875rem;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .memory-banks {
     display: grid;

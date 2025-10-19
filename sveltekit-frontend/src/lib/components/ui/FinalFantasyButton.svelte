@@ -23,12 +23,12 @@
     success: 'bg-gradient-to-b from-green-500 to-green-700 hover:from-green-400 hover:to-green-600 border-green-300',
     danger: 'bg-gradient-to-b from-red-500 to-red-700 hover:from-red-400 hover:to-red-600 border-red-300',
     magic: 'bg-gradient-to-b from-purple-500 to-purple-700 hover:from-purple-400 hover:to-purple-600 border-purple-300',
-    item: 'bg-gradient-to-b from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 border-amber-300';
+    item: 'bg-gradient-to-b from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 border-amber-300',
   }
   const sizeClasses = {
     small: 'px-3 py-1 text-sm',
     medium: 'px-4 py-2 text-base',
-    large: 'px-6 py-3 text-lg';
+    large: 'px-6 py-3 text-lg',
   }
   function handleClick(_event: MouseEvent) {
     if (!disabled && !loading) {

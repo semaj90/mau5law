@@ -134,7 +134,7 @@ https: //svelte.dev/e/js_parse_error -->
       synthesisResult: null
       progressStage: 'selecting',
       error: null;
-      loading: false;
+      loading: false,
     },
     states: {
       idle: {
@@ -159,14 +159,14 @@ https: //svelte.dev/e/js_parse_error -->
             actions: assign({
               synthesisResult: ({ event }) => event.data,
               loading: false
-              progressStage: 'complete';
+              progressStage: 'complete',
             })
           },
           onError: {
             target: 'error',
             actions: assign({
               error: ({ event }) => event.data.message,
-              loading: false;
+              loading: false,
             })
           }
         }
@@ -215,25 +215,25 @@ https: //svelte.dev/e/js_parse_error -->
                   date: "2023-01-15",
                   event: "First unauthorized access detected in system logs",
                   sources: ["Digital Forensics Report #001", "Server Log Analysis"],
-                  significance: "high";
+                  significance: "high",
                 },
                 {
                   date: "2023-03-22",
                   event: "Large data transfer to external IP address",
                   sources: ["Network Traffic Analysis", "Digital Forensics Report #002"],
-                  significance: "critical";
+                  significance: "critical",
                 },
                 {
                   date: "2023-06-10",
                   event: "Witness reports suspicious behavior from suspect",
                   sources: ["Witness Statement - J. Smith", "Security Camera Footage"],
-                  significance: "medium";
+                  significance: "medium",
                 },
                 {
                   date: "2023-08-15",
                   event: "Financial irregularities discovered in company accounts",
                   sources: ["Financial Analysis Report", "Accounting Records"],
-                  significance: "critical";
+                  significance: "critical",
                 }
               ],
               strengthAssessment: {
@@ -246,17 +246,17 @@ https: //svelte.dev/e/js_parse_error -->
                   {
                     name: "Digital Evidence",
                     score: 0.95,
-                    details: "Excellent chain of custody, forensically sound acquisition methods, expert analysis";
+                    details: "Excellent chain of custody, forensically sound acquisition methods, expert analysis",
                   },
                   {
                     name: "Financial Evidence",
                     score: 0.88,
-                    details: "Clear paper trail, professional accounting analysis, quantifiable damages";
+                    details: "Clear paper trail, professional accounting analysis, quantifiable damages",
                   },
                   {
                     name: "Witness Testimony",
                     score: 0.72,
-                    details: "Multiple corroborating witnesses, some credibility concerns to address";
+                    details: "Multiple corroborating witnesses, some credibility concerns to address",
                   }
                 ]
               },
@@ -290,19 +290,19 @@ https: //svelte.dev/e/js_parse_error -->
                     issue: "Technical complexity may confuse jury",
                     likelihood: 0.6,
                     impact: 0.7,
-                    mitigation: "Prepare clear visual aids and expert testimony in plain language";
+                    mitigation: "Prepare clear visual aids and expert testimony in plain language",
                   },
                   {
                     issue: "Defense may challenge digital evidence authenticity",
                     likelihood: 0.8,
                     impact: 0.8,
-                    mitigation: "Ensure robust chain of custody documentation and expert certification";
+                    mitigation: "Ensure robust chain of custody documentation and expert certification",
                   },
                   {
                     issue: "Witness credibility concerns",
                     likelihood: 0.4,
                     impact: 0.6,
-                    mitigation: "Prepare witnesses thoroughly and focus on corroborating physical evidence";
+                    mitigation: "Prepare witnesses thoroughly and focus on corroborating physical evidence",
                   }
                 ],
                 overallRisk: 0.35
@@ -313,21 +313,21 @@ https: //svelte.dev/e/js_parse_error -->
                   category: "evidence",
                   action: "Conduct additional forensic analysis of backup systems",
                   rationale: "May reveal additional evidence of data destruction attempts",
-                  timeline: "Within 2 weeks";
+                  timeline: "Within 2 weeks",
                 },
                 {
                   priority: "high",
                   category: "legal",
                   action: "Prepare technical expert for jury testimony",
                   rationale: "Complex digital evidence requires clear expert explanation",
-                  timeline: "Before trial preparation";
+                  timeline: "Before trial preparation",
                 },
                 {
                   priority: "medium",
                   category: "strategic",
                   action: "Consider plea negotiations based on cooperation",
                   rationale: "Defendant may provide information about broader criminal network",
-                  timeline: "After initial evidence presentation";
+                  timeline: "After initial evidence presentation",
                 }
               ],
               gaps: [

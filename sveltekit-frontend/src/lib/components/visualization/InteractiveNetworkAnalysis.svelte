@@ -133,7 +133,7 @@ if (!browser) return;
     position: absolute;
     top: 10px;
     left: 10px;
-    z-index: 100;
+    z-index: 100,
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -169,7 +169,7 @@ if (!browser) return;
     cursor: pointer;
   }
   .view-controls input[type="checkbox"] {
-    margin: 0;
+    margin: 0,
   }
   .action-controls {
     flex-direction: row;
@@ -193,7 +193,7 @@ if (!browser) return;
     position: absolute;
     top: 10px;
     right: 10px;
-    z-index: 100;
+    z-index: 100,
     background: rgba(0, 0, 0, 0.9);
     color: white;
     padding: 15px;
@@ -228,7 +228,7 @@ if (!browser) return;
     position: absolute;
     bottom: 10px;
     left: 10px;
-    z-index: 100;
+    z-index: 100,
     background: rgba(0, 0, 0, 0.9);
     color: white;
     padding: 15px;
@@ -246,7 +246,7 @@ if (!browser) return;
   .details-content p {
     margin: 5px 0;
     font-size: 14px;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .connected-nodes {
     margin-top: 10px;
@@ -275,7 +275,7 @@ if (!browser) return;
     color: #ccc;
     font-size: 18px;
     cursor: pointer;
-    padding: 0;
+    padding: 0,
     width: 20px;
     height: 20px;
     display: flex;
@@ -287,16 +287,16 @@ if (!browser) return;
   }
   .loading-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.9);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    z-index: 200;
+    z-index: 200,
     color: white;
   }
   .spinner {

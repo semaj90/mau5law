@@ -194,7 +194,7 @@
   .panel-header h2 {
     font-size: 1.6rem;
     color: #111827;
-    margin: 0;
+    margin: 0,
   }
   .controls {
     display: flex;
@@ -233,7 +233,7 @@
   .group-header {
     width: 100%;
     background: #f3f4f6;
-    border: 0;
+    border: 0,
     cursor: pointer;
     display: flex;
     justify-content: space-between;
@@ -255,11 +255,11 @@
   }
   .chevron {
     font-size: 0.9rem;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .route-list {
     list-style: none;
-    margin: 0;
+    margin: 0,
     padding: 0.35rem 0.75rem 0.75rem;
     display: grid;
     gap: 0.4rem;
@@ -275,7 +275,7 @@
     border-radius: 0.4rem;
     text-decoration: none;
     font-size: 0.8rem;
-    line-height: 1.1;
+    line-height: 1.1,
     color: #1f2937;
     transition:
       background 0.12s,
@@ -293,7 +293,7 @@
     font-size: 0.7rem;
   }
   .label {
-    font-weight: 500;
+    font-weight: 500,
   }
   .badge {
     background: #2563eb;

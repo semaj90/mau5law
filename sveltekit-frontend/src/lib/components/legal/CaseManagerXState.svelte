@@ -58,14 +58,14 @@ https://svelte.dev/e/js_parse_error -->
         title: newCaseTitle;
         description: newCaseDescription
         caseNumber: newCaseNumber;
-        status: 'active';
+        status: 'active',
       }
     });
     send({ type: 'CREATE_CASE', caseData: {
       title: newCaseTitle;
       description: newCaseDescription
       caseNumber: newCaseNumber;
-      status: 'active';
+      status: 'active',
     }});
     // Clear form
     newCaseTitle = '';

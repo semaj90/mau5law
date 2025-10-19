@@ -46,10 +46,25 @@
   import { Card } from '$lib/components/ui/enhanced-bits';
   import Input from '$lib/components/ui/Input.svelte';
   import Modal from '$lib/components/ui/Modal.svelte';
+  // Resolve runtime constructor in case enhanced-bits exports an object/module
+  const Btn = (Button as any)?.Button ?? (Button as any)?.default ?? Button;
+
   // State for demonstrations
   let modalOpen = $state(false);
   let searchQuery = $state('');
-  let vectorResults = $state([]);
+  // --- Added typed shape for vector search results ---
+  type VectorResult = {
+    metadata?: {
+      title?: string;
+      type?: string;
+      [k: string]: unknown;
+    } | null;
+    content?: string | null;
+    score?: number | null;
+    [k: string]: unknown;
+  };
+  // typed array to avoid never[] inference
+  let vectorResults = $state<VectorResult[]>([]);
   let isSearching = $state(false);
   // Demo data
   let layoutData = $state({
@@ -61,7 +76,7 @@
       { action: 'Generated Report', details: 'Initial Analysis', time: '3h ago' },
     ],
   });
-  // Vector search integration
+  // Vector search integration (updated parsing to typed results)
   async function performVectorSearch() {
     if (!searchQuery.trim()) return;
     isSearching = true;
@@ -74,16 +89,19 @@
           options: { limit: 5, threshold: 0.7 },
         }),
       });
-      const data = await (response as { json?: unknown }).json();
-      vectorResults = (data as { results?: unknown }).results || [];
-      notifications.add({
+      const data = await response.json();
+      // cast the incoming results to our typed shape safely
+      const results = (data as { results?: VectorResult[] })?.results ?? [];
+      vectorResults = results;
+      // notifications store doesn't expose 'add' in its TS type — cast to any
+      (notifications as any).add?.({
         type: 'success',
         title: 'Search Complete',
         message: `Found ${vectorResults.length} results`,
       });
     } catch (error) {
       console.error('Vector search failed:', error);
-      notifications.add({
+      (notifications as any).add?.({
         type: 'error',
         title: 'Search Failed',
         message: 'Vector search service unavailable',
@@ -91,6 +109,19 @@
     } finally {
       isSearching = false;
     }
+  }
+
+  // --- safe helpers for preview and score formatting ---
+  function getPreview(content: unknown): string | null {
+    if (typeof content === 'string' && content.length > 0) {
+      return content.length > 100 ? `${content.slice(0, 100)}...` : content;
+    }
+    return null;
+  }
+
+  function getScorePercent(score: unknown): string {
+    const n = typeof score === 'number' && Number.isFinite(score) ? score : 0;
+    return (n * 100).toFixed(1);
   }
 </script>
 
@@ -102,10 +133,15 @@
     <div class="nier-nier-bits-card nier-nier-bits-card-interactive p-6">
       <div class="flex gap-4 mb-4">
         <Input bind:value={searchQuery} placeholder="Search cases, evidence, legal documents..." class="flex-1" />
-        <Button class="bits-btn" onclick={performVectorSearch} loading={isSearching} disabled={!searchQuery.trim()}>
+        <Btn
+          class="bits-btn"
+          on:click={performVectorSearch}
+          loading={isSearching}
+          disabled={!searchQuery.trim()}
+        >
           <Search class="w-5 h-5 mr-2" />
           Search
-        </Button>
+        </Btn>
       </div>
       {#if vectorResults.length > 0}
         <div class="mt-4">
@@ -116,24 +152,22 @@
                 <div class="flex justify-between items-start">
                   <div>
                     <h5 class="font-semibold text-nier-white">
-                      {(result as { metadata?: unknown; content?: unknown; score?: unknown }).metadata?.title ||
-                        'Untitled'}
+                      {result.metadata?.title ?? 'Untitled'}
                     </h5>
                     <p class="text-sm text-nier-text-muted">
-                      {(result as { metadata?: unknown; content?: unknown; score?: unknown }).content?.slice(0, 100)}...
+                      {#if getPreview(result.content)}
+                        {getPreview(result.content)}
+                      {:else}
+                        No preview available
+                      {/if}
                     </p>
-                    <span class="text-xs text-nier-accent"
-                      >Score: {(
-                        (result as { metadata?: unknown; content?: unknown; score?: unknown }).score * 100
-                      ).toFixed(1)}%</span
-                    >
+                    <span class="text-xs text-nier-accent">
+                      Score: {getScorePercent(result.score)}%
+                    </span>
                   </div>
-                  <span
-                    class="badge status-{(result as { metadata?: unknown; content?: unknown; score?: unknown }).metadata
-                      ?.type || 'default'}"
-                    >{(result as { metadata?: unknown; content?: unknown; score?: unknown }).metadata?.type ||
-                      'document'}</span
-                  >
+                  <span class={"badge " + (result.metadata?.type ? `status-${result.metadata.type}` : 'status-default')}>
+                    {result.metadata?.type ?? 'document'}
+                  </span>
                 </div>
               </div>
             {/each}
@@ -151,10 +185,10 @@
         <div class="p-4">
           <h3 class="text-lg font-semibold mb-4 text-crimson">Button Variants</h3>
           <div class="space-y-3">
-            <Button class="bits-btn" variant="default">Primary Action</Button>
-            <Button class="bits-btn" variant="secondary">Secondary Action</Button>
-            <Button class="bits-btn" variant="ghost">Ghost Button</Button>
-            <Button class="bits-btn" variant="error">Delete Action</Button>
+            <Btn class="bits-btn" variant="default">Primary Action</Btn>
+            <Btn class="bits-btn" variant="secondary">Secondary Action</Btn>
+            <Btn class="bits-btn" variant="ghost">Ghost Button</Btn>
+            <Btn class="bits-btn" variant="error">Delete Action</Btn>
           </div>
         </div>
       </div>
@@ -162,7 +196,9 @@
       <div class="nes-container">
         <div class="p-4">
           <h3 class="text-lg font-semibold mb-4 text-crimson">Modal Component</h3>
-          <Button class="bits-btn" onclick={() => (modalOpen = true)}>Open Modal</Button>
+          <Btn class="bits-btn" on:click={() => (modalOpen = true)}>
+            Open Modal
+          </Btn>
           <Modal bind:open={modalOpen} title="System Alert">
             <div class="mt-4">
               <p class="text-nier-light-gray mb-4">
@@ -170,8 +206,12 @@
                 follows Svelte 5 best practices.
               </p>
               <div class="flex gap-2 justify-end">
-                <Button class="bits-btn" variant="ghost" onclick={() => (modalOpen = false)}>Cancel</Button>
-                <Button class="bits-btn" onclick={() => (modalOpen = false)}>Acknowledge</Button>
+                <Btn class="bits-btn" variant="ghost" on:click={() => (modalOpen = false)}>
+                  Cancel
+                </Btn>
+                <Btn class="bits-btn" on:click={() => (modalOpen = false)}>
+                  Acknowledge
+                </Btn>
               </div>
             </div>
           </Modal>
@@ -224,8 +264,9 @@
     </div>
   </section>
 </div>
-{#snippet StatusCard({ title, status, description })}
-  <div variant="interactive" class="nes-container">
+{#snippet StatusCard({ title, status, description }: { title: string; status: string; description?: string })}
+  <!-- changed: use data-variant (not unknown HTML prop "variant") -->
+  <div data-variant="interactive" class="nes-container">
     <div class="p-4 text-center">
       <div
         class="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center {status === 'active'
@@ -259,10 +300,11 @@
       </div>
       <nav class="space-y-2">
         {#each [{ icon: LayoutDashboard, label: 'Dashboard' }, { icon: FileText, label: 'Cases' }, { icon: Scale, label: 'Evidence' }, { icon: Users, label: 'Users' }] as item}
-          {@const IconComponent = (item as { icon?: unknown; label?: unknown }).icon}
+          {@const IconComponent = (item as any).icon}
           <a href="/showcase" class="flex items-center gap-3 p-2 rounded hover:bg-nier-surface-light text-nier-text">
+            <!-- render dynamic icon with direct component tag -->
             <IconComponent class="w-5 h-5" />
-            {(item as { icon?: unknown; label?: unknown }).label}
+            {(item as any).label}
           </a>
         {/each}
       </nav>
@@ -274,11 +316,12 @@
       </h1>
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         {#each [{ title: 'Total Cases', value: layoutData.stats.totalCases, icon: FileText }, { title: 'Open Cases', value: layoutData.stats.openCases, icon: FileText }, { title: 'Closed Cases', value: layoutData.stats.closedCases, icon: FileText }, { title: 'Evidence Items', value: layoutData.stats.evidenceCount, icon: Scale }] as stat}
-          {@const StatIcon = stat.icon}
+          {@const StatIcon = (stat as any).icon}
           <div class="nes-container">
             <div class="p-4">
               <div class="flex justify-between items-center mb-2">
                 <h4 class="text-sm font-medium text-nier-text-muted">{stat.title}</h4>
+                <!-- changed: render dynamic icon safely -->
                 <StatIcon class="w-5 h-5 text-nier-accent" />
               </div>
               <p class="text-2xl font-bold text-nier-white">{stat.value}</p>
@@ -295,7 +338,8 @@
                 <div class="w-2 h-2 bg-nier-accent rounded-full"></div>
                 <div>
                   <p class="font-medium text-nier-white">{activity.action}</p>
-                  <p class="text-sm text-nier-text-muted">{acti(vity as CustomEvent).details}</p>
+                  <!-- fixed typo: access details correctly -->
+                  <p class="text-sm text-nier-text-muted">{(activity as { details?: string }).details}</p>
                 </div>
                 <span class="ml-auto text-xs text-nier-text-muted">{activity.time}</span>
               </div>
@@ -308,7 +352,7 @@
 {/snippet}
 
 <style>
-/* Enhanced Nier theme styles */ {}
+/* Enhanced Nier theme styles */
   :global(:root) {
     --nier-bg: #0a0a0a;
     --nier-surface: #1a1a1a;
@@ -350,3 +394,4 @@
     color: rgb(156 163 175);
   }
 </style>
+

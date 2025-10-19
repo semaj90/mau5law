@@ -416,11 +416,11 @@ https://svelte.dev/e/expected_token -->
     margin: 20px;
     max-width: 400px;
     position: relative;
-    z-index: 100;
+    z-index: 100,
   }
   .controls-panel h3 {
     color: #00ff88;
-    margin-top: 0;
+    margin-top: 0,
   }
   .control-row {
     display: flex;
@@ -434,7 +434,7 @@ https://svelte.dev/e/expected_token -->
     color: #ccc;
   }
   .ps1-slider {
-    flex: 1;
+    flex: 1,
     background: #222;
     border: 1px solid #444;
     height: 20px;
@@ -501,7 +501,7 @@ https://svelte.dev/e/expected_token -->
   }
   .parallax-layer {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
     width: 100%;
     height: 100%;
@@ -509,11 +509,11 @@ https://svelte.dev/e/expected_token -->
   }
   .layer-background {
     background: radial-gradient(circle at 30% 70%, #1a1a2e, #0f0f23);
-    z-index: 1;
+    z-index: 1,
   }
   .grid-pattern {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
     width: 100%;
     height: 100%;
@@ -521,7 +521,7 @@ https://svelte.dev/e/expected_token -->
       linear-gradient(rgba(0, 255, 136, 0.1) 1px, transparent 1px),
       linear-gradient(90deg, rgba(0, 255, 136, 0.1) 1px, transparent 1px);
     background-size: 20px 20px;
-    opacity: 0.3;
+    opacity: 0.3,
   }
   .bg-elements {
     position: relative;
@@ -536,7 +536,7 @@ https://svelte.dev/e/expected_token -->
     animation: pulse 2s ease-in-out infinite;
   }
   .layer-midground-1 {
-    z-index: 2;
+    z-index: 2,
   }
   .geometric-shapes {
     position: relative;
@@ -545,7 +545,7 @@ https://svelte.dev/e/expected_token -->
   }
   .shape.triangle {
     position: absolute;
-    width: 0;
+    width: 0,
     height: 0;
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
@@ -553,7 +553,7 @@ https://svelte.dev/e/expected_token -->
     animation: float 3s ease-in-out infinite;
   }
   .layer-midground-2 {
-    z-index: 3;
+    z-index: 3,
   }
   .floating-objects {
     position: relative;
@@ -745,17 +745,17 @@ https://svelte.dev/e/expected_token -->
   }
   .info-panel li {
     margin: 5px 0;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   /* Animations */
   @keyframes pulse {
     0%,
     100% {
-      opacity: 0.3;
+      opacity: 0.3,
       transform: scale(1);
     }
     50% {
-      opacity: 1;
+      opacity: 1,
       transform: scale(1.2);
     }
   }
@@ -779,33 +779,33 @@ https://svelte.dev/e/expected_token -->
   @keyframes scan {
     0% {
       transform: translateX(-10px);
-      opacity: 0;
+      opacity: 0,
     }
     50% {
-      opacity: 1;
+      opacity: 1,
     }
     100% {
       transform: translateX(70px);
-      opacity: 0;
+      opacity: 0,
     }
   }
   @keyframes blink {
     0%,
     50% {
-      opacity: 1;
+      opacity: 1,
     }
     51%,
     100% {
-      opacity: 0.3;
+      opacity: 0.3,
     }
   }
   /* PS1 Effects */
   .ps1-scanlines::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: repeating-linear-gradient(
       90deg,

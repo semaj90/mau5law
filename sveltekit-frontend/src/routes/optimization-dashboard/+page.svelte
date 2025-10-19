@@ -98,7 +98,7 @@ https://svelte.dev/e/js_parse_error -->
             metadata: { source: 'test' }
           },
           options: { maxLength: 100, style: 'brief' },
-          priority: 'high';
+          priority: 'high',
         })
       });
       if (jobResponse.ok) {
@@ -124,7 +124,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       await enhancedRAGStore.search('legal AI optimization neural networks', {
         limit: 5,
-        useMLRanking: true;
+        useMLRanking: true,
       });
       systemStatus.recommendations = enhancedRAGStore.intelligentSuggestions();
     } catch (error) {

@@ -256,7 +256,7 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
   .pixel-card--inventory-item {
     min-width: 120px;
     min-height: 120px;
-    aspect-ratio: 1;
+    aspect-ratio: 1,
     padding: 8px;
   }
   .pixel-card--stats-card {
@@ -329,11 +329,11 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
     display: flex;
     flex-direction: column;
     gap: 4px;
-    flex: 1;
+    flex: 1,
   }
   .pixel-card__icon {
     font-size: 1.5em;
-    line-height: 1;
+    line-height: 1,
   }
   .pixel-card__title {
     margin: 0;
@@ -373,7 +373,7 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
 /* Content */ {}
   .pixel-card__content {
     padding: 12px;
-    flex: 1;
+    flex: 1,
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -381,7 +381,7 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
   .pixel-card__description {
     margin: 0;
     font-size: 0.85em;
-    line-height: 1.4;
+    line-height: 1.4,
     opacity: 0.9;
   }
 /* Stats */ {}
@@ -400,7 +400,7 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
     font-size: 0.8em;
   }
   .pixel-card__stat-label {
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .pixel-card__stat-value {
     font-weight: bold;
@@ -452,16 +452,16 @@ var(--console-primary, #e52521) calc((var(--pixel-offset) + 2) * 1px) {}
     z-index: -1;
   }
   .pixel-card--hovered .pixel-card__glow {
-    opacity: 0.5;
+    opacity: 0.5,
     animation: pulse-glow 1s ease-in-out infinite alternate;
   }
   @keyframes pulse-glow {
     0% {
-      opacity: 0.3;
+      opacity: 0.3,
       transform: scale(1);
     }
     100% {
-      opacity: 0.6;
+      opacity: 0.6,
       transform: scale(1.05);
     }
   }
@@ -478,19 +478,19 @@ var(--console-primary, #e52521) calc((var(--pixel-offset) + 2) * 1px) {}
     background: var(--console-tertiary, #4caf50);
   }
   .pixel-card__corner--tl {
-    top: 0;
+    top: 0,
     left: 0;
   }
   .pixel-card__corner--tr {
-    top: 0;
+    top: 0,
     right: 0;
   }
   .pixel-card__corner--bl {
-    bottom: 0;
+    bottom: 0,
     left: 0;
   }
   .pixel-card__corner--br {
-    bottom: 0;
+    bottom: 0,
     right: 0;
   }
 /* Console Theme Adaptations */ {}

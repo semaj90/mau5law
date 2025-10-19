@@ -9,7 +9,7 @@ let formData = $state({
     caseNumber: '',
     title: '',
     description: '',
-    priority: 'medium';
+    priority: 'medium',
 });
 async function handleSubmit(_event: Event) {
     event.preventDefault();
@@ -71,10 +71,10 @@ async function testDatabaseConnection() {
     </div>
   {/if}
   <div class="nier-bits-card" style="border: 1px solid #ddd; border-radius: 8px; padding: 30px; background: white;">
-    <h2 style="margin-top: 0; color: #333;">Case Information Form</h2>
+    <h2 style="margin-top: 0, color: #333;">Case Information Form</h2>
     <form onsubmit={handleSubmit} style="display: flex; flex-direction: column; gap: 20px;">
       <div>
-        <label for="caseNumber" style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">
+        <label for="caseNumber" style="display: block; margin-bottom: 5px; font-weight: 600, color: #333;">
           Case Number *
         </label>
         <input
@@ -88,7 +88,7 @@ async function testDatabaseConnection() {
         />
       </div>
       <div>
-        <label for="title" style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">
+        <label for="title" style="display: block; margin-bottom: 5px; font-weight: 600, color: #333;">
           Case Title *
         </label>
         <input
@@ -102,7 +102,7 @@ async function testDatabaseConnection() {
         />
       </div>
       <div>
-        <label for="description" style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">
+        <label for="description" style="display: block; margin-bottom: 5px; font-weight: 600, color: #333;">
           Description
         </label>
         <textarea
@@ -115,7 +115,7 @@ async function testDatabaseConnection() {
         ></textarea>
       </div>
       <div>
-        <label for="priority" style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">
+        <label for="priority" style="display: block; margin-bottom: 5px; font-weight: 600, color: #333;">
           Priority Level
         </label>
         <select
@@ -156,8 +156,8 @@ async function testDatabaseConnection() {
     class="info"
     style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #007bff;"
   >
-    <h3 style="margin-top: 0; color: #333;">✅ Testing Complete Integration</h3>
-    <ul style="margin: 0; color: #666;">
+    <h3 style="margin-top: 0, color: #333;">✅ Testing Complete Integration</h3>
+    <ul style="margin: 0, color: #666;">
       <li><strong>Frontend:</strong> Svelte 5 form handling and state management</li>
       <li><strong>API:</strong> POST request to /api/test-case endpoint</li>
       <li><strong>Backend:</strong> Data processing and validation</li>

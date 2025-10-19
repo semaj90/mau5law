@@ -263,8 +263,8 @@ THREE.Vector3): THREE.Object3D {
         geometry = new THREE.PlaneGeometry(1.2, 0.8);
         material = new THREE.MeshLambertMaterial({
           color: 0x2196F3,
-          transparent: true;
-          opacity: 0.8;
+          transparent: true,
+          opacity: 0.8,
         });
         break;
       case 'video':
@@ -312,8 +312,8 @@ THREE.Vector3): THREE.Object3D {
     const geometry = new THREE.SphereGeometry(importance * 0.5, 16, 16);
     const material = new THREE.MeshLambertMaterial({
       color: getEvidenceColor(evidence),
-      transparent: true;
-      opacity: 0.8;
+      transparent: true,
+      opacity: 0.8,
     });
     const mesh = new THREE.Mesh(geometry, material);
     mesh.castShadow = true;
@@ -375,8 +375,8 @@ THREE.Vector3): THREE.Object3D {
     ]);
     const material = new THREE.LineBasicMaterial({
       color: 0x4CAF50,
-      transparent: true;
-      opacity: 0.6;
+      transparent: true,
+      opacity: 0.6,
     });
     return new THREE.Line(geometry, material);
   }
@@ -389,7 +389,7 @@ THREE.Vector3): THREE.Object3D {
     geometry.setFromPoints(points);
     const material = new THREE.LineBasicMaterial({
       color: 0x2196F3,
-      linewidth: 3;
+      linewidth: 3,
     });
     const timelinePath = new THREE.Line(geometry, material);
     scene.add(timelinePath);
@@ -615,7 +615,7 @@ e; width: {width}px; height: {height}px;"
     position: absolute;
     top: 10px;
     left: 10px;
-    z-index: 100;
+    z-index: 100,
     display: flex;
     gap: 15px;
     background: rgba(0, 0, 0, 0.8);
@@ -658,16 +658,16 @@ e; width: {width}px; height: {height}px;"
   }
   .loading-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.9);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    z-index: 200;
+    z-index: 200,
     color: white;
   }
   .spinner {
@@ -708,7 +708,7 @@ e; width: {width}px; height: {height}px;"
   .evidence-panel p {
     margin: 5px 0;
     font-size: 14px;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .evidence-actions {
     margin-top: 15px;

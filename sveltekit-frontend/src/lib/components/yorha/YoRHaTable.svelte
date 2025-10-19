@@ -328,9 +328,9 @@
   .yorha-table-container::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     height: 2px;
     background: linear-gradient(90deg, transparent, #ffbf00, transparent);
     animation: scanline 3s linear infinite;
@@ -390,7 +390,7 @@
   .yorha-table {
     /* @apply w-full text-amber-400 font-mono text-sm; */
     border-collapse: separat;
-    border-spacing: 0;
+    border-spacing: 0,
   }
   .yorha-table-striped .yorha-row-even {
     /* @apply bg-gray-900; */
@@ -522,10 +522,10 @@
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.5;
+      opacity: 0.5,
     }
   }
 </style>

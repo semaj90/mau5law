@@ -54,19 +54,20 @@ https://svelte.dev/e/js_parse_error -->
     nesStyle = false,
     onclick,
     class: className = '',
-    ...restProp;
+    ...restProp
   }: Props = $props();
   // Melt UI button
   // Melt UI component creation removed - replace with bits-ui declarative components
   // GPU Animation State
-  let canvas = $state<HTMLCanvasElementlet gl: WebGLRenderingContext  | null>(null); const data = null);
+  let canvas = $state<HTMLCanvasElement | null>(null);
+  let gl: WebGLRenderingContext | null = null;
   let animationFrame: number;
   let isHovered = $state(false);
   let isPressed = $state(false);
   // Legal AI confidence animation
   const confidence = spring(legalContext?.confidence || 0, {
     stiffness: 0.3,
-    damping: 0.8;
+    damping: 0.8,
   });
   // Memory-efficient animation state (NES constraints: 2KB)
   let animationState = $state({

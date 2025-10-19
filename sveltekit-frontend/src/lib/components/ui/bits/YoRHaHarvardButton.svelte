@@ -104,7 +104,7 @@
 <style>
   .yorha-harvard-btn {
     font-family: var(--font-mono);
-    font-weight: 600;
+    font-weight: 600,
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: 2px solid var(--enhanced-border);
     background: var(--enhanced-bg-secondary);
@@ -126,7 +126,7 @@
     background: linear-gradient(135deg, var(--enhanced-accent), var(--enhanced-accent-secondary));
     color: var(--enhanced-bg-primary);
     border-color: var(--enhanced-accent);
-    font-weight: 700;
+    font-weight: 700,
   }
 
   .yorha-harvard-btn-primary:hover {
@@ -173,9 +173,9 @@
   .yorha-terminal-btn:before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: repeating-linear-gradient(
       {} 0deg,
@@ -208,7 +208,7 @@
   .harvard-gaming-badge:before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: -100%;
     width: 100%;
     height: 100%;
@@ -224,12 +224,12 @@
     bottom: -2px;
     background: linear-gradient(45deg, var(--enhanced-accent), var(--enhanced-accent-secondary));
     z-index: -1;
-    opacity: 0;
+    opacity: 0,
     transition: opacity 0.3s ease;
   }
 
   .yorha-gaming-btn:hover .gaming-border-accent {
-    opacity: 0.3;
+    opacity: 0.3,
   }
 
   .pressed {
@@ -237,7 +237,7 @@
   }
 
   .disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
     pointer-events: none;
   }

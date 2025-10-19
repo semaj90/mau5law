@@ -68,40 +68,68 @@
   // WEBSOCKET CONNECTION
   // ======================
 
+  // Compute WebSocket URL using public env or infer from location, fallback to Docker Desktop python-ai (localhost:8000)
+  function computeWsUrl(): string {
+    // Prefer explicit public env var (set in Docker / Caddy)
+    const envUrl = (import.meta as any).env?.PUBLIC_WS_URL || (import.meta as any).env?.VITE_WS_URL;
+    if (envUrl) return envUrl;
+
+    if (browser) {
+      // If page served over TLS use wss, else ws
+      const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+      // Try same host first, common in proxied deployments
+      return `${proto}://${location.host}/ws`;
+    }
+
+    // Fallback to Docker Desktop python AI service host
+    const fallbackProtocol = 'ws';
+    const fallbackHost = (import.meta as any).env?.PUBLIC_WS_HOST || 'localhost:8000';
+    return `${fallbackProtocol}://${fallbackHost}/ws`;
+  }
+
+  // Reconnect backoff state
+  let reconnectAttempts = 0;
+  function resetBackoff() { reconnectAttempts = 0; }
+
   function connectWebSocket() {
     if (!browser) return;
-
+    const url = computeWsUrl();
     try {
-      ws = new WebSocket('ws://localhost:8000/ws');
+      ws = new WebSocket(url);
 
       ws.onopen = () => {
-        console.log('✅ WebSocket connected to Python AI Server');
+        console.log('✅ WebSocket connected to Python AI Server ->', url);
         wsConnected = true;
         wsReconnecting = false;
+        resetBackoff();
       };
 
       ws.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        handleWebSocketMessage(data);
+        try {
+          const data = JSON.parse(event.data);
+          handleWebSocketMessage(data);
+        } catch (e) {
+          console.warn('Malformed WS message', e);
+        }
       };
 
       ws.onerror = (error) => {
         console.error('❌ WebSocket error:', error);
-        wsConnected = false;
       };
 
       ws.onclose = () => {
         console.log('🔌 WebSocket disconnected');
         wsConnected = false;
+        ws = null;
 
-        // Auto-reconnect after 3 seconds
-        if (!wsReconnecting) {
-          wsReconnecting = true;
-          setTimeout(() => {
-            console.log('🔄 Attempting to reconnect...');
-            connectWebSocket();
-          }, 3000);
-        }
+        // Exponential backoff reconnect
+        wsReconnecting = true;
+        reconnectAttempts++;
+        const backoff = Math.min(30000, 1000 * 2 ** Math.min(reconnectAttempts, 6));
+        setTimeout(() => {
+          console.log(`🔄 Reconnect attempt #${reconnectAttempts} (backoff ${backoff}ms)`);
+          connectWebSocket();
+        }, backoff);
       };
     } catch (error) {
       console.error('Failed to create WebSocket:', error);
@@ -162,8 +190,17 @@
   }
 
   function sendQuery(query: string, fileId?: string) {
-    if (!ws || !wsConnected) {
-      console.error('WebSocket not connected');
+    if (!ws || !wsConnected || !ws?.readyState || ws.readyState !== WebSocket.OPEN) {
+      console.warn('WebSocket not open; falling back to REST query where available');
+      // Optionally call REST endpoint for analysis if WS not available (server must support)
+      const apiBase = (import.meta as any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
+      fetch(`${apiBase}?action=analyze`, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: JSON.stringify({ query, file_id: fileId || currentFileId })
+      }).catch(err => console.warn('REST analysis fallback failed', err));
+      streamingTokens = '';
+      isStreaming = true;
       return;
     }
 
@@ -179,12 +216,8 @@
   }
 
   function subscribeToWorkflow(fileId: string) {
-    if (!ws || !wsConnected) return;
-
-    ws.send(JSON.stringify({
-      type: 'SUBSCRIBE_WORKFLOW',
-      file_id: fileId
-    }));
+    if (!ws || ws?.readyState !== WebSocket.OPEN) return;
+    ws.send(JSON.stringify({ type: 'SUBSCRIBE_WORKFLOW', file_id: fileId }));
   }
 
   // ======================
@@ -223,7 +256,11 @@
 
     const formData = new FormData();
     formData.append('file', selectedFile);
-    formData.append('user_id', 'demo_user'); // TODO: Get from auth
+    // Get authenticated user from XState auth machine
+    import xstateIntegration from '$lib/services/xstate-integration';
+    const authState = xstateIntegration.getGlobalState('auth');
+    const userId = authState?.context?.user?.id || 'anonymous';
+    formData.append('user_id', userId);
     formData.append('caseId', 'case_001');
 
     try {
@@ -234,8 +271,9 @@
         status: 'processing'
       };
 
-      // Use unified API v2 endpoint
-      const response = await fetch('/api/v2/evidence', {
+      // Use unified API v2 endpoint (env-aware)
+      const apiBase = (import.meta as any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
+      const response = await fetch(apiBase, {
         method: 'POST',
         body: formData
       });
@@ -249,18 +287,34 @@
         fileMetadata = {
           filename: selectedFile.name,
           size: selectedFile.size,
-          uploadTime: new Date().toISOString()
+        switch (result.source) {
+          case 'python-ai':
+            aiSource = 'ollama';
+            break;
+          case 'tensorrt':
+            aiSource = 'tensorrt';
+            break;
+          default:
+            aiSource = 'typescript-fallback';
+        }
         };
 
         // Update backend status based on response
         aiSource = result.source === 'python-ai' ? 'ollama' : 'typescript-fallback';
 
-        // If Python AI is available, subscribe to workflow updates
-        if (result.aiProcessing && ws && wsConnected) {
-          subscribeToWorkflow(result.aiProcessing.file_id);
-
-          // Trigger AI analysis
-          sendQuery(`Analyze this legal evidence document: ${selectedFile.name}`, result.aiProcessing.file_id);
+        // Subscribe to workflow updates if supported (WS or REST fallback)
+        if (result.aiProcessing) {
+          if (ws && wsConnected) {
+            subscribeToWorkflow(result.aiProcessing.file_id);
+            sendQuery(`Analyze this legal evidence document: ${selectedFile.name}`, result.aiProcessing.file_id);
+          } else {
+            // REST analysis trigger if WS not present
+            fetch(`${apiBase}?action=analyze`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ file_id: result.aiProcessing.file_id, prompt: `Analyze this legal evidence document: ${selectedFile.name}` })
+            }).catch(err => console.warn('REST analysis trigger failed', err));
+          }
         }
 
         console.log(`✅ File uploaded (${result.source}):`, currentFileId);
@@ -282,7 +336,8 @@
   // SEARCH FUNCTIONALITY
   // ======================
 
-  let searchTimeout: number;
+  // Use a platform-independent timeout type (works with DOM and Node types)
+  let searchTimeout: ReturnType<typeof setTimeout> | undefined;
 
   async function performSearch() {
     if (!searchQuery.trim()) {
@@ -294,9 +349,10 @@
     isSearching = true;
 
     try {
-      // Use unified API v2 endpoint with vector search
+      // Use unified API v2 endpoint with vector search (env-aware)
+      const apiBase = (import.meta as any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
       const response = await fetch(
-        `/api/v2/evidence?action=search&q=${encodeURIComponent(searchQuery)}&vector=true&limit=10`
+        `${apiBase}?action=search&q=${encodeURIComponent(searchQuery)}&vector=true&limit=10`
       );
 
       const data = await response.json();
@@ -324,48 +380,61 @@
   // Debounced search
   $effect(() => {
     if (searchQuery) {
-      clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(performSearch, 500);
-    }
-  });
+      if (searchTimeout) clearTimeout(searchTimeout);
+  onMount(() => {
+    let mounted = true;
 
-  // ======================
-  // LIFECYCLE
-  // ======================
+    (async () => {
+      // Check backend health first
+      try {
+        // env-aware health endpoint
+        const apiBase = (import.meta as any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
+        const healthResponse = await fetch(`${apiBase}?action=health`);
+        const health = await healthResponse.json();
+        if (!mounted) return;
 
-  onMount(async () => {
-    // Check backend health first
-    try {
-      const healthResponse = await fetch('/api/v2/evidence?action=health');
-      const health = await healthResponse.json();
+        backendStatus = {
+          typescript: health.backends?.typescript?.status === 'healthy',
+          pythonAI: health.backends?.pythonAI?.status === 'healthy',
+          capabilities: health.backends?.pythonAI?.capabilities || []
+        };
 
-      backendStatus = {
-        typescript: health.backends?.typescript?.status === 'healthy',
-        pythonAI: health.backends?.pythonAI?.status === 'healthy',
-        capabilities: health.backends?.pythonAI?.capabilities || []
-      };
+        console.log('🏥 Backend Health:', backendStatus);
+      } catch (error) {
+        if (!mounted) return;
+        console.error('Health check failed:', error);
+        backendStatus.pythonAI = false;
+      }
 
-      console.log('🏥 Backend Health:', backendStatus);
-    } catch (error) {
-      console.error('Health check failed:', error);
-      backendStatus.pythonAI = false;
-    }
-
-    // Connect WebSocket if Python AI is available
-    if (backendStatus.pythonAI) {
-      connectWebSocket();
-    } else {
-      console.warn('⚠️ Python AI backend unavailable. Some features will be limited.');
-    }
+      // Connect WebSocket if Python AI is available
+      if (backendStatus.pythonAI) {
+        connectWebSocket();
+      } else {
+        console.warn('⚠️ Python AI backend unavailable. Some features will be limited.');
+      }
+    })();
 
     // Heartbeat ping every 30s
     const heartbeat = setInterval(() => {
-      if (ws && wsConnected) {
+      if (ws && wsConnected && ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({ type: 'PING' }));
       }
     }, 30000);
 
     return () => {
+      mounted = false;
+      clearInterval(heartbeat);
+      if (ws) {
+        ws.close();
+      }
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+      }
+    };
+  });
+
+    return () => {
+      mounted = false;
       clearInterval(heartbeat);
       if (ws) {
         ws.close();
@@ -395,11 +464,12 @@
       complete: '✅',
       error: '❌'
     };
-    return icons[stage] || '🔄';
-  }
-
   function getProgressColor(progress: number): string {
-    if (progress < 30) return 'bg-red-500';
+    // Use UnoCSS theme tokens for colors
+    if (progress < 30) return 'bg-primary-error';
+    if (progress < 70) return 'bg-primary-warning';
+    return 'bg-primary-success';
+  }
     if (progress < 70) return 'bg-yellow-500';
     return 'bg-green-500';
   }
@@ -473,9 +543,9 @@
             role="region"
             aria-label="File upload drop zone"
             class="border-2 border-dashed rounded-lg p-8 text-center transition-all {isDragging ? 'border-purple-500 bg-purple-500/10' : 'border-slate-600 hover:border-slate-500'}"
-            ondragover={handleDragOver}
-            ondragleave={handleDragLeave}
-            ondrop={handleDrop}
+            on:dragover={handleDragOver}
+            on:dragleave={handleDragLeave}
+            on:drop={handleDrop}
           >
             {#if selectedFile}
               <div class="space-y-2">
@@ -484,7 +554,7 @@
                 <p class="text-sm text-slate-400">{formatFileSize(selectedFile.size)}</p>
                 <button
                   class="text-xs text-red-400 hover:text-red-300 mt-2"
-                  onclick={() => selectedFile = null}
+                  on:click={() => selectedFile = null}
                 >
                   Remove
                 </button>
@@ -501,7 +571,7 @@
               type="file"
               class="hidden"
               id="fileInput"
-              onchange={handleFileSelect}
+              on:change={handleFileSelect}
               accept=".pdf,.docx,.txt,.png,.jpg,.jpeg"
             />
             <label
@@ -515,7 +585,7 @@
           <!-- Upload Button -->
           <button
             class="w-full mt-4 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            onclick={uploadFile}
+            on:click={uploadFile}
             disabled={!selectedFile || !wsConnected || isStreaming}
           >
             {isStreaming ? '🔄 Processing...' : '🚀 Upload & Analyze'}
@@ -609,7 +679,7 @@
             />
             <button
               class="px-6 py-3 bg-purple-500 hover:bg-purple-600 rounded-lg font-medium transition-colors disabled:opacity-50"
-              onclick={performSearch}
+              on:click={performSearch}
               disabled={isSearching || !searchQuery.trim()}
             >
               {isSearching ? '🔄' : '🔍'}
@@ -624,7 +694,7 @@
                 {#each aiSuggestions as suggestion}
                   <button
                     class="px-3 py-1 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 rounded-full text-sm transition-colors"
-                    onclick={() => searchQuery = suggestion.insight}
+                    on:click={() => searchQuery = suggestion.insight}
                   >
                     {suggestion.insight}
                   </button>
@@ -734,10 +804,10 @@
   /* Smooth animations */
   @keyframes pulse {
     0%, 100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.5;
+      opacity: 0.5,
     }
   }
 </style>

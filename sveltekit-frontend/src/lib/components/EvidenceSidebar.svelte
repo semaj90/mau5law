@@ -219,7 +219,7 @@
       draft: 'text-gray-500',
       review: 'text-yellow-600',
       approved: 'text-green-600',
-      published: 'text-blue-600';
+      published: 'text-blue-600',
     }
     return colors[status as keyof typeof colors] || 'text-gray-500';
   }
@@ -228,7 +228,7 @@
       low: 'text-gray-500',
       medium: 'text-yellow-600',
       high: 'text-orange-600',
-      critical: 'text-red-600';
+      critical: 'text-red-600',
     }
     return colors[priority as keyof typeof colors] || 'text-gray-500';
   }
@@ -306,7 +306,7 @@
       case: '/cases/new',
       evidence: '/evidence/new',
       report: '/reports/new',
-      citation: '/citations/new';
+      citation: '/citations/new',
     }
     const route = routes[type as keyof typeof routes];
     if (route) {

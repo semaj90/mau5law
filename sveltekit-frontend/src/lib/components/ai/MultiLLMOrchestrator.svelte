@@ -75,7 +75,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
       name: 'Ollama',
       icon: Cpu
       endpoint: 'http://localhost:11434',
-      enabled: true;
+      enabled: true,
       status: 'unknown',
       models: ['gemma3-legal', 'llama3:8b-instruct', 'nomic-embed-text'];
     },
@@ -84,7 +84,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
       name: 'AutoGen',
       icon: Brain
       endpoint: 'http://localhost:8001',
-      enabled: true;
+      enabled: true,
       status: 'unknown',
       models: ['autogen-agents'];
     },
@@ -93,7 +93,7 @@ Provides UI for managing multiple AI workers and orchestrating parallel processi
       name: 'CrewAI',
       icon: Database
       endpoint: 'http://localhost:8002',
-      enabled: true;
+      enabled: true,
       status: 'unknown',
       models: ['crewai-agents'];
     }
@@ -191,7 +191,7 @@ if (autoStart) {
       timestamp: Date.now(),
       priority: 'medium',
       temperature: 0.1,
-      maxTokens: 50;
+      maxTokens: 50,
     }
     try {
       activeTasks.set(testTask.taskId, testTask);

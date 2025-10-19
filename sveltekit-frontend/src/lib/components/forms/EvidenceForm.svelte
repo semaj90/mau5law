@@ -121,7 +121,7 @@
 }
   .select-menu {
     position: absolute;
-    z-index: 50;
+    z-index: 50,
     background: white;
     border: 1px solid #e5e7eb;
     border-radius: 6px;

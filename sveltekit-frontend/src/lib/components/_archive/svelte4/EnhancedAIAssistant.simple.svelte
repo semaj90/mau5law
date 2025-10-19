@@ -261,7 +261,7 @@ https://svelte.dev/e/props_duplicate -->
   }
   .message-content {
     white-space: pre-wrap;
-    line-height: 1.5;
+    line-height: 1.5,
   }
   .references {
     margin-top: 12px;
@@ -270,7 +270,7 @@ https://svelte.dev/e/props_duplicate -->
   }
   .references-title {
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
     margin-bottom: 8px;
   }
@@ -294,7 +294,7 @@ https://svelte.dev/e/props_duplicate -->
     border-color: #d1d5db;
   }
   .reference-title {
-    font-weight: 500;
+    font-weight: 500,
     color: #111827;
   }
   .reference-citation {
@@ -310,7 +310,7 @@ https://svelte.dev/e/props_duplicate -->
     gap: 8px;
   }
   .chat-input-field {
-    flex: 1;
+    flex: 1,
     padding: 12px;
     border: 1px solid #d1d5db;
     border-radius: 6px;
@@ -334,7 +334,7 @@ https://svelte.dev/e/props_duplicate -->
     background: #2563eb;
   }
   .chat-submit-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .btn-icon {
@@ -352,14 +352,14 @@ https://svelte.dev/e/props_duplicate -->
   }
   .settings-panel {
     position: absolute;
-    top: 0;
+    top: 0,
     right: 0;
     width: 300px;
     height: 100%;
     background: white;
     border-left: 1px solid #e5e7eb;
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-    z-index: 10;
+    z-index: 10,
   }
   .settings-header {
     display: flex;
@@ -369,7 +369,7 @@ https://svelte.dev/e/props_duplicate -->
     border-bottom: 1px solid #e5e7eb;
   }
   .settings-title {
-    font-weight: 600;
+    font-weight: 600,
     color: #111827;
   }
   .btn-close {
@@ -389,7 +389,7 @@ https://svelte.dev/e/props_duplicate -->
     display: block;
     margin-bottom: 4px;
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
   }
   .setting-group select,
@@ -405,7 +405,7 @@ https://svelte.dev/e/props_duplicate -->
   }
   .dialog-overlay {
     position: fixed;
-    top: 0;
+    top: 0,
     left: 0;
     width: 100%;
     height: 100%;
@@ -413,7 +413,7 @@ https://svelte.dev/e/props_duplicate -->
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 1000,
   }
   .dialog-content {
     background: white;
@@ -430,7 +430,7 @@ https://svelte.dev/e/props_duplicate -->
     display: flex;
     align-items: center;
     gap: 8px;
-    font-weight: 600;
+    font-weight: 600,
     color: #111827;
   }
   .dialog-body {
@@ -455,7 +455,7 @@ https://svelte.dev/e/props_duplicate -->
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 500,
   }
   .btn-primary:hover {
     background: #2563eb;
@@ -467,7 +467,7 @@ https://svelte.dev/e/props_duplicate -->
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 500,
   }
   .btn-secondary:hover {
     background: #4b5563;

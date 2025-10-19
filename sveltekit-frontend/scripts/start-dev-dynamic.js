@@ -11,6 +11,18 @@ async function startDevServer() {
   console.log(chalk.cyan('\n🔍 Checking for available port...\n'));
 
   try {
+    // Ensure REDIS_PASSWORD is set to 'redis' if not already defined
+    const effectiveRedisPassword = process.env.REDIS_PASSWORD || 'redis';
+
+    // Debug: show critical env vars in the parent process to validate cross-env propagation
+    console.log(
+      '\n🔒 DEBUG ENV: REDIS_PASSWORD=',
+      effectiveRedisPassword,
+      ' DEV_BYPASS_AUTH=',
+      process.env.DEV_BYPASS_AUTH,
+      '\n'
+    );
+
     const availablePort = await findFreePort(PREFERRED_PORT, MAX_PORT_TRIES);
 
     if (availablePort !== PREFERRED_PORT) {
@@ -24,11 +36,17 @@ async function startDevServer() {
     const redisProcess = spawn('node', ['scripts/start-redis.js'], {
       stdio: 'inherit',
       shell: true,
-      env: { ...process.env, FORCE_COLOR: '1' },
+      // Explicitly forward Redis and dev auth env vars for downstream processes
+      env: {
+        ...process.env,
+        FORCE_COLOR: '1',
+        REDIS_PASSWORD: effectiveRedisPassword,
+        DEV_BYPASS_AUTH: process.env.DEV_BYPASS_AUTH,
+      },
     });
 
     // Give Redis a moment to initialize
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     // Start Vite with the available port
     const viteProcess = spawn(
@@ -37,12 +55,19 @@ async function startDevServer() {
       {
         stdio: 'inherit',
         shell: true,
-        env: { ...process.env, FORCE_COLOR: '1', VITE_PORT: availablePort.toString() },
+        // Forward REDIS_PASSWORD and DEV_BYPASS_AUTH explicitly so the Vite/SvelteKit process can access them
+        env: {
+          ...process.env,
+          FORCE_COLOR: '1',
+          VITE_PORT: availablePort.toString(),
+          REDIS_PASSWORD: effectiveRedisPassword,
+          DEV_BYPASS_AUTH: process.env.DEV_BYPASS_AUTH,
+        },
       }
     );
 
     // Handle graceful shutdown
-    const shutdown = (signal) => {
+    const shutdown = signal => {
       console.log(chalk.yellow(`\n\n🛑 Received ${signal}, shutting down gracefully...\n`));
 
       redisProcess.kill('SIGTERM');
@@ -59,18 +84,17 @@ async function startDevServer() {
     process.on('SIGTERM', () => shutdown('SIGTERM'));
 
     // Monitor process exits
-    redisProcess.on('exit', (code) => {
+    redisProcess.on('exit', code => {
       if (code !== 0 && code !== null) {
         console.log(chalk.red(`❌ Redis process exited with code ${code}`));
       }
     });
 
-    viteProcess.on('exit', (code) => {
+    viteProcess.on('exit', code => {
       console.log(chalk.yellow(`\n🛑 Vite server stopped (exit code: ${code})\n`));
       redisProcess.kill('SIGTERM');
       process.exit(code || 0);
     });
-
   } catch (error) {
     console.error(chalk.red(`\n❌ Failed to start dev server: ${error.message}\n`));
     process.exit(1);

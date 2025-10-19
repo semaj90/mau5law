@@ -126,10 +126,11 @@ async function initializeAuth() {
   try {
     console.log('[hooks.server] Loading auth module...');
     const authModule = await import('$lib/server/auth');
-    // authModule may be ESM; narrow unknown via safe checks instead of `any`
+    // Access the auth export (Lucia instance) from the module
     const maybeAuthModule = authModule as unknown;
     if (maybeAuthModule && typeof maybeAuthModule === 'object' && maybeAuthModule !== null) {
-      const candidate = (maybeAuthModule as { lucia?: unknown }).lucia;
+      // Look for 'auth' export which is the Lucia instance
+      const candidate = (maybeAuthModule as { auth?: unknown }).auth;
       if (candidate && typeof candidate === 'object' && candidate !== null) {
         lucia = candidate as LuciaAuth;
       } else {
@@ -139,7 +140,7 @@ async function initializeAuth() {
       lucia = null;
     }
     authEnabled = true;
-    console.log('[hooks.server] Auth module loaded');
+    console.log('[hooks.server] Auth module loaded successfully');
     return { lucia, enabled: true };
   } catch (error) {
     // Try to log the error via structured logger, but don't let logging failure break auth fallback

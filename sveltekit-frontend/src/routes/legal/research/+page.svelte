@@ -33,7 +33,7 @@
     id: null
     startTime: new Date(),
     queries: [],
-    findings: [];
+    findings: [],
   });
   // Advanced search options
   let advancedSearch = $state(false);
@@ -74,7 +74,7 @@ await initializeResearchSession();
         filters: selectedFilters
         sort: sortBy;
         page: currentPage;
-        limit: 20;
+        limit: 20,
       }
       // Store search pattern in CHR-ROM for fast retrieval
       await nesGPUBridge.storeCHRROMPattern(`search_${Date.now()}`, {/* JSX syntax converted to Svelte */});
@@ -119,8 +119,8 @@ await initializeResearchSession();
         keyTopics: ['Contract Law', 'Commercial Disputes', 'Interpretation'],
         relevanceScore: 0.94,
         citedBy: 47,
-        isBookmarked: false;
-        url: '/legal/documents/smith-v-johnson-2019';
+        isBookmarked: false,
+        url: '/legal/documents/smith-v-johnson-2019',
       },
       {
         id: '2',
@@ -136,8 +136,8 @@ await initializeResearchSession();
         keyTopics: ['Discovery', 'Civil Procedure', 'Proportionality'],
         relevanceScore: 0.89,
         citedBy: 234,
-        isBookmarked: true;
-        url: '/legal/documents/frcp-26-b-1';
+        isBookmarked: true,
+        url: '/legal/documents/frcp-26-b-1',
       },
       {
         id: '3',
@@ -153,8 +153,8 @@ await initializeResearchSession();
         keyTopics: ['Summary Judgment', 'Motion Practice', 'Legal Writing'],
         relevanceScore: 0.82,
         citedBy: 12,
-        isBookmarked: false;
-        url: '/legal/documents/summary-judgment-template';
+        isBookmarked: false,
+        url: '/legal/documents/summary-judgment-template',
       }
     ];
   }
@@ -240,7 +240,7 @@ await initializeResearchSession();
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric';
+      day: 'numeric',
     });
   }
   function getRelevanceColor(score) {

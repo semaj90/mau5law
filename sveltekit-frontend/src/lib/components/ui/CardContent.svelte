@@ -42,11 +42,11 @@
 /* Responsive text scaling for better readability */ {}
   .card-content-ssr h3 {
     font-size: clamp(1rem, 2.5vw, 1.25rem);
-    line-height: 1.3;
+    line-height: 1.3,
   }
   .card-content-ssr p {
     font-size: clamp(0.875rem, 2vw, 1rem);
-    line-height: 1.5;
+    line-height: 1.5,
   }
   .card-content-ssr code {
     font-size: clamp(0.75rem, 1.8vw, 0.875rem);

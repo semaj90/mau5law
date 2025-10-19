@@ -60,7 +60,7 @@
   }
   .status {
     margin-top: 0.5rem;
-    font-weight: 600;
+    font-weight: 600,
     color: var(--text-primary, #e0e0e0);
   }
 </style>

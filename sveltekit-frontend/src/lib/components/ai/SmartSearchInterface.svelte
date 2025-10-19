@@ -79,7 +79,7 @@
   				response: `Search failed: ${error.message}`,
   				sources: [],
   				confidence: 0,
-  				generationMethod: 'error';
+  				generationMethod: 'error',
   			}
   		} finally {
   			isSearching = false;

@@ -137,28 +137,28 @@
       group: 'border-gray-200 dark:border-gray-700',
       button: 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300',
       activeButton: 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400',
-      dropdown: 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700';
+      dropdown: 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700',
     },
     legal: {
       toolbar: 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700',
       group: 'border-slate-200 dark:border-slate-700',
       button: 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300',
       activeButton: 'bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400',
-      dropdown: 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700';
+      dropdown: 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700',
     },
     gaming: {
       toolbar: 'bg-black border-green-400/30 shadow-[0_0_20px_rgba(0,255,65,0.1)]',
       group: 'border-green-400/30',
       button: 'hover:bg-green-400/10 text-green-400 hover:shadow-[0_0_10px_rgba(0,255,65,0.2)]',
       activeButton: 'bg-green-400/20 text-green-300 shadow-[0_0_15px_rgba(0,255,65,0.4)]',
-      dropdown: 'bg-black border-green-400/30 shadow-[0_0_20px_rgba(0,255,65,0.3)]';
+      dropdown: 'bg-black border-green-400/30 shadow-[0_0_20px_rgba(0,255,65,0.3)]',
     },
     yorha: {
       toolbar: 'bg-black border-2 border-green-400/50 shadow-[0_0_30px_rgba(0,255,65,0.2)] backdrop-blur-sm font-mono',
       group: 'border-green-400/30',
       button: 'hover:bg-green-400/15 text-green-400 hover:shadow-[0_0_12px_rgba(0,255,65,0.3)] border border-transparent hover:border-green-400/30',
       activeButton: 'bg-green-400/25 text-green-300 shadow-[0_0_18px_rgba(0,255,65,0.5)] border border-green-400/50',
-      dropdown: 'bg-black border-2 border-green-400/50 shadow-[0_0_25px_rgba(0,255,65,0.4)] backdrop-blur-sm';
+      dropdown: 'bg-black border-2 border-green-400/50 shadow-[0_0_25px_rgba(0,255,65,0.4)] backdrop-blur-sm',
     }
   }
   function handleAction(action: ToolbarAction) {

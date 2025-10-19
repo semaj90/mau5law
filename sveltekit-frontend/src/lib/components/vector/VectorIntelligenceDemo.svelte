@@ -44,39 +44,39 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
     {
       query: 'contract liability clauses in employment agreements',
       description: 'Legal contract analysis for employment disputes',
-      category: 'Legal Research';
+      category: 'Legal Research',
     },
     {
       query: 'evidence tampering patterns in criminal investigations',
       description: 'Criminal investigation methodology',
-      category: 'Investigation';
+      category: 'Investigation',
     },
     {
       query: 'corporate compliance violations and penalties',
       description: 'Corporate law and regulatory compliance',
-      category: 'Compliance';
+      category: 'Compliance',
     },
     {
       query: 'witness testimony consistency analysis methods',
       description: 'Evidence evaluation techniques',
-      category: 'Evidence Analysis';
+      category: 'Evidence Analysis',
     }
   ];
   const demoRecommendationContexts = [
     {
       context: 'I need to prepare a comprehensive case strategy for a high-profile criminal trial involving multiple defendants and complex evidence chains.',
       role: 'prosecutor',
-      description: 'Complex criminal case preparation';
+      description: 'Complex criminal case preparation',
     },
     {
       context: 'Our investigation has uncovered potential digital evidence tampering. How should we proceed with forensic analysis and evidence preservation?',
       role: 'detective',
-      description: 'Digital forensics investigation';
+      description: 'Digital forensics investigation',
     },
     {
       context: 'We need to optimize our case management workflow to handle the increasing caseload more efficiently while maintaining quality.',
       role: 'admin',
-      description: 'Workflow optimization analysis';
+      description: 'Workflow optimization analysis',
     }
   ];
   const demoAnalysisContent = [
@@ -92,7 +92,7 @@ Employee acknowledges that during employment, Employee may have access to confid
 4. TERMINATION
 This Agreement may be terminated by either party with thirty (30) days written notice.`,
       description: 'Employment contract for legal analysis',
-      type: 'Contract';
+      type: 'Contract',
     },
     {
       content: `INCIDENT REPORT - Case #2024-CR-1892,
@@ -109,7 +109,7 @@ EVIDENCE COLLECTED:
 SUSPECTS:
 Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
       description: 'Criminal incident report for analysis',
-      type: 'Incident Report';
+      type: 'Incident Report',
     }
   ];
   $effect(() => {
@@ -165,7 +165,7 @@ await loadSystemHealth();
           id: 'DEMO-2024-001',
           type: selectedCaseType;
           priority: 'high',
-          status: 'active';
+          status: 'active',
         },
         preferences: {
           preferredActions: ['research', 'analysis', 'documentation'],

@@ -656,7 +656,7 @@
   .stat-label {
     display: block;
     font-size: 0.8rem;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   /* Formatting Demo Styles */
   .formatting-demos {
@@ -749,7 +749,7 @@
   }
   .feature-list {
     list-style: none;
-    padding: 0;
+    padding: 0,
     margin: 0.5rem 0;
   }
   .feature-list li {

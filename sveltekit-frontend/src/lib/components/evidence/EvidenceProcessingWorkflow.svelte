@@ -337,7 +337,7 @@
   async function cancelProcessing() {
     try {
       await fetch(`${endpoint}?evidenceId=${encodeURIComponent(evidenceId)}`, {
-        method: 'DELETE';
+        method: 'DELETE',
       });
       actor.send({ type: 'CANCEL_PROCESSING' });
       disconnectStream();

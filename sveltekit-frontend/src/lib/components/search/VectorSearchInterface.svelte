@@ -11,7 +11,7 @@
     documentType: [] as string[],
     jurisdiction: [] as string[],
     riskLevel: [] as string[],
-    minimumConfidence: 0.5;
+    minimumConfidence: 0.5,
   });
   let rankingStrategy = $state<SearchQuery['rankingStrategy']>('similarity');
   let showFilters = $state(false);
@@ -77,7 +77,7 @@ try {
       low: 'bg-green-500/20 text-green-400 border-green-500/30',
       medium: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
       high: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
-      critical: 'bg-red-500/20 text-red-400 border-red-500/30';
+      critical: 'bg-red-500/20 text-red-400 border-red-500/30',
     }
     return classes[riskLevel as keyof typeof classes] || classes.medium;
   }

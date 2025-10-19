@@ -10,16 +10,16 @@
   export type DocumentType = 'evidence' | 'report' | 'contract' | 'case_law' | 'general';
 
   let {
-    documentId = null,
-    caseId = null,
+    documentId = undefined,
+    caseId = undefined,
     initialContent = '',
-    documentType = 'evidence' as DocumentType | null,
+    documentType = 'evidence' as DocumentType | undefined,
     compact = false,
   }: {
-    documentId?: string | null;
-    caseId?: string | null;
+    documentId?: string | undefined;
+    caseId?: string | undefined;
     initialContent?: string;
-    documentType?: DocumentType | null;
+    documentType?: DocumentType | undefined;
     compact?: boolean;
   } = $props();
 
@@ -54,7 +54,10 @@
     if (initialContent && documentType) {
       send({ type: 'GENERATE_SUMMARY', content: initialContent, documentType });
     } else if (documentId) {
+      // documentId and caseId are now string | undefined (no null); safe to send directly
       send({ type: 'LOAD_DOCUMENT', documentId, caseId });
+      // Optional explicit coercion:
+      // send({ type: 'LOAD_DOCUMENT', documentId: documentId ?? undefined, caseId: caseId ?? undefined });
     }
   });
 
@@ -561,6 +564,6 @@
     margin-bottom: 1rem;
   }
   .prose p:last-child {
-    margin-bottom: 0;
+    margin-bottom: 0,
   }
 </style>

@@ -339,7 +339,7 @@
     padding: var(--spacing-sm) var(--spacing-md);
     border: none;
     border-radius: var(--radius-md);
-    font-weight: 500;
+    font-weight: 500,
     cursor: pointer;
     transition: all var(--transition-fast);
     font-size: var(--font-size-sm);
@@ -381,7 +381,7 @@
     position: fixed;
     top: var(--spacing-lg);
     right: var(--spacing-lg);
-    z-index: 100;
+    z-index: 100,
     display: flex;
     flex-direction: column;
     gap: var(--spacing-sm);
@@ -427,7 +427,7 @@
   .toast-description {
     font-size: var(--font-size-sm);
     color: var(--color-text-muted);
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .toast-close {
     background: none;
@@ -435,7 +435,7 @@
     font-size: var(--font-size-sm);
     color: var(--color-text-muted);
     cursor: pointer;
-    padding: 0;
+    padding: 0,
     width: 20px;
     height: 20px;
     display: flex;
@@ -443,7 +443,7 @@
     justify-content: center;
     border-radius: var(--radius-sm);
     transition: all var(--transition-fast);
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .toast-close:hover {
     background-color: var(--color-surface);
@@ -505,7 +505,7 @@
   :global(.dialog-description) {
     color: var(--color-text-muted);
     margin-bottom: var(--spacing-lg);
-    line-height: 1.6;
+    line-height: 1.6,
   }
   .case-options {
     margin-bottom: var(--spacing-lg);
@@ -523,7 +523,7 @@
   }
   .case-option h4 {
     margin: 0 0 var(--spacing-xs) 0;
-    font-weight: 600;
+    font-weight: 600,
     color: var(--color-text);
   }
   .case-option p {

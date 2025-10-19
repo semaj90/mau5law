@@ -766,9 +766,9 @@
   }
   .drafting-title {
     font-size: 2rem;
-    font-weight: 700;
+    font-weight: 700,
     color: #1e293b;
-    margin: 0;
+    margin: 0,
   }
   .drafting-subtitle {
     color: #64748b;
@@ -792,13 +792,13 @@
     margin-bottom: 2rem;
   }
   .sidebar-section:last-child {
-    margin-bottom: 0;
+    margin-bottom: 0,
   }
   .sidebar-section h3 {
     margin: 0 0 1rem 0;
     color: #374151;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .document-types-list {
     display: flex;
@@ -837,13 +837,13 @@
     margin: 0 0 0.25rem 0;
     color: #374151;
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .type-category {
     padding: 0.125rem 0.375rem;
     border-radius: 0.25rem;
     font-size: 0.625rem;
-    font-weight: 600;
+    font-weight: 600,
     border: 1px solid;
     text-transform: uppercase;
   }
@@ -851,7 +851,7 @@
     margin: 0.5rem 0;
     font-size: 0.75rem;
     color: #64748b;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .type-metadata {
     display: flex;
@@ -903,7 +903,7 @@
   }
   .form-group label {
     font-size: 0.75rem;
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
   }
   .form-input,
@@ -941,7 +941,7 @@
   .stat-value {
     display: block;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
   }
   .last-modified {
@@ -973,7 +973,7 @@
   .suggestion-type {
     flex: 1;
     font-size: 0.75rem;
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
     text-transform: capitalize;
   }
@@ -985,7 +985,7 @@
     margin: 0 0 0.5rem 0;
     font-size: 0.75rem;
     color: #374151;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .suggestion-reasoning {
     margin: 0 0 0.75rem 0;
@@ -1056,7 +1056,7 @@
     border: none;
     background: transparent;
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
     padding: 0.5rem;
     border-radius: 0.375rem;
@@ -1076,7 +1076,7 @@
     color: #6b7280;
   }
   .editor-content {
-    flex: 1;
+    flex: 1,
     padding: 1.5rem;
   }
   .document-textarea {
@@ -1086,7 +1086,7 @@
     resize: none;
     font-family: 'Georgia', serif;
     font-size: 1rem;
-    line-height: 1.6;
+    line-height: 1.6,
     color: #374151;
     background: transparent;
   }
@@ -1104,7 +1104,7 @@
     align-items: center;
   }
   .ai-prompt-input {
-    flex: 1;
+    flex: 1,
     padding: 0.5rem;
     border: 1px solid #d1d5db;
     border-radius: 0.375rem;
@@ -1165,7 +1165,7 @@
   .draft-preview {
     font-size: 0.75rem;
     color: #64748b;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .draft-actions {
     display: flex;
@@ -1203,7 +1203,7 @@
   .preview-body {
     font-family: 'Georgia', serif;
     font-size: 1rem;
-    line-height: 1.6;
+    line-height: 1.6,
     color: #374151;
   }
   .preview-body p {
@@ -1220,12 +1220,12 @@
   /* Modal overlay used in place of external Dialog component */
   .modal-overlay {
     position: fixed;
-    inset: 0;
+    inset: 0,
     background: rgba(0, 0, 0, 0.45);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 60;
+    z-index: 60,
     padding: 1rem;
   }
   .modal-content {
@@ -1245,7 +1245,7 @@
       max-height: none;
     }
     .drafting-main {
-      order: 1;
+      order: 1,
     }
   }
   @media (max-width: 768px) {

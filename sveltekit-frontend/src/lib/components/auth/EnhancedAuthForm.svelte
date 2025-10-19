@@ -33,17 +33,17 @@
     firstName: '',
     lastName: '',
     acceptTerms: false
-    rememberMe: false;
+    rememberMe: false,
   });
   let formState = $state({
-    loading: false;
+    loading: false,
     error: '',
     success: '',
     passwordStrength: 0,
     showPassword: false
     showConfirmPassword: false
     emailExists: false
-    verificationSent: false;
+    verificationSent: false,
   });
   // Form element references for focus management
   let emailInput: HTMLInputElement = $state(undefined as any);
@@ -185,7 +185,7 @@
         {
           includeRAG: false
           includeGraph: true
-          generateSummary: false;
+          generateSummary: false,
           metadata: { context, result }
         }
       );
@@ -201,17 +201,17 @@
       firstName: '',
       lastName: '',
       acceptTerms: false
-      rememberMe: false;
+      rememberMe: false,
     }
     formState = {
-      loading: false;
+      loading: false,
       error: '',
       success: '',
       passwordStrength: 0,
       showPassword: false
       showConfirmPassword: false
       emailExists: false
-      verificationSent: false;
+      verificationSent: false,
     }
   }
   function toggleMode() {

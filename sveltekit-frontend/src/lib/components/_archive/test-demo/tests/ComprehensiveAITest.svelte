@@ -112,7 +112,7 @@
         response: result.text || result.content || '',
         duration: Math.round(duration),
         timestamp: new Date().toLocaleTimeString(),
-        success: true;
+        success: true,
         metrics: result.metrics ||;
         acceleration: result.acceleration || 'none';
       }
@@ -140,7 +140,7 @@
         success: false
         error: error instanceof Error ? error.message: String(error),
         metrics: ,
-        acceleration: 'failed';
+        acceleration: 'failed',
       }
       testResults = [testResult, ...testResults];
     }
@@ -153,7 +153,7 @@
       prompt: testQuery
       maxTokens: 256,
       temperature: 0.3,
-      systemPrompt: 'You are a legal AI assistant specialized in contract analysis.';
+      systemPrompt: 'You are a legal AI assistant specialized in contract analysis.',
     });
     const capabilities = browserLocalAI.getCapabilities();
     return {
@@ -182,7 +182,7 @@
         jurisdiction: 'general',
         practiceArea: 'contract_law',
         documentType: 'employment_contract',
-        confidentiality: 'attorney-client';
+        confidentiality: 'attorney-client',
       }
     });
     const gpuMetrics = await cudaServiceWorker.getMetrics();
@@ -197,7 +197,7 @@
         precision: result.precision,
         gpuMetrics: gpuMetric;
       },
-      acceleration: 'cuda-tensorrt';
+      acceleration: 'cuda-tensorrt',
     }
   }
   async function testUnifiedAssistant() {

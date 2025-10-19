@@ -60,7 +60,7 @@ https://svelte.dev/e/js_parse_error -->
   			endpoint: 'http://localhost:8000',
   			status: 'offline',
   			capabilities: ['high-throughput', 'batch-processing', 'streaming'],
-  			models: [];
+  			models: [],
   		},
   		{
   			id: 'autogen-framework',
@@ -69,7 +69,7 @@ https://svelte.dev/e/js_parse_error -->
   			endpoint: 'http://localhost:8001',
   			status: 'loading',
   			capabilities: ['multi-agent', 'conversation', 'code-execution'],
-  			models: [];
+  			models: [],
   		},
   		{
   			id: 'crewai-team',
@@ -78,7 +78,7 @@ https://svelte.dev/e/js_parse_error -->
   			endpoint: 'http://localhost:8002',
   			status: 'offline',
   			capabilities: ['role-based', 'collaborative', 'workflow'],
-  			models: [];
+  			models: [],
   		}
   	]);
   	// Real-time status checking
@@ -86,7 +86,7 @@ https://svelte.dev/e/js_parse_error -->
   		try {
   			const response = await fetch(`${provider.endpoint}/health`, {
   				method: 'GET',
-  				timeout: 5000;
+  				timeout: 5000,
   			}));
   			return response.ok ? 'online' : 'offline';
   		} catch {
@@ -122,7 +122,7 @@ https://svelte.dev/e/js_parse_error -->
   		forceVisible: true
   		positioning: {
   			placement: 'bottom',
-  			fitViewport: true;
+  			fitViewport: true,
   		}
   	});
   	// Reactive selection handling

@@ -89,7 +89,7 @@ https://svelte.dev/e/expected_token -->
     documentsCached: 0,
     compressionRatio: 0,
     textureStreamingTime: 0,
-    quantizationSavings: 0;
+    quantizationSavings: 0,
   });
   // Pipeline performance stats
   let pipelineStats: PipelineStats | null = null;
@@ -394,7 +394,7 @@ https://svelte.dev/e/expected_token -->
       },
       primitive: {
         topology: 'triangle-list',
-        cullMode: 'back';
+        cullMode: 'back',
       }
     });
   }
@@ -427,7 +427,7 @@ https://svelte.dev/e/expected_token -->
       memoryBankVertexBuffer = device.createBuffer({
         size: memoryBankVertices.byteLength,
         usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
-        mappedAtCreation: true;
+        mappedAtCreation: true,
       });
       new Float32Array(memoryBankVertexBuffer.getMappedRange()).set(
         new Float32Array(memoryBankVertices)
@@ -473,7 +473,7 @@ https://svelte.dev/e/expected_token -->
               riskIndicator: doc.riskLevel === 'critical' || doc.riskLevel === 'high'
             },
             region: getBankForTextureStorage(doc.bankAssignment || 'PRG_ROM'),
-            compress: true;
+            compress: true,
           }
         );
         if (success) {
@@ -582,7 +582,7 @@ https://svelte.dev/e/expected_token -->
         limit: 50,
         threshold: 0.7,
         useNESCache: true
-        enableGPUAcceleration: true;
+        enableGPUAcceleration: true,
       });
       // Enhance results with full integration data
       const enhancedResults: EnhancedLegalDocument[] = searchResults.map((doc, index) => {
@@ -953,8 +953,8 @@ https://svelte.dev/e/expected_token -->
       memoryBankStatus[bank as keyof typeof memoryBankStatus] = {
         used: 0,
         capacity: memoryBankStatus[bank as keyof typeof memoryBankStatus].capacity,
-        active: false;
-        documents: [];
+        active: false,
+        documents: [],
       }
     }
     // Calculate usage

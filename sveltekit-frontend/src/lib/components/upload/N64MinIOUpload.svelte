@@ -54,17 +54,17 @@
   .n64-select, .n64-cancel { padding: 6px 10px; border-radius: 6px; }
   .files { margin-top: 12px; }
   .file-row { display:flex; gap:12px; align-items:center; padding:6px 0; }
-  .file-name { flex:1; }
+  .file-name { flex:1, }
 </style>
 
-          dismissible: false;
+          dismissible: false,
           actions: [{,
             label: 'Cancel',
             action: () => {
               controller.abort();
               fs.status = 'canceled';
             },
-            style: 'danger';
+            style: 'danger',
           }]
         }
       );
@@ -170,7 +170,7 @@
             embeddingModel = 'fallback-random-384';
             telemetry.emit('embedding_error', {
               file: file.name,
-              error: e instanceof Error ? e.message: 'unknown';
+              error: e instanceof Error ? e.message: 'unknown',
             });
             console.warn('Embedding generation failed, using fallback vector:', e);
           }
@@ -246,7 +246,7 @@
         if (fs.status === 'canceled') {
           toastService.update(fs.toastId, {
             type: 'warning',
-            message: '🎮 Upload canceled by user';
+            message: '🎮 Upload canceled by user',
           });
           setTimeout(() => toastService.dismiss(fs.toastId!), 3000);
         } else {
@@ -599,15 +599,15 @@ restoreSession();
   }
   .evolution-overlay {
     position: fixed;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.9);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 1000,
     animation: fadeIn 0.3s ease;
   }
   @keyframes fadeIn {
@@ -639,7 +639,7 @@ restoreSession();
     bottom: -4px;
     background: linear-gradient(45deg, #FFD700, #FFA500, #FF6B35);
     z-index: -1;
-    border-radius: 0;
+    border-radius: 0,
   }
   .n64-drop-zone:hover:not(.uploading) {
     border-color: #FFA500;
@@ -662,7 +662,7 @@ restoreSession();
   }
   .n64-drop-zone.uploading {
     cursor: not-allowed;
-    opacity: 0.8;
+    opacity: 0.8,
     animation: pulse 2s infinite;
   }
   @keyframes pulse {
@@ -766,7 +766,7 @@ restoreSession();
   }
   .file-icon.n64-icon {
     color: #FFD700;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .n64-file-name {
     font-weight: bold;
@@ -914,7 +914,7 @@ restoreSession();
     gap: 1rem;
   }
   .n64-upload-button {
-    flex: 1;
+    flex: 1,
     display: flex;
     align-items: center;
     justify-content: center;
@@ -943,7 +943,7 @@ restoreSession();
       0 6px 12px rgba(0, 0, 0, 0.7);
   }
   .n64-upload-button:disabled {
-    opacity: 0.6;
+    opacity: 0.6,
     cursor: not-allowed;
     transform: none;
   }
@@ -992,12 +992,12 @@ restoreSession();
     position: absolute;
     width: 1px;
     height: 1px;
-    padding: 0;
+    padding: 0,
     margin: -1px;
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
-    border: 0;
+    border: 0,
   }
   /* Responsive adjustments */
   @media (max-width: 640px) {

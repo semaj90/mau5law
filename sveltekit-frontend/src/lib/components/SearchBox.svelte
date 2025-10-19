@@ -297,7 +297,7 @@
   }
   .nes-btn.is-disabled {
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: 0.6,
   }
   .nes-container.is-rounded {
     border-radius: 8px;
@@ -308,10 +308,10 @@
   }
   @keyframes pulse {
     from {
-      opacity: 0.6;
+      opacity: 0.6,
     }
     to {
-      opacity: 1;
+      opacity: 1,
     }
   }
 </style>

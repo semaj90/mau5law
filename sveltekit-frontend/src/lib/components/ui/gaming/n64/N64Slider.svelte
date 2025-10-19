@@ -25,7 +25,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   		spatialPosition = { x: 0, y: 0, z: 0 },
   		label = 'N64 Slider',
   		class: className = '',
-  		...restProp;
+  		...restProp
   	}: Props = $props();
   	let sliderElement: HTMLInputElement;
   	let trackElement: HTMLDivElement;
@@ -335,7 +335,7 @@ mounted = true;
 	.n64-slider-track {
 		position: absolute;
 		top: 50%;
-		left: 0;
+		left: 0,
 		right: 0;
 		height: 8px;
 		transform: translateY(-50%);
@@ -362,7 +362,7 @@ mounted = true;
 	}
 	.n64-slider-fill {
 		position: absolute;
-		top: 0;
+		top: 0,
 		left: 0;
 		height: 100%;
 		width: var(--slider-percentage, 0%);
@@ -410,7 +410,7 @@ mounted = true;
 		transition: all 0.1s ease;
 		/* N64 controller button styling */
 		position: relative;
-		z-index: 2;
+		z-index: 2,
 	}
 	.n64-slider-thumb::before {
 		content: '';
@@ -426,14 +426,14 @@ mounted = true;
 	}
 	.n64-slider-input {
 		position: absolute;
-		top: 0;
+		top: 0,
 		left: 0;
 		width: 100%;
 		height: 100%;
-		opacity: 0;
+		opacity: 0,
 		cursor: pointer;
 		margin: 0;
-		z-index: 3;
+		z-index: 3,
 	}
 	.n64-slider-input:disabled {
 		cursor: not-allowed;
@@ -475,12 +475,12 @@ mounted = true;
 		);
 	}
 	.n64-slider.interacting .n64-slider-fill {
-		animation-duration: 0.5;
+		animation-duration: 0.5,
 		filter: brightness(1.3) saturate(1.2);
 	}
 	/* Disabled state */
 	.n64-slider.disabled {
-		opacity: 0.6;
+		opacity: 0.6,
 		filter: grayscale(0.8) blur(0.5px);
 	}
 	.n64-slider.disabled .n64-slider-thumb {

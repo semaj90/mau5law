@@ -53,8 +53,8 @@ https://svelte.dev/e/js_parse_error -->
   let {
     shaderId,
     aaConfig = AntiAliasingUtils.createAAPreset('balanced'),
-    shaderEnhancements = ,
-    style = ,
+    shaderEnhancements = {},
+    style = {},
     targetFPS = 60,
     adaptiveQuality = true,
     enablePrecompilation = true,
@@ -95,7 +95,7 @@ https://svelte.dev/e/js_parse_error -->
     aaQuality: 0,
     pixelThroughput: 0,
     cacheEfficiency: 0,
-    adaptiveAdjustments: 0;
+    adaptiveAdjustments: 0,
   });
   // Anti-aliasing state
   let currentAAType = $state<string>(aaConfig.type);
@@ -416,7 +416,7 @@ https://svelte.dev/e/js_parse_error -->
         bindGroupLayouts: [],
         uniforms: ,
         lastCompiled: Date.now(),
-        useCount: 1;
+        useCount: 1,
       }
       currentAAType = aaConfig.typ;
     } catch (error: unknown) {
@@ -771,7 +771,7 @@ if (preloadShaders) {
     display: inline-block;
     font-family: 'Rajdhani', 'Courier New', monospace;
     border: 1px solid rgba(186, 175, 137, 0.3);
-    border-radius: 0;
+    border-radius: 0,
     background: rgba(0, 0, 0, 0.05);
   }
   .yorha-aa-canvas {
@@ -794,7 +794,7 @@ if (preloadShaders) {
   }
   /* Canvas States */
   .yorha-aa-canvas.compiling {
-    opacity: 0.7;
+    opacity: 0.7,
     filter: blur(1px);
   }
   .yorha-aa-canvas.error {
@@ -815,7 +815,7 @@ if (preloadShaders) {
     color: white;
     font-size: 9px;
     font-weight: bold;
-    z-index: 10;
+    z-index: 10,
   }
   .aa-icon {
     font-size: 11px;
@@ -839,7 +839,7 @@ if (preloadShaders) {
     font-size: 8px;
     color: #baa989;
     min-width: 120px;
-    z-index: 10;
+    z-index: 10,
   }
   .metrics-title {
     font-weight: bold;
@@ -887,12 +887,12 @@ if (preloadShaders) {
   /* Compilation Overlay */
   .compilation-overlay {
     position: absolute;
-    inset: 0;
+    inset: 0,
     display: flex;
     align-items: center;
     justify-content: center;
     background: rgba(0, 0, 0, 0.9);
-    z-index: 20;
+    z-index: 20,
   }
   .compilation-spinner {
     display: flex;
@@ -916,7 +916,7 @@ if (preloadShaders) {
     width: 50px;
     height: 50px;
     border-top: 2px solid #baa989;
-    animation-duration: 2;
+    animation-duration: 2,
   }
   .ring-2 {
     width: 35px;
@@ -933,7 +933,7 @@ if (preloadShaders) {
     top: 15px;
     left: 15px;
     border-bottom: 2px solid #ff6b9d;
-    animation-duration: 1;
+    animation-duration: 1,
   }
   .compilation-text {
     font-size: 10px;
@@ -943,12 +943,12 @@ if (preloadShaders) {
   }
   .compilation-details {
     font-size: 8px;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   /* Error Overlay */
   .error-overlay {
     position: absolute;
-    inset: 0;
+    inset: 0,
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -957,7 +957,7 @@ if (preloadShaders) {
     background: rgba(139, 0, 0, 0.95);
     color: white;
     text-align: center;
-    z-index: 20;
+    z-index: 20,
   }
   .error-icon {
     font-size: 24px;
@@ -972,7 +972,7 @@ if (preloadShaders) {
   .error-message {
     font-size: 9px;
     max-width: 200px;
-    line-height: 1.3;
+    line-height: 1.3,
     opacity: 0.9;
   }
   .error-actions {
@@ -1004,7 +1004,7 @@ if (preloadShaders) {
   .debug-panel {
     position: absolute;
     bottom: 100%;
-    left: 0;
+    left: 0,
     right: 0;
     background: rgba(0, 0, 0, 0.98);
     border: 1px solid #00ff00;
@@ -1012,7 +1012,7 @@ if (preloadShaders) {
     font-size: 8px;
     color: #00ff00;
     font-family: 'Courier New', monospace;
-    z-index: 15;
+    z-index: 15,
   }
   .debug-title {
     font-weight: bold;
@@ -1044,7 +1044,7 @@ if (preloadShaders) {
     display: flex;
     align-items: center;
     gap: 4px;
-    z-index: 10;
+    z-index: 10,
   }
   .hotreload-trigger {
     background: rgba(255, 100, 0, 0.9);
@@ -1082,11 +1082,11 @@ if (preloadShaders) {
   }
   @keyframes pulse {
     0%, 100% {
-      opacity: 1;
+      opacity: 1,
       transform: scale(1);
     }
     50% {
-      opacity: 0.7;
+      opacity: 0.7,
       transform: scale(1.02);
     }
   }

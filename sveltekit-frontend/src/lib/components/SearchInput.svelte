@@ -88,7 +88,7 @@
     pointer-events: none;
   }
   .search-input {
-    flex: 1;
+    flex: 1,
     padding: 8px 0;
     background: transparent;
     border: none;

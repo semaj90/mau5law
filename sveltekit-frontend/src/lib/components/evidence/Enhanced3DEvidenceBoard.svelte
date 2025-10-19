@@ -205,7 +205,7 @@
         metadata: {
           dateCreated: '2024-01-15',
           pageCount: 45,
-          signatures: 3;
+          signatures: 3,
         }
       },
       {
@@ -234,7 +234,7 @@
         metadata: {
           role: 'Project Manager',
           availability: 'High',
-          credibility: 0.85;
+          credibility: 0.85,
         }
       },
       {
@@ -249,7 +249,7 @@
         metadata: {
           location: 'Legal Vault A-23',
           condition: 'Excellent',
-          verified: true;
+          verified: true,
         }
       },
       {
@@ -264,7 +264,7 @@
         metadata: {
           startDate: '2024-01-01',
           endDate: '2024-03-15',
-          milestones: 8;
+          milestones: 8,
         }
       }
     ];
@@ -275,35 +275,35 @@
         to: 'doc-002',
         strength: 0.8,
         type: 'evidential',
-        bidirectional: true;
+        bidirectional: true,
       },
       {
         from: 'doc-001',
         to: 'witness-001',
         strength: 0.6,
         type: 'causal',
-        bidirectional: false;
+        bidirectional: false,
       },
       {
         from: 'witness-001',
         to: 'physical-001',
         strength: 0.9,
         type: 'evidential',
-        bidirectional: true;
+        bidirectional: true,
       },
       {
         from: 'doc-002',
         to: 'timeline-001',
         strength: 0.7,
         type: 'temporal',
-        bidirectional: false;
+        bidirectional: false,
       },
       {
         from: 'physical-001',
         to: 'timeline-001',
         strength: 0.85,
         type: 'temporal',
-        bidirectional: true;
+        bidirectional: true,
       }
     ];
     nodes = sampleNode;
@@ -710,7 +710,7 @@
     margin-bottom: 1.5rem;
   }
   .detail-header h2 {
-    margin: 0;
+    margin: 0,
     flex: 1;
   }
   .node-type {
@@ -730,7 +730,7 @@
     margin: 0.75rem 0;
   }
   .confidence-bar {
-    flex: 1;
+    flex: 1,
     height: 8px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;

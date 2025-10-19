@@ -26,21 +26,21 @@
       title: 'Commercial Lease Agreement',
       complexity: 0.7,
       size: { width: 1920, height: 2560 },
-      type: 'contract';
+      type: 'contract',
     },
     {
       id: 'evidence_email_2024_042',
       title: 'Email Evidence Chain',
       complexity: 0.4,
       size: { width: 1024, height: 768 },
-      type: 'evidence';
+      type: 'evidence',
     },
     {
       id: 'motion_summary_judgment',
       title: 'Motion for Summary Judgment',
       complexity: 0.9,
       size: { width: 2048, height: 3200 },
-      type: 'motion';
+      type: 'motion',
     }
   ];
   // Derived current document based on selectedDocument
@@ -397,7 +397,7 @@
     min-width: 160px;
   }
   .bar {
-    flex: 1;
+    flex: 1,
     height: 16px;
     border: 1px solid #000;
     background: #f0f0f0;

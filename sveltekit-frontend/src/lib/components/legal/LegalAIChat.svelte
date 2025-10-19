@@ -295,6 +295,6 @@
     overflow: hidden;
   }
   .prose {
-    line-height: 1.6;
+    line-height: 1.6,
   }
 </style>

@@ -43,14 +43,14 @@
     text-align: center;
   }
   .avatar-content {
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .avatar-info {
-    flex: 1;
+    flex: 1,
   }
   .title-icon {
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 600,
     color: var(--text-primary, #111827);
     margin: 0 0 8px 0;
     display: flex;
@@ -60,7 +60,7 @@
   .avatar-info p {
     color: var(--text-secondary, #6b7280);
     font-size: 14px;
-    line-height: 1.5;
+    line-height: 1.5,
     margin: 0;
   }
   @media (max-width: 768px) {

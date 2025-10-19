@@ -280,7 +280,7 @@ https://svelte.dev/e/attribute_duplicate -->
 }
   .title-section h3 {
     margin: 0;
-    font-weight: 600;
+    font-weight: 600,
     color: #111827;
 }
   .case-badge {
@@ -329,7 +329,7 @@ https://svelte.dev/e/attribute_duplicate -->
 }
   .content {
     white-space: pre-wrap;
-    line-height: 1.5;
+    line-height: 1.5,
 }
   .references {
     margin-top: 12px;
@@ -339,7 +339,7 @@ https://svelte.dev/e/attribute_duplicate -->
   .references h4 {
     margin: 0 0 8px 0;
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
 }
   .reference {
@@ -361,7 +361,7 @@ https://svelte.dev/e/attribute_duplicate -->
     border-color: #d1d5db;
 }
   .ref-title {
-    font-weight: 500;
+    font-weight: 500,
     color: #111827;
 }
   .ref-citation {
@@ -375,7 +375,7 @@ https://svelte.dev/e/attribute_duplicate -->
     border-top: 1px solid #e5e7eb;
 }
   .input {
-    flex: 1;
+    flex: 1,
     padding: 12px;
     border: 1px solid #d1d5db;
     border-radius: 6px;
@@ -399,19 +399,19 @@ https://svelte.dev/e/attribute_duplicate -->
     background: #2563eb;
 }
   .submit-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
 }
   .settings-panel {
     position: absolute;
-    top: 0;
+    top: 0,
     right: 0;
     width: 300px;
     height: 100%;
     background: white;
     border-left: 1px solid #e5e7eb;
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-    z-index: 10;
+    z-index: 10,
 }
   .settings-header {
     display: flex;
@@ -422,7 +422,7 @@ https://svelte.dev/e/attribute_duplicate -->
 }
   .settings-header h4 {
     margin: 0;
-    font-weight: 600;
+    font-weight: 600,
     color: #111827;
 }
   .close-btn {
@@ -442,7 +442,7 @@ https://svelte.dev/e/attribute_duplicate -->
     display: block;
     margin-bottom: 4px;
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
 }
   .setting select,
@@ -470,11 +470,11 @@ https://svelte.dev/e/attribute_duplicate -->
     border-bottom: 1px solid #e5e7eb;
 }
   .modal-header h4 {
-    margin: 0;
+    margin: 0,
     display: flex;
     align-items: center;
     gap: 8px;
-    font-weight: 600;
+    font-weight: 600,
     color: #111827;
 }
   .modal-body {
@@ -499,7 +499,7 @@ https://svelte.dev/e/attribute_duplicate -->
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 500,
     transition: background 0.2;
 }
   .btn-primary:hover {
@@ -512,7 +512,7 @@ https://svelte.dev/e/attribute_duplicate -->
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 500,
     transition: background 0.2;
 }
   .btn-secondary:hover {

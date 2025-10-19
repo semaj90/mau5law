@@ -33,7 +33,7 @@ https://svelte.dev/e/js_parse_error -->
   let strengthColor = $derived({
     strong: 'text-green-600 bg-green-50',
     moderate: 'text-yellow-600 bg-yellow-50',
-    weak: 'text-red-600 bg-red-50';
+    weak: 'text-red-600 bg-red-50',
   }[synthesis.caseStrength] ?? 'text-gray-600 bg-gray-50');
   // Role colors for persons
   const roleColors = {
@@ -41,7 +41,7 @@ https://svelte.dev/e/js_parse_error -->
     witness: 'bg-blue-100 text-blue-800',
     victim: 'bg-purple-100 text-purple-800',
     associate: 'bg-orange-100 text-orange-800',
-    unknown: 'bg-gray-100 text-gray-800';
+    unknown: 'bg-gray-100 text-gray-800',
   }
   let showDetails = $state(false);
 </script>

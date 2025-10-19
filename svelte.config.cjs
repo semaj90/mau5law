@@ -1,8 +1,8 @@
-// CommonJS SvelteKit config (actual adapter/preprocess can be adjusted to your project)
-const adapterAuto = require("@sveltejs/adapter-auto");
-const sveltePreprocess = require("svelte-preprocess");
-
+// Minimal CommonJS config to help Svelte language server resolve project config
 module.exports = {
+  // Keep this minimal so the language server can require it safely.
+  // Add your real preprocess / kit adapter when running the app.
+};
   preprocess: sveltePreprocess(),
   kit: {
     adapter: adapterAuto(),

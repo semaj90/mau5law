@@ -69,7 +69,7 @@ https://svelte.dev/e/js_parse_error -->
             caseId,
             useThinkingStyle: thinkingStyleEnabled
             analysisType: 'reasoning',
-            documentType: 'legal_document';
+            documentType: 'legal_document',
           }),
   });
       } else {
@@ -121,9 +121,9 @@ https://svelte.dev/e/js_parse_error -->
       notifications.add({
         type: "error",
         title: "Chat Error",
-        message: "Failed to get response from AI assistant";
+        message: "Failed to get response from AI assistant",
       });
-      errorMessage = error instanceof Error ? error.message: 'An error occurred';
+      errorMessage = error instanceof Error ? error.message: 'An error occurred',
     } finally {
       chatActions.setLoading(false);
       chatActions.setTyping(false);
@@ -209,7 +209,7 @@ https://svelte.dev/e/js_parse_error -->
       }
       chatActions.addMessage(apiResponse.data.content, "assistant", {
         ...apiResponse.data.metadata,
-        proactive: true;
+        proactive: true,
       });
       setTimeout(scrollToBottom, 100);
     } catch (error) {
@@ -468,7 +468,7 @@ https://svelte.dev/e/js_parse_error -->
     margin-bottom: 0.5rem;
   }
   :global(.message-content p:last-child) {
-    margin-bottom: 0;
+    margin-bottom: 0,
   }
   :global(.message-content ul, .message-content ol) {
     margin: 0.5rem 0;
@@ -481,7 +481,7 @@ https://svelte.dev/e/js_parse_error -->
     font-family: "Courier New", monospace;
   }
   :global(.message-content h1, .message-content h2, .message-content h3) {
-    font-weight: 600;
+    font-weight: 600,
     margin: 1rem 0 0.5rem 0;
   }
   :global(.message-content h1) {

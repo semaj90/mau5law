@@ -8,7 +8,7 @@
       status: 'active',
       progress: 75,
       evidenceCount: 12,
-      lastUpdate: '2 hours ago';
+      lastUpdate: '2 hours ago',
     },
     {
       id: '002',
@@ -16,7 +16,7 @@
       status: 'pending',
       progress: 45,
       evidenceCount: 8,
-      lastUpdate: '1 day ago';
+      lastUpdate: '1 day ago',
     },
     {
       id: '003',
@@ -24,7 +24,7 @@
       status: 'active',
       progress: 90,
       evidenceCount: 15,
-      lastUpdate: '30 min ago';
+      lastUpdate: '30 min ago',
     }
   ]);
   let searchQuery = $state('');
@@ -130,7 +130,7 @@
     font-family: 'Press Start 2P', cursiv;
     font-size: 0.875rem;
     margin: 0;
-    line-height: 1.4;
+    line-height: 1.4,
     flex: 1;
   }
   .case-stats {
@@ -150,7 +150,7 @@
     color: var(--nier-text-secondary);
   }
   .progress-bar {
-    flex: 1;
+    flex: 1,
     height: 8px;
     background: rgba(74, 144, 226, 0.2);
     border-radius: 4px;

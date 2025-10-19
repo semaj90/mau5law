@@ -82,7 +82,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit';
+      minute: '2-digit',
     });
   }
   function getTimeSince(date: Date): string {

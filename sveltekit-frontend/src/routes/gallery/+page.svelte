@@ -755,24 +755,24 @@ Displays all media: evidence, generated images, documents, uploads
   }
   .item-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.7);
     display: flex;
     flex-direction: column;
     justify-content: space-betwee;
     padding: 1rem;
-    opacity: 0;
+    opacity: 0,
     transition: opacity 0.3s ease;
     color: white;
   }
   .gallery-item:hover .item-overlay {
-    opacity: 1;
+    opacity: 1,
   }
   .overlay-info {
-    flex: 1;
+    flex: 1,
   }
   .item-title {
     font-weight: bold;
@@ -780,7 +780,7 @@ Displays all media: evidence, generated images, documents, uploads
   }
   .item-case {
     font-size: 0.8rem;
-    opacity: 0.8;
+    opacity: 0.8,
     margin: 0;
   }
   .overlay-actions {
@@ -823,7 +823,7 @@ Displays all media: evidence, generated images, documents, uploads
   /* Modal Styles */
   .modal-overlay {
     position: fixed;
-    top: 0;
+    top: 0,
     left: 0;
     width: 100%;
     height: 100%;
@@ -831,7 +831,7 @@ Displays all media: evidence, generated images, documents, uploads
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 1000,
     padding: 1rem;
   }
   .modal-content {

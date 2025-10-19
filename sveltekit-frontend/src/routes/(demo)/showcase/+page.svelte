@@ -244,7 +244,7 @@
     color: var(--nier-text-secondary);
     max-width: 600px;
     margin: 0 auto;
-    line-height: 1.6;
+    line-height: 1.6,
   }
 
   .showcase-stats {
@@ -302,7 +302,7 @@
     font-size: 1.8rem;
     font-weight: bold;
     color: var(--nier-text-primary);
-    margin: 0;
+    margin: 0,
   }
 
   .category-count {
@@ -352,13 +352,13 @@
     font-size: 1.3rem;
     font-weight: bold;
     color: var(--nier-accent-warm);
-    margin: 0;
+    margin: 0,
   }
 
   .demo-badges {
     display: flex;
     gap: 0.5rem;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
 
   .status-badge,
@@ -406,7 +406,7 @@
 
   .demo-description {
     color: var(--nier-text-secondary);
-    line-height: 1.5;
+    line-height: 1.5,
     margin: 0 0 1.5rem 0;
   }
 
@@ -467,7 +467,7 @@
 
   .footer-text {
     color: var(--nier-text-muted);
-    margin: 0;
+    margin: 0,
   }
 
   .footer-links {

@@ -240,7 +240,7 @@
         priority: 'high',
         createdAt: '2024-01-15T10:00:00Z',
         updatedAt: '2024-01-20T14:30:00Z',
-        description: 'Investigation into alleged financial irregularities';
+        description: 'Investigation into alleged financial irregularities',
       },
       {
         id: 'case-002',
@@ -249,7 +249,7 @@
         priority: 'medium',
         createdAt: '2024-01-18T09:00:00Z',
         updatedAt: '2024-01-18T09:00:00Z',
-        description: 'Breach of contract claim requiring evidence analysis';
+        description: 'Breach of contract claim requiring evidence analysis',
       }
     ];
     if (!currentCase && cases.length > 0) {
@@ -554,7 +554,7 @@
     gap: 0.5rem;
   }
   .case-title {
-    font-weight: 600;
+    font-weight: 600,
     color: #FFD700;
   }
   .workspace-actions {
@@ -582,7 +582,7 @@
     color: #00ff88;
   }
   .workspace-content {
-    flex: 1;
+    flex: 1,
     overflow: hidden;
   }
   .workspace-tabs {
@@ -610,7 +610,7 @@
     height: 100%;
   }
   .evidence-canvas-section {
-    min-height: 0;
+    min-height: 0,
   }
   .evidence-sidebar {
     overflow-y: auto;
@@ -660,7 +660,7 @@
     font-size: 0.8rem;
     color: #cccccc;
     margin: 0.5rem 0;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .evidence-tags {
     display: flex;
@@ -716,7 +716,7 @@
     align-items: center;
     margin-bottom: 0.5rem;
     font-size: 0.8rem;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .message-role {
     display: flex;
@@ -729,7 +729,7 @@
     font-size: 0.7rem;
   }
   .message-content {
-    line-height: 1.5;
+    line-height: 1.5,
   }
   .thinking-indicator {
     display: flex;
@@ -743,18 +743,18 @@
     animation: thinking 1.5s ease-in-out infinite;
   }
   .thinking-indicator span:nth-child(2) {
-    animation-delay: 0.3;
+    animation-delay: 0.3,
   }
   .thinking-indicator span:nth-child(3) {
-    animation-delay: 0.6;
+    animation-delay: 0.6,
   }
   @keyframes thinking {
     0%, 80%, 100% {
-      opacity: 0.3;
+      opacity: 0.3,
       transform: scale(0.8);
     }
     40% {
-      opacity: 1;
+      opacity: 1,
       transform: scale(1);
     }
   }
@@ -774,7 +774,7 @@
     margin-bottom: 2rem;
   }
   .citations-list {
-    flex: 1;
+    flex: 1,
   }
   .citation-item {
     display: flex;
@@ -797,7 +797,7 @@
     justify-content: center;
     height: 200px;
     text-align: center;
-    opacity: 0.6;
+    opacity: 0.6,
   }
   /* Responsive */
   @media (max-width: 1024px) {

@@ -1,11 +1,7 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- YoRHa 3D Components Gallery -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // $state runtime rune is provided globally via src/types/svelte-helpers.d.ts
-  import { onMount } from 'svelte';
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
   // Import types only to avoid 3D dependencies for now
   import type {
@@ -17,17 +13,18 @@ https://svelte.dev/e/js_parse_error -->
   import {
     Gamepad2,
     Monitor,
-    Cpu,
     Settings,
     Eye,
     Code,
-    Palette,
     Layers
   } from 'lucide-svelte';
+  import type { SvelteComponentTyped } from 'svelte'; // Use SvelteComponentTyped for constructor compatibility
+
   // Component instances and options
   let selectedComponent = $state('button');
   let previewMode = $state('3d');
   let isLoading = $state(false);
+
   // Component configurations
   let buttonConfig = $state<YoRHaButton3DOptions>({
     text: 'YoRHa Button',
@@ -37,47 +34,57 @@ https://svelte.dev/e/js_parse_error -->
     loading: false,
     disabled: false,
     glowEffect: true,
-    hoverAnimation: true;
+    hoverAnimation: true,
   });
   let panelConfig = $state<YoRHaPanel3DOptions>({
     title: 'YoRHa Panel',
     variant: 'default',
     width: 400,
     height: 300,
-    scrollable: true;
-    collapsible: true
-    glitchEffect: false
-    borderGlow: true;
+    scrollable: true,
+    collapsible: true,
+    glitchEffect: false,
+    borderGlow: true,
   });
   let inputConfig = $state<YoRHaInput3DOptions>({
     placeholder: 'Enter command...',
     type: 'text',
     variant: 'default',
     value: '',
-    error: false;
-    focused: false
-    scanlineEffect: true
-    terminalMode: true;
+    error: false,
+    focused: false,
+    scanlineEffect: true,
+    terminalMode: true,
   });
   let modalConfig = $state<YoRHaModal3DOptions>({
     title: 'YoRHa Modal',
     variant: 'default',
     size: 'medium',
-    closable: true;
-    open: false
-    backdropBlur: true
-    hologramEffect: true;
+    closable: true,
+    open: false,
+    backdropBlur: true,
+    hologramEffect: true,
   });
   // UI state
   let yorhaUI = $state<any | null>(null);
   let canvasContainer = $state<HTMLElement | null>(null);
+
+  // Define a type for component types for better type safety
+  interface ComponentType {
+    id: string;
+    label: string;
+    // icon constructors (e.g. lucide-svelte) are compatible with this signature
+    icon: new (...args: any[]) => SvelteComponentTyped<any, any, any>;
+    description: string;
+  }
+
   // Component variants and options
-  const componentTypes = [
+  const componentTypes: ComponentType[] = [
     { id: 'button', label: 'Button 3D', icon: Gamepad2, description: '3D interactive buttons with hover effects' },
     { id: 'panel', label: 'Panel 3D', icon: Monitor, description: 'Floating 3D panels with content areas' },
     { id: 'input', label: 'Input 3D', icon: Code, description: 'Terminal-style 3D input fields' },
     { id: 'modal', label: 'Modal 3D', icon: Layers, description: 'Holographic modal dialogs' }
-  ]);
+  ];
   const previewModes = [
     { id: '3d', label: '3D View', icon: Eye },
     { id: 'code', label: 'Code', icon: Code },
@@ -108,7 +115,7 @@ https://svelte.dev/e/js_parse_error -->
         yorhaAPI.createInputFromAPI('demo-input'),
         yorhaAPI.createModalFromAPI('demo-modal')
       ]);
-      buttonConfig = butto;
+      buttonConfig = button; // Fixed typo: butto -> button
       panelConfig = panel;
       inputConfig = input;
       modalConfig = modal;
@@ -152,10 +159,10 @@ https://svelte.dev/e/js_parse_error -->
   }
   function exportConfig() {
     const configs = {
-      button: buttonConfig
-      panel: panelConfig;
-      input: inputConfig;
-      modal: modalConfig;
+      button: buttonConfig, // Added comma
+      panel: panelConfig, // Added comma
+      input: inputConfig, // Added comma
+      modal: modalConfig, // Added comma
     }
     const blob = new Blob([JSON.stringify(configs, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -167,19 +174,24 @@ https://svelte.dev/e/js_parse_error -->
   }
   async function saveConfig() {
     try {
-      await yorhaAPI.updateComponentConfig(`demo-${selectedComponent}`, getCurrentConfig());
-      console.log('Configuration saved');
+      const currentConfig = getCurrentConfig();
+      if (currentConfig) {
+        await yorhaAPI.updateComponentConfig(`demo-${selectedComponent}`, currentConfig as Record<string, unknown>);
+        console.log('Configuration saved');
+      } else {
+        console.warn('No configuration to save for selected component.');
+      }
     } catch (error) {
       console.error('Failed to save configuration:', error);
     }
   }
-  function getCurrentConfig() {
+  function getCurrentConfig(): YoRHaButton3DOptions | YoRHaPanel3DOptions | YoRHaInput3DOptions | YoRHaModal3DOptions | undefined {
     switch (selectedComponent) {
       case 'button': return buttonConfig;
       case 'panel': return panelConfig;
       case 'input': return inputConfig;
       case 'modal': return modalConfig;
-      default: return ;
+      default: return undefined; // Return undefined if no component is selected
     }
   }
   function resetConfig() {
@@ -190,11 +202,11 @@ https://svelte.dev/e/js_parse_error -->
           variant: 'primary',
           size: 'medium',
           icon: 'terminal',
-          loading: false;
-          disabled: false
-          glowEffect: true
-          hoverAnimation: true;
-        }
+          loading: false,
+          disabled: false,
+          glowEffect: true,
+          hoverAnimation: true,
+        }; // Added semicolon
         break;
       case 'panel':
         panelConfig = {
@@ -202,11 +214,11 @@ https://svelte.dev/e/js_parse_error -->
           variant: 'default',
           width: 400,
           height: 300,
-          scrollable: true;
-          collapsible: true
-          glitchEffect: false
-          borderGlow: true;
-        }
+          scrollable: true,
+          collapsible: true,
+          glitchEffect: false,
+          borderGlow: true,
+        }; // Added semicolon
         break;
       case 'input':
         inputConfig = {
@@ -214,22 +226,22 @@ https://svelte.dev/e/js_parse_error -->
           type: 'text',
           variant: 'default',
           value: '',
-          error: false;
-          focused: false
-          scanlineEffect: true
-          terminalMode: true;
-        }
+          error: false,
+          focused: false,
+          scanlineEffect: true,
+          terminalMode: true,
+        }; // Added semicolon
         break;
       case 'modal':
         modalConfig = {
           title: 'YoRHa Modal',
           variant: 'default',
           size: 'medium',
-          closable: true;
-          open: false
-          backdropBlur: true
-          hologramEffect: true;
-        }
+          closable: true,
+          open: false,
+          backdropBlur: true,
+          hologramEffect: true,
+        }; // Added semicolon
         break;
     }
     updatePreview();
@@ -284,7 +296,6 @@ https://svelte.dev/e/js_parse_error -->
           {#each previewModes as mode}
             <button
               class="yorha-mode-btn"
-              ;
               class:yorha-mode-active={previewMode === mode.id}
               onclick={() => (previewMode = mode.id)}
             >
@@ -439,7 +450,6 @@ https://svelte.dev/e/js_parse_error -->
                 <label for="title">Title</label><input
                   id="title"
                   type="text"
-                  ;
                   bind:value={modalConfig.title}
                   oninput={onConfigChange}
                 />
@@ -525,167 +535,167 @@ https://svelte.dev/e/js_parse_error -->
   </div>
 </div>
 
-<style>
+<style lang="postcss">
   .yorha-components-page {
-    /* @apply min-h-scree; */
+    @apply min-h-screen;
   }
   /* Page Header */
   .yorha-page-header {
-    /* @apply py-12 px-6 border-b border-amber-400 border-opacity-30; */
+    @apply py-12 px-6 border-b border-amber-400 border-opacity-30;
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(255, 191, 0, 0.05) 100%);
   }
   .yorha-header-content {
-    /* @apply max-w-6xl mx-auto text-center; */
+    @apply max-w-6xl mx-auto text-center;
   }
   .yorha-header-title h1 {
-    /* @apply text-3xl md:text-4xl font-bold tracking-wider text-amber-400 flex items-center justify-center gap-4; */
+    @apply text-3xl md:text-4xl font-bold tracking-wider text-amber-400 flex items-center justify-center gap-4;
     text-shadow: 0 0 20px rgba(255, 191, 0, 0.5);
   }
   .yorha-header-subtitle {
-    /* @apply text-lg text-amber-300 tracking-wide opacity-80 mt-2; */
+    @apply text-lg text-amber-300 tracking-wide opacity-80 mt-2;
   }
   /* Layout */
   .yorha-components-layout {
-    /* @apply flex min-h-scree; */
+    @apply flex min-h-screen;
   }
   /* Sidebar */
   .yorha-controls-sidebar {
-    /* @apply w-80 bg-gray-900 border-r border-amber-400 border-opacity-30 p-6 space-y-6 overflow-y-auto; */
+    @apply w-80 bg-gray-900 border-r border-amber-400 border-opacity-30 p-6 space-y-6 overflow-y-auto;
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(255, 191, 0, 0.05) 100%);
   }
   .yorha-control-section {
-    /* @apply space-y-4; */
+    @apply space-y-4;
   }
   .yorha-control-title {
-    /* @apply text-lg font-bold text-amber-400 tracking-wider flex items-center gap-2; */
+    @apply text-lg font-bold text-amber-400 tracking-wider flex items-center gap-2;
   }
   /* Component List */
   .yorha-component-list {
-    /* @apply space-y-2; */
+    @apply space-y-2;
   }
   .yorha-component-btn {
-    /* @apply w-full p-4 text-left flex items-center gap-3 border border-amber-400 border-opacity-30; */
-    /* @apply hover:border-opacity-60 hover:bg-amber-400 hover:bg-opacity-10 transition-all; */
+    @apply w-full p-4 text-left flex items-center gap-3 border border-amber-400 border-opacity-30;
+    @apply hover:border-opacity-60 hover:bg-amber-400 hover:bg-opacity-10 transition-all;
   }
   .yorha-component-active {
-    /* @apply border-amber-400 bg-amber-400 bg-opacity-20; */
+    @apply border-amber-400 bg-amber-400 bg-opacity-20;
   }
   .yorha-component-info {
-    /* @apply flex-1 min-w-0; */
+    @apply flex-1 min-w-0;
   }
   .yorha-component-label {
-    /* @apply block font-semibold text-amber-400; */
+    @apply block font-semibold text-amber-400;
   }
   .yorha-component-desc {
-    /* @apply block text-xs text-amber-300 opacity-60 truncat; */
+    @apply block text-xs text-amber-300 opacity-60 truncate;
   }
   /* Mode Buttons */
   .yorha-mode-buttons {
-    /* @apply grid grid-cols-3 gap-2; */
+    @apply grid grid-cols-3 gap-2;
   }
   .yorha-mode-btn {
-    /* @apply px-3 py-2 text-xs font-mono border border-amber-400 border-opacity-30; */
-    /* @apply hover:border-opacity-60 hover:bg-amber-400 hover:bg-opacity-10 transition-all; */
-    /* @apply flex items-center justify-center gap-2; */
+    @apply px-3 py-2 text-xs font-mono border border-amber-400 border-opacity-30;
+    @apply hover:border-opacity-60 hover:bg-amber-400 hover:bg-opacity-10 transition-all;
+    @apply flex items-center justify-center gap-2;
   }
   .yorha-mode-active {
-    /* @apply border-amber-400 bg-amber-400 bg-opacity-20 text-amber-400; */
+    @apply border-amber-400 bg-amber-400 bg-opacity-20 text-amber-400;
   }
   /* Configuration Form */
   .yorha-config-form {
-    /* @apply space-y-4; */
+    @apply space-y-4;
   }
   .yorha-config-group {
-    /* @apply space-y-2; */
+    @apply space-y-2;
   }
   .yorha-config-group label {
-    /* @apply block text-sm font-semibold text-amber-400; */
+    @apply block text-sm font-semibold text-amber-400;
   }
   .yorha-config-group input,
   .yorha-config-group select {
-    /* @apply w-full px-3 py-2 bg-black border border-amber-400 border-opacity-30 text-amber-300; */
-    /* @apply focus:border-opacity-60 focus:outline-none font-mono text-sm; */
+    @apply w-full px-3 py-2 bg-black border border-amber-400 border-opacity-30 text-amber-300;
+    @apply focus:border-opacity-60 focus:outline-none font-mono text-sm;
   }
   .yorha-checkbox {
-    /* @apply flex items-center gap-2 cursor-pointer; */
+    @apply flex items-center gap-2 cursor-pointer;
   }
   .yorha-checkbox input[type='checkbox'] {
-    /* @apply w-auto; */
+    @apply w-auto;
   }
   /* Config Actions */
   .yorha-config-actions {
-    /* @apply grid grid-cols-3 gap-2 pt-4 border-t border-amber-400 border-opacity-30; */
+    @apply grid grid-cols-3 gap-2 pt-4 border-t border-amber-400 border-opacity-30;
   }
   .yorha-config-btn {
-    /* @apply px-3 py-2 text-xs font-mono border transition-all; */
+    @apply px-3 py-2 text-xs font-mono border transition-all;
   }
   .yorha-btn-save {
-    /* @apply border-green-400 text-green-400 hover:bg-green-400 hover:text-black; */
+    @apply border-green-400 text-green-400 hover:bg-green-400 hover:text-black;
   }
   .yorha-btn-reset {
-    /* @apply border-orange-400 text-orange-400 hover:bg-orange-400 hover:text-black; */
+    @apply border-orange-400 text-orange-400 hover:bg-orange-400 hover:text-black;
   }
   .yorha-btn-export {
-    /* @apply border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-black; */
+    @apply border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-black;
   }
   /* Preview Area */
   .yorha-preview-area {
-    /* @apply flex-1 relative; */
+    @apply flex-1 relative;
   }
   .yorha-3d-container {
-    /* @apply h-full relative; */
+    @apply h-full relative;
   }
   .yorha-canvas-container {
-    /* @apply w-full h-full min-h-scree; */
+    @apply w-full h-full min-h-screen;
   }
   .yorha-3d-loading {
-    /* @apply absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 space-y-4; */
+    @apply absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 space-y-4;
   }
   .yorha-loading-spinner {
-    /* @apply w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full; */
+    @apply w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full;
     animation: spin 1s linear infinite;
   }
   /* Code View */
   .yorha-code-view {
-    /* @apply p-6 h-full; */
+    @apply p-6 h-full;
   }
   .yorha-code-view h3 {
-    /* @apply text-xl font-bold text-amber-400 mb-4; */
+    @apply text-xl font-bold text-amber-400 mb-4;
   }
   .yorha-code-block {
-    /* @apply bg-black border border-amber-400 border-opacity-30 p-4 text-amber-300 text-sm font-monone; */
-    /* @apply whitespace-pre-wrap overflow-auto max-h-96; */
+    @apply bg-black border border-amber-400 border-opacity-30 p-4 text-amber-300 text-sm font-mono;
+    @apply whitespace-pre-wrap overflow-auto max-h-96;
   }
   /* Config Preview */
   .yorha-config-preview {
-    /* @apply p-6 h-full; */
+    @apply p-6 h-full;
   }
   .yorha-config-preview h3 {
-    /* @apply text-xl font-bold text-amber-400 mb-4; */
+    @apply text-xl font-bold text-amber-400 mb-4;
   }
   .yorha-config-display p {
-    /* @apply text-amber-300 mb-4; */
+    @apply text-amber-300 mb-4;
   }
   .yorha-config-summary h4 {
-    /* @apply text-lg font-semibold text-amber-400 mb-2; */
+    @apply text-lg font-semibold text-amber-400 mb-2;
   }
   .yorha-config-summary pre {
-    /* @apply bg-black border border-amber-400 border-opacity-30 p-4 text-amber-300 text-sm font-monone; */
-    /* @apply whitespace-pre-wrap overflow-auto max-h-64; */
+    @apply bg-black border border-amber-400 border-opacity-30 p-4 text-amber-300 text-sm font-mono;
+    @apply whitespace-pre-wrap overflow-auto max-h-64;
   }
   /* Component Info Panel */
   .yorha-component-info-panel {
-    /* @apply absolute bottom-6 right-6 bg-gray-900 border border-amber-400 border-opacity-30 p-4; */
-    /* @apply backdrop-blur-sm; */
+    @apply absolute bottom-6 right-6 bg-gray-900 border border-amber-400 border-opacity-30 p-4;
+    @apply backdrop-blur-sm;
   }
   .yorha-info-content {
-    /* @apply flex items-center gap-3; */
+    @apply flex items-center gap-3;
   }
   .yorha-info-content h4 {
-    /* @apply font-semibold text-amber-400; */
+    @apply font-semibold text-amber-400;
   }
   .yorha-info-content p {
-    /* @apply text-xs text-amber-300 opacity-80; */
+    @apply text-xs text-amber-300 opacity-80;
   }
   @keyframes spin {
     to {
@@ -695,10 +705,10 @@ https://svelte.dev/e/js_parse_error -->
   /* Responsive */
   @media (max-width: 1024px) {
     .yorha-components-layout {
-      /* @apply flex-col; */
+      @apply flex-col;
     }
     .yorha-controls-sidebar {
-      /* @apply w-full border-r-0 border-b; */
+      @apply w-full border-r-0 border-b;
     }
   }
 </style>

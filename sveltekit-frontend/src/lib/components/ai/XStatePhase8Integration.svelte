@@ -496,7 +496,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     align-items: center;
     justify-content: center;
     font-size: 0.875rem;
-    font-weight: 700;
+    font-weight: 700,
   }
   .progress-fill {
     transition: width 0.5s ease-in-out;
@@ -517,12 +517,12 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
   }
   @keyframes slideDown {
     from {
-      height: 0;
+      height: 0,
       opacity: 0;
     }
     to {
       height: auto;
-      opacity: 1;
+      opacity: 1,
     }
   }
   @keyframes spin {

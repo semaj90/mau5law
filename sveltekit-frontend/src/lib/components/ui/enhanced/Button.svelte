@@ -16,7 +16,7 @@
   		children,
   		class: className = '',
   		disabled,
-  		...prop;
+  		...prop
   	}: Props = $props();
   	let isDisabled = $derived(disabled || loading);
 </script>

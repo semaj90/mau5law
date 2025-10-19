@@ -1,0 +1,17 @@
+{
+  "Type parameter declaration expected.": 1,
+  "':' expected.": 4,
+  "')' expected.": 46,
+  "'(' expected.": 5,
+  "Argument expression expected.": 1,
+  "Unexpected keyword or identifier.": 67,
+  "'>' expected.": 26,
+  "';' expected.": 29,
+  "Unterminated template literal.": 1,
+  "Invalid character.": 1,
+  "Declaration or statement expected.": 8,
+  "Identifier expected.": 4,
+  "'}' expected.": 2,
+  "',' expected.": 45,
+  "Property or signature expected.": 3
+}

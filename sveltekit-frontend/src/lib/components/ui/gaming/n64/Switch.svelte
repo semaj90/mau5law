@@ -359,7 +359,7 @@
                      rotate(var(--angle))
                      translateY(calc(-1 * var(--distance)))
                      scale(0);
-          opacity: 0;
+          opacity: 0,
         }
       }
     `;
@@ -526,9 +526,9 @@
   /* Knob lighting overlay */
   .knob-lighting {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: radial-gradient(
       circle at 30% 30%,
@@ -549,7 +549,7 @@
     background: linear-gradient(45deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
     border-radius: 50%;
     pointer-events: none;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   /* Knob loading indicator */
   .knob-loading {
@@ -557,7 +557,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 10;
+    z-index: 10,
   }
   .n64-spinner {
     width: calc(var(--knob-size) * 0.5);
@@ -575,9 +575,9 @@
   /* Track fog effect */
   .track-fog {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: radial-gradient(ellipse at center, transparent 0%, var(--fog-color, #404040) 100%);
     opacity: 0.15;
@@ -618,7 +618,7 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-    flex: 1;
+    flex: 1,
   }
   .switch-label {
     color: #ffffff;
@@ -632,7 +632,7 @@
   .switch-description {
     color: rgba(255, 255, 255, 0.7);
     font-size: calc(var(--switch-font-size) * 0.85);
-    line-height: 1.4;
+    line-height: 1.4,
   }
   /* State variations */
   .n64-switch.focused {
@@ -650,7 +650,7 @@
     background: var(--track-bg);
   }
   .n64-switch.disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
     filter: grayscale(0.8);
   }

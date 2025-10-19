@@ -27,7 +27,7 @@
     webgpu: false,
     webasm: false,
     model: false,
-    adapter: false;
+    adapter: false,
   });
   // Quick prompts
   let quickPrompts = [
@@ -332,7 +332,7 @@
   }
   .content {
     flex: 1;
-    min-width: 0;
+    min-width: 0,
   }
   .typing-indicator {
     display: flex;
@@ -347,19 +347,19 @@
     animation: typing 1.4s ease-in-out infinite;
   }
   .typing-indicator span:nth-child(2) {
-    animation-delay: 0.2;
+    animation-delay: 0.2,
   }
   .typing-indicator span:nth-child(3) {
-    animation-delay: 0.4;
+    animation-delay: 0.4,
   }
   @keyframes typing {
     0%, 60%, 100% {
       transform: translateY(0);
-      opacity: 0.7;
+      opacity: 0.7,
     }
     30% {
       transform: translateY(-6px);
-      opacity: 1;
+      opacity: 1,
     }
   }
   .quick-prompts button {

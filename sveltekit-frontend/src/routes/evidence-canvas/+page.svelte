@@ -31,16 +31,16 @@
     padding: 2rem 1rem 1rem;
     background: #fff;
     border-bottom: 1px solid #e5e5e5;
-    margin-bottom: 0;
+    margin-bottom: 0,
   }
   .page-header h1 {
     margin: 0 0 0.5rem;
     color: #333;
     font-size: 2.5rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .page-header p {
-    margin: 0;
+    margin: 0,
     color: #666;
     font-size: 1.1rem;
   }

@@ -33,7 +33,7 @@
     connections: [],
     similarEvidence: [],
     timeline: [],
-    suggestedActions: [];
+    suggestedActions: [],
   });
   // Initialize search index when evidence list changes
   $effect(() => {
@@ -41,7 +41,7 @@
       fuse = new Fuse(evidenceList, {
         keys: ['name', 'tags', 'title', 'description'],
         threshold: 0.4,
-        includeScore: true;
+        includeScore: true,
       });
     }
   });
@@ -69,7 +69,7 @@
         body: JSON.stringify({
           caseId,
           evidence: selectedNode
-          analysisType: 'comprehensive';
+          analysisType: 'comprehensive',
         })
       });
       if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {

@@ -401,7 +401,7 @@
     gap: 0.5rem;
     font-family: monospace;
     font-size: 0.875rem;
-    font-weight: 700;
+    font-weight: 700,
   }
   .yorha-terminal-controls {
     display: flex;
@@ -480,7 +480,7 @@
     gap: 0.5rem;
   }
   .yorha-terminal-input {
-    flex: 1;
+    flex: 1,
     padding: 0.5rem;
     background: transparent;
     color: #f6d38b;
@@ -502,7 +502,7 @@
   }
   .yorha-command-reference h3 {
     font-size: 1.125rem;
-    font-weight: 700;
+    font-weight: 700,
     color: #fbbf24;
     margin-bottom: 0.75rem;
   }

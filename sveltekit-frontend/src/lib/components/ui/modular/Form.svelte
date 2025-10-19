@@ -37,7 +37,7 @@ https://svelte.dev/e/js_parse_error -->
     target,
     novalidate = false,
     autocomplete = 'on',
-    ...restProp;
+    ...restProp
   }: Props = $props();
   // UnoCSS-based form variants
   const formVariants = cva(
@@ -51,17 +51,17 @@ https://svelte.dev/e/js_parse_error -->
           inline: 'flex items-center gap-4 space-y-0',
           modal: 'space-y-6 p-8',
           yorha: 'space-y-6 p-6 bg-black/90 border-2 border-yellow-400/60 rounded-none font-mono text-yellow-400',
-          legal: 'space-y-4 p-6 bg-blue-50 border-2 border-blue-200 rounded-lg dark:bg-blue-950 dark:border-blue-800';
+          legal: 'space-y-4 p-6 bg-blue-50 border-2 border-blue-200 rounded-lg dark:bg-blue-950 dark:border-blue-800',
         },
         size: {
           sm: 'text-sm space-y-3',
           default: 'text-sm space-y-4',
-          lg: 'text-base space-y-6';
+          lg: 'text-base space-y-6',
         }
       },
       defaultVariants: {
         variant: 'default',
-        size: 'default';
+        size: 'default',
       }
     }
   );
@@ -123,12 +123,12 @@ https://svelte.dev/e/js_parse_error -->
 /* Legal form styling */ {}
   :global(.legal-form label) {
     color: rgb(29, 78, 216);
-    font-weight: 600;
+    font-weight: 600,
   }
 :global(.legal-form input[required] + label::after), {}
 :global(.legal-form textarea[required] + label::after), {}
   :global($1) {
-    content: ' *';
+    content: ' *',
     color: rgb(239, 68, 68);
   }
 </style>

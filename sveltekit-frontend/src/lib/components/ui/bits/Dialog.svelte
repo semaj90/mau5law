@@ -182,19 +182,19 @@
   }
   @keyframes overlay-show {
     from {
-      opacity: 0;
+      opacity: 0,
     }
     to {
-      opacity: 1;
+      opacity: 1,
     }
   }
   @keyframes content-show {
     from {
-      opacity: 0;
+      opacity: 0,
       transform: translate(-50%, -48%) scale(0.96);
     }
     to {
-      opacity: 1;
+      opacity: 1,
       transform: translate(-50%, -50%) scale(1);
     }
   }
@@ -207,9 +207,9 @@
   :global(.bits-dialog-accent) {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     height: 4px;
     background: linear-gradient(
       90deg,
@@ -261,7 +261,7 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    z-index: 51;
+    z-index: 51,
     width: 90vw;
     max-width: 512px;
     max-height: 85vh;

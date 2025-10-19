@@ -357,7 +357,7 @@
   .nes-typewriter-container {
     font-family: 'Courier New', 'Press Start 2P', monospace;
     font-size: 16px;
-    line-height: 1.5;
+    line-height: 1.5,
     color: #212529;
     background: transparent;
     padding: 8px;
@@ -415,7 +415,7 @@
     color: currentColor;
   }
   .nes-typewriter-cursor.visible {
-    opacity: 1;
+    opacity: 1,
   }
   .nes-typewriter-cursor.blinking {
     animation: blink 1s infinite;
@@ -423,11 +423,11 @@
   @keyframes blink {
     0%,
     50% {
-      opacity: 1;
+      opacity: 1,
     }
     51%,
     100% {
-      opacity: 0;
+      opacity: 0,
     }
   }
   /* Pixel-perfect rendering for retro look */
@@ -465,7 +465,7 @@
   @media (prefers-reduced-motion: reduce) {
     .nes-typewriter-cursor {
       animation: none;
-      opacity: 1;
+      opacity: 1,
     }
     .nes-typewriter-text :global(.nes-text-emphasis) {
       animation: none;

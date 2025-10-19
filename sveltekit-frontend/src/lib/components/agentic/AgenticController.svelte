@@ -347,7 +347,7 @@
   }
 
   .agentic-title {
-    margin: 0;
+    margin: 0,
     color: var(--nier-accent-cool, #00ccff);
     font-size: 1.8rem;
   }
@@ -375,7 +375,7 @@
   }
 
   .refresh-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
 
@@ -520,7 +520,7 @@
 
   .upload-btn:disabled,
   .query-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
 
@@ -531,7 +531,7 @@
   }
 
   .query-input {
-    flex: 1;
+    flex: 1,
     padding: 0.75rem;
     background: var(--nier-bg-tertiary, #2a2a2a);
     border: 1px solid var(--nier-border-primary, #333);
@@ -577,7 +577,7 @@
 
   .fix-content {
     margin-bottom: 0.5rem;
-    line-height: 1.6;
+    line-height: 1.6,
   }
 
   .fix-similar {
@@ -626,7 +626,7 @@
 
   .error-text {
     margin-bottom: 0.5rem;
-    line-height: 1.5;
+    line-height: 1.5,
   }
 
   .error-screenshot {

@@ -15,7 +15,7 @@
   /* @unocss-include */
   .select-label {
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 500,
     color: #6b7280;
     margin-bottom: 4px;
     display: block;

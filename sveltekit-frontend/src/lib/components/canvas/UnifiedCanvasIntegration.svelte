@@ -34,7 +34,7 @@
     evidenceObjects: [],
     drawingObjects: [],
     selectedObjects: [],
-    lastSync: 0;
+    lastSync: 0,
   });
   let currentMode = $state(initialMode);
   let showYoRHaBoard = $state(false);
@@ -142,7 +142,7 @@
       metadata: {
         objectCount: canvasObjects.length,
         lastSync: Date.now(),
-        version: '1.0';
+        version: '1.0',
       }
     }
     ondispatch?.(state);
@@ -314,7 +314,7 @@
     box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
   }
   .canvas-container {
-    flex: 1;
+    flex: 1,
     display: flex;
     overflow: hidden;
   }
@@ -323,10 +323,10 @@
   }
   .evidence-canvas-section,
   .yorha-canvas-section {
-    flex: 1;
+    flex: 1,
     display: flex;
     flex-direction: column;
-    min-width: 0;
+    min-width: 0,
   }
   .evidence-canvas-section.full-width,
   .yorha-canvas-section.full-width {

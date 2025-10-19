@@ -27,9 +27,9 @@
   let thinkingDepth = $state('detailed');
   let focusAreas = $state({
     precedents: true
-    evidence: true;
+    evidence: true,
     compliance: true;
-    alternatives: false;
+    alternatives: false,
   });
   let iconSize = $derived(size === 'sm' ? 16 : size === 'md' ? 20 : 24);
   let buttonClass = $derived(cn(
@@ -293,7 +293,7 @@
     margin-bottom: 0.5rem;
     color: inherit;
     opacity: 0.9;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .feature-list {
     display: flex;
@@ -302,7 +302,7 @@
   }
   .feature {
     font-size: 0.75rem;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .config-panel {
     background: var(--color-ui-surface);
@@ -324,7 +324,7 @@
   }
   .setting-label {
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
     color: var(--color-ui-text);
   }
   .setting-select {
@@ -382,17 +382,17 @@
     gap: 1rem;
   }
   .premium-text {
-    flex: 1;
+    flex: 1,
   }
   .premium-text strong {
     display: block;
     margin-bottom: 0.25rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .premium-text p {
     margin: 0;
     font-size: 0.875rem;
-    opacity: 0.9;
+    opacity: 0.9,
   }
   .nier-border-glow {
     position: relative;
@@ -408,6 +408,6 @@
       linear-gradient(#fff 0 0) content-box,
       linear-gradient(#fff 0 0);
     mask-composite: exclud;
-    opacity: 0.6;
+    opacity: 0.6,
   }
 </style>

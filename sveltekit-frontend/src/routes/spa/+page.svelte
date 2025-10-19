@@ -240,7 +240,7 @@
 <style>
   .loading-screen {
     position: fixed;
-    top: 0;
+    top: 0,
     left: 0;
     width: 100vw;
     height: 100vh;
@@ -248,7 +248,7 @@
     align-items: center;
     justify-content: center;
     background: var(--yorha-black);
-    z-index: 2000;
+    z-index: 2000,
   }
   .loading-content {
     text-align: center;
@@ -268,19 +268,19 @@
     margin: 0 0.2rem;
   }
   .loading-dot:nth-child(2) {
-    animation-delay: 0.3;
+    animation-delay: 0.3,
   }
   .loading-dot:nth-child(3) {
-    animation-delay: 0.6;
+    animation-delay: 0.6,
   }
   @keyframes blink {
     0%,
     50% {
-      opacity: 1;
+      opacity: 1,
     }
     51%,
     100% {
-      opacity: 0.3;
+      opacity: 0.3,
     }
   }
   .loading-stats {
@@ -314,7 +314,7 @@
   }
   /* Ensure full-screen coverage */
   :global(body) {
-    margin: 0;
+    margin: 0,
     padding: 0;
     overflow: hidden;
   }

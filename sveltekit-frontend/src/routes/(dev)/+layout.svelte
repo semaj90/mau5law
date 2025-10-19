@@ -51,7 +51,7 @@
   }
 
   .dev-main {
-    flex: 1;
+    flex: 1,
     padding: 1.5rem;
     overflow-x: auto;
     position: relative;
@@ -61,26 +61,26 @@
   .dev-main::before {
     content: '';
     position: fixed;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background-image:
       linear-gradient(rgba(204, 153, 255, 0.05) 1px, transparent 1px),
       linear-gradient(90deg, rgba(204, 153, 255, 0.05) 1px, transparent 1px);
     background-size: 20px 20px;
     pointer-events: none;
-    z-index: 0;
+    z-index: 0,
   }
 
   .dev-main > * {
     position: relative;
-    z-index: 1;
+    z-index: 1,
   }
 
   /* Development mode indicator */
   .dev-main::after {
-    content: '🛠️ DEV MODE';
+    content: '🛠️ DEV MODE',
     position: fixed;
     top: 70px;
     right: 20px;
@@ -88,7 +88,7 @@
     color: var(--text-secondary, #ff6600);
     opacity: 0.6;
     pointer-events: none;
-    z-index: 1000;
+    z-index: 1000,
   }
 
   @media (max-width: 768px) {

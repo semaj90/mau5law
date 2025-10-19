@@ -379,7 +379,7 @@
   .form-group label {
     display: block;
     margin-bottom: 0.5rem;
-    font-weight: 600;
+    font-weight: 600,
     color: var(--text-primary);
   }
   .form-input,
@@ -430,14 +430,14 @@
   }
   .upload-icon {
     font-size: 3rem;
-    opacity: 0.6;
+    opacity: 0.6,
   }
   .upload-text {
     color: var(--text-secondary);
   }
   .upload-hint {
     font-size: 0.875rem;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .file-preview {
     display: flex;
@@ -462,7 +462,7 @@
     border-radius: 6px;
   }
   .file-info {
-    flex: 1;
+    flex: 1,
   }
   .file-name {
     font-weight: 600;
@@ -523,7 +523,7 @@
     color: white;
     border: none;
     border-radius: 6px;
-    font-weight: 600;
+    font-weight: 600,
     cursor: pointer;
     transition: background-color 0.2s;
   }
@@ -531,7 +531,7 @@
     background: var(--accent-primary-dark);
   }
   .submit-button:disabled {
-    opacity: 0.6;
+    opacity: 0.6,
     cursor: not-allowed;
   }
   .error-message {

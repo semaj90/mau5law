@@ -128,7 +128,7 @@
         case_id: contextId;
         jurisdiction: 'Federal',
         practice_area: categoryFilter === 'all' ? 'Contract Law' : categoryFilter;
-        limit: 10;
+        limit: 10,
       }
       const response = await fetch('http://localhost:8095/api/v1/recommend', {
         method: 'POST',
@@ -159,7 +159,7 @@
             estimated_duration: '2-3 hours',
             required_resources: ['Legal database access'],
             dependencies: [],
-            completion_criteria: 'Case analysis completed';
+            completion_criteria: 'Case analysis completed',
           }],
           resources: [],
           risks: [],
@@ -637,9 +637,9 @@
   }
   .engine-title {
     font-size: 2rem;
-    font-weight: 700;
+    font-weight: 700,
     color: #1e293b;
-    margin: 0;
+    margin: 0,
   }
   .engine-subtitle {
     color: #64748b;
@@ -673,7 +673,7 @@
   }
   .control-group label {
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
   }
   .control-select,
@@ -727,7 +727,7 @@
     display: flex;
     align-items: flex-start;
     gap: 0.75rem;
-    flex: 1;
+    flex: 1,
   }
   .recommendation-icon {
     font-size: 1.5rem;
@@ -746,7 +746,7 @@
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 600,
     border: 1px solid;
     text-transform: capitaliz;
   }
@@ -758,11 +758,11 @@
   }
   .priority-indicator {
     font-size: 0.75rem;
-    font-weight: 700;
+    font-weight: 700,
   }
   .confidence-score {
     font-size: 1.125rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
   }
   .recommendation-description {
@@ -786,7 +786,7 @@
     min-width: 60px;
   }
   .stat-bar {
-    flex: 1;
+    flex: 1,
     height: 0.5rem;
     background: #e2e8f0;
     border-radius: 0.25rem;
@@ -801,7 +801,7 @@
   .stat-fill.risk { background: #ef4444, }
   .stat-value {
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
     min-width: 40px;
     text-align: right;
@@ -816,7 +816,7 @@
   }
   .steps-list {
     list-style: none;
-    padding: 0;
+    padding: 0,
     margin: 0;
     counter-reset: step-counter;
   }
@@ -831,7 +831,7 @@
   .step-item::before {
     content: counter(step-counter);
     position: absolute;
-    left: 0;
+    left: 0,
     top: 0.5rem;
     width: 1rem;
     height: 1rem;
@@ -841,7 +841,7 @@
     align-items: center;
     justify-content: center;
     font-size: 0.625rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
   }
   .step-more {
@@ -864,7 +864,7 @@
   }
   .estimate-value {
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
   }
   .recommendation-tags {
@@ -947,11 +947,11 @@
     font-size: 0.75rem;
     color: #64748b;
     text-transform: uppercase;
-    font-weight: 500;
+    font-weight: 500,
   }
   .overview-value {
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
   }
   .rationale-section h4 {
@@ -959,13 +959,13 @@
     color: #374151;
   }
   .rationale-section p {
-    margin: 0;
+    margin: 0,
     color: #64748b;
-    line-height: 1.6;
+    line-height: 1.6,
   }
   .detailed-steps-list {
     list-style: none;
-    padding: 0;
+    padding: 0,
     margin: 0;
     counter-reset: detailed-step-counter;
   }
@@ -1017,7 +1017,7 @@
   .availability-limited { color: #f59e0b, }
   .availability-unavailable { color: #ef4444, }
   .resource-cost {
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
   }
   .risks-list {
@@ -1038,7 +1038,7 @@
     margin-bottom: 0.5rem;
   }
   .risk-description {
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
   }
   .risk-score {

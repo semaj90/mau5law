@@ -97,7 +97,7 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .assistant .avatar {
     background-color: var(--muted, #f1f5f9);
@@ -113,7 +113,7 @@
   }
   .message-content {
     flex: 1;
-    min-width: 0;
+    min-width: 0,
   }
   .message-header {
     display: flex;
@@ -123,7 +123,7 @@
   }
   .sender-name {
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 600,
     color: var(--muted-foreground, #64748b);
   }
   .timestamp {
@@ -171,7 +171,7 @@
     margin: 0 0 0.5rem 0;
   }
   .message-body :global(p:last-child) {
-    margin-bottom: 0;
+    margin-bottom: 0,
   }
   .message-body :global(code) {
     background-color: rgba(0, 0, 0, 0.1);

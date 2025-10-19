@@ -106,7 +106,7 @@
               timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
               action: 'reviewed',
               duration: 45,
-              description: 'Evidence review session';
+              description: 'Evidence review session',
             }
           ],
           metadata: {
@@ -131,14 +131,14 @@
               timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
               action: 'edited',
               duration: 78,
-              description: 'Negotiated liability terms';
+              description: 'Negotiated liability terms',
             }
           ],
           metadata: {
             caseId: 'case-002',
             clientName: 'TechStart Inc.',
             practiceArea: 'Corporate Law',
-            deadline: '2024-02-28';
+            deadline: '2024-02-28',
           }
         }
       ];
@@ -591,13 +591,13 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     text-align: center;
   }
   .work-info {
-    flex: 1;
+    flex: 1,
   }
   .work-title {
     margin: 0 0 0.5rem 0;
     color: rgba(255, 255, 255, 0.9);
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   .work-meta {
     display: flex;
@@ -705,7 +705,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     min-width: 1.5rem;
   }
   .activity-content {
-    flex: 1;
+    flex: 1,
   }
   .activity-description {
     font-size: 0.85rem;
@@ -743,7 +743,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     transition: all 0.2;
   }
   .action-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .action-btn.primary {
@@ -768,7 +768,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .action-btn:hover:not(:disabled) {,
     transform: translateY(-1px);
-    opacity: 0.9;
+    opacity: 0.9,
   }
   .loading-state,
   .empty-state {
@@ -792,7 +792,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   .empty-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
-    opacity: 0.5;
+    opacity: 0.5,
   }
   @keyframes spin {
     0% { transform: rotate(0deg), }

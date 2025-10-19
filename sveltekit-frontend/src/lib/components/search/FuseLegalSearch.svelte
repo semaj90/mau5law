@@ -248,7 +248,7 @@
     background-color: #fef3c7; /* approximate Tailwind yellow-200 */
     padding: 0.125rem 0.25rem;
     border-radius: 0.25rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   :global(.dark mark.hl) {
     background-color: #78350f; /* approximate Tailwind yellow-900 */

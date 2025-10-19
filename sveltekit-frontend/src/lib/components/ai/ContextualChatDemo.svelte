@@ -429,7 +429,7 @@
   .demo-header h2 {
     margin: 0 0 0.5rem 0;
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 600,
   }
 
   .session-info {
@@ -478,7 +478,7 @@
   .message-content {
     padding: 0.75rem 1rem;
     border-radius: 8px;
-    line-height: 1.5;
+    line-height: 1.5,
   }
 
   .user-message .message-content {
@@ -541,7 +541,7 @@
   }
 
   textarea:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
 
@@ -571,7 +571,7 @@
     background: var(--background, #ffffff);
     cursor: pointer;
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
     transition: all 0.2s;
   }
 
@@ -580,7 +580,7 @@
   }
 
   button:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
 
@@ -610,7 +610,7 @@
   .stats-card h3 {
     margin: 0 0 1rem 0;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 600,
   }
 
   .state-display {
@@ -619,7 +619,7 @@
 
   .state-name {
     font-size: 1.5rem;
-    font-weight: 700;
+    font-weight: 700,
     color: var(--primary, #3b82f6);
     margin-bottom: 0.5rem;
   }
@@ -672,7 +672,7 @@
 
   .prediction-action {
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
   }
 
   .prediction-confidence {
@@ -710,7 +710,7 @@
   }
 
   .entity-type {
-    font-weight: 600;
+    font-weight: 600,
     color: var(--primary, #3b82f6);
   }
 
@@ -736,7 +736,7 @@
 
   .stat-value {
     font-size: 1.25rem;
-    font-weight: 700;
+    font-weight: 700,
     color: var(--foreground, #111827);
   }
 </style>

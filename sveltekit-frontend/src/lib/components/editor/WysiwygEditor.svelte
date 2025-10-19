@@ -66,7 +66,7 @@ await initializeEditor();
         config: {
           readonly,
           height,
-          menubar: true;
+          menubar: true,
           plugins: [
             'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
             'anchor', 'searchreplace', 'visualblocks', 'codesample', 'fullscreen',
@@ -84,7 +84,7 @@ await initializeEditor();
             body {
               font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
               font-size: 14px;
-              line-height: 1.6;
+              line-height: 1.6,
               color: #374151;
               max-width: 800px;
               margin: 0 auto;
@@ -192,7 +192,7 @@ await initializeEditor();
           options: {
             maxSources: 5,
             provider: 'auto',
-            enableLegalClassification: true;
+            enableLegalClassification: true,
   }
         })
       });
@@ -217,7 +217,7 @@ await initializeEditor();
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
           query: citationQuery;
-          limit: 10;
+          limit: 10,
         })
       });
       const data = await response.json();
@@ -411,18 +411,18 @@ editing
   .dialog-overlay {
     position: fixed;
 d;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
-    z-index: 40;
+    z-index: 40,
 }
 .dialog-title {
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 600,
     padding: 1.5rem;
-    padding-bottom: 0;
+    padding-bottom: 0,
 }
   .dialog-body {
     padding: 1.5rem;
@@ -433,7 +433,7 @@ d;
     right: 1rem;
     color: #6b7280;
     font-size: 1.5rem;
-    line-height: 1;
+    line-height: 1,
     cursor: pointer;
     background: none;
     border: none;
@@ -486,7 +486,7 @@ d;
     background: #f9fafb;
 }
   .citation-title {
-    font-weight: 600;
+    font-weight: 600,
     color: #111827;
 }
   .citation-text {
@@ -502,7 +502,7 @@ d;
   .btn {
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
-    font-weight: 500;
+    font-weight: 500,
     transition: background-color 0.2;
     cursor: pointer;
     border: none;
@@ -526,7 +526,7 @@ d;
     font-size: 0.875rem;
 }
   .btn:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
 }
   .btn:disabled:hover {

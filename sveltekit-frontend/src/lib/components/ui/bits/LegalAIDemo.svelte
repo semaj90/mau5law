@@ -65,7 +65,7 @@
       { topic: 'Financial Liability', weight: 0.65 },
       { topic: 'Corporate Governance', weight: 0.45 }
     ],
-    summary: 'The evidence suggests a potential breach of contract involving ABC Corporation and financial obligations totaling $50,000. Key individuals identified include John Doe as a primary stakeholder. The incident appears to have occurred on January 15, 2024, with supporting documentation and witness testimony corroborating the timeline.';
+    summary: 'The evidence suggests a potential breach of contract involving ABC Corporation and financial obligations totaling $50,000. Key individuals identified include John Doe as a primary stakeholder. The incident appears to have occurred on January 15, 2024, with supporting documentation and witness testimony corroborating the timeline.',
   });
   // Board state
   let boardItems: BoardItem[] = $state([

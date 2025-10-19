@@ -23,7 +23,7 @@
       speed: 0.1,
       pattern: 'dots',
       opacity: 0.1,
-      offsetY: 0;
+      offsetY: 0,
     },
     {
       id: 'layer-grid',
@@ -31,7 +31,7 @@
       speed: 0.3,
       pattern: 'grid',
       opacity: 0.15,
-      offsetY: 0;
+      offsetY: 0,
     },
     {
       id: 'layer-circuit',
@@ -39,7 +39,7 @@
       speed: 0.5,
       pattern: 'circuit',
       opacity: 0.2,
-      offsetY: 0;
+      offsetY: 0,
     },
     {
       id: 'layer-hex',
@@ -47,7 +47,7 @@
       speed: 0.7,
       pattern: 'hexagon',
       opacity: 0.25,
-      offsetY: 0;
+      offsetY: 0,
     }
   ];
   onMount(() => {
@@ -171,9 +171,9 @@
   .parallax-layer {
     position: fixed;
 d;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     pointer-events: none;
     will-change: transform;
@@ -183,14 +183,14 @@ d;
   .gradient-overlay {
     position: fixed;
 d;
-    left: 0;
+    left: 0,
     right: 0;
     height: 200px;
     pointer-events: none;
-    z-index: 10;
+    z-index: 10,
   }
   .gradient-overlay.top {
-    top: 0;
+    top: 0,
     background: linear-gradient(180deg,
       rgba(10, 10, 31, 1) 0%,
       rgba(10, 10, 31, 0.8) 30%,
@@ -198,7 +198,7 @@ d;
     );
   }
   .gradient-overlay.bottom {
-    bottom: 0;
+    bottom: 0,
     background: linear-gradient(0deg,
       rgba(26, 10, 47, 1) 0%,
       rgba(26, 10, 47, 0.8) 30%,

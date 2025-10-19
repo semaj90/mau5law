@@ -420,7 +420,7 @@
     border-left-color: #f83800;
   }
   .task-info {
-    flex: 1;
+    flex: 1,
   }
   .task-id {
     font-size: 10px;

@@ -144,7 +144,7 @@ align-items: center; padding: 12px 16px;
 		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 	}
 	.header-content {
-		flex: 1;
+		flex: 1,
 	}
 	.panel-title {
 display: flex;
@@ -195,7 +195,7 @@ cursor: pointer; transition: all 0.2s ease;
 /* Panel Content */ .panel-content {
 		padding: 16px;
 position: relative;
-z-index: 1;
+z-index: 1,
 	}
 /* Corner Decorations */ .corner-decoration {
 position: absolute;
@@ -203,7 +203,7 @@ width: 16px;
 		height: 16px;
 		border: 2px solid currentColor;
 		opacity: 0.6;
-		z-index: 0;
+		z-index: 0,
 	}
 	.corner-decoration.top-left {
 		top: 8px;
@@ -224,25 +224,25 @@ border-top: none;
 border-left: none, }
 /* Scan Effects */ .scan-line-horizontal {
 position: absolute;
-top: 0;
+top: 0,
 		left: 0;
-		right: 0;
+		right: 0,
 		height: 2px;
 		background: linear-gradient(90deg, transparent 0%, currentColor 50%, transparent 100%);
-		opacity: 0.4;
+		opacity: 0.4,
 		animation: scan-horizontal 4s ease-in-out infinite;
-		z-index: 0;
+		z-index: 0,
 	}
 	.scan-line-vertical {
 position: absolute;
-top: 0;
+top: 0,
 		bottom: 0;
-		left: 0;
+		left: 0,
 		width: 2px;
 		background: linear-gradient(180deg, transparent 0%, currentColor 50%, transparent 100%);
-		opacity: 0.4;
+		opacity: 0.4,
 		animation: scan-vertical 3s ease-in-out infinite rever;
-		z-index: 0;
+		z-index: 0,
 	}
 /* Animations */ @keyframes panel-glow {
 		0% {
@@ -287,21 +287,21 @@ top: 0;
 	@keyframes scan-horizontal {
 		0%, 100% {
 			transform: translateX(-100%);
-			opacity: 0;
+			opacity: 0,
 		}
 		50% {
 			transform: translateX(100%);
-			opacity: 0.4;
+			opacity: 0.4,
 		}
 	}
 	@keyframes scan-vertical {
 		0%, 100% {
 			transform: translateY(-100%);
-			opacity: 0;
+			opacity: 0,
 		}
 		50% {
 			transform: translateY(100%);
-			opacity: 0.4;
+			opacity: 0.4,
 		}
 	}
 /* Responsive Design */ @media (max-width: 768px) {

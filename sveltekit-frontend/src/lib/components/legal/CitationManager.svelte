@@ -53,7 +53,7 @@
   const citationBuilder = createLegalEvidenceAnalyzer({
     caseType: 'civil',
     urgency: 'medium',
-    aiModel: 'gemma3';
+    aiModel: 'gemma3',
   });
   let citationData = $state<CitationDatabase>({
     citations: citations.length > 0 ? citations : [
@@ -75,7 +75,7 @@
         parentheticals: ['holding that separate educational facilities are inherently unequal'],
         status: 'active',
         dateAdded: '2025-09-15T10:00:00Z',
-        lastChecked: '2025-09-21T14:30:00Z';
+        lastChecked: '2025-09-21T14:30:00Z',
       },
       {
         id: 'cit-002',
@@ -91,7 +91,7 @@
         notes: 'Civil action for deprivation of rights under color of law',
         status: 'active',
         dateAdded: '2025-09-10T15:20:00Z',
-        lastChecked: '2025-09-21T12:15:00Z';
+        lastChecked: '2025-09-21T12:15:00Z',
       },
       {
         id: 'cit-003',
@@ -106,7 +106,7 @@
         tags: ['ADA', 'disability', 'employment'],
         notes: 'Definition of disability under ADA regulations',
         status: 'pending',
-        dateAdded: '2025-09-20T09:45:00Z';
+        dateAdded: '2025-09-20T09:45:00Z',
       }
     ],
     categories: ['Constitutional Law', 'Civil Rights', 'Employment Law', 'Contract Law'],
@@ -268,7 +268,7 @@
       regulation: '📋',
       constitutional: '🏛️',
       secondary: '📚',
-      foreign: '🌍';
+      foreign: '🌍',
     }
     return icons[type] || '📄';
   }
@@ -277,7 +277,7 @@
       active: '#10b981',
       superseded: '#f59e0b',
       overruled: '#ef4444',
-      pending: '#6b7280';
+      pending: '#6b7280',
     }
     return colors[status] || colors.pending;
   }
@@ -639,7 +639,7 @@
     font-size: 2rem;
   }
   .title-text h2 {
-    margin: 0;
+    margin: 0,
     color: var(--enhanced-bits-foreground);
     font-size: 1.5rem;
   }
@@ -678,7 +678,7 @@
     margin-bottom: 1rem;
   }
   .form-header h3, .panel-header h3 {
-    margin: 0;
+    margin: 0,
     color: var(--enhanced-bits-foreground);
   }
   .form-content, .bulk-controls {
@@ -698,7 +698,7 @@
     display: flex;
     gap: 1rem;
     flex: 1;
-    min-width: 0;
+    min-width: 0,
   }
   .citation-search {
     flex: 1;
@@ -837,7 +837,7 @@
     font-size: 1rem;
     color: var(--enhanced-bits-foreground);
     margin-bottom: 0.5rem;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .citation-short, .citation-pinpoint {
     font-size: 0.875rem;
@@ -871,7 +871,7 @@
     border: 1px solid var(--enhanced-bits-border);
     border-radius: 4px;
     font-size: 0.875rem;
-    line-height: 1.5;
+    line-height: 1.5,
   }
   .citation-parentheticals ul {
     margin: 0.5rem 0 0 0;

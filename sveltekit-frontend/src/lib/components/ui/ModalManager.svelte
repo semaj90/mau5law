@@ -66,7 +66,7 @@
   			md: 'max-w-lg',
   			lg: 'max-w-2xl',
   			xl: 'max-w-4xl',
-  			full: 'max-w-[95vw] max-h-[95vh]';
+  			full: 'max-w-[95vw] max-h-[95vh]',
   		}
   		return sizeMap[size as keyof typeof sizeMap] || sizeMap.md;
   }

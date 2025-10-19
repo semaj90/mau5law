@@ -12,34 +12,34 @@
     {
       name: 'Authentication Debug',
       endpoint: '/api/auth/debug',
-      description: 'Check authentication status and development flags';
+      description: 'Check authentication status and development flags',
     },
     {
       name: 'Development Auth Creation',
       endpoint: '/api/dev-auth?seed=true',
-      description: 'Create development session with sample data';
+      description: 'Create development session with sample data',
     },
     {
       name: 'Enhanced RAG Health',
       endpoint: 'http://localhost:8094/health',
-      description: 'Go microservice health check';
+      description: 'Go microservice health check',
     },
     {
       name: 'Upload Service Health',
       endpoint: 'http://localhost:8093/health',
-      description: 'File upload service health';
+      description: 'File upload service health',
     },
     {
       name: 'Ollama API',
       endpoint: 'http://localhost:11434/api/tags',
-      description: 'AI model availability';
+      description: 'AI model availability',
     },
     {
       name: 'SSE Chat API',
       endpoint: '/api/ai/chat-sse',
       method: 'POST',
       body: { message: 'Test SSE streaming', model: 'gemma3-legal:latest' },
-      description: 'Server-Sent Events streaming test';
+      description: 'Server-Sent Events streaming test',
     }
   ];
   async function runTest(test: unknown) {

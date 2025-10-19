@@ -478,13 +478,13 @@
     padding: 20px;
     border-radius: 8px;
     text-align: center;
-    z-index: 1000;
+    z-index: 1000,
   }
   .loading-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
@@ -492,7 +492,7 @@
     align-items: center;
     justify-content: center;
     color: white;
-    z-index: 999;
+    z-index: 999,
   }
   .loading-spinner {
     width: 40px;
@@ -518,7 +518,7 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
-    z-index: 100;
+    z-index: 100,
   }
   .controls-overlay button {
     background: rgba(0, 0, 0, 0.7);

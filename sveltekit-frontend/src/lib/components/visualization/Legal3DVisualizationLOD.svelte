@@ -98,7 +98,7 @@
     up: { x: 0, y: 1, z: 0 },
     fov: 45,
     near: 0.1,
-    far: 100;
+    far: 100,
   });
   let isLoading = $state(false);
   let selectedEntity = $state<Legal3DEntity | null>(null);
@@ -123,7 +123,7 @@
       fogStart: 20,
       fogEnd: 25,
       description: 'Ultra High (Full Detail)',
-      renderComplexity: 1.0;
+      renderComplexity: 1.0,
     },
     1: {
       maxPolygons: 5000,
@@ -132,7 +132,7 @@
       fogStart: 40,
       fogEnd: 50,
       description: 'High Detail',
-      renderComplexity: 0.7;
+      renderComplexity: 0.7,
     },
     2: {
       maxPolygons: 1000,
@@ -141,7 +141,7 @@
       fogStart: 60,
       fogEnd: 75,
       description: 'Medium Detail',
-      renderComplexity: 0.4;
+      renderComplexity: 0.4,
     },
     3: {
       maxPolygons: 500,
@@ -150,7 +150,7 @@
       fogStart: 70,
       fogEnd: 100,
       description: 'Low Poly (N64 Style)',
-      renderComplexity: 0.2;
+      renderComplexity: 0.2,
     }
   }
   // Derived values for automatic LOD calculation
@@ -320,12 +320,12 @@ if (!browser) return;
       },
       primitive: {
         topology: 'triangle-list',
-        cullMode: 'back';
+        cullMode: 'back',
       },
       depthStencil: {
         depthWriteEnabled: true
         depthCompare: 'less',
-        format: 'depth24plus';
+        format: 'depth24plus',
       }
     });
     // Create uniform buffer
@@ -600,7 +600,7 @@ if (!browser) return;
         view: depthTexture.createView(),
         depthClearValue: 1.0,
         depthLoadOp: 'clear',
-        depthStoreOp: 'store';
+        depthStoreOp: 'store',
       }
     });
     renderPass.setPipeline(renderPipeline);
@@ -914,9 +914,9 @@ if (!browser) return;
   }
   .loading-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;

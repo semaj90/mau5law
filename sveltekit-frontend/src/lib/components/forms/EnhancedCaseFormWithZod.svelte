@@ -197,7 +197,7 @@ https://svelte.dev/e/js_parse_error -->
             // Safely construct an error message by narrowing on the discriminant 'type'
             let errorMsg = 'Submission failed';
             if (result?.type === 'error') {
-              // result is narrowed to { type: 'error'; error: any }
+              // result is narrowed to { type: 'error', error: any }
               const err = result.error;
               errorMsg = err?.message ?? String(err) ?? errorMsg;
             } else if (result?.type === 'failure') {
@@ -211,7 +211,7 @@ https://svelte.dev/e/js_parse_error -->
                 errorMsg = JSON.stringify(data) ?? errorMsg;
               }
             } else if (result?.type === 'redirect') {
-              // result is narrowed to { type: 'redirect'; location: string }
+              // result is narrowed to { type: 'redirect', location: string }
               // Provide a helpful message when a redirect occurs
               // @ts-ignore - access for runtime info
               errorMsg = `Redirected to ${(result as any).location}`;
@@ -415,9 +415,15 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <!-- Advanced Options -->
         <div class="border-t pt-6">
-          <Button type="button" variant="ghost" on:click={() => (showAdvanced = !showAdvanced)} class="mb-4">
+          <!-- Use native button to avoid passing unknown 'type' prop to Button component -->
+          <button
+            type="button"
+            onclick={() => (showAdvanced = !showAdvanced)}
+            class="mb-4 inline-flex items-center px-3 py-2 rounded-md text-sm bg-transparent hover:bg-muted/5"
+            aria-expanded={showAdvanced}
+          >
             {showAdvanced ? 'Hide' : 'Show'} Advanced Options
-          </Button>
+          </button>
 
           {#if showAdvanced}
             <div class="space-y-6 border-l-2 border-muted pl-6">
@@ -545,7 +551,15 @@ https://svelte.dev/e/js_parse_error -->
                           <p class="text-xs nes-text is-disabled">{formatFileSize(file.size)}</p>
                         </div>
                       </div>
-                      <Button type="button" variant="ghost" size="sm" on:click={() => removeFile(index)}>Remove</Button>
+                      <!-- native button to avoid passing 'type' prop to Button -->
+                      <button
+                        type="button"
+                        onclick={() => removeFile(index)}
+                        class="inline-flex items-center px-2 py-1 text-sm rounded-md bg-transparent hover:bg-muted/5"
+                        aria-label={`Remove ${file.name}`}
+                      >
+                        Remove
+                      </button>
                     </div>
                   {/each}
                 </div>
@@ -558,32 +572,32 @@ https://svelte.dev/e/js_parse_error -->
         <div class="flex items-center justify-between pt-6 border-t">
           <div class="flex items-center space-x-4">
             {#if enableAutoSave && !editMode}
-              <Button
+              <button
                 type="button"
-                variant="ghost"
-                on:click={() => {
+                onclick={() => {
                   if (ondraft) ondraft({ data: $form });
                 }}
+                class="inline-flex items-center px-3 py-2 rounded-md text-sm bg-transparent hover:bg-muted/5"
               >
                 Save as Draft
-              </Button>
+              </button>
             {/if}
           </div>
           <div class="flex items-center space-x-3">
-            <Button type="button" variant="ghost">Cancel</Button>
+            <button type="button" class="inline-flex items-center px-3 py-2 rounded-md text-sm bg-transparent hover:bg-muted/5">Cancel</button>
 
             <!-- moved conditional outside the Button to avoid invalid block continuation -->
             {#if isSubmitting}
-              <Button type="submit" disabled={true} class="min-w-[120px]">
+              <button type="submit" disabled={true} class="min-w-[120px] inline-flex items-center justify-center px-4 py-2 rounded-md text-sm bg-primary/90 text-white" aria-busy="true">
                 <span class="flex items-center">
                   <Loader2 class="mr-2 h-4 w-4 animate-spin" />
                   {editMode ? 'Updating...' : 'Creating...'}
                 </span>
-              </Button>
+              </button>
             {:else}
-              <Button type="submit" disabled={!isValid} class="min-w-[120px]">
+              <button type="submit" disabled={!isValid} class="min-w-[120px] inline-flex items-center justify-center px-4 py-2 rounded-md text-sm bg-primary text-white disabled:opacity-60">
                 {editMode ? 'Update Case' : 'Create Case'}
-              </Button>
+              </button>
             {/if}
           </div>
         </div>
@@ -597,18 +611,19 @@ https://svelte.dev/e/js_parse_error -->
     <h2 class="text-lg font-semibold text-red-800 mb-2">Form Error</h2>
     <p class="text-red-700 mb-4">The case form encountered an error:</p>
     <p class="text-red-600 font-mono text-sm mb-4 bg-red-100 p-2 rounded">{componentError.message}</p>
-    <Button
-      on:click={() => {
+    <button
+      type="button"
+      onclick={() => {
         componentError = null;
       }}
-      variant="ghost"
-      class="border-red-300 text-red-700 hover:bg-red-50"
+      class="border-red-300 text-red-700 hover:bg-red-50 inline-flex items-center px-3 py-2 rounded-md"
     >
       Dismiss Error
-    </Button>
+    </button>
   </div>
 {/if}
 
 <style lang="postcss">
   /*$$__STYLE_CONTENT__$$*/
 </style>
+

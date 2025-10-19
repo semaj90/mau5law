@@ -668,7 +668,7 @@
   }
   /* disabled button state */
   :global(.nes-legal-register-form .nes-btn:disabled) {
-    opacity: 0.6;
+    opacity: 0.6,
     cursor: not-allowed;
   }
   /* Legal priority styling for submit button */

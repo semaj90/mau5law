@@ -140,7 +140,7 @@
 d;
     top: 20px;
     right: 20px;
-    z-index: 9999;
+    z-index: 9999,
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -208,7 +208,7 @@ d;
   }
   .toast-message {
     font-size: 8px;
-    line-height: 1.4;
+    line-height: 1.4,
     margin: 0;
     word-wrap: break-word;
   }
@@ -254,11 +254,11 @@ d;
   @keyframes slideInRight {
     from {
       transform: translateX(100%);
-      opacity: 0;
+      opacity: 0,
     }
     to {
       transform: translateX(0);
-      opacity: 1;
+      opacity: 1,
     }
   }
   .toast-.removing {
@@ -267,11 +267,11 @@ d;
   @keyframes slideOutRight {
     from {
       transform: translateX(0);
-      opacity: 1;
+      opacity: 1,
     }
     to {
       transform: translateX(100%);
-      opacity: 0;
+      opacity: 0,
     }
   }
   /* Responsive Design */

@@ -423,18 +423,18 @@ nextStep()} size="sm">
   .onboarding-overlay {
     position: fixed;
 d;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     z-index: 10000;
     pointer-events: auto;
 }
   .overlay-backdrop {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(2px);
@@ -449,7 +449,7 @@ d;
     background: rgba(255, 255, 255, 0.1);
     pointer-events: none;
     animation: highlight-pulse 2s infinite;
-    z-index: 10001;
+    z-index: 10001,
 }
   @keyframes highlight-pulse {
     0%,
@@ -473,16 +473,16 @@ d;
     border: 1px solid rgba(0, 0, 0, 0.05);
     max-width: 400px;
     min-width: 320px;
-    z-index: 10002;
+    z-index: 10002,
     animation: tooltip-appear 0.3s ease-out;
 }
   @keyframes tooltip-appear {
     from {
-      opacity: 0;
+      opacity: 0,
       transform: translate(-50%, -50%) scale(0.9);
 }
     to {
-      opacity: 1;
+      opacity: 1,
       transform: translate(-50%, -50%) scale(1);
 }}
   .tooltip-header {
@@ -530,14 +530,14 @@ d;
 }
   .tooltip-title {
     font-size: 1.125rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #111827;
     margin: 0 0 0.5rem 0;
-    line-height: 1.4;
+    line-height: 1.4,
 }
   .tooltip-description {
     color: #6b7280;
-    line-height: 1.5;
+    line-height: 1.5,
     margin: 0 0 1rem 0;
 }
   .tooltip-extended-content {
@@ -563,7 +563,7 @@ d;
     margin-bottom: 1rem;
 }
   .progress-bar {
-    flex: 1;
+    flex: 1,
     height: 4px;
     background: #e5e7eb;
     border-radius: 2px;
@@ -577,7 +577,7 @@ d;
   .progress-text {
     font-size: 0.75rem;
     color: #6b7280;
-    font-weight: 500;
+    font-weight: 500,
 }
   .tooltip-navigation {
     display: flex;
@@ -593,7 +593,7 @@ d;
     gap: 0.5rem;
 }
   .nav-center {
-    flex: 1;
+    flex: 1,
     display: flex;
     justify-content: center;
 }
@@ -611,7 +611,7 @@ d;
     align-items: center;
     justify-content: center;
     font-size: 0.75rem;
-    font-weight: 500;
+    font-weight: 500,
     color: #6b7280;
     cursor: pointer;
     transition: all 0.2;
@@ -631,7 +631,7 @@ d;
     color: white;
 }
   .dot-number {
-    line-height: 1;
+    line-height: 1,
 }
   /* Dark mode */
   @media (prefers-color-scheme: dark) {

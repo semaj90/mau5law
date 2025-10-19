@@ -140,7 +140,7 @@
   .error-icon {
     color: #00ff41;
     margin: 0 auto 2rem;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .error-title {
     color: #00ff41;

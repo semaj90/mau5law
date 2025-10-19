@@ -675,16 +675,16 @@ Production-ready with native Windows support
   .history-prompt {
     font-size: 0.75rem;
     font-weight: bold;
-    margin: 0;
+    margin: 0,
   }
   .history-meta {
     font-size: 0.7rem;
     color: #666;
-    margin: 0;
+    margin: 0,
   }
   .modal-overlay {
     position: fixed;
-    top: 0;
+    top: 0,
     left: 0;
     width: 100%;
     height: 100%;
@@ -692,7 +692,7 @@ Production-ready with native Windows support
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 1000,
     padding: 1rem;
   }
   .modal-content {

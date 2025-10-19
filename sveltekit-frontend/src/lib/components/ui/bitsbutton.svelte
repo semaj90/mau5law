@@ -25,7 +25,7 @@
   					caseItem: 'nes-legal-priority-high yorha-3d-button',
   					success: 'btn-nes-success',
   					yorha: 'yorha-3d-button bg-black/80 text-yellow-400 border-2 border-yellow-400',
-  					neural: 'neural-sprite-active bg-gradient-to-r from-purple-600 to-blue-600 text-white border-2 border-purple-400';
+  					neural: 'neural-sprite-active bg-gradient-to-r from-purple-600 to-blue-600 text-white border-2 border-purple-400',
   				},
   				size: {
   					default: 'h-10 px-4 py-2',
@@ -34,12 +34,12 @@
   					icon: 'h-8 w-8',
   					icon_sm: 'h-6 w-6',
   					icon_lg: 'h-12 w-12',
-  					xs: 'h-8 rounded px-2 text-xs';
+  					xs: 'h-8 rounded px-2 text-xs',
   				}
   			},
   			defaultVariants: {
   				variant: 'default',
-  				size: 'default';
+  				size: 'default',
   			}
   		}
   	);

@@ -277,7 +277,7 @@ and ensure it ends cleanly. I'll update that file. Now I'll apply the patch. (Ne
 }
   .message-content {
     white-space: pre-wrap;
-    line-height: 1.5;
+    line-height: 1.5,
 }
   .references {
     margin-top: 12px;
@@ -286,7 +286,7 @@ and ensure it ends cleanly. I'll update that file. Now I'll apply the patch. (Ne
 }
   .references-title {
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
     margin-bottom: 8px;
 }

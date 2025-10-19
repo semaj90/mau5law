@@ -488,7 +488,7 @@
   .chat-body {
     display: grid;
     grid-template-columns: 1fr 400px;
-    flex: 1;
+    flex: 1,
     overflow: hidden;
   }
 
@@ -642,9 +642,9 @@
 
   .dialog-overlay {
     position: fixed;
-    inset: 0;
+    inset: 0,
     background: rgba(0, 0, 0, 0.8);
-    z-index: 50;
+    z-index: 50,
   }
 
   .dialog-content {
@@ -656,7 +656,7 @@
     max-width: 500px;
     max-height: 85vh;
     padding: 2rem;
-    z-index: 51;
+    z-index: 51,
   }
 
   .dialog-title {
@@ -688,6 +688,6 @@
   .tooltip-content {
     padding: 0.5rem 1rem !important;
     font-size: 10px;
-    z-index: 100;
+    z-index: 100,
   }
 </style>

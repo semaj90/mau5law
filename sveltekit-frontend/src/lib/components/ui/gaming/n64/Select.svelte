@@ -525,7 +525,7 @@
     border-radius: 4px;
     font-size: var(--select-font-size);
     min-height: var(--select-min-height);
-    font-weight: 500;
+    font-weight: 500,
     position: relative;
     cursor: pointer;
     /* 3D transformations */
@@ -548,7 +548,7 @@
     letter-spacing: 0.5px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
     /* Layout */
-    z-index: 1;
+    z-index: 1,
     overflow: visibl;
   }
   .select-trigger {
@@ -558,7 +558,7 @@
     justify-content: space-betwee;
     gap: 12px;
     position: relative;
-    z-index: 2;
+    z-index: 2,
   }
   .select-value {
     flex: 1;
@@ -575,7 +575,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .clear-button {
     background: transparent;
@@ -608,7 +608,7 @@
     right: 12px;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 4;
+    z-index: 4,
   }
   .n64-spinner {
     width: 16px;
@@ -625,7 +625,7 @@
   .select-dropdown {
     position: absolute;
     top: 100%;
-    left: 0;
+    left: 0,
     right: 0;
     background: var(--material-bg);
     border: 2px solid var(--material-border);
@@ -647,11 +647,11 @@
   }
   @keyframes dropdownOpen {
     0% {
-      opacity: 0;
+      opacity: 0,
       transform: translateZ(var(--dropdown-depth)) translateY(-10px) scale(0.95);
     }
     100% {
-      opacity: 1;
+      opacity: 1,
       transform: translateZ(var(--dropdown-depth)) translateY(0) scale(1);
     }
   }
@@ -698,10 +698,10 @@
   .select-option.selected {
     background: rgba(74, 144, 226, 0.2);
     color: #4a90e2;
-    font-weight: 600;
+    font-weight: 600,
   }
   .select-option.disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .select-option.disabled:hover {
@@ -723,9 +723,9 @@
   /* Lighting overlay */
   .lighting-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: linear-gradient(
       135deg,
@@ -740,9 +740,9 @@
   }
   .dropdown-lighting {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: linear-gradient(
       135deg,
@@ -769,7 +769,7 @@
     );
     border-radius: 2px;
     pointer-events: none;
-    z-index: 3;
+    z-index: 3,
     opacity: 0.6;
   }
   /* State variations */
@@ -795,7 +795,7 @@
     background: linear-gradient(145deg, #4a5568 0%, #2d3748 50%, #1a202c 100%);
     color: #a0aec0;
     cursor: not-allowed;
-    opacity: 0.7;
+    opacity: 0.7,
     transform: perspective(1000px) scale(0.98);
   }
   /* Select message styling */

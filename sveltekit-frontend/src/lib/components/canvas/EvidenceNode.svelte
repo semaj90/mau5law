@@ -39,7 +39,7 @@ https://svelte.dev/e/js_parse_error -->
         fabricCanvas = new fabric.Canvas(canvasEl, {
         width: size.width - 20,
         height: size.height - 80,
-        backgroundColor: 'white';
+        backgroundColor: 'white',
       });
       // Load background image if provided
       // Fix for Fabric.js v5+ (Image.fromURL returns a Promise)
@@ -54,7 +54,7 @@ https://svelte.dev/e/js_parse_error -->
           img.set({
             left: 0,
             top: 0,
-            selectable: false;
+            selectable: false,
             evented: false;
           });
           (fabricCanvas as any)?.setBackgroundImage?.(img, () => (fabricCanvas as any)?.renderAll?.());
@@ -102,7 +102,7 @@ https://svelte.dev/e/js_parse_error -->
           height: 60,
           fill: 'transparent',
           stroke: '#ef4444',
-          strokeWidth: 2;
+          strokeWidth: 2,
         });
         fabricCanvas.add(rect);
         break;
@@ -113,7 +113,7 @@ https://svelte.dev/e/js_parse_error -->
           radius: 30,
           fill: 'transparent',
           stroke: '#22c55e',
-          strokeWidth: 2;
+          strokeWidth: 2,
         });
         fabricCanvas.add(circle);
         break;
@@ -121,7 +121,7 @@ https://svelte.dev/e/js_parse_error -->
         const line = new fabric.Line([50, 50, 150, 100], {
           stroke: '#3b82f6',
           strokeWidth: 3,
-          selectable: true;
+          selectable: true,
         });
         fabricCanvas.add(line);
         break;
@@ -130,7 +130,7 @@ https://svelte.dev/e/js_parse_error -->
           left: 50,
           top: 50,
           fontSize: 16,
-          fill: '#1f2937';
+          fill: '#1f2937',
         });
         fabricCanvas.add(text);
         break;
@@ -297,10 +297,10 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 6px 6px 0 0;
   }
   .node-title {
-    flex: 1;
+    flex: 1,
   }
   .title-text {
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
     font-size: 14px;
   }
@@ -334,7 +334,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .evidence-canv.resize-handles {
     position: absolute;
-    bottom: 0;
+    bottom: 0,
     right: 0;
   }
   .resize-handle {

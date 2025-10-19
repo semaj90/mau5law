@@ -45,7 +45,7 @@
           ocr: ocrResults;
           legal: legalAnalysis;
           semantic: semanticEmbeddings
-          preserveFlow: true;
+          preserveFlow: true,
         }));
       }
     },
@@ -163,7 +163,7 @@
             text: textContent
             includeEmbeddings: true
             includeConcepts: true
-            includeClassification: true;
+            includeClassification: true,
           })
         });
         if (legalResponse.ok) {
@@ -258,7 +258,7 @@
               event: 'legal_analysis_complete',
               documentId: uploadResult.documentId,
               analysis: legalAnalysis
-              preserveFlow: true;
+              preserveFlow: true,
             })
           }).catch(error => console.warn('Legal processing webhook failed:', error))
         );
@@ -781,7 +781,7 @@
   .file-size {
     font-size: 0.6rem;
     margin-bottom: 0.5rem;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .remove-file {
     font-size: 0.6rem;
@@ -817,7 +817,7 @@
   }
   .upload-icon {
     font-size: 3rem;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .upload-text {
     text-align: center;

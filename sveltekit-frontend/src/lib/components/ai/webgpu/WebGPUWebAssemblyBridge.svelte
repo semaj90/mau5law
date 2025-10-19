@@ -49,7 +49,7 @@ https://svelte.dev/e/js_parse_error -->
     webAssemblySupport: false
     modelLoaded: false
     lastProcessingTime: 0,
-    throughput: 0;
+    throughput: 0,
   });
   async function initializeWebGPUWebAssembly() {
     loading = true;
@@ -110,7 +110,7 @@ https://svelte.dev/e/js_parse_error -->
           health: webLlamaService.getHealthStatus();
         },
         adapter: {
-          initialized: true;
+          initialized: true,
           health: webAssemblyAIAdapter.getHealthStatus(),
           supportedMethods: processingMode;
         },
@@ -161,7 +161,7 @@ https://svelte.dev/e/js_parse_error -->
         try {
           const gpuResponse = await webgpuClient.generateText(demoText, {
             maxTokens: 512,
-            temperature: 0.1;
+            temperature: 0.1,
           });
           result = gpuResponse.text;
           method = 'WebGPU Client';

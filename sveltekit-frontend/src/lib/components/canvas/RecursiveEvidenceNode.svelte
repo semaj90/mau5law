@@ -381,7 +381,7 @@
   .evidence-id {
     margin: 0;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 600,
     color: #1f2937;
   }
   .header-right {
@@ -394,7 +394,7 @@
     font-size: 12px;
     padding: 4px 8px;
     border-radius: 12px;
-    font-weight: 500;
+    font-weight: 500,
   }
   .chain-integrity-high {
     background: #d1fae5;
@@ -435,14 +435,14 @@
     align-items: center;
   }
   .metadata-row .label {
-    font-weight: 500;
+    font-weight: 500,
     color: #6b7280;
     font-size: 12px;
   }
   .metadata-row .value {
     color: #374151;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 600,
   }
   .detail-toggle {
     background: none;
@@ -460,7 +460,7 @@
   .legal-implications h5 {
     margin: 0 0 8px 0;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
   }
   .implications-list {
@@ -477,7 +477,7 @@
     padding: 4px 8px;
     border-radius: 12px;
     font-size: 10px;
-    font-weight: 500;
+    font-weight: 500,
   }
   .more-implications {
     background: #6b7280;
@@ -485,7 +485,7 @@
     padding: 4px 8px;
     border-radius: 12px;
     font-size: 10px;
-    font-weight: 500;
+    font-weight: 500,
   }
   .critical-implications {
     display: flex;
@@ -513,10 +513,10 @@
     background: none;
     border: none;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
     font-size: 13px;
-    padding: 0;
+    padding: 0,
     display: flex;
     align-items: center;
     gap: 4px;
@@ -541,7 +541,7 @@
     margin-bottom: 4px;
   }
   .officer {
-    font-weight: 500;
+    font-weight: 500,
     color: #1f2937;
   }
   .action {
@@ -565,7 +565,7 @@
   .relationships-section h5 {
     margin: 0 0 8px 0;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
   }
   .relationship-item {
@@ -588,7 +588,7 @@
   }
   .relationship-type {
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 500,
     color: #1f2937;
     text-transform: capitaliz;
   }
@@ -631,7 +631,7 @@
     content: '';
     position: absolute;
     left: -1px;
-    top: 0;
+    top: 0,
     bottom: 0;
     width: 2px;
     background: linear-gradient(to bottom, #3b82f6, transparent);

@@ -89,7 +89,7 @@
         precedentCases: []
       },
       assignedTo: [],
-      tags: [];
+      tags: [],
     });
   }
   function handleQuickAnalysis() {
@@ -124,20 +124,20 @@
             stability: 0.2,
             aggressionLevel: 0.9,
             predictability: 0.3,
-            cooperationLikelihood: 0.1;
+            cooperationLikelihood: 0.1,
           }
         },
         documentReferences: [],
         network: {
           connections: [],
           centralityScore: 0.8,
-          clusterMembership: [];
+          clusterMembership: [],
         }
       },
       contact: {
         emails: [],
         phones: [],
-        addresses: [];
+        addresses: [],
       },
       legal: {
         criminalHistory: []
@@ -152,7 +152,7 @@
             jurisdiction: 'State of California',
             issuedDate: '2024-01-01',
             charges: ['Armed Robbery', 'Assault with Deadly Weapon'],
-            status: 'active';
+            status: 'active',
           }
         ],
         watchLists: [
@@ -160,7 +160,7 @@
             list: 'fbi_most_wanted',
             addedDate: '2024-01-01',
             reason: 'Violent felony charges',
-            priority: 'critical';
+            priority: 'critical',
           }
         ],
         knownAssociates: [],
@@ -178,7 +178,7 @@
           address: '123 Main St, Los Angeles, CA',
           date: '2024-01-10',
           source: 'witness',
-          reliability: 0.8;
+          reliability: 0.8,
         }
       },
       relationships: [],
@@ -430,7 +430,7 @@
     margin: 0 auto;
   }
   .header-content h1 {
-    margin: 0;
+    margin: 0,
     color: var(--enhanced-bits-primary);
     font-size: 1.75rem;
     font-weight: bold;
@@ -472,7 +472,7 @@ d;
     font-size: 2.5rem;
     font-weight: bold;
     color: var(--enhanced-bits-primary);
-    line-height: 1;
+    line-height: 1,
   }
   .stat-detail {
     font-size: 0.875rem;
@@ -481,7 +481,7 @@ d;
   }
   .stat-detail.high-risk {
     color: var(--enhanced-bits-error);
-    font-weight: 600;
+    font-weight: 600,
   }
   .recent-activity {
     margin-bottom: 2rem;
@@ -518,7 +518,7 @@ d;
     margin-bottom: 1.5rem;
   }
   .section-header h2 {
-    margin: 0;
+    margin: 0,
     color: var(--enhanced-bits-primary);
   }
   .poi-grid {

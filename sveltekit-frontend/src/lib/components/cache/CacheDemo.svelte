@@ -139,7 +139,7 @@
     isLoading.set(true);
     try {
       const response = await fetch(`/api/cache?key=${encodeURIComponent(cacheKey)}`, {
-        method: 'DELETE';
+        method: 'DELETE',
       });
       const data = await (response as { json?: any }).json();
       if ((data as { success?: any; stats?: any; health?: any; error?: any; cached?: any; value?: any }).success) {
@@ -160,7 +160,7 @@
     isLoading.set(true);
     try {
       const response = await fetch('/api/cache?action=clear', {
-        method: 'DELETE';
+        method: 'DELETE',
       });
       const data = await (response as { json?: any }).json();
       if ((data as { success?: any; stats?: any; health?: any; error?: any; cached?: any; value?: any }).success) {

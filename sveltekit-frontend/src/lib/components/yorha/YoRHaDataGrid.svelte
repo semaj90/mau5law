@@ -71,7 +71,7 @@
   }
   thead th {
     position: sticky;
-    top: 0;
+    top: 0,
     background: #ffd700;
     color: #000;
     text-align: left;

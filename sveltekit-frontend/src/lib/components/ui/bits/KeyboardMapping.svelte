@@ -48,8 +48,8 @@
       description: 'Create New Case',
       category: 'Case Management',
       action: () => goto('/cases/new'),
-      global: true;
-      priority: 100;
+      global: true,
+      priority: 100,
     },
     {
       id: 'case-search',
@@ -57,8 +57,8 @@
       description: 'Search Cases',
       category: 'Case Management',
       action: () => goto('/cases/search'),
-      global: true;
-      priority: 90;
+      global: true,
+      priority: 90,
     },
     // Evidence Management
     {
@@ -67,8 +67,8 @@
       description: 'Upload Evidence',
       category: 'Evidence',
       action: () => goto('/evidence/upload'),
-      global: true;
-      priority: 85;
+      global: true,
+      priority: 85,
     },
     {
       id: 'evidence-analysis',
@@ -76,8 +76,8 @@
       description: 'AI Evidence Analysis',
       category: 'Evidence',
       action: () => goto('/evidence/analysis'),
-      global: true;
-      priority: 80;
+      global: true,
+      priority: 80,
     },
     // AI Assistant
     {
@@ -86,8 +86,8 @@
       description: 'Open AI Assistant',
       category: 'AI Tools',
       action: () => goto('/ai-assistant'),
-      global: true;
-      priority: 95;
+      global: true,
+      priority: 95,
     },
     {
       id: 'legal-research',
@@ -95,8 +95,8 @@
       description: 'Legal Research',
       category: 'AI Tools',
       action: () => goto('/research'),
-      global: true;
-      priority: 85;
+      global: true,
+      priority: 85,
     },
     // Document Management
     {
@@ -105,8 +105,8 @@
       description: 'New Document',
       category: 'Documents',
       action: () => goto('/documents/new'),
-      global: true;
-      priority: 75;
+      global: true,
+      priority: 75,
     },
     {
       id: 'document-review',
@@ -114,8 +114,8 @@
       description: 'Document Review',
       category: 'Documents',
       action: () => goto('/documents/review'),
-      global: true;
-      priority: 70;
+      global: true,
+      priority: 70,
     },
     // Navigation
     {
@@ -124,8 +124,8 @@
       description: 'Go to Dashboard',
       category: 'Navigation',
       action: () => goto('/dashboard'),
-      global: true;
-      priority: 60;
+      global: true,
+      priority: 60,
     },
     {
       id: 'settings',
@@ -133,8 +133,8 @@
       description: 'Open Settings',
       category: 'Navigation',
       action: () => goto('/settings'),
-      global: true;
-      priority: 50;
+      global: true,
+      priority: 50,
     },
     // Accessibility
     {
@@ -143,8 +143,8 @@
       description: 'Accessibility Panel',
       category: 'Accessibility',
       action: () => document.dispatchEvent(new CustomEvent('toggle-accessibility')),
-      global: true;
-      priority: 40;
+      global: true,
+      priority: 40,
     },
     {
       id: 'keyboard-help',
@@ -152,8 +152,8 @@
       description: 'Keyboard Shortcuts Help',
       category: 'Help',
       action: () => document.dispatchEvent(new CustomEvent('show-keyboard-help')),
-      global: true;
-      priority: 30;
+      global: true,
+      priority: 30,
     }
   ];
   // Combine default and custom shortcuts
@@ -246,7 +246,7 @@
         addDebugLog(`Error executing shortcut: ${error}`, 'error');
         onshortcutblocked?.({
           shortcut: matchingShortcut;
-          reason: error instanceof Error ? error.message: 'Unknown error';
+          reason: error instanceof Error ? error.message: 'Unknown error',
         });
       }
     }
@@ -345,11 +345,11 @@
     position: absolute;
     width: 1px;
     height: 1px;
-    padding: 0;
+    padding: 0,
     margin: -1px;
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
-    border: 0;
+    border: 0,
   }
 </style>

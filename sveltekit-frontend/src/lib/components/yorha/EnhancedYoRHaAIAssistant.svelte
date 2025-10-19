@@ -420,13 +420,13 @@ https://svelte.dev/e/js_parse_error -->
   .ai-assistant-overlay {
     position: fixed;
 d;
-    inset: 0;
+    inset: 0,
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 1000,
     padding: 2rem;
   }
   .ai-assistant-container {
@@ -463,16 +463,16 @@ d;
   }
   .assistant-title {
     font-size: 1.25rem;
-    font-weight: 700;
+    font-weight: 700,
     margin: 0;
     text-transform: uppercase;
     letter-spacing: 1px;
   }
   .assistant-subtitle {
     font-size: 0.75rem;
-    margin: 0;
+    margin: 0,
     opacity: 0.8;
-    font-weight: 600;
+    font-weight: 600,
   }
   .header-controls {
     display: flex;
@@ -490,7 +490,7 @@ d;
     color: #000;
     font-family: inherit;
     font-size: 0.8rem;
-    font-weight: 600;
+    font-weight: 600,
     cursor: pointer;
     transition: all 0.2s ease;
     text-transform: uppercase;
@@ -528,7 +528,7 @@ d;
     gap: 0.5rem;
   }
   .search-input {
-    flex: 1;
+    flex: 1,
     padding: 1rem 1.5rem;
     background: #0a0a0a;
     border: 2px solid #ffd700;
@@ -559,7 +559,7 @@ d;
     transform: translateY(-1px);
   }
   .search-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .context-controls {
@@ -609,7 +609,7 @@ d;
     margin-bottom: 1rem;
   }
   .context-header h3 {
-    margin: 0;
+    margin: 0,
     color: #ffd700;
     font-size: 1rem;
   }
@@ -637,7 +637,7 @@ d;
   }
   /* Main Content */
   .assistant-main {
-    flex: 1;
+    flex: 1,
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -661,7 +661,7 @@ d;
   }
   .message-avatar {
     font-size: 1.5rem;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .message-content {
     max-width: 70%;
@@ -680,7 +680,7 @@ d;
   }
   .message-time {
     font-size: 0.7rem;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .typing-indicator {
     display: flex;
@@ -694,14 +694,14 @@ d;
     animation: typing 1.4s infinite ease-in-out;
   }
   .typing-indicator span:nth-child(2) {
-    animation-delay: 0.2;
+    animation-delay: 0.2,
   }
   .typing-indicator span:nth-child(3) {
-    animation-delay: 0.4;
+    animation-delay: 0.4,
   }
   /* Evidence Mode */
   .evidence-container {
-    flex: 1;
+    flex: 1,
     padding: 1rem;
     display: flex;
     flex-direction: column;
@@ -713,7 +713,7 @@ d;
     margin-bottom: 1rem;
   }
   .evidence-header h2 {
-    margin: 0;
+    margin: 0,
     color: #ffd700;
   }
   .evidence-controls {
@@ -736,7 +736,7 @@ d;
     color: #000;
   }
   .evidence-grid {
-    flex: 1;
+    flex: 1,
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 1rem;
@@ -760,7 +760,7 @@ d;
     margin-bottom: 0.5rem;
   }
   .evidence-item h3 {
-    margin: 0;
+    margin: 0,
     color: #ffd700;
     font-size: 0.9rem;
   }
@@ -800,7 +800,7 @@ d;
   }
   /* Analysis Mode */
   .analysis-container {
-    flex: 1;
+    flex: 1,
     padding: 1rem;
     overflow-y: auto;
   }
@@ -846,7 +846,7 @@ d;
     padding-bottom: 0.5rem;
   }
   .analysis-content {
-    line-height: 1.6;
+    line-height: 1.6,
   }
   .evidence-analysis {
     margin-bottom: 0.5rem;
@@ -913,10 +913,10 @@ d;
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.5;
+      opacity: 0.5,
     }
   }
   /* Responsive Design */

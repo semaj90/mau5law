@@ -51,7 +51,7 @@
     contract: '📋',
     brief: '⚖️',
     evidence: '🔍',
-    citation: '📚';
+    citation: '📚',
   }
   const fileTypeColors = {
     pdf: 'text-red-500',
@@ -63,18 +63,18 @@
     contract: 'text-green-600',
     brief: 'text-indigo-600',
     evidence: 'text-yellow-600',
-    citation: 'text-cyan-600';
+    citation: 'text-cyan-600',
   }
   const confidentialityColors = {
     public: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
     internal: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
     confidential: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200',
-    restricted: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+    restricted: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
   }
   const sizeClasses = {
     sm: 'w-32 h-40',
     md: 'w-40 h-48',
-    lg: 'w-48 h-56';
+    lg: 'w-48 h-56',
   }
   const themeClasses = {
     default: `

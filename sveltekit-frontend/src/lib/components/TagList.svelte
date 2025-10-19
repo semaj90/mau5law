@@ -250,7 +250,7 @@
     }
   }
   .tag-text {
-    font-weight: 500;
+    font-weight: 500,
   }
   .tag-remove {
     margin-left: 0.25rem;
@@ -289,7 +289,7 @@
   .suggestions {
     position: absolute;
     top: 100%;
-    left: 0;
+    left: 0,
     right: 0;
     margin-top: 0.25rem;
     background-color: white;
@@ -298,7 +298,7 @@
     box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
     max-height: 10rem;
     overflow-y: auto;
-    z-index: 50;
+    z-index: 50,
   }
   .suggestion {
     width: 100%;

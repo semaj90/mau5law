@@ -147,9 +147,9 @@
   .enhanced-modal-diamond::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background-image:
       repeating-linear-gradient(
@@ -221,20 +221,20 @@
 
   @keyframes fadeIn {
     from {
-      opacity: 0;
+      opacity: 0,
     }
     to {
-      opacity: 1;
+      opacity: 1,
     }
   }
 
   @keyframes zoomIn {
     from {
-      opacity: 0;
+      opacity: 0,
       transform: scale(0.95);
     }
     to {
-      opacity: 1;
+      opacity: 1,
       transform: scale(1);
     }
   }

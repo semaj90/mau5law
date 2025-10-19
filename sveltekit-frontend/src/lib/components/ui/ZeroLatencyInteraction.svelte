@@ -70,7 +70,7 @@ https://svelte.dev/e/js_parse_error -->
     });
     observer.observe(document.body, {
       childList: true
-      subtree: true ;
+      subtree: true,
     });
     isInitialized = true;
     console.log(`✅ Zero-latency system initialized for ${targetElements.length} elements`);
@@ -294,7 +294,7 @@ https://svelte.dev/e/js_parse_error -->
         type: 'summary_card',
         priority: 3,
         compressedData: new TextEncoder().encode(html),
-        bankId: 2;
+        bankId: 2,
       }
       await nesGPUBridge.storeCHRROMPattern(`${patternPrefix}_${elementId}`, chrRomPattern);
       // Also store in pre-computation service for cross-session caching
@@ -385,18 +385,18 @@ https://svelte.dev/e/js_parse_error -->
     transition: all 0.1s ease;
   }
   :global($1) {
-    content: '⚡';
+    content: '⚡',
     position: absolute;
     top: -2px;
     right: -2px;
     font-size: 10px;
-    opacity: 0;
+    opacity: 0,
     color: #ffd700;
     transition: opacity 0.2s ease;
     pointer-events: none;
   }
   :global($1) {
-    opacity: 0.7;
+    opacity: 0.7,
   }
   :global($1) {
     background: rgba(255, 215, 0, 0.05);
@@ -415,14 +415,14 @@ https://svelte.dev/e/js_parse_error -->
     color: #e0e0e0;
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
-    line-height: 1.4;
+    line-height: 1.4,
     opacity: 0;
     transform: translateY(-5px) scale(0.95);
     transition: all 0.15s cubic-bezier(0.2, 0, 0.2, 1);
-    z-index: 10000;
+    z-index: 10000,
   }
   :global(.chr-rom-tooltip.visible) {
-    opacity: 1;
+    opacity: 1,
     transform: translateY(0) scale(1);
   }
   :global(.chr-rom-tooltip.zero-latency-tooltip) {
@@ -462,7 +462,7 @@ https://svelte.dev/e/js_parse_error -->
     background: #00ff41;
     color: #000;
     font-size: 10px;
-    font-weight: 700;
+    font-weight: 700,
     padding: 2px 6px;
     border-radius: 4px;
     border: 1px solid #000;
@@ -528,7 +528,7 @@ d;
     color: #b0b0b0;
   }
   .stat .value {
-    font-weight: 600;
+    font-weight: 600,
     color: #e0e0e0;
   }
   .stat .value.cache-hits {
@@ -536,7 +536,7 @@ d;
   }
   .stat .value.zero-latency {
     color: #ffd700;
-    font-weight: 700;
+    font-weight: 700,
   }
   /* Responsive design */
   @media (max-width: 768px) {

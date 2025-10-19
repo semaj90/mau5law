@@ -221,7 +221,7 @@
     margin-bottom: 1rem;
     padding: 0.75rem;
     border-radius: 6px;
-    font-weight: 500;
+    font-weight: 500,
   }
   .ai-status-indicator.processing {
     background: rgba(255, 152, 0, 0.1);
@@ -251,10 +251,10 @@
   @keyframes pulse {
 0%, {}
     100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.5;
+      opacity: 0.5,
     }
   }
   .ai-content-area {
@@ -277,7 +277,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-weight: 500;
+    font-weight: 500,
     transition: background-color 0.2s ease;
   }
   .help-toggle:hover {
@@ -301,7 +301,7 @@
     padding-left: 1rem;
   }
   .help-content dt {
-    font-weight: 600;
+    font-weight: 600,
     color: var(--color-text-primary, #fff);
   }
   .help-content dd {

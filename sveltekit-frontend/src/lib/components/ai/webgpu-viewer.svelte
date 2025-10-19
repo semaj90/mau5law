@@ -395,7 +395,7 @@ https://svelte.dev/e/js_parse_error -->
     left: 1rem;
     display: flex;
     gap: 0.5rem;
-    z-index: 10;
+    z-index: 10,
     background: rgba(0, 0, 0, 0.5);
     padding: 0.5rem;
     border-radius: 8px;
@@ -440,7 +440,7 @@ https://svelte.dev/e/js_parse_error -->
     gap: 0.5rem;
     max-width: 300px;
     font-size: 0.75rem;
-    z-index: 10;
+    z-index: 10,
   }
   .label {
     padding: 0.25rem 0.5rem;

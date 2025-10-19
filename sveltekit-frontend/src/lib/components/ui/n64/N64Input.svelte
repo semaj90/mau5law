@@ -284,7 +284,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     padding: 12px 16px;
     font-family: 'Press Start 2P', monospace;
     font-size: 12px;
-    line-height: 1.4;
+    line-height: 1.4,
     background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
     color: #e0e0e0;
     border: 2px solid #505050;
@@ -349,12 +349,12 @@ if (spatialAudio && typeof window !== 'undefined') {
   /* Texture filtering effects */
   .texture-filter-layer {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     pointer-events: none;
-    z-index: 1;
+    z-index: 1,
   }
   .filter-nearest .texture-filter-layer {
     background:
@@ -402,7 +402,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     right: -1px;
     bottom: -1px;
     pointer-events: none;
-    z-index: 2;
+    z-index: 2,
   }
   .aa-fxaa .aa-layer {
     background: linear-gradient(
@@ -438,9 +438,9 @@ if (spatialAudio && typeof window !== 'undefined') {
   /* Fog effect */
   .fog-layer {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: linear-gradient(
       180deg,
@@ -450,7 +450,7 @@ if (spatialAudio && typeof window !== 'undefined') {
       rgba(200, 200, 255, 0.05) 100%
     );
     pointer-events: none;
-    z-index: 3;
+    z-index: 3,
     animation: fog-drift 6s ease-in-out infinite;
   }
   /* Depth of field */
@@ -464,7 +464,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     border: 2px solid rgba(255, 255, 255, 0.05);
     filter: blur(0.5px);
     pointer-events: none;
-    z-index: 4;
+    z-index: 4,
   }
   /* Focus indicator */
   .n64-focus-indicator {
@@ -475,7 +475,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     bottom: -4px;
     border: 2px solid #ffd700;
     border-radius: 4px;
-    opacity: 0;
+    opacity: 0,
     transform: scale(0.9);
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     pointer-events: none;
@@ -485,7 +485,7 @@ if (spatialAudio && typeof window !== 'undefined') {
       inset 0 0 10px rgba(255, 215, 0, 0.2);
   }
   .n64-focus-indicator.visible {
-    opacity: 1;
+    opacity: 1,
     transform: scale(1);
   }
   /* State variations */
@@ -502,7 +502,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     transform: perspective(1000px) rotateX(1deg) translateZ(1px);
   }
   .n64-input:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
     transform: perspective(1000px) rotateX(3deg) translateZ(-1px);
   }

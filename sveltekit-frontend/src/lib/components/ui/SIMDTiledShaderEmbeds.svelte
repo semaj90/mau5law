@@ -509,7 +509,7 @@ async function predictiveAssetCaching(): Promise<void> {
         performanceProfile: {
           device: 'desktop',
           capabilities: enableSIMDAcceleration ? ['webgpu', 'simd'] : ['webgl'],
-          averageFPS: 60;
+          averageFPS: 60,
         }
       },
       generateEmbeddings: true
@@ -769,7 +769,7 @@ export function getCHRPatterns(): string[] {
   font-size: 1.2rem;
 }
 .status-text {
-  font-weight: 500;
+  font-weight: 500,
 }
 .quality-indicator {
   font-size: 0.9rem;
@@ -792,9 +792,9 @@ export function getCHRPatterns(): string[] {
 }
 .tiled-canv.processing-overlay {
   position: absolute;
-  top: 0;
+  top: 0,
   left: 0;
-  right: 0;
+  right: 0,
   bottom: 0;
   display: flex;
   flex-direction: column;
@@ -818,9 +818,9 @@ export function getCHRPatterns(): string[] {
 }
 .tile-info-overlay {
   position: absolute;
-  top: 0;
+  top: 0,
   left: 0;
-  right: 0;
+  right: 0,
   bottom: 0;
   pointer-events: none;
 }
@@ -984,7 +984,7 @@ export function getCHRPatterns(): string[] {
   transform: translateY(-1px);
 }
 .process-button:disabled {
-  opacity: 0.6;
+  opacity: 0.6,
   cursor: not-allowed;
 }
 .settings {
