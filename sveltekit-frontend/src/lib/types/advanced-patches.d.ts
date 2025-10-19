@@ -2,8 +2,19 @@
 declare global {
   namespace Fuse {
     interface FuseOptions<T> {
-      keys?: string[];
+      keys?: (string | { name: string; weight: number })[];
       threshold?: number;
+      includeScore?: boolean;
+      distance?: number;
+      minMatchCharLength?: number;
+      isCaseSensitive?: boolean;
+      includeMatches?: boolean;
+      findAllMatches?: boolean;
+      location?: number;
+      useExtendedSearch?: boolean;
+      ignoreLocation?: boolean;
+      ignoreFieldNorm?: boolean;
+      fieldNormWeight?: number;
     }
   }
   interface BufferLike {
@@ -37,6 +48,14 @@ declare global {
   interface GPUSearchMetrics {
     searchTime: number;
     resultCount: number;
+  }
+  namespace PipelineSearchResult {
+    interface Result {
+      id: string;
+      score: number;
+      snippet: string;
+      source: string;
+    }
   }
 }
 export {};

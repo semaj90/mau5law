@@ -1,8 +1,27 @@
-import type { DocumentItem, VisionItem, SearchResult, LegalMetadata } from '../../types/sharedTypes';
+import type { DocumentItem, VisionItem, SearchResult, LegalMetadata, Party } from '$lib/types/sharedTypes';
 import { Pool } from 'pg';
+
+// Centralized Party role/type defaults (replace with enums if defined elsewhere)
+const DEFAULT_PARTY_ROLE = 'other' as const;
+const DEFAULT_PARTY_TYPE = 'individual' as const;
 
 // Single, canonical pg.Pool instance for server runtime
 const POOL: Pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+// Type guards for robust type checking
+const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null;
+const isString = (v: unknown): v is string => typeof v === 'string';
+const isNumber = (v: unknown): v is number => typeof v === 'number';
+const isStringArray = (v: unknown): v is string[] => Array.isArray(v) && v.every(e => typeof e === 'string');
+
+// Define LegalCaseInfo type locally as it's not exported from sharedTypes
+export type LegalCaseInfo = {
+  id: string;
+  jurisdiction: string;
+  parties: Party[];
+  datesFiled: string[];
+  courtLevel: 'district' | 'appellate' | 'supreme';
+};
 
 /**
  * Upsert a document or vision item into the `embeddings` table.
@@ -45,11 +64,17 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
   // Use a safe, explicit type for `doc.meta` instead of `any`.
   type MetaShape = Record<string, unknown> & {
     snippet?: string;
-    case?: unknown;
-    jurisdiction?: unknown;
-    parties?: unknown;
-    datesFiled?: unknown;
-    courtLevel?: unknown;
+    case?:
+      | string
+      | {
+          // Updated: 'case' can be a string (ID) or an object
+          id?: unknown;
+          jurisdiction?: unknown;
+          parties?: unknown;
+          datesFiled?: unknown;
+          courtLevel?: unknown;
+        };
+    // Removed redundant properties from MetaShape as they are now part of the 'case' object or handled separately
     classification?: unknown;
     processing?: unknown;
   };
@@ -62,70 +87,132 @@ export async function searchPGVector(queryVector: number[], topK = 10): Promise<
 
   // Ensure the returned metadata satisfies the LegalMetadata shape expected by SearchResult.
   function normalizeLegalMetadata(meta?: MetaShape): LegalMetadata {
-    // Type guards
-    const isRecord = (v: unknown): v is Record<string, unknown> =>
-      typeof v === 'object' && v !== null;
-    const isString = (v: unknown): v is string => typeof v === 'string';
-    const isStringArray = (v: unknown): v is string[] =>
-      Array.isArray(v) && v.every((e) => typeof e === 'string');
+    // Inferred types based on error messages for classification and processing
+    // type DocumentType = 'contract' | 'evidence' | 'brief' | 'citation'; // Removed unused type
+    // type RiskLevel = 'low' | 'medium' | 'high' | 'critical'; // Removed unused type
+
+    // Type guard for LegalMetadata['classification']
+    function isClassificationInfo(v: unknown): v is LegalMetadata['classification'] {
+      if (!isRecord(v)) return false;
+      const docTypeValid =
+        isString(v.documentType) && ['contract', 'evidence', 'brief', 'citation'].includes(v.documentType as string);
+      const practiceAreaValid = isStringArray(v.practiceArea);
+      const confidenceLevelValid = isNumber(v.confidenceLevel);
+      const riskLevelValid =
+        isString(v.riskLevel) && ['low', 'medium', 'high', 'critical'].includes(v.riskLevel as string);
+      return docTypeValid && practiceAreaValid && confidenceLevelValid && riskLevelValid;
+    }
+
+    // Type guard for LegalMetadata['processing']
+    function isProcessingInfo(v: unknown): v is LegalMetadata['processing'] {
+      if (!isRecord(v)) return false;
+      const extractedEntitiesValid = isStringArray(v.extractedEntities);
+      const keyTermsValid = isStringArray(v.keyTerms);
+      const sentimentValid = isNumber(v.sentiment);
+      const complexityValid = isNumber(v.complexity);
+      return extractedEntitiesValid && keyTermsValid && sentimentValid && complexityValid;
+    }
 
     // Extract and validate `case` information
     let caseId = '';
-    let jurisdiction = '';
-    let parties: string[] = [];
-    let datesFiled: string[] = [];
-    let courtLevel: 'district' | 'appellate' | 'supreme' = 'district';
+    let jurisdiction: string = ''; // Ensure it's always a string
+    let parties: Party[] = []; // Initialize as Party[]
+    let datesFiled: string[] | undefined = undefined;
+    let courtLevel: LegalCaseInfo['courtLevel'] | undefined = undefined;
 
-    const caseRaw = meta && (meta.case as unknown);
-    if (isString(caseRaw)) {
-      // If case is a simple string, treat it as the id
-      caseId = caseRaw;
-    } else if (isRecord(caseRaw)) {
-      if (isString(caseRaw.id)) caseId = caseRaw.id;
-      if (isString(caseRaw.jurisdiction)) jurisdiction = caseRaw.jurisdiction;
-      if (isStringArray(caseRaw.parties)) parties = caseRaw.parties;
-      if (isStringArray(caseRaw.datesFiled)) datesFiled = caseRaw.datesFiled;
+    const rawCaseData = meta?.case; // Get the raw value from meta.case
+
+    if (isString(rawCaseData)) {
+      // If meta.case is a simple string, treat it as the case ID
+      caseId = rawCaseData;
+    } else if (isRecord(rawCaseData)) {
+      // If meta.case is an object, try to extract properties
+      if (isString(rawCaseData.id)) caseId = rawCaseData.id;
+      if (isString(rawCaseData.jurisdiction)) jurisdiction = rawCaseData.jurisdiction;
+      if (isStringArray(rawCaseData.parties)) {
+        // Convert string[] to Party[] with centralized default role and type
+        parties = rawCaseData.parties.map(name => ({
+          name,
+          role: DEFAULT_PARTY_ROLE,
+          type: DEFAULT_PARTY_TYPE,
+        }));
+      }
+      if (isStringArray(rawCaseData.datesFiled)) datesFiled = rawCaseData.datesFiled;
       if (
-        isString(caseRaw.courtLevel) &&
-        (caseRaw.courtLevel === 'district' ||
-          caseRaw.courtLevel === 'appellate' ||
-          caseRaw.courtLevel === 'supreme')
+        isString(rawCaseData.courtLevel) &&
+        (rawCaseData.courtLevel === 'district' ||
+          rawCaseData.courtLevel === 'appellate' ||
+          rawCaseData.courtLevel === 'supreme')
       ) {
-        courtLevel = caseRaw.courtLevel;
+        courtLevel = rawCaseData.courtLevel;
       }
     }
 
-    const defaultCase = {
-      id: caseId,
-      jurisdiction,
+    // Provide required default values: jurisdiction must be a string (non-optional)
+    const defaultCase: LegalCaseInfo = {
+      id: caseId || '',
+      jurisdiction: jurisdiction || 'unknown', // Ensure jurisdiction is always a string
       parties,
-      datesFiled,
-      courtLevel
+      datesFiled: datesFiled ?? [], // Ensure it's always an array, even if empty
+      courtLevel: courtLevel ?? 'district',
     };
 
-    const classification = isString(meta?.classification) ? meta!.classification : 'unknown';
-    const processing = isRecord(meta?.processing) ? (meta!.processing as Record<string, unknown>) : {};
-    const snippet = isString(meta?.snippet) ? meta!.snippet : '';
+    // Corrected classification parsing with type guard and defaults
+    let classification: LegalMetadata['classification'] = {
+      documentType: 'evidence', // Default to a valid type
+      practiceArea: [],
+      confidenceLevel: 0,
+      riskLevel: 'low', // Default to a valid type
+    };
+    if (isClassificationInfo(meta?.classification)) {
+      classification = meta!.classification;
+    }
 
-    const normalized: Record<string, unknown> = {
-      case: defaultCase,
-      classification,
-      processing,
-      snippet,
-      // preserve other keys conservatively
-      ...(isRecord(meta) ? meta : {})
+    // Corrected processing parsing with type guard and defaults
+    let processing: LegalMetadata['processing'] = {
+      extractedEntities: [],
+      keyTerms: [],
+      sentiment: 0,
+      complexity: 0,
+    };
+    if (isProcessingInfo(meta?.processing)) {
+      processing = meta!.processing;
+    }
+
+    // The snippet property should not be part of LegalMetadata.
+    // It will be extracted directly in the map function for SearchResult.
+    // const snippet = isString(meta?.snippet) ? (meta!.snippet as string) : ''; // This line is no longer needed here
+
+    // Only include explicitly typed properties in LegalMetadata to guarantee type safety.
+    // Do NOT spread the original `meta` object here, as it may contain extra or mismatched properties
+    // that are not part of the LegalMetadata contract, which could cause runtime or type errors.
+    // This explicit construction ensures only the validated and expected fields are present.
+    const normalized: LegalMetadata = {
+      // Add other known properties from MetaShape if they are part of LegalMetadata
+      // and need to be preserved. Avoid spreading 'meta' directly to prevent type issues.
+      // For example, if LegalMetadata can have a 'title' property:
+      // title: isString(meta?.title) ? (meta!.title as string) : undefined,
+      case: defaultCase, // Assign the validated case information
+      classification: classification, // Assign the validated classification information
+      processing: processing, // Assign the validated processing information
     };
 
-    return normalized as unknown as LegalMetadata;
+    return normalized;
   }
 
-  return (res.rows as RowType[]).map((r) => ({
-    id: r.id,
-    score: r.score,
-    source: r.doc?.source ?? 'unknown',
-    snippet: (r.doc?.meta?.snippet as string) ?? '',
-    metadata: normalizeLegalMetadata(r.doc?.meta ?? undefined),
-  }));
+  // Cast the final mapped array to SearchResult[] to satisfy the imported type contract.
+  return (res.rows as RowType[]).map(r => {
+    // Extract snippet directly from the raw meta object before normalizing
+    const rawSnippet = isString(r.doc?.meta?.snippet) ? (r.doc!.meta!.snippet as string) : '';
+    const meta = normalizeLegalMetadata(r.doc?.meta ?? undefined);
+    return {
+      id: r.id,
+      score: r.score,
+      source: r.doc?.source ?? 'unknown',
+      snippet: rawSnippet, // Assign the extracted raw snippet here
+      metadata: meta,
+    };
+  }); // No need for 'as SearchResult[]' if types are correctly aligned
 }
 
 export default { upsertToPGVector, searchPGVector };

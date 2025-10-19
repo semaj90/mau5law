@@ -9,11 +9,27 @@ This is a sophisticated legal AI platform with microservices architecture featur
 ## Architecture Essentials
 
 ### Service Ecosystem
-- **Frontend**: SvelteKit 2 + Svelte 5 runes on port 5173
+- **Frontend**: SvelteKit 2 + Svelte 5 runes on ports 5173-5179
 - **Go Services**: Ports 8080-8136 (37 microservices with health checks)
 - **Context7 MCP**: Port 8777 (AI documentation server, official endpoint: `http://localhost:8777`)
-- **Databases**: PostgreSQL:5432 (pgvector), Redis:6379 (cache)
-- **AI**: Ollama:11434 (local LLMs), gpu cuda, rtx 3060Ti, WebAssembly inference
+- **Databases**:
+  - PostgreSQL:5434 (pgvector/pgvector:pg17) - `postgresql://legal_admin:123456@localhost:5434/legal_ai_db`
+  - PostgreSQL Test:5434 (isolated test instance)
+  - Redis:6379 (redis-stack with RediSearch, RedisJSON) - `redis://:redis@localhost:6379/0`
+  - Redis Test:6380 (isolated test cache)
+  - Neo4j:7474 (HTTP), :7687 (Bolt) - `bolt://localhost:7687` auth: `neo4j/legal123456`
+  - Qdrant:6333 (HTTP), :6334 (gRPC) - `http://localhost:6333`
+- **AI**:
+  - Ollama:11434 (host) or :11435 (docker) - `http://localhost:11434`
+  - FastAPI Embed:8000 - `http://localhost:8000`
+  - GPU: NVIDIA RTX 3060 Ti (CUDA enabled)
+  - Models: gemma3, embeddinggemma:latest, nomic-embed-text
+  - WebAssembly inference (browser-side)
+- **Infrastructure**:
+  - RabbitMQ:5672 (AMQP), :15672 (Management UI) - `amqp://legal_admin:123456@localhost:5672`
+  - MinIO:9000 (API), :9001 (Console) - `http://localhost:9000`
+  - Caddy:443 (HTTPS/QUIC), :80 (HTTP)
+  - QUIC Server:4433/udp, :4434/udp, :8095 (HTTP fallback)
 
 ### Route Discovery Pattern
 ```typescript
@@ -275,11 +291,42 @@ curl http://localhost:5173/api/go/health
 # XState status
 curl http://localhost:5173/api/v1/xstate
 
-# Context7 server
+# Context7 MCP server
 curl http://localhost:8777/health
 
-# QUIC services
-curl http://localhost:8447/health
+# Qdrant vector database
+curl http://localhost:6333/health
+
+# MinIO object storage
+curl http://localhost:9000/minio/health/live
+
+# RabbitMQ management
+curl -u legal_admin:123456 http://localhost:15672/api/overview
+
+# QUIC server
+curl http://localhost:8095/health
+```
+
+### Database Connection Testing
+```bash
+# PostgreSQL main instance
+PGPASSWORD=123456 psql -h localhost -p 5434 -U legal_admin -d legal_ai_db -c "\dt"
+
+# PostgreSQL test instance
+PGPASSWORD=123456 psql -h localhost -p 5434 -U legal_admin -d legal_ai_db -c "\d cases"
+
+# Redis main instance
+redis-cli -p 6379 -a redis ping
+redis-cli -p 6379 -a redis INFO
+
+# Redis test instance
+redis-cli -p 6380 ping
+
+# Neo4j browser
+curl http://localhost:7474
+
+# Qdrant collections
+curl http://localhost:6333/collections
 ```
 
 ### Common Issues
@@ -289,15 +336,58 @@ curl http://localhost:8447/health
 4. **GPU Types**: Install @webgpu/types or stub GPUBufferUsage constants
 5. **WASM Loading**: Ensure proper CORS headers for .wasm files
 6. **QUIC Protocol**: Requires HTTPS in production environments
+7. **Port Conflicts**:
+   - PostgreSQL: Use port 5434 (not 5432) to avoid conflicts with other instances
+   - Ollama: Docker uses 11435, host uses 11434
+   - Redis: Main on 6379, test on 6380
+   - SvelteKit: Multiple instances on 5173-5179 for parallel development
+8. **Docker Network Issues**:
+   - Services communicate via container names in `legal-ai-network`
+   - Use `host.docker.internal` to access host services from containers
+   - Example: Ollama on host is `http://host.docker.internal:11434` from container
+9. **Database Connection Errors**:
+   - Check if PostgreSQL is on 5432 or 5434 (docker-compose uses 5434)
+   - Redis password is `redis` (not empty)
+   - Neo4j auth is `neo4j/legal123456`
+10. **Vector Search Performance**:
+    - Use pgvector for primary searches (fastest for < 1M vectors)
+    - Use Qdrant for advanced similarity (HNSW index, > 1M vectors)
+    - Always cache results in Redis with 5-15 minute TTL
 
 ## Integration Points
 
 ### External Services
-- **Ollama**: Local LLM inference with models in `ollama_models/`
+- **Ollama**: Local LLM inference
+  - URL: `http://localhost:11434` (host) or `http://localhost:11435` (docker)
+  - Models: gemma3, embeddinggemma:latest, nomic-embed-text
+  - Model storage: `/root/.ollama/models` (docker) or `~/.ollama/models` (host)
+  - GPU: NVIDIA RTX 3060 Ti with CUDA support
 - **Context7**: MCP server for document retrieval and AI orchestration
-- **MinIO**: Object storage for document uploads
-- **RabbitMQ**: Message queues for async processing
-- **Qdrant**: Vector database for semantic search
+  - URL: `http://localhost:8777`
+  - Health: `http://localhost:8777/health`
+  - Port: 8777 (standard), 3002-3003 (alternative)
+- **MinIO**: Object storage for legal documents
+  - API: `http://localhost:9000`
+  - Console: `http://localhost:9001`
+  - Credentials: `minio/minio123` or `minioadmin/minioadmin123`
+  - Bucket: `legal-documents`
+  - Use: PDF storage, evidence files, case documents
+- **RabbitMQ**: Message queues for async legal document processing
+  - AMQP: `amqp://legal_admin:123456@localhost:5672`
+  - Management UI: `http://localhost:15672`
+  - Queues: `legal.documents.queue`, `legal.embeddings.queue`
+  - Use: OCR processing, vector embedding, batch operations
+- **Qdrant**: Advanced vector database for semantic search
+  - HTTP: `http://localhost:6333`
+  - gRPC: `localhost:6334`
+  - Collections: `legal_docs`, `case_embeddings`
+  - Use: Large-scale similarity search (> 1M vectors)
+- **Neo4j**: Graph database for case relationships
+  - Browser: `http://localhost:7474`
+  - Bolt: `bolt://localhost:7687`
+  - Auth: `neo4j/legal123456`
+  - Plugins: APOC, Graph Data Science
+  - Use: Case citations, legal precedent graphs, entity relationships
 
 ### Cross-Service Communication
 - **gRPC**: High-performance Go-to-Go communication with protobuf schemas

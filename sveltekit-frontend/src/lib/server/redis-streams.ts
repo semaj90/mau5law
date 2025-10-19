@@ -14,7 +14,12 @@ let client: RedisType | null = null;
 const maybeGlobal = (globalThis as unknown as Record<string, unknown>).__REDIS;
 client = (maybeGlobal as unknown as RedisType) || null;
 if (!client) {
-  client = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
+  client = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
+    password: process.env.REDIS_PASSWORD || 'redis',
+    lazyConnect: true,
+    maxRetriesPerRequest: 3,
+    enableOfflineQueue: false
+  });
 }
 
 export type TokenEntry = { id: string; seq: number; chunk: string; meta: Record<string, unknown> };

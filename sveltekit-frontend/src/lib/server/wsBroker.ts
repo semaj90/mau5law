@@ -17,13 +17,21 @@ let subscriber: RedisClient | null = null;
 export async function initializeWsBroker(): Promise<void> {
   try {
     // Narrowly type import.meta.env access to avoid `any`
-    const env = (import.meta as unknown as { env?: { REDIS_URL?: string } }).env;
+    const env = (import.meta as unknown as { env?: { REDIS_URL?: string; REDIS_PASSWORD?: string } }).env;
     const redisUrl = env?.REDIS_URL ?? 'redis://localhost:6379';
+    const redisPassword = env?.REDIS_PASSWORD || process.env.REDIS_PASSWORD || 'redis';
+
+    const redisConfig = {
+      password: redisPassword,
+      lazyConnect: true,
+      maxRetriesPerRequest: 3,
+      enableOfflineQueue: false
+    };
 
     // Publisher redis connection
-    redis = new Redis(redisUrl);
+    redis = new Redis(redisUrl, redisConfig);
     // Subscriber redis connection (separate connection required for pub/sub)
-    subscriber = new Redis(redisUrl);
+    subscriber = new Redis(redisUrl, redisConfig);
 
     // Subscribe to progress messages channel (defensive but typed)
     // Subscribe to progress messages channel (defensive but typed)

@@ -1,127 +1,280 @@
 /// <reference types="vite/client" />
 import type { PageServerLoad } from './$types.js';
 import { fail } from '@sveltejs/kit';
-import { z } from 'zod';
-import { superValidate } from 'sveltekit-superforms/server';
-import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions } from './$types.js';
-const UPLOAD_SERVICE_URL = import.meta.env.UPLOAD_SERVICE_URL || 'http://localhost:8093';
-// Fallback minimal schema used only to keep typechecking stable during incremental edits.
-// Replace with the project's canonical `fileUploadSchema` when available.
-const fallbackFileUploadSchema = z.object({
-  caseId: z.string().optional(),
-  type: z.string().optional(),
-  title: z.string().optional(),
-  description: z.string().optional(),
-  tags: z.array(z.string()).optional(),
-  isPrivate: z.boolean().optional(),
-  aiAnalysis: z.boolean().optional(),
+import { fileUploadSchema } from '$lib/schemas/fileUploadSchema'; // Import the canonical schema
+import xstateIntegration from '$lib/services/xstate-integration'; // For session management
+import { z } from 'zod'; // Import z from zod for schema manipulation
+
+// The `z.any()` type for files can cause type inference issues with sveltekit-superforms.
+// The recommended approach is to use `z.instanceof(File)` for server-side schemas.
+// This provides strong typing for the file object received from FormData.
+const serverFileUploadSchema = fileUploadSchema.extend({
+  file: z.instanceof(File, { message: 'Please upload a file.' }).refine(f => f.size > 0, 'File cannot be empty.'),
 });
-const getSchema = () => {
-  // Try to reference the real `fileUploadSchema` if it exists in the current module scope.
-  // otherwise, fall back to the local minimal schema.
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  return typeof fileUploadSchema !== 'undefined' ? fileUploadSchema : fallbackFileUploadSchema;
+
+// --- NEW: infer a concrete TypeScript type from the Zod schema ---
+type ServerFileUploadData = z.infer<typeof serverFileUploadSchema>;
+
+// Dynamic port detection for dev:quic (Caddy on 5178) and regular dev (Vite on 5173+)
+const detectServicePort = (): string => {
+  // Priority 1: Explicit environment variable
+  if (process.env.UPLOAD_SERVICE_URL) {
+    return process.env.UPLOAD_SERVICE_URL;
+  }
+
+  // Priority 2: Check if running behind Caddy QUIC proxy
+  const isCaddyQuic = process.env.QUIC_ENABLED === 'true' || process.env.CADDY_QUIC === 'true';
+
+  // Priority 3: Use PORT env var or infer from Vite
+  const port = process.env.PORT || process.env.VITE_PORT || 5173;
+
+  // If behind Caddy QUIC, use Caddy's port (5178)
+  // Otherwise use Vite's direct port (5173, 5174, 5175, etc.)
+  const servicePort = isCaddyQuic ? 5178 : port;
+
+  return `http://localhost:${servicePort}/api/v1/minio`;
 };
-export const load: PageServerLoad = async () => {
-  // Initialize the form
-  const schema = getSchema();
-  const form = await superValidate(zod(schema));
-  return {
-    form,
+
+const UPLOAD_SERVICE_URL = detectServicePort();
+
+// Replace the centralized error logging function with Redis-aware implementation
+const REDIS_URL = process.env.REDIS_URL || process.env.REDIS || undefined;
+
+// --- Replace `any` with a minimal Redis-like interface to satisfy TS ---
+type RedisLike = {
+  lpush: (key: string, value: string) => Promise<number>;
+  ltrim: (key: string, start: number, stop: number) => Promise<void>;
+  on?: (event: string, handler: (e: unknown) => void) => void;
+  quit?: () => Promise<void>;
+  disconnect?: () => void;
+} | null;
+
+let _redisClient: RedisLike = null;
+
+const getRedisClient = async () => {
+  // Lazy/dynamic import so the server doesn't fail if ioredis isn't installed
+  if (!REDIS_URL) return null;
+  if (_redisClient) return _redisClient;
+  try {
+    const mod = await import('ioredis');
+
+    // Narrow constructor signature for the ioredis class we expect at runtime.
+    type IORedisConstructor = new (uri?: string) => Exclude<RedisLike, null>;
+
+    // Use unknown casts (not `any`) to extract the constructor from the dynamic module.
+    const maybe = mod as unknown as { default?: IORedisConstructor } | IORedisConstructor;
+    const IORedis = (maybe as { default?: IORedisConstructor }).default ?? (maybe as IORedisConstructor);
+
+    // Create a concrete client instance and call .on on it
+    const clientInstance = new IORedis(REDIS_URL);
+    clientInstance.on?.('error', (e: unknown) => console.warn('[Redis] connection error', e));
+    _redisClient = clientInstance as RedisLike;
+    return _redisClient;
+  } catch (e) {
+    console.warn('ioredis not available, falling back to console logging.', e);
+    _redisClient = null;
+    return null;
+  }
+};
+
+const logError = async (context: string, error: unknown, details?: Record<string, unknown>) => {
+  const payload = {
+    timestamp: new Date().toISOString(),
+    context,
+    error: error instanceof Error ? { message: error.message, stack: error.stack } : String(error),
+    details: details ?? {},
   };
+  // Always print to stderr for immediate visibility
+  console.error(`[${context}] Error:`, payload);
+
+  // Attempt to push to Redis list if available
+  try {
+    const client = await getRedisClient();
+    if (client) {
+      // store as JSON string, LIFO list 'error_logs'
+      await client.lpush('error_logs', JSON.stringify(payload));
+      // Optionally trim to keep list bounded
+      await client.ltrim('error_logs', 0, 999); // keep last 1000 entries
+    }
+  } catch (redisErr) {
+    // don't throw - just log that redis logging failed
+    console.warn('[logError] failed to write to redis', redisErr);
+  }
 };
+
+export const load: PageServerLoad = async ({ request: _request }) => {
+  // Provide a minimal initial form object for the page (no file uploaded yet).
+  // We avoid calling superValidate here (types vary between library versions) and
+  // instead return a small object with the properties used by the rest of the code.
+  const initialForm = {
+    valid: true,
+    errors: {},
+    data: {} as unknown as ServerFileUploadData,
+  };
+  return { form: initialForm };
+};
+
 export const actions: Actions = {
   upload: async ({ request, fetch }) => {
-    const formData = await request.formData();
-    const schema = getSchema();
-    const form = await superValidate(formData, zod(schema));
+    // Parse form data from the Request and validate against the Zod schema.
+    // We use safeParseAsync to get a predictable ValidationResult without relying on
+    // superValidate typings which differ across versions.
+    const parseFormFromRequest = async (req: Request) => {
+      const fd = await req.formData();
+      const build = {
+        type: fd.get('type') ? String(fd.get('type')) : '',
+        title: fd.get('title') ? String(fd.get('title')) : '',
+        isPrivate:
+          fd.get('isPrivate') === 'true' || fd.get('isPrivate') === 'on' || fd.get('isPrivate') === '1' ? true : false,
+        aiAnalysis: fd.get('aiAnalysis') === 'false' || fd.get('aiAnalysis') === '0' ? false : true,
+        file: fd.get('file') as File | null,
+        caseId: fd.get('caseId') ? String(fd.get('caseId')) : undefined,
+        description: fd.get('description') ? String(fd.get('description')) : undefined,
+        tags: fd.getAll('tags').map(t => String(t)),
+      };
+
+      const parsed = await serverFileUploadSchema.safeParseAsync(build);
+      if (!parsed.success) {
+        return {
+          valid: false,
+          errors: parsed.error.flatten(),
+          data: build,
+        } as const;
+      }
+      return {
+        valid: true,
+        errors: {},
+        data: parsed.data,
+      } as const;
+    };
+
+    const form = await parseFormFromRequest(request);
+
     if (!form.valid) {
+      await logError('UploadAction', 'Form validation failed', { errors: form.errors });
       return fail(400, { form });
     }
+
     try {
+      // Get user from XState session for 'uploadedBy' metadata
+      // Provide a narrow typed view of xstateIntegration to avoid 'any' usage
+      type User = { id?: string };
+      type SessionMachineSnapshot = { context?: { user?: User } } | undefined;
+      type ChildActor = { getSnapshot?: () => SessionMachineSnapshot } | undefined;
+      type ChildrenMap = { get?: (name: string) => ChildActor | undefined } | undefined;
+      type GlobalSnapshot = { children?: ChildrenMap } | undefined;
+      type GlobalActor = { getSnapshot?: () => GlobalSnapshot } | undefined;
+      type XStateIntegrationLike = {
+        globalState?: GlobalActor;
+        getGlobalState?: () => GlobalActor | undefined;
+      };
+      const xsi = xstateIntegration as unknown as XStateIntegrationLike;
+
+      const globalActor =
+        xsi.globalState ?? (typeof xsi.getGlobalState === 'function' ? xsi.getGlobalState() : undefined);
+
+      // Assuming 'sessionMachine' is a child actor of the global state machine
+      const currentUser = globalActor?.getSnapshot?.()?.children?.get?.('sessionMachine')?.getSnapshot?.()
+        ?.context?.user;
+      const uploadedBy = currentUser?.id || 'anonymous'; // Fallback for unauthenticated uploads
+
       // Create FormData for upload service
       const uploadFormData = new FormData();
-      // Add file
-      const file = formData.get('file');
-      if (!(file instanceof File)) {
-        return fail(400, {
-          form,
-          message: 'Invalid file provided',
-        });
+
+      // The file is now guaranteed to be a File object by superValidate and fileUploadSchema
+      const file = form.data.file;
+      uploadFormData.append('file', file as unknown as File);
+
+      // Append other form data, ensuring optional fields are handled
+      // form.data.caseId is now correctly typed as string | undefined
+      if (form.data.caseId) {
+        uploadFormData.append('caseId', String(form.data.caseId)); // Ensure string conversion
       }
-      if (!file || file.size === 0) {
-        return fail(400, {
-          form,
-          message: 'No file provided',
-        });
-      }
-      uploadFormData.append('file', file);
-      uploadFormData.append('caseId', form.data.caseId);
-      uploadFormData.append('documentType', form.data.type);
+      // form.data.type is now correctly typed as string
+      uploadFormData.append('documentType', String(form.data.type)); // Ensure string conversion
+
+      // form.data.description is now correctly typed as string | undefined
       if (form.data.description) {
-        uploadFormData.append('description', form.data.description);
+        uploadFormData.append('description', String(form.data.description)); // Ensure string conversion
       }
+
       // Add tags if provided
-      if (form.data.tags && Array.isArray(form.data.tags) && form.data.tags.length > 0) {
-        uploadFormData.append(
-          'tags',
-          JSON.stringify(
-            (form.data.tags as string[]).reduce(
-              (acc, tag) => {
-                acc[tag] = 'true';
-                return acc;
-              },
-              {} as Record<string, string>
-            )
-          )
-        );
+      // form.data.tags is now correctly typed as string[] | undefined
+      const tags = form.data.tags;
+      if (Array.isArray(tags) && tags.length > 0) {
+        // Build a simple map of tags -> "true" (preserves original intent)
+        const tagsMap = tags.reduce<Record<string, string>>((acc, tag) => {
+          acc[tag] = 'true';
+          return acc;
+        }, {});
+        uploadFormData.append('tags', JSON.stringify(tagsMap));
       }
+
       // Add metadata
       const metadata = {
-        title: form.data.title,
-        isPrivate: form.data.isPrivate.toString(),
-        aiAnalysis: form.data.aiAnalysis.toString(),
-        uploadedBy: 'user', // TODO: Get from session,
+        title: form.data.title, // 'title' is required by schema
+        isPrivate: (form.data.isPrivate ?? false).toString(), // Ensure boolean and then string
+        aiAnalysis: (form.data.aiAnalysis ?? true).toString(), // Ensure boolean and then string, default to true for AI platform
+        uploadedBy: uploadedBy,
         uploadedAt: new Date().toISOString(),
       };
       uploadFormData.append('metadata', JSON.stringify(metadata));
+
       // Upload to MinIO service
       const uploadResponse = await fetch(`${UPLOAD_SERVICE_URL}/upload`, {
         method: 'POST',
         body: uploadFormData,
       });
+
       if (!uploadResponse.ok) {
         const errorText = await uploadResponse.text();
-        console.error('Upload service error:', errorText);
+        logError('UploadAction', 'Upload service responded with non-OK status', {
+          status: uploadResponse.status,
+          statusText: uploadResponse.statusText,
+          responseText: errorText,
+          // Do not log raw formData.entries() in production as it might contain sensitive file data.
+          // Instead, log metadata or a summary.
+          metadataSent: metadata,
+          caseId: form.data.caseId,
+          documentType: form.data.type,
+        });
         return fail(uploadResponse.status, {
           form,
-          message: `Upload failed: ${errorText}`,
+          message: `Upload failed: ${errorText || 'Unknown error from upload service'}`,
         });
       }
+
       const uploadResult = await uploadResponse.json();
       if (!uploadResult.success) {
+        await logError('UploadAction', 'Upload service indicated failure in response body', {
+          uploadResult,
+          metadataSent: metadata,
+          caseId: form.data.caseId,
+          documentType: form.data.type,
+        });
         return fail(500, {
           form,
-          message: uploadResult.message || 'Upload failed',
+          message: uploadResult.message || 'Upload failed due to an internal service error.',
         });
       }
-      // Return success with upload result
+
       return {
         form,
         uploadResult,
         message: 'Document uploaded successfully!',
       };
     } catch (error: unknown) {
-      // Narrow the unknown error to extract a useful message if possible
-      let errMessage = 'Internal server error during upload';
-      if (error instanceof Error && typeof error.message === 'string') {
+      let errMessage = 'An unexpected internal server error occurred during document upload.';
+      if (error instanceof Error) {
         errMessage = error.message;
       } else if (typeof error === 'string') {
         errMessage = error;
       }
-      console.error('Upload error:', error);
+      await logError('UploadAction', error, {
+        userMessage: errMessage,
+        stack: error instanceof Error ? error.stack : undefined,
+      });
       return fail(500, {
         form,
         message: errMessage,

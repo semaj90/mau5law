@@ -852,4 +852,3 @@ export const qdrantOptimized = {
 };
 
 export default optimizedQdrant;
-export default optimizedQdrant;

@@ -32,7 +32,7 @@
   // Superforms setup
   const { form, errors, enhance, submitting, message } = superForm(data?.form, {
     dataType: 'form',
-    multipleFiles: true
+    multipleFiles: true,
     validators: {
       file: (value) => {
         if (!value || !(value instanceof File)) return 'File is required';
@@ -87,24 +87,24 @@
     }
   });
   // File handling
-  function handleFileSelect(_event: Event) {
-    // removed unused target assignment
+  function handleFileSelect(event: Event) {
+    const target = event.target as HTMLInputElement;
     const file = target.files?.[0];
     if (file) {
-      $form.file = fil;
+      $form.file = file;
       generatePreview(file);
     }
   }
-  function handleDrop(_event: DragEvent) {
+  function handleDrop(event: DragEvent) {
     event.preventDefault();
     dragOver = false;
-    const files = event.dataTransfer?.file;
+    const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
       $form.file = files[0];
       generatePreview(files[0]);
     }
   }
-  function handleDragOver(_event: DragEvent) {
+  function handleDragOver(event: DragEvent) {
     event.preventDefault();
     dragOver = true;
   }
@@ -392,10 +392,10 @@
     background: var(--bg-primary);
     color: var(--text-primary);
     font-family: inherit;
-    transition: border-color 0.2;
+    transition: border-color 0.2s;
   }
-  .form-input: focus
-  .form-select: focus
+  .form-input:focus,
+  .form-select:focus,
   .form-textarea:focus {
     outline: none;
     border-color: var(--accent-primary);
@@ -410,10 +410,10 @@
     padding: 2rem;
     text-align: center;
     cursor: pointer;
-    transition: all 0.2;
+    transition: all 0.2s;
     background: var(--bg-primary);
   }
-  .file-upload-area: hover
+  .file-upload-area:hover,
   .file-upload-area.drag-over {
     border-color: var(--accent-primary);
     background: var(--accent-primary-10);
@@ -525,9 +525,9 @@
     border-radius: 6px;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2;
+    transition: background-color 0.2s;
   }
-  .submit-button:hover:not(:disabled) {,
+  .submit-button:hover:not(:disabled) {
     background: var(--accent-primary-dark);
   }
   .submit-button:disabled {

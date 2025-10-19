@@ -1,5 +1,8 @@
 // Move/import Drizzle pg-core symbols near the top of the file
-import { pgTable, uuid, timestamp, text, boolean } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, timestamp, text, boolean, varchar, json, jsonb, real, integer } from 'drizzle-orm/pg-core';
+// removed incompatible customVector import
+// import { customVector as vector } from '@useverk/drizzle-pgvector';
+import { users } from './schema-postgres';
 
 // Re-export the PostgreSQL schema as the main schema
 export * from './schema-postgres';
@@ -12,8 +15,8 @@ export const analysisResults = pgTable('analysis_results', {
   analysisTypes: json('analysis_types').notNull(), // array or string stored as JSON
   confidence: real('confidence').default(0),
   processingTime: integer('processing_time').default(0), // ms or seconds per your convention
-  createdAt: timestamp('created_at', { mode: 'utc' }).defaultNow(),
-  updatedAt: timestamp('updated_at', { mode: 'utc' }).defaultNow(),
+  createdAt: timestamp('created_at', { mode: 'date' }).defaultNow(),
+  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow(),
 });
 
 export const cases = pgTable('cases', {
@@ -39,24 +42,25 @@ export const evidence = pgTable('evidence', {
   summary: text('summary'),
   aiSummary: text('ai_summary'),
   aiAnalysis: jsonb('ai_analysis'),
-  tags: jsonb('tags').$type<string[]>(),
+  tags: jsonb('tags'),
   chainOfCustody: jsonb('chain_of_custody'),
   uploadedBy: uuid('uploaded_by').notNull(),
   isAdmissible: boolean('is_admissible').default(true),
-  confidentialityLevel: varchar('confidentiality_level', { length: 50 }),
+  confidentialityLevel: varchar('confidential_level', { length: 50 }),
   collectedAt: timestamp('collected_at'),
   location: text('location'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
-export const documents = pgTable('documents', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  userId: text('user_id').notNull(),
-  content: text('content'),
-  embedding: vector('embedding', { dimensions: 1536 }),
-  createdAt: timestamp('created_at').defaultNow(),
-});
+export const documents = pgTable('documents', cols => ({
+  id: cols.uuid('id').defaultRandom().primaryKey(),
+  userId: cols.text('user_id').notNull(),
+  content: cols.text('content'),
+  // use the columnTypes callback's vector builder so typings align with Drizzle overloads
+  embedding: cols.vector('embedding', { dimensions: 1536 }),
+  createdAt: cols.timestamp('created_at').defaultNow(),
+}));
 
 export const sessions = pgTable('sessions', {
   id: uuid('id').primaryKey(), // Remove .default(sql`gen_random_uuid()`) or similar
