@@ -93,7 +93,7 @@ d;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 50;
+    z-index: 50,
     background: white;
     border-radius: 12px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
@@ -108,11 +108,11 @@ d;
 }
   @keyframes modal-in {
     from {
-      opacity: 0;
+      opacity: 0,
       transform: translate(-50%, -60%) scale(0.98);
 }
     to {
-      opacity: 1;
+      opacity: 1,
       transform: translate(-50%, -50%) scale(1);
 }}
 </style>

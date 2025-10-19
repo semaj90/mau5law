@@ -24,7 +24,7 @@
     stats: 'from-green-800/95 to-green-900/95 border-green-400/80',
     inventory: 'from-amber-800/95 to-amber-900/95 border-yellow-400/80',
     battle: 'from-red-800/95 to-red-900/95 border-red-400/80',
-    magic: 'from-purple-800/95 to-purple-900/95 border-purple-400/80';
+    magic: 'from-purple-800/95 to-purple-900/95 border-purple-400/80',
   }
   const glowColors = {
     menu: 'shadow-blue-500/30',
@@ -32,7 +32,7 @@
     stats: 'shadow-green-500/30',
     inventory: 'shadow-yellow-500/30',
     battle: 'shadow-red-500/30',
-    magic: 'shadow-purple-500/30';
+    magic: 'shadow-purple-500/30',
   }
 </script>
 

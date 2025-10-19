@@ -15,7 +15,7 @@
       y: 100,
       width: 200,
       height: 150,
-      color: '#3b82f6';
+      color: '#3b82f6',
     },
     {
       id: 'item-2',
@@ -25,7 +25,7 @@
       y: 200,
       width: 180,
       height: 120,
-      color: '#10b981';
+      color: '#10b981',
     },
     {
       id: 'item-3',
@@ -35,7 +35,7 @@
       y: 350,
       width: 220,
       height: 140,
-      color: '#f59e0b';
+      color: '#f59e0b',
     }
   ]);
   $effect(() => {
@@ -43,7 +43,7 @@
       evidenceCanvas = new AdvancedEvidenceCanvas(canvasElement, {
         width: 1200,
         height: 800,
-        backgroundColor: '#0f172a';
+        backgroundColor: '#0f172a',
       });
       // Render initial evidence
       renderEvidence();
@@ -79,7 +79,7 @@
       y: Math.random() * 600,
       width: 180,
       height: 120,
-      color: '#8b5cf6';
+      color: '#8b5cf6',
     }
     evidenceData = [...evidenceData, newItem];
     renderEvidence();

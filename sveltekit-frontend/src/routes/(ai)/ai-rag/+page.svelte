@@ -78,22 +78,22 @@ Fully integrated with LangChain RAG backend and Lucia v3 authentication
 		{
 			icon: Brain;
 			title: 'Intelligent Search',
-			description: 'AI-powered document retrieval with semantic understanding';
+			description: 'AI-powered document retrieval with semantic understanding',
 		},
 		{
 			icon: FileText;
 			title: 'Context Aware',
-			description: 'Retrieves relevant legal documents based on case context';
+			description: 'Retrieves relevant legal documents based on case context',
 		},
 		{
 			icon: Search;
 			title: 'Vector Search',
-			description: 'Advanced vector similarity search across legal corpus';
+			description: 'Advanced vector similarity search across legal corpus',
 		},
 		{
 			icon: Zap;
 			title: 'Fast Results',
-			description: 'Sub-second response times with cached embeddings';
+			description: 'Sub-second response times with cached embeddings',
 		}
 	];
 </script>

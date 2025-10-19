@@ -228,7 +228,7 @@
     border: none;
     border-radius: 0.375rem;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 500,
     transition: all 0.2;
   }
   .btn-primary {
@@ -331,7 +331,7 @@
   }
   .endpoint-path {
     font-family: monospace;
-    font-weight: 500;
+    font-weight: 500,
   }
   .endpoint-stats {
     display: flex;
@@ -347,7 +347,7 @@
     padding: 1rem 0;
   }
   .peak-hour-bar {
-    flex: 1;
+    flex: 1,
     display: flex;
     flex-direction: column;
     align-items: center;

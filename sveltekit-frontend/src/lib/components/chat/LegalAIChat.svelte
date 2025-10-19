@@ -368,7 +368,7 @@ https://svelte.dev/e/js_parse_error -->
     return date.toLocaleTimeString('en-US', {
       hour12: true
       hour: 'numeric',
-      minute: '2-digit' ;
+      minute: '2-digit',
     });
   }
   // Get source display
@@ -578,6 +578,6 @@ https://svelte.dev/e/js_parse_error -->
     max-width: none;
   }
   .prose strong {
-    font-weight: 600;
+    font-weight: 600,
   }
 </style>

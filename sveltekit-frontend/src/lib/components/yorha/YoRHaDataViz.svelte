@@ -56,7 +56,7 @@
     active: 'var(--yorha-accent, #00ff41)',
     pending: 'var(--yorha-warning, #ffaa00)',
     completed: 'var(--yorha-secondary, #ffd700)',
-    failed: 'var(--yorha-danger, #ff0041)';
+    failed: 'var(--yorha-danger, #ff0041)',
   }
   function getBarHeight(_value: number): number {
     if (maxValue === 0) return 0;
@@ -224,7 +224,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 2px;
-    margin: 0;
+    margin: 0,
   }
   .chart-indicators {
     display: flex;
@@ -263,16 +263,16 @@
   }
   .grid-line {
     position: absolute;
-    left: 0;
+    left: 0,
     right: 0;
     height: 1px;
     background: var(--yorha-text-muted, #808080);
-    opacity: 0.3;
+    opacity: 0.3,
   }
   .grid-labels {
     position: absolute;
     left: -50px;
-    top: 0;
+    top: 0,
     bottom: 0;
   }
   .grid-label {
@@ -291,7 +291,7 @@
     padding: 0 60px 40px 60px;
   }
   .bar-container {
-    flex: 1;
+    flex: 1,
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -320,7 +320,7 @@
     left: 50%;
     transform: translateX(-50%);
     font-size: 10px;
-    font-weight: 600;
+    font-weight: 600,
     color: var(--yorha-text-primary, #e0e0e0);
   }
   .bar-glow {
@@ -330,7 +330,7 @@
     right: -2px;
     bottom: -2px;
     background: currentColor;
-    opacity: 0.3;
+    opacity: 0.3,
     filter: blur(4px);
   }
   .bar-label {
@@ -372,7 +372,7 @@ s
   }
   .progress-value {
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 700,
     color: var(--yorha-secondary, #ffd700);
   }
   .progress-bar {
@@ -392,7 +392,7 @@ s
   }
   .progress-glow {
     position: absolute;
-    top: 0;
+    top: 0,
     right: -10px;
     width: 20px;
     height: 100%;
@@ -425,17 +425,17 @@ s
     position: relative;
     width: 16px;
     height: 16px;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .indicator-pulse {
     position: absolute;
     inset: -4px;
     background: currentColor;
-    opacity: 0.3;
+    opacity: 0.3,
     animation: pulse 2s infinite;
   }
   .status-content {
-    flex: 1;
+    flex: 1,
     display: flex;
     justify-content: space-betwee;
     align-items: center;
@@ -448,12 +448,12 @@ s
   }
   .status-value {
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 700,
     color: var(--yorha-secondary, #ffd700);
   }
   .status-badge {
     font-size: 8px;
-    font-weight: 700;
+    font-weight: 700,
     padding: 2px 8px;
     border: 1px solid currentColor;
     text-transform: uppercase;
@@ -496,7 +496,7 @@ s
     position: absolute;
     inset: -4px;
     background: currentColor;
-    opacity: 0.3;
+    opacity: 0.3,
     animation: pulse 2s infinite;
   }
   .timeline-label {
@@ -524,14 +524,14 @@ s
   }
   .stat-label {
     font-size: 8px;
-    font-weight: 600;
+    font-weight: 600,
     color: var(--yorha-text-muted, #808080);
     text-transform: uppercase;
     letter-spacing: 1px;
   }
   .stat-value {
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 700,
     color: var(--yorha-secondary, #ffd700);
   }
   /* Animations */
@@ -546,21 +546,21 @@ s
   @keyframes slideIn {
     from {
       transform: translateX(-20px);
-      opacity: 0;
+      opacity: 0,
     }
     to {
       transform: translateX(0);
-      opacity: 1;
+      opacity: 1,
     }
   }
   @keyframes fadeInUp {
     from {
       transform: translate(-50%, -50%) translateY(10px);
-      opacity: 0;
+      opacity: 0,
     }
     to {
       transform: translate(-50%, -50%) translateY(0);
-      opacity: 1;
+      opacity: 1,
     }
   }
   @keyframes pulse {

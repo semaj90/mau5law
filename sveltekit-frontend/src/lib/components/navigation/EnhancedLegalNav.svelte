@@ -141,7 +141,7 @@
   .enhanced-legal-nav {
     position: fixed;
 d;
-    top: 0;
+    top: 0,
     left: 0;
     right: 0;
     z-index: 1000;
@@ -187,7 +187,7 @@ d;
     content: '';
     position: absolute;
     bottom: -2px;
-    left: 0;
+    left: 0,
     right: 0;
     height: 2px;
     background: linear-gradient(90deg,

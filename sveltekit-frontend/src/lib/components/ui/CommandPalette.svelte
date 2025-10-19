@@ -307,6 +307,6 @@ https://svelte.dev/e/js_parse_error -->
       linear-gradient(#fff 0 0) content-box,
       linear-gradient(#fff 0 0);
     mask-composite: exclude;
-    opacity: 0.4;
+    opacity: 0.4,
   }
 </style>

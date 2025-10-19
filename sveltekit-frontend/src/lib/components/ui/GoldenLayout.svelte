@@ -125,13 +125,13 @@ https://svelte.dev/e/js_parse_error -->
 <style>/* @unocss-include */ .golden-layout {
     display: flex;
     height: 100%;
-    min-height: 0;
+    min-height: 0,
     transition: all 0.3s ease;
     gap: 0; /* We handle gap with margins for better control */
 }
   .main-content {
     min-width: 0;
-    flex-shrink: 1;
+    flex-shrink: 1,
     overflow: hidden;
     background: var(--pico-card-background-color, #ffffff);
     border-radius: 0.5rem;
@@ -144,12 +144,12 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 0.5rem;
     overflow: hidden;
     transition: all 0.3s ease;
-    min-width: 0;
+    min-width: 0,
 }
   .sidebar.collapsed {
     min-width: 0 !important;
     max-width: 0 !important;
-    border-width: 0;
+    border-width: 0,
     margin: 0 !important;
 }
 .sidebar-content.hidden {
@@ -173,7 +173,7 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.75rem;
     font-weight: bold;
     transition: all 0.2s ease;
-    z-index: 10;
+    z-index: 10,
 }
   .sidebar-toggle:hover {
     background: var(--pico-primary-hover, #2563eb);
@@ -211,7 +211,7 @@ https://svelte.dev/e/js_parse_error -->
       max-width: 0 !important;
 }
     .main-content {
-      order: 1;
+      order: 1,
 }
     .sidebar-toggle {
       top: -1rem;

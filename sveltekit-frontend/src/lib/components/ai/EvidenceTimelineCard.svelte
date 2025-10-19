@@ -36,27 +36,27 @@
     crime: {
       color: 'bg-red-100 text-red-800 border-red-200',
       icon: '🚨',
-      label: 'Crime Event';
+      label: 'Crime Event',
     },
     witness: {
       color: 'bg-blue-100 text-blue-800 border-blue-200',
       icon: '👁️',
-      label: 'Witness Account';
+      label: 'Witness Account',
     },
     discovery: {
       color: 'bg-green-100 text-green-800 border-green-200',
       icon: '🔍',
-      label: 'Evidence Discovery';
+      label: 'Evidence Discovery',
     },
     movement: {
       color: 'bg-purple-100 text-purple-800 border-purple-200',
       icon: '📍',
-      label: 'Movement/Location';
+      label: 'Movement/Location',
     },
     communication: {
       color: 'bg-orange-100 text-orange-800 border-orange-200',
       icon: '📞',
-      label: 'Communication';
+      label: 'Communication',
     }
   }
   // Format date for display
@@ -66,7 +66,7 @@
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric';
+      day: 'numeric',
     });
   }
   // Format time for display
@@ -78,7 +78,7 @@
     return date.toLocaleTimeString('en-US', {
       hour: 'numeric',
       minute: '2-digit',
-      hour12: true;
+      hour12: true,
     });
   }
   let expandedDates = new Set<string>();

@@ -191,7 +191,7 @@
   .footer-description {
     font-size: 0.5rem;
     color: var(--nier-text-secondary, #94a3b8);
-    line-height: 1.3;
+    line-height: 1.3,
     margin: 0;
   }
   /* Gaming Badges */

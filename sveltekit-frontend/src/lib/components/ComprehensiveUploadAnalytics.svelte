@@ -249,7 +249,7 @@
     if (uploadActor) {
       uploadActor.send({
         type: 'REQUEST_AI_SUGGESTIONS',
-        context: 'user_requested';
+        context: 'user_requested',
       });
     }
   }
@@ -584,7 +584,7 @@
     margin-bottom: 2rem;
   }
   .upload-header h2 {
-    margin: 0;
+    margin: 0,
     color: #2563eb;
   }
   .user-insights-badge {
@@ -639,7 +639,7 @@
   }
   .prompt-content {
     margin: 0 0 1rem 0;
-    line-height: 1.5;
+    line-height: 1.5,
   }
   .prompt-actions {
     display: flex;
@@ -699,7 +699,7 @@
     gap: 0.25rem;
   }
   .file-name {
-    font-weight: 500;
+    font-weight: 500,
   }
   .file-size, .file-type {
     font-size: 0.75rem;
@@ -811,7 +811,7 @@
   }
   .insights-summary {
     margin-bottom: 1rem;
-    line-height: 1.5;
+    line-height: 1.5,
   }
   .entity-tag, .tag {
     display: inline-block;
@@ -831,7 +831,7 @@
   .analytics-dashboard summary {
     padding: 1rem;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 500,
   }
   .analytics-content {
     padding: 1rem;
@@ -851,7 +851,7 @@
   }
   .behavior-pattern {
     text-transform: capitaliz;
-    font-weight: 500;
+    font-weight: 500,
     color: #3b82f6;
   }
   .recommendations-list {
@@ -866,7 +866,7 @@
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 500,
     transition: background 0.2;
   }
   .btn-primary:hover {
@@ -879,7 +879,7 @@
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 500,
     transition: background 0.2;
   }
   .btn-secondary:hover {
@@ -918,7 +918,7 @@
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 500,
   }
   .btn-reset {
     background: #6b7280;
@@ -927,7 +927,7 @@
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 500,
   }
   .btn-select-files {
     background: #3b82f6;

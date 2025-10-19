@@ -218,7 +218,7 @@
   .empty-icon {
     font-size: 4rem;
     margin-bottom: 1rem;
-    opacity: 0.5;
+    opacity: 0.5,
   }
 
   .citations-grid {

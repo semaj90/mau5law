@@ -384,7 +384,7 @@
     background: var(--console-bg, white);
     color: var(--console-fg, #1f2937);
     font-size: 14px;
-    line-height: 1.5;
+    line-height: 1.5,
     outline: none;
     transition: all 0.2s ease;
   }
@@ -416,10 +416,10 @@
     background: var(--console-primary, #3b82f6);
     color: var(--console-bg, white);
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 600,
   }
   .suggestions-title {
-    flex: 1;
+    flex: 1,
   }
   .processing-indicator {
     color: var(--console-accent-1, #fbbf24);
@@ -428,10 +428,10 @@
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.5;
+      opacity: 0.5,
     }
   }
   .suggestions-list {
@@ -461,7 +461,7 @@
   .suggestion-text {
     display: block;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 500,
     color: var(--console-fg, #1f2937);
     margin-bottom: 2px;
   }
@@ -483,11 +483,11 @@
     color: var(--console-accent-1, #6b7280);
   }
   .confidence {
-    font-weight: 600;
+    font-weight: 600,
     color: var(--console-success, #059669);
   }
   .reasoning {
-    flex: 1;
+    flex: 1,
     opacity: 0.8;
   }
   .suggestions-footer {

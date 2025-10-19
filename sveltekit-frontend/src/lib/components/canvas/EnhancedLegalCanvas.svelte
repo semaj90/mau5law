@@ -55,8 +55,7 @@
       riskLow: '#28a745',
       riskMedium: '#ffc107',
       riskHigh: '#fd7e14',
-      riskCritical: '#dc3545'
-;
+      riskCritical: '#dc3545',
     },
     nes: {
       background: '#212529',
@@ -71,8 +70,7 @@
       riskLow: '#28a745',
       riskMedium: '#ffc107',
       riskHigh: '#fd7e14',
-      riskCritical: '#dc3545'
-;
+      riskCritical: '#dc3545',
     },
     legal: {
       background: '#1a1a2e',
@@ -87,8 +85,7 @@
       riskLow: '#00b894',
       riskMedium: '#fdcb6e',
       riskHigh: '#e17055',
-      riskCritical: '#d63031'
-;
+      riskCritical: '#d63031',
     }
   }
   const currentTheme = $derived(themes[theme]);
@@ -453,7 +450,7 @@
     flex-wrap: wrap;
   }
   .nes-field {
-    margin: 0;
+    margin: 0,
   }
   .nes-field label {
     font-family: 'Press Start 2P', monospace;

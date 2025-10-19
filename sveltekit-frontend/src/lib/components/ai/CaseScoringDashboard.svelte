@@ -705,9 +705,9 @@
   }
   .dashboard-title {
     font-size: 2rem;
-    font-weight: 700;
+    font-weight: 700,
     color: #1e293b;
-    margin: 0;
+    margin: 0,
   }
   .dashboard-subtitle {
     color: #64748b;
@@ -734,7 +734,7 @@
   }
   .demo-toggle span {
     color: #1e40af;
-    font-weight: 500;
+    font-weight: 500,
   }
   .controls-section {
     margin-bottom: 2rem;
@@ -763,7 +763,7 @@
   }
   .filter-group label {
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
   }
   .filter-select {
@@ -794,19 +794,19 @@
     gap: 1rem;
   }
   .case-title {
-    flex: 1;
+    flex: 1,
     margin: 0;
   }
   .case-badges {
     display: flex;
     gap: 0.5rem;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .priority-badge {
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 600,
     border: 1px solid;
   }
   .score-badge {
@@ -814,7 +814,7 @@
     background: #f1f5f9;
     border-radius: 0.25rem;
     font-size: 0.875rem;
-    font-weight: 700;
+    font-weight: 700,
   }
   .case-description {
     margin: 0.5rem 0 0 0;
@@ -859,7 +859,7 @@
   }
   .factors-list {
     list-style: none;
-    padding: 0;
+    padding: 0,
     margin: 0;
   }
   .factor-item {
@@ -869,7 +869,7 @@
     font-size: 0.75rem;
   }
   .factor-category {
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
   }
   .factor-impact {
@@ -904,15 +904,15 @@
   /* Modal Styles */
   .modal-overlay {
     position: fixed;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 1000,
   }
   .modal-content {
     background: white;
@@ -932,16 +932,16 @@
   }
   .modal-title {
     font-size: 1.5rem;
-    font-weight: 600;
+    font-weight: 600,
     margin: 0 0 0.5rem 0;
   }
   .modal-description {
     color: #64748b;
-    margin: 0;
+    margin: 0,
   }
   .modal-close {
     position: absolute;
-    top: 0;
+    top: 0,
     right: 0;
     width: 2rem;
     height: 2rem;
@@ -983,7 +983,7 @@
   }
   .large-score {
     font-size: 4rem;
-    font-weight: 700;
+    font-weight: 700,
   }
   .score-metadata p {
     margin: 0.25rem 0;
@@ -1011,7 +1011,7 @@
     margin-bottom: 0.5rem;
   }
   .factor-bar {
-    flex: 1;
+    flex: 1,
     height: 0.5rem;
     background: #e2e8f0;
     border-radius: 0.25rem;
@@ -1024,7 +1024,7 @@
   }
   .factor-percentage {
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
   }
   .factor-description {
@@ -1035,11 +1035,11 @@
   .factor-confidence {
     font-size: 0.75rem;
     color: #6b7280;
-    margin: 0;
+    margin: 0,
   }
   .recommendations-list {
     list-style: none;
-    padding: 0;
+    padding: 0,
     margin: 0;
   }
   .recommendation-item {
@@ -1063,12 +1063,12 @@
     position: absolute;
     width: 1px;
     height: 1px;
-    padding: 0;
+    padding: 0,
     margin: -1px;
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
-    border: 0;
+    border: 0,
   }
   @media (max-width: 768px) {
     .dashboard-header {

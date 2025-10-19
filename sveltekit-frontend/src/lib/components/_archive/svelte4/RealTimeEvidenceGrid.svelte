@@ -151,7 +151,7 @@ https://svelte.dev/e/js_parse_error -->
       await syncWithServer();
     } catch (err) {
       console.error("Failed to initialize real-time evidence:", err);
-      error = err instanceof Error ? err.message: "Initialization failed";
+      error = err instanceof Error ? err.message: "Initialization failed",
     }
   }
   function loadFromLocal() {
@@ -203,7 +203,7 @@ https://svelte.dev/e/js_parse_error -->
       editingEvidence = evidenceId;
     } catch (err) {
       console.error("Failed to create evidence:", err);
-      error = err instanceof Error ? err.message: "Failed to create evidence";
+      error = err instanceof Error ? err.message: "Failed to create evidence",
     }
   }
   async function updateEvidence(
@@ -215,7 +215,7 @@ https://svelte.dev/e/js_parse_error -->
       editingEvidence = null;
     } catch (err) {
       console.error("Failed to update evidence:", err);
-      error = err instanceof Error ? err.message: "Failed to update evidence";
+      error = err instanceof Error ? err.message: "Failed to update evidence",
     }
   }
   async function deleteEvidence(evidenceId: string) {
@@ -226,7 +226,7 @@ https://svelte.dev/e/js_parse_error -->
       selectedEvidence = selectedEvidence;
     } catch (err) {
       console.error("Failed to delete evidence:", err);
-      error = err instanceof Error ? err.message: "Failed to delete evidence";
+      error = err instanceof Error ? err.message: "Failed to delete evidence",
     }
   }
   // UI interactions

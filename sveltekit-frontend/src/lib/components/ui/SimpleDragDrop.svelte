@@ -244,7 +244,7 @@ https://svelte.dev/e/js_parse_error -->
     animation: pulse-glow 1s ease-in-out infinite alternate;
   }
   .drag-drop-zone.disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
     filter: grayscale(100%);
   }
@@ -254,14 +254,14 @@ https://svelte.dev/e/js_parse_error -->
   /* Drag Overlay */
   .drag-overlay {
     position: absolute;
-    inset: 0;
+    inset: 0,
     background: linear-gradient(135deg,
       rgba(255, 215, 0, 0.1) 0%,
       rgba(0, 255, 65, 0.1) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 2;
+    z-index: 2,
   }
   .drag-content {
     text-align: center;
@@ -370,10 +370,10 @@ https://svelte.dev/e/js_parse_error -->
   }
   .file-icon {
     color: var(--nes-green, #92cc41);
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .file-info {
-    flex: 1;
+    flex: 1,
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -381,7 +381,7 @@ https://svelte.dev/e/js_parse_error -->
   .file-name {
     font-size: 14px;
     color: var(--yorha-text-primary, #e0e0e0);
-    font-weight: 500;
+    font-weight: 500,
   }
   .file-size {
     font-size: 12px;

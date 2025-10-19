@@ -439,7 +439,7 @@ https://svelte.dev/e/expected_token -->
   }
   .controls-panel h3 {
     color: #00ff88;
-    margin-top: 0;
+    margin-top: 0,
   }
   .control-group {
     margin-bottom: 15px;
@@ -484,7 +484,7 @@ https://svelte.dev/e/expected_token -->
   }
   .device-info h4 {
     color: #0088ff;
-    margin-top: 0;
+    margin-top: 0,
   }
   .capability {
     margin: 5px 0;
@@ -529,17 +529,17 @@ https://svelte.dev/e/expected_token -->
   }
   .diffusion-layers {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     pointer-events: none;
   }
   .layer {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: radial-gradient(ellipse at center, transparent 20%, rgba(255, 255, 255, 0.1) 40%, transparent 80%);
     animation: pulse 3s ease-in-out infinite;
@@ -556,11 +556,11 @@ https://svelte.dev/e/expected_token -->
   @keyframes pulse {
     0%,
     100% {
-      opacity: 0.1;
+      opacity: 0.1,
       transform: scale(1);
     }
     50% {
-      opacity: 0.3;
+      opacity: 0.3,
       transform: scale(1.05);
     }
   }
@@ -596,7 +596,7 @@ https://svelte.dev/e/expected_token -->
   }
   .technical-info li {
     margin: 5px 0;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   /* PS1 Style Enhancements */
   .ps1-scene {
@@ -605,9 +605,9 @@ https://svelte.dev/e/expected_token -->
   .ps1-scanlines::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: repeating-linear-gradient(
       90deg,

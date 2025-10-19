@@ -168,7 +168,7 @@ https://svelte.dev/e/js_parse_error -->
       role: "assistant" as const,
       content: "",
       timestamp: new Date(),
-      isTyping: true;
+      isTyping: true,
     }
     messages.update((msgs) => [...msgs, typingMessage]);
     try {
@@ -223,7 +223,7 @@ https://svelte.dev/e/js_parse_error -->
         content:
           "Sorry, I encountered an error while processing your request. Please try again.",
         timestamp: new Date(),
-        isError: true;
+        isError: true,
       }
       messages.update((msgs) => [...msgs, errorMessage]);
     } finally {
@@ -509,7 +509,7 @@ https://svelte.dev/e/js_parse_error -->
   .error-boundary h2 {
     margin: 0 0 0.5rem 0;
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .error-boundary p {
     margin: 0 0 0.5rem 0;
@@ -532,16 +532,16 @@ https://svelte.dev/e/js_parse_error -->
   }
   .chat-overlay {
     position: fixed;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 1000,
     padding: 1rem;
   }
   .chat-container {
@@ -568,7 +568,7 @@ https://svelte.dev/e/js_parse_error -->
     display: flex;
     align-items: center;
     gap: 1rem;
-    flex: 1;
+    flex: 1,
   }
   .title-section {
     display: flex;
@@ -586,7 +586,7 @@ https://svelte.dev/e/js_parse_error -->
   .chat-header h2 {
     margin: 0;
     font-size: 1.125rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .mode-section {
     position: relative;
@@ -671,7 +671,7 @@ https://svelte.dev/e/js_parse_error -->
     background: rgba(255, 255, 255, 0.2);
   }
   .header-action:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .messages-container {
@@ -701,7 +701,7 @@ https://svelte.dev/e/js_parse_error -->
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .message.user .message-avatar {
     background: #3b82f6;
@@ -715,7 +715,7 @@ https://svelte.dev/e/js_parse_error -->
     background: #f8fafc;
     padding: 0.75rem 1rem;
     border-radius: 12px;
-    flex: 1;
+    flex: 1,
   }
   .message.user .message-content {
     background: #3b82f6;
@@ -747,10 +747,10 @@ https://svelte.dev/e/js_parse_error -->
     animation: typing 1.4s infinite;
   }
   .typing-dots span:nth-child(2) {
-    animation-delay: 0.2;
+    animation-delay: 0.2,
   }
   .typing-dots span:nth-child(3) {
-    animation-delay: 0.4;
+    animation-delay: 0.4,
   }
   .typing-text {
     color: #6b7280;
@@ -768,7 +768,7 @@ https://svelte.dev/e/js_parse_error -->
   .suggestions h4 {
     margin: 0 0 0.5rem 0;
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 600,
     opacity: 0.9;
   }
   .suggestions ul {
@@ -778,7 +778,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .suggestions li {
     margin-bottom: 0.25rem;
-    opacity: 0.9;
+    opacity: 0.9,
   }
   .actions {
     margin-top: 0.75rem;
@@ -813,7 +813,7 @@ https://svelte.dev/e/js_parse_error -->
     align-items: center;
     justify-content: space-betwee;
     font-size: 0.75rem;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .context-indicator {
     display: flex;
@@ -853,7 +853,7 @@ https://svelte.dev/e/js_parse_error -->
     transform: translateY(-1px);
   }
   .quick-action:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
     transform: none;
   }
@@ -868,13 +868,13 @@ https://svelte.dev/e/js_parse_error -->
     align-items: flex-end;
   }
   .message-input {
-    flex: 1;
+    flex: 1,
     border: 1px solid #d1d5db;
     border-radius: 8px;
     padding: 0.75rem;
     font-family: inherit;
     font-size: 0.875rem;
-    line-height: 1.5;
+    line-height: 1.5,
     resize: none;
     min-height: 44px;
     max-height: 120px;

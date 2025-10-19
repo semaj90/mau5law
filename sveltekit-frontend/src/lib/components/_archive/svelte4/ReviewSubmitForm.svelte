@@ -26,31 +26,31 @@ https://svelte.dev/e/js_parse_error -->
       id: 'case_info',
       label: 'Case Information Complete',
       description: 'Title, client, case type, and description provided',
-      weight: 20;
+      weight: 20,
     },
     {
       id: 'documents',
       label: 'Documents Uploaded & Processed',
       description: 'At least one document uploaded and OCR completed',
-      weight: 25;
+      weight: 25,
     },
     {
       id: 'evidence',
       label: 'Evidence Analysis Complete',
       description: 'Key facts and legal issues identified',
-      weight: 25;
+      weight: 25,
     },
     {
       id: 'ai_analysis',
       label: 'AI Analysis Generated',
       description: 'Case strength and recommendations provided',
-      weight: 20;
+      weight: 20,
     },
     {
       id: 'review',
       label: 'Final Review Completed',
       description: 'All sections reviewed and quality checked',
-      weight: 10;
+      weight: 10,
     }
   ];
   let sectionScores = writable<Record<string, number>( );
@@ -134,7 +134,7 @@ https://svelte.dev/e/js_parse_error -->
         step: 'review',
         data: formData
         allData: allFormData;
-        success: true;
+        success: true,
       });
     } catch (error) {
       console.error('Submission failed:', error);

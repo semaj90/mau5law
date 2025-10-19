@@ -54,7 +54,7 @@ console.log('🔧 WebAssembly Integration Demo initialized');
         useCase: 'chat',
         useCHRROMCache: true
         maxTokens: 100,
-        temperature: 0.7;
+        temperature: 0.7,
       });
       testResult = result.text || 'WebAssembly inference completed successfully!';
       demoData.webassemblyTest = 'SUCCESS';

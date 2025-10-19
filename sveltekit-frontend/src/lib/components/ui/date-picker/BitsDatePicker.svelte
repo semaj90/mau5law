@@ -42,7 +42,7 @@ https://svelte.dev/e/expected_token -->
   const variantStyles = {
     default: 'border-yorha-border bg-yorha-bg-tertiary text-yorha-text-primary',
     legal: 'border-yorha-primary/30 bg-yorha-bg-secondary text-yorha-text-primary ring-yorha-primary',
-    deadline: 'border-red-500/30 bg-red-500/5 text-yorha-text-primary ring-red-500/20';
+    deadline: 'border-red-500/30 bg-red-500/5 text-yorha-text-primary ring-red-500/20',
   }
   // Format date for display
   let formattedDate = $derived(() => {
@@ -50,7 +50,7 @@ https://svelte.dev/e/expected_token -->
     const options: Intl.DateTimeFormatOptions = {
       year: 'numeric',
       month: 'short',
-      day: 'numeric';
+      day: 'numeric',
     }
     if (showTime) {
       options.hour = '2-digit';

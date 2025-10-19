@@ -1308,9 +1308,9 @@
   }
   .toolbar {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     height: 60px;
     background: rgba(0, 0, 0, 0.9);
     backdrop-filter: blur(10px);
@@ -1319,7 +1319,7 @@
     align-items: center;
     padding: 0 20px;
     gap: 30px;
-    z-index: 100;
+    z-index: 100,
   }
   .tool-group,
   .action-group,
@@ -1363,7 +1363,7 @@
     border-right: 1px solid rgba(255, 255, 255, 0.1);
     padding: 80px 20px 20px 20px;
     overflow-y: auto;
-    z-index: 50;
+    z-index: 50,
   }
   .sidebar-header {
     display: flex;
@@ -1372,7 +1372,7 @@
     margin-bottom: 20px;
   }
   .sidebar-header h3 {
-    margin: 0;
+    margin: 0,
     color: #4a90e2;
   }
   .close-btn {
@@ -1381,7 +1381,7 @@
     color: #ccc;
     font-size: 20px;
     cursor: pointer;
-    padding: 0;
+    padding: 0,
     width: 24px;
     height: 24px;
   }
@@ -1414,7 +1414,7 @@
     justify-content: center;
   }
   .evidence-info {
-    flex: 1;
+    flex: 1,
   }
   .evidence-title {
     font-weight: bold;
@@ -1430,7 +1430,7 @@
     position: absolute;
     top: 80px;
     left: 20px;
-    z-index: 60;
+    z-index: 60,
     background: rgba(0, 0, 0, 0.8);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: white;
@@ -1454,7 +1454,7 @@
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
-    z-index: 100;
+    z-index: 100,
   }
   .panel-header {
     display: flex;
@@ -1464,7 +1464,7 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
   .panel-header h3 {
-    margin: 0;
+    margin: 0,
     color: #4a90e2;
     font-size: 16px;
   }
@@ -1566,7 +1566,7 @@
   .suggestion-text {
     flex: 1;
     font-size: 12px;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .apply-btn {
     background: rgba(74, 144, 226, 0.6);

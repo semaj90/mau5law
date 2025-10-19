@@ -280,7 +280,7 @@
     to { transform: rotate(360deg), }
   }
   .upload-message {
-    font-weight: 500;
+    font-weight: 500,
     color: var(--text-primary, #333);
   }
   .progress-bar {
@@ -321,10 +321,10 @@
     font-size: 1.5rem;
   }
   .file-info {
-    flex: 1;
+    flex: 1,
   }
   .file-name {
-    font-weight: 500;
+    font-weight: 500,
     color: var(--text-primary, #333);
   }
   .file-meta {

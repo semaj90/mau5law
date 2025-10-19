@@ -29,31 +29,31 @@
       bg: '#2C2C2C',
       fill: '#FFD700',
       border: '#1A1A1A',
-      shadow: '#FFB000';
+      shadow: '#FFB000',
     },
     gold: {
       bg: '#1A1A1A',
       fill: '#FFD700',
       border: '#8B7D3A',
-      shadow: '#FFA500';
+      shadow: '#FFA500',
     },
     red: {
       bg: '#2C1A1A',
       fill: '#FF3030',
       border: '#8B1A1A',
-      shadow: '#CC0000';
+      shadow: '#CC0000',
     },
     blue: {
       bg: '#1A1A2C',
       fill: '#4090FF',
       border: '#1A1A8B',
-      shadow: '#0066CC';
+      shadow: '#0066CC',
     },
     green: {
       bg: '#1A2C1A',
       fill: '#40FF40',
       border: '#1A8B1A',
-      shadow: '#00CC00';
+      shadow: '#00CC00',
     }
   }
   const sizes = {
@@ -165,7 +165,7 @@
   }
   .progress-fill {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
     height: 100%;
     background: linear-gradient(
@@ -175,7 +175,7 @@
       var(--fill-color) 100%
     );
     transition: width 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
-    min-width: 0;
+    min-width: 0,
   }
   .progress-fill.animated {
     background-size: 200% 100%;
@@ -183,7 +183,7 @@
   }
   .progress-shine {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
     width: 100%;
     height: 100%;
@@ -197,7 +197,7 @@
   }
   .progress-segments {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
     width: 100%;
     height: 100%;
@@ -205,17 +205,17 @@
     pointer-events: none;
   }
   .segment {
-    flex: 1;
+    flex: 1,
     height: 100%;
     border-right: 1px solid rgba(0,0,0,0.2);
-    opacity: 0.3;
+    opacity: 0.3,
     transition: opacity 0.2s ease;
   }
   .segment:last-child {
     border-right: none;
   }
   .segment.active {
-    opacity: 0.6;
+    opacity: 0.6,
   }
   .percentage-display {
     position: absolute;
@@ -237,7 +237,7 @@
   /* Sparkle effects */
   .sparkle-container {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
     width: 100%;
     height: 100%;
@@ -249,7 +249,7 @@
     height: 4px;
     background: #FFF;
     border-radius: 50%;
-    opacity: 0;
+    opacity: 0,
   }
   .sparkle-1 {
     top: 20%;
@@ -285,7 +285,7 @@
     width: 8px;
     height: 8px;
     background: var(--fill-color);
-    opacity: 0.6;
+    opacity: 0.6,
   }
   .corner-tl {
     top: -4px;
@@ -333,11 +333,11 @@
   }
   @keyframes sparkle {
     0%, 100% {
-      opacity: 0;
+      opacity: 0,
       transform: scale(0);
     }
     50% {
-      opacity: 1;
+      opacity: 1,
       transform: scale(1);
     }
   }

@@ -101,7 +101,7 @@
       selection: enableInteraction
       preserveObjectStacking: true
       imageSmoothingEnabled: true
-      allowTouchScrolling: false;
+      allowTouchScrolling: false,
     });
     // Initialize canvas interactions and zoom/pan handlers
     setupCanvasInteractions();
@@ -303,7 +303,7 @@
       stroke: '#e5e7eb',
       strokeWidth: 2,
       rx: 8,
-      ry: 8;
+      ry: 8,
     });
     // Evidence ID
     const idLabel = String(node?.evidenceId ?? '').substring(0, 12) + (String(node?.evidenceId ?? '').length > 12 ? '...' : '');
@@ -312,7 +312,7 @@
       fill: '#1f2937',
       fontWeight: 'bold',
       top: 10,
-      left: 10;
+      left: 10,
     });
     // Chain integrity indicator
     const chainIntegrity = (node?.chainOfCustody?.completeness) || 0;
@@ -329,7 +329,7 @@
       fontSize: 10,
       fill: '#6b7280',
       top: 35,
-      left: 10;
+      left: 10,
     });
     // Confidence score
     const confidence = Math.round((node?.confidence || 0) * 100);
@@ -337,14 +337,14 @@
       fontSize: 10,
       fill: '#374151',
       top: 50,
-      left: 10;
+      left: 10,
     });
     // Depth indicator
     const depthText = new (fabric.Text as any)(`Depth: ${node?.depth ?? 0}`, {
       fontSize: 9,
       fill: '#9ca3af',
       top: 65,
-      left: 10;
+      left: 10,
     });
     // Processing time
     const processingTime = Math.round(node?.metadata?.processingTime || 0);
@@ -352,7 +352,7 @@
       fontSize: 9,
       fill: '#9ca3af',
       top: 80,
-      left: 10;
+      left: 10,
     });
     // Legal implications icons
     const implicationIcons: any[] = [];
@@ -396,7 +396,7 @@
           stroke: getRelationshipColor(child?.relationships),
           strokeWidth: getRelationshipWidth(child?.relationships),
           strokeDashArray: getRelationshipDash(child?.relationships),
-          selectable: false;
+          selectable: false,
           evented: false;
         });
         fabricCanvas.add(line);
@@ -409,7 +409,7 @@
           fill: getRelationshipStrengthColor(child?.relationships),
           left: midX - 4,
           top: midY - 4,
-          selectable: false;
+          selectable: false,
           evented: false;
         });
         fabricCanvas.add(strengthIndicator);
@@ -600,7 +600,7 @@
     const dataURL = fabricCanvas.toDataURL({
       format: 'png',
       quality: 1,
-      multiplier: 2;
+      multiplier: 2,
     });
     // Download the visualization
     const link = document.createElement('a');
@@ -724,7 +724,7 @@
       align-items: center;
     }
     .control-group label {
-      font-weight: 500;
+      font-weight: 500,
       color: #374151;
     }
     .control-group select {
@@ -758,15 +758,15 @@
     }
   .processing-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(255, 255, 255, 0.9);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10;
+    z-index: 10,
   }
   .processing-content {
     text-align: center;
@@ -786,7 +786,7 @@
     100% { transform: rotate(360deg), }
   }
   .canvas-container {
-    flex: 1;
+    flex: 1,
     position: relative;
     overflow: hidden;
   }
@@ -801,7 +801,7 @@
   .hierarchy-summary h4 {
     margin: 0 0 1rem 0;
     color: #059669;
-    font-weight: 600;
+    font-weight: 600,
   }
   .summary-stats {
     display: grid;
@@ -816,11 +816,11 @@
     border-radius: 4px;
   }
   .stat .label {
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
   }
   .stat .value {
     color: #059669;
-    font-weight: 600;
+    font-weight: 600,
   }
 </style>

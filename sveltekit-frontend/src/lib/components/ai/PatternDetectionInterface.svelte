@@ -501,9 +501,9 @@
   }
   .detection-title {
     font-size: 2rem;
-    font-weight: 700;
+    font-weight: 700,
     color: #1e293b;
-    margin: 0;
+    margin: 0,
   }
   .detection-subtitle {
     color: #64748b;
@@ -527,7 +527,7 @@
   }
   .control-group label {
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
   }
   .control-select {
@@ -569,7 +569,7 @@
   .metric-value {
     display: block;
     font-size: 2rem;
-    font-weight: 700;
+    font-weight: 700,
     color: #1e293b;
   }
   .metric-label {
@@ -585,7 +585,7 @@
   }
   .insights-list {
     list-style: none;
-    padding: 0;
+    padding: 0,
     margin: 0;
   }
   .insights-list li {
@@ -632,7 +632,7 @@
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 600,
     border: 1px solid;
     text-transform: uppercase;
   }
@@ -644,7 +644,7 @@
   }
   .confidence-score {
     font-size: 1.25rem;
-    font-weight: 700;
+    font-weight: 700,
     color: #374151;
   }
   .risk-level {
@@ -673,7 +673,7 @@
     min-width: 80px;
   }
   .stat-bar {
-    flex: 1;
+    flex: 1,
     height: 0.5rem;
     background: #e2e8f0;
     border-radius: 0.25rem;
@@ -686,7 +686,7 @@
   }
   .stat-value {
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
     min-width: 60px;
     text-align: right;
@@ -782,11 +782,11 @@
     font-size: 0.75rem;
     color: #64748b;
     text-transform: uppercase;
-    font-weight: 500;
+    font-weight: 500,
   }
   .overview-value {
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
   }
   .timeframe-info h4 {
@@ -834,7 +834,7 @@
   }
   .involvement-percentage {
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
   }
   .correlations-list {
@@ -856,7 +856,7 @@
   }
   .correlation-type {
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
     text-transform: uppercase;
   }
@@ -871,7 +871,7 @@
   }
   .recommendations-list {
     list-style: none;
-    padding: 0;
+    padding: 0,
     margin: 0;
   }
   .recommendation-item {

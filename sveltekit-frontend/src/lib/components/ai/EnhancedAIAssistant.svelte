@@ -520,7 +520,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     margin-top: 0.25rem;
   }
   .current-backend {
-    font-weight: 500;
+    font-weight: 500,
   }
   .ai-actions {
     display: flex;
@@ -539,7 +539,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     background: #f3f4f6;
   }
   .action-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .settings-panel {
@@ -553,7 +553,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   .setting-group label {
     display: block;
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
     margin-bottom: 0.5rem;
   }
@@ -582,7 +582,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     background: #eff6ff;
   }
   .backend-btn.unavailable {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .latency {
@@ -646,7 +646,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   .backend-tag, .processing-time {
     padding: 0.125rem 0.375rem;
@@ -698,7 +698,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   }
   .message-references ul {
     list-style: none;
-    padding: 0;
+    padding: 0,
     margin: 0;
   }
   .message-references li {
@@ -731,7 +731,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   .search-header h4 {
     margin: 0;
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .search-result {
     padding: 0.75rem 1rem;
@@ -793,7 +793,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     gap: 0.5rem;
   }
   .input-wrapper textarea {
-    flex: 1;
+    flex: 1,
     padding: 0.75rem;
     border: 1px solid #d1d5db;
     border-radius: 8px;
@@ -801,7 +801,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     min-height: 2.5rem;
     font-family: inherit;
     font-size: 0.875rem;
-    line-height: 1.5;
+    line-height: 1.5,
   }
   .input-wrapper textarea:focus {
     outline: none;
@@ -821,22 +821,22 @@ https://svelte.dev/e/effect_invalid_placement -->
     background: #2563eb;
   }
   .submit-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   /* Modal styles */
   .modal-overlay {
     position: fixed;
 d;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 1000,
   }
   .modal {
     background: white;
@@ -853,7 +853,7 @@ d;
     gap: 0.5rem;
     padding: 1rem;
     border-bottom: 1px solid #e5e7eb;
-    font-weight: 600;
+    font-weight: 600,
   }
   .modal-body {
     padding: 1rem;
@@ -869,7 +869,7 @@ d;
     margin: 0;
     font-family: monospace;
     font-size: 0.875rem;
-    line-height: 1.5;
+    line-height: 1.5,
   }
   .modal-actions {
     display: flex;
@@ -929,7 +929,7 @@ d;
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .enhanced-ai-assistant {
-      border-radius: 0;
+      border-radius: 0,
     }
     .backend-grid {
       grid-template-columns: repeat(2, 1fr);

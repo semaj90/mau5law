@@ -1,211 +1,256 @@
 <script lang="ts">
-  import { browser } from '$app/environment';
-  import { Button } from 'bits-ui'; // Import Button from bits-ui for consistency, though not directly used for <a> tags here
-  import { derived, writable } from 'svelte/store';
-  import { recommendations, partialRecommendations, engineState, errorMessage, runQuery  } from '$lib/stores/unified';
-  import { onMount } from 'svelte';
+	// Replace broken named imports with safe namespace import + fallbacks
+	import { browser } from '$app/environment';
+	import { derived, writable } from 'svelte/store';
+	import * as unified from '$lib/stores/unified';
+	import LoginButton from '$lib/components/auth/LoginButton.svelte';
+	import RegisterModal from '$lib/components/auth/RegisterModal.svelte';
 
-  // Simple file uploader utility (bits-ui doesn't have createFileUploader)
-  function createFileUploader(url: string) {
-    const events: Record<string, Function[]> = {};
+	// Simple file uploader utility (bits-ui doesn't have createFileUploader)
+	function createFileUploader(url: string) {
+		type UploadFile = { id: string; file: File; name: string; progress: number; error?: boolean };
+		const events: Record<string, Function[]> = {};
+		const files: UploadFile[] = [];
 
-    return {
-      upload: async (file: File) => {
-        try {
-          const formData = new FormData();
-          formData.append('file', file);
+		async function uploadImpl(file: File) {
+			try {
+				const formData = new FormData();
+				formData.append('file', file);
 
-          const response = await fetch(url, {
-            method: 'POST',
-            body: formData
-          });
+				const response = await fetch(url, {
+					method: 'POST',
+					body: formData
+				});
 
-          if (!response.ok) {
-            throw new Error(`Upload failed: ${response.statusText}`);
-          }
+				if (!response.ok) {
+					throw new Error(`Upload failed: ${response.statusText}`);
+				}
 
-          const result = await response.json();
-          events['success']?.forEach(fn => fn(result));
-          return result;
-        } catch (error) {
-          events['error']?.forEach(fn => fn(error));
-          throw error;
-        }
-      },
-      on: (event: string, callback: Function) => {
-        if (!events[event]) events[event] = [];
-        events[event].push(callback);
-      }
-    };
-  }
+				const result = await response.json();
+				events['success']?.forEach(fn => fn(result));
+				return result;
+			} catch (error) {
+				events['error']?.forEach(fn => fn(error));
+				throw error;
+			}
+		}
 
-  // Svelte 5 runes for reactive state
-  let loading = $state(true);
-  let systemStatus = $state({
-    database: 'checking',
-    redis: 'checking',
-    ollama: 'checking',
-    gpu: 'checking',
-    workers: 'checking', // NEW: Worker health status
-  });
+		return {
+			// exposes a simple array the template can iterate over
+			files,
+			// Accept FileList or Array<File>, push metadata and start upload
+			addFiles: (list: FileList | File[]) => {
+				// ensure we get a File[] and let TS know it
+				const arr = Array.from(list as FileList | File[]) as File[];
+				arr.forEach((file) => {
+					const id = (crypto as any)?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
+					const fileObj: UploadFile = { id, file, name: file.name, progress: 0 };
+					files.push(fileObj);
+					// start upload and update progress (coarse)
+					uploadImpl(file)
+						.then(() => {
+							fileObj.progress = 100;
+							events['success']?.forEach(fn => fn(fileObj));
+						})
+						.catch(() => {
+							fileObj.progress = 0;
+							fileObj.error = true;
+							events['error']?.forEach(fn => fn(fileObj));
+						});
+				});
+			},
+			upload: uploadImpl,
+			on: (event: string, callback: Function) => {
+				if (!events[event]) events[event] = [];
+				events[event].push(callback);
+			}
+		};
+	}
 
-  let stats = $state({
-    totalCases: 0,
-    totalEvidence: 0,
-    processingJobs: 0,
-  });
+	// Create safe local stores that fall back if unified exports are missing
+	const recommendations = (unified as any).recommendations ?? writable<any[]>([]);
+	const partialRecommendations = (unified as any).partialRecommendations ?? writable<any[]>([]);
+	const engineState = (unified as any).engineState ?? writable<'idle' | 'processing' | 'success' | 'failure'>('idle');
+	const errorMessage = (unified as any).errorMessage ?? writable<string>('');
+	const runQuery = (unified as any).runQuery ?? (async (_q: string) => {
+		console.warn('runQuery stub called - unified.runQuery not available');
+	});
 
-  let workerDetails = $state({
-    ocr: { status: 'offline', healthy: false, queueDepth: 0 },
-    embedding: { status: 'offline', healthy: false, queueDepth: 0 },
-    autotag: { status: 'offline', healthy: false, queueDepth: 0 },
-  });
+	// Use svelte/store derived and coerce values into arrays to avoid type errors
+	let displayRecommendations = derived(
+		[recommendations, partialRecommendations, engineState],
+		([$recs, $partial, $state]) => {
+			// cast to any before accessing .items to satisfy TS
+			const recsArr = Array.isArray($recs) ? $recs : (($recs as any)?.items ?? []);
+			const partialArr = Array.isArray($partial) ? $partial : (($partial as any)?.items ?? []);
+			// show streaming partials while processing, otherwise final recommendations
+			if ($state === 'processing' && partialArr.length) return partialArr;
+			return recsArr.length ? recsArr : partialArr;
+		}
+	);
 
-  let userQuery = $state('');
+	// --- Add missing reactive state used by the template / health checks ---
+	let systemStatus: Record<string, string> = {
+		database: 'checking',
+		redis: 'checking',
+		ollama: 'checking',
+		gpu: 'checking',
+		workers: 'checking'
+	};
 
-  // Use $derived to compute display recommendations reactively in Svelte 5
-  let displayRecommendations = $derived.by(() => {
-    const recs = $recommendations || [];
-    const partial = $partialRecommendations || [];
-    const state = $engineState;
+	let workerDetails = {
+		ocr: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
+		embedding: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
+		autotag: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 }
+	};
 
-    // show streaming partials while processing, otherwise final recommendations
-    if (state === 'processing' && partial.length) return partial;
-    return recs.length ? recs : partial;
-  });
+	let stats = { totalCases: 0, totalEvidence: 0, processingJobs: 0 };
+	let loading = true;
+	let userQuery = '';
+	let registerOpen = false;
+	// ---------------------------------------------------------------
 
-  // Check system health on mount
-  $effect(() => {
-    if (browser) {
-      checkSystemHealth();
-      const interval = setInterval(checkSystemHealth, 30000); // Check every 30s
-      return () => clearInterval(interval);
-    }
-  });
+	// Check system health on mount
+	$effect(() => {
+		if (browser) {
+			checkSystemHealth();
+			const interval = setInterval(checkSystemHealth, 30000); // Check every 30s
+			return () => clearInterval(interval);
+		}
+	});
 
-  async function checkSystemHealth() {
-    try {
-      // Check database
-      const dbCheck = await fetch('/api/health/database').catch(() => ({ ok: false }));
-      systemStatus.database = dbCheck.ok ? 'online' : 'offline';
+	async function checkSystemHealth() {
+		try {
+			// Check database
+			const dbCheck = await fetch('/api/health/database').catch(() => ({ ok: false }));
+			systemStatus.database = dbCheck.ok ? 'online' : 'offline';
 
-      // Check Redis
-      const redisCheck = await fetch('/api/health/redis').catch(() => ({ ok: false }));
-      systemStatus.redis = redisCheck.ok ? 'online' : 'offline';
+			// Check Redis
+			const redisCheck = await fetch('/api/health/redis').catch(() => ({ ok: false }));
+			systemStatus.redis = redisCheck.ok ? 'online' : 'offline';
 
-      // Check Ollama
-      const ollamaCheck = await fetch('/api/health/ollama').catch(() => ({ ok: false }));
-      systemStatus.ollama = ollamaCheck.ok ? 'online' : 'offline';
+			// Check Ollama
+			const ollamaCheck = await fetch('/api/health/ollama').catch(() => ({ ok: false }));
+			systemStatus.ollama = ollamaCheck.ok ? 'online' : 'offline';
 
-      // Check GPU
-      const gpuCheck = await fetch('/api/health/gpu').catch(() => ({ ok: false }));
-      systemStatus.gpu = gpuCheck.ok ? 'online' : 'offline';
+			// Check GPU
+			const gpuCheck = await fetch('/api/health/gpu').catch(() => ({ ok: false }));
+			systemStatus.gpu = gpuCheck.ok ? 'online' : 'offline';
 
-      // Check Workers (NEW)
-      const workersCheck = await fetch('/api/health/workers').catch(() => null);
-      if (workersCheck?.ok) {
-        const workersData = await workersCheck.json();
-        systemStatus.workers =
-          workersData.success && workersData.status === 'online'
-            ? 'online'
-            : workersData.status === 'degraded'
-              ? 'degraded'
-              : 'offline';
+			// Check Workers (NEW)
+			const workersCheck = await fetch('/api/health/workers').catch(() => null);
+			if (workersCheck?.ok) {
+				const workersData = await workersCheck.json();
+				systemStatus.workers =
+					workersData.success && workersData.status === 'online'
+						? 'online'
+						: workersData.status === 'degraded'
+							? 'degraded'
+							: 'offline';
 
-        // Update worker details
-        if (workersData.workers) {
-          workersData.workers.forEach((worker: any) => {
-            if (worker.name.includes('OCR')) {
-              workerDetails.ocr = {
-                status: worker.status,
-                healthy: worker.healthy,
-                queueDepth: worker.queueDepth || 0,
-                processedJobs: worker.processedJobs || 0,
-              };
-            } else if (worker.name.includes('Embedding')) {
-              workerDetails.embedding = {
-                status: worker.status,
-                healthy: worker.healthy,
-                queueDepth: worker.queueDepth || 0,
-                processedJobs: worker.processedJobs || 0,
-              };
-            } else if (worker.name.includes('Autotag')) {
-              workerDetails.autotag = {
-                status: worker.status,
-                healthy: worker.healthy,
-                queueDepth: 0,
-                processedJobs: worker.processedJobs || 0,
-              };
-            }
-          });
-        }
-      } else {
-        systemStatus.workers = 'offline';
-      }
+				// Update worker details safely
+				if (workersData.workers && Array.isArray(workersData.workers)) {
+					workersData.workers.forEach((worker: any) => {
+						const name = String(worker.name || '').toLowerCase();
+						if (name.includes('ocr')) {
+							workerDetails.ocr = {
+								status: worker.status ?? 'offline',
+								healthy: !!worker.healthy,
+								queueDepth: worker.queueDepth || 0,
+								processedJobs: worker.processedJobs || 0
+							};
+						} else if (name.includes('embed') || name.includes('embedding')) {
+							workerDetails.embedding = {
+								status: worker.status ?? 'offline',
+								healthy: !!worker.healthy,
+								queueDepth: worker.queueDepth || 0,
+								processedJobs: worker.processedJobs || 0
+							};
+						} else if (name.includes('autotag')) {
+							workerDetails.autotag = {
+								status: worker.status ?? 'offline',
+								healthy: !!worker.healthy,
+								queueDepth: worker.queueDepth || 0,
+								processedJobs: worker.processedJobs || 0
+							};
+						}
+					});
+				}
+			} else {
+				systemStatus.workers = 'offline';
+			}
 
-      // Get stats
-      const statsResponse = await fetch('/api/dashboard/stats').catch(() => null);
-      if (statsResponse?.ok) {
-        const data = await statsResponse.json();
-        if (data.success) {
-          stats.totalCases = data.data.totalCases || 0;
-          stats.totalEvidence = data.data.totalEvidence || 0;
-          stats.processingJobs = data.data.activeJobs || 0;
-        }
-      }
+			// Get stats
+			const statsResponse = await fetch('/api/dashboard/stats').catch(() => null);
+			if (statsResponse?.ok) {
+				const data = await statsResponse.json();
+				if (data.success) {
+					stats.totalCases = data.data.totalCases || 0;
+					stats.totalEvidence = data.data.totalEvidence || 0;
+					stats.processingJobs = data.data.activeJobs || 0;
+				}
+			}
 
-      loading = false;
-    } catch (err) {
-      console.error('Health check error:', err);
-      loading = false;
-    }
-  }
+			loading = false;
+		} catch (err) {
+			console.error('Health check error:', err);
+			loading = false;
+		}
+	}
 
-  function getStatusColor(status: string) {
-    switch (status) {
-      case 'online':
-        return 'is-success'; // NES.css success color
-      case 'offline':
-        return 'is-error'; // NES.css error color
-      case 'degraded':
-        return 'is-warning'; // NES.css warning color
-      default:
-        return 'is-disabled'; // NES.css disabled/default color
-    }
-  }
+	function getStatusColor(status: string) {
+		switch (status) {
+			case 'online':
+				return 'is-success'; // NES.css success color
+			case 'offline':
+				return 'is-error'; // NES.css error color
+			case 'degraded':
+				return 'is-warning'; // NES.css warning color
+			default:
+				return 'is-disabled'; // NES.css disabled/default color
+		}
+	}
 
-  function getStatusIcon(status: string) {
-    switch (status) {
-      case 'online':
-        return '✅';
-      case 'offline':
-        return '❌';
-      case 'degraded':
-        return '⚠️'; // Changed for degraded status
-      default:
-        return '⏳';
-    }
-  }
+	function getStatusIcon(status: string) {
+		switch (status) {
+			case 'online':
+				return '✅';
+			case 'offline':
+				return '❌';
+			case 'degraded':
+				return '⚠️'; // Changed for degraded status
+			default:
+				return '⏳';
+		}
+	}
 
-  const handleSubmit = async () => {
-    if (userQuery.trim()) await runQuery(userQuery.trim());
-  };
+	const handleSubmit = async () => {
+		if (userQuery.trim()) await runQuery(userQuery.trim());
+	};
 
-  // nice keyboard shortcut
-  const onKey = (e: KeyboardEvent) => {
-    if (e.key === 'Enter') handleSubmit();
-  };
+	// nice keyboard shortcut
+	const onKey = (e: KeyboardEvent) => {
+		if (e.key === 'Enter') handleSubmit();
+	};
 
-  // lightweight HTML escape helper to avoid XSS for simple content (use sanitizer for richer content)
-  function escapeHtml(str: string) {
-    const s = String(str || '');
-    return s.replace(/[&<>"']/g, (m) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
-  }
+	// lightweight HTML escape helper to avoid XSS for simple content (use sanitizer for richer content)
+	function escapeHtml(str: string) {
+		const s = String(str ?? '');
+		const map: Record<'&' | '<' | '>' | '"' | "'", string> = {
+			'&': '&amp;',
+			'<': '&lt;',
+			'>': '&gt;',
+			'"': '&quot;',
+			"'": '&#39;'
+		};
+		return s.replace(/[&<>"']/g, (m) => map[m as keyof typeof map]);
+	}
 
-  const uploader = createFileUploader("/api/upload");
+	const uploader = createFileUploader("/api/upload");
 
-	uploader.on("success", (res) => {
-		console.log("Uploaded:", res.url);
+	// annotate parameter to avoid implicit any
+	uploader.on("success", (res: any) => {
+		console.log("Uploaded:", res?.url ?? res);
 	});
 </script>
 
@@ -223,6 +268,17 @@
     <p class="nes-text is-disabled tech-stack-custom">
       SvelteKit 2 · Svelte 5 · PostgreSQL 17 · Redis · Gemma3 Legal · RTX GPU
     </p>
+
+    <!-- Auth Buttons -->
+    <div style="display: flex; gap: 1rem; margin-top: 2rem; justify-content: center;">
+      <div>
+        <LoginButton />
+      </div>
+      <div>
+        <button class="nes-btn is-success" on:click={() => (registerOpen = true)}>� Register</button>
+      </div>
+      <RegisterModal bind:open={registerOpen} onsuccess={() => { /* on success, reload to reflect session cookie */ window.location.reload(); }} />
+    </div>
   </div>
 
   <!-- System Status -->
@@ -479,9 +535,9 @@
       <div style="color:#c53030; margin-top:.6rem">{$errorMessage}</div>
     {/if}
 
-    {#if displayRecommendations && displayRecommendations.length > 0}
+    {#if $displayRecommendations && $displayRecommendations.length > 0}
       <div class="recommendation-cards" aria-live="polite">
-        {#each displayRecommendations as rec (rec.id)}
+        {#each $displayRecommendations as rec (rec.id)}
           <div class="card {rec.type === 'suggestion' ? 'dym' : ($engineState === 'processing' ? 'streaming' : '')}">
             <div>
               <strong>{(rec.type || '').toUpperCase()}</strong>
@@ -556,14 +612,14 @@
     color: #ffd700; /* Override NES.css primary color */
     margin-bottom: 1rem;
     text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-    font-weight: 800;
+    font-weight: 800,
   }
 
   .hero-section-custom .nes-text.is-success.subtitle-custom {
     font-size: 1.4rem;
     color: #00ff41; /* Override NES.css success color */
     margin-bottom: 1rem;
-    font-weight: 600;
+    font-weight: 600,
   }
 
   .hero-section-custom .nes-text.is-disabled.tech-stack-custom {
@@ -595,7 +651,7 @@
   }
 
   .status-label-custom {
-    font-weight: 600;
+    font-weight: 600,
   }
 
   .workers-grid-custom {
@@ -640,7 +696,7 @@
     border-radius: 12px;
     font-size: 0.75rem;
     color: #a855f7;
-    font-weight: 600;
+    font-weight: 600,
   }
 
   .quick-stats-custom {
@@ -709,17 +765,17 @@
   .action-card-custom::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     height: 4px;
     background: linear-gradient(90deg, #ffd700, #00ff41);
-    opacity: 0;
+    opacity: 0,
     transition: opacity 0.3s ease;
   }
 
   .action-card-custom:hover::before {
-    opacity: 1;
+    opacity: 1,
   }
 
   .card-icon-custom {
@@ -779,9 +835,9 @@
   .featured-card-custom::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     height: 6px;
     background: linear-gradient(90deg, #00ff41, #ffd700, #00ff41);
     background-size: 200% 100%;
@@ -823,11 +879,11 @@
     0%,
     100% {
       transform: scale(1);
-      opacity: 1;
+      opacity: 1,
     }
     50% {
       transform: scale(1.05);
-      opacity: 0.9;
+      opacity: 0.9,
     }
   }
 
@@ -885,7 +941,7 @@
   }
 
   input[type='text'] {
-    flex: 1;
+    flex: 1,
     padding: 0.6rem 0.8rem;
     border-radius: 0.6rem;
     border: 1px solid #e6e6ea;
@@ -923,7 +979,7 @@
   }
 
   .card.streaming {
-    opacity: 0.95;
+    opacity: 0.95,
     animation: pulse 1.2s infinite alternate;
     border: 1px dashed rgba(43, 108, 176, 0.12);
   }

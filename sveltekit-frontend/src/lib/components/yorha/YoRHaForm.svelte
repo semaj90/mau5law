@@ -315,7 +315,7 @@ https: //svelte.dev/e/js_parse_error -->
     letter-spacing: 1px;
   }
   .form-status {
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .status-indicator {
     font-size: 10px;
@@ -347,7 +347,7 @@ https: //svelte.dev/e/js_parse_error -->
   }
   .field-label {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 600,
     color: var(--yorha-text-secondary, #b0b0b0);
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -357,7 +357,7 @@ https: //svelte.dev/e/js_parse_error -->
   }
   .required-indicator {
     color: var(--yorha-danger, #ff0041);
-    font-weight: 700;
+    font-weight: 700,
   }
   .field-input-wrapper {
     position: relative;
@@ -373,7 +373,7 @@ https: //svelte.dev/e/js_parse_error -->
     font-size: 14px;
     padding: 12px 16px;
     transition: all 0.2s ease;
-    border-radius: 0;
+    border-radius: 0,
   }
   .field-input: focus
   .field-textarea: focus
@@ -397,9 +397,9 @@ https: //svelte.dev/e/js_parse_error -->
   }
   .field-border {
     position: absolute;
-    bottom: 0;
+    bottom: 0,
     left: 0;
-    right: 0;
+    right: 0,
     height: 2px;
     background: var(--yorha-secondary, #ffd700);
     transform: scaleX(0);
@@ -435,7 +435,7 @@ https: //svelte.dev/e/js_parse_error -->
     background: var(--yorha-secondary, #ffd700);
   }
   .field-checkbox:checked + .checkbox-indicator::after {
-    content: '✓';
+    content: '✓',
     position: absolute;
     top: 50%;
     left: 50%;
@@ -518,7 +518,7 @@ https: //svelte.dev/e/js_parse_error -->
     gap: 8px;
     color: var(--yorha-danger, #ff0041);
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 500,
   }
   .error-icon {
     font-size: 14px;
@@ -573,7 +573,7 @@ https: //svelte.dev/e/js_parse_error -->
     color: var(--yorha-text-primary, #e0e0e0);
   }
   .form-button:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
     transform: none !important;
   }
@@ -588,7 +588,7 @@ https: //svelte.dev/e/js_parse_error -->
   }
   .hint-key {
     color: var(--yorha-secondary, #ffd700);
-    font-weight: 600;
+    font-weight: 600,
   }
   /* Animations */
   @keyframes pulse {

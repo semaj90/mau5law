@@ -55,19 +55,19 @@
       sidebar: 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100',
       homeButton: 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300',
       item: 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300',
-      activeItem: 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-r-2 border-blue-600 dark:border-blue-400';
+      activeItem: 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-r-2 border-blue-600 dark:border-blue-400',
     },
     legal: {
       sidebar: 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100',
       homeButton: 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300',
       item: 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300',
-      activeItem: 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 border-r-2 border-indigo-600 dark:border-indigo-400';
+      activeItem: 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 border-r-2 border-indigo-600 dark:border-indigo-400',
     },
     gaming: {
       sidebar: 'bg-black border-green-400/30 text-green-400 shadow-[0_0_20px_rgba(0,255,65,0.1)]',
       homeButton: 'hover:bg-green-400/10 text-green-400 hover:shadow-[0_0_15px_rgba(0,255,65,0.3)]',
       item: 'hover:bg-green-400/10 text-green-400 hover:shadow-[0_0_10px_rgba(0,255,65,0.2)]',
-      activeItem: 'bg-green-400/20 text-green-300 border-r-2 border-green-400 shadow-[0_0_15px_rgba(0,255,65,0.4)]';
+      activeItem: 'bg-green-400/20 text-green-300 border-r-2 border-green-400 shadow-[0_0_15px_rgba(0,255,65,0.4)]',
     }
   }
   function toggleSidebar() {
@@ -344,6 +344,6 @@
   }
   /* Ensure proper z-indexing */
   [role="navigation"] {
-    z-index: 40;
+    z-index: 40,
   }
 </style>

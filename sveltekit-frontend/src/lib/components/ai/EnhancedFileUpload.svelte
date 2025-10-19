@@ -119,14 +119,14 @@ https://svelte.dev/e/js_parse_error -->
       enabled: enableOCR
       webgpuEnabled: false
       accelerateOCR: true
-      accelerateEmbedding: true;
+      accelerateEmbedding: true,
     },
     rag: {
       enabled: enableRAG
       extractText: true
       generateEmbeddings: true
       storeVectors: true
-      updateIndex: true;
+      updateIndex: true,
     },
     ocr: { enabled: enableOCR, engines: ['tesseract'], languages: ['eng'] },
     yolo: { enabled: false },
@@ -163,7 +163,7 @@ https://svelte.dev/e/js_parse_error -->
           name: file.name,
           size: file.size,
           progress: 0,
-          status: 'uploading';
+          status: 'uploading',
         });
       });
       fileStates = new Map(fileStates);

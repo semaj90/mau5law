@@ -149,7 +149,7 @@
     background: var(--bg-hover, rgba(0, 0, 0, 0.05));
   }
   .ai-status-indicator:hover .status-tooltip {
-    opacity: 1;
+    opacity: 1,
     visibility: visibl;
     transform: translateY(0);
   }
@@ -157,7 +157,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   @keyframes spin {
     0% {
@@ -175,7 +175,7 @@
   }
   .status-text {
     font-weight: 600;
-    line-height: 1.2;
+    line-height: 1.2,
   }
   .provider-info {
     display: flex;
@@ -183,10 +183,10 @@
     gap: 4px;
     font-size: 0.75rem;
     color: var(--text-secondary, #64748b);
-    line-height: 1.2;
+    line-height: 1.2,
   }
   .provider {
-    font-weight: 500;
+    font-weight: 500,
   }
   .provider.local {
     color: var(--text-success, #059669);
@@ -220,7 +220,7 @@
     padding: 12px;
     border-radius: 6px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    opacity: 0;
+    opacity: 0,
     visibility: hidden;
     transition: all 0.2s ease;
     z-index: 1000;

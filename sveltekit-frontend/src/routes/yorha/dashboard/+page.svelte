@@ -1,12 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<!-- YoRHa System Dashboard -->
 <script lang="ts">
-  import { onDestroy } from 'svelte';
+  // YoRHa System Dashboard
+  import { onDestroy, onMount } from 'svelte';
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
   import YoRHaSystemStatus from '$lib/components/yorha/YoRHaSystemStatus.svelte';
-  import YoRHaDataViz from '$lib/components/yorha/YoRHaDataViz.svelte';
+  // Import YoRHaDataViz Svelte component (default export)
+  import YoRHaDataVizComponent from '$lib/components/yorha/YoRHaDataViz.svelte';
   import type { PageData } from './$types';
   import {
     Monitor,
@@ -20,11 +18,40 @@ https://svelte.dev/e/js_parse_error -->
     CheckCircle,
     TrendingUp,
   } from 'lucide-svelte';
+  import * as d3 from 'd3';
+  // add these type imports so TS can resolve D3 types used below
+  import type { ForceLink } from 'd3-force';
 
-  let { data }: { data: PageData } = $props();
+  // Add strongly-typed graph interfaces so Svelte/TS can infer node/edge properties
+  type Position = { x: number; y: number; };
+  interface GraphNode {
+    id: string;
+    type: 'database' | 'service' | 'component' | string;
+    label: string;
+    status: 'healthy' | 'warning' | 'error' | string;
+    position: Position;
+  }
+  interface GraphEdge {
+    id: string;
+    source?: string;
+    target?: string;
+    type: string;
+    traffic: number;
+    latency: number;
+  }
+  interface YoRHaGraphData {
+    nodes: GraphNode[];
+    edges: GraphEdge[];
+  }
+
+  // Svelte 5 (runes) pattern: read page data from $props()
+  // keep TS typing with an assertion
+  let { data } = ($props() as { data: PageData });
+
   // System metrics and status - initialized from SSR data
   let systemMetrics = $state(data.systemStatus);
-  let graphData = $state(data.graphData);
+  // typed graphData with a safe default to avoid 'never' inference
+  let graphData = $state<YoRHaGraphData>(data.graphData ?? { nodes: [], edges: [] });
   let multicoreStatus = $state(data.multicoreStatus);
   let realtimeData = $state({
     cpuHistory: [] as number[],
@@ -37,6 +64,15 @@ https://svelte.dev/e/js_parse_error -->
   // Data update intervals
   let metricsInterval = $state<ReturnType<typeof setInterval> | null>(null);
   let realtimeInterval = $state<ReturnType<typeof setInterval> | null>(null);
+  let errorMessage = $state<string | null>(null); // Added for production error handling
+
+  // add a ref for the d3 render container
+  let graphContainer: HTMLElement | null = null;
+
+  // D3 runtime handles
+  let svg: d3.Selection<SVGSVGElement, unknown, null, undefined> | null = null;
+  let simulation: d3.Simulation<GraphNode, undefined> | null = null;
+  let resizeObserver: ResizeObserver | null = null;
 
   $effect(() => {
     (async () => {
@@ -45,9 +81,26 @@ https://svelte.dev/e/js_parse_error -->
     })();
   });
 
+  // Initialize D3 when component mounts and whenever graphData changes
+  onMount(() => {
+    initD3();
+    return () => {
+      cleanupD3();
+    };
+  });
+
+  $effect(() => {
+    // Rebuild/update the simulation when graphData changes
+    // (This runs reactively in Svelte 5 style)
+    if (svg && simulation) {
+      updateD3();
+    }
+  });
+
   onDestroy(() => {
     if (metricsInterval) clearInterval(metricsInterval);
     if (realtimeInterval) clearInterval(realtimeInterval);
+    cleanupD3();
   });
 
   async function loadSystemData() {
@@ -55,7 +108,8 @@ https://svelte.dev/e/js_parse_error -->
       // Load system status from API
       const [status, graph] = await Promise.all([yorhaAPI.getSystemStatus(), yorhaAPI.getGraphData()]);
       systemMetrics = status;
-      graphData = graph;
+      // cast incoming graph shape into the typed YoRHaGraphData
+      graphData = (graph as unknown) as YoRHaGraphData;
       // Initialize realtime data
       realtimeData = {
         cpuHistory: generateHistoryData(systemMetrics.backend.cpuUsage),
@@ -64,17 +118,12 @@ https://svelte.dev/e/js_parse_error -->
         timestamp: Date.now(),
       };
       isLoading = false;
+      errorMessage = null; // Clear any previous errors on successful load
     } catch (error) {
       console.error('Failed to load system data:', error);
-      // Use mock data for demo
-      systemMetrics = mockSystemMetrics();
-      graphData = mockGraphData();
-      realtimeData = {
-        cpuHistory: generateHistoryData(45),
-        memoryHistory: generateHistoryData(62),
-        networkHistory: generateHistoryData(23),
-        timestamp: Date.now(),
-      };
+      errorMessage = 'Failed to load initial system data. Please check service status.';
+      // In a production environment, we do not fall back to mock data.
+      // The dashboard will display the SSR-provided data (if any) or an error message.
       isLoading = false;
     }
   }
@@ -86,22 +135,12 @@ https://svelte.dev/e/js_parse_error -->
         const status = await yorhaAPI.getSystemStatus();
         systemMetrics = status;
         lastUpdate = new Date();
+        errorMessage = null; // Clear error if real-time updates resume
       } catch (error) {
-        // Update with simulated changes
-        systemMetrics = {
-          ...systemMetrics,
-          backend: {
-            ...systemMetrics.backend,
-            cpuUsage: Math.max(20, Math.min(80, systemMetrics.backend.cpuUsage + (Math.random() - 0.5) * 10)),
-            memoryUsage: Math.max(30, Math.min(85, systemMetrics.backend.memoryUsage + (Math.random() - 0.5) * 8)),
-          },
-          database: {
-            ...systemMetrics.database,
-            latency: Math.max(10, Math.min(100, systemMetrics.database.latency + (Math.random() - 0.5) * 5)),
-            queryCount: systemMetrics.database.queryCount + Math.floor(Math.random() * 5),
-          },
-        };
-        lastUpdate = new Date();
+        console.error('Failed to fetch real-time metrics:', error);
+        errorMessage = 'Real-time metric updates are currently unavailable.';
+        // In a production environment, we do not simulate changes.
+        // The dashboard will show the last known data and an error message.
       }
     }, 5000);
     // Update realtime charts every 2 seconds
@@ -120,92 +159,6 @@ https://svelte.dev/e/js_parse_error -->
       const variation = (Math.random() - 0.5) * 20;
       return Math.max(0, Math.min(100, baseValue + variation));
     });
-  }
-
-  function mockSystemMetrics() {
-    return {
-      database: {
-        connected: true,
-        latency: 23,
-        activeConnections: 12,
-        queryCount: 15847,
-      },
-      backend: {
-        healthy: true,
-        uptime: 98.7,
-        activeServices: 8,
-        cpuUsage: 45,
-        memoryUsage: 62,
-      },
-      frontend: {
-        renderFPS: 60,
-        componentCount: 127,
-        activeComponents: 89,
-        webGPUEnabled: true,
-      },
-    };
-  }
-
-  function mockGraphData() {
-    return {
-      nodes: [
-        {
-          id: 'postgres',
-          type: 'database',
-          label: 'PostgreSQL',
-          position: { x: 0, y: 0, z: 0 },
-          metrics: { connections: 12, queries: 15847 },
-          status: 'healthy',
-        },
-        {
-          id: 'redis',
-          type: 'database',
-          label: 'Redis',
-          position: { x: 1, y: 0, z: 0 },
-          metrics: { memory: '2.1GB', keys: 45823 },
-          status: 'healthy',
-        },
-        {
-          id: 'ollama',
-          type: 'service',
-          label: 'Ollama AI',
-          position: { x: 0, y: 1, z: 0 },
-          metrics: { models: 3, requests: 1847 },
-          status: 'healthy',
-        },
-        {
-          id: 'sveltekit',
-          type: 'component',
-          label: 'SvelteKit',
-          position: { x: 1, y: 1, z: 0 },
-          metrics: { components: 127, fps: 60 },
-          status: 'healthy',
-        },
-      ],
-      edges: [
-        {
-          from: 'sveltekit',
-          to: 'postgres',
-          type: 'api',
-          traffic: 85,
-          latency: 23,
-        },
-        {
-          from: 'sveltekit',
-          to: 'redis',
-          type: 'api',
-          traffic: 65,
-          latency: 12,
-        },
-        {
-          from: 'postgres',
-          to: 'ollama',
-          type: 'data',
-          traffic: 45,
-          latency: 34,
-        },
-      ],
-    };
   }
 
   function getStatusIcon(status: string) {
@@ -232,6 +185,170 @@ https://svelte.dev/e/js_parse_error -->
       default:
         return 'text-gray-400';
     }
+  }
+
+  function initD3() {
+    if (!graphContainer) return;
+    // clear previous svg if present
+    d3.select(graphContainer).selectAll('*').remove();
+
+    const { width, height } = graphContainer.getBoundingClientRect();
+    svg = d3
+      .select(graphContainer)
+      .append('svg')
+      .attr('width', width)
+      .attr('height', height)
+      .attr('viewBox', `0 0 ${Math.max(300, width)} ${Math.max(300, height)}`);
+
+    // groups
+    svg.append('g').attr('class', 'links');
+    svg.append('g').attr('class', 'nodes');
+
+    // create simulation (avoid generic type args on untyped d3 factory calls;
+    // create a typed link force and cast where needed)
+    simulation = d3.forceSimulation() as d3.Simulation<GraphNode, undefined>;
+    const linkForce = d3
+      .forceLink()
+      .id((d: any) => d.id)
+      .distance(120)
+      .strength(0.6) as unknown as ForceLink<GraphNode, GraphEdge>;
+    simulation.force('link', linkForce);
+    simulation.force('charge', d3.forceManyBody().strength(-400));
+    simulation.force('center', d3.forceCenter(width / 2, height / 2));
+    simulation.force('collision', d3.forceCollide(40));
+
+    // setup resize observer to keep svg responsive
+    resizeObserver = new ResizeObserver(() => {
+      if (!graphContainer || !svg) return;
+      const r = graphContainer.getBoundingClientRect();
+      svg.attr('width', r.width).attr('height', r.height);
+      const center = d3.forceCenter(r.width / 2, r.height / 2);
+      if (simulation) simulation.force('center', center).alpha(0.5).restart();
+    });
+    resizeObserver.observe(graphContainer);
+
+    updateD3();
+  }
+
+  function updateD3() {
+    if (!svg || !simulation || !graphContainer) return;
+    // Copy data (avoid mutating original)
+    const nodes = graphData.nodes.map((n) => ({ ...n }));
+    const links = graphData.edges.map((e) => ({
+      id: e.id,
+      source: e.source!,
+      target: e.target!,
+      traffic: e.traffic,
+      latency: e.latency,
+      type: e.type,
+    }));
+
+    // LINK ELEMENTS
+    const linkSelection = svg
+      .select<SVGGElement>('g.links')
+      .selectAll<SVGLineElement, typeof links[0]>('line')
+      .data(links, (d: any) => d.id);
+
+    linkSelection.exit().remove();
+
+    const linkEnter = linkSelection
+      .enter()
+      .append('line')
+      .attr('stroke', '#374151')
+      .attr('stroke-opacity', 0.6)
+      .attr('stroke-width', (d: any) => Math.max(1, Math.min(6, d.traffic / 20)));
+
+    const linksMerged = linkEnter.merge(linkSelection as any);
+
+    // NODE ELEMENTS
+    const nodeSelection = svg
+      .select<SVGGElement>('g.nodes')
+      .selectAll<SVGGElement, typeof nodes[0]>('g.node')
+      .data(nodes, (d: any) => d.id);
+
+    nodeSelection.exit().remove();
+
+    const nodeEnter = nodeSelection
+      .enter()
+      .append('g')
+      .attr('class', 'node')
+      .call(
+        d3
+          .drag() // annotate handlers inline; avoid using D3DragEvent namespace
+          .on('start', (event: any, d: GraphNode) => {
+            if (!simulation) return;
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            (d as any).fx = (d as any).x;
+            (d as any).fy = (d as any).y;
+          })
+          .on('drag', (event: any, d: GraphNode) => {
+            (d as any).fx = event.x;
+            (d as any).fy = event.y;
+          })
+          .on('end', (event: any, d: GraphNode) => {
+            if (!simulation) return;
+            if (!event.active) simulation.alphaTarget(0);
+            (d as any).fx = null;
+            (d as any).fy = null;
+          })
+      );
+
+    nodeEnter
+      .append('circle')
+      .attr('r', 18)
+      .attr('fill', (d: GraphNode) => {
+        if (d.type === 'database') return 'rgba(59,130,246,0.6)';
+        if (d.type === 'service') return 'rgba(34,197,94,0.6)';
+        return 'rgba(139,92,246,0.6)';
+      })
+      .attr('stroke', 'rgba(255,255,255,0.06)')
+      .attr('stroke-width', 1);
+
+    nodeEnter
+      .append('text')
+      .attr('dx', 24)
+      .attr('dy', '0.35em')
+      .attr('font-family', 'monospace')
+      .attr('font-size', 12)
+      .attr('fill', '#f59e0b')
+      .text((d: GraphNode) => d.label);
+
+    const nodesMerged = nodeEnter.merge(nodeSelection as any);
+
+    // update simulation nodes/links
+    simulation.nodes(nodes as any);
+    // cast to imported ForceLink type to avoid relying on d3 namespace export
+    (simulation.force('link') as ForceLink<GraphNode, GraphEdge>).links(links as any);
+
+    simulation.on('tick', () => {
+      // position links
+      linksMerged
+        .attr('x1', (d: any) => (d.source as any).x)
+        .attr('y1', (d: any) => (d.source as any).y)
+        .attr('x2', (d: any) => (d.target as any).x)
+        .attr('y2', (d: any) => (d.target as any).y);
+
+      // position nodes
+      nodesMerged.attr('transform', (d: any) => `translate(${d.x},${d.y})`);
+    });
+
+    // small alpha tweak to avoid static layout on update
+    simulation.alpha(0.6).restart();
+  }
+
+  function cleanupD3() {
+    if (simulation) {
+      simulation.stop();
+      simulation = null;
+    }
+    if (resizeObserver && graphContainer) {
+      resizeObserver.unobserve(graphContainer);
+      resizeObserver = null;
+    }
+    if (graphContainer) {
+      d3.select(graphContainer).selectAll('*').remove();
+    }
+    svg = null;
   }
 </script>
 
@@ -262,6 +379,11 @@ https://svelte.dev/e/js_parse_error -->
     <div class="yorha-loading">
       <div class="yorha-loading-spinner"></div>
       <span>INITIALIZING DASHBOARD...</span>
+    </div>
+  {:else if errorMessage}
+    <div class="yorha-error-message">
+      <AlertTriangle size={24} class="text-red-500" />
+      <span>ERROR: {errorMessage}</span>
     </div>
   {:else}
     <!-- System Overview Cards -->
@@ -394,7 +516,7 @@ https://svelte.dev/e/js_parse_error -->
     </section>
     <!-- Data Visualization -->
     <section class="yorha-data-viz">
-      <YoRHaDataViz />
+      <YoRHaDataVizComponent />
     </section>
     <!-- System Graph -->
     <section class="yorha-graph">
@@ -402,198 +524,288 @@ https://svelte.dev/e/js_parse_error -->
         <Network size={24} />
         SYSTEM ARCHITECTURE
       </h2>
-      <div class="yorha-graph-container">
-        {#each graphData.nodes as node}
-          <div
-            class="yorha-graph-node yorha-node-{node.type}"
-            style="left: {node.position.x * 200 + 100}px; top: {node.position.y * 150 + 50}px;"
-          >
-            <div class="yorha-node-icon">
-              {#if node.type === 'database'}
-                <Database size={20} />
-              {:else if node.type === 'service'}
-                <Cpu size={20} />
-              {:else}
-                <Monitor size={20} />
-              {/if}
-            </div>
-            <div class="yorha-node-label">{node.label}</div>
-            <div class="yorha-node-status yorha-status-{node.status}"></div>
-          </div>
-        {/each}
-        {#each graphData.edges as edge}
-          <div class="yorha-graph-edge yorha-edge-{edge.type}">
-            <span class="yorha-edge-label">{edge.traffic}% • {edge.latency}ms</span>
-          </div>
-        {/each}
-      </div>
+      <!-- Replace manual Svelte loop markup with a D3-managed container -->
+      <div class="yorha-graph-container" bind:this={graphContainer}></div>
     </section>
   {/if}
 </div>
 
 <style>
-  .yorha-dashboard-page {
-    padding-bottom: 4rem;
-    /* space-y-8: add margin-bottom to children if needed */
-  }
-  .yorha-page-header {
-    padding-top: 3rem;
-    padding-bottom: 3rem;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    border-bottom: 1px solid rgba(255, 191, 0, 0.3);
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(255, 191, 0, 0.05) 100%);
-  }
-  .yorha-header-content {
-    max-width: 72rem;
-    margin-left: auto;
-    margin-right: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    align-items: center;
-    justify-content: space-between;
-  }
-  @media (min-width: 768px) {
-    .yorha-header-content {
-      flex-direction: row;
-    }
-  }
+/* Header */
+.yorha-page-header {
+  padding: 3rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 191, 0, 0.3);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(255, 191, 0, 0.05) 100%);
+}
+.yorha-header-content {
+  max-width: 72rem;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: space-between;
+}
+@media (min-width: 768px) {
+  .yorha-header-content { flex-direction: row; }
+}
+
+/* header title: use column layout and responsive text alignment */
+.yorha-header-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: center;
+  align-items: center;
+}
+@media (min-width: 768px) {
   .yorha-header-title {
-    @apply text-center md:text-left space-y-2;
+    text-align: left;
+    align-items: flex-start;
   }
+}
+.yorha-header-title h1 {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.875rem; /* text-3xl */
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #f59e0b; /* amber-400 */
+  margin: 0;
+  text-shadow: 0 0 20px rgba(255, 191, 0, 0.5);
+}
+@media (min-width: 768px) {
+  .yorha-header-title h1 { font-size: 2.25rem; /* md:text-4xl */ }
+}
+.yorha-header-subtitle {
+  font-size: 1.125rem; /* text-lg */
+  color: #fbbf24; /* amber-300 */
+  letter-spacing: 0.01em;
+  opacity: 0.8,
+}
+
+/* header status */
+.yorha-header-status {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.yorha-status-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #f59e0b;
+  opacity: 0.6,
+}
+
+/* Loading */
+.yorha-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8rem 0;
+  gap: 1rem;
+}
+.yorha-loading-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid #f59e0b;
+  border-top-color: transparent;
+  border-radius: 9999px;
+  animation: spin 1s linear infinite;
+}
+
+/* Error message */
+.yorha-error-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  color: #f87171;
+  background: rgba(127, 29, 29, 0.12);
+  border: 1px solid rgba(220, 38, 38, 0.35);
+  max-width: 72rem;
+  margin: 2rem auto;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+/* Overview & metrics grid */
+.yorha-overview { padding: 0 1.5rem; }
+.yorha-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+@media (min-width: 768px) { .yorha-metrics-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .yorha-metrics-grid { grid-template-columns: repeat(4, 1fr); } }
+
+.yorha-metric-card {
+  background: #111827;
+  border: 2px solid rgba(245, 158, 11, 0.12);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-radius: 0.5rem;
+}
+.yorha-metric-header { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.yorha-metric-header h3 { font-weight: 700; letter-spacing: 0.03em; font-size: 1.125rem; margin: 0, }
+.yorha-metric-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; text-align: center; }
+.yorha-stat-value { display: block; font-size: 1.25rem; font-weight: 700, }
+.yorha-stat-label { display: block; font-size: 0.75rem; opacity: 0.6; margin-top: 0.25rem; }
+
+/* Charts */
+.yorha-charts { padding: 0 1.5rem; margin-top: 1.5rem; }
+.yorha-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 700,
+  color: #f59e0b;
+  margin: 0 auto 1rem;
+  max-width: 72rem;
+}
+.yorha-charts-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+@media (min-width: 768px) { .yorha-charts-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.yorha-chart-card {
+  background: #111827;
+  border: 1px solid rgba(245, 158, 11, 0.08);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+}
+.yorha-chart-card h3 { font-size: 0.875rem; font-weight: 700, color: #f59e0b; margin-bottom: 0.75rem; }
+.yorha-chart {
+  position: relative;
+  height: 8rem;
+  background: #000;
+  border: 1px solid rgba(245, 158, 11, 0.08);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.yorha-chart-line {
+  width: 100%;
+  background: linear-gradient(to top, #f59e0b, #fbbf24);
+  transition: height 1s ease;
+  height: var(--height, 100%);
+}
+.yorha-chart-value {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 0.75rem;
+  color: #f59e0b;
+  font-family: monospace;
+}
+
+/* System status, data viz, graph */
+.yorha-system-status, .yorha-data-viz { padding: 0 1.5rem; }
+.yorha-graph { padding: 0 1.5rem; margin-top: 1.5rem; }
+
+/* Mark D3-created node/status selectors as global so Svelte doesn't flag them unused.
+   These classes are applied at runtime by the D3 code in the <script> section. */
+:global(.yorha-graph-container) {
+  position: relative;
+  background: #111827;
+  border: 1px solid rgba(245, 158, 11, 0.08);
+  padding: 2rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  min-height: 400px;
+  border-radius: 0.5rem;
+}
+
+/* single global rule for nodes (used by D3-created DOM) */
+:global(.yorha-graph-node) {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 0.375rem;
+  background-color: rgba(52, 211, 153, 0.06);
+}
+
+/* type-specific node decorations used by D3 */
+:global(.yorha-node-database) { border-color: rgba(59,130,246,0.55); background: rgba(59,130,246,0.06); }
+:global(.yorha-node-service) { border-color: rgba(34,197,94,0.55); background: rgba(34,197,94,0.06); }
+:global(.yorha-node-component) { border-color: rgba(139,92,246,0.55); background: rgba(139,92,246,0.06); }
+
+/* icon/label/status (all applied dynamically) */
+:global(.yorha-node-icon) { color: currentColor; }
+:global(.yorha-node-label) { font-size: 0.75rem; font-family: monospace; color: currentColor; }
+:global(.yorha-node-status) { width: 0.5rem; height: 0.5rem; border-radius: 9999px; }
+
+/* status color helpers (used dynamically) */
+:global(.yorha-status-healthy) { background: #34d399; }
+:global(.yorha-status-warning) { background: #fbbf24; }
+:global(.yorha-status-error) { background: #f87171; }
+
+/* single @keyframes spin definition (removed duplicate) */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .yorha-header-title h1 { font-size: 1.25rem; flex-direction: column; align-items: center; }
+  .yorha-metrics-grid, .yorha-charts-grid { grid-template-columns: 1fr; gap: 1rem; }
+}
+
+/* Replaced Tailwind @apply rules with plain CSS equivalents */
+.yorha-graph-node {
+  /* approximate of Tailwind 'bg-green-400' but subtle like other node backgrounds */
+  background-color: rgba(52, 211, 153, 0.06);
+}
+
+/* approximate of 'bg-yellow-400' */
+.yorha-status-warning {
+  background-color: rgba(251, 191, 36, 0.12);
+}
+
+/* approximate of 'bg-red-400' */
+.yorha-status-error {
+  background-color: rgba(248, 113, 113, 0.12);
+}
+
+/* Responsive adjustments that previously used @apply */
+@media (max-width: 768px) {
   .yorha-header-title h1 {
-    @apply text-3xl md:text-4xl font-bold tracking-wider text-amber-400 flex items-center gap-4;
-    text-shadow: 0 0 20px rgba(255, 191, 0, 0.5);
-  }
-  .yorha-header-subtitle {
-    @apply text-lg text-amber-300 tracking-wide opacity-80;
-  }
-  .yorha-header-status {
-    @apply flex items-center gap-4;
-  }
-  .yorha-status-item {
-    @apply flex items-center gap-2 text-xs text-amber-400 opacity-60;
-  }
-  /* Loading */
-  .yorha-loading {
-    @apply flex flex-col items-center justify-center py-32 space-y-4;
-  }
-  .yorha-loading-spinner {
-    @apply w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full;
-    animation: spin 1s linear infinite;
-  }
-  /* Overview Metrics */
-  .yorha-overview {
-    @apply px-6;
+    /* approximate of Tailwind 'text-2xl' and 'flex-col' */
+    font-size: 1.5rem;
+    flex-direction: column;
   }
   .yorha-metrics-grid {
-    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto;
-  }
-  .yorha-metric-card {
-    @apply bg-gray-900 border-2 p-6 space-y-4;
-  }
-  .yorha-metric-header {
-    /* @apply flex items-center justify-between; */
-  }
-  .yorha-metric-header h3 {
-    @apply font-bold tracking-wider text-lg;
-  }
-  .yorha-metric-stats {
-    @apply grid grid-cols-3 gap-2 text-center;
-  }
-  .yorha-stat-value {
-    @apply block text-xl font-bold;
-  }
-  .yorha-stat-label {
-    @apply block text-xs opacity-60 mt-1;
-  }
-  /* Charts */
-  .yorha-charts {
-    @apply px-6 space-y-6;
-  }
-  .yorha-section-title {
-    @apply text-2xl font-bold text-amber-400 tracking-wider flex items-center gap-3 max-w-6xl mx-auto;
+    /* approximate of Tailwind 'grid-cols-1 gap-4' */
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
   .yorha-charts-grid {
-    @apply grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto;
+    /* approximate of Tailwind 'grid-cols-1 gap-4' */
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
-  .yorha-chart-card {
-    @apply bg-gray-900 border border-amber-400 border-opacity-30 p-6;
-  }
-  .yorha-chart-card h3 {
-    @apply text-sm font-bold text-amber-400 mb-4 tracking-wider;
-  }
-  .yorha-chart {
-    @apply relative h-32 bg-black border border-amber-400 border-opacity-20 flex items-end justify-center;
-  }
-  .yorha-chart-line {
-    @apply w-full bg-gradient-to-t from-amber-400 to-amber-300 transition-all duration-1000;
-    height: var(--height, 100%);
-  }
-  .yorha-chart-value {
-    @apply absolute top-2 right-2 text-xs text-amber-400 font-mono;
-  }
-  /* System Status */
-  .yorha-system-status {
-    @apply px-6;
-  }
-  .yorha-data-viz {
-    @apply px-6;
-  }
-  /* Graph */
-  .yorha-graph {
-    @apply px-6 space-y-6;
-  }
-  .yorha-graph-container {
-    @apply relative bg-gray-900 border border-amber-400 border-opacity-30 p-8 max-w-6xl mx-auto;
-    min-height: 400px;
-  }
-  .yorha-graph-node {
-    @apply absolute flex flex-col items-center space-y-2 p-3 border border-opacity-60;
-  }
-  .yorha-node-database {
-    @apply border-blue-400 bg-blue-400 bg-opacity-10;
-  }
-  .yorha-node-service {
-    @apply border-green-400 bg-green-400 bg-opacity-10;
-  }
-  .yorha-node-component {
-    @apply border-purple-400 bg-purple-400 bg-opacity-10;
-  }
-  .yorha-node-icon {
-    @apply text-current;
-  }
-  .yorha-node-label {
-    @apply text-xs font-mono text-current;
-  }
-  .yorha-node-status {
-    @apply w-2 h-2 rounded-full;
-  }
-  .yorha-status-healthy {
-    @apply bg-green-400;
-  }
-  .yorha-status-warning {
-    @apply bg-yellow-400;
-  }
-  .yorha-status-error {
-    @apply bg-red-400;
-  }
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-  /* Responsive */
-  @media (max-width: 768px) {
-    .yorha-header-title h1 {
-      @apply text-2xl flex-col;
-    }
-    .yorha-metrics-grid {
-      @apply grid-cols-1 gap-4;
-    }
-    .yorha-charts-grid {
-      @apply grid-cols-1 gap-4;
-    }
-  }
+}
 </style>
+

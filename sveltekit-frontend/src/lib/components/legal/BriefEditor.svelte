@@ -53,7 +53,7 @@
   const briefBuilder = createLegalEvidenceAnalyzer({
     caseType: 'civil',
     urgency: 'medium',
-    aiModel: 'gemma3';
+    aiModel: 'gemma3',
   });
   let briefData = $state<Brief>(brief || {
     id: 'brief-001',
@@ -79,7 +79,7 @@
             citation: 'Cal. Code Civ. Proc. § 437c',
             shortForm: '§ 437c',
             verified: true
-            relevanceScore: 0.95;
+            relevanceScore: 0.95,
           }
         ],
         wordCount: 145,
@@ -96,7 +96,7 @@
         content: 'The undisputed material facts establish that on March 15, 2024, Defendant breached its contractual obligations...',
         citations: [],
         wordCount: 89,
-        status: 'draft';
+        status: 'draft',
       }
     ]
   });
@@ -161,7 +161,7 @@
       content: '',
       citations: [],
       wordCount: 0,
-      status: 'draft';
+      status: 'draft',
     }
     briefData.sections.push(newSection);
     selectedSection = newSection.id;
@@ -181,7 +181,7 @@
       citation: '',
       shortForm: '',
       verified: false
-      relevanceScore: 0;
+      relevanceScore: 0,
     }
     const sectionIndex = briefData.sections.findIndex(s => s.id === selectedSection);
     if (sectionIndex >= 0) {
@@ -195,7 +195,7 @@
       facts: '📊',
       argument: '⚖️',
       conclusion: '🏁',
-      signature: '✍️';
+      signature: '✍️',
     }
     return icons[type] || '📄';
   }
@@ -204,7 +204,7 @@
       case: '⚖️',
       statute: '📜',
       regulation: '📋',
-      secondary: '📚';
+      secondary: '📚',
     }
     return icons[type] || '📄';
   }
@@ -213,7 +213,7 @@
       draft: '#6b7280',
       review: '#f59e0b',
       approved: '#10b981',
-      filed: '#3b82f6';
+      filed: '#3b82f6',
     }
     return colors[status as keyof typeof colors] || colors.draft;
   }
@@ -456,7 +456,7 @@
     font-size: 2rem;
   }
   .title-text h2 {
-    margin: 0;
+    margin: 0,
     color: var(--enhanced-bits-foreground);
     font-size: 1.5rem;
   }
@@ -534,7 +534,7 @@
   }
   .detail-value {
     color: var(--enhanced-bits-foreground);
-    font-weight: 500;
+    font-weight: 500,
   }
   .due-date {
     color: var(--enhanced-bits-warning);
@@ -560,7 +560,7 @@
     margin-bottom: 1rem;
   }
   .nav-header h3 {
-    margin: 0;
+    margin: 0,
     color: var(--enhanced-bits-foreground);
   }
   .section-list {
@@ -600,7 +600,7 @@
   }
   .section-title {
     flex: 1;
-    font-weight: 500;
+    font-weight: 500,
   }
   .section-status {
     font-size: 0.75rem;
@@ -628,7 +628,7 @@
     border-bottom: 1px solid var(--enhanced-bits-border);
   }
   .section-info h3 {
-    margin: 0;
+    margin: 0,
     color: var(--enhanced-bits-foreground);
   }
   .section-type {
@@ -641,7 +641,7 @@
     gap: 0.5rem;
   }
   .editor-content {
-    flex: 1;
+    flex: 1,
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 1rem;
@@ -657,7 +657,7 @@
     color: var(--enhanced-bits-foreground);
     font-family: 'Georgia', serif;
     font-size: 1rem;
-    line-height: 1.6;
+    line-height: 1.6,
     resize: vertical;
   }
   .content-textarea:focus {
@@ -679,14 +679,14 @@
   }
   .suggestions-list {
     list-style: none;
-    padding: 0;
+    padding: 0,
     margin: 0;
   }
   .suggestion-item {
     padding: 0.5rem 0;
     border-bottom: 1px solid rgba(157, 74, 221, 0.2);
     font-size: 0.875rem;
-    line-height: 1.4;
+    line-height: 1.4,
     color: var(--enhanced-bits-foreground);
   }
   .section-citations {
@@ -700,7 +700,7 @@
     margin-bottom: 1rem;
   }
   .citations-header h4 {
-    margin: 0;
+    margin: 0,
     color: var(--enhanced-bits-foreground);
   }
   .citations-list {
@@ -765,7 +765,7 @@
     margin-bottom: 1.5rem;
   }
   .panel-header h3 {
-    margin: 0;
+    margin: 0,
     color: var(--enhanced-bits-foreground);
   }
   .section-citations-group {
@@ -784,12 +784,12 @@
     border-bottom: 1px solid var(--enhanced-bits-border);
   }
   .citation-text {
-    flex: 1;
+    flex: 1,
   }
   .citation-full {
     font-size: 0.875rem;
     color: var(--enhanced-bits-foreground);
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .citation-meta {
     font-size: 0.75rem;
@@ -814,7 +814,7 @@
     color: var(--enhanced-bits-foreground);
   }
   .no-section-selected p {
-    margin: 0;
+    margin: 0,
   }
   @media (max-width: 1200px) {
     .editor-layout {
@@ -839,10 +839,10 @@ d;
       gap: 1rem;
     }
     .section-nav {
-      order: 2;
+      order: 2,
     }
     .content-editor {
-      order: 1;
+      order: 1,
     }
     .editor-content {
       grid-template-columns: 1fr;

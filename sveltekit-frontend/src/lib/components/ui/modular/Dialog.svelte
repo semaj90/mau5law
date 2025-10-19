@@ -39,7 +39,7 @@ https://svelte.dev/e/js_parse_error -->
     footer,
     closeOnEscape = true,
     closeOnOutsideClick = true,
-    ...restProp;
+    ...restProp
    }: Props = $props();
   // UnoCSS-based dialog variants
   const contentVariants = cva(
@@ -52,7 +52,7 @@ https://svelte.dev/e/js_parse_error -->
           yorha: 'bg-black/95 border-2 border-yellow-400/60 shadow-2xl shadow-yellow-400/20 backdrop-blur-sm',
           legal: 'bg-blue-50 border-2 border-blue-200 dark:bg-blue-950 dark:border-blue-800',
           fullscreen: 'inset-0 max-w-none h-screen max-h-none rounded-none',
-          drawer: 'inset-x-0 bottom-0 top-auto translate-y-0 translate-x-0 rounded-b-none rounded-t-xl';
+          drawer: 'inset-x-0 bottom-0 top-auto translate-y-0 translate-x-0 rounded-b-none rounded-t-xl',
         },
         size: {
           sm: 'max-w-sm',
@@ -64,7 +64,7 @@ https://svelte.dev/e/js_parse_error -->
       },
       defaultVariants: {
         variant: 'default',
-        size: 'default';
+        size: 'default',
       }
     }
   );
@@ -98,7 +98,7 @@ https://svelte.dev/e/js_parse_error -->
       transitionConfig={{
         duration: 200,
         easing: quintOut;
-        start: 0.95;
+        start: 0.95,
       }}
     >
       <!-- Header Section -->
@@ -153,21 +153,21 @@ https://svelte.dev/e/js_parse_error -->
   }
   @keyframes dialog-content-show {
     from {
-      opacity: 0;
+      opacity: 0,
       transform: translate(-50%, -48%) scale(0.96);
     }
     to {
-      opacity: 1;
+      opacity: 1,
       transform: translate(-50%, -50%) scale(1);
     }
   }
   @keyframes dialog-content-hide {
     from {
-      opacity: 1;
+      opacity: 1,
       transform: translate(-50%, -50%) scale(1);
     }
     to {
-      opacity: 0;
+      opacity: 0,
       transform: translate(-50%, -48%) scale(0.96);
     }
   }

@@ -35,13 +35,13 @@
     primary: 'bg-primary text-primary-foreground border border-primary shadow-lg',
     secondary: 'bg-secondary text-secondary-foreground border border-secondary shadow-lg',
     gaming: 'bg-black text-green-400 border border-green-400 shadow-[0_0_20px_rgba(34,197,94,0.4)] backdrop-blur-sm',
-    legal: 'bg-white text-slate-900 border border-slate-200 shadow-lg dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700';
+    legal: 'bg-white text-slate-900 border border-slate-200 shadow-lg dark:bg-slate-800 dark:text-slate-100 dark:border-slate-700',
   }
   const sizeClasses = {
     sm: 'max-w-xs p-3',
     md: 'max-w-sm p-4',
     lg: 'max-w-md p-6',
-    xl: 'max-w-lg p-8';
+    xl: 'max-w-lg p-8',
   }
   function getTransition() {
     switch (animation) {
@@ -59,7 +59,7 @@
         return {
           y: side === 'top' ? 10 : side === 'bottom' ? -10 : 0,
           x: side === 'left' ? 10 : side === 'right' ? -10 : 0,
-          duration: 200;
+          duration: 200,
         }
       case 'scale':
         return { duration: 150, start: 0.95 }

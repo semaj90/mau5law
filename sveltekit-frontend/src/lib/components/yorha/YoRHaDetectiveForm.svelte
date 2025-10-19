@@ -168,7 +168,7 @@
     font-size: 0.875rem;
     color: #3d3d3d;
     transition: all 0.2s ease;
-    border-radius: 0;
+    border-radius: 0,
     width: 100%;
     box-sizing: border-box;
   }
@@ -179,7 +179,7 @@
   }
   .form-input::placeholder {
     color: #999;
-    opacity: 1;
+    opacity: 1,
   }
   textarea.form-input {
     resize: vertical;
@@ -214,7 +214,7 @@
     transform: translateY(-1px);
   }
   .submit-btn:disabled {
-    opacity: 0.6;
+    opacity: 0.6,
     cursor: not-allowed;
   }
   .submit-btn.yorha-btn-success {

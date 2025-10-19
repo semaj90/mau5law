@@ -38,7 +38,7 @@
       y: 350,
       connections: ['witness-statement'],
       description: 'CCTV footage from the main entrance',
-      icon: '📹';
+      icon: '📹',
     },
     {
       id: 'witness-statement',
@@ -49,7 +49,7 @@
       y: 410,
       connections: ['security-camera'],
       description: 'Detailed written statement from key witness',
-      icon: '📄';
+      icon: '📄',
     }
   ]);
   let caseInfo = $state<CaseInfo>({
@@ -71,7 +71,7 @@
       builders[item.id] = createEnhancedEvidenceCard({
         priority: item.status === 'active' ? 'high' : 'medium',
         interactive: true
-        webGpuAcceleration: true;
+        webGpuAcceleration: true,
       });
       return builder;
     }, {} as { [key: string]: any });
@@ -120,7 +120,7 @@
       y: Math.random() * 400 + 300,
       connections: [],
       description: 'Newly added evidence item',
-      icon: '📋';
+      icon: '📋',
     }
     evidenceItems.push(newEvidence);
     drawConnections();
@@ -282,13 +282,13 @@
   .case-items {
     position: absolute;
     top: 100%;
-    right: 0;
+    right: 0,
     background: rgba(0, 0, 0, 0.95);
     border: 2px solid #00ff41;
     border-radius: 4px;
     padding: 0.5rem;
     min-width: 300px;
-    z-index: 100;
+    z-index: 100,
   }
   .case-item {
     display: flex;
@@ -391,13 +391,13 @@
       linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
     background-size: 20px 20px;
-    opacity: 0.3;
+    opacity: 0.3,
   }
   .connection-canvas {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    z-index: 1;
+    z-index: 1,
   }
   /* Evidence Item Styles */
   .evidence-item {
@@ -409,7 +409,7 @@
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    z-index: 2;
+    z-index: 2,
   }
   .evidence-item:hover {
     transform: scale(1.05);
@@ -418,7 +418,7 @@
   .evidence-item.selected {
     border-color: #00ff41 !important;
     box-shadow: 0 0 30px rgba(0, 255, 65, 0.5);
-    z-index: 3;
+    z-index: 3,
   }
   .evidence-item.video {
     border-color: #3b82f6;
@@ -453,7 +453,7 @@
     font-weight: bold;
     color: #ffffff;
     margin-bottom: 0.5rem;
-    line-height: 1.2;
+    line-height: 1.2,
   }
   .evidence-description {
     font-size: 0.625rem;

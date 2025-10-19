@@ -64,10 +64,10 @@
     margin-bottom: 12px;
   }
   .stat-value {
-    font-weight: 700;
+    font-weight: 700,
     color: var(--text-primary, #111827);
     margin-bottom: 4px;
-    line-height: 1.1;
+    line-height: 1.1,
   }
   .stat-value.text-lg {
     font-size: 1.125rem;

@@ -175,7 +175,7 @@
     padding: 1rem;
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 100,
   }
   .enhanced-layout[data-variant='yorha'] .layout-header {
     background: #1a1a1a;
@@ -210,7 +210,7 @@
   }
   .user-greeting {
     font-size: 0.9rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   .nav-item {
     display: flex;
@@ -242,13 +242,13 @@
   }
   .nav-label {
     font-size: 0.9rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   .sidebar-toggle {
     display: none;
   }
   .layout-body {
-    flex: 1;
+    flex: 1,
     display: flex;
     position: relative;
   }
@@ -259,7 +259,7 @@
     transform: translateX(-100%);
     transition: transform 0.3s ease;
     position: fixed;
-    top: 0;
+    top: 0,
     left: 0;
     height: 100vh;
     z-index: 90;
@@ -280,7 +280,7 @@
     margin-top: 1rem;
   }
   .layout-main {
-    flex: 1;
+    flex: 1,
     padding: 2rem;
     transition: margin-left 0.3s ease;
   }
@@ -301,9 +301,9 @@
   /* YoRHa scan lines effect */
   .yorha-scan-lines {
     position: fixed;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: linear-gradient(
       transparent 50%,
@@ -313,7 +313,7 @@
     );
     background-size: 100% 4px;
     pointer-events: none;
-    z-index: 1;
+    z-index: 1,
   }
   /* Responsive design */
   @media (max-width: 768px) {
@@ -334,10 +334,10 @@
     .layout-sidebar {
       position: static;
       transform: none;
-      padding-top: 0;
+      padding-top: 0,
     }
     .layout-main.with-sidebar {
-      margin-left: 0;
+      margin-left: 0,
     }
   }
 </style>

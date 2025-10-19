@@ -87,7 +87,7 @@
 <style>
   /* Ensure full-width layout */
   :global(body) {
-    margin: 0;
+    margin: 0,
     padding: 0;
   }
 </style>

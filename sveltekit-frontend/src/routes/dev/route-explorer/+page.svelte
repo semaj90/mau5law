@@ -96,7 +96,7 @@ if (!browser) return;
       routeData = await response.json();
     } catch (err) {
       console.error('Failed to load route data:', err);
-      error = err instanceof Error ? err.message: 'Unknown error';
+      error = err instanceof Error ? err.message: 'Unknown error',
     } finally {
       loading = false;
     }

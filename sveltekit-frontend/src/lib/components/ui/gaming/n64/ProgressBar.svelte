@@ -400,12 +400,12 @@
   }
   .progress-value {
     font-family: 'Courier New', monospace;
-    opacity: 0.9;
+    opacity: 0.9,
   }
   .progress-description {
     color: rgba(255, 255, 255, 0.7);
     font-size: calc(var(--progress-font-size) * 0.85);
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .n64-progress {
     /* Base N64 progress styling */
@@ -471,9 +471,9 @@
   /* Texture streaming effect */
   .texture-stream {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: repeating-linear-gradient(
       45deg,
@@ -483,7 +483,7 @@
       rgba(255, 255, 255, 0.1) 8px
     );
     animation: textureStream 1s linear infinite;
-    opacity: 0.6;
+    opacity: 0.6,
   }
   @keyframes textureStream {
     0% { transform: translateX(-16px), }
@@ -492,9 +492,9 @@
   /* Bar lighting overlay */
   .bar-lighting {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: linear-gradient(
       to bottom,
@@ -521,7 +521,7 @@
     );
     border-radius: 2px;
     pointer-events: none;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   /* Progress glow effect */
   .progress-glow {
@@ -544,9 +544,9 @@
   /* Wave effect */
   .wave-effect {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: linear-gradient(
       90deg,
@@ -555,24 +555,24 @@
       transparent 100%
     );
     animation: waveProgress 2s ease-in-out infinite;
-    opacity: 0.6;
+    opacity: 0.6,
   }
   @keyframes waveProgress {
     0%, 100% {
       transform: translateX(-100%);
-      opacity: 0;
+      opacity: 0,
     }
     50% {
       transform: translateX(0%);
-      opacity: 0.6;
+      opacity: 0.6,
     }
   }
   /* Progress particles */
   .progress-particles {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     pointer-events: none;
     overflow: hidden;
@@ -591,7 +591,7 @@
   .progress-particles::before {
     top: 30%;
     left: 20%;
-    animation-delay: 0;
+    animation-delay: 0,
   }
   .progress-particles::after {
     top: 70%;
@@ -601,23 +601,23 @@
   @keyframes floatProgressParticles {
     0% {
       transform: translateY(0px) scale(0);
-      opacity: 0;
+      opacity: 0,
     }
     50% {
       transform: translateY(-8px) scale(1);
-      opacity: 1;
+      opacity: 1,
     }
     100% {
       transform: translateY(-16px) scale(0);
-      opacity: 0;
+      opacity: 0,
     }
   }
   /* Track fog effect */
   .track-fog {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: radial-gradient(
       ellipse at center,
@@ -634,7 +634,7 @@
     right: 8px;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 10;
+    z-index: 10,
   }
   .n64-spinner {
     width: calc(var(--progress-height) * 0.6);
@@ -654,7 +654,7 @@
     font-size: var(--progress-font-size);
     text-align: right;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-    opacity: 0.9;
+    opacity: 0.9,
   }
   /* State variations */
   .n64-progress.complete {
@@ -672,7 +672,7 @@
     }
   }
   .n64-progress.disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     filter: grayscale(0.8);
   }
   .n64-progress.disabled .progress-bar {

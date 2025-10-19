@@ -59,7 +59,7 @@ https://svelte.dev/e/js_parse_error -->
     onchange,
     onfocus,
     onblur,
-    ...restProp;
+    ...restProp
   }: Props = $props();
   // UnoCSS-based input variants
   const inputVariants = cva(
@@ -73,24 +73,24 @@ https://svelte.dev/e/js_parse_error -->
           filled: 'border-transparent bg-gray-100 focus-visible:bg-white focus-visible:border-primary-500 dark:bg-gray-800 dark:focus-visible:bg-gray-900',
           ghost: 'border-transparent bg-transparent focus-visible:border-gray-300 focus-visible:bg-gray-50 dark:focus-visible:border-gray-600 dark:focus-visible:bg-gray-800',
           yorha: 'border-2 border-yellow-400/60 bg-black/90 text-yellow-400 placeholder:text-yellow-400/60 focus-visible:border-yellow-400 focus-visible:shadow-lg focus-visible:shadow-yellow-400/20 font-mono',
-          legal: 'border-2 border-blue-300 bg-blue-50 focus-visible:border-blue-500 focus-visible:ring-blue-500/20 dark:bg-blue-950 dark:border-blue-700';
+          legal: 'border-2 border-blue-300 bg-blue-50 focus-visible:border-blue-500 focus-visible:ring-blue-500/20 dark:bg-blue-950 dark:border-blue-700',
         },
         size: {
           sm: 'h-8 px-3 py-1 text-sm rounded',
           default: 'h-10 px-3 py-2 text-sm rounded-md',
-          lg: 'h-12 px-4 py-3 text-base rounded-lg';
+          lg: 'h-12 px-4 py-3 text-base rounded-lg',
         },
         state: {
           default: '',
           error: 'border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/20',
           warning: 'border-yellow-500 focus-visible:border-yellow-500 focus-visible:ring-yellow-500/20',
-          success: 'border-green-500 focus-visible:border-green-500 focus-visible:ring-green-500/20';
+          success: 'border-green-500 focus-visible:border-green-500 focus-visible:ring-green-500/20',
         }
       },
       defaultVariants: {
         variant: 'default',
         size: 'default',
-        state: 'default';
+        state: 'default',
       }
     }
   );
@@ -101,7 +101,7 @@ https://svelte.dev/e/js_parse_error -->
         default: 'text-gray-600 dark:text-gray-400',
         error: 'text-red-600 dark:text-red-400',
         warning: 'text-yellow-600 dark:text-yellow-400',
-        success: 'text-green-600 dark:text-green-400';
+        success: 'text-green-600 dark:text-green-400',
       }
     }
   });

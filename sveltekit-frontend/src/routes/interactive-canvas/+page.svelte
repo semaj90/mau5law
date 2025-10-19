@@ -261,13 +261,13 @@ https://svelte.dev/e/js_parse_error -->
 }
 	.canvas-layout.fullscreen {
 		position: fixed;
-		top: 0;
+		top: 0,
 		left: 0;
-		z-index: 9999;
+		z-index: 9999,
 }
 	.main-content {
 		display: flex;
-		flex: 1;
+		flex: 1,
 		overflow: hidden;
 		position: relative;
 }
@@ -277,10 +277,10 @@ https://svelte.dev/e/js_parse_error -->
 	.toolbar-container {
 		border-bottom: 1px solid var(--border-light);
 		background: var(--bg-secondary);
-		z-index: 10;
+		z-index: 10,
 }
 	.canvas-editor-container {
-		flex: 1;
+		flex: 1,
 		position: relative;
 		overflow: hidden;
 }
@@ -291,11 +291,11 @@ https://svelte.dev/e/js_parse_error -->
 		right: 20px;
 		z-index: 5;
 		max-width: 400px;
-		opacity: 0.9;
+		opacity: 0.9,
 		transition: opacity 0.3s ease;
 }
 	.upload-zone:hover {
-		opacity: 1;
+		opacity: 1,
 }
 	/* Upload Progress Styles */
 	.upload-progress-container {
@@ -401,7 +401,7 @@ https://svelte.dev/e/js_parse_error -->
 }
 	.hash-label {
 		color: var(--text-muted);
-		font-weight: 500;
+		font-weight: 500,
 }
 	.hash-value {
 		font-family: monospace;
@@ -426,6 +426,6 @@ https://svelte.dev/e/js_parse_error -->
 	/* Responsive Design */
 	@media (max-width: 768px) {
 		.canvas-container.sidebar-open {
-			margin-left: 0;
+			margin-left: 0,
 }}
 </style>

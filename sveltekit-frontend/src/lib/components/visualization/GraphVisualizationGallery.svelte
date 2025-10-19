@@ -477,9 +477,9 @@ generateVisualizationsForAllAlgorithms()}
   }
   .item-overlay {
     position: absolute;
-    bottom: 0;
+    bottom: 0,
     left: 0;
-    right: 0;
+    right: 0,
     background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
     color: white;
     padding: 1rem;
@@ -520,7 +520,7 @@ generateVisualizationsForAllAlgorithms()}
   .modal-overlay {
     position: fixed;
 d;
-    top: 0;
+    top: 0,
     left: 0;
     width: 100%;
     height: 100%;
@@ -528,7 +528,7 @@ d;
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 1000,
     padding: 2rem;
   }
   .modal-content {
@@ -543,7 +543,7 @@ d;
     position: absolute;
     top: 1rem;
     right: 1rem;
-    z-index: 1001;
+    z-index: 1001,
     width: 40px;
     height: 40px;
     border-radius: 50%;

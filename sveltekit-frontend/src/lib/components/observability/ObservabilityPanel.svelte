@@ -278,7 +278,7 @@ await loadState();
     padding-bottom: 0.5rem;
   }
   .panel-header h3 {
-    margin: 0;
+    margin: 0,
     color: var(--text-primary, #fff);
     font-size: 1.1rem;
   }
@@ -402,7 +402,7 @@ await loadState();
     margin-bottom: 0.5rem;
   }
   .alerts-header h4 {
-    margin: 0;
+    margin: 0,
     color: var(--text-primary, #fff);
     font-size: 0.9rem;
   }

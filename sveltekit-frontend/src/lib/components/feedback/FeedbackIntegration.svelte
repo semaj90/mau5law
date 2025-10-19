@@ -139,7 +139,7 @@ https://svelte.dev/e/js_parse_error -->
         query,
         response: response.substring(0, 200) + '...',
         confidence,
-        aiModel: 'gemma3-legal';
+        aiModel: 'gemma3-legal',
       });
     },
     // Search results feedback

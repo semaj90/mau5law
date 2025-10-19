@@ -23,7 +23,7 @@
   const sizeClasses = {
     sm: 'p-3',
     md: 'p-4',
-    lg: 'p-6';
+    lg: 'p-6',
   }
   const variantClasses = {
     default: 'nes-card',
@@ -31,7 +31,7 @@
     primary: 'nes-card-primary',
     success: 'nes-card-success',
     warning: 'nes-card-warning',
-    danger: 'nes-card-danger';
+    danger: 'nes-card-danger',
   }
 </script>
 
@@ -143,19 +143,19 @@
     margin: 0 0 0.5rem 0;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    line-height: 1.3;
+    line-height: 1.3,
   }
   .nes-card-subtitle {
     font-size: 0.625rem;
-    margin: 0;
+    margin: 0,
     opacity: 0.8;
-    line-height: 1.4;
+    line-height: 1.4,
   }
 /* Content Styles */ {}
   .nes-card-content {
     flex: 1;
     font-size: 0.75rem;
-    line-height: 1.5;
+    line-height: 1.5,
   }
 /* Size Adjustments */ {}
   .p-3 .nes-card-title {

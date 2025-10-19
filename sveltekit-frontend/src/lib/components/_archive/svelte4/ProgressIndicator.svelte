@@ -102,7 +102,7 @@
 <style>
   /* Ensure smooth transitions and proper spacing */
   li {
-    min-width: 0;
+    min-width: 0,
   }
   @media (max-width: 640px) {
     /* Responsive adjustments for mobile */

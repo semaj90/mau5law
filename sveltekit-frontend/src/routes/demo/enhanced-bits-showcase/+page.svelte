@@ -347,7 +347,7 @@
   }
   .title-section h1 {
     font-size: 2.5rem;
-    font-weight: 800;
+    font-weight: 800,
     margin: 0 0 0.5rem 0;
     background: linear-gradient(45deg, #4a90e2, #8e44ad);
     background-clip: text;
@@ -357,7 +357,7 @@
   .demo-subtitle {
     font-size: 1.125rem;
     color: var(--color-text-secondary, #6b7280);
-    margin: 0;
+    margin: 0,
   }
   .header-controls {
     display: flex;
@@ -386,7 +386,7 @@
     color: var(--color-text-secondary, #6b7280);
     cursor: pointer;
     border-radius: 0.5rem;
-    font-weight: 500;
+    font-weight: 500,
     transition: all 0.2s ease;
     white-space: nowrap;
   }
@@ -433,12 +433,12 @@
   .feature-item h3 {
     margin: 0 0 0.5rem 0;
     font-size: 1.125rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .feature-item p {
-    margin: 0;
+    margin: 0,
     color: var(--color-text-secondary, #6b7280);
-    line-height: 1.5;
+    line-height: 1.5,
   }
   /* Button Demo */
   .button-grid {
@@ -544,7 +544,7 @@
   .example-section h4 {
     margin: 0 0 1rem 0;
     font-size: 1.125rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .mixed-layout {
     max-width: 600px;

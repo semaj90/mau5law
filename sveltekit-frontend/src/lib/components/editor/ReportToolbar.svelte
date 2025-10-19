@@ -194,7 +194,7 @@
     min-height: 3rem;
     position: sticky;
     top: 0;
-    z-index: 40;
+    z-index: 40,
   }
   .menu-bar {
     display: flex;
@@ -224,7 +224,7 @@
     border-radius: 0.5rem;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     padding: 0.5rem;
-    z-index: 50;
+    z-index: 50,
   }
   .dropdown-item {
     display: flex;
@@ -253,7 +253,7 @@
     margin-left: auto;
     font-size: 0.75rem;
     color: #6b7280;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .quick-actions {
     display: flex;
@@ -294,11 +294,11 @@
     color: #6b7280;
   }
   .word-count {
-    font-weight: 500;
+    font-weight: 500,
   }
   .unsaved-indicator {
     color: #ef4444;
-    font-weight: 500;
+    font-weight: 500,
   }
   .saved-indicator {
     color: #10b981;

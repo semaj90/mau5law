@@ -111,7 +111,7 @@ https://svelte.dev/e/js_parse_error -->
         context: 'document_detail_load',
         documentId: docId;
         severity: 'medium',
-        category: 'ui';
+        category: 'ui',
       });
     } finally {
       loading = false;
@@ -173,7 +173,7 @@ https://svelte.dev/e/js_parse_error -->
       statusCode: 200,
       responseSize: JSON.stringify(length),
       processingTime: serverTime
-      success: true;
+      success: true,
     });
     // Emit events for graph updates
     ondispatch?.({ documentId: docId, data: cacheData });
@@ -207,7 +207,7 @@ https://svelte.dev/e/js_parse_error -->
             gpuAnalysis: data.gpu_analysis,
             metadata: data.enhanced_metadata,
             cached_at: Date.now(),
-            cache_source: 'background_refresh';
+            cache_source: 'background_refresh',
           }
           await db.setCache(`document_detail_${docId}`, cacheData, 5 * 60 * 1000);
         }

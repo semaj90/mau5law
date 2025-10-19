@@ -58,7 +58,7 @@ https://svelte.dev/e/js_parse_error -->
     border-color: #2b6cb0;
   }
   .n64-textfield[disabled] {
-    opacity: 0.6;
+    opacity: 0.6,
     cursor: not-allowed;
   }
 </style>

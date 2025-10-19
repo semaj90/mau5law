@@ -32,6 +32,6 @@
   }
   .value.empty {
     color: var(--nes-muted, #6c757d);
-    font-weight: 600;
+    font-weight: 600,
   }
 </style>

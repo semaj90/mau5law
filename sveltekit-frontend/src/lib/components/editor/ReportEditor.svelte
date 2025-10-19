@@ -217,7 +217,8 @@ https://svelte.dev/e/js_parse_error -->
                 gutter={12}
                 let:item
               >
-                <EvidenceCardPermissive // CHANGED: Use permissive type
+                <!-- CHANGED: Use permissive type -->
+                <EvidenceCardPermissive
                   evidence={item}
                   view={handleViewEvidence}
                   edit={handleEditEvidence}
@@ -230,7 +231,8 @@ https://svelte.dev/e/js_parse_error -->
           {:else}
             <div>
               {#each evidenceSearchResults as evidence (evidence.id)}
-                <EvidenceCardPermissive // CHANGED: Use permissive type
+                <!-- CHANGED: Use permissive type -->
+                <EvidenceCardPermissive
                   {evidence}
                   view={handleViewEvidence}
                   edit={handleEditEvidence}
@@ -413,138 +415,22 @@ https://svelte.dev/e/js_parse_error -->
     background: #ffffff;
     transition: all 0.3s ease;
   }
-  .report-editor.fullscreen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 9999;
-  }
+
   .editor-toolbar {
-    flex-shrink: 0;
-    border-bottom: 1px solid #e2e8f0;
-  }
-  .editor-content {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-  }
-  .editor-sidebar {
-    flex-shrink: 0;
-    background: #f8fafc;
-    border-right: 1px solid #e2e8f0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  .sidebar-section {
-    padding: 1rem;
-    border-bottom: 1px solid #e2e8f0;
-  }
-  .section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.75rem;
-  }
-  .section-header h3 {
-    margin: 0;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #374151;
-  }
-  .add-evidence-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.75rem;
-    height: 1.75rem;
-    border: none;
-    background: #3b82f6;
-    color: white;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    transition: background-color 0.15s ease;
-  }
-  .add-evidence-btn:hover {
-    background: #2563eb;
-  }
-  .evidence-section {
-    flex: 1;
-    overflow-y: auto;
-  }
-  .evidence-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-  .empty-evidence {
-    text-align: center;
-    padding: 2rem 1rem;
-    color: #6b7280;
-  }
-  .empty-evidence p {
-    margin: 0 0 0.25rem;
-    font-weight: 500;
-  }
-  .empty-evidence small {
-    font-size: 0.75rem;
-    opacity: 0.8;
-  }
-  .stats-section {
-    flex-shrink: 0;
-    background: #ffffff;
-  }
-  .stats-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-  }
-  .stat-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-  .stat-label {
-    font-size: 0.75rem;
-    color: #6b7280;
-    font-weight: 500;
-  }
-  .stat-value {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #111827;
-  }
-  .stat-value.status-draft {
-    color: #3b82f6;
-  }
-  .stat-value.status-review {
-    color: #f59e0b;
-  }
-  .stat-value.status-final {
-    color: #10b981;
-  }
-  .editor-main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  .editor-header {
-    display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 1rem;
     border-bottom: 1px solid #e2e8f0;
     background: #ffffff;
   }
+
   .editor-title-section {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     flex: 1;
   }
+
   .sidebar-toggle {
     display: flex;
     align-items: center;
@@ -558,10 +444,12 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     transition: all 0.15s ease;
   }
+
   .sidebar-toggle:hover {
     background: #f3f4f6;
     color: #3b82f6;
   }
+
   .report-title-input {
     flex: 1;
     max-width: 30rem;
@@ -574,16 +462,19 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 0.375rem;
     transition: border-color 0.15s ease;
   }
+
   .report-title-input:focus {
     outline: none;
     border-color: #3b82f6;
     background: #ffffff;
   }
+
   .editor-actions {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
+
   .layout-toggle,
   .fullscreen-toggle,
   .settings-btn {
@@ -599,17 +490,20 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     transition: all 0.15s ease;
   }
+
   .layout-toggle:hover,
   .fullscreen-toggle:hover,
   .settings-btn:hover {
     background: #f3f4f6;
     color: #3b82f6;
   }
+
   .editor-wrapper {
     flex: 1;
     overflow: hidden;
     padding: 1rem;
   }
+
   .evidence-panel {
     width: 20rem;
     background: #f8fafc;
@@ -617,6 +511,7 @@ https://svelte.dev/e/js_parse_error -->
     display: flex;
     flex-direction: column;
   }
+
   .panel-header {
     display: flex;
     align-items: center;
@@ -624,33 +519,40 @@ https://svelte.dev/e/js_parse_error -->
     padding: 1rem;
     border-bottom: 1px solid #e2e8f0;
   }
+
   .panel-header h3 {
     margin: 0;
     font-size: 1rem;
     font-weight: 600;
     color: #374151;
   }
+
   .evidence-grid-panel {
     flex: 1;
     overflow-y: auto;
     padding: 1rem;
   }
+
   /* Layout variations */
   .layout-single .evidence-panel {
     display: none;
   }
+
   .layout-dual .editor-sidebar {
     width: 16rem !important;
   }
+
   .layout-masonry .evidence-section {
     padding: 0.5rem;
   }
+
   /* Modal content */
   .settings-form {
     padding: 1rem;
     text-align: center;
     color: #6b7280;
   }
+
   /* Responsive design */
   @media (max-width: 1024px) {
     .editor-sidebar {
@@ -660,6 +562,7 @@ https://svelte.dev/e/js_parse_error -->
       width: 16rem;
     }
   }
+
   @media (max-width: 768px) {
     .layout-dual .evidence-panel {
       display: none;

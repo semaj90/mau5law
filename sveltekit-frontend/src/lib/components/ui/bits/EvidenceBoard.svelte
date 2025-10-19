@@ -100,25 +100,25 @@
       background: 'bg-gray-50 dark:bg-gray-900',
       grid: 'opacity-20',
       item: 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100',
-      connection: 'stroke-gray-400 dark:stroke-gray-500';
+      connection: 'stroke-gray-400 dark:stroke-gray-500',
     },
     legal: {
       background: 'bg-slate-50 dark:bg-slate-900',
       grid: 'opacity-20',
       item: 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100',
-      connection: 'stroke-slate-400 dark:stroke-slate-500';
+      connection: 'stroke-slate-400 dark:stroke-slate-500',
     },
     gaming: {
       background: 'bg-black',
       grid: 'opacity-30 stroke-green-400',
       item: 'border-green-400 bg-black text-green-400 shadow-[0_0_15px_rgba(0,255,65,0.3)]',
-      connection: 'stroke-green-400';
+      connection: 'stroke-green-400',
     },
     yorha: {
       background: 'bg-black',
       grid: 'opacity-40 stroke-green-400',
       item: 'border-2 border-green-400 bg-black text-green-400 shadow-[0_0_20px_rgba(0,255,65,0.4)] font-mono',
-      connection: 'stroke-green-400 stroke-2';
+      connection: 'stroke-green-400 stroke-2',
     }
   }
   function getItemIcon(type: EvidenceItem['type']): string {
@@ -128,7 +128,7 @@
       video: '🎥',
       audio: '🎵',
       note: '📝',
-      link: '🔗';
+      link: '🔗',
     }
     return icons[type];
   }
@@ -215,7 +215,7 @@
       position: ;
 { x: 50, y: 50 },
       size: { width: 200, height: 150 },
-      color: '#6b7280';
+      color: '#6b7280',
     }
     items = [...items, newItem];
     dispatch('itemAdded', { item: newItem });

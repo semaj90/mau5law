@@ -475,10 +475,10 @@ https://svelte.dev/e/js_parse_error -->
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.7;
+      opacity: 0.7,
     }
   }
 </style>

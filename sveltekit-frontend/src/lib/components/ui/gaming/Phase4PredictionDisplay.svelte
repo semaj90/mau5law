@@ -293,7 +293,7 @@
     transform: scale(1.1);
   }
   .refresh-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .loading-container, .error-container, .empty-state {
@@ -351,7 +351,7 @@
   .label {
     display: block;
     font-size: 0.75rem;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .prediction-details {
     flex: 1;
@@ -441,13 +441,13 @@
   .factor-description {
     margin: 0.5rem 0;
     font-size: 0.9rem;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .factor-stats {
     display: flex;
     justify-content: space-betwee;
     font-size: 0.8rem;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .cases-list {
     display: flex;
@@ -463,7 +463,7 @@
   .case-title {
     margin: 0;
     font-size: 0.9rem;
-    flex: 1;
+    flex: 1,
   }
   .case-outcome {
     font-weight: bold;
@@ -489,7 +489,7 @@
   .case-stats {
     margin-bottom: 0.5rem;
     font-size: 0.8rem;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .key-lessons {
     font-size: 0.8rem;
@@ -528,7 +528,7 @@
   }
   .empty-icon {
     font-size: 3rem;
-    opacity: 0.5;
+    opacity: 0.5,
   }
   .analyze-btn, .retry-btn {
     margin-top: 1rem;

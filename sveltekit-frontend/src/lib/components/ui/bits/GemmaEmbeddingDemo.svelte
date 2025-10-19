@@ -92,12 +92,12 @@
         error = workerError;
       } else {
         result = {
-          success: true;
+          success: true,
           embedding: Array.from(data.embedding),
           metadata: {
             dimensions: data.embedding.length,
             processingTime: data.processingTime,
-            source: 'wasm_worker';
+            source: 'wasm_worker',
           },
           responseTime: `${data.processingTime}ms`,
           timestamp: new Date().toISOString();
@@ -144,7 +144,7 @@
             timestamp: new Date().toISOString(),
             length: content.length,
             variant,
-            source: 'enhanced_bits_demo';
+            source: 'enhanced_bits_demo',
           }
         }),
       });
@@ -170,7 +170,7 @@
               content,
               embedding: data.embedding,
               metadata: result.metadata,
-              source: 'gemma_api';
+              source: 'gemma_api',
             }),
           });
         } catch (storeError) {

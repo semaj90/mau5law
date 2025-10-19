@@ -29,7 +29,7 @@ https://svelte.dev/e/js_parse_error -->
     footer,
     hoverable = false,
     interactive = false,
-    ...restProp;
+    ...restProp
   }: Props = $props();
   // UnoCSS-based card variants
   const cardVariants = cva(
@@ -43,25 +43,25 @@ https://svelte.dev/e/js_parse_error -->
           outlined: 'bg-transparent border-2 border-gray-300 dark:border-gray-600',
           filled: 'bg-gray-50 border-gray-200 dark:bg-gray-800 dark:border-gray-700',
           yorha: 'bg-black/90 border-2 border-yellow-400/60 shadow-lg shadow-yellow-400/10 backdrop-blur-sm',
-          glass: 'bg-white/80 border-white/20 backdrop-blur-md shadow-xl dark:bg-black/80 dark:border-white/10';
+          glass: 'bg-white/80 border-white/20 backdrop-blur-md shadow-xl dark:bg-black/80 dark:border-white/10',
         },
         size: {
           sm: 'max-w-sm',
           default: 'max-w-md',
           lg: 'max-w-lg',
-          xl: 'max-w-xl';
+          xl: 'max-w-xl',
         },
         padding: {
           none: 'p-0',
           sm: 'p-4',
           default: 'p-6',
-          lg: 'p-8';
+          lg: 'p-8',
         }
       },
       defaultVariants: {
         variant: 'default',
         size: 'default',
-        padding: 'default';
+        padding: 'default',
       }
     }
   );

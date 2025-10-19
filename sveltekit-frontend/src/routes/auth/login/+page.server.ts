@@ -1,42 +1,80 @@
 import type { PageServerLoad, Actions } from './$types.js';
 import { fail, redirect } from '@sveltejs/kit';
-export const load: PageServerLoad = async () => {
+import { auth } from '$lib/server/auth';
+import { Argon2id } from 'oslo/password';
+import { db } from '$lib/server/db/drizzle';
+import { users } from '$lib/server/db/schema';
+import { eq } from 'drizzle-orm';
+
+export const load: PageServerLoad = async (event) => {
+  // Redirect if already logged in
+  if (event.locals.user) {
+    throw redirect(302, '/yorha/dashboard');
+  }
   return {};
 };
+
 export const actions: Actions = {
   login: async ({ request, cookies }) => {
     const data = await request.formData();
     const email = data.get('email') as string;
     const password = data.get('password') as string;
+
     // Basic validation
     if (!email || !password) {
       return fail(400, { error: 'Email and password are required' });
     }
+
     try {
-      console.log('🔄 Demo login attempt for:', email);
-      // Demo authentication - allow specific credentials
-      if (email.toLowerCase() === 'admin@legal-ai.local' && password === 'admin123') {
-        // Set a simple session cookie for demo purposes
-        cookies.set('demo_session', 'authenticated', {
-          path: '/',
-          httpOnly: true,
-          secure: false, // Set to true in production with HTTPS
-          sameSite: 'lax',
-          maxAge: 60 * 60 * 24 * 30, // 30 days
-        });
-        console.log('✅ Demo login successful for:', email);
-        // Redirect to home page instead of missing dashboard
-        throw redirect(302, '/');
-      } else {
-        return fail(400, { error: 'Invalid credentials. Use admin@legal-ai.local / admin123' });
+      console.log('🔄 Production login attempt for:', email);
+
+      // Find user in database
+      const existingUser = await db
+        .select()
+        .from(users)
+        .where(eq(users.email, email.toLowerCase()))
+        .limit(1);
+
+      if (existingUser.length === 0 || !existingUser[0].hashedPassword) {
+        return fail(400, { error: 'Invalid email or password' });
       }
+
+      const user = existingUser[0];
+
+      // Verify password
+      const argon2id = new Argon2id();
+      const validPassword = await argon2id.verify(user.hashedPassword, password);
+
+      if (!validPassword) {
+        return fail(400, { error: 'Invalid email or password' });
+      }
+
+      // Check if user is active
+      if (!user.isActive) {
+        return fail(403, { error: 'Account is disabled. Please contact support.' });
+      }
+
+      // Create session
+      const session = await auth.createSession(user.id, {});
+      const sessionCookie = auth.createSessionCookie(session.id);
+
+      cookies.set(sessionCookie.name, sessionCookie.value, {
+        path: '.',
+        ...sessionCookie.attributes
+      });
+
+      console.log('✅ Production login successful for:', email);
+
+      // Redirect to dashboard
+      throw redirect(302, '/yorha/dashboard');
+
     } catch (error: any) {
       // Handle redirect properly - don't treat it as an error
       if (error.status === 302) {
         throw error;
       }
-      console.error('Login error:', error.message);
-      return fail(400, { error: error.message || 'Login failed' });
+      console.error('Login error:', error);
+      return fail(500, { error: 'An error occurred during login. Please try again.' });
     }
   },
 };

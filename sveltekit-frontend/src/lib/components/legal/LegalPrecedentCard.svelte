@@ -59,17 +59,17 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     binding: {
       label: 'Binding Precedent',
       class: 'bg-green-500/20 text-green-400 border-green-500/30',
-      priority: 1;
+      priority: 1,
     },
     persuasive: {
       label: 'Persuasive Authority',
       class: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-      priority: 2;
+      priority: 2,
     },
     distinguishable: {
       label: 'Distinguishable',
       class: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-      priority: 3;
+      priority: 3,
     }
   }
   // Jurisdiction configurations
@@ -96,7 +96,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric';
+      day: 'numeric',
     });
   }
   function getAgeInYears(date: Date): number {

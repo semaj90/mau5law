@@ -14,7 +14,7 @@
     consciousness = {
       level: 1,
       experience: 0,
-      awakening: 0.12;
+      awakening: 0.12,
     },
     width = 800,
     height = 400
@@ -31,19 +31,19 @@
     coherence: 0,
     entanglement: 0,
     collapsed: 0,
-    tunneling: 0;
+    tunneling: 0,
   });
   let consciousnessMetrics = $state({
     awareness: 0,
     activity: 0,
     selfAware: false
-    networkComplexity: 0;
+    networkComplexity: 0,
   });
   let realityMetrics = $state({
     stability: 1,
     glitchLevel: 0,
     temporalDistortion: 0,
-    paradoxes: 0;
+    paradoxes: 0,
   });
   let isInitialized = $state(false);
   let lastTime = $state(0);
@@ -76,9 +76,9 @@ await initializeQuantumVisualization();
       camera.position.set(0, 0, 8);
       // Setup renderer with WebGL2 for better performance
       renderer = new THREE.WebGLRenderer({
-        antialias: true;
+        antialias: true,
         alpha: false
-        powerPreference: 'high-performance';
+        powerPreference: 'high-performance',
       });
       renderer.setSize(width, height);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -95,8 +95,8 @@ await initializeQuantumVisualization();
           quantumCoherence: consciousness.awakening,
           entanglementStrength: 0.6,
           waveFunction: 'superposition',
-          uncertaintyPrinciple: true;
-          dimensions: 8;
+          uncertaintyPrinciple: true,
+          dimensions: 8,
         },
         consciousness: {
           awarenessLevel: consciousness.awakening,
@@ -398,9 +398,9 @@ await initializeQuantumVisualization();
   }
   .loading-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
@@ -452,7 +452,7 @@ await initializeQuantumVisualization();
     color: #aaa;
   }
   .metric-bar {
-    flex: 1;
+    flex: 1,
     height: 8px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;

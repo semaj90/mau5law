@@ -58,14 +58,14 @@
     total: 0,
     withEmbeddings: 0,
     withoutEmbeddings: 0,
-    percentage: 0;
+    percentage: 0,
   });
   let loading = $state({
     files: false
     upload: false
-    backfill: false;
+    backfill: false,
     search: false;
-    stats: false;
+    stats: false,
   });
   let searchQuery = $state('');
   let showSearchResults = $state(false);
@@ -179,7 +179,7 @@
     try {
       const params = new URLSearchParams({
         search: searchQuery;
-        limit: '10';
+        limit: '10',
       });
       if (caseId) params.set('case_id', caseId);
       // removed unused response assignment
@@ -218,7 +218,7 @@
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit';
+      minute: '2-digit',
     });
   }
   // Drag & drop handlers
@@ -521,19 +521,19 @@ fileInput?.click()}
   .stat-item::after {
     content:'';
     position: absolute;
-    inset:0;
+    inset:0,
     background:
       linear-gradient(120deg,
         transparent 0%,
         rgba(255 255 255 / 0.4) 40%,
         transparent 70%);
-    opacity: 0;
+    opacity: 0,
     transform: translateX(-30%);
     transition: opacity .6s, transform .6;
     pointer-events:none;
   }
   .stat-item:hover::after {
-    opacity:1;
+    opacity:1,
     transform: translateX(15%);
   }
   .similarity-score {
@@ -589,7 +589,7 @@ fileInput?.click()}
         transparent 6px 12px
       );
     mix-blend-mode: overlay;
-    opacity:0.25;
+    opacity:0.25,
   }
   .error-box::after {
     background:
@@ -603,12 +603,12 @@ fileInput?.click()}
   }
   .error-icon {
     font-size:1.35rem;
-    line-height: 1;
+    line-height: 1,
     filter: drop-shadow(0 0 4px rgba(239 68 68 / 0.6));
     animation: pulseErr 1.9s ease-in-out infinite;
   }
   .error-title {
-    font-weight: 600;
+    font-weight: 600,
     color:#991b1b;
     letter-spacing:.5px;
     text-shadow:0 0 4px rgba(239 68 68 / 0.35);
@@ -664,7 +664,7 @@ fileInput?.click()}
   .retro-scan::before {
     content:'';
     position: absolute;
-    inset:0;
+    inset:0,
     background:
       repeating-linear-gradient(
         to bottom,

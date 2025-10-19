@@ -308,7 +308,7 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.875rem;
   }
   .metric .value {
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
   }
   .metric .value.excellent {
@@ -362,20 +362,20 @@ https://svelte.dev/e/js_parse_error -->
     margin-bottom: 0.75rem;
   }
   .document-icon {
-    flex-shrink: 0;
+    flex-shrink: 0,
     width: 24px;
     height: 24px;
   }
   .document-title h3 {
     margin: 0;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #111827;
-    line-height: 1.25;
+    line-height: 1.25,
   }
   .status-indicator {
     margin-left: auto;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .document-metadata {
     display: flex;
@@ -391,7 +391,7 @@ https://svelte.dev/e/js_parse_error -->
   .risk-gauge .label {
     font-size: 0.75rem;
     color: #6b7280;
-    font-weight: 500;
+    font-weight: 500,
   }
   /* Hover Details (Advanced Patterns) */
   .hover-details {
@@ -411,7 +411,7 @@ https://svelte.dev/e/js_parse_error -->
   .similarity-graph .label {
     font-size: 0.75rem;
     color: #6b7280;
-    font-weight: 500;
+    font-weight: 500,
   }
   /* Debug Info */
   .debug-info {

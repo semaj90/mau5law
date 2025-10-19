@@ -197,11 +197,11 @@
 <style>
   .yorha-modal-backdrop {
 position: fixed;
-top: 0;
+top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
-    z-index: 10000;
+    z-index: 10000,
 display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(2px);
   }
@@ -237,7 +237,7 @@ position: relative;
 }
   .header-content {
     flex: 1;
-    min-width: 0;
+    min-width: 0,
   }
   .modal-title {
     color: var(--yorha-secondary, #ffd700);
@@ -271,7 +271,7 @@ width: 12px;
   }
   .status-text {
     font-size: 10px;
-    font-weight: 600;
+    font-weight: 600,
     color: var(--yorha-secondary, #ffd700);
 text-transform: uppercase; letter-spacing: 1px;
   }
@@ -281,7 +281,7 @@ text-transform: uppercase; letter-spacing: 1px;
 background: transparent; border: 2px solid var(--yorha-text-muted, #808080);
     color: var(--yorha-text-muted, #808080);
 cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .modal-close:hover {
     border-color: var(--yorha-danger, #ff0041);
@@ -291,7 +291,7 @@ cursor: pointer; display: flex; align-items: center; justify-content: center; tr
   }
   .close-icon {
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 700,
   }
 /* Content */ .modal-content {
     padding: 20px;
@@ -369,7 +369,7 @@ pointer-events: none overflow: hidden;
   .terminal-borders::before {
     content: "";
 position: absolute;
-inset: 0;
+inset: 0,
 background: linear-gradient( 45deg, transparent 49%, rgba(255, 215, 0, 0.1) 50%, transparent 51% );
     animation: scanlines 2s linear infinite;
   }

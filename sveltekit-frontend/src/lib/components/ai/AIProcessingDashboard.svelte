@@ -132,7 +132,7 @@ https://svelte.dev/e/js_parse_error -->
   			case 'embedding':
   				return {
   					embedding: Array(384).fill.map(() => Math.random() - 0.5),
-  					dimensions: 384;
+  					dimensions: 384,
   				}
   			case 'analysis':
   				return {

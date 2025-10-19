@@ -22,7 +22,7 @@
     icon,
     removable = false,
     onremove,
-    ...restProp;
+    ...restProp
   }: Props = $props();
   // UnoCSS-based badge variants
   const badgeVariants = cva(
@@ -41,17 +41,17 @@
           yorha: 'bg-black/90 text-yellow-400 border-2 border-yellow-400/60 rounded-none font-mono shadow-lg shadow-yellow-400/10',
           legal: 'bg-blue-50 text-blue-800 border-2 border-blue-300 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-700',
           evidence: 'bg-orange-50 text-orange-800 border-2 border-orange-300 dark:bg-orange-950 dark:text-orange-300 dark:border-orange-700',
-          caseItem: 'bg-green-50 text-green-800 border-2 border-green-300 dark:bg-green-950 dark:text-green-300 dark:border-green-700';
+          caseItem: 'bg-green-50 text-green-800 border-2 border-green-300 dark:bg-green-950 dark:text-green-300 dark:border-green-700',
         },
         size: {
           sm: 'text-xs px-2 py-1 h-5',
           default: 'text-sm px-2.5 py-1 h-6',
-          lg: 'text-sm px-3 py-1.5 h-7';
+          lg: 'text-sm px-3 py-1.5 h-7',
         }
       },
       defaultVariants: {
         variant: 'default',
-        size: 'default';
+        size: 'default',
       }
     }
   );
@@ -95,7 +95,7 @@
   .yorha-badge::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: -100%;
     width: 100%;
     height: 100%;
@@ -112,10 +112,10 @@
   @keyframes badge-pulse {
 0%, {}
     100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.7;
+      opacity: 0.7,
     }
   }
 /* Priority indicators */ {}

@@ -16,7 +16,7 @@ https://svelte.dev/e/bindable_invalid_location -->
     temperature = 0.7,
     maxTokens = 1000,
     // Lazy loading options
-    lazyOptions = ,
+    lazyOptions = {},
     // Visual props
     height = '600px',
     width = '100%',
@@ -133,7 +133,7 @@ https://svelte.dev/e/bindable_invalid_location -->
           technicalAnalysis: {
             fileIntegrity: 'Verified',
             metadata: 'No tampering detected',
-            forensicHash: 'SHA256-verified';
+            forensicHash: 'SHA256-verified',
           },
           relevanceScore: 0.89,
           recommendations: [
@@ -391,7 +391,7 @@ https://svelte.dev/e/bindable_invalid_location -->
   .progress-header h3 {
     margin: 0;
     font-size: 24px;
-    font-weight: 600;
+    font-weight: 600,
   }
   .progress-bar {
     width: 100%;
@@ -414,10 +414,10 @@ https://svelte.dev/e/bindable_invalid_location -->
     font-size: 14px;
   }
   .progress-step {
-    font-weight: 500;
+    font-weight: 500,
   }
   .progress-percent {
-    font-weight: 600;
+    font-weight: 600,
   }
   .analysis-meta {
     display: flex;
@@ -450,16 +450,16 @@ https://svelte.dev/e/bindable_invalid_location -->
     font-size: 24px;
   }
   .results-header h3 {
-    margin: 0;
+    margin: 0,
     flex: 1;
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 600,
   }
   .confidence-badge {
     padding: 4px 12px;
     border-radius: 12px;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 600,
     color: white;
   }
   .results-body {
@@ -475,12 +475,12 @@ https://svelte.dev/e/bindable_invalid_location -->
   .results-body h4 {
     margin: 0 0 12px 0;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 600,
     color: rgba(0, 0, 0, 0.8);
   }
   .results-body p {
     margin: 0;
-    line-height: 1.6;
+    line-height: 1.6,
     color: rgba(0, 0, 0, 0.7);
   }
   .results-body ul {
@@ -489,7 +489,7 @@ https://svelte.dev/e/bindable_invalid_location -->
   }
   .results-body li {
     margin-bottom: 8px;
-    line-height: 1.5;
+    line-height: 1.5,
     color: rgba(0, 0, 0, 0.7);
   }
   .analysis-metadata {
@@ -509,7 +509,7 @@ https://svelte.dev/e/bindable_invalid_location -->
   }
   .meta-label {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 600,
     color: rgba(0, 0, 0, 0.5);
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -536,7 +536,7 @@ https://svelte.dev/e/bindable_invalid_location -->
   }
   .brain-icon {
     font-size: 72px;
-    z-index: 2;
+    z-index: 2,
     position: relative;
   }
   .brain-waves {
@@ -555,21 +555,21 @@ https://svelte.dev/e/bindable_invalid_location -->
     height: 80px;
     top: 20px;
     left: 20px;
-    animation-delay: 0;
+    animation-delay: 0,
   }
   .wave-2 {
     width: 100px;
     height: 100px;
     top: 10px;
     left: 10px;
-    animation-delay: 0.5;
+    animation-delay: 0.5,
   }
   .wave-3 {
     width: 120px;
     height: 120px;
-    top: 0;
+    top: 0,
     left: 0;
-    animation-delay: 1;
+    animation-delay: 1,
   }
   .placeholder-text {
     text-align: center;
@@ -577,11 +577,11 @@ https://svelte.dev/e/bindable_invalid_location -->
   .placeholder-text h3 {
     margin: 0 0 8px 0;
     font-size: 20px;
-    font-weight: 600;
+    font-weight: 600,
     color: rgba(255, 255, 255, 0.9);
   }
   .placeholder-text p {
-    margin: 0;
+    margin: 0,
     color: rgba(255, 255, 255, 0.7);
     font-size: 14px;
   }
@@ -589,11 +589,11 @@ https://svelte.dev/e/bindable_invalid_location -->
   @keyframes brain-wave {
     0% {
       transform: scale(1);
-      opacity: 1;
+      opacity: 1,
     }
     100% {
       transform: scale(1.3);
-      opacity: 0;
+      opacity: 0,
     }
   }
   /* Responsive design */

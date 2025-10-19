@@ -265,21 +265,21 @@ https://svelte.dev/e/js_parse_error -->
   .nav-.active::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
     border-radius: inherit;
-    opacity: 0;
+    opacity: 0,
     animation: glow 2s ease-in-out infinite alternate;
   }
   @keyframes glow {
     from {
-      opacity: 0.3;
+      opacity: 0.3,
     }
     to {
-      opacity: 0.7;
+      opacity: 0.7,
     }
   }
   /* Responsive adjustments */

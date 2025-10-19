@@ -381,7 +381,7 @@
   padding: 0.15em 0.7em;
   border-radius: 9999px;
   font-size: 0.85em;
-  font-weight: 600;
+  font-weight: 600,
   background: #23272;
   color: #bcbcbc;
   border: 1px solid #bcbcbc;
@@ -394,7 +394,7 @@
 .nier-label {
   font-size: 0.9em;
   color: #bcbcbc;
-  font-weight: 500;
+  font-weight: 500,
 }
 .nier-input {
   background: #23272;
@@ -418,7 +418,7 @@
   border-radius: 0.5em;
   padding: 0.3em 1.1em;
   font-size: 1em;
-  font-weight: 600;
+  font-weight: 600,
   cursor: pointer;
   transition: background 0.2s, color 0.2s, border 0.2;
   display: inline-flex;

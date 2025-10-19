@@ -83,12 +83,12 @@
 <style>
   .boot-screen {
     position: fixed;
-    inset: 0;
+    inset: 0,
     background: linear-gradient(145deg, #000000 0%, #1a1a1a 50%, #000000 100%);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 1000,
     color: #ffffff;
     font-family: 'Courier New', monospace;
   }
@@ -118,7 +118,7 @@
     font-weight: bold;
     color: #00ff41;
     text-shadow: 0 0 15px #00ff41;
-    line-height: 1;
+    line-height: 1,
   }
   .logo-sub {
     font-size: 1rem;
@@ -179,7 +179,7 @@
     min-width: 2rem;
   }
   .message-text {
-    flex: 1;
+    flex: 1,
     color: #cccccc;
   }
   .boot-message.current .message-text {
@@ -200,7 +200,7 @@
   .system-info {
     font-size: 0.75rem;
     color: #666666;
-    line-height: 1.5;
+    line-height: 1.5,
   }
   @keyframes glow-pulse {
     0%,
@@ -218,17 +218,17 @@
   @keyframes loading-dots {
     0%,
     20% {
-      opacity: 0;
+      opacity: 0,
     }
     40% {
-      opacity: 1;
+      opacity: 1,
     }
     60% {
-      opacity: 1;
+      opacity: 1,
     }
     80%,
     100% {
-      opacity: 0;
+      opacity: 0,
     }
   }
   /* Responsive adjustments */

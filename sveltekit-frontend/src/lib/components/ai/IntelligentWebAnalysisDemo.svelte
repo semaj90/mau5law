@@ -63,7 +63,7 @@
     currentStep: '',
     progress: 0,
     elementsProcessed: 0,
-    chunksProcessed: 0;
+    chunksProcessed: 0,
   });
   $effect(() => {
     (async () => {
@@ -178,7 +178,7 @@ if (!browser) return;
       userAnalytics.interactionPatterns.clickHeatmap.push({
         x: e.clientX,
         y: e.clientY,
-        count: 1;
+        count: 1,
       });
       // Limit heatmap size
       if (userAnalytics.interactionPatterns.clickHeatmap.length > 100) {
@@ -238,7 +238,7 @@ if (!browser) return;
     if (!analysisResults) return;
     try {
       const dataBlob = new Blob([JSON.stringify(analysisResults, null, 2)], {
-        type: 'application/json';
+        type: 'application/json',
       });
       const url = URL.createObjectURL(dataBlob);
       const a = document.createElement('a');
@@ -272,7 +272,7 @@ if (!browser) return;
         body: JSON.stringify({,
           texts: testTexts;
           model: 'nomic-text',
-          source: 'batch_test';
+          source: 'batch_test',
         })
       });
       if (response.ok) {
@@ -508,7 +508,7 @@ if (!browser) return;
     border-radius: 2rem;
     background: #f3f4f6;
     color: #6b7280;
-    font-weight: 500;
+    font-weight: 500,
   }
   .status-bar.initialized {
     background: #d1fae5;
@@ -557,12 +557,12 @@ if (!browser) return;
     padding: 0.75rem 1rem;
     border: none;
     border-radius: 0.5rem;
-    font-weight: 500;
+    font-weight: 500,
     cursor: pointer;
     transition: all 0.2;
   }
   .controls button:disabled {
-    opacity: 0.6;
+    opacity: 0.6,
     cursor: not-allowed;
   }
   .controls button.primary {
@@ -591,7 +591,7 @@ if (!browser) return;
     margin-bottom: 0.75rem;
     color: #374151;
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .settings label {
     display: flex;
@@ -621,7 +621,7 @@ if (!browser) return;
   .progress-text {
     font-size: 0.875rem;
     color: #6b7280;
-    margin: 0;
+    margin: 0,
   }
   .metrics-grid {
     display: grid;
@@ -642,11 +642,11 @@ if (!browser) return;
     font-size: 0.75rem;
     color: #6b7280;
     text-transform: uppercase;
-    font-weight: 500;
+    font-weight: 500,
   }
   .metric-value {
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #1f2937;
   }
   .efficiency-metrics {
@@ -674,7 +674,7 @@ if (!browser) return;
     margin-bottom: 0.5rem;
     color: #374151;
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .interaction-stats,
   .typing-stats {
@@ -713,7 +713,7 @@ if (!browser) return;
     font-size: 0.875rem;
   }
   .chunk-index {
-    font-weight: 600;
+    font-weight: 600,
     color: #1f2937;
   }
   .chunk-type {
@@ -724,13 +724,13 @@ if (!browser) return;
   }
   .chunk-weight {
     color: #7c3aed;
-    font-weight: 500;
+    font-weight: 500,
   }
   .chunk-content {
     font-size: 0.875rem;
     color: #374151;
     margin: 0;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .logs-container {
     max-height: 300px;
@@ -744,7 +744,7 @@ if (!browser) return;
   .log-entry {
     color: #f3f4f6;
     margin-bottom: 0.25rem;
-    line-height: 1.3;
+    line-height: 1.3,
   }
   @keyframes pulse {
     0%, 100% { opacity: 1, }

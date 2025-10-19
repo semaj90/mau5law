@@ -54,7 +54,7 @@
     outline-offset: -2px;
   }
   .context-menu-item.disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
 </style>

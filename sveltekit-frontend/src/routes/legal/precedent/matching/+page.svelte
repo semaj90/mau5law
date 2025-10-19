@@ -47,7 +47,7 @@
     precedentDatabase: {
       totalCases: 2847592,
       indexed: 2847592,
-      lastUpdate: '2024-09-10';
+      lastUpdate: '2024-09-10',
     },
     aiConfidence: 0
   });

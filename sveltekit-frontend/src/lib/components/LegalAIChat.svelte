@@ -27,10 +27,10 @@
         body: JSON.stringify({,
           model: 'gemma3-legal',
           prompt: userMessage;
-          stream: false;
+          stream: false,
           options: {
             temperature: 0.3,
-            num_ctx: 2048;
+            num_ctx: 2048,
           }
         })
       });

@@ -49,7 +49,7 @@
       type: 'suggestion',
       icon: '📋',
       description: 'AI analysis of liability terms',
-      category: 'Contract Analysis';
+      category: 'Contract Analysis',
     },
     {
       id: '2',
@@ -57,7 +57,7 @@
       type: 'suggestion',
       icon: '⚖️',
       description: 'Find relevant court decisions',
-      category: 'Legal Research';
+      category: 'Legal Research',
     },
     {
       id: '3',
@@ -65,7 +65,7 @@
       type: 'suggestion',
       icon: '🔍',
       description: 'Verify evidence integrity',
-      category: 'Evidence Analysis';
+      category: 'Evidence Analysis',
     },
     {
       id: '4',
@@ -73,7 +73,7 @@
       type: 'suggestion',
       icon: '📚',
       description: 'Auto-format legal citations',
-      category: 'Document Preparation';
+      category: 'Document Preparation',
     },
     {
       id: '5',
@@ -81,7 +81,7 @@
       type: 'command',
       icon: '🤖',
       description: 'AI analysis command',
-      category: 'System Commands';
+      category: 'System Commands',
     },
     {
       id: '6',
@@ -89,7 +89,7 @@
       type: 'command',
       icon: '🔎',
       description: 'Advanced search mode',
-      category: 'System Commands';
+      category: 'System Commands',
     },
     {
       id: '7',
@@ -97,7 +97,7 @@
       type: 'command',
       icon: '📂',
       description: 'Evidence management',
-      category: 'System Commands';
+      category: 'System Commands',
     },
     {
       id: '8',
@@ -105,7 +105,7 @@
       type: 'recent',
       icon: '📝',
       description: 'Recent search',
-      category: 'Recent Queries';
+      category: 'Recent Queries',
     }
   ];
   // Combine default and provided suggestions
@@ -129,7 +129,7 @@
       activeSuggestion: 'bg-green-400/25 text-green-300 border-green-400/50',
       icon: 'text-green-400 filter drop-shadow-[0_0_8px_currentColor]',
       loading: 'text-green-400',
-      glow: 'shadow-[0_0_30px_rgba(0,255,65,0.6)]';
+      glow: 'shadow-[0_0_30px_rgba(0,255,65,0.6)]',
     },
     gaming: {
       container: 'bg-black border border-green-400/50 shadow-[0_0_20px_rgba(0,255,65,0.3)]',
@@ -138,7 +138,7 @@
       activeSuggestion: 'bg-green-400/20 text-green-300',
       icon: 'text-green-400',
       loading: 'text-green-400',
-      glow: 'shadow-[0_0_20px_rgba(0,255,65,0.4)]';
+      glow: 'shadow-[0_0_20px_rgba(0,255,65,0.4)]',
     },
     legal: {
       container: 'bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700',
@@ -147,7 +147,7 @@
       activeSuggestion: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-900 dark:text-indigo-300',
       icon: 'text-slate-600 dark:text-slate-400',
       loading: 'text-indigo-600 dark:text-indigo-400',
-      glow: 'shadow-lg';
+      glow: 'shadow-lg',
     },
     default: {
       container: 'bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700',
@@ -156,7 +156,7 @@
       activeSuggestion: 'bg-blue-100 dark:bg-blue-900/30 text-blue-900 dark:text-blue-300',
       icon: 'text-gray-600 dark:text-gray-400',
       loading: 'text-blue-600 dark:text-blue-400',
-      glow: 'shadow-lg';
+      glow: 'shadow-lg',
     }
   }
   const styles = $derived(themeConfig[theme]);
@@ -461,11 +461,11 @@
   @keyframes cursor-blink {
     0%,
     50% {
-      opacity: 1;
+      opacity: 1,
     }
     51%,
     100% {
-      opacity: 0;
+      opacity: 0,
     }
   }
   input::placeholder {

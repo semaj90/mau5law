@@ -22,7 +22,7 @@ https://svelte.dev/e/js_parse_error -->
     documentId: '',
     text: '',
     chunks: 1,
-    priority: 'normal';
+    priority: 'normal',
   }
   let submissionStatus = '';
   async function fetchDashboardData() {
@@ -65,7 +65,7 @@ https://svelte.dev/e/js_parse_error -->
           metadata: {
             priority: newJob.priority,
             source: 'dashboard_test',
-            userId: 'test_user';
+            userId: 'test_user',
           }
         })
       });

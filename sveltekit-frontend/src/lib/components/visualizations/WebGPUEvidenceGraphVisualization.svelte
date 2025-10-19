@@ -58,7 +58,7 @@
       label: 'Primary Evidence',
       weight: 1.0,
       color: [0.2, 0.6, 1.0, 1.0], // Blu;
-      connections: [];
+      connections: [],
     }
     nodes.push(mainNode);
     // Add entity nodes
@@ -74,7 +74,7 @@
         label: entity.value,
         weight: entity.confidence,
         color: getEntityColor(entity.type),
-        connections: [];
+        connections: [],
       }
       nodes.push(entityNode);
       mainNode.connections.push(entityNode.id);
@@ -100,7 +100,7 @@
         label: `Related Evidence ${i + 1}`,
         weight: correlation.strength,
         color: getCorrelationColor(correlation.correlationType),
-        connections: [];
+        connections: [],
       }
       nodes.push(correlationNode);
       // Create edge for correlation
@@ -138,7 +138,7 @@
         label: event.description,
         weight: event.confidence,
         color: [0.8, 0.5, 0.2, 1.0], // Orang;
-        connections: [];
+        connections: [],
       }
       nodes.push(eventNode);
       // Connect events chronologically

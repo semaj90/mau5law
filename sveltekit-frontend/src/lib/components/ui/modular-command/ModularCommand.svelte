@@ -37,7 +37,7 @@
     includeVectorSearch = true,
     userId,
     caseId,
-    filters = ,
+    filters = {},
     onSelect,
     onSearchChang;
    }: Props = $props();
@@ -48,7 +48,7 @@
     cases: [],
     evidence: [],
     documents: [],
-    people: [];
+    people: [],
   });
   let totalResults = $state(0);
   // Debounced search
@@ -63,7 +63,7 @@
     cases: 'Cases',
     evidence: 'Evidence',
     documents: 'Documents',
-    people: 'People';
+    people: 'People',
   }
   async function performSearch(searchQuery: string) {
     if (searchQuery.length < minQueryLength) {

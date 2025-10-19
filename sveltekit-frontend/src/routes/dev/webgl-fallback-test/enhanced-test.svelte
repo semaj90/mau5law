@@ -558,11 +558,11 @@ if (browser) {
   .header h1 {
     margin: 0 0 1rem 0;
     font-size: 2rem;
-    font-weight: 700;
+    font-weight: 700,
   }
   .header p {
     margin: 0.5rem 0;
-    opacity: 0.9;
+    opacity: 0.9,
   }
   .test-controls {
     margin: 2rem 0;
@@ -647,16 +647,16 @@ if (browser) {
   .result-card h3 {
     margin: 0 0 1rem 0;
     font-size: 1.25rem;
-    font-weight: 700;
+    font-weight: 700,
     color: #1f2937;
   }
   .status-success {
     color: #059669;
-    font-weight: 600;
+    font-weight: 600,
   }
   .status-error {
     color: #dc2626;
-    font-weight: 600;
+    font-weight: 600,
   }
   .performance-metric {
     margin: 0.5rem 0;
@@ -664,7 +664,7 @@ if (browser) {
   }
   .performance-highlight {
     font-size: 1.1rem;
-    font-weight: 700;
+    font-weight: 700,
   }
   .performance-note {
     font-size: 0.8rem;
@@ -684,11 +684,11 @@ if (browser) {
     margin: 0 0 1rem 0;
     color: #1e40af;
     font-size: 1.5rem;
-    font-weight: 700;
+    font-weight: 700,
   }
   .recommendation-text {
     font-size: 1.1rem;
-    line-height: 1.6;
+    line-height: 1.6,
     color: #1f2937;
   }
   .log-container {
@@ -736,7 +736,7 @@ if (browser) {
   }
   .info-value {
     font-size: 1.1rem;
-    font-weight: 700;
+    font-weight: 700,
     color: #1f2937;
     margin-top: 0.25rem;
   }

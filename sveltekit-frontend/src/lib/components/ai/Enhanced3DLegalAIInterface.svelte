@@ -57,7 +57,7 @@
     memoryUsage: 0,
     networkLatency: 0,
     cacheHitRate: 0,
-    aiResponseTime: 0;
+    aiResponseTime: 0,
   }
   // Bit-encoding streaming state
   let streamingChunks: Array = [];
@@ -250,7 +250,7 @@ if (!browser) return;
         tensorParallelSize: 1,
         quantization: 'int8',
         maxModelLength: 4096,
-        enableTensorCores: true;
+        enableTensorCores: true,
       });
       await vllmIntegration.initializeGPU();
       stages[2].progress = 1.0;
@@ -415,8 +415,8 @@ if (!browser) return;
           userId: 'demo_user',
           context: message;
           type: 'expert_insights',
-          useAI: true;
-          limit: 3;
+          useAI: true,
+          limit: 3,
         });
         if (recommendations.length > 0) {
           addSystemMessage(`Generated ${recommendations.length} AI recommendations`);
@@ -431,15 +431,15 @@ if (!browser) return;
           temperature: 0.1,
           maxTokens: 500,
           stream: true
-          useCache: true;
-          priority: 'high';
+          useCache: true,
+          priority: 'high',
         }
         // Add streaming chunk visualization
         streamingChunks.push({
           id: streamRequest.id,
           data: new ArrayBuffer(1024), // Mock data;
           progress: 0,
-          status: 'streaming';
+          status: 'streaming',
         });
         // Process streaming response
         const responseGenerator = vllmIntegration.streamWithEnhancedQUIC([streamRequest]);
@@ -648,7 +648,7 @@ if (!browser) return;
   }
   .visualization-canv.progress-canvas {
     grid-column: 1;
-    grid-row: 2;
+    grid-row: 2,
     border: 1px solid #444;
     border-radius: 4px;
     background: rgba(0, 0, 0, 0.6);
@@ -669,7 +669,7 @@ if (!browser) return;
     margin-bottom: 16px;
   }
   .status-header h3 {
-    margin: 0;
+    margin: 0,
     color: #00d4aa;
     font-size: 14px;
     text-transform: uppercase;
@@ -722,7 +722,7 @@ if (!browser) return;
     gap: 8px;
   }
   .progress-bar {
-    flex: 1;
+    flex: 1,
     height: 4px;
     background: #333;
     border-radius: 2px;
@@ -764,7 +764,7 @@ if (!browser) return;
   }
   .streaming-chunks {
     grid-column: 1 / 3;
-    grid-row: 3;
+    grid-row: 3,
     background: rgba(0, 0, 0, 0.7);
     border: 1px solid #333;
     border-radius: 8px;
@@ -807,7 +807,7 @@ if (!browser) return;
     color: #888;
   }
   .chunk-progress {
-    flex: 1;
+    flex: 1,
   }
   .chunk-progress-bar {
     width: 100%;
@@ -846,7 +846,7 @@ if (!browser) return;
     border-bottom: 1px solid #333;
   }
   .chat-header h3 {
-    margin: 0;
+    margin: 0,
     color: #00d4aa;
     font-size: 14px;
     text-transform: uppercase;
@@ -898,7 +898,7 @@ if (!browser) return;
   }
   .message-content {
     margin-bottom: 4px;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .message-time {
     font-size: 10px;
@@ -910,7 +910,7 @@ if (!browser) return;
     gap: 12px;
   }
   .chat-input input {
-    flex: 1;
+    flex: 1,
     padding: 10px 12px;
     background: rgba(0, 0, 0, 0.5);
     border: 1px solid #333;
@@ -1036,7 +1036,7 @@ if (!browser) return;
     }
     .visualization-canv.progress-canvas {
       grid-column: 1;
-      grid-row: 2;
+      grid-row: 2,
       height: 80px;
     }
     .status-panel {
@@ -1046,14 +1046,14 @@ if (!browser) return;
     }
     .streaming-chunks {
       grid-column: 1;
-      grid-row: 4;
+      grid-row: 4,
     }
     .chat-interface {
       grid-column: 1;
-      grid-row: 5;
+      grid-row: 5,
     }
     .recommendations-panel {
-      grid-column: 1;
+      grid-column: 1,
     }
   }
 </style>

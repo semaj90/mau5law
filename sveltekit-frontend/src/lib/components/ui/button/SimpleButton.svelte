@@ -28,7 +28,7 @@
     border: none;
     cursor: pointer;
     font-size: 1rem;
-    line-height: 1;
+    line-height: 1,
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -45,7 +45,7 @@
   }
 
   .btn:disabled {
-    opacity: 0.6;
+    opacity: 0.6,
     cursor: not-allowed;
   }
 </style>

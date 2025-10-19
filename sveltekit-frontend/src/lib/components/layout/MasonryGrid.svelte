@@ -168,16 +168,16 @@ https://svelte.dev/e/js_parse_error -->
     cursor: grabbing;
 }
   :global(.masonry-item.drag-shadow) {
-    opacity: 0.5;
+    opacity: 0.5,
     transform: scale(0.95);
   }
   :global(.masonry-item.drag-ghost) {
-    opacity: 0.3;
+    opacity: 0.3,
     transform: rotate(5deg);
   }
   /* Loading state */
     .masonry-grid:empty::before {
-    content: 'Loading...';
+    content: 'Loading...',
     display: block;
     text-align: center;
     color: var(--pico-muted-color, #6b7280);
@@ -191,11 +191,11 @@ https://svelte.dev/e/js_parse_error -->
   @keyframes slideInUp {
     from {
       transform: translateY(20px);
-      opacity: 0;
+      opacity: 0,
 }
     to {
       transform: translateY(0);
-      opacity: 1;
+      opacity: 1,
 }}
   /* Hover effects */
   :global($1) {

@@ -88,7 +88,7 @@
     success: '✓',
     warning: '⚠',
     error: '✕',
-    system: '◆';
+    system: '◆',
   }
   const notificationIcon = $derived(icon || iconMap[type])
 </script>
@@ -170,25 +170,25 @@
     position: relative;
   }
   .notification-icon {
-    flex-shrink: 0;
+    flex-shrink: 0,
     width: 20px;
     height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 16px;
-    font-weight: 700;
+    font-weight: 700,
     color: var(--yorha-secondary, #ffd700);
     border: 1px solid currentColor;
     background: var(--yorha-bg-primary, #0a0a0a);
   }
   .notification-text {
     flex: 1;
-    min-width: 0;
+    min-width: 0,
   }
   .notification-title {
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 700,
     color: var(--yorha-secondary, #ffd700);
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -278,11 +278,11 @@
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1;
+      opacity: 1,
       transform: scale(1);
     }
     50% {
-      opacity: 0.7;
+      opacity: 0.7,
       transform: scale(1.1);
     }
   }

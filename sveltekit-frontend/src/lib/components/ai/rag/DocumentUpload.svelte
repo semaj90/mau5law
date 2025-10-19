@@ -395,17 +395,17 @@
 
   .drop-zone-icon {
     font-size: 3rem;
-    opacity: 0.5;
+    opacity: 0.5,
   }
 
   .drop-zone-text h3 {
-    margin: 0;
+    margin: 0,
     color: var(--yorha-text-primary);
-    font-weight: 600;
+    font-weight: 600,
   }
 
   .drop-zone-text p {
-    margin: 0;
+    margin: 0,
     color: var(--yorha-text-muted);
     font-size: 0.9rem;
   }
@@ -417,7 +417,7 @@
   }
 
   .files-preview h4 {
-    margin: 0;
+    margin: 0,
     color: var(--yorha-text-primary);
   }
 
@@ -444,11 +444,11 @@
   }
 
   .file-info {
-    flex: 1;
+    flex: 1,
   }
 
   .file-name {
-    font-weight: 600;
+    font-weight: 600,
     color: var(--yorha-text-primary);
     margin-bottom: 0.25rem;
   }
@@ -468,7 +468,7 @@
   }
 
   .progress-bar {
-    flex: 1;
+    flex: 1,
     height: 6px;
     background: var(--yorha-bg-primary);
     border-radius: 3px;
@@ -504,7 +504,7 @@
   }
 
   .remove-file:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
 
@@ -577,7 +577,7 @@
   }
 
   .result-file {
-    font-weight: 600;
+    font-weight: 600,
     color: var(--yorha-text-primary);
     margin-bottom: 0.5rem;
   }

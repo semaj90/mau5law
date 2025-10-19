@@ -60,7 +60,7 @@
       const responseMessage = await aiAssistant.sendMessage(testCaseId, testQuery, undefined, {
         backend: method.options.useWebAssembly ? 'webasm' : 'ollama',
         useAcceleration: method.options.useAcceleration,
-        legalContext: 'Legal AI test query';
+        legalContext: 'Legal AI test query',
       });
       response = responseMessage.content;
       accelerationMetrics = responseMessage.metadata?.accelerationMetric;

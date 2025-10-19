@@ -378,7 +378,7 @@ https://svelte.dev/e/js_parse_error -->
     border-bottom: 2px solid #3b82f6;
   }
   .header-title h2 {
-    margin: 0;
+    margin: 0,
     color: #e2e8f0;
     font-size: 1.8rem;
   }
@@ -468,7 +468,7 @@ https://svelte.dev/e/js_parse_error -->
     color: #e2e8f0;
   }
   .grade-info p {
-    margin: 0;
+    margin: 0,
     color: #94a3b8;
   }
   .system-health {
@@ -510,7 +510,7 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 1.5rem;
   }
   .metric-header h3 {
-    margin: 0;
+    margin: 0,
     color: #e2e8f0;
     font-size: 1rem;
   }

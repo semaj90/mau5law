@@ -201,7 +201,7 @@ await loadCitations();
 			relevanceScore: 0
 		};
 	}
-  			relevanceScore: 0;
+  			relevanceScore: 0,
   		}
   	}
   	function hideAddCitationForm() {

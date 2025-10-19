@@ -40,12 +40,12 @@
   let sizeClasses = $derived({
     sm: 'text-sm p-3',
     md: 'text-base p-4',
-    lg: 'text-lg p-6';
+    lg: 'text-lg p-6',
   });
   let iconSize = $derived({
     sm: 'w-4 h-4',
     md: 'w-5 h-5',
-    lg: 'w-6 h-6';
+    lg: 'w-6 h-6',
   });
   function getOperationIcon(op: string) {
     switch (op) {
@@ -425,9 +425,9 @@
   }
   .loading-shimmer::after {
     position: absolute;
-    top: 0;
+    top: 0,
     right: 0;
-    bottom: 0;
+    bottom: 0,
     left: 0;
     transform: translateX(-100%);
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);

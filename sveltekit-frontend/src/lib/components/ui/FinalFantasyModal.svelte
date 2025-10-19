@@ -32,7 +32,7 @@
     small: 'w-80 h-64',
     medium: 'w-96 h-80',
     large: 'w-[32rem] h-96',
-    fullscreen: 'w-[90vw] h-[80vh]';
+    fullscreen: 'w-[90vw] h-[80vh]',
   }
   const typeColors = {
     menu: 'from-blue-900/90 to-blue-800/90',
@@ -40,12 +40,12 @@
     battle: 'from-red-900/90 to-red-800/90',
     shop: 'from-green-900/90 to-green-800/90',
     inventory: 'from-amber-900/90 to-amber-800/90',
-    status: 'from-cyan-900/90 to-cyan-800/90';
+    status: 'from-cyan-900/90 to-cyan-800/90',
   }
   const cornerClasses = {
     classic: 'ff-corner-classic',
     modern: 'ff-corner-modern',
-    hybrid: 'ff-corner-hybrid';
+    hybrid: 'ff-corner-hybrid',
   }
   function handleClose() {
     // ondispatch removed;
@@ -196,16 +196,16 @@ calc(100% - 12px) 100%, {}
   @keyframes ff-shimmer {
 0%, {}
     100% {
-      opacity: 0.8;
+      opacity: 0.8,
     }
     50% {
-      opacity: 1;
+      opacity: 1,
     }
   }
   .ff-corner-classic::after {
     content: '';
     position: absolute;
-    inset: 0;
+    inset: 0,
     background: linear-gradient(45deg, transparent 48%, rgba(255, 255, 255, 0.1) 50%, transparent 52%);
     animation: ff-shimmer 3s ease-in-out infinite;
   }

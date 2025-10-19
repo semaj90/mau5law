@@ -41,7 +41,7 @@ https://svelte.dev/e/props_duplicate -->
   let sizeClasses = $derived({
     sm: 'w-4 h-4',
     md: 'w-6 h-6',
-    lg: 'w-8 h-8';
+    lg: 'w-8 h-8',
   });
 </script>
 
@@ -108,7 +108,7 @@ https://svelte.dev/e/props_duplicate -->
     color: #d1d5db;
     border: none;
     background: transparent;
-    padding: 0;
+    padding: 0,
   }
   .star-button.active {
     color: #fbbf24;
@@ -120,6 +120,6 @@ https://svelte.dev/e/props_duplicate -->
     color: #fef3c7;
   }
   .star-button:disabled {
-    opacity: 0.7;
+    opacity: 0.7,
   }
 </style>

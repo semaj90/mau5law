@@ -15,7 +15,7 @@
   }
   let {
     variant = 'default',
-    size = 'md',
+    size = 'sm',
     className = '',
     loginText = 'Sign In',
     logoutText = 'Sign Out',
@@ -45,24 +45,24 @@
       </div>
     {/if}
     <Button class="bits-btn"
-      {variant}
-      {size}
-      onclick={handleLogout}
-      disabled={authStore.isLoading}
-      aria-label="Sign out"
-    >
-{logoutText}
+        variant={variant}
+        size={size}
+        onclick={handleLogout}
+        disabled={authStore.isLoading}
+        aria-label="Sign out"
+      >
+      {logoutText}
   </div>
 {:else}
   <Button
-    {variant}
-    {size}
+    variant={variant}
+    size={size}
     class={className}
     onclick={handleLogin}
     disabled={authStore.isLoading}
     aria-label="Sign in"
   >
-{loginText}
+    {loginText}
 {/if}
 <style>
   .auth-user-section {
@@ -77,7 +77,7 @@
     font-size: 0.875rem;
   }
   .user-name {
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
   }
   .user-role {

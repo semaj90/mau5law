@@ -54,22 +54,22 @@
     {
       value: 'case-analysis',
       label: '⚖️ Case Analysis',
-      description: 'Deep analysis of current case strategy and opportunities';
+      description: 'Deep analysis of current case strategy and opportunities',
     },
     {
       value: 'search-suggestion',
       label: '🔍 Search Optimization',
-      description: 'AI-powered search query suggestions and filters';
+      description: 'AI-powered search query suggestions and filters',
     },
     {
       value: 'workflow-optimization',
       label: '⚡ Workflow Efficiency',
-      description: 'Identify bottlenecks and optimization opportunities';
+      description: 'Identify bottlenecks and optimization opportunities',
     },
     {
       value: 'precedent-discovery',
       label: '📚 Precedent Discovery',
-      description: 'Find relevant precedents and emerging legal trends';
+      description: 'Find relevant precedents and emerging legal trends',
     }
   ] as const;
   onMount(async () => {
@@ -480,7 +480,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     gap: 1rem;
   }
   .query-input {
-    flex: 1;
+    flex: 1,
     padding: 0.75rem;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -497,7 +497,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     border: 1px solid rgba(138, 43, 226, 0.6);
     border-radius: 8px;
     color: #fff;
-    font-weight: 500;
+    font-weight: 500,
     cursor: pointer;
     transition: all 0.2;
     white-space: nowrap;
@@ -507,7 +507,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     transform: translateY(-1px);
   }
   .analyze-btn:disabled {
-    opacity: 0.6;
+    opacity: 0.6,
     cursor: not-allowed;
   }
   .ai-thinking {
@@ -528,7 +528,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     animation: pulse 2s infinite;
   }
   .thinking-header h3 {
-    margin: 0;
+    margin: 0,
     flex: 1;
     color: rgba(255, 255, 255, 0.9);
   }
@@ -574,7 +574,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     margin-bottom: 0.75rem;
   }
   .reasoning-header h3 {
-    margin: 0;
+    margin: 0,
     color: rgba(255, 255, 255, 0.9);
     font-size: 1.1rem;
   }
@@ -586,9 +586,9 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     font-weight: bold;
   }
   .reasoning-text {
-    margin: 0;
+    margin: 0,
     color: rgba(255, 255, 255, 0.8);
-    line-height: 1.5;
+    line-height: 1.5,
   }
   .recommendations-section,
   .actions-section,
@@ -628,19 +628,19 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     min-width: 2rem;
   }
   .rec-info {
-    flex: 1;
+    flex: 1,
   }
   .rec-title {
     margin: 0 0 0.5rem 0;
     color: rgba(255, 255, 255, 0.9);
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   .rec-description {
-    margin: 0;
+    margin: 0,
     color: rgba(255, 255, 255, 0.7);
     font-size: 0.9rem;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .rec-stats {
     display: flex;
@@ -728,13 +728,13 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     margin: 0 0 0.5rem 0;
     color: rgba(255, 255, 255, 0.9);
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   .action-description {
-    margin: 0;
+    margin: 0,
     color: rgba(255, 255, 255, 0.7);
     font-size: 0.9rem;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .action-meta {
     display: flex;
@@ -787,7 +787,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     transform: translateY(-1px);
   }
   .execute-btn:disabled {
-    opacity: 0.6;
+    opacity: 0.6,
     cursor: not-allowed;
   }
   .topics-tags {
@@ -821,7 +821,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   .empty-icon {
     font-size: 4rem;
     margin-bottom: 1rem;
-    opacity: 0.5;
+    opacity: 0.5,
   }
   .empty-state h3 {
     margin: 0 0 0.5rem 0;
@@ -830,7 +830,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   .empty-state p {
     margin: 0;
     max-width: 400px;
-    line-height: 1.5;
+    line-height: 1.5,
   }
   @keyframes spin {
     0% { transform: rotate(0deg), }

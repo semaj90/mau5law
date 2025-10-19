@@ -3,7 +3,7 @@
 /**
  * Development Startup Script
  * Legal AI Platform with NES Texture Streaming
- * 
+ *
  * Starts all services in development mode with hot reload and debugging
  */
 
@@ -20,10 +20,10 @@ class DevelopmentManager {
     this.healthChecks = new Map();
     this.startTime = Date.now();
     this.isShuttingDown = false;
-    
+
     // Load development environment
     this.loadEnvironment();
-    
+
     // Setup graceful shutdown
     this.setupGracefulShutdown();
   }
@@ -41,7 +41,7 @@ class DevelopmentManager {
           }
           return acc;
         }, {});
-      
+
       console.log('🔧 Development environment loaded');
     } catch (error) {
       console.error('⚠️ Could not load .env.development, using defaults');
@@ -126,11 +126,13 @@ class DevelopmentManager {
         'Full-Stack-Dev',
         'npm',
         ['run', 'dev:full'],
-        { 
+        {
           cwd: './sveltekit-frontend',
-          env: { 
+          env: {
             PORT: '5174',
-            REDIS_PASSWORD: process.env.REDIS_PASSWORD || 'redis',
+            // Ensure REDIS_PASSWORD and DEV_BYPASS_AUTH are explicitly forwarded to the frontend sub-process
+            REDIS_PASSWORD: process.env.REDIS_PASSWORD ?? 'redis',
+            DEV_BYPASS_AUTH: process.env.DEV_BYPASS_AUTH ?? 'true',
             NODE_ENV: 'development'
           }
         }
@@ -174,7 +176,7 @@ class DevelopmentManager {
         // Check NES API
         const nesResponse = await fetch('http://localhost:8097/api/health');
         const nesHealth = await nesResponse.json();
-        
+
         // Log development stats every 2 minutes
         if (Date.now() - this.startTime > 120000) {
           const memoryMB = (nesHealth.memory.heapUsed / 1024 / 1024).toFixed(1);

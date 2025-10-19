@@ -148,7 +148,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 /* Base container styling */ {}
     background-color: var(--container-bg);
     border: 2px solid var(--container-border);
-    border-radius: 0;
+    border-radius: 0,
     padding: var(--container-padding);
     color: var(--container-text);
 /* Typography */ {}
@@ -189,7 +189,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     z-index: 1;
 /* Ensure title has proper background */ {}
     border: 1px solid var(--container-border);
-    border-radius: 0;
+    border-radius: 0,
   }
   :global(.nes-8bit-container.is-rounded) {
     border-radius: 4px;
@@ -238,7 +238,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 /* Container content wrapper */ {}
   .container-content {
     position: relative;
-    z-index: 0;
+    z-index: 0,
   }
 /* Interactive container styles */ {}
   :global(.nes-8bit-container[role='button']) {
@@ -256,7 +256,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     transform: scale(0.99);
   }
   :global(.nes-8bit-container.disabled) {
-    opacity: 0.6;
+    opacity: 0.6,
     cursor: not-allowed;
     pointer-events: none;
   }
@@ -269,9 +269,9 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   :global($1) {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
 background: repeating-linear-gradient( {}
 0deg, {}
@@ -281,7 +281,7 @@ rgba(0, 0, 0, 0.1) 2px, {}
 rgba(0, 0, 0, 0.1) 4px {}
     );
     pointer-events: none;
-    z-index: 1;
+    z-index: 1,
   }
 /* CRT effect */ {}
   :global(.nes-8bit-container.enable-crt) {
@@ -298,10 +298,10 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
   }
 /* Content spacing */ {}
   .container-content > :global(*:first-child) {
-    margin-top: 0;
+    margin-top: 0,
   }
   .container-content > :global(*:last-child) {
-    margin-bottom: 0;
+    margin-bottom: 0,
   }
 /* Typography within containers */ {}
 :global(.nes-8bit-container h1), {}
@@ -333,7 +333,7 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
   }
   :global(.nes-8bit-container p) {
     margin: 0.5rem 0;
-    line-height: 1.6;
+    line-height: 1.6,
   }
 /* List styling */ {}
 :global(.nes-8bit-container ul), {}
@@ -343,7 +343,7 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
   }
   :global(.nes-8bit-container li) {
     margin: 0.25rem 0;
-    line-height: 1.4;
+    line-height: 1.4,
   }
 /* Code blocks */ {}
   :global(.nes-8bit-container code) {
@@ -363,7 +363,7 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
   :global(.nes-8bit-container pre code) {
     background: none;
     border: none;
-    padding: 0;
+    padding: 0,
   }
 /* Mobile optimizations */ {}
   @media (max-width: 480px) {

@@ -132,9 +132,9 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
   /* @unocss-include */
   .app-header {
     position: fixed;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     height: 60px;
     background: var(--bg-secondary);
     border-bottom: 1px solid var(--border-light);
@@ -153,14 +153,14 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
   .brand-section {
     display: flex;
     align-items: center;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .brand-button {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     padding: 0.5rem 1rem;
-    font-weight: 600;
+    font-weight: 600,
     color: var(--harvard-crimson);
     background: transparent;
     border: none;
@@ -173,13 +173,13 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
   }
   .brand-text {
     font-size: 1.1rem;
-    font-weight: 700;
+    font-weight: 700,
   }
   .main-nav {
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .nav-button {
     display: flex;
@@ -209,7 +209,7 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
   .user-section {
     display: flex;
     align-items: center;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .user-menu-container {
     position: relative;
@@ -250,7 +250,7 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     font-size: 0.875rem;
   }
   .user-name {
-    font-weight: 500;
+    font-weight: 500,
     color: var(--text-primary);
   }
   .user-menu {
@@ -303,11 +303,11 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
   }
   .menu-overlay {
     position: fixed;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
-    z-index: 999;
+    z-index: 999,
     background: transparent;
   }
   /* Responsive */
@@ -331,7 +331,7 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
   }
   @media (max-width: 480px) {
     .main-nav {
-      gap: 0;
+      gap: 0,
     }
     .search-section {
       max-width: 200px;

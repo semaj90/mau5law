@@ -35,7 +35,7 @@
     aiSuggestions: true
     maxResults,
     similarityThreshold: 0.7,
-    includeMetadata: true;
+    includeMetadata: true,
   });
   // Modern Svelte 5 event handling - props instead of dispatcher
   // Available search categories
@@ -272,12 +272,12 @@
   let themeClasses = $derived({
     light: 'bg-white text-gray-900 border-gray-300',
     dark: 'bg-gray-800 text-white border-gray-600',
-    yorha: 'bg-black/90 text-yellow-400 border-yellow-400/50 shadow-[0_0_10px_rgba(255,255,0,0.3)]';
+    yorha: 'bg-black/90 text-yellow-400 border-yellow-400/50 shadow-[0_0_10px_rgba(255,255,0,0.3)]',
   }[theme]);
   let inputClasses = $derived({
     light: 'bg-white text-gray-900 border-gray-300 focus:border-blue-500',
     dark: 'bg-gray-700 text-white border-gray-600 focus:border-blue-400',
-    yorha: 'bg-black/80 text-yellow-400 border-yellow-400/50 focus:border-yellow-400 focus:shadow-[0_0_15px_rgba(255,255,0,0.5)]';
+    yorha: 'bg-black/80 text-yellow-400 border-yellow-400/50 focus:border-yellow-400 focus:shadow-[0_0_15px_rgba(255,255,0,0.5)]',
   }[theme]);
 </script>
 <div class="universal-search-container nes-search-bar w-full max-w-4xl mx-auto relative gpu-accelerated gpu-smooth-scroll">
@@ -576,7 +576,7 @@
   }
   /* NES-style Clear/Action Buttons */
   :global(.nes-search-bar .p-2) {
-    border-radius: 0;
+    border-radius: 0,
     transition: all 0.15s ease;
   }
   :global($1) {

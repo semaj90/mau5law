@@ -390,7 +390,7 @@ if (!caseId) {
     border-radius: 0.375rem;
     text-decoration: none;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 500,
   }
   .error-container button:hover,
   .back-link:hover {
@@ -423,7 +423,7 @@ if (!caseId) {
     margin: 0 0 0.75rem 0;
     font-size: 1.75rem;
     color: #1e293b;
-    font-weight: 700;
+    font-weight: 700,
   }
   .case-details {
     display: flex;
@@ -433,7 +433,7 @@ if (!caseId) {
   }
   .case-title {
     font-size: 1.125rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
   }
   .case-number {
@@ -475,7 +475,7 @@ if (!caseId) {
   }
   .selection-count {
     color: #3b82f6;
-    font-weight: 600;
+    font-weight: 600,
   }
   .clear-btn {
     padding: 0.25rem 0.75rem;
@@ -544,11 +544,11 @@ if (!caseId) {
   }
   .stat-label {
     color: #6b7280;
-    font-weight: 500;
+    font-weight: 500,
   }
   .stat-value {
     color: #1e293b;
-    font-weight: 600;
+    font-weight: 600,
   }
   .organizer-main {
     grid-area: mai;
@@ -573,7 +573,7 @@ if (!caseId) {
   .sidebar-panel h3 {
     margin: 0 0 1rem 0;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #1e293b;
   }
   .selected-evidence-list {
@@ -593,7 +593,7 @@ if (!caseId) {
     border: 1px solid #e2e8f0;
   }
   .evidence-info {
-    flex: 1;
+    flex: 1,
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
@@ -601,14 +601,14 @@ if (!caseId) {
   .evidence-info h4 {
     margin: 0;
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #1e293b;
-    line-height: 1.2;
+    line-height: 1.2,
   }
   .evidence-type {
     font-size: 0.75rem;
     color: #3b82f6;
-    font-weight: 500;
+    font-weight: 500,
   }
   .selection-context {
     font-size: 0.7rem;
@@ -641,7 +641,7 @@ if (!caseId) {
     border-radius: 0.375rem;
     cursor: pointer;
     font-size: 0.75rem;
-    font-weight: 500;
+    font-weight: 500,
     transition: all 0.2;
   }
   .bulk-action-btn:hover {
@@ -670,7 +670,7 @@ if (!caseId) {
   }
   .history-mode {
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #1e293b;
   }
   .history-time,
@@ -708,7 +708,7 @@ if (!caseId) {
   }
   .stat-number {
     font-size: 1.5rem;
-    font-weight: 700;
+    font-weight: 700,
     color: #3b82f6;
   }
   .stat-description {

@@ -51,7 +51,7 @@
   }
 
   .legal-main {
-    flex: 1;
+    flex: 1,
     padding: 1.5rem;
     overflow-x: auto;
   }

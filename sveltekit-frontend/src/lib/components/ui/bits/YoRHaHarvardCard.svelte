@@ -108,17 +108,17 @@
   .yorha-harvard-card:before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     height: 2px;
     background: linear-gradient(90deg, var(--enhanced-accent), var(--enhanced-accent-secondary));
-    opacity: 0;
+    opacity: 0,
     transition: opacity 0.3s ease;
   }
 
   .yorha-harvard-card:hover:before {
-    opacity: 1;
+    opacity: 1,
   }
 
   .yorha-harvard-card--gaming {
@@ -137,7 +137,7 @@
     color: var(--yorha-matrix-green);
     font-family: var(--font-mono);
     border: 2px solid var(--enhanced-accent);
-    padding: 0;
+    padding: 0,
   }
 
   .yorha-harvard-card--legal {
@@ -171,14 +171,14 @@ var(--enhanced-accent) {}
     height: 30px;
     background: linear-gradient(45deg, var(--enhanced-accent), var(--enhanced-accent-secondary));
     clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-    opacity: 0.3;
+    opacity: 0.3,
   }
 
   .gaming-header-accent {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     height: 6px;
 background: linear-gradient( {}
 90deg, {}
@@ -233,7 +233,7 @@ var(--enhanced-accent) 100% {}
   .card-title {
     color: var(--enhanced-accent);
     font-size: 1.25rem;
-    font-weight: 700;
+    font-weight: 700,
     margin: 0 0 0.5rem 0;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -253,13 +253,13 @@ var(--enhanced-accent) 100% {}
   .card-subtitle {
     color: var(--enhanced-text-secondary);
     font-size: 0.9rem;
-    margin: 0;
+    margin: 0,
     opacity: 0.8;
   }
 
   .card-content {
     color: var(--enhanced-text-primary);
-    line-height: 1.6;
+    line-height: 1.6,
   }
 
   .yorha-harvard-card--terminal .card-content {
@@ -277,7 +277,7 @@ var(--enhanced-accent) 100% {}
     border-top: 1px solid var(--enhanced-border);
     font-size: 0.8rem;
     color: var(--enhanced-accent-secondary);
-    font-weight: 600;
+    font-weight: 600,
   }
 
   .harvard-shield {
@@ -307,9 +307,9 @@ var(--enhanced-accent) 100% {}
   .gaming-scan-lines:before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
 background: repeating-linear-gradient( {}
 0deg, {}
@@ -319,7 +319,7 @@ rgba(196, 30, 58, 0.05) 2px, {}
 rgba(196, 30, 58, 0.05) 4px {}
     );
     pointer-events: none;
-    z-index: 1;
+    z-index: 1,
   }
 
   .gaming-border {
@@ -341,7 +341,7 @@ var(--enhanced-accent-secondary), {}
 var(--enhanced-accent) {}
     );
     z-index: -1;
-    opacity: 0.2;
+    opacity: 0.2,
   }
 
   .harvard-glow {
@@ -354,11 +354,11 @@ var(--enhanced-accent) {}
 
   @keyframes pulse-glow {
     from {
-      opacity: 0.6;
+      opacity: 0.6,
       filter: brightness(1);
     }
     to {
-      opacity: 1;
+      opacity: 1,
       filter: brightness(1.2);
     }
   }

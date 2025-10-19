@@ -107,7 +107,7 @@
     font-size: 1.5rem;
     font-weight: bold;
     color: var(--nier-accent-warm);
-    margin: 0;
+    margin: 0,
   }
 
   .demo-badge {

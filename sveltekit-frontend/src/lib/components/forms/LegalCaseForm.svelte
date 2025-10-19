@@ -419,7 +419,7 @@
   }
   .form-title {
     font-size: 1.5rem;
-    font-weight: 600;
+    font-weight: 600,
     color: var(--legal-ai-text-primary, #f1f5f9);
   }
   .form-progress {
@@ -442,7 +442,7 @@
   .progress-text {
     font-size: 0.875rem;
     color: var(--legal-ai-text-secondary, #94a3b8);
-    font-weight: 500;
+    font-weight: 500,
   }
   .form-tabs {
     margin-bottom: 2rem;
@@ -464,7 +464,7 @@
   }
   .field-label {
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 600,
     color: var(--legal-ai-text-primary, #f1f5f9);
     margin-bottom: 0.5rem;
   }
@@ -494,7 +494,7 @@
   }
   .review-title {
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 600,
     color: var(--legal-ai-text-primary, #f1f5f9);
     margin-bottom: 1.5rem;
   }
@@ -520,7 +520,7 @@
   .review-item span {
     font-size: 0.9rem;
     color: var(--legal-ai-text-primary, #f1f5f9);
-    font-weight: 500;
+    font-weight: 500,
   }
   .review-description {
     margin-bottom: 1.5rem;
@@ -537,14 +537,14 @@
   }
   .review-description p {
     color: var(--legal-ai-text-primary, #f1f5f9);
-    line-height: 1.5;
+    line-height: 1.5,
     margin: 0;
   }
   .validation-status {
     padding: 1rem;
     border-radius: 0.5rem;
     text-align: center;
-    font-weight: 500;
+    font-weight: 500,
   }
   .status-valid {
     background: rgba(34, 197, 94, 0.1);
@@ -582,7 +582,7 @@
       justify-content: stretch;
     }
     .action-buttons :global(button) {
-      flex: 1;
+      flex: 1,
     }
   }
 </style>

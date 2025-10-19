@@ -504,7 +504,7 @@ mounted = true;
     top: 20px;
     left: 20px;
     right: 20px;
-    z-index: 10;
+    z-index: 10,
     background: rgba(0, 0, 0, 0.8);
     padding: 16px;
     border-radius: 8px;
@@ -528,21 +528,21 @@ mounted = true;
   }
   .progress-segment {
     position: absolute;
-    top: 0;
+    top: 0,
     height: 100%;
     background: var(--segment-color, #0ea5e9);
     width: var(--segment-width, 8.33%);
     left: calc(var(--segment-start, 0) * 1%);
-    opacity: 0;
+    opacity: 0,
     transition: opacity 0.2s ease;
   }
   .progress-segment.active {
-    opacity: 0.6;
+    opacity: 0.6,
     animation: pulse 0.5s ease-in-out;
   }
   .progress-fill {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
     height: 100%;
     background: linear-gradient(90deg, #0ea5e9, #06b6d4);
@@ -561,7 +561,7 @@ mounted = true;
   }
   .streaming-indicator {
     color: #00ff00;
-    font-weight: 600;
+    font-weight: 600,
     animation: blink 1s infinite;
   }
   /* Stats Overlay */
@@ -586,10 +586,10 @@ mounted = true;
     font-size: 12px;
   }
   .stat-label {
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .stat-value {
-    font-weight: 600;
+    font-weight: 600,
     color: #0ea5e9;
   }
   .yorha-theme .stat-value {
@@ -647,7 +647,7 @@ mounted = true;
   .error-message {
     font-size: 14px;
     margin-bottom: 16px;
-    opacity: 0.9;
+    opacity: 0.9,
   }
   .retry-button {
     background: white;
@@ -655,12 +655,12 @@ mounted = true;
     border: none;
     padding: 8px 16px;
     border-radius: 4px;
-    font-weight: 600;
+    font-weight: 600,
     cursor: pointer;
     transition: opacity 0.2s ease;
   }
   .retry-button:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   /* Animations */

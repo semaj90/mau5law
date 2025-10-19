@@ -47,7 +47,7 @@
             handler: 'Legal Clerk',
             action: 'Document received',
             location: 'Law Office',
-            signature: 'LC-001';
+            signature: 'LC-001',
           }
         ],
         createdAt: new Date('2024-01-15'),
@@ -62,7 +62,7 @@
         metadata: {
           dateRange: '2023-12-01 to 2024-01-10',
           participants: ['john@company.com', 'jane@client.com'],
-          messageCount: 47;
+          messageCount: 47,
         },
         chainOfCustody: [
           {
@@ -70,7 +70,7 @@
             handler: 'Digital Forensics',
             action: 'Emails extracted and verified',
             location: 'Digital Evidence Lab',
-            signature: 'DF-002';
+            signature: 'DF-002',
           }
         ],
         createdAt: new Date('2024-01-16'),
@@ -86,7 +86,7 @@
           captureDate: '2024-01-10',
           location: 'Conference Room B',
           cameraId: 'CAM-04',
-          resolution: '1920x1080';
+          resolution: '1920x1080',
         },
         chainOfCustody: [
           {
@@ -94,7 +94,7 @@
             handler: 'Security Department',
             action: 'Image extracted from footage',
             location: 'Security Office',
-            signature: 'SEC-003';
+            signature: 'SEC-003',
           }
         ],
         createdAt: new Date('2024-01-17'),

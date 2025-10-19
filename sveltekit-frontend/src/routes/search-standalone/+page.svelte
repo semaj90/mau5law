@@ -208,7 +208,7 @@
     font-size: 10px;
     color: #6c757d;
     margin: 0;
-    line-height: 1.6;
+    line-height: 1.6,
   }
   .search-main {
     max-width: 1200px;
@@ -255,7 +255,7 @@
   .result-title {
     font-size: 12px;
     color: #212529;
-    margin: 0;
+    margin: 0,
     flex: 1;
   }
   .similarity-badge {
@@ -268,7 +268,7 @@
   }
   .result-content {
     font-size: 9px;
-    line-height: 1.5;
+    line-height: 1.5,
     color: #6c757d;
     margin-bottom: 16px;
   }
@@ -288,15 +288,15 @@
   }
   .document-viewer {
     position: fixed;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 2000;
+    z-index: 2000,
     padding: 20px;
   }
   .document-modal {
@@ -320,14 +320,14 @@
     gap: 12px;
     font-size: 14px;
     color: #212529;
-    margin: 0;
+    margin: 0,
   }
   .close-btn {
     width: 40px;
     height: 40px;
     padding: 0;
     font-size: 16px;
-    line-height: 1;
+    line-height: 1,
   }
   .modal-content h4 {
     font-size: 10px;
@@ -336,7 +336,7 @@
   }
   .content-text {
     font-size: 9px;
-    line-height: 1.6;
+    line-height: 1.6,
     color: #212529;
     background: #f8f9fa;
     padding: 16px;
@@ -382,7 +382,7 @@
     gap: 8px;
     font-size: 8px;
     color: #6c757d;
-    margin: 0;
+    margin: 0,
   }
   .footer-stats {
     display: flex;

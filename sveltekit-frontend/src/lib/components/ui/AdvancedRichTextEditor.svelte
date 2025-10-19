@@ -632,12 +632,12 @@ https://svelte.dev/e/js_parse_error -->
   .advanced-editor.fullscreen {
     position: fixed;
     inset: 0;
-    z-index: 50;
+    z-index: 50,
   }
   .toolbar {
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 10,
   }
   .toolbar-group {
     display: flex;
@@ -662,7 +662,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .toolbar-btn:disabled,
   .toolbar-btn.disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .toolbar-btn.active {
@@ -686,7 +686,7 @@ https://svelte.dev/e/js_parse_error -->
   .dropdown-menu {
     position: absolute;
     top: 100%;
-    left: 0;
+    left: 0,
     background: #fff;
     border: 1px solid #e5e7eb;
     border-radius: 0.375rem;
@@ -730,7 +730,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .color-picker input[type='color'] {
     position: absolute;
-    inset: 0;
+    inset: 0,
     opacity: 0;
     cursor: pointer;
   }
@@ -753,7 +753,7 @@ https://svelte.dev/e/js_parse_error -->
     height: 24px;
   }
   .editor-container {
-    flex: 1;
+    flex: 1,
     overflow: auto;
     min-height: 400px;
   }
@@ -788,7 +788,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   :global(.ProseMirror table th) {
     background: #f3f4f6;
-    font-weight: 600;
+    font-weight: 600,
   }
   :global(.ProseMirror blockquote) {
     border-left: 4px solid #d1d5db;

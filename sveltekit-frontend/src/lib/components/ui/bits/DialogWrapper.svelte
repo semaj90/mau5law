@@ -81,9 +81,9 @@
     position: fixed;
     inset: 0;
     background-color: rgba(0, 0, 0, 0.6);
-    z-index: 40;
+    z-index: 40,
     border: none;
-    padding: 0;
+    padding: 0,
     margin: 0;
   }
 
@@ -91,7 +91,7 @@
     position: fixed;
     left: 50%;
     top: 50%;
-    z-index: 50;
+    z-index: 50,
     width: 100%;
     max-width: 28rem; /* tailwind max-w-md */
     transform: translate(-50%, -50%);
@@ -105,7 +105,7 @@
 
   .modal-title {
     font-size: 1.25rem;
-    font-weight: 700;
+    font-weight: 700,
     color: var(--nier-accent, #9f7aea);
     margin-bottom: 0.5rem;
   }
@@ -133,7 +133,7 @@
       background-color 0.15s ease,
       color 0.15s ease;
     font-size: 1rem;
-    line-height: 1;
+    line-height: 1,
   }
 
   .modal-close:hover {

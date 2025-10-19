@@ -26,12 +26,12 @@ https://svelte.dev/e/expected_token -->
         token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
         sessionId: 'sess_456',
         permissions: ['read', 'write', 'admin'],
-        lastActivity: '2024-01-10T14:30:22.000Z';
+        lastActivity: '2024-01-10T14:30:22.000Z',
       },
       timestamp: '2024-01-10T14:30:22.000Z',
       version: '1.0.2',
       size: 1247,
-      checksum: 'sha256:a1b2c3d4...';
+      checksum: 'sha256:a1b2c3d4...',
     },
     {
       id: 'case_case_789_20240110_142015',
@@ -46,12 +46,12 @@ https://svelte.dev/e/expected_token -->
         documents: ['doc_001', 'doc_002', 'doc_003'],
         evidence: ['evidence_456', 'evidence_789'],
         deadline: '2024-01-15T00:00:00.000Z',
-        notes: 'Awaiting additional documentation from plaintiff.';
+        notes: 'Awaiting additional documentation from plaintiff.',
       },
       timestamp: '2024-01-10T14:20:15.000Z',
       version: '2.1.0',
       size: 2891,
-      checksum: 'sha256:e5f6g7h8...';
+      checksum: 'sha256:e5f6g7h8...',
     },
     {
       id: 'rag_pipeline_20240110_141030',
@@ -73,7 +73,7 @@ https://svelte.dev/e/expected_token -->
       timestamp: '2024-01-10T14:10:30.000Z',
       version: '3.0.1',
       size: 5672,
-      checksum: 'sha256:i9j0k1l2...';
+      checksum: 'sha256:i9j0k1l2...',
     }
   ];
   $effect(() => {
@@ -337,7 +337,7 @@ https://svelte.dev/e/expected_token -->
     color: #9ca3af;
   }
   .breadcrumb-current {
-    font-weight: 500;
+    font-weight: 500,
   }
   .page-header h1 {
     font-size: 2.5rem;
@@ -363,7 +363,7 @@ https://svelte.dev/e/expected_token -->
   .stat-number {
     display: block;
     font-size: 2rem;
-    font-weight: 700;
+    font-weight: 700,
     color: #1f2937;
   }
   .stat-label {
@@ -447,9 +447,9 @@ https://svelte.dev/e/expected_token -->
   }
   .state-title {
     font-size: 1.125rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #1f2937;
-    margin: 0;
+    margin: 0,
   }
   .state-badge {
     padding: 0.25rem 0.75rem;
@@ -468,7 +468,7 @@ https://svelte.dev/e/expected_token -->
     color: #6b7280;
   }
   .state-size {
-    font-weight: 500;
+    font-weight: 500,
   }
   .state-details {
     display: flex;
@@ -485,7 +485,7 @@ https://svelte.dev/e/expected_token -->
     align-items: center;
   }
   .detail-label {
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
     font-size: 0.875rem;
   }
@@ -529,7 +529,7 @@ https://svelte.dev/e/expected_token -->
     margin-bottom: 2rem;
   }
   .context-viewer h4 {
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
     margin-bottom: 0.75rem;
   }
@@ -545,7 +545,7 @@ https://svelte.dev/e/expected_token -->
     overflow-y: auto;
   }
   .metadata-viewer h4 {
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
     margin-bottom: 0.75rem;
   }
@@ -563,7 +563,7 @@ https://svelte.dev/e/expected_token -->
     border-radius: 6px;
   }
   .metadata-label {
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
     font-size: 0.875rem;
   }

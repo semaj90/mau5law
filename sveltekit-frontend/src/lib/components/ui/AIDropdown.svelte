@@ -75,7 +75,7 @@
       icon: FileText
       shortcut: "Ctrl+Shift+S",
       description: "Generate AI summary of current content",
-      requiresContent: true;
+      requiresContent: true,
     },
     {
       id: "analyze",
@@ -83,7 +83,7 @@
       icon: Brain
       shortcut: "Ctrl+Shift+A",
       description: "Comprehensive AI analysis with insights",
-      requiresContent: true;
+      requiresContent: true,
     },
   ];
   // Keyboard shortcut handling
@@ -229,7 +229,7 @@
     gap: 0.25rem;
     padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
     border: 1px solid transparent;
     border-radius: 0.375rem;
     transition: all 0.2;
@@ -247,7 +247,7 @@
     ring-offset: 2px;
   }
   .ai-trigger:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .ai-trigger:disabled:hover {
@@ -259,7 +259,7 @@
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   }
   .ai-trigger--disabled {
-    opacity: 0.6;
+    opacity: 0.6,
     cursor: not-allowed;
   }
   .ai-trigger__icon {
@@ -307,7 +307,7 @@
     gap: 0.5rem;
     padding: 0.5rem 0.75rem;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #6b7280;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -332,10 +332,10 @@
     outline: none;
     ring: 2px;
     ring-color: #8b5cf6;
-    ring-inset: true;
+    ring-inset: true,
   }
   .ai-menu__item:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .ai-menu__item:disabled:hover {
@@ -346,7 +346,7 @@
     color: #581c87;
   }
   .ai-menu__item--disabled {
-    opacity: 0.4;
+    opacity: 0.4,
     cursor: not-allowed;
   }
   .ai-menu__item:not(.ai-menu__item--disabled):hover {
@@ -357,11 +357,11 @@
     align-items: center;
     gap: 0.75rem;
     flex: 1;
-    min-width: 0;
+    min-width: 0,
   }
   .ai-menu__item-icon {
     color: #4b5563;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .ai-menu__item--selected .ai-menu__item-icon {
     color: #9333ease;
@@ -370,11 +370,11 @@
     display: flex;
     flex-direction: column;
     gap: 0.125rem;
-    min-width: 0;
+    min-width: 0,
   }
   .ai-menu__item-name {
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
     color: #111827;
     overflow: hidden;
     text-overflow: ellipsi;
@@ -421,7 +421,7 @@
     color: #6b7280;
   }
   .ai-menu__footer-text {
-    flex: 1;
+    flex: 1,
   }
   /* Yorha Theme Integration */
   :global(.yorha-theme) .ai-trigger {

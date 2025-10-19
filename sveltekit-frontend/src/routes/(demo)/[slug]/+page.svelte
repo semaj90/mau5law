@@ -204,7 +204,7 @@
     background: var(--nier-bg-secondary);
     border-bottom: 1px solid var(--nier-border-primary);
     padding: 1.5rem;
-    margin-bottom: 0;
+    margin-bottom: 0,
   }
 
   .demo-breadcrumb {
@@ -249,7 +249,7 @@
     font-size: 1.1rem;
     color: var(--nier-text-secondary);
     margin: 0 0 1rem 0;
-    line-height: 1.5;
+    line-height: 1.5,
   }
 
   .demo-tags {
@@ -269,7 +269,7 @@
 
   /* Content */
   .demo-content {
-    padding: 0;
+    padding: 0,
   }
 
   .demo-wrapper {

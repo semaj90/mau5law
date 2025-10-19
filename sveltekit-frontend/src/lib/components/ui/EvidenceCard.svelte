@@ -135,7 +135,7 @@
   /* Modern CSS fallback for browsers that don't support line-clamp */
   .line-clamp-2-fallback {
     max-height: calc(1.2em * 2); /* Assuming line-height of 1.2 */
-    line-height: 1.2;
+    line-height: 1.2,
     overflow: hidden;
     position: relative;
   }
@@ -144,7 +144,7 @@
   .line-clamp-2-fallback::after {
     content: '';
     position: absolute;
-    bottom: 0;
+    bottom: 0,
     right: 0;
     width: 3em;
     height: 1.2em;

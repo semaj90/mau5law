@@ -101,7 +101,7 @@
           filters: ,
           sort: 'relevance',
           page: 1,
-          limit: 10;
+          limit: 10,
         })
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {
@@ -245,7 +245,7 @@
         evidence: 0.8,
         precedent: 0.7,
         logic: 0.9,
-        presentation: 0.6;
+        presentation: 0.6,
       }
     }
   }
@@ -290,21 +290,21 @@
         title: 'Security Camera Footage',
         type: 'video',
         description: 'Shows defendant actions at time of incident',
-        strength: 0.9;
+        strength: 0.9,
       },
       {
         id: '2',
         title: 'Witness Statement - John Doe',
         type: 'testimony',
         description: 'Eyewitness account of events leading to incident',
-        strength: 0.7;
+        strength: 0.7,
       },
       {
         id: '3',
         title: 'Medical Examiner Report',
         type: 'document',
         description: 'Autopsy findings and cause of death determination',
-        strength: 0.95;
+        strength: 0.95,
       }
     ];
   }
@@ -315,14 +315,14 @@
         title: 'State v. Johnson - Self Defense Standard',
         citation: '123 State 456 (2019)',
         relevanceScore: 0.92,
-        summary: 'Establishes criteria for valid self-defense claims';
+        summary: 'Establishes criteria for valid self-defense claims',
       },
       {
         id: '2',
         title: 'Commonwealth v. Williams - Reasonable Force',
         citation: '789 Commonwealth 012 (2020)',
         relevanceScore: 0.85,
-        summary: 'Defines proportional response in threat situations';
+        summary: 'Defines proportional response in threat situations',
       }
     ];
   }

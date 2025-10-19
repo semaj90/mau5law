@@ -190,7 +190,7 @@
     color: var(--n64-secondary) !important;
   }
   :global(.citation-save-btn.disabled) {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .collection-selector {
@@ -218,7 +218,7 @@
     color: var(--nier-text-primary);
     font-family: 'Press Start 2P', cursive;
     font-size: 0.625rem;
-    margin: 0;
+    margin: 0,
   }
   .close-btn {
     background: none;
@@ -227,7 +227,7 @@
     cursor: pointer;
     font-size: 0.875rem;
     padding: 0.25rem;
-    line-height: 1;
+    line-height: 1,
   }
   .close-btn:hover {
     color: var(--n64-error);

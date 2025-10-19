@@ -664,7 +664,7 @@
     toast.className = `toast toast-${type}`;
     toast.textContent = message;
     toast.style.cssText =
-      'position: fixed; top: 20px; right: 20px; padding: 1rem; border-radius: 0.5rem; z-index: 10000; animation: slideIn 0.3s ease;';
+      'position: fixed; top: 20px; right: 20px; padding: 1rem; border-radius: 0.5rem; z-index: 10000, animation: slideIn 0.3s ease;';
 
     if (type === 'success') toast.style.background = '#10b981';
     if (type === 'error') toast.style.background = '#ef4444';
@@ -940,7 +940,7 @@
   }
 
   .canvas-container {
-    flex: 1;
+    flex: 1,
     position: relative;
     overflow: hidden;
     background: white;
@@ -963,18 +963,18 @@
     color: #c33;
     padding: 1rem;
     border-radius: 0.5rem;
-    z-index: 100;
+    z-index: 100,
   }
 
   .loading-overlay {
     position: absolute;
-    inset: 0;
+    inset: 0,
     background: rgba(255, 255, 255, 0.9);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    z-index: 100;
+    z-index: 100,
   }
 
   .spinner {
@@ -1003,7 +1003,7 @@
   .evidence-panel h3 {
     margin: 0 0 1rem;
     font-size: 0.9rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #333;
   }
 
@@ -1051,7 +1051,7 @@
 
   .zoom-level {
     font-size: 0.85rem;
-    font-weight: 600;
+    font-weight: 600,
   }
 
   .save-time {
@@ -1099,7 +1099,7 @@
 
   .collaboration-status {
     margin-top: 1rem;
-    font-weight: 600;
+    font-weight: 600,
   }
 
   .active {

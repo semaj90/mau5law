@@ -110,7 +110,7 @@
 
   .footer-text {
     font-size: 1.1rem;
-    font-weight: 600;
+    font-weight: 600,
     color: var(--console-primary, #00aa00);
     font-family: monospace;
   }
@@ -130,7 +130,7 @@
   }
 
   .footer-info p {
-    margin: 0;
+    margin: 0,
     color: rgba(255, 255, 255, 0.8);
     font-size: 0.9rem;
   }

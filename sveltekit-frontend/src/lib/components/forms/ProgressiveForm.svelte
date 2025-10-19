@@ -423,23 +423,23 @@
   .form-header h2 {
     margin: 0 0 8px 0;
     font-size: 24px;
-    font-weight: 600;
+    font-weight: 600,
     color: #1f2937;
   }
   .form-header p {
-    margin: 0;
+    margin: 0,
     color: #6b7280;
   }
   .sr-only {
     position: absolute;
     width: 1px;
     height: 1px;
-    padding: 0;
+    padding: 0,
     margin: -1px;
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
-    border: 0;
+    border: 0,
   }
   .error-summary {
     background: #fef2f2;
@@ -451,7 +451,7 @@
   .error-summary h3 {
     margin: 0 0 12px 0;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 600,
     color: #dc2626;
   }
   .error-summary ul {
@@ -473,7 +473,7 @@
   }
   .form-section legend {
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 600,
     color: #1f2937;
     padding: 0 8px;
   }
@@ -490,11 +490,11 @@
   }
   .form-label {
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
   }
   .form-label.required::after {
-    content: ' *';
+    content: ' *',
     color: #dc2626;
   }
   .form-input {
@@ -502,7 +502,7 @@
     border: 1px solid #d1d5db;
     border-radius: 6px;
     font-size: 16px;
-    line-height: 1.5;
+    line-height: 1.5,
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
   .form-input:focus {
@@ -526,13 +526,13 @@
     width: 18px;
     height: 18px;
     margin-top: 2px;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .checkbox-label {
     font-size: 14px;
-    line-height: 1.5;
+    line-height: 1.5,
     color: #374151;
-    margin: 0;
+    margin: 0,
   }
   .checkbox-label a {
     color: #3b82f6;
@@ -545,7 +545,7 @@
   .field-error {
     font-size: 12px;
     color: #dc2626;
-    font-weight: 500;
+    font-weight: 500,
   }
   .form-actions {
     display: flex;
@@ -561,7 +561,7 @@
     padding: 12px 24px;
     border-radius: 6px;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 500,
     cursor: pointer;
     transition: all 0.2s ease;
     border: none;
@@ -586,7 +586,7 @@
     background: #e5e7eb;
   }
   .reset-button.secondary:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .loading-spinner {
@@ -602,7 +602,7 @@
     padding: 12px;
     border-radius: 6px;
     text-align: center;
-    font-weight: 500;
+    font-weight: 500,
   }
   .submit-message.success {
     background: #f0fdf4;
@@ -648,7 +648,7 @@
     }
     .form-row {
       grid-template-columns: 1fr;
-      gap: 0;
+      gap: 0,
     }
     .form-actions {
       flex-direction: column;

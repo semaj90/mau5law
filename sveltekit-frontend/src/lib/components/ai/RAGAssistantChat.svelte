@@ -484,7 +484,7 @@
     border-radius: 10px;
     background: linear-gradient(135deg, #f6f9ff, #eef7ff);
     position: relative;
-    flex-shrink: 0;
+    flex-shrink: 0,
     transition: transform 200ms ease;
   }
   .assistant-avatar.pulsing {
@@ -582,7 +582,7 @@
     font-size: 12px;
     color: #475569;
     text-transform: uppercase;
-    font-weight: 700;
+    font-weight: 700,
     opacity: 0.85;
     margin-right: 12px;
   }
@@ -638,7 +638,7 @@
   }
   .message-content {
     font-size: 14px;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .message-time {
     font-size: 11px;
@@ -664,7 +664,7 @@
     height: 8px;
     background: #94a3b8;
     border-radius: 50%;
-    opacity: 0.8;
+    opacity: 0.8,
     animation: blink 1s infinite;
   }
   .typing-dots span:nth-child(2) {
@@ -676,15 +676,15 @@
   @keyframes blink {
     0% {
       transform: translateY(0);
-      opacity: 0.35;
+      opacity: 0.35,
     }
     50% {
       transform: translateY(-6px);
-      opacity: 1;
+      opacity: 1,
     }
     100% {
       transform: translateY(0);
-      opacity: 0.35;
+      opacity: 0.35,
     }
   }
   /* Workflow interface */
@@ -735,7 +735,7 @@
     color: white;
     padding: 8px 12px;
     border-radius: 8px;
-    font-weight: 700;
+    font-weight: 700,
     cursor: pointer;
   }
   .workflow-hint {
@@ -756,7 +756,7 @@
     align-items: flex-end;
   }
   .chat-input {
-    flex: 1;
+    flex: 1,
     resize: none;
     padding: 10px;
     border-radius: 10px;
@@ -777,7 +777,7 @@
     place-items: center;
   }
   .send-button:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .quick-actions {

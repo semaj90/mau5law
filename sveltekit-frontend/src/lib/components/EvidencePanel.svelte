@@ -111,7 +111,7 @@
   .evidence-title {
     font-size: 1.3rem;
     margin-bottom: 1rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
   }
   .evidence-upload {
@@ -127,7 +127,7 @@
     padding: 0.5rem 1rem;
     border-radius: 6px;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 500,
     transition: all 0.2s ease;
     border: none;
   }
@@ -175,7 +175,7 @@
     color: #3b82f6;
     padding: 0.125rem 0.5rem;
     border-radius: 12px;
-    font-weight: 500;
+    font-weight: 500,
   }
   .file-type {
     font-size: 0.75rem;
@@ -187,7 +187,7 @@
     text-transform: uppercase;
   }
   .evidence-item-title {
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
     font-size: 0.95em;
     margin: 0.5em 0;
@@ -196,7 +196,7 @@
     color: #6b7280;
     font-size: 0.85em;
     margin-top: 0.5em;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .empty-state {
     text-align: center;
@@ -206,6 +206,6 @@
   .empty-hint {
     font-size: 0.875rem;
     margin-top: 0.5rem;
-    opacity: 0.8;
+    opacity: 0.8,
   }
 </style>

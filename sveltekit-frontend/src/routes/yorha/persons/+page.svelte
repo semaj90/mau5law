@@ -60,7 +60,7 @@
     location: '',
   });
   let isLoading = $state(false);
-  let error = $state(null);
+  let error: string | null = $state(null);
   // Filter persons based on search and threat level
   let filteredPersons = $derived(() => {
     // make a shallow copy to avoid mutating original
@@ -536,7 +536,7 @@
     font-size: 18px;
     font-weight: bold;
     color: #d4af37;
-    line-height: 1;
+    line-height: 1,
   }
   .yorha-subtext {
     font-size: 10px;
@@ -584,7 +584,7 @@
 
   /* Main area */
   .yorha-main {
-    flex: 1;
+    flex: 1,
     display: flex;
     flex-direction: column;
     background: #2a2a2a;
@@ -616,7 +616,7 @@
     font-size: 24px;
     font-weight: bold;
     color: #d4af37;
-    margin: 0;
+    margin: 0,
   }
   .persons-subtitle {
     font-size: 12px;
@@ -688,7 +688,7 @@
     gap: 20px;
     padding: 20px;
     overflow-y: auto;
-    flex: 1;
+    flex: 1,
   }
   :global(.person-nier-bits-card) {
     background: #1a1a1a !important;
@@ -714,7 +714,7 @@
     color: #666;
   }
   .person-basic-info {
-    flex: 1;
+    flex: 1,
   }
   .person-name {
     font-size: 16px;
@@ -753,7 +753,7 @@
   .person-description {
     font-size: 11px;
     color: #ccc;
-    line-height: 1.4;
+    line-height: 1.4,
     margin: 8px 0;
   }
   .person-cases {
@@ -844,12 +844,12 @@
   /* Modal styles */
   .modal-overlay {
     position: fixed;
-    inset: 0;
+    inset: 0,
     background: rgba(0, 0, 0, 0.6);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 50;
+    z-index: 50,
   }
   .yorha-modal {
     width: 720px;

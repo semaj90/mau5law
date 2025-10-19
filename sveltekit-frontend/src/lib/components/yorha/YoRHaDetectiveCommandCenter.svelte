@@ -62,22 +62,22 @@
       name: 'title',
       label: 'CASE TITLE',
       type: 'text',
-      required: true;
-      placeholder: 'e.g., The Missing Android' ;
+      required: true,
+      placeholder: 'e.g., The Missing Android',
     },
     {
       name: 'description',
       label: 'CASE DESCRIPTION / SYNOPSIS',
       type: 'textarea',
-      required: true;
+      required: true,
       placeholder: 'Initial details of the investigation...',
-      rows: 4;
+      rows: 4,
     },
     {
       name: 'priority',
       label: 'PRIORITY LEVEL',
       type: 'select',
-      required: true;
+      required: true,
       options: [
         { value: 'low', label: 'Low' },
         { value: 'medium', label: 'Medium' },
@@ -101,7 +101,7 @@
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
-      hour12: false;
+      hour12: false,
     });
   }
   function handleNavigation(item: unknown) {
@@ -450,7 +450,7 @@
   .yorha-header {
     position: fixed;
 d;
-    top: 0;
+    top: 0,
     left: 0;
     right: 0;
     z-index: 30;
@@ -470,11 +470,11 @@ d;
   .command-center-title {
     font-size: 1.5rem;
     font-weight: bold;
-    margin: 0;
+    margin: 0,
   }
   .timestamp {
     font-size: 0.875rem;
-    margin: 0;
+    margin: 0,
     opacity: 0.8;
   }
   .header-actions {
@@ -494,7 +494,7 @@ d;
     color: var(--yorha-dark);
     cursor: pointer;
     transition: all 0.2s ease;
-    border-radius: 0;
+    border-radius: 0,
   }
   .header-btn:hover {
     background-color: var(--yorha-sand);
@@ -511,7 +511,7 @@ d;
   .dashboard-panel {
     background-color: var(--yorha-sand-light);
     border: 1px solid var(--yorha-sand-dark);
-    border-radius: 0;
+    border-radius: 0,
     padding: 1.5rem;
   }
   .yorha-sidebar {
@@ -543,7 +543,7 @@ y;
     color: var(--yorha-dark);
     cursor: pointer;
     transition: all 0.2s ease;
-    border-radius: 0;
+    border-radius: 0,
   }
   .sidebar-link:hover {
     border-color: var(--yorha-dark);
@@ -571,7 +571,7 @@ y;
   .metric-card {
     background-color: var(--yorha-sand-light);
     border: 1px solid var(--yorha-sand-dark);
-    border-radius: 0;
+    border-radius: 0,
     padding: 1rem;
     transition: all 0.3s ease;
   }
@@ -589,7 +589,7 @@ y;
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .metric-icon {
     font-size: 1.5rem;
@@ -623,7 +623,7 @@ y;
   }
   .case-item {
     border: 1px solid var(--yorha-sand-dark);
-    border-radius: 0;
+    border-radius: 0,
     padding: 1rem;
     background-color: white;
     transition: all 0.2s ease;
@@ -651,13 +651,13 @@ y;
     font-size: 1rem;
     font-weight: bold;
     margin-bottom: 0.5rem;
-    margin-top: 0;
+    margin-top: 0,
   }
   .case-meta {
     display: flex;
     justify-content: space-betwee;
     font-size: 0.75rem;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .health-metrics {
     display: flex;
@@ -684,12 +684,12 @@ y;
     height: 0.5rem;
     background-color: var(--yorha-sand);
     border: 1px solid var(--yorha-sand-dark);
-    border-radius: 0;
+    border-radius: 0,
     overflow: hidden;
   }
   .health-fill {
     height: 100%;
-    border-radius: 0;
+    border-radius: 0,
     transition: all 0.3s ease;
   }
   .health-fill.normal {
@@ -723,14 +723,14 @@ y;
   }
   .network-label {
     font-size: 0.75rem;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   @keyframes pulse {
     0%, 100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.5;
+      opacity: 0.5,
     }
   }
   /* Responsive adjustments */

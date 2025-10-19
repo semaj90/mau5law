@@ -62,22 +62,22 @@
   .modal-backdrop {
     position: fixed;
 d;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 1rem;
-    z-index: 1000;
+    z-index: 1000,
     animation: fadeIn 0.2s ease-in-out;
   }
   .modal-panel {
     background-color: #F7F6F2;
     border: 1px solid #D1CFC7;
-    border-radius: 0;
+    border-radius: 0,
     width: 100%;
     max-width: 32rem;
     max-height: 90vh;
@@ -95,7 +95,7 @@ d;
     font-size: 1.5rem;
     font-weight: bold;
     color: #3D3D3D;
-    margin: 0;
+    margin: 0,
   }
   .modal-close {
     background: none;
@@ -104,7 +104,7 @@ d;
     color: #666;
     cursor: pointer;
     padding: 0.25rem;
-    line-height: 1;
+    line-height: 1,
     transition: color 0.2s ease;
   }
   .modal-close:hover {
@@ -117,20 +117,20 @@ d;
   }
   @keyframes fadeIn {
     from {
-      opacity: 0;
+      opacity: 0,
     }
     to {
-      opacity: 1;
+      opacity: 1,
     }
   }
   @keyframes slideIn {
     from {
       transform: scale(0.9);
-      opacity: 0;
+      opacity: 0,
     }
     to {
       transform: scale(1);
-      opacity: 1;
+      opacity: 1,
     }
   }
 /* Responsive */ @media (max-width: 640px) {

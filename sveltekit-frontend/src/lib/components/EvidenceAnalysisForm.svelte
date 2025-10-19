@@ -152,17 +152,17 @@ https://svelte.dev/e/js_parse_error -->
       {
         case_name: "Smith v. Jones Contract Dispute",
         relevance: 0.92,
-        summary: "Landmark case establishing principles for contract interpretation in commercial disputes.";
+        summary: "Landmark case establishing principles for contract interpretation in commercial disputes.",
       },
       {
         case_name: "Brown v. Board of Education",
         relevance: 0.85,
-        summary: "Supreme Court decision on constitutional rights and equal protection under law.";
+        summary: "Supreme Court decision on constitutional rights and equal protection under law.",
       },
       {
         case_name: "Carlill v. Carbolic Smoke Ball Co.",
         relevance: 0.78,
-        summary: "Classic contract law case defining unilateral contracts and consideration.";
+        summary: "Classic contract law case defining unilateral contracts and consideration.",
       }
     ];
     return mockPrecedent;

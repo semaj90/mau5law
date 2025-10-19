@@ -463,7 +463,7 @@
   .header-left h1 {
     margin: 0;
     font-size: 1.5rem;
-    font-weight: 700;
+    font-weight: 700,
     color: #10b981;
   }
   .timestamp {
@@ -500,7 +500,7 @@
     font-size: 1.5rem;
   }
   .user-name {
-    font-weight: 600;
+    font-weight: 600,
     color: #e2e8f0;
   }
   .user-role {
@@ -532,7 +532,7 @@
   }
   .stat-value {
     font-size: 1.875rem;
-    font-weight: 700;
+    font-weight: 700,
     color: #10b981;
     margin-bottom: 0.25rem;
   }
@@ -577,7 +577,7 @@
     padding: 0.125rem 0.5rem;
     border-radius: 0.25rem;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .priority-urgent {
     background: #dc2626;
@@ -621,7 +621,7 @@
     padding: 0.125rem 0.5rem;
     border-radius: 0.25rem;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .status-active {
     background: #10b981;
@@ -654,7 +654,7 @@
   }
   .metric-value {
     display: block;
-    font-weight: 600;
+    font-weight: 600,
     color: #10b981;
   }
   .case-actions {
@@ -667,10 +667,10 @@
     border: none;
     border-radius: 0.5rem;
     font-size: 0.875rem;
-    font-weight: 600;
+    font-weight: 600,
     cursor: pointer;
     transition: all 0.2s ease;
-    flex: 1;
+    flex: 1,
   }
   .btn-primary {
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
@@ -722,7 +722,7 @@
   }
   .step-label {
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #94a3b8;
   }
   .current-question {
@@ -761,7 +761,7 @@
     padding: 1.5rem;
     backdrop-filter: blur(20px);
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
+    z-index: 1000,
   }
   .ai-header {
     display: flex;
@@ -802,13 +802,13 @@
     animation: blink 1s infinite;
   }
   .ai-info h3 {
-    margin: 0;
+    margin: 0,
     color: #e2e8f0;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .ai-status {
-    margin: 0;
+    margin: 0,
     color: #94a3b8;
     font-size: 0.75rem;
   }
@@ -824,7 +824,7 @@
   .prompt-text {
     color: #e2e8f0;
     font-size: 0.875rem;
-    line-height: 1.5;
+    line-height: 1.5,
   }
   .cursor {
     animation: blink 1s infinite;
@@ -869,7 +869,7 @@
     font-size: 0.875rem;
   }
   .insight-content p {
-    margin: 0;
+    margin: 0,
     color: #94a3b8;
     font-size: 0.75rem;
   }
@@ -896,11 +896,11 @@
   @keyframes blink {
     0%,
     50% {
-      opacity: 1;
+      opacity: 1,
     }
     51%,
     100% {
-      opacity: 0;
+      opacity: 0,
     }
   }
   @media (max-width: 768px) {

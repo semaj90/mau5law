@@ -168,7 +168,7 @@
   .ai-nav-item::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: -100%;
     width: 100%;
     height: 100%;
@@ -218,16 +218,16 @@
   .ai-content::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background-image:
       linear-gradient(45deg, transparent 49%, rgba(0, 204, 255, 0.03) 50%, transparent 51%),
       linear-gradient(-45deg, transparent 49%, rgba(0, 204, 255, 0.03) 50%, transparent 51%);
     background-size: 40px 40px;
     pointer-events: none;
-    opacity: 0.5;
+    opacity: 0.5,
   }
 
   .ai-container {
@@ -236,7 +236,7 @@
     padding: 2rem;
     min-height: 100%;
     position: relative;
-    z-index: 1;
+    z-index: 1,
   }
 
   .ai-placeholder {

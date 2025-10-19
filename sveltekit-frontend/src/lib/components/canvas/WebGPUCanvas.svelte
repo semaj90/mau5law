@@ -434,15 +434,15 @@
   .canvas-wrapper::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: linear-gradient(45deg, transparent 40%, rgba(255, 215, 0, 0.1) 50%, transparent 60%);
     background-size: 200% 200%;
     animation: scanline 3s linear infinite;
     pointer-events: none;
-    z-index: 1;
+    z-index: 1,
   }
   @keyframes scanline {
     0% {

@@ -271,7 +271,7 @@
     border-radius: 0.375rem;
     text-decoration: none;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 500,
   }
   .error-container button:hover, .back-link:hover {
     background: #2563eb;
@@ -300,12 +300,12 @@
     margin: 0 0 0.5rem 0;
     font-size: 1.75rem;
     color: #1e293b;
-    font-weight: 700;
+    font-weight: 700,
   }
   .case-description {
     margin: 0 0 1rem 0;
     color: #64748b;
-    line-height: 1.5;
+    line-height: 1.5,
   }
   .case-meta {
     display: flex;
@@ -329,7 +329,7 @@
   }
   .connection-status {
     color: #059669;
-    font-weight: 500;
+    font-weight: 500,
   }
   .case-actions {
     display: flex;
@@ -374,7 +374,7 @@
     margin: 0 0 1.5rem 0;
     font-size: 1.125rem;
     color: #1e293b;
-    font-weight: 600;
+    font-weight: 600,
   }
   .analytics-section {
     margin-bottom: 2rem;
@@ -383,13 +383,13 @@
     margin: 0 0 1rem 0;
     font-size: 1rem;
     color: #374151;
-    font-weight: 600;
+    font-weight: 600,
   }
   .analytics-section h5 {
     margin: 1rem 0 0.5rem 0;
     font-size: 0.875rem;
     color: #4b5563;
-    font-weight: 600;
+    font-weight: 600,
   }
   .analytics-grid {
     display: grid;
@@ -407,7 +407,7 @@
   }
   .metric .value {
     font-size: 1.25rem;
-    font-weight: 700;
+    font-weight: 700,
     color: #1e293b;
   }
   .metric .label {
@@ -421,7 +421,7 @@
   .value.engagement-medium { color: #d97706, }
   .value.engagement-low { color: #64748b, }
   .recent-prompts ul {
-    margin: 0;
+    margin: 0,
     padding: 0;
     list-style: none;
   }
@@ -432,7 +432,7 @@
     margin-bottom: 0.5rem;
     font-size: 0.875rem;
     color: #475569;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   /* Mobile responsive */
   @media (max-width: 1024px) {

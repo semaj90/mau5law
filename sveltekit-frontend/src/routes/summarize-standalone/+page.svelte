@@ -384,9 +384,9 @@ https://svelte.dev/e/js_parse_error -->
   }
   .page-header h1 {
     font-size: 2.5rem;
-    font-weight: 700;
+    font-weight: 700,
     color: #1f2937;
-    margin: 0;
+    margin: 0,
   }
   .subtitle {
     color: #6b7280;
@@ -418,7 +418,7 @@ https://svelte.dev/e/js_parse_error -->
     margin-bottom: 1.5rem;
   }
   .tab {
-    flex: 1;
+    flex: 1,
     padding: 0.75rem 1rem;
     border: none;
     background: transparent;
@@ -436,10 +436,10 @@ https://svelte.dev/e/js_parse_error -->
   .tab.active {
     background: white;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    font-weight: 600;
+    font-weight: 600,
   }
   .tab:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .loading-spinner {
@@ -475,7 +475,7 @@ https://svelte.dev/e/js_parse_error -->
     align-items: center;
   }
   .option-group label {
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
   }
   .option-group select,
@@ -498,7 +498,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 0.5rem;
     font-family: 'Consolas', 'Monaco', monospace;
     font-size: 0.9rem;
-    line-height: 1.5;
+    line-height: 1.5,
     resize: vertical;
     transition: border-color 0.2;
   }
@@ -514,7 +514,7 @@ https://svelte.dev/e/js_parse_error -->
   .btn {
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
-    font-weight: 500;
+    font-weight: 500,
     cursor: pointer;
     transition: all 0.2;
     border: none;
@@ -543,7 +543,7 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 1.1rem;
   }
   .btn:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .processing-status {
@@ -624,7 +624,7 @@ https://svelte.dev/e/js_parse_error -->
     padding: 0.25rem 0.75rem;
     border-radius: 1rem;
     font-size: 0.8rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   .error-panel,
   .empty-state {

@@ -17,50 +17,50 @@
     sm: '32px',
     md: '48px',
     lg: '64px',
-    xl: '96px';
+    xl: '96px',
   }
   const themes = {
     classic: {
       primary: '#FFD700',
       secondary: '#FFA500',
       accent: '#FF8C00',
-      glow: '#FFFF00';
+      glow: '#FFFF00',
     },
     gold: {
       primary: '#FFD700',
       secondary: '#DAA520',
       accent: '#B8860B',
-      glow: '#FFFF99';
+      glow: '#FFFF99',
     },
     red: {
       primary: '#FF3030',
       secondary: '#DC143C',
       accent: '#B22222',
-      glow: '#FF6666';
+      glow: '#FF6666',
     },
     blue: {
       primary: '#4090FF',
       secondary: '#1E90FF',
       accent: '#0066CC',
-      glow: '#87CEEB';
+      glow: '#87CEEB',
     },
     green: {
       primary: '#40FF40',
       secondary: '#32CD32',
       accent: '#228B22',
-      glow: '#90EE90';
+      glow: '#90EE90',
     },
     purple: {
       primary: '#9932CC',
       secondary: '#8A2BE2',
       accent: '#6A0DAD',
-      glow: '#DDA0DD';
+      glow: '#DDA0DD',
     }
   }
   const speeds = {
     slow: '3s',
     medium: '2s',
-    fast: '1s';
+    fast: '1s',
   }
 </script>
 
@@ -123,7 +123,7 @@
   }
   .ring-outer {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
     width: 100%;
     height: 100%;
@@ -180,7 +180,7 @@
   }
   .percentage-ring {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
     width: 100%;
     height: 100%;
@@ -197,7 +197,7 @@
   .percentage-bg {
     fill: none;
     stroke: rgba(0, 0, 0, 0.1);
-    stroke-width: 2;
+    stroke-width: 2,
   }
   .percentage-fill {
     fill: none;
@@ -220,11 +220,11 @@
       -1px -1px 0 #000,
       1px -1px 0 #000,
       -1px 1px 0 #000;
-    z-index: 10;
+    z-index: 10,
   }
   .sparkle-layer {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
     width: 100%;
     height: 100%;
@@ -262,11 +262,11 @@
   @keyframes pulse-segment {
     0%,
     100% {
-      opacity: 0.4;
+      opacity: 0.4,
       transform: translateX(-50%) rotate(var(--rotation)) scale(1);
     }
     50% {
-      opacity: 1;
+      opacity: 1,
       transform: translateX(-50%) rotate(var(--rotation)) scale(1.1);
     }
   }
@@ -284,32 +284,32 @@
   @keyframes crystal-shine {
     0%,
     100% {
-      opacity: 0.8;
+      opacity: 0.8,
       transform: scale(1);
     }
     50% {
-      opacity: 1;
+      opacity: 1,
       transform: scale(1.2);
     }
   }
   @keyframes sparkle-twinkle {
     0%,
     100% {
-      opacity: 0;
+      opacity: 0,
     }
     25%,
     75% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.5;
+      opacity: 0.5,
     }
   }
   /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
     .ring-outer,
     .ring-core {
-      animation-duration: 10;
+      animation-duration: 10,
     }
     .ring-segment,
     .core-inner,

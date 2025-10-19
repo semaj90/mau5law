@@ -239,11 +239,11 @@
   .yorha-canvas-board {
     position: fixed;
 d;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
-    z-index: 1000;
+    z-index: 1000,
     display: flex;
     flex-direction: column;
     background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
@@ -310,7 +310,7 @@ d;
   .color-section h3,
   .size-section h3 {
     font-size: 0.8rem;
-    margin: 0;
+    margin: 0,
     color: #00ff88;
     text-shadow: 0 0 5px #00ff88;
   }
@@ -376,7 +376,7 @@ d;
     height: 20px;
     background: #00ff88;
     cursor: pointer;
-    border-radius: 0;
+    border-radius: 0,
   }
   .size-display {
     font-weight: bold;
@@ -385,7 +385,7 @@ d;
   }
   .canvas-container {
     position: relative;
-    flex: 1;
+    flex: 1,
     display: flex;
     justify-content: center;
     align-items: center;

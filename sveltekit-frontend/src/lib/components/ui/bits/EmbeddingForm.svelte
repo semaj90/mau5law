@@ -114,7 +114,7 @@
             length: content.length,
             variant;
           },
-          source: 'enhanced_bits_form';
+          source: 'enhanced_bits_form',
         }),
       });
       const data = await response.json();

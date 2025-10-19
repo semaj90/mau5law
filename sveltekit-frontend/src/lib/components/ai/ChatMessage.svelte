@@ -169,7 +169,7 @@ https://svelte.dev/e/js_parse_error -->
     margin-bottom: 0.5rem;
   }
   :global(.message-content p:last-child) {
-    margin-bottom: 0;
+    margin-bottom: 0,
   }
   :global(.message-content ul, .message-content ol) {
     margin: 0.5rem 0;
@@ -192,7 +192,7 @@ https://svelte.dev/e/js_parse_error -->
     font-style: italic;
   }
   :global(.message-content h1, .message-content h2, .message-content h3) {
-    font-weight: 600;
+    font-weight: 600,
     margin: 0.75rem 0 0.5rem 0;
   }
   :global(.message-content h1) {

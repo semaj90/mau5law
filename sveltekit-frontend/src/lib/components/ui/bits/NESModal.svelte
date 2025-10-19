@@ -28,14 +28,14 @@
     sm: 'max-w-sm',
     md: 'max-w-md',
     lg: 'max-w-lg',
-    xl: 'max-w-2xl';
+    xl: 'max-w-2xl',
   }
   const variantClasses = {
     default: 'nes-modal-default',
     dark: 'nes-modal-dark',
     primary: 'nes-modal-primary',
     warning: 'nes-modal-warning',
-    danger: 'nes-modal-danger';
+    danger: 'nes-modal-danger',
   }
   function closeModal() {
     if (!closable) return;
@@ -141,16 +141,16 @@
   .nes-modal-overlay {
     position: fixed;
 d;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 1rem;
-    z-index: 1000;
+    z-index: 1000,
   }
   .backdrop-blur {
     backdrop-filter: blur(4px);
@@ -216,7 +216,7 @@ d;
     margin: 0;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    line-height: 1.3;
+    line-height: 1.3,
     flex: 1;
   }
   .nes-modal-close {
@@ -251,7 +251,7 @@ d;
     overflow-y: auto;
     padding: 1.5rem;
     font-size: 0.75rem;
-    line-height: 1.5;
+    line-height: 1.5,
   }
 /* Size Adjustments */ {}
   .max-w-sm {
@@ -270,11 +270,11 @@ d;
   @keyframes modal-close {
     0% {
       transform: scale(1);
-      opacity: 1;
+      opacity: 1,
     }
     100% {
       transform: scale(0.9);
-      opacity: 0;
+      opacity: 0,
     }
   }
 /* Focus styles */ {}
@@ -325,10 +325,10 @@ d;
     }
     @keyframes modal-close {
       0% {
-        opacity: 1;
+        opacity: 1,
       }
       100% {
-        opacity: 0;
+        opacity: 0,
       }
     }
   }

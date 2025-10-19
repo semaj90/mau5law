@@ -39,7 +39,7 @@
     evidenceType: 'all',
     dateRange: 'all',
     priority: 'all',
-    status: 'all';
+    status: 'all',
   });
   // AI-powered organization state
   let aiClusters = $state<any[]>([]);
@@ -57,7 +57,7 @@
     duplicates: 0,
     missingMetadata: 0,
     chainOfCustodyComplete: 0,
-    aiAnalyzed: 0;
+    aiAnalyzed: 0,
   });
   // Reactive derived values
   const filteredEvidence = $derived(() => {
@@ -348,7 +348,7 @@ await loadCaseEvidence();
           officer: custody[0]?.officer_name || 'Unknown Officer',
           evidence: [],
           status: chainStatus;
-          completeness: 0;
+          completeness: 0,
         }
       }
       custodyChains[chainId].evidence.push({
@@ -390,7 +390,7 @@ await loadCaseEvidence();
             evidenceId: evidence.id,
             content: evidence.title + ' ' + (evidence.description || ''),
             useGemmaEmbeddings: true
-            analysisType: 'embedding_only';
+            analysisType: 'embedding_only',
           })
         });
         if (response.ok) {
@@ -428,7 +428,7 @@ await loadCaseEvidence();
             minClusterSize: 2,
             maxClusters: 10,
             similarityThreshold: 0.7,
-            method: 'kmeans';
+            method: 'kmeans',
           }
         })
       });
@@ -546,7 +546,7 @@ await loadCaseEvidence();
     return [{
       evidence: evidenceWithEmbeddings;
       name: 'All Evidence',
-      averageSimilarity: 0.5;
+      averageSimilarity: 0.5,
     }];
   }
   function generateClusterDescription(evidence: unknown[]): string {
@@ -847,10 +847,10 @@ await loadCaseEvidence();
     margin-bottom: 1rem;
   }
   .header-content h1 {
-    margin: 0;
+    margin: 0,
     color: #1e293b;
     font-size: 1.75rem;
-    font-weight: 700;
+    font-weight: 700,
   }
   .case-info {
     display: flex;
@@ -861,7 +861,7 @@ await loadCaseEvidence();
   }
   .collaboration-status {
     color: #059669;
-    font-weight: 500;
+    font-weight: 500,
   }
   .mode-selector {
     display: flex;
@@ -916,7 +916,7 @@ await loadCaseEvidence();
   }
   .metric-value {
     font-size: 1.5rem;
-    font-weight: 700;
+    font-weight: 700,
     color: #1e293b;
   }
   .metric-label {
@@ -1018,7 +1018,7 @@ await loadCaseEvidence();
   .evidence-header h4 {
     margin: 0;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #1e293b;
   }
   .priority-badge {
@@ -1048,7 +1048,7 @@ await loadCaseEvidence();
     margin: 0 0 0.75rem 0;
     color: #64748b;
     font-size: 0.875rem;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .evidence-meta {
     display: flex;
@@ -1061,7 +1061,7 @@ await loadCaseEvidence();
     background: #f1f5f9;
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   /* Category organization styles */
   .category-organization {
@@ -1084,15 +1084,15 @@ await loadCaseEvidence();
     border-bottom: 1px solid #e5e7eb;
   }
   .category-header h3 {
-    margin: 0;
+    margin: 0,
     color: #1e293b;
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .category-count {
     color: #64748b;
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   .evidence-grid {
     display: grid;
@@ -1138,15 +1138,15 @@ await loadCaseEvidence();
     background: #3b82f6;
     border-radius: 50%;
     margin-top: 0.25rem;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .timeline-content {
-    flex: 1;
+    flex: 1,
   }
   .timeline-content h4 {
     margin: 0 0 0.5rem 0;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #1e293b;
   }
   .timeline-meta {
@@ -1198,7 +1198,7 @@ await loadCaseEvidence();
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     font-size: 0.75rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   .cluster-evidence {
     display: grid;
@@ -1236,7 +1236,7 @@ await loadCaseEvidence();
     padding: 0.25rem 0.75rem;
     border-radius: 1rem;
     font-size: 0.75rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   .completeness-0 {
     background: #fef2f2;
@@ -1294,6 +1294,6 @@ await loadCaseEvidence();
     color: #6b7280;
   }
   .custody-action {
-    font-weight: 500;
+    font-weight: 500,
   }
 </style>

@@ -239,7 +239,7 @@
     border: none;
     padding: 0.75rem;
     border-radius: 0.5rem;
-    font-weight: 600;
+    font-weight: 600,
     transition: all 0.3s ease;
   }
 
@@ -265,7 +265,7 @@
   }
 
   .activity-type {
-    font-weight: 600;
+    font-weight: 600,
     color: #00d4aa;
     margin-bottom: 0.5rem;
   }
@@ -283,7 +283,7 @@
   .pages,
   .similarity {
     color: #00d4aa;
-    font-weight: 600;
+    font-weight: 600,
   }
 
   @media (max-width: 768px) {

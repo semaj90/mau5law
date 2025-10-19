@@ -77,7 +77,7 @@
     margin-bottom: 1.5rem;
   }
   label {
-    font-weight: 600;
+    font-weight: 600,
     display: block;
     margin-bottom: 0.5rem;
   }
@@ -97,7 +97,7 @@
     padding: 0.75rem 1.5rem;
     border-radius: 6px;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 600,
     cursor: pointer;
     transition: background 0.2;
   }
@@ -118,6 +118,6 @@
   .error {
     color: #b30000;
     margin-top: 1rem;
-    font-weight: 600;
+    font-weight: 600,
   }
 </style>

@@ -248,7 +248,7 @@
   }
   .profile-header h1 {
     font-size: 32px;
-    font-weight: 700;
+    font-weight: 700,
     color: var(--text-primary, #111827);
     margin-bottom: 8px;
   }
@@ -279,14 +279,14 @@
   }
   .stat-value {
     font-size: 24px;
-    font-weight: 700;
+    font-weight: 700,
     color: var(--text-primary, #111827);
     margin-bottom: 4px;
   }
   .stat-label {
     font-size: 14px;
     color: var(--text-secondary, #6b7280);
-    font-weight: 500;
+    font-weight: 500,
   }
   .alert {
     background: #fef3cd;
@@ -309,9 +309,9 @@
 
   .rag-section-header h2 {
     font-size: 24px;
-    font-weight: 700;
+    font-weight: 700,
     color: var(--text-primary, #111827);
-    margin: 0;
+    margin: 0,
   }
 
   .rag-toggle-button {
@@ -332,7 +332,7 @@
   .rag-description {
     color: var(--text-secondary, #6b7280);
     margin-bottom: 20px;
-    line-height: 1.5;
+    line-height: 1.5,
   }
 
   .rag-upload-container {
@@ -351,7 +351,7 @@
     margin: 0 0 16px 0;
     color: var(--success-text, #0369a1);
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 600,
   }
 
   .rag-stats {
@@ -371,7 +371,7 @@
   .rag-stat .stat-value {
     display: block;
     font-size: 20px;
-    font-weight: 700;
+    font-weight: 700,
     color: var(--primary-color, #3b82f6);
     margin-bottom: 4px;
   }
@@ -379,7 +379,7 @@
   .rag-stat .stat-label {
     font-size: 12px;
     color: var(--text-secondary, #6b7280);
-    font-weight: 500;
+    font-weight: 500,
   }
 
   /* Responsive */

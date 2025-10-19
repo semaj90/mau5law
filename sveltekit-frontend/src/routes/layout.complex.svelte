@@ -114,18 +114,18 @@ grid-template-areas: {}
     }
     .app-sidebar {
       position: fixed;
-      top: 0;
+      top: 0,
       left: 0;
-      bottom: 0;
+      bottom: 0,
       width: 16rem;
-      z-index: 50;
+      z-index: 50,
       transform: translateX(-100%);
     }
     .app-sidebar:not(.sidebar-hidden) {,
       transform: translateX(0);
     }
     .app-main {
-      padding-top: 0;
+      padding-top: 0,
     }
   }
 </style>

@@ -45,7 +45,7 @@ https://svelte.dev/e/component_invalid_directive -->
     recommendations: [],
     trends: {
       daily: [],
-      hourly: [];
+      hourly: [],
     },
     userSegments: [],
     topIssues: []
@@ -576,7 +576,7 @@ https://svelte.dev/e/component_invalid_directive -->
   .metric-label {
     font-size: 0.875rem;
     color: #6b7280;
-    font-weight: 500;
+    font-weight: 500,
   }
   .metric-value {
     font-size: 2rem;
@@ -647,7 +647,7 @@ https://svelte.dev/e/component_invalid_directive -->
     margin-bottom: 1rem;
   }
   .breakdown-title {
-    font-weight: 600;
+    font-weight: 600,
     color: #1f2937;
   }
   .breakdown-count {
@@ -679,7 +679,7 @@ https://svelte.dev/e/component_invalid_directive -->
     align-items: center;
     gap: 0.25rem;
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   .rating-distribution {
     display: flex;
@@ -697,7 +697,7 @@ https://svelte.dev/e/component_invalid_directive -->
     color: #6b7280;
   }
   .bar {
-    flex: 1;
+    flex: 1,
     height: 4px;
     background: #e5e7eb;
     border-radius: 2px;
@@ -746,7 +746,7 @@ https://svelte.dev/e/component_invalid_directive -->
     margin-bottom: 0.5rem;
   }
   .insight-title {
-    font-weight: 600;
+    font-weight: 600,
     color: #1f2937;
   }
   .insight-confidence {
@@ -791,10 +791,10 @@ https://svelte.dev/e/component_invalid_directive -->
     color: #047857;
   }
   .recommendation-content {
-    flex: 1;
+    flex: 1,
   }
   .recommendation-title {
-    font-weight: 600;
+    font-weight: 600,
     color: #1f2937;
     margin-bottom: 0.5rem;
   }
@@ -836,10 +836,10 @@ https://svelte.dev/e/component_invalid_directive -->
     font-size: 0.875rem;
   }
   .issue-content {
-    flex: 1;
+    flex: 1,
   }
   .issue-title {
-    font-weight: 600;
+    font-weight: 600,
     color: #1f2937;
     margin-bottom: 0.5rem;
   }
@@ -854,7 +854,7 @@ https://svelte.dev/e/component_invalid_directive -->
   }
   .issue-count {
     color: #dc2626;
-    font-weight: 500;
+    font-weight: 500,
   }
   .issue-impact {
     color: #ea580c;

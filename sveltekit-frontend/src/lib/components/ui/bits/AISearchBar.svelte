@@ -13,8 +13,8 @@
   }
   const {
     placeholder = 'Ask AI...',
-    userContext = ,
-    neo4jContext = ,
+    userContext = {},
+    neo4jContext = {},
     analyticsLog = () => ,
     onResults = () => ,
     onsearch

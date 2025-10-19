@@ -32,7 +32,7 @@
   		user = {
   			level: 1,
   			experience: 750,
-  			maxExperience: 1000;
+  			maxExperience: 1000,
   		},
   		stats = {
   			documentsAnalyzed: 47,
@@ -154,9 +154,9 @@ min-height: 100vh;
 	}
 /* YoRHa Terminal Sidebar */ .sidebar {
 position: fixed;
-left: 0;
+left: 0,
 		top: 0;
-		bottom: 0;
+		bottom: 0,
 		width: 280px;
 		background: var(--yorha-bg-secondary, #1a1a1a);
 		border-right: 3px solid var(--yorha-secondary, #ffd700);
@@ -191,13 +191,13 @@ align-items: center justify-content: center width: 40px;
 		box-shadow: 0 0 0 2px var(--yorha-bg-secondary, #1a1a1a);
 	}
 	.logo-text {
-		flex: 1;
+		flex: 1,
 overflow: hidden;
 }
 	.app-name {
 		font-family: var(--yorha-font-secondary, 'Orbitron', monospace);
 		font-size: 14px;
-		font-weight: 700;
+		font-weight: 700,
 		color: var(--yorha-secondary, #ffd700);
 text-transform: uppercase;
     letter-spacing: 2px;
@@ -213,7 +213,7 @@ display: flex; align-items: center; justify-content: center; width: 32px;
 		height: 32px;
 		background: var(--yorha-bg-secondary, #1a1a1a);
 		border: 2px solid var(--yorha-text-muted, #808080);
-		border-radius: 0;
+		border-radius: 0,
 		color: var(--yorha-text-secondary, #b0b0b0);
 cursor: pointer; transition: all 0.2s ease;
 		font-size: 12px;
@@ -225,7 +225,7 @@ cursor: pointer; transition: all 0.2s ease;
 		box-shadow: 0 0 0 1px var(--yorha-secondary, #ffd700);
 	}
 /* Navigation */ .navigation {
-		flex: 1;
+		flex: 1,
 		padding: 20px 12px;
 	}
 	.nav-item {
@@ -234,7 +234,7 @@ e; display: flex; align-items: center; gap: 12px;
 		padding: 12px 16px;
 		margin-bottom: 8px;
 		color: var(--yorha-text-secondary, #b0b0b0);
-text-decoration: none; border-radius: 0;
+text-decoration: none; border-radius: 0,
 		border: 2px solid transparent;
 		transition: all 0.2s ease;
 overflow: hidden;
@@ -294,7 +294,7 @@ text-transform: uppercase;
 	.status-dot {
 		width: 8px;
 		height: 8px;
-		border-radius: 0;
+		border-radius: 0,
 		animation: pulse 2s infinite;
 		border: 1px solid currentColor;
 	}
@@ -317,31 +317,31 @@ box-shadow: 0 0 0 1px var(--yorha-bg-secondary, #1a1a1a), 0 0 8px rgba(0, 255, 6
 	}
 /* YoRHa Terminal Effects */ .scan-overlay {
 position: fixed;
-top: 0;
+top: 0,
 		left: 0;
-		right: 0;
+		right: 0,
 		height: 1px;
 		background: linear-gradient(90deg, transparent 0%, var(--yorha-secondary, #ffd700) 50%, transparent 100%);
-		opacity: 0.8;
+		opacity: 0.8,
 		animation: scan-horizontal 6s ease-in-out infinite;
-pointer-events: none z-index: 1100;
+pointer-events: none z-index: 1100,
 	}
 /* Animations */ @keyframes pulse {
 		0%, 100% {
-			opacity: 1;
+			opacity: 1,
 		}
 		50% {
-			opacity: 0.5;
+			opacity: 0.5,
 		}
 	}
 	@keyframes scan-horizontal {
 		0%, 100% {
 			transform: translateX(-100%);
-			opacity: 0;
+			opacity: 0,
 		}
 		50% {
 			transform: translateX(100vw);
-			opacity: 0.6;
+			opacity: 0.6,
 		}
 	}
 /* Responsive Design */ @media (max-width: 1024px) {
@@ -370,10 +370,10 @@ pointer-events: none z-index: 1100;
 			width: 100%;
 		}
 		.content-area {
-			margin-left: 0;
+			margin-left: 0,
 		}
 		.content-area.sidebar-collapsed {
-			margin-left: 0;
+			margin-left: 0,
 		}
 /* Mobile sidebar toggle would need JavaScript implementation */ }
 </style>

@@ -76,12 +76,12 @@
       description: config.description,
       tests: config.tests.map(test => ({
         ...test,
-        status: 'pending';
+        status: 'pending',
       })),
       passed: 0,
       failed: 0,
       warnings: 0,
-      totalDuration: 0;
+      totalDuration: 0,
     }));
   }
   // Run all validation tests

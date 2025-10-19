@@ -169,7 +169,7 @@
 		font-family: 'Press Start 2P', monospace;
 	}
 	.search-field {
-		margin-bottom: 0;
+		margin-bottom: 0,
 	}
 	.search-label {
 		display: flex;
@@ -199,7 +199,7 @@
 		height: 32px;
 		padding: 0;
 		font-size: 16px;
-		line-height: 1;
+		line-height: 1,
 		border: 2px solid #dc3545;
 	}
 	.loading-indicator {
@@ -223,9 +223,9 @@
 	.results-container {
 		position: absolute;
 		top: 100%;
-		left: 0;
+		left: 0,
 		right: 0;
-		z-index: 1000;
+		z-index: 1000,
 		background: white;
 		margin-top: 8px;
 		max-height: 400px;
@@ -260,7 +260,7 @@
 		text-align: left;
 		border: none;
 		border-bottom: 1px solid #dee2e6;
-		margin: 0;
+		margin: 0,
 		cursor: pointer;
 		transition: background-color 0.2;
 	}

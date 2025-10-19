@@ -543,7 +543,7 @@
     margin-bottom: 1rem;
   }
   .nes-field {
-    margin: 0;
+    margin: 0,
   }
   .nes-field label {
     font-family: 'Press Start 2P', monospace;

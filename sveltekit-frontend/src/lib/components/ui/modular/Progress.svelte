@@ -26,7 +26,7 @@ https://svelte.dev/e/js_parse_error -->
     showPercentage = false,
     label,
     class: className = '',
-    ...restProp;
+    ...restProp
   }: Props = $props();
   // Calculate percentage
   let percentage = $derived(Math.min((value / max) * 100, 100));
@@ -44,17 +44,17 @@ https://svelte.dev/e/js_parse_error -->
           error: 'bg-red-100 dark:bg-red-900/20',
           info: 'bg-blue-100 dark:bg-blue-900/20',
           yorha: 'bg-black border-2 border-yellow-400/30 rounded-none',
-          legal: 'bg-blue-50 border border-blue-200 dark:bg-blue-950/50 dark:border-blue-800';
+          legal: 'bg-blue-50 border border-blue-200 dark:bg-blue-950/50 dark:border-blue-800',
         },
         size: {
           sm: 'h-2',
           default: 'h-3',
-          lg: 'h-4';
+          lg: 'h-4',
         }
       },
       defaultVariants: {
         variant: 'default',
-        size: 'default';
+        size: 'default',
       }
     }
   );
@@ -70,7 +70,7 @@ https://svelte.dev/e/js_parse_error -->
           error: 'bg-red-600',
           info: 'bg-blue-600',
           yorha: 'bg-gradient-to-r from-yellow-400/80 to-yellow-400 shadow-lg shadow-yellow-400/20',
-          legal: 'bg-blue-600';
+          legal: 'bg-blue-600',
         }
       }
     }
@@ -132,9 +132,9 @@ https://svelte.dev/e/js_parse_error -->
   :global($1) {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: linear-gradient(90deg, transparent 0%, rgba(212, 175, 55, 0.1) 50%, transparent 100%);
     animation: yorha-scan 2s infinite linear;

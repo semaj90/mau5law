@@ -28,7 +28,7 @@
       variant: 'legal',
       title: 'Case Updated',
       description: `${caseName} - ${action}`,
-      duration: 4000;
+      duration: 4000,
     });
   }
   export function showEvidenceProcessed(fileName: string) {
@@ -36,7 +36,7 @@
       variant: 'success',
       title: 'Evidence Processed',
       description: `${fileName} has been analyzed and indexed`,
-      duration: 6000;
+      duration: 6000,
     });
   }
   export function showAIAnalysisComplete(documentType: string) {
@@ -44,7 +44,7 @@
       variant: 'info',
       title: 'AI Analysis Complete',
       description: `${documentType} analysis finished`,
-      duration: 5000;
+      duration: 5000,
     });
   }
   export function showLegalDeadlineWarning(deadline: string, daysLeft: number) {

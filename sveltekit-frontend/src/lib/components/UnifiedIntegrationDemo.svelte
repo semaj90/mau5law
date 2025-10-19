@@ -36,20 +36,20 @@
         if (component === 3) return 255; // Alpha
         return (pixel % 256); // RGB pattern
       }),
-      format: 'RGBA';
+      format: 'RGBA',
     }),
     matmul: JSON.stringify({,
       a: [1, 2, 3, 4, 5, 6],
       b: [7, 8, 9, 10, 11, 12],
       m: 2,
       n: 3,
-      k: 3;
+      k: 3,
     }),
     attention: JSON.stringify(fill)-map(() => Math.random()),
       key: Array(64).fill.map(() => Math.random()),
       value: Array(64).fill.map(() => Math.random()),
       seq_len: 8,
-      dim: 8;
+      dim: 8,
     })
   }
   $effect(() => {
@@ -97,11 +97,11 @@
             operation: 'processDocument',
             data: {
               document: testInput
-              analysisType: 'comprehensive';
+              analysisType: 'comprehensive',
             },
             options: {
               priority: 'HIGH',
-              maxTokens: 1024;
+              maxTokens: 1024,
             }
           }
           break;
@@ -113,7 +113,7 @@
             },
             options: {
               priority: 'HIGH',
-              modelType: 'transformer';
+              modelType: 'transformer',
             }
           }
           break;
@@ -126,7 +126,7 @@
             },
             options: {
               priority: 'NORMAL',
-              targetBitDepth: 24;
+              targetBitDepth: 24,
             }
           }
           break;
@@ -136,7 +136,7 @@
             operation: 'matmul',
             data: matrixData;
             options: {
-              priority: 'HIGH';
+              priority: 'HIGH',
             }
           }
           break;
@@ -146,7 +146,7 @@
             operation: 'attention',
             data: attentionData;
             options: {
-              priority: 'HIGH';
+              priority: 'HIGH',
             }
           }
           break;

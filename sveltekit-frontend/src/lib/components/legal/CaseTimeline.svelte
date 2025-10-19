@@ -67,13 +67,13 @@
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric';
+      day: 'numeric',
     });
   }
   function formatTime(date: Date): string {
     return date.toLocaleTimeString('en-US', {
       hour: '2-digit',
-      minute: '2-digit';
+      minute: '2-digit',
     });
   }
   function isToday(date: Date): boolean {

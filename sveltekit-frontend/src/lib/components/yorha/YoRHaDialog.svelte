@@ -223,11 +223,11 @@ https://svelte.dev/e/attribute_duplicate -->
 <style>
   .yorha-dialog-backdrop {
 position: fixed;
-top: 0;
+top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
-    z-index: 10001;
+    z-index: 10001,
 display: flex;
 align-items: center justify-content: center background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(1px);
@@ -268,7 +268,7 @@ display: flex;
 align-items: flex-start;
     gap: 12px;
     flex: 1;
-    min-width: 0;
+    min-width: 0,
   }
   .dialog-icon {
     width: 24px;
@@ -277,12 +277,12 @@ align-items: flex-start;
 display: flex;
 align-items: center justify-content: center font-size: 14px;
     font-weight: 700;
-    flex-shrink: 0;
+    flex-shrink: 0,
     background: var(--yorha-bg-primary, #0a0a0a);
   }
   .header-text {
     flex: 1;
-    min-width: 0;
+    min-width: 0,
   }
   .dialog-title {
     color: var(--yorha-secondary, #ffd700);
@@ -294,7 +294,7 @@ text-transform: uppercase; letter-spacing: 1px;
   .dialog-message {
     color: var(--yorha-text-primary, #e0e0e0);
     font-size: 12px;
-    line-height: 1.4;
+    line-height: 1.4,
     margin: 0;
   }
   .dialog-close {
@@ -304,7 +304,7 @@ background: transparent; border: 1px solid var(--yorha-text-muted, #808080);
     color: var(--yorha-text-muted, #808080);
 cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px;
     transition: all 0.2s ease;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .dialog-close:hover {
     border-color: var(--yorha-danger, #ff0041);
@@ -321,7 +321,7 @@ flex-direction: column gap: 8px;
   }
   .prompt-label {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 600,
     color: var(--yorha-text-secondary, #b0b0b0);
 text-transform: uppercase; letter-spacing: 1px;
   }
@@ -374,24 +374,24 @@ background: currentColor color: var(--yorha-bg-primary, #0a0a0a);
   }
 /* Terminal Scan Effect */ .scan-effect {
     position: absolute;
-    top: 0;
+    top: 0,
     left: -100%;
     width: 100%;
     height: 2px;
-    opacity: 0.8;
+    opacity: 0.8,
     animation: scan 3s ease-in-out infinite;
   }
   @keyframes scan {
     0% {
       left: -100%;
-      opacity: 0;
+      opacity: 0,
     }
     50% {
-      opacity: 0.8;
+      opacity: 0.8,
     }
     100% {
       left: 100%;
-      opacity: 0;
+      opacity: 0,
     }
   }
 /* Responsive Design */ @media (max-width: 768px) {

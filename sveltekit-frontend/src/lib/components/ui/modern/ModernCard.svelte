@@ -49,13 +49,13 @@
       default: 'bg-yorha-bg-card border border-yorha-border-primary',
       elevated: 'bg-yorha-bg-card border border-yorha-border-primary shadow-lg',
       outline: 'bg-transparent border border-yorha-border-accent',
-      ghost: 'bg-transparent border-transparent hover:bg-yorha-bg-hover';
+      ghost: 'bg-transparent border-transparent hover:bg-yorha-bg-hover',
     }
     const sizes = {
       sm: 'p-golden-md',
       md: 'p-golden-lg',
       lg: 'p-golden-xl',
-      xl: 'p-golden-2xl';
+      xl: 'p-golden-2xl',
     }
     const interactive = hoverable ? 'hover:border-yorha-border-accent hover:shadow-md' : '';
     const cursor = clickable ? 'cursor-pointer' : '';
@@ -132,19 +132,19 @@
   }
   .card-title {
     font-size: var(--text-lg);
-    font-weight: 600;
+    font-weight: 600,
     color: var(--yorha-text-primary);
     text-transform: uppercase;
     letter-spacing: 0.025em;
-    margin: 0;
+    margin: 0,
   }
   .card-subtitle {
     font-size: var(--text-sm);
     color: var(--yorha-text-muted);
-    margin: 0;
+    margin: 0,
   }
   .card-content {
-    flex: 1;
+    flex: 1,
   }
   .card-footer {
     border-top: 1px solid var(--yorha-border-secondary);
@@ -158,7 +158,7 @@
   }
   .loading-overlay {
     position: absolute;
-    inset: 0;
+    inset: 0,
     background: rgba(0, 0, 0, 0.6);
     display: flex;
     align-items: center;

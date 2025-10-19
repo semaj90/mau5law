@@ -90,7 +90,7 @@ https://svelte.dev/e/js_parse_error -->
       $aiOpen = false;
       ondispatch?.({ query, context: content });
     } catch (err) {
-      error = err instanceof Error ? err.message: "AI request failed";
+      error = err instanceof Error ? err.message: "AI request failed",
     } finally {
       isProcessingAI = false;
   }}

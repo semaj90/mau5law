@@ -64,10 +64,10 @@ await checkGPUStatus();
   		} catch (error) {
   			console.error('Failed to check GPU status:', error);
   			gpuStatus = {
-  				available: false;
+  				available: false,
   				model: 'Not Available',
   				utilization: 0,
-  				processing_speed: 'N/A';
+  				processing_speed: 'N/A',
   			}
   		}
   	}
@@ -98,7 +98,7 @@ await checkGPUStatus();
   					metadata: {
   						case_vectors: caseVectors;
   						threshold: 0.6,
-  						gpu_acceleration: true;
+  						gpu_acceleration: true,
   					},
   					priority: 'high' // Use direct CUDA processing;
   				})

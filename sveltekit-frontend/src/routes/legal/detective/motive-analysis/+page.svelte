@@ -35,7 +35,7 @@
     confidenceLevel: 0,
     totalEvidence: 0,
     profiledSuspects: 0,
-    motiveConfidence: 0;
+    motiveConfidence: 0,
   });
   // NES-GPU Memory Bridge Integration
   let memoryMetrics = $state({
@@ -181,19 +181,19 @@
         pattern: 'Escalating Aggression',
         confidence: 0.87,
         timeline: ['Week 1: Verbal confrontations', 'Week 2: Property damage', 'Week 3: Direct threats'],
-        riskLevel: 'HIGH';
+        riskLevel: 'HIGH',
       },
       {
         pattern: 'Premeditation Indicators',
         confidence: 0.72,
         timeline: ['Research phase', 'Resource acquisition', 'Opportunity assessment'],
-        riskLevel: 'MEDIUM';
+        riskLevel: 'MEDIUM',
       },
       {
         pattern: 'Emotional Dysregulation',
         confidence: 0.94,
         timeline: ['Trigger events', 'Emotional outbursts', 'Impulsive decisions'],
-        riskLevel: 'HIGH';
+        riskLevel: 'HIGH',
       }
     ];
   }
@@ -206,7 +206,7 @@
         violence: 78,
         manipulation: 65,
         impulsivity: 89,
-        planning: 45;
+        planning: 45,
       },
       recommendations: [
         'Psychological evaluation required',
@@ -222,21 +222,21 @@
         type: 'Digital Communication',
         correlationScore: 0.92,
         motiveSupport: ['REVENGE', 'FINANCIAL'],
-        timelinePosition: '2024-01-15T10:30:00Z';
+        timelinePosition: '2024-01-15T10:30:00Z',
       },
       {
         evidenceId: 'E002',
         type: 'Financial Records',
         correlationScore: 0.78,
         motiveSupport: ['FINANCIAL'],
-        timelinePosition: '2024-01-20T14:15:00Z';
+        timelinePosition: '2024-01-20T14:15:00Z',
       },
       {
         evidenceId: 'E003',
         type: 'Witness Statement',
         correlationScore: 0.85,
         motiveSupport: ['REVENGE', 'JEALOUSY'],
-        timelinePosition: '2024-02-01T09:00:00Z';
+        timelinePosition: '2024-02-01T09:00:00Z',
       }
     ];
   }
@@ -286,7 +286,7 @@
       timeline: {
         immediate: 'Monitor closely - increased surveillance recommended',
         shortTerm: 'Intervention required within 48-72 hours',
-        longTerm: 'Comprehensive treatment and ongoing monitoring';
+        longTerm: 'Comprehensive treatment and ongoing monitoring',
       }
     }
   }
@@ -331,9 +331,9 @@
         aggression: 78,
         deception: 65,
         impulsivity: 89,
-        planning: 45;
+        planning: 45,
       },
-      timeline: [];
+      timeline: [],
     }
   }
   function generateMockTimeline(): TimelineEvent[] {
@@ -343,21 +343,21 @@
         event: 'Threatening email sent to victim',
         significance: 'HIGH',
         evidenceIds: ['E001'],
-        correlationScore: 0.92;
+        correlationScore: 0.92,
       },
       {
         timestamp: '2024-01-20T14:15:00Z',
         event: 'Financial records accessed',
         significance: 'MEDIUM',
         evidenceIds: ['E002'],
-        correlationScore: 0.78;
+        correlationScore: 0.78,
       },
       {
         timestamp: '2024-02-01T09:00:00Z',
         event: 'Public confrontation witnessed',
         significance: 'HIGH',
         evidenceIds: ['E003'],
-        correlationScore: 0.85;
+        correlationScore: 0.85,
       }
     ];
   }

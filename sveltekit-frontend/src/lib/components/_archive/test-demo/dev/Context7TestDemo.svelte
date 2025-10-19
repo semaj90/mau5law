@@ -71,7 +71,7 @@
         maxResults: 5,
         confidenceThreshold: 0.7,
         includeCode: true
-        includeDocs: true;
+        includeDocs: true,
       });
       console.log('[Context7 Test] Semantic search completed:', searchResults);
       $testResults = [
@@ -93,7 +93,7 @@
           status: 'error',
           timestamp: new Date().toISOString(),
           error: String(error),
-          summary: 'Failed to run semantic search';
+          summary: 'Failed to run semantic search',
         }
       ];
     } finally {
@@ -134,7 +134,7 @@
           status: 'error',
           timestamp: new Date().toISOString(),
           error: String(error),
-          summary: 'Failed to run agent orchestration';
+          summary: 'Failed to run agent orchestration',
         }
       ];
     } finally {

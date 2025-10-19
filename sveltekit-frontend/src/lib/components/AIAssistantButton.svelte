@@ -42,7 +42,7 @@
         body: JSON.stringify({,
           model: 'gemma3-legal',
           prompt: query || 'Legal AI status check',
-          stream: false;
+          stream: false,
           options: {
             temperature: 0.1,
             num_ctx: 4096,
@@ -131,7 +131,7 @@
         body: JSON.stringify({,
           query: query || 'legal evidence analysis',
           useContextRAG: true
-          maxResults: 10;
+          maxResults: 10,
         })
       });
       const time = Date.now() - startTime;

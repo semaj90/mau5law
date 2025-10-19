@@ -909,7 +909,7 @@ Reset Filters
   }
   @media (min-width: 1024px) {
     .search-actions {
-      flex-shrink: 0;
+      flex-shrink: 0,
     }
   }
   .search-button,
@@ -972,7 +972,7 @@ Reset Filters
   }
   .filter-label {
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   .checkbox-group {
     display: flex;
@@ -999,7 +999,7 @@ Reset Filters
   }
   .results-title {
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .results-stats {
     font-size: 0.875rem;
@@ -1018,7 +1018,7 @@ Reset Filters
   }
   .stats-label {
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   .stats-badges {
     display: flex;
@@ -1049,7 +1049,7 @@ Reset Filters
   }
   .result-title-section {
     flex: 1;
-    min-width: 0;
+    min-width: 0,
   }
   .result-title {
     font-weight: 500;
@@ -1086,11 +1086,11 @@ Reset Filters
     color: var(--muted-foreground);
   }
   .metric-value {
-    font-weight: 500;
+    font-weight: 500,
   }
   .result-snippet {
     font-size: 0.875rem;
-    line-height: 1.625;
+    line-height: 1.625,
   }
   .result-tags {
     display: flex;
@@ -1122,7 +1122,7 @@ Reset Filters
   }
   .no-results-title {
     font-size: 1.125rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   .no-results-description {
     color: var(--muted-foreground);
@@ -1176,7 +1176,7 @@ Reset Filters
   }
   .metric-value {
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .performance-metrics {
     display: flex;
@@ -1198,7 +1198,7 @@ Reset Filters
     font-size: 0.875rem;
   }
   .performance-bar {
-    flex: 1;
+    flex: 1,
   }
   .performance-value {
     width: 4rem;

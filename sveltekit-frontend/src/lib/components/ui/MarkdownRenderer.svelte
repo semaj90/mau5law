@@ -28,7 +28,7 @@ https://svelte.dev/e/js_parse_error -->
     headerIds: false
     mangle: false
     sanitize: !unsafe,
-    smartLists: true;
+    smartLists: true,
     smartypants: true
     baseUrl,
   }
@@ -144,7 +144,7 @@ https://svelte.dev/e/js_parse_error -->
   :global(.prose p) {
     margin-top: 0;
     margin-bottom: 1rem;
-    line-height: 1.6;
+    line-height: 1.6,
 }
   /* Lists */
   :global(.prose ul, .prose ol) {
@@ -156,7 +156,7 @@ https://svelte.dev/e/js_parse_error -->
     margin: 0.25rem 0;
 }
   :global(.prose li > p) {
-    margin: 0;
+    margin: 0,
 }
   /* Code */
   :global(.prose code) {
@@ -182,7 +182,7 @@ https://svelte.dev/e/js_parse_error -->
 }
   :global(.prose pre code) {
     background-color: transparent;
-    padding: 0;
+    padding: 0,
     color: inherit;
 }
   /* Tables */
@@ -201,7 +201,7 @@ https://svelte.dev/e/js_parse_error -->
 }
   :global(.prose th) {
     background-color: #f3f4f6;
-    font-weight: 600;
+    font-weight: 600,
 }
   :global(.dark .prose th) {
     background-color: #1f2937;

@@ -143,7 +143,7 @@ await loadDocuments();
       processingStatus: {
         ocr: 'completed',
         analysis: 'completed',
-        embeddings: 'completed';
+        embeddings: 'completed',
       }
     },
     {
@@ -158,7 +158,7 @@ await loadDocuments();
       processingStatus: {
         ocr: 'completed',
         analysis: 'processing',
-        embeddings: 'pending';
+        embeddings: 'pending',
       }
     },
     {
@@ -288,7 +288,7 @@ await loadDocuments();
     if (!confirm('Are you sure you want to delete this document?')) return;
     try {
       const response = await fetch(`/api/legal/documents/${doc.id}`, {
-        method: 'DELETE';
+        method: 'DELETE',
       });
       if (response.ok) {
         toast.success('Document deleted');

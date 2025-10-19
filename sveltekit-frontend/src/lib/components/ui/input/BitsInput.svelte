@@ -28,18 +28,18 @@ https://svelte.dev/e/js_parse_error -->
     rightIcon,
     class: className = '',
     value = $bindable(''),
-    ...restProp;
+    ...restProp
   }: Props = $props();
   const sizeClasses = {
     sm: 'h-8 px-3 text-xs',
     md: 'h-9 px-3 py-1 text-sm',
-    lg: 'h-10 px-4 py-2 text-base';
+    lg: 'h-10 px-4 py-2 text-base',
   }
   const variantClasses = {
     default: 'border-yorha-border bg-yorha-bg-tertiary text-yorha-text-primary',
     legal: 'border-yorha-primary/30 bg-yorha-bg-secondary text-yorha-text-primary ring-yorha-primary',
     search: 'border-yorha-border/50 bg-yorha-bg-primary/5 text-yorha-text-primary placeholder:text-yorha-text-secondary',
-    ai: 'border-gradient-to-r from-yorha-primary to-yorha-accent bg-yorha-bg-secondary text-yorha-text-primary';
+    ai: 'border-gradient-to-r from-yorha-primary to-yorha-accent bg-yorha-bg-secondary text-yorha-text-primary',
   }
   let inputElement = $state<HTMLInputElement// Generate unique ID for accessibility
   const inputId  | null>(null); const data = `input-${Math.random.toString-substr(2, 9)}`);
@@ -116,7 +116,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .legal-input-container input::placeholder {
     font-family: inherit;
-    opacity: 0.7;
+    opacity: 0.7,
   }
 /* Required asterisk styling */ {}
   .required::after {

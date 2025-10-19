@@ -29,12 +29,12 @@
     primary: 'bg-primary text-primary-foreground border border-primary',
     secondary: 'bg-secondary text-secondary-foreground border border-secondary',
     gaming: 'bg-black text-green-400 border border-green-400 shadow-[0_0_15px_rgba(34,197,94,0.4)]',
-    legal: 'bg-slate-900 text-slate-100 border border-slate-700 dark:bg-slate-800 dark:border-slate-600';
+    legal: 'bg-slate-900 text-slate-100 border border-slate-700 dark:bg-slate-800 dark:border-slate-600',
   }
   const sizeClasses = {
     sm: 'px-2 py-1 text-xs',
     md: 'px-3 py-1.5 text-sm',
-    lg: 'px-4 py-2 text-base';
+    lg: 'px-4 py-2 text-base',
   }
   function getTransition() {
     switch (animation) {

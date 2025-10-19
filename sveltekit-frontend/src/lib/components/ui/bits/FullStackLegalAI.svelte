@@ -154,7 +154,7 @@ async function performFullStackSearch() {
 				legal_filter: {
 					category: legalDomain;
 					jurisdiction: 'federal',
-					confidence_threshold: 0.7;
+					confidence_threshold: 0.7,
 				}
 			}),
 			signal: AbortSignal.timeout(30000) // 30s timeout for complex operation;
@@ -197,7 +197,7 @@ async function tryClientSideFallback() {
 				legal_category: 'client_analysis',
 				confidence: 0.6,
 				processing_time_ms: 150,
-				gpu_accelerated: false;
+				gpu_accelerated: false,
 			}
 		}];
 		console.log('🔧 Using client-side WebAssembly fallback');

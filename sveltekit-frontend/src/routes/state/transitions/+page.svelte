@@ -295,7 +295,7 @@ https://svelte.dev/e/expected_token -->
     color: #9ca3af;
   }
   .breadcrumb-current {
-    font-weight: 500;
+    font-weight: 500,
   }
   .page-header h1 {
     font-size: 2.5rem;
@@ -313,7 +313,7 @@ https://svelte.dev/e/expected_token -->
     gap: 1rem;
   }
   .state-label {
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
   }
   .current-state {
@@ -378,7 +378,7 @@ https://svelte.dev/e/expected_token -->
   }
   .timeline-header h2 {
     color: #1f2937;
-    margin: 0;
+    margin: 0,
   }
   .timeline-stats {
     font-size: 0.875rem;
@@ -451,7 +451,7 @@ https://svelte.dev/e/expected_token -->
     color: #6b7280;
   }
   .duration {
-    font-weight: 500;
+    font-weight: 500,
     color: #059669;
   }
   .transition-details {
@@ -465,7 +465,7 @@ https://svelte.dev/e/expected_token -->
     gap: 1.5rem;
   }
   .detail-section h4 {
-    font-weight: 600;
+    font-weight: 600,
     color: #374151;
     margin-bottom: 0.75rem;
     font-size: 0.875rem;
@@ -479,7 +479,7 @@ https://svelte.dev/e/expected_token -->
     border-radius: 6px;
     font-size: 0.75rem;
     overflow-x: auto;
-    margin: 0;
+    margin: 0,
   }
   .guards-list,
   .actions-list {
@@ -524,7 +524,7 @@ https://svelte.dev/e/expected_token -->
   .control-note {
     font-size: 0.875rem;
     color: #6b7280;
-    margin: 0;
+    margin: 0,
   }
   @media (max-width: 768px) {
     .page-container {

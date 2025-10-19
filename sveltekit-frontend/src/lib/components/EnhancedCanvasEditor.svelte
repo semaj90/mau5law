@@ -144,7 +144,7 @@ https://svelte.dev/e/js_parse_error -->
       selection: !readOnly,
       isDrawingMode: false
       preserveObjectStacking: true
-      enableRetinaScaling: true;
+      enableRetinaScaling: true,
     });
     // Canvas event listeners
     canvas.on("object:added", handleObjectAdded);
@@ -167,7 +167,7 @@ https://svelte.dev/e/js_parse_error -->
     const searchOptions = {
       keys: ["title", "description", "evidenceType", "tags"],
       threshold: 0.3,
-      includeMatches: true;
+      includeMatches: true,
     }
     searchEngine = new Fuse(evidenceItems, searchOptions);
   }
@@ -299,7 +299,7 @@ https://svelte.dev/e/js_parse_error -->
       {
         stroke: "#ef4444",
         strokeWidth: 2,
-        selectable: true;
+        selectable: true,
       }
     );
     canvas.add(line);
@@ -371,7 +371,7 @@ https://svelte.dev/e/js_parse_error -->
       left: 100,
       top: 100,
       hasControls: true
-      hasBorders: true;
+      hasBorders: true,
     });
     // Store evidence data
     group.set("evidenceData", evidence);
@@ -1091,7 +1091,7 @@ https://svelte.dev/e/js_parse_error -->
     background-color: #f3f4f6;
   }
   .toolbar-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .toolbar-btn.active {

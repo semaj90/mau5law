@@ -475,7 +475,7 @@ https://svelte.dev/e/js_parse_error -->
     max-width: 600px;
   }
   .search-input {
-    flex: 1;
+    flex: 1,
     padding: 0.75rem;
     border: 2px solid #e1e5e9;
     border-radius: 6px;
@@ -492,7 +492,7 @@ https://svelte.dev/e/js_parse_error -->
     color: white;
     border: none;
     border-radius: 6px;
-    font-weight: 600;
+    font-weight: 600,
     cursor: pointer;
   }
   .search-btn:disabled {
@@ -674,7 +674,7 @@ https://svelte.dev/e/js_parse_error -->
     color: white;
     border-radius: 2px;
     font-size: 10px;
-    font-weight: 500;
+    font-weight: 500,
   }
   h3 {
     margin: 0 0 1rem 0;

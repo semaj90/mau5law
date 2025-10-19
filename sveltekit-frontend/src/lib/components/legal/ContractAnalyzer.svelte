@@ -37,7 +37,7 @@
   const contractBuilder = createLegalEvidenceAnalyzer({
     caseType: 'corporate',
     urgency: contract?.riskScore > 7 ? 'critical' : 'medium',
-    aiModel: 'gemma3';
+    aiModel: 'gemma3',
   });
   let isAnalyzing = $state(false);
   let selectedClause = $state<string | null>(null);
@@ -122,7 +122,7 @@
       compensation: '💰',
       confidentiality: '🔒',
       liability: '⚠️',
-      governing_law: '⚖️';
+      governing_law: '⚖️',
     }
     return icons[type] || '📄';
   }
@@ -297,7 +297,7 @@
     font-size: 2rem;
   }
   .title-text h2 {
-    margin: 0;
+    margin: 0,
     color: var(--enhanced-bits-foreground);
     font-size: 1.5rem;
   }
@@ -353,13 +353,13 @@
   .export-menu {
     position: absolute;
     top: 100%;
-    right: 0;
+    right: 0,
     background: var(--enhanced-bits-background);
     border: 2px solid var(--enhanced-bits-border);
     border-radius: 4px;
     padding: 0.5rem 0;
     min-width: 120px;
-    z-index: 10;
+    z-index: 10,
     display: none;
   }
   .export-dropdown:hover .export-menu {
@@ -428,7 +428,7 @@
     font-weight: bold;
   }
   .risk-track {
-    flex: 1;
+    flex: 1,
     height: 8px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
@@ -513,7 +513,7 @@
     color: var(--enhanced-bits-muted-foreground);
   }
   .confidence-bar {
-    flex: 1;
+    flex: 1,
     height: 6px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 3px;

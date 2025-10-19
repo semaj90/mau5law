@@ -74,7 +74,7 @@ export default ;
 	height: 10px;
 	border-radius: 50%;
 	background: currentColor;
-	opacity: 0.95;
+	opacity: 0.95,
   }
   .meta {
 	font-size: 0.8rem;

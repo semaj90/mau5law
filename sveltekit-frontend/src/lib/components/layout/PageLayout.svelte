@@ -4,7 +4,9 @@ https://svelte.dev/e/render_tag_invalid_expression -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { cn } from '$lib/utils';
+  import type { Snippet } from 'svelte';
   interface Props {
+    children?: Snippet | null;
     title?: string;
     subtitle?: string;
     variant?: 'default' | 'dashboard' | 'legal' | 'yorha';
@@ -23,7 +25,8 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     padding = 'lg',
     gap = 'md',
     class: className = '',
-    ...restProp
+    children,
+    ...restProps
   }: Props = $props();
   let containerClass = $derived(() => {
     const baseClass = "flex flex-col min-h-screen";
@@ -31,7 +34,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
       default: "nes-legal-container bg-gray-900 text-white",
       dashboard: "yorha-3d-panel nes-legal-container bg-gray-900 text-white",
       legal: "nes-legal-container nes-legal-priority-medium bg-gray-900 text-white",
-      yorha: "yorha-3d-panel neural-sprite-active bg-gray-900 text-yellow-400";
+      yorha: "yorha-3d-panel neural-sprite-active bg-gray-900 text-yellow-400",
     }
     const maxWidthClasses = {
       sm: "max-w-sm",
@@ -39,21 +42,21 @@ https://svelte.dev/e/render_tag_invalid_expression -->
       lg: "max-w-lg",
       xl: "max-w-7xl",
       '2xl': "max-w-screen-2xl",
-      full: "max-w-none";
+      full: "max-w-none",
     }
     const paddingClasses = {
       none: "p-0",
       sm: "p-2",
       md: "p-4",
       lg: "p-6",
-      xl: "p-8";
+      xl: "p-8",
     }
     const gapClasses = {
       none: "gap-0",
       sm: "gap-2",
       md: "gap-6",
       lg: "gap-8",
-      xl: "gap-12";
+      xl: "gap-12",
     }
     return cn(
       baseClass,
@@ -71,6 +74,15 @@ https://svelte.dev/e/render_tag_invalid_expression -->
       gap === 'md' ? 'mb-8' :
       gap === 'lg' ? 'mb-12' : 'mb-16'
     );
+  });
+  // new: compute main classes (avoid inline { } in a quoted class string)
+  let mainClass = $derived(() => {
+    const gapClass =
+      gap === 'none' ? 'gap-0' :
+      gap === 'sm' ? 'gap-4' :
+      gap === 'md' ? 'gap-6' :
+      gap === 'lg' ? 'gap-8' : 'gap-12';
+    return `flex-1 flex flex-col ${gapClass}`;
   });
 </script>
 <div class={containerClass} {...restProps}>
@@ -91,8 +103,11 @@ https://svelte.dev/e/render_tag_invalid_expression -->
       {/if}
     </header>
   {/if}
-  <main class="flex-1 flex flex-col {gap === 'none' ? 'gap-0' : gap === 'sm' ? 'gap-4' : gap === 'md' ? 'gap-6' : gap === 'lg' ? 'gap-8' : 'gap-12'}">
-    {@render children}
+  <main class={mainClass}>
+    <!-- Svelte 5: render incoming content via a Snippet when provided -->
+    {#if children}
+      {@render children()}
+    {/if}
   </main>
 </div>
 <style>/* Ensure consistent flexbox behavior */ :global(.page-content) {
@@ -124,7 +139,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
   :global(.flex-between) {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
   }
   :global(.flex-col-center) {
     display: flex;

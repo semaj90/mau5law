@@ -53,7 +53,7 @@
     completed: 0,
     failed: 0,
     processing: 0,
-    averageTime: 0;
+    averageTime: 0,
   });
   // Drag and drop handlers
   function handleDragEnter(e: DragEvent) {
@@ -230,7 +230,7 @@
     await new Promise(resolve => setTimeout(resolve, 1000));
     const extractedMetadata: any = {
       extractedText: '',
-      tags: [];
+      tags: [],
     }
     // Mock text extraction based on file type
     switch (evidenceFile.metadata?.type) {
@@ -307,7 +307,7 @@
       completed: 0,
       failed: 0,
       processing: 0,
-      averageTime: 0;
+      averageTime: 0,
     }
   }
   // Utility functions
@@ -553,7 +553,7 @@
     margin-bottom: 0.25rem;
   }
   .info-value {
-    font-weight: 600;
+    font-weight: 600,
     color: #1f2937;
   }
   .info-value.enabled {
@@ -594,7 +594,7 @@
     margin-bottom: 1rem;
   }
   .stats-header h4 {
-    margin: 0;
+    margin: 0,
     color: white;
   }
   .clear-button {
@@ -646,7 +646,7 @@
     overflow: hidden;
   }
   .file-list h4 {
-    margin: 0;
+    margin: 0,
     padding: 1rem 1.5rem;
     background: #f8fafc;
     color: #1f2937;
@@ -678,10 +678,10 @@
   }
   .file-details {
     flex: 1;
-    min-width: 0;
+    min-width: 0,
   }
   .file-name {
-    font-weight: 600;
+    font-weight: 600,
     color: #1f2937;
     word-break: break-word;
   }
@@ -695,11 +695,11 @@
     border: none;
     cursor: pointer;
     font-size: 1rem;
-    opacity: 0.7;
+    opacity: 0.7,
     transition: opacity 0.2s ease;
   }
   .remove-button:hover {
-    opacity: 1;
+    opacity: 1,
   }
   .progress-bar {
     width: 100%;
@@ -718,7 +718,7 @@
     font-size: 0.9rem;
   }
   .status-text {
-    font-weight: 500;
+    font-weight: 500,
   }
   .file-tags {
     display: flex;
@@ -732,7 +732,7 @@
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     font-size: 0.75rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   .ai-analysis {
     margin-top: 0.75rem;

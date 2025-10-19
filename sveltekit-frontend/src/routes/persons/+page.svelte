@@ -66,7 +66,7 @@
         contactInfo: 'marcus.chen@techcorp.com, (555) 012-3456',
         criminalHistory: ['Computer Fraud - 2019', 'Identity Theft - 2020'],
         notes: 'Highly skilled in cybersecurity. Potential access to sensitive systems.',
-        photo: 'https://ui-avatars.com/api/?name=MC&background=dc2626&color=fff&size=200';
+        photo: 'https://ui-avatars.com/api/?name=MC&background=dc2626&color=fff&size=200',
       },
       tags: ['cybercrime', 'fraud', 'high-tech'],
       caseIds: ['case-2024-001', 'case-2024-007'],
@@ -93,7 +93,7 @@
         contactInfo: 'i.santos@financegroup.com, (555) 987-6543',
         criminalHistory: [],
         notes: 'Cooperative witness. Has valuable information about financial transactions.',
-        photo: 'https://ui-avatars.com/api/?name=IS&background=059669&color=fff&size=200';
+        photo: 'https://ui-avatars.com/api/?name=IS&background=059669&color=fff&size=200',
       },
       tags: ['finance', 'witness', 'cooperative'],
       caseIds: ['case-2024-003'],
@@ -120,7 +120,7 @@
         contactInfo: 'Multiple burner phones',
         criminalHistory: ['Organized Crime - 2010', 'Arms Trafficking - 2015', 'Racketeering - 2018'],
         notes: 'EXTREMELY DANGEROUS. Do not approach alone. Armed and dangerous.',
-        photo: 'https://ui-avatars.com/api/?name=VK&background=991b1b&color=fff&size=200';
+        photo: 'https://ui-avatars.com/api/?name=VK&background=991b1b&color=fff&size=200',
       },
       tags: ['organized-crime', 'dangerous', 'armed'],
       caseIds: ['case-2024-001', 'case-2024-004', 'case-2024-008'],

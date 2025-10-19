@@ -1184,9 +1184,9 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   .evidence-canvas-container::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     height: 4px;
     background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4, #10b981);
     border-radius: 12px 12px 0 0;
@@ -1237,7 +1237,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       radial-gradient(circle at 25% 18%, rgba(var(--accent-b) / 0.18), transparent 65%),
       radial-gradient(circle at 80% 70%, rgba(var(--accent-c) / 0.18), transparent 70%);
     mix-blend-mode: overlay;
-    opacity: 0.55;
+    opacity: 0.55,
     animation: scanDrift 9s linear infinite;
   }
   /* NES-style pixel grid & edge glow */
@@ -1247,7 +1247,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       repeating-linear-gradient(45deg, rgba(255 255 255 / 0.05) 0 2px, rgba(0 0 0 / 0.05) 2px 4px);
     filter: brightness(1.05) saturate(1.15);
     mix-blend-mode: soft-light;
-    opacity: 0.75;
+    opacity: 0.75,
     animation: hueShift 12s ease-in-out infinite;
   }
   /* Depth pop for N64 'cartridge slot' vibe when combined with .n64-depth parent */
@@ -1290,15 +1290,15 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   @keyframes scanDrift {
     0% {
       transform: translateY(0);
-      opacity: 0.55;
+      opacity: 0.55,
     }
     50% {
       transform: translateY(-6px);
-      opacity: 0.42;
+      opacity: 0.42,
     }
     100% {
       transform: translateY(0);
-      opacity: 0.55;
+      opacity: 0.55,
     }
   }
   @keyframes hueShift {
@@ -1314,7 +1314,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   }
   @keyframes pulseRing {
     0% {
-      outline-offset: 0;
+      outline-offset: 0,
     }
     100% {
       outline-offset: 4px;

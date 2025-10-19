@@ -75,7 +75,7 @@ Compact AI recommendations component for sidebar/dashboard use
           id: currentCaseId
           type: 'general',
           priority: 'medium',
-          status: 'active';
+          status: 'active',
         } : undefined
         preferences: {
           preferredActions: ['research', 'analysis', 'documentation'],

@@ -60,16 +60,16 @@
 <style>
   :global(.modal-overlay) {
     position: fixed;
-    inset: 0;
+    inset: 0,
     background: rgba(0, 0, 0, 0.6);
-    z-index: 40;
+    z-index: 40,
   }
 
   :global(.modal-content) {
     position: fixed;
     left: 50%;
     top: 50%;
-    z-index: 50;
+    z-index: 50,
     width: 100%;
     max-width: 28rem; /* approx. max-w-md */
     transform: translate(-50%, -50%);

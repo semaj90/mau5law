@@ -409,7 +409,7 @@
 <style>
   .typewriter-container {
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-    line-height: 1.6;
+    line-height: 1.6,
     position: relative;
   }
 
@@ -425,11 +425,11 @@
   }
 
   .typewriter-cursor.visible {
-    opacity: 1;
+    opacity: 1,
   }
 
   .typewriter-cursor.hidden {
-    opacity: 0;
+    opacity: 0,
   }
 
   .typewriter-cursor.blinking {
@@ -439,11 +439,11 @@
   @keyframes blink {
     0%,
     50% {
-      opacity: 1;
+      opacity: 1,
     }
     51%,
     100% {
-      opacity: 0;
+      opacity: 0,
     }
   }
 
@@ -517,7 +517,7 @@
 
   .replay-text {
     color: #ffa500;
-    flex: 1;
+    flex: 1,
   }
 
   .replay-progress {
@@ -552,7 +552,7 @@
   }
 
   .typewriter-controls button:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
 

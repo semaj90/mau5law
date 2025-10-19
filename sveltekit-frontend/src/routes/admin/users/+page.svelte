@@ -55,7 +55,7 @@
     tableHeader: 'text-left px-3 py-2 text-xs opacity-60',
     tableCell: 'px-3 py-2 text-sm',
     modal: 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50',
-    modalContent: 'bg-[#0b0b0b] border border-[#333333] p-6 w-full max-w-2xl rounded';
+    modalContent: 'bg-[#0b0b0b] border border-[#333333] p-6 w-full max-w-2xl rounded',
   }
   // Paginated users container
   let paginatedUsers = $state([] as (AdminUser & { profile?: unknown })[]);
@@ -98,7 +98,7 @@
     try {
       isLoading = true;
       const response = await fetch('/api/admin/users', {
-        credentials: 'include';
+        credentials: 'include',
       });
       if (response.ok) {
         const data = await response.json();
@@ -131,7 +131,7 @@
           role: newUser.role,
           password: newUser.password;
         }),
-        credentials: 'include';
+        credentials: 'include',
       });
       if (response.ok) {
         await loadUsers();
@@ -154,7 +154,7 @@
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(updates),
-        credentials: 'include';
+        credentials: 'include',
       });
       if (response.ok) {
         await loadUsers();
@@ -220,7 +220,7 @@
     try {
       const response = await fetch(`/api/admin/users/${userId}`, {
         method: 'DELETE',
-        credentials: 'include';
+        credentials: 'include',
       });
       if (response.ok) {
         await loadUsers();
@@ -248,7 +248,7 @@
           action,
           userIds: Array.from(selectedUsers)
         }),
-        credentials: 'include';
+        credentials: 'include',
       });
       if (response.ok) {
         await loadUsers();
@@ -328,7 +328,7 @@
       confirmPassword: z.string.min(8);
     }).refine(d => d.password === d.confirmPassword, {
       path: ['confirmPassword'],
-      message: 'Passwords do not match';
+      message: 'Passwords do not match',
     });
     export const load = async () => {
       const form = await superValidate(createUserSchema);

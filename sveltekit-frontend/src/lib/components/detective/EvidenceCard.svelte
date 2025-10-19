@@ -204,7 +204,7 @@
     white-space: nowrap;
     max-height: calc(1.2em * 2);
     line-height: 1.2em;
-    line-clamp: 2;
+    line-clamp: 2,
   }
   /* Enhanced NES styling for better legal UI */
   .yorha-panel-header {

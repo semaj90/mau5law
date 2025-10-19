@@ -189,7 +189,7 @@
   }
   .page-header h1 {
     font-size: 2.5rem;
-    font-weight: 700;
+    font-weight: 700,
     color: var(--text-primary);
     margin-bottom: 0.5rem;
   }
@@ -275,11 +275,11 @@
   }
   .upload-icon {
     font-size: 1.25rem;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .upload-details {
     flex: 1;
-    min-width: 0;
+    min-width: 0,
   }
   .upload-name {
     font-weight: 500;
@@ -331,9 +331,9 @@
     font-size: 1rem;
   }
   .help-card p {
-    margin: 0;
+    margin: 0,
     color: var(--text-secondary);
     font-size: 0.875rem;
-    line-height: 1.5;
+    line-height: 1.5,
   }
 </style>

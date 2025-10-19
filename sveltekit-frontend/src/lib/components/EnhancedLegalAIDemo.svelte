@@ -149,7 +149,7 @@ try {
       content: evidenceText.trim(),
       type: 'custom',
       confidence: 0,
-      relationships: [];
+      relationships: [],
     }
     // Add to state machine for processing
     machines.evidenceActor.send({

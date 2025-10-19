@@ -236,7 +236,7 @@ https://svelte.dev/e/expected_token -->
     color: var(--yorha-text-primary, #e0e0e0);
     border-radius: 4px;
     font-size: 0.85rem;
-    font-weight: 500;
+    font-weight: 500,
     cursor: pointer;
     transition: all 0.2s ease;
     text-transform: uppercase;
@@ -250,7 +250,7 @@ https://svelte.dev/e/expected_token -->
     box-shadow: 0 4px 12px rgba(60, 188, 252, 0.3);
   }
   .action-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .save-btn:not(:disabled) {
@@ -269,7 +269,7 @@ https://svelte.dev/e/expected_token -->
     gap: 12px;
   }
   .document-title-input {
-    flex: 1;
+    flex: 1,
     background: var(--yorha-bg-tertiary, #2a2a2a);
     border: 1px solid var(--yorha-border, #606060);
     color: var(--yorha-text-primary, #e0e0e0);
@@ -324,7 +324,7 @@ https://svelte.dev/e/expected_token -->
 
   /* --editor-header-height: total height of header, stats bar, and spacing above editor. */
   .editor-container {
-    flex: 1;
+    flex: 1,
     padding: 12px;
     min-height: calc(100vh - 200px);
     width: 100%;
@@ -341,13 +341,13 @@ https://svelte.dev/e/expected_token -->
   .editor-content {
     height: calc(100vh - 280px);
     width: 100%;
-    padding: 0;
+    padding: 0,
   }
 
   /* Responsive Design */
   @media (max-width: 768px) {
     .editor-page-container {
-      padding: 0;
+      padding: 0,
     }
     .editor-header {
       padding: 16px 12px;

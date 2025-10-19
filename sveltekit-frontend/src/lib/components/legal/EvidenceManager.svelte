@@ -37,7 +37,7 @@
   const evidenceBuilder = createLegalEvidenceAnalyzer({
     caseType: 'criminal',
     urgency: 'high',
-    aiModel: 'gemma3';
+    aiModel: 'gemma3',
   });
   let selectedEvidence = $state<Set<string>>(new Set());
   let searchTerm = $state('');
@@ -59,12 +59,12 @@
       tags: ['communication', 'dispute', 'payment'],
       relevanceScore: 0.92,
       authenticity: 'verified',
-      privileged: false;
+      privileged: false,
       redacted: false;
       metadata: {
         from: 'john.doe@company.com',
         to: 'legal@contractor.com',
-        subject: 'Re: Project Status Update';
+        subject: 'Re: Project Status Update',
       }
     },
     {
@@ -79,12 +79,12 @@
       tags: ['financial', 'payment', 'fraud'],
       relevanceScore: 0.88,
       authenticity: 'verified',
-      privileged: true;
+      privileged: true,
       redacted: true;
       metadata: {
         account: '****-1234',
         amount: '$25,000.00',
-        institution: 'First National Bank';
+        institution: 'First National Bank',
       }
     },
     {
@@ -99,12 +99,12 @@
       tags: ['meeting', 'decision', 'contractor'],
       relevanceScore: 0.85,
       authenticity: 'pending',
-      privileged: true;
+      privileged: true,
       redacted: false;
       metadata: {
         attendees: 7,
         duration: '2h 15m',
-        recorder: 'Legal Counsel';
+        recorder: 'Legal Counsel',
       }
     }
   ]);
@@ -199,7 +199,7 @@
       financial: '💰',
       document: '📄',
       audio: '🎵',
-      video: '🎥';
+      video: '🎥',
     }
     return icons[type] || '📎';
   }
@@ -482,7 +482,7 @@
     font-size: 2rem;
   }
   .title-text h2 {
-    margin: 0;
+    margin: 0,
     color: var(--enhanced-bits-foreground);
     font-size: 1.5rem;
   }
@@ -522,7 +522,7 @@
   }
   .file-input {
     position: absolute;
-    inset: 0;
+    inset: 0,
     opacity: 0;
     cursor: pointer;
   }
@@ -541,7 +541,7 @@
     margin-bottom: 0.5rem;
   }
   .upload-text p {
-    margin: 0;
+    margin: 0,
     color: var(--enhanced-bits-muted-foreground);
     font-size: 0.875rem;
   }
@@ -557,7 +557,7 @@
     display: flex;
     gap: 1rem;
     flex: 1;
-    min-width: 0;
+    min-width: 0,
   }
   .evidence-search {
     flex: 1;

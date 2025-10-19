@@ -6,13 +6,13 @@
 </script>
 
 <style>
-  .toast-container { position: fixed; right: 1rem; top: 1rem; z-index: 9999; display:flex; flex-direction:column; gap:0.5rem; }
+  .toast-container { position: fixed; right: 1rem; top: 1rem; z-index: 9999, display:flex; flex-direction:column; gap:0.5rem; }
   .toast { padding: 0.75rem 1rem; border-radius: 6px; color: white; box-shadow: 0 6px 18px rgba(0,0,0,.12); }
   .info { background: #3b82f6; }
   .warn { background: #f59e0b; }
   .error { background: #ef4444; }
   .success { background: #10b981; }
-  .title { font-weight: 600; }
+  .title { font-weight: 600, }
   .msg { font-size: 0.95rem; margin-top: 0.25rem; }
 </style>
 

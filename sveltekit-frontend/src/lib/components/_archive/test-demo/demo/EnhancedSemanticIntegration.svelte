@@ -47,12 +47,12 @@ https://svelte.dev/e/js_parse_error -->
   	const systemStatus = writable<SystemStatus>({
   		postgresql: false
   		redis: false
-  		ollama: false;
+  		ollama: false,
   		minio: false;
   		qdrant: false
   		neo4j: false
   		enhanced_rag: false
-  		semantic_architecture: false;
+  		semantic_architecture: false,
   	});
   	// WebGPU-accelerated processing states
   	const isProcessing = writable(false);
@@ -664,10 +664,10 @@ await initializeWebGPU();
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.5;
+      opacity: 0.5,
     }
   }
   /* Custom scrollbar */

@@ -92,9 +92,9 @@
     document: true
     meeting: true
     filing: true
-    communication: true;
+    communication: true,
     incident: true;
-    media: true;
+    media: true,
   });
   let importanceThreshold = $state(0.1);
   let searchQuery = $state('');
@@ -111,7 +111,7 @@
       clusterDistance: 0, // No clustering
       description: 'Ultra High (All Events)',
       renderComplexity: 1.0,
-      thumbnailSize: 64;
+      thumbnailSize: 64,
     },
     1: {
       timePrecision: 'day',
@@ -120,7 +120,7 @@
       clusterDistance: 24 * 60 * 60 * 1000, // 1 day clustering
       description: 'High Detail',
       renderComplexity: 0.7,
-      thumbnailSize: 32;
+      thumbnailSize: 32,
     },
     2: {
       timePrecision: 'week',
@@ -129,7 +129,7 @@
       clusterDistance: 7 * 24 * 60 * 60 * 1000, // 1 week clustering
       description: 'Medium Detail',
       renderComplexity: 0.4,
-      thumbnailSize: 16;
+      thumbnailSize: 16,
     },
     3: {
       timePrecision: 'month',
@@ -138,7 +138,7 @@
       clusterDistance: 30 * 24 * 60 * 60 * 1000, // 1 month clustering
       description: 'Low Detail (N64 Style)',
       renderComplexity: 0.2,
-      thumbnailSize: 8;
+      thumbnailSize: 8,
     }
   }
   // Derived values for automatic LOD calculation
@@ -624,7 +624,7 @@ if (!browser) return;
       image: '#60a5fa',
       video: '#f87171',
       audio: '#a78bfa',
-      other: '#fbbf24';
+      other: '#fbbf24',
     }
     return colors[type as keyof typeof colors] || '#9ca3af';
   }
@@ -1012,9 +1012,9 @@ if (!browser) return;
   }
   .timeline-canv.loading-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
@@ -1047,7 +1047,7 @@ if (!browser) return;
   }
   .event-description {
     margin: 1rem 0;
-    line-height: 1.5;
+    line-height: 1.5,
   }
   .participants h5,
   .evidence-list h5 {

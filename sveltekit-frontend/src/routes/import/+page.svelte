@@ -55,9 +55,9 @@
     };
     error?: string; // Top-level import error (whole operation failed)
   } | null = $state(null);
-  type CsvPreview = { type: 'csv'; data: string[] };
-  type JsonPreview = { type: 'json'; data: unknown };
-  type XmlPreview = { type: 'xml'; data: string };
+  type CsvPreview = { type: 'csv', data: string[] };
+  type JsonPreview = { type: 'json', data: unknown };
+  type XmlPreview = { type: 'xml', data: string };
   type BasePreview = { name: string; size: number; type: string; content?: string; raw?: string };
   let filePreview: (BasePreview & (CsvPreview | JsonPreview | XmlPreview)) | null = $state(null);
   let dragActive = $state(false);

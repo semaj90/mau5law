@@ -35,7 +35,7 @@
   // Enhanced embedding options - use derived for reactive updates
   let embeddingOptions = $derived({
     model: "embeddinggemma",
-    useGPU: true;
+    useGPU: true,
     temperature: 0.7,
     contextLimit: contextLimit;
     threshold: similarityThreshold;
@@ -115,7 +115,7 @@
             timestamp: new Date().toLocaleTimeString(),
             metadata: {
               ragEnabled: true
-              enhancedService: true;
+              enhancedService: true,
               model: ragResult.metadata.model,
               processingTime: ragResult.processingTime,
               similarityScores: ragResult.similarDocuments.map(r => r.similarity),
@@ -179,7 +179,7 @@
             timestamp: new Date().toLocaleTimeString(),
             metadata: {
               ragEnabled: true
-              fallbackMode: true;
+              fallbackMode: true,
               model: ragContext.metadata?.model || 'fallback',
               processingTime: ragContext.processingTime,
               similarityScores: ragContext.similarDocs?.map((d: unknown) => d.score) || [],

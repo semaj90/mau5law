@@ -68,7 +68,7 @@ https://svelte.dev/e/js_parse_error -->
     onOpenChange,
     onClose,
     class: className = '',
-    ...restProp;
+    ...restProp
    }: Props = $props();
   // Melt UI dialog
   // Melt UI component creation removed - replace with bits-ui declarative components
@@ -76,14 +76,15 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
   // WebGPU animation state
-  let canvas = $state<HTMLCanvasElementlet gpu: GPU  | null>(null); const data = null);
-  let device = $state<GPUDevice | null >(null);
+  let canvas = $state<HTMLCanvasElement | null>(null);
+  let gpu: GPU | null = null;
+  let device = $state<GPUDevice | null>(null);
   let animationFrame: number;
   // Memory-efficient state (NES constraints: 8KB)
   let dialogState = $state({
     animationPhase: 0,
     backgroundEffectIntensity: 0,
-    collaborationData: new Map();
+    collaborationData: new Map(),
     lastRender: 0,
     memoryUsed: 0
   });
@@ -170,7 +171,7 @@ https://svelte.dev/e/js_parse_error -->
     if (!context) return;
     context.configure({
       device,
-      format: 'bgra8unorm';
+      format: 'bgra8unorm',
     });
     function animate(currentTime: number) {
       if (!device || !context) return;
@@ -299,7 +300,7 @@ https://svelte.dev/e/js_parse_error -->
         transitiscale={{
           duration: 200,
           easing: cubicInOut;
-          start: 0.95;
+          start: 0.95,
         }}
         {...restProps}
       >

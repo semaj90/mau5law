@@ -49,7 +49,7 @@ await loadDocuments();
             wordCount: 25,
             legalTerms: ['contract', 'plaintiff', 'defendant', 'breach', 'damages'],
             entities: ['$50,000'],
-            citations: [];
+            citations: [],
           },
           rankingFeatures: {
             clarity: 0.85,
@@ -57,7 +57,7 @@ await loadDocuments();
             completeness: 0.78,
             authority: 0.65,
             recency: 0.95,
-            usage: 0.12;
+            usage: 0.12,
           },
           timestamp: new Date('2025-01-01');
         },
@@ -73,7 +73,7 @@ await loadDocuments();
             wordCount: 18,
             legalTerms: ['evidence', 'negligence', 'tort', 'liability', 'malpractice'],
             entities: ['surgical errors'],
-            citations: [];
+            citations: [],
           },
           rankingFeatures: {
             clarity: 0.90,
@@ -81,7 +81,7 @@ await loadDocuments();
             completeness: 0.82,
             authority: 0.75,
             recency: 0.88,
-            usage: 0.28;
+            usage: 0.28,
           },
           timestamp: new Date('2025-01-02');
         },
@@ -97,7 +97,7 @@ await loadDocuments();
             wordCount: 20,
             legalTerms: ['criminal', 'defendant', 'charges', 'motion', 'evidence', 'amendment'],
             entities: ['Fourth Amendment'],
-            citations: [];
+            citations: [],
           },
           rankingFeatures: {
             clarity: 0.88,
@@ -105,7 +105,7 @@ await loadDocuments();
             completeness: 0.80,
             authority: 0.82,
             recency: 0.75,
-            usage: 0.35;
+            usage: 0.35,
           },
           timestamp: new Date('2025-01-03');
         }
@@ -151,7 +151,7 @@ await loadDocuments();
         { name: 'metadata.legalTerms', weight: 0.1 }
       ],
       threshold: 0.3,
-      includeScore: true;
+      includeScore: true,
     });
     console.log('🔍 Fuse.js search initialized');
   }
@@ -201,7 +201,7 @@ await loadDocuments();
       evidence: 'bg-green-100 text-green-800',
       precedent: 'bg-yellow-100 text-yellow-800',
       motion: 'bg-indigo-100 text-indigo-800',
-      brief: 'bg-pink-100 text-pink-800';
+      brief: 'bg-pink-100 text-pink-800',
     }
     return colors[label as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   }
@@ -216,7 +216,7 @@ await loadDocuments();
           model: config.legalModel,
           prompt: `Analyze this legal document and provide key insights:\n\n${doc.content}`,
           temperature: 0.3,
-          stream: false;
+          stream: false,
         })
       });
       if ((response as { ok?: unknown; json?: unknown }).ok) {

@@ -116,7 +116,7 @@ await loadCopilotContent();
           options: {
             limit: 10,
             includePatterns: true
-            boostContext7: true;
+            boostContext7: true,
           },
         }),
       });

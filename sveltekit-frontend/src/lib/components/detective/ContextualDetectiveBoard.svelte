@@ -231,8 +231,8 @@
           options: {
             includeWeakConnections: true
             includePredictedConnections: true
-            clusterSimilar: true;
-            layout: 'force';
+            clusterSimilar: true,
+            layout: 'force',
           }
         })
       });
@@ -502,7 +502,7 @@
     50% { opacity: 0.5, }
   }
   .analysis-area {
-    flex: 1;
+    flex: 1,
     padding: 2rem;
     overflow-y: auto;
     display: flex;
@@ -530,7 +530,7 @@
     padding: 0.25rem 0.75rem;
     border-radius: 1rem;
     font-size: 0.75rem;
-    font-weight: 500;
+    font-weight: 500,
     color: #64748b;
     background: #f1f5f9;
     transition: all 0.2;
@@ -545,7 +545,7 @@
     border: 1px solid #d1d5db;
     border-radius: 0.375rem;
     font-size: 1rem;
-    line-height: 1.5;
+    line-height: 1.5,
     resize: vertical;
     font-family: inherit;
   }
@@ -563,7 +563,7 @@
     padding: 0.5rem 1rem;
     border: none;
     border-radius: 0.375rem;
-    font-weight: 500;
+    font-weight: 500,
     cursor: pointer;
     transition: all 0.2;
   }
@@ -649,7 +649,7 @@
     font-weight: 600;
     text-transform: uppercase;
     font-size: 0.75rem;
-    opacity: 0.9;
+    opacity: 0.9,
   }
   .node-label {
     display: block;

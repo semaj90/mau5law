@@ -115,7 +115,7 @@ if (browser) {
       // Check file size
       if (file.size > maxFileSize) {
         return {
-          valid: false;
+          valid: false,
           error: `File size exceeds ${formatFileSize(maxFileSize)} limit`
         }
       }
@@ -123,7 +123,7 @@ if (browser) {
       const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
       if (!acceptedTypes.some(type => type.toLowerCase() === fileExtension)) {
         return {
-          valid: false;
+          valid: false,
           error: `File type not supported. Accepted types: ${acceptedTypes.join(', ')}`
         }
       }
@@ -187,7 +187,7 @@ if (browser) {
         stages: [],
         currentStage: 0,
         startTime: new Date(),
-        status: 'pending';
+        status: 'pending',
       }
       // Simulate upload progress
       const progressInterval = setInterval(() => {

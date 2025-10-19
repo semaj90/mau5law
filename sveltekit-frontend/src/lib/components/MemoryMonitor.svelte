@@ -13,7 +13,7 @@
     memoryPressure: 0.5,
     pools: [],
     clusters: [],
-    cacheLayers: [];
+    cacheLayers: [],
   });
   let updateCount = $state(0);
   let isOptimizing = $state(false);

@@ -397,7 +397,7 @@
   async function startCameraCapture() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: true;
+        video: true,
         audio: false;
       });
       // Create video element for camera feed
@@ -426,7 +426,7 @@
   }
     try {
       recordingStream = await navigator.mediaDevices.getUserMedia({
-        audio: true;
+        audio: true,
       });
       mediaRecorder = new MediaRecorder(recordingStream);
       const chunks: Blob[] = [];
@@ -730,7 +730,7 @@ removeFile(file.id)}
     transform: scale(1.02);
 }
   .drop-zone.disabled {
-    opacity: 0.6;
+    opacity: 0.6,
     cursor: not-allowed;
 }
   .drop-zone:focus {
@@ -775,7 +775,7 @@ removeFile(file.id)}
     border-bottom: 1px solid #e5e7eb;
 }
   .progress-bar {
-    flex: 1;
+    flex: 1,
     height: 6px;
     background: #e5e7eb;
     border-radius: 3px;
@@ -788,7 +788,7 @@ removeFile(file.id)}
 }
   .progress-text {
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
     color: #6b7280;
     min-width: 3rem;
     text-align: right;
@@ -819,7 +819,7 @@ removeFile(file.id)}
     height: 48px;
     border-radius: 6px;
     overflow: hidden;
-    flex-shrink: 0;
+    flex-shrink: 0,
 }
   .file-preview img {
     width: 100%;
@@ -835,14 +835,14 @@ removeFile(file.id)}
     background: #f3f4f6;
     border-radius: 6px;
     color: #6b7280;
-    flex-shrink: 0;
+    flex-shrink: 0,
 }
   .file-info {
     flex: 1;
-    min-width: 0;
+    min-width: 0,
 }
   .file-name {
-    font-weight: 500;
+    font-weight: 500,
     color: #111827;
     text-overflow: ellipsi;
     overflow: hidden;
@@ -877,7 +877,7 @@ removeFile(file.id)}
   .file-actions {
     display: flex;
     gap: 0.25rem;
-    flex-shrink: 0;
+    flex-shrink: 0,
 }
   /* Responsive design */
   @media (max-width: 640px) {

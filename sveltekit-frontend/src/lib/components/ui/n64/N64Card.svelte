@@ -425,26 +425,26 @@ clip-path: polygon( 0% 0%, 80% 0%, 85% 2%, 90% 5%, 95% 8%, 98% 12%, 100% 20%, 10
   .depth-extreme { --depth-z: 50px, }
 /* Visual enhancement layers */ .n64-card-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     pointer-events: none;
-    z-index: 1;
+    z-index: 1,
   }
   .depth-layer {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
 background: linear-gradient( 135deg, rgba(255, 255, 255, 0.1) 0%, transparent 30%, transparent 70%, rgba(0, 0, 0, 0.2) 100% );
   }
   .texture-filter-layer {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
   }
   .filter-nearest .texture-filter-layer {
@@ -475,9 +475,9 @@ background: radial-gradient( ellipse at top left, rgba(255, 255, 255, 0.01) 0%, 
   }
 /* Fog effect */ .fog-layer {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
 background: linear-gradient( 180deg, rgba(200, 200, 255, 0.08) 0%, transparent 25%, transparent 75%, rgba(200, 200, 255, 0.04) 100% );
     animation: fog-drift 8s ease-in-out infinite;
@@ -512,22 +512,22 @@ transform: translateY(5px) rotateX(90deg) translateZ(calc(var(--depth-z, 15px) *
     font-size: 10px;
     color: #b0b0b0;
     margin: 0;
-    line-height: 1.4;
+    line-height: 1.4,
   }
 /* Card content */ .n64-card-content {
     position: relative;
     z-index: 2;
     font-size: 12px;
-    line-height: 1.6;
+    line-height: 1.6,
   }
 /* Parallax layers */ .parallax-indicators {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     pointer-events: none;
-    z-index: 0;
+    z-index: 0,
   }
   .parallax-layer {
     position: absolute;
@@ -546,7 +546,7 @@ transform: translateY(5px) rotateX(90deg) translateZ(calc(var(--depth-z, 15px) *
     bottom: -4px;
     border: 3px solid #00ff41;
     border-radius: 6px;
-    opacity: 0;
+    opacity: 0,
     transform: scale(0.95);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     pointer-events: none;
@@ -554,7 +554,7 @@ transform: translateY(5px) rotateX(90deg) translateZ(calc(var(--depth-z, 15px) *
 box-shadow: 0 0 15px rgba(0, 255, 65, 0.5), inset 0 0 15px rgba(0, 255, 65, 0.2);
   }
   .selection-indicator.visible {
-    opacity: 1;
+    opacity: 1,
     transform: scale(1);
   }
 /* State variations */ .n64-card.hoverable:hover {

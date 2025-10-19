@@ -230,11 +230,11 @@ Visual progress indicator for the Evidence Chain of Custody workflow
   }
   @keyframes fadeInUp {
     from {
-      opacity: 0;
+      opacity: 0,
       transform: translateY(20px);
     }
     to {
-      opacity: 1;
+      opacity: 1,
       transform: translateY(0);
     }
   }

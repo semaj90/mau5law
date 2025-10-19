@@ -262,7 +262,7 @@ https://svelte.dev/e/js_parse_error -->
 <style>
   .document-notifications {
     /* Ensure notifications appear above other elements */
-    z-index: 9999;
+    z-index: 9999,
   }
   /* Custom scrollbar for notification history */
   .document-notifications :global(.overflow-y-auto) {

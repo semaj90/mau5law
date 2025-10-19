@@ -338,7 +338,7 @@
   }
   .mcp-title {
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 600,
     color: #f3f4f6;
   }
   .connection-status {
@@ -399,7 +399,7 @@
     min-width: 180px;
   }
   .query-input {
-    flex: 1;
+    flex: 1,
   }
   .execute-button {
     background: linear-gradient(135deg, #3b82f6, #1d4ed8);
@@ -407,12 +407,12 @@
     border-radius: 6px;
     padding: 8px 14px;
     color: white;
-    font-weight: 600;
+    font-weight: 600,
     cursor: pointer;
     transition: transform 0.12s ease;
   }
   .execute-button:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .execute-button:hover:not(:disabled) {

@@ -39,7 +39,7 @@ https://svelte.dev/e/js_parse_error -->
     frameTime: 0,
     nodeCount: 0,
     edgeCount: 0,
-    gpuMemoryUsage: 0;
+    gpuMemoryUsage: 0,
   });
   const renderState = writable({
     selectedNode: null as string | null
@@ -47,7 +47,7 @@ https://svelte.dev/e/js_parse_error -->
     filterType: 'all' as 'all' | 'document' | 'case' | 'entity' | 'precedent',
     cameraPosition: [0, 0, 10] as [number, number, number],
     zoom: 1.0,
-    autoRotate: false;
+    autoRotate: false,
   });
   // Document details interaction state
   const documentDetailsState = writable({
@@ -82,7 +82,7 @@ try {
       $isInitialized = true;
     } catch (err) {
       console.error('[Graph Viewer] Initialization failed:', err);
-      $error = err instanceof Error ? err.message: 'Unknown error occurred';
+      $error = err instanceof Error ? err.message: 'Unknown error occurred',
     }
     })();
   });
@@ -122,7 +122,7 @@ try {
       documents: maxNodes;
       chunks: 100,
       representations: 8,
-      maxLOD: 4;
+      maxLOD: 4,
     }, {
       maxGPUMemory: 256 * 1024 * 1024, // 256MB
       streamingDistance: 100,
@@ -393,7 +393,7 @@ try {
     renderState.update(state => ({
       ...state,
       cameraPosition: [0, 0, 10],
-      zoom: 1.0;
+      zoom: 1.0,
     }));
   }
   /**
@@ -450,7 +450,7 @@ try {
         layout: {
           algorithm: 'force-directed',
           parameters: ,
-          dimensions: 3;
+          dimensions: 3,
         },
         cameraPosition: {
           x: $renderState.cameraPosition[0],
@@ -621,9 +621,9 @@ try {
   .loading-overlay,
   .error-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     display: flex;
     flex-direction: column;
@@ -631,7 +631,7 @@ try {
     justify-content: center;
     background: rgba(0, 0, 0, 0.8);
     color: white;
-    z-index: 10;
+    z-index: 10,
   }
   .loading-spinner {
     width: 40px;
@@ -683,7 +683,7 @@ try {
     font-size: 12px;
     color: white;
     font-family: 'Courier New', monospace;
-    z-index: 5;
+    z-index: 5,
   }
   .stat {
     display: flex;
@@ -692,10 +692,10 @@ try {
     margin-bottom: 2px;
   }
   .stat:last-child {
-    margin-bottom: 0;
+    margin-bottom: 0,
   }
   .label {
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .value {
     font-weight: bold;
@@ -708,7 +708,7 @@ try {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
-    z-index: 5;
+    z-index: 5,
   }
   .controls-panel button,
   .controls-panel select {
@@ -740,7 +740,7 @@ try {
     border-radius: 6px;
     min-width: 200px;
     max-width: 300px;
-    z-index: 5;
+    z-index: 5,
   }
   .node-info-panel h4 {
     margin: 0 0 8px 0;

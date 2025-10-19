@@ -408,7 +408,7 @@
   .service-description {
     color: #a1a1aa;
     margin-bottom: 1rem;
-    line-height: 1.5;
+    line-height: 1.5,
   }
 
   .service-stats {
@@ -425,7 +425,7 @@
     border: none;
     padding: 0.75rem;
     border-radius: 0.5rem;
-    font-weight: 600;
+    font-weight: 600,
     transition: all 0.3s ease;
   }
 
@@ -461,7 +461,7 @@
   }
 
   .activity-type {
-    font-weight: 600;
+    font-weight: 600,
     color: #00d4aa;
     font-size: 0.9rem;
     margin-bottom: 0.5rem;

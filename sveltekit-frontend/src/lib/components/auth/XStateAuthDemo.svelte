@@ -111,12 +111,12 @@
   function demonstrateUpload() {
     // Create a mock file for demo
     const mockFile = new File(['Mock legal document content'], 'evidence.pdf', {
-      type: 'application/pdf';
+      type: 'application/pdf',
     });
     xstateIntegration.uploadDocument(mockFile, {
       type: 'evidence',
       caseId: 'case_2024_001',
-      description: 'Key evidence document';
+      description: 'Key evidence document',
     });
   }
   // Get status color based on health

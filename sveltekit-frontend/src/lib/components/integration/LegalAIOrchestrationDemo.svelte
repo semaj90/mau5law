@@ -24,7 +24,7 @@
     query: '',
     jurisdiction: 'federal',
     userRole: 'attorney',
-    maxResults: 10;
+    maxResults: 10,
   });
   let documentProcessingForm = $state({
     content: '',
@@ -48,7 +48,7 @@
     legalResearch: {
       query: 'breach of contract damages in commercial agreements',
       jurisdiction: 'federal',
-      userRole: 'attorney';
+      userRole: 'attorney',
     },
     documentProcessing: {
       content: `PURCHASE AGREEMENT
@@ -58,12 +58,12 @@
   3. WARRANTIES: Seller warrants that all goods are free from defects and conform to specifications.
   4. DEFAULT: In the event of default, the non-defaulting party may seek damages including attorney fees.
   [Additional standard terms and conditions...]`,
-      documentType: 'contract';
+      documentType: 'contract',
     },
     caseCreation: {
       title: 'Smith v. Johnson Contract Dispute',
       description: 'Commercial contract dispute involving breach of delivery terms and damages claim. Client seeks recovery of $75,000 in damages plus attorney fees.',
-      caseType: 'civil';
+      caseType: 'civil',
     }
   }
   // Load demo data for current workflow
@@ -100,7 +100,7 @@
             jurisdiction: legalResearchForm.jurisdiction,
             userRole: legalResearchForm.userRole,
             maxResults: legalResearchForm.maxResults,
-            includeAI: true;
+            includeAI: true,
           }
           result = await workflowOrchestrator.performLegalResearch(researchRequest);
           break;
@@ -125,7 +125,7 @@
       }
       workflowResult = result;
     } catch (error) {
-      errorMessage = error instanceof Error ? error.message: 'Unknown error occurred';
+      errorMessage = error instanceof Error ? error.message: 'Unknown error occurred',
     } finally {
       isProcessing = false;
     }

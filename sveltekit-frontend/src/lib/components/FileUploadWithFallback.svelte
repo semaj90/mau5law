@@ -258,7 +258,7 @@ Automatically handles server upload with localStorage fallback
     font-size: 0.875rem;
   }
   .storage-bar {
-    flex: 1;
+    flex: 1,
     height: 4px;
     background-color: #e5e7eb;
     border-radius: 2px;
@@ -316,7 +316,7 @@ Automatically handles server upload with localStorage fallback
   }
   .fallback-notice {
     color: #f59e0b;
-    font-weight: 500;
+    font-weight: 500,
   }
   .upload-progress {
     display: flex;
@@ -336,7 +336,7 @@ Automatically handles server upload with localStorage fallback
     100% { transform: rotate(360deg), }
   }
   .progress-text {
-    flex: 1;
+    flex: 1,
   }
   .progress-bar {
     width: 100%;
@@ -374,7 +374,7 @@ Automatically handles server upload with localStorage fallback
     border-bottom: 1px solid #e5e7eb;
   }
   .results-header h4 {
-    margin: 0;
+    margin: 0,
     color: #374151;
   }
   .clear-btn {
@@ -413,10 +413,10 @@ Automatically handles server upload with localStorage fallback
     font-size: 1.2rem;
   }
   .result-details {
-    flex: 1;
+    flex: 1,
   }
   .result-name {
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
   }
   .result-meta {
@@ -431,14 +431,14 @@ Automatically handles server upload with localStorage fallback
     background-color: #e0e7ff;
     color: #3730a3;
     border-radius: 12px;
-    font-weight: 500;
+    font-weight: 500,
   }
   .fallback-badge {
     padding: 0.125rem 0.375rem;
     background-color: #fef3c7;
     color: #92f400;
     border-radius: 12px;
-    font-weight: 500;
+    font-weight: 500,
   }
   .file-size {
     color: #6b7280;

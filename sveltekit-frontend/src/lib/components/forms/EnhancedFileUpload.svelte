@@ -98,7 +98,7 @@ export default ;
     enableOcr: false
     enableEmbeddings: false
     enableSummarization: false
-    isAdmissible: false;
+    isAdmissible: false,
   });
   let errors = $state<Record<string, string[]>([]) >( );
   // Options

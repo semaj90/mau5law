@@ -605,13 +605,13 @@ await loadShortcutsFromAI();
 <style>/* @unocss-include */ .command-palette-overlay {
     position: fixed;
 d;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(4px);
-    z-index: 9999;
+    z-index: 9999,
     display: flex;
     align-items: flex-start;
     justify-content: center;
@@ -620,10 +620,10 @@ d;
 }
   @keyframes overlay-appear {
     from {
-      opacity: 0;
+      opacity: 0,
 }
     to {
-      opacity: 1;
+      opacity: 1,
 }}
   .command-palette {
     background: white;
@@ -638,11 +638,11 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)
 }
   @keyframes palette-appear {
     from {
-      opacity: 0;
+      opacity: 0,
       transform: scale(0.95) translateY(-10px);
 }
     to {
-      opacity: 1;
+      opacity: 1,
       transform: scale(1) translateY(0);
 }}
   .command-palette-header {
@@ -678,7 +678,7 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)
   .commands-list {
     list-style: none;
     padding: 0.5rem 0;
-    margin: 0;
+    margin: 0,
 }
   .command-item {
     display: flex;
@@ -700,14 +700,14 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)
     background: #f9fafb;
     border-radius: 6px;
     color: #6b7280;
-    flex-shrink: 0;
+    flex-shrink: 0,
 }
   .command-content {
     flex: 1;
-    min-width: 0;
+    min-width: 0,
 }
   .command-title {
-    font-weight: 500;
+    font-weight: 500,
     color: #111827;
     margin-bottom: 0.125rem;
 }
@@ -748,7 +748,7 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)
     border-radius: 0.25rem;
     font-family: inherit;
     font-size: 0.75rem;
-    font-weight: 500;
+    font-weight: 500,
 }
   .shortcuts-help.hidden {
     display: none;
@@ -757,12 +757,12 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)
     position: absolute;
     width: 1px;
     height: 1px;
-    padding: 0;
+    padding: 0,
     margin: -1px;
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
-    border: 0;
+    border: 0,
 }
 /* Dark mode */ @media (prefers-color-scheme: dark) {
     .command-palette {

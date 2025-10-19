@@ -797,7 +797,7 @@ https://svelte.dev/e/js_parse_error -->
     background: #1a1d20 !important;
     border-bottom: 4px solid #d4af37;
     padding: 1.5rem;
-    margin-bottom: 0;
+    margin-bottom: 0,
   }
 
   .header-content {
@@ -808,7 +808,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   .header-left {
-    flex: 1;
+    flex: 1,
   }
 
   .vault-title {
@@ -819,7 +819,7 @@ https://svelte.dev/e/js_parse_error -->
   .vault-subtitle {
     font-size: 0.7rem;
     color: #8b7547;
-    margin: 0;
+    margin: 0,
   }
 
   .header-actions {
@@ -850,7 +850,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   .search-field {
-    flex: 1;
+    flex: 1,
     margin: 0;
   }
 
@@ -942,7 +942,7 @@ https://svelte.dev/e/js_parse_error -->
   .actions-dropdown {
     display: none;
     position: absolute;
-    right: 0;
+    right: 0,
     top: 100%;
     background: #1a1d20;
     border: 2px solid #d4af37;
@@ -1031,7 +1031,7 @@ https://svelte.dev/e/js_parse_error -->
   .file-description {
     font-size: 0.6rem;
     color: #999;
-    line-height: 1.4;
+    line-height: 1.4,
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -1064,7 +1064,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   .list-file-info {
-    flex: 1;
+    flex: 1,
   }
 
   .list-meta {
@@ -1162,12 +1162,12 @@ https://svelte.dev/e/js_parse_error -->
   /* Modal */
   .modal-overlay {
     position: fixed;
-    inset: 0;
+    inset: 0,
     background: rgba(0, 0, 0, 0.8);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 1000,
     padding: 1rem;
   }
 

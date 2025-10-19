@@ -204,7 +204,7 @@ https://svelte.dev/e/props_duplicate -->
 
   .upload-overlay {
     position: absolute;
-    inset: 0;
+    inset: 0,
     display: flex;
     align-items: center;
     justify-content: center;
@@ -224,7 +224,7 @@ https://svelte.dev/e/props_duplicate -->
     border: none;
     border-radius: 6px;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 500,
     cursor: pointer;
     transition: all 0.2s ease;
   }
@@ -239,7 +239,7 @@ https://svelte.dev/e/props_duplicate -->
   }
 
   .upload-btn:disabled {
-    opacity: 0.6;
+    opacity: 0.6,
     cursor: not-allowed;
   }
 
@@ -265,7 +265,7 @@ https://svelte.dev/e/props_duplicate -->
     color: #dc2626;
     cursor: pointer;
     font-size: 18px;
-    line-height: 1;
+    line-height: 1,
     padding: 0;
     margin-left: 8px;
   }

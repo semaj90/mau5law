@@ -477,7 +477,7 @@
     background: linear-gradient(120deg, rgba(59, 130, 246, 0.2) 0%, rgba(16, 185, 129, 0.2) 100%);
     padding: 2px 4px;
     border-radius: 3px;
-    font-weight: 600;
+    font-weight: 600,
     color: var(--color-nier-text-primary);
   }
   /* Semantic entity styling enhancements */
@@ -510,10 +510,10 @@
   @keyframes processing-pulse {
     0%,
     100% {
-      opacity: 0.8;
+      opacity: 0.8,
     }
     50% {
-      opacity: 1;
+      opacity: 1,
     }
   }
   /* Vector result item enhancements */
@@ -525,7 +525,7 @@
   :global(.vector-result-item::after) {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: -100%;
     width: 100%;
     height: 2px;

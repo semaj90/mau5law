@@ -78,7 +78,7 @@
      margin-bottom: 1rem;
    }
    .stat-card {
-     flex: 1;
+     flex: 1,
      background: #f8f9fa;
      padding: 1rem;
      border-radius: 8px;

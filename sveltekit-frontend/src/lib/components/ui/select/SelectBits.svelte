@@ -42,12 +42,12 @@
   const sizeClasses = {
     sm: "px-3 py-2 text-sm rounded-md",
     md: "px-4 py-3 text-base rounded-lg",
-    lg: "px-6 py-4 text-lg rounded-xl";
+    lg: "px-6 py-4 text-lg rounded-xl",
   }
   const variantClasses = {
     default: "bg-slate-800/60 border border-slate-600/50 focus:border-amber-500",
     filled: "bg-slate-800/80 border-0",
-    outlined: "bg-transparent border-2 border-slate-600/50 focus:border-amber-500";
+    outlined: "bg-transparent border-2 border-slate-600/50 focus:border-amber-500",
   }
   const stateClasses = error
     ? "border-red-500 focus:border-red-500"
@@ -186,11 +186,11 @@
   }
   @keyframes legal-ai-fade-in {
     from {
-      opacity: 0;
+      opacity: 0,
       transform: translateY(-4px);
     }
     to {
-      opacity: 1;
+      opacity: 1,
       transform: translateY(0);
     }
   }

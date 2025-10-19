@@ -120,9 +120,9 @@
   /* Sidebar Overlay for Mobile */
   .sidebar-overlay {
     position: fixed;
-    inset: 0;
+    inset: 0,
     background: rgba(0, 0, 0, 0.5);
-    z-index: 25;
+    z-index: 25,
     cursor: pointer;
   }
   @media (min-width: 768px) {
@@ -133,7 +133,7 @@
 
   /* Main Content */
   .main-content {
-    flex: 1;
+    flex: 1,
     padding: 1.5rem;
     overflow-y: auto;
     background: transparent;

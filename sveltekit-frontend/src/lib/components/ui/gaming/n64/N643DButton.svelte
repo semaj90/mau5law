@@ -300,7 +300,7 @@
                      rotate(var(--angle))
                      translateY(calc(-1 * var(--distance)))
                      scale(0);
-          opacity: 0;
+          opacity: 0,
         }
       }
     `;
@@ -391,17 +391,17 @@
   }
 /* Button content wrapper */ .button-content {
     position: relative;
-    z-index: 2;
+    z-index: 2,
   }
 /* Lighting overlay */ .lighting-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
 background: linear-gradient( 135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 30%, transparent 60%, rgba(0, 0, 0, 0.2) 100% );
     pointer-events: none;
-    z-index: 1;
+    z-index: 1,
   }
 /* Reflection overlay */ .reflection-overlay {
     position: absolute;
@@ -412,7 +412,7 @@ background: linear-gradient( 135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255,
 background: linear-gradient( 45deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100% );
     border-radius: 2px;
     pointer-events: none;
-    z-index: 3;
+    z-index: 3,
     opacity: 0.8;
   }
 /* Material type variations */ :global(.n64-3d-button.pbr) {
@@ -432,7 +432,7 @@ background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, transparent 40%
     background: linear-gradient(145deg, #6c757d 0%, #495057 50%, #343a40 100%);
     color: #adb5bd;
     cursor: not-allowed;
-    opacity: 0.7;
+    opacity: 0.7,
     transform: perspective(1000px) scale(0.98);
 box-shadow: 0 2px 0 #343a40, inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 8px rgba(0,0,0,0.2);
   }
@@ -509,14 +509,14 @@ box-shadow: var(--material-shadow), 0 0 20px rgba(255, 255, 255, calc(var(--glow
 /* Fog effects */ :global($1) {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
 background: radial-gradient( ellipse at center bottom, var(--fog-color, #404040) 0%, transparent 70% );
     opacity: 0.3;
     pointer-events: none;
-    z-index: 0;
+    z-index: 0,
   }
 /* Mobile optimizations */ @media (max-width: 480px) {
     :global(.n64-3d-button) {

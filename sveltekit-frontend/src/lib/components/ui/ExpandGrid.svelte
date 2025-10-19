@@ -143,7 +143,7 @@
   .expand-grid.expanded :global(.grid-item:focus-within) {
     transform: scale(1.035);
     box-shadow: 0 6px 18px -6px rgba(0, 0, 0, 0.15);
-    z-index: 10;
+    z-index: 10,
   }
   /* Responsive adjustments */
   @media (max-width: 768px) {

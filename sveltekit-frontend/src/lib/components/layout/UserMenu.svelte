@@ -270,13 +270,13 @@
   .user-name {
     font-size: 0.9rem;
     font-weight: 500;
-    line-height: 1;
+    line-height: 1,
   }
 
   .user-role {
     font-size: 0.75rem;
     opacity: 0.7;
-    line-height: 1;
+    line-height: 1,
   }
 
   .dropdown-arrow {
@@ -305,11 +305,11 @@
 
   @keyframes slideDown {
     from {
-      opacity: 0;
+      opacity: 0,
       transform: translateY(-8px);
     }
     to {
-      opacity: 1;
+      opacity: 1,
       transform: translateY(0);
     }
   }
@@ -337,7 +337,7 @@
   }
 
   .header-info {
-    flex: 1;
+    flex: 1,
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
@@ -345,19 +345,19 @@
 
   .header-name {
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 600,
     color: var(--console-fg, white);
   }
 
   .header-email {
     font-size: 0.85rem;
-    opacity: 0.8;
+    opacity: 0.8,
     color: var(--console-fg, white);
   }
 
   .header-role {
     font-size: 0.75rem;
-    opacity: 0.7;
+    opacity: 0.7,
     color: var(--console-fg, white);
     display: flex;
     align-items: center;
@@ -399,10 +399,10 @@
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.5;
+      opacity: 0.5,
     }
   }
 
@@ -415,7 +415,7 @@
   }
 
   .nav-section:last-child {
-    margin-bottom: 0;
+    margin-bottom: 0,
   }
 
   .section-title {
@@ -425,7 +425,7 @@
     padding: 0.5rem 1rem;
     margin: 0;
     font-size: 0.8rem;
-    font-weight: 600;
+    font-weight: 600,
     color: rgba(255, 255, 255, 0.8);
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -437,7 +437,7 @@
 
   .nav-list {
     list-style: none;
-    margin: 0;
+    margin: 0,
     padding: 0;
   }
 
@@ -469,7 +469,7 @@
   }
 
   .item-content {
-    flex: 1;
+    flex: 1,
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
@@ -479,23 +479,23 @@
   .item-name {
     font-size: 0.9rem;
     font-weight: 500;
-    line-height: 1;
+    line-height: 1,
   }
 
   .item-desc {
     font-size: 0.75rem;
     opacity: 0.7;
-    line-height: 1;
+    line-height: 1,
   }
 
   .item-arrow {
     font-size: 0.8rem;
-    opacity: 0.5;
+    opacity: 0.5,
     transition: opacity 0.2s;
   }
 
   .nav-item:hover .item-arrow {
-    opacity: 1;
+    opacity: 1,
   }
 
   .admin-section {
@@ -542,7 +542,7 @@
   }
 
   .logout-content {
-    flex: 1;
+    flex: 1,
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
@@ -552,13 +552,13 @@
   .logout-text {
     font-size: 0.9rem;
     font-weight: 500;
-    line-height: 1;
+    line-height: 1,
   }
 
   .logout-desc {
     font-size: 0.75rem;
     opacity: 0.7;
-    line-height: 1;
+    line-height: 1,
   }
 
   .logout-indicator {

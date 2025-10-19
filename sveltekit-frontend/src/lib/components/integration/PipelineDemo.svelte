@@ -39,7 +39,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         type: selectedPipeline
         enableGPU: true
         enableConcurrency: true
-        enableMemoryOptimization: true;
+        enableMemoryOptimization: true,
       });
       results = [result, ...results.slice(0, 9)]; // Keep last 10 results
       updateMetrics();

@@ -43,7 +43,7 @@
     color: #cccccc;
     font-family: 'Courier New', monospace;
     min-height: 100vh;
-    padding: 0;
+    padding: 0,
   }
   .admin-header {
     background: linear-gradient(135deg, #1e1e3f, #0f0f23);
@@ -132,7 +132,7 @@
   .quick-link.external::after {
     content: "↗";
     margin-left: 8px;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   @media (max-width: 768px) {
     .admin-header {

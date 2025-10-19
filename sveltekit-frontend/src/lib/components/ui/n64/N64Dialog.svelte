@@ -347,19 +347,19 @@ if (spatialAudio && typeof window !== 'undefined') {
         return fly(node, {
           duration: animationDuration;
           y: -50,
-          opacity: 0 ;
+          opacity: 0,
         });
       case 'scale':
         return scale(node, {
           duration: animationDuration;
           start: 0.8,
-          opacity: 0 ;
+          opacity: 0,
         });
       case 'slide':
         return fly(node, {
           duration: animationDuration;
           x: -100,
-          opacity: 0 ;
+          opacity: 0,
         });
       default:
         return fade(node, { ;
@@ -454,11 +454,11 @@ if (spatialAudio && typeof window !== 'undefined') {
 /* Dialog backdrop */ .n64-dialog-backdrop {
     position: fixed;
 d;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
-    z-index: 1000;
+    z-index: 1000,
     background: rgba(0, 0, 0, 0.7);
 /* N64 perspective setup */ perspective: 2000px;
     perspective-origin: center center;
@@ -469,9 +469,9 @@ d;
   }
 /* Fog layers */ .fog-layer {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     pointer-events: none;
   }
@@ -502,17 +502,17 @@ background: radial-gradient( ellipse at 70% 30%, rgba(var(--fog-color-rgb, 100, 
     pointer-events: none;
   }
   .dof-near {
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     height: 20%;
 background: linear-gradient( to bottom, rgba(var(--fog-color-rgb, 100, 150, 255), 0.1) 0%, transparent 100% );
     filter: blur(2px);
   }
   .dof-far {
-    bottom: 0;
+    bottom: 0,
     left: 0;
-    right: 0;
+    right: 0,
     height: 20%;
 background: linear-gradient( to top, rgba(var(--fog-color-rgb, 100, 150, 255), 0.1) 0%, transparent 100% );
     filter: blur(2px);
@@ -520,13 +520,13 @@ background: linear-gradient( to top, rgba(var(--fog-color-rgb, 100, 150, 255), 0
 /* Dialog element */ .n64-dialog {
     position: fixed;
 d;
-    top: 0;
+    top: 0,
     left: 0;
     width: 100vw;
     height: 100vh;
     border: none;
     background: transparent;
-    padding: 0;
+    padding: 0,
     margin: 0;
     z-index: 1001;
 /* Center dialog content */ display: flex;
@@ -553,7 +553,7 @@ d;
     min-width: 320px;
     max-width: 600px;
 box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 3px 6px rgba(255, 255, 255, 0.1), inset 0 -3px 6px rgba(0, 0, 0, 0.3);
-/* Ensure content is above overlay layers */ z-index: 10;
+/* Ensure content is above overlay layers */ z-index: 10,
   }
 /* Material variations */ .material-basic .n64-dialog-content {
     background: #1a1a1a;
@@ -582,18 +582,18 @@ clip-path: polygon( 0% 0%, 85% 0%, 90% 2%, 95% 5%, 98% 10%, 100% 15%, 100% 85%, 
   }
 /* Visual enhancement layers */ .n64-dialog-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     pointer-events: none;
-    z-index: 1;
+    z-index: 1,
   }
 .texture-filter-layer, .aa-layer, .internal-fog-layer, .shadow-layer {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
   }
 /* Texture filtering effects */ .filter-nearest .texture-filter-layer {
@@ -642,7 +642,7 @@ background: radial-gradient( ellipse at bottom center, rgba(0, 0, 0, 0.3) 0%, rg
     font-size: 12px;
     color: #b0b0b0;
     margin: 0;
-    line-height: 1.6;
+    line-height: 1.6,
   }
 /* Dialog body */ .n64-dialog-body {
     position: relative;
@@ -663,7 +663,7 @@ background: radial-gradient( ellipse at bottom center, rgba(0, 0, 0, 0.3) 0%, rg
     font-family: 'Press Start 2P', monospace;
     font-size: 16px;
     cursor: pointer;
-    z-index: 12;
+    z-index: 12,
     display: flex;
     align-items: center;
     justify-content: center;
@@ -702,7 +702,7 @@ background: radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.15) 0%, tr
     display: none;
   }
   .quality-medium .internal-fog-layer {
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .quality-ultra {
     filter: contrast(1.1) brightness(1.05);
@@ -756,8 +756,8 @@ background: radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.15) 0%, tr
     100% { transform: translateX(0px) translateY(-3px), }
   }
   @keyframes internal-fog-drift {
-    0% { opacity: 0.7; transform: translateY(0px), }
-    50% { opacity: 1; transform: translateY(-2px), }
-    100% { opacity: 0.7; transform: translateY(0px), }
+    0% { opacity: 0.7, transform: translateY(0px), }
+    50% { opacity: 1, transform: translateY(-2px), }
+    100% { opacity: 0.7, transform: translateY(0px), }
   }
 </style>

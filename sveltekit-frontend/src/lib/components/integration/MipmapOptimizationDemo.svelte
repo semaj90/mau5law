@@ -36,7 +36,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
       priority: 200,
       riskLevel: 'high' as const,
       textureSize: '2048x2048',
-      estimatedComplexity: 'High';
+      estimatedComplexity: 'High',
     },
     {
       id: 'evidence_001',
@@ -45,7 +45,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
       priority: 180,
       riskLevel: 'critical' as const,
       textureSize: '4096x4096',
-      estimatedComplexity: 'Very High';
+      estimatedComplexity: 'Very High',
     },
     {
       id: 'brief_001',
@@ -54,7 +54,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
       priority: 150,
       riskLevel: 'medium' as const,
       textureSize: '1024x1024',
-      estimatedComplexity: 'Medium';
+      estimatedComplexity: 'Medium',
     }
   ]);
   // Performance metrics
@@ -181,7 +181,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         memoryUsed: 0,
         rtxAcceleration: true
         streamingUsed: false
-        batchProcessing: true;
+        batchProcessing: true,
         timestamp: new Date(),
       }, ...processingResults.slice(0, 9)];
       // Update metrics
@@ -225,7 +225,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         memoryUsed: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).memoryUsed,
         rtxAcceleration: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.rtxAcceleration,
         streamingUsed: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.streamingUsed,
-        demo: true;
+        demo: true,
         timestamp: new Date(),
       }, ...processingResults.slice(0, 9)];
       console.log.mipmapLevels.length} levels generated in ${(result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).totalGenerationTime.toFixed(2)}ms`);

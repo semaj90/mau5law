@@ -620,7 +620,7 @@ const saved = localStorage.getItem('ai-search-history');
   .nier-search-btn::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: -100%;
     width: 100%;
     height: 100%;
@@ -636,7 +636,7 @@ const saved = localStorage.getItem('ai-search-history');
   .nier-result-item::before {
     content: '';
     position: absolute;
-    left: 0;
+    left: 0,
     top: 0;
     width: 2px;
     height: 100%;
@@ -711,19 +711,19 @@ const saved = localStorage.getItem('ai-search-history');
   @keyframes borderFlow {
     0%, 100% {
       background: linear-gradient(45deg, #fbbf24, transparent, transparent, #fbbf24);
-      opacity: 0.8;
+      opacity: 0.8,
     }
     25% {
       background: linear-gradient(135deg, transparent, #fbbf24, transparent, transparent);
-      opacity: 1;
+      opacity: 1,
     }
     50% {
       background: linear-gradient(225deg, transparent, transparent, #fbbf24, transparent);
-      opacity: 0.8;
+      opacity: 0.8,
     }
     75% {
       background: linear-gradient(315deg, transparent, transparent, transparent, #fbbf24);
-      opacity: 1;
+      opacity: 1,
     }
   }
   @keyframes glowPulse {

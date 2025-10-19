@@ -206,11 +206,11 @@
   }
   @keyframes select-content-show {
     from {
-      opacity: 0;
+      opacity: 0,
       transform: scale(0.96) translateY(-2px);
     }
     to {
-      opacity: 1;
+      opacity: 1,
       transform: scale(1) translateY(0);
     }
   }
@@ -237,18 +237,18 @@ box-shadow: {}
   :global($1) {
     content: '';
     position: absolute;
-    left: 0;
+    left: 0,
     top: 50%;
     transform: translateY(-50%);
     width: 4px;
     height: 60%;
     background: var(--color-nier-accent-cool);
     border-radius: 2px;
-    opacity: 0;
+    opacity: 0,
     transition: opacity 0.2s ease;
   }
   :global([data-evidence-category] .bits-select-item[data-highlighted]::before) {
-    opacity: 1;
+    opacity: 1,
   }
 /* Case type specific styling */ {}
   :global([data-case-type] .bits-select-content) {

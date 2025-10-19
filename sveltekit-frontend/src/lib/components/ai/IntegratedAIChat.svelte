@@ -634,11 +634,11 @@
 
   @keyframes slideIn {
     from {
-      opacity: 0;
+      opacity: 0,
       transform: translateY(10px);
     }
     to {
-      opacity: 1;
+      opacity: 1,
       transform: translateY(0);
     }
   }
@@ -646,10 +646,10 @@
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1;
+      opacity: 1,
     }
     50% {
-      opacity: 0.3;
+      opacity: 0.3,
     }
   }
 
@@ -657,11 +657,11 @@
     position: absolute;
     width: 1px;
     height: 1px;
-    padding: 0;
+    padding: 0,
     margin: -1px;
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
-    border-width: 0;
+    border-width: 0,
   }
 </style>

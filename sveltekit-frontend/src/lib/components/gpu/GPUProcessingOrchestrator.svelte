@@ -379,7 +379,7 @@ https://svelte.dev/e/js_parse_error -->
     border-bottom: 2px solid #007bff;
   }
   .orchestrator-header h2 {
-    margin: 0;
+    margin: 0,
     color: #333;
     font-size: 1.8rem;
   }
@@ -417,7 +417,7 @@ https://svelte.dev/e/js_parse_error -->
   .metric-card h3 {
     margin: 0 0 0.5rem 0;
     font-size: 0.9rem;
-    opacity: 0.9;
+    opacity: 0.9,
   }
   .metric-value {
     font-size: 2rem;
@@ -426,7 +426,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .metric-label {
     font-size: 0.8rem;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .control-panel {
     margin-bottom: 2rem;
@@ -442,14 +442,14 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.9rem;
-    font-weight: 500;
+    font-weight: 500,
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
   .btn:disabled {
-    opacity: 0.6;
+    opacity: 0.6,
     cursor: not-allowed;
   }
   /* Combine selectors so styles apply to both .btn-primary and the actual markup .nes-btn.is-primary */
@@ -523,7 +523,7 @@ https://svelte.dev/e/js_parse_error -->
     margin-bottom: 1rem;
   }
   .priority-slider {
-    flex: 1;
+    flex: 1,
   }
   .priority-label {
     min-width: 80px;
@@ -550,7 +550,7 @@ https://svelte.dev/e/js_parse_error -->
   .tab.active {
     border-bottom-color: #007bff;
     color: #007bff;
-    font-weight: 600;
+    font-weight: 600,
   }
   .tab-content {
     min-height: 400px;
@@ -587,7 +587,7 @@ https://svelte.dev/e/js_parse_error -->
     background: #fff5f5;
   }
   .document-info {
-    flex: 1;
+    flex: 1,
   }
   .document-info h4 {
     margin: 0 0 0.5rem 0;
@@ -630,7 +630,7 @@ https://svelte.dev/e/js_parse_error -->
   .result-summary {
     color: #28a745;
     font-size: 0.9rem;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .error-message {
     color: #dc3545;

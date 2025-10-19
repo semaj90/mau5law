@@ -295,7 +295,7 @@ https://svelte.dev/e/js_parse_error -->
   /* @unocss-include */
   .textarea-disabled,
   .input-disabled {
-    opacity: 0.6;
+    opacity: 0.6,
     cursor: not-allowed;
 }
   .input-error,

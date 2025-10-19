@@ -596,7 +596,7 @@
     border-radius: 4px;
   }
   .result-panel h4 {
-    margin-top: 0;
+    margin-top: 0,
     color: #333;
   }
   .source-item {

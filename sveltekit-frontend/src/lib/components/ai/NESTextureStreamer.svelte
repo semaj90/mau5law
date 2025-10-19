@@ -448,7 +448,7 @@
     border-color: #22c55e;
   }
   .lod-button:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .zoom-controls {
@@ -472,15 +472,15 @@
   }
   .streaming-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10;
+    z-index: 10,
   }
   .nes-loading {
     text-align: center;

@@ -84,6 +84,37 @@ async function startRedis() {
     return;
   }
 
+  // If a local process already listens on 6379, skip starting another redis instance
+  const isPortOpen = await (async () => {
+    try {
+      const net = await import('net');
+      return await new Promise(resolve => {
+        const sock = new net.Socket();
+        sock.setTimeout(500);
+        sock.on('connect', () => {
+          sock.destroy();
+          resolve(true);
+        });
+        sock.on('error', () => {
+          resolve(false);
+        });
+        sock.on('timeout', () => {
+          sock.destroy();
+          resolve(false);
+        });
+        sock.connect(6379, '127.0.0.1');
+      });
+    } catch (e) {
+      return false;
+    }
+  })();
+
+  if (isPortOpen) {
+    console.log('✅ Detected existing Redis listening on port 6379 - skipping local redis spawn');
+    // keep the process alive as a monitor (so concurrently doesn't exit)
+    setInterval(() => {}, 1000);
+    return;
+  }
   const redisPath = findRedisServer();
 
   console.log('🚀 Starting Local Redis Server...');
@@ -96,6 +127,8 @@ async function startRedis() {
       '6379', // Use standard Redis port
       '--bind',
       '127.0.0.1',
+      // If a password is provided via env, require auth
+      ...(process.env.REDIS_PASSWORD ? ['--requirepass', process.env.REDIS_PASSWORD] : []),
       '--save',
       '60',
       '1000', // Save every 60s if at least 1000 keys changed
@@ -107,7 +140,7 @@ async function startRedis() {
     }
   );
 
-  redis.on('error', (err) => {
+  redis.on('error', err => {
     console.error('❌ Failed to start Redis:', err.message);
     console.log('💡 Try installing Redis:');
     console.log('   Windows: choco install redis-64');
@@ -116,7 +149,7 @@ async function startRedis() {
     process.exit(1);
   });
 
-  redis.on('close', (code) => {
+  redis.on('close', code => {
     console.log(`🔴 Redis server exited with code ${code}`);
   });
 

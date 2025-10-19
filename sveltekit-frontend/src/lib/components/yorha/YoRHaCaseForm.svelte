@@ -643,11 +643,11 @@ https://svelte.dev/e/rune_missing_parentheses -->
   }
   @keyframes fadeInUp {
     from {
-      opacity: 0;
+      opacity: 0,
       transform: translateY(20px);
     }
     to {
-      opacity: 1;
+      opacity: 1,
       transform: translateY(0);
     }
   }
@@ -684,7 +684,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   .submit-btn::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: -100%;
     width: 100%;
     height: 100%;
@@ -702,12 +702,12 @@ https://svelte.dev/e/rune_missing_parentheses -->
   }
   @keyframes slideIn {
     from {
-      width: 0;
+      width: 0,
       opacity: 0;
     }
     to {
       width: 100%;
-      opacity: 1;
+      opacity: 1,
     }
   }
   /* AI Processing indicator */
@@ -748,10 +748,10 @@ https://svelte.dev/e/rune_missing_parentheses -->
   }
   @keyframes fadeIn {
     from {
-      opacity: 0;
+      opacity: 0,
     }
     to {
-      opacity: 1;
+      opacity: 1,
     }
   }
   /* Debug panel */
@@ -769,11 +769,11 @@ https://svelte.dev/e/rune_missing_parentheses -->
   @keyframes slideInRight {
     from {
       transform: translateX(20px);
-      opacity: 0;
+      opacity: 0,
     }
     to {
       transform: translateX(0);
-      opacity: 1;
+      opacity: 1,
     }
   }
   /* Responsive design */

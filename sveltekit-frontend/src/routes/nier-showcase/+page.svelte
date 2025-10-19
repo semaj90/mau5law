@@ -39,10 +39,10 @@
       stats: {
         evidence: 24,
         witnesses: 5,
-        documents: 18;
+        documents: 18,
       },
       tags: ['cybersecurity', 'data-breach', 'priority'],
-      progress: 75;
+      progress: 75,
     },
     {
       id: 'CASE-2025-002',
@@ -58,10 +58,10 @@
       stats: {
         evidence: 12,
         witnesses: 8,
-        documents: 15;
+        documents: 15,
       },
       tags: ['civil-rights', 'android-law'],
-      progress: 45;
+      progress: 45,
     },
     {
       id: 'CASE-2025-003',
@@ -77,10 +77,10 @@
       stats: {
         evidence: 8,
         witnesses: 3,
-        documents: 10;
+        documents: 10,
       },
       tags: ['resources', 'dispute-resolution'],
-      progress: 60;
+      progress: 60,
     }
   ]
   // Case actions
@@ -253,11 +253,11 @@
   /* Page-specific animations */
   @keyframes fade-in {
     from {
-      opacity: 0;
+      opacity: 0,
       transform: translateY(20px);
     }
     to {
-      opacity: 1;
+      opacity: 1,
       transform: translateY(0);
     }
   }

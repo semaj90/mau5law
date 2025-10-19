@@ -142,7 +142,7 @@
   }
   th {
     background: #222;
-    font-weight: 600;
+    font-weight: 600,
   }
   .ok {
     color: #5fbf5f;

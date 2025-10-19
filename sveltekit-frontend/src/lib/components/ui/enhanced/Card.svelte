@@ -12,7 +12,7 @@
   		interactive = false,
   		children,
   		class: className = '',
-  		...prop;
+  		...prop
   	}: Props = $props();
   	let cardClasses = $derived([
   		'yorha-card shadcn-card',
@@ -35,9 +35,9 @@
   .yorha-card::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     height: 2px;
 background: linear-gradient( {}
 90deg, {}
@@ -46,10 +46,10 @@ var(--color-nier-border-primary) 10%, {}
 var(--color-nier-border-primary) 90%, {}
 transparent 100% {}
     );
-    opacity: 0;
+    opacity: 0,
     transition: opacity 0.3s ease;
   }
   .yorha-card:hover::before {
-    opacity: 0.3;
+    opacity: 0.3,
   }
 </style>

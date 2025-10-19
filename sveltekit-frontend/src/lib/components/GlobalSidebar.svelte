@@ -442,9 +442,9 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     overflow-y: auto;
     transition: all 0.3s ease;
     position: fixed;
-    left: 0;
+    left: 0,
     top: 0;
-    z-index: 1000;
+    z-index: 1000,
   }
   .global-sidebar.collapsed {
     width: 80px;
@@ -454,7 +454,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   }
   /* User Profile */
   .user-profile {
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .profile-header {
     display: flex;
@@ -463,11 +463,11 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   }
   .avatar {
     font-size: 1.5rem;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .user-info {
     flex: 1;
-    min-width: 0;
+    min-width: 0,
   }
   .user-name {
     font-weight: bold;
@@ -478,13 +478,13 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     font-size: 0.7rem;
   }
   .collapse-btn {
-    flex-shrink: 0;
+    flex-shrink: 0,
     padding: 0.25rem 0.5rem;
     min-height: auto;
   }
   /* Search */
   .search-section {
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .search-input {
     width: 100%;
@@ -492,7 +492,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   }
   /* Stats */
   .stats-section {
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .stats-grid {
     display: grid;
@@ -514,11 +514,11 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   .stat-label {
     display: block;
     font-size: 0.7rem;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   /* Quick Actions */
   .quick-actions {
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .action-buttons {
     display: grid;
@@ -531,14 +531,14 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   }
   /* Sections */
   .section {
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   .section .title {
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 0;
+    margin: 0,
     padding: 0.5rem;
     user-select: none;
   }
@@ -574,7 +574,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     flex: 1;
     font-weight: bold;
     font-size: 0.85rem;
-    line-height: 1.2;
+    line-height: 1.2,
   }
   .item-meta {
     display: flex;
@@ -587,7 +587,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     font-size: 1rem;
   }
   .favorite-icon {
-    flex-shrink: 0;
+    flex-shrink: 0,
     color: #ffd700;
   }
   .priority-indicator {
@@ -605,7 +605,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   /* Mini text */
   .mini-text {
     font-size: 0.7rem !important;
-    line-height: 1.2;
+    line-height: 1.2,
   }
   /* Empty states */
   .empty-state {
@@ -625,7 +625,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   /* Auth prompt */
   .auth-prompt {
     text-align: center;
-    flex-shrink: 0;
+    flex-shrink: 0,
   }
   /* Scrollbar */
   .global-sidebar::-webkit-scrollbar,

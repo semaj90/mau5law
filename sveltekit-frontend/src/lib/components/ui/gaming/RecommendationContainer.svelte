@@ -35,7 +35,7 @@
     recommendations = $bindable([]),
     documents = [],
     query = '',
-    recommendationContext = ,
+    recommendationContext = {},
     userProfile = null,
     enableEnhancedMode = true
   }: Props = $props();
@@ -50,13 +50,13 @@
     detective: '🕵️',
     legal: '⚖️',
     evidence: '📋',
-    ai: '🤖';
+    ai: '🤖',
   }
   const priorityColors = {
     low: '#10B981',
     medium: '#F59E0B',
     high: '#EF4444',
-    critical: '#DC2626';
+    critical: '#DC2626',
   }
   // Group recommendations by type
   let groupedRecommendations = $derived(() => {
@@ -154,7 +154,7 @@
       console.log(`Generated ${enhancedRecs.length} enhanced recommendations`);
     } catch (error) {
       console.error('Enhanced recommendation generation failed:', error);
-      recommendationError = error instanceof Error ? error.message: 'Unknown error';
+      recommendationError = error instanceof Error ? error.message: 'Unknown error',
     } finally {
       loadingEnhancedRecommendations = false;
     }
@@ -172,7 +172,7 @@
       },
       history: {
         queries: [],
-        feedback: [];
+        feedback: [],
       }
     }
   }
@@ -511,7 +511,7 @@ d;
     left: 50%;
     transform: translateX(-50%);
     width: min(95vw, 1200px);
-    z-index: 100;
+    z-index: 100,
     background: rgba(0, 0, 0, 0.9);
     backdrop-filter: blur(10px);
     border-radius: 12px;
@@ -530,7 +530,7 @@ d;
   .recommendation-container.sidebar {
     position: fixed;
 d;
-    left: 0;
+    left: 0,
     top: 60px;
     width: 300px;
     height: calc(100vh - 60px);
@@ -606,7 +606,7 @@ d;
   }
   .trigger-title {
     font-size: 1.1rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .trigger-right {
     display: flex;
@@ -618,7 +618,7 @@ d;
     padding: 0.25rem 0.5rem;
     border-radius: 12px;
     font-size: 0.9rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .trigger-arrow {
     transition: transform 0.2;
@@ -637,7 +637,7 @@ d;
   .enhanced-badge {
     background: linear-gradient(135deg, #3B82F6, #8B5CF6);
     color: white;
-    font-weight: 600;
+    font-weight: 600,
     animation: pulse 2s infinite;
   }
   .loading-badge {
@@ -689,7 +689,7 @@ d;
     align-items: center;
     gap: 0.5rem;
     color: white;
-    font-weight: 600;
+    font-weight: 600,
   }
   .type-icon {
     font-size: 1.2rem;
@@ -715,14 +715,14 @@ d;
     border-radius: 50%;
   }
   .rec-preview-text {
-    flex: 1;
+    flex: 1,
     overflow: hidden;
     text-overflow: ellipsi;
     white-space: nowrap;
   }
   .rec-confidence {
     font-size: 0.8rem;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .more-indicator {
     color: rgba(255, 255, 255, 0.6);
@@ -740,7 +740,7 @@ d;
     border: none;
     cursor: pointer;
     font-size: 0.9rem;
-    font-weight: 500;
+    font-weight: 500,
     transition: all 0.2;
   }
   .view-all-btn {
@@ -788,7 +788,7 @@ d;
     justify-content: center;
     gap: 0.5rem;
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 500,
     transition: all 0.2;
   }
   .view-all-recommendations:hover {
@@ -798,7 +798,7 @@ d;
     font-size: 1.2rem;
   }
   .view-all-count {
-    opacity: 0.7;
+    opacity: 0.7,
   }
   /* Reinforcement Learning Feedback Styles */
   .feedback-controls {
@@ -823,7 +823,7 @@ d;
     justify-content: center;
   }
   .feedback-btn:hover:not(.feedback-disabled) {,
-    opacity: 1;
+    opacity: 1,
     background: rgba(255, 255, 255, 0.1);
     transform: scale(1.1);
   }
@@ -832,7 +832,7 @@ d;
   }
   .feedback-positive-selected {
     color: #10B981;
-    opacity: 1;
+    opacity: 1,
     background: rgba(16, 185, 129, 0.2);
     box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
   }
@@ -841,12 +841,12 @@ d;
   }
   .feedback-negative-selected {
     color: #EF4444;
-    opacity: 1;
+    opacity: 1,
     background: rgba(239, 68, 68, 0.2);
     box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
   }
   .feedback-disabled {
-    opacity: 0.3;
+    opacity: 0.3,
     cursor: not-allowed;
     transform: none !important;
   }

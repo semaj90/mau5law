@@ -350,7 +350,7 @@
     padding: var(--input-padding);
     font-size: var(--input-font-size);
     min-height: var(--input-min-height);
-    font-weight: 500;
+    font-weight: 500,
     width: 100%;
     /* 3D transformations */
     transform: var(--transform-3d);
@@ -373,7 +373,7 @@
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
     /* Layout */
     position: relative;
-    z-index: 2;
+    z-index: 2,
     overflow: hidden;
     /* Fog effect background */
     background-image:
@@ -384,7 +384,7 @@
   :global(.n64-input::placeholder) {
     color: rgba(255, 255, 255, 0.6);
     text-shadow: none;
-    font-weight: 400;
+    font-weight: 400,
   }
 
   /* Autofill styling */
@@ -396,9 +396,9 @@
   /* Lighting overlay */
   .lighting-overlay {
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: linear-gradient(
       135deg,
@@ -422,7 +422,7 @@
     background: linear-gradient(45deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
     border-radius: 2px;
     pointer-events: none;
-    z-index: 3;
+    z-index: 3,
     opacity: 0.6;
   }
 
@@ -436,7 +436,7 @@
     background: linear-gradient(45deg, rgba(74, 144, 226, 0.3), rgba(74, 144, 226, 0.1), rgba(74, 144, 226, 0.3));
     border-radius: 6px;
     pointer-events: none;
-    z-index: 0;
+    z-index: 0,
     opacity: var(--glow-intensity);
     animation: inputGlow 2s ease-in-out infinite;
   }
@@ -477,7 +477,7 @@
     background: linear-gradient(145deg, #4a5568 0%, #2d3748 50%, #1a202c 100%);
     color: #a0aec0;
     cursor: not-allowed;
-    opacity: 0.7;
+    opacity: 0.7,
     transform: perspective(1000px) scale(0.98);
     box-shadow:
       inset 0 4px 0 #1a202c,
@@ -508,7 +508,7 @@
     right: 12px;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 4;
+    z-index: 4,
   }
 
   .n64-spinner {
@@ -567,9 +567,9 @@
   :global(.n64-input::after) {
     content: '';
     position: absolute;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: radial-gradient(ellipse at center bottom, var(--fog-color, #404040) 0%, transparent 70%);
     opacity: 0.2;

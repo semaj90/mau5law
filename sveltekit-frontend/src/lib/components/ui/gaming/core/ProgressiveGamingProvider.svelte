@@ -338,20 +338,20 @@ https://svelte.dev/e/js_parse_error -->
   /* Main content area */
   .gaming-content {
     position: relative;
-    z-index: 1;
+    z-index: 1,
   }
   /* Transition overlay */
   .transition-overlay {
     position: fixed;
-    top: 0;
+    top: 0,
     left: 0;
-    right: 0;
+    right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.9);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
+    z-index: 9999,
     animation: fadeInOut 1s ease-in-out;
   }
   .transition-content {
@@ -378,16 +378,16 @@ https://svelte.dev/e/js_parse_error -->
   }
   @keyframes fadeInOut {
     0% {
-      opacity: 0;
+      opacity: 0,
     }
     20% {
-      opacity: 1;
+      opacity: 1,
     }
     80% {
-      opacity: 1;
+      opacity: 1,
     }
     100% {
-      opacity: 0;
+      opacity: 0,
     }
   }
   @keyframes transitionSpin {
@@ -410,7 +410,7 @@ https://svelte.dev/e/js_parse_error -->
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
     max-width: 300px;
-    z-index: 10000;
+    z-index: 10000,
     border: 1px solid var(--yorha-secondary, #ffd700);
   }
   .debug-panel h4 {
@@ -459,7 +459,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .progressive-gaming-provider.transitioning .gaming-content {
     filter: blur(1px);
-    opacity: 0.8;
+    opacity: 0.8,
   }
   /* Responsive adjustments */
   @media (max-width: 768px) {
@@ -486,7 +486,7 @@ https://svelte.dev/e/js_parse_error -->
     }
     .progressive-gaming-provider.transitioning .gaming-content {
       filter: none;
-      opacity: 1;
+      opacity: 1,
     }
   }
   /* High contrast mode */

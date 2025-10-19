@@ -100,7 +100,7 @@ export default ;
 	user-select: none;
   }
   .uploader.disabled {
-	opacity: 0.6;
+	opacity: 0.6,
 	cursor: not-allowed;
   }
   .files {

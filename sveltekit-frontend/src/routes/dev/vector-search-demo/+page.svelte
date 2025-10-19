@@ -44,7 +44,7 @@ https://svelte.dev/e/script_duplicate -->
   {/if}
   <style>
   .row { display: flex; gap: 8px; margin: 8px 0, }
-  input { flex: 1; padding: 6px 8px, }
+  input { flex: 1, padding: 6px 8px, }
   button { padding: 6px 12px, }
   pre { background: #111; color: #ddd; padding: 8px; border-radius: 4px, }
   </style>
@@ -118,7 +118,7 @@ https://svelte.dev/e/script_duplicate -->
         error = errorData.error || 'Search failed';
       }
     } catch (err) {
-      error = err instanceof Error ? err.message: 'Network error';
+      error = err instanceof Error ? err.message: 'Network error',
     } finally {
       isSearching = false;
     }
@@ -132,7 +132,7 @@ https://svelte.dev/e/script_duplicate -->
         caseId: 'demo-case-001',
         documentType: 'contract',
         generateSummary: true
-        extractKeywords: true;
+        extractKeywords: true,
       }
       const response = await fetch('/api/ai/vector-search/index', {
         method: 'POST',
@@ -384,7 +384,7 @@ https://svelte.dev/e/script_duplicate -->
     display: flex;
     flex-direction: column;
     flex: 1;
-    font-weight: 500;
+    font-weight: 500,
     color: #333;
   }
   .query-input {
@@ -410,7 +410,7 @@ https://svelte.dev/e/script_duplicate -->
     padding: 0.75rem 1.5rem;
     border: none;
     border-radius: 4px;
-    font-weight: 500;
+    font-weight: 500,
     cursor: pointer;
     transition: all 0.2;
   }
@@ -444,7 +444,7 @@ https://svelte.dev/e/script_duplicate -->
   }
   .confidence {
     margin-top: 0.5rem;
-    font-weight: 500;
+    font-weight: 500,
     color: #007bff;
   }
   .search-metadata {
@@ -483,7 +483,7 @@ https://svelte.dev/e/script_duplicate -->
     margin-bottom: 0.5rem;
   }
   .doc-header h4 {
-    margin: 0;
+    margin: 0,
     color: #333;
   }
   .relevance-score {
@@ -492,7 +492,7 @@ https://svelte.dev/e/script_duplicate -->
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     font-size: 0.8rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   .doc-summary {
     color: #666;
@@ -524,7 +524,7 @@ https://svelte.dev/e/script_duplicate -->
     color: #721c24;
   }
   h2, h3 {
-    margin-top: 0;
+    margin-top: 0,
     color: #333;
   }
 </style>

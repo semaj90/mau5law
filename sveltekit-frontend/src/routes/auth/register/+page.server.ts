@@ -1,75 +1,96 @@
 import type { PageServerLoad, Actions } from './$types.js';
 import { fail, redirect } from '@sveltejs/kit';
-import { EnhancedAuthService } from '$lib/services/enhanced-auth-service.js';
-export const load: PageServerLoad = async () => {
+import { auth } from '$lib/server/auth';
+import { Argon2id } from 'oslo/password';
+import { db } from '$lib/server/db/drizzle';
+import { users } from '$lib/server/db/schema';
+import { eq } from 'drizzle-orm';
+
+export const load: PageServerLoad = async (event) => {
+  // Redirect if already logged in
+  if (event.locals.user) {
+    throw redirect(302, '/yorha/dashboard');
+  }
   return {};
 };
 export const actions: Actions = {
-  register: async ({ request, cookies, getClientAddress }) => {
+  register: async ({ request, cookies }) => {
     const data = await request.formData();
-    const email = (data as { get?: any }).get('email') as string;
-    const firstName = (data as { get?: any }).get('firstName') as string;
-    const lastName = (data as { get?: any }).get('lastName') as string;
-    const password = (data as { get?: any }).get('password') as string;
-    const confirmPassword = (data as { get?: any }).get('confirmPassword') as string;
-    const role = (data as { get?: any }).get('role') as string;
-    const department = (data as { get?: any }).get('department') as string;
-    const jurisdiction = (data as { get?: any }).get('jurisdiction') as string;
-    const badgeNumber = (data as { get?: any }).get('badgeNumber') as string;
+    const email = data.get('email') as string;
+    const firstName = data.get('firstName') as string;
+    const lastName = data.get('lastName') as string;
+    const password = data.get('password') as string;
+    const confirmPassword = data.get('confirmPassword') as string;
+
     // Basic validation
-    if (!email || !firstName || !lastName || !password || !department || !jurisdiction) {
+    if (!email || !firstName || !lastName || !password) {
       return fail(400, { error: 'All required fields must be filled' });
     }
+
     if (password !== confirmPassword) {
       return fail(400, { error: 'Passwords do not match' });
     }
+
     if (password.length < 8) {
       return fail(400, { error: 'Password must be at least 8 characters' });
     }
+
     try {
-      // Use the enhanced auth service
-      const authService = new EnhancedAuthService();
-      const result = await authService.register(
-        {
-          email: email.toLowerCase(),
-          password: password,
-          firstName: firstName,
-          lastName: lastName,
-          role: role || 'user',
-        },
-        { request, cookies, getClientAddress } as any
-      );
-      if (!(result as { success?: any; error?: any; user?: any }).success) {
-        return fail(400, { error: (result as { success?: any; error?: any; user?: any }).error });
+      console.log('🔄 Production registration attempt for:', email);
+
+      // Check if user already exists
+      const existingUser = await db
+        .select()
+        .from(users)
+        .where(eq(users.email, email.toLowerCase()))
+        .limit(1);
+
+      if (existingUser.length > 0) {
+        return fail(400, { error: 'An account with this email already exists' });
       }
-      // Create a session using enhanced auth service
-      const clientIP = getClientAddress();
-      const userAgent = request.headers.get('user-agent') || '';
-      const loginResult = await authService.login({
+
+      // Hash password
+      const argon2id = new Argon2id();
+      const hashedPassword = await argon2id.hash(password);
+
+      // Create user in database
+      const newUser = await db.insert(users).values({
         email: email.toLowerCase(),
-        password: password,
-        ipAddress: clientIP,
-        userAgent: userAgent,
-      });
-      if (loginResult.success && loginResult.session) {
-        // Set session cookie
-        cookies.set('session_id', loginResult.session.id, {
-          path: '/',
-          httpOnly: true,
-          secure: import.meta.env.NODE_ENV === 'production',
-          sameSite: 'strict',
-          maxAge: 60 * 60 * 24, // 1 day
-        });
-        console.log('User registered and logged in successfully:', {
-          userId: (result as { success?: any; error?: any; user?: any }).user?.id,
-          email: email,
-        });
+        hashedPassword,
+        firstName,
+        lastName,
+        name: `${firstName} ${lastName}`,
+        role: 'user',
+        isActive: true,
+      }).returning();
+
+      if (!newUser[0]) {
+        return fail(500, { error: 'Failed to create user account' });
       }
+
+      console.log('✅ User created successfully:', newUser[0].id);
+
+      // Create session
+      const session = await auth.createSession(newUser[0].id, {});
+      const sessionCookie = auth.createSessionCookie(session.id);
+
+      cookies.set(sessionCookie.name, sessionCookie.value, {
+        path: '.',
+        ...sessionCookie.attributes
+      });
+
+      console.log('✅ Session created for new user:', email);
+
+      // Redirect to dashboard
+      throw redirect(302, '/yorha/dashboard');
+
     } catch (error: any) {
+      // Handle redirect properly
+      if (error.status === 302) {
+        throw error;
+      }
       console.error('Registration error:', error);
       return fail(500, { error: 'An error occurred during registration. Please try again.' });
     }
-    // Redirect to dashboard
-    throw redirect(302, '/yorha/dashboard');
   },
 };

@@ -397,7 +397,7 @@
     font-size: 0.875rem;
   }
   .footer-info ul {
-    margin: 0;
+    margin: 0,
   }
   .footer-info li {
     color: #ffffff;
@@ -451,11 +451,11 @@
   @keyframes blink {
     0%,
     50% {
-      opacity: 1;
+      opacity: 1,
     }
     51%,
     100% {
-      opacity: 0;
+      opacity: 0,
     }
   }
 </style>

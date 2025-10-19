@@ -1,7 +1,53 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { ButtonBits, CardBits, InputBits } from '$lib/components/ui/bits-ui';
-  let persons = $state([
+
+  // Define interfaces for API response and internal person data
+  interface APIPerson {
+    name: string;
+    aliases?: string[];
+    profileData?: {
+      role?: string;
+      height?: string;
+      age?: number | string;
+      hair?: string;
+      eyes?: string;
+      what?: string; // Modus Operandi
+      lastKnownLocation?: string;
+      dangerLevel?: number;
+      associates?: string[];
+      habits?: string[];
+    };
+    status?: string;
+    threatLevel?: 'low' | 'medium' | 'high' | 'critical';
+  }
+
+  interface FugitiveDexPerson {
+    id: string;
+    name: string;
+    alias: string;
+    role: string;
+    status: string;
+    priority: string;
+    height: string;
+    age: number | string;
+    hair: string;
+    eyes: string;
+    modusOperandi: string;
+    lastSeen: string;
+    dangerLevel: number;
+    photo: string;
+    knownAssociates: string[];
+    knownHabits: string[];
+    attributes: {
+      stealth: number;
+      intelligence: number;
+      strength: number;
+      speed: number;
+      dangerousness: number;
+    };
+  }
+
+  let persons: FugitiveDexPerson[] = $state([
     {
       id: '001',
       name: 'John "The Ghost" Doe',
@@ -33,7 +79,7 @@
         intelligence: 80,
         strength: 70,
         speed: 85,
-        dangerousness: 90;
+        dangerousness: 90,
       }
     },
     {
@@ -64,7 +110,7 @@
         intelligence: 95,
         strength: 45,
         speed: 60,
-        dangerousness: 65;
+        dangerousness: 65,
       }
     },
     {
@@ -95,28 +141,29 @@
         intelligence: 85,
         strength: 55,
         speed: 70,
-        dangerousness: 30;
+        dangerousness: 30,
       }
     }
   ]);
-  let selectedPerson = $state(persons[0]);
+  // Initialize selectedPerson immediately from the demo data to avoid transient undefined access
+  let selectedPerson: FugitiveDexPerson | null = $state(persons.length > 0 ? persons[0] : null);
   let searchQuery = $state('');
-  let currentCaseId = $state('7d897d59-9832-45c1-87e6-9c5a04745119'); // Use the actual case ID from database
+
   // Function to load POIs from API
   async function loadPersonsFromAPI() {
     try {
-      // removed unused response assignment
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        const result = await (response as { ok?: unknown; json?: unknown }).json();
-        const apiPersons = (result as { success?: unknown; data?: unknown }).success ? (result as { success?: unknown; data?: unknown }).data: [];
+      const response = await fetch('/api/persons-of-interest');
+      if (response.ok) {
+        const result = await response.json();
+        const apiPersons: APIPerson[] = result.success ? result.data : [];
         // Transform API data to FugitiveDex format
-        const transformedPersons = apiPersons.map((person: unknown) => ({,
-          id: (apiPersons.indexOf(person) + 1).toString.padStart(3, '0'),
+        const transformedPersons: FugitiveDexPerson[] = apiPersons.map((person: APIPerson, index) => ({ // Removed extra ',' and typed 'person'
+          id: (index + 1).toString().padStart(3, '0'), // Used index for ID, fixed toString.padStart
           name: person.name,
           alias: (person.aliases && person.aliases.length > 0) ? person.aliases[0] : (person.name ? person.name.split(' ')[0] : 'Unknown'),
           role: person.profileData?.role || 'Unknown',
           status: person.status?.toUpperCase() || 'UNKNOWN',
-          priority: person.threatLevel?.toUpperCase() || 'LOW',
+          priority: typeof person.threatLevel === 'string' ? person.threatLevel.toUpperCase() : 'LOW',
           height: person.profileData?.height || 'Unknown',
           age: person.profileData?.age || 'Unknown',
           hair: person.profileData?.hair || 'Unknown',
@@ -134,13 +181,14 @@
             intelligence: Math.floor(Math.random() * 100),
             strength: Math.floor(Math.random() * 100),
             speed: Math.floor(Math.random() * 100),
-            dangerousness: person.profileData?.dangerLevel ? Math.floor(person.profileData.dangerLevel * 10) :
-                          (person.threatLevel === 'high' ? 75 :
-                           person.threatLevel === 'medium' ? 50 : 25);
+            dangerousness: (typeof person.profileData?.dangerLevel === 'number')
+              ? Math.floor(person.profileData.dangerLevel * 10)
+              : (person.threatLevel === 'high' ? 75 :
+                 person.threatLevel === 'medium' ? 50 : 25)
           }
         }));
         if (transformedPersons.length > 0) {
-          persons = transformedPerson;
+          persons = transformedPersons; // Fixed typo: 'transformedPerson' to 'transformedPersons'
           selectedPerson = transformedPersons[0];
         }
       }
@@ -149,14 +197,16 @@
       // Keep using demo data as fallback
     }
   }
-  // Load on component mount
-  if (typeof window !== 'undefined') {
+  // Load on component mount using $effect
+  $effect(() => {
     loadPersonsFromAPI();
-  }
+  });
 </script>
 
 <svelte:head>
   <title>YoRHa Pod Network - Person of Interest Database</title>
+  <!-- Add nes.css for retro styling -->
+  <link rel="stylesheet" href="/nes.css/css/nes.min.css">
 </svelte:head>
 <div class="fugitive-dex">
   <!-- Header -->
@@ -177,19 +227,31 @@
     <!-- Left Sidebar - Person List -->
     <div class="person-list">
       <div class="list-header">
-        <h3>{selectedPerson.name}</h3>
+        <!-- Fix 1: Add conditional rendering for selectedPerson -->
+        {#if selectedPerson}
+          <h3>{selectedPerson.name}</h3>
+        {/if}
         <div class="person-matches">
           <p>Persons of Interest Matches</p>
         </div>
       </div>
       <div class="search-section">
-        <InputBits bind:value={searchQuery} placeholder="Search..." class="search-input" />
+        <!-- Use a native input to avoid Svelte component type mismatch and implicit any -->
+        <input
+          type="search"
+          bind:value={searchQuery}
+          placeholder="Search..."
+          class="search-input"
+        />
       </div>
       <div class="person-entries">
         {#each persons as person (person.id)}
           <button
-            class="person-entry {selectedPerson.id === person.id ? 'selected' : ''}"
-            onclick={() => (selectedPerson = person)}
+            class="person-entry"
+            class:selected={selectedPerson?.id === person.id}
+            on:click={() => (selectedPerson = person)}
+            type="button"
+            aria-pressed={selectedPerson?.id === person.id}
           >
             <span class="person-number">#{person.id}</span>
             <span class="person-name">{person.alias}</span>
@@ -200,7 +262,8 @@
         <h4>Search Filters</h4>
         <div class="filter-controls">
           <div class="filter-group">
-            <label>Status</label>
+            <!-- Fix 2: Change label to span for accessibility -->
+            <span>Status</span>
             <div class="status-filters">
               <button class="filter-btn active">ALL</button>
               <button class="filter-btn">WANTED</button>
@@ -208,128 +271,166 @@
             </div>
           </div>
           <div class="filter-group">
-            <label>Priority</label>
+            <!-- Fix 2: Associate label with input using for/id -->
+            <label for="priority-range">Priority</label>
             <div class="priority-slider">
-              <input type="range" min="0" max="100" value="50" />
+              <input type="range" id="priority-range" min="0" max="100" value="50" />
             </div>
           </div>
           <div class="filter-group">
-            <label>Danger Level</label>
+            <!-- Fix 2: Associate label with input using for/id -->
+            <label for="danger-level-range">Danger Level</label>
             <div class="danger-slider">
-              <input type="range" min="0" max="10" value="5" step="0.1" />
+              <input type="range" id="danger-level-range" min="0" max="10" value="5" step="0.1" />
             </div>
           </div>
         </div>
       </div>
     </div>
     <!-- Main Content - Person Detail -->
-    <div class="person-detail">
-      <div class="person-header-main">
-        <h2>{selectedPerson.name} #{selectedPerson.id}</h2>
-      </div>
-      <div class="person-content">
-        <!-- Photo and Basic Info -->
-        <div class="person-photo-section">
-          <div class="photo-container">
-            <div class="placeholder-photo">
-              <span>📷</span>
-              <p>No Photo Available</p>
+    <!-- Fix 1: Add conditional rendering for selectedPerson -->
+    {#if selectedPerson}
+      <div class="person-detail">
+        <div class="person-header-main">
+          <h2>{selectedPerson.name} #{selectedPerson.id}</h2>
+        </div>
+        <div class="person-content">
+          <!-- Photo and Basic Info -->
+          <div class="person-photo-section">
+            <div class="photo-container">
+              <div class="placeholder-photo">
+                <span>📷</span>
+                <p>No Photo Available</p>
+              </div>
+            </div>
+            <div class="basic-info">
+              <div class="info-row">
+                <span class="label">Aliases:</span>
+                <span class="value">{selectedPerson.alias}</span>
+              </div>
+              <div class="status-badges">
+                <span class="status-badge {selectedPerson.status ? selectedPerson.status.toLowerCase() : ''}">{selectedPerson.status}</span>
+                <span class="priority-badge {selectedPerson.priority ? selectedPerson.priority.toLowerCase() : ''}">{selectedPerson.priority}</span>
+              </div>
+              <div class="physical-stats">
+                <div class="stat">
+                  <span class="stat-label">Height:</span>
+                  <span class="stat-value">{selectedPerson.height}</span>
+                  <span class="stat-number">{selectedPerson.age}</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-label">Age:</span>
+                  <span class="stat-value">{selectedPerson.age}</span>
+                  <span class="stat-number">85</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-label">Hair:</span>
+                  <span class="stat-value">{selectedPerson.hair}</span>
+                  <span class="stat-label">Eyes:</span>
+                  <span class="stat-value">{selectedPerson.eyes}</span>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="basic-info">
-            <div class="info-row">
-              <span class="label">Aliases:</span>
-              <span class="value">{selectedPerson.alias}</span>
-            </div>
-            <div class="status-badges">
-              <span class="status-badge {selectedPerson.status.toLowerCase()}">{selectedPerson.status}</span>
-              <span class="priority-badge {selectedPerson.priority.toLowerCase()}">{selectedPerson.priority}</span>
-            </div>
-            <div class="physical-stats">
-              <div class="stat">
-                <span class="stat-label">Height:</span>
-                <span class="stat-value">{selectedPerson.height}</span>
-                <span class="stat-number">{selectedPerson.age}</span>
-              </div>
-              <div class="stat">
-                <span class="stat-label">Age:</span>
-                <span class="stat-value">{selectedPerson.age}</span>
-                <span class="stat-number">85</span>
-              </div>
-              <div class="stat">
-                <span class="stat-label">Hair:</span>
-                <span class="stat-value">{selectedPerson.hair}</span>
-                <span class="stat-label">Eyes:</span>
-                <span class="stat-value">{selectedPerson.eyes}</span>
-              </div>
+          <!-- Modus Operandi -->
+          <div class="modus-section">
+            <h3>Modus Operandi</h3>
+            <p>{selectedPerson.modusOperandi}</p>
+          </div>
+          <!-- Known Associates -->
+          <div class="associates-section">
+            <h3>Known Associates</h3>
+            <ul class="associates-list">
+              {#each selectedPerson.knownAssociates as associate}
+                <li>{associate}</li>
+              {/each}
+            </ul>
+          </div>
+          <!-- Known Habits -->
+          <div class="habits-section">
+            <h3>Known Habits</h3>
+            <ul class="habits-list">
+              {#each selectedPerson.knownHabits as habit}
+                <li>{habit}</li>
+              {/each}
+            </ul>
+          </div>
+          <!-- Attributes Section (within person-detail) -->
+          <div class="attributes-section mb-6">
+            <h4>Attributes</h4>
+            <div class="attribute-bars flex flex-col gap-3">
+              {#each Object.entries(selectedPerson.attributes) as [attr, value]}
+                <div class="attribute-row">
+                  <span class="attr-label">{attr}</span>
+                  <div class="attr-bar">
+                    <div class="attr-fill" style="width: {value}%"></div>
+                  </div>
+                  <span class="attr-value">{value}</span>
+                </div>
+              {/each}
             </div>
           </div>
-        </div>
-        <!-- Modus Operandi -->
-        <div class="modus-section">
-          <h3>Modus Operandi</h3>
-          <p>{selectedPerson.modusOperandi}</p>
-        </div>
-        <!-- Known Associates -->
-        <div class="associates-section">
-          <h3>Known Associates</h3>
-          <ul class="associates-list">
-            {#each selectedPerson.knownAssociates as associate}
-              <li>{associate}</li>
-            {/each}
-          </ul>
-        </div>
-        <!-- Known Habits -->
-        <div class="habits-section">
-          <h3>Known Habits</h3>
-          <ul class="habits-list">
-            {#each selectedPerson.knownHabits as habit}
-              <li>{habit}</li>
-            {/each}
-          </ul>
-        </div>
-      </div>
-    </div>
-    <!-- Right Panel - Stats -->
-    <div class="stats-panel">
-      <div class="stats-header">
-        <h3>Combat Assessment</h3>
-        <div class="danger-rating">
-          <span class="danger-number">{selectedPerson.dangerLevel}/10</span>
-        </div>
-        <div class="pod-status">
-          <div class="pod-indicator"></div>
-          <span class="pod-text">Pod 042 - Analysis Complete</span>
-        </div>
-      </div>
-      <div class="attributes-section">
-        <h4>Attributes</h4>
-        <div class="attribute-bars">
-          {#each Object.entries(selectedPerson.attributes) as [attr, value]}
-            <div class="attribute-row">
-              <span class="attr-label">{attr}</span>
-              <div class="attr-bar">
-                <div class="attr-fill" style="width: {value}%"></div>
-              </div>
-              <span class="attr-value">{value}</span>
+          <!-- Location Section (within person-detail) -->
+          <div class="location-section mb-6">
+            <h4>Last Known Location</h4>
+            <div class="location-info">
+              <p>📍 Sector {Math.floor(Math.random() * 26) + 1}Alpha</p>
+              <p>⏱️ {selectedPerson.lastSeen}</p>
+              <p class="pod-signal">📡 Signal Strength: 87%</p>
             </div>
-          {/each}
+          </div>
+          <!-- Actions Section (within person-detail) -->
+          <div class="actions-section mb-6">
+            <button type="button" class="action-btn btn-primary" aria-label="Track Location">🎯 Track Location</button>
+            <button type="button" class="action-btn btn-secondary" aria-label="Contact Team">📞 Contact Team</button>
+            <button type="button" class="action-btn btn-ghost" aria-label="Generate Report">📋 Generate Report</button>
+          </div>
         </div>
       </div>
-      <div class="location-section">
-        <h4>Last Known Location</h4>
-        <div class="location-info">
-          <p>📍 Sector {Math.floor(Math.random() * 26) + 1}Alpha</p>
-          <p>⏱️ {selectedPerson.lastSeen}</p>
-          <p class="pod-signal">📡 Signal Strength: 87%</p>
+      <!-- Right Panel - Stats -->
+      <div class="stats-panel nes-container is-dark">
+        <div class="stats-header">
+          <h3>Combat Assessment</h3>
+          <div class="danger-rating">
+            <span class="danger-number">{selectedPerson.dangerLevel}/10</span>
+          </div>
+          <div class="pod-status">
+            <div class="pod-indicator"></div>
+            <span class="pod-text">Pod 042 - Analysis Complete</span>
+          </div>
+        </div>
+        <!-- Attributes Section (within stats-panel) -->
+        <div class="attributes-section mb-6">
+          <h4>Attributes</h4>
+          <div class="attribute-bars flex flex-col gap-3">
+            {#each Object.entries(selectedPerson.attributes) as [attr, value]}
+              <div class="attribute-row">
+                <span class="attr-label">{attr}</span>
+                <div class="attr-bar">
+                  <div class="attr-fill" style="width: {value}%"></div>
+                </div>
+                <span class="attr-value">{value}</span>
+              </div>
+            {/each}
+          </div>
+        </div>
+        <!-- Location Section (within stats-panel) -->
+        <div class="location-section mb-6">
+          <h4>Last Known Location</h4>
+          <div class="location-info">
+            <p>📍 Sector {Math.floor(Math.random() * 26) + 1}Alpha</p>
+            <p>⏱️ {selectedPerson.lastSeen}</p>
+            <p class="pod-signal">📡 Signal Strength: 87%</p>
+          </div>
+        </div>
+        <!-- Actions Section (within stats-panel) -->
+        <div class="actions-section mb-6">
+          <button type="button" class="action-btn btn-primary" aria-label="Track Location">🎯 Track Location</button>
+          <button type="button" class="action-btn btn-secondary" aria-label="Contact Team">📞 Contact Team</button>
+          <button type="button" class="action-btn btn-ghost" aria-label="Generate Report">📋 Generate Report</button>
         </div>
       </div>
-      <div class="actions-section">
-        <ButtonBits variant="primary" class="action-btn">🎯 Track Location</ButtonBits>
-        <ButtonBits variant="secondary" class="action-btn">📞 Contact Team</ButtonBits>
-        <ButtonBits variant="ghost" class="action-btn">📋 Generate Report</ButtonBits>
-      </div>
-    </div>
+    {/if}
   </div>
 </div>
 
@@ -344,7 +445,7 @@
   .fugitive-dex::before {
     content: '';
     position: fixed;
-    top: 0;
+    top: 0,
     left: 0;
     width: 100%;
     height: 100%;
@@ -364,7 +465,7 @@
   }
   .fugitive-title h1 {
     color: #10b981;
-    font-family: 'Press Start 2P', cursiv;
+    font-family: 'Press Start 2P', cursive;
     font-size: 2rem;
     margin: 0;
     text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
@@ -372,7 +473,7 @@
   }
   .case-info {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-top: 0.5rem;
   }
@@ -407,8 +508,8 @@
     display: grid;
     grid-template-columns: 300px 1fr 350px;
     gap: 1rem;
-    padding: 1rem;
     height: calc(100vh - 120px);
+    padding: 1rem;
   }
   /* Left Sidebar */
   .person-list {
@@ -421,7 +522,7 @@
   }
   .list-header h3 {
     color: #10b981;
-    font-family: 'Press Start 2P', cursiv;
+    font-family: 'Press Start 2P', cursive;
     font-size: 0.875rem;
     margin: 0 0 0.5rem 0;
     text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
@@ -477,7 +578,7 @@
   /* Filter Section */
   .filter-section h4 {
     color: #10b981;
-    font-family: 'Press Start 2P', cursiv;
+    font-family: 'Press Start 2P', cursive;
     font-size: 0.625rem;
     margin: 0 0 1rem 0;
     text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
@@ -523,7 +624,7 @@
   }
   .person-header-main h2 {
     color: #10b981;
-    font-family: 'Press Start 2P', cursiv;
+    font-family: 'Press Start 2P', cursive;
     font-size: 1.25rem;
     margin: 0 0 1.5rem 0;
     text-align: center;
@@ -552,7 +653,7 @@
   .placeholder-photo p {
     color: #9ca3af;
     font-size: 0.75rem;
-    margin: 0;
+    margin: 0,
   }
   .basic-info {
     display: flex;
@@ -652,7 +753,7 @@
   .associates-section h3,
   .habits-section h3 {
     color: #10b981;
-    font-family: 'Press Start 2P', cursiv;
+    font-family: 'Press Start 2P', cursive;
     font-size: 0.875rem;
     margin: 0 0 0.75rem 0;
     text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
@@ -660,7 +761,7 @@
   .associates-list,
   .habits-list {
     list-style: none;
-    padding: 0;
+    padding: 0,
     margin: 0;
   }
   .associates-list li,
@@ -671,9 +772,9 @@
     border-bottom: 1px solid #6b7280;
     margin-bottom: 0.5rem;
   }
-  .associates-list li: before
-  .habits-list li:before {
-    content: '• ';
+  .associates-list li::before,
+  .habits-list li::before {
+    content: '• ',
     color: #10b981;
     font-weight: bold;
     margin-right: 0.5rem;
@@ -694,7 +795,7 @@
   }
   .stats-header h3 {
     color: #10b981;
-    font-family: 'Press Start 2P', cursiv;
+    font-family: 'Press Start 2P', cursive;
     font-size: 0.875rem;
     margin: 0 0 0.75rem 0;
     text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
@@ -708,27 +809,27 @@
   }
   .danger-number {
     color: #dc2626;
-    font-family: 'Press Start 2P', cursiv;
+    font-family: 'Press Start 2P', cursive;
     font-size: 1.5rem;
     font-weight: bold;
     text-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
   }
   /* Attributes Section */
-  .attributes-section {
+  /* .attributes-section {
     margin-bottom: 1.5rem;
-  }
+  } */
   .attributes-section h4 {
     color: #10b981;
-    font-family: 'Press Start 2P', cursiv;
+    font-family: 'Press Start 2P', cursive;
     font-size: 0.75rem;
     margin: 0 0 1rem 0;
     text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
   }
-  .attribute-bars {
+  /* .attribute-bars {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-  }
+  } */
   .attribute-row {
     display: flex;
     align-items: center;
@@ -738,10 +839,10 @@
     color: #9ca3af;
     font-size: 0.75rem;
     min-width: 80px;
-    text-transform: capitaliz;
+    text-transform: capitalize;
   }
   .attr-bar {
-    flex: 1;
+    flex: 1,
     height: 12px;
     background: rgba(30, 41, 59, 0.8);
     border: 1px solid #6b7280;
@@ -763,13 +864,13 @@
     text-shadow: 0 0 3px rgba(16, 185, 129, 0.3);
   }
   /* Location and Actions */
-  .location-section,
+  /* .location-section,
   .actions-section {
     margin-bottom: 1.5rem;
-  }
+  } */
   .location-section h4 {
     color: #10b981;
-    font-family: 'Press Start 2P', cursiv;
+    font-family: 'Press Start 2P', cursive;
     font-size: 0.75rem;
     margin: 0 0 0.75rem 0;
     text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
@@ -783,27 +884,37 @@
     width: 100%;
     margin-bottom: 0.5rem;
     font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    background: rgba(16, 185, 129, 0.08);
+    color: #e6fffa;
+    transition: all 0.15s ease;
   }
-  /* Responsive Design */
-  @media (max-width: 1200px) {
-    .main-layout {
-      grid-template-columns: 250px 1fr 300px;
-    }
+
+  /* Variant styles to approximate ButtonBits look */
+  .btn-primary {
+    background: linear-gradient(90deg,#10b981,#34d399);
+    color: #0d1117;
+    border-color: rgba(255,255,255,0.05);
+    box-shadow: 0 4px 10px rgba(16,185,129,0.12);
   }
-  @media (max-width: 900px) {
-    .main-layout {
-      grid-template-columns: 1fr;
-      grid-template-rows: auto 1fr auto;
-      height: auto;
-    }
-    .person-photo-section {
-      grid-template-columns: 1fr;
-      text-align: center;
-    }
-    .photo-container {
-      height: 200px;
-      margin: 0 auto;
-      max-width: 200px;
-    }
+  .btn-primary:hover { filter: brightness(0.95); }
+
+  .btn-secondary {
+    background: linear-gradient(90deg,#6b7280,#9ca3af);
+    color: #0d1117;
+    border-color: rgba(0,0,0,0.1);
   }
+  .btn-secondary:hover { filter: brightness(0.97); }
+
+  .btn-ghost {
+    background: transparent;
+    color: #10b981;
+    border: 1px dashed rgba(16,185,129,0.25);
+  }
+  .btn-ghost:hover { background: rgba(16,185,129,0.04); }
+
+  /* ...existing styles... */
 </style>

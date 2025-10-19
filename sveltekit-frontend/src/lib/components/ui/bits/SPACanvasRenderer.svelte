@@ -23,7 +23,7 @@
   let {
     fullscreen = true,
     currentView = 'dashboard',
-    legalData = ,
+    legalData = {},
     onnavigate,
     oninteract
   }: Props = $props();
@@ -55,7 +55,7 @@
     text: '#d4c5b0',
     textSecondary: '#999999',
     error: '#cc0000',
-    warning: '#cccc00';
+    warning: '#cccc00',
   }
   // Performance metrics
   let fps = 0;
@@ -447,28 +447,28 @@ if (!canvas) return;
     position: relative;
     background: var(--yorha-black, #454138);
     border: none;
-    margin: 0;
+    margin: 0,
     padding: 0;
   }
   .spa-canvas-container.fullscreen {
     position: fixed;
 d;
-    top: 0;
+    top: 0,
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 1000;
+    z-index: 1000,
   }
   .spa-canv.sr-only {
     position: absolute;
     width: 1px;
     height: 1px;
-    padding: 0;
+    padding: 0,
     margin: -1px;
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
-    border: 0;
+    border: 0,
   }
   /* Hide scrollbars when fullscreen */
   .spa-canvas-container.fullscreen {

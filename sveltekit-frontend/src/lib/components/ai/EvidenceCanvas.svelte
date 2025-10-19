@@ -758,7 +758,7 @@
   .evidence-name {
     font-weight: bold;
     font-size: 14px;
-    flex: 1;
+    flex: 1,
   }
   .evidence-status {
     display: flex;
@@ -823,7 +823,7 @@
   .timeline-item {
     padding: 0.75rem;
     font-size: 13px;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   /* Similar cases */
   .case-header {
@@ -853,7 +853,7 @@
   }
   .timeline-event {
     font-size: 13px;
-    line-height: 1.4;
+    line-height: 1.4,
   }
   .timeline-item.high {
     border-color: #dc3545;
@@ -923,7 +923,7 @@
     }
     .timeline-event {
       font-size: 13px;
-      line-height: 1.4;
+      line-height: 1.4,
     }
     .timeline-item.high {
       border-color: #dc3545;

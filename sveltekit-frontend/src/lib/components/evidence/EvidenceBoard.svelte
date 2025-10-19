@@ -844,7 +844,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .board-title {
     font-size: 1.5rem;
-    font-weight: 700;
+    font-weight: 700,
     margin: 0;
     display: flex;
     align-items: center;
@@ -856,7 +856,7 @@ https://svelte.dev/e/js_parse_error -->
     padding: 0.25rem 0.5rem;
     border-radius: 0.375rem;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 600,
   }
   .evidence-stats {
     display: flex;
@@ -866,14 +866,14 @@ https://svelte.dev/e/js_parse_error -->
   .stat {
     font-size: 0.875rem;
     color: #64748b;
-    font-weight: 500;
+    font-weight: 500,
   }
   .detective-mode .stat {
     color: #cbd5e1;
   }
   .stat.suspicious {
     color: #f59e0b;
-    font-weight: 600;
+    font-weight: 600,
   }
   .header-controls {
     display: flex;
@@ -919,7 +919,7 @@ https://svelte.dev/e/js_parse_error -->
     background: white;
     border-radius: 0.5rem;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 500,
     transition: all 0.2s ease;
   }
   .detective-toggle:hover {
@@ -941,14 +941,14 @@ https://svelte.dev/e/js_parse_error -->
     border: none;
     border-radius: 0.5rem;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 500,
     transition: background 0.2s;
   }
   .analyze-btn:hover:not(:disabled) {
     background: #2563eb;
   }
   .analyze-btn:disabled {
-    opacity: 0.6;
+    opacity: 0.6,
     cursor: not-allowed;
   }
   .filter-toggle {
@@ -989,7 +989,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .filter-group label {
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 500,
     color: #374151;
   }
   .detective-mode .filter-group label {
@@ -1026,7 +1026,7 @@ https://svelte.dev/e/js_parse_error -->
     align-items: center;
     padding: 0.75rem 1rem;
     background: rgba(239, 68, 68, 0.12);
-    font-weight: 600;
+    font-weight: 600,
   }
   .insights-content {
     padding: 1rem;
@@ -1052,7 +1052,7 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.875rem;
   }
   .evidence-display {
-    flex: 1;
+    flex: 1,
     padding: 1.5rem;
     overflow: auto;
   }
@@ -1099,10 +1099,10 @@ https://svelte.dev/e/js_parse_error -->
   }
   .evidence-info {
     flex: 1;
-    min-width: 0;
+    min-width: 0,
   }
   .evidence-title {
-    font-weight: 600;
+    font-weight: 600,
     margin: 0 0 0.25rem 0;
     white-space: nowrap;
     overflow: hidden;
@@ -1118,7 +1118,7 @@ https://svelte.dev/e/js_parse_error -->
   .evidence-description {
     color: #4b5563;
     font-size: 0.875rem;
-    line-height: 1.5;
+    line-height: 1.5,
     margin: 0 0 0.75rem 0;
   }
   .preview-image {
@@ -1147,7 +1147,7 @@ https://svelte.dev/e/js_parse_error -->
     padding: 0.25rem 0.5rem;
     border-radius: 0.375rem;
     font-size: 0.75rem;
-    font-weight: 500;
+    font-weight: 500,
   }
   .suspicious-badge {
     background: #fef3c7;
@@ -1174,7 +1174,7 @@ https://svelte.dev/e/js_parse_error -->
     content: '';
     position: absolute;
     left: 0.875rem;
-    top: 0;
+    top: 0,
     bottom: 0;
     width: 2px;
     background: #e2e8f0;

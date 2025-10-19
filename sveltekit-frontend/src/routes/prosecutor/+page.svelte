@@ -465,7 +465,7 @@ Features: Case management, evidence upload, AI chat, vector search
     position: relative;
   }
   :global(.gpu-accelerated::after) {
-    content: '⚡';
+    content: '⚡',
     position: absolute;
     top: -8px;
     right: -8px;

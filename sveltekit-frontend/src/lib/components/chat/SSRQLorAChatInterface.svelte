@@ -107,7 +107,7 @@ https://svelte.dev/e/js_parse_error -->
       role: 'user',
       content: message;
       timestamp: new Date(),
-      processed: false;
+      processed: false,
     }
     messages.update(msgs => [...msgs, userMessage]);
     currentMessage.set('');
@@ -123,10 +123,10 @@ https://svelte.dev/e/js_parse_error -->
         role: 'assistant',
         content: '',
         timestamp: new Date(),
-        streaming: true;
+        streaming: true,
         chunks: [],
         neuralSprite: null;
-        source: 'qlora';
+        source: 'qlora',
       }
       messages.update(msgs => [...msgs, aiMessage]);
       // Start streaming response
@@ -139,7 +139,7 @@ https://svelte.dev/e/js_parse_error -->
         role: 'system',
         content: 'Sorry, I encountered an error. Please try again.',
         timestamp: new Date(),
-        error: true;
+        error: true,
       }]);
       send({ type: 'ERROR', error: error.message });
     } finally {
@@ -403,7 +403,7 @@ Clear
     display: flex;
     gap: 1rem;
     font-size: 0.75rem;
-    opacity: 0.8;
+    opacity: 0.8,
   }
   .domain-expertise {
     color: #64ffda;
@@ -482,11 +482,11 @@ Clear
     border: none;
     font-size: 1rem;
     cursor: pointer;
-    opacity: 0.6;
+    opacity: 0.6,
     transition: opacity 0.2;
   }
   .feedback-btn:hover {
-    opacity: 1;
+    opacity: 1,
   }
   .neural-sprite-container {
     margin-top: 0.5rem;
@@ -510,7 +510,7 @@ Clear
     align-items: center;
   }
   .message-input {
-    flex: 1;
+    flex: 1,
     padding: 0.75rem;
     background: rgba(15, 52, 96, 0.6);
     border: 1px solid #0f3460;
@@ -538,7 +538,7 @@ Clear
     margin-top: 0.5rem;
     text-align: center;
     font-size: 0.8rem;
-    opacity: 0.7;
+    opacity: 0.7,
   }
   .processing-indicator {
     animation: pulse 2s infinite;
@@ -546,11 +546,11 @@ Clear
   /* Animations */
   @keyframes messageSlideIn {
     from {
-      opacity: 0;
+      opacity: 0,
       transform: translateY(20px);
     }
     to {
-      opacity: 1;
+      opacity: 1,
       transform: translateY(0);
     }
   }

@@ -22,7 +22,7 @@ https://svelte.dev/e/expected_token -->
     riskLevel: 'medium',
     lastAccessed: Date.now(),
     bankId: 1,
-    compressed: false;
+    compressed: false,
     content: 'This contract contains provisions under 15 U.S.C. § 1001 and references Supreme Court case 456 U.S. 789. The parties agree to binding arbitration in the District Court.',
     metadata: {
       document_type: 'contract',
@@ -483,11 +483,11 @@ https://svelte.dev/e/expected_token -->
   .metric-label {
     font-size: 12px;
     color: #6b7280;
-    font-weight: 500;
+    font-weight: 500,
   }
   .metric-value {
     font-size: 18px;
-    font-weight: 700;
+    font-weight: 700,
     color: #1f2937;
   }
   .processing-panel,
@@ -505,13 +505,13 @@ https://svelte.dev/e/expected_token -->
     padding: 10px 20px;
     border: none;
     border-radius: 8px;
-    font-weight: 500;
+    font-weight: 500,
     cursor: pointer;
     transition: all 0.2s ease;
     font-size: 14px;
   }
   .btn:disabled {
-    opacity: 0.5;
+    opacity: 0.5,
     cursor: not-allowed;
   }
   .btn-primary {
@@ -591,7 +591,7 @@ https://svelte.dev/e/expected_token -->
     padding: 2px 6px;
     border-radius: 3px;
     font-size: 11px;
-    font-weight: 500;
+    font-weight: 500,
   }
   .entity-confidence,
   .citation-court {
@@ -631,7 +631,7 @@ https://svelte.dev/e/expected_token -->
   .log-entry {
     color: #d1d5db;
     font-size: 12px;
-    line-height: 1.4;
+    line-height: 1.4,
     padding: 2px 0;
   }
   .log-empty {

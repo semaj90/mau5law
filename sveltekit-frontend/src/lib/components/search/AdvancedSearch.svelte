@@ -317,7 +317,7 @@ https://svelte.dev/e/js_parse_error -->
   position: absolute;
   left: 0.75rem;
   color: #6b7280;
-  z-index: 1;
+  z-index: 1,
 }
 .search-input {
   width: 100%;
@@ -354,7 +354,7 @@ https://svelte.dev/e/js_parse_error -->
 .search-results {
   position: absolute;
   top: 100%;
-  left: 0;
+  left: 0,
   right: 0;
   background: #ffffff;
   border: 1px solid #d1d5db;
@@ -386,7 +386,7 @@ https://svelte.dev/e/js_parse_error -->
   border-bottom: none;
 }
 .result-icon {
-  flex-shrink: 0;
+  flex-shrink: 0,
   width: 2rem;
   height: 2rem;
   display: flex;
@@ -406,7 +406,7 @@ https://svelte.dev/e/js_parse_error -->
   align-items: center;
   justify-content: center;
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 600,
   color: white;
   border-radius: 0.25rem;
 }
@@ -416,10 +416,10 @@ https://svelte.dev/e/js_parse_error -->
 .result-type-badge.link { background: #06b6d4, }
 .result-content {
   flex: 1;
-  min-width: 0;
+  min-width: 0,
 }
 .result-title {
-  font-weight: 500;
+  font-weight: 500,
   color: #111827;
   margin-bottom: 0.25rem;
   word-break: break-word;
@@ -443,7 +443,7 @@ https://svelte.dev/e/js_parse_error -->
   border-radius: 0.25rem;
 }
 .result-meta {
-  flex-shrink: 0;
+  flex-shrink: 0,
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -453,7 +453,7 @@ https://svelte.dev/e/js_parse_error -->
 }
 .result-type {
   text-transform: capitaliz;
-  font-weight: 500;
+  font-weight: 500,
 }
 .no-results {
   display: flex;
@@ -466,11 +466,11 @@ https://svelte.dev/e/js_parse_error -->
 }
 .no-results p {
   margin: 0.5rem 0 0.25rem;
-  font-weight: 500;
+  font-weight: 500,
 }
 .no-results small {
   font-size: 0.75rem;
-  opacity: 0.8;
+  opacity: 0.8,
 }
 .search-filters {
   margin-top: 1rem;
@@ -488,7 +488,7 @@ https://svelte.dev/e/js_parse_error -->
   align-items: center;
   gap: 0.375rem;
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 500,
   color: #374151;
 }
 .filter-options {
@@ -538,7 +538,7 @@ https://svelte.dev/e/js_parse_error -->
 }
 .active-filters-label {
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 500,
   color: #374151;
 }
 .active-filter {
@@ -550,7 +550,7 @@ https://svelte.dev/e/js_parse_error -->
   color: white;
   border-radius: 0.375rem;
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 500,
 }
 .active-filter button {
   display: flex;

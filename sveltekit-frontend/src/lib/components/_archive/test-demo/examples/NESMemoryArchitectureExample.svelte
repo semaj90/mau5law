@@ -40,7 +40,7 @@
       activeReview: true
       lastAccessed: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
       fileSize: 2.5 * 1024 * 1024, // 2.5MB
-      isEvidenceCritical: true;
+      isEvidenceCritical: true,
     },
     {
       id: 'evidence_email_chain_042',
@@ -51,7 +51,7 @@
       activeReview: true
       lastAccessed: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
       fileSize: 800 * 1024, // 800KB
-      isEvidenceCritical: true;
+      isEvidenceCritical: true,
     },
     {
       id: 'motion_summary_judgment',
@@ -62,7 +62,7 @@
       activeReview: false
       lastAccessed: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
       fileSize: 1.2 * 1024 * 1024, // 1.2MB
-      isEvidenceCritical: false;
+      isEvidenceCritical: false,
     },
     {
       id: 'correspondence_client_001',
@@ -73,7 +73,7 @@
       activeReview: false
       lastAccessed: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 1 week ago
       fileSize: 150 * 1024, // 150KB
-      isEvidenceCritical: false;
+      isEvidenceCritical: false,
     }
   ];
   // Sample user profile

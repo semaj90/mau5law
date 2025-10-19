@@ -439,7 +439,7 @@
   }
   .features-enabled ul {
     list-style: none;
-    padding: 0;
+    padding: 0,
   }
   .features-enabled li {
     margin-bottom: 0.25rem;
