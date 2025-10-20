@@ -3,7 +3,7 @@
     "message": "',' expected.",
     "level": "error",
     "code": "TS1005",
-    "count": 3180,
+    "count": 2142,
     "exampleFiles": [
       "src/lib/components/ui/bitsbutton.svelte",
       "src/lib/components/AIAssistantButton.svelte",
@@ -22,7 +22,7 @@
     "message": "Declaration or statement expected.",
     "level": "error",
     "code": "TS1128",
-    "count": 803,
+    "count": 740,
     "exampleFiles": [
       "src/lib/components/AdvancedRichTextEditor.svelte",
       "src/lib/components/ArtifactViewer.svelte",
@@ -41,7 +41,7 @@
     "message": "';' expected.",
     "level": "error",
     "code": "TS1005",
-    "count": 456,
+    "count": 439,
     "exampleFiles": [
       "src/lib/components/AdvancedRichTextEditor.svelte",
       "src/lib/components/ArtifactViewer.svelte",
@@ -79,7 +79,7 @@
     "message": "Property assignment expected.",
     "level": "error",
     "code": "TS1136",
-    "count": 148,
+    "count": 143,
     "exampleFiles": [
       "src/lib/components/AIAssistantButton.svelte",
       "src/lib/components/Chat.svelte",
@@ -136,7 +136,7 @@
     "message": "')' expected.",
     "level": "error",
     "code": "TS1005",
-    "count": 51,
+    "count": 49,
     "exampleFiles": [
       "src/lib/components/AdvancedRichTextEditor.svelte",
       "src/lib/components/EnhancedLegalAIDemo.svelte",
@@ -155,7 +155,7 @@
     "message": "'try' expected.",
     "level": "error",
     "code": "TS1005",
-    "count": 48,
+    "count": 47,
     "exampleFiles": [
       "src/lib/components/AdvancedRichTextEditor.svelte",
       "src/lib/components/EnhancedLegalAIDemo.svelte",
@@ -284,13 +284,13 @@
     "message": "Type expected.",
     "level": "error",
     "code": "TS1110",
-    "count": 18,
+    "count": 19,
     "exampleFiles": [
       "src/lib/components/ai/AIChatInterface.svelte",
       "src/lib/components/canvas/RecursiveEvidenceVisualization.svelte",
+      "src/lib/components/visualizations/EvidenceAnalysisVisualization.svelte",
       "src/lib/components/editor/WysiwygEditor.svelte",
-      "src/lib/components/evidence/Enhanced3DEvidenceBoard.svelte",
-      "src/lib/components/legal/CriminalProfile.svelte"
+      "src/lib/components/evidence/Enhanced3DEvidenceBoard.svelte"
     ],
     "entities": {
       "tsCodes": [],
@@ -384,6 +384,25 @@
       "src/lib/components/cache/CacheDemo.svelte",
       "src/lib/components/editor/WysiwygEditor.svelte",
       "src/routes/dev/vector-search-demo/+page.svelte"
+    ],
+    "entities": {
+      "tsCodes": [],
+      "modules": [],
+      "aliases": [],
+      "idents": []
+    }
+  },
+  {
+    "message": "Argument expression expected.",
+    "level": "error",
+    "code": "TS1135",
+    "count": 10,
+    "exampleFiles": [
+      "src/lib/components/EnhancedLegalAI.svelte",
+      "src/lib/components/Neo4jRecommendation3DViewer.svelte",
+      "src/lib/components/ai/RecommendationEngine.svelte",
+      "src/lib/components/ai/webgpu/WebGPUProcessor.svelte",
+      "src/lib/components/canvas/FabricEvidenceCanvas.svelte"
     ],
     "entities": {
       "tsCodes": [],
@@ -493,16 +512,16 @@
     }
   },
   {
-    "message": "Argument expression expected.",
+    "message": "Expression or comma expected.",
     "level": "error",
-    "code": "TS1135",
+    "code": "TS1137",
     "count": 8,
     "exampleFiles": [
-      "src/lib/components/EnhancedLegalAI.svelte",
       "src/lib/components/Neo4jRecommendation3DViewer.svelte",
       "src/lib/components/ai/RecommendationEngine.svelte",
-      "src/lib/components/ai/webgpu/WebGPUProcessor.svelte",
-      "src/lib/components/gpu/LegalDocumentViewer.svelte"
+      "src/lib/components/visualizations/EvidenceAnalysisVisualization.svelte",
+      "src/lib/components/ui/bits/EmbeddingGemmaChat.svelte",
+      "src/lib/components/unified/UnifiedDialog.svelte"
     ],
     "entities": {
       "tsCodes": [],
@@ -579,23 +598,6 @@
       "src/lib/components/WebGPUProcessor.svelte",
       "src/lib/components/legal/EvidenceCustodyFlow.svelte",
       "src/lib/components/ui/NoteViewerModal.svelte"
-    ],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "Expression or comma expected.",
-    "level": "error",
-    "code": "TS1137",
-    "count": 5,
-    "exampleFiles": [
-      "src/lib/components/Neo4jRecommendation3DViewer.svelte",
-      "src/lib/components/ui/bits/EmbeddingGemmaChat.svelte",
-      "src/lib/components/unified/UnifiedDialog.svelte"
     ],
     "entities": {
       "tsCodes": [],
@@ -822,18 +824,6 @@
     }
   },
   {
-    "message": "185 } catch (error) {",
-    "level": "error",
-    "count": 2,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
     "message": "451 processedFile: (result as { success?: unknownn; data?: unknownn; error?: unknownn; processedFile?: unknownn; metadata?: unknownn; status?: unknownn; analysis?: unknownn; summary?: unknownn; confidence?: unknownn; processing_time_ms?: unknownn }).processedFile ? new File([(result as { success?: unknownn; data?: unknownn; error?: unknownn; processedFile?: unknownn; metadata?: unknownn; status?: unknownn; analysis?: unknownn; summary?: unknownn; confidence?: unknownn; processing_time_ms?: unknownn }).processedFile], file.name, { type: file.type }) : undefined;",
     "level": "error",
     "count": 2,
@@ -956,18 +946,6 @@
     "message": "70 } catch (error) {",
     "level": "error",
     "count": 2,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "env NODE_OPTIONS=\"\" NODE_INSPECT=\"\" svelte-check --tsconfig ./tsconfig.frontend.json --threshold error --fail-on-warnings false",
-    "level": "error",
-    "count": 1,
     "exampleFiles": [],
     "entities": {
       "tsCodes": [],
@@ -1254,18 +1232,6 @@
     }
   },
   {
-    "message": "219 error: true;",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
     "message": "192 const error = await (response as { ok?: any; json?: any }).json();",
     "level": "error",
     "count": 1,
@@ -1365,32 +1331,6 @@
     }
   },
   {
-    "message": "63 error: null;",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "82 generationMethod: 'error';",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": [
-        "error"
-      ]
-    }
-  },
-  {
     "message": "181 ondispatch?.({ message: 'Component initialization failed', error: err;",
     "level": "error",
     "count": 1,
@@ -1416,18 +1356,6 @@
   },
   {
     "message": "215 } catch (error) {",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "625 error: 'Γ¥î';",
     "level": "error",
     "count": 1,
     "exampleFiles": [],
@@ -1469,18 +1397,6 @@
   },
   {
     "message": "495 error: 'Invalid response from upload service';",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "129 error: true;",
     "level": "error",
     "count": 1,
     "exampleFiles": [],
@@ -1539,480 +1455,6 @@
       "idents": [
         "message"
       ]
-    }
-  },
-  {
-    "message": "132 gpu_speedup: (result as { success?: unknown; result?: unknown; processing_ms?: unknown; gpu_utilized?: unknown; metadata?: unknown; error?: unknown; title?: unknown; score?: unknown; case_id?: unknown; gpu_accelerated?: unknown; processing_time?: unknown; confidence?: unknown }).metadata?.speedup_vs_cpu || '8.3x',",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "141 } catch (error) {",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "146 } catch (error) {",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "147 console.error('Document processing failed:', error);",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "194 } catch (error) {",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "195 console.error('Batch processing failed:', error);",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "228 } catch (error) {",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "133 error: null;",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "179 error: null;",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "196 error: null;",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "9 onWorkflowError: ((error: string) ;",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "97 } catch (e: unknown){ error = e.message, }",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "102 error;",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "31 status: ratio >= 1 ? 'critical' : ratio >= 0.8 ? 'warning' : 'normal';",
-    "level": "warning",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": [
-        "critical",
-        "warning",
-        "normal"
-      ]
-    }
-  },
-  {
-    "message": "43 status: ratio >= 1 ? 'critical' : ratio >= 0.8 ? 'warning' : 'normal';",
-    "level": "warning",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": [
-        "critical",
-        "warning",
-        "normal"
-      ]
-    }
-  },
-  {
-    "message": "55 status: ratio >= 1 ? 'critical' : ratio >= 0.8 ? 'warning' : 'normal';",
-    "level": "warning",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": [
-        "critical",
-        "warning",
-        "normal"
-      ]
-    }
-  },
-  {
-    "message": "138 } catch (error) {",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "Parameter declaration expected.",
-    "level": "error",
-    "code": "TS1138",
-    "count": 1,
-    "exampleFiles": [
-      "src/lib/components/ui/RichTextEditor.svelte"
-    ],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "216 } catch (error) {",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "247 reason: error instanceof Error ? error.message: 'Unknown error';",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "58 warning: '#cccc00';",
-    "level": "warning",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "36 error: AlertCircle",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "37 warning: AlertTriangle",
-    "level": "warning",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "68 description: error;",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "Declaration expected.",
-    "level": "error",
-    "code": "TS1146",
-    "count": 1,
-    "exampleFiles": [
-      "src/lib/components/unified/UnifiedDialog.svelte"
-    ],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "149 } catch (error) {",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "186 } catch (error) {",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "257 error: errorData.error?.message || 'Upload failed';",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "274 error: 'Invalid response from upload service';",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "64 error: 'failure default to mock',",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "53 console.warn.error);",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "183 } catch (error) {",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "71 error: error instanceof Error ? error.message: 'Unknown error',",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "40 message: error;",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "438 error: null",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "502 } catch (error) {",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "516 error: error.messag;",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
-    }
-  },
-  {
-    "message": "compacts near heap limit Allocation failed - JavaScript heap out of memory",
-    "level": "error",
-    "count": 1,
-    "exampleFiles": [],
-    "entities": {
-      "tsCodes": [],
-      "modules": [],
-      "aliases": [],
-      "idents": []
     }
   }
 ]

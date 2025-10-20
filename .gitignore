@@ -763,3 +763,4 @@ pytorch_cache.json
 __pycache__/
 sveltekit-tsc-output.txt
 sveltekit-tsc-output-fresh.txt
+svelte-check.json
