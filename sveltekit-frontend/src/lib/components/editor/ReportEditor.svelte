@@ -7,60 +7,76 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
   import { onDestroy, onMount } from 'svelte';
   import { quintOut } from "svelte/easing";
-  import { fly } from "svelte/transition";
-  import type { SvelteComponentTyped } from 'svelte'; // ADDED: Import SvelteComponentTyped
-  import { editorState,
-    report,
-    reportActions,
-    reportUI,
-    setupAutoSave,
-   } from '$lib/stores/unified';
-  // Components
-  import EvidenceCard from "../evidence/EvidenceCard.svelte";
-  import EvidenceForm from "../forms/EvidenceForm.svelte";
-  import MasonryGrid from "../layout/MasonryGrid.svelte";
+  // The 'fly' transition is e";
   import AdvancedSearch from "../search/AdvancedSearch.svelte";
   import Modal from "../ui/Modal.svelte";
   import ReportToolbar from "./ReportToolbar.svelte";
   import RichTextEditor from "./RichTextEditor.svelte";
+  import type { Component } from 'svelte'; // Add this import
+  import MasonryGrid from "$lib/components/ui/MasonryGrid.svelte"; // Add this import
+  import EvidenceCard from "$lib/components/evidence/EvidenceCard.svelte"; // Add this import
   // Icons
   import { invalidateAll } from "$app/navigation";
   import {
     Columns,
+    Download,
+    Eye,
     Grid,
     Layout,
+    Loader2,
     Maximize2,
     Minimize2,
     PanelLeftOpen,
+    PenLine,
     Plus,
+    Search,
     Settings,
+    Trash2,
   } from "lucide-svelte";
+  import { Button } from 'bits-ui'; // Add bits-ui Button import
+  import type { Evidence, ReportStoreState, ReportUIState, EditorState } from '$lib/types/report'; // Import new types
+  import { editorState, report, reportActions, reportUI, setupAutoSave } from '$lib/stores/unified';
+  import { legalAnalysisCache } from '$lib/services/legal-analysis-cache';
+
   // State
   let editorComponent = $state<any>(null);
-  let selectedEvidence = $state<any>(null);
+  let selectedEvidence = $state<Evidence | null>(null); // Type selectedEvidence
   let showEvidenceModal = $state(false);
   let showSettingsModal = $state(false);
-  let evidenceSearchResults = $state<any[]>([]);
+  let evidenceSearchResults = $state<Evidence[]>([]); // Type evidenceSearchResults
   let evidenceFormData = $state<any>(null);
   let cleanupAutoSave: (() => void) | null = null;
 
-  // ADDED: Type widening for EvidenceCard to allow custom props
-  type AnyComponent = new (...args: any[]) => SvelteComponentTyped<Record<string, any>, Record<string, any>, Record<string, any>>;
-  const EvidenceCardPermissive = EvidenceCard as unknown as AnyComponent;
+  // Workaround for Svelte 5 component type inference issue
+  let MasonryGridComponent: Component = MasonryGrid as Component;
+
+  // Legal document comparison state
+  let comparingId = $state<string | null>(null);
+  let compareError = $state<string | null>(null);
+  let comparisonResults = $state<Record<string, any>>({});
+  let cacheStats = $state({ totalEntries: 0, oldestEntry: null, newestEntry: null, totalSize: 0 });
+
+  // Handler for AdvancedSearch component
+  const handleEvidenceSearch = (event: CustomEvent<Evidence[]>) => {
+    evidenceSearchResults = event.detail;
+  };
+
+  let isFullscreen = $derived(($reportUI as ReportUIState).fullscreen);
+  let isSidebarClosed = $derived(!($reportUI as ReportUIState).sidebarOpen);
 
   let layoutClass = $derived(
-    $report?.settings?.layout
+    ($report as unknown as ReportStoreState)?.settings?.layout // Add type assertion
       ? {
           single: "layout-single",
           dual: "layout-dual",
           masonry: "layout-masonry",
-        }[$report.settings.layout]
+        }[($report as unknown as ReportStoreState).settings.layout] // Add type assertion
       : "layout-single"
   );
   // Reactive editor height
-  let editorHeight = $derived($reportUI && $reportUI.fullscreen ? window.innerHeight - 200 : 500);
+  let editorHeight = $derived(($reportUI as ReportUIState) && ($reportUI as ReportUIState).fullscreen ? window.innerHeight - 200 : 500); // Add type assertion
   function updateEditorHeight() {
-    editorHeight = $reportUI.fullscreen ? window.innerHeight - 200 : 500;
+    editorHeight = ($reportUI as ReportUIState).fullscreen ? window.innerHeight - 200 : 500; // Add type assertion
   }
   $effect(() => {
     window.addEventListener('resize', updateEditorHeight);
@@ -70,7 +86,7 @@ https://svelte.dev/e/js_parse_error -->
   });
   // Initialize auto-save
   $effect(() => {
-    if ($report.settings.autoSave) {
+    if (($report as unknown as ReportStoreState).settings.autoSave) { // Add type assertion
       cleanupAutoSave = setupAutoSave();
     }
   });
@@ -80,15 +96,15 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
   // Handle evidence actions
-  const handleViewEvidence = (evidence: any) => {
+  const handleViewEvidence = (evidence: Evidence) => { // Type evidence
     selectedEvidence = evidence;
     showEvidenceModal = true;
   }
-  const handleEditEvidence = (evidence: any) => {
+  const handleEditEvidence = (evidence: Evidence) => { // Type evidence
     selectedEvidence = evidence;
     showEvidenceModal = true;
   }
-  const handleDeleteEvidence = async (evidence: any) => {
+  const handleDeleteEvidence = async (evidence: Evidence) => { // Type evidence
     if (confirm(`Are you sure you want to delete "${evidence.title}"?`)) {
       try {
         const formData = new FormData();
@@ -109,20 +125,100 @@ https://svelte.dev/e/js_parse_error -->
       }
     }
   }
-  const handleDownloadEvidence = (evidence: any) => {
+  const handleDownloadEvidence = (evidence: Evidence) => { // Type evidence
     if (evidence.url) {
       window.open(evidence.url, "_blank");
     }
   }
-  const handleShareEvidence = (evidence: any) => {
-    // Implementation for sharing evidence
-    console.log('Sharing evidence:', evidence);
-  }
-  const handleInsertEvidence = (evidence: any) => {
-    if (editorComponent) {
-      editorComponent.insertEvidence(evidence);
+
+  const handleCompareEvidence = async (evidence: Evidence) => {
+    comparingId = evidence.id;
+    compareError = null;
+
+    try {
+      // 1. Check cache first for instant results
+      const cached = await legalAnalysisCache.get(
+        evidence.id,
+        evidence.title,
+        evidence.description,
+        evidence.tags
+      );
+
+      if (cached) {
+        console.log('⚡ Using cached analysis for:', evidence.title);
+        comparisonResults[evidence.id] = {
+          analysis: cached.analysis,
+          comparison: cached.comparison,
+          processingTime: cached.processingTime,
+          fromCache: true,
+        };
+        comparingId = null;
+        updateCacheStats();
+        return;
+      }
+
+      // 2. No cache hit - analyze with API
+      const formData = new FormData();
+
+      // Create a text file from evidence content for analysis
+      const textContent = `${evidence.title}\n\n${evidence.description || ''}`;
+      const blob = new Blob([textContent], { type: 'text/plain' });
+      const file = new File([blob], `${evidence.title}.txt`, { type: 'text/plain' });
+
+      formData.append('file', file);
+      formData.append('title', evidence.title);
+      formData.append('documentType', 'evidence');
+      formData.append('tags', (evidence.tags || []).join(','));
+      formData.append('enableComparison', 'true');
+
+      const response = await fetch('/api/legal-report/analyze', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Analysis failed: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+
+      if (result.success) {
+        comparisonResults[evidence.id] = result.data;
+        console.log('✅ Legal analysis complete:', result.data);
+
+        // 3. Store in cache for future use
+        await legalAnalysisCache.set(
+          evidence.id,
+          evidence.title,
+          evidence.description || '',
+          evidence.tags || [],
+          result.data.analysis,
+          result.data.comparison,
+          result.data.processingTime
+        );
+
+        updateCacheStats();
+      } else {
+        throw new Error(result.error || 'Analysis failed');
+      }
+    } catch (error: any) {
+      console.error('Legal comparison failed:', error);
+      compareError = error.message || 'Failed to analyze evidence';
+    } finally {
+      comparingId = null;
     }
   }
+
+  // Update cache statistics
+  function updateCacheStats() {
+    cacheStats = legalAnalysisCache.getStats();
+  }
+
+  // Load cache stats on mount
+  onMount(() => {
+    updateCacheStats();
+  });
+
   const handleAddNewEvidence = () => {
     selectedEvidence = null;
     showEvidenceModal = true;
@@ -130,25 +226,25 @@ https://svelte.dev/e/js_parse_error -->
   // Layout switching
   const switchLayout = () => {
     const layouts = ["single", "dual", "masonry"] as const;
-    const currentIndex = layouts.indexOf($report.settings.layout);
+    const currentIndex = layouts.indexOf(($report as unknown as ReportStoreState).settings.layout); // Add type assertion
     const nextLayout = layouts[(currentIndex + 1) % layouts.length];
     reportActions.updateSettings({ layout: nextLayout });
   }
   // Sidebar toggle
   const toggleSidebar = () => {
-    reportUI.update((ui) => ({ ...ui, sidebarOpen: !ui.sidebarOpen }));
+    reportUI.update((ui: ReportUIState) => ({ ...ui, sidebarOpen: !ui.sidebarOpen })); // Type ui parameter
   }
   // Fullscreen toggle
   const toggleFullscreen = () => {
-    reportUI.update((ui) => ({ ...ui, fullscreen: !ui.fullscreen }));
-    if (!$reportUI.fullscreen) {
+    reportUI.update((ui: ReportUIState) => ({ ...ui, fullscreen: !ui.fullscreen })); // Type ui parameter
+    if (!($reportUI as ReportUIState).fullscreen) { // Add type assertion
       document.documentElement.requestFullscreen?.();
     } else {
       document.exitFullscreen?.();
     }
   }
   // Keyboard shortcuts
-  const handleKeydown = (e: CustomEvent<any>) => {
+  const handleKeydown = (e: KeyboardEvent) => { // Changed type from CustomEvent<any> to KeyboardEvent
     if (e.ctrlKey || e.metaKey) {
       switch (e.key) {
         case "s":
@@ -171,11 +267,11 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </script>
-<svelte:window keydown={handleKeydown} />
+<svelte:window on:keydown={handleKeydown} /> <!-- Changed keydown={handleKeydown} to on:keydown={handleKeydown} -->
 <div
   class="report-editor {layoutClass}"
-  class:fullscreen={$reportUI.fullscreen}
-  class:sidebar-closed={!$reportUI.sidebarOpen}
+  class:fullscreen={isFullscreen}
+  class:sidebar-closed={isSidebarClosed}
 >
   <!-- Toolbar -->
   <header class="editor-toolbar">
@@ -184,10 +280,10 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Main Content Area -->
   <div class="editor-content">
     <!-- Sidebar -->
-    {#if $reportUI.sidebarOpen}
+    {#if ($reportUI as ReportUIState).sidebarOpen} <!-- Add type assertion -->
       <aside
         class="editor-sidebar"
-        style="width: {$reportUI.sidebarWidth}px"
+        style="width: {($reportUI as ReportUIState).sidebarWidth}px"
       >
         <!-- Evidence Search -->
         <section class="sidebar-section">
@@ -195,51 +291,134 @@ https://svelte.dev/e/js_parse_error -->
             <section class="space-y-4">
               <div>
                 <h3>Evidence Library</h3>
-                <button
+                <Button <!-- Changed Button.Root to Button -->
                   onclick={() => handleAddNewEvidence()}
                   title="Add new evidence"
                 >
                   <Plus size={16} />
-                </button>
+                </Button>
               </div>
               <!-- The evidence search component was removed earlier; keep placeholder markup -->
-              <div class="evidence-search-placeholder">Search component disabled in migration</div>
+              <div class="evidence-search-placeholder">
+                <!-- Re-integrating AdvancedSearch component -->
+                <AdvancedSearch on:search={handleEvidenceSearch} />
+              </div>
             </section>
           </div>
         </section>
         <!-- Evidence Grid -->
         <section class="evidence-section">
-          {#if $report.settings.layout === "masonry"}
+          {#if ($report as unknown as ReportStoreState).settings.layout === "masonry"} <!-- Add type assertion -->
             <section class="space-y-4">
-              <MasonryGrid
+              <MasonryGridComponent
                 items={evidenceSearchResults}
                 columnWidth={250}
                 gutter={12}
                 let:item
               >
-                <!-- CHANGED: Use permissive type -->
-                <EvidenceCardPermissive
+                <EvidenceCard
                   evidence={item}
-                  view={handleViewEvidence}
-                  edit={handleEditEvidence}
-                  delete={handleDeleteEvidence}
-                  download={handleDownloadEvidence}
                   compact={true}
-                />
-              </MasonryGrid>
+                >
+                  {#snippet actions(evidence: Evidence)} <!-- Type evidence -->
+                    <Button
+                      class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-blue-600"
+                      onclick={() => handleViewEvidence(evidence)}
+                      title="View evidence"
+                    >
+                      <Eye size={14} />
+                    </Button>
+                    <Button
+                      class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-purple-600"
+                      onclick={() => handleCompareEvidence(evidence)}
+                      title="Analyze & Compare with Legal Documents"
+                      disabled={comparingId === evidence.id}
+                    >
+                      {#if comparingId === evidence.id}
+                        <Loader2 size={14} class="animate-spin" />
+                      {:else}
+                        <Search size={14} />
+                      {/if}
+                    </Button>
+                    {#if evidence.url || evidence.file}
+                      <Button
+                        class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-indigo-600"
+                        onclick={() => handleDownloadEvidence(evidence)}
+                        title="Download"
+                      >
+                        <Download size={14} />
+                      </Button>
+                    {/if}
+                    <Button
+                      class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-green-600"
+                      onclick={() => handleEditEvidence(evidence)}
+                      title="Edit evidence"
+                    >
+                      <PenLine size={14} />
+                    </Button>
+                    <Button
+                      class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-red-600"
+                      onclick={() => handleDeleteEvidence(evidence)}
+                      title="Delete evidence"
+                    >
+                      <Trash2 size={14} />
+                    </Button>
+                  {/snippet}
+                </EvidenceCard>
+              </MasonryGridComponent>
             </section>
           {:else}
             <div>
               {#each evidenceSearchResults as evidence (evidence.id)}
-                <!-- CHANGED: Use permissive type -->
-                <EvidenceCardPermissive
+                <EvidenceCard
                   {evidence}
-                  view={handleViewEvidence}
-                  edit={handleEditEvidence}
-                  delete={handleDeleteEvidence}
-                  download={handleDownloadEvidence}
                   compact={true}
-                />
+                >
+                  {#snippet actions(evidence: Evidence)} <!-- Type evidence -->
+                    <Button
+                      class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-blue-600"
+                      onclick={() => handleViewEvidence(evidence)}
+                      title="View evidence"
+                    >
+                      <Eye size={14} />
+                    </Button>
+                    <Button
+                      class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-purple-600"
+                      onclick={() => handleCompareEvidence(evidence)}
+                      title="Analyze & Compare with Legal Documents"
+                      disabled={comparingId === evidence.id}
+                    >
+                      {#if comparingId === evidence.id}
+                        <Loader2 size={14} class="animate-spin" />
+                      {:else}
+                        <Search size={14} />
+                      {/if}
+                    </Button>
+                    {#if evidence.url || evidence.file}
+                      <Button
+                        class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-indigo-600"
+                        onclick={() => handleDownloadEvidence(evidence)}
+                        title="Download"
+                      >
+                        <Download size={14} />
+                      </Button>
+                    {/if}
+                    <Button
+                      class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-green-600"
+                      onclick={() => handleEditEvidence(evidence)}
+                      title="Edit evidence"
+                    >
+                      <PenLine size={14} />
+                    </Button>
+                    <Button
+                      class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-red-600"
+                      onclick={() => handleDeleteEvidence(evidence)}
+                      title="Delete evidence"
+                    >
+                      <Trash2 size={14} />
+                    </Button>
+                  {/snippet}
+                </EvidenceCard>
               {/each}
             </div>
           {/if}
@@ -250,30 +429,124 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           {/if}
         </section>
+
+        <!-- Legal Analysis Results Panel -->
+        {#if Object.keys(comparisonResults).length > 0}
+          <section class="sidebar-section">
+            <div class="section-header">
+              <h3 class="text-sm font-semibold text-gray-700">Legal Analysis</h3>
+            </div>
+            {#each Object.entries(comparisonResults) as [evidenceId, result]}
+              <div class="p-3 bg-white border border-gray-200 rounded-lg mb-2">
+                <div class="flex items-center justify-between mb-2">
+                  <h4 class="text-xs font-semibold text-gray-900">
+                    {evidenceSearchResults.find(e => e.id === evidenceId)?.title || 'Analysis Result'}
+                  </h4>
+                  {#if result.fromCache}
+                    <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded flex items-center gap-1">
+                      <span class="text-[10px]">⚡</span>
+                      Cached
+                    </span>
+                  {/if}
+                </div>
+
+                {#if result.analysis}
+                  <!-- WHO Section -->
+                  {#if result.analysis.who?.personsOfInterest?.length > 0}
+                    <div class="mb-2">
+                      <span class="text-xs font-medium text-blue-700">WHO:</span>
+                      <div class="flex flex-wrap gap-1 mt-1">
+                        {#each result.analysis.who.personsOfInterest.slice(0, 3) as person}
+                          <span class="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded">
+                            {person.name}
+                          </span>
+                        {/each}
+                      </div>
+                    </div>
+                  {/if}
+
+                  <!-- WHAT Section -->
+                  {#if result.analysis.what?.legalIssues?.length > 0}
+                    <div class="mb-2">
+                      <span class="text-xs font-medium text-green-700">WHAT:</span>
+                      <div class="flex flex-wrap gap-1 mt-1">
+                        {#each result.analysis.what.legalIssues.slice(0, 2) as issue}
+                          <span class="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded">
+                            {issue}
+                          </span>
+                        {/each}
+                      </div>
+                    </div>
+                  {/if}
+
+                  <!-- Similar Cases -->
+                  {#if result.comparison?.similarCases?.length > 0}
+                    <div class="mb-2">
+                      <span class="text-xs font-medium text-purple-700">Similar Cases:</span>
+                      <div class="space-y-1 mt-1">
+                        {#each result.comparison.similarCases.slice(0, 2) as similarCase}
+                          <div class="text-xs text-gray-600 truncate">
+                            • {similarCase.title} ({(similarCase.score * 100).toFixed(0)}%)
+                          </div>
+                        {/each}
+                      </div>
+                    </div>
+                  {/if}
+                {/if}
+
+                <div class="text-xs text-gray-400 mt-2">
+                  Processed in {(result.processingTime / 1000).toFixed(1)}s
+                </div>
+              </div>
+            {/each}
+          </section>
+        {/if}
+
+        {#if compareError}
+          <section class="sidebar-section">
+            <div class="p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p class="text-xs text-red-700">{compareError}</p>
+            </div>
+          </section>
+        {/if}
+
         <section class="stats-section sidebar-section">
           <div class="stats-grid">
             <section class="space-y-4">
               <div>
                 <div>
                   <span>Words</span>
-                  <span>{$editorState.wordCount}</span>
+                  <span>{($editorState as EditorState).wordCount}</span> <!-- Add type assertion -->
                 </div>
                 <div>
                   <span>Evidence</span>
-                  <span>{$report.attachedEvidence.length}</span>
+                  <span>{($report as unknown as ReportStoreState).attachedEvidence.length}</span> <!-- Add type assertion -->
                 </div>
                 <div>
                   <span>Status</span>
                   <span>
-                    {$report.metadata.status}
+                    {($report as unknown as ReportStoreState).metadata.status} <!-- Add type assertion -->
                   </span>
                 </div>
                 <div>
                   <span>Modified</span>
                   <span>
-                    {$report.metadata.updatedAt.toLocaleDateString()}
+                    {($report as unknown as ReportStoreState).metadata.updatedAt.toLocaleDateString()} <!-- Add type assertion -->
                   </span>
                 </div>
+                {#if cacheStats.totalEntries > 0}
+                  <div class="border-t border-gray-200 pt-2 mt-2">
+                    <div class="text-xs text-gray-500 font-semibold mb-1">Analysis Cache</div>
+                    <div>
+                      <span>Cached</span>
+                      <span class="text-green-600">{cacheStats.totalEntries}</span>
+                    </div>
+                    <div>
+                      <span>Size</span>
+                      <span class="text-xs">{(cacheStats.totalSize / 1024).toFixed(1)}KB</span>
+                    </div>
+                  </div>
+                {/if}
               </div>
             </section>
           </div>
@@ -285,54 +558,54 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Editor Header -->
       <div class="editor-header">
         <div class="editor-title-section">
-          {#if !$reportUI.sidebarOpen}
-            <button
+          {#if !($reportUI as ReportUIState).sidebarOpen} <!-- Add type assertion -->
+            <Button <!-- Changed Button.Root to Button -->
               onclick={() => toggleSidebar()}
               title="Show sidebar"
               class="sidebar-toggle"
             >
               <PanelLeftOpen size={20} />
-            </button>
+            </Button>
           {/if}
           <input
             type="text"
-            value={$report.title} oninput={(e) => reportActions.updateTitle(e.currentTarget.value)}
+            value={($report as unknown as ReportStoreState).title} oninput={(e) => reportActions.updateTitle((e.currentTarget as HTMLInputElement).value)}
             placeholder="Report title..."
             class="report-title-input"
           />
         </div>
         <div class="editor-actions">
-          <button
+          <Button <!-- Changed Button.Root to Button -->
             onclick={() => switchLayout()}
-            title="Switch layout ({$report.settings.layout})"
+            title="Switch layout ({($report as unknown as ReportStoreState).settings.layout})" <!-- Add type assertion -->
             class="layout-toggle"
           >
-            {#if $report.settings.layout === "single"}
+            {#if ($report as unknown as ReportStoreState).settings.layout === "single"} <!-- Add type assertion -->
               <Layout size={18} />
-            {:else if $report.settings.layout === "dual"}
+            {:else if ($report as unknown as ReportStoreState).settings.layout === "dual"} <!-- Add type assertion -->
               <Columns size={18} />
             {:else}
               <Grid size={18} />
             {/if}
-          </button>
-          <button
+          </Button>
+          <Button <!-- Changed Button.Root to Button -->
             onclick={() => toggleFullscreen()}
             title="Toggle fullscreen"
             class="fullscreen-toggle"
           >
-            {#if $reportUI.fullscreen}
+            {#if ($reportUI as ReportUIState).fullscreen} <!-- Add type assertion -->
               <Minimize2 size={18} />
             {:else}
               <Maximize2 size={18} />
             {/if}
-          </button>
-          <button
+          </Button>
+          <Button <!-- Changed Button.Root to Button -->
             onclick={() => (showSettingsModal = true)}
             title="Settings"
             class="settings-btn"
           >
             <Settings size={18} />
-          </button>
+          </Button>
         </div>
       </div>
       <RichTextEditor
@@ -341,36 +614,62 @@ https://svelte.dev/e/js_parse_error -->
       />
     </main>
     <!-- Evidence Panel (for dual layout) -->
-    {#if $report.settings.layout === "dual"}
+    {#if ($report as unknown as ReportStoreState).settings.layout === "dual"} <!-- Add type assertion -->
       <!-- transition removed -->
       <aside
         class="evidence-panel"
       >
         <div class="panel-header">
           <h3>Evidence</h3>
-          <button class="add-evidence-btn" onclick={() => handleAddNewEvidence()}>
+          <Button class="add-evidence-btn" onclick={() => handleAddNewEvidence()}> <!-- Changed Button.Root to Button -->
             <Plus size={16} />
-          </button>
+          </Button>
         </div>
         <div class="evidence-grid-panel">
-          <MasonryGrid
-            items={$report.attachedEvidence}
+          <MasonryGridComponent // Use the new alias
+            items={($report as unknown as ReportStoreState).attachedEvidence} <!-- Add type assertion -->
             columnWidth={200}
             gutter={8}
             let:item
           >
-            <!-- NOTE: EvidenceCard.svelte needs to declare 'view', 'edit', 'delete', 'download' as props. -->
-            <div> <!-- Added wrapper div -->
-              <EvidenceCardPermissive <!-- CHANGED: Using the permissive type -->
-                evidence={item}
-                view={handleViewEvidence}
-                edit={handleEditEvidence}
-                delete={handleDeleteEvidence}
-                download={handleDownloadEvidence}
-                compact={true}
-              />
-            </div> <!-- Added wrapper div -->
-          </MasonryGrid>
+            <EvidenceCard
+              evidence={item}
+              compact={true}
+            >
+              {#snippet actions(evidence: Evidence)} <!-- Type evidence -->
+                <Button <!-- Changed Button.Root to Button -->
+                  class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-blue-600"
+                  onclick={() => handleViewEvidence(evidence)}
+                  title="View evidence"
+                >
+                  <Eye size={14} />
+                </Button>
+                {#if evidence.url || evidence.file}
+                  <Button <!-- Changed Button.Root to Button -->
+                    class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-indigo-600"
+                    onclick={() => handleDownloadEvidence(evidence)}
+                    title="Download"
+                  >
+                    <Download size={14} />
+                  </Button>
+                {/if}
+                <Button <!-- Changed Button.Root to Button -->
+                  class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-green-600"
+                  onclick={() => handleEditEvidence(evidence)}
+                  title="Edit evidence"
+                >
+                  <PenLine size={14} />
+                </Button>
+                <Button <!-- Changed Button.Root to Button -->
+                  class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-red-600"
+                  onclick={() => handleDeleteEvidence(evidence)}
+                  title="Delete evidence"
+                >
+                  <Trash2 size={14} />
+                </Button>
+              {/snippet}
+            </EvidenceCard>
+          </MasonryGridComponent>
         </div>
       </aside>
     {/if}
@@ -387,8 +686,8 @@ https://svelte.dev/e/js_parse_error -->
         showEvidenceModal = false;
         selectedEvidence = null;
       }}
-      error={(e) => {
-        console.error("Evidence form error:", (e as CustomEvent).detail);
+      error={(e: CustomEvent) => { // Type e parameter
+        console.error("Evidence form error:", e.detail);
         alert("Error saving evidence");
       }}
       cancel={() => {

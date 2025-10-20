@@ -13,12 +13,12 @@ interface CacheEntry<T> {
 }
 
 class LocalCache {
-  private cache = new Map<string, CacheEntry<any>>();
+  private cache = new Map<string, CacheEntry<unknown>>();
 
   get<T>(key: string): T | null {
     const entry = this.cache.get(key);
     if (entry && Date.now() < entry.timestamp + entry.ttl) {
-      return entry.value;
+      return entry.value as T; // Type assertion added here
     }
     this.cache.delete(key); // Expired
     return null;

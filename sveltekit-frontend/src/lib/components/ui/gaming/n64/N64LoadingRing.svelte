@@ -123,7 +123,7 @@
   }
   .ring-outer {
     position: absolute;
-    top: 0,
+    top: 0;
     left: 0;
     width: 100%;
     height: 100%;
@@ -180,7 +180,7 @@
   }
   .percentage-ring {
     position: absolute;
-    top: 0,
+    top: 0;
     left: 0;
     width: 100%;
     height: 100%;
@@ -197,7 +197,7 @@
   .percentage-bg {
     fill: none;
     stroke: rgba(0, 0, 0, 0.1);
-    stroke-width: 2,
+    stroke-width: 2;
   }
   .percentage-fill {
     fill: none;

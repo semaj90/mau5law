@@ -5,7 +5,7 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte 5 runes are auto-imported
   const { title = "System status", status = "OK", updatedAt = null } = $props();
 // Auto-generated default export
-export default ;
+
 </script>
    // e.g. "OK", "WARN", "ERROR"
    // optional Date or ISO string
@@ -32,7 +32,7 @@ export default ;
   .header {
 	display: flex;
 	align-items: center;
-	justify-content: space-betwee;
+	justify-content: space-between;
 	gap: 0.75rem;
   }
   .title {
@@ -56,7 +56,7 @@ export default ;
   }
   .status-warn {
 	background: #fffbeb;
-	color: #92400;
+	color: #92400e;
 	border: 1px solid #fef3c7;
   }
   .status-error {
@@ -74,7 +74,7 @@ export default ;
 	height: 10px;
 	border-radius: 50%;
 	background: currentColor;
-	opacity: 0.95,
+	opacity: 0.95;
   }
   .meta {
 	font-size: 0.8rem;

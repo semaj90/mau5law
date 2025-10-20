@@ -1,28 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Expected a `#` character immediately following the opening bracket;
-https: //svelte.dev/e/block_unexpected_character -->
-<!-- @migration-task Error while migrating Svelte code: Expected a `#` character immediately following the opening bracket -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  interface Props {
-    evidence: ExtendedEvidence;
-    onView: (evidence: Evidence) => void;
-    onEdit: (evidence: Evidence) => void;
-    onDelete: (evidence: Evidence) => void;
-    onDownload: (evidence: Evidence) => void;
-    draggable?: boolean;
-    compact?: boolean;
-    expandOnHover?: boolean;
-  }
-  let {
-    evidence,
-    onView = () => {},
-    onEdit = () => {},
-    onDelete = () => {},
-    onDownload = () => {},
-    draggable = true,
-    compact = false,
-    expandOnHover = false
-  }: Props = $props();
   import {
     Download,
     PenLine,
@@ -33,28 +9,44 @@ https: //svelte.dev/e/block_unexpected_character -->
     Link,
     Tag,
     Trash2,
-    Video
+    Video,
+    Search
   } from "lucide-svelte";
   import { quintOut } from "svelte/easing";
-  import { fly, scale } from "svelte/transition";
-  // import { createTooltip, melt } from '@melt-ui/svelte'; // Using bits-ui patterns
-  import type { Evidence  } from '$lib/stores/unified';
-  type ExtendedEvidence = Evidence & { evidenceType?: string;
-    fileSize?: number;
-    createdAt?: Date | string;
-    updatedAt?: Date | string;
-   }
-                  export const showPreview = true;
+  import { scale } from "svelte/transition";
+  import type { Evidence } from '$lib/types/evidence';
+  import type { Snippet } from 'svelte';
+  import { createEventDispatcher } from 'svelte';
+
+  // Props using Svelte 5 runes
+  let {
+    evidence, // Assuming evidence is always provided
+    draggable = true,
+    compact = false,
+    expandOnHover = false,
+    actions, // actions is now correctly destructured from the single $props() call
+    showCompare = false,
+    autoCompare = false
+  } = $props<{
+    evidence: Evidence;
+    draggable?: boolean;
+    compact?: boolean;
+    expandOnHover?: boolean;
+    actions?: Snippet<[Evidence]>; // Make actions optional
+    showCompare?: boolean;
+    autoCompare?: boolean;
+  }>();
+  const dispatch = createEventDispatcher<{ compare: Evidence; compared: { evidence: Evidence; result: any } }>();
   // Melt UI component creation removed - replace with bits-ui declarative components
   const getIcon = (type: Evidence["type"]) => { switch (type) {
       case "document":
         return FileText;
       case "image":
-        return Imag;
+        return Image; // Fixed typo: Imag -> Image
       case "video":
         return Video;
       case "audio":
-        return Headphone;
+        return Headphones; // Fixed typo: Headphone -> Headphones
       case "link":
         return Link;
       default:
@@ -64,16 +56,18 @@ https: //svelte.dev/e/block_unexpected_character -->
   const formatFileSize = (bytes: number): string => { if (bytes === 0) return "0 Bytes";
     const k = 1024;
     const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k);
+    const i = Math.floor(Math.log(bytes) / Math.log(k)); // FIX: Added missing closing parenthesis
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
    }
   const fileSize = evidence.metadata?.size || evidence.fileSize || 0;
-  let isHovered = false;
+  let isHovered = $state(false);
+  let comparing = $state(false);
+  let compareError = $state<string | null>(null);
   let IconComponent = $derived(getIcon(
     ["document", "image", "video", "audio", "link"].includes(evidence.evidenceType || evidence.type)
       ? (evidence.evidenceType || evidence.type) as Evidence["type"]
       : "document"
-  );
+  )); // FIX: Added missing closing parenthesis
   function handleMouseEnter() { if (expandOnHover) {
       isHovered = true;
      }
@@ -81,6 +75,28 @@ https: //svelte.dev/e/block_unexpected_character -->
   function handleMouseLeave() { if (expandOnHover) {
       isHovered = false;
      }
+  }
+
+  async function handleCompareClick() {
+    try {
+      compareError = null;
+      comparing = true;
+      dispatch('compare', evidence);
+      if (!autoCompare) return; // Let parent handle
+      const fd = new FormData();
+      if ((evidence as any).url) fd.append('fileUrl', String((evidence as any).url));
+      if (evidence.description) fd.append('text', evidence.description);
+      if (Array.isArray(evidence.tags) && evidence.tags.length) fd.append('tags', evidence.tags.join(','));
+      fd.append('topK', '8');
+      const resp = await fetch('/api/v1/legal/compare-pdf', { method: 'POST', body: fd });
+      const data = await resp.json();
+      if (!resp.ok || !data?.success) throw new Error(data?.error || 'Comparison failed');
+      dispatch('compared', { evidence, result: data.data });
+    } catch (e: any) {
+      compareError = e?.message || String(e);
+    } finally {
+      comparing = false;
+    }
   }
 </script>
 
@@ -120,36 +136,19 @@ https: //svelte.dev/e/block_unexpected_character -->
       <span>{evidence.evidenceType || evidence.type}</span>
     </div>
     <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-      <button
-        class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-blue-600"
-        onclick={() => onView(evidence as Evidence)}
-        title="View evidence"
-      >
-        <Eye size={14} />
-      </button>
-      {#if evidence.url || evidence.file}
+      {#if actions}
+        {@render actions(evidence)}
+      {:else if showCompare}
         <button
-          class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-indigo-600"
-          onclick={() => onDownload(evidence as Evidence)}
-          title="Download"
+          class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-blue-600"
+          onclick={handleCompareClick}
+          title={comparing ? 'Analyzing…' : 'Analyze & compare'}
+          aria-busy={comparing}
+          disabled={comparing}
         >
-          <Download size={14} />
+          <Search size={14} />
         </button>
       {/if}
-      <button
-        class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-green-600"
-        onclick={() => onEdit(evidence as Evidence)}
-        title="Edit evidence"
-      >
-        <PenLine size={14} />
-      </button>
-      <button
-        class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-red-600"
-        onclick={() => onDelete(evidence as Evidence)}
-        title="Delete evidence"
-      >
-        <Trash2 size={14} />
-      </button>
     </div>
   </div>
   <!-- Content -->
@@ -163,8 +162,7 @@ https: //svelte.dev/e/block_unexpected_character -->
           loading="lazy"
           class="w-full h-auto max-h-48 object-cover"
           onerror={e => {
-            // removed unused target assignment
-            target.style.display = 'none';
+            (e.target as HTMLImageElement).style.display = 'none';
           }}
         />
       </div>
@@ -241,4 +239,6 @@ https: //svelte.dev/e/block_unexpected_character -->
     </div>
   {/if}
 </div>
-<!-- Tooltip section removed - replaced with native title attributes -->;
+<!-- Tooltip section removed - replaced with native title attributes -->
+<!-- Tooltip section removed - replaced with native title attributes -->
+      >

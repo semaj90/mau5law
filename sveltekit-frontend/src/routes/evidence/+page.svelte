@@ -24,6 +24,9 @@
   let uploadProgress = $state(0);
   let uploadResult = $state<any>(null);
   let uploadError = $state<string | null>(null);
+  let comparing = $state(false);
+  let compareError = $state<string | null>(null);
+  let compareResult = $state<any>(null);
 
   // Form data
   let formData = $state({
@@ -126,6 +129,9 @@
     uploadFile = null;
     uploadResult = null;
     uploadError = null;
+    compareResult = null;
+    compareError = null;
+    comparing = false;
     uploadProgress = 0;
     formData = {
       title: '',
@@ -134,6 +140,30 @@
       tags: '',
       isAdmissible: true,
     };
+  }
+
+  async function runCompare() {
+    if (!uploadFile && !uploadResult) return;
+    try {
+      comparing = true;
+      compareError = null;
+      compareResult = null;
+      const fd = new FormData();
+      if (uploadFile) fd.append('file', uploadFile);
+      if (formData.description?.trim()) fd.append('text', formData.description.trim());
+      if (formData.tags?.trim()) fd.append('tags', formData.tags.trim());
+      fd.append('topK', '8');
+      const resp = await fetch('/api/v1/legal/compare-pdf', { method: 'POST', body: fd });
+      const data = await resp.json();
+      if (!resp.ok || !data?.success) throw new Error(data?.error || 'Comparison failed');
+      compareResult = data.data;
+      toast.success('🔎 Similar cases analyzed');
+    } catch (e: any) {
+      compareError = e?.message || String(e);
+      toast.error(`Comparison error: ${compareError}`);
+    } finally {
+      comparing = false;
+    }
   }
 </script>
 
@@ -302,6 +332,35 @@
               </div>
             {/if}
           </div>
+
+          <div class="compare-actions">
+            <button class="upload-btn" onclick={runCompare} disabled={comparing}>
+              {comparing ? 'Analyzing…' : 'Analyze Similar Cases'}
+            </button>
+          </div>
+
+          {#if compareError}
+            <div class="result-error" style="margin-top: .75rem;">
+              <AlertCircle class="result-error-icon" />
+              <h4>Comparison Failed</h4>
+              <p>{compareError}</p>
+            </div>
+          {/if}
+
+          {#if compareResult}
+            <div class="comparison-panel">
+              <h4>Similar Items (Qdrant)</h4>
+              {#each compareResult.similar as s}
+                <div class="similar-item">
+                  <div><strong>{s.id}</strong> • {s.score?.toFixed?.(3) ?? s.score}</div>
+                  {#if s.tags?.length}<div class="tags">{s.tags.join(', ')}</div>{/if}
+                  {#if s.snippet}<div class="snippet">{s.snippet}</div>{/if}
+                </div>
+              {/each}
+              <h4>Structured Analysis</h4>
+              <pre>{JSON.stringify(compareResult.analysis, null, 2)}</pre>
+            </div>
+          {/if}
         </div>
       {:else if uploadError}
         <div class="result-error">
@@ -546,6 +605,11 @@
     gap: 0.5rem;
     margin-top: 1rem;
   }
+
+  .compare-actions { margin-top: .75rem; }
+  .comparison-panel { margin-top: 1rem; background: #0f1215; border: 1px solid #2a2d30; padding: .75rem; border-radius: 8px; }
+  .similar-item { border-bottom: 1px solid #222; padding: .35rem 0; }
+  .similar-item:last-child { border-bottom: none; }
 
   .upload-btn,
   .reset-btn {

@@ -183,7 +183,7 @@
   }
   .progress-shine {
     position: absolute;
-    top: 0,
+    top: 0;
     left: 0;
     width: 100%;
     height: 100%;
@@ -197,7 +197,7 @@
   }
   .progress-segments {
     position: absolute;
-    top: 0,
+    top: 0;
     left: 0;
     width: 100%;
     height: 100%;
@@ -205,17 +205,17 @@
     pointer-events: none;
   }
   .segment {
-    flex: 1,
+    flex: 1;
     height: 100%;
     border-right: 1px solid rgba(0,0,0,0.2);
-    opacity: 0.3,
+    opacity: 0.3;
     transition: opacity 0.2s ease;
   }
   .segment:last-child {
     border-right: none;
   }
   .segment.active {
-    opacity: 0.6,
+    opacity: 0.6;
   }
   .percentage-display {
     position: absolute;
@@ -249,7 +249,7 @@
     height: 4px;
     background: #FFF;
     border-radius: 50%;
-    opacity: 0,
+    opacity: 0;
   }
   .sparkle-1 {
     top: 20%;

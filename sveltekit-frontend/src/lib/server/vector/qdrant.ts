@@ -95,6 +95,43 @@ export async function searchQdrant(queryVector: number[], topK = 10): Promise<Se
   }
 }
 
+// Filtered search using Qdrant payload filters (tags, caseId)
+export async function searchQdrantFiltered(
+  queryVector: number[],
+  options: { limit?: number; tags?: string[]; caseId?: string }
+): Promise<SearchResult[]> {
+  try {
+    const wrapper = getQdrantWrapper();
+    if (!wrapper || typeof wrapper.search !== 'function') return [];
+    const must: any[] = [];
+    if (options.tags && options.tags.length > 0) {
+      must.push({
+        key: 'tags',
+        match: { any: options.tags },
+      });
+    }
+    if (options.caseId && options.caseId.length > 0) {
+      must.push({
+        key: 'caseId',
+        match: { value: options.caseId },
+      });
+    }
+    const payload = {
+      vector: Array.from(queryVector),
+      limit: options.limit ?? 10,
+      filter: must.length > 0 ? { must } : undefined,
+    } as Record<string, unknown>;
+    const res = await wrapper.search(COLLECTIONS.DOCUMENTS, payload as any);
+    return (res as SearchResult[]) ?? [];
+  } catch (error: unknown) {
+    logger.error('Qdrant filtered search failed', error instanceof Error ? error : undefined, {
+      component: 'QdrantService',
+      service: 'qdrant',
+    });
+    return [];
+  }
+}
+
 // --- Qdrant passthroughs for admin API (enhanced with logging) ---
 export async function getCollections(): Promise<QdrantCollectionList> {
   const wrapper = getQdrantWrapper();

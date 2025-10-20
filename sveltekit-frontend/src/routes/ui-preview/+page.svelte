@@ -749,7 +749,7 @@
   }
   .feature-list {
     list-style: none;
-    padding: 0,
+    padding: 0;
     margin: 0.5rem 0;
   }
   .feature-list li {
