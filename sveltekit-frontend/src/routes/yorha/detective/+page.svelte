@@ -1,400 +1,393 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
-<!-- YoRHa Detective Command Center -->
-<script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { goto } from '$app/navigation';
-  import { page } from '$app/stores';
-  import { onMount } from 'svelte';
-  import type { PageData } from './$types';
-  import YoRHaCommandCenter from '$lib/components/yorha/YoRHaCommandCenter.svelte';
-  import YoRHaModal from '$lib/components/yorha/YoRHaModal.svelte';
-  import YoRHaNotificationManager from '$lib/components/yorha/YoRHaNotificationManager.svelte';
-  // Props
-  let { data }: { data: unknown } = $props(); // PageData
+<svelte:head>
+  <title>YoRHa Detective Command Center</title>
+  <meta name="description" content="Monitor cases, evidence, and AI signals inside the YoRHa detective suite." />
+</svelte:head>
 
-  // State management (Svelte 5 runes)
-  let selectedSection = $state('command-center');
+<script lang="ts">
+  import { browser } from '$app/environment';
+  import { goto } from '$app/navigation';
+  import YoRHaCommandCenter from '$lib/components/yorha/YoRHaCommandCenter.svelte';
+  import { onMount } from 'svelte';
+  // dynamic loader for YoRHaModal to handle modules that export named or default
+  let YoRHaModalComponent = $state<any>(null);
+  onMount(async () => {
+    try {
+      // cast import to unknown then any so TypeScript won't complain about missing properties
+      const mod = (await import('$lib/components/yorha/YoRHaModal.svelte')) as unknown;
+      const modAny = mod as any;
+      // prefer default, then common named variants, then fallback to the module itself
+      const LoadedComponent = modAny?.default ?? modAny?.YoRHaModal ?? modAny?.YoRHaModalComponent ?? modAny;
+      YoRHaModalComponent = LoadedComponent as any;
+    } catch (e) {
+      console.warn('Failed to load YoRHaModal component', e);
+    }
+  });
+  import {
+    Activity,
+    AlertTriangle,
+    BarChart3,
+    Command,
+    FileSearch,
+    FileText,
+    Play,
+    RefreshCw,
+    Search,
+    Terminal,
+    Users
+  } from 'lucide-svelte';
+
+  type SectionId =
+    | 'command-center'
+    | 'evidence'
+    | 'persons'
+    | 'analysis'
+    | 'search'
+    | 'terminal';
+
+  interface DetectiveData {
+    stats?: {
+      activeCases?: number;
+      evidenceItems?: number;
+      personsOfInterest?: number;
+      aiQueries?: number;
+    };
+    recentCases?: Array<{
+      id: string;
+      title: string;
+      caseNumber?: string;
+      priority?: 'low' | 'medium' | 'high' | 'critical';
+      createdAt?: string;
+      createdBy?: string;
+      createdByLastName?: string;
+    }>;
+    evidenceInsights?: Array<{ id: string; label: string; summary: string }>;
+  }
+
+  const sections: Array<{ id: SectionId; label: string; description: string; icon: typeof Command }> = [
+    {
+      id: 'command-center',
+      label: 'Command Center',
+      description: 'Real-time system telemetry for YoRHa subsystems.',
+      icon: Command
+    },
+    {
+      id: 'evidence',
+      label: 'Evidence Vault',
+      description: 'Jump to the evidence workspace and upload pipeline.',
+      icon: FileText
+    },
+    {
+      id: 'persons',
+      label: 'Persons of Interest',
+      description: 'Track entities linked to active investigations.',
+      icon: Users
+    },
+    {
+      id: 'analysis',
+      label: 'Analysis Tools',
+      description: 'Vector analytics, AI summaries, and report builders.',
+      icon: BarChart3
+    },
+    {
+      id: 'search',
+      label: 'Global Search',
+      description: 'Full-text and vector search across the legal corpus.',
+      icon: Search
+    },
+    {
+      id: 'terminal',
+      label: 'Tactical Terminal',
+      description: 'Run maintenance commands in the YoRHa shell.',
+      icon: Terminal
+    }
+  ];
+
+  let { data = {} }: { data?: DetectiveData } = $props();
+
+  let selectedSection = $state<SectionId>('command-center');
   let showNewCaseModal = $state(false);
+  let statusMessage = $state<string | null>(null);
+
   let newCaseData = $state({
     title: '',
     description: '',
     priority: 'medium' as 'low' | 'medium' | 'high' | 'critical'
   });
 
-  // Notification state
-  let notifications = $state<any[]>([]);
+  const quickStats = $derived(() => ({
+    activeCases: data.stats?.activeCases ?? 0,
+    evidenceItems: data.stats?.evidenceItems ?? 0,
+    personsOfInterest: data.stats?.personsOfInterest ?? 0,
+    aiQueries: data.stats?.aiQueries ?? 0
+  }));
 
-  // Navigation sections
-  const navigationSections = [
-    { id: 'command-center', name: 'Command Center', icon: '🏢' },
-    { id: 'evidence', name: 'Evidence', icon: '📁' },
-    { id: 'persons', name: 'Persons of Interest', icon: '👤' },
-    { id: 'analysis', name: 'Analysis', icon: '🔍' },
-    { id: 'search', name: 'Global Search', icon: '🔎' },
-    { id: 'terminal', name: 'Terminal', icon: '💻' }
-  ];
+  const recentCases = $derived(() => Array.isArray(data.recentCases) ? data.recentCases.slice(0, 6) : []);
+  const evidenceInsights = $derived(
+    () => Array.isArray(data.evidenceInsights) ? data.evidenceInsights.slice(0, 6) : []
+  );
 
-  // Quick stats derived from data (safe access + defaults)
-  let quickStats = $derived(() => {
-    const sd = (data as any)?.systemData || {};
-    return {
-      activeCases: sd.activeCases ?? 0,
-      evidenceItems: sd.evidenceItems ?? 0,
-      personsOfInterest: sd.personsOfInterest ?? 0,
-      aiQueries: sd.aiQueries ?? 0
-    };
-  });
+  function selectSection(section: SectionId) {
+    selectedSection = section;
+    if (!browser) return;
 
-  // Handle section navigation
-  function navigateToSection(sectionId: string) {
-    selectedSection = sectionId;
-    // Navigate to dedicated pages for complex sections
-    switch (sectionId) {
-      case 'evidence':
-        goto('/evidence');
-        break;
-      case 'search':
-        goto('/search');
-        break;
-      case 'terminal':
-        goto('/yorha/terminal');
-        break;
-      default:
-        selectedSection = sectionId;
-    }
+    if (section === 'evidence') goto('/evidence');
+    if (section === 'search') goto('/search');
+    if (section === 'terminal') goto('/yorha/terminal');
   }
 
-  // Handle new case creation
-  async function handleCreateCase() {
+  async function handleCreateCase(event: SubmitEvent) {
+    event.preventDefault();
+    statusMessage = 'Creating case…';
+
     try {
       const response = await fetch('/api/cases', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          title: newCaseData.title,
-          description: newCaseData.description,
-          priority: newCaseData.priority
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newCaseData)
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        showNewCaseModal = false;
-        // Reset form
-        newCaseData = {
-          title: '',
-          description: '',
-          priority: 'medium'
-        };
-        // Show success notification
-        addNotification('success', `Case "${result?.title ?? 'untitled'}" created successfully`, 5000);
-        // Refresh the page data (invalidate)
-        goto($page.url, { invalidateAll: true });
-      } else {
-        throw new Error('Failed to create case');
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+
+      const payload = await response.json();
+      statusMessage = `Case "${payload?.title ?? newCaseData.title}" created.`;
+      showNewCaseModal = false;
+      newCaseData = { title: '', description: '', priority: 'medium' };
+      if (browser) {
+        await goto(window.location.pathname, { invalidateAll: true });
       }
     } catch (error) {
-      addNotification('error', 'Failed to create case. Please try again.', 5000);
+      statusMessage = error instanceof Error ? error.message : 'Failed to create case.';
     }
   }
 
-  // Cancel new case modal
   function cancelNewCase() {
     showNewCaseModal = false;
-    newCaseData = {
-      title: '',
-      description: '',
-      priority: 'medium'
-    };
+    newCaseData = { title: '', description: '', priority: 'medium' };
   }
 
-  // Helper function to add notifications
-  function addNotification(type: string, message: string, duration: number = 5000) {
-    const id = crypto.randomUUID();
-    notifications.push({ id, type, message, duration });
-    // Auto-remove notification after duration
-    setTimeout(() => {
-      notifications = notifications.filter(n => n.id !== id);
-    }, duration);
+  function priorityBadge(priority?: string) {
+    switch (priority) {
+      case 'critical':
+        return 'border-red-500/50 text-red-300';
+      case 'high':
+        return 'border-orange-500/50 text-orange-300';
+      case 'medium':
+        return 'border-amber-500/50 text-amber-300';
+      default:
+        return 'border-slate-500/40 text-slate-300';
+    }
   }
 </script>
 
-<!-- Main Detective Interface -->
-<div class="yorha-detective min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 text-amber-300">
-  <!-- Header Bar -->
-  <div class="header-bar bg-black bg-opacity-70 border-b border-amber-400 border-opacity-30 p-4">
-    <div class="flex justify-between items-center">
-      <div class="flex items-center space-x-4">
-        <div
-          class="w-8 h-8 bg-amber-400 bg-opacity-20 border border-amber-400 border-opacity-50 flex items-center justify-center"
-        >
-          <span class="text-amber-400 font-bold text-sm">YD</span>
+<div class="min-h-screen bg-black text-gray-100">
+  <header class="border-b border-amber-500/20 bg-black/80 backdrop-blur">
+    <div class="container mx-auto flex flex-col gap-4 px-6 py-8 md:flex-row md:items-center md:justify-between">
+      <div class="flex items-center gap-4">
+        <Command class="h-10 w-10 text-amber-400" />
+        <div>
+          <h1 class="text-3xl font-bold text-amber-300">YoRHa Detective Command Center</h1>
+          <p class="text-sm text-amber-200/70">
+            Orchestrate cases, evidence, and AI-augmented investigations from a single console.
+          </p>
         </div>
-        <h1 class="text-xl font-bold text-amber-300">YoRHa Detective Command Center</h1>
       </div>
-      <div class="flex items-center space-x-4">
+      <div class="flex flex-wrap gap-3">
         <button
-          class="px-4 py-2 bg-amber-600 bg-opacity-20 border border-amber-400 border-opacity-50 text-amber-300 hover:bg-opacity-30 transition-all duration-300"
-          on:click={() => (showNewCaseModal = true)}
+          class="flex items-center gap-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-100 hover:bg-emerald-500/20"
+          onclick={() => (showNewCaseModal = true)}
         >
-          + New Case
+          <Play class="h-4 w-4" />
+          New Case
         </button>
-        <div class="flex items-center space-x-2 text-sm">
-          <span>User:</span>
-          <span class="text-amber-400"
-            >{(data as any)?.user?.firstName}
-            {(data as any)?.user?.lastName}</span
-          >
-          <span
-            class="px-2 py-1 bg-amber-600 bg-opacity-20 border border-amber-400 border-opacity-30 text-xs uppercase"
-          >
-            {(data as any)?.user?.role}
-          </span>
-        </div>
+        <button
+          class="flex items-center gap-2 rounded-lg border border-sky-500/40 bg-sky-500/10 px-4 py-2 text-sm text-sky-100 hover:bg-sky-500/20"
+          onclick={() => selectSection('command-center')}
+        >
+          <RefreshCw class="h-4 w-4" />
+          Refresh
+        </button>
       </div>
     </div>
-  </div>
-  <!-- Main Layout -->
-  <div class="main-layout flex h-[calc(100vh-80px)]">
-    <!-- Sidebar Navigation -->
-    <div class="sidebar w-64 bg-black bg-opacity-50 border-r border-amber-400 border-opacity-30 p-4">
-      <nav class="space-y-2">
-        {#each navigationSections as section}
-          <button
-            class={`
-              nav-item w-full flex items-center space-x-3 p-3 text-left border border-transparent
-              hover:border-amber-400 hover:border-opacity-30 hover:bg-amber-600 hover:bg-opacity-10
-              transition-all duration-300
-              ${selectedSection === section.id
-                ? 'border-amber-400 border-opacity-50 bg-amber-600 bg-opacity-20 text-amber-400'
-                : 'text-amber-300'}
-            `}
-            on:click={() => navigateToSection(section.id)}
-          >
-            <span class="text-lg">{section.icon}</span>
-            <span class="font-medium">{section.name}</span>
-          </button>
-        {/each}
-      </nav>
-      <!-- Quick Stats in Sidebar -->
-      <div class="mt-8 space-y-4">
-        <h3 class="text-sm font-bold text-amber-400 uppercase tracking-wider">Quick Stats</h3>
-        <div class="stat-item">
-          <div class="text-xs text-amber-400 opacity-70">Active Cases</div>
-          <div class="text-lg font-bold text-amber-300">{quickStats.activeCases}</div>
-        </div>
-        <div class="stat-item">
-          <div class="text-xs text-amber-400 opacity-70">Evidence Items</div>
-          <div class="text-lg font-bold text-amber-300">{quickStats.evidenceItems}</div>
-        </div>
-        <div class="stat-item">
-          <div class="text-xs text-amber-400 opacity-70">Persons of Interest</div>
-          <div class="text-lg font-bold text-amber-300">{quickStats.personsOfInterest}</div>
-        </div>
-        <div class="stat-item">
-          <div class="text-xs text-amber-400 opacity-70">AI Queries</div>
-          <div class="text-lg font-bold text-amber-300">{quickStats.aiQueries}</div>
-        </div>
+  </header>
+
+  <main class="container mx-auto space-y-10 px-6 py-10">
+    {#if statusMessage}
+      <div class="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
+        {statusMessage}
       </div>
-    </div>
-    <!-- Main Content Area -->
-    <div class="content flex-1 p-6">
+    {/if}
+
+    <section class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <article class="rounded-lg border border-slate-700 bg-slate-900/70 p-4">
+        <p class="text-xs uppercase tracking-widest text-slate-400">Active cases</p>
+        <div class="mt-2 flex items-center justify-between">
+          <span class="text-3xl font-bold text-slate-100">{quickStats.activeCases}</span>
+          <FileText class="h-5 w-5 text-slate-400" />
+        </div>
+      </article>
+      <article class="rounded-lg border border-violet-700/50 bg-violet-950/40 p-4">
+        <p class="text-xs uppercase tracking-widest text-violet-200">Evidence items</p>
+        <div class="mt-2 flex items-center justify-between">
+          <span class="text-3xl font-bold text-violet-100">{quickStats.evidenceItems}</span>
+          <FileSearch class="h-5 w-5 text-violet-200" />
+        </div>
+      </article>
+      <article class="rounded-lg border border-rose-700/50 bg-rose-950/40 p-4">
+        <p class="text-xs uppercase tracking-widest text-rose-200">Persons of interest</p>
+        <div class="mt-2 flex items-center justify-between">
+          <span class="text-3xl font-bold text-rose-100">{quickStats.personsOfInterest}</span>
+          <Users class="h-5 w-5 text-rose-200" />
+        </div>
+      </article>
+      <article class="rounded-lg border border-emerald-700/50 bg-emerald-950/40 p-4">
+        <p class="text-xs uppercase tracking-widest text-emerald-200">AI queries (24h)</p>
+        <div class="mt-2 flex items-center justify-between">
+          <span class="text-3xl font-bold text-emerald-100">{quickStats.aiQueries}</span>
+          <Activity class="h-5 w-5 text-emerald-200" />
+        </div>
+      </article>
+    </section>
+
+    <section class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {#each sections as section}
+        <button
+          class={`text-left rounded-lg border px-4 py-5 transition-colors ${
+            selectedSection === section.id
+              ? 'border-amber-500/60 bg-amber-500/15'
+              : 'border-slate-700 bg-black/60 hover:border-amber-500/40'
+          }`}
+          onclick={() => selectSection(section.id)}
+        >
+          <div class="flex items-center gap-3">
+            <section.icon class="h-6 w-6 text-amber-300" />
+            <div>
+              <h2 class="text-lg font-semibold text-slate-50">{section.label}</h2>
+              <p class="text-xs text-slate-400">{section.description}</p>
+            </div>
+          </div>
+        </button>
+      {/each}
+    </section>
+
+    <section class="rounded-lg border border-slate-700 bg-black/60 p-6">
       {#if selectedSection === 'command-center'}
-        <!-- Command Center Dashboard -->
-        <YoRHaCommandCenter
-          systemData={(data as any)?.systemData}
-        />
-      {:else if selectedSection === 'evidence'}
-        <!-- Evidence Section -->
-        <div class="evidence-section">
-          <h2 class="text-2xl font-bold text-amber-400 mb-6">Evidence Management</h2>
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Recent Evidence -->
-            <div class="recent-evidence bg-black bg-opacity-30 border border-amber-400 border-opacity-30 p-6">
-              <h3 class="text-lg font-bold text-amber-400 mb-4">Recent Evidence</h3>
-              <div class="space-y-3">
-                {#if (data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).recentEvidence && Array.isArray((data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).recentEvidence)}
-                  {#each (data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).recentEvidence.slice(0, 5) as evidence}
-                    <div
-                      class="evidence-item p-3 border border-amber-400 border-opacity-20 hover:border-opacity-40 transition-all duration-300"
-                    >
-                      <div class="flex justify-between items-start">
-                        <div>
-                          <div class="font-medium text-amber-300">{evidence.title}</div>
-                          <div class="text-xs text-amber-400 opacity-70">{evidence.evidenceType}</div>
-                          {#if evidence.caseTitle}
-                            <div class="text-xs text-amber-400 opacity-60">Case: {evidence.caseTitle}</div>
-                          {/if}
-                        </div>
-                        <div class="text-xs text-amber-400 opacity-60">
-                          {#if evidence.createdAt}
-                            {new Date(evidence.createdAt).toLocaleDateString()}
-                          {:else}
-                            Unknown date
-                          {/if}
-                        </div>
-                      </div>
-                    </div>
-                  {/each}
-                {/if}
-              </div>
-            </div>
-            <!-- Evidence Actions -->
-            <div class="evidence-actions bg-black bg-opacity-30 border border-amber-400 border-opacity-30 p-6">
-              <h3 class="text-lg font-bold text-amber-400 mb-4">Evidence Actions</h3>
-              <div class="space-y-3">
-                <button
-                  class="action-button w-full p-3 border border-amber-400 border-opacity-30 text-amber-300 hover:border-opacity-50 hover:bg-amber-600 hover:bg-opacity-10 transition-all duration-300"
-                  on:click={() => goto('/evidence/upload')}
-                >
-                  📤 Upload Evidence
-                </button>
-                <button
-                  class="action-button w-full p-3 border border-amber-400 border-opacity-30 text-amber-300 hover:border-opacity-50 hover:bg-amber-600 hover:bg-opacity-10 transition-all duration-300"
-                  on:click={() => goto('/evidence/analyze')}
-                >
-                  🔍 Analyze Evidence
-                </button>
-                <button
-                  class="action-button w-full p-3 border border-amber-400 border-opacity-30 text-amber-300 hover:border-opacity-50 hover:bg-amber-600 hover:bg-opacity-10 transition-all duration-300"
-                  on:click={() => goto('/evidence/search')}
-                >
-                  🔎 Search Evidence
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        {#if YoRHaCommandCenter}
+          <YoRHaCommandCenter />
+        {:else}
+          <p class="text-sm text-slate-400">Command center module unavailable.</p>
+        {/if}
       {:else if selectedSection === 'persons'}
-        <!-- Persons of Interest Section -->
-        <div class="persons-section">
-          <h2 class="text-2xl font-bold text-amber-400 mb-6">Persons of Interest</h2>
-          <div class="coming-soon bg-black bg-opacity-30 border border-amber-400 border-opacity-30 p-12 text-center">
-            <div class="text-6xl mb-4">👤</div>
-            <h3 class="text-xl font-bold text-amber-400 mb-2">Coming Soon</h3>
-            <p class="text-amber-300 opacity-70">
-              Person tracking and relationship mapping will be available in the next update.
-            </p>
-          </div>
+        <div class="space-y-4">
+          <h2 class="text-xl font-semibold text-amber-300">Persons of interest</h2>
+          <p class="text-sm text-slate-400">
+            This module synchronises with dossier analytics. It will surface once the service is enabled.
+          </p>
         </div>
       {:else if selectedSection === 'analysis'}
-        <!-- Analysis Section -->
-        <div class="analysis-section">
-          <h2 class="text-2xl font-bold text-amber-400 mb-6">Case Analysis</h2>
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Recent Cases -->
-            <div class="recent-cases bg-black bg-opacity-30 border border-amber-400 border-opacity-30 p-6">
-              <h3 class="text-lg font-bold text-amber-400 mb-4">Recent Cases</h3>
-              <div class="space-y-3">
-                {#if (data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).recentCases && Array.isArray((data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).recentCases)}
-                  {#each (data as { systemData?: unknown; user?: unknown; recentEvidence?: unknown; recentCases?: unknown }).recentCases.slice(0, 5) as case_}
-                    <div
-                      class="case-item p-3 border border-amber-400 border-opacity-20 hover:border-opacity-40 transition-all duration-300 cursor-pointer"
-                    role="button"
-                    tabindex="0"
-                    on:click={() => goto(`/cases/${case_.id}`)}
-                  >
-                    <div class="flex justify-between items-start">
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="rounded-lg border border-slate-700 bg-slate-900/80 p-5">
+            <h3 class="text-lg font-semibold text-amber-200">Recent cases</h3>
+            {#if recentCases.length === 0}
+              <p class="mt-3 text-sm text-slate-400">No recent cases found. Create one to get started.</p>
+            {:else}
+              <ul class="mt-4 space-y-3 text-sm">
+                {#each recentCases as caseItem}
+                  <li class="rounded border border-slate-700/60 bg-black/40 px-3 py-2">
+                    <div class="flex items-center justify-between">
                       <div>
-                        <div class="font-medium text-amber-300">{case_.title}</div>
-                        <div class="text-xs text-amber-400 opacity-70">#{case_.caseNumber}</div>
-                        {#if case_.createdBy}
-                          <div class="text-xs text-amber-400 opacity-60">
-                            By: {case_.createdBy}
-                            {case_.createdByLastName}
-                          </div>
+                        <p class="font-medium text-slate-100">{caseItem.title}</p>
+                        {#if caseItem.caseNumber}
+                          <p class="text-xs text-slate-500">#{caseItem.caseNumber}</p>
                         {/if}
                       </div>
-                      <div class="flex flex-col items-end">
-                        <span
-                          class={`
-                            text-xs px-2 py-1 border border-amber-400 border-opacity-30
-                            ${case_.priority === 'critical'
-                              ? 'text-red-400'
-                              : case_.priority === 'high'
-                                ? 'text-orange-400'
-                                : 'text-amber-400'}
-                          `}
-                        >
-                          {case_.priority}
-                        </span>
-                        <div class="text-xs text-amber-400 opacity-60 mt-1">
-                          {new Date(case_.createdAt).toLocaleDateString()}
-                        </div>
-                      </div>
+                      <span class={`rounded-full border px-2 py-1 text-xs ${priorityBadge(caseItem.priority)}`}>
+                        {caseItem.priority ?? 'n/a'}
+                      </span>
                     </div>
-                  </div>
+                    <p class="mt-1 text-xs text-slate-500">
+                      {caseItem.createdBy ? `By ${caseItem.createdBy} ${caseItem.createdByLastName ?? ''}` : '—'} •
+                      {caseItem.createdAt
+                        ? new Date(caseItem.createdAt).toLocaleDateString()
+                        : 'Unknown date'}
+                    </p>
+                    <button
+                      class="mt-2 text-xs text-amber-300 hover:underline"
+                      onclick={() => goto(`/cases/${caseItem.id}`)}
+                    >
+                      View case
+                    </button>
+                  </li>
                 {/each}
-              </div>
-            </div>
-            <!-- Analysis Tools -->
-            <div class="analysis-tools bg-black bg-opacity-30 border border-amber-400 border-opacity-30 p-6">
-              <h3 class="text-lg font-bold text-amber-400 mb-4">Analysis Tools</h3>
-              <div class="space-y-3">
-                <button
-                  class="action-button w-full p-3 border border-amber-400 border-opacity-30 text-amber-300 hover:border-opacity-50 hover:bg-amber-600 hover:bg-opacity-10 transition-all duration-300"
-                  on:click={() => goto('/ai-assistant')}
-                >
-                  🤖 AI Assistant
-                </button>
-                <button
-                  class="action-button w-full p-3 border border-amber-400 border-opacity-30 text-amber-300 hover:border-opacity-50 hover:bg-amber-600 hover:bg-opacity-10 transition-all duration-300"
-                  on:click={() => goto('/detective/canvas')}
-                >
-                  🎨 Evidence Canvas
-                </button>
-                <button
-                  class="action-button w-full p-3 border border-amber-400 border-opacity-30 text-amber-300 hover:border-opacity-50 hover:bg-amber-600 hover:bg-opacity-10 transition-all duration-300"
-                  on:click={() => goto('/reports')}
-                >
-                  📊 Generate Report
-                </button>
-              </div>
-            </div>
+              </ul>
+            {/if}
+          </div>
+          <div class="rounded-lg border border-slate-700 bg-slate-900/80 p-5">
+            <h3 class="text-lg font-semibold text-amber-200">Evidence insights</h3>
+            {#if evidenceInsights.length === 0}
+              <p class="mt-3 text-sm text-slate-400">No embeddings or AI summaries are available yet.</p>
+            {:else}
+              <ul class="mt-4 space-y-3 text-sm">
+                {#each evidenceInsights as insight}
+                  <li class="rounded border border-slate-700/60 bg-black/40 px-3 py-2">
+                    <p class="font-medium text-slate-100">{insight.label}</p>
+                    <p class="text-xs text-slate-400">{insight.summary}</p>
+                  </li>
+                {/each}
+              </ul>
+            {/if}
           </div>
         </div>
+      {:else}
+        <div class="space-y-4">
+          <h2 class="text-xl font-semibold text-amber-300">{sections.find((item) => item.id === selectedSection)?.label}</h2>
+          <p class="text-sm text-slate-400">
+            This section opens in a dedicated view. Use the navigation to continue.
+          </p>
+        </div>
       {/if}
-    </div>
-  </div>
+    </section>
+  </main>
+</div>
 
-  <!-- New Case Modal -->
-  {#if showNewCaseModal}
-    <YoRHaModal title="Create New Case" open={showNewCaseModal} close={cancelNewCase}>
-      <form class="space-y-4" on:submit|preventDefault={handleCreateCase}>
-        <!-- Case Title -->
+{#if showNewCaseModal}
+  {#if YoRHaModalComponent}
+    <YoRHaModalComponent title="Create New Case" open={showNewCaseModal} close={cancelNewCase}>
+      <form
+        class="space-y-4"
+        onsubmit={(e) => {
+          e.preventDefault();
+          // forward event to the existing handler
+          handleCreateCase(e as SubmitEvent);
+        }}
+      >
         <div>
-          <label for="case-title" class="block text-sm font-medium text-amber-400 mb-2">Case Title</label>
+          <label for="case-title" class="mb-2 block text-sm font-medium text-slate-200">Title</label>
           <input
             id="case-title"
             type="text"
             bind:value={newCaseData.title}
-            class="w-full p-3 bg-black bg-opacity-50 border border-amber-400 border-opacity-30 text-amber-300 placeholder-amber-400 placeholder-opacity-50 focus:border-opacity-60 focus:ring-2 focus:ring-amber-400 focus:ring-opacity-20"
-            placeholder="Enter case title..."
+            class="w-full rounded border border-slate-700 bg-black/70 px-3 py-2 text-sm text-slate-100 focus:border-amber-400 focus:outline-none"
             required
           />
         </div>
-        <!-- Case Description -->
         <div>
-          <label for="case-description" class="block text-sm font-medium text-amber-400 mb-2">Description</label>
+          <label for="case-description" class="mb-2 block text-sm font-medium text-slate-200">Description</label>
           <textarea
             id="case-description"
             bind:value={newCaseData.description}
             rows="4"
-            class="w-full p-3 bg-black bg-opacity-50 border border-amber-400 border-opacity-30 text-amber-300 placeholder-amber-400 placeholder-opacity-50 focus:border-opacity-60 focus:ring-2 focus:ring-amber-400 focus:ring-opacity-20"
-            placeholder="Enter case description..."
+            class="w-full rounded border border-slate-700 bg-black/70 px-3 py-2 text-sm text-slate-100 focus:border-amber-400 focus:outline-none"
+            placeholder="Provide additional context, links, or known entities."
           ></textarea>
         </div>
-        <!-- Priority -->
         <div>
-          <label for="case-priority" class="block text-sm font-medium text-amber-400 mb-2">Priority</label>
+          <label for="case-priority" class="mb-2 block text-sm font-medium text-slate-200">Priority</label>
           <select
             id="case-priority"
             bind:value={newCaseData.priority}
-            class="w-full p-3 bg-black bg-opacity-50 border border-amber-400 border-opacity-30 text-amber-300 focus:border-opacity-60 focus:ring-2 focus:ring-amber-400 focus:ring-opacity-20"
+            class="w-full rounded border border-slate-700 bg-black/70 px-3 py-2 text-sm text-slate-100 focus:border-amber-400 focus:outline-none"
           >
             <option value="low">Low</option>
             <option value="medium">Medium</option>
@@ -402,133 +395,26 @@ https://svelte.dev/e/js_parse_error -->
             <option value="critical">Critical</option>
           </select>
         </div>
-        <!-- Actions -->
-        <div class="flex justify-end space-x-3 pt-4">
+        <div class="flex justify-end gap-3 pt-2">
           <button
             type="button"
-            on:click={cancelNewCase}
-            class="px-6 py-2 border border-amber-400 border-opacity-30 text-amber-300 hover:border-opacity-50 hover:bg-amber-600 hover:bg-opacity-10 transition-all duration-300"
+            class="rounded border border-slate-600 px-4 py-2 text-sm text-slate-200 hover:border-slate-400"
+            onclick={cancelNewCase}
           >
             Cancel
           </button>
           <button
             type="submit"
-            disabled={!newCaseData.title.trim()}
-            class="px-6 py-2 bg-amber-600 bg-opacity-20 border border-amber-400 border-opacity-50 text-amber-300 hover:bg-opacity-30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+            class="rounded border border-emerald-500/60 bg-emerald-500/20 px-4 py-2 text-sm font-semibold text-emerald-100 hover:bg-emerald-500/30"
           >
-            Create Case
+            Create case
           </button>
         </div>
       </form>
-    </YoRHaModal>
-  {/if}
-
-  <!-- Notification Manager -->
-  {#if notifications.length > 0}
-    <div class="notifications fixed top-4 right-4 space-y-2 z-50">
-      {#each notifications as notification (notification.id)}
-        <div
-          class="notification bg-black bg-opacity-90 border border-amber-400 border-opacity-50 text-amber-300 p-3 rounded backdrop-blur-sm"
-        >
-          <div class="flex items-center space-x-2">
-            <span class="text-lg">
-              {#if notification.type === 'success'}✅
-              {:else if notification.type === 'error'}❌
-              {:else if notification.type === 'warning'}⚠️
-              {:else}ℹ️{/if}
-            </span>
-            <span class="text-sm">{notification.message}</span>
-          </div>
-        </div>
-      {/each}
-    </div>
-  {/if}
-</div>
-
-<style>
-  .yorha-detective {
-    font-family: 'JetBrains Mono', 'Courier New', monospace;
-  }
-  .nav-item {
-    position: relative;
-  }
-  .nav-item::before {
-    content: '';
-    position: absolute;
-    left: 0,
-    top: 0;
-    bottom: 0,
-    width: 2px;
-    background: rgba(251, 191, 36, 0.5);
-    transform: scaleY(0);
-    transition: transform 0.3s ease;
-  }
-  .nav-item:hover::before,
-  .nav-item.active::before {
-    transform: scaleY(1);
-  }
-
-  .stat-item {
-    padding: 12px;
-    border: 1px solid rgba(251, 191, 36, 0.2);
-    background: rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
-  }
-  .stat-item:hover {
-    border-color: rgba(251, 191, 36, 0.4);
-    background: rgba(251, 191, 36, 0.05);
-  }
-
-  .evidence-item,
-  .case-item {
-    transition: all 0.3s ease;
-  }
-  .evidence-item:hover,
-  .case-item:hover {
-    background: rgba(251, 191, 36, 0.05);
-    transform: translateX(4px);
-  }
-
-  .action-button {
-    position: relative;
-    overflow: hidden;
-  }
-  .action-button::before {
-    content: '';
-    position: absolute;
-    top: 0,
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.1), transparent);
-    transition: left 0.5s ease;
-  }
-  .action-button:hover::before {
-    left: 100%;
-  }
-  .coming-soon {
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%,
-    100% {
-      opacity: 1,
-    }
-    50% {
-      opacity: 0.8,
-    }
-  }
-  /* Responsive design */
-  @media (max-width: 1024px) {
-    .main-layout {
-      flex-direction: column;
-    }
-    .sidebar {
-      width: 100%;
-      height: auto;
-    }
-    .grid {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>
+    </YoRHaModalComponent>
+   {:else}
+     <div class="rounded-lg border border-slate-700 bg-black/60 p-6 text-sm text-slate-400">
+       Loading modal…
+     </div>
+   {/if}
+{/if}

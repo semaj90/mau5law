@@ -2,83 +2,184 @@
  * Redis Connection Test Endpoint
  * Simple endpoint to test and debug Redis connectivity
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-export const GET: RequestHandler = async () => {
-  let redis: any = null
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import Redis, { type RedisOptions } from 'ioredis'; // Changed to type-only import for RedisOptions
+// import { EventEmitter } from 'events'; // No longer needed with module augmentation
+
+// Declare module augmentation for ioredis to include missing methods if types are incomplete
+declare module 'ioredis' {
+  interface Redis {
+    // Add 'call' for Redis Stack commands (as hinted by ioredis-extension.d.ts)
+    call(command: string, ...args: (string | number)[]): Promise<unknown>; // Changed any to unknown
+    // Add 'info' if it's missing from the default types
+    info(section?: string): Promise<string>;
+    // Add 'quit' if it's missing from the default types
+    quit(): Promise<'OK'>;
+    // removeListener and once are inherited from EventEmitter and should not need augmentation
+  }
+}
+
+// Define an interface for common Redis connection error properties
+interface IORedisError extends Error {
+  code?: string;
+  errno?: number;
+  syscall?: string;
+  address?: string;
+  port?: number;
+}
+
+// Type guard to check if an error is an IORedisError
+function isIORedisError(error: unknown): error is IORedisError {
+  return (
+    error instanceof Error &&
+    ((error as IORedisError).code !== undefined ||
+      (error as IORedisError).errno !== undefined ||
+      (error as IORedisError).syscall !== undefined ||
+      (error as IORedisError).address !== undefined ||
+      (error as IORedisError).port !== undefined)
+  );
+}
+
+const REDIS_CONNECT_TIMEOUT = 5000;
+
+// Utility function to wait for Redis to be ready
+async function waitForRedisReady(redis: Redis, timeoutMs: number): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    let settled = false;
+    const timeoutId = setTimeout(() => {
+      if (!settled) {
+        settled = true;
+        redis.removeListener('ready', onReady);
+        redis.removeListener('error', onError);
+        reject(new Error(`Redis connection timed out after ${timeoutMs}ms`));
+      }
+    }, timeoutMs);
+
+    const onReady = () => {
+      if (!settled) {
+        settled = true;
+        clearTimeout(timeoutId);
+        redis.removeListener('error', onError);
+        resolve();
+      }
+    };
+    const onError = (err: Error) => {
+      if (!settled) {
+        settled = true;
+        clearTimeout(timeoutId);
+        redis.removeListener('ready', onReady);
+        reject(err);
+      }
+    };
+
+    redis.once('ready', onReady);
+    redis.once('error', onError);
+  });
+}
+
+export const GET: RequestHandler = async ({ url }) => {
+  let redis: Redis | null = null; // Declare redis here for potential cleanup
+  let connectedRedis: Redis | null = null; // Declare connectedRedis here
+
   try {
-    // Test basic Redis connection
-    const { createRedisInstance } = await import('$lib/server/redis')
+    const redisUrl = url.searchParams.get('redisUrl') || process.env.REDIS_URL || 'redis://:redis@localhost:6379/0';
+    const testKey = 'redis-test-key';
+    const testValue = `test-value-${Date.now()}`;
+
+    const redisOptions: RedisOptions = {
+      host: new URL(redisUrl).hostname,
+      port: parseInt(new URL(redisUrl).port || '6379', 10),
+      password: new URL(redisUrl).password,
+      db: parseInt(new URL(redisUrl).pathname.slice(1) || '0', 10),
+      connectTimeout: REDIS_CONNECT_TIMEOUT,
+      maxRetriesPerRequest: 0, // Disable retries for a clean connection test
+      enableOfflineQueue: false, // Disable offline queue for immediate connection feedback
+    };
+
+    redis = new Redis(redisOptions);
+
+    // Wait for Redis to be ready or timeout
+    await waitForRedisReady(redis, REDIS_CONNECT_TIMEOUT);
+    connectedRedis = redis; // Assign to connectedRedis once successfully connected
+
+    // Perform a simple set/get operation
+    await connectedRedis.set(testKey, testValue);
+    const retrievedValue = await connectedRedis.get(testKey);
+
+    if (retrievedValue !== testValue) {
+      throw new Error(`Redis SET/GET test failed. Expected "${testValue}", got "${retrievedValue}"`);
+    }
+
+    // Test RedisJSON support (if available)
+    let jsonSupported = false;
     try {
-      redis = createRedisInstance()
-    } catch {
-      const RedisCtor = (await import('ioredis')).default
-      redis = new RedisCtor({
-        host: 'localhost',
-        port: 6379,
-        connectTimeout: 5000,
-        retryDelayOnFailover: 100,
-        maxRetriesPerRequest: 3,
-        lazyConnect: false
-      })
+      // Attempt to use a RedisJSON command, e.g., JSON.SET
+      // This requires Redis Stack. If it fails, it means JSON module is not loaded or not Redis Stack.
+      await connectedRedis.call('JSON.SET', 'json-test-key', '$', JSON.stringify({ message: 'hello' }));
+      const jsonRetrieved = await connectedRedis.call('JSON.GET', 'json-test-key', '$');
+      if (jsonRetrieved) {
+        jsonSupported = true;
+        await connectedRedis.call('JSON.DEL', 'json-test-key', '$'); // Clean up
+      }
+    } catch (jsonError) {
+      // JSON commands not supported or failed, this is expected for vanilla Redis
+      console.warn('RedisJSON commands not supported or failed:', (jsonError as Error).message);
+      jsonSupported = false;
     }
-    // Wait for connection to be ready
-    await new Promise((resolve, reject) => {
-      redis.on('ready', resolve)
-      redis.on('error', reject)
-      setTimeout(() => reject(new Error('Connection timeout')), 5000)
-    })
-    // Test basic operations
-    await redis.set('test:connection', 'working')
-    const testValue = await redis.get('test:connection')
-    await redis.del('test:connection')
-    // Test Redis Stack JSON operations
-    let jsonSupported = false
-    try {
-      await redis.call('JSON.SET', 'test:json', '$', '{"status": "working"}')
-      await redis.call('JSON.GET', 'test:json')
-      await redis.del('test:json')
-      jsonSupported = true
-    } catch (error) {
-      console.warn('Redis JSON module not available:', error)
-    }
-    // Get Redis info
-    const info = await redis.info('server')
-    if (redis) {
-      await redis.quit()
-    }
+
+    // Get Redis server info
+    const info = await connectedRedis.info('server');
+
+    await connectedRedis.quit(); // The module augmentation above provides the 'quit' method type.
     return json({
       success: true,
       message: 'Redis connection successful',
-      testValue,
+      testValue: retrievedValue, // Use retrievedValue for consistency
       redisInfo: {
-        server: info.includes('redis_version'),
-        jsonSupported
+        server: info.includes('redis_version'), // Check if server info contains redis_version
+        jsonSupported,
       },
-      timestamp: new Date().toISOString()
-    })
-  } catch (error: any) {
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error: unknown) {
+    // Use unknown for catch clause
     if (redis) {
+      // Use the initial 'redis' variable for cleanup
       try {
-        await redis.quit()
+        await redis.quit();
       } catch (quitError) {
         // Ignore quit errors during cleanup
+        console.error('Error quitting Redis during cleanup:', quitError);
       }
     }
-    return json()
+
+    let errorMessage = 'An unknown error occurred.';
+    let errorDetails: Partial<IORedisError> = {};
+
+    if (error instanceof Error) {
+      errorMessage = error.message;
+      if (isIORedisError(error)) {
+        errorDetails = {
+          code: error.code,
+          errno: error.errno,
+          syscall: error.syscall,
+          address: error.address,
+          port: error.port,
+        };
+      }
+    } else if (typeof error === 'string') {
+      errorMessage = error;
+    }
+
+    return json(
       {
         success: false,
-        error,: error.message,
-        details,: {
-          code: error.code,
-          errno,: error.errno,
-          syscall,: error.syscall,
-          address,: error.address,
-          port,: error.port
-        },
-        timestamp: new Date().toISOString()
+        error: errorMessage,
+        details: errorDetails, // Use the collected details
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
-    )
+    );
   }
-}
+};

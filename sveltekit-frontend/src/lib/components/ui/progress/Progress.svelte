@@ -6,12 +6,8 @@
     max?: unknown;
     class?: string;
   }
-  let {
-    value = 0,
-    max = 100,
-    class: className = '';
-  }: Props = $props();
-  	let percentage = $derived(Math.min((value / max) * 100, 100));
+  let { value = 0, max = 100, class: className = '' }: Props = $props();
+  const percentage = $derived(Math.min(((value as number) / (max as number)) * 100, 100))
 </script>
 
 <div

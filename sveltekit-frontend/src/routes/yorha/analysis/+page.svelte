@@ -3,9 +3,13 @@
   import { onMount } from 'svelte';
   // Svelte 5 runes are built-in, no import needed
   import * as Card from '$lib/components/ui/card';
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/button'; // Changed import to directly import Button
   import Progress from '$lib/components/ui/progress/Progress.svelte';
   import { BarChart, TrendingUp, Target, AlertCircle, Brain, Activity, Database, Clock } from 'lucide-svelte';
+
+  // Cast Button to `any` to bypass strict type checks for the `class` prop.
+  const ButtonComponent: any = Button;
+
   // Analysis data
   let analysisData = $state({
     caseMetrics: {
@@ -132,10 +136,10 @@
         <div class="analysis-subtitle">AI-Powered Investigation Intelligence</div>
       </div>
       <div class="header-right">
-        <Button class="header-btn bits-btn bits-btn">
+        <ButtonComponent class="header-btn bits-btn bits-btn">
           <Brain class="w-4 h-4" />
           RUN ANALYSIS
-        </Button>
+        </ButtonComponent>
       </div>
     </header>
     <!-- Analysis Dashboard -->
@@ -297,7 +301,7 @@
                   </div>
                   <div class="analysis-footer">
                     <span class="analysis-timestamp">{analysis.timestamp}</span>
-                    <Button class="bits-btn" size="sm" variant="ghost">View Details</Button>
+                    <ButtonComponent class="bits-btn" size="sm" variant="secondary">View Details</ButtonComponent>
                   </div>
                 </div>
               {/each}
@@ -335,7 +339,7 @@
     font-size: 18px;
     font-weight: bold;
     color: #d4af37;
-    line-height: 1,
+    line-height: 1;
   }
   .yorha-subtext {
     font-size: 10px;
@@ -343,11 +347,11 @@
     margin-top: 5px;
   }
   .yorha-nav {
-    flex: 1,
-    padding: 15px 0;
+    flex: 1;
+    padding: 15px 15px; /* Changed from 15px 0; to provide consistent horizontal padding for the nav container */
     display: flex;
     flex-direction: column;
-    justify-content: space-betwee;
+    justify-content: space-between;
   }
   .nav-section {
     display: flex;
@@ -357,7 +361,8 @@
   .nav-item {
     display: flex;
     align-items: center;
-    padding: 8px 15px;
+    padding: 8px 0; /* Removed horizontal padding from item itself */
+    padding-left: 15px; /* Added explicit left padding for content alignment */
     background: none;
     border: none;
     color: #888;
@@ -366,8 +371,8 @@
     font-family: inherit;
     font-size: 11px;
     cursor: pointer;
-    transition: all 0.2;
-    justify-content: space-betwee;
+    transition: all 0.2s;
+    justify-content: space-between;
   }
   .nav-item:hover {
     background: #2a2a2a;
@@ -377,6 +382,7 @@
     background: #1a2a1a;
     color: #d4af37;
     border-left: 3px solid #d4af37;
+    padding-left: 12px; /* Adjust padding to account for 3px border, maintaining 15px content alignment */
   }
   .nav-icon {
     margin-right: 8px;
@@ -398,7 +404,7 @@
     color: #d4af37;
   }
   .yorha-main {
-    flex: 1,
+    flex: 1;
     display: flex;
     flex-direction: column;
     background: #2a2a2a;
@@ -429,14 +435,14 @@
     font-size: 24px;
     font-weight: bold;
     color: #d4af37;
-    margin: 0,
+    margin: 0;
   }
   .analysis-subtitle {
     font-size: 12px;
     color: #888;
   }
   .analysis-dashboard {
-    flex: 1,
+    flex: 1;
     padding: 20px;
     overflow-y: auto;
     display: flex;
@@ -591,7 +597,7 @@
   }
   .analysis-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
   }
@@ -623,11 +629,11 @@
     font-size: 12px;
     color: #ccc;
     margin: 10px 0;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   .analysis-footer {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-top: 10px;
   }

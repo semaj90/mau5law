@@ -4,7 +4,7 @@
   import { createFormStore, type FormOptions } from '$lib/stores/form';
   import { notifications  } from '$lib/stores/unified';
   interface Props {
-    options?: FormOption;
+    options?: FormOptions;
     class?: string;
     novalidate?: boolean;
     autocomplete?: "on" | "off";
@@ -16,7 +16,7 @@
     showResetButton?: boolean;
     loading?: boolean;
     formApi?: unknown; // Add bindable formApi prop
-    onsubmit?: (_event: { values: { [key: string]: any } isValid: boolean }) => void;
+    onsubmit?: (_event: { values: { [key: string]: any }, isValid: boolean }) => void;
     onreset?: () => void;
     onchange?: (_event: { values: { [key: string]: any } }) => void;
   }
@@ -38,13 +38,11 @@
   // Create form store
   const form = createFormStore({
     ...options,
-    onSubmit: async (values) => {
-      onsubmit?.({ values, isValid: true });
-      if (options.onSubmit) {
-        await options.onSubmit(values);
-  }
-    },
-  });
+    onSubmit: async (values: Record<string, any>) => {
+      onsubmit?.({ values, isValid: true })
+      if ((options as any).onSubmit) await (options as any).onSubmit(values)
+    }
+  })
   // Subscribe to form values for change events using $effect
   $effect(() => {
     if ($form.isDirty) {
@@ -52,7 +50,7 @@
     }
   });
   async function handleSubmit(_event: SubmitEvent) {
-    event.preventDefault();
+    _event.preventDefault();
     const isValid = await form.submit();
     if (!isValid) {
       notifications.error(
@@ -82,10 +80,10 @@
   });
 </script>
 <form onsubmit={handleSubmit}
-  reset={handleReset}
-  class="space-y-6 {restProps.class || ''}"
-  novalidate={restProps.novalidate}
-  autocomplete={restProps.autocomplete}
+  onreset={handleReset}
+  class={`space-y-6 ${restProps?.class ?? ''}`}
+  novalidate={restProps?.novalidate}
+  autocomplete={restProps?.autocomplete}
   {...restProps}
 >
   <!-- Form content -->
@@ -100,7 +98,8 @@
           disabled={!$form.isDirty || $form.isSubmitting || loading}
           class={submitFullWidth ? "w-full" : ""}
         >
-{resetText}
+          {resetText}
+        </Button>
       {/if}
       {#if showSubmitButton}
         <Button
@@ -110,12 +109,13 @@
           loading={$form.isSubmitting}
           class={submitFullWidth ? "w-full" : ""}
         >
-{submitText}
+          {submitText}
+        </Button>
       {/if}
     </div>
   {/if}
   <!-- Form status -->
-  {#if $form.submitCount > 0 && Object.keys(errors).length > 0}
+  {#if $form.submitCount > 0 && Object.keys($form.errors).length > 0}
     <div class="mt-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 rounded-lg">
       <div class="flex items-start gap-3">
         <div class="text-red-600 dark:text-red-400 mt-0.5">⚠</div>
@@ -132,4 +132,4 @@
       </div>
     </div>
   {/if}
-</form>;
+</form>

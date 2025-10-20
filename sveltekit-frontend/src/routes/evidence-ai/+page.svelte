@@ -2,6 +2,7 @@
   import { browser } from '$app/environment';
   import { onMount } from 'svelte';
   import { Button } from 'bits-ui';
+  import xstateIntegration from '$lib/services/xstate-integration';
 
   // ======================
   // SVELTE 5 RUNES STATE
@@ -159,7 +160,7 @@
 
         // Cache the final analysis
         if (fileMetadata && streamingTokens) {
-          fileMetadata.analysis = streamingTokens;
+          fileMetadata = { ...fileMetadata, analysis: streamingTokens };
         }
         break;
 
@@ -190,13 +191,13 @@
   }
 
   function sendQuery(query: string, fileId?: string) {
-    if (!ws || !wsConnected || !ws?.readyState || ws.readyState !== WebSocket.OPEN) {
+    if (!ws || !wsConnected || ws.readyState !== WebSocket.OPEN) {
       console.warn('WebSocket not open; falling back to REST query where available');
       // Optionally call REST endpoint for analysis if WS not available (server must support)
       const apiBase = (import.meta as any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
       fetch(`${apiBase}?action=analyze`, {
         method: 'POST',
-        headers: { Accept: 'application/json' },
+        headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, file_id: fileId || currentFileId })
       }).catch(err => console.warn('REST analysis fallback failed', err));
       streamingTokens = '';
@@ -216,7 +217,7 @@
   }
 
   function subscribeToWorkflow(fileId: string) {
-    if (!ws || ws?.readyState !== WebSocket.OPEN) return;
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
     ws.send(JSON.stringify({ type: 'SUBSCRIBE_WORKFLOW', file_id: fileId }));
   }
 
@@ -256,12 +257,17 @@
 
     const formData = new FormData();
     formData.append('file', selectedFile);
-    // Get authenticated user from XState auth machine
-    import xstateIntegration from '$lib/services/xstate-integration';
-    const authState = xstateIntegration.getGlobalState('auth');
+    // Get authenticated user from XState auth machine (use top-level import)
+    // replaced deprecated/non-existent method getGlobalState(...) with safe access to globalState
+    const _global = (xstateIntegration as any)?.globalState;
+    // authState may be stored under .auth or be the top-level state object; handle both
+    const authState = _global?.auth ?? _global ?? null;
     const userId = authState?.context?.user?.id || 'anonymous';
     formData.append('user_id', userId);
     formData.append('caseId', 'case_001');
+
+    // Ensure apiBase is available for upload and later analysis triggers
+    const apiBase = (import.meta as any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
 
     try {
       uploadProgress = 0;
@@ -271,14 +277,16 @@
         status: 'processing'
       };
 
-      // Use unified API v2 endpoint (env-aware)
-      const apiBase = (import.meta as any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
-      const response = await fetch(apiBase, {
+      // Perform upload to unified API v2
+      const response = await fetch(`${apiBase}?action=upload`, {
         method: 'POST',
         body: formData
       });
 
       const result = await response.json();
+
+      // mark upload complete
+      uploadProgress = 100;
 
       if (result.success) {
         currentFileId = result.aiProcessing?.file_id || result.evidence?.id;
@@ -287,28 +295,21 @@
         fileMetadata = {
           filename: selectedFile.name,
           size: selectedFile.size,
-        switch (result.source) {
-          case 'python-ai':
-            aiSource = 'ollama';
-            break;
-          case 'tensorrt':
-            aiSource = 'tensorrt';
-            break;
-          default:
-            aiSource = 'typescript-fallback';
-        }
+          uploadTime: new Date().toISOString(),
+          analysis: undefined
         };
 
-        // Update backend status based on response
-        aiSource = result.source === 'python-ai' ? 'ollama' : 'typescript-fallback';
+        // set aiSource from result.source (if provided)
+        if (result.source === 'python-ai') aiSource = 'ollama';
+        else if (result.source === 'tensorrt') aiSource = 'tensorrt';
+        else aiSource = 'typescript-fallback';
 
-        // Subscribe to workflow updates if supported (WS or REST fallback)
-        if (result.aiProcessing) {
+        if (result.aiProcessing && result.aiProcessing.file_id) {
           if (ws && wsConnected) {
             subscribeToWorkflow(result.aiProcessing.file_id);
             sendQuery(`Analyze this legal evidence document: ${selectedFile.name}`, result.aiProcessing.file_id);
           } else {
-            // REST analysis trigger if WS not present
+            // REST analysis trigger if WS not present (uses apiBase defined above)
             fetch(`${apiBase}?action=analyze`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -377,44 +378,55 @@
     }
   }
 
-  // Debounced search
+  // debounced effect for searchQuery
   $effect(() => {
-    if (searchQuery) {
-      if (searchTimeout) clearTimeout(searchTimeout);
+    if (!searchQuery) {
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+        searchTimeout = undefined;
+      }
+      searchResults = [];
+      aiSuggestions = [];
+      return;
+    }
+
+    if (searchTimeout) clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => performSearch(), 350);
+
+    return () => {
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+        searchTimeout = undefined;
+      }
+    };
+  });
+
+  // onMount: health check, connect WS if available, heartbeat and cleanup
   onMount(() => {
     let mounted = true;
 
     (async () => {
-      // Check backend health first
       try {
-        // env-aware health endpoint
         const apiBase = (import.meta as any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
         const healthResponse = await fetch(`${apiBase}?action=health`);
         const health = await healthResponse.json();
         if (!mounted) return;
 
         backendStatus = {
-          typescript: health.backends?.typescript?.status === 'healthy',
-          pythonAI: health.backends?.pythonAI?.status === 'healthy',
+          typescript: !!(health.backends?.typescript?.status === 'healthy'),
+          pythonAI: !!(health.backends?.pythonAI?.status === 'healthy'),
           capabilities: health.backends?.pythonAI?.capabilities || []
         };
 
-        console.log('🏥 Backend Health:', backendStatus);
+        if (backendStatus.pythonAI) connectWebSocket();
+        else console.warn('⚠️ Python AI backend unavailable. Some features will be limited.');
       } catch (error) {
         if (!mounted) return;
         console.error('Health check failed:', error);
-        backendStatus.pythonAI = false;
-      }
-
-      // Connect WebSocket if Python AI is available
-      if (backendStatus.pythonAI) {
-        connectWebSocket();
-      } else {
-        console.warn('⚠️ Python AI backend unavailable. Some features will be limited.');
+        backendStatus = { ...backendStatus, pythonAI: false };
       }
     })();
 
-    // Heartbeat ping every 30s
     const heartbeat = setInterval(() => {
       if (ws && wsConnected && ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({ type: 'PING' }));
@@ -424,21 +436,8 @@
     return () => {
       mounted = false;
       clearInterval(heartbeat);
-      if (ws) {
-        ws.close();
-      }
-      if (searchTimeout) {
-        clearTimeout(searchTimeout);
-      }
-    };
-  });
-
-    return () => {
-      mounted = false;
-      clearInterval(heartbeat);
-      if (ws) {
-        ws.close();
-      }
+      if (ws) ws.close();
+      if (searchTimeout) clearTimeout(searchTimeout);
     };
   });
 
@@ -464,12 +463,12 @@
       complete: '✅',
       error: '❌'
     };
+    return icons[stage] ?? 'ℹ️';
+  }
+
   function getProgressColor(progress: number): string {
     // Use UnoCSS theme tokens for colors
-    if (progress < 30) return 'bg-primary-error';
-    if (progress < 70) return 'bg-primary-warning';
-    return 'bg-primary-success';
-  }
+    if (progress < 30) return 'bg-red-500';
     if (progress < 70) return 'bg-yellow-500';
     return 'bg-green-500';
   }
@@ -543,9 +542,9 @@
             role="region"
             aria-label="File upload drop zone"
             class="border-2 border-dashed rounded-lg p-8 text-center transition-all {isDragging ? 'border-purple-500 bg-purple-500/10' : 'border-slate-600 hover:border-slate-500'}"
-            on:dragover={handleDragOver}
-            on:dragleave={handleDragLeave}
-            on:drop={handleDrop}
+            ondragover={handleDragOver}
+            ondragleave={handleDragLeave}
+            ondrop={handleDrop}
           >
             {#if selectedFile}
               <div class="space-y-2">
@@ -554,7 +553,7 @@
                 <p class="text-sm text-slate-400">{formatFileSize(selectedFile.size)}</p>
                 <button
                   class="text-xs text-red-400 hover:text-red-300 mt-2"
-                  on:click={() => selectedFile = null}
+                  onclick={() => selectedFile = null}
                 >
                   Remove
                 </button>
@@ -571,7 +570,7 @@
               type="file"
               class="hidden"
               id="fileInput"
-              on:change={handleFileSelect}
+              onchange={handleFileSelect}
               accept=".pdf,.docx,.txt,.png,.jpg,.jpeg"
             />
             <label
@@ -585,7 +584,7 @@
           <!-- Upload Button -->
           <button
             class="w-full mt-4 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            on:click={uploadFile}
+            onclick={uploadFile}
             disabled={!selectedFile || !wsConnected || isStreaming}
           >
             {isStreaming ? '🔄 Processing...' : '🚀 Upload & Analyze'}
@@ -679,7 +678,7 @@
             />
             <button
               class="px-6 py-3 bg-purple-500 hover:bg-purple-600 rounded-lg font-medium transition-colors disabled:opacity-50"
-              on:click={performSearch}
+              onclick={performSearch}
               disabled={isSearching || !searchQuery.trim()}
             >
               {isSearching ? '🔄' : '🔍'}
@@ -694,7 +693,7 @@
                 {#each aiSuggestions as suggestion}
                   <button
                     class="px-3 py-1 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 rounded-full text-sm transition-colors"
-                    on:click={() => searchQuery = suggestion.insight}
+                    onclick={() => searchQuery = suggestion.insight}
                   >
                     {suggestion.insight}
                   </button>
@@ -804,10 +803,11 @@
   /* Smooth animations */
   @keyframes pulse {
     0%, 100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.5,
+      opacity: 0.5;
     }
   }
 </style>
+
