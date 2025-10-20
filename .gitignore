@@ -431,7 +431,7 @@ src/proto/**
 # and should never be committed to git
 
 # Service directories and binaries
-services/
+/services/
 services/minio/
 services/neo4j/
 services/qdrant/
