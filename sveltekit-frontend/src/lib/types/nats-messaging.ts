@@ -1,92 +1,92 @@
-// Enhanced NATS Messaging Types
-// Complete type definitions for production-ready NATS integration
+/**
+ * Type definitions for NATS Messaging Service
+ */
 
-// Add a reusable payload union to avoid `any` while allowing flexibility
-export type MessageData =
-  | CaseEventData
-  | DocumentEventData
-  | AIAnalysisEventData
-  | ChatEventData
-  | SearchEventData
-  | SystemHealthEventData
-  | WorkItem
-  | Record<string, unknown>
-  | string
-  | number
-  | boolean
-  | null
-  | Array<unknown>;
+// Define the union type for message categories
+export type MessageType =
+  | 'case_management'
+  | 'document_processing'
+  | 'ai_analysis'
+  | 'search_operation'
+  | 'real_time_communication'
+  | 'system_monitoring'
+  | 'request'
+  | 'response'
+  | 'mock'
+  | 'unknown';
 
-// Core Message Types
-export interface LegalAIMessage<T = MessageData> {
+// Generic type for message data payload
+export type MessageData = Record<string, any> | string | number | boolean | null | Array<any>;
+
+// Interface for a standard Legal AI Message
+export interface LegalAIMessage {
   id: string;
   type: MessageType;
   subject: string;
-  data: T;
+  data: MessageData;
   timestamp: string;
   correlation_id?: string;
   reply_to?: string;
   headers?: Record<string, string>;
-  user_id?: string;
-  case_id?: string;
-  session_id?: string;
-  priority?: MessagePriority;
-  expires_at?: string;
 }
 
-export type MessageType =
-  // Case management
-  | 'case_created'
-  | 'case_updated'
-  | 'case_closed'
-  // Document processing
-  | 'document_uploaded'
-  | 'document_processed'
-  | 'document_analyzed'
-  | 'document_indexed'
-  // AI analysis
-  | 'ai_analysis_started'
-  | 'ai_analysis_completed'
-  | 'ai_analysis_failed'
-  // Search and retrieval
-  | 'search_query'
-  | 'search_results'
-  // Real-time communication
-  | 'chat_message'
-  | 'chat_response'
-  | 'chat_streaming'
-  // System monitoring
-  | 'system_health'
-  | 'system_metrics'
-  // Generic types
-  | 'request'
-  | 'response'
-  | 'error'
-  | 'notification'
-  | 'unknown';
+// Type for a message handler function
+export type MessageHandler = (message: LegalAIMessage) => void;
 
-export type MessagePriority = 'immediate' | 'high' | 'normal' | 'low';
-
-export interface MessageHandler<T = MessageData> {
-  (message: LegalAIMessage<T>): void | Promise<void>;
-}
-
-// Configuration Types
+// Interface for NATS connection configuration
 export interface NATSConfig {
   servers: string[];
   user?: string;
   pass?: string;
-  token?: string;
   name?: string;
-  max_reconnect_attempts: number;
-  reconnect_time_wait: number;
+  max_reconnect_attempts?: number;
+  reconnect_time_wait?: number;
   ping_interval?: number;
   max_outstanding?: number;
   max_payload?: number;
-  no_echo?: boolean;
-  verbose?: boolean;
-  pedantic?: boolean;
-  tls?: TLSConfig;
+}
+
+// Interface for NATS connection status
+export interface NATSConnectionStatus {
+  connected: boolean;
+  server: string;
+  client_id: string;
+  connected_at: string;
+}
+
+// Interface for message metrics
+export interface MessageMetrics {
+  messages_published: number;
+  messages_received: number;
+  bytes_sent: number;
+  bytes_received: number;
+  active_subscriptions: number;
+  active_streams: number;
+  connection_uptime: number;
+  last_message_time: string | null;
+  error_count: number;
+}
+
+// Interface for NATS JetStream Stream configuration
+export interface StreamConfig {
+  name: string;
+  subjects: string[];
+  retention: 'limits' | 'interest' | 'workqueue';
+  max_age?: number; // in milliseconds
+  max_msgs?: number;
+  replicas?: number;
+  storage?: 'file' | 'memory';
+}
+
+// Interface for NATS JetStream Consumer configuration
+export interface ConsumerConfig {
+  name: string;
+  durable_name?: string;
+  ack_policy?: 'none' | 'all' | 'explicit';
+  max_in_flight?: number;
+  deliver_subject?: string;
+  filter_subject?: string;
+}
 }
 export interface TLSConfig {
   cert_file?: string;

@@ -2,7 +2,7 @@
  * Module declarations for packages without proper TypeScript types
  */
 declare module 'fuse.js' {
-  interface FuseOptions<T> {
+  interface FuseOptions<$T> {
     keys?: string[] | { name: string; weight?: number }[];
     threshold?: number;
     distance?: number;
@@ -18,7 +18,7 @@ declare module 'fuse.js' {
   interface FuseResult<T> {
     item: T;
     score?: number;
-    matches?: Array<any>;
+    matches?: Array<unknown>;
   }
   class Fuse<T> {
     constructor(list: T[], options?: FuseOptions<T>);
@@ -34,14 +34,14 @@ declare module 'lokijs' {
     autosave?: boolean;
     autosaveInterval?: number;
     autoload?: boolean;
-    autoloadCallback?: (err: any) => void;
+    autoloadCallback?: (err: unknown) => void;
     adapter?: unknown;
     serializationMethod?: string;
     destructureDelimiter?: string;
     persistenceMethod?: string;
     env?: string;
   }
-  interface CollectionOptions<T = any> {
+  interface CollectionOptions {
     indices?: string | string[];
     unique?: string | string[];
     exact?: string | string[];
@@ -57,13 +57,13 @@ declare module 'lokijs' {
     ttlInterval?: number;
     transforms?: unknown;
   }
-  interface Collection<T = any> {
+  interface Collection<T> {
     insert(doc: T): T;
     find(query?: unknown): T[];
     findOne(query?: unknown): T | null;
     update(doc: T): T;
     remove(doc: T): void;
-    removeWhere(query: any): void;
+    removeWhere(query: unknown): void;
     count(query?: unknown): number;
     data: T[];
     chain(): {
@@ -78,18 +78,18 @@ declare module 'lokijs' {
   }
   export default class Loki {
     constructor(filename?: string, options?: LokiOptions);
-    addCollection<T = any>(name: string, options?: CollectionOptions<T>): Collection<T>;
-    getCollection<T = any>(name: string): Collection<T> | null;
+    addCollection<T>(name: string, options?: CollectionOptions): Collection<T>;
+    getCollection<T>(name: string): Collection<T> | null;
     removeCollection(name: string): void;
-    saveDatabase(callback?: (err: any) => void): void;
-    loadDatabase(options?: unknown, callback?: (err: any) => void): void;
+    saveDatabase(callback?: (err: unknown) => void): void;
+    loadDatabase(options?: unknown, callback?: (err: unknown) => void): void;
     close(): void;
-    listCollections(): Array<any>;
+    listCollections(): Array<unknown>;
   }
 }
 // Tauri API module declarations (optional dependencies)
 declare module '@tauri-apps/api/tauri' {
-  export function invoke<T = any>(cmd: string, args?: { [key: string]: any }): Promise<T>;
+  export function invoke<T>(cmd: string, args?: Record<string, unknown>): Promise<T>;
   export const convertFileSrc: (filePath: string, protocol?: string) => string;
 }
 declare module '@tauri-apps/api/fs' {
@@ -106,5 +106,5 @@ declare module '@tauri-apps/api/fs' {
   export function exists(path: string): Promise<boolean>;
 }
 declare module '@tauri-apps/api/core' {
-  export function invoke<T = any>(cmd: string, args?: { [key: string]: any }): Promise<T>;
+  export function invoke<T>(cmd: string, args?: Record<string, unknown>): Promise<T>;
 }
