@@ -62,6 +62,7 @@ export interface GlyphEmbedResult {
     vector_store_updates: number;
     summary_tokens: number;
     semantic_matches: Array<any>;
+  }; // Added missing closing brace and semicolon
   synthesized_glyphs?: Array<any>;
 }
 export interface GlyphEmbedResponse {
@@ -121,7 +122,7 @@ export class EnhancedGlyphEmbedsClient {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({,
+        body: JSON.stringify({ // Removed extra comma
           evidence_id: request.evidence_id,
           prompt: request.prompt,
           style: request.style || 'detective',
@@ -143,15 +144,15 @@ export class EnhancedGlyphEmbedsClient {
           content_sources: request.content_sources
         })
       });
-      if (!(response as { ok?: any; status?: any; statusText?: any; json?: any; text?: any }).ok) {
-        throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any; text?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any; text?: any }).statusText}`);
+      if (!response.ok) { // Removed redundant type assertion
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`); // Removed redundant type assertion
       }
-      const result: GlyphEmbedResponse = await (response as { ok?: any; status?: any; statusText?: any; json?: any; text?: any }).json();
+      const result: GlyphEmbedResponse = await response.json(); // Removed redundant type assertion
       // Convert tiled_data back to Float32Array if it exists
-      if ((result as { data?: any; status?: any; value?: any; reason?: any }).data?.simd_shader_data?.tiled_data) {
-        const tiledDataArray = (result as { data?: any; status?: any; value?: any; reason?: any }).data.simd_shader_data.tiled_data;
+      if (result.data?.simd_shader_data?.tiled_data) { // Removed redundant type assertion
+        const tiledDataArray = result.data.simd_shader_data.tiled_data; // Removed redundant type assertion
         if (Array.isArray(tiledDataArray)) {
-          (result as { data?: any; status?: any; value?: any; reason?: any }).data.simd_shader_data.tiled_data = new Float32Array(tiledDataArray);
+          result.data.simd_shader_data.tiled_data = new Float32Array(tiledDataArray); // Removed redundant type assertion
         }
       }
       return result;
@@ -171,10 +172,10 @@ export class EnhancedGlyphEmbedsClient {
       const response = await fetch(`${this.baseUrl}/api/glyph/simd-embeds`, {
         method: 'GET'
       });
-      if (!(response as { ok?: any; status?: any; statusText?: any; json?: any; text?: any }).ok) {
-        throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any; text?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any; text?: any }).statusText}`);
+      if (!response.ok) { // Removed redundant type assertion
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`); // Removed redundant type assertion
       }
-      return await (response as { ok?: any; status?: any; statusText?: any; json?: any; text?: any }).json();
+      return await response.json(); // Removed redundant type assertion
     } catch (error) {
       console.error('Health check failed:', error);
       return {
@@ -188,18 +189,19 @@ export class EnhancedGlyphEmbedsClient {
    */
   async generateGlyphVariations(
     baseRequest: GlyphEmbedRequest,
-    variations: Partial<GlyphEmbedRequest>[];
+    variations: Partial<GlyphEmbedRequest>[], // Removed semicolon
   ): Promise<GlyphEmbedResponse[]> {
     const requests = variations.map(variation => ({
       ...baseRequest,
       ...variation
-    });
+    })); // Added missing closing parenthesis
     const results = await Promise.allSettled(
-      requests.map(request => this.generateGlyph(request)
+      requests.map(request => this.generateGlyph(request)) // Added missing closing parenthesis
     );
     return results.map(result =>
-      (result as { data?: any; status?: any; value?: any; reason?: any }).status === 'fulfilled'
-        ? (result as { data?: any; status?: any; value?: any; reason?: any }).value:  { success: false, error: (result as { data?: any; status?: any; value?: any; reason?: any }).reason?.message || 'Generation failed' }
+      result.status === 'fulfilled' // Removed redundant type assertion
+        ? result.value // Removed redundant type assertion
+        :  { success: false, error: result.reason?.message || 'Generation failed' } // Removed redundant type assertion
     );
   }
   /**
@@ -213,8 +215,9 @@ export class EnhancedGlyphEmbedsClient {
       enable_summarization?: boolean;
       enable_vector_store?: boolean;
     } = {}
-  ): Promise<{
-    chunks: Array<any>;
+  ): Promise<{ // Updated return type to include success
+    success: boolean;
+    chunks?: Array<any>;
     error?: string;
   }> {
     try {
@@ -230,8 +233,8 @@ export class EnhancedGlyphEmbedsClient {
         // Fetch article if URL provided
         if (article.url && !content) {
           try {
-            // removed unused response assignment
-            content = await (response as { ok?: any; status?: any; statusText?: any; json?: any; text?: any }).text();
+            const response = await fetch(article.url); // Declared missing response variable
+            content = await response.text(); // Removed redundant type assertion
           } catch (error) {
             console.warn(`Failed to fetch article: ${article.url}`, error);
             continue;
@@ -251,7 +254,7 @@ export class EnhancedGlyphEmbedsClient {
               const summaryResponse = await fetch(`${this.baseUrl}/api/llm/gemma3-legal/summarize`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({,
+                body: JSON.stringify({ // Removed extra comma
                   content: chunk,
                   max_tokens: 150,
                   legal_context: true
@@ -270,7 +273,7 @@ export class EnhancedGlyphEmbedsClient {
             const embedResponse = await fetch(`${this.baseUrl}/api/embeddings/gemma`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({,
+              body: JSON.stringify({ // Removed extra comma
                 text: summary || chunk,
                 model: 'embeddinggemma:latest',
               })
@@ -288,7 +291,7 @@ export class EnhancedGlyphEmbedsClient {
               await fetch(`${this.baseUrl}/api/vector/pgvector/store`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({,
+                body: JSON.stringify({ // Removed extra comma
                   id: chunkId,
                   content: chunk,
                   summary: summary,
@@ -342,7 +345,12 @@ export class EnhancedGlyphEmbedsClient {
       max_suggestions?: number;
       cache_synthesized?: boolean;
     } = {}
-  ): Promise<any> {
+  ): Promise<{ // Updated return type to include success
+    success: boolean;
+    synthesized_glyph?: any;
+    did_you_mean_suggestions?: string[];
+    error?: string;
+  }> {
     try {
       const {
         enable_did_you_mean = true,
@@ -353,7 +361,7 @@ export class EnhancedGlyphEmbedsClient {
       const synthesisResponse = await fetch(`${this.baseUrl}/api/glyph/synthesize`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({ // Removed extra comma
           base_glyph_ids: baseGlyphIds,
           prompt: prompt,
           synthesis_config: {
@@ -374,7 +382,7 @@ export class EnhancedGlyphEmbedsClient {
           const suggestionsResponse = await fetch(`${this.baseUrl}/api/llm/gemma3-legal/suggest`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({,
+            body: JSON.stringify({ // Removed extra comma
               original_prompt: prompt,
               base_glyphs: baseGlyphIds,
               max_suggestions: max_suggestions,
@@ -395,7 +403,7 @@ export class EnhancedGlyphEmbedsClient {
           await fetch(`${this.baseUrl}/api/glyph/cache`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({,
+            body: JSON.stringify({ // Removed extra comma
               glyph_id: synthesisResult.synthesized_glyph.id,
               glyph_data: synthesisResult.synthesized_glyph,
               synthesis_metadata: {
@@ -444,7 +452,7 @@ export class EnhancedGlyphEmbedsClient {
       const embedResponse = await fetch(`${this.baseUrl}/api/embeddings/gemma`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({ // Removed extra comma
           text: query,
           model: 'embeddinggemma:latest',
         })
@@ -457,7 +465,7 @@ export class EnhancedGlyphEmbedsClient {
       const searchResponse = await fetch(`${this.baseUrl}/api/vector/pgvector/search`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({ // Removed extra comma
           embedding: embedding,
           limit: limit,
           threshold: threshold,
@@ -487,7 +495,7 @@ export class EnhancedGlyphEmbedsClient {
    */
   async createShaderForCanvas(
     glyphResult: GlyphEmbedResult,
-    targetFormat: 'webgl' | 'webgpu' = 'webgpu';
+    targetFormat: 'webgl' | 'webgpu' = 'webgpu', // Removed semicolon
   ): Promise<any> {
     try {
       if (!glyphResult.simd_shader_data) {
@@ -525,7 +533,7 @@ export class EnhancedGlyphEmbedsClient {
    */
   async downloadEnhancedArtifact(
     glyphResult: GlyphEmbedResult,
-    filename?: string;
+    filename?: string, // Removed semicolon
   ): Promise<any> {
     try {
       if (!glyphResult.enhanced_artifact_url) {
@@ -554,7 +562,7 @@ export class EnhancedGlyphEmbedsClient {
     for (let i = 0; i < words.length; i += chunkSize - overlapSize) {
       const chunk = words.slice(i, i + chunkSize).join(' ');
       if (chunk.trim().length > 0) {
-        chunks.push(chunk.trim();
+        chunks.push(chunk.trim()); // Added missing closing parenthesis
       }
       if (i + chunkSize >= words.length) break;
     }
@@ -631,7 +639,7 @@ export function createEnhancedGlyphRequest(
   evidenceId: string | number,
   prompt: string,
   preset: keyof typeof GLYPH_PRESETS = 'detective',
-  ragPreset: keyof typeof RAG_PRESETS = 'legal_documents';
+  ragPreset: keyof typeof RAG_PRESETS = 'legal_documents', // Removed semicolon
 ): GlyphEmbedRequest {
   return {
     evidence_id: evidenceId,

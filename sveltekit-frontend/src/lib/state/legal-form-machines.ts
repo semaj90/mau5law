@@ -116,6 +116,7 @@ export interface AIResults {
   summary?: string;
   entities?: { type: string; value: string }[];
   riskAssessment?: { level: 'low' | 'medium' | 'high'; details: string };
+  comparison?: unknown; // Add comparison property here
   [key: string]: unknown;
 }
 // Placeholder for a created case from the API
@@ -141,6 +142,23 @@ export interface AIAnalysisResult {
   recommendations?: string[];
   [key: string]: unknown;
 }
+
+// Define the input type for the processDocument actor
+interface ProcessDocumentActorInput {
+  documentId?: string;
+  options?: z.infer<typeof DocumentUploadSchema>['aiProcessing'];
+  file?: File;
+  title?: string;
+  description?: string;
+  tags?: string[];
+}
+
+// Define the output type for the processDocument actor
+interface ProcessDocumentOutput {
+  results: AIResults;
+  processingTime: number;
+}
+
 // ============================================================================
 // STATE MACHINE CONTEXTS
 // ============================================================================
@@ -286,9 +304,10 @@ export const documentUploadMachine = createMachine(
         },
         on: {
           UPLOAD_PROGRESS: {
-            actions: assign({
-              uploadProgress: ({ event }) => (event as { progress: number }).progress,
-            }),
+            actions: assign(({ event }) => ({
+              // Removed explicit cast, event is now typed
+              uploadProgress: event.progress,
+            })),
           },
         },
       },
@@ -297,7 +316,9 @@ export const documentUploadMachine = createMachine(
           {
             // explicitly type ctx to avoid implicit any
             target: 'processing',
-            cond: (ctx: DocumentUploadContext) =>
+            cond: (
+              ctx: DocumentUploadContext // Explicitly type ctx
+            ) =>
               !!ctx.formData?.aiProcessing &&
               (ctx.formData.aiProcessing.generateSummary ||
                 ctx.formData.aiProcessing.extractEntities ||
@@ -310,20 +331,20 @@ export const documentUploadMachine = createMachine(
         invoke: {
           id: 'processDocument',
           src: 'processDocument',
-          input: ({ context }) => ({
-            // make optional inputs explicit so the actor receives a defined shape
-            documentId: context.uploadedFile?.id ?? undefined,
-            options: context.formData?.aiProcessing ?? undefined,
-            file: (context.formData as any)?.file ?? undefined,
-            title: context.formData?.title ?? undefined,
-            description: context.formData?.description ?? undefined,
-            tags: context.formData?.tags ?? undefined,
+          input: ({ context }): ProcessDocumentActorInput => ({
+            // Explicitly type the input
+            documentId: context.uploadedFile?.id,
+            options: context.formData?.aiProcessing,
+            file: context.formData?.file,
+            title: context.formData?.title,
+            description: context.formData?.description,
+            tags: context.formData?.tags,
           }),
           onDone: {
             target: 'completed',
             actions: assign({
               aiResults: ({ event }) =>
-                ((event as DoneActorEvent<{ results: AIResults }>).output?.results ?? null) as AIResults | null,
+                ((event as DoneActorEvent<ProcessDocumentOutput>).output?.results ?? null) as AIResults | null, // Use ProcessDocumentOutput
               processingProgress: () => 100,
             }),
           },
@@ -343,9 +364,10 @@ export const documentUploadMachine = createMachine(
         },
         on: {
           PROCESSING_PROGRESS: {
-            actions: assign({
-              processingProgress: ({ event }) => (event as { progress: number }).progress,
-            }),
+            actions: assign(({ event }) => ({
+              // Removed explicit cast, event is now typed
+              processingProgress: event.progress,
+            })),
           },
         },
       },
@@ -354,10 +376,11 @@ export const documentUploadMachine = createMachine(
           RETRY: [
             {
               // use functional assign to ensure correct typing for ctx modifications (see retry logic)
-              cond: ctx => ctx.retryCount < ctx.maxRetries,
+              cond: (ctx: DocumentUploadContext) => ctx.retryCount < ctx.maxRetries, // Explicitly type ctx
               target: 'uploading', // Go back to uploading
-              actions: assign(ctx => ({
-                retryCount: ctx.retryCount + 1,
+              actions: assign(({ context }) => ({
+                // Changed from (ctx: DocumentUploadContext) to ({ context })
+                retryCount: context.retryCount + 1,
                 error: null,
               })),
             },
@@ -373,9 +396,10 @@ export const documentUploadMachine = createMachine(
           RETRY: [
             {
               target: 'processing',
-              cond: ctx => ctx.retryCount < ctx.maxRetries,
-              actions: assign(ctx => ({
-                retryCount: ctx.retryCount + 1,
+              cond: (ctx: DocumentUploadContext) => ctx.retryCount < ctx.maxRetries, // Explicitly type ctx
+              actions: assign(({ context }) => ({
+                // Changed from (ctx: DocumentUploadContext) to ({ context })
+                retryCount: context.retryCount + 1,
                 error: null,
               })),
             },
@@ -439,52 +463,57 @@ export const documentUploadMachine = createMachine(
         }
         return await response.json();
       }),
-      processDocument: fromPromise(async ({ input }) => {
-        const started = Date.now();
-        let baseResults: any = null;
-        // 1) Keep existing processing endpoint (best-effort)
-        try {
-          const resp = await fetch('/api/ai/process-document', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ documentId: input?.documentId, options: input?.options }),
-          });
-          if (resp.ok) {
-            baseResults = await resp.json();
-          }
-        } catch (_) {
-          // non-fatal
-        }
-
-        // 2) Agentic compare with Qdrant via new endpoint
-        let comparison: any = null;
-        try {
-          if (input?.options?.compareWithRAG) {
-            const fd = new FormData();
-            if (input?.file instanceof File) fd.append('file', input.file);
-            if (typeof input?.description === 'string' && input.description.trim()) fd.append('text', input.description);
-            const tags = Array.isArray(input?.tags) ? input.tags : [];
-            if (tags.length > 0) fd.append('tags', tags.join(','));
-            const k = Number(input?.options?.compareTopK ?? 8);
-            fd.append('topK', String(k));
-            const resp = await fetch('/api/v1/legal/compare-pdf', { method: 'POST', body: fd });
+      processDocument: fromPromise(
+        async ({ input }: { input: ProcessDocumentActorInput }): Promise<ProcessDocumentOutput> => {
+          // Use the new interface here and specify return type
+          const started = Date.now();
+          let baseResults: AIResults | null = null; // Changed from 'unknown' to AIResults | null
+          // 1) Keep existing processing endpoint (best-effort)
+          try {
+            const resp = await fetch('/api/ai/process-document', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ documentId: input?.documentId, options: input?.options }),
+            });
             if (resp.ok) {
-              const data = await resp.json();
-              if (data?.success) comparison = data.data;
+              baseResults = await resp.json();
             }
+          } catch (_) {
+            // non-fatal
           }
-        } catch (_) {
-          // non-fatal
-        }
 
-        return {
-          results: {
-            ...(baseResults?.results ?? {}),
-            comparison,
-          },
-          processingTime: Date.now() - started,
-        };
-      }),
+          // 2) Agentic compare with Qdrant via new endpoint
+          let comparison: unknown = null; // Changed from 'any' to 'unknown'
+          try {
+            if (input?.options?.compareWithRAG) {
+              // Now 'input.options' is correctly typed
+              const fd = new FormData();
+              if (input?.file instanceof File) fd.append('file', input.file); // Now 'input.file' is correctly typed
+              if (typeof input?.description === 'string' && input.description.trim())
+                fd.append('text', input.description); // Now 'input.description' is correctly typed
+              const tags = Array.isArray(input?.tags) ? input.tags : []; // Now 'input.tags' is correctly typed
+              if (tags.length > 0) fd.append('tags', tags.join(','));
+              const k = Number(input?.options?.compareTopK ?? 8); // Now 'input.options' is correctly typed
+              fd.append('topK', String(k));
+              const resp = await fetch('/api/v1/legal/compare-pdf', { method: 'POST', body: fd });
+              if (resp.ok) {
+                const data = await resp.json();
+                if (data?.success) comparison = data.data;
+              }
+            }
+          } catch (_) {
+            // non-fatal
+          }
+
+          return {
+            results: {
+              ...(baseResults ?? {}), // Access baseResults directly, it's already AIResults | null
+              comparison,
+            },
+            processingTime: Date.now() - started,
+          };
+        }
+      ),
     },
   }
 );
@@ -513,7 +542,7 @@ export const caseCreationMachine = createMachine(
       error: null,
       isAutoSaving: false,
       lastSaved: null,
-    },
+    } as CaseCreationContext, // Explicitly cast to CaseCreationContext
     states: {
       idle: {
         on: {
@@ -528,9 +557,8 @@ export const caseCreationMachine = createMachine(
           onDone: {
             target: 'editing',
             actions: assign({
-              // cast via unknown first to satisfy TS when converting event shapes
-              formData: (_, event) =>
-                ((event as unknown as { output?: any })?.output ?? null) as z.infer<typeof CaseCreationSchema> | null,
+              // Correctly type the event and access output
+              formData: ({ event }) => (event as DoneActorEvent<z.infer<typeof CaseCreationSchema> | null>).output,
             }),
           },
           onError: 'creating',
@@ -541,10 +569,9 @@ export const caseCreationMachine = createMachine(
           UPDATE_FORM: {
             target: 'editing',
             actions: assign({
-              formData: (_, event) =>
-                ((event as unknown as { data?: z.infer<typeof CaseCreationSchema> })?.data ?? null) as z.infer<
-                  typeof CaseCreationSchema
-                > | null,
+              // Correctly type the event and access data
+              formData: ({ event }) =>
+                (event as { type: 'UPDATE_FORM'; data: z.infer<typeof CaseCreationSchema> }).data,
             }),
           },
         },
@@ -553,10 +580,9 @@ export const caseCreationMachine = createMachine(
         on: {
           UPDATE_FORM: {
             actions: assign({
-              formData: (_, event) =>
-                ((event as unknown as { data?: z.infer<typeof CaseCreationSchema> })?.data ?? null) as z.infer<
-                  typeof CaseCreationSchema
-                > | null,
+              // Correctly type the event and access data
+              formData: ({ event }) =>
+                (event as { type: 'UPDATE_FORM'; data: z.infer<typeof CaseCreationSchema> }).data,
             }),
           },
           AUTO_SAVE: 'autoSaving',
@@ -599,18 +625,27 @@ export const caseCreationMachine = createMachine(
           onError: {
             target: 'editing',
             actions: assign({
-              validationErrors: (_, event) => {
-                const error = (event as any)?.data;
-                if (error && typeof error === 'object' && 'issues' in error) {
-                  return (error as any).issues.reduce((acc: Record<string, string[]>, issue: any) => {
-                    const field = issue.path?.[0] || 'general';
-                    if (!acc[field]) acc[field] = [];
-                    acc[field].push(issue.message);
-                    return acc;
-                  }, {});
+              validationErrors: ({ event }) => {
+                // Removed explicit generics from assign
+                const error = (event as ErrorActorEvent<Record<string, string[]> | z.ZodError>).error; // Use event.error directly
+                if (error instanceof z.ZodError) {
+                  const fieldErrors = error.flatten().fieldErrors;
+                  const cleanedErrors: Record<string, string[]> = {};
+                  for (const key in fieldErrors) {
+                    if (Object.prototype.hasOwnProperty.call(fieldErrors, key)) {
+                      cleanedErrors[key] = fieldErrors[key] || []; // Ensure it's an array
+                    }
+                  }
+                  return cleanedErrors;
                 }
-                if (error && typeof error === 'object') {
-                  return error as Record<string, string[]>;
+                if (error && typeof error === 'object' && !Array.isArray(error)) {
+                  const cleanedErrors: Record<string, string[]> = {};
+                  for (const key in error) {
+                    if (Object.prototype.hasOwnProperty.call(error, key)) {
+                      cleanedErrors[key] = (error[key] || []) as string[]; // Cast to string[]
+                    }
+                  }
+                  return cleanedErrors;
                 }
                 return {};
               },
@@ -626,15 +661,18 @@ export const caseCreationMachine = createMachine(
           onDone: {
             target: 'completed',
             actions: assign({
-              createdCase: (_, event) => (event as unknown as { output?: CreatedCase })?.output ?? null,
+              // Correctly type the event and access output
+              createdCase: ({ event }) => (event as DoneActorEvent<CreatedCase | null>).output,
             }),
           },
           onError: {
             target: 'editing',
             actions: assign({
-              error: (_, event) => {
-                const err = (event as any)?.data ?? (event as any)?.data?.message ?? (event as any);
+              error: ({ event }) => {
+                // Removed explicit generics from assign
+                const err = (event as ErrorActorEvent<unknown>).error; // Access error directly from event
                 if (err instanceof Error) return err.message;
+                if (typeof err === 'string') return err;
                 if (err && typeof err === 'object' && 'message' in err)
                   return String((err as { message: unknown }).message);
                 return 'An unknown error occurred';
@@ -700,7 +738,15 @@ type SearchEvent =
   | { type: 'RETRY' }
   | { type: 'NEW_SEARCH' };
 
-export const searchMachine = createMachine<SearchContext, SearchEvent>(
+// Define specific output type for performSearch actor
+interface PerformSearchOutput {
+  results: SearchResult[];
+  analytics: SearchContext['analytics'];
+  pagination: SearchContext['pagination'];
+  query: string; // The query that was performed
+}
+
+export const searchMachine = createMachine(
   {
     id: 'search',
     initial: 'idle',
@@ -710,7 +756,7 @@ export const searchMachine = createMachine<SearchContext, SearchEvent>(
       validationErrors: {},
       isSearching: false,
       searchHistory: [],
-      filters: {},
+      filters: SearchQuerySchema.shape.filters.parse(undefined), // Initialize filters with default values
       pagination: {
         page: 1,
         pageSize: 20,
@@ -718,11 +764,16 @@ export const searchMachine = createMachine<SearchContext, SearchEvent>(
       },
       analytics: null,
       error: null,
-    } as SearchContext,
+    } as SearchContext, // Explicitly cast to SearchContext
     states: {
       idle: {
         on: {
-          SEARCH: 'validating',
+          SEARCH: {
+            target: 'validating',
+            actions: assign({
+              query: ({ event }) => (event as SearchEvent & { type: 'SEARCH' }).data,
+            }),
+          },
           LOAD_HISTORY: 'loadingHistory',
         },
       },
@@ -732,8 +783,9 @@ export const searchMachine = createMachine<SearchContext, SearchEvent>(
           src: 'loadSearchHistory',
           onDone: {
             target: 'idle',
-            actions: assign<SearchContext, any>({
-              searchHistory: (_, event) => (event as any)?.output ?? [],
+            actions: assign({
+              // Removed explicit generics from assign
+              searchHistory: ({ event }) => (event as DoneActorEvent<string[]>).output ?? [],
             }),
           },
           onError: 'idle',
@@ -747,18 +799,29 @@ export const searchMachine = createMachine<SearchContext, SearchEvent>(
           onDone: 'searching',
           onError: {
             target: 'idle',
-            actions: assign<SearchContext, any>({
-              validationErrors: (_, event) => {
-                const error = (event as any)?.data;
-                if (error && typeof error === 'object' && 'issues' in error) {
-                  return (error as any).issues.reduce((acc: Record<string, string[]>, issue: any) => {
-                    const field = issue.path?.[0] || 'general';
-                    if (!acc[field]) acc[field] = [];
-                    acc[field].push(issue.message);
-                    return acc;
-                  }, {});
+            actions: assign({
+              // Removed explicit generics from assign
+              validationErrors: ({ event }) => {
+                const error = (event as ErrorActorEvent<Record<string, string[]> | z.ZodError>).error; // Use event.error directly
+                if (error instanceof z.ZodError) {
+                  const fieldErrors = error.flatten().fieldErrors;
+                  const cleanedErrors: Record<string, string[]> = {};
+                  for (const key in fieldErrors) {
+                    if (Object.prototype.hasOwnProperty.call(fieldErrors, key)) {
+                      cleanedErrors[key] = fieldErrors[key] || []; // Ensure it's an array
+                    }
+                  }
+                  return cleanedErrors;
                 }
-                if (error && typeof error === 'object') return error as Record<string, string[]>;
+                if (error && typeof error === 'object' && !Array.isArray(error)) {
+                  const cleanedErrors: Record<string, string[]> = {};
+                  for (const key in error) {
+                    if (Object.prototype.hasOwnProperty.call(error, key)) {
+                      cleanedErrors[key] = (error[key] || []) as string[]; // Cast to string[]
+                    }
+                  }
+                  return cleanedErrors;
+                }
                 return {};
               },
             }),
@@ -772,22 +835,28 @@ export const searchMachine = createMachine<SearchContext, SearchEvent>(
           input: ({ context }) => context.query,
           onDone: {
             target: 'results',
-            actions: assign<SearchContext, any>({
-              results: (_, event) => (event as any)?.output?.results ?? [],
-              analytics: (_, event) => (event as any)?.output?.analytics ?? null,
-              pagination: (_, event) => (event as any)?.output?.pagination ?? { page: 1, pageSize: 20, total: 0 },
-              searchHistory: (ctx, event) => {
-                const outQuery = (event as any)?.output?.query ?? '';
-                return [outQuery, ...ctx.searchHistory.filter((q: string) => q !== outQuery)].slice(0, 10);
+            actions: assign({
+              // Removed explicit generics from assign
+              results: ({ event }) => (event as DoneActorEvent<PerformSearchOutput>).output.results ?? [],
+              analytics: ({ event }) => (event as DoneActorEvent<PerformSearchOutput>).output.analytics ?? null,
+              pagination: ({ event }) =>
+                (event as DoneActorEvent<PerformSearchOutput>).output.pagination ?? { page: 1, pageSize: 20, total: 0 },
+              searchHistory: ({ context, event }) => {
+                // Corrected destructuring
+                // Destructure event from the second argument
+                const outQuery = (event as DoneActorEvent<PerformSearchOutput>).output.query ?? ''; // Access output directly
+                return [outQuery, ...context.searchHistory.filter((q: string) => q !== outQuery)].slice(0, 10); // Corrected context access
               },
             }),
           },
           onError: {
             target: 'error',
-            actions: assign<SearchContext, any>({
-              error: (_, event) => {
-                const err = (event as any)?.data ?? (event as any);
+            actions: assign({
+              // Removed explicit generics from assign
+              error: ({ event }) => {
+                const err = (event as ErrorActorEvent<unknown>).error; // Access error directly
                 if (err instanceof Error) return err.message;
+                if (typeof err === 'string') return err;
                 if (err && typeof err === 'object' && 'message' in err)
                   return String((err as { message: unknown }).message);
                 return String(err ?? 'Search error');
@@ -795,11 +864,13 @@ export const searchMachine = createMachine<SearchContext, SearchEvent>(
             }),
           },
         },
-        entry: assign<SearchContext, any>({
+        entry: assign({
+          // Removed explicit generics from assign
           isSearching: () => true,
           results: () => [],
         }),
-        exit: assign<SearchContext, any>({
+        exit: assign({
+          // Removed explicit generics from assign
           isSearching: () => false,
         }),
       },
@@ -807,8 +878,9 @@ export const searchMachine = createMachine<SearchContext, SearchEvent>(
         on: {
           SEARCH: {
             target: 'validating',
-            actions: assign<SearchContext, any>({
-              query: (_, event) => (event as any).data,
+            actions: assign({
+              // Removed explicit generics from assign
+              query: ({ event }) => (event as SearchEvent & { type: 'SEARCH' }).data, // Corrected event typing
             }),
           },
           REFINE_SEARCH: 'validating',
@@ -826,9 +898,15 @@ export const searchMachine = createMachine<SearchContext, SearchEvent>(
           }),
           onDone: {
             target: 'results',
-            actions: assign<SearchContext, any>({
-              results: (ctx, event) => [...ctx.results, ...((event as any)?.output?.results ?? [])],
-              pagination: (_, event) => (event as any)?.output?.pagination ?? { page: 1, pageSize: 20, total: 0 },
+            actions: assign({
+              // Removed explicit generics from assign
+              results: ({ context, event }) => [
+                // Corrected destructuring
+                ...context.results, // Corrected context access
+                ...((event as DoneActorEvent<PerformSearchOutput>)?.output?.results ?? []),
+              ],
+              pagination: ({ event }) =>
+                (event as DoneActorEvent<PerformSearchOutput>).output.pagination ?? { page: 1, pageSize: 20, total: 0 },
             }),
           },
           onError: 'results',
@@ -859,40 +937,51 @@ export const searchMachine = createMachine<SearchContext, SearchEvent>(
           throw error;
         }
       }),
-      performSearch: fromPromise(async ({ input }: { input: any }) => {
-        const query = input?.query || '';
-        const response = await fetch('/api/search/vector', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(input),
-        });
-        if (!response.ok) {
-          throw new Error(`Search failed: ${response.statusText}`);
+      performSearch: fromPromise(
+        async ({ input }: { input: z.infer<typeof SearchQuerySchema> | null }): Promise<PerformSearchOutput> => {
+          // Add return type
+          const query = input?.query || '';
+          const response = await fetch('/api/search/vector', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(input),
+          });
+          if (!response.ok) {
+            throw new Error(`Search failed: ${response.statusText}`);
+          }
+          const data = await response.json();
+          if (typeof localStorage !== 'undefined') {
+            const history = JSON.parse(localStorage.getItem('search-history') || '[]');
+            const updatedHistory = [query, ...history.filter((q: string) => q !== query)].slice(0, 10);
+            localStorage.setItem('search-history', JSON.stringify(updatedHistory));
+          }
+          return { ...data, query }; // Ensure query is part of the returned data
         }
-        const data = await response.json();
-        if (typeof localStorage !== 'undefined') {
-          const history = JSON.parse(localStorage.getItem('search-history') || '[]');
-          const updatedHistory = [query, ...history.filter((q: string) => q !== query)].slice(0, 10);
-          localStorage.setItem('search-history', JSON.stringify(updatedHistory));
+      ),
+      loadMoreResults: fromPromise(
+        async ({
+          input,
+        }: {
+          input: { query: z.infer<typeof SearchQuerySchema> | null; page: number };
+        }): Promise<PerformSearchOutput> => {
+          // Add return type
+          const query = input?.query || {};
+          const page = input?.page || 1;
+          const response = await fetch('/api/search/vector', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              ...query,
+              pagination: { page },
+            }),
+          });
+          if (!response.ok) {
+            throw new Error(`Load more failed: ${response.statusText}`);
+          }
+          const data = await response.json();
+          return { ...data, query: input.query?.query || '' }; // Ensure query is part of the returned data, safely access
         }
-        return data;
-      }),
-      loadMoreResults: fromPromise(async ({ input }: { input: any }) => {
-        const query = input?.query || {};
-        const page = input?.page || 1;
-        const response = await fetch('/api/search/vector', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            ...query,
-            pagination: { page },
-          }),
-        });
-        if (!response.ok) {
-          throw new Error(`Load more failed: ${response.statusText}`);
-        }
-        return await response.json();
-      }),
+      ),
     },
   }
 );
@@ -914,10 +1003,9 @@ type AIAnalysisEvent =
   | { type: 'STREAM_CONTENT'; content: string }
   | { type: 'NEW_ANALYSIS' }
   | { type: 'RETRY_ANALYSIS' }
-  | { type: 'RETRY' }
-  // Internal XState events for actor completion/error
-  | DoneActorEvent<PerformAnalysisOutput, z.infer<typeof AIAnalysisSchema> | null> // For 'performAnalysis' actor
-  | ErrorActorEvent<Record<string, string[]> | string | Error>; // For 'validateAnalysis' and 'performAnalysis' actors
+  | { type: 'RETRY' };
+// Internal XState events for actor completion/error are not part of the machine's public event type.
+// They are handled by onDone/onError transitions.
 
 export const aiAnalysisMachine = createMachine(
   {
@@ -941,7 +1029,7 @@ export const aiAnalysisMachine = createMachine(
           START_ANALYSIS: {
             target: 'validating',
             actions: assign({
-              analysisData: (_, event) => (event as { data: z.infer<typeof AIAnalysisSchema> }).data ?? null,
+              analysisData: ({ event }) => (event as AIAnalysisEvent & { type: 'START_ANALYSIS' }).data ?? null,
             }),
           },
         },
@@ -955,8 +1043,8 @@ export const aiAnalysisMachine = createMachine(
           onError: {
             target: 'idle',
             actions: assign({
-              validationErrors: (_, event: ErrorActorEvent<Record<string, string[]> | z.ZodError>) => {
-                const error = event.error;
+              validationErrors: ({ event }) => {
+                const error = (event as ErrorActorEvent<Record<string, string[]> | z.ZodError>).error;
                 if (error instanceof z.ZodError) {
                   const fieldErrors = error.flatten().fieldErrors;
                   const cleanedErrors: Record<string, string[]> = {};
@@ -991,17 +1079,18 @@ export const aiAnalysisMachine = createMachine(
           onDone: {
             target: 'completed',
             actions: assign({
-              analysisResults: (_, event: DoneActorEvent<PerformAnalysisOutput>) => event.output.results ?? null,
-              confidence: (_, event: DoneActorEvent<PerformAnalysisOutput>) => event.output.confidence ?? 0,
-              processingTime: (_, event: DoneActorEvent<PerformAnalysisOutput>) => event.output.processingTime ?? 0,
-              tokensUsed: (_, event: DoneActorEvent<PerformAnalysisOutput>) => event.output.tokensUsed ?? 0,
+              analysisResults: ({ event }) => (event as DoneActorEvent<PerformAnalysisOutput>).output.results ?? null,
+              confidence: ({ event }) => (event as DoneActorEvent<PerformAnalysisOutput>).output.confidence ?? 0,
+              processingTime: ({ event }) =>
+                (event as DoneActorEvent<PerformAnalysisOutput>).output.processingTime ?? 0,
+              tokensUsed: ({ event }) => (event as DoneActorEvent<PerformAnalysisOutput>).output.tokensUsed ?? 0,
             }),
           },
           onError: {
             target: 'error',
             actions: assign({
-              error: (_, event: ErrorActorEvent<any>) => {
-                const err = event.error;
+              error: ({ event }) => {
+                const err = (event as ErrorActorEvent<unknown>).error; // Use unknown instead of any
                 if (err instanceof Error) return err.message;
                 if (typeof err === 'string') return err;
                 if (err && typeof err === 'object' && 'message' in err)
@@ -1014,8 +1103,13 @@ export const aiAnalysisMachine = createMachine(
         on: {
           STREAM_CONTENT: {
             actions: assign({
-              streamedContent: (ctx: AIAnalysisContext, event: { type: 'STREAM_CONTENT'; content: string }) =>
-                ctx.streamedContent + (event.content ?? ''),
+              streamedContent: ({
+                context,
+                event,
+              }: {
+                context: AIAnalysisContext;
+                event: { type: 'STREAM_CONTENT'; content: string };
+              }) => context.streamedContent + (event.content ?? ''),
               isStreaming: () => true,
             }),
           },
@@ -1077,4 +1171,7 @@ export type AIAnalysisMachine = typeof aiAnalysisMachine;
 export type DocumentUploadActor = ActorRefFrom<DocumentUploadMachine>;
 export type CaseCreationActor = ActorRefFrom<CaseCreationMachine>;
 export type SearchActor = ActorRefFrom<SearchMachine>;
+export type AIAnalysisActor = ActorRefFrom<AIAnalysisMachine>;
+export type AIAnalysisActor = ActorRefFrom<AIAnalysisMachine>;
+export type AIAnalysisActor = ActorRefFrom<AIAnalysisMachine>;
 export type AIAnalysisActor = ActorRefFrom<AIAnalysisMachine>;

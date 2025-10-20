@@ -3,7 +3,7 @@ import {
   legalDocuments as documents,
   embeddingCache
 } from "$lib/db/schema";
-import { eq, sql, desc, asc } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import crypto from "crypto";
 export interface VectorSearchOptions {
   threshold?: number;
@@ -92,6 +92,7 @@ export class VectorSearchService {
           textHash,
           embedding,
           model,
+          dimensions: embedding.length, // Add dimensions
           createdAt: new Date()
         })
         .onConflictDoNothing();
@@ -134,7 +135,7 @@ export class VectorSearchService {
    * Perform vector similarity search
    */
   async search(
-    query: string;
+    query: string, // Changed semicolon to comma
     options: VectorSearchOptions = {}
   ): Promise<VectorSearchResult[]> {
     const { threshold = 0.7, limit = 10, caseId, documentType } = options;
@@ -179,7 +180,7 @@ export class VectorSearchService {
         LIMIT ${limit}
       `;
       const results = await db.execute(sqlQuery);
-      return results.rows.map((row: any) => ({,
+      return results.rows.map((row: any) => ({ // Removed extraneous comma
         id: row.id,
         content: row.content,
         filename: row.filename,
@@ -200,7 +201,7 @@ export class VectorSearchService {
    */
   async indexDocument(
     documentId: string,
-    content: string;
+    content: string,
     metadata: {
       filename?: string;
       caseId?: string;
