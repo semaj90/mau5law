@@ -166,7 +166,7 @@
       <div class="tag" transition:scale>
         <span class="tag-text">{tag}</span>
         {#if !readonly}
-          <button type="button" class="tag-remove" onclick={() => removeTag(tag)} aria-label="Remove {tag} tag">
+          <button type="button" class="tag-remove" on:click={() => removeTag(tag)} aria-label="Remove {tag} tag">
             <X size={12} />
           </button>
         {/if}
@@ -191,7 +191,7 @@
             type="button"
             class="suggestion"
             class:active={index === activeIndex}
-            onclick={() => handleSuggestionClick(suggestion)}
+            on:click={() => handleSuggestionClick(suggestion)}
             role="option"
             aria-selected={index === activeIndex}
           >
@@ -208,7 +208,7 @@
     <button
       type="button"
       class="add-custom-tag"
-      onclick={() => addTag(inputValue)}
+      on:click={() => addTag(inputValue)}
       aria-label="Add custom tag: {inputValue}"
     >
       <Plus size={14} />

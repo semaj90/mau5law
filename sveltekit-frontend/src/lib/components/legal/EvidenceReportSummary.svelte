@@ -207,7 +207,7 @@
         </div>
         {#if allowExport}
           <button
-            onclick={exportReport}
+            on:click={exportReport}
             class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
             title="Export Report"
           >

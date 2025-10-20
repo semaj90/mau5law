@@ -122,7 +122,7 @@ https://svelte.dev/e/attribute_duplicate -->
 {#if open}
   <div
     class="yorha-dialog-backdrop"
-    onclick={handleBackdropClick}
+    on:click={handleBackdropClick}
     onkeydown={handleKeydown}
     transitionfade={{ duration: 150 }}
     role="dialog"
@@ -162,7 +162,7 @@ https://svelte.dev/e/attribute_duplicate -->
         {#if closable && !persistent}
           <button
             class="dialog-close"
-            onclick={handleClose}
+            on:click={handleClose}
             aria-label="Close dialog"
           >
             ✕
@@ -192,14 +192,14 @@ https://svelte.dev/e/attribute_duplicate -->
       <!-- Actions -->
       <div class="dialog-actions">
         {#if type === "confirm" || type === "prompt"}
-          <button class="dialog-button cancel" onclick={handleCancel}>
+          <button class="dialog-button cancel" on:click={handleCancel}>
             <span class="button-icon">✕</span>
             Cancel
           </button>
           <button
             class="dialog-button confirm"
             style="border-color: {config.color} color: {config.color}"
-            onclick={handleConfirm}
+            on:click={handleConfirm}
           >
             <span class="button-icon">✓</span>
             {type === "prompt" ? "Submit" : "Confirm"}
@@ -208,7 +208,7 @@ https://svelte.dev/e/attribute_duplicate -->
           <button
             class="dialog-button acknowledge"
             style="border-color: {config.color} color: {config.color}"
-            onclick={handleClose}
+            on:click={handleClose}
           >
             <span class="button-icon">■</span>
             OK

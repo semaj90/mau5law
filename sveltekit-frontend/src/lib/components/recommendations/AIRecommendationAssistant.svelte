@@ -255,7 +255,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
           <button
             class="type-btn"
             class:active={selectedType === analysisType.value}
-            onclick={() => (selectedType = analysisType.value)}
+            on:click={() => (selectedType = analysisType.value)}
             title={analysisType.description}
           >
             {analysisType.label}
@@ -271,7 +271,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
           bind:value={customQuery}
           class="query-input"
         />
-        <button class="analyze-btn" onclick={generateRecommendations} disabled={isLoading || isThinking}>
+        <button class="analyze-btn" on:click={generateRecommendations} disabled={isLoading || isThinking}>
           {isLoading || isThinking ? '🤖 Analyzing...' : '🚀 Analyze'}
         </button>
       </div>
@@ -403,7 +403,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
                       {/each}
                     </div>
                   {/if}
-                  <button class="execute-btn" onclick={() => executeAction(action)} disabled={isProcessing}>
+                  <button class="execute-btn" on:click={() => executeAction(action)} disabled={isProcessing}>
                     {isProcessing ? '⏳ Processing...' : '🚀 Execute'}
                   </button>
                 </div>
@@ -417,7 +417,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
             <h4>🔗 Related Topics</h4>
             <div class="topics-tags">
               {#each relatedTopics as topic}
-                <button class="topic-tag" onclick={() => (customQuery = topic)}>
+                <button class="topic-tag" on:click={() => (customQuery = topic)}>
                   {topic}
                 </button>
               {/each}

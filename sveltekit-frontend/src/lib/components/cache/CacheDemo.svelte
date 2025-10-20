@@ -375,7 +375,7 @@
             <div class="flex flex-wrap gap-2">
               <Button
                 class="enhanced-bits-btn nes-cache-operation n64-enhanced lod-optimized retro-cache-btn"
-                onclick={setCacheValue}
+                on:click={setCacheValue}
                 disabled={$isLoading}
                 aria-label={$isLoading ? 'Setting cache value, please wait' : 'Store value in multi-layer cache system'}
                 aria-describedby="set-cache-help"
@@ -395,7 +395,7 @@
               <Button
                 class="enhanced-bits-btn nes-cache-operation n64-enhanced lod-optimized retro-cache-btn"
                 variant="ghost"
-                onclick={getCacheValue}
+                on:click={getCacheValue}
                 disabled={$isLoading}
                 aria-label={$isLoading ? 'Retrieving cache value, please wait' : 'Retrieve value from multi-layer cache'}
                 aria-describedby="get-cache-help"
@@ -415,7 +415,7 @@
               <Button
                 class="enhanced-bits-btn nes-cache-operation n64-enhanced lod-optimized retro-cache-btn danger-variant"
                 variant="error"
-                onclick={deleteCacheValue}
+                on:click={deleteCacheValue}
                 disabled={$isLoading}
                 aria-label={$isLoading ? 'Deleting cache entry, please wait' : 'Delete cache entry from all layers'}
                 aria-describedby="delete-cache-help"
@@ -435,7 +435,7 @@
               <Button
                 class="enhanced-bits-btn nes-cache-operation n64-enhanced lod-optimized retro-cache-btn danger-variant critical-action"
                 variant="error"
-                onclick={clearCache}
+                on:click={clearCache}
                 disabled={$isLoading}
                 aria-label={$isLoading ? 'Clearing all cache data, please wait' : 'Clear entire cache - WARNING: This will remove all cached data'}
                 aria-describedby="clear-cache-help"
@@ -465,7 +465,7 @@
                 class="enhanced-bits-btn nes-cache-control n64-enhanced lod-optimized retro-control-btn"
                 variant="ghost"
                 size="sm"
-                onclick={() =>
+                on:click={() =>
 testResults.set([])}
                 aria-label="Clear test results display"
                 aria-describedby="clear-results-help"
@@ -686,7 +686,7 @@ testResults.set([])}
           <div class="yorha-panel-content space-y-4">
             <div class="space-y-2">
               <Button
-                onclick={runPerformanceTest}
+                on:click={runPerformanceTest}
                 disabled={$isLoading}
                 class="w-full enhanced-bits-btn nes-performance-test n64-enhanced lod-optimized retro-test-btn"
                 aria-label={$isLoading ? 'Running batch performance test, please wait' : 'Execute batch performance test with 100 cache entries'}
@@ -711,7 +711,7 @@ testResults.set([])}
             <div class="space-y-2">
               <Button
                 variant="ghost"
-                onclick={testCacheHitMiss}
+                on:click={testCacheHitMiss}
                 disabled={$isLoading}
                 class="w-full enhanced-bits-btn nes-performance-test n64-enhanced lod-optimized retro-test-btn"
                 aria-label={$isLoading ? 'Running cache hit/miss test, please wait' : 'Test cache hit and miss behavior patterns'}
@@ -736,7 +736,7 @@ testResults.set([])}
             <div class="space-y-2">
               <Button
                 variant="ghost"
-                onclick={refreshStats}
+                on:click={refreshStats}
                 disabled={$isLoading}
                 class="w-full enhanced-bits-btn nes-performance-test n64-enhanced lod-optimized retro-test-btn"
                 aria-label={$isLoading ? 'Refreshing cache statistics, please wait' : 'Update all cache statistics and health monitoring data'}

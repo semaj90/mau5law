@@ -103,49 +103,54 @@ export const POST: RequestHandler = async ({ request }) => {
 // GET: Retrieve automation configurations and job status
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const configId = url.searchParams.get('configId')
-    const jobId = url.searchParams.get('jobId')
-    const status = url.searchParams.get('status')
+    const configId = url.searchParams.get('configId');
+    const jobId = url.searchParams.get('jobId');
+    const status = url.searchParams.get('status');
     // Get specific configuration
     if (configId) {
-      const config = automationConfigs.get(configId)
+      const config = automationConfigs.get(configId);
       if (!config) {
-        return json({
-          success: false,
-          error: 'Configuration not found'
-        }, { status: 404 })
+        return json(
+          {
+            success: false,
+            error: 'Configuration not found',
+          },
+          { status: 404 }
+        );
       }
       // Find related jobs
-      const relatedJobs = Array.from(processingJobs.values()
-        .filter(job => job.configId === configId)
+      const relatedJobs = Array.from(processingJobs.values()).filter(job => job.configId === configId);
       return json({
         success: true,
         data: {
           config,
-          jobs: relatedJobs
-        }
-      })
+          jobs: relatedJobs,
+        },
+      });
     }
     // Get specific job status
     if (jobId) {
-      const job = processingJobs.get(jobId)
+      const job = processingJobs.get(jobId);
       if (!job) {
-        return json({
-          success: false,
-          error: 'Job not found'
-        }, { status: 404 })
+        return json(
+          {
+            success: false,
+            error: 'Job not found',
+          },
+          { status: 404 }
+        );
       }
       return json({
         success: true,
-        data: { job }
-      })
+        data: { job },
+      });
     }
     // List configurations with optional status filter
-    const configs = Array.from(automationConfigs.values()
-    const jobs = Array.from(processingJobs.values()
-    let, filteredJobs = jobs
+    const configs = Array.from(automationConfigs.values());
+    const jobs = Array.from(processingJobs.values());
+    let filteredJobs = jobs;
     if (status) {
-      filteredJobs = jobs.filter(job => job.status === status)
+      filteredJobs = jobs.filter(job => job.status === status);
     }
     return json({
       success: true,
@@ -154,137 +159,157 @@ export const GET: RequestHandler = async ({ url }) => {
         jobs: filteredJobs,
         summary: {
           totalConfigs: configs.length,
-          activeJobs: jobs.filter(item => item.length),
-          completedJobs: jobs.filter(item => item.length),
-          failedJobs: jobs.filter(item => item.length)
-        }
-      }
-    })
+          activeJobs: jobs.filter(item => item.status === 'pending' || item.status === 'processing').length,
+          completedJobs: jobs.filter(item => item.status === 'completed').length,
+          failedJobs: jobs.filter(item => item.status === 'failed').length,
+        },
+      },
+    });
   } catch (error) {
-    return json({
-      success: false,
-      error: error instanceof Error ? error.message: 'Request failed'
-    }, { status: 500 })
+    return json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Request failed',
+      },
+      { status: 500 }
+    );
   }
-}
+};
 // PUT: Update automation configuration
 export const PUT: RequestHandler = async ({ request }) => {
   try {
-    const updates = await request.json()
-    const { id, ...configUpdates } = updates
+    const updates = await request.json();
+    const { id, ...configUpdates } = updates;
     if (!id) {
-      return json({
-        success: false,
-        error: 'Configuration ID is required'
-      }, { status: 400 })
+      return json(
+        {
+          success: false,
+          error: 'Configuration ID is required',
+        },
+        { status: 400 }
+      );
     }
-    const existingConfig = automationConfigs.get(id)
+    const existingConfig = automationConfigs.get(id);
     if (!existingConfig) {
-      return json({
-        success: false,
-        error: 'Configuration not found'
-      }, { status: 404 })
+      return json(
+        {
+          success: false,
+          error: 'Configuration not found',
+        },
+        { status: 404 }
+      );
     }
     // Update configuration
     const updatedConfig = {
       ...existingConfig,
       ...configUpdates,
-      updatedAt: new Date().toISOString()
-    }
-    automationConfigs.set(id, updatedConfig)
+      updatedAt: new Date().toISOString(),
+    };
+    automationConfigs.set(id, updatedConfig);
     return json({
       success: true,
       data: {
         config: updatedConfig,
         message: 'Configuration updated successfully',
-      }
-    })
+      },
+    });
   } catch (error) {
-    return json({
-      success: false,
-      error: error instanceof Error ? error.message: 'Update failed'
-    }, { status: 500 })
+    return json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Update failed',
+      },
+      { status: 500 }
+    );
   }
-}
+};
 // DELETE: Remove automation configuration
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
-    const configId = url.searchParams.get('configId')
+    const configId = url.searchParams.get('configId');
     if (!configId) {
-      return json({
-        success: false,
-        error: 'Configuration ID is required'
-      }, { status: 400 })
+      return json(
+        {
+          success: false,
+          error: 'Configuration ID is required',
+        },
+        { status: 400 }
+      );
     }
-    const config = automationConfigs.get(configId)
+    const config = automationConfigs.get(configId);
     if (!config) {
-      return json({
-        success: false,
-        error: 'Configuration not found'
-      }, { status: 404 })
+      return json(
+        {
+          success: false,
+          error: 'Configuration not found',
+        },
+        { status: 404 }
+      );
     }
     // Remove configuration and related jobs
-    automationConfigs.delete(configId)
+    automationConfigs.delete(configId);
     // Cancel and remove related jobs
-    const relatedJobs = Array.from(processingJobs.entries()
-      .filter(([, job]) => job.configId === configId)
+    const relatedJobs = Array.from(processingJobs.entries()).filter(([, job]) => job.configId === configId);
     relatedJobs.forEach(([jobId, job]) => {
       if (job.status === 'processing') {
-        job.status = 'failed'
-        job.errors = ['Configuration deleted']
-        job.endTime = new Date()
+        job.status = 'failed';
+        job.errors = ['Configuration deleted'];
+        job.endTime = new Date();
       }
-      processingJobs.delete(jobId)
-    })
+      processingJobs.delete(jobId);
+    });
     return json({
       success: true,
       data: {
         message: 'Configuration and related jobs deleted successfully',
-        deletedJobs: relatedJobs.length
-      }
-    })
+        deletedJobs: relatedJobs.length,
+      },
+    });
   } catch (error) {
-    return json({
-      success: false,;
-      error: error instanceof Error ? error.message: 'Delete failed'
-    }, { status: 500 })
+    return json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Delete failed',
+      },
+      { status: 500 }
+    );
   }
-}
+};
 // Background document processing simulation
 async function processDocuments(jobId: string): Promise<void> {
-  const job = processingJobs.get(jobId)
-  const config = job ? automationConfigs.get(job.configId) : null
+  const job = processingJobs.get(jobId);
+  const config = job ? automationConfigs.get(job.configId) : null;
   if (!job || !config) {
-    throw new Error('Job or configuration not found')
+    throw new Error('Job or configuration not found');
   }
-  job.status = 'processing'
+  job.status = 'processing';
   try {
     // Simulate document processing with realistic delays
-    const totalDocuments = job.totalDocuments
-    const batchSize = Math.min(config.batchSize, 10)
+    const totalDocuments = job.totalDocuments;
+    const batchSize = Math.min(config.batchSize, 10);
     for (let processed = 0; processed < totalDocuments; processed += batchSize) {
-      const currentBatch = Math.min(batchSize, totalDocuments - processed)
+      const currentBatch = Math.min(batchSize, totalDocuments - processed);
       // Simulate processing delay based on automation type
-      const processingDelay = getProcessingDelay(config.type)
-      await new Promise(resolve => setTimeout(resolve, processingDelay)
+      const processingDelay = getProcessingDelay(config.type);
+      await new Promise(resolve => setTimeout(resolve, processingDelay));
       // Simulate potential GPU acceleration speedup
       if (config.gpuAcceleration) {
-        await new Promise(resolve => setTimeout(resolve, processingDelay * 0.3)
+        await new Promise(resolve => setTimeout(resolve, processingDelay * 0.3));
       }
-      job.documentsProcessed += currentBatch
+      job.documentsProcessed += currentBatch;
       // Simulate some processing failures based on confidence threshold
       if (Math.random() > config.confidenceThreshold) {
-        if (!job.errors) job.errors = []
-        job.errors.push(`Low confidence processing for batch ${Math.floor(processed / batchSize) + 1}`)
+        if (!job.errors) job.errors = [];
+        job.errors.push(`Low confidence processing for batch ${Math.floor(processed / batchSize) + 1}`);
       }
     }
-    job.status = 'completed'
-    job.endTime = new Date()
+    job.status = 'completed';
+    job.endTime = new Date();
   } catch (error) {
-    job.status = 'failed'
-    job.errors = [error instanceof Error ? error.message: 'Processing failed']
-    job.endTime = new Date()
-    throw error
+    job.status = 'failed';
+    job.errors = [error instanceof Error ? error.message : 'Processing failed'];
+    job.endTime = new Date();
+    throw error;
   }
 }
 // Get processing delay based on automation type (simulation)

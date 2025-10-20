@@ -317,7 +317,7 @@
                   </div>
                 </div>
                 <button class="nes-btn"
-                  onclick={disabled}
+                  on:click={disabled}
                 >
                   {isWarming ? '⚡ Warming...' : 'Start Warming'}
                 </button>

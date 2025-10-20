@@ -85,7 +85,7 @@
       >{/if}
   </div>
   <div class="space-y-4">
-    <Button class="bits-btn" type="button" variant="ghost" onclick={() =>
+    <Button class="bits-btn" type="button" variant="ghost" on:click={() =>
 // ondispatch removed}
       >Cancel</Button
     >

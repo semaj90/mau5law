@@ -159,7 +159,7 @@
         </div>
         <div class="contract-actions">
           <Button
-            onclick={analyzeContract}
+            on:click={analyzeContract}
             disabled={isAnalyzing}
             style="background: {contractBuilder.styling.colors.ai}"
           >
@@ -168,9 +168,9 @@
           <div class="export-dropdown">
             <Button class="export-btn">📤 Export</Button>
             <div class="export-menu">
-              <button onclick={() => exportContract('pdf')}>📄 PDF</button>
-              <button onclick={() => exportContract('docx')}>📝 DOCX</button>
-              <button onclick={() => exportContract('json')}>🔧 JSON</button>
+              <button on:click={() => exportContract('pdf')}>📄 PDF</button>
+              <button on:click={() => exportContract('docx')}>📝 DOCX</button>
+              <button on:click={() => exportContract('json')}>🔧 JSON</button>
             </div>
           </div>
         </div>
@@ -219,7 +219,7 @@
             <div
               class="clause-card"
               class:selected={selectedClause === clause.id}
-              onclick={() => selectClause(clause.id)}
+              on:click={() => selectClause(clause.id)}
               transition:scale={contractBuilder.animations.enter}
               style="border-color: {getRiskBadgeStyle(clause.riskLevel).color}"
             >

@@ -85,10 +85,10 @@
     </CardHeader>
     <CardContent class="space-y-4">
       <div class="flex gap-2">
-        <Button onclick={runTest} disabled={isRunning} variant="default">
+        <Button on:click={runTest} disabled={isRunning} variant="default">
           {isRunning ? '🔄 Testing...' : '🚀 Run Test'}
         </Button>
-        <Button onclick={() => (log = '')} disabled={isRunning} variant="ghost">🗑️ Clear Log</Button>
+        <Button on:click={() => (log = '')} disabled={isRunning} variant="ghost">🗑️ Clear Log</Button>
       </div>
       {#if log}
         <Alert>

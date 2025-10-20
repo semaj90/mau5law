@@ -181,7 +181,7 @@ https://svelte.dev/e/attribute_duplicate -->
                 class="bits-btn"
                 variant="ghost"
                 size="sm"
-                onclick={() =>
+                on:click={() =>
 copyErrorDetails()}
                 aria-label="Copy error details"
               >
@@ -201,7 +201,7 @@ copyErrorDetails()}
             size="sm"
             variant="ghost"
             class={getButtonClass(currentError.severity)}
-            onclick={() =>
+            on:click={() =>
 retryAction()}
             disabled={retryInProgress}
             aria-label="Retry action"
@@ -218,7 +218,7 @@ retryAction()}
           <Button class="bits-btn"
             size="sm"
             variant="ghost"
-            onclick={() =>
+            on:click={() =>
 (showDetails = !showDetails)}
             aria-label="Toggle error details"
           >
@@ -232,7 +232,7 @@ retryAction()}
         <Button class="bits-btn"
           size="sm"
           variant="ghost"
-          onclick={() =>
+          on:click={() =>
 clearError()}
           aria-label="Dismiss error"
         >
@@ -272,7 +272,7 @@ clearError()}
                   <Button class="bits-btn"
                     variant="ghost"
                     size="sm"
-                    onclick={() =>
+                    on:click={() =>
 copyErrorDetails()}
                     class="mx-auto px-4 max-w-7xl"
                     aria-label="Copy error details"
@@ -295,7 +295,7 @@ copyErrorDetails()}
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
-              onclick={() =>
+              on:click={() =>
 reportError()}
               class="mx-auto px-4 max-w-7xl"
             >
@@ -307,7 +307,7 @@ reportError()}
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
-              onclick={() =>
+              on:click={() =>
 (showDetails = !showDetails)}
               class="mx-auto px-4 max-w-7xl"
             >
@@ -323,7 +323,7 @@ reportError()}
           {#if currentError.canRetry}
             <Button
               class={`gap-2 ${getButtonClass(currentError.severity)}`}
-              onclick={() =>
+              on:click={() =>
 retryAction()}
               disabled={retryInProgress}
             >
@@ -338,7 +338,7 @@ retryAction()}
           {/if}
           <Button class="bits-btn"
             variant={currentError.canRetry ? "outline" : "default"}
-            onclick={() =>
+            on:click={() =>
 clearError()}
           >
             {currentError.canRetry ? "Cancel" : "Close"}

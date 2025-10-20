@@ -355,7 +355,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
         <div class="step-navigation flex justify-end pt-4">
           <button
             type="button"
-            onclick={nextStep}
+            on:click={nextStep}
             disabled={!formData.title || !formData.description}
             class="next-btn px-6 py-3 bg-yorha-accent-warm text-yorha-dark rounded font-bold hover:bg-yorha-accent-warm/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -464,7 +464,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
           <div class="step-navigation flex justify-end pt-4">
             <button
               type="button"
-              onclick={nextStep}
+              on:click={nextStep}
               class="next-btn px-6 py-3 bg-yorha-accent-warm text-yorha-dark rounded font-bold hover:bg-yorha-accent-warm/90 transition-colors"
             >
               Next: Review →
@@ -529,7 +529,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
         <div class="step-navigation flex justify-between pt-4">
           <button
             type="button"
-            onclick={previousStep}
+            on:click={previousStep}
             disabled={isSubmitting}
             class="prev-btn px-6 py-3 border border-yorha-accent-warm/50 text-yorha-light rounded hover:bg-yorha-accent-warm/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -538,7 +538,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
           <div class="final-actions flex space-x-4">
             <button
               type="button"
-              onclick={() => {
+              on:click={() => {
                 dispatch('close');
               }}
               disabled={isSubmitting}

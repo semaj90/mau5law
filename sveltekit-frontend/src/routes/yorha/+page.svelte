@@ -299,7 +299,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         <div class="yorha-control-panel">
           <button
             class="yorha-control-btn {showCommandInterface ? 'active' : ''}"
-            onclick={toggleCommandInterface}
+            on:click={toggleCommandInterface}
             aria-label="Toggle command interface"
           >
             <Terminal size={16} />
@@ -307,7 +307,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
           </button>
           <button
             class="yorha-control-btn {holographicMode ? 'active' : ''}"
-            onclick={toggleHolographicMode}
+            on:click={toggleHolographicMode}
             aria-label="Toggle holographic mode"
           >
             <Zap size={16} />
@@ -322,7 +322,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     <div class="yorha-actions-grid">
       <button
         class="yorha-action-nier-bits-card yorha-action-primary"
-        onclick={() => performRAGQuery()}
+        on:click={() => performRAGQuery()}
         disabled={isLoading}
       >
         <Cpu size={32} />
@@ -334,7 +334,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       </button>
       <button
         class="yorha-action-nier-bits-card yorha-action-search"
-        onclick={() => performSemanticSearch()}
+        on:click={() => performSemanticSearch()}
         disabled={isLoading}
       >
         <Search size={32} />
@@ -343,7 +343,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       </button>
       <button
         class="yorha-action-nier-bits-card yorha-action-health"
-        onclick={() => checkClusterHealth()}
+        on:click={() => checkClusterHealth()}
         disabled={isLoading}
       >
         <Monitor size={32} />
@@ -352,7 +352,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       </button>
       <button
         class="yorha-action-nier-bits-card yorha-action-database"
-        onclick={() => performSemanticSearch('database evidence')}
+        on:click={() => performSemanticSearch('database evidence')}
         disabled={isLoading}
       >
         <Database size={32} />

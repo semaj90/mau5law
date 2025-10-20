@@ -239,7 +239,7 @@ Showcases the service worker-based AI orchestration system
                 variant="ghost"
                 size="sm"
                 class="w-full bits-btn bits-btn"
-                onclick={() =>
+                on:click={() =>
 runDemoScenario(scenario)}
                 disabled={isProcessing}
               >
@@ -284,7 +284,7 @@ runDemoScenario(scenario)}
           </div>
           <div class="flex gap-2">
             <Button
-              onclick={submitCustomTask}
+              on:click={submitCustomTask}
               disabled={isProcessing || !selectedModel}
               class="flex-1 bits-btn bits-btn"
             >
@@ -295,7 +295,7 @@ runDemoScenario(scenario)}
                 <Play class="h-4 w-4 mr-2" />
                 Submit Task
               {/if}
-            <Button class="bits-btn" variant="ghost" onclick={clearResults}>
+            <Button class="bits-btn" variant="ghost" on:click={clearResults}>
 <RotateCcw class="h-4 w-4" />
           </div>
         </div>
@@ -309,7 +309,7 @@ runDemoScenario(scenario)}
               Task Results ({demoResults.length})
             </span>
             {#if demoResults.length > 0}
-              <Button class="bits-btn" variant="ghost" size="sm" onclick={clearResults}>
+              <Button class="bits-btn" variant="ghost" size="sm" on:click={clearResults}>
 Clear
             {/if}
           </h3>

@@ -5,12 +5,12 @@
   import { ChevronDown, Check } from 'lucide-svelte';
   // Extract available components from BitsSelect
   const {
-    Root: SelectRoot
-    Trigger: SelectTrigger
-    Content: SelectContent
-    Item: SelectItem
-    Portal: SelectPortal
-    Group: SelectGroup
+    Root: SelectRoot,
+    Trigger: SelectTrigger,
+    Content: SelectContent,
+    Item: SelectItem,
+    Portal: SelectPortal,
+    Group: SelectGroup,
     Viewport: SelectViewport
   } = BitsSelect;
   interface SelectOption {
@@ -77,12 +77,12 @@
       'h-8 px-3 text-xs': size === 'sm',
       'h-10 px-3 text-sm': size === 'md',
       'h-12 px-4 text-base': size === 'lg',
-      'w-full': fullWidth
-      'nier-bits-select': legal
-      'yorha-input': evidenceCategory || caseType
-      'border-red-500 bg-red-50': error
-      'border-green-500 bg-green-50': aiRecommendations && value
-      'font-gothic tracking-wide': legal
+      'w-full': fullWidth,
+      'nier-bits-select': legal,
+      'yorha-input': evidenceCategory || caseType,
+      'border-red-500 bg-red-50': error,
+      'border-green-500 bg-green-50': aiRecommendations && value,
+      'font-gothic tracking-wide': legal,
       'cursor-not-allowed opacity-50': disabled
     },
     triggerClass
@@ -91,16 +91,16 @@
   let selectContentClasses = $derived(cn(
     'bits-select-content',
     {
-      'nier-panel-elevated shadow-xl': legal
-      'border-2 border-nier-border-primary': evidenceCategory
-      'yorha-card': caseType
+      'nier-panel-elevated shadow-xl': legal,
+      'border-2 border-nier-border-primary': evidenceCategory,
+      'yorha-card': caseType,
       'bg-gradient-to-b from-nier-bg-primary to-nier-bg-secondary': legal
     },
     contentClass
   ));
   // Handle value change
   function handleValueChange(newValue: string) {
-    value = newValu;
+    value = newValue;
     onValueChange?.(newValue);
   }
   // Get selected option label
@@ -187,11 +187,11 @@
   }
   @keyframes select-content-show {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: scale(0.96) translateY(-2px);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: scale(1) translateY(0);
     }
   }
@@ -205,18 +205,10 @@
     box-shadow: 0 0 0 1px var(--color-nier-border-primary);
   }
   :global(.nier-panel-elevated) {
-box-shadow: {}
-0 10px 15px -3px rgba(0, 0, 0, 0.1), {}
-0 4px 6px -2px rgba(0, 0, 0, 0.05), {}
+    box-shadow:
+      0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  }
-  :global($1) {
-    outline: 2px solid var(--color-nier-border-primary);
-    outline-offset: 2px;
-  }
-  :global($1) {
-    outline: 2px solid var(--color-nier-border-primary);
-    outline-offset: -2px;
   }
   @media (max-width: 640px) {
     :global(.bits-select-content) {

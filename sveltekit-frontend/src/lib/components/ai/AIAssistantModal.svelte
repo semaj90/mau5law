@@ -109,7 +109,7 @@
 
     <div class="flex gap-2">
       <Button
-        onclick={handleSummarize}
+        on:click={handleSummarize}
         disabled={!user || ($aiGlobalStore as AIStore).context.loading}
         variant="primary"
         class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn"
@@ -124,7 +124,7 @@
       </Button>
 
       <Button
-        onclick={saveSummary}
+        on:click={saveSummary}
         disabled={!($aiGlobalStore as AIStore).context.summary || ($aiGlobalStore as AIStore).context.loading}
         variant="primary"
         class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn"

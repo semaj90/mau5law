@@ -76,15 +76,15 @@ https://svelte.dev/e/expected_token -->
         </div>
       </div>
       <div class="header-actions">
-        <button class="action-btn save-btn" onclick={handleSave} disabled={!isModified}>
+        <button class="action-btn save-btn" on:click={handleSave} disabled={!isModified}>
           <Save size={16} />
           Save
         </button>
-        <button class="action-btn" onclick={handleDownload}>
+        <button class="action-btn" on:click={handleDownload}>
           <Download size={16} />
           Download
         </button>
-        <button class="action-btn" onclick={handleShare}>
+        <button class="action-btn" on:click={handleShare}>
           <Share2 size={16} />
           Share
         </button>

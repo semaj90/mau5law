@@ -274,7 +274,7 @@ https://svelte.dev/e/js_parse_error -->
 					<button aria-label="Action button" class="nes-btn"
 						variant="ghost"
 						disabled={!selectedProvider || selectedProvider.status !== 'online' || isProcessing}
-						onclick={(_event: MouseEvent) => ) => processTask(task}
+						on:click={(_event: MouseEvent) => ) => processTask(task}
 						class="bits-btn h-auto p-3 flex flex-col items-start space-y-1"
 					>
 						<div class="flex items-center space-x-2">
@@ -289,7 +289,7 @@ https://svelte.dev/e/js_parse_error -->
 			<div class="flex items-center justify-center pt-4 border-t border-yorha-border">
 				<Button
 					disabled={!selectedProvider || selectedProvider.status !== 'online' || isProcessing}
-					onclick={(_event: MouseEvent) => processParallelTasks}
+					on:click={(_event: MouseEvent) => processParallelTasks}
 					class="bg-yorha-primary hover:bg-yorha-primary/80 bits-btn bits-btn"
 				>
 {#if isProcessing}

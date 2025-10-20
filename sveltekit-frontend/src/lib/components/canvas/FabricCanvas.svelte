@@ -503,32 +503,32 @@
         {/if}
         <!-- Add Annotation -->
         {#if !readOnly}
-          <Button class="bits-btn" variant="ghost" onclick={addAnnotation}>
+          <Button class="bits-btn" variant="ghost" on:click={addAnnotation}>
             <FileText class="h-4 w-4 mr-2" />
             Add Note
           </Button>
         {/if}
         <!-- Zoom Controls -->
-        <Button class="bits-btn" variant="ghost" onclick={zoomIn}>
+        <Button class="bits-btn" variant="ghost" on:click={zoomIn}>
           <ZoomIn class="h-4 w-4" />
         </Button>
-        <Button class="bits-btn" variant="ghost" onclick={zoomOut}>
+        <Button class="bits-btn" variant="ghost" on:click={zoomOut}>
           <ZoomOut class="h-4 w-4" />
         </Button>
         {#if hasSelectedObject && !readOnly}
-          <Button class="bits-btn" variant="destructive" onclick={deleteSelected}>
+          <Button class="bits-btn" variant="destructive" on:click={deleteSelected}>
             <Trash2 class="h-4 w-4 mr-2" />
             Delete
           </Button>
         {/if}
         <!-- Save & Export -->
         {#if !readOnly}
-          <Button class="bits-btn" variant="default" onclick={saveCanvas}>
+          <Button class="bits-btn" variant="default" on:click={saveCanvas}>
             <Save class="h-4 w-4 mr-2" />
             Save
           </Button>
         {/if}
-        <Button class="bits-btn" variant="ghost" onclick={exportCanvas}>
+        <Button class="bits-btn" variant="ghost" on:click={exportCanvas}>
           <Download class="h-4 w-4 mr-2" />
           Export
         </Button>

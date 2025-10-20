@@ -116,9 +116,9 @@ https://svelte.dev/e/js_parse_error -->
         <h3 class="text-lg font-semibold text-red-800 mb-2">Error</h3>
         <p class="text-red-600 mb-4">{$state.context.error}</p>
         <div class="flex gap-2">
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleRetry}>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={handleRetry}>
 Retry
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleDismissError}>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={handleDismissError}>
 Dismiss
         </div>
       </div>
@@ -167,7 +167,7 @@ Dismiss
               placeholder="Describe the case..."
             ></textarea>
           </div>
-          <Button onclick={handleCreateCase} class="w-full bits-btn bits-btn">
+          <Button on:click={handleCreateCase} class="w-full bits-btn bits-btn">
 Create Case
         </div>
       </div>
@@ -225,7 +225,7 @@ Create Case
           {#each ['overview', 'evidence', 'analysis', 'search'] as tab}
             <button
               class="py-2 px-1 border-b-2 font-medium text-sm {activeTab === tab ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}"
-              onclick={() => handleTabSwitch(tab)}
+              on:click={() => handleTabSwitch(tab)}
             >
               {tab.charAt.toUpperCase() + tab.slice(1)}
           {/each}
@@ -262,7 +262,7 @@ Create Case
                   bind:this={fileInput} onchange={onFileChange}
                   class="hidden"
                 />
-                <Button class="bits-btn" onclick={triggerFileUpload}>
+                <Button class="bits-btn" on:click={triggerFileUpload}>
 Choose Files
               </div>
             </div>
@@ -282,7 +282,7 @@ Choose Files
                           <div class="flex gap-2">
                             <Button class="bits-btn" size="sm" variant="ghost">
 View
-                            <Button class="bits-btn" size="sm" onclick={() =>
+                            <Button class="bits-btn" size="sm" on:click={() =>
 send({ type: 'SELECT_EVIDENCE', evidence: item })}>
                               Select
                           </div>
@@ -308,13 +308,13 @@ send({ type: 'SELECT_EVIDENCE', evidence: item })}>
                 <h3 class="text-lg font-semibold mb-4">AI Analysis</h3>
                 <div class="flex gap-3 mb-4">
                   <Button class="bits-btn"
-                    onclick={handleStartAIAnalysis}
+                    on:click={handleStartAIAnalysis}
                     disabled={!canStartAIAnalysis}
                   >
 Start AI Analysis
                   <Button class="bits-btn"
                     variant="ghost"
-                    onclick={handleFindSimilarCases}
+                    on:click={handleFindSimilarCases}
                   >
 Find Similar Cases
                 </div>

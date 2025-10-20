@@ -180,7 +180,7 @@ await loadSystemCapabilities();
     {/if}
     <button
       class="run-demo-btn"
-      onclick={runDemo}
+      on:click={runDemo}
       disabled={loading}
     >
       {loading ? '🔄 Running Demo...' : '🚀 Run Demo'}

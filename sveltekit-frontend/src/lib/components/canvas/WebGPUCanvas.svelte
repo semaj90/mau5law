@@ -305,24 +305,24 @@
     </div>
   </div>
   <div class="canvas-wrapper">
-    <canvas bind:this={canvas} {width} {height} onclick={handleCanvasClick} class="webgpu-canvas"></canvas>
+    <canvas bind:this={canvas} {width} {height} on:click={handleCanvasClick} class="webgpu-canvas"></canvas>
   </div>
   <div class="canvas-controls">
     <button
       class="nes-btn {renderingMode === 'webgpu' ? 'is-success' : ''}"
-      onclick={() => enableWebGPU && initializeWebGPU()}
+      on:click={() => enableWebGPU && initializeWebGPU()}
       disabled={!enableWebGPU || renderingMode === 'webgpu'}
     >
       WebGPU Mode
     </button>
     <button
       class="nes-btn {renderingMode === '2d' ? 'is-primary' : ''}"
-      onclick={() => initialize2D()}
+      on:click={() => initialize2D()}
       disabled={renderingMode === '2d'}
     >
       2D Fallback
     </button>
-    <button class="nes-btn is-warning" onclick={() => location.reload()}> Reset Canvas </button>
+    <button class="nes-btn is-warning" on:click={() => location.reload()}> Reset Canvas </button>
   </div>
   {#if children}
     <div class="additional-content">

@@ -318,7 +318,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
                 class="bits-btn"
                 size="sm"
                 variant="ghost"
-                onclick={() => executeExample(example)}
+                on:click={() => executeExample(example)}
                 disabled={isProcessing}
               >
                 Run
@@ -406,7 +406,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
         </div>
       {/if}
       <div class="flex gap-2">
-        <Button onclick={executePrompt} disabled={isProcessing || !userPrompt.trim()} class="flex-1 bits-btn bits-btn">
+        <Button on:click={executePrompt} disabled={isProcessing || !userPrompt.trim()} class="flex-1 bits-btn bits-btn">
           {#if isProcessing}
             <Pause class="h-4 w-4 mr-2" />
             Processing...
@@ -415,14 +415,14 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
             Analyze with Copilot AI
           {/if}
         </Button>
-        <Button class="bits-btn" variant="ghost" onclick={executeViaAPI} disabled={isProcessing || !userPrompt.trim()}>
+        <Button class="bits-btn" variant="ghost" on:click={executeViaAPI} disabled={isProcessing || !userPrompt.trim()}>
           Via API
         </Button>
         {#if currentResult}
-          <Button class="bits-btn" variant="ghost" onclick={downloadResult}>
+          <Button class="bits-btn" variant="ghost" on:click={downloadResult}>
             <Download class="h-4 w-4" />
           </Button>
-          <Button class="bits-btn" variant="ghost" onclick={clearResults}>
+          <Button class="bits-btn" variant="ghost" on:click={clearResults}>
             <RefreshCw class="h-4 w-4" />
           </Button>
         {/if}

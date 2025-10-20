@@ -59,7 +59,7 @@
     {#if open}
       <div
         class="fallback-dialog-overlay"
-        onclick={() => handleOpenChange(false)}
+        on:click={() => handleOpenChange(false)}
         onkeydown={e => {
           if (e.key === 'Enter' || e.key === ' ') {
             handleOpenChange(false);
@@ -70,7 +70,7 @@
       >
         <div
           class="fallback-dialog"
-          onclick={e => e.stopPropagation()}
+          on:click={e => e.stopPropagation()}
           onkeydown={e => {
             if (e.key === 'Escape') {
               handleOpenChange(false);

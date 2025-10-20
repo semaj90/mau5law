@@ -322,21 +322,21 @@ https://svelte.dev/e/js_parse_error -->
         class="search-input"
         disabled={isSearching}
       />
-      <button onclick={handleSearch} disabled={isSearching || !searchQuery.trim()} class="search-btn">
+      <button on:click={handleSearch} disabled={isSearching || !searchQuery.trim()} class="search-btn">
         {isSearching ? 'Searching...' : 'Search'}
       </button>
     </div>
     <div class="actions">
-      <button onclick={addSampleData} class="action-btn"> Add Sample Data </button>
-      <button onclick={() => updatePerformanceStats()} class="action-btn"> Refresh Stats </button>
-      <button onclick={clearAllData} class="action-btn danger"> Clear All </button>
+      <button on:click={addSampleData} class="action-btn"> Add Sample Data </button>
+      <button on:click={() => updatePerformanceStats()} class="action-btn"> Refresh Stats </button>
+      <button on:click={clearAllData} class="action-btn danger"> Clear All </button>
     </div>
   </header>
   <main class="main-content">
     <!-- Graph Visualization Canvas -->
     <section class="graph-section">
       <h3>Interactive Graph ({nodes.length} nodes)</h3>
-      <canvas bind:this={canvas} onclick={handleCanvasInteraction} width="800" height="600" class="graph-canvas"
+      <canvas bind:this={canvas} on:click={handleCanvasInteraction} width="800" height="600" class="graph-canvas"
       ></canvas>
       {#if selectedNode}
         <div class="node-details">

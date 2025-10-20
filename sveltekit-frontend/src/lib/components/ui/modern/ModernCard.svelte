@@ -71,7 +71,7 @@
   class={cardClasses}
   role={clickable ? 'button' : undefined}
   tabindex={clickable ? 0 : undefined}
-  onclick={handleClick}
+  on:click={handleClick}
   keydown={(e) = class="nes-container"> {
     if (clickable && (e.key === 'Enter' || e.key === ' ')) {
       e.preventDefault();

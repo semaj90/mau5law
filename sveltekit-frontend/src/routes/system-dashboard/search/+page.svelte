@@ -210,7 +210,7 @@
             disabled={loading}
           />
           <OrchestratedButton.SearchSimilar
-            onclick={performSearch}
+            on:click={performSearch}
             disabled={loading || !query.trim()}
             class="absolute right-2 top-1/2 transform -translate-y-1/2 gap-2"
           >
@@ -248,7 +248,7 @@
           </div>
           {#each documentTypes as docType}
             <button
-              onclick={() => toggleDocumentType(docType.value)}
+              on:click={() => toggleDocumentType(docType.value)}
               class="flex items-center gap-2 px-3 py-1 rounded-full border transition-all
                      {selectedTypes.has(docType.value)
                        ? 'border-nier-accent-warm bg-nier-accent-warm text-nier-bg-primary'
@@ -301,7 +301,7 @@
           <div class="text-center py-8">
             <AlertCircle class="w-8 h-8 text-red-500 mx-auto mb-2" />
             <p class="text-red-600">{error}</p>
-            <Button onclick={performSearch} variant="ghost" size="sm" class="mt-2 bits-btn">
+            <Button on:click={performSearch} variant="ghost" size="sm" class="mt-2 bits-btn">
 Retry Search
           </div>
         {:else if results.length === 0}
@@ -401,7 +401,7 @@ Retry Search
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         {#each searchSuggestions as suggestion}
           <button
-            onclick={() => setSuggestionQuery(suggestion)}
+            on:click={() => setSuggestionQuery(suggestion)}
             class="text-left p-3 text-sm bg-nier-bg-tertiary hover:bg-nier-accent-warm/10
                    rounded-lg transition-colors border border-transparent hover:border-nier-accent-warm/20"
             disabled={loading}

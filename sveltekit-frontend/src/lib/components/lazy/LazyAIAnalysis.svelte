@@ -212,7 +212,7 @@ https://svelte.dev/e/bindable_invalid_location -->
         <small>{loadError.message}</small>
         <button
           class="retry-button"
-          onclick={() => {
+          on:click={() => {
             loadError = null;
             analysisProgress = 0;
             analysisStep = 'Initializing...';

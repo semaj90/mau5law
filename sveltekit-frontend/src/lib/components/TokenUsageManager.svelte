@@ -339,7 +339,7 @@
         size="sm"
         variant="ghost"
         class="bits-btn bits-nes-btn bits-btn bits-btn"
-        onclick={() => (showHistory = !showHistory)}
+        on:click={() => (showHistory = !showHistory)}
         data-testid="token-history-button"
       >
         <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -356,7 +356,7 @@
         size="sm"
         variant="ghost"
         class="bits-btn bits-nes-btn bits-btn bits-btn"
-        onclick={optimizeTokenUsage}
+        on:click={optimizeTokenUsage}
         disabled={!autoOptimize}
       >
         <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -364,10 +364,10 @@
         </svg>
         Optimize
       </Button>
-      <Button size="sm" variant="ghost" class="bits-btn bits-nes-btn bits-btn bits-btn" onclick={resetSession}>
+      <Button size="sm" variant="ghost" class="bits-btn bits-nes-btn bits-btn bits-btn" on:click={resetSession}>
         Reset
       </Button>
-      <Button size="sm" variant="ghost" class="bits-btn bits-nes-btn bits-btn bits-btn" onclick={exportUsageData}>
+      <Button size="sm" variant="ghost" class="bits-btn bits-nes-btn bits-btn bits-btn" on:click={exportUsageData}>
         Export
       </Button>
     </div>

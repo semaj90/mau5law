@@ -71,7 +71,7 @@
     role="dialog"
     aria-modal="true"
     aria-labelledby="modal-title"
-    onclick={handleClose}
+    on:click={handleClose}
     keydown={handleKeydown}
     tabindex="-1"
     ;
@@ -108,7 +108,7 @@
           <button
             class="absolute top-2 right-2 w-6 h-6 text-white hover:text-red-300
                    transition-colors duration-200 font-bold text-xl leading-none"
-            onclick={handleClose}
+            on:click={handleClose}
             aria-label="Close modal"
           >
             ×

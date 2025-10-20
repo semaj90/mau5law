@@ -70,7 +70,7 @@
       variant={enabled ? 'crimson' : 'nier'}
       size={size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'default'}
       disabled={loading || (!premium && !enabled)}
-      onclick={handleToggle}
+      on:click={handleToggle}
       class={cn(
         'thinking-toggle-btn transition-all duration-300',
         enabled && 'animate-crimson-glow',
@@ -104,7 +104,7 @@
       <Button
         variant="ghost"
         size="sm"
-        onclick={handleConfigure}
+        on:click={handleConfigure}
         class="config-btn ml-2 bits-btn bits-btn"
         disabled={loading}
       >
@@ -113,7 +113,7 @@
     {/if}
     <!-- Info Button for non-premium users -->
     {#if !premium}
-      <Button variant="ghost" size="sm" onclick={handleUpgrade} class="upgrade-btn ml-2 bits-btn bits-btn">
+      <Button variant="ghost" size="sm" on:click={handleUpgrade} class="upgrade-btn ml-2 bits-btn bits-btn">
         <Info size={14} class="text-harvard-gold" />
       </Button>
     {/if}
@@ -201,7 +201,7 @@
         </div>
       </div>
       <div class="config-actions">
-        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showConfig = false)}>Cancel</Button>
+        <Button class="bits-btn" variant="ghost" size="sm" on:click={() => (showConfig = false)}>Cancel</Button>
         <Button class="bits-btn" variant="crimson" size="sm">Save Configuration</Button>
       </div>
     </div>
@@ -215,7 +215,7 @@
           <strong>Unlock Advanced AI Reasoning</strong>
           <p>Get step-by-step legal analysis with transparent thinking process</p>
         </div>
-        <Button class="bits-btn" variant="gold" size="sm" onclick={handleUpgrade}>Upgrade Now</Button>
+        <Button class="bits-btn" variant="gold" size="sm" on:click={handleUpgrade}>Upgrade Now</Button>
       </div>
     </div>
   {/if}

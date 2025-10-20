@@ -33,7 +33,7 @@
     role="dialog"
     aria-modal="true"
     tabindex="0"
-    onclick={e => {
+    on:click={e => {
       if (e.target === e.currentTarget) onClose();
     }}
     onkeydown={e => {
@@ -45,7 +45,7 @@
       class="w-[28rem] rounded-md border border-neutral-700 bg-neutral-900 p-4 text-neutral-100 shadow-xl"
       role="document"
       onsubmit={submit}
-      onclick={e => e.stopPropagation()}
+      on:click={e => e.stopPropagation()}
       onkeydown={e => {
         if (e.key === 'Escape') onClose();
       }}
@@ -67,7 +67,7 @@
         />
       </div>
       <div class="mt-4 flex justify-end gap-2">
-        <button class="rounded bg-neutral-700 px-3 py-1" type="button" onclick={onClose}>Cancel</button>
+        <button class="rounded bg-neutral-700 px-3 py-1" type="button" on:click={onClose}>Cancel</button>
         <button class="rounded bg-emerald-600 px-3 py-1" type="submit">Sign in</button>
       </div>
     </form>

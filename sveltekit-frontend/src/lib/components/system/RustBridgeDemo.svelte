@@ -190,7 +190,7 @@
         <h3>📄 Legal Text Processing</h3>
         <textarea bind:value={sampleText} placeholder="Enter legal text to process..." rows="4" class="text-input"
         ></textarea>
-        <button onclick={processText} disabled={!bridgeInitialized || isLoading}> 🔄 Process Text </button>
+        <button on:click={processText} disabled={!bridgeInitialized || isLoading}> 🔄 Process Text </button>
         {#if textProcessingResult}
           <div class="processing-result">
             <h4>Processing Results:</h4>
@@ -201,7 +201,7 @@
       <!-- Performance Benchmark -->
       <div class="demo-section">
         <h3>⚡ Performance Benchmark</h3>
-        <button onclick={runBenchmark} disabled={!bridgeInitialized || isLoading}> 🏃‍♂️ Run Benchmark </button>
+        <button on:click={runBenchmark} disabled={!bridgeInitialized || isLoading}> 🏃‍♂️ Run Benchmark </button>
         {#if benchmarkResults}
           <div class="benchmark-results">
             <h4>Benchmark Results:</h4>
@@ -256,7 +256,7 @@
       {/if}
       <!-- Refresh Button -->
       <div class="demo-actions">
-        <button onclick={loadSystemData} disabled={!bridgeInitialized || isLoading}> 🔄 Refresh Data </button>
+        <button on:click={loadSystemData} disabled={!bridgeInitialized || isLoading}> 🔄 Refresh Data </button>
       </div>
     </div>
   {/if}

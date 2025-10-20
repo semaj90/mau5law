@@ -210,7 +210,7 @@
           </div>
           <Button
             variant="ghost"
-            onclick={loadDemoData}
+            on:click={loadDemoData}
             class="w-full bits-btn bits-btn"
           >
 Load Demo Data
@@ -337,7 +337,7 @@ Load Demo Data
           <!-- Execute Button -->
           <div class="pt-4 border-t border-gray-200">
             <Button
-              onclick={executeWorkflow}
+              on:click={executeWorkflow}
               disabled={isProcessing || !systemHealthy}
               class="w-full {isProcessing ? 'opacity-50 cursor-not-allowed' : ''} bits-btn bits-btn"
             >

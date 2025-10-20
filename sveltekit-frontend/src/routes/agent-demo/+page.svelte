@@ -130,7 +130,7 @@
       filePath: task.files[0] || 'src/lib/components/Navigation.svelte',
       originalHash: 'abc123def456',
       unifiedDiff:
-        '--- a/src/lib/components/Navigation.svelte\\n+++ b/src/lib/components/Navigation.svelte\\n@@ -15,6 +15,9 @@\\n+\\t\\t{#if $user}\\n+\\t\\t\\t<button onclick={logout}>Logout</button>\\n+\\t\\t{/if}',
+        '--- a/src/lib/components/Navigation.svelte\\n+++ b/src/lib/components/Navigation.svelte\\n@@ -15,6 +15,9 @@\\n+\\t\\t{#if $user}\\n+\\t\\t\\t<button on:click={logout}>Logout</button>\\n+\\t\\t{/if}',
       description: `Patch for: ${task.title}`,
       confidence: 0.95,
       createdAt: new Date().toISOString(),
@@ -268,7 +268,7 @@
               <div class="text-xs text-gray-500">
                 Complexity: {task.estimatedComplexity}/10
               </div>
-              <Button size="sm" onclick={() => assignTaskToAgent(task)} disabled={isAgentRunning}>
+              <Button size="sm" on:click={() => assignTaskToAgent(task)} disabled={isAgentRunning}>
                 {isAgentRunning ? 'Agent Busy' : 'Assign to Agent'}
               </Button>
             </div>
@@ -360,7 +360,7 @@
 
             <div class="flex gap-2">
               {#if patch.status === 'pending'}
-                <Button size="sm" onclick={() => applyPatch(patch)}>Apply Patch</Button>
+                <Button size="sm" on:click={() => applyPatch(patch)}>Apply Patch</Button>
               {/if}
             </div>
           </div>

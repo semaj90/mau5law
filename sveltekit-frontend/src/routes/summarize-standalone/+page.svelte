@@ -188,18 +188,18 @@ https://svelte.dev/e/js_parse_error -->
         <span>⏱️ Est. time: {estimatedProcessingTime}s</span>
       </div>
       <div class="actions">
-        <button class="btn nes-btn" onclick={loadSampleDocument}> Load Sample </button>
-        <button class="btn nes-btn" onclick={clearAll}> Clear All </button>
+        <button class="btn nes-btn" on:click={loadSampleDocument}> Load Sample </button>
+        <button class="btn nes-btn" on:click={clearAll}> Clear All </button>
       </div>
     </div>
   </header>
   <div class="tab-navigation">
-    <button class="tab {activeTab === 'input' ? 'active' : ''}" onclick={() => (activeTab = 'input')}>
+    <button class="tab {activeTab === 'input' ? 'active' : ''}" on:click={() => (activeTab = 'input')}>
       📝 Document Input
     </button>
     <button
       class="tab {activeTab === 'summary' ? 'active' : ''}"
-      onclick={() => (activeTab = 'summary')}
+      on:click={() => (activeTab = 'summary')}
       disabled={!summary && !isLoading}
     >
       📋 Summary
@@ -209,7 +209,7 @@ https://svelte.dev/e/js_parse_error -->
     </button>
     <button
       class="tab {activeTab === 'analysis' ? 'active' : ''}"
-      onclick={() => (activeTab = 'analysis')}
+      on:click={() => (activeTab = 'analysis')}
       disabled={!metadata?.legalRiskAnalysis}
     >
       ⚖️ Legal Analysis
@@ -262,7 +262,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="input-footer">
             <button
               class="btn nes-btn is-primary btn-large"
-              onclick={handleSummarize}
+              on:click={handleSummarize}
               disabled={isLoading || !reportText.trim() || reportText.length < 100}
             >
               {#if isLoading}
@@ -293,7 +293,7 @@ https://svelte.dev/e/js_parse_error -->
             <div class="result-header">
               <h3>📋 Document Summary</h3>
               <div class="result-actions">
-                <button id="copy-btn" class="btn nes-btn" onclick={copySummary}> 📋 Copy Summary </button>
+                <button id="copy-btn" class="btn nes-btn" on:click={copySummary}> 📋 Copy Summary </button>
               </div>
             </div>
             <div class="summary-content">
@@ -339,7 +339,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="error-panel">
             <h3>❌ Processing Error</h3>
             <p>{errorMessage}</p>
-            <button class="btn nes-btn is-primary" onclick={() => (activeTab = 'input')}> ← Back to Input </button>
+            <button class="btn nes-btn is-primary" on:click={() => (activeTab = 'input')}> ← Back to Input </button>
           </div>
         {:else}
           <div class="empty-state">

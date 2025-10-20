@@ -78,7 +78,7 @@
     class="inline-block"
     aria-expanded={open}
     aria-controls={dialogId}
-    onclick={() => (open = !open)}
+    on:click={() => (open = !open)}
   >
     <slot name="trigger" />
   </button>
@@ -93,7 +93,7 @@
       role="button"
       tabindex="0"
       aria-label="Close dialog"
-      onclick={handleOutsideClick}
+      on:click={handleOutsideClick}
       onkeydown={handleOverlayKeydown}
     ></div>
 
@@ -106,7 +106,7 @@
       aria-labelledby={title ? 'dialog-title' : undefined}
       aria-describedby={description ? 'dialog-desc' : undefined}
       tabindex="0"
-      onclick={event => event.stopPropagation()}
+      on:click={event => event.stopPropagation()}
       onkeydown={handleContentKeydown}
       transition:scale={{ duration: 180, start: 0.96 }}
     >
@@ -130,7 +130,7 @@
           <button
             type="button"
             class="ml-4 inline-flex items-center justify-center rounded p-1 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none"
-            onclick={close}
+            on:click={close}
             aria-label="Close dialog"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -132,7 +132,7 @@
   onmouseleave={handleMouseLeave}
   onmousedown={handleMouseDown}
   onmouseup={handleMouseUp}
-  onclick={handleClick}
+  on:click={handleClick}
   onkeydown={e => {
     if (interactive && (e.key === 'Enter' || e.key === ' ')) {
       e.preventDefault();

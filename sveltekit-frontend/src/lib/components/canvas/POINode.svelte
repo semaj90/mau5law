@@ -305,11 +305,11 @@
         </div>
         <div class="nier-footer flex justify-between items-center mt-4 gap-2">
           {#if isEditing}
-            <button type="button" class="nier-btn nier-btn-accent" onclick={saveChanges}><Save class="w-4 h-4" /> Save</button>
-            <button type="button" class="nier-btn nier-nes-btn" onclick={cancelEditing}><X class="w-4 h-4" /> Cancel</button>
+            <button type="button" class="nier-btn nier-btn-accent" on:click={saveChanges}><Save class="w-4 h-4" /> Save</button>
+            <button type="button" class="nier-btn nier-nes-btn" on:click={cancelEditing}><X class="w-4 h-4" /> Cancel</button>
           {:else}
-            <button type="button" class="nier-btn nier-nes-btn" onclick={startEditing}><Edit class="w-4 h-4" /> Edit</button>
-            <button type="button" class="nier-btn nier-nes-btn" onclick={summarizePOI}><Sparkles class="w-4 h-4" /> Summarize</button>
+            <button type="button" class="nier-btn nier-nes-btn" on:click={startEditing}><Edit class="w-4 h-4" /> Edit</button>
+            <button type="button" class="nier-btn nier-nes-btn" on:click={summarizePOI}><Sparkles class="w-4 h-4" /> Summarize</button>
           {/if}
         </div>
       </div>

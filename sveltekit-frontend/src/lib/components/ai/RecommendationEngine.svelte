@@ -274,7 +274,7 @@
       <p class="engine-subtitle">Intelligent suggestions for case strategy and next actions</p>
     </div>
     <div class="header-actions">
-      <button class="nes-btn" onclick={generateRecommendations} disabled={isGenerating}>
+      <button class="nes-btn" on:click={generateRecommendations} disabled={isGenerating}>
         {isGenerating ? 'Generating...' : 'Generate Recommendations'}
       </button>
     </div>
@@ -451,10 +451,10 @@
           </CardContent>
           <div.Footer>
             <div class="nier-bits-card-actions">
-              <button class="nes-btn" variant="ghost" size="sm" onclick={() => openRecommendationDetails(recommendation)}>
+              <button class="nes-btn" variant="ghost" size="sm" on:click={() => openRecommendationDetails(recommendation)}>
                 View Details
               </button>
-              <button class="nes-btn" size="sm" onclick={() => applyRecommendation(recommendation.id)}>
+              <button class="nes-btn" size="sm" on:click={() => applyRecommendation(recommendation.id)}>
                 Apply
               </button>
             </div>
@@ -610,10 +610,10 @@
         {/if}
       </div>
       <div class="dialog-actions">
-        <button class="nes-btn" variant="ghost" onclick={() => showRecommendationDetails = false}>
+        <button class="nes-btn" variant="ghost" on:click={() => showRecommendationDetails = false}>
           Close
         </button>
-        <button class="nes-btn" onclick={() => applyRecommendation(selectedRecommendation.id)}>
+        <button class="nes-btn" on:click={() => applyRecommendation(selectedRecommendation.id)}>
           Apply Recommendation
         </button>
       </div>

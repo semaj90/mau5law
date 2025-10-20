@@ -142,7 +142,7 @@
   role="button"
   tabindex="0"
   aria-label="Drop zone or click to upload files"
-  onclick={openFileDialog}
+  on:click={openFileDialog}
   onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && openFileDialog()}
 >
   <input

@@ -288,7 +288,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
           </span>
         </div>
         {#if !isInitialized && !isProcessing}
-          <Button class="bits-btn" onclick={initializeSystem} size="sm">
+          <Button class="bits-btn" on:click={initializeSystem} size="sm">
 🔄 Initialize System
 </Button>
         {/if}
@@ -370,7 +370,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
                 </div>
               </div>
               <Button class="bits-btn"
-                onclick={() =>
+                on:click={() =>
 processDocument(index)}
                 disabled={!isInitialized || isProcessing}
                 size="sm"
@@ -383,13 +383,13 @@ processDocument(index)}
         <!-- Batch Operations -->
         <div class="flex gap-2 pt-4 border-t">
           <Button class="bits-btn"
-            onclick={batchProcessDocuments}
+            on:click={batchProcessDocuments}
             disabled={!isInitialized || isProcessing}
           >
 🚀 Batch Process All
 </Button>
           <Button class="bits-btn"
-            onclick={generateMipmapDemo}
+            on:click={generateMipmapDemo}
             disabled={!isInitialized || isProcessing}
             variant="ghost"
           >

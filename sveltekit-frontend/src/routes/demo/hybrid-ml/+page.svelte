@@ -201,7 +201,7 @@
     <div class="flex gap-4">
       <button
         class="nes-btn is-primary"
-        onclick={generateEmbedding}
+        on:click={generateEmbedding}
         disabled={isProcessing || !isInitialized}
       >
         <Activity size={16} class="inline" />
@@ -210,7 +210,7 @@
 
       <button
         class="nes-btn is-success"
-        onclick={findSimilarDocuments}
+        on:click={findSimilarDocuments}
         disabled={isProcessing || !isInitialized}
       >
         <Zap size={16} class="inline" />

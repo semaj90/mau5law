@@ -510,7 +510,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="flex space-x-2">
             <button
               type="button"
-              onclick={processLegalDocuments}
+              on:click={processLegalDocuments}
               disabled={!canProcess}
               class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
             >
@@ -570,7 +570,7 @@ https://svelte.dev/e/js_parse_error -->
             <div class="flex space-x-2 mt-3">
               <button
                 type="button"
-                onclick={executeRAGQuery}
+                on:click={executeRAGQuery}
                 disabled={!canQuery}
                 class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
               >
@@ -826,7 +826,7 @@ https://svelte.dev/e/js_parse_error -->
         </h3>
         <button
           type="button"
-          onclick={clearLogs}
+          on:click={clearLogs}
           class="px-3 py-1 border border-gray-300 text-sm rounded-md hover:bg-gray-50"
         >
           Clear Logs

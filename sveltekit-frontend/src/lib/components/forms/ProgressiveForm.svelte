@@ -374,7 +374,7 @@
     <button
       type="button"
       class="reset-button secondary"
-      onclick={() => {
+      on:click={() => {
         formState = progressiveForm.createFormState();
         submitMessage = '';
         submitMessageType = '';

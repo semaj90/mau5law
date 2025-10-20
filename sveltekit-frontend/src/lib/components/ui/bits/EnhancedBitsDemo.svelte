@@ -121,7 +121,7 @@
   <div class="border-b border-nier-border-secondary mb-6">
     <nav class="flex space-x-8">
       {#each demoSections as section (section.id)}
-        <button class={tabClasses(section.id)} onclick={() => (currentTab = section.id)}>
+        <button class={tabClasses(section.id)} on:click={() => (currentTab = section.id)}>
           <div class="flex items-center gap-2">
             <section.icon class="w-4 h-4" />
             {section.label}
@@ -258,11 +258,11 @@
           Modal dialogs optimized for legal workflows with evidence analysis and case management features.
         </p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Button class="bits-btn" variant="default" onclick={() => (dialogOpen = true)}>Case Management</Button>
-          <Button class="bits-btn" variant="primary" onclick={() => (evidenceDialogOpen = true)}>
+          <Button class="bits-btn" variant="default" on:click={() => (dialogOpen = true)}>Case Management</Button>
+          <Button class="bits-btn" variant="primary" on:click={() => (evidenceDialogOpen = true)}>
             Evidence Upload
           </Button>
-          <Button class="bits-btn" variant="ghost" onclick={runAIAnalysis} loading={aiAnalysisLoading}>
+          <Button class="bits-btn" variant="ghost" on:click={runAIAnalysis} loading={aiAnalysisLoading}>
             {#if aiAnalysisLoading}
               Running AI Analysis...
             {:else}
@@ -320,7 +320,7 @@
               </div>
             </div>
             <div class="bits-dialog-footer">
-              <Button class="bits-btn" variant="ghost" onclick={() => (dialogOpen = false)}>Cancel</Button>
+              <Button class="bits-btn" variant="ghost" on:click={() => (dialogOpen = false)}>Cancel</Button>
               <Button class="bits-btn" variant="primary">Create Case</Button>
             </div>
           </div>
@@ -365,8 +365,8 @@
               {/if}
             </div>
             <div class="bits-dialog-footer">
-              <Button class="bits-btn" variant="ghost" onclick={() => (evidenceDialogOpen = false)}>Cancel</Button>
-              <Button class="bits-btn" variant="primary" onclick={uploadEvidence} disabled={evidenceUploadProgress > 0}>
+              <Button class="bits-btn" variant="ghost" on:click={() => (evidenceDialogOpen = false)}>Cancel</Button>
+              <Button class="bits-btn" variant="primary" on:click={uploadEvidence} disabled={evidenceUploadProgress > 0}>
                 Upload Evidence
               </Button>
             </div>
@@ -388,7 +388,7 @@
               class:ring-2={selectedEvidenceCard === item.id}
               class:ring-nier-border-primary={selectedEvidenceCard === item.id}
               aria-pressed={selectedEvidenceCard === item.id}
-              onclick={() => selectEvidenceCard(item.id)}
+              on:click={() => selectEvidenceCard(item.id)}
             >
               <div class="space-y-3">
                 <div class="flex items-start justify-between">

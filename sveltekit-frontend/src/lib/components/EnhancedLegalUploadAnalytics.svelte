@@ -479,14 +479,14 @@
                 size="sm"
                 legal
                 confidence="high"
-                onclick={() => handlePromptReaction(prompt.id, 'accepted')}
+                on:click={() => handlePromptReaction(prompt.id, 'accepted')}
               >
                 ✓ Accept
               </button>
               <button class="nes-btn"
                 variant="ghost"
                 size="sm"
-                onclick={() => handlePromptReaction(prompt.id, 'dismissed')}
+                on:click={() => handlePromptReaction(prompt.id, 'dismissed')}
               >
                 ✕ Dismiss
               </button>
@@ -535,7 +535,7 @@
               size="lg"
               legal
               priority={legalContext.urgency}
-              onclick={() => fileInput?.click()}
+              on:click={() => fileInput?.click()}
             >
               Select Legal Documents
             </button>
@@ -602,7 +602,7 @@
                   legal
                   priority={legalContext.urgency}
                   loading={isUploading}
-                  onclick={startEnhancedUpload}
+                  on:click={startEnhancedUpload}
                   data-legal-action="start-upload"
                 >
                   {#if ollamaConnected}
@@ -613,14 +613,14 @@
                 </button>
                 <button class="nes-btn"
                   variant="ghost"
-                  onclick={() => { selectedFiles = []; aiAnalysisResults = [], }}
+                  on:click={() => { selectedFiles = []; aiAnalysisResults = [], }}
                 >
                   Clear Files
                 </button>
                 <button class="nes-btn"
                   variant="ghost"
                   size="sm"
-                  onclick={() => showAdvancedSettings = !showAdvancedSettings}
+                  on:click={() => showAdvancedSettings = !showAdvancedSettings}
                 >
                   Advanced Settings
                 </button>
@@ -713,7 +713,7 @@
         {/if}
         <div class="upload-actions">
           <button class="nes-btn is-error"
-            onclick={() => uploadActor?.send({ type: 'CANCEL_UPLOAD' })}
+            on:click={() => uploadActor?.send({ type: 'CANCEL_UPLOAD' })}
           >
             Cancel Upload
           </button>
@@ -855,13 +855,13 @@
                 variant="yorha"
                 legal
                 priority="high"
-                onclick={() => handlePromptReaction(prompt.id, 'accepted')}
+                on:click={() => handlePromptReaction(prompt.id, 'accepted')}
               >
                 Let's Do It
               </button>
               <button class="nes-btn"
                 variant="ghost"
-                onclick={() => handlePromptReaction(prompt.id, 'dismissed')}
+                on:click={() => handlePromptReaction(prompt.id, 'dismissed')}
               >
                 Maybe Later
               </button>
@@ -916,13 +916,13 @@
         {/each}
         <div class="error-actions">
           <button class="nes-btn is-error"
-            onclick={() => uploadActor?.send({ type: 'RETRY_UPLOAD' })}
+            on:click={() => uploadActor?.send({ type: 'RETRY_UPLOAD' })}
           >
             Retry Upload
           </button>
           <button class="nes-btn"
             variant="ghost"
-            onclick={resetUpload}
+            on:click={resetUpload}
           >
             Start Over
           </button>
@@ -937,14 +937,14 @@
         variant="yorha"
         size="lg"
         legal
-        onclick={resetUpload}
+        on:click={resetUpload}
       >
         Upload More Documents
       </button>
       {#if enableAIPrompts}
         <button class="nes-btn"
           variant="ghost"
-          onclick={() => uploadActor?.send({ type: 'REQUEST_AI_SUGGESTIONS', context: 'user_requested' })}
+          on:click={() => uploadActor?.send({ type: 'REQUEST_AI_SUGGESTIONS', context: 'user_requested' })}
         >
           Get More AI Insights
         </button>
@@ -952,7 +952,7 @@
       {#if caseId}
         <button class="nes-btn"
           variant="ghost"
-          onclick={() => goto(`/cases/${caseId}/evidence`)}
+          on:click={() => goto(`/cases/${caseId}/evidence`)}
         >
           View in Evidence Board
         </button>

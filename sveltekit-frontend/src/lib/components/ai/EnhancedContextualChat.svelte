@@ -192,7 +192,7 @@
 
         <button
           class="nes-btn is-small is-warning"
-          onclick={clearConversation}
+          on:click={clearConversation}
           type="button"
         >
           🗑️ Clear
@@ -351,7 +351,7 @@
                   <button
                     type="button"
                     class="entity-item nes-btn is-small"
-                    onclick={() => showEntity(entity)}
+                    on:click={() => showEntity(entity)}
                   >
                     <span class="entity-type">{entity.type}</span>
                     <span class="entity-value">{entity.value}</span>
@@ -691,3 +691,4 @@
     z-index: 100,
   }
 </style>
+

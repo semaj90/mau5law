@@ -28,7 +28,7 @@ https://svelte.dev/e/script_duplicate -->
   <h1>Vector Search Demo</h1>
   <div class="row">
   <input )bind:value={query} placeholder="Enter query" />
-  <button onclick={runSearch}>Search</button>
+  <button on:click={runSearch}>Search</button>
   </div>
   <p>Log: {wsMsg}</p>
   {#if results?.length}
@@ -235,14 +235,14 @@ https://svelte.dev/e/script_duplicate -->
       </div>
       <div class="form-actions">
         <button
-          onclick={performSearch}
+          on:click={performSearch}
           disabled={isSearching || !query.trim()}
           class="search-button"
         >
           {isSearching ? '🔄 Searching...' : '🔍 Search'}
         </button>
         <button
-          onclick={indexSampleDocument}
+          on:click={indexSampleDocument}
           class="index-button"
         >
           📄 Index Sample Document

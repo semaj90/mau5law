@@ -207,7 +207,7 @@ https://svelte.dev/e/js_parse_error -->
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
     ondrop={handleDrop}
-    onclick={handleClick}
+    on:click={handleClick}
     role="button"
     tabindex="0"
     aria-label="File upload area"
@@ -291,7 +291,7 @@ https://svelte.dev/e/js_parse_error -->
               <button
                 type="button"
                 class="p-1 text-gray-400 hover:text-red-500 transition-colors"
-                onclick={() => removeFile(file.id)}
+                on:click={() => removeFile(file.id)}
                 aria-label="Remove file"
               >
                 <div class="i-lucide-x w-4 h-4" aria-hidden="true"></div>

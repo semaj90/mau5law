@@ -87,7 +87,7 @@
         </div>
         <button
           class="collapse-button"
-          onclick={toggleSidebar}
+          on:click={toggleSidebar}
           aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {sidebarCollapsed ? '▶' : '◀'}

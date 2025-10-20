@@ -313,7 +313,7 @@
           <div class="flex gap-2">
             <Button
               class="bits-btn flex-1"
-              onclick={() => scaleCluster(targetWorkers)}
+              on:click={() => scaleCluster(targetWorkers)}
               disabled={isScaling || targetWorkers === clusterHealth.totalWorkers}
             >
               {#if isScaling}
@@ -326,7 +326,7 @@
             </Button>
             <Button
               class="bits-btn px-3"
-              onclick={() => scaleCluster(clusterHealth.totalWorkers + 1)}
+              on:click={() => scaleCluster(clusterHealth.totalWorkers + 1)}
               disabled={isScaling}
               variant="ghost"
             >
@@ -334,7 +334,7 @@
             </Button>
             <Button
               class="bits-btn px-3"
-              onclick={() => scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
+              on:click={() => scaleCluster(Math.max(1, clusterHealth.totalWorkers - 1))}
               disabled={isScaling || clusterHealth.totalWorkers <= 1}
               variant="ghost"
             >
@@ -351,7 +351,7 @@
         </h3>
         <div class="space-y-3">
           <Button
-            onclick={rollingRestart}
+            on:click={rollingRestart}
             disabled={isRestarting}
             class="w-full bg-orange-600 hover:bg-orange-700 bits-btn bits-btn"
           >
@@ -363,7 +363,7 @@
               Rolling Restart
             {/if}
           </Button>
-          <Button onclick={fetchClusterStatus} variant="ghost" class="w-full bits-btn bits-btn">
+          <Button on:click={fetchClusterStatus} variant="ghost" class="w-full bits-btn bits-btn">
             <RefreshCw class="h-4 w-4 mr-2" />
             Refresh Status
           </Button>

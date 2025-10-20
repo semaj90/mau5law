@@ -176,7 +176,7 @@
   {disabled}
   onmousedown={handleMouseDown}
   onmouseup={handleMouseUp}
-  onclick={handleClick}
+  on:click={handleClick}
   aria-label={`N64 ${variant.toUpperCase()} button${evidenceAction ? ` - ${evidenceAction} evidence` : ''}`}
   {...restProps}
 >

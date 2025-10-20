@@ -83,7 +83,7 @@
 {#each $modals.modals as modal (modal.id)}
 	<div
 		class="space-y-4"
-		onclick={(e) => handleBackdropClick(e, modal)}
+		on:click={(e) => handleBackdropClick(e, modal)}
 		keydown={(e) => handleKeydown(e, modal)}
 		role="dialog"
 		aria-modal="true"
@@ -130,7 +130,7 @@
 					{#if modal.closable !== false}
 						<button
 							class="space-y-4"
-							onclick={() => modals.close(modal.id)}
+							on:click={() => modals.close(modal.id)}
 							aria-label="Close modal"
 						>
 							<iconify-icon data-icon="${1}" class="space-y-4"></iconify-icon>
@@ -158,7 +158,7 @@
 							{#each builtInModal.actions as action}
 								<Button class="bits-btn"
 									variant={action.variant}
-									onclick={() =>
+									on:click={() =>
 action.action()}
 								>
 									{action.label}

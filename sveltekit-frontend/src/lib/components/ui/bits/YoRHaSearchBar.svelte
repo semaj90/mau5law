@@ -319,7 +319,7 @@
     <!-- Clear Button -->
     {#if value}
       <button
-        onclick={clearSearch}
+        on:click={clearSearch}
         class={`
           absolute right-4 top-1/2 transform -translate-y-1/2
           w-6 h-6 rounded-full transition-all duration-200
@@ -356,7 +356,7 @@
     >
       {#each allSuggestions() as suggestion, index}
         <button
-          onclick={() => selectSuggestion(suggestion)}
+          on:click={() => selectSuggestion(suggestion)}
           class={`
             w-full flex items-center px-4 py-3 text-left transition-all duration-200 border-b border-opacity-20
             ${index === selectedIndex ? styles.activeSuggestion : styles.suggestion}

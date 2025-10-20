@@ -272,8 +272,8 @@ https://svelte.dev/e/expected_token -->
       <span class="value">{parallaxConfig.smoothing.toFixed(2)}</span>
     </div>
     <div class="button-row">
-      <button class="ps1-button" onclick={resetParallax}>🔄 Reset</button>
-      <button class="ps1-button" onclick={toggleAutoRotate}>
+      <button class="ps1-button" on:click={resetParallax}>🔄 Reset</button>
+      <button class="ps1-button" on:click={toggleAutoRotate}>
         {parallaxConfig.enableAutoRotate ? '⏸️' : '▶️'} Auto Rotate
       </button>
     </div>

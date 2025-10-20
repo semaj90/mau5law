@@ -131,7 +131,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     {minHeight ? `--container-min-height: ${minHeight}` : ''}
     {style}
   "
-  onclick={handleClick}
+  on:click={handleClick}
   onOnmouseenter={role}
   tabindex={onClick && !disabled ? 0 : undefined}
 >

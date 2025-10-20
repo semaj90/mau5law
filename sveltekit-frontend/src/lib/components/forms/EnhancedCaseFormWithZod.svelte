@@ -418,7 +418,7 @@ https://svelte.dev/e/js_parse_error -->
           <!-- Use native button to avoid passing unknown 'type' prop to Button component -->
           <button
             type="button"
-            onclick={() => (showAdvanced = !showAdvanced)}
+            on:click={() => (showAdvanced = !showAdvanced)}
             class="mb-4 inline-flex items-center px-3 py-2 rounded-md text-sm bg-transparent hover:bg-muted/5"
             aria-expanded={showAdvanced}
           >
@@ -554,7 +554,7 @@ https://svelte.dev/e/js_parse_error -->
                       <!-- native button to avoid passing 'type' prop to Button -->
                       <button
                         type="button"
-                        onclick={() => removeFile(index)}
+                        on:click={() => removeFile(index)}
                         class="inline-flex items-center px-2 py-1 text-sm rounded-md bg-transparent hover:bg-muted/5"
                         aria-label={`Remove ${file.name}`}
                       >
@@ -574,7 +574,7 @@ https://svelte.dev/e/js_parse_error -->
             {#if enableAutoSave && !editMode}
               <button
                 type="button"
-                onclick={() => {
+                on:click={() => {
                   if (ondraft) ondraft({ data: $form });
                 }}
                 class="inline-flex items-center px-3 py-2 rounded-md text-sm bg-transparent hover:bg-muted/5"
@@ -613,7 +613,7 @@ https://svelte.dev/e/js_parse_error -->
     <p class="text-red-600 font-mono text-sm mb-4 bg-red-100 p-2 rounded">{componentError.message}</p>
     <button
       type="button"
-      onclick={() => {
+      on:click={() => {
         componentError = null;
       }}
       class="border-red-300 text-red-700 hover:bg-red-50 inline-flex items-center px-3 py-2 rounded-md"

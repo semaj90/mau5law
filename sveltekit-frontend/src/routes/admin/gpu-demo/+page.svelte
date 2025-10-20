@@ -566,27 +566,27 @@
         <!-- Visualization Controls -->
         <div class="grid grid-cols-2 gap-2">
           <Button class="bits-btn text-sm"
-            onclick={() =>
+            on:click={() =>
 startVisualization('attentionHeatmap')}
             disabled={!isInitialized}
             variant={activeVisualization === 'attentionHeatmap' ? 'default' : 'outline'}>
             Attention Heatmap
           </Button>
           <Button class="bits-btn text-sm"
-            onclick={() => startVisualization('documentNetwork')}
+            on:click={() => startVisualization('documentNetwork')}
             disabled={!isInitialized}
             variant={activeVisualization === 'documentNetwork' ? 'default' : 'outline'}>
             Document Network
 </Button>
             <Button class="bits-btn text-sm"
-              onclick={() =>
+              on:click={() =>
 startVisualization('evidenceTimeline')}
               disabled={!isInitialized}
               variant={activeVisualization === 'evidenceTimeline' ? 'default' : 'outline'}>
               Evidence Timeline
 </Button>
           <Button class="bits-btn text-sm"
-            onclick={() =>
+            on:click={() =>
 startVisualization('textFlow')}
             disabled={!isInitialized}
             variant={activeVisualization === 'textFlow' ? 'default' : 'outline'}>
@@ -596,12 +596,12 @@ startVisualization('textFlow')}
         <!-- Render Controls -->
         <div class="flex gap-2">
           {#if isRendering}
-            <Button onclick={stopVisualization} class="bg-red-600 hover:bg-red-700 bits-btn">
+            <Button on:click={stopVisualization} class="bg-red-600 hover:bg-red-700 bits-btn">
 Stop Rendering
 </Button>
           {/if}
           <Button
-            onclick={executeGPUWorkload}
+            on:click={executeGPUWorkload}
             disabled={!isInitialized}
             variant="ghost"
             class="text-white border-slate-600 hover:bg-slate-700 bits-btn">

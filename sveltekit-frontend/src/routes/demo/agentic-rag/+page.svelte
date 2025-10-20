@@ -278,7 +278,7 @@
       <div class="flex gap-2">
         <button
           class="nes-btn is-success"
-          onclick={sendQuery}
+          on:click={sendQuery}
           disabled={isProcessing || !query.trim()}
         >
           {#if isProcessing}
@@ -289,7 +289,7 @@
           Send
         </button>
 
-        <button class="nes-btn is-warning" onclick={clearConversation} disabled={isProcessing}>
+        <button class="nes-btn is-warning" on:click={clearConversation} disabled={isProcessing}>
           Clear
         </button>
       </div>
@@ -307,7 +307,7 @@
       {#each sampleQueries as sample}
         <button
           class="bg-slate-800 hover:bg-slate-700 transition-colors p-3 rounded border border-slate-700 text-left text-sm text-slate-300"
-          onclick={() => useSampleQuery(sample)}
+          on:click={() => useSampleQuery(sample)}
           disabled={isProcessing}
         >
           <span class="text-gold-400 mr-2">→</span>

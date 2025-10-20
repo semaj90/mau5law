@@ -67,7 +67,7 @@
 	class:pressed={isPressed}
 	class:glow={glowEffect}
 	{disabled}
-	onclick={handleClick}
+	on:click={handleClick}
 >
 	{#if loading}
 		<div class="loading-spinner"></div>

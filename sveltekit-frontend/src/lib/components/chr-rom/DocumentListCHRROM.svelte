@@ -196,7 +196,7 @@ https://svelte.dev/e/js_parse_error -->
           </span>
         </div>
       </div>
-      <button onclick={refreshPatterns} class="refresh-btn"> 🔄 Refresh Patterns </button>
+      <button on:click={refreshPatterns} class="refresh-btn"> 🔄 Refresh Patterns </button>
     </div>
   {/if}
   <!-- Document List with Instant CHR-ROM Patterns -->

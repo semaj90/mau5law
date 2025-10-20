@@ -57,14 +57,14 @@
           {#if minimizable}
             <button
               class="control-button minimize"
-              onclick={toggleMinimize}
+              on:click={toggleMinimize}
               aria-label={isMinimized ? 'Expand panel' : 'Minimize panel'}
             >
               {isMinimized ? '▲' : '▼'}
             </button>
           {/if}
           {#if closable}
-            <button class="control-button close" onclick={closePanel} aria-label="Close panel"> ✕ </button>
+            <button class="control-button close" on:click={closePanel} aria-label="Close panel"> ✕ </button>
           {/if}
         </div>
       </div>

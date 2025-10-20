@@ -769,16 +769,16 @@ if (!browser) return;
   <!-- Timeline Controls -->
   <div class="timeline-controls">
     <div class="navigation-controls">
-      <LoadingButton onclick={() => handleTimeNavigation('prev')} variant="ghost" size="sm">
+      <LoadingButton on:click={() => handleTimeNavigation('prev')} variant="ghost" size="sm">
         {#snippet children()}<SkipBack class="w-4 h-4" />{/snippet}
       </LoadingButton>
-      <LoadingButton onclick={handleZoomIn} variant="ghost" size="sm">
+      <LoadingButton on:click={handleZoomIn} variant="ghost" size="sm">
         {#snippet children()}<ZoomIn class="w-4 h-4" />{/snippet}
       </LoadingButton>
-      <LoadingButton onclick={handleZoomOut} variant="ghost" size="sm">
+      <LoadingButton on:click={handleZoomOut} variant="ghost" size="sm">
         {#snippet children()}<ZoomOut class="w-4 h-4" />{/snippet}
       </LoadingButton>
-      <LoadingButton onclick={() => handleTimeNavigation('next')} variant="ghost" size="sm">
+      <LoadingButton on:click={() => handleTimeNavigation('next')} variant="ghost" size="sm">
         {#snippet children()}<SkipForward class="w-4 h-4" />{/snippet}
       </LoadingButton>
     </div>
@@ -857,7 +857,7 @@ if (!browser) return;
       width="1000"
       height={timelineHeight}
       class="timeline-canvas"
-      onclick={handleCanvasClick}
+      on:click={handleCanvasClick}
       onmousemove={handleCanvasHover}
     ></canvas>
     <!-- Loading overlay -->

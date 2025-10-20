@@ -33,7 +33,7 @@
 </script>
 
 <div class="user-dropdown" bind:this={dropdownElement}>
-  <button class="user-trigger" onclick={() => toggleDropdown()} aria-expanded={dropdownOpen} aria-haspopup="true">
+  <button class="user-trigger" on:click={() => toggleDropdown()} aria-expanded={dropdownOpen} aria-haspopup="true">
     <Avatar size="small" />
     <span class="user-name">
       {user?.name || user?.email || 'User'}
@@ -79,7 +79,7 @@
           </svg>
           My Cases
         </a>
-        <button type="button" class="dropdown-item logout" onclick={() => handleLogout()}>
+        <button type="button" class="dropdown-item logout" on:click={() => handleLogout()}>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path
               d="M6 15H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h3M13 11l3-3-3-3M8 8h6"

@@ -11,9 +11,8 @@
  */
 import { BitmapHMMSOMPredictor } from '$lib/ai/bitmap-hmm-som-predictor.js';
 import { QLoRAReinforcementLearningService } from '$lib/services/qlora-rl-training-service.js';
-import type { CachePerformanceMeta } from '$lib/server/summarizeCache.js';
 import { createRedisInstance } from '$lib/server/redis.js';
-import type IORedis from 'ioredis';
+import { Redis as IORedis } from 'ioredis'; // Changed from 'type IORedis from 'ioredis';'
 
 // Generative UI component metadata
 export interface UIComponentMetadata {
@@ -23,7 +22,7 @@ export interface UIComponentMetadata {
   renderTime: number; // ms
   memoryFootprint: number; // bytes
   dependencies: string[];
-  generationParams: { [key: string]: any };
+  generationParams: Record<string, unknown>; // Changed from any to unknown
   quality: 'low' | 'medium' | 'high';
   lastAccessed: number;
   accessCount: number;
@@ -73,7 +72,7 @@ export interface IndexStats {
 
 export class GenerativeUICacheIndex {
   private redis: IORedis;
-  private hmmPredictor: BitmapHMMSOMPredictor;
+  private hmmPredictor: InstanceType<typeof BitmapHMMSOMPredictor>;
   private qloraService: QLoRAReinforcementLearningService;
   private componentIndex: Map<string, CachedUIComponent> = new Map();
   private embeddings: Map<string, number[]> = new Map();
@@ -81,9 +80,13 @@ export class GenerativeUICacheIndex {
   private webgpuDevice: GPUDevice | null = null;
   private isInitialized = false;
 
-  constructor(hmmPredictor?: BitmapHMMSOMPredictor, qloraService?: QLoRAReinforcementLearningService, redis?: IORedis) {
+  constructor(
+    hmmPredictor?: typeof BitmapHMMSOMPredictor,
+    qloraService?: QLoRAReinforcementLearningService,
+    redis?: IORedis
+  ) {
     this.redis = redis || createRedisInstance();
-    this.hmmPredictor = hmmPredictor || new BitmapHMMSOMPredictor();
+    this.hmmPredictor = hmmPredictor ? new hmmPredictor() : new BitmapHMMSOMPredictor();
     this.qloraService = qloraService || new QLoRAReinforcementLearningService(this.hmmPredictor);
   }
 
@@ -101,7 +104,6 @@ export class GenerativeUICacheIndex {
     // Setup WebGPU for compute acceleration
     if (typeof navigator !== 'undefined' && 'gpu' in navigator) {
       try {
-        // @ts-ignore - navigator.gpu is not in default TS lib for node
         const adapter = await navigator.gpu.requestAdapter();
         if (adapter) {
           this.webgpuDevice = await adapter.requestDevice();
@@ -126,8 +128,8 @@ export class GenerativeUICacheIndex {
    */
   async generateAndCache(
     componentId: string,
-    generationParams: { [key: string]: any },
-    userContext: any
+    generationParams: Record<string, unknown>,
+    userContext: Record<string, unknown>
   ): Promise<CachedUIComponent> {
     console.log(`🎨 Generating UI component: ${componentId}`);
 
@@ -348,7 +350,7 @@ export class GenerativeUICacheIndex {
             query_magnitude = query_magnitude + q * q;
             embedding_magnitude = embedding_magnitude + e * e;
           }
-          
+
           let magnitudes = sqrt(query_magnitude) * sqrt(embedding_magnitude);
           if (magnitudes > 0.0) {
             results[index] = dot_product / magnitudes;
@@ -465,7 +467,7 @@ export class GenerativeUICacheIndex {
   // =============================================================================
 
   private async generateRepresentations(
-    params: any,
+    params: Record<string, unknown>,
     metadata: UIComponentMetadata
   ): Promise<CachedUIComponent['representations']> {
     // Generate SVG representation
@@ -480,7 +482,7 @@ export class GenerativeUICacheIndex {
     return { svg, bitmap, webgl, webgpu, css };
   }
 
-  private generateSVG(params: any, metadata: UIComponentMetadata): string {
+  private generateSVG(params: Record<string, unknown>, metadata: UIComponentMetadata): string {
     const width = params.width || 200;
     const height = params.height || 100;
     const color = params.color || '#4A90E2';
@@ -504,8 +506,8 @@ export class GenerativeUICacheIndex {
     return arr;
   }
 
-  private generateWebGLShader(params: any, metadata: UIComponentMetadata): string {
-    const color = this.hexToRgb(params.color || '#4A90E2');
+  private generateWebGLShader(params: Record<string, unknown>, _metadata: UIComponentMetadata): string {
+    const color = this.hexToRgb((params.color as string | undefined) || '#4A90E2');
     return `
       precision mediump float;
       uniform vec2 resolution;
@@ -519,8 +521,8 @@ export class GenerativeUICacheIndex {
     `;
   }
 
-  private generateWebGPUShader(params: any, metadata: UIComponentMetadata): string {
-    const color = this.hexToRgb(params.color || '#4A90E2');
+  private generateWebGPUShader(params: Record<string, unknown>, _metadata: UIComponentMetadata): string {
+    const color = this.hexToRgb((params.color as string | undefined) || '#4A90E2');
     return `
       struct Uniforms {
         resolution: vec2<f32>,
@@ -545,8 +547,8 @@ export class GenerativeUICacheIndex {
     `;
   }
 
-  private generateCSS(params: any, metadata: UIComponentMetadata): string {
-    const color = params.color || '#4A90E2';
+  private generateCSS(params: Record<string, unknown>, metadata: UIComponentMetadata): string {
+    const color = (params.color as string | undefined) || '#4A90E2';
     return `.${metadata.type}-component { background: ${color}; padding: 1rem; border-radius: 4px; }`;
   }
 
@@ -557,7 +559,7 @@ export class GenerativeUICacheIndex {
     return compressed;
   }
 
-  private async generateEmbedding(id: string, params: any): Promise<number[]> {
+  private async generateEmbedding(id: string, params: Record<string, unknown>): Promise<number[]> {
     // A more robust, deterministic embedding generation based on string content.
     // This is a placeholder for a real model, but provides stable vectors.
     const text = `${id} ${JSON.stringify(params)}`;
@@ -573,7 +575,7 @@ export class GenerativeUICacheIndex {
     return embedding.map(v => v / magnitude);
   }
 
-  private inferComponentType(params: any): UIComponentMetadata['type'] {
+  private inferComponentType(params: Record<string, unknown>): UIComponentMetadata['type'] {
     if (params.chart || params.data) return 'chart';
     if (params.form || params.fields) return 'form';
     if (params.animation || params.keyframes) return 'animation';
@@ -581,7 +583,7 @@ export class GenerativeUICacheIndex {
     return 'widget';
   }
 
-  private calculateComplexity(params: any): number {
+  private calculateComplexity(params: Record<string, unknown>): number {
     let complexity = 1;
     if (params.animation) complexity += 2;
     if (params.webgl) complexity += 3;
@@ -590,7 +592,7 @@ export class GenerativeUICacheIndex {
     return Math.min(10, complexity);
   }
 
-  private extractDependencies(params: any): string[] {
+  private extractDependencies(params: Record<string, unknown>): string[] {
     const deps = [];
     if (params.d3) deps.push('d3');
     if (params.threejs) deps.push('three');
@@ -681,12 +683,12 @@ export class GenerativeUICacheIndex {
   private async recordInteraction(componentId: string, context: any, action: string): Promise<void> {
     await this.hmmPredictor.recordInteraction(action, { ...context, componentId });
     // Collect feedback for QLoRA training
-    await this.qloraService.collectFeedback(
-      `generate component ${componentId}`,
-      'Component generated successfully',
-      'positive',
-      context
-    );
+    await this.qloraService.collectFeedback({
+      prompt: `generate component ${componentId}`,
+      response: 'Component generated successfully',
+      outcome: 'positive',
+      context: context
+    });
   }
 
   private async calculateCacheHitRate(): Promise<number> {
@@ -776,7 +778,7 @@ export class GenerativeUICacheIndex {
   // Helper for Redis with fallback
   private async setRedis(key: string, value: string, ttlSeconds: number): Promise<void> {
     try {
-      await this.redis.set(key, value, 'EX', ttlSeconds);
+      await (this.redis as any).set(key, value, 'EX', ttlSeconds);
     } catch (e) {
       // Fallback for older ioredis versions
       await (this.redis as any).setex(key, ttlSeconds, value);
@@ -797,4 +799,5 @@ export class GenerativeUICacheIndex {
         }
       : { r: 0.5, g: 0.5, b: 0.5 };
   }
+}
 }

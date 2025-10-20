@@ -118,7 +118,7 @@ await context7Service.initialize();
           keydown={(e) => e.key === 'Enter' && performSearch()}
         />
         <Button
-          onclick={performSearch}
+          on:click={performSearch}
           disabled={$isAnalyzing || !searchQuery.trim()}
           class="px-6 bits-btn bits-btn"
         >
@@ -139,7 +139,7 @@ await context7Service.initialize();
             <Badge
               variant={selectedFilters.includes(filter) ? 'default' : 'outline'}
               class="cursor-pointer hover:bg-blue-100 transition-colors"
-              onclick={() => toggleFilter(filter)}
+              on:click={() => toggleFilter(filter)}
             >
               {filter}
             </Badge>
@@ -155,7 +155,7 @@ await context7Service.initialize();
               variant="ghost"
               size="sm"
               class="text-xs bits-btn bits-btn"
-              onclick={() =>
+              on:click={() =>
 useSampleQuery(query)}
             >
               {query}
@@ -263,7 +263,7 @@ useSampleQuery(query)}
           <div class="yorha-panel-header">
             <div class="flex items-center justify-between">
               <h3 class="nes-text is-primary text-lg">Recent Searches</h3>
-              <Button class="bits-btn" variant="ghost" size="sm" onclick={clearHistory}>
+              <Button class="bits-btn" variant="ghost" size="sm" on:click={clearHistory}>
 Clear
 </Button>
             </div>
@@ -273,7 +273,7 @@ Clear
               {#each searchHistory as query}
                 <button
                   class="w-full text-left p-2 text-sm rounded hover:bg-gray-100 transition-colors"
-                  onclick={() => useHistoryQuery(query)}
+                  on:click={() => useHistoryQuery(query)}
                 >
                   {query}
 </Button>

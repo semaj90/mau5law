@@ -104,7 +104,7 @@
     <Button class="bits-btn"
       variant="primary"
       size="md"
-      onclick={() =>
+      on:click={() =>
 showDialog = true}
     >
       <Plus class="w-4 h-4 mr-2" />
@@ -153,13 +153,13 @@ showDialog = true}
 {#snippet footer()}
   <Button class="bits-btn"
     variant="ghost"
-    onclick={() => showDialog = false}
+    on:click={() => showDialog = false}
   >
     Cancel
   </Button>
   <Button class="bits-btn"
     variant="primary"
-    onclick={handleCreateCase}
+    on:click={handleCreateCase}
     disabled={!caseName || !clientName || !selectedCaseType}
   >
     Create Case

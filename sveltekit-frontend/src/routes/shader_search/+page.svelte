@@ -209,7 +209,7 @@ if (!browser) return;
           <h3>Top Operations</h3>
           <div class="operation-tags">
             {#each stats.topOperations as op}
-              <span class="operation-tag" onclick={() => (selectedOperation = op.operation)}>
+              <span class="operation-tag" on:click={() => (selectedOperation = op.operation)}>
                 {op.operation} ({op.count})
               </span>
             {/each}
@@ -229,7 +229,7 @@ if (!browser) return;
           onkeydown={e => e.key === 'Enter' && performSearch()}
           class="search-input"
         />
-        <button onclick={performSearch} disabled={isSearching} class="search-button">
+        <button on:click={performSearch} disabled={isSearching} class="search-button">
           {isSearching ? '⏳' : '🔍'} Search
         </button>
       </div>
@@ -265,7 +265,7 @@ if (!browser) return;
             <option value={100}>100</option>
           </select>
         </div>
-        <button onclick={clearFilters} class="clear-button">Clear Filters</button>
+        <button on:click={clearFilters} class="clear-button">Clear Filters</button>
       </div>
       <!-- Tag Filters -->
       {#if availableTags.length > 0}
@@ -273,7 +273,7 @@ if (!browser) return;
           <label>Tags:</label>
           <div class="tag-filters">
             {#each availableTags as tag}
-              <button class="tag-button" class:selected={selectedTags.includes(tag)} onclick={() => toggleTag(tag)}>
+              <button class="tag-button" class:selected={selectedTags.includes(tag)} on:click={() => toggleTag(tag)}>
                 {tag}
               </button>
             {/each}
@@ -284,7 +284,7 @@ if (!browser) return;
         <div class="selected-tags">
           <strong>Selected Tags:</strong>
           {#each selectedTags as tag}
-            <span class="selected-tag" onclick={() => toggleTag(tag)}>
+            <span class="selected-tag" on:click={() => toggleTag(tag)}>
               {tag} ×
             </span>
           {/each}
@@ -305,7 +305,7 @@ if (!browser) return;
             {/if}
           </span>
           {#if searchResults.length > 0}
-            <button onclick={exportResults} class="export-button">📥 Export Results</button>
+            <button on:click={exportResults} class="export-button">📥 Export Results</button>
           {/if}
         </div>
       </div>
@@ -323,7 +323,7 @@ if (!browser) return;
     {:else}
       <div class="results-grid">
         {#each searchResults as shader}
-          <div class="shader-nier-bits-card" role="button" tabindex="0" onclick={() => (selectedShader = shader)}>
+          <div class="shader-nier-bits-card" role="button" tabindex="0" on:click={() => (selectedShader = shader)}>
             <div class="shader-header">
               <h3>{shader.id}</h3>
               <div class="shader-badges">
@@ -369,11 +369,11 @@ if (!browser) return;
   </section>
   <!-- Shader Detail Modal -->
   {#if selectedShader}
-    <div class="modal-backdrop" role="button" tabindex="0" onclick={() => (selectedShader = null)}>
-      <div class="modal" role="button" tabindex="0" onclick={e => e.stopPropagation()}>
+    <div class="modal-backdrop" role="button" tabindex="0" on:click={() => (selectedShader = null)}>
+      <div class="modal" role="button" tabindex="0" on:click={e => e.stopPropagation()}>
         <div class="modal-header">
           <h2>{selectedShader.id}</h2>
-          <button onclick={() => (selectedShader = null)} class="close-button">×</button>
+          <button on:click={() => (selectedShader = null)} class="close-button">×</button>
         </div>
         <div class="modal-content">
           <div class="shader-details">
@@ -412,7 +412,7 @@ if (!browser) return;
             <div class="detail-group">
               <div class="code-header">
                 <h3>WGSL Code</h3>
-                <button onclick={() => copyShaderCode(selectedShader!)} class="copy-button"> 📋 Copy Code </button>
+                <button on:click={() => copyShaderCode(selectedShader!)} class="copy-button"> 📋 Copy Code </button>
               </div>
               <div class="code-container">
                 <pre><code>{selectedShader.wgsl}</code></pre>

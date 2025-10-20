@@ -60,14 +60,14 @@ TODO: Implement logout functionality, clear session, redirect to login
 					<div class="flex justify-center gap-4">
 						<Button
 							class="nes-btn is-error"
-							onclick={handleLogout}
+							on:click={handleLogout}
 							disabled={isLoggingOut}
 						>
 							Logout Now
 						<Button
 							variant="ghost"
 							class="nes-btn"
-							onclick={() => window.history.back()}
+							on:click={() => window.history.back()}
 						>
 							Cancel
 					</div>

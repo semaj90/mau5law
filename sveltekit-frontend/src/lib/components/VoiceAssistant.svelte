@@ -69,7 +69,7 @@
       <p>Click the button and start speaking.</p>
     {/if}
     <button
-      onclick={() => {
+      on:click={() => {
         if (isListening) {
           recognition.stop();
           isListening = false;

@@ -193,7 +193,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="space-y-4">
   <Button
         class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-add-btn"
-        onclick={() =>
+        on:click={() =>
 (showAddDialog = true)}
         aria-label="Open dialog to add a new legal citation"
         aria-describedby="add-citation-help"
@@ -236,21 +236,21 @@ https://svelte.dev/e/js_parse_error -->
                   </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent {menu}>
-                  <DropdownMenuItem onclick={() => toggleFavorite(citation)}>
+                  <DropdownMenuItem on:click={() => toggleFavorite(citation)}>
                     <Star class="w-4 h-4 mr-2" />
                     {citation.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
                   </DropdownMenuItem>
-                  <DropdownMenuItem onclick={() => copyCitation(citation)}>
+                  <DropdownMenuItem on:click={() => copyCitation(citation)}>
                     <Copy class="w-4 h-4 mr-2" />
                     Copy citation
                   </DropdownMenuItem>
-                  <DropdownMenuItem onclick={() => editCitation(citation)}>
+                  <DropdownMenuItem on:click={() => editCitation(citation)}>
                     <Edit class="w-4 h-4 mr-2" />
                     Edit
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    onclick={() => deleteCitation(citation.id)}
+                    on:click={() => deleteCitation(citation.id)}
                     class="text-destructive">
                     <Trash2 class="w-4 h-4 mr-2" />
                     Delete
@@ -307,7 +307,7 @@ https://svelte.dev/e/js_parse_error -->
             <Button
               class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-filter-btn"
               variant="secondary"
-              onclick={() =>
+              on:click={() =>
 {
                 searchQuery = '';
                 selectedCategory = 'all';
@@ -331,7 +331,7 @@ https://svelte.dev/e/js_parse_error -->
             </p>
             <Button
               class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-first-citation-btn"
-              onclick={() =>
+              on:click={() =>
 (showAddDialog = true)}
               aria-label="Create your first legal citation"
               aria-describedby="first-citation-help"
@@ -402,7 +402,7 @@ https://svelte.dev/e/js_parse_error -->
   <Button
     class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
     variant="secondary"
-    onclick={() =>
+    on:click={() =>
 (showAddDialog = false)}
     aria-label="Cancel citation creation and close dialog"
     role="button"
@@ -411,7 +411,7 @@ https://svelte.dev/e/js_parse_error -->
   >Cancel
   <Button
     class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-save-btn"
-    onclick={() =>
+    on:click={() =>
 saveCitation()}
     disabled={!newCitation.title || !newCitation.content}
     aria-label={!newCitation.title || !newCitation.content ? 'Save citation - Title and content required' : 'Save new legal citation'}
@@ -472,7 +472,7 @@ saveCitation()}
   <Button
     class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
     variant="secondary"
-    onclick={() =>
+    on:click={() =>
 (editingCitation = null)}
     aria-label="Cancel editing and close dialog"
     role="button"
@@ -481,7 +481,7 @@ saveCitation()}
   >Cancel
   <Button
     class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-update-btn"
-    onclick={() =>
+    on:click={() =>
 updateCitation()}
     aria-label="Save changes to citation"
     aria-describedby="update-citation-help"

@@ -266,10 +266,10 @@ https://svelte.dev/e/js_parse_error -->
       <h3 class="nes-text is-primary flex items-center justify-between">
         <span>Connection Status</span>
         {#if !isInitialized}
-          <Button onclick={initializeConnection} disabled={isInitializing} class="px-4 py-2 bits-btn bits-btn">
+          <Button on:click={initializeConnection} disabled={isInitializing} class="px-4 py-2 bits-btn bits-btn">
 {isInitializing ? 'Initializing...' : 'Connect'}
         {:else}
-          <Button onclick={disconnect} class="px-4 py-2 bg-red-600 hover:bg-red-700 bits-btn bits-btn">
+          <Button on:click={disconnect} class="px-4 py-2 bg-red-600 hover:bg-red-700 bits-btn bits-btn">
 Disconnect
         {/if}
       </h3>
@@ -369,7 +369,7 @@ Disconnect
                 </select>
               </div>
             </div>
-            <Button onclick={sendTestMessage} class="w-full bits-btn bits-btn">
+            <Button on:click={sendTestMessage} class="w-full bits-btn bits-btn">
 Send Message
           </div>
         </div>
@@ -400,7 +400,7 @@ Send Message
                 <option value="semantic_analysis">Semantic Analysis</option>
               </select>
             </div>
-            <Button onclick={startStreamingRequest} class="w-full bits-btn bits-btn">
+            <Button on:click={startStreamingRequest} class="w-full bits-btn bits-btn">
 Start Stream
           </div>
         </div>
@@ -411,7 +411,7 @@ Start Stream
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center justify-between">
           <span>Performance Metrics</span>
-          <Button onclick={testPerformance} class="text-sm px-3 py-1 bits-btn bits-btn">
+          <Button on:click={testPerformance} class="text-sm px-3 py-1 bits-btn bits-btn">
 Run Performance Test
         </h3>
       </div>

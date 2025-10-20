@@ -267,7 +267,7 @@
                 </div>
                 <button
                   type="button"
-                  onclick={() => {
+                  on:click={() => {
                     selectedFile = null;
                     filePreview = null;
                     metadata = null;
@@ -493,7 +493,7 @@
       {/if}
       <!-- Submit Button -->
       <div style="text-align: center; margin: 20px 0;">
-        <button type="button" onclick={() => history.back()} disabled={$submitting} class="nes-btn"> ← Cancel </button>
+        <button type="button" on:click={() => history.back()} disabled={$submitting} class="nes-btn"> ← Cancel </button>
         <button
           type="submit"
           disabled={$submitting || (!selectedFile && $form.evidence_type !== 'LINK') || !$form.case_id || !$form.title}

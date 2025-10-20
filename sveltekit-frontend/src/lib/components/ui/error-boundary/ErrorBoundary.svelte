@@ -148,14 +148,14 @@
         <!-- Action Buttons -->
         <div class="flex flex-col sm:flex-row gap-golden-sm justify-center">
           <Button
-            onclick={resetError}
+            on:click={resetError}
             variant="yorha"
             class="bg-gradient-to-r from-nier-accent-warm to-nier-accent-cool text-nier-bg-primary"
           >
             Try Again
           </Button>
           <Button
-            onclick={reloadPage}
+            on:click={reloadPage}
             variant="ghost"
             class="border-nier-accent-cool text-nier-accent-cool hover:bg-nier-accent-cool hover:text-nier-bg-primary"
           >

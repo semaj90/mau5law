@@ -77,7 +77,7 @@
             <option value="regulation">Regulation Citations</option>
           </select>
         </div>
-        <Button onclick={handleSearch} class="search-button">🔍 Search</Button>
+        <Button on:click={handleSearch} class="search-button">🔍 Search</Button>
       </div>
     </CardContent>
   </Card>

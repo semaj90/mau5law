@@ -182,7 +182,7 @@
     <!-- Action Buttons -->
     <div class="flex gap-2 mt-4">
       <Button
-        onclick={() => onView(caseData.id)}
+        on:click={() => onView(caseData.id)}
         class="bits-btn flex-1"
         size="sm"
       >
@@ -190,7 +190,7 @@
         View Details
       </Button>
       <Button
-        onclick={() => onEdit(caseData.id)}
+        on:click={() => onEdit(caseData.id)}
         variant="ghost"
         class="bits-btn"
         size="sm"
@@ -209,7 +209,7 @@
     transitionscale={{ duration: 200, start: 0.95 }}
   >
     <Button
-      onclick={() => onView(caseData.id)}
+      on:click={() => onView(caseData.id)}
       variant="ghost"
       class="bits-btn w-full justify-start"
       size="sm"
@@ -218,7 +218,7 @@
       View Details
     </Button>
     <Button
-      onclick={() => onEdit(caseData.id)}
+      on:click={() => onEdit(caseData.id)}
       variant="ghost"
       class="bits-btn w-full justify-start"
       size="sm"
@@ -228,7 +228,7 @@
     </Button>
     <div class="h-px bg-nier-light-gray dark:bg-nier-gray/30 my-2"></div>
     <Button
-      onclick={() => onArchive(caseData.id)}
+      on:click={() => onArchive(caseData.id)}
       variant="ghost"
       class="bits-btn w-full justify-start text-nier-amber hover:bg-nier-amber/10"
       size="sm"
@@ -237,7 +237,7 @@
       Archive
     </Button>
     <Button
-      onclick={() => onDelete(caseData.id)}
+      on:click={() => onDelete(caseData.id)}
       variant="ghost"
       class="bits-btn w-full justify-start text-harvard-crimson hover:bg-harvard-crimson/10"
       size="sm"

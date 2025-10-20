@@ -63,7 +63,7 @@
   <button
     type="button"
     class="dropdown-trigger"
-    onclick={e => {
+    on:click={e => {
       e.stopPropagation();
       toggle();
     }}
@@ -84,7 +84,7 @@
       role="menu"
       tabindex="-1"
       class="dropdown-menu"
-      onclick={e => e.stopPropagation()}
+      on:click={e => e.stopPropagation()}
       onkeydown={e => {
         if (e.key === 'Escape') close();
       }}

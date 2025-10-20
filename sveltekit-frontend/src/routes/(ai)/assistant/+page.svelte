@@ -141,7 +141,7 @@
     <h2>⚡ Quick Legal Queries</h2>
     <div class="quick-buttons">
       {#each quickQueries as query}
-        <Button onclick={() => handleQuickQuery(query)} disabled={isStreaming} class="quick-button">
+        <Button on:click={() => handleQuickQuery(query)} disabled={isStreaming} class="quick-button">
           {query}
         </Button>
       {/each}
@@ -191,7 +191,7 @@
             class="message-input"
             rows="3"
           ></textarea>
-          <Button onclick={sendMessage} disabled={!currentMessage.trim() || isStreaming} class="send-button">
+          <Button on:click={sendMessage} disabled={!currentMessage.trim() || isStreaming} class="send-button">
             {isStreaming ? '🔄' : '📤'} Send
           </Button>
         </div>

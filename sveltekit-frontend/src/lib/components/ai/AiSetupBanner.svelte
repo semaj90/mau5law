@@ -107,7 +107,7 @@ https: //svelte.dev/e/js_parse_error -->
             {/if}
           </span>
           {#if (data as CustomEvent).details?.ollama?.required_model && !d(ata as CustomEvent).details?.ai_summarize_checks?.model}
-            <button class="pull" onclick={(_event: MouseEvent) => pullModel} aria-label="Pull required model">Pull model</button>
+            <button class="pull" on:click={(_event: MouseEvent) => pullModel} aria-label="Pull required model">Pull model</button>
           {/if}
         </div>
       </div>

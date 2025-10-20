@@ -96,7 +96,7 @@
       <button
         class="filter-button"
         class:active={filtersOpen}
-        onclick={() => toggleFilters()}
+        on:click={() => toggleFilters()}
         aria-label="Toggle filters"
         title="Filters"
       >
@@ -175,7 +175,7 @@
       <button
         type="button"
         class="clear-filters-btn"
-        onclick={() => {
+        on:click={() => {
           selectedFileTypes = [];
           dateRange = { from: '', to: '' };
           dispatchFilters();

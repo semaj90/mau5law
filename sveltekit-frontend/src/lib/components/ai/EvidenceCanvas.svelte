@@ -393,7 +393,7 @@
       type="button"
       class={'nes-btn ' +
         (analysisStatus === 'idle' ? 'is-primary' : analysisStatus === 'complete' ? 'is-success' : 'is-warning')}
-      onclick={handleAnalysis}
+      on:click={handleAnalysis}
       disabled={analysisStatus === 'analyzing' || analysisStatus === 'pending'}
     >
       {#if analysisStatus === 'analyzing'}
@@ -410,7 +410,7 @@
         Analyze Evidence
       {/if}
     </button>
-    <button type="button" class="nes-btn" onclick={saveCanvas}>
+    <button type="button" class="nes-btn" on:click={saveCanvas}>
       <Save size={16} />
       Save Canvas
     </button>

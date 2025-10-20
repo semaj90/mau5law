@@ -195,7 +195,7 @@
         disabled={isProcessing}
       />
       <button
-        onclick={processQuery}
+        on:click={processQuery}
         disabled={isProcessing || !queryInput.trim()}
         class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
@@ -403,13 +403,13 @@
               <div class="flex gap-2 ml-4">
                 {#if !$userFeedback.has(suggestion.id)}
                   <button
-                    onclick={() => acceptSuggestion(suggestion)}
+                    on:click={() => acceptSuggestion(suggestion)}
                     class="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700"
                   >
                     ✓ Accept
                   </button>
                   <button
-                    onclick={() => rejectSuggestion(suggestion)}
+                    on:click={() => rejectSuggestion(suggestion)}
                     class="px-3 py-1 bg-gray-400 text-white rounded text-xs hover:bg-gray-500"
                   >
                     ✗ Reject

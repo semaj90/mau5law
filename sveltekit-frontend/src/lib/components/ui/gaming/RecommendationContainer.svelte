@@ -354,7 +354,7 @@
       <!-- Trigger/Header -->
       <Collapsible.Trigger asChild>
         {#snippet children({ builder })}
-          <button use:builder.action {...builder} class="container-trigger" onclick={toggleContainer}>
+          <button use:builder.action {...builder} class="container-trigger" on:click={toggleContainer}>
             <div class="trigger-content">
               <div class="trigger-left">
                 <span class="trigger-icon">🎯</span>
@@ -425,7 +425,7 @@
                                 use:builder.action
                                 {...builder}
                                 class={getFeedbackButtonClass(rec.id, 'positive', rec.feedback)}
-                                onclick={() => submitFeedback(rec.id, 'positive', rec)}
+                                on:click={() => submitFeedback(rec.id, 'positive', rec)}
                                 disabled={feedbackCooldown.has(rec.id) || processingFeedback}
                               >
                                 👍
@@ -445,7 +445,7 @@
                                 use:builder.action
                                 {...builder}
                                 class={getFeedbackButtonClass(rec.id, 'negative', rec.feedback)}
-                                onclick={() => submitFeedback(rec.id, 'negative', rec)}
+                                on:click={() => submitFeedback(rec.id, 'negative', rec)}
                                 disabled={feedbackCooldown.has(rec.id) || processingFeedback}
                               >
                                 👎
@@ -468,9 +468,9 @@
                   {/if}
                 </div>
                 <div class="nier-bits-card-actions">
-                  <button class="view-all-btn" onclick={() => openModal(type)}> View All </button>
+                  <button class="view-all-btn" on:click={() => openModal(type)}> View All </button>
                   {#if recs[0]}
-                    <button class="quick-action-btn {recs[0].priority}" onclick={() => recs[0].action?.()}>
+                    <button class="quick-action-btn {recs[0].priority}" on:click={() => recs[0].action?.()}>
                       Quick Action
                     </button>
                   {/if}
@@ -481,7 +481,7 @@
           <!-- View All Recommendations -->
           <div.Root class="view-all-nier-bits-card">
             <div.Content class="view-all-content">
-              <button class="view-all-recommendations" onclick={() => openModal()}>
+              <button class="view-all-recommendations" on:click={() => openModal()}>
                 <span class="view-all-icon">📋</span>
                 <span class="view-all-text">View All Recommendations</span>
                 <span class="view-all-count">({recommendations.length})</span>

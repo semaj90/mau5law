@@ -267,20 +267,20 @@
       <!-- Action Buttons -->
       <div class="grid grid-cols-3 gap-2">
         <button
-          onclick={processRequest}
+          on:click={processRequest}
           disabled={$isProcessing}
           class="bg-green-900 border border-green-400 text-green-400 p-2 text-sm hover:bg-green-800 disabled:opacity-50"
         >
           {$isProcessing ? 'PROCESSING...' : 'EXECUTE'}
         </button>
         <button
-          onclick={checkHealth}
+          on:click={checkHealth}
           class="bg-blue-900 border border-blue-400 text-blue-400 p-2 text-sm hover:bg-blue-800"
         >
           HEALTH CHECK
         </button>
         <button
-          onclick={loadAnalytics}
+          on:click={loadAnalytics}
           class="bg-purple-900 border border-purple-400 text-purple-400 p-2 text-sm hover:bg-purple-800"
         >
           ANALYTICS

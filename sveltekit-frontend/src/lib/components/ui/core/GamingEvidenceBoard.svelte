@@ -161,11 +161,11 @@
   <!-- Gaming-style toolbar -->
   <div class="toolbar">
     <div class="zoom-controls">
-      <Button class="zoom-btn" onclick={() => (zoom = Math.max(50, zoom - 10))}>
+      <Button class="zoom-btn" on:click={() => (zoom = Math.max(50, zoom - 10))}>
         🔍 {zoom}%
       </Button>
       <Button class="action-btn">🔗 CONNECT</Button>
-      <Button class="action-btn" onclick={addEvidence}>➕ ADD EVIDENCE</Button>
+      <Button class="action-btn" on:click={addEvidence}>➕ ADD EVIDENCE</Button>
       <Button class="action-btn">📚 LIBRARY (0)</Button>
     </div>
     <div class="connection-status">
@@ -191,7 +191,7 @@
           top: {item.y}px;
           border-color: {builder.styling.colors.primary}
         "
-        onclick={() => selectEvidence(item.id)}
+        on:click={() => selectEvidence(item.id)}
         transition:scale={builder.animations.enter}
       >
         <!-- Evidence type indicator -->

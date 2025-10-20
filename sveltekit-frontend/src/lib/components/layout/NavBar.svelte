@@ -66,7 +66,7 @@
     <!-- Left section: Logo + Sidebar Toggle -->
     <div class="nav-left">
       {#if onToggleSidebar}
-        <button class="sidebar-toggle" onclick={onToggleSidebar} aria-label="Toggle sidebar">
+        <button class="sidebar-toggle" on:click={onToggleSidebar} aria-label="Toggle sidebar">
           <span class="hamburger" class:open={sidebarOpen}>
             <span></span>
             <span></span>
@@ -76,7 +76,7 @@
       {/if}
 
       <div class="logo">
-        <button class="logo-btn" onclick={() => handleNavigation(isAuthenticated ? '/dashboard' : '/')}>
+        <button class="logo-btn" on:click={() => handleNavigation(isAuthenticated ? '/dashboard' : '/')}>
           <span class="logo-icon">🎮</span>
           <span class="logo-text">Legal AI</span>
         </button>
@@ -101,7 +101,7 @@
       <div class="theme-selector">
         <button
           class="theme-btn"
-          onclick={() => (showThemeDropdown = !showThemeDropdown)}
+          on:click={() => (showThemeDropdown = !showThemeDropdown)}
           aria-label="Switch console theme"
         >
           <span class="theme-icon">🎨</span>
@@ -115,7 +115,7 @@
               <button
                 class="theme-option"
                 class:active={key === selectedTheme}
-                onclick={() => switchTheme(key as ConsolePaletteName)}
+                on:click={() => switchTheme(key as ConsolePaletteName)}
               >
                 <span class="theme-preview" style="background: {palette.colors.primary}"></span>
                 <span class="theme-info">
@@ -134,18 +134,18 @@
       <!-- User Menu -->
       {#if isAuthenticated && user}
         <div class="user-menu">
-          <button class="user-btn" onclick={() => goto('/profile')}>
+          <button class="user-btn" on:click={() => goto('/profile')}>
             <span class="user-avatar">👤</span>
             <span class="user-name">{user.email}</span>
           </button>
-          <button class="logout-btn" onclick={handleLogout}>
+          <button class="logout-btn" on:click={handleLogout}>
             <span>🚪</span> Logout
           </button>
         </div>
       {:else}
         <div class="auth-buttons">
-          <button class="login-btn" onclick={() => goto('/login')}> Login </button>
-          <button class="signup-btn" onclick={() => goto('/register')}> Sign Up </button>
+          <button class="login-btn" on:click={() => goto('/login')}> Login </button>
+          <button class="signup-btn" on:click={() => goto('/register')}> Sign Up </button>
         </div>
       {/if}
     </div>

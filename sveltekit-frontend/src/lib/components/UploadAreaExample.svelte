@@ -131,7 +131,7 @@
         <div class="space-y-4" role="status">
           <i class="space-y-4"></i>
           {uploadStatus}
-          <button type="button" class="space-y-4" aria-label="Clear status" onclick={() => clearStatus()}></button>
+          <button type="button" class="space-y-4" aria-label="Clear status" on:click={() => clearStatus()}></button>
         </div>
       {/if}
     </div>
@@ -140,7 +140,7 @@
         <div class="space-y-4">
           <h5>Upload Results</h5>
           {#if uploadedFiles.length > 0}
-            <button type="button" class="space-y-4" onclick={() => clearStatus()}> Clear </button>
+            <button type="button" class="space-y-4" on:click={() => clearStatus()}> Clear </button>
           {/if}
         </div>
         <div class="space-y-4">

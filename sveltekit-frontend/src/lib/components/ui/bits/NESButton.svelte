@@ -71,7 +71,7 @@
   class:is-rounded={rounded}
   class:is-hovered={isHovered}
   {disabled}
-  onclick={handleClick}
+  on:click={handleClick}
   onkeydown={handleKeydown}
   onmouseenter={() => (isHovered = true)}
   onmouseleave={() => (isHovered = false)}

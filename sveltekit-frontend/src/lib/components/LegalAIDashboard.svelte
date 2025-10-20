@@ -166,7 +166,7 @@ try {
         </div>
         <div class="flex items-center space-x-4">
           <button
-            onclick={createNewCase}
+            on:click={createNewCase}
             class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
           >
             New Case
@@ -278,7 +278,7 @@ try {
                 {#each filteredCases as case_ (case_.id)}
                   <div
                     class="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer transition-colors"
-                    onclick={() => selectCase(case_)}
+                    on:click={() => selectCase(case_)}
                     class:ring-2={selectedCase?.id === case_.id}
                     class:ring-blue-500={selectedCase?.id === case_.id}
                   >
@@ -296,7 +296,7 @@ try {
                         </div>
                       </div>
                       <button
-                        onclick={(e) => { e.stopPropagation(); uploadEvidence(case_.id), }}
+                        on:click={(e) => { e.stopPropagation(); uploadEvidence(case_.id), }}
                         class="ml-4 text-blue-600 hover:text-blue-800 text-sm"
                       >
                         Add Evidence

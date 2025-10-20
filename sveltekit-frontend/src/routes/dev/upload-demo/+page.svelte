@@ -33,4 +33,4 @@
 <hr />
 <h3>Save metadata (JSON example)</h3>
 <pre>{JSON.stringify(metadata, null, 2)}</pre>
-<button onclick={saveMetadata}>Save metadata</button>
+<button on:click={saveMetadata}>Save metadata</button>

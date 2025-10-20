@@ -24,6 +24,11 @@ export interface EnvironmentConfig {
     debug: boolean;
     verbose: boolean;
   }
+  readonly minioEndpoint: string;
+  readonly minioAccessKey: string;
+  readonly minioSecretKey: string;
+  readonly minioBucket: string;
+  readonly mcpServerUrl: string;
 }
 /**
  * Detect and configure Ollama environment
@@ -87,7 +92,12 @@ export async function initializeEnvironment(): Promise<EnvironmentConfig> {
       isDev: process.env.NODE_ENV === 'development',
       debug: process.env.DEBUG === 'true' || process.env.VITE_DEBUG === 'true',
       verbose: process.env.VERBOSE === 'true' || process.env.VITE_VERBOSE === 'true'
-    }
+    },
+    readonly minioEndpoint: import.meta.env.VITE_MINIO_ENDPOINT || 'http://localhost:9000',
+    readonly minioAccessKey: import.meta.env.VITE_MINIO_ACCESS_KEY || 'minio',
+    readonly minioSecretKey: import.meta.env.VITE_MINIO_SECRET_KEY || 'minio123',
+    readonly minioBucket: import.meta.env.VITE_MINIO_BUCKET || 'legal-documents',
+    readonly mcpServerUrl: import.meta.env.VITE_MCP_SERVER_URL || 'http://localhost:8777', // Updated to 8777 as per instructions
   }
 }
 /**
@@ -124,13 +134,13 @@ export function setOllamaEnvironment(baseUrl: string, port: number): void {
   // For browser environments, you might store this in localStorage
   if (typeof window !== 'undefined') {
     window.localStorage.setItem('ollama_url', baseUrl);
-    window.localStorage.setItem('ollama_port', port.toString();
+    window.localStorage.setItem('ollama_port', port.toString());
   }
 }
 /**
  * Get runtime configuration with smart defaults
  */
-export const ENV_CONFIG = {
+export const ENV_CONFIG: EnvironmentConfig = {
   get OLLAMA_URL() {
     return getOllamaConfig().baseUrl;
   },
@@ -151,6 +161,11 @@ export const ENV_CONFIG = {
   },
   get IS_SERVER() {
     return typeof process !== 'undefined' && process.versions?.node;
-  }
+  },
+  minioEndpoint: import.meta.env.VITE_MINIO_ENDPOINT || 'http://localhost:9000',
+  minioAccessKey: import.meta.env.VITE_MINIO_ACCESS_KEY || 'minio',
+  minioSecretKey: import.meta.env.VITE_MINIO_SECRET_KEY || 'minio123',
+  minioBucket: import.meta.env.VITE_MINIO_BUCKET || 'legal-documents',
+  mcpServerUrl: import.meta.env.VITE_MCP_SERVER_URL || 'http://localhost:8777', // Updated to 8777 as per instructions
 }
 export default ENV_CONFIG;

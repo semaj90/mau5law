@@ -311,7 +311,7 @@ await loadSystemHealth();
             Semantic Search
           </h3>
           {#each demoSearchQueries as example}
-            <div class="demo-example-nier-bits-card" onclick={() => loadDemoQuery(example.query)}>
+            <div class="demo-example-nier-bits-card" on:click={() => loadDemoQuery(example.query)}>
               <h4 class="font-medium text-sm mb-1">{example.category}</h4>
               <p class="text-xs nes-text is-disabled mb-2">{example.description}</p>
               <p class="text-xs bg-muted p-2 rounded font-mono">{example.query}</p>
@@ -325,7 +325,7 @@ await loadSystemHealth();
             AI Recommendations
           </h3>
           {#each demoRecommendationContexts as example}
-            <div class="demo-example-nier-bits-card" onclick={() => loadDemoContext(example.context, example.role)}>
+            <div class="demo-example-nier-bits-card" on:click={() => loadDemoContext(example.context, example.role)}>
               <h4 class="font-medium text-sm mb-1">{example.description}</h4>
               <Badge class="bits-badge-outline text-xs mb-2">{example.role}</Badge>
               <p class="text-xs nes-text is-disabled">{example.context.substring(0, 80)}...</p>
@@ -339,7 +339,7 @@ await loadSystemHealth();
             Document Analysis
           </h3>
           {#each demoAnalysisContent as example}
-            <div class="demo-example-nier-bits-card" onclick={() => loadDemoContent(example.content)}>
+            <div class="demo-example-nier-bits-card" on:click={() => loadDemoContent(example.content)}>
               <h4 class="font-medium text-sm mb-1">{example.type}</h4>
               <p class="text-xs nes-text is-disabled mb-2">{example.description}</p>
               <p class="text-xs bg-muted p-2 rounded">{example.content.substring(0, 60)}...</p>
@@ -354,7 +354,7 @@ await loadSystemHealth();
     <Button class="bits-btn"
       variant={activeTab === 'search' ? 'default' : 'ghost'}
       size="sm"
-  onclick={() =>
+  on:click={() =>
 activeTab = 'search'}
       class="flex items-center gap-2"
     >
@@ -364,7 +364,7 @@ activeTab = 'search'}
     <Button class="bits-btn"
       variant={activeTab === 'recommendations' ? 'default' : 'ghost'}
       size="sm"
-  onclick={() =>
+  on:click={() =>
 activeTab = 'recommendations'}
       class="flex items-center gap-2"
     >
@@ -374,7 +374,7 @@ activeTab = 'recommendations'}
     <Button class="bits-btn"
       variant={activeTab === 'analysis' ? 'default' : 'ghost'}
       size="sm"
-  onclick={() =>
+  on:click={() =>
 activeTab = 'analysis'}
       class="flex items-center gap-2"
     >
@@ -384,7 +384,7 @@ activeTab = 'analysis'}
     <Button class="bits-btn"
       variant={activeTab === 'health' ? 'default' : 'ghost'}
       size="sm"
-  onclick={() =>
+  on:click={() =>
 activeTab = 'health'}
       class="flex items-center gap-2"
     >
@@ -439,7 +439,7 @@ activeTab = 'health'}
           {/if}
           <div class="flex items-center gap-2">
             <Button
-              onclick={performSearch}
+              on:click={performSearch}
               disabled={isProcessing || !searchQuery.trim()}
               class="bits-btn-default bits-btn bits-btn"
             >
@@ -454,7 +454,7 @@ activeTab = 'health'}
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
-              onclick={() =>
+              on:click={() =>
 showAdvancedOptions = !showAdvancedOptions}
             >
               <Settings class="h-4 w-4" />
@@ -566,7 +566,7 @@ showAdvancedOptions = !showAdvancedOptions}
             </div>
           </div>
           <Button
-            onclick={generateRecommendations}
+            on:click={generateRecommendations}
             disabled={isProcessing || !recommendationContext.trim()}
             class="bits-btn-default bits-btn bits-btn"
           >
@@ -665,7 +665,7 @@ showAdvancedOptions = !showAdvancedOptions}
             />
           </div>
           <Button
-            onclick={performSemanticAnalysis}
+            on:click={performSemanticAnalysis}
             disabled={isProcessing || !analysisContent.trim()}
             class="bits-btn-default bits-btn bits-btn"
           >
@@ -834,7 +834,7 @@ showAdvancedOptions = !showAdvancedOptions}
               <Activity class="h-5 w-5" />
               Vector Intelligence System Health
             </span>
-            <Button class="bits-btn" variant="ghost" size="sm" onclick={loadSystemHealth}>
+            <Button class="bits-btn" variant="ghost" size="sm" on:click={loadSystemHealth}>
 <RefreshCw class="h-4 w-4" />
 </Button>
           </h3>

@@ -182,12 +182,12 @@ https://svelte.dev/e/js_parse_error -->
   let ragTokenCount = $derived(ragStore.tokenCount);
 </script>
 {#if isOpen}
-  <div class="ai-assistant-overlay" transitifade={{ duration: 200 }} onclick={onClose}>
+  <div class="ai-assistant-overlay" transitifade={{ duration: 200 }} on:click={onClose}>
     <div
       class="ai-assistant-container"
       style="width: {containerWidth}px; height: {containerHeight}px;"
       /* transition removed */}
-      onclick={(e) => e.stopPropagation()}>
+      on:click={(e) => e.stopPropagation()}>
       <!-- Header -->
       <header class="assistant-header">
         <div class="header-left">
@@ -202,23 +202,23 @@ https://svelte.dev/e/js_parse_error -->
             <button
               class="mode-btn"
               class:active={currentMode === 'chat'}
-              onclick={() => switchMode('chat')}>
+              on:click={() => switchMode('chat')}>
               💬 Chat
             </button>
             <button
               class="mode-btn"
               class:active={currentMode === 'evidence'}
-              onclick={() => switchMode('evidence')}>
+              on:click={() => switchMode('evidence')}>
               📁 Evidence
             </button>
             <button
               class="mode-btn"
               class:active={currentMode === 'analysis'}
-              onclick={() => switchMode('analysis')}>
+              on:click={() => switchMode('analysis')}>
               📊 Analysis
             </button>
           </div>
-          <button class="close-btn" onclick={onClose}>✕</button>
+          <button class="close-btn" on:click={onClose}>✕</button>
         </div>
       </header>
       <!-- Search Bar - Golden Ratio Positioned -->
@@ -237,14 +237,14 @@ https://svelte.dev/e/js_parse_error -->
             disabled={isProcessing} />
           <button
             class="search-btn"
-            onclick={handleSearch}
+            on:click={handleSearch}
             disabled={isProcessing || !searchQuery.trim()}>
             {isProcessing ? '⚡' : '🔍'}
           </button>
         </div>
         <!-- Context Toggle -->
         <div class="context-controls">
-          <button class="context-toggle" onclick={() => (contextExpanded = !contextExpanded)}>
+          <button class="context-toggle" on:click={() => (contextExpanded = !contextExpanded)}>
             📋 Context ({evidenceItems.length})
           </button>
           {#if $ragStatus !== 'idle'}
@@ -259,7 +259,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="context-panel" /* transition removed */}>
           <div class="context-header">
             <h3>Active Context</h3>
-            <button onclick={() => (contextExpanded = false)}>✕</button>
+            <button on:click={() => (contextExpanded = false)}>✕</button>
           </div>
           <div class="context-items">
             {#each evidenceItems.slice(0, 3) as item}
@@ -318,11 +318,11 @@ https://svelte.dev/e/js_parse_error -->
                     const file = e.target?.files?.[0];
                     if (file) addEvidence(file);
                   }} />
-                <button onclick={() => document.getElementById('evidence-upload')?.click()}>
+                <button on:click={() => document.getElementById('evidence-upload')?.click()}>
                   📁 Upload
                 </button>
-                <button onclick={() => addEvidence()}> ➕ Add Item </button>
-                <button onclick={exportEvidence}> 💾 Export </button>
+                <button on:click={() => addEvidence()}> ➕ Add Item </button>
+                <button on:click={exportEvidence}> 💾 Export </button>
               </div>
             </div>
             <div class="evidence-grid">
@@ -330,7 +330,7 @@ https://svelte.dev/e/js_parse_error -->
                 <div class="evidence-item" transitiscale={{ duration: 200, delay: index * 50 }}>
                   <div class="evidence-header">
                     <h3>{evidence.name}</h3>
-                    <button onclick={() => removeEvidence(evidence.id)}>🗑️</button>
+                    <button on:click={() => removeEvidence(evidence.id)}>🗑️</button>
                   </div>
                   <div class="evidence-content">
                     <div class="evidence-type">{evidence.type}</div>
@@ -347,7 +347,7 @@ https://svelte.dev/e/js_parse_error -->
                 <div class="evidence-empty">
                   <div class="empty-icon">📁</div>
                   <p>No evidence items yet</p>
-                  <button onclick={() => addEvidence()}>Add your first evidence item</button>
+                  <button on:click={() => addEvidence()}>Add your first evidence item</button>
                 </div>
               {/if}
             </div>
@@ -409,8 +409,8 @@ https://svelte.dev/e/js_parse_error -->
           <span class="token-count">{$ragTokenCount} tokens</span>
         </div>
         <div class="footer-controls">
-          <button onclick={() => ragStore.clear()}>Clear Session</button>
-          <button onclick={exportEvidence}>Export All</button>
+          <button on:click={() => ragStore.clear()}>Clear Session</button>
+          <button on:click={exportEvidence}>Export All</button>
         </div>
       </footer>
     </div>

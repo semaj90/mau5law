@@ -728,9 +728,9 @@ if (preloadShaders) {
       <div class="error-title">SHADER ERROR</div>
       <div class="error-message">{errorMessage}</div>
       <div class="error-actions">
-        <button class="retry-button" onclick={() => initializeShaderCache()}> RETRY COMPILATION </button>
+        <button class="retry-button" on:click={() => initializeShaderCache()}> RETRY COMPILATION </button>
         {#if enableHotReload}
-          <button class="hotreload-button" onclick={hotReloadShader}> HOT RELOAD </button>
+          <button class="hotreload-button" on:click={hotReloadShader}> HOT RELOAD </button>
         {/if}
       </div>
     </div>
@@ -759,7 +759,7 @@ if (preloadShaders) {
   <!-- Hot Reload Controls -->
   {#if enableHotReload && enableDebugMode}
     <div class="hotreload-controls">
-      <button class="hotreload-trigger" onclick={hotReloadShader}> 🔥 HOT RELOAD </button>
+      <button class="hotreload-trigger" on:click={hotReloadShader}> 🔥 HOT RELOAD </button>
       <div class="hotreload-count">{shaderHotReloadCount}</div>
     </div>
   {/if}

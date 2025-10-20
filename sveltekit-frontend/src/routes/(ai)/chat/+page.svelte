@@ -214,14 +214,14 @@
         <p>SELECT A QUERY TYPE:</p>
         <button
           class="nes-btn is-primary"
-          onclick={() => (currentMessage = 'What are the key elements of a valid contract?')}
+          on:click={() => (currentMessage = 'What are the key elements of a valid contract?')}
         >
           📋 CONTRACT LAW
         </button>
-        <button class="nes-btn is-success" onclick={() => (currentMessage = 'Explain intellectual property basics')}>
+        <button class="nes-btn is-success" on:click={() => (currentMessage = 'Explain intellectual property basics')}>
           💡 IP BASICS
         </button>
-        <button class="nes-btn is-warning" onclick={() => (currentMessage = 'What is due diligence in M&A?')}>
+        <button class="nes-btn is-warning" on:click={() => (currentMessage = 'What is due diligence in M&A?')}>
           🔍 M&A DUE DILIGENCE
         </button>
       </div>
@@ -267,7 +267,7 @@
       <button
         type="button"
         class="nes-btn is-primary"
-        onclick={sendMessage}
+        on:click={sendMessage}
         disabled={!currentMessage.trim() || isLoading || connectionStatus === 'disconnected'}
       >
         {#if isLoading}
@@ -279,7 +279,7 @@
       <button
         type="button"
         class="nes-btn"
-        onclick={() => {
+        on:click={() => {
           messages = [];
           currentMessage = '';
         }}

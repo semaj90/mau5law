@@ -179,7 +179,7 @@ https://svelte.dev/e/js_parse_error -->
           </select>
           <!-- Manual Refresh -->
           <button
-            onclick={fetchDashboardData}
+            on:click={fetchDashboardData}
             class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 text-sm"
           >
             Refresh
@@ -226,19 +226,19 @@ https://svelte.dev/e/js_parse_error -->
           <h2 class="text-xl font-bold text-gray-900">Workflow Control</h2>
           <div class="flex space-x-2">
             <button
-              onclick={() => controlWorkflow('pause_processing')}
+              on:click={() => controlWorkflow('pause_processing')}
               class="bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:bg-yellow-600"
             >
               Pause
             </button>
             <button
-              onclick={() => controlWorkflow('resume_processing')}
+              on:click={() => controlWorkflow('resume_processing')}
               class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
             >
               Resume
             </button>
             <button
-              onclick={() => controlWorkflow('clear_completed')}
+              on:click={() => controlWorkflow('clear_completed')}
               class="bg-gray-500 text-white px-3 py-1 rounded text-sm hover:bg-gray-600"
             >
               Clear Completed
@@ -307,7 +307,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <div class="mt-4 flex justify-between items-center">
           <button
-            onclick={submitTestJob}
+            on:click={submitTestJob}
             class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           >
             Submit Job

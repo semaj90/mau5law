@@ -450,14 +450,14 @@ https://svelte.dev/e/js_parse_error -->
     <div class="mx-auto px-4 max-w-7xl">
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
-        onclick={(_event: MouseEvent) => ) => saveContent(}
+        on:click={(_event: MouseEvent) => ) => saveContent(}
         title="Save (Ctrl+S)"
       >
         <Save size="18" />
       </button>
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
-        onclick={(_event: MouseEvent) => ) => importDocument(}
+        on:click={(_event: MouseEvent) => ) => importDocument(}
         title="Import Document"
       >
         <Upload size="18" />
@@ -468,11 +468,11 @@ https://svelte.dev/e/js_parse_error -->
           <ChevronDown size="14" />
         </button>
         <div class="mx-auto px-4 max-w-7xl">
-          <button aria-label="Action button" onclick={(_event: MouseEvent) => ) => exportDocument("html"}>Export as HTML</button
+          <button aria-label="Action button" on:click={(_event: MouseEvent) => ) => exportDocument("html"}>Export as HTML</button
           >
-          <button aria-label="Action button" onclick={(_event: MouseEvent) => ) => exportDocument("json"}>Export as JSON</button
+          <button aria-label="Action button" on:click={(_event: MouseEvent) => ) => exportDocument("json"}>Export as JSON</button
           >
-          <button aria-label="Action button" onclick={(_event: MouseEvent) => ) => exportDocument("pdf"}>Export as PDF</button>
+          <button aria-label="Action button" on:click={(_event: MouseEvent) => ) => exportDocument("pdf"}>Export as PDF</button>
         </div>
       </div>
     </div>
@@ -482,7 +482,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:disabled={!state.canUndo}
-        onclick={(_event: MouseEvent) => ) => editor?.commands.undo(}
+        on:click={(_event: MouseEvent) => ) => editor?.commands.undo(}
         title="Undo (Ctrl+Z)"
       >
         <Undo size="18" />
@@ -490,7 +490,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:disabled={!state.canRedo}
-        onclick={(_event: MouseEvent) => ) => editor?.commands.redo(}
+        on:click={(_event: MouseEvent) => ) => editor?.commands.redo(}
         title="Redo (Ctrl+Shift+Z)"
       >
         <Redo size="18" />
@@ -512,7 +512,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isBold}
-        onclick={(_event: MouseEvent) => ) => toggleBold(}
+        on:click={(_event: MouseEvent) => ) => toggleBold(}
         title="Bold (Ctrl+B)"
       >
         <Bold size="18" />
@@ -520,7 +520,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isItalic}
-        onclick={(_event: MouseEvent) => ) => toggleItalic(}
+        on:click={(_event: MouseEvent) => ) => toggleItalic(}
         title="Italic (Ctrl+I)"
       >
         <Italic size="18" />
@@ -528,7 +528,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isUnderline}
-        onclick={(_event: MouseEvent) => ) => toggleUnderline()
+        on:click={(_event: MouseEvent) => ) => toggleUnderline()
         title="Underline (Ctrl+U)"
       >
         <Underline size="18" />
@@ -536,7 +536,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isStrike}
-        onclick={(_event: MouseEvent) => ) => toggleStrike(}
+        on:click={(_event: MouseEvent) => ) => toggleStrike(}
         title="Strikethrough"
       >
         <Strikethrough size="18" />
@@ -563,7 +563,7 @@ https://svelte.dev/e/js_parse_error -->
             <button aria-label="Action button"
               class="mx-auto px-4 max-w-7xl"
               style="background-color: {color}"
-              onclick={(_event: MouseEvent) => ) => setHighlight(color}
+              on:click={(_event: MouseEvent) => ) => setHighlight(color}
               title={color === "transparent"
                 ? "Remove highlight"
                 : `Highlight with ${color}`}
@@ -581,7 +581,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.currentAlignment === "left"}
-        onclick={(_event: MouseEvent) => ) => setAlignment("left"}
+        on:click={(_event: MouseEvent) => ) => setAlignment("left"}
         title="Align Left"
       >
         <AlignLeft size="18" />
@@ -589,7 +589,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.currentAlignment === "center"}
-        onclick={(_event: MouseEvent) => ) => setAlignment("center"}
+        on:click={(_event: MouseEvent) => ) => setAlignment("center"}
         title="Align Center"
       >
         <AlignCenter size="18" />
@@ -597,7 +597,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.currentAlignment === "right"}
-        onclick={(_event: MouseEvent) => ) => setAlignment("right"))
+        on:click={(_event: MouseEvent) => ) => setAlignment("right"))
         title="Align Right"
       >
         <AlignRight size="18" />
@@ -605,8 +605,8 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.currentAlignment === "justify"}
-        onclick={(_event: MouseEvent) => /* JSX syntax converted to Svelte */}
-        onclick={(_event: MouseEvent) => ) => editor?.chain.focus().toggleBulletList.run(}
+        on:click={(_event: MouseEvent) => /* JSX syntax converted to Svelte */}
+        on:click={(_event: MouseEvent) => ) => editor?.chain.focus().toggleBulletList.run(}
         title="Bullet List"
       >
         <List size="18" />
@@ -614,7 +614,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isOrderedList}
-        onclick={(_event: MouseEvent) => ) => editor?.chain.focus().toggleOrderedList.run(}
+        on:click={(_event: MouseEvent) => ) => editor?.chain.focus().toggleOrderedList.run(}
         title="Numbered List"
       >
         <ListOrdered size="18" />
@@ -622,7 +622,7 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isQuote}
-        onclick={(_event: MouseEvent) => ) => editor?.chain.focus().toggleBlockquote.run(}
+        on:click={(_event: MouseEvent) => ) => editor?.chain.focus().toggleBlockquote.run(}
         title="Quote"
       >
         <Quote size="18" />
@@ -630,14 +630,14 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={state.isCode}
-        onclick={(_event: MouseEvent) => /* JSX syntax converted to Svelte */}
+        on:click={(_event: MouseEvent) => /* JSX syntax converted to Svelte */}
         title="Insert Image"
       >
         <ImageIcon size="18" />
       </button>
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
-        onclick={(_event: MouseEvent) => ) => insertTable(}
+        on:click={(_event: MouseEvent) => ) => insertTable(}
         title="Insert Table"
       >
         <TableIcon size="18" />
@@ -648,7 +648,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="mx-auto px-4 max-w-7xl">
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
-        onclick={(_event: MouseEvent) => ) => adjustZoom(-10}
+        on:click={(_event: MouseEvent) => ) => adjustZoom(-10}
         title="Zoom Out"
       >
         <ZoomOut size="18" />
@@ -656,7 +656,7 @@ https://svelte.dev/e/js_parse_error -->
       <span class="mx-auto px-4 max-w-7xl">{currentZoom}%</span>
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
-        onclick={(_event: MouseEvent) => ) => adjustZoom(10}
+        on:click={(_event: MouseEvent) => ) => adjustZoom(10}
         title="Zoom In"
       >
         <ZoomIn size="18" />
@@ -664,14 +664,14 @@ https://svelte.dev/e/js_parse_error -->
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
         class:active={showGrid}
-        onclick={(_event: MouseEvent) => ) => (showGrid = !showGrid}
+        on:click={(_event: MouseEvent) => ) => (showGrid = !showGrid}
         title="Toggle Grid"
       >
         <Grid size="18" />
       </button>
       <button aria-label="Action button"
         class="mx-auto px-4 max-w-7xl"
-        onclick={(_event: MouseEvent) => ) => toggleFullscreen())
+        on:click={(_event: MouseEvent) => ) => toggleFullscreen())
         title="Toggle Fullscreen"
       >
         {#if isFullscreen}

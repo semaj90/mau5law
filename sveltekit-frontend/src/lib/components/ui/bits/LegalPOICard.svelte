@@ -199,12 +199,12 @@
       <!-- Action Buttons -->
       <div class="poi-actions">
         {#if poi.role === 'suspect' || poi.role === 'fugitive'}
-          <Button onclick={handleCreateWantedPoster} variant="destructive" size="sm">📋 Create Wanted Poster</Button>
-          <Button onclick={handleAddToFBIMostWanted} variant="outline" size="sm">🎯 Add to FBI Most Wanted</Button>
-          <Button onclick={handleRecordSighting} variant="outline" size="sm">👁️ Record Sighting</Button>
+          <Button on:click={handleCreateWantedPoster} variant="destructive" size="sm">📋 Create Wanted Poster</Button>
+          <Button on:click={handleAddToFBIMostWanted} variant="outline" size="sm">🎯 Add to FBI Most Wanted</Button>
+          <Button on:click={handleRecordSighting} variant="outline" size="sm">👁️ Record Sighting</Button>
         {/if}
-        <Button onclick={() => onEdit?.(poi)} variant="outline" size="sm">✏️ Edit</Button>
-        <Button onclick={() => onDelete?.(poi.id)} variant="destructive" size="sm">🗑️ Delete</Button>
+        <Button on:click={() => onEdit?.(poi)} variant="outline" size="sm">✏️ Edit</Button>
+        <Button on:click={() => onDelete?.(poi.id)} variant="destructive" size="sm">🗑️ Delete</Button>
       </div>
     {:else}
       <!-- Compact view for lists -->

@@ -347,7 +347,7 @@
           {/if}
         </div>
         <button
-          onclick={() => (showTheoryDialog = true)}
+          on:click={() => (showTheoryDialog = true)}
           class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
         >
           <Plus class="h-4 w-4 mr-2" />
@@ -374,7 +374,7 @@
                          {optimistic ? 'opacity-50' : ''}"
                   role="button"
                   tabindex="0"
-                  onclick={() => selectTheory(theory)}
+                  on:click={() => selectTheory(theory)}
                 >
                   <div class="flex items-start justify-between mb-2">
                     <h4 class="font-medium text-gray-900">{theory.name}</h4>
@@ -619,7 +619,7 @@
             <h3 class="text-lg font-medium text-gray-900 mb-2">Select a Theory</h3>
             <p class="text-gray-600 mb-6">Choose a case theory from the list to view detailed AI analysis</p>
             <button
-              onclick={() => (showTheoryDialog = true)}
+              on:click={() => (showTheoryDialog = true)}
               class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
             >
               <Plus class="h-4 w-4 mr-2" />
@@ -695,7 +695,7 @@
         <div class="flex justify-end space-x-3 pt-4">
           <button
             type="button"
-            onclick={() => (showTheoryDialog = false)}
+            on:click={() => (showTheoryDialog = false)}
             class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
             disabled={isBuilding}
           >

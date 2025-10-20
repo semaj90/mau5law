@@ -92,7 +92,7 @@
     />
     <button
       type="button"
-      onclick={performSearch}
+      on:click={performSearch}
       disabled={!canSearch}
       class="nes-btn {canSearch ? 'is-primary' : 'is-disabled'} search-button"
     >

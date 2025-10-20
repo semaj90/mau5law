@@ -331,19 +331,19 @@ if (!browser) return;
     <div class="panel control-panel">
       <h3>🎛️ Control Panel</h3>
       <div class="controls">
-        <button class="primary" onclick={analyzeCurrentPage} disabled={!isInitialized || isAnalyzing}>
+        <button class="primary" on:click={analyzeCurrentPage} disabled={!isInitialized || isAnalyzing}>
           {#if isAnalyzing}
             🔄 Analyzing...
           {:else}
             🔍 Analyze Page
           {/if}
         </button>
-        <button onclick={simulateTypingPatterns} disabled={isAnalyzing}> 📝 Simulate Typing </button>
-        <button onclick={updateCaseContext} disabled={isAnalyzing}> ⚖️ Update Case Context </button>
-        <button onclick={testBatchProcessing} disabled={isAnalyzing}> 🚀 Test Batch Processing </button>
-        <button onclick={clearAll} disabled={isAnalyzing}> 🗑️ Clear All </button>
+        <button on:click={simulateTypingPatterns} disabled={isAnalyzing}> 📝 Simulate Typing </button>
+        <button on:click={updateCaseContext} disabled={isAnalyzing}> ⚖️ Update Case Context </button>
+        <button on:click={testBatchProcessing} disabled={isAnalyzing}> 🚀 Test Batch Processing </button>
+        <button on:click={clearAll} disabled={isAnalyzing}> 🗑️ Clear All </button>
         {#if analysisResults}
-          <button class="export" onclick={exportQLoRAData}> 📥 Export QLoRA Data </button>
+          <button class="export" on:click={exportQLoRAData}> 📥 Export QLoRA Data </button>
         {/if}
       </div>
       <!-- Settings -->

@@ -120,7 +120,7 @@
   <!-- User trigger button -->
   <button
     class="user-trigger"
-    onclick={toggleDropdown}
+    on:click={toggleDropdown}
     aria-expanded={showDropdown}
     aria-haspopup="true"
     aria-label="User menu"
@@ -170,7 +170,7 @@
           <ul class="nav-list">
             {#each menuItems as item}
               <li>
-                <button class="nav-item" onclick={() => handleNavigation(item.href)}>
+                <button class="nav-item" on:click={() => handleNavigation(item.href)}>
                   <span class="item-icon">{item.icon}</span>
                   <div class="item-content">
                     <span class="item-name">{item.name}</span>
@@ -193,7 +193,7 @@
             <ul class="nav-list">
               {#each adminItems as item}
                 <li>
-                  <button class="nav-item admin-item" onclick={() => handleNavigation(item.href)}>
+                  <button class="nav-item admin-item" on:click={() => handleNavigation(item.href)}>
                     <span class="item-icon">{item.icon}</span>
                     <div class="item-content">
                       <span class="item-name">{item.name}</span>
@@ -209,7 +209,7 @@
 
         <!-- Logout section -->
         <div class="nav-section logout-section">
-          <button class="logout-button" onclick={handleLogout}>
+          <button class="logout-button" on:click={handleLogout}>
             <span class="logout-icon">🚪</span>
             <div class="logout-content">
               <span class="logout-text">Sign Out</span>

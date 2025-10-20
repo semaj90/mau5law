@@ -279,7 +279,7 @@
         <LoginButton />
       </div>
       <div>
-        <button class="nes-btn is-success" onclick={openRegister}>Register</button>
+        <button class="nes-btn is-success" on:click={openRegister}>Register</button>
       </div>
       <RegisterModal bind:open={registerOpen} onsuccess={() => { /* on success, reload to reflect session cookie */ window.location.reload(); }} />
     </div>
@@ -524,7 +524,7 @@
     <p class="title">🧠 AI Query Interface</p>
     <div class="query-box">
       <input type="text" placeholder="Enter your legal query..." bind:value={userQuery} onkeydown={onKey} />
-      <button onclick={handleSubmit}>Run</button>
+      <button on:click={handleSubmit}>Run</button>
     </div>
 
     {#if $engineState === 'processing'}

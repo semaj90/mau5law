@@ -332,7 +332,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
         </select>
         <!-- Timer Control -->
         {#if activeTimer}
-          <button class="timer-btn active" onclick={stopTimer}> ⏱️ Stop Timer </button>
+          <button class="timer-btn active" on:click={stopTimer}> ⏱️ Stop Timer </button>
         {:else}
           <div class="timer-status">
             {isRecordingTime ? '⏱️ Timer Active' : '⏱️ Timer Ready'}
@@ -361,7 +361,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
             class:active={selectedWork?.id === workItem.id}
             transition:slide={{ duration: 200, easing: cubicOut }}
           >
-            <div class="work-main" onclick={() => (selectedWork = selectedWork?.id === workItem.id ? null : workItem)}>
+            <div class="work-main" on:click={() => (selectedWork = selectedWork?.id === workItem.id ? null : workItem)}>
               <div class="work-header">
                 <div class="work-type-icon">{getTypeIcon(workItem.type)}</div>
                 <div class="work-info">
@@ -454,24 +454,24 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
                   {/if}
                   <!-- Action Buttons -->
                   <div class="work-actions">
-                    <button class="action-btn primary" onclick={() => openWorkItem(workItem)}> 📂 Open Item </button>
+                    <button class="action-btn primary" on:click={() => openWorkItem(workItem)}> 📂 Open Item </button>
                     <button
                       class="action-btn secondary"
-                      onclick={() => startTimer(workItem.id)}
+                      on:click={() => startTimer(workItem.id)}
                       disabled={activeTimer?.itemId === workItem.id}
                     >
                       {activeTimer?.itemId === workItem.id ? '⏱️ Timing...' : '⏱️ Start Timer'}
                     </button>
                     <button
                       class="action-btn tertiary"
-                      onclick={() => recordActivity(workItem.id, 'reviewed', 0, 'Quick review from history')}
+                      on:click={() => recordActivity(workItem.id, 'reviewed', 0, 'Quick review from history')}
                     >
                       👀 Mark Reviewed
                     </button>
                     {#if workItem.status !== 'completed'}
                       <button
                         class="action-btn success"
-                        onclick={() => recordActivity(workItem.id, 'approved', 0, 'Marked as completed')}
+                        on:click={() => recordActivity(workItem.id, 'approved', 0, 'Marked as completed')}
                       >
                         ✅ Mark Complete
                       </button>

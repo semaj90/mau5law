@@ -88,7 +88,7 @@
         class="search-input"
         disabled={isLoading}
       />
-      <Button onclick={performSearch} disabled={isLoading || !query.trim()} variant="ghost" class="search-button">
+      <Button on:click={performSearch} disabled={isLoading || !query.trim()} variant="ghost" class="search-button">
         {#if isLoading}
           <Loader2 class="w-4 h-4 animate-spin" />
         {:else}

@@ -297,7 +297,7 @@ editing
           rows="4"
           class="space-y-4"
         ></textarea>
-        <button onclick={() => processAIRequest()} disabled={isProcessingAI || !aiQuery.trim()} class="space-y-4">
+        <button on:click={() => processAIRequest()} disabled={isProcessingAI || !aiQuery.trim()} class="space-y-4">
           {#if isProcessingAI}
             Processing...
           {:else}
@@ -308,7 +308,7 @@ editing
           <div class="space-y-4">
             <strong>AI Response:</strong>
             <div class="space-y-4">{aiResults}</div>
-            <button onclick={() => insertAIContent()} class="space-y-4"> Insert into Document </button>
+            <button on:click={() => insertAIContent()} class="space-y-4"> Insert into Document </button>
           </div>
         {/if}
       </div>
@@ -331,7 +331,7 @@ editing
           placeholder="Enter legal concept, case name, or statute..."
           class="space-y-4"
         />
-        <button onclick={() => searchCitations()} disabled={!citationQuery.trim()} class="space-y-4"> Search </button>
+        <button on:click={() => searchCitations()} disabled={!citationQuery.trim()} class="space-y-4"> Search </button>
         {#if citationResults.length > 0}
           <div class="space-y-4">
             <h4>Found Citations:</h4>
@@ -342,7 +342,7 @@ editing
                 <div class="space-y-4">
                   Relevance: {Math.round(citation.relevance * 100)}%
                 </div>
-                <button onclick={() => insertCitation(citation)} class="space-y-4"> Insert Citation </button>
+                <button on:click={() => insertCitation(citation)} class="space-y-4"> Insert Citation </button>
               </div>
             {/each}
           </div>

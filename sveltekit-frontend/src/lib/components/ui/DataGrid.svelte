@@ -158,7 +158,7 @@ https://svelte.dev/e/js_parse_error -->
             <th class="header-cell">
               <button
                 class="header-button"
-                onclick={() => handleSort(column.key)}
+                on:click={() => handleSort(column.key)}
                 disabled={!sortable || !column.sortable}
                 type="button"
               >
@@ -211,7 +211,7 @@ https://svelte.dev/e/js_parse_error -->
                 'row-even': index % 2 === 0,
                 'row-clickable': selectable,
               })}
-              onclick={() => handleRowSelect(row.id)}
+              on:click={() => handleRowSelect(row.id)}
             >
               {#if selectable && multiSelect}
                 <td class="select-cell">

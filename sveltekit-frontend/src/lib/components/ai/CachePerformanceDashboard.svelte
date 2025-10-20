@@ -298,7 +298,7 @@
         <div class="control-buttons">
           <button
             aria-label="Action button"
-            onclick={(_event: MouseEvent) => refreshMetrics}
+            on:click={(_event: MouseEvent) => refreshMetrics}
             disabled={isRefreshing}
             class="refresh-btn"
           >
@@ -308,13 +308,13 @@
           <button
             aria-expanded="false"
             aria-label="Action button"
-            onclick={(_event: MouseEvent) => toggleAutoRefresh}
+            on:click={(_event: MouseEvent) => toggleAutoRefresh}
             class="auto-refresh-btn {autoRefresh ? 'active' : ''}"
           >
             <Target size={16} />
             Auto: {autoRefresh ? 'ON' : 'OFF'}
           </button>
-          <button aria-label="Action button" onclick={(_event: MouseEvent) => clearCache} class="clear-cache-btn">
+          <button aria-label="Action button" on:click={(_event: MouseEvent) => clearCache} class="clear-cache-btn">
             <Database size={16} />
             Clear Cache
           </button>

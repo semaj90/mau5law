@@ -234,7 +234,7 @@ https://svelte.dev/e/attribute_duplicate -->
           class="bits-btn flex items-center gap-2"
           variant="secondary"
           size="sm"
-          onclick={() =>
+          on:click={() =>
 toggleSort(sortBy)}
         >
           {#if sortOrder === "asc"}
@@ -247,7 +247,7 @@ toggleSort(sortBy)}
         <Button class="bits-btn"
           variant="secondary"
           size="sm"
-          onclick={() =>
+          on:click={() =>
 toggleViewMode()}
           class="flex items-center gap-2"
         >
@@ -269,7 +269,7 @@ toggleViewMode()}
           <Button class="bits-btn"
             variant="secondary"
             size="sm"
-            onclick={() =>
+            on:click={() =>
 clearSelection()}
           >
             Clear
@@ -299,7 +299,7 @@ clearSelection()}
       <Button class="bits-btn"
         variant="secondary"
         size="sm"
-        onclick={() =>
+        on:click={() =>
 evidenceActions.loadEvidence(caseId)}
       >
         Try Again
@@ -329,7 +329,7 @@ evidenceActions.loadEvidence(caseId)}
             <div
               class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg transition-shadow cursor-pointer {selectedItems.has.id) ? 'ring-2 ring-blue-500' : ''}"
               role="button" tabindex="0"
-                onclick={() => toggleSelection(item)}
+                on:click={() => toggleSelection(item)}
               oncontextmenu={(e) => { e.preventDefault(); showContextMenu(e, item), }}
             >
               <!-- Preview/Thumbnail -->
@@ -416,7 +416,7 @@ evidenceActions.loadEvidence(caseId)}
             <div
               class="space-y-4"
               role="button" tabindex="0"
-                onclick={() => toggleSelection(item)}
+                on:click={() => toggleSelection(item)}
               oncontextmenu={(e) => { e.preventDefault(); showContextMenu(e, item), }}
             >
               <!-- Selection checkbox -->

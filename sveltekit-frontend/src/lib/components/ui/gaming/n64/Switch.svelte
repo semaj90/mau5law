@@ -405,7 +405,7 @@
     aria-disabled={disabled}
     aria-labelledby={label ? 'switch-label' : undefined}
     aria-describedby={description ? 'switch-description' : undefined}
-    onclick={handleToggle}
+    on:click={handleToggle}
     onfocus={handleFocus}
     onblur={handleBlur}
     onmouseenter={handleHover}

@@ -51,7 +51,7 @@
   <button
     type="button"
     class="modal-overlay"
-    onclick={handleClose}
+    on:click={handleClose}
     onkeydown={handleOverlayKeydown}
     aria-label="Close dialog"
   ></button>
@@ -71,7 +71,7 @@
         {children}
       {/if}
     </div>
-    <button type="button" class="modal-close" onclick={handleClose} aria-label="Close dialog">×</button>
+    <button type="button" class="modal-close" on:click={handleClose} aria-label="Close dialog">×</button>
   </div>
 {/if}
 

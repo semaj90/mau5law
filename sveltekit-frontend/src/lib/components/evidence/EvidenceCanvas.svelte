@@ -287,14 +287,14 @@ await embeddingsService.initialize();
           <Button
             size="sm"
             variant="ghost"
-            onclick={() => showConnections = !showConnections}
+            on:click={() => showConnections = !showConnections}
           >
             <Zap class="w-4 h-4 mr-1" />
             {showConnections ? 'Hide' : 'Show'} Connections
           </Button>
           <Button
             size="sm"
-            onclick={analyzeAllEvidence}
+            on:click={analyzeAllEvidence}
             disabled={isAnalyzing || readonly}
           >
             {#if isAnalyzing}
@@ -307,7 +307,7 @@ await embeddingsService.initialize();
           <Button
             size="sm"
             variant="ghost"
-            onclick={exportCanvasData}
+            on:click={exportCanvasData}
           >
             <Download class="w-4 h-4 mr-1" />
             Export

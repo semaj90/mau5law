@@ -148,7 +148,7 @@
       <div class="space-y-4">
         <div class="rag-section-header">
           <h2>🧠 AI Knowledge Base</h2>
-          <button class="rag-toggle-button" onclick={() => (showRagUpload = !showRagUpload)}>
+          <button class="rag-toggle-button" on:click={() => (showRagUpload = !showRagUpload)}>
             {showRagUpload ? '▼ Hide Upload' : '▶ Upload Documents'}
           </button>
         </div>

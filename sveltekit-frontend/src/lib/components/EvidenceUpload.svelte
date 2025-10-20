@@ -160,7 +160,7 @@ https://svelte.dev/e/js_parse_error -->
         onchange={handleFileSelect}
         class="hidden"
       />
-      <Button class="bits-btn mt-2" variant="ghost" onclick={() => fileInput?.click()}>Select File</Button>
+      <Button class="bits-btn mt-2" variant="ghost" on:click={() => fileInput?.click()}>Select File</Button>
     </div>
   {/if}
   <!-- Selected File Info -->
@@ -175,8 +175,8 @@ https://svelte.dev/e/js_parse_error -->
           <p class="text-sm text-blue-600 mt-1">Evidence ID: {evidenceId}</p>
         </div>
         <div class="flex gap-2">
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>Change File</Button>
-          <Button onclick={startProcessing} class="bg-blue-600 hover:bg-blue-700 bits-btn">Process Evidence</Button>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={handleReset}>Change File</Button>
+          <Button on:click={startProcessing} class="bg-blue-600 hover:bg-blue-700 bits-btn">Process Evidence</Button>
         </div>
       </div>
     </div>
@@ -230,10 +230,10 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       {#if artifactUrl}
         <div class="flex gap-2 mt-4">
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => window.open(artifactUrl, '_blank')}>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={() => window.open(artifactUrl, '_blank')}>
             Download Artifact
           </Button>
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>Process Another</Button>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={handleReset}>Process Another</Button>
         </div>
       {/if}
     </div>
@@ -245,8 +245,8 @@ https://svelte.dev/e/js_parse_error -->
       <AlertDescription>
         <div class="mb-2">{error}</div>
         <div class="flex gap-2">
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleRetry}>Retry</Button>
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>Reset</Button>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={handleRetry}>Retry</Button>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={handleReset}>Reset</Button>
         </div>
       </AlertDescription>
     </Alert>

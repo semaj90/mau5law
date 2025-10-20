@@ -133,7 +133,7 @@
         {#each sampleQueries as sampleQuery}
           <button
             type="button"
-            onclick={() => {
+            on:click={() => {
               query = sampleQuery;
             }}
             disabled={loading}
@@ -145,12 +145,12 @@
       </div>
     </div>
     <div class="actions">
-      <button onclick={runCachedQuery} disabled={loading || !query.trim()} class="primary-btn">
+      <button on:click={runCachedQuery} disabled={loading || !query.trim()} class="primary-btn">
         {loading ? '🔄 Processing...' : '🔍 Run Cached Query'}
       </button>
-      <button onclick={runCacheTest} disabled={loading} class="secondary-btn"> 🧪 Test Cache </button>
-      <button onclick={warmupCache} disabled={loading} class="secondary-btn"> 🔥 Warmup Cache </button>
-      <button onclick={loadCacheMetrics} disabled={loading} class="secondary-btn"> 📊 Refresh Metrics </button>
+      <button on:click={runCacheTest} disabled={loading} class="secondary-btn"> 🧪 Test Cache </button>
+      <button on:click={warmupCache} disabled={loading} class="secondary-btn"> 🔥 Warmup Cache </button>
+      <button on:click={loadCacheMetrics} disabled={loading} class="secondary-btn"> 📊 Refresh Metrics </button>
     </div>
   </div>
   {#if error}

@@ -47,7 +47,7 @@
     <Button class="bits-btn"
         variant={variant}
         size={size}
-        onclick={handleLogout}
+        on:click={handleLogout}
         disabled={authStore.isLoading}
         aria-label="Sign out"
       >
@@ -58,7 +58,7 @@
     variant={variant}
     size={size}
     class={className}
-    onclick={handleLogin}
+    on:click={handleLogin}
     disabled={authStore.isLoading}
     aria-label="Sign in"
   >

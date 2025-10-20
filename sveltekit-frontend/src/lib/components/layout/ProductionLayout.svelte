@@ -234,7 +234,7 @@
       class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 lg:hidden"
       role="button"
       tabindex="-1"
-      onclick={toggleMobileMenu}
+      on:click={toggleMobileMenu}
       onkeydown={e => e.key === 'Escape' && toggleMobileMenu()}
     ></div>
   {/if}
@@ -266,7 +266,7 @@
           {#if isSidebarOpen}
             <button
               class="p-2 text-slate-400 hover:text-amber-400 transition-colors lg:hidden rounded-lg hover:bg-slate-800/50"
-              onclick={toggleMobileMenu}
+              on:click={toggleMobileMenu}
             >
               <X class="w-5 h-5" />
             </button>
@@ -293,7 +293,7 @@
                   : 'text-slate-400 hover:text-amber-400 hover:bg-slate-800/60 border border-transparent hover:border-amber-500/30',
                 !isSidebarOpen && 'justify-center'
               )}
-              onclick={e => handleNavigation(item.href, e)}
+              on:click={e => handleNavigation(item.href, e)}
               title={!isSidebarOpen ? item.label : ''}
             >
               <item.icon class="w-6 h-6 flex-shrink-0" />
@@ -326,7 +326,7 @@
                   : 'text-slate-400 hover:text-amber-400 hover:bg-slate-800/60 border border-transparent hover:border-amber-500/30',
                 !isSidebarOpen && 'justify-center'
               )}
-              onclick={e => handleNavigation(item.href, e)}
+              on:click={e => handleNavigation(item.href, e)}
               title={!isSidebarOpen ? item.label : ''}
             >
               <item.icon class="w-6 h-6 flex-shrink-0" />
@@ -427,13 +427,13 @@
         <div class="flex items-center gap-6">
           <button
             class="p-3 text-slate-400 hover:text-amber-400 transition-all duration-300 rounded-lg hover:bg-slate-800/50"
-            onclick={toggleSidebar}
+            on:click={toggleSidebar}
           >
             <Menu class="w-6 h-6" />
           </button>
           <button
             class="p-3 text-slate-400 hover:text-amber-400 transition-all duration-300 lg:hidden rounded-lg hover:bg-slate-800/50"
-            onclick={toggleMobileMenu}
+            on:click={toggleMobileMenu}
           >
             <Menu class="w-6 h-6" />
           </button>
@@ -449,7 +449,7 @@
                     'hover:text-yellow-400 transition-colors',
                     index === breadcrumbs.length - 1 ? 'text-yellow-400 font-medium' : 'text-gray-400'
                   )}
-                  onclick={e => handleNavigation(crumb.href, e)}
+                  on:click={e => handleNavigation(crumb.href, e)}
                 >
                   {crumb.label}
                 </button>
@@ -470,7 +470,7 @@
           <div class="relative">
             <button
               class="p-3 text-slate-400 hover:text-green-400 transition-all duration-300 relative group rounded-lg hover:bg-slate-800/50"
-              onclick={() => (showClientChat = !showClientChat)}
+              on:click={() => (showClientChat = !showClientChat)}
               title="AI Assistant (Gemma 270MB)"
             >
               <MessageSquare class="w-6 h-6" />
@@ -483,7 +483,7 @@
           <div class="relative">
             <button
               class="p-3 text-slate-400 hover:text-amber-400 transition-all duration-300 relative rounded-lg hover:bg-slate-800/50"
-              onclick={() => (showNotifications = !showNotifications)}
+              on:click={() => (showNotifications = !showNotifications)}
             >
               <Bell class="w-6 h-6" />
               <div
@@ -519,14 +519,14 @@
                 <div class="p-3 space-y-2">
                   <button
                     class="w-full flex items-center gap-3 p-3 text-slate-400 hover:text-amber-400 hover:bg-slate-700/50 rounded-lg transition-all duration-300 text-left"
-                    onclick={e => handleNavigation('/profile', e)}
+                    on:click={e => handleNavigation('/profile', e)}
                   >
                     <User class="w-5 h-5" />
                     <span class="font-medium">Profile Settings</span>
                   </button>
                   <button
                     class="w-full flex items-center gap-3 p-3 text-slate-400 hover:text-amber-400 hover:bg-slate-700/50 rounded-lg transition-all duration-300 text-left"
-                    onclick={e => handleNavigation('/settings', e)}
+                    on:click={e => handleNavigation('/settings', e)}
                   >
                     <Settings class="w-5 h-5" />
                     <span class="font-medium">Platform Settings</span>
@@ -534,7 +534,7 @@
                   <hr class="my-2 border-slate-600/50" />
                   <button
                     class="w-full flex items-center gap-3 p-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-all duration-300 text-left"
-                    onclick={handleLogout}
+                    on:click={handleLogout}
                   >
                     <LogOut class="w-5 h-5" />
                     <span class="font-medium">Sign Out</span>
@@ -546,13 +546,13 @@
             <div class="flex items-center gap-3">
               <button
                 class="px-6 py-3 bg-amber-500/10 border border-amber-500/50 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500 transition-all duration-300 rounded-lg font-semibold"
-                onclick={e => handleNavigation('/auth/login', e)}
+                on:click={e => handleNavigation('/auth/login', e)}
               >
                 Sign In
               </button>
               <button
                 class="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 hover:from-amber-600 hover:to-amber-700 transition-all duration-300 rounded-lg font-bold shadow-lg shadow-amber-500/25"
-                onclick={e => handleNavigation('/auth/register', e)}
+                on:click={e => handleNavigation('/auth/register', e)}
               >
                 Get Started
               </button>

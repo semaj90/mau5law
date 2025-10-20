@@ -57,12 +57,12 @@
         <!-- Actions -->
         <div class="space-y-4">
           <!-- Accept Button (native to avoid typed component event issues) -->
-          <button type="button" class="space-y-4 bits-btn bits-btn" onclick={handleAccept}>
+          <button type="button" class="space-y-4 bits-btn bits-btn" on:click={handleAccept}>
             <MessageCircle class="space-y-4" />
             Yes, help me
           </button>
           <!-- Quick responses -->
-          <button type="button" class="space-y-4 bits-btn bits-btn" onclick={handleQuickResponse}>
+          <button type="button" class="space-y-4 bits-btn bits-btn" on:click={handleQuickResponse}>
             <Lightbulb class="space-y-4" />
             Summarize
           </button>
@@ -70,7 +70,7 @@
           <button
             type="button"
             class="space-y-4 bits-btn bits-btn"
-            onclick={handleDismiss}
+            on:click={handleDismiss}
             title="Not now"
             aria-label="Dismiss proactive prompt"
           >

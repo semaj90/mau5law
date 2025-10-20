@@ -121,7 +121,7 @@
       <button
         type="button"
         class="action-btn"
-        onclick={() => copyToClipboard()}
+        on:click={() => copyToClipboard()}
         title="Copy message"
         aria-label="Copy message to clipboard"
       >
@@ -141,7 +141,7 @@
         <button
           type="button"
           class="sources-toggle"
-          onclick={() => (isSourcesExpanded = !isSourcesExpanded)}
+          on:click={() => (isSourcesExpanded = !isSourcesExpanded)}
           aria-expanded={isSourcesExpanded}
           aria-label="Toggle sources visibility"
         >
@@ -181,7 +181,7 @@
         <button
           type="button"
           class="metadata-toggle"
-          onclick={() => (isMetadataExpanded = !isMetadataExpanded)}
+          on:click={() => (isMetadataExpanded = !isMetadataExpanded)}
           aria-expanded={isMetadataExpanded}
           aria-label="Toggle metadata visibility"
         >

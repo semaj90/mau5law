@@ -229,7 +229,7 @@
       <div class="flex gap-4">
         <button
           class="nes-btn is-primary"
-          onclick={handleQuery}
+          on:click={handleQuery}
           disabled={isLoading || isStreaming}
         >
           <MessageSquare size={16} class="inline" />
@@ -238,14 +238,14 @@
 
         <button
           class="nes-btn is-success"
-          onclick={handleStreamQuery}
+          on:click={handleStreamQuery}
           disabled={isLoading || isStreaming}
         >
           <Zap size={16} class="inline" />
           Stream Response
         </button>
 
-        <button class="nes-btn" onclick={addCustomDocument}>
+        <button class="nes-btn" on:click={addCustomDocument}>
           <FileText size={16} class="inline" />
           Add Document
         </button>

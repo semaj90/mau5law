@@ -248,17 +248,17 @@
         </div>
         <div class="evidence-actions">
           <Button
-            onclick={() => (showUpload = !showUpload)}
+            on:click={() => (showUpload = !showUpload)}
             style="background: {evidenceBuilder.styling.colors.evidence}"
           >
             📤 Upload Evidence
           </Button>
           {#if selectedEvidence.size > 0}
             <div class="bulk-actions" transition:fade>
-              <Button onclick={() => exportSelected('pdf')} variant="outline">
+              <Button on:click={() => exportSelected('pdf')} variant="outline">
                 📄 Export PDF ({selectedEvidence.size})
               </Button>
-              <Button onclick={() => exportSelected('json')} variant="outline">🔧 Export JSON</Button>
+              <Button on:click={() => exportSelected('json')} variant="outline">🔧 Export JSON</Button>
             </div>
           {/if}
         </div>
@@ -311,10 +311,10 @@
           </select>
         </div>
         <div class="selection-controls">
-          <Button onclick={selectAll} size="sm" variant="outline">
+          <Button on:click={selectAll} size="sm" variant="outline">
             Select All ({filteredEvidence.length})
           </Button>
-          <Button onclick={clearSelection} size="sm" variant="outline">Clear Selection</Button>
+          <Button on:click={clearSelection} size="sm" variant="outline">Clear Selection</Button>
         </div>
       </div>
       <!-- Evidence Statistics -->
@@ -414,7 +414,7 @@
                   </span>
                 </div>
                 <div class="evidence-actions">
-                  <Button onclick={() => analyzeEvidence(evidence.id)} disabled={isAnalyzing} size="sm">
+                  <Button on:click={() => analyzeEvidence(evidence.id)} disabled={isAnalyzing} size="sm">
                     {isAnalyzing ? '🔄' : '🔍'} Analyze
                   </Button>
                   <Button size="sm" variant="outline">📥 Download</Button>
@@ -446,7 +446,7 @@
             <h3>No Evidence Found</h3>
             <p>No evidence matches your current search and filter criteria.</p>
             <Button
-              onclick={() => {
+              on:click={() => {
                 searchTerm = '';
                 filterType = 'all';
               }}

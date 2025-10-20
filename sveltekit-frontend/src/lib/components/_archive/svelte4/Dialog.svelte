@@ -155,7 +155,7 @@ https://svelte.dev/e/js_parse_error -->
 	<div
 		class="mx-auto px-4 max-w-7xl"
 		transitifade={{ duration: 200  "
-		onclick={() => handleBackdropClick()}
+		on:click={() => handleBackdropClick()}
 		keydown={handleKeydown}
 		role="dialog"
 		aria-modal="true"
@@ -179,7 +179,7 @@ https://svelte.dev/e/js_parse_error -->
 						<button
 							class="mx-auto px-4 max-w-7xl"
 						 class:active={selectedVibe === vibe.id}
-							onclick={() => handleVibeChange(vibe.id)}
+							on:click={() => handleVibeChange(vibe.id)}
 							title={vibe.description}
 						>
 							{vibe.label}
@@ -265,7 +265,7 @@ https://svelte.dev/e/js_parse_error -->
 					></textarea>
 					<button
 						class="mx-auto px-4 max-w-7xl"
-						onclick={() => handleSubmit()}
+						on:click={() => handleSubmit()}
 						disabled={!currentPrompt.trim() || isGenerating}
 						aria-label="Send message"
 					>
@@ -275,7 +275,7 @@ https://svelte.dev/e/js_parse_error -->
 				<div class="mx-auto px-4 max-w-7xl">
 					<span>Press Ctrl+Enter to send</span>
 					{#if history.length > 0}
-						<button class="mx-auto px-4 max-w-7xl" onclick={() => clearHistory()}>
+						<button class="mx-auto px-4 max-w-7xl" on:click={() => clearHistory()}>
 							Clear History
 						</button>
 					{/if}

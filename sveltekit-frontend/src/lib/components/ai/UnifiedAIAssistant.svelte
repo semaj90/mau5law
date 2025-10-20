@@ -516,11 +516,11 @@
               >Go µS</span
             >
           </div>
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={exportConversation}>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={exportConversation}>
             <Download class="w-4 h-4 mr-1" />
             Export
           </Button>
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={clearConversation}>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={clearConversation}>
             <Square class="w-4 h-4 mr-1" />
             Clear
           </Button>
@@ -639,7 +639,7 @@
             <Button
               variant="ghost"
               size="sm"
-              onclick={voiceRecording.isRecording ? stopVoiceRecording : startVoiceRecording}
+              on:click={voiceRecording.isRecording ? stopVoiceRecording : startVoiceRecording}
               class="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0 bits-btn bits-btn"
               disabled={readonly}
             >
@@ -651,7 +651,7 @@
             </Button>
           {/if}
         </div>
-        <Button class="bits-btn" onclick={sendMessage} disabled={!currentMessage.trim() || isProcessing || readonly}>
+        <Button class="bits-btn" on:click={sendMessage} disabled={!currentMessage.trim() || isProcessing || readonly}>
           <Send class="w-4 h-4 mr-1" />
           Send
         </Button>
@@ -662,7 +662,7 @@
           class="bits-btn"
           variant="ghost"
           size="sm"
-          onclick={() => (currentMessage = 'Analyze the evidence in this case')}
+          on:click={() => (currentMessage = 'Analyze the evidence in this case')}
         >
           🔍 Analyze Evidence
         </Button>
@@ -670,18 +670,18 @@
           class="bits-btn"
           variant="ghost"
           size="sm"
-          onclick={() => (currentMessage = 'What are the key legal issues?')}
+          on:click={() => (currentMessage = 'What are the key legal issues?')}
         >
           ⚖️ Legal Issues
         </Button>
-        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (currentMessage = 'Generate a case summary')}>
+        <Button class="bits-btn" variant="ghost" size="sm" on:click={() => (currentMessage = 'Generate a case summary')}>
           📋 Case Summary
         </Button>
         <Button
           class="bits-btn"
           variant="ghost"
           size="sm"
-          onclick={() => (currentMessage = 'Find relevant precedents')}
+          on:click={() => (currentMessage = 'Find relevant precedents')}
         >
           📚 Find Precedents
         </Button>

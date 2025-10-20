@@ -292,7 +292,7 @@ https://svelte.dev/e/js_parse_error -->
               <div>
                 <h3>Evidence Library</h3>
                 <Button <!-- Changed Button.Root to Button -->
-                  onclick={() => handleAddNewEvidence()}
+                  on:click={() => handleAddNewEvidence()}
                   title="Add new evidence"
                 >
                   <Plus size={16} />
@@ -323,14 +323,14 @@ https://svelte.dev/e/js_parse_error -->
                   {#snippet actions(evidence: Evidence)} <!-- Type evidence -->
                     <Button
                       class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-blue-600"
-                      onclick={() => handleViewEvidence(evidence)}
+                      on:click={() => handleViewEvidence(evidence)}
                       title="View evidence"
                     >
                       <Eye size={14} />
                     </Button>
                     <Button
                       class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-purple-600"
-                      onclick={() => handleCompareEvidence(evidence)}
+                      on:click={() => handleCompareEvidence(evidence)}
                       title="Analyze & Compare with Legal Documents"
                       disabled={comparingId === evidence.id}
                     >
@@ -343,7 +343,7 @@ https://svelte.dev/e/js_parse_error -->
                     {#if evidence.url || evidence.file}
                       <Button
                         class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-indigo-600"
-                        onclick={() => handleDownloadEvidence(evidence)}
+                        on:click={() => handleDownloadEvidence(evidence)}
                         title="Download"
                       >
                         <Download size={14} />
@@ -351,14 +351,14 @@ https://svelte.dev/e/js_parse_error -->
                     {/if}
                     <Button
                       class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-green-600"
-                      onclick={() => handleEditEvidence(evidence)}
+                      on:click={() => handleEditEvidence(evidence)}
                       title="Edit evidence"
                     >
                       <PenLine size={14} />
                     </Button>
                     <Button
                       class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-red-600"
-                      onclick={() => handleDeleteEvidence(evidence)}
+                      on:click={() => handleDeleteEvidence(evidence)}
                       title="Delete evidence"
                     >
                       <Trash2 size={14} />
@@ -377,14 +377,14 @@ https://svelte.dev/e/js_parse_error -->
                   {#snippet actions(evidence: Evidence)} <!-- Type evidence -->
                     <Button
                       class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-blue-600"
-                      onclick={() => handleViewEvidence(evidence)}
+                      on:click={() => handleViewEvidence(evidence)}
                       title="View evidence"
                     >
                       <Eye size={14} />
                     </Button>
                     <Button
                       class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-purple-600"
-                      onclick={() => handleCompareEvidence(evidence)}
+                      on:click={() => handleCompareEvidence(evidence)}
                       title="Analyze & Compare with Legal Documents"
                       disabled={comparingId === evidence.id}
                     >
@@ -397,7 +397,7 @@ https://svelte.dev/e/js_parse_error -->
                     {#if evidence.url || evidence.file}
                       <Button
                         class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-indigo-600"
-                        onclick={() => handleDownloadEvidence(evidence)}
+                        on:click={() => handleDownloadEvidence(evidence)}
                         title="Download"
                       >
                         <Download size={14} />
@@ -405,14 +405,14 @@ https://svelte.dev/e/js_parse_error -->
                     {/if}
                     <Button
                       class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-green-600"
-                      onclick={() => handleEditEvidence(evidence)}
+                      on:click={() => handleEditEvidence(evidence)}
                       title="Edit evidence"
                     >
                       <PenLine size={14} />
                     </Button>
                     <Button
                       class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-red-600"
-                      onclick={() => handleDeleteEvidence(evidence)}
+                      on:click={() => handleDeleteEvidence(evidence)}
                       title="Delete evidence"
                     >
                       <Trash2 size={14} />
@@ -560,7 +560,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="editor-title-section">
           {#if !($reportUI as ReportUIState).sidebarOpen} <!-- Add type assertion -->
             <Button <!-- Changed Button.Root to Button -->
-              onclick={() => toggleSidebar()}
+              on:click={() => toggleSidebar()}
               title="Show sidebar"
               class="sidebar-toggle"
             >
@@ -576,7 +576,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <div class="editor-actions">
           <Button <!-- Changed Button.Root to Button -->
-            onclick={() => switchLayout()}
+            on:click={() => switchLayout()}
             title="Switch layout ({($report as unknown as ReportStoreState).settings.layout})" <!-- Add type assertion -->
             class="layout-toggle"
           >
@@ -589,7 +589,7 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
           </Button>
           <Button <!-- Changed Button.Root to Button -->
-            onclick={() => toggleFullscreen()}
+            on:click={() => toggleFullscreen()}
             title="Toggle fullscreen"
             class="fullscreen-toggle"
           >
@@ -600,7 +600,7 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
           </Button>
           <Button <!-- Changed Button.Root to Button -->
-            onclick={() => (showSettingsModal = true)}
+            on:click={() => (showSettingsModal = true)}
             title="Settings"
             class="settings-btn"
           >
@@ -621,7 +621,7 @@ https://svelte.dev/e/js_parse_error -->
       >
         <div class="panel-header">
           <h3>Evidence</h3>
-          <Button class="add-evidence-btn" onclick={() => handleAddNewEvidence()}> <!-- Changed Button.Root to Button -->
+          <Button class="add-evidence-btn" on:click={() => handleAddNewEvidence()}> <!-- Changed Button.Root to Button -->
             <Plus size={16} />
           </Button>
         </div>
@@ -639,7 +639,7 @@ https://svelte.dev/e/js_parse_error -->
               {#snippet actions(evidence: Evidence)} <!-- Type evidence -->
                 <Button <!-- Changed Button.Root to Button -->
                   class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-blue-600"
-                  onclick={() => handleViewEvidence(evidence)}
+                  on:click={() => handleViewEvidence(evidence)}
                   title="View evidence"
                 >
                   <Eye size={14} />
@@ -647,7 +647,7 @@ https://svelte.dev/e/js_parse_error -->
                 {#if evidence.url || evidence.file}
                   <Button <!-- Changed Button.Root to Button -->
                     class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-indigo-600"
-                    onclick={() => handleDownloadEvidence(evidence)}
+                    on:click={() => handleDownloadEvidence(evidence)}
                     title="Download"
                   >
                     <Download size={14} />
@@ -655,14 +655,14 @@ https://svelte.dev/e/js_parse_error -->
                 {/if}
                 <Button <!-- Changed Button.Root to Button -->
                   class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-green-600"
-                  onclick={() => handleEditEvidence(evidence)}
+                  on:click={() => handleEditEvidence(evidence)}
                   title="Edit evidence"
                 >
                   <PenLine size={14} />
                 </Button>
                 <Button <!-- Changed Button.Root to Button -->
                   class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-red-600"
-                  onclick={() => handleDeleteEvidence(evidence)}
+                  on:click={() => handleDeleteEvidence(evidence)}
                   title="Delete evidence"
                 >
                   <Trash2 size={14} />

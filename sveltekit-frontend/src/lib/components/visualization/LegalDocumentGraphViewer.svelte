@@ -511,7 +511,7 @@ try {
       <div class="error-icon">⚠️</div>
       <h3>WebGPU Error</h3>
       <p>{$error}</p>
-      <button onclick={() => window.location.reload()}>Reload Page</button>
+      <button on:click={() => window.location.reload()}>Reload Page</button>
     </div>
   {/if}
   <!-- WebGPU Canvas -->
@@ -540,10 +540,10 @@ try {
   <!-- Controls Panel -->
   {#if $canInteract}
     <div class="controls-panel">
-      <button onclick={resetCamera} title="Reset Camera"> 🎯 </button>
-      <button onclick={togglePhysics} title="Toggle Physics" class:active={enablePhysics}> ⚡ </button>
+      <button on:click={resetCamera} title="Reset Camera"> 🎯 </button>
+      <button on:click={togglePhysics} title="Toggle Physics" class:active={enablePhysics}> ⚡ </button>
       <button
-        onclick={() => ($renderState.autoRotate = !$renderState.autoRotate)}
+        on:click={() => ($renderState.autoRotate = !$renderState.autoRotate)}
         title="Auto Rotate"
         ;
         class:active={$renderState.autoRotate}
@@ -557,9 +557,9 @@ try {
         <option value="entity">Entities</option>
         <option value="precedent">Precedents</option>
       </select>
-      <button onclick={saveGraphState} title="Save State"> 💾 </button>
+      <button on:click={saveGraphState} title="Save State"> 💾 </button>
       <button
-        onclick={async () => {
+        on:click={async () => {
           const blob = await exportImage();
           if (blob) {
             const url = URL.createObjectURL(blob);

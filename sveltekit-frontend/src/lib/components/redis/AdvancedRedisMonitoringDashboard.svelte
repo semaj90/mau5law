@@ -334,12 +334,12 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   <div class="control-panel">
     <h3>🎮 System Controls</h3>
     <div class="controls-grid">
-      <button class="control-btn" onclick={() => unifiedSIMDParser.clearAllCaches()}> 🧹 Clear All Caches </button>
-      <button class="control-btn" onclick={() => window.open('/admin/redis', '_blank')}> 📊 Detailed Analytics </button>
-      <button class="control-btn" onclick={() => window.open('http://localhost:3002/mcp/workers', '_blank')}>
+      <button class="control-btn" on:click={() => unifiedSIMDParser.clearAllCaches()}> 🧹 Clear All Caches </button>
+      <button class="control-btn" on:click={() => window.open('/admin/redis', '_blank')}> 📊 Detailed Analytics </button>
+      <button class="control-btn" on:click={() => window.open('http://localhost:3002/mcp/workers', '_blank')}>
         👥 MCP Workers
       </button>
-      <button class="control-btn" onclick={() => location.reload()}> 🔄 Refresh Dashboard </button>
+      <button class="control-btn" on:click={() => location.reload()}> 🔄 Refresh Dashboard </button>
     </div>
   </div>
 </div>

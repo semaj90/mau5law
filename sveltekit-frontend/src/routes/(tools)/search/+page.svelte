@@ -101,9 +101,9 @@
                   </div>
                 {/if}
                 <div class="result-actions">
-                  <button onclick={() => viewDocument(result)} class="nes-btn is-primary action-btn"> View </button>
+                  <button on:click={() => viewDocument(result)} class="nes-btn is-primary action-btn"> View </button>
                   <button
-                    onclick={() => analyzeDocument(result)}
+                    on:click={() => analyzeDocument(result)}
                     class="nes-btn is-success action-btn"
                     disabled={isAnalyzing}
                   >
@@ -124,7 +124,7 @@
               <i class="nes-icon heart"></i>
               {selectedDocument.title || 'Document Viewer'}
             </h3>
-            <button onclick={closeDocument} class="nes-btn is-error close-btn"> × </button>
+            <button on:click={closeDocument} class="nes-btn is-error close-btn"> × </button>
           </div>
           <div class="modal-content">
             {#if selectedDocument.content}

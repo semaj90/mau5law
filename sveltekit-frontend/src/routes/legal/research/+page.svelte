@@ -280,7 +280,7 @@ await initializeResearchSession();
         </div>
         <div class="flex items-center space-x-3">
           <button
-            onclick={() => advancedSearch = !advancedSearch}
+            on:click={() => advancedSearch = !advancedSearch}
             class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
           >
             <Filter class="h-4 w-4 mr-2" />
@@ -314,7 +314,7 @@ await initializeResearchSession();
               />
               <div class="absolute inset-y-0 right-0 flex items-center">
                 <LoadingButton
-                  onclick={performSearch}
+                  on:click={performSearch}
                   loading={isSearching}
                   disabled={!searchQuery.trim()}
                   class="mr-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -336,7 +336,7 @@ await initializeResearchSession();
                 { id: 'phrase', label: 'Exact Phrase', icon: FileText }
               ] as mode}
                 <button
-                  onclick={() => searchMode = mode.id}
+                  on:click={() => searchMode = mode.id}
                   class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium transition-colors
                          {searchMode === mode.id ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
                 >
@@ -382,7 +382,7 @@ await initializeResearchSession();
                 </div>
                 <div class="flex items-end">
                   <button
-                    onclick={clearFilters}
+                    on:click={clearFilters}
                     class="w-full inline-flex justify-center items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                   >
                     Clear Filters
@@ -402,7 +402,7 @@ await initializeResearchSession();
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
               {#each aiSuggestions as suggestion}
                 <button
-                  onclick={() => { searchQuery = suggestion; performSearch(), }}
+                  on:click={() => { searchQuery = suggestion; performSearch(), }}
                   class="text-left p-2 text-sm text-blue-700 hover:bg-blue-100 rounded-md transition-colors"
                 >
                   {suggestion}
@@ -444,7 +444,7 @@ await initializeResearchSession();
                       {Math.round.relevanceScore * 100)}% match
                     </span>
                     <button
-                      onclick={() => saveCitation(result)}
+                      on:click={() => saveCitation(result)}
                       class="p-1 text-gray-400 hover: text-yellow-500 transition-colors";
                       class:text-yellow-500={(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).isBookmarked}
                     >
@@ -473,7 +473,7 @@ await initializeResearchSession();
                       {(result as { url?: unknown; title?: unknown; citation?: unknown; relevanceScore?: unknown; isBookmarked?: unknown; summary?: unknown; court?: unknown; dateDecided?: unknown; citedBy?: unknown; precedentialValue?: unknown; keyTopics?: unknown }).precedentialValue} Precedent
                     </span>
                     <button
-                      onclick={() => openCitationDialog(result)}
+                      on:click={() => openCitationDialog(result)}
                       class="inline-flex items-center px-2 py-1 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50"
                     >
                       <Eye class="h-3 w-3 mr-1" />
@@ -499,7 +499,7 @@ await initializeResearchSession();
             {#if totalResults > 20}
               <div class="flex items-center justify-center space-x-2 mt-8">
                 <button
-                  onclick={() => { currentPage = Math.max(1, currentPage - 1); performSearch(), }}
+                  on:click={() => { currentPage = Math.max(1, currentPage - 1); performSearch(), }}
                   disabled={currentPage <= 1}
                   class="px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
                 >
@@ -509,7 +509,7 @@ await initializeResearchSession();
                   Page {currentPage} of {Math.ceil(totalResults / 20)}
                 </span>
                 <button
-                  onclick={() => { currentPage = currentPage + 1; performSearch(), }}
+                  on:click={() => { currentPage = currentPage + 1; performSearch(), }}
                   disabled={currentPage >= Math.ceil(totalResults / 20)}
                   class="px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
                 >
@@ -581,7 +581,7 @@ await initializeResearchSession();
               <div class="space-y-2 max-h-32 overflow-y-auto">
                 {#each researchSession.queries.slice(-5) as query}
                   <button
-                    onclick={() => { searchQuery = query.query; performSearch(), }}
+                    on:click={() => { searchQuery = query.query; performSearch(), }}
                     class="w-full text-left p-2 text-xs text-gray-600 hover:bg-gray-50 rounded border border-gray-200"
                   >
                     {query.query}
@@ -598,7 +598,7 @@ await initializeResearchSession();
             <div class="space-y-2">
               {#each relatedTopics as topic}
                 <button
-                  onclick={() => { searchQuery = topic; performSearch(), }}
+                  on:click={() => { searchQuery = topic; performSearch(), }}
                   class="w-full text-left p-2 text-sm text-blue-600 hover:bg-blue-50 rounded"
                 >
                   {topic}
@@ -658,13 +658,13 @@ await initializeResearchSession();
         </div>
         <div class="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
           <button
-            onclick={() => showCitationDialog = false}
+            on:click={() => showCitationDialog = false}
             class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
           >
             Close
           </button>
           <button
-            onclick={() => { saveCitation(selectedDocument); showCitationDialog = false, }}
+            on:click={() => { saveCitation(selectedDocument); showCitationDialog = false, }}
             class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700"
           >
             <Bookmark class="h-4 w-4 mr-1 inline" />

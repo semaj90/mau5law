@@ -398,7 +398,7 @@
       <div class="workflow-actions">
         <button
           class="workflow-btn primary"
-          onclick={e => {
+          on:click={e => {
             const wrapper = (e.currentTarget as HTMLElement).closest('.workflow-interface');
             const textarea = wrapper?.querySelector('.workflow-input') as HTMLTextAreaElement | null;
             handleQuickAnswerFromText(textarea);
@@ -427,13 +427,13 @@
             }
           }}
         ></textarea>
-        <button class="send-button" onclick={handleChatMessage} disabled={!currentMessage.trim() || isProcessing}>
+        <button class="send-button" on:click={handleChatMessage} disabled={!currentMessage.trim() || isProcessing}>
           🚀
         </button>
       </div>
       <div class="quick-actions">
-        <button class="quick-btn" onclick={startWorkflow}> 📋 Start Case Workflow </button>
-        <button class="quick-btn" onclick={handleChatMessage}> 🔍 Analyze Evidence </button>
+        <button class="quick-btn" on:click={startWorkflow}> 📋 Start Case Workflow </button>
+        <button class="quick-btn" on:click={handleChatMessage}> 🔍 Analyze Evidence </button>
       </div>
     </div>
   {/if}

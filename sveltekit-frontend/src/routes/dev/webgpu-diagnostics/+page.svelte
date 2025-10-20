@@ -36,7 +36,7 @@ https://svelte.dev/e/expected_token -->
 <h1>WebGPU Diagnostics</h1>
 <p class="muted">Client-side check for adapter/device availability, limits, and common pitfalls.</p>
 <div>
-  <button onclick={run} aria-label="Re-run diagnostics">Re-run</button>
+  <button on:click={run} aria-label="Re-run diagnostics">Re-run</button>
 </div>
 {#if loading}
   <div class="nier-bits-card">Running diagnostics…</div>

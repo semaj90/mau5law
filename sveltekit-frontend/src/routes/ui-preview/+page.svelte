@@ -195,7 +195,7 @@
       <button
         class="nes-btn tab-btn {selectedTab === t.id ? 'is-primary active' : ''}"
         aria-pressed={selectedTab === t.id}
-        onclick={() => (selectedTab = t.id)}>{t.label}</button
+        on:click={() => (selectedTab = t.id)}>{t.label}</button
       >
     {/each}
   </nav>
@@ -246,15 +246,15 @@
     <section class="section-wrap">
       <h2 class="section">Dialog</h2>
       <!-- use any-typed alias to avoid TS errors -->
-      <MeltButtonAny onclick={openDialog}>Open Dialog</MeltButtonAny>
+      <MeltButtonAny on:click={openDialog}>Open Dialog</MeltButtonAny>
       <div class="meta">Simple open/close controlled by boolean state.</div>
       {#if showDialog}
         <!-- changed: use DialogAny to bypass strict event typing -->
         <DialogAny title="Sample Dialog" on:close={closeDialog}>
           <p>This dialog demonstrates the NES modal style and accessibility hooks.</p>
           <div class="dialog-actions">
-            <MeltButtonAny onclick={closeDialog}>Cancel</MeltButtonAny>
-            <MeltButtonAny onclick={closeDialog}>Confirm</MeltButtonAny>
+            <MeltButtonAny on:click={closeDialog}>Cancel</MeltButtonAny>
+            <MeltButtonAny on:click={closeDialog}>Confirm</MeltButtonAny>
           </div>
         </DialogAny>
       {/if}
@@ -268,17 +268,17 @@
       <!-- Modal Trigger Buttons -->
       <div class="grid buttons" style="margin-bottom: 1.5rem;">
         <!-- Use any-typed alias to avoid TS 'never' event typing -->
-        <QuickActionButtonAny onclick={() => openModal('gradient', 'md')}>Gradient Modal</QuickActionButtonAny>
+        <QuickActionButtonAny on:click={() => openModal('gradient', 'md')}>Gradient Modal</QuickActionButtonAny>
 
-        <QuickActionButtonAny onclick={() => openModal('diamond', 'lg')}>Diamond Pattern</QuickActionButtonAny>
+        <QuickActionButtonAny on:click={() => openModal('diamond', 'lg')}>Diamond Pattern</QuickActionButtonAny>
 
-        <QuickActionButtonAny onclick={() => openModal('gaming', 'md')}>Gaming Modal</QuickActionButtonAny>
+        <QuickActionButtonAny on:click={() => openModal('gaming', 'md')}>Gaming Modal</QuickActionButtonAny>
 
-        <QuickActionButtonAny onclick={() => openModal('legal', 'xl')}>Legal Modal XL</QuickActionButtonAny>
+        <QuickActionButtonAny on:click={() => openModal('legal', 'xl')}>Legal Modal XL</QuickActionButtonAny>
 
-        <QuickActionButtonAny onclick={() => openModal('default', 'sm')}>Default Small</QuickActionButtonAny>
+        <QuickActionButtonAny on:click={() => openModal('default', 'sm')}>Default Small</QuickActionButtonAny>
 
-        <QuickActionButtonAny onclick={() => openModal('diamond', 'md')}>NES Diamond</QuickActionButtonAny>
+        <QuickActionButtonAny on:click={() => openModal('diamond', 'md')}>NES Diamond</QuickActionButtonAny>
       </div>
 
       <!-- Demo Cards with Diamond Backgrounds -->
@@ -315,11 +315,11 @@
       <div class="session-actions">
         {#if !authenticated}
           <!-- use alias here as well -->
-          <MeltButtonAny onclick={simulateLogin}>Simulate Login</MeltButtonAny>
+          <MeltButtonAny on:click={simulateLogin}>Simulate Login</MeltButtonAny>
         {:else}
-          <MeltButtonAny onclick={simulateLogout}>Simulate Logout</MeltButtonAny>
+          <MeltButtonAny on:click={simulateLogout}>Simulate Logout</MeltButtonAny>
         {/if}
-        <MeltButtonAny onclick={simulateRefreshSession}>Refresh Session</MeltButtonAny>
+        <MeltButtonAny on:click={simulateRefreshSession}>Refresh Session</MeltButtonAny>
       </div>
 
       {#if currentUser}
@@ -515,8 +515,8 @@
                 </div>
                 <div class="flex space-x-2">
                   <!-- use the any-typed alias to allow arbitrary onclick handlers without TS errors -->
-                  <QuickActionButtonAny onclick={() => { /* execute action */ }}>Execute</QuickActionButtonAny>
-                  <QuickActionButtonAny onclick={() => { /* open terminal */ }}>Terminal</QuickActionButtonAny>
+                  <QuickActionButtonAny on:click={() => { /* execute action */ }}>Execute</QuickActionButtonAny>
+                  <QuickActionButtonAny on:click={() => { /* open terminal */ }}>Terminal</QuickActionButtonAny>
                   <button class="nes-btn is-success">Success</button>
                 </div>
               </div>
@@ -546,8 +546,8 @@
 
           <!-- Common Modal Footer -->
           <div class="flex justify-end space-x-2 pt-4 border-t border-enhanced-border">
-            <QuickActionButtonAny onclick={() => closeModal()}>Cancel</QuickActionButtonAny>
-            <QuickActionButtonAny onclick={() => closeModal()}>Confirm</QuickActionButtonAny>
+            <QuickActionButtonAny on:click={() => closeModal()}>Cancel</QuickActionButtonAny>
+            <QuickActionButtonAny on:click={() => closeModal()}>Confirm</QuickActionButtonAny>
           </div>
 
         </div>

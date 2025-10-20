@@ -199,7 +199,7 @@
               </div>
             </div>
             <button
-              onclick={() => navigateToFeature(feature.href)}
+              on:click={() => navigateToFeature(feature.href)}
               class="w-full py-3 px-6 bg-{feature.color}-600 hover:bg-{feature.color}-700 text-white rounded-lg font-medium transition-colors"
             >
               Launch {feature.title} →
@@ -289,13 +289,13 @@
       </p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <button
-          onclick={() => goto('/mcp/demo')}
+          on:click={() => goto('/mcp/demo')}
           class="px-8 py-4 bg-white text-purple-600 rounded-lg font-bold hover:bg-gray-100 transition-colors"
         >
           🚀 Start Demo Analysis
         </button>
         <button
-          onclick={() => goto('/mcp/dashboard')}
+          on:click={() => goto('/mcp/dashboard')}
           class="px-8 py-4 bg-purple-700 hover:bg-purple-800 text-white rounded-lg font-bold border-2 border-purple-400 transition-colors"
         >
           📊 View Dashboard

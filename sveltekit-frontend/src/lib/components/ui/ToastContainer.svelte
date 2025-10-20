@@ -78,7 +78,7 @@
           <button
             type="button"
             class="toast-dismiss nes-btn is-error"
-            onclick={() => dismissToast(toast.id)}
+            on:click={() => dismissToast(toast.id)}
             aria-label="Dismiss notification"
           >
             <X size={12} />
@@ -113,7 +113,7 @@
                   : action.style === 'danger'
                     ? 'is-error'
                     : ''}"
-                onclick={() => executeAction(action)}
+                on:click={() => executeAction(action)}
               >
                 {#if action.label === 'Retry'}
                   <RotateCcw size={12} />

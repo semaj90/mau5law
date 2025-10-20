@@ -305,7 +305,7 @@ export default ;
           </div>
         </div>
         <div class="flex items-end">
-          <Button onclick={toggleSIMD} variant="ghost" class="w-full text-sm bits-btn bits-btn">
+          <Button on:click={toggleSIMD} variant="ghost" class="w-full text-sm bits-btn bits-btn">
 {enableSIMD ? '🔧 Disable SIMD' : '⚡ Enable SIMD'}
         </div>
       </div>
@@ -321,7 +321,7 @@ export default ;
             onkeydown={(e) => e.key === 'Enter' && submitQuery()}
           />
           <Button
-            onclick={submitQuery}
+            on:click={submitQuery}
             disabled={isProcessing || !queryInput.trim()}
             class={isProcessing ? 'processing' : ''}
           >
@@ -331,7 +331,7 @@ export default ;
         <div class="flex flex-wrap gap-2">
           {#each sampleQueries as sample, index}
             <Button class="bits-btn"
-              onclick={() =>
+              on:click={() =>
 loadSampleQuery(index)}
               variant="ghost"
               size="sm"
@@ -340,7 +340,7 @@ loadSampleQuery(index)}
             >
               Sample {index + 1}
           {/each}
-          <Button class="bits-btn" onclick={clearConversation} variant="ghost" size="sm">
+          <Button class="bits-btn" on:click={clearConversation} variant="ghost" size="sm">
 Clear All
         </div>
       </div>
@@ -501,7 +501,7 @@ Clear All
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex justify-between items-center">
           📝 System Logs
-          <Button class="bits-btn" onclick={() =>
+          <Button class="bits-btn" on:click={() =>
 processingLogs = []} variant="ghost" size="sm">
             Clear Logs
         </h3>

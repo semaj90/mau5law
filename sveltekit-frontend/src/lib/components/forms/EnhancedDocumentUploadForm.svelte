@@ -252,7 +252,7 @@
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
-              onclick={handleSaveDraft}
+              on:click={handleSaveDraft}
               disabled={$isSubmitting}
             >
 <Save size={16} />
@@ -260,7 +260,7 @@
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
-              onclick={handleReset}
+              on:click={handleReset}
               disabled={$isSubmitting}
             >
 <RotateCcw size={16} />
@@ -295,7 +295,7 @@
         role="button" aria-label="Drop zone" ondragover={handleDragOver}
         ondragleave={handleDragLeave}
         tabindex="0"
-        onclick={() => fileInput?.click()}
+        on:click={() => fileInput?.click()}
         keydown={(e) => e.key === "Enter" && fileInput?.click()}
       >
         {#if selectedFile}
@@ -311,7 +311,7 @@
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
-              onclick={removeFile}
+              on:click={removeFile}
               disabled={$isSubmitting}
             >
 <X size={16} />
@@ -506,7 +506,7 @@
               <Button class="bits-btn"
                 variant="ghost"
                 size="sm"
-                onclick={() =>
+                on:click={() =>
 actor.send({ type: "RETRY" })}
                 disabled={contextValue.retryCount >= contextValue.maxRetries}
               >
@@ -517,7 +517,7 @@ actor.send({ type: "RETRY" })}
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  onclick={() =>
+                  on:click={() =>
 actor.send({ type: "SKIP_PROCESSING" })}
                   class="ml-2"
                 >
@@ -556,7 +556,7 @@ actor.send({ type: "SKIP_PROCESSING" })}
       <div class="flex gap-3">
         <Button class="bits-btn"
           variant="ghost"
-          onclick={handleReset}
+          on:click={handleReset}
           disabled={$isSubmitting}
         >
 Reset Form

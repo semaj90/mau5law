@@ -211,7 +211,7 @@
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
         {#each styles as styleOption}
           <button
-            onclick={() => style = styleOption.value}
+            on:click={() => style = styleOption.value}
             class="p-3 border rounded-lg text-left transition-colors {style === styleOption.value ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}"
             disabled={generating}
           >
@@ -227,7 +227,7 @@
       <div class="flex flex-wrap gap-2 mb-3">
         {#each dimensionPresets as preset}
           <button
-            onclick={() => setDimensionPreset(preset.value)}
+            on:click={() => setDimensionPreset(preset.value)}
             class="px-3 py-2 text-sm border rounded-lg transition-colors {dimensions[0] === preset.value[0] && dimensions[1] === preset.value[1] ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}"
             disabled={generating}
           >
@@ -274,7 +274,7 @@
             <div class="flex items-center gap-2 p-2 bg-gray-50 rounded">
               <code class="text-sm flex-1">{tensorId}</code>
               <button
-                onclick={() => removeConditioningTensor(index)}
+                on:click={() => removeConditioningTensor(index)}
                 class="text-red-600 hover:text-red-800 text-sm"
                 disabled={generating}
               >
@@ -286,7 +286,7 @@
       {/if}
       <Button
         variant="ghost"
-        onclick={addConditioningTensor}
+        on:click={addConditioningTensor}
         disabled={generating}
         class="text-sm bits-btn bits-btn"
       >
@@ -445,7 +445,7 @@
     <!-- Generate Button -->
     <div class="flex justify-end">
       <Button
-        onclick={generateGlyph}
+        on:click={generateGlyph}
         disabled={generating || !prompt.trim()}
         class="px-6 py-2 bits-btn bits-btn"
       >

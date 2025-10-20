@@ -1112,13 +1112,13 @@ const success = await initializeGPU();
         class="flex-1 min-w-48 bg-black/50 border border-gray-500 rounded px-3 py-2 text-gray-200 placeholder-gray-400 text-sm"
       />
       <button
-        onclick={() => searchDocuments(searchQuery)}
+        on:click={() => searchDocuments(searchQuery)}
         class="px-3 py-2 bg-gradient-to-r from-cyan-400 to-blue-400 text-gray-900 rounded text-xs font-semibold hover:scale-105 transition-transform cursor-pointer border-none"
       >
         🔍 Search
       </button>
       <button
-        onclick={() => render()}
+        on:click={() => render()}
         class="px-3 py-2 bg-gradient-to-r from-cyan-400 to-blue-400 text-gray-900 rounded text-xs font-semibold hover:scale-105 transition-transform cursor-pointer border-none"
       >
         🔄 Render
@@ -1189,7 +1189,7 @@ const success = await initializeGPU();
             </div>
             <button
               class="px-6 py-3 bg-gradient-to-r from-cyan-400 to-blue-400 text-gray-900 rounded-md text-sm font-semibold hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-              onclick={() => documentUploader?.selectFiles()}
+              on:click={() => documentUploader?.selectFiles()}
               disabled={uploadInProgress}
             >
               📂 Browse Files

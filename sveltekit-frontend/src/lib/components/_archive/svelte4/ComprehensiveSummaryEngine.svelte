@@ -581,7 +581,7 @@ https://svelte.dev/e/props_duplicate -->
       <button
         class="btn-advanced"
         class:active={showAdvancedOptions}
-        onclick={() => (showAdvancedOptions = !showAdvancedOptions)}
+        on:click={() => (showAdvancedOptions = !showAdvancedOptions)}
       >
         <Settings size="16" />
         Advanced
@@ -656,16 +656,16 @@ https://svelte.dev/e/props_duplicate -->
       </div>
       <div class="processing-controls">
         {#if !isProcessing}
-          <button class="nes-btn is-primary" onclick={startComprehensiveSummary}>
+          <button class="nes-btn is-primary" on:click={startComprehensiveSummary}>
             <Play size="16" />
             Start Analysis
           </button>
         {:else}
-          <button class="nes-btn" onclick={pauseProcessing}>
+          <button class="nes-btn" on:click={pauseProcessing}>
             <Pause size="16" />
             Pause
           </button>
-          <button class="btn-danger" onclick={stopProcessing}>
+          <button class="btn-danger" on:click={stopProcessing}>
             <Square size="16" />
             Stop
           </button>
@@ -730,7 +730,7 @@ https://svelte.dev/e/props_duplicate -->
             <option value="json">JSON</option>
             <option value="txt">Text</option>
           </select>
-          <button class="btn-export" onclick={exportSummary} disabled={!canExport}>
+          <button class="btn-export" on:click={exportSummary} disabled={!canExport}>
             <Download size="16" />
             Export
           </button>

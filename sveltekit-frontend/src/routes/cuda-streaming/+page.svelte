@@ -243,7 +243,7 @@
         { id: 'config', label: 'Configuration', icon: Settings }
       ] as tab}
         <button
-          onclick={() => selectedTab = tab.id}
+          on:click={() => selectedTab = tab.id}
           class="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors
                  {selectedTab === tab.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}"
         >
@@ -320,7 +320,7 @@
           <!-- Control Buttons -->
           <div class="flex gap-3">
             <OrchestratedButton.ProcessDocument
-              onclick={startCudaStream}
+              on:click={startCudaStream}
               disabled={!canStream}
               class="flex-1 gap-2"
             >
@@ -341,7 +341,7 @@
             {:else}
               <Button
                 variant="ghost"
-                onclick={processSingleDocument}
+                on:click={processSingleDocument}
                 disabled={!inputText.trim()}
                 class="gap-2"
               >

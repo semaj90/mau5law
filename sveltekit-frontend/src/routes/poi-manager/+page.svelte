@@ -302,7 +302,7 @@
         class="bits-btn {showFilters ? 'bg-blue-50 border-blue-300' : ''}"
         variant="ghost"
         size="sm"
-        onclick={() => (showFilters = !showFilters)}
+        on:click={() => (showFilters = !showFilters)}
       >
         <Filter class="w-4 h-4 mr-2" />
         Filters
@@ -311,7 +311,7 @@
         class="bits-btn"
         variant="ghost"
         size="sm"
-        onclick={() => (viewMode = viewMode === 'grid' ? 'list' : 'grid')}
+        on:click={() => (viewMode = viewMode === 'grid' ? 'list' : 'grid')}
       >
         {#if viewMode === 'grid'}
           <List class="w-4 h-4" />
@@ -319,7 +319,7 @@
           <Grid class="w-4 h-4" />
         {/if}
       </Button>
-      <Button class="bits-btn" onclick={() => (showCreateDialog = true)}>
+      <Button class="bits-btn" on:click={() => (showCreateDialog = true)}>
         <Plus class="w-4 h-4 mr-2" />
         Add Person
       </Button>
@@ -409,7 +409,7 @@
         {searchQuery ? 'Try adjusting your search criteria' : 'Add persons to get started'}
       </p>
       {#if !searchQuery}
-        <Button class="bits-btn" onclick={() => (showCreateDialog = true)}>
+        <Button class="bits-btn" on:click={() => (showCreateDialog = true)}>
           <Plus class="w-4 h-4 mr-2" />
           Add First Person
         </Button>
@@ -455,11 +455,11 @@
           </div>
 
           <div class="flex gap-2">
-            <Button size="sm" class="flex-1 bits-btn" onclick={() => editPoi(poi)}>
+            <Button size="sm" class="flex-1 bits-btn" on:click={() => editPoi(poi)}>
               <Edit class="w-3 h-3 mr-1" />
               Edit
             </Button>
-            <Button variant="ghost" size="sm" class="flex-1 bits-btn" onclick={() => deletePoi(poi)}>
+            <Button variant="ghost" size="sm" class="flex-1 bits-btn" on:click={() => deletePoi(poi)}>
               <Trash2 class="w-3 h-3 mr-1" />
               Delete
             </Button>
@@ -487,11 +487,11 @@
               </div>
             </div>
             <div class="flex gap-2">
-              <Button class="bits-btn" size="sm" onclick={() => editPoi(poi)}>
+              <Button class="bits-btn" size="sm" on:click={() => editPoi(poi)}>
                 <Edit class="w-3 h-3 mr-1" />
                 Edit
               </Button>
-              <Button class="bits-btn" variant="ghost" size="sm" onclick={() => deletePoi(poi)}>
+              <Button class="bits-btn" variant="ghost" size="sm" on:click={() => deletePoi(poi)}>
                 <Trash2 class="w-3 h-3 mr-1" />
                 Delete
               </Button>
@@ -566,7 +566,7 @@
       </div>
 
       <div class="flex justify-end gap-2">
-        <Button type="button" variant="ghost" onclick={() => (showCreateDialog = false)}>Cancel</Button>
+        <Button type="button" variant="ghost" on:click={() => (showCreateDialog = false)}>Cancel</Button>
         <Button type="submit" disabled={isSubmitting || !formData.name.trim()}>
           {isSubmitting ? 'Creating...' : 'Create POI'}
         </Button>
@@ -638,7 +638,7 @@
       </div>
 
       <div class="flex justify-end gap-2">
-        <Button type="button" variant="ghost" onclick={() => (showEditDialog = false)}>Cancel</Button>
+        <Button type="button" variant="ghost" on:click={() => (showEditDialog = false)}>Cancel</Button>
         <Button type="submit" disabled={isSubmitting || !formData.name.trim()}>
           {isSubmitting ? 'Updating...' : 'Update POI'}
         </Button>

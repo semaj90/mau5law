@@ -212,7 +212,7 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
     <!-- Action Buttons -->
     <div class="flex items-center gap-3 pt-4 border-t">
-      <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showDetails = !showDetails)}>
+      <Button class="bits-btn" variant="ghost" size="sm" on:click={() => (showDetails = !showDetails)}>
         {showDetails ? 'Hide' : 'Show'} Full Analysis
       </Button>
       <Button class="bits-btn" variant="ghost" size="sm">📊 View Timeline</Button>

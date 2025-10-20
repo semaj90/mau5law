@@ -435,7 +435,7 @@ if (browser) {
     </div>
   </div>
   <div class="test-controls">
-    <button class="test-button" onclick={runPerformanceTests} disabled={isTestingInProgress}>
+    <button class="test-button" on:click={runPerformanceTests} disabled={isTestingInProgress}>
       {isTestingInProgress ? '🔄 Running Gemma3 270M Tests...' : '🚀 Start Performance Tests'}
     </button>
   </div>

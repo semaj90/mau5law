@@ -406,7 +406,7 @@
     aria-required={required}
     aria-invalid={hasError}
     aria-describedby={error || success ? `${id || name}-message` : undefined}
-    onclick={handleToggle}
+    on:click={handleToggle}
     onfocus={handleFocus}
     onblur={handleBlur}
     onmouseenter={handleHover}
@@ -421,7 +421,7 @@
         {#if clearable && value}
           <button
             class="clear-button"
-            onclick={(e) => { e.stopPropagation(); clearSelection(), }}
+            on:click={(e) => { e.stopPropagation(); clearSelection(), }}
             aria-label="Clear selection"
             type="button"
           >
@@ -477,7 +477,7 @@
               class:disabled={option.disabled}
               role="option"
               aria-selected={option.value === value}
-              onclick={() => selectOption(option)}
+              on:click={() => selectOption(option)}
             >
               {option.label}
               {#if option.value === value}

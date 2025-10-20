@@ -157,7 +157,7 @@ await initializeUnifiedSystems();
 						<Button class="bits-btn"
 							variant={viewMode === 'canvas' ? 'default' : 'ghost'}
 							size="sm"
-							onclick={() =>
+							on:click={() =>
 switchViewMode('canvas')}
 							class="h-8 px-3"
 						>
@@ -166,7 +166,7 @@ switchViewMode('canvas')}
 						<Button class="bits-btn"
 							variant={viewMode === 'board' ? 'default' : 'ghost'}
 							size="sm"
-							onclick={() =>
+							on:click={() =>
 switchViewMode('board')}
 							class="h-8 px-3"
 						>
@@ -175,7 +175,7 @@ switchViewMode('board')}
 						<Button class="bits-btn"
 							variant={viewMode === 'hybrid' ? 'default' : 'ghost'}
 							size="sm"
-							onclick={() =>
+							on:click={() =>
 switchViewMode('hybrid')}
 							class="h-8 px-3"
 						>
@@ -220,11 +220,11 @@ switchViewMode('hybrid')}
 					</div>
 				</div>
 				<div class="flex gap-2">
-					<Button class="bits-btn" variant="ghost" size="sm" onclick={syncCanvasToBoard}>
+					<Button class="bits-btn" variant="ghost" size="sm" on:click={syncCanvasToBoard}>
 Sync Canvas → Board
-					<Button class="bits-btn" variant="ghost" size="sm" onclick={syncBoardToCanvas}>
+					<Button class="bits-btn" variant="ghost" size="sm" on:click={syncBoardToCanvas}>
 Sync Board → Canvas
-					<Button class="bits-btn" variant="default" size="sm" onclick={processUnifiedAnalysis}>
+					<Button class="bits-btn" variant="default" size="sm" on:click={processUnifiedAnalysis}>
 Analyze All Evidence
 				</div>
 			</div>

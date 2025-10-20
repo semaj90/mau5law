@@ -435,19 +435,19 @@ await initializeWebAssembly();
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
               <Button
                 variant="secondary"
-                onclick={() => processText('Sample legal document text for analysis...', 'inference')}
+                on:click={() => processText('Sample legal document text for analysis...', 'inference')}
               >
                 🧠 Inference
               </Button>
               <Button
                 variant="secondary"
-                onclick={() => processText('Generate embedding for this text...', 'embedding')}
+                on:click={() => processText('Generate embedding for this text...', 'embedding')}
               >
                 📊 Embedding
               </Button>
               <Button
                 variant="secondary"
-                onclick={() =>
+                on:click={() =>
                   processText(
                     'This is a long legal document that needs to be summarized for better understanding...',
                     'summarize'
@@ -457,7 +457,7 @@ await initializeWebAssembly();
               </Button>
               <Button
                 variant="secondary"
-                onclick={() =>
+                on:click={() =>
                   processText(
                     'Extract entities from this legal contract between John Doe and ABC Corporation...',
                     'extract'

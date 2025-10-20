@@ -119,7 +119,7 @@ https://svelte.dev/e/js_parse_error -->
           class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 {authMode === 'login'
             ? 'bg-yellow-500 text-black'
             : 'text-gray-300 hover:text-white'}"
-          onclick={() => (authMode = 'login')}
+          on:click={() => (authMode = 'login')}
         >
           🔐 Login
         </button>
@@ -128,7 +128,7 @@ https://svelte.dev/e/js_parse_error -->
           class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 {authMode === 'register'
             ? 'bg-yellow-500 text-black'
             : 'text-gray-300 hover:text-white'}"
-          onclick={() => (authMode = 'register')}
+          on:click={() => (authMode = 'register')}
         >
           📝 Register
         </button>
@@ -341,7 +341,7 @@ https://svelte.dev/e/js_parse_error -->
           {authMode === 'login' ? "Don't have an account?" : 'Already have an account?'}
           <button
             type="button"
-            onclick={toggleAuthMode}
+            on:click={toggleAuthMode}
             class="text-yellow-400 hover:text-yellow-300 hover:underline ml-1 transition-colors"
           >
             {authMode === 'login' ? 'Create one here' : 'Sign in instead'}

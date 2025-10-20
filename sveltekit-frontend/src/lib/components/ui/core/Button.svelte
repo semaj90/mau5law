@@ -227,7 +227,7 @@
     aria-controls={ariaControls}
     aria-busy={loading}
     data-testid={testId || 'button'}
-    onclick={handleClick}
+    on:click={handleClick}
     {...restProps}
   >
     {#if loading}

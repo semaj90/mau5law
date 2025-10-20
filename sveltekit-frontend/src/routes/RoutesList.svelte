@@ -145,7 +145,7 @@
           <button
             class="group-header"
             type="button"
-            onclick={() => toggleGroup(g)}
+            on:click={() => toggleGroup(g)}
             aria-expanded={!groupCollapse[g]}
             id={`group-${g}`}
           >

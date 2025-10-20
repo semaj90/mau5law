@@ -218,7 +218,7 @@ https://svelte.dev/e/js_parse_error -->
           <p class="text-red-800 font-medium">❌ Initialization Error</p>
           <p class="text-red-600 text-sm mt-1">{error}</p>
           <button
-            onclick={initializeWebGPUWebAssembly}
+            on:click={initializeWebGPUWebAssembly}
             class="mt-2 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700"
           >
             Retry
@@ -354,7 +354,7 @@ https://svelte.dev/e/js_parse_error -->
             ></textarea>
           </div>
           <button
-            onclick={runDemo}
+            on:click={runDemo}
             disabled={!demoText.trim() || demoProcessing}
             class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >

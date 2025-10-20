@@ -34,7 +34,7 @@
       <slot />
 
       <div class="flex justify-end">
-        <button class="nes-btn is-primary" onclick={handleAnalyzeClick} type="button">Analyze</button>
+        <button class="nes-btn is-primary" on:click={handleAnalyzeClick} type="button">Analyze</button>
       </div>
     </div>
   </div>

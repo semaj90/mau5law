@@ -326,7 +326,7 @@ await refreshSystemStatus();
             </div>
           </div>
           <button
-            onclick={processDocument}
+            on:click={processDocument}
             disabled={$isProcessing}
             class="w-full py-3 px-4 bg-purple-600 hover: bg-purple-700 disabled:bg-gray-600 ;
                          disabled:cursor-not-allowed rounded-lg font-medium transition-colors"

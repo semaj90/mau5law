@@ -93,7 +93,7 @@
   <div
     class="nes-modal-overlay"
     class:backdrop-blur={backdrop}
-    onclick={handleBackdropClick}
+    on:click={handleBackdropClick}
     transition:fade={{ duration: 200 }}
     role="dialog"
     aria-modal="true"
@@ -117,7 +117,7 @@
           {#if closable}
             <button
               class="nes-modal-close"
-              onclick={closeModal}
+              on:click={closeModal}
               aria-label="Close modal"
               type="button"
             >

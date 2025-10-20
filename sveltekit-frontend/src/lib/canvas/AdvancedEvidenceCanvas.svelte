@@ -496,8 +496,8 @@ https://svelte.dev/e/expected_token -->
   </div>
 {/if}
 <div class="canvas-controls">
-  <button aria-label="Action button" onclick={(_event: MouseEvent) => resetView}>Reset View</button>
-  <button aria-label="Action button" onclick={(_event: MouseEvent) => fitToNodes}>Fit to Nodes</button>
+  <button aria-label="Action button" on:click={(_event: MouseEvent) => resetView}>Reset View</button>
+  <button aria-label="Action button" on:click={(_event: MouseEvent) => fitToNodes}>Fit to Nodes</button>
   <span>Zoom: {Math.round(zoom * 100)}%</span>
   <span>Nodes: {canvasNodes.length}</span>
 </div>

@@ -178,7 +178,7 @@ mcp<script lang="ts">
         class="bits-btn container mx-auto px-4"
         variant="ghost"
         size="sm"
-        onclick={() =>
+        on:click={() =>
 (maxVisible += 5)}
       >
         +{hiddenCount} more notifications
@@ -249,7 +249,7 @@ mcp<script lang="ts">
                           variant={action.variant === "primary"
                             ? "default"
                             : "ghost"}
-                          onclick={() =>
+                          on:click={() =>
 handleNotificationAction(notification, action)}
                           class="container mx-auto px-4"
                         >
@@ -264,7 +264,7 @@ handleNotificationAction(notification, action)}
                   <Button class="bits-btn"
                     variant="ghost"
                     size="sm"
-                    onclick={() =>
+                    on:click={() =>
 dismissNotification((notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).id)}
                     class="container mx-auto px-4"
                     aria-label="Dismiss notification"
@@ -285,7 +285,7 @@ dismissNotification((notification as { type?: unknown; title?: unknown; message?
       <Button class="bits-btn"
         variant="ghost"
         size="sm"
-        onclick={() =>
+        on:click={() =>
 dismissAll()}
         class="container mx-auto px-4"
       >

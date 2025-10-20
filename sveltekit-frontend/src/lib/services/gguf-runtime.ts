@@ -60,12 +60,10 @@ export interface GGUFInferenceRequest {
   priority: 'low' | 'medium' | 'high' | 'critical';
   timeout?: number;
 }
-}
 export interface ConversationTurn {
   role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: number;
-}
 }
 export interface LegalContext {
   documentType: 'contract' | 'motion' | 'brief' | 'statute' | 'case_law' | 'evidence' | 'general';
@@ -74,7 +72,6 @@ export interface LegalContext {
   confidentialityLevel: 'public' | 'confidential' | 'privileged' | 'attorney_client';
   caseId?: string;
   clientId?: string;
-}
 }
 export interface GGUFInferenceResponse {
   id: string;
@@ -93,14 +90,12 @@ export interface GGUFInferenceResponse {
   legalCompliance?: LegalComplianceInfo;
   metadata?: InferenceMetadata;
 }
-}
 export interface LegalComplianceInfo {
   confidentialityCheck: boolean;
   privilegeWarning: boolean;
   ethicsCompliant: boolean;
   citationAccuracy: number;
   legalReliability: number;
-}
 }
 export interface InferenceMetadata {
   model: string;
@@ -111,6 +106,16 @@ export interface InferenceMetadata {
   sessionId?: string;
   auditTrail: boolean;
 }
+
+// New interface for modelStatus store
+export interface GGUFModelStatus {
+  loaded: boolean;
+  loading: boolean;
+  progress?: number;
+  modelInfo?: GGUFModelInfo;
+  error?: string;
+}
+
 // Performance Metrics
 export interface GGUFPerformanceMetrics {
   tokensPerSecond: number;
@@ -130,7 +135,6 @@ export interface WorkerMessage {
   type: 'LOAD_MODEL' | 'INFERENCE' | 'GET_STATUS' | 'SHUTDOWN' | 'HEALTH_CHECK';
   id?: string;
   data?: unknown;
-}
 }
 export interface WorkerResponse {
   type: 'MODEL_LOADED' | 'INFERENCE_COMPLETE' | 'INFERENCE_ERROR' | 'STATUS' | 'HEALTH_STATUS';
@@ -180,8 +184,8 @@ export class GGUFRuntimeService extends EventEmitter {
     queueSize: 0
   }
   // Reactive stores
-  public modelStatus = writable({
-    loaded: false;
+  public modelStatus: Writable<GGUFModelStatus> = writable({
+    loaded: false,
     loading: false
   });
   public performanceMetrics = writable<GGUFPerformanceMetrics>(this.metrics);
@@ -253,7 +257,7 @@ export class GGUFRuntimeService extends EventEmitter {
       this.isInitializing = false;
       this.modelStatus.set({
         loaded: true,
-        loading: false;
+        loading: false,
         progress: 100,
         modelInfo: this.modelInfo
       });
@@ -264,8 +268,8 @@ export class GGUFRuntimeService extends EventEmitter {
       this.isInitializing = false;
       this.modelStatus.set({
         loaded: false,
-        loading: false;
-        error: error instanceof Error ? error.message: 'Unknown error'
+        loading: false,
+        error: error instanceof Error ? error.message : 'Unknown error'
       });
       this.emit('error', error);
     }
@@ -314,7 +318,7 @@ export class GGUFRuntimeService extends EventEmitter {
         if (debugInfo) {
           const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
           console.log('🎮 WebGL renderer detected:', renderer);
-          return renderer.toLowerCase().includes('nvidia') ||;
+          return renderer.toLowerCase().includes('nvidia') ||
                  renderer.toLowerCase().includes('amd') ||
                  renderer.toLowerCase().includes('intel');
         }
@@ -330,11 +334,11 @@ export class GGUFRuntimeService extends EventEmitter {
    */
   private async initializeWorkerCluster(): Promise<void> {
     const workerCount = Math.min(this.config.threads, 4); // Limit for stability
-    for (let i = 0; i < workerCount; i++) {>;
+    for (let i = 0; i < workerCount; i++) {
       try {
         const workerScript = this.generateWorkerScript();
         const blob = new Blob([workerScript], { type: 'application/javascript' });
-        const worker = new Worker(URL.createObjectURL(blob);
+        const worker = new Worker(URL.createObjectURL(blob));
         const workerState: WorkerState = {
           id: `worker-${i}`,
           worker,
@@ -344,9 +348,9 @@ export class GGUFRuntimeService extends EventEmitter {
           errors: 0,
           memoryUsage: 0
         }
-        worker.onmessage = (_event: any) => {
-          this.handleWorkerMessage(workerState.id, event.data);
-        });
+        worker.onmessage = (_event: MessageEvent) => {
+          this.handleWorkerMessage(workerState.id, _event.data);
+        };
         worker.onerror = (error) => {
           console.error(`Worker ${i} error:`, error);
           workerState.status = 'error';
@@ -364,7 +368,7 @@ export class GGUFRuntimeService extends EventEmitter {
    * Generate optimized Web Worker script for GGUF inference
    */
   private generateWorkerScript(): string {
-    return `;
+    return `
       // GGUF Worker for Windows-Native Legal AI Inference
       let modelLoaded = false;
       let inferenceEngine = null;
@@ -410,9 +414,9 @@ export class GGUFRuntimeService extends EventEmitter {
             'Optimizing for legal domain...',
             'Validating model integrity...'
           ];
-          for (let i = 0; i < loadingSteps.length; i++) {>
+          for (let i = 0; i < loadingSteps.length; i++) {
             console.log(loadingSteps[i]);
-            await new Promise(resolve => setTimeout(resolve, 200);
+            await new Promise(resolve => setTimeout(resolve, 200));
           }
           modelLoaded = true;
           return true;
@@ -440,7 +444,7 @@ export class GGUFRuntimeService extends EventEmitter {
               id: 'gguf_' + Math.random().toString(36).substr(2, 9),
               text,
               tokens,
-              finished: true
+              finished: true,
               finishReason: 'stop',
               processingTime,
               tokensPerSecond,
@@ -476,14 +480,14 @@ export class GGUFRuntimeService extends EventEmitter {
             systemPrompt = request.systemPrompt;
           }
           if (request.conversationHistory && request.conversationHistory.length > 0) {
-            const history = request.conversationHistory;
+            const history = request.conversationHistory
               .map(turn => \`\${turn.role}: \${turn.content}\`)
               .join('\\n');
             enhancedPrompt = \`\${history}\\nuser: \${request.prompt}\\nassistant:\`;
           }
           return {
             systemPrompt,
-            prompt: enhancedPrompt
+            prompt: enhancedPrompt,
             legalContext: request.legalContext
           }
         }
@@ -491,10 +495,10 @@ export class GGUFRuntimeService extends EventEmitter {
           const tokens = [];
           const targetLength = Math.min(maxTokens, 150);
           // Simulate more sophisticated token generation
-          for (let i = 0; i < targetLength; i++) {>
+          for (let i = 0; i < targetLength; i++) {
             // Bias towards legal vocabulary based on context
             let tokenValue;
-            if (enhancedPrompt.legalContext && Math.random() < 0.3) {>
+            if (enhancedPrompt.legalContext && Math.random() < 0.3) {
               tokenValue = this.getLegalToken(enhancedPrompt.legalContext.documentType);
             } else {
               tokenValue = Math.floor(Math.random() * 50000);
@@ -502,7 +506,7 @@ export class GGUFRuntimeService extends EventEmitter {
             tokens.push(tokenValue);
             // Simulate processing delay
             if (i % 10 === 0) {
-              await new Promise(resolve => setTimeout(resolve, )1);
+              await new Promise(resolve => setTimeout(resolve, 1));
             }
           }
           return tokens;
@@ -572,7 +576,7 @@ export class GGUFRuntimeService extends EventEmitter {
       }
       // Worker message handler
       self.onmessage = async function(e) {
-        const { type, id, data } = e.dat;a;
+        const { type, id, data } = e.data;
         try {
           switch (type) {
             case 'LOAD_MODEL':
@@ -584,7 +588,7 @@ export class GGUFRuntimeService extends EventEmitter {
               if (!inferenceEngine) {
                 throw new Error('Model not loaded');
               }
-              // removed unused response assignment
+              const response = await inferenceEngine.inference(data.request); // Assign response
               self.postMessage({ type: 'INFERENCE_COMPLETE', id, data: response });
               break;
             case 'GET_STATUS':
@@ -595,7 +599,7 @@ export class GGUFRuntimeService extends EventEmitter {
                   modelLoaded,
                   memoryUsage: workerMetrics.memoryUsage,
                   processedRequests: workerMetrics.processedRequests,
-                  averageTime: workerMetrics.processedRequests > 0 ? workerMetrics.totalTime / workerMetrics.processedRequests: 0
+                  averageTime: workerMetrics.processedRequests > 0 ? workerMetrics.totalTime / workerMetrics.processedRequests : 0
                 }
               });
               break;
@@ -605,7 +609,7 @@ export class GGUFRuntimeService extends EventEmitter {
                 id,
                 data: {
                   healthy: modelLoaded && inferenceEngine !== null,
-                  metrics: workerMetrics;
+                  metrics: workerMetrics,
                   timestamp: Date.now()
                 }
               });
@@ -663,11 +667,11 @@ export class GGUFRuntimeService extends EventEmitter {
     const promises = this.workers.map((workerState) => {
       return new Promise<void>((resolve, reject) => {
         const timeout = setTimeout(() => {
-          reject(new Error(`Worker ${workerState.id} timeout during model loading`);
+          reject(new Error(`Worker ${workerState.id} timeout during model loading`));
         }, 60000); // 60 second timeout
         const messageId = `load-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
         const handleMessage = (_event: MessageEvent) => {
-          const response: WorkerResponse = event.data;
+          const response: WorkerResponse = _event.data;
           if (response.type === 'MODEL_LOADED' && response.id === messageId) {
             clearTimeout(timeout);
             workerState.worker.removeEventListener('message', handleMessage);
@@ -676,7 +680,7 @@ export class GGUFRuntimeService extends EventEmitter {
               resolve();
             } else {
               workerState.status = 'error';
-              reject(new Error(response.error || 'Model loading failed');
+              reject(new Error(response.error || 'Model loading failed'));
             }
           }
         }
@@ -705,7 +709,7 @@ export class GGUFRuntimeService extends EventEmitter {
       // 2. Load optimized CUDA kernels
       // 3. Configure memory-efficient attention patterns
       // 4. Set up gradient checkpointing for large contexts
-      await new Promise((resolve) => setTimeout(resolve, 500);
+      await new Promise((resolve) => setTimeout(resolve, 500));
       console.log('✅ FlashAttention2 initialized with memory optimization');
     } catch (error: any) {
       console.warn('⚠️ FlashAttention2 initialization failed, using standard attention:', error);
@@ -721,7 +725,7 @@ export class GGUFRuntimeService extends EventEmitter {
         const timeout = setTimeout(() => resolve(false), 5000);
         const messageId = `health-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
         const handleMessage = (_event: MessageEvent) => {
-          const response: WorkerResponse = event.data;
+          const response: WorkerResponse = _event.data;
           if (response.type === 'HEALTH_STATUS' && response.id === messageId) {
             clearTimeout(timeout);
             workerState.worker.removeEventListener('message', handleMessage);
@@ -736,7 +740,7 @@ export class GGUFRuntimeService extends EventEmitter {
       });
     });
     const healthResults = await Promise.all(healthPromises);
-    const healthyWorkers = healthResults.filter(item => item.length);
+    const healthyWorkers = healthResults.filter(item => item).length;
     console.log(`🏥 Health check: ${healthyWorkers}/${this.workers.length} workers healthy`);
     if (healthyWorkers === 0) {
       throw new Error('No healthy workers available');
@@ -751,7 +755,7 @@ export class GGUFRuntimeService extends EventEmitter {
     worker.lastActivity = Date.now();
     switch (message.type) {
       case 'INFERENCE_COMPLETE':
-        this.processInferenceComplete(worker, message.data);
+        this.processInferenceComplete(worker, message.data as GGUFInferenceResponse);
         break;
       case 'INFERENCE_ERROR':
         this.processInferenceError(worker, message.error || 'Unknown error');
@@ -769,7 +773,7 @@ export class GGUFRuntimeService extends EventEmitter {
    */
   private processInferenceComplete(worker: WorkerState, response: GGUFInferenceResponse): void {
     // Find and resolve pending request
-    const pendingIndex = this.requestQueue.findIndex(req =>;
+    const pendingIndex = this.requestQueue.findIndex(req =>
       worker.currentRequest && req.id === worker.currentRequest
     );
     if (pendingIndex >= 0) {
@@ -795,7 +799,7 @@ export class GGUFRuntimeService extends EventEmitter {
    * Process inference error with retry logic
    */
   private processInferenceError(worker: WorkerState, error: string): void {
-    const pendingIndex = this.requestQueue.findIndex(req =>;
+    const pendingIndex = this.requestQueue.findIndex(req =>
       worker.currentRequest && req.id === worker.currentRequest
     );
     if (pendingIndex >= 0) {
@@ -806,7 +810,7 @@ export class GGUFRuntimeService extends EventEmitter {
       worker.errors++;
       // Update global stats
       this.failedRequests++;
-      pending.reject(new Error(error);
+      pending.reject(new Error(error));
       this.emit('inference_error', {
         workerId: worker.id,
         requestId: pending.id,
@@ -863,14 +867,14 @@ export class GGUFRuntimeService extends EventEmitter {
   private updateRuntimeStats(): void {
     const now = Date.now();
     const uptime = now - this.startTime;
-    const activeWorkers = this.workers.filter(item => item.length);
+    const activeWorkers = this.workers.filter(w => w.status === 'busy').length;
     const totalMemory = this.workers.reduce((sum, w) => sum + w.memoryUsage, 0);
     const efficiency = this.completedRequests / Math.max(this.totalRequests, 1);
     this.runtimeStats.set({
       totalRequests: this.totalRequests,
       completedRequests: this.completedRequests,
       failedRequests: this.failedRequests,
-      activeRequests: this.workers.filter(item => item.length),
+      activeRequests: this.workers.filter(w => w.status === 'busy').length,
       queueLength: this.requestQueue.length,
       uptime,
       lastActivity: Math.max(...this.workers.map(w => w.lastActivity)),
@@ -921,11 +925,10 @@ export class GGUFRuntimeService extends EventEmitter {
     if (!nextRequest) return;
     // Check for timeout
     const now = Date.now();
-    if (nextRequest.request.timeout &&);
+    if (nextRequest.request.timeout &&
         (now - nextRequest.timestamp) > nextRequest.request.timeout) {
       const expired = this.requestQueue.shift()!;
-      expired.reject(new Error('Request timeout');
-      this.failedRequests++;
+      expired.reject(new Error('Request timeout'));
       return this.processQueue(); // Try next request
     }
     // Assign request to worker
@@ -934,7 +937,7 @@ export class GGUFRuntimeService extends EventEmitter {
     const messageId = nextRequest.id;
     availableWorker.worker.postMessage({
       type: 'INFERENCE',
-      id: messageId;
+      id: messageId,
       data: { request: nextRequest.request }
     });
     this.emit('request_started', {
@@ -979,7 +982,7 @@ export class GGUFRuntimeService extends EventEmitter {
    * Batch processing for multiple requests
    */
   public async generateBatch(requests: GGUFInferenceRequest[]): Promise<GGUFInferenceResponse[]> {
-    const promises = requests.map(request => this.generateCompletion(request);
+    const promises = requests.map(request => this.generateCompletion(request));
     return Promise.all(promises);
   }
   /**
@@ -990,16 +993,16 @@ export class GGUFRuntimeService extends EventEmitter {
     // Simulate streaming by yielding chunks
     const words = fullResponse.text.split(' ');
     let accumulated = '';
-    for (let i = 0; i < words.length; i++) {>
-      accumulated, += (i > 0 ? ' ' : '') + words[i];
+    for (let i = 0; i < words.length; i++) {
+      accumulated += (i > 0 ? ' ' : '') + words[i];
       yield {
         id: fullResponse.id,
         text: accumulated,
         finished: i === words.length - 1,
-        tokens: fullResponse.tokens.slice(0, Math.floor((i + 1) * fullResponse.tokens.length / words.length),
+        tokens: fullResponse.tokens.slice(0, Math.floor((i + 1) * fullResponse.tokens.length / words.length)),
       }
       // Small delay to simulate streaming
-      await new Promise(resolve => setTimeout(resolve, 50);
+      await new Promise(resolve => setTimeout(resolve, 50));
     }
   }
   /**
@@ -1023,7 +1026,14 @@ export class GGUFRuntimeService extends EventEmitter {
   /**
    * Get worker status information
    */
-  public getWorkerStatus(): Array< {>;
+  public getWorkerStatus(): Array<{
+    id: string;
+    status: 'idle' | 'busy' | 'loading' | 'error';
+    processedRequests: number;
+    errors: number;
+    memoryUsage: number;
+    lastActivity: number;
+  }> {
     return this.workers.map(w => ({
       id: w.id,
       status: w.status,
@@ -1031,16 +1041,16 @@ export class GGUFRuntimeService extends EventEmitter {
       errors: w.errors,
       memoryUsage: w.memoryUsage,
       lastActivity: w.lastActivity
-    });
+    }));
   }
   /**
    * Cancel a pending request
    */
-  public cancelRequest(requestId,: string): boolean {
+  public cancelRequest(requestId: string): boolean {
     const index = this.requestQueue.findIndex(req => req.id === requestId);
     if (index >= 0) {
       const cancelled = this.requestQueue.splice(index, 1)[0];
-      cancelled.reject(new Error('Request cancelled');
+      cancelled.reject(new Error('Request cancelled'));
       return true;
     }
     return false;
@@ -1048,9 +1058,9 @@ export class GGUFRuntimeService extends EventEmitter {
   /**
    * Restart a specific worker
    */
-  public async restartWorker(workerId,: string): Promise<void> {
+  public async restartWorker(workerId: string): Promise<void> {
     const workerIndex = this.workers.findIndex(w => w.id === workerId);
-    if (workerIndex, === -,1) return;
+    if (workerIndex === -1) return;
     const oldWorker = this.workers[workerIndex];
     try {
       // Terminate old worker
@@ -1058,7 +1068,7 @@ export class GGUFRuntimeService extends EventEmitter {
       // Create new worker
       const workerScript = this.generateWorkerScript();
       const blob = new Blob([workerScript], { type: 'application/javascript' });
-      const newWorker = new Worker(URL.createObjectURL(blob);
+      const newWorker = new Worker(URL.createObjectURL(blob));
       const newWorkerState: WorkerState = {
         id: workerId,
         worker: newWorker,
@@ -1068,9 +1078,9 @@ export class GGUFRuntimeService extends EventEmitter {
         errors: 0,
         memoryUsage: 0
       }
-      newWorker.onmessage = (_event: any) => {
-        this.handleWorkerMessage(workerId, event.data);
-      });
+      newWorker.onmessage = (_event: MessageEvent) => {
+        this.handleWorkerMessage(workerId, _event.data);
+      };
       newWorker.onerror = (error) => {
         console.error(`Restarted worker ${workerId} error:`, error);
         newWorkerState.status = 'error';
@@ -1089,14 +1099,14 @@ export class GGUFRuntimeService extends EventEmitter {
   /**
    * Shutdown runtime and cleanup all resources
    */
-  public async shutdown(),: Promise<void> {
-    console,.log('🛑 Shutting down GGUF Runtime...');
+  public async shutdown(): Promise<void> {
+    console.log('🛑 Shutting down GGUF Runtime...');
     try {
       // Cancel all pending requests
       this.requestQueue.forEach(req => {
-        req.reject(new Error('Runtime shutdown');
+        req.reject(new Error('Runtime shutdown'));
       });
-      this.requestQueue = [,];
+      this.requestQueue = [];
       // Shutdown all workers gracefully
       const shutdownPromises = this.workers.map(async (worker) => {
         return new Promise<void>((resolve) => {
@@ -1106,7 +1116,7 @@ export class GGUFRuntimeService extends EventEmitter {
           }, 5000);
           const messageId = `shutdown-${Date.now()}`;
           const handleMessage = (_event: MessageEvent) => {
-            if (event.data.type === 'SHUTDOWN_COMPLETE' && event.data.id === messageId) {
+            if (_event.data.type === 'SHUTDOWN_COMPLETE' && _event.data.id === messageId) {
               clearTimeout(timeout);
               worker.worker.removeEventListener('message', handleMessage);
               worker.worker.terminate();
@@ -1120,11 +1130,11 @@ export class GGUFRuntimeService extends EventEmitter {
           });
         });
       });
-      await Promis,e.all(shutdownPromise,s);
+      await Promise.all(shutdownPromises);
       // Clear workers array
-      this.workers = [,];
-      this.isLoaded = fals,e;
-      this.isInitializing = fals,e;
+      this.workers = [];
+      this.isLoaded = false;
+      this.isInitializing = false;
       // Reset stores
       this.modelStatus.set({ loaded: false, loading: false });
       this.performanceMetrics.set({
@@ -1140,7 +1150,7 @@ export class GGUFRuntimeService extends EventEmitter {
         errorRate: 0,
         queueSize: 0,
       });
-      console,.log('✅ GGUF Runtime shutdown complete');
+      console.log('✅ GGUF Runtime shutdown complete');
       this.emit('shutdown');
     } catch (error: any) {
       console.error('Error during shutdown:', error);
@@ -1166,9 +1176,9 @@ export function createGGUFRuntime(config?: Partial<GGUFRuntimeConfig>) {
       isReady: derived(runtime.modelStatus, ($status) => $status.loaded),
       isLoading: derived(runtime.modelStatus, ($status) => $status.loading),
       hasError: derived(runtime.modelStatus, ($status) => !!$status.error),
-      efficiency: derived()
+      efficiency: derived(
         [runtime.performanceMetrics, runtime.runtimeStats],
-        ([$perf, $stats]), => ({
+        ([$perf, $stats]) => ({
           tokensPerSecond: $perf.tokensPerSecond,
           requestsPerMinute: $stats.uptime > 0 ? ($stats.totalRequests / ($stats.uptime / 60000)) : 0,
           memoryEfficiency: $perf.memoryUsage > 0 ? ((8192 - $perf.memoryUsage) / 8192) : 1,
@@ -1176,33 +1186,33 @@ export function createGGUFRuntime(config?: Partial<GGUFRuntimeConfig>) {
           successRate: $stats.totalRequests > 0 ? ($stats.completedRequests / $stats.totalRequests) : 0
         })
       ),
-      systemHealth: derived()
+      systemHealth: derived(
         [runtime.modelStatus, runtime.performanceMetrics, runtime.runtimeStats],
         ([$status, $perf, $stats]) => ({
           overall: $status.loaded && $perf.errorRate < 0.1 && $stats.workersActive > 0,
           model: $status.loaded,
           workers: $stats.workersActive,
-          memory: $perf.memoryUsage < 6144, // Under 6GB>
-          queue: $stats.queueLength < 10,>
-          errors: $perf.errorRate < 0.05>,
+          memory: $perf.memoryUsage < 6144, // Under 6GB
+          queue: $stats.queueLength < 10,
+          errors: $perf.errorRate < 0.05,
         })
       )
     },
     // Enhanced API methods
     generateCompletion: runtime.generateCompletion.bind(runtime),
-    generateBatch,: runtime.generateBatch.bind(runtime),
-    generateCompletionStream,: runtime.generateCompletionStream.bind(runtime),
-    getModelInfo,: runtime.getModelInfo.bind(runtime),
-    isReady,: runtime.isReady.bind(runtime),
-    getPerformanceMetrics,: runtime.getPerformanceMetrics.bind(runtime),
-    getWorkerStatus,: runtime.getWorkerStatus.bind(runtime),
-    cancelRequest,: runtime.cancelRequest.bind(runtime),
-    restartWorker,: runtime.restartWorker.bind(runtime),
-    shutdown,: runtime.shutdown.bind(runtime),
+    generateBatch: runtime.generateBatch.bind(runtime),
+    generateCompletionStream: runtime.generateCompletionStream.bind(runtime),
+    getModelInfo: runtime.getModelInfo.bind(runtime),
+    isReady: runtime.isReady.bind(runtime),
+    getPerformanceMetrics: runtime.getPerformanceMetrics.bind(runtime),
+    getWorkerStatus: runtime.getWorkerStatus.bind(runtime),
+    cancelRequest: runtime.cancelRequest.bind(runtime),
+    restartWorker: runtime.restartWorker.bind(runtime),
+    shutdown: runtime.shutdown.bind(runtime),
     // Event handling
-    on,: runtime.on.bind(runtime),
-    off,: runtime.off.bind(runtime),
-    once,: runtime.once.bind(runtime)
+    on: runtime.on.bind(runtime),
+    off: runtime.off.bind(runtime),
+    once: runtime.once.bind(runtime)
   }
 }
 // Enhanced helper functions for legal AI tasks
@@ -1226,7 +1236,7 @@ export const GGUFLegalHelpers = {
     stopTokens: ['\n\n', '---', 'END_ANALYSIS']
   }),
   // Legal document review with compliance checking
-  reviewLegalDocument: (documentText: string, documentType: LegalContext['documentType']): GGUFInferenceRequest => ({,
+  reviewLegalDocument: (documentText: string, documentType: LegalContext['documentType']): GGUFInferenceRequest => ({
     prompt: documentText,
     maxTokens: 1536,
     temperature: 0.15,
@@ -1245,7 +1255,7 @@ export const GGUFLegalHelpers = {
   }),
   // Legal research with citation support
   legalResearch: (query: string, jurisdiction = 'federal'): GGUFInferenceRequest => ({
-    prompt: `Research the following legal question: ${query}`,
+    prompt: \`Research the following legal question: \${query}\`,
     maxTokens: 2048,
     temperature: 0.3,
     topP: 0.9,
@@ -1281,7 +1291,7 @@ export const GGUFLegalHelpers = {
     timeout: 30000
   }),
   // Regulatory compliance analysis
-  analyzeCompliance: (regulatoryText: string, industry: string): GGUFInferenceRequest => ({,
+  analyzeCompliance: (regulatoryText: string, industry: string): GGUFInferenceRequest => ({
     prompt: regulatoryText,
     maxTokens: 1280,
     temperature: 0.1,
@@ -1289,7 +1299,7 @@ export const GGUFLegalHelpers = {
     topK: 20,
     repeatPenalty: 1.2,
     priority: 'high',
-    systemPrompt: `Analyze this regulatory text for compliance requirements in the ${industry} industry.`,
+    systemPrompt: \`Analyze this regulatory text for compliance requirements in the \${industry} industry.\`,
     legalContext: {
       documentType: 'statute',
       jurisdiction: 'federal',
@@ -1304,7 +1314,7 @@ export const GGUFRuntimeUtils = {
   /**
    * Create optimal configuration for legal AI workloads
    */
-  createLegalConfig: (gpuMemory = 8192): Partial<GGUFRuntimeConfig> => ({,
+  createLegalConfig: (gpuMemory = 8192): Partial<GGUFRuntimeConfig> => ({
     contextLength: 4096,
     batchSize: 256,
     gpuLayers: gpuMemory >= 8192 ? 35 : 20,
@@ -1322,15 +1332,15 @@ export const GGUFRuntimeUtils = {
     cpu: number;
     total: number;
   } => {
-    const baseGPU = 2048); // Base GPU memory in MB
-    const baseCPU = 1024); // Base CPU memory in MB
-    const gpuMultiplier = config.gpuLayers ? config.gpuLayers / 35 : 0);
-    const contextMultiplier = (config.contextLength || 4096) / 4096);
+    const baseGPU = 2048; // Base GPU memory in MB
+    const baseCPU = 1024; // Base CPU memory in MB
+    const gpuMultiplier = (config.gpuLayers ? config.gpuLayers / 35 : 0);
+    const contextMultiplier = (config.contextLength || 4096) / 4096;
     return {
       gpu: Math.floor(baseGPU * gpuMultiplier * contextMultiplier),
       cpu: Math.floor(baseCPU * contextMultiplier),
       total: Math.floor((baseGPU * gpuMultiplier + baseCPU) * contextMultiplier)
-    });
+    };
   },
   /**
    * Validate configuration for system compatibility

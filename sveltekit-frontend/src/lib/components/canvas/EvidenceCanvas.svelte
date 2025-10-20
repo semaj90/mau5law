@@ -459,7 +459,7 @@
       width="800"
       height="600"
       onmousemove={handleMouseMove}
-      onclick={handleMouseClick}
+      on:click={handleMouseClick}
       onmouseleave={handleMouseLeave}
       class="evidence-canvas"
     ></canvas>

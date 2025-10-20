@@ -206,7 +206,7 @@ https://svelte.dev/e/expected_token -->
         </div>
         <div class="flex items-end">
           <Button class="bits-btn"
-            onclick={() =>
+            on:click={() =>
 generateSIMDGlyph(demoPrompts[Math.floor(Math.random() * demoPrompts.length)])}
             disabled={isGenerating}
             class="w-full"
@@ -216,11 +216,11 @@ generateSIMDGlyph(demoPrompts[Math.floor(Math.random() * demoPrompts.length)])}
       </div>
       <!-- Batch Actions -->
       <div class="flex gap-2">
-        <Button class="bits-btn" onclick={generateBatchDemo} disabled={isGenerating} variant="ghost">
+        <Button class="bits-btn" on:click={generateBatchDemo} disabled={isGenerating} variant="ghost">
 🚀 Batch Demo
-        <Button class="bits-btn" onclick={testCompressionLevels} disabled={isGenerating} variant="ghost">
+        <Button class="bits-btn" on:click={testCompressionLevels} disabled={isGenerating} variant="ghost">
 📊 Test Compression
-        <Button class="bits-btn" onclick={() =>
+        <Button class="bits-btn" on:click={() =>
 results = []} variant="ghost">
           🗑️ Clear Results
       </div>
@@ -318,7 +318,7 @@ results = []} variant="ghost">
                 <div class="flex justify-between items-center mb-2">
                   <span class="text-yellow-400">Generated {(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).metadata.shader_format.toUpperCase()} Shader</span>
                   <Button class="bits-btn"
-                    onclick={() =>
+                    on:click={() =>
 downloadShaderCode(result)}
                     size="sm"
                     variant="ghost"
@@ -359,7 +359,7 @@ downloadShaderCode(result)}
         <h3 class="text-lg font-medium mb-2">No SIMD Glyphs Generated Yet</h3>
         <p class="mb-4">Generate your first SIMD-optimized legal evidence glyph with GPU acceleration!</p>
         <Button class="bits-btn"
-          onclick={() =>
+          on:click={() =>
 generateSIMDGlyph(demoPrompts[0])}
           disabled={isGenerating}
         >

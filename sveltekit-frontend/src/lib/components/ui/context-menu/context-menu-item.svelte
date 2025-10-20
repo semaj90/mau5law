@@ -25,7 +25,7 @@
   class:disabled
   role="menuitem"
   tabindex={disabled ? -1 : 0}
-  onclick={handleClick}
+  on:click={handleClick}
   aria-disabled={disabled}
 >
   <slot />

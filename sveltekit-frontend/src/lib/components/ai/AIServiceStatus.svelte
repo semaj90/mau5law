@@ -90,7 +90,7 @@
     </div>
 
     <button
-      onclick={checkServices}
+      on:click={checkServices}
       disabled={isChecking}
       class="refresh-button"
       class:spinning={isChecking}

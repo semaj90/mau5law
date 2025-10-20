@@ -334,7 +334,7 @@ const saved = localStorage.getItem('ai-search-history');
                 {#each suggestions as suggestion}
                   <button type="button"
                     class="w-full px-4 py-2 text-left text-gray-300 hover:bg-gray-700 hover:text-white font-mono text-sm transition-colors"
-                    onclick={() => selectSuggestion(suggestion)}
+                    on:click={() => selectSuggestion(suggestion)}
                   >
                     <Search class="w-4 h-4 inline mr-2" />
                     {suggestion}
@@ -352,7 +352,7 @@ const saved = localStorage.getItem('ai-search-history');
               { value: 'documents', label: 'DOCUMENTS', icon: Calendar, color: 'purple' }
             ] as filter}
               <button type="button"
-                onclick={() => selectedType = filter.value}
+                on:click={() => selectedType = filter.value}
                 class="nier-filter-btn {selectedType === filter.value ? 'active' : ''} {filter.color}"
                 in:scale={{ duration: 200, start: 0.9 }}
               >
@@ -362,7 +362,7 @@ const saved = localStorage.getItem('ai-search-history');
             {/each}
             <!-- Advanced Options Toggle -->
             <button type="button"
-              onclick={() => showAdvanced = !showAdvanced}
+              on:click={() => showAdvanced = !showAdvanced}
               class="nier-filter-btn advanced {showAdvanced ? 'active' : ''}"
             >
               <Zap class="w-4 h-4" />
@@ -408,7 +408,7 @@ const saved = localStorage.getItem('ai-search-history');
                     {#each searchHistory.slice(0, 3) as query}
                       <button type="button"
                         class="block w-full text-left text-gray-400 hover:text-white font-mono text-xs p-1 rounded hover:bg-gray-700 transition-colors"
-                        onclick={() => selectHistory(query)}
+                        on:click={() => selectHistory(query)}
                       >
                         {query}
                       </button>
@@ -420,7 +420,7 @@ const saved = localStorage.getItem('ai-search-history');
           {/if}
           <!-- AI Search Button -->
           <button type="button"
-            onclick={performAISearch}
+            on:click={performAISearch}
             disabled={isSearching || !searchQuery.trim()}
             class="nier-search-btn w-full py-4 bg-yellow-400 hover:bg-yellow-300 disabled:bg-gray-600 disabled:cursor-not-allowed text-black font-mono font-bold transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
             data-testid="ai-search-btn"
@@ -442,7 +442,7 @@ const saved = localStorage.getItem('ai-search-history');
             {#each searchResults as result, index ((result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).id)}
               <div
                 class="nier-result-item border-b border-gray-700/50 p-4 hover:bg-gray-800/50 cursor-pointer transition-all duration-200 group"
-                onclick={() => selectResult(result)}
+                on:click={() => selectResult(result)}
                 in:fly={{ x: -20, duration: 300, delay: index * 50 }}
                 data-testid="result-item"
               >
@@ -526,7 +526,7 @@ const saved = localStorage.getItem('ai-search-history');
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               {#each autoSuggestions as suggestion}
                 <div class="nier-suggestion-nier-bits-card bg-gray-800/50 border border-gray-600 p-4 hover:border-yellow-400/50 transition-colors group cursor-pointer"
-                     onclick={() => applyAutoSuggestion(suggestion)}>
+                     on:click={() => applyAutoSuggestion(suggestion)}>
                   <div class="flex items-start gap-3">
                     <div class="nier-priority-indicator {suggestion.priority} w-3 h-3 rounded-full flex-shrink-0 mt-1"></div>
                     <div class="flex-1">

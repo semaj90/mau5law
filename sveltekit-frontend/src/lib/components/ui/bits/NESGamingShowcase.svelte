@@ -100,10 +100,10 @@
   <div class="showcase-header">
     <h1 class="showcase-title">{title}</h1>
     <div class="header-controls">
-      <NESButton variant="primary" onclick={() => handleGameAction('start')}>
+      <NESButton variant="primary" on:click={() => handleGameAction('start')}>
         {isPlaying ? 'Playing...' : 'Start Demo'}
       </NESButton>
-      <NESButton variant="warning" onclick={() => handleGameAction('reset')}>Reset</NESButton>
+      <NESButton variant="warning" on:click={() => handleGameAction('reset')}>Reset</NESButton>
     </div>
   </div>
   <!-- Stats Bar -->
@@ -141,7 +141,7 @@
         title={feature.title}
         subtitle={feature.description}
         elevated={selectedCard === feature.id}
-        onclick={() => handleCardSelect(feature.id)}
+        on:click={() => handleCardSelect(feature.id)}
       >
         <div class="feature-content">
           <div class="feature-icon">{feature.icon}</div>
@@ -156,12 +156,12 @@
   </div>
   <!-- Action Buttons Grid -->
   <div class="actions-grid">
-    <NESButton variant="success" onclick={() => handleGameAction('powerup')}>Power Up! (+100)</NESButton>
-    <NESButton variant="warning" onclick={() => handleGameAction('pause')}>
+    <NESButton variant="success" on:click={() => handleGameAction('powerup')}>Power Up! (+100)</NESButton>
+    <NESButton variant="warning" on:click={() => handleGameAction('pause')}>
       {isPlaying ? 'Pause' : 'Resume'}
     </NESButton>
-    <NESButton variant="danger" onclick={() => handleGameAction('damage')}>Take Damage (-1 Life)</NESButton>
-    <NESButton variant="primary" onclick={() => (showModal = true)}>Show Modal</NESButton>
+    <NESButton variant="danger" on:click={() => handleGameAction('damage')}>Take Damage (-1 Life)</NESButton>
+    <NESButton variant="primary" on:click={() => (showModal = true)}>Show Modal</NESButton>
   </div>
   <!-- Demo Modal -->
   <NESModal bind:open={showModal} title="System Information" variant="dark" size="lg">
@@ -220,8 +220,8 @@
         </div>
       {/if}
       <div class="modal-actions">
-        <NESButton variant="success" onclick={() => (showModal = false)}>Awesome!</NESButton>
-        <NESButton variant="default" onclick={() => (selectedCard = null)}>Clear Selection</NESButton>
+        <NESButton variant="success" on:click={() => (showModal = false)}>Awesome!</NESButton>
+        <NESButton variant="default" on:click={() => (selectedCard = null)}>Clear Selection</NESButton>
       </div>
     </div>
   </NESModal>

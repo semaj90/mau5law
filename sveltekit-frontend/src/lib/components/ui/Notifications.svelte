@@ -77,7 +77,7 @@
                 <Button class="bits-btn"
                   size="sm"
                   variant={action.variant || "secondary"}
-                  onclick={() =>
+                  on:click={() =>
 handleAction(notification, action)}
                 >
                   {action.label}
@@ -91,7 +91,7 @@ handleAction(notification, action)}
           <button
             type="button"
             class="space-y-4"
-            onclick={() => handleClose(notification)}
+            on:click={() => handleClose(notification)}
           >
             <span class="space-y-4">Dismiss</span>
             <iconify-icon icon="ph:x" class="space-y-4"></iconify-icon>

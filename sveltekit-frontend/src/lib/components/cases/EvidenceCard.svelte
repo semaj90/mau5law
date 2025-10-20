@@ -123,7 +123,7 @@
     <!-- Actions -->
     <div class="flex-shrink-0 flex items-center gap-1">
       <button
-        onclick={() => handleView()}
+        on:click={() => handleView()}
         class="p-1 text-gray-400 hover:text-gray-600 rounded"
         title="View evidence"
         {disabled}
@@ -131,7 +131,7 @@
         <Eye class="h-4 w-4" />
       </button>
       <button
-        onclick={() => handleEdit()}
+        on:click={() => handleEdit()}
         class="p-1 text-gray-400 hover:text-gray-600 rounded"
         title="Edit evidence"
         {disabled}
@@ -139,7 +139,7 @@
         <Edit class="h-4 w-4" />
       </button>
       <button
-        onclick={() => handleDownload()}
+        on:click={() => handleDownload()}
         class="p-1 text-gray-400 hover:text-gray-600 rounded"
         title="Download evidence"
         {disabled}
@@ -147,7 +147,7 @@
         <Download class="h-4 w-4" />
       </button>
       <button
-        onclick={() => handleDelete()}
+        on:click={() => handleDelete()}
         class="p-1 text-red-400 hover:text-red-600 rounded"
         title="Delete evidence"
         {disabled}

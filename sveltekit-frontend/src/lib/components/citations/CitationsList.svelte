@@ -216,7 +216,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     </div>
     {#if !readonly}
       <button
-        onclick={createCitation}
+        on:click={createCitation}
         class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
         Add Citation
@@ -274,7 +274,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
             <option value="title">Title</option>
           </select>
           <button
-            onclick={() => { sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'; handleSortChange(), }}
+            on:click={() => { sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'; handleSortChange(), }}
             class="px-2 py-2 text-sm border border-l-0 border-gray-300 rounded-r-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
             title={sortOrder === 'asc' ? 'Sort ascending' : 'Sort descending'}
           >
@@ -286,13 +286,13 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     <!-- Quick Actions -->
     <div class="flex justify-between items-center">
       <button
-        onclick={handleSearch}
+        on:click={handleSearch}
         class="px-3 py-1 text-xs font-medium text-blue-600 hover:text-blue-800"
       >
         Search
       </button>
       <button
-        onclick={() => { searchQuery = ''; typeFilter = 'all'; verifiedFilter = 'all'; handleFilterChange(), }}
+        on:click={() => { searchQuery = ''; typeFilter = 'all'; verifiedFilter = 'all'; handleFilterChange(), }}
         class="px-3 py-1 text-xs font-medium text-gray-600 hover:text-gray-800"
       >
         Clear Filters
@@ -312,7 +312,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         <div
           class="bg-white border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
           role="button" tabindex="0"
-                onclick={() => selectCitation(citation)}
+                on:click={() => selectCitation(citation)}
         >
           <div class="flex justify-between items-start">
             <div class="flex-1">
@@ -403,7 +403,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
             {#if !readonly}
               <div class="flex space-x-2 ml-4">
                 <button
-                  onclick={() => editCitation(citation)}
+                  on:click={() => editCitation(citation)}
                   class="text-gray-400 hover:text-gray-600 p-1"
                   title="Edit citation"
                 >
@@ -443,7 +443,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
           </p>
           {#if !readonly}
             <button
-              onclick={createCitation}
+              on:click={createCitation}
               class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               Add First Citation
@@ -460,7 +460,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         </div>
         <div class="flex space-x-1">
           <button
-            onclick={() => changePage(currentPage - 1)}
+            on:click={() => changePage(currentPage - 1)}
             disabled={currentPage <= 1}
             class="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 disabled:opacity-50"
           >
@@ -470,7 +470,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
             {@const pageNum = Math.max(1, currentPage - 2) + i}
             {#if pageNum <= totalPages}
               <button
-                onclick={() => changePage(pageNum)}
+                on:click={() => changePage(pageNum)}
                 class={`px-3 py-2 text-sm font-medium rounded ${
                   pageNum === currentPage
                     ? 'text-white bg-blue-600'
@@ -482,7 +482,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
             {/if}
           {/each}
           <button
-            onclick={() => changePage(currentPage + 1)}
+            on:click={() => changePage(currentPage + 1)}
             disabled={currentPage >= totalPages}
             class="px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 disabled:opacity-50"
           >

@@ -167,7 +167,7 @@
 {#if minimal}
   <button
     class="upload-zone px-3 py-2 border rounded text-sm"
-    onclick={openFileDialog}
+    on:click={openFileDialog}
     title="Upload Evidence"
     aria-label="Upload Evidence"
     tabindex={0}
@@ -190,7 +190,7 @@
     role="button"
     aria-label="Upload Evidence Dropzone"
     tabindex={0}
-    onclick={openFileDialog}
+    on:click={openFileDialog}
     onkeydown={e => e.key === 'Enter' && openFileDialog()}
   >
     {#if isUploading}
@@ -202,7 +202,7 @@
         <div class="flex gap-2 items-center">
           <button
             class="text-xs px-2 py-1 border rounded hover:bg-gray-100"
-            onclick={e => {
+            on:click={e => {
               e.stopPropagation();
               cancelUpload();
             }}>Cancel</button

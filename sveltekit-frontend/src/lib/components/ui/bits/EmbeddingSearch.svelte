@@ -156,7 +156,7 @@
               nesStyle={true}
               disabled={!isValidQuery || isSearching}
               loading={isSearching}
-              onclick={handleSearch}
+              on:click={handleSearch}
             >
               {#if isSearching}
                 <Zap class="inline-icon animate-spin" />
@@ -233,7 +233,7 @@
         </div>
         <div class="search-results">
           {#each results as result}
-            <div class="result-item" onclick={() => selectResult(result)}>
+            <div class="result-item" on:click={() => selectResult(result)}>
               <div class="result-header">
                 <div class="similarity-score">
                   <span class="nes-text is-success">

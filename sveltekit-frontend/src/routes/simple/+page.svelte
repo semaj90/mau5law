@@ -23,18 +23,18 @@
     <!-- Programmatic navigation buttons -->
     <div class="space-x-4 mt-6">
       <button
-        onclick={() => goto('/yorha-command-center')}
+        on:click={() => goto('/yorha-command-center')}
         class="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800"
       >
         YoRHa Command Center (Button)
       </button>
       <button
-        onclick={() => goto('/evidenceboard')}
+        on:click={() => goto('/evidenceboard')}
         class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800"
       >
         Evidence Board (Button)
       </button>
-      <button onclick={() => goto('/endpoints')} class="bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-800">
+      <button on:click={() => goto('/endpoints')} class="bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-800">
         Endpoints (Button)
       </button>
     </div>

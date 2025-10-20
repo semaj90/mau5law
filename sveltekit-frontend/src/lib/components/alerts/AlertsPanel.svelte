@@ -41,11 +41,11 @@ https://svelte.dev/e/js_parse_error -->
         </span>
       {/if}
       <button
-        onclick={() => (autoRefresh = !autoRefresh)}
+        on:click={() => (autoRefresh = !autoRefresh)}
         class="text-xs border px-2 py-1 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800"
         >{autoRefresh ? 'Pause' : 'Resume'}</button
       >
-      <button onclick={load} class="text-xs border px-2 py-1 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800"
+      <button on:click={load} class="text-xs border px-2 py-1 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800"
         >Refresh</button
       >
     </div>

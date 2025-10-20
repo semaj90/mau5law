@@ -90,7 +90,7 @@ Tests the demo RAG functionality with a working interface
   <div class="chat-header">
     <h3 class="nes-text is-primary">🤖 Demo AI Chat</h3>
     <div class="chat-controls">
-      <button class="nes-btn is-warning" onclick={clearChat}> Clear Chat </button>
+      <button class="nes-btn is-warning" on:click={clearChat}> Clear Chat </button>
     </div>
   </div>
   <!-- Sample Queries -->
@@ -98,7 +98,7 @@ Tests the demo RAG functionality with a working interface
     <p class="nes-text is-disabled">Try these sample queries:</p>
     <div class="query-buttons">
       {#each sampleQueries as sampleQuery}
-        <button class="nes-btn is-normal" onclick={() => useSampleQuery(sampleQuery)}>
+        <button class="nes-btn is-normal" on:click={() => useSampleQuery(sampleQuery)}>
           {sampleQuery}
         </button>
       {/each}
@@ -193,7 +193,7 @@ Tests the demo RAG functionality with a working interface
         rows="3"
       ></textarea>
     </div>
-    <button class="nes-btn is-primary" onclick={sendQuery} disabled={!query.trim() || isLoading}>
+    <button class="nes-btn is-primary" on:click={sendQuery} disabled={!query.trim() || isLoading}>
       {isLoading ? 'Thinking...' : 'Send'}
     </button>
   </div>

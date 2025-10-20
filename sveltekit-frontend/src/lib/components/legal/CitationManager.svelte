@@ -310,23 +310,23 @@
         </div>
         <div class="citation-actions">
           <Button
-            onclick={() => showAddForm = !showAddForm}
+            on:click={() => showAddForm = !showAddForm}
             style="background: {citationBuilder.styling.colors.evidence}"
           >
             ➕ Add Citation
           </Button>
           <Button
-            onclick={() => bulkOperations = !bulkOperations}
+            on:click={() => bulkOperations = !bulkOperations}
             variant="outline"
           >
             🔧 Bulk Operations
           </Button>
           {#if selectedCitations.size > 0}
             <div class="bulk-actions" transition:fade>
-              <Button onclick={() => exportCitations('bluebook')} size="sm">
+              <Button on:click={() => exportCitations('bluebook')} size="sm">
                 📄 Bluebook ({selectedCitations.size})
               </Button>
-              <Button onclick={() => exportCitations('json')} size="sm" variant="outline">
+              <Button on:click={() => exportCitations('json')} size="sm" variant="outline">
                 🔧 JSON
               </Button>
             </div>
@@ -340,13 +340,13 @@
         <div class="add-form" transition:fly={{ y: -20, duration: 300 }}>
           <div class="form-header">
             <h3>Add New Citation</h3>
-            <Button onclick={() => showAddForm = false} size="sm">✕</Button>
+            <Button on:click={() => showAddForm = false} size="sm">✕</Button>
           </div>
           <div class="form-content">
-            <Button onclick={addNewCitation}>
+            <Button on:click={addNewCitation}>
               📝 Create New Citation
             </Button>
-            <Button onclick={searchCitations} disabled={!searchTerm}>
+            <Button on:click={searchCitations} disabled={!searchTerm}>
               🔍 Search Legal Databases
             </Button>
           </div>
@@ -357,12 +357,12 @@
         <div class="bulk-panel" transition:fly={{ y: -20, duration: 300 }}>
           <div class="panel-header">
             <h3>Bulk Operations</h3>
-            <Button onclick={() => bulkOperations = false} size="sm">✕</Button>
+            <Button on:click={() => bulkOperations = false} size="sm">✕</Button>
           </div>
           <div class="bulk-controls">
-            <Button onclick={selectAll}>Select All ({filteredCitations.length})</Button>
-            <Button onclick={clearSelection}>Clear Selection</Button>
-            <Button onclick={() => exportCitations('bluebook')} disabled={selectedCitations.size === 0}>
+            <Button on:click={selectAll}>Select All ({filteredCitations.length})</Button>
+            <Button on:click={clearSelection}>Clear Selection</Button>
+            <Button on:click={() => exportCitations('bluebook')} disabled={selectedCitations.size === 0}>
               Export Selected ({selectedCitations.size})
             </Button>
           </div>
@@ -376,7 +376,7 @@
             placeholder="Search citations by title, content, tags, or notes..."
             class="citation-search"
           />
-          <Button onclick={searchCitations} disabled={!searchTerm}>
+          <Button on:click={searchCitations} disabled={!searchTerm}>
             🔍 Search
           </Button>
         </div>
@@ -483,13 +483,13 @@
               </div>
               <div class="citation-actions">
                 <Button
-                  onclick={() => verifyCitation(citation.id)}
+                  on:click={() => verifyCitation(citation.id)}
                   disabled={isVerifying || citation.verified}
                   size="sm"
                 >
                   {isVerifying ? '🔄' : citation.verified ? '✅' : '🔍'} Verify
                 </Button>
-                <Button onclick={() => deleteCitation(citation.id)} size="sm" variant="outline">
+                <Button on:click={() => deleteCitation(citation.id)} size="sm" variant="outline">
                   🗑️
                 </Button>
               </div>
@@ -608,7 +608,7 @@
             <span class="no-citations-icon">📚</span>
             <h3>No Citations Found</h3>
             <p>No citations match your current search and filter criteria.</p>
-            <Button onclick={() => { searchTerm = ''; filterType = 'all'; filterJurisdiction = 'all', }}>
+            <Button on:click={() => { searchTerm = ''; filterType = 'all'; filterJurisdiction = 'all', }}>
               Clear Filters
             </Button>
           </div>

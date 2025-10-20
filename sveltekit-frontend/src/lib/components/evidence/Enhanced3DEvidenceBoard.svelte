@@ -582,9 +582,9 @@
     </div>
     <div class="panel-section">
       <h4>Controls</h4>
-      <button class="control-btn" onclick={resetCamera}>Reset View</button>
-      <button class="control-btn" onclick={toggleView}>Toggle View</button>
-      <button class="control-btn" onclick={exportBoard}>Export</button>
+      <button class="control-btn" on:click={resetCamera}>Reset View</button>
+      <button class="control-btn" on:click={toggleView}>Toggle View</button>
+      <button class="control-btn" on:click={exportBoard}>Export</button>
     </div>
   </div>
 </div>

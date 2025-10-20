@@ -176,7 +176,7 @@
         <h2>Demo Load Failed</h2>
         <p>{error}</p>
         <div class="error-actions">
-          <button onclick={() => loadDemoComponent(demoSlug)}>🔄 Retry</button>
+          <button on:click={() => loadDemoComponent(demoSlug)}>🔄 Retry</button>
           <a href="/demo/showcase">← Back to Demos</a>
         </div>
       </div>

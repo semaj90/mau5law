@@ -265,7 +265,7 @@
         <button
           class="nav-item"
           class:active={item.active}
-          onclick={() => selectSidebarItem(index)}
+          on:click={() => selectSidebarItem(index)}
           transition:fade={{ delay: index * 50 }}
         >
           <span class="nav-icon">{item.icon}</span>
@@ -324,7 +324,7 @@
         <div class="chat-controls">
           <Button class="control-btn">⭐ TERMINAL</Button>
           <Button class="control-btn active">🤖 AI CHAT</Button>
-          <Button class="control-btn" onclick={clearChat}>🗑️ CLEAR</Button>
+          <Button class="control-btn" on:click={clearChat}>🗑️ CLEAR</Button>
           {#if isTestMode}
             <span class="test-mode-badge">TEST MODE</span>
           {/if}
@@ -380,7 +380,7 @@
               onkeypress={handleKeyPress}
               disabled={isTyping}
             />
-            <Button class="send-btn" onclick={sendMessage} disabled={!currentInput.trim() || isTyping}>⚡SEND</Button>
+            <Button class="send-btn" on:click={sendMessage} disabled={!currentInput.trim() || isTyping}>⚡SEND</Button>
           </div>
         </div>
       </div>

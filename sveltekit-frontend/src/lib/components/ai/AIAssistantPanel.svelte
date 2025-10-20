@@ -179,7 +179,7 @@
               : ''} {accelerationStatus === 'initializing' ? 'initializing' : ''} {accelerationStatus === 'error'
               ? 'error'
               : ''}"
-            onclick={() => {
+            on:click={() => {
               useAcceleration = !useAcceleration;
               if (useAcceleration && accelerationStatus === 'disabled') {
                 initializeAcceleration();
@@ -197,7 +197,7 @@
         <Button
           size="sm"
           variant={currentContext === 'general' ? 'default' : 'outline'}
-          onclick={() => setContext('general')}
+          on:click={() => setContext('general')}
           class="text-xs"
         >
           General
@@ -205,7 +205,7 @@
         <Button
           size="sm"
           variant={currentContext === 'analysis' ? 'default' : 'outline'}
-          onclick={() => setContext('analysis')}
+          on:click={() => setContext('analysis')}
           class="text-xs"
         >
           Analysis
@@ -213,7 +213,7 @@
         <Button
           size="sm"
           variant={currentContext === 'connection' ? 'default' : 'outline'}
-          onclick={() => setContext('connection')}
+          on:click={() => setContext('connection')}
           class="text-xs"
         >
           Connections
@@ -221,7 +221,7 @@
         <Button
           size="sm"
           variant={currentContext === 'investigation' ? 'default' : 'outline'}
-          onclick={() => setContext('investigation')}
+          on:click={() => setContext('investigation')}
           class="text-xs"
         >
           Next Steps
@@ -258,7 +258,7 @@
                     <button
                       type="button"
                       class="evidence-ref-btn text-xs bg-primary/10 text-primary px-2 py-1 rounded hover:bg-primary/20 transition-colors"
-                      onclick={() => onEvidenceSelect?.({ evidenceId })}
+                      on:click={() => onEvidenceSelect?.({ evidenceId })}
                       aria-label={`Select evidence ${evidenceId}`}
                     >
                       {evidenceId}
@@ -276,14 +276,14 @@
           <Button
             size="sm"
             variant="ghost"
-            onclick={analyzeSelectedEvidence}
+            on:click={analyzeSelectedEvidence}
             disabled={selectedEvidenceIds.length === 0 || isLoading}
             class="text-xs"
           >
             <FileText class="w-3 h-3 mr-1" />
             Analyze Selected
           </Button>
-          <Button size="sm" variant="ghost" onclick={suggestNextSteps} disabled={isLoading} class="text-xs">
+          <Button size="sm" variant="ghost" on:click={suggestNextSteps} disabled={isLoading} class="text-xs">
             <Search class="w-3 h-3 mr-1" />
             Next Steps
           </Button>
@@ -312,7 +312,7 @@
       <!-- Acceleration Results Panel -->
       {#if useAcceleration && lastAccelerationResults}
         <div class="acceleration-panel">
-          <button class="acceleration-header" onclick={() => (showSuggestions = !showSuggestions)}>
+          <button class="acceleration-header" on:click={() => (showSuggestions = !showSuggestions)}>
             <Zap class="w-4 h-4" />
             <span>GPU Acceleration Results</span>
           </button>
@@ -356,14 +356,14 @@
       <!-- Insights Panel -->
       {#if showInsights && insights.length > 0}
         <div class="insights-panel">
-          <button class="insights-header" onclick={() => (showInsights = !showInsights)}>
+          <button class="insights-header" on:click={() => (showInsights = !showInsights)}>
             <Lightbulb class="w-4 h-4" />
             <span>AI Insights ({insights.length})</span>
           </button>
           {#if showInsights}
             <div class="insights-content">
               {#each insights.slice(0, 3) as insight}
-                <button class="insight-item" onclick={() => handleInsightClick(insight)}>
+                <button class="insight-item" on:click={() => handleInsightClick(insight)}>
                   <div class="insight-type">{insight.type}</div>
                   <div class="insight-description">{insight.description}</div>
                   <div class="insight-confidence">

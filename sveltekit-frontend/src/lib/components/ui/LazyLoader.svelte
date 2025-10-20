@@ -49,7 +49,7 @@
     <p class="text-red-600 dark:text-red-400 text-sm mb-3">
       {errorFallback}
     </p>
-    <button onclick={retry} class="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition-colors">
+    <button on:click={retry} class="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition-colors">
       Retry
     </button>
   </div>

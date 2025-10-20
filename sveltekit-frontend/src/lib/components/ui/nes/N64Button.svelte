@@ -96,7 +96,7 @@
   class={buttonStyles}
   {style}
   {disabled}
-  onclick={handleClick}
+  on:click={handleClick}
   onmousedown={handleMouseDown}
   onmouseup={handleMouseUp}
   onmouseleave={handleMouseLeave}

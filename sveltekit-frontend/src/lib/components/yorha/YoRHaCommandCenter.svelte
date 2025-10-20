@@ -276,7 +276,7 @@
     <p class="text-red-100 font-mono text-sm mb-4">{componentError.message}</p>
     <button
       class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-      onclick={() => {
+      on:click={() => {
         componentError = null;
       }}
       aria-label="Dismiss error and retry"
@@ -430,7 +430,7 @@
             class="action-nier-bits-card border rounded-lg p-4 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg {getActionColor(
               action.color
             )} {selectedCard === action.id ? 'scale-95' : ''}"
-            onclick={() => handleQuickAction(action)}
+            on:click={() => handleQuickAction(action)}
             tabindex="0"
             aria-label="{action.label} - {action.icon}"
             onkeydown={e => {
@@ -516,7 +516,7 @@
 {#if showCaseModal}
   <div
     class="modal-backdrop fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
-    onclick={handleModalBackdropClick}
+    on:click={handleModalBackdropClick}
     onkeydown={e => {
       if (e.key === 'Escape') showCaseModal = false;
     }}
@@ -525,7 +525,7 @@
     aria-labelledby="case-modal-title"
     tabindex="-1"
   >
-    <div class="modal-content max-w-4xl w-full" onclick={e => e.stopPropagation()} role="none" tabindex="-1">
+    <div class="modal-content max-w-4xl w-full" on:click={e => e.stopPropagation()} role="none" tabindex="-1">
       <YoRHaCaseForm
         on:success={handleCaseCreationSuccess}
         on:error={handleCaseCreationError}

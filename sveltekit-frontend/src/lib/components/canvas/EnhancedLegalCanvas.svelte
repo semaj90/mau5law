@@ -378,7 +378,7 @@
       {width}
       {height}
       onmousemove={handleMouseMove}
-      onclick={handleMouseClick}
+      on:click={handleMouseClick}
       onmouseleave={handleMouseLeave}
       class="legal-canvas"
     ></canvas>

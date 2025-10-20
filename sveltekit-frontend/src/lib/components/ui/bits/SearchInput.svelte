@@ -149,7 +149,7 @@
   }
 </script>
 
-<svelte:window onclick={handleClickOutside} onkeydown={handleKeydown} />
+<svelte:window on:click={handleClickOutside} onkeydown={handleKeydown} />
 <div class="{containerClasses} search-container">
   <!-- Main Search Input -->
   <div class="relative">
@@ -176,7 +176,7 @@
     {#if value}
       <button
         class="absolute right-10 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-        onclick={clearSearch}
+        on:click={clearSearch}
       >
         <X class={iconSizes[size]} />
       </button>
@@ -185,7 +185,7 @@
     {#if filters.length > 0}
       <button
         class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-        onclick={() => (showFilters = !showFilters)}
+        on:click={() => (showFilters = !showFilters)}
         class:text-blue-600={filters.some(f => f.active)}
       >
         <Filter class={iconSizes[size]} />
@@ -218,7 +218,7 @@
       </div>
       <div class="flex flex-wrap gap-2">
         {#each filters as filter, index}
-          <button class="nes-btn is-small" ; class:is-primary={filter.active} onclick={() => toggleFilter(index)}>
+          <button class="nes-btn is-small" ; class:is-primary={filter.active} on:click={() => toggleFilter(index)}>
             {filter.label}
           </button>
         {/each}
@@ -242,7 +242,7 @@
           {#each suggestions as suggestion}
             <button
               class="w-full text-left p-2 rounded hover:bg-gray-100 transition-colors"
-              onclick={() => selectSuggestion(suggestion)}
+              on:click={() => selectSuggestion(suggestion)}
             >
               <div class="font-medium text-sm truncate">{suggestion.content}</div>
               {#if suggestion.score}
@@ -273,7 +273,7 @@
           {#each searchHistory.slice(0, 3) as historyItem}
             <button
               class="w-full text-left p-2 rounded hover:bg-gray-100 transition-colors"
-              onclick={() => {
+              on:click={() => {
                 value = historyItem;
                 performSearch(historyItem);
               }}

@@ -772,7 +772,7 @@
     ondrop={handleDrop}
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
-    onclick={openFileDialog}
+    on:click={openFileDialog}
     onkeydown={e => e.key === 'Enter' && openFileDialog()}
   >
     {#if fileStates.length === 0}
@@ -834,7 +834,7 @@
                   type="button"
                   class="action-btn"
                   title="Remove"
-                  onclick={e => {
+                  on:click={e => {
                     e.stopPropagation();
                     removeFile(index);
                   }}
@@ -845,7 +845,7 @@
                   type="button"
                   class="action-btn"
                   title="Cancel"
-                  onclick={e => {
+                  on:click={e => {
                     e.stopPropagation();
                     cancelUpload(index);
                   }}
@@ -856,7 +856,7 @@
                   type="button"
                   class="action-btn"
                   title="Retry"
-                  onclick={e => {
+                  on:click={e => {
                     e.stopPropagation();
                     retryFile(index);
                     uploadFiles();
@@ -867,7 +867,7 @@
                   type="button"
                   class="action-btn"
                   title="Remove"
-                  onclick={e => {
+                  on:click={e => {
                     e.stopPropagation();
                     removeFile(index);
                   }}
@@ -950,7 +950,7 @@
         uploading ||
         disabled ||
         fileStates.every(f => ['completed', 'canceled'].includes(f.status))}
-      onclick={uploadFiles}
+      on:click={uploadFiles}
       aria-label="Start upload"
     >
       {#if uploading}
@@ -962,7 +962,7 @@
       {/if}
     </button>
     {#if uploading}
-      <button type="button" class="clear-button" onclick={cancelAllUploads} aria-label="Cancel all uploads"
+      <button type="button" class="clear-button" on:click={cancelAllUploads} aria-label="Cancel all uploads"
         >Cancel All</button
       >
     {/if}
@@ -970,7 +970,7 @@
       <button
         type="button"
         class="clear-button"
-        onclick={() => {
+        on:click={() => {
           files = [];
           fileStates = [];
           if (fileInput) fileInput.value = '';

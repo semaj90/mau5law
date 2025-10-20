@@ -390,10 +390,10 @@
     </div>
     <div class="header-actions">
       {#if currentDocument}
-        <button type="button" class="nes-btn" onclick={saveDocument}>Save Draft</button>
-        <button type="button" class="nes-btn btn-ghost" onclick={() => (showPreview = true)}>Preview</button>
+        <button type="button" class="nes-btn" on:click={saveDocument}>Save Draft</button>
+        <button type="button" class="nes-btn btn-ghost" on:click={() => (showPreview = true)}>Preview</button>
       {:else}
-        <button type="button" class="nes-btn" onclick={startNewDocument} disabled={!selectedDocumentType || isDrafting}>
+        <button type="button" class="nes-btn" on:click={startNewDocument} disabled={!selectedDocumentType || isDrafting}>
           {isDrafting ? 'Creating...' : 'Start New Document'}
         </button>
       {/if}
@@ -542,10 +542,10 @@
                   <p class="suggestion-text">{suggestion.suggestion}</p>
                   <p class="suggestion-reasoning">{suggestion.reasoning}</p>
                   <div class="suggestion-actions">
-                    <button class="nes-btn btn-sm" onclick={() => applySuggestion(suggestion)}> Apply </button>
+                    <button class="nes-btn btn-sm" on:click={() => applySuggestion(suggestion)}> Apply </button>
                     <button
                       class="nes-btn btn-ghost btn-sm"
-                      onclick={() => {
+                      on:click={() => {
                         /* dismiss TODO */
                       }}
                     >
@@ -563,7 +563,7 @@
           <div class="quick-actions">
             <button
               class="nes-btn btn-ghost btn-sm"
-              onclick={() => {
+              on:click={() => {
                 /* Add Introduction TODO */
               }}
             >
@@ -571,7 +571,7 @@
             </button>
             <button
               class="nes-btn btn-ghost btn-sm"
-              onclick={() => {
+              on:click={() => {
                 /* Add Conclusion TODO */
               }}
             >
@@ -579,7 +579,7 @@
             </button>
             <button
               class="nes-btn btn-ghost btn-sm"
-              onclick={() => {
+              on:click={() => {
                 /* Improve Language TODO */
               }}
             >
@@ -587,7 +587,7 @@
             </button>
             <button
               class="nes-btn btn-ghost btn-sm"
-              onclick={() => {
+              on:click={() => {
                 /* Add Citations TODO */
               }}
             >
@@ -640,7 +640,7 @@
               <button
                 class="nes-btn btn-ghost btn-sm"
                 disabled={isGenerating}
-                onclick={() => {
+                on:click={() => {
                   /* AI Assist TODO */
                 }}
               >
@@ -666,7 +666,7 @@
               <button
                 class="nes-btn btn-sm"
                 disabled={isGenerating}
-                onclick={() => {
+                on:click={() => {
                   /* quick generate TODO */
                 }}
               >
@@ -738,7 +738,7 @@
           </div>
         </div>
         <div class="dialog-actions">
-          <button class="nes-btn btn-ghost" onclick={() => (showPreview = false)}> Close Preview </button>
+          <button class="nes-btn btn-ghost" on:click={() => (showPreview = false)}> Close Preview </button>
           <button class="nes-btn"> Export PDF </button>
         </div>
       {/if}

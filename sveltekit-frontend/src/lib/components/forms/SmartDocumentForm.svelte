@@ -266,7 +266,7 @@ https://svelte.dev/e/js_parse_error -->
 						<Button
 							variant="ghost"
 							class="mt-4 bits-btn"
-							onclick={() =>
+							on:click={() =>
 fileInput.click()}
 						>
 							Browse Files
@@ -372,7 +372,7 @@ fileInput.click()}
 												variant="ghost"
 												size="sm"
 												class="text-xs h-6 px-2 bits-btn"
-												onclick={() =>
+												on:click={() =>
 applySuggestion(field.name, suggestion)}
 											>
 												{suggestion}
@@ -406,7 +406,7 @@ applySuggestion(field.name, suggestion)}
 					<div class="flex items-center space-x-3">
 						<Button class="bits-btn"
 							variant="ghost"
-							onclick={() =>
+							on:click={() =>
 {
 								populatedFields = populatedFields.map(f => ({ ...f, value: '' }));
 								formErrors.set( );
@@ -436,7 +436,7 @@ Submit Form
 					<Button class="bits-btn"
 						variant="ghost"
 						size="sm"
-						onclick={() =>
+						on:click={() =>
 showPreview = !showPreview}
 					>
 						{showPreview ? 'Hide' : 'Show'}

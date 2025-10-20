@@ -200,7 +200,7 @@
   }
 </script>
 
-<svelte:window onkeydown={handleKeydown} onclick={handleClickOutside} />
+<svelte:window onkeydown={handleKeydown} on:click={handleClickOutside} />
 <div
   class={`
     flex items-center px-4 py-2 border-b overflow-x-auto
@@ -227,7 +227,7 @@
           {:else if action.type === 'dropdown'}
             <div class="relative toolbar-dropdown">
               <button
-                onclick={() => handleAction(action)}
+                on:click={() => handleAction(action)}
                 disabled={action.disabled}
                 class={`
                   flex items-center px-3 py-2 rounded transition-all duration-200
@@ -263,7 +263,7 @@
                 >
                   {#each action.options || [] as option}
                     <button
-                      onclick={() => handleDropdownSelect(action, option)}
+                      on:click={() => handleDropdownSelect(action, option)}
                       class={`
                         w-full flex items-center px-3 py-2 text-left hover:bg-opacity-80 transition-colors
                         ${themeClasses[theme].button}
@@ -284,7 +284,7 @@
             <Tooltip content={`${action.label}${action.shortcut ? ` (${action.shortcut})` : ''}`} {theme}>
               {#snippet children()}
                 <button
-                  onclick={() => handleAction(action)}
+                  on:click={() => handleAction(action)}
                   disabled={action.disabled}
                   class={`
                     flex items-center px-3 py-2 rounded transition-all duration-200
@@ -341,7 +341,7 @@
           variant={action.active ? 'primary' : 'ghost'}
           size={compact ? 'sm' : 'md'}
           disabled={action.disabled}
-          onclick={() => handleAction(action)}
+          on:click={() => handleAction(action)}
         >
           {action.icon}
           {showLabels ? action.label : ''}
@@ -356,8 +356,8 @@
     {#if theme === 'yorha'}
       <div class="text-xs text-green-400/50 font-mono">LEGAL_AI_SYSTEM_ACTIVE</div>
     {/if}
-    <Button {theme} variant="ghost" size={compact ? 'sm' : 'md'} onclick={() => dispatch('help')}>❓</Button>
-    <Button {theme} variant="ghost" size={compact ? 'sm' : 'md'} onclick={() => dispatch('settings')}>⚙️</Button>
+    <Button {theme} variant="ghost" size={compact ? 'sm' : 'md'} on:click={() => dispatch('help')}>❓</Button>
+    <Button {theme} variant="ghost" size={compact ? 'sm' : 'md'} on:click={() => dispatch('settings')}>⚙️</Button>
   </div>
 </div>
 

@@ -300,7 +300,7 @@ https://svelte.dev/e/js_parse_error -->
                   variant="secondary"
                   size="md"
                   data-icon="${1}"
-                  onclick={() =>
+                  on:click={() =>
 addTag()}
                 >
                   Add

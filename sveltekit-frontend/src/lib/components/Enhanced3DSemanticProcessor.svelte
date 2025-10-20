@@ -229,7 +229,7 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Process Button -->
         <div class="flex items-center gap-4">
           <button
-            onclick={processSemanticStructure}
+            on:click={processSemanticStructure}
             disabled={!inputText.trim() || processing}
             class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >

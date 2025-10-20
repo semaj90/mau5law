@@ -65,10 +65,10 @@
   <div class="nier-toolbar">
     <div class="nier-toolbar-group">
       <!-- Replaced custom ButtonRoot with native button -->
-      <button type="button" class="nier-toolbar-btn bits-btn" aria-label="Undo" onclick={() => editor?.commands.undo()}>
+      <button type="button" class="nier-toolbar-btn bits-btn" aria-label="Undo" on:click={() => editor?.commands.undo()}>
         ↶
       </button>
-      <button type="button" class="nier-toolbar-btn bits-btn" aria-label="Redo" onclick={() => editor?.commands.redo()}>
+      <button type="button" class="nier-toolbar-btn bits-btn" aria-label="Redo" on:click={() => editor?.commands.redo()}>
         ↷
       </button>
     </div>
@@ -100,7 +100,7 @@
         type="button"
         class="nier-toolbar-btn bits-btn"
         class:active={editor?.isActive('bold')}
-        onclick={() => editor?.chain().focus().toggleBold().run()}
+        on:click={() => editor?.chain().focus().toggleBold().run()}
       >
         <strong>B</strong>
       </button>
@@ -108,7 +108,7 @@
         type="button"
         class="nier-toolbar-btn bits-btn"
         class:active={editor?.isActive('italic')}
-        onclick={() => editor?.chain().focus().toggleItalic().run()}
+        on:click={() => editor?.chain().focus().toggleItalic().run()}
       >
         <em>I</em>
       </button>

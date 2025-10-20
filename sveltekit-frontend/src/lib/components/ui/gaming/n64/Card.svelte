@@ -310,7 +310,7 @@
   bind:this={cardElement}
   role={clickable ? 'button' : 'region'}
   tabindex={clickable ? 0 : -1}
-  onclick={handleClick}
+  on:click={handleClick}
   onmouseenter={handleHover}
   onmouseleave={handleUnhover}
   onmousemove={handleMouseMove}

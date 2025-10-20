@@ -244,7 +244,7 @@
         <!-- Fixed: Added closing tag -->
         <Button class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm" disabled>📎 CONNECT</Button>
         <!-- Fixed: Added closing tag -->
-        <Button onclick={addEvidence} class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 text-sm">
+        <Button on:click={addEvidence} class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 text-sm">
           + ADD EVIDENCE
         </Button>
         <!-- Fixed: Added closing tag -->
@@ -292,7 +292,7 @@
             class="absolute cursor-pointer select-none"
             style="left: {item.position.x}px; top: {item.position.y}px; z-index: 2;"
             onmousedown={(e: MouseEvent) => handleMouseDown(e, item)}
-            onclick={() => startConnection(item)}
+            on:click={() => startConnection(item)}
           >
             <Card.Root
               class="w-60 bg-white border-2 {selectedItem?.id === item.id
@@ -365,7 +365,7 @@
                   Selected: {selectedItem?.title}<br />
                   Click another evidence item to create connection
                 </div>
-                <Button onclick={cancelConnection} class="bg-red-600 hover:bg-red-700 text-white">
+                <Button on:click={cancelConnection} class="bg-red-600 hover:bg-red-700 text-white">
                   Cancel Connection
                 </Button>
                 <!-- Fixed: Added closing tag -->
@@ -442,7 +442,7 @@
         </div>
         <!-- Action Buttons -->
         <div class="p-4 border-t space-y-2">
-          <Button onclick={addEvidence} class="w-full bg-blue-600 hover:bg-blue-700 text-white">+ Add Evidence</Button>
+          <Button on:click={addEvidence} class="w-full bg-blue-600 hover:bg-blue-700 text-white">+ Add Evidence</Button>
           <!-- Fixed: Added closing tag -->
           <Button class="w-full bg-green-600 hover:bg-green-700 text-white">🔍 Analyze All</Button>
           <!-- Fixed: Added closing tag -->

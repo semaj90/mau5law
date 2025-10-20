@@ -348,7 +348,7 @@
         {#each currentSuggestions as suggestion, index}
           <button
             class="suggestion-item {index === selectedSuggestionIndex ? 'selected' : ''}"
-            onclick={() => applySuggestion(suggestion)}
+            on:click={() => applySuggestion(suggestion)}
             type="button"
           >
             <div class="suggestion-content">

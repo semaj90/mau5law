@@ -324,8 +324,8 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
       </div>
       <div class="flex gap-2">
-        <Button class="bits-btn" variant="ghost" onclick={resetForm} disabled={analyzing}>Reset</Button>
-        <Button class="bits-btn" onclick={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
+        <Button class="bits-btn" variant="ghost" on:click={resetForm} disabled={analyzing}>Reset</Button>
+        <Button class="bits-btn" on:click={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
           {analyzing ? 'Analyzing...' : 'Start Analysis'}
         </Button>
       </div>
@@ -450,7 +450,7 @@ https://svelte.dev/e/js_parse_error -->
                   variant="ghost"
                   size="sm"
                   class="mt-2 bits-btn bits-btn"
-                  onclick={() => viewDetailedResults(data)}
+                  on:click={() => viewDetailedResults(data)}
                 >
                   View Details →
                 </Button>
@@ -459,8 +459,8 @@ https://svelte.dev/e/js_parse_error -->
           {/each}
         </div>
         <DialogFooter>
-          <Button class="bits-btn" variant="ghost" onclick={() => (showResults = false)}>Close</Button>
-          <Button class="bits-btn" onclick={() => goto(`/cases/${caseId}`)}>View Case Details</Button>
+          <Button class="bits-btn" variant="ghost" on:click={() => (showResults = false)}>Close</Button>
+          <Button class="bits-btn" on:click={() => goto(`/cases/${caseId}`)}>View Case Details</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

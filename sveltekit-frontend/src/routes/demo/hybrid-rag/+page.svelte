@@ -219,11 +219,11 @@
     <h2 class="text-xl text-gold-400 mb-4">📄 Documents ({documents.length})</h2>
 
     <div class="flex gap-2 mb-4">
-      <button class="nes-btn is-primary" onclick={loadSamples}>
+      <button class="nes-btn is-primary" on:click={loadSamples}>
         <Database class="inline w-4 h-4 mr-2" />
         Load Samples
       </button>
-      <button class="nes-btn is-success" onclick={addDocument}>
+      <button class="nes-btn is-success" on:click={addDocument}>
         <Upload class="inline w-4 h-4 mr-2" />
         Add Document
       </button>
@@ -266,7 +266,7 @@
     <div class="flex gap-2">
       <button
         class="nes-btn is-success"
-        onclick={processDocuments}
+        on:click={processDocuments}
         disabled={isProcessing || documents.length === 0 || !query.trim()}
       >
         <Zap class="inline w-4 h-4 mr-2" />
@@ -275,7 +275,7 @@
 
       <button
         class="nes-btn is-primary"
-        onclick={searchKnowledgeBase}
+        on:click={searchKnowledgeBase}
         disabled={isProcessing || !query.trim()}
       >
         <Search class="inline w-4 h-4 mr-2" />

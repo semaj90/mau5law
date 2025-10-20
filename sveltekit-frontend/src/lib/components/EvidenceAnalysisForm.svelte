@@ -217,7 +217,7 @@ https://svelte.dev/e/js_parse_error -->
           </p>
         </div>
         <Button.Root
-          onclick={performAutomatedAnalysis}
+          on:click={performAutomatedAnalysis}
           class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
         >
           🤖 Start Analysis
@@ -260,7 +260,7 @@ https://svelte.dev/e/js_parse_error -->
                   {Math.round(entity.confidence * 100)}%
                 </span>
                 <button class="nes-btn".Root
-                  onclick={() => removeEntity(index)}
+                  on:click={() => removeEntity(index)}
                   class="bits-btn p-1 text-red-600 hover:text-red-800 focus:outline-none"
                 >
                   ×
@@ -279,7 +279,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-lg font-medium text-gray-900">Key Facts</h3>
       <Button.Root
-        onclick={addKeyFact}
+        on:click={addKeyFact}
         class="px-3 py-1 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 bits-btn"
       >
         + Add Fact
@@ -298,7 +298,7 @@ https://svelte.dev/e/js_parse_error -->
               ></textarea>
             </div>
             <button class="nes-btn".Root
-              onclick={() => removeKeyFact(index)}
+              on:click={() => removeKeyFact(index)}
               class="px-3 py-2 text-red-600 hover:text-red-800 focus:outline-none bits-btn"
             >
               Remove
@@ -315,7 +315,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-lg font-medium text-gray-900">Legal Issues</h3>
       <Button.Root
-        onclick={addLegalIssue}
+        on:click={addLegalIssue}
         class="px-3 py-1 text-sm bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 bits-btn"
       >
         + Add Issue
@@ -335,7 +335,7 @@ https://svelte.dev/e/js_parse_error -->
               {/each}
             </select>
             <button class="nes-btn".Root
-              onclick={() => removeLegalIssue(index)}
+              on:click={() => removeLegalIssue(index)}
               class="px-3 py-2 text-red-600 hover:text-red-800 focus:outline-none bits-btn"
             >
               Remove
@@ -371,20 +371,20 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Form Actions -->
   <div class="flex justify-between pt-6 border-t border-gray-200">
     <Button.Root
-      onclick={handlePrevious}
+      on:click={handlePrevious}
       class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
     >
       ← Previous
     </Button.Root>
     <div class="flex space-x-3">
       <Button.Root
-        onclick={handleSaveDraft}
+        on:click={handleSaveDraft}
         class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
       >
         Save Draft
       </Button.Root>
       <Button.Root
-        onclick={handleNext}
+        on:click={handleNext}
         disabled={formData.key_facts.length === 0}
         class="px-6 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed bits-btn"
       >

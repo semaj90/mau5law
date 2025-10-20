@@ -112,7 +112,7 @@
         {#if variant === 'window' || variant === 'dialog'}
           <button
             class="nes-container__control nes-container__control--minimize"
-            onclick={toggleMinimize}
+            on:click={toggleMinimize}
             title={isMinimized ? 'Maximize' : 'Minimize'}
             aria-label={isMinimized ? 'Maximize window' : 'Minimize window'}
           >
@@ -122,7 +122,7 @@
         {#if closable}
           <button
             class="nes-container__control nes-container__control--close"
-            onclick={handleClose}
+            on:click={handleClose}
             title="Close"
             aria-label="Close window"
           >

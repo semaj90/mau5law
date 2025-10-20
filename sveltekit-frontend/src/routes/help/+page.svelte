@@ -452,7 +452,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
             class:bg-green-100={activeCategory === 'all'}
             class:text-green-700={activeCategory === 'all'}
             class:hover:bg-gray-100={activeCategory !== 'all'}
-            onclick={() => (activeCategory = 'all')}
+            on:click={() => (activeCategory = 'all')}
           >
             <Book class="h-5 w-5" />
             <div>
@@ -469,7 +469,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
               class:bg-green-100={activeCategory === category.id}
               class:text-green-700={activeCategory === category.id}
               class:hover:bg-gray-100={activeCategory !== category.id}
-              onclick={() => (activeCategory = category.id)}
+              on:click={() => (activeCategory = category.id)}
             >
               {@const Icon = category.icon}
               <Icon class="h-5 w-5" />

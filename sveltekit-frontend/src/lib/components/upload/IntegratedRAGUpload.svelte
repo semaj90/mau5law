@@ -129,7 +129,7 @@
       aria-label="Upload area - click or drag files to upload"
       ondragover={handleDragOver}
       ondrop={handleDrop}
-      onclick={handleClick}
+      on:click={handleClick}
       onkeydown={e => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
@@ -204,7 +204,7 @@
         placeholder="Search across uploaded documents..."
         onkeydown={e => e.key === 'Enter' && searchDocuments()}
       />
-      <button onclick={searchDocuments} disabled={searching || !searchQuery.trim()}>
+      <button on:click={searchDocuments} disabled={searching || !searchQuery.trim()}>
         {searching ? 'Searching...' : 'Search'}
       </button>
     </div>

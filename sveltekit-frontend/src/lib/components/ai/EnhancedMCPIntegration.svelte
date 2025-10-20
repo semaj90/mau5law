@@ -272,7 +272,7 @@
         <input class="query-input" placeholder="Enter query or parameters" bind:value={queryInput} />
         <button
           class="execute-button"
-          onclick={() => selectedTool && executeMCPTool(selectedTool, { query: queryInput })}
+          on:click={() => selectedTool && executeMCPTool(selectedTool, { query: queryInput })}
           disabled={!selectedTool || isProcessing}
         >
           Execute

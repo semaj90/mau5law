@@ -28,7 +28,7 @@
   <!-- Simple Select -->
   <div class="space-y-4 relative">
     <button
-      onclick={toggleSelect}
+      on:click={toggleSelect}
       class="border border-gray-300 rounded px-4 py-2 w-full text-left"
       aria-label="Case Type Filter"
     >
@@ -40,7 +40,7 @@
         transitionfade={{ duration: 150 }}
       >
         {#each items as item}
-          <div class="p-2 hover:bg-gray-100 cursor-pointer" role="button" tabindex="0" onclick={() => selectItem(item)}>
+          <div class="p-2 hover:bg-gray-100 cursor-pointer" role="button" tabindex="0" on:click={() => selectItem(item)}>
             {item}
           </div>
         {/each}
@@ -48,7 +48,7 @@
     {/if}
   </div>
   <!-- Dialog Trigger -->
-  <button onclick={toggleDialog} class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+  <button on:click={toggleDialog} class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
     Open Case Details Dialog
   </button>
   <!-- Dialog -->
@@ -68,7 +68,7 @@
           This is a demo of simple UI components integrated with Tailwind styling for legal case management.
         </p>
         <div class="flex gap-2 justify-end">
-          <button onclick={toggleDialog} class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+          <button on:click={toggleDialog} class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
             Cancel
           </button>
           <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"> Save Changes </button>

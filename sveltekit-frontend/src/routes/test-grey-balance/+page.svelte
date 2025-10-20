@@ -148,9 +148,9 @@
           variant="grey"
           title="Click Me"
           subtitle="Pure grey interaction"
-          onclick={() => alert('Pure grey card clicked!')}
+          on:click={() => alert('Pure grey card clicked!')}
         >
-          <YoRHaHarvardButton variant="grey" onclick={() => alert('Grey button clicked!')}>
+          <YoRHaHarvardButton variant="grey" on:click={() => alert('Grey button clicked!')}>
             Grey Action
           </YoRHaHarvardButton>
         </YoRHaHarvardCard>
@@ -159,10 +159,10 @@
           variant="crimson-grey"
           title="Balanced Click"
           subtitle="Crimson-grey balance"
-          onclick={() => alert('Balanced card clicked!')}
+          on:click={() => alert('Balanced card clicked!')}
           glowing
         >
-          <YoRHaHarvardButton variant="crimson-grey" onclick={() => alert('Balanced button clicked!')}>
+          <YoRHaHarvardButton variant="crimson-grey" on:click={() => alert('Balanced button clicked!')}>
             Balanced Action
           </YoRHaHarvardButton>
         </YoRHaHarvardCard>
@@ -171,10 +171,10 @@
           variant="terminal"
           title="Terminal Interface"
           subtitle="Monospace grey theme"
-          onclick={() => alert('Terminal card clicked!')}
+          on:click={() => alert('Terminal card clicked!')}
           scanLines
         >
-          <YoRHaHarvardButton variant="grey" pixelated onclick={() => alert('Terminal button clicked!')}>
+          <YoRHaHarvardButton variant="grey" pixelated on:click={() => alert('Terminal button clicked!')}>
             Execute Command
           </YoRHaHarvardButton>
         </YoRHaHarvardCard>

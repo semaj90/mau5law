@@ -129,7 +129,7 @@ https://svelte.dev/e/js_parse_error -->
         <div
           class="list-item"
           in:slide={{ duration: 300, easing: quintOut }}
-          onclick={() => handleItemClick(item)}
+          on:click={() => handleItemClick(item)}
           onkeydown={e => e.key === 'Enter' && handleItemClick(item)}
           role="option"
           tabindex={0}

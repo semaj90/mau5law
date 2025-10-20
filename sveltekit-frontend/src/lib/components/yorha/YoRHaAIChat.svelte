@@ -322,7 +322,7 @@ Connection: ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
         rows="2"
       ></textarea>
       <button
-        onclick={sendMessage}
+        on:click={sendMessage}
         disabled={isLoading || !messageInput.trim()}
         class="px-6 py-3 bg-yorha-accent-warm text-yorha-dark font-bold rounded hover:bg-yorha-accent-warm/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
       >

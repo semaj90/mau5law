@@ -512,7 +512,7 @@ await loadShortcutsFromAI();
     tabindex={0}
     aria-modal="true"
     aria-labelledby="command-palette-title"
-    onclick={(e) => { if ((e.target as HTMLButtonElement) === e.currentTarget) open = false, }}
+    on:click={(e) => { if ((e.target as HTMLButtonElement) === e.currentTarget) open = false, }}
     keydown={(e) => (e.key === "Escape" ? (open = false) : null)}
   >
     <div class="command-palette">
@@ -533,7 +533,7 @@ await loadShortcutsFromAI();
           <button class="nes-btn"
             variant="ghost"
             size="sm"
-            onclick={() => (open = false)}
+            on:click={() => (open = false)}
             class="close-button"
             aria-label="Close command palette"
           >
@@ -555,7 +555,7 @@ await loadShortcutsFromAI();
                 role="option"
                 aria-selected={index === selectedIndex}
                 tabindex={0}
-                onclick={() => shortcut.action && shortcut.action()}
+                on:click={() => shortcut.action && shortcut.action()}
                 keydown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();

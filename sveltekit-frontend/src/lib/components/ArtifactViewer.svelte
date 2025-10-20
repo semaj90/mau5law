@@ -125,7 +125,7 @@ https://svelte.dev/e/js_parse_error -->
         <p class="text-sm text-gray-600">ID: {artifact.evidence_id}</p>
       </div>
       {#if allowDownload && downloadUrl}
-        <Button onclick={handleDownload} class="flex items-center gap-2 bits-btn bits-btn">
+        <Button on:click={handleDownload} class="flex items-center gap-2 bits-btn bits-btn">
 <Download class="w-4 h-4" />
           Download
       {/if}

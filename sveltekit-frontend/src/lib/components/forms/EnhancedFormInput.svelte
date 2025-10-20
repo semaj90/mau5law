@@ -212,7 +212,7 @@ https://svelte.dev/e/js_parse_error -->
         <button
           type="button"
           class="container mx-auto px-4"
-          onclick={() => togglePasswordVisibility()}
+          on:click={() => togglePasswordVisibility()}
           aria-label={showPassword ? "Hide password" : "Show password"}
           tabindex={-1}
         >

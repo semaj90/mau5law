@@ -908,14 +908,14 @@ $effect(() => {
 {/if}
       <Button
         variant="secondary"
-        onclick={closePOIDetails}
+        on:click={closePOIDetails}
         class="bits-btn"
         ariaLabel="Close person of interest details"
       >
         Close
       </Button>
       <Button
-        onclick={() => {
+        on:click={() => {
           handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`);
           closePOIDetails();
         }}

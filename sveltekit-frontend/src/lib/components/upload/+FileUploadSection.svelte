@@ -91,7 +91,7 @@
         <span>Tag with AI</span>
       </label>
     </div>
-    <button class="btn nes-btn is-primary" onclick={handleSubmit}>Upload</button>
+    <button class="btn nes-btn is-primary" on:click={handleSubmit}>Upload</button>
   </div>
 </div>
 

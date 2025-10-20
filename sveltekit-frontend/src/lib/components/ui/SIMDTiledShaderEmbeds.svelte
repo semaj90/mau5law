@@ -681,7 +681,7 @@ export function getCHRPatterns(): string[] {
             </div>
             <button
               class="copy-shader"
-              onclick={() => navigator.clipboard.writeText(shader)}
+              on:click={() => navigator.clipboard.writeText(shader)}
             >
               📋 Copy
             </button>
@@ -712,7 +712,7 @@ export function getCHRPatterns(): string[] {
   <div class="control-panel">
     <button
       class="process-button"
-      onclick={processTiledShaderEmbeds}
+      on:click={processTiledShaderEmbeds}
       disabled={isProcessing}
     >
       {#if isProcessing}

@@ -34,7 +34,7 @@
         </div>
       </div>
       {#if dismissible}
-        <button class="alert-dismiss" onclick={dismiss} aria-label="Dismiss"> × </button>
+        <button class="alert-dismiss" on:click={dismiss} aria-label="Dismiss"> × </button>
       {/if}
     </div>
   </div>

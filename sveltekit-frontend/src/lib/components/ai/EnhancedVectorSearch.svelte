@@ -439,7 +439,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <div class="search-actions">
         <button class="nes-btn"
-          onclick={() => performSearch()}
+          on:click={() => performSearch()}
           disabled={$isSearching || !$searchQuery.trim()}
           class="bits-btn search-button"
         >
@@ -454,7 +454,7 @@ https://svelte.dev/e/js_parse_error -->
         {#if enableFilters}
           <Button class="bits-btn"
             variant="ghost"
-            onclick={() =>
+            on:click={() =>
 showFilters.update((s) => !s)}
             class="filter-button"
           >
@@ -469,7 +469,7 @@ showFilters.update((s) => !s)}
         {#if enableAnalytics}
           <Button class="bits-btn"
             variant="ghost"
-            onclick={() =>
+            on:click={() =>
 showAnalytics.update((s) => !s)}
           >
             <BarChart3 class="mr-2" size={16} />
@@ -486,7 +486,7 @@ showAnalytics.update((s) => !s)}
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
-              onclick={() =>
+              on:click={() =>
 {
                 searchQuery.set(historyItem);
                 performSearch(historyItem);
@@ -506,7 +506,7 @@ showAnalytics.update((s) => !s)}
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center justify-between">
           <span>Advanced Filters</span>
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={resetFilters}>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={resetFilters}>
 Reset
         </h3>
       </div>
@@ -597,7 +597,7 @@ Reset
             </Select>
           </div>
         </div>
-        <Button onclick={applyFilters} class="w-full bits-btn bits-btn">
+        <Button on:click={applyFilters} class="w-full bits-btn bits-btn">
 Apply Filters
       </div>
     </div>
@@ -711,7 +711,7 @@ Apply Filters
         <p class="no-results-description">
           Try adjusting your search terms or filters
         </p>
-        <Button class="bits-btn" variant="ghost" onclick={resetFilters}>
+        <Button class="bits-btn" variant="ghost" on:click={resetFilters}>
 Reset Filters
       </div>
     </div>

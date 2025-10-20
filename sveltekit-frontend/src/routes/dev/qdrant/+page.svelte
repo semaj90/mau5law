@@ -169,7 +169,7 @@
       <label class="text-sm">CaseId <input type="text" bind:value={caseId} placeholder="case-123" class="ml-1" /></label
       >
       <label class="text-sm">Tag <input type="text" bind:value={tag} placeholder="contract" class="ml-1" /></label>
-      <button class="bits-btn" onclick={runQuery} disabled={loading}>{loading ? 'Running...' : 'Run Query'}</button>
+      <button class="bits-btn" on:click={runQuery} disabled={loading}>{loading ? 'Running...' : 'Run Query'}</button>
     </div>
   </div>
   {#if error}
@@ -199,13 +199,13 @@
                     <button
                       class="bits-btn bits-ghost text-xs px-2 py-1"
                       title="Copy ID"
-                      onclick={() => copyId(item.id)}>{copiedId === item.id ? 'Copied' : 'Copy ID'}</button
+                      on:click={() => copyId(item.id)}>{copiedId === item.id ? 'Copied' : 'Copy ID'}</button
                     >
                   </div>
                   <button
                     class="bits-btn bits-ghost text-xs px-2 py-1"
                     title="Preview"
-                    onclick={() => openPreview(extractTitle(item.payload), extractSnippet(item.payload))}
+                    on:click={() => openPreview(extractTitle(item.payload), extractSnippet(item.payload))}
                     >Preview</button
                   >
                   <a
@@ -248,13 +248,13 @@
                   {/if}
                 </div>
                 <div class="flex flex-col items-end gap-2">
-                  <button class="bits-btn bits-ghost text-xs px-2 py-1" title="Copy ID" onclick={() => copyId(row.id)}
+                  <button class="bits-btn bits-ghost text-xs px-2 py-1" title="Copy ID" on:click={() => copyId(row.id)}
                     >{copiedId === row.id ? 'Copied' : 'Copy ID'}</button
                   >
                   <button
                     class="bits-btn bits-ghost text-xs px-2 py-1"
                     title="Preview"
-                    onclick={() =>
+                    on:click={() =>
                       openPreview(
                         row.title || row.payload?.title || row.metadata?.title || 'Preview',
                         row.payload?.snippet || row.metadata?.snippet || row.snippet || ''
@@ -269,7 +269,7 @@
             <div class="mt-2 flex items-center gap-2">
               <button
                 class="bits-btn bits-ghost"
-                onclick={() => {
+                on:click={() => {
                   if (page > 1) {
                     page--;
                     runQuery();
@@ -280,7 +280,7 @@
               <div>Page {result.pgvector.page} (limit {result.pgvector.limit})</div>
               <button
                 class="bits-btn bits-ghost"
-                onclick={() => {
+                on:click={() => {
                   page++;
                   runQuery();
                 }}>Next</button
@@ -295,7 +295,7 @@
         <div
           class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center"
           tabindex="-1"
-          onclick={() => {
+          on:click={() => {
             previewOpen = false;
             restoreFocus();
           }}
@@ -308,13 +308,13 @@
             aria-label={previewTitle || 'Preview'}
             class="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative z-10"
             tabindex="-1"
-            onclick={() => {}}
+            on:click={() => {}}
             in:scale={{ duration: 160 }}
             out:scale={{ duration: 120 }}
           >
             <button
               class="absolute top-2 right-2 text-gray-500 hover:text-black"
-              onclick={() => {
+              on:click={() => {
                 previewOpen = false;
                 restoreFocus();
               }}
@@ -326,7 +326,7 @@
                 <label class="text-xs text-muted flex items-center gap-1"
                   ><input type="checkbox" bind:checked={previewRenderMarkdown} /> Render Markdown</label
                 >
-                <button class="bits-btn bits-ghost text-xs px-2 py-1" onclick={() => copyId(previewTitle || '')}
+                <button class="bits-btn bits-ghost text-xs px-2 py-1" on:click={() => copyId(previewTitle || '')}
                   >Copy Title</button
                 >
               </div>

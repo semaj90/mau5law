@@ -35,8 +35,8 @@
 
 <div class="n64-upload">
   <input bind:this={fileInput} type="file" {accept} {multiple} style="display:none" onchange={handleFileSelect} />
-  <button onclick={() => fileInput?.click()} class="n64-select">Select files</button>
-  <button onclick={cancelAll} class="n64-cancel ml-2">Cancel all</button>
+  <button on:click={() => fileInput?.click()} class="n64-select">Select files</button>
+  <button on:click={cancelAll} class="n64-cancel ml-2">Cancel all</button>
 
   <div class="files mt-3">
     {#each manager.fileStates as s}
@@ -343,7 +343,7 @@ restoreSession();
     ondrop={handleDrop}
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
-    onclick={openFileDialog}
+    on:click={openFileDialog}
     onkeydown={(e) => e.key === 'Enter' && openFileDialog()}
   >
     {#if fileStates.length === 0}
@@ -424,7 +424,7 @@ restoreSession();
                   type="button"
                   class="n64-action-btn remove"
                   title="Remove"
-                  onclick={(e) => { e.stopPropagation(); removeFile(index), }}
+                  on:click={(e) => { e.stopPropagation(); removeFile(index), }}
                   aria-label="Remove file"
                 >
                   ✕
@@ -434,7 +434,7 @@ restoreSession();
                   type="button"
                   class="n64-action-btn cancel"
                   title="Cancel"
-                  onclick={(e) => { e.stopPropagation(); cancelUpload(index), }}
+                  on:click={(e) => { e.stopPropagation(); cancelUpload(index), }}
                   aria-label="Cancel upload"
                 >
                   ⏹
@@ -444,7 +444,7 @@ restoreSession();
                   type="button"
                   class="n64-action-btn retry"
                   title="Retry"
-                  onclick={(e) => { e.stopPropagation(); retryFile(index); uploadFiles(), }}
+                  on:click={(e) => { e.stopPropagation(); retryFile(index); uploadFiles(), }}
                   aria-label="Retry upload"
                 >
                   ⟳
@@ -453,7 +453,7 @@ restoreSession();
                   type="button"
                   class="n64-action-btn remove"
                   title="Remove"
-                  onclick={(e) => { e.stopPropagation(); removeFile(index), }}
+                  on:click={(e) => { e.stopPropagation(); removeFile(index), }}
                   aria-label="Remove file"
                 >
                   ✕
@@ -539,7 +539,7 @@ restoreSession();
       class="n64-upload-button";
       class:theme-{evolutionStage}
       disabled={fileStates.length === 0 || uploading || disabled || fileStates.every(f=>['completed','canceled'].includes(f.status))}
-      onclick={uploadFiles}
+      on:click={uploadFiles}
       aria-label="Start upload"
     >
       {#if uploading}
@@ -554,7 +554,7 @@ restoreSession();
       <button
         type="button"
         class="n64-clear-button cancel"
-        onclick={cancelAllUploads}
+        on:click={cancelAllUploads}
         aria-label="Cancel all uploads"
       >
         ❌ CANCEL ALL
@@ -564,7 +564,7 @@ restoreSession();
       <button
         type="button"
         class="n64-clear-button clear"
-        onclick={() => {
+        on:click={() => {
           files = [];
           fileStates = [];
           if (fileInput) fileInput.value = '';

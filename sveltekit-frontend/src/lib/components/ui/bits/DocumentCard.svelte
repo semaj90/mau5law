@@ -136,7 +136,7 @@
     ${sizeClasses[size]}
     ${themeClasses[theme]}
   `}
-  onclick={handleCardClick}
+  on:click={handleCardClick}
   onmouseenter={() => isHovered = true}
   onmouseleave={() => isHovered = false}
   role="button"
@@ -232,7 +232,7 @@
       <div class="flex space-x-2">
         {#if onDownload}
           <button
-            onclick={handleDownload}
+            on:click={handleDownload}
             class={`
               p-2 rounded-full transition-colors
               ${theme === 'gaming'
@@ -250,7 +250,7 @@
         {/if}
         {#if onEdit}
           <button
-            onclick={handleEdit}
+            on:click={handleEdit}
             class={`
               p-2 rounded-full transition-colors
               ${theme === 'gaming'
@@ -268,7 +268,7 @@
         {/if}
         {#if onDelete}
           <button
-            onclick={handleDelete}
+            on:click={handleDelete}
             class={`
               p-2 rounded-full transition-colors
               ${theme === 'gaming'
@@ -292,7 +292,7 @@
 {#if showModal}
   <div
     class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-    onclick={() => showModal = false}
+    on:click={() => showModal = false}
     transition:fade={{ duration: 200 }}
   >
     <div
@@ -301,12 +301,12 @@
         ${themeClasses[theme]}
         ${theme === 'gaming' ? 'shadow-[0_0_30px_rgba(0,255,65,0.3)]' : 'shadow-2xl'}
       `}
-      onclick={(e) => e.stopPropagation()}
+      on:click={(e) => e.stopPropagation()}
       transition:scale={{ duration: 200, easing: quintOut }}
     >
       <!-- Close Button -->
       <button
-        onclick={() => showModal = false}
+        on:click={() => showModal = false}
         class={`
           absolute top-4 right-4 p-1 rounded-full transition-colors
           ${theme === 'gaming'
@@ -446,7 +446,7 @@
               {theme}
               variant="outline"
               size="sm"
-              onclick={handleDownload}
+              on:click={handleDownload}
             >
               Download
             </Button>
@@ -456,7 +456,7 @@
               {theme}
               variant="outline"
               size="sm"
-              onclick={handleEdit}
+              on:click={handleEdit}
             >
               Edit
             </Button>
@@ -464,7 +464,7 @@
           <Button
             {theme}
             size="sm"
-            onclick={() => showModal = false}
+            on:click={() => showModal = false}
           >
             Close
           </Button>

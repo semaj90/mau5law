@@ -366,7 +366,7 @@ https://svelte.dev/e/js_parse_error -->
         <Tooltip content="Refresh files">
           <button
             class="nes-btn is-warning refresh-btn"
-            onclick={() => loadEvidenceFiles()}
+            on:click={() => loadEvidenceFiles()}
             disabled={loading}
             aria-label="Refresh evidence files"
           >
@@ -375,7 +375,7 @@ https://svelte.dev/e/js_parse_error -->
         </Tooltip>
 
         <Tooltip content="Upload files">
-          <button class="nes-btn is-success" onclick={() => (showUploadModal = true)} disabled={!caseId}>
+          <button class="nes-btn is-success" on:click={() => (showUploadModal = true)} disabled={!caseId}>
             <Upload class="icon" />
             UPLOAD
           </button>
@@ -413,7 +413,7 @@ https://svelte.dev/e/js_parse_error -->
       <Tooltip content="Toggle view mode">
         <button
           class="nes-btn view-toggle"
-          onclick={() => (viewMode = viewMode === 'grid' ? 'list' : 'grid')}
+          on:click={() => (viewMode = viewMode === 'grid' ? 'list' : 'grid')}
           aria-label="Toggle view mode"
         >
           {#if viewMode === 'grid'}
@@ -461,7 +461,7 @@ https://svelte.dev/e/js_parse_error -->
           </button>
           <button
             class="nes-btn"
-            onclick={() => {
+            on:click={() => {
               selectedFiles.clear();
               selectedFiles = selectedFiles;
               showBulkActions = false;
@@ -488,7 +488,7 @@ https://svelte.dev/e/js_parse_error -->
           <h3 class="nes-text is-error">Error Loading Files</h3>
           <div class="error-message">{error}</div>
         </div>
-        <button class="nes-btn is-warning" onclick={() => loadEvidenceFiles()}>
+        <button class="nes-btn is-warning" on:click={() => loadEvidenceFiles()}>
           <RefreshCw class="icon" />
           Retry
         </button>
@@ -539,7 +539,7 @@ https://svelte.dev/e/js_parse_error -->
           {filteredFiles.length} file{filteredFiles.length !== 1 ? 's' : ''} found
         </span>
 
-        <button class="nes-btn select-all-btn" onclick={() => selectAllFiles()}>
+        <button class="nes-btn select-all-btn" on:click={() => selectAllFiles()}>
           {#if selectedFiles.size === filteredFiles.length}
             <CheckSquare class="icon" />
           {:else}
@@ -746,7 +746,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="modal-actions">
         <button
           class="nes-btn"
-          onclick={() => {
+          on:click={() => {
             showUploadModal = false;
             uploadFiles = null;
             uploadDescription = '';
@@ -756,7 +756,7 @@ https://svelte.dev/e/js_parse_error -->
         >
           Cancel
         </button>
-        <button class="nes-btn is-success" onclick={() => uploadSingleFile()} disabled={uploading || !uploadFiles}>
+        <button class="nes-btn is-success" on:click={() => uploadSingleFile()} disabled={uploading || !uploadFiles}>
           {#if uploading}
             <div class="uploading-spinner"></div>
             Uploading...

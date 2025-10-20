@@ -111,7 +111,7 @@ try {
         />
       </div>
       <ModernButton
-        onclick={performSearch}
+        on:click={performSearch}
         disabled={isSearching || !searchQuery.trim()}
         variant="primary"
         class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 px-6 py-3 font-bold text-white disabled:opacity-50"
@@ -138,7 +138,7 @@ try {
     <!-- Filter Toggle -->
     <div class="flex items-end">
       <ModernButton
-        onclick={() => (showFilters = !showFilters)}
+        on:click={() => (showFilters = !showFilters)}
         variant="ghost"
         class="border-cyan-400/30 text-cyan-400 hover:bg-cyan-400/10"
       >

@@ -497,7 +497,7 @@
             <button
               type="button"
               class="pw-toggle"
-              onclick={togglePasswordVisibility}
+              on:click={togglePasswordVisibility}
               disabled={isLoading}
               aria-label="Toggle password visibility"
             >
@@ -536,7 +536,7 @@
             <button
               type="button"
               class="pw-toggle"
-              onclick={toggleConfirmPasswordVisibility}
+              on:click={toggleConfirmPasswordVisibility}
               disabled={isLoading}
               aria-label="Toggle confirm password visibility"
             >

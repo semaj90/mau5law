@@ -154,8 +154,8 @@
         </h2>
         <div class="flex items-center gap-2">
           <!-- replaced Button component with native button to avoid typing issues -->
-          <button class="bits-btn px-3 py-1 text-sm" onclick={exportLogs}>📤 Export</button>
-          <button class="bits-btn px-3 py-1 text-sm" onclick={clearLogs}>🗑️ Clear</button>
+          <button class="bits-btn px-3 py-1 text-sm" on:click={exportLogs}>📤 Export</button>
+          <button class="bits-btn px-3 py-1 text-sm" on:click={clearLogs}>🗑️ Clear</button>
         </div>
       </div>
 
@@ -230,7 +230,7 @@
               role="button"
               tabindex="0"
               class="log-entry group w-full text-left hover:bg-gray-800 p-2 rounded cursor-pointer transition-colors duration-150"
-              onclick={() => selectEntry(entry)}
+              on:click={() => selectEntry(entry)}
               onkeydown={(e: KeyboardEvent) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
@@ -279,7 +279,7 @@
                   <!-- replaced Button component with native button and stopPropagation handler -->
                   <button
                     class="bits-btn px-2 py-1 text-sm"
-                    onclick={e => {
+                    on:click={e => {
                       e.stopPropagation();
                       selectEntry(entry);
                     }}
@@ -306,7 +306,7 @@
                 {getLevelIcon(selectedEntry.level)} Log Entry Details
               </h3>
               <!-- modal close using native button -->
-              <button class="bits-btn px-2 py-1" onclick={() => (showDetails = false)}>✕</button>
+              <button class="bits-btn px-2 py-1" on:click={() => (showDetails = false)}>✕</button>
             </div>
 
             <div role="group" aria-label="Timestamp">
@@ -428,10 +428,10 @@
             <div class="flex gap-2 mt-6">
               <button
                 class="bits-btn px-3 py-1"
-                onclick={() => navigator.clipboard.writeText(JSON.stringify(selectedEntry, null, 2))}
+                on:click={() => navigator.clipboard.writeText(JSON.stringify(selectedEntry, null, 2))}
                 >📋 Copy JSON</button
               >
-              <button class="bits-btn px-3 py-1" onclick={() => (showDetails = false)}>Close</button>
+              <button class="bits-btn px-3 py-1" on:click={() => (showDetails = false)}>Close</button>
             </div>
           </div>
         </div>

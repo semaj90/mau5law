@@ -259,7 +259,7 @@
         <p>Comprehensive view of all database entities and operations</p>
       </div>
       <div class="header-content">
-        <button class="refresh-btn" onclick={() => fetchAllData()} disabled={refreshing} title="Refresh all data">
+        <button class="refresh-btn" on:click={() => fetchAllData()} disabled={refreshing} title="Refresh all data">
           <RefreshCw class={refreshing ? 'animate-spin' : ''} size={16} />
           Refresh
         </button>
@@ -329,7 +329,7 @@
             />
           </div>
           <div class="section-actions">
-            <button class="refresh-btn" onclick={() => createNew('cases')}>
+            <button class="refresh-btn" on:click={() => createNew('cases')}>
               <Plus size={16} />
             </button>
           </div>
@@ -357,7 +357,7 @@
         {/if}
       </div>
       <div class="space-y-4">
-        <button class="space-y-4" onclick={() => viewAll('cases')}> View All Cases </button>
+        <button class="space-y-4" on:click={() => viewAll('cases')}> View All Cases </button>
       </div>
     </div>
     <!-- Evidence Section -->
@@ -378,7 +378,7 @@
             />
           </div>
           <div class="section-actions">
-            <button class="refresh-btn" onclick={() => createNew('evidence')}>
+            <button class="refresh-btn" on:click={() => createNew('evidence')}>
               <Plus size={16} />
             </button>
           </div>
@@ -413,7 +413,7 @@
         {/if}
       </div>
       <div class="space-y-4">
-        <button class="space-y-4" onclick={() => viewAll('evidence')}> View All Evidence </button>
+        <button class="space-y-4" on:click={() => viewAll('evidence')}> View All Evidence </button>
       </div>
     </div>
     <!-- Reports Section -->
@@ -434,7 +434,7 @@
             />
           </div>
           <div class="section-actions">
-            <button class="refresh-btn" onclick={() => createNew('reports')}>
+            <button class="refresh-btn" on:click={() => createNew('reports')}>
               <Plus size={16} />
             </button>
           </div>
@@ -462,7 +462,7 @@
         {/if}
       </div>
       <div class="space-y-4">
-        <button class="space-y-4" onclick={() => viewAll('reports')}> View All Reports </button>
+        <button class="space-y-4" on:click={() => viewAll('reports')}> View All Reports </button>
       </div>
     </div>
     <!-- Activities Section -->
@@ -483,7 +483,7 @@
             />
           </div>
           <div class="section-actions">
-            <button class="refresh-btn" onclick={() => createNew('activities')}>
+            <button class="refresh-btn" on:click={() => createNew('activities')}>
               <Plus size={16} />
             </button>
           </div>
@@ -511,7 +511,7 @@
         {/if}
       </div>
       <div class="space-y-4">
-        <button class="space-y-4" onclick={() => viewAll('activities')}> View All Activities </button>
+        <button class="space-y-4" on:click={() => viewAll('activities')}> View All Activities </button>
       </div>
     </div>
     <!-- Quick Actions Panel -->
@@ -523,19 +523,19 @@
         </h2>
       </div>
       <div class="actions-grid space-y-4">
-        <button class="refresh-btn" onclick={() => createNew('cases')}>
+        <button class="refresh-btn" on:click={() => createNew('cases')}>
           <FileText size={24} />
           <span>New Case</span>
         </button>
-        <button class="refresh-btn" onclick={() => createNew('evidence')}>
+        <button class="refresh-btn" on:click={() => createNew('evidence')}>
           <Camera size={24} />
           <span>Add Evidence</span>
         </button>
-        <button class="refresh-btn" onclick={() => createNew('reports')}>
+        <button class="refresh-btn" on:click={() => createNew('reports')}>
           <FileText size={24} />
           <span>Create Report</span>
         </button>
-        <button class="refresh-btn" onclick={() => viewAll('activities')}>
+        <button class="refresh-btn" on:click={() => viewAll('activities')}>
           <Clock size={24} />
           <span>View Tasks</span>
         </button>
