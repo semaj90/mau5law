@@ -6,11 +6,10 @@
 // =====================================
 // Core API Types & Interfaces
 // =====================================
-}
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   data?: T;
   error?: string;
-  status: "success" | "error" | "loading";
+  status: 'success' | 'error' | 'loading';
   timestamp: string;
   requestId: string;
 }
@@ -20,7 +19,7 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
     limit: number;
     total: number;
     hasMore: boolean;
-  }
+  };
 }
 export interface ApiLegalDocument {
   id: string;
@@ -28,12 +27,12 @@ export interface ApiLegalDocument {
   title: string;
   content: string;
   extractedText: string;
-  documentType: "legal" | "evidence" | "contract" | "brief";
+  documentType: 'legal' | 'evidence' | 'contract' | 'brief';
   jurisdiction: string;
   uploadedAt: string;
   processedAt?: string;
   embeddings?: number[];
-  metadata: { [key: string]: any }
+  metadata: Record<string, unknown>;
 }
 export interface SemanticSearchQuery {
   query: string;
@@ -43,16 +42,16 @@ export interface SemanticSearchQuery {
     documentType?: string[];
     jurisdiction?: string;
     caseId?: string;
-    dateRange?: { start: Date; end: Date }
+    dateRange?: { start: Date; end: Date };
     confidenceThreshold?: number;
-  }
+  };
   includeEmbeddings?: boolean;
   rerank?: boolean;
 }
 export interface ChatMessage {
   id: string;
   sessionId: string;
-  role: "user" | "assistant" | "system";
+  role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: string;
   metadata?: {
@@ -61,32 +60,31 @@ export interface ChatMessage {
     processingTime?: number;
     tokenCount?: number;
     model?: string;
-  }
+  };
 }
 // =====================================
 // Authentication & User Management
 // =====================================
-}
 export interface AuthUser {
   id: string;
   email: string;
-  role: "admin" | "prosecutor" | "detective" | "user";
+  role: 'admin' | 'prosecutor' | 'detective' | 'user';
   permissions: string[];
   lastLogin?: string;
   preferences: UserPreferences;
 }
 export interface UserPreferences {
-  theme: "yorha-dark" | "yorha-light" | "professional";
-  language: "en" | "es" | "fr";
+  theme: 'yorha-dark' | 'yorha-light' | 'professional';
+  language: 'en' | 'es' | 'fr';
   notifications: {
     email: boolean;
     browser: boolean;
     mobile: boolean;
-  }
+  };
   dashboard: {
-    layout: "grid" | "list";
+    layout: 'grid' | 'list';
     widgets: string[];
-  }
+  };
 }
 export interface LoginCredentials {
   email: string;
@@ -95,19 +93,18 @@ export interface LoginCredentials {
 }
 export interface RegisterData extends LoginCredentials {
   name: string;
-  role: "prosecutor" | "detective" | "user";
+  role: 'prosecutor' | 'detective' | 'user';
   organization?: string;
 }
 // =====================================
 // Document Processing API
 // =====================================
-}
 export interface DocumentUploadOptions {
   caseId: string;
-  documentType: ApiLegalDocument["documentType"];
+  documentType: ApiLegalDocument['documentType'];
   title?: string;
   jurisdiction?: string;
-  metadata?: { [key: string]: any }
+  metadata?: Record<string, unknown>;
   processImmediately?: boolean;
   generateEmbeddings?: boolean;
 }
@@ -122,31 +119,30 @@ export interface DocumentProcessingResult {
     model: string;
     dimensions: number;
     vectors: number[];
-  }
+  };
   analysis?: {
-    entities: Array<any>;
+    entities: unknown[];
     summary: string;
     topics: string[];
-    sentiment?: { score: number; label: "positive" | "negative" | "neutral" }
-  }
+    sentiment?: { score: number; label: 'positive' | 'negative' | 'neutral' };
+  };
 }
 // =====================================
 // Vector Search & Embeddings
 // =====================================
-}
 export interface VectorSearchOptions {
   query: string | number[];
-  collection: "documents" | "cases" | "precedents";
+  collection: 'documents' | 'cases' | 'precedents';
   topK?: number;
   threshold?: number;
-  metadataFilters?: { [key: string]: any }
+  metadataFilters?: Record<string, unknown>;
   includePayload?: boolean;
   includeVectors?: boolean;
 }
 export interface VectorSearchResult {
   id: string;
   score: number;
-  payload?: { [key: string]: any }
+  payload?: Record<string, unknown>;
   vector?: number[];
   document?: Partial<ApiLegalDocument>;
 }
@@ -166,7 +162,6 @@ export interface EmbeddingResponse {
 // =====================================
 // Real-time Chat & Streaming
 // =====================================
-}
 export interface ChatSessionOptions {
   caseId?: string;
   model?: "gemma3-legal:latest" | "mixtral:8x7b";
@@ -178,26 +173,25 @@ export interface ChatSessionOptions {
   ragSources?: string[];
 }
 export interface StreamingChatResponse {
-  type: "token" | "complete" | "error" | "thinking";
+  type: 'token' | 'complete' | 'error' | 'thinking';
   content?: string;
   metadata?: {
     tokensGenerated?: number;
     processingTime?: number;
-    ragContext?: Array<any>;
+    ragContext?: unknown[];
     error?: string;
-  }
+  };
   done: boolean;
 }
 // =====================================
 // Case Management
 // =====================================
-}
 export interface LegalCase {
   id: string;
   title: string;
   description: string;
-  status: "active" | "closed" | "archived" | "pending";
-  priority: "low" | "medium" | "high" | "critical";
+  status: 'active' | 'closed' | 'archived' | 'pending';
+  priority: 'low' | 'medium' | 'high' | 'critical';
   jurisdiction: string;
   assignedTo: string[];
   createdBy: string;
@@ -207,12 +201,12 @@ export interface LegalCase {
   evidence: Evidence[];
   notes: CaseNote[];
   timeline: CaseTimelineEntry[];
-  metadata: { [key: string]: any }
+  metadata: Record<string, unknown>;
 }
 export interface Evidence {
   id: string;
   caseId: string;
-  type: "physical" | "digital" | "document" | "testimony" | "photo" | "video";
+  type: 'physical' | 'digital' | 'document' | 'testimony' | 'photo' | 'video';
   title: string;
   description: string;
   source: string;
@@ -223,8 +217,8 @@ export interface Evidence {
     findings: string[];
     confidence: number;
     methodology: string;
-  }
-  files: Array<any>;
+  };
+  files: unknown[];
 }
 export interface CaseNote {
   id: string;
@@ -232,7 +226,7 @@ export interface CaseNote {
   authorId: string;
   title: string;
   content: string;
-  type: "general" | "analysis" | "action" | "reminder";
+  type: 'general' | 'analysis' | 'action' | 'reminder';
   private: boolean;
   createdAt: string;
   updatedAt: string;
@@ -241,22 +235,17 @@ export interface CaseNote {
 export interface CaseTimelineEntry {
   id: string;
   caseId: string;
-  type:
-    | "document_added"
-    | "evidence_collected"
-    | "note_created"
-    | "status_changed"
-    | "assignment_changed";
+  type: 'document_added' | 'evidence_collected' | 'note_created' | 'status_changed' | 'assignment_changed';
   title: string;
   description: string;
   actorId: string;
   timestamp: string;
-  metadata: { [key: string]: any }
+  metadata: Record<string, unknown>;
 }
 export interface ChainOfCustodyEntry {
   id: string;
   evidenceId: string;
-  action: "collected" | "transferred" | "analyzed" | "stored" | "accessed";
+  action: 'collected' | 'transferred' | 'analyzed' | 'stored' | 'accessed';
   actor: string;
   location: string;
   timestamp: string;
@@ -266,7 +255,6 @@ export interface ChainOfCustodyEntry {
 // =====================================
 // API Client Configuration
 // =====================================
-}
 export interface ApiClientConfig {
   baseUrl: string;
   timeout?: number;
@@ -274,10 +262,10 @@ export interface ApiClientConfig {
   retryDelay?: number;
   headers?: Record<string, string>;
   interceptors?: {
-    request?: Array<(config: any) => any>;
-    response?: Array<(response: any) => any>;
-    error?: Array<(error: any) => any>;
-  }
+    request?: Array<(config: unknown) => unknown>;
+    response?: Array<(response: unknown) => unknown>;
+    error?: Array<(error: unknown) => unknown>;
+  };
 }
 export interface ServiceEndpoints {
   sveltekit: {

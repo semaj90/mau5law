@@ -9,31 +9,10 @@
   // Import the new CollapsibleErrorSection component
   import CollapsibleErrorSection from '$lib/components/CollapsibleErrorSection.svelte';
 
-  // Define a type for the Button component's props.
-  // This is a local workaround to satisfy TypeScript in this file,
-  // assuming the Button component itself accepts these props but its
-  // type definitions are not correctly inferred or exported.
-  type ButtonProps = {
-    variant?: 'default' | 'ghost' | 'link' | 'primary' | 'secondary' | 'destructive' | 'outline';
-    size?: 'default' | 'sm' | 'lg' | 'icon';
-    disabled?: boolean;
-    'aria-busy'?: boolean; // Added aria-busy to cover all used props
-    // Add other common props if they are used and cause errors
-    // e.g., type?: 'button' | 'submit' | 'reset';
-    //       href?: string;
-  };
-
-  // Extend the default Svelte component type with our custom props.
-  // This allows us to use the Button component directly with these props
-  // without needing `svelte:component` or `as any` on each prop.
-  // This is still a workaround for a potentially missing or incorrect type definition
-  // in the Button.svelte component itself.
-  type TypedButton = typeof Button & {
-    new (...args: any[]): import('svelte').SvelteComponent<ButtonProps>;
-  };
-
-  // Cast the imported Button to our custom typed version.
-  const ButtonComponent: TypedButton = Button as TypedButton;
+  // Lightweight cast to avoid TS errors about unknown props on the Button component
+  const ButtonComponent: any = Button as unknown as any;
+  // Cast CollapsibleErrorSection to any constructor for safe svelte:component rendering
+  const CollapsibleErrorSectionComponent: any = CollapsibleErrorSection as unknown as any;
 
   // Import state
   let importFile: File | null = $state(null);
@@ -485,8 +464,7 @@
               </div>
             </div>
             {#if (importResults.results?.errors?.length ?? 0) > 0}
-              <!-- @ts-ignore -->
-              <CollapsibleErrorSection errors={importResults.results?.errors ?? []} />
+              <svelte:component this={CollapsibleErrorSectionComponent} errors={importResults.results?.errors ?? []} />
             {/if}
             {#if importResults.error}
               <div class="text-red-600 text-sm">
@@ -600,6 +578,28 @@
         <div class="space-y-2">
           <!-- Replaced Button with <a> for navigation, applying button-like styles -->
           <a href="/export" class="flex items-center w-full justify-start px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-200">
+            <Download class="h-4 w-4 mr-2" />
+            Export Data
+          </a>
+          <a href="/cases" class="flex items-center w-full justify-start px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-200">
+            <Database class="h-4 w-4 mr-2" />
+            View Cases
+          </a>
+          <a href="/evidence" class="flex items-center w-full justify-start px-3 py-2 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-200">
+            <FileText class="h-4 w-4 mr-2" />
+            View Evidence
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Example UnoCSS drag and drop styles */
+  /* border-blue-400, bg-blue-50, border-gray-300 are already used via class bindings above */
+  /* Add any additional custom styles here if needed */
+</style>
             <Download class="h-4 w-4 mr-2" />
             Export Data
           </a>

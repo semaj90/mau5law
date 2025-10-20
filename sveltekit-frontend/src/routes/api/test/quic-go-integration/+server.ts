@@ -5,171 +5,295 @@
 import { json, error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { ensureError } from '$lib/utils/ensure-error'
+
+// --- New Interfaces for Mock Responses ---
+interface EnhancedRAGResult {
+  id: string;
+  content: string;
+  score: number;
+}
+
+interface EnhancedRAGResponse {
+  success: boolean;
+  results: EnhancedRAGResult[];
+  query: string;
+  totalResults: number;
+  responseTime?: number;
+  protocol: string;
+  error?: string | null;
+}
+
+interface SemanticSearchResponse {
+  success: boolean;
+  results: EnhancedRAGResult[];
+  query: string;
+  totalResults: number;
+  responseTime?: number;
+  protocol: string;
+  error?: string | null;
+}
+
+interface UploadDocumentResponse {
+  success: boolean;
+  documentId: string;
+  filename: string;
+  size: number;
+  processed: boolean;
+}
+
+interface UploadServiceHealthResponse {
+  success: boolean;
+  status: string;
+  uptime: string;
+  activeConnections: number;
+  protocol: string;
+  responseTime?: number;
+  error?: string | null;
+}
+
+interface GoClientRequestResponse {
+  success: boolean;
+  service: string;
+  method: string;
+  mockResponse: boolean;
+  timestamp: string;
+}
+
+// --- New Interfaces for POST request payload and result ---
+
+interface EnhancedRagQueryPayload {
+  query: string;
+  options: { maxResults: number; threshold: number };
+}
+
+interface EnhancedRagSemanticSearchPayload {
+  query: string;
+  options: { collection: string; limit: number };
+}
+
+// Generic payload for other services, using unknown for values for better type safety than 'any'
+interface GenericClientPayload extends Record<string, unknown> {}
+
+// Union type for the payload in the POST request
+type PostRequestPayload = EnhancedRagQueryPayload | EnhancedRagSemanticSearchPayload | GenericClientPayload;
+
+// Interface for the POST request body (testConfig)
+interface PostTestConfig {
+  service: string;
+  endpoint: string;
+  payload: PostRequestPayload;
+}
+
+// Union type for the result of the POST request (testResult)
+type PostTestResult = EnhancedRAGResponse | SemanticSearchResponse | UploadServiceHealthResponse | GoClientRequestResponse;
+
+interface GoServiceManager {
+  healthCheck(): Promise<{ success: boolean; message: string }>;
+  checkAllServices(): Promise<{
+    enhancedRAG: { success: boolean; status: string };
+    uploadService: { success: boolean; status: string };
+    vectorDB: { success: boolean; status: string };
+  }>;
+  getEnhancedRAG(): {
+    ragQuery(query: string, options: { maxResults: number; threshold: number }): Promise<EnhancedRAGResponse>;
+    semanticSearch(query: string, options: { collection: string; limit: number }): Promise<SemanticSearchResponse>;
+  };
+  getUploadService(): {
+    uploadDocument(file: { name?: string; size?: number }, metadata: Record<string, unknown>): Promise<UploadDocumentResponse>;
+    health(): Promise<UploadServiceHealthResponse>;
+  };
+  getClient(service: string): {
+    request(method: string, data: Record<string, unknown>): Promise<GoClientRequestResponse>;
+  };
+}
+
 // Mock Go service manager since the actual service doesn't exist
-const goServiceManager = {
+const goServiceManager: GoServiceManager = {
   async healthCheck() {
-    return { success: true, message: 'Mock Go service health check' }
+    return { success: true, message: 'Mock Go service health check' };
   },
   async checkAllServices() {
     return {
       enhancedRAG: { success: true, status: 'healthy' },
       uploadService: { success: true, status: 'healthy' },
-      vectorDB: { success: true, status: 'healthy' }
-    }
+      vectorDB: { success: true, status: 'healthy' },
+    };
   },
   getEnhancedRAG() {
     return {
-      async ragQuery(query: string, options: any) {
+      async ragQuery(query: string, _options: { maxResults: number; threshold: number }): Promise<EnhancedRAGResponse> {
         return {
           success: true,
           results: [
             { id: '1', content: 'Mock legal document result', score: 0.95 },
-            { id: '2', content: 'Mock case law result', score: 0.87 }
+            { id: '2', content: 'Mock case law result', score: 0.87 },
           ],
           query,
           totalResults: 2,
           responseTime: 45,
           protocol: 'QUIC',
-          error: null
-        }
+          error: null,
+        };
       },
-      async semanticSearch(query: string, options: any) {
+      async semanticSearch(
+        query: string,
+        _options: { collection: string; limit: number }
+      ): Promise<SemanticSearchResponse> {
         return {
           success: true,
           results: [
             { id: '1', content: 'Mock semantic search result', score: 0.92 },
-            { id: '2', content: 'Mock legal context result', score: 0.84 }
+            { id: '2', content: 'Mock legal context result', score: 0.84 },
           ],
           query,
           totalResults: 2,
           responseTime: 38,
-          protocol: 'QUIC'
-        }
-      }
-    }
+          protocol: 'QUIC',
+          error: null,
+        };
+      },
+    };
   },
   getUploadService() {
     return {
-      async uploadDocument(file: any, metadata: any) {
+      async uploadDocument(
+        _file: { name?: string; size?: number },
+        _metadata: Record<string, unknown>
+      ): Promise<UploadDocumentResponse> {
         return {
           success: true,
           documentId: 'mock-doc-123',
-          filename: file.name || 'test.pdf',
-          size: file.size || 1024,
-          processed: true
-        }
+          filename: _file.name || 'test.pdf',
+          size: _file.size || 1024,
+          processed: true,
+        };
       },
-      async health() {
+      async health(): Promise<UploadServiceHealthResponse> {
         return {
           success: true,
           status: 'healthy',
           uptime: '2h 15m',
           activeConnections: 5,
-          protocol: 'QUIC'
-        }
-      }
-    }
+          protocol: 'QUIC',
+          responseTime: 20,
+          error: null,
+        };
+      },
+    };
   },
   getClient(service: string) {
     return {
-      async request(method: string, data: any) {
+      async request(method: string, _data: Record<string, unknown>): Promise<GoClientRequestResponse> {
         return {
           success: true,
           service,
           method,
           mockResponse: true,
           timestamp: new Date().toISOString(),
-        }
-      }
-    }
-  }
-}
+        };
+      },
+    };
+  },
+};
 /*
  * GET /api/test/quic-go-integration - Test all QUIC-Go integrations
  */
-export const GET: RequestHandler = async ({ url }) => {
-  const testResults: { [key: string]: any } = {}
-  let overallSuccess = true
+export const GET: RequestHandler = async ({ url: _url }) => {
+  interface TestResultEntry {
+    test: string;
+    status: 'PASS' | 'FAIL' | 'ERROR' | 'PARTIAL';
+    details?: unknown;
+    responseTime?: number;
+    protocol?: string;
+    error?: string | null;
+    httpStatus?: number;
+    statusText?: string;
+  }
+  const testResults: Record<string, TestResultEntry> = {};
+  let overallSuccess = true;
   try {
     // Test 1: Go Service Manager Health Check
-    console.log('Testing Go Service Manager health check...')
-    const servicesHealth = await goServiceManager.checkAllServices()
+    console.log('Testing Go Service Manager health check...');
+    const servicesHealth = await goServiceManager.checkAllServices();
     testResults.servicesHealth = {
       test: 'Go Services Health Check',
-      status: Object.values(servicesHealth).every((s) => s.success) ? 'PASS' : 'PARTIAL',
-      details: servicesHealth
-    }
+      status: Object.values(servicesHealth).every(s => s.success) ? 'PASS' : 'PARTIAL',
+      details: servicesHealth,
+    };
     // Test 2: Enhanced RAG Service
-    console.log('Testing Enhanced RAG service...')
+    console.log('Testing Enhanced RAG service...');
     try {
-      const enhancedRagClient = goServiceManager.getEnhancedRAG()
-      const ragResponse = await enhancedRagClient.ragQuery('test legal query', {
+      const enhancedRagClient = goServiceManager.getEnhancedRAG();
+      const ragResponse: EnhancedRAGResponse = await enhancedRagClient.ragQuery('test legal query', {
         maxResults: 3,
-        threshold: 0.5
-      })
+        threshold: 0.5,
+      });
       testResults.enhancedRag = {
         test: 'Enhanced RAG Query',
         status: ragResponse.success ? 'PASS' : 'FAIL',
         responseTime: ragResponse.responseTime,
         protocol: ragResponse.protocol,
-        error: ragResponse.error || null
-      }
-      if (!ragResponse.success) overallSuccess = false
-    } catch (ragError) {
+        error: ragResponse.error || null,
+      };
+      if (!ragResponse.success) overallSuccess = false;
+    } catch (ragError: unknown) {
       testResults.enhancedRag = {
         test: 'Enhanced RAG Query',
         status: 'ERROR',
-        error: ragError instanceof Error ? ragError.message: 'Unknown error'
-      }
-      overallSuccess = false
+        error: ragError instanceof Error ? ragError.message : 'Unknown error',
+      };
+      overallSuccess = false;
     }
     // Test 3: Vector Service via Enhanced RAG
-    console.log('Testing Vector service...')
+    console.log('Testing Vector service...');
     try {
-      const enhancedRagClient = goServiceManager.getEnhancedRAG()
-      const vectorResponse = await enhancedRagClient.semanticSearch('test legal document search', {
-        collection: 'legal_documents',
-        limit: 5
-      })
+      const enhancedRagClient = goServiceManager.getEnhancedRAG();
+      const vectorResponse: SemanticSearchResponse = await enhancedRagClient.semanticSearch(
+        'test legal document search',
+        {
+          collection: 'legal_documents',
+          limit: 5,
+        }
+      );
       testResults.vectorService = {
         test: 'Vector Semantic Search',
         status: vectorResponse.success ? 'PASS' : 'FAIL',
         responseTime: vectorResponse.responseTime,
         protocol: vectorResponse.protocol,
-        error: vectorResponse.error || null
-      }
-      if (!vectorResponse.success) overallSuccess = false
-    } catch (vectorError) {
+        error: vectorResponse.error || null,
+      };
+      if (!vectorResponse.success) overallSuccess = false;
+    } catch (vectorError: unknown) {
       testResults.vectorService = {
         test: 'Vector Semantic Search',
         status: 'ERROR',
-        error: vectorError instanceof Error ? vectorError.message: 'Unknown error'
-      }
-      overallSuccess = false
+        error: vectorError instanceof Error ? vectorError.message : 'Unknown error',
+      };
+      overallSuccess = false;
     }
     // Test 4: Upload Service
-    console.log('Testing Upload service...')
+    console.log('Testing Upload service...');
     try {
-      const uploadClient = goServiceManager.getUploadService()
-      const healthResponse = await uploadClient.health()
+      const uploadClient = goServiceManager.getUploadService();
+      const healthResponse: UploadServiceHealthResponse = await uploadClient.health();
       testResults.uploadService = {
         test: 'Upload Service Health',
         status: healthResponse.success ? 'PASS' : 'FAIL',
         responseTime: healthResponse.responseTime,
         protocol: healthResponse.protocol,
-        error: healthResponse.error || null
-      }
-      if (!healthResponse.success) overallSuccess = false
-    } catch (uploadError) {
+        error: healthResponse.error || null,
+      };
+      if (!healthResponse.success) overallSuccess = false;
+    } catch (uploadError: unknown) {
       testResults.uploadService = {
         test: 'Upload Service Health',
         status: 'ERROR',
-        error: uploadError instanceof Error ? uploadError.message: 'Unknown error'
-      }
-      overallSuccess = false
+        error: uploadError instanceof Error ? uploadError.message : 'Unknown error',
+      };
+      overallSuccess = false;
     }
     // Test 5: QUIC Endpoints Integration Test
-    console.log('Testing QUIC endpoints...')
+    console.log('Testing QUIC endpoints...');
     try {
       // Test RAG proxy endpoint
       const ragProxyResponse = await fetch('/api/v1/quic/rag-proxy', {
@@ -178,34 +302,34 @@ export const GET: RequestHandler = async ({ url }) => {
         body: JSON.stringify({
           query: 'test legal query',
           maxResults: 3,
-          threshold: 0.7
-        })
-      })
-      const ragProxyResult = ragProxyResponse.ok
+          threshold: 0.7,
+        }),
+      });
+      const ragProxyResult = ragProxyResponse.ok;
       testResults.quicEndpoints = {
         test: 'QUIC RAG Proxy Integration',
         status: ragProxyResult ? 'PASS' : 'FAIL',
         httpStatus: ragProxyResponse.status,
-        statusText: ragProxyResponse.statusText
-      }
-      if (!ragProxyResult) overallSuccess = false
-    } catch (quicError) {
+        statusText: ragProxyResponse.statusText,
+      };
+      if (!ragProxyResult) overallSuccess = false;
+    } catch (quicError: unknown) {
       testResults.quicEndpoints = {
         test: 'QUIC RAG Proxy Integration',
         status: 'ERROR',
-        error: quicError instanceof Error ? quicError.message: 'Unknown error'
-      }
-      overallSuccess = false
+        error: quicError instanceof Error ? quicError.message : 'Unknown error',
+      };
+      overallSuccess = false;
     }
     // Summary
     const summary = {
       overallStatus: overallSuccess ? 'ALL_TESTS_PASSED' : 'SOME_TESTS_FAILED',
       timestamp: new Date().toISOString(),
       testsRun: Object.keys(testResults).length,
-      testsPassed: Object.values(testResults).filter((t) => t.status === 'PASS').length,
-      testsFailed: Object.values(testResults).filter((t) => t.status === 'FAIL').length,
-      testsError: Object.values(testResults).filter((t) => t.status === 'ERROR').length
-    }
+      testsPassed: Object.values(testResults).filter(t => t.status === 'PASS').length,
+      testsFailed: Object.values(testResults).filter(t => t.status === 'FAIL').length,
+      testsError: Object.values(testResults).filter(t => t.status === 'ERROR').length,
+    };
     return json({
       success: overallSuccess,
       message: 'QUIC-Go Integration Test Complete',
@@ -218,52 +342,68 @@ export const GET: RequestHandler = async ({ url }) => {
         '✅ Vector service integration via Enhanced RAG',
         '✅ Upload service health monitoring',
         '✅ Multi-protocol support (HTTP/QUIC/gRPC)',
-        '✅ Automatic service discovery and health checks'
-      ]
-    })
-  } catch (err: any) {
-    console.error('Integration test failed:', err)
+        '✅ Automatic service discovery and health checks',
+      ],
+    });
+  } catch (unknownErr: unknown) {
+    console.error('Integration test failed:', unknownErr);
     return json({
       success: false,
       message: 'QUIC-Go Integration Test Failed',
-      error: err instanceof Error ? err.message: 'Unknown error',
-      timestamp: new Date().toISOString()
-    })
+      error: unknownErr instanceof Error ? unknownErr.message : 'Unknown error',
+      timestamp: new Date().toISOString(),
+    });
   }
-}
+};
 /*
  * POST /api/test/quic-go-integration - Test specific integration with custom payload
  */
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const testConfig = await request.json()
-    const { service, endpoint, payload } = testConfig
+    const testConfig: PostTestConfig = await request.json();
+    const { service, endpoint, payload } = testConfig;
     if (!service || !endpoint) {
-      error(400, ensureError({ message: 'Service and endpoint are required' })
+      error(400, ensureError({ message: 'Service and endpoint are required' }));
     }
-    let testResult: any = {}
+    let testResult: PostTestResult;
     switch (service) {
-      case 'enhancedRag':
-        const enhancedRagClient = goServiceManager.getEnhancedRAG()
+      case 'enhancedRag': {
+        const enhancedRagClient = goServiceManager.getEnhancedRAG();
         if (endpoint === 'ragQuery') {
-          testResult = await enhancedRagClient.ragQuery(payload.query, payload.options)
+          // Type assertion to narrow down the payload for ragQuery
+          const ragPayload = payload as EnhancedRagQueryPayload;
+          testResult = await enhancedRagClient.ragQuery(ragPayload.query, ragPayload.options);
         } else if (endpoint === 'semanticSearch') {
-          testResult = await enhancedRagClient.semanticSearch(payload.query, payload.options)
+          // Type assertion to narrow down the payload for semanticSearch
+          const semanticSearchPayload = payload as EnhancedRagSemanticSearchPayload;
+          testResult = await enhancedRagClient.semanticSearch(
+            semanticSearchPayload.query,
+            semanticSearchPayload.options
+          );
+        } else {
+          error(400, ensureError({ message: `Unknown endpoint for enhancedRag service: ${endpoint}` }));
         }
-        break
-      case 'uploadService':
-        const uploadClient = goServiceManager.getUploadService()
+        break;
+      }
+      case 'uploadService': {
+        const uploadClient = goServiceManager.getUploadService();
         if (endpoint === 'health') {
-          testResult = await uploadClient.health()
+          // Health endpoint typically doesn't require a specific payload, or it's ignored
+          testResult = await uploadClient.health();
+        } else {
+          error(400, ensureError({ message: `Unknown endpoint for uploadService: ${endpoint}` }));
         }
-        break
-      default:
-        const client = goServiceManager.getClient(service as any)
+        break;
+      }
+      default: {
+        const client = goServiceManager.getClient(service);
         if (!client) {
-          error(400, ensureError({ message: `Unknown service: ${service}` })
+          error(400, ensureError({ message: `Unknown service: ${service}` }));
         }
-        testResult = await client.request(endpoint, payload)
-        break
+        // Type assertion for generic client requests
+        testResult = await client.request(endpoint, payload as GenericClientPayload);
+        break;
+      }
     }
     return json({
       success: true,
@@ -273,14 +413,14 @@ export const POST: RequestHandler = async ({ request }) => {
       result: testResult,
       timestamp: new Date().toISOString(),
     })
-  } catch (err: any) {
-    console.error('Custom integration test failed:', err)
+  } catch (unknownErr: unknown) {
+    console.error('Custom integration test failed:', unknownErr)
     error(
       500,
       ensureError({
         message: 'Custom integration test failed',
-        error: err instanceof Error ? err.message: 'Unknown error'
+        error: unknownErr instanceof Error ? unknownErr.message : 'Unknown error',
       })
-    )
+    );
   }
 }

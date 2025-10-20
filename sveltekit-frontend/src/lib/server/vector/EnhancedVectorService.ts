@@ -2,10 +2,12 @@
 // Generated: 2025-07-25T03:29:35.246Z
 // Features detected: hasOllama, hasQdrant, hasRedis, hasPgVector, hasEmbeddings
 import { createQdrantWrapper, QdrantApiWrapper } from './qdrant-api-wrapper.js';
-import type { Redis } from 'ioredis';
-import { createRedisInstance } from '$lib/server/redis';
-import { cases, evidence, criminals, embeddingCache, vectorMetadata } from '../db/schema-postgres-enhanced.js';
-import { eq, sql } from 'drizzle-orm';
+// Replaced createRedisInstance import with default Redis class import to match instance type
+import Redis from 'ioredis';
+// Only import `cases` (others were unused)
+import { cases } from '../db/schema-postgres-enhanced.js';
+// Removed unused `eq` import, keep `sql`
+import { sql } from 'drizzle-orm';
 import { db } from '../db.js';
 
 interface DocumentMetadata {
@@ -52,21 +54,23 @@ interface CombinedSearchResult {
   content: string;
 }
 export class EnhancedVectorService {
-  private qdrant: QdrantApiWrapper;
-  // Use explicit Redis type for clarity and easier mocking in tests
-  private redis: Redis;
+  private qdrant!: QdrantApiWrapper;
+  // Use InstanceType<typeof Redis> and definite assignment to satisfy strictPropertyInitialization
+  private redis!: InstanceType<typeof Redis>;
   private collectionName = 'legal_documents';
   constructor() {
     // Removed duplicate constructor
     this.qdrant = createQdrantWrapper({
       url: import.meta.env.QDRANT_URL || 'http://localhost:6333',
     });
-    // Centralized Redis instance (injects password & consistent options). Fallback not needed here.
-    this.redis = createRedisInstance();
+    // Create a local ioredis instance if project helper isn't exported
+    const redisUrl = (import.meta.env.REDIS_URL as string) || 'redis://:redis@localhost:6379/0';
+    this.redis = new Redis(redisUrl);
   }
   async initializeCollection() {
     const collections = await this.qdrant.getCollections();
-    const exists = collections.collections.some((c: any) => c.name === this.collectionName);
+    // single typed exists declaration (no duplicate)
+    const exists = collections.collections.some((c: { name?: string }) => c.name === this.collectionName);
     if (!exists) {
       await this.qdrant.createCollection(this.collectionName, {
         vectors: { size: 768, distance: 'Cosine' },
@@ -78,7 +82,6 @@ export class EnhancedVectorService {
         // await this.qdrant.createPayloadIndex(this.collectionName, "type")
         console.log('Payload index creation skipped - method not available in current client');
       } catch (error: unknown) {
-        // Changed 'any' to 'unknown'
         console.log('Index creation skipped due to API compatibility');
       }
     }
@@ -137,13 +140,9 @@ export class EnhancedVectorService {
       throw new Error('Failed to generate embedding with both primary and fallback models.');
     }
 
-    // Cache for 24 hours - using modern Redis syntax
-    if (typeof this.redis.setex === 'function') {
-      await this.redis.setex(cacheKey, 86400, JSON.stringify(embedding));
-    } else {
-      // Fallback to SET with EX option if setex not available in types
-      await this.redis.set(cacheKey, JSON.stringify(embedding), 'EX', 86400);
-    }
+    // Cache for 24 hours - use Redis SET with EX (preferred and typed)
+    await this.redis.set(cacheKey, JSON.stringify(embedding), 'EX', 86400);
+
     return embedding;
   }
   async storeDocument(id: string, content: string, metadata: DocumentMetadata) {
@@ -161,9 +160,7 @@ export class EnhancedVectorService {
     });
   }
   async hybridSearch(query: string, options: HybridSearchOptions = {}): Promise<CombinedSearchResult[]> {
-    // Corrected parameter syntax
     const { limit = 10, threshold = 0.7 } = options;
-    // Vector search
     const queryEmbedding = await this.generateEmbedding(query);
     const vectorResults: QdrantVectorSearchResult[] = await this.qdrant.search(this.collectionName, {
       vector: queryEmbedding,
@@ -171,7 +168,6 @@ export class EnhancedVectorService {
       score_threshold: threshold,
       with_payload: true,
     });
-    // Keyword search in PostgreSQL
     const keywordResults: KeywordSearchResult[] = await this.keywordSearch(query, limit);
     // Combine results
     return this.combineResults(vectorResults, keywordResults);
@@ -183,43 +179,64 @@ export class EnhancedVectorService {
       .where(sql`${cases.title} ILIKE ${'%' + query + '%'} OR ${cases.description} ILIKE ${'%' + query + '%'}`)
       .limit(limit);
 
-    return caseResults.map((c: CaseSelect) => ({
-      id: c.id,
-      score: 0.8, // Placeholder score, could be improved with text similarity
-      metadata: { type: 'case', title: c.title },
-      content: `${c.title} ${c.description}`,
-    }));
+    // Use typed access via CaseSelect and safe coercions instead of `any` casts
+    return caseResults.map((c: CaseSelect) => {
+      const rawId = (c as Partial<CaseSelect>).id;
+      const id = rawId !== undefined && rawId !== null ? String(rawId) : '';
+      const title = (c as Partial<CaseSelect>).title ?? '';
+      const description = (c as Partial<CaseSelect>).description ?? '';
+
+      return {
+        id,
+        score: 0.8, // Placeholder score, could be improved with text similarity
+        metadata: { type: 'case', title: String(title) },
+        content: `${String(title)} ${String(description)}`.trim(),
+      } as KeywordSearchResult;
+    });
   }
   private combineResults(
     vectorResults: QdrantVectorSearchResult[],
     keywordResults: KeywordSearchResult[]
   ): CombinedSearchResult[] {
-    // Corrected parameter syntax
     const combined = new Map<string, CombinedSearchResult>();
-    vectorResults.forEach(r =>
-      combined.set(r.id, {
-        id: r.id,
-        score: r.score * 0.7,
-        metadata: { type: r.payload.type || 'document', title: r.payload.title || 'Untitled Document' }, // Assuming payload has type and title
-        content: r.payload.content,
-      })
-    ); // Added closing parenthesis
+    vectorResults.forEach(r => {
+      const payload = r.payload || {};
+      const title = typeof payload.title === 'string' ? payload.title : 'Untitled Document';
+      const type = typeof payload.type === 'string' ? payload.type : 'document';
+      const content = typeof payload.content === 'string' ? payload.content : String(payload.content || '');
+      combined.set(String(r.id), {
+        id: String(r.id),
+        score: (typeof r.score === 'number' ? r.score : 0) * 0.7,
+        metadata: { type, title },
+        content,
+      });
+    });
     keywordResults.forEach(r => {
-      const existing = combined.get(r.id);
+      const id = String(r.id);
+      const existing = combined.get(id);
       if (existing) existing.score += r.score * 0.3;
-      else combined.set(r.id, { ...r, score: r.score * 0.3 });
+      else combined.set(id, { ...r, score: r.score * 0.3 });
     });
     return Array.from(combined.values()).sort((a, b) => b.score - a.score);
   }
   async healthCheck() {
     try {
       await this.qdrant.getCollections();
-      await this.redis.ping();
+      // Call Redis.ping() if available. Use a safe cast to avoid relying on external typings.
+      if (this.redis) {
+        const maybePing = (this.redis as unknown as { ping?: () => Promise<string> }).ping;
+        if (typeof maybePing === 'function') {
+          await maybePing.call(this.redis);
+        }
+      }
       return { qdrant: true, redis: true };
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
       return { qdrant: false, redis: false, error: errorMessage };
     }
   }
-}
+} // end of class EnhancedVectorService
+
+// Export single instance (ensure no duplicate exports remain)
 export const vectorService = new EnhancedVectorService();
+

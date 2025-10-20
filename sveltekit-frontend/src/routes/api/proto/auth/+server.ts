@@ -1,6 +1,6 @@
 import { json, error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
-import { legal } from '../../../../proto/legal_api_pb.js'
+// Protobuf types are dynamically imported to avoid TypeScript checking JS
 // Protobuf authentication endpoint
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -9,7 +9,9 @@ export const POST: RequestHandler = async ({ request }) => {
     if (contentType?.includes('application/x-protobuf')) {
       // Protobuf handling
       const buffer = await request.arrayBuffer()
-      const authRequest = legal.api.AuthRequest.decode(new Uint8Array(buffer)
+      // @ts-ignore: dynamic import of generated JS without type defs
+      const { legal } = await import('../../../../proto/legal_api_pb.js')
+      const authRequest = legal.api.AuthRequest.decode(new Uint8Array(buffer))
       // Mock authentication logic
       const isValid = authRequest.email && authRequest.password
       if (!isValid) {

@@ -61,6 +61,16 @@ https://svelte.dev/e/js_parse_error -->
   // GPU Animation State
   let canvas = $state<HTMLCanvasElement | null>(null);
   let gl: WebGLRenderingContext | null = null;
+  let program = $state<WebGLProgram | null>(null); // Store the WebGL program
+  let uniformLocations = $state<{
+    confidence: WebGLUniformLocation | null;
+    time: WebGLUniformLocation | null;
+    glow: WebGLUniformLocation | null;
+  }>({
+    confidence: null,
+    time: null,
+    glow: null,
+  });
   let animationFrame: number;
   let isHovered = $state(false);
   let isPressed = $state(false);
@@ -96,24 +106,24 @@ https://svelte.dev/e/js_parse_error -->
   });
   function initWebGL() {
     if (!canvas) return;
-    gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    gl = (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')) as WebGLRenderingContext | null;
     if (!gl) {
       console.warn('WebGL not supported, falling back to CSS animations');
       return;
     }
     // Create minimal shader for legal confidence glow
     const vertexShaderSource = `
-      attribute vec4 a_positio;
+      attribute vec4 a_position; // Corrected typo from a_positio
       attribute vec2 a_texCoord;
       varying vec2 v_texCoord;
       void main() {
-        gl_Position = a_positio;
+        gl_Position = a_position;
         v_texCoord = a_texCoord;
       }
     `;
     const fragmentShaderSource = `
       precision mediump float;
-      uniform float u_confidenc;
+      uniform float u_confidence; // Corrected typo from u_confidenc
       uniform float u_time;
       uniform float u_glow;
       varying vec2 v_texCoord;
@@ -134,7 +144,7 @@ https://svelte.dev/e/js_parse_error -->
       }
     `;
     // Compile shaders (memory-efficient)
-    const program = createShaderProgram(vertexShaderSource, fragmentShaderSource);
+    program = createShaderProgram(vertexShaderSource, fragmentShaderSource);
     if (!program) return;
     // Set up minimal geometry
     const vertices = new Float32Array([
@@ -155,9 +165,9 @@ https://svelte.dev/e/js_parse_error -->
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 16, 0);
     gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 16, 8);
     // Store uniforms for animation
-    gl.confidenceUniform = gl.getUniformLocation(program, 'u_confidence');
-    gl.timeUniform = gl.getUniformLocation(program, 'u_time');
-    gl.glowUniform = gl.getUniformLocation(program, 'u_glow');
+    uniformLocations.confidence = gl.getUniformLocation(program, 'u_confidence');
+    uniformLocations.time = gl.getUniformLocation(program, 'u_time');
+    uniformLocations.glow = gl.getUniformLocation(program, 'u_glow');
   }
   function createShaderProgram(vertexSource: string, fragmentSource: string) {
     if (!gl) return null;
@@ -187,11 +197,11 @@ https://svelte.dev/e/js_parse_error -->
     return shader;
   }
   function startAnimation() {
-    if (!gl) return;
+    if (!gl || !program) return;
     function animate(currentTime: number) {
-      if (!gl || !canvas) return;
-      const deltaTime = currentTime - animationState.lastFram;
-      animationState.lastFrame = currentTim;
+      if (!gl || !canvas || !program) return;
+      const deltaTime = currentTime - animationState.lastFrame; // Corrected typo from lastFram
+      animationState.lastFrame = currentTime; // Corrected typo from currentTim
       // Update animation state (memory efficient)
       animationState.glowPhase += deltaTime * 0.001;
       animationState.pulseIntensity = isHovered ? 1.0 : 0.3;
@@ -201,10 +211,11 @@ https://svelte.dev/e/js_parse_error -->
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.enable(gl.BLEND);
       gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+      gl.useProgram(program); // Ensure the program is active before setting uniforms
       // Set uniforms
-      gl.uniform1f(gl.confidenceUniform, $confidence);
-      gl.uniform1f(gl.timeUniform, animationState.glowPhase);
-      gl.uniform1f(gl.glowUniform, glowIntensity * animationState.pulseIntensity);
+      gl.uniform1f(uniformLocations.confidence, $confidence);
+      gl.uniform1f(uniformLocations.time, animationState.glowPhase);
+      gl.uniform1f(uniformLocations.glow, glowIntensity * animationState.pulseIntensity);
       // Draw
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
       animationFrame = requestAnimationFrame(animate);
@@ -214,14 +225,21 @@ https://svelte.dev/e/js_parse_error -->
   function cleanupWebGL() {
     if (gl) {
       // Cleanup WebGL resources
+      if (program) {
+        gl.deleteProgram(program);
+      }
       gl = null;
+      program = null;
+      uniformLocations.confidence = null;
+      uniformLocations.time = null;
+      uniformLocations.glow = null;
     }
   }
   function handleClick(_event: MouseEvent) {
     if (disabled || loading) return;
     isPressed = true;
     setTimeout(() => isPressed = false, 150);
-    onclick?.(event);
+    onclick?.(_event); // Corrected to use _event parameter
   }
   function handleMouseEnter() {
     isHovered = true;
@@ -258,8 +276,8 @@ https://svelte.dev/e/js_parse_error -->
     disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
     loading ? 'cursor-wait' : '',
     isPressed ? 'scale-95' : '',
-    class
-  ].filter(Boolean).join(' ');
+    className // Changed 'class' to 'className'
+  ].filter(Boolean).join(' ')); // Added missing closing parenthesis for $derived
   // Legal confidence indicator
   let confidenceColor = $derived($confidence > 0.8 ? 'text-green-500' :
     $confidence > 0.5 ? 'text-yellow-500' : 'text-red-500');
@@ -274,7 +292,7 @@ https://svelte.dev/e/js_parse_error -->
       width="100"
       height="40"
       style="mix-blend-mode: screen; opacity: 0.8;"
-    />
+    ></canvas>
   {/if}
   <!-- Main button -->
   <button
@@ -282,14 +300,14 @@ https://svelte.dev/e/js_parse_error -->
     onclick={handleClick}
     onmouseenter={handleMouseEnter}
     onmouseleave={handleMouseLeave}
-    {...restProps}
+    {...restProp}
   >
     <!-- Loading spinner -->
     {#if loading}
       <div
         class="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
-        transitifade={{ duration: 200 }}
-      />
+        transition:fade={ { duration: 200 } }
+      ></div>
     {/if}
     <!-- Button content -->
     <span class="relative z-10 flex items-center gap-2">
@@ -310,16 +328,15 @@ https://svelte.dev/e/js_parse_error -->
         <div
           class="ml-1 h-2 w-2 rounded-full bg-blue-400 animate-pulse"
           title="AI Suggested"
-          /* transition removed */}
-        />
+        ></div>
       {/if}
     </span>
     <!-- Legal risk indicator -->
     {#if legalContext?.riskLevel === 'high'}
       <div
-        class="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500 animate-ping";
+        class="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500 animate-ping"
         transition:fade
-      />
+      ></div>
     {/if}
   </button>
   <!-- NES-style shadow effect -->
@@ -327,7 +344,7 @@ https://svelte.dev/e/js_parse_error -->
     <div
       class="absolute inset-0 translate-x-0.5 translate-y-0.5 -z-10 bg-black/20 rounded-inherit"
       style="image-rendering: pixelated;"
-    />
+    ></div>
   {/if}
 </div>
 <style>

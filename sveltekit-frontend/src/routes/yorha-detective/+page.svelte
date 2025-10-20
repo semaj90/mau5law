@@ -34,43 +34,43 @@
   <meta name="description" content="Cyberpunk detective interface using Enhanced-Bits components" />
 </svelte:head>
 {#if isBooting}
-  <div class="boot-screen" transition:fade>
-    <div class="boot-content">
-      <div class="boot-logo">
-        <div class="logo-symbol">⚔️</div>
-        <div class="logo-text">
-          <div class="logo-main">YoRHa</div>
-          <div class="logo-sub">DETECTIVE SYSTEM</div>
+  <div class="boot-screen fixed inset-0 flex justify-center items-center z-1000 text-white font-mono" transition:fade>
+    <div class="boot-content text-center max-w-[600px] w-90%">
+      <div class="boot-logo flex flex-col md:flex-row justify-center items-center gap-2 md:gap-4 mb-12">
+        <div class="logo-symbol text-[3rem] md:text-[4rem] text-[#00ff41] animate-glow-pulse">⚔️</div>
+        <div class="logo-text text-left">
+          <div class="logo-main text-[2rem] md:text-[2.5rem] font-bold text-[#00ff41] leading-none">YoRHa</div>
+          <div class="logo-sub text-[1rem] text-[#cccccc] mt-1 tracking-[2px]">DETECTIVE SYSTEM</div>
         </div>
       </div>
-      <div class="boot-progress">
-        <div class="progress-bar">
-          <div class="progress-fill" style="width: {(bootProgress / bootSequence.length) * 100}%"></div>
+      <div class="boot-progress mb-12">
+        <div class="progress-bar w-full h-2 bg-white/10 border border-[#333333] rounded overflow-hidden mb-4">
+          <div class="progress-fill h-full rounded-[3px] transition-width duration-800 ease" style="width: {(bootProgress / bootSequence.length) * 100}%"></div>
         </div>
-        <div class="progress-text">
+        <div class="progress-text text-[1rem] text-[#00ff41] font-bold">
           {Math.round((bootProgress / bootSequence.length) * 100)}% Complete
         </div>
       </div>
-      <div class="boot-messages">
+      <div class="boot-messages text-left bg-black/80 border border-[#333333] rounded-lg p-4 md:p-8 mb-8 min-h-[200px]">
         {#each bootMessages as message, index}
-          <div class="boot-message" transition:fade={{ delay: 200 }}>
-            <span class="message-prefix">[{(index + 1).toString().padStart(2, '0')}]</span>
-            <span class="message-text">{message}</span>
-            <span class="message-status">✓</span>
+          <div class="boot-message flex items-center gap-4 mb-3 text-[0.75rem] md:text-[0.875rem] py-2" transition:fade={{ delay: 200 }}>
+            <span class="message-prefix text-[#666666] font-bold min-w-[2rem]">[{(index + 1).toString().padStart(2, '0')}]</span>
+            <span class="message-text flex-1 text-[#cccccc]">{message}</span>
+            <span class="message-status text-[#00ff41] font-bold">✓</span>
           </div>
         {/each}
         {#if bootProgress < bootSequence.length}
-          <div class="boot-message current">
-            <span class="message-prefix">[{(bootProgress + 1).toString().padStart(2, '0')}]</span>
-            <span class="message-text">
+          <div class="boot-message current flex items-center gap-4 mb-3 text-[0.75rem] md:text-[0.875rem] py-2 bg-[#00ff41]/10 border-l-3 border-l-[#00ff41] pl-4 -ml-4">
+            <span class="message-prefix text-[#666666] font-bold min-w-[2rem]">[{(bootProgress + 1).toString().padStart(2, '0')}]</span>
+            <span class="message-text flex-1 text-[#00ff41]">
               {bootSequence[bootProgress] || 'Finalizing...'}
             </span>
-            <span class="loading-dots">...</span>
+            <span class="loading-dots text-[#00ff41] animate-loading-dots">...</span>
           </div>
         {/if}
       </div>
-      <div class="boot-footer">
-        <div class="system-info">YoRHa OS v2.0 | Neural Network Active | Enhanced-Bits Framework</div>
+      <div class="boot-footer border-t border-t-[#333333] pt-4">
+        <div class="system-info text-[0.75rem] text-[#666666] leading-normal">YoRHa OS v2.0 | Neural Network Active | Enhanced-Bits Framework</div>
       </div>
     </div>
   </div>
@@ -81,69 +81,22 @@
 {/if}
 
 <style>
+  /* Custom styles for gradients, shadows, and animations not easily expressed with UnoCSS */
   .boot-screen {
-    position: fixed;
-    inset: 0,
     background: linear-gradient(145deg, #000000 0%, #1a1a1a 50%, #000000 100%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000,
-    color: #ffffff;
-    font-family: 'Courier New', monospace;
-  }
-  .boot-content {
-    text-align: center;
-    max-width: 600px;
-    width: 90%;
-  }
-  .boot-logo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 3rem;
   }
   .logo-symbol {
-    font-size: 4rem;
-    color: #00ff41;
     text-shadow: 0 0 20px #00ff41;
-    animation: glow-pulse 2s infinite;
-  }
-  .logo-text {
-    text-align: left;
   }
   .logo-main {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #00ff41;
     text-shadow: 0 0 15px #00ff41;
-    line-height: 1,
-  }
-  .logo-sub {
-    font-size: 1rem;
-    color: #cccccc;
-    margin-top: 0.25rem;
-    letter-spacing: 2px;
-  }
-  .boot-progress {
-    margin-bottom: 3rem;
-  }
-  .progress-bar {
-    width: 100%;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid #333333;
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 1rem;
   }
   .progress-fill {
-    height: 100%;
     background: linear-gradient(90deg, #00ff41, #00cc34);
-    border-radius: 3px;
-    transition: width 0.8s ease;
     box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+  }
+  .progress-bar {
+    border: 1px solid #333333; /* Keep border as UnoCSS might not handle it exactly */
   }
   .progress-text {
     font-size: 1rem;
@@ -156,7 +109,6 @@
     border: 1px solid #333333;
     border-radius: 8px;
     padding: 2rem;
-    margin-bottom: 2rem;
     min-height: 200px;
   }
   .boot-message {
@@ -179,7 +131,7 @@
     min-width: 2rem;
   }
   .message-text {
-    flex: 1,
+    flex: 1; /* Corrected syntax */
     color: #cccccc;
   }
   .boot-message.current .message-text {
@@ -200,7 +152,7 @@
   .system-info {
     font-size: 0.75rem;
     color: #666666;
-    line-height: 1.5,
+    line-height: 1.5; /* Corrected syntax */
   }
   @keyframes glow-pulse {
     0%,
@@ -218,17 +170,17 @@
   @keyframes loading-dots {
     0%,
     20% {
-      opacity: 0,
+      opacity: 0; /* Corrected syntax */
     }
     40% {
-      opacity: 1,
+      opacity: 1; /* Corrected syntax */
     }
     60% {
-      opacity: 1,
+      opacity: 1; /* Corrected syntax */
     }
     80%,
     100% {
-      opacity: 0,
+      opacity: 0; /* Corrected syntax */
     }
   }
   /* Responsive adjustments */
@@ -251,3 +203,4 @@
     }
   }
 </style>
+

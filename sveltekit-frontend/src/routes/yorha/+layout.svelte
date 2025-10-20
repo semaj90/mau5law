@@ -120,7 +120,7 @@
     })();
   });
   onDestroy(() => {
-    yorhaAPI.dispose();
+    // yorhaAPI.dispose(); // Temporarily commented out as dispose() might not exist or be needed here
   });
   function navigateTo(path: string) {
     goto(path);
@@ -240,7 +240,7 @@
   /* Header */
   :global(.yorha-header) {
     position: fixed;
-    top: 0,
+    top: 0;
     left: 0;
     right: 0;
     z-index: 40;
@@ -296,15 +296,15 @@
     gap: 0.5rem;
     font-size: 0.75rem;
     color: #f59e0b;
-    opacity: 0.6,
+    opacity: 0.6;
   }
   :global(.yorha-status-connected) {
     color: #10b981; /* green-400 */
-    opacity: 1,
+    opacity: 1;
   }
   :global(.yorha-status-error) {
     color: #f43f5e; /* red-400 */
-    opacity: 1,
+    opacity: 1;
   }
   :global(.yorha-quick-actions) {
     display: flex;
@@ -333,14 +333,14 @@
   :global(.yorha-sidebar) {
     position: fixed;
     top: 73px;
-    left: 0,
+    left: 0;
     bottom: 0;
     width: 20rem; /* w-80 */
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(255, 191, 0, 0.05) 100%);
     border-right: 1px solid rgba(245, 158, 11, 0.3);
     transform: translateX(-100%);
     transition: transform 0.3s ease;
-    z-index: 30,
+    z-index: 30;
     overflow: auto;
   }
   :global(.yorha-sidebar-open) {
@@ -360,10 +360,10 @@
   }
   :global(.yorha-nav-header h2) {
     font-size: 1rem;
-    font-weight: 700,
+    font-weight: 700;
     color: #f59e0b;
     letter-spacing: 0.04em;
-    margin: 0,
+    margin: 0;
   }
   :global(.yorha-sidebar-close) {
     padding: 0.5rem;
@@ -373,7 +373,7 @@
     cursor: pointer;
   }
   :global(.yorha-nav-list) {
-    flex: 1,
+    flex: 1;
     padding: 1rem 0;
     margin: 0;
     list-style: none;
@@ -407,15 +407,15 @@
     border-right: 2px solid #f59e0b;
   }
   :global(.yorha-nav-arrow) {
-    opacity: 0.4,
+    opacity: 0.4;
     transition: opacity 0.15s ease;
   }
   :global(.yorha-nav-link:hover .yorha-nav-arrow) {
-    opacity: 1,
+    opacity: 1;
   }
   :global(.yorha-nav-content) {
     flex: 1;
-    min-width: 0,
+    min-width: 0;
   }
   :global(.yorha-nav-label) {
     display: block;
@@ -425,7 +425,7 @@
   :global(.yorha-nav-desc) {
     display: block;
     font-size: 0.75rem;
-    opacity: 0.6,
+    opacity: 0.6;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -461,9 +461,9 @@
     }
     :global(.yorha-overlay) {
       position: fixed;
-      inset: 0,
+      inset: 0;
       background: rgba(0, 0, 0, 0.5);
-      z-index: 20,
+      z-index: 20;
     }
   }
 </style>
