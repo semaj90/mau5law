@@ -17,9 +17,8 @@ import {
   index,
 } from 'drizzle-orm/pg-core';
 import { vector } from 'pgvector/drizzle-orm';
-import { relations } from 'drizzle-orm';
+import { relations, type Relations } from 'drizzle-orm';
 import { createSelectSchema, createUpdateSchema, createInsertSchema } from 'drizzle-zod';
-import { z } from 'zod';
 
 // Base Users table
 export const users = pgTable(
@@ -135,7 +134,7 @@ export const evidence = pgTable(
 export const legalDocuments = pgTable(
   'legal_documents',
   {
-    id: serial('id').primaryKey(),
+    id: uuid('id').primaryKey().defaultRandom(), // Changed from serial('id') to uuid('id')
     title: text('title').notNull(),
     content: text('content').notNull(),
     documentType: text('document_type').notNull(), // 'contract', 'brief', 'evidence', 'correspondence'
@@ -287,14 +286,14 @@ export const aiHistory = pgTable('ai_history', {
   metadata: jsonb('metadata').default('{}'),
 });
 // Relations for better query experience
-export const usersRelations = relations(users, ({ many }: any) => ({
+export const usersRelations = relations(users, ({ many }: Relations) => ({
   documents: many(documents),
   cases: many(cases),
   evidence: many(evidence),
   sessions: many(sessions),
   aiHistory: many(aiHistory),
 }));
-export const documentsRelations = relations(documents, ({ one, many }: any) => ({
+export const documentsRelations = relations(documents, ({ one, many }: Relations) => ({
   case: one(cases, {
     fields: [documents.case_id],
     references: [cases.id],
@@ -306,7 +305,7 @@ export const documentsRelations = relations(documents, ({ one, many }: any) => (
   chunks: many(document_chunks),
   citations: many(citations),
 }));
-export const casesRelations = relations(cases, ({ one, many }: any) => ({
+export const casesRelations = relations(cases, ({ one, many }: Relations) => ({
   user: one(users, {
     fields: [cases.user_id],
     references: [users.id],
@@ -314,7 +313,7 @@ export const casesRelations = relations(cases, ({ one, many }: any) => ({
   evidence: many(evidence),
   citations: many(citations),
 }));
-export const evidenceRelations = relations(evidence, ({ one, many }: any) => ({
+export const evidenceRelations = relations(evidence, ({ one, many }: Relations) => ({
   case: one(cases, {
     fields: [evidence.case_id],
     references: [cases.id],
@@ -325,7 +324,7 @@ export const evidenceRelations = relations(evidence, ({ one, many }: any) => ({
   }),
   chunks: many(document_chunks),
 }));
-export const documentChunksRelations = relations(document_chunks, ({ one }: any) => ({
+export const documentChunksRelations = relations(document_chunks, ({ one }: Relations) => ({
   document: one(documents, {
     fields: [document_chunks.document_id],
     references: [documents.id],
@@ -335,7 +334,7 @@ export const documentChunksRelations = relations(document_chunks, ({ one }: any)
     references: [evidence.id],
   }),
 }));
-export const citationsRelations = relations(citations, ({ one }: any) => ({
+export const citationsRelations = relations(citations, ({ one }: Relations) => ({
   case: one(cases, {
     fields: [citations.case_id],
     references: [cases.id],
@@ -345,35 +344,18 @@ export const citationsRelations = relations(citations, ({ one }: any) => ({
     references: [documents.id],
   }),
 }));
-export const sessionsRelations = relations(sessions, ({ one }: any) => ({
+export const sessionsRelations = relations(sessions, ({ one }: Relations) => ({
   user: one(users, {
     fields: [sessions.user_id],
     references: [users.id],
   }),
 }));
-export const aiHistoryRelations = relations(aiHistory, ({ one }: any) => ({
+export const aiHistoryRelations = relations(aiHistory, ({ one }: Relations) => ({
   user: one(users, {
     fields: [aiHistory.user_id],
     references: [users.id],
   }),
 }));
-// Type exports for TypeScript
-export type User = typeof users.$inferSelect;
-export type NewUser = typeof users.$inferInsert;
-export type Document = typeof documents.$inferSelect;
-export type NewDocument = typeof documents.$inferInsert;
-export type Case = typeof cases.$inferSelect;
-export type NewCase = typeof cases.$inferInsert;
-export type Evidence = typeof evidence.$inferSelect;
-export type NewEvidence = typeof evidence.$inferInsert;
-export type DocumentChunk = typeof document_chunks.$inferSelect;
-export type NewDocumentChunk = typeof document_chunks.$inferInsert;
-export type Citation = typeof citations.$inferSelect;
-export type NewCitation = typeof citations.$inferInsert;
-export type Session = typeof sessions.$inferSelect;
-export type NewSession = typeof sessions.$inferInsert;
-export type AiHistory = typeof aiHistory.$inferSelect;
-export type NewAiHistory = typeof aiHistory.$inferInsert;
 // Profile table for user profiles
 export const profileTable = pgTable('profile', {
   id: uuid('id').primaryKey(),
@@ -381,7 +363,7 @@ export const profileTable = pgTable('profile', {
   lastName: text('last_name').notNull(),
 });
 // Profile relations
-export const profileRelations = relations(profileTable, ({ one }: any) => ({
+export const profileRelations = relations(profileTable, ({ one }: Relations) => ({
   user: one(users, {
     fields: [profileTable.id],
     references: [users.id],
@@ -402,7 +384,7 @@ export const casesSelectSchema = createSelectSchema(cases);
 export const casesUpdateSchema = createUpdateSchema(cases);
 export const casesInsertSchema = createInsertSchema(cases);
 // Helper function to extract Zod schema from drizzle-zod BuildSchema for SuperForms compatibility
-export function extractZodSchema<T extends any>(drizzleZodSchema: T) {
+export function extractZodSchema<T>(drizzleZodSchema: T) {
   return drizzleZodSchema;
 }
 // Pre-extracted schemas for common use with SuperForms
@@ -479,11 +461,11 @@ export const codeEmbeddings = pgTable(
 );
 
 // RAG document relations
-export const ragDocumentsRelations = relations(ragDocuments, ({ many }) => ({
+export const ragDocumentsRelations = relations(ragDocuments, ({ many }: Relations) => ({
   knowledgeChunks: many(knowledgeBase),
 }));
 
-export const knowledgeBaseRelations = relations(knowledgeBase, ({ one }) => ({
+export const knowledgeBaseRelations = relations(knowledgeBase, ({ one }: Relations) => ({
   ragDocument: one(ragDocuments, {
     fields: [knowledgeBase.sourceFile],
     references: [ragDocuments.filename],
@@ -494,6 +476,7 @@ export const knowledgeBaseRelations = relations(knowledgeBase, ({ one }) => ({
 export type RagDocument = typeof ragDocuments.$inferSelect;
 export type NewRagDocument = typeof ragDocuments.$inferInsert;
 export type KnowledgeBase = typeof knowledgeBase.$inferSelect;
+
 export type NewKnowledgeBase = typeof knowledgeBase.$inferInsert;
 export type CodeEmbedding = typeof codeEmbeddings.$inferSelect;
 export type NewCodeEmbedding = typeof codeEmbeddings.$inferInsert;
@@ -503,3 +486,41 @@ export const ragDocumentsSelectSchema = createSelectSchema(ragDocuments);
 export const ragDocumentsInsertSchema = createInsertSchema(ragDocuments);
 export const knowledgeBaseSelectSchema = createSelectSchema(knowledgeBase);
 export const knowledgeBaseInsertSchema = createInsertSchema(knowledgeBase);
+
+// Document processing tasks table (single definition, with relations)
+export const documentProcessingTasks = pgTable('document_processing_tasks', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  documentId: uuid('document_id')
+    .notNull()
+    .references(() => legalDocuments.id, { onDelete: 'cascade' }), // Foreign key to legalDocuments
+  taskType: text('task_type').notNull(), // e.g., 'summary', 'entity_extraction', 'risk_assessment', 'vector_comparison'
+  status: text('status').notNull().default('pending'), // 'pending', 'in_progress', 'completed', 'failed'
+  requestedAt: timestamp('requested_at', { withTimezone: true }).defaultNow().notNull(),
+  startedAt: timestamp('started_at', { withTimezone: true }),
+  completedAt: timestamp('completed_at', { withTimezone: true }),
+  results: jsonb('results'), // Store AI output (summary, entities, comparison data)
+  error: text('error'),
+  modelUsed: text('model_used'), // e.g., 'gemma3', 'nomic-embed-text'
+  processingTime: integer('processing_time'), // in milliseconds
+  tokensUsed: integer('tokens_used'),
+  confidenceScore: real('confidence_score'), // 0.0 to 1.0
+  requestedOptions: jsonb('requested_options'), // Store the options that triggered this task (e.g., AIProcessingOptions)
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const documentProcessingTasksRelations = relations(documentProcessingTasks, (args: Relations) => ({
+  document: args.one(legalDocuments, {
+    fields: [documentProcessingTasks.documentId],
+    references: [legalDocuments.id],
+  }),
+}));
+
+// Schema for caching generated embeddings to avoid re-computation (single definition)
+export const embeddingCache = pgTable('embedding_cache', {
+  textHash: text('text_hash').primaryKey(), // Unique hash of the text content
+  embedding: vector('embedding', { dimensions: 1536 }).notNull(), // The generated embedding vector
+  model: text('model').notNull(), // The model used to generate the embedding
+  dimensions: integer('dimensions').notNull(), // Number of dimensions in the embedding
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});

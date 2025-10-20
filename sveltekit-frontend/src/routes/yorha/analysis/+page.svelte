@@ -412,7 +412,7 @@
   }
   .analysis-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 15px 20px;
     border-bottom: 1px solid #3a3a3a;

@@ -9,24 +9,51 @@ export interface TensorRequest {
   data: Float32Array | number[];
   operation: 'process' | 'vectorize' | 'analyze' | 'similarity';
   options?: {
-    batchSize?: number;
-  timeout?: number;
-  priority?: number;
-  }
+    batchSize?: number; // Add semicolon
+    timeout?: number; // Add semicolon
+    priority?: number;
+  };
 }
 export interface TensorResponse {
   id: string;
   success: boolean;
   result?: {
     processedData?: Float32Array | number[];
-  embeddings?: Float32Array | number[];
-  metadata?: { [key: string]: any }
-  similarity?: number;
-  processingTime?: number;
-  }
+    embeddings?: Float32Array | number[];
+    metadata?: Record<string, unknown>;
+    similarity?: number;
+    processingTime?: number;
+  };
   error?: string;
   timestamp: Date;
 }
+
+// New interface for WebSocket messages, extending TensorResponse and adding a 'type' field
+export interface WebSocketResponseEvent extends TensorResponse {
+  type: 'tensor_response' | 'error' | string; // Define expected message types
+}
+
+// New interfaces for raw JSON responses from Go service
+interface GoTensorRawResult {
+  processedData?: number[];
+  embeddings?: number[];
+  metadata?: Record<string, unknown>;
+  similarity?: number;
+  processingTime?: number;
+}
+
+interface GoTensorRawResponse {
+  id: string;
+  success: boolean;
+  result?: GoTensorRawResult;
+  error?: string;
+  timestamp: string; // Go service likely returns ISO string
+}
+
+interface GoTensorBatchResponse {
+  responses: GoTensorRawResponse[];
+}
+
 export interface ServiceHealth {
   status: 'healthy' | 'degraded' | 'offline';
   lastCheck: Date;
@@ -34,8 +61,24 @@ export interface ServiceHealth {
   version?: string;
   connections?: number;
 }
+
+// New interface for Tensor Service Metrics
+export interface TensorServiceMetrics {
+  cpuUsage?: number; // Percentage, e.g., 0.5 for 50%
+  memoryUsageBytes?: number; // Bytes
+  gpuUsage?: number; // Percentage, if GPU is active
+  gpuMemoryUsageBytes?: number; // Bytes, if GPU is active
+  activeConnections?: number;
+  processedRequests?: number;
+  errorRate?: number; // Percentage
+  uptimeSeconds?: number;
+  version?: string;
+  timestamp: Date;
+  // Add any other specific metrics the Go service might expose
+}
+
 // HTTP client for RESTful endpoints
-class GoTensorHTTPClient {
+export class GoTensorHTTPClient {
   private baseUrl: string;
   private timeout: number;
   constructor(baseUrl = 'http://localhost:8095', timeout = 10000) {
@@ -52,27 +95,35 @@ class GoTensorHTTPClient {
         method: 'GET',
         signal: controller.signal,
         headers: {
-          'Content-Type': 'application/json'
-        }
-      )});
+          'Content-Type': 'application/json',
+        },
+      });
       clearTimeout(timeoutId);
       const latency = Date.now() - start;
-      if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-        throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any); json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      const data = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
+      // Define the expected structure from the Go service's /health endpoint
+      interface GoHealthResponse {
+        status: string; // e.g., "ok", "healthy", "error"
+        version?: string;
+        connections?: number;
+        // Add other fields if the Go service returns them, e.g., 'gpu_available', 'uptime'
+      }
+      const data: GoHealthResponse = await response.json(); // Use specific interface for data
       return {
-        status: 'healthy',
+        status: data.status === 'ok' || data.status === 'healthy' ? 'healthy' : 'degraded', // Map Go status to ServiceHealth status
         lastCheck: new Date(),
-        latency,
-        version: (data as { version?: any; connections?: any; type?: any; id?: any; success?: any; result?: any; error?: any }).version,
-        connections: (data as { version?: any; connections?: any; type?: any; id?: any; success?: any; result?: any; error?: any }).connections
-      }
+        latency: latency, // Corrected assignment
+        version: data.version, // Simplified assignment
+        connections: data.connections, // Simplified assignment
+      };
     } catch (error) {
+      console.error('GoTensorHTTPClient healthCheck failed:', error); // Added logging for debugging
       return {
         status: 'offline',
-        lastCheck: new Date()
-      }
+        lastCheck: new Date(),
+      };
     }
   }
   // Process tensor data
@@ -82,111 +133,131 @@ class GoTensorHTTPClient {
       const timeoutId = setTimeout(() => controller.abort(), request.options?.timeout || this.timeout);
       // Convert Float32Array to regular array for JSON serialization
       const data = request.data instanceof Float32Array ? Array.from(request.data) : request.data;
-      const response = await fetch(`,${this.baseUrl}/api/tensor/process`, {
+      const response = await fetch(`${this.baseUrl}/api/tensor/process`, {
         method: 'POST',
         signal: controller.signal,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           id: request.id,
           documentId: request.documentId,
           data,
           operation: request.operation,
-          options: request.options
-        )})
+          options: request.options,
+        }),
       });
       clearTimeout(timeoutId);
-      if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-        throw new Error(`,HTTP ${(response as { ok?: any; status?: any; statusText?: an,y); json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
+      const result = await response.json();
       return {
         id: request.id,
-        success: (result as { success?: any; result?: any; responses?: any; processedData?: any; embeddings?: any; metadata?: any; similarity?: any; processingTime?: any }).success,
+        success: result.success,
         result: {
-          processedData: (result as { success?: any; result?: any; responses?: any; processedData?: any; embeddings?: any; metadata?: any; similarity?: any; processingTime?: any }).result?.processedData ? new Float32Array((result as { success?: any; result?: any; responses?: any; processedData?: any; embeddings?: any; metadata?: any; similarity?: any); processingTime?: any }).result.processedData) : undefined
-          embeddings: (result as { success?: any; result?: any; responses?: any; processedData?: any; embeddings?: any; metadata?: any; similarity?: any; processingTime?: any }).result?.embeddings ? new Float32Array((result as { success?: any; result?: any; responses?: any; processedData?: any; embeddings?: any; metadata?: any; similarity?: any); processingTime?: any }).result.embeddings) : undefined
-          metadata: (result as { success?: any; result?: any; responses?: any; processedData?: any; embeddings?: any; metadata?: any; similarity?: any; processingTime?: any }).result?.metadata,
-          similarity: (result as { success?: any; result?: any; responses?: any; processedData?: any; embeddings?: any; metadata?: any; similarity?: any; processingTime?: any }).result?.similarity,
-          processingTime: (result as { success?: any; result?: any; responses?: any; processedData?: any; embeddings?: any; metadata?: any; similarity?: any; processingTime?: any }).result?.processingTime
+          processedData: result.result?.processedData ? new Float32Array(result.result.processedData) : undefined,
+          embeddings: result.result?.embeddings ? new Float32Array(result.result.embeddings) : undefined,
+          metadata: result.result?.metadata,
+          similarity: result.result?.similarity,
+          processingTime: result.result?.processingTime,
         },
-        timestamp: new Date()
-      }
-    } catch (error) {
+        timestamp: new Date(),
+      };
+    } catch (err: unknown) {
       return {
         id: request.id,
-        success: false
-        error: error instanceof Error ? error.message: 'Unknown error',
-        timestamp: new Date()
-      }
+        success: false,
+        error: err instanceof Error ? err.message : 'Unknown error',
+        timestamp: new Date(),
+      };
     }
   }
   // Batch process multiple tensors
   async processBatch(requests: TensorRequest[]): Promise<TensorResponse[]> {
     try {
-      const response = await fetch(`,${this.baseUrl}/api/tensor/batch`, {
+      const response = await fetch(`${this.baseUrl}/api/tensor/batch`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           requests: requests.map(req => ({
             ...req,
-            data: req.data instanceof Float32Array ? Array.from(req.data) : req.data
-          })
-        })
+            data: req.data instanceof Float32Array ? Array.from(req.data) : req.data,
+          })),
+        }),
       });
-      if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-        throw new Error(`,HTTP ${(response as { ok?: any; status?: any; statusText?: an,y); json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      const result = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
-      return (result as { success?: any; result?: any; responses?: any; processedData?: any; embeddings?: any; metadata?: any; similarity?: any; processingTime?: any }).responses.map((res: any) => ({,
+      const result: GoTensorBatchResponse = await response.json();
+      return result.responses.map((res: GoTensorRawResponse) => ({
         id: res.id,
         success: res.success,
-        result: res.result ? {,
-          processedData: res.result.processedData ? new Float32Array(res.result.processedData) : undefined
-          embeddings: res.result.embeddings ? new Float32Array(res.result.embeddings) : undefined
-          metadata: res.result.metadata,
-          similarity: res.result.similarity,
-          processingTime: res.result.processingTime
-        } : undefined
+        result: res.result
+          ? {
+              processedData: res.result.processedData ? new Float32Array(res.result.processedData) : undefined,
+              embeddings: res.result.embeddings ? new Float32Array(res.result.embeddings) : undefined,
+              metadata: res.result.metadata,
+              similarity: res.result.similarity,
+              processingTime: res.result.processingTime,
+            }
+          : undefined,
         error: res.error,
-        timestamp: new Date()
-      });
+        timestamp: new Date(res.timestamp),
+      }));
     } catch (error) {
       // Return failed responses for all requests
       return requests.map(req => ({
         id: req.id,
-        success: false
-        error: error instanceof Error ? error.message: 'Batch processing failed',
-        timestamp: new Date()
-      });
+        success: false,
+        error: error instanceof Error ? error.message : 'Batch processing failed',
+        timestamp: new Date(),
+      }));
     }
   }
   // Get service metrics
-  async getMetrics(): Promise<Record<string>, a>>n>>y>> {
+  async getMetrics(): Promise<TensorServiceMetrics> {
     try {
-      const response = await fetch(`,${this.baseUrl}/metrics`, {
+      const response = await fetch(`${this.baseUrl}/metrics`, {
         method: 'GET',
-        headers,: {
-          'Content-Type',: 'application/json'
-        }
-      )});
-      if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-        throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any); json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      return await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json();
+      const rawMetrics = await response.json();
+      // Map raw JSON response to TensorServiceMetrics interface
+      return {
+        cpuUsage: rawMetrics.cpu_usage,
+        memoryUsageBytes: rawMetrics.memory_usage_bytes,
+        gpuUsage: rawMetrics.gpu_usage,
+        gpuMemoryUsageBytes: rawMetrics.gpu_memory_usage_bytes,
+        activeConnections: rawMetrics.active_connections,
+        processedRequests: rawMetrics.processed_requests,
+        errorRate: rawMetrics.error_rate,
+        uptimeSeconds: rawMetrics.uptime_seconds,
+        version: rawMetrics.version,
+        timestamp: new Date(),
+      };
     } catch (error) {
-      return {}
+      console.error('GoTensorHTTPClient getMetrics failed:', error);
+      return {
+        timestamp: new Date(),
+        errorRate: 1, // Indicate an error
+        // Provide default or undefined values for other metrics on failure
+      };
     }
   }
 }
 // WebSocket client for streaming tensor operations
-class GoTensorWebSocketClient {
+export class GoTensorWebSocketClient {
   private ws: WebSocket | null = null;
   private url: string;
-  private eventHandlers: Map<string, ((data: any) => void)[]> = new Map();
+  private eventHandlers: Map<string, ((data: WebSocketResponseEvent) => void)[]> = new Map();
   private reconnectDelay = 5000;
   private maxReconnectAttempts = 5;
   private reconnectAttempts = 0;
@@ -200,25 +271,25 @@ class GoTensorWebSocketClient {
         this.ws = new WebSocket(this.url);
         this.ws.onopen = () => {
           console.log('Connected to Go tensor service via WebSocket');
-          this.reconnectAttempts = 0);
+          this.reconnectAttempts = 0;
           resolve();
-        });
-        this.ws.onmessage = (event) => {
+        };
+        this.ws.onmessage = event => {
           try {
             const data = JSON.parse(event.data);
             this.handleMessage(data);
           } catch (error) {
             console.error('Failed to parse WebSocket message:', error);
           }
-        }
+        };
         this.ws.onclose = () => {
           console.log('WebSocket connection closed');
           this.attemptReconnect();
-        });
-        this.ws.onerror = (error) => {
+        };
+        this.ws.onerror = error => {
           console.error('WebSocket error:', error);
           reject(error);
-        });
+        };
       } catch (error) {
         reject(error);
       }
@@ -230,27 +301,27 @@ class GoTensorWebSocketClient {
       const message = {
         type: 'tensor_request',
         ...request,
-        data: request.data instanceof Float32Array ? Array.from(request.data) : request.data
-      }
-      this.ws.send(JSON.stringify(message);
+        data: request.data instanceof Float32Array ? Array.from(request.data) : request.data,
+      };
+      this.ws.send(JSON.stringify(message));
     } else {
       console.error('WebSocket not connected');
     }
   }
   // Handle incoming messages
-  private handleMessage(data: any): void {
-    const handlers = this.eventHandlers.get((data as { version?: any; connections?: any; type?: any; id?: any; success?: any; result?: any); error?: any }).type) || [];
-    handlers.forEach(handler => handler(data);
+  private handleMessage(data: WebSocketResponseEvent): void {
+    const handlers = this.eventHandlers.get(data.type) || [];
+    handlers.forEach(handler => handler(data));
   }
   // Add event listener
-  on(_event: string, handler: (data: any) => void): void {
+  on(event: string, handler: (data: WebSocketResponseEvent) => void): void {
     if (!this.eventHandlers.has(event)) {
       this.eventHandlers.set(event, []);
     }
     this.eventHandlers.get(event)!.push(handler);
   }
   // Remove event listener
-  off(_event: string, handler: (data: any) => void): void {
+  off(event: string, handler: (data: WebSocketResponseEvent) => void): void {
     const handlers = this.eventHandlers.get(event);
     if (handlers) {
       const index = handlers.indexOf(handler);
@@ -259,124 +330,27 @@ class GoTensorWebSocketClient {
       }
     }
   }
-  // Attempt reconnection
+
+  // Attempt to reconnect to the WebSocket
   private attemptReconnect(): void {
-    if (this.reconnectAttempts < this.maxReconnectAttempts) {>
+    if (this.reconnectAttempts < this.maxReconnectAttempts) {
       this.reconnectAttempts++;
-      console.log(`,Attempting to reconnect (,${th,is.reconnectAttempts}/${,this.maxReconnectAttem,pts})...`);
-      setTimeout(() => {
-        this.connect().catch(error => {
-          console.error('Reconnection failed:', error);
-        });
-      }, this.reconnectDelay);
+      console.log(
+        `Attempting to reconnect in ${this.reconnectDelay / 1000} seconds... (Attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`
+      );
+      setTimeout(() => this.connect(), this.reconnectDelay);
     } else {
-      console.error('Max reconnection attempts reached');
+      console.error('Max reconnect attempts reached. WebSocket connection permanently closed.');
+      // Optionally, emit an error event to listeners
+      this.eventHandlers.get('error')?.forEach(handler =>
+        handler({
+          type: 'error',
+          id: `reconnect-error-${Date.now()}`, // Unique ID for this error event
+          success: false,
+          error: 'Max reconnect attempts reached',
+          timestamp: new Date(),
+        })
+      );
     }
   }
-  // Disconnect
-  disconnect(): void {
-    if (this.ws) {
-      this.ws.close();
-      this.ws = null;
-    }
-  }
-}
-// Main service class
-export class GoTensorServiceClient {
-  private httpClient: GoTensorHTTPClient;
-  private wsClient: GoTensorWebSocketClient;
-  private isConnected = false;
-  constructor(httpBaseUrl = 'http://localhost:8095', wsUrl = 'ws://localhost:8095/ws/tensor') {
-    this.httpClient = new GoTensorHTTPClient(httpBaseUrl);
-    this.wsClient = new GoTensorWebSocketClient(wsUrl);
-  }
-  // Initialize connection
-  async init(): Promise<void> {
-    try {
-      // Test HTTP connection first
-      const health = await this.httpClient.healthCheck();
-      if (health.status === 'offline') {
-        throw new Error('Go tensor service is not available');
-      }
-      // Initialize WebSocket connection
-      await this.wsClient.connect();
-      this.isConnected = true;
-      console.log('Go tensor service client initialized successfully');
-    } catch (error) {
-      console.error('Failed to initialize Go tensor service client:', error);
-      throw error;
-    }
-  }
-  // Health check
-  async healthCheck(): Promise<ServiceHealth> {
-    return this.httpClient.healthCheck();
-  }
-  // Process single tensor (HTTP)
-  async processTensor(request: TensorRequest): Promise<TensorResponse> {
-    return this.httpClient.processTensor(request);
-  }
-  // Process batch tensors (HTTP)
-  async processBatch(requests: TensorRequest[]): Promise<TensorResponse[]> {
-    return this.httpClient.processBatch(requests);
-  }
-  // Stream tensor processing (WebSocket)
-  streamTensor(request: TensorRequest, onResponse: (response: TensorResponse) => void): void {
-    if (!this.isConnected) {
-      console.error('WebSocket not connected');
-      return;
-    }
-    // Listen for responses
-    this.wsClient.on('tensor_response', (data) => {
-      if ((data as { version?: any; connections?: any; type?: any; id?: any; success?: any; result?: any; error?: any }).id === request.id) {
-        const response: TensorResponse = {
-          id: (data as { version?: any; connections?: any; type?: any; id?: any; success?: any; result?: any; error?: any }).id,
-          success: (data as { version?: any; connections?: any; type?: any; id?: any; success?: any; result?: any; error?: any }).success,
-          result: (data as { version?: any; connections?: any; type?: any; id?: any; success?: any; result?: any; error?: any }).result ? {
-            processedData: (data as { version?: any; connections?: any; type?: any; id?: any; success?: any; result?: any; error?: any }).result.processedData ? new Float32Array((data as { version?: any; connections?: any; type?: any; id?: any; success?: any; result?: any); error?: any }).result.processedData) : undefined
-            embeddings: (data as { version?: any; connections?: any; type?: any; id?: any; success?: any; result?: any; error?: any }).result.embeddings ? new Float32Array((data as { version?: any; connections?: any; type?: any; id?: any; success?: any; result?: any); error?: any }).result.embeddings) : undefined
-            metadata: (data as { version?: any; connections?: any; type?: any; id?: any; success?: any; result?: any; error?: any }).result.metadata,
-            similarity: (data as { version?: any; connections?: any; type?: any; id?: any; success?: any; result?: any; error?: any }).result.similarity,
-            processingTime: (data as { version?: any; connections?: any; type?: any; id?: any; success?: any; result?: any; error?: any }).result.processingTime
-          } : undefined
-          error: (data as { version?: any; connections?: any; type?: any; id?: any; success?: any; result?: any; error?: any }).error,
-          timestamp: new Date()
-        }
-        onResponse(response);
-      }
-    });
-    // Send request
-    this.wsClient.sendTensorRequest(request);
-  }
-  // Get service metrics
-  async getMetrics(): Promise<Record<string>, a>>n>>y>> {
-    return this.httpClient.getMetrics();
-  }
-  // Disconnect
-  disconnect(): void {
-    this.wsClient.disconnect();
-    this.isConnected = false;
-  }
-}
-// Singleton instance
-export const goTensorService = new GoTensorServiceClient();
-// Utility functions
-export function generateTensorRequest()
-  documentId: string
-  data: number[] | Float32Array;
-  operation: TensorRequest['operation'] = 'process';
-): TensorRequest {
-  return {
-    id: `,tensor_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-    documentId,
-    data,
-    operation,
-    options: {
-      batchSize: 1,
-      timeout: 10000,
-      priority: 5
-    }
-  }
-}
-export function mockTensorData(dimensions: number = 768): Float32Array {
-  return new Float32Array(Array.from({ length: dimensions }, () => Math.random() * 2 - 1);
 }

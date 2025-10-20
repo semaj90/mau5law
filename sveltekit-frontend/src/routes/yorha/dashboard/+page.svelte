@@ -4,7 +4,7 @@
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
   import YoRHaSystemStatus from '$lib/components/yorha/YoRHaSystemStatus.svelte';
   // Import YoRHaDataViz Svelte component (default export)
-  import YoRHaDataVizComponent from '$lib/components/yorha/YoRHaDataViz.svelte';
+  // import YoRHaDataVizComponent from '$lib/components/yorha/YoRHaDataViz.svelte'; // Removed direct import
   import type { PageData } from './$types';
   import {
     Monitor,
@@ -18,23 +18,39 @@
     CheckCircle,
     TrendingUp,
   } from 'lucide-svelte';
-  import * as d3 from 'd3';
-  // add these type imports so TS can resolve D3 types used below
-  import type { ForceLink } from 'd3-force';
+  // Removed import * as d3 from 'd3';
+  // Removed direct import of ForceLink, Simulation, force functions, drag function, DragEvent
+  import type { SvelteComponent } from 'svelte'; // Changed from ComponentType<SvelteComponent>
+  // Import D3 types from their specific sub-modules to avoid namespace conflicts
+  import type { SimulationNodeDatum, SimulationLinkDatum, Simulation, ForceLink } from 'd3-force';
+  import type { DragEvent, DragBehavior } from 'd3-drag';
+
+  // NEW D3 IMPORTS: Import specific D3 functions directly
+  import { select } from 'd3-selection';
+  import { forceSimulation, forceLink, forceManyBody, forceCenter, forceCollide } from 'd3-force';
+  import { drag } from 'd3-drag';
+  // END NEW D3 IMPORTS
 
   // Add strongly-typed graph interfaces so Svelte/TS can infer node/edge properties
   type Position = { x: number; y: number; };
-  interface GraphNode {
+  interface GraphNode extends SimulationNodeDatum { // Extend SimulationNodeDatum for D3's internal properties
     id: string;
     type: 'database' | 'service' | 'component' | string;
     label: string;
     status: 'healthy' | 'warning' | 'error' | string;
-    position: Position;
+    position?: Position; // Make position optional as D3 simulation will manage x, y
+    // Explicitly add D3 simulation properties to ensure they are recognized
+    x?: number;
+    y?: number;
+    vx?: number;
+    vy?: number;
+    fx?: number | null;
+    fy?: number | null;
   }
-  interface GraphEdge {
+  interface GraphEdge extends SimulationLinkDatum<GraphNode> { // Extend SimulationLinkDatum for D3's internal properties
     id: string;
-    source?: string;
-    target?: string;
+    source: string | GraphNode; // D3 can convert these to GraphNode objects
+    target: string | GraphNode; // D3 can convert these to GraphNode objects
     type: string;
     traffic: number;
     latency: number;
@@ -71,8 +87,11 @@
 
   // D3 runtime handles
   let svg: d3.Selection<SVGSVGElement, unknown, null, undefined> | null = null;
-  let simulation: d3.Simulation<GraphNode, undefined> | null = null;
+  let simulation: Simulation<GraphNode, GraphEdge> | null = null; // Use Simulation type
   let resizeObserver: ResizeObserver | null = null;
+
+  // dynamic loader for YoRHaDataVizComponent
+  let YoRHaDataVizComponent = $state<typeof SvelteComponent | null>(null); // Corrected type to typeof SvelteComponent
 
   $effect(() => {
     (async () => {
@@ -84,6 +103,18 @@
   // Initialize D3 when component mounts and whenever graphData changes
   onMount(() => {
     initD3();
+    // Dynamically load YoRHaDataVizComponent
+    (async () => {
+      try {
+        const mod = (await import('$lib/components/yorha/YoRHaDataViz.svelte')) as unknown;
+        const modAny = mod as any;
+        // Prefer default, then common named variants, then fallback to the module itself
+        const LoadedComponent = modAny?.default ?? modAny?.YoRHaDataViz ?? modAny?.YoRHaDataVizComponent ?? modAny;
+        YoRHaDataVizComponent = LoadedComponent as typeof SvelteComponent; // Corrected type assertion
+      } catch (e) {
+        console.warn('Failed to load YoRHaDataViz component', e);
+      }
+    })();
     return () => {
       cleanupD3();
     };
@@ -155,46 +186,19 @@
   }
 
   function generateHistoryData(baseValue: number, points = 30): number[] {
-    return Array.from({ length: points }, (_, i) => {
+    return Array.from({ length: points }, (_, _i) => { // Changed 'i' to '_i' to mark as unused
       const variation = (Math.random() - 0.5) * 20;
       return Math.max(0, Math.min(100, baseValue + variation));
     });
   }
 
-  function getStatusIcon(status: string) {
-    switch (status) {
-      case 'healthy':
-        return CheckCircle;
-      case 'warning':
-        return AlertTriangle;
-      case 'error':
-        return AlertTriangle;
-      default:
-        return Monitor;
-    }
-  }
-
-  function getStatusColor(status: string) {
-    switch (status) {
-      case 'healthy':
-        return 'text-green-400';
-      case 'warning':
-        return 'text-yellow-400';
-      case 'error':
-        return 'text-red-400';
-      default:
-        return 'text-gray-400';
-    }
-  }
-
   function initD3() {
     if (!graphContainer) return;
     // clear previous svg if present
-    d3.select(graphContainer).selectAll('*').remove();
+    select(graphContainer).selectAll('*').remove(); // Changed d3.select to select
 
     const { width, height } = graphContainer.getBoundingClientRect();
-    svg = d3
-      .select(graphContainer)
+    svg = select(graphContainer) // Changed d3.select to select
       .append('svg')
       .attr('width', width)
       .attr('height', height)
@@ -206,23 +210,22 @@
 
     // create simulation (avoid generic type args on untyped d3 factory calls;
     // create a typed link force and cast where needed)
-    simulation = d3.forceSimulation() as d3.Simulation<GraphNode, undefined>;
-    const linkForce = d3
-      .forceLink()
-      .id((d: any) => d.id)
+    simulation = forceSimulation<GraphNode, GraphEdge>(); // Changed d3.forceSimulation to forceSimulation
+    const linkForce = forceLink<GraphNode, GraphEdge>() // Changed d3.forceLink to forceLink
+      .id((d: GraphNode) => d.id) // 'd' is now correctly typed as GraphNode
       .distance(120)
-      .strength(0.6) as unknown as ForceLink<GraphNode, GraphEdge>;
-    simulation.force('link', linkForce);
-    simulation.force('charge', d3.forceManyBody().strength(-400));
-    simulation.force('center', d3.forceCenter(width / 2, height / 2));
-    simulation.force('collision', d3.forceCollide(40));
+      .strength(0.6);
+    simulation.force('link', linkForce); // No need for `as unknown as ForceLink` here if `linkForce` is correctly typed
+    simulation.force('charge', forceManyBody().strength(-400)); // Changed d3.forceManyBody to forceManyBody
+    simulation.force('center', forceCenter(width / 2, height / 2)); // Changed d3.forceCenter to forceCenter
+    simulation.force('collision', forceCollide(40)); // Changed d3.forceCollide to forceCollide
 
     // setup resize observer to keep svg responsive
     resizeObserver = new ResizeObserver(() => {
       if (!graphContainer || !svg) return;
       const r = graphContainer.getBoundingClientRect();
       svg.attr('width', r.width).attr('height', r.height);
-      const center = d3.forceCenter(r.width / 2, r.height / 2);
+      const center = forceCenter(r.width / 2, r.height / 2); // Changed d3.forceCenter to forceCenter
       if (simulation) simulation.force('center', center).alpha(0.5).restart();
     });
     resizeObserver.observe(graphContainer);
@@ -233,8 +236,8 @@
   function updateD3() {
     if (!svg || !simulation || !graphContainer) return;
     // Copy data (avoid mutating original)
-    const nodes = graphData.nodes.map((n) => ({ ...n }));
-    const links = graphData.edges.map((e) => ({
+    const nodes: GraphNode[] = graphData.nodes.map((n) => ({ ...n }));
+    const links: GraphEdge[] = graphData.edges.map((e) => ({
       id: e.id,
       source: e.source!,
       target: e.target!,
@@ -246,8 +249,8 @@
     // LINK ELEMENTS
     const linkSelection = svg
       .select<SVGGElement>('g.links')
-      .selectAll<SVGLineElement, typeof links[0]>('line')
-      .data(links, (d: any) => d.id);
+      .selectAll<SVGLineElement, GraphEdge>('line') // Explicitly type data for link selection
+      .data(links, (d: GraphEdge) => d.id); // Explicitly type d
 
     linkSelection.exit().remove();
 
@@ -256,15 +259,15 @@
       .append('line')
       .attr('stroke', '#374151')
       .attr('stroke-opacity', 0.6)
-      .attr('stroke-width', (d: any) => Math.max(1, Math.min(6, d.traffic / 20)));
+      .attr('stroke-width', (d: GraphEdge) => Math.max(1, Math.min(6, d.traffic / 20))); // Explicitly type d
 
-    const linksMerged = linkEnter.merge(linkSelection as any);
+    const linksMerged = linkEnter.merge(linkSelection); // No need for 'as any'
 
     // NODE ELEMENTS
     const nodeSelection = svg
       .select<SVGGElement>('g.nodes')
-      .selectAll<SVGGElement, typeof nodes[0]>('g.node')
-      .data(nodes, (d: any) => d.id);
+      .selectAll<SVGGElement, GraphNode>('g.node') // Explicitly type data for node selection
+      .data(nodes, (d: GraphNode) => d.id); // Explicitly type d
 
     nodeSelection.exit().remove();
 
@@ -273,23 +276,22 @@
       .append('g')
       .attr('class', 'node')
       .call(
-        d3
-          .drag() // annotate handlers inline; avoid using D3DragEvent namespace
-          .on('start', (event: any, d: GraphNode) => {
+        drag<GraphNode, GraphNode, SVGGElement>() // Changed d3.drag to drag, and specified all 3 generic args
+          .on('start', (event: DragEvent<SVGGElement, GraphNode>, d: GraphNode) => { // Corrected DragEvent generics
             if (!simulation) return;
             if (!event.active) simulation.alphaTarget(0.3).restart();
-            (d as any).fx = (d as any).x;
-            (d as any).fy = (d as any).y;
+            d.fx = d.x;
+            d.fy = d.y;
           })
-          .on('drag', (event: any, d: GraphNode) => {
-            (d as any).fx = event.x;
-            (d as any).fy = event.y;
+          .on('drag', (event: DragEvent<SVGGElement, GraphNode>, d: GraphNode) => { // Corrected DragEvent generics
+            d.fx = event.x;
+            d.fy = event.y;
           })
-          .on('end', (event: any, d: GraphNode) => {
+          .on('end', (event: DragEvent<SVGGElement, GraphNode>, d: GraphNode) => { // Corrected DragEvent generics
             if (!simulation) return;
             if (!event.active) simulation.alphaTarget(0);
-            (d as any).fx = null;
-            (d as any).fy = null;
+            d.fx = null;
+            d.fy = null;
           })
       );
 
@@ -311,25 +313,26 @@
       .attr('font-family', 'monospace')
       .attr('font-size', 12)
       .attr('fill', '#f59e0b')
-      .text((d: GraphNode) => d.label);
+      .text((d: GraphNode) => d.label); // Explicitly type d
 
-    const nodesMerged = nodeEnter.merge(nodeSelection as any);
+    const nodesMerged = nodeEnter.merge(nodeSelection); // No need for 'as any'
 
     // update simulation nodes/links
-    simulation.nodes(nodes as any);
+    simulation.nodes(nodes); // No need for 'as any'
     // cast to imported ForceLink type to avoid relying on d3 namespace export
-    (simulation.force('link') as ForceLink<GraphNode, GraphEdge>).links(links as any);
+    // Use d3.ForceLink directly, as the 'type' import might be causing the namespace conflict.
+    (simulation.force('link') as ForceLink<GraphNode, GraphEdge>).links(links); // This line should now be fine.
 
     simulation.on('tick', () => {
       // position links
       linksMerged
-        .attr('x1', (d: any) => (d.source as any).x)
-        .attr('y1', (d: any) => (d.source as any).y)
-        .attr('x2', (d: any) => (d.target as any).x)
-        .attr('y2', (d: any) => (d.target as any).y);
+        .attr('x1', (d: GraphEdge) => (d.source as GraphNode).x!) // Explicitly type d and d.source
+        .attr('y1', (d: GraphEdge) => (d.source as GraphNode).y!) // Explicitly type d and d.source
+        .attr('x2', (d: GraphEdge) => (d.target as GraphNode).x!) // Explicitly type d and d.target
+        .attr('y2', (d: GraphEdge) => (d.target as GraphNode).y!); // Explicitly type d and d.target
 
       // position nodes
-      nodesMerged.attr('transform', (d: any) => `translate(${d.x},${d.y})`);
+      nodesMerged.attr('transform', (d: GraphNode) => `translate(${d.x},${d.y})`); // Explicitly type d
     });
 
     // small alpha tweak to avoid static layout on update
@@ -346,7 +349,7 @@
       resizeObserver = null;
     }
     if (graphContainer) {
-      d3.select(graphContainer).selectAll('*').remove();
+      select(graphContainer).selectAll('*').remove(); // Changed d3.select to select
     }
     svg = null;
   }
@@ -516,7 +519,11 @@
     </section>
     <!-- Data Visualization -->
     <section class="yorha-data-viz">
-      <YoRHaDataVizComponent />
+      {#if YoRHaDataVizComponent}
+        <YoRHaDataVizComponent />
+      {:else}
+        <p class="yorha-loading">Loading data visualization...</p>
+      {/if}
     </section>
     <!-- System Graph -->
     <section class="yorha-graph">
@@ -579,12 +586,12 @@
 @media (min-width: 768px) {
   .yorha-header-title h1 { font-size: 2.25rem; /* md:text-4xl */ }
 }
-.yorha-header-subtitle {
+ .yorha-header-subtitle {
   font-size: 1.125rem; /* text-lg */
   color: #fbbf24; /* amber-300 */
   letter-spacing: 0.01em;
-  opacity: 0.8,
-}
+  opacity: 0.8;
+ }
 
 /* header status */
 .yorha-header-status {
@@ -592,14 +599,14 @@
   align-items: center;
   gap: 1rem;
 }
-.yorha-status-item {
+ .yorha-status-item {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-size: 0.75rem;
   color: #f59e0b;
-  opacity: 0.6,
-}
+  opacity: 0.6;
+ }
 
 /* Loading */
 .yorha-loading {
@@ -658,9 +665,9 @@
   border-radius: 0.5rem;
 }
 .yorha-metric-header { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
-.yorha-metric-header h3 { font-weight: 700; letter-spacing: 0.03em; font-size: 1.125rem; margin: 0, }
+.yorha-metric-header h3 { font-weight: 700; letter-spacing: 0.03em; font-size: 1.125rem; margin: 0; }
 .yorha-metric-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; text-align: center; }
-.yorha-stat-value { display: block; font-size: 1.25rem; font-weight: 700, }
+.yorha-stat-value { display: block; font-size: 1.25rem; font-weight: 700; }
 .yorha-stat-label { display: block; font-size: 0.75rem; opacity: 0.6; margin-top: 0.25rem; }
 
 /* Charts */
@@ -670,7 +677,7 @@
   align-items: center;
   gap: 0.75rem;
   font-size: 1.25rem;
-  font-weight: 700,
+  font-weight: 700;
   color: #f59e0b;
   margin: 0 auto 1rem;
   max-width: 72rem;
@@ -690,7 +697,7 @@
   padding: 1.5rem;
   border-radius: 0.5rem;
 }
-.yorha-chart-card h3 { font-size: 0.875rem; font-weight: 700, color: #f59e0b; margin-bottom: 0.75rem; }
+.yorha-chart-card h3 { font-size: 0.875rem; font-weight: 700; color: #f59e0b; margin-bottom: 0.75rem; }
 .yorha-chart {
   position: relative;
   height: 8rem;
@@ -808,4 +815,3 @@
   }
 }
 </style>
-
