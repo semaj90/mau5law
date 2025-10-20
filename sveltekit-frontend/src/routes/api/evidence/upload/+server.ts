@@ -91,19 +91,52 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       textContent = description || title;
     }
 
-    // 4. Generate embeddings using enhanced RAG pipeline
+    // 4. Generate embeddings using Ollama (gemma3-legal:latest)
     let embeddingVector: number[] = [];
     let aiSummary = '';
 
     try {
-      // Generate embedding via Gemma embeddings
-      const embeddingResult = await enhancedRAGPipeline.generateEmbedding(textContent);
-      embeddingVector = embeddingResult.embedding || [];
+      // Generate embedding via Ollama gemma3-legal model (specialized for legal documents)
+      const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
 
-      // Generate AI summary if we have content
+      const embeddingResponse = await fetch(`${ollamaUrl}/api/embeddings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'gemma3-legal:latest', // Specialized legal AI model
+          prompt: textContent.slice(0, 8000), // Limit to 8K chars for performance
+        }),
+      });
+
+      if (embeddingResponse.ok) {
+        const embeddingData = await embeddingResponse.json();
+        embeddingVector = embeddingData.embedding || [];
+        console.log(`[Evidence Upload] Generated embedding with gemma3-legal: ${embeddingVector.length} dimensions`);
+      } else {
+        console.warn('[Evidence Upload] Embedding generation failed:', embeddingResponse.status);
+      }
+
+      // Generate AI summary if we have content (using legal model)
       if (textContent.length > 100) {
-        const summaryResult = await enhancedRAGPipeline.generateSummary(textContent);
-        aiSummary = summaryResult.summary || '';
+        try {
+          const summaryResponse = await fetch(`${ollamaUrl}/api/generate`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              model: 'gemma3-legal:latest',
+              prompt: `Summarize this legal document in 2-3 sentences:\n\n${textContent.slice(0, 4000)}`,
+              stream: false,
+            }),
+          });
+
+          if (summaryResponse.ok) {
+            const summaryData = await summaryResponse.json();
+            aiSummary = summaryData.response || '';
+            console.log('[Evidence Upload] Generated AI summary with gemma3-legal');
+          }
+        } catch (summaryError) {
+          console.warn('[Evidence Upload] Summary generation failed:', summaryError);
+        }
       }
     } catch (embeddingError) {
       console.warn('[Evidence Upload] Embedding generation failed:', embeddingError);

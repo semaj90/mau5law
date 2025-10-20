@@ -13,324 +13,167 @@ https://svelte.dev/e/js_parse_error -->
   - Legal AI context integration
 -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-	import type { Snippet } from 'svelte';
-  import * as Dialog from 'bits-ui';
-  import { fade, fly, scale } from 'svelte/transition';
+  import { onMount, onDestroy } from 'svelte';
+  import { fade, scale } from 'svelte/transition';
   import { cubicInOut } from 'svelte/easing';
-  import { onMount } from 'svelte';
-  import { UnifiedButton } from './index.js';
-  // Props with Svelte 5 support
-  interface Props {
-    open?: boolean;
-    size?: 'sm' | 'md' | 'lg' | 'xl' | 'fullscreen';
-    // Content slots
-    title?: import('svelte').Snippet;
-    content?: import('svelte').Snippet;
-    footer?: import('svelte').Snippet;
-    // Styling
-    variant?: 'default' | 'legal' | 'evidence' | 'case' | 'nes';
-    glassmorphism?: boolean;
-    pixelated?: boolean;
-    webgpuEffects?: boolean;
-    // Real-time collaboration
-    collaboration?: {
-      enabled: boolean;
-      users?: Array;
-      sessionId?: string;
-    }
-    // Legal AI context
-    legalContext?: {
-      caseId?: string;
-      documentType?: 'contract' | 'evidence' | 'brief' | 'citation';
-      aiAnalysis?: {
-        riskLevel: 'low' | 'medium' | 'high';
-        confidence: number;
-        suggestions: string[];
-      }
-    }
-    // Events
-    onOpenChange?: (open: boolean) => void;
-    onClose?: () => void;
-    class?: string;
-  }
-  let { open = $bindable(false),
-    size = 'md',
-    title,
-    content,
-    footer,
-    variant = 'default',
-    glassmorphism = false,
-    pixelated = false,
-    webgpuEffects = true,
-    collaboration,
-    legalContext,
-    onOpenChange,
-    onClose,
-    class: className = '',
-    ...restProp
-   }: Props = $props();
-  // Melt UI dialog
-  // Melt UI component creation removed - replace with bits-ui declarative components
-      if (!newOpen) onClose?.();
-    }
-  });
-  // WebGPU animation state
-  let canvas = $state<HTMLCanvasElement | null>(null);
-  let gpu: GPU | null = null;
-  let device = $state<GPUDevice | null>(null);
-  let animationFrame: number;
-  // Memory-efficient state (NES constraints: 8KB)
-  let dialogState = $state({
+
+  // Exported props (simpler, explicit, typed)
+  export let open: boolean = false;
+  export let size: 'sm' | 'md' | 'lg' | 'xl' | 'fullscreen' = 'md';
+  export let title: any = null;
+  export let content: any = null;
+  export let footer: any = null;
+  export let variant: 'default' | 'legal' | 'evidence' | 'case' | 'nes' = 'default';
+  export let glassmorphism: boolean = false;
+  export let pixelated: boolean = false;
+  export let webgpuEffects: boolean = true;
+  export let collaboration: { enabled?: boolean; users?: any[]; sessionId?: string } = {};
+  export let legalContext: any = null;
+  export let onOpenChange: ((o: boolean) => void) | undefined;
+  export let onClose: (() => void) | undefined;
+  // renamed prop to avoid TS reserved-word error in svelte-preprocess
+  export let className: string = '';
+
+  // Minimal WebGPU state (graceful fallback)
+  let canvas: HTMLCanvasElement | null = null;
+  let device: GPUDevice | null = null;
+  let animationFrame = 0;
+
+  // Lightweight dialog state
+  let dialogState = {
     animationPhase: 0,
     backgroundEffectIntensity: 0,
     collaborationData: new Map(),
     lastRender: 0,
     memoryUsed: 0
-  });
-  // Reactive updates
-  $effect(() => {
-    if ($dialogOpen !== open) {
-      open = $dialogOpe;
-    }
-  });
-  $effect(() => {
-    if (webgpuEffects) {
-      initWebGPU();
-    }
-    return () => {
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame);
-      }
-      cleanupWebGPU();
-    }
-  });
-  async function initWebGPU() {
-    if (!canvas || !navigator.gpu) {
-      console.warn('WebGPU not supported, falling back to CSS effects');
-      return;
-    }
-    try {
-      const adapter = await navigator.gpu.requestAdapter();
-      if (!adapter) return;
-      device = await adapter.requestDevice();
-      gpu = navigator.gpu;
-      // Create simple compute shader for background effects
-      const computeShaderCode =
-        struct Uniforms {
-          time: f32
-          intensity: f32;
-          variant: f32
-          legal_confidence: f32;
-        }
-        @group(0) @binding(0) var<uniform> uniforms: Uniform;
-        @group(0) @binding(1) var outputTex: texture_storage_2d<rgba8unorm, write>;
-        @compute @workgroup_size(8, 8)
-        fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
-          let dims = textureDimensions(outputTex);
-          let coord = vec2<i32>(global_id.xy);
-          if (coord.x >= dims.x || coord.y >= dims.y) {
-            return;
-          }
-          let uv = vec2<f32>(coord) / vec2<f32>(dims);
-          let center = vec2<f32>(0.5, 0.5);
-          let dist = distance(uv, center);
-          // Legal AI context glow
-          var color = vec3<f32>(0.0, 0.0, 0.0);
-          if (uniforms.variant == 1.0) { // legal
-            color = vec3<f32>(0.0, 0.6, 0.2);
-          } else if (uniforms.variant == 2.0) { // evidence
-            color = vec3<f32>(0.8, 0.4, 0.0);
-          } else if (uniforms.variant == 3.0) { // case
-            color = vec3<f32>(0.2, 0.4, 0.8);
-          }
-          // Background gradient with confidence influence
-          let gradient = (1.0 - dist) * uniforms.intensity * uniforms.legal_confidenc;
-          let wave = sin(uniforms.time * 2.0 + dist * 10.0) * 0.1 + 0.9;
-          let finalColor = color * gradient * wav;
-          let alpha = gradient * 0.3;
-          textureStore(outputTex, coord, vec4<f32>(finalColor, alpha));
-        }
-      ;
-      // Create compute pipeline (memory efficient)
-      const computePipeline = device.createComputePipeline({
-        layout: 'auto',
-        compute: {
-          module: device.createShaderModule({ code: computeShaderCode }),
-          entryPoint: 'main'
-        }
-      });
-      startWebGPUAnimation(computePipeline);
-    } catch (error) {
-      console.warn('WebGPU initialization failed:', error);
-    }
-  }
-  function startWebGPUAnimation(pipeline: GPUComputePipeline) {
-    if (!device || !canvas) return;
-    const context = canvas.getContext('webgpu');
-    if (!context) return;
-    context.configure({
-      device,
-      format: 'bgra8unorm',
-    });
-    function animate(currentTime: number) {
-      if (!device || !context) return;
-      const deltaTime = currentTime - dialogState.lastRender;
-      dialogState.lastRender = currentTim;
-      // Update animation state
-      dialogState.animationPhase += deltaTime * 0.001;
-      dialogState.backgroundEffectIntensity = open ? 1.0 : 0.0;
-      // Create uniform buffer
-      const uniformData = new Float32Array([
-        dialogState.animationPhase,
-        dialogState.backgroundEffectIntensity,
-        variant === 'legal' ? 1.0 : variant === 'evidence' ? 2.0 : variant === 'case' ? 3.0 : 0.0,
-        legalContext?.aiAnalysis?.confidence || 0.5
-      ]);
-      const uniformBuffer = device.createBuffer({
-        size: uniformData.byteLength,
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST;
-      });
-      device.queue.writeBuffer(uniformBuffer, 0, uniformData);
-      // Create output texture
-      const outputTexture = device.createTexture({
-        size: { width: canvas.width, height: canvas.height, depthOrArrayLayers: 1 },
-        format: 'rgba8unorm',
-        usage: GPUTextureUsage.STORAGE_BINDING | GPUTextureUsage.COPY_SRC;
-      });
-      // Create bind group
-      const bindGroup = device.createBindGroup({
-        layout: pipeline.getBindGroupLayout(0),
-        entries: [
-          { binding: 0, resource: { buffer: uniformBuffer } },
-          { binding: 1, resource: outputTexture.createView() }
-        ]
-      });
-      // Dispatch compute shader
-      const commandEncoder = device.createCommandEncoder();
-      const computePass = commandEncoder.beginComputePass();
-      computePass.setPipeline(pipeline);
-      computePass.setBindGroup(0, bindGroup);
-      computePass.dispatchWorkgroups(
-        Math.ceil(canvas.width / 8),
-        Math.ceil(canvas.height / 8)
-      );
-      computePass.end();
-      // Copy to canvas
-      commandEncoder.copyTextureToTexture(
-        { texture: outputTexture },
-        { texture: context.getCurrentTexture() },
-        { width: canvas.width, height: canvas.height }
-      );
-      device.queue.submit([commandEncoder.finish()]);
-      if (open) {
-        animationFrame = requestAnimationFrame(animate);
-      }
-    }
-    if (open) {
-      animationFrame = requestAnimationFrame(animate);
-    }
-  }
-  function cleanupWebGPU() {
-    if (device) {
-      device.destroy();
-      device = null;
-      gpu = null;
-    }
-  }
-  // Collaboration cursor rendering
-  function renderCollaborationCursors() {
-    if (!collaboration?.enabled || !collaboration.users) return;
-    return collaboration.users.map(user => ({
-      id: user.id,
-      x: user.cursor?.x || 0,
-      y: user.cursor?.y || 0,
-      color: user.color,
-      name: user.nam;
-    }));
-  }
-  // Dynamic classes
-  let dialogClasses = $derived([);
+  };
+
+  // Reactive classes (clean, no $derived)
+  $: dialogClasses = [
     'fixed inset-0 z-50 flex items-center justify-center p-4',
-    // Size variants
     size === 'sm' ? 'max-w-sm' :
     size === 'md' ? 'max-w-md' :
     size === 'lg' ? 'max-w-2xl' :
     size === 'xl' ? 'max-w-4xl' :
     size === 'fullscreen' ? 'max-w-full h-full' : '',
-    class
+    className
   ].filter(Boolean).join(' ');
-  let contentClasses = $derived([);
-    'relative bg-white rounded-lg shadow-xl',
-    'max-h-[90vh] overflow-hidden',
-    // Variant styling
+
+  $: contentClasses = [
+    'relative rounded-lg shadow-xl max-h-[90vh] overflow-hidden',
     variant === 'legal' ? 'border-l-4 border-green-500' :
     variant === 'evidence' ? 'border-l-4 border-amber-500' :
     variant === 'case' ? 'border-l-4 border-indigo-500' : '',
-    // Effects
     glassmorphism ? 'backdrop-blur-md bg-white/80' : 'bg-white',
     pixelated ? 'image-rendering-pixelated' : '',
-    // NES styling
     variant === 'nes' ? 'border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' : ''
   ].filter(Boolean).join(' ');
+
+  function closeDialog() {
+    open = false;
+    onClose?.();
+    onOpenChange?.(false);
+  }
+
+  function renderCollaborationCursors() {
+    if (!collaboration?.enabled || !collaboration?.users) return [];
+    return (collaboration.users || []).map((user: any) => ({
+      id: user.id ?? Math.random().toString(36).slice(2,8),
+      x: user.cursor?.x ?? 0,
+      y: user.cursor?.y ?? 0,
+      color: user.color ?? '#333',
+      name: user.name ?? 'User'
+    }));
+  }
+
+  // Minimal WebGPU init: try to request device, but do not compile heavy shaders here.
+  async function initWebGPU() {
+    if (!webgpuEffects) return;
+    // graceful fallback if not supported
+    if (!canvas || typeof (navigator as any).gpu === 'undefined') {
+      console.info('WebGPU not supported or not available; using CSS fallback for background effects.');
+      return;
+    }
+    try {
+      const adapter = await (navigator as any).gpu.requestAdapter();
+      if (!adapter) return;
+      device = await adapter.requestDevice();
+      // Keep this file lightweight: complex compute pipeline creation should be done in a dedicated module.
+    } catch (err) {
+      console.warn('WebGPU initialization failed:', err);
+      device = null;
+    }
+  }
+
+  onMount(() => {
+    if (webgpuEffects) initWebGPU();
+  });
+
+  onDestroy(() => {
+    if (animationFrame) cancelAnimationFrame(animationFrame);
+    // Device destruction if supported (some implementations expose destroy())
+    try { if (device && (device as any).destroy) (device as any).destroy(); } catch {}
+    device = null;
+  });
 </script>
+
 {#if open}
-  <!-- Dialog Portal -->
   <div class="fixed inset-0 z-50">
-    <!-- WebGPU Background Canvas -->
     {#if webgpuEffects}
+      <!-- canvas must not be self-closing -->
       <canvas
-        bind:this={canvas as any}
+        bind:this={canvas}
         class="absolute inset-0 w-full h-full"
         width="800"
         height="600"
         style="mix-blend-mode: multiply; opacity: 0.6;"
-      />
+      ></canvas>
     {/if}
-    <!-- Overlay -->
-    <div
-      class="fixed inset-0 bg-black/50 backdrop-blur-sm"
-      transitifade={{ duration: 150 }}
-    />
+
+    <!-- Overlay: use a semantic button so keyboard users can close with Enter/Space and ARIA role is implicit -->
+    <button
+      type="button"
+      class="fixed inset-0 bg-black/50 backdrop-blur-sm appearance-none border-none p-0 m-0"
+      transition:fade={{ duration: 150 }}
+      on:click={() => closeDialog()}
+      aria-label="Close dialog"
+    ></button>
+
     <!-- Dialog Container -->
-    <div class={dialogClasses}>
+    <div class={dialogClasses} aria-hidden={!open}>
       <!-- Dialog Content -->
       <div
         class={contentClasses}
-        transitiscale={{
-          duration: 200,
-          easing: cubicInOut;
-          start: 0.95,
-        }}
-        {...restProps}
+        transition:scale={{ duration: 200, easing: cubicInOut }}
+        role="dialog"
+        aria-modal="true"
       >
         <!-- Collaboration Users -->
         {#if collaboration?.enabled}
           <div class="absolute -top-8 right-0 flex -space-x-2">
-            {#each collaboration.users || [] as user}
+            {#each collaboration.users || [] as user (user.id)}
               <div
                 class="w-6 h-6 rounded-full border-2 border-white shadow-sm flex items-center justify-center text-xs font-bold text-white"
                 style="background-color: {user.color}"
                 title={user.name}
-                /* transition removed */}
               >
-                {user.name.charAt.toUpperCase()}
+                {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
               </div>
             {/each}
           </div>
         {/if}
+
         <!-- Legal AI Risk Indicator -->
         {#if legalContext?.aiAnalysis?.riskLevel === 'high'}
-          <div class="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-pulse border-2 border-white" />
+          <!-- do not self-close non-void elements -->
+          <div class="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-pulse border-2 border-white"></div>
         {/if}
+
         <!-- Header -->
         {#if title}
           <div class="px-6 py-4 border-b border-gray-200">
-            <h2
-              class="text-lg font-semibold text-gray-900 flex items-center gap-3"
-            >
-              {@render title()}
-              <!-- Legal AI Analysis Badge -->
+            <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-3">
+              <slot name="title">{title}</slot>
               {#if legalContext?.aiAnalysis}
                 <span
                   class="px-2 py-1 text-xs rounded-full"
@@ -341,19 +184,18 @@ https://svelte.dev/e/js_parse_error -->
                   class:bg-red-100={legalContext.aiAnalysis.riskLevel === 'high'}
                   class:text-red-800={legalContext.aiAnalysis.riskLevel === 'high'}
                 >
-                  AI: {Math.round(legalContext.aiAnalysis.confidence * 100)}%
+                  AI: {Math.round((legalContext.aiAnalysis.confidence ?? 0) * 100)}%
                 </span>
               {/if}
             </h2>
           </div>
         {/if}
+
         <!-- Content -->
         <div class="px-6 py-4 overflow-y-auto max-h-[60vh]">
-          {#if content}
-            {@render content()}
-          {/if}
-          <!-- AI Suggestions -->
-          {#if legalContext?.aiAnalysis?.suggestions.length}
+          <slot>{content}</slot>
+
+          {#if legalContext?.aiAnalysis?.suggestions?.length > 0}
             <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
               <h4 class="text-sm font-medium text-blue-900 mb-2">AI Suggestions:</h4>
               <ul class="text-sm text-blue-800 space-y-1">
@@ -367,36 +209,42 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           {/if}
         </div>
+
         <!-- Footer -->
         {#if footer}
           <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
-            {@render footer()}
+            <slot name="footer">{footer}</slot>
           </div>
         {:else}
-          <!-- Default footer with close button -->
           <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
-            <UnifiedButton
-              variant="secondary"
-              size="sm"
+            <!-- Use native button to avoid component event typing issues -->
+            <button
+              class="px-3 py-1 text-sm rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 shadow-sm"
+              type="button"
+              on:click={closeDialog}
             >
               Close
-            </UnifiedButton>
+            </button>
           </div>
         {/if}
+
         <!-- Close button -->
         <button
           class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+          on:click={closeDialog}
+          aria-label="Close"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
+
         <!-- Collaboration Cursors -->
         {#each renderCollaborationCursors() as cursor (cursor.id)}
           <div
             class="absolute pointer-events-none z-10"
             style="left: {cursor.x}px; top: {cursor.y}px; color: {cursor.color}"
-            transitifade={{ duration: 200 }}
+            transition:fade={{ duration: 200 }}
           >
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
               <path d="M7 2L17 12L12 13L13 18L7 2Z"/>
@@ -413,6 +261,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 {/if}
+
 <style>
   .image-rendering-pixelated {
     image-rendering: -moz-crisp-edge;
@@ -420,11 +269,13 @@ https://svelte.dev/e/js_parse_error -->
     image-rendering: pixelated;
     image-rendering: crisp-edge;
   }
-/* WebGPU canvas optimization */ canvas {
+  /* WebGPU canvas optimization */
+  canvas {
     will-change: transform;
     transform: translateZ(0);
   }
-/* NES-style shadows */ .shadow-\[4px_4px_0px_0px_rgba\(0\,0\,0\,1\)\] {
+  /* NES-style shadows */
+  .shadow-\[4px_4px_0px_0px_rgba\(0\,0\,0\,1\)\] {
     box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
   }
 </style>

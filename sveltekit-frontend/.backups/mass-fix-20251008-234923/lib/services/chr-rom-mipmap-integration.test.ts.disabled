@@ -1,0 +1,94 @@
+/**
+ * CHR-ROM Mipmap Integration Tests
+ * Tests the integration between CHR-ROM caching and YoRHa mipmap optimization
+ */
+
+import { chrROMmipmapIntegration } from './chr-rom-mipmap-integration.js';
+
+export async function runIntegrationTests() {
+  console.log('🧪 Starting CHR-ROM Mipmap Integration Tests...');
+
+  try {
+    // Test 1: Basic Integration
+    console.log('\n📋 Test 1: Basic Integration');
+    const integrationResult = await chrROMmipmapIntegration.testIntegration();
+    
+    if (integrationResult.success) {
+      console.log('✅ Integration test passed');
+      console.log('  - YoRHa initialized:', integrationResult.results.yorhaInitialized);
+      console.log('  - CHR-ROM optimizer ready:', integrationResult.results.chrromOptimizerReady);
+      console.log('  - Redis connected:', integrationResult.results.redisConnected);
+      console.log('  - Sample pattern generated:', integrationResult.results.samplePatternGenerated);
+      console.log('  - Performance metrics:', integrationResult.results.performanceMetrics);
+    } else {
+      console.warn('⚠️ Integration test failed - some components not ready');
+    }
+
+    // Test 2: Mipmap Pattern Retrieval
+    console.log('\n📋 Test 2: Mipmap Pattern Retrieval');
+    
+    // Try to get a cached pattern (should return null initially)
+    const cachedPattern = await chrROMmipmapIntegration.getMipmapPattern('test_doc', 0, false);
+    if (cachedPattern === null) {
+      console.log('✅ Cache miss handling works correctly');
+    } else {
+      console.log('ℹ️ Found existing cached pattern:', cachedPattern.type);
+    }
+
+    // Test thumbnail generation
+    const thumbnail = await chrROMmipmapIntegration.getThumbnailPattern('test_doc');
+    if (thumbnail && thumbnail.data) {
+      console.log('✅ Thumbnail generation works');
+      console.log('  - Type:', thumbnail.type);
+      console.log('  - Size:', thumbnail.size);
+      console.log('  - Format:', thumbnail.metadata?.format);
+    }
+
+    // Test 3: Performance Statistics
+    console.log('\n📋 Test 3: Performance Statistics');
+    const stats = chrROMmipmapIntegration.getStats();
+    console.log('✅ Statistics retrieved:');
+    console.log('  - Cached documents:', stats.cachedDocuments);
+    console.log('  - Total patterns:', stats.totalPatterns);
+    console.log('  - Estimated memory usage:', stats.estimatedMemoryUsage, 'KB');
+    console.log('  - Average patterns per doc:', stats.averagePatternsPerDoc.toFixed(2));
+
+    // Test 4: Fallback Pattern Generation
+    console.log('\n📋 Test 4: Fallback Pattern Generation');
+    const fallbackPattern = await chrROMmipmapIntegration.getMipmapPattern('nonexistent_doc', 3, true);
+    if (fallbackPattern) {
+      console.log('✅ Fallback generation works');
+      console.log('  - Mipmap level:', fallbackPattern.mipmapLevel);
+      console.log('  - Original size:', fallbackPattern.originalSize);
+      console.log('  - Is fallback:', fallbackPattern.metadata?.isFallback);
+    }
+
+    // Test 5: Batch Prefetch Simulation
+    console.log('\n📋 Test 5: Batch Prefetch Simulation');
+    const testDocIds = ['doc1', 'doc2', 'doc3'];
+    await chrROMmipmapIntegration.prefetchMipmapPatterns(testDocIds);
+    console.log('✅ Batch prefetch completed');
+
+    console.log('\n🎉 All CHR-ROM Mipmap Integration tests completed!');
+    
+    return {
+      success: true,
+      integrationStatus: integrationResult,
+      finalStats: chrROMmipmapIntegration.getStats()
+    };
+
+  } catch (error) {
+    console.error('❌ Integration tests failed:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : String(error)
+    };
+  }
+}
+
+// Auto-run tests if this file is executed directly
+if (typeof window !== 'undefined' && (window as any).__CHR_ROM_RUN_TESTS) {
+  runIntegrationTests().then(result => {
+    console.log('Test results:', result);
+  });
+}
