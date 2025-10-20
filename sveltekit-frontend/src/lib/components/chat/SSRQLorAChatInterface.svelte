@@ -306,14 +306,14 @@ https://svelte.dev/e/js_parse_error -->
             <div class="feedback-buttons">
               <button
                 class="feedback-btn positive"
-                onclick={() => provideFeedback(message.id, 1)}
+                on:click={() => provideFeedback(message.id, 1)}
                 title="Good response"
               >
                 👍
               </button>
               <button
                 class="feedback-btn negative"
-                onclick={() => provideFeedback(message.id, -1)}
+                on:click={() => provideFeedback(message.id, -1)}
                 title="Poor response"
               >
                 👎
@@ -348,7 +348,7 @@ https://svelte.dev/e/js_parse_error -->
         class="message-input nes-input"
       />
       <Button
-        onclick={sendMessage}
+        on:click={sendMessage}
         disabled={!$canSend}
         class="send-button bits-btn bits-btn"
         variant="ghost"
@@ -359,7 +359,7 @@ https://svelte.dev/e/js_parse_error -->
           Send
         {/if}
       <Button
-        onclick={clearChat}
+        on:click={clearChat}
         variant="ghost"
         size="sm"
         class="clear-button bits-btn bits-btn"

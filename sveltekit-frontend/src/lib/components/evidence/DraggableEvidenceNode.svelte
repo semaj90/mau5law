@@ -190,7 +190,7 @@
     handle: '.drag-handle',
     constraint: canvasContainer ? { container: canvasContainer } : undefined
   }}
-  onclick={handleNodeClick}
+  on:click={handleNodeClick}
   ondrop={handleConnectionDrop}
   ondragover={(e) => e.preventDefault()}
   draggable="true"
@@ -218,7 +218,7 @@
             size="sm"
             variant="ghost"
             class="p-1 h-6 w-6"
-            onclick={(e) => { e.stopPropagation(); analyzeEvidence(), }}
+            on:click={(e) => { e.stopPropagation(); analyzeEvidence(), }}
             disabled={isAnalyzing}
           >
             {#if isAnalyzing}

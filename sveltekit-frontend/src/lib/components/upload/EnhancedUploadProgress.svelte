@@ -166,10 +166,10 @@
             <span class="text-sm">{uploadState.context.error}</span>
           </div>
           <div class="flex gap-2">
-            <Button onclick={retryUpload} variant="outline" size="sm">
+            <Button on:click={retryUpload} variant="outline" size="sm">
               Retry
             </Button>
-            <Button onclick={resetUpload} variant="ghost" size="sm">
+            <Button on:click={resetUpload} variant="ghost" size="sm">
               Reset
             </Button>
           </div>

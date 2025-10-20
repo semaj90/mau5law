@@ -128,7 +128,7 @@ Fully integrated with LangChain RAG backend and Lucia v3 authentication
 									/>
 									<Button
 										class="nes-btn is-primary"
-										onclick={handleRAGSearch}
+										on:click={handleRAGSearch}
 										disabled={isSearching || !query.trim()}
 									>
 										{#if isSearching}

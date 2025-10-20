@@ -268,14 +268,14 @@
         <button
           class="rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-amber-200 hover:bg-amber-500/20"
           class:animate-spin={autoRefresh}
-          onclick={toggleAutoRefresh}
+          on:click={toggleAutoRefresh}
           title={autoRefresh ? 'Disable auto refresh' : 'Enable auto refresh'}
         >
           <RefreshCw class="h-4 w-4" />
         </button>
         <button
           class="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-red-200 hover:bg-red-500/20"
-          onclick={clearResults}
+          on:click={clearResults}
         >
           Clear
         </button>
@@ -324,7 +324,7 @@
         <div class="flex gap-2">
           <button
             class="flex items-center gap-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-4 py-2 text-emerald-100 hover:bg-emerald-500/20"
-            onclick={runAllTests}
+            on:click={runAllTests}
             disabled={isRunning}
           >
             <Play class="h-4 w-4" />
@@ -357,7 +357,7 @@
             </div>
             <button
               class="rounded-md border border-blue-500/40 bg-blue-500/10 px-3 py-2 text-sm text-blue-100 hover:bg-blue-500/20"
-              onclick={() => runEndpoint(endpoint)}
+              on:click={() => runEndpoint(endpoint)}
               disabled={isRunning}
             >
               Run test

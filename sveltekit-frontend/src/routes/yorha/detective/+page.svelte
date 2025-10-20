@@ -196,14 +196,14 @@
       <div class="flex flex-wrap gap-3">
         <button
           class="flex items-center gap-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-100 hover:bg-emerald-500/20"
-          onclick={() => (showNewCaseModal = true)}
+          on:click={() => (showNewCaseModal = true)}
         >
           <Play class="h-4 w-4" />
           New Case
         </button>
         <button
           class="flex items-center gap-2 rounded-lg border border-sky-500/40 bg-sky-500/10 px-4 py-2 text-sm text-sky-100 hover:bg-sky-500/20"
-          onclick={() => selectSection('command-center')}
+          on:click={() => selectSection('command-center')}
         >
           <RefreshCw class="h-4 w-4" />
           Refresh
@@ -258,7 +258,7 @@
               ? 'border-amber-500/60 bg-amber-500/15'
               : 'border-slate-700 bg-black/60 hover:border-amber-500/40'
           }`}
-          onclick={() => selectSection(section.id)}
+          on:click={() => selectSection(section.id)}
         >
           <div class="flex items-center gap-3">
             <section.icon class="h-6 w-6 text-amber-300" />
@@ -314,7 +314,7 @@
                     </p>
                     <button
                       class="mt-2 text-xs text-amber-300 hover:underline"
-                      onclick={() => goto(`/cases/${caseItem.id}`)}
+                      on:click={() => goto(`/cases/${caseItem.id}`)}
                     >
                       View case
                     </button>
@@ -399,7 +399,7 @@
           <button
             type="button"
             class="rounded border border-slate-600 px-4 py-2 text-sm text-slate-200 hover:border-slate-400"
-            onclick={cancelNewCase}
+            on:click={cancelNewCase}
           >
             Cancel
           </button>

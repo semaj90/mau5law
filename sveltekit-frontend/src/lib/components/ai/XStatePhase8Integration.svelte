@@ -302,7 +302,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                   onchange={handleFileUpload}
                   class="hidden"
                 />
-                <button onclick={() => fileInput?.click()} class="yorha-button px-6 py-3 bg-blue-600 text-white">
+                <button on:click={() => fileInput?.click()} class="yorha-button px-6 py-3 bg-blue-600 text-white">
                   Select Evidence Files
                 </button>
                 <p class="text-gray-400 text-sm mt-2">Supported: PDF, Images, Documents</p>
@@ -328,7 +328,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
               {#if $machineState.matches('evidenceUpload')}
                 <div class="mt-2">
                   <button
-                    onclick={handleNextStep}
+                    on:click={handleNextStep}
                     disabled={!$machineContext?.evidenceFiles?.length}
                     class="yorha-button px-6 py-2 bg-yellow-400 text-black disabled:opacity-50"
                   >
@@ -409,9 +409,9 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 
               {#if $machineState.matches('caseDetails')}
                 <div class="flex gap-3">
-                  <button onclick={handleBackStep} class="yorha-button px-4 py-2 bg-gray-600 text-white"> Back </button>
+                  <button on:click={handleBackStep} class="yorha-button px-4 py-2 bg-gray-600 text-white"> Back </button>
                   <button
-                    onclick={handleNextStep}
+                    on:click={handleNextStep}
                     disabled={!caseTitle.trim() || !caseDescription.trim()}
                     class="yorha-button px-6 py-2 bg-yellow-400 text-black disabled:opacity-50"
                   >
@@ -452,7 +452,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                   </div>
                   <p class="text-gray-300 text-xs mb-2">{rec.reasoning}</p>
                   <button
-                    onclick={() => applyAIRecommendation(rec.nextAction)}
+                    on:click={() => applyAIRecommendation(rec.nextAction)}
                     class="yorha-button px-3 py-1 text-xs bg-yellow-400 text-black"
                   >
                     Apply

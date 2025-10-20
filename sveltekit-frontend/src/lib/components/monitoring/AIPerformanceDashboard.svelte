@@ -240,15 +240,15 @@
     <div class="header-controls">
       <button
         class="control-btn {isMonitoring ? 'active' : ''}"
-        onclick={toggleMonitoring}
+        on:click={toggleMonitoring}
         title={isMonitoring ? 'Pause monitoring' : 'Resume monitoring'}
       >
         {isMonitoring ? 'Monitoring' : 'Paused'}
       </button>
-      <button class="control-btn" onclick={resetMetrics} title="Reset metrics">
+      <button class="control-btn" on:click={resetMetrics} title="Reset metrics">
         Reset
       </button>
-      <button class="control-btn" onclick={exportMetrics} title="Export metrics">
+      <button class="control-btn" on:click={exportMetrics} title="Export metrics">
         Export
       </button>
     </div>

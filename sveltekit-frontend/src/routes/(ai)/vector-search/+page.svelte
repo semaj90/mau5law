@@ -121,7 +121,7 @@
         </div>
 
         <div class="search-actions">
-          <Button onclick={performVectorSearch} disabled={!query.trim() || loading} class="search-button">
+          <Button on:click={performVectorSearch} disabled={!query.trim() || loading} class="search-button">
             {#if loading}
               🔄 Searching...
             {:else}

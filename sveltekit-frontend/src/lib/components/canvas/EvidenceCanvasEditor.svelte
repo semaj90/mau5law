@@ -684,7 +684,7 @@
   <!-- Toolbar -->
   <Toolbar.Root class="canvas-toolbar">
     <Toolbar.Group>
-      <Toolbar.Button onclick={() => setActiveTool('select')} class:active={activeTool === 'select'}>
+      <Toolbar.Button on:click={() => setActiveTool('select')} class:active={activeTool === 'select'}>
         <Move size={20} />
         <Tooltip.Root>
           <Tooltip.Trigger>Select</Tooltip.Trigger>
@@ -692,7 +692,7 @@
         </Tooltip.Root>
       </Toolbar.Button>
 
-      <Toolbar.Button onclick={() => setActiveTool('draw')} class:active={activeTool === 'draw'}>
+      <Toolbar.Button on:click={() => setActiveTool('draw')} class:active={activeTool === 'draw'}>
         <Square size={20} />
         <Tooltip.Root>
           <Tooltip.Trigger>Draw</Tooltip.Trigger>
@@ -700,7 +700,7 @@
         </Tooltip.Root>
       </Toolbar.Button>
 
-      <Toolbar.Button onclick={() => setActiveTool('text')} class:active={activeTool === 'text'}>
+      <Toolbar.Button on:click={() => setActiveTool('text')} class:active={activeTool === 'text'}>
         <Type size={20} />
         <Tooltip.Root>
           <Tooltip.Trigger>Text</Tooltip.Trigger>
@@ -708,7 +708,7 @@
         </Tooltip.Root>
       </Toolbar.Button>
 
-      <Toolbar.Button onclick={() => (showEvidenceDialog = true)}>
+      <Toolbar.Button on:click={() => (showEvidenceDialog = true)}>
         <Image size={20} />
         <Tooltip.Root>
           <Tooltip.Trigger>Evidence</Tooltip.Trigger>
@@ -720,15 +720,15 @@
     <Toolbar.Separator />
 
     <Toolbar.Group>
-      <Toolbar.Button onclick={undo} disabled={$state.context.historyIndex <= 0}>
+      <Toolbar.Button on:click={undo} disabled={$state.context.historyIndex <= 0}>
         <Undo size={20} />
       </Toolbar.Button>
 
-      <Toolbar.Button onclick={redo} disabled={$state.context.historyIndex >= $state.context.history.length - 1}>
+      <Toolbar.Button on:click={redo} disabled={$state.context.historyIndex >= $state.context.history.length - 1}>
         <Redo size={20} />
       </Toolbar.Button>
 
-      <Toolbar.Button onclick={deleteSelected} disabled={!selectedObject}>
+      <Toolbar.Button on:click={deleteSelected} disabled={!selectedObject}>
         <Trash2 size={20} />
       </Toolbar.Button>
     </Toolbar.Group>
@@ -736,15 +736,15 @@
     <Toolbar.Separator />
 
     <Toolbar.Group>
-      <Toolbar.Button onclick={zoomOut}>
+      <Toolbar.Button on:click={zoomOut}>
         <ZoomOut size={20} />
       </Toolbar.Button>
 
-      <Toolbar.Button onclick={resetZoom}>
+      <Toolbar.Button on:click={resetZoom}>
         <span class="zoom-level">{Math.round(zoomLevel * 100)}%</span>
       </Toolbar.Button>
 
-      <Toolbar.Button onclick={zoomIn}>
+      <Toolbar.Button on:click={zoomIn}>
         <ZoomIn size={20} />
       </Toolbar.Button>
     </Toolbar.Group>
@@ -752,20 +752,20 @@
     <Toolbar.Separator />
 
     <Toolbar.Group>
-      <Toolbar.Button onclick={toggleGrid} class:active={gridEnabled}>
+      <Toolbar.Button on:click={toggleGrid} class:active={gridEnabled}>
         <Grid size={20} />
       </Toolbar.Button>
 
-      <Toolbar.Button onclick={() => selectedObject && lockSelected()}>
+      <Toolbar.Button on:click={() => selectedObject && lockSelected()}>
         <Lock size={20} />
       </Toolbar.Button>
 
-      <Toolbar.Button onclick={() => selectedObject && unlockSelected()}>
+      <Toolbar.Button on:click={() => selectedObject && unlockSelected()}>
         <Unlock size={20} />
       </Toolbar.Button>
 
       {#if enableAutoTag}
-        <Toolbar.Button onclick={() => (showTaggingDialog = true)} disabled={!selectedObject}>
+        <Toolbar.Button on:click={() => (showTaggingDialog = true)} disabled={!selectedObject}>
           <Tag size={20} />
         </Toolbar.Button>
       {/if}
@@ -774,7 +774,7 @@
     <Toolbar.Separator />
 
     <Toolbar.Group>
-      <Toolbar.Button onclick={saveCanvasState} disabled={isLoading || !isDirty}>
+      <Toolbar.Button on:click={saveCanvasState} disabled={isLoading || !isDirty}>
         <Save size={20} />
         {#if lastSaved}
           <span class="save-time">Saved {lastSaved.toLocaleTimeString()}</span>
@@ -789,14 +789,14 @@
         </Popover.Trigger>
         <Popover.Content>
           <div class="export-menu">
-            <Button onclick={exportAsImage} variant="ghost" class="w-full justify-start">Export as PNG</Button>
-            <Button onclick={exportAsJSON} variant="ghost" class="w-full justify-start">Export as JSON</Button>
+            <Button on:click={exportAsImage} variant="ghost" class="w-full justify-start">Export as PNG</Button>
+            <Button on:click={exportAsJSON} variant="ghost" class="w-full justify-start">Export as JSON</Button>
           </div>
         </Popover.Content>
       </Popover.Root>
 
       {#if enableCollaboration}
-        <Toolbar.Button onclick={() => (showShareDialog = true)}>
+        <Toolbar.Button on:click={() => (showShareDialog = true)}>
           <Share2 size={20} />
         </Toolbar.Button>
       {/if}
@@ -827,7 +827,7 @@
       <h3>Evidence Library ({evidence.length})</h3>
       <div class="evidence-grid">
         {#each evidence as item}
-          <Card class="evidence-item" onclick={() => addEvidence(item)}>
+          <Card class="evidence-item" on:click={() => addEvidence(item)}>
             <CardHeader>
               <CardTitle class="text-sm">{item.title}</CardTitle>
             </CardHeader>
@@ -861,7 +861,7 @@
         <Button
           variant="outline"
           class="w-full justify-start mb-2"
-          onclick={() => {
+          on:click={() => {
             addEvidence(item);
             showEvidenceDialog = false;
           }}
@@ -891,8 +891,8 @@
       </div>
 
       <div class="dialog-actions">
-        <Button variant="secondary" onclick={() => (showTaggingDialog = false)}>Cancel</Button>
-        <Button onclick={() => applyTags(suggestedTags)}>Apply Tags</Button>
+        <Button variant="secondary" on:click={() => (showTaggingDialog = false)}>Cancel</Button>
+        <Button on:click={() => applyTags(suggestedTags)}>Apply Tags</Button>
       </div>
     {/if}
   </Dialog.Content>

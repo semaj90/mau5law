@@ -261,13 +261,13 @@ https://svelte.dev/e/js_parse_error -->
         >{loading ? (useStreaming ? (streaming ? 'Streaming…' : 'Starting…') : 'Searching…') : 'Search'}</button
       >
       {#if loading}
-        <button type="button" onclick={abort} class="px-3 py-2 rounded bg-neutral-200 dark:bg-neutral-700 text-sm"
+        <button type="button" on:click={abort} class="px-3 py-2 rounded bg-neutral-200 dark:bg-neutral-700 text-sm"
           >Abort</button
         >
       {/if}
       <button
         type="button"
-        onclick={reset}
+        on:click={reset}
         class="px-3 py-2 rounded border border-neutral-300 dark:border-neutral-600 text-sm">Clear</button
       >
     </div>

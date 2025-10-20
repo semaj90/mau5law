@@ -380,10 +380,10 @@
 <!-- Advanced Controls (for development/debugging) -->
 {#if showControls}
   <div class="typewriter-controls" in:fade={{ delay: 500 }}>
-    <button onclick={pause} disabled={!isTyping || isPaused}>Pause</button>
-    <button onclick={resume} disabled={!isPaused}>Resume</button>
-    <button onclick={restart}>Restart</button>
-    <button onclick={stop}>Stop</button>
+    <button on:click={pause} disabled={!isTyping || isPaused}>Pause</button>
+    <button on:click={resume} disabled={!isPaused}>Resume</button>
+    <button on:click={restart}>Restart</button>
+    <button on:click={stop}>Stop</button>
     <div class="speed-controls">
       <label>
         Speed:

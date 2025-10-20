@@ -141,7 +141,7 @@
       {:else if showCompare}
         <button
           class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-blue-600"
-          onclick={handleCompareClick}
+          on:click={handleCompareClick}
           title={comparing ? 'Analyzing…' : 'Analyze & compare'}
           aria-busy={comparing}
           disabled={comparing}

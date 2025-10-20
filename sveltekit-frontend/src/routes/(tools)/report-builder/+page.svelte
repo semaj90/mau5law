@@ -192,8 +192,8 @@
       <p>AI-powered case analysis and report generation</p>
       <div class="space-y-4">
         <!-- changed: use onclick instead of deprecated on:click -->
-        <button onclick={() => createNewReport()}> 📄 New Report </button>
-        <button onclick={() => createNewCanvas()}> 🎨 New Canvas </button>
+        <button on:click={() => createNewReport()}> 📄 New Report </button>
+        <button on:click={() => createNewCanvas()}> 🎨 New Canvas </button>
       </div>
     </div>
   </header>
@@ -202,7 +202,7 @@
     <div class="space-y-4">
       ❌ {error}
       <!-- changed: use onclick instead of deprecated on:click -->
-      <button onclick={() => (error = '')}>×</button>
+      <button on:click={() => (error = '')}>×</button>
     </div>
   {/if}
   <!-- Loading State -->
@@ -214,8 +214,8 @@
   {:else}
     <!-- Tab Navigation -->
     <div class="space-y-4">
-      <button class:active={activeTab === 'editor'} onclick={() => (activeTab = 'editor')}> 📝 Report Editor </button>
-      <button class:active={activeTab === 'canvas'} onclick={() => (activeTab = 'canvas')}>
+      <button class:active={activeTab === 'editor'} on:click={() => (activeTab = 'editor')}> 📝 Report Editor </button>
+      <button class:active={activeTab === 'canvas'} on:click={() => (activeTab = 'canvas')}>
         🎨 Interactive Canvas
       </button>
     </div>

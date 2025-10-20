@@ -257,7 +257,7 @@ if (!canvas) return;
     height="300"
     class="glyph-engine-canvas"
     style="width: 100%; height: auto; max-height: 300px;"
-    onclick={handleCanvasClick}
+    on:click={handleCanvasClick}
   />
   <!-- Accessibility text for screen readers -->
   <div class="sr-only">

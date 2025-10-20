@@ -136,7 +136,7 @@ https://svelte.dev/e/js_parse_error -->
       {#if searchValue}
         <button
           class="clear-button"
-          onclick={() => clearSearch()}
+          on:click={() => clearSearch()}
           title="Clear search"
         >
           <X size={16} />
@@ -154,7 +154,7 @@ https://svelte.dev/e/js_parse_error -->
             use:melt={$option({ value: (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).id, label: (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).title })}
             class="search-result-item"
             class:highlighted={$isSelected((item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).id)}
-            onclick={() => handleSelect(item)}
+            on:click={() => handleSelect(item)}
           >
             <div class="result-icon">
               {#if (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).type === 'document'}
@@ -215,7 +215,7 @@ https://svelte.dev/e/js_parse_error -->
             <button
               class="filter-chip"
               class:active={selectedTypes.includes(type)}
-              onclick={() => toggleType(type)}
+              on:click={() => toggleType(type)}
             >
               {type}
             </button>
@@ -234,7 +234,7 @@ https://svelte.dev/e/js_parse_error -->
               <button
                 class="filter-chip"
                 class:active={selectedTags.includes(tag)}
-                onclick={() => toggleTag(tag)}
+                on:click={() => toggleTag(tag)}
               >
                 {tag}
               </button>
@@ -273,7 +273,7 @@ https://svelte.dev/e/js_parse_error -->
       {#each selectedTypes as type}
         <span class="active-filter">
           {type}
-          <button onclick={() => toggleType(type)}>
+          <button on:click={() => toggleType(type)}>
             <X size={12} />
           </button>
         </span>
@@ -281,7 +281,7 @@ https://svelte.dev/e/js_parse_error -->
       {#each selectedTags as tag}
         <span class="active-filter">
           #{tag}
-          <button onclick={() => toggleTag(tag)}>
+          <button on:click={() => toggleTag(tag)}>
             <X size={12} />
           </button>
         </span>
@@ -289,12 +289,12 @@ https://svelte.dev/e/js_parse_error -->
       {#if dateRange.start || dateRange.end}
         <span class="active-filter">
           {dateRange.start?.toLocaleDateString() || '...'} - {dateRange.end?.toLocaleDateString() || '...'}
-          <button onclick={() => dateRange = }>
+          <button on:click={() => dateRange = }>
             <X size={12} />
           </button>
         </span>
       {/if}
-      <button class="clear-all-filters" onclick={() => clearSearch()}>
+      <button class="clear-all-filters" on:click={() => clearSearch()}>
         Clear all
       </button>
     </div>

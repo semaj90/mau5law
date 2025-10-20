@@ -144,7 +144,7 @@
             oninput={(e) => (searchQuery = (e.target as HTMLInputElement).value)} />
           <Input {placeholder} bind:value={searchQuery} class="pl-10" />
         </div>
-  <Button class="bits-btn" onclick={performSearch} disabled={isSearching || !searchQuery.trim()} size="sm">
+  <Button class="bits-btn" on:click={performSearch} disabled={isSearching || !searchQuery.trim()} size="sm">
 {#if isSearching}
             Searching...
           {:else}
@@ -272,7 +272,7 @@
               <Button class="bits-btn"
               variant="ghost"
               size="sm"
-                onclick={() =>
+                on:click={() =>
 {
                 searchQuery = suggestio;
                 performSearch();

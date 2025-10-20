@@ -114,7 +114,7 @@
     type="button"
     class={buttonClasses}
     data-status={aiStatus}
-    onclick={handleClick}
+    on:click={handleClick}
     {disabled}
     aria-label="Open assistant"
   >
@@ -139,7 +139,7 @@
     aria-label="Action button"
     class={buttonClasses}
     data-status={aiStatus}
-    onclick={handleClick}
+    on:click={handleClick}
     {disabled}
   >
     <div class="flex items-center gap-3 px-4 py-3">
@@ -166,7 +166,7 @@
           class="ml-auto p-1 hover:bg-yorha-bg-hover rounded inline-flex items-center justify-center cursor-pointer"
           role="button"
           tabindex="0"
-          onclick={e => {
+          on:click={e => {
             e.stopPropagation();
             toggleVoiceInput();
           }}
@@ -199,7 +199,7 @@
     type="button"
     class={buttonClasses}
     data-status={aiStatus}
-    onclick={handleClick}
+    on:click={handleClick}
     {disabled}
     aria-label="AI Assistant"
     title={`AI Assistant — Status: ${aiStatus}${unreadCount > 0 ? ` — ${unreadCount} new` : ''}`}
@@ -218,7 +218,7 @@
     aria-label="Action button"
     class={buttonClasses}
     data-status={aiStatus}
-    onclick={handleClick}
+    on:click={handleClick}
     {disabled}
   >
     <div class="flex items-center justify-between w-full">
@@ -255,7 +255,7 @@
             class="p-2 hover:bg-yorha-bg-hover rounded-lg inline-flex items-center justify-center cursor-pointer"
             role="button"
             tabindex="0"
-            onclick={e => {
+            on:click={e => {
               e.stopPropagation();
               toggleVoiceInput();
             }}

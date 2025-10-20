@@ -506,7 +506,7 @@
         </h3>
         <button
           class="text-sm bg-blue-50 hover:bg-blue-100 px-3 py-1 rounded-full border border-blue-200 transition-colors"
-          onclick={() => uploadMachine?.send({ type: 'CHECK_SERVICES' })}
+          on:click={() => uploadMachine?.send({ type: 'CHECK_SERVICES' })}
         >
           Refresh Status
         </button>
@@ -566,7 +566,7 @@
     role="button"
     aria-label="Drop zone"
     tabindex="0"
-    onclick={() => fileInput?.click()}
+    on:click={() => fileInput?.click()}
     onkeydown={(e) => e.key === 'Enter' && fileInput?.click()}
   >
     <div class="flex flex-col items-center">
@@ -701,7 +701,7 @@
             <div class="border-t pt-3">
               <button
                 class="text-sm text-blue-600 hover:text-blue-700 font-medium"
-                onclick={() => {
+                on:click={() => {
                   const detailsEl = document.getElementById(`details-${fileId}`);
                   if (detailsEl) {
                     detailsEl.classList.toggle('hidden');

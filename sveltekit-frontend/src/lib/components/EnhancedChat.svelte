@@ -351,7 +351,7 @@ const { state, send } = useMachine(enhancedChatMachine);
 						class="bits-btn text-red-700 border-red-300 hover:bg-red-50"
 						size="sm"
 						variant="ghost"
-						onclick={() =>
+						on:click={() =>
 send({ type: 'RETRY' })}
 					>
 						Retry
@@ -360,7 +360,7 @@ send({ type: 'RETRY' })}
 						class="bits-btn text-red-700 hover:bg-red-50"
 						size="sm"
 						variant="ghost"
-						onclick={() =>
+						on:click={() =>
 send({ type: 'CLEAR_ERROR' })}
 					>
 						Dismiss
@@ -371,7 +371,7 @@ send({ type: 'CLEAR_ERROR' })}
 						class="bits-btn text-red-700 border-red-300 hover:bg-red-50"
 						size="sm"
 						variant="ghost"
-						onclick={() =>
+						on:click={() =>
 send({ type: 'RETRY' })}
 					>
 						Retry
@@ -380,19 +380,19 @@ send({ type: 'RETRY' })}
 						class="bits-btn text-red-700 hover:bg-red-50"
 						size="sm"
 						variant="ghost"
-						onclick={() =>
+						on:click={() =>
 send({ type: 'CLEAR_ERROR' })}
 					>
 						Dismiss
 </Button>
 			<div class="flex flex-col justify-end">
 				<Button
-					onclick={handleSend}
+					on:click={handleSend}
 					disabled={!messageInput.trim() || $state.matches('sending')}
 					class={/* JSX syntax converted to Svelte */}
 						<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<Button
-					onclick={disabled}
+					on:click={disabled}
 					class={cn(
 						"px-6 py-3 rounded-lg font-medium transition-colors",
 						messageInput.trim() && !$state.matches('sending')

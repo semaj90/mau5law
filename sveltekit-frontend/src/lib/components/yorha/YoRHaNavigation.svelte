@@ -109,7 +109,7 @@ https://svelte.dev/e/js_parse_error -->
             class="nes-nav-item nes-legal-priority-medium yorha-3d-button w-full text-left {isRouteActive(route.route)
               ? 'nes-legal-priority-high neural-sprite-active'
               : ''}"
-            onclick={() => navigateToRoute(route.route)}
+            on:click={() => navigateToRoute(route.route)}
             onmouseenter={() => (hoveredRoute = route.id)}
             onmouseleave={() => (hoveredRoute = null)}
           >
@@ -130,7 +130,7 @@ https://svelte.dev/e/js_parse_error -->
             <!-- Section Header -->
             <button
               class="section-header w-full flex items-center justify-between p-2 rounded hover:bg-yorha-accent-warm/10 transition-colors duration-200"
-              onclick={() => toggleSection(sectionId)}
+              on:click={() => toggleSection(sectionId)}
             >
               <div class="flex items-center gap-2">
                 <span class="text-lg">{getSectionIcon(sectionId)}</span>
@@ -160,7 +160,7 @@ https://svelte.dev/e/js_parse_error -->
                     )
                       ? 'active bg-yorha-accent-warm/20 border-yorha-accent-warm text-yorha-accent-warm'
                       : 'text-yorha-light'}"
-                    onclick={() => navigateToRoute(route.route)}
+                    on:click={() => navigateToRoute(route.route)}
                     onmouseenter={() => (hoveredRoute = route.id)}
                     onmouseleave={title}
                   >

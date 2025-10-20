@@ -162,7 +162,7 @@ https://svelte.dev/e/js_parse_error -->
   ondragleave={handleDragLeave}
   role="button" ondrop={handleDrop}
   tabindex="0"
-  onclick={openFileDialog}
+  on:click={openFileDialog}
   onkeydown={(e) => e.key === 'Enter' && openFileDialog()}
   aria-label="Drag and drop files here or click to select"
 >
@@ -212,7 +212,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <button
           class="remove-file"
-          onclick={() => removeFile(index)}
+          on:click={() => removeFile(index)}
           aria-label="Remove {file.name}"
         >
           <X size={14} />

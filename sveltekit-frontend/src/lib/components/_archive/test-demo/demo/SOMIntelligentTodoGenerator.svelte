@@ -174,7 +174,7 @@ try {
     ></textarea>
     <div class="flex justify-between items-center mt-4">
       <button
-        onclick={processErrors}
+        on:click={processErrors}
         disabled={isLoading || !somCache}
         class="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-6 py-2 rounded-lg font-medium transition-colors"
       >

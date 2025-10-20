@@ -165,7 +165,7 @@ Automatically handles server upload with localStorage fallback
     role="button"
     aria-label="Drop zone"
     tabindex="0"
-    onclick={openFileSelector}
+    on:click={openFileSelector}
     onkeydown={(e) => e.key === 'Enter' && openFileSelector()}
   >
     <div class="drop-zone-content">
@@ -217,7 +217,7 @@ Automatically handles server upload with localStorage fallback
     <div class="results-container">
       <div class="results-header">
         <h4>Upload Results</h4>
-        <button class="clear-btn" onclick={clearResults}>Clear</button>
+        <button class="clear-btn" on:click={clearResults}>Clear</button>
       </div>
       <div class="results-list">
         {#each uploadResults as result}

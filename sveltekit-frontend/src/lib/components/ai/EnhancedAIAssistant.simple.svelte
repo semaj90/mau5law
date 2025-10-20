@@ -80,7 +80,7 @@
         <button
           type="button"
           class="btn-icon"
-          onclick={() => (showSettings = !showSettings)}
+          on:click={() => (showSettings = !showSettings)}
           title="Settings"
           aria-label="Open settings"
         >
@@ -89,7 +89,7 @@
         <button
           type="button"
           class="btn-icon"
-          onclick={() => clearMessages()}
+          on:click={() => clearMessages()}
           title="Clear conversation"
           aria-label="Clear conversation"
         >
@@ -111,7 +111,7 @@
                 <button
                   type="button"
                   class="reference-item"
-                  onclick={() => handleReferenceClick(reference)}
+                  on:click={() => handleReferenceClick(reference)}
                   aria-label={`Open reference ${reference.title}`}
                 >
                   <Quote aria-hidden="true" />
@@ -147,7 +147,7 @@
     <div class="settings-panel">
       <div class="settings-header">
         <h4 class="settings-title">AI Assistant Settings</h4>
-        <button type="button" class="btn-close" onclick={() => (showSettings = false)} aria-label="Close settings"
+        <button type="button" class="btn-close" on:click={() => (showSettings = false)} aria-label="Close settings"
           >×</button
         >
       </div>
@@ -180,7 +180,7 @@
     <div
       class="dialog-overlay"
       tabindex="0"
-      onclick={() => (showCitationDialog = false)}
+      on:click={() => (showCitationDialog = false)}
       onkeydown={e => {
         if (e.key === 'Escape') showCitationDialog = false;
       }}
@@ -192,7 +192,7 @@
         class="dialog-content"
         role="document"
         tabindex="-1"
-        onclick={e => e.stopPropagation()}
+        on:click={e => e.stopPropagation()}
         onkeydown={e => e.stopPropagation()}
       >
         <div class="dialog-header">
@@ -203,7 +203,7 @@
           <button
             type="button"
             class="btn-close"
-            onclick={() => (showCitationDialog = false)}
+            on:click={() => (showCitationDialog = false)}
             aria-label="Close citation dialog">×</button
           >
         </div>
@@ -213,13 +213,13 @@
             <p>{selectedCitation}</p>
           </div>
           <div class="dialog-actions">
-            <button type="button" class="btn-primary" onclick={() => insertCitation()} aria-label="Insert citation"
+            <button type="button" class="btn-primary" on:click={() => insertCitation()} aria-label="Insert citation"
               >Insert Citation</button
             >
             <button
               type="button"
               class="btn-secondary"
-              onclick={() => navigator.clipboard.writeText(selectedCitation)}
+              on:click={() => navigator.clipboard.writeText(selectedCitation)}
               aria-label="Copy citation to clipboard"
             >
               Copy to Clipboard
@@ -228,7 +228,7 @@
         </div>
 
         <div class="dialog-footer">
-          <button type="button" class="btn-close" onclick={() => (showCitationDialog = false)} aria-label="Close dialog"
+          <button type="button" class="btn-close" on:click={() => (showCitationDialog = false)} aria-label="Close dialog"
             >Close</button
           >
         </div>

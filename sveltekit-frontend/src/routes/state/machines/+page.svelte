@@ -164,21 +164,21 @@ https://svelte.dev/e/expected_token -->
                   <button class="nes-btn"
                     variant="ghost"
                     size="sm"
-                    onclick={() => (window.location.href = `/state/transitions?machine=${machine.id}`)}
+                    on:click={() => (window.location.href = `/state/transitions?machine=${machine.id}`)}
                   >
                     View Transitions
                   </button>
                   <button class="nes-btn"
                     variant="ghost"
                     size="sm"
-                    onclick={() => restartMachine(machine.id)}
+                    on:click={() => restartMachine(machine.id)}
                   >
                     Restart
                   </button>
                   {#if machine.status === 'running'}
                     <button class="nes-btn is-error"
                       size="sm"
-                      onclick={() => stopMachine(machine.id)}
+                      on:click={() => stopMachine(machine.id)}
                     >
                       Stop
                     </button>

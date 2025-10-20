@@ -466,7 +466,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
         <button
           type="button"
           class="bits-btn px-4 py-2 rounded bg-gray-100 text-gray-800"
-          onclick={() => clickFileInput('file-input')}
+          on:click={() => clickFileInput('file-input')}
         >
           Select Files
         </button>
@@ -512,7 +512,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
                 <button
                   type="button"
                   class="bits-btn px-2 py-1 text-sm rounded bg-gray-100 text-gray-800"
-                  onclick={() => removeFile(index)}
+                  on:click={() => removeFile(index)}
                   aria-label="Remove file"
                 >
                   <X class="w-4 h-4" />
@@ -532,7 +532,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
             <button
               type="button"
               class="bits-btn px-4 py-2 rounded bg-gray-100 text-gray-800"
-              onclick={() => clickFileInput('add-more-files')}
+              on:click={() => clickFileInput('add-more-files')}
               disabled={selectedFiles.length >= Number(maxFiles ?? 10)}
             >
               Add More Files
@@ -540,7 +540,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
             <button
               type="button"
               class="bits-btn px-4 py-2 rounded bg-blue-600 text-white"
-              onclick={uploadEvidence}
+              on:click={uploadEvidence}
               disabled={uploading || !evidenceTitle.trim()}
             >
               {#if uploading}
@@ -683,7 +683,7 @@ Features: MinIO storage, AI analysis, multi-file support, drag-drop
           <button
             type="button"
             class="bits-btn px-4 py-2 rounded bg-gray-100 text-gray-800"
-            onclick={() => {
+            on:click={() => {
               uploadResults = [];
               selectedFiles = [];
             }}

@@ -199,7 +199,7 @@
       <div class="flex flex-wrap gap-2">
         <span class="text-sm nes-text is-disabled">Try:</span>
         {#each ['property ownership transfer', 'contract liability clauses', 'employment agreements', 'intellectual property rights'] as example}
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (query = example)} disabled={isSearching}>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={() => (query = example)} disabled={isSearching}>
             {example}
           </Button>
         {/each}
@@ -251,7 +251,7 @@
           <button
             type="button"
             class="w-full text-left hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-purple-500 nes-container"
-            onclick={() => (selectedResult = result)}
+            on:click={() => (selectedResult = result)}
             aria-label={`Open ${result.title}`}
           >
             <div class="yorha-panel-content pt-6">
@@ -341,7 +341,7 @@
           <Button
             class="bits-btn"
             variant="ghost"
-            onclick={() => {
+            on:click={() => {
               results = demoResults;
               metrics = { totalDocuments: 1250, searchTime: 45, vectorDimensions: 384, similarityThreshold: 0.7 };
             }}
@@ -360,7 +360,7 @@
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center justify-between">
           {selectedResult.title}
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (selectedResult = null)}>×</Button>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={() => (selectedResult = null)}>×</Button>
         </h3>
       </div>
       <div class="yorha-panel-content space-y-4">

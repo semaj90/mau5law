@@ -173,7 +173,7 @@ https://svelte.dev/e/attribute_duplicate -->
           type="checkbox"
           class="sr-only peer"
           bind:checked={trainingEnabled}
-          onclick={handleTrainingToggle}
+          on:click={handleTrainingToggle}
         />
         <div class="w-14 h-8 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-cyan-300/20 rounded-full peer peer-checked:after:translate-x-6 peer-checked:after:border-white after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-cyan-600"></div>
       </label>
@@ -221,7 +221,7 @@ Select Files
                 </div>
               </div>
               <button
-                onclick={() => removeFile(index)}
+                on:click={() => removeFile(index)}
                 class="text-red-400 hover:text-red-300 p-1 rounded hover:bg-red-500/20 transition-colors"
               >
                 ✕
@@ -231,7 +231,7 @@ Select Files
         </div>
         {#if trainingEnabled}
           <button class="nes-btn"
-            onclick={() => startTraining(selectedFiles)}
+            on:click={() => startTraining(selectedFiles)}
             class="bits-btn w-full bg-green-600 hover:bg-green-700"
             disabled={currentJob?.status === 'running'}
           >
@@ -320,22 +320,22 @@ Select Files
         <!-- Training Controls -->
         <div class="flex gap-3">
           {#if currentJob.status === 'running'}
-            <Button class="bits-btn" onclick={pauseTraining} variant="ghost" size="sm">
+            <Button class="bits-btn" on:click={pauseTraining} variant="ghost" size="sm">
 ⏸️ Pause
 </Button>
-            <Button class="bits-btn" onclick={stopTraining} variant="error" size="sm">
+            <Button class="bits-btn" on:click={stopTraining} variant="error" size="sm">
 ⏹️ Stop
 </Button>
           {:else if currentJob.status === 'paused'}
-            <Button class="bits-btn" onclick={resumeTraining} variant="default" size="sm">
+            <Button class="bits-btn" on:click={resumeTraining} variant="default" size="sm">
 ▶️ Resume
 </Button>
-            <Button class="bits-btn" onclick={stopTraining} variant="error" size="sm">
+            <Button class="bits-btn" on:click={stopTraining} variant="error" size="sm">
 ⏹️ Stop
 </Button>
           {/if}
           <Button class="bits-btn"
-            onclick={() =>
+            on:click={() =>
 showAdvancedConfig = !showAdvancedConfig}
             variant="ghost"
             size="sm"

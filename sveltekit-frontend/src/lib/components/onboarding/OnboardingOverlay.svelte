@@ -246,7 +246,7 @@ https://svelte.dev/e/js_parse_error -->
       class="w-4 h-4"
       role="button"
       tabindex={0}
-      onclick={() => closeOnboarding()}
+      on:click={() => closeOnboarding()}
       keydown={(e: KeyboardEvent) => {
         if (e.key === "Escape") {
           closeOnboarding();
@@ -286,7 +286,7 @@ https://svelte.dev/e/js_parse_error -->
               class="bits-btn w-4 h-4"
               variant="ghost"
               size="sm"
-              onclick={() =>
+              on:click={() =>
 toggleAutoProgress()}
               aria-label={isPlaying
                 ? "Pause auto-progress"
@@ -302,7 +302,7 @@ toggleAutoProgress()}
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            onclick={() =>
+            on:click={() =>
 closeOnboarding()}
             aria-label="Close onboarding"
           >
@@ -364,7 +364,7 @@ closeOnboarding()}
       <div class="w-4 h-4">
         <div class="w-4 h-4">
           {#if allowSkip}
-            <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
+            <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
 skipOnboarding()}>
               <SkipForward class="w-4 h-4" />
               Skip Tour
@@ -379,7 +379,7 @@ skipOnboarding()}>
                   class="w-4 h-4"
                   class:active={index === currentStep}
                   class:completed={index < currentStep}
-                  onclick={() => goToStep(index)}
+                  on:click={() => goToStep(index)}
                   aria-label={"Go to step " + (index + 1) + ": " + step.title}
                 >
                   {#if index < currentStep}
@@ -396,14 +396,14 @@ skipOnboarding()}>
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            onclick={() =>
+            on:click={() =>
 previousStep()}
             disabled={currentStep === 0}
           >
             <ArrowLeft class="w-4 h-4" />
             Back
 </Button>
-          <Button class="bits-btn" onclick={() =>
+          <Button class="bits-btn" on:click={() =>
 nextStep()} size="sm">
             {#if currentStep === steps.length - 1}
               <Check class="w-4 h-4" />

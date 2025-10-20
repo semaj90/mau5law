@@ -103,13 +103,13 @@
       {/if}
       <div class="error-actions">
         {#if showRefreshButton}
-          <button class="nes-btn is-primary" onclick={refreshPage}> Try Again </button>
+          <button class="nes-btn is-primary" on:click={refreshPage}> Try Again </button>
         {/if}
-        <button class="nes-btn" variant="ghost" onclick={goHome}> Go Home </button>
+        <button class="nes-btn" variant="ghost" on:click={goHome}> Go Home </button>
         {#if showReportButton}
-          <button class="nes-btn" variant="ghost" onclick={reportError}> Report Issue </button>
+          <button class="nes-btn" variant="ghost" on:click={reportError}> Report Issue </button>
         {/if}
-        <button class="nes-btn" variant="ghost" size="sm" onclick={reset}> Reset </button>
+        <button class="nes-btn" variant="ghost" size="sm" on:click={reset}> Reset </button>
       </div>
     </div>
   </div>

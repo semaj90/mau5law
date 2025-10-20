@@ -411,7 +411,7 @@
     <div class="error-overlay">
       <p>Error: {error}</p>
       <button
-        onclick={() => {
+        on:click={() => {
           error = null;
         }}>Dismiss</button
       >
@@ -426,28 +426,28 @@
   {#if mode !== 'courtroom' && isReady}
     <div class="controls-overlay">
       <button
-        onclick={() => evidenceCanvas.setMode('view')}
+        on:click={() => evidenceCanvas.setMode('view')}
         class:active={evidenceCanvas.getCanvasState().mode === 'view'}
       >
         View
       </button>
       <button
-        onclick={() => evidenceCanvas.setMode('edit')}
+        on:click={() => evidenceCanvas.setMode('edit')}
         class:active={evidenceCanvas.getCanvasState().mode === 'edit'}
       >
         Edit
       </button>
       <button
-        onclick={() => evidenceCanvas.setMode('present')}
+        on:click={() => evidenceCanvas.setMode('present')}
         class:active={evidenceCanvas.getCanvasState().mode === 'present'}
       >
         Present
       </button>
-      <button onclick={() => evidenceCanvas.toggleConnections()}>
+      <button on:click={() => evidenceCanvas.toggleConnections()}>
         {evidenceCanvas.getCanvasState().showConnections ? 'Hide' : 'Show'} Connections
       </button>
-      <button onclick={fitToContent}>Fit to Content</button>
-      <button onclick={clearCanvas}>Clear</button>
+      <button on:click={fitToContent}>Fit to Content</button>
+      <button on:click={clearCanvas}>Clear</button>
     </div>
   {/if}
 </div>

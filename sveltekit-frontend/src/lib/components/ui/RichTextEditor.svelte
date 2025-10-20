@@ -192,28 +192,28 @@ https://svelte.dev/e/js_parse_error -->
     </select>
     <div class="space-y-4"></div>
     <!-- Text Formatting -->
-    <button type="button" class="space-y-4" onclick={() => toggleBold()} title="Bold">
+    <button type="button" class="space-y-4" on:click={() => toggleBold()} title="Bold">
       <Bold class="space-y-4" />
     </button>
-    <button type="button" class="space-y-4" onclick={() => toggleItalic()} title="Italic">
+    <button type="button" class="space-y-4" on:click={() => toggleItalic()} title="Italic">
       <Italic class="space-y-4" />
     </button>
     <div class="space-y-4"></div>
     <!-- Lists -->
-    <button type="button" class="space-y-4" onclick={() => toggleBulletList()} title="Bullet List">
+    <button type="button" class="space-y-4" on:click={() => toggleBulletList()} title="Bullet List">
       <List class="space-y-4" />
     </button>
-    <button type="button" class="space-y-4" onclick={() => toggleOrderedList()} title="Numbered List">
+    <button type="button" class="space-y-4" on:click={() => toggleOrderedList()} title="Numbered List">
       <ListOrdered class="space-y-4" />
     </button>
     <div class="space-y-4"></div>
     <!-- Image -->
-    <button type="button" class="space-y-4" onclick={() => addImage()} title="Add Image">
+    <button type="button" class="space-y-4" on:click={() => addImage()} title="Add Image">
       <ImageIcon class="space-y-4" />
     </button>
     <div class="space-y-4"></div>
     <!-- Save Button -->
-    <button type="button" class="space-y-4" onclick={() => saveContent()} title="Save Content">
+    <button type="button" class="space-y-4" on:click={() => saveContent()} title="Save Content">
       <Save class="space-y-4" />
       Save
     </button>

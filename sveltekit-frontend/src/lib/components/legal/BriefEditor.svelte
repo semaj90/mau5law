@@ -265,13 +265,13 @@
             </div>
           </div>
           <Button
-            onclick={saveBrief}
+            on:click={saveBrief}
             disabled={isAutoSaving}
             style="background: {briefBuilder.styling.colors.evidence}"
           >
             {isAutoSaving ? '💾 Saving...' : '💾 Save Brief'}
           </Button>
-          <Button onclick={() => (citationPanel = !citationPanel)} variant="outline">📚 Citations</Button>
+          <Button on:click={() => (citationPanel = !citationPanel)} variant="outline">📚 Citations</Button>
         </div>
       </CardTitle>
     </CardHeader>
@@ -307,14 +307,14 @@
     <div class="section-nav">
       <div class="nav-header">
         <h3>Brief Sections</h3>
-        <Button onclick={addSection} size="sm">➕ Add Section</Button>
+        <Button on:click={addSection} size="sm">➕ Add Section</Button>
       </div>
       <div class="section-list">
         {#each briefData.sections as section (section.id)}
           <button
             class="section-item"
             class:active={selectedSection === section.id}
-            onclick={() => (selectedSection = section.id)}
+            on:click={() => (selectedSection = section.id)}
             transition:fade
           >
             <div class="section-header">
@@ -339,8 +339,8 @@
             <span class="section-type">{currentSection.type.replace('_', ' ').toUpperCase()}</span>
           </div>
           <div class="editor-tools">
-            <Button onclick={() => getAISuggestions(currentSection.id)} size="sm">🤖 AI Suggestions</Button>
-            <Button onclick={checkCitations} size="sm" variant="outline">🔍 Check Citations</Button>
+            <Button on:click={() => getAISuggestions(currentSection.id)} size="sm">🤖 AI Suggestions</Button>
+            <Button on:click={checkCitations} size="sm" variant="outline">🔍 Check Citations</Button>
           </div>
         </div>
         <div class="editor-content">
@@ -366,7 +366,7 @@
         <div class="section-citations">
           <div class="citations-header">
             <h4>Citations ({currentSection.citations.length})</h4>
-            <Button onclick={addCitation} size="sm">➕ Add Citation</Button>
+            <Button on:click={addCitation} size="sm">➕ Add Citation</Button>
           </div>
           <div class="citations-list">
             {#each currentSection.citations as citation (citation.id)}
@@ -407,7 +407,7 @@
       <div class="citation-panel" transition:fly={{ x: 300, duration: 300 }}>
         <div class="panel-header">
           <h3>📚 All Citations</h3>
-          <Button onclick={() => (citationPanel = false)} size="sm">✕</Button>
+          <Button on:click={() => (citationPanel = false)} size="sm">✕</Button>
         </div>
         <div class="panel-content">
           {#each briefData.sections as section}

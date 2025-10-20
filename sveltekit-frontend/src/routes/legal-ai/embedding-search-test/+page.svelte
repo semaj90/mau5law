@@ -332,14 +332,14 @@ await checkSystemHealth();
       </div>
       <div class="flex space-x-4">
         <button
-          onclick={submitEmbedding}
+          on:click={submitEmbedding}
           disabled={isLoading}
           class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? 'Processing...' : 'Submit for Embedding (Ollama)'}
         </button>
         <button
-          onclick={testCUDAEmbedding}
+          on:click={testCUDAEmbedding}
           disabled={isLoading || cudaStatus.status !== 'healthy'}
           class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -377,14 +377,14 @@ await checkSystemHealth();
       </div>
       <div class="flex space-x-4">
         <button
-          onclick={performSearch}
+          on:click={performSearch}
           disabled={isLoading}
           class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? 'Searching...' : 'Simple Search (GET)'}
         </button>
         <button
-          onclick={performAdvancedSearch}
+          on:click={performAdvancedSearch}
           disabled={isLoading}
           class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >

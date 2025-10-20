@@ -240,7 +240,7 @@ ${scanlinePosition}%;
   bind:this={card}
   class={cardClasses}
   style={cardStyle}
-  onclick={handleClick}
+  on:click={handleClick}
   onmouseenter={handleMouseEnter}
   onmouseleave={handleMouseLeave}
   role={interactive ? 'button' : 'article'}

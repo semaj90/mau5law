@@ -54,7 +54,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     aria-label={title
       ? `${title} overlay - click or press Enter/Space to close`
       : 'Drawer overlay - press Enter/Space or click to close'}
-    onclick={handleBackdropClick}
+    on:click={handleBackdropClick}
     onkeydown={handleBackdropKey}
   >
     <div
@@ -65,7 +65,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
       aria-label={title ? title : 'Drawer'}
       tabindex="0"
       bind:this={dialogEl}
-      onclick={e => e.stopPropagation()}
+      on:click={e => e.stopPropagation()}
       onkeydown={handleDialogKey}
     >
       <div class="drawer-header">
@@ -77,7 +77,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
             <p class="drawer-description">{description}</p>
           {/if}
         </div>
-        <button class="drawer-close" aria-label="Close drawer" onclick={handleClose}>
+        <button class="drawer-close" aria-label="Close drawer" on:click={handleClose}>
           <X size="24" />
         </button>
       </div>

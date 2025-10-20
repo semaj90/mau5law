@@ -252,7 +252,7 @@ https: //svelte.dev/e/js_parse_error -->
   <div class="form-footer">
     <div class="form-actions">
       {#if showCancel}
-        <button type="button" class="form-button cancel" disabled={loading} onclick={handleCancel}>
+        <button type="button" class="form-button cancel" disabled={loading} on:click={handleCancel}>
           <span class="button-icon">✕</span>
           {cancelLabel}
         </button>
@@ -261,7 +261,7 @@ https: //svelte.dev/e/js_parse_error -->
         type="submit"
         class="form-button submit"
         disabled={loading || Object.keys(errors).length > 0}
-        onclick={handleSubmit}
+        on:click={handleSubmit}
       >
         {#if loading}
           <span class="button-spinner">◌</span>

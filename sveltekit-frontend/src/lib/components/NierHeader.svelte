@@ -37,28 +37,28 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
   <div class="space-y-4">
     <!-- Logo and Brand -->
     <div class="space-y-4">
-      <button class="space-y-4" onclick={() => handleNavigation('/')} aria-label="Go to homepage">
+      <button class="space-y-4" on:click={() => handleNavigation('/')} aria-label="Go to homepage">
         <Palette size={24} />
         <span class="space-y-4">Prosecutor Canvas</span>
       </button>
     </div>
     <!-- Navigation -->
     <nav class="space-y-4" aria-label="Main navigation">
-      <button class="space-y-4" onclick={() => handleNavigation('/dashboard')} aria-label="Dashboard">
+      <button class="space-y-4" on:click={() => handleNavigation('/dashboard')} aria-label="Dashboard">
         <Home size={18} />
         <span>Dashboard</span>
       </button>
-      <button class="space-y-4" onclick={() => handleNavigation('/cases')} aria-label="Cases">
+      <button class="space-y-4" on:click={() => handleNavigation('/cases')} aria-label="Cases">
         <FolderOpen size={18} />
         <span>Cases</span>
       </button>
-      <button class="space-y-4" onclick={() => handleNavigation('/interactive-canvas')} aria-label="Interactive Canvas">
+      <button class="space-y-4" on:click={() => handleNavigation('/interactive-canvas')} aria-label="Interactive Canvas">
         <Palette size={18} />
         <span>Canvas</span>
       </button>
       <button
         class="space-y-4"
-        onclick={() => handleNavigation('/evidence/hash')}
+        on:click={() => handleNavigation('/evidence/hash')}
         aria-label="Hash Verification"
         title="Verify evidence file integrity"
       >
@@ -76,7 +76,7 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
         <div class="space-y-4">
           <button
             class="space-y-4"
-            onclick={() => toggleUserMenu()}
+            on:click={() => toggleUserMenu()}
             aria-label="User menu"
             aria-expanded={userMenuOpen}
           >
@@ -94,16 +94,16 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
           </button>
           {#if userMenuOpen}
             <div class="space-y-4" role="menu">
-              <button class="space-y-4" onclick={() => handleNavigation('/profile')} role="menuitem">
+              <button class="space-y-4" on:click={() => handleNavigation('/profile')} role="menuitem">
                 <UserIcon size={16} />
                 Profile
               </button>
-              <button class="space-y-4" onclick={() => handleNavigation('/settings')} role="menuitem">
+              <button class="space-y-4" on:click={() => handleNavigation('/settings')} role="menuitem">
                 <Settings size={16} />
                 Settings
               </button>
               <hr class="space-y-4" />
-              <button class="space-y-4" onclick={() => handleLogout()} role="menuitem">
+              <button class="space-y-4" on:click={() => handleLogout()} role="menuitem">
                 <LogOut size={16} />
                 Sign Out
               </button>
@@ -111,7 +111,7 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
           {/if}
         </div>
       {:else}
-        <button class="space-y-4" onclick={() => handleNavigation('/login')} aria-label="Sign in"> Sign In </button>
+        <button class="space-y-4" on:click={() => handleNavigation('/login')} aria-label="Sign in"> Sign In </button>
       {/if}
     </div>
   </div>
@@ -120,7 +120,7 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
 {#if userMenuOpen}
   <div
     class="space-y-4"
-    onclick={() => closeUserMenu()}
+    on:click={() => closeUserMenu()}
     keydown={e => e.key === 'Escape' && closeUserMenu()}
     role="button"
     tabindex={-1}

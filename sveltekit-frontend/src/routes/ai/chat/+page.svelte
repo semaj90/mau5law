@@ -518,7 +518,7 @@
           <Button
             class="bits-btn justify-start"
             variant="secondary"
-            onclick={() => handleQuickQuery('Explain contract formation requirements')}
+            on:click={() => handleQuickQuery('Explain contract formation requirements')}
             disabled={isStreaming}
             aria-label="Explain contract formation requirements"
           >
@@ -527,7 +527,7 @@
           <Button
             class="bits-btn justify-start"
             variant="secondary"
-            onclick={() => handleQuickQuery('What is the chain of custody for evidence?')}
+            on:click={() => handleQuickQuery('What is the chain of custody for evidence?')}
             disabled={isStreaming}
             aria-label="What is the chain of custody for evidence?"
           >
@@ -536,7 +536,7 @@
           <Button
             class="bits-btn justify-start"
             variant="secondary"
-            onclick={() => handleQuickQuery('Explain liability limitations in contracts')}
+            on:click={() => handleQuickQuery('Explain liability limitations in contracts')}
             disabled={isStreaming}
             aria-label="Explain liability limitations in contracts"
           >
@@ -545,7 +545,7 @@
           <Button
             class="bits-btn justify-start"
             variant="secondary"
-            onclick={() => handleQuickQuery('What are the elements of negligence?')}
+            on:click={() => handleQuickQuery('What are the elements of negligence?')}
             disabled={isStreaming}
             aria-label="What are the elements of negligence?"
           >
@@ -572,7 +572,7 @@
               <Button
                 variant="secondary"
                 class="bits-btn bits-nes-btn"
-                onclick={clearChat}
+                on:click={clearChat}
                 disabled={isStreaming}
                 aria-label="Clear chat"
               >
@@ -633,7 +633,7 @@
                 aria-label="Legal question input"
               />
               <Button
-                onclick={sendMessage}
+                on:click={sendMessage}
                 disabled={!currentMessage.trim() || isStreaming}
                 class="px-6 bits-btn"
                 aria-label="Send message"
@@ -672,7 +672,7 @@
               </CardTitle>
               <Button
                 variant="secondary"
-                onclick={() => (showTimeline = false)}
+                on:click={() => (showTimeline = false)}
                 class="nes-btn bits-btn"
                 aria-label="Close timeline"
               >
@@ -695,7 +695,7 @@
                     </div>
                     <Button
                       variant="secondary"
-                      onclick={() => selectPOI(poi)}
+                      on:click={() => selectPOI(poi)}
                       class="nes-btn bits-btn"
                       aria-label={`View details for ${poi.name}`}
                     >
@@ -848,7 +848,7 @@
             <CardContent class="space-y-3">
               <Button
                 variant="secondary"
-                onclick={checkSystemStatus}
+                on:click={checkSystemStatus}
                 class="w-full justify-start bits-btn"
                 aria-label="Refresh system status"
               >
@@ -866,7 +866,7 @@
               <Button
                 class="bits-btn w-full justify-start"
                 variant="secondary"
-                onclick={() => window.open('/api/v1/cluster/health', '_blank')}
+                on:click={() => window.open('/api/v1/cluster/health', '_blank')}
                 aria-label="Open health report in new tab"
               >
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -883,7 +883,7 @@
               <Button
                 variant="secondary"
                 class="w-full justify-start bits-btn"
-                onclick={analyzePersonsOfInterest}
+                on:click={analyzePersonsOfInterest}
                 disabled={timelineLoading}
                 aria-label="Analyze evidence"
               >
@@ -911,7 +911,7 @@
 
               <Button
                 variant="secondary"
-                onclick={generateUserActivityTimeline}
+                on:click={generateUserActivityTimeline}
                 disabled={activityLoading}
                 class="w-full justify-start bits-btn"
                 aria-label="Generate user activity timeline"
@@ -1000,7 +1000,7 @@
             {/if}
           </div>
         </div>
-        <Button variant="secondary" size="sm" onclick={closePOIDetails} class="bits-btn" aria-label="Close">
+        <Button variant="secondary" size="sm" on:click={closePOIDetails} class="bits-btn" aria-label="Close">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
@@ -1103,9 +1103,9 @@
 
       <!-- Modal Footer -->
       <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
-        <Button variant="secondary" onclick={closePOIDetails} class="bits-btn" aria-label="Close">Close</Button>
+        <Button variant="secondary" on:click={closePOIDetails} class="bits-btn" aria-label="Close">Close</Button>
         <Button
-          onclick={() => {
+          on:click={() => {
             handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`);
             closePOIDetails();
           }}

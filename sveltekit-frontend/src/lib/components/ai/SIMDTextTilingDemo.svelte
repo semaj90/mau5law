@@ -308,7 +308,7 @@ https://svelte.dev/e/expected_token -->
         </div>
         <div class="flex items-end">
           <Button class="bits-btn"
-            onclick={() =>
+            on:click={() =>
 processSingleText(Math.floor(Math.random() * sampleTexts.length))}
             disabled={isProcessing}
             class="w-full text-sm"
@@ -318,11 +318,11 @@ processSingleText(Math.floor(Math.random() * sampleTexts.length))}
       </div>
       <!-- Action Buttons -->
       <div class="flex flex-wrap gap-2">
-        <Button class="bits-btn" onclick={processBatchTexts} disabled={isProcessing} variant="ghost" size="sm">
+        <Button class="bits-btn" on:click={processBatchTexts} disabled={isProcessing} variant="ghost" size="sm">
 📦 Batch Process ({sampleTexts.length})
-        <Button class="bits-btn" onclick={benchmarkCompressionLevels} disabled={isProcessing} variant="ghost" size="sm">
+        <Button class="bits-btn" on:click={benchmarkCompressionLevels} disabled={isProcessing} variant="ghost" size="sm">
 🧪 Compression Benchmark
-        <Button class="bits-btn" onclick={clearAll} variant="ghost" size="sm">
+        <Button class="bits-btn" on:click={clearAll} variant="ghost" size="sm">
 🗑️ Clear All
       </div>
       <!-- System Statistics -->
@@ -483,7 +483,7 @@ processSingleText(Math.floor(Math.random() * sampleTexts.length))}
         <h3 class="text-lg font-medium mb-2">No SIMD Text Processing Results Yet</h3>
         <p class="mb-4">Process your first text with ultra-compressed 7-bit tiling!</p>
         <Button class="bits-btn"
-          onclick={() =>
+          on:click={() =>
 processSingleText(0)}
           disabled={isProcessing}
         >
@@ -497,7 +497,7 @@ processSingleText(0)}
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex justify-between items-center">
           📝 Processing Logs
-          <Button class="bits-btn" onclick={() =>
+          <Button class="bits-btn" on:click={() =>
 processingLogs = []} variant="ghost" size="sm">
             Clear Logs
         </h3>

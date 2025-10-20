@@ -738,7 +738,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
             <button
               type="button"
               class="nes-btn {gamingMode ? 'is-success' : ''}"
-              onclick={() => (gamingMode = !gamingMode)}
+              on:click={() => (gamingMode = !gamingMode)}
               title="Toggle Gaming Mode"
             >
               🎮 Gaming
@@ -746,7 +746,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
             <button
               type="button"
               class="nes-btn {retroTerminalMode ? 'is-primary' : ''}"
-              onclick={() => (retroTerminalMode = !retroTerminalMode)}
+              on:click={() => (retroTerminalMode = !retroTerminalMode)}
               title="Toggle Terminal Mode"
             >
               💻 Terminal
@@ -781,7 +781,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                 <button
                   type="button"
                   class="w-full text-left p-2 hover:bg-nier-accent hover:text-white transition-colors rounded mb-1"
-                  onclick={() => applySuggestion(suggestion)}
+                  on:click={() => applySuggestion(suggestion)}
                 >
                   <div class="flex justify-between items-center">
                     <span class="font-medium">{suggestion.text}</span>
@@ -840,7 +840,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
           <button
             type="button"
             class="nes-btn"
-            onclick={() => {
+            on:click={() => {
               if (selectedEvidence.length === filteredEvidence.length) {
                 selectedEvidence = [];
               } else {
@@ -871,7 +871,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
           <button
             type="button"
             class="nes-btn {isAnalyzing ? 'is-disabled' : 'is-primary'}"
-            onclick={performAdvancedAnalysis}
+            on:click={performAdvancedAnalysis}
             disabled={selectedEvidence.length === 0 || isAnalyzing}
           >
             {#if isAnalyzing}
@@ -947,7 +947,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                       <button
                         type="button"
                         class="nes-btn is-primary text-sm"
-                        onclick={() => (currentBucket = b)}
+                        on:click={() => (currentBucket = b)}
                         title={`Select bucket ${b}`}
                       >
                         📦 {b}
@@ -1031,7 +1031,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                   <button
                     type="button"
                     class="ml-2 nes-btn is-error is-small"
-                    onclick={() => removeEvidence(evidence.id)}
+                    on:click={() => removeEvidence(evidence.id)}
                     title="Remove evidence"
                   >
                     ✖
@@ -1144,8 +1144,8 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         present.
       </p>
       <div class="flex justify-end gap-2">
-        <button class="nes-btn" onclick={cancelDelete}>Cancel</button>
-        <button class="nes-btn is-error" onclick={confirmDelete}>Delete</button>
+        <button class="nes-btn" on:click={cancelDelete}>Cancel</button>
+        <button class="nes-btn is-error" on:click={confirmDelete}>Delete</button>
       </div>
     </div>
   </div>

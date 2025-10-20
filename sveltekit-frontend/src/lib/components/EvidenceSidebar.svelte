@@ -343,7 +343,7 @@
       <Button
         variant="ghost"
         size="sm"
-        onclick={() => collapsed = true}
+        on:click={() => collapsed = true}
         class="p-1"
       >
         <ChevronRight class="w-4 h-4" />
@@ -352,7 +352,7 @@
       <Button
         variant="ghost"
         size="sm"
-        onclick={() => collapsed = false}
+        on:click={() => collapsed = false}
         class="p-1 mx-auto"
       >
         <ChevronDown class="w-4 h-4" />
@@ -413,7 +413,7 @@
         <Button
           variant="ghost"
           size="sm"
-          onclick={() => sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'}
+          on:click={() => sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'}
           class="px-2"
         >
           <SortAsc class="w-3 h-3" class:rotate-180={sortOrder === 'desc'} />
@@ -424,7 +424,7 @@
         <Button
           variant="ghost"
           size="sm"
-          onclick={() => createNewItem('case')}
+          on:click={() => createNewItem('case')}
           title="New Case"
           class="flex-1 text-xs"
         >
@@ -434,7 +434,7 @@
         <Button
           variant="ghost"
           size="sm"
-          onclick={() => createNewItem('evidence')}
+          on:click={() => createNewItem('evidence')}
           title="New Evidence"
           class="flex-1 text-xs"
         >
@@ -457,7 +457,7 @@
           <Button
             variant="ghost"
             size="sm"
-            onclick={loadUserData}
+            on:click={loadUserData}
             class="mt-2 text-xs"
           >
             Retry
@@ -468,7 +468,7 @@
         {#if recentActivity.length > 0}
           <div class="p-4">
             <button
-              onclick={() => toggleFolder('recent')}
+              on:click={() => toggleFolder('recent')}
               class="flex items-center gap-2 w-full text-left text-sm font-medium text-gray-700 hover:text-gray-900"
             >
               {#if expandedFolders.has('recent')}
@@ -507,7 +507,7 @@
             {#each filteredItems as item (item.id)}
               {@const Icon = getItemIcon(item._type || item.type)}
               <button
-                onclick={() => navigateToItem(item)}
+                on:click={() => navigateToItem(item)}
                 class={cn(
                   "w-full flex items-start gap-3 p-2 text-left rounded-md hover:bg-gray-50 transition-colors",
                   selectedItems.has(item.id) && "bg-blue-50 border border-blue-200"
@@ -563,7 +563,7 @@
                   <Button
                     variant="ghost"
                     size="sm"
-                    onclick={() => searchQuery = ''}
+                    on:click={() => searchQuery = ''}
                     class="mt-2 text-xs"
                   >
                     Clear search
@@ -580,7 +580,7 @@
       <Button
         variant="outline"
         size="sm"
-        onclick={() => goto('/ai-assistant')}
+        on:click={() => goto('/ai-assistant')}
         class="w-full justify-start text-xs"
       >
         <Brain class="w-4 h-4 mr-2" />
@@ -589,7 +589,7 @@
       <Button
         variant="ghost"
         size="sm"
-        onclick={() => goto('/settings')}
+        on:click={() => goto('/settings')}
         class="w-full justify-start text-xs"
       >
         <Settings class="w-4 h-4 mr-2" />

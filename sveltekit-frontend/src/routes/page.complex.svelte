@@ -102,11 +102,11 @@
         <div class="text-sm yorha-text-muted">YoRHa Detective Interface • 8/20/2025 16:08:30</div>
       </div>
       <div class="flex items-center space-x-3">
-        <button class="yorha-btn yorha-nes-btn is-primary" onclick={handleNewCase}>
+        <button class="yorha-btn yorha-nes-btn is-primary" on:click={handleNewCase}>
           <Plus class="w-4 h-4 mr-2" />
           NEW CASE
         </button>
-        <button class="yorha-btn yorha-nes-btn" onclick={handleGlobalSearch}>
+        <button class="yorha-btn yorha-nes-btn" on:click={handleGlobalSearch}>
           <Search class="w-4 h-4 mr-2" />
           GLOBAL SEARCH
         </button>
@@ -214,7 +214,7 @@
           <div class="yorha-nier-bits-nier-bits-nier-bits-card yorha-slide-in">
             <div class="yorha-nier-bits-yorha-panel-header flex items-center justify-between">
               <h2 class="yorha-nier-bits-nes-text is-primary">ACTIVE CASES</h2>
-              <button class="yorha-btn yorha-nes-btn text-sm" onclick={handleViewAll}>
+              <button class="yorha-btn yorha-nes-btn text-sm" on:click={handleViewAll}>
                 VIEW ALL
                 <ChevronRight class="w-4 h-4 ml-1" />
               </button>

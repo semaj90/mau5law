@@ -152,7 +152,7 @@ console.log('🔧 WebAssembly Integration Demo initialized');
       <div class="flex items-center gap-3 mb-6">
         <Server class="w-6 h-6 text-amber-400" />
         <h2 class="text-xl font-semibold text-amber-400">Integration Status</h2>
-        <Button onclick={checkAllIntegrations} disabled={isLoading} size="sm" variant="ghost">
+        <Button on:click={checkAllIntegrations} disabled={isLoading} size="sm" variant="ghost">
           {isLoading ? 'Checking...' : 'Refresh Status'}
         </Button>
       </div>
@@ -347,10 +347,10 @@ console.log('🔧 WebAssembly Integration Demo initialized');
       </div>
       <!-- Test Buttons -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <Button onclick={testWebAssemblyRuntime} variant="primary" class="w-full">Test WebAssembly Runtime</Button>
-        <Button onclick={testDatabaseIntegration} variant="secondary" class="w-full">Test Database</Button>
-        <Button onclick={testWebGPUCapabilities} variant="secondary" class="w-full">Test WebGPU</Button>
-        <Button onclick={testCacheSystem} variant="secondary" class="w-full">Test Cache</Button>
+        <Button on:click={testWebAssemblyRuntime} variant="primary" class="w-full">Test WebAssembly Runtime</Button>
+        <Button on:click={testDatabaseIntegration} variant="secondary" class="w-full">Test Database</Button>
+        <Button on:click={testWebGPUCapabilities} variant="secondary" class="w-full">Test WebGPU</Button>
+        <Button on:click={testCacheSystem} variant="secondary" class="w-full">Test Cache</Button>
       </div>
       <!-- Test Results -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

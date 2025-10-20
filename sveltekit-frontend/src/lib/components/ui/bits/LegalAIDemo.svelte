@@ -150,7 +150,7 @@
       {#each sampleEvidence as evidence}
         <div
           class="cursor-pointer transform hover:scale-105 transition-transform"
-          onclick={() => handleEvidenceSelect(evidence)}
+          on:click={() => handleEvidenceSelect(evidence)}
         >
           <EvidenceThumbnail
             {evidence}
@@ -206,11 +206,11 @@
   <Card class="p-4">
     <h2 class="text-xl font-semibold mb-4">⚡ Quick Actions</h2>
     <div class="flex flex-wrap gap-3">
-      <Button variant="primary" onclick={() => (showAnalysis = true)}>Run AI Analysis</Button>
-      <Button variant="secondary" onclick={() => console.log('Export case')}>Export Case</Button>
-      <Button variant="success" onclick={() => console.log('Generate report')}>Generate Report</Button>
-      <Button variant="warning" onclick={() => console.log('Flag critical')}>Flag Critical</Button>
-      <Button variant="error" onclick={() => console.log('Archive case')}>Archive Case</Button>
+      <Button variant="primary" on:click={() => (showAnalysis = true)}>Run AI Analysis</Button>
+      <Button variant="secondary" on:click={() => console.log('Export case')}>Export Case</Button>
+      <Button variant="success" on:click={() => console.log('Generate report')}>Generate Report</Button>
+      <Button variant="warning" on:click={() => console.log('Flag critical')}>Flag Critical</Button>
+      <Button variant="error" on:click={() => console.log('Archive case')}>Archive Case</Button>
     </div>
   </Card>
   <!-- Component Stats -->

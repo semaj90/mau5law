@@ -66,7 +66,7 @@ https://svelte.dev/e/js_parse_error -->
           {@const isClickable = index <= currentStep || !step.required}
           <li class="flex-1 min-w-0">
             <button
-              onclick={() => handleStepClick(index)}
+              on:click={() => handleStepClick(index)}
               disabled={!isClickable}
               class="group flex items-center w-full text-left
                                    {isClickable

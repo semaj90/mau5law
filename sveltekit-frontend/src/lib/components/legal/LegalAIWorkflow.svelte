@@ -109,7 +109,7 @@
       <span class="status-indicator {servicesHealth?.recommendationEngine ? 'online' : 'offline'}">
         Recommendation Engine {servicesHealth?.recommendationEngine ? '🟢' : '🔴'}
       </span>
-      <button onclick={checkServicesHealth} class="refresh-btn">🔄</button>
+      <button on:click={checkServicesHealth} class="refresh-btn">🔄</button>
     </div>
   </div>
   <!-- Step Indicator -->
@@ -142,7 +142,7 @@
     <div class="error-message">
       <span class="error-icon">❌</span>
       <span>{error}</span>
-      <button onclick={reset} class="retry-btn">Try Again</button>
+      <button on:click={reset} class="retry-btn">Try Again</button>
     </div>
   {/if}
   <!-- Upload Section -->
@@ -188,7 +188,7 @@
           Risk Assessment
         </label>
       </div>
-      <button onclick={processDocument} disabled={!canProcess} class="process-btn">
+      <button on:click={processDocument} disabled={!canProcess} class="process-btn">
         {isProcessing ? 'Processing...' : 'Analyze Document'}
       </button>
     </div>
@@ -341,8 +341,8 @@
   <!-- Action Buttons -->
   {#if currentStep === 'complete'}
     <div class="action-buttons">
-      <button onclick={reset} class="secondary-btn">Analyze Another Document</button>
-      <button onclick={() => ondispatch?.({ analysisResult, recommendations })} class="primary-btn">
+      <button on:click={reset} class="secondary-btn">Analyze Another Document</button>
+      <button on:click={() => ondispatch?.({ analysisResult, recommendations })} class="primary-btn">
         Export Results
       </button>
     </div>

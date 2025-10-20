@@ -140,7 +140,7 @@ if (!browser) return;
       <div class="flex items-center justify-between mb-4">
         <h1 class="text-4xl font-bold text-gray-900">🗺️ Route Explorer</h1>
         <button
-          onclick={refreshData}
+          on:click={refreshData}
           disabled={loading}
           class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
         >
@@ -158,7 +158,7 @@ if (!browser) return;
       <div class="bg-red-50 border border-red-200 rounded-lg p-6">
         <h2 class="text-red-800 font-semibold mb-2">Error Loading Routes</h2>
         <p class="text-red-600">{error}</p>
-        <button onclick={refreshData} class="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+        <button on:click={refreshData} class="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
           Try Again
         </button>
       </div>
@@ -216,7 +216,7 @@ if (!browser) return;
       <div class="bg-white rounded-xl shadow-sm border p-6 mb-8">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold text-gray-900">Filters</h2>
-          <button onclick={clearFilters} class="text-sm text-gray-600 hover:text-gray-800"> Clear All </button>
+          <button on:click={clearFilters} class="text-sm text-gray-600 hover:text-gray-800"> Clear All </button>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <div>
@@ -287,7 +287,7 @@ if (!browser) return;
             Showing {filteredRoutes.length} of {routeData.data.configRoutes.length} routes
           </p>
           <button
-            onclick={() => (showAnalytics = !showAnalytics)}
+            on:click={() => (showAnalytics = !showAnalytics)}
             class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
           >
             {showAnalytics ? 'Hide' : 'Show'} Analytics

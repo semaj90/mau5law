@@ -66,7 +66,7 @@
 {#if useBits && BitsComponent && !href}
   {#if typeof BitsComponent === 'function' || (BitsComponent && typeof BitsComponent === 'object')}
     {@const Bits = BitsComponent as ComponentType}
-    <Bits class={buttonClass} disabled={isDisabled} {type} aria-label={ariaLabel} onclick={handleClick}>
+    <Bits class={buttonClass} disabled={isDisabled} {type} aria-label={ariaLabel} on:click={handleClick}>
       {#if loading}
         <span class="loader" aria-hidden="true"></span> <span>{loadingText}</span>
       {:else}
@@ -75,7 +75,7 @@
     </Bits>
   {:else}
     <!-- Fallback: render native button if BitsComponent is unusable -->
-    <button {type} class={buttonClass} disabled={isDisabled} aria-label={ariaLabel} onclick={handleClick}>
+    <button {type} class={buttonClass} disabled={isDisabled} aria-label={ariaLabel} on:click={handleClick}>
       {#if loading}
         <span class="loader" aria-hidden="true"></span> <span>{loadingText}</span>
       {:else}
@@ -84,7 +84,7 @@
     </button>
   {/if}
 {:else if href}
-  <a {href} {target} class={buttonClass} role="button" aria-disabled={isDisabled} onclick={handleClick}>
+  <a {href} {target} class={buttonClass} role="button" aria-disabled={isDisabled} on:click={handleClick}>
     {#if loading}
       <span class="loader" aria-hidden="true"></span> <span>{loadingText}</span>
     {:else}
@@ -92,7 +92,7 @@
     {/if}
   </a>
 {:else}
-  <button {type} class={buttonClass} disabled={isDisabled} aria-label={ariaLabel} onclick={handleClick}>
+  <button {type} class={buttonClass} disabled={isDisabled} aria-label={ariaLabel} on:click={handleClick}>
     {#if loading}
       <span class="loader" aria-hidden="true"></span> <span>{loadingText}</span>
     {:else}

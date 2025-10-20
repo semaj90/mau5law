@@ -257,13 +257,13 @@
     <Dialog.Footer class="border-t border-gray-100 p-6 flex justify-end space-x-3">
       <Button class="bits-btn"
         variant="ghost"
-        onclick={() =>
+        on:click={() =>
 onOpenChange(false)}
         disabled={loading.analysis}
       >
         Cancel
       <Button
-        onclick={handleAnalysis}
+        on:click={handleAnalysis}
         disabled={!selectedCaseForAnalysis || loading.analysis || analysisStatus === 'analyzing'}
         class="bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn"
       >

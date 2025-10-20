@@ -58,7 +58,7 @@
   <div
     bind:this={modalElement}
     class="modal-backdrop"
-    onclick={handleOutsideClick}
+    on:click={handleOutsideClick}
     role="presentation"
     aria-hidden="true"
     transition:fade={{ duration: 200 }}
@@ -72,7 +72,7 @@
       {#if title}
         <div class="modal-header">
           <h2 id="modal-title" class="modal-title">{title}</h2>
-          <button type="button" class="modal-close" onclick={handleClose} aria-label="Close">
+          <button type="button" class="modal-close" on:click={handleClose} aria-label="Close">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

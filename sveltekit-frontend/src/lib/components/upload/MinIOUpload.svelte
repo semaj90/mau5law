@@ -218,7 +218,7 @@
         ondrop={handleDrop}
         ondragover={handleDragOver}
         ondragleave={handleDragLeave}
-        onclick={() => fileInput?.click()}
+        on:click={() => fileInput?.click()}
         onkeydown={e => e.key === 'Enter' && fileInput?.click()}
       >
         <input
@@ -240,7 +240,7 @@
             <div class="file-info">
               <div class="file-name">{$form.file.name}</div>
               <div class="file-size">{formatFileSize($form.file.size)}</div>
-              <button type="button" class="remove-file" onclick={removeFile}> ✕ Remove </button>
+              <button type="button" class="remove-file" on:click={removeFile}> ✕ Remove </button>
             </div>
           </div>
         {:else}

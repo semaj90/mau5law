@@ -172,9 +172,9 @@
           </div>
         </div>
         <div class="action-buttons">
-          <button class="nes-btn" onclick={processDocument}>Process Document</button>
-          <button class="nes-btn" onclick={preloadAllLODs}>Preload All LODs</button>
-          <button class="nes-btn" onclick={updateScrollVelocity}>Simulate Scroll</button>
+          <button class="nes-btn" on:click={processDocument}>Process Document</button>
+          <button class="nes-btn" on:click={preloadAllLODs}>Preload All LODs</button>
+          <button class="nes-btn" on:click={updateScrollVelocity}>Simulate Scroll</button>
         </div>
         <div class="nes-field">
           <label class="nes-checkbox">

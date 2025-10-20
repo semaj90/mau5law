@@ -191,7 +191,7 @@
     <div class="flex gap-2 pt-3 border-t">
       <button
         class="flex-1 text-xs bits-btn bits-btn border border-gray-300 rounded px-2 py-1 bg-white"
-        onclick={() => (showFullDetails = !showFullDetails)}
+        on:click={() => (showFullDetails = !showFullDetails)}
         type="button"
       >
         {showFullDetails ? 'Less' : 'More'} Info

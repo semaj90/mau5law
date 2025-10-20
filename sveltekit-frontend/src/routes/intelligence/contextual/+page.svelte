@@ -349,7 +349,7 @@
           <LoadingButton
             loading={isAnalyzing}
             variant="primary"
-            onclick={analyzeContextualQuery}
+            on:click={analyzeContextualQuery}
             loadingText="Analyzing..."
           >
             {#snippet children()}
@@ -390,7 +390,7 @@
                 class:optimistic={isOptimistic}
                 role="button"
                 tabindex="0"
-                onclick={() => openInsightDetails((item as { id?: unknown; data?: unknown; optimistic?: unknown }).data)}
+                on:click={() => openInsightDetails((item as { id?: unknown; data?: unknown; optimistic?: unknown }).data)}
               >
                 <div class="insight-header">
                   <div class="insight-type {getInsightTypeColor((item as { id?: unknown; data?: unknown; optimistic?: unknown }).data.type)}">
@@ -527,7 +527,7 @@
               <LoadingButton
                 loading={isUploading}
                 variant="secondary"
-                onclick={selectFiles}
+                on:click={selectFiles}
                 loadingText="Uploading..."
               >
                 {#snippet children()}
@@ -594,7 +594,7 @@
           </div>
         </div>
         <div class="modal-actions">
-          <button class="nes-btn" variant="ghost" onclick={closeInsightDetails}>
+          <button class="nes-btn" variant="ghost" on:click={closeInsightDetails}>
             Close
           </button>
           <button class="nes-btn is-primary">

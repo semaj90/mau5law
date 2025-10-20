@@ -249,7 +249,7 @@
   <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"> AI Model Selection </label>
   <!-- Trigger Button -->
   <button
-    onclick={() => (isOpen = !isOpen)}
+    on:click={() => (isOpen = !isOpen)}
     class="flex h-12 w-full items-center justify-between rounded-lg border border-gray-300 dark:border-gray-600
            bg-white dark:bg-gray-800 px-3 py-2 text-sm,
            hover:bg-gray-50 dark:hover:bg-gray-700,
@@ -297,7 +297,7 @@
           {@const SvelteComponent_2 = getProviderIcon(model.provider)}
           {@const SvelteComponent_3 = getStatusIcon(model.status)}
           <button
-            onclick={() => selectModel(model)}
+            on:click={() => selectModel(model)}
             class="flex w-full items-center justify-between px-4 py-3 text-sm;
                    hover: bg-gray-100 dark:hover:bg-gray-700;
                    focus:bg-gray-100 dark:focus:bg-gray-700 focus:outline-none
@@ -356,7 +356,7 @@
                 <!-- Load Button -->
                 {#if model.status === 'offline'}
                   <button
-                    onclick={e => {
+                    on:click={e => {
                       e.stopPropagation();
                       loadModel(model);
                     }}
@@ -386,7 +386,7 @@
       <div class="border-t border-gray-200 dark:border-gray-700 px-4 py-3">
         <div class="flex items-center justify-between">
           <button
-            onclick={refreshModelStatuses}
+            on:click={refreshModelStatuses}
             class="text-xs text-blue-600 dark: text-blue-400 hover:text-blue-800 dark:hover:text-blue-300;
                    focus:outline-none focus:underline"
           >

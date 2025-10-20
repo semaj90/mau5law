@@ -52,7 +52,7 @@
         {/if}
       </p>
     </div>
-    <Button class="bits-btn" variant="ghost" size="sm" onclick={handleClear}>Clear Chat</Button>
+    <Button class="bits-btn" variant="ghost" size="sm" on:click={handleClear}>Clear Chat</Button>
   </div>
   <!-- Chat messages -->
   <div bind:this={chatContainer} class="flex-1 overflow-y-auto p-4 space-y-4">

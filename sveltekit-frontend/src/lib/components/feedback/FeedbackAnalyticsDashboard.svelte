@@ -184,14 +184,14 @@ https://svelte.dev/e/component_invalid_directive -->
           </select>
         </div>
         <button
-          onclick={() => loadDashboardData(true)}
+          on:click={() => loadDashboardData(true)}
           disabled={refreshing}
           class="action-button refresh-button"
         >
           <RefreshCw class="w-4 h-4" class:animate-spin={refreshing} />
           {refreshing ? 'Refreshing...' : 'Refresh'}
         </button>
-        <button onclick={exportData} class="action-button export-button">
+        <button on:click={exportData} class="action-button export-button">
           <Download class="w-4 h-4" />
           Export Data
         </button>
@@ -205,7 +205,7 @@ https://svelte.dev/e/component_invalid_directive -->
         <h3 class="font-semibold">Error Loading Analytics</h3>
         <p>{error}</p>
       </div>
-      <button onclick={() => loadDashboardData()} class="retry-button">
+      <button on:click={() => loadDashboardData()} class="retry-button">
         <RefreshCw class="w-4 h-4" />
         Retry
       </button>

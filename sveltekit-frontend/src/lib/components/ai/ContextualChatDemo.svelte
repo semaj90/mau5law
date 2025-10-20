@@ -300,10 +300,10 @@
           </label>
 
           <div class="button-group">
-            <button onclick={clearConversation} disabled={isLoading}>
+            <button on:click={clearConversation} disabled={isLoading}>
               Clear
             </button>
-            <button onclick={sendMessage} disabled={isLoading || !message.trim()}>
+            <button on:click={sendMessage} disabled={isLoading || !message.trim()}>
               {isLoading ? 'Sending...' : 'Send'}
             </button>
           </div>

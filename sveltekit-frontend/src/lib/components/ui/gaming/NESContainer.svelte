@@ -201,7 +201,7 @@
   bind:this={container}
   class={containerClasses}
   style={containerStyle}
-  onclick={handleClick}
+  on:click={handleClick}
   role={onclick ? 'button' : 'region'}
   tabindex={onclick ? 0 : undefined}
   aria-label={`NES ${variant} container${evidenceType ? ` - ${evidenceType} evidence` : ''}${caseId ? ` for case ${caseId}` : ''}`}

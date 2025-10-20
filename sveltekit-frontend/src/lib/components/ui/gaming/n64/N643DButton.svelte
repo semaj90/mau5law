@@ -318,7 +318,7 @@
   {form}
   {name}
   {value}
-  onclick={handleClick}
+  on:click={handleClick}
   onmouseenter={handleHover}
   onmouseleave={handleUnhover}
   onMousemove={handleMouseMove}

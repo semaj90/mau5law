@@ -151,12 +151,12 @@
       </Button>
 
       <!-- replace deprecated on:click with onclick attribute -->
-      <button type="button" onclick={toggleMode} class="nes-btn is-dark is-small">
+      <button type="button" on:click={toggleMode} class="nes-btn is-dark is-small">
         {mode === 'login' ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
       </button>
     </form>
 
-    <button type="button" onclick={() => (open = false)} class="absolute right-4 top-4 nes-btn is-error is-small">
+    <button type="button" on:click={() => (open = false)} class="absolute right-4 top-4 nes-btn is-error is-small">
       ×
     </button>
   </div>

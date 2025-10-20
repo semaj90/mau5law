@@ -223,7 +223,7 @@
             {#each aiSuggestions as suggestion}
               <button
                 class="suggestion-pill"
-                onclick={() => {
+                on:click={() => {
                   searchFilter = suggestion;
                 }}
               >
@@ -256,7 +256,7 @@
               role="button"
               tabindex="0"
               aria-expanded={selectedSearch?.id === searchItem.id}
-              onclick={() => (selectedSearch = selectedSearch?.id === searchItem.id ? null : searchItem)}
+              on:click={() => (selectedSearch = selectedSearch?.id === searchItem.id ? null : searchItem)}
               onkeydown={e => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
@@ -313,16 +313,16 @@
                   {/if}
                   <!-- Action Buttons -->
                   <div class="search-actions">
-                    <button class="action-btn primary" onclick={() => repeatSearch(searchItem)}>
+                    <button class="action-btn primary" on:click={() => repeatSearch(searchItem)}>
                       🔄 Repeat Search
                     </button>
                     <button
                       class="action-btn secondary"
-                      onclick={() => navigator.clipboard.writeText(searchItem.query)}
+                      on:click={() => navigator.clipboard.writeText(searchItem.query)}
                     >
                       📋 Copy Query
                     </button>
-                    <button class="action-btn danger" onclick={() => deleteSearch(searchItem.id)}> 🗑️ Delete </button>
+                    <button class="action-btn danger" on:click={() => deleteSearch(searchItem.id)}> 🗑️ Delete </button>
                   </div>
                 </div>
               {/if}

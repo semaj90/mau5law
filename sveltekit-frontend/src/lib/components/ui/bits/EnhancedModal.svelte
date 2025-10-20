@@ -62,7 +62,7 @@
   <!-- Modal Backdrop -->
   <div
     class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-    onclick={handleBackdropClick}
+    on:click={handleBackdropClick}
     role="dialog"
     aria-modal="true"
   >
@@ -71,14 +71,14 @@
       class="relative w-full {sizeClasses[
         size
       ]} max-h-[90vh] overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200"
-      onclick={e => e.stopPropagation()}
+      on:click={e => e.stopPropagation()}
       {...restProps}
     >
       <Card class="enhanced-modal {variantClasses[variant]} border-2">
         <!-- Close Button -->
         <button
           class="absolute top-4 right-4 z-10 p-2 rounded-md bg-enhanced-bg-secondary/80 hover:bg-enhanced-bg-secondary text-enhanced-text-secondary hover:text-enhanced-text-primary transition-colors nes-btn is-small"
-          onclick={closeModal}
+          on:click={closeModal}
           aria-label="Close modal"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -421,28 +421,28 @@
     <div class="controls">
       <button
         class="control-btn"
-        onclick={() => setStage('nes')}
+        on:click={() => setStage('nes')}
         class:active={stages[currentStageIndex] === 'nes'}
       >
         NES
       </button>
       <button
         class="control-btn"
-        onclick={() => setStage('snes')}
+        on:click={() => setStage('snes')}
         class:active={stages[currentStageIndex] === 'snes'}
       >
         SNES
       </button>
       <button
         class="control-btn"
-        onclick={() => setStage('n64')}
+        on:click={() => setStage('n64')}
         class:active={stages[currentStageIndex] === 'n64'}
       >
         N64
       </button>
       <button
         class="control-btn"
-        onclick={() => setStage('modern')}
+        on:click={() => setStage('modern')}
         class:active={stages[currentStageIndex] === 'modern'}
       >
         Modern

@@ -58,11 +58,11 @@
         <button class="menu-trigger nes-btn">File</button>
       </DropdownTrigger>
       <DropdownContent class="nes-container is-dark with-title">
-        <DropdownItem onclick={() => handleSave()}>
+        <DropdownItem on:click={() => handleSave()}>
           <Save size={16} /> Save Report <span class="shortcut">Ctrl+S</span>
         </DropdownItem>
         <DropdownItem
-          onclick={() => {
+          on:click={() => {
             /* new */
           }}
         >
@@ -70,17 +70,17 @@
         </DropdownItem>
         <DropdownSeparator />
         <DropdownItem
-          onclick={() => {
+          on:click={() => {
             /* import */
           }}
         >
           <Upload size={16} /> Import
         </DropdownItem>
-        <DropdownItem onclick={() => handleExport()}>
+        <DropdownItem on:click={() => handleExport()}>
           <Download size={16} /> Export
         </DropdownItem>
         <DropdownSeparator />
-        <DropdownItem onclick={() => handlePreview()}>
+        <DropdownItem on:click={() => handlePreview()}>
           <Eye size={16} /> Preview
         </DropdownItem>
       </DropdownContent>
@@ -91,14 +91,14 @@
       <DropdownTrigger><button class="menu-trigger nes-btn">Edit</button></DropdownTrigger>
       <DropdownContent class="nes-container is-dark with-title">
         <DropdownItem
-          onclick={() => {
+          on:click={() => {
             /* undo */
           }}
         >
           <Undo size={16} /> Undo <span class="shortcut">Ctrl+Z</span>
         </DropdownItem>
         <DropdownItem
-          onclick={() => {
+          on:click={() => {
             /* redo */
           }}
         >
@@ -106,14 +106,14 @@
         </DropdownItem>
         <DropdownSeparator />
         <DropdownItem
-          onclick={() => {
+          on:click={() => {
             /* find */
           }}
         >
           <Search size={16} /> Find <span class="shortcut">Ctrl+F</span>
         </DropdownItem>
         <DropdownItem
-          onclick={() => {
+          on:click={() => {
             /* replace */
           }}
         >
@@ -126,13 +126,13 @@
     <DropdownRoot align="left">
       <DropdownTrigger><button class="menu-trigger nes-btn">View</button></DropdownTrigger>
       <DropdownContent class="nes-container is-dark with-title">
-        <DropdownItem onclick={() => toggleSidebar()}>
+        <DropdownItem on:click={() => toggleSidebar()}>
           <Sidebar size={16} /> Toggle Sidebar <span class="shortcut">Ctrl+B</span>
         </DropdownItem>
-        <DropdownItem onclick={() => toggleLayout()}>
+        <DropdownItem on:click={() => toggleLayout()}>
           <Layout size={16} /> Switch Layout ({$report.settings.layout})
         </DropdownItem>
-        <DropdownItem onclick={() => toggleFullscreen()}>
+        <DropdownItem on:click={() => toggleFullscreen()}>
           {#if $reportUI.fullscreen}
             <Minimize size={16} /> Exit Fullscreen
           {:else}
@@ -149,20 +149,20 @@
     <button
       class="action-button nes-btn"
       class:unsaved={$editorState.hasUnsavedChanges}
-      onclick={handleSave}
+      on:click={handleSave}
       title="Save Report"
     >
       <Save size={16} />
     </button>
     <div class="separator"></div>
-    <button class="action-button nes-btn" onclick={toggleSidebar} title="Toggle Sidebar">
+    <button class="action-button nes-btn" on:click={toggleSidebar} title="Toggle Sidebar">
       <Sidebar size={16} />
     </button>
-    <button class="action-button nes-btn" onclick={toggleLayout} title="Switch Layout">
+    <button class="action-button nes-btn" on:click={toggleLayout} title="Switch Layout">
       <Layout size={16} />
     </button>
     <div class="separator"></div>
-    <button class="action-button nes-btn" onclick={handlePreview} title="Preview Report">
+    <button class="action-button nes-btn" on:click={handlePreview} title="Preview Report">
       <Eye size={16} />
     </button>
   </div>

@@ -224,7 +224,7 @@ try {
     </h3>
     {#if mode === 'edit'}
       <button
-        onclick={handleDelete}
+        on:click={handleDelete}
         disabled={isLoading}
         class="text-red-600 hover:text-red-800 text-sm font-medium disabled:opacity-50"
       >
@@ -446,7 +446,7 @@ try {
               {tag}
               <button
                 type="button"
-                onclick={() => removeTag(tag)}
+                on:click={() => removeTag(tag)}
                 class="ml-1.5 inline-flex items-center justify-center w-4 h-4 rounded-full text-blue-400 hover:bg-blue-200 hover:text-blue-500 focus:outline-none"
               >
                 <svg class="w-2 h-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
@@ -475,7 +475,7 @@ try {
     <div class="flex justify-end space-x-3 pt-4 border-t">
       <button
         type="button"
-        onclick={() => // ondispatch removed}
+        on:click={() => // ondispatch removed}
         disabled={isLoading}
         class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50"
       >

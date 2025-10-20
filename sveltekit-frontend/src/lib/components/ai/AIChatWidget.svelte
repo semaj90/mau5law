@@ -266,7 +266,7 @@
                             type="button"
                             class="bits-btn"
                             aria-label="Copy message"
-                            onclick={() => copyToClipboard(message.content)}
+                            on:click={() => copyToClipboard(message.content)}
                           >
                             <Copy aria-hidden="true" class="h-3 w-3" />
                           </button>
@@ -274,7 +274,7 @@
                             type="button"
                             class="bits-btn"
                             aria-label="Thumbs up feedback"
-                            onclick={() => provideFeedback(message.id, 'positive')}
+                            on:click={() => provideFeedback(message.id, 'positive')}
                           >
                             <ThumbsUp aria-hidden="true" class="h-3 w-3" />
                           </button>
@@ -282,7 +282,7 @@
                             type="button"
                             class="bits-btn"
                             aria-label="Thumbs down feedback"
-                            onclick={() => provideFeedback(message.id, 'negative')}
+                            on:click={() => provideFeedback(message.id, 'negative')}
                           >
                             <ThumbsDown aria-hidden="true" class="h-3 w-3" />
                           </button>
@@ -299,7 +299,7 @@
                       <button
                         type="button"
                         class="text-xs h-auto py-1 px-2 bits-btn"
-                        onclick={() => handleSuggestionClick(suggestion)}
+                        on:click={() => handleSuggestionClick(suggestion)}
                       >
                         {suggestion}
                       </button>

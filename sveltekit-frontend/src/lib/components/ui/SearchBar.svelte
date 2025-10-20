@@ -59,7 +59,7 @@
   {#if showAdvancedFilters}
     <button
       class="filter-toggle"
-      onclick={() => (showAdvancedFilters = !showAdvancedFilters)}
+      on:click={() => (showAdvancedFilters = !showAdvancedFilters)}
       aria-label="Toggle filters"
     >
       <svg xmlns="http://www.w3.org/2000/svg" class="filter-icon" viewBox="0 0 20 20" fill="currentColor">
@@ -101,7 +101,7 @@
       </div>
     </div>
     <div class="filter-actions">
-      <button type="button" class="clear-button" onclick={clearFilters}> Clear Filters </button>
+      <button type="button" class="clear-button" on:click={clearFilters}> Clear Filters </button>
     </div>
   </div>
 {/if}

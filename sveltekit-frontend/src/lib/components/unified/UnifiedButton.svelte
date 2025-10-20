@@ -297,7 +297,7 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Main button -->
   <button
     class={baseClasses}
-    onclick={handleClick}
+    on:click={handleClick}
     onmouseenter={handleMouseEnter}
     onmouseleave={handleMouseLeave}
     {...restProp}

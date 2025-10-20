@@ -476,7 +476,7 @@
       <button
         aria-label="Action button"
         type="button"
-        onclick={() => loadCaseScores()}
+        on:click={() => loadCaseScores()}
         disabled={isLoading}
         class="px-3 py-2 rounded border text-sm font-medium bg-white hover:bg-gray-50 disabled:opacity-50"
       >
@@ -579,7 +579,7 @@
               <button
                 aria-label="Action button"
                 type="button"
-                onclick={() => openScoreDetails(caseItem)}
+                on:click={() => openScoreDetails(caseItem)}
                 class="px-2 py-1 text-sm rounded border bg-white hover:bg-gray-50"
               >
                 View Details
@@ -587,7 +587,7 @@
               <button
                 aria-label="Action button"
                 type="button"
-                onclick={() => scoreCase(caseItem.id)}
+                on:click={() => scoreCase(caseItem.id)}
                 disabled={scoringInProgress}
                 class="px-2 py-1 text-sm rounded bg-blue-600 text-white disabled:opacity-50"
               >
@@ -608,16 +608,16 @@
       type="button"
       aria-label="Close dialog"
       class="visually-hidden"
-      onclick={() => (showScoreDetails = false)}
+      on:click={() => (showScoreDetails = false)}
       onkeydown={e => {
         if (e.key === 'Escape') showScoreDetails = false;
       }}>Close</button
     >
-    <div class="modal-content score-details-dialog" role="document" onclick={e => e.stopPropagation()}>
+    <div class="modal-content score-details-dialog" role="document" on:click={e => e.stopPropagation()}>
       <div class="modal-header">
         <h2 class="modal-title">Case Score Analysis: {selectedCase.title}</h2>
         <p class="modal-description">Detailed scoring breakdown and recommendations</p>
-        <button type="button" aria-label="Close" onclick={() => (showScoreDetails = false)} class="modal-close">
+        <button type="button" aria-label="Close" on:click={() => (showScoreDetails = false)} class="modal-close">
           ×
         </button>
       </div>
@@ -667,7 +667,7 @@
         <button
           aria-label="Action button"
           type="button"
-          onclick={() => (showScoreDetails = false)}
+          on:click={() => (showScoreDetails = false)}
           class="px-3 py-2 rounded border text-sm bg-white hover:bg-gray-50"
         >
           Close
@@ -675,7 +675,7 @@
         <button
           aria-label="Action button"
           type="button"
-          onclick={() => selectedCase && scoreCase(selectedCase.id)}
+          on:click={() => selectedCase && scoreCase(selectedCase.id)}
           class="px-3 py-2 rounded bg-blue-600 text-white"
         >
           Rescore Case

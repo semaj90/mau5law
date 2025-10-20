@@ -644,7 +644,7 @@
         </div>
         <div style="display:flex;align-items:center;gap:0.5rem;">
           <button
-            onclick={() => resumeLastRequest()}
+            on:click={() => resumeLastRequest()}
             class="process-batch-btn"
             style="padding:0.25rem 0.5rem;font-size:0.75rem;"
             disabled={!sessionStorage.getItem('lastRequestId') && !sessionStorage.getItem('sessionId')}
@@ -692,9 +692,9 @@
         <span>📎 Upload Document</span>
       </label>
       {#if !currentRoom}
-        <button onclick={() => joinRoom('legal-team')} class="join-room-btn"> Join Room </button>
+        <button on:click={() => joinRoom('legal-team')} class="join-room-btn"> Join Room </button>
       {:else}
-        <button onclick={leaveRoom} class="leave-room-btn"> Leave Room </button>
+        <button on:click={leaveRoom} class="leave-room-btn"> Leave Room </button>
       {/if}
     </div>
   </header>
@@ -769,7 +769,7 @@
           {i + 1}. {item}
         </div>
       {/each}
-      <button onclick={processBatch} class="process-batch-btn"> Process Batch </button>
+      <button on:click={processBatch} class="process-batch-btn"> Process Batch </button>
     </div>
   {/if}
   <!-- Uploaded Files Display -->
@@ -794,9 +794,9 @@
     ></textarea>
     <div class="input-actions">
       {#if batchMode}
-        <button onclick={addToBatch} class="add-batch-btn"> ➕ Add to Batch </button>
+        <button on:click={addToBatch} class="add-batch-btn"> ➕ Add to Batch </button>
       {/if}
-      <button onclick={sendMessage} disabled={!inputMessage.trim() || !isConnected} class="send-button">
+      <button on:click={sendMessage} disabled={!inputMessage.trim() || !isConnected} class="send-button">
         <span class="send-icon">🚀</span>
         Send
       </button>

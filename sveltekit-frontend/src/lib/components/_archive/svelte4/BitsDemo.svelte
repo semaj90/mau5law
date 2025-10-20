@@ -194,18 +194,18 @@
   <div class="mx-auto px-4 max-w-7xl">
     <h3 class="mx-auto px-4 max-w-7xl">Bits-UI Notifications Demo</h3>
     <div class="mx-auto px-4 max-w-7xl">
-      <button type="button" class="mx-auto px-4 max-w-7xl" onclick={showSuccessNotification}>
+      <button type="button" class="mx-auto px-4 max-w-7xl" on:click={showSuccessNotification}>
         Success Notification
       </button>
-      <button type="button" class="mx-auto px-4 max-w-7xl" onclick={showWarningNotification}>
+      <button type="button" class="mx-auto px-4 max-w-7xl" on:click={showWarningNotification}>
         Warning Notification
       </button>
-      <button type="button" class="mx-auto px-4 max-w-7xl" onclick={showErrorNotification}> Error Notification </button>
-      <button type="button" class="mx-auto px-4 max-w-7xl" onclick={showInfoNotification}> Info Notification </button>
+      <button type="button" class="mx-auto px-4 max-w-7xl" on:click={showErrorNotification}> Error Notification </button>
+      <button type="button" class="mx-auto px-4 max-w-7xl" on:click={showInfoNotification}> Info Notification </button>
     </div>
   </div>
   <!-- Bits UI Button (replaced Button.Root with native button) -->
-  <button type="button" class="mx-auto px-4 max-w-7xl bits-btn bits-btn" onclick={showSuccessNotification}>
+  <button type="button" class="mx-auto px-4 max-w-7xl bits-btn bits-btn" on:click={showSuccessNotification}>
     Create New Case
   </button>
   <!-- Bits UI Select (replaced Select.* with native select/options) -->
@@ -224,7 +224,7 @@
     </select>
   </div>
   <!-- Bits UI Dialog (replaced Dialog.* with simple conditional modal) -->
-  <button type="button" class="mx-auto px-4 max-w-7xl" onclick={() => (dialogOpen = true)}>
+  <button type="button" class="mx-auto px-4 max-w-7xl" on:click={() => (dialogOpen = true)}>
     Case Management Options
   </button>
   {#if dialogOpen}
@@ -250,8 +250,8 @@
           </div>
         </div>
         <div class="dialog-actions mx-auto px-4 max-w-7xl">
-          <button type="button" class="mx-auto px-4 max-w-7xl" onclick={() => (dialogOpen = false)}>Close</button>
-          <button type="button" class="mx-auto px-4 max-w-7xl bits-btn bits-btn" onclick={() => (dialogOpen = false)}
+          <button type="button" class="mx-auto px-4 max-w-7xl" on:click={() => (dialogOpen = false)}>Close</button>
+          <button type="button" class="mx-auto px-4 max-w-7xl bits-btn bits-btn" on:click={() => (dialogOpen = false)}
             >Get Started</button
           >
         </div>
@@ -259,7 +259,7 @@
     </div>
   {/if}
   <!-- Bits UI Alert Dialog (replaced with native confirm-style modal) -->
-  <button type="button" class="mx-auto px-4 max-w-7xl" onclick={() => (alertOpen = true)}>Delete Case</button>
+  <button type="button" class="mx-auto px-4 max-w-7xl" on:click={() => (alertOpen = true)}>Delete Case</button>
   {#if alertOpen}
     <div class="dialog-overlay" role="alertdialog" aria-modal="true" aria-labelledby="delete-case-title">
       <div class="dialog-content">
@@ -269,11 +269,11 @@
           data, evidence, and related documents.
         </p>
         <div class="alert-actions">
-          <button type="button" onclick={() => (alertOpen = false)}>Cancel</button>
+          <button type="button" on:click={() => (alertOpen = false)}>Cancel</button>
           <button
             type="button"
             class="text-danger"
-            onclick={() => {
+            on:click={() => {
               showErrorNotification();
               alertOpen = false;
             }}
@@ -306,7 +306,7 @@
             {(data as { color?: any; title?: any; description?: any }).title}
           </div>
         {/if}
-        <button class="toast-close" onclick={() => removeToast(id)} aria-label="Close notification"> ✕ </button>
+        <button class="toast-close" on:click={() => removeToast(id)} aria-label="Close notification"> ✕ </button>
       </div>
       {#if (data as { color?: any; title?: any; description?: any }).description}
         <div class="toast-description">

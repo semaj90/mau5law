@@ -287,7 +287,7 @@
   <!-- Room selector -->
   <div class="room-selector">
     {#each rooms as room (room.id)}
-      <button class="room-btn" class:active={selectedRoom?.id === room.id} onclick={() => selectRoom(room)}>
+      <button class="room-btn" class:active={selectedRoom?.id === room.id} on:click={() => selectRoom(room)}>
         <span class="room-icon">
           {#if room.theme === 'evidence'}📊
           {:else if room.theme === 'contracts'}📜

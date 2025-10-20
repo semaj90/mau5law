@@ -431,7 +431,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 {#if showPanel}
   <div role="button" tabindex="0"
     class="mx-auto px-4 max-w-7xl"
-    onclick={(_event: MouseEvent) => ) => (showPanel = false}
+    on:click={(_event: MouseEvent) => ) => (showPanel = false}
     onkeydown={(e) => e.key === 'Escape' && (showPanel = false)}
     role="dialog"
     aria-modal="true"
@@ -447,7 +447,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            onclick={(_event: MouseEvent) => ) =>
+            on:click={(_event: MouseEvent) => ) =>
 (showPanel = false}
             aria-label="Close accessibility panel"
           >
@@ -512,7 +512,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
             <Button
               class="bits-btn mx-auto px-4 max-w-7xl"
               size="sm"
-              onclick={(_event: MouseEvent) => ) =>
+              on:click={(_event: MouseEvent) => ) =>
 runAccessibilityAudit(}
               disabled={isAuditing}
             >
@@ -564,7 +564,7 @@ runAccessibilityAudit(}
                 variant="ghost"
                 size="sm"
                 class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
-                onclick={(_event: MouseEvent) => ) =>
+                on:click={(_event: MouseEvent) => ) =>
 exportAuditResults(}
               >
                 <Download class="mx-auto px-4 max-w-7xl" />

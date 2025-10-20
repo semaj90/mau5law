@@ -276,28 +276,28 @@ if (!browser) return;
     <button
       class="n64-tab"
       class:active={selectedTab === 'evidence'}
-      onclick={() => selectedTab = 'evidence'}
+      on:click={() => selectedTab = 'evidence'}
     >
       EVIDENCE
     </button>
     <button
       class="n64-tab"
       class:active={selectedTab === 'conflicts'}
-      onclick={() => selectedTab = 'conflicts'}
+      on:click={() => selectedTab = 'conflicts'}
     >
       CONFLICTS ({conflicts.length})
     </button>
     <button
       class="n64-tab"
       class:active={selectedTab === 'search'}
-      onclick={() => selectedTab = 'search'}
+      on:click={() => selectedTab = 'search'}
     >
       SEARCH
     </button>
     <button
       class="n64-tab"
       class:active={selectedTab === 'cache'}
-      onclick={() => selectedTab = 'cache'}
+      on:click={() => selectedTab = 'cache'}
     >
       CACHE
     </button>
@@ -328,7 +328,7 @@ if (!browser) return;
                 onchange={handleFileSelect}
                 style="display: none;"
               />
-              <button class="n64-button" onclick={() => fileInput?.click()}>
+              <button class="n64-button" on:click={() => fileInput?.click()}>
                 SELECT FILE
               </button>
             </div>
@@ -339,7 +339,7 @@ if (!browser) return;
             <div class="evidence-header">
               <h3>EVIDENCE #{currentEvidence.id.slice(-8)}</h3>
               <div class="evidence-actions">
-                <button class="n64-button small" onclick={screenshotEvidence}>
+                <button class="n64-button small" on:click={screenshotEvidence}>
                   📸 ENHANCE
                 </button>
               </div>
@@ -412,7 +412,7 @@ if (!browser) return;
             <div class="history-grid">
               {#each evidenceHistory.slice(0, 6) as evidence}
                 <div class="history-item" role="button" tabindex="0"
-                onclick={() => currentEvidence = evidence}>
+                on:click={() => currentEvidence = evidence}>
                   <div class="history-id">#{evidence.id.slice(-6)}</div>
                   <div class="history-type">{evidence.type.toUpperCase()}</div>
                   <div class="history-relevance" class:high={evidence.analysis.legalRelevance === 'high'}>
@@ -488,7 +488,7 @@ if (!browser) return;
               {#each searchSuggestions as suggestion}
                 <button
                   class="suggestion-item"
-                  onclick={() => applySuggestion(suggestion)}
+                  on:click={() => applySuggestion(suggestion)}
                 >
                   <div class="suggestion-query">{suggestion.query}</div>
                   <div class="suggestion-meta">

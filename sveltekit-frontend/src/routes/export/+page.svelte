@@ -132,7 +132,7 @@
               {#each [{ value: 'json', label: 'JSON', description: 'Structured data format' }, { value: 'csv', label: 'CSV', description: 'Spreadsheet compatible' }, { value: 'xml', label: 'XML', description: 'Standard markup format' }] as formatOption}
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button class="space-y-4" onclick={() => (format = formatOption.value as 'json' | 'csv' | 'xml')}>
+                    <button class="space-y-4" on:click={() => (format = formatOption.value as 'json' | 'csv' | 'xml')}>
                       <div class="space-y-4">{formatOption.label}</div>
                       <div class="space-y-4">
                         {formatOption.description}
@@ -189,8 +189,8 @@
                 Case Filter (Optional)
               </label>
               <div class="space-y-4">
-                <Button class="bits-btn" variant="ghost" size="sm" onclick={() => selectAllCases()}>Select All</Button>
-                <Button class="bits-btn" variant="ghost" size="sm" onclick={() => clearCaseSelection()}>Clear</Button>
+                <Button class="bits-btn" variant="ghost" size="sm" on:click={() => selectAllCases()}>Select All</Button>
+                <Button class="bits-btn" variant="ghost" size="sm" on:click={() => clearCaseSelection()}>Clear</Button>
               </div>
             </div>
             {#if availableCases.length > 0}
@@ -245,7 +245,7 @@
             <TooltipTrigger asChild>
               <Button
                 class="bits-btn space-y-4"
-                onclick={() => exportData()}
+                on:click={() => exportData()}
                 disabled={exportLoading || (!includeCases && !includeEvidence)}
               >
                 {#if exportLoading}

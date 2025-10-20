@@ -133,7 +133,7 @@
 
 <!-- Mobile backdrop -->
 {#if open}
-  <button class="fixed inset-0 z-40 bg-black/50 lg:hidden" onclick={closeSidebar} aria-label="Close sidebar"></button>
+  <button class="fixed inset-0 z-40 bg-black/50 lg:hidden" on:click={closeSidebar} aria-label="Close sidebar"></button>
 {/if}
 <!-- Sidebar -->
 <aside
@@ -208,7 +208,7 @@
                   ? 'bg-harvard-crimson text-white shadow-nier-glow'
                   : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light'
               )}
-              onclick={closeSidebar}
+              on:click={closeSidebar}
             >
               <div class="flex items-center">
                 <IconComponent
@@ -249,7 +249,7 @@
                     ? 'bg-harvard-crimson text-white shadow-nier-glow'
                     : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light'
                 )}
-                onclick={closeSidebar}
+                on:click={closeSidebar}
               >
                 <IconComponent
                   class={cn(
@@ -277,7 +277,7 @@
                       ? 'bg-console-error text-white shadow-nier-glow'
                       : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light border border-console-error/20'
                   )}
-                  onclick={closeSidebar}
+                  on:click={closeSidebar}
                 >
                   <div class="flex items-center">
                     <IconComponent
@@ -318,7 +318,7 @@
                     ? 'bg-console-primary text-console-bg shadow-nier-glow'
                     : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light'
                 )}
-                onclick={closeSidebar}
+                on:click={closeSidebar}
               >
                 <IconComponent
                   class={cn(

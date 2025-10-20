@@ -306,7 +306,7 @@
     <div class={yorhaClasses.modalContent}>
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-xl font-bold text-[#00ff88]">CREATE USER</h2>
-        <button type="button" onclick={() => (showCreateModal = false)} class="text-2xl hover:text-red-500"> ✕ </button>
+        <button type="button" on:click={() => (showCreateModal = false)} class="text-2xl hover:text-red-500"> ✕ </button>
       </div>
       <!--
   Superforms integration notes (no runtime change yet):
@@ -357,7 +357,7 @@
       </div>
       ... (repeat for other fields; use form.data.*, form.errors.*)
       <div class="flex justify-end space-x-4 pt-4">
-       <button type="button" onclick={() => showCreateModal = false} class={yorhaClasses.button}>CANCEL</button>
+       <button type="button" on:click={() => showCreateModal = false} class={yorhaClasses.button}>CANCEL</button>
        <button type="submit" class={yorhaClasses.buttonPrimary}>◈ CREATE USER</button>
       </div>
       {#if form.message}<p class="text-xs text-green-400 pt-2">{form.message}</p>{/if}
@@ -421,7 +421,7 @@
         </div>
         <!-- Actions -->
         <div class="flex justify-end space-x-4 pt-4">
-          <button type="button" onclick={() => (showCreateModal = false)} class={yorhaClasses.button}> CANCEL </button>
+          <button type="button" on:click={() => (showCreateModal = false)} class={yorhaClasses.button}> CANCEL </button>
           <button type="submit" class={yorhaClasses.buttonPrimary}> ◈ CREATE USER </button>
         </div>
       </form>
@@ -434,7 +434,7 @@
     <div class={yorhaClasses.modalContent}>
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-xl font-bold text-[#00ff88]">EDIT USER</h2>
-        <button type="button" onclick={() => (showEditModal = false)} class="text-2xl hover:text-red-500"> ✕ </button>
+        <button type="button" on:click={() => (showEditModal = false)} class="text-2xl hover:text-red-500"> ✕ </button>
       </div>
       <!-- Single form using handleUpdate which omits the id and sends partial updates -->
       <form onsubmit={handleUpdate} class="space-y-4">
@@ -482,7 +482,7 @@
         </div>
         <!-- Actions -->
         <div class="flex justify-end space-x-4 pt-4">
-          <button type="button" onclick={() => (showEditModal = false)} class={yorhaClasses.button}> CANCEL </button>
+          <button type="button" on:click={() => (showEditModal = false)} class={yorhaClasses.button}> CANCEL </button>
           <button type="submit" class={yorhaClasses.buttonPrimary}> ◈ UPDATE USER </button>
         </div>
       </form>

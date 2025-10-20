@@ -156,7 +156,7 @@
   <!-- Header with close button -->
   <div class="canvas-header">
     <h2 class="canvas-title">EVIDENCE BOARD</h2>
-    <button class="close-btn" onclick={closeBoard} title="Close Evidence Board"> ✕ </button>
+    <button class="close-btn" on:click={closeBoard} title="Close Evidence Board"> ✕ </button>
   </div>
   <!-- Toolbar -->
   {#if showToolbar}
@@ -164,18 +164,18 @@
       <div class="tool-section">
         <h3>TOOLS</h3>
         <div class="tool-buttons">
-          <button class="tool-btn" class:active={tool === 'brush'} onclick={() => setTool('brush')} title="Brush Tool">
+          <button class="tool-btn" class:active={tool === 'brush'} on:click={() => setTool('brush')} title="Brush Tool">
             🖌️
           </button>
           <button
             class="tool-btn"
             class:active={tool === 'eraser'}
-            onclick={() => setTool('eraser')}
+            on:click={() => setTool('eraser')}
             title="Eraser Tool"
           >
             🧽
           </button>
-          <button class="tool-btn" onclick={clearCanvas} title="Clear Canvas"> 🗑️ </button>
+          <button class="tool-btn" on:click={clearCanvas} title="Clear Canvas"> 🗑️ </button>
         </div>
       </div>
       <div class="color-section">
@@ -187,7 +187,7 @@
               ;
               class:active={color === yorhaColor}
               style="background-color: {yorhaColor}"
-              onclick={() => setColor(yorhaColor)}
+              on:click={() => setColor(yorhaColor)}
               title="Select {yorhaColor}"
             >
             </button>

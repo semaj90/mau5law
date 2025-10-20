@@ -203,7 +203,7 @@
 
       <!-- Upload Button -->
       <Button
-        onclick={uploadFile}
+        on:click={uploadFile}
         disabled={!selectedFile || uploading}
         class="nes-btn is-success"
         style="width: 100%;"
@@ -298,7 +298,7 @@
 
       <!-- Search Button -->
       <Button
-        onclick={searchDocuments}
+        on:click={searchDocuments}
         disabled={!searchQuery.trim() || searching}
         class="nes-btn is-primary"
         style="width: 100%;"

@@ -237,7 +237,7 @@
             <button
               type="button"
               class="p-1 hover:bg-gray-100 rounded"
-              onclick={handleSearch}
+              on:click={handleSearch}
               disabled={!inputValue.trim()}
             >
               <Search class="h-4 w-4 text-gray-500" />
@@ -309,7 +309,7 @@
                 <button
                   type="button"
                   class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2 text-sm outline-none hover:bg-gray-50"
-                  onclick={() => handleSelect(result)}
+                  on:click={() => handleSelect(result)}
                 >
                   <div class="mt-1 text-lg">{getResultTypeIcon((result as any).type)}</div>
                   <div class="flex-1 min-w-0">
@@ -372,7 +372,7 @@
                 <button
                   type="button"
                   class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2 text-sm outline-none hover:bg-gray-50"
-                  onclick={() => handleSelect(result)}
+                  on:click={() => handleSelect(result)}
                 >
                   <div class="mt-1 text-lg">{getResultTypeIcon((result as any).type)}</div>
                   <div class="flex-1 min-w-0">
@@ -410,7 +410,7 @@
                 <button
                   type="button"
                   class="block w-full text-left text-xs text-gray-600 hover:text-gray-900 py-1"
-                  onclick={() => handleInputChange(query)}
+                  on:click={() => handleInputChange(query)}
                 >
                   {query}
                 </button>

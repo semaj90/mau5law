@@ -59,7 +59,7 @@
     <Button class="bits-btn {showFilters ? 'bg-blue-50 border-blue-300' : ''}"
         variant="ghost"
         size="sm"
-  onclick={() =>
+  on:click={() =>
 (showFilters = !showFilters)}
       >
         <Filter class="w-4 h-4 mr-2" />
@@ -67,7 +67,7 @@
     <Button class="bits-btn"
         variant="ghost"
         size="sm"
-  onclick={() =>
+  on:click={() =>
 (viewMode = viewMode === 'grid' ? 'list' : 'grid')}
       >
         {#if viewMode === 'grid'}

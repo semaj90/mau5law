@@ -116,7 +116,7 @@ https://svelte.dev/e/js_parse_error -->
     <h3 class="nier-title text-lg font-bold mb-2">AI Evidence Summary</h3>
     <div class="flex gap-2 flex-wrap">
       <Button
-        onclick={handleSummarize}
+        on:click={handleSummarize}
         disabled={!user || $aiGlobalStore.context.loading}
         variant="primary"
         class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
@@ -124,7 +124,7 @@ https://svelte.dev/e/js_parse_error -->
         {!user ? 'Sign in to Summarize' : $aiGlobalStore.context.loading ? 'Summarizing...' : 'Summarize Evidence'}
       </Button>
       <Button
-        onclick={saveSummary}
+        on:click={saveSummary}
         disabled={!$aiGlobalStore.context.summary || $aiGlobalStore.context.loading}
         variant="primary"
         class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
@@ -133,7 +133,7 @@ https://svelte.dev/e/js_parse_error -->
       </Button>
       {#if evidenceText}
         <Button
-          onclick={handleGenerateEmbedding}
+          on:click={handleGenerateEmbedding}
           disabled={!user || legalCaseStore.context.generatingEmbedding}
           variant="secondary"
           class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
@@ -141,7 +141,7 @@ https://svelte.dev/e/js_parse_error -->
           {legalCaseStore.context.generatingEmbedding ? 'Generating...' : 'Find Related Evidence'}
         </Button>
         <Button
-          onclick={handleSearchRelatedEvidence}
+          on:click={handleSearchRelatedEvidence}
           disabled={!user || legalCaseStore.context.searchingRelatedEvidence}
           variant="ghost"
           class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"

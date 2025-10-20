@@ -203,7 +203,7 @@ https://svelte.dev/e/js_parse_error -->
               >
             </div>
             <Button
-              onclick={() => AuthStore.logout()}
+              on:click={() => AuthStore.logout()}
               class="px-4 py-2 bg-red-500/10 border border-red-500/50 text-red-400 hover:bg-red-500/20 hover:border-red-500 transition-all duration-300 rounded-lg text-sm font-medium"
             >
               Sign Out
@@ -352,7 +352,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="text-xs text-slate-500 mt-2">Contact your system administrator for access</div>
       </div>
       <Button
-        onclick={() => goto('/')}
+        on:click={() => goto('/')}
         class="px-8 py-3 bg-amber-500/10 border border-amber-500/50 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500 transition-all duration-300 rounded-lg font-medium"
       >
         Return to Dashboard

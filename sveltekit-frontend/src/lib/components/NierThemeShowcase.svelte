@@ -41,7 +41,7 @@
         <a href="#" class="nav-item">Analytics</a>
         <a href="#" class="nav-item">AI Assistant</a>
         <button
-          onclick={() => isDarkMode = !isDarkMode}
+          on:click={() => isDarkMode = !isDarkMode}
           class="nier-button-outline px-4 py-2 rounded-lg"
           class:dark={isDarkMode}
         >
@@ -65,7 +65,7 @@
     <div class="flex gap-2 border-b nier-divider">
       {#each ['overview', 'components', 'forms', 'cards'] as tab}
         <button
-          onclick={() => activeTab = tab}
+          on:click={() => activeTab = tab}
           class="px-6 py-3 font-medium capitalize nier-transition"
           class:text-harvard-crimson={activeTab === tab}
           class:dark:text-digital-green={activeTab === tab}
@@ -185,7 +185,7 @@
           <!-- Melt UI Dialog Example -->
           <button
             class="nier-button-crimson"
-            onclick={() => showModal = true}
+            on:click={() => showModal = true}
           >
             Open Modal Dialog
           </button>
@@ -205,7 +205,7 @@
                 This is a NieR: Automata styled modal dialog using Melt UI.
               </p>
               <div class="flex gap-4 justify-end">
-                <button class="nier-button-outline px-4 py-2" onclick={() => showModal = false}>
+                <button class="nier-button-outline px-4 py-2" on:click={() => showModal = false}>
                   Cancel
                 </button>
                 <button class="nier-button-digital px-4 py-2">

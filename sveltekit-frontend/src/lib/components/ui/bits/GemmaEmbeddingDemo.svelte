@@ -400,7 +400,7 @@
               nesStyle={true}
               disabled={!canSearch || isSearching}
               loading={isSearching}
-              onclick={searchEmbeddings}
+              on:click={searchEmbeddings}
             >
               {#if isSearching}
                 <Search class="inline-icon animate-spin" />

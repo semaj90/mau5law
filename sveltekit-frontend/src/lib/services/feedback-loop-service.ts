@@ -5,19 +5,19 @@
 import { db } from '$lib/server/db/drizzle';
 import {
   users,
-  // userRatings, // Not available in schema
-  // interactionHistory, // Not available in schema
-  // trainingData, // Not available in schema
-  // userBehaviorPatterns, // Not available in schema
-  // feedbackMetrics, // Not available in schema
+  userRatings, // Not available in schema
+  interactionHistory, // Not available in schema
+  trainingData, // Not available in schema
+  userBehaviorPatterns, // Not available in schema
+  feedbackMetrics, // Not available in schema
   type NewUserRating,
   type NewInteractionHistory,
   type NewTrainingData,
   type NewUserBehaviorPattern,
   type NewFeedbackMetric
 } from '$lib/database/schema';
-import { eq, desc, sql, and, gte } from 'drizzle-orm';
-}
+import { eq, desc, sql, and, gte, lt } from 'drizzle-orm';
+
 export interface UserRating {
   id: string;
   userId: string;
@@ -76,10 +76,10 @@ class OllamaEmbeddingService implements EmbeddingService {
       const response = await fetch('http://localhost:11434/api/embeddings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           model: 'nomic-embed-text',
           prompt: text,
-        )}),
+        }),
       });
       if (!response.ok) {
         throw new Error(`Ollama embedding failed: ${response.statusText}`);
@@ -116,13 +116,13 @@ export class FeedbackLoopService {
    */
   async collectRating(rating: Omit<UserRating, 'id' | 'timestamp'>): Promise<string> {
     try {
-      const ratingId = `rating_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const ratingId = `rating_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
       // Generate embeddings for semantic analysis
-      const queryEmbedding = rating.context.query;
-        ? await this.embeddingService.generateEmbedding(rating.context.query)
+      const queryEmbedding: number[] | null = rating.context.query
+        ? await this.embeddingService.generateEmbedding(rating.context.query as string)
         : null;
-      const responseEmbedding = rating.context.response;
-        ? await this.embeddingService.generateEmbedding(rating.context.response)
+      const responseEmbedding: number[] | null = rating.context.response
+        ? await this.embeddingService.generateEmbedding(rating.context.response as string)
         : null;
       const ratingData: NewUserRating = {
         id: ratingId,
@@ -134,8 +134,8 @@ export class FeedbackLoopService {
         feedback: rating.feedback,
         context: rating.context,
         metadata: rating.metadata,
-        queryEmbedding: queryEmbedding ? sql`ARRAY[${sql.join(queryEmbedding.map(v => sql.raw(v.toString())), sql.raw(','))}]: real[]` : null,
-        responseEmbedding: responseEmbedding ? sql`ARRAY[${sql.join(responseEmbedding.map(v => sql.raw(v.toString())), sql.raw(','))}]: real[]` : null;
+        queryEmbedding: queryEmbedding ? sql`ARRAY[${sql.join(queryEmbedding.map((v: number) => sql.raw(v.toString())), sql.raw(','))}]: real[]` : null,
+        responseEmbedding: responseEmbedding ? sql`ARRAY[${sql.join(responseEmbedding.map((v: number) => sql.raw(v.toString())), sql.raw(','))}]: real[]` : null,
         timestamp: new Date(),
         createdAt: new Date(),
         updatedAt: new Date()
@@ -143,13 +143,13 @@ export class FeedbackLoopService {
       // Store rating in PostgreSQL with vector embeddings
       await db.insert(userRatings).values(ratingData);
       // Process for training if quality is below threshold
-      if (rating.score < 3.0) {>
+      if (rating.score < 3.0) {
         await this.processLowQualityInteraction(rating);
       }
       // Update user behavior patterns
       await this.updateUserBehaviorPattern(rating.userId, rating);
       // Find similar low-rated interactions using vector similarity
-      if (rating.score < 3.0 && queryEmbedding) {>
+      if (rating.score < 3.0 && queryEmbedding) {
         await this.findSimilarLowRatedInteractions(rating.userId, queryEmbedding);
       }
       // Trigger adaptive learning if needed
@@ -180,7 +180,7 @@ export class FeedbackLoopService {
       this.trainingQueue.push(trainingPoint);
       // Store in database for future analysis
       await db.insert(trainingData).values({
-        id: `training_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        id: `training_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
         userId: rating.userId,
         input: trainingPoint.input,
         expectedOutput: trainingPoint.expectedOutput,
@@ -213,7 +213,7 @@ export class FeedbackLoopService {
           1 - (ur.query_embedding <=> ARRAY[${sql.join(queryEmbedding.map(v => sql.raw(v.toString())), sql.raw(','))}]: real[]) as similarity
         FROM ${userRatings} ur
         WHERE ur.user_id = ${userId}
-          AND ur.score < 3.0>
+          AND ur.score < 3.0
           AND ur.query_embedding IS NOT NULL
           AND 1 - (ur.query_embedding <=> ARRAY[${sql.join(queryEmbedding.map(v => sql.raw(v.toString())), sql.raw(','))}]: real[]) > 0.8
         ORDER BY similarity DESC
@@ -288,7 +288,7 @@ export class FeedbackLoopService {
         if (rating.metadata.featureUsed && !pattern.learningProgress.strongAreas.includes(rating.metadata.featureUsed)) {
           pattern.learningProgress.strongAreas.push(rating.metadata.featureUsed);
         }
-      } else if (rating.score <= 2) {>;
+      } else if (rating.score <= 2) {
         if (rating.metadata.featureUsed && !pattern.learningProgress.weakAreas.includes(rating.metadata.featureUsed)) {
           pattern.learningProgress.weakAreas.push(rating.metadata.featureUsed);
         }
@@ -305,13 +305,13 @@ export class FeedbackLoopService {
   private triggerAdaptiveLearning(rating: UserRating) {
     // If user consistently rates below their expected threshold, trigger retraining
     const pattern = this.userPatterns.get(rating.userId);
-    if (pattern && pattern.learningProgress.currentAccuracy < pattern.qualityExpectations) {>
+    if (pattern && pattern.learningProgress.currentAccuracy < pattern.qualityExpectations) {
       console.log(`🧠 Triggering adaptive learning for user ${rating.userId}`);
       // Add personalized training data
       this.schedulePersonalizedTraining(rating.userId);
     }
     // If rating is significantly below average, trigger immediate attention
-    if (rating.score <= 1.5) {>
+    if (rating.score <= 1.5) {
       console.log(`🚨 Critical rating detected: ${rating.score}/5 - escalating for immediate review`);
       this.escalateCriticalFeedback(rating);
     }
@@ -326,8 +326,8 @@ export class FeedbackLoopService {
       // Get recent low-rated interactions for this user
       const recentInteractions = await db.select();
         .from(userRatings)
-        .where(and(eq(userRatings.userId, userId), gte(userRatings.score, 3))
-        .orderBy(desc(userRatings.timestamp)
+        .where(and(eq(userRatings.userId, userId), lt(userRatings.score, 3)))
+        .orderBy(desc(userRatings.timestamp))
         .limit(10);
       // Create training scenarios based on user's common queries and weak areas
       for (const query of pattern.commonQueries.slice(0, 5)) {
@@ -408,7 +408,7 @@ export class FeedbackLoopService {
         // Update processed flag in database
         await db.update(trainingData)
           .set({ processed: true, updatedAt: new Date() })
-          .where(eq(trainingData.input, dataPoint.input);
+          .where(eq(trainingData.input, dataPoint.input));
       }
       console.log(`✅ Processed ${batch.length} training data points`);
     } catch (error: any) {
@@ -423,8 +423,8 @@ export class FeedbackLoopService {
       // Load recent user patterns to rebuild in-memory cache
       const recentRatings = await db.select();
         .from(userRatings)
-        .where(gte(userRatings.timestamp, sql`NOW() - INTERVAL '7 days'`)
-        .orderBy(desc(userRatings.timestamp);
+        .where(gte(userRatings.timestamp, sql`NOW() - INTERVAL '7 days'`))
+        .orderBy(desc(userRatings.timestamp));
       // Group by user and rebuild patterns
       const userGroups: { [userId: string]: any[] } = {}
       for (const rating of recentRatings) {
@@ -438,7 +438,7 @@ export class FeedbackLoopService {
         for (const rating of ratings) {
           await this.updateUserPattern(userId, {
             ...rating,
-            context: JSON.parse(rating.context || '{})'),
+            context: JSON.parse(rating.context || '{}'),
             metadata: JSON.parse(rating.metadata || '{}')
           } as UserRating);
         }
@@ -457,12 +457,12 @@ export class FeedbackLoopService {
       return {
         suggestedFeatures: ['ai_chat', 'document_search', 'case_analysis'],
         qualityImprovements: [],
-        personalizedSettings: { [key,: strin,g]: any },
+        personalizedSettings: { [key: string]: any },
       }
     }
     return {
       suggestedFeatures: pattern.preferredFeatures.slice(0, 5),
-      qualityImprovements: pattern.learningProgress.weakAreas.map(area =>)
+      qualityImprovements: pattern.learningProgress.weakAreas.map(area =>
         `Consider using improved ${area} features`
       ),
       personalizedSettings: {
@@ -480,15 +480,15 @@ export class FeedbackLoopService {
       // Get recent ratings for analysis
       const recentRatings = await db.select();
         .from(userRatings)
-        .where(gte(userRatings.timestamp, sql`NOW() - INTERVAL '30 days'`);
+        .where(gte(userRatings.timestamp, sql`NOW() - INTERVAL '30 days'`));
       const totalRatings = recentRatings.length;
-      const averageRating = totalRatings > 0;
+      const averageRating = totalRatings > 0
         ? recentRatings.reduce((sum, r) => sum + parseFloat(r.score), 0) / totalRatings
         : 0;
       // Calculate rating distribution
       const ratingDistribution: { [score: number]: number } = {}
-      for (let i = 1; i <= 5; i++) {>
-        ratingDistribution[i], = recentRatings.filter(r => Math.floor(parseFloat(r.score)) === i).length;
+      for (let i = 1; i <= 5; i++) {
+        ratingDistribution[i] = recentRatings.filter(r => Math.floor(parseFloat(r.score)) === i).length;
       }
       // Calculate improvement trends by feature area
       const improvementTrends: { [area: string]: number } = {}
@@ -509,8 +509,8 @@ export class FeedbackLoopService {
       return {
         averageRating: 0,
         totalRatings: 0,
-        ratingDistribution: { [key,: strin,g]: any },
-        improvementTrends: { [key,: strin,g]: any },
+        ratingDistribution: { [key: string]: any },
+        improvementTrends: { [key: string]: any },
         activeTrainingItems: 0
       }
     }

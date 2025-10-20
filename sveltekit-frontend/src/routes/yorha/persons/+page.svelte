@@ -394,7 +394,7 @@
     role="button"
     tabindex="0"
     aria-label="Close person modal"
-    onclick={() => (showNewPersonModal = false)}
+    on:click={() => (showNewPersonModal = false)}
     onkeydown={(e: KeyboardEvent) => {
       // Close on Enter / Space / Escape for keyboard users
       if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar' || e.key === 'Escape') {
@@ -409,13 +409,13 @@
       aria-modal="true"
       aria-labelledby="dialog-title"
       tabindex="-1"
-      onclick={(e: MouseEvent) => e.stopPropagation()}
+      on:click={(e: MouseEvent) => e.stopPropagation()}
       onkeydown={(e: KeyboardEvent) => e.stopPropagation()}
     >
       <header class="dialog-header">
         <!-- ensure the heading has the id referenced by aria-labelledby -->
         <h3 id="dialog-title" class="dialog-title">ADD PERSON OF INTEREST</h3>
-        <button class="close-btn" aria-label="Close" type="button" onclick={() => (showNewPersonModal = false)}
+        <button class="close-btn" aria-label="Close" type="button" on:click={() => (showNewPersonModal = false)}
           >×</button
         >
       </header>
@@ -488,7 +488,7 @@
         <ButtonComponent
           class="bits-btn"
           variant="ghost"
-          onclick={() => {
+          on:click={() => {
             showNewPersonModal = false;
             newPerson = {
               name: '',
@@ -503,7 +503,7 @@
         >
           CANCEL
         </ButtonComponent>
-        <ButtonComponent class="bits-btn" onclick={handleAddPerson}>ADD PERSON</ButtonComponent>
+        <ButtonComponent class="bits-btn" on:click={handleAddPerson}>ADD PERSON</ButtonComponent>
       </footer>
     </div>
   </div>

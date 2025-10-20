@@ -247,14 +247,14 @@
         />
         <div class="button-group">
           {#if isStreaming}
-            <button type="button" onclick={stopStreaming} class="btn btn-stop"> Stop </button>
+            <button type="button" on:click={stopStreaming} class="btn btn-stop"> Stop </button>
           {:else}
             <button type="submit" disabled={!prompt.trim()} class="btn btn-send">
               <Zap size={16} />
               Send
             </button>
           {/if}
-          <button type="button" onclick={clearChat} class="btn btn-clear"> Clear </button>
+          <button type="button" on:click={clearChat} class="btn btn-clear"> Clear </button>
         </div>
       </div>
     </form>

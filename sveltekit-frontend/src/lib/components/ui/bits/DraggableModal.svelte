@@ -227,7 +227,7 @@
       <div class="flex items-center space-x-1">
         {#if minimizable}
           <button
-            onclick={toggleMinimize}
+            on:click={toggleMinimize}
             class={`
               w-6 h-6 rounded flex items-center justify-center text-xs transition-colors
               ${themeClasses[theme].button}
@@ -239,7 +239,7 @@
         {/if}
         {#if closable}
           <button
-            onclick={closeModal}
+            on:click={closeModal}
             class={`
               w-6 h-6 rounded flex items-center justify-center text-xs transition-colors
               ${themeClasses[theme].button}

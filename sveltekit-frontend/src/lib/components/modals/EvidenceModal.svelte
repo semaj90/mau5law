@@ -88,7 +88,7 @@ form = await superValidate(zod(evidenceSchema), { initialValues: item
         <!-- Add other view-only fields as needed -->
       </div>
       <div class="flex gap-2 mt-2">
-        <Button class="bits-btn" onclick={handleEdit}>
+        <Button class="bits-btn" on:click={handleEdit}>
 Edit
       </div>
     {:else}
@@ -100,13 +100,13 @@ Edit
         <div class="flex gap-2 mt-2">
           <Button type="submit" class="uno-bg-green-600 uno-text-white uno-px-3 uno-py-1 uno-rounded bits-btn bits-btn">
 Save
-          <Button class="bits-btn" variant="ghost" onclick={handleCancel}>
+          <Button class="bits-btn" variant="ghost" on:click={handleCancel}>
 Cancel
         </div>
       </form>
     {/if}
     <div class="mt-4 flex justify-end">
-      <Button class="bits-btn" onclick={() =>
+      <Button class="bits-btn" on:click={() =>
 (open = false)} variant="ghost">Close
     </div>
   </div>

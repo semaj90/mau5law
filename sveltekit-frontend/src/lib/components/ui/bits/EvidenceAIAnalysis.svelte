@@ -79,7 +79,7 @@
           <button
             class="nes-btn is-small"
             class:is-disabled={isRefreshing}
-            onclick={refreshAnalysis}
+            on:click={refreshAnalysis}
             disabled={isRefreshing}
             title="Refresh Analysis"
           >
@@ -88,7 +88,7 @@
           </button>
         {/if}
         {#if showExport}
-          <button class="nes-btn is-small is-success" onclick={exportAnalysis} title="Export Analysis"> Export </button>
+          <button class="nes-btn is-small is-success" on:click={exportAnalysis} title="Export Analysis"> Export </button>
         {/if}
       </div>
     </div>
@@ -129,7 +129,7 @@
             {analysis.summary}
           {:else}
             {analysis.summary.substring(0, 200)}...
-            <button class="text-blue-600 hover:text-blue-800 ml-1" onclick={() => (showFullSummary = true)}>
+            <button class="text-blue-600 hover:text-blue-800 ml-1" on:click={() => (showFullSummary = true)}>
               Read more
             </button>
           {/if}

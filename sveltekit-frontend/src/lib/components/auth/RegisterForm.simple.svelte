@@ -495,7 +495,7 @@
             <button
               type="button"
               class="absolute inset-y-0 right-0 pr-3 flex items-center"
-              onclick={togglePasswordVisibility}
+              on:click={togglePasswordVisibility}
               disabled={isLoading}
             >
               {#if showPassword}
@@ -538,7 +538,7 @@
             <button
               type="button"
               class="absolute inset-y-0 right-0 pr-3 flex items-center"
-              onclick={toggleConfirmPasswordVisibility}
+              on:click={toggleConfirmPasswordVisibility}
               disabled={isLoading}
             >
               {#if showConfirmPassword}
@@ -608,7 +608,7 @@
             <Button
               type="button"
               class="w-full sm:w-auto bits-btn bits-btn"
-              onclick={triggerFileInput}
+              on:click={triggerFileInput}
               disabled={isLoading}
             >
               Upload Documents
@@ -619,7 +619,7 @@
             <Button
               type="button"
               class="w-full sm:w-auto bits-btn bits-ghost"
-              onclick={uploadAllPending}
+              on:click={uploadAllPending}
               disabled={isLoading || files.length === 0}
             >
               Upload All Pending
@@ -656,14 +656,14 @@
                     <Button
                       type="button"
                       class="bits-btn bits-ghost text-xs px-2 py-1"
-                      onclick={() => reattachFile(f.id)}
+                      on:click={() => reattachFile(f.id)}
                       disabled={isLoading}>Reattach</Button
                     >
                   {/if}
                   <Button
                     type="button"
                     class="bits-btn bits-ghost text-xs px-2 py-1"
-                    onclick={() => removeFile(f.id)}
+                    on:click={() => removeFile(f.id)}
                     disabled={isLoading}>Remove</Button
                   >
                 </div>

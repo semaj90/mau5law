@@ -224,7 +224,7 @@ try {
       {/if}
       <div class="action-buttons">
         <button
-          onclick={processImage}
+          on:click={processImage}
           disabled={!uploadedFile || !initialized || processing}
         >
           {#if processing}
@@ -234,13 +234,13 @@ try {
           {/if}
         </button>
         <button
-          onclick={processBatchDemo}
+          on:click={processBatchDemo}
           disabled={!initialized || processing}
         >
           📊 Batch Demo
         </button>
         <button
-          onclick={clearResults}
+          on:click={clearResults}
           disabled={results.length === 0}
         >
           🗑️ Clear Results

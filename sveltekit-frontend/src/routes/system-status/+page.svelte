@@ -156,12 +156,12 @@
     <div class="nes-container is-rounded evidence-panel">
       <h3 class="nes-text is-warning mb-3">🚀 Quick Actions</h3>
       <div class="space-y-2">
-        <button class="nes-btn is-primary w-full text-xs" onclick={runAllTests} disabled={isRunning}>
+        <button class="nes-btn is-primary w-full text-xs" on:click={runAllTests} disabled={isRunning}>
           {isRunning ? '⏳ Running...' : '🔄 Run All Tests'}
         </button>
-        <button class="nes-btn is-success w-full text-xs" onclick={createDevSession}> 🔑 Create Dev Session </button>
-        <button class="nes-btn is-normal w-full text-xs" onclick={checkAuthStatus}> 👤 Check Auth Status </button>
-        <button class="nes-btn is-error w-full text-xs" onclick={clearSession}> 🚪 Clear Session </button>
+        <button class="nes-btn is-success w-full text-xs" on:click={createDevSession}> 🔑 Create Dev Session </button>
+        <button class="nes-btn is-normal w-full text-xs" on:click={checkAuthStatus}> 👤 Check Auth Status </button>
+        <button class="nes-btn is-error w-full text-xs" on:click={clearSession}> 🚪 Clear Session </button>
       </div>
     </div>
   {/snippet}

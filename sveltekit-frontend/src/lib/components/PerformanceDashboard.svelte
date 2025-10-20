@@ -93,10 +93,10 @@
   <div class="space-y-4">
     <h1>Performance Dashboard</h1>
     <div class="space-y-4">
-      <button class="space-y-4" onclick={() => toggleAutoRefresh()}>
+      <button class="space-y-4" on:click={() => toggleAutoRefresh()}>
         {autoRefresh ? '🔄 Auto Refresh On' : '⏸️ Auto Refresh Off'}
       </button>
-      <button class="space-y-4" onclick={() => loadMetrics()}> 🔄 Refresh Now </button>
+      <button class="space-y-4" on:click={() => loadMetrics()}> 🔄 Refresh Now </button>
     </div>
   </div>
   <!-- System Health Cards -->

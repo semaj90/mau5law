@@ -48,7 +48,7 @@
       </div>
       <div class="header-controls">
         <ThemeToggle />
-        <Button variant="primary" onclick={() => window.open('/all-routes', '_blank')}>View All Routes</Button>
+        <Button variant="primary" on:click={() => window.open('/all-routes', '_blank')}>View All Routes</Button>
       </div>
     </div>
   </div>
@@ -59,7 +59,7 @@
         {#each demoSections as section}
           <button
             class="tab-trigger {activeDemo === section.id ? 'active' : ''}"
-            onclick={() => (activeDemo = section.id)}
+            on:click={() => (activeDemo = section.id)}
           >
             <span class="tab-icon">{section.icon}</span>
             <span class="tab-label">{section.title}</span>
@@ -213,7 +213,7 @@
               </div>
             </NESCard>
           </div>
-          <NESButton onclick={() => (showNESModal = true)}>Open NES Modal</NESButton>
+          <NESButton on:click={() => (showNESModal = true)}>Open NES Modal</NESButton>
         </Card>
         <!-- Full NES Gaming Showcase -->
         <Card title="Complete NES Gaming Interface" class="demo-card">
@@ -244,7 +244,7 @@
                 </div>
               </div>
             </div>
-            <Button onclick={() => (showYoRHaModal = true)}>Open YoRHa Modal</Button>
+            <Button on:click={() => (showYoRHaModal = true)}>Open YoRHa Modal</Button>
           </div>
         </Card>
       </div>
@@ -253,7 +253,7 @@
       <div class="evidence-demo">
         <Card title="Interactive Evidence Board" class="demo-card">
           <p>Drag-and-drop evidence management system with YoRHa styling</p>
-          <Button onclick={() => (showEvidenceBoard = true)}>Open Evidence Board</Button>
+          <Button on:click={() => (showEvidenceBoard = true)}>Open Evidence Board</Button>
         </Card>
       </div>
     {:else if activeDemo === 'integration'}
@@ -302,7 +302,7 @@
         <div>Theme: NES Gaming</div>
         <div>Framework: Svelte 5</div>
       </div>
-      <NESButton onclick={() => (showNESModal = false)}>Close Modal</NESButton>
+      <NESButton on:click={() => (showNESModal = false)}>Close Modal</NESButton>
     </div>
   </NESModal>
   <DraggableModal bind:open={showYoRHaModal} title="YoRHa System Interface" theme="yorha">

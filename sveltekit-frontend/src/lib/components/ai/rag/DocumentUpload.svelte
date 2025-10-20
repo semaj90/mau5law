@@ -233,7 +233,7 @@
       ondrop={handleDrop}
       ondragover={handleDragOver}
       ondragleave={handleDragLeave}
-      onclick={() => fileInput?.click()}
+      on:click={() => fileInput?.click()}
       role="button"
       tabindex="0"
       onkeydown={e => e.key === 'Enter' && fileInput?.click()}
@@ -288,7 +288,7 @@
                 <span class="progress-text">{uploadProgress[file.name]}%</span>
               </div>
             {:else}
-              <button class="remove-file" onclick={() => removeFile(index)} disabled={uploading} title="Remove file">
+              <button class="remove-file" on:click={() => removeFile(index)} disabled={uploading} title="Remove file">
                 ✕
               </button>
             {/if}
@@ -311,7 +311,7 @@
 
     <!-- Action Buttons -->
     <div class="action-buttons">
-      <Button variant="primary" disabled={!canUpload} onclick={uploadFiles} class="upload-button">
+      <Button variant="primary" disabled={!canUpload} on:click={uploadFiles} class="upload-button">
         {#if uploading}
           <span class="upload-spinner">🔄</span>
           Uploading to Knowledge Base...
@@ -321,7 +321,7 @@
       </Button>
 
       {#if hasFiles && !uploading}
-        <Button variant="secondary" onclick={clearAll}>Clear All</Button>
+        <Button variant="secondary" on:click={clearAll}>Clear All</Button>
       {/if}
     </div>
 

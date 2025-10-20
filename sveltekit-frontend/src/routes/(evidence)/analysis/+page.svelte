@@ -174,7 +174,7 @@
     <CardHeader>
       <div class="demo-header">
         <CardTitle>🚀 WebGPU 3D Evidence Graph</CardTitle>
-        <Button onclick={toggleWebGPUDemo} variant="primary">
+        <Button on:click={toggleWebGPUDemo} variant="primary">
           {showWebGPUDemo ? 'Hide' : 'Show'} WebGPU Demo
         </Button>
       </div>

@@ -392,7 +392,7 @@
       <Button class="bits-btn"
         variant="ghost"
         size="sm"
-        onclick={() =>
+        on:click={() =>
 useAdvancedRAG = !useAdvancedRAG}
         disabled={isLoading}
       >
@@ -410,7 +410,7 @@ useAdvancedRAG = !useAdvancedRAG}
         <Button class="bits-btn"
           variant="ghost"
           size="sm"
-          onclick={analyzeDocuments}
+          on:click={analyzeDocuments}
           disabled={isLoading || availableDocuments.length === 0}
         >
 {#snippet children()}
@@ -422,7 +422,7 @@ useAdvancedRAG = !useAdvancedRAG}
       <Button class="bits-btn"
         variant="ghost"
         size="sm"
-        onclick={checkServiceHealth}
+        on:click={checkServiceHealth}
         disabled={isLoading}
       >
 {#snippet children()}
@@ -437,7 +437,7 @@ useAdvancedRAG = !useAdvancedRAG}
       <Button class="bits-btn"
         variant="ghost"
         size="sm"
-        onclick={queueEmbeddingJobs}
+        on:click={queueEmbeddingJobs}
         disabled={isLoading || availableDocuments.length === 0}
       >
 {#snippet children()}
@@ -455,7 +455,7 @@ useAdvancedRAG = !useAdvancedRAG}
           RAG Context: {selectedDocuments.length > 0 ? selectedDocuments.length: availableDocuments.length} of {availableDocuments.length} documents
         </span>
         <div class="flex gap-2">
-          <Button class="bits-btn" variant="ghost" size="xs" onclick={addDocument}>
+          <Button class="bits-btn" variant="ghost" size="xs" on:click={addDocument}>
 {#snippet children()}
               <FileText class="w-3 h-3 mr-1" />
               Add Doc
@@ -560,7 +560,7 @@ useAdvancedRAG = !useAdvancedRAG}
       <Button class="bits-btn"
         variant="default"
         size="default"
-        onclick={sendMessage}
+        on:click={sendMessage}
         disabled={isLoading || !messageInput.trim()}
       >
 {#snippet children()}

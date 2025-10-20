@@ -214,11 +214,11 @@
           placeholder="Search across all systems..."
           onkeydown={e => e.key === 'Enter' && handleSearch()}
         />
-        <Button onclick={handleSearch} disabled={loading}>
+        <Button on:click={handleSearch} disabled={loading}>
           {loading ? '🔍 Searching...' : '🔍 Search'}
         </Button>
-        <Button onclick={handleCreateCase} variant="outline">📝 New Case</Button>
-        <Button onclick={handleQuickAnalysis} variant="outline">🤖 AI Analysis</Button>
+        <Button on:click={handleCreateCase} variant="outline">📝 New Case</Button>
+        <Button on:click={handleQuickAnalysis} variant="outline">🤖 AI Analysis</Button>
       </div>
     </div>
   </header>
@@ -300,7 +300,7 @@
         <div class="poi-section">
           <div class="section-header">
             <h2>👥 Persons of Interest</h2>
-            <Button onclick={() => alert('Create new POI')}>➕ Add POI</Button>
+            <Button on:click={() => alert('Create new POI')}>➕ Add POI</Button>
           </div>
           <div class="poi-grid">
             {#each samplePOIs as poi}
@@ -318,7 +318,7 @@
         <div class="citations-section">
           <div class="section-header">
             <h2>📚 Legal Citations</h2>
-            <Button onclick={() => alert('Add new citation')}>➕ Add Citation</Button>
+            <Button on:click={() => alert('Add new citation')}>➕ Add Citation</Button>
           </div>
           <Card>
             <CardContent>
@@ -333,7 +333,7 @@
         <div class="reports-section">
           <div class="section-header">
             <h2>📊 Legal Reports</h2>
-            <Button onclick={() => alert('Generate new report')}>➕ Generate Report</Button>
+            <Button on:click={() => alert('Generate new report')}>➕ Generate Report</Button>
           </div>
           <Card>
             <CardContent>
@@ -397,14 +397,14 @@
     </Tabs>
     <!-- Navigation Tabs -->
     <nav class="dashboard-nav">
-      <Button onclick={() => (activeTab = 'dashboard')} variant={activeTab === 'dashboard' ? 'default' : 'outline'}>
+      <Button on:click={() => (activeTab = 'dashboard')} variant={activeTab === 'dashboard' ? 'default' : 'outline'}>
         📊 Dashboard
       </Button>
-      <Button onclick={() => (activeTab = 'poi')} variant={activeTab === 'poi' ? 'default' : 'outline'}>👥 POI</Button>
-      <Button onclick={() => (activeTab = 'citations')} variant={activeTab === 'citations' ? 'default' : 'outline'}>
+      <Button on:click={() => (activeTab = 'poi')} variant={activeTab === 'poi' ? 'default' : 'outline'}>👥 POI</Button>
+      <Button on:click={() => (activeTab = 'citations')} variant={activeTab === 'citations' ? 'default' : 'outline'}>
         📚 Citations
       </Button>
-      <Button onclick={() => (activeTab = 'reports')} variant={activeTab === 'reports' ? 'default' : 'outline'}>
+      <Button on:click={() => (activeTab = 'reports')} variant={activeTab === 'reports' ? 'default' : 'outline'}>
         📊 Reports
       </Button>
     </nav>

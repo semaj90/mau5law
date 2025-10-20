@@ -453,7 +453,7 @@
       {:else if authError}
         <div class="text-red-600 space-y-2">
           <p><strong>Error:</strong> {authError}</p>
-          <Button class="bits-btn" onclick={goToLogin} variant="default">Go to Login</Button>
+          <Button class="bits-btn" on:click={goToLogin} variant="default">Go to Login</Button>
         </div>
       {:else}
         <p class="text-gray-500">Checking authentication...</p>
@@ -469,18 +469,18 @@
       <div class="flex flex-wrap gap-3">
         <Button
           class="bits-btn"
-          onclick={runAuthenticatedCRUDTest}
+          on:click={runAuthenticatedCRUDTest}
           disabled={isLoading || !isAuthenticated}
           variant="default"
         >
           {isLoading ? '⏳ Testing...' : '🚀 Run Authenticated CRUD Test'}
         </Button>
-        <Button class="bits-btn" onclick={() => checkAuth()} disabled={isLoading} variant="secondary">
+        <Button class="bits-btn" on:click={() => checkAuth()} disabled={isLoading} variant="secondary">
           🔍 Check Auth
         </Button>
         <Button
           class="bits-btn"
-          onclick={testAuthenticatedGET}
+          on:click={testAuthenticatedGET}
           disabled={isLoading || !isAuthenticated}
           variant="secondary"
         >
@@ -488,7 +488,7 @@
         </Button>
         <Button
           class="bits-btn"
-          onclick={testAuthenticatedPOST}
+          on:click={testAuthenticatedPOST}
           disabled={isLoading || !isAuthenticated}
           variant="secondary"
         >
@@ -496,7 +496,7 @@
         </Button>
         <Button
           class="bits-btn"
-          onclick={() => testAuthenticatedPUT()}
+          on:click={() => testAuthenticatedPUT()}
           disabled={isLoading || !isAuthenticated}
           variant="secondary"
         >
@@ -504,13 +504,13 @@
         </Button>
         <Button
           class="bits-btn"
-          onclick={() => testAuthenticatedDELETE()}
+          on:click={() => testAuthenticatedDELETE()}
           disabled={isLoading || !isAuthenticated}
           variant="secondary"
         >
           🗑️ Test DELETE
         </Button>
-        <Button class="bits-btn" onclick={clearResults} variant="ghost">🧹 Clear Results</Button>
+        <Button class="bits-btn" on:click={clearResults} variant="ghost">🧹 Clear Results</Button>
       </div>
       {#if !isAuthenticated}
         <p class="text-sm text-gray-500 mt-2">⚠️ Authentication required to run tests. Please log in first.</p>

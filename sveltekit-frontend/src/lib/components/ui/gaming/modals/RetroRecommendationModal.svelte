@@ -221,7 +221,7 @@ https://svelte.dev/e/attribute_duplicate -->
     transitionfade={{ duration: 300 }}
     role="button"
     tabindex="0"
-    onclick={handleClose}
+    on:click={handleClose}
     aria-label="Close modal"
   ></div>
   <!-- Modal Container -->
@@ -245,7 +245,7 @@ https://svelte.dev/e/attribute_duplicate -->
       <button
         class="close-button"
         style:color={currentTheme.colors.accent}
-        onclick={handleClose}
+        on:click={handleClose}
         aria-label="Close modal"
       >
         ×
@@ -267,7 +267,7 @@ https://svelte.dev/e/attribute_duplicate -->
               style:border-color={index === selectedIndex ? currentTheme.colors.selected : 'transparent'}
               style:background-color={index === selectedIndex ? `${currentTheme.colors.selected}20` : 'transparent'}
               role="button"
-              onclick={() => {
+              on:click={() => {
                 selectedIndex = index;
                 rec.action?.();
                 handleClose();

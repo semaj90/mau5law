@@ -421,7 +421,7 @@ if (!canvas) return;
     width={canvasWidth}
     height={canvasHeight}
     class="spa-canvas"
-    onclick={handleCanvasClick}
+    on:click={handleCanvasClick}
     style="display: block; cursor: pointer;"
   />
   <!-- Accessibility content for screen readers -->

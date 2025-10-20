@@ -141,7 +141,7 @@
     <div class="yorha-header-content">
       <!-- Logo and Title -->
       <div class="yorha-brand">
-        <button class="yorha-menu-toggle" onclick={() => (sidebarOpen = !sidebarOpen)} aria-label="Toggle sidebar">
+        <button class="yorha-menu-toggle" on:click={() => (sidebarOpen = !sidebarOpen)} aria-label="Toggle sidebar">
           <Terminal size={20} />
         </button>
         <h1 class="yorha-brand-title">
@@ -167,11 +167,11 @@
       </div>
       <!-- Quick Actions -->
       <div class="yorha-quick-actions">
-        <button class="yorha-quick-btn" onclick={() => goto('/')}>
+        <button class="yorha-quick-btn" on:click={() => goto('/')}>
           <Home size={16} />
           <span>MAIN</span>
         </button>
-        <button class="yorha-quick-btn" onclick={() => goto('/demos')}>
+        <button class="yorha-quick-btn" on:click={() => goto('/demos')}>
           <FileText size={16} />
           <span>DEMOS</span>
         </button>
@@ -183,7 +183,7 @@
     <nav class="yorha-nav">
       <div class="yorha-nav-header">
         <h2>NAVIGATION</h2>
-        <button class="yorha-sidebar-close" onclick={() => (sidebarOpen = false)}>
+        <button class="yorha-sidebar-close" on:click={() => (sidebarOpen = false)}>
           <ChevronLeft size={20} />
         </button>
       </div>
@@ -194,7 +194,7 @@
             <button
               class="yorha-nav-link"
               class:yorha-nav-active={isActivePath(item.path)}
-              onclick={() => navigateTo(item.path)}
+              on:click={() => navigateTo(item.path)}
             >
               <Icon size={18} />
               <div class="yorha-nav-content">
@@ -218,7 +218,7 @@
       class="yorha-overlay"
       role="button"
       tabindex="0"
-      onclick={() => (sidebarOpen = false)}
+      on:click={() => (sidebarOpen = false)}
       onkeydown={e => (e.key === 'Enter' || e.key === ' ' ? (sidebarOpen = false) : null)}
       aria-label="Close sidebar"
     ></div>

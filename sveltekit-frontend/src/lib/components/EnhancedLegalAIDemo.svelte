@@ -254,7 +254,7 @@ try {
             />
             <button
               class="bits-btn bits-btn w-full"
-              onclick={addCustomEvidence}
+              on:click={addCustomEvidence}
               disabled={!evidenceText.trim() || processingActive}
             >
               Process Evidence
@@ -275,7 +275,7 @@ try {
                   {demo.content.slice(0, 100)}...
                 </p>
                 <button type="button" class="bits-btn bits-btn w-full"
-                  onclick={() => addDemoEvidence(demo)}
+                  on:click={() => addDemoEvidence(demo)}
                   disabled={processingActive}
                 >
                   Process This Evidence
@@ -290,16 +290,16 @@ try {
             <h3 class="nes-text is-primary">System Controls</h3>
           </div>
           <div class="yorha-panel-content space-y-3">
-            <button type="button" class="bits-btn bits-btn w-full" onclick={() => checkSystemHealth()}>
+            <button type="button" class="bits-btn bits-btn w-full" on:click={() => checkSystemHealth()}>
               Health Check
             </button>
-            <button type="button" class="bits-btn bits-btn w-full" onclick={() => syncCache()}>
+            <button type="button" class="bits-btn bits-btn w-full" on:click={() => syncCache()}>
               Sync Cache
             </button>
-            <button type="button" class="bits-btn bits-btn w-full" onclick={() => clearErrors()}>
+            <button type="button" class="bits-btn bits-btn w-full" on:click={() => clearErrors()}>
               Clear Errors
             </button>
-            <button type="button" class="bits-btn bits-btn w-full" onclick={() => clearCache()}>
+            <button type="button" class="bits-btn bits-btn w-full" on:click={() => clearCache()}>
               Clear Cache
             </button>
           </div>

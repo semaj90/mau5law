@@ -154,7 +154,7 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Backdrop -->
   <div
     class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
-    onclick={close}
+    on:click={close}
     role="button"
     tabindex="0"
     keydown={e => e.key === 'Enter' && close()}
@@ -163,7 +163,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg">
       <div
         class="bg-nier-surface border border-nier-gray rounded-lg shadow-2xl nier-border-glow"
-        onclick={e => e.stopPropagation()}
+        on:click={e => e.stopPropagation()}
         role="dialog"
         tabindex="0"
       >
@@ -207,7 +207,7 @@ https://svelte.dev/e/js_parse_error -->
                         ? 'bg-harvard-crimson text-white shadow-nier-glow'
                         : 'hover:bg-nier-surface-light text-foreground'
                     )}
-                    onclick={() => selectItem(item)}
+                    on:click={() => selectItem(item)}
                     onmouseenter={() => (selectedIndex = globalIndex)}
                   >
                     <div class="flex items-center">

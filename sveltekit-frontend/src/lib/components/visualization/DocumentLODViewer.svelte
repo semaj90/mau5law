@@ -382,7 +382,7 @@ if (!browser || !enableWebGPU) return;
     <div class="navigation-controls">
       <LoadingButton
         loading={isLoading}
-        onclick={() => changePage(currentPage - 1)}
+        on:click={() => changePage(currentPage - 1)}
         disabled={currentPage <= 1 || isLoading}
         variant="ghost"
         size="sm"
@@ -394,7 +394,7 @@ if (!browser || !enableWebGPU) return;
       </span>
       <LoadingButton
         loading={isLoading}
-        onclick={() => changePage(currentPage + 1)}
+        on:click={() => changePage(currentPage + 1)}
         disabled={currentPage >= totalPages || isLoading}
         variant="ghost"
         size="sm"
@@ -403,16 +403,16 @@ if (!browser || !enableWebGPU) return;
       </LoadingButton>
     </div>
     <div class="view-controls">
-      <LoadingButton onclick={handleZoomIn} variant="ghost" size="sm">
+      <LoadingButton on:click={handleZoomIn} variant="ghost" size="sm">
         {#snippet children()}<ZoomIn class="w-4 h-4" />{/snippet}
       </LoadingButton>
       <span class="zoom-info">
         {Math.round(zoomLevel * 100)}%
       </span>
-      <LoadingButton onclick={handleZoomOut} variant="ghost" size="sm">
+      <LoadingButton on:click={handleZoomOut} variant="ghost" size="sm">
         {#snippet children()}<ZoomOut class="w-4 h-4" />{/snippet}
       </LoadingButton>
-      <LoadingButton onclick={handleRotate} variant="ghost" size="sm">
+      <LoadingButton on:click={handleRotate} variant="ghost" size="sm">
         {#snippet children()}<RotateCw class="w-4 h-4" />{/snippet}
       </LoadingButton>
     </div>

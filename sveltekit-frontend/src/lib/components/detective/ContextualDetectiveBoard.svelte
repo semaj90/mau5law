@@ -364,10 +364,10 @@
         rows="8"
       ></textarea>
       <div class="input-actions">
-        <button type="button" onclick={generateConnectionMap} disabled={isGeneratingMap}>
+        <button type="button" on:click={generateConnectionMap} disabled={isGeneratingMap}>
           {isGeneratingMap ? 'Generating...' : 'Generate Connection Map'}
         </button>
-        <button type="button" onclick={clearInput}>Clear</button>
+        <button type="button" on:click={clearInput}>Clear</button>
       </div>
     </section>
     <!-- Contextual prompts display -->
@@ -379,7 +379,7 @@
             <button
               type="button"
               class="prompt-button"
-              onclick={() => selectContextualPrompt(prompt)}
+              on:click={() => selectContextualPrompt(prompt)}
             >
               {prompt}
             </button>

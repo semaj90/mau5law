@@ -381,7 +381,7 @@
                 disabled={isProcessing} />
             </div>
             <Button
-              onclick={runSimilarityDemo}
+              on:click={runSimilarityDemo}
               disabled={isProcessing || activeDemo === 'similarity'}
               class="w-full bits-btn bits-btn">
 {isProcessing && activeDemo === 'similarity' ? 'Computing...' : 'Run Similarity Test'}
@@ -426,7 +426,7 @@
                 disabled={isProcessing} />
             </div>
             <Button
-              onclick={runClusteringDemo}
+              on:click={runClusteringDemo}
               disabled={isProcessing || activeDemo === 'clustering'}
               class="w-full bits-btn bits-btn">
 {isProcessing && activeDemo === 'clustering' ? 'Clustering...' : 'Run Clustering'}
@@ -458,7 +458,7 @@
                 disabled={isProcessing} />
             </div>
             <Button
-              onclick={runMatrixDemo}
+              on:click={runMatrixDemo}
               disabled={isProcessing || activeDemo === 'matrix'}
               class="w-full bits-btn bits-btn">
 {isProcessing && activeDemo === 'matrix' ? 'Computing...' : 'Run Matrix Multiply'}

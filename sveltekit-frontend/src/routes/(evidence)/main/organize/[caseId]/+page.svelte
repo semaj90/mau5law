@@ -202,7 +202,7 @@ if (!caseId) {
     <div class="error-icon">⚠️</div>
     <h1>Error</h1>
     <p>{error}</p>
-    <button type="button" onclick={refreshOrganization}>Try Again</button>
+    <button type="button" on:click={refreshOrganization}>Try Again</button>
   </div>
 {:else if caseData}
   <div class="evidence-organization-page">
@@ -221,12 +221,12 @@ if (!caseId) {
           {#if selectedEvidence.length > 0}
             <div class="selection-info">
               <span class="selection-count">{selectedEvidence.length} selected</span>
-              <button type="button" onclick={clearSelections} class="clear-btn"> Clear Selection </button>
+              <button type="button" on:click={clearSelections} class="clear-btn"> Clear Selection </button>
             </div>
           {/if}
           <div class="action-buttons">
-            <button type="button" onclick={exportOrganization} class="export-btn"> 📥 Export Organization </button>
-            <button type="button" onclick={generateReport} class="report-btn"> 📊 Generate Report </button>
+            <button type="button" on:click={exportOrganization} class="export-btn"> 📥 Export Organization </button>
+            <button type="button" on:click={generateReport} class="report-btn"> 📊 Generate Report </button>
             <a href="/cases/{caseId}" class="view-case-btn"> 👁️ View Case </a>
           </div>
         </div>
@@ -282,7 +282,7 @@ if (!caseId) {
                 <button
                   type="button"
                   class="remove-btn"
-                  onclick={() => handleEvidenceSelected({ detail: { evidence, context: 'removal' } })}
+                  on:click={() => handleEvidenceSelected({ detail: { evidence, context: 'removal' } })}
                 >
                   ✕
                 </button>

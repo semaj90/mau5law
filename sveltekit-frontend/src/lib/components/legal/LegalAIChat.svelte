@@ -159,7 +159,7 @@
           />
           <span class="ml-2 text-sm text-gray-700"> Search similar documents </span>
         </label>
-        <Button onclick={submitQuery} disabled={!canSubmit} class="px-6 py-2">
+        <Button on:click={submitQuery} disabled={!canSubmit} class="px-6 py-2">
           {#if isLoading}
             <span class="flex items-center">
               <svg
@@ -193,7 +193,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         {#each samplePrompts as sample}
           <button
-            onclick={() => useSamplePrompt(sample)}
+            on:click={() => useSamplePrompt(sample)}
             class="p-3 text-left border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors disabled:opacity-50"
             disabled={isLoading}
           >

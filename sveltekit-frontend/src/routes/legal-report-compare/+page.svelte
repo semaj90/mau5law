@@ -409,7 +409,7 @@
 
             <!-- Submit Button -->
             <Button
-              onclick={submitReport}
+              on:click={submitReport}
               disabled={!canSubmit}
               class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors"
             >
@@ -454,7 +454,7 @@
                 Analysis Results
               </h2>
               <Button
-                onclick={resetForm}
+                on:click={resetForm}
                 class="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg"
               >
                 Upload New Report
@@ -503,7 +503,7 @@
         <div class="flex gap-2 flex-wrap">
           {#each ['who', 'what', 'why', 'how', 'evidence', 'comparison'] as tab}
             <button
-              onclick={() => activeTab = tab as typeof activeTab}
+              on:click={() => activeTab = tab as typeof activeTab}
               class="px-4 py-2 rounded-lg font-medium transition-colors {activeTab === tab
                 ? 'bg-blue-600 text-white'
                 : 'bg-slate-700 text-slate-300 hover:bg-slate-600'}"

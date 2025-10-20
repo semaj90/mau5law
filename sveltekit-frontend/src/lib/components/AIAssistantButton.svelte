@@ -171,7 +171,7 @@
   <!-- Action Buttons -->
   <div class="grid grid-cols-3 gap-3">
     <Button.Root
-      onclick={testGemma3}
+      on:click={testGemma3}
       disabled={isProcessing}
       class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn"
     >
@@ -183,7 +183,7 @@
       Gemma3
     </Button.Root>
     <Button.Root
-      onclick={testSynthesis}
+      on:click={testSynthesis}
       disabled={isProcessing}
       class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white bits-btn bits-btn"
     >
@@ -195,7 +195,7 @@
       Synthesis
     </Button.Root>
     <Button.Root
-      onclick={testRAG}
+      on:click={testRAG}
       disabled={isProcessing}
       class="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white bits-btn bits-btn"
     >

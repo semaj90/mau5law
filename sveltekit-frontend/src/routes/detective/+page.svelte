@@ -151,16 +151,16 @@
     <div class="space-y-2">
       <h1 class="text-xl font-bold">Detective Mode</h1>
       <div class="flex gap-2 flex-wrap">
-        <button onclick={() => (currentView = 'board')} class="border rounded px-3 py-1 hover:bg-white/5">
+        <button on:click={() => (currentView = 'board')} class="border rounded px-3 py-1 hover:bg-white/5">
           Evidence Board
         </button>
-        <button onclick={() => (currentView = 'create-case')} class="border rounded px-3 py-1 hover:bg-white/5">
+        <button on:click={() => (currentView = 'create-case')} class="border rounded px-3 py-1 hover:bg-white/5">
           Create Case
         </button>
-        <button onclick={() => (currentView = 'auth-demo')} class="border rounded px-3 py-1 hover:bg-white/5">
+        <button on:click={() => (currentView = 'auth-demo')} class="border rounded px-3 py-1 hover:bg-white/5">
           Auth Demo
         </button>
-        <button onclick={simulateCollaboration} class="border rounded px-3 py-1 hover:bg-white/5"> Demo Collab </button>
+        <button on:click={simulateCollaboration} class="border rounded px-3 py-1 hover:bg-white/5"> Demo Collab </button>
       </div>
       <div class="space-y-4">
         <!-- Demo Status Badge -->
@@ -171,7 +171,7 @@
         {#if $auth.isAuthenticated}
           <div class="flex items-center gap-3">
             <span>Welcome, {$auth.user?.name || $auth.user?.email}</span>
-            <button onclick={() => auth.logout()} class="border rounded px-2 py-1 hover:bg-white/5">Logout</button>
+            <button on:click={() => auth.logout()} class="border rounded px-2 py-1 hover:bg-white/5">Logout</button>
           </div>
         {:else}
           <div class="text-sm opacity-80">Not authenticated</div>
@@ -207,21 +207,21 @@
               <div>
                 <div class="flex gap-2 flex-wrap">
                   <button
-                    onclick={() => auth.login('test@example.com', 'password123')}
+                    on:click={() => auth.login('test@example.com', 'password123')}
                     class="border rounded px-2 py-1 hover:bg-white/5"
                     disabled={$auth.isLoading}
                   >
                     Mock Login
                   </button>
                   <button
-                    onclick={() => auth.logout()}
+                    on:click={() => auth.logout()}
                     class="border rounded px-2 py-1 hover:bg-white/5"
                     disabled={!$auth.isAuthenticated}
                   >
                     Logout
                   </button>
                   <button
-                    onclick={() => auth.checkAuth()}
+                    on:click={() => auth.checkAuth()}
                     class="border rounded px-2 py-1 hover:bg-white/5"
                     disabled={$auth.isLoading}
                   >

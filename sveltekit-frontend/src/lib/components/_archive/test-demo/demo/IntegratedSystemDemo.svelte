@@ -335,11 +335,11 @@ https://svelte.dev/e/js_parse_error -->
             <div class="space-y-2">
               <h4 class="font-semibold">🎯 Demo Actions:</h4>
               <div class="space-y-2">
-                <Button class="bits-btn" onclick={demoLogin} disabled={authenticatedUser !== null}>
+                <Button class="bits-btn" on:click={demoLogin} disabled={authenticatedUser !== null}>
 Demo Login
-                <Button class="bits-btn" onclick={demoAIInteraction} disabled={!authenticatedUser}>
+                <Button class="bits-btn" on:click={demoAIInteraction} disabled={!authenticatedUser}>
 Test AI Assistant
-                <Button class="bits-btn" onclick={demoLogout} disabled={!authenticatedUser} variant="ghost">
+                <Button class="bits-btn" on:click={demoLogout} disabled={!authenticatedUser} variant="ghost">
 Demo Logout
               </div>
             </div>
@@ -359,7 +359,7 @@ Demo Logout
               <p class="text-gray-600">
                 Demonstrate the modern authentication system with Svelte 5 runes and XState integration.
               </p>
-              <Button class="bits-btn" onclick={() =>
+              <Button class="bits-btn" on:click={() =>
 showAuthDialog = true}>
                 Open Authentication Dialog
             </div>
@@ -373,7 +373,7 @@ showAuthDialog = true}>
                   <p><strong>Status:</strong> {authenticatedUser.isActive ? 'Active' : 'Inactive'}</p>
                 </div>
               </div>
-              <Button class="bits-btn" onclick={demoLogout} variant="ghost">
+              <Button class="bits-btn" on:click={demoLogout} variant="ghost">
 Logout
             </div>
           {/if}
@@ -410,13 +410,13 @@ Logout
               </div>
               <div class="flex gap-2">
                 <Button class="bits-btn"
-                  onclick={() =>
+                  on:click={() =>
 sessionManager.performSecurityCheck()}
                   size="sm"
                 >
                   Security Check
                 <Button class="bits-btn"
-                  onclick={() =>
+                  on:click={() =>
 sessionManager.refreshSession()}
                   size="sm"
                   variant="ghost"
@@ -479,7 +479,7 @@ sessionManager.refreshSession()}
                 </div>
               </div>
             </div>
-            <Button class="bits-btn" onclick={checkSystemHealth}>
+            <Button class="bits-btn" on:click={checkSystemHealth}>
 Refresh System Health
           </div>
         </div>

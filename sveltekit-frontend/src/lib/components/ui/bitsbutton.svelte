@@ -149,7 +149,7 @@
     tabindex="0"
     aria-disabled={isDisabled}
     data-testid={dataTestid || 'bits-button'}
-    onclick={handleClick}
+    on:click={handleClick}
   >
     {#if loading}
       <svg
@@ -178,7 +178,7 @@
     disabled={isDisabled}
     class={buttonClass}
     data-testid={dataTestid || 'bits-button'}
-    onclick={handleClick}
+    on:click={handleClick}
   >
     {#if loading}
       <svg

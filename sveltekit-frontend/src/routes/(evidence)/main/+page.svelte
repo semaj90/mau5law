@@ -45,7 +45,7 @@
       />
       {#if uploadFile}
         <p>Selected: {uploadFile.name}</p>
-        <button onclick={submitEvidence} class="upload-btn">Submit Evidence</button>
+        <button on:click={submitEvidence} class="upload-btn">Submit Evidence</button>
       {/if}
     </div>
 

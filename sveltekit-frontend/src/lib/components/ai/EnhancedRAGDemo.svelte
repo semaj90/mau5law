@@ -260,7 +260,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
       class="px-4 py-2 text-sm font-medium border-b-2 {activeTab === 'analyze'
         ? 'border-blue-500 text-blue-600'
         : 'border-transparent text-gray-500 hover:text-gray-700'}"
-      onclick={() => (activeTab = 'analyze')}
+      on:click={() => (activeTab = 'analyze')}
     >
       Document Analysis
     </button>
@@ -268,7 +268,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
       class="px-4 py-2 text-sm font-medium border-b-2 {activeTab === 'query'
         ? 'border-blue-500 text-blue-600'
         : 'border-transparent text-gray-500 hover:text-gray-700'}"
-      onclick={() => (activeTab = 'query')}
+      on:click={() => (activeTab = 'query')}
     >
       RAG Query
     </button>
@@ -290,7 +290,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
           ></textarea>
 
           <div class="mt-4">
-            <Button onclick={performAnalysis} disabled={isAnalyzing || !sampleLegalText.trim()} class="w-full">
+            <Button on:click={performAnalysis} disabled={isAnalyzing || !sampleLegalText.trim()} class="w-full">
               {#if isAnalyzing}
                 <svg
                   class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
@@ -443,7 +443,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
               </div>
             </div>
 
-            <Button onclick={performRAGQuery} disabled={isAnalyzing || !queryText.trim()} class="w-full">
+            <Button on:click={performRAGQuery} disabled={isAnalyzing || !queryText.trim()} class="w-full">
               {#if isAnalyzing}
                 <svg
                   class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"

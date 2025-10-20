@@ -32,7 +32,7 @@
 <div class="panel">
   <div style="display:flex; justify-content:space-between; align-items:center;">
     <strong>GPU Diagnostics</strong>
-    <button onclick={() => (expanded = !expanded)}>{expanded ? 'Hide' : 'Show'}</button>
+    <button on:click={() => (expanded = !expanded)}>{expanded ? 'Hide' : 'Show'}</button>
   </div>
   {#if expanded}
     <div class="section">

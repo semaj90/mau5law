@@ -182,7 +182,7 @@
         class="px-3 py-2 rounded-lg {isMonitoring
           ? 'bg-green-600 hover:bg-green-700'
           : 'bg-gray-600 hover:bg-gray-700'} text-white transition-colors"
-        onclick={handleToggleMonitoring}
+        on:click={handleToggleMonitoring}
       >
         {isMonitoring ? '⏹️ Stop' : '▶️ Start'} Monitoring
       </button>
@@ -373,21 +373,21 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
         <button
           class="flex items-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
-          onclick={handleOptimizeMemory}
+          on:click={handleOptimizeMemory}
         >
           <span>🧹</span>
           <span>Optimize Memory</span>
         </button>
         <button
           class="flex items-center gap-2 px-4 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors"
-          onclick={handleOptimizeTensors}
+          on:click={handleOptimizeTensors}
         >
           <span>⚡</span>
           <span>Optimize Tensors</span>
         </button>
         <button
           class="flex items-center gap-2 px-4 py-3 bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
-          onclick={handleBalanceWorkload}
+          on:click={handleBalanceWorkload}
         >
           <span>⚖️</span>
           <span>Balance Workload</span>

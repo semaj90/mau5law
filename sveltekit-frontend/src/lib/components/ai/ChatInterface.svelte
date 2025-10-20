@@ -326,7 +326,7 @@ https://svelte.dev/e/js_parse_error -->
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            onclick={quickAnalyzeEvidence}
+            on:click={quickAnalyzeEvidence}
             disabled={$isLoading}
           >
 🔍 Quick Analysis
@@ -433,7 +433,7 @@ https://svelte.dev/e/js_parse_error -->
         variant="default"
         size="sm"
         class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
-        onclick={() => sendMessage()}
+        on:click={() => sendMessage()}
         disabled={$isLoading || !messageInput.trim()}
       >
         {#if $isLoading}

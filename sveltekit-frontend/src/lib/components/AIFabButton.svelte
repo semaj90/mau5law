@@ -30,7 +30,7 @@
 <button
   class="ai-fab-button"
   class:generating={isGenerating}
-  onclick={toggleDialog}
+  on:click={toggleDialog}
   aria-label="Open AI Assistant"
   title="AI Assistant"
 >

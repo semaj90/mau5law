@@ -142,7 +142,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
         </div>
         <button
           class="nes-btn is-small collapse-btn"
-          onclick={() => (isCollapsed = !isCollapsed)}
+          on:click={() => (isCollapsed = !isCollapsed)}
           title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {isCollapsed ? '→' : '←'}
@@ -155,7 +155,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
         <p class="nes-text">Please sign in to access your legal workspace</p>
         <a href="/auth/login" class="nes-btn is-primary">Sign In</a>
       {:else}
-        <button class="nes-btn is-small" onclick={() => (isCollapsed = false)}>⚡</button>
+        <button class="nes-btn is-small" on:click={() => (isCollapsed = false)}>⚡</button>
       {/if}
     </div>
   {/if}
@@ -198,16 +198,16 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
       <div class="quick-actions nes-container is-dark with-title">
         <p class="title">⚡ Quick Actions</p>
         <div class="action-buttons">
-          <button class="nes-btn is-small is-primary" onclick={createQuickCase}> 📁 New Case </button>
-          <button class="nes-btn is-small is-success" onclick={uploadEvidence}> 📤 Upload Evidence </button>
-          <button class="nes-btn is-small is-warning" onclick={createReport}> 📋 New Report </button>
-          <button class="nes-btn is-small" onclick={() => openAIAssistant()}> 🤖 AI Assistant </button>
+          <button class="nes-btn is-small is-primary" on:click={createQuickCase}> 📁 New Case </button>
+          <button class="nes-btn is-small is-success" on:click={uploadEvidence}> 📤 Upload Evidence </button>
+          <button class="nes-btn is-small is-warning" on:click={createReport}> 📋 New Report </button>
+          <button class="nes-btn is-small" on:click={() => openAIAssistant()}> 🤖 AI Assistant </button>
         </div>
       </div>
     {/if}
     <!-- Cases Section -->
     <div class="section cases-section nes-container is-dark with-title">
-      <p class="title" onclick={() => toggleSection('cases')}>
+      <p class="title" on:click={() => toggleSection('cases')}>
         📁 Cases ({stats.totalCases})
         <span class="toggle-icon">{showCases ? '−' : '+'}</span>
       </p>
@@ -215,7 +215,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
         <div class="section-content">
           {#if filteredCases.length > 0}
             {#each filteredCases as case_ (case_.id)}
-              <div class="item case-item" onclick={() => navigateTo(`/cases/${case_.id}`)}>
+              <div class="item case-item" on:click={() => navigateTo(`/cases/${case_.id}`)}>
                 <div class="item-header">
                   <span class="item-title" title={case_.title}>
                     {truncateCaseTitle(case_.title, MINI_TEXT_LENGTHS.TITLE)}
@@ -243,7 +243,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
           {:else}
             <div class="empty-state">
               <p class="nes-text is-disabled">No cases found</p>
-              <button class="nes-btn is-small" onclick={createQuickCase}>Create First Case</button>
+              <button class="nes-btn is-small" on:click={createQuickCase}>Create First Case</button>
             </div>
           {/if}
         </div>
@@ -251,7 +251,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     </div>
     <!-- Evidence Section -->
     <div class="section evidence-section nes-container is-dark with-title">
-      <p class="title" onclick={() => toggleSection('evidence')}>
+      <p class="title" on:click={() => toggleSection('evidence')}>
         📎 Evidence ({stats.totalEvidence})
         <span class="toggle-icon">{showEvidence ? '−' : '+'}</span>
       </p>
@@ -261,7 +261,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
             {#each filteredEvidence as evidence (evidence.id)}
               <div
                 class="item evidence-item"
-                onclick={() => navigateTo(`/cases/${evidence.caseId}/evidence/${evidence.id}`)}
+                on:click={() => navigateTo(`/cases/${evidence.caseId}/evidence/${evidence.id}`)}
               >
                 <div class="item-header">
                   <span class="file-icon">{getFileIcon(evidence.fileType)}</span>
@@ -297,7 +297,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
           {:else}
             <div class="empty-state">
               <p class="nes-text is-disabled">No evidence found</p>
-              <button class="nes-btn is-small" onclick={uploadEvidence}>Upload Evidence</button>
+              <button class="nes-btn is-small" on:click={uploadEvidence}>Upload Evidence</button>
             </div>
           {/if}
         </div>
@@ -305,7 +305,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     </div>
     <!-- Citations Section -->
     <div class="section citations-section nes-container is-dark with-title">
-      <p class="title" onclick={() => toggleSection('citations')}>
+      <p class="title" on:click={() => toggleSection('citations')}>
         📚 Citations ({stats.totalCitations})
         <span class="toggle-icon">{showCitations ? '−' : '+'}</span>
       </p>
@@ -313,7 +313,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
         <div class="section-content">
           {#if filteredCitations.length > 0}
             {#each filteredCitations as citation (citation.id)}
-              <div class="item citation-item" onclick={() => navigateTo(`/citations/${citation.id}`)}>
+              <div class="item citation-item" on:click={() => navigateTo(`/citations/${citation.id}`)}>
                 <div class="item-header">
                   <span class="item-title" title={citation.title}>
                     {truncateText(citation.title, MINI_TEXT_LENGTHS.TITLE)}
@@ -349,7 +349,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     </div>
     <!-- Reports Section -->
     <div class="section reports-section nes-container is-dark with-title">
-      <p class="title" onclick={() => toggleSection('reports')}>
+      <p class="title" on:click={() => toggleSection('reports')}>
         📋 Reports ({stats.totalReports})
         <span class="toggle-icon">{showReports ? '−' : '+'}</span>
       </p>
@@ -357,7 +357,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
         <div class="section-content">
           {#if filteredReports.length > 0}
             {#each filteredReports as report (report.id)}
-              <div class="item report-item" onclick={() => navigateTo(`/reports/${report.id}`)}>
+              <div class="item report-item" on:click={() => navigateTo(`/reports/${report.id}`)}>
                 <div class="item-header">
                   <span class="item-title" title={report.title}>
                     {truncateText(report.title, MINI_TEXT_LENGTHS.TITLE)}
@@ -381,7 +381,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
           {:else}
             <div class="empty-state">
               <p class="nes-text is-disabled">No reports found</p>
-              <button class="nes-btn is-small" onclick={createReport}>Create Report</button>
+              <button class="nes-btn is-small" on:click={createReport}>Create Report</button>
             </div>
           {/if}
         </div>
@@ -389,7 +389,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     </div>
     <!-- AI Assistant Section -->
     <div class="section ai-section nes-container is-dark with-title">
-      <p class="title" onclick={() => toggleSection('ai')}>
+      <p class="title" on:click={() => toggleSection('ai')}>
         🤖 AI Assistant ({stats.aiConversations})
         <span class="toggle-icon">{showAIAssistant ? '−' : '+'}</span>
       </p>
@@ -397,7 +397,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
         <div class="section-content">
           {#if userAIConversations.length > 0}
             {#each userAIConversations.slice(0, 5) as conversation (conversation.id)}
-              <div class="item ai-item" onclick={() => navigateTo(`/ai/conversations/${conversation.id}`)}>
+              <div class="item ai-item" on:click={() => navigateTo(`/ai/conversations/${conversation.id}`)}>
                 <div class="item-header">
                   <span class="item-title" title={conversation.title}>
                     {truncateText(conversation.title, MINI_TEXT_LENGTHS.TITLE)}
@@ -420,7 +420,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
           {:else}
             <div class="empty-state">
               <p class="nes-text is-disabled">No AI conversations yet</p>
-              <button class="nes-btn is-small" onclick={() => openAIAssistant()}>Start Chat</button>
+              <button class="nes-btn is-small" on:click={() => openAIAssistant()}>Start Chat</button>
             </div>
           {/if}
         </div>

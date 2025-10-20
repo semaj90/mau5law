@@ -247,7 +247,7 @@
 
         <div class="button-group">
           <button
-            onclick={submitEvidence}
+            on:click={submitEvidence}
             disabled={!canSubmit}
             class="upload-btn"
             class:disabled={!canSubmit}
@@ -262,7 +262,7 @@
           </button>
 
           {#if uploadResult || uploadError}
-            <button onclick={resetForm} class="reset-btn">Reset</button>
+            <button on:click={resetForm} class="reset-btn">Reset</button>
           {/if}
         </div>
       {/if}
@@ -334,7 +334,7 @@
           </div>
 
           <div class="compare-actions">
-            <button class="upload-btn" onclick={runCompare} disabled={comparing}>
+            <button class="upload-btn" on:click={runCompare} disabled={comparing}>
               {comparing ? 'Analyzing…' : 'Analyze Similar Cases'}
             </button>
           </div>

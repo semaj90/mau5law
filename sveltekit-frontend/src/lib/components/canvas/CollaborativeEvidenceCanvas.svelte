@@ -1106,7 +1106,7 @@
     <div class="tool-group flex gap-2">
       <Button
         variant={selectedTool === 'select' ? 'default' : 'ghost'}
-        onclick={() => {
+        on:click={() => {
           selectedTool = 'select';
           updateToolMode();
         }}
@@ -1117,7 +1117,7 @@
       </Button>
       <Button
         variant={selectedTool === 'evidence' ? 'default' : 'ghost'}
-        onclick={() => (selectedTool = 'evidence')}
+        on:click={() => (selectedTool = 'evidence')}
         title="Add Evidence (2)"
         size="sm"
       >
@@ -1125,7 +1125,7 @@
       </Button>
       <Button
         variant={selectedTool === 'connection' ? 'default' : 'ghost'}
-        onclick={() => (selectedTool = 'connection')}
+        on:click={() => (selectedTool = 'connection')}
         title="Connect Evidence (3)"
         size="sm"
       >
@@ -1133,7 +1133,7 @@
       </Button>
       <Button
         variant={selectedTool === 'note' ? 'default' : 'ghost'}
-        onclick={() => (selectedTool = 'note')}
+        on:click={() => (selectedTool = 'note')}
         title="Add Note (4)"
         size="sm"
       >
@@ -1141,7 +1141,7 @@
       </Button>
       <Button
         variant={selectedTool === 'highlight' ? 'default' : 'ghost'}
-        onclick={() => (selectedTool = 'highlight')}
+        on:click={() => (selectedTool = 'highlight')}
         title="Highlight (5)"
         size="sm"
       >
@@ -1149,7 +1149,7 @@
       </Button>
       <Button
         variant={selectedTool === 'draw' ? 'default' : 'ghost'}
-        onclick={() => {
+        on:click={() => {
           selectedTool = 'draw';
           updateToolMode();
         }}
@@ -1160,17 +1160,17 @@
       </Button>
     </div>
     <div class="action-group flex gap-2">
-      <Button variant="ghost" onclick={undo} disabled={undoStack.length === 0} size="sm">⏪ Undo</Button>
-      <Button variant="ghost" onclick={redo} disabled={redoStack.length === 0} size="sm">⏩ Redo</Button>
-      <Button variant="ghost" onclick={zoomFit} size="sm">🔍 Fit</Button>
-      <Button variant="ghost" onclick={() => exportCanvas('png')} size="sm">💾 Export</Button>
+      <Button variant="ghost" on:click={undo} disabled={undoStack.length === 0} size="sm">⏪ Undo</Button>
+      <Button variant="ghost" on:click={redo} disabled={redoStack.length === 0} size="sm">⏩ Redo</Button>
+      <Button variant="ghost" on:click={zoomFit} size="sm">🔍 Fit</Button>
+      <Button variant="ghost" on:click={() => exportCanvas('png')} size="sm">💾 Export</Button>
     </div>
     {#if aiAssisted}
       <div class="ai-group">
-        <button class="ai-btn" onclick={applyAILayout} disabled={isGeneratingLayout}>
+        <button class="ai-btn" on:click={applyAILayout} disabled={isGeneratingLayout}>
           {isGeneratingLayout ? '⏳' : '🤖'} AI Layout
         </button>
-        <button class="ai-btn" onclick={() => (showAISuggestions = !showAISuggestions)}> 💡 Suggestions </button>
+        <button class="ai-btn" on:click={() => (showAISuggestions = !showAISuggestions)}> 💡 Suggestions </button>
       </div>
     {/if}
     {#if collaborative}
@@ -1193,7 +1193,7 @@
     <div class="sidebar">
       <div class="sidebar-header">
         <h3>Evidence Library</h3>
-        <button class="close-btn" onclick={() => (sidebarOpen = false)}>×</button>
+        <button class="close-btn" on:click={() => (sidebarOpen = false)}>×</button>
       </div>
       <div class="evidence-list">
         {#each evidenceData as evidence}
@@ -1216,14 +1216,14 @@
           {#each aiSuggestions as suggestion}
             <div class="suggestion-item">
               <div class="suggestion-text">{suggestion.text}</div>
-              <button class="apply-btn" onclick={() => suggestion.action()}> Apply </button>
+              <button class="apply-btn" on:click={() => suggestion.action()}> Apply </button>
             </div>
           {/each}
         </div>
       {/if}
     </div>
   {:else}
-    <Button variant="ghost" size="sm" onclick={() => (sidebarOpen = true)} class="fixed left-4 top-4 z-30">
+    <Button variant="ghost" size="sm" on:click={() => (sidebarOpen = true)} class="fixed left-4 top-4 z-30">
       📚 Sidebar
     </Button>
   {/if}
@@ -1238,7 +1238,7 @@
         <CardHeader>
           <div class="flex items-center justify-between">
             <CardTitle>Properties</CardTitle>
-            <Button variant="ghost" size="sm" onclick={() => (propertiesPanel = null)}>×</Button>
+            <Button variant="ghost" size="sm" on:click={() => (propertiesPanel = null)}>×</Button>
           </div>
         </CardHeader>
         <CardContent class="space-y-4">
@@ -1283,7 +1283,7 @@
         <Button
           variant="ghost"
           size="sm"
-          onclick={() => {
+          on:click={() => {
             action.action();
             contextMenu = null;
           }}

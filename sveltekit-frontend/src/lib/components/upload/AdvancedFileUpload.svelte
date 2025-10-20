@@ -509,7 +509,7 @@
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
     tabindex={0}
-    onclick={() => !disabled && fileInput.click()}
+    on:click={() => !disabled && fileInput.click()}
     onkeydown={(e) => {
       if ((e.key === "Enter" || e.key === " ") && !disabled) {
         e.preventDefault();
@@ -545,7 +545,7 @@
         {#if enableCameraCapture}
           <Button class="bits-btn"
             variant="secondary"
-            onclick={handleCameraCaptureClick}
+            on:click={handleCameraCaptureClick}
             {disabled}
           >
 <Camera class="container mx-auto px-4" />
@@ -554,7 +554,7 @@
         {/if}
         {#if enableAudioRecording}
           <button class="nes-btn"
-            onclick={handleAudioRecordingClick}
+            on:click={handleAudioRecordingClick}
             {disabled}
             class={isRecording ? "bg-red-100 text-red-700" : ""}
           >
@@ -586,7 +586,7 @@
           {#if !autoUpload && files.some((f) => f.status === "pending")}
             <Button class="bits-btn"
               size="sm"
-              onclick={() =>
+              on:click={() =>
 uploadFiles()}
               disabled={isUploading}
             >
@@ -601,7 +601,7 @@ uploadFiles()}
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            onclick={() =>
+            on:click={() =>
 (files = [])}
             disabled={isUploading}
           >
@@ -671,7 +671,7 @@ uploadFiles()}
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  onclick={() =>
+                  on:click={() =>
 window.open(file.url, "_blank")}
                   aria-label="View {file.name}"
                 >
@@ -682,7 +682,7 @@ window.open(file.url, "_blank")}
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  onclick={() =>
+                  on:click={() =>
 retryUpload(file.id)}
                   aria-label="Retry upload of {file.name}"
                 >
@@ -692,7 +692,7 @@ retryUpload(file.id)}
               <Button class="bits-btn"
                 variant="ghost"
                 size="sm"
-                onclick={() =>
+                on:click={() =>
 removeFile(file.id)}
                 disabled={file.status === "uploading"}
                 aria-label="Remove {file.name}"

@@ -266,7 +266,7 @@ https://svelte.dev/e/expected_token -->
             </p>
           </div>
           <div class="yorha-panel-content space-y-3">
-            <Button onclick={testConnection} disabled={isLoading} class="w-full bits-btn bits-btn">
+            <Button on:click={testConnection} disabled={isLoading} class="w-full bits-btn bits-btn">
 {isLoading ? 'Testing...' : 'Test Connection'}
             {#if connectionDetails}
               <div class="text-sm space-y-1">
@@ -290,7 +290,7 @@ https://svelte.dev/e/expected_token -->
             </p>
           </div>
           <div class="yorha-panel-content space-y-3">
-            <Button onclick={getDatabaseStats} disabled={isLoading} class="w-full bits-btn bits-btn">
+            <Button on:click={getDatabaseStats} disabled={isLoading} class="w-full bits-btn bits-btn">
 {isLoading ? 'Loading...' : 'Get Statistics'}
             {#if dbStats}
               <div class="text-sm space-y-1">
@@ -316,13 +316,13 @@ https://svelte.dev/e/expected_token -->
         </div>
         <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <Button class="bits-btn" onclick={() =>
+            <Button class="bits-btn" on:click={() =>
 seedDatabase(10)} disabled={isLoading}>
               Seed 10 Documents
-            <Button class="bits-btn" onclick={() =>
+            <Button class="bits-btn" on:click={() =>
 seedDatabase(50)} disabled={isLoading}>
               Seed 50 Documents
-            <Button class="bits-btn" onclick={() =>
+            <Button class="bits-btn" on:click={() =>
 createIndex(100, 'cosine')} disabled={isLoading}>
               Create IVFFLAT Index
           </div>
@@ -350,7 +350,7 @@ createIndex(100, 'cosine')} disabled={isLoading}>
               />
             </div>
             <div class="flex items-end">
-              <Button class="bits-btn" onclick={performVectorSearch} disabled={isLoading || !testQuery.trim()}>
+              <Button class="bits-btn" on:click={performVectorSearch} disabled={isLoading || !testQuery.trim()}>
 {isLoading ? 'Searching...' : 'Search'}
             </div>
           </div>
@@ -406,7 +406,7 @@ createIndex(100, 'cosine')} disabled={isLoading}>
             </p>
           </div>
           <div class="yorha-panel-content space-y-3">
-            <Button onclick={testDocumentInsert} disabled={isLoading} class="w-full bits-btn bits-btn">
+            <Button on:click={testDocumentInsert} disabled={isLoading} class="w-full bits-btn bits-btn">
 {isLoading ? 'Inserting...' : 'Test Document Insert'}
             <p class="text-sm nes-text is-disabled">
               Inserts a sample legal document with 1536-dimension mock embedding
@@ -423,16 +423,16 @@ createIndex(100, 'cosine')} disabled={isLoading}>
           </div>
           <div class="yorha-panel-content space-y-3">
             <div class="grid grid-cols-2 gap-2">
-              <Button class="bits-btn" onclick={() =>
+              <Button class="bits-btn" on:click={() =>
 createIndex(50, 'cosine')} disabled={isLoading} size="sm">
                 Cosine (50 lists)
-              <Button class="bits-btn" onclick={() =>
+              <Button class="bits-btn" on:click={() =>
 createIndex(100, 'cosine')} disabled={isLoading} size="sm">
                 Cosine (100 lists)
-              <Button class="bits-btn" onclick={() =>
+              <Button class="bits-btn" on:click={() =>
 createIndex(100, 'euclidean')} disabled={isLoading} size="sm">
                 Euclidean
-              <Button class="bits-btn" onclick={() =>
+              <Button class="bits-btn" on:click={() =>
 createIndex(100, 'inner_product')} disabled={isLoading} size="sm">
                 Inner Product
             </div>

@@ -328,7 +328,7 @@
   <div
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
     class:animate-fadeOut={isClosing}
-    onclick={(e) => { if (e.target === e.currentTarget) handleClose(), }}
+    on:click={(e) => { if (e.target === e.currentTarget) handleClose(), }}
     onkeydown={handleKeydown}
     role="dialog"
     aria-modal="true"
@@ -361,7 +361,7 @@
             <Button
               variant="ghost"
               size="sm"
-              onclick={handleClose}
+              on:click={handleClose}
               class="rounded-full"
             >
               <X class="w-4 h-4" />
@@ -436,7 +436,7 @@
                     <Button
                       size="sm"
                       variant="ghost"
-                      onclick={addTag}
+                      on:click={addTag}
                       disabled={mode === 'view' || !tagInput.trim()}
                     >
                       <Tag class="w-4 h-4" />
@@ -449,7 +449,7 @@
                           #{tag}
                           {#if mode !== 'view'}
                             <button
-                              onclick={() => removeTag(tag)}
+                              on:click={() => removeTag(tag)}
                               class="text-muted-foreground hover:text-foreground"
                             >
                               <X class="w-3 h-3" />
@@ -517,7 +517,7 @@
                     <Button
                       size="sm"
                       variant="ghost"
-                      onclick={analyzeEvidence}
+                      on:click={analyzeEvidence}
                       disabled={isAnalyzing}
                     >
                       {#if isAnalyzing}
@@ -584,7 +584,7 @@
               <Button
                 variant="error"
                 size="sm"
-                onclick={handleDelete}
+                on:click={handleDelete}
                 disabled={isDeleting}
               >
                 {#if isDeleting}
@@ -597,12 +597,12 @@
             {/if}
           </div>
           <div class="flex items-center gap-2">
-            <Button variant="ghost" onclick={handleClose}>
+            <Button variant="ghost" on:click={handleClose}>
               Cancel
             </Button>
             {#if mode !== 'view'}
               <Button
-                onclick={handleSave}
+                on:click={handleSave}
                 disabled={isSaving}
               >
                 {#if isSaving}

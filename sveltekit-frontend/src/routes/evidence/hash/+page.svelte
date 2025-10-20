@@ -87,7 +87,7 @@
             class="space-y-4"
             maxlength="64"
           />
-          <button onclick={() => searchByHash()} disabled={loading || !hashInput} class="space-y-4">
+          <button on:click={() => searchByHash()} disabled={loading || !hashInput} class="space-y-4">
             {loading ? 'Searching...' : 'Search'}
           </button>
         </div>
@@ -340,7 +340,7 @@
                         }
                       ).hash}
                       <button
-                        onclick={() =>
+                        on:click={() =>
                           copyToClipboard(
                             (
                               item as {
@@ -387,7 +387,7 @@
                     {/if}
                     <div class="space-y-4">
                       <button
-                        onclick={() =>
+                        on:click={() =>
                           verifyIntegrity(
                             (
                               item as {

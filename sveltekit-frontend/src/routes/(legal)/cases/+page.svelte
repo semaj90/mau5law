@@ -56,7 +56,7 @@
 
   <header class="page-header">
     <h1>Legal Cases</h1>
-    <button class="btn-primary" onclick={createNewCase}>
+    <button class="btn-primary" on:click={createNewCase}>
       <span>+</span> New Case
     </button>
   </header>
@@ -71,21 +71,21 @@
       <div class="error-icon">⚠️</div>
       <h2>Error Loading Cases</h2>
       <p>{error}</p>
-      <button class="btn-secondary" onclick={loadCases}>Retry</button>
+      <button class="btn-secondary" on:click={loadCases}>Retry</button>
     </div>
   {:else if cases.length === 0}
     <div class="empty-state">
       <div class="empty-icon">📋</div>
       <h2>No Cases Found</h2>
       <p>Get started by creating your first case</p>
-      <button class="btn-primary" onclick={createNewCase}>Create Case</button>
+      <button class="btn-primary" on:click={createNewCase}>Create Case</button>
     </div>
   {:else}
     <div class="cases-grid">
       {#each cases as caseItem (caseItem.id)}
         <div
           class="case-card"
-          onclick={() => navigateToCase(caseItem.id)}
+          on:click={() => navigateToCase(caseItem.id)}
           onkeydown={e => {
             if (e.key === 'Enter' || e.key === ' ') navigateToCase(caseItem.id);
           }}

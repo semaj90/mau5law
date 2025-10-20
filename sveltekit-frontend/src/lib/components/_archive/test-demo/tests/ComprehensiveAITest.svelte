@@ -313,13 +313,13 @@
         class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       />
       <button
-        onclick={() => runTest('all')}
+        on:click={() => runTest('all')}
         disabled={isRunning}
         class="px-4 py-2 bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-md hover:from-green-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isRunning ? 'Testing...' : 'Run All Tests'}
       </button>
-      <button onclick={clearResults} class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
+      <button on:click={clearResults} class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
         Clear
       </button>
     </div>
@@ -329,7 +329,7 @@
       <div class="flex flex-wrap gap-2 mt-1">
         {#each sampleQueries as query}
           <button
-            onclick={() => (testQuery = query)}
+            on:click={() => (testQuery = query)}
             class="px-2 py-1 bg-blue-100 text-blue-800 rounded hover:bg-blue-200 text-xs"
           >
             {query.substring(0, 40)}...
@@ -356,7 +356,7 @@
             </ul>
           </div>
           <button
-            onclick={() => runTest('local')}
+            on:click={() => runTest('local')}
             disabled={isRunning || localAIStatus !== 'available'}
             class="w-full px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 text-sm"
           >
@@ -381,7 +381,7 @@
             </ul>
           </div>
           <button
-            onclick={() => runTest('cuda')}
+            on:click={() => runTest('cuda')}
             disabled={isRunning || cudaServiceStatus !== 'available'}
             class="w-full px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 disabled:opacity-50 text-sm"
           >
@@ -406,7 +406,7 @@
             </ul>
           </div>
           <button
-            onclick={() => runTest('unified')}
+            on:click={() => runTest('unified')}
             disabled={isRunning}
             class="w-full px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 text-sm"
           >

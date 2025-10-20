@@ -167,14 +167,14 @@
     </div>
   {:else}
     <!-- Normal evidence node -->
-    <div class="evidence-card" onclick={handleEvidenceClick}>
+    <div class="evidence-card" on:click={handleEvidenceClick}>
       <!-- Header with expand/collapse control -->
       <div class="evidence-header">
         <div class="header-left">
           {#if shouldRenderChildren}
             <button
               class="expand-toggle"
-              onclick={toggleExpanded}
+              on:click={toggleExpanded}
               aria-label={isExpanded ? 'Collapse children' : 'Expand children'}
             >
               {isExpanded ? '▼' : '▶'}
@@ -218,7 +218,7 @@
             <div class="metadata-row">
               <span class="label">Relationships:</span>
               <span class="value">{evidence.relationships.length}</span>
-              <button class="detail-toggle" onclick={toggleRelationshipDetails} title="Show relationship details">
+              <button class="detail-toggle" on:click={toggleRelationshipDetails} title="Show relationship details">
                 {getRelationshipTypeIcon('chain_link')}
               </button>
             </div>
@@ -254,7 +254,7 @@
       <!-- Chain of custody details (expandable) -->
       {#if evidence.chainOfCustody?.length > 0}
         <div class="chain-section">
-          <button class="chain-toggle" onclick={toggleChainDetails} aria-expanded={showChainDetails}>
+          <button class="chain-toggle" on:click={toggleChainDetails} aria-expanded={showChainDetails}>
             🔗 Chain of Custody ({evidence.chainOfCustody.length} entries)
             {showChainDetails ? '▼' : '▶'}
           </button>
@@ -273,7 +273,7 @@
               {/each}
               {#if evidence.chainOfCustody.length > 3}
                 <div class="more-entries">
-                  <button onclick={handleChainAnalysis}>
+                  <button on:click={handleChainAnalysis}>
                     View all {evidence.chainOfCustody.length} entries →
                   </button>
                 </div>

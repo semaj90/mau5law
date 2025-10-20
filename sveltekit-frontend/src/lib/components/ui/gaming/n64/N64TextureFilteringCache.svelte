@@ -431,7 +431,7 @@ if (preloadTextures) {
     <div class="error-overlay">
       <div class="error-icon">⚠️</div>
       <div class="error-message">{errorMessage}</div>
-      <button class="retry-button" onclick={() => initializeTextureCache()}> RETRY </button>
+      <button class="retry-button" on:click={() => initializeTextureCache()}> RETRY </button>
     </div>
   {/if}
   <!-- Debug Information -->

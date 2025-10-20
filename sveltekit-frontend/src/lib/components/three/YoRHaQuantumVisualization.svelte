@@ -221,25 +221,25 @@ await initializeQuantumVisualization();
       <div class="control-buttons">
         <button
           class="quantum-btn {secretFeatures.quantumDebugEnabled ? 'active' : ''}"
-          onclick={toggleQuantumMode}
+          on:click={toggleQuantumMode}
         >
           ⚛️ Quantum
         </button>
         <button
           class="quantum-btn {secretFeatures.aiWhispererMode ? 'active' : ''}"
-          onclick={toggleAIWhisperer}
+          on:click={toggleAIWhisperer}
         >
           🧠 Consciousness
         </button>
         <button
           class="quantum-btn {secretFeatures.matrixMode ? 'active' : ''}"
-          onclick={toggleMatrixMode}
+          on:click={toggleMatrixMode}
         >
           🕶️ Matrix
         </button>
         <button
           class="quantum-btn"
-          onclick={captureQuantumState}
+          on:click={captureQuantumState}
         >
           📸 Capture
         </button>

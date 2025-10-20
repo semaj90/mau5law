@@ -196,7 +196,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         </div>
         <div class="flex items-end">
           <Button
-            onclick={executePipeline}
+            on:click={executePipeline}
             disabled={isProcessing}
             class="w-full bits-btn bits-btn"
           >
@@ -206,29 +206,29 @@ https://svelte.dev/e/unexpected_reserved_word -->
       <!-- Advanced Controls -->
       <div class="flex flex-wrap gap-2">
         <Button class="bits-btn"
-          onclick={autoExecutePipeline}
+          on:click={autoExecutePipeline}
           disabled={isProcessing}
           variant="ghost"
         >
 🧠 Auto-Select Optimal
         <Button class="bits-btn"
-          onclick={batchProcess}
+          on:click={batchProcess}
           disabled={isProcessing}
           variant="ghost"
         >
 📦 Batch Process
         <Button class="bits-btn"
-          onclick={checkSystemHealth}
+          on:click={checkSystemHealth}
           variant="ghost"
         >
 🏥 Health Check
         <Button class="bits-btn"
-          onclick={generateReport}
+          on:click={generateReport}
           variant="ghost"
         >
 📈 Performance Report
         <Button class="bits-btn"
-          onclick={cleanup}
+          on:click={cleanup}
           variant="error"
         >
 🧹 Cleanup
@@ -249,7 +249,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
           placeholder="Search across all pipelines..."
           onkeypress={(e) => e.key === 'Enter' && searchPipelines()}
         />
-        <Button class="bits-btn" onclick={searchPipelines}>
+        <Button class="bits-btn" on:click={searchPipelines}>
 🔍 Search
       </div>
       {#if searchResults}

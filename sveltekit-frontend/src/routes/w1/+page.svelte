@@ -180,19 +180,19 @@
       <div class="timestamp">{timestamp}</div>
     </div>
     <nav class="main-nav">
-      <button class="nav-item" class:active={activeView === 'dashboard'} onclick={() => (activeView = 'dashboard')}>
+      <button class="nav-item" class:active={activeView === 'dashboard'} on:click={() => (activeView = 'dashboard')}>
         📊 Dashboard
       </button>
-      <button class="nav-item" class:active={activeView === 'cases'} onclick={() => (activeView = 'cases')}>
+      <button class="nav-item" class:active={activeView === 'cases'} on:click={() => (activeView = 'cases')}>
         📂 Cases ({mockUser.cases})
       </button>
-      <button class="nav-item" class:active={activeView === 'evidence'} onclick={() => (activeView = 'evidence')}>
+      <button class="nav-item" class:active={activeView === 'evidence'} on:click={() => (activeView = 'evidence')}>
         🔍 Evidence
       </button>
-      <button class="nav-item" class:active={activeView === 'detective'} onclick={() => (activeView = 'detective')}>
+      <button class="nav-item" class:active={activeView === 'detective'} on:click={() => (activeView = 'detective')}>
         🧠 Detective Mode
       </button>
-      <button class="nav-item" class:active={activeView === 'timeline'} onclick={() => (activeView = 'timeline')}>
+      <button class="nav-item" class:active={activeView === 'timeline'} on:click={() => (activeView = 'timeline')}>
         ⏱️ Timeline
       </button>
     </nav>
@@ -325,7 +325,7 @@
             ></textarea>
             <button
               class="nes-btn is-primary"
-              onclick={() => {
+              on:click={() => {
                 workflowStep++;
                 if (workflowStep < prosecutionWorkflow.length) {
                   startTypewriter(`Great! Now: ${prosecutionWorkflow[workflowStep].question}`);
@@ -396,7 +396,7 @@
       <div class="ai-actions">
         <button
           class="nes-btn is-primary"
-          onclick={() => {
+          on:click={() => {
             showQuickInput = true;
             startTypewriter("What's wrong? Describe the situation and I'll help you build the caseItem:");
           }}
@@ -405,7 +405,7 @@
         </button>
         <button
           class="nes-btn"
-          onclick={() =>
+          on:click={() =>
             startTypewriter(
               'Ready to analyze evidence, detect patterns, and suggest prosecution strategies. What would you like me to focus on?'
             )}
@@ -423,12 +423,12 @@
           rows="3"
         ></textarea>
         <div class="input-actions">
-          <button class="nes-btn is-primary" onclick={processQuickInput} disabled={!quickInput.trim()}>
+          <button class="nes-btn is-primary" on:click={processQuickInput} disabled={!quickInput.trim()}>
             Auto-Fill Case
           </button>
           <button
             class="nes-btn"
-            onclick={() => {
+            on:click={() => {
               showQuickInput = false;
               quickInput = '';
             }}

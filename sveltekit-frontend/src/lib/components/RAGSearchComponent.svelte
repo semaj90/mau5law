@@ -208,7 +208,7 @@
           disabled={isSearching}
         />
         <ButtonBits
-          onclick={performSearch}
+          on:click={performSearch}
           disabled={isSearching || !searchQuery.trim()}
           variant="success"
           size="lg"
@@ -225,7 +225,7 @@
             {/if}
           {/snippet}
         </ButtonBits>
-        <ButtonBits onclick={ingestDocument} variant="ghost" size="lg" class="border-blue-500 text-blue-400">
+        <ButtonBits on:click={ingestDocument} variant="ghost" size="lg" class="border-blue-500 text-blue-400">
           {#snippet children()}
             📄 Ingest Doc
           {/snippet}
@@ -265,7 +265,7 @@
         <span class="text-sm text-nier-text-muted">Try:</span>
         {#each searchSuggestions as suggestion}
           <ButtonBits
-            onclick={() => {
+            on:click={() => {
               searchQuery = suggestion;
             }}
             variant="ghost"
@@ -356,7 +356,7 @@
       <div class="space-y-2">
         {#each searchHistory as historyItem}
           <ButtonBits
-            onclick={() => {
+            on:click={() => {
               searchQuery = historyItem.query;
             }}
             variant="ghost"

@@ -149,7 +149,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 {#if showShortcuts}
   <div
     class="mx-auto px-4 max-w-7xl"
-    onclick={() => (showShortcuts = false)}
+    on:click={() => (showShortcuts = false)}
     keydown={e => e.key === 'Escape' && (showShortcuts = false)}
     role="dialog"
     aria-modal="true"
@@ -163,7 +163,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         </h3>
         <button
           class="mx-auto px-4 max-w-7xl"
-          onclick={() => (showShortcuts = false)}
+          on:click={() => (showShortcuts = false)}
           aria-label="Close shortcuts dialog"
         >
           <svg class="mx-auto px-4 max-w-7xl" fill="currentColor" viewBox="0 0 20 20">
@@ -201,7 +201,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       variant="ghost"
       size="sm"
       class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
-      onclick={() => (showAccessibilityPanel = !showAccessibilityPanel)}
+      on:click={() => (showAccessibilityPanel = !showAccessibilityPanel)}
       aria-label="Toggle accessibility panel"
     >
       <Accessibility class="mx-auto px-4 max-w-7xl" />
@@ -213,7 +213,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       variant="ghost"
       size="sm"
       class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
-      onclick={() => (showShortcuts = !showShortcuts)}
+      on:click={() => (showShortcuts = !showShortcuts)}
       aria-label="Show keyboard shortcuts"
     >
       <Keyboard class="mx-auto px-4 max-w-7xl" />
@@ -225,7 +225,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       variant="ghost"
       size="sm"
       class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
-      onclick={() => toggleFullscreen()}
+      on:click={() => toggleFullscreen()}
       aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
     >
       {#if isFullscreen}

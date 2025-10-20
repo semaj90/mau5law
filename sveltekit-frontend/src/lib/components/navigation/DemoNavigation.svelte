@@ -64,7 +64,7 @@
   <!-- Floating Navigation Button -->
   <button
     class="nav-toggle fixed top-4 right-4 z-50 w-12 h-12 bg-green-600 hover:bg-green-700 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center text-white font-bold text-lg"
-    onclick={toggleNav}
+    on:click={toggleNav}
     class:rotate-45={isOpen}
   >
     {isOpen ? '✕' : '🚀'}
@@ -80,7 +80,7 @@
           <button
             class="nav-item w-full text-left p-3 rounded-lg transition-all duration-200 border border-transparent hover: border-green-500 hover:bg-green-500/10";
             class:active={isCurrentPage((item as { external?: unknown; href?: unknown; icon?: unknown; label?: unknown; description?: unknown; active?: unknown }).href)}
-            onclick={() => navigateTo(item)}
+            on:click={() => navigateTo(item)}
           >
             <div class="flex items-start gap-3">
               <div class="text-2xl">{(item as { external?: unknown; href?: unknown; icon?: unknown; label?: unknown; description?: unknown; active?: unknown }).icon}</div>
@@ -103,25 +103,25 @@
         <div class="grid grid-cols-2 gap-2">
           <button
             class="px-3 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm transition-colors"
-            onclick={() => window.open('http://localhost:8081/api/health', '_blank')}
+            on:click={() => window.open('http://localhost:8081/api/health', '_blank')}
           >
             💚 Health
           </button>
           <button
             class="px-3 py-2 bg-purple-600 hover:bg-purple-700 rounded text-sm transition-colors"
-            onclick={() => navigateTo(navItems[0])}
+            on:click={() => navigateTo(navItems[0])}
           >
             🤖 AI Demo
           </button>
           <button
             class="px-3 py-2 bg-yellow-600 hover:bg-yellow-700 rounded text-sm transition-colors"
-            onclick={() => window.open('http://localhost:8081/test', '_blank')}
+            on:click={() => window.open('http://localhost:8081/test', '_blank')}
           >
             🧪 Test UI
           </button>
           <button
             class="px-3 py-2 bg-gray-600 hover:bg-gray-700 rounded text-sm transition-colors"
-            onclick={() => navigateTo({ href: '/dev/mcp-tools', external: false } as NavItem)}
+            on:click={() => navigateTo({ href: '/dev/mcp-tools', external: false } as NavItem)}
           >
             🛠️ Tools
           </button>
@@ -157,7 +157,7 @@
       type="button"
       aria-label="Close navigation"
       class="fixed inset-0 bg-black/50 z-30 backdrop-btn"
-      onclick={onkeydown}
+      on:click={onkeydown}
       tabindex="0"
     ></button>
   {/if}

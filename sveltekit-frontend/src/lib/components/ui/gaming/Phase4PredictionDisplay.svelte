@@ -100,7 +100,7 @@
       <span class="icon">🔮</span>
       Case Outcome Prediction
     </h2>
-    <button class="refresh-btn" style:color={currentTheme.accentColor} onclick={loadPrediction} disabled={loading}>
+    <button class="refresh-btn" style:color={currentTheme.accentColor} on:click={loadPrediction} disabled={loading}>
       {loading ? '⏳' : '🔄'}
     </button>
   </div>
@@ -116,7 +116,7 @@
     <div class="error-container" transition:fade>
       <div class="error-icon">❌</div>
       <p class="error-message">{error}</p>
-      <button class="retry-btn nes-btn is-error" onclick={loadPrediction}> Retry Analysis </button>
+      <button class="retry-btn nes-btn is-error" on:click={loadPrediction}> Retry Analysis </button>
     </div>
   {:else if prediction}
     <div class="prediction-content" transitionfly={{ y: 20, duration: 400 }}>
@@ -232,7 +232,7 @@
     <div class="empty-state" transition:fade>
       <div class="empty-icon">🔮</div>
       <p>Click "Analyze Case" to generate outcome prediction</p>
-      <button class="analyze-btn nes-btn is-primary" onclick={loadPrediction}> Analyze Case </button>
+      <button class="analyze-btn nes-btn is-primary" on:click={loadPrediction}> Analyze Case </button>
     </div>
   {/if}
 </div>

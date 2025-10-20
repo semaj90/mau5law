@@ -96,7 +96,7 @@
   </section>
   <section class="diagnostics">
     <h2>WebGPU Diagnostics</h2>
-    <button onclick={runDiagnostics} disabled={isRunning}>
+    <button on:click={runDiagnostics} disabled={isRunning}>
       {isRunning ? 'Running Diagnostics...' : 'Run Diagnostics'}
     </button>
     {#if diagnosticsResults}
@@ -161,7 +161,7 @@
   </section>
   <section class="performance-test">
     <h2>Vector Similarity Performance Test</h2>
-    <button onclick={testVectorSimilarity} disabled={isRunning}>
+    <button on:click={testVectorSimilarity} disabled={isRunning}>
       {isRunning ? 'Running Test...' : 'Test Vector Similarity'}
     </button>
     {#if testResults}

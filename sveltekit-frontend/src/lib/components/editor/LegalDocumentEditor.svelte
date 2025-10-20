@@ -328,7 +328,7 @@ https://svelte.dev/e/js_parse_error -->
             <ChevronDown class="container mx-auto px-4" />
           </button>
           <button
-            onclick={() => manualSaveDocument()}
+            on:click={() => manualSaveDocument()}
             class="container mx-auto px-4"
             disabled={readonly || loadingDocument || isSaving}
           >
@@ -389,7 +389,7 @@ https://svelte.dev/e/js_parse_error -->
                     <AlertCircle class="container mx-auto px-4" />
                     <p class="container mx-auto px-4">Failed to load document</p>
                     <p class="container mx-auto px-4">{documentLoadError}</p>
-                    <button class="container mx-auto px-4" onclick={() => loadDocument()}> Try Again </button>
+                    <button class="container mx-auto px-4" on:click={() => loadDocument()}> Try Again </button>
                   </div>
                 </div>
               {:else}
@@ -431,7 +431,7 @@ https://svelte.dev/e/js_parse_error -->
               {/if}
               <button
                 class="container mx-auto px-4"
-                onclick={() =>
+                on:click={() =>
                   insertCitation({
                     id: Math.random.toString(),
                     text: 'Sample Citation',
@@ -517,7 +517,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="container mx-auto px-4">
             <button class="container mx-auto px-4" disabled={isProcessingAI}> Cancel </button>
             <button
-              onclick={() => handleAIRequest()}
+              on:click={() => handleAIRequest()}
               class="container mx-auto px-4"
               disabled={!query.trim() || isProcessingAI}
             >

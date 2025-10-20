@@ -64,8 +64,8 @@ export default ;
     <p>History: {history.join(', ')}</p>
   </div>
   <div class="controls">
-    <button onclick={increment}>Increment</button>
-    <button onclick={reset}>Reset</button>
+    <button on:click={increment}>Increment</button>
+    <button on:click={reset}>Reset</button>
   </div>
 </div>
 

@@ -129,7 +129,7 @@
         <div class="nes-header-actions">
           <button
             class={`nes-legal-priority-medium yorha-3d-button ${isPinned ? 'nes-legal-priority-high' : ''}`}
-            onclick={togglePin}
+            on:click={togglePin}
             aria-label={isPinned ? 'Unpin sidebar' : 'Pin sidebar'}
             type="button"
           >
@@ -138,7 +138,7 @@
           {#if !isPinned}
             <button
               class="nes-legal-priority-low yorha-3d-button"
-              onclick={() => (isHovered = false)}
+              on:click={() => (isHovered = false)}
               aria-label="Close sidebar"
               type="button"
             >
@@ -155,7 +155,7 @@
           <button
             class="nes-tab-trigger nes-legal-priority-medium"
             class:active={activeTab === 'evidence'}
-            onclick={() => handleTabChange('evidence')}
+            on:click={() => handleTabChange('evidence')}
             type="button"
           >
             <Folder size={16} /> EVIDENCE
@@ -163,7 +163,7 @@
           <button
             class="nes-tab-trigger nes-legal-priority-medium"
             class:active={activeTab === 'notes'}
-            onclick={() => handleTabChange('notes')}
+            on:click={() => handleTabChange('notes')}
             type="button"
           >
             <FileText size={16} /> NOTES
@@ -171,7 +171,7 @@
           <button
             class="nes-tab-trigger nes-legal-priority-medium"
             class:active={activeTab === 'canvas'}
-            onclick={() => handleTabChange('canvas')}
+            on:click={() => handleTabChange('canvas')}
             type="button"
           >
             <Tag size={16} /> CANVAS

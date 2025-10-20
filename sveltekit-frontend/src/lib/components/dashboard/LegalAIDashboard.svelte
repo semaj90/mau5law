@@ -222,7 +222,7 @@
         </div>
         <div class="flex items-center space-x-4">
           <button
-            onclick={loadDashboardData}
+            on:click={loadDashboardData}
             class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             disabled={loading}
           >
@@ -243,7 +243,7 @@
             Refresh
           </button>
           <button
-            onclick={createQuickCase}
+            on:click={createQuickCase}
             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -262,7 +262,7 @@
       <div class="flex space-x-8">
         {#each tabs as tab}
           <button
-            onclick={() => (selectedTab = tab.id)}
+            on:click={() => (selectedTab = tab.id)}
             class="py-4 px-1 border-b-2 font-medium text-sm transition-colors"
             class:border-blue-500={selectedTab === tab.id}
             class:text-blue-600={selectedTab === tab.id}

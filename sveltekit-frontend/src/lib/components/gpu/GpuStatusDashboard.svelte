@@ -131,21 +131,21 @@
     </div>
     <div class="panel controls">
       <h3>Controls</h3>
-      <button onclick={triggerTestRun}>Test Run</button>
-      <button onclick={() => console.log('GPU Vector Processor state:', gpuVectorProcessor.dumpState?.())}
+      <button on:click={triggerTestRun}>Test Run</button>
+      <button on:click={() => console.log('GPU Vector Processor state:', gpuVectorProcessor.dumpState?.())}
         >Dump State</button
       >
-      <button onclick={clearLog}>Clear Log</button>
+      <button on:click={clearLog}>Clear Log</button>
       <div style="margin-top:6px; display:flex; gap:4px; flex-wrap:wrap;">
-        <button onclick={forceDemote} title="Force demote to next lower tier">Force Demote</button>
-        <button onclick={() => forcePromote('webgl1')}>To WebGL1</button>
-        <button onclick={() => forcePromote('webgl2')}>To WebGL2</button>
-        <button onclick={() => forcePromote('webgpu')}>To WebGPU</button>
+        <button on:click={forceDemote} title="Force demote to next lower tier">Force Demote</button>
+        <button on:click={() => forcePromote('webgl1')}>To WebGL1</button>
+        <button on:click={() => forcePromote('webgl2')}>To WebGL2</button>
+        <button on:click={() => forcePromote('webgpu')}>To WebGPU</button>
       </div>
       <div style="margin-top:8px;display:flex;gap:4px;flex-wrap:wrap;">
-        <button onclick={() => setReductionMode('auto')} title="Auto reduction selection">Auto</button>
-        <button onclick={() => setReductionMode('gpu')} title="Force GPU stats path">GPU</button>
-        <button onclick={() => setReductionMode('cpu')} title="Force CPU reduction path">CPU</button>
+        <button on:click={() => setReductionMode('auto')} title="Auto reduction selection">Auto</button>
+        <button on:click={() => setReductionMode('gpu')} title="Force GPU stats path">GPU</button>
+        <button on:click={() => setReductionMode('cpu')} title="Force CPU reduction path">CPU</button>
       </div>
     </div>
     <div class="panel">

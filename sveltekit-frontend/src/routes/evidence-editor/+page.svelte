@@ -31,7 +31,7 @@
       </div>
       <div class="space-y-4">
     <Button class="bits-btn"
-      onclick={toggleReadOnly}
+      on:click={toggleReadOnly}
           variant={readOnly ? "default" : "outline"}
           size="sm"
         >
@@ -65,7 +65,7 @@
   <Button
     size="sm"
     class="space-y-4 bits-btn bits-btn"
-            onclick={() =>
+            on:click={() =>
 {
       const helpOverlay = document.getElementById('help-overlay');
       if (helpOverlay) {

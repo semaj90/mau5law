@@ -73,7 +73,7 @@
     class={buttonClasses}
     target={external ? '_blank' : undefined}
     rel={external ? 'noopener noreferrer' : undefined}
-    onclick={handleClick}
+    on:click={handleClick}
   >
     <span class="button-content">
       {#if loading}
@@ -87,7 +87,7 @@
     </span>
   </a>
 {:else}
-  <Button.Root {type} {disabled} class={buttonClasses} onclick={handleClick}>
+  <Button.Root {type} {disabled} class={buttonClasses} on:click={handleClick}>
     <span class="button-content">
       {#if loading}
         <div class="loading-spinner"></div>

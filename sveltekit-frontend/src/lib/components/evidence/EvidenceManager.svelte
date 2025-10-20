@@ -270,7 +270,7 @@ export default ;
       </div>
       <div class="flex gap-2">
         <Button
-          onclick={loadEmbeddingStats}
+          on:click={loadEmbeddingStats}
           disabled={loading.stats}
           variant="ghost"
           class="text-sm bits-btn bits-btn"
@@ -278,7 +278,7 @@ export default ;
 {loading.stats ? 'Refreshing...' : '🔄 Refresh Stats'}
 </Button>
         <Button
-          onclick={triggerEmbeddingBackfill}
+          on:click={triggerEmbeddingBackfill}
           disabled={loading.backfill || embeddingStats.withoutEmbeddings === 0}
           variant="secondary"
           class="text-sm bits-btn bits-btn"
@@ -317,7 +317,7 @@ export default ;
             <p class="text-lg mb-2">Drop files here or click to browse</p>
             <p class="text-sm text-gray-600 mb-4">Supports PDFs, images, documents, and more</p>
             <Button class="bits-btn"
-              onclick={() =>
+              on:click={() =>
 fileInput?.click()}
               disabled={loading.upload}
             >
@@ -349,7 +349,7 @@ fileInput?.click()}
             onkeydown={(e) => e.key === 'Enter' && performSemanticSearch()}
           />
           <Button class="bits-btn"
-            onclick={performSemanticSearch}
+            on:click={performSemanticSearch}
             disabled={loading.search || !searchQuery.trim()}
           >
 {loading.search ? 'Searching...' : 'Search'}
@@ -360,7 +360,7 @@ fileInput?.click()}
             <div class="flex justify-between items-center mb-4">
               <h4 class="font-semibold">Search Results ({searchResults.length})</h4>
               <button class="nes-btn"
-                onclick={() => { showSearchResults = false; searchResults = [], }}
+                on:click={() => { showSearchResults = false; searchResults = [], }}
                 variant="ghost"
                 class="bits-btn text-sm"
               >
@@ -408,7 +408,7 @@ fileInput?.click()}
       <div class="flex justify-between items-center">
         <h3 class="nes-text is-primary">📋 Evidence Files ({evidenceFiles.length})</h3>
         <Button
-          onclick={loadEvidenceFiles}
+          on:click={loadEvidenceFiles}
           disabled={loading.files}
           variant="ghost"
           class="text-sm bits-btn bits-btn"
@@ -476,7 +476,7 @@ fileInput?.click()}
           <h4 class="error-title">Error</h4>
           <p class="error-message">{error}</p>
           <button class="nes-btn"
-            onclick={() => { error = '', }}
+            on:click={() => { error = '', }}
             variant="ghost"
             class="bits-btn mt-3 text-xs dismiss-btn"
           >

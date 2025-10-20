@@ -592,7 +592,7 @@ await loadCaseEvidence();
           type="button"
           class="mode-button"
           class:active={organizationMode === mode.value}
-          onclick={() => handleModeChange(mode.value)}
+          on:click={() => handleModeChange(mode.value)}
         >
           <span class="mode-icon">{mode.icon}</span>
           <span class="mode-label">{mode.label}</span>
@@ -682,7 +682,7 @@ await loadCaseEvidence();
                 <div
                   class="evidence-nier-bits-card"
                   class:selected={selectedEvidence.includes(evidence)}
-                  onclick={() => selectEvidence(evidence, 'category')}
+                  on:click={() => selectEvidence(evidence, 'category')}
                 >
                   <div class="evidence-header">
                     <h4>{evidence.title}</h4>
@@ -721,7 +721,7 @@ await loadCaseEvidence();
                 <div
                   class="timeline-item"
                   class:selected={selectedEvidence.includes(evidence)}
-                  onclick={() => selectEvidence(evidence, 'timeline')}
+                  on:click={() => selectEvidence(evidence, 'timeline')}
                 >
                   <div class="timeline-marker"></div>
                   <div class="timeline-content">
@@ -767,7 +767,7 @@ await loadCaseEvidence();
                 <div
                   class="evidence-nier-bits-card compact"
                   class:selected={selectedEvidence.includes(evidence)}
-                  onclick={() => selectEvidence(evidence, 'cluster')}
+                  on:click={() => selectEvidence(evidence, 'cluster')}
                 >
                   <h4>{evidence.title}</h4>
                   <span class="evidence-type">{evidence.evidenceType}</span>
@@ -796,7 +796,7 @@ await loadCaseEvidence();
                 <div
                   class="evidence-nier-bits-card custody"
                   class:selected={selectedEvidence.includes(evidence)}
-                  onclick={() => selectEvidence(evidence, 'custody')}
+                  on:click={() => selectEvidence(evidence, 'custody')}
                 >
                   <div class="evidence-header">
                     <h4>{evidence.title}</h4>

@@ -52,7 +52,7 @@ https://svelte.dev/e/js_parse_error -->
           <Upload class="container mx-auto px-4" />
           <h2 class="container mx-auto px-4">Upload Evidence</h2>
         </div>
-        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => closeModal()}>
+        <Button class="bits-btn" variant="ghost" size="sm" on:click={() => closeModal()}>
           <X class="container mx-auto px-4" />
         </Button>
       </div>
@@ -68,7 +68,7 @@ https://svelte.dev/e/js_parse_error -->
           ondrop={handleDrop}
           ondragover={handleDragOver}
           ondragleave={handleDragLeave}
-          onclick={() => fileInput?.click()}
+          on:click={() => fileInput?.click()}
           keydown={e => (e.key === 'Enter' || e.key === ' ') && fileInput?.click()}
         >
           <Upload class="container mx-auto px-4" />
@@ -76,7 +76,7 @@ https://svelte.dev/e/js_parse_error -->
           <p id="evidence-dropzone-instructions" class="container mx-auto px-4">
             Support for images, documents, audio, and video files
           </p>
-          <Button class="bits-btn" variant="ghost" onclick={() => fileInput?.click()}>Choose Files</Button>
+          <Button class="bits-btn" variant="ghost" on:click={() => fileInput?.click()}>Choose Files</Button>
           <input
             bind:this={fileInput}
             type="file"
@@ -135,7 +135,7 @@ https://svelte.dev/e/js_parse_error -->
                       </div>
                     </div>
                     <div class="container mx-auto px-4">
-                      <Button class="bits-btn" variant="ghost" size="sm" onclick={() => removeFile(file.id)}>
+                      <Button class="bits-btn" variant="ghost" size="sm" on:click={() => removeFile(file.id)}>
                         <X class="container mx-auto px-4" />
                       </Button>
                     </div>
@@ -158,11 +158,11 @@ https://svelte.dev/e/js_parse_error -->
           {/if}
         </div>
         <div class="container mx-auto px-4">
-          <Button class="bits-btn" variant="ghost" onclick={() => closeModal()}>
+          <Button class="bits-btn" variant="ghost" on:click={() => closeModal()}>
             {activeUploads.length > 0 ? 'Continue in Background' : 'Close'}
           </Button>
           {#if completedUploads.length > 0}
-            <Button class="bits-btn" onclick={() => ondispatch?.(completedUploads)}>View Evidence</Button>
+            <Button class="bits-btn" on:click={() => ondispatch?.(completedUploads)}>View Evidence</Button>
           {/if}
         </div>
       </div>

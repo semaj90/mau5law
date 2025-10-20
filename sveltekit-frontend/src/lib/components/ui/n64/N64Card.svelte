@@ -311,7 +311,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     onmouseleave={handleMouseLeave}
     onmousedown={handleMouseDown}
     onmouseup={handleMouseUp}
-    onclick={handleClick}
+    on:click={handleClick}
     onkeydown={handleKeydown}
   >
     <!-- N64 Visual Enhancement Layers -->

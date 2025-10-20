@@ -98,7 +98,7 @@
         autocomplete="off"
       />
       {#if query}
-        <button onclick={clearSearch} class="nes-btn is-error clear-btn" type="button" title="Clear search"> × </button>
+        <button on:click={clearSearch} class="nes-btn is-error clear-btn" type="button" title="Clear search"> × </button>
       {/if}
       {#if isLoading}
         <div class="loading-indicator">
@@ -121,7 +121,7 @@
         </div>
         <div class="results-list">
           {#each results as result, index}
-            <button onclick={() => selectResult(result)} class="nes-container result-item" type="button">
+            <button on:click={() => selectResult(result)} class="nes-container result-item" type="button">
               <div class="result-content">
                 <div class="result-title">
                   {result.title || `Document ${index + 1}`}

@@ -336,20 +336,20 @@ Production-ready with native Windows support
         <div class="image-actions">
           <button
             class="nes-btn is-primary"
-            onclick={() => copyPrompt($imageGenerationStore.currentGeneration!.prompt)}
+            on:click={() => copyPrompt($imageGenerationStore.currentGeneration!.prompt)}
           >
             📋 Copy Prompt
           </button>
           <button
             class="nes-btn is-warning"
-            onclick={() => regenerateWithSeed($imageGenerationStore.currentGeneration!)}
+            on:click={() => regenerateWithSeed($imageGenerationStore.currentGeneration!)}
           >
             🔄 Regenerate
           </button>
           {#if caseId}
             <button
               class="nes-btn is-success"
-              onclick={() => useImageAsEvidence($imageGenerationStore.currentGeneration!)}
+              on:click={() => useImageAsEvidence($imageGenerationStore.currentGeneration!)}
             >
               📁 Use as Evidence
             </button>
@@ -373,13 +373,13 @@ Production-ready with native Windows support
   <!-- History Section -->
   <div class="history-section">
     <div class="history-header">
-      <button class="nes-btn is-normal" onclick={() => (showHistory = !showHistory)}>
+      <button class="nes-btn is-normal" on:click={() => (showHistory = !showHistory)}>
         📚 History ({generationHistory.length})
       </button>
       {#if generationHistory.length > 0}
         <button
           class="nes-btn is-error"
-          onclick={() => {
+          on:click={() => {
             imageGenerationService.clearHistory();
             generationHistory = [];
           }}
@@ -416,7 +416,7 @@ Production-ready with native Windows support
                 }
               ).prompt}
               class="history-thumbnail"
-              onclick={() => (selectedImage = result)}
+              on:click={() => (selectedImage = result)}
             />
             <div class="history-info">
               <p class="history-prompt">
@@ -482,18 +482,18 @@ Production-ready with native Windows support
           <div class="modal-actions">
             <button
               class="nes-btn is-primary"
-              onclick={() => {
+              on:click={() => {
                 prompt = selectedImage!.prompt;
                 selectedImage = null;
               }}
             >
               Use Prompt
             </button>
-            <button class="nes-btn is-warning" onclick={() => regenerateWithSeed(selectedImage!)}> Regenerate </button>
+            <button class="nes-btn is-warning" on:click={() => regenerateWithSeed(selectedImage!)}> Regenerate </button>
             {#if caseId}
               <button
                 class="nes-btn is-success"
-                onclick={() => {
+                on:click={() => {
                   useImageAsEvidence(selectedImage!);
                   selectedImage = null;
                 }}

@@ -3,8 +3,10 @@
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { N64LODManager } from '$lib/services/n64-lod-manager';
-  import SSRWebGPULoader from '$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte';
+  import SSRWebGPULoader_ from '$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte';
+  const SSRWebGPULoader = SSRWebGPULoader_ as any;
   import { fade, scale, slide } from 'svelte/transition';
+
   // Svelte 5 props
   let {
     documentId,
@@ -237,6 +239,7 @@
     for (let i = 0; i < pixels.length && i < imageSize * imageSize; i++) {
       const pixelIndex = i * 4;
       const value = pixels[i];
+      // Write full RGBA for this pixel
       imageData.data[pixelIndex] = value;     // R
       imageData.data[pixelIndex + 1] = value; // G
       imageData.data[pixelIndex + 2] = value; // B
@@ -245,14 +248,10 @@
     ctx.putImageData(imageData, 0, 0);
     return canvas.toDataURL();
   }
-
-  // Cast to a permissive constructor-like value for svelte:component usage
-  // This avoids the "instance vs constructor" TypeScript mismatch reported by svelte-check.
-  const SSRWebGPULoaderCtor = SSRWebGPULoader as unknown as any;
 </script>
 
 <!-- Use slot binding to receive hasWebGPU from SSRWebGPULoader -->
-<svelte:component this={SSRWebGPULoaderCtor} requireWebGPU={false} let:hasWebGPU>
+<SSRWebGPULoader requireWebGPU={false} let:hasWebGPU>
   <div class="nes-texture-streamer">
     <!-- Header with controls -->
     <div class="controls-header">
@@ -263,28 +262,28 @@
       </div>
       <div class="lod-controls">
         <button
-          onclick={() => streamSpecificLOD(0)}
+          on:click={() => streamSpecificLOD(0)}
           class="lod-button {currentLOD === 0 ? 'active' : ''}"
           disabled={isStreaming}
         >
           LOD 0
         </button>
         <button
-          onclick={() => streamSpecificLOD(1)}
+          on:click={() => streamSpecificLOD(1)}
           class="lod-button {currentLOD === 1 ? 'active' : ''}"
           disabled={isStreaming}
         >
           LOD 1
         </button>
         <button
-          onclick={() => streamSpecificLOD(2)}
+          on:click={() => streamSpecificLOD(2)}
           class="lod-button {currentLOD === 2 ? 'active' : ''}"
           disabled={isStreaming}
         >
           LOD 2
         </button>
         <button
-          onclick={() => streamSpecificLOD(3)}
+          on:click={() => streamSpecificLOD(3)}
           class="lod-button {currentLOD === 3 ? 'active' : ''}"
           disabled={isStreaming}
         >
@@ -292,9 +291,9 @@
         </button>
       </div>
       <div class="zoom-controls">
-        <button onclick={() => handleZoomChange(-0.1)}>🔍-</button>
+        <button on:click={() => handleZoomChange(-0.1)}>🔍-</button>
         <span>Zoom: {zoomLevel.toFixed(1)}x</span>
-        <button onclick={() => handleZoomChange(0.1)}>🔍+</button>
+        <button on:click={() => handleZoomChange(0.1)}>🔍+</button>
       </div>
     </div>
     <!-- Main viewer area -->
@@ -322,7 +321,7 @@
         <div class="no-texture">
           <div class="nes-icon">🎮</div>
           <p>No texture loaded</p>
-          <button onclick={() => startStreaming()}>Load Texture</button>
+          <button on:click={() => startStreaming()}>Load Texture</button>
         </div>
       {/if}
     </div>
@@ -365,7 +364,7 @@
       </div>
     {/if}
   </div>
-</svelte:component>
+</SSRWebGPULoader>
 
 <style>
   .nes-texture-streamer {
@@ -448,7 +447,7 @@
     border-color: #22c55e;
   }
   .lod-button:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .zoom-controls {
@@ -472,15 +471,15 @@
   }
   .streaming-overlay {
     position: absolute;
-    top: 0,
+    top: 0;
     left: 0;
-    right: 0,
+    right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10,
+    z-index: 10;
   }
   .nes-loading {
     text-align: center;
@@ -618,3 +617,4 @@
     }
   }
 </style>
+

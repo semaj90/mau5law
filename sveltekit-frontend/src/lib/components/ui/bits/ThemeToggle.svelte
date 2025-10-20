@@ -148,7 +148,7 @@
       </span>
     {/if}
     <button
-      onclick={toggleTheme}
+      on:click={toggleTheme}
       class={`
         relative inline-flex items-center rounded-full border-2 transition-colors
         focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary
@@ -174,7 +174,7 @@
     {theme}
     {size}
     variant="outline"
-    onclick={toggleTheme}
+    on:click={toggleTheme}
     class="flex items-center space-x-2"
     aria-label={`Current theme: ${themeLabels[currentTheme]}. Click to switch.`}
   >
@@ -190,7 +190,7 @@
 {:else}
   <!-- Icon variant (default) -->
   <button
-    onclick={toggleTheme}
+    on:click={toggleTheme}
     class={`
       inline-flex items-center justify-center rounded-md border transition-colors;
       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary,

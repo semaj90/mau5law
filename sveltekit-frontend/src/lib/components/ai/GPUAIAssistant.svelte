@@ -352,7 +352,7 @@ await initializeAssistant();
                 {#each message.suggestions as suggestion}
                   <button
                     class="block w-full text-left p-2 rounded border border-current/20 hover:bg-current/10 transition-colors"
-                    onclick={() => handleSuggestionClick(suggestion)}
+                    on:click={() => handleSuggestionClick(suggestion)}
                   >
                     <div class="flex items-center gap-2">
                       <Brain class="w-3 h-3" />
@@ -417,7 +417,7 @@ await initializeAssistant();
       <Button
         size="sm"
         variant="ghost"
-        onclick={analyzeSelectedEvidence}
+        on:click={analyzeSelectedEvidence}
         disabled={selectedEvidenceIds.length === 0 || isStreaming}
         class="text-xs"
       >
@@ -427,7 +427,7 @@ await initializeAssistant();
       <Button
         size="sm"
         variant="ghost"
-        onclick={suggestInvestigationSteps}
+        on:click={suggestInvestigationSteps}
         disabled={isStreaming}
         class="text-xs"
       >
@@ -437,7 +437,7 @@ await initializeAssistant();
       <Button
         size="sm"
         variant="ghost"
-        onclick={identifyEvidenceGaps}
+        on:click={identifyEvidenceGaps}
         disabled={isStreaming}
         class="text-xs"
       >
@@ -456,7 +456,7 @@ await initializeAssistant();
         class="flex-1"
       />
       <Button
-        onclick={sendMessage}
+        on:click={sendMessage}
         disabled={!currentMessage.trim() || isStreaming}
         size="sm"
       >

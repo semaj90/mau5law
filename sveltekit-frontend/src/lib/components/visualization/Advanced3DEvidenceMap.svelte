@@ -547,19 +547,19 @@ e; width: {width}px; height: {height}px;"
   <!-- Controls -->
   <div class="controls-panel">
     <div class="view-controls flex gap-2">
-      <Button variant={viewMode === '3d' ? 'default' : 'outline'} onclick={() => changeViewMode('3d')} size="sm">
+      <Button variant={viewMode === '3d' ? 'default' : 'outline'} on:click={() => changeViewMode('3d')} size="sm">
         🌍 3D Map
       </Button>
       <Button
         variant={viewMode === 'network' ? 'default' : 'outline'}
-        onclick={() => changeViewMode('network')}
+        on:click={() => changeViewMode('network')}
         size="sm"
       >
         🕸️ Network
       </Button>
       <Button
         variant={viewMode === 'timeline' ? 'default' : 'outline'}
-        onclick={() => changeViewMode('timeline')}
+        on:click={() => changeViewMode('timeline')}
         size="sm"
       >
         🕰️ Timeline
@@ -575,8 +575,8 @@ e; width: {width}px; height: {height}px;"
       </select>
     </div>
     <div class="action-controls">
-      <Button variant="ghost" onclick={resetView} size="sm">🔄 Reset View</Button>
-      <Button variant="ghost" onclick={exportVisualization} size="sm">📤 Export</Button>
+      <Button variant="ghost" on:click={resetView} size="sm">🔄 Reset View</Button>
+      <Button variant="ghost" on:click={exportVisualization} size="sm">📤 Export</Button>
     </div>
   </div>
   <!-- Loading indicator -->
@@ -596,7 +596,7 @@ e; width: {width}px; height: {height}px;"
         <p><strong>AI Summary:</strong> {selectedEvidence.aiSummary}</p>
       {/if}
       <div class="evidence-actions">
-        <button class="btn-primary" onclick={() => (selectedEvidence = null)}>Close</button>
+        <button class="btn-primary" on:click={() => (selectedEvidence = null)}>Close</button>
       </div>
     </div>
   {/if}

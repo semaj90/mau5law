@@ -359,7 +359,7 @@
     role="button"
     aria-label="Drop zone"
     tabindex="0"
-    onclick={handleClickToSelect}
+    on:click={handleClickToSelect}
   >
     <!-- Drag overlay -->
     {#if dragOver}
@@ -411,7 +411,7 @@
     <div class="file-list mt-4 space-y-2">
       <div class="flex justify-between items-center">
         <h4 class="font-semibold text-gray-700">Upload Queue</h4>
-        <button class="text-xs text-red-600 hover:text-red-800" onclick={clearFiles} disabled={uploading}>
+        <button class="text-xs text-red-600 hover:text-red-800" on:click={clearFiles} disabled={uploading}>
           Clear All
         </button>
       </div>
@@ -442,7 +442,7 @@
               {#if file.status === 'pending' || file.status === 'error'}
                 <button
                   class="text-red-600 hover:text-red-800 text-sm"
-                  onclick={() => removeFile(file.id)}
+                  on:click={() => removeFile(file.id)}
                   disabled={uploading}
                 >
                   ×

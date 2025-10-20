@@ -621,16 +621,16 @@
   <!-- Graph Controls -->
   <div class="graph-controls">
     <div class="view-controls">
-      <LoadingButton onclick={handleZoomIn} variant="ghost" size="sm">
+      <LoadingButton on:click={handleZoomIn} variant="ghost" size="sm">
         {#snippet children()}<ZoomIn class="w-4 h-4" />{/snippet}
       </LoadingButton>
       <span class="zoom-info">
         {Math.round(zoomLevel * 100)}%
       </span>
-      <LoadingButton onclick={handleZoomOut} variant="ghost" size="sm">
+      <LoadingButton on:click={handleZoomOut} variant="ghost" size="sm">
         {#snippet children()}<ZoomOut class="w-4 h-4" />{/snippet}
       </LoadingButton>
-      <LoadingButton onclick={handleResetView} variant="ghost" size="sm">
+      <LoadingButton on:click={handleResetView} variant="ghost" size="sm">
         {#snippet children()}<RotateCcw class="w-4 h-4" />{/snippet}
       </LoadingButton>
     </div>
@@ -692,7 +692,7 @@
       width="800"
       height="600"
       class="graph-canvas"
-      onclick={handleCanvasClick}
+      on:click={handleCanvasClick}
       onmousemove={handleCanvasHover}
     ></canvas>
     <!-- Loading overlay -->

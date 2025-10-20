@@ -392,7 +392,7 @@ if (autoStartServices) {
       <Button class="bits-btn"
         variant="ghost"
         size="sm"
-  onclick={(_event: MouseEvent) => checkServiceStatus}
+  on:click={(_event: MouseEvent) => checkServiceStatus}
       >
 <RefreshCw class="h-4 w-4" />
 </Button>
@@ -478,7 +478,7 @@ if (autoStartServices) {
       </div>
       <div class="flex gap-2">
         <Button
-          onclick={(_event: MouseEvent) => executeWorkflow}
+          on:click={(_event: MouseEvent) => executeWorkflow}
           disabled={isProcessing || !inputText.trim() || (!serviceStatus.autogen && selectedProvider === 'autogen') || (!serviceStatus.crewai && selectedProvider === 'crewai')}
           class="flex-1 bits-btn bits-btn"
         >
@@ -491,15 +491,15 @@ if (autoStartServices) {
           {/if}
 </Button>
         {#if isProcessing}
-          <Button class="bits-btn" variant="ghost" onclick={(_event: MouseEvent) => cancelExecution}>
+          <Button class="bits-btn" variant="ghost" on:click={(_event: MouseEvent) => cancelExecution}>
 <Square class="h-4 w-4" />
 </Button>
         {/if}
         {#if conversationMessages.length > 0 || executionResults.length > 0}
-          <Button class="bits-btn" variant="ghost" onclick={(_event: MouseEvent) => clearResults}>
+          <Button class="bits-btn" variant="ghost" on:click={(_event: MouseEvent) => clearResults}>
 Clear
 </Button>
-          <Button class="bits-btn" variant="ghost" onclick={(_event: MouseEvent) => downloadResults}>
+          <Button class="bits-btn" variant="ghost" on:click={(_event: MouseEvent) => downloadResults}>
 <Download class="h-4 w-4" />
 </Button>
         {/if}
@@ -628,7 +628,7 @@ Clear
           <Button
             variant="ghost"
             class="h-auto p-4 justify-start bits-btn bits-btn"
-            onclick={(_event: MouseEvent) => ) =>
+            on:click={(_event: MouseEvent) => ) =>
 {
               selectedWorkflow = 'case_analysis';
               selectedProvider = 'autogen';
@@ -643,7 +643,7 @@ Clear
           <Button
             variant="ghost"
             class="h-auto p-4 justify-start bits-btn bits-btn"
-            onclick={(_event: MouseEvent) => ) =>
+            on:click={(_event: MouseEvent) => ) =>
 {
               selectedWorkflow = 'contract_analysis';
               selectedProvider = 'crewai';
@@ -658,7 +658,7 @@ Clear
           <Button
             variant="ghost"
             class="h-auto p-4 justify-start bits-btn bits-btn"
-            onclick={(_event: MouseEvent) => ) =>
+            on:click={(_event: MouseEvent) => ) =>
 {
               selectedWorkflow = 'evidence_review';
               selectedProvider = 'autogen';
@@ -673,7 +673,7 @@ Clear
           <Button
             variant="ghost"
             class="h-auto p-4 justify-start bits-btn bits-btn"
-            onclick={(_event: MouseEvent) => ) =>
+            on:click={(_event: MouseEvent) => ) =>
 {
               selectedWorkflow = 'legal_research';
               selectedProvider = 'autogen';

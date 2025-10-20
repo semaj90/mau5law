@@ -124,7 +124,7 @@
       </div>
       <!-- Close Button -->
       {#if closable}
-        <button class="notification-close" onclick={closeNotification} aria-label="Close notification"> ✕ </button>
+        <button class="notification-close" on:click={closeNotification} aria-label="Close notification"> ✕ </button>
       {/if}
     </div>
     <!-- System Status Indicator -->

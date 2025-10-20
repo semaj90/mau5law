@@ -330,7 +330,7 @@
         border-color: {item.color || ''}
       "
       onmousedown={(e) => startDrag(e, item)}
-      onclick={(e) => {
+      on:click={(e) => {
         if (isConnecting) {
           completeConnection(item.id);
         } else {
@@ -361,7 +361,7 @@
         </div>
         {#if !readonly}
           <button
-            onclick={(e) => {
+            on:click={(e) => {
               e.stopPropagation();
               items = items.filter(i => i.id !== item.id);
             }}
@@ -426,7 +426,7 @@
       }
     `}>
       <button
-        onclick={() => addNewItem('note')}
+        on:click={() => addNewItem('note')}
         class={`
           px-3 py-1 rounded text-sm transition-colors
           ${theme === 'yorha'
@@ -439,7 +439,7 @@
         📝 Note
       </button>
       <button
-        onclick={() => addNewItem('document')}
+        on:click={() => addNewItem('document')}
         class={`
           px-3 py-1 rounded text-sm transition-colors
           ${theme === 'yorha'
@@ -452,7 +452,7 @@
         📄 Doc
       </button>
       <button
-        onclick={() => addNewItem('link')}
+        on:click={() => addNewItem('link')}
         class={`
           px-3 py-1 rounded text-sm transition-colors
           ${theme === 'yorha'
@@ -466,7 +466,7 @@
       </button>
       {#if selectedItems.size > 0}
         <button
-          onclick={deleteSelected}
+          on:click={deleteSelected}
           class={`
             px-3 py-1 rounded text-sm transition-colors
             ${theme === 'yorha'

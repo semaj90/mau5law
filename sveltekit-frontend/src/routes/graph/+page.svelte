@@ -166,7 +166,7 @@ await loadEngineData();
       <div class="space-y-2">
         {#each hotQueries.slice(0, 3) as query}
           <button
-            onclick={() => useHotQuery(query.query)}
+            on:click={() => useHotQuery(query.query)}
             class="w-full text-left text-xs font-mono p-2 border border-nier-border-muted rounded hover:bg-nier-bg-tertiary transition-colors"
           >
             <div class="text-nier-text-primary truncate">
@@ -187,14 +187,14 @@ await loadEngineData();
       <h3 class="font-bold text-nier-accent-warm mb-3">Actions</h3>
       <div class="space-y-2">
         <ModernButton
-          onclick={hydrateCache}
+          on:click={hydrateCache}
           size="sm"
           class="w-full bg-blue-600 hover:bg-blue-700"
         >
           💧 Hydrate Cache
         </ModernButton>
         <ModernButton
-          onclick={loadEngineData}
+          on:click={loadEngineData}
           size="sm"
           variant="ghost"
           class="w-full border-green-500 text-green-400"
@@ -202,7 +202,7 @@ await loadEngineData();
           🔄 Refresh Stats
         </ModernButton>
         <ModernButton
-          onclick={() => unifiedServiceRegistry.clearCaches()}
+          on:click={() => unifiedServiceRegistry.clearCaches()}
           size="sm"
           variant="ghost"
           class="w-full border-red-500 text-red-400"
@@ -230,7 +230,7 @@ await loadEngineData();
       <!-- Action Buttons -->
       <div class="flex gap-4">
         <ModernButton
-          onclick={executeQuery}
+          on:click={executeQuery}
           disabled={isExecuting || !queryInput.trim()}
           class="bg-green-600 hover:bg-green-700"
         >
@@ -238,7 +238,7 @@ await loadEngineData();
         </ModernButton>
         {#if queryResult?.nodes?.length > 0}
           <ModernButton
-            onclick={getRecommendations}
+            on:click={getRecommendations}
             variant="ghost"
             class="border-blue-500 text-blue-400"
           >
@@ -254,7 +254,7 @@ await loadEngineData();
         <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
           {#each commonQueries as query}
             <button
-              onclick={() => { queryInput = query,}}
+              on:click={() => { queryInput = query,}}
               class="text-left text-xs font-mono p-2 border border-nier-border-muted rounded hover:bg-nier-bg-tertiary transition-colors"
             >
               {query}

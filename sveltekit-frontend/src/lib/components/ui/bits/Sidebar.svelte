@@ -106,7 +106,7 @@
 {#if overlay && isExpanded && backdrop}
   <div
     class="fixed inset-0 bg-black/50 z-30 lg:hidden"
-    onclick={toggleSidebar}
+    on:click={toggleSidebar}
     transition:fade={{ duration: 200 }}
   ></div>
 {/if}
@@ -127,7 +127,7 @@
   <!-- Home Button (Trigger) -->
   <div class="p-4">
     <button
-      onclick={handleHomeClick}
+      on:click={handleHomeClick}
       class={`
         w-full flex items-center justify-center rounded-lg p-3
         transition-all duration-200 group relative
@@ -172,7 +172,7 @@
           <li>
             <!-- Main Navigation Item -->
             <button
-              onclick={() => handleItemClick(item)}
+              on:click={() => handleItemClick(item)}
               disabled={item.disabled}
               class={`
                 w-full flex items-center rounded-lg p-3
@@ -246,7 +246,7 @@
                 {#each item.children as child (child.id)}
                   <li>
                     <button
-                      onclick={() => handleItemClick(child)}
+                      on:click={() => handleItemClick(child)}
                       disabled={child.disabled}
                       class={`
                         w-full flex items-center rounded-md p-2 text-sm
@@ -288,7 +288,7 @@
   {#if !overlay}
     <div class="p-4 border-t border-gray-200 dark:border-gray-700">
       <button
-        onclick={toggleSidebar}
+        on:click={toggleSidebar}
         class={`
           w-full flex items-center justify-center rounded-lg p-2
           transition-all duration-200

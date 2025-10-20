@@ -45,7 +45,7 @@
   <div class="header-content">
     <!-- Logo and Brand -->
     <div class="brand-section">
-      <button class="brand-button" onclick={() => handleNavigation('/')} aria-label="Go to homepage">
+      <button class="brand-button" on:click={() => handleNavigation('/')} aria-label="Go to homepage">
         <Palette size={24} aria-hidden="true" />
         <span class="brand-text">Prosecutor Canvas</span>
       </button>
@@ -55,7 +55,7 @@
       <button
         class="nav-button"
         class:active={isActiveRoute('/dashboard')}
-        onclick={() => handleNavigation('/dashboard')}
+        on:click={() => handleNavigation('/dashboard')}
         aria-label="Dashboard"
         aria-current={isActiveRoute('/dashboard') ? 'page' : undefined}
       >
@@ -65,7 +65,7 @@
       <button
         class="nav-button"
         class:active={isActiveRoute('/cases')}
-        onclick={() => handleNavigation('/cases')}
+        on:click={() => handleNavigation('/cases')}
         aria-label="Cases"
         aria-current={isActiveRoute('/cases') ? 'page' : undefined}
       >
@@ -76,7 +76,7 @@
         class="nav-button"
         ;
         class:active={isActiveRoute('/interactive-canvas')}
-        onclick={() => handleNavigation('/interactive-canvas')}
+        on:click={() => handleNavigation('/interactive-canvas')}
         aria-label="Interactive Canvas"
         aria-current={isActiveRoute('/interactive-canvas') ? 'page' : undefined}
       >
@@ -87,7 +87,7 @@
         class="nav-button"
         ;
         class:active={isActiveRoute('/evidence/hash')}
-        onclick={() => handleNavigation('/evidence/hash')}
+        on:click={() => handleNavigation('/evidence/hash')}
         aria-label="Hash Verification"
         aria-current={isActiveRoute('/evidence/hash') ? 'page' : undefined}
         title="Verify evidence file integrity"
@@ -106,7 +106,7 @@
         <div class="user-menu-container">
           <button
             class="user-button"
-            onclick={toggleUserMenu}
+            on:click={toggleUserMenu}
             aria-label="User menu"
             aria-expanded={userMenuOpen}
             aria-haspopup="menu"
@@ -125,16 +125,16 @@
           </button>
           {#if userMenuOpen}
             <div class="user-menu" role="menu" aria-labelledby="user-button">
-              <button class="menu-item" onclick={() => handleNavigation('/profile')} role="menuitem" tabindex="0">
+              <button class="menu-item" on:click={() => handleNavigation('/profile')} role="menuitem" tabindex="0">
                 <UserIcon size={16} aria-hidden="true" />
                 Profile
               </button>
-              <button class="menu-item" onclick={() => handleNavigation('/settings')} role="menuitem" tabindex="0">
+              <button class="menu-item" on:click={() => handleNavigation('/settings')} role="menuitem" tabindex="0">
                 <Settings size={16} aria-hidden="true" />
                 Settings
               </button>
               <hr class="menu-separator" />
-              <button class="menu-item" onclick={handleLogout} role="menuitem" tabindex="0">
+              <button class="menu-item" on:click={handleLogout} role="menuitem" tabindex="0">
                 <LogOut size={16} aria-hidden="true" />
                 Sign Out
               </button>
@@ -142,7 +142,7 @@
           {/if}
         </div>
       {:else}
-        <button class="sign-in-button" onclick={() => handleNavigation('/login')} aria-label="Sign in">
+        <button class="sign-in-button" on:click={() => handleNavigation('/login')} aria-label="Sign in">
           Sign In
         </button>
       {/if}
@@ -153,7 +153,7 @@
 {#if userMenuOpen}
   <div
     class="menu-overlay"
-    onclick={closeUserMenu}
+    on:click={closeUserMenu}
     keydown={e => e.key === 'Escape' && closeUserMenu()}
     role="button"
     tabindex="-1"

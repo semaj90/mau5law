@@ -386,7 +386,7 @@
         onchange={handleFileSelect}
         style="display: none"
       />
-      <button class="browse-button" onclick={() => document.getElementById('file-input')?.click()}>
+      <button class="browse-button" on:click={() => document.getElementById('file-input')?.click()}>
         📁 Browse Files
       </button>
     </div>
@@ -397,7 +397,7 @@
       <div class="stats-header">
         <h4>📊 Processing Statistics</h4>
         {#if files.length > 1}
-          <button class="clear-button" onclick={clearAll}> 🗑️ Clear All </button>
+          <button class="clear-button" on:click={clearAll}> 🗑️ Clear All </button>
         {/if}
       </div>
       <div class="stats-grid">
@@ -444,7 +444,7 @@
                   {/if}
                 </div>
               </div>
-              <button class="remove-button" onclick={() => removeFile(file.id)}> ❌ </button>
+              <button class="remove-button" on:click={() => removeFile(file.id)}> ❌ </button>
             </div>
             {#if file.progress > 0 && file.status !== 'completed'}
               <div class="progress-bar">

@@ -79,6 +79,12 @@ interface DistillationStatus {
   deploymentReady?: boolean
   error?: string
 }
+
+// Define an interface for the route parameters
+interface QloraDistillationParams {
+  jobId: string;
+}
+
 // Track active distillation jobs
 const activeDistillations = new Map<string, DistillationStatus>()
 /**
@@ -127,11 +133,12 @@ export const POST: RequestHandler = async ({ request }) => {
     })
   } catch (error) {
     console.error('❌ QLoRA Distillation API error:', error)
-    return json({
+    return json(
+      {
         success: false,
         error: 'Failed to start distillation job',
-        details: error instanceof Error ? error.message: 'Unknown error'
-      },)
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     )
   }
@@ -140,7 +147,7 @@ export const POST: RequestHandler = async ({ request }) => {
  * GET /api/qlora-distillation/{jobId}
  * Get distillation job status and progress
  */
-export const GET: RequestHandler = async ({ params }) => {
+export const GET: RequestHandler<QloraDistillationParams> = async ({ params }) => {
   try {
     const jobId = params.jobId
     if (!jobId) {
@@ -160,7 +167,7 @@ export const GET: RequestHandler = async ({ params }) => {
  * DELETE /api/qlora-distillation/{jobId}
  * Cancel running distillation job
  */
-export const DELETE: RequestHandler = async ({ params }) => {
+export const DELETE: RequestHandler<QloraDistillationParams> = async ({ params }) => {
   try {
     const jobId = params.jobId
     if (!jobId) {
@@ -213,7 +220,7 @@ async function processDistillationJob(jobId: string, request: DistillationReques
     console.log(`📊 Phase 1: Analyzing feedback data for ${jobId}...`)
     // Use integration analyzer to comprehensively analyze feedback
     const feedbackAnalysis = await qloraIntegrationAnalyzer.analyzeFeedbackForDistillation(
-      request.feedbackData || (await getMockFeedbackData(request.domain)
+      request.feedbackData || (await getMockFeedbackData(request.domain))
     )
     updateStatus({
       progress: 25,
@@ -259,11 +266,11 @@ async function processDistillationJob(jobId: string, request: DistillationReques
     // Optimize with context switcher
     await autoencoderContextSwitcher.switchContext(
       request.userId,
-      `Optimizing distilled model for domain: ${request.domain}`,)
+      `Optimizing distilled model for domain: ${request.domain}`,
       {
         modelPath: distillationResult.modelPath,
-        performance_target,: request.parameters?.optimizeFor || 'balanced',
-        domain,: request.domain
+        performance_target: request.parameters?.optimizeFor || 'balanced',
+        domain: request.domain
       }
     )
     // Phase 3: Model Validation and Integration
@@ -501,7 +508,7 @@ function calculateModelSize(modelPath: string): number {
 async function simulateFileOperations(operations: string[], delayMs: number): Promise<void> {
   for (const op of operations) {
     console.log(`📁 Performing ${op}...`)
-    await new Promise((resolve) => setTimeout(resolve, delayMs / operations.length)
+    await new Promise((resolve) => setTimeout(resolve, delayMs / operations.length))
   }
 }
 /**

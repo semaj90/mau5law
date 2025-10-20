@@ -268,7 +268,7 @@
           <span>YoRHa Terminal</span>
         </div>
         <div class="yorha-terminal-controls">
-          <button class="yorha-terminal-control" onclick={() => clearTerminal()}>
+          <button class="yorha-terminal-control" on:click={() => clearTerminal()}>
             <RotateCcw size={14} />
           </button>
           <button class="yorha-terminal-control">

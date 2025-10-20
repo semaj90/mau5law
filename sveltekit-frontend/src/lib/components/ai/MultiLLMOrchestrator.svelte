@@ -251,7 +251,7 @@ if (autoStart) {
       <Button class="bits-btn"
         variant="ghost"
         size="sm"
-        onclick={refreshStatus}
+        on:click={refreshStatus}
         disabled={isProcessing}
       >
 <RefreshCw class="h-4 w-4 mr-2 {isProcessing ? 'animate-spin' : ''}" />
@@ -259,12 +259,12 @@ if (autoStart) {
       <Button class="bits-btn"
         variant="ghost"
         size="sm"
-        onclick={() =>
+        on:click={() =>
 showSettings = !showSettings}
       >
         <Settings class="h-4 w-4" />
       {#if !isInitialized}
-        <Button class="bits-btn" onclick={initializeOrchestrator} disabled={isProcessing}>
+        <Button class="bits-btn" on:click={initializeOrchestrator} disabled={isProcessing}>
 <Play class="h-4 w-4 mr-2" />
           Initialize
       {/if}
@@ -356,7 +356,7 @@ showSettings = !showSettings}
                 variant="ghost"
                 size="sm"
                 class="w-full mt-2 bits-btn bits-btn"
-                onclick={() =>
+                on:click={() =>
 submitTestTask(provider.id)}
                 disabled={provider.status !== 'online'}
               >
@@ -376,7 +376,7 @@ submitTestTask(provider.id)}
             <Activity class="h-5 w-5" />
             Active Tasks ({activeTasks.size})
           </span>
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={clearCompletedTasks}>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={clearCompletedTasks}>
 Clear Completed
         </h3>
       </div>
@@ -401,7 +401,7 @@ Clear Completed
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  onclick={() =>
+                  on:click={() =>
 cancelTask(taskId)}
                 >
                   <X class="h-4 w-4" />

@@ -73,7 +73,7 @@
             <Button class="bits-btn"
               type="button"
               variant="ghost"
-              onclick={() =>
+              on:click={() =>
 handleOpenChange(false)}
             >
               Cancel

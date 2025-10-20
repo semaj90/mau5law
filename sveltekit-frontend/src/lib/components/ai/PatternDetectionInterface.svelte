@@ -177,7 +177,7 @@
       <p class="detection-subtitle">AI-powered pattern recognition and behavioral analysis</p>
     </div>
     <div class="header-actions">
-      <button class="nes-btn" onclick={disabled}>
+      <button class="nes-btn" on:click={disabled}>
         {isAnalyzing ? 'Analyzing...' : 'Run Analysis'}
       </button>
     </div>
@@ -355,7 +355,7 @@
           </div>
           <div.Footer>
             <div class="nier-bits-card-actions">
-              <button class="nes-btn" variant="ghost" size="sm" onclick={() => openPatternDetails(pattern)}>
+              <button class="nes-btn" variant="ghost" size="sm" on:click={() => openPatternDetails(pattern)}>
                 View Details
               </button>
               <button class="nes-btn" size="sm">
@@ -474,7 +474,7 @@
         {/if}
       </div>
       <div class="dialog-actions">
-        <button class="nes-btn" variant="ghost" onclick={() => showPatternDetails = false}>
+        <button class="nes-btn" variant="ghost" on:click={() => showPatternDetails = false}>
           Close
         </button>
         <button class="nes-btn">

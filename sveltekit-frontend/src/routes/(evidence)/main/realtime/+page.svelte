@@ -182,12 +182,12 @@
         </div>
         <div class="space-y-4">
           {#if !demoMode}
-            <Button class="bits-btn" onclick={() =>
+            <Button class="bits-btn" on:click={() =>
 startDemoMode()}>
               <Activity class="space-y-4" />
               Start Demo
           {/if}
-          <Button class="bits-btn" variant="ghost" onclick={() =>
+          <Button class="bits-btn" variant="ghost" on:click={() =>
 clearAllEvidence()}>
             <Database class="space-y-4" />
             Clear All
@@ -364,7 +364,7 @@ clearAllEvidence()}>
                 size="sm"
                 variant="ghost"
                 class="space-y-4 bits-btn bits-btn"
-                onclick={() =>
+                on:click={() =>
 (selectedTypes = ["video", "image"])}
               >
                 Visual Evidence
@@ -372,7 +372,7 @@ clearAllEvidence()}>
                 size="sm"
                 variant="ghost"
                 class="space-y-4 bits-btn bits-btn"
-                onclick={() =>
+                on:click={() =>
 (selectedTypes = ["testimony", "document"])}
               >
                 Testimonial
@@ -380,7 +380,7 @@ clearAllEvidence()}>
                 size="sm"
                 variant="ghost"
                 class="space-y-4 bits-btn bits-btn"
-                onclick={() =>
+                on:click={() =>
 {
                   selectedTypes = [];
                   searchQuery = "";

@@ -111,7 +111,7 @@
             <span class="user-greeting nes-text is-primary">Hello, {user.name}!</span>
           {/if}
           {#if showSidebar}
-            <button class="sidebar-toggle nes-btn" onclick={toggleSidebar} aria-label="Toggle sidebar"> ☰ </button>
+            <button class="sidebar-toggle nes-btn" on:click={toggleSidebar} aria-label="Toggle sidebar"> ☰ </button>
           {/if}
         </div>
       </div>

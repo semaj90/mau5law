@@ -321,7 +321,7 @@ await checkServiceHealth();
         </div>
         <!-- Generate Button -->
         <Button
-          onclick={generateSummary}
+          on:click={generateSummary}
           disabled={isProcessing || !documentContent.trim() || !documentTitle.trim() || serviceHealth === 'unavailable'}
           class="w-full"
         >
@@ -370,7 +370,7 @@ await checkServiceHealth();
             {/if}
           </div>
           {#if currentSummary}
-            <Button variant="ghost" size="sm" onclick={copySummary}>
+            <Button variant="ghost" size="sm" on:click={copySummary}>
               📋 Copy
             </Button>
           {/if}

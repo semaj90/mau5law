@@ -607,7 +607,7 @@ if (!browser) return;
         onkeydown={e => e.key === 'Enter' && handleUserInput()}
         disabled={!isInitialized || isProcessing}
       />
-      <button onclick={handleUserInput} disabled={!isInitialized || isProcessing}>
+      <button on:click={handleUserInput} disabled={!isInitialized || isProcessing}>
         {isProcessing ? 'Processing...' : 'Analyze'}
       </button>
     </div>

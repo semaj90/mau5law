@@ -403,7 +403,7 @@
       {/if}
       <button
         type="button"
-        onclick={testConnections}
+        on:click={testConnections}
         class="ml-auto text-xs text-yellow-400 hover:text-yellow-300 transition-colors"
       >
         Refresh Status
@@ -519,7 +519,7 @@
               =� {file.name} ({formatFileSize(file.size)})
               <button
                 type="button"
-                onclick={() => removeFile(index)}
+                on:click={() => removeFile(index)}
                 class="ml-1 text-red-400 hover:text-red-300"
                 aria-label="Remove file"
               >
@@ -553,7 +553,7 @@
 
         <Button
           variant="yorha"
-          onclick={handleSend}
+          on:click={handleSend}
           disabled={isLoading || (!inputMessage.trim() && attachedFiles.length === 0)}
           loading={isLoading}
           loadingText="Sending..."

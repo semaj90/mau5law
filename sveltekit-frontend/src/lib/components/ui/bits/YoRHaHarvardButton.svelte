@@ -84,7 +84,7 @@
 <button
   class={buttonClasses}
   {disabled}
-  onclick={handleClick}
+  on:click={handleClick}
   onkeydown={handleKeydown}
   onmouseenter={() => (isHovered = true)}
   onmouseleave={() => (isHovered = false)}

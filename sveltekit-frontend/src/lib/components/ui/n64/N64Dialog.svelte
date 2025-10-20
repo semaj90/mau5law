@@ -376,7 +376,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     class={backdropClasses()}
     role="button"
     tabindex="0"
-    onclick={handleBackdropClick}
+    on:click={handleBackdropClick}
     transitionfade={{ duration: reducedMotion ? 0 : animationDuration }}
     aria-hidden="true"
   >
@@ -442,7 +442,7 @@ if (spatialAudio && typeof window !== 'undefined') {
           {/if}
         </div>
         <!-- Close button -->
-        <button type="button" class="n64-dialog-close" onclick={handleClose} aria-label="Close dialog">
+        <button type="button" class="n64-dialog-close" on:click={handleClose} aria-label="Close dialog">
           <span aria-hidden="true">×</span>
         </button>
       </article>

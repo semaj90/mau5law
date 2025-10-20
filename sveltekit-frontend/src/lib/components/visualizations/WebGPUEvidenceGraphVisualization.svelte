@@ -312,10 +312,10 @@
         <option value="circular">Circular</option>
         <option value="hierarchical">Hierarchical</option>
       </select>
-      <Button onclick={toggleLabels} variant="secondary" size="sm">
+      <Button on:click={toggleLabels} variant="secondary" size="sm">
         {showLabels ? 'Hide' : 'Show'} Labels
       </Button>
-      <Button onclick={resetView} variant="secondary" size="sm">
+      <Button on:click={resetView} variant="secondary" size="sm">
         Reset View
       </Button>
     </div>

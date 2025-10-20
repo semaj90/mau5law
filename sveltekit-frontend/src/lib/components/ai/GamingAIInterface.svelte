@@ -306,7 +306,7 @@
         <div class="flex items-center gap-2">
           <button
             type="button"
-            onclick={() =>
+            on:click={() =>
               (currentTheme =
                 currentTheme === 'yorha' ? 'cyberpunk' : currentTheme === 'cyberpunk' ? 'matrix' : 'yorha')}
             class="p-2 rounded-lg hover:bg_gray-700/50 transition-colors"
@@ -316,7 +316,7 @@
           </button>
           <button
             type="button"
-            onclick={openNierAssistant}
+            on:click={openNierAssistant}
             class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
             title="Open Full Assistant"
           >
@@ -324,7 +324,7 @@
           </button>
           <button
             type="button"
-            onclick={() => (showAIInterface = false)}
+            on:click={() => (showAIInterface = false)}
             class="p-2 rounded-lg hover:bg-red-500/20 transition-colors"
           >
             <X class="w-5 h-5 text-red-400" />
@@ -444,7 +444,7 @@
             <div class="flex gap-2 mt-3">
               {#each ['analyze case', 'search evidence', 'system status', 'generate report'] as cmd}
                 <button
-                  onclick={() => {
+                  on:click={() => {
                     inputValue = cmd;
                     sendMessage(cmd);
                   }}
@@ -464,7 +464,7 @@
           <div class="space-y-2 mb-6">
             {#each [{ id: 'analysis', label: 'Deep Analysis', icon: Brain }, { id: 'search', label: 'Evidence Search', icon: Search }, { id: 'document', label: 'Document Gen', icon: FileText }, { id: 'rapid', label: 'Rapid Response', icon: Zap }] as mode}
               <button
-                onclick={() => processAICommand(`switch to ${mode.label.toLowerCase()}`)}
+                on:click={() => processAICommand(`switch to ${mode.label.toLowerCase()}`)}
                 class="w-full flex items-center gap-3 p-3 rounded-lg border {theme.border}
                        hover:bg-gray-700/30 transition-colors text-left"
               >

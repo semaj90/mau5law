@@ -183,7 +183,7 @@
       <span class="agentic-subtitle">OCR → Embeddings → RAG</span>
     </h2>
 
-    <button class="refresh-btn" onclick={fetchStatus} disabled={loading}>
+    <button class="refresh-btn" on:click={fetchStatus} disabled={loading}>
       {loading ? '🔄' : '↻'} Refresh
     </button>
   </div>
@@ -192,7 +192,7 @@
   {#if error}
     <div class="error-alert">
       ❌ {error}
-      <button onclick={() => (error = '')}>×</button>
+      <button on:click={() => (error = '')}>×</button>
     </div>
   {/if}
 
@@ -241,7 +241,7 @@
       {#if selectedFile}
         <div class="file-selected">
           📄 {selectedFile.name}
-          <button onclick={() => (selectedFile = null)}>×</button>
+          <button on:click={() => (selectedFile = null)}>×</button>
         </div>
       {:else}
         <div class="drop-message">
@@ -255,7 +255,7 @@
     </div>
 
     {#if selectedFile}
-      <button class="upload-btn" onclick={uploadScreenshot} disabled={loading}>
+      <button class="upload-btn" on:click={uploadScreenshot} disabled={loading}>
         {loading ? '🔄 Processing...' : '🚀 Analyze Screenshot'}
       </button>
     {/if}
@@ -267,7 +267,7 @@
 
     <div class="query-input-group">
       <input type="text" bind:value={errorQuery} placeholder="Paste error message here..." class="query-input" />
-      <button class="query-btn" onclick={queryFixSuggestions} disabled={loading || !errorQuery.trim()}>
+      <button class="query-btn" on:click={queryFixSuggestions} disabled={loading || !errorQuery.trim()}>
         {loading ? '🔄' : '🔍'} Find Fixes
       </button>
     </div>

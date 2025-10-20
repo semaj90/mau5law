@@ -988,9 +988,9 @@
   <!-- Canvas Controls -->
   <div class="canvas-controls">
     <div class="control-group">
-      <button onclick={zoomToFit} class="control-btn" title="Reset Zoom"> 🔍 Fit </button>
-      <button onclick={centerEvidence} class="control-btn" title="Center Evidence"> 🎯 Center </button>
-      <button onclick={() => (showGrid = !showGrid)} class="control-btn" title="Toggle Grid">
+      <button on:click={zoomToFit} class="control-btn" title="Reset Zoom"> 🔍 Fit </button>
+      <button on:click={centerEvidence} class="control-btn" title="Center Evidence"> 🎯 Center </button>
+      <button on:click={() => (showGrid = !showGrid)} class="control-btn" title="Toggle Grid">
         {showGrid ? '⊞' : '⊡'} Grid
       </button>
     </div>

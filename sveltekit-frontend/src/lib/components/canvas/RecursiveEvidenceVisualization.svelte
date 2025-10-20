@@ -622,18 +622,18 @@
       </select>
     </div>
     <div class="control-group">
-      <button onclick={toggleChainIntegrity} class:active={showChainIntegrity}>
+      <button on:click={toggleChainIntegrity} class:active={showChainIntegrity}>
         Chain Integrity
       </button>
-      <button onclick={toggleLegalImplications} class:active={showLegalImplications}>
+      <button on:click={toggleLegalImplications} class:active={showLegalImplications}>
         Legal Implications
       </button>
     </div>
     <div class="control-group">
-      <button onclick={() => fitHierarchyToCanvas()}>
+      <button on:click={() => fitHierarchyToCanvas()}>
         Fit to Canvas
       </button>
-      <button onclick={exportHierarchyVisualization}>
+      <button on:click={exportHierarchyVisualization}>
         Export PNG
       </button>
     </div>

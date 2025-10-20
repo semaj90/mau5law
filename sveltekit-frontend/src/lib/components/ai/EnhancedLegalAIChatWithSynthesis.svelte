@@ -1066,7 +1066,7 @@ if (browser) {
             {/each}
           </div>
           <!-- Settings Toggle -->
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
 (showSettings = !showSettings)}>
             <Settings class="w-4 h-4" />
 </Button>
@@ -1295,7 +1295,7 @@ if (browser) {
           </div>
           <!-- Message Actions -->
           <div class="flex-shrink-0 flex flex-col gap-1">
-            <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
+            <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
 copyToClipboard(message.content)}>
               <FileText class="w-3 h-3" />
 </Button>
@@ -1321,7 +1321,7 @@ copyToClipboard(message.content)}>
       keydown={handleKeyDown}
       disabled={isProcessing}
       class="flex-1" />
-    <Button class="bits-btn" onclick={sendMessage} disabled={!currentInput.trim() || isProcessing}>
+    <Button class="bits-btn" on:click={sendMessage} disabled={!currentInput.trim() || isProcessing}>
 {#if isProcessing}
         <Loader2 class="w-4 h-4 animate-spin" />
       {:else}
@@ -1335,7 +1335,7 @@ copyToClipboard(message.content)}>
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center justify-between">
           Detailed Analysis
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
+          <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
 (showAdvancedAnalysis = false)}>
             ×
 </Button>

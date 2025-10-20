@@ -139,7 +139,7 @@
           {getStatusText()}
         </Badge>
       </h3>
-      <Button class="bits-btn" variant="ghost" size="sm" onclick={clearMessages}>Clear Chat</Button>
+      <Button class="bits-btn" variant="ghost" size="sm" on:click={clearMessages}>Clear Chat</Button>
     </div>
   </div>
   <div class="yorha-panel-content flex-1 flex flex-col gap-4 overflow-hidden">
@@ -207,7 +207,7 @@
       />
       <Button
         class="bits-btn"
-        onclick={sendMessage}
+        on:click={sendMessage}
         disabled={!inputMessage.trim() || isLoading || connectionStatus !== 'connected'}
       >
         {isLoading ? '⏳' : '📤'} Send

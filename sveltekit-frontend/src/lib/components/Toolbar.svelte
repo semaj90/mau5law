@@ -132,7 +132,7 @@
         <button
           class="container mx-auto px-4"
           class:active={selectedTool === tool.id}
-          onclick={() => selectTool(tool.id)}
+          on:click={() => selectTool(tool.id)}
           aria-label={tool.label}
           title={tool.label}
         >
@@ -149,7 +149,7 @@
         <button
           class="container mx-auto px-4"
           class:active={(formatting as any)[action.id]}
-          onclick={() => toggleFormatting(action.id)}
+          on:click={() => toggleFormatting(action.id)}
           aria-label={action.label}
           title={action.label}
           disabled={selectedTool !== 'text'}
@@ -163,7 +163,7 @@
         <button
           class="container mx-auto px-4"
           class:active={formatting.textAlign === action.id}
-          onclick={() => setAlignment(action.id)}
+          on:click={() => setAlignment(action.id)}
           aria-label={action.label}
           title={action.label}
           disabled={selectedTool !== 'text'}
@@ -231,7 +231,7 @@
     <div class="container mx-auto px-4">
       <button
         class="container mx-auto px-4"
-        onclick={() => handleAction('undo')}
+        on:click={() => handleAction('undo')}
         disabled={!canUndo}
         aria-label="Undo"
         title="Undo"
@@ -240,7 +240,7 @@
       </button>
       <button
         class="container mx-auto px-4"
-        onclick={() => handleAction('redo')}
+        on:click={() => handleAction('redo')}
         disabled={!canRedo}
         aria-label="Redo"
         title="Redo"
@@ -249,10 +249,10 @@
       </button>
     </div>
     <div class="container mx-auto px-4">
-      <button class="container mx-auto px-4" onclick={() => handleAction('copy')} aria-label="Copy" title="Copy">
+      <button class="container mx-auto px-4" on:click={() => handleAction('copy')} aria-label="Copy" title="Copy">
         <Copy size={18} />
       </button>
-      <button class="container mx-auto px-4" onclick={() => handleAction('delete')} aria-label="Delete" title="Delete">
+      <button class="container mx-auto px-4" on:click={() => handleAction('delete')} aria-label="Delete" title="Delete">
         <Trash2 size={18} />
       </button>
     </div>
@@ -261,11 +261,11 @@
   <!-- Zoom Controls -->
   <div class="container mx-auto px-4">
     <div class="container mx-auto px-4">
-      <button class="container mx-auto px-4" onclick={() => handleZoom(-10)} aria-label="Zoom Out" title="Zoom Out">
+      <button class="container mx-auto px-4" on:click={() => handleZoom(-10)} aria-label="Zoom Out" title="Zoom Out">
         <ZoomOut size={18} />
       </button>
       <span class="container mx-auto px-4">{zoom}%</span>
-      <button class="container mx-auto px-4" onclick={() => handleZoom(10)} aria-label="Zoom In" title="Zoom In">
+      <button class="container mx-auto px-4" on:click={() => handleZoom(10)} aria-label="Zoom In" title="Zoom In">
         <ZoomIn size={18} />
       </button>
     </div>

@@ -223,13 +223,13 @@ https://svelte.dev/e/js_parse_error -->
 				<div class="action-buttons" transitionFade={{ duration: 300 }}>
 					<button
 						class="nes-btn is-primary"
-						onclick={() => showCreateForm = true}
+						on:click={() => showCreateForm = true}
 					>
 						Create Case Instantly
 					</button>
 					<button
 						class="nes-btn"
-						onclick={() => startTypewriter("🔍 Ready to analyze evidence, detect patterns, and assist with case strategy. What would you like me to focus on?")}
+						on:click={() => startTypewriter("🔍 Ready to analyze evidence, detect patterns, and assist with case strategy. What would you like me to focus on?")}
 					>
 						Analyze Evidence
 					</button>
@@ -246,7 +246,7 @@ https://svelte.dev/e/js_parse_error -->
 							{#each quickCaseTemplates as template}
 								<button
 									class="template-nier-bits-card"
-									onclick={disabled}
+									on:click={disabled}
 								>
 									<div class="template-title">{template.title}</div>
 									<div class="template-priority priority-{template.priority}">
@@ -297,7 +297,7 @@ https://svelte.dev/e/js_parse_error -->
 							<div class="form-actions">
 								<button
 									class="nes-btn is-primary"
-									onclick={disabled}
+									on:click={disabled}
 								>
 									{#if isProcessing}
 										Creating...
@@ -307,7 +307,7 @@ https://svelte.dev/e/js_parse_error -->
 								</button>
 								<button
 									class="nes-btn"
-									onclick={() => showCreateForm = false}
+									on:click={() => showCreateForm = false}
 								>
 									Cancel
 								</button>

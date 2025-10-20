@@ -42,7 +42,7 @@
   class:hovered={isHovered}
   onmouseenter={() => (isHovered = true)}
   onmouseleave={() => (isHovered = false)}
-  onclick={handleClick}
+  on:click={handleClick}
   role="button"
   tabindex="0"
   onkeydown={e => e.key === 'Enter' && handleClick()}

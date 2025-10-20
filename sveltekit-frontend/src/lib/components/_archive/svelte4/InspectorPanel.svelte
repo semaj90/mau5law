@@ -584,7 +584,7 @@ https://svelte.dev/e/js_parse_error -->
             </span>
           {/if}
           <button
-            onclick={reanalyzeWithAI}
+            on:click={reanalyzeWithAI}
             disabled={isLoading}
             class="reanalyze-button"
           >
@@ -725,7 +725,7 @@ https://svelte.dev/e/js_parse_error -->
                       {tag}
                       {#if !readOnly}
                         <button
-                          onclick={() => removeCustomTag(tag)}
+                          on:click={() => removeCustomTag(tag)}
                           class="remove-tag-button"
                         >×</button>
                       {/if}
@@ -741,7 +741,7 @@ https://svelte.dev/e/js_parse_error -->
                       class="input-field"
                     />
                     <button
-                      onclick={addCustomTag}
+                      on:click={addCustomTag}
                       class="add-button"
                     >Add</button>
                   </div>
@@ -770,7 +770,7 @@ https://svelte.dev/e/js_parse_error -->
                         👤 {person}
                         {#if !readOnly}
                           <button
-                            onclick={() => removePerson(person)}
+                            on:click={() => removePerson(person)}
                             class="remove-entity-button"
                           >×</button>
                         {/if}
@@ -786,7 +786,7 @@ https://svelte.dev/e/js_parse_error -->
                         class="input-field"
                       />
                       <button
-                        onclick={addCustomPerson}
+                        on:click={addCustomPerson}
                         class="add-button"
                       >Add</button>
                     </div>
@@ -810,7 +810,7 @@ https://svelte.dev/e/js_parse_error -->
                         📍 {location}
                         {#if !readOnly}
                           <button
-                            onclick={() => removeLocation(location)}
+                            on:click={() => removeLocation(location)}
                             class="remove-entity-button"
                           >×</button>
                         {/if}
@@ -826,7 +826,7 @@ https://svelte.dev/e/js_parse_error -->
                         class="input-field"
                       />
                       <button
-                        onclick={addCustomLocation}
+                        on:click={addCustomLocation}
                         class="add-button"
                       >Add</button>
                     </div>
@@ -850,7 +850,7 @@ https://svelte.dev/e/js_parse_error -->
                         🏢 {org}
                         {#if !readOnly}
                           <button
-                            onclick={() => removeOrganization(org)}
+                            on:click={() => removeOrganization(org)}
                             class="remove-entity-button"
                           >×</button>
                         {/if}
@@ -866,7 +866,7 @@ https://svelte.dev/e/js_parse_error -->
                         class="input-field"
                       />
                       <button
-                        onclick={addCustomOrganization}
+                        on:click={addCustomOrganization}
                         class="add-button"
                       >Add</button>
                     </div>
@@ -923,7 +923,7 @@ https://svelte.dev/e/js_parse_error -->
                         ⚡ {action}
                         {#if !readOnly}
                           <button
-                            onclick={() => removeAction(action)}
+                            on:click={() => removeAction(action)}
                             class="remove-action-button"
                           >×</button>
                         {/if}
@@ -939,7 +939,7 @@ https://svelte.dev/e/js_parse_error -->
                         class="input-field"
                       />
                       <button
-                        onclick={addCustomAction}
+                        on:click={addCustomAction}
                         class="add-button"
                       >Add</button>
                     </div>
@@ -1031,7 +1031,7 @@ https://svelte.dev/e/js_parse_error -->
         {#if !readOnly}
           <div class="save-button-container">
             <button
-              onclick={handleSave}
+              on:click={handleSave}
               disabled={isSaving || !hasUnsavedChanges}
               class="save-button"
             >

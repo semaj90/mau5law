@@ -293,8 +293,8 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
     <div class="action-buttons">
-      <button onclick={runSystemDiagnostics} class="diagnostic-button"> 🔬 Run System Diagnostics </button>
-      <button onclick={clearLogs} class="clear-logs-button"> 🧹 Clear Logs </button>
+      <button on:click={runSystemDiagnostics} class="diagnostic-button"> 🔬 Run System Diagnostics </button>
+      <button on:click={clearLogs} class="clear-logs-button"> 🧹 Clear Logs </button>
     </div>
   </div>
   <div class="main-integration">

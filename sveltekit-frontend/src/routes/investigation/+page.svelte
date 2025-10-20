@@ -315,7 +315,7 @@
         {/if}
       </div>
       <div class="workspace-actions">
-  <Button class="bits-btn" onclick={saveInvestigation} variant="ghost" size="sm">
+  <Button class="bits-btn" on:click={saveInvestigation} variant="ghost" size="sm">
 <Save class="w-4 h-4 mr-2" />
           Save Progress
 </Button>
@@ -485,7 +485,7 @@
                 onkeydown={(e) => e.key === 'Enter' && !e.shiftKey && sendChatMessage()}
                 class="flex-1"
               />
-              <Button class="bits-btn" onclick={sendChatMessage} disabled={isAIProcessing || !currentChatMessage.trim()}>
+              <Button class="bits-btn" on:click={sendChatMessage} disabled={isAIProcessing || !currentChatMessage.trim()}>
 <MessageSquare class="w-4 h-4" />
 </Button>
             </div>

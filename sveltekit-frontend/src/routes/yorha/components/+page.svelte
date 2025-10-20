@@ -276,7 +276,7 @@
             <button
               class="yorha-component-btn"
               class:yorha-component-active={selectedComponent === component.id}
-              onclick={() => onComponentChange(component.id)}
+              on:click={() => onComponentChange(component.id)}
             >
               <div class="yorha-component-info">
                 <span class="yorha-component-label">{component.label}</span>
@@ -297,7 +297,7 @@
             <button
               class="yorha-mode-btn"
               class:yorha-mode-active={previewMode === mode.id}
-              onclick={() => (previewMode = mode.id)}
+              on:click={() => (previewMode = mode.id)}
             >
               <span>{mode.label}</span>
             </button>
@@ -484,9 +484,9 @@
           </div>
           <!-- Config Actions -->
           <div class="yorha-config-actions">
-            <button class="yorha-config-btn yorha-btn-save" onclick={saveConfig}> SAVE </button>
-            <button class="yorha-config-btn yorha-btn-reset" onclick={resetConfig}> RESET </button>
-            <button class="yorha-config-btn yorha-btn-export" onclick={exportConfig}> EXPORT </button>
+            <button class="yorha-config-btn yorha-btn-save" on:click={saveConfig}> SAVE </button>
+            <button class="yorha-config-btn yorha-btn-reset" on:click={resetConfig}> RESET </button>
+            <button class="yorha-config-btn yorha-btn-export" on:click={exportConfig}> EXPORT </button>
           </div>
         </section>
       {/if}

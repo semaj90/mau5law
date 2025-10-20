@@ -55,7 +55,7 @@
   <button
     type="button"
     class="demo-login"
-    onclick={() => {
+    on:click={() => {
       $form.email = 'demo@legal-ai.com';
       $form.password = 'demo123';
     }}

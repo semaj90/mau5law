@@ -38,7 +38,7 @@
 <div class="minio-upload">
   <label for="file">Evidence file</label>
   <input id="file" type="file" onchange={e => (file = (e.target as HTMLInputElement).files?.[0] ?? null)} />
-  <button onclick={upload} disabled={$uploading}>Upload to MinIO</button>
+  <button on:click={upload} disabled={$uploading}>Upload to MinIO</button>
   <p>{$message}</p>
 </div>
 

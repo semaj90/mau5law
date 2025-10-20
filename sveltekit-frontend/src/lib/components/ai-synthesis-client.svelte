@@ -257,7 +257,7 @@
   <div class="query-panel">
     <h3>Query</h3>
     <textarea bind:value={query} placeholder="Enter your legal query..." disabled={$processing} rows="4"></textarea>
-    <button onclick={submitQuery} disabled={$processing || !query} class="submit-btn">
+    <button on:click={submitQuery} disabled={$processing || !query} class="submit-btn">
       {$processing ? 'Processing...' : 'Submit Query'}
     </button>
   </div>
@@ -483,7 +483,7 @@
         <h4>Provide Feedback</h4>
         <div class="rating-buttons">
           {#each [1, 2, 3, 4, 5] as rating}
-            <button onclick={() => submitFeedback(rating)}>
+            <button on:click={() => submitFeedback(rating)}>
               {rating} Star{rating > 1 ? 's' : ''}
             </button>
           {/each}

@@ -227,7 +227,7 @@
           {#each $evidenceItems as evidence}
             <button
               class="evidence-item {$selectedEvidence?.id === evidence.id ? 'selected' : ''}"
-              onclick={() => analyzeEvidence(evidence)}
+              on:click={() => analyzeEvidence(evidence)}
               transition:fly={{ x: -20, duration: 300 }}
             >
               <span class="evidence-icon">{getEvidenceIcon(evidence.type)}</span>
@@ -260,8 +260,8 @@
       {:else if $currentAnalysis}
         <div class="analysis-content" transition:fade>
           <div class="analysis-actions">
-            <Button onclick={exportAnalysis} variant="secondary">Export Analysis</Button>
-            <Button onclick={() => $selectedEvidence && analyzeEvidence($selectedEvidence)} variant="primary">
+            <Button on:click={exportAnalysis} variant="secondary">Export Analysis</Button>
+            <Button on:click={() => $selectedEvidence && analyzeEvidence($selectedEvidence)} variant="primary">
               Re-analyze
             </Button>
           </div>

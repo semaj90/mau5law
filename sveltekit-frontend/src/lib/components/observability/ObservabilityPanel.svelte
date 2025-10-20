@@ -170,7 +170,7 @@ await loadState();
         <span class="status-indicator {isConnected ? 'connected' : 'disconnected'}"></span>
         {isConnected ? 'Live' : 'Disconnected'}
       </div>
-      <button class="btn-toggle" onclick={() => (showDetails = !showDetails)}>
+      <button class="btn-toggle" on:click={() => (showDetails = !showDetails)}>
         {showDetails ? 'Hide' : 'Show'} Details
       </button>
     </div>
@@ -232,7 +232,7 @@ await loadState();
           <input type="checkbox" bind:checked={autoScroll} />
           Auto-scroll
         </label>
-        <button class="btn-clear" onclick={clearAlerts}>Clear</button>
+        <button class="btn-clear" on:click={clearAlerts}>Clear</button>
       </div>
     </div>
     <div class="alerts-list" style="max-height: 300px; overflow-y: auto;">

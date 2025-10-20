@@ -128,7 +128,7 @@ export default ;
   role="button"
   aria-label={ariaLabel}
   tabindex="0"
-  onclick={() => !disabled && inputEl.click()}
+  on:click={() => !disabled && inputEl.click()}
   on:drop|preventDefault={onDrop}
   on:dragover|preventDefault={onDragOver}
 >
@@ -160,7 +160,7 @@ export default ;
 		  <div style="font-size: 0.85rem; color: #666;">{bytesToSize(f.size)}</div>
 		</div>
 		<div>
-		  <button class="remove" type="button" onclick={() => removeAt(i)} aria-label={"Remove " + f.name}>Remove</button>
+		  <button class="remove" type="button" on:click={() => removeAt(i)} aria-label={"Remove " + f.name}>Remove</button>
 		</div>
 	  </div>
 	{/each}
