@@ -1,6 +1,13 @@
 // Legal AI Form State Machines with XState
 // Advanced state management for legal document processing workflows
-import { createMachine, assign, fromPromise, type ActorRefFrom } from 'xstate';
+import {
+  createMachine,
+  assign,
+  fromPromise,
+  type ActorRefFrom,
+  type ErrorActorEvent,
+  type DoneActorEvent,
+} from 'xstate';
 import { z } from 'zod';
 // ============================================================================
 // ZOD VALIDATION SCHEMAS
@@ -27,6 +34,8 @@ export const DocumentUploadSchema = z.object({
       generateSummary: z.boolean().default(true),
       extractEntities: z.boolean().default(true),
       riskAssessment: z.boolean().default(true),
+      compareWithRAG: z.boolean().default(true),
+      compareTopK: z.number().min(1).max(20).default(8),
       generateRecommendations: z.boolean().default(false),
     })
     .optional()
@@ -34,6 +43,8 @@ export const DocumentUploadSchema = z.object({
       generateSummary: true,
       extractEntities: true,
       riskAssessment: true,
+      compareWithRAG: true,
+      compareTopK: 8,
       generateRecommendations: false,
     }),
 });
@@ -105,7 +116,7 @@ export interface AIResults {
   summary?: string;
   entities?: { type: string; value: string }[];
   riskAssessment?: { level: 'low' | 'medium' | 'high'; details: string };
-  [key:string]: unknown;
+  [key: string]: unknown;
 }
 // Placeholder for a created case from the API
 export interface CreatedCase extends z.infer<typeof CaseCreationSchema> {
@@ -184,16 +195,17 @@ export interface AIAnalysisContext {
   isStreaming: boolean;
   streamedContent: string;
 }
+
 // ============================================================================
 // DOCUMENT UPLOAD STATE MACHINE
 // ============================================================================
 type DocumentUploadEvent =
-  | { type: 'VALIDATE_FORM'; data: z.infer<typeof DocumentUploadSchema> }
-  | { type: 'RESET' }
-  | { type: 'UPLOAD' }
+  | { type: 'SUBMIT_FORM'; data: z.infer<typeof DocumentUploadSchema> }
+  | { type: 'UPDATE_FORM'; data: z.infer<typeof DocumentUploadSchema> }
   | { type: 'UPLOAD_PROGRESS'; progress: number }
-  | { type: 'RETRY' }
   | { type: 'PROCESSING_PROGRESS'; progress: number }
+  | { type: 'RETRY' }
+  | { type: 'RESET' }
   | { type: 'SKIP_PROCESSING' }
   | { type: 'NEW_UPLOAD' };
 
@@ -211,16 +223,24 @@ export const documentUploadMachine = createMachine(
       error: null,
       retryCount: 0,
       maxRetries: 3,
-    },
+    } as DocumentUploadContext,
     states: {
       idle: {
         on: {
-          VALIDATE_FORM: {
+          SUBMIT_FORM: {
             target: 'validating',
             actions: assign({
-              // Use DocumentUploadEvent type for event to ensure correct context assignment and avoid 'any'
-              formData: (_ctx, event: { type: 'VALIDATE_FORM'; data: z.infer<typeof DocumentUploadSchema> }) =>
-                (event.data ?? null) as z.infer<typeof DocumentUploadSchema> | null,
+              formData: ({ event }) => (event as DocumentUploadEvent & { type: 'SUBMIT_FORM' }).data,
+              validationErrors: {}, // Clear previous errors
+              uploadProgress: 0,
+              processingProgress: 0,
+              error: null,
+              retryCount: 0,
+            }),
+          },
+          UPDATE_FORM: {
+            actions: assign({
+              formData: ({ event }) => (event as DocumentUploadEvent & { type: 'UPDATE_FORM' }).data,
             }),
           },
         },
@@ -231,40 +251,16 @@ export const documentUploadMachine = createMachine(
           src: 'validateDocumentForm',
           input: ({ context }) => context.formData,
           onDone: {
-            target: 'valid',
+            target: 'uploading',
             actions: assign({
-              validationErrors: () => ({}),
+              validationErrors: {}, // Clear errors on success
             }),
           },
           onError: {
-            target: 'invalid',
-              // Map Zod field errors from the event to the validationErrors context property.
-              // The event.data is expected to be a Record<string, string[]> produced by ZodError.flatten().fieldErrors.
-              validationErrors: (_ctx, event: { data?: Record<string, string[]> }) =>
-                (event?.data ?? {}) as Record<string, string[]>,
-              validationErrors: (_ctx, event: any) => (event?.data ?? {}) as Record<string, string[]>,
-            }),
-          },
-        },
-      },
-      invalid: {
-        on: {
-          VALIDATE_FORM: {
-            target: 'validating',
+            target: 'idle', // Go back to idle or a specific validationError state
             actions: assign({
-              formData: (_ctx, event: any) => ((event && event.data) ?? null) as z.infer<typeof DocumentUploadSchema> | null,
-            }),
-          },
-          RESET: 'idle',
-        },
-      },
-      valid: {
-        on: {
-          UPLOAD: 'uploading',
-          VALIDATE_FORM: {
-            target: 'validating',
-            actions: assign({
-              formData: (_ctx, event: any) => ((event && event.data) ?? null) as z.infer<typeof DocumentUploadSchema> | null,
+              validationErrors: ({ event }) => event.error as Record<string, string[]>,
+              error: () => 'Form validation failed.',
             }),
           },
         },
@@ -273,25 +269,25 @@ export const documentUploadMachine = createMachine(
         invoke: {
           id: 'uploadDocument',
           src: 'uploadDocument',
-          input: ({ context }: { context: DocumentUploadContext }) => context.formData,
+          input: ({ context }) => context.formData,
           onDone: {
             target: 'uploaded',
             actions: assign({
-              uploadedFile: (_ctx, event: any) => ((event && event.output) ?? null) as UploadedFile | null,
+              uploadedFile: ({ event }) => (event as DoneActorEvent<UploadedFile>).output,
               uploadProgress: () => 100,
             }),
           },
           onError: {
             target: 'uploadError',
             actions: assign({
-              error: (_ctx, event: any) => (event?.data?.message ?? String(event?.data ?? 'Upload error')) as string,
+              error: ({ event }) => (event as ErrorActorEvent<Error>).error.message,
             }),
           },
         },
         on: {
           UPLOAD_PROGRESS: {
             actions: assign({
-              uploadProgress: (_ctx, event: any) => (event?.progress ?? 0) as number,
+              uploadProgress: ({ event }) => (event as { progress: number }).progress,
             }),
           },
         },
@@ -314,30 +310,41 @@ export const documentUploadMachine = createMachine(
         invoke: {
           id: 'processDocument',
           src: 'processDocument',
-          input: ({ context }: { context: DocumentUploadContext }) => ({
+          input: ({ context }) => ({
             // make optional inputs explicit so the actor receives a defined shape
             documentId: context.uploadedFile?.id ?? undefined,
             options: context.formData?.aiProcessing ?? undefined,
+            file: (context.formData as any)?.file ?? undefined,
+            title: context.formData?.title ?? undefined,
+            description: context.formData?.description ?? undefined,
+            tags: context.formData?.tags ?? undefined,
           }),
           onDone: {
             target: 'completed',
             actions: assign({
-              aiResults: (_ctx, event: any) => ((event && event.output && event.output.results) ?? null) as AIResults | null,
+              aiResults: ({ event }) =>
+                ((event as DoneActorEvent<{ results: AIResults }>).output?.results ?? null) as AIResults | null,
               processingProgress: () => 100,
             }),
           },
           onError: {
             target: 'processingError',
             actions: assign({
-              error: (_ctx, event: any) =>
-                (event?.data?.message ?? String(event?.data ?? 'Processing error')) as string,
+              error: ({ event }) => {
+                const err = (event as ErrorActorEvent<unknown>).error;
+                if (err instanceof Error) return err.message;
+                if (typeof err === 'string') return err;
+                if (err && typeof err === 'object' && 'message' in err)
+                  return String((err as { message: unknown }).message);
+                return String(err ?? 'Processing error');
+              },
             }),
           },
         },
         on: {
           PROCESSING_PROGRESS: {
             actions: assign({
-              processingProgress: (_ctx, event: any) => (event?.progress ?? 0) as number,
+              processingProgress: ({ event }) => (event as { progress: number }).progress,
             }),
           },
         },
@@ -347,15 +354,16 @@ export const documentUploadMachine = createMachine(
           RETRY: [
             {
               // use functional assign to ensure correct typing for ctx modifications (see retry logic)
-              actions: assign((ctx: DocumentUploadContext, _event) => ({
-                retryCount: ctx.retryCount + 1,
-                error: null,
-              })),
+              cond: ctx => ctx.retryCount < ctx.maxRetries,
+              target: 'uploading', // Go back to uploading
+              actions: assign(ctx => ({
                 retryCount: ctx.retryCount + 1,
                 error: null,
               })),
             },
-            { target: 'failed' },
+            {
+              target: 'failed', // If max retries reached, go to failed
+            },
           ],
           RESET: 'idle',
         },
@@ -365,8 +373,8 @@ export const documentUploadMachine = createMachine(
           RETRY: [
             {
               target: 'processing',
-              cond: (ctx: DocumentUploadContext) => ctx.retryCount < ctx.maxRetries,
-              actions: assign((ctx: DocumentUploadContext) => ({
+              cond: ctx => ctx.retryCount < ctx.maxRetries,
+              actions: assign(ctx => ({
                 retryCount: ctx.retryCount + 1,
                 error: null,
               })),
@@ -404,6 +412,11 @@ export const documentUploadMachine = createMachine(
         } catch (error) {
           if (error instanceof z.ZodError) {
             // throw field errors so onError can map them
+            throw error.flatten().fieldErrors;
+          }
+          throw error;
+        }
+      }),
       uploadDocument: fromPromise(async ({ input }) => {
         // Mock upload implementation
         // TODO: Integrate with actual backend or use productionServiceClient as per project conventions
@@ -426,21 +439,51 @@ export const documentUploadMachine = createMachine(
         }
         return await response.json();
       }),
-        if (!response.ok) {
-          throw new Error(`Upload failed: ${response.statusText}`);
-        }
-        return await response.json();
-      }),
       processDocument: fromPromise(async ({ input }) => {
-        const response = await fetch('/api/ai/process-document', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(input),
-        });
-        if (!response.ok) {
-          throw new Error(`Processing failed: ${response.statusText}`);
+        const started = Date.now();
+        let baseResults: any = null;
+        // 1) Keep existing processing endpoint (best-effort)
+        try {
+          const resp = await fetch('/api/ai/process-document', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ documentId: input?.documentId, options: input?.options }),
+          });
+          if (resp.ok) {
+            baseResults = await resp.json();
+          }
+        } catch (_) {
+          // non-fatal
         }
-        return await response.json();
+
+        // 2) Agentic compare with Qdrant via new endpoint
+        let comparison: any = null;
+        try {
+          if (input?.options?.compareWithRAG) {
+            const fd = new FormData();
+            if (input?.file instanceof File) fd.append('file', input.file);
+            if (typeof input?.description === 'string' && input.description.trim()) fd.append('text', input.description);
+            const tags = Array.isArray(input?.tags) ? input.tags : [];
+            if (tags.length > 0) fd.append('tags', tags.join(','));
+            const k = Number(input?.options?.compareTopK ?? 8);
+            fd.append('topK', String(k));
+            const resp = await fetch('/api/v1/legal/compare-pdf', { method: 'POST', body: fd });
+            if (resp.ok) {
+              const data = await resp.json();
+              if (data?.success) comparison = data.data;
+            }
+          }
+        } catch (_) {
+          // non-fatal
+        }
+
+        return {
+          results: {
+            ...(baseResults?.results ?? {}),
+            comparison,
+          },
+          processingTime: Date.now() - started,
+        };
       }),
     },
   }
@@ -583,8 +626,7 @@ export const caseCreationMachine = createMachine(
           onDone: {
             target: 'completed',
             actions: assign({
-              createdCase: (_, event) =>
-                (event as unknown as { output?: CreatedCase })?.output ?? null,
+              createdCase: (_, event) => (event as unknown as { output?: CreatedCase })?.output ?? null,
             }),
           },
           onError: {
@@ -593,7 +635,8 @@ export const caseCreationMachine = createMachine(
               error: (_, event) => {
                 const err = (event as any)?.data ?? (event as any)?.data?.message ?? (event as any);
                 if (err instanceof Error) return err.message;
-                if (err && typeof err === 'object' && 'message' in err) return String((err as { message: unknown }).message);
+                if (err && typeof err === 'object' && 'message' in err)
+                  return String((err as { message: unknown }).message);
                 return 'An unknown error occurred';
               },
             }),
@@ -745,7 +788,8 @@ export const searchMachine = createMachine<SearchContext, SearchEvent>(
               error: (_, event) => {
                 const err = (event as any)?.data ?? (event as any);
                 if (err instanceof Error) return err.message;
-                if (err && typeof err === 'object' && 'message' in err) return String((err as { message: unknown }).message);
+                if (err && typeof err === 'object' && 'message' in err)
+                  return String((err as { message: unknown }).message);
                 return String(err ?? 'Search error');
               },
             }),
@@ -855,14 +899,27 @@ export const searchMachine = createMachine<SearchContext, SearchEvent>(
 // ============================================================================
 // AI ANALYSIS STATE MACHINE
 // ============================================================================
+
+// Define specific output type for performAnalysis actor
+interface PerformAnalysisOutput {
+  results: AIAnalysisResult | null;
+  confidence: number;
+  processingTime: number;
+  tokensUsed: number;
+}
+
+// Define the union of all possible events for the AIAnalysisMachine
 type AIAnalysisEvent =
   | { type: 'START_ANALYSIS'; data: z.infer<typeof AIAnalysisSchema> }
   | { type: 'STREAM_CONTENT'; content: string }
   | { type: 'NEW_ANALYSIS' }
   | { type: 'RETRY_ANALYSIS' }
-  | { type: 'RETRY' };
+  | { type: 'RETRY' }
+  // Internal XState events for actor completion/error
+  | DoneActorEvent<PerformAnalysisOutput, z.infer<typeof AIAnalysisSchema> | null> // For 'performAnalysis' actor
+  | ErrorActorEvent<Record<string, string[]> | string | Error>; // For 'validateAnalysis' and 'performAnalysis' actors
 
-export const aiAnalysisMachine = createMachine<AIAnalysisContext, AIAnalysisEvent>(
+export const aiAnalysisMachine = createMachine(
   {
     id: 'aiAnalysis',
     initial: 'idle',
@@ -883,8 +940,8 @@ export const aiAnalysisMachine = createMachine<AIAnalysisContext, AIAnalysisEven
         on: {
           START_ANALYSIS: {
             target: 'validating',
-            actions: assign<AIAnalysisContext, any>({
-              analysisData: (_, event) => (event as any)?.data ?? null,
+            actions: assign({
+              analysisData: (_, event) => (event as { data: z.infer<typeof AIAnalysisSchema> }).data ?? null,
             }),
           },
         },
@@ -897,19 +954,30 @@ export const aiAnalysisMachine = createMachine<AIAnalysisContext, AIAnalysisEven
           onDone: 'analyzing',
           onError: {
             target: 'idle',
-            actions: assign<AIAnalysisContext, any>({
-              validationErrors: (_, event) => {
-                const error = (event as any)?.data;
-                if (error && typeof error === 'object' && 'issues' in error) {
-                  return (error as any).issues.reduce((acc: Record<string, string[]>, issue: any) => {
-                    const field = issue.path?.[0] || 'general';
-                    if (!acc[field]) acc[field] = [];
-                    acc[field].push(issue.message);
-                    return acc;
-                  }, {});
+            actions: assign({
+              validationErrors: (_, event: ErrorActorEvent<Record<string, string[]> | z.ZodError>) => {
+                const error = event.error;
+                if (error instanceof z.ZodError) {
+                  const fieldErrors = error.flatten().fieldErrors;
+                  const cleanedErrors: Record<string, string[]> = {};
+                  for (const key in fieldErrors) {
+                    if (Object.prototype.hasOwnProperty.call(fieldErrors, key)) {
+                      cleanedErrors[key] = fieldErrors[key] || []; // Ensure it's an array
+                    }
+                  }
+                  return cleanedErrors;
                 }
-                if (error && typeof error === 'object') return error as Record<string, string[]>;
-                return {};
+                // If error is already Record<string, string[]>, ensure its values are string[]
+                if (error && typeof error === 'object' && !Array.isArray(error)) {
+                  const cleanedErrors: Record<string, string[]> = {};
+                  for (const key in error) {
+                    if (Object.prototype.hasOwnProperty.call(error, key)) {
+                      cleanedErrors[key] = (error[key] || []) as string[]; // Cast to string[]
+                    }
+                  }
+                  return cleanedErrors;
+                }
+                return {}; // Default to empty object if error is not a ZodError or a suitable object
               },
             }),
           },
@@ -922,20 +990,22 @@ export const aiAnalysisMachine = createMachine<AIAnalysisContext, AIAnalysisEven
           input: ({ context }) => context.analysisData,
           onDone: {
             target: 'completed',
-            actions: assign<AIAnalysisContext, any>({
-              analysisResults: (_, event) => (event as any)?.output?.results ?? null,
-              confidence: (_, event) => (event as any)?.output?.confidence ?? 0,
-              processingTime: (_, event) => (event as any)?.output?.processingTime ?? 0,
-              tokensUsed: (_, event) => (event as any)?.output?.tokensUsed ?? 0,
+            actions: assign({
+              analysisResults: (_, event: DoneActorEvent<PerformAnalysisOutput>) => event.output.results ?? null,
+              confidence: (_, event: DoneActorEvent<PerformAnalysisOutput>) => event.output.confidence ?? 0,
+              processingTime: (_, event: DoneActorEvent<PerformAnalysisOutput>) => event.output.processingTime ?? 0,
+              tokensUsed: (_, event: DoneActorEvent<PerformAnalysisOutput>) => event.output.tokensUsed ?? 0,
             }),
           },
           onError: {
             target: 'error',
-            actions: assign<AIAnalysisContext, any>({
-              error: (_, event) => {
-                const err = (event as any)?.data ?? (event as any);
+            actions: assign({
+              error: (_, event: ErrorActorEvent<any>) => {
+                const err = event.error;
                 if (err instanceof Error) return err.message;
-                if (err && typeof err === 'object' && 'message' in err) return String((err as { message: unknown }).message);
+                if (typeof err === 'string') return err;
+                if (err && typeof err === 'object' && 'message' in err)
+                  return String((err as { message: unknown }).message);
                 return 'Analysis failed with an unknown error';
               },
             }),
@@ -943,8 +1013,9 @@ export const aiAnalysisMachine = createMachine<AIAnalysisContext, AIAnalysisEven
         },
         on: {
           STREAM_CONTENT: {
-            actions: assign<AIAnalysisContext, any>({
-              streamedContent: (ctx, event) => ctx.streamedContent + ((event as any)?.content ?? ''),
+            actions: assign({
+              streamedContent: (ctx: AIAnalysisContext, event: { type: 'STREAM_CONTENT'; content: string }) =>
+                ctx.streamedContent + (event.content ?? ''),
               isStreaming: () => true,
             }),
           },
@@ -991,7 +1062,7 @@ export const aiAnalysisMachine = createMachine<AIAnalysisContext, AIAnalysisEven
         return {
           ...data,
           processingTime: Date.now() - startTime,
-        };
+        } as PerformAnalysisOutput;
       }),
     },
   }
@@ -1007,12 +1078,3 @@ export type DocumentUploadActor = ActorRefFrom<DocumentUploadMachine>;
 export type CaseCreationActor = ActorRefFrom<CaseCreationMachine>;
 export type SearchActor = ActorRefFrom<SearchMachine>;
 export type AIAnalysisActor = ActorRefFrom<AIAnalysisMachine>;
-export type AIAnalysisActor = ActorRefFrom<AIAnalysisMachine>;
-// Schemas are already exported above where they are defined
-export type SearchMachine = typeof searchMachine;
-export type AIAnalysisMachine = typeof aiAnalysisMachine;
-export type DocumentUploadActor = ActorRefFrom<DocumentUploadMachine>;
-export type CaseCreationActor = ActorRefFrom<CaseCreationMachine>;
-export type SearchActor = ActorRefFrom<SearchMachine>;
-export type AIAnalysisActor = ActorRefFrom<AIAnalysisMachine>;
-// Schemas are already exported above where they are defined

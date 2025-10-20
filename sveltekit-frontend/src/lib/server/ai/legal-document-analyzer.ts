@@ -120,6 +120,22 @@ export interface ComparisonResult {
   processingTime: number;
 }
 
+// Define an interface for the Qdrant search result item
+interface QdrantSearchResultItem {
+  id: string; // Qdrant point ID can be string or number, assuming string for document IDs
+  score: number;
+  payload?: {
+    metadata?: {
+      title?: string;
+      legalIssues?: string[];
+      tags?: string[];
+      outcome?: string;
+      // Add other metadata fields if they are consistently present and used
+    };
+    content?: string;
+  };
+}
+
 // ============================================================================
 // Function Definitions for gemma3-legal:latest
 // ============================================================================
@@ -485,7 +501,7 @@ async function searchSimilarCases(
 
     console.log(`✅ Qdrant returned ${data.result.length} similar cases`);
 
-    return data.result.map((item: any) => ({
+    return data.result.map((item: QdrantSearchResultItem) => ({
       caseId: item.id,
       title: item.payload?.metadata?.title || 'Untitled',
       similarity: item.score,
@@ -537,18 +553,40 @@ function parseRole(roleStr: string): PersonOfInterest['role'] {
   return 'witness'; // default
 }
 
-function extractParties(text: string, aiResponse: string): Array<{ name: string; type: string; role: string }> {
+function extractParties(
+  text: string,
+  aiResponse: string
+): Array<{ name: string; type: 'individual' | 'corporate' | 'government'; role: string }> {
   const partiesSection = aiResponse.match(/(?:PARTIES)[:\s]+([\s\S]*?)(?:\n\n|WHAT)/i);
   if (!partiesSection) return [];
 
   return partiesSection[1]
     .split('\n')
     .filter(line => line.trim())
-    .map(line => ({
-      name: line.match(/([A-Z][a-z]+(?:\s[A-Z][a-z]+)*)/)?.[1] || 'Unknown',
-      type: 'individual',
-      role: line.toLowerCase().includes('plaintiff') ? 'plaintiff' : 'defendant',
-    }));
+    .map(line => {
+      const lowerCaseLine = line.toLowerCase();
+      let partyType: 'individual' | 'corporate' | 'government' = 'individual';
+
+      if (
+        lowerCaseLine.includes('company') ||
+        lowerCaseLine.includes('corporation') ||
+        lowerCaseLine.includes('inc.')
+      ) {
+        partyType = 'corporate';
+      } else if (
+        lowerCaseLine.includes('government') ||
+        lowerCaseLine.includes('state of') ||
+        lowerCaseLine.includes('united states')
+      ) {
+        partyType = 'government';
+      }
+
+      return {
+        name: line.match(/([A-Z][a-z]+(?:\s[A-Z][a-z]+)*)/)?.[1] || 'Unknown',
+        type: partyType,
+        role: lowerCaseLine.includes('plaintiff') ? 'plaintiff' : 'defendant',
+      };
+    });
 }
 
 function extractSummary(aiResponse: string): string {
@@ -723,8 +761,14 @@ function extractSentencing(aiResponse: string): { penalties: string[]; duration?
 function parseRecommendations(aiResponse: string): LegalRecommendation[] {
   const recommendations: LegalRecommendation[] = [];
 
+  // Define an interface for the sections to ensure 'type' is correctly inferred
+  interface RecommendationSection {
+    type: LegalRecommendation['type'];
+    pattern: RegExp;
+  }
+
   // Parse different recommendation sections
-  const sections = [
+  const sections: RecommendationSection[] = [
     { type: 'strategy', pattern: /(?:STRATEGY|LEGAL STRATEGY)[:\s]+([\s\S]*?)(?:\n\n|EVIDENCE|ARGUMENTS)/i },
     { type: 'evidence', pattern: /(?:EVIDENCE|ADDITIONAL EVIDENCE)[:\s]+([\s\S]*?)(?:\n\n|ARGUMENTS|RISK)/i },
     { type: 'argument', pattern: /(?:ARGUMENTS?)[:\s]+([\s\S]*?)(?:\n\n|RISK|OUTCOME)/i },
@@ -741,7 +785,7 @@ function parseRecommendations(aiResponse: string): LegalRecommendation[] {
 
       items.forEach(item => {
         recommendations.push({
-          type: type as any,
+          type: type,
           priority: item.toLowerCase().includes('critical') || item.toLowerCase().includes('high') ? 'high' : 'medium',
           description: item,
           reasoning: 'Based on similar case analysis',

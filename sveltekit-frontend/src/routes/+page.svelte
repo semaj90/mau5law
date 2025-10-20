@@ -3,8 +3,8 @@
 	import { browser } from '$app/environment';
 	import { derived, writable } from 'svelte/store';
 	import * as unified from '$lib/stores/unified';
-	import LoginButton from '$lib/components/auth/LoginButton.svelte';
-	import RegisterModal from '$lib/components/auth/RegisterModal.svelte';
+  import LoginButton from '$lib/components/auth/LoginButton.svelte'; // Changed to default import
+  import RegisterModal from '$lib/components/auth/RegisterModal.svelte';
 
 	// Simple file uploader utility (bits-ui doesn't have createFileUploader)
 	function createFileUploader(url: string) {
@@ -108,7 +108,11 @@
 	let loading = true;
 	let userQuery = '';
 	let registerOpen = false;
-	// ---------------------------------------------------------------
+  // ---------------------------------------------------------------
+
+  function openRegister() {
+    registerOpen = true;
+  }
 
 	// Check system health on mount
 	$effect(() => {
@@ -270,12 +274,12 @@
     </p>
 
     <!-- Auth Buttons -->
-    <div style="display: flex; gap: 1rem; margin-top: 2rem; justify-content: center;">
+    <div class="auth-buttons-flex">
       <div>
         <LoginButton />
       </div>
       <div>
-        <button class="nes-btn is-success" on:click={() => (registerOpen = true)}>� Register</button>
+        <button class="nes-btn is-success" onclick={openRegister}>Register</button>
       </div>
       <RegisterModal bind:open={registerOpen} onsuccess={() => { /* on success, reload to reflect session cookie */ window.location.reload(); }} />
     </div>
@@ -598,6 +602,13 @@
     background-color: #212529; /* Dark background for NES.css theme */
   }
 
+  .auth-buttons-flex {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    justify-content: center;
+  }
+
   /* Custom overrides for NES.css containers to match original gradients/shadows */
   .nes-container.hero-section-custom {
     text-align: center;
@@ -612,14 +623,14 @@
     color: #ffd700; /* Override NES.css primary color */
     margin-bottom: 1rem;
     text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-    font-weight: 800,
+    font-weight: 800;
   }
 
   .hero-section-custom .nes-text.is-success.subtitle-custom {
     font-size: 1.4rem;
     color: #00ff41; /* Override NES.css success color */
     margin-bottom: 1rem;
-    font-weight: 600,
+    font-weight: 600;
   }
 
   .hero-section-custom .nes-text.is-disabled.tech-stack-custom {
@@ -651,7 +662,7 @@
   }
 
   .status-label-custom {
-    font-weight: 600,
+    font-weight: 600;
   }
 
   .workers-grid-custom {
@@ -696,7 +707,7 @@
     border-radius: 12px;
     font-size: 0.75rem;
     color: #a855f7;
-    font-weight: 600,
+    font-weight: 600;
   }
 
   .quick-stats-custom {
@@ -765,17 +776,17 @@
   .action-card-custom::before {
     content: '';
     position: absolute;
-    top: 0,
+    top: 0;
     left: 0;
-    right: 0,
+    right: 0;
     height: 4px;
     background: linear-gradient(90deg, #ffd700, #00ff41);
-    opacity: 0,
+    opacity: 0;
     transition: opacity 0.3s ease;
   }
 
   .action-card-custom:hover::before {
-    opacity: 1,
+    opacity: 1;
   }
 
   .card-icon-custom {
@@ -792,29 +803,6 @@
     margin-top: 0.5rem;
   }
 
-  .action-card-custom:hover .card-button-custom {
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
-  }
-
-  .action-buttons-custom {
-    display: flex;
-    gap: 1.5rem;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .quick-button-detective {
-    border: 2px solid #00ff41;
-    font-weight: 900;
-    text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
-  }
-
-  .quick-button-detective:hover {
-    box-shadow: 0 0 30px rgba(0, 255, 65, 0.8);
-    transform: translateY(-2px) scale(1.05);
-  }
-
-  /* Featured Section */
   .featured-section-custom {
     margin-bottom: 3rem;
   }
@@ -835,9 +823,9 @@
   .featured-card-custom::before {
     content: '';
     position: absolute;
-    top: 0,
+    top: 0;
     left: 0;
-    right: 0,
+    right: 0;
     height: 6px;
     background: linear-gradient(90deg, #00ff41, #ffd700, #00ff41);
     background-size: 200% 100%;
@@ -879,11 +867,11 @@
     0%,
     100% {
       transform: scale(1);
-      opacity: 1,
+      opacity: 1;
     }
     50% {
       transform: scale(1.05);
-      opacity: 0.9,
+      opacity: 0.9;
     }
   }
 
@@ -941,7 +929,7 @@
   }
 
   input[type='text'] {
-    flex: 1,
+    flex: 1;
     padding: 0.6rem 0.8rem;
     border-radius: 0.6rem;
     border: 1px solid #e6e6ea;
@@ -979,7 +967,7 @@
   }
 
   .card.streaming {
-    opacity: 0.95,
+    opacity: 0.95;
     animation: pulse 1.2s infinite alternate;
     border: 1px dashed rgba(43, 108, 176, 0.12);
   }

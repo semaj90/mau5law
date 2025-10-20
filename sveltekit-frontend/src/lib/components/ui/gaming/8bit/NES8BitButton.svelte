@@ -252,7 +252,7 @@
     background-color: #7c7c7c;
     --button-color: #7c7c7c;
     cursor: not-allowed;
-    opacity: 0.6,
+    opacity: 0.6;
     transform: none !important;
     box-shadow: 1px 1px 0px #000000;
   }

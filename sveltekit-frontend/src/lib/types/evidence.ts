@@ -1,7 +1,36 @@
 // Evidence Management Types for SvelteKit 2 AI Platform
 // Optimized for PostgreSQL + PGVector + Qdrant + MinIO + Redis
 
-import type { Actor } from 'xstate';
+import type { ActorRef } from 'xstate';
+
+/**
+ * Defines the structure for an evidence item used in the legal AI platform.
+ * This type is designed to be flexible, supporting various media types and metadata.
+ */
+export interface Evidence {
+  id: string;
+  // The primary type of evidence (e.g., document, image, video).
+  type: 'document' | 'image' | 'video' | 'audio' | 'link' | string;
+  // An optional, more specific evidence type, often used for display or filtering.
+  // If present, it might override or refine the 'type' property in some contexts.
+  evidenceType?: 'document' | 'image' | 'video' | 'audio' | 'link' | string;
+  title: string;
+  description?: string;
+  url?: string;
+  tags?: string[];
+  // Optional top-level properties for convenience, which might also be present in metadata.
+  fileSize?: number;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  // Generic metadata object to store additional, unstructured information.
+  metadata?: {
+    size?: number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    format?: string;
+    [key: string]: unknown; // Allows for any other arbitrary metadata properties.
+  };
+}
 
 // ==================== Evidence File Types ====================
 
@@ -181,17 +210,23 @@ export type WSMessage =
 
 // ==================== Export Actor Types ====================
 
-// Keep the actor type tied to the workflow context/events
-export type EvidenceActor = Actor<WorkflowContext, WorkflowEvent>;
+// Correct the generic arguments for ActorRef: ActorRef<TEvent, TSnapshot>
+export type EvidenceActor = ActorRef<WorkflowEvent, EvidenceSnapshot>;
 
 // Replace SnapshotFrom<> usage (causes TS issues) with an explicit lightweight snapshot shape
 export type EvidenceSnapshot = {
   context: WorkflowContext;
   // current state value (string | object) depending on machine shape
-  value?: unknown;
+  value: unknown; // Made non-optional to satisfy Snapshot<unknown> constraint
+  // The status of the actor, required by XState's Snapshot interface
+  status: 'active' | 'done' | 'error' | 'stopped';
   // optional last event that produced this snapshot
   lastEvent?: WorkflowEvent;
   // simple metadata for UI/transport (timestamps, progress)
   timestamp?: number;
   children?: Record<string, unknown>;
+  // Optional output when the actor is done
+  output?: unknown;
+  // Optional error when the actor has errored
+  error?: unknown;
 };

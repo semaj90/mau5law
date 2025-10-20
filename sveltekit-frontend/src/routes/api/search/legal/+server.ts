@@ -1,6 +1,8 @@
 import { json } from '@sveltejs/kit';
 import { z } from 'zod';
 import type { RequestHandler } from './$types.js';
+import { legalDocumentAnalyzer } from '$lib/server/ai/legal-document-analyzer';
+import { searchQdrant } from '$lib/server/vector/qdrant';
 
 // Enhanced RAG Service Configuration
 const ENHANCED_RAG_URL = 'http://localhost:8094';
@@ -110,6 +112,7 @@ const LegalSearchSchema = z.object({
   vectorSearch: z.coerce.boolean().default(true),
   aiSuggestions: z.coerce.boolean().default(true),
   includeMetadata: z.coerce.boolean().default(true),
+  legalAnalysis: z.coerce.boolean().default(false), // Optional deep legal analysis
 });
 
 export interface SearchResult {
@@ -184,6 +187,26 @@ export interface SearchResult {
     sentiment?: any;
     keywords?: string[];
   };
+  // Legal document analysis (WHO/WHAT/WHY/HOW/EVIDENCE)
+  legalAnalysis?: {
+    who?: string[];
+    what?: string[];
+    why?: string[];
+    how?: string[];
+    evidence?: string[];
+    poi?: Array<{ name: string; role?: string; risk?: string }>;
+    verdict?: string;
+    sentencing?: string;
+    legalIssues?: string[];
+    recommendations?: string[];
+    confidence?: number;
+    similarCases?: Array<{
+      id: string;
+      title: string;
+      score: number;
+      tags?: string[];
+    }>;
+  };
 }
 
 // Initialize service client
@@ -194,7 +217,7 @@ export const GET: RequestHandler = async ({ url }) => {
     // Parse and validate query parameters
     const params = Object.fromEntries(url.searchParams);
     const validatedParams = LegalSearchSchema.parse(params);
-    const { q: query, limit, threshold, categories, vectorSearch, aiSuggestions } = validatedParams;
+    const { q: query, limit, threshold, categories, vectorSearch, aiSuggestions, legalAnalysis } = validatedParams;
     console.log(
       `🔍 Enhanced Legal AI Search: "${query}" | Categories: ${categories.join(', ')} | Vector: ${vectorSearch}`
     );
@@ -278,6 +301,58 @@ export const GET: RequestHandler = async ({ url }) => {
       }
     }
 
+    // Legal document analysis (WHO/WHAT/WHY/HOW/EVIDENCE) for top results
+    if (legalAnalysis && enhancedResults.length > 0) {
+      try {
+        console.log('🧠 Running legal document analysis on top 3 results...');
+        const legalAnalysisPromises = enhancedResults.slice(0, 3).map(async result => {
+          try {
+            const fullText = `${result.title}\n\n${result.content}`;
+            const analysis = await legalDocumentAnalyzer.analyzeAndComparePDF(
+              { text: fullText },
+              { topK: 5, tagFilter: result.metadata.tags }
+            );
+
+            return {
+              ...result,
+              legalAnalysis: {
+                who: analysis.analysis?.who || [],
+                what: analysis.analysis?.what || [],
+                why: analysis.analysis?.why || [],
+                how: analysis.analysis?.how || [],
+                evidence: analysis.analysis?.evidence || [],
+                poi: analysis.analysis?.poi || [],
+                verdict: analysis.analysis?.verdict,
+                sentencing: analysis.analysis?.sentencing,
+                legalIssues: analysis.analysis?.legalIssues || [],
+                recommendations: analysis.analysis?.recommendations || [],
+                confidence: analysis.analysis?.confidence || 0,
+                similarCases: analysis.similar?.map(s => ({
+                  id: s.id,
+                  title: s.title,
+                  score: s.score,
+                  tags: s.tags
+                })) || []
+              }
+            };
+          } catch (error: any) {
+            console.warn('Legal analysis failed for result:', result.id, error);
+            return result;
+          }
+        });
+
+        const legalResults = await Promise.allSettled(legalAnalysisPromises);
+        const enhancedWithLegal = legalResults
+          .filter((result): result is PromiseFulfilledResult<SearchResult> => result.status === 'fulfilled')
+          .map(result => result.value);
+        enhancedResults = [...enhancedWithLegal, ...enhancedResults.slice(3)];
+
+        console.log(`✅ Legal analysis complete for ${enhancedWithLegal.length} results`);
+      } catch (error: any) {
+        console.warn('Legal analysis failed, using enhanced results:', error);
+      }
+    }
+
     const processingTime = Date.now() - startTime;
 
     // Enhanced response with legal AI platform optimization
@@ -301,6 +376,7 @@ export const GET: RequestHandler = async ({ url }) => {
           uploadService: categories.includes('documents'),
           vectorDB: vectorSearch, // Added missing ','
           semanticAnalysis: aiSuggestions,
+          legalDocumentAnalyzer: legalAnalysis,
         },
       },
       // Legal AI platform specific enhancements
