@@ -257,13 +257,13 @@ Displays all media: evidence, generated images, documents, uploads
       <div class="header-actions">
         <button
           class="nes-btn is-success"
-          on:click={() => showUploadModal = true}
+          onclick={() => showUploadModal = true}
         >
           📤 Upload Files
         </button>
         <button
           class="nes-btn is-normal"
-          on:click={() => loadGalleryData()}
+          onclick={() => loadGalleryData()}
           disabled={isLoading}
         >
           {isLoading ? '🔄' : '↻'} Refresh
@@ -324,7 +324,7 @@ Displays all media: evidence, generated images, documents, uploads
       <div class="control-group">
         <button
           class="nes-btn {sortOrder === 'desc' ? 'is-primary' : 'is-normal'}"
-          on:click={() => sortOrder = sortOrder === 'desc' ? 'asc' : 'desc'}
+          onclick={() => sortOrder = sortOrder === 'desc' ? 'asc' : 'desc'}
         >
           {sortOrder === 'desc' ? '↓' : '↑'}
         </button>
@@ -333,19 +333,19 @@ Displays all media: evidence, generated images, documents, uploads
       <div class="control-group view-modes">
         <button
           class="nes-btn {viewMode === 'grid' ? 'is-primary' : 'is-normal'}"
-          on:click={() => viewMode = 'grid'}
+          onclick={() => viewMode = 'grid'}
         >
           ⊞
         </button>
         <button
           class="nes-btn {viewMode === 'list' ? 'is-primary' : 'is-normal'}"
-          on:click={() => viewMode = 'list'}
+          onclick={() => viewMode = 'list'}
         >
           ☰
         </button>
         <button
           class="nes-btn {viewMode === 'masonry' ? 'is-primary' : 'is-normal'}"
-          on:click={() => viewMode = 'masonry'}
+          onclick={() => viewMode = 'masonry'}
         >
           ⊡
         </button>
@@ -354,7 +354,7 @@ Displays all media: evidence, generated images, documents, uploads
       <div class="control-group">
         <button
           class="nes-btn is-error"
-          on:click={clearFilters}
+          onclick={clearFilters}
         >
           🗑️ Clear
         </button>
@@ -374,7 +374,7 @@ Displays all media: evidence, generated images, documents, uploads
   {#if error}
     <div class="error-state nes-container is-error">
       <p>❌ {error}</p>
-  <button class="nes-btn is-normal" on:click={() => loadGalleryData()}>
+  <button class="nes-btn is-normal" onclick={() => loadGalleryData()}>
         Retry
       </button>
     </div>
@@ -392,14 +392,14 @@ Displays all media: evidence, generated images, documents, uploads
         <div class="empty-actions">
           <button
             class="nes-btn is-success"
-            on:click={() => showUploadModal = true}
+            onclick={() => showUploadModal = true}
           >
             📤 Upload Files
           </button>
           {#if searchQuery || selectedCategory !== 'all' || selectedCaseId !== 'all'}
             <button
               class="nes-btn is-normal"
-              on:click={clearFilters}
+              onclick={clearFilters}
             >
               Clear Filters
             </button>
@@ -411,7 +411,7 @@ Displays all media: evidence, generated images, documents, uploads
         {#each filteredItems as item}
           <div class="gallery-item nes-container is-rounded">
             <div class="item-preview" role="button" tabindex="0"
-                on:click={() => openItem(item)}>
+                onclick={() => openItem(item)}>
               {#if (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).type === 'image' || (item as { category?: unknown; metadata?: unknown; caseId?: unknown; title?: unknown; description?: unknown; tags?: unknown; caseTitle?: unknown; type?: unknown; fileUrl?: unknown; imageUrl?: unknown; thumbnailUrl?: unknown; id?: unknown; createdAt?: unknown; timestamp?: unknown }).category === 'images'}
                 <img
                   src={getItemPreview(item)}
@@ -442,10 +442,10 @@ Displays all media: evidence, generated images, documents, uploads
                   {/if}
                 </div>
                 <div class="overlay-actions">
-                  <button class="nes-btn is-small" on:click={(e) => { e.stopPropagation(); downloadItem(item), }}>
+                  <button class="nes-btn is-small" onclick={(e) => { e.stopPropagation(); downloadItem(item), }}>
                     ⬇️
                   </button>
-                  <button class="nes-btn is-small" on:click={(e) => { e.stopPropagation(); shareItem(item), }}>
+                  <button class="nes-btn is-small" onclick={(e) => { e.stopPropagation(); shareItem(item), }}>
                     📤
                   </button>
                 </div>
@@ -482,12 +482,12 @@ Displays all media: evidence, generated images, documents, uploads
   <!-- Upload Modal -->
   {#if showUploadModal}
   <div class="modal-overlay" role="button" tabindex="0"
-                on:click={() => showUploadModal = false}>
+                onclick={() => showUploadModal = false}>
   <div class="modal-content nes-container is-rounded" role="button" tabindex="0"
-                on:click={(e) => e.stopPropagation()}>
+                onclick={(e) => e.stopPropagation()}>
         <div class="modal-header">
           <h3>Upload Files</h3>
-          <button class="nes-btn is-error" on:click={() => showUploadModal = false}>×</button>
+          <button class="nes-btn is-error" onclick={() => showUploadModal = false}>×</button>
         </div>
         <div class="modal-body">
           <div class="upload-area nes-container is-dark">
@@ -527,12 +527,12 @@ Displays all media: evidence, generated images, documents, uploads
   <!-- Item Detail Modal -->
   {#if selectedItem}
   <div class="modal-overlay" role="button" tabindex="0"
-                on:click={closeModal}>
+                onclick={closeModal}>
   <div class="modal-content detail-modal nes-container is-rounded" role="button" tabindex="0"
-                on:click={(e) => e.stopPropagation()}>
+                onclick={(e) => e.stopPropagation()}>
         <div class="modal-header">
           <h3>{selectedItem.title || 'Gallery Item'}</h3>
-          <button class="nes-btn is-error" on:click={closeModal}>×</button>
+          <button class="nes-btn is-error" onclick={closeModal}>×</button>
         </div>
         <div class="modal-body">
           <div class="detail-content">
@@ -572,7 +572,7 @@ Displays all media: evidence, generated images, documents, uploads
             </div>
             {#if selectedItem.description}
               <div class="info-row">
-                <strong>Description:</strong> {selectedItem.description}
+                <strong>Description</strong> {selectedItem.description}
               </div>
             {/if}
             {#if selectedItem.caseTitle}
@@ -605,10 +605,10 @@ Displays all media: evidence, generated images, documents, uploads
             {/if}
           </div>
           <div class="detail-actions">
-            <button class="nes-btn is-success" on:click={() => downloadItem(selectedItem)}>
+            <button class="nes-btn is-success" onclick={() => downloadItem(selectedItem)}>
               ⬇️ Download
             </button>
-            <button class="nes-btn is-primary" on:click={() => shareItem(selectedItem)}>
+            <button class="nes-btn is-primary" onclick={() => shareItem(selectedItem)}>
               📤 Share
             </button>
             {#if selectedItem.caseId}
@@ -616,7 +616,7 @@ Displays all media: evidence, generated images, documents, uploads
                 🔗 View Case
               </a>
             {/if}
-            <button class="nes-btn is-error" on:click={() => deleteItem(selectedItem)}>
+            <button class="nes-btn is-error" onclick={() => deleteItem(selectedItem)}>
               🗑️ Delete
             </button>
           </div>
@@ -668,7 +668,7 @@ Displays all media: evidence, generated images, documents, uploads
   }
   .control-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .view-modes {
@@ -683,7 +683,7 @@ Displays all media: evidence, generated images, documents, uploads
   }
   .loading-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 1rem;
   }
@@ -714,13 +714,13 @@ Displays all media: evidence, generated images, documents, uploads
   }
   .gallery-item {
     overflow: hidden;
-    transition: transform 0.2s ease;
+    transition transform 0.2s ease;
   }
   .gallery-item:hover {
     transform: translateY(-4px);
   }
   .item-preview {
-    position: relative;
+    position relative;
     width: 100%;
     height: 200px;
     overflow: hidden;
@@ -736,7 +736,7 @@ Displays all media: evidence, generated images, documents, uploads
     width: 100%;
     height: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     background: #f0f0f0;
@@ -754,18 +754,18 @@ Displays all media: evidence, generated images, documents, uploads
     color: #666;
   }
   .item-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.7);
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     justify-content: space-betwee;
     padding: 1rem;
     opacity: 0,
-    transition: opacity 0.3s ease;
+    transition opacity 0.3s ease;
     color: white;
   }
   .gallery-item:hover .item-overlay {
@@ -822,7 +822,7 @@ Displays all media: evidence, generated images, documents, uploads
   }
   /* Modal Styles */
   .modal-overlay {
-    position: fixed;
+    position fixed;
     top: 0,
     left: 0;
     width: 100%;
@@ -876,12 +876,12 @@ Displays all media: evidence, generated images, documents, uploads
   }
   .upload-options {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .option-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .detail-content {
@@ -931,7 +931,7 @@ Displays all media: evidence, generated images, documents, uploads
       gap: 1rem;
     }
     .control-group {
-      flex-direction: row;
+      flex-direction row;
       align-items: center;
     }
     .view-modes {
@@ -940,7 +940,7 @@ Displays all media: evidence, generated images, documents, uploads
   }
   @media (max-width: 768px) {
     .header-content {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
     }
     .gallery-stats {
@@ -954,7 +954,7 @@ Displays all media: evidence, generated images, documents, uploads
       max-width: calc(100vw - 1rem);
     }
     .detail-actions {
-      flex-direction: column;
+      flex-direction column;
     }
   }
 </style>

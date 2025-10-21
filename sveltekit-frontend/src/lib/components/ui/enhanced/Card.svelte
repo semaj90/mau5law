@@ -30,11 +30,11 @@
 /* Enhanced Card with NieR styling */ {}
   .yorha-card {
 /* Base styles from UnoCSS shortcuts */ {}
-    position: relative;
+    position relative;
   }
   .yorha-card::before {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -47,7 +47,7 @@ var(--color-nier-border-primary) 90%, {}
 transparent 100% {}
     );
     opacity: 0,
-    transition: opacity 0.3s ease;
+    transition opacity 0.3s ease;
   }
   .yorha-card:hover::before {
     opacity: 0.3,

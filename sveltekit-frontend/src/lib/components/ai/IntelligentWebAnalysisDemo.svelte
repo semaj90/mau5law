@@ -15,7 +15,7 @@
   let userAnalytics: UserAnalytics = $state({,
     userId: 'demo_user_' + Date.now(),
     sessionId: crypto.randomUUID(),
-    typingPatterns: { avgSpeed: 0, commonWords: [], specialization: [] },
+    typingPatterns: { avgSpeed: 0, commonWords: [], specialization [] },
     interactionPatterns: { clickHeatmap: [], scrollBehavior: { depth: 0, speed: 0 }, focusAreas: [] },
     caseContext: { activeCases: ['Demo Case v. Example'], currentTask: 'Document Analysis', relevantDocuments: [] }
   });
@@ -33,13 +33,13 @@
   let logs: string[] = $state([]);
   // Performance monitoring
   let performanceMetrics = $state({
-    domExtraction: 0,
+    domExtraction 0,
     ocrProcessing: 0,
-    chunkGeneration: 0,
-    embeddingGeneration: 0,
-    tensorOptimization: 0,
+    chunkGeneration 0,
+    embeddingGeneration 0,
+    tensorOptimization 0,
     cacheOperations: 0,
-    qloraPreparation: 0
+    qloraPreparation 0
   });
   // Live user tracking
   let liveInteractions = $state({
@@ -140,7 +140,7 @@ if (!browser) return;
     userAnalytics.typingPatterns = {
       avgSpeed: 65 + Math.random() * 20, // 65-85 WPM
       commonWords: ['contract', 'legal', 'case', 'document', 'evidence', 'court', 'plaintiff', 'defendant'],
-      specialization: ['legal', 'litigation', 'document_review'];
+      specialization ['legal', 'litigation', 'document_review'];
     }
     intelligentWebAnalyzer.updateUserContext(userAnalytics);
     addLog('📝 Updated typing patterns for legal specialization');
@@ -331,19 +331,19 @@ if (!browser) return;
     <div class="panel control-panel">
       <h3>🎛️ Control Panel</h3>
       <div class="controls">
-        <button class="primary" on:click={analyzeCurrentPage} disabled={!isInitialized || isAnalyzing}>
+        <button class="primary" onclick={analyzeCurrentPage} disabled={!isInitialized || isAnalyzing}>
           {#if isAnalyzing}
             🔄 Analyzing...
           {:else}
             🔍 Analyze Page
           {/if}
         </button>
-        <button on:click={simulateTypingPatterns} disabled={isAnalyzing}> 📝 Simulate Typing </button>
-        <button on:click={updateCaseContext} disabled={isAnalyzing}> ⚖️ Update Case Context </button>
-        <button on:click={testBatchProcessing} disabled={isAnalyzing}> 🚀 Test Batch Processing </button>
-        <button on:click={clearAll} disabled={isAnalyzing}> 🗑️ Clear All </button>
+        <button onclick={simulateTypingPatterns} disabled={isAnalyzing}> 📝 Simulate Typing </button>
+        <button onclick={updateCaseContext} disabled={isAnalyzing}> ⚖️ Update Case Context </button>
+        <button onclick={testBatchProcessing} disabled={isAnalyzing}> 🚀 Test Batch Processing </button>
+        <button onclick={clearAll} disabled={isAnalyzing}> 🗑️ Clear All </button>
         {#if analysisResults}
-          <button class="export" on:click={exportQLoRAData}> 📥 Export QLoRA Data </button>
+          <button class="export" onclick={exportQLoRAData}> 📥 Export QLoRA Data </button>
         {/if}
       </div>
       <!-- Settings -->
@@ -431,7 +431,7 @@ if (!browser) return;
         <h4>Typing Patterns</h4>
         <div class="typing-stats">
           <span>WPM: {userAnalytics.typingPatterns.avgSpeed.toFixed(0)}</span>
-          <span>Specialization: {userAnalytics.typingPatterns.specialization.join(', ') || 'None'}</span>
+          <span>Specialization {userAnalytics.typingPatterns.specialization.join(', ') || 'None'}</span>
         </div>
       </div>
       <div class="analytics-section">
@@ -517,7 +517,7 @@ if (!browser) return;
   .status-bar.analyzing {
     background: #fef3c7;
     color: #92400;
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   .status-dot {
     width: 10px;
@@ -549,7 +549,7 @@ if (!browser) return;
   }
   .controls {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
     margin-bottom: 1.5rem;
   }
@@ -559,9 +559,9 @@ if (!browser) return;
     border-radius: 0.5rem;
     font-weight: 500,
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
-  .controls button:disabled {
+  .controls buttondisabled {
     opacity: 0.6,
     cursor: not-allowed;
   }
@@ -576,11 +576,11 @@ if (!browser) return;
     background: #10b981;
     color: white;
   }
-  .controls button:not(.primary):not(.export) {,
+  .controls buttonnot(.primary):not(.export) {,
     background: #f3f4f6;
     color: #374151;
   }
-  .controls button:not(.primary):not(.export):hover:not(:disabled) {,
+  .controls buttonnot(.primary):not(.export):hover:not(:disabled) {,
     background: #e5e7eb;
   }
   .settings {
@@ -616,7 +616,7 @@ if (!browser) return;
   .progress-fill {
     height: 100%;
     background: #3b82f6;
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .progress-text {
     font-size: 0.875rem;
@@ -631,7 +631,7 @@ if (!browser) return;
   }
   .metric {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
     text-align: center;
     padding: 0.75rem;
@@ -653,7 +653,7 @@ if (!browser) return;
     border-top: 1px solid #e5e7eb;
     padding-top: 1rem;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .efficiency-metric {
@@ -667,7 +667,7 @@ if (!browser) return;
     padding-bottom: 1rem;
     border-bottom: 1px solid #f3f4f6;
   }
-  .analytics-section:last-child {
+  .analytics-sectionlast-child {
     border-bottom: none;
   }
   .analytics-section h4 {

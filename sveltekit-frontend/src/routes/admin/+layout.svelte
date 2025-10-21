@@ -39,48 +39,48 @@ https://svelte.dev/e/js_parse_error -->
     glitch: 'relative overflow-hidden',
   };
   // Executive navigation items for admin panel
-  const navItems: { path: string; label: string; icon: string; permission: Permission; description: string }[] = [
+  const navItems: { path: string; label: string; icon string; permission Permission; description string }[] = [
     {
       path: '/admin',
       label: 'Executive Dashboard',
-      icon: '📊',
-      permission: 'access_admin_panel',
-      description: 'Strategic overview and key metrics',
+      icon '📊',
+      permission 'access_admin_panel',
+      description 'Strategic overview and key metrics',
     },
     {
       path: '/admin/users',
       label: 'User Management',
-      icon: '👥',
-      permission: 'manage_users',
-      description: 'User accounts and permissions',
+      icon '👥',
+      permission 'manage_users',
+      description 'User accounts and permissions',
     },
     {
       path: '/admin/roles',
       label: 'Role Administration',
-      icon: '🔐',
-      permission: 'manage_users',
-      description: 'Access control and role definitions',
+      icon '🔐',
+      permission 'manage_users',
+      description 'Access control and role definitions',
     },
     {
       path: '/admin/system',
       label: 'System Configuration',
-      icon: '⚙️',
-      permission: 'configure_system',
-      description: 'Platform settings and configuration',
+      icon '⚙️',
+      permission 'configure_system',
+      description 'Platform settings and configuration',
     },
     {
       path: '/admin/audit',
       label: 'Audit & Compliance',
-      icon: '📋',
-      permission: 'view_audit_logs',
-      description: 'Security logs and compliance tracking',
+      icon '📋',
+      permission 'view_audit_logs',
+      description 'Security logs and compliance tracking',
     },
     {
       path: '/admin/integrations',
       label: 'Enterprise Integrations',
-      icon: '🔗',
-      permission: 'manage_integrations',
-      description: 'Third-party systems and APIs',
+      icon '🔗',
+      permission 'manage_integrations',
+      description 'Third-party systems and APIs',
     },
   ];
   // Derive visible nav items from current user permissions
@@ -101,7 +101,7 @@ https://svelte.dev/e/js_parse_error -->
   function isActivePath(itemPath: string) {
     return currentPath === itemPath || (itemPath !== '/admin' && currentPath.startsWith(itemPath + '/'));
   }
-  function navClass(item: { path: string; label: string; icon: string; permission: Permission; description: string }) {
+  function navClass(item: { path: string; label: string; icon string; permission Permission; description string }) {
     return (
       (isActivePath(
         (item as { permission?: unknown; path?: unknown; icon?: unknown; label?: unknown; description?: unknown }).path
@@ -203,7 +203,7 @@ https://svelte.dev/e/js_parse_error -->
               >
             </div>
             <Button
-              on:click={() => AuthStore.logout()}
+              onclick={() => AuthStore.logout()}
               class="px-4 py-2 bg-red-500/10 border border-red-500/50 text-red-400 hover:bg-red-500/20 hover:border-red-500 transition-all duration-300 rounded-lg text-sm font-medium"
             >
               Sign Out
@@ -352,7 +352,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="text-xs text-slate-500 mt-2">Contact your system administrator for access</div>
       </div>
       <Button
-        on:click={() => goto('/')}
+        onclick={() => goto('/')}
         class="px-8 py-3 bg-amber-500/10 border border-amber-500/50 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500 transition-all duration-300 rounded-lg font-medium"
       >
         Return to Dashboard
@@ -373,7 +373,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   .professional-glow {
-    animation: professional-glow 3s ease-in-out infinite;
+    animation professional-glow 3s ease-in-out infinite;
   }
 /* Enhanced scrollbar for executive theme */ {}
   :global(::-webkit-scrollbar) {
@@ -393,7 +393,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 /* Smooth transitions for professional feel */ {}
   :global(*) {
-transition: {}
+transition {}
 color 0.3s ease, {}
 background-color 0.3s ease, {}
 border-color 0.3s ease, {}

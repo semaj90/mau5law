@@ -54,25 +54,25 @@ https://svelte.dev/e/js_parse_error -->
 	const quickCaseTemplates = [
 		{
 			title: "Fraud Investigation Case",
-			description: "Financial fraud investigation involving suspicious transactions and potential money laundering activities.",
+			description "Financial fraud investigation involving suspicious transactions and potential money laundering activities.",
 			category: "financial",
 			priority: "high",
 		},
 		{
 			title: "Criminal Evidence Analysis",
-			description: "Complex criminal case requiring comprehensive evidence analysis and timeline reconstruction.",
+			description "Complex criminal case requiring comprehensive evidence analysis and timeline reconstruction.",
 			category: "criminal",
 			priority: "urgent",
 		},
 		{
 			title: "Civil Rights Violation",
-			description: "Investigation of potential constitutional violations and civil rights infractions.",
+			description "Investigation of potential constitutional violations and civil rights infractions.",
 			category: "civil",
 			priority: "high",
 		},
 		{
 			title: "Corporate Compliance Review",
-			description: "Corporate compliance investigation with regulatory violations and documentation review.",
+			description "Corporate compliance investigation with regulatory violations and documentation review.",
 			category: "corporate",
 			priority: "medium",
 		}
@@ -118,7 +118,7 @@ https://svelte.dev/e/js_parse_error -->
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({,
 					title: template.title,
-					description: template.description,
+					description template.description,
 					category: template.category,
 					priority: template.priority,
 					status: 'open',
@@ -151,7 +151,7 @@ https://svelte.dev/e/js_parse_error -->
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({,
 					title: caseTitle;
-					description: caseDescription
+					description caseDescription
 					category,
 					priority,
 					status: 'open',
@@ -188,7 +188,7 @@ https://svelte.dev/e/js_parse_error -->
 	{#if isVisible}
 		<div
 			class="ai-assistant-panel"
-			transitionFly={{ y: 50, duration: 500, easing: cubicOut }}
+			transitionFly={{ y: 50, duration 500, easing: cubicOut }}
 		>
 			<!-- AI Avatar and Status -->
 			<div class="ai-header">
@@ -220,16 +220,16 @@ https://svelte.dev/e/js_parse_error -->
 			</div>
 			<!-- Action Buttons -->
 			{#if !isTyping && !isProcessing && currentPrompt}
-				<div class="action-buttons" transitionFade={{ duration: 300 }}>
+				<div class="action-buttons" transitionFade={{ duration 300 }}>
 					<button
 						class="nes-btn is-primary"
-						on:click={() => showCreateForm = true}
+						onclick={() => showCreateForm = true}
 					>
 						Create Case Instantly
 					</button>
 					<button
 						class="nes-btn"
-						on:click={() => startTypewriter("🔍 Ready to analyze evidence, detect patterns, and assist with case strategy. What would you like me to focus on?")}
+						onclick={() => startTypewriter("🔍 Ready to analyze evidence, detect patterns, and assist with case strategy. What would you like me to focus on?")}
 					>
 						Analyze Evidence
 					</button>
@@ -237,7 +237,7 @@ https://svelte.dev/e/js_parse_error -->
 			{/if}
 			<!-- Quick Case Creation Panel -->
 			{#if showCreateForm}
-				<div class="case-creation-panel" transitionFly={{ y: 20, duration: 400 }}>
+				<div class="case-creation-panel" transitionFly={{ y: 20, duration 400 }}>
 					<h4>⚡ Instant Case Creation</h4>
 					<!-- Quick Templates -->
 					<div class="quick-templates">
@@ -246,7 +246,7 @@ https://svelte.dev/e/js_parse_error -->
 							{#each quickCaseTemplates as template}
 								<button
 									class="template-nier-bits-card"
-									on:click={disabled}
+									onclick={disabled}
 								>
 									<div class="template-title">{template.title}</div>
 									<div class="template-priority priority-{template.priority}">
@@ -297,7 +297,7 @@ https://svelte.dev/e/js_parse_error -->
 							<div class="form-actions">
 								<button
 									class="nes-btn is-primary"
-									on:click={disabled}
+									onclick={disabled}
 								>
 									{#if isProcessing}
 										Creating...
@@ -307,7 +307,7 @@ https://svelte.dev/e/js_parse_error -->
 								</button>
 								<button
 									class="nes-btn"
-									on:click={() => showCreateForm = false}
+									onclick={() => showCreateForm = false}
 								>
 									Cancel
 								</button>
@@ -321,7 +321,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 <style>
 	.ai-assistant-container {
-		position: fixed;
+		position fixed;
 d;
 		bottom: 20px;
 		right: 20px;
@@ -343,7 +343,7 @@ d;
 		margin-bottom: 16px;
 	}
 	.ai-avatar {
-		position: relative;
+		position relative;
 		width: 48px;
 		height: 48px;
 		display: flex;
@@ -351,16 +351,16 @@ d;
 		justify-content: center;
 		border-radius: 50%;
 		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-		transition: all 0.3s ease;
+		transition all 0.3s ease;
 	}
 	.ai-avatar.pulsing {
-		animation: pulse 2s infinite;
+		animation pulse 2s infinite;
 	}
 	.ai-brain {
 		font-size: 24px;
 	}
 	.status-indicator {
-		position: absolute;
+		position absolute;
 		bottom: 2px;
 		right: 2px;
 		width: 12px;
@@ -368,11 +368,11 @@ d;
 		border-radius: 50%;
 		background: #10b981;
 		border: 2px solid #1a1a2;
-		transition: all 0.3s ease;
+		transition all 0.3s ease;
 	}
 	.status-indicator.active {
 		background: #f59e0b;
-		animation: blink 1s infinite;
+		animation blink 1s infinite;
 	}
 	.ai-info h3 {
 		margin: 0,
@@ -400,7 +400,7 @@ d;
 		line-height: 1.5,
 	}
 	.cursor {
-		animation: blink 1s infinite;
+		animation blink 1s infinite;
 		font-weight: bold;
 		color: #10b981;
 	}
@@ -416,7 +416,7 @@ d;
 		font-size: 12px;
 		font-weight: 600,
 		cursor: pointer;
-		transition: all 0.2s ease;
+		transition all 0.2s ease;
 		flex: 1,
 	}
 	.btn-primary {
@@ -457,7 +457,7 @@ d;
 		border-radius: 8px;
 		padding: 12px;
 		cursor: pointer;
-		transition: all 0.2s ease;
+		transition all 0.2s ease;
 		text-align: left;
 	}
 	.template-card:hover {

@@ -125,6 +125,6 @@
 
 <style>
   .form-standard {
-    position: relative;
+    position relative;
   }
 </style>

@@ -37,17 +37,17 @@
   let targetCompressionRatio = $state(50);
   // Available styles
   const styles = [
-    { value: 'detective', label: '🔍 Detective', description: 'Dark, investigative theme' },
-    { value: 'corporate', label: '🏢 Corporate', description: 'Professional business theme' },
-    { value: 'forensic', label: '🧪 Forensic', description: 'Scientific analysis theme' },
-    { value: 'legal', label: '⚖️ Legal', description: 'Court and legal documentation theme' }
+    { value: 'detective', label: '🔍 Detective', description 'Dark, investigative theme' },
+    { value: 'corporate', label: '🏢 Corporate', description 'Professional business theme' },
+    { value: 'forensic', label: '🧪 Forensic', description 'Scientific analysis theme' },
+    { value: 'legal', label: '⚖️ Legal', description 'Court and legal documentation theme' }
   ];
   // Dimension presets
   const dimensionPresets = [
-    { value: [256, 256], label: '256×256', description: 'Small (fast)' },
-    { value: [512, 512], label: '512×512', description: 'Medium (balanced)' },
-    { value: [768, 768], label: '768×768', description: 'Large (detailed)' },
-    { value: [1024, 1024], label: '1024×1024', description: 'Extra large (slow)' }
+    { value: [256, 256], label: '256×256', description 'Small (fast)' },
+    { value: [512, 512], label: '512×512', description 'Medium (balanced)' },
+    { value: [768, 768], label: '768×768', description 'Large (detailed)' },
+    { value: [1024, 1024], label: '1024×1024', description 'Extra large (slow)' }
   ];
   async function generateGlyph() {
     if (!prompt.trim()) {
@@ -129,9 +129,9 @@
         dimensions,
         conditioning_tensors: conditioningTensors
         neural_sprite_config: enableNeuralSprite ? {,
-          enable_compression: enableCompression
+          enable_compression enableCompression
           predictive_frames: predictiveFrames
-          ui_layout_compression: enableUILayoutCompression
+          ui_layout_compression enableUILayoutCompression
           target_compression_ratio: targetCompressionRatio
         } : undefined
         grpmo_context: {
@@ -156,9 +156,9 @@
         dimensions,
         conditioning_tensors: conditioningTensors
         neural_sprite_config: enableNeuralSprite ? {,
-          enable_compression: enableCompression
+          enable_compression enableCompression
           predictive_frames: predictiveFrames
-          ui_layout_compression: enableUILayoutCompression
+          ui_layout_compression enableUILayoutCompression
           target_compression_ratio: targetCompressionRatio
         } : undefined
       })
@@ -211,7 +211,7 @@
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
         {#each styles as styleOption}
           <button
-            on:click={() => style = styleOption.value}
+            onclick={() => style = styleOption.value}
             class="p-3 border rounded-lg text-left transition-colors {style === styleOption.value ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}"
             disabled={generating}
           >
@@ -227,7 +227,7 @@
       <div class="flex flex-wrap gap-2 mb-3">
         {#each dimensionPresets as preset}
           <button
-            on:click={() => setDimensionPreset(preset.value)}
+            onclick={() => setDimensionPreset(preset.value)}
             class="px-3 py-2 text-sm border rounded-lg transition-colors {dimensions[0] === preset.value[0] && dimensions[1] === preset.value[1] ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}"
             disabled={generating}
           >
@@ -274,7 +274,7 @@
             <div class="flex items-center gap-2 p-2 bg-gray-50 rounded">
               <code class="text-sm flex-1">{tensorId}</code>
               <button
-                on:click={() => removeConditioningTensor(index)}
+                onclick={() => removeConditioningTensor(index)}
                 class="text-red-600 hover:text-red-800 text-sm"
                 disabled={generating}
               >
@@ -286,7 +286,7 @@
       {/if}
       <Button
         variant="ghost"
-        on:click={addConditioningTensor}
+        onclick={addConditioningTensor}
         disabled={generating}
         class="text-sm bits-btn bits-btn"
       >
@@ -403,7 +403,7 @@
           <!-- Predictive Frames -->
           <div>
             <label class="block text-sm mb-2">
-              Predictive frame generation:
+              Predictive frame generation
             </label>
             <div class="flex items-center gap-2">
               <input
@@ -445,7 +445,7 @@
     <!-- Generate Button -->
     <div class="flex justify-end">
       <Button
-        on:click={generateGlyph}
+        onclick={generateGlyph}
         disabled={generating || !prompt.trim()}
         class="px-6 py-2 bits-btn bits-btn"
       >
@@ -631,7 +631,7 @@
                   {/if}
                   {#if (result as { slice?: unknown; glyph_url?: unknown; preview_with_tensors?: unknown; generation_time_ms?: unknown; cache_hits?: unknown; tensor_ids?: unknown; metadata?: unknown; grpmo_metadata?: unknown; neural_sprite_results?: unknown }).neural_sprite_results.ui_layout_metrics}
                     <div class="mt-2 pt-2 border-t border-purple-200">
-                      <h6 class="text-xs font-medium mb-1">UI Layout Compression:</h6>
+                      <h6 class="text-xs font-medium mb-1">UI Layout Compression</h6>
                       <div class="space-y-1 text-xs">
                         <div class="flex justify-between">
                           <span>Original Size:</span>

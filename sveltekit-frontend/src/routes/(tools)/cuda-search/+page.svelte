@@ -200,10 +200,10 @@ Content-Type: application/json
     padding: 15px;
   }
   .status-item a {
-    text-decoration: none;
+    text-decoration none;
   }
   .status-item a:hover {
-    text-decoration: underline;
+    text-decoration underline;
   }
   /* Responsive design */
   @media (max-width: 768px) {

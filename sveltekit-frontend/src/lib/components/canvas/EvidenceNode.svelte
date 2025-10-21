@@ -183,7 +183,7 @@ https://svelte.dev/e/js_parse_error -->
     document.addEventListener('mouseup', onMouseUp);
   }
   // Add a handler for touch events
-  function handleResizeTouch(direction: string, e: TouchEvent) {
+  function handleResizeTouch(direction string, e: TouchEvent) {
     if (e.touches && e.touches.length > 0) {
       // Synthesize a MouseEvent-like object
       const touch = e.touches[0];
@@ -279,7 +279,7 @@ https://svelte.dev/e/js_parse_error -->
   /* @unocss-include */
   /* Evidence Node Styles */
   .evidence-node {
-    position: absolute;
+    position absolute;
     border: 2px solid #e2e8f0;
     border-radius: 8px;
     background: white;
@@ -314,9 +314,9 @@ https://svelte.dev/e/js_parse_error -->
     background: transparent;
     border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.2;
+    transition background-color 0.2;
   }
-  .control-button:hover {
+  .control-buttonhover {
     background: #e2e8f0;
   }
   .control-buttonfocus {
@@ -333,12 +333,12 @@ https://svelte.dev/e/js_parse_error -->
     height: calc(100% - 60px);
   }
   .evidence-canv.resize-handles {
-    position: absolute;
+    position absolute;
     bottom: 0,
     right: 0;
   }
   .resize-handle {
-    position: absolute;
+    position absolute;
     background: #3b82f6;
     border: 1px solid #2563eb;
   }

@@ -62,17 +62,17 @@ https://svelte.dev/e/js_parse_error -->
   let draggedEvidence = $state<string | null>(null);
   // Evidence filters
   const evidenceTypes = [
-    { value: 'all', label: 'All Evidence', icon: Archive },
-    { value: 'document', label: 'Documents', icon: FileText },
-    { value: 'photo', label: 'Photos', icon: Image },
-    { value: 'video', label: 'Videos', icon: Video },
-    { value: 'audio', label: 'Audio', icon: Music },
-    { value: 'digital', label: 'Digital', icon: Archive },
+    { value: 'all', label: 'All Evidence', icon Archive },
+    { value: 'document', label: 'Documents', icon FileText },
+    { value: 'photo', label: 'Photos', icon Image },
+    { value: 'video', label: 'Videos', icon Video },
+    { value: 'audio', label: 'Audio', icon Music },
+    { value: 'digital', label: 'Digital', icon Archive },
   ];
   // Detective mode configuration
   // make detectiveConfig reactive using Svelte 5 runes so bind:checked works on nested props
   let detectiveConfig = $state({
-    enableSuspiciousPatternDetection: true,
+    enableSuspiciousPatternDetection true,
     enableCrossReferenceAnalysis: true,
     enableEntityMapping: true,
     enableTimelineAnalysis: true,
@@ -83,7 +83,7 @@ https://svelte.dev/e/js_parse_error -->
   let ctx: CanvasRenderingContext2D | null = null;
 
   // new: auth/session + search/upload state
-  let userSession: any = null;
+  let userSession any = null;
   let authChecked = false;
   let searchProvider: 'pgvector' | 'qdrant' = 'pgvector';
   let tagSearchResults: any[] = [];
@@ -175,7 +175,7 @@ https://svelte.dev/e/js_parse_error -->
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock - Evidence service unavailable, using mock data';
       notice.style.cssText =
-        'position: fixed; top: 20px; right: 20px; background: rgba(220,53,69,0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+        'position fixed; top: 20px; right: 20px; background: rgba(220,53,69,0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 5000);
       // Provide mock evidence data
@@ -183,7 +183,7 @@ https://svelte.dev/e/js_parse_error -->
         {
           id: 'mock-evidence-1',
           title: 'Mock Contract Document',
-          description: 'Mock evidence document for fallback demonstration',
+          description 'Mock evidence document for fallback demonstration',
           evidenceType: 'document',
           fileName: 'mock_contract.pdf',
           fileSize: 245760,
@@ -197,7 +197,7 @@ https://svelte.dev/e/js_parse_error -->
         {
           id: 'mock-evidence-2',
           title: 'Mock Email Evidence',
-          description: 'Mock email communication evidence',
+          description 'Mock email communication evidence',
           evidenceType: 'communication',
           fileName: 'mock_email.eml',
           fileSize: 32768,
@@ -229,7 +229,7 @@ https://svelte.dev/e/js_parse_error -->
         suspiciousPatterns: [
           {
             type: 'time_anomaly',
-            description: 'Mock suspicious pattern: Unusual timing in document creation',
+            description 'Mock suspicious pattern: Unusual timing in document creation',
             severity: 'medium',
             evidence: ['mock-evidence-1'],
             confidence: 0.72,
@@ -256,7 +256,7 @@ https://svelte.dev/e/js_parse_error -->
             {
               timestamp: new Date(Date.now() - 86400000).toISOString(),
               evidenceId: 'mock-evidence-1',
-              description: 'Mock contract document created',
+              description 'Mock contract document created',
             },
           ],
         },
@@ -272,7 +272,7 @@ https://svelte.dev/e/js_parse_error -->
   function buildConnectionMap(insights: any) {
     const connections: any[] = [];
     // Process entity connections
-    insights?.entityConnections?.forEach((connection: any) => {
+    insights?.entityConnections?.forEach((connection any) => {
       connections.push({
         type: 'entity',
         source: connection.source,
@@ -377,7 +377,7 @@ https://svelte.dev/e/js_parse_error -->
   // Create connection between evidence items
   async function createEvidenceConnection(sourceId: string, targetId: string) {
     try {
-      console.log(`Creating connection: ${sourceId} -> ${targetId}`);
+      console.log(`Creating connection ${sourceId} -> ${targetId}`);
       connectionMap = [
         ...(Array.isArray(connectionMap) ? connectionMap : []),
         {
@@ -389,7 +389,7 @@ https://svelte.dev/e/js_parse_error -->
         },
       ];
     } catch (error) {
-      console.error('Failed to create connection:', error);
+      console.error('Failed to create connection', error);
     }
   }
   // Get evidence type icon
@@ -438,7 +438,7 @@ https://svelte.dev/e/js_parse_error -->
       drawEvidenceNode(evidence, index);
     });
   }
-  function drawConnection(connection: any) {
+  function drawConnection(connection any) {
     if (!ctx) return;
     const c: any = connection || {};
     ctx.beginPath();
@@ -516,7 +516,7 @@ https://svelte.dev/e/js_parse_error -->
         <button
           class="view-btn"
           class:active={viewMode === 'grid'}
-          on:click={() => (viewMode = 'grid')}
+          onclick={() => (viewMode = 'grid')}
           title="Grid View"
         >
           <Archive class="w-4 h-4" />
@@ -524,7 +524,7 @@ https://svelte.dev/e/js_parse_error -->
         <button
           class="view-btn"
           class:active={viewMode === 'timeline'}
-          on:click={() => (viewMode = 'timeline')}
+          onclick={() => (viewMode = 'timeline')}
           title="Timeline View"
         >
           <Clock class="w-4 h-4" />
@@ -532,7 +532,7 @@ https://svelte.dev/e/js_parse_error -->
         <button
           class="view-btn"
           class:active={viewMode === 'network'}
-          on:click={() => (viewMode = 'network')}
+          onclick={() => (viewMode = 'network')}
           title="Network View"
         >
           <Network class="w-4 h-4" />
@@ -542,7 +542,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="detective-toggle"
         class:active={detectiveMode}
-        on:click={toggleDetectiveMode}
+        onclick={toggleDetectiveMode}
         title="Toggle Detective Mode"
       >
         {#if detectiveMode}
@@ -557,7 +557,7 @@ https://svelte.dev/e/js_parse_error -->
       {#if selectedEvidence.length > 0}
         <button
           class="analyze-btn"
-          on:click={analyzeSelectedEvidence}
+          onclick={analyzeSelectedEvidence}
           disabled={loadingAnalysis}
           title="Analyze Selected Evidence"
         >
@@ -574,7 +574,7 @@ https://svelte.dev/e/js_parse_error -->
       <button
         class="filter-toggle"
         class:active={showFilters}
-        on:click={() => (showFilters = !showFilters)}
+        onclick={() => (showFilters = !showFilters)}
         title="Toggle Filters"
       >
         <Filter class="w-4 h-4" />
@@ -628,7 +628,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="insights-panel">
       <div class="insights-header">
         <h3>🕵️ Detective Insights</h3>
-        <button class="insights-toggle" on:click={() => (showInsights = !showInsights)}>
+        <button class="insights-toggle" onclick={() => (showInsights = !showInsights)}>
           {showInsights ? 'Hide' : 'Show'} Insights
         </button>
       </div>
@@ -664,7 +664,7 @@ https://svelte.dev/e/js_parse_error -->
             ondragstart={e => handleDragStart(e, evidence.id)}
             ondragover={e => e.preventDefault()}
             ondrop={e => handleDrop(e, evidence.id)}
-            on:click={() => toggleEvidenceSelection(evidence.id)}
+            onclick={() => toggleEvidenceSelection(evidence.id)}
             onkeydown={(e: KeyboardEvent) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
@@ -742,7 +742,7 @@ https://svelte.dev/e/js_parse_error -->
               <!-- quick semantic search -->
               <button
                 class="search-related"
-                on:click={() => performSemanticSearch(evidence.title || evidence.description || '')}
+                onclick={() => performSemanticSearch(evidence.title || evidence.description || '')}
               >
                 Search Related
               </button>
@@ -821,7 +821,7 @@ https://svelte.dev/e/js_parse_error -->
 <style>
   .evidence-board {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     height: 100%;
     background: #f8fafc;
   }
@@ -895,7 +895,7 @@ https://svelte.dev/e/js_parse_error -->
     display: flex;
     align-items: center;
     color: #64748b;
-    transition:
+    transition
       color 0.2s ease,
       background 0.2s ease;
   }
@@ -920,7 +920,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 0.5rem;
     cursor: pointer;
     font-weight: 500,
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .detective-toggle:hover {
     border-color: #3b82f6;
@@ -942,7 +942,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 0.5rem;
     cursor: pointer;
     font-weight: 500,
-    transition: background 0.2s;
+    transition background 0.2s;
   }
   .analyze-btn:hover:not(:disabled) {
     background: #2563eb;
@@ -958,7 +958,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 0.5rem;
     cursor: pointer;
     color: #64748b;
-    transition: all 0.2s;
+    transition all 0.2s;
   }
   /* Replaced empty ruleset with a minimal non-empty hover style to avoid "Do not use empty rulesets" error */
   .filter-toggle:hover {
@@ -984,7 +984,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .filter-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
   .filter-group label {
@@ -1067,8 +1067,8 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 0.75rem;
     padding: 1rem;
     cursor: pointer;
-    transition: all 0.2s ease;
-    position: relative;
+    transition all 0.2s ease;
+    position relative;
   }
   .evidence-card:hover {
     border-color: #3b82f6;
@@ -1165,14 +1165,14 @@ https://svelte.dev/e/js_parse_error -->
   }
   .evidence-timeline {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
-    position: relative;
+    position relative;
     padding-left: 2rem;
   }
   .evidence-timeline::before {
     content: '';
-    position: absolute;
+    position absolute;
     left: 0.875rem;
     top: 0,
     bottom: 0;
@@ -1180,14 +1180,14 @@ https://svelte.dev/e/js_parse_error -->
     background: #e2e8f0;
   }
   .timeline-item {
-    position: relative;
+    position relative;
     background: white;
     border-radius: 0.5rem;
     padding: 1rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
   .timeline-marker {
-    position: absolute;
+    position absolute;
     left: -2.125rem;
     top: 1rem;
     width: 1.75rem;
@@ -1201,11 +1201,11 @@ https://svelte.dev/e/js_parse_error -->
     color: #3b82f6;
   }
   .network-view {
-    position: relative;
+    position relative;
     height: 600px;
   }
   .network-legend {
-    position: absolute;
+    position absolute;
     top: 1rem;
     right: 1rem;
     background: white;
@@ -1242,7 +1242,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-top: 2px solid white;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     from {
@@ -1255,7 +1255,7 @@ https://svelte.dev/e/js_parse_error -->
   /* Responsive design */
   @media (max-width: 768px) {
     .board-header {
-      flex-direction: column;
+      flex-direction column;
       align-items: stretch;
       gap: 1rem;
     }
@@ -1263,14 +1263,14 @@ https://svelte.dev/e/js_parse_error -->
       justify-content: space-between;
     }
     .filters-panel {
-      flex-direction: column;
+      flex-direction column;
       align-items: stretch;
     }
     .evidence-grid {
       grid-template-columns: 1fr;
     }
     .checkbox-group {
-      flex-direction: column;
+      flex-direction column;
       gap: 0.5rem;
     }
   }

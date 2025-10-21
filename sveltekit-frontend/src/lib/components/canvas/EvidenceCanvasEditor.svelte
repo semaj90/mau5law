@@ -73,7 +73,7 @@
     reportId: string;
     canvasData: string; // JSON serialized fabric canvas
     objects: CanvasObject[];
-    version: number;
+    version number;
     createdAt?: Date;
     updatedAt?: Date;
   }
@@ -82,7 +82,7 @@
     id: string;
     type: 'image' | 'text' | 'shape' | 'evidence';
     data: any;
-    position: { x: number; y: number };
+    position { x: number; y: number };
     size: { width: number; height: number };
     metadata?: Record<string, any>;
   }
@@ -181,7 +181,7 @@
         width,
         height,
         backgroundColor: '#ffffff',
-        selection: !readOnly,
+        selection !readOnly,
         isDrawingMode: false,
       });
 
@@ -204,9 +204,9 @@
     if (!canvas) return;
 
     // Selection events
-    canvas.on('selection:created', handleSelection);
-    canvas.on('selection:updated', handleSelection);
-    canvas.on('selection:cleared', () => {
+    canvas.on('selectioncreated', handleSelection);
+    canvas.on('selectionupdated', handleSelection);
+    canvas.on('selectioncleared', () => {
       selectedObject = null;
       send({ type: 'DESELECT' });
     });
@@ -316,7 +316,7 @@
         reportId,
         canvasData,
         objects,
-        version: ($state.context.canvasState?.version || 0) + 1,
+        version ($state.context.canvasState?.version || 0) + 1,
       };
 
       const response = await fetch('/api/canvas', {
@@ -361,7 +361,7 @@
       id: obj.id || crypto.randomUUID(),
       type: obj.type === 'image' ? 'image' : obj.type === 'text' ? 'text' : 'shape',
       data: obj.toJSON(),
-      position: { x: obj.left || 0, y: obj.top || 0 },
+      position { x: obj.left || 0, y: obj.top || 0 },
       size: { width: obj.width || 0, height: obj.height || 0 },
       metadata: obj.metadata || {},
     }));
@@ -442,7 +442,7 @@
 
       send({ type: 'COLLABORATION_ENABLED' });
     } catch (err) {
-      console.error('Failed to setup collaboration:', err);
+      console.error('Failed to setup collaboration', err);
     }
   }
 
@@ -547,7 +547,7 @@
         (img as any).evidenceId = item.id;
         (img as any).metadata = {
           title: item.title,
-          description: item.description,
+          description item.description,
           evidenceType: item.evidenceType,
           tags: item.aiTags || [],
         };
@@ -568,7 +568,7 @@
 
       (text as any).evidenceId = item.id;
       (text as any).metadata = {
-        description: item.description,
+        description item.description,
         evidenceType: item.evidenceType,
       };
 
@@ -592,7 +592,7 @@
     selectedObject.set({
       lockMovementX: true,
       lockMovementY: true,
-      lockRotation: true,
+      lockRotation true,
       lockScalingX: true,
       lockScalingY: true,
     });
@@ -604,7 +604,7 @@
     selectedObject.set({
       lockMovementX: false,
       lockMovementY: false,
-      lockRotation: false,
+      lockRotation false,
       lockScalingX: false,
       lockScalingY: false,
     });
@@ -664,7 +664,7 @@
     toast.className = `toast toast-${type}`;
     toast.textContent = message;
     toast.style.cssText =
-      'position: fixed; top: 20px; right: 20px; padding: 1rem; border-radius: 0.5rem; z-index: 10000, animation: slideIn 0.3s ease;';
+      'position fixed; top: 20px; right: 20px; padding: 1rem; border-radius: 0.5rem; z-index: 10000, animation slideIn 0.3s ease;';
 
     if (type === 'success') toast.style.background = '#10b981';
     if (type === 'error') toast.style.background = '#ef4444';
@@ -684,7 +684,7 @@
   <!-- Toolbar -->
   <Toolbar.Root class="canvas-toolbar">
     <Toolbar.Group>
-      <Toolbar.Button on:click={() => setActiveTool('select')} class:active={activeTool === 'select'}>
+      <Toolbar.Button onclick={() => setActiveTool('select')} class:active={activeTool === 'select'}>
         <Move size={20} />
         <Tooltip.Root>
           <Tooltip.Trigger>Select</Tooltip.Trigger>
@@ -692,7 +692,7 @@
         </Tooltip.Root>
       </Toolbar.Button>
 
-      <Toolbar.Button on:click={() => setActiveTool('draw')} class:active={activeTool === 'draw'}>
+      <Toolbar.Button onclick={() => setActiveTool('draw')} class:active={activeTool === 'draw'}>
         <Square size={20} />
         <Tooltip.Root>
           <Tooltip.Trigger>Draw</Tooltip.Trigger>
@@ -700,7 +700,7 @@
         </Tooltip.Root>
       </Toolbar.Button>
 
-      <Toolbar.Button on:click={() => setActiveTool('text')} class:active={activeTool === 'text'}>
+      <Toolbar.Button onclick={() => setActiveTool('text')} class:active={activeTool === 'text'}>
         <Type size={20} />
         <Tooltip.Root>
           <Tooltip.Trigger>Text</Tooltip.Trigger>
@@ -708,7 +708,7 @@
         </Tooltip.Root>
       </Toolbar.Button>
 
-      <Toolbar.Button on:click={() => (showEvidenceDialog = true)}>
+      <Toolbar.Button onclick={() => (showEvidenceDialog = true)}>
         <Image size={20} />
         <Tooltip.Root>
           <Tooltip.Trigger>Evidence</Tooltip.Trigger>
@@ -720,15 +720,15 @@
     <Toolbar.Separator />
 
     <Toolbar.Group>
-      <Toolbar.Button on:click={undo} disabled={$state.context.historyIndex <= 0}>
+      <Toolbar.Button onclick={undo} disabled={$state.context.historyIndex <= 0}>
         <Undo size={20} />
       </Toolbar.Button>
 
-      <Toolbar.Button on:click={redo} disabled={$state.context.historyIndex >= $state.context.history.length - 1}>
+      <Toolbar.Button onclick={redo} disabled={$state.context.historyIndex >= $state.context.history.length - 1}>
         <Redo size={20} />
       </Toolbar.Button>
 
-      <Toolbar.Button on:click={deleteSelected} disabled={!selectedObject}>
+      <Toolbar.Button onclick={deleteSelected} disabled={!selectedObject}>
         <Trash2 size={20} />
       </Toolbar.Button>
     </Toolbar.Group>
@@ -736,15 +736,15 @@
     <Toolbar.Separator />
 
     <Toolbar.Group>
-      <Toolbar.Button on:click={zoomOut}>
+      <Toolbar.Button onclick={zoomOut}>
         <ZoomOut size={20} />
       </Toolbar.Button>
 
-      <Toolbar.Button on:click={resetZoom}>
+      <Toolbar.Button onclick={resetZoom}>
         <span class="zoom-level">{Math.round(zoomLevel * 100)}%</span>
       </Toolbar.Button>
 
-      <Toolbar.Button on:click={zoomIn}>
+      <Toolbar.Button onclick={zoomIn}>
         <ZoomIn size={20} />
       </Toolbar.Button>
     </Toolbar.Group>
@@ -752,20 +752,20 @@
     <Toolbar.Separator />
 
     <Toolbar.Group>
-      <Toolbar.Button on:click={toggleGrid} class:active={gridEnabled}>
+      <Toolbar.Button onclick={toggleGrid} class:active={gridEnabled}>
         <Grid size={20} />
       </Toolbar.Button>
 
-      <Toolbar.Button on:click={() => selectedObject && lockSelected()}>
+      <Toolbar.Button onclick={() => selectedObject && lockSelected()}>
         <Lock size={20} />
       </Toolbar.Button>
 
-      <Toolbar.Button on:click={() => selectedObject && unlockSelected()}>
+      <Toolbar.Button onclick={() => selectedObject && unlockSelected()}>
         <Unlock size={20} />
       </Toolbar.Button>
 
       {#if enableAutoTag}
-        <Toolbar.Button on:click={() => (showTaggingDialog = true)} disabled={!selectedObject}>
+        <Toolbar.Button onclick={() => (showTaggingDialog = true)} disabled={!selectedObject}>
           <Tag size={20} />
         </Toolbar.Button>
       {/if}
@@ -774,7 +774,7 @@
     <Toolbar.Separator />
 
     <Toolbar.Group>
-      <Toolbar.Button on:click={saveCanvasState} disabled={isLoading || !isDirty}>
+      <Toolbar.Button onclick={saveCanvasState} disabled={isLoading || !isDirty}>
         <Save size={20} />
         {#if lastSaved}
           <span class="save-time">Saved {lastSaved.toLocaleTimeString()}</span>
@@ -789,14 +789,14 @@
         </Popover.Trigger>
         <Popover.Content>
           <div class="export-menu">
-            <Button on:click={exportAsImage} variant="ghost" class="w-full justify-start">Export as PNG</Button>
-            <Button on:click={exportAsJSON} variant="ghost" class="w-full justify-start">Export as JSON</Button>
+            <Button onclick={exportAsImage} variant="ghost" class="w-full justify-start">Export as PNG</Button>
+            <Button onclick={exportAsJSON} variant="ghost" class="w-full justify-start">Export as JSON</Button>
           </div>
         </Popover.Content>
       </Popover.Root>
 
       {#if enableCollaboration}
-        <Toolbar.Button on:click={() => (showShareDialog = true)}>
+        <Toolbar.Button onclick={() => (showShareDialog = true)}>
           <Share2 size={20} />
         </Toolbar.Button>
       {/if}
@@ -827,7 +827,7 @@
       <h3>Evidence Library ({evidence.length})</h3>
       <div class="evidence-grid">
         {#each evidence as item}
-          <Card class="evidence-item" on:click={() => addEvidence(item)}>
+          <Card class="evidence-item" onclick={() => addEvidence(item)}>
             <CardHeader>
               <CardTitle class="text-sm">{item.title}</CardTitle>
             </CardHeader>
@@ -861,7 +861,7 @@
         <Button
           variant="outline"
           class="w-full justify-start mb-2"
-          on:click={() => {
+          onclick={() => {
             addEvidence(item);
             showEvidenceDialog = false;
           }}
@@ -891,8 +891,8 @@
       </div>
 
       <div class="dialog-actions">
-        <Button variant="secondary" on:click={() => (showTaggingDialog = false)}>Cancel</Button>
-        <Button on:click={() => applyTags(suggestedTags)}>Apply Tags</Button>
+        <Button variant="secondary" onclick={() => (showTaggingDialog = false)}>Cancel</Button>
+        <Button onclick={() => applyTags(suggestedTags)}>Apply Tags</Button>
       </div>
     {/if}
   </Dialog.Content>
@@ -924,7 +924,7 @@
 <style>
   .evidence-canvas-editor {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     height: 100%;
     width: 100%;
     background: #f5f5f5;
@@ -941,7 +941,7 @@
 
   .canvas-container {
     flex: 1,
-    position: relative;
+    position relative;
     overflow: hidden;
     background: white;
     display: flex;
@@ -955,7 +955,7 @@
   }
 
   .error-message {
-    position: absolute;
+    position absolute;
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
@@ -967,11 +967,11 @@
   }
 
   .loading-overlay {
-    position: absolute;
+    position absolute;
     inset: 0,
     background: rgba(255, 255, 255, 0.9);
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     z-index: 100,
@@ -983,7 +983,7 @@
     border: 4px solid #e5e5e5;
     border-top-color: #3b82f6;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
 
   @keyframes spin {
@@ -1014,7 +1014,7 @@
 
   .evidence-item {
     cursor: pointer;
-    transition: all 0.2s;
+    transition all 0.2s;
   }
 
   .evidence-item:hover {
@@ -1062,7 +1062,7 @@
 
   .export-menu {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
     padding: 0.5rem;
   }

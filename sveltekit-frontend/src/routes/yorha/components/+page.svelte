@@ -159,11 +159,11 @@
   }
   function exportConfig() {
     const configs = {
-      button: buttonConfig, // Added comma
-      panel: panelConfig, // Added comma
-      input: inputConfig, // Added comma
-      modal: modalConfig, // Added comma
-    }
+      button: buttonConfig,
+      panel: panelConfig,
+      input: inputConfig,
+      modal: modalConfig,
+    };
     const blob = new Blob([JSON.stringify(configs, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -182,7 +182,7 @@
         console.warn('No configuration to save for selected component.');
       }
     } catch (error) {
-      console.error('Failed to save configuration:', error);
+      console.error('Failed to save configuration', error);
     }
   }
   function getCurrentConfig(): YoRHaButton3DOptions | YoRHaPanel3DOptions | YoRHaInput3DOptions | YoRHaModal3DOptions | undefined {
@@ -201,11 +201,11 @@
           text: 'YoRHa Button',
           variant: 'primary',
           size: 'medium',
-          icon: 'terminal',
+          icon 'terminal',
           loading: false,
           disabled: false,
           glowEffect: true,
-          hoverAnimation: true,
+          hoverAnimation true,
         }; // Added semicolon
         break;
       case 'panel':
@@ -273,10 +273,9 @@
         </h3>
         <div class="yorha-component-list">
           {#each componentTypes as component}
-            <button
-              class="yorha-component-btn"
-              class:yorha-component-active={selectedComponent === component.id}
-              on:click={() => onComponentChange(component.id)}
+                class="yorha-component-btn"
+                class:yorha-component-active={selectedComponent === component.id}
+                on:click={() => onComponentChange(component.id)}
             >
               <div class="yorha-component-info">
                 <span class="yorha-component-label">{component.label}</span>
@@ -484,9 +483,9 @@
           </div>
           <!-- Config Actions -->
           <div class="yorha-config-actions">
-            <button class="yorha-config-btn yorha-btn-save" on:click={saveConfig}> SAVE </button>
-            <button class="yorha-config-btn yorha-btn-reset" on:click={resetConfig}> RESET </button>
-            <button class="yorha-config-btn yorha-btn-export" on:click={exportConfig}> EXPORT </button>
+            <button class="yorha-config-btn yorha-btn-save" onclick={saveConfig}> SAVE </button>
+            <button class="yorha-config-btn yorha-btn-reset" onclick={resetConfig}> RESET </button>
+            <button class="yorha-config-btn yorha-btn-export" onclick={exportConfig}> EXPORT </button>
           </div>
         </section>
       {/if}
@@ -514,7 +513,7 @@
           <div class="yorha-config-display">
             <p>Use the sidebar controls to modify the {selectedComponent} component configuration in real-time.</p>
             <div class="yorha-config-summary">
-              <h4>Current Configuration:</h4>
+              <h4>Current Configuration</h4>
               <pre>{JSON.stringify(getCurrentConfig(), null, 2)}</pre>
             </div>
           </div>
@@ -653,7 +652,7 @@
   }
   .yorha-loading-spinner {
     @apply w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   /* Code View */
   .yorha-code-view {

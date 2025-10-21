@@ -211,7 +211,7 @@
             <div class="flex flex-wrap gap-1">
               {#each quickPrompts.slice(0, 2) as prompt}
                 <button aria-label="Action button"
-                  on:click={() => sendMessage(prompt)}
+                  onclick={() => sendMessage(prompt)}
                   disabled={isProcessing || !isInitialized}
                   class="text-xs px-2 py-1 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded border border-gray-600 hover:border-yellow-500 transition-colors disabled:opacity-50"
                 >
@@ -240,7 +240,7 @@
               data-testid="chat-input"
             ></textarea>
             <button aria-label="Action button"
-              on:click={() => sendMessage()}
+              onclick={() => sendMessage()}
               disabled={!chatInput.trim() || isProcessing || !isInitialized}
               class="px-3 py-1 bg-yellow-600 text-black text-xs font-mono rounded hover:bg-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               data-testid="send-button"
@@ -253,7 +253,7 @@
               Running locally • No data sent to servers
             </div>
             <button aria-label="Action button"
-              on:click={clearChat}
+              onclick={clearChat}
               class="text-xs text-gray-400 hover:text-gray-300 font-mono"
             >
               Clear
@@ -344,7 +344,7 @@
     height: 4px;
     border-radius: 50%;
     background: #FCD34D;
-    animation: typing 1.4s ease-in-out infinite;
+    animation typing 1.4s ease-in-out infinite;
   }
   .typing-indicator span:nth-child(2) {
     animation-delay: 0.2,
@@ -364,14 +364,14 @@
   }
   .quick-prompts button {
     font-size: 10px;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
-  .quick-prompts button:hover:not(:disabled) {
+  .quick-prompts buttonhover:not(:disabled) {
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
   .error-message {
-    animation: shake 0.5s ease-in-out;
+    animation shake 0.5s ease-in-out;
   }
   @keyframes shake {
     0%, 100% { transform: translateX(0), }

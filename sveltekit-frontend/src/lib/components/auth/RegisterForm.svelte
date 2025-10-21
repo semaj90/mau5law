@@ -34,7 +34,7 @@
       confirmPassword: z.string(),
       role: z.enum(['prosecutor', 'investigator', 'analyst', 'admin']),
       department: z.string().min(2, 'Department is required'),
-      jurisdiction: z.string().min(2, 'Jurisdiction is required'),
+      jurisdiction z.string().min(2, 'Jurisdiction is required'),
       badgeNumber: z.string().optional(),
       agreeToTerms: z.boolean().refine(val => val === true, { message: 'You must agree to the terms' }),
       agreeToPrivacy: z.boolean().refine(val => val === true, { message: 'You must agree to privacy policy' }),
@@ -61,10 +61,10 @@
   let securityScore = $state(0);
   // Legal role options
   const roleOptions = [
-    { value: 'prosecutor', label: 'Prosecutor', icon: Scale },
-    { value: 'investigator', label: 'Investigator', icon: Badge },
-    { value: 'analyst', label: 'Legal Analyst', icon: Building },
-    { value: 'admin', label: 'Administrator', icon: Shield },
+    { value: 'prosecutor', label: 'Prosecutor', icon Scale },
+    { value: 'investigator', label: 'Investigator', icon Badge },
+    { value: 'analyst', label: 'Legal Analyst', icon Building },
+    { value: 'admin', label: 'Administrator', icon Shield },
   ];
   // XState auth machine
   const authActor = createActor(authMachine);
@@ -103,12 +103,12 @@
               username: `${firstName}.${lastName}`.toLowerCase(),
               requestedRole: role,
               department: formData.get('department'),
-              jurisdiction: formData.get('jurisdiction'),
+              jurisdiction formData.get('jurisdiction'),
               badgeNumber: formData.get('badgeNumber'),
             },
             context: {
-              action: 'registration_attempt',
-              enhancedValidation: true,
+              action 'registration_attempt',
+              enhancedValidation true,
               legalProfessionalCheck: true,
               clientTimestamp: new Date().toISOString(),
               userAgent: navigator.userAgent,
@@ -140,7 +140,7 @@
           password: formData.get('password') as string,
           role: formData.get('role') as string,
           department: formData.get('department') as string,
-          jurisdiction: formData.get('jurisdiction') as string,
+          jurisdiction formData.get('jurisdiction') as string,
           badgeNumber: formData.get('badgeNumber') as string,
           enableTwoFactor: formData.get('enableTwoFactor') === 'on',
           deviceInfo: {
@@ -193,7 +193,7 @@
       language: navigator.language,
       languages: navigator.languages,
       platform: navigator.platform,
-      screenResolution: `${screen.width}x${screen.height}`,
+      screenResolution `${screen.width}x${screen.height}`,
       colorDepth: screen.colorDepth,
       timezone: new Intl.DateTimeFormat().resolvedOptions().timeZone,
       canvas: canvas.toDataURL(),
@@ -294,7 +294,7 @@
       <div class="panel-body">
         <p class="line">> Please provide official credentials to continue.</p>
         <p class="line">> Password must be 12+ chars incl. UPPER, lower, number, symbol.</p>
-        <p class="line">> GPU Validation: {enableGPUValidation ? 'ENABLED' : 'DISABLED'}</p>
+        <p class="line">> GPU Validation {enableGPUValidation ? 'ENABLED' : 'DISABLED'}</p>
         {#if enableGPUValidation}
           <p class="line status">
             > STATUS:
@@ -335,7 +335,7 @@
         padding: 6px 10px;
         background: #111;
         color: #fff;
-        position: relative;
+        position relative;
         border-bottom: 3px solid #000;
       }
       :global(.nes-retro-panel .panel-header .title) {
@@ -497,7 +497,7 @@
             <button
               type="button"
               class="pw-toggle"
-              on:click={togglePasswordVisibility}
+              onclick={togglePasswordVisibility}
               disabled={isLoading}
               aria-label="Toggle password visibility"
             >
@@ -536,7 +536,7 @@
             <button
               type="button"
               class="pw-toggle"
-              on:click={toggleConfirmPasswordVisibility}
+              onclick={toggleConfirmPasswordVisibility}
               disabled={isLoading}
               aria-label="Toggle confirm password visibility"
             >
@@ -655,7 +655,7 @@
     font-family: 'Courier New', monospace;
     font-weight: bold;
     padding: 12px 24px;
-    transition: all 0.1s ease;
+    transition all 0.1s ease;
     text-transform: uppercase;
   }
   :global(.nes-legal-register-form .nes-btn:hover:not(:disabled)) {
@@ -709,7 +709,7 @@
     font-family: 'Courier New', monospace;
   }
   /* hover state for role option */
-  :global(.nes-legal-register-form .role-option:hover) {
+  :global(.nes-legal-register-form .role-optionhover) {
     background: #f3f4f6;
     border-color: #000;
   }
@@ -721,7 +721,7 @@
     font-family: 'Courier New', monospace;
   }
   :global(.nes-legal-register-form .gpu-validation.processing) {
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   :global(.nes-legal-register-form .gpu-validation.success) {
     border-color: #16a34a;

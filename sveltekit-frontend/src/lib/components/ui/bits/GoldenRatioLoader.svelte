@@ -24,23 +24,23 @@
   	const GOLDEN_ANGLE = 137.508; // Golden angle in degrees
   	// Animated properties
   	const progressValue = tweened(0, {
-  		duration: 800,
+  		duration 800,
   		easing: cubicInOut;
   	});
   	const containerWidth = tweened(100, {
-  		duration: 1200,
+  		duration 1200,
   		easing: elasticOut;
   	});
   	const containerHeight = tweened(8, {
-  		duration: 1200,
+  		duration 1200,
   		easing: elasticOut;
   	});
   	const borderRadius = tweened(4, {
-  		duration: 1000,
+  		duration 1000,
   		easing: cubicInOut;
   	});
   	const opacity = tweened(1, {
-  		duration: 600,
+  		duration 600,
   		easing: cubicInOut;
   	});
   	// Progress state management
@@ -210,7 +210,7 @@
 
 <style>
   .golden-loader-container {
-    transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
   @keyframes shimmer {
     0% {
@@ -221,7 +221,7 @@
     }
   }
   .animate-shimmer {
-    animation: shimmer 2s infinite;
+    animation shimmer 2s infinite;
   }
   /* Golden ratio inspired gradients */
   .bg-golden-gradient {

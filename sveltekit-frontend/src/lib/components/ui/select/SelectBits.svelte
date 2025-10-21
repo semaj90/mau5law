@@ -107,7 +107,7 @@
     <SelectPrimitive.Content
       class={contentClasses}
       transition={scale}
-      transitionConfig={{ duration: 150, start: 0.95 }}
+      transitionConfig={{ duration 150, start: 0.95 }}
       sideOffset={8}
     >
       {#each options as option}
@@ -172,7 +172,7 @@
   }
   :global(.legal-ai-select-content) {
     font-family: var(--legal-ai-font-family-sans);
-    animation: legal-ai-fade-in 150ms ease-out;
+    animation legal-ai-fade-in 150ms ease-out;
   }
   :global(.legal-ai-select-item) {
     font-family: var(--legal-ai-font-family-sans);

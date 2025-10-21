@@ -9,7 +9,7 @@
 
 <style>
   .tooltip-provider {
-    position: relative;
+    position relative;
     display: inline-block;
   }
 </style>

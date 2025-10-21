@@ -74,7 +74,7 @@
         text,
         contextBefore,
         contextAfter,
-        cursorPosition: cursorPos,
+        cursorPosition cursorPos,
       });
       currentSuggestions = suggestions.slice(0, maxSuggestions);
       if (currentSuggestions.length > 0) {
@@ -94,7 +94,7 @@
     text: string;
     contextBefore: string;
     contextAfter: string;
-    cursorPosition: number;
+    cursorPosition number;
   }): Promise<AISuggestion[]> {
     const suggestions: AISuggestion[] = [];
     // 1. Auto-completion suggestions
@@ -102,7 +102,7 @@
       try {
         const completionTask = createAITask('completion', 'completion', {
           prompt: `Complete this text naturally: "${context.contextBefore}[CURSOR]${context.contextAfter}"
-            Provide 2-3 natural completions for the text at [CURSOR]. Focus on:
+            Provide 2-3 natural completions for the text at [CURSOR]. Focus on
             - Legal terminology accuracy
             - Contextual relevance
             - Natural language flow
@@ -114,7 +114,7 @@
         const result = await waitForAIResult(completionTask.id);
         if (result?.success && result.result?.completions) {
           suggestions.push(
-            ...result.result.completions.map((completion: string, index: number) => ({
+            ...result.result.completions.map((completion string, index: number) => ({
               id: `completion_${index}`,
               type: 'completion' as const,
               text: completion,
@@ -132,7 +132,7 @@
       try {
         const grammarTask = createAITask('grammar', 'analysis', {
           prompt: `Analyze this text for grammar, style, and legal writing improvements: "${context.text}"
-            Focus on:
+            Focus on
             - Grammar errors
             - Legal writing style
             - Clarity improvements
@@ -145,7 +145,7 @@
         const result = await waitForAIResult(grammarTask.id);
         if (result?.success && result.result?.suggestions) {
           suggestions.push(
-            ...result.result.suggestions.map((suggestion: any, index: number) => ({
+            ...result.result.suggestions.map((suggestion any, index: number) => ({
               id: `grammar_${index}`,
               type: 'grammar' as const,
               text: suggestion.text,
@@ -264,7 +264,7 @@
     }
   }
   // Apply selected suggestion
-  function applySuggestion(suggestion: AISuggestion) {
+  function applySuggestion(suggestion AISuggestion) {
     if (!editorElement) return;
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0) return;
@@ -348,7 +348,7 @@
         {#each currentSuggestions as suggestion, index}
           <button
             class="suggestion-item {index === selectedSuggestionIndex ? 'selected' : ''}"
-            on:click={() => applySuggestion(suggestion)}
+            onclick={() => applySuggestion(suggestion)}
             type="button"
           >
             <div class="suggestion-content">
@@ -371,7 +371,7 @@
 
 <style>
   .enhanced-inline-editor {
-    position: relative;
+    position relative;
     font-family: var(--font-sans, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont);
   }
   .editor-content {
@@ -386,7 +386,7 @@
     font-size: 14px;
     line-height: 1.5,
     outline: none;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .editor-content:focus {
     border-color: var(--console-primary, #3b82f6);
@@ -398,7 +398,7 @@
     pointer-events: none;
   }
   .suggestions-popup {
-    position: absolute;
+    position absolute;
     z-index: 1000;
     min-width: 320px;
     max-width: 480px;
@@ -423,7 +423,7 @@
   }
   .processing-indicator {
     color: var(--console-accent-1, #fbbf24);
-    animation: pulse 1s infinite;
+    animation pulse 1s infinite;
   }
   @keyframes pulse {
     0%,
@@ -446,7 +446,7 @@
     background: transparent;
     text-align: left;
     cursor: pointer;
-    transition: background-color 0.15s ease;
+    transition background-color 0.15s ease;
     border-bottom: 1px solid var(--console-accent-0, #e5e7eb);
   }
   .suggestion-item:hover {

@@ -126,14 +126,14 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
   <button
-    style="position:fixed;left:-9999px;top:-9999px;"
+    style="positionfixed;left:-9999px;top:-9999px;"
     aria-label="Open context menu"
     tabindex={-1}>
   </button>
   <DropdownMenuContent
     menu={menuOpen}
     class="space-y-4"
-    style="position:fixed;left:{x}px;top:{y}px;"
+    style="positionfixed;left:{x}px;top:{y}px;"
     onkeydown={(e) => {
       if (e.key === "Escape") closeMenu();
     }}

@@ -35,8 +35,8 @@
 
 <div class="n64-upload">
   <input bind:this={fileInput} type="file" {accept} {multiple} style="display:none" onchange={handleFileSelect} />
-  <button on:click={() => fileInput?.click()} class="n64-select">Select files</button>
-  <button on:click={cancelAll} class="n64-cancel ml-2">Cancel all</button>
+  <button onclick={() => fileInput?.click()} class="n64-select">Select files</button>
+  <button onclick={cancelAll} class="n64-cancel ml-2">Cancel all</button>
 
   <div class="files mt-3">
     {#each manager.fileStates as s}
@@ -60,7 +60,7 @@
           dismissible: false,
           actions: [{,
             label: 'Cancel',
-            action: () => {
+            action () => {
               controller.abort();
               fs.status = 'canceled';
             },
@@ -74,7 +74,7 @@
     formData.append('uploadData', JSON.stringify({
       caseId,
       title: file.name,
-      description: `N64-style upload: ${file.name}`,
+      description `N64-style upload: ${file.name}`,
       evidenceType: getEvidenceType(file),
       enableAiAnalysis: true
       enableEmbeddings: true
@@ -343,7 +343,7 @@ restoreSession();
     ondrop={handleDrop}
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
-    on:click={openFileDialog}
+    onclick={openFileDialog}
     onkeydown={(e) => e.key === 'Enter' && openFileDialog()}
   >
     {#if fileStates.length === 0}
@@ -424,7 +424,7 @@ restoreSession();
                   type="button"
                   class="n64-action-btn remove"
                   title="Remove"
-                  on:click={(e) => { e.stopPropagation(); removeFile(index), }}
+                  onclick={(e) => { e.stopPropagation(); removeFile(index), }}
                   aria-label="Remove file"
                 >
                   ✕
@@ -434,7 +434,7 @@ restoreSession();
                   type="button"
                   class="n64-action-btn cancel"
                   title="Cancel"
-                  on:click={(e) => { e.stopPropagation(); cancelUpload(index), }}
+                  onclick={(e) => { e.stopPropagation(); cancelUpload(index), }}
                   aria-label="Cancel upload"
                 >
                   ⏹
@@ -444,7 +444,7 @@ restoreSession();
                   type="button"
                   class="n64-action-btn retry"
                   title="Retry"
-                  on:click={(e) => { e.stopPropagation(); retryFile(index); uploadFiles(), }}
+                  onclick={(e) => { e.stopPropagation(); retryFile(index); uploadFiles(), }}
                   aria-label="Retry upload"
                 >
                   ⟳
@@ -453,7 +453,7 @@ restoreSession();
                   type="button"
                   class="n64-action-btn remove"
                   title="Remove"
-                  on:click={(e) => { e.stopPropagation(); removeFile(index), }}
+                  onclick={(e) => { e.stopPropagation(); removeFile(index), }}
                   aria-label="Remove file"
                 >
                   ✕
@@ -539,7 +539,7 @@ restoreSession();
       class="n64-upload-button";
       class:theme-{evolutionStage}
       disabled={fileStates.length === 0 || uploading || disabled || fileStates.every(f=>['completed','canceled'].includes(f.status))}
-      on:click={uploadFiles}
+      onclick={uploadFiles}
       aria-label="Start upload"
     >
       {#if uploading}
@@ -554,7 +554,7 @@ restoreSession();
       <button
         type="button"
         class="n64-clear-button cancel"
-        on:click={cancelAllUploads}
+        onclick={cancelAllUploads}
         aria-label="Cancel all uploads"
       >
         ❌ CANCEL ALL
@@ -564,7 +564,7 @@ restoreSession();
       <button
         type="button"
         class="n64-clear-button clear"
-        on:click={() => {
+        onclick={() => {
           files = [];
           fileStates = [];
           if (fileInput) fileInput.value = '';
@@ -590,7 +590,7 @@ restoreSession();
     max-width: 700px;
     margin: 0 auto;
     font-family: 'Courier New', monospace;
-    position: relative;
+    position relative;
   }
   .retro {
     image-rendering: pixelated;
@@ -598,7 +598,7 @@ restoreSession();
     image-rendering: crisp-edge;
   }
   .evolution-overlay {
-    position: fixed;
+    position fixed;
     top: 0,
     left: 0;
     right: 0,
@@ -608,7 +608,7 @@ restoreSession();
     align-items: center;
     justify-content: center;
     z-index: 1000,
-    animation: fadeIn 0.3s ease;
+    animation fadeIn 0.3s ease;
   }
   @keyframes fadeIn {
     from { opacity: 0, }
@@ -620,19 +620,19 @@ restoreSession();
     padding: 2rem;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     min-height: 220px;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
+    position relative;
     box-shadow:
       inset 0 0 20px rgba(255, 215, 0, 0.1),
       0 0 20px rgba(255, 215, 0, 0.3);
   }
   .n64-drop-zone::before {
     content: '';
-    position: absolute;
+    position absolute;
     top: -4px;
     left: -4px;
     right: -4px;
@@ -663,7 +663,7 @@ restoreSession();
   .n64-drop-zone.uploading {
     cursor: not-allowed;
     opacity: 0.8,
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   @keyframes pulse {
     0%, 100% { opacity: 0.8, }
@@ -688,12 +688,12 @@ restoreSession();
   }
   .n64-upload-prompt {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 1.5rem;
   }
   .n64-upload-icon {
-    animation: float 3s ease-in-out infinite;
+    animation float 3s ease-in-out infinite;
   }
   @keyframes float {
     0%, 100% { transform: translateY(0px), }
@@ -720,7 +720,7 @@ restoreSession();
   .n64-file-list {
     width: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .n64-file-item {
@@ -731,15 +731,15 @@ restoreSession();
     background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
     border: 2px solid #FFD700;
     text-align: left;
-    transition: all 0.3s ease;
-    position: relative;
+    transition all 0.3s ease;
+    position relative;
     box-shadow:
       inset 0 0 10px rgba(255, 215, 0, 0.1),
       0 0 10px rgba(0, 0, 0, 0.5);
   }
   .n64-file-item::before {
     content: '';
-    position: absolute;
+    position absolute;
     top: 4px;
     left: 4px;
     right: 4px;
@@ -750,7 +750,7 @@ restoreSession();
   .n64-file-.status-uploading {
     border-color: #4090FF;
     background: linear-gradient(135deg, #1a1a2e 0%, #0a0a1a 100%);
-    animation: processingGlow 1.5s ease-in-out infinite alternate;
+    animation processingGlow 1.5s ease-in-out infinite alternate;
   }
   .n64-file-.status-completed {
     border-color: #40FF40;
@@ -788,7 +788,7 @@ restoreSession();
   }
   .n64-retry-countdown {
     color: #FFA500;
-    animation: blink 1s infinite;
+    animation blink 1s infinite;
   }
   @keyframes blink {
     0%, 50% { opacity: 1, }
@@ -807,7 +807,7 @@ restoreSession();
     font-family: 'Courier New', monospace;
     font-weight: bold;
     font-size: 0.8rem;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     box-shadow:
       inset 1px 1px 0 rgba(255, 255, 255, 0.3),
       inset -1px -1px 0 rgba(0, 0, 0, 0.3);
@@ -926,7 +926,7 @@ restoreSession();
     font-family: 'Courier New', monospace;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     font-size: 0.9rem;
     letter-spacing: 0.5px;
     box-shadow:
@@ -934,7 +934,7 @@ restoreSession();
       inset -2px -2px 0 rgba(0, 0, 0, 0.3),
       0 4px 8px rgba(0, 0, 0, 0.5);
   }
-  .n64-upload-button:hover:not(:disabled) {
+  .n64-upload-buttonhover:not(:disabled) {
     background: #FFA500;
     transform: translateY(-2px);
     box-shadow:
@@ -942,7 +942,7 @@ restoreSession();
       inset -2px -2px 0 rgba(0, 0, 0, 0.3),
       0 6px 12px rgba(0, 0, 0, 0.7);
   }
-  .n64-upload-button:disabled {
+  .n64-upload-buttondisabled {
     opacity: 0.6,
     cursor: not-allowed;
     transform: none;
@@ -955,14 +955,14 @@ restoreSession();
     font-family: 'Courier New', monospace;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     font-size: 0.8rem;
     letter-spacing: 0.5px;
     box-shadow:
       inset 1px 1px 0 rgba(255, 255, 255, 0.2),
       inset -1px -1px 0 rgba(0, 0, 0, 0.3);
   }
-  .n64-clear-button:hover {
+  .n64-clear-buttonhover {
     background: #777777;
     transform: translateY(-1px);
   }
@@ -989,7 +989,7 @@ restoreSession();
       0 0 10px rgba(255, 48, 48, 0.3);
   }
   .sr-only {
-    position: absolute;
+    position absolute;
     width: 1px;
     height: 1px;
     padding: 0,
@@ -1012,7 +1012,7 @@ restoreSession();
       grid-template-columns: 1fr 1fr;
     }
     .n64-upload-actions {
-      flex-direction: column;
+      flex-direction column;
     }
     .n64-file-item {
       padding: 0.75rem;

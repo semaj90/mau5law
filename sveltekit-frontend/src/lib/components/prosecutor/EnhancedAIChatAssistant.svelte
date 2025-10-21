@@ -215,7 +215,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
   };
 
   // Quick action for self-prompt suggestions
-  const useSelfPrompt = (suggestion: string) => {
+  const useSelfPrompt = (suggestion string) => {
     currentMessage = suggestion;
     sendMessage();
   };
@@ -313,7 +313,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
               class="bits-btn suggestion-button"
               variant="ghost"
               size="sm"
-              on:click={() => useSelfPrompt(suggestion)}
+              onclick={() => useSelfPrompt(suggestion)}
               disabled={isTyping}
             >
               {suggestion}
@@ -413,12 +413,12 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
           <InputComp
             bind:value={currentMessage}
             placeholder="Ask about evidence, legal precedents, case strategy..."
-            on:keydown={handleKeyDown}
+            onkeydown={handleKeyDown}
             disabled={isTyping}
           />
         </div>
         <!-- use Btn alias for send button -->
-        <Btn class="bits-btn" on:click={sendMessage} disabled={isTyping || !currentMessage || !currentMessage.trim()}>
+        <Btn class="bits-btn" onclick={sendMessage} disabled={isTyping || !currentMessage || !currentMessage.trim()}>
           <Send class="w-4 h-4" />
         </Btn>
       </div>
@@ -460,7 +460,7 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
 <style>
   /* Enhanced chat styling */
   :global(.chat-message) {
-    animation: fadeIn 0.3s ease-in-out;
+    animation fadeIn 0.3s ease-in-out;
   }
   @keyframes fadeIn {
     from {
@@ -474,13 +474,13 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
   }
   /* Elemental awareness hover effects */
   :global(*:hover) {
-    position: relative;
+    position relative;
   }
   /* Self-prompting suggestion animations */
   :global(.suggestion-button) {
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
-  :global(.suggestion-button:hover) {
+  :global(.suggestion-buttonhover) {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }

@@ -29,7 +29,7 @@
   let vertexBuffer: WebGLBuffer | null = null;
   let shaderProgram: WebGLProgram | null = null;
   // Service integrations
-  let vllmIntegration: EnhancedVLLMCudaIntegration | null = null;
+  let vllmIntegration EnhancedVLLMCudaIntegration | null = null;
   let simdParser: SIMDGPUParserIntegration | null = null;
   let neo4jEngine: Neo4jRecommendationEngine | null = null;
   let idleDetectionService: IdleDetectionActor | null = null;
@@ -53,7 +53,7 @@
   // Performance metrics
   let performanceMetrics = {
     fps: 0,
-    gpuUtilization: 0,
+    gpuUtilization 0,
     memoryUsage: 0,
     networkLatency: 0,
     cacheHitRate: 0,
@@ -229,13 +229,13 @@ if (!browser) return;
       if (enableGPUAcceleration) {
         simdParser = new SIMDGPUParserIntegration({
           enableSpellCheck: true
-          enableEntityExtraction: true
+          enableEntityExtraction true
           enableLegalTermSuggestions: true
-          enableCitationValidation: true
+          enableCitationValidation true
           confidenceThreshold: 0.7,
           maxSuggestions: 10,
-          simdOptimization: true
-          gpuAcceleration: true
+          simdOptimization true
+          gpuAcceleration true
         });
         await simdParser.initializeGPU();
       }
@@ -248,7 +248,7 @@ if (!browser) return;
         maxConcurrentStreams,
         gpuMemoryPerDevice: 8,
         tensorParallelSize: 1,
-        quantization: 'int8',
+        quantization 'int8',
         maxModelLength: 4096,
         enableTensorCores: true,
       });
@@ -607,7 +607,7 @@ if (!browser) return;
         onkeydown={e => e.key === 'Enter' && handleUserInput()}
         disabled={!isInitialized || isProcessing}
       />
-      <button on:click={handleUserInput} disabled={!isInitialized || isProcessing}>
+      <button onclick={handleUserInput} disabled={!isInitialized || isProcessing}>
         {isProcessing ? 'Processing...' : 'Analyze'}
       </button>
     </div>
@@ -689,7 +689,7 @@ if (!browser) return;
     height: 8px;
     border-radius: 50%;
     background: #888;
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   .status-indicator.active .pulse {
     background: #00d4aa;
@@ -732,7 +732,7 @@ if (!browser) return;
     height: 100%;
     background: linear-gradient(90deg, #00d4aa, #00ff88);
     border-radius: 2px;
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .progress-text {
     font-size: 10px;
@@ -820,7 +820,7 @@ if (!browser) return;
     height: 100%;
     background: #00d4aa;
     border-radius: 2px;
-    transition: width 0.1s linear;
+    transition width 0.1s linear;
   }
   .chunk-status {
     color: #888;
@@ -834,7 +834,7 @@ if (!browser) return;
     border-radius: 8px;
     padding: 16px;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     height: 400px;
   }
   .chat-header {
@@ -857,14 +857,14 @@ if (!browser) return;
   }
   .ai-status.processing {
     color: #ff9800;
-    animation: pulse 1s infinite;
+    animation pulse 1s infinite;
   }
   .chat-messages {
     flex: 1;
     overflow-y: auto;
     margin-bottom: 16px;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 8px;
   }
   .message {
@@ -934,12 +934,12 @@ if (!browser) return;
     font-size: 13px;
     font-weight: bold;
     cursor: pointer;
-    transition: background 0.2;
+    transition background 0.2;
   }
-  .chat-input button:hover:not(:disabled) {,
+  .chat-input buttonhover:not(:disabled) {,
     background: #00ff88;
   }
-  .chat-input button:disabled {
+  .chat-input buttondisabled {
     background: #333;
     color: #666;
     cursor: not-allowed;
@@ -965,7 +965,7 @@ if (!browser) return;
     background: rgba(0, 0, 0, 0.5);
     border: 1px solid #333;
     border-radius: 4px;
-    position: relative;
+    position relative;
   }
   .rec-title {
     font-weight: bold;
@@ -989,7 +989,7 @@ if (!browser) return;
     font-weight: bold;
   }
   .rec-ai-badge {
-    position: absolute;
+    position absolute;
     top: 8px;
     right: 8px;
     background: rgba(33, 150, 243, 0.2);

@@ -27,6 +27,6 @@
   }
 </script>
 
-<button class={`dropdown-item ${className}`} role="menuitem" on:click={handleClick} {disabled}>
+<button class={`dropdown-item ${className}`} role="menuitem" onclick={handleClick} {disabled}>
   {@render children?.()}
 </button>

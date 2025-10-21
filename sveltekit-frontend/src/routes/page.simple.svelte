@@ -111,21 +111,21 @@
     border: 1px solid #444;
     border-radius: 8px;
     padding: 2rem;
-    text-decoration: none;
+    text-decoration none;
     color: inherit;
-    transition: all 0.3s ease;
-    position: relative;
+    transition all 0.3s ease;
+    position relative;
     overflow: hidden;
   }
   .action-card::before {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: -100%;
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
-    transition: left 0.5;
+    transition left 0.5;
   }
   .action-card:hover::before {
     left: 100%;

@@ -32,43 +32,43 @@ https://svelte.dev/e/js_parse_error -->
       items: [
         {
           key: "Ctrl+/",
-          description: "Open command palette",
-          action: () => (open = true),
+          description "Open command palette",
+          action () => (open = true),
         },
         {
           key: "Ctrl+H",
-          description: "Go to dashboard",
-          action: () => goto("/dashboard"),
+          description "Go to dashboard",
+          action () => goto("/dashboard"),
         },
         {
           key: "Ctrl+Shift+C",
-          description: "Go to cases",
-          action: () => goto("/cases"),
+          description "Go to cases",
+          action () => goto("/cases"),
         },
         {
           key: "Ctrl+Shift+E",
-          description: "Go to evidence",
-          action: () => goto("/evidence"),
+          description "Go to evidence",
+          action () => goto("/evidence"),
         },
         {
           key: "Ctrl+Shift+P",
-          description: "Go to persons",
-          action: () => goto("/criminals"),
+          description "Go to persons",
+          action () => goto("/criminals"),
         },
         {
           key: "Ctrl+Shift+S",
-          description: "Go to search",
-          action: () => goto("/search"),
+          description "Go to search",
+          action () => goto("/search"),
         },
         {
           key: "Ctrl+Shift+R",
-          description: "Go to reports",
-          action: () => goto("/reports"),
+          description "Go to reports",
+          action () => goto("/reports"),
         },
         {
           key: "Ctrl+,",
-          description: "Open settings",
-          action: () => goto("/settings"),
+          description "Open settings",
+          action () => goto("/settings"),
         },
       ],
     },
@@ -77,23 +77,23 @@ https://svelte.dev/e/js_parse_error -->
       items: [
         {
           key: "Ctrl+N",
-          description: "New case",
-          action: () => goto("/cases/new"),
+          description "New case",
+          action () => goto("/cases/new"),
         },
         {
           key: "Ctrl+Shift+N",
-          description: "New person",
-          action: () => goto("/criminals/new"),
+          description "New person",
+          action () => goto("/criminals/new"),
         },
         {
           key: "Ctrl+U",
-          description: "Upload evidence",
-          action: () => goto("/evidence"),
+          description "Upload evidence",
+          action () => goto("/evidence"),
         },
         {
           key: "Ctrl+Shift+U",
-          description: "Generate report",
-          action: () => goto("/reports/new"),
+          description "Generate report",
+          action () => goto("/reports/new"),
         },
       ],
     },
@@ -102,28 +102,28 @@ https://svelte.dev/e/js_parse_error -->
       items: [
         {
           key: "Ctrl+K",
-          description: "Quick search",
-          action: () => focusSearch(),
+          description "Quick search",
+          action () => focusSearch(),
         },
         {
           key: "Ctrl+F",
-          description: "Find in page",
-          action: () => triggerPageSearch(),
+          description "Find in page",
+          action () => triggerPageSearch(),
         },
         {
           key: "Ctrl+Shift+F",
-          description: "Global search",
-          action: () => goto("/search"),
+          description "Global search",
+          action () => goto("/search"),
         },
         {
           key: "F1",
-          description: "Help & documentation",
-          action: () => goto("/help"),
+          description "Help & documentation",
+          action () => goto("/help"),
         },
         {
           key: "F11",
-          description: "Toggle fullscreen",
-          action: () => toggleFullscreen(),
+          description "Toggle fullscreen",
+          action () => toggleFullscreen(),
         },
       ],
     },
@@ -132,23 +132,23 @@ https://svelte.dev/e/js_parse_error -->
       items: [
         {
           key: "Escape",
-          description: "Close modals/overlays",
-          action: () => closeModals(),
+          description "Close modals/overlays",
+          action () => closeModals(),
         },
         {
           key: "Ctrl+Shift+D",
-          description: "Toggle dark mode",
-          action: () => toggleDarkMode(),
+          description "Toggle dark mode",
+          action () => toggleDarkMode(),
         },
         {
           key: "Ctrl+Shift+L",
-          description: "Toggle layout",
-          action: () => toggleLayout(),
+          description "Toggle layout",
+          action () => toggleLayout(),
         },
         {
           key: "Ctrl+R",
-          description: "Refresh page",
-          action: () => window.location.reload(),
+          description "Refresh page",
+          action () => window.location.reload(),
         },
       ],
     },
@@ -157,23 +157,23 @@ https://svelte.dev/e/js_parse_error -->
       items: [
         {
           key: "Alt+Shift+H",
-          description: "Toggle heading navigation",
-          action: () => toggleHeadingNav(),
+          description "Toggle heading navigation",
+          action () => toggleHeadingNav(),
         },
         {
           key: "Alt+Shift+L",
-          description: "Toggle landmark navigation",
-          action: () => toggleLandmarkNav(),
+          description "Toggle landmark navigation",
+          action () => toggleLandmarkNav(),
         },
         {
           key: "Alt+Shift+F",
-          description: "Toggle focus indicators",
-          action: () => toggleFocusIndicators(),
+          description "Toggle focus indicators",
+          action () => toggleFocusIndicators(),
         },
         {
           key: "Ctrl+Alt+A",
-          description: "Accessibility settings",
-          action: () => goto("/settings?tab=accessibility"),
+          description "Accessibility settings",
+          action () => goto("/settings?tab=accessibility"),
         },
       ],
     },
@@ -218,79 +218,79 @@ await loadShortcutsFromAI();
   const commands = [
     {
       title: "Persons of interest",
-      description: "Persons of interest",
-      icon: Users
-      action: () => goto("/criminals"),
+      description "Persons of interest",
+      icon Users
+      action () => goto("/criminals"),
       keywords: ["people", "suspects"],
     },
     {
       title: "Search",
-      description: "Global search",
-      icon: Search
-      action: () => goto("/search"),
+      description "Global search",
+      icon Search
+      action () => goto("/search"),
       keywords: ["find", "lookup"],
     },
     {
       title: "Reports",
-      description: "Generate reports",
-      icon: FileText
-      action: () => goto("/reports"),
+      description "Generate reports",
+      icon FileText
+      action () => goto("/reports"),
       keywords: ["export", "print"],
     },
     {
       title: "Settings",
-      description: "Application settings",
-      icon: Settings
-      action: () => goto("/settings"),
+      description "Application settings",
+      icon Settings
+      action () => goto("/settings"),
       keywords: ["config", "preferences"],
     },
     {
       title: "Help",
-      description: "Help & documentation",
-      icon: HelpCircle
-      action: () => goto("/help"),
+      description "Help & documentation",
+      icon HelpCircle
+      action () => goto("/help"),
       keywords: ["support", "docs"],
     },
     {
       title: "New Case",
-      description: "Create a new case",
-      icon: Plus
-      action: () => goto("/cases/new"),
+      description "Create a new case",
+      icon Plus
+      action () => goto("/cases/new"),
       keywords: ["create", "add"],
     },
     {
       title: "New Person",
-      description: "Add person of interest",
-      icon: Plus
-      action: () => goto("/criminals/new"),
+      description "Add person of interest",
+      icon Plus
+      action () => goto("/criminals/new"),
       keywords: ["create", "add"],
     },
     {
       title: "Upload Evidence",
-      description: "Upload evidence files",
-      icon: Plus
-      action: () => goto("/evidence"),
+      description "Upload evidence files",
+      icon Plus
+      action () => goto("/evidence"),
       keywords: ["upload", "files"],
     },
     {
       title: "Hash Verification",
-      description: "Verify evidence integrity",
-      icon: Search
-      action: () => goto("/evidence/hash"),
+      description "Verify evidence integrity",
+      icon Search
+      action () => goto("/evidence/hash"),
       keywords: ["integrity", "verify"],
     },
     {
       title: "Analytics",
-      description: "View analytics",
-      icon: Search
-      action: () => goto("/analytics"),
+      description "View analytics",
+      icon Search
+      action () => goto("/analytics"),
       keywords: ["stats", "metrics"],
     },
     {
       title: "Canvas Board",
-      description: "Evidence canvas",
-      icon: Search
-      action: () => goto("/interactive-canvas"),
+      description "Evidence canvas",
+      icon Search
+      action () => goto("/interactive-canvas"),
       keywords: ["board", "visual"],
     },
   ];
@@ -512,7 +512,7 @@ await loadShortcutsFromAI();
     tabindex={0}
     aria-modal="true"
     aria-labelledby="command-palette-title"
-    on:click={(e) => { if ((e.target as HTMLButtonElement) === e.currentTarget) open = false, }}
+    onclick={(e) => { if ((e.target as HTMLButtonElement) === e.currentTarget) open = false, }}
     keydown={(e) => (e.key === "Escape" ? (open = false) : null)}
   >
     <div class="command-palette">
@@ -533,7 +533,7 @@ await loadShortcutsFromAI();
           <button class="nes-btn"
             variant="ghost"
             size="sm"
-            on:click={() => (open = false)}
+            onclick={() => (open = false)}
             class="close-button"
             aria-label="Close command palette"
           >
@@ -555,7 +555,7 @@ await loadShortcutsFromAI();
                 role="option"
                 aria-selected={index === selectedIndex}
                 tabindex={0}
-                on:click={() => shortcut.action && shortcut.action()}
+                onclick={() => shortcut.action && shortcut.action()}
                 keydown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
@@ -603,7 +603,7 @@ await loadShortcutsFromAI();
 <!-- Shortcut definitions for screen readers -->
 <div class="space-y-4" aria-live="polite" id="shortcuts-announcements"></div>
 <style>/* @unocss-include */ .command-palette-overlay {
-    position: fixed;
+    position fixed;
 d;
     top: 0,
     left: 0;
@@ -616,7 +616,7 @@ d;
     align-items: flex-start;
     justify-content: center;
     padding-top: 10vh;
-    animation: overlay-appear 0.2s ease-out;
+    animation overlay-appear 0.2s ease-out;
 }
   @keyframes overlay-appear {
     from {
@@ -633,8 +633,8 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)
     max-width: 600px;
     max-height: 70vh;
     display: flex;
-    flex-direction: column;
-    animation: palette-appear 0.2s ease-out;
+    flex-direction column;
+    animation palette-appear 0.2s ease-out;
 }
   @keyframes palette-appear {
     from {
@@ -650,7 +650,7 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)
     border-bottom: 1px solid #e5e7eb;
 }
   .search-container {
-    position: relative;
+    position relative;
     display: flex;
     align-items: center;
 }
@@ -667,7 +667,7 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)
     color: #9ca3af;
 }
   .close-button {
-    position: absolute;
+    position absolute;
     right: 0.5rem;
 }
   .command-palette-body {
@@ -686,7 +686,7 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)
     gap: 0.75rem;
     padding: 0.75rem 1rem;
     cursor: pointer;
-    transition: background-color 0.1s ease;
+    transition background-color 0.1s ease;
 }
 .command-item:hover, .command-.selected {
     background: #f3f4f6;
@@ -717,7 +717,7 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)
 }
   .no-results {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     padding: 3rem 2rem;
@@ -754,7 +754,7 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)
     display: none;
 }
 /* Screen reader only content */ .sr-only {
-    position: absolute;
+    position absolute;
     width: 1px;
     height: 1px;
     padding: 0,
@@ -822,11 +822,11 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)
       background: #000;
       color: #fff;
 }}
-/* Reduced motion */ @media (prefers-reduced-motion: reduce) {
+/* Reduced motion */ @media (prefers-reduced-motion reduce) {
 .command-palette-overlay, .command-palette {
-      animation: none;
+      animation none;
 }
     .command-item {
-      transition: none;
+      transition none;
 }}
 </style>

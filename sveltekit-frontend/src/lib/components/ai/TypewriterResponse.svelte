@@ -7,7 +7,7 @@
   // Types
   interface UserActivity {
     timestamp: number;
-    action: 'typing' | 'pause' | 'delete' | 'select';
+    action 'typing' | 'pause' | 'delete' | 'select';
     content?: string;
     duration?: number;
     position?: number;
@@ -337,7 +337,7 @@
 
 <!-- Thinking Animation (shown while LLM loads) -->
 {#if enableThinking && thinkingState.phase !== 'complete' && isTyping && !displayedText}
-  <div class="thinking-container" in:fade={{ duration: 300 }} out:fade={{ duration: 200 }}>
+  <div class="thinking-container" in:fade={{ duration 300 }} out:fade={{ duration 200 }}>
     <div class="thinking-indicator">
       <div class="thinking-dots">
         <span class="dot animate-bounce" style="animation-delay: 0ms;"></span>
@@ -356,7 +356,7 @@
 
 <!-- User Activity Replay Indicator -->
 {#if isReplayingActivity}
-  <div class="activity-replay-indicator" in:fly={{ y: -20, duration: 300, easing: quintOut }}>
+  <div class="activity-replay-indicator" in:fly={{ y: -20, duration 300, easing: quintOut }}>
     <span class="replay-icon">⚡</span>
     <span class="replay-text">Replaying your activity...</span>
     <div class="replay-progress">
@@ -380,10 +380,10 @@
 <!-- Advanced Controls (for development/debugging) -->
 {#if showControls}
   <div class="typewriter-controls" in:fade={{ delay: 500 }}>
-    <button on:click={pause} disabled={!isTyping || isPaused}>Pause</button>
-    <button on:click={resume} disabled={!isPaused}>Resume</button>
-    <button on:click={restart}>Restart</button>
-    <button on:click={stop}>Stop</button>
+    <button onclick={pause} disabled={!isTyping || isPaused}>Pause</button>
+    <button onclick={resume} disabled={!isPaused}>Resume</button>
+    <button onclick={restart}>Restart</button>
+    <button onclick={stop}>Stop</button>
     <div class="speed-controls">
       <label>
         Speed:
@@ -410,7 +410,7 @@
   .typewriter-container {
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
     line-height: 1.6,
-    position: relative;
+    position relative;
   }
 
   .typewriter-text {
@@ -421,7 +421,7 @@
   .typewriter-cursor {
     color: #00ff00;
     font-weight: bold;
-    transition: opacity 0.1s;
+    transition opacity 0.1s;
   }
 
   .typewriter-cursor.visible {
@@ -433,7 +433,7 @@
   }
 
   .typewriter-cursor.blinking {
-    animation: blink 1.06s infinite;
+    animation blink 1.06s infinite;
   }
 
   @keyframes blink {
@@ -458,7 +458,7 @@
 
   .thinking-indicator {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 0.5rem;
   }
@@ -494,7 +494,7 @@
   .progress-bar {
     height: 100%;
     background: linear-gradient(90deg, #00ff00, #00ff88);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
 
   /* Activity Replay Styles */
@@ -547,11 +547,11 @@
     cursor: pointer;
   }
 
-  .typewriter-controls button:hover:not(:disabled) {
+  .typewriter-controls buttonhover:not(:disabled) {
     background: rgba(0, 255, 0, 0.1);
   }
 
-  .typewriter-controls button:disabled {
+  .typewriter-controls buttondisabled {
     opacity: 0.5,
     cursor: not-allowed;
   }
@@ -594,7 +594,7 @@
     }
 
     .speed-controls {
-      flex-direction: column;
+      flex-direction column;
       gap: 0.5rem;
     }
   }

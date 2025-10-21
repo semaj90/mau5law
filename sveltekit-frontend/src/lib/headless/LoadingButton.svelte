@@ -78,13 +78,13 @@
 
 <style>
   .loading-button {
-    position: relative;
+    position relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border-radius: 0.375rem;
     font-weight: 500;
-    transition: all 0.2s ease-in-out;
+    transition all 0.2s ease-in-out;
     border: 1px solid transparent;
     cursor: pointer;
     user-select: none;
@@ -103,7 +103,7 @@
   .spinner-icon {
     width: 1rem;
     height: 1rem;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   .spinner-circle {
     opacity: 0.25;
@@ -112,7 +112,7 @@
     opacity: 0.75;
   }
   .loading-button__text {
-    transition: opacity 0.2s ease-in-out;
+    transition opacity 0.2s ease-in-out;
   }
   .loading-button__text--loading {
     opacity: 0.8;
@@ -198,13 +198,13 @@
     }
   }
 /* Focus styles */ {}
-  .loading-button:focus-visible {
+  .loading-buttonfocus-visible {
     outline: 2px solid rgb(59, 130, 246);
     outline-offset: 2px;
   }
 /* Loading state animation */ {}
   .loading-button--loading .loading-button__content {
-    animation: loadingPulse 1.5s ease-in-out infinite;
+    animation loadingPulse 1.5s ease-in-out infinite;
   }
   @keyframes loadingPulse {
 0%, {}

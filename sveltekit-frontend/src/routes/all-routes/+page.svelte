@@ -97,7 +97,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 
   type CategoryInfo = {
     name: string;
-    icon: string;
+    icon string;
     color?: string;
     priority: 'production' | 'testing' | 'consolidation' | 'demo' | 'other' | string;
   };
@@ -118,17 +118,17 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 
   // Enhanced route categorization with separation of core vs demo vs API testing
   const routeCategories: Record<string, CategoryInfo> = {
-    'core-user': { name: 'Core User Routes', icon: '👤', color: 'blue', priority: 'production' },
-    'core-legal': { name: 'Legal Core', icon: '⚖️', color: 'indigo', priority: 'production' },
-    'core-admin': { name: 'Administration', icon: '👨‍💼', color: 'red', priority: 'production' },
-    'api-production': { name: 'Production APIs', icon: '🚀', color: 'green', priority: 'production' },
-    'api-testing': { name: 'APIs Need Testing', icon: '🧪', color: 'yellow', priority: 'testing' },
-    'api-unversioned': { name: 'APIs Need Versioning', icon: '⚠️', color: 'orange', priority: 'consolidation' },
-    'demo-development': { name: 'Development Demos', icon: '🛠️', color: 'purple', priority: 'demo' },
-    'demo-showcase': { name: 'Feature Showcase', icon: '✨', color: 'pink', priority: 'demo' },
-    'demo-games': { name: 'Game Demos', icon: '🎮', color: 'cyan', priority: 'demo' },
-    infrastructure: { name: 'Infrastructure', icon: '🏗️', color: 'gray', priority: 'production' },
-    other: { name: 'Other', icon: '📄', color: 'slate', priority: 'other' },
+    'core-user': { name: 'Core User Routes', icon '👤', color: 'blue', priority: 'production' },
+    'core-legal': { name: 'Legal Core', icon '⚖️', color: 'indigo', priority: 'production' },
+    'core-admin': { name: 'Administration', icon '👨‍💼', color: 'red', priority: 'production' },
+    'api-production': { name: 'Production APIs', icon '🚀', color: 'green', priority: 'production' },
+    'api-testing': { name: 'APIs Need Testing', icon '🧪', color: 'yellow', priority: 'testing' },
+    'api-unversioned': { name: 'APIs Need Versioning', icon '⚠️', color: 'orange', priority: 'consolidation' },
+    'demo-development': { name: 'Development Demos', icon '🛠️', color: 'purple', priority: 'demo' },
+    'demo-showcase': { name: 'Feature Showcase', icon '✨', color: 'pink', priority: 'demo' },
+    'demo-games': { name: 'Game Demos', icon '🎮', color: 'cyan', priority: 'demo' },
+    infrastructure: { name: 'Infrastructure', icon '🏗️', color: 'gray', priority: 'production' },
+    other: { name: 'Other', icon '📄', color: 'slate', priority: 'other' },
   };
   function categorizeRoute(path: string): string {
     // Core User Routes - Main user-facing functionality
@@ -236,8 +236,8 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
           path: route.path,
           name: route.path.replace(/\//g, ' → '),
           type: 'configured',
-          icon: route.icon || '📄',
-          description: route.description,
+          icon route.icon || '📄',
+          description route.description,
           category: categorizeRoute(route.path),
         });
       });
@@ -249,8 +249,8 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
           path: route,
           name: route.replace(/\//g, ' → '),
           type: 'file-based',
-          icon: '🔗',
-          description: `Auto-discovered route`,
+          icon '🔗',
+          description `Auto-discovered route`,
           category: categorizeRoute(route),
         });
       });
@@ -264,9 +264,9 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       byCategory: {},
       byType: { configured: 0, 'file-based': 0 },
       byPriority: {
-        production: 0,
+        production 0,
         testing: 0,
-        consolidation: 0,
+        consolidation 0,
         demo: 0,
         other: 0,
       },
@@ -481,7 +481,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-2xl font-bold">📊 Platform Overview</h2>
           <button
-            on:click={() => (showStats = !showStats)}
+            onclick={() => (showStats = !showStats)}
             class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
           >
             {showStats ? 'Hide' : 'Show'} Stats
@@ -628,7 +628,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
         <span id="quick-filters-label" class="block text-sm font-medium text-gray-700 mb-2">⚡ Quick Filters</span>
         <div class="flex flex-wrap gap-2" aria-labelledby="quick-filters-label">
           <button
-            on:click={() => {
+            onclick={() => {
               selectedSection = 'core';
               selectedCategory = 'all';
             }}
@@ -637,7 +637,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
             👤 Core User ({routeStats.sections.core})
           </button>
           <button
-            on:click={() => {
+            onclick={() => {
               selectedSection = 'testing';
               selectedCategory = 'all';
             }}
@@ -646,7 +646,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
             🧪 APIs Need Testing ({routeStats.byPriority.testing})
           </button>
           <button
-            on:click={() => {
+            onclick={() => {
               selectedSection = 'demo';
               selectedCategory = 'all';
             }}
@@ -655,7 +655,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
             ✨ Demo Routes ({routeStats.sections.demo})
           </button>
           <button
-            on:click={() => {
+            onclick={() => {
               selectedCategory = 'api-unversioned';
               selectedSection = 'all';
             }}
@@ -671,8 +671,8 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
           <span class="text-sm text-gray-600">Active filters:</span>
           {#if selectedSection !== 'all'}
             <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm flex items-center gap-1">
-              📂 Section: {selectedSection}
-              <button on:click={() => (selectedSection = 'all')} class="ml-1 text-purple-600 hover:text-purple-800"
+              📂 Section {selectedSection}
+              <button onclick={() => (selectedSection = 'all')} class="ml-1 text-purple-600 hover:text-purple-800"
                 >×</button
               >
             </span>
@@ -681,7 +681,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
             <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm flex items-center gap-1">
               {routeCategories[selectedCategory].icon}
               {routeCategories[selectedCategory].name}
-              <button on:click={() => (selectedCategory = 'all')} class="ml-1 text-blue-600 hover:text-blue-800"
+              <button onclick={() => (selectedCategory = 'all')} class="ml-1 text-blue-600 hover:text-blue-800"
                 >×</button
               >
             </span>
@@ -689,11 +689,11 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
           {#if searchTerm}
             <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm flex items-center gap-1">
               🔍 "{searchTerm}"
-              <button on:click={() => (searchTerm = '')} class="ml-1 text-green-600 hover:text-green-800">×</button>
+              <button onclick={() => (searchTerm = '')} class="ml-1 text-green-600 hover:text-green-800">×</button>
             </span>
           {/if}
           <button
-            on:click={() => {
+            onclick={() => {
               selectedSection = 'all';
               selectedCategory = 'all';
               searchTerm = '';
@@ -711,7 +711,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       <div class="flex items-center gap-4">
         <!-- SSR Test Toggle -->
         <button
-          on:click={() => (showSSRTest = !showSSRTest)}
+          onclick={() => (showSSRTest = !showSSRTest)}
           class="px-3 py-1 bg-purple-100 hover:bg-purple-200 text-purple-800 rounded-full text-sm transition-colors"
         >
           🧪 {showSSRTest ? 'Hide' : 'Show'} SSR Test
@@ -719,7 +719,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
         <!-- View Mode Toggles -->
         <div class="flex gap-2">
           <button
-            on:click={() => {
+            onclick={() => {
               layoutMode = 'grid';
               showClustered = false;
             }}
@@ -730,7 +730,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
             🔲 Grid
           </button>
           <button
-            on:click={() => {
+            onclick={() => {
               layoutMode = 'flexbox';
               showClustered = false;
             }}
@@ -741,7 +741,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
             📊 Flexbox SSR
           </button>
           <button
-            on:click={() => (showClustered = !showClustered)}
+            onclick={() => (showClustered = !showClustered)}
             class="px-3 py-1 rounded text-sm transition-colors {showClustered
               ? 'bg-green-500 text-white'
               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}"
@@ -842,7 +842,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                       <div class="endpoint-item">
                         <code class="endpoint-code">{endpoint.path}</code>
                         <button
-                          on:click={() => visitRoute(endpoint.path)}
+                          onclick={() => visitRoute(endpoint.path)}
                           class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-xs"
                           title="Visit {endpoint.path}"
                         >
@@ -859,7 +859,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                   <div class="action-buttons">
                     <!-- replace DialogTrigger + bind:open with explicit control -->
                     <button
-                      on:click={() => openCluster(serviceName)}
+                      onclick={() => openCluster(serviceName)}
                       class="flex-1 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm font-medium transition-colors"
                     >
                       📋 View All ({endpoints.length})
@@ -885,13 +885,13 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                               </div>
                               <div class="flex gap-2">
                                 <button
-                                  on:click={() => visitRoute(endpoint.path)}
+                                  onclick={() => visitRoute(endpoint.path)}
                                   class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs"
                                 >
                                   🚀 Visit
                                 </button>
                                 <button
-                                  on:click={() => navigator.clipboard.writeText(endpoint.path)}
+                                  onclick={() => navigator.clipboard.writeText(endpoint.path)}
                                   class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 text-xs"
                                 >
                                   📋
@@ -901,7 +901,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                           {/each}
                         </div>
                         <div class="mt-4 flex justify-end">
-                          <button on:click={() => closeCluster(serviceName)} class="px-3 py-1 bg-gray-100 rounded"
+                          <button onclick={() => closeCluster(serviceName)} class="px-3 py-1 bg-gray-100 rounded"
                             >Close</button
                           >
                         </div>
@@ -924,7 +924,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
           <button
             type="button"
             class="w-full h-full p-0 border-none bg-transparent text-left"
-            on:click={() => openRouteModal(route)}
+            onclick={() => openRouteModal(route)}
           >
             <Card
               class="ssr-card {columnClass} min-w-80 max-w-none hover:border-{categoryInfo.color}-400 group border-2"
@@ -966,7 +966,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
           <button
             type="button"
             class="w-full h-full p-0 border-none bg-transparent text-left"
-            on:click={() => openRouteModal(route)}
+            onclick={() => openRouteModal(route)}
           >
             <Card class={'hover:' + cls.border300 + ' group'}>
               {#snippet children()}
@@ -1018,7 +1018,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                   <!-- Route Actions -->
                   <div class="flex gap-2">
                     <button
-                      on:click={e => {
+                      onclick={e => {
                         e.stopPropagation();
                         visitRoute(route.path);
                       }}
@@ -1031,7 +1031,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
                       🚀 Visit
                     </button>
                     <button
-                      on:click={e => {
+                      onclick={e => {
                         e.stopPropagation();
                         navigator.clipboard.writeText(route.path);
                       }}
@@ -1059,7 +1059,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
           {/if}
         </p>
         <button
-          on:click={() => {
+          onclick={() => {
             searchTerm = '';
             selectedCategory = 'all';
           }}
@@ -1108,7 +1108,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       </div>
       <div class="mt-4 text-sm text-gray-600">
         <p>
-          <strong>Architecture Integration:</strong> This routing system implements the 5-layer Gemma embeddings vector architecture
+          <strong>Architecture Integration</strong> This routing system implements the 5-layer Gemma embeddings vector architecture
           with SIMD optimization, RabbitMQ distribution, XState orchestration, and pgvector search capabilities.
         </p>
       </div>
@@ -1150,7 +1150,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-bold">{selectedRoute.icon} {selectedRoute.name}</h2>
           <button
-            on:click={() => (showModal = false)}
+            onclick={() => (showModal = false)}
             class="text-gray-500 hover:text-gray-700 text-2xl"
             aria-label="Close modal">×</button
           >
@@ -1173,19 +1173,19 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
         </div>
         {#if selectedRoute.description}
           <div>
-            <span class="font-semibold text-gray-700">Description:</span>
+            <span class="font-semibold text-gray-700">Description</span>
             <p class="mt-1 text-gray-600">{selectedRoute.description}</p>
           </div>
         {/if}
         <div class="flex gap-3 pt-4">
           <button
-            on:click={() => visitRoute(selectedRoute.path)}
+            onclick={() => visitRoute(selectedRoute.path)}
             class="flex-1 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           >
             🚀 Visit Route
           </button>
           <button
-            on:click={() => navigator.clipboard.writeText(selectedRoute.path)}
+            onclick={() => navigator.clipboard.writeText(selectedRoute.path)}
             class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
           >
             📋 Copy URL
@@ -1221,13 +1221,13 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
   .ssr-card {
     /* Ensure consistent card heights in flexbox layout */
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     min-height: 280px;
     max-height: 400px;
     overflow: hidden;
     /* Enhanced border and shadow for better visual hierarchy */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .ssr-card:hover {
     transform: translateY(-2px);
@@ -1277,7 +1277,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
   }
   /* Service cluster enhancements for API display */
   .service-cluster {
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     min-height: 340px;
     max-height: 500px;
     /* Improved visual hierarchy and spacing */

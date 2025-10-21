@@ -128,7 +128,7 @@ async function processTiledShaderEmbeds(): Promise<void> {
       {
         tileSize,
         evidenceType: 'mixed',
-        enableCompression: true
+        enableCompression true
         priority: 'high',
         generateEmbeddings: enablePredictiveLoading;
       }
@@ -412,7 +412,7 @@ async function applyCHRROMCompression(tiles: unknown[]): Promise {
   const compressedSize = chrPatterns.reduce((total, pattern) => total + pattern.length, 0);
   const compressionRatio = originalSize / compressedSiz;
   const compressionTime = performance.now() - startTime;
-  console.log(`🗜️ CHR-ROM compression: ${originalSize} → ${compressedSize} bytes (${compressionRatio.toFixed(1)}:1)`);
+  console.log(`🗜️ CHR-ROM compression ${originalSize} → ${compressedSize} bytes (${compressionRatio.toFixed(1)}:1)`);
   return {
     originalSize,
     compressedSize,
@@ -681,7 +681,7 @@ export function getCHRPatterns(): string[] {
             </div>
             <button
               class="copy-shader"
-              on:click={() => navigator.clipboard.writeText(shader)}
+              onclick={() => navigator.clipboard.writeText(shader)}
             >
               📋 Copy
             </button>
@@ -712,7 +712,7 @@ export function getCHRPatterns(): string[] {
   <div class="control-panel">
     <button
       class="process-button"
-      on:click={processTiledShaderEmbeds}
+      onclick={processTiledShaderEmbeds}
       disabled={isProcessing}
     >
       {#if isProcessing}
@@ -740,7 +740,7 @@ export function getCHRPatterns(): string[] {
 <style>
 .simd-tiled-shader-embeds {
   display: flex;
-  flex-direction: column;
+  flex-direction column;
   gap: 1rem;
   padding: 1rem;
   background: linear-gradient(135deg, #1e293b, #334155);
@@ -758,7 +758,7 @@ export function getCHRPatterns(): string[] {
 }
 .status-header.processing {
   border-left-color: #f59e0b;
-  animation: pulse 2s infinite;
+  animation pulse 2s infinite;
 }
 .status-indicator {
   display: flex;
@@ -785,19 +785,19 @@ export function getCHRPatterns(): string[] {
   min-height: 400px;
 }
 .canvas-container {
-  position: relative;
+  position relative;
   background: rgba(0, 0, 0, 0.5);
   border-radius: 6px;
   overflow: hidden;
 }
 .tiled-canv.processing-overlay {
-  position: absolute;
+  position absolute;
   top: 0,
   left: 0;
   right: 0,
   bottom: 0;
   display: flex;
-  flex-direction: column;
+  flex-direction column;
   justify-content: center;
   align-items: center;
   background: rgba(0, 0, 0, 0.7);
@@ -809,7 +809,7 @@ export function getCHRPatterns(): string[] {
   border: 4px solid rgba(255, 255, 255, 0.2);
   border-top: 4px solid #3b82f6;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation spin 1s linear infinite;
   margin-bottom: 1rem;
 }
 .processing-text {
@@ -817,7 +817,7 @@ export function getCHRPatterns(): string[] {
   text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
 }
 .tile-info-overlay {
-  position: absolute;
+  position absolute;
   top: 0,
   left: 0;
   right: 0,
@@ -825,7 +825,7 @@ export function getCHRPatterns(): string[] {
   pointer-events: none;
 }
 .tile-info {
-  position: absolute;
+  position absolute;
   transform: translate(-50%, -50%);
 }
 .tile-confidence {
@@ -977,13 +977,13 @@ export function getCHRPatterns(): string[] {
   border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
-  transition: all 0.2;
+  transition all 0.2;
 }
-.process-button:hover:not(:disabled) {,
+.process-buttonhover:not(:disabled) {,
   background: linear-gradient(135deg, #2563eb, #1e40af);
   transform: translateY(-1px);
 }
-.process-button:disabled {
+.process-buttondisabled {
   opacity: 0.6,
   cursor: not-allowed;
 }
@@ -1022,7 +1022,7 @@ export function getCHRPatterns(): string[] {
     grid-template-columns: repeat(4, 1fr);
   }
   .control-panel {
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .settings {

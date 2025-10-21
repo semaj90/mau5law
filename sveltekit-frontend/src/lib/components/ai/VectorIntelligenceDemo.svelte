@@ -113,15 +113,15 @@
   function getDocumentTypeStyle(type: SearchResult['documentType']) {
     switch (type) {
       case 'deed':
-        return { icon: FileText, color: 'bg-blue-100 text-blue-800' };
+        return { icon FileText, color: 'bg-blue-100 text-blue-800' };
       case 'contract':
-        return { icon: FileText, color: 'bg-green-100 text-green-800' };
+        return { icon FileText, color: 'bg-green-100 text-green-800' };
       case 'evidence':
-        return { icon: Database, color: 'bg-orange-100 text-orange-800' };
+        return { icon Database, color: 'bg-orange-100 text-orange-800' };
       case 'case_law':
-        return { icon: Brain, color: 'bg-purple-100 text-purple-800' };
+        return { icon Brain, color: 'bg-purple-100 text-purple-800' };
       default:
-        return { icon: FileText, color: 'bg-gray-100 text-gray-800' };
+        return { icon FileText, color: 'bg-gray-100 text-gray-800' };
     }
   }
 
@@ -199,7 +199,7 @@
       <div class="flex flex-wrap gap-2">
         <span class="text-sm nes-text is-disabled">Try:</span>
         {#each ['property ownership transfer', 'contract liability clauses', 'employment agreements', 'intellectual property rights'] as example}
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={() => (query = example)} disabled={isSearching}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (query = example)} disabled={isSearching}>
             {example}
           </Button>
         {/each}
@@ -251,7 +251,7 @@
           <button
             type="button"
             class="w-full text-left hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-purple-500 nes-container"
-            on:click={() => (selectedResult = result)}
+            onclick={() => (selectedResult = result)}
             aria-label={`Open ${result.title}`}
           >
             <div class="yorha-panel-content pt-6">
@@ -341,7 +341,7 @@
           <Button
             class="bits-btn"
             variant="ghost"
-            on:click={() => {
+            onclick={() => {
               results = demoResults;
               metrics = { totalDocuments: 1250, searchTime: 45, vectorDimensions: 384, similarityThreshold: 0.7 };
             }}
@@ -360,7 +360,7 @@
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center justify-between">
           {selectedResult.title}
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={() => (selectedResult = null)}>×</Button>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (selectedResult = null)}>×</Button>
         </h3>
       </div>
       <div class="yorha-panel-content space-y-4">

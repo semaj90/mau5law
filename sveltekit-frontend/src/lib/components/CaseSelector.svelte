@@ -13,7 +13,7 @@
     showModal = false;
   }
 </script>
-<Button class="bits-btn" on:click={() =>
+<Button class="bits-btn" onclick={() =>
 showModal = true}>Select Case
 <Modal bind:open={showModal} title="Select a Case">
   {#snippet description()}
@@ -23,7 +23,7 @@ showModal = true}>Select Case
   {/snippet}
   <div class="space-y-4">
     {#each cases as caseItem}
-      <Button class="bits-btn" on:click={() =>
+      <Button class="bits-btn" onclick={() =>
 selectCase(caseItem.id)} variant="secondary">
         {caseItem.name}
     {/each}

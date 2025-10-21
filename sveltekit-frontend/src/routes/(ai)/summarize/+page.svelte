@@ -64,9 +64,9 @@ TODO: Implement document upload, AI summarization, export functionality
 		URL.revokeObjectURL(url);
 	}
 	const summaryTypes = [
-		{ value: 'brief', label: 'Brief Summary', description: 'Key points only' },
-		{ value: 'detailed', label: 'Detailed Summary', description: 'Comprehensive analysis' },
-		{ value: 'bullet', label: 'Bullet Points', description: 'Structured list format' }
+		{ value: 'brief', label: 'Brief Summary', description 'Key points only' },
+		{ value: 'detailed', label: 'Detailed Summary', description 'Comprehensive analysis' },
+		{ value: 'bullet', label: 'Bullet Points', description 'Structured list format' }
 	];
 </script>
 <EssentialRoutePage
@@ -150,7 +150,7 @@ TODO: Implement document upload, AI summarization, export functionality
 							<div class="pt-4 border-t border-gray-600">
 								<Button
 									class="nes-btn is-primary w-full"
-									on:click={generateSummary}
+									onclick={generateSummary}
 									disabled={!selectedFile || isUploading || isSummarizing}
 								>
 									{#if isSummarizing}
@@ -177,7 +177,7 @@ TODO: Implement document upload, AI summarization, export functionality
 								<Button
 									size="sm"
 									class="nes-btn"
-									on:click={exportSummary}
+									onclick={exportSummary}
 								>
 									<Download class="w-3 h-3 mr-1" />
 									Export

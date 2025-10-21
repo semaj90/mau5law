@@ -12,14 +12,14 @@
 
   // Demo navigation items
   const demoRoutes = [
-    { name: 'WebGPU Test', slug: 'webgpu', icon: '🖥️' },
-    { name: 'CUDA Streaming', slug: 'cuda-streaming', icon: '⚡' },
-    { name: 'AI Assistant', slug: 'ai-assistant', icon: '🤖' },
-    { name: 'Evidence Canvas', slug: 'evidence-canvas', icon: '🎨' },
-    { name: 'Legal Research', slug: 'legal-research', icon: '⚖️' },
-    { name: 'Vector Search', slug: 'vector-search', icon: '🔍' },
-    { name: 'Gaming UI', slug: 'gaming-ui', icon: '🎮' },
-    { name: 'Performance', slug: 'performance', icon: '📊' },
+    { name: 'WebGPU Test', slug: 'webgpu', icon '🖥️' },
+    { name: 'CUDA Streaming', slug: 'cuda-streaming', icon '⚡' },
+    { name: 'AI Assistant', slug: 'ai-assistant', icon '🤖' },
+    { name: 'Evidence Canvas', slug: 'evidence-canvas', icon '🎨' },
+    { name: 'Legal Research', slug: 'legal-research', icon '⚖️' },
+    { name: 'Vector Search', slug: 'vector-search', icon '🔍' },
+    { name: 'Gaming UI', slug: 'gaming-ui', icon '🎮' },
+    { name: 'Performance', slug: 'performance', icon '📊' },
   ];
 
   // Get current demo from URL
@@ -80,7 +80,7 @@
   .demo-layout {
     min-height: 100vh;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     background: var(--nier-bg-primary);
     color: var(--nier-text-primary);
   }
@@ -133,10 +133,10 @@
     padding: 0.5rem 1rem;
     border: 1px solid var(--nier-border-primary);
     border-radius: 0.5rem;
-    text-decoration: none;
+    text-decoration none;
     color: var(--nier-text-secondary);
     background: var(--nier-bg-primary);
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
 
   .demo-nav-item:hover {
@@ -226,10 +226,10 @@
     padding: 0.5rem 1rem;
     border: 1px solid var(--nier-border-primary);
     border-radius: 0.5rem;
-    text-decoration: none;
+    text-decoration none;
     color: var(--nier-text-primary);
     background: var(--nier-bg-primary);
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     font-size: 0.9rem;
   }
 
@@ -246,7 +246,7 @@
     }
 
     .demo-footer-content {
-      flex-direction: column;
+      flex-direction column;
       text-align: center;
       gap: 1rem;
     }

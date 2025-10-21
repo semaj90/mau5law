@@ -37,8 +37,8 @@
       x: 230,
       y: 350,
       connections: ['witness-statement'],
-      description: 'CCTV footage from the main entrance',
-      icon: '📹',
+      description 'CCTV footage from the main entrance',
+      icon '📹',
     },
     {
       id: 'witness-statement',
@@ -48,8 +48,8 @@
       x: 490,
       y: 410,
       connections: ['security-camera'],
-      description: 'Detailed written statement from key witness',
-      icon: '📄',
+      description 'Detailed written statement from key witness',
+      icon '📄',
     }
   ]);
   let caseInfo = $state<CaseInfo>({
@@ -57,7 +57,7 @@
     status: 'active',
     items: [
       'Corporate Espionage Investigation',
-      'Missing Person: Dr. Sarah Chen',
+      'Missing Person Dr. Sarah Chen',
       'Financial Fraud Analysis',
       'Security Breach Analysis'
     ];
@@ -71,7 +71,7 @@
       builders[item.id] = createEnhancedEvidenceCard({
         priority: item.status === 'active' ? 'high' : 'medium',
         interactive: true
-        webGpuAcceleration: true,
+        webGpuAcceleration true,
       });
       return builder;
     }, {} as { [key: string]: any });
@@ -119,8 +119,8 @@
       x: Math.random() * 600 + 200,
       y: Math.random() * 400 + 300,
       connections: [],
-      description: 'Newly added evidence item',
-      icon: '📋',
+      description 'Newly added evidence item',
+      icon '📋',
     }
     evidenceItems.push(newEvidence);
     drawConnections();
@@ -143,7 +143,7 @@
         <span class="case-name">CORPORATE ESPIONAGE INV</span>
         <div class="case-items">
           {#each caseInfo.items as item, index}
-            <div class="case-item" class:active={index === 0} transition:fade={{ delay: index * 100 }}>
+            <div class="case-item" class:active={index === 0} transitionfade={{ delay: index * 100 }}>
               {item}
               <span class="status-indicator {index < 2 ? 'active' : 'pending'}">
                 {index < 2 ? 'active' : 'pending'}
@@ -161,11 +161,11 @@
   <!-- Gaming-style toolbar -->
   <div class="toolbar">
     <div class="zoom-controls">
-      <Button class="zoom-btn" on:click={() => (zoom = Math.max(50, zoom - 10))}>
+      <Button class="zoom-btn" onclick={() => (zoom = Math.max(50, zoom - 10))}>
         🔍 {zoom}%
       </Button>
       <Button class="action-btn">🔗 CONNECT</Button>
-      <Button class="action-btn" on:click={addEvidence}>➕ ADD EVIDENCE</Button>
+      <Button class="action-btn" onclick={addEvidence}>➕ ADD EVIDENCE</Button>
       <Button class="action-btn">📚 LIBRARY (0)</Button>
     </div>
     <div class="connection-status">
@@ -191,8 +191,8 @@
           top: {item.y}px;
           border-color: {builder.styling.colors.primary}
         "
-        on:click={() => selectEvidence(item.id)}
-        transition:scale={builder.animations.enter}
+        onclick={() => selectEvidence(item.id)}
+        transitionscale={builder.animations.enter}
       >
         <!-- Evidence type indicator -->
         <div class="evidence-type">
@@ -231,7 +231,7 @@
     background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
     color: #ffffff;
     font-family: 'Courier New', monospace;
-    position: relative;
+    position relative;
     overflow: hidden;
   }
   /* Header Styles */
@@ -245,7 +245,7 @@
   }
   .title-section {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
   }
   .board-title {
     font-size: 1.5rem;
@@ -269,7 +269,7 @@
     font-size: 0.875rem;
   }
   .case-dropdown {
-    position: relative;
+    position relative;
   }
   .case-name {
     background: #333333;
@@ -280,7 +280,7 @@
     font-size: 0.875rem;
   }
   .case-items {
-    position: absolute;
+    position absolute;
     top: 100%;
     right: 0,
     background: rgba(0, 0, 0, 0.95);
@@ -330,7 +330,7 @@
     font-family: inherit;
     font-size: 0.75rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .control-btn:hover {
     border-color: #00ff41;
@@ -359,7 +359,7 @@
     font-family: inherit;
     font-size: 0.75rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .zoom-btn:hover, .action-btn: hover {
     border-color: #00ff41;
@@ -380,12 +380,12 @@
   }
   /* Board Area Styles */
   .board-area {
-    position: relative;
+    position relative;
     height: calc(100vh - 140px);
     overflow: hidden;
   }
   .grid-background {
-    position: absolute;
+    position absolute;
     inset: 0;
     background-image:
       linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
@@ -394,21 +394,21 @@
     opacity: 0.3,
   }
   .connection-canvas {
-    position: absolute;
+    position absolute;
     inset: 0;
     pointer-events: none;
     z-index: 1,
   }
   /* Evidence Item Styles */
   .evidence-item {
-    position: absolute;
+    position absolute;
     width: 160px;
     min-height: 100px;
     background: rgba(0, 0, 0, 0.9);
     border: 3px solid #555555;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     z-index: 2,
   }
   .evidence-item:hover {
@@ -482,7 +482,7 @@
     box-shadow: 0 0 4px #00ff41;
   }
   .status-badge {
-    position: absolute;
+    position absolute;
     top: -8px;
     right: -8px;
     padding: 0.125rem 0.375rem;

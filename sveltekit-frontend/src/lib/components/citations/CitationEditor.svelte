@@ -11,7 +11,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  const { caseId: string, citation: Partial<Citation> | null = null, mode: 'create' | 'edit' = 'create', disabled = false } = $props();
+  const { caseId: string, citation Partial<Citation> | null = null, mode: 'create' | 'edit' = 'create', disabled = false } = $props();
   import { onMount } from "svelte";
   import { writable } from 'svelte/store';
   import type { Citation } from '$lib/server/db/schemas/cases-schema.js';
@@ -23,7 +23,7 @@ https://svelte.dev/e/js_parse_error -->
     citationType: citation?.citationType || 'case_law',
     author: citation?.author || '',
     source: citation?.source || '',
-    citation: citation?.citation || '',
+    citation citation?.citation || '',
     url: citation?.url || '',
     doi: citation?.doi || '',
     abstract: citation?.abstract || '',
@@ -33,7 +33,7 @@ https://svelte.dev/e/js_parse_error -->
     citationPurpose: citation?.citationPurpose || 'support',
     publicationDate: citation?.publicationDate ?
       new Date(citation.publicationDate).toISOString.split('T')[0] : '',
-    jurisdiction: citation?.jurisdiction || '',
+    jurisdiction citation?.jurisdiction || '',
     court: citation?.court || '',
     verified: citation?.verified || false,
     tags: citation?.tags || [];
@@ -224,7 +224,7 @@ try {
     </h3>
     {#if mode === 'edit'}
       <button
-        on:click={handleDelete}
+        onclick={handleDelete}
         disabled={isLoading}
         class="text-red-600 hover:text-red-800 text-sm font-medium disabled:opacity-50"
       >
@@ -446,7 +446,7 @@ try {
               {tag}
               <button
                 type="button"
-                on:click={() => removeTag(tag)}
+                onclick={() => removeTag(tag)}
                 class="ml-1.5 inline-flex items-center justify-center w-4 h-4 rounded-full text-blue-400 hover:bg-blue-200 hover:text-blue-500 focus:outline-none"
               >
                 <svg class="w-2 h-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
@@ -475,7 +475,7 @@ try {
     <div class="flex justify-end space-x-3 pt-4 border-t">
       <button
         type="button"
-        on:click={() => // ondispatch removed}
+        onclick={() => // ondispatch removed}
         disabled={isLoading}
         class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50"
       >

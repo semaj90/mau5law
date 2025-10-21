@@ -76,7 +76,7 @@
     </div>
     <div class="result-item">
       <span class="indicator {isFormValid ? 'success' : 'pending'}">●</span>
-      Form validation: {isFormValid ? 'COMPLETE' : 'INCOMPLETE'}
+      Form validation {isFormValid ? 'COMPLETE' : 'INCOMPLETE'}
     </div>
   </div>
   {#if isFormValid}

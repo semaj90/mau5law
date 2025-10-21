@@ -40,7 +40,7 @@ https://svelte.dev/e/expected_token -->
         dimensions: [512, 512],
         seed: Math.floor(Math.random() * 1000000),
         neural_sprite_config: {
-          enable_compression: true
+          enable_compression true
           compression_ratio: compressionTarget / 10,
           predictive_frames: 3
         },
@@ -206,7 +206,7 @@ https://svelte.dev/e/expected_token -->
         </div>
         <div class="flex items-end">
           <Button class="bits-btn"
-            on:click={() =>
+            onclick={() =>
 generateSIMDGlyph(demoPrompts[Math.floor(Math.random() * demoPrompts.length)])}
             disabled={isGenerating}
             class="w-full"
@@ -216,11 +216,11 @@ generateSIMDGlyph(demoPrompts[Math.floor(Math.random() * demoPrompts.length)])}
       </div>
       <!-- Batch Actions -->
       <div class="flex gap-2">
-        <Button class="bits-btn" on:click={generateBatchDemo} disabled={isGenerating} variant="ghost">
+        <Button class="bits-btn" onclick={generateBatchDemo} disabled={isGenerating} variant="ghost">
 🚀 Batch Demo
-        <Button class="bits-btn" on:click={testCompressionLevels} disabled={isGenerating} variant="ghost">
+        <Button class="bits-btn" onclick={testCompressionLevels} disabled={isGenerating} variant="ghost">
 📊 Test Compression
-        <Button class="bits-btn" on:click={() =>
+        <Button class="bits-btn" onclick={() =>
 results = []} variant="ghost">
           🗑️ Clear Results
       </div>
@@ -295,7 +295,7 @@ results = []} variant="ghost">
             {#if (result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).simd_data}
               <div class="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span class="font-medium">Compression:</span>
+                  <span class="font-medium">Compression</span>
                   <span class={getCompressionColor((result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).simd_data.compression_ratio)}>
                     {(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).simd_data.compression_ratio.toFixed(1)}:1
                   </span>
@@ -318,7 +318,7 @@ results = []} variant="ghost">
                 <div class="flex justify-between items-center mb-2">
                   <span class="text-yellow-400">Generated {(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).metadata.shader_format.toUpperCase()} Shader</span>
                   <Button class="bits-btn"
-                    on:click={() =>
+                    onclick={() =>
 downloadShaderCode(result)}
                     size="sm"
                     variant="ghost"
@@ -336,7 +336,7 @@ downloadShaderCode(result)}
                     Tiling: {(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).simd_data.performance_stats.tiling_time_ms}ms
                   </span>
                   <span class="px-2 py-1 bg-green-100 text-green-800 rounded">
-                    Compression: {(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).simd_data.performance_stats.compression_time_ms}ms
+                    Compression {(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).simd_data.performance_stats.compression_time_ms}ms
                   </span>
                   <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded">
                     Shader Gen: {(result as { success?: any; data?: any; metadata?: any; error?: any; simd_data?: any; id?: any; prompt?: any; style?: any; evidence_id?: any; glyph_url?: any; enhanced_artifact_url?: any; cache_hits?: any; timestamp?: any; processing_time?: any }).simd_data.performance_stats.shader_generation_time_ms}ms
@@ -359,7 +359,7 @@ downloadShaderCode(result)}
         <h3 class="text-lg font-medium mb-2">No SIMD Glyphs Generated Yet</h3>
         <p class="mb-4">Generate your first SIMD-optimized legal evidence glyph with GPU acceleration!</p>
         <Button class="bits-btn"
-          on:click={() =>
+          onclick={() =>
 generateSIMDGlyph(demoPrompts[0])}
           disabled={isGenerating}
         >
@@ -382,7 +382,7 @@ generateSIMDGlyph(demoPrompts[0])}
   /* Improve image hover effects */
   img:hover {
     transform: scale(1.02);
-    transition: transform 0.2s ease-in-out;
+    transition transform 0.2s ease-in-out;
   }
   /* Add loading animation */
   @keyframes pulse {
@@ -390,6 +390,6 @@ generateSIMDGlyph(demoPrompts[0])}
     50% { opacity: 0.7, }
   }
   .generating {
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    animation pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 </style>

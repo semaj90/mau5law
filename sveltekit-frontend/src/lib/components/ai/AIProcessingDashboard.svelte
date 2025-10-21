@@ -27,26 +27,26 @@ https://svelte.dev/e/js_parse_error -->
   		{
   			name: "Document Embedding",
   			type: "embedding" as const,
-  			description: "Generate vector embeddings for document search",
+  			description "Generate vector embeddings for document search",
   			payload: { text: testInput, model: "nomic-embed-text" }
   		},
   		{
   			name: "Legal Analysis",
   			type: "analysis" as const,
-  			description: "Analyze document for legal compliance",
+  			description "Analyze document for legal compliance",
   			payload: { content: testInput, analysisType: "legal-document" }
   		},
   		{
   			name: "Text Generation",
   			type: "generation" as const,
-  			description: "Generate legal summary and recommendations",
+  			description "Generate legal summary and recommendations",
   			payload: { prompt: `Create a legal summary for: ${testInput}`, model: "gemma3-legal" }
   		},
   		{
   			name: "Vector Search",
   			type: "vector-search" as const,
-  			description: "Search similar documents in database",
-  			payload: { query: testInput, collection: "legal_docs", limit: 5 }
+  			description "Search similar documents in database",
+  			payload: { query: testInput, collection "legal_docs", limit: 5 }
   		}
   	];
   	// Event handlers
@@ -87,7 +87,7 @@ https://svelte.dev/e/js_parse_error -->
   					taskId,
   					success: true
   					result: generateMockResult(taskTemplate.type),
-  					duration: Math.random() * 2000 + 500,
+  					duration Math.random() * 2000 + 500,
   					metrics: {
   						tokensProcessed: Math.floor(Math.random() * 1000) + 100,
   						throughput: Math.floor(Math.random() * 50) + 10,
@@ -274,7 +274,7 @@ https://svelte.dev/e/js_parse_error -->
 					<button aria-label="Action button" class="nes-btn"
 						variant="ghost"
 						disabled={!selectedProvider || selectedProvider.status !== 'online' || isProcessing}
-						on:click={(_event: MouseEvent) => ) => processTask(task}
+						onclick={(_event: MouseEvent) => ) => processTask(task}
 						class="bits-btn h-auto p-3 flex flex-col items-start space-y-1"
 					>
 						<div class="flex items-center space-x-2">
@@ -289,7 +289,7 @@ https://svelte.dev/e/js_parse_error -->
 			<div class="flex items-center justify-center pt-4 border-t border-yorha-border">
 				<Button
 					disabled={!selectedProvider || selectedProvider.status !== 'online' || isProcessing}
-					on:click={(_event: MouseEvent) => processParallelTasks}
+					onclick={(_event: MouseEvent) => processParallelTasks}
 					class="bg-yorha-primary hover:bg-yorha-primary/80 bits-btn bits-btn"
 				>
 {#if isProcessing}
@@ -313,7 +313,7 @@ https://svelte.dev/e/js_parse_error -->
 					{#each processingResults as result ((result as { taskId?: any; success?: any; duration?: any; result?: any; metrics?: any }).taskId)}
 						<div
 							class="p-3 bg-yorha-bg-secondary rounded-md border border-yorha-border"
-							transitionfly={{ y: -20, duration: 300 }}
+							transitionfly={{ y: -20, duration 300 }}
 						>
 							<div class="flex items-center justify-between mb-2">
 								<div class="flex items-center space-x-2">

@@ -99,7 +99,7 @@
       </p>
     </div>
     {#if !isEditing}
-      <button type="button" on:click={generateCaseNumber} class="space-y-4"> Generate Case # </button>
+      <button type="button" onclick={generateCaseNumber} class="space-y-4"> Generate Case # </button>
     {/if}
   </div>
 
@@ -213,7 +213,7 @@
         {#each $form.tags || [] as tag}
           <span>
             {tag}
-            <button type="button" on:click={() => removeTag(tag)}> × </button>
+            <button type="button" onclick={() => removeTag(tag)}> × </button>
           </span>
         {/each}
       </div>
@@ -222,11 +222,11 @@
           type="text"
           id="tagInput"
           bind:value={tagInput}
-          on:keydown={handleTagKeydown}
+          onkeydown={handleTagKeydown}
           placeholder="Add a tag..."
           aria-label="Add tag"
         />
-        <button type="button" on:click={addTag}> Add Tag </button>
+        <button type="button" onclick={addTag}> Add Tag </button>
       </div>
       {#if $errors.tags}
         <p id="tags-error">{$errors.tags}</p>
@@ -247,7 +247,7 @@
     <div>
       <button
         type="button"
-        on:click={() => {
+        onclick={() => {
           /* Cancelled by user */
         }}
         disabled={$submitting}

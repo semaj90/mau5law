@@ -133,7 +133,7 @@
     }
   }
 
-  function handleSelection(suggestion: Suggestion) {
+  function handleSelection(suggestion Suggestion) {
     const suggestionText = suggestion.term || suggestion.suggestion || suggestion.text || suggestion.label || '';
     query = suggestionText;
     onSelect?.(suggestion);
@@ -238,7 +238,7 @@
       {placeholder}
       autocomplete="off"
       value={query}
-      on:input={e => {
+      oninput={e => {
         query = (e.target as HTMLInputElement).value;
         if (query.length >= 2) scheduleSearch(query);
         else {
@@ -248,10 +248,10 @@
           open = false;
         }
       }}
-      on:focus={() => {
+      onfocus={() => {
         if (query.length >= 2) open = true;
       }}
-      on:keydown={e => {
+      onkeydown={e => {
         if (e.key === 'Escape') {
           open = false;
           inputEl?.blur();
@@ -272,7 +272,7 @@
   {#if error}
     <div
       class="mt-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
-      transition:fade
+      transitionfade
     >
       <p class="text-sm text-red-800 dark:text-red-200">
         <span class="font-medium">Error:</span>
@@ -299,7 +299,7 @@
     <div
       class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-80 overflow-auto suggestions-scroll"
       style="z-index:50;"
-      transition:fly={{ y: -5, duration: 150 }}
+      transitionfly={{ y: -5, duration 150 }}
     >
       <!-- Regular Suggestions -->
       {#if suggestions.length > 0}
@@ -311,7 +311,7 @@
             {@const confidence = suggestion.confidence ?? suggestion.score ?? 0}
             <button
               class="w-full px-3 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-700 focus:bg-gray-50 dark:focus:bg-gray-700 focus:outline-none rounded border-b border-gray-100 dark:border-gray-700 last:border-b-0"
-              on:click={() => handleSelection(suggestion)}
+              onclick={() => handleSelection(suggestion)}
             >
               <div class="flex items-center gap-3">
                 <!-- merged classes into a single class attribute -->
@@ -382,7 +382,7 @@
           {#each taskSuggestions as task, index}
             <button
               class="w-full px-3 py-2 text-left hover:bg-blue-50 dark:hover:bg-blue-900/20 focus:bg-blue-50 dark:focus:bg-blue-900/20 focus:outline-none rounded border-b border-gray-100 dark:border-gray-700 last:border-b-0"
-              on:click={() => handleTaskSelection(task)}
+              onclick={() => handleTaskSelection(task)}
             >
               <div class="flex items-start justify-between">
                 <div class="flex-1">
@@ -453,7 +453,7 @@
     <div
       class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg p-4"
       style="z-index:50;"
-      transition:fade
+      transitionfade
     >
       <div class="text-center text-gray-500 dark:text-gray-400">
         <Brain class="w-8 h-8 mx-auto mb-2 opacity-50" />

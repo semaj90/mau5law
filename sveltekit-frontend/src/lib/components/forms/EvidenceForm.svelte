@@ -85,7 +85,7 @@
       >{/if}
   </div>
   <div class="space-y-4">
-    <Button class="bits-btn" type="button" variant="ghost" on:click={() =>
+    <Button class="bits-btn" type="button" variant="ghost" onclick={() =>
 // ondispatch removed}
       >Cancel</Button
     >
@@ -113,14 +113,14 @@
     cursor: pointer;
     font-size: 1rem;
     min-width: 160px;
-    transition: box-shadow 0.2;
+    transition box-shadow 0.2;
 }
   .select-trigger:focus {
     outline: none;
     box-shadow: 0 0 0 2px #6366f1;
 }
   .select-menu {
-    position: absolute;
+    position absolute;
     z-index: 50,
     background: white;
     border: 1px solid #e5e7eb;
@@ -133,7 +133,7 @@
   .select-menu > div {
     padding: 0.5rem 1rem;
     cursor: pointer;
-    transition: background 0.2;
+    transition background 0.2;
 }
   .select-menu > div:hover {
     background: #f3f4f6;

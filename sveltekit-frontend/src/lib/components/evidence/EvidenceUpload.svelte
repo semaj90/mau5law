@@ -22,7 +22,7 @@
   // Form data
   let evidenceData = $state({
     title: '',
-    description: '',
+    description '',
     evidenceType: 'document',
     tags: '',
     isAdmissible: true,
@@ -104,7 +104,7 @@
         id: Math.random().toString(36).substr(2, 9),
         file,
         title: file.name.replace(/\.[^/.]+$/, ''),
-        description: '',
+        description '',
         evidenceType: getEvidenceTypeFromMimeType(file.type),
         tags: '',
         isAdmissible: true,
@@ -201,7 +201,7 @@
   function resetForm() {
     evidenceData = {
       title: '',
-      description: '',
+      description '',
       evidenceType: 'document',
       tags: '',
       isAdmissible: true,
@@ -212,7 +212,7 @@
 
 <div class="evidence-upload-container">
   <!-- Upload Button -->
-  <Button on:click={() => (showUploadDialog = true)} class="w-full">
+  <Button onclick={() => (showUploadDialog = true)} class="w-full">
     <Upload class="w-4 h-4 mr-2" />
     Upload Evidence
   </Button>
@@ -242,7 +242,7 @@
           class="hidden"
           id="file-input"
         />
-        <Button on:click={() => document.getElementById('file-input').click()}>Select Files</Button>
+        <Button onclick={() => document.getElementById('file-input').click()}>Select Files</Button>
       </div>
 
       <!-- Selected Files -->
@@ -264,7 +264,7 @@
                       <h5 class="font-medium text-gray-900 truncate">
                         {fileData.title}
                       </h5>
-                      <Button size="sm" variant="ghost" on:click={() => removeFile(fileData.id)}>
+                      <Button size="sm" variant="ghost" onclick={() => removeFile(fileData.id)}>
                         <X class="w-4 h-4" />
                       </Button>
                     </div>
@@ -387,13 +387,13 @@
       <div class="flex justify-between items-center mt-6">
         <div class="flex gap-2">
           {#if selectedFiles.length > 0}
-            <Button variant="ghost" on:click={clearAllFiles}>Clear All</Button>
+            <Button variant="ghost" onclick={clearAllFiles}>Clear All</Button>
           {/if}
         </div>
 
         <div class="flex gap-2">
-          <Button variant="ghost" on:click={() => (showUploadDialog = false)}>Cancel</Button>
-          <Button on:click={uploadFiles} disabled={selectedFiles.length === 0 || isUploading}>
+          <Button variant="ghost" onclick={() => (showUploadDialog = false)}>Cancel</Button>
+          <Button onclick={uploadFiles} disabled={selectedFiles.length === 0 || isUploading}>
             {isUploading ? 'Uploading...' : `Upload ${selectedFiles.length} Files`}
           </Button>
         </div>

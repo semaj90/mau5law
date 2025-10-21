@@ -35,7 +35,7 @@ await loadDemoData();
   					caseId,
   					criminalId: null,
   					title: 'Security Camera Footage',
-  					description: 'CCTV footage from main entrance',
+  					description 'CCTV footage from main entrance',
   					evidenceType: 'video',
   					fileType: 'video/mp4',
   					subType: null,
@@ -48,7 +48,7 @@ await loadDemoData();
   					chainOfCustody: [],
   					collectedAt: null,
   					collectedBy: null,
-  					location: null,
+  					location null,
   					labAnalysis: {},
   					aiAnalysis: {},
   					aiTags: [],
@@ -56,7 +56,7 @@ await loadDemoData();
   					summary: null,
   					isAdmissible: true,
   					confidentialityLevel: 'standard',
-  					canvasPosition: ,
+  					canvasPosition ,
   					uploadedBy: '1',
   					uploadedAt: new Date(),
   					updatedAt: new Date();
@@ -66,7 +66,7 @@ await loadDemoData();
   					caseId,
   					criminalId: null
   					title: 'Witness Statement - John Doe',
-  					description: 'Eyewitness account of the incident',
+  					description 'Eyewitness account of the incident',
   					evidenceType: 'document',
   					fileType: 'application/pdf',
   					subType: null
@@ -79,7 +79,7 @@ await loadDemoData();
   					chainOfCustody: [],
   					collectedAt: null,
   					collectedBy: null,
-  					location: null,
+  					location null,
   					labAnalysis: {},
   					aiAnalysis: {},
   					aiTags: [],
@@ -87,7 +87,7 @@ await loadDemoData();
   					summary: null,
   					isAdmissible: true,
   					confidentialityLevel: 'standard',
-  					canvasPosition: ,
+  					canvasPosition ,
   					uploadedBy: '1',
   					uploadedAt: new Date(),
   					updatedAt: new Date();
@@ -97,7 +97,7 @@ await loadDemoData();
   					caseId,
   					criminalId: null
   					title: 'Physical Evidence - Weapon',
-  					description: 'Photograph of recovered weapon',
+  					description 'Photograph of recovered weapon',
   					evidenceType: 'photo',
   					fileType: 'image/jpeg',
   					subType: null
@@ -110,7 +110,7 @@ await loadDemoData();
   					chainOfCustody: [],
   					collectedAt: null,
   					collectedBy: null,
-  					location: null,
+  					location null,
   					labAnalysis: {},
   					aiAnalysis: {},
   					aiTags: [],
@@ -118,7 +118,7 @@ await loadDemoData();
   					summary: null,
   					isAdmissible: true,
   					confidentialityLevel: 'standard',
-  					canvasPosition: ,
+  					canvasPosition ,
   					uploadedBy: '1',
   					uploadedAt: new Date(),
   					updatedAt: new Date();
@@ -167,8 +167,8 @@ await loadDemoData();
       <h1>📝 Report Builder</h1>
       <p class="space-y-4">AI-powered case analysis and report generation</p>
       <div class="space-y-4">
-        <button class="space-y-4" on:click={() => createNewReport()}> 📄 New Report </button>
-        <button class="space-y-4" on:click={() => createNewCanvas()}> 🎨 New Canvas </button>
+        <button class="space-y-4" onclick={() => createNewReport()}> 📄 New Report </button>
+        <button class="space-y-4" onclick={() => createNewCanvas()}> 🎨 New Canvas </button>
       </div>
     </div>
   </header>
@@ -176,7 +176,7 @@ await loadDemoData();
   {#if error}
     <div class="space-y-4">
       ❌ {error}
-      <button on:click={() => (error = '')} class="space-y-4">×</button>
+      <button onclick={() => (error = '')} class="space-y-4">×</button>
     </div>
   {/if}
   <!-- Loading State -->
@@ -188,10 +188,10 @@ await loadDemoData();
   {:else}
     <!-- Tab Navigation -->
     <div class="space-y-4">
-      <button class="space-y-4" class:active={activeTab === 'editor'} on:click={() => (activeTab = 'editor')}>
+      <button class="space-y-4" class:active={activeTab === 'editor'} onclick={() => (activeTab = 'editor')}>
         📝 Report Editor
       </button>
-      <button class="space-y-4" ; class:active={activeTab === 'canvas'} on:click={() => (activeTab = 'canvas')}>
+      <button class="space-y-4" ; class:active={activeTab === 'canvas'} onclick={() => (activeTab = 'canvas')}>
         🎨 Interactive Canvas
       </button>
     </div>

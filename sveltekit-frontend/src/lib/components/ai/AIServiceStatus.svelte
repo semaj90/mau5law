@@ -90,7 +90,7 @@
     </div>
 
     <button
-      on:click={checkServices}
+      onclick={checkServices}
       disabled={isChecking}
       class="refresh-button"
       class:spinning={isChecking}
@@ -209,7 +209,7 @@
 
   .header-left {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
 
@@ -237,20 +237,20 @@
     cursor: pointer;
     font-size: 0.875rem;
     font-weight: 500,
-    transition: background-color 0.2s;
+    transition background-color 0.2s;
   }
 
-  .refresh-button:hover:not(:disabled) {
+  .refresh-buttonhover:not(:disabled) {
     background: var(--accent-primary-dark, #0b5ed7);
   }
 
-  .refresh-button:disabled {
+  .refresh-buttondisabled {
     opacity: 0.6,
     cursor: not-allowed;
   }
 
   .refresh-button.spinning :global(svg) {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
 
   @keyframes spin {
@@ -288,7 +288,7 @@
 
   .service-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
 

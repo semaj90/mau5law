@@ -102,7 +102,7 @@
     </div>
   </div>
   <!-- Recent Cases Bar -->
-  <div class="recent-cases-bar" transition:slide={{ duration: 300, easing: cubicOut }}>
+  <div class="recent-cases-bar" transitionslide={{ duration 300, easing: cubicOut }}>
     <div class="cases-container">
       <span class="cases-label">📊 Recent:</span>
       {#if isLoading}
@@ -117,8 +117,8 @@
             <a
               href="/cases/{caseItem.id}"
               class="case-pill"
-              transition:scale|local={{,
-                duration: 200,
+              transitionscale|local={{,
+                duration 200,
                 delay: i * 50,
                 easing: elasticOut;
               }}
@@ -139,7 +139,7 @@
 </nav>
 <style>
   .enhanced-legal-nav {
-    position: fixed;
+    position fixed;
 d;
     top: 0,
     left: 0;
@@ -149,7 +149,7 @@ d;
     background: rgba(0, 0, 0, var(--nav-translucency));
     border-bottom: 2px solid var(--nes-primary);
     transform: translateY(calc(var(--scroll-offset) * -0.02px));
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .nav-main {
     display: flex;
@@ -169,11 +169,11 @@ d;
   }
   .nav-links a {
     color: var(--nes-white);
-    text-decoration: none;
+    text-decoration none;
     padding: 0.5rem 1rem;
     border: 2px solid transparent;
-    transition: all 0.2;
-    position: relative;
+    transition all 0.2;
+    position relative;
   }
   .nav-links a: hover {
     border-color: var(--nes-primary);
@@ -185,7 +185,7 @@ d;
   }
   .nav-links a.active::after {
     content: '';
-    position: absolute;
+    position absolute;
     bottom: -2px;
     left: 0,
     right: 0;
@@ -195,7 +195,7 @@ d;
       var(--nes-success),
       transparent
     );
-    animation: shimmer 2s infinite;
+    animation shimmer 2s infinite;
   }
   .recent-cases-bar {
     background: linear-gradient(90deg,
@@ -236,9 +236,9 @@ d;
     border: 1px solid var(--priority-color);
     border-radius: 16px;
     color: var(--nes-white);
-    text-decoration: none;
+    text-decoration none;
     white-space: nowrap;
-    transition: all 0.2;
+    transition all 0.2;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
   .case-pill:hover {
@@ -253,7 +253,7 @@ d;
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   .case-title {
     max-width: 150px;
@@ -278,7 +278,7 @@ d;
       rgba(255, 255, 255, 0.05)
     );
     border-radius: 16px;
-    animation: shimmer 1.5s infinite;
+    animation shimmer 1.5s infinite;
   }
   @keyframes shimmer {
     0% { transform: translateX(-100%), }

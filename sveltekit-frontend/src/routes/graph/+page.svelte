@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:onclick) and new syntaxes for event handling is not allowed. Use only the ononclick syntax;
+<!-- @migration-task Error while migrating Svelte code: Mixing old (ononclick) and new syntaxes for event handling is not allowed. Use only the ononclick syntax;
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:onclick) and new syntaxes for event handling is not allowed. Use only the ononclick syntax -->
+<!-- @migration-task Error while migrating Svelte code: Mixing old (ononclick) and new syntaxes for event handling is not allowed. Use only the ononclick syntax -->
 <!--
   Graph Engine Page
   WASM Graph Engine with Neo4j Remote Query Caching
@@ -90,7 +90,7 @@ await loadEngineData();
   const commonQueries = [
     'MATCH (caseItem:Case) RETURN case LIMIT 5',
     'MATCH (evidence:Evidence)-[:BELONGS_TO]->(caseItem:Case) RETURN evidence, case LIMIT 3',
-    'MATCH (person:Person)-[:INVOLVED_IN]->(caseItem:Case) RETURN person, case LIMIT 3',
+    'MATCH (personPerson)-[:INVOLVED_IN]->(caseItem:Case) RETURN person, case LIMIT 3',
     'MATCH (doc:Document)-[:CONTAINS]->(evidence:Evidence) RETURN doc, evidence LIMIT 5'
   ];
 </script>
@@ -166,7 +166,7 @@ await loadEngineData();
       <div class="space-y-2">
         {#each hotQueries.slice(0, 3) as query}
           <button
-            on:click={() => useHotQuery(query.query)}
+            onclick={() => useHotQuery(query.query)}
             class="w-full text-left text-xs font-mono p-2 border border-nier-border-muted rounded hover:bg-nier-bg-tertiary transition-colors"
           >
             <div class="text-nier-text-primary truncate">
@@ -187,14 +187,14 @@ await loadEngineData();
       <h3 class="font-bold text-nier-accent-warm mb-3">Actions</h3>
       <div class="space-y-2">
         <ModernButton
-          on:click={hydrateCache}
+          onclick={hydrateCache}
           size="sm"
           class="w-full bg-blue-600 hover:bg-blue-700"
         >
           💧 Hydrate Cache
         </ModernButton>
         <ModernButton
-          on:click={loadEngineData}
+          onclick={loadEngineData}
           size="sm"
           variant="ghost"
           class="w-full border-green-500 text-green-400"
@@ -202,7 +202,7 @@ await loadEngineData();
           🔄 Refresh Stats
         </ModernButton>
         <ModernButton
-          on:click={() => unifiedServiceRegistry.clearCaches()}
+          onclick={() => unifiedServiceRegistry.clearCaches()}
           size="sm"
           variant="ghost"
           class="w-full border-red-500 text-red-400"
@@ -230,7 +230,7 @@ await loadEngineData();
       <!-- Action Buttons -->
       <div class="flex gap-4">
         <ModernButton
-          on:click={executeQuery}
+          onclick={executeQuery}
           disabled={isExecuting || !queryInput.trim()}
           class="bg-green-600 hover:bg-green-700"
         >
@@ -238,7 +238,7 @@ await loadEngineData();
         </ModernButton>
         {#if queryResult?.nodes?.length > 0}
           <ModernButton
-            on:click={getRecommendations}
+            onclick={getRecommendations}
             variant="ghost"
             class="border-blue-500 text-blue-400"
           >
@@ -254,7 +254,7 @@ await loadEngineData();
         <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
           {#each commonQueries as query}
             <button
-              on:click={() => { queryInput = query,}}
+              onclick={() => { queryInput = query,}}
               class="text-left text-xs font-mono p-2 border border-nier-border-muted rounded hover:bg-nier-bg-tertiary transition-colors"
             >
               {query}

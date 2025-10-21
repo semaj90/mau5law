@@ -75,17 +75,17 @@ Enhanced-bits UI integration with real-time progress and quality metrics
   ];
   // Document type options
   const documentTypes = [
-    { value: 'contract', label: '📄 Contract', description: 'Agreements, terms, obligations' },
-    { value: 'judgment', label: '⚖️ Court Judgment', description: 'Court decisions, rulings' },
-    { value: 'brief', label: '📝 Legal Brief', description: 'Arguments, case analysis' },
-    { value: 'statute', label: '📖 Statute/Law', description: 'Legal codes, regulations' }
+    { value: 'contract', label: '📄 Contract', description 'Agreements, terms, obligations' },
+    { value: 'judgment', label: '⚖️ Court Judgment', description 'Court decisions, rulings' },
+    { value: 'brief', label: '📝 Legal Brief', description 'Arguments, case analysis' },
+    { value: 'statute', label: '📖 Statute/Law', description 'Legal codes, regulations' }
   ];
   // Summary type options
   const summaryTypes = [
-    { value: 'executive', label: '🎯 Executive Summary', description: 'High-level overview for decision makers' },
-    { value: 'detailed', label: '📋 Detailed Analysis', description: 'Comprehensive breakdown with context' },
-    { value: 'bullet_points', label: '📌 Key Points', description: 'Structured bullet-point format' },
-    { value: 'legal_analysis', label: '⚖️ Legal Analysis', description: 'Legal implications and precedents' }
+    { value: 'executive', label: '🎯 Executive Summary', description 'High-level overview for decision makers' },
+    { value: 'detailed', label: '📋 Detailed Analysis', description 'Comprehensive breakdown with context' },
+    { value: 'bullet_points', label: '📌 Key Points', description 'Structured bullet-point format' },
+    { value: 'legal_analysis', label: '⚖️ Legal Analysis', description 'Legal implications and precedents' }
   ];
   // Check service health on mount
   $effect(() => {
@@ -321,7 +321,7 @@ await checkServiceHealth();
         </div>
         <!-- Generate Button -->
         <Button
-          on:click={generateSummary}
+          onclick={generateSummary}
           disabled={isProcessing || !documentContent.trim() || !documentTitle.trim() || serviceHealth === 'unavailable'}
           class="w-full"
         >
@@ -370,7 +370,7 @@ await checkServiceHealth();
             {/if}
           </div>
           {#if currentSummary}
-            <Button variant="ghost" size="sm" on:click={copySummary}>
+            <Button variant="ghost" size="sm" onclick={copySummary}>
               📋 Copy
             </Button>
           {/if}

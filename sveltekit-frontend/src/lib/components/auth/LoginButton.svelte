@@ -47,7 +47,7 @@
     <Button class="bits-btn"
         variant={variant}
         size={size}
-        on:click={handleLogout}
+        onclick={handleLogout}
         disabled={authStore.isLoading}
         aria-label="Sign out"
       >
@@ -58,7 +58,7 @@
     variant={variant}
     size={size}
     class={className}
-    on:click={handleLogin}
+    onclick={handleLogin}
     disabled={authStore.isLoading}
     aria-label="Sign in"
   >
@@ -72,7 +72,7 @@
   }
   .user-info {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: flex-end;
     font-size: 0.875rem;
   }

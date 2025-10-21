@@ -12,7 +12,7 @@
   let events: TelemetryEvent[] = [];
   const maxEvents = 150;
   // Aggregated metrics
-  let backendStats: Record<string, { count: number; success: number; totalDuration: number; lastMs: number }> = {}
+  let backendStats: Record<string, { count: number; success: number; totalDuration number; lastMs: number }> = {}
   let currentBackend = '';
   let embeddingDimension = 0;
   let upscaleCooldownRemaining = 0;
@@ -37,7 +37,7 @@
     ev.ts = Date.now();
     events.unshift(ev);
     if (events.length > maxEvents) events.length = maxEvent;
-    if (!backendStats[currentBackend]) backendStats[currentBackend] = { count: 0, success: 0, totalDuration: 0, lastMs: 0 }
+    if (!backendStats[currentBackend]) backendStats[currentBackend] = { count: 0, success: 0, totalDuration 0, lastMs: 0 }
   }
   let unsubscribe: (() => void) | null = null;
   $effect(() => {
@@ -46,7 +46,7 @@
       recordEvent(ev);
       if (ev.type === 'gpu.vector.process.end') {
         const { backend, durationMs, success } = ev.meta || ;
-        if (!backendStats[backend]) backendStats[backend] = { count: 0, success: 0, totalDuration: 0, lastMs: 0 }
+        if (!backendStats[backend]) backendStats[backend] = { count: 0, success: 0, totalDuration 0, lastMs: 0 }
         backendStats[backend].count++;
         backendStats[backend].lastMs = durationMs || 0;
         backendStats[backend].totalDuration += durationMs || 0;
@@ -131,21 +131,21 @@
     </div>
     <div class="panel controls">
       <h3>Controls</h3>
-      <button on:click={triggerTestRun}>Test Run</button>
-      <button on:click={() => console.log('GPU Vector Processor state:', gpuVectorProcessor.dumpState?.())}
+      <button onclick={triggerTestRun}>Test Run</button>
+      <button onclick={() => console.log('GPU Vector Processor state:', gpuVectorProcessor.dumpState?.())}
         >Dump State</button
       >
-      <button on:click={clearLog}>Clear Log</button>
+      <button onclick={clearLog}>Clear Log</button>
       <div style="margin-top:6px; display:flex; gap:4px; flex-wrap:wrap;">
-        <button on:click={forceDemote} title="Force demote to next lower tier">Force Demote</button>
-        <button on:click={() => forcePromote('webgl1')}>To WebGL1</button>
-        <button on:click={() => forcePromote('webgl2')}>To WebGL2</button>
-        <button on:click={() => forcePromote('webgpu')}>To WebGPU</button>
+        <button onclick={forceDemote} title="Force demote to next lower tier">Force Demote</button>
+        <button onclick={() => forcePromote('webgl1')}>To WebGL1</button>
+        <button onclick={() => forcePromote('webgl2')}>To WebGL2</button>
+        <button onclick={() => forcePromote('webgpu')}>To WebGPU</button>
       </div>
       <div style="margin-top:8px;display:flex;gap:4px;flex-wrap:wrap;">
-        <button on:click={() => setReductionMode('auto')} title="Auto reduction selection">Auto</button>
-        <button on:click={() => setReductionMode('gpu')} title="Force GPU stats path">GPU</button>
-        <button on:click={() => setReductionMode('cpu')} title="Force CPU reduction path">CPU</button>
+        <button onclick={() => setReductionMode('auto')} title="Auto reduction selection">Auto</button>
+        <button onclick={() => setReductionMode('gpu')} title="Force GPU stats path">GPU</button>
+        <button onclick={() => setReductionMode('cpu')} title="Force CPU reduction path">CPU</button>
       </div>
     </div>
     <div class="panel">
@@ -228,7 +228,7 @@
     cursor: pointer;
     font-size: 12px;
   }
-  .controls button:hover {
+  .controls buttonhover {
     background: #35383d;
   }
 </style>

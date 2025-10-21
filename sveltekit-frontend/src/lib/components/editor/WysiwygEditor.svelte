@@ -56,12 +56,12 @@ await initializeEditor();
         getContent: () => content,
         setContent: (newContent: string) => content = newContent,
         destroy: () => ,
-        on: () => ,
+        on () => ,
         off: () => ,
         ui: {
           registry: {
-            addButton: () => ,
-            addIcon: () => }
+            addButton () => ,
+            addIcon () => }
         },
         config: {
           readonly,
@@ -116,13 +116,13 @@ await initializeEditor();
             editor.ui.registry.addButton('ai-assistant', {
               text: '🤖 AI',
               tooltip: 'AI Assistant',
-              onAction: () => openAIAssistant(editor.selection.getContent());
+              onAction () => openAIAssistant(editor.selection.getContent());
             });
             // Custom Citation Helper button
             editor.ui.registry.addButton('citation-helper', {
               text: '📚 Cite',
               tooltip: 'Citation Helper',
-              onAction: () => openCitationHelper(editor.selection.getContent());
+              onAction () => openCitationHelper(editor.selection.getContent());
             });
             // Auto-save functionality
             editor.on('NodeChange', () => {
@@ -145,7 +145,7 @@ await initializeEditor();
             ondispatch?.({ content: hugerte.getContent() });
           },
           autosave_interval: '10s',
-          autosave_retention: '30m',
+          autosave_retention '30m',
           // Legal document specific settings
           spellchecker_language: 'en_US',
           spellchecker_whitelist: ['appellant', 'appellee', 'plaintiff', 'defendant', 'jurisdiction'],
@@ -192,14 +192,14 @@ await initializeEditor();
           options: {
             maxSources: 5,
             provider: 'auto',
-            enableLegalClassification: true,
+            enableLegalClassification true,
   }
         })
       });
       const data = await response.json();
       if (data.success) {
         aiResults = data.data.answer;
-        ondispatch?.({ selectedText, action: aiQuery });
+        ondispatch?.({ selectedText, action aiQuery });
       } else {
         aiResults = 'Sorry, I encountered an error processing your request.';
   }
@@ -224,14 +224,14 @@ await initializeEditor();
       if (data.success) {
         citationResults = data.results.map((r: unknown) => ({,
           title: r.title,
-          citation: r.citation,
+          citation r.citation,
           relevance: r.similarity;
         }));
   }
     } catch (error) {
       console.error('Citation search failed:', error);
   }}
-  function insertCitation(citation: unknown) {/* JSX syntax converted to Svelte */}</em>
+  function insertCitation(citation unknown) {/* JSX syntax converted to Svelte */}</em>
         </div>
       `;
       hugerte.insertContent(citationHtml);
@@ -297,7 +297,7 @@ editing
           rows="4"
           class="space-y-4"
         ></textarea>
-        <button on:click={() => processAIRequest()} disabled={isProcessingAI || !aiQuery.trim()} class="space-y-4">
+        <button onclick={() => processAIRequest()} disabled={isProcessingAI || !aiQuery.trim()} class="space-y-4">
           {#if isProcessingAI}
             Processing...
           {:else}
@@ -308,7 +308,7 @@ editing
           <div class="space-y-4">
             <strong>AI Response:</strong>
             <div class="space-y-4">{aiResults}</div>
-            <button on:click={() => insertAIContent()} class="space-y-4"> Insert into Document </button>
+            <button onclick={() => insertAIContent()} class="space-y-4"> Insert into Document </button>
           </div>
         {/if}
       </div>
@@ -331,7 +331,7 @@ editing
           placeholder="Enter legal concept, case name, or statute..."
           class="space-y-4"
         />
-        <button on:click={() => searchCitations()} disabled={!citationQuery.trim()} class="space-y-4"> Search </button>
+        <button onclick={() => searchCitations()} disabled={!citationQuery.trim()} class="space-y-4"> Search </button>
         {#if citationResults.length > 0}
           <div class="space-y-4">
             <h4>Found Citations:</h4>
@@ -342,7 +342,7 @@ editing
                 <div class="space-y-4">
                   Relevance: {Math.round(citation.relevance * 100)}%
                 </div>
-                <button on:click={() => insertCitation(citation)} class="space-y-4"> Insert Citation </button>
+                <button onclick={() => insertCitation(citation)} class="space-y-4"> Insert Citation </button>
               </div>
             {/each}
           </div>
@@ -379,7 +379,7 @@ editing
     background: white;
     border: 1px solid #d1d5db;
     border-radius: 0.25rem;
-    transition: background-color 0.2;
+    transition background-color 0.2;
     cursor: pointer;
 }
   .toolbar-btn:hover {
@@ -409,7 +409,7 @@ editing
     width: 100%;
 }
   .dialog-overlay {
-    position: fixed;
+    position fixed;
 d;
     top: 0,
     left: 0;
@@ -428,7 +428,7 @@ d;
     padding: 1.5rem;
 }
   .dialog-close {
-    position: absolute;
+    position absolute;
     top: 1rem;
     right: 1rem;
     color: #6b7280;
@@ -480,7 +480,7 @@ d;
     padding: 0.75rem;
     margin-bottom: 0.75rem;
     cursor: pointer;
-    transition: background-color 0.2;
+    transition background-color 0.2;
 }
   .citation-item:hover {
     background: #f9fafb;
@@ -503,7 +503,7 @@ d;
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
     font-weight: 500,
-    transition: background-color 0.2;
+    transition background-color 0.2;
     cursor: pointer;
     border: none;
 }

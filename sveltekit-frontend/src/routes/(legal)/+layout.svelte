@@ -58,7 +58,7 @@
 
   @media (max-width: 768px) {
     .legal-content {
-      flex-direction: column;
+      flex-direction column;
     }
 
     .legal-sidebar {

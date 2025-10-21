@@ -165,7 +165,7 @@ Automatically handles server upload with localStorage fallback
     role="button"
     aria-label="Drop zone"
     tabindex="0"
-    on:click={openFileSelector}
+    onclick={openFileSelector}
     onkeydown={(e) => e.key === 'Enter' && openFileSelector()}
   >
     <div class="drop-zone-content">
@@ -217,7 +217,7 @@ Automatically handles server upload with localStorage fallback
     <div class="results-container">
       <div class="results-header">
         <h4>Upload Results</h4>
-        <button class="clear-btn" on:click={clearResults}>Clear</button>
+        <button class="clear-btn" onclick={clearResults}>Clear</button>
       </div>
       <div class="results-list">
         {#each uploadResults as result}
@@ -267,7 +267,7 @@ Automatically handles server upload with localStorage fallback
   .storage-fill {
     height: 100%;
     background-color: #3b82f6;
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .storage-fill.warning {
     background-color: #f59e0b;
@@ -285,7 +285,7 @@ Automatically handles server upload with localStorage fallback
     padding: 2rem;
     text-align: center;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     background-color: #f9fafb;
   }
   .drop-zone:hover {
@@ -329,7 +329,7 @@ Automatically handles server upload with localStorage fallback
     border: 2px solid #e5e7eb;
     border-top: 2px solid #3b82f6;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     0% { transform: rotate(0deg), }
@@ -349,7 +349,7 @@ Automatically handles server upload with localStorage fallback
   .progress-fill {
     height: 100%;
     background-color: #10b981;
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .error-message {
     margin-top: 1rem;

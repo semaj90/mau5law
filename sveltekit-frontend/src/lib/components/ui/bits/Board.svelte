@@ -183,7 +183,7 @@
         <button
           class="nes-btn is-small"
           class:is-primary={layoutMode === 'freeform'}
-          on:click={() => setLayoutMode('freeform')}
+          onclick={() => setLayoutMode('freeform')}
           title="Freeform Layout"
         >
           <Layout class="w-4 h-4" />
@@ -191,7 +191,7 @@
         <button
           class="nes-btn is-small"
           class:is-primary={layoutMode === 'grid'}
-          on:click={() => setLayoutMode('grid')}
+          onclick={() => setLayoutMode('grid')}
           title="Grid Layout"
         >
           <Grid class="w-4 h-4" />
@@ -199,23 +199,23 @@
       </div>
       <!-- Zoom Controls -->
       <div class="flex gap-1">
-        <button class="nes-btn is-small" on:click={zoomOut} title="Zoom Out">-</button>
+        <button class="nes-btn is-small" onclick={zoomOut} title="Zoom Out">-</button>
         <span class="px-2 py-1 text-sm bg-gray-100 rounded">
           {Math.round(zoomLevel * 100)}%
         </span>
-        <button class="nes-btn is-small" on:click={zoomIn} title="Zoom In">+</button>
-        <button class="nes-btn is-small" on:click={resetZoom} title="Reset Zoom">
+        <button class="nes-btn is-small" onclick={zoomIn} title="Zoom In">+</button>
+        <button class="nes-btn is-small" onclick={resetZoom} title="Reset Zoom">
           <RotateCcw class="w-4 h-4" />
         </button>
       </div>
       <!-- Board Actions -->
-      <button class="nes-btn is-small" on:click={autoArrange} title="Auto Arrange">
+      <button class="nes-btn is-small" onclick={autoArrange} title="Auto Arrange">
         <Layout class="w-4 h-4" />
       </button>
-      <button class="nes-btn is-small is-success" on:click={saveBoard} title="Save Board">
+      <button class="nes-btn is-small is-success" onclick={saveBoard} title="Save Board">
         <Save class="w-4 h-4" />
       </button>
-      <button class="nes-btn is-small" on:click={toggleFullscreen} title="Fullscreen">
+      <button class="nes-btn is-small" onclick={toggleFullscreen} title="Fullscreen">
         {#if isFullscreen}
           <Minimize2 class="w-4 h-4" />
         {:else}
@@ -336,11 +336,11 @@ linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px), {}
   }
 /* Smooth transitions for zoom */ {}
   div[style*="transform: scale"] {,
-    transition: transform 0.2s ease-out;
+    transition transform 0.2s ease-out;
   }
 /* Connection lines animation */ {}
   svg path {
-    animation: dash 5s linear infinite;
+    animation dash 5s linear infinite;
   }
   @keyframes dash {
     to {

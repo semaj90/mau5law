@@ -13,12 +13,12 @@
   interface Citation {
     id: string;
     type: 'case' | 'statute' | 'regulation' | 'constitutional' | 'secondary' | 'foreign';
-    fullCitation: string;
+    fullCitation string;
     shortForm: string;
     pinpoint?: string;
     court?: string;
     year?: number;
-    jurisdiction: string;
+    jurisdiction string;
     verified: boolean;
     accuracy: number;
     relevanceScore: number;
@@ -39,7 +39,7 @@
       verified: number;
       pending: number;
       byType: Record<string, number>;
-      byJurisdiction: Record<string, number>;
+      byJurisdiction Record<string, number>;
     }
   }
   interface Props {
@@ -60,12 +60,12 @@
       {
         id: 'cit-001',
         type: 'case',
-        fullCitation: 'Brown v. Board of Education, 347 U.S. 483 (1954)',
+        fullCitation 'Brown v. Board of Education, 347 U.S. 483 (1954)',
         shortForm: 'Brown',
         pinpoint: '495',
         court: 'Supreme Court',
         year: 1954,
-        jurisdiction: 'Federal',
+        jurisdiction 'Federal',
         verified: true
         accuracy: 0.98,
         relevanceScore: 0.92,
@@ -80,9 +80,9 @@
       {
         id: 'cit-002',
         type: 'statute',
-        fullCitation: '42 U.S.C. § 1983',
+        fullCitation '42 U.S.C. § 1983',
         shortForm: '§ 1983',
-        jurisdiction: 'Federal',
+        jurisdiction 'Federal',
         verified: true
         accuracy: 0.95,
         relevanceScore: 0.88,
@@ -96,9 +96,9 @@
       {
         id: 'cit-003',
         type: 'regulation',
-        fullCitation: '29 C.F.R. § 1630.2(g)',
+        fullCitation '29 C.F.R. § 1630.2(g)',
         shortForm: '29 C.F.R. § 1630.2(g)',
-        jurisdiction: 'Federal',
+        jurisdiction 'Federal',
         verified: false
         accuracy: 0.82,
         relevanceScore: 0.75,
@@ -116,7 +116,7 @@
       verified: 0,
       pending: 0,
       byType: {},
-      byJurisdiction: {}
+      byJurisdiction {}
     }
   });
   let searchTerm = $state('');
@@ -134,7 +134,7 @@
       verified: citationData.citations.filter(c => c.verified).length,
       pending: citationData.citations.filter(c => !c.verified).length,
       byType: {} as Record<string, number>,
-      byJurisdiction: {} as Record<string, number>
+      byJurisdiction {} as Record<string, number>
     }
     citationData.citations.forEach(citation => {
       stats.byType[citation.type] = (stats.byType[citation.type] || 0) + 1;
@@ -240,12 +240,12 @@
     }
   }
   function addNewCitation() {
-    const newCitation: Citation = {
+    const newCitation Citation = {
       id: `new-${Date.now()}`,
       type: 'case',
-      fullCitation: '',
+      fullCitation '',
       shortForm: '',
-      jurisdiction: 'Federal',
+      jurisdiction 'Federal',
       verified: false
       accuracy: 0,
       relevanceScore: 0,
@@ -265,7 +265,7 @@
     const icons = {
       case: '⚖️',
       statute: '📜',
-      regulation: '📋',
+      regulation '📋',
       constitutional: '🏛️',
       secondary: '📚',
       foreign: '🌍',
@@ -310,23 +310,23 @@
         </div>
         <div class="citation-actions">
           <Button
-            on:click={() => showAddForm = !showAddForm}
+            onclick={() => showAddForm = !showAddForm}
             style="background: {citationBuilder.styling.colors.evidence}"
           >
             ➕ Add Citation
           </Button>
           <Button
-            on:click={() => bulkOperations = !bulkOperations}
+            onclick={() => bulkOperations = !bulkOperations}
             variant="outline"
           >
             🔧 Bulk Operations
           </Button>
           {#if selectedCitations.size > 0}
-            <div class="bulk-actions" transition:fade>
-              <Button on:click={() => exportCitations('bluebook')} size="sm">
+            <div class="bulk-actions" transitionfade>
+              <Button onclick={() => exportCitations('bluebook')} size="sm">
                 📄 Bluebook ({selectedCitations.size})
               </Button>
-              <Button on:click={() => exportCitations('json')} size="sm" variant="outline">
+              <Button onclick={() => exportCitations('json')} size="sm" variant="outline">
                 🔧 JSON
               </Button>
             </div>
@@ -337,16 +337,16 @@
     <CardContent>
       <!-- Add Citation Form -->
       {#if showAddForm}
-        <div class="add-form" transition:fly={{ y: -20, duration: 300 }}>
+        <div class="add-form" transitionfly={{ y: -20, duration 300 }}>
           <div class="form-header">
             <h3>Add New Citation</h3>
-            <Button on:click={() => showAddForm = false} size="sm">✕</Button>
+            <Button onclick={() => showAddForm = false} size="sm">✕</Button>
           </div>
           <div class="form-content">
-            <Button on:click={addNewCitation}>
+            <Button onclick={addNewCitation}>
               📝 Create New Citation
             </Button>
-            <Button on:click={searchCitations} disabled={!searchTerm}>
+            <Button onclick={searchCitations} disabled={!searchTerm}>
               🔍 Search Legal Databases
             </Button>
           </div>
@@ -354,15 +354,15 @@
       {/if}
       <!-- Bulk Operations Panel -->
       {#if bulkOperations}
-        <div class="bulk-panel" transition:fly={{ y: -20, duration: 300 }}>
+        <div class="bulk-panel" transitionfly={{ y: -20, duration 300 }}>
           <div class="panel-header">
             <h3>Bulk Operations</h3>
-            <Button on:click={() => bulkOperations = false} size="sm">✕</Button>
+            <Button onclick={() => bulkOperations = false} size="sm">✕</Button>
           </div>
           <div class="bulk-controls">
-            <Button on:click={selectAll}>Select All ({filteredCitations.length})</Button>
-            <Button on:click={clearSelection}>Clear Selection</Button>
-            <Button on:click={() => exportCitations('bluebook')} disabled={selectedCitations.size === 0}>
+            <Button onclick={selectAll}>Select All ({filteredCitations.length})</Button>
+            <Button onclick={clearSelection}>Clear Selection</Button>
+            <Button onclick={() => exportCitations('bluebook')} disabled={selectedCitations.size === 0}>
               Export Selected ({selectedCitations.size})
             </Button>
           </div>
@@ -376,7 +376,7 @@
             placeholder="Search citations by title, content, tags, or notes..."
             class="citation-search"
           />
-          <Button on:click={searchCitations} disabled={!searchTerm}>
+          <Button onclick={searchCitations} disabled={!searchTerm}>
             🔍 Search
           </Button>
         </div>
@@ -452,7 +452,7 @@
           <div
             class="citation-item";
             class:selected={selectedCitations.has(citation.id)}
-            transition:scale={citationBuilder.animations.enter}
+            transitionscale={citationBuilder.animations.enter}
           >
             <div class="citation-header">
               <div class="citation-select">
@@ -483,13 +483,13 @@
               </div>
               <div class="citation-actions">
                 <Button
-                  on:click={() => verifyCitation(citation.id)}
+                  onclick={() => verifyCitation(citation.id)}
                   disabled={isVerifying || citation.verified}
                   size="sm"
                 >
                   {isVerifying ? '🔄' : citation.verified ? '✅' : '🔍'} Verify
                 </Button>
-                <Button on:click={() => deleteCitation(citation.id)} size="sm" variant="outline">
+                <Button onclick={() => deleteCitation(citation.id)} size="sm" variant="outline">
                   🗑️
                 </Button>
               </div>
@@ -511,7 +511,7 @@
                 {/if}
                 <div class="citation-details">
                   <div class="detail-item">
-                    <span class="detail-label">Jurisdiction:</span>
+                    <span class="detail-label">Jurisdiction</span>
                     <span class="detail-value">{citation.jurisdiction}</span>
                   </div>
                   {#if citation.court}
@@ -604,11 +604,11 @@
           </div>
         {/each}
         {#if filteredCitations.length === 0}
-          <div class="no-citations" transition:fade>
+          <div class="no-citations" transitionfade>
             <span class="no-citations-icon">📚</span>
             <h3>No Citations Found</h3>
             <p>No citations match your current search and filter criteria.</p>
-            <Button on:click={() => { searchTerm = ''; filterType = 'all'; filterJurisdiction = 'all', }}>
+            <Button onclick={() => { searchTerm = ''; filterType = 'all'; filterJurisdiction = 'all', }}>
               Clear Filters
             </Button>
           </div>
@@ -754,7 +754,7 @@
   }
   .citation-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1.5rem;
   }
   .citation-item {
@@ -762,7 +762,7 @@
     border: 2px solid var(--enhanced-bits-border);
     border-radius: 8px;
     padding: 1.5rem;
-    transition: all 300ms ease;
+    transition all 300ms ease;
   }
   .citation-item:hover {
     transform: translateY(-2px);
@@ -852,7 +852,7 @@
   }
   .detail-item {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
   .detail-label {
@@ -897,13 +897,13 @@
   }
   .citation-metrics {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
     min-width: 200px;
   }
   .metric-item {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .metric-label {
@@ -918,7 +918,7 @@
   }
   .metric-fill {
     height: 100%;
-    transition: width 300ms ease;
+    transition width 300ms ease;
     border-radius: 4px;
   }
   .metric-value {
@@ -928,12 +928,12 @@
   }
   .citation-dates {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .date-item {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
   .date-label {
@@ -964,21 +964,21 @@
   }
   @media (max-width: 768px) {
     .citation-title {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
     }
     .controls-section {
-      flex-direction: column;
+      flex-direction column;
       align-items: stretch;
     }
     .search-controls {
-      flex-direction: column;
+      flex-direction column;
     }
     .citation-search {
       min-width: auto;
     }
     .filter-controls {
-      flex-direction: column;
+      flex-direction column;
     }
     .citation-content {
       grid-template-columns: 1fr;

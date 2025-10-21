@@ -2,12 +2,41 @@ import IORedis from 'ioredis';
 import { createRedisInstance } from '$lib/server/redis.js';
 import { createHash } from 'crypto'; // Import createHash for hashing
 
-// Initialize a shared Redis client instance
-const redisClient = createRedisInstance(); // Fix: Call without arguments as per error message
+// Defensive Redis client wrapper: try to create a real client, but fall back to a no-op proxy
+let redisClient: IORedis | null = null;
+let redisAvailable = false;
 
-// Helper to get the Redis client
+try {
+  // createRedisInstance may throw if environment is not configured or Redis is unavailable
+  // It's okay if this runs during SSR; we catch and fall back to a safe proxy below
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  redisClient = createRedisInstance();
+  if (redisClient) {
+    redisAvailable = true;
+    // Attach an error handler so unhandled errors don't crash the process
+    // Some ioredis types can be strict; cast to a minimal shape to attach handler safely
+    const rc = redisClient as unknown as { on?: (ev: string, cb: (err: unknown) => void) => void };
+    rc.on?.('error', (err: unknown) => {
+      console.warn('Redis client error (caught):', err);
+    });
+  }
+} catch (err) {
+  console.warn('Redis client initialization failed, falling back to no-op proxy:', err);
+  redisClient = null;
+}
+
+// Basic no-op proxy to avoid runtime calls when redis is not available
+const noopHandler = {
+  get(_target: unknown) {
+    // Return an async no-op function for any function access
+    return async (..._args: unknown[]) => undefined;
+  },
+};
+
+// Helper to get the Redis client (or no-op proxy) without throwing
 async function getRedisClient(): Promise<IORedis> {
-  return redisClient;
+  if (redisAvailable && redisClient) return redisClient;
+    return new Proxy({}, noopHandler) as IORedis;
 }
 
 // Helper to call Redis commands, handling potential type issues or different ioredis versions

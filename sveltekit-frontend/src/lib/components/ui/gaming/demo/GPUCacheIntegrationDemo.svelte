@@ -38,12 +38,12 @@
   });
   // NES memory visualization
   let nesMemoryBanks = $state([
-    { region: 'PRG_ROM', utilization: 75, status: 'active' },
-    { region: 'CHR_ROM', utilization: 60, status: 'cached' },
-    { region: 'RAM', utilization: 45, status: 'active' },
-    { region: 'PPU_MEMORY', utilization: 80, status: 'optimized' },
-    { region: 'SPRITE_MEMORY', utilization: 30, status: 'idle' },
-    { region: 'PALETTE_MEMORY', utilization: 90, status: 'full' },
+    { region 'PRG_ROM', utilization 75, status: 'active' },
+    { region 'CHR_ROM', utilization 60, status: 'cached' },
+    { region 'RAM', utilization 45, status: 'active' },
+    { region 'PPU_MEMORY', utilization 80, status: 'optimized' },
+    { region 'SPRITE_MEMORY', utilization 30, status: 'idle' },
+    { region 'PALETTE_MEMORY', utilization 90, status: 'full' },
   ]);
   $effect(() => {
     // Initialize XState machine
@@ -75,7 +75,7 @@
         // Update NES memory visualization
         nesMemoryBanks = nesMemoryBanks.map(bank => ({
           ...bank,
-          utilization: Math.min(100, Math.max(10, bank.utilization + (Math.random() - 0.5) * 10)),
+          utilization Math.min(100, Math.max(10, bank.utilization + (Math.random() - 0.5) * 10)),
         }));
       }, 2000);
     }
@@ -239,7 +239,7 @@
     color: var(--gpu-cache-text-primary);
     font-family: monospace;
     border-radius: 4px;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .era-button.active {
     background: var(--gpu-cache-accent-primary);
@@ -286,7 +286,7 @@
   .memory-bank-fill {
     height: 100%;
     background: var(--gpu-cache-accent-primary);
-    transition: width 0.5s ease;
+    transition width 0.5s ease;
   }
   .metrics-grid {
     display: grid;
@@ -320,7 +320,7 @@
   .metric-bar-fill {
     height: 100%;
     background: linear-gradient(90deg, var(--gpu-cache-accent-secondary), var(--gpu-cache-accent-primary));
-    transition: width 0.5s ease;
+    transition width 0.5s ease;
   }
   .state-machine-diagram {
     display: flex;
@@ -335,13 +335,13 @@
     font-family: monospace;
     font-size: 0.75rem;
     color: var(--gpu-cache-text-secondary);
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .state-node.active {
     background: var(--gpu-cache-accent-primary);
     color: var(--gpu-cache-bg-primary);
     box-shadow: var(--gpu-glow-primary);
-    animation: pulse 1s ease-in-out infinite alternate;
+    animation pulse 1s ease-in-out infinite alternate;
   }
   @keyframes pulse {
     from {
@@ -365,22 +365,22 @@
   }
   .cache-status-indicator.querying {
     background: var(--gpu-cache-state-querying);
-    animation: var(--gpu-cache-animation-processing);
+    animation var(--gpu-cache-animation-processing);
   }
   .cache-status-indicator.backgroundRefreshing {
     background: var(--gpu-cache-state-refreshing);
-    animation: var(--gpu-cache-animation-refreshing);
+    animation var(--gpu-cache-animation-refreshing);
   }
   /* YoRHa quantum interface */
   .yorha-quantum-interface {
-    position: relative;
+    position relative;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 200px;
   }
   .quantum-effect-container {
-    position: relative;
+    position relative;
     z-index: 2,
   }
   .yorha-quantum-button {
@@ -392,16 +392,16 @@
     font-weight: bold;
     border-radius: 8px;
     box-shadow: var(--gpu-glow-secondary);
-    transition: all 0.3s ease;
-    position: relative;
+    transition all 0.3s ease;
+    position relative;
     overflow: hidden;
   }
-  .yorha-quantum-button:hover {
+  .yorha-quantum-buttonhover {
     box-shadow: var(--gpu-glow-primary);
     transform: scale(1.05);
   }
   .quantum-particles {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -409,7 +409,7 @@
     background:
       radial-gradient(circle at 20% 30%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
       radial-gradient(circle at 80% 70%, rgba(255, 0, 255, 0.1) 0%, transparent 50%);
-    animation: float 4s ease-in-out infinite alternate;
+    animation float 4s ease-in-out infinite alternate;
   }
   @keyframes float {
     from {

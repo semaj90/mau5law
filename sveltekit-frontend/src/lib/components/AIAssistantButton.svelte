@@ -27,7 +27,7 @@
       status,
       time,
       error,
-      timestamp: Date.now();
+      timestamp: Date.now()
     }, ...apiLogs.slice(0, 9)];
   }
   const testGemma3 = async () => {
@@ -39,14 +39,14 @@
       const response = await fetch('http://localhost:11434/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           model: 'gemma3-legal',
           prompt: query || 'Legal AI status check',
           stream: false,
           options: {
             temperature: 0.1,
             num_ctx: 4096,
-            num_gpu: 1 // Force GPU;
+            num_gpu: 1 // Force GPU
           }
         })
       });
@@ -85,12 +85,12 @@
       const response = await fetch('/api/evidence/synthesize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           evidenceIds: ['test-1', 'test-2'],
           synthesisType: 'correlation',
           caseId: 'api-test',
           title: 'API Validation Test',
-          prompt: query;
+          prompt: query
         })
       });
       const time = Date.now() - startTime;
@@ -128,9 +128,9 @@
       const response = await fetch('/api/enhanced-rag/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           query: query || 'legal evidence analysis',
-          useContextRAG: true
+          useContextRAG: true,
           maxResults: 10,
         })
       });
@@ -171,7 +171,7 @@
   <!-- Action Buttons -->
   <div class="grid grid-cols-3 gap-3">
     <Button.Root
-      on:click={testGemma3}
+      onclick={testGemma3}
       disabled={isProcessing}
       class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn"
     >
@@ -183,7 +183,7 @@
       Gemma3
     </Button.Root>
     <Button.Root
-      on:click={testSynthesis}
+      onclick={testSynthesis}
       disabled={isProcessing}
       class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white bits-btn bits-btn"
     >
@@ -195,7 +195,7 @@
       Synthesis
     </Button.Root>
     <Button.Root
-      on:click={testRAG}
+      onclick={testRAG}
       disabled={isProcessing}
       class="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white bits-btn bits-btn"
     >
@@ -236,4 +236,4 @@
     </div>
   {/if}
 </div>
-;
+

@@ -20,7 +20,7 @@
   interface Props {
     caseId: string;
     selectedEvidenceIds?: string[];
-    onSuggestionClick?: (suggestion: any) => void;
+    onSuggestionClick?: (suggestion any) => void;
     onInsightClick?: (insight: any) => void;
   }
   let {
@@ -36,7 +36,7 @@
   let isTyping = $state(false);
   let gpuStatus = $state({
     available: false,
-    utilization: 0,
+    utilization 0,
     model: 'none',
     queue_length: 0,
   });
@@ -84,7 +84,7 @@ await initializeAssistant();
       const status = await gpuAIService.getServerStatus();
       gpuStatus = {
         available: status.gpu_available,
-        utilization: status.gpu_utilization,
+        utilization status.gpu_utilization,
         model: status.model_loaded,
         queue_length: status.queue_length;
       }
@@ -235,7 +235,7 @@ await initializeAssistant();
       sendMessage();
     }
   }
-  function handleSuggestionClick(suggestion: any) {
+  function handleSuggestionClick(suggestion any) {
     onSuggestionClick?.(suggestion);
     // Auto-follow suggestion
     if (suggestion.action) {
@@ -352,7 +352,7 @@ await initializeAssistant();
                 {#each message.suggestions as suggestion}
                   <button
                     class="block w-full text-left p-2 rounded border border-current/20 hover:bg-current/10 transition-colors"
-                    on:click={() => handleSuggestionClick(suggestion)}
+                    onclick={() => handleSuggestionClick(suggestion)}
                   >
                     <div class="flex items-center gap-2">
                       <Brain class="w-3 h-3" />
@@ -417,7 +417,7 @@ await initializeAssistant();
       <Button
         size="sm"
         variant="ghost"
-        on:click={analyzeSelectedEvidence}
+        onclick={analyzeSelectedEvidence}
         disabled={selectedEvidenceIds.length === 0 || isStreaming}
         class="text-xs"
       >
@@ -427,7 +427,7 @@ await initializeAssistant();
       <Button
         size="sm"
         variant="ghost"
-        on:click={suggestInvestigationSteps}
+        onclick={suggestInvestigationSteps}
         disabled={isStreaming}
         class="text-xs"
       >
@@ -437,7 +437,7 @@ await initializeAssistant();
       <Button
         size="sm"
         variant="ghost"
-        on:click={identifyEvidenceGaps}
+        onclick={identifyEvidenceGaps}
         disabled={isStreaming}
         class="text-xs"
       >
@@ -456,7 +456,7 @@ await initializeAssistant();
         class="flex-1"
       />
       <Button
-        on:click={sendMessage}
+        onclick={sendMessage}
         disabled={!currentMessage.trim() || isStreaming}
         size="sm"
       >

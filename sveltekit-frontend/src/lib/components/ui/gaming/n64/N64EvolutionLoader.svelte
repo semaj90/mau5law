@@ -29,21 +29,21 @@
     nes: {
       pixelSize: 8,
       colors: ['#000', '#FFF', '#FF0000', '#00FF00'],
-      dimension: '2D',
+      dimension '2D',
       shading: false,
       particles: 0,
     },
     snes: {
       pixelSize: 4,
       colors: ['#000', '#FFF', '#FF0000', '#00FF00', '#0000FF', '#FFFF00'],
-      dimension: '2.5D',
+      dimension '2.5D',
       shading: true,
       particles: 10,
     },
     n64: {
       pixelSize: 1,
       colors: ['#FFD700', '#FF6B35', '#004E89', '#1A936F', '#88D4AB', '#FFFFFF'],
-      dimension: '3D',
+      dimension '3D',
       shading: true
       particles: 50,
       fog: true
@@ -52,7 +52,7 @@
     modern: {
       pixelSize: 0,
       colors: ['#FFD700', '#FF6B35', '#004E89', '#1A936F', '#88D4AB', '#FFFFFF', '#000000'],
-      dimension: '3D',
+      dimension '3D',
       shading: true,
       particles: 100,
       fog: true
@@ -393,7 +393,7 @@
     {JSON.stringify({
       stage: stages[currentStageIndex];
       progress: evolutionProgress;
-      rotation: rotation ;
+      rotation rotation ;
     })}
   </div>
 {:else}
@@ -421,28 +421,28 @@
     <div class="controls">
       <button
         class="control-btn"
-        on:click={() => setStage('nes')}
+        onclick={() => setStage('nes')}
         class:active={stages[currentStageIndex] === 'nes'}
       >
         NES
       </button>
       <button
         class="control-btn"
-        on:click={() => setStage('snes')}
+        onclick={() => setStage('snes')}
         class:active={stages[currentStageIndex] === 'snes'}
       >
         SNES
       </button>
       <button
         class="control-btn"
-        on:click={() => setStage('n64')}
+        onclick={() => setStage('n64')}
         class:active={stages[currentStageIndex] === 'n64'}
       >
         N64
       </button>
       <button
         class="control-btn"
-        on:click={() => setStage('modern')}
+        onclick={() => setStage('modern')}
         class:active={stages[currentStageIndex] === 'modern'}
       >
         Modern
@@ -477,7 +477,7 @@
 <style>
   .n64-evolution-container {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 1rem;
     padding: 1rem;
@@ -510,7 +510,7 @@
   .progress-bar {
     height: 100%;
     background: linear-gradient(90deg, #FFD700, #FF6B35);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .controls {
     display: flex;
@@ -523,7 +523,7 @@
     border: 1px solid #666;
     font-family: 'Courier New', monospace;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .control-btn:hover {
     background: #444;
@@ -555,7 +555,7 @@
       flex-wrap: wrap;
     }
     .feature-toggles {
-      flex-direction: column;
+      flex-direction column;
       gap: 0.5rem;
     }
   }

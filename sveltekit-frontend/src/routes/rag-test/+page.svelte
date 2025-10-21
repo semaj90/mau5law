@@ -36,7 +36,7 @@
 <div class="p-4">
   <h2 class="text-xl font-bold mb-2">RAG Sync Test</h2>
 
-  <button on:click={createPendingDoc} class="px-3 py-1 bg-blue-600 text-white rounded">Create Pending Doc</button>
+  <button onclick={createPendingDoc} class="px-3 py-1 bg-blue-600 text-white rounded">Create Pending Doc</button>
 
   <p class="mt-4">Status: <strong>{status}</strong></p>
 

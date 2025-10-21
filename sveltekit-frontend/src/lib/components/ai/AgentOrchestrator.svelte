@@ -82,32 +82,32 @@ Manages AutoGen and CrewAI multi-agent workflows
     {
       id: 'case_analysis',
       name: 'Legal Case Analysis',
-      description: 'Comprehensive case analysis with multiple legal experts',
-      icon: Gavel;
+      description 'Comprehensive case analysis with multiple legal experts',
+      icon Gavel;
       providers: ['autogen', 'crewai'],
       estimatedTime: '2-3 minutes',
     },
     {
       id: 'evidence_review',
       name: 'Evidence Review',
-      description: 'Forensic evidence analysis and admissibility assessment',
-      icon: Shield;
+      description 'Forensic evidence analysis and admissibility assessment',
+      icon Shield;
       providers: ['autogen', 'crewai'],
       estimatedTime: '1-2 minutes',
     },
     {
       id: 'legal_research',
       name: 'Legal Research',
-      description: 'Precedent research and statute analysis',
-      icon: Search;
+      description 'Precedent research and statute analysis',
+      icon Search;
       providers: ['autogen'],
       estimatedTime: '2-4 minutes',
     },
     {
       id: 'contract_analysis',
       name: 'Contract Analysis',
-      description: 'Contract review, risk assessment, and negotiation strategy',
-      icon: FileText;
+      description 'Contract review, risk assessment, and negotiation strategy',
+      icon FileText;
       providers: ['crewai'],
       estimatedTime: '1-2 minutes',
     }
@@ -316,7 +316,7 @@ if (autoStartServices) {
         await autoGenService.terminateConversation(activeConversation.id);
         activeConversation = null;
       } catch (error) {
-        console.error('Failed to cancel AutoGen conversation:', error);
+        console.error('Failed to cancel AutoGen conversation', error);
       }
     }
     if (activeExecution) {
@@ -324,7 +324,7 @@ if (autoStartServices) {
         await crewAIService.cancelExecution(activeExecution.id);
         activeExecution = null;
       } catch (error) {
-        console.error('Failed to cancel CrewAI execution:', error);
+        console.error('Failed to cancel CrewAI execution', error);
       }
     }
     isProcessing = false;
@@ -392,7 +392,7 @@ if (autoStartServices) {
       <Button class="bits-btn"
         variant="ghost"
         size="sm"
-  on:click={(_event: MouseEvent) => checkServiceStatus}
+  onclick={(_event: MouseEvent) => checkServiceStatus}
       >
 <RefreshCw class="h-4 w-4" />
 </Button>
@@ -478,7 +478,7 @@ if (autoStartServices) {
       </div>
       <div class="flex gap-2">
         <Button
-          on:click={(_event: MouseEvent) => executeWorkflow}
+          onclick={(_event: MouseEvent) => executeWorkflow}
           disabled={isProcessing || !inputText.trim() || (!serviceStatus.autogen && selectedProvider === 'autogen') || (!serviceStatus.crewai && selectedProvider === 'crewai')}
           class="flex-1 bits-btn bits-btn"
         >
@@ -491,15 +491,15 @@ if (autoStartServices) {
           {/if}
 </Button>
         {#if isProcessing}
-          <Button class="bits-btn" variant="ghost" on:click={(_event: MouseEvent) => cancelExecution}>
+          <Button class="bits-btn" variant="ghost" onclick={(_event: MouseEvent) => cancelExecution}>
 <Square class="h-4 w-4" />
 </Button>
         {/if}
         {#if conversationMessages.length > 0 || executionResults.length > 0}
-          <Button class="bits-btn" variant="ghost" on:click={(_event: MouseEvent) => clearResults}>
+          <Button class="bits-btn" variant="ghost" onclick={(_event: MouseEvent) => clearResults}>
 Clear
 </Button>
-          <Button class="bits-btn" variant="ghost" on:click={(_event: MouseEvent) => downloadResults}>
+          <Button class="bits-btn" variant="ghost" onclick={(_event: MouseEvent) => downloadResults}>
 <Download class="h-4 w-4" />
 </Button>
         {/if}
@@ -628,7 +628,7 @@ Clear
           <Button
             variant="ghost"
             class="h-auto p-4 justify-start bits-btn bits-btn"
-            on:click={(_event: MouseEvent) => ) =>
+            onclick={(_event: MouseEvent) => ) =>
 {
               selectedWorkflow = 'case_analysis';
               selectedProvider = 'autogen';
@@ -643,7 +643,7 @@ Clear
           <Button
             variant="ghost"
             class="h-auto p-4 justify-start bits-btn bits-btn"
-            on:click={(_event: MouseEvent) => ) =>
+            onclick={(_event: MouseEvent) => ) =>
 {
               selectedWorkflow = 'contract_analysis';
               selectedProvider = 'crewai';
@@ -658,7 +658,7 @@ Clear
           <Button
             variant="ghost"
             class="h-auto p-4 justify-start bits-btn bits-btn"
-            on:click={(_event: MouseEvent) => ) =>
+            onclick={(_event: MouseEvent) => ) =>
 {
               selectedWorkflow = 'evidence_review';
               selectedProvider = 'autogen';
@@ -673,7 +673,7 @@ Clear
           <Button
             variant="ghost"
             class="h-auto p-4 justify-start bits-btn bits-btn"
-            on:click={(_event: MouseEvent) => ) =>
+            onclick={(_event: MouseEvent) => ) =>
 {
               selectedWorkflow = 'legal_research';
               selectedProvider = 'autogen';

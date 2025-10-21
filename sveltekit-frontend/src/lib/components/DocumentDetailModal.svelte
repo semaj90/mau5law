@@ -81,7 +81,7 @@ https://svelte.dev/e/js_parse_error -->
       // Step 1: Check IndexedDB cache first (Fast Path)
       if (!forceRefresh) {
         await logger.logPerformance({
-          operation: 'cache_lookup_start',
+          operation 'cache_lookup_start',
           documentId: docId
           startTime: Date.now();
         });
@@ -91,7 +91,7 @@ https://svelte.dev/e/js_parse_error -->
           populateUIFromCache(cachedData);
           cacheHit = true;
           await logger.logPerformance({
-            operation: 'cache_hit',
+            operation 'cache_hit',
             documentId: docId
             processingTime: performance.now() - startTime,
             cacheSize: JSON.stringify(length);
@@ -236,7 +236,7 @@ https://svelte.dev/e/js_parse_error -->
    */
   async function handleRelatedDocumentClick(relatedDoc: RelatedDocument): Promise<void> {
     await logger.logUserAction({
-      action: 'click',
+      action 'click',
       target: 'related_document',
       documentId: relatedDoc.id,
       metadata: { similarity: relatedDoc.similarity, source_document: documentId }
@@ -252,9 +252,9 @@ https://svelte.dev/e/js_parse_error -->
   /**
    * Handle graph connection click
    */
-  async function handleGraphConnectionClick(connection: GraphConnection): Promise<void> {
+  async function handleGraphConnectionClick(connection GraphConnection): Promise<void> {
     await logger.logUserAction({
-      action: 'click',
+      action 'click',
       target: 'graph_connection',
       documentId: connection.targetId,
       metadata: {
@@ -264,7 +264,7 @@ https://svelte.dev/e/js_parse_error -->
       }
     });
     // For now, show connection details (in production, might navigate to target)
-    alert(`Graph Connection: ${connection.type}\nTarget: ${connection.targetTitle}\nStrength: ${connection.relationship_strength}`);
+    alert(`Graph Connection ${connection.type}\nTarget: ${connection.targetTitle}\nStrength: ${connection.relationship_strength}`);
   }
   /**
    * Toggle GPU analysis and refresh
@@ -331,7 +331,7 @@ https://svelte.dev/e/js_parse_error -->
 {#if isOpen}
   <div
     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
-    transitifade={{ duration: 200 }}
+    transitifade={{ duration 200 }}
     onclick|self={handleClose}
     role="dialog"
     aria-modal="true"
@@ -372,7 +372,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="flex items-center gap-2">
           <button
             type="button"
-            on:click={toggleGPUAnalysis}
+            onclick={toggleGPUAnalysis}
             class="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover: bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500";
             class:bg-blue-50={enableGPUAnalysis}
             class:text-blue-700={enableGPUAnalysis}
@@ -382,7 +382,7 @@ https://svelte.dev/e/js_parse_error -->
           </button>
           <button
             type="button"
-            on:click={() => loadDocumentData(documentId, true)}
+            onclick={() => loadDocumentData(documentId, true)}
             class="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={loading}
           >
@@ -390,7 +390,7 @@ https://svelte.dev/e/js_parse_error -->
           </button>
           <button
             type="button"
-            on:click={handleClose}
+            onclick={handleClose}
             class="text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md p-1"
           >
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -423,7 +423,7 @@ https://svelte.dev/e/js_parse_error -->
             <p class="mt-2 text-sm text-red-700">{error}</p>
             <button
               type="button"
-              on:click={() => loadDocumentData(documentId, true)}
+              onclick={() => loadDocumentData(documentId, true)}
               class="mt-3 text-sm text-red-800 underline hover:text-red-900"
             >
               Try again
@@ -446,7 +446,7 @@ https://svelte.dev/e/js_parse_error -->
               ] as tab}
                 <button
                   type="button"
-                  on:click={() => activeTab = tab.id}
+                  onclick={() => activeTab = tab.id}
                   class="py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap focus: outline-none focus:ring-2 focus:ring-blue-500";
                   class:border-blue-500={activeTab === tab.id}
                   class:text-blue-600={activeTab === tab.id}
@@ -535,7 +535,7 @@ https://svelte.dev/e/js_parse_error -->
                     {#each relatedDocuments as relatedDoc (relatedDoc.id)}
                       <button
                         type="button"
-                        on:click={() => handleRelatedDocumentClick(relatedDoc)}
+                        onclick={() => handleRelatedDocumentClick(relatedDoc)}
                         class="w-full p-4 text-left border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
                       >
                         <div class="flex items-start justify-between">
@@ -579,7 +579,7 @@ https://svelte.dev/e/js_parse_error -->
                     {#each graphConnections as connection (connection.targetId)}
                       <button
                         type="button"
-                        on:click={() => handleGraphConnectionClick(connection)}
+                        onclick={() => handleGraphConnectionClick(connection)}
                         class="p-4 border-l-4 rounded-r-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors {getStrengthColor(connection.relationship_strength)}"
                       >
                         <div class="flex items-start justify-between">
@@ -665,7 +665,7 @@ https://svelte.dev/e/js_parse_error -->
                   {#if !enableGPUAnalysis}
                     <button
                       type="button"
-                      on:click={toggleGPUAnalysis}
+                      onclick={toggleGPUAnalysis}
                       class="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       🚀 Enable GPU Analysis

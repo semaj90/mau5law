@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:drop) and new syntaxes for event handling is not allowed. Use only the ondrop syntax;
+<!-- @migration-task Error while migrating Svelte code: Mixing old (ondrop) and new syntaxes for event handling is not allowed. Use only the ondrop syntax;
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:drop) and new syntaxes for event handling is not allowed. Use only the ondrop syntax -->
+<!-- @migration-task Error while migrating Svelte code: Mixing old (ondrop) and new syntaxes for event handling is not allowed. Use only the ondrop syntax -->
 <!--
   N64 Detective UI - Gaming-Style Evidence Analysis Interface
   Integrates with Detective Analysis Engine, NES Memory Architecture,
@@ -116,9 +116,9 @@ if (!browser) return;
           conflictId: `conflict_${Date.now()}`,
           type: 'factual_inconsistency',
           severity: 'medium',
-          description: 'Potential inconsistency detected with previous evidence',
+          description 'Potential inconsistency detected with previous evidence',
           affectedEvidence: [evidence.id],
-          suggestedResolution: 'Review evidence for accuracy',
+          suggestedResolution 'Review evidence for accuracy',
           confidence: 0.75,
           llmResponse: {
             summary: 'LLM analysis indicates potential conflict',
@@ -169,7 +169,7 @@ if (!browser) return;
   /**
    * Apply search suggestion
    */
-  function applySuggestion(suggestion: SearchSuggestion) {
+  function applySuggestion(suggestion SearchSuggestion) {
     searchQuery = suggestion.query;
     showSuggestions = false;
     // Perform actual search here
@@ -276,28 +276,28 @@ if (!browser) return;
     <button
       class="n64-tab"
       class:active={selectedTab === 'evidence'}
-      on:click={() => selectedTab = 'evidence'}
+      onclick={() => selectedTab = 'evidence'}
     >
       EVIDENCE
     </button>
     <button
       class="n64-tab"
       class:active={selectedTab === 'conflicts'}
-      on:click={() => selectedTab = 'conflicts'}
+      onclick={() => selectedTab = 'conflicts'}
     >
       CONFLICTS ({conflicts.length})
     </button>
     <button
       class="n64-tab"
       class:active={selectedTab === 'search'}
-      on:click={() => selectedTab = 'search'}
+      onclick={() => selectedTab = 'search'}
     >
       SEARCH
     </button>
     <button
       class="n64-tab"
       class:active={selectedTab === 'cache'}
-      on:click={() => selectedTab = 'cache'}
+      onclick={() => selectedTab = 'cache'}
     >
       CACHE
     </button>
@@ -328,7 +328,7 @@ if (!browser) return;
                 onchange={handleFileSelect}
                 style="display: none;"
               />
-              <button class="n64-button" on:click={() => fileInput?.click()}>
+              <button class="n64-button" onclick={() => fileInput?.click()}>
                 SELECT FILE
               </button>
             </div>
@@ -339,7 +339,7 @@ if (!browser) return;
             <div class="evidence-header">
               <h3>EVIDENCE #{currentEvidence.id.slice(-8)}</h3>
               <div class="evidence-actions">
-                <button class="n64-button small" on:click={screenshotEvidence}>
+                <button class="n64-button small" onclick={screenshotEvidence}>
                   📸 ENHANCE
                 </button>
               </div>
@@ -412,7 +412,7 @@ if (!browser) return;
             <div class="history-grid">
               {#each evidenceHistory.slice(0, 6) as evidence}
                 <div class="history-item" role="button" tabindex="0"
-                on:click={() => currentEvidence = evidence}>
+                onclick={() => currentEvidence = evidence}>
                   <div class="history-id">#{evidence.id.slice(-6)}</div>
                   <div class="history-type">{evidence.type.toUpperCase()}</div>
                   <div class="history-relevance" class:high={evidence.analysis.legalRelevance === 'high'}>
@@ -488,7 +488,7 @@ if (!browser) return;
               {#each searchSuggestions as suggestion}
                 <button
                   class="suggestion-item"
-                  on:click={() => applySuggestion(suggestion)}
+                  onclick={() => applySuggestion(suggestion)}
                 >
                   <div class="suggestion-query">{suggestion.query}</div>
                   <div class="suggestion-meta">
@@ -576,11 +576,11 @@ if (!browser) return;
     font-family: 'Courier New', monospace;
     min-height: 100vh;
     padding: 1rem;
-    position: relative;
+    position relative;
   }
   .n64-detective-ui.scanlines::before {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -618,7 +618,7 @@ if (!browser) return;
   }
   .status-item {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 0.25rem;
   }
@@ -646,7 +646,7 @@ if (!browser) return;
     text-align: center;
   }
   .n64-progress-bar {
-    position: relative;
+    position relative;
     height: 24px;
     background: #0a0a0a;
     border: 2px solid #00ff41;
@@ -656,11 +656,11 @@ if (!browser) return;
   .n64-progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #00ff41, #00cc33);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
     box-shadow: 0 0 10px #00ff41;
   }
   .n64-progress-text {
-    position: absolute;
+    position absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -682,7 +682,7 @@ if (!browser) return;
     font-family: inherit;
     font-size: 0.875rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
     text-transform: uppercase;
   }
   .n64-tab:hover {
@@ -702,13 +702,13 @@ if (!browser) return;
     min-height: 500px;
   }
   .drop-zone {
-    position: relative;
+    position relative;
     border: 2px dashed #00ff41;
     border-radius: 8px;
     padding: 3rem;
     text-align: center;
     margin-bottom: 2rem;
-    transition: all 0.3;
+    transition all 0.3;
     background: rgba(0, 255, 65, 0.05);
   }
   .drop-zone: hover {
@@ -720,16 +720,16 @@ if (!browser) return;
     background: rgba(255, 255, 0, 0.1);
   }
   .analyzing-overlay {
-    position: relative;
+    position relative;
   }
   .scan-line {
-    position: absolute;
+    position absolute;
     top: 0,
     left: -100%;
     width: 100%;
     height: 2px;
     background: linear-gradient(90deg, transparent, #ffff00, transparent);
-    animation: scan 2s linear infinite;
+    animation scan 2s linear infinite;
   }
   @keyframes scan {
     0% { left: -100%, }
@@ -740,7 +740,7 @@ if (!browser) return;
     font-size: 1.25rem;
     font-weight: bold;
     text-shadow: 0 0 10px #ffff00;
-    animation: pulse 1s infinite;
+    animation pulse 1s infinite;
   }
   @keyframes pulse {
     0%, 100% { opacity: 1, }
@@ -748,7 +748,7 @@ if (!browser) return;
   }
   .drop-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 1rem;
   }
@@ -772,11 +772,11 @@ if (!browser) return;
     font-family: inherit;
     font-size: 0.875rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
     text-transform: uppercase;
     font-weight: bold;
   }
-  .n64-button:hover {
+  .n64-buttonhover {
     background: #00ff41;
     color: #000;
     box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
@@ -874,7 +874,7 @@ if (!browser) return;
     border-radius: 4px;
     padding: 0.75rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
     text-align: center;
   }
   .history-item:hover {
@@ -910,7 +910,7 @@ if (!browser) return;
   }
   .conflicts-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .conflict-item {
@@ -1002,7 +1002,7 @@ if (!browser) return;
   }
   .suggestions-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .suggestion-item {
@@ -1011,7 +1011,7 @@ if (!browser) return;
     border-radius: 4px;
     padding: 0.75rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
     text-align: left;
   }
   .suggestion-item:hover {
@@ -1084,7 +1084,7 @@ if (!browser) return;
   .usage-fill {
     height: 100%;
     background: linear-gradient(90deg, #00ff41, #ffaa00, #ff4444);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .usage-text {
     font-size: 0.875rem;
@@ -1101,7 +1101,7 @@ if (!browser) return;
   }
   .metric {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 0.25rem;
     background: rgba(0, 0, 0, 0.3);
@@ -1119,7 +1119,7 @@ if (!browser) return;
     color: #00cc33;
   }
   .n64-settings {
-    position: fixed;
+    position fixed;
 d;
     bottom: 1rem;
     right: 1rem;

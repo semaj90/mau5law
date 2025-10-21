@@ -111,11 +111,11 @@
   function getTransitionConfig() {
     switch (animation) {
       case 'fly':
-        return { x: orientation === 'vertical' ? -20 : 0, y: orientation === 'horizontal' ? 20 : 0, duration: 200 }
+        return { x: orientation === 'vertical' ? -20 : 0, y: orientation === 'horizontal' ? 20 : 0, duration 200 }
       case 'scale':
-        return { duration: 150, start: 0.95 }
+        return { duration 150, start: 0.95 }
       default:
-        return { duration: 200 }
+        return { duration 200 }
     }
   }
 </script>
@@ -190,14 +190,14 @@
 <style>
 /* Gaming theme animations */ {}
   :global([data-bits-tabs-trigger][data-theme='gaming']) {
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   :global([data-bits-tabs-trigger][data-theme='gaming']:hover) {
     text-shadow: 0 0 8px currentColor;
     transform: translateY(-1px);
   }
   :global([data-bits-tabs-trigger][data-state='active'][data-theme='gaming']) {
-    animation: gaming-active 2s ease-in-out infinite alternate;
+    animation gaming-active 2s ease-in-out infinite alternate;
   }
   @keyframes gaming-active {
     from {
@@ -221,7 +221,7 @@ box-shadow: {}
     gap: 1rem;
   }
   :global([data-orientation='vertical'] [data-bits-tabs-list]) {
-    flex-direction: column;
+    flex-direction column;
     width: 200px;
     min-width: 200px;
   }
@@ -230,17 +230,17 @@ box-shadow: {}
   }
 /* Underline variant animation */ {}
   :global([data-variant='underline'] [data-bits-tabs-trigger]) {
-    position: relative;
+    position relative;
   }
   :global([data-variant='underline'] [data-bits-tabs-trigger][data-state='active']::after) {
     content: '';
-    position: absolute;
+    position absolute;
     bottom: -2px;
     left: 0,
     right: 0;
     height: 2px;
     background: currentColor;
-    animation: underline-expand 0.2s ease-out;
+    animation underline-expand 0.2s ease-out;
   }
   @keyframes underline-expand {
     from {

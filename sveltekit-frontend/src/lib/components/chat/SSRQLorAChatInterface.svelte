@@ -306,14 +306,14 @@ https://svelte.dev/e/js_parse_error -->
             <div class="feedback-buttons">
               <button
                 class="feedback-btn positive"
-                on:click={() => provideFeedback(message.id, 1)}
+                onclick={() => provideFeedback(message.id, 1)}
                 title="Good response"
               >
                 👍
               </button>
               <button
                 class="feedback-btn negative"
-                on:click={() => provideFeedback(message.id, -1)}
+                onclick={() => provideFeedback(message.id, -1)}
                 title="Poor response"
               >
                 👎
@@ -348,7 +348,7 @@ https://svelte.dev/e/js_parse_error -->
         class="message-input nes-input"
       />
       <Button
-        on:click={sendMessage}
+        onclick={sendMessage}
         disabled={!$canSend}
         class="send-button bits-btn bits-btn"
         variant="ghost"
@@ -359,7 +359,7 @@ https://svelte.dev/e/js_parse_error -->
           Send
         {/if}
       <Button
-        on:click={clearChat}
+        onclick={clearChat}
         variant="ghost"
         size="sm"
         class="clear-button bits-btn bits-btn"
@@ -378,7 +378,7 @@ Clear
 <style>
   .ssr-qlora-chat-interface {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     height: 100vh;
     max-width: 1200px;
     margin: 0 auto;
@@ -417,7 +417,7 @@ Clear
   }
   .message {
     margin-bottom: 1.5rem;
-    animation: messageSlideIn 0.3s ease-out;
+    animation messageSlideIn 0.3s ease-out;
   }
   .message-user {
     align-self: flex-end;
@@ -427,7 +427,7 @@ Clear
     align-self: flex-start;
   }
   .message-content {
-    position: relative;
+    position relative;
     background: rgba(15, 52, 96, 0.6);
     padding: 1rem;
     border-radius: 8px;
@@ -444,7 +444,7 @@ Clear
     word-wrap: break-word;
   }
   .typing-indicator {
-    animation: blink 1s infinite;
+    animation blink 1s infinite;
     color: #64ffda;
   }
   .message-metadata {
@@ -483,7 +483,7 @@ Clear
     font-size: 1rem;
     cursor: pointer;
     opacity: 0.6,
-    transition: opacity 0.2;
+    transition opacity 0.2;
   }
   .feedback-btn:hover {
     opacity: 1,
@@ -532,7 +532,7 @@ Clear
     border: 2px solid transparent;
     border-top: 2px solid currentColor;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   .processing-status {
     margin-top: 0.5rem;
@@ -541,7 +541,7 @@ Clear
     opacity: 0.7,
   }
   .processing-indicator {
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   /* Animations */
   @keyframes messageSlideIn {
@@ -571,7 +571,7 @@ Clear
       max-width: 90%;
     }
     .system-status-bar {
-      flex-direction: column;
+      flex-direction column;
       gap: 0.5rem;
     }
   }

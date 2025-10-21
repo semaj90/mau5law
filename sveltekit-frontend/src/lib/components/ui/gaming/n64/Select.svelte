@@ -122,7 +122,7 @@
       : options
   );
   // Create spatial audio for select interactions
-  const playSelectSound = async (frequency: number, duration: number = 0.15) => {
+  const playSelectSound = async (frequency: number, duration number = 0.15) => {
     if (!enableSpatialAudio) return;
     try {
       if (!audioContext) {
@@ -183,7 +183,7 @@
       selectElement.focus();
     }
   }
-  const selectOption = async (option: SelectOption) => {
+  const selectOption = async (option SelectOption) => {
     if (option.disabled) return;
     value = option.valu;
     await playSelectSound(660, 0.2);
@@ -194,7 +194,7 @@
     if (!clearable || disabled) return;
     value = '';
     await playSelectSound(330, 0.15);
-    ondispatch?.({ value: '', option: null });
+    ondispatch?.({ value: '', option null });
   }
   const handleToggle = () => {
     if (isOpen) {
@@ -406,7 +406,7 @@
     aria-required={required}
     aria-invalid={hasError}
     aria-describedby={error || success ? `${id || name}-message` : undefined}
-    on:click={handleToggle}
+    onclick={handleToggle}
     onfocus={handleFocus}
     onblur={handleBlur}
     onmouseenter={handleHover}
@@ -421,7 +421,7 @@
         {#if clearable && value}
           <button
             class="clear-button"
-            on:click={(e) => { e.stopPropagation(); clearSelection(), }}
+            onclick={(e) => { e.stopPropagation(); clearSelection(), }}
             aria-label="Clear selection"
             type="button"
           >
@@ -477,7 +477,7 @@
               class:disabled={option.disabled}
               role="option"
               aria-selected={option.value === value}
-              on:click={() => selectOption(option)}
+              onclick={() => selectOption(option)}
             >
               {option.label}
               {#if option.value === value}
@@ -511,9 +511,9 @@
 </div>
 <style>
   .n64-select-container {
-    position: relative;
+    position relative;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 8px;
     font-family: 'Rajdhani', 'Arial', sans-serif;
   }
@@ -526,7 +526,7 @@
     font-size: var(--select-font-size);
     min-height: var(--select-min-height);
     font-weight: 500,
-    position: relative;
+    position relative;
     cursor: pointer;
     /* 3D transformations */
     transform: var(--transform-3d);
@@ -538,7 +538,7 @@
     text-rendering: optimizeLegibility;
     /* Advanced shadows and lighting */
     box-shadow: var(--material-shadow);
-    transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
+    transition all 200ms cubic-bezier(0.23, 1, 0.32, 1);
     /* Remove default styles */
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -557,7 +557,7 @@
     align-items: center;
     justify-content: space-betwee;
     gap: 12px;
-    position: relative;
+    position relative;
     z-index: 2,
   }
   .select-value {
@@ -587,15 +587,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 150ms ease;
+    transition all 150ms ease;
   }
-  .clear-button:hover {
+  .clear-buttonhover {
     color: rgba(255, 255, 255, 0.9);
     background: rgba(255, 255, 255, 0.1);
   }
   .dropdown-arrow {
     color: rgba(255, 255, 255, 0.8);
-    transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
+    transition transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -604,7 +604,7 @@
     transform: rotate(180deg);
   }
   .loading-indicator {
-    position: absolute;
+    position absolute;
     right: 12px;
     top: 50%;
     transform: translateY(-50%);
@@ -616,14 +616,14 @@
     border: 2px solid transparent;
     border-top: 2px solid currentColor;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     to { transform: rotate(360deg), }
   }
   /* Dropdown styling */
   .select-dropdown {
-    position: absolute;
+    position absolute;
     top: 100%;
     left: 0,
     right: 0;
@@ -639,7 +639,7 @@
     box-shadow:
       var(--material-shadow),
       0 8px 16px rgba(0, 0, 0, 0.4);
-    animation: dropdownOpen 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    animation dropdownOpen 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
   .select-dropdown.blur {
     backdrop-filter: blur(8px);
@@ -668,7 +668,7 @@
     padding: 8px 12px;
     font-size: 0.9em;
     outline: none;
-    transition: border-color 150ms ease;
+    transition border-color 150ms ease;
   }
   .search-input:focus {
     border-color: var(--material-border);
@@ -686,11 +686,11 @@
     display: flex;
     align-items: center;
     justify-content: space-betwee;
-    transition: all 150ms ease;
-    position: relative;
+    transition all 150ms ease;
+    position relative;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
-  .select-option: hover
+  .select-option hover
   .select-option.highlighted {
     background: rgba(255, 255, 255, 0.1);
     transform: translateX(4px);
@@ -722,7 +722,7 @@
   }
   /* Lighting overlay */
   .lighting-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -739,7 +739,7 @@
     border-radius: 4px;
   }
   .dropdown-lighting {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -756,7 +756,7 @@
   }
   /* Reflection overlay */
   .reflection-overlay {
-    position: absolute;
+    position absolute;
     top: 15%;
     left: 15%;
     right: 70%;
@@ -851,20 +851,20 @@
     }
   }
   /* Reduced motion support */
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     .n64-select {
       transform: none !important;
-      transition: border-color 150ms ease, box-shadow 150ms ease;
+      transition border-color 150ms ease, box-shadow 150ms ease;
     }
     .select-dropdown {
-      animation: none;
+      animation none;
       transform: none;
     }
     .dropdown-arrow {
-      transition: none;
+      transition none;
     }
     .n64-spinner {
-      animation: none;
+      animation none;
       border: 2px solid currentColor;
       border-right-color: transparent;
     }

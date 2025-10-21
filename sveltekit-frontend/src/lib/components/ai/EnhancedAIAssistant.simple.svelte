@@ -9,7 +9,7 @@
   export let maxHeight: string = '400px';
   export let showReferences: boolean = true;
   export let enableVoiceInput: boolean = false;
-  export let ondispatch: ((citation: string) => void) | undefined;
+  export let ondispatch: ((citation string) => void) | undefined;
 
   // State
   let query = $state('');
@@ -38,12 +38,12 @@
         references: [
           {
             title: 'Smith v. Jones',
-            citation: '123 F.3d 456 (2023)',
+            citation '123 F.3d 456 (2023)',
             relevance: 0.9,
           },
           {
             title: '42 U.S.C. § 1983',
-            citation: 'Federal Civil Rights Statute',
+            citation 'Federal Civil Rights Statute',
             relevance: 0.8,
           },
         ],
@@ -67,7 +67,7 @@
 </script>
 
 <div class="ai-assistant-container">
-  <div style="max-height: {maxHeight}; display: flex; flex-direction: column; height: 100%;">
+  <div style="max-height: {maxHeight}; display: flex; flex-direction column; height: 100%;">
     <div class="chat-header">
       <div style="display: flex; align-items: center; gap: 8px;">
         <Brain />
@@ -80,7 +80,7 @@
         <button
           type="button"
           class="btn-icon"
-          on:click={() => (showSettings = !showSettings)}
+          onclick={() => (showSettings = !showSettings)}
           title="Settings"
           aria-label="Open settings"
         >
@@ -89,7 +89,7 @@
         <button
           type="button"
           class="btn-icon"
-          on:click={() => clearMessages()}
+          onclick={() => clearMessages()}
           title="Clear conversation"
           aria-label="Clear conversation"
         >
@@ -111,7 +111,7 @@
                 <button
                   type="button"
                   class="reference-item"
-                  on:click={() => handleReferenceClick(reference)}
+                  onclick={() => handleReferenceClick(reference)}
                   aria-label={`Open reference ${reference.title}`}
                 >
                   <Quote aria-hidden="true" />
@@ -147,7 +147,7 @@
     <div class="settings-panel">
       <div class="settings-header">
         <h4 class="settings-title">AI Assistant Settings</h4>
-        <button type="button" class="btn-close" on:click={() => (showSettings = false)} aria-label="Close settings"
+        <button type="button" class="btn-close" onclick={() => (showSettings = false)} aria-label="Close settings"
           >×</button
         >
       </div>
@@ -180,7 +180,7 @@
     <div
       class="dialog-overlay"
       tabindex="0"
-      on:click={() => (showCitationDialog = false)}
+      onclick={() => (showCitationDialog = false)}
       onkeydown={e => {
         if (e.key === 'Escape') showCitationDialog = false;
       }}
@@ -192,7 +192,7 @@
         class="dialog-content"
         role="document"
         tabindex="-1"
-        on:click={e => e.stopPropagation()}
+        onclick={e => e.stopPropagation()}
         onkeydown={e => e.stopPropagation()}
       >
         <div class="dialog-header">
@@ -203,7 +203,7 @@
           <button
             type="button"
             class="btn-close"
-            on:click={() => (showCitationDialog = false)}
+            onclick={() => (showCitationDialog = false)}
             aria-label="Close citation dialog">×</button
           >
         </div>
@@ -213,13 +213,13 @@
             <p>{selectedCitation}</p>
           </div>
           <div class="dialog-actions">
-            <button type="button" class="btn-primary" on:click={() => insertCitation()} aria-label="Insert citation"
+            <button type="button" class="btn-primary" onclick={() => insertCitation()} aria-label="Insert citation"
               >Insert Citation</button
             >
             <button
               type="button"
               class="btn-secondary"
-              on:click={() => navigator.clipboard.writeText(selectedCitation)}
+              onclick={() => navigator.clipboard.writeText(selectedCitation)}
               aria-label="Copy citation to clipboard"
             >
               Copy to Clipboard
@@ -228,7 +228,7 @@
         </div>
 
         <div class="dialog-footer">
-          <button type="button" class="btn-close" on:click={() => (showCitationDialog = false)} aria-label="Close dialog"
+          <button type="button" class="btn-close" onclick={() => (showCitationDialog = false)} aria-label="Close dialog"
             >Close</button
           >
         </div>
@@ -241,7 +241,7 @@ and ensure it ends cleanly. I'll update that file. Now I'll apply the patch. (Ne
 <style>
   /* @unocss-include */
   .ai-assistant-container {
-    position: relative;
+    position relative;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     background: white;

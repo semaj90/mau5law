@@ -41,14 +41,14 @@ https://svelte.dev/e/js_parse_error -->
   					id: 'gemma3-legal',
   					name: 'Gemma3 Legal',
   					size: '7.3GB',
-  					specialization: 'legal',
+  					specialization 'legal',
   					performance: { avgResponseTime: 1200, tokensPerSecond: 45, memoryUsage: '6.2GB', uptime: 99.2 }
   				},
   				{
   					id: 'nomic-embed-text',
   					name: 'Nomic Embed',
   					size: '274MB',
-  					specialization: 'general',
+  					specialization 'general',
   					performance: { avgResponseTime: 150, tokensPerSecond: 200, memoryUsage: '512MB', uptime: 99.8 }
   				}
   			]
@@ -266,6 +266,6 @@ https://svelte.dev/e/js_parse_error -->
 		100% { transform: translateX(100%), }
 	}
 	.animate-scan {
-		animation: scan 2s linear infinite;
+		animation scan 2s linear infinite;
 	}
 </style>

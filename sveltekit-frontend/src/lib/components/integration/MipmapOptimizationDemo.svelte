@@ -138,7 +138,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         processingTime: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).processingTime,
         mipmapsGenerated: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).mipmaps.length,
         memoryUsed: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).memoryUsed,
-        rtxAcceleration: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.rtxAcceleration,
+        rtxAcceleration (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.rtxAcceleration,
         streamingUsed: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.streamingUsed,
         timestamp: new Date(),
       }, ...processingResults.slice(0, 9)]; // Keep last 10 results
@@ -179,7 +179,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         processingTime: batchResult.totalProcessingTime,
         mipmapsGenerated: batchResult.mipmapsGenerated,
         memoryUsed: 0,
-        rtxAcceleration: true
+        rtxAcceleration true
         streamingUsed: false
         batchProcessing: true,
         timestamp: new Date(),
@@ -223,7 +223,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         processingTime: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).totalGenerationTime,
         mipmapsGenerated: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).mipmapLevels.length,
         memoryUsed: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).memoryUsed,
-        rtxAcceleration: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.rtxAcceleration,
+        rtxAcceleration (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.rtxAcceleration,
         streamingUsed: (result as { processingTime?: unknown; mipmaps?: unknown; memoryUsed?: unknown; optimization?: unknown; totalGenerationTime?: unknown; mipmapLevels?: unknown; document?: unknown; batchProcessing?: unknown; demo?: unknown; mipmapsGenerated?: unknown; rtxAcceleration?: unknown; streamingUsed?: unknown }).optimization.streamingUsed,
         demo: true,
         timestamp: new Date(),
@@ -288,7 +288,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
           </span>
         </div>
         {#if !isInitialized && !isProcessing}
-          <Button class="bits-btn" on:click={initializeSystem} size="sm">
+          <Button class="bits-btn" onclick={initializeSystem} size="sm">
 🔄 Initialize System
 </Button>
         {/if}
@@ -370,7 +370,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
                 </div>
               </div>
               <Button class="bits-btn"
-                on:click={() =>
+                onclick={() =>
 processDocument(index)}
                 disabled={!isInitialized || isProcessing}
                 size="sm"
@@ -383,13 +383,13 @@ processDocument(index)}
         <!-- Batch Operations -->
         <div class="flex gap-2 pt-4 border-t">
           <Button class="bits-btn"
-            on:click={batchProcessDocuments}
+            onclick={batchProcessDocuments}
             disabled={!isInitialized || isProcessing}
           >
 🚀 Batch Process All
 </Button>
           <Button class="bits-btn"
-            on:click={generateMipmapDemo}
+            onclick={generateMipmapDemo}
             disabled={!isInitialized || isProcessing}
             variant="ghost"
           >
@@ -463,7 +463,7 @@ processDocument(index)}
                   <span class="font-medium">{bankStats.memoryUsedMB}MB</span>
                 </div>
                 <div class="flex justify-between">
-                  <span>Utilization:</span>
+                  <span>Utilization</span>
                   <span class="font-medium">{bankStats.utilization}%</span>
                 </div>
               </div>

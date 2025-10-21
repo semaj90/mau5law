@@ -174,7 +174,7 @@
     });
   }
 
-  function handleSuggestionClick(suggestion: string) {
+  function handleSuggestionClick(suggestion string) {
     currentMessage = suggestion;
     sendMessage();
   }
@@ -266,7 +266,7 @@
                             type="button"
                             class="bits-btn"
                             aria-label="Copy message"
-                            on:click={() => copyToClipboard(message.content)}
+                            onclick={() => copyToClipboard(message.content)}
                           >
                             <Copy aria-hidden="true" class="h-3 w-3" />
                           </button>
@@ -274,7 +274,7 @@
                             type="button"
                             class="bits-btn"
                             aria-label="Thumbs up feedback"
-                            on:click={() => provideFeedback(message.id, 'positive')}
+                            onclick={() => provideFeedback(message.id, 'positive')}
                           >
                             <ThumbsUp aria-hidden="true" class="h-3 w-3" />
                           </button>
@@ -282,7 +282,7 @@
                             type="button"
                             class="bits-btn"
                             aria-label="Thumbs down feedback"
-                            on:click={() => provideFeedback(message.id, 'negative')}
+                            onclick={() => provideFeedback(message.id, 'negative')}
                           >
                             <ThumbsDown aria-hidden="true" class="h-3 w-3" />
                           </button>
@@ -299,7 +299,7 @@
                       <button
                         type="button"
                         class="text-xs h-auto py-1 px-2 bits-btn"
-                        on:click={() => handleSuggestionClick(suggestion)}
+                        onclick={() => handleSuggestionClick(suggestion)}
                       >
                         {suggestion}
                       </button>
@@ -348,7 +348,7 @@
         <textarea
           bind:this={inputElement}
           bind:value={currentMessage}
-          on:input={e => (currentMessage = (e.target as HTMLTextAreaElement).value)}
+          oninput={e => (currentMessage = (e.target as HTMLTextAreaElement).value)}
           {placeholder}
           onkeydown={handleKeydown}
           aria-label="Message input"
@@ -360,7 +360,7 @@
         <button
           type="button"
           class="bits-btn"
-          on:click={() => sendMessage()}
+          onclick={() => sendMessage()}
           disabled={isLoading || !currentMessage.trim()}
           aria-label="Send message"
         >
@@ -371,7 +371,7 @@
           {/if}
         </button>
 
-        <button type="button" class="bits-btn" on:click={clearChat} aria-label="Clear chat">
+        <button type="button" class="bits-btn" onclick={clearChat} aria-label="Clear chat">
           <X class="h-4 w-4" aria-hidden="true" />
         </button>
       </div>

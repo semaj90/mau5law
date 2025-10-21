@@ -24,7 +24,7 @@ https://svelte.dev/e/js_parse_error -->
     lastName: '',
     role: 'prosecutor',
     department: '',
-    jurisdiction: '',
+    jurisdiction '',
     badgeNumber: '',
     agreeToTerms: false,
     agreeToPrivacy: false,
@@ -119,7 +119,7 @@ https://svelte.dev/e/js_parse_error -->
           class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 {authMode === 'login'
             ? 'bg-yellow-500 text-black'
             : 'text-gray-300 hover:text-white'}"
-          on:click={() => (authMode = 'login')}
+          onclick={() => (authMode = 'login')}
         >
           🔐 Login
         </button>
@@ -128,19 +128,19 @@ https://svelte.dev/e/js_parse_error -->
           class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 {authMode === 'register'
             ? 'bg-yellow-500 text-black'
             : 'text-gray-300 hover:text-white'}"
-          on:click={() => (authMode = 'register')}
+          onclick={() => (authMode = 'register')}
         >
           📝 Register
         </button>
       </div>
       <!-- Error/Success Messages -->
       {#if error}
-        <div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-4" transition:slide>
+        <div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-4" transitionslide>
           {error}
         </div>
       {/if}
       {#if success}
-        <div class="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded mb-4" transition:slide>
+        <div class="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded mb-4" transitionslide>
           {success}
         </div>
       {/if}
@@ -160,7 +160,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <!-- Register-specific: Name fields -->
         {#if authMode === 'register'}
-          <div class="grid grid-cols-2 gap-3" transitislide={{ duration: 300, easing: cubicOut }}>
+          <div class="grid grid-cols-2 gap-3" transitislide={{ duration 300, easing: cubicOut }}>
             <div>
               <label for="firstName" class="block text-sm font-medium text-gray-300 mb-2"> First Name </label>
               <input
@@ -200,7 +200,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <!-- Register-specific: Confirm Password -->
         {#if authMode === 'register'}
-          <div transitislide={{ duration: 300, easing: cubicOut }}>
+          <div transitislide={{ duration 300, easing: cubicOut }}>
             <label for="confirmPassword" class="block text-sm font-medium text-gray-300 mb-2"> Confirm Password </label>
             <input
               type="password"
@@ -219,7 +219,7 @@ https://svelte.dev/e/js_parse_error -->
             {/if}
           </div>
           <!-- Professional Details -->
-          <div class="space-y-3" transitislide={{ duration: 300, easing: cubicOut }}>
+          <div class="space-y-3" transitislide={{ duration 300, easing: cubicOut }}>
             <div>
               <label for="role" class="block text-sm font-medium text-gray-300 mb-2"> Role </label>
               <select
@@ -274,7 +274,7 @@ https://svelte.dev/e/js_parse_error -->
             </div>
           </div>
           <!-- Terms and Privacy -->
-          <div class="space-y-3" transitislide={{ duration: 300, easing: cubicOut }}>
+          <div class="space-y-3" transitislide={{ duration 300, easing: cubicOut }}>
             <label class="flex items-start space-x-3 cursor-pointer">
               <input
                 type="checkbox"
@@ -341,7 +341,7 @@ https://svelte.dev/e/js_parse_error -->
           {authMode === 'login' ? "Don't have an account?" : 'Already have an account?'}
           <button
             type="button"
-            on:click={toggleAuthMode}
+            onclick={toggleAuthMode}
             class="text-yellow-400 hover:text-yellow-300 hover:underline ml-1 transition-colors"
           >
             {authMode === 'login' ? 'Create one here' : 'Sign in instead'}

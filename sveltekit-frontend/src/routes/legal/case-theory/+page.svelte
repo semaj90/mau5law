@@ -23,7 +23,7 @@
     name: '',
     type: 'prosecution',
     strategy: 'evidence-based',
-    description: '',
+    description '',
     errors: });
   // Theory building components
   let evidenceItems = $state([]);
@@ -38,16 +38,16 @@
   let riskAssessment = $state(null);
   let theoryScores = $state( );
   const theoryTypes = [
-    { id: 'prosecution', label: 'Prosecution Theory', icon: Scale },
-    { id: 'defense', label: 'Defense Theory', icon: Users },
-    { id: 'civil', label: 'Civil Claim Theory', icon: FileText },
-    { id: 'alternative', label: 'Alternative Theory', icon: Lightbulb }
+    { id: 'prosecution', label: 'Prosecution Theory', icon Scale },
+    { id: 'defense', label: 'Defense Theory', icon Users },
+    { id: 'civil', label: 'Civil Claim Theory', icon FileText },
+    { id: 'alternative', label: 'Alternative Theory', icon Lightbulb }
   ];
   const strategyTypes = [
-    { id: 'evidence-based', label: 'Evidence-Driven', description: 'Build theory around strongest evidence' },
-    { id: 'precedent-based', label: 'Precedent-Driven', description: 'Leverage existing case law' },
-    { id: 'narrative-based', label: 'Narrative-Driven', description: 'Construct compelling story' },
-    { id: 'technical-based', label: 'Technical-Driven', description: 'Focus on legal technicalities' }
+    { id: 'evidence-based', label: 'Evidence-Driven', description 'Build theory around strongest evidence' },
+    { id: 'precedent-based', label: 'Precedent-Driven', description 'Leverage existing case law' },
+    { id: 'narrative-based', label: 'Narrative-Driven', description 'Construct compelling story' },
+    { id: 'technical-based', label: 'Technical-Driven', description 'Focus on legal technicalities' }
   ];
   $effect(() => {
     (async () => {
@@ -129,7 +129,7 @@
           name: 'Self-Defense Theory',
           type: 'defense',
           strategy: 'evidence-based',
-          description: 'Client acted in self-defense under reasonable fear of imminent harm',
+          description 'Client acted in self-defense under reasonable fear of imminent harm',
           strength: 0.87,
           legalArguments: ['Evidence of threat', 'Witness testimony', 'Prior incidents'],
           counterarguments: ['No imminent danger', 'Excessive force'],
@@ -213,7 +213,7 @@
         { step: 1, premise: 'Defendant faced immediate threat', evidence: 'Security footage timestamp 10:23 PM' },
         { step: 2, premise: 'Reasonable person would fear harm', evidence: 'Expert testimony on threat assessment' },
         { step: 3, premise: 'Response was proportional', evidence: 'Medical examiner report on injuries' },
-        { step: 4, conclusion: 'Self-defense claim is justified', confidence: 0.87 }
+        { step: 4, conclusion 'Self-defense claim is justified', confidence: 0.87 }
       ],
       strength: 0.75 + Math.random() * 0.2,
       riskAssessment: {
@@ -245,7 +245,7 @@
         evidence: 0.8,
         precedent: 0.7,
         logic: 0.9,
-        presentation: 0.6,
+        presentation 0.6,
       }
     }
   }
@@ -262,7 +262,7 @@
       name: '',
       type: 'prosecution',
       strategy: 'evidence-based',
-      description: '',
+      description '',
       errors: }
   }
   function selectTheory(theory) {
@@ -289,21 +289,21 @@
         id: '1',
         title: 'Security Camera Footage',
         type: 'video',
-        description: 'Shows defendant actions at time of incident',
+        description 'Shows defendant actions at time of incident',
         strength: 0.9,
       },
       {
         id: '2',
         title: 'Witness Statement - John Doe',
         type: 'testimony',
-        description: 'Eyewitness account of events leading to incident',
+        description 'Eyewitness account of events leading to incident',
         strength: 0.7,
       },
       {
         id: '3',
         title: 'Medical Examiner Report',
         type: 'document',
-        description: 'Autopsy findings and cause of death determination',
+        description 'Autopsy findings and cause of death determination',
         strength: 0.95,
       }
     ];
@@ -313,14 +313,14 @@
       {
         id: '1',
         title: 'State v. Johnson - Self Defense Standard',
-        citation: '123 State 456 (2019)',
+        citation '123 State 456 (2019)',
         relevanceScore: 0.92,
         summary: 'Establishes criteria for valid self-defense claims',
       },
       {
         id: '2',
         title: 'Commonwealth v. Williams - Reasonable Force',
-        citation: '789 Commonwealth 012 (2020)',
+        citation '789 Commonwealth 012 (2020)',
         relevanceScore: 0.85,
         summary: 'Defines proportional response in threat situations',
       }
@@ -347,7 +347,7 @@
           {/if}
         </div>
         <button
-          on:click={() => (showTheoryDialog = true)}
+          onclick={() => (showTheoryDialog = true)}
           class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
         >
           <Plus class="h-4 w-4 mr-2" />
@@ -374,7 +374,7 @@
                          {optimistic ? 'opacity-50' : ''}"
                   role="button"
                   tabindex="0"
-                  on:click={() => selectTheory(theory)}
+                  onclick={() => selectTheory(theory)}
                 >
                   <div class="flex items-start justify-between mb-2">
                     <h4 class="font-medium text-gray-900">{theory.name}</h4>
@@ -527,7 +527,7 @@
                       <div class="flex-1">
                         <div class="flex items-center space-x-2 mb-1">
                           <span class="font-medium text-gray-900">
-                            {step.conclusion ? 'Conclusion:' : 'Premise:'}
+                            {step.conclusion ? 'Conclusion' : 'Premise:'}
                           </span>
                           {#if step.confidence}
                             <span class="text-sm text-gray-500">
@@ -619,7 +619,7 @@
             <h3 class="text-lg font-medium text-gray-900 mb-2">Select a Theory</h3>
             <p class="text-gray-600 mb-6">Choose a case theory from the list to view detailed AI analysis</p>
             <button
-              on:click={() => (showTheoryDialog = true)}
+              onclick={() => (showTheoryDialog = true)}
               class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
             >
               <Plus class="h-4 w-4 mr-2" />
@@ -695,7 +695,7 @@
         <div class="flex justify-end space-x-3 pt-4">
           <button
             type="button"
-            on:click={() => (showTheoryDialog = false)}
+            onclick={() => (showTheoryDialog = false)}
             class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
             disabled={isBuilding}
           >

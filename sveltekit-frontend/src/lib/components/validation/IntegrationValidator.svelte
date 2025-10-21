@@ -6,7 +6,7 @@
   interface ValidationTest {
     id: string;
     name: string;
-    description: string;
+    description string;
     status: 'pending' | 'running' | 'passed' | 'failed' | 'warning';
     duration?: number;
     details?: string;
@@ -14,12 +14,12 @@
   }
   interface ValidationSuite {
     name: string;
-    description: string;
+    description string;
     tests: ValidationTest[];
     passed: number;
     failed: number;
     warnings: number;
-    totalDuration: number;
+    totalDuration number;
   }
   let validationSuites = $state<ValidationSuite[]>([]);
   let isRunning = $state(false);
@@ -30,39 +30,39 @@
   const suiteConfigs = [
     {
       name: 'Core UI Components',
-      description: 'Validate critical UI component functionality',
+      description 'Validate critical UI component functionality',
       tests: [
-        { id: 'dropdown-test', name: 'Dropdown Component', description: 'Test dropdown rendering and interaction' },
-        { id: 'checkbox-test', name: 'Checkbox Component', description: 'Test checkbox state management' },
-        { id: 'searchbar-test', name: 'SearchBar Component', description: 'Test search functionality and debouncing' }
+        { id: 'dropdown-test', name: 'Dropdown Component', description 'Test dropdown rendering and interaction' },
+        { id: 'checkbox-test', name: 'Checkbox Component', description 'Test checkbox state management' },
+        { id: 'searchbar-test', name: 'SearchBar Component', description 'Test search functionality and debouncing' }
       ]
     },
     {
       name: 'GPU Acceleration',
-      description: 'Validate GPU processing and tensor operations',
+      description 'Validate GPU processing and tensor operations',
       tests: [
-        { id: 'tensor-service-test', name: 'Tensor Service Connection', description: 'Test Go tensor service connectivity' },
-        { id: 'gpu-processing-test', name: 'GPU Processing Pipeline', description: 'Test batch GPU processing capabilities' },
-        { id: 'performance-monitoring-test', name: 'Performance Monitoring', description: 'Test GPU performance monitoring system' }
+        { id: 'tensor-service-test', name: 'Tensor Service Connection', description 'Test Go tensor service connectivity' },
+        { id: 'gpu-processing-test', name: 'GPU Processing Pipeline', description 'Test batch GPU processing capabilities' },
+        { id: 'performance-monitoring-test', name: 'Performance Monitoring', description 'Test GPU performance monitoring system' }
       ]
     },
     {
       name: 'Legal AI Workflows',
-      description: 'Validate legal document processing workflows',
+      description 'Validate legal document processing workflows',
       tests: [
-        { id: 'evidence-upload-test', name: 'Evidence Upload System', description: 'Test evidence upload and processing' },
-        { id: 'case-automation-test', name: 'Case Automation Workflows', description: 'Test legal case automation pipeline' },
-        { id: 'document-classification-test', name: 'Document Classification', description: 'Test AI document classification accuracy' }
+        { id: 'evidence-upload-test', name: 'Evidence Upload System', description 'Test evidence upload and processing' },
+        { id: 'case-automation-test', name: 'Case Automation Workflows', description 'Test legal case automation pipeline' },
+        { id: 'document-classification-test', name: 'Document Classification', description 'Test AI document classification accuracy' }
       ]
     },
     {
       name: 'System Integration',
-      description: 'Validate system-wide integration and performance',
+      description 'Validate system-wide integration and performance',
       tests: [
-        { id: 'api-endpoints-test', name: 'API Endpoints', description: 'Test all API endpoint functionality' },
-        { id: 'database-integration-test', name: 'Database Integration', description: 'Test database connectivity and operations' },
-        { id: 'error-handling-test', name: 'Error Handling', description: 'Test system error handling and recovery' },
-        { id: 'performance-benchmarks-test', name: 'Performance Benchmarks', description: 'Test system performance meets requirements' }
+        { id: 'api-endpoints-test', name: 'API Endpoints', description 'Test all API endpoint functionality' },
+        { id: 'database-integration-test', name: 'Database Integration', description 'Test database connectivity and operations' },
+        { id: 'error-handling-test', name: 'Error Handling', description 'Test system error handling and recovery' },
+        { id: 'performance-benchmarks-test', name: 'Performance Benchmarks', description 'Test system performance meets requirements' }
       ]
     }
   ];
@@ -73,7 +73,7 @@
   function initializeValidationSuites() {
     validationSuites = suiteConfigs.map(config => ({
       name: config.name,
-      description: config.description,
+      description config.description,
       tests: config.tests.map(test => ({
         ...test,
         status: 'pending',
@@ -81,7 +81,7 @@
       passed: 0,
       failed: 0,
       warnings: 0,
-      totalDuration: 0,
+      totalDuration 0,
     }));
   }
   // Run all validation tests
@@ -230,7 +230,7 @@
         id: 'validation-test',
         documentId: 'test-doc',
         data: testData;
-        operation: 'process' as const,
+        operation 'process' as const,
         options: { timeout: 5000 }
       }
       // removed unused response assignment
@@ -271,7 +271,7 @@
         type: 'batch_upload',
         source: 'test_source',
         autoProcessing: true
-        gpuAcceleration: true
+        gpuAcceleration true
         batchSize: 10,
         confidenceThreshold: 0.8,
         processingOptions: ['entity_extraction'],
@@ -413,7 +413,7 @@
     </div>
     <button
       class="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors duration-200 flex items-center gap-2"
-      on:click={runAllValidationTests}
+      onclick={runAllValidationTests}
       disabled={isRunning}
     >
       {#if isRunning}
@@ -584,7 +584,7 @@
   /* Smooth animations for progress bars */
   .transition-all {
     transition-property: all;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 300m;
+    transition-timing-function cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration 300m;
   }
 </style>

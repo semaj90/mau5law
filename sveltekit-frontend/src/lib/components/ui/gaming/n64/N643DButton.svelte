@@ -181,13 +181,13 @@
       const particle = document.createElement('div');
       particle.className = 'n64-particle';
       particle.style.cssText = `
-        position: absolute;
+        position absolute;
         width: 4px;
         height: 4px;
         background: radial-gradient(circle, #fff, #4a90e2);
         border-radius: 50%;
         pointer-events: none;
-        animation: particleExplosion 0.8s ease-out forward;
+        animation particleExplosion 0.8s ease-out forward;
         --angle: ${(360 / particles) * i}deg;
         --distance: ${50 + Math.random() * 30}px;
         top: 50%;
@@ -318,7 +318,7 @@
   {form}
   {name}
   {value}
-  on:click={handleClick}
+  onclick={handleClick}
   onmouseenter={handleHover}
   onmouseleave={handleUnhover}
   onMousemove={handleMouseMove}
@@ -369,7 +369,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 /* Advanced shadows and lighting */ box-shadow: var(--material-shadow);
-    transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
+    transition all 200ms cubic-bezier(0.23, 1, 0.32, 1);
 /* Remove default button styles */ -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -381,7 +381,7 @@
 /* Text styling */ text-transform: uppercase;
     letter-spacing: 0.8px;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-/* Layout */ position: relative;
+/* Layout */ position relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -390,11 +390,11 @@
 /* Fog effect */ background-image: var(--material-bg), radial-gradient(circle at 50% 120%, var(--fog-color, #404040) 0%, transparent 70%);
   }
 /* Button content wrapper */ .button-content {
-    position: relative;
+    position relative;
     z-index: 2,
   }
 /* Lighting overlay */ .lighting-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -404,7 +404,7 @@ background: linear-gradient( 135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255,
     z-index: 1,
   }
 /* Reflection overlay */ .reflection-overlay {
-    position: absolute;
+    position absolute;
     top: 10%;
     left: 10%;
     right: 60%;
@@ -441,7 +441,7 @@ box-shadow: 0 2px 0 #343a40, inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 8px rgba
     outline-offset: 3px;
 box-shadow: var(--material-shadow), 0 0 0 3px rgba(255, 255, 255, 0.3);
   }
-/* Glow effect */ :global(.n64-3d-button:hover) {
+/* Glow effect */ :global(.n64-3d-buttonhover) {
 box-shadow: var(--material-shadow), 0 0 20px rgba(255, 255, 255, calc(var(--glow-intensity) * 0.5));
   }
 /* Enhanced loading spinner */ .loading-spinner {
@@ -457,7 +457,7 @@ box-shadow: var(--material-shadow), 0 0 20px rgba(255, 255, 255, calc(var(--glow
     border-right: 2px solid rgba(255, 255, 255, 0.6);
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
-    animation: n64Spin 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+    animation n64Spin 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
     transform-style: preserve-3d;
   }
   @keyframes n64Spin {
@@ -508,7 +508,7 @@ box-shadow: var(--material-shadow), 0 0 20px rgba(255, 255, 255, calc(var(--glow
   }
 /* Fog effects */ :global($1) {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -531,13 +531,13 @@ background: radial-gradient( ellipse at center bottom, var(--fog-color, #404040)
       display: none;
     }
   }
-/* Reduced motion support */ @media (prefers-reduced-motion: reduce) {
+/* Reduced motion support */ @media (prefers-reduced-motion reduce) {
     :global(.n64-3d-button) {
       transform: none !important;
-      transition: opacity 150ms ease;
+      transition opacity 150ms ease;
     }
     .n64-spinner {
-      animation: none;
+      animation none;
       border: 3px solid currentColor;
       border-right-color: transparent;
     }

@@ -7,7 +7,7 @@
   let finalTranscript = $state('');
   let interimTranscript = $state('');
   let currentTranscript = $state('');
-  let recognition: unknown = $state();
+  let recognition unknown = $state();
   $effect(() => {
     // Initialize speech recognition
     const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognitio;
@@ -52,7 +52,7 @@
         } else if (event.error === 'not-allowed') {
           speak('Permission to use microphone denied. Please enable microphone access.');
         } else {
-          speak('Error occurred in recognition: ' + event.error);
+          speak('Error occurred in recognition ' + event.error);
         }
       };
     } else {
@@ -69,7 +69,7 @@
       <p>Click the button and start speaking.</p>
     {/if}
     <button
-      on:click={() => {
+      onclick={() => {
         if (isListening) {
           recognition.stop();
           isListening = false;

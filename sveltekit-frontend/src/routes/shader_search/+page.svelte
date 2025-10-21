@@ -60,7 +60,7 @@ if (!browser) return;
           webgpu: data.totalShaders.webgpu,
           webgl: data.totalShaders.webgl;
         },
-        topOperations: data.supportedOperations.map((op: string) => ({ operation: op, count: 0 })),
+        topOperations: data.supportedOperations.map((op: string) => ({ operation op, count: 0 })),
         averagePerformance: 0,
         totalUsage: 0
       }
@@ -94,7 +94,7 @@ if (!browser) return;
     try {
       const query: ShaderSearchQuery = {
         text: searchQuery.trim() || undefined,
-        operation: selectedOperation || undefined;
+        operation selectedOperation || undefined;
         tags: selectedTags.length > 0 ? selectedTags : undefined
         shaderType: selectedShaderType
         sortBy,
@@ -148,8 +148,8 @@ if (!browser) return;
       query: searchMetadata?.query,
       results: searchResults.map(shader => ({,
         id: shader.id,
-        operation: shader.metadata.operation,
-        description: shader.metadata.description,
+        operation shader.metadata.operation,
+        description shader.metadata.description,
         tags: shader.metadata.tags,
         relevanceScore: shader.relevanceScore,
         embeddingSimilarity: shader.embeddingSimilarity,
@@ -209,7 +209,7 @@ if (!browser) return;
           <h3>Top Operations</h3>
           <div class="operation-tags">
             {#each stats.topOperations as op}
-              <span class="operation-tag" on:click={() => (selectedOperation = op.operation)}>
+              <span class="operation-tag" onclick={() => (selectedOperation = op.operation)}>
                 {op.operation} ({op.count})
               </span>
             {/each}
@@ -229,13 +229,13 @@ if (!browser) return;
           onkeydown={e => e.key === 'Enter' && performSearch()}
           class="search-input"
         />
-        <button on:click={performSearch} disabled={isSearching} class="search-button">
+        <button onclick={performSearch} disabled={isSearching} class="search-button">
           {isSearching ? '⏳' : '🔍'} Search
         </button>
       </div>
       <div class="filters-row">
         <div class="filter-group">
-          <label for="operation">Operation:</label><select id="operation" bind:value={selectedOperation}>
+          <label for="operation">Operation</label><select id="operation" bind:value={selectedOperation}>
             <option value="">All Operations</option>
             {#each availableOperations as operation}
               <option value={operation}>{operation}</option>
@@ -265,7 +265,7 @@ if (!browser) return;
             <option value={100}>100</option>
           </select>
         </div>
-        <button on:click={clearFilters} class="clear-button">Clear Filters</button>
+        <button onclick={clearFilters} class="clear-button">Clear Filters</button>
       </div>
       <!-- Tag Filters -->
       {#if availableTags.length > 0}
@@ -273,7 +273,7 @@ if (!browser) return;
           <label>Tags:</label>
           <div class="tag-filters">
             {#each availableTags as tag}
-              <button class="tag-button" class:selected={selectedTags.includes(tag)} on:click={() => toggleTag(tag)}>
+              <button class="tag-button" class:selected={selectedTags.includes(tag)} onclick={() => toggleTag(tag)}>
                 {tag}
               </button>
             {/each}
@@ -284,7 +284,7 @@ if (!browser) return;
         <div class="selected-tags">
           <strong>Selected Tags:</strong>
           {#each selectedTags as tag}
-            <span class="selected-tag" on:click={() => toggleTag(tag)}>
+            <span class="selected-tag" onclick={() => toggleTag(tag)}>
               {tag} ×
             </span>
           {/each}
@@ -305,7 +305,7 @@ if (!browser) return;
             {/if}
           </span>
           {#if searchResults.length > 0}
-            <button on:click={exportResults} class="export-button">📥 Export Results</button>
+            <button onclick={exportResults} class="export-button">📥 Export Results</button>
           {/if}
         </div>
       </div>
@@ -323,7 +323,7 @@ if (!browser) return;
     {:else}
       <div class="results-grid">
         {#each searchResults as shader}
-          <div class="shader-nier-bits-card" role="button" tabindex="0" on:click={() => (selectedShader = shader)}>
+          <div class="shader-nier-bits-card" role="button" tabindex="0" onclick={() => (selectedShader = shader)}>
             <div class="shader-header">
               <h3>{shader.id}</h3>
               <div class="shader-badges">
@@ -333,7 +333,7 @@ if (!browser) return;
             </div>
             <div class="shader-meta">
               <div class="meta-item">
-                <strong>Operation:</strong>
+                <strong>Operation</strong>
                 {shader.metadata.operation}
               </div>
               <div class="meta-item">
@@ -369,11 +369,11 @@ if (!browser) return;
   </section>
   <!-- Shader Detail Modal -->
   {#if selectedShader}
-    <div class="modal-backdrop" role="button" tabindex="0" on:click={() => (selectedShader = null)}>
-      <div class="modal" role="button" tabindex="0" on:click={e => e.stopPropagation()}>
+    <div class="modal-backdrop" role="button" tabindex="0" onclick={() => (selectedShader = null)}>
+      <div class="modal" role="button" tabindex="0" onclick={e => e.stopPropagation()}>
         <div class="modal-header">
           <h2>{selectedShader.id}</h2>
-          <button on:click={() => (selectedShader = null)} class="close-button">×</button>
+          <button onclick={() => (selectedShader = null)} class="close-button">×</button>
         </div>
         <div class="modal-content">
           <div class="shader-details">
@@ -381,7 +381,7 @@ if (!browser) return;
               <h3>Metadata</h3>
               <div class="detail-grid">
                 <div><strong>Type:</strong> {selectedShader.config.type}</div>
-                <div><strong>Operation:</strong> {selectedShader.metadata.operation}</div>
+                <div><strong>Operation</strong> {selectedShader.metadata.operation}</div>
                 <div><strong>Usage Count:</strong> {selectedShader.metadata.usageCount}</div>
                 <div>
                   <strong>Performance:</strong>
@@ -412,7 +412,7 @@ if (!browser) return;
             <div class="detail-group">
               <div class="code-header">
                 <h3>WGSL Code</h3>
-                <button on:click={() => copyShaderCode(selectedShader!)} class="copy-button"> 📋 Copy Code </button>
+                <button onclick={() => copyShaderCode(selectedShader!)} class="copy-button"> 📋 Copy Code </button>
               </div>
               <div class="code-container">
                 <pre><code>{selectedShader.wgsl}</code></pre>
@@ -527,7 +527,7 @@ if (!browser) return;
     cursor: pointer;
     font-weight: 500,
   }
-  .search-button:disabled {
+  .search-buttondisabled {
     background: #9ca3af;
   }
   .filters-row {
@@ -539,7 +539,7 @@ if (!browser) return;
   }
   .filter-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .filter-group label {
@@ -631,7 +631,7 @@ if (!browser) return;
     border: 4px solid #f3f4f6;
     border-top: 4px solid #2563eb;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
   @keyframes spin {
@@ -657,7 +657,7 @@ if (!browser) return;
     border-radius: 8px;
     padding: 1.5rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .shader-card: hover {
     border-color: #2563eb;
@@ -742,7 +742,7 @@ if (!browser) return;
     overflow: hidden;
   }
   .modal-backdrop {
-    position: fixed;
+    position fixed;
     top: 0,
     left: 0;
     right: 0,
@@ -761,7 +761,7 @@ if (!browser) return;
     max-height: 90vh;
     overflow: hidden;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
   }
   .modal-header {
     display: flex;

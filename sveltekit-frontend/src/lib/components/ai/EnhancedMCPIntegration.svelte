@@ -26,7 +26,7 @@
   interface McpTool {
     id: string;
     name: string;
-    description: string;
+    description string;
     status: 'available' | 'busy' | 'error';
     successCount: number;
     errorCount: number;
@@ -45,7 +45,7 @@
   interface ContextualSuggestion {
     id: string;
     title: string;
-    description: string;
+    description string;
     priority: 'high' | 'medium' | 'low';
   }
 
@@ -53,7 +53,7 @@
   const queryResults = writable<QueryResult[]>([]);
   const contextualSuggestions = writable<ContextualSuggestion[]>([]);
 
-  let wsConnection: WebSocket | null = null;
+  let wsConnection WebSocket | null = null;
   let queryInput = '';
   let selectedTool = '';
   let isProcessing = false;
@@ -61,9 +61,9 @@
   let metricsInterval: ReturnType<typeof setInterval> | null = null;
 
   const availableMCPTools = [
-    { id: 'enhanced_rag_query', name: 'Enhanced RAG Query', description: 'Semantic search with Context7 integration' },
-    { id: 'mcp_memory2_create_relations', name: 'Memory Relations', description: 'Create knowledge graph relations' },
-    { id: 'mcp_memory2_read_graph', name: 'Memory Read Graph', description: 'Query knowledge graph' },
+    { id: 'enhanced_rag_query', name: 'Enhanced RAG Query', description 'Semantic search with Context7 integration' },
+    { id: 'mcp_memory2_create_relations', name: 'Memory Relations', description 'Create knowledge graph relations' },
+    { id: 'mcp_memory2_read_graph', name: 'Memory Read Graph', description 'Query knowledge graph' },
   ];
 
   onMount(() => {
@@ -149,7 +149,7 @@
       suggestions.push({
         id: 'analyze-evidence',
         title: 'Analyze Case Evidence',
-        description: 'Run enhanced RAG analysis on case evidence',
+        description 'Run enhanced RAG analysis on case evidence',
         priority: 'high',
       });
     }
@@ -272,7 +272,7 @@
         <input class="query-input" placeholder="Enter query or parameters" bind:value={queryInput} />
         <button
           class="execute-button"
-          on:click={() => selectedTool && executeMCPTool(selectedTool, { query: queryInput })}
+          onclick={() => selectedTool && executeMCPTool(selectedTool, { query: queryInput })}
           disabled={!selectedTool || isProcessing}
         >
           Execute
@@ -409,13 +409,13 @@
     color: white;
     font-weight: 600,
     cursor: pointer;
-    transition: transform 0.12s ease;
+    transition transform 0.12s ease;
   }
-  .execute-button:disabled {
+  .execute-buttondisabled {
     opacity: 0.5,
     cursor: not-allowed;
   }
-  .execute-button:hover:not(:disabled) {
+  .execute-buttonhover:not(:disabled) {
     transform: translateY(-2px);
   }
   .results-list {

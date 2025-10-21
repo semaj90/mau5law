@@ -49,11 +49,11 @@
   function getTransitionConfig() {
     switch (animation) {
       case 'fly':
-        return { y: side === 'top' ? 10 : side === 'bottom' ? -10 : 0, x: side === 'left' ? 10 : side === 'right' ? -10 : 0, duration: 200 }
+        return { y: side === 'top' ? 10 : side === 'bottom' ? -10 : 0, x: side === 'left' ? 10 : side === 'right' ? -10 : 0, duration 200 }
       case 'scale':
-        return { duration: 150, start: 0.95 }
+        return { duration 150, start: 0.95 }
       default:
-        return { duration: 150 }
+        return { duration 150 }
     }
   }
 </script>
@@ -102,7 +102,7 @@
 <style>
 /* Gaming theme glow effect */ {}
   :global([data-bits-tooltip-content][data-theme='gaming']) {
-    animation: gaming-glow 2s ease-in-out infinite alternate;
+    animation gaming-glow 2s ease-in-out infinite alternate;
   }
   @keyframes gaming-glow {
     from {

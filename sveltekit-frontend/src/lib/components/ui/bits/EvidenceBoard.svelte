@@ -8,7 +8,7 @@
     title: string;
     content?: string;
     thumbnail?: string;
-    position: ;
+    position ;
 { x: number; y: number }
     size: { width: number; height: number }
     color?: string;
@@ -49,7 +49,7 @@
       type: 'document',
       title: 'Contract Agreement',
       content: 'Employment contract between parties',
-      position: ;
+      position ;
 { x: 100, y: 100 },
       size: { width: 200, height: 150 },
       color: '#3b82f6',
@@ -60,18 +60,18 @@
       type: 'image',
       title: 'Signed Document',
       content: 'Signature verification',
-      position: ;
+      position ;
 { x: 350, y: 150 },
       size: { width: 180, height: 120 },
       color: '#10b981',
-      metadata: { resolution: '1920x1080', format: 'PNG' }
+      metadata: { resolution '1920x1080', format: 'PNG' }
     },
     {
       id: '3',
       type: 'note',
       title: 'Legal Analysis',
       content: 'Key points:\n- Clause 4.2 needs review\n- Liability section unclear\n- Termination conditions',
-      position: ;
+      position ;
 { x: 150, y: 300 },
       size: { width: 250, height: 180 },
       color: '#f59e0b',
@@ -82,7 +82,7 @@
       type: 'link',
       title: 'Case Precedent',
       content: 'Similar case: Johnson v. TechCorp (2023)',
-      position: ;
+      position ;
 { x: 450, y: 350 },
       size: { width: 200, height: 100 },
       color: '#8b5cf6',
@@ -100,25 +100,25 @@
       background: 'bg-gray-50 dark:bg-gray-900',
       grid: 'opacity-20',
       item: 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100',
-      connection: 'stroke-gray-400 dark:stroke-gray-500',
+      connection 'stroke-gray-400 dark:stroke-gray-500',
     },
     legal: {
       background: 'bg-slate-50 dark:bg-slate-900',
       grid: 'opacity-20',
       item: 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100',
-      connection: 'stroke-slate-400 dark:stroke-slate-500',
+      connection 'stroke-slate-400 dark:stroke-slate-500',
     },
     gaming: {
       background: 'bg-black',
       grid: 'opacity-30 stroke-green-400',
       item: 'border-green-400 bg-black text-green-400 shadow-[0_0_15px_rgba(0,255,65,0.3)]',
-      connection: 'stroke-green-400',
+      connection 'stroke-green-400',
     },
     yorha: {
       background: 'bg-black',
       grid: 'opacity-40 stroke-green-400',
       item: 'border-2 border-green-400 bg-black text-green-400 shadow-[0_0_20px_rgba(0,255,65,0.4)] font-mono',
-      connection: 'stroke-green-400 stroke-2',
+      connection 'stroke-green-400 stroke-2',
     }
   }
   function getItemIcon(type: EvidenceItem['type']): string {
@@ -212,7 +212,7 @@
       type,
       title: `New ${type}`,
       content: '',
-      position: ;
+      position ;
 { x: 50, y: 50 },
       size: { width: 200, height: 150 },
       color: '#6b7280',
@@ -330,7 +330,7 @@
         border-color: {item.color || ''}
       "
       onmousedown={(e) => startDrag(e, item)}
-      on:click={(e) => {
+      onclick={(e) => {
         if (isConnecting) {
           completeConnection(item.id);
         } else {
@@ -341,7 +341,7 @@
         e.preventDefault();
         startConnection(item.id);
       }}
-      transition:scale={{ duration: 200, easing: quintOut }}
+      transitionscale={{ duration 200, easing: quintOut }}
     >
       <!-- Item Header -->
       <div class="flex items-center justify-between mb-2">
@@ -361,7 +361,7 @@
         </div>
         {#if !readonly}
           <button
-            on:click={(e) => {
+            onclick={(e) => {
               e.stopPropagation();
               items = items.filter(i => i.id !== item.id);
             }}
@@ -426,7 +426,7 @@
       }
     `}>
       <button
-        on:click={() => addNewItem('note')}
+        onclick={() => addNewItem('note')}
         class={`
           px-3 py-1 rounded text-sm transition-colors
           ${theme === 'yorha'
@@ -439,7 +439,7 @@
         📝 Note
       </button>
       <button
-        on:click={() => addNewItem('document')}
+        onclick={() => addNewItem('document')}
         class={`
           px-3 py-1 rounded text-sm transition-colors
           ${theme === 'yorha'
@@ -452,7 +452,7 @@
         📄 Doc
       </button>
       <button
-        on:click={() => addNewItem('link')}
+        onclick={() => addNewItem('link')}
         class={`
           px-3 py-1 rounded text-sm transition-colors
           ${theme === 'yorha'
@@ -466,7 +466,7 @@
       </button>
       {#if selectedItems.size > 0}
         <button
-          on:click={deleteSelected}
+          onclick={deleteSelected}
           class={`
             px-3 py-1 rounded text-sm transition-colors
             ${theme === 'yorha'
@@ -504,7 +504,7 @@
 <style>
   /* Smooth animations for YoRHa theme */
   :global(.yorha-evidence-item) {
-    animation: yorha-item-glow 2s ease-in-out infinite alternate;
+    animation yorha-item-glow 2s ease-in-out infinite alternate;
   }
   @keyframes yorha-item-glow {
     from {

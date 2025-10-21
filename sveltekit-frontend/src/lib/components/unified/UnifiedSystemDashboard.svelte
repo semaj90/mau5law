@@ -20,7 +20,7 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
     },
     activeJobs: { gpu: 0, cpu: 0 },
     uptime: 0,
-    version: '2.0.0',
+    version '2.0.0',
   });
   const processingResults = writable([]);
   const isProcessing = writable(false);
@@ -48,14 +48,14 @@ Showcases integration between Phase 2 GPU Acceleration and Production Pipeline
     content: `This is a demonstration legal document for testing the unified processing system.
     AGREEMENT made this day between Party A and Party B, whereas the parties agree to the following terms and conditions:
     1. SCOPE OF WORK: Party A shall provide legal consulting services
-    2. COMPENSATION: Payment terms as specified herein
+    2. COMPENSATIon Payment terms as specified herein
     3. CONFIDENTIALITY: All information shall remain confidential
-    4. TERMINATION: This agreement may be terminated with 30 days notice
+    4. TERMINATIon This agreement may be terminated with 30 days notice
     This document demonstrates the integration of GPU-accelerated processing with the standard production pipeline.`,
     metadata: {
       document_type: 'contract',
       court_level: 'appellate',
-      jurisdiction: 'federal',
+      jurisdiction 'federal',
       practice_areas: ['contract', 'commercial'],
       estimated_complexity: 'medium',
     },
@@ -174,7 +174,7 @@ await refreshSystemStatus();
             <span class="text-blue-400">{formatUptime($systemStatus.uptime)}</span>
           </div>
           <div class="flex justify-between">
-            <span>Version:</span>
+            <span>Version</span>
             <span class="text-purple-400">{$systemStatus.version}</span>
           </div>
         </div>
@@ -326,7 +326,7 @@ await refreshSystemStatus();
             </div>
           </div>
           <button
-            on:click={processDocument}
+            onclick={processDocument}
             disabled={$isProcessing}
             class="w-full py-3 px-4 bg-purple-600 hover: bg-purple-700 disabled:bg-gray-600 ;
                          disabled:cursor-not-allowed rounded-lg font-medium transition-colors"
@@ -417,7 +417,7 @@ await refreshSystemStatus();
               </div>
               {#if (result as { result?: unknown; timestamp?: unknown; document?: unknown; processingTime?: unknown }).result.metadata.gpuUtilization > 0}
                 <div class="mt-2 text-xs">
-                  <span class="text-purple-400">GPU Utilization:</span>
+                  <span class="text-purple-400">GPU Utilization</span>
                   <span class="text-white ml-1"
                     >{(
                       (

@@ -106,7 +106,7 @@
             id: 1,
             type: 'case_created',
             user: 'john.doe@law.com',
-            description: 'Created new case: Smith v. Johnson',
+            description 'Created new case: Smith v. Johnson',
             timestamp: new Date(Date.now() - 300000).toISOString(),
             status: 'success',
           },
@@ -114,7 +114,7 @@
             id: 2,
             type: 'ai_analysis',
             user: 'jane.smith@law.com',
-            description: 'Completed AI analysis on contract dispute',
+            description 'Completed AI analysis on contract dispute',
             timestamp: new Date(Date.now() - 900000).toISOString(),
             status: 'success',
           },
@@ -122,7 +122,7 @@
             id: 3,
             type: 'user_login',
             user: 'admin@legal-ai.com',
-            description: 'Administrator login from 192.168.1.100',
+            description 'Administrator login from 192.168.1.100',
             timestamp: new Date(Date.now() - 1800000).toISOString(),
             status: 'info',
           },
@@ -180,7 +180,7 @@
         <Clock class="w-3 h-3" />
         Updated {formatTimeAgo(lastUpdated.toISOString())}
       </Badge>
-      <Button variant="ghost" on:click={refreshData} disabled={isLoading} class="gap-2">
+      <Button variant="ghost" onclick={refreshData} disabled={isLoading} class="gap-2">
         <RefreshCw class="w-4 h-4 {isLoading ? 'animate-spin' : ''}" />
         Refresh
       </Button>
@@ -188,19 +188,19 @@
   </div>
   <!-- Quick Actions -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-    <button class="nes-btn h-20 flex-col gap-2" on:click={() => goto('/admin/users')}>
+    <button class="nes-btn h-20 flex-col gap-2" onclick={() => goto('/admin/users')}>
       <Users class="w-6 h-6" />
       <span>Manage Users</span>
     </button>
-    <button class="nes-btn h-20 flex-col gap-2" on:click={() => goto('/admin/cluster')}>
+    <button class="nes-btn h-20 flex-col gap-2" onclick={() => goto('/admin/cluster')}>
       <Server class="w-6 h-6" />
       <span>Cluster Status</span>
     </button>
-    <button class="nes-btn h-20 flex-col gap-2" on:click={() => goto('/admin/gpu-demo')}>
+    <button class="nes-btn h-20 flex-col gap-2" onclick={() => goto('/admin/gpu-demo')}>
       <Cpu class="w-6 h-6" />
       <span>GPU Monitor</span>
     </button>
-    <button class="nes-btn h-20 flex-col gap-2" on:click={() => goto('/system-status')}>
+    <button class="nes-btn h-20 flex-col gap-2" onclick={() => goto('/system-status')}>
       <Monitor class="w-6 h-6" />
       <span>System Status</span>
     </button>
@@ -279,7 +279,7 @@
         <div>Real-time status of core system components</div>
       </div>
       <div class="space-y-4">
-        {#each [{ key: 'database', label: 'PostgreSQL Database', icon: Database }, { key: 'redis', label: 'Redis Cache', icon: HardDrive }, { key: 'aiService', label: 'AI Service', icon: Cpu }, { key: 'vectorSearch', label: 'Vector Search', icon: Network }, { key: 'fileSystem', label: 'File System', icon: HardDrive }, { key: 'gpu', label: 'GPU Acceleration', icon: Zap }] as service}
+        {#each [{ key: 'database', label: 'PostgreSQL Database', icon Database }, { key: 'redis', label: 'Redis Cache', icon HardDrive }, { key: 'aiService', label: 'AI Service', icon Cpu }, { key: 'vectorSearch', label: 'Vector Search', icon Network }, { key: 'fileSystem', label: 'File System', icon HardDrive }, { key: 'gpu', label: 'GPU Acceleration', icon Zap }] as service}
           <div class="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
             <div class="flex items-center gap-3">
               <service.icon class="w-4 h-4 nes-text is-disabled" />

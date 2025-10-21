@@ -183,7 +183,7 @@
     </div>
     <!-- Upload Button -->
     <div class="upload-actions">
-      <ModernButton on:click={uploadDocument} disabled={!selectedFile || uploading} variant="secondary">
+      <ModernButton onclick={uploadDocument} disabled={!selectedFile || uploading} variant="secondary">
         {uploading ? '🔄 Processing...' : '🚀 Upload & Process'}
       </ModernButton>
     </div>
@@ -330,7 +330,7 @@
     border: 2px dashed #555;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .file-input-label:hover {
     border-color: #00ff41;
@@ -354,7 +354,7 @@
   }
   .file-details {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .file-name {

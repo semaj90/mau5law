@@ -16,7 +16,7 @@
 
 <button
   type="button"
-  on:click={handleClick}
+  onclick={handleClick}
   disabled={disabled}
   class={`bits-btn ${variant ?? ''} ${size ?? ''} ${className ?? ''}`}
   {...$$restProps}>

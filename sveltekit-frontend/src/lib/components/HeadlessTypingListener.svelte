@@ -5,8 +5,8 @@
   Usage:
   <HeadlessTypingListener
     bind:text={userInput}
-    on:contextualPrompts={handlePrompt}
-    on:analyticsUpdate={handleAnalytics}
+    oncontextualPrompts={handlePrompt}
+    onanalyticsUpdate={handleAnalytics}
   />
 -->
 <script lang="ts">
@@ -248,7 +248,7 @@
       // ignore if already started or actor implementation varies
     }
 
-    const subscription: any = typingActor.subscribe?.((s: any) => {
+    const subscription any = typingActor.subscribe?.((s: any) => {
       currentState = s.value as TypingState;
       currentContext = s.context as TypingContext;
       handleStateChange(currentState, currentContext);
@@ -294,7 +294,7 @@
   <!-- Debug info only in development -->
   <div
     class="debug-panel"
-    style="position: fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 1rem; border-radius: 0.5rem; font-family: monospace; font-size: 0.75rem; z-index: 9999;"
+    style="position fixed; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 1rem; border-radius: 0.5rem; font-family: monospace; font-size: 0.75rem; z-index: 9999;"
   >
     <div><strong>Typing State:</strong> {currentState}</div>
     <div><strong>User Engagement:</strong> {userEngagement}</div>

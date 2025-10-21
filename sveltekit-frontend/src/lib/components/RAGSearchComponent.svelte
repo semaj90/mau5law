@@ -208,7 +208,7 @@
           disabled={isSearching}
         />
         <ButtonBits
-          on:click={performSearch}
+          onclick={performSearch}
           disabled={isSearching || !searchQuery.trim()}
           variant="success"
           size="lg"
@@ -225,7 +225,7 @@
             {/if}
           {/snippet}
         </ButtonBits>
-        <ButtonBits on:click={ingestDocument} variant="ghost" size="lg" class="border-blue-500 text-blue-400">
+        <ButtonBits onclick={ingestDocument} variant="ghost" size="lg" class="border-blue-500 text-blue-400">
           {#snippet children()}
             📄 Ingest Doc
           {/snippet}
@@ -265,7 +265,7 @@
         <span class="text-sm text-nier-text-muted">Try:</span>
         {#each searchSuggestions as suggestion}
           <ButtonBits
-            on:click={() => {
+            onclick={() => {
               searchQuery = suggestion;
             }}
             variant="ghost"
@@ -356,7 +356,7 @@
       <div class="space-y-2">
         {#each searchHistory as historyItem}
           <ButtonBits
-            on:click={() => {
+            onclick={() => {
               searchQuery = historyItem.query;
             }}
             variant="ghost"
@@ -387,14 +387,14 @@
   :global(.legal-ai-search-input) {
     background: var(--nier-bg-primary);
     border: 2px solid var(--nier-border-muted);
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   :global(.legal-ai-search-input:focus) {
     border-color: var(--nier-accent-warm);
     box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
   }
   :global(.legal-ai-search-btn) {
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     box-shadow: var(--legal-ai-shadow-md);
   }
   :global(.legal-ai-search-btn:hover) {
@@ -403,7 +403,7 @@
   }
   :global(.legal-search-result) {
     border-left: 4px solid var(--nier-accent-warm);
-    transition: transform 0.2s ease;
+    transition transform 0.2s ease;
   }
   :global(.legal-search-result:hover) {
     transform: translateY(-2px);

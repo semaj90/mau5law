@@ -45,7 +45,7 @@
       />
       {#if uploadFile}
         <p>Selected: {uploadFile.name}</p>
-        <button on:click={submitEvidence} class="upload-btn">Submit Evidence</button>
+        <button onclick={submitEvidence} class="upload-btn">Submit Evidence</button>
       {/if}
     </div>
 
@@ -112,7 +112,7 @@
     border: 1px solid #444;
     border-radius: 8px;
     padding: 2rem;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
 
   .action-card:hover {
@@ -169,11 +169,11 @@
 
   .action-link {
     color: #ffd700;
-    text-decoration: none;
+    text-decoration none;
     padding: 0.5rem 1rem;
     border: 1px solid #ffd700;
     border-radius: 4px;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
 
   .action-link:hover {

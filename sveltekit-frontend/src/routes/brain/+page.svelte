@@ -39,7 +39,7 @@ https://svelte.dev/e/js_parse_error -->
     edge: 0xef4444,
     'ui-lib': 0x94a3b8,
     routing: 0x22c55e,
-    automation: 0x14b8a6,
+    automation 0x14b8a6,
     table: 0x8b5cf6,
     default: 0xffffff,
   };

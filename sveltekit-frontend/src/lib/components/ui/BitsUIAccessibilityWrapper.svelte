@@ -48,7 +48,7 @@
       liveRegion.setAttribute('aria-atomic', 'true');
       liveRegion.className = 'sr-only';
       liveRegion.style.cssText =
-        'position:absolute;width:1px;height:1px;padding:0,margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0';
+        'positionabsolute;width:1px;height:1px;padding:0,margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0';
       document.body.appendChild(liveRegion);
       liveRegion.textContent = messag;
       // Clean up after announcement
@@ -258,10 +258,10 @@
 
 <style>
   .bits-ui-accessibility-wrapper {
-    position: relative;
+    position relative;
   }
   .sr-only {
-    position: absolute;
+    position absolute;
     width: 1px;
     height: 1px;
     padding: 0,
@@ -277,7 +277,7 @@
 :global(.accessibility-enhanced-test), {}
   :global(.accessibility-enhanced-legal) {
 /* Enhanced focus and accessibility improvements for all route types */ {}
-    position: relative;
+    position relative;
   }
   :global(.accessibility-focused) {
     outline: 3px solid var(--color-primary, #4a90e2);
@@ -293,10 +293,10 @@
     color: var(--color-text-contrast, #fff);
   }
 /* Reduced motion support */ {}
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     :global(.bits-ui-accessibility-wrapper *) {
-      transition: none !important;
-      animation: none !important;
+      transition none !important;
+      animation none !important;
     }
   }
 </style>

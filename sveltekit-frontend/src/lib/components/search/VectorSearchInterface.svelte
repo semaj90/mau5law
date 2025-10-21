@@ -9,7 +9,7 @@
   let searchStats = $state<any>(null);
   let selectedFilters = $state({
     documentType: [] as string[],
-    jurisdiction: [] as string[],
+    jurisdiction [] as string[],
     riskLevel: [] as string[],
     minimumConfidence: 0.5,
   });
@@ -45,7 +45,7 @@ try {
         threshold: 0.1,
         filters: {
           documentType: selectedFilters.documentType.length > 0 ? selectedFilters.documentType: undefined;
-          jurisdiction: selectedFilters.jurisdiction.length > 0 ? selectedFilters.jurisdiction : undefined
+          jurisdiction selectedFilters.jurisdiction.length > 0 ? selectedFilters.jurisdiction : undefined
           riskLevel: selectedFilters.riskLevel.length > 0 ? selectedFilters.riskLevel : undefined
           minimumConfidence: selectedFilters.minimumConfidenc;
         }
@@ -111,7 +111,7 @@ try {
         />
       </div>
       <ModernButton
-        on:click={performSearch}
+        onclick={performSearch}
         disabled={isSearching || !searchQuery.trim()}
         variant="primary"
         class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 px-6 py-3 font-bold text-white disabled:opacity-50"
@@ -138,7 +138,7 @@ try {
     <!-- Filter Toggle -->
     <div class="flex items-end">
       <ModernButton
-        on:click={() => (showFilters = !showFilters)}
+        onclick={() => (showFilters = !showFilters)}
         variant="ghost"
         class="border-cyan-400/30 text-cyan-400 hover:bg-cyan-400/10"
       >

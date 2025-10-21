@@ -247,7 +247,7 @@
   <div class="demo-header">
     <h2>Contextual Chat with HMM State Machine</h2>
     <div class="session-info">
-      <span>Session: {sessionId.substring(0, 12)}...</span>
+      <span>Session {sessionId.substring(0, 12)}...</span>
       <span>User: {userId}</span>
     </div>
   </div>
@@ -300,10 +300,10 @@
           </label>
 
           <div class="button-group">
-            <button on:click={clearConversation} disabled={isLoading}>
+            <button onclick={clearConversation} disabled={isLoading}>
               Clear
             </button>
-            <button on:click={sendMessage} disabled={isLoading || !message.trim()}>
+            <button onclick={sendMessage} disabled={isLoading || !message.trim()}>
               {isLoading ? 'Sending...' : 'Send'}
             </button>
           </div>
@@ -411,7 +411,7 @@
 <style>
   .contextual-chat-demo {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     height: 100%;
     max-height: 800px;
     border: 1px solid var(--border, #e5e7eb);
@@ -449,7 +449,7 @@
   /* Chat Panel */
   .chat-panel {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     border-right: 1px solid var(--border, #e5e7eb);
   }
 
@@ -572,14 +572,14 @@
     cursor: pointer;
     font-size: 0.875rem;
     font-weight: 500,
-    transition: all 0.2s;
+    transition all 0.2s;
   }
 
-  button:hover:not(:disabled) {
+  buttonhover:not(:disabled) {
     background: var(--muted, #f9fafb);
   }
 
-  button:disabled {
+  buttondisabled {
     opacity: 0.5,
     cursor: not-allowed;
   }
@@ -587,7 +587,7 @@
   /* State Panel */
   .state-panel {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
     padding: 1rem;
     overflow-y: auto;
@@ -660,13 +660,13 @@
 
   .predictions-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
   }
 
   .prediction-item {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
 
@@ -690,12 +690,12 @@
   .prediction-fill {
     height: 100%;
     background: var(--primary, #3b82f6);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
 
   .entities-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
 

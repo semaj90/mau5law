@@ -15,19 +15,19 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   let isFullscreen = $state(false);
   // Keyboard shortcuts map
   const shortcuts = [
-    { key: 'Ctrl + K', description: 'Quick search', action: 'search' },
-    { key: 'Ctrl + N', description: 'New evidence', action: 'new' },
-    { key: 'Ctrl + S', description: 'Save current work', action: 'save' },
-    { key: 'Ctrl + E', description: 'Export data', action: 'export' },
-    { key: 'Ctrl + F', description: 'Toggle filters', action: 'filter' },
-    { key: 'Ctrl + H', description: 'Show/hide shortcuts', action: 'help' },
+    { key: 'Ctrl + K', description 'Quick search', action 'search' },
+    { key: 'Ctrl + N', description 'New evidence', action 'new' },
+    { key: 'Ctrl + S', description 'Save current work', action 'save' },
+    { key: 'Ctrl + E', description 'Export data', action 'export' },
+    { key: 'Ctrl + F', description 'Toggle filters', action 'filter' },
+    { key: 'Ctrl + H', description 'Show/hide shortcuts', action 'help' },
     {
       key: 'Ctrl + Alt + A',
-      description: 'Accessibility panel',
-      action: 'accessibility',
+      description 'Accessibility panel',
+      action 'accessibility',
     },
-    { key: 'F11', description: 'Toggle fullscreen', action: 'fullscreen' },
-    { key: 'Escape', description: 'Close modals/exit', action: 'escape' },
+    { key: 'F11', description 'Toggle fullscreen', action 'fullscreen' },
+    { key: 'Escape', description 'Close modals/exit', action 'escape' },
   ];
   $effect(() => {
     if (browser) {
@@ -149,7 +149,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 {#if showShortcuts}
   <div
     class="mx-auto px-4 max-w-7xl"
-    on:click={() => (showShortcuts = false)}
+    onclick={() => (showShortcuts = false)}
     keydown={e => e.key === 'Escape' && (showShortcuts = false)}
     role="dialog"
     aria-modal="true"
@@ -163,7 +163,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
         </h3>
         <button
           class="mx-auto px-4 max-w-7xl"
-          on:click={() => (showShortcuts = false)}
+          onclick={() => (showShortcuts = false)}
           aria-label="Close shortcuts dialog"
         >
           <svg class="mx-auto px-4 max-w-7xl" fill="currentColor" viewBox="0 0 20 20">
@@ -201,7 +201,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       variant="ghost"
       size="sm"
       class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
-      on:click={() => (showAccessibilityPanel = !showAccessibilityPanel)}
+      onclick={() => (showAccessibilityPanel = !showAccessibilityPanel)}
       aria-label="Toggle accessibility panel"
     >
       <Accessibility class="mx-auto px-4 max-w-7xl" />
@@ -213,7 +213,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       variant="ghost"
       size="sm"
       class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
-      on:click={() => (showShortcuts = !showShortcuts)}
+      onclick={() => (showShortcuts = !showShortcuts)}
       aria-label="Show keyboard shortcuts"
     >
       <Keyboard class="mx-auto px-4 max-w-7xl" />
@@ -225,7 +225,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       variant="ghost"
       size="sm"
       class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
-      on:click={() => toggleFullscreen()}
+      onclick={() => toggleFullscreen()}
       aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
     >
       {#if isFullscreen}
@@ -241,7 +241,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 
 <style>
   :global(.floating-actions) {
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   :global($1) {
     transform: scale(1.05);

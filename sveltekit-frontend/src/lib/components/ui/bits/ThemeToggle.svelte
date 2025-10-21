@@ -148,7 +148,7 @@
       </span>
     {/if}
     <button
-      on:click={toggleTheme}
+      onclick={toggleTheme}
       class={`
         relative inline-flex items-center rounded-full border-2 transition-colors
         focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary
@@ -163,7 +163,7 @@
         class="flex items-center justify-center w-full h-full transition-transform duration-200"
         class:rotate-180={resolvedTheme === 'dark'}
       >
-        <span class="text-lg" transition:fade>
+        <span class="text-lg" transitionfade>
           {themeIcons[currentTheme]}
         </span>
       </div>
@@ -174,15 +174,15 @@
     {theme}
     {size}
     variant="outline"
-    on:click={toggleTheme}
+    onclick={toggleTheme}
     class="flex items-center space-x-2"
     aria-label={`Current theme: ${themeLabels[currentTheme]}. Click to switch.`}
   >
-    <span class="text-lg" transition:fade>
+    <span class="text-lg" transitionfade>
       {themeIcons[currentTheme]}
     </span>
     {#if showLabel}
-      <span transition:fade>
+      <span transitionfade>
         {themeLabels[currentTheme]}
       </span>
     {/if}
@@ -190,7 +190,7 @@
 {:else}
   <!-- Icon variant (default) -->
   <button
-    on:click={toggleTheme}
+    onclick={toggleTheme}
     class={`
       inline-flex items-center justify-center rounded-md border transition-colors;
       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary,
@@ -206,7 +206,7 @@
     <span
       class="transition-transform duration-300 text-lg"
       class:rotate-180={resolvedTheme === 'dark' && currentTheme !== 'system'}
-      transition:fade
+      transitionfade
     >
       {themeIcons[currentTheme]}
     </span>
@@ -216,7 +216,7 @@
 <style>
   /* Gaming theme animations */
   button[data-theme='gaming'] {
-    animation: gaming-glow 3s ease-in-out infinite alternate;
+    animation gaming-glow 3s ease-in-out infinite alternate;
   }
   @keyframes gaming-glow {
     from {
@@ -234,7 +234,7 @@
   }
   /* Smooth theme transitions */
   :global(html) {
-    transition:
+    transition
       background-color 0.3s ease,
       color 0.3s ease;
   }
@@ -245,7 +245,7 @@
     color-scheme: light;
   }
   /* Enhanced focus styles */
-  button:focus-visible {
+  buttonfocus-visible {
     outline: 2px solid currentColor;
     outline-offset: 2px;
   }

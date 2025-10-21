@@ -45,7 +45,7 @@
           <span class="size">({Math.round(f.size / 1024)} KB)</span>
         </div>
         <div class="actions">
-          <button type="button" on:click={() => removeFile(i)} disabled={readonly}>Remove</button>
+          <button type="button" onclick={() => removeFile(i)} disabled={readonly}>Remove</button>
         </div>
       </li>
     {/each}

@@ -58,12 +58,12 @@
     },
   ]);
   const prosecutionWorkflow = [
-    { step: 'what', question: 'What happened? Tell me about the incident.', icon: '🔍' },
-    { step: 'who', question: 'Who was involved? Identify all parties.', icon: '👥' },
-    { step: 'when', question: 'When did this occur? Timeline details.', icon: '⏰' },
-    { step: 'where', question: 'Where did it happen? Location specifics.', icon: '📍' },
-    { step: 'why', question: "Why did this happen? What's the motive?", icon: '💭' },
-    { step: 'how', question: 'How was it carried out? Method of operation.', icon: '⚙️' },
+    { step: 'what', question 'What happened? Tell me about the incident.', icon '🔍' },
+    { step: 'who', question 'Who was involved? Identify all parties.', icon '👥' },
+    { step: 'when', question 'When did this occur? Timeline details.', icon '⏰' },
+    { step: 'where', question 'Where did it happen? Location specifics.', icon '📍' },
+    { step: 'why', question "Why did this happen? What's the motive?", icon '💭' },
+    { step: 'how', question 'How was it carried out? Method of operation.', icon '⚙️' },
   ];
   let workflowAnswers = $state({
     what: '',
@@ -180,19 +180,19 @@
       <div class="timestamp">{timestamp}</div>
     </div>
     <nav class="main-nav">
-      <button class="nav-item" class:active={activeView === 'dashboard'} on:click={() => (activeView = 'dashboard')}>
+      <button class="nav-item" class:active={activeView === 'dashboard'} onclick={() => (activeView = 'dashboard')}>
         📊 Dashboard
       </button>
-      <button class="nav-item" class:active={activeView === 'cases'} on:click={() => (activeView = 'cases')}>
+      <button class="nav-item" class:active={activeView === 'cases'} onclick={() => (activeView = 'cases')}>
         📂 Cases ({mockUser.cases})
       </button>
-      <button class="nav-item" class:active={activeView === 'evidence'} on:click={() => (activeView = 'evidence')}>
+      <button class="nav-item" class:active={activeView === 'evidence'} onclick={() => (activeView = 'evidence')}>
         🔍 Evidence
       </button>
-      <button class="nav-item" class:active={activeView === 'detective'} on:click={() => (activeView = 'detective')}>
+      <button class="nav-item" class:active={activeView === 'detective'} onclick={() => (activeView = 'detective')}>
         🧠 Detective Mode
       </button>
-      <button class="nav-item" class:active={activeView === 'timeline'} on:click={() => (activeView = 'timeline')}>
+      <button class="nav-item" class:active={activeView === 'timeline'} onclick={() => (activeView = 'timeline')}>
         ⏱️ Timeline
       </button>
     </nav>
@@ -209,7 +209,7 @@
   <!-- Main Content -->
   <main class="platform-content">
     {#if activeView === 'dashboard'}
-      <div class="dashboard" transition:fade={{ duration: 300 }}>
+      <div class="dashboard" transitionfade={{ duration 300 }}>
         <div class="stats-grid">
           <div class="stat-nier-bits-card">
             <div class="stat-icon">📂</div>
@@ -269,7 +269,7 @@
         </div>
       </div>
     {:else if activeView === 'cases'}
-      <div class="cases-view" transition:fade={{ duration: 300 }}>
+      <div class="cases-view" transitionfade={{ duration 300 }}>
         <h2>📂 Case Management</h2>
         <div class="cases-grid">
           {#each cases as cse}
@@ -304,7 +304,7 @@
         </div>
       </div>
     {:else if activeView === 'detective'}
-      <div class="detective-mode" transition:fade={{ duration: 300 }}>
+      <div class="detective-mode" transitionfade={{ duration 300 }}>
         <h2>🧠 Detective Mode - "Who, What, Why, How"</h2>
         <div class="workflow-progress">
           {#each prosecutionWorkflow as step, index}
@@ -325,7 +325,7 @@
             ></textarea>
             <button
               class="nes-btn is-primary"
-              on:click={() => {
+              onclick={() => {
                 workflowStep++;
                 if (workflowStep < prosecutionWorkflow.length) {
                   startTypewriter(`Great! Now: ${prosecutionWorkflow[workflowStep].question}`);
@@ -346,7 +346,7 @@
         {/if}
       </div>
     {:else}
-      <div class="feature-view" transition:fade={{ duration: 300 }}>
+      <div class="feature-view" transitionfade={{ duration 300 }}>
         <h2>🚧 {activeView.charAt(0).toUpperCase() + activeView.slice(1)} Feature</h2>
         <p>This feature is fully implemented in the platform. Click around to explore!</p>
         <div class="feature-grid">
@@ -396,7 +396,7 @@
       <div class="ai-actions">
         <button
           class="nes-btn is-primary"
-          on:click={() => {
+          onclick={() => {
             showQuickInput = true;
             startTypewriter("What's wrong? Describe the situation and I'll help you build the caseItem:");
           }}
@@ -405,7 +405,7 @@
         </button>
         <button
           class="nes-btn"
-          on:click={() =>
+          onclick={() =>
             startTypewriter(
               'Ready to analyze evidence, detect patterns, and suggest prosecution strategies. What would you like me to focus on?'
             )}
@@ -415,7 +415,7 @@
       </div>
     {/if}
     {#if showQuickInput}
-      <div class="quick-input-panel" transition:fly={{ y: 20, duration: 300 }}>
+      <div class="quick-input-panel" transitionfly={{ y: 20, duration 300 }}>
         <textarea
           bind:value={quickInput}
           placeholder="Describe what happened... (e.g., 'Urgent fraud case with missing financial records and uncooperative witness')"
@@ -423,12 +423,12 @@
           rows="3"
         ></textarea>
         <div class="input-actions">
-          <button class="nes-btn is-primary" on:click={processQuickInput} disabled={!quickInput.trim()}>
+          <button class="nes-btn is-primary" onclick={processQuickInput} disabled={!quickInput.trim()}>
             Auto-Fill Case
           </button>
           <button
             class="nes-btn"
-            on:click={() => {
+            onclick={() => {
               showQuickInput = false;
               quickInput = '';
             }}
@@ -482,7 +482,7 @@
     border-radius: 0.5rem;
     color: #cbd5e1;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     font-size: 0.875rem;
   }
   .nav-item:hover,
@@ -669,7 +669,7 @@
     font-size: 0.875rem;
     font-weight: 600,
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     flex: 1,
   }
   .btn-primary {
@@ -700,13 +700,13 @@
   }
   .workflow-step {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     padding: 1rem;
     border-radius: 1rem;
     background: rgba(30, 41, 59, 0.3);
     border: 2px solid #334155;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .workflow-step.active {
     border-color: #10b981;
@@ -751,7 +751,7 @@
     box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
   }
   .ai-assistant-panel {
-    position: fixed;
+    position fixed;
     bottom: 2rem;
     right: 2rem;
     width: 400px;
@@ -770,7 +770,7 @@
     margin-bottom: 1rem;
   }
   .ai-avatar {
-    position: relative;
+    position relative;
     width: 48px;
     height: 48px;
     display: flex;
@@ -778,16 +778,16 @@
     justify-content: center;
     border-radius: 50%;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .ai-avatar.pulsing {
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   .ai-brain {
     font-size: 1.5rem;
   }
   .status-indicator {
-    position: absolute;
+    position absolute;
     bottom: 2px;
     right: 2px;
     width: 12px;
@@ -795,11 +795,11 @@
     border-radius: 50%;
     background: #10b981;
     border: 2px solid rgba(15, 23, 42, 0.95);
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .status-indicator.active {
     background: #f59e0b;
-    animation: blink 1s infinite;
+    animation blink 1s infinite;
   }
   .ai-info h3 {
     margin: 0,
@@ -827,7 +827,7 @@
     line-height: 1.5,
   }
   .cursor {
-    animation: blink 1s infinite;
+    animation blink 1s infinite;
     font-weight: bold;
     color: #10b981;
   }
@@ -905,7 +905,7 @@
   }
   @media (max-width: 768px) {
     .platform-header {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
     }
     .main-nav {
@@ -919,7 +919,7 @@
       grid-template-columns: 1fr;
     }
     .ai-assistant-panel {
-      position: relative;
+      position relative;
       width: 100%;
       bottom: auto;
       right: auto;

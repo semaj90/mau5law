@@ -98,7 +98,7 @@
         autocomplete="off"
       />
       {#if query}
-        <button on:click={clearSearch} class="nes-btn is-error clear-btn" type="button" title="Clear search"> × </button>
+        <button onclick={clearSearch} class="nes-btn is-error clear-btn" type="button" title="Clear search"> × </button>
       {/if}
       {#if isLoading}
         <div class="loading-indicator">
@@ -121,7 +121,7 @@
         </div>
         <div class="results-list">
           {#each results as result, index}
-            <button on:click={() => selectResult(result)} class="nes-container result-item" type="button">
+            <button onclick={() => selectResult(result)} class="nes-container result-item" type="button">
               <div class="result-content">
                 <div class="result-title">
                   {result.title || `Document ${index + 1}`}
@@ -162,7 +162,7 @@
 
 <style>
 	.search-container {
-		position: relative;
+		position relative;
 		width: 100%;
 		max-width: 600px;
 		margin: 0 auto;
@@ -180,7 +180,7 @@
 		color: #212529;
 	}
 	.search-input-wrapper {
-		position: relative;
+		position relative;
 		display: flex;
 		align-items: center;
 	}
@@ -191,7 +191,7 @@
 		font-size: 10px;
 	}
 	.clear-btn {
-		position: absolute;
+		position absolute;
 		right: 40px;
 		top: 50%;
 		transform: translateY(-50%);
@@ -203,11 +203,11 @@
 		border: 2px solid #dc3545;
 	}
 	.loading-indicator {
-		position: absolute;
+		position absolute;
 		right: 8px;
 		top: 50%;
 		transform: translateY(-50%);
-		animation: bounce 1s infinite;
+		animation bounce 1s infinite;
 	}
 	@keyframes bounce {
 		0%, 20%, 50%, 80%, 100% {
@@ -221,7 +221,7 @@
 		}
 	}
 	.results-container {
-		position: absolute;
+		position absolute;
 		top: 100%;
 		left: 0,
 		right: 0;
@@ -262,7 +262,7 @@
 		border-bottom: 1px solid #dee2e6;
 		margin: 0,
 		cursor: pointer;
-		transition: background-color 0.2;
+		transition background-color 0.2;
 	}
 	.result-item:hover {
 		background: #e9ecef;
@@ -320,7 +320,7 @@
 			font-size: 8px;
 		}
 		.results-container {
-			position: fixed;
+			position fixed;
 d;
 			top: auto;
 			left: 16px;

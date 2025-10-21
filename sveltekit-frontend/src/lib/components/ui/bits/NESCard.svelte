@@ -59,11 +59,11 @@
 
 <style>
   .nes-card-container {
-    position: relative;
+    position relative;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     font-family: 'Press Start 2P', cursiv;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
 /* Base NES Card Styling */ {}
   .nes-card {

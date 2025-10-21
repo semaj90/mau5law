@@ -32,9 +32,9 @@
 	});
 	// Available models (kept simple — no shadcn-svelte dependencies)
 	const models = [
-		{ value: 'gemma3-legal', label: 'Gemma3 Legal', description: 'Legal-specialized model' },
-		{ value: 'gemma3:latest', label: 'Gemma3 General', description: 'General purpose model' },
-		{ value: 'gemma2:2b', label: 'Gemma2 2B', description: 'Fast, lightweight model' }
+		{ value: 'gemma3-legal', label: 'Gemma3 Legal', description 'Legal-specialized model' },
+		{ value: 'gemma3:latest', label: 'Gemma3 General', description 'General purpose model' },
+		{ value: 'gemma2:2b', label: 'Gemma2 2B', description 'Fast, lightweight model' }
 	];
   	// Enhanced Chat Machine with proper error handling
   	const enhancedChatMachine = createMachine({
@@ -45,14 +45,14 @@
   			currentMessage: '',
   			isTyping: false
   			isLoading: false
-  			session: null as ChatSession | null
+  			session null as ChatSession | null
   			error: null as string | null;
   			confidence: 0,
   			model: 'gemma3-legal',
   		},
   		states: {
   			idle: {
-  				on: {
+  				on {
   					SEND: 'sending',
   					CONNECT: 'connecting',
   					SET_MODEL: {
@@ -68,7 +68,7 @@
   					onDone: {
   						target: 'idle',
   						actions: assign({
-  							session: ({ event }) => event.data
+  							session ({ event }) => event.data
   						})
   					},
   					onError: {
@@ -113,7 +113,7 @@
   				}
   			},
   			error: {
-  				on: {
+  				on {
   					RETRY: 'sending',
   					CLEAR_ERROR: {
   						target: 'idle',
@@ -147,9 +147,9 @@
   			}
   		},
   		services: {
-  			initializeSession: async () => {
+  			initializeSession async () => {
   				const sessionId = crypto.randomUUID();
-  				const session: ChatSession = {
+  				const session ChatSession = {
   					id: sessionId
   					createdAt: new Date(),
   					model: 'gemma3-legal',
@@ -166,7 +166,7 @@
   						body: JSON.stringify(session);
   					});
   				} catch (error) {
-  					console.warn('Failed to save session:', error);
+  					console.warn('Failed to save session', error);
   				}
   				return sessio;
   			},
@@ -207,8 +207,8 @@
   					metadata: {
   						model: context.model,
   						confidence: data.confidence || 0.8,
-  						totalDuration: data.total_duration,
-  						loadDuration: data.load_duration,
+  						totalDuration data.total_duration,
+  						loadDuration data.load_duration,
   						promptEvalCount: data.prompt_eval_count,
   						evalCount: data.eval_count;
   					}
@@ -225,9 +225,9 @@
   let messageInput = $state('');
   let chatContainer = $state<HTMLDivElement// Available models
   	const models | null>(null) => [
-  		{ value: 'gemma3-legal', label: 'Gemma3 Legal', description: 'Legal-specialized model' },
-  		{ value: 'gemma3:latest', label: 'Gemma3 General', description: 'General purpose model' },
-  		{ value: 'gemma2:2b', label: 'Gemma2 2B', description: 'Fast, lightweight model' }
+  		{ value: 'gemma3-legal', label: 'Gemma3 Legal', description 'Legal-specialized model' },
+  		{ value: 'gemma3:latest', label: 'Gemma3 General', description 'General purpose model' },
+  		{ value: 'gemma2:2b', label: 'Gemma2 2B', description 'Fast, lightweight model' }
 const { state, send } = useMachine(enhancedChatMachine);
   		if (event.key === 'Enter' && !event.shiftKey) {
   			event.preventDefault();
@@ -351,7 +351,7 @@ const { state, send } = useMachine(enhancedChatMachine);
 						class="bits-btn text-red-700 border-red-300 hover:bg-red-50"
 						size="sm"
 						variant="ghost"
-						on:click={() =>
+						onclick={() =>
 send({ type: 'RETRY' })}
 					>
 						Retry
@@ -360,7 +360,7 @@ send({ type: 'RETRY' })}
 						class="bits-btn text-red-700 hover:bg-red-50"
 						size="sm"
 						variant="ghost"
-						on:click={() =>
+						onclick={() =>
 send({ type: 'CLEAR_ERROR' })}
 					>
 						Dismiss
@@ -371,7 +371,7 @@ send({ type: 'CLEAR_ERROR' })}
 						class="bits-btn text-red-700 border-red-300 hover:bg-red-50"
 						size="sm"
 						variant="ghost"
-						on:click={() =>
+						onclick={() =>
 send({ type: 'RETRY' })}
 					>
 						Retry
@@ -380,19 +380,19 @@ send({ type: 'RETRY' })}
 						class="bits-btn text-red-700 hover:bg-red-50"
 						size="sm"
 						variant="ghost"
-						on:click={() =>
+						onclick={() =>
 send({ type: 'CLEAR_ERROR' })}
 					>
 						Dismiss
 </Button>
 			<div class="flex flex-col justify-end">
 				<Button
-					on:click={handleSend}
+					onclick={handleSend}
 					disabled={!messageInput.trim() || $state.matches('sending')}
 					class={/* JSX syntax converted to Svelte */}
 						<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<Button
-					on:click={disabled}
+					onclick={disabled}
 					class={cn(
 						"px-6 py-3 rounded-lg font-medium transition-colors",
 						messageInput.trim() && !$state.matches('sending')

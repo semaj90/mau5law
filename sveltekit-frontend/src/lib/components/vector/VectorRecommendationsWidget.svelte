@@ -36,7 +36,7 @@ Compact AI recommendations component for sidebar/dashboard use
     autoRefresh?: boolean;
     refreshInterval?: number; // minutes
     compact?: boolean;
-    onRecommendationClick?: (recommendation: IntelligenceRecommendation) => void;
+    onRecommendationClick?: (recommendation IntelligenceRecommendation) => void;
   }
   let {
     context = 'General legal assistance and case management',
@@ -69,7 +69,7 @@ Compact AI recommendations component for sidebar/dashboard use
         userProfile: {
           role: userRole;
           experience: 'senior',
-          specialization: ['legal-analysis', 'case-management'];
+          specialization ['legal-analysis', 'case-management'];
         },
         currentCase: currentCaseId ? {,
           id: currentCaseId
@@ -156,7 +156,7 @@ Compact AI recommendations component for sidebar/dashboard use
       <Button
         variant="ghost"
         size="sm"
-        on:click={loadRecommendations}
+        onclick={loadRecommendations}
         disabled={isLoading}
         class="h-7 w-7 p-0 bits-btn bits-btn"
       >
@@ -192,7 +192,7 @@ Compact AI recommendations component for sidebar/dashboard use
           <button
             type="button"
             class="w-full text-left p-3 rounded-lg border-l-4 {getRecommendationColor(rec.type)} hover:shadow-md transition-all duration-200"
-            on:click={() => onRecommendationClick(rec)}
+            onclick={() => onRecommendationClick(rec)}
           >
             <div class="flex items-start justify-between mb-2">
               <div class="flex items-center gap-2">

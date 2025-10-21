@@ -18,7 +18,7 @@
       // Show fallback notice on upload failure
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock - Upload service temporarily unavailable';
-      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+      notice.style.cssText = 'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 5000);
       console.log('Upload failed, using mock fallback:', result);
@@ -267,7 +267,7 @@
                 </div>
                 <button
                   type="button"
-                  on:click={() => {
+                  onclick={() => {
                     selectedFile = null;
                     filePreview = null;
                     metadata = null;
@@ -493,7 +493,7 @@
       {/if}
       <!-- Submit Button -->
       <div style="text-align: center; margin: 20px 0;">
-        <button type="button" on:click={() => history.back()} disabled={$submitting} class="nes-btn"> ← Cancel </button>
+        <button type="button" onclick={() => history.back()} disabled={$submitting} class="nes-btn"> ← Cancel </button>
         <button
           type="submit"
           disabled={$submitting || (!selectedFile && $form.evidence_type !== 'LINK') || !$form.case_id || !$form.title}

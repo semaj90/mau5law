@@ -56,7 +56,7 @@ https://svelte.dev/e/js_parse_error -->
           </div>
         </div>
         <button
-          on:click={() => (showAdvancedSettings = !showAdvancedSettings)}
+          onclick={() => (showAdvancedSettings = !showAdvancedSettings)}
           class="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
         >
           ⚙️ {showAdvancedSettings ? 'Hide' : 'Show'} Advanced Settings
@@ -135,7 +135,7 @@ https://svelte.dev/e/js_parse_error -->
               <div>Workgroup Size: 64x1x1</div>
               <div>Max Buffer: 256MB</div>
               <div>Shader Cache: Enabled</div>
-              <div>Mixed Precision: F16</div>
+              <div>Mixed Precision F16</div>
             </div>
           </div>
         </div>
@@ -239,7 +239,7 @@ https://svelte.dev/e/js_parse_error -->
     font-family: 'Inter', system-ui, sans-serif;
   }
   .status-card {
-    transition:
+    transition
       transform 0.2s ease,
       box-shadow 0.2s ease;
   }

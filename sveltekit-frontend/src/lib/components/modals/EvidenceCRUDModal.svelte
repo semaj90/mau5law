@@ -189,7 +189,7 @@
       evidence.embeddings = result.embedding;
       evidence.metadata = {
         ...evidence.metadata,
-        embedding_dimension: result.dimension,
+        embedding_dimension result.dimension,
         analyzed_at: new Date().toISOString()
       }
       showSuccess('AI analysis completed');
@@ -328,7 +328,7 @@
   <div
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
     class:animate-fadeOut={isClosing}
-    on:click={(e) => { if (e.target === e.currentTarget) handleClose(), }}
+    onclick={(e) => { if (e.target === e.currentTarget) handleClose(), }}
     onkeydown={handleKeydown}
     role="dialog"
     aria-modal="true"
@@ -361,7 +361,7 @@
             <Button
               variant="ghost"
               size="sm"
-              on:click={handleClose}
+              onclick={handleClose}
               class="rounded-full"
             >
               <X class="w-4 h-4" />
@@ -436,7 +436,7 @@
                     <Button
                       size="sm"
                       variant="ghost"
-                      on:click={addTag}
+                      onclick={addTag}
                       disabled={mode === 'view' || !tagInput.trim()}
                     >
                       <Tag class="w-4 h-4" />
@@ -449,7 +449,7 @@
                           #{tag}
                           {#if mode !== 'view'}
                             <button
-                              on:click={() => removeTag(tag)}
+                              onclick={() => removeTag(tag)}
                               class="text-muted-foreground hover:text-foreground"
                             >
                               <X class="w-3 h-3" />
@@ -517,7 +517,7 @@
                     <Button
                       size="sm"
                       variant="ghost"
-                      on:click={analyzeEvidence}
+                      onclick={analyzeEvidence}
                       disabled={isAnalyzing}
                     >
                       {#if isAnalyzing}
@@ -533,7 +533,7 @@
                   <div class="p-3 bg-muted/50 rounded">
                     <p class="text-sm text-green-600 mb-1">✓ Embeddings generated</p>
                     <p class="text-xs text-muted-foreground">
-                      Dimension: {evidence.embeddings.length}
+                      Dimension {evidence.embeddings.length}
                     </p>
                   </div>
                 {:else}
@@ -584,7 +584,7 @@
               <Button
                 variant="error"
                 size="sm"
-                on:click={handleDelete}
+                onclick={handleDelete}
                 disabled={isDeleting}
               >
                 {#if isDeleting}
@@ -597,12 +597,12 @@
             {/if}
           </div>
           <div class="flex items-center gap-2">
-            <Button variant="ghost" on:click={handleClose}>
+            <Button variant="ghost" onclick={handleClose}>
               Cancel
             </Button>
             {#if mode !== 'view'}
               <Button
-                on:click={handleSave}
+                onclick={handleSave}
                 disabled={isSaving}
               >
                 {#if isSaving}
@@ -645,12 +645,12 @@
     }
   }
   .animate-fadeOut {
-    animation: fadeOut 200ms ease-out forward;
+    animation fadeOut 200ms ease-out forward;
   }
   .animate-scaleIn {
-    animation: scaleIn 200ms ease-out forward;
+    animation scaleIn 200ms ease-out forward;
   }
   .animate-scaleOut {
-    animation: scaleOut 200ms ease-out forward;
+    animation scaleOut 200ms ease-out forward;
   }
 </style>

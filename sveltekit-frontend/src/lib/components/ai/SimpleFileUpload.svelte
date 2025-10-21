@@ -77,7 +77,7 @@
     },
     states: {
       idle: {
-        on: {
+        on {
           UPLOAD_FILES: { target: 'validating' },
           CHECK_SERVICES: { target: 'checkingServices' }
         }
@@ -90,10 +90,10 @@
         }
       },
       validating: { always: { target: 'uploading' } },
-      uploading: { on: { PROGRESS_UPDATE: {} } },
+      uploading: { on { PROGRESS_UPDATE: {} } },
       processing: {},
-      completed: { on: { RESET: 'idle' } },
-      error: { on: { RETRY: 'validating', RESET: 'idle' } }
+      completed: { on { RESET: 'idle' } },
+      error: { on { RETRY: 'validating', RESET: 'idle' } }
     }
   });
 
@@ -186,11 +186,11 @@
       fileSize: file.size,
       fileType: file.type,
       stages: {
-        validation: 'pending',
+        validation 'pending',
         storage: 'pending',
         ocr: enableOCR ? 'pending' : 'skipped',
         embedding: enableEmbedding ? 'pending' : 'skipped',
-        vectorization: enableEmbedding ? 'pending' : 'skipped',
+        vectorization enableEmbedding ? 'pending' : 'skipped',
         indexing: 'pending',
         tagging: enableAutoTags ? 'pending' : 'skipped',
         caching: 'pending'
@@ -430,7 +430,7 @@
     const response = await fetch('/api/v1/qdrant/points/upsert', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ collection: 'legal-documents', points: [vectorData] })
+      body: JSON.stringify({ collection 'legal-documents', points: [vectorData] })
     });
     if (!response.ok) throw new Error('Vector storage failed');
     return await response.json();
@@ -506,7 +506,7 @@
         </h3>
         <button
           class="text-sm bg-blue-50 hover:bg-blue-100 px-3 py-1 rounded-full border border-blue-200 transition-colors"
-          on:click={() => uploadMachine?.send({ type: 'CHECK_SERVICES' })}
+          onclick={() => uploadMachine?.send({ type: 'CHECK_SERVICES' })}
         >
           Refresh Status
         </button>
@@ -566,7 +566,7 @@
     role="button"
     aria-label="Drop zone"
     tabindex="0"
-    on:click={() => fileInput?.click()}
+    onclick={() => fileInput?.click()}
     onkeydown={(e) => e.key === 'Enter' && fileInput?.click()}
   >
     <div class="flex flex-col items-center">
@@ -701,7 +701,7 @@
             <div class="border-t pt-3">
               <button
                 class="text-sm text-blue-600 hover:text-blue-700 font-medium"
-                on:click={() => {
+                onclick={() => {
                   const detailsEl = document.getElementById(`details-${fileId}`);
                   if (detailsEl) {
                     detailsEl.classList.toggle('hidden');

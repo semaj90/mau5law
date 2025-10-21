@@ -101,7 +101,7 @@
   const variantGradient = $derived(
     generateGradient({
       variant: variant as any,
-      direction: gradientDirection,
+      direction gradientDirection,
       colorPalette: SNES_PALETTE,
     })
   );
@@ -115,7 +115,7 @@
   {form}
   {name}
   {value}
-  on:click={handleClick}
+  onclick={handleClick}
   onmouseenter={handleHover}
   onmouseleave={handleUnhover}
   onfocus={handleFocus}
@@ -154,7 +154,7 @@
       inset 0 1px 0px rgba(255, 255, 255, 0.4),
       inset 0 -1px 0px rgba(0, 0, 0, 0.2);
     transform: var(--mode7-transform, none);
-    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition all 150ms cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -170,13 +170,13 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    position: relative;
+    position relative;
     overflow: hidden;
   }
 
   :global(.snes-16bit-button.layer-effects::before) {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0;
     left: 0;
     right: 0;
@@ -187,19 +187,19 @@
   }
 
   :global(.snes-16bit-button.plasma) {
-    animation: plasmaShift 3s ease-in-out infinite alternate;
+    animation plasmaShift 3s ease-in-out infinite alternate;
     background-size: 200% 200%;
   }
 
   @keyframes plasmaShift {
     0% {
-      background-position: 0% 0%;
+      background-position 0% 0%;
     }
     50% {
-      background-position: 100% 100%;
+      background-position 100% 100%;
     }
     100% {
-      background-position: 0% 0%;
+      background-position 0% 0%;
     }
   }
 
@@ -207,7 +207,7 @@
     transform-style: preserve-3d;
   }
 
-  :global(.snes-16bit-button:not(:disabled):hover) {
+  :global(.snes-16bit-buttonnot(:disabled):hover) {
     border-color: rgba(255, 255, 255, 0.5);
     box-shadow:
       0 3px 0px rgba(0, 0, 0, 0.3),
@@ -217,14 +217,14 @@
     filter: brightness(1.1) saturate(1.1);
   }
 
-  :global(.snes-16bit-button:not(:disabled):active) {
+  :global(.snes-16bit-buttonnot(:disabled):active) {
     box-shadow:
       0 1px 0px rgba(0, 0, 0, 0.3),
       inset 0 1px 0px rgba(255, 255, 255, 0.3),
       inset 0 2px 4px rgba(0, 0, 0, 0.3);
   }
 
-  :global(.snes-16bit-button:disabled) {
+  :global(.snes-16bit-buttondisabled) {
     background: linear-gradient(to bottom, #7c7c7c, #5c5c5c, #3c3c3c);
     color: #bcbcbc;
     cursor: not-allowed;
@@ -235,7 +235,7 @@
       inset 0 1px 0px rgba(255, 255, 255, 0.1);
   }
 
-  :global(.snes-16bit-button:focus-visible) {
+  :global(.snes-16bit-buttonfocus-visible) {
     outline: 2px solid #ffffff;
     outline-offset: 2px;
   }
@@ -255,7 +255,7 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
     border-left: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
-    animation: enhancedSpin 0.8s ease-in-out infinite;
+    animation enhancedSpin 0.8s ease-in-out infinite;
   }
 
   @keyframes enhancedSpin {
@@ -279,7 +279,7 @@
       font-size: 11px;
     }
     :global(.snes-16bit-button.plasma) {
-      animation: none;
+      animation none;
       background-size: 100% 100%;
     }
     :global(.snes-16bit-button.mode7) {
@@ -287,16 +287,16 @@
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     :global(.snes-16bit-button) {
-      animation: none;
-      transition: opacity 150ms ease;
+      animation none;
+      transition opacity 150ms ease;
     }
     :global(.snes-16bit-button.plasma) {
-      animation: none;
+      animation none;
     }
     .enhanced-spinner {
-      animation: none;
+      animation none;
       border: 2px solid currentColor;
     }
   }

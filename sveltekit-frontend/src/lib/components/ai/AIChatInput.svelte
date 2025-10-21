@@ -110,10 +110,10 @@
       class:near-limit={isNearLimit}
       class:at-limit={isAtLimit}
       {rows}
-      on:input={debouncedHandleInput}
-      on:keydown={handleKeydown}
-      on:focus={handleFocus}
-      on:blur={handleBlur}
+      oninput={debouncedHandleInput}
+      onkeydown={handleKeydown}
+      onfocus={handleFocus}
+      onblur={handleBlur}
       aria-label="Message input"
       spellcheck="true"
     ></textarea>
@@ -128,7 +128,7 @@
         class="send-button"
         {disabled}
         class:has-content={value.trim().length > 0}
-        on:click={handleSend}
+        onclick={handleSend}
         title="Send message (Enter)"
         aria-label="Send message"
       >
@@ -158,7 +158,7 @@
 
 <style>
   .chat-input-wrapper {
-    position: relative;
+    position relative;
     width: 100%;
   }
   /* --- Chat Input Styles --- */
@@ -170,7 +170,7 @@
     background: var(--bg-primary, #ffffff);
     border: 1px solid var(--border-color, #e2e8f0);
     border-radius: 8px;
-    transition:
+    transition
       border-color 0.2s ease,
       box-shadow 0.2s ease;
   }
@@ -236,9 +236,9 @@
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
-  .send-button:hover:not(:disabled) {
+  .send-buttonhover:not(:disabled) {
     background: var(--bg-hover, #e2e8f0);
     color: var(--text-primary, #1e293b);
   }
@@ -249,7 +249,7 @@
   .send-button.has-content:hover:not(:disabled) {
     background: var(--accent-hover, #2563eb);
   }
-  .send-button:disabled {
+  .send-buttondisabled {
     opacity: 0.5,
     cursor: not-allowed;
   }
@@ -297,7 +297,7 @@
       background: var(--bg-muted, #334155);
       color: var(--text-muted, #94a3b8);
     }
-    .send-button:hover:not(:disabled) {
+    .send-buttonhover:not(:disabled) {
       background: var(--bg-hover, #475569);
       color: var(--text-primary, #f8fafc);
     }

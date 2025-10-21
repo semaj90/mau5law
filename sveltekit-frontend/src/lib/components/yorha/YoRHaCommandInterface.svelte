@@ -28,7 +28,7 @@ https://svelte.dev/e/js_parse_error -->
   const metrics = writable<SystemMetrics>({
     cpu_usage: 45.2,
     memory_usage: 67.8,
-    gpu_utilization: 89.3,
+    gpu_utilization 89.3,
     network_latency: 12,
     active_processes: 847,
     security_level: 'MAXIMUM',
@@ -49,8 +49,8 @@ https://svelte.dev/e/js_parse_error -->
       name: 'LEGAL AI CORE',
       status: 'ACTIVE',
       power: 96.8,
-      description: 'Advanced Legal Document Analysis',
-      icon: 'gavel',
+      description 'Advanced Legal Document Analysis',
+      icon 'gavel',
       color: '#00ff88', // Changed semicolon to comma
     },
     {
@@ -58,8 +58,8 @@ https://svelte.dev/e/js_parse_error -->
       name: 'EVIDENCE ANALYSIS',
       status: 'STANDBY',
       power: 78.2,
-      description: 'Digital Evidence Processing Unit',
-      icon: 'search',
+      description 'Digital Evidence Processing Unit',
+      icon 'search',
       color: '#ff6b35', // Changed semicolon to comma
     },
     {
@@ -67,8 +67,8 @@ https://svelte.dev/e/js_parse_error -->
       name: 'NEURAL MATRIX',
       status: 'ACTIVE',
       power: 94.1,
-      description: 'Machine Learning Core System',
-      icon: 'brain',
+      description 'Machine Learning Core System',
+      icon 'brain',
       color: '#3b82f6', // Changed semicolon to comma
     },
     {
@@ -76,8 +76,8 @@ https://svelte.dev/e/js_parse_error -->
       name: 'QUANTUM DATABASE',
       status: 'ACTIVE',
       power: 89.7,
-      description: 'High-Speed Data Storage Matrix',
-      icon: 'database',
+      description 'High-Speed Data Storage Matrix',
+      icon 'database',
       color: '#8b5cf6', // Changed semicolon to comma
     },
     {
@@ -85,8 +85,8 @@ https://svelte.dev/e/js_parse_error -->
       name: 'SECURITY GRID',
       status: 'MAXIMUM',
       power: 99.2,
-      description: 'Perimeter Defense System',
-      icon: 'shield',
+      description 'Perimeter Defense System',
+      icon 'shield',
       color: '#ef4444', // Changed semicolon to comma
     },
     {
@@ -94,8 +94,8 @@ https://svelte.dev/e/js_parse_error -->
       name: 'COMMUNICATIONS',
       status: 'ACTIVE',
       power: 87.4,
-      description: 'Multi-Protocol Communication Hub',
-      icon: 'radio',
+      description 'Multi-Protocol Communication Hub',
+      icon 'radio',
       color: '#06b6d4', // Changed semicolon to comma
     },
   ];
@@ -113,32 +113,32 @@ https://svelte.dev/e/js_parse_error -->
       {
         id: 'central-core',
         type: 'sphere',
-        position: { x: 0, y: 0, z: 0 }, // Removed semicolon
-        rotation: { x: 0, y: 0, z: 0 },
+        position { x: 0, y: 0, z: 0 }, // Removed semicolon
+        rotation { x: 0, y: 0, z: 0 },
         scale: 1.0,
         color: '#00ff88',
         opacity: 0.8,
-        animation: 'rotate', // Changed semicolon to comma
+        animation 'rotate', // Changed semicolon to comma
       },
       {
         id: 'data-streams',
         type: 'lines',
-        position: { x: 0, y: 0, z: 0 }, // Removed semicolon
-        rotation: { x: 0, y: 0, z: 0 },
+        position { x: 0, y: 0, z: 0 }, // Removed semicolon
+        rotation { x: 0, y: 0, z: 0 },
         scale: 1.0,
         color: '#3b82f6',
         opacity: 0.6,
-        animation: 'flow', // Changed semicolon to comma
+        animation 'flow', // Changed semicolon to comma
       },
       {
         id: 'neural-nodes',
         type: 'points',
-        position: { x: 0, y: 0, z: 0 }, // Removed semicolon
-        rotation: { x: 0, y: 0, z: 0 },
+        position { x: 0, y: 0, z: 0 }, // Removed semicolon
+        rotation { x: 0, y: 0, z: 0 },
         scale: 1.0,
         color: '#8b5cf6',
         opacity: 0.9,
-        animation: 'pulse', // Changed semicolon to comma
+        animation 'pulse', // Changed semicolon to comma
       },
     ];
     holographicData.set(initialData);
@@ -149,7 +149,7 @@ https://svelte.dev/e/js_parse_error -->
         ...current,
         cpu_usage: 40 + Math.random() * 20,
         memory_usage: 60 + Math.random() * 15,
-        gpu_utilization: 85 + Math.random() * 10,
+        gpu_utilization 85 + Math.random() * 10,
         network_latency: 8 + Math.random() * 8,
         neural_activity: 90 + Math.random() * 8,
       }));
@@ -229,7 +229,7 @@ https://svelte.dev/e/js_parse_error -->
     holographicData.update(currentData =>
       currentData.map(item => ({
         ...item,
-        rotation: {
+        rotation {
           x: item.rotation.x + (item.animation === 'rotate' ? 0.01 : 0),
           y: item.rotation.y + (item.animation === 'rotate' ? 0.02 : 0),
           z: item.rotation.z + (item.animation === 'rotate' ? 0.005 : 0),
@@ -386,7 +386,7 @@ https://svelte.dev/e/js_parse_error -->
 
   // No event dispatching needed: removed unused $event rune and dispatch variable.
   // Removed unused function
-  // Removed unused function: handleExecuteCommand and its references to dispatch (Svelte 5 migration)
+  // Removed unused function handleExecuteCommand and its references to dispatch (Svelte 5 migration)
   // Removed unused variable
   // let currentCommandInput = $state('');
 </script>
@@ -530,17 +530,17 @@ https://svelte.dev/e/js_parse_error -->
   .yorha-container {
     font-family: 'Courier New', 'Monaco', monospace;
     overflow: hidden;
-    position: relative;
+    position relative;
   }
   .scanlines {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
     bottom: 0;
     background: linear-gradient(transparent 50%, rgba(0, 255, 136, 0.03) 50%);
     background-size: 100% 2px;
-    animation: scanline-scroll 0.1s linear infinite;
+    animation scanline-scroll 0.1s linear infinite;
     pointer-events: none;
     z-index: 1,
   }
@@ -553,7 +553,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   .glitch-effect {
-    animation: glitch 0.2s ease-in-out;
+    animation glitch 0.2s ease-in-out;
   }
   @keyframes glitch {
     0% {
@@ -590,7 +590,7 @@ https://svelte.dev/e/js_parse_error -->
   .hologram-text {
     color: #00ff88;
     text-shadow: 0 0 10px currentColor;
-    animation: hologram-flicker 2s ease-in-out infinite alternate;
+    animation hologram-flicker 2s ease-in-out infinite alternate;
   }
   @keyframes hologram-flicker {
     0% {
@@ -607,7 +607,7 @@ https://svelte.dev/e/js_parse_error -->
     background: rgba(0, 20, 40, 0.8);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(0, 255, 136, 0.3);
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .module-panel:hover {
     border-color: #00ff88;
@@ -634,7 +634,7 @@ https://svelte.dev/e/js_parse_error -->
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    animation: status-pulse 2s ease-in-out infinite;
+    animation status-pulse 2s ease-in-out infinite;
   }
   @keyframes status-pulse {
     0% {
@@ -649,11 +649,11 @@ https://svelte.dev/e/js_parse_error -->
   }
   .data-stream {
     /* Changed selector from .holographic-canv.data-stream to .data-stream */
-    position: absolute;
+    position absolute;
     width: 2px;
     height: 100px;
     background: linear-gradient(to bottom, transparent, #00ff88, transparent);
-    animation: data-flow 3s linear infinite;
+    animation data-flow 3s linear infinite;
   }
   @keyframes data-flow {
     0% {

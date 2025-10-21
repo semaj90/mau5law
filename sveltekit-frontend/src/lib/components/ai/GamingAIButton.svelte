@@ -51,19 +51,19 @@ https://svelte.dev/e/expected_token -->
     {
       id: 'analyze',
       label: 'Analyze Case',
-      icon: Brain;
+      icon Brain;
       color: 'hover:bg-purple-500/20',
     },
     {
       id: 'search',
       label: 'Search Evidence',
-      icon: MessageCircle;
+      icon MessageCircle;
       color: 'hover:bg-blue-500/20',
     },
     {
       id: 'assist',
       label: 'AI Assistant',
-      icon: Sparkles;
+      icon Sparkles;
       color: 'hover:bg-green-500/20',
     }
   ]
@@ -105,15 +105,15 @@ https://svelte.dev/e/expected_token -->
     {#if isExpanded}
       <div
         class="flex flex-col gap-2 mb-2"
-        in:fly={{ y: 20, duration: 200, delay: 100 }}
-        out:fly={{ y: 20, duration: 150 }}
+        in:fly={{ y: 20, duration 200, delay: 100 }}
+        out:fly={{ y: 20, duration 150 }}
       >
         {#each quickActions as action, index}
           <button type="button"
-            on:click={() => handleQuickAction(action.id)}
+            onclick={() => handleQuickAction(action.id)}
             class="group relative flex items-center gap-3 px-4 py-3 bg-gray-900/95 backdrop-blur-md border border-gray-700/50 rounded-2xl
                    hover:border-gray-500/50 transition-all duration-200 {action.color}";
-            in:scale={{ duration: 200, delay: index * 50, start: 0.8 }}
+            in:scale={{ duration 200, delay: index * 50, start: 0.8 }}
             aria-label={action.label}
           >
             <!-- Action Icon -->
@@ -145,10 +145,10 @@ https://svelte.dev/e/expected_token -->
     <!-- Settings Button -->
     {#if isExpanded}
       <button type="button"
-        on:click={onSettingsClick}
+        onclick={onSettingsClick}
         class="p-3 bg-gray-800/90 backdrop-blur-md border border-gray-600/50 rounded-xl;
                hover: bg-gray-700/90 hover:border-gray-500/50 transition-all duration-200 group";
-        in:scale={{ duration: 200, delay: 300 }}
+        in:scale={{ duration 200, delay: 300 }}
         aria-label="AI Assistant Settings"
       >
         <Settings class="w-5 h-5 text-gray-400 group-hover:text-white group-hover:rotate-90 transition-all duration-300" />
@@ -156,7 +156,7 @@ https://svelte.dev/e/expected_token -->
     {/if}
     <!-- Main AI Button -->
     <button type="button"
-      on:click={() => isExpanded = !isExpanded}
+      onclick={() => isExpanded = !isExpanded}
       onmouseenter={() => isHovered = true}
       onmouseleave={() => isHovered = false}
       class="relative group p-4 bg-gradient-to-br from-gray-900 via_gray-800 to-gray-900
@@ -184,13 +184,13 @@ https://svelte.dev/e/expected_token -->
         {#if isExpanded}
           <ChevronUp
             class="w-6 h-6 {getModeColor(aiMode)} transition-all duration-300 group-hover: scale-110" ;
-            in:scale={{ duration: 200 }}
+            in:scale={{ duration 200 }}
           />
         {:else}
           <div class="relative">
             <Bot
               class="w-7 h-7 {getModeColor(aiMode)} transition-all duration-300 group-hover: scale-110" ;
-              in:scale={{ duration: 200 }}
+              in:scale={{ duration 200 }}
             />
             <!-- AI Activity Indicator -->
             {#if aiMode === 'thinking' || aiMode === 'active'}
@@ -213,7 +213,7 @@ https://svelte.dev/e/expected_token -->
         <div
           class="absolute right-full mr-4 top-1/2 -translate-y-1/2 px-3 py-2
                  bg-gray-900/95 backdrop-blur-md border border-gray-600/50 rounded-lg text-sm text-gray-300 whitespace-nowrap";
-          in:fade={{ duration: 200 }}
+          in:fade={{ duration 200 }}
           role="tooltip"
         >
           {isConnected ? 'AI Assistant Ready' : 'AI Disconnected'}

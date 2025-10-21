@@ -240,15 +240,15 @@
     <div class="header-controls">
       <button
         class="control-btn {isMonitoring ? 'active' : ''}"
-        on:click={toggleMonitoring}
+        onclick={toggleMonitoring}
         title={isMonitoring ? 'Pause monitoring' : 'Resume monitoring'}
       >
         {isMonitoring ? 'Monitoring' : 'Paused'}
       </button>
-      <button class="control-btn" on:click={resetMetrics} title="Reset metrics">
+      <button class="control-btn" onclick={resetMetrics} title="Reset metrics">
         Reset
       </button>
-      <button class="control-btn" on:click={exportMetrics} title="Export metrics">
+      <button class="control-btn" onclick={exportMetrics} title="Export metrics">
         Export
       </button>
     </div>
@@ -462,7 +462,7 @@
     cursor: pointer;
     font-size: 0.875rem;
     font-weight: 500,
-    transition: all 0.2;
+    transition all 0.2;
   }
   .control-btn:hover {
     background: #f3f4f6;
@@ -499,7 +499,7 @@
   }
   .card-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
   }
   .metric-row, .backend-row {
@@ -555,7 +555,7 @@
   }
   .history-chart {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
     max-height: 200px;
     overflow-y: auto;
@@ -574,7 +574,7 @@
   .point-metrics {
     flex: 1,
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
   .metric-bar {
@@ -598,7 +598,7 @@
   }
   .bar-fill {
     height: 100%;
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .bar-fill.requests {
     background: #3b82f6;
@@ -670,7 +670,7 @@
   }
   .info-item {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
   .info-label {
@@ -702,7 +702,7 @@
       grid-template-columns: 1fr;
     }
     .dashboard-header {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
       align-items: flex-start;
     }

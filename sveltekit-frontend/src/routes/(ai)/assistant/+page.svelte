@@ -141,7 +141,7 @@
     <h2>⚡ Quick Legal Queries</h2>
     <div class="quick-buttons">
       {#each quickQueries as query}
-        <Button on:click={() => handleQuickQuery(query)} disabled={isStreaming} class="quick-button">
+        <Button onclick={() => handleQuickQuery(query)} disabled={isStreaming} class="quick-button">
           {query}
         </Button>
       {/each}
@@ -191,7 +191,7 @@
             class="message-input"
             rows="3"
           ></textarea>
-          <Button on:click={sendMessage} disabled={!currentMessage.trim() || isStreaming} class="send-button">
+          <Button onclick={sendMessage} disabled={!currentMessage.trim() || isStreaming} class="send-button">
             {isStreaming ? '🔄' : '📤'} Send
           </Button>
         </div>
@@ -295,16 +295,16 @@
     padding: 0.75rem;
     border-radius: 4px;
     font-size: 0.9rem;
-    transition: all 0.2s;
+    transition all 0.2s;
   }
 
-  .quick-button:hover:not(:disabled) {
+  .quick-buttonhover:not(:disabled) {
     background: rgba(0, 204, 255, 0.2);
     border-color: var(--text-primary, #00ccff);
     transform: translateY(-1px);
   }
 
-  .quick-button:disabled {
+  .quick-buttondisabled {
     opacity: 0.5,
     cursor: not-allowed;
   }
@@ -323,7 +323,7 @@
     overflow-y: auto;
     padding: 1rem 0;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
 
@@ -334,7 +334,7 @@
   }
 
   .message.user {
-    flex-direction: row-reverse;
+    flex-direction row-reverse;
   }
 
   .message-icon {
@@ -388,7 +388,7 @@
 
   .typing-indicator {
     color: var(--text-primary, #00ff00);
-    animation: pulse 1.5s infinite;
+    animation pulse 1.5s infinite;
   }
 
   @keyframes pulse {
@@ -439,15 +439,15 @@
     padding: 0.75rem 1.5rem;
     border-radius: 4px;
     font-weight: bold;
-    transition: all 0.2s;
+    transition all 0.2s;
   }
 
-  .send-button:hover:not(:disabled) {
+  .send-buttonhover:not(:disabled) {
     transform: scale(1.05);
     box-shadow: 0 0 15px rgba(0, 204, 255, 0.5);
   }
 
-  .send-button:disabled {
+  .send-buttondisabled {
     opacity: 0.5,
     cursor: not-allowed;
   }
@@ -472,7 +472,7 @@
     background: var(--surface-secondary, #111111);
     border: 1px solid rgba(0, 204, 255, 0.3);
     text-align: center;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
 
   .capability-card:hover {

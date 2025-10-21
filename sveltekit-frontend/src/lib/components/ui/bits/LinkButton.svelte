@@ -30,6 +30,6 @@
   }
 </script>
 
-<Button {variant} {size} {disabled} class={className} on:click={handleClick}>
+<Button {variant} {size} {disabled} class={className} onclick={handleClick}>
   {@render children?.()}
 </Button>

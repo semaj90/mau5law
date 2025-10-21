@@ -103,7 +103,7 @@
     }
     return colors[category] || colors.administrativ;
   }
-  function getJurisdictionColor(jurisdiction: string): string {
+  function getJurisdictionColor(jurisdiction string): string {
     const colors: Record<string, string> = {
       california: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
       federal: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
@@ -144,7 +144,7 @@
             oninput={(e) => (searchQuery = (e.target as HTMLInputElement).value)} />
           <Input {placeholder} bind:value={searchQuery} class="pl-10" />
         </div>
-  <Button class="bits-btn" on:click={performSearch} disabled={isSearching || !searchQuery.trim()} size="sm">
+  <Button class="bits-btn" onclick={performSearch} disabled={isSearching || !searchQuery.trim()} size="sm">
 {#if isSearching}
             Searching...
           {:else}
@@ -272,7 +272,7 @@
               <Button class="bits-btn"
               variant="ghost"
               size="sm"
-                on:click={() =>
+                onclick={() =>
 {
                 searchQuery = suggestio;
                 performSearch();

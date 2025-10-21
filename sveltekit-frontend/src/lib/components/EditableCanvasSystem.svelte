@@ -243,7 +243,7 @@ mounted = true;
       <button
         type="button"
         disabled={readonly}
-        on:click={resetCanvas}
+        onclick={resetCanvas}
         aria-label="Create new canvas"
       >
         New Canvas
@@ -270,7 +270,7 @@ mounted = true;
       role="img"
       aria-label="Interactive canvas for creating and editing nodes"
       tabindex={readonly ? -1 : 0}
-      on:click={handleCanvasClick}
+      onclick={handleCanvasClick}
       ondrop={handleFileDrop}
       ondragover={handleDragOver}
     ></canvas>
@@ -352,7 +352,7 @@ mounted = true;
   .evidence-item {
     padding: 0.75rem 1rem;
     border-bottom: 1px solid hsl(220 13% 96%);
-    transition: background-color 0.2s ease;
+    transition background-color 0.2s ease;
   }
   .evidence-item:hover {
     background: hsl(220 13% 97%);
@@ -409,16 +409,16 @@ mounted = true;
     font-size: 0.875rem;
     font-weight: 500,
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
-  button:hover:not(:disabled) {
+  buttonhover:not(:disabled) {
     background: hsl(220 13% 98%);
     border-color: hsl(220 13% 85%);
   }
-  button:active:not(:disabled) {
+  buttonactive:not(:disabled) {
     background: hsl(220 13% 95%);
   }
-  button:disabled {
+  buttondisabled {
     opacity: 0.5,
     cursor: not-allowed;
   }
@@ -462,7 +462,7 @@ mounted = true;
       border-color: hsl(220 15% 25%);
       color: hsl(220 15% 85%);
     }
-    button:hover:not(:disabled) {
+    buttonhover:not(:disabled) {
       background: hsl(220 15% 20%);
     }
     .node-counter,

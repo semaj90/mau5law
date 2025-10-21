@@ -7,7 +7,7 @@
   import { Upload, FileText, Image, CheckCircle, AlertCircle, Loader2, Zap, X, Cpu, Database, Layers } from 'lucide-svelte';
   // Enhanced ingestion system (mock implementations for demo)
   const ingestionWorkerManager = {
-    processIngestion: async (_task: unknownn, onProgress?: Function) => {
+    processIngestion async (_task: unknownn, onProgress?: Function) => {
       // Simulate processing with callbacks
       if (onProgress) {
         setTimeout(() => onProgress(25, 'Uploading files'), 500);
@@ -29,7 +29,7 @@
         })),
         embeddings: { documentEmbeddings: 1, chunkEmbeddings: 5, processingTime: 1200 },
         somClustering: { clusters: 3, quality: 0.85, processingTime: 800 },
-        rtxCompression: { originalSize: task.files[0].size, compressedSize: Math.floor(task.files[0].size / 50), ratio: '50:1', processingTime: 500 },
+        rtxCompression { originalSize: task.files[0].size, compressedSize: Math.floor(task.files[0].size / 50), ratio: '50:1', processingTime: 500 },
         totalProcessingTime: 4000
       }
     },
@@ -61,7 +61,7 @@
             type: 'text',
             coordinates: { x: 0.1, y: 0.1, width: 0.3, height: 0.1 },
             confidence: 0.9,
-            description: 'Key evidence section',
+            description 'Key evidence section',
             legal_relevance: 'high' ;
           },
           {
@@ -69,12 +69,12 @@
             type: 'object',
             coordinates: { x: 0.5, y: 0.3, width: 0.2, height: 0.2 },
             confidence: 0.8,
-            description: 'Relevant document element',
+            description 'Relevant document element',
             legal_relevance: 'medium' ;
           }
         ],
         timeline_segments: evidence.type === 'video' ? [
-          { start_time: 0, end_time: 30, event_type: 'scene_change', description: 'Initial scene', confidence: 0.9, legal_significance: 'Key evidence timestamp' }
+          { start_time: 0, end_time: 30, event_type: 'scene_change', description 'Initial scene', confidence: 0.9, legal_significance: 'Key evidence timestamp' }
         ] : undefined
         copilot_analysis: `Enhanced analysis for ${evidence.type} evidence: Legal relevance assessed with high confidence. Recommended for case inclusion.`;
       }
@@ -212,7 +212,7 @@ const fabricModule = await import("fabric");
       const left = typeof o.left === "number" ? o.left: 0;
       const top = typeof o.top === "number" ? o.top: 0;
       const text = typeof o.text === "string" ? o.text: undefined;
-      return { type, position: { x: left, y: top }, ...(text ? { text } : ) }
+      return { type, position { x: left, y: top }, ...(text ? { text } : ) }
     });
     return obj;
   }
@@ -224,7 +224,7 @@ const fabricModule = await import("fabric");
       // Use concurrency orchestrator for analysis
       const analysisTaskId = await concurrencyOrchestrator.submitAnalysisTask(
         {
-          canvas_json: fabricCanvas?.toJSON() ||
+          canvas_json fabricCanvas?.toJSON() ||
           objects: collectObjects(),
           canvas_size: { width: canvasEl.width, height: canvasEl.height },
           uploaded_files: uploadedFiles.filter(item => item.map)(f => ({,
@@ -312,7 +312,7 @@ const fabricModule = await import("fabric");
     processDroppedFiles(selectedFiles, { x: 400, y: 300 }); // Center position
     target.value = ''; // Clear input
   }
-  async function processDroppedFiles(droppedFiles: File[], position: { x: number; y: number }) {
+  async function processDroppedFiles(droppedFiles: File[], position { x: number; y: number }) {
     error = null;
     // Validate files
     const validFiles = droppedFiles.filter(file => {
@@ -348,7 +348,7 @@ const fabricModule = await import("fabric");
     // Start upload process
     await uploadFilesToMinIO(uploadFiles, position);
   }
-  async function uploadFilesToMinIO(uploadFiles: UploadedFile[], position: { x: number; y: number }) {
+  async function uploadFilesToMinIO(uploadFiles: UploadedFile[], position { x: number; y: number }) {
     uploading = true;
     uploadProgress = 0;
     const startTime = Date.now();
@@ -434,7 +434,7 @@ const fabricModule = await import("fabric");
       const formData = new FormData();
       formData.append('file', file);
       formData.append('options', JSON.stringify({
-        enableGpuOptimization: enableGPUProcessing
+        enableGpuOptimization enableGPUProcessing
         targetGpuArch: 'sm_75', // RTX 3060 Ti
         useClangOptimizations: true
       }));
@@ -462,7 +462,7 @@ const fabricModule = await import("fabric");
     formData.append('uploadData', JSON.stringify({
       caseId,
       title: file.name,
-      description: `🎮 Canvas upload: ${file.name}`,
+      description `🎮 Canvas upload: ${file.name}`,
       evidenceType: getEvidenceType(file),
       enableAiAnalysis: true
       enableEmbeddings: true
@@ -495,7 +495,7 @@ const fabricModule = await import("fabric");
       error: 'Invalid response from upload service';
     }
   }
-  async function addFileToCanvas(uploadFile: UploadedFile, position: { x: number; y: number }, uploadResult: UploadResult) {
+  async function addFileToCanvas(uploadFile: UploadedFile, position { x: number; y: number }, uploadResult: UploadResult) {
     if (!fabricCanvas) return;
     const file = uploadFile.fil;
     if (file.type.startsWith('image/')) {
@@ -792,7 +792,7 @@ const fabricModule = await import("fabric");
       name: file.file.name,
       type: getEvidenceType(file.file),
       size: file.file.size,
-      canvasPosition: file.canvasObjectId ? getCanvasObjectPosition(file.canvasObjectId) : null;
+      canvasPosition file.canvasObjectId ? getCanvasObjectPosition(file.canvasObjectId) : null;
       metadata: file.detectiveAnalysis ||
       uploadTime: file.timestamp;
     }));
@@ -896,7 +896,7 @@ const fabricModule = await import("fabric");
     <div class="ingestion-progress" class:n64-ingestion={enableN64Style}>
       <div class="flex justify-between text-sm">
         <span class="font-semibold">
-          {enableN64Style ? '🧠 ENHANCED INGESTION PIPELINE:' : 'Enhanced Ingestion:'}
+          {enableN64Style ? '🧠 ENHANCED INGESTION PIPELINE:' : 'Enhanced Ingestion'}
         </span>
         <span>{uploadedFiles.filter(item => item.length)}/{uploadedFiles.length} processed</span>
       </div>
@@ -1235,7 +1235,7 @@ const fabricModule = await import("fabric");
     border-radius: 4px;
     cursor: pointer;
     font-size: 0.9rem;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .n64-btn {
     background: #FFD700;
@@ -1296,7 +1296,7 @@ const fabricModule = await import("fabric");
     color: #ffaa00;
   }
   .evidence-canvas-wrapper {
-    position: relative;
+    position relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1307,7 +1307,7 @@ const fabricModule = await import("fabric");
     max-width: 820px;
     height: 620px;
     background: #fafafa;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .n64-canv.evidence-canvas-wrapper.drag-over {
     border-color: #4090FF;
@@ -1322,7 +1322,7 @@ const fabricModule = await import("fabric");
       0 0 40px rgba(255, 107, 53, 0.7);
   }
   .drag-overlay {
-    position: absolute;
+    position absolute;
     inset: 0;
     background: rgba(64, 144, 255, 0.9);
     display: flex;
@@ -1346,11 +1346,11 @@ const fabricModule = await import("fabric");
     color: rgba(255, 255, 255, 0.8);
   }
   .upload-progress-overlay {
-    position: absolute;
+    position absolute;
     inset: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     color: white;
@@ -1416,7 +1416,7 @@ const fabricModule = await import("fabric");
     background: white;
     border: 1px solid #ddd;
     border-radius: 6px;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .n64-file {
     background: linear-gradient(135deg, #1a1a2e 0%, #0a0a1a 100%);
@@ -1479,7 +1479,7 @@ const fabricModule = await import("fabric");
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .n64-remove {
     background: #FF3030;
@@ -1510,7 +1510,7 @@ const fabricModule = await import("fabric");
   }
   .analysis-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .analysis-section h4 {
@@ -1587,7 +1587,7 @@ const fabricModule = await import("fabric");
     border-radius: 4px;
     font-size: 0.8rem;
     opacity: 0.5;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .stage.active {
     opacity: 1;
@@ -1652,7 +1652,7 @@ const fabricModule = await import("fabric");
   }
   @media (max-width: 768px) {
     .enhanced-evidence-canv.toolbar {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
       gap: 0.5rem;
     }

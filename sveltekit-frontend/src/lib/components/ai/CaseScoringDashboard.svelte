@@ -23,7 +23,7 @@
   interface CaseScore {
     id: string;
     title: string;
-    description: string;
+    description string;
     score: number;
     priority: 'critical' | 'high' | 'medium' | 'low';
     confidence: number;
@@ -37,7 +37,7 @@
     category: string;
     weight: number;
     impact: number;
-    description: string;
+    description string;
     confidence: number;
   }
   interface ScoringRequest {
@@ -52,7 +52,7 @@
       {
         id: 'case-001',
         title: 'Johnson v. Tech Corp - Patent Infringement',
-        description: 'Complex patent dispute involving AI technology and trade secrets',
+        description 'Complex patent dispute involving AI technology and trade secrets',
         score: 87,
         priority: 'critical',
         confidence: 92,
@@ -63,35 +63,35 @@
             category: 'Financial Risk',
             weight: 0.3,
             impact: 0.9,
-            description: 'Potential damages exceed $10M',
+            description 'Potential damages exceed $10M',
             confidence: 95,
           },
           {
             category: 'Legal Precedent',
             weight: 0.25,
             impact: 0.85,
-            description: 'Limited favorable precedents',
+            description 'Limited favorable precedents',
             confidence: 88,
           },
           {
             category: 'Evidence Strength',
             weight: 0.2,
             impact: 0.7,
-            description: 'Key documents under dispute',
+            description 'Key documents under dispute',
             confidence: 82,
           },
           {
             category: 'Timeline Pressure',
             weight: 0.15,
             impact: 0.95,
-            description: 'Trial date approaching rapidly',
+            description 'Trial date approaching rapidly',
             confidence: 100,
           },
           {
             category: 'Public Relations',
             weight: 0.1,
             impact: 0.6,
-            description: 'Moderate media attention',
+            description 'Moderate media attention',
             confidence: 75,
           },
         ],
@@ -106,7 +106,7 @@
       {
         id: 'case-002',
         title: 'State v. Anderson - Criminal Defense',
-        description: 'White collar crime case involving financial fraud allegations',
+        description 'White collar crime case involving financial fraud allegations',
         score: 72,
         priority: 'high',
         confidence: 85,
@@ -117,28 +117,28 @@
             category: 'Evidence Strength',
             weight: 0.35,
             impact: 0.75,
-            description: 'Prosecution has substantial documentation',
+            description 'Prosecution has substantial documentation',
             confidence: 90,
           },
           {
             category: 'Witness Credibility',
             weight: 0.25,
             impact: 0.6,
-            description: 'Key witness reliability questionable',
+            description 'Key witness reliability questionable',
             confidence: 70,
           },
           {
             category: 'Legal Complexity',
             weight: 0.2,
             impact: 0.8,
-            description: 'Multiple intersecting statutes',
+            description 'Multiple intersecting statutes',
             confidence: 85,
           },
           {
             category: 'Sentencing Risk',
             weight: 0.2,
             impact: 0.85,
-            description: 'Mandatory minimums apply',
+            description 'Mandatory minimums apply',
             confidence: 95,
           },
         ],
@@ -152,7 +152,7 @@
       {
         id: 'case-003',
         title: 'Smith Family Trust - Estate Planning',
-        description: 'Complex multi-generational trust with tax optimization needs',
+        description 'Complex multi-generational trust with tax optimization needs',
         score: 45,
         priority: 'medium',
         confidence: 88,
@@ -163,28 +163,28 @@
             category: 'Tax Implications',
             weight: 0.4,
             impact: 0.5,
-            description: 'Moderate tax exposure under current structure',
+            description 'Moderate tax exposure under current structure',
             confidence: 85,
           },
           {
             category: 'Family Dynamics',
             weight: 0.3,
             impact: 0.4,
-            description: 'Generally cooperative beneficiaries',
+            description 'Generally cooperative beneficiaries',
             confidence: 80,
           },
           {
             category: 'Asset Complexity',
             weight: 0.2,
             impact: 0.45,
-            description: 'Mixed portfolio of liquid and illiquid assets',
+            description 'Mixed portfolio of liquid and illiquid assets',
             confidence: 90,
           },
           {
             category: 'Regulatory Changes',
             weight: 0.1,
             impact: 0.3,
-            description: 'Stable regulatory environment',
+            description 'Stable regulatory environment',
             confidence: 75,
           },
         ],
@@ -198,7 +198,7 @@
       {
         id: 'case-004',
         title: 'Green Energy LLC - Contract Dispute',
-        description: 'Breach of contract claim for renewable energy installation',
+        description 'Breach of contract claim for renewable energy installation',
         score: 32,
         priority: 'low',
         confidence: 91,
@@ -209,28 +209,28 @@
             category: 'Contract Clarity',
             weight: 0.35,
             impact: 0.25,
-            description: 'Well-drafted agreement with clear terms',
+            description 'Well-drafted agreement with clear terms',
             confidence: 95,
           },
           {
             category: 'Damages Amount',
             weight: 0.3,
             impact: 0.3,
-            description: 'Limited financial exposure',
+            description 'Limited financial exposure',
             confidence: 90,
           },
           {
             category: 'Counterparty Risk',
             weight: 0.2,
             impact: 0.35,
-            description: 'Financially stable opponent',
+            description 'Financially stable opponent',
             confidence: 88,
           },
           {
             category: 'Settlement Likelihood',
             weight: 0.15,
             impact: 0.2,
-            description: 'High probability of early settlement',
+            description 'High probability of early settlement',
             confidence: 92,
           },
         ],
@@ -244,7 +244,7 @@
       {
         id: 'case-005',
         title: 'Medical Malpractice - Hospital Group',
-        description: 'Defending against surgical complication claims',
+        description 'Defending against surgical complication claims',
         score: 68,
         priority: 'high',
         confidence: 79,
@@ -255,28 +255,28 @@
             category: 'Medical Evidence',
             weight: 0.35,
             impact: 0.65,
-            description: 'Mixed expert opinions on standard of care',
+            description 'Mixed expert opinions on standard of care',
             confidence: 75,
           },
           {
             category: 'Jury Sympathy',
             weight: 0.25,
             impact: 0.8,
-            description: 'Plaintiff has compelling personal story',
+            description 'Plaintiff has compelling personal story',
             confidence: 85,
           },
           {
             category: 'Insurance Coverage',
             weight: 0.2,
             impact: 0.5,
-            description: 'Adequate coverage with reasonable deductible',
+            description 'Adequate coverage with reasonable deductible',
             confidence: 90,
           },
           {
             category: 'Prior Cases',
             weight: 0.2,
             impact: 0.7,
-            description: 'Previous similar claims settled',
+            description 'Previous similar claims settled',
             confidence: 80,
           },
         ],
@@ -476,7 +476,7 @@
       <button
         aria-label="Action button"
         type="button"
-        on:click={() => loadCaseScores()}
+        onclick={() => loadCaseScores()}
         disabled={isLoading}
         class="px-3 py-2 rounded border text-sm font-medium bg-white hover:bg-gray-50 disabled:opacity-50"
       >
@@ -579,7 +579,7 @@
               <button
                 aria-label="Action button"
                 type="button"
-                on:click={() => openScoreDetails(caseItem)}
+                onclick={() => openScoreDetails(caseItem)}
                 class="px-2 py-1 text-sm rounded border bg-white hover:bg-gray-50"
               >
                 View Details
@@ -587,7 +587,7 @@
               <button
                 aria-label="Action button"
                 type="button"
-                on:click={() => scoreCase(caseItem.id)}
+                onclick={() => scoreCase(caseItem.id)}
                 disabled={scoringInProgress}
                 class="px-2 py-1 text-sm rounded bg-blue-600 text-white disabled:opacity-50"
               >
@@ -608,16 +608,16 @@
       type="button"
       aria-label="Close dialog"
       class="visually-hidden"
-      on:click={() => (showScoreDetails = false)}
+      onclick={() => (showScoreDetails = false)}
       onkeydown={e => {
         if (e.key === 'Escape') showScoreDetails = false;
       }}>Close</button
     >
-    <div class="modal-content score-details-dialog" role="document" on:click={e => e.stopPropagation()}>
+    <div class="modal-content score-details-dialog" role="document" onclick={e => e.stopPropagation()}>
       <div class="modal-header">
         <h2 class="modal-title">Case Score Analysis: {selectedCase.title}</h2>
         <p class="modal-description">Detailed scoring breakdown and recommendations</p>
-        <button type="button" aria-label="Close" on:click={() => (showScoreDetails = false)} class="modal-close">
+        <button type="button" aria-label="Close" onclick={() => (showScoreDetails = false)} class="modal-close">
           ×
         </button>
       </div>
@@ -667,7 +667,7 @@
         <button
           aria-label="Action button"
           type="button"
-          on:click={() => (showScoreDetails = false)}
+          onclick={() => (showScoreDetails = false)}
           class="px-3 py-2 rounded border text-sm bg-white hover:bg-gray-50"
         >
           Close
@@ -675,7 +675,7 @@
         <button
           aria-label="Action button"
           type="button"
-          on:click={() => selectedCase && scoreCase(selectedCase.id)}
+          onclick={() => selectedCase && scoreCase(selectedCase.id)}
           class="px-3 py-2 rounded bg-blue-600 text-white"
         >
           Rescore Case
@@ -758,7 +758,7 @@
   }
   .filter-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .filter-group label {
@@ -782,7 +782,7 @@
     border: 1px solid #e2e8f0;
     border-radius: 0.5rem;
     overflow: hidden;
-    transition: box-shadow 0.2s;
+    transition box-shadow 0.2s;
   }
   .case-score-card:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -893,7 +893,7 @@
     border: 2px solid #e2e8f0;
     border-top: 2px solid #3b82f6;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
   @keyframes spin {
@@ -903,7 +903,7 @@
   }
   /* Modal Styles */
   .modal-overlay {
-    position: fixed;
+    position fixed;
     top: 0,
     left: 0;
     right: 0,
@@ -927,7 +927,7 @@
     padding: 1.5rem;
   }
   .modal-header {
-    position: relative;
+    position relative;
     margin-bottom: 1.5rem;
   }
   .modal-title {
@@ -940,7 +940,7 @@
     margin: 0,
   }
   .modal-close {
-    position: absolute;
+    position absolute;
     top: 0,
     right: 0;
     width: 2rem;
@@ -966,7 +966,7 @@
   }
   .score-details-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 2rem;
   }
   .score-overview {
@@ -1020,7 +1020,7 @@
   .factor-fill {
     height: 100%;
     background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
-    transition: width 0.3s;
+    transition width 0.3s;
   }
   .factor-percentage {
     font-size: 0.75rem;
@@ -1060,7 +1060,7 @@
     border-top: 1px solid #e2e8f0;
   }
   .visually-hidden {
-    position: absolute;
+    position absolute;
     width: 1px;
     height: 1px;
     padding: 0,
@@ -1072,18 +1072,18 @@
   }
   @media (max-width: 768px) {
     .dashboard-header {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
     }
     .filters-row {
-      flex-direction: column;
+      flex-direction column;
       align-items: stretch;
     }
     .cases-grid {
       grid-template-columns: 1fr;
     }
     .score-display {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
     }
     .factors-grid {

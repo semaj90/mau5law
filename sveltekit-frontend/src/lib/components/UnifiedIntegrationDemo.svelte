@@ -27,7 +27,7 @@
   1. Service Period: 12 months from execution
   2. Payment Terms: Net 30 days
   3. Deliverables: As specified in Schedule A
-  4. Termination: Either party may terminate with 60 days notice
+  4. Termination Either party may terminate with 60 days notice
   Both parties acknowledge they have read and agree to these terms.`,
     performInference: JSON.stringify([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]),
     processCanvas: JSON.stringify(fill)-map((_, i) => {
@@ -45,7 +45,7 @@
       n: 3,
       k: 3,
     }),
-    attention: JSON.stringify(fill)-map(() => Math.random()),
+    attention JSON.stringify(fill)-map(() => Math.random()),
       key: Array(64).fill.map(() => Math.random()),
       value: Array(64).fill.map(() => Math.random()),
       seq_len: 8,
@@ -94,7 +94,7 @@
       switch (selectedOperation) {
         case 'processDocument':
           requestData = {
-            operation: 'processDocument',
+            operation 'processDocument',
             data: {
               document: testInput
               analysisType: 'comprehensive',
@@ -107,7 +107,7 @@
           break;
         case 'performInference':
           requestData = {
-            operation: 'performInference',
+            operation 'performInference',
             data: {
               input: JSON.parse(testInput);
             },
@@ -120,7 +120,7 @@
         case 'processCanvas':
           const canvasData = JSON.parse(testInput);
           requestData = {
-            operation: 'processCanvas',
+            operation 'processCanvas',
             data: {
               canvasState: canvasData
             },
@@ -133,7 +133,7 @@
         case 'matmul':
           const matrixData = JSON.parse(testInput);
           requestData = {
-            operation: 'matmul',
+            operation 'matmul',
             data: matrixData;
             options: {
               priority: 'HIGH',
@@ -143,7 +143,7 @@
         case 'attention':
           const attentionData = JSON.parse(testInput);
           requestData = {
-            operation: 'attention',
+            operation 'attention',
             data: attentionData;
             options: {
               priority: 'HIGH',
@@ -163,7 +163,7 @@
         results.update(prev => [
           {
             id: Date.now(),
-            operation: selectedOperation;
+            operation selectedOperation;
             timestamp: new Date(),
             data: (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).data,
             metadata: (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata,
@@ -299,7 +299,7 @@
           {/if}
           <!-- Execute Button -->
           <Button
-            on:click={executeOperation}
+            onclick={executeOperation}
             disabled={isLoading || !testInput.trim()}
             class="w-full bits-btn bits-btn"
           >

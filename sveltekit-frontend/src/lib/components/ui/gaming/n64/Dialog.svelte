@@ -114,7 +114,7 @@ https://svelte.dev/e/attribute_duplicate -->
     ...renderOptions
   }
   // Create spatial audio for dialog transitions
-  const playDialogSound = async (type: 'open' | 'close', duration: number = 0.4) => {
+  const playDialogSound = async (type: 'open' | 'close', duration number = 0.4) => {
     if (!enableSpatialAudio) return;
     try {
       if (!audioContext) {
@@ -345,7 +345,7 @@ https://svelte.dev/e/attribute_duplicate -->
     class:backdrop-blur={enableBackdropBlur}
     role="button"
     tabindex="0"
-    on:click={handleBackdropClick}
+    onclick={handleBackdropClick}
     style=";
       --atmosphere-intensity: {atmosphereIntensity}
       --fog-color: {effectiveRenderOptions.fogColor}
@@ -388,7 +388,7 @@ https://svelte.dev/e/attribute_duplicate -->
           {#if !preventClose}
             <button
               class="dialog-close-button"
-              on:click={closeDialog}
+              onclick={closeDialog}
               aria-label="Close dialog"
               type="button"
             >
@@ -432,7 +432,7 @@ https://svelte.dev/e/attribute_duplicate -->
   </div>
 {/if}
 <style>/* Backdrop styling */ .n64-dialog-backdrop {
-    position: fixed;
+    position fixed;
 d;
     top: 0,
     left: 0;
@@ -452,7 +452,7 @@ d;
     -webkit-backdrop-filter: blur(8px);
   }
   .atmosphere-layer {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -460,7 +460,7 @@ d;
 background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(74, 144, 226, 0.1) 0%, transparent 60%), radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.3) 0%, transparent 70%);
     opacity: var(--atmosphere-intensity);
     pointer-events: none;
-    animation: atmosphereSwirl 20s ease-in-out infinite;
+    animation atmosphereSwirl 20s ease-in-out infinite;
   }
   @keyframes atmosphereSwirl {
     0%, 100% {
@@ -490,9 +490,9 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     max-height: var(--dialog-max-height);
     width: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     overflow: hidden;
-    position: relative;
+    position relative;
 /* 3D transformations */ transform-style: preserve-3d;
 /* Enhanced rendering */ -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -512,19 +512,19 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     border-radius: 0,
   }
 /* Entrance animations */ .n64-dialog.entrance-zoom {
-    animation: dialogZoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation dialogZoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   .n64-dialog.entrance-slide-up {
-    animation: dialogSlideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    animation dialogSlideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
   .n64-dialog.entrance-slide-down {
-    animation: dialogSlideDown 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    animation dialogSlideDown 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
   .n64-dialog.entrance-fade {
-    animation: dialogFadeIn 0.4s ease-out;
+    animation dialogFadeIn 0.4s ease-out;
   }
   .n64-dialog.entrance-portal {
-    animation: dialogPortal 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    animation dialogPortal 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
   @keyframes dialogZoomIn {
     0% {
@@ -614,14 +614,14 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     padding: 8px;
     color: #ffffff;
     cursor: pointer;
-    transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
+    transition all 200ms cubic-bezier(0.23, 1, 0.32, 1);
     display: flex;
     align-items: center;
     justify-content: center;
     min-width: 36px;
     min-height: 36px;
   }
-  .dialog-close-button:hover {
+  .dialog-close-buttonhover {
     background: rgba(255, 255, 255, 0.2);
     transform: scale(1.1);
   }
@@ -633,7 +633,7 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     flex: 1,
     padding: 28px;
     overflow-y: auto;
-    position: relative;
+    position relative;
     z-index: 2,
   }
   .dialog-footer {
@@ -645,14 +645,14 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     justify-content: flex-end;
   }
 /* Loading overlay */ .loading-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     gap: 20px;
@@ -666,7 +666,7 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     border-right: 3px solid rgba(255, 255, 255, 0.6);
     border-bottom: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
-    animation: n64DialogSpin 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+    animation n64DialogSpin 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
     transform-style: preserve-3d;
   }
   @keyframes n64DialogSpin {
@@ -688,14 +688,14 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     letter-spacing: 1.5px;
     text-transform: uppercase;
     font-size: 1.1em;
-    animation: pulse 2s ease-in-out infinite;
+    animation pulse 2s ease-in-out infinite;
   }
   @keyframes pulse {
     0%, 100% { opacity: 1, }
     50% { opacity: 0.6, }
   }
 /* Lighting overlay */ .lighting-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -706,7 +706,7 @@ background: linear-gradient( 135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255,
     border-radius: 8px;
   }
 /* Reflection overlay */ .reflection-overlay {
-    position: absolute;
+    position absolute;
     top: 15%;
     left: 20%;
     right: 60%;
@@ -718,7 +718,7 @@ background: linear-gradient( 45deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 
     opacity: 0.8;
   }
 /* Particle overlay */ .particle-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -730,12 +730,12 @@ background: linear-gradient( 45deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 
   }
 .particle-overlay::before, .particle-overlay::after {
     content: '';
-    position: absolute;
+    position absolute;
     width: 3px;
     height: 3px;
     background: rgba(255, 255, 255, 0.6);
     border-radius: 50%;
-    animation: floatParticles 8s ease-in-out infinite;
+    animation floatParticles 8s ease-in-out infinite;
   }
   .particle-overlay::before {
     top: 20%;
@@ -790,7 +790,7 @@ filter: contrast(1.03) brightness(1.02) saturate(1.08);
   }
 /* Fog effects */ .n64-dialog::before {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -827,27 +827,27 @@ background: radial-gradient( ellipse at center, transparent 0%, var(--fog-color,
       display: none;
     }
   }
-/* Reduced motion support */ @media (prefers-reduced-motion: reduce) {
+/* Reduced motion support */ @media (prefers-reduced-motion reduce) {
     .n64-dialog {
-      animation: none !important;
+      animation none !important;
     }
     .n64-dialog-backdrop {
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
     }
     .atmosphere-layer {
-      animation: none;
+      animation none;
     }
 .particle-overlay::before, .particle-overlay::after {
-      animation: none;
+      animation none;
     }
     .n64-spinner {
-      animation: none;
+      animation none;
       border: 4px solid currentColor;
       border-right-color: transparent;
     }
     .loading-text {
-      animation: none;
+      animation none;
     }
   }
 /* High contrast mode */ @media (prefers-contrast: high) {

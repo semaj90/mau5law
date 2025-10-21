@@ -1,6 +1,6 @@
 <!--
   Gemma3 270M Client-Side WebAssembly Component
-  Function: Offload lightweight AI operations to client-side WebAssembly for reduced server load,
+  Function Offload lightweight AI operations to client-side WebAssembly for reduced server load,
   Architecture: WebAssembly + WebGL + Shared Memory for real-time legal document processing
 -->
 <script lang="ts">
@@ -20,7 +20,7 @@
   // WebAssembly configuration
   const wasmConfig = {
     modelSize: '270M',
-    quantization: 'int8',
+    quantization 'int8',
     contextLength: 2048,
     batchSize: 1,
     threads: navigator.hardwareConcurrency || 4,
@@ -34,7 +34,7 @@
     inferenceTime: 0,
     tokensPerSecond: 0,
     memoryUsage: 0,
-    webglAcceleration: false
+    webglAcceleration false
     lastUpdated: null
   });
   // WebGL context for GPU acceleration
@@ -151,7 +151,7 @@ await initializeWebAssembly();
           result = await extractClientSide(text);
           break;
         default:
-          throw new Error(`Unknown operation: ${operation}`);
+          throw new Error(`Unknown operation ${operation}`);
       }
       const inferenceTime = performance.now() - startTime;
       performanceMetrics.inferenceTime = inferenceTim;
@@ -187,7 +187,7 @@ await initializeWebAssembly();
       confidence: result.confidence || 0.85,
       tokensGenerated: result.tokensGenerated || 42,
       model: 'gemma3-270m-wasm',
-      processingLocation: 'client-side',
+      processingLocation 'client-side',
     }
   }
   async function generateClientEmbedding(text) {
@@ -200,7 +200,7 @@ await initializeWebAssembly();
       embedding: result.vector || new Array(384).fill.map(() => Math.random()),
       dimensions: 384,
       model: 'gemma3-270m-embedding-wasm',
-      processingLocation: 'client-side',
+      processingLocation 'client-side',
     }
   }
   async function summarizeClientSide(text) {
@@ -214,7 +214,7 @@ await initializeWebAssembly();
       compressionRatio: result.compressionRatio || 0.25,
       keyPoints: result.keyPoints || ['Key point 1', 'Key point 2', 'Key point 3'],
       model: 'gemma3-270m-summarizer-wasm',
-      processingLocation: 'client-side',
+      processingLocation 'client-side',
     }
   }
   async function extractClientSide(text) {
@@ -230,7 +230,7 @@ await initializeWebAssembly();
       ],
       relationships: result.relationships || [],
       model: 'gemma3-270m-extractor-wasm',
-      processingLocation: 'client-side',
+      processingLocation 'client-side',
     }
   }
   function calculateTokensPerSecond(text, inferenceTime) {
@@ -435,19 +435,19 @@ await initializeWebAssembly();
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
               <Button
                 variant="secondary"
-                on:click={() => processText('Sample legal document text for analysis...', 'inference')}
+                onclick={() => processText('Sample legal document text for analysis...', 'inference')}
               >
                 🧠 Inference
               </Button>
               <Button
                 variant="secondary"
-                on:click={() => processText('Generate embedding for this text...', 'embedding')}
+                onclick={() => processText('Generate embedding for this text...', 'embedding')}
               >
                 📊 Embedding
               </Button>
               <Button
                 variant="secondary"
-                on:click={() =>
+                onclick={() =>
                   processText(
                     'This is a long legal document that needs to be summarized for better understanding...',
                     'summarize'
@@ -457,7 +457,7 @@ await initializeWebAssembly();
               </Button>
               <Button
                 variant="secondary"
-                on:click={() =>
+                onclick={() =>
                   processText(
                     'Extract entities from this legal contract between John Doe and ABC Corporation...',
                     'extract'
@@ -492,10 +492,10 @@ await initializeWebAssembly();
         <CardContent>
           <div class="text-sm text-muted-foreground space-y-1">
             <div>Model: Gemma3 {wasmConfig.modelSize} (WebAssembly)</div>
-            <div>Quantization: {wasmConfig.quantization}</div>
+            <div>Quantization {wasmConfig.quantization}</div>
             <div>Context Length: {wasmConfig.contextLength} tokens</div>
             <div>Memory Limit: {wasmConfig.memoryMB} MB</div>
-            <div>WebGL Acceleration: {performanceMetrics.webglAcceleration ? 'Enabled' : 'Disabled'}</div>
+            <div>WebGL Acceleration {performanceMetrics.webglAcceleration ? 'Enabled' : 'Disabled'}</div>
             <div>Threads: {wasmConfig.threads}</div>
           </div>
         </CardContent>
@@ -509,13 +509,13 @@ await initializeWebAssembly();
     max-width: 800px;
   }
   .metric {
-    transition: transform 0.2s ease;
+    transition transform 0.2s ease;
   }
   .metric:hover {
     transform: translateY(-2px);
   }
   .action-btn {
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .action-btn:hover {
     transform: translateY(-1px);
@@ -530,7 +530,7 @@ await initializeWebAssembly();
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   }
   .animate-spin {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     from {

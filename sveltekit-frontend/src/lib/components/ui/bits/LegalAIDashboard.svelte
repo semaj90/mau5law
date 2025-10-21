@@ -64,7 +64,7 @@
     legalPlatformStore.createCase({
       caseNumber: `CASE-${Date.now()}`,
       title: 'New Legal Case',
-      description: 'Case created from dashboard',
+      description 'Case created from dashboard',
       status: 'active',
       priority: 'medium',
       citations: [],
@@ -72,7 +72,7 @@
       personsOfInterest: [],
       documents: [],
       notes: [],
-      jurisdiction: 'Federal',
+      jurisdiction 'Federal',
       court: 'District Court',
       filingDate: new Date().toISOString(),
       financials: {
@@ -112,11 +112,11 @@
         influenceLevel: 'significant',
         communicationStyle: ['aggressive', 'uncooperative'],
         strategicImportance: 85,
-        lastInteraction: '2024-01-15',
+        lastInteraction '2024-01-15',
         interactionCount: 12,
         personality: {
           traits: ['violent', 'unpredictable', 'anti-authority'],
-          communication: [],
+          communication [],
           predictedBehavior: [],
           negotiationStyle: 'hostile',
           riskFactors: ['violence history', 'weapon access'],
@@ -149,7 +149,7 @@
           {
             id: 'W001',
             type: 'arrest',
-            jurisdiction: 'State of California',
+            jurisdiction 'State of California',
             issuedDate: '2024-01-01',
             charges: ['Armed Robbery', 'Assault with Deadly Weapon'],
             status: 'active',
@@ -159,7 +159,7 @@
           {
             list: 'fbi_most_wanted',
             addedDate: '2024-01-01',
-            reason: 'Violent felony charges',
+            reason 'Violent felony charges',
             priority: 'critical',
           }
         ],
@@ -174,7 +174,7 @@
         dangerLevel: 'extreme',
         armedAndDangerous: true
         escapeRisk: 'high',
-        lastKnownLocation: {
+        lastKnownLocation {
           address: '123 Main St, Los Angeles, CA',
           date: '2024-01-10',
           source: 'witness',
@@ -214,11 +214,11 @@
           placeholder="Search across all systems..."
           onkeydown={e => e.key === 'Enter' && handleSearch()}
         />
-        <Button on:click={handleSearch} disabled={loading}>
+        <Button onclick={handleSearch} disabled={loading}>
           {loading ? '🔍 Searching...' : '🔍 Search'}
         </Button>
-        <Button on:click={handleCreateCase} variant="outline">📝 New Case</Button>
-        <Button on:click={handleQuickAnalysis} variant="outline">🤖 AI Analysis</Button>
+        <Button onclick={handleCreateCase} variant="outline">📝 New Case</Button>
+        <Button onclick={handleQuickAnalysis} variant="outline">🤖 AI Analysis</Button>
       </div>
     </div>
   </header>
@@ -300,7 +300,7 @@
         <div class="poi-section">
           <div class="section-header">
             <h2>👥 Persons of Interest</h2>
-            <Button on:click={() => alert('Create new POI')}>➕ Add POI</Button>
+            <Button onclick={() => alert('Create new POI')}>➕ Add POI</Button>
           </div>
           <div class="poi-grid">
             {#each samplePOIs as poi}
@@ -318,7 +318,7 @@
         <div class="citations-section">
           <div class="section-header">
             <h2>📚 Legal Citations</h2>
-            <Button on:click={() => alert('Add new citation')}>➕ Add Citation</Button>
+            <Button onclick={() => alert('Add new citation')}>➕ Add Citation</Button>
           </div>
           <Card>
             <CardContent>
@@ -333,7 +333,7 @@
         <div class="reports-section">
           <div class="section-header">
             <h2>📊 Legal Reports</h2>
-            <Button on:click={() => alert('Generate new report')}>➕ Generate Report</Button>
+            <Button onclick={() => alert('Generate new report')}>➕ Generate Report</Button>
           </div>
           <Card>
             <CardContent>
@@ -397,14 +397,14 @@
     </Tabs>
     <!-- Navigation Tabs -->
     <nav class="dashboard-nav">
-      <Button on:click={() => (activeTab = 'dashboard')} variant={activeTab === 'dashboard' ? 'default' : 'outline'}>
+      <Button onclick={() => (activeTab = 'dashboard')} variant={activeTab === 'dashboard' ? 'default' : 'outline'}>
         📊 Dashboard
       </Button>
-      <Button on:click={() => (activeTab = 'poi')} variant={activeTab === 'poi' ? 'default' : 'outline'}>👥 POI</Button>
-      <Button on:click={() => (activeTab = 'citations')} variant={activeTab === 'citations' ? 'default' : 'outline'}>
+      <Button onclick={() => (activeTab = 'poi')} variant={activeTab === 'poi' ? 'default' : 'outline'}>👥 POI</Button>
+      <Button onclick={() => (activeTab = 'citations')} variant={activeTab === 'citations' ? 'default' : 'outline'}>
         📚 Citations
       </Button>
-      <Button on:click={() => (activeTab = 'reports')} variant={activeTab === 'reports' ? 'default' : 'outline'}>
+      <Button onclick={() => (activeTab = 'reports')} variant={activeTab === 'reports' ? 'default' : 'outline'}>
         📊 Reports
       </Button>
     </nav>
@@ -446,7 +446,7 @@
     padding: 2rem;
   }
   .dashboard-nav {
-    position: fixed;
+    position fixed;
 d;
     bottom: 2rem;
     left: 50%;
@@ -488,7 +488,7 @@ d;
   }
   .activity-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
   }
   .activity-item {
@@ -550,7 +550,7 @@ d;
   }
   @media (max-width: 768px) {
     .header-content {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
     }
     .header-actions {
@@ -567,7 +567,7 @@ d;
       grid-template-columns: 1fr;
     }
     .dashboard-nav {
-      position: stati;
+      position stati;
 c;
       transform: none;
       margin-top: 2rem;

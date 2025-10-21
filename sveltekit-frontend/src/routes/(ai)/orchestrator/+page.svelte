@@ -40,7 +40,7 @@ Showcases the service worker-based AI orchestration system
   const demoScenarios = [
     {
       name: 'Legal Document Analysis',
-      description: 'Parallel analysis across multiple AI models',
+      description 'Parallel analysis across multiple AI models',
       prompt: 'Analyze this contract for potential legal issues, key terms, and compliance requirements.',
       tasks: [
         { provider: 'ollama', model: 'gemma3-legal', focus: 'Legal compliance analysis' },
@@ -50,7 +50,7 @@ Showcases the service worker-based AI orchestration system
     },
     {
       name: 'Evidence Processing',
-      description: 'Multi-stage evidence analysis pipeline',
+      description 'Multi-stage evidence analysis pipeline',
       prompt: 'Process and categorize evidence files for case preparation.',
       tasks: [
         { provider: 'ollama', model: 'nomic-embed-text', focus: 'Text embedding generation' },
@@ -60,7 +60,7 @@ Showcases the service worker-based AI orchestration system
     },
     {
       name: 'Case Research',
-      description: 'Comprehensive legal research workflow',
+      description 'Comprehensive legal research workflow',
       prompt: 'Research relevant case law and statutes for this legal matter.',
       tasks: [
         { provider: 'autogen', model: 'autogen-agents', focus: 'Legal research coordination' },
@@ -239,7 +239,7 @@ Showcases the service worker-based AI orchestration system
                 variant="ghost"
                 size="sm"
                 class="w-full bits-btn bits-btn"
-                on:click={() =>
+                onclick={() =>
 runDemoScenario(scenario)}
                 disabled={isProcessing}
               >
@@ -284,7 +284,7 @@ runDemoScenario(scenario)}
           </div>
           <div class="flex gap-2">
             <Button
-              on:click={submitCustomTask}
+              onclick={submitCustomTask}
               disabled={isProcessing || !selectedModel}
               class="flex-1 bits-btn bits-btn"
             >
@@ -295,7 +295,7 @@ runDemoScenario(scenario)}
                 <Play class="h-4 w-4 mr-2" />
                 Submit Task
               {/if}
-            <Button class="bits-btn" variant="ghost" on:click={clearResults}>
+            <Button class="bits-btn" variant="ghost" onclick={clearResults}>
 <RotateCcw class="h-4 w-4" />
           </div>
         </div>
@@ -309,7 +309,7 @@ runDemoScenario(scenario)}
               Task Results ({demoResults.length})
             </span>
             {#if demoResults.length > 0}
-              <Button class="bits-btn" variant="ghost" size="sm" on:click={clearResults}>
+              <Button class="bits-btn" variant="ghost" size="sm" onclick={clearResults}>
 Clear
             {/if}
           </h3>

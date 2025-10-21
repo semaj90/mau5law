@@ -59,7 +59,7 @@
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock - AI service unavailable';
       notice.style.cssText =
-        'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+        'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Set mock model info and mark backend explicitly
@@ -122,7 +122,7 @@
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock';
       notice.style.cssText =
-        'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+        'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Generate mock legal AI response
@@ -214,14 +214,14 @@
         <p>SELECT A QUERY TYPE:</p>
         <button
           class="nes-btn is-primary"
-          on:click={() => (currentMessage = 'What are the key elements of a valid contract?')}
+          onclick={() => (currentMessage = 'What are the key elements of a valid contract?')}
         >
           📋 CONTRACT LAW
         </button>
-        <button class="nes-btn is-success" on:click={() => (currentMessage = 'Explain intellectual property basics')}>
+        <button class="nes-btn is-success" onclick={() => (currentMessage = 'Explain intellectual property basics')}>
           💡 IP BASICS
         </button>
-        <button class="nes-btn is-warning" on:click={() => (currentMessage = 'What is due diligence in M&A?')}>
+        <button class="nes-btn is-warning" onclick={() => (currentMessage = 'What is due diligence in M&A?')}>
           🔍 M&A DUE DILIGENCE
         </button>
       </div>
@@ -267,7 +267,7 @@
       <button
         type="button"
         class="nes-btn is-primary"
-        on:click={sendMessage}
+        onclick={sendMessage}
         disabled={!currentMessage.trim() || isLoading || connectionStatus === 'disconnected'}
       >
         {#if isLoading}
@@ -279,7 +279,7 @@
       <button
         type="button"
         class="nes-btn"
-        on:click={() => {
+        onclick={() => {
           messages = [];
           currentMessage = '';
         }}
@@ -294,7 +294,7 @@
       <ul class="nes-list is-disc">
         <li>TensorRT Bridge: localhost:8086</li>
         <li>Model: Gemma3-Legal Q4_K_M</li>
-        <li>GPU Acceleration: RTX 3060 Ti</li>
+        <li>GPU Acceleration RTX 3060 Ti</li>
       </ul>
     </div>
   </div>
@@ -436,14 +436,14 @@
       max-width: 85%;
     }
     .button-row {
-      flex-direction: column;
+      flex-direction column;
     }
     .button-row button {
       width: 100%;
       min-width: auto;
     }
     .status-bar {
-      flex-direction: column;
+      flex-direction column;
       gap: 0.5rem;
     }
   }

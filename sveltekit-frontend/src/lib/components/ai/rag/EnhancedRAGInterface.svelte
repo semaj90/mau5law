@@ -200,7 +200,7 @@ await loadDocuments();
       criminal: 'bg-purple-100 text-purple-800',
       evidence: 'bg-green-100 text-green-800',
       precedent: 'bg-yellow-100 text-yellow-800',
-      motion: 'bg-indigo-100 text-indigo-800',
+      motion 'bg-indigo-100 text-indigo-800',
       brief: 'bg-pink-100 text-pink-800',
     }
     return colors[label as keyof typeof colors] || 'bg-gray-100 text-gray-800';
@@ -269,7 +269,7 @@ await loadDocuments();
         class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       />
       <button
-        on:click={() => performSearch()}
+        onclick={() => performSearch()}
         class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
       >
         Search
@@ -301,7 +301,7 @@ await loadDocuments();
                   {(result as { embedding?: unknown; item?: unknown; score?: unknown; response?: unknown; label?: unknown; searchScore?: unknown; summary?: unknown; content?: unknown; metadata?: unknown }).metadata.wordCount} words • {(result as { embedding?: unknown; item?: unknown; score?: unknown; response?: unknown; label?: unknown; searchScore?: unknown; summary?: unknown; content?: unknown; metadata?: unknown }).metadata.legalTerms.length} legal terms
                 </div>
                 <button
-                  on:click={() => analyzeDocument(result)}
+                  onclick={() => analyzeDocument(result)}
                   class="px-3 py-1 bg-purple-600 text-white text-xs rounded hover:bg-purple-700 transition-colors"
                 >
                   🤖 AI Analyze
@@ -376,7 +376,7 @@ await loadDocuments();
                 Source: {doc.source} • {doc.metadata.wordCount} words • {doc.timestamp.toLocaleDateString()}
               </div>
               <button
-                on:click={() => analyzeDocument(doc)}
+                onclick={() => analyzeDocument(doc)}
                 class="px-3 py-1 bg-purple-600 text-white text-xs rounded hover:bg-purple-700 transition-colors"
               >
                 🤖 Analyze with AI
@@ -393,20 +393,20 @@ await loadDocuments();
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
   .stat-card {
-    transition: transform 0.2s ease;
+    transition transform 0.2s ease;
   }
   .stat-card:hover {
     transform: translateY(-2px);
   }
   .result-card {
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .result-card:hover {
     transform: translateX(4px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   .document-card {
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .document-card:hover {
     border-color: #3b82f6;

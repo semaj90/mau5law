@@ -88,7 +88,7 @@
     max-width: 80%;
   }
   .user .message-wrapper {
-    flex-direction: row-rever;
+    flex-direction row-rever;
   }
   .avatar {
     display: flex;

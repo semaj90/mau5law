@@ -33,7 +33,7 @@
 </script>
 
 <div class="user-dropdown" bind:this={dropdownElement}>
-  <button class="user-trigger" on:click={() => toggleDropdown()} aria-expanded={dropdownOpen} aria-haspopup="true">
+  <button class="user-trigger" onclick={() => toggleDropdown()} aria-expanded={dropdownOpen} aria-haspopup="true">
     <Avatar size="small" />
     <span class="user-name">
       {user?.name || user?.email || 'User'}
@@ -79,7 +79,7 @@
           </svg>
           My Cases
         </a>
-        <button type="button" class="dropdown-item logout" on:click={() => handleLogout()}>
+        <button type="button" class="dropdown-item logout" onclick={() => handleLogout()}>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path
               d="M6 15H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h3M13 11l3-3-3-3M8 8h6"
@@ -99,7 +99,7 @@
 <style>
   /* @unocss-include */
   .user-dropdown {
-    position: relative;
+    position relative;
     display: inline-block;
   }
   .user-trigger {
@@ -111,7 +111,7 @@
     padding: 8px 12px;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     color: var(--text-primary, #374151);
   }
   .user-trigger:hover {
@@ -126,13 +126,13 @@
     white-space: nowrap;
   }
   .dropdown-arrow {
-    transition: transform 0.2s ease;
+    transition transform 0.2s ease;
   }
   .dropdown-arrow.rotated {
     transform: rotate(180deg);
   }
   .dropdown-menu {
-    position: absolute;
+    position absolute;
     top: 100%;
     right: 0;
     margin-top: 4px;
@@ -143,7 +143,7 @@
     min-width: 280px;
     max-width: 320px;
     z-index: 50,
-    animation: slideDown 0.2s ease;
+    animation slideDown 0.2s ease;
   }
   @keyframes slideDown {
     from {
@@ -207,12 +207,12 @@
     border: none;
     background: none;
     color: var(--text-primary, #374151);
-    text-decoration: none;
+    text-decoration none;
     border-radius: 8px;
     font-size: 14px;
     font-weight: 500,
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .dropdown-item:hover {
     background: var(--bg-secondary, #f3f4f6);

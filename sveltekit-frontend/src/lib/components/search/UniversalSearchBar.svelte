@@ -40,12 +40,12 @@
   // Modern Svelte 5 event handling - props instead of dispatcher
   // Available search categories
   const searchCategories = [
-    { id: 'cases', label: 'Cases', icon: '📁', color: 'blue' },
-    { id: 'criminals', label: 'Persons of Interest', icon: '👤', color: 'red' },
-    { id: 'evidence', label: 'Evidence', icon: '🔍', color: 'green' },
-    { id: 'documents', label: 'Documents', icon: '📄', color: 'purple' },
-    { id: 'precedents', label: 'Precedents', icon: '⚖️', color: 'yellow' },
-    { id: 'statutes', label: 'Statutes', icon: '📖', color: 'indigo' }
+    { id: 'cases', label: 'Cases', icon '📁', color: 'blue' },
+    { id: 'criminals', label: 'Persons of Interest', icon '👤', color: 'red' },
+    { id: 'evidence', label: 'Evidence', icon '🔍', color: 'green' },
+    { id: 'documents', label: 'Documents', icon '📄', color: 'purple' },
+    { id: 'precedents', label: 'Precedents', icon '⚖️', color: 'yellow' },
+    { id: 'statutes', label: 'Statutes', icon '📖', color: 'indigo' }
   ];
   // Recent searches and suggestions
   let trendingSearches = $state([
@@ -169,7 +169,7 @@
           score: 0.9,
           metadata: {
             date: '2024-08-24',
-            jurisdiction: 'Federal',
+            jurisdiction 'Federal',
             status: 'Active',
             caseId: 'CASE-001',
             tags: ['investigation', 'active'];
@@ -260,7 +260,7 @@
       performSearch();
     }
   }
-  function selectSuggestion(suggestion: SearchSuggestion) {
+  function selectSuggestion(suggestion SearchSuggestion) {
     searchInput = suggestion.text;
     performSearch();
   }
@@ -310,7 +310,7 @@
       <!-- Clear Button -->
       {#if searchInput}
         <button
-          on:click={clearSearch}
+          onclick={clearSearch}
           class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
           aria-label="Clear search"
         >
@@ -323,7 +323,7 @@
       {#if showFilters}
             <button
               class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
-              on:click={() => {/* Toggle filters panel */}}
+              onclick={() => {/* Toggle filters panel */}}
               aria-label="Toggle search filters"
             >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -350,7 +350,7 @@
               class:bg-gray-700={!selectedCategories.includes(category.id) && theme === 'dark'}
               class:bg-black={!selectedCategories.includes(category.id) && theme === 'yorha'}
               class:bg-opacity-50={!selectedCategories.includes(category.id) && theme === 'yorha'}
-              on:click={() => toggleCategory(category.id)}
+              onclick={() => toggleCategory(category.id)}
             >
               <span>{category.icon}</span>
               <span>{category.label}</span>
@@ -376,7 +376,7 @@
             {#each recentSearches.slice(0, 5) as recent}
               <button
                 class="w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded flex items-center gap-2"
-                on:click={() => { searchInput = recent; performSearch(), }}
+                onclick={() => { searchInput = recent; performSearch(), }}
               >
                 <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -395,7 +395,7 @@
             {#each trendingSearches as trending}
               <button
                 class="px-3 py-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full text-sm"
-                on:click={() => selectTrendingSearch(trending)}
+                onclick={() => selectTrendingSearch(trending)}
               >
                 {trending}
               </button>
@@ -413,7 +413,7 @@
             <button
               class="w-full text-left p-3 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg border-b border-current/10 last:border-b-0 transition-colors"
               data-result-type={(result as { id?: unknown; title?: unknown; type?: unknown; content?: unknown; score?: unknown; similarity?: unknown; metadata?: unknown; createdAt?: unknown; category?: unknown; description?: unknown; tags?: unknown }).type}
-              on:click={() => selectResult(result)}
+              onclick={() => selectResult(result)}
             >
               <div class="flex items-start gap-3">
                 <!-- Result Type Icon -->
@@ -455,7 +455,7 @@
             {#each suggestions as suggestion}
               <button
                 class="w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded flex items-center gap-2"
-                on:click={() => selectSuggestion(suggestion)}
+                onclick={() => selectSuggestion(suggestion)}
               >
                 <svg class="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
@@ -490,7 +490,7 @@
     border: 3px solid #000;
     box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.3);
     background: linear-gradient(145deg, #f0f0f0, #e6e6e6);
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   :global(.nes-search-bar .search-bar-wrapper:focus-within) {
     box-shadow: 8px 8px 0px rgba(0, 100, 200, 0.4), 6px 6px 0px rgba(0, 0, 0, 0.3);
@@ -515,7 +515,7 @@
     font-weight: bold;
     font-size: 12px;
     text-transform: uppercase;
-    transition: all 0.15s ease;
+    transition all 0.15s ease;
   }
   :global($1) {
     transform: translateY(-2px);
@@ -542,7 +542,7 @@
   /* NES-style Result Items */
   :global(.nes-search-bar .search-dropdown button) {
     font-family: 'Courier New', monospace;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   :global($1) {
     background: linear-gradient(135deg, #e3f2fd, #bbdefb) !important;
@@ -577,7 +577,7 @@
   /* NES-style Clear/Action Buttons */
   :global(.nes-search-bar .p-2) {
     border-radius: 0,
-    transition: all 0.15s ease;
+    transition all 0.15s ease;
   }
   :global($1) {
     background: linear-gradient(135deg, #ffecb3, #fff3c4) !important;
@@ -618,7 +618,7 @@
     overflow: hidden;
   }
   .category-chip {
-    transition: all 0.2s ease-in-out;
+    transition all 0.2s ease-in-out;
   }
   .category-chip:hover {
     transform: translateY(-1px);

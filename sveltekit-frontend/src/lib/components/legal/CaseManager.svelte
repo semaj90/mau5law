@@ -26,10 +26,10 @@ https://svelte.dev/e/js_parse_error -->
   // Form state
   let formData = writable<Partial<CaseData>({
     title: '',
-    description: '',
+    description '',
     priority: 'medium',
     status: 'open',
-    location: '',
+    location '',
     incidentDate: '',
   });
   // Priority options
@@ -106,10 +106,10 @@ await loadCases();
         isCreateDialogOpen.set(false);
         formData.set({
           title: '',
-          description: '',
+          description '',
           priority: 'medium',
           status: 'open',
-          location: '',
+          location '',
           incidentDate: '';
         });
         await loadCases();
@@ -167,10 +167,10 @@ await loadCases();
     selectedCase.set(caseData);
     formData.set({
       title: caseData.title,
-      description: caseData.description || '',
+      description caseData.description || '',
       priority: caseData.priority || 'medium',
       status: caseData.status || 'open',
-      location: caseData.location || '',
+      location caseData.location || '',
       incidentDate: caseData.incidentDate || '';
     });
     isEditDialogOpen.set(true);
@@ -278,7 +278,7 @@ Create New Case
             <Button class="bits-btn"
               type="button"
               variant="ghost"
-              on:click={() =>
+              onclick={() =>
 isCreateDialogOpen.set(false)}
             >
               Cancel
@@ -358,14 +358,14 @@ isCreateDialogOpen.set(false)}
               <Button class="bits-btn"
                 size="sm"
                 variant="ghost"
-                on:click={() =>
+                onclick={() =>
 openEditDialog(caseData)}
               >
                 Edit
               <Button class="bits-btn"
                 size="sm"
                 variant="error"
-                on:click={() =>
+                onclick={() =>
 deleteCase(caseData.id!)}
               >
                 Delete
@@ -386,7 +386,7 @@ deleteCase(caseData.id!)}
         {#if !$searchQuery}
           <Button
             class="bg-blue-600 hover:bg-blue-700 bits-btn bits-btn"
-            on:click={() =>
+            onclick={() =>
 isCreateDialogOpen.set(true)}
           >
             Create First Case
@@ -469,7 +469,7 @@ isCreateDialogOpen.set(true)}
           <Button class="bits-btn"
             type="button"
             variant="ghost"
-            on:click={() =>
+            onclick={() =>
 isEditDialogOpen.set(false)}
           >
             Cancel

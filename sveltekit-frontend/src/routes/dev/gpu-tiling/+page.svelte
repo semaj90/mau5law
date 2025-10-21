@@ -71,7 +71,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
   <div class="actions">
-    <button on:click={run} disabled={runBusy}>Process</button>
+    <button onclick={run} disabled={runBusy}>Process</button>
     {#if runBusy}<span>Running…</span>{/if}
   </div>
   {#if result}

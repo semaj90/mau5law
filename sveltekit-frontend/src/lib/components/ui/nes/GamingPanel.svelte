@@ -57,14 +57,14 @@
           {#if minimizable}
             <button
               class="control-button minimize"
-              on:click={toggleMinimize}
+              onclick={toggleMinimize}
               aria-label={isMinimized ? 'Expand panel' : 'Minimize panel'}
             >
               {isMinimized ? '▲' : '▼'}
             </button>
           {/if}
           {#if closable}
-            <button class="control-button close" on:click={closePanel} aria-label="Close panel"> ✕ </button>
+            <button class="control-button close" onclick={closePanel} aria-label="Close panel"> ✕ </button>
           {/if}
         </div>
       </div>
@@ -89,7 +89,7 @@
 
 <style>
 	.gaming-panel {
-position: relative;
+position relative;
 background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
 		border: 2px solid;
 		border-radius: 8px;
@@ -97,7 +97,7 @@ overflow: hidden;
 font-family: 'Orbitron', 'Courier New', monospace;
 		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 		backdrop-filter: blur(5px);
-		transition: all 0.3s ease;
+		transition all 0.3s ease;
 	}
 /* Panel Variants */ .gaming-panel.default {
 		border-color: #333;
@@ -120,19 +120,19 @@ font-family: 'Orbitron', 'Courier New', monospace;
 		box-shadow: 0 4px 20px rgba(255, 68, 68, 0.2);
 	}
 /* Glow Effect */ .gaming-panel.glow {
-		animation: panel-glow 3s ease-in-out infinite alternate;
+		animation panel-glow 3s ease-in-out infinite alternate;
 	}
 	.gaming-panel.glow.primary {
-		animation: panel-glow-primary 3s ease-in-out infinite alternate;
+		animation panel-glow-primary 3s ease-in-out infinite alternate;
 	}
 	.gaming-panel.glow.success {
-		animation: panel-glow-success 3s ease-in-out infinite alternate;
+		animation panel-glow-success 3s ease-in-out infinite alternate;
 	}
 	.gaming-panel.glow.warning {
-		animation: panel-glow-warning 3s ease-in-out infinite alternate;
+		animation panel-glow-warning 3s ease-in-out infinite alternate;
 	}
 	.gaming-panel.glow.danger {
-		animation: panel-glow-danger 3s ease-in-out infinite alternate;
+		animation panel-glow-danger 3s ease-in-out infinite alternate;
 	}
 /* Minimized State */ .gaming-panel.minimized {
 overflow: visibl;
@@ -148,7 +148,7 @@ align-items: center; padding: 12px 16px;
 	}
 	.panel-title {
 display: flex;
-flex-direction: column gap: 2px;
+flex-direction column gap: 2px;
 	}
 	.title-text {
 		font-size: 14px;
@@ -175,9 +175,9 @@ align-items: center justify-content: center width: 24px;
 		border-radius: 4px;
 		color: #fff;
 		font-size: 12px;
-cursor: pointer; transition: all 0.2s ease;
+cursor: pointer; transition all 0.2s ease;
 	}
-	.control-button:hover {
+	.control-buttonhover {
 		background: rgba(255, 255, 255, 0.2);
 		border-color: rgba(255, 255, 255, 0.4);
 		transform: scale(1.1);
@@ -194,11 +194,11 @@ cursor: pointer; transition: all 0.2s ease;
 	}
 /* Panel Content */ .panel-content {
 		padding: 16px;
-position: relative;
+position relative;
 z-index: 1,
 	}
 /* Corner Decorations */ .corner-decoration {
-position: absolute;
+position absolute;
 width: 16px;
 		height: 16px;
 		border: 2px solid currentColor;
@@ -223,25 +223,25 @@ border-top: none border-right: none }
 border-top: none;
 border-left: none, }
 /* Scan Effects */ .scan-line-horizontal {
-position: absolute;
+position absolute;
 top: 0,
 		left: 0;
 		right: 0,
 		height: 2px;
 		background: linear-gradient(90deg, transparent 0%, currentColor 50%, transparent 100%);
 		opacity: 0.4,
-		animation: scan-horizontal 4s ease-in-out infinite;
+		animation scan-horizontal 4s ease-in-out infinite;
 		z-index: 0,
 	}
 	.scan-line-vertical {
-position: absolute;
+position absolute;
 top: 0,
 		bottom: 0;
 		left: 0,
 		width: 2px;
 		background: linear-gradient(180deg, transparent 0%, currentColor 50%, transparent 100%);
 		opacity: 0.4,
-		animation: scan-vertical 3s ease-in-out infinite rever;
+		animation scan-vertical 3s ease-in-out infinite rever;
 		z-index: 0,
 	}
 /* Animations */ @keyframes panel-glow {

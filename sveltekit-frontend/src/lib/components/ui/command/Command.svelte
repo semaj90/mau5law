@@ -24,96 +24,96 @@
   const mockCommands = [
     {
       group: 'Cases',
-      icon: Gavel,
+      icon Gavel,
       items: [
         {
           id: 'case-1',
           title: 'State v. Johnson',
-          description: 'Active criminal case',
+          description 'Active criminal case',
           keywords: ['criminal', 'theft', 'johnson'],
         },
         {
           id: 'case-2',
           title: 'Smith v. Corporation',
-          description: 'Civil litigation',
+          description 'Civil litigation',
           keywords: ['civil', 'corporate', 'smith'],
         },
         {
           id: 'case-3',
           title: 'People v. Williams',
-          description: 'DUI case pending',
+          description 'DUI case pending',
           keywords: ['dui', 'williams', 'traffic'],
         },
       ],
     },
     {
       group: 'Evidence',
-      icon: FileText,
+      icon FileText,
       items: [
         {
           id: 'evidence-1',
           title: 'Security Footage 2024-01-15',
-          description: 'Video evidence',
+          description 'Video evidence',
           keywords: ['video', 'security', 'footage'],
         },
         {
           id: 'evidence-2',
           title: 'Financial Records',
-          description: 'Bank statements',
+          description 'Bank statements',
           keywords: ['financial', 'bank', 'records'],
         },
         {
           id: 'evidence-3',
           title: 'Witness Statement - Martinez',
-          description: 'Testimony transcript',
+          description 'Testimony transcript',
           keywords: ['witness', 'martinez', 'statement'],
         },
       ],
     },
     {
       group: 'People',
-      icon: Users,
+      icon Users,
       items: [
         {
           id: 'person-1',
           title: 'John Smith',
-          description: 'Defendant in case #2024-001',
+          description 'Defendant in case #2024-001',
           keywords: ['defendant', 'smith'],
         },
         {
           id: 'person-2',
           title: 'Detective Rodriguez',
-          description: 'Lead investigator',
+          description 'Lead investigator',
           keywords: ['detective', 'rodriguez', 'investigator'],
         },
         {
           id: 'person-3',
           title: 'Attorney Johnson',
-          description: 'Prosecuting attorney',
+          description 'Prosecuting attorney',
           keywords: ['attorney', 'johnson', 'prosecutor'],
         },
       ],
     },
     {
       group: 'Documents',
-      icon: FileText,
+      icon FileText,
       items: [
         {
           id: 'doc-1',
           title: 'Motion to Dismiss',
-          description: 'Filed 2024-01-20',
+          description 'Filed 2024-01-20',
           keywords: ['motion', 'dismiss', 'filing'],
         },
         {
           id: 'doc-2',
           title: 'Search Warrant',
-          description: 'Authorized 2024-01-18',
+          description 'Authorized 2024-01-18',
           keywords: ['warrant', 'search', 'authorized'],
         },
         {
           id: 'doc-3',
           title: 'Police Report',
-          description: 'Initial incident report',
+          description 'Initial incident report',
           keywords: ['police', 'report', 'incident'],
         },
       ],
@@ -204,7 +204,7 @@
   }
   :global(.legal-command-item) {
     color: var(--yorha-text-primary, inherit);
-    transition:
+    transition
       background-color 150ms ease,
       color 150ms ease;
   }

@@ -93,8 +93,8 @@
   <div
     class="nes-modal-overlay"
     class:backdrop-blur={backdrop}
-    on:click={handleBackdropClick}
-    transition:fade={{ duration: 200 }}
+    onclick={handleBackdropClick}
+    transitionfade={{ duration 200 }}
     role="dialog"
     aria-modal="true"
     aria-labelledby={title ? 'modal-title' : undefined}
@@ -104,7 +104,7 @@
       bind:this={modalElement}
       class="nes-modal {variantClasses[variant]} {sizeClasses[size]}"
       class:is-closing={isClosing}
-      transition:scale={{ duration: 200, easing: quintOut }}
+      transitionscale={{ duration 200, easing: quintOut }}
       use:trapFocus
       {...restProps}
     >
@@ -117,7 +117,7 @@
           {#if closable}
             <button
               class="nes-modal-close"
-              on:click={closeModal}
+              onclick={closeModal}
               aria-label="Close modal"
               type="button"
             >
@@ -139,7 +139,7 @@
 {/if}
 <style>
   .nes-modal-overlay {
-    position: fixed;
+    position fixed;
 d;
     top: 0,
     left: 0;
@@ -156,18 +156,18 @@ d;
     backdrop-filter: blur(4px);
   }
   .nes-modal {
-    position: relative;
+    position relative;
     width: 100%;
     max-height: calc(100vh - 2rem);
     overflow: hidden;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     font-family: 'Press Start 2P', cursiv;
     border: 4px solid theme('colors.nes.black');
     box-shadow: 12px 12px 0px 0px theme('colors.nes.black');
   }
   .nes-modal.is-closing {
-    animation: modal-close 0.15s ease-out forward;
+    animation modal-close 0.15s ease-out forward;
   }
 /* Variant Styles */ {}
   .nes-modal-default {
@@ -231,7 +231,7 @@ d;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.1s ease;
+    transition all 0.1s ease;
     margin-left: 1rem;
   }
   .nes-modal-close:hover {
@@ -318,10 +318,10 @@ d;
     }
   }
 /* Accessibility improvements */ {}
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
 .nes-modal, {}
     .nes-modal-overlay {
-      transition: none;
+      transition none;
     }
     @keyframes modal-close {
       0% {

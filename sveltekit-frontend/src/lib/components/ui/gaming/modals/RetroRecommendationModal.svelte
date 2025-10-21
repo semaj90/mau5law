@@ -218,10 +218,10 @@ https://svelte.dev/e/attribute_duplicate -->
   <div
     class="modal-backdrop"
     style:background-color="rgba(0, 0, 0, 0.8)"
-    transitionfade={{ duration: 300 }}
+    transitionfade={{ duration 300 }}
     role="button"
     tabindex="0"
-    on:click={handleClose}
+    onclick={handleClose}
     aria-label="Close modal"
   ></div>
   <!-- Modal Container -->
@@ -232,7 +232,7 @@ https://svelte.dev/e/attribute_duplicate -->
     style:border-color={currentTheme.colors.border}
     style:box-shadow={currentTheme.shadow}
     style:font-family={currentTheme.fontFamily}
-    transitionfly={{ y: -50, duration: 400, easing: quintOut }}
+    transitionfly={{ y: -50, duration 400, easing: quintOut }}
     role="dialog"
     aria-modal="true"
     aria-labelledby="modal-title"
@@ -245,7 +245,7 @@ https://svelte.dev/e/attribute_duplicate -->
       <button
         class="close-button"
         style:color={currentTheme.colors.accent}
-        on:click={handleClose}
+        onclick={handleClose}
         aria-label="Close modal"
       >
         ×
@@ -267,13 +267,13 @@ https://svelte.dev/e/attribute_duplicate -->
               style:border-color={index === selectedIndex ? currentTheme.colors.selected : 'transparent'}
               style:background-color={index === selectedIndex ? `${currentTheme.colors.selected}20` : 'transparent'}
               role="button"
-              on:click={() => {
+              onclick={() => {
                 selectedIndex = index;
                 rec.action?.();
                 handleClose();
               }}
               tabindex={index === selectedIndex ? 0 : -1}
-              transitionscale={{ duration: 200, delay: index * 50 }}
+              transitionscale={{ duration 200, delay: index * 50 }}
             >
               <!-- Priority Indicator -->
               <div
@@ -323,7 +323,7 @@ https://svelte.dev/e/attribute_duplicate -->
 
 <style>
   .modal-backdrop {
-    position: fixed;
+    position fixed;
 d;
     top: 0,
     left: 0;
@@ -333,7 +333,7 @@ d;
     backdrop-filter: blur(4px);
   }
   .retro-modal {
-    position: fixed;
+    position fixed;
 d;
     top: 50%;
     left: 50%;
@@ -345,7 +345,7 @@ d;
     border-radius: 8px;
     overflow: hidden;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
   }
   /* Console-specific styling */
   .retro-modal.nes {
@@ -375,11 +375,11 @@ d;
     border-radius: 0;
     border-style: solid;
     border-width: 2px;
-    position: relative;
+    position relative;
   }
   .retro-modal.yorha::before {
     content: '';
-    position: absolute;
+    position absolute;
     top: -2px;
     left: -2px;
     right: -2px;
@@ -410,9 +410,9 @@ d;
     cursor: pointer;
     padding: 0;
     line-height: 1,
-    transition: opacity 0.2;
+    transition opacity 0.2;
   }
-  .close-button:hover {
+  .close-buttonhover {
     opacity: 0.7,
   }
   .modal-content {
@@ -431,7 +431,7 @@ d;
   }
   .recommendations-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .recommendation-item {
@@ -442,8 +442,8 @@ d;
     border: 2px solid;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2;
-    position: relative;
+    transition all 0.2;
+    position relative;
   }
   .recommendation-item:hover {
     transform: translateX(4px);
@@ -485,7 +485,7 @@ d;
     font-weight: bold;
     min-width: 2rem;
     text-align: center;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .modal-footer {
     padding: 1rem;
@@ -500,7 +500,7 @@ d;
   }
   /* Animation classes */
   .recommendation-item {
-    animation: slideIn 0.3s ease-out;
+    animation slideIn 0.3s ease-out;
   }
   @keyframes slideIn {
     from {

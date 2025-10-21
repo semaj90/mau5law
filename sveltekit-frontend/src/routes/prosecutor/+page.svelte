@@ -211,7 +211,7 @@ Features: Case management, evidence upload, AI chat, vector search
             <span class="bits-btn">
               <Button
                 variant={selectedCaseId === caseItem.id ? 'secondary' : 'ghost'}
-                on:click={() => selectCase(caseItem.id)}
+                onclick={() => selectCase(caseItem.id)}
               >
                 {caseItem.caseNumber} - {caseItem.title}
                 <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{caseItem.status}</span>
@@ -221,7 +221,7 @@ Features: Case management, evidence upload, AI chat, vector search
           <span class="bits-btn">
             <Button
               variant="secondary"
-              on:click={() => {
+              onclick={() => {
                 /* New case handler */
               }}
             >
@@ -252,7 +252,7 @@ Features: Case management, evidence upload, AI chat, vector search
               <Input bind:value={searchQuery} placeholder="Search evidence, cases, precedents..." class="flex-1" />
               <!-- moved classes to wrapper span to avoid passing unknown 'class' prop to Button -->
               <span class="bits-btn">
-                <Button on:click={performVectorSearch} disabled={!searchQuery.trim()}>
+                <Button onclick={performVectorSearch} disabled={!searchQuery.trim()}>
                   <Search class="w-4 h-4" />
                 </Button>
               </span>
@@ -294,7 +294,7 @@ Features: Case management, evidence upload, AI chat, vector search
             this={EvidenceUploadComponent as any}
             caseId={selectedCaseId}
             enableWebGPU={webGPUEnabled}
-            on:uploadcomplete={handleEvidenceUploaded}
+            onuploadcomplete={handleEvidenceUploaded}
           />
         {:else}
           <div class="p-4 text-sm text-gray-500">Loading uploader…</div>
@@ -341,7 +341,7 @@ Features: Case management, evidence upload, AI chat, vector search
                       <span class="bits-btn px-2 py-1 text-sm">
                         <Button
                           variant="secondary"
-                          on:click={() => {
+                          onclick={() => {
                             /* view handler */
                           }}
                         >
@@ -399,7 +399,7 @@ Features: Case management, evidence upload, AI chat, vector search
             <span class="bits-btn w-full mt-3 block px-3 py-2 text-sm">
               <Button
                 variant="secondary"
-                on:click={() => {
+                onclick={() => {
                   /* New POI handler */
                 }}
               >
@@ -458,15 +458,15 @@ Features: Case management, evidence upload, AI chat, vector search
   }
   /* Enhanced hover effects for elemental awareness */
   :global(*:hover) {
-    transition: all 0.1s ease;
+    transition all 0.1s ease;
   }
   /* WebGPU acceleration indicators */
   :global(.gpu-accelerated) {
-    position: relative;
+    position relative;
   }
   :global(.gpu-accelerated::after) {
     content: '⚡',
-    position: absolute;
+    position absolute;
     top: -8px;
     right: -8px;
     font-size: 12px;

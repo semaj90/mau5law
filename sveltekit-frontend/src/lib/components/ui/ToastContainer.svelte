@@ -49,7 +49,7 @@
   function dismissToast(id: string) {
     toastService.dismiss(id);
   }
-  function executeAction(action: NonNullable<Toast['actions']>[0]) {
+  function executeAction(action NonNullable<Toast['actions']>[0]) {
     action.action();
   }
 </script>
@@ -78,7 +78,7 @@
           <button
             type="button"
             class="toast-dismiss nes-btn is-error"
-            on:click={() => dismissToast(toast.id)}
+            onclick={() => dismissToast(toast.id)}
             aria-label="Dismiss notification"
           >
             <X size={12} />
@@ -113,7 +113,7 @@
                   : action.style === 'danger'
                     ? 'is-error'
                     : ''}"
-                on:click={() => executeAction(action)}
+                onclick={() => executeAction(action)}
               >
                 {#if action.label === 'Retry'}
                   <RotateCcw size={12} />
@@ -136,13 +136,13 @@
 
 <style>
   .toast-container {
-    position: fixed;
+    position fixed;
 d;
     top: 20px;
     right: 20px;
     z-index: 9999,
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 12px;
     max-width: 420px;
     width: 100%;
@@ -153,8 +153,8 @@ d;
     background: #ffffff;
     border: 4px solid #212529;
     box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.3);
-    animation: slideInRight 0.3s ease-out;
-    position: relative;
+    animation slideInRight 0.3s ease-out;
+    position relative;
     padding: 16px;
     font-family: "Press Start 2P", cursiv;
   }
@@ -216,13 +216,13 @@ d;
     margin-top: 8px;
   }
   .progress-container {
-    position: relative;
+    position relative;
     padding: 8px;
     background: rgba(255, 255, 255, 0.5);
     border: 2px solid #212529;
   }
   .progress-text {
-    position: absolute;
+    position absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -245,7 +245,7 @@ d;
     gap: 4px;
   }
   .toast-timestamp {
-    position: absolute;
+    position absolute;
     bottom: 4px;
     right: 8px;
     font-size: 6px;
@@ -262,7 +262,7 @@ d;
     }
   }
   .toast-.removing {
-    animation: slideOutRight 0.3s ease-in forward;
+    animation slideOutRight 0.3s ease-in forward;
   }
   @keyframes slideOutRight {
     from {
@@ -298,7 +298,7 @@ d;
   }
   /* Progress bar custom styling */
   .nes-progress {
-    position: relative;
+    position relative;
     height: 20px;
   }
   /* Hide default progress styling and add pixel styling */

@@ -59,7 +59,7 @@
   /* Admin-specific security indicators */
   .admin-main::after {
     content: '🔒 ADMIN ACCESS',
-    position: fixed;
+    position fixed;
     top: 70px;
     right: 20px;
     font-size: 0.75rem;
@@ -71,7 +71,7 @@
 
   @media (max-width: 768px) {
     .admin-content {
-      flex-direction: column;
+      flex-direction column;
     }
 
     .admin-sidebar {

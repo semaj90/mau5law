@@ -44,12 +44,12 @@
       <p>Text with <sub>subscript</sub> and <sup>superscript</sup> elements.</p>
       <blockquote>This is a blockquote element for quoted content.</blockquote>
       <address>
-        Contact information:<br />
+        Contact information<br />
         123 Legal Street<br />
         Law City, LC 12345
       </address>
       <p>
-        Abbreviation: <abbr title="World Health Organization">WHO</abbr> and
+        Abbreviation <abbr title="World Health Organization">WHO</abbr> and
         <abbr data-original-title="HyperText Markup Language">HTML</abbr>
       </p>
       <hr />

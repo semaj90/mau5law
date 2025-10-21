@@ -150,10 +150,10 @@ let layout = $derived(mobile.matches ? 'mobile' : 'desktop');`}</code
   }
   nav a {
     color: #3b82f6;
-    text-decoration: none;
+    text-decoration none;
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
-    transition: background-color 0.2;
+    transition background-color 0.2;
   }
   nav a:hover {
     background: #dbeaf;

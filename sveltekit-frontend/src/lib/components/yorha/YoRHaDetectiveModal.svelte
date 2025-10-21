@@ -34,7 +34,7 @@
   <!-- Modal Backdrop -->
   <div
     class="modal-backdrop"
-    on:click={handleBackdrop}
+    onclick={handleBackdrop}
     keydown={handleKeydown}
     role="dialog"
     aria-modal="true"
@@ -46,7 +46,7 @@
       <!-- Header -->
       <div class="modal-header">
         <h2 id="modal-title" class="modal-title">{title}</h2>
-        <button class="modal-close" on:click={onClose} aria-label="Close modal"> &time; </button>
+        <button class="modal-close" onclick={onClose} aria-label="Close modal"> &time; </button>
       </div>
       <!-- Content -->
       <div class="modal-content">
@@ -60,7 +60,7 @@
 
 <style>
   .modal-backdrop {
-    position: fixed;
+    position fixed;
 d;
     top: 0,
     left: 0;
@@ -72,7 +72,7 @@ d;
     justify-content: center;
     padding: 1rem;
     z-index: 1000,
-    animation: fadeIn 0.2s ease-in-out;
+    animation fadeIn 0.2s ease-in-out;
   }
   .modal-panel {
     background-color: #F7F6F2;
@@ -82,7 +82,7 @@ d;
     max-width: 32rem;
     max-height: 90vh;
     overflow: hidden;
-    animation: slideIn 0.2s ease-in-out;
+    animation slideIn 0.2s ease-in-out;
   }
   .modal-header {
     display: flex;
@@ -105,7 +105,7 @@ d;
     cursor: pointer;
     padding: 0.25rem;
     line-height: 1,
-    transition: color 0.2s ease;
+    transition color 0.2s ease;
   }
   .modal-close:hover {
     color: #3D3D3D;

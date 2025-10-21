@@ -136,7 +136,7 @@ https://svelte.dev/e/js_parse_error -->
       {#if searchValue}
         <button
           class="clear-button"
-          on:click={() => clearSearch()}
+          onclick={() => clearSearch()}
           title="Clear search"
         >
           <X size={16} />
@@ -147,14 +147,14 @@ https://svelte.dev/e/js_parse_error -->
     {#if $open && searchResults.length > 0}
       <div
         class="search-results"
-        transitionfly={{ duration: 150, y: -10 }}
+        transitionfly={{ duration 150, y: -10 }}
       >
         {#each filteredResults as item ((item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).id)}
           <button
             use:melt={$option({ value: (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).id, label: (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).title })}
             class="search-result-item"
             class:highlighted={$isSelected((item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).id)}
-            on:click={() => handleSelect(item)}
+            onclick={() => handleSelect(item)}
           >
             <div class="result-icon">
               {#if (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).type === 'document'}
@@ -215,7 +215,7 @@ https://svelte.dev/e/js_parse_error -->
             <button
               class="filter-chip"
               class:active={selectedTypes.includes(type)}
-              on:click={() => toggleType(type)}
+              onclick={() => toggleType(type)}
             >
               {type}
             </button>
@@ -234,7 +234,7 @@ https://svelte.dev/e/js_parse_error -->
               <button
                 class="filter-chip"
                 class:active={selectedTags.includes(tag)}
-                on:click={() => toggleTag(tag)}
+                onclick={() => toggleTag(tag)}
               >
                 {tag}
               </button>
@@ -273,7 +273,7 @@ https://svelte.dev/e/js_parse_error -->
       {#each selectedTypes as type}
         <span class="active-filter">
           {type}
-          <button on:click={() => toggleType(type)}>
+          <button onclick={() => toggleType(type)}>
             <X size={12} />
           </button>
         </span>
@@ -281,7 +281,7 @@ https://svelte.dev/e/js_parse_error -->
       {#each selectedTags as tag}
         <span class="active-filter">
           #{tag}
-          <button on:click={() => toggleTag(tag)}>
+          <button onclick={() => toggleTag(tag)}>
             <X size={12} />
           </button>
         </span>
@@ -289,12 +289,12 @@ https://svelte.dev/e/js_parse_error -->
       {#if dateRange.start || dateRange.end}
         <span class="active-filter">
           {dateRange.start?.toLocaleDateString() || '...'} - {dateRange.end?.toLocaleDateString() || '...'}
-          <button on:click={() => dateRange = }>
+          <button onclick={() => dateRange = }>
             <X size={12} />
           </button>
         </span>
       {/if}
-      <button class="clear-all-filters" on:click={() => clearSearch()}>
+      <button class="clear-all-filters" onclick={() => clearSearch()}>
         Clear all
       </button>
     </div>
@@ -302,19 +302,19 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 <style>
 .advanced-search {
-  position: relative;
+  position relative;
   width: 100%;
 }
 .search-input-container {
-  position: relative;
+  position relative;
 }
 .search-input-wrapper {
-  position: relative;
+  position relative;
   display: flex;
   align-items: center;
 }
 .search-icon {
-  position: absolute;
+  position absolute;
   left: 0.75rem;
   color: #6b7280;
   z-index: 1,
@@ -326,7 +326,7 @@ https://svelte.dev/e/js_parse_error -->
   border-radius: 0.5rem;
   font-size: 0.875rem;
   background: #ffffff;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .search-input:focus {
   outline: none;
@@ -334,7 +334,7 @@ https://svelte.dev/e/js_parse_error -->
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 .clear-button {
-  position: absolute;
+  position absolute;
   right: 0.75rem;
   display: flex;
   align-items: center;
@@ -346,13 +346,13 @@ https://svelte.dev/e/js_parse_error -->
   color: #6b7280;
   border-radius: 0.25rem;
   cursor: pointer;
-  transition: color 0.15s ease;
+  transition color 0.15s ease;
 }
-.clear-button:hover {
+.clear-buttonhover {
   color: #374151;
 }
 .search-results {
-  position: absolute;
+  position absolute;
   top: 100%;
   left: 0,
   right: 0;
@@ -375,7 +375,7 @@ https://svelte.dev/e/js_parse_error -->
   background: none;
   text-align: left;
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition background-color 0.15s ease;
   border-bottom: 1px solid #f1f5f9;
 }
 .search-result-item: hover
@@ -445,7 +445,7 @@ https://svelte.dev/e/js_parse_error -->
 .result-meta {
   flex-shrink: 0,
   display: flex;
-  flex-direction: column;
+  flex-direction column;
   align-items: flex-end;
   gap: 0.25rem;
   font-size: 0.75rem;
@@ -457,7 +457,7 @@ https://svelte.dev/e/js_parse_error -->
 }
 .no-results {
   display: flex;
-  flex-direction: column;
+  flex-direction column;
   align-items: center;
   justify-content: center;
   padding: 2rem;
@@ -475,12 +475,12 @@ https://svelte.dev/e/js_parse_error -->
 .search-filters {
   margin-top: 1rem;
   display: flex;
-  flex-direction: column;
+  flex-direction column;
   gap: 1rem;
 }
 .filter-group {
   display: flex;
-  flex-direction: column;
+  flex-direction column;
   gap: 0.5rem;
 }
 .filter-label {
@@ -504,7 +504,7 @@ https://svelte.dev/e/js_parse_error -->
   border-radius: 1rem;
   font-size: 0.875rem;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition all 0.15s ease;
 }
 .filter-chip: hover {
   border-color: #3b82f6;
@@ -561,9 +561,9 @@ https://svelte.dev/e/js_parse_error -->
   border-radius: 50%;
   padding: 0.125rem;
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition background-color 0.15s ease;
 }
-.active-filter button:hover {
+.active-filter buttonhover {
   background: rgba(255, 255, 255, 0.5);
 }
 .clear-all-filters {
@@ -574,7 +574,7 @@ https://svelte.dev/e/js_parse_error -->
   border-radius: 0.375rem;
   font-size: 0.75rem;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition all 0.15s ease;
 }
 .clear-all-filters: hover {
   border-color: #ef4444;

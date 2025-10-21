@@ -107,7 +107,7 @@
           x: (layer + 1) * (width / (layers.length + 1)),
           y: (node + 1) * (height / (layers[layer] + 1)),
           layer,
-          activation: Math.random(),
+          activation Math.random(),
           size: 4 + Math.random() * 8,
           pulsePhase: Math.random() * Math.PI * 2;
         });
@@ -420,7 +420,7 @@
       <span class="text-gray-400">FPS: {fps}</span>
       <button
         class="bg-blue-600/20 border border-blue-600/50 text-blue-300 hover:bg-blue-600/30 px-3 py-1 rounded text-xs"
-        on:click={switchMode}
+        onclick={switchMode}
       >
         Switch Mode
       </button>

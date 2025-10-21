@@ -112,7 +112,7 @@
         const notice = document.createElement('div');
         notice.innerHTML = '⚠️ failure default to mock';
         notice.style.cssText =
-          'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+          'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
         document.body.appendChild(notice);
         setTimeout(() => notice.remove(), 3000);
       }
@@ -240,7 +240,7 @@
         const notice = document.createElement('div');
         notice.innerHTML = '⚠️ failure default to mock';
         notice.style.cssText =
-          'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+          'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
         document.body.appendChild(notice);
         setTimeout(() => notice.remove(), 3000);
       }
@@ -248,7 +248,7 @@
       const mockLegalAssistantResponses = [
         'Based on your legal inquiry, I would recommend examining the contractual obligations and relevant case precedents. Here are the key considerations: [Mock Analysis] 1) Review governing law clauses, 2) Examine breach conditions, 3) Consider damages calculations.',
         'This appears to be an employment law matter. Mock legal assistant analysis suggests: The timeline of events indicates potential wrongful termination. I recommend gathering additional documentation and reviewing company policy violations.',
-        'For intellectual property concerns like this, prior art searches are essential. Mock recommendation: Conduct comprehensive patent database review, examine competitor filings, and assess potential infringement claims.',
+        'For intellectual property concerns like this, prior art searches are essential. Mock recommendation Conduct comprehensive patent database review, examine competitor filings, and assess potential infringement claims.',
         'In contract dispute matters, intent and consideration are primary factors. Mock legal guidance: Review contract formation elements, examine performance obligations, and consider alternative dispute resolution options.',
       ];
       const randomMockResponse =
@@ -296,7 +296,7 @@
         const notice = document.createElement('div');
         notice.innerHTML = '⚠️ failure default to mock';
         notice.style.cssText =
-          'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+          'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
         document.body.appendChild(notice);
         setTimeout(() => notice.remove(), 3000);
       }
@@ -344,7 +344,7 @@
         // store the parsed object (typed) — not an array
         ragAnalysisResults = parsed;
         // Safely extract persons array and map to the normalized POI shape
-        poiTimelineData = (parsed?.persons ?? []).map((person: Person) => {
+        poiTimelineData = (parsed?.persons ?? []).map((person Person) => {
           const poi: POI = {
             id: person.id,
             name: person.name,
@@ -461,7 +461,7 @@
           <Button
             class="bits-btn justify-start"
             variant="ghost"
-            on:click={() => handleQuickQuery('Explain contract formation requirements')}
+            onclick={() => handleQuickQuery('Explain contract formation requirements')}
             disabled={isStreaming}
           >
             Contract Law
@@ -469,7 +469,7 @@
           <Button
             class="bits-btn justify-start"
             variant="ghost"
-            on:click={() => handleQuickQuery('What is the chain of custody for evidence?')}
+            onclick={() => handleQuickQuery('What is the chain of custody for evidence?')}
             disabled={isStreaming}
           >
             Evidence Rules
@@ -477,7 +477,7 @@
           <Button
             class="bits-btn justify-start"
             variant="ghost"
-            on:click={() => handleQuickQuery('Explain liability limitations in contracts')}
+            onclick={() => handleQuickQuery('Explain liability limitations in contracts')}
             disabled={isStreaming}
           >
             Liability
@@ -485,7 +485,7 @@
           <Button
             class="bits-btn justify-start"
             variant="ghost"
-            on:click={() => handleQuickQuery('What are the elements of negligence?')}
+            onclick={() => handleQuickQuery('What are the elements of negligence?')}
             disabled={isStreaming}
           >
             Tort Law
@@ -514,7 +514,7 @@
                   variant="ghost"
                   size="sm"
                   class="bits-btn bits-nes-btn bits-btn bits-btn"
-                  on:click={clearChat}
+                  onclick={clearChat}
                   disabled={isStreaming}
                 >
                   Clear
@@ -578,13 +578,13 @@
               <div class="flex gap-2">
                 <input
                   bind:value={currentMessage}
-                  on:keydown={handleKeydown}
+                  onkeydown={handleKeydown}
                   placeholder="Ask a legal question..."
                   disabled={isStreaming}
                   class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <Button
-                  on:click={sendMessage}
+                  onclick={sendMessage}
                   disabled={!currentMessage.trim() || isStreaming}
                   class="px-6 bits-btn bits-btn"
                 >
@@ -621,7 +621,7 @@
                   </svg>
                   Persons of Interest Timeline
                 </h2>
-                <Button variant="ghost" size="sm" on:click={() => (showTimeline = false)} class="nes-btn bits-btn">
+                <Button variant="ghost" size="sm" onclick={() => (showTimeline = false)} class="nes-btn bits-btn">
                   {#snippet children()}
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"
@@ -645,7 +645,7 @@
                           </span>
                         </div>
                       </div>
-                      <Button variant="ghost" size="sm" on:click={() => selectPOI(poi)} class="nes-btn bits-btn">
+                      <Button variant="ghost" size="sm" onclick={() => selectPOI(poi)} class="nes-btn bits-btn">
                         {#snippet children()}
                           View Details
                         {/snippet}
@@ -787,7 +787,7 @@
                 <Button
                   variant="ghost"
                   size="sm"
-                  on:click={checkSystemStatus}
+                  onclick={checkSystemStatus}
                   class="w-full justify-start bits-btn bits-btn"
                   fullWidth={true}
                 >
@@ -807,7 +807,7 @@
                   class="bits-btn w-full justify-start"
                   variant="ghost"
                   size="sm"
-                  on:click={() => window.open('/api/v1/cluster/health', '_blank')}
+                  onclick={() => window.open('/api/v1/cluster/health', '_blank')}
                   fullWidth={true}
                 >
                   {#snippet children()}
@@ -842,7 +842,7 @@
               <div class="space-y-2">
                 <Button
                   class="nes-btn is-primary w-full justify-start bits-btn"
-                  on:click={analyzePersonsOfInterest}
+                  onclick={analyzePersonsOfInterest}
                   disabled={timelineLoading}
                   fullWidth={true}
                 >
@@ -872,7 +872,7 @@
                 <Button
                   variant="ghost"
                   size="sm"
-                  on:click={generateUserActivityTimeline}
+                  onclick={generateUserActivityTimeline}
                   disabled={activityLoading}
                   class="w-full justify-start bits-btn"
                   fullWidth={true}
@@ -940,7 +940,7 @@
     bind:open={showPOIDialog}
     legal={true}
     size="lg"
-    on:openChange={(e: CustomEvent<boolean>) => {
+    onopenChange={(e: CustomEvent<boolean>) => {
       if (!e.detail) closePOIDetails();
     }}
   >
@@ -969,7 +969,7 @@
               </span>
             </div>
           </div>
-          <Button variant="ghost" size="sm" on:click={closePOIDetails} class="bits-btn">
+          <Button variant="ghost" size="sm" onclick={closePOIDetails} class="bits-btn">
             {#snippet children()}
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -1080,9 +1080,9 @@
         {/if}
         <!-- Actions -->
         <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
-          <Button variant="ghost" size="sm" on:click={closePOIDetails} class="bits-btn">Close</Button>
+          <Button variant="ghost" size="sm" onclick={closePOIDetails} class="bits-btn">Close</Button>
           <Button
-            on:click={() => {
+            onclick={() => {
               handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`);
               closePOIDetails();
             }}

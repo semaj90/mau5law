@@ -27,7 +27,7 @@ https://svelte.dev/e/js_parse_error -->
 
   // Fixed $state generics and initializers
   let selectedRows = $state<Set<string | number>>(new Set());
-  let sortConfig = $state<{ column: string; direction: 'asc' | 'desc' } | null>(null);
+  let sortConfig = $state<{ column: string; direction 'asc' | 'desc' } | null>(null);
   let searchQuery = $state('');
   let columnFilters = $state<Map<string, string>>(new Map());
 
@@ -76,10 +76,10 @@ https://svelte.dev/e/js_parse_error -->
     if (sortConfig?.column === column) {
       sortConfig = {
         column,
-        direction: sortConfig.direction === 'asc' ? 'desc' : 'asc',
+        direction sortConfig.direction === 'asc' ? 'desc' : 'asc',
       };
     } else {
-      sortConfig = { column, direction: 'asc' };
+      sortConfig = { column, direction 'asc' };
     }
   }
 
@@ -158,7 +158,7 @@ https://svelte.dev/e/js_parse_error -->
             <th class="header-cell">
               <button
                 class="header-button"
-                on:click={() => handleSort(column.key)}
+                onclick={() => handleSort(column.key)}
                 disabled={!sortable || !column.sortable}
                 type="button"
               >
@@ -211,7 +211,7 @@ https://svelte.dev/e/js_parse_error -->
                 'row-even': index % 2 === 0,
                 'row-clickable': selectable,
               })}
-              on:click={() => handleRowSelect(row.id)}
+              onclick={() => handleRowSelect(row.id)}
             >
               {#if selectable && multiSelect}
                 <td class="select-cell">
@@ -253,7 +253,7 @@ https://svelte.dev/e/js_parse_error -->
     background-color: white;
     border: 1px solid rgb(229 231 235);
     border-radius: 12px;
-    position: relative;
+    position relative;
     overflow: hidden;
     font-family:
       'Inter',
@@ -273,12 +273,12 @@ https://svelte.dev/e/js_parse_error -->
     background-color: rgb(249 250 251);
   }
   .search-container {
-    position: relative;
+    position relative;
     flex: 1;
     max-width: 24rem;
   }
   .search-icon {
-    position: absolute;
+    position absolute;
     left: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
@@ -293,7 +293,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 0.5rem;
     font-size: 0.875rem;
     background-color: white;
-    transition: border-color 0.15s;
+    transition border-color 0.15s;
   }
   .search-input:focus {
     outline: none;
@@ -315,9 +315,9 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.875rem;
     font-weight: 500,
     color: rgb(55 65 81);
-    transition: all 0.15s;
+    transition all 0.15s;
   }
-  .filter-button:hover {
+  .filter-buttonhover {
     background-color: rgb(249 250 251);
     border-color: rgb(156 163 175);
   }
@@ -332,7 +332,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .table-header {
     background-color: rgb(249 250 251);
-    position: sticky;
+    position sticky;
     top: 0;
     z-index: 10,
   }
@@ -363,12 +363,12 @@ https://svelte.dev/e/js_parse_error -->
     font-weight: inherit;
     color: inherit;
     cursor: pointer;
-    transition: background-color 0.15s;
+    transition background-color 0.15s;
   }
-  .header-button:hover:not(:disabled) {
+  .header-buttonhover:not(:disabled) {
     background-color: rgb(243 244 246);
   }
-  .header-button:disabled {
+  .header-buttondisabled {
     cursor: default;
   }
   .header-text {
@@ -385,7 +385,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .data-row {
     border-bottom: 1px solid rgb(243 244 246);
-    transition: background-color 0.15;
+    transition background-color 0.15;
   }
   .data-row:hover {
     background-color: rgb(249 250 251);
@@ -435,7 +435,7 @@ https://svelte.dev/e/js_parse_error -->
   .loading-content,
   .empty-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 1rem;
     color: rgb(107 114 128);
@@ -446,7 +446,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 2px solid rgb(229 231 235);
     border-top: 2px solid rgb(59 130 246);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   .loading-text,
   .empty-text {
@@ -464,7 +464,7 @@ https://svelte.dev/e/js_parse_error -->
   /* Responsive design */
   @media (max-width: 768px) {
     .grid-toolbar {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
       align-items: stretch;
     }

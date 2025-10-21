@@ -180,7 +180,7 @@
   async function submitFeedback(
     recommendationId: string
     feedback: 'positive' | 'negative',
-    recommendation: EnhancedRecommendation
+    recommendation EnhancedRecommendation
   ) {
     if (feedbackCooldown.has(recommendationId) || processingFeedback) {
       return;
@@ -226,7 +226,7 @@
             feedback,
             recommendationType: recommendation.type,
             recommendationTitle: recommendation.title,
-            recommendationDescription: recommendation.description,
+            recommendationDescription recommendation.description,
             confidence: recommendation.confidence,
             priority: recommendation.priority,
             context: recommendation.context || '',
@@ -354,7 +354,7 @@
       <!-- Trigger/Header -->
       <Collapsible.Trigger asChild>
         {#snippet children({ builder })}
-          <button use:builder.action {...builder} class="container-trigger" on:click={toggleContainer}>
+          <button use:builder.action {...builder} class="container-trigger" onclick={toggleContainer}>
             <div class="trigger-content">
               <div class="trigger-left">
                 <span class="trigger-icon">🎯</span>
@@ -394,7 +394,7 @@
       </Collapsible.Trigger>
       <!-- Collapsible Content -->
       <Collapsible.Content class="collapsible-content">
-        <div class="recommendations-grid" transitionfly={{ y: -20, duration: 300, easing: quintOut }}>
+        <div class="recommendations-grid" transitionfly={{ y: -20, duration 300, easing: quintOut }}>
           {#each Object.entries(groupedRecommendations) as [type, recs]}
             <div.Root class="recommendation-nier-bits-card {type}">
               <div.Header class="nier-bits-yorha-panel-header">
@@ -425,7 +425,7 @@
                                 use:builder.action
                                 {...builder}
                                 class={getFeedbackButtonClass(rec.id, 'positive', rec.feedback)}
-                                on:click={() => submitFeedback(rec.id, 'positive', rec)}
+                                onclick={() => submitFeedback(rec.id, 'positive', rec)}
                                 disabled={feedbackCooldown.has(rec.id) || processingFeedback}
                               >
                                 👍
@@ -445,7 +445,7 @@
                                 use:builder.action
                                 {...builder}
                                 class={getFeedbackButtonClass(rec.id, 'negative', rec.feedback)}
-                                on:click={() => submitFeedback(rec.id, 'negative', rec)}
+                                onclick={() => submitFeedback(rec.id, 'negative', rec)}
                                 disabled={feedbackCooldown.has(rec.id) || processingFeedback}
                               >
                                 👎
@@ -468,9 +468,9 @@
                   {/if}
                 </div>
                 <div class="nier-bits-card-actions">
-                  <button class="view-all-btn" on:click={() => openModal(type)}> View All </button>
+                  <button class="view-all-btn" onclick={() => openModal(type)}> View All </button>
                   {#if recs[0]}
-                    <button class="quick-action-btn {recs[0].priority}" on:click={() => recs[0].action?.()}>
+                    <button class="quick-action-btn {recs[0].priority}" onclick={() => recs[0].action?.()}>
                       Quick Action
                     </button>
                   {/if}
@@ -481,7 +481,7 @@
           <!-- View All Recommendations -->
           <div.Root class="view-all-nier-bits-card">
             <div.Content class="view-all-content">
-              <button class="view-all-recommendations" on:click={() => openModal()}>
+              <button class="view-all-recommendations" onclick={() => openModal()}>
                 <span class="view-all-icon">📋</span>
                 <span class="view-all-text">View All Recommendations</span>
                 <span class="view-all-count">({recommendations.length})</span>
@@ -505,7 +505,7 @@
 
 <style>
   .recommendation-container {
-    position: fixed;
+    position fixed;
 d;
     top: 60px; /* Adjust based on your nav-bar height */,
     left: 50%;
@@ -517,10 +517,10 @@ d;
     border-radius: 12px;
     border: 2px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .recommendation-container.floating {
-    position: fixed;
+    position fixed;
 d;
     top: 20px;
     right: 20px;
@@ -528,7 +528,7 @@ d;
     transform: none;
   }
   .recommendation-container.sidebar {
-    position: fixed;
+    position fixed;
 d;
     left: 0,
     top: 60px;
@@ -540,7 +540,7 @@ d;
   .recommendation-container.has-critical {
     border-color: #EF4444;
     box-shadow: 0 8px 32px rgba(239, 68, 68, 0.3);
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   @keyframes pulse {
     0%, 100% {
@@ -585,7 +585,7 @@ d;
     background: transparent;
     border: none;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .container-trigger:hover {
     background: rgba(255, 255, 255, 0.05);
@@ -621,7 +621,7 @@ d;
     font-weight: 600,
   }
   .trigger-arrow {
-    transition: transform 0.2;
+    transition transform 0.2;
     font-size: 0.8rem;
   }
   .trigger-arrow.rotated {
@@ -629,7 +629,7 @@ d;
   }
   .critical-badge {
     background: #EF4444;
-    animation: pulse 1.5s infinite;
+    animation pulse 1.5s infinite;
   }
   .high-badge {
     background: #F59E0B;
@@ -638,17 +638,17 @@ d;
     background: linear-gradient(135deg, #3B82F6, #8B5CF6);
     color: white;
     font-weight: 600,
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   .loading-badge {
     background: rgba(59, 130, 246, 0.8);
     color: white;
-    animation: pulse 1s infinite;
+    animation pulse 1s infinite;
   }
   .error-badge {
     background: #EF4444;
     color: white;
-    animation: pulse 1.5s infinite;
+    animation pulse 1.5s infinite;
   }
   .collapsible-content {
     overflow: hidden;
@@ -663,7 +663,7 @@ d;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .recommendation-card:hover {
     background: rgba(255, 255, 255, 0.08);
@@ -707,7 +707,7 @@ d;
     padding: 0.25rem 0;
     color: rgba(255, 255, 255, 0.8);
     font-size: 0.9rem;
-    position: relative;
+    position relative;
   }
   .priority-dot {
     width: 8px;
@@ -741,7 +741,7 @@ d;
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: 500,
-    transition: all 0.2;
+    transition all 0.2;
   }
   .view-all-btn {
     background: rgba(59, 130, 246, 0.8);
@@ -789,7 +789,7 @@ d;
     gap: 0.5rem;
     font-size: 1rem;
     font-weight: 500,
-    transition: all 0.2;
+    transition all 0.2;
   }
   .view-all-recommendations:hover {
     background: rgba(255, 255, 255, 0.05);
@@ -814,7 +814,7 @@ d;
     cursor: pointer;
     font-size: 0.9rem;
     border-radius: 4px;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     opacity: 0.6;
     min-width: 28px;
     height: 28px;

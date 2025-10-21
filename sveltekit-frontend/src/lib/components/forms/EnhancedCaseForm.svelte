@@ -17,19 +17,19 @@ https://svelte.dev/e/props_duplicate -->
   // Form data matching the database schema
   let formData = $state({
     title: case_?.title || "",
-    description: case_?.description || "",
+    description case_?.description || "",
     caseNumber: case_?.caseNumber || "",
     name: case_?.name || "",
     incidentDate: case_?.incidentDate
       ? new Date(case_.incidentDate).toISOString().split("T")[0]
       : "",
-    location: case_?.location || "",
+    location case_?.location || "",
     priority: case_?.priority || "medium",
     status: case_?.status || "open",
     category: case_?.category || "",
     dangerScore: case_?.dangerScore || 0,
     estimatedValue: case_?.estimatedValue || "",
-    jurisdiction: case_?.jurisdiction || "",
+    jurisdiction case_?.jurisdiction || "",
     leadProsecutor: case_?.leadProsecutor || user?.id || "",
     assignedTeam: case_?.assignedTeam || [],
     tags: case_?.tags || [],
@@ -69,11 +69,11 @@ https://svelte.dev/e/props_duplicate -->
       // Prepare data for API - match schema exactly
       const apiData = {
         title: formData.title.trim(),
-        description: formData.description.trim(),
+        description formData.description.trim(),
         caseNumber: formData.caseNumber.trim(),
         name: formData.name.trim() || formData.title.trim(), // Use title as fallback
         incidentDate: formData.incidentDate || null,
-        location: formData.location.trim(),
+        location formData.location.trim(),
         priority: formData.priority,
         status: formData.status,
         category: formData.category.trim(),
@@ -81,13 +81,13 @@ https://svelte.dev/e/props_duplicate -->
         estimatedValue: formData.estimatedValue
           ? Number(formData.estimatedValue)
           : null
-        jurisdiction: formData.jurisdiction.trim(),
+        jurisdiction formData.jurisdiction.trim(),
         leadProsecutor: formData.leadProsecutor || user.id,
         assignedTeam: formData.assignedTeam,
         tags: formData.tags,
         metadata: {
           ...formData.metadata,
-          formVersion: "2.0",
+          formVersion "2.0",
           lastModified: new Date().toISOString(),
         },
       }
@@ -320,14 +320,14 @@ https://svelte.dev/e/props_duplicate -->
             keydown={(e) =>
               e.key === "Enter" && (e.preventDefault(), addTeamMember())}
           />
-          <button type="button" on:click={() => addTeamMember()}>Add</button>
+          <button type="button" onclick={() => addTeamMember()}>Add</button>
         </div>
         {#if formData.assignedTeam.length > 0}
           <div class="container mx-auto px-4">
             {#each formData.assignedTeam as member}
               <span class="container mx-auto px-4">
                 {member}
-                <button type="button" on:click={() => removeTeamMember(member)}
+                <button type="button" onclick={() => removeTeamMember(member)}
                   >×</button
                 >
               </span>
@@ -346,14 +346,14 @@ https://svelte.dev/e/props_duplicate -->
             keydown={(e) =>
               e.key === "Enter" && (e.preventDefault(), addTag())}
           />
-          <button type="button" on:click={() => addTag()}>Add</button>
+          <button type="button" onclick={() => addTag()}>Add</button>
         </div>
         {#if formData.tags.length > 0}
           <div class="container mx-auto px-4">
             {#each formData.tags as tag}
               <span class="container mx-auto px-4">
                 {tag}
-                <button type="button" on:click={() => removeTag(tag)}>×</button>
+                <button type="button" onclick={() => removeTag(tag)}>×</button>
               </span>
             {/each}
           </div>
@@ -363,7 +363,7 @@ https://svelte.dev/e/props_duplicate -->
   </div>
   <!-- Form Actions -->
   <div class="container mx-auto px-4">
-    <button type="button" on:click={() => // ondispatch removed}> Cancel </button>
+    <button type="button" onclick={() => // ondispatch removed}> Cancel </button>
     <button type="submit" disabled={loading} class="container mx-auto px-4">
       {#if loading}
         Saving...
@@ -422,7 +422,7 @@ https://svelte.dev/e/props_duplicate -->
     border: 1px solid #d1d5db;
     border-radius: 6px;
     font-size: 1rem;
-    transition:
+    transition
       border-color 0.2s,
       box-shadow 0.2;
 }
@@ -458,9 +458,9 @@ https://svelte.dev/e/props_duplicate -->
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.875rem;
-    transition: background-color 0.2;
+    transition background-color 0.2;
 }
-  .tag-input button:hover {
+  .tag-input buttonhover {
     background: #2563eb;
 }
   .tags-list {
@@ -491,9 +491,9 @@ https://svelte.dev/e/props_duplicate -->
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: background-color 0.2;
+    transition background-color 0.2;
 }
-  .tag button:hover {
+  .tag buttonhover {
     background: #d1d5db;
     color: #374151;
 }
@@ -513,9 +513,9 @@ https://svelte.dev/e/props_duplicate -->
     color: #374151;
     cursor: pointer;
     font-size: 1rem;
-    transition: all 0.2;
+    transition all 0.2;
 }
-  .form-actions button:hover {
+  .form-actions buttonhover {
     background: #f9fafb;
 }
   .form-actions button.primary {
@@ -527,7 +527,7 @@ https://svelte.dev/e/props_duplicate -->
     background: #2563eb;
     border-color: #2563eb;
 }
-  .form-actions button:disabled {
+  .form-actions buttondisabled {
     opacity: 0.5,
     cursor: not-allowed;
 }
@@ -539,7 +539,7 @@ https://svelte.dev/e/props_duplicate -->
       grid-template-columns: 1fr;
 }
     .form-actions {
-      flex-direction: column;
+      flex-direction column;
 }
 }
 </style>

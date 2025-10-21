@@ -71,12 +71,12 @@ try {
   async function createNewCase(): Promise<void> {
     const title = prompt('Enter case title:');
     if (!title) return;
-    const description = prompt('Enter case description:');
+    const description = prompt('Enter case description');
     if (!description) return;
     try {
       const response = await apiClient.createCase({
         title: title.trim(),
-        description: description.trim();
+        description description.trim();
       });
       if (response.success) {
         // WebSocket will handle the real-time update
@@ -100,7 +100,7 @@ try {
         for (const file of Array.from(files)) {
           const response = await apiClient.uploadEvidence(caseId, file, {
             title: file.name,
-            description: `Uploaded file: ${file.name}`
+            description `Uploaded file: ${file.name}`
           });
           if (!response.success) {
             console.error('Failed to upload evidence:', response.error);
@@ -166,7 +166,7 @@ try {
         </div>
         <div class="flex items-center space-x-4">
           <button
-            on:click={createNewCase}
+            onclick={createNewCase}
             class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
           >
             New Case
@@ -278,7 +278,7 @@ try {
                 {#each filteredCases as case_ (case_.id)}
                   <div
                     class="border rounded-lg p-4 hover:bg-gray-50 cursor-pointer transition-colors"
-                    on:click={() => selectCase(case_)}
+                    onclick={() => selectCase(case_)}
                     class:ring-2={selectedCase?.id === case_.id}
                     class:ring-blue-500={selectedCase?.id === case_.id}
                   >
@@ -296,7 +296,7 @@ try {
                         </div>
                       </div>
                       <button
-                        on:click={(e) => { e.stopPropagation(); uploadEvidence(case_.id), }}
+                        onclick={(e) => { e.stopPropagation(); uploadEvidence(case_.id), }}
                         class="ml-4 text-blue-600 hover:text-blue-800 text-sm"
                       >
                         Add Evidence
@@ -438,7 +438,7 @@ try {
 <style>
   /* Custom styles for the dashboard */
   .animate-pulse {
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    animation pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
   @keyframes pulse {
     0%, 100% {

@@ -47,7 +47,7 @@
 	let systemStatus = $state({
 		rabbitMQ: { connected: false, health: 'unknown' },
 		postgreSQL: { connected: false, vectorCount: 0 },
-		gpu: { available: false, utilization: 0, model: 'RTX 3060 Ti' },
+		gpu: { available: false, utilization 0, model: 'RTX 3060 Ti' },
 		processingStats: { totalFiles: 0, processed: 0, queued: 0 }
 	});
 	let findModal = $state({ show: false, query: '', results: [] as any[], loading: false, error: '', suggestions: [] as any[] });
@@ -250,7 +250,7 @@
 				body: JSON.stringify({
 					userId: null,
 					evidenceId: item.id,
-					action: 'save',
+					action 'save',
 					target
 				})
 			});
@@ -383,10 +383,10 @@
 								<span class="mr-2">🎨</span> Canvas
 							</ToggleGroup.Item>
 						</ToggleGroup.Root>
-						<Button variant={showAIAssistant ? 'default' : 'ghost'} on:click={toggleAIAssistant} aria-pressed={showAIAssistant} size="sm">
+						<Button variant={showAIAssistant ? 'default' : 'ghost'} onclick={toggleAIAssistant} aria-pressed={showAIAssistant} size="sm">
 							AI Assistant
 						</Button>
-						<Button size="sm" variant="secondary" on:click={() => analyzeSelectedEvidence()}>
+						<Button size="sm" variant="secondary" onclick={() => analyzeSelectedEvidence()}>
 							<span class="mr-2">🤖</span> Analyze Selected
 						</Button>
 					</div>
@@ -409,7 +409,7 @@
 						</div>
 					{/if}
 
-					<Button size="sm" on:click={() => { /* new case */ }}>
+					<Button size="sm" onclick={() => { /* new case */ }}>
 						<span class="mr-2">➕</span> New Case
 					</Button>
 				</div>
@@ -437,8 +437,8 @@
 								{#if column.id === 'new'}
 									<!-- typed event handlers to satisfy TS for custom events -->
 									<UploadZone
-										on:upload={(e: CustomEvent<any>) => handleFileUpload((e as CustomEvent).detail, column.id)}
-										on:uploadError={(e: CustomEvent<string>) => handleUploadError((e as CustomEvent).detail, column.id)}
+										onupload={(e: CustomEvent<any>) => handleFileUpload((e as CustomEvent).detail, column.id)}
+										onuploadError={(e: CustomEvent<string>) => handleUploadError((e as CustomEvent).detail, column.id)}
 										caseId={caseId}
 									/>
 								{/if}
@@ -446,8 +446,8 @@
 								<div
 									class="space-y-3 min-h-[200px]"
 									use:dndzone={{ items: column.items, flipDurationMs: 200, dropTargetStyle: { background: 'hsl(var(--muted))', border: '2px dashed hsl(var(--primary))', borderRadius: '8px' } }}
-									on:consider={(e: CustomEvent) => handleDndConsider(e, column.id)}
-									on:finalize={(e: CustomEvent<{ items: any[] }>) => handleDndFinalize(e, column.id)}
+									onconsider={(e: CustomEvent) => handleDndConsider(e, column.id)}
+									onfinalize={(e: CustomEvent<{ items: any[] }>) => handleDndFinalize(e, column.id)}
 								>
 									{#each column.items as item (item.id)}
 										<ContextMenu.Root>
@@ -456,24 +456,24 @@
 													class="cursor-grab active:cursor-grabbing transition-transform hover:scale-105 p-2"
 													class:highlighted={aiHighlightedEvidence.includes(item.id)}
 													class:selected={selectedEvidenceIds.includes(item.id)}
-													on:click={() => handleEvidenceSelect(item.id)}
+													onclick={() => handleEvidenceSelect(item.id)}
 													onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleEvidenceSelect(item.id); } }}
 													role="button"
 													tabindex="0"
 												>
-													<EvidenceCard item={item} on:view={() => handleViewEvidence(item)} on:moreOptions={() => {}} />
+													<EvidenceCard item={item} onview={() => handleViewEvidence(item)} onmoreOptions={() => {}} />
 												</div>
 											</ContextMenu.Trigger>
 											<ContextMenu.Content>
-												<ContextMenu.Item on:click={() => handleViewEvidence(item)}>View Details</ContextMenu.Item>
-												<ContextMenu.Item on:click={() => window.location.href = `/evidence/${item.id}/edit`}>Edit</ContextMenu.Item>
+												<ContextMenu.Item onclick={() => handleViewEvidence(item)}>View Details</ContextMenu.Item>
+												<ContextMenu.Item onclick={() => window.location.href = `/evidence/${item.id}/edit`}>Edit</ContextMenu.Item>
 												<ContextMenu.Separator />
 												<ContextMenu.Sub>
 													<ContextMenu.SubTrigger>Add to...</ContextMenu.SubTrigger>
 													<ContextMenu.SubContent>
 														<Tooltip.Root>
 															<Tooltip.Trigger asChild let:trigger>
-																<ContextMenu.Item {...triggerProps} on:click={() => saveTo('savedcitations', item)}>Saved Citations</ContextMenu.Item>
+																<ContextMenu.Item {...triggerProps} onclick={() => saveTo('savedcitations', item)}>Saved Citations</ContextMenu.Item>
 															</Tooltip.Trigger>
 															<Tooltip.Content>
 																<p>Save this evidence to your personal citations list.</p>
@@ -481,7 +481,7 @@
 														</Tooltip.Root>
 														<Tooltip.Root>
 															<Tooltip.Trigger asChild let:trigger>
-																<ContextMenu.Item {...triggerProps} on:click={() => saveTo('mcpcontext', item)}>MCP Context (LLM)</ContextMenu.Item>
+																<ContextMenu.Item {...triggerProps} onclick={() => saveTo('mcpcontext', item)}>MCP Context (LLM)</ContextMenu.Item>
 															</Tooltip.Trigger>
 															<Tooltip.Content>
 																<p>Add this evidence to the MCP context for the AI assistant.</p>
@@ -491,9 +491,9 @@
 												</ContextMenu.Sub>
 												<ContextMenu.Separator />
 												<Dialog.Trigger asChild let:trigger>
-													<ContextMenu.Item {...triggerProps} on:click={() => openFindModal(item)}>Find Related...</ContextMenu.Item>
+													<ContextMenu.Item {...triggerProps} onclick={() => openFindModal(item)}>Find Related...</ContextMenu.Item>
 												</Dialog.Trigger>
-												<ContextMenu.Item on:click={() => analyzeSelectedEvidence()}>
+												<ContextMenu.Item onclick={() => analyzeSelectedEvidence()}>
 													<span class="mr-2">🤖</span> Ask AI About This
 												</ContextMenu.Item>
 											</ContextMenu.Content>
@@ -512,8 +512,8 @@
 							class="relative w-full h-full bg-slate-50 dark:bg-slate-900 overflow-auto p-4"
 							role="region"
 							aria-label="Canvas Drop Zone"
-							on:drop={handleCanvasDrop}
-							on:dragover={(e) => e.preventDefault()}
+							ondrop={handleCanvasDrop}
+							ondragover={(e) => e.preventDefault()}
 						>
 							<div class="absolute inset-0 bg-grid-pattern opacity-5 pointer-events-none"></div>
 
@@ -529,12 +529,12 @@
 											data-evidence-id={item.id}
 											ondragstart={(e) => handleCanvasDragStart(e, item)}
 											ondragend={(e) => handleCanvasDragEnd(e, item)}
-											on:click={() => handleEvidenceSelect(item.id)}
+											onclick={() => handleEvidenceSelect(item.id)}
 											onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleEvidenceSelect(item.id); } }}
 											role="button"
 											tabindex="0"
 										>
-											<EvidenceCard item={item} on:view={() => handleViewEvidence(item)} on:moreOptions={() => {}}>
+											<EvidenceCard item={item} onview={() => handleViewEvidence(item)} onmoreOptions={() => {}}>
 												<Card class="nes-container is-rounded p-2 w-full mt-2">
 													<CardHeader class="flex items-center justify-between">
 														<div class="flex items-center gap-2">
@@ -549,8 +549,8 @@
 																<span class="nes-text is-disabled">{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : ''}</span>
 															</div>
 															<div class="flex gap-2">
-																<Button size="sm" variant="ghost" on:click={() => handleViewEvidence(item)}><span class="mr-1">🔍</span> View</Button>
-																<Button size="sm" variant="secondary" on:click={() => {}}><span class="mr-1">⋯</span></Button>
+																<Button size="sm" variant="ghost" onclick={() => handleViewEvidence(item)}><span class="mr-1">🔍</span> View</Button>
+																<Button size="sm" variant="secondary" onclick={() => {}}><span class="mr-1">⋯</span></Button>
 															</div>
 														</div>
 													</CardContent>
@@ -559,15 +559,15 @@
 										</div>
 									</ContextMenu.Trigger>
 									<ContextMenu.Content>
-										<ContextMenu.Item on:click={() => handleViewEvidence(item)}>View Details</ContextMenu.Item>
-										<ContextMenu.Item on:click={() => window.location.href = `/evidence/${item.id}/edit`}>Edit</ContextMenu.Item>
+										<ContextMenu.Item onclick={() => handleViewEvidence(item)}>View Details</ContextMenu.Item>
+										<ContextMenu.Item onclick={() => window.location.href = `/evidence/${item.id}/edit`}>Edit</ContextMenu.Item>
 										<ContextMenu.Separator />
 										<ContextMenu.Sub>
 											<ContextMenu.SubTrigger>Add to...</ContextMenu.SubTrigger>
 											<ContextMenu.SubContent>
 												<Tooltip.Root>
 													<Tooltip.Trigger asChild let:trigger>
-														<ContextMenu.Item {...triggerProps} on:click={() => saveTo('savedcitations', item)}>Saved Citations</ContextMenu.Item>
+														<ContextMenu.Item {...triggerProps} onclick={() => saveTo('savedcitations', item)}>Saved Citations</ContextMenu.Item>
 													</Tooltip.Trigger>
 													<Tooltip.Content>
 														<p>Save this evidence to your personal citations list.</p>
@@ -575,7 +575,7 @@
 												</Tooltip.Root>
 												<Tooltip.Root>
 													<Tooltip.Trigger asChild let:trigger>
-														<ContextMenu.Item {...triggerProps} on:click={() => saveTo('mcpcontext', item)}>MCP Context (LLM)</ContextMenu.Item>
+														<ContextMenu.Item {...triggerProps} onclick={() => saveTo('mcpcontext', item)}>MCP Context (LLM)</ContextMenu.Item>
 													</Tooltip.Trigger>
 													<Tooltip.Content>
 														<p>Add this evidence to the MCP context for the AI assistant.</p>
@@ -585,9 +585,9 @@
 										</ContextMenu.Sub>
 										<ContextMenu.Separator />
 										<Dialog.Trigger asChild let:trigger>
-											<ContextMenu.Item {...triggerProps} on:click={() => openFindModal(item)}>Find Related...</ContextMenu.Item>
+											<ContextMenu.Item {...triggerProps} onclick={() => openFindModal(item)}>Find Related...</ContextMenu.Item>
 										</Dialog.Trigger>
-										<ContextMenu.Item on:click={() => analyzeSelectedEvidence()}>
+										<ContextMenu.Item onclick={() => analyzeSelectedEvidence()}>
 											<span class="mr-2">🤖</span> Ask AI About This
 										</ContextMenu.Item>
 									</ContextMenu.Content>
@@ -622,9 +622,9 @@
 				<AIAssistantPanel
 					{caseId}
 					{selectedEvidenceIds}
-					on:evidenceSelect={(e: CustomEvent<{ evidenceId: string }>) => handleEvidenceSelect((e as CustomEvent).detail.evidenceId)}
-					on:evidenceHighlight={(e: CustomEvent<{ evidenceIds: string[] }>) => handleEvidenceHighlight((e as CustomEvent).detail.evidenceIds)}
-					on:actionTrigger={(e: CustomEvent<any>) => handleAIActionTrigger((e as CustomEvent).detail)}
+					onevidenceSelect={(e: CustomEvent<{ evidenceId: string }>) => handleEvidenceSelect((e as CustomEvent).detail.evidenceId)}
+					onevidenceHighlight={(e: CustomEvent<{ evidenceIds: string[] }>) => handleEvidenceHighlight((e as CustomEvent).detail.evidenceIds)}
+					onactionTrigger={(e: CustomEvent<any>) => handleAIActionTrigger((e as CustomEvent).detail)}
 				/>
 			</div>
 		{/if}
@@ -643,7 +643,7 @@
 		<div class="flex flex-col gap-4">
 			<Input type="text" bind:value={findModal.query} placeholder="Enter keywords or question..." onkeydown={(e) => { if (e.key === 'Enter') runFindSearch(null); }} />
 			<div class="flex gap-2">
-				<Button on:click={() => runFindSearch(null)} disabled={findModal.loading}>
+				<Button onclick={() => runFindSearch(null)} disabled={findModal.loading}>
 					{#if findModal.loading}
 						Searching...
 					{:else}
@@ -668,7 +668,7 @@
 			{/if}
 		</div>
 		<Dialog.Footer>
-			<Button variant="secondary" on:click={closeFindModal}>Close</Button>
+			<Button variant="secondary" onclick={closeFindModal}>Close</Button>
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>
@@ -698,7 +698,7 @@
 
 	:global(.highlighted) {
 		box-shadow: 0 0 0 2px rgb(251 191 36 / 0.75), 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-		animation: pulse-highlight 2s ease-in-out;
+		animation pulse-highlight 2s ease-in-out;
 	}
 	:global(.selected) {
 		box-shadow: 0 0 0 2px hsl(var(--primary) / 0.75);

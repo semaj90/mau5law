@@ -67,30 +67,30 @@
     {
       id: 'profile',
       name: '👤 Profile',
-      description: 'Account settings and preferences',
+      description 'Account settings and preferences',
       href: '/profile',
-      icon: '👤',
+      icon '👤',
     },
     {
       id: 'dashboard',
       name: '🎮 Dashboard',
-      description: 'Return to command center',
+      description 'Return to command center',
       href: '/dashboard',
-      icon: '🎮',
+      icon '🎮',
     },
     {
       id: 'cases',
       name: '⚖️ My Cases',
-      description: 'Your active legal cases',
+      description 'Your active legal cases',
       href: '/cases',
-      icon: '⚖️',
+      icon '⚖️',
     },
     {
       id: 'settings',
       name: '⚙️ Settings',
-      description: 'System preferences',
+      description 'System preferences',
       href: '/settings',
-      icon: '⚙️',
+      icon '⚙️',
     },
   ]);
 
@@ -98,16 +98,16 @@
     {
       id: 'admin',
       name: '🔧 Admin Panel',
-      description: 'System administration',
+      description 'System administration',
       href: '/admin',
-      icon: '🔧',
+      icon '🔧',
     },
     {
       id: 'users',
       name: '👥 User Management',
-      description: 'Manage system users',
+      description 'Manage system users',
       href: '/admin/users',
-      icon: '👥',
+      icon '👥',
     },
   ]);
 
@@ -120,7 +120,7 @@
   <!-- User trigger button -->
   <button
     class="user-trigger"
-    on:click={toggleDropdown}
+    onclick={toggleDropdown}
     aria-expanded={showDropdown}
     aria-haspopup="true"
     aria-label="User menu"
@@ -170,7 +170,7 @@
           <ul class="nav-list">
             {#each menuItems as item}
               <li>
-                <button class="nav-item" on:click={() => handleNavigation(item.href)}>
+                <button class="nav-item" onclick={() => handleNavigation(item.href)}>
                   <span class="item-icon">{item.icon}</span>
                   <div class="item-content">
                     <span class="item-name">{item.name}</span>
@@ -193,7 +193,7 @@
             <ul class="nav-list">
               {#each adminItems as item}
                 <li>
-                  <button class="nav-item admin-item" on:click={() => handleNavigation(item.href)}>
+                  <button class="nav-item admin-item" onclick={() => handleNavigation(item.href)}>
                     <span class="item-icon">{item.icon}</span>
                     <div class="item-content">
                       <span class="item-name">{item.name}</span>
@@ -209,7 +209,7 @@
 
         <!-- Logout section -->
         <div class="nav-section logout-section">
-          <button class="logout-button" on:click={handleLogout}>
+          <button class="logout-button" onclick={handleLogout}>
             <span class="logout-icon">🚪</span>
             <div class="logout-content">
               <span class="logout-text">Sign Out</span>
@@ -225,7 +225,7 @@
 
 <style>
   .user-menu {
-    position: relative;
+    position relative;
     display: inline-block;
   }
 
@@ -239,7 +239,7 @@
     color: var(--console-fg, white);
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition all 0.2s;
     font-family: inherit;
   }
 
@@ -262,7 +262,7 @@
 
   .user-info {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: flex-start;
     gap: 0.25rem;
   }
@@ -281,7 +281,7 @@
 
   .dropdown-arrow {
     font-size: 0.75rem;
-    transition: transform 0.2s;
+    transition transform 0.2s;
   }
 
   .dropdown-arrow.open {
@@ -289,7 +289,7 @@
   }
 
   .dropdown-menu {
-    position: absolute;
+    position absolute;
     top: 100%;
     right: 0;
     margin-top: 0.5rem;
@@ -300,7 +300,7 @@
     max-width: 400px;
     z-index: 1000;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    animation: slideDown 0.2s ease;
+    animation slideDown 0.2s ease;
   }
 
   @keyframes slideDown {
@@ -339,7 +339,7 @@
   .header-info {
     flex: 1,
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
 
@@ -376,7 +376,7 @@
 
   .console-indicator {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 0.25rem;
   }
@@ -393,7 +393,7 @@
     height: 8px;
     background: var(--console-primary, #00aa00);
     border-radius: 50%;
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
 
   @keyframes pulse {
@@ -414,7 +414,7 @@
     margin-bottom: 0.5rem;
   }
 
-  .nav-section:last-child {
+  .nav-sectionlast-child {
     margin-bottom: 0,
   }
 
@@ -452,7 +452,7 @@
     color: var(--console-fg, white);
     text-align: left;
     cursor: pointer;
-    transition: all 0.2s;
+    transition all 0.2s;
     border-left: 3px solid transparent;
     font-family: inherit;
   }
@@ -471,7 +471,7 @@
   .item-content {
     flex: 1,
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
     align-items: flex-start;
   }
@@ -491,7 +491,7 @@
   .item-arrow {
     font-size: 0.8rem;
     opacity: 0.5,
-    transition: opacity 0.2s;
+    transition opacity 0.2s;
   }
 
   .nav-item:hover .item-arrow {
@@ -527,11 +527,11 @@
     color: var(--console-error, #ff5555);
     text-align: left;
     cursor: pointer;
-    transition: all 0.2s;
+    transition all 0.2s;
     font-family: inherit;
   }
 
-  .logout-button:hover {
+  .logout-buttonhover {
     background: rgba(255, 85, 85, 0.1);
   }
 
@@ -544,7 +544,7 @@
   .logout-content {
     flex: 1,
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
     align-items: flex-start;
   }

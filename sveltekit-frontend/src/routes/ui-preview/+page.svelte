@@ -80,8 +80,8 @@
   type AvatarSize = (typeof avatarSizes)[number];
   // Mock session actions for demo
   const mockSessionActions = {
-    setSession: (user: any, session: any) => console.log('Mock setSession:', user, session),
-    clearSession: () => console.log('Mock clearSession'),
+    setSession (user: any, session any) => console.log('Mock setSession', user, session),
+    clearSession () => console.log('Mock clearSession'),
     init: (data: any) => console.log('Mock init:', data),
   };
 
@@ -177,7 +177,7 @@
   // TEMPORARY WORKAROUND: The following alias casts QuickActionButton as 'any' to bypass TypeScript event typing errors in this demo.
   // This should NOT be used in production code, as it disables type safety for component props and events.
   // Properly type the component or update its event typings for production use.
-  // DEMO/PROTOTYPE ONLY: The following alias casts Dialog as 'any' to bypass strict event typing (e.g., for on:close).
+  // DEMO/PROTOTYPE ONLY: The following alias casts Dialog as 'any' to bypass strict event typing (e.g., for onclose).
   // This is a workaround for Svelte/TypeScript event typing issues and should NOT be used in production code.
   const DialogAny = (Dialog as unknown) as any;
   // add QuickActionButtonAny alias so template demo buttons can use onclick without TS errors
@@ -195,7 +195,7 @@
       <button
         class="nes-btn tab-btn {selectedTab === t.id ? 'is-primary active' : ''}"
         aria-pressed={selectedTab === t.id}
-        on:click={() => (selectedTab = t.id)}>{t.label}</button
+        onclick={() => (selectedTab = t.id)}>{t.label}</button
       >
     {/each}
   </nav>
@@ -246,15 +246,15 @@
     <section class="section-wrap">
       <h2 class="section">Dialog</h2>
       <!-- use any-typed alias to avoid TS errors -->
-      <MeltButtonAny on:click={openDialog}>Open Dialog</MeltButtonAny>
+      <MeltButtonAny onclick={openDialog}>Open Dialog</MeltButtonAny>
       <div class="meta">Simple open/close controlled by boolean state.</div>
       {#if showDialog}
         <!-- changed: use DialogAny to bypass strict event typing -->
-        <DialogAny title="Sample Dialog" on:close={closeDialog}>
+        <DialogAny title="Sample Dialog" onclose={closeDialog}>
           <p>This dialog demonstrates the NES modal style and accessibility hooks.</p>
           <div class="dialog-actions">
-            <MeltButtonAny on:click={closeDialog}>Cancel</MeltButtonAny>
-            <MeltButtonAny on:click={closeDialog}>Confirm</MeltButtonAny>
+            <MeltButtonAny onclick={closeDialog}>Cancel</MeltButtonAny>
+            <MeltButtonAny onclick={closeDialog}>Confirm</MeltButtonAny>
           </div>
         </DialogAny>
       {/if}
@@ -268,17 +268,17 @@
       <!-- Modal Trigger Buttons -->
       <div class="grid buttons" style="margin-bottom: 1.5rem;">
         <!-- Use any-typed alias to avoid TS 'never' event typing -->
-        <QuickActionButtonAny on:click={() => openModal('gradient', 'md')}>Gradient Modal</QuickActionButtonAny>
+        <QuickActionButtonAny onclick={() => openModal('gradient', 'md')}>Gradient Modal</QuickActionButtonAny>
 
-        <QuickActionButtonAny on:click={() => openModal('diamond', 'lg')}>Diamond Pattern</QuickActionButtonAny>
+        <QuickActionButtonAny onclick={() => openModal('diamond', 'lg')}>Diamond Pattern</QuickActionButtonAny>
 
-        <QuickActionButtonAny on:click={() => openModal('gaming', 'md')}>Gaming Modal</QuickActionButtonAny>
+        <QuickActionButtonAny onclick={() => openModal('gaming', 'md')}>Gaming Modal</QuickActionButtonAny>
 
-        <QuickActionButtonAny on:click={() => openModal('legal', 'xl')}>Legal Modal XL</QuickActionButtonAny>
+        <QuickActionButtonAny onclick={() => openModal('legal', 'xl')}>Legal Modal XL</QuickActionButtonAny>
 
-        <QuickActionButtonAny on:click={() => openModal('default', 'sm')}>Default Small</QuickActionButtonAny>
+        <QuickActionButtonAny onclick={() => openModal('default', 'sm')}>Default Small</QuickActionButtonAny>
 
-        <QuickActionButtonAny on:click={() => openModal('diamond', 'md')}>NES Diamond</QuickActionButtonAny>
+        <QuickActionButtonAny onclick={() => openModal('diamond', 'md')}>NES Diamond</QuickActionButtonAny>
       </div>
 
       <!-- Demo Cards with Diamond Backgrounds -->
@@ -315,11 +315,11 @@
       <div class="session-actions">
         {#if !authenticated}
           <!-- use alias here as well -->
-          <MeltButtonAny on:click={simulateLogin}>Simulate Login</MeltButtonAny>
+          <MeltButtonAny onclick={simulateLogin}>Simulate Login</MeltButtonAny>
         {:else}
-          <MeltButtonAny on:click={simulateLogout}>Simulate Logout</MeltButtonAny>
+          <MeltButtonAny onclick={simulateLogout}>Simulate Logout</MeltButtonAny>
         {/if}
-        <MeltButtonAny on:click={simulateRefreshSession}>Refresh Session</MeltButtonAny>
+        <MeltButtonAny onclick={simulateRefreshSession}>Refresh Session</MeltButtonAny>
       </div>
 
       {#if currentUser}
@@ -370,7 +370,7 @@
           </div>
         </div>
         <div class="demo-group">
-          <h3>Filename Truncation:</h3>
+          <h3>Filename Truncation</h3>
           <div class="filename-examples">
             {#each mockFilenames as filename}
               <div class="filename-row">
@@ -406,7 +406,7 @@
     <section class="section-wrap">
       <h2 class="section">Global Sidebar Demo</h2>
       <div class="sidebar-controls">
-        <h3>Sidebar Configuration:</h3>
+        <h3>Sidebar Configuration</h3>
         <div class="control-group">
           <label class="nes-text">
             <input type="checkbox" class="nes-checkbox" bind:checked={showSidebar} />
@@ -509,14 +509,14 @@
                   <div class="font-mono text-green-400 text-sm">
                     <div>> System Status: ONLINE</div>
                     <div>> AI Models: LOADED</div>
-                    <div>> GPU Acceleration: ENABLED</div>
+                    <div>> GPU Acceleration ENABLED</div>
                     <div>> Legal Database: CONNECTED</div>
                   </div>
                 </div>
                 <div class="flex space-x-2">
                   <!-- use the any-typed alias to allow arbitrary onclick handlers without TS errors -->
-                  <QuickActionButtonAny on:click={() => { /* execute action */ }}>Execute</QuickActionButtonAny>
-                  <QuickActionButtonAny on:click={() => { /* open terminal */ }}>Terminal</QuickActionButtonAny>
+                  <QuickActionButtonAny onclick={() => { /* execute action */ }}>Execute</QuickActionButtonAny>
+                  <QuickActionButtonAny onclick={() => { /* open terminal */ }}>Terminal</QuickActionButtonAny>
                   <button class="nes-btn is-success">Success</button>
                 </div>
               </div>
@@ -546,8 +546,8 @@
 
           <!-- Common Modal Footer -->
           <div class="flex justify-end space-x-2 pt-4 border-t border-enhanced-border">
-            <QuickActionButtonAny on:click={() => closeModal()}>Cancel</QuickActionButtonAny>
-            <QuickActionButtonAny on:click={() => closeModal()}>Confirm</QuickActionButtonAny>
+            <QuickActionButtonAny onclick={() => closeModal()}>Cancel</QuickActionButtonAny>
+            <QuickActionButtonAny onclick={() => closeModal()}>Confirm</QuickActionButtonAny>
           </div>
 
         </div>
@@ -616,7 +616,7 @@
   /* Session Demo Styles */
   .session-controls {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .status-display {
@@ -661,7 +661,7 @@
   /* Formatting Demo Styles */
   .formatting-demos {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1.5rem;
   }
   .demo-group h3 {
@@ -672,7 +672,7 @@
   .filename-examples,
   .case-examples {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .timestamp-row {
@@ -736,7 +736,7 @@
   /* Sidebar Demo Styles */
   .sidebar-controls {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .control-group {

@@ -31,11 +31,11 @@ https://svelte.dev/e/js_parse_error -->
   }: Props = $props();
   // Animated progress value
   const progressValue = tweened(0, {
-    duration: 800,
+    duration 800,
     easing: cubicInOut;
   });
   const opacity = tweened(0, {
-    duration: 400,
+    duration 400,
     easing: cubicInOut;
   });
   // Auto-update progress and text based on status
@@ -106,7 +106,7 @@ https://svelte.dev/e/js_parse_error -->
   <div
     class="gpu-progress-container {className}"
     style:opacity="{$opacity}"
-    transitionslide="{{ duration: 300 }}"
+    transitionslide="{{ duration 300 }}"
   >
     <!-- Main Progress Card -->
     <div class="bg-gradient-to-r from-blue-50 via-purple-50 to-blue-50 border border-blue-200 rounded-xl p-6 shadow-lg backdrop-blur-sm">
@@ -181,10 +181,10 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <!-- Technical Details (expandable) -->
       {#if status === 'model-loading' && progress > 50}
-        <div class="mt-4 p-3 bg-white/50 rounded-lg border border-blue-100" transitionslide="{{ duration: 300 }}">
+        <div class="mt-4 p-3 bg-white/50 rounded-lg border border-blue-100" transitionslide="{{ duration 300 }}">
           <div class="grid grid-cols-2 gap-4 text-xs">
             <div>
-              <span class="text-gray-500">Quantization:</span>
+              <span class="text-gray-500">Quantization</span>
               <span class="text-gray-700 ml-1">Q4_K_M</span>
             </div>
             <div>
@@ -213,7 +213,7 @@ https://svelte.dev/e/js_parse_error -->
 {/if}
 <style>
   .gpu-progress-container {
-    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
   @keyframes gpu-shimmer {
     0% {
@@ -224,7 +224,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   .animate-gpu-shimmer {
-    animation: gpu-shimmer 2.5s infinite;
+    animation gpu-shimmer 2.5s infinite;
   }
 /* Custom animations for GPU activity */ @keyframes gpu-pulse {
     0%, 100% {
@@ -237,6 +237,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   .animate-gpu-pulse {
-    animation: gpu-pulse 1.5s infinite;
+    animation gpu-pulse 1.5s infinite;
   }
 </style>

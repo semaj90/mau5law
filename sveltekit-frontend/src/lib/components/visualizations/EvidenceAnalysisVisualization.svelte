@@ -80,7 +80,7 @@
         scales: {
           y: {
             beginAtZero: true
-            ticks: { precision: 0 }
+            ticks: { precision 0 }
           }
         },
         plugins: {
@@ -105,7 +105,7 @@
           data: sortedEvents.map(e => e.confidence * 100),
           borderColor: 'rgba(168, 85, 247, 1)',
           backgroundColor: 'rgba(168, 85, 247, 0.1)',
-          tension: 0.3,
+          tension 0.3,
           fill: true,
         }]
       },
@@ -197,7 +197,7 @@
         },
         plugins: {
           legend: {
-            position: ;
+            position ;
 'right';
           }
         }
@@ -370,7 +370,7 @@
   }
   .chart-container {
     /* @apply bg-gray-50 dark: bg-gray-700 p-4 rounded-lg; */
-    position: relative;
+    position relative;
     min-height: 250px;
   }
   .chart-title {

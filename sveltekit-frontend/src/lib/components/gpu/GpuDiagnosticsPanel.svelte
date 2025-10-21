@@ -32,7 +32,7 @@
 <div class="panel">
   <div style="display:flex; justify-content:space-between; align-items:center;">
     <strong>GPU Diagnostics</strong>
-    <button on:click={() => (expanded = !expanded)}>{expanded ? 'Hide' : 'Show'}</button>
+    <button onclick={() => (expanded = !expanded)}>{expanded ? 'Hide' : 'Show'}</button>
   </div>
   {#if expanded}
     <div class="section">
@@ -161,7 +161,7 @@
     border-radius: 4px;
     cursor: pointer;
   }
-  button:hover {
+  buttonhover {
     background: #2d2d2d;
   }
   .grid {

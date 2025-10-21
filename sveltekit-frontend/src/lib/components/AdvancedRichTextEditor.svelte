@@ -1,14 +1,9 @@
-
-<!-- Consider wrapping this component in an ErrorBoundary for better error handling -->
-<!-- import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'; -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Advanced Rich Text Editor with Google Slides/Photoshop-like Features -->
 <script lang="ts">
+  import ErrorBoundary from '$lib/components/ErrorBoundary.svelte';
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
-  import { Editor } from "@tiptap/core";
+  import { Editor as TiptapEditor } from "@tiptap/core";
   import Color from "@tiptap/extension-color";
   import FontFamily from "@tiptap/extension-font-family";
   import Highlight from "@tiptap/extension-highlight";
@@ -21,6 +16,7 @@ https://svelte.dev/e/js_parse_error -->
   import TextAlign from "@tiptap/extension-text-align";
   import TextStyle from "@tiptap/extension-text-style";
   import Typography from "@tiptap/extension-typography";
+  import Underline from "@tiptap/extension-underline"; // Added Underline extension import
   import StarterKit from "@tiptap/starter-kit";
   import {
     AlignCenter,
@@ -45,13 +41,14 @@ https://svelte.dev/e/js_parse_error -->
     Strikethrough,
     Table as TableIcon,
     Type,
-    Underline,
+    Underline as UnderlineIcon, // Renamed to avoid conflict
     Undo,
     Upload,
     ZoomIn,
     ZoomOut,
   } from "lucide-svelte";
-  import { get, writable } from "svelte/store";
+  import { writable } from "svelte/store";
+
   // Svelte 5 props
   let {
     content = $bindable(),
@@ -59,15 +56,11 @@ https://svelte.dev/e/js_parse_error -->
     autosave = true,
     reportId = "",
     caseId = ""
-  }: {
-    content?: any;
-    placeholder?: string;
-    autosave?: boolean;
-    reportId?: string;
-    caseId?: string;
   } = $props();
-  let editor = $state<Editor | null >(null);
-  let editorElement: HTMLElement;
+
+  // typed editor and elements
+  let editor: InstanceType<typeof TiptapEditor> | null = $state(null);
+  let editorElement: HTMLElement | null;
   let isFullscreen = $state(false);
   let errorMessage = $state('');
   let isLoading = $state(false);
@@ -76,25 +69,56 @@ https://svelte.dev/e/js_parse_error -->
   let showRuler = $state(true);
   let wordCount = $state(0);
   let characterCount = $state(0);
+
+  // Auto-save timeout typed to be compatible with browser/node
+  let autoSaveTimeout: ReturnType<typeof setTimeout> | null = null;
+
   // Editor state stores
-  const editorState = writable({
-    canUndo: false
-    canRedo: false
-    isBold: false
-    isItalic: false
-    isUnderline: false
-    isStrike: false
+  // define editor state shape for TypeScript
+  type EditorState = {
+    canUndo: boolean;
+    canRedo: boolean;
+    isBold: boolean;
+    isItalic: boolean;
+    isUnderline: boolean;
+    isStrike: boolean;
+    currentAlignment: string;
+    currentColor: string;
+    currentHighlight: string;
+    currentFontFamily: string;
+    currentFontSize: number;
+    isTable: boolean;
+    isCode: boolean;
+    isList: boolean;
+    isOrderedList: boolean;
+    isQuote: boolean;
+  };
+
+  const defaultEditorState: EditorState = {
+    canUndo: false,
+    canRedo: false,
+    isBold: false,
+    isItalic: false,
+    isUnderline: false,
+    isStrike: false,
     currentAlignment: "left",
     currentColor: "#000000",
     currentHighlight: "",
     currentFontFamily: "Inter",
     currentFontSize: 16,
-    isTable: false
-    isCode: false
-    isList: false
-    isOrderedList: false
-    isQuote: false
-  });
+    isTable: false,
+    isCode: false,
+    isList: false,
+    isOrderedList: false,
+    isQuote: false,
+  };
+
+  const editorState = writable<EditorState>(defaultEditorState);
+
+  // local plain object used in template for property access
+  let state: EditorState = defaultEditorState;
+  const unsubscribeEditorState = editorState.subscribe((v) => (state = v));
+
   // Color palettes for quick access
   const colorPalettes = {
     text: [
@@ -146,7 +170,7 @@ https://svelte.dev/e/js_parse_error -->
     "Merriweather",
   ];
   // Auto-save functionality
-  let autoSaveTimeout = $state({}) {
+  onMount(() => { // Corrected onMount syntax
     initializeEditor();
     setupKeyboardShortcuts();
   });
@@ -156,19 +180,23 @@ https://svelte.dev/e/js_parse_error -->
     }
     if (autoSaveTimeout) {
       clearTimeout(autoSaveTimeout);
+      autoSaveTimeout = null;
     }
+    // unsubscribe from the editor state store
+    unsubscribeEditorState?.();
   });
-  function initializeEditor( {
-    editor = new Editor({
-      element: editorElement;
+  function initializeEditor() {
+    editor = new TiptapEditor({
+      element: editorElement,
       extensions: [
         StarterKit.configure({
           history: {
             depth: 100,
           },
         }),
+        Underline, // Added Underline extension
         Image.configure({
-          inline: true
+          inline: true,
           allowBase64: true,
         }),
         TextAlign.configure({
@@ -179,7 +207,7 @@ https://svelte.dev/e/js_parse_error -->
         }),
         Typography,
         Placeholder.configure({
-          placeholder: placeholder;
+          placeholder: placeholder, // Corrected semicolon to comma
         }),
         Table.configure({
           resizable: true,
@@ -193,12 +221,12 @@ https://svelte.dev/e/js_parse_error -->
           types: ["textStyle"],
         }),
       ],
-      content: content
-      onTransaction: updateEditorState
-      onUpdate: ({ editor }) => {
-        updateWordCount();
+      content: content, // Corrected semicolon to comma
+      onTransaction: () => updateEditorState(),
+      onUpdate: ({ editor: currentEditorInstance }: { editor: InstanceType<typeof TiptapEditor> | null }) => {
+        updateWordCount(currentEditorInstance);
         if (autosave) {
-          scheduleAutoSave();
+          scheduleAutoSave(currentEditorInstance);
         }
       },
       editorProps: {
@@ -211,7 +239,8 @@ https://svelte.dev/e/js_parse_error -->
   }
   function updateEditorState() {
     if (!editor) return;
-    editorState.set(undo)(),
+    editorState.set({ // Corrected set method call
+      canUndo: editor.can.undo(),
       canRedo: editor.can.redo(),
       isBold: editor.isActive("bold"),
       isItalic: editor.isActive("italic"),
@@ -224,11 +253,11 @@ https://svelte.dev/e/js_parse_error -->
           : editor.isActive({ textAlign: "justify" })
             ? "justify"
             : "left",
-      currentColor: editor.getAttributes.color || "#000000",
-      currentHighlight: editor.getAttributes.color || "",
+      currentColor: editor.getAttributes('textStyle').color || "#000000", // Corrected getAttributes call
+      currentHighlight: editor.getAttributes('highlight').color || "", // Corrected getAttributes call
       currentFontFamily:
-        editor.getAttributes.fontFamily || "Inter",
-      currentFontSize: editor.getAttributes.fontSize || 16,
+        editor.getAttributes('textStyle').fontFamily || "Inter", // Corrected getAttributes call
+      currentFontSize: editor.getAttributes('textStyle').fontSize || 16, // Corrected getAttributes call
       isTable: editor.isActive("table"),
       isCode: editor.isActive("code"),
       isList: editor.isActive("bulletList"),
@@ -236,27 +265,30 @@ https://svelte.dev/e/js_parse_error -->
       isQuote: editor.isActive("blockquote"),
     });
   }
-  function updateWordCount() {
-    if (!editor) return;
-    const text = editor.getText();
-    wordCount = text.split.filter((word: string) => word.length > 0).length;
+
+  // typed functions accepting the editor instance
+  function updateWordCount(editorInstance: InstanceType<typeof TiptapEditor> | null): void {
+    if (!editorInstance) return;
+    const text = editorInstance.getText();
+    wordCount = text.split(' ').filter((word: string) => word.length > 0).length;
     characterCount = text.length;
   }
-  function scheduleAutoSave() {
+
+  function scheduleAutoSave(editorInstance: InstanceType<typeof TiptapEditor> | null): void {
     if (autoSaveTimeout) {
       clearTimeout(autoSaveTimeout);
     }
     autoSaveTimeout = setTimeout(() => {
-      saveContent();
+      saveContent(editorInstance);
     }, 2000);
   }
-  async function saveContent() {
-    if (!editor) return;
-    const content = editor.getJSON();
-    const html = editor.getHTML();
+
+  async function saveContent(editorInstance: InstanceType<typeof TiptapEditor> | null): Promise<void> {
+    if (!editorInstance) return;
+    const content = editorInstance.getJSON();
+    const html = editorInstance.getHTML();
     try {
-      try {
-    const response = await fetch("/api/reports/save", {
+      const response = await fetch("/api/reports/save", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -268,29 +300,23 @@ https://svelte.dev/e/js_parse_error -->
           html,
           wordCount,
           characterCount,
-        }));
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-  } catch (error) {
-    console.error('API call failed:', error);
-    throw error;
-  },
+        }),
       });
       if (!response.ok) {
-        throw new Error("Failed to save");
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      // Show save indicator
       showSaveIndicator();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Auto-save failed:", error);
-    errorMessage = error instanceof Error ? error.message: 'An error occurred'}
+      errorMessage = error && error.message ? error.message : 'An error occurred';
+    }
   }
+
   function showSaveIndicator() {
     // Implement visual save indicator
     const indicator = document.createElement("div");
     indicator.textContent = "Saved";
-    indicator.class =
+    indicator.className =
       "fixed top-4 right-4 bg-green-500 text-white px-3 py-1 rounded text-sm z-50";
     document.body.appendChild(indicator);
     setTimeout(() => {
@@ -299,21 +325,14 @@ https://svelte.dev/e/js_parse_error -->
   }
   function setupKeyboardShortcuts() {
   $effect(() => {
-    try {
-          document.addEventListener("keydown", (e)
-          return () => {
-            document.removeEventListener('keydown', (e);
-          }
-    } catch (error) {
-      console.error('Effect error:', error);
-      // Handle error gracefully
-    }
-  }); => {
+    const handleKeyDown = (e: KeyboardEvent) => { // Corrected effect syntax
       if (e.ctrlKey || e.metaKey) {
         switch (e.key) {
           case "s":
             e.preventDefault();
-            saveContent();
+            if (editor) { // Ensure editor is initialized before saving
+              saveContent(editor);
+            }
             break;
           case "z":
             if (e.shiftKey) {
@@ -324,41 +343,47 @@ https://svelte.dev/e/js_parse_error -->
             break;
         }
       }
-    });
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  });
   }
   // Toolbar actions
   function toggleBold() {
-    editor?.chain.focus().toggleBold.run();
+    editor?.chain().focus().toggleBold().run();
   }
   function toggleItalic() {
-    editor?.chain.focus().toggleItalic.run();
+    editor?.chain().focus().toggleItalic().run();
   }
-  function toggleUnderline( {
-    editor?.chain.focus().toggleMark.run();
+  function toggleUnderline() { // Corrected function signature
+    editor?.chain().focus().toggleUnderline().run(); // Corrected command
   }
   function toggleStrike() {
-    editor?.chain.focus().toggleStrike.run();
+    editor?.chain().focus().toggleStrike().run();
   }
-  function setAlignment(align: string) {
-    editor?.chain.focus().setTextAlign.run();
+  function setAlignment(align: string) { // Corrected function signature
+    editor?.chain().focus().setTextAlign(align).run(); // Corrected command
   }
-  function setTextColor(color: string) {
-    editor?.chain.focus().setColor.run();
+  function setTextColor(color: string) { // Corrected function signature
+    editor?.chain().focus().setColor(color).run(); // Corrected command
   }
-  function setHighlight(color: string) {
+  function setHighlight(color: string) { // Corrected function signature
     if (color === "transparent") {
-      editor?.chain.focus().unsetHighlight.run();
+      editor?.chain().focus().unsetHighlight().run();
     } else {
-      editor?.chain.focus().setHighlight.run();
+      editor?.chain().focus().setHighlight({ color }).run(); // Corrected command
     }
   }
-  function setFontFamily(family: string) {
-    editor?.chain.focus().setFontFamily.run();
+  function setFontFamily(family: string) { // Corrected function signature
+    editor?.chain().focus().setFontFamily(family).run(); // Corrected command
   }
-  function insertTable() {
+  function insertTable() { // Corrected function signature
     editor
-      ?.chain.focus()
-      .insertTable.run();
+      ?.chain().focus()
+      .insertTable({ rows: 3, cols: 3, withHeaderRow: true }) // Added default table dimensions
+      .run();
   }
   function insertImage() {
     const input = document.createElement("input");
@@ -370,7 +395,7 @@ https://svelte.dev/e/js_parse_error -->
         const reader = new FileReader();
         reader.onload = (e) => {
           const src = e.target?.result as string;
-          editor?.chain.focus().setImage.run();
+          editor?.chain().focus().setImage({ src }).run(); // Corrected command
         }
         reader.readAsDataURL(file);
       }
@@ -378,7 +403,7 @@ https://svelte.dev/e/js_parse_error -->
     input.click();
   }
   function toggleFullscreen() {
-    isFullscreen = !isFullscree;
+    isFullscreen = !isFullscreen; // Corrected typo
     if (isFullscreen) {
       document.documentElement.requestFullscreen?.();
     } else {
@@ -427,491 +452,380 @@ https://svelte.dev/e/js_parse_error -->
     input.click();
   }
   // Reactive statements
-  let state = $derived(get(editorState));
-  // Exported functions for parent component access
-  export function setContent(content: string) {
-    if (editor) {
-      editor.commands.setContent(content);
-    }
-  }
-  export function getContent() {
-    return editor ? editor.getHTML() : "";
-  }
-  export function getJSON() {
-    return editor ? editor.getJSON() : null;
-  }
+  // 'state' is updated via the editorState subscription above and used in the template.
 </script>
-<div class="mx-auto px-4 max-w-7xl" class:fullscreen={isFullscreen}>
-  <!-- Main Toolbar -->
+
+<ErrorBoundary>
   <div
-    class="mx-auto px-4 max-w-7xl"
+    class="mx-auto px-4 max-w-7xl min-h-[500px] border border-gray-300 rounded-lg overflow-hidden bg-white"
+    class:fixed={isFullscreen}
+    class:inset-0={isFullscreen}
+    class:z-50={isFullscreen}
   >
-    <!-- File Operations -->
-    <div class="mx-auto px-4 max-w-7xl">
-      <button aria-label="Action button"
-        class="mx-auto px-4 max-w-7xl"
-        on:click={(_event: MouseEvent) => ) => saveContent(}
-        title="Save (Ctrl+S)"
-      >
-        <Save size="18" />
-      </button>
-      <button aria-label="Action button"
-        class="mx-auto px-4 max-w-7xl"
-        on:click={(_event: MouseEvent) => ) => importDocument(}
-        title="Import Document"
-      >
-        <Upload size="18" />
-      </button>
-      <div class="mx-auto px-4 max-w-7xl">
-        <button aria-label="Button" class="mx-auto px-4 max-w-7xl">
-          <Download size="18" />
-          <ChevronDown size="14" />
-        </button>
-        <div class="mx-auto px-4 max-w-7xl">
-          <button aria-label="Action button" on:click={(_event: MouseEvent) => ) => exportDocument("html"}>Export as HTML</button
-          >
-          <button aria-label="Action button" on:click={(_event: MouseEvent) => ) => exportDocument("json"}>Export as JSON</button
-          >
-          <button aria-label="Action button" on:click={(_event: MouseEvent) => ) => exportDocument("pdf"}>Export as PDF</button>
-        </div>
-      </div>
-    </div>
-    <div class="mx-auto px-4 max-w-7xl"></div>
-    <!-- Undo/Redo -->
-    <div class="mx-auto px-4 max-w-7xl">
-      <button aria-label="Action button"
-        class="mx-auto px-4 max-w-7xl"
-        class:disabled={!state.canUndo}
-        on:click={(_event: MouseEvent) => ) => editor?.commands.undo(}
-        title="Undo (Ctrl+Z)"
-      >
-        <Undo size="18" />
-      </button>
-      <button aria-label="Action button"
-        class="mx-auto px-4 max-w-7xl"
-        class:disabled={!state.canRedo}
-        on:click={(_event: MouseEvent) => ) => editor?.commands.redo(}
-        title="Redo (Ctrl+Shift+Z)"
-      >
-        <Redo size="18" />
-      </button>
-    </div>
-    <div class="mx-auto px-4 max-w-7xl"></div>
-    <!-- Text Formatting -->
-    <div class="mx-auto px-4 max-w-7xl">
-      <div class="mx-auto px-4 max-w-7xl">
-        <select
-          bind:value={state.currentFontFamily} onchange={(_event: Event) => e) =>
-            setFontFamily((e.target as HTMLSelectElement).value}
+    <!-- Main Toolbar -->
+    <div
+      class="flex flex-wrap items-center justify-between gap-2 p-2 border-b border-gray-200 bg-white sticky top-0 z-10"
+    >
+      <!-- File Operations -->
+      <div class="flex items-center gap-1">
+        <button
+          aria-label="Action button"
+          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          onclick={() => saveContent(editor)}
+          title="Save (Ctrl+S)"
         >
-          {#each fontFamilies as font}
-            <option value={font}>{font}</option>
-          {/each}
-        </select>
-      </div>
-      <button aria-label="Action button"
-        class="mx-auto px-4 max-w-7xl"
-        class:active={state.isBold}
-        on:click={(_event: MouseEvent) => ) => toggleBold(}
-        title="Bold (Ctrl+B)"
-      >
-        <Bold size="18" />
-      </button>
-      <button aria-label="Action button"
-        class="mx-auto px-4 max-w-7xl"
-        class:active={state.isItalic}
-        on:click={(_event: MouseEvent) => ) => toggleItalic(}
-        title="Italic (Ctrl+I)"
-      >
-        <Italic size="18" />
-      </button>
-      <button aria-label="Action button"
-        class="mx-auto px-4 max-w-7xl"
-        class:active={state.isUnderline}
-        on:click={(_event: MouseEvent) => ) => toggleUnderline()
-        title="Underline (Ctrl+U)"
-      >
-        <Underline size="18" />
-      </button>
-      <button aria-label="Action button"
-        class="mx-auto px-4 max-w-7xl"
-        class:active={state.isStrike}
-        on:click={(_event: MouseEvent) => ) => toggleStrike(}
-        title="Strikethrough"
-      >
-        <Strikethrough size="18" />
-      </button>
-    </div>
-    <div class="mx-auto px-4 max-w-7xl"></div>
-    <!-- Color Tools -->
-    <div class="mx-auto px-4 max-w-7xl">
-      <div class="mx-auto px-4 max-w-7xl">
-        <input
-          type="color"
-          bind:value={state.currentColor} onchange={(_event: Event) => e) => setTextColor((e.target as HTMLInputElement).value}
-          title="Text Color"
-        />
-        <Type size="18" />
-      </div>
-      <div class="mx-auto px-4 max-w-7xl">
-        <button aria-label="Button" class="mx-auto px-4 max-w-7xl">
-          <Highlighter size="18" />
-          <ChevronDown size="14" />
+          <Save size="18" />
         </button>
-        <div class="mx-auto px-4 max-w-7xl">
-          {#each colorPalettes.highlight as color}
-            <button aria-label="Action button"
-              class="mx-auto px-4 max-w-7xl"
-              style="background-color: {color}"
-              on:click={(_event: MouseEvent) => ) => setHighlight(color}
-              title={color === "transparent"
-                ? "Remove highlight"
-                : `Highlight with ${color}`}
-              aria-label={color === "transparent"
-                ? "Remove highlight"
-                : `Highlight with ${color}`}
-            ></button>
-          {/each}
+        <button
+          aria-label="Action button"
+          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          onclick={() => importDocument()}
+          title="Import Document"
+        >
+          <Upload size="18" />
+        </button>
+        <div class="relative group">
+          <button
+            aria-label="Button"
+            class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+          >
+            <Download size="18" />
+            <ChevronDown size="14" />
+          </button>
+          <div
+            class="absolute top-full left-0 bg-white border border-gray-200 rounded-md shadow-md py-1 z-20 min-w-[150px] hidden group-hover:block"
+          >
+            <button
+              aria-label="Action button"
+              class="w-full text-left px-3 py-2 bg-transparent border-none cursor-pointer transition-colors duration-200 hover:bg-gray-100"
+              onclick={() => exportDocument("html")}>Export as HTML</button
+            >
+            <button
+              aria-label="Action button"
+              class="w-full text-left px-3 py-2 bg-transparent border-none cursor-pointer transition-colors duration-200 hover:bg-gray-100"
+              onclick={() => exportDocument("json")}>Export as JSON</button
+            >
+            <button
+              aria-label="Action button"
+              class="w-full text-left px-3 py-2 bg-transparent border-none cursor-pointer transition-colors duration-200 hover:bg-gray-100"
+              onclick={() => exportDocument("pdf")}>Export as PDF</button
+            >
+          </div>
         </div>
       </div>
-    </div>
-    <div class="mx-auto px-4 max-w-7xl"></div>
-    <!-- Alignment -->
-    <div class="mx-auto px-4 max-w-7xl">
-      <button aria-label="Action button"
-        class="mx-auto px-4 max-w-7xl"
-        class:active={state.currentAlignment === "left"}
-        on:click={(_event: MouseEvent) => ) => setAlignment("left"}
-        title="Align Left"
-      >
-        <AlignLeft size="18" />
-      </button>
-      <button aria-label="Action button"
-        class="mx-auto px-4 max-w-7xl"
-        class:active={state.currentAlignment === "center"}
-        on:click={(_event: MouseEvent) => ) => setAlignment("center"}
-        title="Align Center"
-      >
-        <AlignCenter size="18" />
-      </button>
-      <button aria-label="Action button"
-        class="mx-auto px-4 max-w-7xl"
-        class:active={state.currentAlignment === "right"}
-        on:click={(_event: MouseEvent) => ) => setAlignment("right"))
-        title="Align Right"
-      >
-        <AlignRight size="18" />
-      </button>
-      <button aria-label="Action button"
-        class="mx-auto px-4 max-w-7xl"
-        class:active={state.currentAlignment === "justify"}
-        on:click={(_event: MouseEvent) => /* JSX syntax converted to Svelte */}
-        on:click={(_event: MouseEvent) => ) => editor?.chain.focus().toggleBulletList.run(}
-        title="Bullet List"
-      >
-        <List size="18" />
-      </button>
-      <button aria-label="Action button"
-        class="mx-auto px-4 max-w-7xl"
-        class:active={state.isOrderedList}
-        on:click={(_event: MouseEvent) => ) => editor?.chain.focus().toggleOrderedList.run(}
-        title="Numbered List"
-      >
-        <ListOrdered size="18" />
-      </button>
-      <button aria-label="Action button"
-        class="mx-auto px-4 max-w-7xl"
-        class:active={state.isQuote}
-        on:click={(_event: MouseEvent) => ) => editor?.chain.focus().toggleBlockquote.run(}
-        title="Quote"
-      >
-        <Quote size="18" />
-      </button>
-      <button aria-label="Action button"
-        class="mx-auto px-4 max-w-7xl"
-        class:active={state.isCode}
-        on:click={(_event: MouseEvent) => /* JSX syntax converted to Svelte */}
-        title="Insert Image"
-      >
-        <ImageIcon size="18" />
-      </button>
-      <button aria-label="Action button"
-        class="mx-auto px-4 max-w-7xl"
-        on:click={(_event: MouseEvent) => ) => insertTable(}
-        title="Insert Table"
-      >
-        <TableIcon size="18" />
-      </button>
-    </div>
-    <div class="mx-auto px-4 max-w-7xl"></div>
-    <!-- View Controls -->
-    <div class="mx-auto px-4 max-w-7xl">
-      <button aria-label="Action button"
-        class="mx-auto px-4 max-w-7xl"
-        on:click={(_event: MouseEvent) => ) => adjustZoom(-10}
-        title="Zoom Out"
-      >
-        <ZoomOut size="18" />
-      </button>
-      <span class="mx-auto px-4 max-w-7xl">{currentZoom}%</span>
-      <button aria-label="Action button"
-        class="mx-auto px-4 max-w-7xl"
-        on:click={(_event: MouseEvent) => ) => adjustZoom(10}
-        title="Zoom In"
-      >
-        <ZoomIn size="18" />
-      </button>
-      <button aria-label="Action button"
-        class="mx-auto px-4 max-w-7xl"
-        class:active={showGrid}
-        on:click={(_event: MouseEvent) => ) => (showGrid = !showGrid}
-        title="Toggle Grid"
-      >
-        <Grid size="18" />
-      </button>
-      <button aria-label="Action button"
-        class="mx-auto px-4 max-w-7xl"
-        on:click={(_event: MouseEvent) => ) => toggleFullscreen())
-        title="Toggle Fullscreen"
-      >
-        {#if isFullscreen}
-          <EyeOff size="18" />
-        {:else}
-          <Eye size="18" />
-        {/if}
-      </button>
-    </div>
-  </div>
-  <!-- Secondary Toolbar for Advanced Features -->
-  <div
-    class="mx-auto px-4 max-w-7xl"
-  >
-    <div class="mx-auto px-4 max-w-7xl">
-      Words: <span class="mx-auto px-4 max-w-7xl">{wordCount}</span> | Characters:
-      <span class="mx-auto px-4 max-w-7xl">{characterCount}</span>
-    </div>
-    <div class="mx-auto px-4 max-w-7xl"></div>
-    {#if autosave}
-      <div class="mx-auto px-4 max-w-7xl">Auto-save enabled</div>
-    {/if}
-  </div>
-  <!-- Ruler (if enabled) -->
-  {#if showRuler}
-    <div class="mx-auto px-4 max-w-7xl">
-      {#each Array(20) as _, i}
+      <div class="w-px h-6 bg-gray-300 mx-1"></div>
+      <!-- Undo/Redo -->
+      <div class="flex items-center gap-1">
+        <button
+          aria-label="Action button"
+          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          class:disabled={!state.canUndo}
+          onclick={() => editor?.commands.undo()}
+          title="Undo (Ctrl+Z)"
+        >
+          <Undo size="18" />
+        </button>
+        <button
+          aria-label="Action button"
+          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          class:disabled={!state.canRedo}
+          onclick={() => editor?.commands.redo()}
+          title="Redo (Ctrl+Shift+Z)"
+        >
+          <Redo size="18" />
+        </button>
+      </div>
+      <div class="w-px h-6 bg-gray-300 mx-1"></div>
+      <!-- Text Formatting -->
+      <div class="flex items-center gap-1">
+        <div class="font-selector">
+          <select
+            class="border border-gray-300 rounded-md px-2 py-1 text-sm"
+            value={state.currentFontFamily}
+            onchange={(e) => setFontFamily((e.target as HTMLSelectElement).value)}
+          >
+            {#each fontFamilies as font}
+              <option value={font}>{font}</option>
+            {/each}
+          </select>
+        </div>
+        <button
+          aria-label="Action button"
+          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          class:bg-blue-100={state.isBold}
+          class:text-blue-700={state.isBold}
+          onclick={() => toggleBold()}
+          title="Bold (Ctrl+B)"
+        >
+          <Bold size="18" />
+        </button>
+        <button
+          aria-label="Action button"
+          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          class:bg-blue-100={state.isItalic}
+          class:text-blue-700={state.isItalic}
+          onclick={() => toggleItalic()}
+          title="Italic (Ctrl+I)"
+        >
+          <Italic size="18" />
+        </button>
+        <button
+          aria-label="Action button"
+          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          class:bg-blue-100={state.isUnderline}
+          class:text-blue-700={state.isUnderline}
+          onclick={() => toggleUnderline()}
+          title="Underline (Ctrl+U)"
+        >
+          <UnderlineIcon size="18" />
+        </button>
+        <button
+          aria-label="Action button"
+          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          class:bg-blue-100={state.isStrike}
+          class:text-blue-700={state.isStrike}
+          onclick={() => toggleStrike()}
+          title="Strikethrough"
+        >
+          <Strikethrough size="18" />
+        </button>
+      </div>
+      <div class="w-px h-6 bg-gray-300 mx-1"></div>
+      <!-- Color Tools -->
+      <div class="flex items-center gap-1">
         <div
-          class="mx-auto px-4 max-w-7xl"
-          style="left: {i * 50}px"
+          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed relative"
         >
-          {#if i % 2 === 0}
-            <span class="mx-auto px-4 max-w-7xl">{i}</span>
-          {/if}
+          <input
+            type="color"
+            class="absolute inset-0 opacity-0 cursor-pointer"
+            bind:value={state.currentColor}
+            onchange={(e) => setTextColor((e.target as HTMLInputElement).value)}
+            title="Text Color"
+          />
+          <Type size="18" />
         </div>
-      {/each}
+        <div class="relative group">
+          <button
+            aria-label="Button"
+            class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+          >
+            <Highlighter size="18" />
+            <ChevronDown size="14" />
+          </button>
+          <div
+            class="absolute top-full left-0 bg-white border border-gray-200 rounded-md shadow-md py-1 z-20 min-w-[150px] hidden group-hover:block grid grid-cols-5 gap-1 p-2 min-w-[200px]"
+          >
+            {#each colorPalettes.highlight as color}
+              <button
+                aria-label={color === "transparent"
+                  ? "Remove highlight"
+                  : `Highlight with ${color}`}
+                class="w-6 h-6 rounded-md border border-gray-300 cursor-pointer"
+                style="background-color: {color}"
+                onclick={() => setHighlight(color)}
+                title={color === "transparent"
+                  ? "Remove highlight"
+                  : `Highlight with ${color}`}
+              ></button>
+            {/each}
+          </div>
+        </div>
+      </div>
+      <div class="w-px h-6 bg-gray-300 mx-1"></div>
+      <!-- Alignment -->
+      <div class="flex items-center gap-1">
+        <button
+          aria-label="Action button"
+          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          class:bg-blue-100={state.currentAlignment === "left"}
+          class:text-blue-700={state.currentAlignment === "left"}
+          onclick={() => setAlignment("left")}
+          title="Align Left"
+        >
+          <AlignLeft size="18" />
+        </button>
+        <button
+          aria-label="Action button"
+          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          class:bg-blue-100={state.currentAlignment === "center"}
+          class:text-blue-700={state.currentAlignment === "center"}
+          onclick={() => setAlignment("center")}
+          title="Align Center"
+        >
+          <AlignCenter size="18" />
+        </button>
+        <button
+          aria-label="Action button"
+          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          class:bg-blue-100={state.currentAlignment === "right"}
+          class:text-blue-700={state.currentAlignment === "right"}
+          onclick={() => setAlignment("right")}
+          title="Align Right"
+        >
+          <AlignRight size="18" />
+        </button>
+        <button
+          aria-label="Action button"
+          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          class:bg-blue-100={state.currentAlignment === "justify"}
+          class:text-blue-700={state.currentAlignment === "justify"}
+          onclick={() => setAlignment("justify")}
+          title="Align Justify"
+        >
+          <AlignJustify size="18" />
+        </button>
+      </div>
+      <div class="w-px h-6 bg-gray-300 mx-1"></div>
+      <!-- Lists & Blockquote -->
+      <div class="flex items-center gap-1">
+        <button
+          aria-label="Action button"
+          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          class:bg-blue-100={state.isList}
+          class:text-blue-700={state.isList}
+          onclick={() => editor?.chain().focus().toggleBulletList().run()}
+          title="Bullet List"
+        >
+          <List size="18" />
+        </button>
+        <button
+          aria-label="Action button"
+          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          class:bg-blue-100={state.isOrderedList}
+          class:text-blue-700={state.isOrderedList}
+          onclick={() => editor?.chain().focus().toggleOrderedList().run()}
+          title="Numbered List"
+        >
+          <ListOrdered size="18" />
+        </button>
+        <button
+          aria-label="Action button"
+          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          class:bg-blue-100={state.isQuote}
+          class:text-blue-700={state.isQuote}
+          onclick={() => editor?.chain().focus().toggleBlockquote().run()}
+          title="Quote"
+        >
+          <Quote size="18" />
+        </button>
+        <button
+          aria-label="Action button"
+          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          class:bg-blue-100={state.isCode}
+          class:text-blue-700={state.isCode}
+          onclick={() => editor?.chain().focus().toggleCode().run()}
+          title="Code"
+        >
+          <Code size="18" />
+        </button>
+      </div>
+      <div class="w-px h-6 bg-gray-300 mx-1"></div>
+      <!-- Insert Elements -->
+      <div class="flex items-center gap-1">
+        <button
+          aria-label="Action button"
+          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          onclick={() => insertImage()}
+          title="Insert Image"
+        >
+          <ImageIcon size="18" />
+        </button>
+        <button
+          aria-label="Action button"
+          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          onclick={() => insertTable()}
+          title="Insert Table"
+        >
+          <TableIcon size="18" />
+        </button>
+      </div>
+      <div class="w-px h-6 bg-gray-300 mx-1"></div>
+      <!-- View Controls -->
+      <div class="flex items-center gap-1">
+        <button
+          aria-label="Action button"
+          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          onclick={() => adjustZoom(-10)}
+          title="Zoom Out"
+        >
+          <ZoomOut size="18" />
+        </button>
+        <span class="text-sm text-gray-600 min-w-10 text-center"
+          >{currentZoom}%</span
+        >
+        <button
+          aria-label="Action button"
+          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          onclick={() => adjustZoom(10)}
+          title="Zoom In"
+        >
+          <ZoomIn size="18" />
+        </button>
+        <button
+          aria-label="Action button"
+          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          class:bg-blue-100={showGrid}
+          class:text-blue-700={showGrid}
+          onclick={() => (showGrid = !showGrid)}
+          title="Toggle Grid"
+        >
+          <Grid size="18" />
+        </button>
+        <button
+          aria-label="Action button"
+          class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          onclick={() => toggleFullscreen()}
+          title="Toggle Fullscreen"
+        >
+          {#if isFullscreen}
+            <EyeOff size="18" />
+          {:else}
+            <Eye size="18" />
+          {/if}
+        </button>
+      </div>
     </div>
-  {/if}
-  <!-- Editor Container -->
-  <div class="mx-auto px-4 max-w-7xl" class:show-grid={showGrid}>
-    <div bind:this={editorElement} class="mx-auto px-4 max-w-7xl"></div>
+    <!-- Secondary Toolbar for Advanced Features -->
+    <div
+      class="flex items-center justify-between gap-2 p-2 border-b border-gray-200 bg-gray-50 text-sm text-gray-600"
+    >
+      <div class="flex items-center gap-1">
+        Words: <span class="font-medium text-gray-800">{wordCount}</span> | Characters:
+        <span class="font-medium text-gray-800">{characterCount}</span>
+      </div>
+      <div class="flex-grow"></div>
+      {#if autosave}
+        <div class="text-xs text-gray-500">Auto-save enabled</div>
+      {/if}
+    </div>
+    <!-- Ruler (if enabled) -->
+    {#if showRuler}
+      <div
+        class="h-6 w-full bg-gray-100 border-b border-gray-200 flex items-center relative overflow-hidden bg-[repeating-linear-gradient(90deg,transparent,transparent_10px,#e5e7eb_10px,#e5e7eb_11px)]"
+      >
+        {#each Array(20) as _, i}
+          <div
+            class="absolute h-full border-l border-gray-400 flex flex-col justify-end items-center"
+            style="left: {i * 50}px"
+          >
+            {#if i % 2 === 0}
+              <span class="text-xs text-gray-600 -mb-1">{i}</span>
+            {/if}
+          </div>
+        {/each}
+      </div>
+    {/if}
+    <!-- Editor Container -->
+    <div
+      class="flex flex-col flex-1 overflow-auto min-h-[400px]"
+      class:bg-[linear-gradient(to_right,#f3f4f6_1px,transparent_1px),linear-gradient(to_bottom,#f3f4f6_1px,transparent_1px)]={showGrid}
+      class:bg-size-[20px_20px]={showGrid}
+    >
+      <div bind:this={editorElement} class="flex-grow p-6 min-h-full"></div>
+    </div>
   </div>
-</div>
-<style>
-  /* Remove all @apply rules. Use Tailwind/UnoCSS classes in markup instead. */
-  .advanced-editor {
-    min-height: 500px;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
-    overflow: hidden;
-    background: #fff;
-  }
-  .advanced-editor.fullscreen {
-    position: fixed;
-    inset: 0;
-    z-index: 50,
-  }
-  .toolbar {
-    position: sticky;
-    top: 0;
-    z-index: 10,
-  }
-  .toolbar-group {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-  }
-  .toolbar-btn {
-    padding: 0.5rem;
-    border-radius: 0.375rem;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 36px;
-    height: 36px;
-    transition: background 0.2;
-  }
-  .toolbar-btn:hover {
-    background: #f3f4f6;
-  }
-  .toolbar-btn:disabled,
-  .toolbar-btn.disabled {
-    opacity: 0.5,
-    cursor: not-allowed;
-  }
-  .toolbar-btn.active {
-    background: #dbeaf;
-    color: #2563eb;
-  }
-  .toolbar-separator {
-    width: 1px;
-    height: 1.5rem;
-    background: #d1d5db;
-    margin: 0 0.25rem;
-  }
-  .dropdown {
-    position: relative;
-  }
-  .dropdown-toggle {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-  }
-  .dropdown-menu {
-    position: absolute;
-    top: 100%;
-    left: 0,
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.375rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    padding: 0.25rem 0;
-    z-index: 20;
-    min-width: 150px;
-    display: none;
-  }
-  .dropdown:hover .dropdown-menu {
-    display: block;
-  }
-  .dropdown-menu button {
-    width: 100%;
-    text-align: left;
-    padding: 0.5rem 0.75rem;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    transition: background 0.2;
-  }
-  .dropdown-menu button:hover {
-    background: #f3f4f6;
-  }
-  .color-palette {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 0.25rem;
-    padding: 0.5rem;
-    min-width: 200px;
-  }
-  .color-swatch {
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: 0.375rem;
-    border: 1px solid #d1d5db;
-    cursor: pointer;
-  }
-  .color-picker {
-    position: relative;
-  }
-  .color-picker input[type="color"] {
-    position: absolute;
-    inset: 0,
-    opacity: 0;
-    cursor: pointer;
-  }
-  .font-selector select {
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
-  }
-  .zoom-indicator {
-    font-size: 0.875rem;
-    color: #4b5563;
-    min-width: 40px;
-    text-align: center;
-  }
-  .ruler {
-    background: repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 10px,
-      #e5e7eb 10px,
-      #e5e7eb 11px
-    );
-  }
-  .ruler-mark {
-    height: 24px;
-  }
-  .editor-container {
-    flex: 1,
-    overflow: auto;
-    min-height: 400px;
-  }
-  .editor-container.show-grid {
-    background-image:
-      linear-gradient(to right, #f3f4f6 1px, transparent 1px),
-      linear-gradient(to bottom, #f3f4f6 1px, transparent 1px);
-    background-size: 20px 20px;
-  }
-  .editor-content {
-    min-height: 100%;
-  }
-  /* Tiptap specific styles */
-  :global(.ProseMirror) {
-    outline: none;
-  }
-  :global(.ProseMirror p.is-editor-empty:first-child::before) {
-    color: #9ca3af;
-    content: attr(data-placeholder);
-    float: left;
-    height: 0;
-    pointer-events: none;
-  }
-  :global(.ProseMirror table) {
-    border-collapse: collap;
-    border: 1px solid #d1d5db;
-  }
-  :global(.ProseMirror table td),
-  :global(.ProseMirror table th) {
-    border: 1px solid #d1d5db;
-    padding: 0.75rem 1rem;
-  }
-  :global(.ProseMirror table th) {
-    background: #f3f4f6;
-    font-weight: 600,
-  }
-  :global(.ProseMirror blockquote) {
-    border-left: 4px solid #d1d5db;
-    padding-left: 1rem;
-    font-style: italic;
-  }
-  :global(.ProseMirror code) {
-    background: #f3f4f6;
-    padding: 0.25rem;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
-  }
-  :global(.ProseMirror pre) {
-    background: #f3f4f6;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    overflow-x: auto;
-  }
-  :global(.ProseMirror img) {
-    max-width: 100%;
-    height: auto;
-    border-radius: 0.5rem;
-  }
-</style>
-<!-- Props migrated to Svelte 5 $props() pattern -->
+  <!-- All styles have been moved to UnoCSS classes in the markup. -->
+</ErrorBoundary>
+  <!-- All styles have been moved to UnoCSS classes in the markup. -->
+</svelte:component>

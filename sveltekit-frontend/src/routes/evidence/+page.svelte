@@ -31,7 +31,7 @@
   // Form data
   let formData = $state({
     title: '',
-    description: '',
+    description '',
     evidenceType: 'document',
     tags: '',
     isAdmissible: true,
@@ -135,7 +135,7 @@
     uploadProgress = 0;
     formData = {
       title: '',
-      description: '',
+      description '',
       evidenceType: 'document',
       tags: '',
       isAdmissible: true,
@@ -247,7 +247,7 @@
 
         <div class="button-group">
           <button
-            on:click={submitEvidence}
+            onclick={submitEvidence}
             disabled={!canSubmit}
             class="upload-btn"
             class:disabled={!canSubmit}
@@ -262,7 +262,7 @@
           </button>
 
           {#if uploadResult || uploadError}
-            <button on:click={resetForm} class="reset-btn">Reset</button>
+            <button onclick={resetForm} class="reset-btn">Reset</button>
           {/if}
         </div>
       {/if}
@@ -334,7 +334,7 @@
           </div>
 
           <div class="compare-actions">
-            <button class="upload-btn" on:click={runCompare} disabled={comparing}>
+            <button class="upload-btn" onclick={runCompare} disabled={comparing}>
               {comparing ? 'Analyzing…' : 'Analyze Similar Cases'}
             </button>
           </div>
@@ -455,7 +455,7 @@
     border: 2px solid #2a2d30;
     border-radius: 12px;
     padding: 1.5rem;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
 
   .action-card:hover {
@@ -492,7 +492,7 @@
     border-radius: 8px;
     color: white;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
 
   .file-input:hover {
@@ -534,7 +534,7 @@
 
   .form-fields {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
     margin: 1rem 0;
   }
@@ -572,7 +572,7 @@
   }
 
   :global(.loader-spin-icon) {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     width: 16px;
     height: 16px;
   }
@@ -597,7 +597,7 @@
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #92cc41, #ffd700);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
 
   .button-group {
@@ -624,7 +624,7 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
 
   .upload-btn {
@@ -815,7 +815,7 @@
 
   .tech-stack {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
   }
 
@@ -839,11 +839,11 @@
 
   .action-link {
     color: #ffd700;
-    text-decoration: none;
+    text-decoration none;
     padding: 0.5rem 1rem;
     border: 1px solid #ffd700;
     border-radius: 6px;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     font-size: 0.85rem;
   }
 

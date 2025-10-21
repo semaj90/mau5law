@@ -36,7 +36,7 @@
   async function saveCitation(text: string) {
     if (!text.trim()) return;
     // Implementation for saving citation
-    console.log('Saving citation:', text);
+    console.log('Saving citation', text);
   }
   async function summarizeReport() {
     // Implementation for AI summary

@@ -163,7 +163,7 @@
     const view = event?.detail?.view;
     if (view) {
       currentView = view;
-      console.log('🧭 Navigation:', event.detail);
+      console.log('🧭 Navigation', event.detail);
       // Simulate AI processing when switching to chat view
       if (view === 'chat') {
         simulateAIResponse();
@@ -173,11 +173,11 @@
 
   function handleInteraction(event: CustomEvent) {
     // Use the actual event param and include 'data' in the debug log
-    console.log('🖱️ Canvas interaction:', event.detail);
+    console.log('🖱️ Canvas interaction', event.detail);
     const { type, position, view, data } = event.detail;
     if (type === 'click' && view === 'documents') {
       // Use data in the log so it's not reported as unused
-      console.log('📄 Analyzing document with gemma3:legal-latest at position:', position, 'data:', data);
+      console.log('📄 Analyzing document with gemma3:legal-latest at position', position, 'data:', data);
     }
   }
 
@@ -226,8 +226,8 @@
     {legalData}
     {currentView}
     fullscreen={true}
-    on:navigate={handleNavigation}
-    on:interact={handleInteraction}
+    onnavigate={handleNavigation}
+    oninteract={handleInteraction}
   />
   <!-- Debug info (remove in production) -->
   <div class="debug-info">
@@ -239,7 +239,7 @@
 
 <style>
   .loading-screen {
-    position: fixed;
+    position fixed;
     top: 0,
     left: 0;
     width: 100vw;
@@ -264,7 +264,7 @@
     margin: 1rem 0;
   }
   .loading-dot {
-    animation: blink 1.5s infinite;
+    animation blink 1.5s infinite;
     margin: 0 0.2rem;
   }
   .loading-dot:nth-child(2) {
@@ -291,7 +291,7 @@
     font-family: 'Courier New', monospace;
   }
   .debug-info {
-    position: fixed;
+    position fixed;
     top: 10px;
     right: 10px;
     background: rgba(0, 0, 0, 0.8);

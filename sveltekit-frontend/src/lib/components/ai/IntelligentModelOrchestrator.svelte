@@ -37,7 +37,7 @@
     memoryOptimization,
     ($memory) => $memory ? {
       totalUsed: $memory.totalMemoryUsed,
-      fragmentation: $memory.fragmentationRatio,
+      fragmentation $memory.fragmentationRatio,
       efficiency: 1 - $memory.fragmentationRatio,
       layout: Array.from($memory.layout.entries());
     } : null
@@ -123,7 +123,7 @@
       isProcessing = false;
     }
   }
-  async function acceptSuggestion(suggestion: SelfPromptingSuggestion) {
+  async function acceptSuggestion(suggestion SelfPromptingSuggestion) {
     try {
       await intelligentOrchestrator.handleUserFeedback(suggestion.id, true, suggestion.suggestion);
       // Update local feedback tracking
@@ -135,10 +135,10 @@
       queryInput = suggestion.suggestio;
       await processQuery();
     } catch (error) {
-      console.error('Failed to accept suggestion:', error);
+      console.error('Failed to accept suggestion', error);
     }
   }
-  async function rejectSuggestion(suggestion: SelfPromptingSuggestion) {
+  async function rejectSuggestion(suggestion SelfPromptingSuggestion) {
     try {
       await intelligentOrchestrator.handleUserFeedback(suggestion.id, false);
       userFeedback.update(fb => {
@@ -146,7 +146,7 @@
         return fb;
       });
     } catch (error) {
-      console.error('Failed to reject suggestion:', error);
+      console.error('Failed to reject suggestion', error);
     }
   }
   function formatLatency(ms: number): string {
@@ -195,7 +195,7 @@
         disabled={isProcessing}
       />
       <button
-        on:click={processQuery}
+        onclick={processQuery}
         disabled={isProcessing || !queryInput.trim()}
         class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
@@ -403,13 +403,13 @@
               <div class="flex gap-2 ml-4">
                 {#if !$userFeedback.has(suggestion.id)}
                   <button
-                    on:click={() => acceptSuggestion(suggestion)}
+                    onclick={() => acceptSuggestion(suggestion)}
                     class="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700"
                   >
                     ✓ Accept
                   </button>
                   <button
-                    on:click={() => rejectSuggestion(suggestion)}
+                    onclick={() => rejectSuggestion(suggestion)}
                     class="px-3 py-1 bg-gray-400 text-white rounded text-xs hover:bg-gray-500"
                   >
                     ✗ Reject
@@ -493,7 +493,7 @@
   }
   /* Responsive animations */
   .animate-spin {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     from {

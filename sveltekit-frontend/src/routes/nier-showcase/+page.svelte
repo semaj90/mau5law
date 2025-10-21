@@ -28,7 +28,7 @@
     {
       id: 'CASE-2025-001',
       title: 'Machine Lifeform Network Breach',
-      description: 'Investigation into unauthorized access of YoRHa combat data through compromised machine network protocols.',
+      description 'Investigation into unauthorized access of YoRHa combat data through compromised machine network protocols.',
       status: 'active' as const,
       priority: 'critical' as const,
       created: new Date('2025-07-14'),
@@ -47,7 +47,7 @@
     {
       id: 'CASE-2025-002',
       title: 'Android Rights Violation',
-      description: 'Analysis of potential violations regarding android autonomy protocols in civilian sectors.',
+      description 'Analysis of potential violations regarding android autonomy protocols in civilian sectors.',
       status: 'pending' as const,
       priority: 'high' as const,
       created: new Date('2025-07-12'),
@@ -66,7 +66,7 @@
     {
       id: 'CASE-2025-003',
       title: 'Resource Allocation Dispute',
-      description: 'Legal review of resource distribution protocols between resistance camps.',
+      description 'Legal review of resource distribution protocols between resistance camps.',
       status: 'active' as const,
       priority: 'medium' as const,
       created: new Date('2025-07-10'),
@@ -129,7 +129,7 @@
         Advanced Case Management System • For the Glory of Mankind
       </p>
       <div class="flex justify-center gap-4 animate-fade-in" style="animation-delay: 0.4s">
-        <button on:click={() => (showAIAssistant = true)} class="nier-button-digital px-6 py-3">
+        <button onclick={() => (showAIAssistant = true)} class="nier-button-digital px-6 py-3">
           <span class="mr-2">🤖</span>
           Launch AI Assistant
         </button>
@@ -240,7 +240,7 @@
   {/if}
   <!-- Floating Action Button -->
   <button
-    on:click={() => (showAIAssistant = true)}
+    onclick={() => (showAIAssistant = true)}
     class="fixed bottom-6 right-6 w-14 h-14 bg-nier-gradient-digital rounded-full flex items-center justify-center shadow-lg hover: shadow-xl transform hover:scale-110 nier-transition animate-digital-glow"
     aria-label="Open AI Assistant"
   >
@@ -262,6 +262,6 @@
     }
   }
   .animate-fade-in {
-    animation: fade-in 0.6s ease-out forward;
+    animation fade-in 0.6s ease-out forward;
   }
 </style>

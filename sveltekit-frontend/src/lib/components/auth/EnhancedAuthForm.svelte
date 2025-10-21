@@ -310,7 +310,7 @@
         {/if}
         <!-- Name Fields (Register Only) -->
         {#if mode === 'register'}
-          <div class="grid grid-cols-2 gap-4" transitiscale={{ duration: 300, easing: quartOut }}>
+          <div class="grid grid-cols-2 gap-4" transitiscale={{ duration 300, easing: quartOut }}>
             <div class="space-y-2">
               <Label for="firstName">First Name *</Label>
               <Input
@@ -383,7 +383,7 @@
             />
             <button
               type="button"
-              on:click={() => formState.showPassword = !formState.showPassword}
+              onclick={() => formState.showPassword = !formState.showPassword}
               class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
             >
               {#if formState.showPassword}
@@ -399,7 +399,7 @@
             </button>
           </div>
           {#if mode === 'register' && formData.password}
-            <div class="space-y-1" transitifade={{ duration: 200 }}>
+            <div class="space-y-1" transitifade={{ duration 200 }}>
               <div class="flex items-center justify-between text-xs">
                 <span>Password strength</span>
                 <span class={
@@ -421,7 +421,7 @@
         </div>
         <!-- Confirm Password (Register Only) -->
         {#if mode === 'register'}
-          <div class="space-y-2" transitiscale={{ duration: 300, easing: quartOut }}>
+          <div class="space-y-2" transitiscale={{ duration 300, easing: quartOut }}>
             <Label for="confirmPassword">Confirm Password *</Label>
             <div class="relative">
               <Input
@@ -436,7 +436,7 @@
               />
               <button
                 type="button"
-                on:click={() => formState.showConfirmPassword = !formState.showConfirmPassword}
+                onclick={() => formState.showConfirmPassword = !formState.showConfirmPassword}
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
               >
                 {#if formState.showConfirmPassword}
@@ -503,7 +503,7 @@
             type="button"
             variant="ghost"
             class="w-full bits-btn bits-btn"
-            on:click={handleGuestLogin}
+            onclick={handleGuestLogin}
             disabled={formState.loading}
           >
 Continue as Guest
@@ -512,7 +512,7 @@ Continue as Guest
         <div class="text-center">
           <button
             type="button"
-            on:click={toggleMode}
+            onclick={toggleMode}
             class="text-sm text-primary hover:underline"
             disabled={formState.loading}
           >
@@ -544,11 +544,11 @@ Continue as Guest
 </Dialog.Root>
 <style>
   :global(.animate-in) {
-    animation-duration: 200m;
+    animation-duration 200m;
     animation-fill-mode: both;
   }
   :global(.animate-out) {
-    animation-duration: 150m;
+    animation-duration 150m;
     animation-fill-mode: both;
   }
 </style>

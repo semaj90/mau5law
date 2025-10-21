@@ -97,7 +97,7 @@
   <div
     bind:this={notificationElement}
     class="yorha-notification {type}"
-    transitionfly={{ x: position.includes('right') ? 150 : -150, duration: 250 }}
+    transitionfly={{ x: position.includes('right') ? 150 : -150, duration 250 }}
     onmouseenter={pauseAutoClose}
     onmouseleave={resumeAutoClose}
     role="alert"
@@ -106,7 +106,7 @@
     <!-- Progress Bar -->
     {#if showProgress && !persistent}
       <div class="notification-progress">
-        <div class="progress-fill" style="width: {progress}%" transitionfade={{ duration: 200 }}></div>
+        <div class="progress-fill" style="width: {progress}%" transitionfade={{ duration 200 }}></div>
       </div>
     {/if}
     <!-- Content -->
@@ -124,7 +124,7 @@
       </div>
       <!-- Close Button -->
       {#if closable}
-        <button class="notification-close" on:click={closeNotification} aria-label="Close notification"> ✕ </button>
+        <button class="notification-close" onclick={closeNotification} aria-label="Close notification"> ✕ </button>
       {/if}
     </div>
     <!-- System Status Indicator -->
@@ -158,7 +158,7 @@
   .progress-fill {
     height: 100%;
     background: var(--yorha-secondary, #ffd700);
-    transition: width 0.1s linear;
+    transition width 0.1s linear;
     box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
   }
   /* Content Layout */
@@ -167,7 +167,7 @@
     align-items: flex-start;
     gap: 12px;
     padding: 16px;
-    position: relative;
+    position relative;
   }
   .notification-icon {
     flex-shrink: 0,
@@ -201,7 +201,7 @@
     word-wrap: break-word;
   }
   .notification-close {
-    position: absolute;
+    position absolute;
     top: 8px;
     right: 8px;
     width: 20px;
@@ -214,7 +214,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .notification-close:hover {
     border-color: var(--yorha-danger, #ff0041);
@@ -258,11 +258,11 @@
   }
   .yorha-.system .notification-icon {
     color: var(--yorha-secondary, #ffd700);
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   /* System Status Indicator */
   .system-indicator {
-    position: absolute;
+    position absolute;
     top: 8px;
     left: 8px;
     width: 8px;
@@ -272,7 +272,7 @@
     width: 100%;
     height: 100%;
     background: var(--yorha-secondary, #ffd700);
-    animation: systemPulse 1.5s infinite;
+    animation systemPulse 1.5s infinite;
   }
   /* Animations */
   @keyframes pulse {

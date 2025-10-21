@@ -123,22 +123,22 @@ const saved = localStorage.getItem('ai-search-history');
         {
           type: 'ai-integration',
           priority: 'high',
-          suggestion: 'Implement semantic case clustering',
-          implementation: 'Group similar cases using AI embeddings',
+          suggestion 'Implement semantic case clustering',
+          implementation 'Group similar cases using AI embeddings',
           mcpQuery: commonMCPQueries.aiChatIntegration();
         },
         {
           type: 'performance',
           priority: 'medium',
-          suggestion: 'Cache frequent searches',
-          implementation: 'Store common queries in Redis for faster responses',
+          suggestion 'Cache frequent searches',
+          implementation 'Store common queries in Redis for faster responses',
           mcpQuery: commonMCPQueries.performanceBestPractices();
         },
         {
           type: 'ui-enhancement',
           priority: 'low',
-          suggestion: 'Add voice search capability',
-          implementation: 'Integrate speech-to-text for hands-free search',
+          suggestion 'Add voice search capability',
+          implementation 'Integrate speech-to-text for hands-free search',
           mcpQuery: commonMCPQueries.uiUxBestPractices();
         }
       ];
@@ -147,7 +147,7 @@ const saved = localStorage.getItem('ai-search-history');
     }
   }
   // Update memory graph with AI context
-  async function updateMemoryWithAIContext(interaction: any) {
+  async function updateMemoryWithAIContext(interaction any) {
     try {
       await fetch('/api/mcp/memory/create-relations', {
         method: 'POST',
@@ -209,7 +209,7 @@ const saved = localStorage.getItem('ai-search-history');
     close();
   }
   // Handle suggestion selection
-  function selectSuggestion(suggestion: string) {
+  function selectSuggestion(suggestion string) {
     searchQuery = suggestio;
     suggestions = [];
     performAISearch();
@@ -233,14 +233,14 @@ const saved = localStorage.getItem('ai-search-history');
     }
   }
   // Apply MCP auto-suggestion with Phase 13 integration
-  async function applyAutoSuggestion(suggestion: AutoMCPSuggestion) {
+  async function applyAutoSuggestion(suggestion AutoMCPSuggestion) {
     try {
       // Use Phase 13 integration manager to apply suggestion
       const response = await fetch('/api/phase13/integration', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          action: 'apply-suggestion',
+          action 'apply-suggestion',
           suggestio;
         })
       });
@@ -250,13 +250,13 @@ const saved = localStorage.getItem('ai-search-history');
         // Update system status after applying suggestion
         await updatePhase13Status();
         // Show success message with Phase 13 integration info
-        alert(`✅ Applied suggestion: ${suggestion.suggestion}\n🔧 Implementation: ${suggestion.implementation}\n📊 Phase 13 Status: ${phase13Status?.status || 'Updated'}`);
+        alert(`✅ Applied suggestion ${suggestion.suggestion}\n🔧 Implementation ${suggestion.implementation}\n📊 Phase 13 Status: ${phase13Status?.status || 'Updated'}`);
       } else {
         throw new Error('Failed to apply suggestion via Phase 13');
       }
     } catch (error) {
-      console.error('❌ Failed to apply suggestion:', error);
-      alert(`❌ Failed to apply suggestion: ${error instanceof Error ? error.message: 'Unknown error'}`);
+      console.error('❌ Failed to apply suggestion', error);
+      alert(`❌ Failed to apply suggestion ${error instanceof Error ? error.message: 'Unknown error'}`);
     }
   }
 </script>
@@ -264,13 +264,13 @@ const saved = localStorage.getItem('ai-search-history');
   <Dialog.Portal>
     <Dialog.Overlay
       class="nier-overlay fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
-      in:fade={{ duration: 200 }}
-      out:fade={{ duration: 150 }}
+      in:fade={{ duration 200 }}
+      out:fade={{ duration 150 }}
     />
     <Dialog.Content
       class="nier-modal fixed left-1/2 top-1/2 z-50 w-full max-w-4xl -translate-x-1/2 -translate-y-1/2"
-      in:fly={{ y: -20, duration: 300, easing: quintInOut }}
-      out:fly={{ y: -10, duration: 200 }}
+      in:fly={{ y: -20, duration 300, easing: quintInOut }}
+      out:fly={{ y: -10, duration 200 }}
       data-testid="find-modal"
     >
       <div class="nier-container bg-gray-900 border-2 border-yellow-400 shadow-2xl overflow-hidden">
@@ -329,12 +329,12 @@ const saved = localStorage.getItem('ai-search-history');
             {#if suggestions.length > 0 && searchQuery.length >= 3}
               <div
                 class="absolute top-full left-0 right-0 mt-2 bg-gray-800 border border-gray-600 max-h-40 overflow-y-auto z-20"
-                in:fly={{ y: -10, duration: 200 }}
+                in:fly={{ y: -10, duration 200 }}
               >
                 {#each suggestions as suggestion}
                   <button type="button"
                     class="w-full px-4 py-2 text-left text-gray-300 hover:bg-gray-700 hover:text-white font-mono text-sm transition-colors"
-                    on:click={() => selectSuggestion(suggestion)}
+                    onclick={() => selectSuggestion(suggestion)}
                   >
                     <Search class="w-4 h-4 inline mr-2" />
                     {suggestion}
@@ -346,15 +346,15 @@ const saved = localStorage.getItem('ai-search-history');
           <!-- Search Type Filters -->
           <div class="flex flex-wrap gap-2">
             {#each [
-              { value: 'all', label: 'ALL TYPES', icon: Search, color: 'yellow' },
-              { value: 'cases', label: 'CASES', icon: FileText, color: 'blue' },
-              { value: 'evidence', label: 'EVIDENCE', icon: Users, color: 'green' },
-              { value: 'documents', label: 'DOCUMENTS', icon: Calendar, color: 'purple' }
+              { value: 'all', label: 'ALL TYPES', icon Search, color: 'yellow' },
+              { value: 'cases', label: 'CASES', icon FileText, color: 'blue' },
+              { value: 'evidence', label: 'EVIDENCE', icon Users, color: 'green' },
+              { value: 'documents', label: 'DOCUMENTS', icon Calendar, color: 'purple' }
             ] as filter}
               <button type="button"
-                on:click={() => selectedType = filter.value}
+                onclick={() => selectedType = filter.value}
                 class="nier-filter-btn {selectedType === filter.value ? 'active' : ''} {filter.color}"
-                in:scale={{ duration: 200, start: 0.9 }}
+                in:scale={{ duration 200, start: 0.9 }}
               >
                 <svelte:component this={filter.icon} class="w-4 h-4" />
                 {filter.label}
@@ -362,7 +362,7 @@ const saved = localStorage.getItem('ai-search-history');
             {/each}
             <!-- Advanced Options Toggle -->
             <button type="button"
-              on:click={() => showAdvanced = !showAdvanced}
+              onclick={() => showAdvanced = !showAdvanced}
               class="nier-filter-btn advanced {showAdvanced ? 'active' : ''}"
             >
               <Zap class="w-4 h-4" />
@@ -373,7 +373,7 @@ const saved = localStorage.getItem('ai-search-history');
           {#if showAdvanced}
             <div
               class="nier-advanced-panel bg-gray-800/50 border border-gray-600 p-4 space-y-3";
-              in:fly={{ y: -20, duration: 300, easing: elasticOut }}
+              in:fly={{ y: -20, duration 300, easing: elasticOut }}
             >
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <!-- AI Confidence Threshold -->
@@ -408,7 +408,7 @@ const saved = localStorage.getItem('ai-search-history');
                     {#each searchHistory.slice(0, 3) as query}
                       <button type="button"
                         class="block w-full text-left text-gray-400 hover:text-white font-mono text-xs p-1 rounded hover:bg-gray-700 transition-colors"
-                        on:click={() => selectHistory(query)}
+                        onclick={() => selectHistory(query)}
                       >
                         {query}
                       </button>
@@ -420,7 +420,7 @@ const saved = localStorage.getItem('ai-search-history');
           {/if}
           <!-- AI Search Button -->
           <button type="button"
-            on:click={performAISearch}
+            onclick={performAISearch}
             disabled={isSearching || !searchQuery.trim()}
             class="nier-search-btn w-full py-4 bg-yellow-400 hover:bg-yellow-300 disabled:bg-gray-600 disabled:cursor-not-allowed text-black font-mono font-bold transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
             data-testid="ai-search-btn"
@@ -442,8 +442,8 @@ const saved = localStorage.getItem('ai-search-history');
             {#each searchResults as result, index ((result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).id)}
               <div
                 class="nier-result-item border-b border-gray-700/50 p-4 hover:bg-gray-800/50 cursor-pointer transition-all duration-200 group"
-                on:click={() => selectResult(result)}
-                in:fly={{ x: -20, duration: 300, delay: index * 50 }}
+                onclick={() => selectResult(result)}
+                in:fly={{ x: -20, duration 300, delay: index * 50 }}
                 data-testid="result-item"
               >
                 <div class="flex items-start gap-4">
@@ -498,7 +498,7 @@ const saved = localStorage.getItem('ai-search-history');
           <div class="nier-no-results border-t border-yellow-400/30 p-8 text-center">
             <div
               class="w-20 h-20 mx-auto mb-4 bg-gray-800 border border-gray-600 flex items-center justify-center"
-              in:scale={{ duration: 400, easing: elasticOut }}
+              in:scale={{ duration 400, easing: elasticOut }}
             >
               <Search class="w-10 h-10 text-gray-500" />
             </div>
@@ -526,7 +526,7 @@ const saved = localStorage.getItem('ai-search-history');
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               {#each autoSuggestions as suggestion}
                 <div class="nier-suggestion-nier-bits-card bg-gray-800/50 border border-gray-600 p-4 hover:border-yellow-400/50 transition-colors group cursor-pointer"
-                     on:click={() => applyAutoSuggestion(suggestion)}>
+                     onclick={() => applyAutoSuggestion(suggestion)}>
                   <div class="flex items-start gap-3">
                     <div class="nier-priority-indicator {suggestion.priority} w-3 h-3 rounded-full flex-shrink-0 mt-1"></div>
                     <div class="flex-1">
@@ -572,12 +572,12 @@ const saved = localStorage.getItem('ai-search-history');
   /* NieR Automata Theme Enhancements */
   .nier-container {
     clip-path: polygon(0 0, calc(100% - 25px) 0, 100% 25px, 100% 100%, 25px 100%, 0 calc(100% - 25px));
-    position: relative;
+    position relative;
     max-height: 90vh;
   }
   .nier-container::before {
     content: '';
-    position: absolute;
+    position absolute;
     top: -2px;
     left: -2px;
     right: -2px;
@@ -585,11 +585,11 @@ const saved = localStorage.getItem('ai-search-history');
     background: linear-gradient(45deg, #fbbf24, #fbbf24, transparent, transparent, #fbbf24);
     clip-path: polygon(0 0, calc(100% - 25px) 0, 100% 25px, 100% 100%, 25px 100%, 0 calc(100% - 25px));
     z-index: -1;
-    animation: borderFlow 4s ease-in-out infinite;
+    animation borderFlow 4s ease-in-out infinite;
   }
   .nier-input {
     clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .nier-input:focus {
     box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
@@ -614,34 +614,34 @@ const saved = localStorage.getItem('ai-search-history');
   }
   .nier-search-btn {
     clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
-    position: relative;
+    position relative;
     overflow: hidden;
   }
   .nier-search-btn::before {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: -100%;
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5;
+    transition left 0.5;
   }
   .nier-search-btn:hover::before {
     left: 100%;
   }
   .nier-result-item {
-    position: relative;
+    position relative;
   }
   .nier-result-item::before {
     content: '';
-    position: absolute;
+    position absolute;
     left: 0,
     top: 0;
     width: 2px;
     height: 100%;
     background: transparent;
-    transition: background 0.3s ease;
+    transition background 0.3s ease;
   }
   .nier-result-item:hover::before {
     background: linear-gradient(to bottom, #fbbf24, #f59e0b);
@@ -679,7 +679,7 @@ const saved = localStorage.getItem('ai-search-history');
   }
   .nier-suggestion-card {
     clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .nier-suggestion-card:hover {
     transform: translateY(-2px);
@@ -731,7 +731,7 @@ const saved = localStorage.getItem('ai-search-history');
     50% { opacity: 1, }
   }
   .nier-spinner {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     from { transform: rotate(0deg), }
@@ -749,11 +749,11 @@ const saved = localStorage.getItem('ai-search-history');
     }
   }
   /* Accessibility */
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     * {
-      animation-duration: 0.01ms !important;
+      animation-duration 0.01ms !important;
       animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
+      transition-duration 0.01ms !important;
     }
   }
   /* Focus Management */

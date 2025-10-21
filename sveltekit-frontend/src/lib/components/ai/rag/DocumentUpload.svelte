@@ -233,7 +233,7 @@
       ondrop={handleDrop}
       ondragover={handleDragOver}
       ondragleave={handleDragLeave}
-      on:click={() => fileInput?.click()}
+      onclick={() => fileInput?.click()}
       role="button"
       tabindex="0"
       onkeydown={e => e.key === 'Enter' && fileInput?.click()}
@@ -288,7 +288,7 @@
                 <span class="progress-text">{uploadProgress[file.name]}%</span>
               </div>
             {:else}
-              <button class="remove-file" on:click={() => removeFile(index)} disabled={uploading} title="Remove file">
+              <button class="remove-file" onclick={() => removeFile(index)} disabled={uploading} title="Remove file">
                 ✕
               </button>
             {/if}
@@ -311,7 +311,7 @@
 
     <!-- Action Buttons -->
     <div class="action-buttons">
-      <Button variant="primary" disabled={!canUpload} on:click={uploadFiles} class="upload-button">
+      <Button variant="primary" disabled={!canUpload} onclick={uploadFiles} class="upload-button">
         {#if uploading}
           <span class="upload-spinner">🔄</span>
           Uploading to Knowledge Base...
@@ -321,7 +321,7 @@
       </Button>
 
       {#if hasFiles && !uploading}
-        <Button variant="secondary" on:click={clearAll}>Clear All</Button>
+        <Button variant="secondary" onclick={clearAll}>Clear All</Button>
       {/if}
     </div>
 
@@ -369,7 +369,7 @@
     padding: 3rem 2rem;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     background: var(--yorha-bg-primary);
     margin-bottom: 1rem;
   }
@@ -388,7 +388,7 @@
 
   .drop-zone-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 1rem;
   }
@@ -428,7 +428,7 @@
 
   .file-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
     margin-bottom: 1rem;
   }
@@ -478,7 +478,7 @@
   .progress-fill {
     height: 100%;
     background: var(--yorha-accent);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
 
   .progress-text {
@@ -496,7 +496,7 @@
     padding: 0.5rem;
     border-radius: 4px;
     font-size: 1rem;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
 
   .remove-file:hover {
@@ -510,7 +510,7 @@
 
   .error-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
     margin-bottom: 1rem;
   }
@@ -539,7 +539,7 @@
 
   .upload-spinner {
     display: inline-block;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
 
   @keyframes spin {
@@ -566,7 +566,7 @@
 
   .results-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
   }
 
@@ -595,7 +595,7 @@
     }
 
     .file-item {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
       gap: 0.75rem;
     }
@@ -605,11 +605,11 @@
     }
 
     .action-buttons {
-      flex-direction: column;
+      flex-direction column;
     }
 
     .result-details {
-      flex-direction: column;
+      flex-direction column;
       gap: 0.25rem;
     }
   }

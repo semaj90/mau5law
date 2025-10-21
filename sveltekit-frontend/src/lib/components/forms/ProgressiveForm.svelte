@@ -374,7 +374,7 @@
     <button
       type="button"
       class="reset-button secondary"
-      on:click={() => {
+      onclick={() => {
         formState = progressiveForm.createFormState();
         submitMessage = '';
         submitMessageType = '';
@@ -431,7 +431,7 @@
     color: #6b7280;
   }
   .sr-only {
-    position: absolute;
+    position absolute;
     width: 1px;
     height: 1px;
     padding: 0,
@@ -463,7 +463,7 @@
   }
   .error-summary a {
     color: #dc2626;
-    text-decoration: underli;
+    text-decoration underli;
   }
   .form-section {
     border: 1px solid #d1d5db;
@@ -484,7 +484,7 @@
   }
   .form-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 8px;
     margin-bottom: 20px;
   }
@@ -503,7 +503,7 @@
     border-radius: 6px;
     font-size: 16px;
     line-height: 1.5,
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition border-color 0.2s ease, box-shadow 0.2s ease;
   }
   .form-input:focus {
     outline: none;
@@ -518,7 +518,7 @@
     box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
   }
   .checkbox-group {
-    flex-direction: row;
+    flex-direction row;
     align-items: flex-start;
     gap: 12px;
   }
@@ -536,7 +536,7 @@
   }
   .checkbox-label a {
     color: #3b82f6;
-    text-decoration: underli;
+    text-decoration underli;
   }
   .field-hint {
     font-size: 12px;
@@ -563,7 +563,7 @@
     font-size: 16px;
     font-weight: 500,
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     border: none;
   }
   .submit-button.primary {
@@ -595,7 +595,7 @@
     border: 2px solid transparent;
     border-top: 2px solid currentColor;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   .submit-message {
     margin-top: 16px;
@@ -651,7 +651,7 @@
       gap: 0,
     }
     .form-actions {
-      flex-direction: column;
+      flex-direction column;
     }
   }
   /* High contrast mode support */
@@ -663,14 +663,14 @@
     }
   }
   /* Reduced motion support */
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     .form-input,
     .submit-button,
     .reset-button {
-      transition: none;
+      transition none;
     }
     .loading-spinner {
-      animation: none;
+      animation none;
       border: 2px solid currentColor;
       border-top-color: transparent;
     }

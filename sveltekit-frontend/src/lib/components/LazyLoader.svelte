@@ -123,7 +123,7 @@ https://svelte.dev/e/bindable_invalid_location -->
       <p class="error-message">{errorText}</p>
       <button
         class="retry-button"
-        on:click={() => {
+        onclick={() => {
           loadError = null;
           lazyStore.reset();
         }}
@@ -143,7 +143,7 @@ https://svelte.dev/e/bindable_invalid_location -->
         <p class="loading-text">{loadingText}</p>
         {#if enableProfiling && $lazyStore.intersectionRatio > 0}
           <div class="debug-info">
-            Intersection: {Math.round($lazyStore.intersectionRatio * 100)}%
+            Intersection {Math.round($lazyStore.intersectionRatio * 100)}%
           </div>
         {/if}
       </div>
@@ -160,7 +160,7 @@ https://svelte.dev/e/bindable_invalid_location -->
 </div>
 <style>
   .lazy-loader-container {
-    position: relative;
+    position relative;
     width: 100%;
   }
   /* Placeholder styles */
@@ -175,13 +175,13 @@ https://svelte.dev/e/bindable_invalid_location -->
       rgba(255, 255, 255, 0.1) 75%
     );
     background-size: 200% 100%;
-    animation: loading-shimmer 2s infinite;
+    animation loading-shimmer 2s infinite;
     border-radius: 4px;
     min-height: 200px;
   }
   .placeholder-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 12px;
     color: rgba(255, 255, 255, 0.7);
@@ -193,7 +193,7 @@ https://svelte.dev/e/bindable_invalid_location -->
     border: 3px solid rgba(255, 255, 255, 0.2);
     border-top: 3px solid rgba(255, 255, 255, 0.8);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   .loading-text {
     margin: 0;
@@ -208,7 +208,7 @@ https://svelte.dev/e/bindable_invalid_location -->
   /* Error styles */
   .lazy-loader-error {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 12px;
     padding: 24px;
@@ -233,9 +233,9 @@ https://svelte.dev/e/bindable_invalid_location -->
     color: #ffffff;
     cursor: pointer;
     font-size: 12px;
-    transition: background 0.2s ease;
+    transition background 0.2s ease;
   }
-  .retry-button:hover {
+  .retry-buttonhover {
     background: rgba(255, 255, 255, 0.2);
   }
   /* Content styles */
@@ -245,10 +245,10 @@ https://svelte.dev/e/bindable_invalid_location -->
   /* Animations */
   @keyframes loading-shimmer {
     0% {
-      background-position: -200% 0;
+      background-position -200% 0;
     }
     100% {
-      background-position: 200% 0;
+      background-position 200% 0;
     }
   }
   @keyframes spin {
@@ -295,12 +295,12 @@ https://svelte.dev/e/bindable_invalid_location -->
     }
   }
   /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     .loading-spinner {
-      animation: none;
+      animation none;
     }
     .lazy-loader-placeholder {
-      animation: none;
+      animation none;
     }
   }
 </style>

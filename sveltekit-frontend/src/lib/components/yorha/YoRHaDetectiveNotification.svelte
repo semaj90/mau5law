@@ -54,7 +54,7 @@
 
 <style>
   .notification-container {
-    position: fixed;
+    position fixed;
 d;
     bottom: 1.25rem;
     right: 1.25rem;
@@ -66,7 +66,7 @@ d;
     font-weight: bold;
     font-size: 0.875rem;
     z-index: 1050,
-    animation: slideInRight 0.3s ease-in-out;
+    animation slideInRight 0.3s ease-in-out;
     backdrop-filter: blur(8px);
   }
   .notification-content {

@@ -130,8 +130,8 @@ https://svelte.dev/e/js_parse_error -->
     dropTargetStyle,
     dropFromOthersDisabled
   }}
-  on:consider={handleDndConsider}
-  on:finalize={handleDndFinalize}
+  onconsider={handleDndConsider}
+  onfinalize={handleDndFinalize}
   style="--column-width: {columnWidth}px; --gutter: {gutter}px;"
 >
   {#each items as item, index (item?.id ?? index)}
@@ -186,7 +186,7 @@ https://svelte.dev/e/js_parse_error -->
 }
   /* Animation for new items */
   :global(.masonry-item.newly-added) {
-    animation: slideInUp 0.3s ease-out;
+    animation slideInUp 0.3s ease-out;
   }
   @keyframes slideInUp {
     from {

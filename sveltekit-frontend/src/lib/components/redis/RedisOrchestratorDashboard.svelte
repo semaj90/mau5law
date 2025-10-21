@@ -88,12 +88,12 @@
       </div>
     </div>
     <div class="action-buttons">
-      <button class="nes-button" on:click={refresh} disabled={isLoading}>
+      <button class="nes-button" onclick={refresh} disabled={isLoading}>
         {isLoading ? 'REFRESHING...' : 'REFRESH'}
       </button>
       <button
         class="nes-button danger"
-        on:click={handleClearCache}
+        onclick={handleClearCache}
         disabled={clearingCache}
       >
         {clearingCache ? 'CLEARING...' : showClearConfirm ? 'CONFIRM CLEAR' : 'CLEAR CACHE'}
@@ -104,7 +104,7 @@
     <div class="initialization-status">
       {#if initError}
         <div class="error-message">⚠️ INITIALIZATION FAILED: {initError}</div>
-        <button class="nes-button" on:click={initialize}>RETRY INITIALIZATION</button>
+        <button class="nes-button" onclick={initialize}>RETRY INITIALIZATION</button>
       {:else}
         <div class="loading-message">🎮 INITIALIZING REDIS ORCHESTRATOR...</div>
       {/if}
@@ -216,7 +216,7 @@
         <div class="panel-header">
           <span class="panel-icon">📋</span>
           <span class="panel-title">ACTIVE TASKS</span>
-          <button class="clear-completed-btn" on:click={clearCompletedTasks}>
+          <button class="clear-completed-btn" onclick={clearCompletedTasks}>
             CLEAR COMPLETED
           </button>
         </div>
@@ -303,9 +303,9 @@
     font-family: inherit;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
-  .nes-button:hover {
+  .nes-buttonhover {
     background: #74d3fc;
   }
   .nes-button.danger {
@@ -315,7 +315,7 @@
   .nes-button.danger:hover {
     background: #ff5722;
   }
-  .nes-button:disabled {
+  .nes-buttondisabled {
     background: #7c7c7c;
     cursor: not-allowed;
   }
@@ -364,7 +364,7 @@
   }
   .progress-fill {
     height: 100%;
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .mini-chart {
     display: flex;
@@ -376,7 +376,7 @@
   .chart-bar {
     width: 4px;
     min-height: 4px;
-    transition: height 0.3s ease;
+    transition height 0.3s ease;
   }
   .task-queue-panel,
   .processing-times-panel {
@@ -498,7 +498,7 @@
   .loading-message {
     color: #3cbcfc;
     font-weight: bold;
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   @keyframes pulse {
     0%, 100% { opacity: 1, }

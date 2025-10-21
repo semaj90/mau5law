@@ -80,7 +80,7 @@
   <!-- Hidden NES.css Elements Showcase - Prevents unused CSS selector warnings -->
   <div
     class="nes-elements-showcase"
-    style="position: absolute;
+    style="position absolute;
 e; left: -9999px; top: -9999px; visibility: hidden;"
   >
     <!-- Containers -->
@@ -238,11 +238,11 @@ e; left: -9999px; top: -9999px; visibility: hidden;"
     border: 4px solid #212529;
     border-radius: 8px;
     padding: 1rem;
-    position: relative;
+    position relative;
   }
   .nes-container.evidence-panel::before {
     content: '';
-    position: absolute;
+    position absolute;
     top: -2px;
     left: -2px;
     right: -2px;
@@ -251,7 +251,7 @@ e; left: -9999px; top: -9999px; visibility: hidden;"
       linear-gradient(45deg, #f8f9fa 25%, transparent 25%), linear-gradient(-45deg, #f8f9fa 25%, transparent 25%),
       linear-gradient(45deg, transparent 75%, #f8f9fa 75%), linear-gradient(-45deg, transparent 75%, #f8f9fa 75%);
     background-size: 4px 4px;
-    background-position:
+    background-position
       0 0,
       0 2px,
       2px -2px,
@@ -262,7 +262,7 @@ e; left: -9999px; top: -9999px; visibility: hidden;"
   .evidence-item {
     padding: 1rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     background: white;
     border: 2px solid #ccc;
     border-radius: 0.5rem;

@@ -23,8 +23,8 @@
   interface ApiEndpoint {
     id: string;
     name: string;
-    description: string;
-    icon: typeof TestTube;
+    description string;
+    icon typeof TestTube;
     method: HttpMethod;
     url: string;
     category: 'system' | 'ai' | 'data' | 'infrastructure' | 'messaging';
@@ -51,8 +51,8 @@
     {
       id: 'system-status',
       name: 'System Status',
-      description: 'Real-time system health and performance metrics.',
-      icon: Server,
+      description 'Real-time system health and performance metrics.',
+      icon Server,
       method: 'GET',
       url: '/api/yorha/system/status',
       category: 'system',
@@ -61,8 +61,8 @@
     {
       id: 'database-health',
       name: 'Database Health',
-      description: 'PostgreSQL, Redis and Neo4j connectivity check.',
-      icon: Database,
+      description 'PostgreSQL, Redis and Neo4j connectivity check.',
+      icon Database,
       method: 'GET',
       url: '/api/v1/database/health',
       category: 'infrastructure',
@@ -71,8 +71,8 @@
     {
       id: 'vector-search',
       name: 'Vector Search',
-      description: 'PostgreSQL pgvector similarity search pipeline.',
-      icon: Search,
+      description 'PostgreSQL pgvector similarity search pipeline.',
+      icon Search,
       method: 'POST',
       url: '/api/v1/vector/search',
       category: 'data',
@@ -87,8 +87,8 @@
     {
       id: 'enhanced-rag',
       name: 'Enhanced RAG',
-      description: 'AI retrieval augmented generation service.',
-      icon: Cpu,
+      description 'AI retrieval augmented generation service.',
+      icon Cpu,
       method: 'POST',
       url: '/api/yorha/enhanced-rag',
       category: 'ai',
@@ -107,8 +107,8 @@
     {
       id: 'ai-inference',
       name: 'AI Inference',
-      description: 'Ollama Gemma3 legal inference with summarisation.',
-      icon: Activity,
+      description 'Ollama Gemma3 legal inference with summarisation.',
+      icon Activity,
       method: 'POST',
       url: '/api/v1/ai/inference',
       category: 'ai',
@@ -268,14 +268,14 @@
         <button
           class="rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-amber-200 hover:bg-amber-500/20"
           class:animate-spin={autoRefresh}
-          on:click={toggleAutoRefresh}
+          onclick={toggleAutoRefresh}
           title={autoRefresh ? 'Disable auto refresh' : 'Enable auto refresh'}
         >
           <RefreshCw class="h-4 w-4" />
         </button>
         <button
           class="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-red-200 hover:bg-red-500/20"
-          on:click={clearResults}
+          onclick={clearResults}
         >
           Clear
         </button>
@@ -324,7 +324,7 @@
         <div class="flex gap-2">
           <button
             class="flex items-center gap-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-4 py-2 text-emerald-100 hover:bg-emerald-500/20"
-            on:click={runAllTests}
+            onclick={runAllTests}
             disabled={isRunning}
           >
             <Play class="h-4 w-4" />
@@ -357,7 +357,7 @@
             </div>
             <button
               class="rounded-md border border-blue-500/40 bg-blue-500/10 px-3 py-2 text-sm text-blue-100 hover:bg-blue-500/20"
-              on:click={() => runEndpoint(endpoint)}
+              onclick={() => runEndpoint(endpoint)}
               disabled={isRunning}
             >
               Run test

@@ -52,7 +52,7 @@
         {/if}
       </p>
     </div>
-    <Button class="bits-btn" variant="ghost" size="sm" on:click={handleClear}>Clear Chat</Button>
+    <Button class="bits-btn" variant="ghost" size="sm" onclick={handleClear}>Clear Chat</Button>
   </div>
   <!-- Chat messages -->
   <div bind:this={chatContainer} class="flex-1 overflow-y-auto p-4 space-y-4">
@@ -141,7 +141,7 @@
     height: 5px;
     border-radius: 50%;
     background-color: currentColor;
-    animation: typing 1s infinite steps(4, end);
+    animation typing 1s infinite steps(4, end);
     margin-left: 8px;
     vertical-align: middl;
   }

@@ -43,7 +43,7 @@
     id: string;
     type: 'pattern' | 'anomaly' | 'prediction' | 'recommendation';
     title: string;
-    description: string;
+    description string;
     confidence: number;
     relevance: number;
     timestamp: Date;
@@ -97,7 +97,7 @@
       id: '1',
       type: 'pattern',
       title: 'Evidence Pattern Detected',
-      description: 'Similar contract clauses found across 15 cases with 89% similarity',
+      description 'Similar contract clauses found across 15 cases with 89% similarity',
       confidence: 0.91,
       relevance: 0.87,
       timestamp: new Date(Date.now() - 1000 * 60 * 5),
@@ -107,7 +107,7 @@
       id: '2',
       type: 'anomaly',
       title: 'Unusual Timeline Gap',
-      description: 'Missing evidence period detected between March 15-22 in Case #2024-156',
+      description 'Missing evidence period detected between March 15-22 in Case #2024-156',
       confidence: 0.84,
       relevance: 0.95,
       timestamp: new Date(Date.now() - 1000 * 60 * 12),
@@ -117,7 +117,7 @@
       id: '3',
       type: 'prediction',
       title: 'Case Outcome Prediction',
-      description: 'Based on similar precedents, 73% likelihood of favorable settlement',
+      description 'Based on similar precedents, 73% likelihood of favorable settlement',
       confidence: 0.73,
       relevance: 0.92,
       timestamp: new Date(Date.now() - 1000 * 60 * 18),
@@ -138,7 +138,7 @@
       name: 'Legal Entity Extraction',
       status: 'completed',
       progress: 100,
-      context: { entities: 156, precision: 0.94 }
+      context: { entities: 156, precision 0.94 }
     }
   ]);
   let optimisticInsights = $state<Item<ContextualInsight>(null)[]>([]);
@@ -216,7 +216,7 @@
         id: `insight_${Date.now()}`,
         type: 'recommendation',
         title: `Analysis: "${analysisQuery.slice(0, 50)}..."`,
-        description: 'Processing contextual analysis...',
+        description 'Processing contextual analysis...',
         confidence: 0.85,
         relevance: 0.90,
         timestamp: new Date(),
@@ -232,7 +232,7 @@
         id: `insight_${Date.now()}`,
         type: 'recommendation',
         title: `Contextual Analysis Complete`,
-        description: `Found 3 relevant patterns and 2 potential recommendations for: "${analysisQuery}"`,
+        description `Found 3 relevant patterns and 2 potential recommendations for: "${analysisQuery}"`,
         confidence: 0.91,
         relevance: 0.88,
         timestamp: new Date(),
@@ -349,7 +349,7 @@
           <LoadingButton
             loading={isAnalyzing}
             variant="primary"
-            on:click={analyzeContextualQuery}
+            onclick={analyzeContextualQuery}
             loadingText="Analyzing..."
           >
             {#snippet children()}
@@ -390,7 +390,7 @@
                 class:optimistic={isOptimistic}
                 role="button"
                 tabindex="0"
-                on:click={() => openInsightDetails((item as { id?: unknown; data?: unknown; optimistic?: unknown }).data)}
+                onclick={() => openInsightDetails((item as { id?: unknown; data?: unknown; optimistic?: unknown }).data)}
               >
                 <div class="insight-header">
                   <div class="insight-type {getInsightTypeColor((item as { id?: unknown; data?: unknown; optimistic?: unknown }).data.type)}">
@@ -512,7 +512,7 @@
                 id: `doc_insight_${file.id}`,
                 type: 'pattern',
                 title: `Document Analyzed: ${file.filename}`,
-                description: 'Processing document for contextual patterns and insights...',
+                description 'Processing document for contextual patterns and insights...',
                 confidence: 0.80,
                 relevance: 0.85,
                 timestamp: new Date(),
@@ -527,7 +527,7 @@
               <LoadingButton
                 loading={isUploading}
                 variant="secondary"
-                on:click={selectFiles}
+                onclick={selectFiles}
                 loadingText="Uploading..."
               >
                 {#snippet children()}
@@ -594,7 +594,7 @@
           </div>
         </div>
         <div class="modal-actions">
-          <button class="nes-btn" variant="ghost" on:click={closeInsightDetails}>
+          <button class="nes-btn" variant="ghost" onclick={closeInsightDetails}>
             Close
           </button>
           <button class="nes-btn is-primary">
@@ -641,7 +641,7 @@
   }
   .stat-item {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 0.25rem;
   }
@@ -665,7 +665,7 @@
     gap: 1.5rem;
   }
   .metric-card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition transform 0.2s ease, box-shadow 0.2s ease;
   }
   .metric-card:hover {
     transform: translateY(-2px);
@@ -726,7 +726,7 @@
     border-radius: 0.375rem;
     font-size: 1rem;
     resize: vertical;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition border-color 0.2s ease, box-shadow 0.2s ease;
   }
   .analysis-textarea:focus {
     outline: none;
@@ -751,7 +751,7 @@
     padding: 1rem;
     border-bottom: 1px solid #e5e7eb;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition background-color 0.2s ease;
   }
   .insight-item:hover {
     background-color: #f9fafb;
@@ -812,7 +812,7 @@
   }
   .tasks-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .task-item {
@@ -860,19 +860,19 @@
     height: 0.5rem;
     background: #3b82f6;
     border-radius: 50%;
-    animation: pulse 1.5s ease-in-out infinite;
+    animation pulse 1.5s ease-in-out infinite;
   }
   .upload-section {
     margin-bottom: 2rem;
   }
   .upload-interface {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .upload-progress {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .progress-item {
@@ -952,7 +952,7 @@
       padding: 1rem;
     }
     .header-content {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
     }
     .content-grid {

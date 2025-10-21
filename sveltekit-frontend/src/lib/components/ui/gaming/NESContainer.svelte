@@ -201,7 +201,7 @@
   bind:this={container}
   class={containerClasses}
   style={containerStyle}
-  on:click={handleClick}
+  onclick={handleClick}
   role={onclick ? 'button' : 'region'}
   tabindex={onclick ? 0 : undefined}
   aria-label={`NES ${variant} container${evidenceType ? ` - ${evidenceType} evidence` : ''}${caseId ? ` for case ${caseId}` : ''}`}
@@ -275,14 +275,14 @@
 </div>
 <style>
   .nes-container {
-    position: relative;
+    position relative;
     background: var(--nes-primary);
     border: 4px solid var(--nes-secondary);
     font-family: 'Courier New', monospace;
     font-weight: bold;
     color: var(--nes-text);
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
 /* Size variants */ {}
   .nes-container--sm {
@@ -334,10 +334,10 @@
   }
 /* Orientation */ {}
   .nes-container--horizontal {
-    flex-direction: row;
+    flex-direction row;
   }
   .nes-container--vertical {
-    flex-direction: column;
+    flex-direction column;
   }
 /* Padding variants */ {}
   .nes-container--padding-none .nes-container__content {
@@ -357,7 +357,7 @@
   }
 /* Animation effects */ {}
   .nes-container--animated {
-    animation: nes-container-pulse 2s ease-in-out infinite alternate;
+    animation nes-container-pulse 2s ease-in-out infinite alternate;
   }
   @keyframes nes-container-pulse {
     from {
@@ -369,7 +369,7 @@
   }
 /* Glowing effect */ {}
   .nes-container--glowing {
-    animation: nes-container-glow 1.5s ease-in-out infinite alternate;
+    animation nes-container-glow 1.5s ease-in-out infinite alternate;
   }
   @keyframes nes-container-glow {
     from {
@@ -389,7 +389,7 @@
   }
 /* Processing states */ {}
   .nes-container--processing {
-    animation: nes-container-processing 1s linear infinite;
+    animation nes-container-processing 1s linear infinite;
   }
   @keyframes nes-container-processing {
     0% { border-color: var(--nes-secondary), }
@@ -403,7 +403,7 @@
   .nes-container--error {
     border-color: #ff0000;
     box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
-    animation: nes-container-error 0.5s ease-in-out 3;
+    animation nes-container-error 0.5s ease-in-out 3;
   }
   @keyframes nes-container-error {
     0%, 100% { transform: translateX(0), }
@@ -413,7 +413,7 @@
 /* Priority indicators */ {}
   .nes-container--priority-critical {
     border-color: #ff0000;
-    animation: nes-container-critical 1s ease-in-out infinite;
+    animation nes-container-critical 1s ease-in-out infinite;
   }
   @keyframes nes-container-critical {
     0%, 100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.4), }
@@ -428,7 +428,7 @@
   }
   .nes-container--evidence-digital {
     border-style: dashed;
-    animation: nes-container-digital 2s linear infinite;
+    animation nes-container-digital 2s linear infinite;
   }
   @keyframes nes-container-digital {
     0% { border-style: dashed, }
@@ -437,14 +437,14 @@
   }
 /* Power LED */ {}
   .nes-container__power-led {
-    position: absolute;
+    position absolute;
     top: 8px;
     right: 8px;
     width: 8px;
     height: 8px;
     border-radius: 50%;
     background: #666666;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .nes-container__power-led--on {
     background: #00ff00;
@@ -452,7 +452,7 @@
   }
 /* Cartridge label */ {}
   .nes-container__cartridge-label {
-    position: absolute;
+    position absolute;
     top: 8px;
     left: 8px;
     right: 8px;
@@ -476,18 +476,18 @@
   }
 /* Content area */ {}
   .nes-container__content {
-    position: relative;
+    position relative;
     z-index: 2,
     width: 100%;
     height: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     justify-content: center;
     align-items: center;
   }
 /* Status bar */ {}
   .nes-container__status-bar {
-    position: absolute;
+    position absolute;
     bottom: 0,
     left: 0;
     right: 0,
@@ -516,7 +516,7 @@
   .progress-fill {
     height: 100%;
     background: var(--nes-accent);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .nes-container__confidence {
     display: flex;
@@ -533,7 +533,7 @@
   .confidence-fill {
     height: 100%;
     background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .nes-container__priority {
     display: flex;
@@ -542,7 +542,7 @@
   }
   .nes-container__priority--critical {
     color: #ff0000;
-    animation: priority-blink 1s infinite;
+    animation priority-blink 1s infinite;
   }
   @keyframes priority-blink {
     0%, 50% { opacity: 1, }
@@ -559,7 +559,7 @@
   }
 /* Scan lines for screen variant */ {}
   .nes-container__scanlines {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -572,7 +572,7 @@ rgba(0, 255, 0, 0.1) 2px, {}
 rgba(0, 255, 0, 0.1) 4px {}
     );
     pointer-events: none;
-    animation: nes-scanlines 0.1s linear infinite;
+    animation nes-scanlines 0.1s linear infinite;
   }
   @keyframes nes-scanlines {
     0% { transform: translateY(0), }
@@ -580,7 +580,7 @@ rgba(0, 255, 0, 0.1) 4px {}
   }
 /* Power button for console */ {}
   .nes-container__power-button {
-    position: absolute;
+    position absolute;
     bottom: 8px;
     left: 8px;
     width: 24px;
@@ -594,14 +594,14 @@ rgba(0, 255, 0, 0.1) 4px {}
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .nes-container__power-button--on {
     background: var(--nes-accent);
     color: #000000;
     box-shadow: 0 0 8px var(--nes-accent);
   }
-  .nes-container__power-button:hover {
+  .nes-container__power-buttonhover {
     transform: scale(1.1);
   }
 /* Click effect */ {}
@@ -610,13 +610,13 @@ rgba(0, 255, 0, 0.1) 4px {}
     filter: brightness(0.9);
   }
 /* Accessibility */ {}
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
 .nes-container, {}
 .nes-container__power-led, {}
 .progress-fill, {}
     .confidence-fill {
-      animation: none;
-      transition: none;
+      animation none;
+      transition none;
     }
   }
 /* High contrast mode */ {}

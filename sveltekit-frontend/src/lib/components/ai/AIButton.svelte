@@ -113,8 +113,8 @@
     {#if showTooltip && tooltip}
       <div
         class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-yorha-bg-tertiary border border-yorha-border text-yorha-text-primary text-sm font-mono whitespace-nowrap rounded-none shadow-lg"
-        in:fade={{ duration: 150 }}
-        out:fade={{ duration: 100 }}
+        in:fade={{ duration 150 }}
+        out:fade={{ duration 100 }}
       >
         {tooltip}
         <div
@@ -142,14 +142,14 @@
   				{loading ? 'animate-pulse' : ''}
   			"
       {disabled}
-      on:click={handleClick}
+      onclick={handleClick}
       onkeydown={handleKeydown}
       onmouseenter={showTooltipHandler}
       onmouseleave={hideTooltipHandler}
       onfocus={showTooltipHandler}
       onblur={hideTooltipHandler}
       aria-label={tooltip}
-      in:fly={{ y: 100, duration: 500, easing: quintOut }}
+      in:fly={{ y: 100, duration 500, easing: quintOut }}
     >
       <!-- Background Effects -->
       <div
@@ -163,7 +163,7 @@
             style=";
 							left: {20 + i * 30}%;
 							animation-delay: {i * 0.5}
-							animation-duration: {3 + i * 0.5}
+							animation-duration {3 + i * 0.5}
 						"
           ></div>
         {/each}
@@ -202,7 +202,7 @@
       {#if notification && notificationCount > 0}
         <div
           class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center animate-bounce"
-          in:fly={{ y: -10, duration: 300 }}
+          in:fly={{ y: -10, duration 300 }}
         >
           {notificationCount > 9 ? '9+' : notificationCount}
         </div>
@@ -230,6 +230,6 @@
     }
   }
   .animate-float {
-    animation: float 3s linear infinite;
+    animation float 3s linear infinite;
   }
 </style>

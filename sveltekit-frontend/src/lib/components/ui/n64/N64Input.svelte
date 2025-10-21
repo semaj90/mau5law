@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:focus) and new syntaxes for event handling is not allowed. Use only the onfocus syntax;
+<!-- @migration-task Error while migrating Svelte code: Mixing old (onfocus) and new syntaxes for event handling is not allowed. Use only the onfocus syntax;
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:focus) and new syntaxes for event handling is not allowed. Use only the onfocus syntax -->
+<!-- @migration-task Error while migrating Svelte code: Mixing old (onfocus) and new syntaxes for event handling is not allowed. Use only the onfocus syntax -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from "svelte";
@@ -270,7 +270,7 @@ if (spatialAudio && typeof window !== 'undefined') {
 
 <style>
   .n64-input-container {
-    position: relative;
+    position relative;
     display: inline-block;
     font-family: 'Press Start 2P', monospace;
     /* 3D perspective for N64 depth */
@@ -279,7 +279,7 @@ if (spatialAudio && typeof window !== 'undefined') {
   }
   /* Base input styling */
   .n64-input {
-    position: relative;
+    position relative;
     width: 100%;
     padding: 12px 16px;
     font-family: 'Press Start 2P', monospace;
@@ -288,7 +288,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
     color: #e0e0e0;
     border: 2px solid #505050;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     /* N64-style 3D depth */
     transform: perspective(1000px) rotateX(2deg) translateZ(0);
     box-shadow:
@@ -348,7 +348,7 @@ if (spatialAudio && typeof window !== 'undefined') {
   }
   /* Texture filtering effects */
   .texture-filter-layer {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -392,11 +392,11 @@ if (spatialAudio && typeof window !== 'undefined') {
         transparent 75%,
         rgba(255, 0, 65, 0.03) 100%
       );
-    animation: anisotropic-sweep 3s ease-in-out infinite;
+    animation anisotropic-sweep 3s ease-in-out infinite;
   }
   /* Anti-aliasing layers */
   .aa-layer {
-    position: absolute;
+    position absolute;
     top: -1px;
     left: -1px;
     right: -1px;
@@ -437,7 +437,7 @@ if (spatialAudio && typeof window !== 'undefined') {
   }
   /* Fog effect */
   .fog-layer {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -451,11 +451,11 @@ if (spatialAudio && typeof window !== 'undefined') {
     );
     pointer-events: none;
     z-index: 3,
-    animation: fog-drift 6s ease-in-out infinite;
+    animation fog-drift 6s ease-in-out infinite;
   }
   /* Depth of field */
   .dof-layer {
-    position: absolute;
+    position absolute;
     top: -2px;
     left: -2px;
     right: -2px;
@@ -468,7 +468,7 @@ if (spatialAudio && typeof window !== 'undefined') {
   }
   /* Focus indicator */
   .n64-focus-indicator {
-    position: absolute;
+    position absolute;
     top: -4px;
     left: -4px;
     right: -4px;
@@ -477,7 +477,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     border-radius: 4px;
     opacity: 0,
     transform: scale(0.9);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     pointer-events: none;
     z-index: 5;
     box-shadow:
@@ -529,8 +529,8 @@ if (spatialAudio && typeof window !== 'undefined') {
   .reduced-motion .texture-filter-layer,
   .reduced-motion .aa-layer,
   .reduced-motion .fog-layer {
-    animation: none !important;
-    transition: none !important;
+    animation none !important;
+    transition none !important;
   }
   /* Lighting effects */
   .lighting-enabled .n64-input {

@@ -19,7 +19,7 @@
   let completedJobs = $state([]);
   let systemMetrics = $state({
     nesMemory: { usedRAM: 0, totalRAM: 2048, usedCHR: 0, totalCHR: 8192 },
-    gpuUtilization: 0,
+    gpuUtilization 0,
     vectorProcessingRate: 0,
     glyphCacheHitRate: 0,
     bankSwitchingFreq: 0,
@@ -84,7 +84,7 @@
           usedCHR: Math.min(8192, systemMetrics.nesMemory.usedCHR + (Math.random() - 0.5) * 100),
           totalCHR: 8192
         },
-        gpuUtilization: Math.max(0, Math.min(100, systemMetrics.gpuUtilization + (Math.random() - 0.5) * 10)),
+        gpuUtilization Math.max(0, Math.min(100, systemMetrics.gpuUtilization + (Math.random() - 0.5) * 10)),
         vectorProcessingRate: Math.max(0, systemMetrics.vectorProcessingRate + (Math.random() - 0.5) * 500),
         glyphCacheHitRate: glyphStats.cacheHitRate * 100,
         bankSwitchingFreq: nesGPUMetrics.activeBankMappings ? Object.keys(errors).length: 0,
@@ -263,14 +263,14 @@
       </div>
       <div class="flex items-center gap-3">
         <button
-          on:click={() => (realTimeStats = !realTimeStats)}
+          onclick={() => (realTimeStats = !realTimeStats)}
           class="flex items-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
         >
           <Monitor class="w-4 h-4" />
           Real-time: {realTimeStats ? 'ON' : 'OFF'}
         </button>
         <button
-          on:click={() => (showJobDialog = true)}
+          onclick={() => (showJobDialog = true)}
           class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm text-sm font-medium hover:bg-blue-700"
         >
           <Play class="w-4 h-4" />
@@ -381,7 +381,7 @@
                 {job.analysisType} · {job.useGPU ? `Bank ${job.bankId}` : 'CPU'} · {formatTimeAgo(job.createdAt)}
               </div>
               <div class="flex justify-end mt-2">
-                <button on:click={() => cancelJob(job.id)} class="text-xs text-red-600 hover:text-red-800">
+                <button onclick={() => cancelJob(job.id)} class="text-xs text-red-600 hover:text-red-800">
                   Cancel
                 </button>
               </div>
@@ -560,7 +560,7 @@
         <div class="flex justify-end gap-3 pt-4">
           <button
             type="button"
-            on:click={() => (showJobDialog = false)}
+            onclick={() => (showJobDialog = false)}
             class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             Cancel

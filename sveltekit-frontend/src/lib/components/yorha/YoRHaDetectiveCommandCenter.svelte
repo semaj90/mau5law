@@ -17,7 +17,7 @@
       personsOfInterest: number;
       aiQueries: number;
       systemLoad: number;
-      gpuUtilization: number;
+      gpuUtilization number;
       memoryUsage: number;
       networkLatency: number;
     }
@@ -30,7 +30,7 @@
       personsOfInterest: 8,
       aiQueries: 1543,
       systemLoad: 34,
-      gpuUtilization: 67,
+      gpuUtilization 67,
       memoryUsage: 42,
       networkLatency: 23
     }
@@ -43,17 +43,17 @@
   let notification = $state({ show: false, message: '', type: 'info' });
   // Navigation items
   const navigationItems = [
-    { id: 'dashboard', label: 'COMMAND CENTER', icon: '⌘', active: true },
-    { id: 'evidence', label: 'EVIDENCE', icon: '🔍', route: '/evidenceboard' },
-    { id: 'persons', label: 'PERSONS OF INTEREST', icon: '👤', route: '/yorha/persons' },
-    { id: 'analysis', label: 'ANALYSIS', icon: '📊', route: '/yorha/analysis' },
-    { id: 'search', label: 'GLOBAL SEARCH', icon: '🔎', route: '/yorha/search' },
-    { id: 'terminal', label: 'TERMINAL', icon: '💻', route: '/yorha/terminal' }
+    { id: 'dashboard', label: 'COMMAND CENTER', icon '⌘', active: true },
+    { id: 'evidence', label: 'EVIDENCE', icon '🔍', route: '/evidenceboard' },
+    { id: 'persons', label: 'PERSONS OF INTEREST', icon '👤', route: '/yorha/persons' },
+    { id: 'analysis', label: 'ANALYSIS', icon '📊', route: '/yorha/analysis' },
+    { id: 'search', label: 'GLOBAL SEARCH', icon '🔎', route: '/yorha/search' },
+    { id: 'terminal', label: 'TERMINAL', icon '💻', route: '/yorha/terminal' }
   ];
   // Active cases data (mock)
   let activeCases = $state([
     { id: 'CASE-2024-087', title: 'Corporate Espionage Investigation', status: 'active', priority: 'high', lastUpdate: '2 hours ago' },
-    { id: 'CASE-2024-088', title: 'Missing Person: Dr. Sarah Chen', status: 'active', priority: 'medium', lastUpdate: '4 hours ago' },
+    { id: 'CASE-2024-088', title: 'Missing Person Dr. Sarah Chen', status: 'active', priority: 'medium', lastUpdate: '4 hours ago' },
     { id: 'CASE-2024-089', title: 'Financial Fraud Analysis', status: 'pending', priority: 'low', lastUpdate: '1 day ago' }
   ]);
   // Form fields for new case
@@ -180,13 +180,13 @@
         <p class="timestamp">YoRHa Detective Interface - {formatDateTime(currentTime)}</p>
       </div>
       <div class="header-actions">
-        <button class="header-btn" on:click={openNewCaseModal}>
+        <button class="header-btn" onclick={openNewCaseModal}>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
           </svg>
           NEW CASE
         </button>
-        <button class="header-btn" on:click={handleGlobalSearch}>
+        <button class="header-btn" onclick={handleGlobalSearch}>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
@@ -197,7 +197,7 @@
           </svg>
           GLOBAL SEARCH
         </button>
-        <button class="header-btn ai-assistant" on:click={() => (showAIAssistant = true)}>
+        <button class="header-btn ai-assistant" onclick={() => (showAIAssistant = true)}>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
@@ -223,7 +223,7 @@
             (item as { route?: unknown; id?: unknown; icon?: unknown; label?: unknown }).id
               ? 'active'
               : ''}"
-            on:click={() => handleNavigation(item)}
+            onclick={() => handleNavigation(item)}
           >
             <span class="nav-icon"
               >{(item as { route?: unknown; id?: unknown; icon?: unknown; label?: unknown }).icon}</span
@@ -448,7 +448,7 @@
     color: var(--yorha-dark);
   }
   .yorha-header {
-    position: fixed;
+    position fixed;
 d;
     top: 0,
     left: 0;
@@ -493,7 +493,7 @@ d;
     font-weight: bold;
     color: var(--yorha-dark);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     border-radius: 0,
   }
   .header-btn:hover {
@@ -515,7 +515,7 @@ d;
     padding: 1.5rem;
   }
   .yorha-sidebar {
-    position: sticky;
+    position sticky;
 y;
     top: 5rem;
     height: fit-content;
@@ -527,7 +527,7 @@ y;
   }
   .sidebar-nav {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .sidebar-link {
@@ -542,7 +542,7 @@ y;
     background: none;
     color: var(--yorha-dark);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     border-radius: 0,
   }
   .sidebar-link:hover {
@@ -560,7 +560,7 @@ y;
   }
   .dashboard-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1.5rem;
   }
   .metrics-grid {
@@ -573,7 +573,7 @@ y;
     border: 1px solid var(--yorha-sand-dark);
     border-radius: 0,
     padding: 1rem;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .metric-card:hover {
     transform: translateY(-2px);
@@ -618,7 +618,7 @@ y;
   }
   .cases-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .case-item {
@@ -626,7 +626,7 @@ y;
     border-radius: 0,
     padding: 1rem;
     background-color: white;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .case-item:hover {
     transform: translateX(4px);
@@ -661,12 +661,12 @@ y;
   }
   .health-metrics {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .health-metric {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .health-label {
@@ -690,7 +690,7 @@ y;
   .health-fill {
     height: 100%;
     border-radius: 0,
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .health-fill.normal {
     background-color: #10b981;
@@ -710,7 +710,7 @@ y;
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 50%;
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   .network-indicator.excellent {
     background-color: #10b981;
@@ -739,7 +739,7 @@ y;
       grid-template-columns: 1fr;
     }
     .yorha-sidebar {
-      position: stati;
+      position stati;
 c;
     }
   }
@@ -750,7 +750,7 @@ c;
     border-color: #2E8B57 !important;
     font-weight: bold !important;
     box-shadow: 0 0 10px rgba(46, 139, 87, 0.3) !important;
-    animation: ai-pulse 2s infinite;
+    animation ai-pulse 2s infinite;
   }
   .header-btn.ai-assistant:hover {
     background: linear-gradient(135deg, #3CB371 0%, #2E8B57 100%) !important;
@@ -782,7 +782,7 @@ c;
   .ai-status-indicator.active {
     background: #2E8B57;
     box-shadow: 0 0 8px #2E8B57;
-    animation: ai-blink 1.5s infinite;
+    animation ai-blink 1.5s infinite;
   }
   .ai-status-text {
     font-weight: bold;
@@ -846,7 +846,7 @@ c;
   }
   @media (max-width: 768px) {
     .header-content {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
     }
     .main-content {

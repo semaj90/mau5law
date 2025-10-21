@@ -114,7 +114,7 @@
     type="button"
     class={buttonClasses}
     data-status={aiStatus}
-    on:click={handleClick}
+    onclick={handleClick}
     {disabled}
     aria-label="Open assistant"
   >
@@ -139,7 +139,7 @@
     aria-label="Action button"
     class={buttonClasses}
     data-status={aiStatus}
-    on:click={handleClick}
+    onclick={handleClick}
     {disabled}
   >
     <div class="flex items-center gap-3 px-4 py-3">
@@ -166,7 +166,7 @@
           class="ml-auto p-1 hover:bg-yorha-bg-hover rounded inline-flex items-center justify-center cursor-pointer"
           role="button"
           tabindex="0"
-          on:click={e => {
+          onclick={e => {
             e.stopPropagation();
             toggleVoiceInput();
           }}
@@ -199,7 +199,7 @@
     type="button"
     class={buttonClasses}
     data-status={aiStatus}
-    on:click={handleClick}
+    onclick={handleClick}
     {disabled}
     aria-label="AI Assistant"
     title={`AI Assistant — Status: ${aiStatus}${unreadCount > 0 ? ` — ${unreadCount} new` : ''}`}
@@ -218,7 +218,7 @@
     aria-label="Action button"
     class={buttonClasses}
     data-status={aiStatus}
-    on:click={handleClick}
+    onclick={handleClick}
     {disabled}
   >
     <div class="flex items-center justify-between w-full">
@@ -255,7 +255,7 @@
             class="p-2 hover:bg-yorha-bg-hover rounded-lg inline-flex items-center justify-center cursor-pointer"
             role="button"
             tabindex="0"
-            on:click={e => {
+            onclick={e => {
               e.stopPropagation();
               toggleVoiceInput();
             }}
@@ -292,18 +292,18 @@
 <!-- Remove the disabled tooltip section as it's now handled in the compact variant above -->
 <style>
   .ai-assistant-btn {
-    position: relative;
+    position relative;
     overflow: hidden;
   }
   .ai-assistant-btn::before {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: -100%;
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(var(--yorha-accent-gold-rgb), 0.2), transparent);
-    transition: left 0.5s ease;
+    transition left 0.5s ease;
   }
   .ai-assistant-btn:hover::before {
     left: 100%;
@@ -319,7 +319,7 @@
     }
   }
   .ai-assistant-btn[data-status='processing'] {
-    animation: ai-pulse 2s infinite;
+    animation ai-pulse 2s infinite;
   }
   /* Glowing effect for floating button */
   .ai-assistant-btn.fixed:hover {

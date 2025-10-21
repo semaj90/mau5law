@@ -16,7 +16,7 @@
   interface QuickAction {
     id: string;
     label: string;
-    icon: string;
+    icon string;
     action?: 'modal'; // Specific action type for 'new-case'
     route?: string;
     color: string;
@@ -53,7 +53,7 @@
       personsOfInterest: 0,
       aiQueries: 0,
       systemLoad: 0,
-      gpuUtilization: 0,
+      gpuUtilization 0,
       memoryUsage: 0,
       networkLatency: 0,
     },
@@ -65,24 +65,24 @@
   // Error boundary state
   let componentError = $state<Error | null>(null);
   let recentActivity = $state([
-    { id: 1, action: 'Case Analysis Completed', target: 'CASE-2024-087', time: '2 minutes ago', type: 'success' },
-    { id: 2, action: 'Evidence Upload', target: 'Digital Forensics Report', time: '5 minutes ago', type: 'info' },
-    { id: 3, action: 'AI Query Processed', target: 'Contract Liability Analysis', time: '8 minutes ago', type: 'ai' },
-    { id: 4, action: 'System Alert', target: 'GPU Memory Optimization', time: '12 minutes ago', type: 'warning' },
-    { id: 5, action: 'New Case Created', target: 'CASE-2024-088', time: '15 minutes ago', type: 'success' },
+    { id: 1, action 'Case Analysis Completed', target: 'CASE-2024-087', time: '2 minutes ago', type: 'success' },
+    { id: 2, action 'Evidence Upload', target: 'Digital Forensics Report', time: '5 minutes ago', type: 'info' },
+    { id: 3, action 'AI Query Processed', target: 'Contract Liability Analysis', time: '8 minutes ago', type: 'ai' },
+    { id: 4, action 'System Alert', target: 'GPU Memory Optimization', time: '12 minutes ago', type: 'warning' },
+    { id: 5, action 'New Case Created', target: 'CASE-2024-088', time: '15 minutes ago', type: 'success' },
   ]);
   // Real-time search integration
   const { state: searchState, search: performSearch } = useRealTimeSearch();
   // Quick actions
   const quickActions: QuickAction[] = [
     // Explicitly type the array
-    { id: 'new-case', label: 'Create New Case', icon: '📁', action: 'modal', color: 'blue' },
-    { id: 'upload-evidence', label: 'Upload Evidence', icon: '🔍', route: '/evidence/upload', color: 'green' },
-    { id: 'ai-analysis', label: 'AI Analysis', icon: '🤖', route: '/ai-assistant', color: 'purple' },
-    { id: 'ai-assistant-3d', label: '3D AI Assistant', icon: '🎮', route: '/ai-assistant-demo', color: 'pink' },
-    { id: 'search-global', label: 'Global Search', icon: '🔎', route: '/search', color: 'orange' },
-    { id: 'generate-report', label: 'Generate Report', icon: '📊', route: '/report-builder', color: 'teal' },
-    { id: 'memory-dashboard', label: 'Memory Graph', icon: '🧠', route: '/memory-dashboard', color: 'cyan' },
+    { id: 'new-case', label: 'Create New Case', icon '📁', action 'modal', color: 'blue' },
+    { id: 'upload-evidence', label: 'Upload Evidence', icon '🔍', route: '/evidence/upload', color: 'green' },
+    { id: 'ai-analysis', label: 'AI Analysis', icon '🤖', route: '/ai-assistant', color: 'purple' },
+    { id: 'ai-assistant-3d', label: '3D AI Assistant', icon '🎮', route: '/ai-assistant-demo', color: 'pink' },
+    { id: 'search-global', label: 'Global Search', icon '🔎', route: '/search', color: 'orange' },
+    { id: 'generate-report', label: 'Generate Report', icon '📊', route: '/report-builder', color: 'teal' },
+    { id: 'memory-dashboard', label: 'Memory Graph', icon '🧠', route: '/memory-dashboard', color: 'cyan' },
   ];
   // helpers to safely coerce numbers
   function safeNumber(n: number | undefined | null) {
@@ -147,7 +147,7 @@
     }
   });
 
-  function handleQuickAction(action: QuickAction) {
+  function handleQuickAction(action QuickAction) {
     selectedCard = action.id ?? null;
     if (action.action === 'modal' && action.id === 'new-case') {
       showCaseModal = true;
@@ -165,7 +165,7 @@
     recentActivity = [
       {
         id: Date.now(),
-        action: 'New Case Created',
+        action 'New Case Created',
         target: newCase.title || `Case ${newCase.caseNumber}`,
         time: 'just now',
         type: 'success',
@@ -246,14 +246,14 @@
   // add a component ref to attach runtime event listeners (typed as any to avoid TS component-event coupling)
   let searchComponent = $state<any>(null);
 
-  // attach the 'select' listener at runtime to avoid compile-time on: event type checks
+  // attach the 'select' listener at runtime to avoid compile-time on event type checks
   $effect(() => {
     if (!searchComponent) return;
     const handler = (e: CustomEvent<SearchResultEventDetail>) => {
       recentActivity = [
         {
           id: Date.now(),
-          action: 'Search Query Executed',
+          action 'Search Query Executed',
           target: `"${(e as CustomEvent).detail.title}"`,
           time: 'just now',
           type: 'ai',
@@ -276,7 +276,7 @@
     <p class="text-red-100 font-mono text-sm mb-4">{componentError.message}</p>
     <button
       class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-      on:click={() => {
+      onclick={() => {
         componentError = null;
       }}
       aria-label="Dismiss error and retry"
@@ -430,7 +430,7 @@
             class="action-nier-bits-card border rounded-lg p-4 text-center transition-all duration-300 hover:scale-105 hover:shadow-lg {getActionColor(
               action.color
             )} {selectedCard === action.id ? 'scale-95' : ''}"
-            on:click={() => handleQuickAction(action)}
+            onclick={() => handleQuickAction(action)}
             tabindex="0"
             aria-label="{action.label} - {action.icon}"
             onkeydown={e => {
@@ -516,7 +516,7 @@
 {#if showCaseModal}
   <div
     class="modal-backdrop fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
-    on:click={handleModalBackdropClick}
+    onclick={handleModalBackdropClick}
     onkeydown={e => {
       if (e.key === 'Escape') showCaseModal = false;
     }}
@@ -525,11 +525,11 @@
     aria-labelledby="case-modal-title"
     tabindex="-1"
   >
-    <div class="modal-content max-w-4xl w-full" on:click={e => e.stopPropagation()} role="none" tabindex="-1">
+    <div class="modal-content max-w-4xl w-full" onclick={e => e.stopPropagation()} role="none" tabindex="-1">
       <YoRHaCaseForm
-        on:success={handleCaseCreationSuccess}
-        on:error={handleCaseCreationError}
-        on:close={() => (showCaseModal = false)}
+        onsuccess={handleCaseCreationSuccess}
+        onerror={handleCaseCreationError}
+        onclose={() => (showCaseModal = false)}
       />
     </div>
   </div>
@@ -550,7 +550,7 @@
   }
   .metric-card {
     backdrop-filter: blur(10px);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .metric-card:hover {
     transform: translateY(-2px);
@@ -559,11 +559,11 @@
   .action-card {
     backdrop-filter: blur(10px);
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .activity-item {
     backdrop-filter: blur(10px);
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .activity-item:hover {
     transform: translateX(4px);
@@ -584,15 +584,15 @@
     }
   }
   .animate-pulse {
-    animation: pulse-glow 2s infinite;
+    animation pulse-glow 2s infinite;
   }
   /* Modal styling */
   .modal-backdrop {
     backdrop-filter: blur(10px);
-    animation: fadeIn 0.2s ease-in-out;
+    animation fadeIn 0.2s ease-in-out;
   }
   .modal-content {
-    animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   @keyframes fadeIn {
     from {

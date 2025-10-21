@@ -91,7 +91,7 @@ https://svelte.dev/e/js_parse_error -->
     fps: 0,
     frameTime: 0,
     shaderCompileTime: 0,
-    gpuUtilization: 0,
+    gpuUtilization 0,
     aaQuality: 0,
     pixelThroughput: 0,
     cacheEfficiency: 0,
@@ -111,7 +111,7 @@ https://svelte.dev/e/js_parse_error -->
   const yorhaShaderTemplates = {
     vertex: `
       @vertex
-      fn vs_main(@location(0) position: vec;
+      fn vs_main(@location(0) position vec;
 2<f32>) -> @builtin(position) vec4<f32> {
         return vec4<f32>(position, 0.0, 1.0);
       }
@@ -119,7 +119,7 @@ https://svelte.dev/e/js_parse_error -->
     fxaa_fragment: `
       @group(0) @binding(0) var texSampler: sampler;
       @group(0) @binding(1) var inputTexture: texture_2d<f32>;
-      @group(0) @binding(2) var<uniform> resolution: vec2<f32>;
+      @group(0) @binding(2) var<uniform> resolution vec2<f32>;
       @group(0) @binding(3) var<uniform> fxaaParams: vec4<f32>; // subpixel, edgeThreshold, edgeThresholdMin, _unused
       // YoRHa-enhanced FXAA with geometric pattern awareness
       fn yorhaLuma(rgb: vec3<f32>) -> f32 {
@@ -728,9 +728,9 @@ if (preloadShaders) {
       <div class="error-title">SHADER ERROR</div>
       <div class="error-message">{errorMessage}</div>
       <div class="error-actions">
-        <button class="retry-button" on:click={() => initializeShaderCache()}> RETRY COMPILATION </button>
+        <button class="retry-button" onclick={() => initializeShaderCache()}> RETRY COMPILATION </button>
         {#if enableHotReload}
-          <button class="hotreload-button" on:click={hotReloadShader}> HOT RELOAD </button>
+          <button class="hotreload-button" onclick={hotReloadShader}> HOT RELOAD </button>
         {/if}
       </div>
     </div>
@@ -759,7 +759,7 @@ if (preloadShaders) {
   <!-- Hot Reload Controls -->
   {#if enableHotReload && enableDebugMode}
     <div class="hotreload-controls">
-      <button class="hotreload-trigger" on:click={hotReloadShader}> 🔥 HOT RELOAD </button>
+      <button class="hotreload-trigger" onclick={hotReloadShader}> 🔥 HOT RELOAD </button>
       <div class="hotreload-count">{shaderHotReloadCount}</div>
     </div>
   {/if}
@@ -767,7 +767,7 @@ if (preloadShaders) {
 
 <style>
   .yorha-aa-cache-container {
-    position: relative;
+    position relative;
     display: inline-block;
     font-family: 'Rajdhani', 'Courier New', monospace;
     border: 1px solid rgba(186, 175, 137, 0.3);
@@ -778,7 +778,7 @@ if (preloadShaders) {
     display: block;
     border: 1px solid rgba(186, 175, 137, 0.5);
     image-rendering: pixelated;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   /* AA Quality Classes */
   .standard-aa {
@@ -803,7 +803,7 @@ if (preloadShaders) {
   }
   /* AA Type Indicator */
   .aa-type-indicator {
-    position: absolute;
+    position absolute;
     top: 6px;
     left: 6px;
     display: flex;
@@ -830,7 +830,7 @@ if (preloadShaders) {
   }
   /* Shader Metrics Overlay */
   .shader-metrics-overlay {
-    position: absolute;
+    position absolute;
     top: 6px;
     right: 6px;
     background: rgba(0, 0, 0, 0.95);
@@ -852,7 +852,7 @@ if (preloadShaders) {
   }
   .metrics-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1px;
   }
   .metric-row {
@@ -876,7 +876,7 @@ if (preloadShaders) {
   }
   .metric-value.poor {
     color: #ff6600;
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   .metric-value.aa-quality {
     color: #ff00ff;
@@ -886,7 +886,7 @@ if (preloadShaders) {
   }
   /* Compilation Overlay */
   .compilation-overlay {
-    position: absolute;
+    position absolute;
     inset: 0,
     display: flex;
     align-items: center;
@@ -896,27 +896,27 @@ if (preloadShaders) {
   }
   .compilation-spinner {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 8px;
     color: #baa989;
   }
   .spinner-rings {
-    position: relative;
+    position relative;
     width: 50px;
     height: 50px;
   }
   .spinner-rings div {
-    position: absolute;
+    position absolute;
     border: 2px solid transparent;
     border-radius: 50%;
-    animation: spin 2s linear infinite;
+    animation spin 2s linear infinite;
   }
   .ring-1 {
     width: 50px;
     height: 50px;
     border-top: 2px solid #baa989;
-    animation-duration: 2,
+    animation-duration 2,
   }
   .ring-2 {
     width: 35px;
@@ -924,8 +924,8 @@ if (preloadShaders) {
     top: 7px;
     left: 7px;
     border-right: 2px solid #74a0e2;
-    animation-duration: 1.5;
-    animation-direction: rever;
+    animation-duration 1.5;
+    animation-direction rever;
   }
   .ring-3 {
     width: 20px;
@@ -933,13 +933,13 @@ if (preloadShaders) {
     top: 15px;
     left: 15px;
     border-bottom: 2px solid #ff6b9d;
-    animation-duration: 1,
+    animation-duration 1,
   }
   .compilation-text {
     font-size: 10px;
     font-weight: bold;
     letter-spacing: 1px;
-    animation: pulse 2s ease-in-out infinite;
+    animation pulse 2s ease-in-out infinite;
   }
   .compilation-details {
     font-size: 8px;
@@ -947,10 +947,10 @@ if (preloadShaders) {
   }
   /* Error Overlay */
   .error-overlay {
-    position: absolute;
+    position absolute;
     inset: 0,
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     gap: 6px;
@@ -989,10 +989,10 @@ if (preloadShaders) {
     font-size: 8px;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
-  .retry-button: hover
-  .hotreload-button:hover {
+  .retry-button hover
+  .hotreload-buttonhover {
     background: rgba(255, 255, 255, 0.2);
     transform: translateY(-1px);
   }
@@ -1002,7 +1002,7 @@ if (preloadShaders) {
   }
   /* Debug Panel */
   .debug-panel {
-    position: absolute;
+    position absolute;
     bottom: 100%;
     left: 0,
     right: 0;
@@ -1025,7 +1025,7 @@ if (preloadShaders) {
   }
   .debug-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1px;
   }
   .debug-content div {
@@ -1038,7 +1038,7 @@ if (preloadShaders) {
   }
   /* Hot Reload Controls */
   .hotreload-controls {
-    position: absolute;
+    position absolute;
     bottom: 6px;
     right: 6px;
     display: flex;
@@ -1054,7 +1054,7 @@ if (preloadShaders) {
     font-size: 8px;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .hotreload-trigger:hover {
     background: #ff6400;
@@ -1093,23 +1093,23 @@ if (preloadShaders) {
   /* Responsive Design */
   @media (max-width: 768px) {
     .shader-metrics-overlay {
-      position: stati;
+      position stati;
 c;
       margin-top: 4px;
       width: 100%;
     }
     .metrics-content {
-      flex-direction: row;
+      flex-direction row;
       flex-wrap: wrap;
       gap: 4px;
     }
     .metric-row {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
       min-width: 50px;
     }
     .debug-panel {
-      position: stati;
+      position stati;
 c;
       margin-top: 4px;
     }
@@ -1128,16 +1128,16 @@ c;
     }
   }
   /* Reduced Motion */
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     .spinner-rings div {
-      animation: none;
+      animation none;
       border: 2px solid currentColor;
     }
     .compilation-text {
-      animation: none;
+      animation none;
     }
     .metric-value.poor {
-      animation: none;
+      animation none;
       color: #ff0000;
     }
   }

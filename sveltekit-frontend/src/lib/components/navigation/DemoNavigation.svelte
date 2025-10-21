@@ -6,42 +6,42 @@
   interface NavItem {
     label: string;
     href: string;
-    description: string;
-    icon: string;
+    description string;
+    icon string;
     external?: boolean;
   }
   const navItems: NavItem[] = [
     {
       label: 'AI Document Demo',
       href: '/demo/document-ai',
-      description: 'Document upload with AI processing',
-      icon: '🤖',
+      description 'Document upload with AI processing',
+      icon '🤖',
     },
     {
       label: 'AI Service Test',
       href: 'http://localhost:8081/test',
-      description: 'Go microservice test interface',
-      icon: '🧪',
+      description 'Go microservice test interface',
+      icon '🧪',
       external: true,
     },
     {
       label: 'Service Health',
       href: 'http://localhost:8081/api/health',
-      description: 'System health API endpoint',
-      icon: '💚',
+      description 'System health API endpoint',
+      icon '💚',
       external: true,
     },
     {
       label: 'Dev Tools',
       href: '/dev/mcp-tools',
-      description: 'MCP and development tools',
-      icon: '🛠️',
+      description 'MCP and development tools',
+      icon '🛠️',
     },
     {
       label: 'Legal AI Cases',
       href: '/cases',
-      description: 'Case management interface',
-      icon: '⚖️',
+      description 'Case management interface',
+      icon '⚖️',
     }
   ];
   let isOpen = $state(false);
@@ -64,7 +64,7 @@
   <!-- Floating Navigation Button -->
   <button
     class="nav-toggle fixed top-4 right-4 z-50 w-12 h-12 bg-green-600 hover:bg-green-700 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center text-white font-bold text-lg"
-    on:click={toggleNav}
+    onclick={toggleNav}
     class:rotate-45={isOpen}
   >
     {isOpen ? '✕' : '🚀'}
@@ -80,7 +80,7 @@
           <button
             class="nav-item w-full text-left p-3 rounded-lg transition-all duration-200 border border-transparent hover: border-green-500 hover:bg-green-500/10";
             class:active={isCurrentPage((item as { external?: unknown; href?: unknown; icon?: unknown; label?: unknown; description?: unknown; active?: unknown }).href)}
-            on:click={() => navigateTo(item)}
+            onclick={() => navigateTo(item)}
           >
             <div class="flex items-start gap-3">
               <div class="text-2xl">{(item as { external?: unknown; href?: unknown; icon?: unknown; label?: unknown; description?: unknown; active?: unknown }).icon}</div>
@@ -103,25 +103,25 @@
         <div class="grid grid-cols-2 gap-2">
           <button
             class="px-3 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm transition-colors"
-            on:click={() => window.open('http://localhost:8081/api/health', '_blank')}
+            onclick={() => window.open('http://localhost:8081/api/health', '_blank')}
           >
             💚 Health
           </button>
           <button
             class="px-3 py-2 bg-purple-600 hover:bg-purple-700 rounded text-sm transition-colors"
-            on:click={() => navigateTo(navItems[0])}
+            onclick={() => navigateTo(navItems[0])}
           >
             🤖 AI Demo
           </button>
           <button
             class="px-3 py-2 bg-yellow-600 hover:bg-yellow-700 rounded text-sm transition-colors"
-            on:click={() => window.open('http://localhost:8081/test', '_blank')}
+            onclick={() => window.open('http://localhost:8081/test', '_blank')}
           >
             🧪 Test UI
           </button>
           <button
             class="px-3 py-2 bg-gray-600 hover:bg-gray-700 rounded text-sm transition-colors"
-            on:click={() => navigateTo({ href: '/dev/mcp-tools', external: false } as NavItem)}
+            onclick={() => navigateTo({ href: '/dev/mcp-tools', external: false } as NavItem)}
           >
             🛠️ Tools
           </button>
@@ -157,7 +157,7 @@
       type="button"
       aria-label="Close navigation"
       class="fixed inset-0 bg-black/50 z-30 backdrop-btn"
-      on:click={onkeydown}
+      onclick={onkeydown}
       tabindex="0"
     ></button>
   {/if}
@@ -188,7 +188,7 @@
     }
   }
   .animate-slideIn {
-    animation: slideIn 0.3s ease-out;
+    animation slideIn 0.3s ease-out;
   }
   /* Remove native button chrome for the full-screen backdrop while keeping utility classes' background */
   .backdrop-btn {

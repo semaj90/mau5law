@@ -243,7 +243,7 @@
               <!-- Summary -->
               {#if message.summary}
                 <div class="mt-2 text-xs text-slate-400">
-                  Total execution: {message.summary.totalExecutionTime?.toFixed(2)}ms | Success:
+                  Total execution {message.summary.totalExecutionTime?.toFixed(2)}ms | Success:
                   {message.summary.successfulTools}/{message.summary.toolsUsed}
                 </div>
               {/if}
@@ -278,7 +278,7 @@
       <div class="flex gap-2">
         <button
           class="nes-btn is-success"
-          on:click={sendQuery}
+          onclick={sendQuery}
           disabled={isProcessing || !query.trim()}
         >
           {#if isProcessing}
@@ -289,7 +289,7 @@
           Send
         </button>
 
-        <button class="nes-btn is-warning" on:click={clearConversation} disabled={isProcessing}>
+        <button class="nes-btn is-warning" onclick={clearConversation} disabled={isProcessing}>
           Clear
         </button>
       </div>
@@ -307,7 +307,7 @@
       {#each sampleQueries as sample}
         <button
           class="bg-slate-800 hover:bg-slate-700 transition-colors p-3 rounded border border-slate-700 text-left text-sm text-slate-300"
-          on:click={() => useSampleQuery(sample)}
+          onclick={() => useSampleQuery(sample)}
           disabled={isProcessing}
         >
           <span class="text-gold-400 mr-2">→</span>
@@ -330,7 +330,7 @@
   }
 
   .animate-spin {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
 
   @keyframes spin {

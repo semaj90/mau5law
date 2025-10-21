@@ -128,7 +128,7 @@
     border-radius: 6px;
     cursor: pointer;
     font-weight: 500,
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     border: none;
   }
   .evidence-upload-btn:hover {
@@ -150,7 +150,7 @@
     padding: 0.75rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     cursor: grab;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     min-width: 180px;
     max-width: 220px;
     user-select: none;

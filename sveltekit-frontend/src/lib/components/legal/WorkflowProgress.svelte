@@ -13,15 +13,15 @@ Visual progress indicator for the Evidence Chain of Custody workflow
   import { CheckCircle, Clock, AlertCircle } from 'lucide-svelte';
   // Define workflow stages
   const workflowStages = [
-    { id: 'idle', name: 'Idle', description: 'Waiting to start' },
-    { id: 'evidence-intake', name: 'Evidence Intake', description: 'Taking evidence into custody' },
-    { id: 'integrity-verification', name: 'Integrity Check', description: 'Verifying evidence integrity' },
-    { id: 'ai-analysis', name: 'AI Analysis', description: 'Performing AI-powered analysis' },
-    { id: 'collaboration', name: 'Collaboration', description: 'Team review and collaboration' },
-    { id: 'custody-transfer', name: 'Custody Transfer', description: 'Transferring custody' },
-    { id: 'awaiting-approval', name: 'Awaiting Approval', description: 'Waiting for supervisor approval' },
-    { id: 'finalization', name: 'Finalization', description: 'Finalizing custody workflow' },
-    { id: 'completed', name: 'Completed', description: 'Workflow completed successfully' },
+    { id: 'idle', name: 'Idle', description 'Waiting to start' },
+    { id: 'evidence-intake', name: 'Evidence Intake', description 'Taking evidence into custody' },
+    { id: 'integrity-verification', name: 'Integrity Check', description 'Verifying evidence integrity' },
+    { id: 'ai-analysis', name: 'AI Analysis', description 'Performing AI-powered analysis' },
+    { id: 'collaboration', name: 'Collaboration', description 'Team review and collaboration' },
+    { id: 'custody-transfer', name: 'Custody Transfer', description 'Transferring custody' },
+    { id: 'awaiting-approval', name: 'Awaiting Approval', description 'Waiting for supervisor approval' },
+    { id: 'finalization', name: 'Finalization', description 'Finalizing custody workflow' },
+    { id: 'completed', name: 'Completed', description 'Workflow completed successfully' },
   ];
   function getStageIndex(stageId: string): number {
     return workflowStages.findIndex(s => s.id === stageId);
@@ -226,7 +226,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
 
 <style>
   .workflow-progress {
-    animation: fadeInUp 0.5s ease-out;
+    animation fadeInUp 0.5s ease-out;
   }
   @keyframes fadeInUp {
     from {
@@ -241,7 +241,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
   /* Smooth transitions for progress elements */
   .workflow-progress * {
     transition-property: color, background-color, border-color, transform, opacity;
-    transition-duration: 300m;
-    transition-timing-function: ease-in-out;
+    transition-duration 300m;
+    transition-timing-function ease-in-out;
   }
 </style>

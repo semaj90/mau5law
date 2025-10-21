@@ -81,7 +81,7 @@
    * Initialize NES-inspired texture streaming with LOD management
    */
   async function initializeTextureStreaming() {
-    // Placeholder initialization: could warm up pipelines or allocate buffers
+    // Placeholder initialization could warm up pipelines or allocate buffers
     // For now just proceed to streaming logic executed below
     return Promise.resolve();
   }
@@ -276,14 +276,14 @@
 <style>
   /* NES-inspired container styling */
   .nes-container {
-    position: relative;
+    position relative;
     border: 2px solid #000;
     background: #fcfcfc;
     image-rendering: pixelated;
     font-family: 'Courier New', monospace;
   }
   .nes-loading {
-    animation: nes-blink 1s infinite;
+    animation nes-blink 1s infinite;
     border-color: #3cbcfc;
   }
   .nes-error {
@@ -291,13 +291,13 @@
     background: #ffeee6;
   }
   .nes-texture-container {
-    position: relative;
+    position relative;
     width: 100%;
     height: 100%;
     overflow: hidden;
   }
   .nes-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -306,7 +306,7 @@
   }
   .nes-loading-container {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     width: 100%;
@@ -315,7 +315,7 @@
   }
   .nes-spinner {
     font-size: 16px;
-    animation: nes-spin 0.5s infinite;
+    animation nes-spin 0.5s infinite;
   }
   .nes-loading-text {
     font-size: 8px;
@@ -324,7 +324,7 @@
   }
   .nes-error-container {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     width: 100%;

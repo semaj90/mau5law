@@ -64,7 +64,7 @@
   .public-layout {
     min-height: 100vh;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     background: var(--console-gradient-main, linear-gradient(135deg, #0f0f23, #1a1a2e));
     color: var(--console-fg, white);
   }
@@ -171,7 +171,7 @@
     }
 
     .footer-content {
-      flex-direction: column;
+      flex-direction column;
       text-align: center;
       gap: 1rem;
     }

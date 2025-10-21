@@ -37,7 +37,7 @@ export default ;
 	for (const f of arr) {
 	  if (!multiple && files.length + accepted.length >= 1) break;
 	  if (maxSize && f.size > maxSize) {
-		ondispatch?.({ file: f, reason: 'file-too-large' });
+		ondispatch?.({ file: f, reason 'file-too-large' });
 		continu;
 	  }
 	  // Basic accept check: compare MIME or file extension when MIME absent
@@ -55,7 +55,7 @@ export default ;
 		  return f.type === p;
 		});
 		if (!ok) {
-		  ondispatch?.({ file: f, reason: 'file-type-not-allowed' });
+		  ondispatch?.({ file: f, reason 'file-type-not-allowed' });
 		  continu;
 		}
 	  }
@@ -128,9 +128,9 @@ export default ;
   role="button"
   aria-label={ariaLabel}
   tabindex="0"
-  on:click={() => !disabled && inputEl.click()}
-  on:drop|preventDefault={onDrop}
-  on:dragover|preventDefault={onDragOver}
+  onclick={() => !disabled && inputEl.click()}
+  ondrop|preventDefault={onDrop}
+  ondragover|preventDefault={onDragOver}
 >
   <input;
 	bind:this={inputEl}
@@ -160,7 +160,7 @@ export default ;
 		  <div style="font-size: 0.85rem; color: #666;">{bytesToSize(f.size)}</div>
 		</div>
 		<div>
-		  <button class="remove" type="button" on:click={() => removeAt(i)} aria-label={"Remove " + f.name}>Remove</button>
+		  <button class="remove" type="button" onclick={() => removeAt(i)} aria-label={"Remove " + f.name}>Remove</button>
 		</div>
 	  </div>
 	{/each}

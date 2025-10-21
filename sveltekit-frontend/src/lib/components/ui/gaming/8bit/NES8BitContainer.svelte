@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:on:mouseenter) and new syntaxes for event handling is not allowed. Use only the onon:mouseenter syntax;
+<!-- @migration-task Error while migrating Svelte code: Mixing old (ononmouseenter) and new syntaxes for event handling is not allowed. Use only the ononmouseenter syntax;
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:on:mouseenter) and new syntaxes for event handling is not allowed. Use only the onon:mouseenter syntax -->
+<!-- @migration-task Error while migrating Svelte code: Mixing old (ononmouseenter) and new syntaxes for event handling is not allowed. Use only the ononmouseenter syntax -->
 <!--
   NES 8-Bit Container Component
   Authentic NES.css container with enhanced features
@@ -131,7 +131,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     {minHeight ? `--container-min-height: ${minHeight}` : ''}
     {style}
   "
-  on:click={handleClick}
+  onclick={handleClick}
   onOnmouseenter={role}
   tabindex={onClick && !disabled ? 0 : undefined}
 >
@@ -160,7 +160,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     image-rendering: -moz-crisp-edge;
     image-rendering: crisp-edge;
 /* Layout */ {}
-    position: relative;
+    position relative;
     display: block;
     box-sizing: border-box;
 /* Optional constraints */ {}
@@ -176,7 +176,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     margin-top: 1rem;
   }
   :global(.nes-8bit-container.with-title .title) {
-    position: absolute;
+    position absolute;
     top: -0.75rem;
     left: 1rem;
     background-color: var(--container-bg);
@@ -207,7 +207,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
   :global(.nes-8bit-container.is-centered .container-content) {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
   }
@@ -237,7 +237,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
 /* Container content wrapper */ {}
   .container-content {
-    position: relative;
+    position relative;
     z-index: 0,
   }
 /* Interactive container styles */ {}
@@ -246,7 +246,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
-    transition: transform 50ms ease-out;
+    transition transform 50ms ease-out;
   }
   :global(.nes-8bit-container[role='button']:hover) {
     transform: scale(1.01);
@@ -268,7 +268,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
 /* Scanlines effect */ {}
   :global($1) {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,

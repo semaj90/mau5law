@@ -50,7 +50,7 @@ await loadSystemCapabilities();
     demoResults = null;
     try {
       const requestData = {
-        operation: selectedOperation;
+        operation selectedOperation;
         data: {
           batchSize: config.batchSize,
           iterations: config.iterations,
@@ -60,7 +60,7 @@ await loadSystemCapabilities();
         },
         options: {
           useWebGPU: true
-          enableCompression: true
+          enableCompression true
           parallelProcessing: true
         }
       }
@@ -180,7 +180,7 @@ await loadSystemCapabilities();
     {/if}
     <button
       class="run-demo-btn"
-      on:click={runDemo}
+      onclick={runDemo}
       disabled={loading}
     >
       {loading ? '🔄 Running Demo...' : '🚀 Run Demo'}
@@ -384,7 +384,7 @@ await loadSystemCapabilities();
   }
   .control-group label, .config-row label {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .control-group label span, .config-row label span {
@@ -418,7 +418,7 @@ await loadSystemCapabilities();
     padding: 0.75rem 1.5rem;
     font-weight: 600,
     cursor: pointer;
-    transition: background-color 0.2;
+    transition background-color 0.2;
   }
   .run-demo-btn:hover:not(:disabled) {,
     background: #1d4ed8;

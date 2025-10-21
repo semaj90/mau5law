@@ -62,12 +62,12 @@ https://svelte.dev/e/js_parse_error -->
 
   // File categories
   const categories = [
-    { value: '', label: 'All Files', icon: Folder },
-    { value: 'image', label: 'Images', icon: Image },
-    { value: 'video', label: 'Videos', icon: Video },
-    { value: 'document', label: 'Documents', icon: FileText },
-    { value: 'audio', label: 'Audio', icon: Music },
-    { value: 'archive', label: 'Archives', icon: Archive },
+    { value: '', label: 'All Files', icon Folder },
+    { value: 'image', label: 'Images', icon Image },
+    { value: 'video', label: 'Videos', icon Video },
+    { value: 'document', label: 'Documents', icon FileText },
+    { value: 'audio', label: 'Audio', icon Music },
+    { value: 'archive', label: 'Archives', icon Archive },
   ];
 
   // Get caseId from URL if not provided as prop
@@ -111,7 +111,7 @@ https://svelte.dev/e/js_parse_error -->
         type: 'error',
         title: 'Error Loading Evidence',
         message: 'Failed to load evidence files. Please try again.',
-        duration: 5000,
+        duration 5000,
       });
     } finally {
       loading = false;
@@ -235,7 +235,7 @@ https://svelte.dev/e/js_parse_error -->
         type: 'error',
         title: 'Upload Failed',
         message: err instanceof Error ? err.message : 'File upload failed',
-        duration: 5000,
+        duration 5000,
       });
     } finally {
       uploading = false;
@@ -274,7 +274,7 @@ https://svelte.dev/e/js_parse_error -->
             type: 'warning',
             title: 'Some Uploads Failed',
             message: `${result.failureCount} files failed to upload`,
-            duration: 8000,
+            duration 8000,
           });
         }
         uploadFiles = null;
@@ -288,7 +288,7 @@ https://svelte.dev/e/js_parse_error -->
         type: 'error',
         title: 'Bulk Upload Failed',
         message: err instanceof Error ? err.message : 'Bulk upload failed',
-        duration: 5000,
+        duration 5000,
       });
     } finally {
       uploading = false;
@@ -366,7 +366,7 @@ https://svelte.dev/e/js_parse_error -->
         <Tooltip content="Refresh files">
           <button
             class="nes-btn is-warning refresh-btn"
-            on:click={() => loadEvidenceFiles()}
+            onclick={() => loadEvidenceFiles()}
             disabled={loading}
             aria-label="Refresh evidence files"
           >
@@ -375,7 +375,7 @@ https://svelte.dev/e/js_parse_error -->
         </Tooltip>
 
         <Tooltip content="Upload files">
-          <button class="nes-btn is-success" on:click={() => (showUploadModal = true)} disabled={!caseId}>
+          <button class="nes-btn is-success" onclick={() => (showUploadModal = true)} disabled={!caseId}>
             <Upload class="icon" />
             UPLOAD
           </button>
@@ -413,7 +413,7 @@ https://svelte.dev/e/js_parse_error -->
       <Tooltip content="Toggle view mode">
         <button
           class="nes-btn view-toggle"
-          on:click={() => (viewMode = viewMode === 'grid' ? 'list' : 'grid')}
+          onclick={() => (viewMode = viewMode === 'grid' ? 'list' : 'grid')}
           aria-label="Toggle view mode"
         >
           {#if viewMode === 'grid'}
@@ -461,7 +461,7 @@ https://svelte.dev/e/js_parse_error -->
           </button>
           <button
             class="nes-btn"
-            on:click={() => {
+            onclick={() => {
               selectedFiles.clear();
               selectedFiles = selectedFiles;
               showBulkActions = false;
@@ -488,7 +488,7 @@ https://svelte.dev/e/js_parse_error -->
           <h3 class="nes-text is-error">Error Loading Files</h3>
           <div class="error-message">{error}</div>
         </div>
-        <button class="nes-btn is-warning" on:click={() => loadEvidenceFiles()}>
+        <button class="nes-btn is-warning" onclick={() => loadEvidenceFiles()}>
           <RefreshCw class="icon" />
           Retry
         </button>
@@ -498,9 +498,9 @@ https://svelte.dev/e/js_parse_error -->
       <div
         class="nes-container is-dark is-rounded drop-zone"
         class:drop-zone-active={dragActive}
-        on:dragover={handleDragOver}
-        on:dragleave={handleDragLeave}
-        on:drop={handleDrop}
+        ondragover={handleDragOver}
+        ondragleave={handleDragLeave}
+        ondrop={handleDrop}
         role="button"
         tabindex={0}
         aria-label="Drop files here to upload"
@@ -521,7 +521,7 @@ https://svelte.dev/e/js_parse_error -->
             multiple
             class="hidden-input"
             id="file-upload"
-            on:change={handleFileSelect}
+            onchange={handleFileSelect}
             accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.zip,.rar"
           />
           <label for="file-upload">
@@ -539,7 +539,7 @@ https://svelte.dev/e/js_parse_error -->
           {filteredFiles.length} file{filteredFiles.length !== 1 ? 's' : ''} found
         </span>
 
-        <button class="nes-btn select-all-btn" on:click={() => selectAllFiles()}>
+        <button class="nes-btn select-all-btn" onclick={() => selectAllFiles()}>
           {#if selectedFiles.size === filteredFiles.length}
             <CheckSquare class="icon" />
           {:else}
@@ -561,7 +561,7 @@ https://svelte.dev/e/js_parse_error -->
                     <input
                       type="checkbox"
                       checked={selectedFiles.has(file.id)}
-                      on:change={() => toggleFileSelection(file.id)}
+                      onchange={() => toggleFileSelection(file.id)}
                       aria-label="Select file {file.title || file.fileName}"
                     />
                     <span></span>
@@ -642,7 +642,7 @@ https://svelte.dev/e/js_parse_error -->
                   <input
                     type="checkbox"
                     checked={selectedFiles.has(file.id)}
-                    on:change={() => toggleFileSelection(file.id)}
+                    onchange={() => toggleFileSelection(file.id)}
                     aria-label="Select file {file.title || file.fileName}"
                   />
                   <span></span>
@@ -746,7 +746,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="modal-actions">
         <button
           class="nes-btn"
-          on:click={() => {
+          onclick={() => {
             showUploadModal = false;
             uploadFiles = null;
             uploadDescription = '';
@@ -756,7 +756,7 @@ https://svelte.dev/e/js_parse_error -->
         >
           Cancel
         </button>
-        <button class="nes-btn is-success" on:click={() => uploadSingleFile()} disabled={uploading || !uploadFiles}>
+        <button class="nes-btn is-success" onclick={() => uploadSingleFile()} disabled={uploading || !uploadFiles}>
           {#if uploading}
             <div class="uploading-spinner"></div>
             Uploading...
@@ -776,7 +776,7 @@ https://svelte.dev/e/js_parse_error -->
   multiple
   class="hidden-input"
   id="bulk-upload"
-  on:change={handleFileSelect}
+  onchange={handleFileSelect}
   accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.zip,.rar"
 />
 
@@ -913,7 +913,7 @@ https://svelte.dev/e/js_parse_error -->
   .file-card {
     background: #1a1d20 !important;
     border: 2px solid #3a3d40 !important;
-    transition:
+    transition
       border-color 0.2s,
       transform 0.2s;
   }
@@ -925,7 +925,7 @@ https://svelte.dev/e/js_parse_error -->
 
   .file-card-header {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
   }
 
@@ -936,12 +936,12 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   .file-actions-menu {
-    position: relative;
+    position relative;
   }
 
   .actions-dropdown {
     display: none;
-    position: absolute;
+    position absolute;
     right: 0,
     top: 100%;
     background: #1a1d20;
@@ -962,7 +962,7 @@ https://svelte.dev/e/js_parse_error -->
     gap: 0.5rem;
     padding: 0.5rem;
     color: #d4af37;
-    text-decoration: none;
+    text-decoration none;
     background: none;
     border: none;
     cursor: pointer;
@@ -1005,7 +1005,7 @@ https://svelte.dev/e/js_parse_error -->
   /* File Info */
   .file-info {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
 
@@ -1019,7 +1019,7 @@ https://svelte.dev/e/js_parse_error -->
 
   .file-meta {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
 
@@ -1042,7 +1042,7 @@ https://svelte.dev/e/js_parse_error -->
   /* List View */
   .files-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
   }
 
@@ -1087,7 +1087,7 @@ https://svelte.dev/e/js_parse_error -->
   /* Drop Zone */
   .drop-zone {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     padding: 3rem 2rem;
@@ -1095,7 +1095,7 @@ https://svelte.dev/e/js_parse_error -->
     background: #1a1d20 !important;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s;
+    transition all 0.3s;
   }
 
   .drop-zone:hover,
@@ -1121,7 +1121,7 @@ https://svelte.dev/e/js_parse_error -->
   .loading-state,
   .error-state {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     padding: 3rem 2rem;
@@ -1135,7 +1135,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 4px solid #3a3d40;
     border-top-color: #d4af37;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
 
   .error-icon {
@@ -1156,12 +1156,12 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   .animate-spin {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
 
   /* Modal */
   .modal-overlay {
-    position: fixed;
+    position fixed;
     inset: 0,
     background: rgba(0, 0, 0, 0.8);
     display: flex;
@@ -1185,7 +1185,7 @@ https://svelte.dev/e/js_parse_error -->
 
   .modal-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
     margin-bottom: 1.5rem;
   }
@@ -1208,7 +1208,7 @@ https://svelte.dev/e/js_parse_error -->
 
   .upload-progress {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
 
@@ -1231,7 +1231,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 2px solid #3a3d40;
     border-top-color: #92cc41;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
 
   /* Utilities */

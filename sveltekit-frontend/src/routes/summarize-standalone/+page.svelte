@@ -188,18 +188,18 @@ https://svelte.dev/e/js_parse_error -->
         <span>⏱️ Est. time: {estimatedProcessingTime}s</span>
       </div>
       <div class="actions">
-        <button class="btn nes-btn" on:click={loadSampleDocument}> Load Sample </button>
-        <button class="btn nes-btn" on:click={clearAll}> Clear All </button>
+        <button class="btn nes-btn" onclick={loadSampleDocument}> Load Sample </button>
+        <button class="btn nes-btn" onclick={clearAll}> Clear All </button>
       </div>
     </div>
   </header>
   <div class="tab-navigation">
-    <button class="tab {activeTab === 'input' ? 'active' : ''}" on:click={() => (activeTab = 'input')}>
+    <button class="tab {activeTab === 'input' ? 'active' : ''}" onclick={() => (activeTab = 'input')}>
       📝 Document Input
     </button>
     <button
       class="tab {activeTab === 'summary' ? 'active' : ''}"
-      on:click={() => (activeTab = 'summary')}
+      onclick={() => (activeTab = 'summary')}
       disabled={!summary && !isLoading}
     >
       📋 Summary
@@ -209,7 +209,7 @@ https://svelte.dev/e/js_parse_error -->
     </button>
     <button
       class="tab {activeTab === 'analysis' ? 'active' : ''}"
-      on:click={() => (activeTab = 'analysis')}
+      onclick={() => (activeTab = 'analysis')}
       disabled={!metadata?.legalRiskAnalysis}
     >
       ⚖️ Legal Analysis
@@ -262,7 +262,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="input-footer">
             <button
               class="btn nes-btn is-primary btn-large"
-              on:click={handleSummarize}
+              onclick={handleSummarize}
               disabled={isLoading || !reportText.trim() || reportText.length < 100}
             >
               {#if isLoading}
@@ -293,7 +293,7 @@ https://svelte.dev/e/js_parse_error -->
             <div class="result-header">
               <h3>📋 Document Summary</h3>
               <div class="result-actions">
-                <button id="copy-btn" class="btn nes-btn" on:click={copySummary}> 📋 Copy Summary </button>
+                <button id="copy-btn" class="btn nes-btn" onclick={copySummary}> 📋 Copy Summary </button>
               </div>
             </div>
             <div class="summary-content">
@@ -305,7 +305,7 @@ https://svelte.dev/e/js_parse_error -->
                   <h4>📊 Processing Metadata</h4>
                   <div class="metadata-grid">
                     <div class="metadata-item">
-                      <strong>Compression:</strong>
+                      <strong>Compression</strong>
                       {metadata.compressionRatio}:1 ratio
                     </div>
                     <div class="metadata-item">
@@ -339,7 +339,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="error-panel">
             <h3>❌ Processing Error</h3>
             <p>{errorMessage}</p>
-            <button class="btn nes-btn is-primary" on:click={() => (activeTab = 'input')}> ← Back to Input </button>
+            <button class="btn nes-btn is-primary" onclick={() => (activeTab = 'input')}> ← Back to Input </button>
           </div>
         {:else}
           <div class="empty-state">
@@ -424,7 +424,7 @@ https://svelte.dev/e/js_parse_error -->
     background: transparent;
     border-radius: 0.25rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -443,7 +443,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: not-allowed;
   }
   .loading-spinner {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     from { transform: rotate(0deg), }
@@ -467,11 +467,11 @@ https://svelte.dev/e/js_parse_error -->
   }
   .option-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .checkbox-group {
-    flex-direction: row;
+    flex-direction row;
     align-items: center;
   }
   .option-group label {
@@ -489,7 +489,7 @@ https://svelte.dev/e/js_parse_error -->
     color: #6b7280;
   }
   .text-input-area {
-    position: relative;
+    position relative;
   }
   #document-input {
     width: 100%;
@@ -500,7 +500,7 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.9rem;
     line-height: 1.5,
     resize: vertical;
-    transition: border-color 0.2;
+    transition border-color 0.2;
   }
   #document-input:focus {
     outline: none;
@@ -516,9 +516,9 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 0.25rem;
     font-weight: 500,
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
     border: none;
-    text-decoration: none;
+    text-decoration none;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -557,12 +557,12 @@ https://svelte.dev/e/js_parse_error -->
     padding: 0.75rem;
     margin: 0.5rem 0;
     border-radius: 0.25rem;
-    transition: all 0.3;
+    transition all 0.3;
   }
   .step.current {
     background: #dbeaf;
     border-left: 4px solid #3b82f6;
-    animation: pulse 1s infinite;
+    animation pulse 1s infinite;
   }
   .step.completed {
     background: #f0fdf4;
@@ -664,18 +664,18 @@ https://svelte.dev/e/js_parse_error -->
       padding: 1rem;
     }
     .status-bar {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
     }
     .stats {
-      flex-direction: column;
+      flex-direction column;
       gap: 0.5rem;
     }
     .options-grid {
       grid-template-columns: 1fr;
     }
     .result-header {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
       gap: 1rem;
     }

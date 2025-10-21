@@ -133,7 +133,7 @@
       handleValueChange(newOption.value);
       inputValue = '';
     } catch (error) {
-      console.error('Failed to create option:', error);
+      console.error('Failed to create option', error);
     }
   }
   // Generate unique ID for accessibility
@@ -147,7 +147,7 @@
       {label}
     </label>
   {/if}
-  <ComboboxRoot bind:open {disabled} {multiple} on:selectedChange={handleValueChange}>
+  <ComboboxRoot bind:open {disabled} {multiple} onselectedChange={handleValueChange}>
     <div class="relative">
       <ComboboxInput
         id={inputId}
@@ -175,7 +175,7 @@
         {#if canCreateOption}
           <ComboboxItem
             value={inputValue}
-            on:select={handleCreateOption}
+            onselect={handleCreateOption}
             class="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-yorha-bg-tertiary data-[highlighted]:bg-yorha-primary data-[highlighted]:text-yorha-bg-primary font-mono"
           >
             <div class="flex items-center gap-2">
@@ -235,7 +235,7 @@
           {option.label}
           <button
             type="button"
-            on:click={() => removeValue(option.value)}
+            onclick={() => removeValue(option.value)}
             class="hover:bg-yorha-primary/20 rounded p-0.5"
           >
             <X class="w-3 h-3" />
@@ -260,7 +260,7 @@
 
 <style>
   :global(.legal-combobox-container input) {
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   :global(.legal-combobox-container input:focus) {
     box-shadow: 0 0 0 1px rgb(var(--yorha-primary) / 0.5);

@@ -22,7 +22,7 @@
     displayName: string;
     provider: 'ollama' | 'autogen' | 'crewai' | 'langchain';
     size: string;
-    specialization: 'general' | 'legal' | 'code' | 'reasoning' | 'embedding';
+    specialization 'general' | 'legal' | 'code' | 'reasoning' | 'embedding';
     status: 'online' | 'offline' | 'loading' | 'error';
     performance: {
       tokensPerSecond: number;
@@ -54,7 +54,7 @@
       displayName: 'Gemma3 Legal Specialist',
       provider: 'ollama',
       size: '7.3GB',
-      specialization: 'legal',
+      specialization 'legal',
       status: 'online',
       performance: {
         tokensPerSecond: 25,
@@ -70,7 +70,7 @@
       displayName: 'Llama3 Instruct',
       provider: 'ollama',
       size: '4.7GB',
-      specialization: 'general',
+      specialization 'general',
       status: 'online',
       performance: {
         tokensPerSecond: 35,
@@ -86,7 +86,7 @@
       displayName: 'CodeLlama Code Expert',
       provider: 'ollama',
       size: '3.8GB',
-      specialization: 'code',
+      specialization 'code',
       status: 'offline',
       performance: {
         tokensPerSecond: 40,
@@ -102,7 +102,7 @@
       displayName: 'Nomic Embeddings',
       provider: 'ollama',
       size: '274MB',
-      specialization: 'embedding',
+      specialization 'embedding',
       status: 'online',
       performance: {
         tokensPerSecond: 500,
@@ -249,7 +249,7 @@
   <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"> AI Model Selection </label>
   <!-- Trigger Button -->
   <button
-    on:click={() => (isOpen = !isOpen)}
+    onclick={() => (isOpen = !isOpen)}
     class="flex h-12 w-full items-center justify-between rounded-lg border border-gray-300 dark:border-gray-600
            bg-white dark:bg-gray-800 px-3 py-2 text-sm,
            hover:bg-gray-50 dark:hover:bg-gray-700,
@@ -289,15 +289,15 @@
              bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5
              max-h-96 overflow-auto"
       ;
-      in:fade={{ duration: 150 }}
-      out:fade={{ duration: 100 }}
+      in:fade={{ duration 150 }}
+      out:fade={{ duration 100 }}
     >
       <div class="py-1">
         {#each filteredModels as model (model.id)}
           {@const SvelteComponent_2 = getProviderIcon(model.provider)}
           {@const SvelteComponent_3 = getStatusIcon(model.status)}
           <button
-            on:click={() => selectModel(model)}
+            onclick={() => selectModel(model)}
             class="flex w-full items-center justify-between px-4 py-3 text-sm;
                    hover: bg-gray-100 dark:hover:bg-gray-700;
                    focus:bg-gray-100 dark:focus:bg-gray-700 focus:outline-none
@@ -356,7 +356,7 @@
                 <!-- Load Button -->
                 {#if model.status === 'offline'}
                   <button
-                    on:click={e => {
+                    onclick={e => {
                       e.stopPropagation();
                       loadModel(model);
                     }}
@@ -386,7 +386,7 @@
       <div class="border-t border-gray-200 dark:border-gray-700 px-4 py-3">
         <div class="flex items-center justify-between">
           <button
-            on:click={refreshModelStatuses}
+            onclick={refreshModelStatuses}
             class="text-xs text-blue-600 dark: text-blue-400 hover:text-blue-800 dark:hover:text-blue-300;
                    focus:outline-none focus:underline"
           >

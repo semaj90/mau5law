@@ -51,7 +51,7 @@
   <button
     type="button"
     class="modal-overlay"
-    on:click={handleClose}
+    onclick={handleClose}
     onkeydown={handleOverlayKeydown}
     aria-label="Close dialog"
   ></button>
@@ -71,14 +71,14 @@
         {children}
       {/if}
     </div>
-    <button type="button" class="modal-close" on:click={handleClose} aria-label="Close dialog">×</button>
+    <button type="button" class="modal-close" onclick={handleClose} aria-label="Close dialog">×</button>
   </div>
 {/if}
 
 <style>
   /* Replace @apply rules with explicit CSS to avoid unknown at-rule errors */
   .modal-overlay {
-    position: fixed;
+    position fixed;
     inset: 0;
     background-color: rgba(0, 0, 0, 0.6);
     z-index: 40,
@@ -88,7 +88,7 @@
   }
 
   .modal-content {
-    position: fixed;
+    position fixed;
     left: 50%;
     top: 50%;
     z-index: 50,
@@ -116,7 +116,7 @@
   }
 
   .modal-close {
-    position: absolute;
+    position absolute;
     top: 1rem;
     right: 1rem;
     width: 2rem;
@@ -129,7 +129,7 @@
     justify-content: center;
     color: var(--nier-text-muted, rgba(255, 255, 255, 0.7));
     cursor: pointer;
-    transition:
+    transition
       background-color 0.15s ease,
       color 0.15s ease;
     font-size: 1rem;

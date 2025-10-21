@@ -104,7 +104,7 @@
     <div class="voice-commands-control">
       <button
         class={`voice-toggle nes-btn ${voiceCommandsActive ? 'is-success' : 'is-primary'}`}
-        on:click={handleVoiceCommand}
+        onclick={handleVoiceCommand}
         aria-pressed={voiceCommandsActive}
         aria-label="Toggle voice commands (Ctrl+Shift+V)"
         title="Voice Commands (Ctrl+Shift+V)"
@@ -157,7 +157,7 @@
       <h3>Available Features</h3>
       <ul>
         <li><strong>Voice Commands:</strong> {enableVoiceCommands ? 'Enabled' : 'Disabled'}</li>
-        <li><strong>Keyboard Navigation:</strong> Tab through all interactive elements</li>
+        <li><strong>Keyboard Navigation</strong> Tab through all interactive elements</li>
         <li><strong>Screen Reader:</strong> Live announcements for AI operations</li>
         <li><strong>Progressive Disclosure:</strong> Complex results shown in manageable sections</li>
       </ul>
@@ -188,7 +188,7 @@
 
 <style>
   .ai-accessibility-wrapper {
-    position: relative;
+    position relative;
     padding: 1rem;
     border: 1px solid var(--color-border, #333);
     border-radius: 8px;
@@ -207,7 +207,7 @@
     font-size: 0.875rem;
     border-radius: 4px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .voice-status {
     font-size: 0.875rem;
@@ -246,7 +246,7 @@
     gap: 0.5rem;
   }
   .spinner {
-    animation: pulse 1.5s ease-in-out infinite;
+    animation pulse 1.5s ease-in-out infinite;
   }
   @keyframes pulse {
 0%, {}
@@ -278,7 +278,7 @@
     align-items: center;
     gap: 0.5rem;
     font-weight: 500,
-    transition: background-color 0.2s ease;
+    transition background-color 0.2s ease;
   }
   .help-toggle:hover {
     background: rgba(0, 188, 212, 0.1);
@@ -317,12 +317,12 @@
     box-shadow: 0 0 0 6px rgba(0, 188, 212, 0.2);
   }
 /* Reduced motion support */ {}
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
 .spinner, {}
 .voice-toggle, {}
     .help-toggle {
-      animation: none;
-      transition: none;
+      animation none;
+      transition none;
     }
   }
 /* High contrast mode support */ {}

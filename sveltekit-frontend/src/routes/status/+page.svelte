@@ -244,7 +244,7 @@
       <div class="flex items-center gap-4">
         <span class="text-gray-400">Last updated: {lastUpdated}</span>
         <Button
-          on:click={loadSystemStatus}
+          onclick={loadSystemStatus}
           disabled={isLoading}
           class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg bits-btn bits-btn"
         >
@@ -465,7 +465,7 @@
               <h4 class="font-semibold text-white mb-4">Platform Information</h4>
               <div class="space-y-2 text-gray-300">
                 <p><strong>Platform:</strong> {systemHealth.architecture.platform}</p>
-                <p><strong>Version:</strong> {systemHealth.architecture.version}</p>
+                <p><strong>Version</strong> {systemHealth.architecture.version}</p>
                 <p><strong>GPU Architecture:</strong> {systemHealth.architecture.gpuArchitecture}</p>
                 <p><strong>Microservices:</strong> {systemHealth.architecture.microservices}</p>
               </div>
@@ -505,7 +505,7 @@
     font-family: 'Inter', sans-serif;
   }
   .service-card {
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .service-card:hover {
     border-color: rgba(59, 130, 246, 0.5);

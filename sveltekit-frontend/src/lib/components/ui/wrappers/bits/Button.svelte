@@ -52,13 +52,13 @@
 </script>
 
 {#if Btn}
-  <Btn class={className} {disabled} {type} aria-label={ariaLabel} on:click={handleClick}>
+  <Btn class={className} {disabled} {type} aria-label={ariaLabel} onclick={handleClick}>
     {#if children}
       {@render children()}
     {/if}
   </Btn>
 {:else}
-  <button class={className} {disabled} {type} aria-label={ariaLabel} on:click={handleClick}>
+  <button class={className} {disabled} {type} aria-label={ariaLabel} onclick={handleClick}>
     {#if children}
       {@render children()}
     {/if}

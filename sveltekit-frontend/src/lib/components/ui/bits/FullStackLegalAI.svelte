@@ -73,7 +73,7 @@ let wsConnection = $state<WebSocket | null>(null);
 // GPU metrics for real-time monitoring
 let gpuMetrics = $state({
 	vram_usage: 0,
-	gpu_utilization: 0,
+	gpu_utilization 0,
 	loaded_engines: 0,
 	active_streams: 0,
 	mps_enabled: false
@@ -107,7 +107,7 @@ async function checkServiceHealth() {
 			if (health.gpu_status) {
 				gpuMetrics = {
 					vram_usage: health.gpu_status.used_vram_mb || 0,
-					gpu_utilization: health.gpu_status.utilization_percent || 0,
+					gpu_utilization health.gpu_status.utilization_percent || 0,
 					loaded_engines: health.gpu_status.loaded_engines || 0,
 					active_streams: 0,
 					mps_enabled: health.gpu_status.mps_enabled || false
@@ -153,7 +153,7 @@ async function performFullStackSearch() {
 				performance_monitoring: showPerformanceMetrics
 				legal_filter: {
 					category: legalDomain;
-					jurisdiction: 'federal',
+					jurisdiction 'federal',
 					confidence_threshold: 0.7,
 				}
 			}),
@@ -504,6 +504,6 @@ $effect(() => {
     }
   }
   .full-stack-legal-ai :global(.animate-pulse-glow) {
-    animation: pulse-glow 2s ease-in-out infinite;
+    animation pulse-glow 2s ease-in-out infinite;
   }
 </style>

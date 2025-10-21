@@ -50,8 +50,8 @@
       evidence: '#00ff41',
       case: '#00ccff',
       document: '#ff6b35',
-      citation: '#d63384',
-      connection: '#6f42c1',
+      citation '#d63384',
+      connection '#6f42c1',
       riskLow: '#28a745',
       riskMedium: '#ffc107',
       riskHigh: '#fd7e14',
@@ -65,8 +65,8 @@
       evidence: '#28a745',
       case: '#17a2b8',
       document: '#ffc107',
-      citation: '#dc3545',
-      connection: '#6f42c1',
+      citation '#dc3545',
+      connection '#6f42c1',
       riskLow: '#28a745',
       riskMedium: '#ffc107',
       riskHigh: '#fd7e14',
@@ -80,8 +80,8 @@
       evidence: '#0f3460',
       case: '#16213e',
       document: '#e94560',
-      citation: '#f5f5f5',
-      connection: '#533483',
+      citation '#f5f5f5',
+      connection '#533483',
       riskLow: '#00b894',
       riskMedium: '#fdcb6e',
       riskHigh: '#e17055',
@@ -378,7 +378,7 @@
       {width}
       {height}
       onmousemove={handleMouseMove}
-      on:click={handleMouseClick}
+      onclick={handleMouseClick}
       onmouseleave={handleMouseLeave}
       class="legal-canvas"
     ></canvas>
@@ -408,7 +408,7 @@
       <h4>Selected: {selectedNode.label}</h4>
       <p>Type: {selectedNode.type}</p>
       <p>Risk Level: {selectedNode.riskLevel}</p>
-      <p>Position: ({selectedNode.x}, {selectedNode.y})</p>
+      <p>Position ({selectedNode.x}, {selectedNode.y})</p>
       {#if selectedNode.metadata}
         <details>
           <summary>Metadata</summary>
@@ -430,7 +430,7 @@
     border: 2px solid var(--yorha-text-muted);
   }
   .canvas-wrapper {
-    position: relative;
+    position relative;
     display: inline-block;
     border: 2px solid var(--yorha-secondary);
     background: var(--yorha-bg-primary);
@@ -503,7 +503,7 @@
   }
 /* Animation for canvas updates */ {}
   .canvas-wrapper {
-    animation: subtleGlow 3s ease-in-out infinite alternate;
+    animation subtleGlow 3s ease-in-out infinite alternate;
   }
   @keyframes subtleGlow {
     from {
@@ -516,7 +516,7 @@
 /* Responsive design */ {}
   @media (max-width: 768px) {
     .canvas-controls {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
     }
     .legal-canvas {

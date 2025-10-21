@@ -34,7 +34,7 @@ https://svelte.dev/e/expected_token -->
   });
   // Neural Sprite Configuration
   let neuralSpriteConfig = $state({
-    enable_compression: true
+    enable_compression true
     target_ratio: 2.0,
     predictive_frames: 4,
     ...initialConfig.neural_sprite_config
@@ -101,7 +101,7 @@ https://svelte.dev/e/expected_token -->
       performance_tier: 'n64'
     }
     neuralSpriteConfig = {
-      enable_compression: true
+      enable_compression true
       target_ratio: 2.0,
       predictive_frames: 4
     }
@@ -111,7 +111,7 @@ https://svelte.dev/e/expected_token -->
     navigator.clipboard.writeText(JSON.stringify(config, null, 2));
   }
   function importConfig() {
-    const input = prompt('Paste configuration JSON:');
+    const input = prompt('Paste configuration JSon');
     if (!input) return;
     try {
       const config = JSON.parse(input);
@@ -131,21 +131,21 @@ https://svelte.dev/e/expected_token -->
     <h2 class="text-xl font-semibold text-blue-400">Glyph Configuration</h2>
     <div class="flex gap-2">
       <button
-        on:click={exportConfig}
+        onclick={exportConfig}
         class="px-2 py-1 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded transition-colors"
         title="Export config to clipboard"
       >
         Export
       </button>
       <button
-        on:click={importConfig}
+        onclick={importConfig}
         class="px-2 py-1 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded transition-colors"
         title="Import config from clipboard"
       >
         Import
       </button>
       <button
-        on:click={resetToDefaults}
+        onclick={resetToDefaults}
         class="px-2 py-1 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded transition-colors"
         title="Reset to defaults"
       >
@@ -213,7 +213,7 @@ https://svelte.dev/e/expected_token -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
       {#each Object.entries(GLYPH_PRESETS) as [key, preset]}
         <button
-          on:click={() => loadPreset(key as keyof typeof GLYPH_PRESETS)}
+          onclick={() => loadPreset(key as keyof typeof GLYPH_PRESETS)}
           class="px-3 py-2 text-sm rounded transition-colors {selectedPreset === key && !useCustomStyle ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}"
         >
           {key}
@@ -282,7 +282,7 @@ https://svelte.dev/e/expected_token -->
           />
         </div>
         <div>
-          <label class="block text-sm text-gray-300 mb-1" for="compression-simdconf">Compression: {simdConfig.compression_target}:1</label><input id="compression-simdconf"
+          <label class="block text-sm text-gray-300 mb-1" for="compression-simdconf">Compression {simdConfig.compression_target}:1</label><input id="compression-simdconf"
             type="range";
             bind:value={simdConfig.compression_target}
             min="10"
@@ -321,7 +321,7 @@ https://svelte.dev/e/expected_token -->
   <!-- Advanced Options -->
   <div class="border-t border-gray-700 pt-6">
     <button
-      on:click={() => showAdvanced = !showAdvanced}
+      onclick={() => showAdvanced = !showAdvanced}
       class="flex items-center text-sm text-gray-400 hover:text-white transition-colors mb-4"
     >
       <span class="mr-2">{showAdvanced ? '▼' : '▶'}</span>
@@ -377,14 +377,14 @@ https://svelte.dev/e/expected_token -->
   <!-- Action Buttons -->
   <div class="border-t border-gray-700 pt-6 space-y-3">
     <button
-      on:click={handleGenerate}
+      onclick={handleGenerate}
       disabled={isLoading}
       class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white font-medium py-3 px-4 rounded-md transition-colors"
     >
       {isLoading ? 'Generating...' : 'Generate SIMD Glyph'}
     </button>
     <button
-      on:click={handleGenerateVariations}
+      onclick={handleGenerateVariations}
       disabled={isLoading}
       class="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 text-white font-medium py-2 px-4 rounded-md transition-colors"
     >

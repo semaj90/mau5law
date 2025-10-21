@@ -178,7 +178,7 @@ https://svelte.dev/e/js_parse_error -->
   /* Focus ring animations */
   input:focus-visible {
     outline: none;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   /* Custom validation styling */
   input:invalid:not(:placeholder-shown) {
@@ -192,6 +192,6 @@ https://svelte.dev/e/js_parse_error -->
   }
   /* Required field indicator */
   label.required {
-    position: relative;
+    position relative;
   }
 </style>

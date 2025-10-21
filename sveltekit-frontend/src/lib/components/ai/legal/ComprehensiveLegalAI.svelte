@@ -38,7 +38,7 @@
     totalProcessingTime: 0,
     averageSpeed: 0,
     cacheHitRate: 0,
-    workerUtilization: 0,
+    workerUtilization 0,
     simdPerformance: 0,
   });
 
@@ -211,7 +211,7 @@
         evidence: Array.from({ length: 100 }, (_, i) => ({
           id: i,
           type: 'document',
-          description: `Evidence item ${i} with detailed legal content and metadata`,
+          description `Evidence item ${i} with detailed legal content and metadata`,
         })),
       },
     };
@@ -320,7 +320,7 @@
           </div>
           <button
             type="button"
-            on:click={testSIMDPerformance}
+            onclick={testSIMDPerformance}
             class="w-full text-xs py-1 rounded mt-2 border bg-gray-100"
           >
             Benchmark
@@ -393,7 +393,7 @@
       <div class="w-full">
         <button
           type="button"
-          on:click={handleFileUpload}
+          onclick={handleFileUpload}
           disabled={!selectedFiles || selectedFiles.length === 0 || isProcessing}
           class="w-full p-2 rounded flex items-center justify-center gap-2 bg-blue-600 text-white disabled:opacity-50"
         >

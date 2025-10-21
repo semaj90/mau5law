@@ -80,19 +80,19 @@ https://svelte.dev/e/js_parse_error -->
   let isDirty = $state(false);
   // Tools and modes
   const tools = [
-    { id: "select", icon: MousePointer, label: "Select" },
-    { id: "pan", icon: Hand, label: "Pan" },
-    { id: "text", icon: Type, label: "Text" },
-    { id: "rect", icon: Square, label: "Rectangle" },
-    { id: "circle", icon: Circle, label: "Circle" },
-    { id: "line", icon: Minus, label: "Line" },
-    { id: "arrow", icon: Move, label: "Arrow" },
-    { id: "image", icon: ImageIcon, label: "Image" },
-    { id: "evidence", icon: Archive, label: "Evidence" },
-    { id: "note", icon: FileText, label: "Note" },
-    { id: "timeline", icon: Clock, label: "Timeline" },
-    { id: "person", icon: Users, label: "Person" },
-    { id: "location", icon: MapPin, label: "Location" },
+    { id: "select", icon MousePointer, label: "Select" },
+    { id: "pan", icon Hand, label: "Pan" },
+    { id: "text", icon Type, label: "Text" },
+    { id: "rect", icon Square, label: "Rectangle" },
+    { id: "circle", icon Circle, label: "Circle" },
+    { id: "line", icon Minus, label: "Line" },
+    { id: "arrow", icon Move, label: "Arrow" },
+    { id: "image", icon ImageIcon, label: "Image" },
+    { id: "evidence", icon Archive, label: "Evidence" },
+    { id: "note", icon FileText, label: "Note" },
+    { id: "timeline", icon Clock, label: "Timeline" },
+    { id: "person", icon Users, label: "Person" },
+    { id: "location", icon MapPin, label: "Location" },
   ];
   // Evidence items from store
   let evidenceItems = $state<any[] >([]);
@@ -141,7 +141,7 @@ https://svelte.dev/e/js_parse_error -->
       width,
       height,
       backgroundColor: "#ffffff",
-      selection: !readOnly,
+      selection !readOnly,
       isDrawingMode: false
       preserveObjectStacking: true
       enableRetinaScaling: true,
@@ -150,13 +150,13 @@ https://svelte.dev/e/js_parse_error -->
     canvas.on("object:added", handleObjectAdded);
     canvas.on("object:removed", handleObjectRemoved);
     canvas.on("object:modified", handleObjectModified);
-    canvas.on("selection:created", (options) =>
+    canvas.on("selectioncreated", (options) =>
       handleSelectionCreated(options)
     );
-    canvas.on("selection:updated", (options) =>
+    canvas.on("selectionupdated", (options) =>
       handleSelectionUpdated(options)
     );
-    canvas.on("selection:cleared", handleSelectionCleared);
+    canvas.on("selectioncleared", handleSelectionCleared);
     canvas.on("path:created", handlePathCreated);
     // Setup grid
     updateGrid();
@@ -623,7 +623,7 @@ https://svelte.dev/e/js_parse_error -->
           zoom: get(canvasState).zoom,
         },
         timestamp: new Date(),
-        version: Date.now(),
+        version Date.now(),
       }
       // Save to Loki.js
       const existing = canvasCollection.findOne({ id: canvasData.id });
@@ -919,13 +919,13 @@ https://svelte.dev/e/js_parse_error -->
   <div class="mx-auto px-4 max-w-7xl">
     <!-- File Operations -->
     <div class="mx-auto px-4 max-w-7xl">
-      <button class="mx-auto px-4 max-w-7xl" on:click={() => saveCanvas()} title="Save Canvas">
+      <button class="mx-auto px-4 max-w-7xl" onclick={() => saveCanvas()} title="Save Canvas">
         <Save size="18" />
       </button>
-      <button class="mx-auto px-4 max-w-7xl" on:click={() => undo()} disabled={!state.canUndo} title="Undo">
+      <button class="mx-auto px-4 max-w-7xl" onclick={() => undo()} disabled={!state.canUndo} title="Undo">
         <Undo size="18" />
       </button>
-      <button class="mx-auto px-4 max-w-7xl" on:click={() => redo()} disabled={!state.canRedo} title="Redo">
+      <button class="mx-auto px-4 max-w-7xl" onclick={() => redo()} disabled={!state.canRedo} title="Redo">
         <Redo size="18" />
       </button>
     </div>
@@ -936,7 +936,7 @@ https://svelte.dev/e/js_parse_error -->
         <button
           class="mx-auto px-4 max-w-7xl"
           class:active={state.tool === tool.id}
-          on:click={() => setTool(tool.id)}
+          onclick={() => setTool(tool.id)}
           title={tool.label}
         >
           <svelte:component this={tool.icon} size="18" />
@@ -946,17 +946,17 @@ https://svelte.dev/e/js_parse_error -->
     <div class="mx-auto px-4 max-w-7xl"></div>
     <!-- Canvas Controls -->
     <div class="mx-auto px-4 max-w-7xl">
-      <button class="mx-auto px-4 max-w-7xl" on:click={() => zoomOut()} title="Zoom Out">
+      <button class="mx-auto px-4 max-w-7xl" onclick={() => zoomOut()} title="Zoom Out">
         <ZoomOut size="18" />
       </button>
       <span class="mx-auto px-4 max-w-7xl">{state.zoom}%</span>
-      <button class="mx-auto px-4 max-w-7xl" on:click={() => zoomIn()} title="Zoom In">
+      <button class="mx-auto px-4 max-w-7xl" onclick={() => zoomIn()} title="Zoom In">
         <ZoomIn size="18" />
       </button>
       <button
         class="mx-auto px-4 max-w-7xl"
         class:active={state.showGrid}
-        on:click={() => toggleGrid()}
+        onclick={() => toggleGrid()}
         title="Toggle Grid"
       >
         <Grid size="18" />
@@ -965,20 +965,20 @@ https://svelte.dev/e/js_parse_error -->
     <div class="mx-auto px-4 max-w-7xl"></div>
     <!-- Object Actions -->
     <div class="mx-auto px-4 max-w-7xl">
-      <button class="mx-auto px-4 max-w-7xl" on:click={() => copySelected()} title="Copy">
+      <button class="mx-auto px-4 max-w-7xl" onclick={() => copySelected()} title="Copy">
         <Copy size="18" />
       </button>
-      <button class="mx-auto px-4 max-w-7xl" on:click={() => pasteClipboard()} title="Paste">
+      <button class="mx-auto px-4 max-w-7xl" onclick={() => pasteClipboard()} title="Paste">
         <Copy size="18" />
       </button>
-      <button class="mx-auto px-4 max-w-7xl" on:click={() => deleteSelected()} title="Delete">
+      <button class="mx-auto px-4 max-w-7xl" onclick={() => deleteSelected()} title="Delete">
         <Trash2 size="18" />
       </button>
     </div>
     <div class="mx-auto px-4 max-w-7xl"></div>
     <!-- AI Features -->
     <div class="mx-auto px-4 max-w-7xl">
-      <button class="mx-auto px-4 max-w-7xl" on:click={() => generateAISummary()} title="Generate AI Summary">
+      <button class="mx-auto px-4 max-w-7xl" onclick={() => generateAISummary()} title="Generate AI Summary">
         <FileText size="18" />
       </button>
     </div>
@@ -989,9 +989,9 @@ https://svelte.dev/e/js_parse_error -->
         <Download size="18" />
       </button>
       <div class="mx-auto px-4 max-w-7xl">
-        <button on:click={() => exportCanvas('png')}>Export as PNG</button>
-        <button on:click={() => exportCanvas('svg')}>Export as SVG</button>
-        <button on:click={() => exportCanvas('json')}>Export as JSON</button>
+        <button onclick={() => exportCanvas('png')}>Export as PNG</button>
+        <button onclick={() => exportCanvas('svg')}>Export as SVG</button>
+        <button onclick={() => exportCanvas('json')}>Export as JSON</button>
       </div>
     </div>
     <div class="mx-auto px-4 max-w-7xl"></div>
@@ -1020,7 +1020,7 @@ https://svelte.dev/e/js_parse_error -->
           {#each state.searchQuery ? searchResults : evidenceItems as evidence}
             <div
               class="mx-auto px-4 max-w-7xl"
-              on:click={() => addEvidenceToCanvas(evidence)}
+              onclick={() => addEvidenceToCanvas(evidence)}
               keydown={e => e.key === 'Enter' && addEvidenceToCanvas(evidence)}
               role="button"
               tabindex={0}
@@ -1034,19 +1034,19 @@ https://svelte.dev/e/js_parse_error -->
       <div class="mx-auto px-4 max-w-7xl">
         <h3 class="mx-auto px-4 max-w-7xl">Quick Add</h3>
         <div class="mx-auto px-4 max-w-7xl">
-          <button class="mx-auto px-4 max-w-7xl" on:click={() => addTimelineToCanvas()}>
+          <button class="mx-auto px-4 max-w-7xl" onclick={() => addTimelineToCanvas()}>
             <Clock size="16" class="mx-auto px-4 max-w-7xl" />
             Timeline
           </button>
-          <button class="mx-auto px-4 max-w-7xl" on:click={() => addPersonToCanvas()}>
+          <button class="mx-auto px-4 max-w-7xl" onclick={() => addPersonToCanvas()}>
             <Users size="16" class="mx-auto px-4 max-w-7xl" />
             Person
           </button>
-          <button class="mx-auto px-4 max-w-7xl" on:click={() => addLocationToCanvas()}>
+          <button class="mx-auto px-4 max-w-7xl" onclick={() => addLocationToCanvas()}>
             <MapPin size="16" class="mx-auto px-4 max-w-7xl" />
             Location
           </button>
-          <button class="mx-auto px-4 max-w-7xl" on:click={() => setTool('note')}>
+          <button class="mx-auto px-4 max-w-7xl" onclick={() => setTool('note')}>
             <FileText size="16" class="mx-auto px-4 max-w-7xl" />
             Note
           </button>
@@ -1077,7 +1077,7 @@ https://svelte.dev/e/js_parse_error -->
   .toolbar-btn {
     padding: 0.5rem;
     border-radius: 0.375rem;
-    transition: background-color 0.2;
+    transition background-color 0.2;
     border: none;
     background: transparent;
     cursor: pointer;
@@ -1111,10 +1111,10 @@ https://svelte.dev/e/js_parse_error -->
     text-align: center;
   }
   .dropdown {
-    position: relative;
+    position relative;
   }
   .dropdown-menu {
-    position: absolute;
+    position absolute;
     top: 100%;
     left: 0;
     background-color: white;
@@ -1139,11 +1139,11 @@ https://svelte.dev/e/js_parse_error -->
     background-color: transparent;
     cursor: pointer;
   }
-  .dropdown-menu button:hover {
+  .dropdown-menu buttonhover {
     background-color: #f3f4f6;
   }
   .evidence-item {
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .evidence-item:hover {
     transform: translateY(-1px);

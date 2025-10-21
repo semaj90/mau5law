@@ -43,22 +43,22 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
   const demoSearchQueries = [
     {
       query: 'contract liability clauses in employment agreements',
-      description: 'Legal contract analysis for employment disputes',
+      description 'Legal contract analysis for employment disputes',
       category: 'Legal Research',
     },
     {
       query: 'evidence tampering patterns in criminal investigations',
-      description: 'Criminal investigation methodology',
+      description 'Criminal investigation methodology',
       category: 'Investigation',
     },
     {
       query: 'corporate compliance violations and penalties',
-      description: 'Corporate law and regulatory compliance',
+      description 'Corporate law and regulatory compliance',
       category: 'Compliance',
     },
     {
       query: 'witness testimony consistency analysis methods',
-      description: 'Evidence evaluation techniques',
+      description 'Evidence evaluation techniques',
       category: 'Evidence Analysis',
     }
   ];
@@ -66,17 +66,17 @@ Comprehensive showcase of Phase 4 Vector Intelligence capabilities
     {
       context: 'I need to prepare a comprehensive case strategy for a high-profile criminal trial involving multiple defendants and complex evidence chains.',
       role: 'prosecutor',
-      description: 'Complex criminal case preparation',
+      description 'Complex criminal case preparation',
     },
     {
       context: 'Our investigation has uncovered potential digital evidence tampering. How should we proceed with forensic analysis and evidence preservation?',
       role: 'detective',
-      description: 'Digital forensics investigation',
+      description 'Digital forensics investigation',
     },
     {
       context: 'We need to optimize our case management workflow to handle the increasing caseload more efficiently while maintaining quality.',
       role: 'admin',
-      description: 'Workflow optimization analysis',
+      description 'Workflow optimization analysis',
     }
   ];
   const demoAnalysisContent = [
@@ -91,13 +91,13 @@ Company shall pay Employee a base salary of $150,000 per year, payable in accord
 Employee acknowledges that during employment, Employee may have access to confidential information. Employee agrees to maintain strict confidentiality.
 4. TERMINATION
 This Agreement may be terminated by either party with thirty (30) days written notice.`,
-      description: 'Employment contract for legal analysis',
+      description 'Employment contract for legal analysis',
       type: 'Contract',
     },
     {
       content: `INCIDENT REPORT - Case #2024-CR-1892,
 Date: March 8, 2024
-Location: 1425 Oak Street, Downtown District
+Location 1425 Oak Street, Downtown District
 Reporting Officer: Detective Sarah Johnson
 SUMMARY:
 Responded to reports of suspected break-in at residential property. Upon arrival, discovered evidence of forced entry through rear window. Victim John Doe reported missing electronics valued at approximately $3,500.
@@ -108,7 +108,7 @@ EVIDENCE COLLECTED:
 - Witness statements from two neighbors
 SUSPECTS:
 Investigation ongoing. Similar pattern matches recent break-ins in the area.`,
-      description: 'Criminal incident report for analysis',
+      description 'Criminal incident report for analysis',
       type: 'Incident Report',
     }
   ];
@@ -159,7 +159,7 @@ await loadSystemHealth();
         userProfile: {
           role: selectedUserRole;
           experience: 'senior',
-          specialization: ['legal-analysis', 'case-management'];
+          specialization ['legal-analysis', 'case-management'];
         },
         currentCase: {
           id: 'DEMO-2024-001',
@@ -311,7 +311,7 @@ await loadSystemHealth();
             Semantic Search
           </h3>
           {#each demoSearchQueries as example}
-            <div class="demo-example-nier-bits-card" on:click={() => loadDemoQuery(example.query)}>
+            <div class="demo-example-nier-bits-card" onclick={() => loadDemoQuery(example.query)}>
               <h4 class="font-medium text-sm mb-1">{example.category}</h4>
               <p class="text-xs nes-text is-disabled mb-2">{example.description}</p>
               <p class="text-xs bg-muted p-2 rounded font-mono">{example.query}</p>
@@ -325,7 +325,7 @@ await loadSystemHealth();
             AI Recommendations
           </h3>
           {#each demoRecommendationContexts as example}
-            <div class="demo-example-nier-bits-card" on:click={() => loadDemoContext(example.context, example.role)}>
+            <div class="demo-example-nier-bits-card" onclick={() => loadDemoContext(example.context, example.role)}>
               <h4 class="font-medium text-sm mb-1">{example.description}</h4>
               <Badge class="bits-badge-outline text-xs mb-2">{example.role}</Badge>
               <p class="text-xs nes-text is-disabled">{example.context.substring(0, 80)}...</p>
@@ -339,7 +339,7 @@ await loadSystemHealth();
             Document Analysis
           </h3>
           {#each demoAnalysisContent as example}
-            <div class="demo-example-nier-bits-card" on:click={() => loadDemoContent(example.content)}>
+            <div class="demo-example-nier-bits-card" onclick={() => loadDemoContent(example.content)}>
               <h4 class="font-medium text-sm mb-1">{example.type}</h4>
               <p class="text-xs nes-text is-disabled mb-2">{example.description}</p>
               <p class="text-xs bg-muted p-2 rounded">{example.content.substring(0, 60)}...</p>
@@ -354,7 +354,7 @@ await loadSystemHealth();
     <Button class="bits-btn"
       variant={activeTab === 'search' ? 'default' : 'ghost'}
       size="sm"
-  on:click={() =>
+  onclick={() =>
 activeTab = 'search'}
       class="flex items-center gap-2"
     >
@@ -364,7 +364,7 @@ activeTab = 'search'}
     <Button class="bits-btn"
       variant={activeTab === 'recommendations' ? 'default' : 'ghost'}
       size="sm"
-  on:click={() =>
+  onclick={() =>
 activeTab = 'recommendations'}
       class="flex items-center gap-2"
     >
@@ -374,7 +374,7 @@ activeTab = 'recommendations'}
     <Button class="bits-btn"
       variant={activeTab === 'analysis' ? 'default' : 'ghost'}
       size="sm"
-  on:click={() =>
+  onclick={() =>
 activeTab = 'analysis'}
       class="flex items-center gap-2"
     >
@@ -384,7 +384,7 @@ activeTab = 'analysis'}
     <Button class="bits-btn"
       variant={activeTab === 'health' ? 'default' : 'ghost'}
       size="sm"
-  on:click={() =>
+  onclick={() =>
 activeTab = 'health'}
       class="flex items-center gap-2"
     >
@@ -439,7 +439,7 @@ activeTab = 'health'}
           {/if}
           <div class="flex items-center gap-2">
             <Button
-              on:click={performSearch}
+              onclick={performSearch}
               disabled={isProcessing || !searchQuery.trim()}
               class="bits-btn-default bits-btn bits-btn"
             >
@@ -454,7 +454,7 @@ activeTab = 'health'}
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
-              on:click={() =>
+              onclick={() =>
 showAdvancedOptions = !showAdvancedOptions}
             >
               <Settings class="h-4 w-4" />
@@ -566,7 +566,7 @@ showAdvancedOptions = !showAdvancedOptions}
             </div>
           </div>
           <Button
-            on:click={generateRecommendations}
+            onclick={generateRecommendations}
             disabled={isProcessing || !recommendationContext.trim()}
             class="bits-btn-default bits-btn bits-btn"
           >
@@ -665,7 +665,7 @@ showAdvancedOptions = !showAdvancedOptions}
             />
           </div>
           <Button
-            on:click={performSemanticAnalysis}
+            onclick={performSemanticAnalysis}
             disabled={isProcessing || !analysisContent.trim()}
             class="bits-btn-default bits-btn bits-btn"
           >
@@ -834,7 +834,7 @@ showAdvancedOptions = !showAdvancedOptions}
               <Activity class="h-5 w-5" />
               Vector Intelligence System Health
             </span>
-            <Button class="bits-btn" variant="ghost" size="sm" on:click={loadSystemHealth}>
+            <Button class="bits-btn" variant="ghost" size="sm" onclick={loadSystemHealth}>
 <RefreshCw class="h-4 w-4" />
 </Button>
           </h3>

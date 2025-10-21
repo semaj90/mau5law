@@ -9,15 +9,15 @@
     id: string;
     type: 'case' | 'document' | 'search' | 'workflow' | 'precedent';
     title: string;
-    description: string;
+    description string;
     confidence: number;
     priority: number;
     metadata: any;
     aiInsight: string;
   }
   interface AIAction {
-    action: string;
-    description: string;
+    action string;
+    description string;
     priority: 'low' | 'medium' | 'high' | 'critical';
     estimatedTime: string;
     tools?: string[];
@@ -54,22 +54,22 @@
     {
       value: 'case-analysis',
       label: '⚖️ Case Analysis',
-      description: 'Deep analysis of current case strategy and opportunities',
+      description 'Deep analysis of current case strategy and opportunities',
     },
     {
       value: 'search-suggestion',
       label: '🔍 Search Optimization',
-      description: 'AI-powered search query suggestions and filters',
+      description 'AI-powered search query suggestions and filters',
     },
     {
       value: 'workflow-optimization',
       label: '⚡ Workflow Efficiency',
-      description: 'Identify bottlenecks and optimization opportunities',
+      description 'Identify bottlenecks and optimization opportunities',
     },
     {
       value: 'precedent-discovery',
       label: '📚 Precedent Discovery',
-      description: 'Find relevant precedents and emerging legal trends',
+      description 'Find relevant precedents and emerging legal trends',
     }
   ] as const;
   onMount(async () => {
@@ -116,7 +116,7 @@
           id: 'mock-ai-001',
           type: 'case',
           title: 'Employment Dispute Analysis',
-          description: 'Similar pattern detected in 3 recent cases with 85% success rate',
+          description 'Similar pattern detected in 3 recent cases with 85% success rate',
           confidence: 0.87,
           priority: 220,
           metadata: { caseType: 'employment', successRate: 0.85 },
@@ -126,7 +126,7 @@
           id: 'mock-ai-002',
           type: 'precedent',
           title: 'Recent 9th Circuit Decision',
-          description: 'New precedent strengthens constructive dismissal claims',
+          description 'New precedent strengthens constructive dismissal claims',
           confidence: 0.91,
           priority: 240,
           metadata: { court: '9th Circuit', date: '2024-02-15' },
@@ -135,8 +135,8 @@
       ];
       suggestedActions = [
         {
-          action: 'Document Discovery Request',
-          description: 'Subpoena HR files including contract amendments',
+          action 'Document Discovery Request',
+          description 'Subpoena HR files including contract amendments',
           priority: 'high',
           estimatedTime: '3-5 business days',
           tools: ['Subpoena Generator', 'Document Templates'];
@@ -152,7 +152,7 @@
       if (usingMockData) {
         const notice = document.createElement('div');
         notice.innerHTML = '⚠️ failure default to mock';
-        notice.style.cssText = 'position: fixed;
+        notice.style.cssText = 'position fixed;
 d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
         document.body.appendChild(notice);
         setTimeout(() => notice.remove(), 3000);
@@ -177,14 +177,14 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
       await new Promise(resolve => setTimeout(resolve, delay));
     }
   }
-  async function executeAction(action: AIAction) {
+  async function executeAction(action AIAction) {
     isProcessing = true;
     try {
       // In real app, this would trigger the actual action through API
       const response = await fetch('/api/ai/execute-action', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: action.action, context })
+        body: JSON.stringify({ action action.action, context })
       });
       if (!response.ok) {
         throw new Error('Action execution API failed');
@@ -196,11 +196,11 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
         throw new Error(result.error || 'Action execution failed');
       }
     } catch (error) {
-      console.error('Failed to execute action:', error);
+      console.error('Failed to execute action', error);
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock - action simulated locally';
-      notice.style.cssText = 'position: fixed;
+      notice.style.cssText = 'position fixed;
 d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
@@ -255,7 +255,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
           <button
             class="type-btn"
             class:active={selectedType === analysisType.value}
-            on:click={() => (selectedType = analysisType.value)}
+            onclick={() => (selectedType = analysisType.value)}
             title={analysisType.description}
           >
             {analysisType.label}
@@ -271,14 +271,14 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
           bind:value={customQuery}
           class="query-input"
         />
-        <button class="analyze-btn" on:click={generateRecommendations} disabled={isLoading || isThinking}>
+        <button class="analyze-btn" onclick={generateRecommendations} disabled={isLoading || isThinking}>
           {isLoading || isThinking ? '🤖 Analyzing...' : '🚀 Analyze'}
         </button>
       </div>
     </div>
     <!-- AI Thinking Process -->
     {#if isThinking}
-      <div class="ai-thinking" transition:slide={{ duration: 300 }}>
+      <div class="ai-thinking" transitionslide={{ duration 300 }}>
         <div class="thinking-header">
           <div class="thinking-icon">🧠</div>
           <h3>Gemma3:legal-latest Processing</h3>
@@ -287,7 +287,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
         <div class="thinking-message">{thinkingMessage}</div>
         <div class="processing-steps">
           {#each processingSteps as step, i}
-            <div class="processing-step" ; transition:slide={{ duration: 200, delay: i * 100 }}>
+            <div class="processing-step" ; transitionslide={{ duration 200, delay: i * 100 }}>
               ✓ {step}
             </div>
           {/each}
@@ -296,7 +296,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     {/if}
     <!-- AI Analysis Results -->
     {#if !isThinking && recommendations.length > 0}
-      <div class="ai-results" transition:fade={{ duration: 400 }}>
+      <div class="ai-results" transitionfade={{ duration 400 }}>
         <!-- AI Reasoning -->
         <div class="ai-reasoning">
           <div class="reasoning-header">
@@ -320,7 +320,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
               <div
                 class="recommendation-card"
                 ;
-                transition:fly={{ y: 20, delay: i * 100, duration: 300, easing: elasticOut }}
+                transitionfly={{ y: 20, delay: i * 100, duration 300, easing: elasticOut }}
               >
                 <div class="rec-header">
                   <span class="rec-icon">{getTypeIcon(recommendation.type)}</span>
@@ -377,7 +377,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
             <h4>⚡ Suggested Actions ({suggestedActions.length})</h4>
             <div class="actions-list">
               {#each suggestedActions as action, i (action.action)}
-                <div class="action-card" ; transition:slide={{ duration: 200, delay: i * 50 }}>
+                <div class="action-card" ; transitionslide={{ duration 200, delay: i * 50 }}>
                   <div class="action-header">
                     <div class="action-info">
                       <h5 class="action-title">{action.action}</h5>
@@ -403,7 +403,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
                       {/each}
                     </div>
                   {/if}
-                  <button class="execute-btn" on:click={() => executeAction(action)} disabled={isProcessing}>
+                  <button class="execute-btn" onclick={() => executeAction(action)} disabled={isProcessing}>
                     {isProcessing ? '⏳ Processing...' : '🚀 Execute'}
                   </button>
                 </div>
@@ -417,7 +417,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
             <h4>🔗 Related Topics</h4>
             <div class="topics-tags">
               {#each relatedTopics as topic}
-                <button class="topic-tag" on:click={() => (customQuery = topic)}>
+                <button class="topic-tag" onclick={() => (customQuery = topic)}>
                   {topic}
                 </button>
               {/each}
@@ -442,7 +442,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     max-height: 85vh;
     overflow: hidden;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
   }
   .modal-header {
     margin-bottom: 1.5rem;
@@ -463,7 +463,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     color: rgba(255, 255, 255, 0.8);
     font-size: 0.85rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
     text-align: left;
   }
   .type-btn:hover {
@@ -499,7 +499,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     color: #fff;
     font-weight: 500,
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
     white-space: nowrap;
   }
   .analyze-btn:hover:not(:disabled) {,
@@ -525,7 +525,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .thinking-icon {
     font-size: 2rem;
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   .thinking-header h3 {
     margin: 0,
@@ -538,7 +538,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-top: 2px solid rgba(138, 43, 226, 0.8);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   .thinking-message {
     font-size: 1rem;
@@ -548,7 +548,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .processing-steps {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .processing-step {
@@ -604,7 +604,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .recommendations-grid {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .recommendation-card {
@@ -612,7 +612,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     padding: 1rem;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .recommendation-card:hover {
     background: rgba(255, 255, 255, 0.05);
@@ -644,7 +644,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .rec-stats {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .confidence-meter,
@@ -706,7 +706,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .actions-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .action-card {
@@ -738,7 +738,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .action-meta {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
     align-items: flex-end;
   }
@@ -780,7 +780,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     color: #fff;
     font-size: 0.85rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .execute-btn:hover:not(:disabled) {,
     background: rgba(76, 175, 80, 0.3);
@@ -803,7 +803,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     color: rgba(255, 255, 255, 0.8);
     font-size: 0.8rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .topic-tag:hover {
     background: rgba(138, 43, 226, 0.2);
@@ -811,7 +811,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .empty-state {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     padding: 3rem;

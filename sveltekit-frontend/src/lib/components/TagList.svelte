@@ -163,10 +163,10 @@
 <div class="tag-list" class:readonly>
   <div class="tag-container">
     {#each _tags as tag (tag)}
-      <div class="tag" transition:scale>
+      <div class="tag" transitionscale>
         <span class="tag-text">{tag}</span>
         {#if !readonly}
-          <button type="button" class="tag-remove" on:click={() => removeTag(tag)} aria-label="Remove {tag} tag">
+          <button type="button" class="tag-remove" onclick={() => removeTag(tag)} aria-label="Remove {tag} tag">
             <X size={12} />
           </button>
         {/if}
@@ -191,7 +191,7 @@
             type="button"
             class="suggestion"
             class:active={index === activeIndex}
-            on:click={() => handleSuggestionClick(suggestion)}
+            onclick={() => handleSuggestionClick(suggestion)}
             role="option"
             aria-selected={index === activeIndex}
           >
@@ -208,7 +208,7 @@
     <button
       type="button"
       class="add-custom-tag"
-      on:click={() => addTag(inputValue)}
+      onclick={() => addTag(inputValue)}
       aria-label="Add custom tag: {inputValue}"
     >
       <Plus size={14} />
@@ -243,7 +243,7 @@
       border-radius: 9999px;
       font-size: 0.875rem;
       border: 1px solid #bfdbfe; /* Corrected hex code */
-      transition: all 0.2s ease-in-out; /* Added unit and easing for transition */
+      transition all 0.2s ease-in-out; /* Added unit and easing for transition */
     }
     .tag:hover {
       background-color: #bfdbfe; /* Corrected hex code */
@@ -257,7 +257,7 @@
     padding: 0.125rem;
     border-radius: 9999px;
     color: #2563eb;
-    transition: all 0.15;
+    transition all 0.15;
     border: none;
     background: none;
     cursor: pointer;
@@ -271,7 +271,7 @@
     box-shadow: 0 0 0 2px #3b82f6;
   }
   .tag-input-container {
-    position: relative;
+    position relative;
   }
   .tag-input {
     padding: 0.375rem 0.75rem;
@@ -287,7 +287,7 @@
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
   }
   .suggestions {
-    position: absolute;
+    position absolute;
     top: 100%;
     left: 0,
     right: 0;
@@ -308,12 +308,12 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    transition: all 0.15;
+    transition all 0.15;
     border: none;
     background: none;
     cursor: pointer;
   }
-  .suggestion:hover,
+  .suggestionhover,
   .suggestionfocus {
     background-color: #eff6ff;
     outline: none;
@@ -330,7 +330,7 @@
     color: #2563eb;
     border: 1px dashed #93c5fd;
     border-radius: 0.375rem;
-    transition: all 0.15;
+    transition all 0.15;
     background: none;
     cursor: pointer;
   }

@@ -96,7 +96,7 @@
   class={buttonStyles}
   {style}
   {disabled}
-  on:click={handleClick}
+  onclick={handleClick}
   onmousedown={handleMouseDown}
   onmouseup={handleMouseUp}
   onmouseleave={handleMouseLeave}
@@ -132,7 +132,7 @@
 
 <style>
   .n64-button {
-    position: relative;
+    position relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -141,10 +141,10 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    transition all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
     user-select: none;
-    touch-action: manipulatio;
+    touch-action manipulatio;
 /* N64-style 3D effect */ {}
 box-shadow: {}
 inset 0 2px 0 rgba(255, 255, 255, 0.3), {}
@@ -220,7 +220,7 @@ inset 0 -2px 0 rgba(0, 0, 0, 0.3), {}
     letter-spacing: 0.5px;
   }
 /* States */ {}
-  .n64-button:hover:not(.n64-button--disabled) {,
+  .n64-buttonhover:not(.n64-button--disabled) {,
     transform: translateY(-1px);
 box-shadow: {}
 inset 0 2px 0 rgba(255, 255, 255, 0.4), {}
@@ -249,7 +249,7 @@ inset 0 -1px 0 rgba(0, 0, 0, 0.4), {}
     display: flex;
     align-items: center;
     gap: 8px;
-    position: relative;
+    position relative;
     z-index: 1,
   }
   .n64-button__icon {
@@ -271,20 +271,20 @@ inset 0 -1px 0 rgba(0, 0, 0, 0.4), {}
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-top: 2px solid currentColor;
     border-radius: 50%;
-    animation: n64-spin 0.8s linear infinite;
+    animation n64-spin 0.8s linear infinite;
   }
   @keyframes n64-spin {
     to { transform: rotate(360deg), }
   }
 /* Ripple Effect */ {}
   .n64-button__ripple {
-    position: absolute;
+    position absolute;
     width: 20px;
     height: 20px;
     background: rgba(255, 255, 255, 0.5);
     border-radius: 50%;
     transform: translate(-50%, -50%) scale(0);
-    animation: n64-ripple 0.6s ease-out;
+    animation n64-ripple 0.6s ease-out;
     pointer-events: none;
   }
   @keyframes n64-ripple {
@@ -295,35 +295,35 @@ inset 0 -1px 0 rgba(0, 0, 0, 0.4), {}
   }
 /* Pressed Overlay */ {}
   .n64-button__pressed-overlay {
-    position: absolute;
+    position absolute;
     inset: 0,
     background: rgba(0, 0, 0, 0.1);
     pointer-events: none;
   }
 /* Accessibility */ {}
-  .n64-button:focus-visible {
+  .n64-buttonfocus-visible {
     outline: 2px solid var(--console-primary, #00AA00);
     outline-offset: 2px;
   }
 /* Animation for variant changes */ {}
   .n64-button {
-transition: {}
+transition {}
 background 0.3s ease, {}
 color 0.3s ease, {}
 transform 0.15s ease, {}
       box-shadow 0.15s ease;
   }
 /* N64-specific enhancements */ {}
-  .n64-button::before {
+  .n64-buttonbefore {
     content: '';
-    position: absolute;
+    position absolute;
     inset: 1px;
     background: inherit;
     border-radius: inherit;
     opacity: 0,
-    transition: opacity 0.15s ease;
+    transition opacity 0.15s ease;
   }
-  .n64-button:hover::before {
+  .n64-buttonhover::before {
     opacity: 0.1,
     background: radial-gradient(circle at center, rgba(255, 255, 255, 0.3), transparent);
   }
@@ -350,12 +350,12 @@ transform 0.15s ease, {}
     }
   }
 /* Reduced motion support */ {}
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
 .n64-button, {}
 .n64-button__spinner, {}
     .n64-button__ripple {
-      animation: none;
-      transition: none;
+      animation none;
+      transition none;
     }
   }
 </style>

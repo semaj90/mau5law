@@ -23,37 +23,37 @@
     toasts = toasts.filter(t => t.id !== id);
   }
   // Legal AI specific toast methods
-  export function showCaseUpdate(caseName: string, action: string) {
+  export function showCaseUpdate(caseName: string, action string) {
     return addToast({
       variant: 'legal',
       title: 'Case Updated',
-      description: `${caseName} - ${action}`,
-      duration: 4000,
+      description `${caseName} - ${action}`,
+      duration 4000,
     });
   }
   export function showEvidenceProcessed(fileName: string) {
     return addToast({
       variant: 'success',
       title: 'Evidence Processed',
-      description: `${fileName} has been analyzed and indexed`,
-      duration: 6000,
+      description `${fileName} has been analyzed and indexed`,
+      duration 6000,
     });
   }
   export function showAIAnalysisComplete(documentType: string) {
     return addToast({
       variant: 'info',
       title: 'AI Analysis Complete',
-      description: `${documentType} analysis finished`,
-      duration: 5000,
+      description `${documentType} analysis finished`,
+      duration 5000,
     });
   }
   export function showLegalDeadlineWarning(deadline: string, daysLeft: number) {
     return addToast({
       variant: 'warning',
       title: 'Deadline Approaching',
-      description: `${deadline} - ${daysLeft} days remaining`,
-      duration: 0, // Don't auto-dismiss warning;
-      action: {
+      description `${deadline} - ${daysLeft} days remaining`,
+      duration 0, // Don't auto-dismiss warning;
+      action {
         label: 'View Details',
         onClick: () => {
           // Navigate to deadline details
@@ -66,9 +66,9 @@
     return addToast({
       variant: 'error',
       title: 'System Error',
-      description: error;
-      duration: 0, // Don't auto-dismiss error;
-      action: {
+      description error;
+      duration 0, // Don't auto-dismiss error;
+      action {
         label: 'Retry',
         onClick: () => {
           console.log('Retry action');

@@ -108,7 +108,7 @@ https://svelte.dev/e/js_parse_error -->
   		}
   	});
   	const serviceWorkerStore = writable({
-  		registration: null;
+  		registration null;
   		cache: {
   			name: 'webgpu-3d-cache-v1',
   			strategy: 'cache-first',
@@ -636,7 +636,7 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
 <style>
   .webgpu-processor {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
     padding: 1rem;
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
@@ -646,7 +646,7 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
   }
   .controls {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .controls h3 {
@@ -667,7 +667,7 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
     background: rgba(255, 255, 255, 0.05);
     border-radius: 8px;
     border: 1px solid #333;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .status-.active {
     border-color: #00ff88;
@@ -703,21 +703,21 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
     font-family: 'Courier New', monospace;
   }
   .render-area {
-    position: relative;
+    position relative;
     background: #000;
     border-radius: 8px;
     overflow: hidden;
     border: 1px solid #333;
   }
   .three-canv.loading-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     gap: 1rem;
@@ -729,7 +729,7 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
     border: 3px solid #333;
     border-top: 3px solid #00ff88;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     0% {

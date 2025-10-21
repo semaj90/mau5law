@@ -14,7 +14,7 @@
   <meta name="description" content="Gaming interface recreation using Enhanced-Bits + WebGPU" />
 </svelte:head>
 {#if isLoading}
-  <div class="loading-screen" transition:fade>
+  <div class="loading-screen" transitionfade>
     <div class="loading-content">
       <div class="loading-logo">🕵️</div>
       <h1>EVIDENCE BOARD</h1>
@@ -25,14 +25,14 @@
     </div>
   </div>
 {:else}
-  <div transition:fade={{ delay: 300 }}>
+  <div transitionfade={{ delay: 300 }}>
     <GamingEvidenceBoard />
   </div>
 {/if}
 
 <style>
   .loading-screen {
-    position: fixed;
+    position fixed;
     inset: 0,
     background: linear-gradient(145deg, #1a1a1a 0%, #000000 100%);
     display: flex;
@@ -48,7 +48,7 @@
   .loading-logo {
     font-size: 4rem;
     margin-bottom: 1rem;
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   .loading-content h1 {
     font-size: 2rem;
@@ -73,7 +73,7 @@
     height: 100%;
     background: #00ff41;
     border-radius: 3px;
-    animation: loading-progress 1.5s ease-in-out;
+    animation loading-progress 1.5s ease-in-out;
     box-shadow: 0 0 10px #00ff41;
   }
   @keyframes pulse {

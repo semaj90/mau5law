@@ -71,7 +71,7 @@
   class={cardClasses}
   role={clickable ? 'button' : undefined}
   tabindex={clickable ? 0 : undefined}
-  on:click={handleClick}
+  onclick={handleClick}
   keydown={(e) = class="nes-container"> {
     if (clickable && (e.key === 'Enter' || e.key === ' ')) {
       e.preventDefault();
@@ -118,7 +118,7 @@
 <style>
   .modern-card {
     border-radius: 0.75rem;
-    position: relative;
+    position relative;
     overflow: hidden;
   }
   .modern-card:focus-visible {
@@ -157,7 +157,7 @@
     align-items: center;
   }
   .loading-overlay {
-    position: absolute;
+    position absolute;
     inset: 0,
     background: rgba(0, 0, 0, 0.6);
     display: flex;
@@ -173,7 +173,7 @@
     border: 2px solid var(--yorha-border-primary);
     border-top: 2px solid var(--yorha-accent-gold);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     to {

@@ -134,10 +134,10 @@ https://svelte.dev/e/js_parse_error -->
   ];
   // Status options
   const statusOptions = [
-    { value: 'draft', label: 'Draft', description: 'Case is being prepared' },
-    { value: 'active', label: 'Active', description: 'Case is under investigation' },
-    { value: 'pending', label: 'Pending', description: 'Awaiting review or action' },
-    { value: 'closed', label: 'Closed', description: 'Case is completed' },
+    { value: 'draft', label: 'Draft', description 'Case is being prepared' },
+    { value: 'active', label: 'Active', description 'Case is under investigation' },
+    { value: 'pending', label: 'Pending', description 'Awaiting review or action' },
+    { value: 'closed', label: 'Closed', description 'Case is completed' },
   ];
   // Auto-save indicator
   // let lastSaved = $state<Date | null>(null);
@@ -162,7 +162,7 @@ https://svelte.dev/e/js_parse_error -->
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
   // Enhanced form submission with progress tracking
-  // Svelte Action: accept node so Svelte can call the action with the form element
+  // Svelte Action accept node so Svelte can call the action with the form element
   function createEnhancedSubmit(node: HTMLFormElement) {
     // When Svelte calls the action it will pass the node; pass node along to enhance
     return enhance(node, ({ formData }) => {
@@ -211,7 +211,7 @@ https://svelte.dev/e/js_parse_error -->
                 errorMsg = JSON.stringify(data) ?? errorMsg;
               }
             } else if (result?.type === 'redirect') {
-              // result is narrowed to { type: 'redirect', location: string }
+              // result is narrowed to { type: 'redirect', location string }
               // Provide a helpful message when a redirect occurs
               // @ts-ignore - access for runtime info
               errorMsg = `Redirected to ${(result as any).location}`;
@@ -418,7 +418,7 @@ https://svelte.dev/e/js_parse_error -->
           <!-- Use native button to avoid passing unknown 'type' prop to Button component -->
           <button
             type="button"
-            on:click={() => (showAdvanced = !showAdvanced)}
+            onclick={() => (showAdvanced = !showAdvanced)}
             class="mb-4 inline-flex items-center px-3 py-2 rounded-md text-sm bg-transparent hover:bg-muted/5"
             aria-expanded={showAdvanced}
           >
@@ -554,7 +554,7 @@ https://svelte.dev/e/js_parse_error -->
                       <!-- native button to avoid passing 'type' prop to Button -->
                       <button
                         type="button"
-                        on:click={() => removeFile(index)}
+                        onclick={() => removeFile(index)}
                         class="inline-flex items-center px-2 py-1 text-sm rounded-md bg-transparent hover:bg-muted/5"
                         aria-label={`Remove ${file.name}`}
                       >
@@ -574,7 +574,7 @@ https://svelte.dev/e/js_parse_error -->
             {#if enableAutoSave && !editMode}
               <button
                 type="button"
-                on:click={() => {
+                onclick={() => {
                   if (ondraft) ondraft({ data: $form });
                 }}
                 class="inline-flex items-center px-3 py-2 rounded-md text-sm bg-transparent hover:bg-muted/5"
@@ -613,7 +613,7 @@ https://svelte.dev/e/js_parse_error -->
     <p class="text-red-600 font-mono text-sm mb-4 bg-red-100 p-2 rounded">{componentError.message}</p>
     <button
       type="button"
-      on:click={() => {
+      onclick={() => {
         componentError = null;
       }}
       class="border-red-300 text-red-700 hover:bg-red-50 inline-flex items-center px-3 py-2 rounded-md"

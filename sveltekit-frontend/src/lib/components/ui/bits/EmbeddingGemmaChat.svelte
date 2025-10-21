@@ -267,7 +267,7 @@
         {
           model: embeddingOptions.model,
           practiceArea: caseId ? 'legal' : undefined;
-          jurisdiction: caseId ? 'us-federal' : undefined;
+          jurisdiction caseId ? 'us-federal' : undefined;
         }
       );
       embeddedDocuments = embedResult;
@@ -392,7 +392,7 @@
       <Button class="bits-btn"
         variant="ghost"
         size="sm"
-        on:click={() =>
+        onclick={() =>
 useAdvancedRAG = !useAdvancedRAG}
         disabled={isLoading}
       >
@@ -410,7 +410,7 @@ useAdvancedRAG = !useAdvancedRAG}
         <Button class="bits-btn"
           variant="ghost"
           size="sm"
-          on:click={analyzeDocuments}
+          onclick={analyzeDocuments}
           disabled={isLoading || availableDocuments.length === 0}
         >
 {#snippet children()}
@@ -422,7 +422,7 @@ useAdvancedRAG = !useAdvancedRAG}
       <Button class="bits-btn"
         variant="ghost"
         size="sm"
-        on:click={checkServiceHealth}
+        onclick={checkServiceHealth}
         disabled={isLoading}
       >
 {#snippet children()}
@@ -437,7 +437,7 @@ useAdvancedRAG = !useAdvancedRAG}
       <Button class="bits-btn"
         variant="ghost"
         size="sm"
-        on:click={queueEmbeddingJobs}
+        onclick={queueEmbeddingJobs}
         disabled={isLoading || availableDocuments.length === 0}
       >
 {#snippet children()}
@@ -455,7 +455,7 @@ useAdvancedRAG = !useAdvancedRAG}
           RAG Context: {selectedDocuments.length > 0 ? selectedDocuments.length: availableDocuments.length} of {availableDocuments.length} documents
         </span>
         <div class="flex gap-2">
-          <Button class="bits-btn" variant="ghost" size="xs" on:click={addDocument}>
+          <Button class="bits-btn" variant="ghost" size="xs" onclick={addDocument}>
 {#snippet children()}
               <FileText class="w-3 h-3 mr-1" />
               Add Doc
@@ -560,7 +560,7 @@ useAdvancedRAG = !useAdvancedRAG}
       <Button class="bits-btn"
         variant="default"
         size="default"
-        on:click={sendMessage}
+        onclick={sendMessage}
         disabled={isLoading || !messageInput.trim()}
       >
 {#snippet children()}

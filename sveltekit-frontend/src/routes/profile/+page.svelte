@@ -148,7 +148,7 @@
       <div class="space-y-4">
         <div class="rag-section-header">
           <h2>🧠 AI Knowledge Base</h2>
-          <button class="rag-toggle-button" on:click={() => (showRagUpload = !showRagUpload)}>
+          <button class="rag-toggle-button" onclick={() => (showRagUpload = !showRagUpload)}>
             {showRagUpload ? '▼ Hide Upload' : '▶ Upload Documents'}
           </button>
         </div>
@@ -269,7 +269,7 @@
     padding: 20px;
     text-align: center;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    transition:
+    transition
       transform 0.2s ease,
       box-shadow 0.2s ease;
   }
@@ -322,10 +322,10 @@
     border-radius: 6px;
     cursor: pointer;
     font-size: 14px;
-    transition: background-color 0.2s ease;
+    transition background-color 0.2s ease;
   }
 
-  .rag-toggle-button:hover {
+  .rag-toggle-buttonhover {
     background: var(--primary-hover, #2563eb);
   }
 
@@ -388,11 +388,11 @@
       grid-template-columns: 1fr;
     }
     .avatar-display {
-      flex-direction: column;
+      flex-direction column;
       text-align: center;
     }
     .rag-section-header {
-      flex-direction: column;
+      flex-direction column;
       align-items: stretch;
       gap: 12px;
     }

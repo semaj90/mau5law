@@ -156,7 +156,7 @@
   <!-- Header with close button -->
   <div class="canvas-header">
     <h2 class="canvas-title">EVIDENCE BOARD</h2>
-    <button class="close-btn" on:click={closeBoard} title="Close Evidence Board"> ✕ </button>
+    <button class="close-btn" onclick={closeBoard} title="Close Evidence Board"> ✕ </button>
   </div>
   <!-- Toolbar -->
   {#if showToolbar}
@@ -164,18 +164,18 @@
       <div class="tool-section">
         <h3>TOOLS</h3>
         <div class="tool-buttons">
-          <button class="tool-btn" class:active={tool === 'brush'} on:click={() => setTool('brush')} title="Brush Tool">
+          <button class="tool-btn" class:active={tool === 'brush'} onclick={() => setTool('brush')} title="Brush Tool">
             🖌️
           </button>
           <button
             class="tool-btn"
             class:active={tool === 'eraser'}
-            on:click={() => setTool('eraser')}
+            onclick={() => setTool('eraser')}
             title="Eraser Tool"
           >
             🧽
           </button>
-          <button class="tool-btn" on:click={clearCanvas} title="Clear Canvas"> 🗑️ </button>
+          <button class="tool-btn" onclick={clearCanvas} title="Clear Canvas"> 🗑️ </button>
         </div>
       </div>
       <div class="color-section">
@@ -187,7 +187,7 @@
               ;
               class:active={color === yorhaColor}
               style="background-color: {yorhaColor}"
-              on:click={() => setColor(yorhaColor)}
+              onclick={() => setColor(yorhaColor)}
               title="Select {yorhaColor}"
             >
             </button>
@@ -237,7 +237,7 @@
 
 <style>
   .yorha-canvas-board {
-    position: fixed;
+    position fixed;
 d;
     top: 0,
     left: 0;
@@ -245,7 +245,7 @@ d;
     bottom: 0;
     z-index: 1000,
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
     border: 2px solid #00ff88;
     border-radius: 0; /* YoRHa sharp edges */
@@ -276,7 +276,7 @@ d;
     width: 40px;
     height: 40px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -302,7 +302,7 @@ d;
   .color-section,
   .size-section {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
     align-items: center;
   }
@@ -324,7 +324,7 @@ d;
     color: #00ff88;
     padding: 0.5rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     font-size: 1.2rem;
     width: 40px;
     height: 40px;
@@ -352,7 +352,7 @@ d;
     height: 30px;
     border: 2px solid #333;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .color-btn: hover {
     border-color: #00ff88;
@@ -384,7 +384,7 @@ d;
     text-shadow: 0 0 5px #00ff88;
   }
   .canvas-container {
-    position: relative;
+    position relative;
     flex: 1,
     display: flex;
     justify-content: center;
@@ -402,7 +402,7 @@ d;
     box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
   }
   .canvas-overlay {
-    position: absolute;
+    position absolute;
     top: 1rem;
     right: 1rem;
     background: rgba(0, 0, 0, 0.8);
@@ -412,7 +412,7 @@ d;
   }
   .canvas-info {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
   .info-item {
@@ -423,13 +423,13 @@ d;
   /* Responsive design */
   @media (max-width: 768px) {
     .canvas-toolbar {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
     }
     .tool-section,
     .color-section,
     .size-section {
-      flex-direction: row;
+      flex-direction row;
       align-items: center;
     }
     .color-palette {
@@ -443,6 +443,6 @@ d;
     100% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.3), }
   }
   .yorha-canvas-board:hover {
-    animation: yorha-glow 2s ease-in-out infinite;
+    animation yorha-glow 2s ease-in-out infinite;
   }
 </style>

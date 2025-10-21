@@ -248,7 +248,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant={editorState.isBold ? "default" : "ghost"}
 							size="sm"
-							on:click={toggleBold}
+							onclick={toggleBold}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
@@ -257,7 +257,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant={editorState.isItalic ? "default" : "ghost"}
 							size="sm"
-							on:click={toggleItalic}
+							onclick={toggleItalic}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
@@ -266,7 +266,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant={editorState.isUnderlined ? "default" : "ghost"}
 							size="sm"
-							on:click={toggleUnderline}
+							onclick={toggleUnderline}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
@@ -278,7 +278,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant="ghost"
 							size="sm"
-							on:click={insertList}
+							onclick={insertList}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
@@ -287,7 +287,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant="ghost"
 							size="sm"
-							on:click={insertOrderedList}
+							onclick={insertOrderedList}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
@@ -296,7 +296,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant="ghost"
 							size="sm"
-							on:click={insertQuote}
+							onclick={insertQuote}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
@@ -308,7 +308,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant="ghost"
 							size="sm"
-							on:click={insertLink}
+							onclick={insertLink}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
@@ -317,7 +317,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant="ghost"
 							size="sm"
-							on:click={insertCode}
+							onclick={insertCode}
 							disabled={readonly}
 							class="h-8 w-8 p-0 bits-btn bits-btn"
 						>
@@ -329,7 +329,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<Button
 							variant="ghost"
 							size="sm"
-							on:click={saveContent}
+							onclick={saveContent}
 							disabled={readonly}
 							class="h-8 bits-btn bits-btn"
 						>
@@ -344,7 +344,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<button
 							variant={nieRTheme.mode === 'android' ? 'default' : 'ghost'}
 							size="sm"
-							on:click={() => switchTheme('android')}
+							onclick={() => switchTheme('android')}
 							class="nes-btn bits-btn h-6 px-2 text-xs"
 						>
 							2B
@@ -352,7 +352,7 @@ https://svelte.dev/e/attribute_duplicate -->
 						<button
 							variant={nieRTheme.mode === 'yorha' ? 'default' : 'ghost'}
 							size="sm"
-							on:click={() => switchTheme('yorha')}
+							onclick={() => switchTheme('yorha')}
 							class="nes-btn bits-btn h-6 px-2 text-xs"
 						>
 							9S
@@ -361,7 +361,7 @@ https://svelte.dev/e/attribute_duplicate -->
 							variant={nieRTheme.mode === 'machine' ? 'default' : 'ghost'}
 							class="bits-btn"
 							size="sm"
-							on:click={() => switchTheme('machine')}
+							onclick={() => switchTheme('machine')}
 							class="h-6 px-2 text-xs"
 						>
 							A2
@@ -474,7 +474,7 @@ https://svelte.dev/e/attribute_duplicate -->
 	/* Scanlines Effect */
 	.scanlines::after {
 		content: '';
-		position: absolute;
+		position absolute;
 		top: 0,
 		left: 0;
 		right: 0,
@@ -485,7 +485,7 @@ https://svelte.dev/e/attribute_duplicate -->
 			transparent 100%
 		);
 		background-size: 100% 4px;
-		animation: scanlines 2s linear infinite;
+		animation scanlines 2s linear infinite;
 		pointer-events: none;
 	}
 	@keyframes scanlines {
@@ -494,7 +494,7 @@ https://svelte.dev/e/attribute_duplicate -->
 	}
 	/* Glitch Effect */
 	.glitch-effect {
-		animation: glitch 0.1s ease-in-out;
+		animation glitch 0.1s ease-in-out;
 	}
 	@keyframes glitch {
 		0% { transform: translateX(0), }
@@ -535,7 +535,7 @@ https://svelte.dev/e/attribute_duplicate -->
 	}
 	/* Save Indicator */
 	:global(.save-indicator) {
-		position: fixed;
+		position fixed;
 d;
 		top: 20px;
 		right: 20px;
@@ -545,7 +545,7 @@ d;
 		font-size: 12px;
 		font-weight: bold;
 		z-index: 9999,
-		animation: fadeInOut 2s ease-in-out;
+		animation fadeInOut 2s ease-in-out;
 	}
 	:global(.save-success) {
 		background: rgba(0, 255, 0, 0.2);

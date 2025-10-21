@@ -49,7 +49,7 @@ https://svelte.dev/e/js_parse_error -->
     uploadSpeed: 0,
     processingTime: 0,
     memoryUsage: 0,
-    gpuUtilization: 0,
+    gpuUtilization 0,
   });
   $effect(() => {
     initializeWebSocket();
@@ -389,7 +389,7 @@ https://svelte.dev/e/js_parse_error -->
   /* Add any custom styles here */
   .transition-all {
     transition-property: all;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 150m;
+    transition-timing-function cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration 150m;
   }
 </style>

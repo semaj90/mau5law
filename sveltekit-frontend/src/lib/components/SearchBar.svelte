@@ -96,7 +96,7 @@
       <button
         class="filter-button"
         class:active={filtersOpen}
-        on:click={() => toggleFilters()}
+        onclick={() => toggleFilters()}
         aria-label="Toggle filters"
         title="Filters"
       >
@@ -175,7 +175,7 @@
       <button
         type="button"
         class="clear-filters-btn"
-        on:click={() => {
+        onclick={() => {
           selectedFileTypes = [];
           dateRange = { from: '', to: '' };
           dispatchFilters();
@@ -202,7 +202,7 @@
     flex-shrink: 0,
   }
   .sort-container {
-    position: relative;
+    position relative;
     display: flex;
     align-items: center;
   }
@@ -218,7 +218,7 @@
     min-width: 100px;
   }
   .sort-container :global(svg) {
-    position: absolute;
+    position absolute;
     right: 0.5rem;
     top: 50%;
     transform: translateY(-50%);
@@ -235,10 +235,10 @@
     border: 1px solid var(--border-light);
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     color: var(--text-muted);
   }
-  .filter-button:hover {
+  .filter-buttonhover {
     background: var(--bg-tertiary);
     border-color: var(--harvard-crimson);
     color: var(--harvard-crimson);
@@ -255,7 +255,7 @@
     border: 1px solid var(--border-light);
     border-radius: 8px;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .filter-group label,
@@ -308,7 +308,7 @@
     color: var(--text-muted);
     cursor: pointer;
     font-size: 0.875rem;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .clear-filters-btn:hover {
     background: var(--bg-tertiary);
@@ -318,18 +318,18 @@
   /* Responsive */
   @media (max-width: 768px) {
     .search-controls {
-      flex-direction: column;
+      flex-direction column;
       align-items: stretch;
     }
     .sort-select {
       min-width: auto;
     }
     .filter-options {
-      flex-direction: column;
+      flex-direction column;
       gap: 0.5rem;
     }
     .date-range {
-      flex-direction: column;
+      flex-direction column;
       align-items: stretch;
     }
   }

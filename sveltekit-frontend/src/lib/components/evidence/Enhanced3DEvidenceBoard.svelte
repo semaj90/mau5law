@@ -11,7 +11,7 @@
     id: string;
     type: 'document' | 'witness' | 'physical' | 'digital' | 'timeline';
     title: string;
-    position: ;
+    position ;
 { x: number; y: number; z: number }
     connections: string[];
     confidence: number;
@@ -197,7 +197,7 @@
         id: 'doc-001',
         type: 'document',
         title: 'Contract Agreement v2.1',
-        position: ;
+        position ;
 { x: 0, y: 0, z: 0 },
         connections: ['doc-002', 'witness-001'],
         confidence: 0.95,
@@ -212,7 +212,7 @@
         id: 'doc-002',
         type: 'document',
         title: 'Email Chain - Negotiations',
-        position: ;
+        position ;
 { x: 150, y: 50, z: -100 },
         connections: ['doc-001', 'timeline-001'],
         confidence: 0.87,
@@ -226,7 +226,7 @@
         id: 'witness-001',
         type: 'witness',
         title: 'John Smith - Key Witness',
-        position: ;
+        position ;
 { x: -120, y: 80, z: 150 },
         connections: ['doc-001', 'physical-001'],
         confidence: 0.78,
@@ -241,14 +241,14 @@
         id: 'physical-001',
         type: 'physical',
         title: 'Signed Original Contract',
-        position: ;
+        position ;
 { x: 200, y: -100, z: 80 },
         connections: ['witness-001', 'timeline-001'],
         confidence: 0.99,
         priority: 240,
         metadata: {
-          location: 'Legal Vault A-23',
-          condition: 'Excellent',
+          location 'Legal Vault A-23',
+          condition 'Excellent',
           verified: true,
         }
       },
@@ -256,7 +256,7 @@
         id: 'timeline-001',
         type: 'timeline',
         title: 'Contract Timeline',
-        position: ;
+        position ;
 { x: -50, y: -150, z: 100 },
         connections: ['doc-002', 'physical-001'],
         confidence: 0.92,
@@ -549,7 +549,7 @@
       nodes,
       connections,
       camera: $camera;
-      rotation: $rotation;
+      rotation $rotation;
       timestamp: new Date().toISOString();
     }
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
@@ -582,9 +582,9 @@
     </div>
     <div class="panel-section">
       <h4>Controls</h4>
-      <button class="control-btn" on:click={resetCamera}>Reset View</button>
-      <button class="control-btn" on:click={toggleView}>Toggle View</button>
-      <button class="control-btn" on:click={exportBoard}>Export</button>
+      <button class="control-btn" onclick={resetCamera}>Reset View</button>
+      <button class="control-btn" onclick={toggleView}>Toggle View</button>
+      <button class="control-btn" onclick={exportBoard}>Export</button>
     </div>
   </div>
 </div>
@@ -632,7 +632,7 @@
 
 <style>
   .evidence-board-container {
-    position: relative;
+    position relative;
     width: 100%;
     height: 800px;
     border-radius: 8px;
@@ -649,7 +649,7 @@
     cursor: grabbing;
   }
   .control-panel {
-    position: absolute;
+    position absolute;
     top: 1rem;
     right: 1rem;
     background: rgba(0, 0, 0, 0.8);
@@ -670,7 +670,7 @@
   }
   .stats {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
   .stat {
@@ -694,7 +694,7 @@
     color: #fff;
     font-size: 0.8rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .control-btn:hover {
     background: rgba(138, 43, 226, 0.4);
@@ -739,7 +739,7 @@
   .confidence-fill {
     height: 100%;
     background: linear-gradient(90deg, #8a2be2, #4b0082);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .priority-value {
     color: #8a2be2;

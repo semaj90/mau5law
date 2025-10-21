@@ -26,8 +26,8 @@ https://svelte.dev/e/js_parse_error -->
   let optimizationConfig = $state({
     enableContext7Boost: true,
     enableSemanticClustering: true,
-    enablePatternRecognition: true,
-    enablePerformanceOptimization: true,
+    enablePatternRecognition true,
+    enablePerformanceOptimization true,
     minRelevanceThreshold: 0.7,
     compressionRatio: 0.8,
   });
@@ -80,7 +80,7 @@ await loadCopilotContent();
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          action: 'optimize_index',
+          action 'optimize_index',
           content: copilotContent;
           options: optimizationConfig;
         }),
@@ -111,7 +111,7 @@ await loadCopilotContent();
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          action: 'semantic_search',
+          action 'semantic_search',
           content: searchQuery;
           options: {
             limit: 10,
@@ -177,7 +177,7 @@ await loadCopilotContent();
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          action: 'generate_suggestions',
+          action 'generate_suggestions',
           content: {
             currentCode: testCode
             cursor: { line: 5, character: 25 },
@@ -192,11 +192,11 @@ await loadCopilotContent();
       searchResults = (data as { content?: unknown; results?: unknown; optimizer?: unknown; cache?: unknown; suggestions?: unknown }).suggestions.map((suggestion, index) => ({
         id: `suggestion_${index}`,
         document: {
-          title: `Suggestion: ${suggestion.category}`,
+          title: `Suggestion ${suggestion.category}`,
           content: suggestion.text,
         },
         score: suggestion.confidence,
-        explanation: `${suggestion.category} suggestion (Priority: ${suggestion.priority})`,
+        explanation `${suggestion.category} suggestion (Priority: ${suggestion.priority})`,
         context7Pattern: suggestion.context7Pattern,
       });
     } catch (error) {
@@ -289,7 +289,7 @@ await loadCopilotContent();
       <div class="mb-6 p-4 bg-red-900/30 border border-red-500/50 rounded-lg text-red-100">
         <strong>Error:</strong> {errorMessage}
         <button
-          on:click={() => errorMessage = ''}
+          onclick={() => errorMessage = ''}
           class="ml-2 text-red-300 hover:text-red-100"
         >
           ✕
@@ -307,7 +307,7 @@ await loadCopilotContent();
           { id: 'config', label: 'Configuration' }
         ] as tab}
           <button
-            on:click={() => selectedTab = tab.id}
+            onclick={() => selectedTab = tab.id}
             class="px-4 py-2 rounded-md text-sm font-medium transition-all
               {selectedTab === tab.id
                 ? 'bg-purple-600 text-white'
@@ -327,7 +327,7 @@ await loadCopilotContent();
           <div class="flex items-center justify-between">
             <h2 class="text-xl font-semibold text-purple-100">Copilot Content</h2>
             <button
-              on:click={loadCopilotContent}
+              onclick={loadCopilotContent}
               disabled={isLoading}
               class="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50
                      text-white rounded-lg transition-colors"
@@ -343,7 +343,7 @@ await loadCopilotContent();
           ></textarea>
           <div class="flex gap-2">
             <button
-              on:click={optimizeIndex}
+              onclick={optimizeIndex}
               disabled={!copilotContent || isLoading}
               class="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600;
                      hover:from-purple-700 hover:to-blue-700 disabled:opacity-50
@@ -353,13 +353,13 @@ await loadCopilotContent();
             </button>
             {#if optimizationResults}
               <button
-                on:click={exportResults}
+                onclick={exportResults}
                 class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
               >
                 Export
               </button>
               <button
-                on:click={resetOptimization}
+                onclick={resetOptimization}
                 class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
               >
                 Reset
@@ -461,7 +461,7 @@ await loadCopilotContent();
                   keydown={(e) => e.key === 'Enter' && performSearch()}
                 />
                 <button
-                  on:click={performSearch}
+                  onclick={performSearch}
                   disabled={!searchQuery.trim() || isLoading}
                   class="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50
                          text-white rounded-lg transition-colors"
@@ -479,7 +479,7 @@ await loadCopilotContent();
                 'Vector embeddings'
               ] as example}
                 <button
-                  on:click={() => { searchQuery = example; performSearch(), }}
+                  onclick={() => { searchQuery = example; performSearch(), }}
                   class="p-2 text-left text-sm bg-black/20 hover:bg-purple-700/20
                          text-purple-300 hover:text-purple-100 rounded border border-purple-500/20
                          transition-colors"
@@ -535,7 +535,7 @@ await loadCopilotContent();
         <div class="flex items-center justify-between">
           <h2 class="text-xl font-semibold text-purple-100">Code Suggestions</h2>
           <button
-            on:click={generateSuggestions}
+            onclick={generateSuggestions}
             disabled={isLoading}
             class="px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:opacity-50
                    text-white rounded-lg transition-colors"
@@ -669,7 +669,7 @@ await loadCopilotContent();
                   <span class="text-purple-100">{performanceMetrics.cache.size} entries</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="text-purple-400">Node Version:</span>
+                  <span class="text-purple-400">Node Version</span>
                   <span class="text-purple-100">{performanceMetrics.system.nodeVersion}</span>
                 </div>
                 <div class="flex justify-between">
@@ -693,10 +693,10 @@ await loadCopilotContent();
         <div class="space-y-4">
           <!-- Boolean options -->
           {#each [
-            { key: 'enableContext7Boost', label: 'Enable Context7 Pattern Boosting', description: 'Boost relevance for Context7-compatible patterns' },
-            { key: 'enableSemanticClustering', label: 'Enable Semantic Clustering', description: 'Use SOM clustering for better organization' },
-            { key: 'enablePatternRecognition', label: 'Enable Pattern Recognition', description: 'Recognize and boost known code patterns' },
-            { key: 'enablePerformanceOptimization', label: 'Enable Performance Optimization', description: 'Apply compression and sorting optimizations' }
+            { key: 'enableContext7Boost', label: 'Enable Context7 Pattern Boosting', description 'Boost relevance for Context7-compatible patterns' },
+            { key: 'enableSemanticClustering', label: 'Enable Semantic Clustering', description 'Use SOM clustering for better organization' },
+            { key: 'enablePatternRecognition', label: 'Enable Pattern Recognition', description 'Recognize and boost known code patterns' },
+            { key: 'enablePerformanceOptimization', label: 'Enable Performance Optimization', description 'Apply compression and sorting optimizations' }
           ] as option}
             <div class="p-4 bg-black/30 rounded-lg border border-purple-500/30">
               <label class="flex items-center justify-between">
@@ -753,7 +753,7 @@ await loadCopilotContent();
         <!-- Save configuration -->
         <div class="flex gap-2">
           <button
-            on:click={() => {
+            onclick={() => {
               localStorage.setItem('copilot-optimization-config', JSON.stringify(optimizationConfig);
               alert('Configuration saved!');
             }}
@@ -762,7 +762,7 @@ await loadCopilotContent();
             Save Configuration
           </button>
           <button
-            on:click={() => {
+            onclick={() => {
               const saved = localStorage.getItem('copilot-optimization-config');
               if (saved) {
                 optimizationConfig = JSON.parse(saved);
@@ -774,12 +774,12 @@ await loadCopilotContent();
             Load Saved
           </button>
           <button
-            on:click={() => {
+            onclick={() => {
               optimizationConfig = {
                 enableContext7Boost: true
                 enableSemanticClustering: true
-                enablePatternRecognition: true
-                enablePerformanceOptimization: true
+                enablePatternRecognition true
+                enablePerformanceOptimization true
                 minRelevanceThreshold: 0.7,
                 compressionRatio: 0.8,
               }

@@ -25,8 +25,8 @@
   }
   interface WorkActivity {
     timestamp: string;
-    action: 'opened' | 'edited' | 'reviewed' | 'commented' | 'shared' | 'approved';
-    duration: number; // minutes
+    action 'opened' | 'edited' | 'reviewed' | 'commented' | 'shared' | 'approved';
+    duration number; // minutes
     description?: string;
   }
   interface Props {
@@ -104,9 +104,9 @@
           activities: [
             {
               timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-              action: 'reviewed',
-              duration: 45,
-              description: 'Evidence review session',
+              action 'reviewed',
+              duration 45,
+              description 'Evidence review session',
             }
           ],
           metadata: {
@@ -129,9 +129,9 @@
           activities: [
             {
               timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-              action: 'edited',
-              duration: 78,
-              description: 'Negotiated liability terms',
+              action 'edited',
+              duration 78,
+              description 'Negotiated liability terms',
             }
           ],
           metadata: {
@@ -148,14 +148,14 @@
       if (usingMockData) {
         const notice = document.createElement('div');
         notice.innerHTML = '⚠️ failure default to mock';
-        notice.style.cssText = 'position: fixed;
+        notice.style.cssText = 'position fixed;
 d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
         document.body.appendChild(notice);
         setTimeout(() => notice.remove(), 3000);
       }
     }
   }
-  async function recordActivity(itemId: string, action: WorkActivity['action'], duration: number = 0, description?: string) {
+  async function recordActivity(itemId: string, action WorkActivity['action'], duration number = 0, description?: string) {
     try {
       const response = await fetch('/api/recommendations/last-worked', {
         method: 'POST',
@@ -177,7 +177,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock - activity recorded locally';
-      notice.style.cssText = 'position: fixed;
+      notice.style.cssText = 'position fixed;
 d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
@@ -188,7 +188,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
           timestamp: new Date().toISOString(),
           action,
           duration,
-          description: description || `${action} the item`
+          description description || `${action} the item`
         });
         workHistory[workIndex].lastWorked = new Date().toISOString();
         workHistory[workIndex].timeSpent += duratio;
@@ -280,7 +280,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
       // Show fallback notice for navigation failure
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock - item opened locally';
-      notice.style.cssText = 'position: fixed;
+      notice.style.cssText = 'position fixed;
 d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
@@ -332,7 +332,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
         </select>
         <!-- Timer Control -->
         {#if activeTimer}
-          <button class="timer-btn active" on:click={stopTimer}> ⏱️ Stop Timer </button>
+          <button class="timer-btn active" onclick={stopTimer}> ⏱️ Stop Timer </button>
         {:else}
           <div class="timer-status">
             {isRecordingTime ? '⏱️ Timer Active' : '⏱️ Timer Ready'}
@@ -359,9 +359,9 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
             class="work-item"
             ;
             class:active={selectedWork?.id === workItem.id}
-            transition:slide={{ duration: 200, easing: cubicOut }}
+            transitionslide={{ duration 200, easing: cubicOut }}
           >
-            <div class="work-main" on:click={() => (selectedWork = selectedWork?.id === workItem.id ? null : workItem)}>
+            <div class="work-main" onclick={() => (selectedWork = selectedWork?.id === workItem.id ? null : workItem)}>
               <div class="work-header">
                 <div class="work-type-icon">{getTypeIcon(workItem.type)}</div>
                 <div class="work-info">
@@ -409,7 +409,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
               </div>
               <!-- Expanded Details -->
               {#if selectedWork?.id === workItem.id}
-                <div class="work-details" transition:slide={{ duration: 300 }}>
+                <div class="work-details" transitionslide={{ duration 300 }}>
                   <!-- Recent Activities -->
                   <div class="activities-section">
                     <h5>Recent Activities ({workItem.activities.length})</h5>
@@ -454,24 +454,24 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
                   {/if}
                   <!-- Action Buttons -->
                   <div class="work-actions">
-                    <button class="action-btn primary" on:click={() => openWorkItem(workItem)}> 📂 Open Item </button>
+                    <button class="action-btn primary" onclick={() => openWorkItem(workItem)}> 📂 Open Item </button>
                     <button
                       class="action-btn secondary"
-                      on:click={() => startTimer(workItem.id)}
+                      onclick={() => startTimer(workItem.id)}
                       disabled={activeTimer?.itemId === workItem.id}
                     >
                       {activeTimer?.itemId === workItem.id ? '⏱️ Timing...' : '⏱️ Start Timer'}
                     </button>
                     <button
                       class="action-btn tertiary"
-                      on:click={() => recordActivity(workItem.id, 'reviewed', 0, 'Quick review from history')}
+                      onclick={() => recordActivity(workItem.id, 'reviewed', 0, 'Quick review from history')}
                     >
                       👀 Mark Reviewed
                     </button>
                     {#if workItem.status !== 'completed'}
                       <button
                         class="action-btn success"
-                        on:click={() => recordActivity(workItem.id, 'approved', 0, 'Marked as completed')}
+                        onclick={() => recordActivity(workItem.id, 'approved', 0, 'Marked as completed')}
                       >
                         ✅ Mark Complete
                       </button>
@@ -492,7 +492,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     max-height: 85vh;
     overflow: hidden;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
   }
   .modal-header {
     margin-bottom: 1.5rem;
@@ -546,12 +546,12 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     color: #fff;
     font-size: 0.9rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .timer-btn.active {
     background: rgba(244, 67, 54, 0.2);
     border-color: rgba(244, 67, 54, 0.4);
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   .timer-status {
     padding: 0.5rem 1rem;
@@ -569,7 +569,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     overflow: hidden;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .work-item: hover
   .work-item.active {
@@ -608,7 +608,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .work-stats-column {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: flex-end;
     gap: 0.5rem;
     min-width: 120px;
@@ -627,7 +627,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .progress-fill {
     height: 100%;
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .progress-text {
     font-size: 0.75rem;
@@ -636,7 +636,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .status-time {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: flex-end;
     gap: 0.25rem;
   }
@@ -690,7 +690,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .activities-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .activity-item {
@@ -740,7 +740,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     border-radius: 6px;
     font-size: 0.8rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .action-btn:disabled {
     opacity: 0.5,
@@ -773,7 +773,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   .loading-state,
   .empty-state {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     padding: 3rem;
@@ -786,7 +786,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     border: 3px solid rgba(255, 255, 255, 0.2);
     border-top: 3px solid rgba(138, 43, 226, 0.8);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin-bottom: 1rem;
   }
   .empty-icon {

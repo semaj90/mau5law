@@ -101,7 +101,7 @@
 <style>
   .optimistic-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .optimistic-list__error {
@@ -130,7 +130,7 @@
   }
   .empty-placeholder {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 1rem;
     color: rgb(107, 114, 128);
@@ -141,7 +141,7 @@
     border: 2px solid rgba(59, 130, 246, 0.2);
     border-top: 2px solid rgb(59, 130, 246);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   .loading-spinner--small {
     width: 1rem;
@@ -157,11 +157,11 @@
   }
   .optimistic-list__items {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .optimistic-list__item {
-    transition: all 0.2s ease-in-out;
+    transition all 0.2s ease-in-out;
   }
   .optimistic-list__item--optimistic {
     opacity: 0.7;
@@ -169,7 +169,7 @@
     border: 1px dashed rgba(59, 130, 246, 0.3);
     border-radius: 0.375rem;
     padding: 0.5rem;
-    animation: optimisticPulse 2s ease-in-out infinite;
+    animation optimisticPulse 2s ease-in-out infinite;
   }
   .optimistic-list__loading-more {
     display: flex;

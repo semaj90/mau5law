@@ -188,7 +188,7 @@
       });
       // Prepare request
       const requestBody = {
-        question: currentQuery;
+        question currentQuery;
         context: {
           caseId,
           evidenceIds,
@@ -450,14 +450,14 @@
       <div>
         <button aria-label="Action button"
           type="button"
-          on:click={(_event: MouseEvent) => ) => (showAdvancedOptions = !showAdvancedOptions}
+          onclick={(_event: MouseEvent) => ) => (showAdvancedOptions = !showAdvancedOptions}
         >
           Advanced
         </button>
         {#if conversation.length > 0}
           <button aria-label="Action button"
             type="button"
-            on:click={(_event: MouseEvent) => ) => clearConversation(}
+            onclick={(_event: MouseEvent) => ) => clearConversation(}
           >
             Clear
           </button>
@@ -576,7 +576,7 @@
               <button
                 type="button"
                 aria-label="Listen to AI response"
-                on:click={(_event: MouseEvent) => ) => speak(message.content}
+                onclick={(_event: MouseEvent) => ) => speak(message.content}
                 disabled={ttsLoading}
               >
                 {#if ttsLoading}
@@ -596,7 +596,7 @@
                 {#each message.references as reference}
                   <button aria-label="Action button"
                     type="button"
-                    on:click={(_event: MouseEvent) => ) => handleReferenceClick(reference}
+                    onclick={(_event: MouseEvent) => ) => handleReferenceClick(reference}
                   >
                     <span>{reference.type.toUpperCase()}:</span>
                     {reference.title}
@@ -650,7 +650,7 @@
             type="button"
             class:text-red-500={isListening}
             aria-label={isListening ? "Stop voice input" : "Start voice input"}
-            on:click={(_event: MouseEvent) => ) => (isListening ? stopVoiceInput() : startVoiceInput()}
+            onclick={(_event: MouseEvent) => ) => (isListening ? stopVoiceInput() : startVoiceInput()}
             disabled={isLoading}
           >
             🎤
@@ -659,7 +659,7 @@
       </div>
       <button aria-label="Action button"
         type="button"
-        on:click={(_event: MouseEvent) => ) => askAI(}
+        onclick={(_event: MouseEvent) => ) => askAI(}
         disabled={!query.trim() || isLoading}
         aria-label="Send question to AI"
       >
@@ -677,7 +677,7 @@
             type="button"
             class="container mx-auto px-4 {isListening ? 'text-red-500' : ''}"
             aria-label={isListening ? "Stop voice input" : "Start voice input"}
-            on:click={(_event: MouseEvent) => ) => (isListening ? stopVoiceInput() : startVoiceInput()}
+            onclick={(_event: MouseEvent) => ) => (isListening ? stopVoiceInput() : startVoiceInput()}
             disabled={isLoading}
           >
             🎤
@@ -694,7 +694,7 @@
       sans-serif;
 }
   .message {
-    animation: slideInFromBottom 0.3s ease-in-out;
+    animation slideInFromBottom 0.3s ease-in-out;
     transform: translateY(0);
 }
   @keyframes slideInFromBottom {
@@ -734,7 +734,7 @@
   .blinking-cursor {
     display: inline-block;
     width: 1ch;
-    animation: blink 1s steps(1) infinite;
+    animation blink 1s steps(1) infinite;
   }
   @keyframes blink {
     0%, 100% { opacity: 1, }

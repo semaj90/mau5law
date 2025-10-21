@@ -9,7 +9,7 @@
     name: string;
     handle: string;
     role: string;
-    specialization: string;
+    specialization string;
     confidence: number;
     relationshipPath: string;
   }
@@ -70,7 +70,7 @@ if (open && personId && !foafData) {
 </script>
 <!-- Melt-UI Dialog Implementation -->
 {#if open}
-  <div  class="fixed inset-0 z-50 bg-black/50" transitifade={{ duration: 150 }}>
+  <div  class="fixed inset-0 z-50 bg-black/50" transitifade={{ duration 150 }}>
     <div
       class="fixed left-1/2 top-1/2 z-50 max-h-[85vh] w-[90vw] max-w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-xl border bg-white p-6 shadow-lg"
       /* transition removed */}
@@ -83,7 +83,7 @@ if (open && personId && !foafData) {
         </h2>
         <button
           class="rounded-sm opacity-70 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
-          on:click={handleClose}
+          onclick={handleClose}
         >
           <X class="w-4 h-4" />
         </button>
@@ -151,7 +151,7 @@ if (open && personId && !foafData) {
       <div class="flex justify-end mt-6 pt-4 border-t border-gray-200">
         <button
           class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400"
-          on:click={handleClose}
+          onclick={handleClose}
         >
           Close
         </button>
@@ -162,7 +162,7 @@ if (open && personId && !foafData) {
 <style>
   /* Additional Tailwind-compatible styles for enhanced UX */
   .animate-spin {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     from { transform: rotate(0deg), }

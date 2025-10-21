@@ -96,7 +96,7 @@
   </section>
   <section class="diagnostics">
     <h2>WebGPU Diagnostics</h2>
-    <button on:click={runDiagnostics} disabled={isRunning}>
+    <button onclick={runDiagnostics} disabled={isRunning}>
       {isRunning ? 'Running Diagnostics...' : 'Run Diagnostics'}
     </button>
     {#if diagnosticsResults}
@@ -128,7 +128,7 @@
               <li>Vendor: {diagnosticsResults.adapterInfo.vendor}</li>
               <li>Device: {diagnosticsResults.adapterInfo.device}</li>
               <li>Architecture: {diagnosticsResults.adapterInfo.architecture}</li>
-              <li>Description: {diagnosticsResults.adapterInfo.description}</li>
+              <li>Description {diagnosticsResults.adapterInfo.description}</li>
             </ul>
           {/if}
           {#if diagnosticsResults.deviceInfo}
@@ -161,7 +161,7 @@
   </section>
   <section class="performance-test">
     <h2>Vector Similarity Performance Test</h2>
-    <button on:click={testVectorSimilarity} disabled={isRunning}>
+    <button onclick={testVectorSimilarity} disabled={isRunning}>
       {isRunning ? 'Running Test...' : 'Test Vector Similarity'}
     </button>
     {#if testResults}
@@ -273,10 +273,10 @@
     cursor: pointer;
     margin-bottom: 1.5rem;
   }
-  button:hover:not(:disabled) {,
+  buttonhover:not(:disabled) {,
     background: #1d4ed8;
   }
-  button:disabled {
+  buttondisabled {
     background: #9ca3af;
     cursor: not-allowed;
   }

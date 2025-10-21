@@ -81,11 +81,11 @@
     evidenceCanvas: true,
     detectiveAnalysis: true,
     aiAssistant: false,
-    webgpuAcceleration: false,
-    ollamaConnection: false
+    webgpuAcceleration false,
+    ollamaConnection false
   });
   // Create a new case
-  async function createCase(title: string, description: string = '') {
+  async function createCase(title: string, description string = '') {
     const newCase: Case = {
       id: `case-${Date.now()}`,
       title,
@@ -105,7 +105,7 @@
   // Evidence handling
   function handleEvidenceUploaded(event: CustomEvent) {
     const { file, position } = e(vent as CustomEvent).detail;
-    console.log('🔍 Evidence uploaded:', file.name, 'at position:', position);
+    console.log('🔍 Evidence uploaded:', file.name, 'at position', position);
     const newEvidence: EvidenceItem = {
       id: `evidence-${Date.now()}`,
       caseId: currentCase?.id || 'unknown',
@@ -240,7 +240,7 @@
         priority: 'high',
         createdAt: '2024-01-15T10:00:00Z',
         updatedAt: '2024-01-20T14:30:00Z',
-        description: 'Investigation into alleged financial irregularities',
+        description 'Investigation into alleged financial irregularities',
       },
       {
         id: 'case-002',
@@ -249,7 +249,7 @@
         priority: 'medium',
         createdAt: '2024-01-18T09:00:00Z',
         updatedAt: '2024-01-18T09:00:00Z',
-        description: 'Breach of contract claim requiring evidence analysis',
+        description 'Breach of contract claim requiring evidence analysis',
       }
     ];
     if (!currentCase && cases.length > 0) {
@@ -315,7 +315,7 @@
         {/if}
       </div>
       <div class="workspace-actions">
-  <Button class="bits-btn" on:click={saveInvestigation} variant="ghost" size="sm">
+  <Button class="bits-btn" onclick={saveInvestigation} variant="ghost" size="sm">
 <Save class="w-4 h-4 mr-2" />
           Save Progress
 </Button>
@@ -485,7 +485,7 @@
                 onkeydown={(e) => e.key === 'Enter' && !e.shiftKey && sendChatMessage()}
                 class="flex-1"
               />
-              <Button class="bits-btn" on:click={sendChatMessage} disabled={isAIProcessing || !currentChatMessage.trim()}>
+              <Button class="bits-btn" onclick={sendChatMessage} disabled={isAIProcessing || !currentChatMessage.trim()}>
 <MessageSquare class="w-4 h-4" />
 </Button>
             </div>
@@ -526,7 +526,7 @@
 <style>
   .investigation-workspace {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     height: 100vh;
     background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
     color: #00ff88;
@@ -574,7 +574,7 @@
     height: 2rem;
     border: 1px solid #666;
     border-radius: 4px;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .status-.active {
     background: rgba(0, 255, 136, 0.2);
@@ -591,7 +591,7 @@
   }
   .tab-trigger {
     color: #cccccc;
-    transition: color 0.3s ease;
+    transition color 0.3s ease;
   }
   .tab-trigger: hover
   .tab-trigger[data-state="active"] {
@@ -617,7 +617,7 @@
   }
   .evidence-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .evidence-item {
@@ -654,7 +654,7 @@
   .confidence-fill {
     height: 100%;
     background: linear-gradient(to right, #ff4444, #ffaa00, #00ff88);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .evidence-analysis {
     font-size: 0.8rem;
@@ -673,11 +673,11 @@
   }
   .chat-container {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
   }
   .chat-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     height: 100%;
   }
   .messages-container {
@@ -740,7 +740,7 @@
     height: 6px;
     background: #FFD700;
     border-radius: 50%;
-    animation: thinking 1.5s ease-in-out infinite;
+    animation thinking 1.5s ease-in-out infinite;
   }
   .thinking-indicator span:nth-child(2) {
     animation-delay: 0.3,
@@ -767,7 +767,7 @@
   }
   .citations-container {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     height: 100%;
   }
   .add-citation {
@@ -792,7 +792,7 @@
   }
   .empty-state {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     height: 200px;
@@ -813,7 +813,7 @@
       padding: 0.5rem 1rem;
     }
     .header-content {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
       align-items: flex-start;
     }

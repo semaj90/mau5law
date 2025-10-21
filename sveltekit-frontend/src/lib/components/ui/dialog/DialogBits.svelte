@@ -9,7 +9,7 @@
   export let closeOnOutsideClick: boolean = true;
   export let className: string = '';
   export let title: string | undefined = undefined;
-  export let description: string | undefined = undefined;
+  export let description string | undefined = undefined;
 
   const sizeClasses: Record<'sm' | 'md' | 'lg' | 'xl' | 'full', string> = {
     sm: 'max-w-sm',
@@ -78,7 +78,7 @@
     class="inline-block"
     aria-expanded={open}
     aria-controls={dialogId}
-    on:click={() => (open = !open)}
+    onclick={() => (open = !open)}
   >
     <slot name="trigger" />
   </button>
@@ -89,11 +89,11 @@
     <!-- overlay -->
     <div
       class="fixed inset-0 bg-black/50"
-      transition:fade={{ duration: 200 }}
+      transitionfade={{ duration 200 }}
       role="button"
       tabindex="0"
       aria-label="Close dialog"
-      on:click={handleOutsideClick}
+      onclick={handleOutsideClick}
       onkeydown={handleOverlayKeydown}
     ></div>
 
@@ -106,9 +106,9 @@
       aria-labelledby={title ? 'dialog-title' : undefined}
       aria-describedby={description ? 'dialog-desc' : undefined}
       tabindex="0"
-      on:click={event => event.stopPropagation()}
+      onclick={event => event.stopPropagation()}
       onkeydown={handleContentKeydown}
-      transition:scale={{ duration: 180, start: 0.96 }}
+      transitionscale={{ duration 180, start: 0.96 }}
     >
       <!-- header -->
       {#if title || description}
@@ -130,7 +130,7 @@
           <button
             type="button"
             class="ml-4 inline-flex items-center justify-center rounded p-1 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none"
-            on:click={close}
+            onclick={close}
             aria-label="Close dialog"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

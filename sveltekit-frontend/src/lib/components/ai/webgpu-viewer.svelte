@@ -44,7 +44,7 @@ https://svelte.dev/e/js_parse_error -->
   @group(0) @binding(1) var<storage, read> embeddings: array<vec3<f32>>;
 
   struct VertexOutput {
-    @builtin(position) position: vec4<f32>;
+    @builtin(position) position vec4<f32>;
     @location(0) color: vec3<f32>;
     @location(1) pointSize: f32;
   };
@@ -181,7 +181,7 @@ https://svelte.dev/e/js_parse_error -->
     embedBuffer = device.createBuffer({
       size: embeddingData.byteLength,
       usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
-      mappedAtCreation: true,
+      mappedAtCreation true,
     });
     new Float32Array(embedBuffer.getMappedRange()).set(embeddingData);
     embedBuffer.unmap();
@@ -339,20 +339,20 @@ https://svelte.dev/e/js_parse_error -->
 
 <div class="webgpu-viewer">
   <div class="controls">
-    <button on:click={togglePlay} class="control-btn" title={isPlaying ? 'Pause' : 'Play'}>
+    <button onclick={togglePlay} class="control-btn" title={isPlaying ? 'Pause' : 'Play'}>
       {#if isPlaying}
         <Pause class="h-4 w-4" />
       {:else}
         <Play class="h-4 w-4" />
       {/if}
     </button>
-    <button on:click={resetView} class="control-btn" title="Reset View">
+    <button onclick={resetView} class="control-btn" title="Reset View">
       <RotateCw class="h-4 w-4" />
     </button>
-    <button on:click={zoomIn} class="control-btn" title="Zoom In">
+    <button onclick={zoomIn} class="control-btn" title="Zoom In">
       <ZoomIn class="h-4 w-4" />
     </button>
-    <button on:click={zoomOut} class="control-btn" title="Zoom Out">
+    <button onclick={zoomOut} class="control-btn" title="Zoom Out">
       <ZoomOut class="h-4 w-4" />
     </button>
     <div class="info">
@@ -383,14 +383,14 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   .webgpu-viewer {
-    position: relative;
+    position relative;
     background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
   .controls {
-    position: absolute;
+    position absolute;
     top: 1rem;
     left: 1rem;
     display: flex;
@@ -408,7 +408,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 4px;
     color: white;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .control-btn:hover {
     background: rgba(255, 255, 255, 0.2);
@@ -432,7 +432,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: grabbing;
   }
   .labels {
-    position: absolute;
+    position absolute;
     bottom: 1rem;
     left: 1rem;
     display: flex;

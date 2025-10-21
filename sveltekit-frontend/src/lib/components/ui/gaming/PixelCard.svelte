@@ -190,7 +190,7 @@
       --pixel-highlight: ${colors.highlight}
       --pixel-size: ${pixelSize}px;
       --pixel-status-color: ${statusColors[analysisStatus] || colors.accent}
-      --scanline-position: ;
+      --scanline-position ;
 ${scanlinePosition}%;
     `;
     return style ? `${baseStyle} ${style}` : baseStyl;
@@ -240,7 +240,7 @@ ${scanlinePosition}%;
   bind:this={card}
   class={cardClasses}
   style={cardStyle}
-  on:click={handleClick}
+  onclick={handleClick}
   onmouseenter={handleMouseEnter}
   onmouseleave={handleMouseLeave}
   role={interactive ? 'button' : 'article'}
@@ -347,13 +347,13 @@ ${scanlinePosition}%;
 </div>
 <style>
   .pixel-card {
-    position: relative;
+    position relative;
     background: var(--pixel-primary);
     color: var(--pixel-text);
     font-family: 'Courier New', monospace;
     font-weight: bold;
     overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edge;
     image-rendering: crisp-edge;
@@ -437,7 +437,7 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
   }
 /* Animation effects */ {}
   .pixel-card--animated {
-    animation: pixel-card-idle 3s ease-in-out infinite alternate;
+    animation pixel-card-idle 3s ease-in-out infinite alternate;
   }
   @keyframes pixel-card-idle {
     from {
@@ -449,7 +449,7 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
   }
 /* Glowing effect */ {}
   .pixel-card--glowing {
-    animation: pixel-card-glow 2s ease-in-out infinite alternate;
+    animation pixel-card-glow 2s ease-in-out infinite alternate;
   }
   @keyframes pixel-card-glow {
     from {
@@ -462,7 +462,7 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
 /* Status styling */ {}
   .pixel-card--status-analyzing {
     border-color: #00BFFF;
-    animation: pixel-card-analyzing 1s linear infinite;
+    animation pixel-card-analyzing 1s linear infinite;
   }
   @keyframes pixel-card-analyzing {
     0% { border-color: #00BFFF, }
@@ -474,7 +474,7 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
   }
   .pixel-card--status-error {
     border-color: #FF4500;
-    animation: pixel-card-error 0.5s ease-in-out 3;
+    animation pixel-card-error 0.5s ease-in-out 3;
   }
   @keyframes pixel-card-error {
     0%, 100% { transform: translateX(0), }
@@ -483,7 +483,7 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
   }
   .pixel-card--status-flagged {
     border-color: #DC143C;
-    animation: pixel-card-flagged 1s ease-in-out infinite;
+    animation pixel-card-flagged 1s ease-in-out infinite;
   }
   @keyframes pixel-card-flagged {
     0%, 100% { box-shadow: 0 0 0 0 rgba(220, 20, 60, 0.4), }
@@ -491,7 +491,7 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
   }
 /* Priority styling */ {}
   .pixel-card--priority-urgent {
-    animation: pixel-card-urgent 0.8s ease-in-out infinite;
+    animation pixel-card-urgent 0.8s ease-in-out infinite;
   }
   @keyframes pixel-card-urgent {
     0%, 100% { filter: brightness(1), }
@@ -502,7 +502,7 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
   }
 /* Layout sections */ {}
   .pixel-card__status-bar {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -524,7 +524,7 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
     height: calc(var(--pixel-size) * 1.5);
     background: var(--pixel-status-color);
     border-radius: 0,
-    animation: pixel-dot-blink 1s infinite;
+    animation pixel-dot-blink 1s infinite;
   }
   @keyframes pixel-dot-blink {
     0%, 50% { opacity: 1, }
@@ -563,7 +563,7 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
     margin-top: calc(var(--pixel-size) / 2);
   }
   .pixel-card__image-container {
-    position: relative;
+    position relative;
     margin: 0 calc(var(--pixel-size) * 2);
   }
   .pixel-card__image {
@@ -573,7 +573,7 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
     border: calc(var(--pixel-size) / 2) solid var(--pixel-secondary);
   }
   .pixel-card__image-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -592,7 +592,7 @@ transparent 52% {}
     padding: calc(var(--pixel-size) * 2);
     flex: 1,
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     justify-content: center;
   }
   .pixel-card__description {
@@ -631,11 +631,11 @@ transparent 52% {}
   .confidence-fill {
     height: 100%;
     background: linear-gradient(90deg, #FF0000, #FFFF00, #00FF00);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
 /* Pixel effects */ {}
   .pixel-card__scanlines {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -650,7 +650,7 @@ transparent calc(var(--scanline-position) * 1% + 4px) {}
     z-index: 5,
   }
   .pixel-card__crt-effect {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -668,7 +668,7 @@ rgba(0, 0, 0, 0.1) calc(var(--pixel-size) * 4) {}
     z-index: 5,
   }
   .pixel-card__pixel-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -692,7 +692,7 @@ rgba(255, 255, 255, 0.03) calc(var(--pixel-size) * 2) {}
     z-index: 1,
   }
   .pixel-card__glow {
-    position: absolute;
+    position absolute;
     top: calc(-1 * var(--pixel-size));
     left: calc(-1 * var(--pixel-size));
     right: calc(-1 * var(--pixel-size));
@@ -703,11 +703,11 @@ rgba(255, 255, 255, 0.03) calc(var(--pixel-size) * 2) {}
     z-index: -1;
   }
 /* Accessibility */ {}
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
 .pixel-card, {}
 .status-dot, {}
     .pixel-card__scanlines {
-      animation: none;
+      animation none;
     }
   }
 /* High contrast mode */ {}

@@ -128,7 +128,7 @@ https://svelte.dev/e/js_parse_error -->
             {...builder}
             variant="ghost"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 closeModal()}
           >
             ×
@@ -195,7 +195,7 @@ closeModal()}
               <Button
                 variant={validationChoice === "approve" ? "default" : "outline"}
                 class="space-y-4 bits-btn bits-btn"
-                on:click={() =>
+                onclick={() =>
 handleValidationChoice("approve")}
               >
                 <CheckCircle class="space-y-4" />
@@ -204,7 +204,7 @@ handleValidationChoice("approve")}
               <Button
                 variant={validationChoice === "reject" ? "danger" : "outline"}
                 class="space-y-4 bits-btn bits-btn"
-                on:click={() =>
+                onclick={() =>
 handleValidationChoice("reject")}
               >
                 <XCircle class="space-y-4" />
@@ -290,7 +290,7 @@ handleValidationChoice("reject")}
                         {tag}
                         <button
                           type="button"
-                          on:click={() => removeTag(tag)}
+                          onclick={() => removeTag(tag)}
                           class="space-y-4"
                         >
                           ×
@@ -313,7 +313,7 @@ handleValidationChoice("reject")}
                     type="button"
                     variant="secondary"
                     size="sm"
-                    on:click={() =>
+                    onclick={() =>
 addTag()}
                   >
                     <Tag class="space-y-4" />
@@ -327,7 +327,7 @@ addTag()}
         <div class="space-y-4">
           <Button class="bits-btn"
             variant="ghost"
-            on:click={() =>
+            onclick={() =>
 closeModal()}
             disabled={isSubmitting}
           >
@@ -335,7 +335,7 @@ closeModal()}
 </Button>
           <Button
             class="bits-btn"
-            on:click={() =>
+            onclick={() =>
 submitValidation()}
             disabled={!validationChoice || isSubmitting}
           >

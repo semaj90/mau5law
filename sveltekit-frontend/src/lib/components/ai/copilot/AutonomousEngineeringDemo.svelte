@@ -69,7 +69,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       mode: 'comprehensive' as const,
       platform: 'webapp' as const,
       urgency: 'high' as const,
-      description: 'Comprehensive TypeScript error analysis and resolution',
+      description 'Comprehensive TypeScript error analysis and resolution',
     },
     {
       id: 'performance-optimization',
@@ -78,7 +78,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       mode: 'autonomous' as const,
       platform: 'all' as const,
       urgency: 'critical' as const,
-      description: 'Full-stack performance analysis with autonomous engineering',
+      description 'Full-stack performance analysis with autonomous engineering',
     },
     {
       id: 'security-audit',
@@ -87,7 +87,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       mode: 'comprehensive' as const,
       platform: 'webapp' as const,
       urgency: 'high' as const,
-      description: 'Multi-agent security analysis',
+      description 'Multi-agent security analysis',
     },
     {
       id: 'deployment-pipeline',
@@ -96,7 +96,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       mode: 'autonomous' as const,
       platform: 'all' as const,
       urgency: 'medium' as const,
-      description: 'DevOps automation and pipeline optimization',
+      description 'DevOps automation and pipeline optimization',
     },
     {
       id: 'api-integration',
@@ -105,7 +105,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
       mode: 'quick' as const,
       platform: 'webapp' as const,
       urgency: 'medium' as const,
-      description: 'Quick semantic search for integration patterns',
+      description 'Quick semantic search for integration patterns',
     }
   ];
   $effect(() => {
@@ -318,7 +318,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
                 class="bits-btn"
                 size="sm"
                 variant="ghost"
-                on:click={() => executeExample(example)}
+                onclick={() => executeExample(example)}
                 disabled={isProcessing}
               >
                 Run
@@ -406,7 +406,7 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
         </div>
       {/if}
       <div class="flex gap-2">
-        <Button on:click={executePrompt} disabled={isProcessing || !userPrompt.trim()} class="flex-1 bits-btn bits-btn">
+        <Button onclick={executePrompt} disabled={isProcessing || !userPrompt.trim()} class="flex-1 bits-btn bits-btn">
           {#if isProcessing}
             <Pause class="h-4 w-4 mr-2" />
             Processing...
@@ -415,14 +415,14 @@ Showcases Copilot self-prompting with comprehensive AI orchestration
             Analyze with Copilot AI
           {/if}
         </Button>
-        <Button class="bits-btn" variant="ghost" on:click={executeViaAPI} disabled={isProcessing || !userPrompt.trim()}>
+        <Button class="bits-btn" variant="ghost" onclick={executeViaAPI} disabled={isProcessing || !userPrompt.trim()}>
           Via API
         </Button>
         {#if currentResult}
-          <Button class="bits-btn" variant="ghost" on:click={downloadResult}>
+          <Button class="bits-btn" variant="ghost" onclick={downloadResult}>
             <Download class="h-4 w-4" />
           </Button>
-          <Button class="bits-btn" variant="ghost" on:click={clearResults}>
+          <Button class="bits-btn" variant="ghost" onclick={clearResults}>
             <RefreshCw class="h-4 w-4" />
           </Button>
         {/if}

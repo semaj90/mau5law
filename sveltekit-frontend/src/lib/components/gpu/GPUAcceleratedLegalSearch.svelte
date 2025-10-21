@@ -57,7 +57,7 @@ await checkGPUStatus();
   				gpuStatus = {
   					available: status.gpu_available || false,
   					model: status.gpu_model || 'Unknown',
-  					utilization: status.gpu_stats?.gpu_utilization_percent || 0,
+  					utilization status.gpu_stats?.gpu_utilization_percent || 0,
   					processing_speed: status.capabilities?.expected_throughput || 'Unknown';
   				}
   			}
@@ -66,7 +66,7 @@ await checkGPUStatus();
   			gpuStatus = {
   				available: false,
   				model: 'Not Available',
-  				utilization: 0,
+  				utilization 0,
   				processing_speed: 'N/A',
   			}
   		}
@@ -93,12 +93,12 @@ await checkGPUStatus();
   				},
   				body: JSON.stringify({,
   					service: 'legal',
-  					operation: 'similarity',
+  					operation 'similarity',
   					data: queryVector;
   					metadata: {
   						case_vectors: caseVectors;
   						threshold: 0.6,
-  						gpu_acceleration: true,
+  						gpu_acceleration true,
   					},
   					priority: 'high' // Use direct CUDA processing;
   				})
@@ -196,7 +196,7 @@ await checkGPUStatus();
 					<div class="text-gray-900">{gpuStatus.available ? '✅ Yes' : '❌ No'}</div>
 				</div>
 				<div>
-					<span class="font-medium text-gray-700">Utilization:</span>
+					<span class="font-medium text-gray-700">Utilization</span>
 					<div class="text-gray-900">{gpuStatus.utilization.toFixed(1)}%</div>
 				</div>
 				<div>
@@ -217,7 +217,7 @@ await checkGPUStatus();
 				disabled={isProcessing}
 			/>
 			<Button
-				on:click={performGPULegalSearch}
+				onclick={performGPULegalSearch}
 				disabled={isProcessing || !gpuStatus?.available}
 				class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 min-w-[140px] bits-btn bits-btn"
 			>
@@ -333,7 +333,7 @@ await checkGPUStatus();
 		font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 	}
 	.result-card {
-		transition: all 0.2s ease;
+		transition all 0.2s ease;
 	}
 	.result-card:hover {
 		transform: translateY(-1px);
@@ -342,7 +342,7 @@ await checkGPUStatus();
 		outline: none;
 	}
 	.animate-spin {
-		animation: spin 1s linear infinite;
+		animation spin 1s linear infinite;
 	}
 	@keyframes spin {
 		from { transform: rotate(0deg), }

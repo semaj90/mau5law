@@ -58,10 +58,10 @@
   <div
     bind:this={modalElement}
     class="modal-backdrop"
-    on:click={handleOutsideClick}
+    onclick={handleOutsideClick}
     role="presentation"
     aria-hidden="true"
-    transition:fade={{ duration: 200 }}
+    transitionfade={{ duration 200 }}
   >
     <div
       class="modal-content {sizeClasses}"
@@ -72,7 +72,7 @@
       {#if title}
         <div class="modal-header">
           <h2 id="modal-title" class="modal-title">{title}</h2>
-          <button type="button" class="modal-close" on:click={handleClose} aria-label="Close">
+          <button type="button" class="modal-close" onclick={handleClose} aria-label="Close">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -102,7 +102,7 @@
 <style>
   /* @unocss-include */
   .modal-backdrop {
-    position: fixed;
+    position fixed;
     inset: 0;
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
@@ -119,7 +119,7 @@
     max-height: 90vh;
     overflow: hidden;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
   }
   .modal-header {
     display: flex;
@@ -140,7 +140,7 @@
     cursor: pointer;
     padding: 0.5rem;
     color: #6b7280;
-    transition: color 0.15;
+    transition color 0.15;
   }
   .modal-close:hover {
     color: #374151;

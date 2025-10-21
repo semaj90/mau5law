@@ -55,7 +55,7 @@
       {
         id: 'demo-logout-button',
         title: 'Add Logout Button',
-        description: 'Add logout button to navigation component',
+        description 'Add logout button to navigation component',
         priority: 'medium',
         estimatedComplexity: 3,
         type: 'feature',
@@ -65,7 +65,7 @@
       {
         id: 'demo-user-profile',
         title: 'Implement User Profile',
-        description: 'Create user profile page with form validation',
+        description 'Create user profile page with form validation',
         priority: 'high',
         estimatedComplexity: 7,
         type: 'feature',
@@ -104,9 +104,9 @@
 
   async function simulateAgentProgress(task) {
     const steps = [
-      { progress: 10, message: 'Analyzing codebase structure...', duration: 1000 },
-      { progress: 50, message: 'Creating diff patches...', duration: 1500 },
-      { progress: 100, message: 'Task completed successfully!', duration: 500 },
+      { progress: 10, message: 'Analyzing codebase structure...', duration 1000 },
+      { progress: 50, message: 'Creating diff patches...', duration 1500 },
+      { progress: 100, message: 'Task completed successfully!', duration 500 },
     ];
 
     for (const step of steps) {
@@ -130,8 +130,8 @@
       filePath: task.files[0] || 'src/lib/components/Navigation.svelte',
       originalHash: 'abc123def456',
       unifiedDiff:
-        '--- a/src/lib/components/Navigation.svelte\n+++ b/src/lib/components/Navigation.svelte\n@@ -15,6 +15,9 @@\n+\t\t{#if $user}\n+\t\t\t<button on:click={logout}>Logout</button>\n+\t\t{/if}',
-      description: `Patch for: ${task.title}`,
+        '--- a/src/lib/components/Navigation.svelte\n+++ b/src/lib/components/Navigation.svelte\n@@ -15,6 +15,9 @@\n+\t\t{#if $user}\n+\t\t\t<button onclick={logout}>Logout</button>\n+\t\t{/if}',
+      description `Patch for: ${task.title}`,
       confidence: 0.95,
       createdAt: new Date().toISOString(),
       status: 'pending',
@@ -268,7 +268,7 @@
               <div class="text-xs text-gray-500">
                 Complexity: {task.estimatedComplexity}/10
               </div>
-              <Button size="sm" on:click={() => assignTaskToAgent(task)} disabled={isAgentRunning}>
+              <Button size="sm" onclick={() => assignTaskToAgent(task)} disabled={isAgentRunning}>
                 {isAgentRunning ? 'Agent Busy' : 'Assign to Agent'}
               </Button>
             </div>
@@ -360,7 +360,7 @@
 
             <div class="flex gap-2">
               {#if patch.status === 'pending'}
-                <Button size="sm" on:click={() => applyPatch(patch)}>Apply Patch</Button>
+                <Button size="sm" onclick={() => applyPatch(patch)}>Apply Patch</Button>
               {/if}
             </div>
           </div>
@@ -435,7 +435,7 @@
   }
 
   .progress-bar {
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
 
   @keyframes pulse {

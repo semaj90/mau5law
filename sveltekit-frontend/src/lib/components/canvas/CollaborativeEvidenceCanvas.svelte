@@ -132,7 +132,7 @@
 
   let redisChannels = {
     canvas: `legal:canvas:${caseId}`,
-    collaboration: `legal:canvas:${caseId}:collab`,
+    collaboration `legal:canvas:${caseId}:collab`,
     cursors: `legal:canvas:${caseId}:cursors`,
     ai: `legal:canvas:${caseId}:ai`,
   };
@@ -166,7 +166,7 @@
       width: canvasWidth,
       height: canvasHeight,
       backgroundColor: '#1a1a1a',
-      selection: !readOnly,
+      selection !readOnly,
       interactive: !readOnly,
       preserveObjectStacking: true,
     });
@@ -298,7 +298,7 @@
     fabricCanvas.renderAll && fabricCanvas.renderAll();
   }
 
-  async function createEvidenceNode(evidence: any, position: { x: number; y: number }) {
+  async function createEvidenceNode(evidence: any, position { x: number; y: number }) {
     const fabric = await getFabric();
     const nodeGroup = new fabric.Group([], {
       left: position.x,
@@ -425,7 +425,7 @@
     return group;
   }
 
-  async function createAnnotation(position: { x: number; y: number }, text: string, type: string = 'note') {
+  async function createAnnotation(position { x: number; y: number }, text: string, type: string = 'note') {
     const fabric = await getFabric();
     const annotation = new fabric.Group([], {
       left: position.x,
@@ -513,7 +513,7 @@
     propertiesPanel = {
       type: node.nodeType,
       data: node.nodeType === 'evidence' ? node.evidenceData : node,
-      position: { x: node.left ?? 0, y: node.top ?? 0 },
+      position { x: node.left ?? 0, y: node.top ?? 0 },
     };
   }
 
@@ -547,12 +547,12 @@
       });
 
     fabricCanvas.on &&
-      fabricCanvas.on('selection:created', (e: any) => {
+      fabricCanvas.on('selectioncreated', (e: any) => {
         if (e.selected && e.selected.length === 1) selectNode(e.selected[0]);
       });
 
     fabricCanvas.on &&
-      fabricCanvas.on('selection:cleared', () => {
+      fabricCanvas.on('selectioncleared', () => {
         propertiesPanel = null;
       });
 
@@ -641,22 +641,22 @@
     if (target) {
       if (target.nodeType === 'evidence') {
         actions.push(
-          { label: 'Analyze Evidence', action: () => analyzeEvidence(target.evidenceId) },
-          { label: 'Add Connection', action: () => startConnection(target) },
-          { label: 'Add Note', action: () => addNote(target) },
-          { label: 'Properties', action: () => selectNode(target) }
+          { label: 'Analyze Evidence', action () => analyzeEvidence(target.evidenceId) },
+          { label: 'Add Connection', action () => startConnection(target) },
+          { label: 'Add Note', action () => addNote(target) },
+          { label: 'Properties', action () => selectNode(target) }
         );
       } else if (target.nodeType === 'connection') {
         actions.push(
-          { label: 'Edit Connection', action: () => editConnection(target) },
-          { label: 'Delete Connection', action: () => deleteConnection(target) }
+          { label: 'Edit Connection', action () => editConnection(target) },
+          { label: 'Delete Connection', action () => deleteConnection(target) }
         );
       }
-      actions.push({ label: 'Delete', action: () => fabricCanvas.remove && fabricCanvas.remove(target) });
+      actions.push({ label: 'Delete', action () => fabricCanvas.remove && fabricCanvas.remove(target) });
     } else {
       actions.push(
-        { label: 'Add Note', action: () => addNoteAt(contextMenu?.x ?? 0, contextMenu?.y ?? 0) },
-        { label: 'Paste', action: () => paste() }
+        { label: 'Add Note', action () => addNoteAt(contextMenu?.x ?? 0, contextMenu?.y ?? 0) },
+        { label: 'Paste', action () => paste() }
       );
     }
     return actions;
@@ -704,7 +704,7 @@
       websocketStore.subscribeToDashboard && websocketStore.subscribeToDashboard();
       console.log('Canvas collaboration setup complete with Redis');
     } catch (err) {
-      console.error('Failed to setup Redis collaboration:', err);
+      console.error('Failed to setup Redis collaboration', err);
     }
   }
 
@@ -753,13 +753,13 @@
       fabricCanvas.add && fabricCanvas.add(cursor);
     } else {
       const cursor = collaboratorCursors.get(userId);
-      cursor.animate && cursor.animate('left', cursorData.x, { duration: 100 });
-      cursor.animate && cursor.animate('top', cursorData.y, { duration: 100 });
+      cursor.animate && cursor.animate('left', cursorData.x, { duration 100 });
+      cursor.animate && cursor.animate('top', cursorData.y, { duration 100 });
     }
     fabricCanvas.renderAll && fabricCanvas.renderAll();
   }
 
-  function broadcastCanvasChange(action: string, data: any) {
+  function broadcastCanvasChange(action string, data: any) {
     if (websocketStore.connected)
       websocketStore.broadcastEvidenceEdit && websocketStore.broadcastEvidenceEdit(Number(caseId), action, data);
   }
@@ -813,8 +813,8 @@
     evidenceNodes.forEach((node, evidenceId) => {
       const pos = positions[evidenceId];
       if (pos) {
-        node.animate && node.animate('left', pos.x, { duration: 500 });
-        node.animate && node.animate('top', pos.y, { duration: 500 });
+        node.animate && node.animate('left', pos.x, { duration 500 });
+        node.animate && node.animate('top', pos.y, { duration 500 });
       }
     });
     fabricCanvas.renderAll && fabricCanvas.renderAll();
@@ -854,7 +854,7 @@
         await saveToRedisCache(savePayload);
         if (pubSubController && collaborative && pubSubController.publish) {
           await pubSubController.publish(redisChannels.canvas, {
-            action: 'canvas_saved',
+            action 'canvas_saved',
             caseId,
             timestamp: savePayload.timestamp,
             user: 'current_user', // replace with actual user id retrieval
@@ -919,7 +919,7 @@
     console.log('Auto-save enabled');
   }
 
-  async function publishCanvasChange(action: string) {
+  async function publishCanvasChange(action string) {
     if (!pubSubController || !collaborative) return;
     try {
       await pubSubController.publish(redisChannels.collaboration, {
@@ -966,7 +966,7 @@
     }
   }
 
-  async function highlightSuggestedConnection(suggestion: any) {
+  async function highlightSuggestedConnection(suggestion any) {
     const fabric = await getFabric();
     const fromNode = evidenceNodes.get(suggestion.fromId);
     const toNode = evidenceNodes.get(suggestion.toId);
@@ -996,7 +996,7 @@
             });
         });
     } catch (err) {
-      console.error('Failed to load canvas from JSON:', err);
+      console.error('Failed to load canvas from JSon', err);
     }
   }
 
@@ -1106,7 +1106,7 @@
     <div class="tool-group flex gap-2">
       <Button
         variant={selectedTool === 'select' ? 'default' : 'ghost'}
-        on:click={() => {
+        onclick={() => {
           selectedTool = 'select';
           updateToolMode();
         }}
@@ -1117,7 +1117,7 @@
       </Button>
       <Button
         variant={selectedTool === 'evidence' ? 'default' : 'ghost'}
-        on:click={() => (selectedTool = 'evidence')}
+        onclick={() => (selectedTool = 'evidence')}
         title="Add Evidence (2)"
         size="sm"
       >
@@ -1125,7 +1125,7 @@
       </Button>
       <Button
         variant={selectedTool === 'connection' ? 'default' : 'ghost'}
-        on:click={() => (selectedTool = 'connection')}
+        onclick={() => (selectedTool = 'connection')}
         title="Connect Evidence (3)"
         size="sm"
       >
@@ -1133,7 +1133,7 @@
       </Button>
       <Button
         variant={selectedTool === 'note' ? 'default' : 'ghost'}
-        on:click={() => (selectedTool = 'note')}
+        onclick={() => (selectedTool = 'note')}
         title="Add Note (4)"
         size="sm"
       >
@@ -1141,7 +1141,7 @@
       </Button>
       <Button
         variant={selectedTool === 'highlight' ? 'default' : 'ghost'}
-        on:click={() => (selectedTool = 'highlight')}
+        onclick={() => (selectedTool = 'highlight')}
         title="Highlight (5)"
         size="sm"
       >
@@ -1149,7 +1149,7 @@
       </Button>
       <Button
         variant={selectedTool === 'draw' ? 'default' : 'ghost'}
-        on:click={() => {
+        onclick={() => {
           selectedTool = 'draw';
           updateToolMode();
         }}
@@ -1160,17 +1160,17 @@
       </Button>
     </div>
     <div class="action-group flex gap-2">
-      <Button variant="ghost" on:click={undo} disabled={undoStack.length === 0} size="sm">⏪ Undo</Button>
-      <Button variant="ghost" on:click={redo} disabled={redoStack.length === 0} size="sm">⏩ Redo</Button>
-      <Button variant="ghost" on:click={zoomFit} size="sm">🔍 Fit</Button>
-      <Button variant="ghost" on:click={() => exportCanvas('png')} size="sm">💾 Export</Button>
+      <Button variant="ghost" onclick={undo} disabled={undoStack.length === 0} size="sm">⏪ Undo</Button>
+      <Button variant="ghost" onclick={redo} disabled={redoStack.length === 0} size="sm">⏩ Redo</Button>
+      <Button variant="ghost" onclick={zoomFit} size="sm">🔍 Fit</Button>
+      <Button variant="ghost" onclick={() => exportCanvas('png')} size="sm">💾 Export</Button>
     </div>
     {#if aiAssisted}
       <div class="ai-group">
-        <button class="ai-btn" on:click={applyAILayout} disabled={isGeneratingLayout}>
+        <button class="ai-btn" onclick={applyAILayout} disabled={isGeneratingLayout}>
           {isGeneratingLayout ? '⏳' : '🤖'} AI Layout
         </button>
-        <button class="ai-btn" on:click={() => (showAISuggestions = !showAISuggestions)}> 💡 Suggestions </button>
+        <button class="ai-btn" onclick={() => (showAISuggestions = !showAISuggestions)}> 💡 Suggestions </button>
       </div>
     {/if}
     {#if collaborative}
@@ -1193,7 +1193,7 @@
     <div class="sidebar">
       <div class="sidebar-header">
         <h3>Evidence Library</h3>
-        <button class="close-btn" on:click={() => (sidebarOpen = false)}>×</button>
+        <button class="close-btn" onclick={() => (sidebarOpen = false)}>×</button>
       </div>
       <div class="evidence-list">
         {#each evidenceData as evidence}
@@ -1216,14 +1216,14 @@
           {#each aiSuggestions as suggestion}
             <div class="suggestion-item">
               <div class="suggestion-text">{suggestion.text}</div>
-              <button class="apply-btn" on:click={() => suggestion.action()}> Apply </button>
+              <button class="apply-btn" onclick={() => suggestion.action()}> Apply </button>
             </div>
           {/each}
         </div>
       {/if}
     </div>
   {:else}
-    <Button variant="ghost" size="sm" on:click={() => (sidebarOpen = true)} class="fixed left-4 top-4 z-30">
+    <Button variant="ghost" size="sm" onclick={() => (sidebarOpen = true)} class="fixed left-4 top-4 z-30">
       📚 Sidebar
     </Button>
   {/if}
@@ -1238,7 +1238,7 @@
         <CardHeader>
           <div class="flex items-center justify-between">
             <CardTitle>Properties</CardTitle>
-            <Button variant="ghost" size="sm" on:click={() => (propertiesPanel = null)}>×</Button>
+            <Button variant="ghost" size="sm" onclick={() => (propertiesPanel = null)}>×</Button>
           </div>
         </CardHeader>
         <CardContent class="space-y-4">
@@ -1262,7 +1262,7 @@
               </select>
             </div>
             <div class="space-y-2">
-              <Label>Position:</Label>
+              <Label>Position</Label>
               <div class="grid grid-cols-2 gap-2">
                 <Input type="number" bind:value={propertiesPanel.position.x} placeholder="X" />
                 <Input type="number" bind:value={propertiesPanel.position.y} placeholder="Y" />
@@ -1283,7 +1283,7 @@
         <Button
           variant="ghost"
           size="sm"
-          on:click={() => {
+          onclick={() => {
             action.action();
             contextMenu = null;
           }}
@@ -1303,11 +1303,11 @@
     background: #0a0a0a;
     color: white;
     font-family: Arial, sans-serif;
-    position: relative;
+    position relative;
     overflow: hidden;
   }
   .toolbar {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -1339,7 +1339,7 @@
     border-radius: 6px;
     font-size: 12px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     min-width: 40px;
     height: 36px;
     display: flex;
@@ -1387,7 +1387,7 @@
   }
   .evidence-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 10px;
   }
   .evidence-item {
@@ -1398,7 +1398,7 @@
     background: rgba(255, 255, 255, 0.05);
     border-radius: 6px;
     cursor: grab;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     border: 1px solid transparent;
   }
   .evidence-item:hover {
@@ -1427,7 +1427,7 @@
     text-transform: capitaliz;
   }
   .sidebar-toggle {
-    position: absolute;
+    position absolute;
     top: 80px;
     left: 20px;
     z-index: 60,
@@ -1442,11 +1442,11 @@
   .canvas-container {
     flex: 1;
     margin-top: 60px;
-    position: relative;
+    position relative;
     overflow: hidden;
   }
   .properties-panel {
-    position: absolute;
+    position absolute;
     top: 80px;
     right: 20px;
     width: 280px;
@@ -1498,7 +1498,7 @@
     width: calc(50% - 5px);
   }
   .context-menu {
-    position: fixed;
+    position fixed;
     background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -1517,9 +1517,9 @@
     text-align: left;
     cursor: pointer;
     font-size: 14px;
-    transition: background 0.2s ease;
+    transition background 0.2s ease;
   }
-  .context-action:hover {
+  .context-actionhover {
     background: rgba(255, 255, 255, 0.1);
   }
   .collaborators {

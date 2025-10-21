@@ -196,7 +196,7 @@ https://svelte.dev/e/js_parse_error -->
           </span>
         </div>
       </div>
-      <button on:click={refreshPatterns} class="refresh-btn"> 🔄 Refresh Patterns </button>
+      <button onclick={refreshPatterns} class="refresh-btn"> 🔄 Refresh Patterns </button>
     </div>
   {/if}
   <!-- Document List with Instant CHR-ROM Patterns -->
@@ -236,7 +236,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <!-- Hover-Triggered Patterns (Advanced) -->
         {#if hoveredDocument === doc.id}
-          <div class="hover-details" transition:slide>
+          <div class="hover-details" transitionslide>
             <div class="entity-heatmap">
               <span class="label">Entities:</span>
               <div class="{getPatternRenderingClass(doc.id, 'entity_heatmap')} chr-rom-heatmap">
@@ -349,7 +349,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 8px;
     padding: 1rem;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition all 0.15s ease;
   }
   .document-card:hover {
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
@@ -446,7 +446,7 @@ https://svelte.dev/e/js_parse_error -->
       grid-template-columns: 1fr;
     }
     .hover-details {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
       gap: 0.5rem;
     }

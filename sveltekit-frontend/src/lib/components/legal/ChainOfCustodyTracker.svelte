@@ -9,11 +9,11 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   export interface CustodyTransfer {
     id: string;
     timestamp: Date;
-    fromPerson: string;
-    toPerson: string;
-    location: string;
-    reason: string;
-    condition: 'excellent' | 'good' | 'fair' | 'poor' | 'damaged';
+    fromPerson string;
+    toPerson string;
+    location string;
+    reason string;
+    condition 'excellent' | 'good' | 'fair' | 'poor' | 'damaged';
     photos?: string[];
     signature: string;
     witnessSignature?: string;
@@ -23,13 +23,13 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   export interface EvidenceItem {
     id: string;
     itemNumber: string;
-    description: string;
+    description string;
     category: 'physical' | 'digital' | 'document' | 'biological' | 'chemical' | 'other';
     collectedDate: Date;
     collectedBy: string;
     currentCustodian: string;
-    location: string;
-    condition: 'excellent' | 'good' | 'fair' | 'poor' | 'damaged';
+    location string;
+    condition 'excellent' | 'good' | 'fair' | 'poor' | 'damaged';
     sealed: boolean;
     chainOfCustody: CustodyTransfer[];
     compromised: boolean;
@@ -61,12 +61,12 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   let latestTransfer = $derived(() => sortedTransfers[0]);
   // Evidence category configurations
   const categoryConfig = {
-    physical: { icon: Shield, color: 'text-blue-400', bg: 'bg-blue-500/10' },
-    digital: { icon: FileCheck, color: 'text-green-400', bg: 'bg-green-500/10' },
-    document: { icon: FileCheck, color: 'text-yellow-400', bg: 'bg-yellow-500/10' },
-    biological: { icon: Shield, color: 'text-red-400', bg: 'bg-red-500/10' },
-    chemical: { icon: Shield, color: 'text-purple-400', bg: 'bg-purple-500/10' },
-    other: { icon: Shield, color: 'text-gray-400', bg: 'bg-gray-500/10' }
+    physical: { icon Shield, color: 'text-blue-400', bg: 'bg-blue-500/10' },
+    digital: { icon FileCheck, color: 'text-green-400', bg: 'bg-green-500/10' },
+    document: { icon FileCheck, color: 'text-yellow-400', bg: 'bg-yellow-500/10' },
+    biological: { icon Shield, color: 'text-red-400', bg: 'bg-red-500/10' },
+    chemical: { icon Shield, color: 'text-purple-400', bg: 'bg-purple-500/10' },
+    other: { icon Shield, color: 'text-gray-400', bg: 'bg-gray-500/10' }
   }
   // Condition configurations
   const conditionConfig = {
@@ -152,11 +152,11 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         <div class="text-yorha-text-primary font-medium">{evidence.currentCustodian}</div>
       </div>
       <div>
-        <span class="text-yorha-text-secondary">Location:</span>
+        <span class="text-yorha-text-secondary">Location</span>
         <div class="text-yorha-text-primary font-medium">{evidence.location}</div>
       </div>
       <div>
-        <span class="text-yorha-text-secondary">Condition:</span>
+        <span class="text-yorha-text-secondary">Condition</span>
         <span className={cn('inline-block px-2 py-0.5 rounded text-xs', conditionConfig[evidence.condition].className)}>
           {conditionConfig[evidence.condition].label}
         </span>
@@ -182,7 +182,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     {#if interactive && onTransferEvidence}
       <div class="mt-3 flex justify-end">
         <button
-          on:click={() => onTransferEvidence?.(evidence)}
+          onclick={() => onTransferEvidence?.(evidence)}
           class="px-4 py-2 text-sm font-mono bg-yorha-primary/10 text-yorha-primary border border-yorha-primary/20 rounded hover:bg-yorha-primary/20 transition-colors"
         >
           Transfer Custody
@@ -212,7 +212,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
           {#each showFullHistory ? sortedTransfers : sortedTransfers.slice(0, 3) as transfer, index (transfer.id)}
             <div
               class={cn('relative flex items-start gap-4', interactive && 'cursor-pointer group')}
-              on:click={() => interactive && onViewDetails?.(transfer)}
+              onclick={() => interactive && onViewDetails?.(transfer)}
             >
               <!-- Timeline Node -->
               <div
@@ -267,18 +267,18 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                   <!-- Transfer Details -->
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
                     <div>
-                      <span class="text-yorha-text-secondary">Reason:</span>
+                      <span class="text-yorha-text-secondary">Reason</span>
                       <div class="text-yorha-text-primary">{transfer.reason}</div>
                     </div>
                     <div>
-                      <span class="text-yorha-text-secondary">Location:</span>
+                      <span class="text-yorha-text-secondary">Location</span>
                       <div class="flex items-center gap-1 text-yorha-text-primary">
                         <MapPin class="w-3 h-3" />
                         {transfer.location}
                       </div>
                     </div>
                     <div>
-                      <span class="text-yorha-text-secondary">Condition:</span>
+                      <span class="text-yorha-text-secondary">Condition</span>
                       <span
                         className={cn(
                           'inline-block px-1.5 py-0.5 rounded',
@@ -314,7 +314,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         {#if !showFullHistory && sortedTransfers.length > 3}
           <div class="text-center mt-4">
             <button
-              on:click={() => (showFullHistory = true)}
+              onclick={() => (showFullHistory = true)}
               class="text-sm font-mono text-yorha-primary hover:text-yorha-accent transition-colors"
             >
               Show {sortedTransfers.length - 3} more transfer{sortedTransfers.length - 3 !== 1 ? 's' : ''}

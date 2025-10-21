@@ -56,14 +56,14 @@
     vectorCache: { used: 0, total: 16384 },
     precedentPatterns: { cached: 0, total: 10000 },
     glyphCache: { hitRate: 0, entries: 0 },
-    gpuUtilization: 0
+    gpuUtilization 0
   });
   interface PrecedentMatch {
     id: string;
     title: string;
-    citation: string;
+    citation string;
     court: string;
-    jurisdiction: string;
+    jurisdiction string;
     dateDecided: string;
     similarityScore: number;
     factualSimilarity: number;
@@ -89,14 +89,14 @@
     citedCases: string[];
     authorityScore: number;
     influenceRank: number;
-    networkPosition: 'CORE' | 'PERIPHERAL' | 'BRIDGE';
+    networkPosition 'CORE' | 'PERIPHERAL' | 'BRIDGE';
   }
   interface LegalReasoningStep {
     stepNumber: number;
     legalPrinciple: string;
     supportingCases: string[];
     factualBasis: string;
-    logicalConnection: string;
+    logicalConnection string;
     strengthScore: number;
     vulnerabilities: string[];
   }
@@ -187,9 +187,9 @@
       {
         id: 'CASE-2023-001',
         title: 'State v. Johnson - Contract Interpretation Under Duress',
-        citation: '847 F.3d 234 (5th Cir. 2023)',
+        citation '847 F.3d 234 (5th Cir. 2023)',
         court: '5th Circuit Court of Appeals',
-        jurisdiction: 'Federal',
+        jurisdiction 'Federal',
         dateDecided: '2023-08-15',
         similarityScore: 0.94,
         factualSimilarity: 0.92,
@@ -222,9 +222,9 @@
       {
         id: 'CASE-2022-087',
         title: 'Martinez v. Global Corp - Unconscionable Contract Terms',
-        citation: '623 F.Supp.3d 445 (S.D. Cal. 2022)',
+        citation '623 F.Supp.3d 445 (S.D. Cal. 2022)',
         court: 'U.S. District Court Southern District of California',
-        jurisdiction: 'Federal',
+        jurisdiction 'Federal',
         dateDecided: '2022-11-22',
         similarityScore: 0.87,
         factualSimilarity: 0.85,
@@ -260,9 +260,9 @@
       {
         id: 'CASE-2021-156',
         title: 'Thompson Industries v. Allied Manufacturing - Good Faith Dealing',
-        citation: '789 F.3d 567 (9th Cir. 2021)',
+        citation '789 F.3d 567 (9th Cir. 2021)',
         court: '9th Circuit Court of Appeals',
-        jurisdiction: 'Federal',
+        jurisdiction 'Federal',
         dateDecided: '2021-03-10',
         similarityScore: 0.82,
         factualSimilarity: 0.80,
@@ -315,7 +315,7 @@
       citedCases: generateMockCitedCases(15),
       authorityScore: Math.min(100, match.citationCount * 0.5 + match.recentCitations * 2),
       influenceRank: Math.floor(Math.random() * 1000) + 1,
-      networkPosition: match.citationCount > 200 ? 'CORE' : match.citationCount > 50 ? 'BRIDGE' : 'PERIPHERAL'
+      networkPosition match.citationCount > 200 ? 'CORE' : match.citationCount > 50 ? 'BRIDGE' : 'PERIPHERAL'
     }));
   }
   async function analyzeLegalReasoning(): Promise<LegalReasoningStep[]> {
@@ -325,7 +325,7 @@
         legalPrinciple: 'Contract Formation Requirements',
         supportingCases: ['CASE-2023-001', 'CASE-2022-087'],
         factualBasis: 'Valid contract requires mutual assent, consideration, and capacity',
-        logicalConnection: 'Foundation for analyzing contract validity',
+        logicalConnection 'Foundation for analyzing contract validity',
         strengthScore: 0.95,
         vulnerabilities: ['Potential capacity questions', 'Consideration adequacy'];
       },
@@ -334,7 +334,7 @@
         legalPrinciple: 'Duress and Unconscionability Doctrines',
         supportingCases: ['CASE-2023-001', 'CASE-2022-087'],
         factualBasis: 'Evidence of coercive circumstances and unequal bargaining power',
-        logicalConnection: 'Duress can void otherwise valid contracts',
+        logicalConnection 'Duress can void otherwise valid contracts',
         strengthScore: 0.87,
         vulnerabilities: ['Subjective nature of duress', 'Burden of proof issues'];
       },
@@ -343,7 +343,7 @@
         legalPrinciple: 'Good Faith Performance Obligation',
         supportingCases: ['CASE-2021-156'],
         factualBasis: 'Implied covenant exists in all contractual relationships',
-        logicalConnection: 'Even valid contracts require good faith performance',
+        logicalConnection 'Even valid contracts require good faith performance',
         strengthScore: 0.78,
         vulnerabilities: ['Scope of good faith duty', 'Relationship to express terms'];
       },
@@ -352,7 +352,7 @@
         legalPrinciple: 'Remedial Framework',
         supportingCases: ['CASE-2023-001', 'CASE-2021-156'],
         factualBasis: 'Multiple remedial options available for contract violations',
-        logicalConnection: 'Relief available through rescission, restitution, or damages',
+        logicalConnection 'Relief available through rescission, restitution, or damages',
         strengthScore: 0.83,
         vulnerabilities: ['Election of remedies', 'Mitigation requirements'];
       }
@@ -585,7 +585,7 @@
         />
       </div>
       <Button
-        on:click={searchPrecedents}
+        onclick={searchPrecedents}
         disabled={analysisInProgress}
         class="bg-blue-600 hover:bg-blue-700 w-full"
       >

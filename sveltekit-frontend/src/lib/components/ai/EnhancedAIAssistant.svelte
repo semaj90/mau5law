@@ -49,7 +49,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   const config = $derived(aiAssistant.config);
   // Voice input support
   let isListening = $state(false);
-  let recognition: SpeechRecognition | null = null;
+  let recognition SpeechRecognition | null = null;
   $effect(() => {
     // Initialize speech recognition if available
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
@@ -183,7 +183,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     return new Date(timestamp).toLocaleTimeString();
   }
   // Show citation
-  function showCitation(citation: string) {
+  function showCitation(citation string) {
     selectedCitation = citatio;
     showCitationDialog = true;
   }
@@ -212,14 +212,14 @@ https://svelte.dev/e/effect_invalid_placement -->
     <div class="ai-actions">
       <button type="button"
         class="action-btn"
-        on:click={() => showSettings = !showSettings}
+        onclick={() => showSettings = !showSettings}
         title="Settings"
       >
         <Settings size={16} />
       </button>
       <button type="button"
         class="action-btn"
-        on:click={() => exportConversation('markdown')}
+        onclick={() => exportConversation('markdown')}
         title="Export Conversation"
         disabled={messages.length === 0}
       >
@@ -227,7 +227,7 @@ https://svelte.dev/e/effect_invalid_placement -->
       </button>
       <button type="button"
         class="action-btn"
-        on:click={clearConversation}
+        onclick={clearConversation}
         title="Clear Conversation"
         disabled={messages.length === 0}
       >
@@ -240,13 +240,13 @@ https://svelte.dev/e/effect_invalid_placement -->
     <div class="settings-panel">
       <h4>AI Assistant Settings</h4>
       <div class="setting-group">
-        <label>Backend Selection:</label>
+        <label>Backend Selection</label>
         <div class="backend-grid">
           {#each aiAssistant.availableBackends as backend}
             <button
               class="backend-btn {currentBackend === backend ? 'active' : ''}"
               class:unavailable={backendLatency[backend] === 0}
-              on:click={() => selectBackend(backend)}
+              onclick={() => selectBackend(backend)}
             >
               {backend}
               <span class="latency {getBackendStatusColor(backend)}">
@@ -343,7 +343,7 @@ https://svelte.dev/e/effect_invalid_placement -->
                 <li>
                   <button
                     class="reference-link"
-                    on:click={() => showCitation(ref.citation)}
+                    onclick={() => showCitation(ref.citation)}
                   >
                     {ref.title}
                   </button>
@@ -377,14 +377,14 @@ https://svelte.dev/e/effect_invalid_placement -->
     <div class="search-results-panel">
       <div class="search-header">
         <h4>🔍 Related Conversations</h4>
-  <button type="button" on:click={() => showSearchResults = false} aria-label="Close search results">✕</button>
+  <button type="button" onclick={() => showSearchResults = false} aria-label="Close search results">✕</button>
       </div>
       <div class="search-results">
         {#each searchResults as result}
           <div
             class="search-result"
             role="button" tabindex="0"
-                on:click={() => insertSearchResult(result)}
+                onclick={() => insertSearchResult(result)}
           >
             <div class="result-content">{(result as { content?: any; similarity?: any; timestamp?: any }).content}</div>
             <div class="result-meta">
@@ -404,7 +404,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     <div class="input-controls">
       <button type="button"
         class="voice-btn {isListening ? 'listening' : ''}"
-        on:click={toggleVoiceInput}
+        onclick={toggleVoiceInput}
         disabled={!recognition}
         title={recognition ? 'Voice input' : 'Voice input not supported'}
       >
@@ -416,7 +416,7 @@ https://svelte.dev/e/effect_invalid_placement -->
       </button>
       <button type="button"
         class="search-btn"
-        on:click={searchHistory}
+        onclick={searchHistory}
         disabled={!messageInput.trim()}
         title="Search conversation history"
       >
@@ -433,7 +433,7 @@ https://svelte.dev/e/effect_invalid_placement -->
       ></textarea>
       <button type="button"
         class="submit-btn"
-        on:click={sendMessage}
+        onclick={sendMessage}
         disabled={!messageInput.trim() || isProcessing}
         title="Send message (Enter)"
       >
@@ -444,7 +444,7 @@ https://svelte.dev/e/effect_invalid_placement -->
         {/if}
                   <button type="button"
                     class="reference-link"
-                    on:click={() => showCitation(ref.citation)}
+                    onclick={() => showCitation(ref.citation)}
                   >
   {#if showCitationDialog}
     <div class="modal-overlay" tabindex="-1" aria-modal="true" role="dialog" aria-labelledby="citation-modal-title" onkeydown={(e) => { if (e.key === 'Escape') showCitationDialog = false, }}>
@@ -458,16 +458,16 @@ https://svelte.dev/e/effect_invalid_placement -->
             <p>{selectedCitation}</p>
           </div>
             <div class="modal-actions">
-            <button type="button" class="nes-btn is-primary" on:click={() => insertCitation()}>
+            <button type="button" class="nes-btn is-primary" onclick={() => insertCitation()}>
               Insert Citation
             </button>
-            <button type="button" class="nes-btn" on:click={() => navigator.clipboard.writeText(selectedCitation)}>
+            <button type="button" class="nes-btn" onclick={() => navigator.clipboard.writeText(selectedCitation)}>
               Copy
             </button>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn-close" on:click={() => (showCitationDialog = false)}>
+          <button type="button" class="btn-close" onclick={() => (showCitationDialog = false)}>
             Close
           </button>
         </div>
@@ -478,7 +478,7 @@ https://svelte.dev/e/effect_invalid_placement -->
 <style>
   .enhanced-ai-assistant {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     background: white;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
@@ -499,7 +499,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     align-items: center;
     gap: 0.5rem;
     font-weight: 600;
-    flex-direction: column;
+    flex-direction column;
     align-items: flex-start;
   }
   .ai-title > span:first-of-type {
@@ -532,7 +532,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     background: transparent;
     border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.2;
+    transition background-color 0.2;
     border: 1px solid #d1d5db;
   }
   .action-btn:hover:not(:disabled) {,
@@ -564,7 +564,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   }
   .backend-btn {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     padding: 0.5rem;
     border: 1px solid #d1d5db;
@@ -572,7 +572,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     background: white;
     cursor: pointer;
     font-size: 0.75rem;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .backend-btn:hover {
     background: #f3f4f6;
@@ -598,7 +598,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     padding: 1rem;
     background: white;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .welcome-message {
@@ -625,7 +625,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   }
   .message {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
     max-width: 85%;
   }
@@ -706,7 +706,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   }
   .reference-link {
     color: #3b82f6;
-    text-decoration: underli;
+    text-decoration underli;
     background: none;
     border: none;
     cursor: pointer;
@@ -737,7 +737,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     padding: 0.75rem 1rem;
     border-bottom: 1px solid #e5e7eb;
     cursor: pointer;
-    transition: background 0.2;
+    transition background 0.2;
   }
   .search-result:hover {
     background: #f3f4f6;
@@ -761,7 +761,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     border-top: 1px solid #e5e7eb;
     background: #f9fafb;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .input-controls {
@@ -774,7 +774,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     border-radius: 6px;
     background: white;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .voice-btn:hover, .search-btn:hover {
     background: #f3f4f6;
@@ -782,7 +782,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   .voice-btn.listening {
     background: #fee2e2;
     border-color: #fca5a5;
-    animation: pulse 1s infinite;
+    animation pulse 1s infinite;
   }
   @keyframes pulse {
     0%, 100% { opacity: 1, }
@@ -815,7 +815,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .submit-btn:hover:not(:disabled) {,
     background: #2563eb;
@@ -826,7 +826,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   }
   /* Modal styles */
   .modal-overlay {
-    position: fixed;
+    position fixed;
 d;
     top: 0,
     left: 0;
@@ -884,7 +884,7 @@ d;
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.875rem;
-    transition: background-color 0.2;
+    transition background-color 0.2;
   }
   .btn-primary:hover {
     background: #2563eb;
@@ -897,7 +897,7 @@ d;
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.875rem;
-    transition: background-color 0.2;
+    transition background-color 0.2;
   }
   .btn-secondary:hover {
     background: #e5e7eb;
@@ -916,7 +916,7 @@ d;
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.875rem;
-    transition: background-color 0.2;
+    transition background-color 0.2;
   }
   .btn-close:hover {
     background: #e5e7eb;

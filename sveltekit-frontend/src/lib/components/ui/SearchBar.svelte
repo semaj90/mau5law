@@ -59,7 +59,7 @@
   {#if showAdvancedFilters}
     <button
       class="filter-toggle"
-      on:click={() => (showAdvancedFilters = !showAdvancedFilters)}
+      onclick={() => (showAdvancedFilters = !showAdvancedFilters)}
       aria-label="Toggle filters"
     >
       <svg xmlns="http://www.w3.org/2000/svg" class="filter-icon" viewBox="0 0 20 20" fill="currentColor">
@@ -101,7 +101,7 @@
       </div>
     </div>
     <div class="filter-actions">
-      <button type="button" class="clear-button" on:click={clearFilters}> Clear Filters </button>
+      <button type="button" class="clear-button" onclick={clearFilters}> Clear Filters </button>
     </div>
   </div>
 {/if}
@@ -115,7 +115,7 @@
     max-width: 600px;
   }
   .search-input-container {
-    position: relative;
+    position relative;
     flex: 1;
   }
   .search-input {
@@ -126,7 +126,7 @@
     border-radius: 8px;
     font-size: 1rem;
     background: #fff;
-    transition:
+    transition
       border-color 0.2s ease,
       box-shadow 0.2s ease;
   }
@@ -136,7 +136,7 @@
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
   }
   .search-icon {
-    position: absolute;
+    position absolute;
     left: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
@@ -155,7 +155,7 @@
     border: 1px solid #ddd;
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .filter-toggle:hover {
     background: #f8f9fa;
@@ -173,12 +173,12 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .filter-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .filter-group label {
@@ -225,9 +225,9 @@
     color: #666;
     cursor: pointer;
     font-size: 0.875rem;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
-  .clear-button:hover {
+  .clear-buttonhover {
     background: #f8f9fa;
     border-color: #007bff;
     color: #007bff;
@@ -235,11 +235,11 @@
   /* Responsive design */
   @media (max-width: 768px) {
     .searchbar-container {
-      flex-direction: column;
+      flex-direction column;
       align-items: stretch;
     }
     .date-range {
-      flex-direction: column;
+      flex-direction column;
       align-items: stretch;
     }
     .date-separator {

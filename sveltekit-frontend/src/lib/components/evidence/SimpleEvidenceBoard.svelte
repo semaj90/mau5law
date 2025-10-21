@@ -52,7 +52,7 @@
           body: JSON.stringify({
             caseId,
             name: 'Evidence Board',
-            description: 'Evidence board for case',
+            description 'Evidence board for case',
           }),
         });
         const result = await response.json();
@@ -103,7 +103,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...newItem,
-          position: { x: 100, y: 100 },
+          position { x: 100, y: 100 },
           size: { width: 200, height: 100 },
         }),
       });
@@ -171,7 +171,7 @@
       evidence: 'bg-blue-50 border-blue-200',
       poi: 'bg-yellow-50 border-yellow-200',
       note: 'bg-gray-50 border-gray-200',
-      connection: 'bg-purple-50 border-purple-200',
+      connection 'bg-purple-50 border-purple-200',
       image: 'bg-pink-50 border-pink-200',
     };
     return colors[type] || 'bg-gray-50 border-gray-200';
@@ -196,7 +196,7 @@
     </div>
 
     <div class="flex items-center gap-2">
-      <Button on:click={() => (showAddItemDialog = true)}>
+      <Button onclick={() => (showAddItemDialog = true)}>
         <Plus class="w-4 h-4 mr-2" />
         Add Item
       </Button>
@@ -221,7 +221,7 @@
       </div>
       <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No items on this board</h3>
       <p class="text-gray-500 mb-4">Add evidence, persons of interest, or notes to get started</p>
-      <Button on:click={() => (showAddItemDialog = true)}>
+      <Button onclick={() => (showAddItemDialog = true)}>
         <Plus class="w-4 h-4 mr-2" />
         Add First Item
       </Button>
@@ -236,10 +236,10 @@
               {item.type}
             </Badge>
             <div class="flex gap-1">
-              <Button size="sm" variant="ghost" on:click={() => (selectedItem = item)}>
+              <Button size="sm" variant="ghost" onclick={() => (selectedItem = item)}>
                 <Edit class="w-3 h-3" />
               </Button>
-              <Button size="sm" variant="ghost" on:click={() => deleteItem(item)}>
+              <Button size="sm" variant="ghost" onclick={() => deleteItem(item)}>
                 <Trash2 class="w-3 h-3" />
               </Button>
             </div>
@@ -315,7 +315,7 @@
       {/if}
 
       <div class="flex justify-end gap-2">
-        <Button type="button" variant="ghost" on:click={() => (showAddItemDialog = false)}>Cancel</Button>
+        <Button type="button" variant="ghost" onclick={() => (showAddItemDialog = false)}>Cancel</Button>
         <Button type="submit">Add Item</Button>
       </div>
     </form>

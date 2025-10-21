@@ -46,7 +46,7 @@
         <Button
           variant="ghost"
           size="sm"
-          on:click={() =>
+          onclick={() =>
 isOpen = false}
           aria-label="Close accessibility settings"
           class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
@@ -76,7 +76,7 @@ isOpen = false}
                       {config.fontSize === size
                         ? 'bg-blue-600 text-white border-blue-600'
                         : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:border-blue-500'}"
-                    on:click={() => updateFontSize(size)}
+                    onclick={() => updateFontSize(size)}
                     aria-pressed={config.fontSize === size}
                   >
                     {size.charAt(0).toUpperCase() + size.slice(1).replace('-', ' ')}
@@ -95,7 +95,7 @@ isOpen = false}
                 aria-checked={config.enableHighContrast}
                 class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors
                   {config.enableHighContrast ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}"
-                on:click={toggleHighContrast}
+                onclick={toggleHighContrast}
               >
                 <span class="sr-only">Enable high contrast mode</span>
                 <span
@@ -115,7 +115,7 @@ isOpen = false}
                 aria-checked={config.enableReducedMotion}
                 class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors
                   {config.enableReducedMotion ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}"
-                on:click={toggleReducedMotion}
+                onclick={toggleReducedMotion}
               >
                 <span class="sr-only">Reduce motion and animations</span>
                 <span
@@ -144,7 +144,7 @@ isOpen = false}
                 aria-checked={config.enableKeyboardNavigation}
                 class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors
                   {config.enableKeyboardNavigation ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}"
-                on:click={() => updateConfig('enableKeyboardNavigation', !config.enableKeyboardNavigation)}
+                onclick={() => updateConfig('enableKeyboardNavigation', !config.enableKeyboardNavigation)}
               >
                 <span class="sr-only">Enable enhanced keyboard navigation</span>
                 <span
@@ -164,7 +164,7 @@ isOpen = false}
                 aria-checked={config.focusManagement}
                 class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors
                   {config.focusManagement ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}"
-                on:click={() => updateConfig('focusManagement', !config.focusManagement)}
+                onclick={() => updateConfig('focusManagement', !config.focusManagement)}
               >
                 <span class="sr-only">Enable smart focus management</span>
                 <span
@@ -193,7 +193,7 @@ isOpen = false}
                 aria-checked={config.enableScreenReaderAnnouncements}
                 class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors
                   {config.enableScreenReaderAnnouncements ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}"
-                on:click={() => updateConfig('enableScreenReaderAnnouncements', !config.enableScreenReaderAnnouncements)}
+                onclick={() => updateConfig('enableScreenReaderAnnouncements', !config.enableScreenReaderAnnouncements)}
               >
                 <span class="sr-only">Enable screen reader announcements</span>
                 <span
@@ -233,7 +233,7 @@ isOpen = false}
       </div>
       <!-- Footer -->
       <div class="flex justify-end gap-3 p-6 border-t border-gray-200 dark:border-gray-700">
-        <Button variant="ghost" on:click={() => isOpen = false}>
+        <Button variant="ghost" onclick={() => isOpen = false}>
           Close
                     </div>
       </div>

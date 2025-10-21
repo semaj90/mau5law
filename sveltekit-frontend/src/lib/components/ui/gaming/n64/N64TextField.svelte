@@ -45,7 +45,7 @@ https://svelte.dev/e/js_parse_error -->
       'Helvetica Neue',
       Arial;
     font-size: 0.95rem;
-    transition:
+    transition
       box-shadow 0.12s ease,
       transform 0.06s ease;
     box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.08);

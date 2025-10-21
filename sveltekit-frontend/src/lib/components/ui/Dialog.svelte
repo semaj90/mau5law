@@ -35,7 +35,7 @@
 {#if open}
   <div
     class="dialog-backdrop fixed inset-0 z-50 bg-black/50 flex items-center justify-center"
-    on:click={handleBackdropClick}
+    onclick={handleBackdropClick}
     role="presentation"
   >
     <div
@@ -61,7 +61,7 @@
         <button
           type="button"
           class="dialog-close text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
-          on:click={handleClose}
+          onclick={handleClose}
           aria-label="Close dialog"
         >
           <X class="w-5 h-5" />
@@ -78,11 +78,11 @@
 
 <style>
   .dialog-backdrop {
-    animation: fadeIn 0.2s ease-out;
+    animation fadeIn 0.2s ease-out;
   }
 
   .dialog-content {
-    animation: slideIn 0.3s ease-out;
+    animation slideIn 0.3s ease-out;
   }
 
   @keyframes fadeIn {

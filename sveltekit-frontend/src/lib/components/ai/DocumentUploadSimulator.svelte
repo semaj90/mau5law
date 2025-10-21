@@ -129,7 +129,7 @@
     }
 
     try {
-      // PDF detection: content-type or filename
+      // PDF detection content-type or filename
       if (mime === 'application/pdf' || name.endsWith('.pdf')) {
         const formData = new FormData();
         formData.append('file', file);
@@ -414,14 +414,14 @@
     role="button"
     tabindex="0"
     aria-label="File upload area. Press Enter or Space to open file picker, or drop files here."
-    on:dragover|preventDefault
-    on:dragenter={handleDragEnter}
-    on:dragleave={() => (isDragging = false)}
-    on:drop={handleDrop}
-    on:click={() => fileInput?.click()}
-    on:keydown={handleKeyDown}
+    ondragover|preventDefault
+    ondragenter={handleDragEnter}
+    ondragleave={() => (isDragging = false)}
+    ondrop={handleDrop}
+    onclick={() => fileInput?.click()}
+    onkeydown={handleKeyDown}
   >
-    <input type="file" bind:this={fileInput} class="hidden" multiple on:change={handleFileInput} />
+    <input type="file" bind:this={fileInput} class="hidden" multiple onchange={handleFileInput} />
     <div class="text-center">
       <div class="text-6xl mb-4">
         {#if isDragging}
@@ -435,7 +435,7 @@
       <button
         type="button"
         class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm transition-colors"
-        on:click={() => fileInput?.click()}
+        onclick={() => fileInput?.click()}
       >
         Select Files
       </button>
@@ -462,7 +462,7 @@
         <button
           type="button"
           class="text-gray-400 hover:text-red-400 transition-colors"
-          on:click={() => removeUpload(upload.id)}
+          onclick={() => removeUpload(upload.id)}
           aria-label="Remove upload"
         >
           ✕
@@ -524,7 +524,7 @@
             <button
               type="button"
               class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm transition-colors"
-              on:click={() => downloadProcessedData(upload)}
+              onclick={() => downloadProcessedData(upload)}
               aria-label="Download processed JSON"
             >
               📥 Download JSON
@@ -561,7 +561,7 @@
     cursor: pointer;
   }
   .upload-item {
-    animation: slideIn 0.3s ease-out;
+    animation slideIn 0.3s ease-out;
   }
   @keyframes slideIn {
     from {

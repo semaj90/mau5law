@@ -29,7 +29,7 @@
   }
   .header {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
     margin-bottom: 1rem;
   }

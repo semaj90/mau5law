@@ -51,7 +51,7 @@
     contract: '📋',
     brief: '⚖️',
     evidence: '🔍',
-    citation: '📚',
+    citation '📚',
   }
   const fileTypeColors = {
     pdf: 'text-red-500',
@@ -63,7 +63,7 @@
     contract: 'text-green-600',
     brief: 'text-indigo-600',
     evidence: 'text-yellow-600',
-    citation: 'text-cyan-600',
+    citation 'text-cyan-600',
   }
   const confidentialityColors = {
     public: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
@@ -136,7 +136,7 @@
     ${sizeClasses[size]}
     ${themeClasses[theme]}
   `}
-  on:click={handleCardClick}
+  onclick={handleCardClick}
   onmouseenter={() => isHovered = true}
   onmouseleave={() => isHovered = false}
   role="button"
@@ -227,12 +227,12 @@
   {#if isHovered}
     <div
       class="absolute inset-0 bg-black/20 rounded-lg flex items-center justify-center"
-      transition:fade={{ duration: 150 }}
+      transitionfade={{ duration 150 }}
     >
       <div class="flex space-x-2">
         {#if onDownload}
           <button
-            on:click={handleDownload}
+            onclick={handleDownload}
             class={`
               p-2 rounded-full transition-colors
               ${theme === 'gaming'
@@ -250,7 +250,7 @@
         {/if}
         {#if onEdit}
           <button
-            on:click={handleEdit}
+            onclick={handleEdit}
             class={`
               p-2 rounded-full transition-colors
               ${theme === 'gaming'
@@ -268,7 +268,7 @@
         {/if}
         {#if onDelete}
           <button
-            on:click={handleDelete}
+            onclick={handleDelete}
             class={`
               p-2 rounded-full transition-colors
               ${theme === 'gaming'
@@ -292,8 +292,8 @@
 {#if showModal}
   <div
     class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-    on:click={() => showModal = false}
-    transition:fade={{ duration: 200 }}
+    onclick={() => showModal = false}
+    transitionfade={{ duration 200 }}
   >
     <div
       class={`
@@ -301,12 +301,12 @@
         ${themeClasses[theme]}
         ${theme === 'gaming' ? 'shadow-[0_0_30px_rgba(0,255,65,0.3)]' : 'shadow-2xl'}
       `}
-      on:click={(e) => e.stopPropagation()}
-      transition:scale={{ duration: 200, easing: quintOut }}
+      onclick={(e) => e.stopPropagation()}
+      transitionscale={{ duration 200, easing: quintOut }}
     >
       <!-- Close Button -->
       <button
-        on:click={() => showModal = false}
+        onclick={() => showModal = false}
         class={`
           absolute top-4 right-4 p-1 rounded-full transition-colors
           ${theme === 'gaming'
@@ -446,7 +446,7 @@
               {theme}
               variant="outline"
               size="sm"
-              on:click={handleDownload}
+              onclick={handleDownload}
             >
               Download
             </Button>
@@ -456,7 +456,7 @@
               {theme}
               variant="outline"
               size="sm"
-              on:click={handleEdit}
+              onclick={handleEdit}
             >
               Edit
             </Button>
@@ -464,7 +464,7 @@
           <Button
             {theme}
             size="sm"
-            on:click={() => showModal = false}
+            onclick={() => showModal = false}
           >
             Close
           </Button>
@@ -487,6 +487,6 @@
   /* Smooth animations */
   .transition-all {
     transition-property: all;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-timing-function cubic-bezier(0.4, 0, 0.2, 1);
   }
 </style>

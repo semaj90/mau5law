@@ -23,7 +23,7 @@
   interface Citation {
     id: string;
     type: 'case' | 'statute' | 'regulation' | 'secondary';
-    citation: string;
+    citation string;
     shortForm: string;
     pinpoint?: string;
     verified: boolean;
@@ -40,13 +40,13 @@
     sections: BriefSection[];
     status: 'draft' | 'review' | 'filed';
     collaborators: string[];
-    version: number;
+    version number;
   }
   interface Props {
     brief?: Brief;
     onSave?: (brief: Brief) => Promise<void>;
     onCitationCheck?: (citations: Citation[]) => Promise<Citation[]>;
-    onAISuggestion?: (section: BriefSection) => Promise<string[]>;
+    onAISuggestion?: (section BriefSection) => Promise<string[]>;
   }
   let { brief, onSave, onCitationCheck, onAISuggestion }: Props = $props();
   // Enhanced-Bits builder for briefs
@@ -65,7 +65,7 @@
     wordLimit: 8000,
     status: 'draft',
     collaborators: ['Legal Counsel', 'Associate Attorney'],
-    version: 1,
+    version 1,
     sections: [
       {
         id: 'intro',
@@ -76,7 +76,7 @@
           {
             id: 'cit-1',
             type: 'statute',
-            citation: 'Cal. Code Civ. Proc. § 437c',
+            citation 'Cal. Code Civ. Proc. § 437c',
             shortForm: '§ 437c',
             verified: true
             relevanceScore: 0.95,
@@ -154,7 +154,7 @@
     }
   }
   function addSection() {
-    const newSection: BriefSection = {
+    const newSection BriefSection = {
       id: `section-${Date.now()}`,
       type: 'argument',
       title: 'New Argument Section',
@@ -175,10 +175,10 @@
   }
   function addCitation() {
     if (!currentSection) return;
-    const newCitation: Citation = {
+    const newCitation Citation = {
       id: `cit-${Date.now()}`,
       type: 'case',
-      citation: '',
+      citation '',
       shortForm: '',
       verified: false
       relevanceScore: 0,
@@ -191,10 +191,10 @@
   function getSectionIcon(type: BriefSection['type']): string {
     const icons = {
       header: '📋',
-      introduction: '🎯',
+      introduction '🎯',
       facts: '📊',
       argument: '⚖️',
-      conclusion: '🏁',
+      conclusion '🏁',
       signature: '✍️',
     }
     return icons[type] || '📄';
@@ -203,7 +203,7 @@
     const icons = {
       case: '⚖️',
       statute: '📜',
-      regulation: '📋',
+      regulation '📋',
       secondary: '📚',
     }
     return icons[type] || '📄';
@@ -265,13 +265,13 @@
             </div>
           </div>
           <Button
-            on:click={saveBrief}
+            onclick={saveBrief}
             disabled={isAutoSaving}
             style="background: {briefBuilder.styling.colors.evidence}"
           >
             {isAutoSaving ? '💾 Saving...' : '💾 Save Brief'}
           </Button>
-          <Button on:click={() => (citationPanel = !citationPanel)} variant="outline">📚 Citations</Button>
+          <Button onclick={() => (citationPanel = !citationPanel)} variant="outline">📚 Citations</Button>
         </div>
       </CardTitle>
     </CardHeader>
@@ -307,15 +307,15 @@
     <div class="section-nav">
       <div class="nav-header">
         <h3>Brief Sections</h3>
-        <Button on:click={addSection} size="sm">➕ Add Section</Button>
+        <Button onclick={addSection} size="sm">➕ Add Section</Button>
       </div>
       <div class="section-list">
         {#each briefData.sections as section (section.id)}
           <button
             class="section-item"
             class:active={selectedSection === section.id}
-            on:click={() => (selectedSection = section.id)}
-            transition:fade
+            onclick={() => (selectedSection = section.id)}
+            transitionfade
           >
             <div class="section-header">
               <span class="section-icon">{getSectionIcon(section.type)}</span>
@@ -339,8 +339,8 @@
             <span class="section-type">{currentSection.type.replace('_', ' ').toUpperCase()}</span>
           </div>
           <div class="editor-tools">
-            <Button on:click={() => getAISuggestions(currentSection.id)} size="sm">🤖 AI Suggestions</Button>
-            <Button on:click={checkCitations} size="sm" variant="outline">🔍 Check Citations</Button>
+            <Button onclick={() => getAISuggestions(currentSection.id)} size="sm">🤖 AI Suggestions</Button>
+            <Button onclick={checkCitations} size="sm" variant="outline">🔍 Check Citations</Button>
           </div>
         </div>
         <div class="editor-content">
@@ -352,7 +352,7 @@
           ></textarea>
           <!-- AI Suggestions Panel -->
           {#if currentSection.aiSuggestions && currentSection.aiSuggestions.length > 0}
-            <div class="suggestions-panel" transition:fly={{ x: 20, duration: 300 }}>
+            <div class="suggestions-panel" transitionfly={{ x: 20, duration 300 }}>
               <h4>🤖 AI Suggestions</h4>
               <ul class="suggestions-list">
                 {#each currentSection.aiSuggestions as suggestion}
@@ -366,11 +366,11 @@
         <div class="section-citations">
           <div class="citations-header">
             <h4>Citations ({currentSection.citations.length})</h4>
-            <Button on:click={addCitation} size="sm">➕ Add Citation</Button>
+            <Button onclick={addCitation} size="sm">➕ Add Citation</Button>
           </div>
           <div class="citations-list">
             {#each currentSection.citations as citation (citation.id)}
-              <div class="citation-item" transition:scale>
+              <div class="citation-item" transitionscale>
                 <div class="citation-header">
                   <span class="citation-icon">{getCitationIcon(citation.type)}</span>
                   <span class="citation-type">{citation.type.toUpperCase()}</span>
@@ -404,10 +404,10 @@
     </div>
     <!-- Citation Panel -->
     {#if citationPanel}
-      <div class="citation-panel" transition:fly={{ x: 300, duration: 300 }}>
+      <div class="citation-panel" transitionfly={{ x: 300, duration 300 }}>
         <div class="panel-header">
           <h3>📚 All Citations</h3>
-          <Button on:click={() => (citationPanel = false)} size="sm">✕</Button>
+          <Button onclick={() => (citationPanel = false)} size="sm">✕</Button>
         </div>
         <div class="panel-content">
           {#each briefData.sections as section}
@@ -486,7 +486,7 @@
   }
   .word-count-display {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: flex-end;
     gap: 0.25rem;
   }
@@ -506,7 +506,7 @@
   }
   .word-fill {
     height: 100%;
-    transition: width 300ms ease;
+    transition width 300ms ease;
     border-radius: 2px;
   }
   .word-fill.normal { background: var(--enhanced-bits-success), }
@@ -524,7 +524,7 @@
   }
   .detail-item {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
   .detail-label {
@@ -565,7 +565,7 @@
   }
   .section-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .section-item {
@@ -576,7 +576,7 @@
     border: 1px solid var(--enhanced-bits-border);
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     text-align: left;
     color: var(--enhanced-bits-foreground);
     font-family: inherit;
@@ -617,7 +617,7 @@
     border-radius: 8px;
     padding: 1.5rem;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
   }
   .editor-header {
     display: flex;
@@ -705,7 +705,7 @@
   }
   .citations-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .citation-item {
@@ -798,7 +798,7 @@
   }
   .no-section-selected {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     height: 100%;
@@ -821,7 +821,7 @@
       grid-template-columns: 250px 1fr;
     }
     .citation-panel {
-      position: fixed;
+      position fixed;
 d;
       top: 20px;
       right: 20px;
@@ -831,7 +831,7 @@ d;
   }
   @media (max-width: 768px) {
     .brief-title {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
     }
     .editor-layout {

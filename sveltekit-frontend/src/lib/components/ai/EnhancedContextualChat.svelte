@@ -170,7 +170,7 @@
         $form.message = '';
       }
     } catch (error) {
-      console.error('Failed to clear conversation:', error);
+      console.error('Failed to clear conversation', error);
     }
   }
 </script>
@@ -192,7 +192,7 @@
 
         <button
           class="nes-btn is-small is-warning"
-          on:click={clearConversation}
+          onclick={clearConversation}
           type="button"
         >
           🗑️ Clear
@@ -351,7 +351,7 @@
                   <button
                     type="button"
                     class="entity-item nes-btn is-small"
-                    on:click={() => showEntity(entity)}
+                    onclick={() => showEntity(entity)}
                   >
                     <span class="entity-type">{entity.type}</span>
                     <span class="entity-value">{entity.value}</span>
@@ -419,7 +419,7 @@
           </div>
           {#if selectedEntity.startPos !== undefined}
             <div class="detail-row">
-              <span class="detail-label">Position:</span>
+              <span class="detail-label">Position</span>
               <span class="detail-value">
                 {selectedEntity.startPos} - {selectedEntity.endPos}
               </span>
@@ -436,7 +436,7 @@
 <style>
   .enhanced-contextual-chat {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     height: 100vh;
     max-height: 900px;
     background: #212529;
@@ -494,7 +494,7 @@
 
   .conversation-panel {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     border-right: 4px solid #d4af37;
   }
 
@@ -575,7 +575,7 @@
   .entities-list,
   .state-history {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
   }
 
@@ -615,7 +615,7 @@
   .confidence-fill {
     height: 100%;
     background: linear-gradient(90deg, #d4af37, #4ade80);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
 
   .entity-item {
@@ -641,14 +641,14 @@
   }
 
   .dialog-overlay {
-    position: fixed;
+    position fixed;
     inset: 0,
     background: rgba(0, 0, 0, 0.8);
     z-index: 50,
   }
 
   .dialog-content {
-    position: fixed;
+    position fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);

@@ -203,7 +203,7 @@
 
       <!-- Upload Button -->
       <Button
-        on:click={uploadFile}
+        onclick={uploadFile}
         disabled={!selectedFile || uploading}
         class="nes-btn is-success"
         style="width: 100%;"
@@ -298,7 +298,7 @@
 
       <!-- Search Button -->
       <Button
-        on:click={searchDocuments}
+        onclick={searchDocuments}
         disabled={!searchQuery.trim() || searching}
         class="nes-btn is-primary"
         style="width: 100%;"
@@ -315,7 +315,7 @@
         📊 SEARCH RESULTS ({searchResults.length})
       </h3>
 
-      <div style="display: flex; flex-direction: column; gap: 1rem;">
+      <div style="display: flex; flex-direction column; gap: 1rem;">
         {#each searchResults as result, index}
           <div class="nes-container" style="background: #0f1214; padding: 1rem;">
             <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">

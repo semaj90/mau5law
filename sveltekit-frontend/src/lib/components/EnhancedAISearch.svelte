@@ -105,7 +105,7 @@
       const searchResults = await enhancedAiPipeline.semanticSearch(query, {
         ...searchOptions,
         practiceArea: selectedPracticeArea
-        jurisdiction: selectedJurisdiction;
+        jurisdiction selectedJurisdiction;
       });
       const endTime = performance.now();
       searchTime = Math.round(endTime - startTime);
@@ -156,7 +156,7 @@
       <h2 class="text-2xl font-bold text-gray-900 dark:text-white">🤖 Enhanced Legal AI Search</h2>
       <Button
         class="bits-btn flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
-        on:click={() => (showAdvanced = !showAdvanced)}
+        onclick={() => (showAdvanced = !showAdvanced)}
       >
         <span class="i-tabler-settings w-4 h-4"></span>
         Advanced
@@ -182,7 +182,7 @@
         {/if}
       </div>
       <Button.Root
-        on:click={performSearch}
+        onclick={performSearch}
         disabled={loading || !query.trim()}
         class="px-6 py-3 bg-blue-600 hover: bg-blue-700 text-white rounded-lg;
                disabled:opacity-50 disabled:cursor-not-allowed

@@ -27,10 +27,10 @@
 </script>
 
 <h2>Upload Demo</h2>
-<UploadProgress uploadUrl="/api/upload" on:progress={onProgress} on:done={onDone} on:error={onError} />
+<UploadProgress uploadUrl="/api/upload" onprogress={onProgress} ondone={onDone} onerror={onError} />
 <div class="mt-4">{last}</div>
 
 <hr />
 <h3>Save metadata (JSON example)</h3>
 <pre>{JSON.stringify(metadata, null, 2)}</pre>
-<button on:click={saveMetadata}>Save metadata</button>
+<button onclick={saveMetadata}>Save metadata</button>

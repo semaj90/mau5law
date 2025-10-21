@@ -328,7 +328,7 @@
     background: #1a1a1a;
     border-right: 1px solid #3a3a3a;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
   }
   .yorha-logo {
     padding: 20px 15px;
@@ -350,12 +350,12 @@
     flex: 1;
     padding: 15px 15px; /* Changed from 15px 0; to provide consistent horizontal padding for the nav container */
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     justify-content: space-between;
   }
   .nav-section {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 2px;
   }
   .nav-item {
@@ -366,12 +366,12 @@
     background: none;
     border: none;
     color: #888;
-    text-decoration: none;
+    text-decoration none;
     text-align: left;
     font-family: inherit;
     font-size: 11px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition all 0.2s;
     justify-content: space-between;
   }
   .nav-item:hover {
@@ -406,7 +406,7 @@
   .yorha-main {
     flex: 1;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     background: #2a2a2a;
     overflow: hidden;
   }
@@ -446,7 +446,7 @@
     padding: 20px;
     overflow-y: auto;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 20px;
   }
   .metrics-row {
@@ -496,12 +496,12 @@
   }
   .progress-section {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 15px;
   }
   .progress-item {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 5px;
   }
   .progress-label {
@@ -548,7 +548,7 @@
   }
   :global(.ai-performance-content) {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 15px;
   }
   .analyses-content {
@@ -586,7 +586,7 @@
   }
   .analyses-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 15px;
   }
   .analysis-item {

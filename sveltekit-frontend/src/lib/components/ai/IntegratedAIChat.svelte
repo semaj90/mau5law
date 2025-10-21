@@ -403,7 +403,7 @@
       {/if}
       <button
         type="button"
-        on:click={testConnections}
+        onclick={testConnections}
         class="ml-auto text-xs text-yellow-400 hover:text-yellow-300 transition-colors"
       >
         Refresh Status
@@ -519,7 +519,7 @@
               =� {file.name} ({formatFileSize(file.size)})
               <button
                 type="button"
-                on:click={() => removeFile(index)}
+                onclick={() => removeFile(index)}
                 class="ml-1 text-red-400 hover:text-red-300"
                 aria-label="Remove file"
               >
@@ -553,7 +553,7 @@
 
         <Button
           variant="yorha"
-          on:click={handleSend}
+          onclick={handleSend}
           disabled={isLoading || (!inputMessage.trim() && attachedFiles.length === 0)}
           loading={isLoading}
           loadingText="Sending..."
@@ -575,7 +575,7 @@
 <style>
   .integrated-ai-chat {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
     border: 2px solid rgba(250, 204, 21, 0.3);
     border-radius: 8px;
@@ -588,7 +588,7 @@
   }
 
   .yorha-panel-content {
-    position: relative;
+    position relative;
     scrollbar-width: thin;
     scrollbar-color: #facc15 #1a1a1a;
   }
@@ -608,7 +608,7 @@
 
   .message-bubble {
     max-width: 85%;
-    animation: slideIn 0.3s ease-out;
+    animation slideIn 0.3s ease-out;
   }
 
   .user-message {
@@ -629,7 +629,7 @@
   }
 
   .loading-pulse {
-    animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    animation pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 
   @keyframes slideIn {
@@ -654,7 +654,7 @@
   }
 
   .sr-only {
-    position: absolute;
+    position absolute;
     width: 1px;
     height: 1px;
     padding: 0,

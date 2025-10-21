@@ -57,7 +57,7 @@
       Fabric = (mod as any).fabric ?? mod;
       fabricCanvas = new Fabric.Canvas(canvasEl as HTMLCanvasElement, {
         backgroundColor: '#ffffff',
-        selection: true,
+        selection true,
         preserveObjectStacking: true,
       });
     } catch (err: unknown) {
@@ -185,7 +185,7 @@
   function getEvidenceColor(type: string): string {
     const colors: Record<string, string> = {
       document: '#3b82f6',
-      communication: '#10b981',
+      communication '#10b981',
       financial: '#f59e0b',
       testimony: '#8b5cf6',
       physical: '#ef4444',
@@ -205,7 +205,7 @@
       const evidenceId = o.evidenceId ?? o.get('evidenceId');
       const out: any = {
         type,
-        position: { x: left, y: top },
+        position { x: left, y: top },
       };
       if (text) out.text = text;
       if (evidenceId) out.evidenceId = evidenceId;
@@ -340,7 +340,7 @@
   function saveCanvas() {
     if (!fabricCanvas) return;
     const canvasData = {
-      version: fabricCanvas.version,
+      version fabricCanvas.version,
       objects: fabricCanvas.toJSON(),
       evidence: evidenceList,
       timestamp: new Date().toISOString(),
@@ -393,7 +393,7 @@
       type="button"
       class={'nes-btn ' +
         (analysisStatus === 'idle' ? 'is-primary' : analysisStatus === 'complete' ? 'is-success' : 'is-warning')}
-      on:click={handleAnalysis}
+      onclick={handleAnalysis}
       disabled={analysisStatus === 'analyzing' || analysisStatus === 'pending'}
     >
       {#if analysisStatus === 'analyzing'}
@@ -410,7 +410,7 @@
         Analyze Evidence
       {/if}
     </button>
-    <button type="button" class="nes-btn" on:click={saveCanvas}>
+    <button type="button" class="nes-btn" onclick={saveCanvas}>
       <Save size={16} />
       Save Canvas
     </button>
@@ -717,7 +717,7 @@
     max-width: 820px;
     height: 620px;
     background: #f8f8f8;
-    position: relative;
+    position relative;
   }
   canvas {
     background: #fff;
@@ -768,7 +768,7 @@
   }
   .evidence-details {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
     opacity: 0.8;
     font-size: 11px;
@@ -813,7 +813,7 @@
   .similar-cases-list,
   .timeline-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
     margin-top: 1rem;
   }
@@ -894,11 +894,11 @@
   /* Responsive design */
   @media (max-width: 768px) {
     .upload-section {
-      flex-direction: column;
+      flex-direction column;
       align-items: stretch;
     }
     .settings-row {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
     }
     .evidence-grid {
@@ -906,7 +906,7 @@
     }
     .case-header,
     .timeline-header {
-      flex-direction: column;
+      flex-direction column;
       gap: 0.5rem;
       align-items: flex-start;
     }
@@ -964,11 +964,11 @@
     /* Responsive design */
     @media (max-width: 768px) {
       .upload-section {
-        flex-direction: column;
+        flex-direction column;
         align-items: stretch;
       }
       .settings-row {
-        flex-direction: column;
+        flex-direction column;
         gap: 1rem;
       }
       .evidence-grid {
@@ -976,7 +976,7 @@
       }
       .case-header,
       .timeline-header {
-        flex-direction: column;
+        flex-direction column;
         gap: 0.5rem;
         align-items: flex-start;
       }

@@ -98,7 +98,7 @@
         const notice = document.createElement('div');
         notice.innerHTML = '⚠️ failure default to mock';
         notice.style.cssText =
-          'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+          'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
         document.body.appendChild(notice);
         setTimeout(() => notice.remove(), 3000);
       }
@@ -144,7 +144,7 @@
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock - search repeated locally';
       notice.style.cssText =
-        'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+        'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Mock behavior - close modal anyway
@@ -217,13 +217,13 @@
       </div>
       <!-- AI Suggestions Section -->
       {#if aiSuggestions.length > 0}
-        <div class="ai-suggestions" transition:slide={{ duration: 300 }}>
+        <div class="ai-suggestions" transitionslide={{ duration 300 }}>
           <h4>🤖 AI Suggestions</h4>
           <div class="suggestions-grid">
             {#each aiSuggestions as suggestion}
               <button
                 class="suggestion-pill"
-                on:click={() => {
+                onclick={() => {
                   searchFilter = suggestion;
                 }}
               >
@@ -249,14 +249,14 @@
         </div>
       {:else}
         {#each filteredSearches as searchItem (searchItem.id)}
-          <div class="search-item" transition:slide={{ duration: 200, easing: cubicOut }}>
+          <div class="search-item" transitionslide={{ duration 200, easing: cubicOut }}>
             <!-- changed: add role, tabindex, aria-expanded, and keyboard handler; use DOM-style onclick/onkeydown -->
             <div
               class="search-main"
               role="button"
               tabindex="0"
               aria-expanded={selectedSearch?.id === searchItem.id}
-              on:click={() => (selectedSearch = selectedSearch?.id === searchItem.id ? null : searchItem)}
+              onclick={() => (selectedSearch = selectedSearch?.id === searchItem.id ? null : searchItem)}
               onkeydown={e => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
@@ -288,7 +288,7 @@
               </div>
               <!-- Expanded Details -->
               {#if selectedSearch?.id === searchItem.id}
-                <div class="search-details" transition:slide={{ duration: 300 }}>
+                <div class="search-details" transitionslide={{ duration 300 }}>
                   <!-- Filters Used -->
                   {#if searchItem.filters && Object.keys(searchItem.filters).length > 0}
                     <div class="filters-section">
@@ -313,16 +313,16 @@
                   {/if}
                   <!-- Action Buttons -->
                   <div class="search-actions">
-                    <button class="action-btn primary" on:click={() => repeatSearch(searchItem)}>
+                    <button class="action-btn primary" onclick={() => repeatSearch(searchItem)}>
                       🔄 Repeat Search
                     </button>
                     <button
                       class="action-btn secondary"
-                      on:click={() => navigator.clipboard.writeText(searchItem.query)}
+                      onclick={() => navigator.clipboard.writeText(searchItem.query)}
                     >
                       📋 Copy Query
                     </button>
-                    <button class="action-btn danger" on:click={() => deleteSearch(searchItem.id)}> 🗑️ Delete </button>
+                    <button class="action-btn danger" onclick={() => deleteSearch(searchItem.id)}> 🗑️ Delete </button>
                   </div>
                 </div>
               {/if}
@@ -339,7 +339,7 @@
     max-height: 80vh;
     overflow: hidden;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
   }
   .modal-header {
     margin-bottom: 1.5rem;
@@ -396,7 +396,7 @@
     color: #fff;
     font-size: 0.8rem;
     cursor: pointer;
-    transition: all 0.2s; /* fixed unit */
+    transition all 0.2s; /* fixed unit */
   }
   .suggestion-pill:hover {
     background: rgba(138, 43, 226, 0.3);
@@ -413,7 +413,7 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     overflow: hidden;
-    transition: all 0.2s; /* fixed unit */
+    transition all 0.2s; /* fixed unit */
   }
   .search-item:hover {
     background: rgba(255, 255, 255, 0.05);
@@ -456,7 +456,7 @@
   }
   .search-stats {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: flex-end;
     gap: 0.5rem;
   }
@@ -511,7 +511,7 @@
     border-radius: 6px;
     font-size: 0.8rem;
     cursor: pointer;
-    transition: all 0.2s; /* fixed unit */
+    transition all 0.2s; /* fixed unit */
   }
   .action-btn.primary {
     background: rgba(138, 43, 226, 0.2);
@@ -540,7 +540,7 @@
   .loading-state,
   .empty-state {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     padding: 3rem;
@@ -553,7 +553,7 @@
     border: 3px solid rgba(255, 255, 255, 0.2);
     border-top: 3px solid rgba(138, 43, 226, 0.8);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin-bottom: 1rem;
   }
   .empty-icon {

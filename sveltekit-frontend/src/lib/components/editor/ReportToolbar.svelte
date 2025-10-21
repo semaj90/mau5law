@@ -58,11 +58,11 @@
         <button class="menu-trigger nes-btn">File</button>
       </DropdownTrigger>
       <DropdownContent class="nes-container is-dark with-title">
-        <DropdownItem on:click={() => handleSave()}>
+        <DropdownItem onclick={() => handleSave()}>
           <Save size={16} /> Save Report <span class="shortcut">Ctrl+S</span>
         </DropdownItem>
         <DropdownItem
-          on:click={() => {
+          onclick={() => {
             /* new */
           }}
         >
@@ -70,17 +70,17 @@
         </DropdownItem>
         <DropdownSeparator />
         <DropdownItem
-          on:click={() => {
+          onclick={() => {
             /* import */
           }}
         >
           <Upload size={16} /> Import
         </DropdownItem>
-        <DropdownItem on:click={() => handleExport()}>
+        <DropdownItem onclick={() => handleExport()}>
           <Download size={16} /> Export
         </DropdownItem>
         <DropdownSeparator />
-        <DropdownItem on:click={() => handlePreview()}>
+        <DropdownItem onclick={() => handlePreview()}>
           <Eye size={16} /> Preview
         </DropdownItem>
       </DropdownContent>
@@ -91,14 +91,14 @@
       <DropdownTrigger><button class="menu-trigger nes-btn">Edit</button></DropdownTrigger>
       <DropdownContent class="nes-container is-dark with-title">
         <DropdownItem
-          on:click={() => {
+          onclick={() => {
             /* undo */
           }}
         >
           <Undo size={16} /> Undo <span class="shortcut">Ctrl+Z</span>
         </DropdownItem>
         <DropdownItem
-          on:click={() => {
+          onclick={() => {
             /* redo */
           }}
         >
@@ -106,14 +106,14 @@
         </DropdownItem>
         <DropdownSeparator />
         <DropdownItem
-          on:click={() => {
+          onclick={() => {
             /* find */
           }}
         >
           <Search size={16} /> Find <span class="shortcut">Ctrl+F</span>
         </DropdownItem>
         <DropdownItem
-          on:click={() => {
+          onclick={() => {
             /* replace */
           }}
         >
@@ -126,13 +126,13 @@
     <DropdownRoot align="left">
       <DropdownTrigger><button class="menu-trigger nes-btn">View</button></DropdownTrigger>
       <DropdownContent class="nes-container is-dark with-title">
-        <DropdownItem on:click={() => toggleSidebar()}>
+        <DropdownItem onclick={() => toggleSidebar()}>
           <Sidebar size={16} /> Toggle Sidebar <span class="shortcut">Ctrl+B</span>
         </DropdownItem>
-        <DropdownItem on:click={() => toggleLayout()}>
+        <DropdownItem onclick={() => toggleLayout()}>
           <Layout size={16} /> Switch Layout ({$report.settings.layout})
         </DropdownItem>
-        <DropdownItem on:click={() => toggleFullscreen()}>
+        <DropdownItem onclick={() => toggleFullscreen()}>
           {#if $reportUI.fullscreen}
             <Minimize size={16} /> Exit Fullscreen
           {:else}
@@ -149,20 +149,20 @@
     <button
       class="action-button nes-btn"
       class:unsaved={$editorState.hasUnsavedChanges}
-      on:click={handleSave}
+      onclick={handleSave}
       title="Save Report"
     >
       <Save size={16} />
     </button>
     <div class="separator"></div>
-    <button class="action-button nes-btn" on:click={toggleSidebar} title="Toggle Sidebar">
+    <button class="action-button nes-btn" onclick={toggleSidebar} title="Toggle Sidebar">
       <Sidebar size={16} />
     </button>
-    <button class="action-button nes-btn" on:click={toggleLayout} title="Switch Layout">
+    <button class="action-button nes-btn" onclick={toggleLayout} title="Switch Layout">
       <Layout size={16} />
     </button>
     <div class="separator"></div>
-    <button class="action-button nes-btn" on:click={handlePreview} title="Preview Report">
+    <button class="action-button nes-btn" onclick={handlePreview} title="Preview Report">
       <Eye size={16} />
     </button>
   </div>
@@ -173,9 +173,9 @@
       {$editorState.wordCount} words
     </span>
     {#if $editorState.hasUnsavedChanges}
-      <span class="unsaved-indicator" transition:slide={{ duration: 200 }}> Unsaved changes </span>
+      <span class="unsaved-indicator" transitionslide={{ duration 200 }}> Unsaved changes </span>
     {:else}
-      <span class="saved-indicator" transition:slide={{ duration: 200 }}>
+      <span class="saved-indicator" transitionslide={{ duration 200 }}>
         Saved {$editorState.lastSaved ? $editorState.lastSaved.toLocaleTimeString() : 'never'}
       </span>
     {/if}
@@ -192,7 +192,7 @@
     border-bottom: 1px solid #e2e8f0;
     padding: 0.5rem 1rem;
     min-height: 3rem;
-    position: sticky;
+    position sticky;
     top: 0;
     z-index: 40,
   }
@@ -209,13 +209,13 @@
     font-size: 0.875rem;
     color: #374151;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition all 0.15s ease;
   }
   .menu-trigger:hover {
     background: #f3f4f6;
   }
   .dropdown-menu {
-    position: absolute;
+    position absolute;
     top: 100%;
     left: 0;
     min-width: 12rem;
@@ -239,7 +239,7 @@
     font-size: 0.875rem;
     color: #374151;
     cursor: pointer;
-    transition: background-color 0.15s ease;
+    transition background-color 0.15s ease;
   }
   .dropdown-item:hover {
     background: #f3f4f6;
@@ -271,9 +271,9 @@
     border-radius: 0.25rem;
     color: #6b7280;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition all 0.15s ease;
   }
-  .action-button:hover {
+  .action-buttonhover {
     background: #f3f4f6;
     color: #3b82f6;
   }

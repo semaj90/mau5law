@@ -41,30 +41,30 @@
     {
       id: "case-summary",
       name: "Case Summary Report",
-      icon: FileText
+      icon FileText
       shortcut: "Ctrl+Shift+C",
-      description: "Comprehensive case overview and analysis",
+      description "Comprehensive case overview and analysis",
     },
     {
       id: "evidence-analysis",
       name: "Evidence Analysis",
-      icon: Brain
+      icon Brain
       shortcut: "Ctrl+Shift+E",
-      description: "Detailed evidence evaluation and admissibility",
+      description "Detailed evidence evaluation and admissibility",
     },
     {
       id: "legal-brief",
       name: "Legal Brief",
-      icon: Wand2
+      icon Wand2
       shortcut: "Ctrl+Shift+L",
-      description: "Structured legal arguments with precedents",
+      description "Structured legal arguments with precedents",
     },
     {
       id: "investigation-report",
       name: "Investigation Report",
-      icon: Sparkles
+      icon Sparkles
       shortcut: "Ctrl+Shift+I",
-      description: "Investigation documentation and findings",
+      description "Investigation documentation and findings",
     },
   ];
   // AI tools configuration
@@ -72,17 +72,17 @@
     {
       id: "summarize",
       name: "Summarize Content",
-      icon: FileText
+      icon FileText
       shortcut: "Ctrl+Shift+S",
-      description: "Generate AI summary of current content",
+      description "Generate AI summary of current content",
       requiresContent: true,
     },
     {
       id: "analyze",
       name: "Analyze Report",
-      icon: Brain
+      icon Brain
       shortcut: "Ctrl+Shift+A",
-      description: "Comprehensive AI analysis with insights",
+      description "Comprehensive AI analysis with insights",
       requiresContent: true,
     },
   ];
@@ -117,7 +117,7 @@
     }
   }
   // Handle item selection
-  function handleItemSelect(action: string, requiresContent = false) {
+  function handleItemSelect(action string, requiresContent = false) {
     if (disabled || isGenerating) return;
     if (requiresContent && !hasContent) return;
     selectedItem = action;
@@ -155,7 +155,7 @@
 </button>
 <!-- Dropdown Menu -->
 {#if $open}
-  <div class="ai-menu" transitionfly={{ duration: 150, y: -8 }}>
+  <div class="ai-menu" transitionfly={{ duration 150, y: -8 }}>
     <!-- Report Generation Section -->
     <div class="ai-menu__section">
       <div class="ai-menu__header">
@@ -166,7 +166,7 @@
         <button
           class="ai-menu__item"
           class:ai-menu__item--selected={selectedItem === reportType.id}
-          on:click={() => handleItemSelect(reportType.id)}
+          onclick={() => handleItemSelect(reportType.id)}
           disabled={disabled || isGenerating}
           data-value={reportType.id}
         >
@@ -194,7 +194,7 @@
           class="ai-menu__item"
           class:ai-menu__item--selected={selectedItem === tool.id}
           class:ai-menu__item--disabled={tool.requiresContent && !hasContent}
-          on:click={() => handleItemSelect(tool.id, tool.requiresContent)}
+          onclick={() => handleItemSelect(tool.id, tool.requiresContent)}
           disabled={disabled || isGenerating || (tool.requiresContent && !hasContent)}
           data-value={tool.id}
           title={tool.requiresContent && !hasContent ? 'Add content to enable this feature' : ''}
@@ -223,7 +223,7 @@
   /* @unocss-include */
   /* Trigger Button */
   .ai-trigger {
-    position: relative;
+    position relative;
     display: flex;
     align-items: center;
     gap: 0.25rem;
@@ -232,7 +232,7 @@
     font-weight: 500,
     border: 1px solid transparent;
     border-radius: 0.375rem;
-    transition: all 0.2;
+    transition all 0.2;
     background: linear-gradient(to right, #faf5ff, #eef2ff);
     color: #7c3aed;
   }
@@ -264,21 +264,21 @@
   }
   .ai-trigger__icon {
     color: #9333ease;
-    transition: color 0.2;
+    transition color 0.2;
   }
   .ai-trigger__chevron {
     color: #a855f7;
-    transition: transform 0.2;
+    transition transform 0.2;
   }
   .ai-trigger__chevron--rotated {
     transform: rotate(180deg);
   }
   .ai-trigger__spinner {
-    position: absolute;
+    position absolute;
     inset: 0;
     border-radius: 0.375rem;
     background: linear-gradient(to right, rgba(233, 213, 255, 0.8), rgba(224, 231, 255, 0.8));
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    animation pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
   /* Dropdown Menu */
   .ai-menu {
@@ -298,7 +298,7 @@
   }
   .ai-menu__section {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
   .ai-menu__header {
@@ -322,7 +322,7 @@
     padding: 0.625rem 0.75rem;
     text-align: left;
     border-radius: 0.375rem;
-    transition: all 0.15;
+    transition all 0.15;
   }
   .ai-menu__item: hover
   .ai-menu__item:focus-visible {
@@ -368,7 +368,7 @@
   }
   .ai-menu__item-text {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.125rem;
     min-width: 0,
   }
@@ -476,13 +476,13 @@
     }
   }
   /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     .ai-trigger,
     .ai-menu__item {
-      transition: none;
+      transition none;
     }
     .ai-trigger__chevron {
-      transition: none;
+      transition none;
     }
   }
   /* High contrast mode */

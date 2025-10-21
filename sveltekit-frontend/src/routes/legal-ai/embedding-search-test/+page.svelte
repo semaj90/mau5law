@@ -168,11 +168,11 @@ await checkSystemHealth();
           priority: 5,
           payload: {
             text: embeddingText;
-            dimension: 768,
+            dimension 768,
           },
           metadata: {
             source: 'legal_ai_test',
-            gpu_acceleration: 'true',
+            gpu_acceleration 'true',
           }
         })
       });
@@ -332,14 +332,14 @@ await checkSystemHealth();
       </div>
       <div class="flex space-x-4">
         <button
-          on:click={submitEmbedding}
+          onclick={submitEmbedding}
           disabled={isLoading}
           class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? 'Processing...' : 'Submit for Embedding (Ollama)'}
         </button>
         <button
-          on:click={testCUDAEmbedding}
+          onclick={testCUDAEmbedding}
           disabled={isLoading || cudaStatus.status !== 'healthy'}
           class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -377,14 +377,14 @@ await checkSystemHealth();
       </div>
       <div class="flex space-x-4">
         <button
-          on:click={performSearch}
+          onclick={performSearch}
           disabled={isLoading}
           class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? 'Searching...' : 'Simple Search (GET)'}
         </button>
         <button
-          on:click={performAdvancedSearch}
+          onclick={performAdvancedSearch}
           disabled={isLoading}
           class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >

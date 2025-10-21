@@ -19,7 +19,7 @@
       },
       states: {
         idle: {
-          on: {
+          on {
             QUERY: {
               target: 'querying',
               guard: (_ctx, evt) => !!(evt as any)?.prompt?.trim(),
@@ -82,7 +82,7 @@
           },
         },
         success: {
-          on: {
+          on {
             QUERY: {
               target: 'querying',
               guard: (_ctx, evt) => !!(evt as any)?.prompt?.trim(),
@@ -102,7 +102,7 @@
           },
         },
         error: {
-          on: {
+          on {
             RETRY: {
               target: 'querying',
             },
@@ -125,7 +125,7 @@
   // Use explicit Svelte stores for local UI state
   // Local writable stores
   const promptInput = writable('');
-  type Notification = { id: number; title: string; description: string };
+  type Notification = { id: number; title: string; description string };
   const notifications = writable<Notification[]>([]);
 
   // Derived stores based on the XState snapshot store
@@ -137,7 +137,7 @@
     ([$promptInput, $isLoading]) => $promptInput.trim().length > 0 && !$isLoading
   );
 
-  function showNotification(title: string, description: string) {
+  function showNotification(title: string, description string) {
     const id = Date.now();
     notifications.update(n => [...n, { id, title, description }]);
     // remove after timeout (run outside update callback for safety)
@@ -178,7 +178,7 @@
     <div class="text-sm">{notification.description}</div>
     <button
       class="absolute top-2 right-2 text-white hover:text-gray-200"
-      on:click={() => notifications.update(n => n.filter(item => item.id !== notification.id))}
+      onclick={() => notifications.update(n => n.filter(item => item.id !== notification.id))}
     >
       ×
     </button>
@@ -213,7 +213,7 @@
         this={TextareaAny}
         id="legal-prompt"
         bind:value={$promptInput}
-        on:keydown={handleKeydown}
+        onkeydown={handleKeydown}
         placeholder="Ask a legal question (e.g., 'What are the key elements of a valid contract?', 'Explain force majeure clauses', etc.)"
         rows={4}
         class="yorha-textarea"
@@ -229,7 +229,7 @@
       <svelte:component
         this={EnhancedButtonAny}
         variant="legal"
-        on:click={handleQuery}
+        onclick={handleQuery}
         disabled={!$canSubmit}
         loading={$isLoading}
         loadingText="Analyzing..."
@@ -238,10 +238,10 @@
         {$isLoading ? 'Processing Legal Query...' : 'Ask Legal AI'}
       </svelte:component>
       {#if $snapshot.matches('error')}
-        <svelte:component this={EnhancedButtonAny} variant="ghost" on:click={handleRetry}>Retry</svelte:component>
+        <svelte:component this={EnhancedButtonAny} variant="ghost" onclick={handleRetry}>Retry</svelte:component>
       {/if}
       {#if $currentResponse}
-        <svelte:component this={EnhancedButtonAny} variant="ghost" on:click={handleClear}>Clear</svelte:component>
+        <svelte:component this={EnhancedButtonAny} variant="ghost" onclick={handleClear}>Clear</svelte:component>
       {/if}
     </div>
     <!-- Response Section -->
@@ -318,7 +318,7 @@
   :global(.yorha-textarea) {
     background: #ffffff;
     border: 2px solid #e5e5e5;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     font-family: 'JetBrains Mono', monospace;
   }
   :global(.yorha-textarea:focus) {
@@ -326,18 +326,18 @@
     box-shadow: 0 0 0 3px rgba(255, 191, 0, 0.1);
   }
   :global(.yorha-response) {
-    position: relative;
+    position relative;
     overflow: hidden;
   }
   :global(.yorha-response::after) {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: -100%;
     width: 100%;
     height: 2px;
     background: linear-gradient(90deg, transparent, #ffbf00, transparent);
-    animation: shimmer 2s infinite;
+    animation shimmer 2s infinite;
   }
   :global(.yorha-error) {
     border-left: 4px solid #ef4444;

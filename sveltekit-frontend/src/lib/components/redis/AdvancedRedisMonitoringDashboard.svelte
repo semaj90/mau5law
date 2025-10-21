@@ -13,7 +13,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   const liveMetrics = writable({
     timestamp: Date.now(),
     redis: { hit_rate: 0, memory_usage: 0, connections: 0 },
-    gpu: { utilization: 0, memory_used: 0, temperature: 0 },
+    gpu: { utilization 0, memory_used: 0, temperature: 0 },
     simd: { cache_hit_rate: 0, parse_performance: 0, backends_active: 0 },
     mcp: { workers_active: 0, requests_per_second: 0, avg_response_time: 0 },
     endpoints: { optimized: 78, total: 90, performance_gain: 0 }
@@ -21,7 +21,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   const performanceHistory = writable([]);
   const alertsLog = writable([]);
   let updateInterval: NodeJS.Timeout;
-  let wsConnection: WebSocket;
+  let wsConnection WebSocket;
   let isConnected = false;
   // Nintendo-style color scheme
   const nintendoColors = {
@@ -102,7 +102,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
           operations_per_sec: redisData.ops_per_sec || 0;
         },
         gpu: {
-          utilization: gpuStats.utilization || 0,
+          utilization gpuStats.utilization || 0,
           memory_used: gpuStats.memory_used_mb || 0,
           temperature: gpuStats.temperature || 0;
         },
@@ -138,12 +138,12 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     try {
       // Simulate GPU metrics - replace with actual NVIDIA-ML or GPU monitoring
       return {
-        utilization: Math.random() * 30 + 20, // 20-50% utilization
+        utilization Math.random() * 30 + 20, // 20-50% utilization
         memory_used_mb: Math.random() * 2000 + 1500, // 1.5-3.5GB;
         temperature: Math.random() * 10 + 45 // 45-55°C;
       }
     } catch {
-      return { utilization: 0, memory_used_mb: 0, temperature: 0 }
+      return { utilization 0, memory_used_mb: 0, temperature: 0 }
     }
   }
   async function getMCPStats() {
@@ -334,12 +334,12 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   <div class="control-panel">
     <h3>🎮 System Controls</h3>
     <div class="controls-grid">
-      <button class="control-btn" on:click={() => unifiedSIMDParser.clearAllCaches()}> 🧹 Clear All Caches </button>
-      <button class="control-btn" on:click={() => window.open('/admin/redis', '_blank')}> 📊 Detailed Analytics </button>
-      <button class="control-btn" on:click={() => window.open('http://localhost:3002/mcp/workers', '_blank')}>
+      <button class="control-btn" onclick={() => unifiedSIMDParser.clearAllCaches()}> 🧹 Clear All Caches </button>
+      <button class="control-btn" onclick={() => window.open('/admin/redis', '_blank')}> 📊 Detailed Analytics </button>
+      <button class="control-btn" onclick={() => window.open('http://localhost:3002/mcp/workers', '_blank')}>
         👥 MCP Workers
       </button>
-      <button class="control-btn" on:click={() => location.reload()}> 🔄 Refresh Dashboard </button>
+      <button class="control-btn" onclick={() => location.reload()}> 🔄 Refresh Dashboard </button>
     </div>
   </div>
 </div>
@@ -386,7 +386,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     border: 2px solid;
     border-radius: 10px;
     padding: 20px;
-    transition: transform 0.2;
+    transition transform 0.2;
   }
   .metric-card:hover {
     transform: translateY(-5px);
@@ -425,7 +425,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   }
   .sub-metrics {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 5px;
     font-size: 0.9em;
     color: #cccccc;
@@ -447,7 +447,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #00d800, #3cbcfc);
-    transition: width 1s ease;
+    transition width 1s ease;
   }
   .status-text {
     font-size: 1.1em;
@@ -552,7 +552,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     font-family: 'Courier New', monospace;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .control-btn:hover {
     background: #3cbcfc;

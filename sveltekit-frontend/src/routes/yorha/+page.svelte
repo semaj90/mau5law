@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:input) and new syntaxes for event handling is not allowed. Use only the oninput syntax;
+<!-- @migration-task Error while migrating Svelte code: Mixing old (oninput) and new syntaxes for event handling is not allowed. Use only the oninput syntax;
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:input) and new syntaxes for event handling is not allowed. Use only the oninput syntax -->
+<!-- @migration-task Error while migrating Svelte code: Mixing old (oninput) and new syntaxes for event handling is not allowed. Use only the oninput syntax -->
 <!-- YoRHa Main Interface Page -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
@@ -50,7 +50,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   let systemData = $state<SystemMetrics>({
     cpu_usage: 45,
     memory_usage: 62,
-    gpu_utilization: 78,
+    gpu_utilization 78,
     network_latency: 23,
     active_processes: 12,
     security_level: 'HIGH',
@@ -89,7 +89,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       systemData = {
         ...systemData,
         cpu_usage: Math.max(20, Math.min(90, systemData.cpu_usage + (Math.random() - 0.5) * 10)),
-        gpu_utilization: Math.max(30, Math.min(95, systemData.gpu_utilization + (Math.random() - 0.5) * 8)),
+        gpu_utilization Math.max(30, Math.min(95, systemData.gpu_utilization + (Math.random() - 0.5) * 8)),
         memory_usage: Math.max(40, Math.min(85, systemData.memory_usage + (Math.random() - 0.5) * 6)),
         network_latency: Math.max(10, Math.min(100, systemData.network_latency + (Math.random() - 0.5) * 5)),
         neural_activity: Math.max(60, Math.min(100, systemData.neural_activity + (Math.random() - 0.5) * 4)),
@@ -116,11 +116,11 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
           user_id: 'yorha-user-001',
           case_id: `case-${Date.now()}`,
           context: {
-            jurisdiction: 'Global',
+            jurisdiction 'Global',
             practice_area: ['AI Law', 'Tech Ethics', 'Data Privacy'],
             case_type: 'Investigation',
             priority_level: 8,
-            security_classification: 'HIGH',
+            security_classification 'HIGH',
           },
         }),
       });
@@ -299,7 +299,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         <div class="yorha-control-panel">
           <button
             class="yorha-control-btn {showCommandInterface ? 'active' : ''}"
-            on:click={toggleCommandInterface}
+            onclick={toggleCommandInterface}
             aria-label="Toggle command interface"
           >
             <Terminal size={16} />
@@ -307,7 +307,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
           </button>
           <button
             class="yorha-control-btn {holographicMode ? 'active' : ''}"
-            on:click={toggleHolographicMode}
+            onclick={toggleHolographicMode}
             aria-label="Toggle holographic mode"
           >
             <Zap size={16} />
@@ -322,7 +322,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     <div class="yorha-actions-grid">
       <button
         class="yorha-action-nier-bits-card yorha-action-primary"
-        on:click={() => performRAGQuery()}
+        onclick={() => performRAGQuery()}
         disabled={isLoading}
       >
         <Cpu size={32} />
@@ -334,7 +334,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       </button>
       <button
         class="yorha-action-nier-bits-card yorha-action-search"
-        on:click={() => performSemanticSearch()}
+        onclick={() => performSemanticSearch()}
         disabled={isLoading}
       >
         <Search size={32} />
@@ -343,7 +343,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       </button>
       <button
         class="yorha-action-nier-bits-card yorha-action-health"
-        on:click={() => checkClusterHealth()}
+        onclick={() => checkClusterHealth()}
         disabled={isLoading}
       >
         <Monitor size={32} />
@@ -352,7 +352,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       </button>
       <button
         class="yorha-action-nier-bits-card yorha-action-database"
-        on:click={() => performSemanticSearch('database evidence')}
+        onclick={() => performSemanticSearch('database evidence')}
         disabled={isLoading}
       >
         <Database size={32} />
@@ -373,7 +373,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         systemData={systemData}
         legalSession={legalSession}
         holographicMode={holographicMode}
-        on:command={(e) => {
+        oncommand={(e) => {
           const result = e.detail;
           commandHistory = [result, ...commandHistory.slice(0, 49)]; // Keep last 50
         }}

@@ -113,7 +113,7 @@
       tokensUsed,
       tokensRemaining,
       usagePercentage,
-      session: currentSession,
+      session currentSession,
     });
   }
   function optimizeTokenUsage() {
@@ -173,7 +173,7 @@
   }
   function exportUsageData() {
     const data = {
-      session: currentSession,
+      session currentSession,
       history: usageHistory,
       settings: {
         tokenLimit,
@@ -339,7 +339,7 @@
         size="sm"
         variant="ghost"
         class="bits-btn bits-nes-btn bits-btn bits-btn"
-        on:click={() => (showHistory = !showHistory)}
+        onclick={() => (showHistory = !showHistory)}
         data-testid="token-history-button"
       >
         <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -356,7 +356,7 @@
         size="sm"
         variant="ghost"
         class="bits-btn bits-nes-btn bits-btn bits-btn"
-        on:click={optimizeTokenUsage}
+        onclick={optimizeTokenUsage}
         disabled={!autoOptimize}
       >
         <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -364,10 +364,10 @@
         </svg>
         Optimize
       </Button>
-      <Button size="sm" variant="ghost" class="bits-btn bits-nes-btn bits-btn bits-btn" on:click={resetSession}>
+      <Button size="sm" variant="ghost" class="bits-btn bits-nes-btn bits-btn bits-btn" onclick={resetSession}>
         Reset
       </Button>
-      <Button size="sm" variant="ghost" class="bits-btn bits-nes-btn bits-btn bits-btn" on:click={exportUsageData}>
+      <Button size="sm" variant="ghost" class="bits-btn bits-nes-btn bits-btn bits-btn" onclick={exportUsageData}>
         Export
       </Button>
     </div>
@@ -453,23 +453,23 @@
     height: 20px;
     background: #e5e7eb;
     border-radius: 20px;
-    position: relative;
+    position relative;
     cursor: pointer;
-    transition: background 0.2;
+    transition background 0.2;
   }
   .toggle:checked {
     background: #3b82f6;
   }
   .toggle::before {
     content: '';
-    position: absolute;
+    position absolute;
     width: 18px;
     height: 18px;
     background: white;
     border-radius: 50%;
     top: 1px;
     left: 1px;
-    transition: transform 0.2;
+    transition transform 0.2;
   }
   .toggle:checked::before {
     transform: translateX(20px);

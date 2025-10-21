@@ -87,7 +87,7 @@
             class="space-y-4"
             maxlength="64"
           />
-          <button on:click={() => searchByHash()} disabled={loading || !hashInput} class="space-y-4">
+          <button onclick={() => searchByHash()} disabled={loading || !hashInput} class="space-y-4">
             {loading ? 'Searching...' : 'Search'}
           </button>
         </div>
@@ -340,7 +340,7 @@
                         }
                       ).hash}
                       <button
-                        on:click={() =>
+                        onclick={() =>
                           copyToClipboard(
                             (
                               item as {
@@ -387,7 +387,7 @@
                     {/if}
                     <div class="space-y-4">
                       <button
-                        on:click={() =>
+                        onclick={() =>
                           verifyIntegrity(
                             (
                               item as {
@@ -461,7 +461,7 @@
           </li>
           <li><strong>Hash Search:</strong> Search for evidence using the exact 64-character SHA256 hash</li>
           <li>
-            <strong>Integrity Verification:</strong> Compare provided hashes with stored hashes to detect file tampering
+            <strong>Integrity Verification</strong> Compare provided hashes with stored hashes to detect file tampering
           </li>
         </ul>
         <h3>Use cases:</h3>

@@ -62,7 +62,7 @@
           chainOfCustody: [],
           collectedAt: null,
           collectedBy: null,
-          location: null,
+          location null,
           labAnalysis: {},
           aiAnalysis: {},
           aiTags: [],
@@ -70,7 +70,7 @@
           summary: null,
           isAdmissible: true,
           confidentialityLevel: 'standard',
-          canvasPosition: null,
+          canvasPosition null,
           uploadedBy: '1',
           uploadedAt: new Date(),
           updatedAt: new Date(),
@@ -93,7 +93,7 @@
           chainOfCustody: [],
           collectedAt: null,
           collectedBy: null,
-          location: null,
+          location null,
           labAnalysis: {},
           aiAnalysis: {},
           aiTags: [],
@@ -101,7 +101,7 @@
           summary: null,
           isAdmissible: true,
           confidentialityLevel: 'standard',
-          canvasPosition: null,
+          canvasPosition null,
           uploadedBy: '1',
           uploadedAt: new Date(),
           updatedAt: new Date(),
@@ -124,7 +124,7 @@
           chainOfCustody: [],
           collectedAt: null,
           collectedBy: null,
-          location: null,
+          location null,
           labAnalysis: {},
           aiAnalysis: {},
           aiTags: [],
@@ -132,7 +132,7 @@
           summary: null,
           isAdmissible: true,
           confidentialityLevel: 'standard',
-          canvasPosition: null,
+          canvasPosition null,
           uploadedBy: '1',
           uploadedAt: new Date(),
           updatedAt: new Date(),
@@ -191,9 +191,9 @@
       <h1>📝 Report Builder</h1>
       <p>AI-powered case analysis and report generation</p>
       <div class="space-y-4">
-        <!-- changed: use onclick instead of deprecated on:click -->
-        <button on:click={() => createNewReport()}> 📄 New Report </button>
-        <button on:click={() => createNewCanvas()}> 🎨 New Canvas </button>
+        <!-- changed: use onclick instead of deprecated onclick -->
+        <button onclick={() => createNewReport()}> 📄 New Report </button>
+        <button onclick={() => createNewCanvas()}> 🎨 New Canvas </button>
       </div>
     </div>
   </header>
@@ -201,8 +201,8 @@
   {#if error}
     <div class="space-y-4">
       ❌ {error}
-      <!-- changed: use onclick instead of deprecated on:click -->
-      <button on:click={() => (error = '')}>×</button>
+      <!-- changed: use onclick instead of deprecated onclick -->
+      <button onclick={() => (error = '')}>×</button>
     </div>
   {/if}
   <!-- Loading State -->
@@ -214,8 +214,8 @@
   {:else}
     <!-- Tab Navigation -->
     <div class="space-y-4">
-      <button class:active={activeTab === 'editor'} on:click={() => (activeTab = 'editor')}> 📝 Report Editor </button>
-      <button class:active={activeTab === 'canvas'} on:click={() => (activeTab = 'canvas')}>
+      <button class:active={activeTab === 'editor'} onclick={() => (activeTab = 'editor')}> 📝 Report Editor </button>
+      <button class:active={activeTab === 'canvas'} onclick={() => (activeTab = 'canvas')}>
         🎨 Interactive Canvas
       </button>
     </div>

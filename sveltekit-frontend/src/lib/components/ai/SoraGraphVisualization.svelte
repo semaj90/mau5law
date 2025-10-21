@@ -55,7 +55,7 @@ https://svelte.dev/e/js_parse_error -->
   let canvas2D = $state<HTMLCanvasElement;
   let canvas3D: HTMLCanvasElement;
   let container: HTMLDivElement// GPU and memory integrations
-  let gpuIntegration: NESGPUIntegration  | null>(null); const data = null);
+  let gpuIntegration NESGPUIntegration  | null>(null); const data = null);
   let memoryArch = $state<NESMemoryArchitecture | null >(null);
   let semanticPipeline = $state<SemanticAnalysisPipeline | null >(null);
   let tensorStore = $state<DimensionalTensorStore | null >(null);
@@ -130,7 +130,7 @@ https://svelte.dev/e/js_parse_error -->
     scoreThreshold: 0.6,
     traversalStrategy: 'reinforcement' as const,
     semanticFiltering: true
-    useGPUAcceleration: enableGPUAcceleration
+    useGPUAcceleration enableGPUAcceleration
     reinforcementLearning: {
       enabled: enableReinforcementLearning
       explorationRate: 0.1,
@@ -154,8 +154,8 @@ https://svelte.dev/e/js_parse_error -->
     layout: 'legal-context' as const,
     physics: {
       gravity: 0.1,
-      repulsion: 100,
-      attraction: 0.05,
+      repulsion 100,
+      attraction 0.05,
       damping: 0.9,
     },
     reinforcementLearning: {
@@ -163,7 +163,7 @@ https://svelte.dev/e/js_parse_error -->
       showTrainingProgress: true
       highlightOptimalPaths: true
       showRewardHeatmap: true
-      qValueVisualization: true,
+      qValueVisualization true,
     },
     useWebGL: true
     useWasm: true
@@ -250,13 +250,13 @@ try {
         const viz2D = await moogleSynthesizer.synthesize2D(traversalPaths, visualizationConfig);
         visualization2D.set(viz2D);
         renderCanvas2D(viz2D);
-        ondispatch?.({ visualization: viz2D });
+        ondispatch?.({ visualization viz2D });
       }
       if (mode === '3d' || mode === 'both') {
         const viz3D = await moogleSynthesizer.synthesize3D(traversalPaths, visualizationConfig);
         visualization3D.set(viz3D);
         renderCanvas3D(viz3D);
-        ondispatch?.({ visualization: viz3D });
+        ondispatch?.({ visualization viz3D });
       }
       // Update statistics
       const reinforcementStats = soraTraversal.getReinforcementStats();
@@ -423,7 +423,7 @@ try {
     <div class="error-overlay">
       <h3>⚠️ Visualization Error</h3>
       <p>{$error}</p>
-      <button on:click={() => error.set(null)}>Dismiss</button>
+      <button onclick={() => error.set(null)}>Dismiss</button>
     </div>
   {/if}
   <!-- 2D Visualization -->
@@ -434,7 +434,7 @@ try {
         {width}
         {height}
         class="visualization-canvas canvas-2d"
-        on:click={e => handleCanvasClick(e, false)}
+        onclick={e => handleCanvasClick(e, false)}
       ></canvas>
       <!-- 2D Controls -->
       <div class="canvas-controls">
@@ -453,7 +453,7 @@ try {
         {width}
         {height}
         class="visualization-canvas canvas-3d"
-        on:click={e => handleCanvasClick(e, true)}
+        onclick={e => handleCanvasClick(e, true)}
       ></canvas>
       <!-- 3D Controls -->
       <div class="canvas-controls">
@@ -477,7 +477,7 @@ try {
       <h4>🛤️ Traversal Paths ({$paths.length})</h4>
       <div class="path-list">
         {#each $paths.slice(0, 5) as path, index}
-          <div class="path-item" class:high-score={path.totalScore > 0.8} on:click={() => handlePathSelection(index)}>
+          <div class="path-item" class:high-score={path.totalScore > 0.8} onclick={() => handlePathSelection(index)}>
             <div class="path-header">
               <span class="path-score">Score: {path.totalScore.toFixed(3)}</span>
               <span class="path-length">Nodes: {path.nodes.length}</span>
@@ -519,7 +519,7 @@ try {
 
 <style>
   .sora-graph-visualization {
-    position: relative;
+    position relative;
     border-radius: 8px;
     background: var(--bg-color, #0f1419);
     border: 1px solid var(--border-color, #2a2a2a);
@@ -527,14 +527,14 @@ try {
     font-family: 'JetBrains Mono', monospace;
   }
   .loading-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
     bottom: 0;
     background: rgba(15, 20, 25, 0.95);
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     z-index: 100,
@@ -546,7 +546,7 @@ try {
     border: 3px solid #2a2a2a;
     border-top: 3px solid #4a9eff;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin-bottom: 16px;
   }
   @keyframes spin {
@@ -571,7 +571,7 @@ try {
     border: 1px solid rgba(74, 158, 255, 0.3);
   }
   .error-overlay {
-    position: absolute;
+    position absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -584,7 +584,7 @@ try {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   }
   .canvas-container {
-    position: relative;
+    position relative;
     width: 100%;
     height: 100%;
   }
@@ -595,7 +595,7 @@ try {
     opacity: 0.95,
   }
   .canvas-controls {
-    position: absolute;
+    position absolute;
     top: 8px;
     right: 8px;
     display: flex;
@@ -610,7 +610,7 @@ try {
     border-radius: 4px;
     cursor: pointer;
     font-size: 12px;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .control-btn:hover {
     background: rgba(74, 158, 255, 0.2);
@@ -618,7 +618,7 @@ try {
     transform: translateY(-1px);
   }
   .mode-switcher {
-    position: absolute;
+    position absolute;
     top: 8px;
     left: 8px;
     display: flex;
@@ -635,14 +635,14 @@ try {
     border-radius: 4px;
     cursor: pointer;
     font-size: 12px;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .mode-btn.active {
     background: #4a9eff;
     color: white;
   }
   .path-explorer {
-    position: absolute;
+    position absolute;
     bottom: 8px;
     left: 8px;
     background: rgba(15, 20, 25, 0.95);
@@ -662,7 +662,7 @@ try {
   }
   .path-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 6px;
   }
   .path-item {
@@ -671,7 +671,7 @@ try {
     border-radius: 4px;
     padding: 8px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     font-size: 11px;
   }
   .path-item:hover {
@@ -701,7 +701,7 @@ try {
     opacity: 0.9,
   }
   .stats-panel {
-    position: absolute;
+    position absolute;
     bottom: 8px;
     right: 8px;
     background: rgba(15, 20, 25, 0.95);
@@ -724,7 +724,7 @@ try {
   }
   .stat-item {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 2px;
   }
   .stat-label {

@@ -19,7 +19,8 @@ export const GET: RequestHandler = withSSRHandler(async ({ url, locals }) => {
     default:
       return createSSRResponse({ message: 'Invalid data type requested' }, { status: 400 })
   }
-})
+},
+{})
 async function getDashboardData(locals: any) {
   const dashboardStats: DashboardStats = {
     activeCases: 42,
@@ -122,7 +123,7 @@ async function getBatchData(locals: any): Promise<Response> {
   const batchedData = await batchSSRRequests({
     dashboard: () => getDashboardData(locals).then(r => r.json()),
     health: () => getSystemHealth().then(r => r.json()),
-    activities: () => getRecentActivities(locals).then(r => r.json(),
+    activities: () => getRecentActivities(locals).then(r => r.json()),
   })
   return createSSRResponse({
     ...batchedData,

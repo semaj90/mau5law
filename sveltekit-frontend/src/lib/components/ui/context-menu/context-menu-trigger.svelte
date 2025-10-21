@@ -47,7 +47,7 @@
   }
 
   // hold the rendered snippet as a permissively typed value so {@render} accepts it
-  let renderedChild = $derived(() => renderChild(asChild ? { action: builderAction } : undefined));
+  let renderedChild = $derived(() => renderChild(asChild ? { action builderAction } : undefined));
 </script>
 
 {#if asChild}

@@ -46,7 +46,7 @@
           default: 'h-10 px-4 py-2 text-sm rounded-md',
           sm: 'h-8 px-3 py-1.5 text-xs rounded',
           lg: 'h-12 px-6 py-3 text-base rounded-lg',
-          icon: 'h-10 w-10 p-0 rounded-md',
+          icon 'h-10 w-10 p-0 rounded-md',
           xs: 'h-6 px-2 py-1 text-xs rounded',
         }
       },
@@ -90,7 +90,7 @@
 box-shadow: 0 0 10px rgba(212, 175, 55, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
   .hover-lift {
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .hover-lift:hover {
     transform: translateY(-1px);

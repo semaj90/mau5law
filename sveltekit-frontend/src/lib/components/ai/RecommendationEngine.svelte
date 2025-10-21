@@ -23,7 +23,7 @@
   interface Recommendation {
     id: string;
     title: string;
-    description: string;
+    description string;
     category: 'strategy' | 'evidence' | 'legal_research' | 'next_action' | 'risk_mitigation';
     priority: 'high' | 'medium' | 'low';
     confidence: number;
@@ -37,14 +37,14 @@
     alternatives: Alternative[];
     dependencies: string[];
     success_metrics: SuccessMetric[];
-    estimated_completion: string;
+    estimated_completion string;
     tags: string[];
   }
   interface ActionStep {
     id: string;
-    description: string;
+    description string;
     order: number;
-    estimated_duration: string;
+    estimated_duration string;
     required_resources: string[];
     dependencies: string[];
     completion_criteria: string;
@@ -52,19 +52,19 @@
   interface Resource {
     type: 'person' | 'document' | 'tool' | 'external_service';
     name: string;
-    description: string;
+    description string;
     availability: 'available' | 'limited' | 'unavailable';
     cost?: number;
   }
   interface Risk {
-    description: string;
+    description string;
     probability: number;
     impact: number;
-    mitigation: string;
+    mitigation string;
   }
   interface Alternative {
     title: string;
-    description: string;
+    description string;
     pros: string[];
     cons: string[];
     confidence: number;
@@ -126,7 +126,7 @@
       const request = {
         query: contextId || 'legal case analysis',
         case_id: contextId;
-        jurisdiction: 'Federal',
+        jurisdiction 'Federal',
         practice_area: categoryFilter === 'all' ? 'Contract Law' : categoryFilter;
         limit: 10,
       }
@@ -144,7 +144,7 @@
         recommendations = legalRecs.map((rec: any) => ({,
           id: rec.case_id || rec.id,
           title: rec.title,
-          description: rec.summary || rec.description,
+          description rec.summary || rec.description,
           category: 'legal_research',
           priority: rec.relevance > 0.9 ? 'high' : rec.relevance > 0.7 ? 'medium' : 'low',
           confidence: Math.round(rec.relevance * 100),
@@ -154,9 +154,9 @@
           rationale: `Legal precedent analysis for ${rec.practice_area} case`,
           steps: [{,
             id: '1',
-            description: 'Review case details and legal precedents',
+            description 'Review case details and legal precedents',
             order: 1,
-            estimated_duration: '2-3 hours',
+            estimated_duration '2-3 hours',
             required_resources: ['Legal database access'],
             dependencies: [],
             completion_criteria: 'Case analysis completed',
@@ -166,7 +166,7 @@
           alternatives: [],
           dependencies: [],
           success_metrics: [],
-          estimated_completion: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+          estimated_completion new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
           tags: [rec.jurisdiction, rec.practice_area].filter(Boolean);
         }));
       } else {
@@ -194,7 +194,7 @@
         await loadExistingRecommendations();
       }
     } catch (error) {
-      console.error('Error applying recommendation:', error);
+      console.error('Error applying recommendation', error);
     }
   }
   function getCategoryIcon(category: string): string {
@@ -255,7 +255,7 @@
     });
     return filtered;
   });
-  function openRecommendationDetails(recommendation: Recommendation) {
+  function openRecommendationDetails(recommendation Recommendation) {
     selectedRecommendation = recommendatio;
     showRecommendationDetails = true;
   }
@@ -274,7 +274,7 @@
       <p class="engine-subtitle">Intelligent suggestions for case strategy and next actions</p>
     </div>
     <div class="header-actions">
-      <button class="nes-btn" on:click={generateRecommendations} disabled={isGenerating}>
+      <button class="nes-btn" onclick={generateRecommendations} disabled={isGenerating}>
         {isGenerating ? 'Generating...' : 'Generate Recommendations'}
       </button>
     </div>
@@ -433,7 +433,7 @@
               </div>
               {#if recommendation.estimated_completion}
                 <div class="completion-estimate">
-                  <span class="estimate-label">Est. Completion:</span>
+                  <span class="estimate-label">Est. Completion</span>
                   <span class="estimate-value">{new Date(recommendation.estimated_completion).toLocaleDateString()}</span>
                 </div>
               {/if}
@@ -451,10 +451,10 @@
           </CardContent>
           <div.Footer>
             <div class="nier-bits-card-actions">
-              <button class="nes-btn" variant="ghost" size="sm" on:click={() => openRecommendationDetails(recommendation)}>
+              <button class="nes-btn" variant="ghost" size="sm" onclick={() => openRecommendationDetails(recommendation)}>
                 View Details
               </button>
-              <button class="nes-btn" size="sm" on:click={() => applyRecommendation(recommendation.id)}>
+              <button class="nes-btn" size="sm" onclick={() => applyRecommendation(recommendation.id)}>
                 Apply
               </button>
             </div>
@@ -468,7 +468,7 @@
 <Dialog.Root bind:open={showRecommendationDetails}>
   <Dialog.Content class="recommendation-details-dialog">
     {#if selectedRecommendation}
-      <Dialog.Title>Recommendation: {selectedRecommendation.title}</Dialog.Title>
+      <Dialog.Title>Recommendation {selectedRecommendation.title}</Dialog.Title>
       <Dialog.Description>
         Detailed implementation plan and analysis
       </Dialog.Description>
@@ -510,7 +510,7 @@
               <li class="detailed-step">
                 <h4>Step {step.order}: {step.description}</h4>
                 <div class="step-details">
-                  <p><strong>Duration:</strong> {step.estimated_duration}</p>
+                  <p><strong>Duration</strong> {step.estimated_duration}</p>
                   <p><strong>Completion Criteria:</strong> {step.completion_criteria}</p>
                   {#if step.required_resources.length > 0}
                     <p><strong>Required Resources:</strong> {step.required_resources.join(', ')}</p>
@@ -555,7 +555,7 @@
                     <span class="risk-description">{risk.description}</span>
                     <span class="risk-score">P:{(risk.probability * 100).toFixed(0)}% I:{(risk.impact * 100).toFixed(0)}%</span>
                   </div>
-                  <p class="risk-mitigation"><strong>Mitigation:</strong> {risk.mitigation}</p>
+                  <p class="risk-mitigation"><strong>Mitigation</strong> {risk.mitigation}</p>
                 </div>
               {/each}
             </div>
@@ -610,10 +610,10 @@
         {/if}
       </div>
       <div class="dialog-actions">
-        <button class="nes-btn" variant="ghost" on:click={() => showRecommendationDetails = false}>
+        <button class="nes-btn" variant="ghost" onclick={() => showRecommendationDetails = false}>
           Close
         </button>
-        <button class="nes-btn" on:click={() => applyRecommendation(selectedRecommendation.id)}>
+        <button class="nes-btn" onclick={() => applyRecommendation(selectedRecommendation.id)}>
           Apply Recommendation
         </button>
       </div>
@@ -663,12 +663,12 @@
   .context-controls,
   .filter-controls {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .control-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .control-group label {
@@ -712,7 +712,7 @@
     border: 1px solid #e2e8f0;
     border-radius: 0.5rem;
     overflow: hidden;
-    transition: box-shadow 0.2;
+    transition box-shadow 0.2;
   }
   .recommendation-card:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -752,7 +752,7 @@
   }
   .recommendation-metrics {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: flex-end;
     gap: 0.25rem;
   }
@@ -771,7 +771,7 @@
   }
   .stat-grid {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
     margin-bottom: 1rem;
   }
@@ -794,7 +794,7 @@
   }
   .stat-fill {
     height: 100%;
-    transition: width 0.3;
+    transition width 0.3;
   }
   .stat-fill.impact { background: #10b981, }
   .stat-fill.effort { background: #f59e0b, }
@@ -825,12 +825,12 @@
     padding: 0.5rem 0;
     font-size: 0.75rem;
     color: #64748b;
-    position: relative;
+    position relative;
     padding-left: 1.5rem;
   }
   .step-item::before {
     content: counter(step-counter);
-    position: absolute;
+    position absolute;
     left: 0,
     top: 0.5rem;
     width: 1rem;
@@ -905,7 +905,7 @@
     border: 2px solid #e2e8f0;
     border-top: 2px solid #3b82f6;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
   .loading-detail {
@@ -923,7 +923,7 @@
   }
   .recommendation-details-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 2rem;
   }
   .recommendation-overview {
@@ -939,7 +939,7 @@
   }
   .overview-metric {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
     text-align: center;
   }
@@ -1022,7 +1022,7 @@
   }
   .risks-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .risk-item {
@@ -1052,7 +1052,7 @@
   }
   .alternatives-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1.5rem;
   }
   .alternative-item {
@@ -1121,7 +1121,7 @@
   }
   @media (max-width: 768px) {
     .engine-header {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
     }
     .controls-section {

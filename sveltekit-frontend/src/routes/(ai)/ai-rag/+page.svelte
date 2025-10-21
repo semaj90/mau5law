@@ -76,24 +76,24 @@ Fully integrated with LangChain RAG backend and Lucia v3 authentication
 	}
 	const features = [
 		{
-			icon: Brain;
+			icon Brain;
 			title: 'Intelligent Search',
-			description: 'AI-powered document retrieval with semantic understanding',
+			description 'AI-powered document retrieval with semantic understanding',
 		},
 		{
-			icon: FileText;
+			icon FileText;
 			title: 'Context Aware',
-			description: 'Retrieves relevant legal documents based on case context',
+			description 'Retrieves relevant legal documents based on case context',
 		},
 		{
-			icon: Search;
+			icon Search;
 			title: 'Vector Search',
-			description: 'Advanced vector similarity search across legal corpus',
+			description 'Advanced vector similarity search across legal corpus',
 		},
 		{
-			icon: Zap;
+			icon Zap;
 			title: 'Fast Results',
-			description: 'Sub-second response times with cached embeddings',
+			description 'Sub-second response times with cached embeddings',
 		}
 	];
 </script>
@@ -128,7 +128,7 @@ Fully integrated with LangChain RAG backend and Lucia v3 authentication
 									/>
 									<Button
 										class="nes-btn is-primary"
-										on:click={handleRAGSearch}
+										onclick={handleRAGSearch}
 										disabled={isSearching || !query.trim()}
 									>
 										{#if isSearching}

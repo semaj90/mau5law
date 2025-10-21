@@ -30,7 +30,7 @@
 <button
   class="ai-fab-button"
   class:generating={isGenerating}
-  on:click={toggleDialog}
+  onclick={toggleDialog}
   aria-label="Open AI Assistant"
   title="AI Assistant"
 >
@@ -62,7 +62,7 @@
 
 <style>
   .ai-fab-button {
-    position: fixed;
+    position fixed;
     bottom: 2rem;
     right: 2rem;
     width: 64px;
@@ -75,41 +75,41 @@
     align-items: center;
     justify-content: center;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1000,
     color: white;
     overflow: hidden;
-    position: relative;
+    position relative;
   }
-  .ai-fab-button:hover {
+  .ai-fab-buttonhover {
     transform: translateY(-2px) scale(1.05);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
   }
-  .ai-fab-button:active {
+  .ai-fab-buttonactive {
     transform: translateY(-1px) scale(1.02);
   }
   .ai-fab-button.generating {
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   .fab-icon {
-    position: relative;
+    position relative;
     z-index: 2,
     display: flex;
     align-items: center;
     justify-content: center;
   }
   .fab-glow {
-    position: absolute;
+    position absolute;
     top: -50%;
     left: -50%;
     width: 200%;
     height: 200%;
     background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
     opacity: 0,
-    transition: opacity 0.3s ease;
+    transition opacity 0.3s ease;
     pointer-events: none;
   }
-  .ai-fab-button:hover .fab-glow {
+  .ai-fab-buttonhover .fab-glow {
     opacity: 1,
   }
   @keyframes spin {

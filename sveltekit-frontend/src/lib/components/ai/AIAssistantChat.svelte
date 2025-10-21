@@ -208,7 +208,7 @@
 
     <div class="flex items-center gap-2">
       {#if showSettings}
-        <Button variant="ghost" size="sm" on:click={() => (showSettingsDialog = true)} class="bits-btn">
+        <Button variant="ghost" size="sm" onclick={() => (showSettingsDialog = true)} class="bits-btn">
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
@@ -227,7 +227,7 @@
       {/if}
 
       {#if hasConversation()}
-        <Button variant="ghost" size="sm" on:click={() => (showExportDialog = true)} class="bits-btn">
+        <Button variant="ghost" size="sm" onclick={() => (showExportDialog = true)} class="bits-btn">
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
@@ -305,7 +305,7 @@
       <div class="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
         <div class="text-sm text-red-800 dark:text-red-200 font-medium">Error</div>
         <div class="text-sm text-red-600 dark:text-red-300 mt-1">{aiError()}</div>
-        <Button variant="ghost" size="sm" class="mt-2 bits-btn" on:click={retryLast}>Retry</Button>
+        <Button variant="ghost" size="sm" class="mt-2 bits-btn" onclick={retryLast}>Retry</Button>
       </div>
     {/if}
   </div>
@@ -356,7 +356,7 @@
         class="flex-1 min-h-[40px] max-h-[120px] resize-none"
       />
       <div class="flex flex-col gap-1">
-        <Button on:click={sendMessage} disabled={!canSend()} class="px-4 bits-btn">
+        <Button onclick={sendMessage} disabled={!canSend()} class="px-4 bits-btn">
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
@@ -368,7 +368,7 @@
         </Button>
 
         {#if isProcessing()}
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={stopGeneration}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={stopGeneration}>
             <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <rect x="6" y="6" width="12" height="12" />
             </svg>
@@ -422,10 +422,10 @@
         </div>
 
         <div class="flex justify-between gap-2 pt-4">
-          <Button variant="destructive" on:click={clearConversation} disabled={!hasConversation()} class="bits-btn">
+          <Button variant="destructive" onclick={clearConversation} disabled={!hasConversation()} class="bits-btn">
             Clear Chat
           </Button>
-          <Button class="bits-btn" on:click={() => (showSettingsDialog = false)}>Close</Button>
+          <Button class="bits-btn" onclick={() => (showSettingsDialog = false)}>Close</Button>
         </div>
       </CardContent>
     </Card>
@@ -458,10 +458,10 @@
           </div>
         </div>
         <div class="flex justify-end gap-2">
-          <Button variant="ghost" on:click={() => (showExportDialog = false)} class="bits-btn">Cancel</Button>
+          <Button variant="ghost" onclick={() => (showExportDialog = false)} class="bits-btn">Cancel</Button>
           <Button
             class="bits-btn"
-            on:click={() => {
+            onclick={() => {
               exportConversation();
               showExportDialog = false;
             }}
@@ -476,7 +476,7 @@
 
 <style>
   :global(.animate-spin) {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
 
   @keyframes spin {

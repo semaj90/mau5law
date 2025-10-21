@@ -22,10 +22,10 @@ https://svelte.dev/e/js_parse_error -->
   // Form state
   let formData = writable<Partial<CaseData>({
     title: '',
-    description: '',
+    description '',
     priority: 'medium',
     status: 'open',
-    location: '',
+    location '',
     incidentDate: '';
   });
   // Priority options with colors
@@ -106,10 +106,10 @@ await loadCases();
         isCreateDialogOpen.set(false);
         formData.set({
           title: '',
-          description: '',
+          description '',
           priority: 'medium',
           status: 'open',
-          location: '',
+          location '',
           incidentDate: '';
         });
         await loadCases();
@@ -173,10 +173,10 @@ await loadCases();
     selectedCase.set(caseData);
     formData.set({
       title: caseData.title,
-      description: caseData.description || '',
+      description caseData.description || '',
       priority: caseData.priority || 'medium',
       status: caseData.status || 'open',
-      location: caseData.location || '',
+      location caseData.location || '',
       incidentDate: caseData.incidentDate || '';
     });
     isEditDialogOpen.set(true);
@@ -201,7 +201,7 @@ await loadCases();
       </div>
       <button
         class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-sm transition-colors duration-200"
-        on:click={() => isCreateDialogOpen.set(true)}
+        onclick={() => isCreateDialogOpen.set(true)}
       >
         + Create New Case
       </button>
@@ -221,7 +221,7 @@ await loadCases();
       </div>
       <button
         class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-6 rounded-lg transition-colors duration-200"
-        on:click={loadCases}
+        onclick={loadCases}
       >
         Refresh
       </button>
@@ -244,7 +244,7 @@ await loadCases();
           <div class="ml-3">
             <p class="text-sm text-red-800">{$error}</p>
           </div>
-          <button class="ml-auto flex-shrink-0" on:click={() => error.set('')}>
+          <button class="ml-auto flex-shrink-0" onclick={() => error.set('')}>
             <svg class="h-5 w-5 text-red-400 hover:text-red-600" viewBox="0 0 20 20" fill="currentColor">
               <path
                 fill-rule="evenodd"
@@ -347,13 +347,13 @@ await loadCases();
               <div class="flex space-x-2">
                 <button
                   class="text-blue-600 hover:text-blue-800 text-sm font-medium px-3 py-1 rounded hover:bg-blue-50 transition-colors duration-200"
-                  on:click={() => openEditDialog(caseData)}
+                  onclick={() => openEditDialog(caseData)}
                 >
                   Edit
                 </button>
                 <button
                   class="text-red-600 hover:text-red-800 text-sm font-medium px-3 py-1 rounded hover:bg-red-50 transition-colors duration-200"
-                  on:click={() => deleteCase(caseData.id!)}
+                  onclick={() => deleteCase(caseData.id!)}
                 >
                   Delete
                 </button>
@@ -384,7 +384,7 @@ await loadCases();
           <div class="mt-6">
             <button
               class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition-colors duration-200"
-              on:click={() => isCreateDialogOpen.set(true)}
+              onclick={() => isCreateDialogOpen.set(true)}
             >
               Create First Case
             </button>
@@ -398,7 +398,7 @@ await loadCases();
 {#if $isCreateDialogOpen}
   <div
     class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
-    on:click={() => isCreateDialogOpen.set(false)}
+    onclick={() => isCreateDialogOpen.set(false)}
   >
     <div
       class="relative top-20 mx-auto p-5 border w-11/12 max-w-2xl shadow-lg rounded-md bg-white"
@@ -484,7 +484,7 @@ await loadCases();
             <button
               type="button"
               class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200"
-              on:click={() => isCreateDialogOpen.set(false)}
+              onclick={() => isCreateDialogOpen.set(false)}
             >
               Cancel
             </button>
@@ -505,7 +505,7 @@ await loadCases();
 {#if $isEditDialogOpen}
   <div
     class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
-    on:click={() => isEditDialogOpen.set(false)}
+    onclick={() => isEditDialogOpen.set(false)}
   >
     <div
       class="relative top-20 mx-auto p-5 border w-11/12 max-w-2xl shadow-lg rounded-md bg-white"
@@ -591,7 +591,7 @@ await loadCases();
             <button
               type="button"
               class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200"
-              on:click={() => isEditDialogOpen.set(false)}
+              onclick={() => isEditDialogOpen.set(false)}
             >
               Cancel
             </button>

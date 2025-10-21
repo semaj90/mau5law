@@ -67,7 +67,7 @@
 	class:pressed={isPressed}
 	class:glow={glowEffect}
 	{disabled}
-	on:click={handleClick}
+	onclick={handleClick}
 >
 	{#if loading}
 		<div class="loading-spinner"></div>
@@ -81,7 +81,7 @@
 </button>
 <style>
 	.gaming-button {
-		position: relative;
+		position relative;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
@@ -93,7 +93,7 @@
 		text-transform: uppercase;
 		letter-spacing: 2px;
 		cursor: pointer;
-		transition: all 0.2s ease;
+		transition all 0.2s ease;
 		overflow: hidden;
 		user-select: none;
 		outline: none;
@@ -180,7 +180,7 @@ box-shadow: 0 0 0 1px var(--yorha-warning, #ffaa00), inset 0 0 10px rgba(255, 17
 box-shadow: 0 0 0 2px var(--yorha-warning, #ffaa00), 0 0 20px rgba(255, 170, 0, 0.5);
 		transform: translateY(-1px);
 	}
-/* States */ .gaming-button:disabled {
+/* States */ .gaming-buttondisabled {
 		opacity: 0.4,
 		cursor: not-allowed;
 		transform: none !important;
@@ -194,51 +194,51 @@ box-shadow: 0 0 0 2px var(--yorha-warning, #ffaa00), 0 0 20px rgba(255, 170, 0, 
 		box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
 	}
 	.gaming-button.glow {
-		animation: gaming-glow 2s ease-in-out infinite alternate;
+		animation gaming-glow 2s ease-in-out infinite alternate;
 	}
 /* Button Content */ .button-content {
-		position: relative;
+		position relative;
 		z-index: 2,
 		display: flex;
 		align-items: center;
 		gap: 8px;
-		transition: opacity 0.2s ease;
+		transition opacity 0.2s ease;
 	}
 	.button-content.loading {
 		opacity: 0.7,
 	}
 /* Loading Spinner */ .loading-spinner {
-		position: absolute;
+		position absolute;
 		width: 20px;
 		height: 20px;
 		border: 2px solid rgba(255, 255, 255, 0.3);
 		border-top: 2px solid currentColor;
 		border-radius: 50%;
-		animation: spin 1s linear infinite;
+		animation spin 1s linear infinite;
 		z-index: 3,
 	}
 /* Gaming Effects */ .button-overlay {
-		position: absolute;
+		position absolute;
 		top: 0,
 		left: -100%;
 		width: 100%;
 		height: 100%;
 		background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
-		transition: left 0.5s ease;
+		transition left 0.5s ease;
 		z-index: 1,
 	}
-	.gaming-button:hover:not(:disabled) .button-overlay {
+	.gaming-buttonhover:not(:disabled) .button-overlay {
 		left: 100%;
 	}
 	.scan-line {
-		position: absolute;
+		position absolute;
 		top: 0,
 		left: 0;
 		right: 0,
 		height: 1px;
 		background: linear-gradient(90deg, transparent 0%, currentColor 50%, transparent 100%);
 		opacity: 0.6,
-		animation: scan 3s ease-in-out infinite;
+		animation scan 3s ease-in-out infinite;
 		z-index: 1,
 	}
 /* Animations */ @keyframes spin {
@@ -263,7 +263,7 @@ box-shadow: 0 0 40px currentColor, 0 0 60px currentColor, inset 0 1px 0 rgba(255
 			opacity: 0.6,
 		}
 	}
-/* Focus styles for accessibility */ .gaming-button:focus-visible {
+/* Focus styles for accessibility */ .gaming-buttonfocus-visible {
 		outline: 2px solid currentColor;
 		outline-offset: 2px;
 	}

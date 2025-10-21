@@ -27,8 +27,8 @@
   interface NavItem {
     path: string;
     label: string;
-    icon: ComponentType;
-    description: string;
+    icon ComponentType;
+    description string;
   }
 
   // System status and navigation
@@ -45,50 +45,50 @@
     {
       path: '/yorha',
       label: 'Command Center',
-      icon: Terminal,
-      description: 'Main YoRHa interface hub',
+      icon Terminal,
+  description: 'Main YoRHa interface hub',
     },
     {
       path: '/yorha/dashboard',
       label: 'System Dashboard',
-      icon: Monitor,
-      description: 'Live system monitoring',
+      icon Monitor,
+  description: 'Live system monitoring',
     },
     {
       path: '/yorha/components',
       label: 'UI Components',
-      icon: Bot,
-      description: '3D UI component gallery',
+      icon Bot,
+  description: '3D UI component gallery',
     },
     {
       path: '/yorha/api-test',
       label: 'API Testing',
-      icon: Cpu,
-      description: 'Live API integration tests',
+      icon Cpu,
+  description: 'Live API integration tests',
     },
     {
       path: '/yorha/terminal',
       label: 'Terminal',
-      icon: Terminal,
-      description: 'YoRHa command terminal',
+      icon Terminal,
+  description: 'YoRHa command terminal',
     },
     {
       path: '/yorha/data-grid',
       label: 'Data Grid',
-      icon: Database,
-      description: 'Advanced data visualization',
+      icon Database,
+  description: 'Advanced data visualization',
     },
     {
       path: '/yorha/search',
       label: 'Vector Search',
-      icon: Search,
-      description: 'Semantic search interface',
+      icon Search,
+  description: 'Semantic search interface',
     },
     {
       path: '/yorha/chat',
       label: 'AI Chat',
-      icon: Bot,
-      description: 'Enhanced AI conversation',
+      icon Bot,
+  description: 'Enhanced AI conversation',
     },
   ];
   // System status monitoring
@@ -141,7 +141,7 @@
     <div class="yorha-header-content">
       <!-- Logo and Title -->
       <div class="yorha-brand">
-        <button class="yorha-menu-toggle" on:click={() => (sidebarOpen = !sidebarOpen)} aria-label="Toggle sidebar">
+        <button class="yorha-menu-toggle" onclick={() => (sidebarOpen = !sidebarOpen)} aria-label="Toggle sidebar">
           <Terminal size={20} />
         </button>
         <h1 class="yorha-brand-title">
@@ -167,11 +167,11 @@
       </div>
       <!-- Quick Actions -->
       <div class="yorha-quick-actions">
-        <button class="yorha-quick-btn" on:click={() => goto('/')}>
+        <button class="yorha-quick-btn" onclick={() => goto('/')}>
           <Home size={16} />
           <span>MAIN</span>
         </button>
-        <button class="yorha-quick-btn" on:click={() => goto('/demos')}>
+        <button class="yorha-quick-btn" onclick={() => goto('/demos')}>
           <FileText size={16} />
           <span>DEMOS</span>
         </button>
@@ -183,7 +183,7 @@
     <nav class="yorha-nav">
       <div class="yorha-nav-header">
         <h2>NAVIGATION</h2>
-        <button class="yorha-sidebar-close" on:click={() => (sidebarOpen = false)}>
+        <button class="yorha-sidebar-close" onclick={() => (sidebarOpen = false)}>
           <ChevronLeft size={20} />
         </button>
       </div>
@@ -194,7 +194,7 @@
             <button
               class="yorha-nav-link"
               class:yorha-nav-active={isActivePath(item.path)}
-              on:click={() => navigateTo(item.path)}
+              onclick={() => navigateTo(item.path)}
             >
               <Icon size={18} />
               <div class="yorha-nav-content">
@@ -218,7 +218,7 @@
       class="yorha-overlay"
       role="button"
       tabindex="0"
-      on:click={() => (sidebarOpen = false)}
+      onclick={() => (sidebarOpen = false)}
       onkeydown={e => (e.key === 'Enter' || e.key === ' ' ? (sidebarOpen = false) : null)}
       aria-label="Close sidebar"
     ></div>
@@ -239,7 +239,7 @@
 
   /* Header */
   :global(.yorha-header) {
-    position: fixed;
+    position fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -264,7 +264,7 @@
     color: #f59e0b;
     background: transparent;
     border: 1px solid rgba(245, 158, 11, 0.3);
-    transition:
+    transition
       color 0.15s ease,
       border-color 0.15s ease;
     cursor: pointer;
@@ -323,7 +323,7 @@
     gap: 0.5rem;
     border-radius: 3px;
     cursor: pointer;
-    transition: background-color 0.15s ease;
+    transition background-color 0.15s ease;
   }
   :global(.yorha-quick-btn:hover) {
     background: #fbbf24;
@@ -331,7 +331,7 @@
 
   /* Sidebar */
   :global(.yorha-sidebar) {
-    position: fixed;
+    position fixed;
     top: 73px;
     left: 0;
     bottom: 0;
@@ -339,7 +339,7 @@
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(255, 191, 0, 0.05) 100%);
     border-right: 1px solid rgba(245, 158, 11, 0.3);
     transform: translateX(-100%);
-    transition: transform 0.3s ease;
+    transition transform 0.3s ease;
     z-index: 30;
     overflow: auto;
   }
@@ -349,7 +349,7 @@
   :global(.yorha-nav) {
     height: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
   }
   :global(.yorha-nav-header) {
     display: flex;
@@ -390,10 +390,10 @@
     gap: 1rem;
     background: transparent;
     color: #f59e0b;
-    text-decoration: none;
+    text-decoration none;
     border: none;
     cursor: pointer;
-    transition:
+    transition
       background-color 0.15s ease,
       color 0.15s ease;
   }
@@ -408,7 +408,7 @@
   }
   :global(.yorha-nav-arrow) {
     opacity: 0.4;
-    transition: opacity 0.15s ease;
+    transition opacity 0.15s ease;
   }
   :global(.yorha-nav-link:hover .yorha-nav-arrow) {
     opacity: 1;
@@ -439,7 +439,7 @@
     padding-left: 2rem;
     padding-right: 2rem;
     padding-bottom: 2rem;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
 
   /* Responsive adjustments */
@@ -460,7 +460,7 @@
       width: 100%;
     }
     :global(.yorha-overlay) {
-      position: fixed;
+      position fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.5);
       z-index: 20;

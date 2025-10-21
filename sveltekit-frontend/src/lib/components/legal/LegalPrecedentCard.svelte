@@ -11,7 +11,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     caseNumber: string;
     caseName: string;
     court: string;
-    jurisdiction: 'federal' | 'state' | 'local' | 'international';
+    jurisdiction 'federal' | 'state' | 'local' | 'international';
     date: Date;
     judge: string;
     summary: string;
@@ -74,10 +74,10 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   }
   // Jurisdiction configurations
   const jurisdictionConfig = {
-    federal: { label: 'Federal', icon: Scale, color: 'text-blue-400' },
-    state: { label: 'State', icon: MapPin, color: 'text-green-400' },
-    local: { label: 'Local', icon: MapPin, color: 'text-yellow-400' },
-    international: { label: 'International', icon: Scale, color: 'text-purple-400' }
+    federal: { label: 'Federal', icon Scale, color: 'text-blue-400' },
+    state: { label: 'State', icon MapPin, color: 'text-green-400' },
+    local: { label: 'Local', icon MapPin, color: 'text-yellow-400' },
+    international: { label: 'International', icon Scale, color: 'text-purple-400' }
   }
   // Calculate relevance level
   let relevanceLevel = $derived(() => {
@@ -297,7 +297,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       <!-- Expand/Collapse -->
       {#if expandable}
         <button
-          on:click={() => (expanded = !expanded)}
+          onclick={() => (expanded = !expanded)}
           class="text-xs font-mono text-yorha-primary hover:text-yorha-accent transition-colors"
         >
           {expanded ? 'Show Less' : 'Show More'}
@@ -331,7 +331,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         {/if}
         {#if onViewFull && interactive}
           <button
-            on:click={() => onViewFull?.(precedent)}
+            onclick={() => onViewFull?.(precedent)}
             class="px-2 py-1 text-xs font-mono bg-yorha-primary/10 text-yorha-primary border border-yorha-primary/20 rounded hover:bg-yorha-primary/20 transition-colors"
           >
             Full Details
@@ -339,7 +339,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         {/if}
         {#if onAddToCase && interactive && currentCaseId}
           <button
-            on:click={() => onAddToCase?.(precedent)}
+            onclick={() => onAddToCase?.(precedent)}
             class="px-2 py-1 text-xs font-mono bg-green-500/10 text-green-400 border border-green-500/20 rounded hover:bg-green-500/20 transition-colors"
           >
             Add to Case
@@ -354,7 +354,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
         <div class="flex flex-wrap gap-2">
           {#each precedent.relatedCases.slice(0, 3) as relatedCase}
             <button
-              on:click={() => onViewRelated?.(relatedCase)}
+              onclick={() => onViewRelated?.(relatedCase)}
               class="text-xs font-mono text-yorha-primary hover:text-yorha-accent transition-colors underline"
             >
               {relatedCase}
@@ -373,6 +373,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
 
 <style>
   .legal-precedent-card {
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
 </style>

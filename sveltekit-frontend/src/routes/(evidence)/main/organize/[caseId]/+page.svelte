@@ -202,7 +202,7 @@ if (!caseId) {
     <div class="error-icon">⚠️</div>
     <h1>Error</h1>
     <p>{error}</p>
-    <button type="button" on:click={refreshOrganization}>Try Again</button>
+    <button type="button" onclick={refreshOrganization}>Try Again</button>
   </div>
 {:else if caseData}
   <div class="evidence-organization-page">
@@ -221,12 +221,12 @@ if (!caseId) {
           {#if selectedEvidence.length > 0}
             <div class="selection-info">
               <span class="selection-count">{selectedEvidence.length} selected</span>
-              <button type="button" on:click={clearSelections} class="clear-btn"> Clear Selection </button>
+              <button type="button" onclick={clearSelections} class="clear-btn"> Clear Selection </button>
             </div>
           {/if}
           <div class="action-buttons">
-            <button type="button" on:click={exportOrganization} class="export-btn"> 📥 Export Organization </button>
-            <button type="button" on:click={generateReport} class="report-btn"> 📊 Generate Report </button>
+            <button type="button" onclick={exportOrganization} class="export-btn"> 📥 Export Organization </button>
+            <button type="button" onclick={generateReport} class="report-btn"> 📊 Generate Report </button>
             <a href="/cases/{caseId}" class="view-case-btn"> 👁️ View Case </a>
           </div>
         </div>
@@ -282,7 +282,7 @@ if (!caseId) {
                 <button
                   type="button"
                   class="remove-btn"
-                  on:click={() => handleEvidenceSelected({ detail: { evidence, context: 'removal' } })}
+                  onclick={() => handleEvidenceSelected({ detail: { evidence, context: 'removal' } })}
                 >
                   ✕
                 </button>
@@ -355,7 +355,7 @@ if (!caseId) {
   .loading-container,
   .error-container {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     height: 100vh;
@@ -368,7 +368,7 @@ if (!caseId) {
     border: 3px solid #f3f4f6;
     border-top: 3px solid #3b82f6;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     0% {
@@ -388,11 +388,11 @@ if (!caseId) {
     color: white;
     border: none;
     border-radius: 0.375rem;
-    text-decoration: none;
+    text-decoration none;
     cursor: pointer;
     font-weight: 500,
   }
-  .error-container button:hover,
+  .error-container buttonhover,
   .back-link:hover {
     background: #2563eb;
   }
@@ -463,7 +463,7 @@ if (!caseId) {
   }
   .page-actions {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
     align-items: flex-end;
   }
@@ -499,9 +499,9 @@ if (!caseId) {
     padding: 0.5rem 1rem;
     border-radius: 0.375rem;
     font-weight: 500;
-    text-decoration: none;
+    text-decoration none;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
     font-size: 0.875rem;
     border: none;
     display: flex;
@@ -561,7 +561,7 @@ if (!caseId) {
     overflow-y: auto;
     padding: 1.5rem;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1.5rem;
   }
   .sidebar-panel {
@@ -578,7 +578,7 @@ if (!caseId) {
   }
   .selected-evidence-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
     max-height: 300px;
     overflow-y: auto;
@@ -595,7 +595,7 @@ if (!caseId) {
   .evidence-info {
     flex: 1,
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
   .evidence-info h4 {
@@ -622,7 +622,7 @@ if (!caseId) {
     cursor: pointer;
     padding: 0.25rem;
     border-radius: 0.25rem;
-    transition: background-color 0.2;
+    transition background-color 0.2;
   }
   .remove-btn:hover {
     background: #fef2f2;
@@ -630,7 +630,7 @@ if (!caseId) {
   .selection-actions {
     margin-top: 1rem;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .bulk-action-btn {
@@ -642,14 +642,14 @@ if (!caseId) {
     cursor: pointer;
     font-size: 0.75rem;
     font-weight: 500,
-    transition: all 0.2;
+    transition all 0.2;
   }
   .bulk-action-btn:hover {
     background: #e2e8f0;
   }
   .history-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
     max-height: 200px;
     overflow-y: auto;
@@ -665,7 +665,7 @@ if (!caseId) {
   }
   .history-info {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
   .history-mode {
@@ -686,19 +686,19 @@ if (!caseId) {
     padding: 0.25rem;
     border-radius: 0.25rem;
     font-size: 1rem;
-    transition: background-color 0.2;
+    transition background-color 0.2;
   }
   .restore-btn:hover {
     background: #eff6ff;
   }
   .quick-stats {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .quick-stat {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     text-align: center;
     padding: 1rem;
@@ -730,7 +730,7 @@ if (!caseId) {
       display: none;
     }
     .header-content {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
     }
     .page-actions {

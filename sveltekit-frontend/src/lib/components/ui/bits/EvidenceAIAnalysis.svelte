@@ -79,7 +79,7 @@
           <button
             class="nes-btn is-small"
             class:is-disabled={isRefreshing}
-            on:click={refreshAnalysis}
+            onclick={refreshAnalysis}
             disabled={isRefreshing}
             title="Refresh Analysis"
           >
@@ -88,7 +88,7 @@
           </button>
         {/if}
         {#if showExport}
-          <button class="nes-btn is-small is-success" on:click={exportAnalysis} title="Export Analysis"> Export </button>
+          <button class="nes-btn is-small is-success" onclick={exportAnalysis} title="Export Analysis"> Export </button>
         {/if}
       </div>
     </div>
@@ -129,7 +129,7 @@
             {analysis.summary}
           {:else}
             {analysis.summary.substring(0, 200)}...
-            <button class="text-blue-600 hover:text-blue-800 ml-1" on:click={() => (showFullSummary = true)}>
+            <button class="text-blue-600 hover:text-blue-800 ml-1" onclick={() => (showFullSummary = true)}>
               Read more
             </button>
           {/if}
@@ -237,12 +237,12 @@
   }
   /* Theme weight bar animations */
   .bg-orange-500 {
-    transition: width 0.8s ease-in-out;
+    transition width 0.8s ease-in-out;
   }
   /* Entity card hover effects */
   .bg-purple-50:hover {
     background-color: rgba(139, 92, 246, 0.15);
     transform: translateY(-1px);
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
 </style>

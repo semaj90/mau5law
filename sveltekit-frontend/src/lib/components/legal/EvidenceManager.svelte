@@ -14,7 +14,7 @@
     id: string;
     type: 'email' | 'transcript' | 'financial' | 'document' | 'audio' | 'video';
     title: string;
-    description: string;
+    description string;
     dateCreated: string;
     source: string;
     hash: string;
@@ -51,7 +51,7 @@
       id: 'ev-001',
       type: 'email',
       title: 'Email Exchange - Project Termination',
-      description: 'Email correspondence discussing abrupt project termination and payment disputes',
+      description 'Email correspondence discussing abrupt project termination and payment disputes',
       dateCreated: '2024-03-15T10:30:00Z',
       source: 'company-email-server',
       hash: 'sha256:a1b2c3d4e5f6...',
@@ -71,7 +71,7 @@
       id: 'ev-002',
       type: 'financial',
       title: 'Bank Transfer Records',
-      description: 'Financial records showing payment discrepancies and unauthorized transactions',
+      description 'Financial records showing payment discrepancies and unauthorized transactions',
       dateCreated: '2024-03-10T14:22:00Z',
       source: 'bank-api-export',
       hash: 'sha256:f6e5d4c3b2a1...',
@@ -84,14 +84,14 @@
       metadata: {
         account: '****-1234',
         amount: '$25,000.00',
-        institution: 'First National Bank',
+        institution 'First National Bank',
       }
     },
     {
       id: 'ev-003',
       type: 'transcript',
       title: 'Board Meeting Minutes - March 2024',
-      description: 'Transcript of emergency board meeting discussing contractor issues',
+      description 'Transcript of emergency board meeting discussing contractor issues',
       dateCreated: '2024-03-12T09:00:00Z',
       source: 'meeting-recorder',
       hash: 'sha256:1a2b3c4d5e6f...',
@@ -103,7 +103,7 @@
       redacted: false;
       metadata: {
         attendees: 7,
-        duration: '2h 15m',
+        duration '2h 15m',
         recorder: 'Legal Counsel',
       }
     }
@@ -248,17 +248,17 @@
         </div>
         <div class="evidence-actions">
           <Button
-            on:click={() => (showUpload = !showUpload)}
+            onclick={() => (showUpload = !showUpload)}
             style="background: {evidenceBuilder.styling.colors.evidence}"
           >
             📤 Upload Evidence
           </Button>
           {#if selectedEvidence.size > 0}
-            <div class="bulk-actions" transition:fade>
-              <Button on:click={() => exportSelected('pdf')} variant="outline">
+            <div class="bulk-actions" transitionfade>
+              <Button onclick={() => exportSelected('pdf')} variant="outline">
                 📄 Export PDF ({selectedEvidence.size})
               </Button>
-              <Button on:click={() => exportSelected('json')} variant="outline">🔧 Export JSON</Button>
+              <Button onclick={() => exportSelected('json')} variant="outline">🔧 Export JSON</Button>
             </div>
           {/if}
         </div>
@@ -267,7 +267,7 @@
     <CardContent>
       <!-- Upload Section -->
       {#if showUpload}
-        <div class="upload-section" transition:fly={{ y: -20, duration: 300 }}>
+        <div class="upload-section" transitionfly={{ y: -20, duration 300 }}>
           <div class="upload-area">
             <input
               type="file"
@@ -311,10 +311,10 @@
           </select>
         </div>
         <div class="selection-controls">
-          <Button on:click={selectAll} size="sm" variant="outline">
+          <Button onclick={selectAll} size="sm" variant="outline">
             Select All ({filteredEvidence.length})
           </Button>
-          <Button on:click={clearSelection} size="sm" variant="outline">Clear Selection</Button>
+          <Button onclick={clearSelection} size="sm" variant="outline">Clear Selection</Button>
         </div>
       </div>
       <!-- Evidence Statistics -->
@@ -338,7 +338,7 @@
           <div
             class="evidence-item"
             class:selected={selectedEvidence.has(evidence.id)}
-            transition:scale={evidenceBuilder.animations.enter}
+            transitionscale={evidenceBuilder.animations.enter}
           >
             <div class="evidence-header">
               <div class="evidence-select">
@@ -414,7 +414,7 @@
                   </span>
                 </div>
                 <div class="evidence-actions">
-                  <Button on:click={() => analyzeEvidence(evidence.id)} disabled={isAnalyzing} size="sm">
+                  <Button onclick={() => analyzeEvidence(evidence.id)} disabled={isAnalyzing} size="sm">
                     {isAnalyzing ? '🔄' : '🔍'} Analyze
                   </Button>
                   <Button size="sm" variant="outline">📥 Download</Button>
@@ -441,12 +441,12 @@
           </div>
         {/each}
         {#if filteredEvidence.length === 0}
-          <div class="no-evidence" transition:fade>
+          <div class="no-evidence" transitionfade>
             <span class="no-evidence-icon">🔍</span>
             <h3>No Evidence Found</h3>
             <p>No evidence matches your current search and filter criteria.</p>
             <Button
-              on:click={() => {
+              onclick={() => {
                 searchTerm = '';
                 filterType = 'all';
               }}
@@ -517,11 +517,11 @@
     background: rgba(255, 255, 255, 0.02);
   }
   .upload-area {
-    position: relative;
+    position relative;
     text-align: center;
   }
   .file-input {
-    position: absolute;
+    position absolute;
     inset: 0,
     opacity: 0;
     cursor: pointer;
@@ -613,7 +613,7 @@
   }
   .evidence-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1.5rem;
   }
   .evidence-item {
@@ -621,7 +621,7 @@
     border: 2px solid var(--enhanced-bits-border);
     border-radius: 8px;
     padding: 1.5rem;
-    transition: all 300ms ease;
+    transition all 300ms ease;
   }
   .evidence-item:hover {
     transform: translateY(-2px);
@@ -705,7 +705,7 @@
   }
   .detail-item {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
   .detail-label {
@@ -737,13 +737,13 @@
   }
   .evidence-metrics {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
     min-width: 200px;
   }
   .relevance-score {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .relevance-label {
@@ -758,7 +758,7 @@
   }
   .relevance-fill {
     height: 100%;
-    transition: width 300ms ease;
+    transition width 300ms ease;
     border-radius: 4px;
   }
   .relevance-value {
@@ -792,7 +792,7 @@
   }
   .metadata-item {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
   .metadata-key {
@@ -823,15 +823,15 @@
   }
   @media (max-width: 768px) {
     .evidence-title {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
     }
     .controls-section {
-      flex-direction: column;
+      flex-direction column;
       align-items: stretch;
     }
     .search-controls {
-      flex-direction: column;
+      flex-direction column;
     }
     .evidence-search {
       min-width: auto;

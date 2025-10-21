@@ -141,12 +141,12 @@
   }
   .form-fields {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1.5rem;
   }
   .form-field {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .form-label {
@@ -167,7 +167,7 @@
     font-family: 'Roboto Mono', monospace;
     font-size: 0.875rem;
     color: #3d3d3d;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     border-radius: 0,
     width: 100%;
     box-sizing: border-box;
@@ -205,7 +205,7 @@
     font-weight: bold;
     color: #3d3d3d;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     border-radius: 0;
     text-transform: uppercase;
   }

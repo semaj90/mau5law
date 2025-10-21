@@ -11,9 +11,9 @@
   interface KeyboardShortcut {
     id: string;
     keys: string[];
-    description: string;
+    description string;
     category: string;
-    action: () => void | Promise<void>;
+    action () => void | Promise<void>;
     enabled?: boolean;
     priority?: number;
     global?: boolean;
@@ -104,15 +104,15 @@
   });
 </script>
 <!-- Global Keyboard Event Listener -->
-<svelte:window on:show-keyboard-help={handleHelpShortcut} />
+<svelte:window onshow-keyboard-help={handleHelpShortcut} />
 <!-- Keyboard Mapping System -->
 <KeyboardMapping
   bind:this={keyboardMappingRef}
   shortcuts={currentShortcuts}
   {enableGlobalShortcuts}
   {enableDebugMode}
-  on: shortcutExecuted;
-  on:shortcutBlocked
+  on shortcutExecuted;
+  onshortcutBlocked
 />
 <!-- Help Panel -->
 {#if enableHelpPanel}

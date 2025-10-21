@@ -73,7 +73,7 @@
     class={buttonClasses}
     target={external ? '_blank' : undefined}
     rel={external ? 'noopener noreferrer' : undefined}
-    on:click={handleClick}
+    onclick={handleClick}
   >
     <span class="button-content">
       {#if loading}
@@ -87,7 +87,7 @@
     </span>
   </a>
 {:else}
-  <Button.Root {type} {disabled} class={buttonClasses} on:click={handleClick}>
+  <Button.Root {type} {disabled} class={buttonClasses} onclick={handleClick}>
     <span class="button-content">
       {#if loading}
         <div class="loading-spinner"></div>
@@ -106,10 +106,10 @@
 
 <style>
   .modern-btn {
-    position: relative;
+    position relative;
     text-transform: uppercase;
     letter-spacing: 0.025em;
-    text-decoration: none;
+    text-decoration none;
     outline: none;
     user-select: none;
   }
@@ -141,7 +141,7 @@
     border: 2px solid transparent;
     border-top: 2px solid currentColor;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     to {

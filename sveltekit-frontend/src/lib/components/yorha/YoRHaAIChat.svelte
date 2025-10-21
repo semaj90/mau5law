@@ -34,7 +34,7 @@ https://svelte.dev/e/js_parse_error -->
           content: `🤖 YoRHa AI Assistant Online
 Enhanced RAG System Connected
 - Service Status: ✅ OPERATIONAL
-- GPU Acceleration: ✅ ACTIVE
+- GPU Acceleration ✅ ACTIVE
 - Vector Database: ✅ CONNECTED
 How can I assist with your legal AI operations?`,
           timestamp: new Date(),
@@ -159,7 +159,7 @@ Offline Mode Available — Basic chat functionality only.`,
           const status = await health.json();
           responseText = `📊 System Status
 Enhanced RAG Service: ${status?.status === 'ok' ? '✅ HEALTHY' : '❌ ERROR'}
-Connection: ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
+Connection ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
         } catch {
           responseText = '❌ System Offline — Unable to connect to Enhanced RAG service';
         }
@@ -305,7 +305,7 @@ Connection: ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
       </div>
       <div class="flex items-center gap-4">
         <span>Messages: {$messages.length}</span>
-        <span>Session: yorha-{String(Date.now()).slice(-6)}</span>
+        <span>Session yorha-{String(Date.now()).slice(-6)}</span>
       </div>
     </div>
   </div>
@@ -322,7 +322,7 @@ Connection: ${isConnected ? '✅ CONNECTED' : '❌ DISCONNECTED'}`;
         rows="2"
       ></textarea>
       <button
-        on:click={sendMessage}
+        onclick={sendMessage}
         disabled={isLoading || !messageInput.trim()}
         class="px-6 py-3 bg-yorha-accent-warm text-yorha-dark font-bold rounded hover:bg-yorha-accent-warm/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
       >

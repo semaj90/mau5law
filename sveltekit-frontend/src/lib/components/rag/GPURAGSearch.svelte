@@ -88,7 +88,7 @@
         class="search-input"
         disabled={isLoading}
       />
-      <Button on:click={performSearch} disabled={isLoading || !query.trim()} variant="ghost" class="search-button">
+      <Button onclick={performSearch} disabled={isLoading || !query.trim()} variant="ghost" class="search-button">
         {#if isLoading}
           <Loader2 class="w-4 h-4 animate-spin" />
         {:else}
@@ -145,7 +145,7 @@
 <style>
   .gpu-rag-search {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1.5rem;
     padding: 1rem;
     background: rgba(15, 23, 36, 0.6);
@@ -155,7 +155,7 @@
 
   .search-container {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
 
@@ -184,7 +184,7 @@
     background: rgba(15, 23, 36, 0.8);
     border: 1px solid rgba(6, 182, 212, 0.3);
     border-radius: 0.375rem;
-    transition: border-color 0.2s;
+    transition border-color 0.2s;
   }
 
   .search-input-wrapper:focus-within {
@@ -230,7 +230,7 @@
 
   .results-container {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
 
@@ -244,7 +244,7 @@
 
   .results-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
   }
 
@@ -253,7 +253,7 @@
     background: rgba(15, 23, 36, 0.8);
     border: 1px solid rgba(6, 182, 212, 0.2);
     border-radius: 0.375rem;
-    transition: all 0.2s;
+    transition all 0.2s;
   }
 
   .result-card:hover {

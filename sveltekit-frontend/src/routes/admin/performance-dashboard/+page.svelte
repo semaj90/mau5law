@@ -48,7 +48,7 @@
     if (latency <= 1000) return 'text-yellow-500';
     return 'text-red-500';
   }
-  function getGPUColor(utilization: number): string {
+  function getGPUColor(utilization number): string {
     if (utilization <= 70) return 'text-green-500';
     if (utilization <= 90) return 'text-yellow-500';
     return 'text-red-500';
@@ -129,7 +129,7 @@
         <h3 class="text-lg font-semibold text-green-300 mb-4">Latency Breakdown</h3>
         <div class="space-y-3">
           <div class="flex justify-between">
-            <span class="text-green-400">Embedding Generation:</span>
+            <span class="text-green-400">Embedding Generation</span>
             <span class="text-green-200"
               >{formatMetric($currentMetrics.latency.embedding_generation, 'milliseconds')}</span
             >
@@ -286,7 +286,7 @@
   }
   /* Subtle pulse animation for critical alerts */
   .text-red-500 {
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   @keyframes pulse {
     0%,

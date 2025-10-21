@@ -34,7 +34,7 @@
   <meta name="description" content="Cyberpunk detective interface using Enhanced-Bits components" />
 </svelte:head>
 {#if isBooting}
-  <div class="boot-screen fixed inset-0 flex justify-center items-center z-1000 text-white font-mono" transition:fade>
+  <div class="boot-screen fixed inset-0 flex justify-center items-center z-1000 text-white font-mono" transitionfade>
     <div class="boot-content text-center max-w-[600px] w-90%">
       <div class="boot-logo flex flex-col md:flex-row justify-center items-center gap-2 md:gap-4 mb-12">
         <div class="logo-symbol text-[3rem] md:text-[4rem] text-[#00ff41] animate-glow-pulse">⚔️</div>
@@ -53,7 +53,7 @@
       </div>
       <div class="boot-messages text-left bg-black/80 border border-[#333333] rounded-lg p-4 md:p-8 mb-8 min-h-[200px]">
         {#each bootMessages as message, index}
-          <div class="boot-message flex items-center gap-4 mb-3 text-[0.75rem] md:text-[0.875rem] py-2" transition:fade={{ delay: 200 }}>
+          <div class="boot-message flex items-center gap-4 mb-3 text-[0.75rem] md:text-[0.875rem] py-2" transitionfade={{ delay: 200 }}>
             <span class="message-prefix text-[#666666] font-bold min-w-[2rem]">[{(index + 1).toString().padStart(2, '0')}]</span>
             <span class="message-text flex-1 text-[#cccccc]">{message}</span>
             <span class="message-status text-[#00ff41] font-bold">✓</span>
@@ -75,7 +75,7 @@
     </div>
   </div>
 {:else}
-  <div transition:fade={{ delay: 300, duration: 800 }}>
+  <div transitionfade={{ delay: 300, duration 800 }}>
     <YorHADetectiveInterface />
   </div>
 {/if}
@@ -143,7 +143,7 @@
   }
   .loading-dots {
     color: #00ff41;
-    animation: loading-dots 1.5s infinite;
+    animation loading-dots 1.5s infinite;
   }
   .boot-footer {
     border-top: 1px solid #333333;
@@ -186,7 +186,7 @@
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .boot-logo {
-      flex-direction: column;
+      flex-direction column;
       gap: 0.5rem;
     }
     .logo-symbol {

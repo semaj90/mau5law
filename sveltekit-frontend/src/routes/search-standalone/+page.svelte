@@ -101,9 +101,9 @@
                   </div>
                 {/if}
                 <div class="result-actions">
-                  <button on:click={() => viewDocument(result)} class="nes-btn is-primary action-btn"> View </button>
+                  <button onclick={() => viewDocument(result)} class="nes-btn is-primary action-btn"> View </button>
                   <button
-                    on:click={() => analyzeDocument(result)}
+                    onclick={() => analyzeDocument(result)}
                     class="nes-btn is-success action-btn"
                     disabled={isAnalyzing}
                   >
@@ -124,7 +124,7 @@
               <i class="nes-icon heart"></i>
               {selectedDocument.title || 'Document Viewer'}
             </h3>
-            <button on:click={closeDocument} class="nes-btn is-error close-btn"> × </button>
+            <button onclick={closeDocument} class="nes-btn is-error close-btn"> × </button>
           </div>
           <div class="modal-content">
             {#if selectedDocument.content}
@@ -150,7 +150,7 @@
             {/if}
             {#if selectedDocument.embedding}
               <div class="embedding-info">
-                <h4>Vector Information:</h4>
+                <h4>Vector Information</h4>
                 <p>Embedding dimensions: {selectedDocument.embedding.length || 'N/A'}</p>
                 <p>Vector magnitude: {selectedDocument.vectorMagnitude || 'N/A'}</p>
               </div>
@@ -241,7 +241,7 @@
   }
   .result-card {
     background: white;
-    transition: transform 0.2s ease;
+    transition transform 0.2s ease;
   }
   .result-card:hover {
     transform: translateY(-2px);
@@ -287,7 +287,7 @@
     padding: 8px 16px;
   }
   .document-viewer {
-    position: fixed;
+    position fixed;
     top: 0,
     left: 0;
     right: 0,
@@ -410,7 +410,7 @@
       grid-template-columns: 1fr;
     }
     .footer-content {
-      flex-direction: column;
+      flex-direction column;
       gap: 12px;
     }
     .document-viewer {
@@ -422,13 +422,13 @@
   }
   @media (max-width: 480px) {
     .result-actions {
-      flex-direction: column;
+      flex-direction column;
     }
     .action-btn {
       width: 100%;
     }
     .modal-header {
-      flex-direction: column;
+      flex-direction column;
       gap: 12px;
     }
     .close-btn {

@@ -20,14 +20,14 @@ interface SearchResult {
   score: number;
   metadata: {
     document_type: string;
-    jurisdiction: string;
+    jurisdiction string;
     date: string;
     legal_domain: string;
   }
   performance: {
     gpu_accelerated: boolean;
     search_time_ms: number;
-    gpu_utilization: number;
+    gpu_utilization number;
   }
 }
 interface CudaCapabilities {
@@ -65,7 +65,7 @@ let searchTime = $state(0);
 let cudaCapabilities = $state<CudaCapabilities | null>(null);
 let errorMessage = $state('');
 let gpuMetrics = $state({
-  utilization: 0,
+  utilization 0,
   memory_usage: 0,
   temperature: 0,
   active_streams: 0,
@@ -74,7 +74,7 @@ let gpuMetrics = $state({
 let performanceHistory = $state<Array<{
   timestamp: number;
   search_time_ms: number;
-  gpu_utilization: number;
+  gpu_utilization number;
   query_length: number;
   results_count: number;
 }>([]);
@@ -146,20 +146,20 @@ async function performSearch() {
           score: cudaResults.distances?.[0]?.[index] || 0.5,
           metadata: {
             document_type: 'contract',
-            jurisdiction: 'federal',
+            jurisdiction 'federal',
             date: new Date().toISOString.split('T')[0],
             legal_domain: legalDomai;
           },
           performance: {
             gpu_accelerated: true
             search_time_ms: cudaResults.stats?.search_time_ms || 0,
-            gpu_utilization: cudaResults.stats?.gpu_utilization || 0
+            gpu_utilization cudaResults.stats?.gpu_utilization || 0
           }
         }));
         // Update GPU metrics
         if (cudaResults.stats) {
           gpuMetrics = {
-            utilization: cudaResults.stats.gpu_utilization || 0,
+            utilization cudaResults.stats.gpu_utilization || 0,
             memory_usage: cudaResults.stats.memory_usage_mb || 0,
             temperature: 65, // Simulated
             active_streams: 1,
@@ -189,14 +189,14 @@ async function performSearch() {
           score: result.score || 0.5,
           metadata: {
             document_type: result.document_type || 'unknown',
-            jurisdiction: result.jurisdiction || 'unknown',
+            jurisdiction result.jurisdiction || 'unknown',
             date: result.date || new Date().toISOString.split('T')[0],
             legal_domain: result.legal_domain || legalDomai;
           },
           performance: {
             gpu_accelerated: false
             search_time_ms: fallbackData.search_time_ms || 0,
-            gpu_utilization: 0
+            gpu_utilization 0
           }
         }));
       }
@@ -207,7 +207,7 @@ async function performSearch() {
     performanceHistory.push({
       timestamp: Date.now(),
       search_time_ms: totalSearchTime
-      gpu_utilization: gpuMetrics.utilization,
+      gpu_utilization gpuMetrics.utilization,
       query_length: query.length,
       results_count: searchResults.length;
     });

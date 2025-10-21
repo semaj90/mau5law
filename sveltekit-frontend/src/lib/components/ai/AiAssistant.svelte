@@ -116,7 +116,7 @@ https://svelte.dev/e/js_parse_error -->
     <h3 class="nier-title text-lg font-bold mb-2">AI Evidence Summary</h3>
     <div class="flex gap-2 flex-wrap">
       <Button
-        on:click={handleSummarize}
+        onclick={handleSummarize}
         disabled={!user || $aiGlobalStore.context.loading}
         variant="primary"
         class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
@@ -124,7 +124,7 @@ https://svelte.dev/e/js_parse_error -->
         {!user ? 'Sign in to Summarize' : $aiGlobalStore.context.loading ? 'Summarizing...' : 'Summarize Evidence'}
       </Button>
       <Button
-        on:click={saveSummary}
+        onclick={saveSummary}
         disabled={!$aiGlobalStore.context.summary || $aiGlobalStore.context.loading}
         variant="primary"
         class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
@@ -133,7 +133,7 @@ https://svelte.dev/e/js_parse_error -->
       </Button>
       {#if evidenceText}
         <Button
-          on:click={handleGenerateEmbedding}
+          onclick={handleGenerateEmbedding}
           disabled={!user || legalCaseStore.context.generatingEmbedding}
           variant="secondary"
           class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
@@ -141,7 +141,7 @@ https://svelte.dev/e/js_parse_error -->
           {legalCaseStore.context.generatingEmbedding ? 'Generating...' : 'Find Related Evidence'}
         </Button>
         <Button
-          on:click={handleSearchRelatedEvidence}
+          onclick={handleSearchRelatedEvidence}
           disabled={!user || legalCaseStore.context.searchingRelatedEvidence}
           variant="ghost"
           class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn bits-btn"
@@ -263,9 +263,9 @@ https://svelte.dev/e/js_parse_error -->
     text-transform: uppercase;
   }
   :global(.nier-button) {
-    position: relative;
+    position relative;
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   :global(.nier-button\:hover) {
     transform: translateY(-2px);
@@ -304,7 +304,7 @@ https://svelte.dev/e/js_parse_error -->
     padding: 0.5rem 0;
   }
   :global(.nier-evidence-item) {
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   :global(.nier-evidence-item:hover) {
     transform: translateY(-1px);

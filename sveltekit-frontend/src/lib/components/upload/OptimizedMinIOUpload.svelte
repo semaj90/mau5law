@@ -145,7 +145,7 @@
           toastService.info(
             'Session Restored',
             `Recovered ${restored.length} pending file(s). Re-select originals to resume.`,
-            { duration: 6000 }
+            { duration 6000 }
           );
         ensureRetryTicker();
       }
@@ -169,7 +169,7 @@
     if (statusCode && (statusCode >= 500 || statusCode === 429)) return true;
     return transientPatterns.some(r => r.test(message));
   }
-  function scheduleRetry(fs: FileState, reason: string) {
+  function scheduleRetry(fs: FileState, reason string) {
     // Ensure attempts is numeric
     fs.attempts = (fs.attempts || 0);
     // If we've already reached max retries, mark error and surface toasts/telemetry
@@ -243,7 +243,7 @@
     uploading = false;
     liveMessage = 'All uploads canceled';
     if (enableToastNotifications) {
-      toastService.info('Uploads canceled', 'All in‑flight and queued uploads have been canceled.', { duration: 4000 });
+      toastService.info('Uploads canceled', 'All in‑flight and queued uploads have been canceled.', { duration 4000 });
     }
     finalizeAggregateStatus();
     serializeSession();
@@ -377,7 +377,7 @@
       toastService.info(
         `📊 Upload Performance`,
         `Completed ${performanceMetrics.completedFiles} files in ${Math.round(performanceMetrics.totalUploadTime / 1000)}s. GPU tasks: ${performanceMetrics.gpuTasksSubmitted}`,
-        { duration: 6000 }
+        { duration 6000 }
       );
     }
     // Auto-reset after success (all completed without errors)
@@ -421,7 +421,7 @@
     if (fileStates.length === 0 || uploading) return;
     const realPending = fileStates.filter(f => f.status === 'pending' && !f.placeholder);
     if (realPending.length === 0) {
-      if (enableToastNotifications) toastService.info('Awaiting Files', 'Select original files to replace placeholders before uploading.', { duration: 5000 });
+      if (enableToastNotifications) toastService.info('Awaiting Files', 'Select original files to replace placeholders before uploading.', { duration 5000 });
       return;
     }
     errorMessage = null;
@@ -507,7 +507,7 @@
           dismissible: false,
           actions: [{
             label: 'Cancel',
-            action: () => {
+            action () => {
               controller.abort();
               fs.status = 'canceled';
             },
@@ -522,7 +522,7 @@
     formData.append('uploadData', JSON.stringify({
       caseId,
       title: file.name,
-      description: `Uploaded via drag-and-drop: ${file.name}`,
+      description `Uploaded via drag-and-drop: ${file.name}`,
       evidenceType: getEvidenceType(file),
       enableAiAnalysis: true,
       enableEmbeddings: true,
@@ -772,7 +772,7 @@
     ondrop={handleDrop}
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
-    on:click={openFileDialog}
+    onclick={openFileDialog}
     onkeydown={e => e.key === 'Enter' && openFileDialog()}
   >
     {#if fileStates.length === 0}
@@ -834,7 +834,7 @@
                   type="button"
                   class="action-btn"
                   title="Remove"
-                  on:click={e => {
+                  onclick={e => {
                     e.stopPropagation();
                     removeFile(index);
                   }}
@@ -845,7 +845,7 @@
                   type="button"
                   class="action-btn"
                   title="Cancel"
-                  on:click={e => {
+                  onclick={e => {
                     e.stopPropagation();
                     cancelUpload(index);
                   }}
@@ -856,7 +856,7 @@
                   type="button"
                   class="action-btn"
                   title="Retry"
-                  on:click={e => {
+                  onclick={e => {
                     e.stopPropagation();
                     retryFile(index);
                     uploadFiles();
@@ -867,7 +867,7 @@
                   type="button"
                   class="action-btn"
                   title="Remove"
-                  on:click={e => {
+                  onclick={e => {
                     e.stopPropagation();
                     removeFile(index);
                   }}
@@ -950,7 +950,7 @@
         uploading ||
         disabled ||
         fileStates.every(f => ['completed', 'canceled'].includes(f.status))}
-      on:click={uploadFiles}
+      onclick={uploadFiles}
       aria-label="Start upload"
     >
       {#if uploading}
@@ -962,7 +962,7 @@
       {/if}
     </button>
     {#if uploading}
-      <button type="button" class="clear-button" on:click={cancelAllUploads} aria-label="Cancel all uploads"
+      <button type="button" class="clear-button" onclick={cancelAllUploads} aria-label="Cancel all uploads"
         >Cancel All</button
       >
     {/if}
@@ -970,7 +970,7 @@
       <button
         type="button"
         class="clear-button"
-        on:click={() => {
+        onclick={() => {
           files = [];
           fileStates = [];
           if (fileInput) fileInput.value = '';
@@ -1007,7 +1007,7 @@
     padding: 2rem;
     text-align: center;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     background: #f9fafb;
     min-height: 200px;
     display: flex;
@@ -1034,14 +1034,14 @@
   }
   .upload-prompt {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 1rem;
   }
   .upload-icon {
-    transition: transform 0.2s ease;
+    transition transform 0.2s ease;
   }
-  .drop-zone:hover .upload-icon:not(.uploading) {
+  .drop-zone:hover .upload-iconnot(.uploading) {
     transform: scale(1.1);
   }
   .upload-text h3 {
@@ -1053,7 +1053,7 @@
   .file-list {
     width: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
   }
   .file-item {
@@ -1098,10 +1098,10 @@
     height: 100%;
     background: #3b82f6;
     border-radius: 2px;
-    transition: transform 0.2s linear;
+    transition transform 0.2s linear;
   }
   .sr-only {
-    position: absolute;
+    position absolute;
     width: 1px;
     height: 1px;
     padding: 0,
@@ -1151,7 +1151,7 @@
     height: 100%;
     background: #3b82f6;
     border-radius: 4px;
-    transition: transform 0.3s ease;
+    transition transform 0.3s ease;
   }
   .progress-text {
     display: flex;
@@ -1178,7 +1178,7 @@
     background: #d7d7d7;
     border: 2px solid #212529;
     border-radius: 0,
-    position: relative;
+    position relative;
     box-shadow: inset 0 0 0 2px #fff;
   }
   :global(.nes-theme) .progress-fill {
@@ -1208,7 +1208,7 @@
       0 0 0 8px #212529;
     border: 4px solid #212529;
   }
-  :global(.nes-theme) .upload-button:hover:not(:disabled) {
+  :global(.nes-theme) .upload-buttonhover:not(:disabled) {
     background: #1081c4;
   }
   :global(.nes-theme) .clear-button {
@@ -1268,12 +1268,12 @@
     border-radius: 8px;
     font-weight: 500,
     cursor: pointer;
-    transition: background-color 0.2;
+    transition background-color 0.2;
   }
-  .upload-button:hover:not(:disabled) {
+  .upload-buttonhover:not(:disabled) {
     background: #2563eb;
   }
-  .upload-button:disabled {
+  .upload-buttondisabled {
     opacity: 0.6,
     cursor: not-allowed;
   }
@@ -1285,9 +1285,9 @@
     border-radius: 8px;
     font-weight: 500,
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
-  .clear-button:hover {
+  .clear-buttonhover {
     background: #e5e7eb;
   }
   .error-alert {
@@ -1360,7 +1360,7 @@
   }
   /* Animation for performance metrics */
   .performance-metrics {
-    animation: slideInUp 0.3s ease-out;
+    animation slideInUp 0.3s ease-out;
   }
   @keyframes slideInUp {
     from {
@@ -1378,7 +1378,7 @@
       grid-template-columns: 1fr 1fr;
     }
     .metric-item {
-      flex-direction: column;
+      flex-direction column;
       gap: 0.25rem;
     }
     .metric-label,

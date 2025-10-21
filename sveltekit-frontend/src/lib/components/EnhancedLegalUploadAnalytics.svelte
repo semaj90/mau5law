@@ -180,7 +180,7 @@
       if (e.ctrlKey && ['s', 'f', 'h'].includes(e.key.toLowerCase())) {
         uploadActor?.send({
           type: 'TRACK_USER_ACTION',
-          action: 'legal_shortcut',
+          action 'legal_shortcut',
           data: { shortcut: `Ctrl+${e.key.toUpperCase()}`, timestamp: Date.now() }
         });
       }
@@ -247,7 +247,7 @@
       // Enhanced tracking with legal context
       uploadActor.send({
         type: 'TRACK_USER_ACTION',
-        action: 'file_selection_legal',
+        action 'file_selection_legal',
         data: {
           fileCount: limitedFiles.length,
           totalSize: limitedFiles.reduce((sum, file) => sum + file.size, 0),
@@ -366,7 +366,7 @@
     }
     return { level, factors: risks }
   }
-  function handlePromptReaction(promptId: string, reaction: 'accepted' | 'dismissed' | 'ignored') {
+  function handlePromptReaction(promptId: string, reaction 'accepted' | 'dismissed' | 'ignored') {
     if (uploadActor) {
       uploadActor.send({
         type: 'USER_REACTED_TO_PROMPT',
@@ -479,14 +479,14 @@
                 size="sm"
                 legal
                 confidence="high"
-                on:click={() => handlePromptReaction(prompt.id, 'accepted')}
+                onclick={() => handlePromptReaction(prompt.id, 'accepted')}
               >
                 ✓ Accept
               </button>
               <button class="nes-btn"
                 variant="ghost"
                 size="sm"
-                on:click={() => handlePromptReaction(prompt.id, 'dismissed')}
+                onclick={() => handlePromptReaction(prompt.id, 'dismissed')}
               >
                 ✕ Dismiss
               </button>
@@ -535,7 +535,7 @@
               size="lg"
               legal
               priority={legalContext.urgency}
-              on:click={() => fileInput?.click()}
+              onclick={() => fileInput?.click()}
             >
               Select Legal Documents
             </button>
@@ -602,7 +602,7 @@
                   legal
                   priority={legalContext.urgency}
                   loading={isUploading}
-                  on:click={startEnhancedUpload}
+                  onclick={startEnhancedUpload}
                   data-legal-action="start-upload"
                 >
                   {#if ollamaConnected}
@@ -613,14 +613,14 @@
                 </button>
                 <button class="nes-btn"
                   variant="ghost"
-                  on:click={() => { selectedFiles = []; aiAnalysisResults = [], }}
+                  onclick={() => { selectedFiles = []; aiAnalysisResults = [], }}
                 >
                   Clear Files
                 </button>
                 <button class="nes-btn"
                   variant="ghost"
                   size="sm"
-                  on:click={() => showAdvancedSettings = !showAdvancedSettings}
+                  onclick={() => showAdvancedSettings = !showAdvancedSettings}
                 >
                   Advanced Settings
                 </button>
@@ -713,7 +713,7 @@
         {/if}
         <div class="upload-actions">
           <button class="nes-btn is-error"
-            on:click={() => uploadActor?.send({ type: 'CANCEL_UPLOAD' })}
+            onclick={() => uploadActor?.send({ type: 'CANCEL_UPLOAD' })}
           >
             Cancel Upload
           </button>
@@ -855,13 +855,13 @@
                 variant="yorha"
                 legal
                 priority="high"
-                on:click={() => handlePromptReaction(prompt.id, 'accepted')}
+                onclick={() => handlePromptReaction(prompt.id, 'accepted')}
               >
                 Let's Do It
               </button>
               <button class="nes-btn"
                 variant="ghost"
-                on:click={() => handlePromptReaction(prompt.id, 'dismissed')}
+                onclick={() => handlePromptReaction(prompt.id, 'dismissed')}
               >
                 Maybe Later
               </button>
@@ -916,13 +916,13 @@
         {/each}
         <div class="error-actions">
           <button class="nes-btn is-error"
-            on:click={() => uploadActor?.send({ type: 'RETRY_UPLOAD' })}
+            onclick={() => uploadActor?.send({ type: 'RETRY_UPLOAD' })}
           >
             Retry Upload
           </button>
           <button class="nes-btn"
             variant="ghost"
-            on:click={resetUpload}
+            onclick={resetUpload}
           >
             Start Over
           </button>
@@ -937,14 +937,14 @@
         variant="yorha"
         size="lg"
         legal
-        on:click={resetUpload}
+        onclick={resetUpload}
       >
         Upload More Documents
       </button>
       {#if enableAIPrompts}
         <button class="nes-btn"
           variant="ghost"
-          on:click={() => uploadActor?.send({ type: 'REQUEST_AI_SUGGESTIONS', context: 'user_requested' })}
+          onclick={() => uploadActor?.send({ type: 'REQUEST_AI_SUGGESTIONS', context: 'user_requested' })}
         >
           Get More AI Insights
         </button>
@@ -952,7 +952,7 @@
       {#if caseId}
         <button class="nes-btn"
           variant="ghost"
-          on:click={() => goto(`/cases/${caseId}/evidence`)}
+          onclick={() => goto(`/cases/${caseId}/evidence`)}
         >
           View in Evidence Board
         </button>
@@ -1028,7 +1028,7 @@
     border-radius: 0.75rem;
     padding: 3rem;
     text-align: center;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     background: rgba(16, 16, 16, 0.5);
   }
   .file-drop-zone.drag-over {
@@ -1046,7 +1046,7 @@
   }
   .drop-zone-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 1.5rem;
   }
@@ -1091,7 +1091,7 @@
     border: 1px solid #404040;
     border-radius: 0.5rem;
     margin-bottom: 0.5rem;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .yorha-file-item:hover {
     background: rgba(32, 32, 32, 0.8);
@@ -1145,7 +1145,7 @@
   }
   .setting-item {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .setting-item label {
@@ -1163,7 +1163,7 @@
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #ffd700, #51cf66);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
     border-radius: 0.375rem;
   }
   .yorha-pipeline {
@@ -1174,14 +1174,14 @@
   }
   .pipeline-stage {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 0.5rem;
     padding: 1rem;
     background: rgba(24, 24, 24, 0.7);
     border: 1px solid #404040;
     border-radius: 0.5rem;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .pipeline-stage.active {
     border-color: #ffd700;
@@ -1365,7 +1365,7 @@
   .confidence-fill {
     height: 100%;
     background: linear-gradient(90deg, #ff6b6b, #ffd700, #51cf66);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .confidence-value {
     font-size: 0.875rem;
@@ -1494,18 +1494,18 @@
       padding: 1rem;
     }
     .files-header {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
       align-items: flex-start;
     }
     .legal-insights-summary {
-      flex-direction: column;
+      flex-direction column;
       gap: 0.5rem;
     }
     .file-actions,
     .final-actions,
     .error-actions {
-      flex-direction: column;
+      flex-direction column;
     }
     .summary-stats {
       grid-template-columns: 1fr;

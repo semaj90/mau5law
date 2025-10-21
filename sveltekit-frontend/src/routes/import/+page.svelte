@@ -44,15 +44,15 @@
   let fileInput: HTMLInputElement = $state();
   // Supported file types
   const supportedTypes = [
-    { value: 'all', label: 'Complete Export (All Data)', icon: Database },
-    { value: 'cases', label: 'Cases Only', icon: FileText },
-    { value: 'evidence', label: 'Evidence Only', icon: FileText },
-    { value: 'participants', label: 'Participants Only', icon: Users },
+    { value: 'all', label: 'Complete Export (All Data)', icon Database },
+    { value: 'cases', label: 'Cases Only', icon FileText },
+    { value: 'evidence', label: 'Evidence Only', icon FileText },
+    { value: 'participants', label: 'Participants Only', icon Users },
   ];
   // Example data formats
   const exampleFormats = {
     cases: {
-      json: `[
+      json `[
   {
     "id": "optional-existing-id",
     "title": "Case Title",
@@ -67,7 +67,7 @@
   "Theft Case","Retail theft investigation","pending","medium"`,
     },
     evidence: {
-      json: `[
+      json `[
   {
     "case_id": "case-uuid",
     "type": "document|photo|video|audio|other",
@@ -277,7 +277,7 @@
       subscribe: (run: (value: any) => void, invalidate?: () => void) => () => void;
       add: (payload: NotificationPayload) => void;
       // Add other methods if they are used and cause type errors, e.g.,
-      // toggleDesktopNotification: () => void;
+      // toggleDesktopNotification () => void;
     }
 
     // Cast notifications to the interface that includes 'add'
@@ -338,7 +338,7 @@
                   </ButtonComponent>
                 </Tooltip>
                 <Tooltip content="Remove selected file">
-                  <ButtonComponent variant="ghost" size="sm" on:click={() => clearImport()}>
+                  <ButtonComponent variant="ghost" size="sm" onclick={() => clearImport()}>
                     <X class="h-4 w-4" />
                     Remove
                   </ButtonComponent>
@@ -352,7 +352,7 @@
                 <p class="text-lg font-medium">Drop your file here</p>
                 <p class="text-sm text-gray-500">or click to browse</p>
               </div>
-              <ButtonComponent variant="ghost" on:click={() => fileInput?.click()}>Select File</ButtonComponent>
+              <ButtonComponent variant="ghost" onclick={() => fileInput?.click()}>Select File</ButtonComponent>
             </div>
           {/if}
         </div>
@@ -481,7 +481,7 @@
       <!-- Action Buttons -->
       {#if importFile}
         <div class="flex gap-2 justify-end">
-          <ButtonComponent on:click={() => performImport()} disabled={isImporting} aria-busy={isImporting}>
+          <ButtonComponent onclick={() => performImport()} disabled={isImporting} aria-busy={isImporting}>
             {#if isImporting}
               <div class="i-lucide-loader-2 animate-spin mr-2"></div>
               Importing...
@@ -491,7 +491,7 @@
             {/if}
           </ButtonComponent>
           <Tooltip content="Clear current import and start over">
-            <ButtonComponent variant="ghost" on:click={() => clearImport()}>
+            <ButtonComponent variant="ghost" onclick={() => clearImport()}>
               <X class="h-4 w-4 mr-2" />
               Cancel
             </ButtonComponent>
@@ -516,7 +516,7 @@
                 <ButtonComponent
                   variant="ghost"
                   size="sm"
-                  on:click={() => downloadExampleTemplate('cases', 'json')}
+                  onclick={() => downloadExampleTemplate('cases', 'json')}
                 >
                   JSON
                 </ButtonComponent>
@@ -526,7 +526,7 @@
                 <ButtonComponent
                   variant="ghost"
                   size="sm"
-                  on:click={() => downloadExampleTemplate('cases', 'csv')}
+                  onclick={() => downloadExampleTemplate('cases', 'csv')}
                 >
                   CSV
                 </ButtonComponent>
@@ -541,7 +541,7 @@
                 <ButtonComponent
                   variant="ghost"
                   size="sm"
-                  on:click={() => downloadExampleTemplate('evidence', 'json')}
+                  onclick={() => downloadExampleTemplate('evidence', 'json')}
                 >
                   JSON
                 </ButtonComponent>
@@ -551,7 +551,7 @@
                 <ButtonComponent
                   variant="ghost"
                   size="sm"
-                  on:click={() => downloadExampleTemplate('evidence', 'csv')}
+                  onclick={() => downloadExampleTemplate('evidence', 'csv')}
                 >
                   CSV
                 </ButtonComponent>

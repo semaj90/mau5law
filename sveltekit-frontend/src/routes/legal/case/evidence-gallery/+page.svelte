@@ -22,7 +22,7 @@
   // Case sidebar data
   let caseDetails = $state([
     { name: 'Corporate Espionage Investigation', status: 'active', color: 'green' },
-    { name: 'Missing Person: Dr. Sarah Chen', status: 'active', color: 'green' },
+    { name: 'Missing Person Dr. Sarah Chen', status: 'active', color: 'green' },
     { name: 'Financial Fraud Analysis', status: 'pending', color: 'yellow' },
     { name: 'Security Breach Analysis', status: 'active', color: 'green' },
   ]);
@@ -30,8 +30,8 @@
     id: string;
     title: string;
     type: 'VIDEO' | 'DOCUMENT' | 'PHOTO' | 'AUDIO';
-    description: string;
-    position: { x: number; y: number };
+    description string;
+    position { x: number; y: number };
     connections: string[];
     metadata?: {
       timestamp?: string;
@@ -49,12 +49,12 @@
         id: 'video-001',
         title: 'SECURITY CAMERA',
         type: 'VIDEO',
-        description: 'CCTV footage from the main entrance',
-        position: { x: 200, y: 300 },
+        description 'CCTV footage from the main entrance',
+        position { x: 200, y: 300 },
         connections: ['doc-001'],
         metadata: {
           timestamp: '2024-03-15 14:32',
-          location: 'Main Entrance',
+          location 'Main Entrance',
           source: 'Security System', // Fixed: Removed trailing semicolon
         },
       },
@@ -62,8 +62,8 @@
         id: 'doc-001',
         title: 'WITNESS STATEMENT',
         type: 'DOCUMENT',
-        description: 'Detailed written statement from key witness',
-        position: { x: 500, y: 400 },
+        description 'Detailed written statement from key witness',
+        position { x: 500, y: 400 },
         connections: ['video-001'],
         metadata: {
           timestamp: '2024-03-16 09:15',
@@ -104,8 +104,8 @@
       id: `evidence-${Date.now()}`,
       title: 'NEW EVIDENCE',
       type: 'DOCUMENT',
-      description: 'New evidence item',
-      position: { x: Math.random() * 400 + 200, y: Math.random() * 300 + 200 },
+      description 'New evidence item',
+      position { x: Math.random() * 400 + 200, y: Math.random() * 300 + 200 },
       connections: [], // Fixed: Removed trailing semicolon
     };
     canvasItems = [...canvasItems, newEvidence];
@@ -163,7 +163,7 @@
       canvasItems = canvasItems.map(
         (
           item: EvidenceCard // Fixed: Correct map syntax and added type for item
-        ) => (item.id === draggedItem.id ? { ...item, position: { x: Math.max(0, newX), y: Math.max(0, newY) } } : item)
+        ) => (item.id === draggedItem.id ? { ...item, position { x: Math.max(0, newX), y: Math.max(0, newY) } } : item)
       );
     }
   }
@@ -244,7 +244,7 @@
         <!-- Fixed: Added closing tag -->
         <Button class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm" disabled>📎 CONNECT</Button>
         <!-- Fixed: Added closing tag -->
-        <Button on:click={addEvidence} class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 text-sm">
+        <Button onclick={addEvidence} class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 text-sm">
           + ADD EVIDENCE
         </Button>
         <!-- Fixed: Added closing tag -->
@@ -292,7 +292,7 @@
             class="absolute cursor-pointer select-none"
             style="left: {item.position.x}px; top: {item.position.y}px; z-index: 2;"
             onmousedown={(e: MouseEvent) => handleMouseDown(e, item)}
-            on:click={() => startConnection(item)}
+            onclick={() => startConnection(item)}
           >
             <Card.Root
               class="w-60 bg-white border-2 {selectedItem?.id === item.id
@@ -365,7 +365,7 @@
                   Selected: {selectedItem?.title}<br />
                   Click another evidence item to create connection
                 </div>
-                <Button on:click={cancelConnection} class="bg-red-600 hover:bg-red-700 text-white">
+                <Button onclick={cancelConnection} class="bg-red-600 hover:bg-red-700 text-white">
                   Cancel Connection
                 </Button>
                 <!-- Fixed: Added closing tag -->
@@ -442,7 +442,7 @@
         </div>
         <!-- Action Buttons -->
         <div class="p-4 border-t space-y-2">
-          <Button on:click={addEvidence} class="w-full bg-blue-600 hover:bg-blue-700 text-white">+ Add Evidence</Button>
+          <Button onclick={addEvidence} class="w-full bg-blue-600 hover:bg-blue-700 text-white">+ Add Evidence</Button>
           <!-- Fixed: Added closing tag -->
           <Button class="w-full bg-green-600 hover:bg-green-700 text-white">🔍 Analyze All</Button>
           <!-- Fixed: Added closing tag -->
@@ -462,14 +462,14 @@
   }
   /* Smooth transitions for drag and drop */
   .evidence-card {
-    transition: transform 0.1s ease;
+    transition transform 0.1s ease;
   }
   .evidence-card:hover {
     transform: translateY(-2px);
   }
   /* Connection line animations */
   svg line {
-    animation: dash 2s linear infinite;
+    animation dash 2s linear infinite;
   }
   @keyframes dash {
     to {

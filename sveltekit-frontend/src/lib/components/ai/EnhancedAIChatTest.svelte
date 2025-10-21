@@ -342,12 +342,12 @@ if (browser) {
             class="bits-btn"
             variant="ghost"
             size="sm"
-            on:click={downloadConversation}
+            onclick={downloadConversation}
             disabled={messages.length <= 1}
           >
             <Download class="h-4 w-4" />
           </Button>
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={clearMessages} disabled={messages.length <= 1}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={clearMessages} disabled={messages.length <= 1}>
             <Trash2 class="h-4 w-4" />
           </Button>
           <Dialog.Close>
@@ -417,7 +417,7 @@ if (browser) {
             keydown={handleKeydown}
           />
           <Button
-            on:click={sendMessage}
+            onclick={sendMessage}
             disabled={!currentMessage.trim() || !isConnected || isLoading}
             class="px-4 bits-btn bits-btn"
           >

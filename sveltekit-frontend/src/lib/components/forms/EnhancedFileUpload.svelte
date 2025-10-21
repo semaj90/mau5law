@@ -39,7 +39,7 @@ export default ;
   interface FileUpload {
     file: Fil;
     title: string;
-    description: string;
+    description string;
     tags: string[];
     caseId?: string;
     evidenceType?: string;
@@ -87,17 +87,17 @@ export default ;
   // Local form state (no $form store)
   let formState = $state({
     title: '',
-    description: '',
+    description '',
     tags: [] as string[],
     caseId: caseId || '',
     evidenceType: '',
     confidentialityLevel: '',
     collectedBy: '',
-    location: '',
+    location '',
     enableAiAnalysis: false
     enableOcr: false
     enableEmbeddings: false
-    enableSummarization: false
+    enableSummarization false
     isAdmissible: false,
   });
   let errors = $state<Record<string, string[]>([]) >( );
@@ -286,7 +286,7 @@ export default ;
       ondragover={handleDragOver}
       ondragleave={handleDragLeave}
       role="button" ondrop={handleDrop}
-      on:click={openFileDialog}
+      onclick={openFileDialog}
       keydown={(e: KeyboardEvent) => e.key === "Enter" && openFileDialog()}
       tabindex="0"
       aria-label="File upload area"
@@ -339,7 +339,7 @@ export default ;
                   <progress value={uploadProgress[file.name]} max="100" class="mt-2 w-full" />
                 {/if}
               </div>
-              <button class="nes-btn" variant="ghost" size="sm" on:click={() => removeFile(file.name)} disabled={isUploading} class="flex-shrink-0">
+              <button class="nes-btn" variant="ghost" size="sm" onclick={() => removeFile(file.name)} disabled={isUploading} class="flex-shrink-0">
                 <X class="h-4 w-4" />
               </button>
             </div>
@@ -388,7 +388,7 @@ export default ;
           <Label for="tags">Tags</Label>
           <div class="flex gap-2">
             <Input bind:value={tagInput} placeholder="Add a tag" disabled={isUploading} keydown={(e) => e.key === "Enter" && (e.preventDefault(), addTag())} />
-            <Button class="bits-btn" type="button" variant="ghost" on:click={addTag} disabled={isUploading}>
+            <Button class="bits-btn" type="button" variant="ghost" onclick={addTag} disabled={isUploading}>
 Add
 </Button>
           </div>
@@ -397,7 +397,7 @@ Add
               {#each formState.tags as tag}
                 <Badge variant="secondary" class="gap-1 inline-flex items-center">
                   <span>{tag}</span>
-                  <button type="button" class="ml-2" on:click={() => removeTag(tag)} disabled={isUploading} aria-label="Remove tag">
+                  <button type="button" class="ml-2" onclick={() => removeTag(tag)} disabled={isUploading} aria-label="Remove tag">
                     <X class="h-3 w-3" />
 </Button>
                 </Badge>
@@ -438,10 +438,10 @@ Add
         {#if multiple}(max {maxFiles}){/if}
       </p>
       <div class="flex gap-2">
-        <Button class="bits-btn" variant="ghost" on:click={() =>
+        <Button class="bits-btn" variant="ghost" onclick={() =>
 oncancel?.()} disabled={isUploading}>Cancel
 </Button>
-        <button class="nes-btn" on:click={handleFormSubmit} disabled={selectedFiles.length === 0 || isUploading || Object.keys(errors).length > 0} class="min-w-24">
+        <button class="nes-btn" onclick={handleFormSubmit} disabled={selectedFiles.length === 0 || isUploading || Object.keys(errors).length > 0} class="min-w-24">
           {#if isUploading}
             <Loader2 class="h-4 w-4 animate-spin mr-2" />Uploading...
           {:else}

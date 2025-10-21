@@ -92,15 +92,15 @@
     const icons: Record<string, string> = {
       chain_link: '🔗',
       temporal: '⏰',
-      location: '📍',
+      location '📍',
       causal: '🔄',
       documentary: '📄',
       financial: '💰',
-      communication: '💬',
+      communication '💬',
     };
     return icons[type] || '🔗';
   }
-  function getLegalImplicationIcon(implication: string): string {
+  function getLegalImplicationIcon(implication string): string {
     if (implication.includes('critical')) return '🔴';
     if (implication.includes('chain_integrity')) return '🔗';
     if (implication.includes('timeline_gap')) return '⏰';
@@ -167,14 +167,14 @@
     </div>
   {:else}
     <!-- Normal evidence node -->
-    <div class="evidence-card" on:click={handleEvidenceClick}>
+    <div class="evidence-card" onclick={handleEvidenceClick}>
       <!-- Header with expand/collapse control -->
       <div class="evidence-header">
         <div class="header-left">
           {#if shouldRenderChildren}
             <button
               class="expand-toggle"
-              on:click={toggleExpanded}
+              onclick={toggleExpanded}
               aria-label={isExpanded ? 'Collapse children' : 'Expand children'}
             >
               {isExpanded ? '▼' : '▶'}
@@ -218,7 +218,7 @@
             <div class="metadata-row">
               <span class="label">Relationships:</span>
               <span class="value">{evidence.relationships.length}</span>
-              <button class="detail-toggle" on:click={toggleRelationshipDetails} title="Show relationship details">
+              <button class="detail-toggle" onclick={toggleRelationshipDetails} title="Show relationship details">
                 {getRelationshipTypeIcon('chain_link')}
               </button>
             </div>
@@ -254,7 +254,7 @@
       <!-- Chain of custody details (expandable) -->
       {#if evidence.chainOfCustody?.length > 0}
         <div class="chain-section">
-          <button class="chain-toggle" on:click={toggleChainDetails} aria-expanded={showChainDetails}>
+          <button class="chain-toggle" onclick={toggleChainDetails} aria-expanded={showChainDetails}>
             🔗 Chain of Custody ({evidence.chainOfCustody.length} entries)
             {showChainDetails ? '▼' : '▶'}
           </button>
@@ -273,7 +273,7 @@
               {/each}
               {#if evidence.chainOfCustody.length > 3}
                 <div class="more-entries">
-                  <button on:click={handleChainAnalysis}>
+                  <button onclick={handleChainAnalysis}>
                     View all {evidence.chainOfCustody.length} entries →
                   </button>
                 </div>
@@ -338,7 +338,7 @@
   .evidence-node {
     margin: 8px 0;
     border-radius: 8px;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .evidence-card {
     background: #ffffff;
@@ -346,7 +346,7 @@
     border-radius: 8px;
     padding: 16px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
   .evidence-card:hover {
@@ -373,7 +373,7 @@
     color: #6b7280;
     padding: 4px;
     border-radius: 4px;
-    transition: background-color 0.2;
+    transition background-color 0.2;
   }
   .expand-toggle:hover {
     background-color: #f3f4f6;
@@ -559,8 +559,8 @@
     font-size: 12px;
     padding: 4px 0;
   }
-  .more-entries button:hover {
-    text-decoration: underli;
+  .more-entries buttonhover {
+    text-decoration underli;
   }
   .relationships-section h5 {
     margin: 0 0 8px 0;
@@ -583,7 +583,7 @@
   }
   .relationship-info {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 2px;
   }
   .relationship-type {
@@ -625,11 +625,11 @@
     border-left: 2px solid #e5e7eb;
     margin-top: 16px;
     padding-left: 16px;
-    position: relative;
+    position relative;
   }
   .evidence-children::before {
     content: '';
-    position: absolute;
+    position absolute;
     left: -1px;
     top: 0,
     bottom: 0;

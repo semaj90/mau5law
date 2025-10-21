@@ -99,7 +99,7 @@
     ...renderOptions
   }
   // Create spatial audio feedback
-  const playCardSound = async (frequency: number, duration: number = 0.2) => {
+  const playCardSound = async (frequency: number, duration number = 0.2) => {
     if (!enableSpatialAudio) return;
     try {
       if (!audioContext) {
@@ -310,7 +310,7 @@
   bind:this={cardElement}
   role={clickable ? 'button' : 'region'}
   tabindex={clickable ? 0 : -1}
-  on:click={handleClick}
+  onclick={handleClick}
   onmouseenter={handleHover}
   onmouseleave={handleUnhover}
   onmousemove={handleMouseMove}
@@ -333,7 +333,7 @@
     --transform-3d: {transform3D}
     --fog-color: {effectiveRenderOptions.fogColor}
     --glow-intensity: {glowIntensity}
-    --card-elevation: {dynamicElevation}px;
+    --card-elevation {dynamicElevation}px;
     --layer-depth: {layerDepth}px;
   "
   aria-disabled={disabled}
@@ -380,9 +380,9 @@
     border: 1px solid var(--material-border);
     border-radius: 6px;
     padding: var(--card-padding);
-    position: relative;
+    position relative;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     overflow: hidden;
 /* 3D transformations */ transform: var(--transform-3d);
     transform-origin: center center;
@@ -391,7 +391,7 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
 /* Advanced shadows and lighting */ box-shadow: var(--material-shadow);
-    transition: all 300ms cubic-bezier(0.23, 1, 0.32, 1);
+    transition all 300ms cubic-bezier(0.23, 1, 0.32, 1);
 /* Remove default styles */ -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -417,7 +417,7 @@
   }
   .card-content {
     flex: 1,
-    position: relative;
+    position relative;
     z-index: 2,
   }
   .card-footer {
@@ -428,14 +428,14 @@
     opacity: 0.8,
   }
 /* Loading overlay */ .loading-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     gap: 16px;
@@ -449,7 +449,7 @@
     border-right: 3px solid rgba(255, 255, 255, 0.6);
     border-bottom: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
-    animation: n64CardSpin 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+    animation n64CardSpin 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
     transform-style: preserve-3d;
   }
   @keyframes n64CardSpin {
@@ -471,14 +471,14 @@
     letter-spacing: 1px;
     text-transform: uppercase;
     font-size: 0.9em;
-    animation: pulse 2s ease-in-out infinite;
+    animation pulse 2s ease-in-out infinite;
   }
   @keyframes pulse {
     0%, 100% { opacity: 1, }
     50% { opacity: 0.6, }
   }
 /* Lighting overlay */ .lighting-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -489,7 +489,7 @@ background: linear-gradient( 135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255,
     border-radius: 6px;
   }
 /* Reflection overlay */ .reflection-overlay {
-    position: absolute;
+    position absolute;
     top: 10%;
     left: 15%;
     right: 60%;
@@ -501,7 +501,7 @@ background: linear-gradient( 45deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 
     opacity: 0.7;
   }
 /* Atmosphere overlay for depth */ .atmosphere-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -513,7 +513,7 @@ background: radial-gradient( ellipse at center, transparent 0%, var(--fog-color,
     border-radius: 6px;
   }
 /* Depth shadow */ .depth-shadow {
-    position: absolute;
+    position absolute;
     top: 100%;
     left: 5%;
     right: 5%;
@@ -575,7 +575,7 @@ filter: contrast(1.02) brightness(1.01) saturate(1.05);
   }
 /* Fog effects */ .n64-card::before {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -589,7 +589,7 @@ background: radial-gradient( ellipse at center bottom, var(--fog-color, #404040)
 /* Mobile optimizations */ @media (max-width: 480px) {
     .n64-card {
       transform: scale(var(--dynamic-scale, 1));
-      transition: transform 150ms ease;
+      transition transform 150ms ease;
     }
 .lighting-overlay, .reflection-overlay, .atmosphere-overlay, .depth-shadow {
       display: none;
@@ -598,18 +598,18 @@ background: radial-gradient( ellipse at center bottom, var(--fog-color, #404040)
       display: none;
     }
   }
-/* Reduced motion support */ @media (prefers-reduced-motion: reduce) {
+/* Reduced motion support */ @media (prefers-reduced-motion reduce) {
     .n64-card {
       transform: none !important;
-      transition: box-shadow 150ms ease, opacity 150ms ease;
+      transition box-shadow 150ms ease, opacity 150ms ease;
     }
     .n64-spinner {
-      animation: none;
+      animation none;
       border: 4px solid currentColor;
       border-right-color: transparent;
     }
     .loading-text {
-      animation: none;
+      animation none;
     }
   }
 /* High contrast mode */ @media (prefers-contrast: high) {

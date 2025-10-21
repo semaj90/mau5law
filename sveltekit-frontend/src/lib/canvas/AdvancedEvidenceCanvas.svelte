@@ -107,7 +107,7 @@ https://svelte.dev/e/expected_token -->
       id: selectedNode.id,
       type: selectedNode.type,
       title: selectedNode.title,
-      position: { x: selectedNode.x, y: selectedNode.y },
+      position { x: selectedNode.x, y: selectedNode.y },
       size: { width: selectedNode.width, height: selectedNode.height }
     }
   });
@@ -491,19 +491,19 @@ https://svelte.dev/e/expected_token -->
   <div class="canvas-info">
     <h4>Selected: {selectionInfo?.title}</h4>
     <p>Type: {selectionInfo?.type}</p>
-    <p>Position: {Math.round(selectionInfo?.position.x || 0)}, {Math.round(selectionInfo?.position.y || 0)}</p>
+    <p>Position {Math.round(selectionInfo?.position.x || 0)}, {Math.round(selectionInfo?.position.y || 0)}</p>
     <p>Size: {selectionInfo?.size.width} × {selectionInfo?.size.height}</p>
   </div>
 {/if}
 <div class="canvas-controls">
-  <button aria-label="Action button" on:click={(_event: MouseEvent) => resetView}>Reset View</button>
-  <button aria-label="Action button" on:click={(_event: MouseEvent) => fitToNodes}>Fit to Nodes</button>
+  <button aria-label="Action button" onclick={(_event: MouseEvent) => resetView}>Reset View</button>
+  <button aria-label="Action button" onclick={(_event: MouseEvent) => fitToNodes}>Fit to Nodes</button>
   <span>Zoom: {Math.round(zoom * 100)}%</span>
   <span>Nodes: {canvasNodes.length}</span>
 </div>
 <style>
   .canvas-info {
-    position: absolute;
+    position absolute;
     top: 10px;
     right: 10px;
     background: rgba(0, 0, 0, 0.8);
@@ -521,7 +521,7 @@ https://svelte.dev/e/expected_token -->
     margin: 4px 0;
   }
   .canvas-controls {
-    position: absolute;
+    position absolute;
     bottom: 10px;
     left: 10px;
     display: flex;
@@ -537,7 +537,7 @@ https://svelte.dev/e/expected_token -->
     cursor: pointer;
     font-size: 12px;
   }
-  .canvas-controls button:hover {
+  .canvas-controls buttonhover {
     background: #555;
   }
   .canvas-controls span {

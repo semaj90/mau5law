@@ -19,7 +19,7 @@
 
   export interface QualityConfig {
     tier: QualityTier;
-    targetResolution: number;
+    targetResolution number;
     pixelScale: number;
     shaderComplexity: number;
     textureStreamingEnabled: boolean;
@@ -34,7 +34,7 @@
     frameTime: number;
     memoryUsage: number;
     cacheHitRate: number;
-    gpuUtilization: number;
+    gpuUtilization number;
     drawCalls: number;
   }
 
@@ -51,7 +51,7 @@
   // Reactive state using Svelte 5 runes
   let currentQuality = $state<QualityConfig>({
     tier: '8-BIT_NES',
-    targetResolution: 540,
+    targetResolution 540,
     pixelScale: 2.0,
     shaderComplexity: 1,
     textureStreamingEnabled: false,
@@ -66,7 +66,7 @@
     frameTime: 16.67,
     memoryUsage: 50,
     cacheHitRate: 80,
-    gpuUtilization: 30,
+    gpuUtilization 30,
     drawCalls: 100,
   });
 
@@ -137,7 +137,7 @@
   function create8BitConfig(): QualityConfig {
     return {
       tier: '8-BIT_NES',
-      targetResolution: 540,
+      targetResolution 540,
       pixelScale: 2.0,
       shaderComplexity: 1,
       textureStreamingEnabled: false,
@@ -150,7 +150,7 @@
   function create16BitConfig(): QualityConfig {
     return {
       tier: '16-BIT_SNES',
-      targetResolution: 720,
+      targetResolution 720,
       pixelScale: 1.5,
       shaderComplexity: 2,
       textureStreamingEnabled: true,
@@ -163,7 +163,7 @@
   function create64BitConfig(): QualityConfig {
     return {
       tier: '64-BIT_N64',
-      targetResolution: 1080,
+      targetResolution 1080,
       pixelScale: 1.0,
       shaderComplexity: 3,
       textureStreamingEnabled: true,
@@ -217,7 +217,7 @@
       frameTime: Number(averageFrameTime.toFixed(2)),
       memoryUsage: getMemoryUsage(),
       cacheHitRate: getCacheHitRate(),
-      gpuUtilization: estimateGPUUtilization(),
+      gpuUtilization estimateGPUUtilization(),
       drawCalls: estimateDrawCalls(),
     };
   }
@@ -499,7 +499,7 @@
 
 <style>
   .adaptive-rendering-container {
-    position: relative;
+    position relative;
     display: inline-block;
     border-radius: 4px;
     overflow: hidden;
@@ -517,11 +517,11 @@
     filter: none;
   }
   .quality-indicator {
-    position: absolute;
+    position absolute;
     top: 4px;
     right: 4px;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 2px;
     pointer-events: none;
   }
@@ -551,7 +551,7 @@
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
   }
   .webgpu-indicator {
-    position: absolute;
+    position absolute;
     bottom: 4px;
     left: 4px;
     font-size: 8px;
@@ -561,13 +561,13 @@
   }
   /* Quality-specific animations */
   .\38 -bit-nes {
-    animation: pixel-flicker 0.1s infinite;
+    animation pixel-flicker 0.1s infinite;
   }
   .\31 6-bit-snes {
-    animation: smooth-glow 2s ease-in-out infinite alternate;
+    animation smooth-glow 2s ease-in-out infinite alternate;
   }
   .\36 4-bit-n64 {
-    animation: premium-shine 3s ease-in-out infinite;
+    animation premium-shine 3s ease-in-out infinite;
   }
   @keyframes pixel-flicker {
     0%,

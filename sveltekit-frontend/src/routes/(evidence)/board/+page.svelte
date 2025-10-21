@@ -42,7 +42,7 @@
           </div>
         </div>
         <div class="nier-bits-yorha-panel-content">
-          <Button class="nes-btn" variant="ghost" size="sm" on:click={() => (showWelcome = false)}>Get Started →</Button>
+          <Button class="nes-btn" variant="ghost" size="sm" onclick={() => (showWelcome = false)}>Get Started →</Button>
         </div>
       </Card>
     </div>
@@ -61,10 +61,10 @@
 <style>
   .evidence-page-container {
     min-height: 100vh;
-    position: relative;
+    position relative;
   }
   .welcome-banner {
-    position: fixed;
+    position fixed;
     top: 20px;
     right: 20px;
     z-index: 1000,
@@ -74,7 +74,7 @@
     box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
   }
   .animate-fade-in {
-    animation: fadeInSlide 0.5s ease-out;
+    animation fadeInSlide 0.5s ease-out;
   }
   @keyframes fadeInSlide {
     from {
@@ -94,7 +94,7 @@
   }
   .stat {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     padding: 8px;
     background: rgba(0, 255, 65, 0.1);
@@ -115,7 +115,7 @@
   }
   .loading-screen {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     height: 100vh;
@@ -128,7 +128,7 @@
     border: 4px solid #e5e5e5;
     border-top: 4px solid #3b82f6;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin-bottom: 16px;
   }
   @keyframes spin {

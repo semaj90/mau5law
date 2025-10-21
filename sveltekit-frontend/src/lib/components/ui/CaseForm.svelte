@@ -14,7 +14,7 @@ https://svelte.dev/e/js_parse_error -->
   const formOptions = {
     initialValues: {
       title: "",
-      description: "",
+      description "",
       priority: "medium",
       assignedTo: "",
       dueDate: "",
@@ -30,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
   }
         return null;
       },
-      description: (_value: string) => {
+      description (_value: string) => {
         if (!value || value.trim.length < 10) {
           return "Description must be at least 10 characters long";
   }
@@ -300,7 +300,7 @@ https://svelte.dev/e/js_parse_error -->
                   variant="secondary"
                   size="md"
                   data-icon="${1}"
-                  on:click={() =>
+                  onclick={() =>
 addTag()}
                 >
                   Add

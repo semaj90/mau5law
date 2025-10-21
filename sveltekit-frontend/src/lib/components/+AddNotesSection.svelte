@@ -61,7 +61,7 @@
         {/each}
       </select>
     </div>
-    <button aria-label="Action button" class="btn nes-btn is-primary" on:click={(_event: MouseEvent) => handleSubmit}
+    <button aria-label="Action button" class="btn nes-btn is-primary" onclick={(_event: MouseEvent) => handleSubmit}
       >Save Notes</button
     >
   </div>

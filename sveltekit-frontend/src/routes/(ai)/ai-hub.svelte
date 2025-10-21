@@ -11,7 +11,7 @@
   const aiStats = {
     modelsActive: 5,
     inferencesPerHour: 1247,
-    gpuUtilization: 78,
+    gpuUtilization 78,
     averageResponseTime: 0.85,
   };
 
@@ -213,7 +213,7 @@
   .service-card {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
 
   .service-card:hover {
@@ -240,10 +240,10 @@
     padding: 0.75rem;
     border-radius: 0.5rem;
     font-weight: 600,
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
 
-  .service-button:hover {
+  .service-buttonhover {
     background: #00b89a;
     transform: translateY(-1px);
   }
@@ -300,7 +300,7 @@
     }
 
     .activity-details {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
       gap: 0.5rem;
     }

@@ -60,7 +60,7 @@
       <div class="text-xs text-gray-500">Updates: {updateCount}</div>
       <button
         class="optimize-btn px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-        on:click={triggerOptimization}
+        onclick={triggerOptimization}
         disabled={isOptimizing}
       >
         {isOptimizing ? 'Optimizing...' : 'Optimize'}
@@ -121,6 +121,6 @@
 
 <style>
   .usage-fill {
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
 </style>

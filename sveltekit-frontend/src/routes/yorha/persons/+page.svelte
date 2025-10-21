@@ -55,9 +55,9 @@
     alias: '',
     threat_level: 'low',
     status: 'surveillance',
-    description: '',
+    description '',
     last_seen: '',
-    location: '',
+    location '',
   });
   let isLoading = $state(false);
   let error: string | null = $state(null);
@@ -157,9 +157,9 @@
         alias: '',
         threat_level: 'low',
         status: 'surveillance',
-        description: '',
+        description '',
         last_seen: '',
-        location: '',
+        location '',
       };
       showNewPersonModal = false;
       error = null;
@@ -246,7 +246,7 @@
         <div class="persons-subtitle">Surveillance and Investigation Targets</div>
       </div>
       <div class="header-right">
-        <ButtonComponent class="header-btn bits-btn bits-btn" on:click={() => (showNewPersonModal = true)}>
+        <ButtonComponent class="header-btn bits-btn bits-btn" onclick={() => (showNewPersonModal = true)}>
           <Plus class="w-4 h-4" />
           ADD PERSON
         </ButtonComponent>
@@ -336,7 +336,7 @@
                   <span class="detail-value">{person.last_seen}</span>
                 </div>
                 <div class="detail-row">
-                  <span class="detail-label">Location:</span>
+                  <span class="detail-label">Location</span>
                   <span class="detail-value">{person.location}</span>
                 </div>
                 <div class="detail-row">
@@ -394,7 +394,7 @@
     role="button"
     tabindex="0"
     aria-label="Close person modal"
-    on:click={() => (showNewPersonModal = false)}
+    onclick={() => (showNewPersonModal = false)}
     onkeydown={(e: KeyboardEvent) => {
       // Close on Enter / Space / Escape for keyboard users
       if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar' || e.key === 'Escape') {
@@ -409,13 +409,13 @@
       aria-modal="true"
       aria-labelledby="dialog-title"
       tabindex="-1"
-      on:click={(e: MouseEvent) => e.stopPropagation()}
+      onclick={(e: MouseEvent) => e.stopPropagation()}
       onkeydown={(e: KeyboardEvent) => e.stopPropagation()}
     >
       <header class="dialog-header">
         <!-- ensure the heading has the id referenced by aria-labelledby -->
         <h3 id="dialog-title" class="dialog-title">ADD PERSON OF INTEREST</h3>
-        <button class="close-btn" aria-label="Close" type="button" on:click={() => (showNewPersonModal = false)}
+        <button class="close-btn" aria-label="Close" type="button" onclick={() => (showNewPersonModal = false)}
           >×</button
         >
       </header>
@@ -488,22 +488,22 @@
         <ButtonComponent
           class="bits-btn"
           variant="ghost"
-          on:click={() => {
+          onclick={() => {
             showNewPersonModal = false;
             newPerson = {
               name: '',
               alias: '',
               threat_level: 'low',
               status: 'surveillance',
-              description: '',
+              description '',
               last_seen: '',
-              location: '',
+              location '',
             };
           }}
         >
           CANCEL
         </ButtonComponent>
-        <ButtonComponent class="bits-btn" on:click={handleAddPerson}>ADD PERSON</ButtonComponent>
+        <ButtonComponent class="bits-btn" onclick={handleAddPerson}>ADD PERSON</ButtonComponent>
       </footer>
     </div>
   </div>
@@ -526,7 +526,7 @@
     background: #1a1a1a;
     border-right: 1px solid #3a3a3a;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
   }
   .yorha-logo {
     padding: 20px 15px;
@@ -547,7 +547,7 @@
   .yorha-nav {
     padding: 10px 0;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 6px;
     padding-left: 8px;
   }
@@ -556,9 +556,9 @@
     align-items: center;
     padding: 8px 12px;
     color: #888;
-    text-decoration: none;
+    text-decoration none;
     cursor: pointer;
-    transition:
+    transition
       background 0.15s,
       color 0.15s;
     justify-content: space-between;
@@ -586,7 +586,7 @@
   .yorha-main {
     flex: 1,
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     background: #2a2a2a;
     overflow: hidden;
   }
@@ -633,13 +633,13 @@
     border-bottom: 1px solid #3a3a3a;
   }
   .search-input-wrapper {
-    position: relative;
+    position relative;
     display: flex;
     align-items: center;
     gap: 12px;
   }
   :global(.search-icon) {
-    position: absolute;
+    position absolute;
     left: 10px;
   }
   :global(.search-input) {
@@ -731,7 +731,7 @@
   }
   .person-badges {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 6px;
   }
   .person-details {
@@ -781,7 +781,7 @@
   /* Empty / loading / error */
   .empty-state {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     padding: 24px;
@@ -817,7 +817,7 @@
   }
   .loading-state {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     padding: 60px 20px;
@@ -829,7 +829,7 @@
     border: 2px solid #3a3a3a;
     border-top: 2px solid #d4af37;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin-bottom: 12px;
   }
   @keyframes spin {
@@ -843,7 +843,7 @@
 
   /* Modal styles */
   .modal-overlay {
-    position: fixed;
+    position fixed;
     inset: 0,
     background: rgba(0, 0, 0, 0.6);
     display: flex;
@@ -882,7 +882,7 @@
 
   .modal-form {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     padding: 8px 0 0 0;
   }
   .form-grid {
@@ -892,7 +892,7 @@
   }
   .form-field {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 6px;
   }
   .form-field-full {

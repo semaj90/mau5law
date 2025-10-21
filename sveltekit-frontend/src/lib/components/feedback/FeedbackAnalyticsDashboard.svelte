@@ -38,7 +38,7 @@ https://svelte.dev/e/component_invalid_directive -->
       totalRatings: 0,
       averageRating: 0,
       completionRate: 0,
-      trendDirection: 'stable'
+      trendDirection 'stable'
     },
     breakdown: [],
     insights: [],
@@ -129,7 +129,7 @@ https://svelte.dev/e/component_invalid_directive -->
   /**
    * Get trend indicator component
    */
-  function getTrendIcon(direction: string) {
+  function getTrendIcon(direction string) {
     switch (direction) {
       case 'up': return ArrowUpRight;
       case 'down': return ArrowDownRight;
@@ -139,7 +139,7 @@ https://svelte.dev/e/component_invalid_directive -->
   /**
    * Get trend color class
    */
-  function getTrendColor(direction: string) {
+  function getTrendColor(direction string) {
     switch (direction) {
       case 'up': return 'text-green-600';
       case 'down': return 'text-red-600';
@@ -184,14 +184,14 @@ https://svelte.dev/e/component_invalid_directive -->
           </select>
         </div>
         <button
-          on:click={() => loadDashboardData(true)}
+          onclick={() => loadDashboardData(true)}
           disabled={refreshing}
           class="action-button refresh-button"
         >
           <RefreshCw class="w-4 h-4" class:animate-spin={refreshing} />
           {refreshing ? 'Refreshing...' : 'Refresh'}
         </button>
-        <button on:click={exportData} class="action-button export-button">
+        <button onclick={exportData} class="action-button export-button">
           <Download class="w-4 h-4" />
           Export Data
         </button>
@@ -199,13 +199,13 @@ https://svelte.dev/e/component_invalid_directive -->
     </div>
   </header>
   {#if error}
-    <div class="error-banner" transition:fade>
+    <div class="error-banner" transitionfade>
       <AlertCircle class="w-5 h-5" />
       <div>
         <h3 class="font-semibold">Error Loading Analytics</h3>
         <p>{error}</p>
       </div>
-      <button on:click={() => loadDashboardData()} class="retry-button">
+      <button onclick={() => loadDashboardData()} class="retry-button">
         <RefreshCw class="w-4 h-4" />
         Retry
       </button>
@@ -480,14 +480,14 @@ https://svelte.dev/e/component_invalid_directive -->
     border-radius: 6px;
     font-weight: 500;
     font-size: 0.875rem;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .refresh-button {
     background: #3b82f6;
     color: white;
     border: none;
   }
-  .refresh-button:hover:not(:disabled) {,
+  .refresh-buttonhover:not(:disabled) {,
     background: #2563eb;
   }
   .export-button {
@@ -495,7 +495,7 @@ https://svelte.dev/e/component_invalid_directive -->
     color: white;
     border: none;
   }
-  .export-button:hover {
+  .export-buttonhover {
     background: #059669;
   }
   .error-banner {
@@ -523,7 +523,7 @@ https://svelte.dev/e/component_invalid_directive -->
   }
   .loading-state {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     padding: 4rem;
@@ -535,7 +535,7 @@ https://svelte.dev/e/component_invalid_directive -->
     border: 3px solid #e5e7eb;
     border-top: 3px solid #3b82f6;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin-bottom: 1rem;
   }
   @keyframes spin {
@@ -543,7 +543,7 @@ https://svelte.dev/e/component_invalid_directive -->
   }
   .dashboard-main {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 2rem;
   }
   .overview-section {
@@ -612,7 +612,7 @@ https://svelte.dev/e/component_invalid_directive -->
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #10b981 0%, #059669 100%);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .section-title {
     display: flex;
@@ -662,7 +662,7 @@ https://svelte.dev/e/component_invalid_directive -->
   }
   .breakdown-rating {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
   .rating-value {
@@ -683,7 +683,7 @@ https://svelte.dev/e/component_invalid_directive -->
   }
   .rating-distribution {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .rating-bar {
@@ -705,7 +705,7 @@ https://svelte.dev/e/component_invalid_directive -->
   }
   .bar-fill {
     height: 100%;
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .bar-fill.rating-5 { background: #10b981, }
   .bar-fill.rating-4 { background: #84cc16, }
@@ -730,7 +730,7 @@ https://svelte.dev/e/component_invalid_directive -->
   }
   .insights-list, .recommendations-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .insight-item, .recommendation-item {
@@ -812,7 +812,7 @@ https://svelte.dev/e/component_invalid_directive -->
   }
   .issues-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .issue-item {
@@ -873,7 +873,7 @@ https://svelte.dev/e/component_invalid_directive -->
       padding: 1rem;
     }
     .header-content {
-      flex-direction: column;
+      flex-direction column;
       align-items: stretch;
     }
     .overview-cards {

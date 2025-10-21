@@ -163,7 +163,7 @@
             text: textContent
             includeEmbeddings: true
             includeConcepts: true
-            includeClassification: true,
+            includeClassification true,
           })
         });
         if (legalResponse.ok) {
@@ -211,7 +211,7 @@
           metadata: {
             title: $form.title,
             evidenceType: $form.evidenceType,
-            description: $form.description,
+            description $form.description,
             tags: $form.tags?.split.map(tag => tag.trim()).filter(Boolean),
             flags: {
               enableAiAnalysis: $form.enableAiAnalysis,
@@ -363,7 +363,7 @@
           ondrop={onDrop}
           ondragover={onDragOver}
           ondragleave={onDragLeave}
-          on:click={() => document.getElementById('file-input')?.click()}
+          onclick={() => document.getElementById('file-input')?.click()}
           keydown={e => e.key === 'Enter' && document.getElementById('file-input')?.click()}
         >
           <input
@@ -385,7 +385,7 @@
                 <div class="file-details">
                   <div class="file-name">{selectedFile.name}</div>
                   <div class="file-size">{formatFileSize(selectedFile.size)}</div>
-                  <button type="button" class="remove-file" on:click={removeFile}> ✕ Remove </button>
+                  <button type="button" class="remove-file" onclick={removeFile}> ✕ Remove </button>
                 </div>
               </div>
               <!-- Analysis Results Preview -->
@@ -673,7 +673,7 @@
                 <div class="semantic-visualization">
                   {#if semanticEmbeddings.data?.som_cluster}
                     <p class="nes-text is-primary">
-                      🗺️ Document clustered to region: [{semanticEmbeddings.data.som_cluster.x}, {semanticEmbeddings
+                      🗺️ Document clustered to region [{semanticEmbeddings.data.som_cluster.x}, {semanticEmbeddings
                         .data.som_cluster.y}]
                     </p>
                   {:else}
@@ -717,7 +717,7 @@
   /* Custom nes.css enhancements for file upload */
   .file-upload-area {
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     min-height: 200px;
     display: flex;
     align-items: center;
@@ -743,7 +743,7 @@
   /* File preview with retro styling */
   .file-preview {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .file-info {
@@ -810,7 +810,7 @@
   /* Upload prompt styling */
   .upload-prompt {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 1rem;
     padding: 2rem;
@@ -865,7 +865,7 @@
     border: 2px solid transparent;
     border-top: 2px solid currentColor;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     display: inline-block;
   }
   /* Responsive design */
@@ -878,11 +878,11 @@
       grid-template-columns: 1fr;
     }
     .upload-header {
-      flex-direction: column;
+      flex-direction column;
       text-align: center;
     }
     .file-info {
-      flex-direction: column;
+      flex-direction column;
       text-align: center;
     }
   }

@@ -44,7 +44,7 @@
         entities: $context.entities,
         riskScore: $context.riskScore,
         aiAnalysis: $context.aiAnalysis,
-        processingDuration: $context.processingDuratio;
+        processingDuration $context.processingDuratio;
       });
     }
     if (isFailed && onError && $context.errors.length > 0) {
@@ -94,7 +94,7 @@
     <div class="flex items-center space-x-2">
       {#if $context.processingDuration}
         <span class="text-sm text-gray-500">
-          Duration: {formatDuration($context.processingDuration)}
+          Duration {formatDuration($context.processingDuration)}
         </span>
       {/if}
       <div class="flex items-center space-x-1">
@@ -125,7 +125,7 @@
           {document.caseType || 'Unknown'}
         </div>
         <div>
-          <span class="font-medium">Jurisdiction:</span>
+          <span class="font-medium">Jurisdiction</span>
           {document.jurisdiction || 'Unknown'}
         </div>
         <div>
@@ -290,7 +290,7 @@
   <div class="flex items-center space-x-3">
     {#if !isProcessing && !isCompleted && document}
       <button
-        on:click={startProcessing}
+        onclick={startProcessing}
         class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
       >
         Start Processing
@@ -298,7 +298,7 @@
     {/if}
     {#if isProcessing}
       <button
-        on:click={cancelProcessing}
+        onclick={cancelProcessing}
         class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors"
       >
         Cancel
@@ -306,7 +306,7 @@
     {/if}
     {#if isFailed && $context.retryCount < $context.maxRetries}
       <button
-        on:click={retryProcessing}
+        onclick={retryProcessing}
         class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors"
       >
         Retry ({$context.retryCount}/{$context.maxRetries})
@@ -314,7 +314,7 @@
     {/if}
     {#if isCompleted || isFailed}
       <button
-        on:click={() => {
+        onclick={() => {
           // Reset the machine to idle state
           send({ type: 'CANCEL' });
           // You might want to emit an event or call a callback here

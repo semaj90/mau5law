@@ -258,7 +258,7 @@
   function createParticle(type: 'data' | 'connection' | 'analysis' | 'result') {
     const colors = {
       data: currentStyle.colors.primary,
-      connection: currentStyle.colors.secondary,
+      connection currentStyle.colors.secondary,
       analysis: currentStyle.colors.accent,
       result: '#00FF00',
     }
@@ -367,10 +367,10 @@
   }
   async function runProcessingSequence() {
     const stages = [
-      { stage: 'parsing', duration: 2000 },
-      { stage: 'analyzing', duration: 3000 },
-      { stage: 'connecting', duration: 2500 },
-      { stage: 'synthesizing', duration: 2000 }
+      { stage: 'parsing', duration 2000 },
+      { stage: 'analyzing', duration 3000 },
+      { stage: 'connecting', duration 2500 },
+      { stage: 'synthesizing', duration 2000 }
     ];
     for (const { stage, duration } of stages) {
       if (!processing) break;
@@ -387,7 +387,7 @@
     const perspective = 1000;
     const translateZ = particle.z;
     return `
-      position: absolute;
+      position absolute;
       left: 50%;
       top: 50%;
       transform:
@@ -598,7 +598,7 @@
   /**
    * Transition to new quality tier with smooth animation
    */
-  async function transitionToQuality(newQuality: typeof adaptiveQuality, direction: 'upgrade' | 'downgrade'): Promise<void> {
+  async function transitionToQuality(newQuality: typeof adaptiveQuality, direction 'upgrade' | 'downgrade'): Promise<void> {
     console.log(`🎮 Quality ${direction}: ${adaptiveQuality} → ${newQuality}`);
     // Update predictive engine with quality change
     await predictiveAssetEngine.updateUserState(userId, 'rendering_session', `quality_${direction}`, {
@@ -607,7 +607,7 @@
       performance_score: calculatePerformanceScore(performanceMetrics.fps),
       cache_hit_rate: performanceMetrics.cacheHitRate
     });
-    // Smooth transition: adjust particles gradually
+    // Smooth transition adjust particles gradually
     const oldTier = qualityTiers[adaptiveQuality];
     const newTier = qualityTiers[newQuality];
     // Update quality state
@@ -697,7 +697,7 @@
           border-radius: {currentStyle.borderRadius}
           box-shadow: {currentStyle.shadows}, inset 0 0 20px {getStageColor()}33;
         "
-        transitionscale={{ duration: 500, easing: elasticOut }}
+        transitionscale={{ duration 500, easing: elasticOut }}
       >
         <div class="doc-icon">📄</div>
         <div class="doc-title">{document.title}</div>
@@ -716,7 +716,7 @@
               stroke-dasharray={`${2 * Math.PI * 25}`}
               stroke-dashoffset={`${2 * Math.PI * 25 * (1 - (document.progress || 0))}`}
               transform="rotate(-90 30 30)"
-              style="transition: stroke-dashoffset 0.5s ease;"
+              style="transition stroke-dashoffset 0.5s ease;"
             />
           </svg>
           <div class="progress-text">{Math.round((document.progress || 0) * 100)}%</div>
@@ -728,7 +728,7 @@
       <div
         class="particle {particle.type}"
         style={getParticleStyle(particle)}
-        transitionscale={{ duration: 300, easing: quintOut }}
+        transitionscale={{ duration 300, easing: quintOut }}
       ></div>
     {/each}
     <!-- Connection Lines -->
@@ -740,7 +740,7 @@
           opacity: {connection.strength}
           box-shadow: 0 0 10px {currentStyle.colors.secondary}
         "
-        transitionfly={{ duration: 500, easing: quintOut }}
+        transitionfly={{ duration 500, easing: quintOut }}
       ></div>
     {/each}
   </div>
@@ -756,7 +756,7 @@
         border-radius: {currentStyle.borderRadius}
         box-shadow: {currentStyle.shadows}
       "
-      transitionfade={{ duration: 300 }}
+      transitionfade={{ duration 300 }}
     >
       <div class="stage-icon">
         {#if processingStage === 'parsing'}🔍
@@ -835,7 +835,7 @@
 
 <style>
   .nes-lod-processor {
-    position: relative;
+    position relative;
     width: 100%;
     height: 400px;
     overflow: hidden;
@@ -846,14 +846,14 @@
     justify-content: center;
   }
   .scene-container {
-    position: relative;
+    position relative;
     width: 100%;
     height: 100%;
     transform-style: preserve-3d;
-    transition: all 0.1s ease-out;
+    transition all 0.1s ease-out;
   }
   .document-core {
-    position: absolute;
+    position absolute;
     left: 50%;
     top: 50%;
     transform: translateX(-50%) translateY(-50%);
@@ -880,12 +880,12 @@
     margin-bottom: 1rem;
   }
   .progress-ring {
-    position: relative;
+    position relative;
     display: inline-block;
     margin-top: 1rem;
   }
   .progress-text {
-    position: absolute;
+    position absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -893,7 +893,7 @@
     font-size: 0.8rem;
   }
   .particle {
-    animation: float 3s ease-in-out infinite;
+    animation float 3s ease-in-out infinite;
   }
   .particle.data {
     border-radius: 50%;
@@ -901,23 +901,23 @@
   .particle.connection {
     border-radius: 25%;
     transform-origin: center;
-    animation: spin 2s linear infinite;
+    animation spin 2s linear infinite;
   }
   .particle.analysis {
     clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
   }
   .particle.result {
     clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-    animation: pulse 1s ease-in-out infinite;
+    animation pulse 1s ease-in-out infinite;
   }
   .connection-line {
-    position: absolute;
+    position absolute;
     height: 2px;
     transform-origin: left center;
-    animation: flow 2s ease-in-out infinite;
+    animation flow 2s ease-in-out infinite;
   }
   .ui-overlay {
-    position: absolute;
+    position absolute;
     top: 1rem;
     left: 1rem;
     right: 1rem;
@@ -941,7 +941,7 @@
   }
   .adaptive-quality-indicator {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 0.25rem;
     min-width: 120px;
@@ -970,7 +970,7 @@
     font-size: 1.2rem;
   }
   .debug-info {
-    position: absolute;
+    position absolute;
     bottom: 1rem;
     right: 1rem;
     font-size: 0.7rem;
@@ -1038,7 +1038,7 @@
       font-size: 1rem;
     }
     .ui-overlay {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
     }
     .adaptive-quality-indicator {

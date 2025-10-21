@@ -36,7 +36,7 @@
     minMatchCharLength: 2,
     includeScore: true,
     includeMatches: true,
-    ignoreLocation: true,
+    ignoreLocation true,
     useExtendedSearch: true,
   };
 
@@ -147,7 +147,7 @@
   <div class="relative">
     <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 nes-text is-disabled" />
     <!-- use svelte:component with the casted Input to satisfy TypeScript -->
-    <svelte:component this={InputAny} bind:value={searchQuery} {placeholder} on:keydown={handleKeydown} class="pl-10" />
+    <svelte:component this={InputAny} bind:value={searchQuery} {placeholder} onkeydown={handleKeydown} class="pl-10" />
     {#if isSearching}
       <Loader2 class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 animate-spin nes-text is-disabled" />
     {/if}
@@ -200,7 +200,7 @@
                 <button
                   type="button"
                   class="bits-btn inline-flex items-center px-3 py-1 rounded text-sm bg-indigo-600 text-white hover:bg-indigo-700"
-                  on:click={() => handleAIAction(law, 'summary')}
+                  onclick={() => handleAIAction(law, 'summary')}
                 >
                   <Bot class="h-3 w-3 mr-1" />
                   AI Summary
@@ -209,7 +209,7 @@
                 <button
                   type="button"
                   class="bits-btn inline-flex items-center px-3 py-1 rounded text-sm border border-gray-200 bg-transparent text-gray-700 hover:bg-gray-50"
-                  on:click={() => handleAIAction(law, 'chat')}
+                  onclick={() => handleAIAction(law, 'chat')}
                 >
                   <Bot class="h-3 w-3 mr-1" />
                   Ask AI

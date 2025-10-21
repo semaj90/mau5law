@@ -30,13 +30,13 @@ https://svelte.dev/e/expected_token -->
   .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace, }
   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.75rem, }
   button { padding: 0.5rem 0.9rem; border-radius: 6px; border: 1px solid #ccc; background: #fafafa; cursor: pointer, }
-  button:hover { background: #f0f0f0, }
+  buttonhover { background: #f0f0f0, }
   h2 { margin: 0.2rem 0, }
 </style>
 <h1>WebGPU Diagnostics</h1>
 <p class="muted">Client-side check for adapter/device availability, limits, and common pitfalls.</p>
 <div>
-  <button on:click={run} aria-label="Re-run diagnostics">Re-run</button>
+  <button onclick={run} aria-label="Re-run diagnostics">Re-run</button>
 </div>
 {#if loading}
   <div class="nier-bits-card">Running diagnostics…</div>

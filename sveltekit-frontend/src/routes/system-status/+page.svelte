@@ -8,41 +8,48 @@
   let authStatus = $state<any>(null);
   let testResults = $state({});
   let isRunning = $state(false);
-  const tests = [
+  type TestConfig = {
+    name: string;
+    endpoint: string;
+    method?: 'GET' | 'POST';
+    body?: unknown;
+    description string;
+  };
+  const tests: TestConfig[] = [
     {
       name: 'Authentication Debug',
       endpoint: '/api/auth/debug',
-      description: 'Check authentication status and development flags',
+      description 'Check authentication status and development flags',
     },
     {
       name: 'Development Auth Creation',
       endpoint: '/api/dev-auth?seed=true',
-      description: 'Create development session with sample data',
+      description 'Create development session with sample data',
     },
     {
       name: 'Enhanced RAG Health',
       endpoint: 'http://localhost:8094/health',
-      description: 'Go microservice health check',
+      description 'Go microservice health check',
     },
     {
       name: 'Upload Service Health',
       endpoint: 'http://localhost:8093/health',
-      description: 'File upload service health',
+      description 'File upload service health',
     },
     {
       name: 'Ollama API',
       endpoint: 'http://localhost:11434/api/tags',
-      description: 'AI model availability',
+      description 'AI model availability',
     },
     {
       name: 'SSE Chat API',
       endpoint: '/api/ai/chat-sse',
       method: 'POST',
       body: { message: 'Test SSE streaming', model: 'gemma3-legal:latest' },
-      description: 'Server-Sent Events streaming test',
+      description 'Server-Sent Events streaming test',
     }
   ];
-  async function runTest(test: unknown) {
+  async function runTest(test: TestConfig) {
     try {
       const options: RequestInit = {
         method: test.method || 'GET',
@@ -51,27 +58,27 @@
       if (test.body) {
         options.body = JSON.stringify(test.body);
       }
-      // removed unused response assignment
-      let data;
+      const response = await fetch(test.endpoint, options);
+      let data: unknown;
       try {
-        data = await (response as { json?: unknown; text?: unknown; ok?: unknown; status?: unknown }).json();
+        data = await response.json();
       } catch {
-        data = await (response as { json?: unknown; text?: unknown; ok?: unknown; status?: unknown }).text();
+        data = await response.text();
       }
       testResults[test.name] = {
-        success: (response as { json?: unknown; text?: unknown; ok?: unknown; status?: unknown }).ok,
-        status: (response as { json?: unknown; text?: unknown; ok?: unknown; status?: unknown }).status,
-        data: data;
+        success: response.ok,
+        status: response.status,
+        data,
         endpoint: test.endpoint,
-        timestamp: new Date().toISOString();
-      }
+        timestamp: new Date().toISOString(),
+      } as any;
     } catch (error) {
       testResults[test.name] = {
-        success: false
-        error: error instanceof Error ? error.message: 'Unknown error',
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
         endpoint: test.endpoint,
-        timestamp: new Date().toISOString();
-      }
+        timestamp: new Date().toISOString(),
+      } as any;
     }
     // Trigger reactivity
     testResults = { ...testResults }
@@ -87,16 +94,16 @@
   }
   async function checkAuthStatus() {
     try {
-      // removed unused response assignment
-      authStatus = await (response as { json?: unknown; text?: unknown; ok?: unknown; status?: unknown }).json();
+      const response = await fetch('/api/auth/me');
+      authStatus = await response.json();
     } catch (error) {
       console.error('Auth status check failed:', error);
     }
   }
   async function createDevSession() {
     try {
-      // removed unused response assignment
-      const result = await (response as { json?: unknown; text?: unknown; ok?: unknown; status?: unknown }).json();
+      const response = await fetch('/api/dev-auth?seed=true');
+      const result = await response.json();
       if ((result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).success) {
         await checkAuthStatus();
       }
@@ -107,8 +114,8 @@
   }
   async function clearSession() {
     try {
-      // removed unused response assignment
-      const result = await (response as { json?: unknown; text?: unknown; ok?: unknown; status?: unknown }).json();
+      const response = await fetch('/api/dev-auth', { method: 'DELETE' });
+      const result = await response.json();
       if ((result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).success) {
         await checkAuthStatus();
       }
@@ -156,12 +163,12 @@
     <div class="nes-container is-rounded evidence-panel">
       <h3 class="nes-text is-warning mb-3">🚀 Quick Actions</h3>
       <div class="space-y-2">
-        <button class="nes-btn is-primary w-full text-xs" on:click={runAllTests} disabled={isRunning}>
+        <button class="nes-btn is-primary w-full text-xs" onclick={runAllTests} disabled={isRunning}>
           {isRunning ? '⏳ Running...' : '🔄 Run All Tests'}
         </button>
-        <button class="nes-btn is-success w-full text-xs" on:click={createDevSession}> 🔑 Create Dev Session </button>
-        <button class="nes-btn is-normal w-full text-xs" on:click={checkAuthStatus}> 👤 Check Auth Status </button>
-        <button class="nes-btn is-error w-full text-xs" on:click={clearSession}> 🚪 Clear Session </button>
+        <button class="nes-btn is-success w-full text-xs" onclick={createDevSession}> 🔑 Create Dev Session </button>
+        <button class="nes-btn is-normal w-full text-xs" onclick={checkAuthStatus}> 👤 Check Auth Status </button>
+        <button class="nes-btn is-error w-full text-xs" onclick={clearSession}> 🚪 Clear Session </button>
       </div>
     </div>
   {/snippet}
@@ -287,7 +294,7 @@
             <p class="text-yellow-700">http://localhost:5176</p>
           </div>
           <div class="text-xs">
-            <span class="nes-text font-bold">Authentication:</span>
+            <span class="nes-text font-bold">Authentication</span>
             <p class="text-yellow-700">DEV_BYPASS_AUTH enabled</p>
           </div>
           <div class="text-xs">

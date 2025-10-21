@@ -178,7 +178,7 @@ https://svelte.dev/e/expected_token -->
     if (!device) return;
     const vertexShaderCode = `
       struct VertexInput {
-        @location(0) position: vec;
+        @location(0) position vec;
 3f,
         @location(1) texCoord: vec2f
         @location(2) color: vec4f
@@ -190,7 +190,7 @@ https://svelte.dev/e/expected_token -->
         @location(8) quantizationLevel: f32;
       }
       struct VertexOutput {
-        @builtin(position) position: vec;
+        @builtin(position) position vec;
 4f,
         @location(0) texCoord: vec2f
         @location(1) color: vec4f
@@ -363,15 +363,15 @@ https://svelte.dev/e/expected_token -->
         buffers: [{,
           arrayStride: 72, // 3+2+4+1+1+1+1+1+1 floats * 4 bytes = 60, padded to 72 for alignment
           attributes: [
-            { format: 'float32x3', offset: 0, shaderLocation: 0 },  // position
-            { format: 'float32x2', offset: 12, shaderLocation: 1 }, // texCoord
-            { format: 'float32x4', offset: 20, shaderLocation: 2 }, // color
-            { format: 'float32', offset: 36, shaderLocation: 3 },   // elementId
-            { format: 'float32', offset: 40, shaderLocation: 4 },   // documentId
-            { format: 'float32', offset: 44, shaderLocation: 5 },   // bankId
-            { format: 'float32', offset: 48, shaderLocation: 6 },   // riskLevel
-            { format: 'float32', offset: 52, shaderLocation: 7 },   // compressionRatio
-            { format: 'float32', offset: 56, shaderLocation: 8 },   // quantizationLevel
+            { format: 'float32x3', offset: 0, shaderLocation 0 },  // position
+            { format: 'float32x2', offset: 12, shaderLocation 1 }, // texCoord
+            { format: 'float32x4', offset: 20, shaderLocation 2 }, // color
+            { format: 'float32', offset: 36, shaderLocation 3 },   // elementId
+            { format: 'float32', offset: 40, shaderLocation 4 },   // documentId
+            { format: 'float32', offset: 44, shaderLocation 5 },   // bankId
+            { format: 'float32', offset: 48, shaderLocation 6 },   // riskLevel
+            { format: 'float32', offset: 52, shaderLocation 7 },   // compressionRatio
+            { format: 'float32', offset: 56, shaderLocation 8 },   // quantizationLevel
           ]
         }]
       },
@@ -427,7 +427,7 @@ https://svelte.dev/e/expected_token -->
       memoryBankVertexBuffer = device.createBuffer({
         size: memoryBankVertices.byteLength,
         usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
-        mappedAtCreation: true,
+        mappedAtCreation true,
       });
       new Float32Array(memoryBankVertexBuffer.getMappedRange()).set(
         new Float32Array(memoryBankVertices)
@@ -447,7 +447,7 @@ https://svelte.dev/e/expected_token -->
       updateMemoryBankStatus();
       console.log(`🎮🏛️ NES-GPU enhanced vertex buffers created for ${currentDocs.length} documents`);
       console.log(`📊 Pipeline: ${nesStats.totalPipelineTime.toFixed(2)}ms | Textures: ${frameStats.textureStreamingTime.toFixed(2)}ms`);
-      console.log(`💾 Quantization savings: ${frameStats.quantizationSavings.toFixed(1)}% | Compression: ${frameStats.compressionRatio.toFixed(1)}x`);
+      console.log(`💾 Quantization savings: ${frameStats.quantizationSavings.toFixed(1)}% | Compression ${frameStats.compressionRatio.toFixed(1)}x`);
     } catch (error) {
       console.error('❌ Enhanced vertex buffer creation failed:', error);
       // Fallback to basic vertex buffer creation
@@ -472,7 +472,7 @@ https://svelte.dev/e/expected_token -->
               confidenceLevel: doc.confidenceLevel || 0.5,
               riskIndicator: doc.riskLevel === 'critical' || doc.riskLevel === 'high'
             },
-            region: getBankForTextureStorage(doc.bankAssignment || 'PRG_ROM'),
+            region getBankForTextureStorage(doc.bankAssignment || 'PRG_ROM'),
             compress: true,
           }
         );
@@ -582,7 +582,7 @@ https://svelte.dev/e/expected_token -->
         limit: 50,
         threshold: 0.7,
         useNESCache: true
-        enableGPUAcceleration: true,
+        enableGPUAcceleration true,
       });
       // Enhance results with full integration data
       const enhancedResults: EnhancedLegalDocument[] = searchResults.map((doc, index) => {
@@ -590,7 +590,7 @@ https://svelte.dev/e/expected_token -->
         const quantLevel = selectQuantizationLevel(doc);
         return {
           ...doc,
-          renderPosition: calculateMemoryPalacePosition(doc, index),
+          renderPosition calculateMemoryPalacePosition(doc, index),
           vertexBufferId: `vertex_${doc.id}`,
           bankAssignment,
           gpuTextureSlot: index % 256, // Distribute across texture array slots
@@ -684,7 +684,7 @@ https://svelte.dev/e/expected_token -->
           aiProcessed: file.metadata?.aiProcessed || false,
           vectorEmbedding: file.metadata?.vectorEmbedding
         },
-        renderPosition: calculateMemoryPalacePosition({ ;
+        renderPosition calculateMemoryPalacePosition({ ;
           id: file.id,
           riskLevel: file.metadata?.riskLevel || 'medium' ;
         } as LegalDocument, index),
@@ -1055,7 +1055,7 @@ const success = await initializeGPU();
       <span class="bg-cyan-400/10 px-2 py-1 rounded border border-cyan-400/20">FPS: {frameStats.fps}</span>
       <span class="bg-cyan-400/10 px-2 py-1 rounded border border-cyan-400/20">Pipeline: {frameStats.binaryPipelineTime.toFixed(1)}ms</span>
       <span class="bg-cyan-400/10 px-2 py-1 rounded border border-cyan-400/20">Vertices: {frameStats.verticesRendered.toLocaleString()}</span>
-      <span class="bg-cyan-400/10 px-2 py-1 rounded border border-cyan-400/20">Compression: {frameStats.compressionRatio.toFixed(1)}x</span>
+      <span class="bg-cyan-400/10 px-2 py-1 rounded border border-cyan-400/20">Compression {frameStats.compressionRatio.toFixed(1)}x</span>
       <span class="bg-cyan-400/10 px-2 py-1 rounded border border-cyan-400/20">Quant Savings: {frameStats.quantizationSavings.toFixed(1)}%</span>
     </div>
   </div>
@@ -1094,7 +1094,7 @@ const success = await initializeGPU();
         </select>
       </label>
       <label class="flex items-center gap-2 text-sm text-gray-300">
-        Quantization:
+        Quantization
         <select bind:value={quantizationProfile} class="bg-black/50 border border-gray-500 rounded px-2 py-1 text-gray-200 text-sm">
           <option value="legal_critical">Critical (FP32)</option>
           <option value="legal_standard">Standard (FP16)</option>
@@ -1112,13 +1112,13 @@ const success = await initializeGPU();
         class="flex-1 min-w-48 bg-black/50 border border-gray-500 rounded px-3 py-2 text-gray-200 placeholder-gray-400 text-sm"
       />
       <button
-        on:click={() => searchDocuments(searchQuery)}
+        onclick={() => searchDocuments(searchQuery)}
         class="px-3 py-2 bg-gradient-to-r from-cyan-400 to-blue-400 text-gray-900 rounded text-xs font-semibold hover:scale-105 transition-transform cursor-pointer border-none"
       >
         🔍 Search
       </button>
       <button
-        on:click={() => render()}
+        onclick={() => render()}
         class="px-3 py-2 bg-gradient-to-r from-cyan-400 to-blue-400 text-gray-900 rounded text-xs font-semibold hover:scale-105 transition-transform cursor-pointer border-none"
       >
         🔄 Render
@@ -1189,7 +1189,7 @@ const success = await initializeGPU();
             </div>
             <button
               class="px-6 py-3 bg-gradient-to-r from-cyan-400 to-blue-400 text-gray-900 rounded-md text-sm font-semibold hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-              on:click={() => documentUploader?.selectFiles()}
+              onclick={() => documentUploader?.selectFiles()}
               disabled={uploadInProgress}
             >
               📂 Browse Files
@@ -1348,7 +1348,7 @@ const success = await initializeGPU();
   </div>
   <div class="mt-4 p-3 bg-black/20 rounded border border-gray-700">
     <p class="my-1 text-xs text-gray-400">📄 Documents: {documents.length} | 🤖 AI Analysis: {aiAnalysis.length}</p>
-    <p class="my-1 text-xs text-gray-400">⚡ Mode: {viewMode} | 🗜️ Quantization: {quantizationProfile}</p>
+    <p class="my-1 text-xs text-gray-400">⚡ Mode: {viewMode} | 🗜️ Quantization {quantizationProfile}</p>
     <p class="my-1 text-xs text-gray-400">🎮 NES Memory: {formatMemoryUsage(frameStats.nesMemoryUsed)} | 💾 Savings: {frameStats.quantizationSavings.toFixed(1)}%</p>
   </div>
 </div>
@@ -1367,9 +1367,9 @@ const success = await initializeGPU();
   .text-shadow-glow {
     text-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
   }
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     .animate-pulse {
-      animation: none !important;
+      animation none !important;
     }
   }
 </style>

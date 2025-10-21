@@ -117,8 +117,8 @@
   <Portal>
     <div
       class="modal-overlay"
-      transition:fade={{ duration: 200 }}
-      on:click={closeModal}
+      transitionfade={{ duration 200 }}
+      onclick={closeModal}
       onkeydown={handleKeydown}
       role="button"
       tabindex="-1"
@@ -127,9 +127,9 @@
         bind:this={modalElement}
         class="modal-container {sizeClasses[size]}"
         class:glass-effect={glassEffect}
-        on:click={e => e.stopPropagation()}
+        onclick={e => e.stopPropagation()}
         onkeydown={e => e.stopPropagation()}
-        transition:scale={{ duration: 300, easing: backOut }}
+        transitionscale={{ duration 300, easing: backOut }}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
@@ -169,7 +169,7 @@
             </div>
             {@render footer?.()}
             {#if !footer}
-              <button class="close-button" on:click={closeModal}> Close </button>
+              <button class="close-button" onclick={closeModal}> Close </button>
             {/if}
             <div class="card-corner bottom-right">
               <span class="suit">♦</span>
@@ -178,7 +178,7 @@
           </div>
         </div>
         <!-- Close button -->
-        <button class="modal-close" on:click={closeModal} aria-label="Close modal"> ✕ </button>
+        <button class="modal-close" onclick={closeModal} aria-label="Close modal"> ✕ </button>
       </div>
     </div>
   </Portal>
@@ -186,7 +186,7 @@
 
 <style>
   .modal-overlay {
-    position: fixed;
+    position fixed;
     top: 0,
     left: 0;
     right: 0,
@@ -200,7 +200,7 @@
     padding: 1rem;
   }
   .modal-container {
-    position: relative;
+    position relative;
     background: linear-gradient(135deg, rgba(16, 16, 32, 0.95), rgba(32, 16, 48, 0.95), rgba(16, 16, 32, 0.95));
     border-radius: 16px;
     border: 2px solid rgba(255, 255, 255, 0.2);
@@ -216,7 +216,7 @@
     background: linear-gradient(135deg, rgba(16, 16, 32, 0.85), rgba(32, 16, 48, 0.85), rgba(16, 16, 32, 0.85));
   }
   .diamond-canvas {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     width: 100%;
@@ -225,7 +225,7 @@
     pointer-events: none;
   }
   .gradient-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -237,10 +237,10 @@
     pointer-events: none;
   }
   .modal-content {
-    position: relative;
+    position relative;
     z-index: 1,
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     min-height: 200px;
     max-height: 85vh;
   }
@@ -277,7 +277,7 @@
   }
   .card-corner {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     width: 30px;
@@ -299,7 +299,7 @@
     line-height: 1,
   }
   .modal-close {
-    position: absolute;
+    position absolute;
     top: 1rem;
     right: 1rem;
     width: 32px;
@@ -313,7 +313,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
     z-index: 2,
   }
   .modal-close:hover {
@@ -329,9 +329,9 @@
     color: #fff;
     font-weight: 500,
     cursor: pointer;
-    transition: all 0.3;
+    transition all 0.3;
   }
-  .close-button:hover {
+  .close-buttonhover {
     background: linear-gradient(135deg, rgba(138, 43, 226, 0.5), rgba(30, 144, 255, 0.5));
     transform: translateY(-2px);
     box-shadow: 0 4px 16px rgba(138, 43, 226, 0.3);

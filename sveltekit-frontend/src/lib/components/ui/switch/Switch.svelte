@@ -19,8 +19,8 @@
     height: 24px;
     background: #e5e7eb;
     border-radius: 9999px;
-    position: relative;
-    transition: background 0.2;
+    position relative;
+    transition background 0.2;
     display: inline-block;
   }
   .track.on {
@@ -28,16 +28,16 @@
   }
   .track::after {
     content: '';
-    position: absolute;
+    position absolute;
     top: 3px;
     left: 3px;
     width: 18px;
     height: 18px;
     background: white;
     border-radius: 9999px;
-    transition: transform 0.2;
+    transition transform 0.2;
   }
-  .track.on::after {
+  .track.onafter {
     transform: translateX(18px);
   }
 </style>

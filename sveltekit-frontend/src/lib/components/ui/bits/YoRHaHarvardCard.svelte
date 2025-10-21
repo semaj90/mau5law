@@ -95,8 +95,8 @@
     border: 1px solid var(--enhanced-border);
     border-radius: 8px;
     padding: 1.5rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
+    transition all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position relative;
     overflow: hidden;
   }
 
@@ -107,14 +107,14 @@
 
   .yorha-harvard-card:before {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
     height: 2px;
     background: linear-gradient(90deg, var(--enhanced-accent), var(--enhanced-accent-secondary));
     opacity: 0,
-    transition: opacity 0.3s ease;
+    transition opacity 0.3s ease;
   }
 
   .yorha-harvard-card:hover:before {
@@ -159,12 +159,12 @@ var(--enhanced-accent) {}
   .yorha-harvard-card--academic {
     background: var(--enhanced-bg-secondary);
     border: 2px solid var(--enhanced-accent-secondary);
-    position: relative;
+    position relative;
   }
 
   .yorha-harvard-card--academic:after {
     content: '';
-    position: absolute;
+    position absolute;
     top: 10px;
     right: 10px;
     width: 30px;
@@ -175,7 +175,7 @@ var(--enhanced-accent) {}
   }
 
   .gaming-header-accent {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -186,7 +186,7 @@ var(--enhanced-accent) 0%, {}
 var(--enhanced-accent-secondary) 50%, {}
 var(--enhanced-accent) 100% {}
     );
-    animation: pulse-glow 2s ease-in-out infinite alternate;
+    animation pulse-glow 2s ease-in-out infinite alternate;
   }
 
   .terminal-header {
@@ -306,7 +306,7 @@ var(--enhanced-accent) 100% {}
 
   .gaming-scan-lines:before {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -324,12 +324,12 @@ rgba(196, 30, 58, 0.05) 4px {}
 
   .gaming-border {
     border: 2px solid var(--enhanced-accent);
-    position: relative;
+    position relative;
   }
 
   .gaming-border:before {
     content: '';
-    position: absolute;
+    position absolute;
     top: -1px;
     left: -1px;
     right: -1px;

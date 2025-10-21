@@ -242,7 +242,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
     </div>
 
     <div class="flex items-center space-x-2">
-      <span class="text-sm text-gray-500">Acceleration:</span>
+      <span class="text-sm text-gray-500">Acceleration</span>
       <span class="px-2 py-1 rounded text-xs text-white {accelerationBadge.color}">
         {accelerationBadge.text}
       </span>
@@ -260,7 +260,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
       class="px-4 py-2 text-sm font-medium border-b-2 {activeTab === 'analyze'
         ? 'border-blue-500 text-blue-600'
         : 'border-transparent text-gray-500 hover:text-gray-700'}"
-      on:click={() => (activeTab = 'analyze')}
+      onclick={() => (activeTab = 'analyze')}
     >
       Document Analysis
     </button>
@@ -268,7 +268,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
       class="px-4 py-2 text-sm font-medium border-b-2 {activeTab === 'query'
         ? 'border-blue-500 text-blue-600'
         : 'border-transparent text-gray-500 hover:text-gray-700'}"
-      on:click={() => (activeTab = 'query')}
+      onclick={() => (activeTab = 'query')}
     >
       RAG Query
     </button>
@@ -290,7 +290,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
           ></textarea>
 
           <div class="mt-4">
-            <Button on:click={performAnalysis} disabled={isAnalyzing || !sampleLegalText.trim()} class="w-full">
+            <Button onclick={performAnalysis} disabled={isAnalyzing || !sampleLegalText.trim()} class="w-full">
               {#if isAnalyzing}
                 <svg
                   class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
@@ -443,7 +443,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
               </div>
             </div>
 
-            <Button on:click={performRAGQuery} disabled={isAnalyzing || !queryText.trim()} class="w-full">
+            <Button onclick={performRAGQuery} disabled={isAnalyzing || !queryText.trim()} class="w-full">
               {#if isAnalyzing}
                 <svg
                   class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
@@ -573,7 +573,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
 
   /* WebGPU acceleration indicators */
   .animate-spin {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
 
   @keyframes spin {

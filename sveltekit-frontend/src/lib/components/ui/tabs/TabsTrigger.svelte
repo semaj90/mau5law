@@ -21,7 +21,7 @@
   value
     ? 'bg-background text-foreground shadow-sm'
     : 'hover:bg-muted/50'} {className}"
-  on:click={handleClick}
+  onclick={handleClick}
 >
   {#if children}
     {@render children()}

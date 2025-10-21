@@ -111,14 +111,14 @@ https: //svelte.dev/e/js_parse_error -->
       issue: string;
       likelihood: number;
       impact: number;
-      mitigation: string;
+      mitigation string;
     }[];
     overallRisk: number
   }
   interface Recommendation {
     priority: 'immediate' | 'high' | 'medium' | 'low';
     category: 'evidence' | 'legal' | 'procedural' | 'strategic';
-    action: string;
+    action string;
     rationale: string;
     timeline: string;
   }
@@ -138,7 +138,7 @@ https: //svelte.dev/e/js_parse_error -->
     },
     states: {
       idle: {
-        on: {
+        on {
           SELECT_ITEMS: {
             actions: assign({
               selectedItems: ({ event }) => event.items,
@@ -172,7 +172,7 @@ https: //svelte.dev/e/js_parse_error -->
         }
       },
       complete: {
-        on: {
+        on {
           RESTART: {
             target: 'idle',
             actions: assign({
@@ -185,7 +185,7 @@ https: //svelte.dev/e/js_parse_error -->
         }
       },
       error: {
-        on: {
+        on {
           RETRY: {
             target: 'synthesizing',
             actions: assign({ error: null, loading: true })
@@ -290,19 +290,19 @@ https: //svelte.dev/e/js_parse_error -->
                     issue: "Technical complexity may confuse jury",
                     likelihood: 0.6,
                     impact: 0.7,
-                    mitigation: "Prepare clear visual aids and expert testimony in plain language",
+                    mitigation "Prepare clear visual aids and expert testimony in plain language",
                   },
                   {
                     issue: "Defense may challenge digital evidence authenticity",
                     likelihood: 0.8,
                     impact: 0.8,
-                    mitigation: "Ensure robust chain of custody documentation and expert certification",
+                    mitigation "Ensure robust chain of custody documentation and expert certification",
                   },
                   {
                     issue: "Witness credibility concerns",
                     likelihood: 0.4,
                     impact: 0.6,
-                    mitigation: "Prepare witnesses thoroughly and focus on corroborating physical evidence",
+                    mitigation "Prepare witnesses thoroughly and focus on corroborating physical evidence",
                   }
                 ],
                 overallRisk: 0.35
@@ -311,21 +311,21 @@ https: //svelte.dev/e/js_parse_error -->
                 {
                   priority: "immediate",
                   category: "evidence",
-                  action: "Conduct additional forensic analysis of backup systems",
+                  action "Conduct additional forensic analysis of backup systems",
                   rationale: "May reveal additional evidence of data destruction attempts",
                   timeline: "Within 2 weeks",
                 },
                 {
                   priority: "high",
                   category: "legal",
-                  action: "Prepare technical expert for jury testimony",
+                  action "Prepare technical expert for jury testimony",
                   rationale: "Complex digital evidence requires clear expert explanation",
                   timeline: "Before trial preparation",
                 },
                 {
                   priority: "medium",
                   category: "strategic",
-                  action: "Consider plea negotiations based on cooperation",
+                  action "Consider plea negotiations based on cooperation",
                   rationale: "Defendant may provide information about broader criminal network",
                   timeline: "After initial evidence presentation",
                 }
@@ -438,7 +438,7 @@ https: //svelte.dev/e/js_parse_error -->
         </div>
         {#if $state.context.synthesisResult}
           <button
-            on:click={exportSynthesis}
+            onclick={exportSynthesis}
             class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
           >
             <Download class="w-4 h-4" />
@@ -530,7 +530,7 @@ https: //svelte.dev/e/js_parse_error -->
           {selectedCount} items selected for synthesis
         </div>
         <button
-          on:click={startSynthesis}
+          onclick={startSynthesis}
           disabled={selectedCount === 0}
           class="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
@@ -566,13 +566,13 @@ https: //svelte.dev/e/js_parse_error -->
       </div>
       <div class="mt-4 flex gap-3">
         <button
-          on:click={() => send({ type: 'RETRY' })}
+          onclick={() => send({ type: 'RETRY' })}
           class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
         >
           Retry Synthesis
         </button>
         <button
-          on:click={() => send({ type: 'RESTART' })}
+          onclick={() => send({ type: 'RESTART' })}
           class="px-4 py-2 border border-red-300 text-red-700 rounded-md hover:bg-red-50 transition-colors"
         >
           Start Over
@@ -581,7 +581,7 @@ https: //svelte.dev/e/js_parse_error -->
     </div>
   {:else if $state.matches('complete') && $state.context.synthesisResult}
     <!-- Synthesis Results -->
-    <div class="space-y-6" transitionfly={{ y: 20, duration: 300 }}>
+    <div class="space-y-6" transitionfly={{ y: 20, duration 300 }}>
       <!-- Executive Summary -->
       <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
         <h2 class="text-xl font-semibold text-blue-900 mb-4 flex items-center gap-2">
@@ -772,13 +772,13 @@ https: //svelte.dev/e/js_parse_error -->
       <!-- Action Buttons -->
       <div class="flex gap-4">
         <button
-          on:click={() => send({ type: 'RESTART' })}
+          onclick={() => send({ type: 'RESTART' })}
           class="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
         >
           New Synthesis
         </button>
         <button
-          on:click={exportSynthesis}
+          onclick={exportSynthesis}
           class="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
         >
           <Download class="w-4 h-4" />

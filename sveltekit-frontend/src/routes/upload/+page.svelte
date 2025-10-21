@@ -116,7 +116,7 @@
           <h3>📋 Recent Uploads</h3>
           <button
             type="button"
-            on:click={loadRecentUploads}
+            onclick={loadRecentUploads}
             class="text-button"
           >
             {showRecentUploads ? 'Refresh' : 'Show'}
@@ -216,7 +216,7 @@
   }
   .info-sidebar {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1.5rem;
   }
   .info-card {
@@ -254,14 +254,14 @@
     color: var(--accent-primary);
     cursor: pointer;
     font-size: 0.875rem;
-    text-decoration: underli;
+    text-decoration underli;
   }
-  .text-button:hover {
+  .text-buttonhover {
     color: var(--accent-primary-dark);
   }
   .recent-uploads {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
   }
   .upload-item {

@@ -54,7 +54,7 @@
   let webgpuAccelerator = $state<any>(null);
   let processingMetrics = $state({
     tokensPerSecond: 0,
-    gpuUtilization: 0,
+    gpuUtilization 0,
     memoryUsage: 0,
   });
   // Dialog state for analysis panel
@@ -87,7 +87,7 @@
         isConnected = false;
       };
     } catch (error) {
-      console.error('Failed to initialize connection:', error);
+      console.error('Failed to initialize connection', error);
       isConnected = false;
       wsConnection = null;
     }
@@ -377,7 +377,7 @@
             </Tooltip.Root>
           {/if}
 
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={clearChat} aria-label="Clear chat">Clear</Button>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={clearChat} aria-label="Clear chat">Clear</Button>
         </div>
       </div>
     </div>
@@ -445,11 +445,11 @@
           bind:value={currentMessage}
           placeholder="Ask about legal matters..."
           disabled={isTyping || !isConnected}
-          on:keydown={handleKeydown}
+          onkeydown={handleKeydown}
           class="flex-1 min-h-[40px] max-h-[120px] resize-none"
         />
         <Button
-          on:click={sendMessage}
+          onclick={sendMessage}
           disabled={!currentMessage.trim() || isTyping || !isConnected}
           class="self-end bits-btn bits-btn"
         >

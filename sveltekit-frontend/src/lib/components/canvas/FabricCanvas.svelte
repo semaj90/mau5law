@@ -94,7 +94,7 @@
           width,
           height,
           backgroundColor: '#f8fafc',
-          selection: !readOnly,
+          selection !readOnly,
         });
         if (gridEnabled) {
           drawGrid(fabric);
@@ -141,11 +141,11 @@
   function setupCanvasEvents() {
     if (!fabricCanvas) return;
     // Object selection
-    fabricCanvas.on('selection:created', (e: any) => {
+    fabricCanvas.on('selectioncreated', (e: any) => {
       selectedObject = e.selected?.[0] ?? null;
       onSelect?.({ object: selectedObject });
     });
-    fabricCanvas.on('selection:cleared', () => {
+    fabricCanvas.on('selectioncleared', () => {
       selectedObject = null;
     });
     // Object modification
@@ -503,32 +503,32 @@
         {/if}
         <!-- Add Annotation -->
         {#if !readOnly}
-          <Button class="bits-btn" variant="ghost" on:click={addAnnotation}>
+          <Button class="bits-btn" variant="ghost" onclick={addAnnotation}>
             <FileText class="h-4 w-4 mr-2" />
             Add Note
           </Button>
         {/if}
         <!-- Zoom Controls -->
-        <Button class="bits-btn" variant="ghost" on:click={zoomIn}>
+        <Button class="bits-btn" variant="ghost" onclick={zoomIn}>
           <ZoomIn class="h-4 w-4" />
         </Button>
-        <Button class="bits-btn" variant="ghost" on:click={zoomOut}>
+        <Button class="bits-btn" variant="ghost" onclick={zoomOut}>
           <ZoomOut class="h-4 w-4" />
         </Button>
         {#if hasSelectedObject && !readOnly}
-          <Button class="bits-btn" variant="destructive" on:click={deleteSelected}>
+          <Button class="bits-btn" variant="destructive" onclick={deleteSelected}>
             <Trash2 class="h-4 w-4 mr-2" />
             Delete
           </Button>
         {/if}
         <!-- Save & Export -->
         {#if !readOnly}
-          <Button class="bits-btn" variant="default" on:click={saveCanvas}>
+          <Button class="bits-btn" variant="default" onclick={saveCanvas}>
             <Save class="h-4 w-4 mr-2" />
             Save
           </Button>
         {/if}
-        <Button class="bits-btn" variant="ghost" on:click={exportCanvas}>
+        <Button class="bits-btn" variant="ghost" onclick={exportCanvas}>
           <Download class="h-4 w-4 mr-2" />
           Export
         </Button>
@@ -574,7 +574,7 @@
             <p class="text-gray-600">{selectedObject.type}</p>
           </div>
           <div>
-            <span class="font-medium">Position:</span>
+            <span class="font-medium">Position</span>
             <p class="text-gray-600">
               {Math.round(selectedObject.left)}, {Math.round(selectedObject.top)}
             </p>
@@ -587,7 +587,7 @@
             </p>
           </div>
           <div>
-            <span class="font-medium">Rotation:</span>
+            <span class="font-medium">Rotation</span>
             <p class="text-gray-600">{Math.round(selectedObject.angle)}°</p>
           </div>
           {#if selectedObject.evidenceId}

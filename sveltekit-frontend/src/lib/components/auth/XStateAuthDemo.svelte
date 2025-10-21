@@ -116,7 +116,7 @@
     xstateIntegration.uploadDocument(mockFile, {
       type: 'evidence',
       caseId: 'case_2024_001',
-      description: 'Key evidence document',
+      description 'Key evidence document',
     });
   }
   // Get status color based on health
@@ -161,7 +161,7 @@
         <div class="grid grid-cols-3 gap-4 text-sm">
           <div class="flex items-center gap-2">
             <CheckCircle class="h-4 w-4 {getHealthColor(health.auth)}" />
-            Authentication: {health.auth ? 'Healthy' : 'Issues'}
+            Authentication {health.auth ? 'Healthy' : 'Issues'}
           </div>
           <div class="flex items-center gap-2">
             <CheckCircle class="h-4 w-4 {getHealthColor(health.ai)}" />
@@ -228,7 +228,7 @@
               </div>
             </div>
             <Button
-              on:click={demonstrateLogin}
+              onclick={demonstrateLogin}
               disabled={isLoading || authenticated}
               class="w-full bits-btn bits-btn"
             >
@@ -266,17 +266,17 @@
             </AlertDescription>
           </Alert>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Button class="bits-btn" on:click={demonstrateAI} variant="ghost">
+            <Button class="bits-btn" onclick={demonstrateAI} variant="ghost">
 <Brain class="h-4 w-4 mr-2" />
               Test AI Assistant
-            <Button class="bits-btn" on:click={demonstrateUpload} variant="ghost">
+            <Button class="bits-btn" onclick={demonstrateUpload} variant="ghost">
 <Zap class="h-4 w-4 mr-2" />
               Demo File Upload
-            <Button class="bits-btn" on:click={demonstrateSessionActivity} variant="ghost">
+            <Button class="bits-btn" onclick={demonstrateSessionActivity} variant="ghost">
 <Settings class="h-4 w-4 mr-2" />
               Record Activity
           </div>
-          <Button on:click={demonstrateLogout} variant="error" class="w-full bits-btn bits-btn">
+          <Button onclick={demonstrateLogout} variant="error" class="w-full bits-btn bits-btn">
 <LogOut class="h-4 w-4 mr-2" />
             Demonstrate Logout
         </div>
@@ -318,10 +318,10 @@
               </div>
             {/if}
             <div class="flex gap-2">
-              <Button class="bits-btn" on:click={() =>
+              <Button class="bits-btn" onclick={() =>
 demoStep = 'dashboard'} variant="ghost">
                 Back to Dashboard
-              <Button class="bits-btn" on:click={demonstrateLogout} variant="error">
+              <Button class="bits-btn" onclick={demonstrateLogout} variant="error">
 <LogOut class="h-4 w-4 mr-2" />
                 Complete Demo
             </div>

@@ -70,12 +70,12 @@
     const demoEvidence = [
       {
         title: "Security Camera Footage",
-        description:
+        description
           "Camera footage from the main entrance showing suspect entering at 9:15 PM",
         type: "video",
         caseId: "case-001",
         tags: ["surveillance", "timestamp", "entrance"],
-        classification: {
+        classification {
           category: "visual",
           relevance: 0.95,
           confidence: 0.88,
@@ -83,12 +83,12 @@
       },
       {
         title: "Witness Statement - John Doe",
-        description:
+        description
           "First-hand account of the incident from witness who was present at the scene",
         type: "testimony",
         caseId: "case-001",
         tags: ["witness", "firsthand", "scene"],
-        classification: {
+        classification {
           category: "testimony",
           relevance: 0.82,
           confidence: 0.75,
@@ -96,12 +96,12 @@
       },
       {
         title: "Fingerprint Analysis Report",
-        description:
+        description
           "Forensic analysis of fingerprints found on the door handle",
         type: "document",
         caseId: "case-001",
         tags: ["forensics", "fingerprints", "physical"],
-        classification: {
+        classification {
           category: "forensic",
           relevance: 0.78,
           confidence: 0.92,
@@ -109,12 +109,12 @@
       },
       {
         title: "Phone Records",
-        description:
+        description
           "Call logs and text messages from suspect's phone for the relevant time period",
         type: "digital",
         caseId: "case-001",
         tags: ["communications", "timeline", "digital"],
-        classification: {
+        classification {
           category: "digital",
           relevance: 0.65,
           confidence: 0.85,
@@ -182,12 +182,12 @@
         </div>
         <div class="space-y-4">
           {#if !demoMode}
-            <Button class="bits-btn" on:click={() =>
+            <Button class="bits-btn" onclick={() =>
 startDemoMode()}>
               <Activity class="space-y-4" />
               Start Demo
           {/if}
-          <Button class="bits-btn" variant="ghost" on:click={() =>
+          <Button class="bits-btn" variant="ghost" onclick={() =>
 clearAllEvidence()}>
             <Database class="space-y-4" />
             Clear All
@@ -364,7 +364,7 @@ clearAllEvidence()}>
                 size="sm"
                 variant="ghost"
                 class="space-y-4 bits-btn bits-btn"
-                on:click={() =>
+                onclick={() =>
 (selectedTypes = ["video", "image"])}
               >
                 Visual Evidence
@@ -372,7 +372,7 @@ clearAllEvidence()}>
                 size="sm"
                 variant="ghost"
                 class="space-y-4 bits-btn bits-btn"
-                on:click={() =>
+                onclick={() =>
 (selectedTypes = ["testimony", "document"])}
               >
                 Testimonial
@@ -380,7 +380,7 @@ clearAllEvidence()}>
                 size="sm"
                 variant="ghost"
                 class="space-y-4 bits-btn bits-btn"
-                on:click={() =>
+                onclick={() =>
 {
                   selectedTypes = [];
                   searchQuery = "";

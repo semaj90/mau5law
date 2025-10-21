@@ -38,14 +38,14 @@
 <div class="minio-upload">
   <label for="file">Evidence file</label>
   <input id="file" type="file" onchange={e => (file = (e.target as HTMLInputElement).files?.[0] ?? null)} />
-  <button on:click={upload} disabled={$uploading}>Upload to MinIO</button>
+  <button onclick={upload} disabled={$uploading}>Upload to MinIO</button>
   <p>{$message}</p>
 </div>
 
 <style>
   .minio-upload {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 8px;
     max-width: 480px;
   }

@@ -132,7 +132,7 @@
     <p class="text-red-100 font-mono text-sm mb-4">{componentError.message}</p>
     <button
       class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-      on:click={() => { componentError = null, }}
+      onclick={() => { componentError = null, }}
       aria-label="Dismiss error and retry"
     >
       Retry
@@ -150,7 +150,7 @@
     role="button"
     aria-label="Upload evidence files - drag and drop or click to browse"
     tabindex="0"
-    on:click={() => document.getElementById('file-input')?.click()}
+    onclick={() => document.getElementById('file-input')?.click()}
     onkeydown={(e) => e.key === 'Enter' && document.getElementById('file-input')?.click()}
   >
     <input
@@ -219,7 +219,7 @@
     padding: 2rem;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     background: var(--background-alt, #f8f9fa);
   }
   .upload-zone:hover {
@@ -267,13 +267,13 @@
   }
   .upload-progress {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 1rem;
   }
   .upload-spinner {
     font-size: 2rem;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     from { transform: rotate(0deg), }
@@ -294,7 +294,7 @@
   .progress-fill {
     height: 100%;
     background: var(--primary, #007bff);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .file-preview {
     margin-top: 1rem;

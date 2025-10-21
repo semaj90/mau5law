@@ -55,7 +55,7 @@ https://svelte.dev/e/expected_token -->
       isProcessing = true;
       const sample = sampleTexts[sampleIndex];
       addLog(`🚀 Starting ${selectedMode} processing: "${sample.title}"`);
-      addLog(`📊 Target compression: ${compressionTarget}:1, Quality: ${qualityTier.toUpperCase()}`);
+      addLog(`📊 Target compression ${compressionTarget}:1, Quality: ${qualityTier.toUpperCase()}`);
       const requestData = {
         text: sample.text,
         model: 'nomic-embed-text',
@@ -63,7 +63,7 @@ https://svelte.dev/e/expected_token -->
         simd_config: {
           compressionRatio: compressionTarget
           qualityTier: qualityTier
-          enableGPUAcceleration: true
+          enableGPUAcceleration true
           semanticClustering: true
         },
         ui_target: 'component',
@@ -100,8 +100,8 @@ https://svelte.dev/e/expected_token -->
             // SIMD results
             compressedTiles: simdData.compressed_tiles || [],
             totalCompressionRatio: simdData.processing_stats?.total_compression_ratio || 0,
-            gpuUtilization: simdData.processing_stats?.gpu_utilization || 0,
-            semanticPreservation: simdData.processing_stats?.semantic_preservation_score || 0,
+            gpuUtilization simdData.processing_stats?.gpu_utilization || 0,
+            semanticPreservation simdData.processing_stats?.semantic_preservation_score || 0,
             // UI components
             instantComponents: simdData.ui_components?.instant_render || false,
             componentCount: simdData.ui_components?.instant_render ? simdData.compressed_tiles?.length || 0 : 0,
@@ -308,7 +308,7 @@ https://svelte.dev/e/expected_token -->
         </div>
         <div class="flex items-end">
           <Button class="bits-btn"
-            on:click={() =>
+            onclick={() =>
 processSingleText(Math.floor(Math.random() * sampleTexts.length))}
             disabled={isProcessing}
             class="w-full text-sm"
@@ -318,11 +318,11 @@ processSingleText(Math.floor(Math.random() * sampleTexts.length))}
       </div>
       <!-- Action Buttons -->
       <div class="flex flex-wrap gap-2">
-        <Button class="bits-btn" on:click={processBatchTexts} disabled={isProcessing} variant="ghost" size="sm">
+        <Button class="bits-btn" onclick={processBatchTexts} disabled={isProcessing} variant="ghost" size="sm">
 📦 Batch Process ({sampleTexts.length})
-        <Button class="bits-btn" on:click={benchmarkCompressionLevels} disabled={isProcessing} variant="ghost" size="sm">
+        <Button class="bits-btn" onclick={benchmarkCompressionLevels} disabled={isProcessing} variant="ghost" size="sm">
 🧪 Compression Benchmark
-        <Button class="bits-btn" on:click={clearAll} variant="ghost" size="sm">
+        <Button class="bits-btn" onclick={clearAll} variant="ghost" size="sm">
 🗑️ Clear All
       </div>
       <!-- System Statistics -->
@@ -416,7 +416,7 @@ processSingleText(Math.floor(Math.random() * sampleTexts.length))}
             <!-- SIMD Compression Stats -->
             <div class="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <span class="font-medium">Compression:</span>
+                <span class="font-medium">Compression</span>
                 <span class={getCompressionColor((result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).totalCompressionRatio)}>
                   {(result as { success?: any; simd_results?: any; result?: any; error?: any; totalCompressionRatio?: any; processingTime?: any; gpuUtilization?: any; memoryEfficiency?: any; componentCount?: any; cssOptimized?: any; renderingInstructions?: any; id?: any; title?: any; compressedTiles?: any; qualityTier?: any; processingMode?: any; type?: any; timestamp?: any; originalText?: any; semanticPreservation?: any; cacheHits?: any; instantComponents?: any }).totalCompressionRatio.toFixed(1)}:1
                 </span>
@@ -483,7 +483,7 @@ processSingleText(Math.floor(Math.random() * sampleTexts.length))}
         <h3 class="text-lg font-medium mb-2">No SIMD Text Processing Results Yet</h3>
         <p class="mb-4">Process your first text with ultra-compressed 7-bit tiling!</p>
         <Button class="bits-btn"
-          on:click={() =>
+          onclick={() =>
 processSingleText(0)}
           disabled={isProcessing}
         >
@@ -497,7 +497,7 @@ processSingleText(0)}
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex justify-between items-center">
           📝 Processing Logs
-          <Button class="bits-btn" on:click={() =>
+          <Button class="bits-btn" onclick={() =>
 processingLogs = []} variant="ghost" size="sm">
             Clear Logs
         </h3>
@@ -524,7 +524,7 @@ processingLogs = []} variant="ghost" size="sm">
   }
   /* Enhance tile visualizations */
   .grid > div {
-    transition: transform 0.2s ease-in-out;
+    transition transform 0.2s ease-in-out;
   }
   .grid > div:hover {
     transform: scale(1.05);
@@ -535,7 +535,7 @@ processingLogs = []} variant="ghost" size="sm">
     50% { opacity: 0.7, }
   }
   .processing {
-    animation: processing-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    animation processing-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
   /* Log terminal styling */
   .bg-black {

@@ -27,7 +27,7 @@
   <div
     use:overlay
     class="space-y-4"
-    transitifade={{ duration: 200 }}
+    transitifade={{ duration 200 }}
   ></div>
   <!-- Content -->
   <div

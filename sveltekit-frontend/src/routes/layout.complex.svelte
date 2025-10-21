@@ -94,7 +94,7 @@
   .app-main {
     background: var(--yorha-bg-primary);
     overflow-y: auto;
-    position: relative;
+    position relative;
   }
   .app-footer {
     background: var(--yorha-bg-tertiary);
@@ -113,7 +113,7 @@ grid-template-areas: {}
       grid-template-columns: 1fr;
     }
     .app-sidebar {
-      position: fixed;
+      position fixed;
       top: 0,
       left: 0;
       bottom: 0,

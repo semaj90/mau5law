@@ -4,12 +4,12 @@
   const demoCategories = [
     {
       name: 'AI & Processing',
-      icon: '🤖',
+      icon '🤖',
       demos: [
         {
           slug: 'ai-assistant',
           name: 'AI Legal Assistant',
-          description: 'Intelligent legal research and document analysis with Gemma embeddings',
+          description 'Intelligent legal research and document analysis with Gemma embeddings',
           features: ['Legal Research', 'Document Analysis', 'Case Recommendations'],
           status: 'active',
           complexity: 'high',
@@ -17,7 +17,7 @@
         {
           slug: 'cuda-streaming',
           name: 'CUDA Streaming',
-          description: 'Real-time GPU-accelerated document processing pipeline',
+          description 'Real-time GPU-accelerated document processing pipeline',
           features: ['GPU Processing', 'Real-time Streaming', 'CUDA Integration'],
           status: 'active',
           complexity: 'high',
@@ -25,7 +25,7 @@
         {
           slug: 'vector-search',
           name: 'Vector Intelligence',
-          description: 'Semantic search using vector embeddings and similarity matching',
+          description 'Semantic search using vector embeddings and similarity matching',
           features: ['Vector Embeddings', 'Semantic Search', 'Similarity Scoring'],
           status: 'active',
           complexity: 'medium',
@@ -34,12 +34,12 @@
     },
     {
       name: 'Legal Workflow',
-      icon: '⚖️',
+      icon '⚖️',
       demos: [
         {
           slug: 'evidence-canvas',
           name: 'Evidence Canvas',
-          description: 'Interactive evidence organization and case visualization',
+          description 'Interactive evidence organization and case visualization',
           features: ['Evidence Management', 'Visual Organization', 'Case Building'],
           status: 'active',
           complexity: 'medium',
@@ -47,7 +47,7 @@
         {
           slug: 'legal-research',
           name: 'Legal Research',
-          description: 'Advanced legal document search with precedent matching',
+          description 'Advanced legal document search with precedent matching',
           features: ['Document Search', 'Precedent Analysis', 'Legal Citations'],
           status: 'active',
           complexity: 'medium',
@@ -56,12 +56,12 @@
     },
     {
       name: 'Performance & UI',
-      icon: '🎮',
+      icon '🎮',
       demos: [
         {
           slug: 'webgpu',
           name: 'WebGPU Acceleration',
-          description: 'Hardware-accelerated computing for legal AI processing',
+          description 'Hardware-accelerated computing for legal AI processing',
           features: ['WebGPU Computing', 'Shader Programs', 'GPU Optimization'],
           status: 'active',
           complexity: 'high',
@@ -69,7 +69,7 @@
         {
           slug: 'gaming-ui',
           name: 'Gaming UI System',
-          description: 'YoRHa-inspired aesthetic with professional legal functionality',
+          description 'YoRHa-inspired aesthetic with professional legal functionality',
           features: ['Gaming Aesthetics', 'Professional UI', 'Theme System'],
           status: 'active',
           complexity: 'low',
@@ -77,7 +77,7 @@
         {
           slug: 'performance',
           name: 'Performance Dashboard',
-          description: 'Real-time system performance monitoring and optimization',
+          description 'Real-time system performance monitoring and optimization',
           features: ['Performance Metrics', 'Real-time Monitoring', 'System Health'],
           status: 'active',
           complexity: 'medium',
@@ -257,7 +257,7 @@
 
   .stat-item {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 0.5rem;
   }
@@ -327,7 +327,7 @@
     border: 1px solid var(--nier-border-primary);
     border-radius: 1rem;
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
 
   .demo-card:hover {
@@ -436,11 +436,11 @@
     padding: 1rem;
     background: var(--nier-accent-warm);
     color: var(--nier-bg-primary);
-    text-decoration: none;
+    text-decoration none;
     text-align: center;
     border-radius: 0.5rem;
     font-weight: bold;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
 
   .demo-launch-btn:hover {
@@ -477,7 +477,7 @@
 
   .footer-links a {
     color: var(--nier-accent-cool);
-    text-decoration: none;
+    text-decoration none;
   }
 
   .footer-links a:hover {
@@ -507,7 +507,7 @@
     }
 
     .footer-content {
-      flex-direction: column;
+      flex-direction column;
       text-align: center;
     }
   }

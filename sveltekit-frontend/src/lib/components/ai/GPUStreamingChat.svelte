@@ -157,7 +157,7 @@
 
 <div class="gpu-streaming-chat">
   <!-- Memory Stats Dashboard -->
-  <div class="memory-stats" transition:fade>
+  <div class="memory-stats" transitionfade>
     <div class="stat-item">
       <Cpu class="icon" />
       <span>Chunks: {memoryStats.chunksInMemory}</span>
@@ -182,7 +182,7 @@
   <div class="chat-container">
     <div class="messages-wrapper">
       {#each visibleMessages as message, i (i)}
-        <div class="message {message.role}" transitionslide={{ duration: 300 }}>
+        <div class="message {message.role}" transitionslide={{ duration 300 }}>
           <div class="message-role">
             {#if message.role === 'user'}
               <span class="role-icon">👤</span>
@@ -213,7 +213,7 @@
     </div>
     <!-- Similar Documents Panel -->
     {#if similarDocuments.length > 0}
-      <div class="similar-docs" transition:slide>
+      <div class="similar-docs" transitionslide>
         <h3>📚 Similar Documents</h3>
         {#each similarDocuments as doc}
           <div class="similar-doc">
@@ -247,14 +247,14 @@
         />
         <div class="button-group">
           {#if isStreaming}
-            <button type="button" on:click={stopStreaming} class="btn btn-stop"> Stop </button>
+            <button type="button" onclick={stopStreaming} class="btn btn-stop"> Stop </button>
           {:else}
             <button type="submit" disabled={!prompt.trim()} class="btn btn-send">
               <Zap size={16} />
               Send
             </button>
           {/if}
-          <button type="button" on:click={clearChat} class="btn btn-clear"> Clear </button>
+          <button type="button" onclick={clearChat} class="btn btn-clear"> Clear </button>
         </div>
       </div>
     </form>
@@ -264,7 +264,7 @@
 <style>
   .gpu-streaming-chat {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     height: 100vh;
     max-height: 800px;
     background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
@@ -299,7 +299,7 @@
   .messages-wrapper {
     flex: 1,
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .message {
@@ -307,7 +307,7 @@
     border-radius: 8px;
     padding: 1rem;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    position: relative;
+    position relative;
   }
   .message.user {
     background: rgba(59, 130, 246, 0.1);
@@ -344,7 +344,7 @@
     word-wrap: break-word;
   }
   .cursor {
-    animation: blink 1s infinite;
+    animation blink 1s infinite;
     color: #22c55;
   }
   @keyframes blink {
@@ -352,7 +352,7 @@
     51%, 100% { opacity: 0, }
   }
   .embedding-indicator {
-    position: absolute;
+    position absolute;
     top: 0.5rem;
     right: 0.5rem;
     display: flex;
@@ -421,7 +421,7 @@
   }
   .button-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .btn {
@@ -430,7 +430,7 @@
     border-radius: 6px;
     font-size: 0.875rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
     display: flex;
     align-items: center;
     justify-content: center;

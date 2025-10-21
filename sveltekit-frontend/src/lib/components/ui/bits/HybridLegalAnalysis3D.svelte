@@ -76,7 +76,7 @@ https://svelte.dev/e/expected_token -->
     confidenceScore: number;
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
     practiceArea: string;
-    jurisdiction: string;
+    jurisdiction string;
     keyFindings: string[];
     recommendations: string[];
     position3D?: THREE.Vector3;
@@ -252,7 +252,7 @@ https://svelte.dev/e/expected_token -->
               model: embeddingModel
               useGPU: true
               practiceArea: 'legal',
-              jurisdiction: 'us-federal',
+              jurisdiction 'us-federal',
             }
           );
           // Create analysis result
@@ -267,7 +267,7 @@ https://svelte.dev/e/expected_token -->
               : 0.5,
             riskLevel: assessRiskLevel(doc),
             practiceArea: determinePracticeArea(doc),
-            jurisdiction: 'us-federal',
+            jurisdiction 'us-federal',
             keyFindings: extractKeyFindings(doc),
             recommendations: generateRecommendations(doc),
             position3D: new THREE.Vector3(
@@ -510,7 +510,7 @@ https://svelte.dev/e/expected_token -->
       </div>
       <!-- Visualization Mode -->
       <div class="nes-field">
-        <label for="viz-select">3D Visualization:</label>
+        <label for="viz-select">3D Visualization</label>
         <div class="nes-select">
           <select bind:value={visualizationMode} id="viz-select">
             <option value="semantic-space">Semantic Space</option>
@@ -524,7 +524,7 @@ https://svelte.dev/e/expected_token -->
     <div class="action-buttons">
       <Button
         variant="ghost"
-        on:click={startHybridAnalysis}
+        onclick={startHybridAnalysis}
         disabled={isAnalyzing || documents.length === 0}
         class="nes-btn is-primary bits-btn bits-btn"
       >
@@ -539,7 +539,7 @@ https://svelte.dev/e/expected_token -->
         {/snippet}
       <Button
         variant="ghost"
-        on:click={checkSystemHealth}
+        onclick={checkSystemHealth}
         disabled={isAnalyzing}
         class="nes-btn is-warning bits-btn bits-btn"
       >
@@ -549,7 +549,7 @@ https://svelte.dev/e/expected_token -->
         {/snippet}
       <Button class="bits-btn"
         variant="ghost"
-        on:click={() =>
+        onclick={() =>
 enable3DVisualization = !enable3DVisualization}
         class="nes-btn {enable3DVisualization ? 'is-success' : 'is-normal'}"
       >
@@ -659,7 +659,7 @@ enable3DVisualization = !enable3DVisualization}
     padding: 1rem;
     overflow: hidden;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
   }
   .analysis-header {
     margin-bottom: 1rem;
@@ -709,7 +709,7 @@ enable3DVisualization = !enable3DVisualization}
   }
   .document-result {
     background: rgba(212, 197, 169, 0.1);
-    transition: transform 0.2s ease;
+    transition transform 0.2s ease;
   }
   .document-result:hover {
     transform: scale(1.02);

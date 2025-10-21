@@ -24,7 +24,7 @@
     {
       id: 'contract1',
       content: 'Employment contracts in California must include at-will employment clauses unless otherwise specified. Non-compete agreements are generally unenforceable except in limited circumstances involving trade secrets.',
-      metadata: { type: 'contract', jurisdiction: 'California', date: '2024-01-15' }
+      metadata: { type: 'contract', jurisdiction 'California', date: '2024-01-15' }
     },
     {
       id: 'precedent1',
@@ -34,7 +34,7 @@
     {
       id: 'statute1',
       content: 'Federal law requires all employment contracts to comply with minimum wage requirements under the Fair Labor Standards Act (FLSA). Exempt employees must meet specific salary and duties tests.',
-      metadata: { type: 'statute', jurisdiction: 'Federal', topic: 'Labor Law' }
+      metadata: { type: 'statute', jurisdiction 'Federal', topic: 'Labor Law' }
     }
   ]);
 
@@ -216,7 +216,7 @@
       <h2>Ask a Legal Question</h2>
 
       <div class="mb-4">
-        <label for="query_input" class="text-sm">Question:</label>
+        <label for="query_input" class="text-sm">Question</label>
         <textarea
           id="query_input"
           class="nes-textarea"
@@ -229,7 +229,7 @@
       <div class="flex gap-4">
         <button
           class="nes-btn is-primary"
-          on:click={handleQuery}
+          onclick={handleQuery}
           disabled={isLoading || isStreaming}
         >
           <MessageSquare size={16} class="inline" />
@@ -238,14 +238,14 @@
 
         <button
           class="nes-btn is-success"
-          on:click={handleStreamQuery}
+          onclick={handleStreamQuery}
           disabled={isLoading || isStreaming}
         >
           <Zap size={16} class="inline" />
           Stream Response
         </button>
 
-        <button class="nes-btn" on:click={addCustomDocument}>
+        <button class="nes-btn" onclick={addCustomDocument}>
           <FileText size={16} class="inline" />
           Add Document
         </button>

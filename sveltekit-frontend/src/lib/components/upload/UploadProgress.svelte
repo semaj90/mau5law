@@ -114,8 +114,8 @@
 <div class="flex flex-col gap-2 w-full">
   <div class="flex items-center gap-2">
     <input type="file" onchange={onFileChange} />
-    <button on:click={startUpload} disabled={!file || uploading} class="btn">Upload</button>
-    <button on:click={cancelUpload} disabled={!uploading} class="btn-ghost">Cancel</button>
+    <button onclick={startUpload} disabled={!file || uploading} class="btn">Upload</button>
+    <button onclick={cancelUpload} disabled={!uploading} class="btn-ghost">Cancel</button>
   </div>
 
   <div aria-live="polite">
@@ -142,6 +142,6 @@
     background: var(--accent, #0ea5a4);
     height: 100%;
     width: 0%;
-    transition: width 300ms ease;
+    transition width 300ms ease;
   }
 </style>

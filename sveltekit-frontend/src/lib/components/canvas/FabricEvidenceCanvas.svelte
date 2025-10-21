@@ -19,7 +19,7 @@
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock - Canvas unavailable, fabric.js loading failed';
-      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+      notice.style.cssText = 'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 5000);
       // Return mock fabric for fallback
@@ -54,7 +54,7 @@
     status: 'uploading' | 'processing' | 'ready' | 'error';
     size: number;
     mimeType: string;
-    position: { x: number; y: number }
+    position { x: number; y: number }
     previewUrl?: string;
     aiAnalysis?: {
       summary?: string;
@@ -73,7 +73,7 @@
     width?: number;
     height?: number;
     evidenceItems?: EvidenceItem[];
-    onEvidenceMove?: (id: string, position: { x: number; y: number }) => void;
+    onEvidenceMove?: (id: string, position { x: number; y: number }) => void;
     onEvidenceSelect?: (id: string | null) => void;
     onDropZone?: (data: { x: number; y: number; files?: File[] }) => void;
   }
@@ -125,7 +125,7 @@
       width,
       height,
       backgroundColor: '#f8fafc',
-      selection: true
+      selection true
       preserveObjectStacking: true
       imageSmoothingEnabled: true
       allowTouchScrolling: false
@@ -178,14 +178,14 @@
   function setupEventHandlers() {
     if (!fabricCanvas) return;
     // Object selection
-    fabricCanvas.on('selection:created', (e) => {
+    fabricCanvas.on('selectioncreated', (e) => {
       const activeObject = e.selected?.[0];
       if (activeObject && activeObject.data?.evidenceId) {
         selectedEvidence = activeObject.data.evidenceId;
         onEvidenceSelect?.(selectedEvidence);
       }
     });
-    fabricCanvas.on('selection:cleared', () => {
+    fabricCanvas.on('selectioncleared', () => {
       selectedEvidence = null;
       onEvidenceSelect?.(null);
     });
@@ -316,8 +316,8 @@
     objectsToRemove.forEach(obj => fabricCanvas.remove(obj));
     fabricCanvas.renderAll();
   }
-  async function handleExternalFileDrop(files: File[], position: { x: number; y: number }) {
-    console.log('🎯 Evidence files dropped:', files, 'at position:', position);
+  async function handleExternalFileDrop(files: File[], position { x: number; y: number }) {
+    console.log('🎯 Evidence files dropped:', files, 'at position', position);
     // Initialize MinIO-WebGPU evidence service if not already done
     if (!evidenceService) {
       const { MinIOWebGPUEvidenceService } = await import('$lib/services/minio-webgpu-evidence-service');
@@ -379,7 +379,7 @@
     });
   }
   // WASM-enhanced file processing
-  async function tryWASMParsing(files: File[], position: { x: number; y: number }) {
+  async function tryWASMParsing(files: File[], position { x: number; y: number }) {
     try {
       // Use dynamic script loading for public directory files
       const { loadSIMDParser, checkWASMSupport } = await loadWASMWrapper();
@@ -398,7 +398,7 @@
             const result = wasmParser.parseForCanvas(bytes, {
               maxChunkSize: 3000,
               overlap: 200,
-              enableEntityExtraction: true,
+              enableEntityExtraction true,
             });
             // Create enhanced file object
             const enhancedFile = Object.assign(file, {
@@ -710,7 +710,7 @@
     }
   }
   // MinIO-WebGPU Evidence Processing Functions
-  async function createProcessingEvidenceObject(evidenceFile: any, position: { x: number; y: number }) {
+  async function createProcessingEvidenceObject(evidenceFile: any, position { x: number; y: number }) {
     if (!fabricCanvas) return;
     console.log(`🎨 Creating canvas object for: ${evidenceFile.name}`);
     // Create a visual representation immediately, update as processing completes
@@ -845,7 +845,7 @@
     evidenceObjects.set(jobId, finalCard);
     fabricCanvas.renderAll();
   }
-  function createFinalEvidenceCard(evidenceFile: any, processingResult: any, position: any) {
+  function createFinalEvidenceCard(evidenceFile: any, processingResult: any, position any) {
     const cardWidth = 220;
     const cardHeight = 160;
     const methodColor = processingResult.processingMethod === 'webgpu' ? '#10b981' :
@@ -977,7 +977,7 @@
   });
 </script>
 
-<div class="fabric-evidence-canvas-container" style="position: relative;">
+<div class="fabric-evidence-canvas-container" style="position relative;">
   <!-- Canvas Element -->
   <canvas
     bind:this={canvasElement}
@@ -988,9 +988,9 @@
   <!-- Canvas Controls -->
   <div class="canvas-controls">
     <div class="control-group">
-      <button on:click={zoomToFit} class="control-btn" title="Reset Zoom"> 🔍 Fit </button>
-      <button on:click={centerEvidence} class="control-btn" title="Center Evidence"> 🎯 Center </button>
-      <button on:click={() => (showGrid = !showGrid)} class="control-btn" title="Toggle Grid">
+      <button onclick={zoomToFit} class="control-btn" title="Reset Zoom"> 🔍 Fit </button>
+      <button onclick={centerEvidence} class="control-btn" title="Center Evidence"> 🎯 Center </button>
+      <button onclick={() => (showGrid = !showGrid)} class="control-btn" title="Toggle Grid">
         {showGrid ? '⊞' : '⊡'} Grid
       </button>
     </div>
@@ -1013,15 +1013,15 @@
 
 <style>
   .fabric-evidence-canvas-container {
-    position: relative;
+    position relative;
     display: inline-block;
   }
   .canvas-controls {
-    position: absolute;
+    position absolute;
     top: 10px;
     left: 10px;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 10px;
     z-index: 10,
   }
@@ -1042,14 +1042,14 @@
     cursor: pointer;
     font-size: 12px;
     font-weight: 500,
-    transition: background-color 0.2s;
+    transition background-color 0.2s;
   }
   .control-btn:hover {
     background: #2563eb;
   }
   .status-info {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 2px;
     background: rgba(0, 0, 0, 0.8);
     color: white;
@@ -1066,12 +1066,12 @@
     font-weight: bold;
   }
   .canvas-loading {
-    position: absolute;
+    position absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 16px;
     background: rgba(255, 255, 255, 0.95);
@@ -1085,7 +1085,7 @@
     border: 3px solid #e5e7eb;
     border-top: 3px solid #3b82f6;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     0% {

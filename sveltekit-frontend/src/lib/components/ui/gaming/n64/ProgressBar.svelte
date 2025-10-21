@@ -383,7 +383,7 @@
   .n64-progress-container {
     font-family: 'Rajdhani', 'Arial', sans-serif;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 8px;
     width: 100%;
   }
@@ -409,7 +409,7 @@
   }
   .n64-progress {
     /* Base N64 progress styling */
-    position: relative;
+    position relative;
     width: 100%;
     height: var(--progress-height);
     overflow: hidden;
@@ -420,7 +420,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    transition: all 300ms cubic-bezier(0.23, 1, 0.32, 1);
+    transition all 300ms cubic-bezier(0.23, 1, 0.32, 1);
     /* Remove default styles */
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -428,7 +428,7 @@
     outline: none;
   }
   .progress-track {
-    position: relative;
+    position relative;
     width: 100%;
     height: 100%;
     background: var(--track-bg);
@@ -441,11 +441,11 @@
       0 2px 4px rgba(0, 0, 0, 0.3);
   }
   .progress-bar {
-    position: relative;
+    position relative;
     height: 100%;
     background: var(--bar-bg);
     border-radius: var(--progress-border-radius);
-    transition: width var(--animation-duration, 500)ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition width var(--animation-duration, 500)ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
     overflow: hidden;
     /* Enhanced 3D styling */
     box-shadow: var(--bar-shadow);
@@ -454,7 +454,7 @@
   /* Indeterminate animation */
   .n64-progress.indeterminate .progress-bar {
     width: 30% !important;
-    animation: indeterminateProgress 2s ease-in-out infinite;
+    animation indeterminateProgress 2s ease-in-out infinite;
     transform-origin: left center;
   }
   @keyframes indeterminateProgress {
@@ -470,7 +470,7 @@
   }
   /* Texture streaming effect */
   .texture-stream {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -482,7 +482,7 @@
       rgba(255, 255, 255, 0.1) 4px,
       rgba(255, 255, 255, 0.1) 8px
     );
-    animation: textureStream 1s linear infinite;
+    animation textureStream 1s linear infinite;
     opacity: 0.6,
   }
   @keyframes textureStream {
@@ -491,7 +491,7 @@
   }
   /* Bar lighting overlay */
   .bar-lighting {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -508,7 +508,7 @@
   }
   /* Bar reflection */
   .bar-reflection {
-    position: absolute;
+    position absolute;
     top: 10%;
     left: 10%;
     right: 60%;
@@ -525,7 +525,7 @@
   }
   /* Progress glow effect */
   .progress-glow {
-    position: absolute;
+    position absolute;
     top: -2px;
     left: -2px;
     right: -2px;
@@ -543,7 +543,7 @@
   }
   /* Wave effect */
   .wave-effect {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -554,7 +554,7 @@
       rgba(255, 255, 255, 0.3) 50%,
       transparent 100%
     );
-    animation: waveProgress 2s ease-in-out infinite;
+    animation waveProgress 2s ease-in-out infinite;
     opacity: 0.6,
   }
   @keyframes waveProgress {
@@ -569,7 +569,7 @@
   }
   /* Progress particles */
   .progress-particles {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -581,12 +581,12 @@
   .progress-particles:: before
   .progress-particles::after {
     content: '';
-    position: absolute;
+    position absolute;
     width: 2px;
     height: 2px;
     background: rgba(255, 255, 255, 0.8);
     border-radius: 50%;
-    animation: floatProgressParticles 1.5s ease-out infinite;
+    animation floatProgressParticles 1.5s ease-out infinite;
   }
   .progress-particles::before {
     top: 30%;
@@ -614,7 +614,7 @@
   }
   /* Track fog effect */
   .track-fog {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -630,7 +630,7 @@
   }
   /* Loading indicator */
   .loading-indicator {
-    position: absolute;
+    position absolute;
     right: 8px;
     top: 50%;
     transform: translateY(-50%);
@@ -642,7 +642,7 @@
     border: 2px solid transparent;
     border-top: 2px solid rgba(255, 255, 255, 0.8);
     border-radius: 50%;
-    animation: progressSpin 1s linear infinite;
+    animation progressSpin 1s linear infinite;
   }
   @keyframes progressSpin {
     to { transform: rotate(360deg), }
@@ -658,7 +658,7 @@
   }
   /* State variations */
   .n64-progress.complete {
-    animation: completeProgress 0.6s ease-out;
+    animation completeProgress 0.6s ease-out;
   }
   @keyframes completeProgress {
     0% { transform: scale(1), }
@@ -718,34 +718,34 @@
       display: none;
     }
     .texture-stream {
-      animation: none;
+      animation none;
     }
   }
   /* Reduced motion support */
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     .n64-progress {
       transform: none !important;
     }
     .progress-bar {
-      transition: width 150ms ease;
+      transition width 150ms ease;
     }
     .texture-stream,
     .wave-effect,
     .progress-particles:: before
     .progress-particles::after {
-      animation: none;
+      animation none;
     }
     .n64-progress.indeterminate .progress-bar {
-      animation: none;
+      animation none;
       width: 50% !important;
     }
     .n64-spinner {
-      animation: none;
+      animation none;
       border: 2px solid rgba(255, 255, 255, 0.8);
       border-right-color: transparent;
     }
     .n64-progress.complete {
-      animation: none;
+      animation none;
     }
   }
   /* High contrast mode */

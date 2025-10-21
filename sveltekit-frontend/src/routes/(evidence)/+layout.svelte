@@ -12,13 +12,13 @@
 
   // Evidence navigation items
   const evidenceRoutes = [
-    { name: 'Evidence List', href: '/evidence', icon: '📋' },
-    { name: 'Upload Evidence', href: '/evidence/upload', icon: '⬆️' },
-    { name: 'Analysis Dashboard', href: '/evidence/analysis', icon: '🔍' },
-    { name: 'Evidence Canvas', href: '/evidence/canvas', icon: '🎨' },
-    { name: 'Evidence Board', href: '/evidence/board', icon: '📊' },
-    { name: 'Workspace', href: '/evidence/workspace', icon: '🏢' },
-    { name: 'Interactive Tools', href: '/evidence/interactive', icon: '⚡' },
+    { name: 'Evidence List', href: '/evidence', icon '📋' },
+    { name: 'Upload Evidence', href: '/evidence/upload', icon '⬆️' },
+    { name: 'Analysis Dashboard', href: '/evidence/analysis', icon '🔍' },
+    { name: 'Evidence Canvas', href: '/evidence/canvas', icon '🎨' },
+    { name: 'Evidence Board', href: '/evidence/board', icon '📊' },
+    { name: 'Workspace', href: '/evidence/workspace', icon '🏢' },
+    { name: 'Interactive Tools', href: '/evidence/interactive', icon '⚡' },
   ];
 
   // Get current route
@@ -82,7 +82,7 @@
   .evidence-layout {
     min-height: 100vh;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     background: var(--nier-bg-primary, #0a0a0a);
     color: var(--nier-text-primary, #f0f0f0);
   }
@@ -135,10 +135,10 @@
     padding: 0.5rem 1rem;
     border: 1px solid var(--nier-border-primary, #333);
     border-radius: 0.5rem;
-    text-decoration: none;
+    text-decoration none;
     color: var(--nier-text-secondary, #ccc);
     background: var(--nier-bg-primary, #0a0a0a);
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
 
   .evidence-nav-item:hover {
@@ -227,10 +227,10 @@
     padding: 0.5rem 1rem;
     border: 1px solid var(--nier-border-primary, #333);
     border-radius: 0.5rem;
-    text-decoration: none;
+    text-decoration none;
     color: var(--nier-text-primary, #f0f0f0);
     background: var(--nier-bg-primary, #0a0a0a);
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     font-size: 0.9rem;
   }
 
@@ -246,7 +246,7 @@
     }
 
     .evidence-footer-content {
-      flex-direction: column;
+      flex-direction column;
       text-align: center;
       gap: 1rem;
     }

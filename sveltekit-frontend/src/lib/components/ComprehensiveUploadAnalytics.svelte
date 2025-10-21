@@ -205,7 +205,7 @@
       // Track file selection
       uploadActor.send({
         type: 'TRACK_USER_ACTION',
-        action: 'file_selection',
+        action 'file_selection',
         data: {
           fileCount: limitedFiles.length,
           totalSize: limitedFiles.reduce((sum, file) => sum + file.size, 0),
@@ -236,7 +236,7 @@
     }
     selectedFiles = [];
   }
-  function handlePromptReaction(promptId: string, reaction: 'accepted' | 'dismissed' | 'ignored') {
+  function handlePromptReaction(promptId: string, reaction 'accepted' | 'dismissed' | 'ignored') {
     if (uploadActor) {
       uploadActor.send({
         type: 'USER_REACTED_TO_PROMPT',
@@ -290,13 +290,13 @@
           <div class="prompt-actions">
             <button
               class="btn-accept"
-              on:click={() => handlePromptReaction(prompt.id, 'accepted')}
+              onclick={() => handlePromptReaction(prompt.id, 'accepted')}
             >
               ✓ Accept
             </button>
             <button
               class="btn-dismiss"
-              on:click={() => handlePromptReaction(prompt.id, 'dismissed')}
+              onclick={() => handlePromptReaction(prompt.id, 'dismissed')}
             >
               ✕ Dismiss
             </button>
@@ -334,7 +334,7 @@
         />
         <button
           class="btn-select-files"
-          on:click={() => fileInput?.click()}
+          onclick={() => fileInput?.click()}
         >
           Select Files
         </button>
@@ -362,10 +362,10 @@
         {/each}
         {#if !isUploading && !isComplete}
           <div class="file-actions">
-            <button class="nes-btn is-primary" on:click={startUpload}>
+            <button class="nes-btn is-primary" onclick={startUpload}>
               Start Upload & Analysis
             </button>
-            <button class="nes-btn" on:click={() => { selectedFiles = [], }}>
+            <button class="nes-btn" onclick={() => { selectedFiles = [], }}>
               Clear Files
             </button>
           </div>
@@ -420,7 +420,7 @@
         {/each}
       </div>
       <div class="upload-actions">
-        <button class="btn-cancel" on:click={cancelUpload}>
+        <button class="btn-cancel" onclick={cancelUpload}>
           Cancel Upload
         </button>
       </div>
@@ -495,13 +495,13 @@
           <div class="prompt-actions">
             <button
               class="nes-btn is-primary"
-              on:click={() => handlePromptReaction(prompt.id, 'accepted')}
+              onclick={() => handlePromptReaction(prompt.id, 'accepted')}
             >
               Let's Do It
             </button>
             <button
               class="nes-btn"
-              on:click={() => handlePromptReaction(prompt.id, 'dismissed')}
+              onclick={() => handlePromptReaction(prompt.id, 'dismissed')}
             >
               Maybe Later
             </button>
@@ -520,10 +520,10 @@
         </div>
       {/each}
       <div class="error-actions">
-        <button class="btn-retry" on:click={retryUpload}>
+        <button class="btn-retry" onclick={retryUpload}>
           Retry Upload
         </button>
-        <button class="btn-reset" on:click={resetUpload}>
+        <button class="btn-reset" onclick={resetUpload}>
           Start Over
         </button>
       </div>
@@ -559,11 +559,11 @@
   <!-- Action Buttons -->
   {#if isComplete}
     <div class="final-actions">
-      <button class="nes-btn is-primary" on:click={resetUpload}>
+      <button class="nes-btn is-primary" onclick={resetUpload}>
         Upload More Files
       </button>
       {#if enableAIPrompts}
-        <button class="nes-btn" on:click={requestAISuggestions}>
+        <button class="nes-btn" onclick={requestAISuggestions}>
           Get AI Suggestions
         </button>
       {/if}
@@ -655,7 +655,7 @@
     border-radius: 0.75rem;
     padding: 2rem;
     text-align: center;
-    transition: all 0.2;
+    transition all 0.2;
     margin-bottom: 2rem;
   }
   .file-drop-zone.drag-over {
@@ -668,7 +668,7 @@
   }
   .drop-zone-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 1rem;
   }
@@ -695,7 +695,7 @@
   }
   .file-info {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
   .file-name {
@@ -733,7 +733,7 @@
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #3b82f6, #10b981);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .pipeline-status {
     display: flex;
@@ -867,7 +867,7 @@
     border-radius: 0.5rem;
     cursor: pointer;
     font-weight: 500,
-    transition: background 0.2;
+    transition background 0.2;
   }
   .btn-primary:hover {
     background: #2563eb;
@@ -880,7 +880,7 @@
     border-radius: 0.5rem;
     cursor: pointer;
     font-weight: 500,
-    transition: background 0.2;
+    transition background 0.2;
   }
   .btn-secondary:hover {
     background: #4b5563;
@@ -973,16 +973,16 @@
       padding: 1rem;
     }
     .upload-header {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
       align-items: flex-start;
     }
     .results-summary {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
     }
     .file-actions, .final-actions, .error-actions {
-      flex-direction: column;
+      flex-direction column;
     }
     .analytics-content {
       grid-template-columns: 1fr;

@@ -221,7 +221,7 @@ https://svelte.dev/e/js_parse_error -->
   /* Links */
   :global(.prose a) {
     color: #2563eb;
-    text-decoration: underli;
+    text-decoration underli;
 }
   :global($1) {
     color: #1d4ed8;

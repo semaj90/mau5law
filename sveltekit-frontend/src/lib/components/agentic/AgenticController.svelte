@@ -26,7 +26,7 @@
   }
 
   interface FixSuggestion {
-    suggestion: string;
+    suggestion string;
     successRate: number;
     similarError: string;
     relevance: number;
@@ -183,7 +183,7 @@
       <span class="agentic-subtitle">OCR → Embeddings → RAG</span>
     </h2>
 
-    <button class="refresh-btn" on:click={fetchStatus} disabled={loading}>
+    <button class="refresh-btn" onclick={fetchStatus} disabled={loading}>
       {loading ? '🔄' : '↻'} Refresh
     </button>
   </div>
@@ -192,7 +192,7 @@
   {#if error}
     <div class="error-alert">
       ❌ {error}
-      <button on:click={() => (error = '')}>×</button>
+      <button onclick={() => (error = '')}>×</button>
     </div>
   {/if}
 
@@ -232,16 +232,16 @@
     <div
       class="drop-zone"
       class:drag-active={dragActive}
-      on:drop={handleDrop}
-      on:dragover={handleDragOver}
-      on:dragleave={handleDragLeave}
+      ondrop={handleDrop}
+      ondragover={handleDragOver}
+      ondragleave={handleDragLeave}
       role="button"
       tabindex="0"
     >
       {#if selectedFile}
         <div class="file-selected">
           📄 {selectedFile.name}
-          <button on:click={() => (selectedFile = null)}>×</button>
+          <button onclick={() => (selectedFile = null)}>×</button>
         </div>
       {:else}
         <div class="drop-message">
@@ -255,7 +255,7 @@
     </div>
 
     {#if selectedFile}
-      <button class="upload-btn" on:click={uploadScreenshot} disabled={loading}>
+      <button class="upload-btn" onclick={uploadScreenshot} disabled={loading}>
         {loading ? '🔄 Processing...' : '🚀 Analyze Screenshot'}
       </button>
     {/if}
@@ -267,7 +267,7 @@
 
     <div class="query-input-group">
       <input type="text" bind:value={errorQuery} placeholder="Paste error message here..." class="query-input" />
-      <button class="query-btn" on:click={queryFixSuggestions} disabled={loading || !errorQuery.trim()}>
+      <button class="query-btn" onclick={queryFixSuggestions} disabled={loading || !errorQuery.trim()}>
         {loading ? '🔄' : '🔍'} Find Fixes
       </button>
     </div>
@@ -365,7 +365,7 @@
     color: var(--nier-accent-cool, #00ccff);
     border-radius: 0.5rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
 
   .refresh-btn:hover:not(:disabled) {
@@ -461,7 +461,7 @@
     padding: 2rem;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     margin-bottom: 1rem;
   }
 
@@ -493,7 +493,7 @@
   .file-input-label {
     color: var(--nier-accent-cool, #00ccff);
     cursor: pointer;
-    text-decoration: underline;
+    text-decoration underline;
   }
 
   .file-input-label input {
@@ -509,7 +509,7 @@
     border-radius: 0.5rem;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
 
   .upload-btn:hover:not(:disabled),
@@ -659,7 +659,7 @@
     }
 
     .agentic-header {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
       align-items: stretch;
     }
@@ -669,11 +669,11 @@
     }
 
     .query-input-group {
-      flex-direction: column;
+      flex-direction column;
     }
 
     .error-header {
-      flex-direction: column;
+      flex-direction column;
       gap: 0.5rem;
     }
   }

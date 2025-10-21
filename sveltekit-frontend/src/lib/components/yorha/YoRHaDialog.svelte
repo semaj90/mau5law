@@ -42,32 +42,32 @@ https://svelte.dev/e/attribute_duplicate -->
   let promptValue = $state(value);
   const typeConfig = {
     info: {
-      icon: "■",
+      icon "■",
       color: "var(--yorha-accent, #00ff41)",
       border: "var(--yorha-accent, #00ff41)",
     },
     success: {
-      icon: "✓",
+      icon "✓",
       color: "var(--yorha-accent, #00ff41)",
       border: "var(--yorha-accent, #00ff41)",
     },
     warning: {
-      icon: "⚠",
+      icon "⚠",
       color: "var(--yorha-warning, #ffaa00)",
       border: "var(--yorha-warning, #ffaa00)",
     },
     error: {
-      icon: "✕",
+      icon "✕",
       color: "var(--yorha-danger, #ff0041)",
       border: "var(--yorha-danger, #ff0041)",
     },
     confirm: {
-      icon: "?",
+      icon "?",
       color: "var(--yorha-secondary, #ffd700)",
       border: "var(--yorha-secondary, #ffd700)",
     },
     prompt: {
-      icon: "►",
+      icon "►",
       color: "var(--yorha-secondary, #ffd700)",
       border: "var(--yorha-secondary, #ffd700)",
     },
@@ -122,9 +122,9 @@ https://svelte.dev/e/attribute_duplicate -->
 {#if open}
   <div
     class="yorha-dialog-backdrop"
-    on:click={handleBackdropClick}
+    onclick={handleBackdropClick}
     onkeydown={handleKeydown}
-    transitionfade={{ duration: 150 }}
+    transitionfade={{ duration 150 }}
     role="dialog"
     aria-modal="true"
     aria-labelledby={title ? "dialog-title" : undefined}
@@ -136,7 +136,7 @@ https://svelte.dev/e/attribute_duplicate -->
       style="border-color: {config.border}"
       transitionfly={{
         y: position === "top" ? -50 : position === "bottom" ? 50 : 0,
-        duration: 250,
+        duration 250,
         easing: quintOut;
       }}
       tabindex="-1"
@@ -162,7 +162,7 @@ https://svelte.dev/e/attribute_duplicate -->
         {#if closable && !persistent}
           <button
             class="dialog-close"
-            on:click={handleClose}
+            onclick={handleClose}
             aria-label="Close dialog"
           >
             ✕
@@ -192,14 +192,14 @@ https://svelte.dev/e/attribute_duplicate -->
       <!-- Actions -->
       <div class="dialog-actions">
         {#if type === "confirm" || type === "prompt"}
-          <button class="dialog-button cancel" on:click={handleCancel}>
+          <button class="dialog-button cancel" onclick={handleCancel}>
             <span class="button-icon">✕</span>
             Cancel
           </button>
           <button
             class="dialog-button confirm"
             style="border-color: {config.color} color: {config.color}"
-            on:click={handleConfirm}
+            onclick={handleConfirm}
           >
             <span class="button-icon">✓</span>
             {type === "prompt" ? "Submit" : "Confirm"}
@@ -208,7 +208,7 @@ https://svelte.dev/e/attribute_duplicate -->
           <button
             class="dialog-button acknowledge"
             style="border-color: {config.color} color: {config.color}"
-            on:click={handleClose}
+            onclick={handleClose}
           >
             <span class="button-icon">■</span>
             OK
@@ -222,7 +222,7 @@ https://svelte.dev/e/attribute_duplicate -->
 {/if}
 <style>
   .yorha-dialog-backdrop {
-position: fixed;
+position fixed;
 top: 0,
     left: 0;
     right: 0,
@@ -233,7 +233,7 @@ align-items: center justify-content: center background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(1px);
   }
   .yorha-dialog {
-position: relative;
+position relative;
 background: var(--yorha-bg-secondary, #1a1a1a);
     border: 2px solid;
     font-family: var(--yorha-font-primary, "JetBrains Mono", monospace);
@@ -303,7 +303,7 @@ text-transform: uppercase; letter-spacing: 1px;
 background: transparent; border: 1px solid var(--yorha-text-muted, #808080);
     color: var(--yorha-text-muted, #808080);
 cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     flex-shrink: 0,
   }
   .dialog-close:hover {
@@ -317,7 +317,7 @@ cursor: pointer; display: flex; align-items: center; justify-content: center; fo
 overflow-y: auto }
   .prompt-input-group {
 display: flex;
-flex-direction: column gap: 8px;
+flex-direction column gap: 8px;
   }
   .prompt-label {
     font-size: 12px;
@@ -332,7 +332,7 @@ text-transform: uppercase; letter-spacing: 1px;
     color: var(--yorha-text-primary, #e0e0e0);
 font-family: inherit font-size: 14px;
     padding: 8px 12px;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .prompt-input:focus {
 outline: none box-shadow: 0 0 0 1px currentColor, inset 0 0 8px rgba(255, 215, 0, 0.1);
@@ -354,10 +354,10 @@ background: transparent; border: 1px solid var(--yorha-text-muted, #808080);
 font-family: inherit; font-size: 11px;
     font-weight: 600;
 text-transform: uppercase; letter-spacing: 1px;
-cursor: pointer; transition: all 0.2s ease;
+cursor: pointer; transition all 0.2s ease;
     min-width: 80px;
 justify-content: center, }
-  .dialog-button:hover {
+  .dialog-buttonhover {
     background: rgba(255, 255, 255, 0.05);
     transform: translateY(-1px);
   }
@@ -373,13 +373,13 @@ background: currentColor color: var(--yorha-bg-primary, #0a0a0a);
     font-size: 12px;
   }
 /* Terminal Scan Effect */ .scan-effect {
-    position: absolute;
+    position absolute;
     top: 0,
     left: -100%;
     width: 100%;
     height: 2px;
     opacity: 0.8,
-    animation: scan 3s ease-in-out infinite;
+    animation scan 3s ease-in-out infinite;
   }
   @keyframes scan {
     0% {
@@ -407,7 +407,7 @@ max-width: none }
     }
     .dialog-actions {
       padding: 10px 12px;
-flex-direction: column }
+flex-direction column }
     .dialog-button {
 min-width: auto }
     .dialog-top {

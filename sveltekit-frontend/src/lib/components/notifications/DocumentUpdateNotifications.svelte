@@ -82,7 +82,7 @@ https://svelte.dev/e/js_parse_error -->
   function toggleNotifications() {
     showNotifications = !showNotification;
   }
-  function getProgressWidth(notification: UpdateNotification): string {
+  function getProgressWidth(notification UpdateNotification): string {
     if ((notification as { data?: unknown; id?: unknown }).data.progress !== undefined) {
       return `${(notification as { data?: unknown; id?: unknown }).data.progress}%`;
     }
@@ -117,7 +117,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="flex items-center space-x-1">
         {#if notifications.length > 0}
           <button
-            on:click={clearAllNotifications}
+            onclick={clearAllNotifications}
             class="text-xs text-gray-500 hover:text-gray-700 px-2 py-1 rounded"
             title="Clear all"
           >
@@ -125,7 +125,7 @@ https://svelte.dev/e/js_parse_error -->
           </button>
         {/if}
         <button
-          on:click={toggleNotifications}
+          onclick={toggleNotifications}
           class="text-gray-500 hover:text-gray-700 p-1 rounded"
           title={showNotifications ? 'Hide notifications' : 'Show notifications'}
         >
@@ -184,7 +184,7 @@ https://svelte.dev/e/js_parse_error -->
   {#if showNotifications && visibleNotifications.length > 0}
     <div
       class="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 max-h-96 overflow-y-auto"
-      transitislide={{ duration: 200 }}
+      transitislide={{ duration 200 }}
     >
       <div class="p-3 border-b border-gray-200 dark:border-gray-700">
         <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">📋 Recent Updates</h4>
@@ -193,7 +193,7 @@ https://svelte.dev/e/js_parse_error -->
         {@const typedNotification = notification as UpdateNotification}
         <div
           class="p-3 border-b border-gray-100 dark:border-gray-600 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
-          transitislide={{ duration: 150 }}
+          transitislide={{ duration 150 }}
         >
           <div class="flex items-start justify-between">
             <div class="flex items-start space-x-2 flex-1">
@@ -240,7 +240,7 @@ https://svelte.dev/e/js_parse_error -->
       {/each}
       {#if !showAll && notifications.length > maxVisible}
         <div class="p-3 text-center">
-          <button on:click={() => (showAll = true)} class="text-xs text-blue-600 hover:text-blue-800">
+          <button onclick={() => (showAll = true)} class="text-xs text-blue-600 hover:text-blue-800">
             Show all {notifications.length} notifications
           </button>
         </div>
@@ -251,7 +251,7 @@ https://svelte.dev/e/js_parse_error -->
   {#if showNotifications && notifications.length === 0 && activeUpdatesList.length === 0}
     <div
       class="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-6 text-center"
-      transitislide={{ duration: 200 }}
+      transitislide={{ duration 200 }}
     >
       <div class="text-4xl mb-2">📭</div>
       <div class="text-sm text-gray-500">No document updates yet</div>

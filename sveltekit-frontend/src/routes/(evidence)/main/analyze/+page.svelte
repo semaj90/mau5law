@@ -25,9 +25,9 @@
     name: string;
     key: string;
     status: 'pending' | 'processing' | 'completed';
-    description: string;
-    icon: string;
-    duration: string;
+    description string;
+    icon string;
+    duration string;
   }
 
   interface EvidenceType {
@@ -73,33 +73,33 @@
       name: 'Evidence Analysis',
       key: 'evidence_analysis',
       status: 'pending',
-      description: 'Structuring document and extracting key facts',
-      icon: '📋',
-      duration: '30-45s',
+      description 'Structuring document and extracting key facts',
+      icon '📋',
+      duration '30-45s',
     },
     {
       name: 'Person Extraction',
       key: 'persons_extracted',
       status: 'pending',
-      description: 'Identifying persons of interest and roles',
-      icon: '👥',
-      duration: '20-30s',
+      description 'Identifying persons of interest and roles',
+      icon '👥',
+      duration '20-30s',
     },
     {
       name: 'Relationship Mapping',
       key: 'neo4j_updates',
       status: 'pending',
-      description: 'Building knowledge graph connections',
-      icon: '🔗',
-      duration: '15-25s',
+      description 'Building knowledge graph connections',
+      icon '🔗',
+      duration '15-25s',
     },
     {
       name: 'Case Synthesis',
       key: 'case_synthesis',
       status: 'pending',
-      description: 'Generating prosecutorial analysis',
-      icon: '⚖️',
-      duration: '25-35s',
+      description 'Generating prosecutorial analysis',
+      icon '⚖️',
+      duration '25-35s',
     },
   ]);
 
@@ -245,7 +245,7 @@
       const notice = document.createElement('div');
       notice.innerHTML = `⚠️ API failed: ${errorMessage.substring(0, 100)}`;
       notice.style.cssText =
-        'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.75rem 1.25rem; border-radius: 6px; z-index: 10000; font-size: 0.9rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 400px;';
+        'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.75rem 1.25rem; border-radius: 6px; z-index: 10000; font-size: 0.9rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 400px;';
       document.body.appendChild(notice);
       setTimeout(() => {
         notice.style.transition = 'opacity 0.3s';
@@ -371,7 +371,7 @@
           id="evidenceFile"
           type="file"
           accept=".txt,.pdf,.doc,.docx"
-          on:change={handleFileUpload}
+          onchange={handleFileUpload}
           disabled={analyzing}
           class="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary hover:file:bg-opacity-80"
         />
@@ -419,8 +419,8 @@
         {/if}
       </div>
       <div class="flex gap-2">
-        <Button class="bits-btn" variant="ghost" on:click={resetForm} disabled={analyzing}>Reset</Button>
-        <Button class="bits-btn" on:click={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
+        <Button class="bits-btn" variant="ghost" onclick={resetForm} disabled={analyzing}>Reset</Button>
+        <Button class="bits-btn" onclick={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
           {analyzing ? 'Analyzing...' : 'Start Analysis'}
         </Button>
       </div>
@@ -542,7 +542,7 @@
               <Button
                 class="bits-btn"
                 variant="outline"
-                on:click={() => viewDetailedResults(results.analysisResults)}
+                onclick={() => viewDetailedResults(results.analysisResults)}
                 disabled={analyzing}
               >
                 View Detailed Results
