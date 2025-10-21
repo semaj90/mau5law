@@ -1,4 +1,5 @@
-import { createClient, RedisClientType } from 'redis';
+import { createClient } from 'redis';
+import type { RedisClientType } from 'redis';
 
 const REDIS_URL = process.env.REDIS_URL ?? 'redis://127.0.0.1:6379';
 const REDIS_PASSWORD = process.env.REDIS_PASSWORD;
@@ -6,82 +7,82 @@ const REDIS_PASSWORD = process.env.REDIS_PASSWORD;
 let instance: RedisClientType | null = null;
 
 function buildUrlWithPassword(url: string, password?: string) {
-	// if password is provided and not already in the URL, inject it
-	if (!password) return url;
-	try {
-		const u = new URL(url);
-		if (!u.username && !u.password) {
-			u.username = '';
-			u.password = password;
-			return u.toString();
-		}
-		return url;
-	} catch {
-		// fallback: naive replace (shouldn't normally happen)
-		if (url.startsWith('redis://')) {
-			return `redis://:${encodeURIComponent(password)}@${url.slice('redis://'.length)}`;
-		}
-		return url;
-	}
+  // if password is provided and not already in the URL, inject it
+  if (!password) return url;
+  try {
+    const u = new URL(url);
+    if (!u.username && !u.password) {
+      u.username = '';
+      u.password = password;
+      return u.toString();
+    }
+    return url;
+  } catch {
+    // fallback: naive replace (shouldn't normally happen)
+    if (url.startsWith('redis://')) {
+      return `redis://:${encodeURIComponent(password)}@${url.slice('redis://'.length)}`;
+    }
+    return url;
+  }
 }
 
 function createClientInstance(): RedisClientType {
-	if (instance) return instance;
-	const url = buildUrlWithPassword(REDIS_URL, REDIS_PASSWORD);
-	const client = createClient({ url });
-	// attach lightweight logging for dev
-	client.on('error', (err: Error) => console.error('[redis] error', err && err.message));
-	client.on('connect', () => console.log('[redis] connected'));
-	// attempt to connect but don't fail creation
-	client.connect().catch((err) => {
-		console.warn('[redis] connect failed (will retry on use)', err && err.message);
-	});
-	instance = client;
-	return instance;
+  if (instance) return instance;
+  const url = buildUrlWithPassword(REDIS_URL, REDIS_PASSWORD);
+  const client = createClient({ url });
+  // attach lightweight logging for dev
+  client.on('error', (err: Error) => console.error('[redis] error', err && err.message));
+  client.on('connect', () => console.log('[redis] connected'));
+  // attempt to connect but don't fail creation
+  client.connect().catch(err => {
+    console.warn('[redis] connect failed (will retry on use)', err && err.message);
+  });
+  instance = client;
+  return instance;
 }
 
 export const redis = createClientInstance();
 
 export async function getFromCache(key: string): Promise<string | null> {
-	try {
-		// ensure connected (node-redis will handle reconnection internally)
-		if (!redis.isOpen) await redis.connect();
-		return await redis.get(key);
-	} catch (err) {
-		console.warn('[redis] get error', (err as Error).message);
-		return null;
-	}
+  try {
+    // ensure connected (node-redis will handle reconnection internally)
+    if (!redis.isOpen) await redis.connect();
+    return await redis.get(key);
+  } catch (err) {
+    console.warn('[redis] get error', (err as Error).message);
+    return null;
+  }
 }
 
 export async function setCache(key: string, value: string, ttl?: number): Promise<boolean> {
-	try {
-		if (!redis.isOpen) await redis.connect();
-		if (typeof ttl === 'number') {
-			await redis.set(key, value, { EX: ttl });
-		} else {
-			await redis.set(key, value);
-		}
-		return true;
-	} catch (err) {
-		console.warn('[redis] set error', (err as Error).message);
-		return false;
-	}
+  try {
+    if (!redis.isOpen) await redis.connect();
+    if (typeof ttl === 'number') {
+      await redis.set(key, value, { EX: ttl });
+    } else {
+      await redis.set(key, value);
+    }
+    return true;
+  } catch (err) {
+    console.warn('[redis] set error', (err as Error).message);
+    return false;
+  }
 }
 
 export function createRedisClientSet() {
-	const url = buildUrlWithPassword(REDIS_URL, REDIS_PASSWORD);
-	const primary = createClient({ url });
-	const subscriber = createClient({ url });
-	const publisher = createClient({ url });
+  const url = buildUrlWithPassword(REDIS_URL, REDIS_PASSWORD);
+  const primary = createClient({ url });
+  const subscriber = createClient({ url });
+  const publisher = createClient({ url });
 
-	// attach simple error logging
-	for (const c of [primary, subscriber, publisher]) {
-		c.on('error', (err: Error) => console.error('[redis] client error', err && err.message));
-		// attempt background connect
-		c.connect().catch(() => undefined);
-	}
+  // attach simple error logging
+  for (const c of [primary, subscriber, publisher]) {
+    c.on('error', (err: Error) => console.error('[redis] client error', err && err.message));
+    // attempt background connect
+    c.connect().catch(() => undefined);
+  }
 
-	return { primary, subscriber, publisher };
+  return { primary, subscriber, publisher };
 }
 
 export default redis;

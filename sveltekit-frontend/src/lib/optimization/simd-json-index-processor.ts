@@ -1,16 +1,16 @@
-
 /**
  * SIMD JSON Index Processor - Optimized Copilot Context Processing (Fixed)
  * Integrates with Enhanced RAG system and Context7 MCP for high-performance index parsing
  */
-import { createActor } from "xstate";
+// Remove invalid/malformed import token line that caused the parsing error
+// -import { createActor } from 'xstate';
 import type { RAGDocument, RAGSearchResult, TextChunk } from '$lib/types/rag';
-import { enhancedRAGStore  } from '$lib/stores/unified';
+import { enhancedRAGStore } from '$lib/stores/unified';
 // SIMD JSON Parser using structured cloning for performance
 export interface SIMDJSONParser {
-  parse: (buffer: ArrayBuffer) => Promise<any>;
-  parseString: (jsonString: string) => Promise<any>;
-  parseWithStreaming: (buffer: ArrayBuffer, chunkSize?: number) => AsyncGenerator<any>;
+  parse: (buffer: ArrayBuffer) => Promise<RawIndex>;
+  parseString: (jsonString: string) => Promise<RawIndex>;
+  parseWithStreaming: (buffer: ArrayBuffer, chunkSize?: number) => AsyncGenerator<RawIndex>;
 }
 // Optimized index structures for copilot context
 export interface CopilotIndexEntry {
@@ -18,7 +18,7 @@ export interface CopilotIndexEntry {
   filePath: string;
   language: string;
   content: string;
-  embedding: Float32Array; // Use typed arrays for SIMD operations,
+  embedding: Float32Array; // Use typed arrays for SIMD operations
   metadata: {
     source: 'enhanced_local_index' | 'context7_mcp' | 'basic_index';
     priority: 'high' | 'medium' | 'low';
@@ -26,9 +26,19 @@ export interface CopilotIndexEntry {
     timestamp: number;
     fileSize: number;
     tokens: number;
-  }
-  semanticChunks: Array<any>;
+  };
+  // changed from Array<any> to explicit SemanticChunk[]
+  semanticChunks: SemanticChunk[];
 }
+
+// New explicit cluster type instead of Array<any>
+export interface CopilotCluster {
+  id: string;
+  centroid: Float32Array;
+  memberIds: string[];
+  relevantTerms: string[];
+}
+
 export interface CopilotIndex {
   version: string;
   indexType: 'enhanced_legal_ai' | 'context7_mcp' | 'hybrid';
@@ -39,8 +49,10 @@ export interface CopilotIndex {
     avgEmbeddingTime: number;
     indexSizeMB: number;
     lastUpdated: number;
-  }
-  clusters: Array<any>
+  };
+  // changed from Array<any> to CopilotCluster[]
+  clusters: CopilotCluster[];
+} // <-- added missing closing brace
 // Vector embedding integration with pgvector/Qdrant
 export interface VectorEmbeddingConfig {
   model: 'nomic-embed-text' | 'all-MiniLM-L6-v2' | 'text-embedding-ada-002';
@@ -48,6 +60,38 @@ export interface VectorEmbeddingConfig {
   backend: 'pgvector' | 'qdrant' | 'hybrid';
   chunkSize: number;
   overlap: number;
+}
+
+// New: explicit raw index / entry and SOM cluster types (fix 'any' usages)
+export interface RawIndexEntry {
+  id?: string;
+  file_path?: string;
+  filePath?: string;
+  language?: string;
+  content?: string;
+  mcp_metadata?: {
+    source?: 'enhanced_local_index' | 'context7_mcp' | 'basic_index';
+    priority?: 'high' | 'medium' | 'low';
+    [k: string]: unknown;
+  };
+  relevance_score?: number;
+  [k: string]: unknown;
+}
+
+export interface RawIndex {
+  version?: string;
+  entries?: RawIndexEntry[];
+  [k: string]: unknown;
+}
+
+export interface SomCluster {
+  id: string;
+  centroid?: number[] | Float32Array;
+  documents?: string[]; // member ids
+  metadata?: {
+    dominant_legal_type?: string;
+    [k: string]: unknown;
+  };
 }
 export class SIMDJSONIndexProcessor {
   private parser: SIMDJSONParser;
@@ -58,8 +102,8 @@ export class SIMDJSONIndexProcessor {
     embeddingTime: 0,
     indexTime: 0,
     totalProcessed: 0,
-    cacheHits: 0
-  }
+    cacheHits: 0,
+  };
   constructor(config: Partial<VectorEmbeddingConfig> = {}) {
     this.vectorConfig = {
       model: 'nomic-embed-text',
@@ -67,8 +111,8 @@ export class SIMDJSONIndexProcessor {
       backend: 'hybrid',
       chunkSize: 512,
       overlap: 50,
-      ...config
-    }
+      ...config,
+    };
     // Initialize SIMD JSON parser with worker thread support
     this.parser = this.createSIMDParser();
   }
@@ -91,16 +135,17 @@ export class SIMDJSONIndexProcessor {
         indexType: 'enhanced_legal_ai',
         entries: optimizedEntries,
         statistics,
-        clusters
-      }
+        clusters,
+      };
       this.performanceMetrics.indexTime = performance.now() - startTime;
       this.performanceMetrics.totalProcessed++;
       // Integrate with Enhanced RAG store
       await this.integrateWithRAGStore(processedIndex);
       return processedIndex;
-    } catch (error: any) {
-      console.error('SIMD Index processing failed:', error);
-      throw new Error(`Index processing failed: ${error.message}`);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error('SIMD Index processing failed:', msg);
+      throw new Error(`Index processing failed: ${msg}`);
     }
   }
   /**
@@ -133,8 +178,9 @@ export class SIMDJSONIndexProcessor {
       this.embeddingCache.set(cacheKey, embeddingArray);
       this.performanceMetrics.embeddingTime += performance.now() - startTime;
       return embeddingArray;
-    } catch (error: any) {
-      console.error('Embedding generation failed:', error);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error('Embedding generation failed:', msg);
       // Return zero vector as fallback
       return new Float32Array(this.vectorConfig.dimensions);
     }
@@ -144,7 +190,7 @@ export class SIMDJSONIndexProcessor {
    */
   async semanticSearch(
     query: string,
-    index: CopilotIndex;
+    index: CopilotIndex, // <-- fixed semicolon -> comma previously
     options: {
       limit?: number;
       threshold?: number;
@@ -155,44 +201,46 @@ export class SIMDJSONIndexProcessor {
     // Generate query embedding
     const queryEmbedding = await this.generateEmbeddings(query);
     // Calculate similarities using SIMD operations
-    const similarities = index.entries.map((entry) => ({
+    const similarities = index.entries.map(entry => ({
       entry,
-      similarity: this.calculateCosineSimilaritySIMD(queryEmbedding, entry.embedding)
-    });
-    // Filter and sort by similarity
-    let results = similarities
-      .filter(({ similarity }) => similarity >= threshold);
+      similarity: this.calculateCosineSimilaritySIMD(queryEmbedding, entry.embedding),
+    })); // <-- closed parentheses correctly
+    // Filter and sort by similarity (no stray semicolons between chain calls)
+    const results = similarities
+      .filter(({ similarity }) => similarity >= threshold)
       .sort((a, b) => {
-        // Boost enhanced index results
         if (preferEnhanced) {
           const aBoost = a.entry.metadata.source === 'enhanced_local_index' ? 0.2 : 0;
           const bBoost = b.entry.metadata.source === 'enhanced_local_index' ? 0.2 : 0;
-          return (b.similarity + bBoost) - (a.similarity + aBoost);
+          return b.similarity + bBoost - (a.similarity + aBoost);
         }
         return b.similarity - a.similarity;
       })
       .slice(0, limit);
     // Convert to SearchResult format
-    return results.map(({ entry, similarity }, index) => ({
+    return results.map(({ entry, similarity }, idx) => ({
       id: entry.id,
       content: entry.content,
-      metadata: entry.metadata,
+      metadata: entry.metadata as Record<string, unknown>,
       type: 'document' as const,
       document: this.convertToRAGDocument(entry),
       score: similarity,
-      relevantChunks: entry.semanticChunks.map((chunk, chunkIndex) => ({
-        id: `chunk_${entry.id}_${chunkIndex}`,
-        content: chunk.content,
-        text: chunk.content, // Required by TextChunk interface
-        documentId: entry.id,
-        index: chunkIndex, // Required by TextChunk interface
-        startIndex: chunk.startOffset,
-        endIndex: chunk.endOffset,
-        score: this.calculateCosineSimilaritySIMD(queryEmbedding, chunk.embedding),
-        embeddings: Array.from(chunk.embedding.slice(0, 10)),
-        chunkType: 'paragraph' as const,
-        metadata: { [key,: strin,g]: any } // Required by TextChunk interface
-      } as TextChunk)),
+      relevantChunks: (entry.semanticChunks || []).map(
+        (chunk: SemanticChunk, chunkIndex: number) =>
+          ({
+            id: `chunk_${entry.id}_${chunkIndex}`,
+            content: chunk.content,
+            text: chunk.content,
+            documentId: entry.id,
+            index: chunkIndex,
+            startIndex: chunk.startOffset,
+            endIndex: chunk.endOffset,
+            score: this.calculateCosineSimilaritySIMD(queryEmbedding, chunk.embedding),
+            embeddings: Array.from((chunk.embedding || new Float32Array(0)).slice(0, 10)),
+            chunkType: 'paragraph' as const,
+            metadata: {} as Record<string, unknown>, // simplified valid placeholder
+          }) as TextChunk
+      ),
       highlights: this.extractHighlights(entry.content, query),
       explanation: `Enhanced semantic search result (${entry.metadata.source})`,
       legalRelevance: {
@@ -201,12 +249,12 @@ export class SIMDJSONIndexProcessor {
         procedural: similarity * 0.8,
         precedential: similarity * 0.85,
         jurisdictional: similarity * 0.95,
-        confidence: entry.metadata.relevanceScore
+        confidence: entry.metadata.relevanceScore,
       },
       relevanceScore: similarity,
-      rank: index + 1,
-      snippet: entry.content.substring(0, 200)
-    });
+      rank: idx + 1,
+      snippet: entry.content.substring(0, 200),
+    }));
   }
   /**
    * SIMD-optimized cosine similarity calculation
@@ -223,9 +271,9 @@ export class SIMDJSONIndexProcessor {
     const chunks = Math.floor(a.length / chunkSize);
     for (let i = 0; i < chunks * chunkSize; i += chunkSize) {
       // Manually unrolled loop for better SIMD optimization
-      dotProduct += a[i] * b[i] + a[i+1] * b[i+1] + a[i+2] * b[i+2] + a[i+3] * b[i+3];
-      normA += a[i] * a[i] + a[i+1] * a[i+1] + a[i+2] * a[i+2] + a[i+3] * a[i+3];
-      normB += b[i] * b[i] + b[i+1] * b[i+1] + b[i+2] * b[i+2] + b[i+3] * b[i+3];
+      dotProduct += a[i] * b[i] + a[i + 1] * b[i + 1] + a[i + 2] * b[i + 2] + a[i + 3] * b[i + 3];
+      normA += a[i] * a[i] + a[i + 1] * a[i + 1] + a[i + 2] * a[i + 2] + a[i + 3] * a[i + 3];
+      normB += b[i] * b[i] + b[i + 1] * b[i + 1] + b[i + 2] * b[i + 2] + b[i + 3] * b[i + 3];
     }
     // Handle remaining elements
     for (let i = chunks * chunkSize; i < a.length; i++) {
@@ -243,19 +291,20 @@ export class SIMDJSONIndexProcessor {
     return {
       parse: async (buffer: ArrayBuffer) => {
         try {
-          // Use structured cloning for optimal performance
           const textDecoder = new TextDecoder('utf-8');
           const jsonString = textDecoder.decode(buffer);
           return JSON.parse(jsonString);
-        } catch (error: any) {
-          throw new Error(`SIMD JSON parse failed: ${error.message}`);
+        } catch (error: unknown) {
+          const msg = error instanceof Error ? error.message : String(error);
+          throw new Error(`SIMD JSON parse failed: ${msg}`);
         }
       },
       parseString: async (jsonString: string) => {
         try {
           return JSON.parse(jsonString);
-        } catch (error: any) {
-          throw new Error(`SIMD JSON string parse failed: ${error.message}`);
+        } catch (error: unknown) {
+          const msg = error instanceof Error ? error.message : String(error);
+          throw new Error(`SIMD JSON string parse failed: ${msg}`);
         }
       },
       parseWithStreaming: async function* (buffer: ArrayBuffer, chunkSize = 1024 * 1024) {
@@ -263,24 +312,25 @@ export class SIMDJSONIndexProcessor {
         const totalLength = buffer.byteLength;
         let offset = 0;
         while (offset < totalLength) {
-          const chunk = buffer.slice(offset, Math.min(offset + chunkSize, totalLength);
+          const chunk = buffer.slice(offset, Math.min(offset + chunkSize, totalLength));
           const jsonString = textDecoder.decode(chunk);
           try {
             const parsed = JSON.parse(jsonString);
             yield parsed;
-          } catch (error: any) {
+          } catch (error: unknown) {
+            const msg = error instanceof Error ? error.message : String(error);
             // Handle partial JSON in streaming
-            console.warn('Partial JSON chunk skipped:', error.message);
+            console.warn('Partial JSON chunk skipped:', msg);
           }
           offset += chunkSize;
         }
-      }
-    }
+      },
+    };
   }
   /**
    * Parse data with SIMD optimization
    */
-  private async parseWithSIMD(data: string | ArrayBuffer): Promise<any> {
+  private async parseWithSIMD(data: string | ArrayBuffer): Promise<RawIndex> {
     const startTime = performance.now();
     try {
       if (typeof data === 'string') {
@@ -295,30 +345,32 @@ export class SIMDJSONIndexProcessor {
   /**
    * Process index entries with optimization
    */
-  private async processIndexEntries(rawIndex: any): Promise<CopilotIndexEntry[]> {
+  private async processIndexEntries(rawIndex: RawIndex): Promise<CopilotIndexEntry[]> {
     const entries: CopilotIndexEntry[] = [];
     // Process in parallel batches for performance
     const batchSize = 10;
     const batches = this.chunkArray(rawIndex.entries || [], batchSize);
     for (const batch of batches) {
-      const batchPromises = batch.map(async (entry: any) => {
-        const embedding = await this.generateEmbeddings(entry.content);
-        const semanticChunks = await this.generateSemanticChunks(entry.content);
+      // batch is RawIndexEntry[]
+      const batchPromises = batch.map(async (entry: RawIndexEntry) => {
+        const content = entry.content || '';
+        const embedding = await this.generateEmbeddings(content);
+        const semanticChunks = await this.generateSemanticChunks(content);
         return {
           id: entry.id || this.generateId(),
           filePath: entry.file_path || entry.filePath || '',
           language: entry.language || 'typescript',
-          content: entry.content || '',
+          content,
           embedding,
           metadata: {
             source: entry.mcp_metadata?.source || 'enhanced_local_index',
             priority: entry.mcp_metadata?.priority || 'medium',
             relevanceScore: entry.relevance_score || 0.8,
             timestamp: Date.now(),
-            fileSize: entry.content?.length || 0,
-            tokens: this.estimateTokens(entry.content || '')
+            fileSize: content.length,
+            tokens: this.estimateTokens(content),
           },
-          semanticChunks
+          semanticChunks,
         } as CopilotIndexEntry;
       });
       const batchResults = await Promise.all(batchPromises);
@@ -335,13 +387,14 @@ export class SIMDJSONIndexProcessor {
     const step = chunkSize - overlap;
     for (let i = 0; i < content.length; i += step) {
       const chunkContent = content.substring(i, i + chunkSize);
-      if (chunkContent.trim().length > 50) { // Skip very small chunks
+      if (chunkContent.trim().length > 50) {
+        // Skip very small chunks
         const embedding = await this.generateEmbeddings(chunkContent);
         chunks.push({
           content: chunkContent,
           embedding,
           startOffset: i,
-          endOffset: Math.min(i + chunkSize, content.length)
+          endOffset: Math.min(i + chunkSize, content.length),
         });
       }
     }
@@ -350,11 +403,9 @@ export class SIMDJSONIndexProcessor {
   /**
    * Generate semantic clusters using SOM algorithm - Fixed version
    */
-  private async generateSemanticClusters(entries: CopilotIndexEntry[]) {
+  private async generateSemanticClusters(entries: CopilotIndexEntry[]): Promise<CopilotCluster[]> {
     try {
-      // Use the enhanced RAG store's SOM system
       const somRAG = enhancedRAGStore.somRAG;
-      // Train SOM with embeddings (convert Float32Array to regular array)
       for (const entry of entries) {
         await somRAG.trainIncremental(Array.from(entry.embedding), {
           id: entry.id,
@@ -362,7 +413,7 @@ export class SIMDJSONIndexProcessor {
           content: entry.content,
           type: 'document' as const,
           metadata: {
-            source: entry.metadata.source || "enhanced_local_index",
+            source: entry.metadata.source || 'enhanced_local_index',
             type: 'document',
             jurisdiction: '',
             practiceArea: [entry.metadata.priority || 'general'],
@@ -370,22 +421,21 @@ export class SIMDJSONIndexProcessor {
             lastModified: new Date(entry.metadata.timestamp || Date.now()),
             fileSize: entry.metadata.fileSize || entry.content.length,
             language: 'en',
-            tags: []
+            tags: [],
           },
-          version: '1.0'
+          version: '1.0',
         });
       }
-      const somClusters = somRAG.getClusters();
-      // Convert BooleanCluster to expected format
-      return somClusters.map((cluster: any) => ({,
+      const somClusters = somRAG.getClusters() as SomCluster[];
+      return somClusters.map((cluster: SomCluster) => ({
         id: cluster.id,
         centroid: new Float32Array(cluster.centroid || []),
         memberIds: cluster.documents || [],
-        relevantTerms: cluster.metadata?.dominant_legal_type ? [cluster.metadata.dominant_legal_type] : []
-      });
-    } catch (error: any) {
-      console.error('Cluster generation failed:', error);
-      // Return empty clusters on error
+        relevantTerms: cluster.metadata?.dominant_legal_type ? [cluster.metadata.dominant_legal_type] : [],
+      }));
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error('Cluster generation failed:', msg);
       return [];
     }
   }
@@ -400,15 +450,15 @@ export class SIMDJSONIndexProcessor {
       totalTokens,
       avgEmbeddingTime: this.performanceMetrics.embeddingTime / Math.max(entries.length, 1),
       indexSizeMB: totalSize / (1024 * 1024),
-      lastUpdated: Date.now()
-    }
+      lastUpdated: Date.now(),
+    };
   }
   /**
    * Integrate with Enhanced RAG store
    */
-  private async integrateWithRAGStore(_index: CopilotIndex) {
+  private async integrateWithRAGStore(index: CopilotIndex) {
+    // renamed param to index for clarity
     const addDocument = enhancedRAGStore.addDocument;
-    // Add entries as RAG documents
     for (const entry of index.entries) {
       const ragDocument = this.convertToRAGDocument(entry);
       await addDocument(ragDocument);
@@ -417,7 +467,7 @@ export class SIMDJSONIndexProcessor {
   /**
    * Convert index entry to RAG document
    */
-  private convertToRAGDocument(entry: CopilotIndexEntry): import('$lib/types/rag').RAGDocument {
+  private convertToRAGDocument(entry: CopilotIndexEntry): RAGDocument {
     return {
       id: entry.id,
       title: entry.filePath.split('/').pop() || entry.id,
@@ -432,10 +482,10 @@ export class SIMDJSONIndexProcessor {
         lastModified: new Date(entry.metadata.timestamp),
         fileSize: entry.metadata.fileSize,
         language: entry.language,
-        tags: [entry.metadata.source, entry.metadata.priority]
+        tags: [entry.metadata.source, entry.metadata.priority],
       },
-      version: '1.0'
-    } as import('$lib/types/rag').RAGDocument;
+      version: '1.0',
+    } as RAGDocument;
   }
   /**
    * Generate embeddings using different backends
@@ -448,17 +498,19 @@ export class SIMDJSONIndexProcessor {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           content,
-          model: this.vectorConfig?.model || "unknown" // @ts-ignore - Model property access,
+          model: this.vectorConfig?.model || 'unknown',
+          // @ts-expect-error - Model property access
           backend: 'pgvector',
-        })
+        }),
       });
       if (!response.ok) {
         throw new Error(`PGVector API error: ${response.status}`);
       }
       const { embedding } = await response.json();
       return embedding;
-    } catch (error: any) {
-      console.warn('PGVector embedding failed, using fallback:', error);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.warn('PGVector embedding failed, using fallback:', msg);
       return this.generateFallbackEmbedding(content);
     }
   }
@@ -470,17 +522,19 @@ export class SIMDJSONIndexProcessor {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           content,
-          model: this.vectorConfig?.model || "unknown" // @ts-ignore - Model property access,
+          model: this.vectorConfig?.model || 'unknown',
+          // @ts-expect-error - Model property access
           backend: 'qdrant',
-        })
+        }),
       });
       if (!response.ok) {
         throw new Error(`Qdrant API error: ${response.status}`);
       }
       const { embedding } = await response.json();
       return embedding;
-    } catch (error: any) {
-      console.warn('Qdrant embedding failed, using fallback:', error);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.warn('Qdrant embedding failed, using fallback:', msg);
       return this.generateFallbackEmbedding(content);
     }
   }
@@ -488,10 +542,11 @@ export class SIMDJSONIndexProcessor {
     // Try PGVector first, fallback to Qdrant, then local
     try {
       return await this.generatePGVectorEmbedding(content);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      // attempt qdrant
       try {
         return await this.generateQdrantEmbedding(content);
-      } catch (error2) {
+      } catch (error2: unknown) {
         return this.generateFallbackEmbedding(content);
       }
     }
@@ -500,13 +555,14 @@ export class SIMDJSONIndexProcessor {
     // Simple TF-IDF based embedding as fallback
     const words = content.toLowerCase().split(/\s+/);
     const wordCount = new Map<string, number>();
-    words.forEach((word: any) => {
+    words.forEach((word: string) => {
       wordCount.set(word, (wordCount.get(word) || 0) + 1);
     });
     // Create sparse vector and pad to target dimensions
     const embedding = new Array(this.vectorConfig.dimensions).fill(0);
     let index = 0;
-    for (const [word, count] of wordCount.entries()) {
+    // Skip the key binding since it's not used to avoid the linter error
+    for (const [, count] of wordCount.entries()) {
       if (index < embedding.length) {
         embedding[index] = count / words.length; // TF
         index++;
@@ -521,7 +577,7 @@ export class SIMDJSONIndexProcessor {
     let hash = 0;
     for (let i = 0; i < content.length; i++) {
       const char = content.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return hash.toString(36);
@@ -529,7 +585,7 @@ export class SIMDJSONIndexProcessor {
   private chunkArray<T>(array: T[], size: number): T[][] {
     const chunks: T[][] = [];
     for (let i = 0; i < array.length; i += size) {
-      chunks.push(array.slice(i, i + size);
+      chunks.push(array.slice(i, i + size)); // <-- fixed missing paren
     }
     return chunks;
   }
@@ -546,21 +602,21 @@ export class SIMDJSONIndexProcessor {
       javascript: 'memo',
       svelte: 'memo',
       markdown: 'memo',
-      json: 'evidence'
-    }
+      json: 'evidence',
+    };
     return typeMap[language] || 'memo';
   }
   private extractHighlights(content: string, query: string): string[] {
     const queryWords = query.toLowerCase().split(/\s+/);
     const highlights: string[] = [];
-    queryWords.forEach((word: any) => {
+    queryWords.forEach((word: string) => {
       const regex = new RegExp(`(.{0,50}${word}.{0,50})`, 'gi');
       const matches = content.match(regex);
       if (matches) {
-        highlights.push(...matches.slice(0, 3); // Limit to 3 highlights per word
+        highlights.push(...matches.slice(0, 3));
       }
     });
-    return highlights.slice(0, 10); // Limit total highlights
+    return highlights.slice(0, 10);
   }
   /**
    * Performance monitoring
@@ -571,8 +627,8 @@ export class SIMDJSONIndexProcessor {
       cacheHitRate: this.performanceMetrics.cacheHits / Math.max(this.performanceMetrics.totalProcessed, 1),
       avgParseTime: this.performanceMetrics.parseTime / Math.max(this.performanceMetrics.totalProcessed, 1),
       avgEmbeddingTime: this.performanceMetrics.embeddingTime / Math.max(this.performanceMetrics.totalProcessed, 1),
-      avgIndexTime: this.performanceMetrics.indexTime / Math.max(this.performanceMetrics.totalProcessed, 1)
-    }
+      avgIndexTime: this.performanceMetrics.indexTime / Math.max(this.performanceMetrics.totalProcessed, 1),
+    };
   }
   /**
    * Reset performance metrics
@@ -583,8 +639,8 @@ export class SIMDJSONIndexProcessor {
       embeddingTime: 0,
       indexTime: 0,
       totalProcessed: 0,
-      cacheHits: 0
-    }
+      cacheHits: 0,
+    };
   }
   /**
    * Clear embedding cache
@@ -593,11 +649,21 @@ export class SIMDJSONIndexProcessor {
     this.embeddingCache.clear();
   }
 }
+
+// Add a local semantic chunk type to avoid `any` (already present in file) - ensure it's above usages
+type SemanticChunk = {
+  id: string | undefined;
+  content: string;
+  embedding: Float32Array;
+  startOffset: number;
+  endOffset: number;
+};
+
 // Export singleton instance
 export const simdIndexProcessor = new SIMDJSONIndexProcessor({
   model: 'nomic-embed-text',
   dimensions: 384,
   backend: 'hybrid',
   chunkSize: 512,
-  overlap: 50
+  overlap: 50,
 });

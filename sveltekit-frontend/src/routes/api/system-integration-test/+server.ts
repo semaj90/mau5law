@@ -12,254 +12,273 @@ import { natsQuicSearchService } from '$lib/server/search/nats-quic-search-servi
 import { lokiRedisCache } from '$lib/cache/loki-redis-integration'
 import { instantSearchEngine } from '$lib/services/instant-search-engine'
 import { enhancedRAGPipeline } from '$lib/services/enhanced-rag-pipeline'
+
+interface TestResult {
+  status: string;
+  [key: string]: unknown;
+}
+
+interface TestSummary {
+  testsRun: number;
+  testsPassed: number;
+  testsFailed: number;
+  overallStatus?: string;
+  totalTime: number;
+}
+
+interface StressTestOptions {
+  iterations?: number;
+  concurrent?: number;
+}
+
+interface StressTestWorkerResult {
+  workerId: number;
+  iterations: number;
+  errors: number;
+  totalTime: number;
+  avgTime: number;
+}
+
 export const GET: RequestHandler = async ({ url }) => {
-  const testType = url.searchParams.get('type') || 'full'
-  const startTime = Date.now()
+  const testType = url.searchParams.get('type') || 'full';
+  const startTime = Date.now();
   const results: {
-    timestamp: string
-    testType: string
-    results: { [key: string]: any }
-    errors: string[]
-    performance: Record<string, number>
-    status?: string
-    summary?: any
+    timestamp: string;
+    testType: string;
+    results: Record<string, TestResult>;
+    errors: string[];
+    performance: Record<string, number>;
+    status?: string;
+    summary?: TestSummary;
   } = {
     timestamp: new Date().toISOString(),
     testType,
-    results: { [key,: strin,g]: any },
+    results: {},
     errors: [],
-    performance: { [key,: strin,g]: any }
-  }
+    performance: {},
+  };
   try {
     // Test PostgreSQL + pgvector
     if (testType === 'all' || testType === 'database') {
-      const dbStartTime = Date.now()
+      const dbStartTime = Date.now();
       try {
         // Test basic connection
-        const dbVersion = await db.execute(sql`SELECT version() as version`)
+        const dbVersion = await db.execute(sql`SELECT version() as version`);
         // Test pgvector
-        const vectorTest = await db.execute(
-          sql`SELECT '[1,2,3]'::vector <-> '[1,2,4]'::vector as distance`
-        )
+        const vectorTest = await db.execute(sql`SELECT '[1,2,3]'::vector <-> '[1,2,4]'::vector as distance`);
         // Test document count
-        const docCount = await db.select({ count: sql`COUNT(*)` }).from(schema.legalDocuments)
+        const docCount = await db.select({ count: sql<number>`COUNT(*)` }).from(schema.legalDocuments);
         results.results.database = {
           status: 'connected',
-          version: dbVersion.rows[0].version,
+          version: (dbVersion[0] as { version: string }).version,
           pgvectorWorking: true,
-          vectorDistance: vectorTest.rows[0].distance,
-          documentsCount: docCount[0].count
-        }
-        results.performance.database = Date.now() - dbStartTime
+          vectorDistance: (vectorTest[0] as { distance: number }).distance,
+          documentsCount: docCount[0].count,
+        };
+        results.performance.database = Date.now() - dbStartTime;
       } catch (error: unknown) {
-        const msg = error instanceof Error ? error.message: 'Unknown database error'
-        results.errors.push(`Database test failed: ${msg}`)
-        results.results.database = { status: 'error', message: msg }
+        const msg = error instanceof Error ? error.message : 'Unknown database error';
+        results.errors.push(`Database test failed: ${msg}`);
+        results.results.database = { status: 'error', message: msg };
       }
     }
     // Test Redis
     if (testType === 'all' || testType === 'redis') {
-      const redisStartTime = Date.now()
+      const redisStartTime = Date.now();
       try {
-        const testKey = `integration-test-${Date.now()}`
-        await redisService.set(testKey, { test: true }, 60)
-        const retrievedRaw = await redisService.get(testKey)
-        const retrieved =
-          retrievedRaw && typeof retrievedRaw === 'object' ? (retrievedRaw as any) : null
-        await redisService.del(testKey)
-        const healthy =
-          typeof (redisService as any).isHealthy === 'function'
-            ? (redisService as any).isHealthy()
-            : true; // assume healthy if method missing
-        const stats =
-          typeof (redisService as any).getStats === 'function'
-            ? (redisService as any).getStats()
-            : { [key,: strin,g]: any }
+        const testKey = `integration-test-${Date.now()}`;
+        await redisService.set(testKey, { test: true }, 60);
+        const retrievedRaw = await redisService.get(testKey);
+        const retrieved = retrievedRaw && typeof retrievedRaw === 'object' ? (retrievedRaw as { test: boolean }) : null;
+        await redisService.del(testKey);
+        const rService = redisService as {
+          isHealthy?: () => boolean;
+          getStats?: () => Record<string, unknown>;
+        };
+        const healthy = typeof rService.isHealthy === 'function' ? rService.isHealthy() : true; // assume healthy if method missing
+        const stats = typeof rService.getStats === 'function' ? rService.getStats() : {};
         results.results.redis = {
           status: 'connected',
           healthy,
-          dataIntegrity: !!retrieved && (retrieved as any).test === true,
-          stats
-        }
-        results.performance.redis = Date.now() - redisStartTime
+          dataIntegrity: !!retrieved && retrieved.test === true,
+          stats,
+        };
+        results.performance.redis = Date.now() - redisStartTime;
       } catch (error: unknown) {
-        const msg = error instanceof Error ? error.message: 'Unknown redis error'
-        results.errors.push(`Redis test failed: ${msg}`)
-        results.results.redis = { status: 'error', message: msg }
+        const msg = error instanceof Error ? error.message : 'Unknown redis error';
+        results.errors.push(`Redis test failed: ${msg}`);
+        results.results.redis = { status: 'error', message: msg };
       }
     }
     // Test NATS + QUIC
     if (testType === 'all' || testType === 'nats') {
-      const natsStartTime = Date.now()
+      const natsStartTime = Date.now();
       try {
-        const healthCheck = await natsQuicSearchService.healthCheck()
+        const healthCheck = await natsQuicSearchService.healthCheck();
         const testSearch = await natsQuicSearchService.searchSimple('test legal document', {
           type: 'hybrid',
-          limit: 5
-        })
+          limit: 5,
+        });
         results.results.nats = {
           status: 'success',
           health: healthCheck,
           searchTest: {
             resultCount: testSearch.results?.length || 0,
             processingTime: testSearch.analytics?.processingTime || 0,
-            lowLatency: (testSearch.analytics?.processingTime || 0) < 100
+            lowLatency: (testSearch.analytics?.processingTime || 0) < 100,
           },
-          quicEnabled: healthCheck.quicEnabled
-        }
-        results.performance.nats = Date.now() - natsStartTime
+          quicEnabled: healthCheck.quicEnabled,
+        };
+        results.performance.nats = Date.now() - natsStartTime;
       } catch (error: unknown) {
-        const msg = error instanceof Error ? error.message: 'Unknown NATS error'
-        results.errors.push(`NATS test failed: ${msg}`)
-        results.results.nats = { status: 'error', message: msg }
+        const msg = error instanceof Error ? error.message : 'Unknown NATS error';
+        results.errors.push(`NATS test failed: ${msg}`);
+        results.results.nats = { status: 'error', message: msg };
       }
     }
     // Test Loki.js Integration
     if (testType === 'all' || testType === 'loki') {
-      const lokiStartTime = Date.now()
+      const lokiStartTime = Date.now();
       try {
         // Re-initialize if not healthy (getter added to cache class)
         if (!lokiRedisCache.isHealthy) {
-          await lokiRedisCache.initialize()
+          await lokiRedisCache.initialize();
         }
         results.results.loki = {
           status: 'initialized',
           healthy: lokiRedisCache.isHealthy,
-          stats: lokiRedisCache.getStats()
-        }
-        results.performance.loki = Date.now() - lokiStartTime
+          stats: lokiRedisCache.getStats(),
+        };
+        results.performance.loki = Date.now() - lokiStartTime;
       } catch (error: unknown) {
-        const msg = error instanceof Error ? error.message: 'Unknown loki error'
-        results.errors.push(`Loki test failed: ${msg}`)
-        results.results.loki = { status: 'error', message: msg }
+        const msg = error instanceof Error ? error.message : 'Unknown loki error';
+        results.errors.push(`Loki test failed: ${msg}`);
+        results.results.loki = { status: 'error', message: msg };
       }
     }
     // Test Instant Search
     if (testType === 'all' || testType === 'search') {
-      const searchStartTime = Date.now()
+      const searchStartTime = Date.now();
       try {
-        await instantSearchEngine.initialize()
-        const stats = instantSearchEngine.getSearchStats()
+        await instantSearchEngine.initialize();
+        const iSearchEngine = instantSearchEngine as { getStats?: () => Record<string, unknown> };
+        const stats = typeof iSearchEngine.getStats === 'function' ? iSearchEngine.getStats() : {};
         results.results.instantSearch = {
           status: 'initialized',
-          stats
-        }
-        results.performance.instantSearch = Date.now() - searchStartTime
+          stats,
+        };
+        results.performance.instantSearch = Date.now() - searchStartTime;
       } catch (error: unknown) {
-        const msg = error instanceof Error ? error.message: 'Unknown search error'
-        results.errors.push(`Instant search test failed: ${msg}`)
-        results.results.instantSearch = { status: 'error', message: msg }
+        const msg = error instanceof Error ? error.message : 'Unknown search error';
+        results.errors.push(`Instant search test failed: ${msg}`);
+        results.results.instantSearch = { status: 'error', message: msg };
       }
     }
     // Test RAG Pipeline
     if (testType === 'all' || testType === 'rag') {
-      const ragStartTime = Date.now()
+      const ragStartTime = Date.now();
       try {
-        const stats = await enhancedRAGPipeline.getSystemStats()
+        const stats = await enhancedRAGPipeline.getSystemStats();
         results.results.ragPipeline = {
           status: 'available',
           stats,
-          features: ['pgvector', 'gemma_embeddings', 'legal_reranker', 'redis_caching']
-        }
-        results.performance.ragPipeline = Date.now() - ragStartTime
+          features: ['pgvector', 'gemma_embeddings', 'legal_reranker', 'redis_caching'],
+        };
+        results.performance.ragPipeline = Date.now() - ragStartTime;
       } catch (error: unknown) {
-        const msg = error instanceof Error ? error.message: 'Unknown rag error'
-        results.errors.push(`RAG pipeline test failed: ${msg}`)
-        results.results.ragPipeline = { status: 'error', message: msg }
+        const msg = error instanceof Error ? error.message : 'Unknown rag error';
+        results.errors.push(`RAG pipeline test failed: ${msg}`);
+        results.results.ragPipeline = { status: 'error', message: msg };
       }
     }
     // Overall status
-    const totalTime = Date.now() - startTime
-    results.performance.total = totalTime
-    results.status = results.errors.length === 0 ? 'healthy' : 'degraded'
-    const passedTests = Object.keys(results.results).filter((key) =>
+    const totalTime = Date.now() - startTime;
+    results.performance.total = totalTime;
+    results.status = results.errors.length === 0 ? 'healthy' : 'degraded';
+    const passedTests = Object.keys(results.results).filter(key =>
       ['connected', 'initialized', 'available'].includes(results.results[key].status)
-    ).length
+    ).length;
     results.summary = {
       testsRun: Object.keys(results.results).length,
       testsPassed: passedTests,
       testsFailed: results.errors.length,
       overallStatus: results.status,
-      totalTime: totalTime
-    }
-    console.log(
-      `🧪 System integration test completed: ${passedTests}/${Object.keys(results.results).length} passed`
-    )
-    return json(results)
+      totalTime: totalTime,
+    };
+    console.log(`🧪 System integration test completed: ${passedTests}/${Object.keys(results.results).length} passed`);
+    return json(results);
   } catch (error: unknown) {
-    const msg = error instanceof Error ? error.message: 'Unknown system integration error'
-    console.error('❌ System integration test failed:', error)
-    return json()
+    const msg = error instanceof Error ? error.message : 'Unknown system integration error';
+    console.error('❌ System integration test failed:', error);
+    return json(
       {
         status: 'error',
-        timestamp,: new Date().toISOString(),
-        error,: msg
-        results: { [key,: string,]: any },
+        timestamp: new Date().toISOString(),
+        error: msg,
+        results: {},
         errors: [msg],
-        performance,: { total: Date.now() - startTime }
+        performance: { total: Date.now() - startTime },
       },
       { status: 500 }
-    )
+    );
   }
-}
+};
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { action, data } = await request.json()
+    const { action, data } = await request.json();
     switch (action) {
       case 'stress-test':
-        return await runStressTest(data)
+        return await runStressTest(data);
       case 'end-to-end':
-        return await runEndToEndTest(data)
+        return await runEndToEndTest(data);
       case 'cleanup':
         return await cleanupTestData();
       default:
-        return json({ success: false, error: 'Unknown action' }, { status: 400 })
+        return json({ success: false, error: 'Unknown action' }, { status: 400 });
     }
   } catch (error: unknown) {
-    const msg = error instanceof Error ? error.message: 'Unknown request error'
-    return json({ success: false, error: msg }, { status: 500 })
+    const msg = error instanceof Error ? error.message : 'Unknown request error';
+    return json({ success: false, error: msg }, { status: 500 });
   }
-}
-async function runStressTest(_options: any = {}): Promise<Response> {
-  const { iterations = 100, concurrent = 10 } = options
-  const results = []
-  console.log(`🔥 Running stress test: ${iterations} iterations, ${concurrent} concurrent`)
+};
+async function runStressTest(_options: StressTestOptions = {}): Promise<Response> {
+  const { iterations = 100, concurrent = 10 } = _options;
+  console.log(`🔥 Running stress test: ${iterations} iterations, ${concurrent} concurrent`);
   // Run concurrent operations
-  const promises = []
+  const promises = [];
   for (let i = 0; i < concurrent; i++) {
-    promises.push(stressTestWorker(iterations / concurrent, i)
+    promises.push(stressTestWorker(iterations / concurrent, i));
   }
-  const workerResults = await Promise.all(promises)
+  const workerResults = await Promise.all(promises);
   return json({
     success: true,
     stressTest: {
       iterations,
       concurrent,
-      results: workerResults,;
+      results: workerResults,
       summary: {
-        avgResponseTime:
-          workerResults.reduce((sum, r) => sum + r.avgTime, 0) / workerResults.length,
+        avgResponseTime: workerResults.reduce((sum, r) => sum + r.avgTime, 0) / workerResults.length,
         totalErrors: workerResults.reduce((sum, r) => sum + r.errors, 0),
-        opsPerSecond: iterations / (Math.max(...workerResults.map((r) => r.totalTime)) / 1000)
-      }
-    }
-  })
+        opsPerSecond: iterations / (Math.max(...workerResults.map(r => r.totalTime)) / 1000),
+      },
+    },
+  });
 }
-async function stressTestWorker(iterations: number, workerId: number): Promise<any> {
-  const startTime = Date.now()
-  let errors = 0
-  let totalResponseTime = 0
+async function stressTestWorker(iterations: number, workerId: number): Promise<StressTestWorkerResult> {
+  const startTime = Date.now();
+  let errors = 0;
+  let totalResponseTime = 0;
   for (let i = 0; i < iterations; i++) {
     try {
-      const opStart = Date.now()
+      const opStart = Date.now();
       // Test Redis operation
-      const testKey = `stress:${workerId}:${i}`
-      await redisService.set(testKey, { worker: workerId, iteration: i }, 10)
-      await redisService.get(testKey)
-      await redisService.del(testKey)
-      totalResponseTime += Date.now() - opStart
+      const testKey = `stress:${workerId}:${i}`;
+      await redisService.set(testKey, { worker: workerId, iteration: i }, 10);
+      await redisService.get(testKey);
+      await redisService.del(testKey);
+      totalResponseTime += Date.now() - opStart;
     } catch (error) {
-      errors++
+      errors++;
     }
   }
   return {
@@ -267,20 +286,20 @@ async function stressTestWorker(iterations: number, workerId: number): Promise<a
     iterations,
     errors,
     totalTime: Date.now() - startTime,
-    avgTime: totalResponseTime / iterations
-  }
+    avgTime: totalResponseTime / iterations,
+  };
 }
-async function runEndToEndTest(_options: any = {}): Promise<Response> {
-  const testId = `e2e-${Date.now()}`
+async function runEndToEndTest(_options: Record<string, unknown> = {}): Promise<Response> {
+  const testId = `e2e-${Date.now()}`;
   const results: { steps: string[]; errors: string[]; success: boolean } = {
     steps: [],
     errors: [],
     success: true,
-  }
+  };
   try {
     // Step 1: Create test document
-    results.steps.push('Creating test document')
-    const testDoc = {
+    results.steps.push('Creating test document');
+    const testDoc: typeof schema.legalDocuments.$inferInsert = {
       id: testId,
       title: 'End-to-End Test Document',
       documentType: 'contract',
@@ -288,22 +307,22 @@ async function runEndToEndTest(_options: any = {}): Promise<Response> {
         'This is a comprehensive test of the legal AI system integration. It includes contract terms, liability clauses, and termination provisions.',
       isActive: true,
       createdAt: new Date().toISOString(),
-    }
-    await db.insert(schema.legalDocuments).values(testDoc)
+    };
+    await db.insert(schema.legalDocuments).values(testDoc);
     // Step 2: Index document
-    results.steps.push('Indexing document')
-    const indexResult = await enhancedRAGPipeline.indexDocument(testDoc as any)
+    results.steps.push('Indexing document');
+    const indexResult = await enhancedRAGPipeline.indexDocument(testDoc);
     if (!indexResult.success) {
-      throw new Error('Document indexing failed')
+      throw new Error('Document indexing failed');
     }
     // Step 3: Wait and search
-    results.steps.push('Searching for document')
-    await new Promise((resolve) => setTimeout(resolve, 1000)
-    const searchResults = await instantSearchEngine.search('test document contract')
+    results.steps.push('Searching for document');
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    const searchResults = await instantSearchEngine.search();
     // Step 4: Cleanup
-    results.steps.push('Cleaning up')
-    await db.delete(schema.legalDocuments).where(sql`id = ${testId}`)
-    await db.delete(schema.documentChunks).where(sql`document_id = ${testId}`)
+    results.steps.push('Cleaning up');
+    await db.delete(schema.legalDocuments).where(sql`id = ${testId}`);
+    await db.delete(schema.documentChunks).where(sql`document_id = ${testId}`);
     return json({
       success: true,
       endToEnd: {
@@ -313,25 +332,25 @@ async function runEndToEndTest(_options: any = {}): Promise<Response> {
           documentCreated: true,
           indexedChunks: indexResult.chunksCreated,
           searchResults: searchResults.length,
-          cleanedUp: true
-        }
-      }
-    })
+          cleanedUp: true,
+        },
+      },
+    });
   } catch (error: unknown) {
-    const msg = error instanceof Error ? error.message: 'Unknown end-to-end test error'
-    results.errors.push(msg)
-    results.success = false
+    const msg = error instanceof Error ? error.message : 'Unknown end-to-end test error';
+    results.errors.push(msg);
+    results.success = false;
     // Attempt cleanup
     try {
-      await db.delete(schema.legalDocuments).where(sql`id = ${testId}`)
-      await db.delete(schema.documentChunks).where(sql`document_id = ${testId}`)
+      await db.delete(schema.legalDocuments).where(sql`id = ${testId}`);
+      await db.delete(schema.documentChunks).where(sql`document_id = ${testId}`);
     } catch (cleanupError) {
-      console.warn('Cleanup failed:', cleanupError)
+      console.warn('Cleanup failed:', cleanupError);
     }
     return json({
       success: false,
-      endToEnd: results
-    })
+      endToEnd: results,
+    });
   }
 }
 async function cleanupTestData(): Promise<Response> {

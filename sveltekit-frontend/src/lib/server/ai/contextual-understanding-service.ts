@@ -92,7 +92,7 @@ export class ContextualUnderstandingService {
       agentResponse,
       intent,
       entities,
-      embedding
+      ...(embedding !== undefined ? { embedding } : {})
     };
 
     // Update conversation history (keep last N turns)

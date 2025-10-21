@@ -2,6 +2,7 @@
 // Manages user authentication state, permissions, and session management
 import { writable, derived, get } from 'svelte/store';
 import { browser } from '$app/environment';
+import { PUBLIC_API_BASE } from '$env/static/public'; // added
 import type { User } from '../server/db/schema-postgres.js';
 import { AccessControl, type UserRole, type Permission } from './roles.js';
 export interface AuthUser extends Partial<User> {
@@ -14,10 +15,13 @@ export interface AuthUser extends Partial<User> {
   isActive: boolean;
   avatarUrl?: string;
   emailVerified?: boolean;
+}
 export interface AuthSession {
   id: string;
   userId: string;
-  expiresAt: Date;
+  // expiresAt may come from the server as an ISO string; accept string or Date and normalize when used
+  expiresAt: string | Date;
+}
 export interface AuthState {
   user: AuthUser | null;
   session: AuthSession | null;
@@ -27,15 +31,26 @@ export interface AuthState {
   lastActivity: Date | null;
   csrfToken?: string;
 }
+
+// Add a type for API responses to reduce repetition and improve readability
+type ApiResponse = {
+  success?: boolean;
+  user?: AuthUser;
+  session?: AuthSession;
+  error?: string;
+  requiresMFA?: boolean;
+  requiresVerification?: boolean;
+};
+
 // Initial auth state
 const initialState: AuthState = {
   user: null,
   session: null,
   isLoading: true,
-  isAuthenticated: false;
+  isAuthenticated: false,
   permissions: [],
-  lastActivity: null
-}
+  lastActivity: null,
+};
 // Create writable store for auth state
 export const authState = writable<AuthState>(initialState);
 // Create derived stores for common auth checks
@@ -48,15 +63,42 @@ export const isLoading = derived(authState, $auth => $auth.isLoading);
 const SESSION_CHECK_INTERVAL = 60000; // Check session every minute
 const SESSION_WARNING_TIME = 5 * 60 * 1000; // Warn 5 minutes before expiration
 const ACTIVITY_TIMEOUT = 30 * 60 * 1000; // 30 minutes of inactivity
+// Production-ready Docker Desktop endpoints (use host.docker.internal from containers)
+export const DockerEndpoints = {
+  POSTGRES: 'postgresql://legal_admin:123456@host.docker.internal:5434/legal_ai_db',
+  REDIS: 'redis://:redis@host.docker.internal:6379/0',
+  QDRANT: 'http://host.docker.internal:6333',
+  OLLAMA: 'http://host.docker.internal:11434',
+  CONTEXT7: 'http://host.docker.internal:8777',
+  MINIO: 'http://host.docker.internal:9000',
+};
+
+// API base helper (uses PUBLIC_API_BASE if provided)
+const API_BASE = (PUBLIC_API_BASE as string | undefined) || 'http://localhost:5173';
+export function buildApiUrl(path: string) {
+  if (!path.startsWith('/')) path = `/${path}`;
+  return `${API_BASE}${path}`;
+}
+
 export class AuthStore {
-  private static sessionCheckInterval: NodeJS.Timeout | null = null;
-  private static activityTimeout: NodeJS.Timeout | null = null;
+  // Use number|null for browser setInterval/setTimeout handles (compatible with DOM)
+  private static sessionCheckInterval: number | null = null;
+  private static activityTimeout: number | null = null;
+  // Helper to parse API responses without using `any`
+  private static async parseApiResponse(response: Response): Promise<ApiResponse> {
+    try {
+      const raw = (await response.json()) as unknown;
+      return raw as ApiResponse;
+    } catch (err: unknown) {
+      return {};
+    }
+  }
   /**
    * Initialize the auth store and start session management
    */
   static async initialize(): Promise<void> {
     if (!browser) return;
-    authState.update(state => ({ ...state, isLoading: true });
+    authState.update(state => ({ ...state, isLoading: true }));
     try {
       // Check if there's an existing session
       await this.checkSession();
@@ -64,46 +106,50 @@ export class AuthStore {
       this.startSessionMonitoring();
       // Setup activity tracking
       this.setupActivityTracking();
-    } catch (error: any) {
-      console.error('Auth initialization failed:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error('Auth initialization failed:', message);
       this.clearAuth();
     } finally {
-      authState.update(state => ({ ...state, isLoading: false });
+      authState.update(state => ({ ...state, isLoading: false }));
     }
   }
   /**
    * Login with email and password
    */
-  static async login(email: string, password: string, rememberMe = false): Promise<any> {
-    authState.update(state => ({ ...state, isLoading: true });
+  static async login(
+    email: string,
+    password: string,
+    rememberMe = false
+  ): Promise<{ success: boolean; error?: string; requiresMFA?: boolean }> {
+    authState.update(state => ({ ...state, isLoading: true }));
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, rememberMe }),
-        credentials: 'include'
+        credentials: 'include',
       });
-      const result = await (response as { json?: any; ok?: any }).json();
-      if ((response as { json?: any; ok?: any }).ok && (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).success) {
+      const result = await this.parseApiResponse(response);
+      if (response.ok && result.success) {
         // Update auth state with user data
-        await this.updateAuthState((result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).user, (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).session);
+        await this.updateAuthState(result.user!, result.session!);
         // Track login activity
         this.trackActivity('login');
-        return { success: true }
+        return { success: true };
       } else {
         return {
-          success: false;
-          error: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).error || 'Login failed',
-          requiresMFA: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).requiresMFA
-        }
+          success: false,
+          error: result.error || 'Login failed',
+          requiresMFA: result.requiresMFA,
+        };
       }
-    } catch (error: any) {
-      console.error('Login error:', error);
-      return { success: false, error: 'Network error during login' }
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error('Login error:', msg);
+      return { success: false, error: 'Network error during login' };
     } finally {
-      authState.update(state => ({ ...state, isLoading: false });
+      authState.update(state => ({ ...state, isLoading: false }));
     }
   }
   /**
@@ -115,52 +161,43 @@ export class AuthStore {
     firstName?: string;
     lastName?: string;
     role?: UserRole;
-  }): Promise<any> {
-    authState.update(state => ({ ...state, isLoading: true });
+  }): Promise<{ success: boolean; requiresVerification?: boolean; error?: string }> {
+    authState.update(state => ({ ...state, isLoading: true }));
     try {
       const response = await fetch('/api/auth/register', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData),
-        credentials: 'include'
+        credentials: 'include',
       });
-      const result = await (response as { json?: any; ok?: any }).json();
-      if ((response as { json?: any; ok?: any }).ok && (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).success) {
+      const result = await this.parseApiResponse(response);
+      if (response.ok && result.success) {
         // If auto-login after registration
-        if ((result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).user && (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).session) {
-          await this.updateAuthState((result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).user, (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).session);
+        if (result.user && result.session) {
+          await this.updateAuthState(result.user, result.session);
         }
-        return {
-          success: true,
-          requiresVerification: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).requiresVerification
-        }
+        return { success: true, requiresVerification: result.requiresVerification };
       } else {
-        return {
-          success: false;
-          error: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).error || 'Registration failed'
-        }
+        return { success: false, error: result.error || 'Registration failed' };
       }
-    } catch (error: any) {
-      console.error('Registration error:', error);
-      return { success: false, error: 'Network error during registration' }
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error('Registration error:', msg);
+      return { success: false, error: 'Network error during registration' };
     } finally {
-      authState.update(state => ({ ...state, isLoading: false });
+      authState.update(state => ({ ...state, isLoading: false }));
     }
   }
   /**
    * Logout and clear session
    */
   static async logout(): Promise<void> {
-    authState.update(state => ({ ...state, isLoading: true });
+    authState.update(state => ({ ...state, isLoading: true }));
     try {
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include'
-      });
-    } catch (error: any) {
-      console.error('Logout error:', error);
+      await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error('Logout error:', msg);
     } finally {
       this.clearAuth();
       this.stopSessionMonitoring();
@@ -176,19 +213,18 @@ export class AuthStore {
   static async checkSession(): Promise<boolean> {
     if (!browser) return false;
     try {
-      const response = await fetch('/api/auth/session', {
-        credentials: 'include'
-      });
-      const result = await (response as { json?: any; ok?: any }).json();
-      if ((response as { json?: any; ok?: any }).ok && (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).user && (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).session) {
-        await this.updateAuthState((result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).user, (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).session);
+      const response = await fetch('/api/auth/session', { credentials: 'include' });
+      const result = await this.parseApiResponse(response);
+      if (response.ok && result.user && result.session) {
+        await this.updateAuthState(result.user, result.session);
         return true;
       } else {
         this.clearAuth();
         return false;
       }
-    } catch (error: any) {
-      console.error('Session check error:', error);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error('Session check error:', msg);
       this.clearAuth();
       return false;
     }
@@ -196,57 +232,59 @@ export class AuthStore {
   /**
    * Update user profile
    */
-  static async updateProfile(updates: Partial<AuthUser>): Promise<any> {
+  static async updateProfile(updates: Partial<AuthUser>): Promise<{ success: boolean; error?: string }> {
     const currentState = get(authState);
     if (!currentState.isAuthenticated || !currentState.user) {
-      return { success: false, error: 'Not authenticated' }
+      return { success: false, error: 'Not authenticated' };
     }
     try {
       const response = await fetch('/api/user/profile', {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
-        credentials: 'include'
+        credentials: 'include',
       });
-      const result = await (response as { json?: any; ok?: any }).json();
-      if ((response as { json?: any; ok?: any }).ok && (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).success) {
+      const raw = (await response.json()) as unknown;
+      const result = raw as { success?: boolean; user?: AuthUser; error?: string };
+      if (response.ok && result.success) {
         // Update local user data
         authState.update(state => ({
           ...state,
-          user: state.user ? { ...state.user, ...result.user } : null
-        });
-        return { success: true }
+          user: state.user ? { ...state.user, ...(result.user as AuthUser) } : null,
+        }));
+        return { success: true };
       } else {
-        return { success: false, error: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).error || 'Profile update failed' }
+        return { success: false, error: result.error || 'Profile update failed' };
       }
-    } catch (error: any) {
-      console.error('Profile update error:', error);
-      return { success: false, error: 'Network error during profile update' }
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error('Profile update error:', msg);
+      return { success: false, error: 'Network error during profile update' };
     }
   }
   /**
    * Change user password
    */
-  static async changePassword(currentPassword: string, newPassword: string): Promise<any> {
+  static async changePassword(
+    currentPassword: string,
+    newPassword: string
+  ): Promise<{ success: boolean; error?: string | undefined }> {
     try {
       const response = await fetch('/api/auth/change-password', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ currentPassword, newPassword }),
-        credentials: 'include'
+        credentials: 'include',
       });
-      const result = await (response as { json?: any; ok?: any }).json();
+      const result = await this.parseApiResponse(response);
       return {
-        success: (response as { json?: any; ok?: any }).ok && (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).success,
-        error: (result as { success?: any; user?: any; session?: any; error?: any; requiresMFA?: any; requiresVerification?: any }).error
-      }
-    } catch (error: any) {
-      console.error('Password change error:', error);
-      return { success: false, error: 'Network error during password change' }
+        success: response.ok && !!result.success,
+        error: result.error,
+      };
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error('Password change error:', msg);
+      return { success: false, error: 'Network error during password change' };
     }
   }
   /**
@@ -261,32 +299,22 @@ export class AuthStore {
    */
   static hasAnyPermission(permissions: Permission[]): boolean {
     const state = get(authState);
-    return permissions.some(permission => state.permissions.includes(permission);
+    return permissions.some(permission => state.permissions.includes(permission));
   }
   /**
    * Check if user has all of the specified permissions
    */
   static hasAllPermissions(permissions: Permission[]): boolean {
     const state = get(authState);
-    return permissions.every(permission => state.permissions.includes(permission);
+    return permissions.every(permission => state.permissions.includes(permission));
   }
   /**
    * Check if user can access a resource
    */
-  static canAccessResource(
-    permission: Permission,
-    resourceOwnerId?: string
-    isPublic = false;
-  ): boolean {
+  static canAccessResource(permission: Permission, resourceOwnerId?: string, isPublic = false): boolean {
     const state = get(authState);
     if (!state.user) return false;
-    return AccessControl.canAccessResource(
-      state.user.role,
-      permission,
-      resourceOwnerId,
-      state.user.id,
-      isPublic
-    );
+    return AccessControl.canAccessResource(state.user.role, permission, resourceOwnerId, state.user.id, isPublic);
   }
   /**
    * Get user's role hierarchy level
@@ -303,15 +331,21 @@ export class AuthStore {
   private static async updateAuthState(user: AuthUser, session: AuthSession): Promise<void> {
     // Get user permissions based on role
     const permissions = AccessControl.getRolePermissions(user.role);
+    // Normalize session.expiresAt to a Date instance to make time math safe
+    const normalizedSession: AuthSession = {
+      ...session,
+      expiresAt: session.expiresAt ? new Date(session.expiresAt) : new Date(),
+    };
+
     authState.update(state => ({
       ...state,
       user,
-      session,
+      session: normalizedSession,
       isAuthenticated: true,
       permissions,
       lastActivity: new Date(),
-      isLoading: false
-    });
+      isLoading: false,
+    }));
   }
   /**
    * Private: Clear authentication state
@@ -319,7 +353,7 @@ export class AuthStore {
   private static clearAuth(): void {
     authState.set({
       ...initialState,
-      isLoading: false
+      isLoading: false,
     });
   }
   /**
@@ -331,21 +365,55 @@ export class AuthStore {
     }
     this.sessionCheckInterval = setInterval(async () => {
       const state = get(authState);
-      if (state.session) {
-        const now = new Date();
-        const expiresAt = new Date(state.session.expiresAt);
-        const timeUntilExpiry = expiresAt.getTime() - now.getTime();
-        // Warn user if session expires soon
-        if (timeUntilExpiry <= SESSION_WARNING_TIME && timeUntilExpiry > 0) {
-          this.showSessionWarning(timeUntilExpiry);
-        }
-        // Check session validity
-        if (timeUntilExpiry <= 0) {
+      // If not authenticated, attempt a lightweight session check and return
+      if (!state.isAuthenticated || !state.session) {
+        try {
           await this.checkSession();
+        } catch (err) {
+          // ignore - checkSession already handles clearing state on error
+        }
+        return;
+      }
+
+      // Ensure session.expiresAt is a timestamp
+      const expiresAt = state.session && state.session.expiresAt ? new Date(state.session.expiresAt).getTime() : 0;
+      const now = Date.now();
+      const timeLeft = expiresAt - now;
+
+      // If session expired, clear and redirect to login
+      if (timeLeft <= 0) {
+        console.warn('Session expired, clearing auth state.');
+        this.clearAuth();
+        return;
+      }
+
+      // If session is near expiry, attempt token refresh
+      if (timeLeft < SESSION_WARNING_TIME) {
+        try {
+          const res = await fetch(buildApiUrl('/api/auth/refresh'), {
+            method: 'POST',
+            credentials: 'include',
+          });
+          if (res.ok) {
+            const payload = await res.json();
+            if (payload?.user && payload?.session) {
+              await this.updateAuthState(payload.user, payload.session);
+              await this.trackActivity('session_refresh');
+              return;
+            }
+          }
+          // If refresh fails, force logout
+          console.warn('Session refresh failed, logging out.');
+          await this.logout();
+        } catch (err) {
+          console.error('Error refreshing session:', err);
+          await this.logout();
         }
       }
+      // otherwise session healthy, no-op
     }, SESSION_CHECK_INTERVAL);
   }
+
   /**
    * Private: Stop session monitoring
    */
@@ -354,71 +422,46 @@ export class AuthStore {
       clearInterval(this.sessionCheckInterval);
       this.sessionCheckInterval = null;
     }
-    if (this.activityTimeout) {
-      clearTimeout(this.activityTimeout);
-      this.activityTimeout = null;
-    }
   }
+
   /**
-   * Private: Setup activity tracking
+   * Private: Setup simple activity tracking to keep sessions active
    */
   private static setupActivityTracking(): void {
     if (!browser) return;
-    // Track user activity
-    const trackActivity = () => {
-      this.trackActivity('interaction');
-      this.resetActivityTimeout();
-    }
-    // Add event listeners for user activity
-    ['mousedown', 'keydown', 'scroll', 'touchstart'].forEach(event => {
-      document.addEventListener(event, trackActivity, { passive: true });
-    });
-    this.resetActivityTimeout();
+    const resetLastActivity = () => {
+      authState.update(s => ({ ...s, lastActivity: new Date() }));
+    };
+    const debouncedReset = () => {
+      resetLastActivity();
+      if (this.activityTimeout) clearTimeout(this.activityTimeout);
+      this.activityTimeout = setTimeout(() => {
+        // mark user inactive if no activity within ACTIVITY_TIMEOUT
+        authState.update(s => ({ ...s, lastActivity: s.lastActivity ?? new Date() }));
+      }, ACTIVITY_TIMEOUT);
+    };
+    // Listen to common user events
+    ['click', 'keydown', 'mousemove', 'scroll', 'touchstart'].forEach(evt =>
+      window.addEventListener(evt, debouncedReset, { passive: true })
+    );
+    // initialize
+    debouncedReset();
   }
+
   /**
-   * Private: Track user activity
+   * Private: Track a named activity (best-effort notify server)
    */
-  private static trackActivity(type: string): void {
-    authState.update(state => ({
-      ...state,
-      lastActivity: new Date()
-    });
-    // Send activity ping to server occasionally
-    if (type === 'login' || Math.random() < 0.1) {
-      fetch('/api/auth/activity', {
+  private static async trackActivity(name = 'interaction'): Promise<void> {
+    authState.update(s => ({ ...s, lastActivity: new Date() }));
+    try {
+      await fetch(buildApiUrl('/api/auth/activity'), {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type, timestamp: new Date() }),
-        credentials: 'include'
-      }).catch(() => {}); // Silently fail
-    }
-  }
-  /**
-   * Private: Reset activity timeout
-   */
-  private static resetActivityTimeout(): void {
-    if (this.activityTimeout) {
-      clearTimeout(this.activityTimeout);
-    }
-    this.activityTimeout = setTimeout(() => {
-      // Auto-logout after inactivity
-      this.logout();
-    }, ACTIVITY_TIMEOUT);
-  }
-  /**
-   * Private: Show session expiration warning
-   */
-  private static showSessionWarning(timeRemaining: number): void {
-    const minutes = Math.ceil(timeRemaining / 60000);
-    // You can replace this with a proper notification system
-    if (browser && window.confirm(
-      `Your session will expire in ${minutes} minute${minutes !== 1 ? 's' : ''}. ` +
-      'Would you like to extend your session?';
-    )) {
-      // Refresh session by making a request
-      this.checkSession();
+        body: JSON.stringify({ activity: name, timestamp: Date.now() }),
+      });
+    } catch {
+      // ignore network errors for activity pings
     }
   }
 }
-// Export store instances and utilities
-export { authState as default }

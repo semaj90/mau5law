@@ -1,5 +1,5 @@
 // Scoring types for CaseScoringService
-}
+
 export interface CaseScoringRequest {
   caseId: string;
   userId: string;

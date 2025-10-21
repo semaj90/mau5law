@@ -1008,15 +1008,4 @@
     }
   }
 </style>
-    }
-
-    .quick-stats-custom {
-      grid-template-columns: 1fr;
-    }
-
-    .action-buttons-custom {
-      flex-direction column;
-      align-items: stretch;
-    }
-  }
 </style>

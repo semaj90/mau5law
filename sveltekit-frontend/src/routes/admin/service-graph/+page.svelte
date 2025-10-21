@@ -6,17 +6,16 @@
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import type { PageData } from './$types';
 
   interface Service {
     id: string;
     label: string;
     type: string;
     port: number;
-    description string;
+    description: string;
     capabilities: string[];
     protocol: string | string[];
-    dependson string[];
+    dependsOn: string[];
     health?: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
     responseTime?: number;
     uptime?: number;
@@ -40,7 +39,7 @@
     core: 'bg-teal-500',
     gpu: 'bg-blue-500',
     cache: 'bg-yellow-500',
-    orchestration 'bg-purple-500',
+    orchestration: 'bg-purple-500',
     ai: 'bg-cyan-500',
     vector: 'bg-green-500',
     infrastructure: 'bg-indigo-500',

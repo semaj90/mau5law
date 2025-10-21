@@ -8,7 +8,7 @@
  * - Integration with PostgreSQL for metadata
  */
 
-import { QdrantClient } from '@qdrant/js-client-rest';
+import { QdrantClient, type QdrantClientParams } from '@qdrant/js-client-rest';
 import type {
   ContextualState,
   ConversationTurn,
@@ -46,10 +46,12 @@ export class QdrantVectorStore {
   private initialized: boolean = false;
 
   constructor() {
-    this.client = new QdrantClient({
-      url: QDRANT_URL,
-      apiKey: QDRANT_API_KEY
-    });
+    const config: QdrantClientParams = { url: QDRANT_URL };
+    if (QDRANT_API_KEY) {
+      config.apiKey = QDRANT_API_KEY;
+    }
+
+    this.client = new QdrantClient(config);
   }
 
   /**
@@ -176,8 +178,7 @@ export class QdrantVectorStore {
             entityType: entity.type,
             entityValue: entity.value,
             confidence: entity.confidence,
-            startPos: entity.startPos,
-            endPos: entity.endPos,
+            ...(entity.span ? { startPos: entity.span.start, endPos: entity.span.end } : {}),
             timestamp: Date.now()
           }
         }
@@ -281,12 +282,14 @@ export class QdrantVectorStore {
       }
     }
 
-    const searchResult = await this.client.search(COLLECTIONS.CONVERSATIONS, {
+    const searchParams = {
       vector: queryEmbedding,
       limit,
-      filter: Object.keys(qdrantFilter).length > 0 ? qdrantFilter : undefined,
-      with_payload: true
-    });
+      with_payload: true,
+      ...(Object.keys(qdrantFilter).length > 0 ? { filter: qdrantFilter } : {})
+    };
+
+    const searchResult = await this.client.search(COLLECTIONS.CONVERSATIONS, searchParams);
 
     return searchResult.map(hit => ({
       score: hit.score,
@@ -315,23 +318,25 @@ export class QdrantVectorStore {
   }>> {
     await this.ensureInitialized();
 
-    const filter = entityType
-      ? {
-          must: [
-            {
-              key: 'entityType',
-              match: { value: entityType }
-            }
-          ]
-        }
-      : undefined;
-
-    const searchResult = await this.client.search(COLLECTIONS.ENTITIES, {
+    const searchParams = {
       vector: queryEmbedding,
       limit,
-      filter,
-      with_payload: true
-    });
+      with_payload: true,
+      ...(entityType
+        ? {
+            filter: {
+              must: [
+                {
+                  key: 'entityType',
+                  match: { value: entityType }
+                }
+              ]
+            }
+          }
+        : {})
+    };
+
+    const searchResult = await this.client.search(COLLECTIONS.ENTITIES, searchParams);
 
     return searchResult.map(hit => ({
       score: hit.score,
@@ -412,12 +417,32 @@ export class QdrantVectorStore {
 
     const processed = new Set<string>();
 
+    const normaliseVector = (input: unknown): number[] | null => {
+      if (!input) return null;
+      if (Array.isArray(input)) {
+        if (input.length > 0 && Array.isArray(input[0])) {
+          return input[0] as number[];
+        }
+        return input as number[];
+      }
+      if (typeof input === 'object' && 'vector' in (input as { vector?: unknown })) {
+        const v = (input as { vector?: unknown }).vector;
+        if (Array.isArray(v)) {
+          if (v.length > 0 && Array.isArray(v[0])) {
+            return v[0] as number[];
+          }
+          return v as number[];
+        }
+      }
+      return null;
+    };
+
     for (const point of scrollResult.points) {
       const entityValue = point.payload?.entityValue as string;
       if (processed.has(entityValue)) continue;
 
-      const vector = Array.isArray(point.vector) ? point.vector : [];
-      if (vector.length === 0) continue;
+      const vector = normaliseVector(point.vector);
+      if (!vector || vector.length === 0) continue;
 
       // Find similar entities
       const similar = await this.client.search(COLLECTIONS.ENTITIES, {

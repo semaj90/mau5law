@@ -97,81 +97,74 @@ let cache: { ts?: number; data?: CachePayload } = {}
 export const GET: RequestHandler = async () => {
   try {
     // Simple in-process cache (5s) to avoid repeated probing and UI flapping
-    const now = Date.now()
+    const now = Date.now();
     if (cache.ts && cache.data && now - cache.ts < 5000) {
-      return json(cache.data)
+      return json(cache.data);
     }
     // Try gpu-status once; if it fails, wait briefly and retry once
-    const gpuAttempt = await Promise.allSettled([
-      fetchWithTimeout<GPUStatus>("/api/gpu-status")
-    ])
-    let gpuStatus = gpuAttempt[0]
-    if (gpuStatus.status === "rejected") {
-      await new Promise((r) => setTimeout(r, 150)
-      gpuStatus = (await Promise.allSettled([fetchWithTimeout<GPUStatus>("/api/gpu-status")]))[0]
+    const gpuAttempt = await Promise.allSettled([fetchWithTimeout<GPUStatus>('/api/gpu-status')]);
+    let gpuStatus = gpuAttempt[0];
+    if (gpuStatus.status === 'rejected') {
+      await new Promise(r => setTimeout(r, 150));
+      gpuStatus = (await Promise.allSettled([fetchWithTimeout<GPUStatus>('/api/gpu-status')]))[0];
     }
     const [ollamaHealthy, health] = await Promise.allSettled([
       ollamaService.isHealthy(),
-      fetchWithTimeout<HealthPayload>("/api/health")
-    ])
-    const ollama_ok = ollamaHealthy.status === "fulfilled" && Boolean(ollamaHealthy.value)
-    // If Ollama is healthy, fetch models and check for required model
-    const requiredModel = import.meta.env.PRIMARY_MODEL || import.meta.env.MODEL_NAME || "gemma3-legal:latest"
-    let models: OllamaModel[] = []
-    if (ollama_ok) {
-      try {
-        models = await ollamaService.listModels()
-      } catch {
-        models = []
-      }
-    }
-    const model_present = models.some(
-      (m) => m?.name === requiredModel || m?.name?.startsWith(requiredModel)
-    )
-    const gpu_ok = (gpuStatus.status === "fulfilled" && (() => {
-        const v = gpuStatus.value
-        return Boolean(v?.available ?? v?.cuda?.available)
-      })()) ||
-      (health.status === "fulfilled" && Boolean(health.value?.services?.gpu)
+      fetchWithTimeout<HealthPayload>('/api/health'),
+    ]);
+    const ollama_ok = ollamaHealthy.status === 'fulfilled' && Boolean(ollamaHealthy.value);
+
+    const ollamaModels = ollama_ok ? await ollamaService.listModels() : [];
+    const requiredModel = 'gemma3'; // As per instructions, gemma3 is a key model
+    const model_present = ollamaModels.some((m: OllamaModel) => m.name?.includes(requiredModel));
+
+    const go_service_ok = health.status === 'fulfilled' && health.value?.services?.gpu === 'ok';
+
+    const ai_summarize_checks: AISummarizeChecks = {
+      gpu: go_service_ok && gpuStatus.status === 'fulfilled' && Boolean(gpuStatus.value?.available),
+      ollama: ollama_ok,
+      model: model_present,
+    };
+
     const details: Details = {
       ollama: {
         ok: ollama_ok,
-        models_count: models.length,
+        models_count: ollamaModels.length,
         required_model: requiredModel,
-        model_present
+        model_present: model_present,
       },
       go_service: {
-        ok: gpu_ok,
-        endpoint: `${GO_BASE}/api/gpu-status`,
-        source: gpuStatus.status === "fulfilled" ? "go" : "shim",
-        version: "v1",
-        raw: gpuStatus.status === "fulfilled" ? gpuStatus.value: undefined,
-        health: health.status === "fulfilled" ? health.value : undefined,
+        ok: go_service_ok,
+        endpoint: GO_BASE,
+        source: health.status === 'fulfilled' ? health.value?.services?.gpu?.toString() : 'unknown',
+        version: health.status === 'fulfilled' ? 'v1.0' : 'unknown', // Placeholder, actual version might come from health.value
+        raw: gpuStatus.status === 'fulfilled' ? gpuStatus.value : undefined,
+        health: health.status === 'fulfilled' ? health.value : undefined,
       },
-      ai_summarize_checks: {
-        gpu: gpu_ok,
-        ollama: ollama_ok,
-        model: model_present,
-      }
-    }
-    const ai_ready = details.ai_summarize_checks.gpu &&
-                    details.ai_summarize_checks.ollama &&
-                    details.ai_summarize_checks?.model || "unknown" // @ts-ignore - Model property access
-    const message = !model_present ? "Please download local LLM model" : undefined
+      ai_summarize_checks: ai_summarize_checks,
+    };
+
     const payload: CachePayload = {
-      ok: ai_ready,
-      details,
-      message
-    }
-    // Cache the result
-    cache = { ts: now, data: payload }
-    return json(payload)
-  } catch (error: any) {
-    console.error('GPU validation error:', error)
-    return json({
+      ok: ai_summarize_checks.gpu && ai_summarize_checks.ollama && ai_summarize_checks.model,
+      details: details,
+      message: ai_summarize_checks.gpu && ai_summarize_checks.ollama && ai_summarize_checks.model
+        ? 'All AI components are ready for legal PDF processing.'
+        : 'Some AI components are not fully ready. Check details.',
+    };
+
+    cache = { ts: now, data: payload };
+    return json(payload);
+  } catch (error) {
+    console.error('GPU setup validation failed:', error);
+    const errorPayload: CachePayload = {
       ok: false,
-      error: error instanceof Error ? error.message: 'Unknown error',
-      timestamp: new Date().toISOString()
-    })
+      details: {
+        ollama: { ok: false, models_count: 0, required_model: 'gemma3', model_present: false },
+        go_service: { ok: false, endpoint: GO_BASE },
+        ai_summarize_checks: { gpu: false, ollama: false, model: false },
+      },
+      message: `Failed to validate GPU setup: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    };
+    return json(errorPayload, { status: 500 });
   }
 }

@@ -1,100 +1,162 @@
 /// <reference types="vite/client" />
-import { healthCheck } from "$lib/server/db/index.js"
-import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+
 // Environment variables for Ollama configuration
-const OLLAMA_URL = import.meta.env.OLLAMA_URL || 'http://localhost:11434'
+const OLLAMA_URL = import.meta.env.OLLAMA_URL || 'http://localhost:11434';
 const OLLAMA_TIMEOUT = 5000; // 5 seconds
+
+type OllamaStatus = {
+  status: 'connected' | 'error';
+  version?: string;
+  url: string;
+  error?: string;
+};
+
+type DatabaseStatus = {
+  status: 'connected' | 'error' | 'unknown';
+  type: 'PostgreSQL';
+  tablesAccessible?: unknown;
+  error?: string;
+};
+
 export const GET: RequestHandler = async () => {
   try {
     const systemStatus = {
       services: {
         ollama: await checkOllamaStatus(),
-        database: await checkDatabaseStatus()
+        database: await checkDatabaseStatus(),
       },
       environment: {
-        ollamaUrl: OLLAMA_URL
+        ollamaUrl: OLLAMA_URL,
       },
-      timestamp: new Date().toISOString()
-    }
-    return json(systemStatus)
-  } catch (error: any) {
-    console.error('System status check failed:', error)
-    return json()
+      timestamp: new Date().toISOString(),
+    };
+    return json(systemStatus);
+  } catch (error: unknown) {
+    console.error('System status check failed:', error);
+    return json(
       {
         services: {
-          ollama: { status: 'error', error,: 'System check failed' },
-          database: { status: 'error', error,: 'System check failed' }
+          ollama: { status: 'error', error: 'System check failed' },
+          database: { status: 'error', error: 'System check failed' },
         },
         environment: { ollamaUrl: OLLAMA_URL },
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
-    )
+    );
   }
-}
-async function checkOllamaStatus(): Promise<any> {
+};
+
+async function checkOllamaStatus(): Promise<OllamaStatus> {
   try {
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), OLLAMA_TIMEOUT)
-    const response = await fetch(`${OLLAMA_URL}/api/version`, {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), OLLAMA_TIMEOUT);
+    const response: Response = await fetch(`${OLLAMA_URL}/api/version`, {
       signal: controller.signal,
       headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    clearTimeout(timeoutId)
-    if (!(response as { ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-      throw new Error(`HTTP ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { ok?: any; status?: any; statusText?: any; json?: any }).statusText}`)
+        'Content-Type': 'application/json',
+      },
+    });
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
-    const data = await (response as { ok?: any; status?: any; statusText?: any; json?: any }).json()
+
+    const data = (await response.json()) as { version?: string } | unknown;
+    const version =
+      typeof data === 'object' && data !== null && 'version' in data
+        ? ((data as { version?: string }).version ?? 'unknown')
+        : 'unknown';
+
     return {
       status: 'connected',
-      version: (data as { version?: any }).version || 'unknown',
-      url: OLLAMA_URL
-    }
-  } catch (error: any) {
-    console.error('Ollama connection failed:', error)
-    let errorMessage = 'Connection failed'
+      version,
+      url: OLLAMA_URL,
+    };
+  } catch (error: unknown) {
+    console.error('Ollama connection failed:', error);
+    let errorMessage = 'Connection failed';
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
-        errorMessage = 'Connection timeout'
-      } else if (error.message.includes('fetch')) {
-        errorMessage = 'Service unavailable'
+        errorMessage = 'Connection timeout';
+      } else if (/fetch/i.test(error.message)) {
+        errorMessage = 'Service unavailable';
       } else {
-        errorMessage = error.message
+        errorMessage = error.message;
       }
     }
     return {
       status: 'error',
-      error: errorMessage,;
-      url: OLLAMA_URL
-    }
+      error: errorMessage,
+      url: OLLAMA_URL,
+    };
   }
 }
-async function checkDatabaseStatus(): Promise<any> {
+
+// Add lightweight types and a type guard for the DB module/health result
+type DBModule = {
+  healthCheck?: () => Promise<unknown>;
+};
+
+type DBHealthResult = {
+  status?: string;
+  tablesAccessible?: unknown;
+  error?: string;
+};
+
+function isDBHealthResult(obj: unknown): obj is DBHealthResult {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    ('status' in (obj as Record<string, unknown>) ||
+      'tablesAccessible' in (obj as Record<string, unknown>) ||
+      'error' in (obj as Record<string, unknown>))
+  );
+}
+
+async function checkDatabaseStatus(): Promise<DatabaseStatus> {
+  // Try to dynamically import a healthCheck if the module exports it.
   try {
-    const result = await healthCheck()
-    if ((result as { status?: any; error?: any }).status === 'healthy') {
-      return {
-        status: 'connected',
-        type: 'PostgreSQL',
-        tablesAccessible: (result as any).tablesAccessible
-      }
-    } else {
-      return {
-        status: 'error',
-        error: (result as { status?: any; error?: any }).error,
-        type: 'PostgreSQL'
+    // import as unknown first to avoid unsafe casting between module shapes
+    const dbModuleUnknown = await import('$lib/server/db/index.js').catch(() => null);
+    const dbModule = dbModuleUnknown as DBModule | null;
+
+    if (dbModule && typeof dbModule.healthCheck === 'function') {
+      // call the exported healthCheck safely and guard its shape
+      const result = await dbModule.healthCheck();
+      if (isDBHealthResult(result) && result.status === 'healthy') {
+        return {
+          status: 'connected',
+          type: 'PostgreSQL',
+          tablesAccessible: result.tablesAccessible,
+        };
+      } else {
+        return {
+          status: 'error',
+          type: 'PostgreSQL',
+          error: isDBHealthResult(result) && result.error ? String(result.error) : 'unhealthy',
+        };
       }
     }
-  } catch (error: any) {
-    console.error('Database health check failed:', error)
+
+    // Fallback: healthCheck not provided by DB module
+    return {
+      status: 'unknown',
+      type: 'PostgreSQL',
+      error: 'healthCheck not exported from $lib/server/db/index.js',
+    };
+  } catch (error: unknown) {
+    console.error('Database health check failed:', error);
     return {
       status: 'error',
-      error: error instanceof Error ? error.message: 'Unknown error',
-      type: 'PostgreSQL'
-    }
+      type: 'PostgreSQL',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 }
+
 // Also support POST for triggering system checks
-export const POST = GET;
+export const POST: RequestHandler = GET;

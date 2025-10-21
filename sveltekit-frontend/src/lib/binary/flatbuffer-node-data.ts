@@ -9,36 +9,36 @@
  * - NES memory architecture integration
  * - WebGPU texture upload optimization
  */
-import { nesGPUBridge, type GPUNodeDataFB } from '../gpu/nes-gpu-memory-bridge.js';
+import type { GPUNodeDataFB } from '../gpu/nes-gpu-memory-bridge.js';
 // Binary field offsets and sizes (bytes)
 const FLATBUFFER_SCHEMA = {
   HEADER: {
-    MAGIC: 0,           // 4 bytes - "FBND" magic number
-    VERSION: 4,         // 2 bytes - schema version
-    NODE_COUNT: 6,      // 4 bytes - number of nodes
-    TIMESTAMP: 10,      // 8 bytes - creation timestamp
-    CHECKSUM: 18,       // 4 bytes - data integrity checksum
-    RESERVED: 22        // 10 bytes - future expansion
+    MAGIC: 0, // 4 bytes - "FBND" magic number
+    VERSION: 4, // 2 bytes - schema version
+    NODE_COUNT: 6, // 4 bytes - number of nodes
+    TIMESTAMP: 10, // 8 bytes - creation timestamp
+    CHECKSUM: 18, // 4 bytes - data integrity checksum
+    RESERVED: 22, // 10 bytes - future expansion
   },
   NODE: {
-    ID: 0,              // 4 bytes - node ID (uint32)
-    TYPE: 4,            // 1 byte - document type code
-    PRIORITY: 5,        // 1 byte - NES priority (0-255)
-    BANK_ID: 6,         // 1 byte - memory bank reference
-    FLAGS: 7,           // 1 byte - compressed, cached, etc.
-    CONFIDENCE: 8,      // 4 bytes - confidence level (float32)
-    RISK_CODE: 12,      // 1 byte - risk level code
-    RESERVED1: 13,      // 3 bytes - alignment padding
-    POSITION_X: 16,     // 4 bytes - graph X coordinate
-    POSITION_Y: 20,     // 4 bytes - graph Y coordinate
-    POSITION_Z: 24,     // 4 bytes - graph Z coordinate (optional)
-    RESERVED2: 28,      // 4 bytes - alignment padding
+    ID: 0, // 4 bytes - node ID (uint32)
+    TYPE: 4, // 1 byte - document type code
+    PRIORITY: 5, // 1 byte - NES priority (0-255)
+    BANK_ID: 6, // 1 byte - memory bank reference
+    FLAGS: 7, // 1 byte - compressed, cached, etc.
+    CONFIDENCE: 8, // 4 bytes - confidence level (float32)
+    RISK_CODE: 12, // 1 byte - risk level code
+    RESERVED1: 13, // 3 bytes - alignment padding
+    POSITION_X: 16, // 4 bytes - graph X coordinate
+    POSITION_Y: 20, // 4 bytes - graph Y coordinate
+    POSITION_Z: 24, // 4 bytes - graph Z coordinate (optional)
+    RESERVED2: 28, // 4 bytes - alignment padding
     EMBEDDING_SIZE: 32, // 4 bytes - vector embedding size
-    METADATA_SIZE: 36,  // 4 bytes - metadata blob size
+    METADATA_SIZE: 36, // 4 bytes - metadata blob size
     EMBEDDING_OFFSET: 40, // 4 bytes - offset to embedding data
-    METADATA_OFFSET: 44,  // 4 bytes - offset to metadata blob
-    TOTAL_SIZE: 48      // Total node header size
-  }
+    METADATA_OFFSET: 44, // 4 bytes - offset to metadata blob
+    TOTAL_SIZE: 48, // Total node header size
+  },
 } as const;
 export interface FlatBufferNode {
   readonly id: number;
@@ -48,17 +48,19 @@ export interface FlatBufferNode {
   readonly flags: number;
   readonly confidence: number;
   readonly riskCode: number;
-  readonly position: { x: number; y: number; z: number }
+  readonly position: { x: number; y: number; z: number };
   readonly embedding: Float32Array | null;
   readonly metadata: ArrayBuffer | null;
+}
 export interface BinaryGraphData {
   readonly nodeCount: number;
   readonly timestamp: number;
   readonly checksum: number;
   readonly nodes: FlatBufferNode[];
   readonly totalSize: number;
+}
 export class FlatBufferNodeSerializer {
-  private static readonly MAGIC_NUMBER = 0x444E4246; // "FBND" in little-endian
+  private static readonly MAGIC_NUMBER = 0x444e4246; // "FBND" in little-endian
   private static readonly CURRENT_VERSION = 1;
   // Performance tracking
   private static metrics = {
@@ -67,8 +69,8 @@ export class FlatBufferNodeSerializer {
     compressionRatio: 0,
     totalNodes: 0,
     cacheHits: 0,
-    cacheMisses: 0
-  }
+    cacheMisses: 0,
+  };
   // Binary data cache with LRU eviction
   private static binaryCache = new Map<string, ArrayBuffer>();
   private static cacheAccessTime = new Map<string, number>();
@@ -77,19 +79,30 @@ export class FlatBufferNodeSerializer {
    * Serialize legal document graph nodes to binary FlatBuffer format
    * Optimized for GPU texture upload and NES memory allocation
    */
-  static async serializeNodes(nodes: Array<any>;
-    compressed?: boolean;
-    cached?: boolean;
-  }>): Promise<ArrayBuffer> {
+  static async serializeNodes(
+    nodes: Array<{
+      id: number;
+      type: string;
+      priority: number;
+      bankId?: number;
+      compressed?: boolean;
+      cached?: boolean;
+      confidence: number;
+      riskLevel: string;
+      position: { x: number; y: number; z?: number };
+      embedding?: Float32Array;
+      metadata?: Record<string, unknown>; // Changed from 'any'
+    }>
+  ): Promise<ArrayBuffer> {
     const startTime = performance.now();
     try {
       // Calculate total buffer size
-      let totalSize = 3,2; // Header size
-      const nodeDataSize,s: numb,er,[], = [];
-      for (const node, o,f nodes) {
+      let totalSize = 32; // Header size
+      const nodeDataSizes: number[] = [];
+      for (const node of nodes) {
         let nodeSize = FLATBUFFER_SCHEMA.NODE.TOTAL_SIZE;
-        nodeSize += node.embedding ? node.embedding.byteLength: 0;
-        nodeSize += node.metadata ? JSON.stringify(node.metadata).length: 0;
+        nodeSize += node.embedding ? node.embedding.byteLength : 0;
+        nodeSize += node.metadata ? new TextEncoder().encode(JSON.stringify(node.metadata)).length : 0;
         // Align to 8-byte boundary for GPU optimization
         nodeSize = Math.ceil(nodeSize / 8) * 8;
         nodeDataSizes.push(nodeSize);
@@ -99,20 +112,20 @@ export class FlatBufferNodeSerializer {
       const buffer = new ArrayBuffer(totalSize);
       const view = new DataView(buffer);
       const uint8View = new Uint8Array(buffer);
-      let offset =, 0;
+      let offset = 0;
       // Write header
-      view,.setUint32(offset + FLATBUFFER_SCHEMA.HEADER.MAGIC, this.MAGIC_NUMBER, true);
-      view,.setUint16(offset + FLATBUFFER_SCHEMA.HEADER.VERSION, this.CURRENT_VERSION, true);
-      view,.setUint32(offset + FLATBUFFER_SCHEMA.HEADER.NODE_COUNT, nodes.length, true);
-      view,.setBigUint64(offset + FLATBUFFER_SCHEMA.HEADER.TIMESTAMP, BigInt(Date.now()), true);
-      offset, += 3,2; // Skip header
+      view.setUint32(offset + FLATBUFFER_SCHEMA.HEADER.MAGIC, this.MAGIC_NUMBER, true);
+      view.setUint16(offset + FLATBUFFER_SCHEMA.HEADER.VERSION, this.CURRENT_VERSION, true);
+      view.setUint32(offset + FLATBUFFER_SCHEMA.HEADER.NODE_COUNT, nodes.length, true);
+      view.setBigUint64(offset + FLATBUFFER_SCHEMA.HEADER.TIMESTAMP, BigInt(Date.now()), true);
+      offset += 32; // Skip header
       // Write node data
-      for (let i =, 0;, i < no,des.le,ng,t,h; i++) {
+      for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i];
         const nodeStartOffset = offset;
         // Write node header
         view.setUint32(offset + FLATBUFFER_SCHEMA.NODE.ID, node.id, true);
-        view.setUint8(offset + FLATBUFFER_SCHEMA.NODE.TYPE, this.encodeDocumentType(node.type);
+        view.setUint8(offset + FLATBUFFER_SCHEMA.NODE.TYPE, this.encodeDocumentType(node.type));
         view.setUint8(offset + FLATBUFFER_SCHEMA.NODE.PRIORITY, node.priority);
         view.setUint8(offset + FLATBUFFER_SCHEMA.NODE.BANK_ID, node.bankId || 0);
         // Encode flags
@@ -121,7 +134,7 @@ export class FlatBufferNodeSerializer {
         if (node.cached) flags |= 0x02;
         view.setUint8(offset + FLATBUFFER_SCHEMA.NODE.FLAGS, flags);
         view.setFloat32(offset + FLATBUFFER_SCHEMA.NODE.CONFIDENCE, node.confidence, true);
-        view.setUint8(offset + FLATBUFFER_SCHEMA.NODE.RISK_CODE, this.encodeRiskLevel(node.riskLevel);
+        view.setUint8(offset + FLATBUFFER_SCHEMA.NODE.RISK_CODE, this.encodeRiskLevel(node.riskLevel));
         // Write position
         view.setFloat32(offset + FLATBUFFER_SCHEMA.NODE.POSITION_X, node.position.x, true);
         view.setFloat32(offset + FLATBUFFER_SCHEMA.NODE.POSITION_Y, node.position.y, true);
@@ -155,18 +168,21 @@ export class FlatBufferNodeSerializer {
         }
       }
       // Calculate and write checksum
-      const checksum = this.calculateChecksum(uint8View.slice(32); // Skip header for checksum
+      const checksum = this.calculateChecksum(uint8View.slice(32)); // Skip header for checksum
       view.setUint32(FLATBUFFER_SCHEMA.HEADER.CHECKSUM, checksum, true);
       const serializeTime = performance.now() - startTime;
       this.metrics.serializeTime += serializeTime;
       this.metrics.totalNodes += nodes.length;
-      console.log(`📦 Serialized ${nodes.length} nodes to FlatBuffer: ${buffer.byteLength} bytes in ${serializeTime.toFixed(2)}ms`);
+      console.log(
+        `📦 Serialized ${nodes.length} nodes to FlatBuffer: ${buffer.byteLength} bytes in ${serializeTime.toFixed(2)}ms`
+      );
       // Cache the result
       const cacheKey = this.generateCacheKey(nodes);
       this.addToCache(cacheKey, buffer);
       return buffer;
-    } catch (error: any) {
-      console.error('❌ FlatBuffer serialization failed:', error);
+    } catch (error: unknown) {
+      // Changed from 'any'
+      console.error('❌ FlatBuffer serialization failed:', error instanceof Error ? error.message : error);
       throw error;
     }
   }
@@ -174,14 +190,14 @@ export class FlatBufferNodeSerializer {
    * Deserialize binary FlatBuffer back to node objects
    * Optimized for zero-copy access where possible
    */
-  static async deserializeNodes(buffer,: ArrayBuffer): Promise<BinaryGraphData> {
+  static async deserializeNodes(buffer: ArrayBuffer): Promise<BinaryGraphData> {
     const startTime = performance.now();
     try {
       const view = new DataView(buffer);
       const uint8View = new Uint8Array(buffer);
       // Validate header
       const magic = view.getUint32(FLATBUFFER_SCHEMA.HEADER.MAGIC, true);
-      if (magic, !== this.MAGIC_NUMBE,R) {
+      if (magic !== this.MAGIC_NUMBER) {
         throw new Error(`Invalid FlatBuffer magic number: 0x${magic.toString(16)}`);
       }
       const version = view.getUint16(FLATBUFFER_SCHEMA.HEADER.VERSION, true);
@@ -189,10 +205,10 @@ export class FlatBufferNodeSerializer {
         throw new Error(`Unsupported FlatBuffer version: ${version}`);
       }
       const nodeCount = view.getUint32(FLATBUFFER_SCHEMA.HEADER.NODE_COUNT, true);
-      const timestamp = Number(view.getBigUint64(FLATBUFFER_SCHEMA.HEADER.TIMESTAMP, true);
+      const timestamp = Number(view.getBigUint64(FLATBUFFER_SCHEMA.HEADER.TIMESTAMP, true));
       const checksum = view.getUint32(FLATBUFFER_SCHEMA.HEADER.CHECKSUM, true);
       // Validate checksum
-      const calculatedChecksum = this.calculateChecksum(uint8View.slice(32);
+      const calculatedChecksum = this.calculateChecksum(uint8View.slice(32));
       if (checksum !== calculatedChecksum) {
         throw new Error(`FlatBuffer checksum mismatch: expected ${checksum}, got ${calculatedChecksum}`);
       }
@@ -213,14 +229,15 @@ export class FlatBufferNodeSerializer {
         const position = {
           x: view.getFloat32(offset + FLATBUFFER_SCHEMA.NODE.POSITION_X, true),
           y: view.getFloat32(offset + FLATBUFFER_SCHEMA.NODE.POSITION_Y, true),
-          z: view.getFloat32(offset + FLATBUFFER_SCHEMA.NODE.POSITION_Z, true)
-        }
+          z: view.getFloat32(offset + FLATBUFFER_SCHEMA.NODE.POSITION_Z, true),
+        };
         offset += FLATBUFFER_SCHEMA.NODE.TOTAL_SIZE;
         // Read embedding (zero-copy when possible)
         let embedding: Float32Array | null = null;
         const embeddingSize = view.getUint32(nodeStartOffset + FLATBUFFER_SCHEMA.NODE.EMBEDDING_SIZE, true);
         if (embeddingSize > 0) {
-          const embeddingOffset = nodeStartOffset + view.getUint32(nodeStartOffset + FLATBUFFER_SCHEMA.NODE.EMBEDDING_OFFSET, true);
+          const embeddingOffset =
+            nodeStartOffset + view.getUint32(nodeStartOffset + FLATBUFFER_SCHEMA.NODE.EMBEDDING_OFFSET, true);
           // Zero-copy view of the embedding data
           embedding = new Float32Array(buffer, embeddingOffset, embeddingSize);
           offset = Math.max(offset, embeddingOffset + embeddingSize * 4);
@@ -229,7 +246,8 @@ export class FlatBufferNodeSerializer {
         let metadata: ArrayBuffer | null = null;
         const metadataSize = view.getUint32(nodeStartOffset + FLATBUFFER_SCHEMA.NODE.METADATA_SIZE, true);
         if (metadataSize > 0) {
-          const metadataOffset = nodeStartOffset + view.getUint32(nodeStartOffset + FLATBUFFER_SCHEMA.NODE.METADATA_OFFSET, true);
+          const metadataOffset =
+            nodeStartOffset + view.getUint32(nodeStartOffset + FLATBUFFER_SCHEMA.NODE.METADATA_OFFSET, true);
           metadata = buffer.slice(metadataOffset, metadataOffset + metadataSize);
           offset = Math.max(offset, metadataOffset + metadataSize);
         }
@@ -245,7 +263,7 @@ export class FlatBufferNodeSerializer {
           riskCode,
           position,
           embedding,
-          metadata
+          metadata,
         });
       }
       const deserializeTime = performance.now() - startTime;
@@ -256,10 +274,11 @@ export class FlatBufferNodeSerializer {
         timestamp,
         checksum,
         nodes,
-        totalSize: buffer.byteLength
-      }
-    } catch (error: any) {
-      console.error('❌ FlatBuffer deserialization failed:', error);
+        totalSize: buffer.byteLength,
+      };
+    } catch (error: unknown) {
+      // Changed from 'any'
+      console.error('❌ FlatBuffer deserialization failed:', error instanceof Error ? error.message : error);
       throw error;
     }
   }
@@ -267,7 +286,7 @@ export class FlatBufferNodeSerializer {
    * Create GPU-optimized node data for WebGPU texture upload
    * Converts FlatBuffer nodes to texture-ready format
    */
-  static createGPUNodeData(binaryData,: BinaryGraphData): GPUNodeDataFB {
+  static createGPUNodeData(binaryData: BinaryGraphData): GPUNodeDataFB {
     const nodeCount = binaryData.nodes.length;
     // Create GPU-aligned arrays
     const nodeIds = new Uint32Array(nodeCount);
@@ -305,28 +324,27 @@ export class FlatBufferNodeSerializer {
       metadata,
       priority: priorities,
       bankId: bankIds,
-    }
+    };
   }
   // Cache management
-  private static generateCacheKey(nodes,: any[]): string {
-    const ids = nodes.map(n => n.id).sort();
+  private static generateCacheKey(nodes: Array<{ id: number }>): string {
+    const ids = nodes.map(n => n.id).sort((a, b) => a - b); // Sort numerically
     return `nodes_${ids.length}_${ids[0] || 0}_${ids[ids.length - 1] || 0}`;
   }
-  private static addToCache(_key,: string, buffe,r: ArrayBuffe,r): void {
+  private static addToCache(key: string, buffer: ArrayBuffer): void {
     // LRU eviction
-    if (this.binaryCache.size >= this.MAX_CACHE_SIZ,E) {
-      const oldestKey = Array.from(this.cacheAccessTime.entries()
-        .sort((a, b) => a[1] - b[1])[0][0];
+    if (this.binaryCache.size >= this.MAX_CACHE_SIZE) {
+      const oldestKey = Array.from(this.cacheAccessTime.entries()).sort((a, b) => a[1] - b[1])[0][0];
       this.binaryCache.delete(oldestKey);
       this.cacheAccessTime.delete(oldestKey);
     }
     this.binaryCache.set(key, buffer);
-    this.cacheAccessTime.set(key, Date.now();
+    this.cacheAccessTime.set(key, Date.now());
   }
-  static getFromCache(_key,: string): ArrayBuffer | nul,l {
+  static getFromCache(key: string): ArrayBuffer | null {
     const buffer = this.binaryCache.get(key);
     if (buffer) {
-      this.cacheAccessTime.set(key, Date.now();
+      this.cacheAccessTime.set(key, Date.now());
       this.metrics.cacheHits++;
       return buffer;
     }
@@ -334,38 +352,57 @@ export class FlatBufferNodeSerializer {
     return null;
   }
   // Utility methods
-  private static encodeDocumentType(type,: string): number {
-    const types = { contract: 1, evidence: 2, brief: 3, citation: 4, precedent: 5 }
-    return (types as any)[type] || 0;
+  private static encodeDocumentType(type: string): number {
+    type DocumentTypeKey = 'contract' | 'evidence' | 'brief' | 'citation' | 'precedent';
+    const types: Record<DocumentTypeKey, number> = { contract: 1, evidence: 2, brief: 3, citation: 4, precedent: 5 };
+    if (Object.prototype.hasOwnProperty.call(types, type)) {
+      return types[type as DocumentTypeKey];
+    }
+    return 0;
   }
-  private static encodeRiskLevel(level,: string): number {
-    const levels = { low: 1, medium: 2, high: 3, critical: 4 }
-    return (levels as any)[level] || 1;
+  private static encodeRiskLevel(level: string): number {
+    type RiskLevelKey = 'low' | 'medium' | 'high' | 'critical';
+    const levels: Record<RiskLevelKey, number> = { low: 1, medium: 2, high: 3, critical: 4 };
+    if (Object.prototype.hasOwnProperty.call(levels, level)) {
+      return levels[level as RiskLevelKey];
+    }
+    return 1;
   }
-  private static calculateChecksum(data,: Uint8Array): number {
+  private static calculateChecksum(data: Uint8Array): number {
     let checksum = 0;
     for (let i = 0; i < data.length; i++) {
-      checksum = (checksum + data[i]) & 0xFFFFFFFF;
+      checksum = (checksum + data[i]) & 0xffffffff;
     }
     return checksum;
   }
   /**
    * Get performance metrics and cache statistics
    */
-  static getMetrics(), {
+  static getMetrics(): {
+    serializeTime: number;
+    deserializeTime: number;
+    compressionRatio: number;
+    totalNodes: number;
+    cacheHits: number;
+    cacheMisses: number;
+    cacheSize: number;
+    cacheHitRate: number;
+    avgSerializeTime: number;
+    avgDeserializeTime: number;
+  } {
     const cacheHitRate = this.metrics.cacheHits / (this.metrics.cacheHits + this.metrics.cacheMisses);
     return {
       ...this.metrics,
       cacheSize: this.binaryCache.size,
       cacheHitRate: isNaN(cacheHitRate) ? 0 : cacheHitRate,
-      avgSerializeTime: this.metrics.totalNodes > 0 ? this.metrics.serializeTime / this.metrics.totalNodes: 0,
-      avgDeserializeTime: this.metrics.totalNodes > 0 ? this.metrics.deserializeTime / this.metrics.totalNodes : 0
-    }
+      avgSerializeTime: this.metrics.totalNodes > 0 ? this.metrics.serializeTime / this.metrics.totalNodes : 0,
+      avgDeserializeTime: this.metrics.totalNodes > 0 ? this.metrics.deserializeTime / this.metrics.totalNodes : 0,
+    };
   }
   /**
    * Clear cache and reset metrics
    */
-  static reset(),: void {
+  static reset(): void {
     this.binaryCache.clear();
     this.cacheAccessTime.clear();
     this.metrics = {
@@ -374,8 +411,8 @@ export class FlatBufferNodeSerializer {
       compressionRatio: 0,
       totalNodes: 0,
       cacheHits: 0,
-      cacheMisses: 0
-    }
+      cacheMisses: 0,
+    };
   }
 }
 export { FLATBUFFER_SCHEMA }

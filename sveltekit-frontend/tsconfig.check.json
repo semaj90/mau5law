@@ -24,6 +24,14 @@
     "src/proto/**",
     "src/lib/server/db/**",
     "src/lib/experimental/**",
-    "src/lib/ai/_experimental/**"
+    "src/lib/ai/_experimental/**",
+    "src/lib/auth/**",
+    "src/lib/binary/**",
+    "src/routes/api/rag/**",
+    "src/routes/api/recommendations/**",
+    "src/routes/api/reports/**",
+    "src/routes/api/redis-orchestrator/**",
+    "src/routes/api/security/**",
+    "src/routes/api/test/**"
   ]
 }

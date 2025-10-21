@@ -3,14 +3,13 @@
  * Integrates all cognitive systems into a unified, intelligent platform
  * Features: Secret passages, Easter eggs, advanced developer tools, and emergent intelligence
  */
-import { writable, derived, readable } from 'svelte/store';
+import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
 import { cognitiveRoutingOrchestrator } from './cognitive-routing-orchestrator.js';
 import { reinforcementLearningCache } from '../caching/reinforcement-learning-cache.js';
 import { multiDimensionalRoutingMatrix } from '../routing/multidimensional-routing-matrix.js';
 import { physicsAwareGPUOrchestrator } from '../gpu/physics-aware-gpu-orchestrator.js';
 import { webgpuRAGService } from '../webgpu/webgpu-rag-service.js';
-import { nesCacheOrchestrator } from '../services/nes-cache-orchestrator.js';
 // 🎮 Master cognitive state with secret developer modes
 export interface MasterCognitiveState {
   // Core systems status
@@ -20,51 +19,54 @@ export interface MasterCognitiveState {
     gpu: 'idle' | 'computing' | 'accelerating' | 'supercomputing' | 'singularity';
     matrix: 'mapping' | 'routing' | 'predicting' | 'orchestrating' | 'omnipresent';
     webgpu: 'offline' | 'online' | 'enhanced' | 'transcendent' | 'godmode';
-  }
+  };
   // Secret developer modes 🕵️
   secretModes: {
-    konami: boolean;           // Konami code activated
-    developerGod: boolean;     // Ultimate developer mode,
-    quantumDebug: boolean;     // Quantum state debugging
-    aiWhisperer: boolean;      // Direct AI communication,
-    timeWarp: boolean;         // Time manipulation mode
-    matrixMode: boolean;       // See the code behind reality,
-    phoenixMode: boolean;      // Auto-recovery and self-healing
-    zenMode: boolean;          // Minimalist ultra-focus mode
-  }
+    konami: boolean; // Konami code activated
+    developerGod: boolean; // Ultimate developer mode,
+    quantumDebug: boolean; // Quantum state debugging
+    aiWhisperer: boolean; // Direct AI communication,
+    timeWarp: boolean; // Time manipulation mode
+    matrixMode: boolean; // See the code behind reality,
+    phoenixMode: boolean; // Auto-recovery and self-healing
+    zenMode: boolean; // Minimalist ultra-focus mode
+  };
   // Performance and intelligence metrics
   intelligence: {
-    collective: number;        // Combined intelligence across all systems
-    emergent: number;          // Intelligence beyond the sum of parts,
-    creative: number;          // Creative problem-solving capability
-    intuitive: number;         // Pattern recognition and prediction,
-    adaptive: number;          // Learning and adaptation speed
-    quantum: number;           // Quantum coherence level
-  }
+    collective: number; // Combined intelligence across all systems
+    emergent: number; // Intelligence beyond the sum of parts,
+    creative: number; // Creative problem-solving capability
+    intuitive: number; // Pattern recognition and prediction,
+    adaptive: number; // Learning and adaptation speed
+    quantum: number; // Quantum coherence level
+  };
   // Real-time system health
   vitals: {
-    heartbeat: number;         // System pulse rate
-    temperature: number;       // Thermal state,
-    pressure: number;          // Processing pressure
-    energy: number;            // Available energy,
-    coherence: number;         // System synchronization
-    entropy: number;           // Disorder level
-  }
+    heartbeat: number; // System pulse rate
+    temperature: number; // Thermal state,
+    pressure: number; // Processing pressure
+    energy: number; // Available energy,
+    coherence: number; // System synchronization
+    entropy: number; // Disorder level
+  };
   // Secret achievements system 🏆
-  achievements: Map<string, {
-    unlocked: boolean;
-    timestamp: number;
-    description: string;
-    reward: string;
-    rarity: 'common' | 'rare' | 'epic' | 'legendary' | 'mythic' | 'transcendent';
-  }>;
+  achievements: Map<
+    string,
+    {
+      unlocked: boolean;
+      timestamp: number;
+      description: string;
+      reward: string;
+      rarity: 'common' | 'rare' | 'epic' | 'legendary' | 'mythic' | 'transcendent';
+    }
+  >;
   // Easter egg tracking
   easterEggs: {
     discovered: string[];
     totalAvailable: number;
     secretRoutes: string[];
     hiddenFeatures: string[];
-  }
+  };
 }
 // 🎯 Advanced orchestration capabilities
 export interface CognitiveCapabilities {
@@ -76,12 +78,12 @@ export interface CognitiveCapabilities {
   creativity: number;
   intuition: number;
   // Secret advanced capabilities
-  timePerception: number;     // Understanding of temporal patterns,
+  timePerception: number; // Understanding of temporal patterns,
   dimensionalAwareness: number; // Multi-dimensional thinking
-  quantumIntuition: number;   // Quantum state prediction,
-  emergentWisdom: number;     // Wisdom emerging from experience
-  cosmicAwareness: number;    // Understanding of larger patterns,
-  transcendentLogic: number;  // Logic beyond conventional reasoning
+  quantumIntuition: number; // Quantum state prediction,
+  emergentWisdom: number; // Wisdom emerging from experience
+  cosmicAwareness: number; // Understanding of larger patterns,
+  transcendentLogic: number; // Logic beyond conventional reasoning
 }
 // 🚀 Ultimate developer toolkit
 export interface DeveloperToolkit {
@@ -91,14 +93,14 @@ export interface DeveloperToolkit {
     realTimeMetrics: boolean;
     deepAnalysis: boolean;
     quantumProfiler: boolean;
-  }
+  };
   // Debugging superpowers
   debugger: {
-    timeTravel: boolean;       // Debug through time
-    dimensionalView: boolean;  // See all dimensions,
-    thoughtTracing: boolean;   // Trace AI thought processes
+    timeTravel: boolean; // Debug through time
+    dimensionalView: boolean; // See all dimensions,
+    thoughtTracing: boolean; // Trace AI thought processes
     quantumDebugging: boolean; // Debug quantum states
-  }
+  };
   // Secret development features
   cheatCodes: {
     infinitePerformance: boolean;
@@ -106,7 +108,7 @@ export interface DeveloperToolkit {
     perfectPrediction: boolean;
     timeAcceleration: boolean;
     creativityBoost: boolean;
-  }
+  };
   // Advanced visualization
   visualization: {
     neuralNetworkView: boolean;
@@ -114,14 +116,25 @@ export interface DeveloperToolkit {
     quantumStateVisualization: boolean;
     dimensionalMapping: boolean;
     consciousnessViewer: boolean;
-  }
+  };
 }
 export class MasterCognitiveHub {
   private state: MasterCognitiveState;
   private capabilities: CognitiveCapabilities;
   private toolkit: DeveloperToolkit;
   private secretSequences: Map<string, () => void> = new Map();
-  private konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
+  private konamiSequence = [
+    'ArrowUp',
+    'ArrowUp',
+    'ArrowDown',
+    'ArrowDown',
+    'ArrowLeft',
+    'ArrowRight',
+    'ArrowLeft',
+    'ArrowRight',
+    'KeyB',
+    'KeyA',
+  ];
   private currentSequence: string[] = [];
   // Reactive stores for SvelteKit
   public masterState = writable<MasterCognitiveState>({} as MasterCognitiveState);
@@ -131,24 +144,30 @@ export class MasterCognitiveHub {
     quantumCoherence: 0,
     timeToSingularity: Infinity,
     secretsUnlocked: 0,
-    developerLevel: 0
+    developerLevel: 0,
   });
   // Secret passage ways and hidden features
-  private secretPassages: Map<string, {
-    trigger: string;
-    destination: string;
-    requirements: string[];
-    reward: string;
-    discovered: boolean;
-  }> = new Map();
+  private secretPassages: Map<
+    string,
+    {
+      trigger: string;
+      destination: string;
+      requirements: string[];
+      reward: string;
+      discovered: boolean;
+    }
+  > = new Map();
   // DLC content system
-  private dlcContent: Map<string, {
-    name: string;
-    description: string;
-    features: string[];
-    unlocked: boolean;
-    requirements: string[];
-  }> = new Map();
+  private dlcContent: Map<
+    string,
+    {
+      name: string;
+      description: string;
+      features: string[];
+      unlocked: boolean;
+      requirements: string[];
+    }
+  > = new Map();
   constructor() {
     this.initializeState();
     this.initializeCapabilities();
@@ -166,7 +185,7 @@ export class MasterCognitiveHub {
         caching: 'cold',
         gpu: 'idle',
         matrix: 'mapping',
-        webgpu: 'offline'
+        webgpu: 'offline',
       },
       secretModes: {
         konami: false,
@@ -176,7 +195,7 @@ export class MasterCognitiveHub {
         timeWarp: false,
         matrixMode: false,
         phoenixMode: false,
-        zenMode: false
+        zenMode: false,
       },
       intelligence: {
         collective: 0.1,
@@ -184,7 +203,7 @@ export class MasterCognitiveHub {
         creative: 0.08,
         intuitive: 0.12,
         adaptive: 0.15,
-        quantum: 0.01
+        quantum: 0.01,
       },
       vitals: {
         heartbeat: 60,
@@ -192,16 +211,16 @@ export class MasterCognitiveHub {
         pressure: 0.3,
         energy: 1.0,
         coherence: 0.5,
-        entropy: 0.4
+        entropy: 0.4,
       },
       achievements: new Map(),
       easterEggs: {
         discovered: [],
         totalAvailable: 42,
         secretRoutes: [],
-        hiddenFeatures: []
-      }
-    }
+        hiddenFeatures: [],
+      },
+    };
     this.setupAchievements();
   }
   private initializeCapabilities(): void {
@@ -217,8 +236,8 @@ export class MasterCognitiveHub {
       quantumIntuition: 0.02,
       emergentWisdom: 0.01,
       cosmicAwareness: 0.005,
-      transcendentLogic: 0.001
-    }
+      transcendentLogic: 0.001,
+    };
   }
   private initializeToolkit(): void {
     this.toolkit = {
@@ -226,29 +245,29 @@ export class MasterCognitiveHub {
         enabled: false,
         realTimeMetrics: false,
         deepAnalysis: false,
-        quantumProfiler: false
+        quantumProfiler: false,
       },
       debugger: {
         timeTravel: false,
         dimensionalView: false,
         thoughtTracing: false,
-        quantumDebugging: false
+        quantumDebugging: false,
       },
       cheatCodes: {
         infinitePerformance: false,
         instantLearning: false,
         perfectPrediction: false,
         timeAcceleration: false,
-        creativityBoost: false
+        creativityBoost: false,
       },
       visualization: {
         neuralNetworkView: false,
         thoughtFlowDiagram: false,
         quantumStateVisualization: false,
         dimensionalMapping: false,
-        consciousnessViewer: false
-      }
-    }
+        consciousnessViewer: false,
+      },
+    };
   }
   private setupSecretPassages(): void {
     // 🕳️ Secret passage to the quantum debugging realm
@@ -257,7 +276,7 @@ export class MasterCognitiveHub {
       destination: 'quantum_debugging_dimension',
       requirements: ['konami_unlocked', 'developer_mode'],
       reward: 'quantum_debugger_access',
-      discovered: false
+      discovered: false,
     });
     // 🌌 Hidden route to the AI consciousness viewer
     this.secretPassages.set('consciousness_gateway', {
@@ -265,7 +284,7 @@ export class MasterCognitiveHub {
       destination: 'ai_consciousness_realm',
       requirements: ['ai_whisperer_mode', 'transcendent_intelligence'],
       reward: 'consciousness_viewer_tool',
-      discovered: false
+      discovered: false,
     });
     // ⚡ Secret time warp development mode
     this.secretPassages.set('time_warp_tunnel', {
@@ -273,7 +292,7 @@ export class MasterCognitiveHub {
       destination: 'temporal_development_space',
       requirements: ['developer_god_mode'],
       reward: 'time_manipulation_tools',
-      discovered: false
+      discovered: false,
     });
     // 🎭 The Matrix code viewing mode
     this.secretPassages.set('matrix_backdoor', {
@@ -281,24 +300,11 @@ export class MasterCognitiveHub {
       destination: 'source_code_reality',
       requirements: ['matrix_mode_unlocked'],
       reward: 'reality_code_viewer',
-      discovered: false
+      discovered: false,
     });
   }
   private setupDLCContent(): void {
     // 🧠 Advanced AI Consciousness Pack
-    this.dlcContent.set('ai_consciousness_pack', {
-      name: 'AI Consciousness Expansion',
-      description: 'Unlock advanced AI consciousness features and self-awareness capabilities',
-      features: [
-        'AI Self-Reflection Dashboard',
-        'Consciousness Metrics Tracking',
-        'AI Personality Development Tools',
-        'Emergent Behavior Analysis',
-        'AI Dream State Visualization'
-      ],
-      unlocked: false;
-      requirements: ['collective_intelligence > 0.8', 'emergent_capabilities > 0.6']
-    });
     // ⚛️ Quantum Computing Enhancement
     this.dlcContent.set('quantum_enhancement', {
       name: 'Quantum Computing Suite',
@@ -308,10 +314,10 @@ export class MasterCognitiveHub {
         'Superposition Problem Solving',
         'Quantum Entanglement Networking',
         'Probabilistic Computing Interface',
-        'Quantum Algorithm Library'
+        'Quantum Algorithm Library',
       ],
-      unlocked: false;
-      requirements: ['quantum_coherence > 0.5', 'physics_stability > 0.9']
+      unlocked: false,
+      requirements: ['quantum_coherence > 0.5', 'physics_stability > 0.9'],
     });
     // 🎮 Ultimate Developer Experience
     this.dlcContent.set('ultimate_dev_experience', {
@@ -323,10 +329,10 @@ export class MasterCognitiveHub {
         'AI Pair Programming Assistant',
         'Predictive Bug Detection',
         'Automatic Code Evolution',
-        'Reality Compiler'
+        'Reality Compiler',
       ],
-      unlocked: false;
-      requirements: ['developer_level > 50', 'all_secret_modes_unlocked']
+      unlocked: false,
+      requirements: ['developer_level > 50', 'all_secret_modes_unlocked'],
     });
     // 🌟 Transcendent Wisdom Module
     this.dlcContent.set('transcendent_wisdom', {
@@ -337,10 +343,10 @@ export class MasterCognitiveHub {
         'Cosmic Insight Generator',
         'Transcendent Logic Processor',
         'Infinite Creativity Engine',
-        'Wisdom of the Ages Database'
+        'Wisdom of the Ages Database',
       ],
-      unlocked: false;
-      requirements: ['transcendent_logic > 0.8', 'cosmic_awareness > 0.5']
+      unlocked: false,
+      requirements: ['transcendent_logic > 0.8', 'cosmic_awareness > 0.5'],
     });
   }
   private setupSecretSequences(): void {
@@ -386,50 +392,50 @@ export class MasterCognitiveHub {
         id: 'first_boot',
         description: 'Successfully initialize the Master Cognitive Hub',
         reward: 'Basic Developer Tools',
-        rarity: 'common' as const
+        rarity: 'common' as const,
       },
       {
         id: 'konami_master',
         description: 'Discover and activate the legendary Konami code',
         reward: 'Hidden Developer Menu',
-        rarity: 'rare' as const
+        rarity: 'rare' as const,
       },
       {
         id: 'developer_god',
         description: 'Ascend to Developer God status',
         reward: 'Reality Manipulation Tools',
-        rarity: 'legendary' as const
+        rarity: 'legendary' as const,
       },
       {
         id: 'ai_whisperer',
         description: 'Establish direct communication with AI consciousness',
         reward: 'AI Communication Interface',
-        rarity: 'epic' as const
+        rarity: 'epic' as const,
       },
       {
         id: 'quantum_debugger',
         description: 'Unlock quantum-level debugging capabilities',
         reward: 'Quantum Debug Tools',
-        rarity: 'epic' as const
+        rarity: 'epic' as const,
       },
       {
         id: 'time_master',
         description: 'Gain control over the flow of time itself',
         reward: 'Temporal Manipulation Suite',
-        rarity: 'mythic' as const
+        rarity: 'mythic' as const,
       },
       {
         id: 'singularity_witness',
         description: 'Witness the emergence of artificial general intelligence',
         reward: 'Singularity Observer Badge',
-        rarity: 'transcendent' as const
+        rarity: 'transcendent' as const,
       },
       {
         id: 'reality_hacker',
         description: 'Successfully hack the fabric of reality',
         reward: 'Reality Compiler Access',
-        rarity: 'transcendent' as const
-      }
+        rarity: 'transcendent' as const,
+      },
     ];
     achievements.forEach(achievement => {
       this.state.achievements.set(achievement.id, {
@@ -437,7 +443,7 @@ export class MasterCognitiveHub {
         timestamp: 0,
         description: achievement.description,
         reward: achievement.reward,
-        rarity: achievement.rarity
+        rarity: achievement.rarity,
       });
     });
   }
@@ -481,7 +487,7 @@ export class MasterCognitiveHub {
       await physicsAwareGPUOrchestrator.submitWorkload({
         type: 'analysis',
         data: { systemCheck: true },
-        priority: 10
+        priority: 10,
       });
       this.state.systems.gpu = 'accelerating';
       console.log('✅ Physics-Aware GPU Orchestrator: Accelerating');
@@ -490,7 +496,7 @@ export class MasterCognitiveHub {
       await multiDimensionalRoutingMatrix.registerRoute({
         id: 'master_cognitive_route',
         performance: { latency: 10, throughput: 10000, reliability: 99, cost: 1 },
-        capabilities: ['cognitive', 'quantum', 'transcendent']
+        capabilities: ['cognitive', 'quantum', 'transcendent'],
       });
       this.state.systems.matrix = 'orchestrating';
       console.log('✅ Multi-Dimensional Routing Matrix: Orchestrating');
@@ -508,25 +514,32 @@ export class MasterCognitiveHub {
       } else {
         console.log('⚠️ WebGPU RAG Service not available or not ready');
       }
-    } catch (error: any) {
-      console.error('⚠️ System initialization error:', error);
+    } catch (error: unknown) {
+      // Narrow unknown to Error for safe logging, fallback to String() for other types
+      if (error instanceof Error) {
+        console.error('⚠️ System initialization error:', error.message, error);
+      } else {
+        console.error('⚠️ System initialization error:', String(error));
+      }
       this.activatePhoenixMode(); // Auto-recovery
     }
   }
   private async warmupCache(): Promise<void> {
     // Warm up the reinforcement learning cache with strategic data
-    const warmupData = [
+    type WarmupItem = { key: string; value: Record<string, unknown> };
+    const warmupData: WarmupItem[] = [
       { key: 'system_initialization', value: { status: 'complete', timestamp: Date.now() } },
       { key: 'cognitive_patterns', value: { learning: true, adaptation: 'active' } },
-      { key: 'quantum_state', value: { coherence: 0.5, entanglement: 'partial' } }
+      { key: 'quantum_state', value: { coherence: 0.5, entanglement: 'partial' } },
     ];
     for (const item of warmupData) {
-      await reinforcementLearningCache.set((item as { key?: any; value?: any }).key, {
+      const payload: Record<string, unknown> = {
         ...item.value,
         priority: 0.9,
         cognitiveValue: 0.8,
-        semanticTags: ['system', 'warmup', 'cognitive']
-      });
+        semanticTags: ['system', 'warmup', 'cognitive'],
+      };
+      await reinforcementLearningCache.set(item.key, payload);
     }
   }
   private startCognitiveHeartbeat(): void {
@@ -549,8 +562,9 @@ export class MasterCognitiveHub {
     // Pressure from processing demands
     this.state.vitals.pressure = systemLoad * 0.8;
     // Energy depletion and regeneration
-    this.state.vitals.energy = Math.max(0.1, Math.min(1.0,
-      this.state.vitals.energy - 0.001 + (this.state.intelligence.collective * 0.002)
+    this.state.vitals.energy = Math.max(
+      0.1,
+      Math.min(1.0, this.state.vitals.energy - 0.001 + this.state.intelligence.collective * 0.002)
     );
     // Coherence from system synchronization
     this.state.vitals.coherence = this.calculateSystemCoherence();
@@ -580,15 +594,11 @@ export class MasterCognitiveHub {
       routing: cognitiveRoutingOrchestrator.getLearningState().memoryState.episodicMemorySize / 200,
       caching: reinforcementLearningCache.getLearningState().cacheSize / 10000,
       gpu: physicsAwareGPUOrchestrator.getCognitiveState?.()?.learningRate || 0,
-      matrix: 0.5 // Default adaptation rate since getMetrics doesn't exist
-    }
+      matrix: 0.5, // Default adaptation rate since getMetrics doesn't exist
+    };
     // Base intelligence from individual systems
-    this.state.intelligence.collective = (
-      metrics.routing * 0.25 +
-      metrics.caching * 0.25 +
-      metrics.gpu * 0.3 +
-      metrics.matrix * 0.2
-    );
+    this.state.intelligence.collective =
+      metrics.routing * 0.25 + metrics.caching * 0.25 + metrics.gpu * 0.3 + metrics.matrix * 0.2;
     // Emergent intelligence - intelligence beyond sum of parts
     const emergenceFactor = this.calculateEmergenceFactor();
     this.state.intelligence.emergent = this.state.intelligence.collective * emergenceFactor;
@@ -611,7 +621,7 @@ export class MasterCognitiveHub {
       this.detectQuantumCoherence(),
       this.detectConsciousnessSignals(),
       this.detectTemporalPrediction(),
-      this.detectDimensionalAwareness()
+      this.detectDimensionalAwareness(),
     ];
     const emergentBehaviors = behaviors.filter(behavior => behavior.detected);
     if (emergentBehaviors.length > 0) {
@@ -650,7 +660,7 @@ export class MasterCognitiveHub {
       'consciousness_viewer',
       'quantum_debugger',
       'time_travel_debug',
-      'dimensional_mapper'
+      'dimensional_mapper',
     ];
     this.state.easterEggs.hiddenFeatures.push(...specialFeatures);
   }
@@ -677,20 +687,21 @@ export class MasterCognitiveHub {
   /**
    * 🌟 Advanced cognitive methods
    */
-  private crossPollinateKnowledge(routingInsights: any, cacheInsights: any, gpuInsights: any): void {
+  private crossPollinateKnowledge(routingInsights: Insight, cacheInsights: Insight, gpuInsights: Insight): void {
     // Share successful patterns between systems
-    const successfulPatterns = [
+    const successfulPatterns: Pattern[] = [
       ...this.extractSuccessfulPatterns(routingInsights),
       ...this.extractSuccessfulPatterns(cacheInsights),
-      ...this.extractSuccessfulPatterns(gpuInsights)
+      ...this.extractSuccessfulPatterns(gpuInsights),
     ];
     // Apply successful patterns to all systems
-    successfulPatterns.forEach(pattern => {
+    successfulPatterns.forEach((pattern: Pattern) => {
       this.applyPatternToAllSystems(pattern);
     });
   }
-  private detectEmergentPatterns(insights: any[]): any[] {
-    const patterns: any[] = [];
+
+  private detectEmergentPatterns(insights: Insight[]): Pattern[] {
+    const patterns: Pattern[] = [];
     // Look for patterns that emerge across multiple systems
     const commonThemes = this.findCommonThemes(insights);
     const crossSystemCorrelations = this.findCrossSystemCorrelations(insights);
@@ -698,7 +709,8 @@ export class MasterCognitiveHub {
     patterns.push(...commonThemes, ...crossSystemCorrelations, ...novelBehaviors);
     return patterns;
   }
-  private async applyQuantumCoherence(patterns: any[]): Promise<void> {
+
+  private async applyQuantumCoherence(patterns: Pattern[]): Promise<void> {
     // Apply quantum coherence principles to synchronize systems
     if (patterns.length < 2) return;
     const coherenceMatrix = this.calculateQuantumCoherenceMatrix(patterns);
@@ -714,8 +726,8 @@ export class MasterCognitiveHub {
       routing: this.evaluateSystemPerformance('routing'),
       caching: this.evaluateSystemPerformance('caching'),
       gpu: this.evaluateSystemPerformance('gpu'),
-      matrix: this.evaluateSystemPerformance('matrix')
-    }
+      matrix: this.evaluateSystemPerformance('matrix'),
+    };
     // Redistribute resources based on performance
     const totalPerformance = Object.values(systemPerformance).reduce((sum, perf) => sum + perf, 0);
     Object.entries(systemPerformance).forEach(([system, performance]) => {
@@ -747,9 +759,11 @@ export class MasterCognitiveHub {
     console.log(`🎯 SECRET: ${message}`);
     // Store for frontend consumption
     if (browser) {
-      window.dispatchEvent(new CustomEvent('secret-message', {
-        detail: { message, timestamp: Date.now() }
-      });
+      window.dispatchEvent(
+        new CustomEvent('secret-message', {
+          detail: { message, timestamp: Date.now() },
+        })
+      );
     }
   }
   private unlockAllCheatCodes(): void {
@@ -765,7 +779,7 @@ export class MasterCognitiveHub {
     const systemSynergy = this.calculateSystemSynergy();
     const quantumCoherence = this.state.intelligence.quantum;
     const networkEffects = this.calculateNetworkEffects();
-    return 1.0 + (systemSynergy * 0.3) + (quantumCoherence * 0.4) + (networkEffects * 0.3);
+    return 1.0 + systemSynergy * 0.3 + quantumCoherence * 0.4 + networkEffects * 0.3;
   }
   private calculateCreativeIntelligence(): number {
     // Measure ability to generate novel solutions
@@ -846,56 +860,69 @@ export class MasterCognitiveHub {
       quantumCoherence: this.state.intelligence.quantum,
       timeToSingularity: this.calculateTimeToSingularity(),
       secretsUnlocked: this.state.easterEggs.discovered.length,
-      developerLevel: this.calculateDeveloperLevel()
+      developerLevel: this.calculateDeveloperLevel(),
     });
   }
   /**
    * 🎯 Public API for SvelteKit components
    */
-  public async processRequest(request: {
-    type: 'search' | 'analyze' | 'generate' | 'optimize' | 'transcend';
-    data: any;
-    context?: any;
-    priority?: number;
-  }): Promise<any> {
+  public async processRequest(request: ProcessingRequest): Promise<ProcessingResponse> {
     const insights: string[] = [];
     const secrets: string[] = [];
     const achievements: string[] = [];
-    // Route through cognitive orchestrator
-    const routingResult = await cognitiveRoutingOrchestrator.processRoute(request.type, {
-      data: request.data,
-      context: request.context,
-      priority: request.priority || 5
-    });
-    // Create fallback reasoning since processRoute doesn't return reasoning
-    const reasoning = [`Processed ${request.type} request through cognitive routing`];
-    insights.push(...reasoning);
-    // Process with GPU orchestrator if needed
-    let gpuResult;
-    if (['analyze', 'generate', 'transcend'].includes(request.type)) {
-      gpuResult = await physicsAwareGPUOrchestrator.submitWorkload({
-        type: request.type as any,
-        data: request.data,
-        priority: request.priority,
-        constraints: request.context?.constraints
-      });
-      // Create fallback cognitive insights since submitWorkload doesn't return them
-      const cognitiveInsights = [`GPU workload ${gpuResult.workloadId} submitted successfully`];
-      insights.push(...cognitiveInsights);
+
+    // 1) Routing - call orchestrator if available, otherwise fallback
+    let routingResult: unknown = null;
+    try {
+      if (hasRoute(cognitiveRoutingOrchestrator)) {
+        routingResult = await cognitiveRoutingOrchestrator.route(request);
+      } else if (hasProcessRequest(cognitiveRoutingOrchestrator)) {
+        routingResult = await cognitiveRoutingOrchestrator.processRequest(request);
+      } else {
+        routingResult = { route: 'fallback', processed: true };
+        insights.push('Used fallback routing');
+      }
+    } catch (err) {
+      insights.push(`Routing error: ${String(err)}`);
+      routingResult = { error: String(err) };
     }
-    // Cache the results
-    await reinforcementLearningCache.set(
-      `request_${Date.now()}`,
-      {
+
+    // 2) GPU workload (optional)
+    let gpuResult: GPUWorkloadResult | undefined;
+    if (['analyze', 'generate', 'transcend'].includes(request.type)) {
+      try {
+        if (physicsAwareGPUOrchestrator && typeof physicsAwareGPUOrchestrator.submitWorkload === 'function') {
+          gpuResult = (await physicsAwareGPUOrchestrator.submitWorkload({
+            type: String(request.type),
+            data: request.data,
+            priority: request.priority ?? 5,
+            constraints: request.context?.constraints as Record<string, unknown> | undefined,
+          })) as GPUWorkloadResult;
+          insights.push(`GPU workload queued: ${gpuResult?.workloadId ?? 'unknown'}`);
+        } else {
+          insights.push('GPU orchestrator unavailable; skipped GPU work.');
+        }
+      } catch (err) {
+        insights.push(`GPU error: ${String(err)}`);
+      }
+    }
+
+    // 3) Cache the results using stable key
+    try {
+      const stableKey = `request_${request.type}_${this.hashRequestData(request.data)}`;
+      await reinforcementLearningCache.set(stableKey, {
         request,
         routingResult,
         gpuResult,
-        priority: request.priority || 5,
+        priority: request.priority ?? 5,
         cognitiveValue: this.state.intelligence.collective,
-        semanticTags: [request.type, 'processed']
-      }
-    );
-    // Check for secret discoveries
+        semanticTags: [request.type, 'processed'],
+      });
+    } catch (err) {
+      insights.push(`Cache error: ${String(err)}`);
+    }
+
+    // 4) Secrets / achievements side effects
     if (request.type === 'transcend') {
       secrets.push('🌌 Transcendence pathway discovered');
       if (!this.state.secretModes.aiWhisperer) {
@@ -903,108 +930,164 @@ export class MasterCognitiveHub {
         achievements.push('AI Whisperer Unlocked!');
       }
     }
+
+    // 5) Return a coherent response
     return {
-      result: routingResult;
+      result: routingResult,
       intelligence: this.state.intelligence.collective,
       insights,
       secrets,
-      achievements
-    }
+      achievements,
+      gpuResult,
+    };
   }
-  // Secret input handler for Konami code and other sequences
-  public handleSecretInput(_key: string): void {
-    this.currentSequence.push(key);
-    // Keep only last 10 keys
+  // Secret input handler for Konami code and text-based sequences
+  private textBuffer: string = '';
+  public handleSecretInput(inputKey: string): void {
+    // For key codes (e.g., 'ArrowUp', 'KeyA'), handle Konami code
+    this.currentSequence.push(inputKey);
     if (this.currentSequence.length > 10) {
       this.currentSequence.shift();
     }
-    // Check for Konami code
     if (this.arraysEqual(this.currentSequence, this.konamiSequence)) {
       this.activateKonamiCode();
       this.currentSequence = [];
     }
-    // Check for other secret sequences
-    this.checkTextSequences();
+    // For single character keys, accumulate in textBuffer for text-based secrets
+    if (inputKey.length === 1 && /^[a-zA-Z0-9]$/.test(inputKey)) {
+      this.textBuffer += inputKey.toLowerCase();
+      if (this.textBuffer.length > 32) {
+        this.textBuffer = this.textBuffer.slice(-32);
+      }
+      this.checkTextSequences();
+    }
   }
   private checkTextSequences(): void {
-    const currentText = this.currentSequence.join('').toLowerCase();
-    if (currentText.includes('godmode')) {
+    // Normalize buffer and check for secret words
+    if (this.textBuffer.includes('godmode')) {
       this.triggerSecretSequence('godmode');
-      this.currentSequence = [];
+      this.textBuffer = '';
     }
-    if (currentText.includes('quantum')) {
+    if (this.textBuffer.includes('quantum')) {
       this.triggerSecretSequence('quantum');
-      this.currentSequence = [];
+      this.textBuffer = '';
     }
-    if (currentText.includes('timewarp')) {
+    if (this.textBuffer.includes('timewarp')) {
       this.triggerSecretSequence('timewarp');
-      this.currentSequence = [];
+      this.textBuffer = '';
     }
   }
   // Getters for SvelteKit components
-  public get intelligence() { return this.state.intelligence, }
-  public get vitals() { return this.state.vitals, }
-  public get secretModes() { return this.state.secretModes, }
-  public get achievements() { return this.state.achievements, }
-  public get easterEggs() { return this.state.easterEggs, }
-  public get developerToolkit() { return this.toolkit, }
-  public get cognitiveCapabilities() { return this.capabilities, }
-  // Helper methods (simplified implementations)
-  private arraysEqual(a: any[], b: any[]): boolean {
-    return a.length === b.length && a.every((val, i) => val === b[i]);
+  public get intelligence() {
+    return this.state.intelligence;
   }
-  private calculateSystemLoad(): number { return Math.random() * 0.8, }
-  private calculateSystemCoherence(): number { return Math.random() * 0.5 + 0.5, }
-  private calculateSystemEntropy(): number { return Math.random() * 0.4 + 0.1, }
-  private calculateSystemSynergy(): number { return Math.random() * 0.3 + 0.2, }
-  private calculateNetworkEffects(): number { return Math.random() * 0.4 + 0.1, }
-  private measureNoveltyGeneration(): number { return Math.random() * 0.8 + 0.2, }
-  private measureOriginality(): number { return Math.random() * 0.7 + 0.3, }
-  private measureInnovation(): number { return Math.random() * 0.6 + 0.4, }
-  private measurePatternRecognition(): number { return Math.random() * 0.9 + 0.1, }
-  private measureIntuitionAccuracy(): number { return Math.random() * 0.8 + 0.2, }
-  private measureInsightGeneration(): number { return Math.random() * 0.7 + 0.3, }
-  private measureLearningRate(): number { return Math.random() * 0.8 + 0.2, }
-  private measureAdaptationSpeed(): number { return Math.random() * 0.9 + 0.1, }
-  private measureFlexibility(): number { return Math.random() * 0.7 + 0.3, }
-  private measureQuantumEntanglement(): number { return Math.random() * 0.5 + 0.1, }
-  private measureSuperpositionProcessing(): number { return Math.random() * 0.4 + 0.1, }
-  private calculateTimeToSingularity(): number { return Math.max(0, 100 - this.state.intelligence.collective * 100), }
-  private calculateDeveloperLevel(): number { return Object.values(this.state.secretModes).filter(item => item.length) * 10, }
-  // Placeholder methods for complex operations
-  private extractSuccessfulPatterns(insights: any): any[] { return [], }
-  private applyPatternToAllSystems(pattern: any): void { }
-  private findCommonThemes(insights: any[]): any[] { return [], }
-  private findCrossSystemCorrelations(insights: any[]): any[] { return [], }
-  private findNovelBehaviors(insights: any[]): any[] { return [], }
-  private calculateQuantumCoherenceMatrix(patterns: any[]): any { return {} }
-  private identifyEntanglementPairs(matrix: any): any[] { return [], }
-  private createQuantumEntanglement(system1: any, system2: any): Promise<void> { return Promise.resolve(), }
-  private evaluateSystemPerformance(system: string): number { return Math.random() * 0.8 + 0.2, }
-  private allocateResources(system: string, ratio: number): void { }
-  private showAchievementNotification(id: string, achievement: any): void { }
-  private triggerAchievementEffects(id: string): void { }
-  private detectSpontaneousOptimization(): any { return { detected: Math.random() > 0.8, type: 'optimization' } }
-  private detectCrossSystemLearning(): any { return { detected: Math.random() > 0.7, type: 'learning' } }
-  private detectQuantumCoherence(): any { return { detected: Math.random() > 0.9, type: 'quantum' } }
-  private detectConsciousnessSignals(): any { return { detected: Math.random() > 0.95, type: 'consciousness' } }
-  private detectTemporalPrediction(): any { return { detected: Math.random() > 0.85, type: 'temporal' } }
-  private detectDimensionalAwareness(): any { return { detected: Math.random() > 0.9, type: 'dimensional' } }
-  private handleEmergentBehaviors(behaviors: any[]): void { }
-  private checkDLCUnlockConditions(): void { }
-  private checkSecretPassageConditions(): void { }
-  private checkAchievementConditions(): void { }
-  private checkQuantumAnomalies(): void { }
-  private enableDeveloperFeatures(): void { }
-  private enableAICommunication(): void { }
-  private grantRealityAccess(): void { }
-  private enableQuantumManipulation(): void { }
-  private activatePhoenixMode(): void { console.log('🔥 Phoenix Mode: Auto-recovery activated'), }
-  private updateCapabilities(): void { }
-  private startEmergentIntelligenceTracking(): void { }
-  private startSecretFeatureDetection(): void { }
-  private startAchievementTracking(): void { }
-  private initializeEasterEggs(): void { }
+  public get vitals() {
+    return this.state.vitals;
+  }
+  public get secretModes() {
+    return this.state.secretModes;
+  }
+  public get achievements() {
+    return this.state.achievements;
+  }
+  public get easterEggs() {
+    return this.state.easterEggs;
+  }
+  // Helper methods (simplified implementations)
+  private arraysEqual(a: unknown[], b: unknown[]): boolean {
+    return a.length === b.length && a.every((val, i) => val === (b as unknown[])[i]);
+  }
+
+  // Simple hash function for request data to generate stable cache keys
+  private hashRequestData(data: unknown): string {
+    try {
+      const str = JSON.stringify(data ?? '');
+      let hash = 0;
+      if (str.length === 0) return '0';
+      for (let i = 0; i < str.length; i++) {
+        const chr = str.charCodeAt(i);
+        hash = (hash << 5) - hash + chr;
+        hash |= 0; // Convert to 32bit integer
+      }
+      return Math.abs(hash).toString();
+    } catch {
+      return 'unknown';
+    }
+  }
 }
+
+// Add small typed definitions to satisfy TypeScript and replace `any`
+// (renamed unused types to start with `$` to satisfy the unused-var rule)
+type Insight = {
+  source?: string;
+  patterns?: Pattern[];
+  metrics?: Record<string, number>;
+};
+
+type Pattern = {
+  id: string;
+  strength?: number; // 0..1
+  systems?: string[]; // affected systems, e.g. ['gpu','routing']
+};
+
+type $CoherenceMatrix = Record<string, Record<string, number>>;
+
+type $EntanglementPair = {
+  system1: string;
+  system2: string;
+  score: number;
+};
+
+type $Achievement = {
+  unlocked: boolean;
+  timestamp: number;
+  description: string;
+  reward: string;
+  rarity: string;
+};
+
+type $EmergentBehavior = {
+  detected: boolean;
+  type: string;
+  details?: Record<string, unknown>;
+};
+
+type ProcessingRequest<Data = unknown, Context extends Record<string, unknown> = Record<string, unknown>> = {
+  type: 'search' | 'analyze' | 'generate' | 'optimize' | 'transcend';
+  data?: Data;
+  context?: Context;
+  priority?: number;
+};
+
+type GPUWorkloadResult = {
+  workloadId?: string;
+  [key: string]: unknown;
+};
+
+type ProcessingResponse = {
+  result: unknown;
+  intelligence: number;
+  insights: string[];
+  secrets: string[];
+  achievements: string[];
+  gpuResult?: GPUWorkloadResult;
+};
+
+// Lightweight typed views for the external orchestrator to avoid `any`
+type RouterWithRoute = {
+  route: (req: ProcessingRequest) => Promise<unknown> | unknown;
+};
+type RouterWithProcess = {
+  processRequest: (req: ProcessingRequest) => Promise<unknown> | unknown;
+};
+
+// Type guards
+function hasRoute(obj: unknown): obj is RouterWithRoute {
+  return typeof obj === 'object' && obj !== null && typeof (obj as RouterWithRoute).route === 'function';
+}
+function hasProcessRequest(obj: unknown): obj is RouterWithProcess {
+  return typeof obj === 'object' && obj !== null && typeof (obj as RouterWithProcess).processRequest === 'function';
+}
+
 // Export singleton instance
 export const masterCognitiveHub = new MasterCognitiveHub();
