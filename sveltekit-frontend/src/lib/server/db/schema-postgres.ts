@@ -1290,14 +1290,8 @@ export const contextualEmbeddings = pgTable(
   ]
 );
 
-// Add a tiny local type to annotate relation helpers and avoid implicit 'any'
-type RelationHelpers = {
-  one: <T = unknown>(table: T, opts?: Record<string, unknown>) => unknown;
-  many: <T = unknown>(table: T, opts?: Record<string, unknown>) => unknown;
-};
-
 // === RELATIONS ===
-export const usersRelations = relations(users, ({ many }: RelationHelpers) => ({
+export const usersRelations = relations(users, ({ many }) => ({
   casesAsLead: many(cases, { relationName: 'leadProsecutor' }),
   casesCreated: many(cases, { relationName: 'createdBy' }),
   evidenceUploaded: many(evidence),
@@ -1306,13 +1300,13 @@ export const usersRelations = relations(users, ({ many }: RelationHelpers) => ({
   criminalsCreated: many(criminals),
   sessions: many(sessions),
 }));
-export const sessionsRelations = relations(sessions, ({ one }: RelationHelpers) => ({
+export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, {
     fields: [sessions.userId],
     references: [users.id],
   }),
 }));
-export const casesRelations = relations(cases, ({ one, many }: RelationHelpers) => ({
+export const casesRelations = relations(cases, ({ one, many }) => ({
   leadProsecutor: one(users, {
     fields: [cases.leadProsecutor],
     references: [users.id],
@@ -1326,14 +1320,14 @@ export const casesRelations = relations(cases, ({ one, many }: RelationHelpers) 
   evidence: many(evidence),
   activities: many(caseActivities),
 }));
-export const criminalsRelations = relations(criminals, ({ one, many }: RelationHelpers) => ({
+export const criminalsRelations = relations(criminals, ({ one, many }) => ({
   createdBy: one(users, {
     fields: [criminals.createdBy],
     references: [users.id],
   }),
   evidence: many(evidence),
 }));
-export const evidenceRelations = relations(evidence, ({ one }: RelationHelpers) => ({
+export const evidenceRelations = relations(evidence, ({ one }) => ({
   uploadedBy: one(users, {
     fields: [evidence.uploadedBy],
     references: [users.id],
@@ -1343,7 +1337,7 @@ export const evidenceRelations = relations(evidence, ({ one }: RelationHelpers) 
     references: [cases.id],
   }),
 }));
-export const caseActivitiesRelations = relations(caseActivities, ({ one }: RelationHelpers) => ({
+export const caseActivitiesRelations = relations(caseActivities, ({ one }) => ({
   case: one(cases, {
     fields: [caseActivities.caseId],
     references: [cases.id],
@@ -1359,7 +1353,7 @@ export const caseActivitiesRelations = relations(caseActivities, ({ one }: Relat
     relationName: 'createdBy',
   }),
 }));
-export const aiReportsRelations = relations(aiReports, ({ one }: RelationHelpers) => ({
+export const aiReportsRelations = relations(aiReports, ({ one }) => ({
   case: one(cases, {
     fields: [aiReports.caseId],
     references: [cases.id],
@@ -1369,7 +1363,7 @@ export const aiReportsRelations = relations(aiReports, ({ one }: RelationHelpers
     references: [users.id],
   }),
 }));
-export const personsOfInterestRelations = relations(personsOfInterest, ({ one }: RelationHelpers) => ({
+export const personsOfInterestRelations = relations(personsOfInterest, ({ one }) => ({
   case: one(cases, {
     fields: [personsOfInterest.caseId],
     references: [cases.id],
@@ -1379,7 +1373,7 @@ export const personsOfInterestRelations = relations(personsOfInterest, ({ one }:
     references: [users.id],
   }),
 }));
-export const legalDocumentsRelations = relations(legalDocuments, ({ one }: RelationHelpers) => ({
+export const legalDocumentsRelations = relations(legalDocuments, ({ one }) => ({
   case: one(cases, {
     fields: [legalDocuments.caseId],
     references: [cases.id],
@@ -1389,13 +1383,13 @@ export const legalDocumentsRelations = relations(legalDocuments, ({ one }: Relat
     references: [evidence.id],
   }),
 }));
-export const ragSessionsRelations = relations(ragSessions, ({ one }: RelationHelpers) => ({
+export const ragSessionsRelations = relations(ragSessions, ({ one }) => ({
   user: one(users, {
     fields: [ragSessions.userId],
     references: [users.id],
   }),
 }));
-export const userAiQueriesRelations = relations(userAiQueries, ({ one }: RelationHelpers) => ({
+export const userAiQueriesRelations = relations(userAiQueries, ({ one }) => ({
   user: one(users, {
     fields: [userAiQueries.userId],
     references: [users.id],

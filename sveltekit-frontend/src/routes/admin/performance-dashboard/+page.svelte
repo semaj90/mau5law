@@ -1,7 +1,6 @@
 <!-- Legal AI Performance Metrics Dashboard -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
   import {
     legalPerformanceMonitor,
     currentMetrics,
@@ -9,12 +8,11 @@
     cacheEfficiency,
     averageLatency,
     gpuUtilization,
-    legalConfidence,
     formatMetric,
     type PerformanceSnapshot,
   } from '$lib/monitoring/legal-performance-metrics.js';
   let metricsHistory: PerformanceSnapshot[] = $state([]);
-  let refreshInterval: number;
+  let refreshInterval: ReturnType<typeof setInterval>;
   $effect(() => {
     // Refresh metrics every 5 seconds
     refreshInterval = setInterval(() => {
@@ -48,7 +46,7 @@
     if (latency <= 1000) return 'text-yellow-500';
     return 'text-red-500';
   }
-  function getGPUColor(utilization number): string {
+  function getGPUColor(utilization: number): string {
     if (utilization <= 70) return 'text-green-500';
     if (utilization <= 90) return 'text-yellow-500';
     return 'text-red-500';
@@ -286,15 +284,15 @@
   }
   /* Subtle pulse animation for critical alerts */
   .text-red-500 {
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.7,
+      opacity: 0.7;
     }
   }
 </style>

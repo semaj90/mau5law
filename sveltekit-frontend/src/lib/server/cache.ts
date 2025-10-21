@@ -83,11 +83,15 @@ export async function getRedisClient(): Promise<RedisClientType | null> {
       const client = redisClient;
       if (typeof client.connect === 'function') {
         // Safe typed invocation when connect exists
-        await withBackoff(() => (client.connect as () => Promise<void>)());
+        await withBackoff(async () => {
+          await client.connect();
+        });
       } else {
         // Typings may be inconsistent across environments; fallback to any-call to avoid TS error.
         // Use a narrow typed fallback instead of `any`
-        await withBackoff(() => (client as unknown as { connect: () => Promise<void> }).connect());
+        await withBackoff(async () => {
+          await (client as unknown as { connect: () => Promise<unknown> }).connect();
+        });
       }
       redisConnected = true;
     }

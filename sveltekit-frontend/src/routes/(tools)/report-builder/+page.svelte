@@ -1,19 +1,52 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
-  import { get } from 'svelte/store';
-  // Note: ReportEditor uses stores, not props - displays independently
-  import ReportEditor from '$lib/components/editor/ReportEditor.svelte';
+  // Load ReportEditor dynamically to avoid TS "no default export" error
+  // Make EditorComponent reactive using Svelte 5 runes ($state) so updates are reflected in the UI
+  let EditorComponent: any = $state<any>(null);
+  async function loadEditor() {
+    try {
+      // Cast the dynamic import to any to avoid TypeScript errors about .default / named exports
+      const mod = (await import('$lib/components/editor/ReportEditor.svelte')) as any;
+      // module might expose default or a named export; prefer default then fallback
+      EditorComponent = mod.default ?? mod.ReportEditor ?? mod;
+    } catch (e) {
+      console.error('Failed to load ReportEditor:', e);
+    }
+  }
   // Use FabricCanvas as CanvasEditor alternative
   import FabricCanvas from '$lib/components/canvas/FabricCanvas.svelte';
   import type { Report, CanvasState } from '$lib/data/types';
   // Avoid importing namespaces as types here — use lightweight local types to satisfy the component's needs.
   type LocalEvidence = {
     id: string;
-    caseId?: string;
+    caseId: string;
+    criminalId: string | null;
     title: string;
-    evidenceType?: string;
-    // allow additional fields coming from the real type
+    description: string;
+    evidenceType: string;
+    fileType: string | null;
+    subType: string | null;
+    fileUrl: string | null;
+    fileName: string | null;
+    fileSize: number | null;
+    mimeType: string | null;
+    hash: string;
+    tags: string[];
+    chainOfCustody: any[];
+    collectedAt: Date | null;
+    collectedBy: string | null;
+    location: string | null; // Corrected type
+    labAnalysis: Record<string, any>;
+    aiAnalysis: Record<string, any>;
+    aiTags: string[];
+    aiSummary: string | null;
+    summary: string | null;
+    isAdmissible: boolean;
+    confidentialityLevel: string;
+    canvasPosition: { x: number; y: number } | null;
+    uploadedBy: string;
+    uploadedAt: Date;
+    updatedAt: Date;
     [key: string]: any;
   };
   type LocalCitationPoint = {
@@ -21,6 +54,13 @@
     text: string;
     [key: string]: any;
   };
+
+  // Define the type for the data prop received from the page load function
+  interface PageData {
+    caseId?: string; // caseId might be optional or undefined if not provided by the loader
+    user?: any; // Assuming 'user' might also be part of the data
+  }
+
   let currentReport: Report | null = $state(null);
   let currentCanvasState: CanvasState | null = $state(null);
   let evidence = $state<LocalEvidence[]>([]);
@@ -28,11 +68,22 @@
   let activeTab: 'editor' | 'canvas' = $state('editor');
   let isLoading = $state(false);
   let error = $state('');
+
+  // $props() provides an object with a `data` property (page load data).
+  // Declare the outer shape so TypeScript knows `data` exists (optional).
+  let { data } = $props<{ data?: PageData }>(); // Changed to receive data using $props() with explicit wrapper type
+
   // Demo case ID - in real app this would come from the route (read safely from the page store)
-  const caseId = get(page).params?.caseId ?? 'demo-case-123';
+  let caseId: string = $state('demo-case-123'); // Initialize with default and make reactive
+  $effect(() => {
+    // Safely access caseId from data, falling back to default
+    caseId = data?.caseId ?? 'demo-case-123';
+  });
   // Load demo data once on mount
   onMount(() => {
     void loadDemoData();
+    // load the editor component (concurrent with demo data)
+    void loadEditor();
   });
   async function loadDemoData() {
     try {
@@ -62,7 +113,7 @@
           chainOfCustody: [],
           collectedAt: null,
           collectedBy: null,
-          location null,
+          location: null, // Corrected syntax
           labAnalysis: {},
           aiAnalysis: {},
           aiTags: [],
@@ -70,7 +121,7 @@
           summary: null,
           isAdmissible: true,
           confidentialityLevel: 'standard',
-          canvasPosition null,
+          canvasPosition: null,
           uploadedBy: '1',
           uploadedAt: new Date(),
           updatedAt: new Date(),
@@ -93,7 +144,7 @@
           chainOfCustody: [],
           collectedAt: null,
           collectedBy: null,
-          location null,
+          location: null, // Corrected syntax
           labAnalysis: {},
           aiAnalysis: {},
           aiTags: [],
@@ -101,7 +152,7 @@
           summary: null,
           isAdmissible: true,
           confidentialityLevel: 'standard',
-          canvasPosition null,
+          canvasPosition: null,
           uploadedBy: '1',
           uploadedAt: new Date(),
           updatedAt: new Date(),
@@ -124,7 +175,7 @@
           chainOfCustody: [],
           collectedAt: null,
           collectedBy: null,
-          location null,
+          location: null, // Corrected syntax
           labAnalysis: {},
           aiAnalysis: {},
           aiTags: [],
@@ -132,7 +183,7 @@
           summary: null,
           isAdmissible: true,
           confidentialityLevel: 'standard',
-          canvasPosition null,
+          canvasPosition: null,
           uploadedBy: '1',
           uploadedAt: new Date(),
           updatedAt: new Date(),
@@ -154,10 +205,38 @@
       error = 'Failed to save report';
     }
   }
-  async function handleCanvasSave(canvasState: CanvasState) {
+  async function handleCanvasSave(data: { objects: any[] }) {
     try {
-      currentCanvasState = canvasState;
-      console.log('Canvas saved:', canvasState);
+      const now = new Date().toISOString();
+      let stateToSave: CanvasState;
+
+      if (currentCanvasState) {
+        // Update existing canvas state
+        stateToSave = {
+          ...currentCanvasState,
+          canvasData: data, // Store the raw Fabric.js data
+          updatedAt: now,
+          version: (currentCanvasState.version || 0) + 1, // Increment version
+        };
+      } else {
+        // Create new canvas state
+        stateToSave = {
+          id: crypto.randomUUID(), // Generate a new ID
+          name: `Canvas - ${new Date().toLocaleString()}`, // Default name
+          caseId: caseId, // Use the current caseId
+          createdBy: 'current_user_id', // Placeholder, replace with actual user ID if available
+          createdAt: now,
+          updatedAt: now,
+          canvasData: data,
+          version: 1,
+          isDefault: false,
+        };
+      }
+
+      currentCanvasState = stateToSave;
+      console.log('Canvas saved:', stateToSave);
+      // In a real application, you would send stateToSave to a backend API here
+      // e.g., await fetch('/api/canvas-state', { method: 'POST', body: JSON.stringify(stateToSave) });
     } catch (err) {
       console.error('Failed to save canvas:', err);
       error = 'Failed to save canvas';
@@ -184,7 +263,7 @@
   <title>Report Builder - Prosecutor's Case Management</title>
   <meta name="description" content="AI-powered report builder for legal case analysis" />
 </svelte:head>
-<div class="space-y-4">
+<div class="container space-y-4">
   <!-- Header -->
   <header>
     <div class="space-y-4">
@@ -228,8 +307,13 @@
             <h2>Prosecutor's Report</h2>
             <p>Write, edit, and analyze case reports with AI assistance</p>
           </div>
-          <!-- ReportEditor uses internal stores, not props -->
-          <ReportEditor />
+          <!-- Dynamically loaded ReportEditor component -->
+          {#if EditorComponent}
+            <!-- Svelte 5: components are dynamic by default -->
+            <EditorComponent />
+          {:else}
+            <div>Loading editor…</div>
+          {/if}
         </div>
       {:else if activeTab === 'canvas'}
         <div class="space-y-4">

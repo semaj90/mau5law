@@ -10,12 +10,9 @@ import { EventEmitter } from 'events';
 import * as zlib from 'zlib';
 import { promisify } from 'util';
 
-// NOTE: drizzle's Insertable type is not available in this environment/version; provide a compatible local alias.
-// Changed: make alias permissive to avoid mismatches with drizzle-generated table types in this environment.
-// Replace the permissive `any` alias with a small typed shim that actually uses the generic T.
-type Insertable<T> = Record<string, unknown>;
-
+// --- added: promisified gunzip helper
 const gunzip = promisify(zlib.gunzip);
+
 // Performance monitoring
 class PerformanceMonitor {
   private metrics: Map<string, number[]> = new Map();
@@ -96,12 +93,6 @@ type OllamaServiceType = {
   [k: string]: unknown;
 };
 
-// Utility function to encapsulate double casting for Insertable<T>
-function asInsertable<T extends object>(obj: T): Insertable<T> {
-  // preserve the ability to coerce shaped objects into the Insertable<T> expected by drizzle
-  return obj as Insertable<T>;
-}
-
 // Map scoring result into DB-shaped insert payload (camelCase keys matching drizzle schema)
 function mapScoringResultToInsert(result: CaseScoringResult): {
   caseId: string;
@@ -113,9 +104,9 @@ function mapScoringResultToInsert(result: CaseScoringResult): {
   model: string | null;
   modelVersion: string | null;
   performanceMetrics: string;
-  createdAt: Date;
+  createdAt: string; // changed to ISO string
   riskLevel: string;
-  updatedAt?: Date;
+  updatedAt?: string; // changed to ISO string
 } {
   const numericScore = typeof result.score === 'number' ? result.score : Number(result.score ?? NaN);
   let riskLevel = 'unknown';
@@ -136,9 +127,10 @@ function mapScoringResultToInsert(result: CaseScoringResult): {
     model: result.model ?? null,
     modelVersion: result.version ?? null,
     performanceMetrics: JSON.stringify(result.performanceMetrics ?? {}),
-    createdAt: result.scoringDate ?? new Date(),
+    // convert Date to ISO string to satisfy drizzle insert typings
+    createdAt: (result.scoringDate ?? new Date()).toISOString(),
     riskLevel: riskLevel,
-    // updatedAt left optional
+    // updatedAt left optional; if present elsewhere ensure it's set as ISO string
   };
 }
 
@@ -280,11 +272,8 @@ export class CaseScoringServiceGrpc extends EventEmitter {
                 (response?.detailed_scorings as Record<string, unknown>) ||
                 {}
             ),
-            explanation: response?.ai_analysis
-              ? Buffer.isBuffer(response.ai_analysis)
-                ? response.ai_analysis.toString('utf-8')
-                : String(response.ai_analysis)
-              : '',
+            // changed: use decompressAnalysis to handle compressed buffers consistently
+            explanation: await this.decompressAnalysis(response?.ai_analysis),
             recommendations: (response?.recommendations || []).map((r: { text?: string } | string) =>
               typeof r === 'string' ? r : r.text || String(r)
             ),
@@ -430,10 +419,11 @@ export class CaseScoringServiceGrpc extends EventEmitter {
 
     return new Promise((resolve, reject) => {
       const results: CaseScoringResult[] = [];
-      call.on('data', (payload: unknown) => {
+      // changed: allow async processing inside 'data' handler
+      call.on('data', async (payload: unknown) => {
         const response = payload as GrpcResponse;
         try {
-          results.push(this.convertGrpcResponse(response));
+          results.push(await this.convertGrpcResponse(response));
         } catch (e) {
           logger.warn('Failed to convert batch response', e);
         }
@@ -505,16 +495,43 @@ export class CaseScoringServiceGrpc extends EventEmitter {
   /**
    * Helper: Decompress binary AI analysis
    */
-  private async decompressAnalysis(compressedData: Buffer | string | undefined): Promise<string> {
+  private async decompressAnalysis(
+    compressedData: Buffer | string | Uint8Array | ArrayBuffer | undefined
+  ): Promise<string> {
     if (!compressedData) return '';
     try {
+      // If it's already a Buffer, decompress directly
       if (Buffer.isBuffer(compressedData)) {
         const decompressed = await gunzip(compressedData);
         return decompressed.toString('utf-8');
       }
-      // if string, assume plain text or base64
+
+      // If it's a typed array (Uint8Array / ArrayBuffer view), convert to Buffer then decompress
+      if (typeof compressedData !== 'string' && (ArrayBuffer.isView(compressedData) || compressedData instanceof ArrayBuffer)) {
+        const buf = Buffer.from(compressedData as Uint8Array);
+        const decompressed = await gunzip(buf);
+        return decompressed.toString('utf-8');
+      }
+
+      // For string input: attempt base64 decode + gunzip (common for compressed payloads sent as base64).
+      // If that fails, fall back to returning the original string (preserve previous behavior).
+      if (typeof compressedData === 'string') {
+        try {
+          const maybeBuf = Buffer.from(compressedData, 'base64');
+          // Only attempt gunzip if the base64 decode produced something non-empty
+          if (maybeBuf.length > 0) {
+            const decompressed = await gunzip(maybeBuf);
+            return decompressed.toString('utf-8');
+          }
+        } catch {
+          // ignore and fall through to returning the string
+        }
+        return compressedData;
+      }
+
+      // Fallback: stringify whatever came in
       return String(compressedData);
-    } catch (err) {
+    } catch (err: unknown) {
       logger.warn('Failed to decompress analysis', err);
       return typeof compressedData === 'string' ? compressedData : String(compressedData);
     }
@@ -540,13 +557,9 @@ export class CaseScoringServiceGrpc extends EventEmitter {
   /**
    * Helper: Convert gRPC response to result format
    */
-  private convertGrpcResponse(response: GrpcResponse): CaseScoringResult {
-    const aiAnalysis = response.ai_analysis;
-    const explanation = aiAnalysis
-      ? Buffer.isBuffer(aiAnalysis)
-        ? aiAnalysis.toString('utf-8')
-        : String(aiAnalysis)
-      : '';
+  private async convertGrpcResponse(response: GrpcResponse): Promise<CaseScoringResult> {
+    // use central decompression helper so compressed payloads are handled uniformly
+    const explanation = await this.decompressAnalysis(response.ai_analysis);
     return {
       caseId: response.case_id ?? '',
       score: response.score ?? 0,
@@ -661,7 +674,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         case_complexity: provided.case_complexity ?? aiScores.case_complexity ?? 0.5,
         resource_requirements: provided.resource_requirements ?? aiScores.resource_requirements ?? 0.5,
       };
-    } catch (err) {
+    } catch (err: unknown) {
       logger.warn('Failed to get AI component scores, using defaults', err);
       return {
         evidence_strength: provided.evidence_strength ?? 0.5,
@@ -825,11 +838,81 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       // Map result to drizzle expected camelCase column property names
       const dbPayload = mapScoringResultToInsert(result);
 
-      // Use the typed helper to coerce the shaped object into the Insertable<T> expected by drizzle.
-      // If you have the generated insert type available (e.g. caseScores.$inferInsert), replace the asInsertable(...) call with that specific type.
-      // cast to `any` at the call site to avoid structural mismatch errors with the local Insertable shim
-      await db.insert(caseScores).values(asInsertable(dbPayload) as unknown as any);
-    } catch (err) {
+      // Basic validation
+      if (!dbPayload.caseId || typeof dbPayload.caseId !== 'string') {
+        throw new Error('DB insert failed: caseId is missing or not a string');
+      }
+
+      // Retry mechanism: up to 3 attempts with exponential backoff
+      // --- changed code: ensure payload is treated as a concrete (non-optional) shape for TS overload resolution
+      type InsertPayload = ReturnType<typeof mapScoringResultToInsert>;
+      let attempt = 0;
+      const maxAttempts = 3;
+      let lastError: unknown = null;
+      while (attempt < maxAttempts) {
+        try {
+          // Build a concrete payload with required fields (avoid optional-indexed Insertable typing)
+          const insertPayload: InsertPayload = {
+            caseId: dbPayload.caseId!,
+            score: dbPayload.score!,
+            confidence: dbPayload.confidence!,
+            criteria: dbPayload.criteria!,
+            recommendations: dbPayload.recommendations!,
+            explanation: dbPayload.explanation!,
+            model: dbPayload.model ?? null,
+            modelVersion: dbPayload.modelVersion ?? null,
+            performanceMetrics: dbPayload.performanceMetrics!,
+            createdAt: dbPayload.createdAt!,
+            riskLevel: dbPayload.riskLevel!,
+            // keep updatedAt if provided
+            updatedAt: dbPayload.updatedAt
+          };
+
+          // pass concrete payload to drizzle; avoids optional-property overload mismatch
+          await db.insert(caseScores).values(insertPayload);
+          // success
+          lastError = null;
+          break;
+        } catch (err: unknown) {
+          lastError = err;
+          attempt++;
+          if (attempt < maxAttempts) {
+            await new Promise(res => setTimeout(res, 200 * Math.pow(2, attempt))); // exponential backoff
+          }
+        }
+      }
+
+      if (lastError) {
+        // Surface critical DB failures to monitoring service
+        const errorLog = {
+          code: 'DB_PERSIST_ERROR_CRITICAL',
+          timestamp: new Date().toISOString(),
+          payloadSummary: {
+            caseId: dbPayload.caseId,
+            score: dbPayload.score,
+            confidence: dbPayload.confidence,
+          },
+          error: String(lastError)
+        };
+        try {
+          const g = globalThis as unknown as {
+            redisLogger?: { logError?: (payload: unknown) => Promise<void> | void };
+            monitoringService?: { alertCritical?: (payload: unknown) => Promise<void> | void };
+          };
+          if (g.monitoringService && typeof g.monitoringService.alertCritical === 'function') {
+            await g.monitoringService.alertCritical(errorLog);
+          }
+          if (g.redisLogger && typeof g.redisLogger.logError === 'function') {
+            await g.redisLogger.logError(errorLog);
+          } else {
+            logger.error('[DB_PERSIST_ERROR_CRITICAL]', errorLog);
+          }
+        } catch (logErr: unknown) {
+          logger.error('Failed to surface critical DB error', logErr, errorLog);
+        }
+        // Do not rethrow to avoid breaking scoring flow; choose to log and continue
+      }
+    } catch (err: unknown) {
       const errorLog = {
         code: 'DB_PERSIST_ERROR',
         timestamp: new Date().toISOString(),
@@ -850,7 +933,7 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         } else {
           logger.warn('[DB_PERSIST_ERROR]', errorLog);
         }
-      } catch (logErr) {
+      } catch (logErr: unknown) {
         logger.warn('Failed to log error to Redis', logErr, errorLog);
       }
       // Non-fatal: do not rethrow to avoid breaking scoring flow

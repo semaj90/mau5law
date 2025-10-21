@@ -7,10 +7,16 @@
 
 import type {
   HMMState,
-  HMMStateTransition,
   ConversationTurn,
   NextStepPrediction
 } from '$lib/types/sharedTypes';
+
+interface HMMStateTransition {
+  fromState: number;
+  toState: number;
+  probability: number;
+  observedPattern: number[];
+}
 
 /**
  * HMM States for Legal AI Conversations

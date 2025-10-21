@@ -18,7 +18,7 @@
 
   let pageTitle = 'WebGPU + WebAssembly Integration';
   let pageDescription = 'Real-time demonstration of GPU-accelerated WebAssembly AI processing with Gemma 3 270M model';
-  
+
   // Example prompts for different use cases
   let examplePrompts = [
     {
@@ -42,7 +42,7 @@
       icon: '💻'
     }
   ];
-  
+
   // Technical specifications
   let technicalSpecs = [
     {
@@ -92,7 +92,7 @@
   <title>{pageTitle} | Legal AI System</title>
   <meta name="description" content={pageDescription} />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  
+
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="{page.url}" />
@@ -112,7 +112,7 @@
           <span class="mx-2 text-gray-400">/</span>
           <span class="text-gray-600">WebGPU + WebAssembly</span>
         </div>
-        
+
         <div class="flex items-center space-x-4">
           <a href="/demo/semantic-3d" class="text-gray-600 hover:text-blue-600 transition-colors text-sm font-medium">
             🎯 3D Semantic
@@ -137,7 +137,7 @@
           🔗 WebGPU + WebAssembly Integration
         </h1>
         <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-          Real-time AI processing combining GPU acceleration with WebAssembly efficiency. 
+          Real-time AI processing combining GPU acceleration with WebAssembly efficiency.
           Experience client-side inference with the Gemma 3 270M model running at 60+ FPS.
         </p>
       </div>
@@ -145,7 +145,7 @@
 
     <!-- Main Integration Component -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-      <WebGPUWebAssemblyBridge 
+      <WebGPUWebAssemblyBridge
         enableGPU={true}
         enableWebAssembly={true}
         modelSize="270m"
@@ -169,7 +169,7 @@
                   <h3 class="font-semibold">{example.category}</h3>
                 </div>
                 <p class="text-sm text-gray-600 italic">"{example.prompt}"</p>
-                <button 
+                <button
                   class="mt-2 text-xs text-blue-600 hover:text-blue-800"
                   onclick={() => {
                     // Copy to clipboard and scroll to demo
@@ -247,45 +247,45 @@
                 <div class="font-semibold">User Input</div>
                 <div class="text-xs text-gray-600">Text/Prompt</div>
               </div>
-              
+
               <div class="text-2xl">→</div>
-              
+
               <!-- Method Selection -->
               <div class="flex flex-col items-center p-4 border rounded-lg bg-yellow-50 min-w-32">
                 <div class="text-3xl mb-2">🎯</div>
                 <div class="font-semibold">Auto Select</div>
                 <div class="text-xs text-gray-600">GPU/WASM/CPU</div>
               </div>
-              
+
               <div class="text-2xl">→</div>
-              
+
               <!-- WebGPU Processing -->
               <div class="flex flex-col items-center p-4 border rounded-lg bg-green-50 min-w-32">
                 <div class="text-3xl mb-2">🎮</div>
                 <div class="font-semibold">WebGPU</div>
                 <div class="text-xs text-gray-600">GPU Shaders</div>
               </div>
-              
+
               <div class="text-lg">↕</div>
-              
+
               <!-- WebAssembly Processing -->
               <div class="flex flex-col items-center p-4 border rounded-lg bg-purple-50 min-w-32">
                 <div class="text-3xl mb-2">⚡</div>
                 <div class="font-semibold">WebAssembly</div>
                 <div class="text-xs text-gray-600">WASM Runtime</div>
               </div>
-              
+
               <div class="text-2xl">→</div>
-              
+
               <!-- Caching -->
               <div class="flex flex-col items-center p-4 border rounded-lg bg-orange-50 min-w-32">
                 <div class="text-3xl mb-2">🗄️</div>
                 <div class="font-semibold">Smart Cache</div>
                 <div class="text-xs text-gray-600">LRU + Vector</div>
               </div>
-              
+
               <div class="text-2xl">→</div>
-              
+
               <!-- Output -->
               <div class="flex flex-col items-center p-4 border rounded-lg bg-red-50 min-w-32">
                 <div class="text-3xl mb-2">📤</div>
@@ -294,7 +294,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="mt-6 p-4 bg-gray-50 rounded-lg">
             <h4 class="font-semibold mb-2">🚀 Key Features:</h4>
             <ul class="text-sm text-gray-700 space-y-1 grid grid-cols-1 md:grid-cols-2 gap-2">
