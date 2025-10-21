@@ -28,7 +28,7 @@
     timestamp: Date;
     type: 'document' | 'meeting' | 'filing' | 'communication' | 'incident' | 'media';
     title: string;
-    description: string;
+    description string;
     importance: number; // 0-1, affects LOD visibility
     duration?: number; // minutes
     participants: string[];
@@ -92,7 +92,7 @@
     document: true
     meeting: true
     filing: true
-    communication: true,
+    communication true,
     incident: true;
     media: true,
   });
@@ -105,38 +105,38 @@
   // LOD configuration for temporal visualization
   const lodConfig = {
     0: {
-      timePrecision: 'hour',
+      timePrecision 'hour',
       maxEvents: 1000,
       minImportance: 0.0,
       clusterDistance: 0, // No clustering
-      description: 'Ultra High (All Events)',
+      description 'Ultra High (All Events)',
       renderComplexity: 1.0,
       thumbnailSize: 64,
     },
     1: {
-      timePrecision: 'day',
+      timePrecision 'day',
       maxEvents: 500,
       minImportance: 0.2,
       clusterDistance: 24 * 60 * 60 * 1000, // 1 day clustering
-      description: 'High Detail',
+      description 'High Detail',
       renderComplexity: 0.7,
       thumbnailSize: 32,
     },
     2: {
-      timePrecision: 'week',
+      timePrecision 'week',
       maxEvents: 200,
       minImportance: 0.4,
       clusterDistance: 7 * 24 * 60 * 60 * 1000, // 1 week clustering
-      description: 'Medium Detail',
+      description 'Medium Detail',
       renderComplexity: 0.4,
       thumbnailSize: 16,
     },
     3: {
-      timePrecision: 'month',
+      timePrecision 'month',
       maxEvents: 50,
       minImportance: 0.7,
       clusterDistance: 30 * 24 * 60 * 60 * 1000, // 1 month clustering
-      description: 'Low Detail (N64 Style)',
+      description 'Low Detail (N64 Style)',
       renderComplexity: 0.2,
       thumbnailSize: 8,
     }
@@ -160,7 +160,7 @@
       visibleEvents: visibleEvents.length,
       totalEvents: allEvents.length,
       timeSpan: `${timeSpanDays.toFixed(0)} days`,
-      precision: config?.timePrecision || 'month',
+      precision config?.timePrecision || 'month',
       renderComplexity: config?.renderComplexity || 0.2,
       memoryUsage: calculateMemoryUsage(),
       thumbnailsLoaded: calculateThumbnailsLoaded();
@@ -255,7 +255,7 @@ if (!browser) return;
       incident: 0.9,      // Incidents are crucial
       meeting: 0.7,       // Meetings are important
       document: 0.6,      // Documents have moderate importanc
-      communication: 0.5, // Communications are commo;
+      communication 0.5, // Communications are commo;
       media: 0.4         // Media is supporting evidenc;
     }
     return typeWeights[type as keyof typeof typeWeights] || 0.5;
@@ -353,7 +353,7 @@ if (!browser) return;
           timestamp: event.timestamp,
           type: event.type,
           title: `${nearbyEvents.length} events`,
-          description: `Clustered events: ${nearbyEvents.map.join-slice(0, 100)}...`,
+          description `Clustered events: ${nearbyEvents.map.join-slice(0, 100)}...`,
           importance: nearbyEvents.reduce((sum, e) => sum + e.importance, 0) / nearbyEvents.length,
           participants: [...new Set(nearbyEvents.flatMap(e => e.participants))],
           evidence: nearbyEvents.flatMap(e => e.evidence),
@@ -457,7 +457,7 @@ if (!browser) return;
       ctx.fillText(timeLabel, x, axisY + 20);
     }
   }
-  function getTimeMarkerInterval(precision: string, timeSpan: number): number {
+  function getTimeMarkerInterval(precision string, timeSpan: number): number {
     switch (precision) {
       case 'hour': return 60 * 60 * 1000; // 1 hour
       case 'day': return 24 * 60 * 60 * 1000; // 1 day
@@ -466,7 +466,7 @@ if (!browser) return;
       default: return Math.max(24 * 60 * 60 * 1000, timeSpan / 20); // Adaptive
     }
   }
-  function formatTimeLabel(date: Date, precision: string): string {
+  function formatTimeLabel(date: Date, precision string): string {
     switch (precision) {
       case 'hour':
         return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' ' +
@@ -613,7 +613,7 @@ if (!browser) return;
       incident: '#ea580c',    // Orange for incidents
       meeting: '#3b82f6',     // Blue for meetings
       document: '#059669',    // Green for document
-      communication: '#7c3aed', // Purple for communication;
+      communication '#7c3aed', // Purple for communication;
       media: '#db2777'        // Pink for media;
     }
     return colors[type as keyof typeof colors] || '#6b7280';
@@ -688,7 +688,7 @@ if (!browser) return;
     onTimeRangeChange?.(timeRange);
     applyLODFiltering();
   }
-  function handleTimeNavigation(direction: 'prev' | 'next'): void {
+  function handleTimeNavigation(direction 'prev' | 'next'): void {
     const timeSpan = timeRange.end.getTime() - timeRange.start.getTime();
     const offset = direction === 'prev' ? -timeSpan * 0.5 : timeSpan * 0.5;
     timeRange = {
@@ -728,9 +728,9 @@ if (!browser) return;
         timestamp: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
         type: 'filing',
         title: 'Initial Complaint Filed',
-        description: 'Plaintiff filed initial complaint against defendant',
+        description 'Plaintiff filed initial complaint against defendant',
         importance: 0.9,
-        duration: 120,
+        duration 120,
         participants: ['Plaintiff Attorney', 'Court Clerk'],
         evidence: [
           {
@@ -749,11 +749,11 @@ if (!browser) return;
         timestamp: new Date(now.getTime() - 25 * 24 * 60 * 60 * 1000), // 25 days ago
         type: 'meeting',
         title: 'Client Consultation',
-        description: 'Strategy meeting with client to discuss case approach',
+        description 'Strategy meeting with client to discuss case approach',
         importance: 0.7,
-        duration: 90,
+        duration 90,
         participants: ['Attorney', 'Client', 'Paralegal'],
-        location: 'Law Office',
+        location 'Law Office',
         evidence: [],
         metadata: { billable: true, rate: 350 }
       }
@@ -769,16 +769,16 @@ if (!browser) return;
   <!-- Timeline Controls -->
   <div class="timeline-controls">
     <div class="navigation-controls">
-      <LoadingButton on:click={() => handleTimeNavigation('prev')} variant="ghost" size="sm">
+      <LoadingButton onclick={() => handleTimeNavigation('prev')} variant="ghost" size="sm">
         {#snippet children()}<SkipBack class="w-4 h-4" />{/snippet}
       </LoadingButton>
-      <LoadingButton on:click={handleZoomIn} variant="ghost" size="sm">
+      <LoadingButton onclick={handleZoomIn} variant="ghost" size="sm">
         {#snippet children()}<ZoomIn class="w-4 h-4" />{/snippet}
       </LoadingButton>
-      <LoadingButton on:click={handleZoomOut} variant="ghost" size="sm">
+      <LoadingButton onclick={handleZoomOut} variant="ghost" size="sm">
         {#snippet children()}<ZoomOut class="w-4 h-4" />{/snippet}
       </LoadingButton>
-      <LoadingButton on:click={() => handleTimeNavigation('next')} variant="ghost" size="sm">
+      <LoadingButton onclick={() => handleTimeNavigation('next')} variant="ghost" size="sm">
         {#snippet children()}<SkipForward class="w-4 h-4" />{/snippet}
       </LoadingButton>
     </div>
@@ -857,7 +857,7 @@ if (!browser) return;
       width="1000"
       height={timelineHeight}
       class="timeline-canvas"
-      on:click={handleCanvasClick}
+      onclick={handleCanvasClick}
       onmousemove={handleCanvasHover}
     ></canvas>
     <!-- Loading overlay -->
@@ -935,7 +935,7 @@ if (!browser) return;
         <span class="value">{timelineStats.timeSpan}</span>
       </div>
       <div class="stat-item">
-        <span class="label">Precision:</span>
+        <span class="label">Precision</span>
         <span class="value">{timelineStats.precision}</span>
       </div>
       <div class="stat-item">
@@ -994,7 +994,7 @@ if (!browser) return;
   }
   .filter-section {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .event-type-filters {
@@ -1003,7 +1003,7 @@ if (!browser) return;
     gap: 0.5rem;
   }
   .timeline-canvas-container {
-    position: relative;
+    position relative;
     background: #1a1a2;
     border: 2px solid #444;
     border-radius: 4px;
@@ -1011,14 +1011,14 @@ if (!browser) return;
     overflow: hidden;
   }
   .timeline-canv.loading-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     justify-content: center;
     align-items: center;
     gap: 1rem;
@@ -1062,7 +1062,7 @@ if (!browser) return;
   }
   .evidence-items {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .evidence-item {
@@ -1110,7 +1110,7 @@ if (!browser) return;
     100% { transform: translateX(100%), }
   }
   .nes-progress-bar.indeterminate {
-    animation: indeterminate 1.5s linear infinite;
+    animation indeterminate 1.5s linear infinite;
   }
   /* Responsive adjustments */
   @media (max-width: 768px) {

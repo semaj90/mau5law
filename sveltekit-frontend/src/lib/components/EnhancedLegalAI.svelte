@@ -10,7 +10,7 @@
     content: string;
     document_type: string;
     practice_area?: string;
-    jurisdiction: string;
+    jurisdiction string;
     metadata?: { [key: string]: any }
     use_gpu?: boolean;
   }
@@ -57,7 +57,7 @@
     healthy: false
     loading: true
     services: as Record<string, string>,
-    version: "",
+    version "",
     config: as { [key: string]: any },
   });
   let documentContent = $state("");
@@ -109,7 +109,7 @@
           healthy: true
           loading: false
           services: health.services ||
-          version: health.version || "",
+          version health.version || "",
           config: health.config ||;
         }
       } else {
@@ -121,7 +121,7 @@
         healthy: false
         loading: false
         services: ,
-        version: "",
+        version "",
         config: ,
       }
     }
@@ -138,7 +138,7 @@
         content: documentContent
         document_type: selectedDocumentType
         practice_area: selectedPracticeArea;
-        jurisdiction: selectedJurisdiction
+        jurisdiction selectedJurisdiction
         use_gpu: useGPU;
         metadata: {
           timestamp: new Date().toISOString(),
@@ -179,7 +179,7 @@
         use_gpu: useGPU;
         model: "gemma3-legal",
         filters: {
-          jurisdiction: selectedJurisdiction
+          jurisdiction selectedJurisdiction
           practice_area: selectedPracticeArea;
         },
       }
@@ -368,7 +368,7 @@
         ></textarea>
         <!-- Process Button -->
         <Button.Root
-          on:click={processDocument}
+          onclick={processDocument}
           disabled={processing || !serviceStatus.healthy}
           class="w-full mt-4 px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white font-semibold rounded-lg transition-colors bits-btn bits-btn"
         >
@@ -420,7 +420,7 @@
         ></textarea>
         <!-- Search Button -->
         <Button.Root
-          on:click={performVectorSearch}
+          onclick={performVectorSearch}
           disabled={searching || !serviceStatus.healthy}
           class="w-full mt-4 px-4 py-3 bg-green-600 hover:bg-green-700 disabled:bg-slate-400 text-white font-semibold rounded-lg transition-colors bits-btn bits-btn"
         >
@@ -589,7 +589,7 @@
 <style>
   /* UnoCSS will handle most styling, but we can add custom styles here if needed */
   .animate-spin {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     from {

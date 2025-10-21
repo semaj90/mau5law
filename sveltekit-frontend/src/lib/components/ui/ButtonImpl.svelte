@@ -33,7 +33,7 @@
 <button
   bind:this={buttonEl}
   class={buttonClass}
-  on:click={handleClick}
+  onclick={handleClick}
   disabled={disabled}
   aria-label={ariaLabel}
   type={type}

@@ -26,8 +26,8 @@ https://svelte.dev/e/js_parse_error -->
   // Add typed shapes to avoid 'never' errors in template
   type Prediction = {
     step: number;
-    action: string;
-    prediction: {
+    action string;
+    prediction {
       geometryComplexity?: string;
       animationType?: string;
       predictedUsage?: number;
@@ -182,7 +182,7 @@ https://svelte.dev/e/js_parse_error -->
     console.log('🏁 Neural Topology Demo completed!');
   }
 
-  async function demonstrateTopologyIntegration(userAction: string, step: number) {
+  async function demonstrateTopologyIntegration(userAction string, step: number) {
     const startTime = performance.now();
     console.log(`\n🎯 Step ${step + 1}: Demonstrating "${userAction}"`);
 
@@ -197,8 +197,8 @@ https://svelte.dev/e/js_parse_error -->
         ...predictions,
         {
           step: step + 1,
-          action: userAction,
-          prediction: predicted3D,
+          action userAction,
+          prediction predicted3D,
           confidence: predicted3D.predictedUsage ?? 0
         }
       ];
@@ -259,8 +259,8 @@ https://svelte.dev/e/js_parse_error -->
       ...performanceMetrics,
       [`step_${step + 1}`]: {
         processingTime: Math.round(processingTime),
-        prediction: !!predicted3D,
-        animation: animations.some((a: any) => a.step === step + 1),
+        prediction !!predicted3D,
+        animation animations.some((a: any) => a.step === step + 1),
         searchResults: assetSearchResults.length,
         chrRomHit: !!chrRomPattern
       }
@@ -295,11 +295,11 @@ https://svelte.dev/e/js_parse_error -->
     ];
   }
 
-  async function processVisualPatterns(predicted3D: any, userAction: string) {
+  async function processVisualPatterns(predicted3D: any, userAction string) {
     const patterns = {
       geometric: predicted3D?.geometryComplexity === 'high' ? 0.9 : 0.6,
       textural: userAction.includes('hover') ? 0.8 : 0.5,
-      motion: userAction.includes('drag') ? 0.9 : 0.3,
+      motion userAction.includes('drag') ? 0.9 : 0.3,
       lighting: predicted3D?.animationType === 'particle' ? 0.7 : 0.4
     };
     console.log('👁️ Visual patterns processed:', patterns);
@@ -419,13 +419,13 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Demo Controls -->
   <div class="demo-controls">
     {#if demoStage === 'ready'}
-      <button class="demo-btn primary" on:click={runNeuralTopologyDemo}>
+      <button class="demo-btn primary" onclick={runNeuralTopologyDemo}>
         🎬 Start Neural Topology Demo
       </button>
     {:else if demoStage === 'running'}
       <div class="demo-progress">
         <h3>Running Demo - Step {currentActionIndex + 1} of {userActions.length}</h3>
-        <p>Current Action: <code>{userActions[currentActionIndex]}</code></p>
+        <p>Current Action <code>{userActions[currentActionIndex]}</code></p>
         <div class="progress-bar">
           <div class="progress-fill" style="width: {((currentActionIndex + 1) / userActions.length) * 100}%"></div>
         </div>
@@ -433,7 +433,7 @@ https://svelte.dev/e/js_parse_error -->
     {:else if demoStage === 'completed'}
       <div class="demo-completed">
         <h3>✅ Demo Completed!</h3>
-        <button class="demo-btn secondary" on:click={resetDemo}>
+        <button class="demo-btn secondary" onclick={resetDemo}>
           🔄 Run Again
         </button>
       </div>
@@ -583,7 +583,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 8px;
     padding: 20px;
     border-left: 4px solid #e5e7eb;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .topology-card.active {
     border-left-color: #10b981;
@@ -619,7 +619,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 8px;
     font-weight: 600,
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .demo-btn.primary {
     background: linear-gradient(135deg, #3b82f6, #1d4ed8);
@@ -649,7 +649,7 @@ https://svelte.dev/e/js_parse_error -->
     height: 100%;
     background: linear-gradient(90deg, #3b82f6, #10b981);
     border-radius: 4px;
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .metrics-dashboard {
     display: grid;
@@ -753,7 +753,7 @@ https://svelte.dev/e/js_parse_error -->
     .metrics-dashboard {
       grid-template-columns: repeat(2, 1fr);
     }
-    .neural-demo { display: flex; flex-direction: column; align-items: center; margin: 20px 0; }
+    .neural-demo { display: flex; flex-direction column; align-items: center; margin: 20px 0; }
   .neural-canvas { border-radius: 8px; box-shadow: 0 6px 18px rgba(15,23,42,0.06); background: #0b1220; }
   .fallback { text-align: center; color: #334155; }
   .placeholder { display: inline-block; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(2,6,23,0.06); margin-top: 12px; }

@@ -1,6 +1,6 @@
 <!--
   3D Legal Data Visualization LOD Component - N64-Inspired Mesh Detail
-  Implements progressive 3D detail similar to N64 polygon reduction:
+  Implements progressive 3D detail similar to N64 polygon reduction
   - LOD 0: Full mesh detail (10,000+ polygons per object)
   - LOD 1: High detail meshes (5,000 polygons)
   - LOD 2: Medium detail meshes (1,000 polygons)
@@ -26,10 +26,10 @@
   interface Legal3DEntity {
     id: string;
     type: 'person' | 'organization' | 'document' | 'location' | 'event';
-    position: ;
+    position ;
 { x: number; y: number; z: number }
     scale: { x: number; y: number; z: number }
-    rotation: { x: number; y: number; z: number }
+    rotation { x: number; y: number; z: number }
     importance: number; // 0-1, affects LOD visibility and mesh detail
     connections: string[];
     meshType: 'cube' | 'sphere' | 'pyramid' | 'cylinder' | 'complex';
@@ -53,7 +53,7 @@
     color: { r: number; g: number; b: number; a: number }
   }
   interface Camera3D {
-    position: ;
+    position ;
 { x: number; y: number; z: number }
     target: { x: number; y: number; z: number }
     up: { x: number; y: number; z: number }
@@ -67,7 +67,7 @@
     enableWebGPU?: boolean;
     initialCamera?: Camera3D;
     onEntityClick?: (entity: Legal3DEntity) => void;
-    onConnectionClick?: (connection: Legal3DConnection) => void;
+    onConnectionClick?: (connection Legal3DConnection) => void;
     onCameraChange?: (camera: Camera3D) => void;
     onLODChange?: (level: number) => void;
   }
@@ -92,7 +92,7 @@
   let visibleConnections = $state<Legal3DConnection[]>([]);
   let currentLOD = $state(1);
   let camera = $state<Camera3D>(initialCamera || {
-    position: ;
+    position ;
 { x: 0, y: 5, z: 15 },
     target: { x: 0, y: 0, z: 0 },
     up: { x: 0, y: 1, z: 0 },
@@ -122,7 +122,7 @@
       maxDistance: 25,
       fogStart: 20,
       fogEnd: 25,
-      description: 'Ultra High (Full Detail)',
+      description 'Ultra High (Full Detail)',
       renderComplexity: 1.0,
     },
     1: {
@@ -131,7 +131,7 @@
       maxDistance: 50,
       fogStart: 40,
       fogEnd: 50,
-      description: 'High Detail',
+      description 'High Detail',
       renderComplexity: 0.7,
     },
     2: {
@@ -140,7 +140,7 @@
       maxDistance: 75,
       fogStart: 60,
       fogEnd: 75,
-      description: 'Medium Detail',
+      description 'Medium Detail',
       renderComplexity: 0.4,
     },
     3: {
@@ -149,7 +149,7 @@
       maxDistance: 100,
       fogStart: 70,
       fogEnd: 100,
-      description: 'Low Poly (N64 Style)',
+      description 'Low Poly (N64 Style)',
       renderComplexity: 0.2,
     }
   }
@@ -308,8 +308,8 @@ if (!browser) return;
         buffers: [{,
           arrayStride: 7 * 4, // 3 position + 4 color floats
           attributes: [
-            { shaderLocation: 0, offset: 0, format: 'float32x3' }, // position
-            { shaderLocation: 1, offset: 3 * 4, format: 'float32x4' }, // color
+            { shaderLocation 0, offset: 0, format: 'float32x3' }, // position
+            { shaderLocation 1, offset: 3 * 4, format: 'float32x4' }, // color
           ]
         }]
       },
@@ -703,10 +703,10 @@ if (!browser) return;
       {
         id: 'person_1',
         type: 'person',
-        position: ;
+        position ;
 { x: 0, y: 0, z: 0 },
         scale: { x: 1, y: 1, z: 1 },
-        rotation: { x: 0, y: 0, z: 0 },
+        rotation { x: 0, y: 0, z: 0 },
         importance: 0.9,
         connections: ['org_1'],
         meshType: 'sphere',
@@ -717,10 +717,10 @@ if (!browser) return;
       {
         id: 'org_1',
         type: 'organization',
-        position: ;
+        position ;
 { x: 3, y: 0, z: 0 },
         scale: { x: 1.5, y: 1.5, z: 1.5 },
-        rotation: { x: 0, y: 45, z: 0 },
+        rotation { x: 0, y: 45, z: 0 },
         importance: 0.8,
         connections: ['person_1'],
         meshType: 'cube',
@@ -751,16 +751,16 @@ if (!browser) return;
   <!-- 3D Controls -->
   <div class="visualization-controls">
     <div class="camera-controls">
-      <LoadingButton on:click={handleZoomIn} variant="ghost" size="sm">
+      <LoadingButton onclick={handleZoomIn} variant="ghost" size="sm">
         {#snippet children()}<ZoomIn class="w-4 h-4" />{/snippet}
       </LoadingButton>
       <span class="distance-info">
         {cameraDistance.toFixed(1)}m
       </span>
-      <LoadingButton on:click={handleZoomOut} variant="ghost" size="sm">
+      <LoadingButton onclick={handleZoomOut} variant="ghost" size="sm">
         {#snippet children()}<ZoomOut class="w-4 h-4" />{/snippet}
       </LoadingButton>
-      <LoadingButton on:click={handleResetCamera} variant="ghost" size="sm">
+      <LoadingButton onclick={handleResetCamera} variant="ghost" size="sm">
         {#snippet children()}<RotateCcw class="w-4 h-4" />{/snippet}
       </LoadingButton>
       <label class="nes-checkbox">
@@ -822,7 +822,7 @@ if (!browser) return;
       </div>
       <div class="entity-position">
         <span
-          >Position: ({selectedEntity.position.x.toFixed(1)}, {selectedEntity.position.y.toFixed(1)}, {selectedEntity.position.z.toFixed(
+          >Position ({selectedEntity.position.x.toFixed(1)}, {selectedEntity.position.y.toFixed(1)}, {selectedEntity.position.z.toFixed(
             1
           )})</span
         >
@@ -902,7 +902,7 @@ if (!browser) return;
     font-size: 0.75rem;
   }
   .canvas-container {
-    position: relative;
+    position relative;
     background: #1a1a2;
     border: 2px solid #444;
     border-radius: 4px;
@@ -913,20 +913,20 @@ if (!browser) return;
     cursor: grabbing;
   }
   .loading-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     justify-content: center;
     align-items: center;
     gap: 1rem;
   }
   .controls-overlay {
-    position: absolute;
+    position absolute;
     bottom: 10px;
     left: 10px;
     right: 10px;
@@ -997,7 +997,7 @@ if (!browser) return;
     }
   }
   .nes-progress-bar.indeterminate {
-    animation: indeterminate 1.5s linear infinite;
+    animation indeterminate 1.5s linear infinite;
   }
   /* Responsive adjustments */
   @media (max-width: 768px) {

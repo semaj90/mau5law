@@ -55,7 +55,7 @@
   <button
     type="button"
     class="demo-login"
-    on:click={() => {
+    onclick={() => {
       $form.email = 'demo@legal-ai.com';
       $form.password = 'demo123';
     }}
@@ -107,7 +107,7 @@
     border-radius: 0.375rem;
     cursor: pointer;
   }
-  button:hover {
+  buttonhover {
     background: #0056b3;
   }
   .demo-login {

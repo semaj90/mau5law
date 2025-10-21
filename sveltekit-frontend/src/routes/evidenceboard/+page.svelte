@@ -99,7 +99,7 @@
               variant="ghost"
               size="sm"
               class="nes-btn"
-              on:click={() => (showWelcome = false)}
+              onclick={() => (showWelcome = false)}
             >
               Get Started →
             </svelte:component>
@@ -114,7 +114,7 @@
         uploadUrl="/api/upload"
         fieldName="file"
         maxBytes={200 * 1024 * 1024}
-        on:done={e => handleUploadDone((e as CustomEvent).detail)}
+        ondone={e => handleUploadDone((e as CustomEvent).detail)}
       />
       {#if savedLocally}
         <div class="local-save-notice">Saved locally — will sync when you log in</div>
@@ -134,10 +134,10 @@
 <style>
   .evidence-page-container {
     min-height: 100vh;
-    position: relative;
+    position relative;
   }
   .welcome-banner {
-    position: fixed;
+    position fixed;
     top: 20px;
     right: 20px;
     z-index: 1000,
@@ -147,7 +147,7 @@
     box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
   }
   .animate-fade-in {
-    animation: fadeInSlide 0.5s ease-out;
+    animation fadeInSlide 0.5s ease-out;
   }
   @keyframes fadeInSlide {
     from {
@@ -167,7 +167,7 @@
   }
   .stat {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     padding: 8px;
     background: rgba(0, 255, 65, 0.1);
@@ -188,7 +188,7 @@
   }
   .loading-screen {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     height: 100vh;
@@ -201,7 +201,7 @@
     border: 4px solid #e5e5e5;
     border-top: 4px solid #3b82f6;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin-bottom: 16px;
   }
   @keyframes spin {

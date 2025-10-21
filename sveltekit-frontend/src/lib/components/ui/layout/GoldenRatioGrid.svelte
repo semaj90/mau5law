@@ -107,9 +107,9 @@
   style="
     --golden-ratio: {PHI}
     --inverse-golden-ratio: {INVERSE_PHI}
-    --primary-proportion: {goldenProportions.primary}
-    --secondary-proportion: {goldenProportions.secondary}
-    {goldenProportions.tertiary ? `--tertiary-proportion: ${goldenProportions.tertiary}` : ''}
+    --primary-proportion {goldenProportions.primary}
+    --secondary-proportion {goldenProportions.secondary}
+    {goldenProportions.tertiary ? `--tertiary-proportion ${goldenProportions.tertiary}` : ''}
   "
   data-variant={variant}
   data-direction={direction}
@@ -149,7 +149,7 @@
     display: grid;
     width: 100%;
     height: 100%;
-    position: relative;
+    position relative;
   }
 /* Horizontal Golden Ratio Layout */ {}
   :global(.golden-horizontal) {
@@ -240,18 +240,18 @@ linear-gradient(-45deg, transparent 25%, rgba(0, 0, 0, 0.02) 25%), {}
 linear-gradient(45deg, rgba(0, 0, 0, 0.02) 75%, transparent 75%), {}
       linear-gradient(-45deg, rgba(0, 0, 0, 0.02) 75%, transparent 75%);
     background-size: 20px 20px;
-background-position: {}
+background-position {}
 0, {}
 0 10px, {}
 10px -10px, {}
       -10px 0px;
   }
   :global(.yorha-evidence-grid .golden-main) {
-    position: relative;
+    position relative;
   }
   :global($1) {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -335,10 +335,10 @@ var(--color-nier-accent-cool) {}
     }
   }
 /* Reduced Motion */ {}
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     :global(.golden-ratio-grid *) {
-      transition: none !important;
-      animation: none !important;
+      transition none !important;
+      animation none !important;
     }
   }
 </style>

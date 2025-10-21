@@ -9,7 +9,7 @@
     status: 'checking',
     workers: 0,
     uptime: 0,
-    version: 'Unknown',
+    version 'Unknown',
   });
   // Quick stats
   let totalProcessed = 1247;
@@ -20,25 +20,25 @@
   const features = [
     {
       title: 'Document Analysis',
-      description:
+      description
         'AI-powered legal document processing with entity extraction, risk assessment, and compliance checking',
-      icon: '📄',
+      icon '📄',
       href: '/mcp/demo',
       stats: { processed: '450+ docs', accuracy: '95%' },
       color: 'blue',
     },
     {
       title: 'Legal Processor',
-      description: 'Batch document processing with parallel worker threads and real-time progress tracking',
-      icon: '⚖️',
+      description 'Batch document processing with parallel worker threads and real-time progress tracking',
+      icon '⚖️',
       href: '/mcp/processor',
       stats: { workers: '4 cores', speed: '2.3s avg' },
       color: 'purple',
     },
     {
       title: 'Server Dashboard',
-      description: 'Real-time monitoring of MCP server performance, GPU utilization, and system metrics',
-      icon: '📊',
+      description 'Real-time monitoring of MCP server performance, GPU utilization, and system metrics',
+      icon '📊',
       href: '/mcp/dashboard',
       stats: { uptime: '99.9%', gpu: 'RTX 3060 Ti' },
       color: 'green',
@@ -46,11 +46,11 @@
   ];
   // Recent activity (mock data)
   const recentActivity = [
-    { time: '2 min ago', action: 'Processed employment contract', status: 'completed', risk: 25 },
-    { time: '5 min ago', action: 'Analyzed NDA template', status: 'completed', risk: 15 },
-    { time: '8 min ago', action: 'Real estate agreement review', status: 'completed', risk: 42 },
-    { time: '12 min ago', action: 'Corporate merger LOI', status: 'completed', risk: 38 },
-    { time: '15 min ago', action: 'Partnership agreement scan', status: 'completed', risk: 22 },
+    { time: '2 min ago', action 'Processed employment contract', status: 'completed', risk: 25 },
+    { time: '5 min ago', action 'Analyzed NDA template', status: 'completed', risk: 15 },
+    { time: '8 min ago', action 'Real estate agreement review', status: 'completed', risk: 42 },
+    { time: '12 min ago', action 'Corporate merger LOI', status: 'completed', risk: 38 },
+    { time: '15 min ago', action 'Partnership agreement scan', status: 'completed', risk: 22 },
   ];
   // Check server status on mount
   $effect(() => {
@@ -61,7 +61,7 @@
           status: health.status,
           workers: health.workers,
           uptime: health.uptime,
-          version: health.version,
+          version health.version,
         });
       } catch (error) {
         console.error('Failed to get server status:', error);
@@ -134,7 +134,7 @@
             <span class="opacity-75">Uptime:</span> <strong>{formatUptime($serverStatus.uptime)}</strong>
           </div>
           <div class="text-sm">
-            <span class="opacity-75">Version:</span> <strong>{$serverStatus.version}</strong>
+            <span class="opacity-75">Version</span> <strong>{$serverStatus.version}</strong>
           </div>
         </div>
       </div>
@@ -199,7 +199,7 @@
               </div>
             </div>
             <button
-              on:click={() => navigateToFeature(feature.href)}
+              onclick={() => navigateToFeature(feature.href)}
               class="w-full py-3 px-6 bg-{feature.color}-600 hover:bg-{feature.color}-700 text-white rounded-lg font-medium transition-colors"
             >
               Launch {feature.title} →
@@ -289,13 +289,13 @@
       </p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <button
-          on:click={() => goto('/mcp/demo')}
+          onclick={() => goto('/mcp/demo')}
           class="px-8 py-4 bg-white text-purple-600 rounded-lg font-bold hover:bg-gray-100 transition-colors"
         >
           🚀 Start Demo Analysis
         </button>
         <button
-          on:click={() => goto('/mcp/dashboard')}
+          onclick={() => goto('/mcp/dashboard')}
           class="px-8 py-4 bg-purple-700 hover:bg-purple-800 text-white rounded-lg font-bold border-2 border-purple-400 transition-colors"
         >
           📊 View Dashboard
@@ -317,6 +317,6 @@
     }
   }
   .animate-pulse-slow {
-    animation: pulse-slow 2s infinite;
+    animation pulse-slow 2s infinite;
   }
 </style>

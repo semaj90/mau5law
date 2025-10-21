@@ -10,7 +10,7 @@ https://svelte.dev/e/expected_token -->
   - Advanced filtering with legal-specific context
   - Search analytics and performance monitoring
   - Progressive loading and debounced search
-  Integration:
+  Integration
   - InstantSearchEngine: Core search logic with multi-source results
   - Semantic Search API: AI-powered document retrieval
   - Loki.js + Redis: High-performance caching layer
@@ -89,11 +89,11 @@ https://svelte.dev/e/expected_token -->
 
   // Search options
   const documentTypes = [
-    { value: 'contract', label: 'Contracts', icon: FileText },
-    { value: 'evidence', label: 'Evidence', icon: Shield },
-    { value: 'brief', label: 'Legal Briefs', icon: Scale },
-    { value: 'citation', label: 'Citations', icon: TrendingUp },
-    { value: 'precedent', label: 'Precedents', icon: Clock },
+    { value: 'contract', label: 'Contracts', icon FileText },
+    { value: 'evidence', label: 'Evidence', icon Shield },
+    { value: 'brief', label: 'Legal Briefs', icon Scale },
+    { value: 'citation', label: 'Citations', icon TrendingUp },
+    { value: 'precedent', label: 'Precedents', icon Clock },
   ];
   const riskLevels = [
     { value: 'low', label: 'Low Risk', color: 'bg-green-100 text-green-800' },
@@ -195,7 +195,7 @@ https://svelte.dev/e/expected_token -->
     if (onResultClick) onResultClick(result);
   }
 
-  function handleResultAction(result: InstantSearchResult, action: string) {
+  function handleResultAction(result: InstantSearchResult, action string) {
     if (onResultAction) onResultAction(result, action);
   }
 
@@ -255,14 +255,14 @@ https://svelte.dev/e/expected_token -->
     <!-- Main Search Input -->
     <div class="relative">
       <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 nes-text is-disabled" />
-      <Input bind:value={searchQuery} {placeholder} on:keydown={handleKeydown} class="pl-10 pr-20 text-base" />
+      <Input bind:value={searchQuery} {placeholder} onkeydown={handleKeydown} class="pl-10 pr-20 text-base" />
       <!-- Search Status Icons -->
       <div class="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
         {#if isSearching}
           <Loader2 class="h-4 w-4 animate-spin nes-text is-disabled" />
         {/if}
         {#if showFilters}
-          <Button size="sm" variant="ghost" on:click={toggleFiltersPanel} class="h-8 w-8 p-0">
+          <Button size="sm" variant="ghost" onclick={toggleFiltersPanel} class="h-8 w-8 p-0">
             <Filter class="h-4 w-4" />
           </Button>
         {/if}
@@ -392,7 +392,7 @@ https://svelte.dev/e/expected_token -->
         {#each searchResults as result (result.id)}
           <Card.Root
             class="hover:shadow-md transition-shadow cursor-pointer nes-container"
-            on:click={() => handleResultClick(result)}
+            onclick={() => handleResultClick(result)}
           >
             <Card.Header class="pb-3">
               <div class="flex items-start justify-between">
@@ -466,15 +466,15 @@ https://svelte.dev/e/expected_token -->
 
             <Card.Content class="pt-0">
               <div class="flex gap-2 flex-wrap">
-                <button class="nes-btn" on:click|stopPropagation={() => handleResultAction(result, 'view')}
+                <button class="nes-btn" onclick|stopPropagation={() => handleResultAction(result, 'view')}
                   >View Document</button
                 >
-                <button class="nes-btn" on:click|stopPropagation={() => handleResultAction(result, 'analyze')}
+                <button class="nes-btn" onclick|stopPropagation={() => handleResultAction(result, 'analyze')}
                   >AI Analysis</button
                 >
 
                 {#if result.document?.type === 'evidence'}
-                  <button class="nes-btn" on:click|stopPropagation={() => handleResultAction(result, 'canvas')}
+                  <button class="nes-btn" onclick|stopPropagation={() => handleResultAction(result, 'canvas')}
                     >Open in Canvas</button
                   >
                 {/if}

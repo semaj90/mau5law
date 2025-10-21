@@ -146,7 +146,7 @@
     }
   ]);
   // Initialize selectedPerson immediately from the demo data to avoid transient undefined access
-  let selectedPerson: FugitiveDexPerson | null = $state(persons.length > 0 ? persons[0] : null);
+  let selectedPerson FugitiveDexPerson | null = $state(persons.length > 0 ? persons[0] : null);
   let searchQuery = $state('');
 
   // Function to load POIs from API
@@ -157,7 +157,7 @@
         const result = await response.json();
         const apiPersons: APIPerson[] = result.success ? result.data : [];
         // Transform API data to FugitiveDex format
-        const transformedPersons: FugitiveDexPerson[] = apiPersons.map((person: APIPerson, index) => ({ // Removed extra ',' and typed 'person'
+        const transformedPersons: FugitiveDexPerson[] = apiPersons.map((person APIPerson, index) => ({ // Removed extra ',' and typed 'person'
           id: (index + 1).toString().padStart(3, '0'), // Used index for ID, fixed toString.padStart
           name: person.name,
           alias: (person.aliases && person.aliases.length > 0) ? person.aliases[0] : (person.name ? person.name.split(' ')[0] : 'Unknown'),
@@ -214,7 +214,7 @@
     <div class="fugitive-title">
       <h1>YoRHa Pod Network</h1>
       <div class="case-info">
-        <span>Operation: <strong>Digital Hunt Protocol</strong></span>
+        <span>Operation <strong>Digital Hunt Protocol</strong></span>
         <div class="case-badges">
           <span class="case-badge active">⚡ ONLINE</span>
           <span class="case-badge evidence">📡 DATA</span>
@@ -249,7 +249,7 @@
           <button
             class="person-entry"
             class:selected={selectedPerson?.id === person.id}
-            on:click={() => (selectedPerson = person)}
+            onclick={() => (selectedPerson = person)}
             type="button"
             aria-pressed={selectedPerson?.id === person.id}
           >
@@ -440,11 +440,11 @@
     min-height: 100vh;
     color: #f0f6fc;
     font-family: 'JetBrains Mono', monospace;
-    position: relative;
+    position relative;
   }
   .fugitive-dex::before {
     content: '';
-    position: fixed;
+    position fixed;
     top: 0,
     left: 0;
     width: 100%;
@@ -551,7 +551,7 @@
     border-radius: 4px;
     margin-bottom: 0.5rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     text-align: left;
   }
   .person-entry:hover {
@@ -605,7 +605,7 @@
     color: #f0f6fc;
     border-radius: 4px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .filter-btn.active,
   .filter-btn:hover {
@@ -644,7 +644,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
+    flex-direction column;
   }
   .placeholder-photo span {
     font-size: 3rem;
@@ -657,7 +657,7 @@
   }
   .basic-info {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .info-row {
@@ -720,7 +720,7 @@
   }
   .physical-stats {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .stat {
@@ -827,7 +827,7 @@
   }
   /* .attribute-bars {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
   } */
   .attribute-row {
@@ -852,7 +852,7 @@
   .attr-fill {
     height: 100%;
     background: linear-gradient(90deg, #10b981, #34d399);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
     box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
   }
   .attr-value {
@@ -890,7 +890,7 @@
     cursor: pointer;
     background: rgba(16, 185, 129, 0.08);
     color: #e6fffa;
-    transition: all 0.15s ease;
+    transition all 0.15s ease;
   }
 
   /* Variant styles to approximate ButtonBits look */

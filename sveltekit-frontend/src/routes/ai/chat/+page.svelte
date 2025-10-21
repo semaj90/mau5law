@@ -56,7 +56,7 @@
   };
 
   type UserActivity = {
-    action: string;
+    action string;
     description?: string;
     details?: string;
     timestamp?: string | number | Date;
@@ -157,7 +157,7 @@
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock';
       notice.style.cssText =
-        'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+        'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Set mock system status
@@ -304,14 +304,14 @@
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock';
       notice.style.cssText =
-        'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+        'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Generate mock AI assistant response
       const mockLegalAssistantResponses = [
         'Based on your legal inquiry, I would recommend examining the contractual obligations and relevant case precedents. Here are the key considerations: [Mock Analysis] 1) Review governing law clauses, 2) Examine breach conditions, 3) Consider damages calculations.',
         'This appears to be an employment law matter. Mock legal assistant analysis suggests: The timeline of events indicates potential wrongful termination. I recommend gathering additional documentation and reviewing company policy violations.',
-        'For intellectual property concerns like this, prior art searches are essential. Mock recommendation: Conduct comprehensive patent database review, examine competitor filings, and assess potential infringement claims.',
+        'For intellectual property concerns like this, prior art searches are essential. Mock recommendation Conduct comprehensive patent database review, examine competitor filings, and assess potential infringement claims.',
         'In contract dispute matters, intent and consideration are primary factors. Mock legal guidance: Review contract formation elements, examine performance obligations, and consider alternative dispute resolution options.',
       ];
       const randomMockResponse =
@@ -360,7 +360,7 @@
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock';
       notice.style.cssText =
-        'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+        'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Set mock evidence reports
@@ -406,7 +406,7 @@
         // Extract POI timeline data from semantic analysis
         poiTimelineData =
           ragAnalysisResults?.persons?.map(
-            (person: RagPerson): POI => ({
+            (person RagPerson): POI => ({
               id: person.id,
               name: person.name,
               type: person.type || 'person',
@@ -518,7 +518,7 @@
           <Button
             class="bits-btn justify-start"
             variant="secondary"
-            on:click={() => handleQuickQuery('Explain contract formation requirements')}
+            onclick={() => handleQuickQuery('Explain contract formation requirements')}
             disabled={isStreaming}
             aria-label="Explain contract formation requirements"
           >
@@ -527,7 +527,7 @@
           <Button
             class="bits-btn justify-start"
             variant="secondary"
-            on:click={() => handleQuickQuery('What is the chain of custody for evidence?')}
+            onclick={() => handleQuickQuery('What is the chain of custody for evidence?')}
             disabled={isStreaming}
             aria-label="What is the chain of custody for evidence?"
           >
@@ -536,7 +536,7 @@
           <Button
             class="bits-btn justify-start"
             variant="secondary"
-            on:click={() => handleQuickQuery('Explain liability limitations in contracts')}
+            onclick={() => handleQuickQuery('Explain liability limitations in contracts')}
             disabled={isStreaming}
             aria-label="Explain liability limitations in contracts"
           >
@@ -545,7 +545,7 @@
           <Button
             class="bits-btn justify-start"
             variant="secondary"
-            on:click={() => handleQuickQuery('What are the elements of negligence?')}
+            onclick={() => handleQuickQuery('What are the elements of negligence?')}
             disabled={isStreaming}
             aria-label="What are the elements of negligence?"
           >
@@ -572,7 +572,7 @@
               <Button
                 variant="secondary"
                 class="bits-btn bits-nes-btn"
-                on:click={clearChat}
+                onclick={clearChat}
                 disabled={isStreaming}
                 aria-label="Clear chat"
               >
@@ -633,7 +633,7 @@
                 aria-label="Legal question input"
               />
               <Button
-                on:click={sendMessage}
+                onclick={sendMessage}
                 disabled={!currentMessage.trim() || isStreaming}
                 class="px-6 bits-btn"
                 aria-label="Send message"
@@ -672,7 +672,7 @@
               </CardTitle>
               <Button
                 variant="secondary"
-                on:click={() => (showTimeline = false)}
+                onclick={() => (showTimeline = false)}
                 class="nes-btn bits-btn"
                 aria-label="Close timeline"
               >
@@ -695,7 +695,7 @@
                     </div>
                     <Button
                       variant="secondary"
-                      on:click={() => selectPOI(poi)}
+                      onclick={() => selectPOI(poi)}
                       class="nes-btn bits-btn"
                       aria-label={`View details for ${poi.name}`}
                     >
@@ -848,7 +848,7 @@
             <CardContent class="space-y-3">
               <Button
                 variant="secondary"
-                on:click={checkSystemStatus}
+                onclick={checkSystemStatus}
                 class="w-full justify-start bits-btn"
                 aria-label="Refresh system status"
               >
@@ -866,7 +866,7 @@
               <Button
                 class="bits-btn w-full justify-start"
                 variant="secondary"
-                on:click={() => window.open('/api/v1/cluster/health', '_blank')}
+                onclick={() => window.open('/api/v1/cluster/health', '_blank')}
                 aria-label="Open health report in new tab"
               >
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -883,7 +883,7 @@
               <Button
                 variant="secondary"
                 class="w-full justify-start bits-btn"
-                on:click={analyzePersonsOfInterest}
+                onclick={analyzePersonsOfInterest}
                 disabled={timelineLoading}
                 aria-label="Analyze evidence"
               >
@@ -911,7 +911,7 @@
 
               <Button
                 variant="secondary"
-                on:click={generateUserActivityTimeline}
+                onclick={generateUserActivityTimeline}
                 disabled={activityLoading}
                 class="w-full justify-start bits-btn"
                 aria-label="Generate user activity timeline"
@@ -1000,7 +1000,7 @@
             {/if}
           </div>
         </div>
-        <Button variant="secondary" size="sm" on:click={closePOIDetails} class="bits-btn" aria-label="Close">
+        <Button variant="secondary" size="sm" onclick={closePOIDetails} class="bits-btn" aria-label="Close">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
@@ -1103,9 +1103,9 @@
 
       <!-- Modal Footer -->
       <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
-        <Button variant="secondary" on:click={closePOIDetails} class="bits-btn" aria-label="Close">Close</Button>
+        <Button variant="secondary" onclick={closePOIDetails} class="bits-btn" aria-label="Close">Close</Button>
         <Button
-          on:click={() => {
+          onclick={() => {
             handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`);
             closePOIDetails();
           }}

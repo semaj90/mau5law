@@ -459,7 +459,7 @@
       width="800"
       height="600"
       onmousemove={handleMouseMove}
-      on:click={handleMouseClick}
+      onclick={handleMouseClick}
       onmouseleave={handleMouseLeave}
       class="evidence-canvas"
     ></canvas>
@@ -521,7 +521,7 @@
     border: 2px solid var(--yorha-text-muted);
   }
   .canvas-wrapper {
-    position: relative;
+    position relative;
     display: inline-block;
     border: 2px solid var(--yorha-secondary);
     background: var(--yorha-bg-primary);
@@ -583,7 +583,7 @@
   }
   /* Animation for canvas */
   .canvas-wrapper {
-    animation: borderGlow 4s ease-in-out infinite alternate;
+    animation borderGlow 4s ease-in-out infinite alternate;
   }
   @keyframes borderGlow {
     from {
@@ -596,7 +596,7 @@
   /* Responsive design */
   @media (max-width: 768px) {
     .controls-panel {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
     }
     .evidence-canvas {

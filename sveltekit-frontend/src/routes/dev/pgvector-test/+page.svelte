@@ -37,7 +37,7 @@ https://svelte.dev/e/expected_token -->
     connectionTest: '',
     vectorSearch: '',
     documentInsert: '',
-    indexCreation: ''
+    indexCreation ''
   }
   /**
    * Test PostgreSQL + pgvector connection
@@ -266,13 +266,13 @@ https://svelte.dev/e/expected_token -->
             </p>
           </div>
           <div class="yorha-panel-content space-y-3">
-            <Button on:click={testConnection} disabled={isLoading} class="w-full bits-btn bits-btn">
+            <Button onclick={testConnection} disabled={isLoading} class="w-full bits-btn bits-btn">
 {isLoading ? 'Testing...' : 'Test Connection'}
             {#if connectionDetails}
               <div class="text-sm space-y-1">
                 <div><strong>Database:</strong> {connectionDetails.connection?.current_time?.substring(0, 19) || 'Connected'}</div>
                 {#if connectionDetails.pgvectorExtension?.extversion}
-                  <div><strong>pgvector Version:</strong> {connectionDetails.pgvectorExtension.extversion}</div>
+                  <div><strong>pgvector Version</strong> {connectionDetails.pgvectorExtension.extversion}</div>
                 {:else}
                   <div class="text-red-600"><strong>pgvector:</strong> Not installed</div>
                 {/if}
@@ -290,12 +290,12 @@ https://svelte.dev/e/expected_token -->
             </p>
           </div>
           <div class="yorha-panel-content space-y-3">
-            <Button on:click={getDatabaseStats} disabled={isLoading} class="w-full bits-btn bits-btn">
+            <Button onclick={getDatabaseStats} disabled={isLoading} class="w-full bits-btn bits-btn">
 {isLoading ? 'Loading...' : 'Get Statistics'}
             {#if dbStats}
               <div class="text-sm space-y-1">
                 <div><strong>Total Embeddings:</strong> {dbStats.vectors?.total_embeddings || 0}</div>
-                <div><strong>Avg Dimension:</strong> {dbStats.vectors?.avg_dimension || 'N/A'}</div>
+                <div><strong>Avg Dimension</strong> {dbStats.vectors?.avg_dimension || 'N/A'}</div>
                 <div><strong>Documents:</strong> {dbStats.documents?.length || 0} types</div>
                 <div><strong>Indexes:</strong> {dbStats.indexes?.length || 0}</div>
                 {#if dbStats.sizes}
@@ -316,13 +316,13 @@ https://svelte.dev/e/expected_token -->
         </div>
         <div class="yorha-panel-content">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <Button class="bits-btn" on:click={() =>
+            <Button class="bits-btn" onclick={() =>
 seedDatabase(10)} disabled={isLoading}>
               Seed 10 Documents
-            <Button class="bits-btn" on:click={() =>
+            <Button class="bits-btn" onclick={() =>
 seedDatabase(50)} disabled={isLoading}>
               Seed 50 Documents
-            <Button class="bits-btn" on:click={() =>
+            <Button class="bits-btn" onclick={() =>
 createIndex(100, 'cosine')} disabled={isLoading}>
               Create IVFFLAT Index
           </div>
@@ -350,7 +350,7 @@ createIndex(100, 'cosine')} disabled={isLoading}>
               />
             </div>
             <div class="flex items-end">
-              <Button class="bits-btn" on:click={performVectorSearch} disabled={isLoading || !testQuery.trim()}>
+              <Button class="bits-btn" onclick={performVectorSearch} disabled={isLoading || !testQuery.trim()}>
 {isLoading ? 'Searching...' : 'Search'}
             </div>
           </div>
@@ -406,7 +406,7 @@ createIndex(100, 'cosine')} disabled={isLoading}>
             </p>
           </div>
           <div class="yorha-panel-content space-y-3">
-            <Button on:click={testDocumentInsert} disabled={isLoading} class="w-full bits-btn bits-btn">
+            <Button onclick={testDocumentInsert} disabled={isLoading} class="w-full bits-btn bits-btn">
 {isLoading ? 'Inserting...' : 'Test Document Insert'}
             <p class="text-sm nes-text is-disabled">
               Inserts a sample legal document with 1536-dimension mock embedding
@@ -423,16 +423,16 @@ createIndex(100, 'cosine')} disabled={isLoading}>
           </div>
           <div class="yorha-panel-content space-y-3">
             <div class="grid grid-cols-2 gap-2">
-              <Button class="bits-btn" on:click={() =>
+              <Button class="bits-btn" onclick={() =>
 createIndex(50, 'cosine')} disabled={isLoading} size="sm">
                 Cosine (50 lists)
-              <Button class="bits-btn" on:click={() =>
+              <Button class="bits-btn" onclick={() =>
 createIndex(100, 'cosine')} disabled={isLoading} size="sm">
                 Cosine (100 lists)
-              <Button class="bits-btn" on:click={() =>
+              <Button class="bits-btn" onclick={() =>
 createIndex(100, 'euclidean')} disabled={isLoading} size="sm">
                 Euclidean
-              <Button class="bits-btn" on:click={() =>
+              <Button class="bits-btn" onclick={() =>
 createIndex(100, 'inner_product')} disabled={isLoading} size="sm">
                 Inner Product
             </div>
@@ -517,7 +517,7 @@ createIndex(100, 'inner_product')} disabled={isLoading} size="sm">
                 <li>• Connection test: < 100ms</li>
                 <li>• Vector search (10 results): < 200ms</li>
                 <li>• Document insert: < 50ms</li>
-                <li>• Index creation: < 30s</li>
+                <li>• Index creation < 30s</li>
                 <li>• Batch insert (100 docs): < 2s</li>
               </ul>
             </div>

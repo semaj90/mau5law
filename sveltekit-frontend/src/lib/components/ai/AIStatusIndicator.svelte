@@ -135,14 +135,14 @@
 
 <style>
   .ai-status-indicator {
-    position: relative;
+    position relative;
     display: flex;
     align-items: center;
     gap: 8px;
     padding: 4px 8px;
     border-radius: 6px;
     font-size: 0.875rem;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     cursor: help;
   }
   .ai-status-indicator:hover {
@@ -169,7 +169,7 @@
   }
   .status-details {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 2px;
     min-width: 0; /* Allow text truncation */
   }
@@ -211,7 +211,7 @@
     white-space: nowrap;
   }
   .status-tooltip {
-    position: absolute;
+    position absolute;
     bottom: 100%;
     left: 50%;
     transform: translateX(-50%) translateY(-8px);
@@ -222,7 +222,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     opacity: 0,
     visibility: hidden;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     z-index: 1000;
     white-space: nowrap;
     font-size: 0.75rem;
@@ -230,7 +230,7 @@
   }
   .status-tooltip::after {
     content: '';
-    position: absolute;
+    position absolute;
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
@@ -239,7 +239,7 @@
   }
   .tooltip-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 6px;
   }
   .tooltip-section {

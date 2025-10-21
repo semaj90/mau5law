@@ -55,7 +55,7 @@
 
       fabricCanvas = new fabric.Canvas(canvasElement, {
         backgroundColor: '#f8fafc',
-        selection: !readonly,
+        selection !readonly,
         preserveObjectStacking: true,
         enableRetinaScaling: true,
       });
@@ -397,7 +397,7 @@
           class="bits-btn"
           variant={selectedTool === 'select' ? 'primary' : 'outline'}
           size="sm"
-          on:click={() => selectTool('select')}
+          onclick={() => selectTool('select')}
           disabled={readonly}
         >
           <Move />
@@ -406,7 +406,7 @@
           class="bits-btn"
           variant={selectedTool === 'draw' ? 'primary' : 'outline'}
           size="sm"
-          on:click={() => selectTool('draw')}
+          onclick={() => selectTool('draw')}
           disabled={readonly}
         >
           ✏️
@@ -415,7 +415,7 @@
           class="bits-btn"
           variant={selectedTool === 'text' ? 'primary' : 'outline'}
           size="sm"
-          on:click={() => selectTool('text')}
+          onclick={() => selectTool('text')}
           disabled={readonly}
         >
           <Type />
@@ -425,10 +425,10 @@
       <!-- Shapes -->
       {#if !readonly}
         <div class="space-y-4">
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={() => addShape('rectangle')}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => addShape('rectangle')}>
             <Square />
           </Button>
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={() => addShape('circle')}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => addShape('circle')}>
             <Circle />
           </Button>
         </div>
@@ -440,7 +440,7 @@
           class="bits-btn"
           variant="ghost"
           size="sm"
-          on:click={() => undo()}
+          onclick={() => undo()}
           disabled={readonly || historyIndex <= 0}
         >
           <Undo />
@@ -449,7 +449,7 @@
           class="bits-btn"
           variant="ghost"
           size="sm"
-          on:click={() => redo()}
+          onclick={() => redo()}
           disabled={readonly || historyIndex >= canvasHistory.length - 1}
         >
           <Redo />
@@ -458,29 +458,29 @@
 
       <!-- Zoom -->
       <div class="space-y-4">
-        <Button class="bits-btn" variant="ghost" size="sm" on:click={() => zoomOut()}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => zoomOut()}>
           <ZoomOut />
         </Button>
         <span>{Math.round(zoom * 100)}%</span>
-        <Button class="bits-btn" variant="ghost" size="sm" on:click={() => zoomIn()}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => zoomIn()}>
           <ZoomIn />
         </Button>
-        <Button class="bits-btn" variant="ghost" size="sm" on:click={() => resetZoom()}>Reset</Button>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => resetZoom()}>Reset</Button>
       </div>
     </div>
 
     <!-- Actions -->
     <div class="space-y-4">
       {#if !readonly}
-        <Button class="bits-btn" variant="ghost" size="sm" on:click={() => deleteSelected()}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => deleteSelected()}>
           <Trash2 />
         </Button>
-        <Button class="bits-btn" variant="ghost" size="sm" on:click={() => saveCanvas()}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => saveCanvas()}>
           <Save />
           Save
         </Button>
       {/if}
-      <Button class="bits-btn" variant="ghost" size="sm" on:click={() => exportCanvas()}>
+      <Button class="bits-btn" variant="ghost" size="sm" onclick={() => exportCanvas()}>
         <Download />
         Export
       </Button>

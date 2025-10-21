@@ -54,13 +54,13 @@
     flex: 1,
     padding: 1.5rem;
     overflow-x: auto;
-    position: relative;
+    position relative;
   }
 
   /* Development-specific debugging grid */
   .dev-main::before {
     content: '';
-    position: fixed;
+    position fixed;
     top: 0,
     left: 0;
     right: 0,
@@ -74,14 +74,14 @@
   }
 
   .dev-main > * {
-    position: relative;
+    position relative;
     z-index: 1,
   }
 
   /* Development mode indicator */
   .dev-main::after {
     content: '🛠️ DEV MODE',
-    position: fixed;
+    position fixed;
     top: 70px;
     right: 20px;
     font-size: 0.75rem;
@@ -93,7 +93,7 @@
 
   @media (max-width: 768px) {
     .dev-content {
-      flex-direction: column;
+      flex-direction column;
     }
 
     .dev-sidebar {

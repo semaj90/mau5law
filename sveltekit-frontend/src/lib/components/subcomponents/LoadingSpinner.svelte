@@ -41,7 +41,7 @@
 
 <style>
   .sr-only {
-    position: absolute;
+    position absolute;
     width: 1px;
     height: 1px;
     padding: 0,

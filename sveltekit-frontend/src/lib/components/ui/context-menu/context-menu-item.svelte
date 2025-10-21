@@ -25,7 +25,7 @@
   class:disabled
   role="menuitem"
   tabindex={disabled ? -1 : 0}
-  on:click={handleClick}
+  onclick={handleClick}
   aria-disabled={disabled}
 >
   <slot />
@@ -43,7 +43,7 @@
     border-radius: 0.25rem;
     background: transparent;
     cursor: pointer;
-    transition: background-color 0.15s;
+    transition background-color 0.15s;
     text-align: left;
   }
   .context-menu-item:hover:not(.disabled) {

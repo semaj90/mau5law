@@ -75,7 +75,7 @@ $effect(() => {
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock';
-      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+      notice.style.cssText = 'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Set mock system status
@@ -190,14 +190,14 @@ $effect(() => {
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock';
-      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+      notice.style.cssText = 'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Generate mock AI assistant response
       const mockLegalAssistantResponses = [
         "Based on your legal inquiry, I would recommend examining the contractual obligations and relevant case precedents. Here are the key considerations: [Mock Analysis] 1) Review governing law clauses, 2) Examine breach conditions, 3) Consider damages calculations.",
         "This appears to be an employment law matter. Mock legal assistant analysis suggests: The timeline of events indicates potential wrongful termination. I recommend gathering additional documentation and reviewing company policy violations.",
-        "For intellectual property concerns like this, prior art searches are essential. Mock recommendation: Conduct comprehensive patent database review, examine competitor filings, and assess potential infringement claims.",
+        "For intellectual property concerns like this, prior art searches are essential. Mock recommendation Conduct comprehensive patent database review, examine competitor filings, and assess potential infringement claims.",
         "In contract dispute matters, intent and consideration are primary factors. Mock legal guidance: Review contract formation elements, examine performance obligations, and consider alternative dispute resolution options."
       ];
       const randomMockResponse = mockLegalAssistantResponses[Math.floor(Math.random() * mockLegalAssistantResponses.length)];
@@ -244,7 +244,7 @@ $effect(() => {
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock';
-      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+      notice.style.cssText = 'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Set mock evidence reports
@@ -288,7 +288,7 @@ $effect(() => {
       if (ragResponse.ok) {
         ragAnalysisResults = await ragResponse.json();
         // Extract POI timeline data from semantic analysis
-        poiTimelineData = ragAnalysisResults.persons?.map((person: any) => ({ // Explicitly type person
+        poiTimelineData = ragAnalysisResults.persons?.map((person any) => ({ // Explicitly type person
           id: person.id,
           name: person.name,
           type: person.type || 'person',
@@ -395,25 +395,25 @@ $effect(() => {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
           <button
             class="bits-btn justify-start px-3 py-2 rounded-md text-sm"
-            on:click={() => handleQuickQuery('Explain contract formation requirements')}
+            onclick={() => handleQuickQuery('Explain contract formation requirements')}
             disabled={isStreaming}
             aria-label="Explain contract formation requirements"
           >Contract Law</button>
           <button
             class="bits-btn justify-start px-3 py-2 rounded-md text-sm"
-            on:click={() => handleQuickQuery('What is the chain of custody for evidence?')}
+            onclick={() => handleQuickQuery('What is the chain of custody for evidence?')}
             disabled={isStreaming}
             aria-label="What is the chain of custody for evidence?"
           >Evidence Rules</button>
           <button
             class="bits-btn justify-start px-3 py-2 rounded-md text-sm"
-            on:click={() => handleQuickQuery('Explain liability limitations in contracts')}
+            onclick={() => handleQuickQuery('Explain liability limitations in contracts')}
             disabled={isStreaming}
             aria-label="Explain liability limitations in contracts"
           >Liability</button>
           <button
             class="bits-btn justify-start px-3 py-2 rounded-md text-sm"
-            on:click={() => handleQuickQuery('What are the elements of negligence?')}
+            onclick={() => handleQuickQuery('What are the elements of negligence?')}
             disabled={isStreaming}
             aria-label="What are the elements of negligence?"
           >Tort Law</button>
@@ -433,7 +433,7 @@ $effect(() => {
               </span>
               <button
                 class="bits-btn bits-nes-btn px-3 py-1 rounded-md text-sm"
-                on:click={clearChat}
+                onclick={clearChat}
                 disabled={isStreaming}
                 aria-label="Clear chat"
               >Clear</button>
@@ -489,7 +489,7 @@ $effect(() => {
                 placeholder="Ask a legal question..."
               />
               <button
-                on:click={sendMessage}
+                onclick={sendMessage}
                 disabled={!currentMessage.trim() || isStreaming}
                 class="px-6 bits-btn rounded-md"
                 aria-label="Send message"
@@ -515,7 +515,7 @@ $effect(() => {
                 Persons of Interest Timeline
               </CardTitle>
               <button
-                on:click={() => showTimeline = false}
+                onclick={() => showTimeline = false}
                 class="nes-btn bits-btn px-2 py-1 rounded-md"
                 aria-label="Close timeline"
               >
@@ -537,7 +537,7 @@ $effect(() => {
                       </div>
                     </div>
                     <button
-                      on:click={() => selectPOI(poi)}
+                      onclick={() => selectPOI(poi)}
                       class="nes-btn bits-btn px-2 py-1 rounded-md"
                       aria-label={`View details for ${poi.name}`}
                     >View Details</button>
@@ -680,7 +680,7 @@ $effect(() => {
             </CardHeader>
             <CardContent class="space-y-3">
               <button
-                on:click={checkSystemStatus}
+                onclick={checkSystemStatus}
                 class="w-full justify-start bits-btn px-3 py-2 rounded-md text-sm"
                 aria-label="Refresh system status"
               >
@@ -692,7 +692,7 @@ $effect(() => {
 
               <button
                 class="bits-btn w-full justify-start px-3 py-2 rounded-md text-sm"
-                on:click={() => window.open('/api/v1/cluster/health', '_blank')}
+                onclick={() => window.open('/api/v1/cluster/health', '_blank')}
                 aria-label="Open health report in new tab"
               >
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -703,7 +703,7 @@ $effect(() => {
 
               <button
                 class="w-full justify-start bits-btn px-3 py-2 rounded-md text-sm"
-                on:click={analyzePersonsOfInterest}
+                onclick={analyzePersonsOfInterest}
                 disabled={timelineLoading}
                 aria-label="Analyze evidence"
               >
@@ -721,7 +721,7 @@ $effect(() => {
               </button>
 
               <button
-                on:click={generateUserActivityTimeline}
+                onclick={generateUserActivityTimeline}
                 disabled={activityLoading}
                 class="w-full justify-start bits-btn px-3 py-2 rounded-md text-sm"
                 aria-label="Generate user activity timeline"
@@ -773,7 +773,7 @@ $effect(() => {
 </div>
 <!-- POI Details Modal -->
 {#if selectedPOI}
-  <Dialog bind:open={showPOIDialog} legal={true} size="lg" on:openChange={(open: boolean) => { if (!open) closePOIDetails() }}>
+  <Dialog bind:open={showPOIDialog} legal={true} size="lg" onopenChange={(open: boolean) => { if (!open) closePOIDetails() }}>
     <!-- Modal Header -->
     <div class="flex justify-between items-start mb-6">
       <div>
@@ -797,7 +797,7 @@ $effect(() => {
       <div>
         <button
           class="px-2 py-1 rounded-md text-sm"
-          on:click={closePOIDetails}
+          onclick={closePOIDetails}
           aria-label="Close dialog"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -890,12 +890,12 @@ $effect(() => {
     <!-- Modal Footer -->
     <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
       <button
-        on:click={closePOIDetails}
+        onclick={closePOIDetails}
         class="bits-btn px-3 py-2 rounded-md"
         aria-label="Close person of interest details"
       >Close</button>
       <button
-        on:click={() => {
+        onclick={() => {
           handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`);
           closePOIDetails();
         }}
@@ -908,14 +908,14 @@ $effect(() => {
 {/if}
       <Button
         variant="secondary"
-        on:click={closePOIDetails}
+        onclick={closePOIDetails}
         class="bits-btn"
         ariaLabel="Close person of interest details"
       >
         Close
       </Button>
       <Button
-        on:click={() => {
+        onclick={() => {
           handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`);
           closePOIDetails();
         }}

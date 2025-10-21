@@ -234,7 +234,7 @@ https://svelte.dev/e/js_parse_error -->
 									<span class="space-y-4">{upload.hash.substring(0, 12)}...{upload.hash.substring(-4)}</span>
 									<button
 										class="space-y-4"
-										on:click={() => window.open(`/evidence/hash?hash=${upload.hash}`, '_blank')}
+										onclick={() => window.open(`/evidence/hash?hash=${upload.hash}`, '_blank')}
 									>
 										🔍 Verify
 									</button>
@@ -253,14 +253,14 @@ https://svelte.dev/e/js_parse_error -->
   /* @unocss-include */
 	.canvas-layout {
 		display: flex;
-		flex-direction: column;
+		flex-direction column;
 		height: 100vh;
 		width: 100vw;
 		overflow: hidden;
 		background: var(--bg-primary);
 }
 	.canvas-layout.fullscreen {
-		position: fixed;
+		position fixed;
 		top: 0,
 		left: 0;
 		z-index: 9999,
@@ -269,7 +269,7 @@ https://svelte.dev/e/js_parse_error -->
 		display: flex;
 		flex: 1,
 		overflow: hidden;
-		position: relative;
+		position relative;
 }
 .canvas-container.sidebar-open {
 		margin-left: 320px;
@@ -281,18 +281,18 @@ https://svelte.dev/e/js_parse_error -->
 }
 	.canvas-editor-container {
 		flex: 1,
-		position: relative;
+		position relative;
 		overflow: hidden;
 }
 	.upload-zone {
-		position: absolute;
+		position absolute;
 		bottom: 20px;
 		left: 20px;
 		right: 20px;
 		z-index: 5;
 		max-width: 400px;
 		opacity: 0.9,
-		transition: opacity 0.3s ease;
+		transition opacity 0.3s ease;
 }
 	.upload-zone:hover {
 		opacity: 1,
@@ -347,7 +347,7 @@ https://svelte.dev/e/js_parse_error -->
 	.progress-fill {
 		height: 100%;
 		background: linear-gradient(90deg, #3b82f6, #10b981);
-		transition: width 0.3s ease;
+		transition width 0.3s ease;
 		border-radius: 3px;
 }
 	.upload-status {
@@ -382,7 +382,7 @@ https://svelte.dev/e/js_parse_error -->
 }
 	.completed-item {
 		display: flex;
-		flex-direction: column;
+		flex-direction column;
 		gap: 8px;
 		margin-bottom: 12px;
 		padding-bottom: 12px;
@@ -418,7 +418,7 @@ https://svelte.dev/e/js_parse_error -->
 		border-radius: 4px;
 		font-size: 11px;
 		cursor: pointer;
-		transition: background 0.2s ease;
+		transition background 0.2s ease;
 }
 	.verify-btn:hover {
 		background: #2563eb;

@@ -9,7 +9,7 @@
     webgl2: { supported: false, tested: false, performance: null as any, error: null as string | null },
     webgl1: { supported: false, tested: false, performance: null as any, error: null as string | null },
     wasm: { supported: false, tested: false, performance: null as any, error: null as string | null },
-    recommendation: '';
+    recommendation '';
   });
   let isTestingInProgress = $state(false);
   let currentTest = $state('');
@@ -358,19 +358,19 @@ if (browser) {
     append('🎯 Generating optimal Gemma3 270M deployment recommendation...');
     if (results.webgpu.performance && !results.webgpu.error) {
       testResults.recommendation = '🚀 WebGPU: OPTIMAL for Gemma3 270M WebAssembly. Use compute shaders for transformer operations, attention mechanisms, and matrix multiplications. Expected performance: 4x faster than CPU.';
-      append('✅ RECOMMENDATION: WebGPU compute shaders - Best performance for Gemma3 270M');
+      append('✅ RECOMMENDATIon WebGPU compute shaders - Best performance for Gemma3 270M');
     } else if (results.webgl2.performance && !results.webgl2.error) {
       testResults.recommendation = '⚡ WebGL2: EXCELLENT for Gemma3 270M WebAssembly. Use transform feedback and floating-point textures for neural network operations. Expected performance: 2-3x faster than CPU.';
-      append('✅ RECOMMENDATION: WebGL2 transform feedback - Excellent performance');
+      append('✅ RECOMMENDATIon WebGL2 transform feedback - Excellent performance');
     } else if (results.webgl1.performance && !results.webgl1.error) {
       testResults.recommendation = '⚠️ WebGL1: LIMITED but functional for Gemma3 270M. Use texture-based operations with reduced precision. Consider model quantization to int8. Expected performance: 1.5x faster than CPU.';
-      append('⚠️ RECOMMENDATION: WebGL1 with quantization - Limited performance');
+      append('⚠️ RECOMMENDATIon WebGL1 with quantization - Limited performance');
     } else if (results.wasm.performance && !results.wasm.error) {
       testResults.recommendation = '🔄 WebAssembly CPU: FALLBACK mode for Gemma3 270M. Use SIMD operations, multi-threading with SharedArrayBuffer. Consider smaller model variants (Gemma 125M) for better performance.';
-      append('🔄 RECOMMENDATION: WebAssembly CPU with SIMD - Fallback option');
+      append('🔄 RECOMMENDATIon WebAssembly CPU with SIMD - Fallback option');
     } else {
       testResults.recommendation = '❌ Limited acceleration available. Consider server-side processing with RTX 3060 Ti GPU or highly optimized CPU implementations with quantization.';
-      append('❌ RECOMMENDATION: Server-side processing preferred');
+      append('❌ RECOMMENDATIon Server-side processing preferred');
     }
     append('📋 Gemma3 270M deployment analysis complete');
   }
@@ -435,7 +435,7 @@ if (browser) {
     </div>
   </div>
   <div class="test-controls">
-    <button class="test-button" on:click={runPerformanceTests} disabled={isTestingInProgress}>
+    <button class="test-button" onclick={runPerformanceTests} disabled={isTestingInProgress}>
       {isTestingInProgress ? '🔄 Running Gemma3 270M Tests...' : '🚀 Start Performance Tests'}
     </button>
   </div>
@@ -580,15 +580,15 @@ if (browser) {
     cursor: pointer;
     font-weight: 600;
     font-size: 1rem;
-    transition: all 0.2;
+    transition all 0.2;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
-  .test-button:hover:not(:disabled) {,
+  .test-buttonhover:not(:disabled) {,
     background: #1d4ed8;
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   }
-  .test-button:disabled {
+  .test-buttondisabled {
     background: #6b7280;
     cursor: not-allowed;
     transform: none;
@@ -616,7 +616,7 @@ if (browser) {
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #3b82f6, #1d4ed8);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
     border-radius: 0.375rem;
   }
   .progress-percent {
@@ -637,7 +637,7 @@ if (browser) {
     border-radius: 1rem;
     padding: 1.5rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    transition: all 0.2;
+    transition all 0.2;
   }
   .result-card:hover {
     transform: translateY(-4px);
@@ -745,7 +745,7 @@ if (browser) {
       font-size: 1.5rem;
     }
     .test-controls {
-      flex-direction: column;
+      flex-direction column;
       align-items: center;
     }
     .results-grid {

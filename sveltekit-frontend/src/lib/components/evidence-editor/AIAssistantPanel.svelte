@@ -131,7 +131,7 @@
   function selectEvidence(item: unknown) {
     ondispatch?.({ id: (item as { id?: unknown }).id });
   }
-  function selectConnection(connection: unknown) {
+  function selectConnection(connection unknown) {
     ondispatch?.({ connection });
   }
 </script>
@@ -163,7 +163,7 @@
           class="flex-1"
         />
         {#if searchQuery}
-          <Button class="bits-btn" on:click={clearSearch} variant="ghost" size="sm">
+          <Button class="bits-btn" onclick={clearSearch} variant="ghost" size="sm">
 Clear
         {/if}
       </div>
@@ -175,7 +175,7 @@ Clear
           <div class="space-y-2 max-h-60 overflow-y-auto">
             {#each searchResults as result}
               <button
-                on:click={() => selectEvidence(result)}
+                onclick={() => selectEvidence(result)}
                 class="w-full text-left p-3 rounded-md border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
                 <div class="flex justify-between items-start">
@@ -227,10 +227,10 @@ Clear
           {/if}
         </div>
         <div class="flex gap-2">
-          <Button on:click={analyzeWithAI} disabled={isProcessing} class="flex-1 bits-btn bits-btn">
+          <Button onclick={analyzeWithAI} disabled={isProcessing} class="flex-1 bits-btn bits-btn">
 <Sparkles class="w-4 h-4 mr-2" />
             {isProcessing ? 'Analyzing...' : 'Analyze with AI'}
-          <Button class="bits-btn" on:click={generateInsights} disabled={isProcessing} variant="ghost">
+          <Button class="bits-btn" onclick={generateInsights} disabled={isProcessing} variant="ghost">
 Generate Insights
         </div>
         <!-- AI Analysis Results -->
@@ -290,7 +290,7 @@ Generate Insights
             <div class="space-y-2">
               {#each aiInsights.connections as connection}
                 <button
-                  on:click={() => selectConnection(connection)}
+                  onclick={() => selectConnection(connection)}
                   class="w-full text-left p-3 rounded-md border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
                   <p class="font-medium text-gray-900 dark:text-white">
@@ -312,7 +312,7 @@ Generate Insights
             <div class="space-y-2">
               {#each aiInsights.similarEvidence as similar}
                 <button
-                  on:click={() => selectEvidence(similar)}
+                  onclick={() => selectEvidence(similar)}
                   class="w-full text-left p-3 rounded-md border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
                   <p class="font-medium text-gray-900 dark:text-white">

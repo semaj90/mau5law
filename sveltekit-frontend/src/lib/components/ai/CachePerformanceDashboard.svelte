@@ -271,13 +271,13 @@
     performance.mark('function-start');
     switch (systemHealth) {
       case 'healthy':
-        return { icon: CheckCircle, color: 'text-green-500' };
+        return { icon CheckCircle, color: 'text-green-500' };
       case 'warning':
-        return { icon: AlertTriangle, color: 'text-yellow-500' };
+        return { icon AlertTriangle, color: 'text-yellow-500' };
       case 'critical':
-        return { icon: AlertTriangle, color: 'text-red-500' };
+        return { icon AlertTriangle, color: 'text-red-500' };
       default:
-        return { icon: AlertTriangle, color: 'text-gray-500' };
+        return { icon AlertTriangle, color: 'text-gray-500' };
     }
   }
 </script>
@@ -298,7 +298,7 @@
         <div class="control-buttons">
           <button
             aria-label="Action button"
-            on:click={(_event: MouseEvent) => refreshMetrics}
+            onclick={(_event: MouseEvent) => refreshMetrics}
             disabled={isRefreshing}
             class="refresh-btn"
           >
@@ -308,13 +308,13 @@
           <button
             aria-expanded="false"
             aria-label="Action button"
-            on:click={(_event: MouseEvent) => toggleAutoRefresh}
+            onclick={(_event: MouseEvent) => toggleAutoRefresh}
             class="auto-refresh-btn {autoRefresh ? 'active' : ''}"
           >
             <Target size={16} />
             Auto: {autoRefresh ? 'ON' : 'OFF'}
           </button>
-          <button aria-label="Action button" on:click={(_event: MouseEvent) => clearCache} class="clear-cache-btn">
+          <button aria-label="Action button" onclick={(_event: MouseEvent) => clearCache} class="clear-cache-btn">
             <Database size={16} />
             Clear Cache
           </button>
@@ -514,7 +514,7 @@
         <h2>📋 Recent Queries</h2>
         <div class="query-list">
           {#each recentQueries as query, i (i)}
-            <div class="query-item {query.cached ? 'cached' : 'uncached'}" transition:slide>
+            <div class="query-item {query.cached ? 'cached' : 'uncached'}" transitionslide>
               <div class="query-content">
                 <div class="query-text">{query.query}</div>
                 <div class="query-meta">
@@ -633,13 +633,13 @@
     cursor: pointer;
     font-family: inherit;
     font-size: 0.875rem;
-    transition: all 0.2s;
+    transition all 0.2s;
   }
-  .control-buttons button:hover {
+  .control-buttons buttonhover {
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.3);
   }
-  .control-buttons button:disabled {
+  .control-buttons buttondisabled {
     opacity: 0.5,
     cursor: not-allowed;
   }
@@ -725,7 +725,7 @@
   }
   .cache-stats {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .stat-row {
@@ -749,7 +749,7 @@
   .fill {
     height: 100%;
     border-radius: 4px;
-    transition: width 0.5s ease;
+    transition width 0.5s ease;
   }
   .fill.retrieval {
     background: linear-gradient(90deg, #3b82f6, #1d4ed8);
@@ -764,7 +764,7 @@
   }
   .stat-item {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
   .stat-item .label {
@@ -777,7 +777,7 @@
   }
   .nintendo-stats {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .memory-overview {
@@ -794,7 +794,7 @@
     height: 100%;
     background: linear-gradient(90deg, #22c55e, #f59e0b, #ef4444);
     border-radius: 6px;
-    transition: width 0.5s ease;
+    transition width 0.5s ease;
   }
   .bank-info {
     display: flex;
@@ -816,7 +816,7 @@
   }
   .memory-hierarchy {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .memory-layer {
@@ -861,7 +861,7 @@
     height: 100%;
     background: currentColor;
     border-radius: 3px;
-    transition: width 0.5s ease;
+    transition width 0.5s ease;
   }
   .usage-text {
     min-width: 50px;
@@ -871,7 +871,7 @@
   }
   .query-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
     max-height: 300px;
     overflow-y: auto;
@@ -907,7 +907,7 @@
   }
   .performance-metrics {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .perf-item {
@@ -928,7 +928,7 @@
       padding: 1rem;
     }
     .header-content {
-      flex-direction: column;
+      flex-direction column;
       align-items: stretch;
     }
     .header-controls {
@@ -951,12 +951,12 @@
       grid-template-columns: 1fr;
     }
     .bank-info {
-      flex-direction: column;
+      flex-direction column;
     }
   }
   /* Animation classes */
   .animate-spin {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     from {

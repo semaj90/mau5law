@@ -257,7 +257,7 @@
   <div class="query-panel">
     <h3>Query</h3>
     <textarea bind:value={query} placeholder="Enter your legal query..." disabled={$processing} rows="4"></textarea>
-    <button on:click={submitQuery} disabled={$processing || !query} class="submit-btn">
+    <button onclick={submitQuery} disabled={$processing || !query} class="submit-btn">
       {$processing ? 'Processing...' : 'Submit Query'}
     </button>
   </div>
@@ -483,7 +483,7 @@
         <h4>Provide Feedback</h4>
         <div class="rating-buttons">
           {#each [1, 2, 3, 4, 5] as rating}
-            <button on:click={() => submitFeedback(rating)}>
+            <button onclick={() => submitFeedback(rating)}>
               {rating} Star{rating > 1 ? 's' : ''}
             </button>
           {/each}
@@ -564,7 +564,7 @@
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #4caf50, #8bc34a);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .stage-info {
     margin-top: 10px;
@@ -633,7 +633,7 @@
     border-radius: 4px;
     cursor: pointer;
   }
-  .rating-buttons button:hover {
+  .rating-buttons buttonhover {
     background: #e0e0e0;
   }
   .event-log {

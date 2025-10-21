@@ -117,7 +117,7 @@ https://svelte.dev/e/js_parse_error -->
     <AlertDescription>{error}</AlertDescription>
   </Alert>
 {:else if artifact}
-  <div class="artifact-viewer" transition:fade>
+  <div class="artifact-viewer" transitionfade>
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
       <div>
@@ -125,7 +125,7 @@ https://svelte.dev/e/js_parse_error -->
         <p class="text-sm text-gray-600">ID: {artifact.evidence_id}</p>
       </div>
       {#if allowDownload && downloadUrl}
-        <Button on:click={handleDownload} class="flex items-center gap-2 bits-btn bits-btn">
+        <Button onclick={handleDownload} class="flex items-center gap-2 bits-btn bits-btn">
 <Download class="w-4 h-4" />
           Download
       {/if}
@@ -146,7 +146,7 @@ https://svelte.dev/e/js_parse_error -->
                 src={imageUrl}
                 alt="Evidence artifact"
                 class="w-full h-auto rounded-lg shadow-sm max-h-96 object-contain"
-                transition:scale
+                transitionscale
               />
               {#if extractedMetadata}
                 <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Metadata Embedded</span>
@@ -293,7 +293,7 @@ https://svelte.dev/e/js_parse_error -->
                       <span class="ml-2">{formatConfidence(extractedMetadata.confidence)}</span>
                     </div>
                     <div>
-                      <span class="font-medium">Version:</span>
+                      <span class="font-medium">Version</span>
                       <span class="ml-2">{extractedMetadata.version}</span>
                     </div>
                   </div>
@@ -342,7 +342,7 @@ https://svelte.dev/e/js_parse_error -->
                       <div class="flex-1">
                         <span class="text-sm font-medium">{step.step}</span>
                         <div class="text-xs text-gray-500">
-                          Duration: {step.duration_ms}ms
+                          Duration {step.duration_ms}ms
                           {#if step.success}
                             <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">Success</span>
                           {:else}

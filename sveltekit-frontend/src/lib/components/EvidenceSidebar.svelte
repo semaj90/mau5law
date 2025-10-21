@@ -90,8 +90,8 @@
     id: string;
     title: string;
     type: 'case_law' | 'statute' | 'regulation' | 'precedent';
-    jurisdiction: string;
-    citation: string;
+    jurisdiction string;
+    citation string;
     relevance: number;
     summary?: string;
     caseId?: string;
@@ -101,7 +101,7 @@
     id: string;
     type: 'case_created' | 'evidence_added' | 'report_generated' | 'analysis_completed';
     title: string;
-    description: string;
+    description string;
     entityId: string;
     entityType: 'case' | 'evidence' | 'report' | 'citation';
     timestamp: Date;
@@ -197,7 +197,7 @@
       case: Folder
       evidence: FileText
       report: MessageSquare
-      citation: Archive
+      citation Archive
       document: FileText
       photo: Eye
       video: Eye
@@ -294,7 +294,7 @@
       case: `/cases/${item.id}`,
       evidence: `/evidence/${item.id}`,
       report: `/reports/${item.id}`,
-      citation: `/citations/${item.id}`
+      citation `/citations/${item.id}`
     }
     const route = routes[item._type as keyof typeof routes];
     if (route) {
@@ -306,7 +306,7 @@
       case: '/cases/new',
       evidence: '/evidence/new',
       report: '/reports/new',
-      citation: '/citations/new',
+      citation '/citations/new',
     }
     const route = routes[type as keyof typeof routes];
     if (route) {
@@ -343,7 +343,7 @@
       <Button
         variant="ghost"
         size="sm"
-        on:click={() => collapsed = true}
+        onclick={() => collapsed = true}
         class="p-1"
       >
         <ChevronRight class="w-4 h-4" />
@@ -352,7 +352,7 @@
       <Button
         variant="ghost"
         size="sm"
-        on:click={() => collapsed = false}
+        onclick={() => collapsed = false}
         class="p-1 mx-auto"
       >
         <ChevronDown class="w-4 h-4" />
@@ -413,7 +413,7 @@
         <Button
           variant="ghost"
           size="sm"
-          on:click={() => sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'}
+          onclick={() => sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'}
           class="px-2"
         >
           <SortAsc class="w-3 h-3" class:rotate-180={sortOrder === 'desc'} />
@@ -424,7 +424,7 @@
         <Button
           variant="ghost"
           size="sm"
-          on:click={() => createNewItem('case')}
+          onclick={() => createNewItem('case')}
           title="New Case"
           class="flex-1 text-xs"
         >
@@ -434,7 +434,7 @@
         <Button
           variant="ghost"
           size="sm"
-          on:click={() => createNewItem('evidence')}
+          onclick={() => createNewItem('evidence')}
           title="New Evidence"
           class="flex-1 text-xs"
         >
@@ -457,7 +457,7 @@
           <Button
             variant="ghost"
             size="sm"
-            on:click={loadUserData}
+            onclick={loadUserData}
             class="mt-2 text-xs"
           >
             Retry
@@ -468,7 +468,7 @@
         {#if recentActivity.length > 0}
           <div class="p-4">
             <button
-              on:click={() => toggleFolder('recent')}
+              onclick={() => toggleFolder('recent')}
               class="flex items-center gap-2 w-full text-left text-sm font-medium text-gray-700 hover:text-gray-900"
             >
               {#if expandedFolders.has('recent')}
@@ -507,7 +507,7 @@
             {#each filteredItems as item (item.id)}
               {@const Icon = getItemIcon(item._type || item.type)}
               <button
-                on:click={() => navigateToItem(item)}
+                onclick={() => navigateToItem(item)}
                 class={cn(
                   "w-full flex items-start gap-3 p-2 text-left rounded-md hover:bg-gray-50 transition-colors",
                   selectedItems.has(item.id) && "bg-blue-50 border border-blue-200"
@@ -563,7 +563,7 @@
                   <Button
                     variant="ghost"
                     size="sm"
-                    on:click={() => searchQuery = ''}
+                    onclick={() => searchQuery = ''}
                     class="mt-2 text-xs"
                   >
                     Clear search
@@ -580,7 +580,7 @@
       <Button
         variant="outline"
         size="sm"
-        on:click={() => goto('/ai-assistant')}
+        onclick={() => goto('/ai-assistant')}
         class="w-full justify-start text-xs"
       >
         <Brain class="w-4 h-4 mr-2" />
@@ -589,7 +589,7 @@
       <Button
         variant="ghost"
         size="sm"
-        on:click={() => goto('/settings')}
+        onclick={() => goto('/settings')}
         class="w-full justify-start text-xs"
       >
         <Settings class="w-4 h-4 mr-2" />

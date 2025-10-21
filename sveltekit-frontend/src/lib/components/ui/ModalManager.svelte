@@ -12,12 +12,12 @@
   				{
   					label: props.cancelText || 'Cancel',
   					variant: 'ghost',
-  					action: onClo;
+  					action onClo;
   				},
   				{
   					label: props.confirmText || 'Confirm',
   					variant: 'primary',
-  					action: onConfirm;
+  					action onConfirm;
   }
   			]
   		}
@@ -30,7 +30,7 @@
   				{
   					label: props.buttonText || 'OK',
   					variant: 'primary',
-  					action: onClo;
+  					action onClo;
   }
   			]
   		}
@@ -45,12 +45,12 @@
   				{
   					label: props.cancelText || 'Cancel',
   					variant: 'ghost',
-  					action: onClo;
+  					action onClo;
   				},
   				{
   					label: props.confirmText || 'OK',
   					variant: 'primary',
-  					action: () => onConfirm?.(inputValue);
+  					action () => onConfirm?.(inputValue);
   }
   			]
   		}
@@ -83,14 +83,14 @@
 {#each $modals.modals as modal (modal.id)}
 	<div
 		class="space-y-4"
-		on:click={(e) => handleBackdropClick(e, modal)}
+		onclick={(e) => handleBackdropClick(e, modal)}
 		keydown={(e) => handleKeydown(e, modal)}
 		role="dialog"
 		aria-modal="true"
 		aria-labelledby="{modal.id}-title"
 		tabindex={-1}
-		in:fade={{ duration: 200 }}
-		out:fade={{ duration: 150 }}
+		in:fade={{ duration 200 }}
+		out:fade={{ duration 150 }}
 	>
 		<!-- Backdrop -->
 		<div
@@ -105,12 +105,12 @@
 			`}
 			in:fly={{,
 				y: 30,
-				duration: 300,
+				duration 300,
 				easing: quintOut;
 			}}
 			out:fly={{,
 				y: -30,
-				duration: 200,
+				duration 200,
 				easing: quintOut;
 			}}
 		>
@@ -130,7 +130,7 @@
 					{#if modal.closable !== false}
 						<button
 							class="space-y-4"
-							on:click={() => modals.close(modal.id)}
+							onclick={() => modals.close(modal.id)}
 							aria-label="Close modal"
 						>
 							<iconify-icon data-icon="${1}" class="space-y-4"></iconify-icon>
@@ -158,7 +158,7 @@
 							{#each builtInModal.actions as action}
 								<Button class="bits-btn"
 									variant={action.variant}
-									on:click={() =>
+									onclick={() =>
 action.action()}
 								>
 									{action.label}

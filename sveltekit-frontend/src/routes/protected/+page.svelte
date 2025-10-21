@@ -54,7 +54,7 @@
             <span class="text-gray-600 ml-2 font-mono text-sm">{session.id}</span>
           </div>
           <div>
-            <span class="font-medium text-gray-700">Fresh Session:</span>
+            <span class="font-medium text-gray-700">Fresh Session</span>
             <span
               class="inline-block px-2 py-1 {session.fresh
                 ? 'bg-green-100 text-green-800'
@@ -109,7 +109,7 @@
 
 <style>
   .container {
-    animation: fadeIn 0.5s ease-i;
+    animation fadeIn 0.5s ease-i;
   }
   @keyframes fadeIn {
     from {

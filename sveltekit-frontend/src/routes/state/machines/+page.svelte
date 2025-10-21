@@ -59,7 +59,7 @@ https://svelte.dev/e/expected_token -->
   async function loadMachines() {
     loading = true;
     try {
-      // In production: const response = await fetch('/api/state/machines')
+      // In production const response = await fetch('/api/state/machines')
       // For now, use mock data
       await new Promise(resolve => setTimeout(resolve, 1000));
       machines = mockMachine;
@@ -164,21 +164,21 @@ https://svelte.dev/e/expected_token -->
                   <button class="nes-btn"
                     variant="ghost"
                     size="sm"
-                    on:click={() => (window.location.href = `/state/transitions?machine=${machine.id}`)}
+                    onclick={() => (window.location.href = `/state/transitions?machine=${machine.id}`)}
                   >
                     View Transitions
                   </button>
                   <button class="nes-btn"
                     variant="ghost"
                     size="sm"
-                    on:click={() => restartMachine(machine.id)}
+                    onclick={() => restartMachine(machine.id)}
                   >
                     Restart
                   </button>
                   {#if machine.status === 'running'}
                     <button class="nes-btn is-error"
                       size="sm"
-                      on:click={() => stopMachine(machine.id)}
+                      onclick={() => stopMachine(machine.id)}
                     >
                       Stop
                     </button>
@@ -247,7 +247,7 @@ https://svelte.dev/e/expected_token -->
     border: 4px solid #f3f4f6;
     border-top: 4px solid #3b82f6;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
   @keyframes spin {
@@ -262,7 +262,7 @@ https://svelte.dev/e/expected_token -->
   .machine-card {
     border: 1px solid #e2e8f0;
     border-radius: 12px;
-    transition: box-shadow 0.2;
+    transition box-shadow 0.2;
   }
   .machine-card:hover {
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);

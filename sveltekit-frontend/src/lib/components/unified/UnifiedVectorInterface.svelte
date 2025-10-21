@@ -14,7 +14,7 @@
   const analytics = writable<{ [key: string]: any }>({});
   const logs = writable<string[]>([]);
   // Form state
-  let selectedOperation: 'analyze' | 'search' | 'recommend' | 'visualize' | 'ingest' = $state('analyze');
+  let selectedOperation 'analyze' | 'search' | 'recommend' | 'visualize' | 'ingest' = $state('analyze');
   let inputText = $state('');
   let userId = $state('demo_user');
   let sessionId = $state(`session_${Date.now()}`);
@@ -267,20 +267,20 @@
       <!-- Action Buttons -->
       <div class="grid grid-cols-3 gap-2">
         <button
-          on:click={processRequest}
+          onclick={processRequest}
           disabled={$isProcessing}
           class="bg-green-900 border border-green-400 text-green-400 p-2 text-sm hover:bg-green-800 disabled:opacity-50"
         >
           {$isProcessing ? 'PROCESSING...' : 'EXECUTE'}
         </button>
         <button
-          on:click={checkHealth}
+          onclick={checkHealth}
           class="bg-blue-900 border border-blue-400 text-blue-400 p-2 text-sm hover:bg-blue-800"
         >
           HEALTH CHECK
         </button>
         <button
-          on:click={loadAnalytics}
+          onclick={loadAnalytics}
           class="bg-purple-900 border border-purple-400 text-purple-400 p-2 text-sm hover:bg-purple-800"
         >
           ANALYTICS
@@ -294,7 +294,7 @@
         <div class="space-y-4 text-sm">
           <!-- Operation Summary -->
           <div class="border border-green-600 p-3">
-            <div class="text-green-200 mb-2">OPERATION: {$results.type.toUpperCase()}</div>
+            <div class="text-green-200 mb-2">OPERATIon {$results.type.toUpperCase()}</div>
             <div class="grid grid-cols-2 gap-2 text-xs">
               <div>
                 Status: <span class={$results.success ? 'text-green-400' : 'text-red-400'}>
@@ -398,7 +398,7 @@
   select:focus {
     box-shadow: inset 0 0 0 1px theme('colors.green.400');
   }
-  button:disabled {
+  buttondisabled {
     cursor: not-allowed;
   }
   .accent-green-400 {

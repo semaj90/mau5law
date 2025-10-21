@@ -50,7 +50,7 @@
         agentStarted = true;
       } else {
         // eslint-disable-next-line no-console
-        console.warn('xstateIntegration: sendEvent function not available; cannot start RAG sync agent.');
+        console.warn('xstateIntegration sendEvent function not available; cannot start RAG sync agent.');
       }
     } catch (e) {
       // eslint-disable-next-line no-console
@@ -67,7 +67,7 @@
         agentStarted = false;
       } else {
         // eslint-disable-next-line no-console
-        console.warn('xstateIntegration: sendEvent function not available; cannot stop RAG sync agent.');
+        console.warn('xstateIntegration sendEvent function not available; cannot stop RAG sync agent.');
       }
     } catch (e) {
       // eslint-disable-next-line no-console

@@ -35,7 +35,7 @@
     try {
       const payload = {
         query: aiSearchQuery,
-        jurisdiction: 'all',
+        jurisdiction 'all',
         category: 'all',
         maxResults: 10,
         useAI: true,
@@ -75,7 +75,7 @@
   // Fallback search method
   async function performFallbackSearch() {
     try {
-      const payload = { query: aiSearchQuery, jurisdiction: 'all', category: 'all', useAI: true };
+      const payload = { query: aiSearchQuery, jurisdiction 'all', category: 'all', useAI: true };
       const response = await fetch('/api/ai/legal-search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -183,14 +183,14 @@
             <Input
               placeholder="Ask AI to find laws..."
               bind:value={aiSearchQuery}
-              on:keydown={handleAISearchKeydown}
+              onkeydown={handleAISearchKeydown}
               {disabled}
               class="pl-10" />
           </div>
           <button
             type="button"
             class="bits-btn text-sm px-2 py-1"
-            on:click={performAISearch}
+            onclick={performAISearch}
             disabled={disabled || isAISearching || !aiSearchQuery.trim()}>
             {#if isAISearching}
               <Loader2 class="h-4 w-4 animate-spin" />
@@ -227,12 +227,12 @@
       <div class="yorha-panel-content space-y-4">
         <div class="space-y-2">
           <!-- use a small form so submit behavior is explicit and accessible -->
-          <form on:submit|preventDefault={performAIChat} class="space-y-2">
+          <form onsubmit|preventDefault={performAIChat} class="space-y-2">
             <textarea
               name="aiChat"
               placeholder="Ask a legal question..."
               bind:value={aiChatMessage}
-              on:keydown={(e) => handleAIChatKeydown(e as KeyboardEvent)}
+              onkeydown={(e) => handleAIChatKeydown(e as KeyboardEvent)}
               disabled={disabled}
               rows="2"
               aria-label="Ask a legal question"
@@ -240,7 +240,7 @@
 
             <button
               type="submit"
-              on:click|preventDefault={() => {}}
+              onclick|preventDefault={() => {}}
               disabled={disabled || isAIChatting || !aiChatMessage.trim()}
               class="w-full bits-btn text-sm px-3 py-2">
               {#if isAIChatting}
@@ -283,7 +283,7 @@
             class="resize-none rounded border px-3 py-2 w-full"></textarea>
           <button
             type="button"
-            on:click={performAISummarization}
+            onclick={performAISummarization}
             disabled={disabled || isSummarizing || !summarizeText.trim()}
             class="w-full bits-btn text-sm px-3 py-2">
             {#if isSummarizing}
@@ -310,7 +310,7 @@
   <!-- Clear Results Button -->
   {#if aiSearchResults.length > 0 || aiChatResponse || summaryResult}
     <div class="text-center">
-      <button type="button" class="bits-btn text-sm px-2 py-1" on:click={clearResults}>
+      <button type="button" class="bits-btn text-sm px-2 py-1" onclick={clearResults}>
         Clear All Results
       </button>
     </div>
@@ -320,7 +320,7 @@
   <div class="flex flex-wrap gap-2 justify-center">
     <button type="button"
       class="bits-btn text-sm px-2 py-1"
-      on:click={() => { aiSearchQuery = 'California murder laws'; performAISearch(); }}
+      onclick={() => { aiSearchQuery = 'California murder laws'; performAISearch(); }}
       disabled={disabled || isAISearching}>
       <Bot class="h-3 w-3 mr-1" />
       Murder Laws
@@ -329,7 +329,7 @@
     <button
       type="button"
       class="bits-btn text-sm px-2 py-1"
-      on:click={() => { aiChatMessage = 'What are the elements of a valid contract?'; performAIChat(); }}
+      onclick={() => { aiChatMessage = 'What are the elements of a valid contract?'; performAIChat(); }}
       disabled={disabled || isAIChatting}>
       <MessageSquare class="h-3 w-3 mr-1" />
       Contract Elements
@@ -338,7 +338,7 @@
     <button
       type="button"
       class="bits-btn text-sm px-2 py-1"
-      on:click={() => { aiSearchQuery = 'evidence admissibility rules'; performAISearch(); }}
+      onclick={() => { aiSearchQuery = 'evidence admissibility rules'; performAISearch(); }}
       disabled={disabled || isAISearching}>
       <Search class="h-3 w-3 mr-1" />
       Evidence Rules
@@ -360,7 +360,7 @@
             class="resize-none" />
           <Button
             type="button"
-            on:click={performAISummarization}
+            onclick={performAISummarization}
             disabled={disabled || isSummarizing || !summarizeText.trim()}
             size="sm"
             class="w-full bits-btn"

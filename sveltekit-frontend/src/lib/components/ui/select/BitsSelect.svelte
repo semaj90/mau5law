@@ -88,7 +88,7 @@
 <style>
   /* Legal AI App Specific Styling */
   :global(.legal-select-trigger) {
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   :global(.legal-select-trigger:hover) {
     box-shadow: 0 0 0 1px rgb(var(--yorha-primary) / 0.3);
@@ -97,6 +97,6 @@
     backdrop-filter: blur(8px);
   }
   :global(.legal-select-item) {
-    transition: all 0.15s ease;
+    transition all 0.15s ease;
   }
 </style>

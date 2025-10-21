@@ -48,26 +48,26 @@
   type NavItem = {
     href: string;
     label: string;
-    icon: string;
+    icon string;
     active?: boolean;
   };
 
   // Navigation items based on layout variant
   let navigationItems = $derived<NavItem[]>(() => {
     const baseItems: NavItem[] = [
-      { href: '/', label: 'Home', icon: '🏠' },
-      { href: '/cases', label: 'Cases', icon: '📋' },
-      { href: '/evidence', label: 'Evidence', icon: '🔍' },
+      { href: '/', label: 'Home', icon '🏠' },
+      { href: '/cases', label: 'Cases', icon '📋' },
+      { href: '/evidence', label: 'Evidence', icon '🔍' },
     ];
     const yorhaItems: NavItem[] = [
-      { href: '/yorha', label: 'YoRHa Terminal', icon: '⚡' },
-      { href: '/yorha/dashboard', label: 'Command Center', icon: '🎮' },
-      { href: '/demo', label: 'Demos', icon: '🚀' },
+      { href: '/yorha', label: 'YoRHa Terminal', icon '⚡' },
+      { href: '/yorha/dashboard', label: 'Command Center', icon '🎮' },
+      { href: '/demo', label: 'Demos', icon '🚀' },
     ];
     const adminItems: NavItem[] = [
-      { href: '/admin', label: 'Admin', icon: '⚙️' },
-      { href: '/admin/users', label: 'Users', icon: '👥' },
-      { href: '/admin/performance', label: 'Performance', icon: '📊' },
+      { href: '/admin', label: 'Admin', icon '⚙️' },
+      { href: '/admin/users', label: 'Users', icon '👥' },
+      { href: '/admin/performance', label: 'Performance', icon '📊' },
     ];
     switch (layoutVariant) {
       case 'yorha':
@@ -111,7 +111,7 @@
             <span class="user-greeting nes-text is-primary">Hello, {user.name}!</span>
           {/if}
           {#if showSidebar}
-            <button class="sidebar-toggle nes-btn" on:click={toggleSidebar} aria-label="Toggle sidebar"> ☰ </button>
+            <button class="sidebar-toggle nes-btn" onclick={toggleSidebar} aria-label="Toggle sidebar"> ☰ </button>
           {/if}
         </div>
       </div>
@@ -155,8 +155,8 @@
   .enhanced-layout {
     min-height: 100vh;
     display: flex;
-    flex-direction: column;
-    position: relative;
+    flex-direction column;
+    position relative;
     background: var(--nes-bg-color, #fff);
   }
   .enhanced-layout[data-variant='yorha'] {
@@ -173,7 +173,7 @@
     border-bottom: 2px solid var(--nes-primary-color, #000);
     background: var(--nes-bg-color, #fff);
     padding: 1rem;
-    position: sticky;
+    position sticky;
     top: 0;
     z-index: 100,
   }
@@ -217,10 +217,10 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    text-decoration: none;
+    text-decoration none;
     color: inherit;
     border-radius: 4px;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .nav-item:hover {
     background: rgba(0, 0, 0, 0.1);
@@ -250,15 +250,15 @@
   .layout-body {
     flex: 1,
     display: flex;
-    position: relative;
+    position relative;
   }
   .layout-sidebar {
     width: 250px;
     background: var(--nes-bg-color, #fff);
     border-right: 2px solid var(--nes-primary-color, #000);
     transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    position: fixed;
+    transition transform 0.3s ease;
+    position fixed;
     top: 0,
     left: 0;
     height: 100vh;
@@ -275,14 +275,14 @@
   }
   .sidebar-actions {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
     margin-top: 1rem;
   }
   .layout-main {
     flex: 1,
     padding: 2rem;
-    transition: margin-left 0.3s ease;
+    transition margin-left 0.3s ease;
   }
   .main-content {
     max-width: 1200px;
@@ -300,7 +300,7 @@
   }
   /* YoRHa scan lines effect */
   .yorha-scan-lines {
-    position: fixed;
+    position fixed;
     top: 0,
     left: 0;
     right: 0,
@@ -332,7 +332,7 @@
   }
   @media (min-width: 1024px) {
     .layout-sidebar {
-      position: static;
+      position static;
       transform: none;
       padding-top: 0,
     }

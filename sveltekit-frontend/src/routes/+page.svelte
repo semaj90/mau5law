@@ -39,7 +39,7 @@
 			// exposes a simple array the template can iterate over
 			files,
 			// Accept FileList or Array<File>, push metadata and start upload
-			addFiles: (list: FileList | File[]) => {
+      addFiles: (list: FileList | File[]) => {
 				// ensure we get a File[] and let TS know it
 				const arr = Array.from(list as FileList | File[]) as File[];
 				arr.forEach((file) => {
@@ -60,10 +60,10 @@
 				});
 			},
 			upload: uploadImpl,
-			on: (event: string, callback: Function) => {
-				if (!events[event]) events[event] = [];
-				events[event].push(callback);
-			}
+      on: (event: string, callback: Function) => {
+        if (!events[event]) events[event] = [];
+        events[event].push(callback);
+      }
 		};
 	}
 
@@ -238,9 +238,9 @@
 	};
 
 	// lightweight HTML escape helper to avoid XSS for simple content (use sanitizer for richer content)
-	function escapeHtml(str: string) {
-		const s = String(str ?? '');
-		const map: Record<'&' | '<' | '>' | '"' | "'", string> = {
+  function escapeHtml(str: string) {
+    const s = String(str ?? '');
+    const map: Record<string, string> = {
 			'&': '&amp;',
 			'<': '&lt;',
 			'>': '&gt;',
@@ -250,12 +250,12 @@
 		return s.replace(/[&<>"']/g, (m) => map[m as keyof typeof map]);
 	}
 
-	const uploader = createFileUploader("/api/upload");
+  const uploader = createFileUploader('/api/upload');
 
-	// annotate parameter to avoid implicit any
-	uploader.on("success", (res: any) => {
-		console.log("Uploaded:", res?.url ?? res);
-	});
+  // annotate parameter to avoid implicit any
+  uploader.on('success', (res: any) => {
+    console.log('Uploaded:', res?.url ?? res);
+  });
 </script>
 
 <svelte:head>
@@ -281,7 +281,7 @@
       <div>
         <button class="nes-btn is-success" on:click={openRegister}>Register</button>
       </div>
-      <RegisterModal bind:open={registerOpen} onsuccess={() => { /* on success, reload to reflect session cookie */ window.location.reload(); }} />
+      <RegisterModal bind:open={registerOpen} on:success={() => { /* on success, reload to reflect session cookie */ window.location.reload(); }} />
     </div>
   </div>
 
@@ -523,7 +523,7 @@
   <div class="nes-container is-dark with-title ai-query-section-custom">
     <p class="title">🧠 AI Query Interface</p>
     <div class="query-box">
-      <input type="text" placeholder="Enter your legal query..." bind:value={userQuery} onkeydown={onKey} />
+      <input type="text" placeholder="Enter your legal query..." bind:value={userQuery} on:keydown={onKey} />
       <button on:click={handleSubmit}>Run</button>
     </div>
 
@@ -571,14 +571,14 @@
 
   <!-- File Uploader Section -->
   <div class="p-6 bg-white rounded-2xl shadow">
-	<input
-		type="file"
-		multiple
-		onchange={(e) => {
-			const target = e.currentTarget as HTMLInputElement;
-			if (target.files) uploader.addFiles(target.files);
-		}}
-	/>
+  <input
+    type="file"
+    multiple
+    on:change={(e) => {
+      const target = e.currentTarget as HTMLInputElement;
+      if (target.files) uploader.addFiles(target.files);
+      }}
+  />
 	{#each uploader.files as file (file.id)}
 		<p class="text-sm mt-2">{file.name} – {file.progress}%</p>
 	{/each}
@@ -721,7 +721,7 @@
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    transition: all 0.3s ease;
+  transition: all 0.3s ease;
   }
 
   .stat-card-custom:hover {
@@ -785,10 +785,6 @@
     transition: opacity 0.3s ease;
   }
 
-  .action-card-custom:hover::before {
-    opacity: 1;
-  }
-
   .card-icon-custom {
     font-size: 3rem;
     filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.5));
@@ -799,7 +795,7 @@
     padding: 0.5rem 1rem;
     font-weight: 700;
     border-radius: 6px;
-    transition: all 0.3s ease;
+  transition: all 0.3s ease;
     margin-top: 0.5rem;
   }
 
@@ -839,14 +835,6 @@
     100% {
       background-position: 200% 0;
     }
-  }
-
-  .featured-card-custom:hover {
-    border-color: #ffd700;
-    box-shadow:
-      0 0 40px rgba(0, 255, 65, 0.4),
-      0 0 60px rgba(255, 215, 0, 0.2);
-    transform: translateY(-8px) scale(1.02);
   }
 
   .featured-badge {
@@ -908,7 +896,7 @@
     font-weight: 900;
     font-size: 1.2rem;
     border-radius: 8px;
-    transition: all 0.3s ease;
+  transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(0, 255, 65, 0.3);
   }
 
@@ -962,7 +950,7 @@
     border-radius: 12px;
     padding: 1rem;
     box-shadow: 0 6px 18px rgba(13, 38, 59, 0.06);
-    transition: transform 200ms ease, opacity 200ms ease;
+  transition: transform 200ms ease, opacity 200ms ease;
     overflow: hidden;
   }
 
@@ -1016,6 +1004,18 @@
 
     .action-buttons-custom {
       flex-direction: column;
+      align-items: stretch;
+    }
+  }
+</style>
+    }
+
+    .quick-stats-custom {
+      grid-template-columns: 1fr;
+    }
+
+    .action-buttons-custom {
+      flex-direction column;
       align-items: stretch;
     }
   }

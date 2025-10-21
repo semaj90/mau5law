@@ -17,65 +17,65 @@
   const aiServices = [
     {
       name: 'AI Chat',
-      icon: '💬',
+      icon '💬',
       href: '/ai/chat',
-      description: 'Interactive AI chat with legal document context',
+      description 'Interactive AI chat with legal document context',
       status: 'active',
       stats: `${aiStats.activeChats} active chats`,
     },
     {
       name: 'AI Assistant',
-      icon: '🤖',
+      icon '🤖',
       href: '/ai/assistant',
-      description: 'Legal AI assistant for document analysis',
+      description 'Legal AI assistant for document analysis',
       status: 'active',
       stats: `${aiStats.assistantSessions} sessions`,
     },
     {
       name: 'RAG Query System',
-      icon: '🧠',
+      icon '🧠',
       href: '/ai/rag',
-      description: 'Retrieval-Augmented Generation for legal research',
+      description 'Retrieval-Augmented Generation for legal research',
       status: 'active',
       stats: `${aiStats.ragQueries} queries processed`,
     },
     {
       name: 'GPU Chat',
-      icon: '⚡',
+      icon '⚡',
       href: '/ai/gpu-chat',
-      description: 'High-performance GPU-accelerated chat',
+      description 'High-performance GPU-accelerated chat',
       status: 'active',
       stats: 'RTX 3060 Ti enabled',
     },
     {
       name: 'Vector Search',
-      icon: '🔍',
+      icon '🔍',
       href: '/ai/vector-search',
-      description: 'Semantic search across legal documents',
+      description 'Semantic search across legal documents',
       status: 'active',
       stats: 'pgvector enabled',
     },
     {
       name: 'Document Analysis',
-      icon: '📄',
+      icon '📄',
       href: '/ai/processing',
-      description: 'AI-powered document processing and analysis',
+      description 'AI-powered document processing and analysis',
       status: 'active',
       stats: `${aiStats.documentsAnalyzed} documents`,
     },
     {
       name: 'Case Scoring',
-      icon: '⚖️',
+      icon '⚖️',
       href: '/ai/case-scoring',
-      description: 'AI-driven case strength assessment',
+      description 'AI-driven case strength assessment',
       status: 'active',
       stats: `${aiStats.casesProcessed} cases scored`,
     },
     {
       name: 'Pattern Detection',
-      icon: '🔬',
+      icon '🔬',
       href: '/ai/pattern-detection',
-      description: 'Legal pattern and anomaly detection',
+      description 'Legal pattern and anomaly detection',
       status: 'active',
       stats: 'ML models active',
     },
@@ -117,7 +117,7 @@
   let systemHealth = $state({
     aiModels: 'online',
     vectorDB: 'online',
-    gpuAcceleration: 'active',
+    gpuAcceleration 'active',
     ragPipeline: 'healthy',
   });
 
@@ -381,7 +381,7 @@
   :global(.service-card) {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
 
   :global(.service-card:hover) {
@@ -426,10 +426,10 @@
     padding: 0.75rem;
     border-radius: 0.5rem;
     font-weight: 600,
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
 
-  :global(.service-button:hover) {
+  :global(.service-buttonhover) {
     background: #00b89a;
     transform: translateY(-2px);
   }
@@ -498,7 +498,7 @@
 
   /* Note: .action-button styles moved to Button component variants if needed */
   /* :global(.action-button) { ... } */
-  /* :global(.action-button:hover) { ... } */
+  /* :global(.action-buttonhover) { ... } */
 
   /* Status Badge Styles */
   :global(.status-online) {
@@ -559,12 +559,12 @@
     }
 
     .activity-header {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
     }
 
     .activity-meta {
-      flex-direction: column;
+      flex-direction column;
       gap: 0.25rem;
     }
   }

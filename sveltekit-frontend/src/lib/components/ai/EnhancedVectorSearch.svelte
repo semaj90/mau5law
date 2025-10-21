@@ -363,12 +363,12 @@ https://svelte.dev/e/js_parse_error -->
   function getDocumentTypeColor(type?: string): string {
     const colors = {
       contract: "blue",
-      motion: "green",
+      motion "green",
       brief: "purple",
       evidence: "red",
       correspondence: "yellow",
       statute: "indigo",
-      regulation: "pink",
+      regulation "pink",
       case_law: "gray",
       other: "slate",
     }
@@ -439,7 +439,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <div class="search-actions">
         <button class="nes-btn"
-          on:click={() => performSearch()}
+          onclick={() => performSearch()}
           disabled={$isSearching || !$searchQuery.trim()}
           class="bits-btn search-button"
         >
@@ -454,7 +454,7 @@ https://svelte.dev/e/js_parse_error -->
         {#if enableFilters}
           <Button class="bits-btn"
             variant="ghost"
-            on:click={() =>
+            onclick={() =>
 showFilters.update((s) => !s)}
             class="filter-button"
           >
@@ -469,7 +469,7 @@ showFilters.update((s) => !s)}
         {#if enableAnalytics}
           <Button class="bits-btn"
             variant="ghost"
-            on:click={() =>
+            onclick={() =>
 showAnalytics.update((s) => !s)}
           >
             <BarChart3 class="mr-2" size={16} />
@@ -486,7 +486,7 @@ showAnalytics.update((s) => !s)}
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
-              on:click={() =>
+              onclick={() =>
 {
                 searchQuery.set(historyItem);
                 performSearch(historyItem);
@@ -506,7 +506,7 @@ showAnalytics.update((s) => !s)}
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center justify-between">
           <span>Advanced Filters</span>
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={resetFilters}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={resetFilters}>
 Reset
         </h3>
       </div>
@@ -597,7 +597,7 @@ Reset
             </Select>
           </div>
         </div>
-        <Button on:click={applyFilters} class="w-full bits-btn bits-btn">
+        <Button onclick={applyFilters} class="w-full bits-btn bits-btn">
 Apply Filters
       </div>
     </div>
@@ -711,7 +711,7 @@ Apply Filters
         <p class="no-results-description">
           Try adjusting your search terms or filters
         </p>
-        <Button class="bits-btn" variant="ghost" on:click={resetFilters}>
+        <Button class="bits-btn" variant="ghost" onclick={resetFilters}>
 Reset Filters
       </div>
     </div>
@@ -865,22 +865,22 @@ Reset Filters
 <style>
   .enhanced-vector-search {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1.5rem;
   }
   .search-header {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .search-input-container {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   @media (min-width: 1024px) {
     .search-input-container {
-      flex-direction: row;
+      flex-direction row;
     }
   }
   .search-input {
@@ -890,14 +890,14 @@ Reset Filters
     font-size: 1rem;
   }
   .search-icon {
-    position: absolute;
+    position absolute;
     left: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
     color: var(--muted-foreground);
   }
   .loading-icon {
-    position: absolute;
+    position absolute;
     right: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
@@ -922,12 +922,12 @@ Reset Filters
   }
   .search-history {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   @media (min-width: 640px) {
     .search-history {
-      flex-direction: row;
+      flex-direction row;
       align-items: center;
     }
   }
@@ -967,7 +967,7 @@ Reset Filters
   }
   .filter-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .filter-label {
@@ -976,7 +976,7 @@ Reset Filters
   }
   .checkbox-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
   .similarity-slider {
@@ -984,12 +984,12 @@ Reset Filters
   }
   .search-results {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .results-header {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
   }
   .results-meta {
@@ -1007,12 +1007,12 @@ Reset Filters
   }
   .quick-stats {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   @media (min-width: 640px) {
     .quick-stats {
-      flex-direction: row;
+      flex-direction row;
       align-items: center;
     }
   }
@@ -1027,19 +1027,19 @@ Reset Filters
   }
   .results-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
   }
   .result-item {
     cursor: pointer;
-    transition: box-shadow 0.2;
+    transition box-shadow 0.2;
   }
   .result-item:hover {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   }
   .result-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
   }
   .result-header {
@@ -1072,7 +1072,7 @@ Reset Filters
   }
   .result-metrics {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
     text-align: right;
   }
@@ -1113,7 +1113,7 @@ Reset Filters
   .no-results-content {
     text-align: center;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .no-results-icon {
@@ -1129,12 +1129,12 @@ Reset Filters
   }
   .analytics-tabs {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .analytics-overview {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .analytics-grid {
@@ -1167,7 +1167,7 @@ Reset Filters
   }
   .metric-info {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
   .metric-label {
@@ -1180,12 +1180,12 @@ Reset Filters
   }
   .performance-metrics {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .performance-bars {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
   }
   .performance-item {
@@ -1208,7 +1208,7 @@ Reset Filters
   }
   .top-queries-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .query-item {

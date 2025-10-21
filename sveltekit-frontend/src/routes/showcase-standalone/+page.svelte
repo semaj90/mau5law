@@ -71,9 +71,9 @@
     user: { name: 'James', email: 'james@example.com' },
     stats: { totalCases: 12, openCases: 5, closedCases: 7, evidenceCount: 142 },
     recentActivity: [
-      { action: 'Uploaded Evidence', details: 'witness_statement_01.pdf', time: '2m ago' },
-      { action: 'Updated Case', details: 'State v. Anderson', time: '1h ago' },
-      { action: 'Generated Report', details: 'Initial Analysis', time: '3h ago' },
+      { action 'Uploaded Evidence', details: 'witness_statement_01.pdf', time: '2m ago' },
+      { action 'Updated Case', details: 'State v. Anderson', time: '1h ago' },
+      { action 'Generated Report', details: 'Initial Analysis', time: '3h ago' },
     ],
   });
   // Vector search integration (updated parsing to typed results)
@@ -135,7 +135,7 @@
         <Input bind:value={searchQuery} placeholder="Search cases, evidence, legal documents..." class="flex-1" />
         <Btn
           class="bits-btn"
-          on:click={performVectorSearch}
+          onclick={performVectorSearch}
           loading={isSearching}
           disabled={!searchQuery.trim()}
         >
@@ -196,7 +196,7 @@
       <div class="nes-container">
         <div class="p-4">
           <h3 class="text-lg font-semibold mb-4 text-crimson">Modal Component</h3>
-          <Btn class="bits-btn" on:click={() => (modalOpen = true)}>
+          <Btn class="bits-btn" onclick={() => (modalOpen = true)}>
             Open Modal
           </Btn>
           <Modal bind:open={modalOpen} title="System Alert">
@@ -206,10 +206,10 @@
                 follows Svelte 5 best practices.
               </p>
               <div class="flex gap-2 justify-end">
-                <Btn class="bits-btn" variant="ghost" on:click={() => (modalOpen = false)}>
+                <Btn class="bits-btn" variant="ghost" onclick={() => (modalOpen = false)}>
                   Cancel
                 </Btn>
-                <Btn class="bits-btn" on:click={() => (modalOpen = false)}>
+                <Btn class="bits-btn" onclick={() => (modalOpen = false)}>
                   Acknowledge
                 </Btn>
               </div>
@@ -244,22 +244,22 @@
       {@render StatusCard({
         title: 'Svelte 5 Runes',
         status: 'active',
-        description: 'Using $state and $props',
+        description 'Using $state and $props',
       })}
       {@render StatusCard({
         title: 'Bits UI',
         status: 'active',
-        description: 'Headless components integrated',
+        description 'Headless components integrated',
       })}
       {@render StatusCard({
         title: 'Vector Search',
         status: 'active',
-        description: 'Qdrant + PostgreSQL ready',
+        description 'Qdrant + PostgreSQL ready',
       })}
       {@render StatusCard({
         title: 'UnoCSS',
         status: 'active',
-        description: 'Utility classes configured',
+        description 'Utility classes configured',
       })}
     </div>
   </section>
@@ -299,7 +299,7 @@
         <h2 class="text-xl font-bold text-nier-accent">⚖️ DEEDS</h2>
       </div>
       <nav class="space-y-2">
-        {#each [{ icon: LayoutDashboard, label: 'Dashboard' }, { icon: FileText, label: 'Cases' }, { icon: Scale, label: 'Evidence' }, { icon: Users, label: 'Users' }] as item}
+        {#each [{ icon LayoutDashboard, label: 'Dashboard' }, { icon FileText, label: 'Cases' }, { icon Scale, label: 'Evidence' }, { icon Users, label: 'Users' }] as item}
           {@const IconComponent = (item as any).icon}
           <a href="/showcase" class="flex items-center gap-3 p-2 rounded hover:bg-nier-surface-light text-nier-text">
             <!-- render dynamic icon with direct component tag -->
@@ -315,7 +315,7 @@
         Welcome back, {layoutData.user.name}
       </h1>
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        {#each [{ title: 'Total Cases', value: layoutData.stats.totalCases, icon: FileText }, { title: 'Open Cases', value: layoutData.stats.openCases, icon: FileText }, { title: 'Closed Cases', value: layoutData.stats.closedCases, icon: FileText }, { title: 'Evidence Items', value: layoutData.stats.evidenceCount, icon: Scale }] as stat}
+        {#each [{ title: 'Total Cases', value: layoutData.stats.totalCases, icon FileText }, { title: 'Open Cases', value: layoutData.stats.openCases, icon FileText }, { title: 'Closed Cases', value: layoutData.stats.closedCases, icon FileText }, { title: 'Evidence Items', value: layoutData.stats.evidenceCount, icon Scale }] as stat}
           {@const StatIcon = (stat as any).icon}
           <div class="nes-container">
             <div class="p-4">

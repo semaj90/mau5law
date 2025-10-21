@@ -49,43 +49,43 @@
       id: 'dashboard',
       href: '/',
       label: 'Dashboard',
-      icon: Home, // Changed semicolon to comma
-      description: 'Executive overview and key metrics',
+      icon Home, // Changed semicolon to comma
+      description 'Executive overview and key metrics',
     },
     {
       id: 'cases',
       href: '/cases',
       label: 'Case Management',
-      icon: Folder, // Changed semicolon to comma
-      description: 'Legal case tracking and documentation',
+      icon Folder, // Changed semicolon to comma
+      description 'Legal case tracking and documentation',
     },
     {
       id: 'evidence',
       href: '/evidenceboard',
       label: 'Evidence Analysis',
-      icon: Eye, // Changed semicolon to comma
-      description: 'Digital evidence collection and forensics',
+      icon Eye, // Changed semicolon to comma
+      description 'Digital evidence collection and forensics',
     },
     {
       id: 'research',
       href: '/demo/enhanced-rag-semantic',
       label: 'Legal Research',
-      icon: Search, // Changed semicolon to comma
-      description: 'AI-powered legal research and precedents',
+      icon Search, // Changed semicolon to comma
+      description 'AI-powered legal research and precedents',
     },
     {
       id: 'chat',
       href: '/chat',
       label: 'AI Assistant',
-      icon: MessageSquare, // Changed semicolon to comma
-      description: 'Intelligent legal consultation',
+      icon MessageSquare, // Changed semicolon to comma
+      description 'Intelligent legal consultation',
     },
     {
       id: 'analysis',
       href: '/analysis',
-      icon: BarChart3, // Reverted to BarChart3 as BarChart is deprecated
+      icon BarChart3, // Reverted to BarChart3 as BarChart is deprecated
       label: 'Analytics',
-      description: 'Data insights and trend analysis',
+      description 'Data insights and trend analysis',
     },
   ];
   const toolsNavItems = [
@@ -93,29 +93,29 @@
       id: 'yorha-command',
       href: '/yorha-command-center',
       label: 'Command Center',
-      icon: Terminal, // Changed semicolon to comma
-      description: 'Advanced system controls',
+      icon Terminal, // Changed semicolon to comma
+      description 'Advanced system controls',
     },
     {
       id: 'gpu-inference',
       href: '/demo/gpu-inference',
       label: 'GPU Processing',
-      icon: Zap, // Changed semicolon to comma
-      description: 'High-performance AI inference',
+      icon Zap, // Changed semicolon to comma
+      description 'High-performance AI inference',
     },
     {
       id: 'settings',
       href: '/settings',
       label: 'Settings',
-      icon: Settings, // Changed semicolon to comma
-      description: 'Platform configuration',
+      icon Settings, // Changed semicolon to comma
+      description 'Platform configuration',
     },
     {
       id: 'admin',
       href: '/admin',
       label: 'Administration',
-      icon: Database, // Changed semicolon to comma
-      description: 'System administration',
+      icon Database, // Changed semicolon to comma
+      description 'System administration',
     },
   ];
   // State
@@ -234,7 +234,7 @@
       class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 lg:hidden"
       role="button"
       tabindex="-1"
-      on:click={toggleMobileMenu}
+      onclick={toggleMobileMenu}
       onkeydown={e => e.key === 'Escape' && toggleMobileMenu()}
     ></div>
   {/if}
@@ -266,7 +266,7 @@
           {#if isSidebarOpen}
             <button
               class="p-2 text-slate-400 hover:text-amber-400 transition-colors lg:hidden rounded-lg hover:bg-slate-800/50"
-              on:click={toggleMobileMenu}
+              onclick={toggleMobileMenu}
             >
               <X class="w-5 h-5" />
             </button>
@@ -293,7 +293,7 @@
                   : 'text-slate-400 hover:text-amber-400 hover:bg-slate-800/60 border border-transparent hover:border-amber-500/30',
                 !isSidebarOpen && 'justify-center'
               )}
-              on:click={e => handleNavigation(item.href, e)}
+              onclick={e => handleNavigation(item.href, e)}
               title={!isSidebarOpen ? item.label : ''}
             >
               <item.icon class="w-6 h-6 flex-shrink-0" />
@@ -326,7 +326,7 @@
                   : 'text-slate-400 hover:text-amber-400 hover:bg-slate-800/60 border border-transparent hover:border-amber-500/30',
                 !isSidebarOpen && 'justify-center'
               )}
-              on:click={e => handleNavigation(item.href, e)}
+              onclick={e => handleNavigation(item.href, e)}
               title={!isSidebarOpen ? item.label : ''}
             >
               <item.icon class="w-6 h-6 flex-shrink-0" />
@@ -427,13 +427,13 @@
         <div class="flex items-center gap-6">
           <button
             class="p-3 text-slate-400 hover:text-amber-400 transition-all duration-300 rounded-lg hover:bg-slate-800/50"
-            on:click={toggleSidebar}
+            onclick={toggleSidebar}
           >
             <Menu class="w-6 h-6" />
           </button>
           <button
             class="p-3 text-slate-400 hover:text-amber-400 transition-all duration-300 lg:hidden rounded-lg hover:bg-slate-800/50"
-            on:click={toggleMobileMenu}
+            onclick={toggleMobileMenu}
           >
             <Menu class="w-6 h-6" />
           </button>
@@ -449,7 +449,7 @@
                     'hover:text-yellow-400 transition-colors',
                     index === breadcrumbs.length - 1 ? 'text-yellow-400 font-medium' : 'text-gray-400'
                   )}
-                  on:click={e => handleNavigation(crumb.href, e)}
+                  onclick={e => handleNavigation(crumb.href, e)}
                 >
                   {crumb.label}
                 </button>
@@ -470,7 +470,7 @@
           <div class="relative">
             <button
               class="p-3 text-slate-400 hover:text-green-400 transition-all duration-300 relative group rounded-lg hover:bg-slate-800/50"
-              on:click={() => (showClientChat = !showClientChat)}
+              onclick={() => (showClientChat = !showClientChat)}
               title="AI Assistant (Gemma 270MB)"
             >
               <MessageSquare class="w-6 h-6" />
@@ -483,7 +483,7 @@
           <div class="relative">
             <button
               class="p-3 text-slate-400 hover:text-amber-400 transition-all duration-300 relative rounded-lg hover:bg-slate-800/50"
-              on:click={() => (showNotifications = !showNotifications)}
+              onclick={() => (showNotifications = !showNotifications)}
             >
               <Bell class="w-6 h-6" />
               <div
@@ -519,14 +519,14 @@
                 <div class="p-3 space-y-2">
                   <button
                     class="w-full flex items-center gap-3 p-3 text-slate-400 hover:text-amber-400 hover:bg-slate-700/50 rounded-lg transition-all duration-300 text-left"
-                    on:click={e => handleNavigation('/profile', e)}
+                    onclick={e => handleNavigation('/profile', e)}
                   >
                     <User class="w-5 h-5" />
                     <span class="font-medium">Profile Settings</span>
                   </button>
                   <button
                     class="w-full flex items-center gap-3 p-3 text-slate-400 hover:text-amber-400 hover:bg-slate-700/50 rounded-lg transition-all duration-300 text-left"
-                    on:click={e => handleNavigation('/settings', e)}
+                    onclick={e => handleNavigation('/settings', e)}
                   >
                     <Settings class="w-5 h-5" />
                     <span class="font-medium">Platform Settings</span>
@@ -534,7 +534,7 @@
                   <hr class="my-2 border-slate-600/50" />
                   <button
                     class="w-full flex items-center gap-3 p-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-all duration-300 text-left"
-                    on:click={handleLogout}
+                    onclick={handleLogout}
                   >
                     <LogOut class="w-5 h-5" />
                     <span class="font-medium">Sign Out</span>
@@ -546,13 +546,13 @@
             <div class="flex items-center gap-3">
               <button
                 class="px-6 py-3 bg-amber-500/10 border border-amber-500/50 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500 transition-all duration-300 rounded-lg font-semibold"
-                on:click={e => handleNavigation('/auth/login', e)}
+                onclick={e => handleNavigation('/auth/login', e)}
               >
                 Sign In
               </button>
               <button
                 class="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-900 hover:from-amber-600 hover:to-amber-700 transition-all duration-300 rounded-lg font-bold shadow-lg shadow-amber-500/25"
-                on:click={e => handleNavigation('/auth/register', e)}
+                onclick={e => handleNavigation('/auth/register', e)}
               >
                 Get Started
               </button>
@@ -620,7 +620,7 @@
   }
   /* Professional animation effects */
   :global(.professional-glow) {
-    animation: professional-glow 3s ease-in-out infinite;
+    animation professional-glow 3s ease-in-out infinite;
   }
   @keyframes professional-glow {
     0%,
@@ -648,7 +648,7 @@
   }
   /* Professional smooth transitions */
   :global(*) {
-    transition:
+    transition
       color 0.3s ease,
       background-color 0.3s ease,
       border-color 0.3s ease,

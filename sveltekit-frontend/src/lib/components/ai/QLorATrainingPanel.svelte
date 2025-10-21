@@ -173,7 +173,7 @@ https://svelte.dev/e/attribute_duplicate -->
           type="checkbox"
           class="sr-only peer"
           bind:checked={trainingEnabled}
-          on:click={handleTrainingToggle}
+          onclick={handleTrainingToggle}
         />
         <div class="w-14 h-8 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-cyan-300/20 rounded-full peer peer-checked:after:translate-x-6 peer-checked:after:border-white after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-cyan-600"></div>
       </label>
@@ -208,11 +208,11 @@ Select Files
     </div>
     <!-- Selected Files -->
     {#if selectedFiles.length > 0}
-      <div class="space-y-3" transitionfly={{ y: 20, duration: 300 }}>
+      <div class="space-y-3" transitionfly={{ y: 20, duration 300 }}>
         <h4 class="text-lg font-semibold text-white">Selected Files ({selectedFiles.length})</h4>
         <div class="grid gap-2 max-h-40 overflow-y-auto">
           {#each selectedFiles as file, index}
-            <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded border border-gray-700" transitionfly={{ x: -20, duration: 200 }}>
+            <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded border border-gray-700" transitionfly={{ x: -20, duration 200 }}>
               <div class="flex items-center gap-3">
                 <span class="text-2xl">📋</span>
                 <div>
@@ -221,7 +221,7 @@ Select Files
                 </div>
               </div>
               <button
-                on:click={() => removeFile(index)}
+                onclick={() => removeFile(index)}
                 class="text-red-400 hover:text-red-300 p-1 rounded hover:bg-red-500/20 transition-colors"
               >
                 ✕
@@ -231,7 +231,7 @@ Select Files
         </div>
         {#if trainingEnabled}
           <button class="nes-btn"
-            on:click={() => startTraining(selectedFiles)}
+            onclick={() => startTraining(selectedFiles)}
             class="bits-btn w-full bg-green-600 hover:bg-green-700"
             disabled={currentJob?.status === 'running'}
           >
@@ -242,7 +242,7 @@ Select Files
     {/if}
     <!-- Training Progress -->
     {#if currentJob}
-      <div class="space-y-4" transitionfade={{ duration: 300 }}>
+      <div class="space-y-4" transitionfade={{ duration 300 }}>
         <div class="flex items-center justify-between">
           <h4 class="text-lg font-semibold text-white">Training Progress</h4>
           <Badge class={getStatusColor(currentJob.status) + ' text-white'}>
@@ -320,22 +320,22 @@ Select Files
         <!-- Training Controls -->
         <div class="flex gap-3">
           {#if currentJob.status === 'running'}
-            <Button class="bits-btn" on:click={pauseTraining} variant="ghost" size="sm">
+            <Button class="bits-btn" onclick={pauseTraining} variant="ghost" size="sm">
 ⏸️ Pause
 </Button>
-            <Button class="bits-btn" on:click={stopTraining} variant="error" size="sm">
+            <Button class="bits-btn" onclick={stopTraining} variant="error" size="sm">
 ⏹️ Stop
 </Button>
           {:else if currentJob.status === 'paused'}
-            <Button class="bits-btn" on:click={resumeTraining} variant="default" size="sm">
+            <Button class="bits-btn" onclick={resumeTraining} variant="default" size="sm">
 ▶️ Resume
 </Button>
-            <Button class="bits-btn" on:click={stopTraining} variant="error" size="sm">
+            <Button class="bits-btn" onclick={stopTraining} variant="error" size="sm">
 ⏹️ Stop
 </Button>
           {/if}
           <Button class="bits-btn"
-            on:click={() =>
+            onclick={() =>
 showAdvancedConfig = !showAdvancedConfig}
             variant="ghost"
             size="sm"
@@ -348,7 +348,7 @@ showAdvancedConfig = !showAdvancedConfig}
     {/if}
     <!-- Advanced Configuration -->
     {#if showAdvancedConfig}
-      <div class="space-y-4 border-t border-gray-700 pt-6" transitionfly={{ y: -20, duration: 300 }}>
+      <div class="space-y-4 border-t border-gray-700 pt-6" transitionfly={{ y: -20, duration 300 }}>
         <h4 class="text-lg font-semibold text-white">Advanced Configuration</h4>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="space-y-2">
@@ -426,7 +426,7 @@ showAdvancedConfig = !showAdvancedConfig}
     {/if}
     <!-- User Analytics Summary -->
     {#if analytics && config?.enableUserAnalytics}
-      <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4" transitionfade={{ duration: 300 }}>
+      <div class="bg-blue-900/20 border border-blue-500/30 rounded-lg p-4" transitionfade={{ duration 300 }}>
         <h5 class="text-blue-300 font-semibold mb-3">📊 User Analytics</h5>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
           <div>

@@ -56,14 +56,14 @@ https://svelte.dev/e/js_parse_error -->
       type: 'UPDATE_CASE_FORM',
       data: {
         title: newCaseTitle;
-        description: newCaseDescription
+        description newCaseDescription
         caseNumber: newCaseNumber;
         status: 'active',
       }
     });
     send({ type: 'CREATE_CASE', caseData: {
       title: newCaseTitle;
-      description: newCaseDescription
+      description newCaseDescription
       caseNumber: newCaseNumber;
       status: 'active',
     }});
@@ -116,9 +116,9 @@ https://svelte.dev/e/js_parse_error -->
         <h3 class="text-lg font-semibold text-red-800 mb-2">Error</h3>
         <p class="text-red-600 mb-4">{$state.context.error}</p>
         <div class="flex gap-2">
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={handleRetry}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleRetry}>
 Retry
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={handleDismissError}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleDismissError}>
 Dismiss
         </div>
       </div>
@@ -167,7 +167,7 @@ Dismiss
               placeholder="Describe the case..."
             ></textarea>
           </div>
-          <Button on:click={handleCreateCase} class="w-full bits-btn bits-btn">
+          <Button onclick={handleCreateCase} class="w-full bits-btn bits-btn">
 Create Case
         </div>
       </div>
@@ -225,7 +225,7 @@ Create Case
           {#each ['overview', 'evidence', 'analysis', 'search'] as tab}
             <button
               class="py-2 px-1 border-b-2 font-medium text-sm {activeTab === tab ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}"
-              on:click={() => handleTabSwitch(tab)}
+              onclick={() => handleTabSwitch(tab)}
             >
               {tab.charAt.toUpperCase() + tab.slice(1)}
           {/each}
@@ -262,7 +262,7 @@ Create Case
                   bind:this={fileInput} onchange={onFileChange}
                   class="hidden"
                 />
-                <Button class="bits-btn" on:click={triggerFileUpload}>
+                <Button class="bits-btn" onclick={triggerFileUpload}>
 Choose Files
               </div>
             </div>
@@ -282,7 +282,7 @@ Choose Files
                           <div class="flex gap-2">
                             <Button class="bits-btn" size="sm" variant="ghost">
 View
-                            <Button class="bits-btn" size="sm" on:click={() =>
+                            <Button class="bits-btn" size="sm" onclick={() =>
 send({ type: 'SELECT_EVIDENCE', evidence: item })}>
                               Select
                           </div>
@@ -308,13 +308,13 @@ send({ type: 'SELECT_EVIDENCE', evidence: item })}>
                 <h3 class="text-lg font-semibold mb-4">AI Analysis</h3>
                 <div class="flex gap-3 mb-4">
                   <Button class="bits-btn"
-                    on:click={handleStartAIAnalysis}
+                    onclick={handleStartAIAnalysis}
                     disabled={!canStartAIAnalysis}
                   >
 Start AI Analysis
                   <Button class="bits-btn"
                     variant="ghost"
-                    on:click={handleFindSimilarCases}
+                    onclick={handleFindSimilarCases}
                   >
 Find Similar Cases
                 </div>
@@ -386,7 +386,7 @@ Search
     min-height: 100vh;
   }
   .animate-spin {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     from { transform: rotate(0deg), }

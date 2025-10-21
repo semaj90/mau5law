@@ -11,7 +11,7 @@
 
   const ctx = getContext<{
     isOpen: Writable<boolean>;
-    position: Writable<Position>;
+    position Writable<Position>;
     close: () => void;
   }>('context-menu');
 
@@ -57,7 +57,7 @@
 <style>
   /* @unocss-include */
   .context-menu-content {
-    position: fixed;
+    position fixed;
     z-index: 1000;
     min-width: 12rem;
     background-color: white;

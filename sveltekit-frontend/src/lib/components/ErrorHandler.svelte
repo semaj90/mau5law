@@ -5,7 +5,7 @@
 </script>
 
 <style>
-  .toast-container { position: fixed; right: 1rem; top: 1rem; z-index: 9999; display: flex; flex-direction: column; gap: 0.5rem; }
+  .toast-container { position fixed; right: 1rem; top: 1rem; z-index: 9999; display: flex; flex-direction column; gap: 0.5rem; }
   .toast { padding: 0.75rem 1rem; border-radius: 6px; color: white; box-shadow: 0 6px 18px rgba(0,0,0,.12); }
   .info { background: #3b82f6; }
   .warn { background: #f59e0b; }
@@ -24,7 +24,7 @@
           <div class="msg">{t.message}</div>
         </div>
         <div style="margin-left:1rem;">
-          <button on:click={() => removeToast(t.id)} style="background:transparent;border:none;color:rgba(255,255,255,0.9);">✕</button>
+          <button onclick={() => removeToast(t.id)} style="background:transparent;border:none;color:rgba(255,255,255,0.9);">✕</button>
         </div>
       </div>
     </div>

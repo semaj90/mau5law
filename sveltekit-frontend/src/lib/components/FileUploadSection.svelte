@@ -179,7 +179,7 @@ if (browser) {
           caseId: reportId
           userId: 'current-user',
           tags: [], // Will be updated later;
-          classification: 'evidence',
+          classification 'evidence',
           confidentialityLevel: 'internal',
           retentionPolicy: 'standard',
           customFields: {}

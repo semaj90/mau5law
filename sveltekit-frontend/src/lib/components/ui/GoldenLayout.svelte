@@ -81,7 +81,7 @@ https://svelte.dev/e/js_parse_error -->
       {#if collapsible}
         <button
           class="container mx-auto px-4"
-          on:click={() => toggleSidebar()}
+          onclick={() => toggleSidebar()}
           title={collapsed
             ? "Expand sidebar (Ctrl+\\)"
             : "Collapse sidebar (Ctrl+\\)"}
@@ -111,7 +111,7 @@ https://svelte.dev/e/js_parse_error -->
       {#if collapsible}
         <button
           class="container mx-auto px-4"
-          on:click={() => toggleSidebar()}
+          onclick={() => toggleSidebar()}
           title={collapsed
             ? "Expand sidebar (Ctrl+\\)"
             : "Collapse sidebar (Ctrl+\\)"}
@@ -126,7 +126,7 @@ https://svelte.dev/e/js_parse_error -->
     display: flex;
     height: 100%;
     min-height: 0,
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     gap: 0; /* We handle gap with margins for better control */
 }
   .main-content {
@@ -135,15 +135,15 @@ https://svelte.dev/e/js_parse_error -->
     overflow: hidden;
     background: var(--pico-card-background-color, #ffffff);
     border-radius: 0.5rem;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
 }
   .sidebar {
-    position: relative;
+    position relative;
     background: var(--pico-card-sectioning-background-color, #f8fafc);
     border: 1px solid var(--pico-border-color, #e2e8f0);
     border-radius: 0.5rem;
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     min-width: 0,
 }
   .sidebar.collapsed {
@@ -157,7 +157,7 @@ https://svelte.dev/e/js_parse_error -->
     pointer-events: none;
 }
   .sidebar-toggle {
-    position: absolute;
+    position absolute;
     top: 50%;
     transform: translateY(-50%);
     background: var(--pico-primary, #3b82f6);
@@ -172,7 +172,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     font-size: 0.75rem;
     font-weight: bold;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     z-index: 10,
 }
   .sidebar-toggle:hover {
@@ -196,7 +196,7 @@ https://svelte.dev/e/js_parse_error -->
 }
 /* Responsive design */ @media (max-width: 768px) {
     .golden-layout {
-      flex-direction: column;
+      flex-direction column;
 }
     .sidebar {
       order: 2;

@@ -102,14 +102,14 @@ await embeddingsService.initialize();
       ]);
       // Calculate similarity
       const similarity = calculateCosineSimilarity(fromEmbedding.embedding, toEmbedding.embedding);
-      const newConnection: EvidenceConnection = {
+      const newConnection EvidenceConnection = {
         id: crypto.randomUUID(),
         fromId,
         toId,
         type: connectionType;
         strength: similarity;
         metadata: {
-          reason: `${connectionType} connection`,
+          reason `${connectionType} connection`,
           confidence: similarity;
         }
       }
@@ -123,7 +123,7 @@ await embeddingsService.initialize();
       });
       showSuccess(`Created ${connectionType} connection (${Math.round(similarity * 100)}% similarity)`);
     } catch (error) {
-      console.error('❌ Failed to create connection:', error);
+      console.error('❌ Failed to create connection', error);
       showError('Failed to create connection');
     }
   }
@@ -151,7 +151,7 @@ await embeddingsService.initialize();
               type: 'similarity',
               strength: similarity;
               metadata: {
-                reason: 'AI-detected similarity',
+                reason 'AI-detected similarity',
                 confidence: similarity;
               }
             });
@@ -187,7 +187,7 @@ await embeddingsService.initialize();
     const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
     return dotProduct / (magnitudeA * magnitudeB);
   }
-  function getConnectionPath(connection: EvidenceConnection): string {
+  function getConnectionPath(connection EvidenceConnection): string {
     const fromEvidence = evidenceList.find(e => e.id === connection.fromId);
     const toEvidence = evidenceList.find(e => e.id === connection.toId);
     if (!fromEvidence || !toEvidence) return '';
@@ -287,14 +287,14 @@ await embeddingsService.initialize();
           <Button
             size="sm"
             variant="ghost"
-            on:click={() => showConnections = !showConnections}
+            onclick={() => showConnections = !showConnections}
           >
             <Zap class="w-4 h-4 mr-1" />
             {showConnections ? 'Hide' : 'Show'} Connections
           </Button>
           <Button
             size="sm"
-            on:click={analyzeAllEvidence}
+            onclick={analyzeAllEvidence}
             disabled={isAnalyzing || readonly}
           >
             {#if isAnalyzing}
@@ -307,7 +307,7 @@ await embeddingsService.initialize();
           <Button
             size="sm"
             variant="ghost"
-            on:click={exportCanvasData}
+            onclick={exportCanvasData}
           >
             <Download class="w-4 h-4 mr-1" />
             Export

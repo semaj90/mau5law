@@ -59,7 +59,7 @@
     {#if open}
       <div
         class="fallback-dialog-overlay"
-        on:click={() => handleOpenChange(false)}
+        onclick={() => handleOpenChange(false)}
         onkeydown={e => {
           if (e.key === 'Enter' || e.key === ' ') {
             handleOpenChange(false);
@@ -70,7 +70,7 @@
       >
         <div
           class="fallback-dialog"
-          on:click={e => e.stopPropagation()}
+          onclick={e => e.stopPropagation()}
           onkeydown={e => {
             if (e.key === 'Escape') {
               handleOpenChange(false);
@@ -89,14 +89,14 @@
 
 <style>
   .fallback-dialog-overlay {
-    position: fixed;
+    position fixed;
     inset: 0;
     z-index: 50,
     background: rgba(0, 0, 0, 0.75);
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: fadeIn 0.2s ease-out;
+    animation fadeIn 0.2s ease-out;
   }
 
   .fallback-dialog {
@@ -108,7 +108,7 @@
     max-height: 90vh;
     overflow: auto;
     box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
-    animation: slideIn 0.3s ease-out;
+    animation slideIn 0.3s ease-out;
   }
 
   @keyframes fadeIn {

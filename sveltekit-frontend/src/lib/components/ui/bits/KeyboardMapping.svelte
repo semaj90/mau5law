@@ -10,9 +10,9 @@
   interface KeyboardShortcut {
     id: string;
     keys: string[];
-    description: string;
+    description string;
     category: string;
-    action: () => void | Promise<void>;
+    action () => void | Promise<void>;
     enabled?: boolean;
     priority?: number;
     global?: boolean;
@@ -24,7 +24,7 @@
     enableDebugMode?: boolean;
     className?: string;
     onshortcutexecuted?: (data: { shortcut: KeyboardShortcut; event: KeyboardEvent }) => void;
-    onshortcutblocked?: (data: { shortcut: KeyboardShortcut; reason: string }) => void;
+    onshortcutblocked?: (data: { shortcut: KeyboardShortcut; reason string }) => void;
   }
   // Props
   let {
@@ -45,18 +45,18 @@
     {
       id: 'new-case',
       keys: ['ctrl', 'shift', 'c'],
-      description: 'Create New Case',
+      description 'Create New Case',
       category: 'Case Management',
-      action: () => goto('/cases/new'),
+      action () => goto('/cases/new'),
       global: true,
       priority: 100,
     },
     {
       id: 'case-search',
       keys: ['ctrl', 'shift', 'f'],
-      description: 'Search Cases',
+      description 'Search Cases',
       category: 'Case Management',
-      action: () => goto('/cases/search'),
+      action () => goto('/cases/search'),
       global: true,
       priority: 90,
     },
@@ -64,18 +64,18 @@
     {
       id: 'upload-evidence',
       keys: ['ctrl', 'u'],
-      description: 'Upload Evidence',
+      description 'Upload Evidence',
       category: 'Evidence',
-      action: () => goto('/evidence/upload'),
+      action () => goto('/evidence/upload'),
       global: true,
       priority: 85,
     },
     {
       id: 'evidence-analysis',
       keys: ['ctrl', 'shift', 'a'],
-      description: 'AI Evidence Analysis',
+      description 'AI Evidence Analysis',
       category: 'Evidence',
-      action: () => goto('/evidence/analysis'),
+      action () => goto('/evidence/analysis'),
       global: true,
       priority: 80,
     },
@@ -83,18 +83,18 @@
     {
       id: 'ai-assistant',
       keys: ['ctrl', 'shift', 'i'],
-      description: 'Open AI Assistant',
+      description 'Open AI Assistant',
       category: 'AI Tools',
-      action: () => goto('/ai-assistant'),
+      action () => goto('/ai-assistant'),
       global: true,
       priority: 95,
     },
     {
       id: 'legal-research',
       keys: ['ctrl', 'shift', 'r'],
-      description: 'Legal Research',
+      description 'Legal Research',
       category: 'AI Tools',
-      action: () => goto('/research'),
+      action () => goto('/research'),
       global: true,
       priority: 85,
     },
@@ -102,18 +102,18 @@
     {
       id: 'new-document',
       keys: ['ctrl', 'n'],
-      description: 'New Document',
+      description 'New Document',
       category: 'Documents',
-      action: () => goto('/documents/new'),
+      action () => goto('/documents/new'),
       global: true,
       priority: 75,
     },
     {
       id: 'document-review',
       keys: ['ctrl', 'shift', 'd'],
-      description: 'Document Review',
+      description 'Document Review',
       category: 'Documents',
-      action: () => goto('/documents/review'),
+      action () => goto('/documents/review'),
       global: true,
       priority: 70,
     },
@@ -121,18 +121,18 @@
     {
       id: 'dashboard',
       keys: ['ctrl', 'h'],
-      description: 'Go to Dashboard',
+      description 'Go to Dashboard',
       category: 'Navigation',
-      action: () => goto('/dashboard'),
+      action () => goto('/dashboard'),
       global: true,
       priority: 60,
     },
     {
       id: 'settings',
       keys: ['ctrl', ','],
-      description: 'Open Settings',
+      description 'Open Settings',
       category: 'Navigation',
-      action: () => goto('/settings'),
+      action () => goto('/settings'),
       global: true,
       priority: 50,
     },
@@ -140,18 +140,18 @@
     {
       id: 'accessibility-panel',
       keys: ['ctrl', 'alt', 'a'],
-      description: 'Accessibility Panel',
+      description 'Accessibility Panel',
       category: 'Accessibility',
-      action: () => document.dispatchEvent(new CustomEvent('toggle-accessibility')),
+      action () => document.dispatchEvent(new CustomEvent('toggle-accessibility')),
       global: true,
       priority: 40,
     },
     {
       id: 'keyboard-help',
       keys: ['shift', '?'],
-      description: 'Keyboard Shortcuts Help',
+      description 'Keyboard Shortcuts Help',
       category: 'Help',
-      action: () => document.dispatchEvent(new CustomEvent('show-keyboard-help')),
+      action () => document.dispatchEvent(new CustomEvent('show-keyboard-help')),
       global: true,
       priority: 30,
     }
@@ -246,7 +246,7 @@
         addDebugLog(`Error executing shortcut: ${error}`, 'error');
         onshortcutblocked?.({
           shortcut: matchingShortcut;
-          reason: error instanceof Error ? error.message: 'Unknown error',
+          reason error instanceof Error ? error.message: 'Unknown error',
         });
       }
     }
@@ -342,7 +342,7 @@
 
 <style>
   .sr-only {
-    position: absolute;
+    position absolute;
     width: 1px;
     height: 1px;
     padding: 0,

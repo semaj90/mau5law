@@ -50,18 +50,18 @@
   <div class="flex items-center justify-between mb-4">
     <h2 class="text-xl font-bold">Enhanced RAG Studio</h2>
     <div class="flex gap-2">
-      <button class="nes-btn is-small" class:is-primary={activeTab === 'search'} on:click={() => (activeTab = 'search')}>
+      <button class="nes-btn is-small" class:is-primary={activeTab === 'search'} onclick={() => (activeTab = 'search')}>
         <Search class="w-4 h-4" />
         Search
       </button>
-      <button class="nes-btn is-small" class:is-primary={activeTab === 'upload'} on:click={() => (activeTab = 'upload')}>
+      <button class="nes-btn is-small" class:is-primary={activeTab === 'upload'} onclick={() => (activeTab = 'upload')}>
         <Database class="w-4 h-4" />
         Upload
       </button>
       <button
         class="nes-btn is-small"
         class:is-primary={activeTab === 'settings'}
-        on:click={() => (activeTab = 'settings')}
+        onclick={() => (activeTab = 'settings')}
       >
         <Settings class="w-4 h-4" />
         Settings
@@ -78,7 +78,7 @@
           bind:value={searchQuery}
           onkeydown={e => e.key === 'Enter' && handleSearch()}
         />
-        <button class="nes-btn is-success" on:click={handleSearch} disabled={isLoading || !searchQuery.trim()}>
+        <button class="nes-btn is-success" onclick={handleSearch} disabled={isLoading || !searchQuery.trim()}>
           {#if isLoading}
             <RefreshCw class="w-4 h-4 animate-spin" />
           {:else}
@@ -134,7 +134,7 @@
           </div>
         </div>
       {/if}
-      <button class="nes-btn is-success" on:click={handleUpload} disabled={!uploadFile || isLoading}>
+      <button class="nes-btn is-success" onclick={handleUpload} disabled={!uploadFile || isLoading}>
         {#if isLoading}
           <RefreshCw class="w-4 h-4 animate-spin" />
         {:else}
@@ -160,7 +160,7 @@
 
 <style>
   .animate-spin {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     from {

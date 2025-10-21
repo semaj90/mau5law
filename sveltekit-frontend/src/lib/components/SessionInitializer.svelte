@@ -9,7 +9,7 @@ Updated to work with proper SvelteKit data flow instead of global stores
   // Props from the layout with session data from server
   interface Props {
     user: any;
-    session: any;
+    session any;
     isAuthenticated: boolean;
     enableAutoSync?: boolean;
     syncInterval?: number;

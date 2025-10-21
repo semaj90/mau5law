@@ -6,7 +6,7 @@
   interface Citation {
     id: string;
     citationType: string;
-    formattedCitation: string;
+    formattedCitation string;
     quotedText: string;
     legalPrinciple: string;
     relevanceScore: string;
@@ -77,7 +77,7 @@
             <option value="regulation">Regulation Citations</option>
           </select>
         </div>
-        <Button on:click={handleSearch} class="search-button">🔍 Search</Button>
+        <Button onclick={handleSearch} class="search-button">🔍 Search</Button>
       </div>
     </CardContent>
   </Card>
@@ -202,7 +202,7 @@
     border: 3px solid rgba(0, 255, 0, 0.3);
     border-top: 3px solid var(--text-primary, #00ff00);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
 
@@ -230,7 +230,7 @@
   .citation-card {
     background: var(--surface-secondary, #111111);
     border: 1px solid var(--border-primary, #00ff00);
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
 
   .citation-card:hover {

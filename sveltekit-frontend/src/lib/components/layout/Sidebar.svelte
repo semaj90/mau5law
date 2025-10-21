@@ -42,7 +42,7 @@
   type NavigationItem = {
     name: string;
     href: string;
-    icon: any;
+    icon any;
     current: boolean;
     badge?: string;
   };
@@ -50,47 +50,47 @@
     {
       name: '🎮 Command Center',
       href: '/dashboard',
-      icon: Home,
+      icon Home,
       current: currentPath === '/' || currentPath === '/dashboard',
       badge: 'HQ',
     },
     {
       name: '⚖️ Case Management',
       href: '/cases',
-      icon: Briefcase,
+      icon Briefcase,
       current: currentPath.startsWith('/cases'),
       badge: 'ACTIVE',
     },
     {
       name: '🗃️ Evidence Vault',
       href: '/evidence',
-      icon: FileText,
+      icon FileText,
       current: currentPath.startsWith('/evidence'),
       badge: '12 New',
     },
     {
       name: '🤖 AI Counsel',
       href: '/ai',
-      icon: Bot,
+      icon Bot,
       current: currentPath.startsWith('/ai'),
       badge: 'AI',
     },
     {
       name: '📋 Document Analysis',
       href: '/documents',
-      icon: FileBarChart,
+      icon FileBarChart,
       current: currentPath.startsWith('/documents'),
     },
     {
       name: '🔍 Legal Research',
       href: '/research',
-      icon: Search,
+      icon Search,
       current: currentPath.startsWith('/research'),
     },
     {
       name: '⏱️ Case Timeline',
       href: '/timeline',
-      icon: Layers,
+      icon Layers,
       current: currentPath.startsWith('/timeline'),
     },
   ]);
@@ -98,13 +98,13 @@
     {
       name: '📊 Analytics Hub',
       href: '/analytics',
-      icon: BarChart3,
+      icon BarChart3,
       current: currentPath.startsWith('/analytics'),
     },
     {
       name: '📋 Reports',
       href: '/reports',
-      icon: FileBarChart,
+      icon FileBarChart,
       current: currentPath.startsWith('/reports'),
     },
   ]);
@@ -112,7 +112,7 @@
     {
       name: '🔧 Admin Console',
       href: '/admin',
-      icon: Settings,
+      icon Settings,
       current: currentPath.startsWith('/admin'),
       badge: 'ADMIN',
     },
@@ -122,7 +122,7 @@
     {
       name: '⚙️ Settings',
       href: '/settings',
-      icon: Settings,
+      icon Settings,
       current: currentPath.startsWith('/settings'),
     },
   ]);
@@ -133,7 +133,7 @@
 
 <!-- Mobile backdrop -->
 {#if open}
-  <button class="fixed inset-0 z-40 bg-black/50 lg:hidden" on:click={closeSidebar} aria-label="Close sidebar"></button>
+  <button class="fixed inset-0 z-40 bg-black/50 lg:hidden" onclick={closeSidebar} aria-label="Close sidebar"></button>
 {/if}
 <!-- Sidebar -->
 <aside
@@ -208,7 +208,7 @@
                   ? 'bg-harvard-crimson text-white shadow-nier-glow'
                   : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light'
               )}
-              on:click={closeSidebar}
+              onclick={closeSidebar}
             >
               <div class="flex items-center">
                 <IconComponent
@@ -249,7 +249,7 @@
                     ? 'bg-harvard-crimson text-white shadow-nier-glow'
                     : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light'
                 )}
-                on:click={closeSidebar}
+                onclick={closeSidebar}
               >
                 <IconComponent
                   class={cn(
@@ -277,7 +277,7 @@
                       ? 'bg-console-error text-white shadow-nier-glow'
                       : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light border border-console-error/20'
                   )}
-                  on:click={closeSidebar}
+                  onclick={closeSidebar}
                 >
                   <div class="flex items-center">
                     <IconComponent
@@ -318,7 +318,7 @@
                     ? 'bg-console-primary text-console-bg shadow-nier-glow'
                     : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light'
                 )}
-                on:click={closeSidebar}
+                onclick={closeSidebar}
               >
                 <IconComponent
                   class={cn(
@@ -395,7 +395,7 @@
   }
 
   .animate-nier-pulse {
-    animation: nier-pulse 2s infinite;
+    animation nier-pulse 2s infinite;
   }
 
   /* Console-themed scrollbar */
@@ -441,9 +441,9 @@
 
   @media (min-width: 1024px) {
     aside {
-      position: relative;
+      position relative;
       transform: none;
-      transition: width 0.3s ease;
+      transition width 0.3s ease;
     }
 
     aside:not(.open) {

@@ -218,7 +218,7 @@
         ondrop={handleDrop}
         ondragover={handleDragOver}
         ondragleave={handleDragLeave}
-        on:click={() => fileInput?.click()}
+        onclick={() => fileInput?.click()}
         onkeydown={e => e.key === 'Enter' && fileInput?.click()}
       >
         <input
@@ -240,7 +240,7 @@
             <div class="file-info">
               <div class="file-name">{$form.file.name}</div>
               <div class="file-size">{formatFileSize($form.file.size)}</div>
-              <button type="button" class="remove-file" on:click={removeFile}> ✕ Remove </button>
+              <button type="button" class="remove-file" onclick={removeFile}> ✕ Remove </button>
             </div>
           </div>
         {:else}
@@ -392,7 +392,7 @@
     background: var(--bg-primary);
     color: var(--text-primary);
     font-family: inherit;
-    transition: border-color 0.2s;
+    transition border-color 0.2s;
   }
   .form-input:focus,
   .form-select:focus,
@@ -410,7 +410,7 @@
     padding: 2rem;
     text-align: center;
     cursor: pointer;
-    transition: all 0.2s;
+    transition all 0.2s;
     background: var(--bg-primary);
   }
   .file-upload-area:hover,
@@ -424,7 +424,7 @@
   }
   .upload-prompt {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 1rem;
   }
@@ -505,7 +505,7 @@
   .progress-fill {
     height: 100%;
     background: var(--accent-primary);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .progress-text {
     margin-top: 0.5rem;
@@ -525,12 +525,12 @@
     border-radius: 6px;
     font-weight: 600,
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition background-color 0.2s;
   }
-  .submit-button:hover:not(:disabled) {
+  .submit-buttonhover:not(:disabled) {
     background: var(--accent-primary-dark);
   }
-  .submit-button:disabled {
+  .submit-buttondisabled {
     opacity: 0.6,
     cursor: not-allowed;
   }

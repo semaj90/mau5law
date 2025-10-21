@@ -76,15 +76,15 @@ https://svelte.dev/e/expected_token -->
         </div>
       </div>
       <div class="header-actions">
-        <button class="action-btn save-btn" on:click={handleSave} disabled={!isModified}>
+        <button class="action-btn save-btn" onclick={handleSave} disabled={!isModified}>
           <Save size={16} />
           Save
         </button>
-        <button class="action-btn" on:click={handleDownload}>
+        <button class="action-btn" onclick={handleDownload}>
           <Download size={16} />
           Download
         </button>
-        <button class="action-btn" on:click={handleShare}>
+        <button class="action-btn" onclick={handleShare}>
           <Share2 size={16} />
           Share
         </button>
@@ -196,7 +196,7 @@ https://svelte.dev/e/expected_token -->
     font-size: 0.85rem;
     font-weight: 500,
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -308,7 +308,7 @@ https://svelte.dev/e/expected_token -->
       padding: 16px 12px;
     }
     .header-content {
-      flex-direction: column;
+      flex-direction column;
       gap: 16px;
       align-items: stretch;
     }
@@ -319,7 +319,7 @@ https://svelte.dev/e/expected_token -->
       justify-content: center;
     }
     .document-title-section {
-      flex-direction: column;
+      flex-direction column;
       align-items: stretch;
       gap: 8px;
     }
@@ -348,6 +348,6 @@ https://svelte.dev/e/expected_token -->
     }
   }
   .action-btn:hover {
-    animation: glow-pulse 2s ease-in-out infinite;
+    animation glow-pulse 2s ease-in-out infinite;
   }
 </style>

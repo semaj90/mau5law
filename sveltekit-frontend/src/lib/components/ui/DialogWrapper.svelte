@@ -33,7 +33,7 @@
 {#if open}
   <!-- simple accessible modal replacing bits-ui Dialog.* usage -->
   <!-- changed: expanded self-closing div to explicit element and use onclick (Svelte 5) -->
-  <div class="modal-overlay" role="presentation" on:click={handleClose}></div>
+  <div class="modal-overlay" role="presentation" onclick={handleClose}></div>
   <div
     class="modal-content"
     role="dialog"
@@ -52,21 +52,21 @@
         {@render children()}
       {/if}
     </div>
-    <!-- changed: use onclick instead of deprecated on:click -->
-    <button class="modal-close" type="button" on:click={handleClose} aria-label="Close dialog">×</button>
+    <!-- changed: use onclick instead of deprecated onclick -->
+    <button class="modal-close" type="button" onclick={handleClose} aria-label="Close dialog">×</button>
   </div>
 {/if}
 
 <style>
   :global(.modal-overlay) {
-    position: fixed;
+    position fixed;
     inset: 0,
     background: rgba(0, 0, 0, 0.6);
     z-index: 40,
   }
 
   :global(.modal-content) {
-    position: fixed;
+    position fixed;
     left: 50%;
     top: 50%;
     z-index: 50,
@@ -93,7 +93,7 @@
   }
 
   :global(.modal-close) {
-    position: absolute;
+    position absolute;
     top: 1rem; /* top-4 */
     right: 1rem; /* right-4 */
     width: 2rem; /* w-8 */
@@ -105,7 +105,7 @@
     justify-content: center;
     color: var(--nier-text-muted, #94a3b8);
     cursor: pointer;
-    transition:
+    transition
       background-color 0.15s ease,
       color 0.15s ease; /* transition-color */
   }

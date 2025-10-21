@@ -125,7 +125,7 @@
   }
   .chat-message.user {
     margin-left: auto;
-    flex-direction: row-reverse;
+    flex-direction row-reverse;
   }
   .chat-message.assistant {
     margin-right: auto;
@@ -134,7 +134,7 @@
     padding: 0.75rem 1rem;
     border-radius: 1.25rem;
     word-wrap: break-word;
-    position: relative;
+    position relative;
   }
   .user .message-bubble {
     background-color: #2563eb;
@@ -164,7 +164,7 @@
     height: 5px;
     border-radius: 50%;
     background-color: currentColor;
-    animation: typing 1s infinite steps(4, end);
+    animation typing 1s infinite steps(4, end);
     margin-left: 8px;
     vertical-align: bottom;
   }

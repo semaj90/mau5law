@@ -20,7 +20,7 @@
       createdAt: new Date('2024-01-15T10:30:00'),
       uploadedAt: new Date('2024-01-15T10:30:00'),
       updatedAt: new Date('2024-01-15T10:30:00'),
-      description: 'Video shows suspect entering building at 10:23 PM wearing dark clothing',
+      description 'Video shows suspect entering building at 10:23 PM wearing dark clothing',
       tags: ['surveillance', 'timestamp', 'suspect-entry'],
       hash: 'abc123',
       thumbnailUrl: '/api/thumbnails/evidence-1.jpg',
@@ -36,7 +36,7 @@
       createdAt: new Date('2024-01-16T14:20:00'),
       uploadedAt: new Date('2024-01-16T14:20:00'),
       updatedAt: new Date('2024-01-16T14:20:00'),
-      description: 'Witness observed suspicious activity near the crime scene around 10:15 PM',
+      description 'Witness observed suspicious activity near the crime scene around 10:15 PM',
       tags: ['witness', 'testimony', 'timeline'],
       aiSummary: 'Witness observed suspicious activity near the crime scene around 10:15 PM',
     },
@@ -64,7 +64,7 @@
       createdAt: new Date('2024-01-18T11:45:00'),
       uploadedAt: new Date('2024-01-18T11:45:00'),
       updatedAt: new Date('2024-01-18T11:45:00'),
-      description: 'Audio recording contains discussion about meeting location',
+      description 'Audio recording contains discussion about meeting location',
       tags: ['wiretap', 'conversation', 'evidence'],
       aiSummary: 'Audio recording contains discussion about meeting location',
     },
@@ -78,7 +78,7 @@
       createdAt: new Date('2024-01-19T16:30:00'),
       uploadedAt: new Date('2024-01-19T16:30:00'),
       updatedAt: new Date('2024-01-19T16:30:00'),
-      description: 'Bank statements showing suspicious transactions',
+      description 'Bank statements showing suspicious transactions',
       tags: ['financial', 'money-laundering', 'transactions'],
       aiSummary: 'Bank statements reveal suspicious large cash deposits totaling $50,000 over 3 months',
     },
@@ -92,7 +92,7 @@
       createdAt: new Date('2024-01-20T09:00:00'),
       uploadedAt: new Date('2024-01-20T09:00:00'),
       updatedAt: new Date('2024-01-20T09:00:00'),
-      description: 'Forensic DNA analysis results',
+      description 'Forensic DNA analysis results',
       tags: ['dna', 'forensics', 'lab-report'],
       hash: 'dna456',
       aiSummary: 'DNA evidence confirms 99.7% match with suspect sample collected at scene',
@@ -151,16 +151,16 @@
     <div class="space-y-2">
       <h1 class="text-xl font-bold">Detective Mode</h1>
       <div class="flex gap-2 flex-wrap">
-        <button on:click={() => (currentView = 'board')} class="border rounded px-3 py-1 hover:bg-white/5">
+        <button onclick={() => (currentView = 'board')} class="border rounded px-3 py-1 hover:bg-white/5">
           Evidence Board
         </button>
-        <button on:click={() => (currentView = 'create-case')} class="border rounded px-3 py-1 hover:bg-white/5">
+        <button onclick={() => (currentView = 'create-case')} class="border rounded px-3 py-1 hover:bg-white/5">
           Create Case
         </button>
-        <button on:click={() => (currentView = 'auth-demo')} class="border rounded px-3 py-1 hover:bg-white/5">
+        <button onclick={() => (currentView = 'auth-demo')} class="border rounded px-3 py-1 hover:bg-white/5">
           Auth Demo
         </button>
-        <button on:click={simulateCollaboration} class="border rounded px-3 py-1 hover:bg-white/5"> Demo Collab </button>
+        <button onclick={simulateCollaboration} class="border rounded px-3 py-1 hover:bg-white/5"> Demo Collab </button>
       </div>
       <div class="space-y-4">
         <!-- Demo Status Badge -->
@@ -171,7 +171,7 @@
         {#if $auth.isAuthenticated}
           <div class="flex items-center gap-3">
             <span>Welcome, {$auth.user?.name || $auth.user?.email}</span>
-            <button on:click={() => auth.logout()} class="border rounded px-2 py-1 hover:bg-white/5">Logout</button>
+            <button onclick={() => auth.logout()} class="border rounded px-2 py-1 hover:bg-white/5">Logout</button>
           </div>
         {:else}
           <div class="text-sm opacity-80">Not authenticated</div>
@@ -207,21 +207,21 @@
               <div>
                 <div class="flex gap-2 flex-wrap">
                   <button
-                    on:click={() => auth.login('test@example.com', 'password123')}
+                    onclick={() => auth.login('test@example.com', 'password123')}
                     class="border rounded px-2 py-1 hover:bg-white/5"
                     disabled={$auth.isLoading}
                   >
                     Mock Login
                   </button>
                   <button
-                    on:click={() => auth.logout()}
+                    onclick={() => auth.logout()}
                     class="border rounded px-2 py-1 hover:bg-white/5"
                     disabled={!$auth.isAuthenticated}
                   >
                     Logout
                   </button>
                   <button
-                    on:click={() => auth.checkAuth()}
+                    onclick={() => auth.checkAuth()}
                     class="border rounded px-2 py-1 hover:bg-white/5"
                     disabled={$auth.isLoading}
                   >

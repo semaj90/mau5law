@@ -16,7 +16,7 @@ https://svelte.dev/e/js_parse_error -->
   let ragQuery = $state('');
   let ragResults = $state<any[]>([]);
   let systemMetrics = $state({
-    gpuAcceleration: false,
+    gpuAcceleration false,
     ollamaStatus: 'unknown',
     processingSpeed: 0,
     caseAIScore: 0,
@@ -203,7 +203,7 @@ https://svelte.dev/e/js_parse_error -->
         },
         body: JSON.stringify({
           query: ragQuery,
-          jurisdiction: selectedJurisdiction,
+          jurisdiction selectedJurisdiction,
           maxResults: 5,
           includeContext7: true,
           prioritizeFactChecked: true,
@@ -510,7 +510,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="flex space-x-2">
             <button
               type="button"
-              on:click={processLegalDocuments}
+              onclick={processLegalDocuments}
               disabled={!canProcess}
               class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
             >
@@ -570,7 +570,7 @@ https://svelte.dev/e/js_parse_error -->
             <div class="flex space-x-2 mt-3">
               <button
                 type="button"
-                on:click={executeRAGQuery}
+                onclick={executeRAGQuery}
                 disabled={!canQuery}
                 class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
               >
@@ -679,7 +679,7 @@ https://svelte.dev/e/js_parse_error -->
                     </p>
                     <div class="flex justify-between items-center text-xs text-gray-500">
                       <span
-                        >Jurisdiction: {(
+                        >Jurisdiction {(
                           result as {
                             success?: unknown;
                             documents?: unknown;
@@ -780,7 +780,7 @@ https://svelte.dev/e/js_parse_error -->
                 <h4 class="font-semibold text-gray-800 mb-2">{doc.filename ?? 'Untitled Document'}</h4>
                 <div class="space-y-1 text-sm">
                   <div class="flex justify-between">
-                    <span class="text-gray-600">Jurisdiction:</span>
+                    <span class="text-gray-600">Jurisdiction</span>
                     <span class="font-medium">{doc.jurisdiction ?? 'Unknown'}</span>
                   </div>
                   <div class="flex justify-between">
@@ -826,7 +826,7 @@ https://svelte.dev/e/js_parse_error -->
         </h3>
         <button
           type="button"
-          on:click={clearLogs}
+          onclick={clearLogs}
           class="px-3 py-1 border border-gray-300 text-sm rounded-md hover:bg-gray-50"
         >
           Clear Logs

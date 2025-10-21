@@ -35,7 +35,7 @@
           default: 'h-10 px-4 py-2',
           sm: 'h-9 rounded-md px-3',
           lg: 'h-11 rounded-md px-8',
-          icon: 'h-8 w-8',
+          icon 'h-8 w-8',
           icon_sm: 'h-6 w-6',
           icon_lg: 'h-12 w-12',
           xs: 'h-8 rounded px-2 text-xs',
@@ -130,7 +130,7 @@
   let buttonClass = $derived(cn(buttonVariants({ variant, size }), classAttr, className));
   // Lightweight manual event callbacks (avoids deprecated createEventDispatcher)
   let onAnalytics: ((e: ButtonAnalyticsEvent) => void) | null = null;
-  let onCache: ((p: { key: string; action: string }) => void) | null = null;
+  let onCache: ((p: { key: string; action string }) => void) | null = null;
   let onClickAnalytics: ((e: ButtonAnalyticsEvent) => void) | null = null;
   // Enhanced click handler with analytics and XState integration
   function handleClick(event: MouseEvent) {
@@ -139,7 +139,7 @@
     const analyticsEvent: ButtonAnalyticsEvent = {
       id,
       category: analyticsCategory,
-      action: analyticsAction,
+      action analyticsAction,
       label: analyticsLabel || (event.target as HTMLElement)?.textContent || '',
       timestamp: Date.now(),
       context: xstateContext,
@@ -154,7 +154,7 @@
     // Cache interaction if cacheKey provided
     if (cacheKey && browser) {
       lokiButtonCache.recordInteraction(cacheKey, analyticsEvent);
-      onCache?.({ key: cacheKey, action: 'click' });
+      onCache?.({ key: cacheKey, action 'click' });
     }
     onClickAnalytics?.(analyticsEvent);
     // Call the onclick prop if provided
@@ -227,7 +227,7 @@
     aria-controls={ariaControls}
     aria-busy={loading}
     data-testid={testId || 'button'}
-    on:click={handleClick}
+    onclick={handleClick}
     {...restProps}
   >
     {#if loading}

@@ -93,10 +93,10 @@
   <div class="space-y-4">
     <h1>Performance Dashboard</h1>
     <div class="space-y-4">
-      <button class="space-y-4" on:click={() => toggleAutoRefresh()}>
+      <button class="space-y-4" onclick={() => toggleAutoRefresh()}>
         {autoRefresh ? '🔄 Auto Refresh On' : '⏸️ Auto Refresh Off'}
       </button>
-      <button class="space-y-4" on:click={() => loadMetrics()}> 🔄 Refresh Now </button>
+      <button class="space-y-4" onclick={() => loadMetrics()}> 🔄 Refresh Now </button>
     </div>
   </div>
   <!-- System Health Cards -->
@@ -229,7 +229,7 @@
     border-radius: 0.375rem;
     cursor: pointer;
     font-weight: 500,
-    transition: all 0.2;
+    transition all 0.2;
   }
   .btn-primary {
     background: var(--primary-color);
@@ -302,7 +302,7 @@
   .progress-fill {
     height: 100%;
     background: var(--primary-color);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .chart-section {
     background: white;
@@ -349,7 +349,7 @@
   .peak-hour-bar {
     flex: 1,
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     height: 100%;
   }
@@ -364,7 +364,7 @@
     color: var(--text-secondary);
     margin-top: 0.5rem;
     writing-mode: vertical-rl;
-    text-orientation: mixed;
+    text-orientation mixed;
   }
   .bar-count {
     font-size: 0.75rem;

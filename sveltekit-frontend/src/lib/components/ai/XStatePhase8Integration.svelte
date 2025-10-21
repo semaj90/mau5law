@@ -137,7 +137,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
       recentActions: userContext.recentActions,
       caseId: userContext.currentCase,
       timeOnPage: 0,
-      scrollPosition: 0,
+      scrollPosition 0,
       mouseActivity: [],
       keyboardActivity: [],
     } as any);
@@ -172,7 +172,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     send({
       type: 'UPDATE_CASE_DETAILS',
       title: caseTitle,
-      description: caseDescription,
+      description caseDescription,
     });
     // Update matrix UI
     updateMatrixUINodes();
@@ -180,7 +180,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     performAIReranking('case_update', [caseTitle, caseDescription]);
   }
 
-  async function performAIReranking(action: string, ctx: string[]): Promise<void> {
+  async function performAIReranking(action string, ctx: string[]): Promise<void> {
     try {
       const appContext = (get(machineContext) as Partial<LegalFormContext>) || {};
       const userContext: UserContext = {
@@ -224,7 +224,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     showAIPanel = true;
   }
 
-  function applyAIRecommendation(recommendation: string): void {
+  function applyAIRecommendation(recommendation string): void {
     send({ type: 'APPLY_AI_RECOMMENDATION', recommendation });
     // Apply the recommendation based on its content
     if (recommendation.includes('priority to HIGH')) {
@@ -302,7 +302,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                   onchange={handleFileUpload}
                   class="hidden"
                 />
-                <button on:click={() => fileInput?.click()} class="yorha-button px-6 py-3 bg-blue-600 text-white">
+                <button onclick={() => fileInput?.click()} class="yorha-button px-6 py-3 bg-blue-600 text-white">
                   Select Evidence Files
                 </button>
                 <p class="text-gray-400 text-sm mt-2">Supported: PDF, Images, Documents</p>
@@ -328,7 +328,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
               {#if $machineState.matches('evidenceUpload')}
                 <div class="mt-2">
                   <button
-                    on:click={handleNextStep}
+                    onclick={handleNextStep}
                     disabled={!$machineContext?.evidenceFiles?.length}
                     class="yorha-button px-6 py-2 bg-yellow-400 text-black disabled:opacity-50"
                   >
@@ -409,9 +409,9 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
 
               {#if $machineState.matches('caseDetails')}
                 <div class="flex gap-3">
-                  <button on:click={handleBackStep} class="yorha-button px-4 py-2 bg-gray-600 text-white"> Back </button>
+                  <button onclick={handleBackStep} class="yorha-button px-4 py-2 bg-gray-600 text-white"> Back </button>
                   <button
-                    on:click={handleNextStep}
+                    onclick={handleNextStep}
                     disabled={!caseTitle.trim() || !caseDescription.trim()}
                     class="yorha-button px-6 py-2 bg-yellow-400 text-black disabled:opacity-50"
                   >
@@ -452,7 +452,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
                   </div>
                   <p class="text-gray-300 text-xs mb-2">{rec.reasoning}</p>
                   <button
-                    on:click={() => applyAIRecommendation(rec.nextAction)}
+                    onclick={() => applyAIRecommendation(rec.nextAction)}
                     class="yorha-button px-3 py-1 text-xs bg-yellow-400 text-black"
                   >
                     Apply
@@ -499,7 +499,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     font-weight: 700,
   }
   .progress-fill {
-    transition: width 0.5s ease-in-out;
+    transition width 0.5s ease-in-out;
   }
   .loading-spinner {
     width: 2rem;
@@ -507,13 +507,13 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     border: 2px solid #fbbf24;
     border-top-color: transparent;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   .accordion-trigger[data-accordion-trigger] {
     background-color: rgba(255, 255, 255, 0.03);
   }
   .accordion-content {
-    animation: slideDown 0.3s ease-out;
+    animation slideDown 0.3s ease-out;
   }
   @keyframes slideDown {
     from {

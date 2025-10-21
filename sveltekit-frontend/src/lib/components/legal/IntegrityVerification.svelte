@@ -360,7 +360,7 @@ Displays detailed integrity verification results with AI analysis
 
 <style>
   .integrity-verification {
-    animation: fadeIn 0.5s ease-out;
+    animation fadeIn 0.5s ease-out;
   }
   @keyframes fadeIn {
     from {

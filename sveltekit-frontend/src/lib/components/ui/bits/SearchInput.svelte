@@ -115,7 +115,7 @@
     }, debounceMs);
   }
   // Handle suggestion selection
-  function selectSuggestion(suggestion: VectorSearchResult) {
+  function selectSuggestion(suggestion VectorSearchResult) {
     value = suggestion.content;
     showSuggestions = false;
     onsearch?.(suggestion.content);
@@ -149,7 +149,7 @@
   }
 </script>
 
-<svelte:window on:click={handleClickOutside} onkeydown={handleKeydown} />
+<svelte:window onclick={handleClickOutside} onkeydown={handleKeydown} />
 <div class="{containerClasses} search-container">
   <!-- Main Search Input -->
   <div class="relative">
@@ -176,7 +176,7 @@
     {#if value}
       <button
         class="absolute right-10 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-        on:click={clearSearch}
+        onclick={clearSearch}
       >
         <X class={iconSizes[size]} />
       </button>
@@ -185,7 +185,7 @@
     {#if filters.length > 0}
       <button
         class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-        on:click={() => (showFilters = !showFilters)}
+        onclick={() => (showFilters = !showFilters)}
         class:text-blue-600={filters.some(f => f.active)}
       >
         <Filter class={iconSizes[size]} />
@@ -218,7 +218,7 @@
       </div>
       <div class="flex flex-wrap gap-2">
         {#each filters as filter, index}
-          <button class="nes-btn is-small" ; class:is-primary={filter.active} on:click={() => toggleFilter(index)}>
+          <button class="nes-btn is-small" ; class:is-primary={filter.active} onclick={() => toggleFilter(index)}>
             {filter.label}
           </button>
         {/each}
@@ -242,7 +242,7 @@
           {#each suggestions as suggestion}
             <button
               class="w-full text-left p-2 rounded hover:bg-gray-100 transition-colors"
-              on:click={() => selectSuggestion(suggestion)}
+              onclick={() => selectSuggestion(suggestion)}
             >
               <div class="font-medium text-sm truncate">{suggestion.content}</div>
               {#if suggestion.score}
@@ -273,7 +273,7 @@
           {#each searchHistory.slice(0, 3) as historyItem}
             <button
               class="w-full text-left p-2 rounded hover:bg-gray-100 transition-colors"
-              on:click={() => {
+              onclick={() => {
                 value = historyItem;
                 performSearch(historyItem);
               }}
@@ -295,7 +295,7 @@
   }
   /* Vector search indicator glow */
   .nes-input:focus-within .text-purple-500 {
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   @keyframes pulse {
     0%,
@@ -309,6 +309,6 @@
   /* Suggestion hover animation */
   .hover\:bg-gray-100:hover {
     transform: translateX(2px);
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
 </style>

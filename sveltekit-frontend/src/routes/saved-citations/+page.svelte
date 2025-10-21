@@ -24,7 +24,7 @@ https://svelte.dev/e/js_parse_error -->
   import { Copy, Edit, MoreVertical, Plus, Search, Star, Tag, Trash2 } from 'lucide-svelte';
   import { onMount } from 'svelte';
   import type { Citation } from '$lib/types/api';
-  let editingCitation: Citation | null = $state(null);
+  let editingCitation Citation | null = $state(null);
   let searchQuery = $state('');
   let selectedCategory = $state('all');
   let showAddDialog = $state(false);
@@ -93,7 +93,7 @@ https://svelte.dev/e/js_parse_error -->
       }
       showAddDialog = false;
     } catch (error) {
-      console.error('Error saving citation:', error);
+      console.error('Error saving citation', error);
     }
   }
   async function deleteCitation(citationId: string) {
@@ -101,23 +101,23 @@ https://svelte.dev/e/js_parse_error -->
       // In a real app, this would DELETE /api/user/saved-citations/{id}
       savedCitations = savedCitations.filter((c) => c.id !== citationId);
     } catch (error) {
-      console.error('Error deleting citation:', error);
+      console.error('Error deleting citation', error);
     }
   }
-  async function toggleFavorite(citation: unknown) {
+  async function toggleFavorite(citation unknown) {
     try {
       citation.isFavorite = !citation.isFavorit;
       // In a real app, this would PATCH /api/user/saved-citations/{id}
       savedCitations = [...savedCitations];
     } catch (error) {
-      console.error('Error updating citation:', error);
+      console.error('Error updating citation', error);
     }
   }
-  function copyCitation(citation: unknown) {
+  function copyCitation(citation unknown) {
     const citationText = `${citation.content}\n\nSource: ${citation.source}`;
     navigator.clipboard.writeText(citationText);
   }
-  function editCitation(citation: unknown) {
+  function editCitation(citation unknown) {
     editingCitation = { ...citation }
     editingCitation.tags = citation.tags.join(', ');
   }
@@ -137,7 +137,7 @@ https://svelte.dev/e/js_parse_error -->
       }
       editingCitation = null;
     } catch (error) {
-      console.error('Error updating citation:', error);
+      console.error('Error updating citation', error);
     }
   }
   // Stats
@@ -193,7 +193,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="space-y-4">
   <Button
         class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-add-btn"
-        on:click={() =>
+        onclick={() =>
 (showAddDialog = true)}
         aria-label="Open dialog to add a new legal citation"
         aria-describedby="add-citation-help"
@@ -236,21 +236,21 @@ https://svelte.dev/e/js_parse_error -->
                   </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent {menu}>
-                  <DropdownMenuItem on:click={() => toggleFavorite(citation)}>
+                  <DropdownMenuItem onclick={() => toggleFavorite(citation)}>
                     <Star class="w-4 h-4 mr-2" />
                     {citation.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
                   </DropdownMenuItem>
-                  <DropdownMenuItem on:click={() => copyCitation(citation)}>
+                  <DropdownMenuItem onclick={() => copyCitation(citation)}>
                     <Copy class="w-4 h-4 mr-2" />
                     Copy citation
                   </DropdownMenuItem>
-                  <DropdownMenuItem on:click={() => editCitation(citation)}>
+                  <DropdownMenuItem onclick={() => editCitation(citation)}>
                     <Edit class="w-4 h-4 mr-2" />
                     Edit
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    on:click={() => deleteCitation(citation.id)}
+                    onclick={() => deleteCitation(citation.id)}
                     class="text-destructive">
                     <Trash2 class="w-4 h-4 mr-2" />
                     Delete
@@ -307,7 +307,7 @@ https://svelte.dev/e/js_parse_error -->
             <Button
               class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-filter-btn"
               variant="secondary"
-              on:click={() =>
+              onclick={() =>
 {
                 searchQuery = '';
                 selectedCategory = 'all';
@@ -331,7 +331,7 @@ https://svelte.dev/e/js_parse_error -->
             </p>
             <Button
               class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-first-citation-btn"
-              on:click={() =>
+              onclick={() =>
 (showAddDialog = true)}
               aria-label="Create your first legal citation"
               aria-describedby="first-citation-help"
@@ -402,7 +402,7 @@ https://svelte.dev/e/js_parse_error -->
   <Button
     class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
     variant="secondary"
-    on:click={() =>
+    onclick={() =>
 (showAddDialog = false)}
     aria-label="Cancel citation creation and close dialog"
     role="button"
@@ -411,7 +411,7 @@ https://svelte.dev/e/js_parse_error -->
   >Cancel
   <Button
     class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-save-btn"
-    on:click={() =>
+    onclick={() =>
 saveCitation()}
     disabled={!newCitation.title || !newCitation.content}
     aria-label={!newCitation.title || !newCitation.content ? 'Save citation - Title and content required' : 'Save new legal citation'}
@@ -472,7 +472,7 @@ saveCitation()}
   <Button
     class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
     variant="secondary"
-    on:click={() =>
+    onclick={() =>
 (editingCitation = null)}
     aria-label="Cancel editing and close dialog"
     role="button"
@@ -481,7 +481,7 @@ saveCitation()}
   >Cancel
   <Button
     class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-update-btn"
-    on:click={() =>
+    onclick={() =>
 updateCitation()}
     aria-label="Save changes to citation"
     aria-describedby="update-citation-help"

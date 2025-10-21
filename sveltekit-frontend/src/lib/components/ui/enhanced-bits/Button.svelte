@@ -7,7 +7,7 @@
 </script>
 
 <button
-  on:click={() => onclick && onclick()}
+  onclick={() => onclick && onclick()}
   disabled={disabled}
   class={`px-3 py-2 rounded ${class} ${variant ?? ''} ${size ?? ''}`}
 >

@@ -134,7 +134,7 @@
     tabindex="0"
     onclick={backdropClick}
     onkeydown={e => (e.key === 'Escape' ? backdropClick(e) : null)}
-    style="animation: fadeIn 0.2s ease-out;"
+    style="animation fadeIn 0.2s ease-out;"
   >
     <div class="flex min-h-full items-center justify-center p-4">
       <div
@@ -142,7 +142,7 @@
         role="document"
         onclick={handleContentClick}
         onkeydown={e => (e.key === 'Escape' ? backdropClick(e) : null)}
-        style="animation: slideIn 0.2s ease-out;"
+        style="animation slideIn 0.2s ease-out;"
       >
         <!-- Dialog header -->
         <div class="px-6 pt-6">

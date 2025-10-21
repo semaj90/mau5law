@@ -143,7 +143,7 @@
     <div class="error-icon">⚠️</div>
     <h1>Error</h1>
     <p>{error}</p>
-    <button type="button" on:click={refreshCase}>Try Again</button>
+    <button type="button" onclick={refreshCase}>Try Again</button>
   </div>
 {:else if caseData}
   <div class="detective-page">
@@ -161,7 +161,7 @@
         </div>
       </div>
       <div class="case-actions">
-        <button type="button" on:click={refreshCase}>Refresh</button>
+        <button type="button" onclick={refreshCase}>Refresh</button>
         <a href="/cases/{caseId}" class="view-case-btn">View Case Details</a>
       </div>
     </header>
@@ -241,7 +241,7 @@
 <style>
   .loading-container, .error-container {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     height: 100vh;
@@ -254,7 +254,7 @@
     border: 3px solid #f3f4f6;
     border-top: 3px solid #3b82f6;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     0% { transform: rotate(0deg), }
@@ -269,11 +269,11 @@
     color: white;
     border: none;
     border-radius: 0.375rem;
-    text-decoration: none;
+    text-decoration none;
     cursor: pointer;
     font-weight: 500,
   }
-  .error-container button:hover, .back-link:hover {
+  .error-container buttonhover, .back-link:hover {
     background: #2563eb;
   }
   .detective-page {
@@ -339,16 +339,16 @@
     padding: 0.5rem 1rem;
     border-radius: 0.375rem;
     font-weight: 500;
-    text-decoration: none;
+    text-decoration none;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .case-actions button {
     background: #f3f4f6;
     color: #374151;
     border: 1px solid #d1d5db;
   }
-  .case-actions button:hover {
+  .case-actions buttonhover {
     background: #e5e7eb;
   }
   .view-case-btn {
@@ -398,7 +398,7 @@
   }
   .metric {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     text-align: center;
     padding: 0.75rem;

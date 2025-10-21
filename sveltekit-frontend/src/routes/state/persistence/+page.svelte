@@ -29,7 +29,7 @@ https://svelte.dev/e/expected_token -->
         lastActivity: '2024-01-10T14:30:22.000Z',
       },
       timestamp: '2024-01-10T14:30:22.000Z',
-      version: '1.0.2',
+      version '1.0.2',
       size: 1247,
       checksum: 'sha256:a1b2c3d4...',
     },
@@ -49,7 +49,7 @@ https://svelte.dev/e/expected_token -->
         notes: 'Awaiting additional documentation from plaintiff.',
       },
       timestamp: '2024-01-10T14:20:15.000Z',
-      version: '2.1.0',
+      version '2.1.0',
       size: 2891,
       checksum: 'sha256:e5f6g7h8...',
     },
@@ -68,10 +68,10 @@ https://svelte.dev/e/expected_token -->
         totalChunks: 342,
         processedChunks: 298,
         batchSize: 32,
-        modelVersion: 'gemma-3-legal-v1.2'
+        modelVersion 'gemma-3-legal-v1.2'
       },
       timestamp: '2024-01-10T14:10:30.000Z',
-      version: '3.0.1',
+      version '3.0.1',
       size: 5672,
       checksum: 'sha256:i9j0k1l2...',
     }
@@ -83,7 +83,7 @@ https://svelte.dev/e/expected_token -->
   async function loadPersistedStates() {
     loading = true;
     try {
-      // In production: const response = await fetch('/api/state/persistence')
+      // In production const response = await fetch('/api/state/persistence')
       await new Promise(resolve => setTimeout(resolve, 1000));
       persistedStates = mockPersistedState;
     } catch (error) {
@@ -195,7 +195,7 @@ https://svelte.dev/e/expected_token -->
         <div class="states-list">
           <h2>📋 Persisted States ({persistedStates.length})</h2>
           <div class="filter-controls">
-            <button class="nes-btn" variant="ghost" on:click={loadPersistedStates}>
+            <button class="nes-btn" variant="ghost" onclick={loadPersistedStates}>
               🔄 Refresh
             </button>
           </div>
@@ -203,7 +203,7 @@ https://svelte.dev/e/expected_token -->
             {#each persistedStates.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()) as state}
               <div class="state-nier-bits-card {selectedState?.id === state.id ? 'selected' : ''}"
                    role="button" tabindex="0"
-                on:click={() => selectedState = selectedState?.id === state.id ? null : state}>
+                onclick={() => selectedState = selectedState?.id === state.id ? null : state}>
                 <div class="state-header">
                   <div class="state-info">
                     <h3 class="state-title">{getMachineDisplayName(state.machineId)}</h3>
@@ -224,7 +224,7 @@ https://svelte.dev/e/expected_token -->
                     <span class="detail-value">{state.userId}</span>
                   </div>
                   <div class="detail-row">
-                    <span class="detail-label">Version:</span>
+                    <span class="detail-label">Version</span>
                     <span class="detail-value">{state.version}</span>
                   </div>
                   <div class="detail-row">
@@ -235,7 +235,7 @@ https://svelte.dev/e/expected_token -->
                 <div class="state-actions">
                   <button class="nes-btn"
                     size="sm"
-                    on:click={(e) => {
+                    onclick={(e) => {
                       e.stopPropagation();
                       restoreState(state.id);
                     }}
@@ -245,7 +245,7 @@ https://svelte.dev/e/expected_token -->
                   </button>
                   <button class="nes-btn is-error"
                     size="sm"
-                    on:click={(e) => {
+                    onclick={(e) => {
                       e.stopPropagation();
                       deletePersistedState(state.id);
                     }}
@@ -285,7 +285,7 @@ https://svelte.dev/e/expected_token -->
                       <span class="metadata-value">{selectedState.userId}</span>
                     </div>
                     <div class="metadata-item">
-                      <span class="metadata-label">Version:</span>
+                      <span class="metadata-label">Version</span>
                       <span class="metadata-value">{selectedState.version}</span>
                     </div>
                     <div class="metadata-item">
@@ -328,10 +328,10 @@ https://svelte.dev/e/expected_token -->
   }
   .breadcrumb-link {
     color: #3b82f6;
-    text-decoration: none;
+    text-decoration none;
   }
   .breadcrumb-link:hover {
-    text-decoration: underli;
+    text-decoration underli;
   }
   .breadcrumb-separator {
     color: #9ca3af;
@@ -382,7 +382,7 @@ https://svelte.dev/e/expected_token -->
     border: 4px solid #f3f4f6;
     border-top: 4px solid #3b82f6;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
   @keyframes spin {
@@ -415,7 +415,7 @@ https://svelte.dev/e/expected_token -->
   }
   .states-container {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .state-card {
@@ -424,7 +424,7 @@ https://svelte.dev/e/expected_token -->
     border-radius: 12px;
     padding: 1.5rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .state-card:hover {
     border-color: #d1d5db;
@@ -461,7 +461,7 @@ https://svelte.dev/e/expected_token -->
   }
   .state-meta {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: flex-end;
     gap: 0.25rem;
     font-size: 0.875rem;
@@ -472,7 +472,7 @@ https://svelte.dev/e/expected_token -->
   }
   .state-details {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
     margin-bottom: 1rem;
     padding: 1rem;
@@ -512,7 +512,7 @@ https://svelte.dev/e/expected_token -->
     gap: 0.75rem;
   }
   .state-inspector {
-    position: sticky;
+    position sticky;
     top: 2rem;
   }
   .inspector-card {
@@ -577,7 +577,7 @@ https://svelte.dev/e/expected_token -->
       grid-template-columns: 1fr;
     }
     .state-inspector {
-      position: static;
+      position static;
     }
   }
   @media (max-width: 768px) {
@@ -585,7 +585,7 @@ https://svelte.dev/e/expected_token -->
       padding: 1rem;
     }
     .state-header {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
       gap: 1rem;
     }

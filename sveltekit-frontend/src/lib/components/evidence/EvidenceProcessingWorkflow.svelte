@@ -103,7 +103,7 @@
     routingKey: evidenceId;
   }
   let rabbitClient: unknown = null;
-  let rabbitSubscription: unknown = null;
+  let rabbitSubscription unknown = null;
   async function connectRabbitMQ() {
     if (!useRabbitMQ || typeof window === 'undefined') return;
     try {
@@ -168,9 +168,9 @@
   let dragOver = false;
   let selectedFile: File | null = null;
   let neuralSpriteConfig = {
-    enable_compression: neuralSpriteEnabled
+    enable_compression neuralSpriteEnabled
     predictive_frames: 3,
-    ui_layout_compression: false
+    ui_layout_compression false
     target_compression_ratio: 50
   }
   // Reactive values with safe fallbacks
@@ -420,7 +420,7 @@
           </div>
         </div>
         {#if !isProcessing && !isCompleted}
-          <button type="button" class="bits-btn" on:click={resetWorkflow}> Change File </button>
+          <button type="button" class="bits-btn" onclick={resetWorkflow}> Change File </button>
         {/if}
       </div>
     {/if}
@@ -440,7 +440,7 @@
         {#if neuralSpriteConfig.enable_compression}
           <div class="space-y-3 ml-6 border-l-2 border-purple-200 pl-4">
             <div class="flex items-center gap-2">
-              <label for="compression-ratio" class="text-sm text-gray-600 w-32">Compression:</label>
+              <label for="compression-ratio" class="text-sm text-gray-600 w-32">Compression</label>
               <input
                 id="compression-ratio"
                 type="range"
@@ -484,7 +484,7 @@
     <!-- Processing Controls -->
     {#if selectedFile && !isProcessing && !isCompleted && !hasError}
       <div class="flex justify-center">
-        <button type="button" on:click={startProcessing} class="px-8 py-3 bits-btn">
+        <button type="button" onclick={startProcessing} class="px-8 py-3 bits-btn">
           🚀 Start Processing Workflow
         </button>
       </div>
@@ -526,7 +526,7 @@
         </div>
         {#if canCancel}
           <div class="flex justify-center">
-            <button type="button" class="bits-btn" on:click={cancelProcessing}> Cancel Processing </button>
+            <button type="button" class="bits-btn" onclick={cancelProcessing}> Cancel Processing </button>
           </div>
         {/if}
       </div>
@@ -544,8 +544,8 @@
           {/each}
         </div>
         <div class="flex gap-2 mt-3">
-          <button type="button" class="bits-btn" on:click={retryProcessing}> Retry </button>
-          <button type="button" class="bits-btn" on:click={resetWorkflow}> Reset </button>
+          <button type="button" class="bits-btn" onclick={retryProcessing}> Retry </button>
+          <button type="button" class="bits-btn" onclick={resetWorkflow}> Reset </button>
         </div>
       </div>
     {/if}
@@ -563,22 +563,22 @@
             <div class="space-y-3">
               <div class="flex items-center justify-center gap-4">
                 <!-- ensure each element has unique attributes and no duplicate handlers -->
-                <button type="button" class="bits-btn px-4 py-2" on:click={openPortableArtifact}>
+                <button type="button" class="bits-btn px-4 py-2" onclick={openPortableArtifact}>
                   📦 Download Portable Artifact
                 </button>
                 {#if currentState.context.minioStorage}
-                  <button type="button" class="bits-btn" on:click={openMinioStorage}> 🗄️ View in Archive </button>
+                  <button type="button" class="bits-btn" onclick={openMinioStorage}> 🗄️ View in Archive </button>
                 {/if}
               </div>
               {#if currentState.context.portableArtifact?.compressionRatio}
                 <div class="text-sm text-gray-600">
-                  Neural Sprite Compression: {currentState.context.portableArtifact.compressionRatio}:1 ratio
+                  Neural Sprite Compression {currentState.context.portableArtifact.compressionRatio}:1 ratio
                 </div>
               {/if}
             </div>
           {/if}
           <div class="flex justify-center">
-            <button type="button" class="bits-btn" on:click={resetWorkflow}> Process Another Evidence </button>
+            <button type="button" class="bits-btn" onclick={resetWorkflow}> Process Another Evidence </button>
           </div>
         </div>
       </div>
@@ -591,7 +591,7 @@
           <h3 class="font-medium text-yellow-800">Processing Cancelled</h3>
           <p class="text-sm text-yellow-700">Workflow was cancelled by user</p>
           <div class="flex justify-center">
-            <button type="button" class="bits-btn" on:click={resetWorkflow}> Start New Workflow </button>
+            <button type="button" class="bits-btn" onclick={resetWorkflow}> Start New Workflow </button>
           </div>
         </div>
       </div>

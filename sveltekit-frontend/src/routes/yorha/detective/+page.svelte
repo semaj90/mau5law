@@ -258,7 +258,7 @@
               ? 'border-amber-500/60 bg-amber-500/15'
               : 'border-slate-700 bg-black/60 hover:border-amber-500/40'
           }`}
-          on:click={() => selectSection(section.id)}
+          onclick={() => selectSection(section.id)}
         >
           <div class="flex items-center gap-3">
             <section.icon class="h-6 w-6 text-amber-300" />

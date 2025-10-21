@@ -71,10 +71,10 @@
   let dragState = $state({ isDragging: false, startX: 0, startY: 0, offsetX: 0, offsetY: 0 });
   // LOD configuration based on N64 constraints
   const lodConfig = {
-    0: { textureSize: 2048, quality: 1.0, description: 'Ultra High' },
-    1: { textureSize: 1024, quality: 0.8, description: 'High' },
-    2: { textureSize: 512, quality: 0.6, description: 'Medium' },
-    3: { textureSize: 256, quality: 0.4, description: 'Low (N64 Style)' }
+    0: { textureSize: 2048, quality: 1.0, description 'Ultra High' },
+    1: { textureSize: 1024, quality: 0.8, description 'High' },
+    2: { textureSize: 512, quality: 0.6, description 'Medium' },
+    3: { textureSize: 256, quality: 0.4, description 'Low (N64 Style)' }
   }
   // Derived values for automatic LOD switching
   let recommendedLOD = $derived(() => {
@@ -382,7 +382,7 @@ if (!browser || !enableWebGPU) return;
     <div class="navigation-controls">
       <LoadingButton
         loading={isLoading}
-        on:click={() => changePage(currentPage - 1)}
+        onclick={() => changePage(currentPage - 1)}
         disabled={currentPage <= 1 || isLoading}
         variant="ghost"
         size="sm"
@@ -394,7 +394,7 @@ if (!browser || !enableWebGPU) return;
       </span>
       <LoadingButton
         loading={isLoading}
-        on:click={() => changePage(currentPage + 1)}
+        onclick={() => changePage(currentPage + 1)}
         disabled={currentPage >= totalPages || isLoading}
         variant="ghost"
         size="sm"
@@ -403,16 +403,16 @@ if (!browser || !enableWebGPU) return;
       </LoadingButton>
     </div>
     <div class="view-controls">
-      <LoadingButton on:click={handleZoomIn} variant="ghost" size="sm">
+      <LoadingButton onclick={handleZoomIn} variant="ghost" size="sm">
         {#snippet children()}<ZoomIn class="w-4 h-4" />{/snippet}
       </LoadingButton>
       <span class="zoom-info">
         {Math.round(zoomLevel * 100)}%
       </span>
-      <LoadingButton on:click={handleZoomOut} variant="ghost" size="sm">
+      <LoadingButton onclick={handleZoomOut} variant="ghost" size="sm">
         {#snippet children()}<ZoomOut class="w-4 h-4" />{/snippet}
       </LoadingButton>
-      <LoadingButton on:click={handleRotate} variant="ghost" size="sm">
+      <LoadingButton onclick={handleRotate} variant="ghost" size="sm">
         {#snippet children()}<RotateCw class="w-4 h-4" />{/snippet}
       </LoadingButton>
     </div>
@@ -539,7 +539,7 @@ if (!browser || !enableWebGPU) return;
     font-size: 0.75rem;
   }
   .document-canvas-container {
-    position: relative;
+    position relative;
     height: 500px;
     background: #2a2a3;
     border: 2px solid #444;
@@ -551,14 +551,14 @@ if (!browser || !enableWebGPU) return;
     cursor: grabbing;
   }
   .loading-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     justify-content: center;
     align-items: center;
     gap: 1rem;
@@ -604,7 +604,7 @@ if (!browser || !enableWebGPU) return;
     }
   }
   .nes-progress-bar.indeterminate {
-    animation: indeterminate 1.5s linear infinite;
+    animation indeterminate 1.5s linear infinite;
   }
   /* Responsive adjustments */
   @media (max-width: 768px) {

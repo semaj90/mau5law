@@ -71,7 +71,7 @@
   class:is-rounded={rounded}
   class:is-hovered={isHovered}
   {disabled}
-  on:click={handleClick}
+  onclick={handleClick}
   onkeydown={handleKeydown}
   onmouseenter={() => (isHovered = true)}
   onmouseleave={() => (isHovered = false)}
@@ -85,7 +85,7 @@
 
 <style>
   .nes-btn {
-    position: relative;
+    position relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -95,7 +95,7 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     cursor: pointer;
-    transition: all 0.1s ease;
+    transition all 0.1s ease;
     user-select: none;
 /* Base NES styling */ {}
     background: theme('colors.nes.white');
@@ -151,7 +151,7 @@
   }
 /* Loading Animation */ {}
   .loading-spinner {
-    animation: nes-blink 0.5s step-end infinite;
+    animation nes-blink 0.5s step-end infinite;
   }
   .is-loading {
     cursor: wait;

@@ -92,7 +92,7 @@
     />
     <button
       type="button"
-      on:click={performSearch}
+      onclick={performSearch}
       disabled={!canSearch}
       class="nes-btn {canSearch ? 'is-primary' : 'is-disabled'} search-button"
     >
@@ -274,7 +274,7 @@
   /* Responsive design */
   @media (max-width: 600px) {
     .search-input-group {
-      flex-direction: column;
+      flex-direction column;
     }
     .search-input {
       min-width: 100%;
@@ -283,11 +283,11 @@
       width: 100%;
     }
     .search-config {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
     }
     .result-header {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
     }
   }
@@ -303,8 +303,8 @@
     border-radius: 8px;
   }
   /* Animation for loading state */
-  .search-button:disabled {
-    animation: pulse 1.5s ease-in-out infinite alternate;
+  .search-buttondisabled {
+    animation pulse 1.5s ease-in-out infinite alternate;
   }
   @keyframes pulse {
     from {

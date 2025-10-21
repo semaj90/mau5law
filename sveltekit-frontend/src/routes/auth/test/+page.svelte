@@ -41,7 +41,7 @@
       confirmPassword: 'SecurePass123!@#',
       role: 'investigator',
       department: 'Metropolitan Police Department',
-      jurisdiction: 'Washington DC',
+      jurisdiction 'Washington DC',
       badgeNumber: 'MPD-4567',
       enableTwoFactor: true
       agreeToTerms: true
@@ -92,7 +92,7 @@ await runInitialTests();
           fingerprint: btoa(JSON.stringify({ test: true }))
         },
         context: {
-          action: 'test_analysis',
+          action 'test_analysis',
           enhancedSecurity: true,
         },
         config: {
@@ -118,11 +118,11 @@ await runInitialTests();
           lastName: 'Doe',
           role: 'prosecutor',
           department: 'District Attorney Office',
-          jurisdiction: 'Los Angeles County',
+          jurisdiction 'Los Angeles County',
           badgeNumber: 'DA-123',
         },
         context: {
-          action: 'test_validation',
+          action 'test_validation',
           legalProfessionalCheck: true,
         },
         config: {
@@ -163,7 +163,7 @@ await runInitialTests();
     register: {
       email: '', firstName: '', lastName: '', password: '',
       confirmPassword: '', role: 'prosecutor', department: '',
-      jurisdiction: '', badgeNumber: '', enableTwoFactor: false
+      jurisdiction '', badgeNumber: '', enableTwoFactor: false
       agreeToTerms: false, agreeToPrivacy: false,
     }
   }
@@ -259,7 +259,7 @@ await runInitialTests();
       </div>
       <div class="flex gap-2">
         <Button class="bits-btn"
-          on:click={runInitialTests}
+          onclick={runInitialTests}
           disabled={testRunning}
           variant="ghost"
         >
@@ -297,7 +297,7 @@ await runInitialTests();
           </div.Header>
           <CardContent class="space-y-4">
             <Button class="bits-btn"
-              on:click={() => populateTestData('login')}
+              onclick={() => populateTestData('login')}
               variant="ghost"
               size="sm"
             >
@@ -322,7 +322,7 @@ await runInitialTests();
           </div.Header>
           <CardContent class="space-y-4">
             <Button class="bits-btn"
-              on:click={() => populateTestData('register')}
+              onclick={() => populateTestData('register')}
               variant="ghost"
               size="sm"
             >

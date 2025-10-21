@@ -174,24 +174,24 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
 </LazyLoader>
 <style>
   .lazy-chart-container {
-    position: relative;
+    position relative;
     background: rgba(0, 0, 0, 0.02);
     border-radius: 8px;
     overflow: hidden;
   }
   .chart-wrapper {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     width: 100%;
   }
   .chart-content {
     flex: 1,
-    position: relative;
+    position relative;
   }
   /* Mock chart styles (replace with your actual chart styling) */
   .mock-chart {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -223,7 +223,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
     background: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
     margin-bottom: 20px;
-    animation: placeholder-pulse 2s infinite;
+    animation placeholder-pulse 2s infinite;
   }
   /* Line chart placeholder */
   .placeholder-line-chart {
@@ -239,11 +239,11 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
     stroke: rgba(255, 255, 255, 0.3);
     stroke-width: 2;
     stroke-dasharray: 5, 5;
-    animation: dash-move 2s linear infinite;
+    animation dash-move 2s linear infinite;
   }
   .placeholder-point {
     fill: rgba(255, 255, 255, 0.4);
-    animation: point-pulse 2s infinite;
+    animation point-pulse 2s infinite;
   }
   /* Bar chart placeholder */
   .placeholder-bar-chart {
@@ -257,7 +257,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
     flex: 1,
     background: rgba(255, 255, 255, 0.2);
     border-radius: 2px 2px 0 0;
-    animation: bar-grow 1.5s ease-out infinite;
+    animation bar-grow 1.5s ease-out infinite;
   }
   /* Pie chart placeholder */
   .placeholder-pie-chart {
@@ -268,12 +268,12 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    position: relative;
+    position relative;
     overflow: hidden;
-    animation: pie-rotate 3s linear infinite;
+    animation pie-rotate 3s linear infinite;
   }
   .pie-slice {
-    position: absolute;
+    position absolute;
     width: 50%;
     height: 50%;
     transform-origin: 100% 100%;
@@ -309,12 +309,12 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
     flex: 1,
     background: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
-    animation: bar-pulse 2s ease-in-out infinite;
+    animation bar-pulse 2s ease-in-out infinite;
   }
   /* Error state */
   .chart-error {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     height: 100%;
@@ -364,16 +364,16 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
     }
   }
   /* Reduced motion support */
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     .placeholder-line,
     .placeholder-point,
     .placeholder-bar,
     .placeholder-pie,
     .generic-bar {
-      animation: none;
+      animation none;
     }
     .placeholder-title {
-      animation: placeholder-pulse 4s infinite;
+      animation placeholder-pulse 4s infinite;
     }
   }
 </style>

@@ -145,7 +145,7 @@
           <button
             class="group-header"
             type="button"
-            on:click={() => toggleGroup(g)}
+            onclick={() => toggleGroup(g)}
             aria-expanded={!groupCollapse[g]}
             id={`group-${g}`}
           >
@@ -273,11 +273,11 @@
     background: #fff;
     border: 1px solid #e5e7eb;
     border-radius: 0.4rem;
-    text-decoration: none;
+    text-decoration none;
     font-size: 0.8rem;
     line-height: 1.1,
     color: #1f2937;
-    transition:
+    transition
       background 0.12s,
       border-color 0.12s;
   }

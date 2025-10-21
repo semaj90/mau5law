@@ -142,7 +142,7 @@
       content: newNote.content,
       markdown: newNote.content,
       html: `<p>${newNote.content.replace(/\n/g, '<br>')}</p>`,
-      contentJson: { content: newNote.content },
+      contentJson { content: newNote.content },
       noteType: newNote.noteType,
       tags,
       caseId: newNote.caseId || undefined,
@@ -274,13 +274,13 @@
     </div>
     <div class="flex gap-2">
       <!-- Use native buttons for accessibility; visually mimic Button inner content -->
-      <button type="button" class="inline-block" on:click={() => (showCreateNote = !showCreateNote)}>
+      <button type="button" class="inline-block" onclick={() => (showCreateNote = !showCreateNote)}>
         <span class="inline-flex items-center px-3 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm">
           <Plus class="h-4 w-4 mr-2" />
           New Note
         </span>
       </button>
-      <button type="button" class="inline-block" on:click={() => (showFilters = !showFilters)}>
+      <button type="button" class="inline-block" onclick={() => (showFilters = !showFilters)}>
         <span class="inline-flex items-center px-3 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm">
           <Filter class="h-4 w-4 mr-2" />
           Filters
@@ -357,7 +357,7 @@
     <CardContent class="space-y-4">
       <div class="flex gap-4">
         <div class="flex-1">
-          <!-- add explicit event typing via on:keydown -->
+          <!-- add explicit event typing via onkeydown -->
           <Input
             type="text"
             placeholder="Search notes, content, citations..."
@@ -369,7 +369,7 @@
         <button
           type="button"
           class="inline-flex items-center px-3 py-1 rounded-md bg-white border hover:bg-slate-50 text-sm"
-          on:click={applyFilters}
+          onclick={applyFilters}
         >
           <Search class="h-4 w-4 mr-2" />
           Search
@@ -377,7 +377,7 @@
         <button
           type="button"
           class="inline-flex items-center px-3 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm"
-          on:click={performSemSearch}
+          onclick={performSemSearch}
         >
           <Brain class="h-4 w-4 mr-2" />
           Semantic
@@ -385,7 +385,7 @@
         <button
           type="button"
           class="inline-flex items-center px-3 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm"
-          on:click={clearAllFilters}
+          onclick={clearAllFilters}
         >
           Clear
         </button>
@@ -421,7 +421,7 @@
             <button
               type="button"
               class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm"
-              on:click={() => exportNotes('json')}
+              onclick={() => exportNotes('json')}
             >
               <Download class="h-4 w-4 mr-2" />
               JSON
@@ -429,7 +429,7 @@
             <button
               type="button"
               class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm"
-              on:click={() => exportNotes('markdown')}
+              onclick={() => exportNotes('markdown')}
             >
               <Download class="h-4 w-4 mr-2" />
               Markdown
@@ -437,7 +437,7 @@
             <button
               type="button"
               class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm"
-              on:click={() => exportNotes('legal_brief')}
+              onclick={() => exportNotes('legal_brief')}
             >
               <Gavel class="h-4 w-4 mr-2" />
               Brief
@@ -495,7 +495,7 @@
             {#each newNote.tags as tag, index}
               <Badge variant="outline" class="flex items-center gap-1">
                 {tag}
-                <button type="button" class="ml-1" on:click={() => removeTag(index)}>
+                <button type="button" class="ml-1" onclick={() => removeTag(index)}>
                   <X class="h-3 w-3" />
                 </button>
               </Badge>
@@ -517,7 +517,7 @@
           <button
             type="button"
             class="inline-flex items-center px-3 py-1 rounded-md bg-blue-600 text-white text-sm"
-            on:click={createNote}
+            onclick={createNote}
           >
             <Save class="h-4 w-4 mr-2" />
             Save Note
@@ -525,7 +525,7 @@
           <button
             type="button"
             class="inline-flex items-center px-3 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm"
-            on:click={() => (showCreateNote = false)}
+            onclick={() => (showCreateNote = false)}
           >
             Cancel
           </button>
@@ -543,7 +543,7 @@
           <button
             type="button"
             class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm ml-2"
-            on:click={() => (showSemanticSearch = false)}
+            onclick={() => (showSemanticSearch = false)}
           >
             <X class="h-4 w-4" />
           </button>
@@ -592,7 +592,7 @@
                 <button
                   type="button"
                   class="inline-flex items-center px-2 py-1 rounded-md bg-blue-600 text-white text-sm"
-                  on:click={saveEditedNote}
+                  onclick={saveEditedNote}
                 >
                   <Save class="h-4 w-4 mr-2" />
                   Save
@@ -600,7 +600,7 @@
                 <button
                   type="button"
                   class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm"
-                  on:click={cancelEdit}>Cancel</button
+                  onclick={cancelEdit}>Cancel</button
                 >
               </div>
             </div>
@@ -677,7 +677,7 @@
                   <button
                     type="button"
                     class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm"
-                    on:click={() => toggleStar(note)}
+                    onclick={() => toggleStar(note)}
                   >
                     {#if note.metadata.starred}
                       <Star class="h-4 w-4 fill-yellow-400 text-yellow-400" />
@@ -688,14 +688,14 @@
                   <button
                     type="button"
                     class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm"
-                    on:click={() => startEditNote(note)}
+                    onclick={() => startEditNote(note)}
                   >
                     <Edit3 class="h-4 w-4" />
                   </button>
                   <button
                     type="button"
                     class="inline-flex items-center px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-sm text-red-600"
-                    on:click={() => deleteNote(note.id)}
+                    onclick={() => deleteNote(note.id)}
                   >
                     <Trash2 class="h-4 w-4" />
                   </button>
@@ -734,7 +734,7 @@
             <button
               type="button"
               class="inline-flex items-center px-3 py-1 rounded-md bg-blue-600 text-white text-sm"
-              on:click={() => (showCreateNote = true)}
+              onclick={() => (showCreateNote = true)}
             >
               <Plus class="h-4 w-4 mr-2" />
               Create Note

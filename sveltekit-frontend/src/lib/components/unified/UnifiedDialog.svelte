@@ -27,7 +27,7 @@ https://svelte.dev/e/js_parse_error -->
   export let glassmorphism: boolean = false;
   export let pixelated: boolean = false;
   export let webgpuEffects: boolean = true;
-  export let collaboration: { enabled?: boolean; users?: any[]; sessionId?: string } = {};
+  export let collaboration { enabled?: boolean; users?: any[]; sessionId?: string } = {};
   export let legalContext: any = null;
   export let onOpenChange: ((o: boolean) => void) | undefined;
   export let onClose: (() => void) | undefined;
@@ -134,8 +134,8 @@ https://svelte.dev/e/js_parse_error -->
     <button
       type="button"
       class="fixed inset-0 bg-black/50 backdrop-blur-sm appearance-none border-none p-0 m-0"
-      transition:fade={{ duration: 150 }}
-      on:click={() => closeDialog()}
+      transitionfade={{ duration 150 }}
+      onclick={() => closeDialog()}
       aria-label="Close dialog"
     ></button>
 
@@ -144,7 +144,7 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Dialog Content -->
       <div
         class={contentClasses}
-        transition:scale={{ duration: 200, easing: cubicInOut }}
+        transitionscale={{ duration 200, easing: cubicInOut }}
         role="dialog"
         aria-modal="true"
       >
@@ -221,7 +221,7 @@ https://svelte.dev/e/js_parse_error -->
             <button
               class="px-3 py-1 text-sm rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 shadow-sm"
               type="button"
-              on:click={closeDialog}
+              onclick={closeDialog}
             >
               Close
             </button>
@@ -231,7 +231,7 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Close button -->
         <button
           class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
-          on:click={closeDialog}
+          onclick={closeDialog}
           aria-label="Close"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -244,7 +244,7 @@ https://svelte.dev/e/js_parse_error -->
           <div
             class="absolute pointer-events-none z-10"
             style="left: {cursor.x}px; top: {cursor.y}px; color: {cursor.color}"
-            transition:fade={{ duration: 200 }}
+            transitionfade={{ duration 200 }}
           >
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
               <path d="M7 2L17 12L12 13L13 18L7 2Z"/>

@@ -11,7 +11,7 @@ https://svelte.dev/e/js_parse_error -->
     height?: number;
   }
   interface SOMNode {
-    position: { x: number; y: number };
+    position { x: number; y: number };
     cluster: number;
     confidence: number;
     documents: number;
@@ -27,16 +27,16 @@ https://svelte.dev/e/js_parse_error -->
   let isInitialized = $state(false);
   let isTraining = $state(false);
   let visualizationData = $state<SOMNode[]>([]);
-  let stats = $state<IngestionStats & { queue_size: number; is_processing: boolean; som_visualization: any[] }>({
+  let stats = $state<IngestionStats & { queue_size: number; is_processing: boolean; som_visualization any[] }>({
     total_processed: 0,
     successful: 0,
     failed: 0,
     avg_processing_time: 0,
-    cluster_distribution: {},
-    evidence_type_distribution: {},
+    cluster_distribution {},
+    evidence_type_distribution {},
     queue_size: 0,
     is_processing: false,
-    som_visualization: [],
+    som_visualization [],
   });
   // Configuration
   let somConfig: SOMConfig = $state({
@@ -428,21 +428,21 @@ https://svelte.dev/e/js_parse_error -->
       <h3 class="text-lg font-semibold text-yellow-400 mb-3">Actions</h3>
       <div class="space-y-3">
         <button
-          on:click={trainWithSampleData}
+          onclick={trainWithSampleData}
           disabled={!isInitialized || isTraining}
           class="w-full yorha-button px-4 py-2 bg-blue-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isTraining ? 'Training...' : 'Train with Sample Data'}
         </button>
         <button
-          on:click={processTestDocument}
+          onclick={processTestDocument}
           disabled={!isInitialized || isTraining}
           class="w-full yorha-button px-4 py-2 bg-green-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Process Test Document
         </button>
         <button
-          on:click={exportSOMData}
+          onclick={exportSOMData}
           disabled={!isInitialized}
           class="w-full yorha-button px-4 py-2 bg-purple-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
         >

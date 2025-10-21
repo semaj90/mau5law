@@ -30,8 +30,8 @@
         <p>{message}</p>
       {/if}
       <menu class="dialog-menu">
-        <button type="button" class="nes-btn" on:click={onCancel || onclose}>Cancel</button>
-        <button type="button" class="nes-btn is-primary" on:click={onConfirm || onclose}>OK</button>
+        <button type="button" class="nes-btn" onclick={onCancel || onclose}>Cancel</button>
+        <button type="button" class="nes-btn is-primary" onclick={onConfirm || onclose}>OK</button>
       </menu>
     </form>
   </dialog>

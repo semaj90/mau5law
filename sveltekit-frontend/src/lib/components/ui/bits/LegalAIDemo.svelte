@@ -24,7 +24,7 @@
       confidence: 0.92,
       thumbnailUrl: '/api/placeholder/150/100',
       hash: 'sha256:abc123...',
-      metadata: { duration: '5:30', location: 'Main Entrance' },
+      metadata: { duration '5:30', location 'Main Entrance' },
       createdAt: new Date('2024-01-15'),
       updatedAt: new Date('2024-01-15')
     },
@@ -46,7 +46,7 @@
       priority: 'medium',
       confidence: 0.76,
       thumbnailUrl: '/api/placeholder/150/100',
-      metadata: { resolution: '1920x1080', timestamp: '2024-01-13 14:30' },
+      metadata: { resolution '1920x1080', timestamp: '2024-01-13 14:30' },
       createdAt: new Date('2024-01-13'),
       updatedAt: new Date('2024-01-13')
     }
@@ -150,7 +150,7 @@
       {#each sampleEvidence as evidence}
         <div
           class="cursor-pointer transform hover:scale-105 transition-transform"
-          on:click={() => handleEvidenceSelect(evidence)}
+          onclick={() => handleEvidenceSelect(evidence)}
         >
           <EvidenceThumbnail
             {evidence}
@@ -206,11 +206,11 @@
   <Card class="p-4">
     <h2 class="text-xl font-semibold mb-4">⚡ Quick Actions</h2>
     <div class="flex flex-wrap gap-3">
-      <Button variant="primary" on:click={() => (showAnalysis = true)}>Run AI Analysis</Button>
-      <Button variant="secondary" on:click={() => console.log('Export case')}>Export Case</Button>
-      <Button variant="success" on:click={() => console.log('Generate report')}>Generate Report</Button>
-      <Button variant="warning" on:click={() => console.log('Flag critical')}>Flag Critical</Button>
-      <Button variant="error" on:click={() => console.log('Archive case')}>Archive Case</Button>
+      <Button variant="primary" onclick={() => (showAnalysis = true)}>Run AI Analysis</Button>
+      <Button variant="secondary" onclick={() => console.log('Export case')}>Export Case</Button>
+      <Button variant="success" onclick={() => console.log('Generate report')}>Generate Report</Button>
+      <Button variant="warning" onclick={() => console.log('Flag critical')}>Flag Critical</Button>
+      <Button variant="error" onclick={() => console.log('Archive case')}>Archive Case</Button>
     </div>
   </Card>
   <!-- Component Stats -->
@@ -264,7 +264,7 @@
           </ul>
         </div>
         <div>
-          <h4 class="font-medium">Legal AI Platform Integration:</h4>
+          <h4 class="font-medium">Legal AI Platform Integration</h4>
           <ul class="list-disc list-inside pl-4 space-y-1">
             <li>PostgreSQL + pgvector backend compatibility</li>
             <li>Chain of custody tracking with hash verification</li>

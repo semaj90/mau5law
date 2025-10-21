@@ -31,7 +31,7 @@
   // WebGPU shader source (WGSL)
   const vertexShaderSource = `
     struct VertexOutput {
-      @builtin(position) position: vec4<f32>;
+      @builtin(position) position vec4<f32>;
       @location(0) color: vec3<f32>;
     }
     @vertex
@@ -305,24 +305,24 @@
     </div>
   </div>
   <div class="canvas-wrapper">
-    <canvas bind:this={canvas} {width} {height} on:click={handleCanvasClick} class="webgpu-canvas"></canvas>
+    <canvas bind:this={canvas} {width} {height} onclick={handleCanvasClick} class="webgpu-canvas"></canvas>
   </div>
   <div class="canvas-controls">
     <button
       class="nes-btn {renderingMode === 'webgpu' ? 'is-success' : ''}"
-      on:click={() => enableWebGPU && initializeWebGPU()}
+      onclick={() => enableWebGPU && initializeWebGPU()}
       disabled={!enableWebGPU || renderingMode === 'webgpu'}
     >
       WebGPU Mode
     </button>
     <button
       class="nes-btn {renderingMode === '2d' ? 'is-primary' : ''}"
-      on:click={() => initialize2D()}
+      onclick={() => initialize2D()}
       disabled={renderingMode === '2d'}
     >
       2D Fallback
     </button>
-    <button class="nes-btn is-warning" on:click={() => location.reload()}> Reset Canvas </button>
+    <button class="nes-btn is-warning" onclick={() => location.reload()}> Reset Canvas </button>
   </div>
   {#if children}
     <div class="additional-content">
@@ -362,7 +362,7 @@
     color: var(--yorha-accent);
     border-color: var(--yorha-accent);
     background: rgba(255, 215, 0, 0.1);
-    animation: webgpuGlow 2s ease-in-out infinite alternate;
+    animation webgpuGlow 2s ease-in-out infinite alternate;
   }
   .mode-indicator.mode-2d {
     color: var(--yorha-text-primary);
@@ -381,7 +381,7 @@
     text-align: right;
   }
   .canvas-wrapper {
-    position: relative;
+    position relative;
     display: inline-block;
     border: 2px solid var(--yorha-secondary);
     background: var(--yorha-bg-primary);
@@ -412,11 +412,11 @@
   }
   @media (max-width: 768px) {
     .canvas-info {
-      flex-direction: column;
+      flex-direction column;
       gap: 0.5rem;
     }
     .canvas-controls {
-      flex-direction: column;
+      flex-direction column;
     }
     .webgpu-canvas {
       max-width: 100%;
@@ -433,23 +433,23 @@
   }
   .canvas-wrapper::before {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
     bottom: 0;
     background: linear-gradient(45deg, transparent 40%, rgba(255, 215, 0, 0.1) 50%, transparent 60%);
     background-size: 200% 200%;
-    animation: scanline 3s linear infinite;
+    animation scanline 3s linear infinite;
     pointer-events: none;
     z-index: 1,
   }
   @keyframes scanline {
     0% {
-      background-position: -200% -200%;
+      background-position -200% -200%;
     }
     100% {
-      background-position: 200% 200%;
+      background-position 200% 200%;
     }
   }
 </style>

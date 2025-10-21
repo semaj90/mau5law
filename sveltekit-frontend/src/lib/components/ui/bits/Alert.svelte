@@ -34,7 +34,7 @@
         </div>
       </div>
       {#if dismissible}
-        <button class="alert-dismiss" on:click={dismiss} aria-label="Dismiss"> × </button>
+        <button class="alert-dismiss" onclick={dismiss} aria-label="Dismiss"> × </button>
       {/if}
     </div>
   </div>
@@ -46,7 +46,7 @@
     padding: 16px;
     margin: 16px 0;
     border: 1px solid;
-    position: relative;
+    position relative;
   }
   .alert-content {
     display: flex;
@@ -69,7 +69,7 @@
     line-height: 1.5,
   }
   .alert-dismiss {
-    position: absolute;
+    position absolute;
     top: 12px;
     right: 12px;
     background: none;
@@ -80,7 +80,7 @@
     padding: 4px;
     border-radius: 4px;
     opacity: 0.6,
-    transition: opacity 0.2s ease;
+    transition opacity 0.2s ease;
   }
   .alert-dismiss:hover {
     opacity: 1,

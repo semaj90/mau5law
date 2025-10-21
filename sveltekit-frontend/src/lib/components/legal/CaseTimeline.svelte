@@ -48,13 +48,13 @@
   });
   // Event type configurations
   const eventConfig = {
-    filing: { icon: FileText, color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
-    hearing: { icon: Scale, color: 'text-purple-400', bg: 'bg-purple-500/10', border: 'border-purple-500/20' },
-    evidence: { icon: FileText, color: 'text-green-400', bg: 'bg-green-500/10', border: 'border-green-500/20' },
-    meeting: { icon: Users, color: 'text-yellow-400', bg: 'bg-yellow-500/10', border: 'border-yellow-500/20' },
-    deadline: { icon: AlertCircle, color: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/20' },
-    decision: { icon: CheckCircle, color: 'text-yorha-primary', bg: 'bg-yorha-primary/10', border: 'border-yorha-primary/20' },
-    milestone: { icon: Calendar, color: 'text-yorha-accent', bg: 'bg-yorha-accent/10', border: 'border-yorha-accent/20' }
+    filing: { icon FileText, color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
+    hearing: { icon Scale, color: 'text-purple-400', bg: 'bg-purple-500/10', border: 'border-purple-500/20' },
+    evidence: { icon FileText, color: 'text-green-400', bg: 'bg-green-500/10', border: 'border-green-500/20' },
+    meeting: { icon Users, color: 'text-yellow-400', bg: 'bg-yellow-500/10', border: 'border-yellow-500/20' },
+    deadline: { icon AlertCircle, color: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/20' },
+    decision { icon CheckCircle, color: 'text-yorha-primary', bg: 'bg-yorha-primary/10', border: 'border-yorha-primary/20' },
+    milestone: { icon Calendar, color: 'text-yorha-accent', bg: 'bg-yorha-accent/10', border: 'border-yorha-accent/20' }
   }
   // Status configurations
   const statusConfig = {
@@ -96,7 +96,7 @@
     </div>
     {#if onAddEvent && interactive}
       <button
-        on:click={onAddEvent}
+        onclick={onAddEvent}
         class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium font-mono bg-yorha-primary/10 text-yorha-primary border border-yorha-primary/20 rounded-md hover:bg-yorha-primary/20 transition-colors"
       >
         <Calendar class="w-4 h-4" />
@@ -111,7 +111,7 @@
         <Calendar class="w-12 h-12 mx-auto mb-4 opacity-50" />
         <p>No timeline events recorded</p>
         {#if onAddEvent}
-          <button on:click={onAddEvent} class="mt-2 text-yorha-primary hover:text-yorha-accent transition-colors">
+          <button onclick={onAddEvent} class="mt-2 text-yorha-primary hover:text-yorha-accent transition-colors">
             Add the first event
           </button>
         {/if}
@@ -126,7 +126,7 @@
           {@const IconComponent = config.icon}
           <div
             class={cn('relative flex items-start gap-4', interactive && 'cursor-pointer group', compactMode && 'gap-3')}
-            on:click={() => interactive && onEventClick?.(event)}
+            onclick={() => interactive && onEventClick?.(event)}
           >
             <!-- Timeline Node -->
             <div
@@ -225,7 +225,7 @@
                     {/if}
                     {#if event.location}
                       <div>
-                        <span class="text-yorha-text-secondary">Location:</span>
+                        <span class="text-yorha-text-secondary">Location</span>
                         <div class="mt-1 text-yorha-text-primary">{event.location}</div>
                       </div>
                     {/if}

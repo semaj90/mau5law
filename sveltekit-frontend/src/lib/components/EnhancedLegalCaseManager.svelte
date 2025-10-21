@@ -37,7 +37,7 @@ https://svelte.dev/e/js_parse_error -->
     interface StepConfig {
         id: string;
         title: string;
-        description: string;
+        description string;
         component: unknown;
         required: boolean;
         estimatedTime: number; // in minutes
@@ -57,7 +57,7 @@ https://svelte.dev/e/js_parse_error -->
     let caseData = $state<ExtendedCaseData>({
         id: '',
         title: '',
-        description: '',
+        description '',
         clientInfo: {
             name: '',
             email: '',
@@ -73,7 +73,7 @@ https://svelte.dev/e/js_parse_error -->
         metadata: {
             createdAt: new Date(),
             updatedAt: new Date(),
-            version: 1,
+            version 1,
             workflow: 'standard',
         }
     });
@@ -82,7 +82,7 @@ https://svelte.dev/e/js_parse_error -->
         {
             id: 'case-info',
             title: 'Case Information',
-            description: 'Basic case details and client information',
+            description 'Basic case details and client information',
             component: CaseInfoForm;
             required: true
             estimatedTime: 5,
@@ -90,7 +90,7 @@ https://svelte.dev/e/js_parse_error -->
         {
             id: 'document-upload',
             title: 'Document Upload',
-            description: 'Upload and process case documents',
+            description 'Upload and process case documents',
             component: DocumentUploadForm;
             required: true
             estimatedTime: 10,
@@ -98,7 +98,7 @@ https://svelte.dev/e/js_parse_error -->
         {
             id: 'evidence-analysis',
             title: 'Evidence Analysis',
-            description: 'Analyze and categorize evidence',
+            description 'Analyze and categorize evidence',
             component: EvidenceAnalysisForm;
             required: false
             estimatedTime: 15,
@@ -106,7 +106,7 @@ https://svelte.dev/e/js_parse_error -->
         {
             id: 'ai-analysis',
             title: 'AI Analysis',
-            description: 'AI-powered case analysis and recommendations',
+            description 'AI-powered case analysis and recommendations',
             component: AIAnalysisForm;
             required: false
             estimatedTime: 8,
@@ -114,7 +114,7 @@ https://svelte.dev/e/js_parse_error -->
         {
             id: 'review-submit',
             title: 'Review & Submit',
-            description: 'Final review and case submission',
+            description 'Final review and case submission',
             component: ReviewSubmitForm;
             required: true
             estimatedTime: 5,
@@ -147,7 +147,7 @@ https://svelte.dev/e/js_parse_error -->
                 type: 'info',
                 title: 'Auto-save',
                 message: 'Progress auto-saved',
-                duration: 2000,
+                duration 2000,
             });
         } catch (error) {
             console.error('Auto-save failed:', error);
@@ -155,7 +155,7 @@ https://svelte.dev/e/js_parse_error -->
                 type: 'error',
                 title: 'Auto-save Error',
                 message: 'Auto-save failed. Please save manually.',
-                duration: 5000,
+                duration 5000,
             });
         }
     }
@@ -215,7 +215,7 @@ https://svelte.dev/e/js_parse_error -->
                     type: 'error',
                     title: 'Validation Error',
                     message: `Please fix errors: ${validation.errors.join(', ')}`,
-                    duration: 5000,
+                    duration 5000,
                 });
                 return;
             }
@@ -225,7 +225,7 @@ https://svelte.dev/e/js_parse_error -->
                     type: 'warning',
                     title: 'Validation Warning',
                     message: `Warnings: ${validation.warnings.join(', ')}`,
-                    duration: 4000,
+                    duration 4000,
                 });
             }
             // Save progress
@@ -250,7 +250,7 @@ https://svelte.dev/e/js_parse_error -->
                 type: 'error',
                 title: 'Step Error',
                 message: 'Failed to advance to next step',
-                duration: 5000,
+                duration 5000,
             });
         } finally {
             isProcessing = false;
@@ -275,7 +275,7 @@ https://svelte.dev/e/js_parse_error -->
                         type: 'error',
                         title: 'Step Required',
                         message: `Cannot skip required step: ${steps[i].title}`,
-                        duration: 5000,
+                        duration 5000,
                     });
                     canJump = false;
                     break;
@@ -325,7 +325,7 @@ https://svelte.dev/e/js_parse_error -->
                 type: 'success',
                 title: 'Success',
                 message: 'Case submitted successfully!',
-                duration: 5000,
+                duration 5000,
             });
             // Redirect to case view
             await goto(`/cases/${(result as { errors?: unknown; warnings?: unknown; isValid?: unknown; id?: unknown; metadata?: unknown }).id}`);
@@ -335,7 +335,7 @@ https://svelte.dev/e/js_parse_error -->
                 type: 'error',
                 title: 'Submission Error',
                 message: 'Failed to submit case. Please try again.',
-                duration: 5000,
+                duration 5000,
             });
         } finally {
             isProcessing = false;
@@ -361,7 +361,7 @@ https://svelte.dev/e/js_parse_error -->
             caseData.metadata = {
                 createdAt: new Date(),
                 updatedAt: new Date(),
-                version: 1,
+                version 1,
                 workflow: 'standard',
             }
             currentStep = 0;
@@ -370,7 +370,7 @@ https://svelte.dev/e/js_parse_error -->
                 type: 'info',
                 title: 'Reset',
                 message: 'Case data reset',
-                duration: 3000,
+                duration 3000,
             });
         }
     }
@@ -470,7 +470,7 @@ https://svelte.dev/e/js_parse_error -->
                         type: 'info',
                         title: 'Case Loaded',
                         message: 'Loaded existing case for editing',
-                        duration: 3000,
+                        duration 3000,
                     });
                 }
             } catch (error) {
@@ -503,7 +503,7 @@ https://svelte.dev/e/js_parse_error -->
                     <!-- Voice control button -->
                     {#if recognition}
                         <button
-                            on:click={toggleVoiceListening}
+                            onclick={toggleVoiceListening}
                             class="p-2 rounded-lg border border-gray-300 dark: border-gray-600;
                                    hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors
                                    {isListening ? 'bg-red-50 border-red-300 text-red-600' : ''}"
@@ -539,7 +539,7 @@ https://svelte.dev/e/js_parse_error -->
         {steps}
         currentStep={currentStep}
         validationresults={validationResults}
-        step-on:click={(e) => jumpToStep((e as CustomEvent).detail)}
+        step-onclick={(e) => jumpToStep((e as CustomEvent).detail)}
     />
     <!-- Processing queue indicator -->
     {#if processingQueue.length > 0}
@@ -590,7 +590,7 @@ https://svelte.dev/e/js_parse_error -->
                 <div class="flex items-center justify-between">
                     <div class="flex space-x-3">
                         <button
-                            on:click={previousStep}
+                            onclick={previousStep}
                             disabled={isFirstStep || isProcessing}
                             class="px-4 py-2 border border-gray-300 dark:border-gray-600
                                    rounded-md shadow-sm text-sm font-medium
@@ -603,7 +603,7 @@ https://svelte.dev/e/js_parse_error -->
                             Previous
                         </button>
                         <button
-                            on:click={resetCase}
+                            onclick={resetCase}
                             disabled={isProcessing}
                             class="px-4 py-2 border border-red-300 dark:border-red-600
                                    rounded-md shadow-sm text-sm font-medium
@@ -618,7 +618,7 @@ https://svelte.dev/e/js_parse_error -->
                     </div>
                     <div class="flex space-x-3">
                         <button
-                            on:click={saveProgress}
+                            onclick={saveProgress}
                             disabled={isProcessing}
                             class="px-4 py-2 border border-gray-300 dark:border-gray-600
                                    rounded-md shadow-sm text-sm font-medium
@@ -632,7 +632,7 @@ https://svelte.dev/e/js_parse_error -->
                         </button>
                         {#if isLastStep}
                             <button
-                                on:click={submitCase}
+                                onclick={submitCase}
                                 disabled={isProcessing}
                                 class="px-4 py-2 border border-transparent
                                        rounded-md shadow-sm text-sm font-medium
@@ -645,7 +645,7 @@ https://svelte.dev/e/js_parse_error -->
                             </button>
                         {:else}
                             <button
-                                on:click={nextStep}
+                                onclick={nextStep}
                                 disabled={isProcessing}
                                 class="px-4 py-2 border border-transparent
                                        rounded-md shadow-sm text-sm font-medium
@@ -675,6 +675,6 @@ https://svelte.dev/e/js_parse_error -->
     /* Smooth transitions for all interactive elements */
     .legal-case-manager button,
     .legal-case-manager input {
-        transition: all 0.2s ease-in-out;
+        transition all 0.2s ease-in-out;
     }
 </style>

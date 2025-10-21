@@ -37,7 +37,7 @@
   let gl = $state<WebGL2RenderingContext | WebGLRenderingContext | null >(null);
   // Demo state
   let isInitialized = $state(false);
-  let activeVisualization: string = $state('attentionHeatmap');
+  let activeVisualization string = $state('attentionHeatmap');
   let isRendering = $state(false);
   let animationFrame = $state<number >(0);
   // Performance metrics
@@ -228,7 +228,7 @@
       // Begin render loop
       animationFrame = requestAnimationFrame(renderLoop);
     } catch (error) {
-      console.error(`Failed to start ${type} visualization:`, error);
+      console.error(`Failed to start ${type} visualization`, error);
       isRendering = false;
     }
   }
@@ -275,8 +275,8 @@
       }
       shaderCache.setUniforms(program, uniforms);
       const attributes = {
-        a_position: { buffer: positionBuffer, size: 2, stride: 3 * 4 },
-        a_attention: { buffer: positionBuffer, size: 1, offset: 2 * 4, stride: 3 * 4 },
+        a_position { buffer: positionBuffer, size: 2, stride: 3 * 4 },
+        a_attention { buffer: positionBuffer, size: 1, offset: 2 * 4, stride: 3 * 4 },
       }
       shaderCache.setupVertexAttributes(program, attributes);
       gl.drawArrays(gl.POINTS, 0, attentionData.length / 3);
@@ -299,7 +299,7 @@
       }
       shaderCache.setUniforms(program, uniforms);
       const attributes = {
-        a_position: { buffer: positionBuffer, size: 3, stride: 7 * 4 },
+        a_position { buffer: positionBuffer, size: 3, stride: 7 * 4 },
         a_color: { buffer: positionBuffer, size: 3, offset: 3 * 4, stride: 7 * 4 },
         a_pageRank: { buffer: positionBuffer, size: 1, offset: 6 * 4, stride: 7 * 4 },
       }
@@ -324,7 +324,7 @@
       }
       shaderCache.setUniforms(program, uniforms);
       const attributes = {
-        a_position: { buffer: positionBuffer, size: 2, stride: 7 * 4 },
+        a_position { buffer: positionBuffer, size: 2, stride: 7 * 4 },
         a_timestamp: { buffer: positionBuffer, size: 1, offset: 2 * 4, stride: 7 * 4 },
         a_importance: { buffer: positionBuffer, size: 1, offset: 3 * 4, stride: 7 * 4 },
         a_evidenceColor: { buffer: positionBuffer, size: 3, offset: 4 * 4, stride: 7 * 4 },
@@ -361,7 +361,7 @@
         priority: 'high' as const,
         data: new Float32Array([1, 2, 3, 4, 5]),
         shaderProgram: 'vector-normalize',
-        expectedDuration: 10,
+        expectedDuration 10,
         callback: (result: unknown) => {
           console.log('GPU workload result:', result);
         },
@@ -566,27 +566,27 @@
         <!-- Visualization Controls -->
         <div class="grid grid-cols-2 gap-2">
           <Button class="bits-btn text-sm"
-            on:click={() =>
+            onclick={() =>
 startVisualization('attentionHeatmap')}
             disabled={!isInitialized}
             variant={activeVisualization === 'attentionHeatmap' ? 'default' : 'outline'}>
             Attention Heatmap
           </Button>
           <Button class="bits-btn text-sm"
-            on:click={() => startVisualization('documentNetwork')}
+            onclick={() => startVisualization('documentNetwork')}
             disabled={!isInitialized}
             variant={activeVisualization === 'documentNetwork' ? 'default' : 'outline'}>
             Document Network
 </Button>
             <Button class="bits-btn text-sm"
-              on:click={() =>
+              onclick={() =>
 startVisualization('evidenceTimeline')}
               disabled={!isInitialized}
               variant={activeVisualization === 'evidenceTimeline' ? 'default' : 'outline'}>
               Evidence Timeline
 </Button>
           <Button class="bits-btn text-sm"
-            on:click={() =>
+            onclick={() =>
 startVisualization('textFlow')}
             disabled={!isInitialized}
             variant={activeVisualization === 'textFlow' ? 'default' : 'outline'}>
@@ -596,12 +596,12 @@ startVisualization('textFlow')}
         <!-- Render Controls -->
         <div class="flex gap-2">
           {#if isRendering}
-            <Button on:click={stopVisualization} class="bg-red-600 hover:bg-red-700 bits-btn">
+            <Button onclick={stopVisualization} class="bg-red-600 hover:bg-red-700 bits-btn">
 Stop Rendering
 </Button>
           {/if}
           <Button
-            on:click={executeGPUWorkload}
+            onclick={executeGPUWorkload}
             disabled={!isInitialized}
             variant="ghost"
             class="text-white border-slate-600 hover:bg-slate-700 bits-btn">
@@ -661,7 +661,7 @@ Execute GPU Workload
             <span class="font-bold text-red-400">{shaderMetrics.cacheMisses}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-gray-400">Avg Compilation:</span>
+            <span class="text-gray-400">Avg Compilation</span>
             <span class="font-bold">{shaderMetrics.averageCompilationTime.toFixed(1)}ms</span>
           </div>
           <div class="flex justify-between">

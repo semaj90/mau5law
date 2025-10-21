@@ -87,7 +87,7 @@
         <Button type="submit" disabled={loading}>
           {loading ? 'Creating...' : 'Create Case'}
         </Button>
-        <Button type="button" variant="outline" on:click={() => goto('/cases')}>Cancel</Button>
+        <Button type="button" variant="outline" onclick={() => goto('/cases')}>Cancel</Button>
       </div>
     </form>
   </div>

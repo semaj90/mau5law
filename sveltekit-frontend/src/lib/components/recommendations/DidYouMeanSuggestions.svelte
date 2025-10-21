@@ -45,7 +45,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     includeAI?: boolean;
     maxSuggestions?: number;
     showUserProfile?: boolean;
-    onSelect?: (suggestion: Suggestion) => void;
+    onSelect?: (suggestion Suggestion) => void;
     onTaskSelect?: (_task: TaskSuggestion) => void;
     onSearch?: (query: string) => void;
   }
@@ -146,7 +146,7 @@ https://svelte.dev/e/attribute_invalid_name -->
       loading = false;
     }
   }
-  function handleSelection(suggestion: Suggestion) {
+  function handleSelection(suggestion Suggestion) {
     const suggestionText = suggestion.term || suggestion.suggestion || suggestion.text || suggestion.label || '';
     query = suggestionText;
     onSelect?.(suggestion);
@@ -226,7 +226,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   </div>
   <!-- Error Display -->
   {#if error}
-    <div class="mt-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg" transition:fade>
+    <div class="mt-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg" transitionfade>
       <p class="text-sm text-red-800 dark:text-red-200">
         <span class="font-medium">Error:</span> {error}
       </p>
@@ -248,7 +248,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   {#if $open && (suggestions.length > 0 || taskSuggestions.length > 0)}
     <div
       class="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-80 overflow-auto"
-      transitionFly={{ y: -5, duration: 150 }}
+      transitionFly={{ y: -5, duration 150 }}
     >
       <!-- Regular Suggestions -->
       {#if suggestions.length > 0}
@@ -262,7 +262,7 @@ https://svelte.dev/e/attribute_invalid_name -->
             <button
               )}
               class="w-full px-3 py-2 text-left hover:bg-gray-50 dark:hover:bg-gray-700 focus:bg-gray-50 dark:focus:bg-gray-700 focus:outline-none rounded border-b border-gray-100 dark:border-gray-700 last:border-b-0"
-              on:click={() => handleSelection(suggestion)}
+              onclick={() => handleSelection(suggestion)}
             >
               <div class="flex items-center gap-3">
                 <!-- Icon -->
@@ -331,7 +331,7 @@ https://svelte.dev/e/attribute_invalid_name -->
           {#each taskSuggestions as task, index}
             <button
               class="w-full px-3 py-2 text-left hover:bg-blue-50 dark:hover:bg-blue-900/20 focus:bg-blue-50 dark:focus:bg-blue-900/20 focus:outline-none rounded border-b border-gray-100 dark:border-gray-700 last:border-b-0"
-              on:click={() => handleTaskSelection(task)}
+              onclick={() => handleTaskSelection(task)}
             >
               <div class="flex items-start justify-between">
                 <div class="flex-1">

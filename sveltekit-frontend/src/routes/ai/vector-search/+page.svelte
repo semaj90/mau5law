@@ -39,7 +39,7 @@
       class="w-full px-4 py-2 border rounded-lg"
     />
     <button
-      on:click={performSearch}
+      onclick={performSearch}
       disabled={loading}
       class="mt-3 px-6 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50"
     >

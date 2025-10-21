@@ -138,7 +138,7 @@
   const dialogStyles = $derived(() => {
     return `
       --fog-density: ${fogDensity}
-      --animation-duration: ${animationDuration}m;
+      --animation-duration ${animationDuration}m;
       --frame-count: ${frameCount}
       --fog-animation-time: ${frameCount * 0.02}
     `;
@@ -272,7 +272,7 @@ if (spatialAudio && typeof window !== 'undefined') {
   function setupFocusTrap() {
     if (!contentElement) return;
     const focusableSelectors = [
-      'button:not([disabled])',
+      'buttonnot([disabled])',
       'input:not([disabled])',
       'textarea:not([disabled])',
       'select:not([disabled])',
@@ -340,30 +340,30 @@ if (spatialAudio && typeof window !== 'undefined') {
   // Animation transition functions
   function getTransitionFunction(node: Element) {
     if (reducedMotion) {
-      return fade(node, { duration: 0 });
+      return fade(node, { duration 0 });
     }
     switch (animationType) {
       case 'fly':
         return fly(node, {
-          duration: animationDuration;
+          duration animationDuration;
           y: -50,
           opacity: 0,
         });
       case 'scale':
         return scale(node, {
-          duration: animationDuration;
+          duration animationDuration;
           start: 0.8,
           opacity: 0,
         });
       case 'slide':
         return fly(node, {
-          duration: animationDuration;
+          duration animationDuration;
           x: -100,
           opacity: 0,
         });
       default:
         return fade(node, { ;
-          duration: animationDuration ;
+          duration animationDuration ;
         });
     }
   }
@@ -376,8 +376,8 @@ if (spatialAudio && typeof window !== 'undefined') {
     class={backdropClasses()}
     role="button"
     tabindex="0"
-    on:click={handleBackdropClick}
-    transitionfade={{ duration: reducedMotion ? 0 : animationDuration }}
+    onclick={handleBackdropClick}
+    transitionfade={{ duration reducedMotion ? 0 : animationDuration }}
     aria-hidden="true"
   >
     <!-- Fog layers -->
@@ -402,7 +402,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     aria-labelledby={ariaLabelledby || (title ? titleId : undefined)}
     aria-describedby={ariaDescribedby || (description ? descId : undefined)}
     onkeydown={handleKeydown}
-    transition:getTransitionFunction
+    transitiongetTransitionFunction
   >
     <div class="n64-dialog-container {className}">
       <!-- N64 Visual Enhancement Layers -->
@@ -442,7 +442,7 @@ if (spatialAudio && typeof window !== 'undefined') {
           {/if}
         </div>
         <!-- Close button -->
-        <button type="button" class="n64-dialog-close" on:click={handleClose} aria-label="Close dialog">
+        <button type="button" class="n64-dialog-close" onclick={handleClose} aria-label="Close dialog">
           <span aria-hidden="true">×</span>
         </button>
       </article>
@@ -452,7 +452,7 @@ if (spatialAudio && typeof window !== 'undefined') {
 
 <style>
 /* Dialog backdrop */ .n64-dialog-backdrop {
-    position: fixed;
+    position fixed;
 d;
     top: 0,
     left: 0;
@@ -468,7 +468,7 @@ d;
     -webkit-backdrop-filter: blur(8px);
   }
 /* Fog layers */ .fog-layer {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -477,15 +477,15 @@ d;
   }
   .fog-layer-1 {
 background: linear-gradient( 45deg, rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.3)) 0%, transparent 50%, rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.2)) 100% );
-    animation: fog-drift-1 12s ease-in-out infinite;
+    animation fog-drift-1 12s ease-in-out infinite;
   }
   .fog-layer-2 {
 background: radial-gradient( ellipse at 30% 70%, rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.4)) 0%, transparent 60% );
-    animation: fog-drift-2 15s ease-in-out infinite;
+    animation fog-drift-2 15s ease-in-out infinite;
   }
   .fog-layer-3 {
 background: radial-gradient( ellipse at 70% 30%, rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.25)) 0%, transparent 70% );
-    animation: fog-drift-3 18s ease-in-out infinite;
+    animation fog-drift-3 18s ease-in-out infinite;
   }
 /* Fog color variations */ .fog-color-blue { --fog-color-rgb: 100, 150, 255, }
   .fog-color-purple { --fog-color-rgb: 150, 100, 255, }
@@ -498,7 +498,7 @@ background: radial-gradient( ellipse at 70% 30%, rgba(var(--fog-color-rgb, 100, 
   .fog-heavy { --fog-density: 0.7, }
   .fog-dense { --fog-density: 0.9, }
 /* Depth of field layers */ .dof-layer {
-    position: absolute;
+    position absolute;
     pointer-events: none;
   }
   .dof-near {
@@ -518,7 +518,7 @@ background: linear-gradient( to top, rgba(var(--fog-color-rgb, 100, 150, 255), 0
     filter: blur(2px);
   }
 /* Dialog element */ .n64-dialog {
-    position: fixed;
+    position fixed;
 d;
     top: 0,
     left: 0;
@@ -537,7 +537,7 @@ d;
     display: none; /* Use custom backdrop */
   }
   .n64-dialog-container {
-    position: relative;
+    position relative;
     max-width: 90vw;
     max-height: 90vh;
     font-family: 'Press Start 2P', monospace;
@@ -545,7 +545,7 @@ d;
     transform-style: preserve-3d;
   }
 /* Dialog content styling */ .n64-dialog-content {
-    position: relative;
+    position relative;
     background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
     color: #e0e0e0;
     border: 3px solid #505050;
@@ -581,7 +581,7 @@ clip-path: polygon( 0% 0%, 90% 0%, 95% 3%, 100% 10%, 100% 90%, 97% 95%, 90% 100%
 clip-path: polygon( 0% 0%, 85% 0%, 90% 2%, 95% 5%, 98% 10%, 100% 15%, 100% 85%, 98% 90%, 95% 95%, 90% 98%, 85% 100%, 15% 100%, 10% 98%, 5% 95%, 2% 90%, 0% 85%, 0% 15%, 2% 10%, 5% 5%, 10% 2% );
   }
 /* Visual enhancement layers */ .n64-dialog-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -590,7 +590,7 @@ clip-path: polygon( 0% 0%, 85% 0%, 90% 2%, 95% 5%, 98% 10%, 100% 15%, 100% 85%, 
     z-index: 1,
   }
 .texture-filter-layer, .aa-layer, .internal-fog-layer, .shadow-layer {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -616,14 +616,14 @@ background: radial-gradient( circle at top left, rgba(255, 255, 255, 0.01) 0%, t
   }
 /* Internal fog layer */ .internal-fog-layer {
 background: linear-gradient( 180deg, rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.1)) 0%, transparent 30%, transparent 70%, rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.05)) 100% );
-    animation: internal-fog-drift 10s ease-in-out infinite;
+    animation internal-fog-drift 10s ease-in-out infinite;
   }
 /* Shadow layer */ .shadow-layer {
 background: radial-gradient( ellipse at bottom center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.1) 50%, transparent 100% );
     transform: translateY(2px);
   }
 /* Dialog header */ .n64-dialog-header {
-    position: relative;
+    position relative;
     z-index: 11;
     margin-bottom: 20px;
     padding-bottom: 16px;
@@ -645,14 +645,14 @@ background: radial-gradient( ellipse at bottom center, rgba(0, 0, 0, 0.3) 0%, rg
     line-height: 1.6,
   }
 /* Dialog body */ .n64-dialog-body {
-    position: relative;
+    position relative;
     z-index: 11;
     font-size: 12px;
     line-height: 1.6;
     margin-bottom: 20px;
   }
 /* Close button */ .n64-dialog-close {
-    position: absolute;
+    position absolute;
     top: 12px;
     right: 12px;
     width: 32px;
@@ -667,7 +667,7 @@ background: radial-gradient( ellipse at bottom center, rgba(0, 0, 0, 0.3) 0%, rg
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     transform: perspective(100px) rotateX(2deg);
 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.1);
   }
@@ -733,8 +733,8 @@ background: radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.15) 0%, tr
     font-size: 11px;
   }
 /* Reduced motion */ .reduced-motion .n64-dialog, .reduced-motion .fog-layer, .reduced-motion .internal-fog-layer, .reduced-motion .n64-dialog-close {
-    animation: none !important;
-    transition: none !important;
+    animation none !important;
+    transition none !important;
     transform: none !important;
   }
 /* Animations */ @keyframes fog-drift-1 {

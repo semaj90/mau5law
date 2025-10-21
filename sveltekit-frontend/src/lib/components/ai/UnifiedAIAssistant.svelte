@@ -29,14 +29,14 @@
     tokensPerSecond: 0,
     contextLength: 0,
     memoryUsage: 0,
-    gpuUtilization: 0,
+    gpuUtilization 0,
   });
   let assistantConfig = $state({
     model: 'gemma3-legal',
     temperature: 0.7,
     maxTokens: 1000,
     streamResponse: true,
-    useGPUAcceleration: true,
+    useGPUAcceleration true,
     preferredBackend: 'auto', // 'vllm' | 'ollama' | 'webasm' | 'auto'
     legalContext: true,
   });
@@ -249,10 +249,10 @@
     // Add recent conversation context
     const recentMessages = messages.slice(-5);
     if (recentMessages.length > 0) {
-      contextPrompt += 'Recent conversation: ';
+      contextPrompt += 'Recent conversation ';
       contextPrompt += recentMessages.map((m: any) => m?.content ?? String(m)).join(' | ') + ' | ';
     }
-    contextPrompt += `User question: ${message}`;
+    contextPrompt += `User question ${message}`;
     return contextPrompt;
   }
 
@@ -384,7 +384,7 @@
           }),
         });
       } catch (error) {
-        console.warn('⚠️ Failed to save conversation:', error);
+        console.warn('⚠️ Failed to save conversation', error);
       }
     }
   }
@@ -516,11 +516,11 @@
               >Go µS</span
             >
           </div>
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={exportConversation}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={exportConversation}>
             <Download class="w-4 h-4 mr-1" />
             Export
           </Button>
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={clearConversation}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={clearConversation}>
             <Square class="w-4 h-4 mr-1" />
             Clear
           </Button>
@@ -639,7 +639,7 @@
             <Button
               variant="ghost"
               size="sm"
-              on:click={voiceRecording.isRecording ? stopVoiceRecording : startVoiceRecording}
+              onclick={voiceRecording.isRecording ? stopVoiceRecording : startVoiceRecording}
               class="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0 bits-btn bits-btn"
               disabled={readonly}
             >
@@ -651,7 +651,7 @@
             </Button>
           {/if}
         </div>
-        <Button class="bits-btn" on:click={sendMessage} disabled={!currentMessage.trim() || isProcessing || readonly}>
+        <Button class="bits-btn" onclick={sendMessage} disabled={!currentMessage.trim() || isProcessing || readonly}>
           <Send class="w-4 h-4 mr-1" />
           Send
         </Button>
@@ -662,7 +662,7 @@
           class="bits-btn"
           variant="ghost"
           size="sm"
-          on:click={() => (currentMessage = 'Analyze the evidence in this case')}
+          onclick={() => (currentMessage = 'Analyze the evidence in this case')}
         >
           🔍 Analyze Evidence
         </Button>
@@ -670,18 +670,18 @@
           class="bits-btn"
           variant="ghost"
           size="sm"
-          on:click={() => (currentMessage = 'What are the key legal issues?')}
+          onclick={() => (currentMessage = 'What are the key legal issues?')}
         >
           ⚖️ Legal Issues
         </Button>
-        <Button class="bits-btn" variant="ghost" size="sm" on:click={() => (currentMessage = 'Generate a case summary')}>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (currentMessage = 'Generate a case summary')}>
           📋 Case Summary
         </Button>
         <Button
           class="bits-btn"
           variant="ghost"
           size="sm"
-          on:click={() => (currentMessage = 'Find relevant precedents')}
+          onclick={() => (currentMessage = 'Find relevant precedents')}
         >
           📚 Find Precedents
         </Button>
@@ -708,7 +708,7 @@
   }
   /* Message animation */
   .flex.items-start {
-    animation: slideIn 0.3s ease-out;
+    animation slideIn 0.3s ease-out;
   }
   @keyframes slideIn {
     from {
@@ -722,7 +722,7 @@
   }
   /* Processing indicator animation */
   .animate-spin {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     from {

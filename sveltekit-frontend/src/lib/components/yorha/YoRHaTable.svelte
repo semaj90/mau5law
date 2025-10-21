@@ -174,7 +174,7 @@
         <span class="yorha-selection-count">
           {selectedRows.size} SELECTED
         </span>
-        <button class="yorha-action-btn" on:click={() => selectedRows.clear()}> CLEAR SELECTION </button>
+        <button class="yorha-action-btn" onclick={() => selectedRows.clear()}> CLEAR SELECTION </button>
       </div>
     {/if}
   </div>
@@ -206,7 +206,7 @@
               class:yorha-sorted-asc={sortColumn === column.key && sortDirection === 'asc'}
               class:yorha-sorted-desc={sortColumn === column.key && sortDirection === 'desc'}
               style:width={column.width}
-              on:click={() => handleSort(column)}
+              onclick={() => handleSort(column)}
             >
               <div class="yorha-header-content">
                 <span class="yorha-header-text">{column.title}</span>
@@ -297,20 +297,20 @@
         SHOWING {(currentPage - 1) * pageSize + 1}-{Math.min(currentPage * pageSize, filteredData.length)} OF {filteredData.length}
       </div>
       <div class="yorha-pagination-controls">
-        <button class="yorha-pagination-btn" disabled={currentPage === 1} on:click={() => (currentPage = 1)}>
+        <button class="yorha-pagination-btn" disabled={currentPage === 1} onclick={() => (currentPage = 1)}>
           ⟨⟨
         </button>
-        <button class="yorha-pagination-btn" disabled={currentPage === 1} on:click={() => currentPage--}> ⟨ </button>
+        <button class="yorha-pagination-btn" disabled={currentPage === 1} onclick={() => currentPage--}> ⟨ </button>
         <span class="yorha-page-info">
           PAGE {currentPage} OF {totalPages}
         </span>
-        <button class="yorha-pagination-btn" disabled={currentPage === totalPages} on:click={() => currentPage++}>
+        <button class="yorha-pagination-btn" disabled={currentPage === totalPages} onclick={() => currentPage++}>
           ⟩
         </button>
         <button
           class="yorha-pagination-btn"
           disabled={currentPage === totalPages}
-          on:click={() => (currentPage = totalPages)}
+          onclick={() => (currentPage = totalPages)}
         >
           ⟩⟩
         </button>
@@ -327,16 +327,16 @@
   }
   .yorha-table-container::before {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
     height: 2px;
     background: linear-gradient(90deg, transparent, #ffbf00, transparent);
-    animation: scanline 3s linear infinite;
+    animation scanline 3s linear infinite;
   }
   .yorha-glitch-effect {
-    animation: glitch 0.3s infinite;
+    animation glitch 0.3s infinite;
   }
   @keyframes glitch {
     0%,
@@ -459,7 +459,7 @@
   .yorha-status-pending,
   .yorha-status-processing {
     /* @apply bg-yellow-600 text-yellow-100 border-yellow-400; */
-    animation: pulse 1.5s infinite;
+    animation pulse 1.5s infinite;
   }
   .yorha-status-warning {
     /* @apply bg-orange-600 text-orange-100 border-orange-400; */
@@ -490,7 +490,7 @@
   }
   .yorha-spinner {
     /* @apply w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full; */
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   .yorha-empty-state {
     /* @apply flex flex-col items-center gap-3 text-amber-400; */

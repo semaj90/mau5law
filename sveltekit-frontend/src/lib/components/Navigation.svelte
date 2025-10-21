@@ -52,7 +52,7 @@
 
   <!-- Search -->
   <div class="relative">
-    <button class="nes-btn is-warning" on:click={toggleSearch}>Search</button>
+    <button class="nes-btn is-warning" onclick={toggleSearch}>Search</button>
   </div>
 </nav>
 
@@ -60,7 +60,7 @@
 {#if searchOpen}
   <div
     class="search-modal-overlay"
-    on:click={e => {
+    onclick={e => {
       if (e.currentTarget === e.target) toggleSearch();
     }}
     onkeydown={e => {
@@ -73,7 +73,7 @@
     <div class="search-modal">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-bold">Search</h2>
-        <button class="nes-btn is-error" on:click={toggleSearch} aria-label="Close">X</button>
+        <button class="nes-btn is-error" onclick={toggleSearch} aria-label="Close">X</button>
       </div>
       <input type="text" class="nes-input" placeholder="Search..." bind:value={searchQuery} />
     </div>

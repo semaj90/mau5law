@@ -59,12 +59,12 @@
         return {
           y: side === 'top' ? 10 : side === 'bottom' ? -10 : 0,
           x: side === 'left' ? 10 : side === 'right' ? -10 : 0,
-          duration: 200,
+          duration 200,
         }
       case 'scale':
-        return { duration: 150, start: 0.95 }
+        return { duration 150, start: 0.95 }
       default:
-        return { duration: 200 }
+        return { duration 200 }
     }
   }
   function handleOpenChange(newOpen: boolean) {
@@ -118,7 +118,7 @@
 /* Gaming theme effects */ {}
   :global([data-bits-popover-content][data-theme='gaming']) {
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 20, 0, 0.95) 100%);
-    animation: gaming-pulse 3s ease-in-out infinite alternate;
+    animation gaming-pulse 3s ease-in-out infinite alternate;
   }
   @keyframes gaming-pulse {
     from {

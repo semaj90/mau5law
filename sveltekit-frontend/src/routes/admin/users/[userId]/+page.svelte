@@ -54,7 +54,7 @@
       default: return 'text-gray-400 border-gray-500';
     }
   }
-  function openSessionModal(session: unknown) {
+  function openSessionModal(session unknown) {
     selectedSession = sessio;
     showSessionModal = true;
   }
@@ -104,7 +104,7 @@
       <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-4">
           <button
-            on:click={() => goto('/admin/users')}
+            onclick={() => goto('/admin/users')}
             class="px-4 py-2 bg-gray-700 text-amber-300 border-2 border-amber-300 hover:bg-gray-600 transition-colors"
           >
             [← BACK TO USERS]
@@ -259,20 +259,20 @@
         </div>
         <div class="p-4 space-y-4">
           <button
-            on:click={() => (showProfileModal = true)}
+            onclick={() => (showProfileModal = true)}
             class="w-full px-4 py-2 bg-gray-700 text-amber-300 border-2 border-amber-300 hover:bg-gray-600 transition-colors text-left"
           >
             [EDIT PROFILE] Update name and details
           </button>
           <button
-            on:click={() => (showPasswordModal = true)}
+            onclick={() => (showPasswordModal = true)}
             class="w-full px-4 py-2 bg-orange-900 text-amber-300 border-2 border-orange-500 hover:bg-orange-800 transition-colors text-left"
           >
             [RESET PASSWORD] Force password change
           </button>
           <div class="grid grid-cols-2 gap-2">
             <button
-              on:click={() =>
+              onclick={() =>
                 goto(
                   `/admin/users/${(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).user.id}/cases`
                 )}
@@ -281,7 +281,7 @@
               [VIEW CASES]
             </button>
             <button
-              on:click={() =>
+              onclick={() =>
                 goto(
                   `/admin/users/${(data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).user.id}/ai-history`
                 )}
@@ -384,13 +384,13 @@
         {#each (data as { user?: unknown; stats?: unknown; recentCases?: unknown; recentAIInteractions?: unknown; activeSessions?: unknown }).activeSessions as session}
           <div class="flex items-center justify-between p-3 border border-gray-700 mb-2">
             <div>
-              <div class="text-sm font-mono text-amber-400">Session: {session.id.substring(0, 8)}...</div>
+              <div class="text-sm font-mono text-amber-400">Session {session.id.substring(0, 8)}...</div>
               <div class="text-xs text-gray-400">
                 Created: {formatDate(session.created_at)} | Expires: {formatDate(session.expires_at)}
               </div>
             </div>
             <button
-              on:click={() => openSessionModal(session)}
+              onclick={() => openSessionModal(session)}
               class="px-3 py-1 bg-red-800 text-amber-300 text-xs border border-red-500 hover:bg-red-700 transition-colors"
             >
               [REVOKE]
@@ -455,7 +455,7 @@
         <div class="flex justify-end gap-3 mt-6">
           <button
             type="button"
-            on:click={() => (showProfileModal = false)}
+            onclick={() => (showProfileModal = false)}
             class="px-4 py-2 bg-gray-700 text-amber-300 border-2 border-amber-300 hover:bg-gray-600 transition-colors"
           >
             [CANCEL]
@@ -533,7 +533,7 @@
         <div class="flex justify-end gap-3 mt-6">
           <button
             type="button"
-            on:click={() => (showPasswordModal = false)}
+            onclick={() => (showPasswordModal = false)}
             class="px-4 py-2 bg-gray-700 text-amber-300 border-2 border-amber-300 hover:bg-gray-600 transition-colors"
           >
             [CANCEL]
@@ -585,7 +585,7 @@
           <div class="flex justify-end gap-3 mt-6">
             <button
               type="button"
-              on:click={closeSessionModal}
+              onclick={closeSessionModal}
               class="px-4 py-2 bg-gray-700 text-amber-300 border-2 border-amber-300 hover:bg-gray-600 transition-colors"
             >
               [CANCEL]

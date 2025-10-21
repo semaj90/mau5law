@@ -72,7 +72,7 @@
     border: 2px solid #e5e7eb;
     border-top: 2px solid #3b82f6;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     to {

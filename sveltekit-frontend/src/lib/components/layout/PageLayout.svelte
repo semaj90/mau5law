@@ -112,7 +112,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
 </div>
 <style>/* Ensure consistent flexbox behavior */ :global(.page-content) {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     flex: 1;
     min-height: 0; /* Allow shrinking */
   }
@@ -143,7 +143,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
   }
   :global(.flex-col-center) {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
   }

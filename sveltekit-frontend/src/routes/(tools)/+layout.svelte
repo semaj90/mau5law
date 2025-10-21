@@ -12,14 +12,14 @@
 
   // Tools navigation items
   const toolsRoutes = [
-    { name: 'Search Tools', href: '/tools/search', icon: '🔍' },
-    { name: 'CUDA Search', href: '/tools/search/cuda', icon: '⚡' },
-    { name: 'Text Editor', href: '/tools/editor', icon: '📝' },
-    { name: 'Report Builder', href: '/tools/reports', icon: '📊' },
-    { name: 'Upload Tools', href: '/tools/upload', icon: '⬆️' },
-    { name: 'Cache Manager', href: '/tools/cache', icon: '💾' },
-    { name: 'Brain Interface', href: '/tools/brain', icon: '🧠' },
-    { name: 'Detective Tools', href: '/tools/detective', icon: '🕵️' },
+  { name: 'Search Tools', href: '/tools/search', icon: '🔍' },
+  { name: 'CUDA Search', href: '/tools/search/cuda', icon: '⚡' },
+  { name: 'Text Editor', href: '/tools/editor', icon: '📝' },
+  { name: 'Report Builder', href: '/tools/reports', icon: '📊' },
+  { name: 'Upload Tools', href: '/tools/upload', icon: '⬆️' },
+  { name: 'Cache Manager', href: '/tools/cache', icon: '💾' },
+  { name: 'Brain Interface', href: '/tools/brain', icon: '🧠' },
+  { name: 'Detective Tools', href: '/tools/detective', icon: '🕵️' },
   ];
 
   // Get current route
@@ -83,7 +83,7 @@
   .tools-layout {
     min-height: 100vh;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     background: var(--nier-bg-primary, #0a0a0a);
     color: var(--nier-text-primary, #f0f0f0);
   }
@@ -136,10 +136,10 @@
     padding: 0.5rem 1rem;
     border: 1px solid var(--nier-border-primary, #333);
     border-radius: 0.5rem;
-    text-decoration: none;
+    text-decoration none;
     color: var(--nier-text-secondary, #ccc);
     background: var(--nier-bg-primary, #0a0a0a);
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
 
   .tools-nav-item:hover {
@@ -228,10 +228,10 @@
     padding: 0.5rem 1rem;
     border: 1px solid var(--nier-border-primary, #333);
     border-radius: 0.5rem;
-    text-decoration: none;
+    text-decoration none;
     color: var(--nier-text-primary, #f0f0f0);
     background: var(--nier-bg-primary, #0a0a0a);
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     font-size: 0.9rem;
   }
 
@@ -247,7 +247,7 @@
     }
 
     .tools-footer-content {
-      flex-direction: column;
+      flex-direction column;
       text-align: center;
       gap: 1rem;
     }

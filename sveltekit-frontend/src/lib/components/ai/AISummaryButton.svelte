@@ -43,7 +43,7 @@
   }
 </script>
 
-<button type="button" aria-label="Get AI summary" class="space-y-4" on:click={() => getSummary(text)} disabled={loading}>
+<button type="button" aria-label="Get AI summary" class="space-y-4" onclick={() => getSummary(text)} disabled={loading}>
   {#if loading}
     Summarizing...
   {:else}

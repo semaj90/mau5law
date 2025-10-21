@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:dragenter) and new syntaxes for event handling is not allowed. Use only the ondragenter syntax;
+<!-- @migration-task Error while migrating Svelte code: Mixing old (ondragenter) and new syntaxes for event handling is not allowed. Use only the ondragenter syntax;
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:dragenter) and new syntaxes for event handling is not allowed. Use only the ondragenter syntax -->
+<!-- @migration-task Error while migrating Svelte code: Mixing old (ondragenter) and new syntaxes for event handling is not allowed. Use only the ondragenter syntax -->
 <script lang="ts">
   import type { Evidence } from '$lib/data/types';
   let dragActive = false;
@@ -49,7 +49,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   aria-label="Evidence upload area. Press Enter or Space to choose files, or drag and drop."
   ondragenter={handleDragEnter}
   ondragleave={handleDragLeave}
-  on:dragover|preventDefault
+  ondragover|preventDefault
   ondrop={onkeydown}
 >
   <div class="upload-content">
@@ -84,7 +84,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     padding: 2rem;
     text-align: center;
     border-radius: 8px;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .upload-zone.active {
     border-color: #007bff;
@@ -92,7 +92,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
   .upload-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 1rem;
   }
@@ -110,6 +110,6 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   .progress {
     height: 4px;
     background-color: #007bff;
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
 </style>

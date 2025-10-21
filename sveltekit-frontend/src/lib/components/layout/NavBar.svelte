@@ -63,10 +63,10 @@
 
 <nav class="navbar">
   <div class="nav-container">
-    <!-- Left section: Logo + Sidebar Toggle -->
+    <!-- Left section Logo + Sidebar Toggle -->
     <div class="nav-left">
       {#if onToggleSidebar}
-        <button class="sidebar-toggle" on:click={onToggleSidebar} aria-label="Toggle sidebar">
+        <button class="sidebar-toggle" onclick={onToggleSidebar} aria-label="Toggle sidebar">
           <span class="hamburger" class:open={sidebarOpen}>
             <span></span>
             <span></span>
@@ -76,14 +76,14 @@
       {/if}
 
       <div class="logo">
-        <button class="logo-btn" on:click={() => handleNavigation(isAuthenticated ? '/dashboard' : '/')}>
+        <button class="logo-btn" onclick={() => handleNavigation(isAuthenticated ? '/dashboard' : '/')}>
           <span class="logo-icon">🎮</span>
           <span class="logo-text">Legal AI</span>
         </button>
       </div>
     </div>
 
-    <!-- Center section: Main Navigation (if authenticated) -->
+    <!-- Center section Main Navigation (if authenticated) -->
     {#if isAuthenticated}
       <div class="nav-center">
         <a href="/dashboard" class="nav-link" class:active={currentRoute === '/dashboard'}> 🏠 Dashboard </a>
@@ -95,13 +95,13 @@
       </div>
     {/if}
 
-    <!-- Right section: Theme + User Menu -->
+    <!-- Right section Theme + User Menu -->
     <div class="nav-right">
       <!-- Gaming Theme Selector -->
       <div class="theme-selector">
         <button
           class="theme-btn"
-          on:click={() => (showThemeDropdown = !showThemeDropdown)}
+          onclick={() => (showThemeDropdown = !showThemeDropdown)}
           aria-label="Switch console theme"
         >
           <span class="theme-icon">🎨</span>
@@ -115,7 +115,7 @@
               <button
                 class="theme-option"
                 class:active={key === selectedTheme}
-                on:click={() => switchTheme(key as ConsolePaletteName)}
+                onclick={() => switchTheme(key as ConsolePaletteName)}
               >
                 <span class="theme-preview" style="background: {palette.colors.primary}"></span>
                 <span class="theme-info">
@@ -134,18 +134,18 @@
       <!-- User Menu -->
       {#if isAuthenticated && user}
         <div class="user-menu">
-          <button class="user-btn" on:click={() => goto('/profile')}>
+          <button class="user-btn" onclick={() => goto('/profile')}>
             <span class="user-avatar">👤</span>
             <span class="user-name">{user.email}</span>
           </button>
-          <button class="logout-btn" on:click={handleLogout}>
+          <button class="logout-btn" onclick={handleLogout}>
             <span>🚪</span> Logout
           </button>
         </div>
       {:else}
         <div class="auth-buttons">
-          <button class="login-btn" on:click={() => goto('/login')}> Login </button>
-          <button class="signup-btn" on:click={() => goto('/register')}> Sign Up </button>
+          <button class="login-btn" onclick={() => goto('/login')}> Login </button>
+          <button class="signup-btn" onclick={() => goto('/register')}> Sign Up </button>
         </div>
       {/if}
     </div>
@@ -154,7 +154,7 @@
 
 <style>
   .navbar {
-    position: sticky;
+    position sticky;
     top: 0;
     z-index: 1000;
     background: var(--console-gradient-main, linear-gradient(45deg, #0f0f23, #1a1a2e));
@@ -187,7 +187,7 @@
     border: none;
     cursor: pointer;
     border-radius: 4px;
-    transition: background 0.2s;
+    transition background 0.2s;
   }
 
   .sidebar-toggle:hover {
@@ -196,10 +196,10 @@
 
   .hamburger {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     width: 20px;
     height: 16px;
-    position: relative;
+    position relative;
   }
 
   .hamburger span {
@@ -208,7 +208,7 @@
     width: 100%;
     background: var(--console-fg, white);
     margin: 2px 0;
-    transition: 0.3s;
+    transition 0.3s;
     transform-origin: center;
   }
 
@@ -236,7 +236,7 @@
     font-weight: bold;
     cursor: pointer;
     border-radius: 6px;
-    transition: all 0.2s;
+    transition all 0.2s;
   }
 
   .logo-btn:hover {
@@ -260,9 +260,9 @@
     gap: 0.5rem;
     padding: 0.75rem 1rem;
     color: var(--console-fg, white);
-    text-decoration: none;
+    text-decoration none;
     border-radius: 6px;
-    transition: all 0.2s;
+    transition all 0.2s;
     font-weight: 500;
   }
 
@@ -287,7 +287,7 @@
   }
 
   .theme-selector {
-    position: relative;
+    position relative;
   }
 
   .theme-btn {
@@ -300,7 +300,7 @@
     color: var(--console-fg, white);
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition all 0.2s;
     font-size: 0.9rem;
   }
 
@@ -310,7 +310,7 @@
 
   .dropdown-arrow {
     font-size: 0.8rem;
-    transition: transform 0.2s;
+    transition transform 0.2s;
   }
 
   .dropdown-arrow.open {
@@ -318,7 +318,7 @@
   }
 
   .theme-dropdown {
-    position: absolute;
+    position absolute;
     top: 100%;
     right: 0;
     margin-top: 0.5rem;
@@ -340,11 +340,11 @@
     border: none;
     color: var(--console-fg, white);
     cursor: pointer;
-    transition: background 0.2s;
+    transition background 0.2s;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  .theme-option:hover {
+  .theme-optionhover {
     background: rgba(255, 255, 255, 0.1);
   }
 
@@ -362,7 +362,7 @@
 
   .theme-info {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: flex-start;
     flex: 1;
   }
@@ -397,7 +397,7 @@
     color: var(--console-fg, white);
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition all 0.2s;
   }
 
   .user-btn:hover {
@@ -414,7 +414,7 @@
     color: white;
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition all 0.2s;
     font-size: 0.9rem;
   }
 
@@ -435,7 +435,7 @@
     background: none;
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition all 0.2s;
     font-weight: 500;
   }
 

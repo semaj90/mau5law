@@ -19,11 +19,11 @@ https://svelte.dev/e/rune_missing_parentheses -->
   // Enhanced Zod schema for case creation with legal AI context
   const CaseCreationSchema = z.object({
     title: z.string().min(3, 'Title must be at least 3 characters'),
-    description: z.string().min(10, 'Description must be at least 10 characters'),
+    description z.string().min(10, 'Description must be at least 10 characters'),
     priority: z.enum(['low', 'medium', 'high', 'critical']).default('medium'), // Added 'critical'
     status: z.enum(['open', 'active', 'closed']).default('open'),
-    location: z.string().optional(),
-    jurisdiction: z.string().optional(),
+    location z.string().optional(),
+    jurisdiction z.string().optional(),
     caseType: z.enum(['civil', 'criminal', 'family', 'corporate', 'intellectual_property']).default('civil'), // Added 'intellectual_property'
     assignedTo: z.string().optional(),
     clientName: z.string().optional(),
@@ -61,7 +61,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   }
 
   // allow null initially; template guards with {#if formIntegration}
-  let formIntegration: FormIntegrationType | null = $state(null);
+  let formIntegration FormIntegrationType | null = $state(null);
 
   // Form integration state
   let currentStep = $state(0);
@@ -105,11 +105,11 @@ https://svelte.dev/e/rune_missing_parentheses -->
     const savedData = formStatePersistence.load();
     const initialData = savedData || {
       title: '',
-      description: '',
+      description '',
       priority: 'medium',
       status: 'open',
-      location: '',
-      jurisdiction: '',
+      location '',
+      jurisdiction '',
       caseType: 'civil',
       assignedTo: '',
       clientName: '',
@@ -355,7 +355,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
         <div class="step-navigation flex justify-end pt-4">
           <button
             type="button"
-            on:click={nextStep}
+            onclick={nextStep}
             disabled={!formData.title || !formData.description}
             class="next-btn px-6 py-3 bg-yorha-accent-warm text-yorha-dark rounded font-bold hover:bg-yorha-accent-warm/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -464,7 +464,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
           <div class="step-navigation flex justify-end pt-4">
             <button
               type="button"
-              on:click={nextStep}
+              onclick={nextStep}
               class="next-btn px-6 py-3 bg-yorha-accent-warm text-yorha-dark rounded font-bold hover:bg-yorha-accent-warm/90 transition-colors"
             >
               Next: Review →
@@ -529,7 +529,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
         <div class="step-navigation flex justify-between pt-4">
           <button
             type="button"
-            on:click={previousStep}
+            onclick={previousStep}
             disabled={isSubmitting}
             class="prev-btn px-6 py-3 border border-yorha-accent-warm/50 text-yorha-light rounded hover:bg-yorha-accent-warm/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -538,7 +538,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
           <div class="final-actions flex space-x-4">
             <button
               type="button"
-              on:click={() => {
+              onclick={() => {
                 dispatch('close');
               }}
               disabled={isSubmitting}
@@ -610,12 +610,12 @@ https://svelte.dev/e/rune_missing_parentheses -->
     --yorha-darker: #1a1a1a;
     font-family: 'JetBrains Mono', monospace;
     backdrop-filter: blur(10px);
-    position: relative;
+    position relative;
     overflow: hidden;
   }
   /* Multi-step progress indicators */
   .step-circle {
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .step-circle.active {
     background-color: var(--yorha-accent-warm);
@@ -635,11 +635,11 @@ https://svelte.dev/e/rune_missing_parentheses -->
   }
   .step-line {
     background: linear-gradient(90deg, var(--yorha-accent-warm) 0%, rgba(212, 175, 55, 0.3) 100%);
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   /* Form animations */
   .form-step {
-    animation: fadeInUp 0.4s ease-out;
+    animation fadeInUp 0.4s ease-out;
   }
   @keyframes fadeInUp {
     from {
@@ -653,8 +653,8 @@ https://svelte.dev/e/rune_missing_parentheses -->
   }
   /* Enhanced form inputs */
   .form-input {
-    transition: all 0.2s ease;
-    position: relative;
+    transition all 0.2s ease;
+    position relative;
   }
   .form-input:focus {
     box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
@@ -667,8 +667,8 @@ https://svelte.dev/e/rune_missing_parentheses -->
   .next-btn,
   .prev-btn,
   .submit-btn {
-    position: relative;
-    transition: all 0.2s ease;
+    position relative;
+    transition all 0.2s ease;
     overflow: hidden;
   }
   .next-btn:hover,
@@ -683,13 +683,13 @@ https://svelte.dev/e/rune_missing_parentheses -->
   .next-btn::before,
   .submit-btn::before {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: -100%;
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transition: left 0.5;
+    transition left 0.5;
   }
   .next-btn:hover::before,
   .submit-btn:hover::before {
@@ -698,7 +698,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   /* Progress animations */
   .progress-bar,
   .step-progress {
-    animation: slideIn 0.3s ease-out;
+    animation slideIn 0.3s ease-out;
   }
   @keyframes slideIn {
     from {
@@ -712,7 +712,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   }
   /* AI Processing indicator */
   .ai-processing-indicator {
-    animation: pulseGlow 2s infinite;
+    animation pulseGlow 2s infinite;
   }
   @keyframes pulseGlow {
     0%,
@@ -725,10 +725,10 @@ https://svelte.dev/e/rune_missing_parentheses -->
   }
   /* Review section styling */
   .review-section {
-    animation: fadeIn 0.5s ease-out;
+    animation fadeIn 0.5s ease-out;
   }
   .review-item {
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .review-item:hover {
     background-color: rgba(212, 175, 55, 0.05);
@@ -736,7 +736,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   }
   /* Loading spinner */
   .spinner {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     from {
@@ -764,7 +764,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   }
   /* State indicators */
   .form-state-indicator {
-    animation: slideInRight 0.3s ease-out;
+    animation slideInRight 0.3s ease-out;
   }
   @keyframes slideInRight {
     from {
@@ -784,11 +784,11 @@ https://svelte.dev/e/rune_missing_parentheses -->
     }
     .step-navigation,
     .final-actions {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
     }
     .step-indicator {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
       gap: 1rem;
     }

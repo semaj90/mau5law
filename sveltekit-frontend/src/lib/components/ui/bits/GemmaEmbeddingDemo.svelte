@@ -400,7 +400,7 @@
               nesStyle={true}
               disabled={!canSearch || isSearching}
               loading={isSearching}
-              on:click={searchEmbeddings}
+              onclick={searchEmbeddings}
             >
               {#if isSearching}
                 <Search class="inline-icon animate-spin" />
@@ -447,12 +447,12 @@
     margin: 0 auto;
     padding: 1rem;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 2rem;
   }
   .demo-header {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .stats-bar {
@@ -468,12 +468,12 @@
   }
   .generation-form {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1.5rem;
   }
   .form-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .form-group label {
@@ -506,7 +506,7 @@
   .result-details {
     margin-top: 1rem;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .result-details code {
@@ -518,7 +518,7 @@
   }
   .search-section {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1.5rem;
   }
   .search-form {
@@ -533,7 +533,7 @@
   }
   .search-results {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .search-result-item {
@@ -565,7 +565,7 @@
     gap: 0.5rem;
   }
   .animate-spin {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     from {
@@ -585,11 +585,11 @@
   }
   @media (max-width: 768px) {
     .stats-bar {
-      flex-direction: column;
+      flex-direction column;
       align-items: center;
     }
     .search-form {
-      flex-direction: column;
+      flex-direction column;
     }
     .search-form > :first-child {
       min-width: auto;

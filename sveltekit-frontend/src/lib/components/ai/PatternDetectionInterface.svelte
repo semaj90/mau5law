@@ -23,14 +23,14 @@
     id: string;
     type: 'temporal' | 'behavioral' | 'financial' | 'communication' | 'location';
     title: string;
-    description: string;
+    description string;
     confidence: number;
     significance: number;
     frequency: number;
     timeframe: {
       start: string;
       end: string;
-      duration: string;
+      duration string;
     }
     entities: PatternEntity[];
     evidence: string[];
@@ -49,7 +49,7 @@
     patternId: string;
     strength: number;
     type: 'temporal' | 'causal' | 'associative';
-    description: string;
+    description string;
   }
   interface AnalysisResult {
     timestamp: string;
@@ -152,7 +152,7 @@
     selectedPattern = pattern;
     showPatternDetails = true;
   }
-  function formatDuration(duration: string): string {
+  function formatDuration(duration string): string {
     // Convert duration string to human readable format
     const match = duration.match(/(\d+) => [dhm])/);
     if (match) {
@@ -177,7 +177,7 @@
       <p class="detection-subtitle">AI-powered pattern recognition and behavioral analysis</p>
     </div>
     <div class="header-actions">
-      <button class="nes-btn" on:click={disabled}>
+      <button class="nes-btn" onclick={disabled}>
         {isAnalyzing ? 'Analyzing...' : 'Run Analysis'}
       </button>
     </div>
@@ -355,7 +355,7 @@
           </div>
           <div.Footer>
             <div class="nier-bits-card-actions">
-              <button class="nes-btn" variant="ghost" size="sm" on:click={() => openPatternDetails(pattern)}>
+              <button class="nes-btn" variant="ghost" size="sm" onclick={() => openPatternDetails(pattern)}>
                 View Details
               </button>
               <button class="nes-btn" size="sm">
@@ -410,7 +410,7 @@
               <strong>End:</strong> {new Date(selectedPattern.timeframe.end).toLocaleString()}
             </p>
             <p>
-              <strong>Duration:</strong> {formatDuration(selectedPattern.timeframe.duration)}
+              <strong>Duration</strong> {formatDuration(selectedPattern.timeframe.duration)}
             </p>
           </div>
         </section>
@@ -474,7 +474,7 @@
         {/if}
       </div>
       <div class="dialog-actions">
-        <button class="nes-btn" variant="ghost" on:click={() => showPatternDetails = false}>
+        <button class="nes-btn" variant="ghost" onclick={() => showPatternDetails = false}>
           Close
         </button>
         <button class="nes-btn">
@@ -522,7 +522,7 @@
   }
   .control-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .control-group label {
@@ -605,7 +605,7 @@
     border: 1px solid #e2e8f0;
     border-radius: 0.5rem;
     overflow: hidden;
-    transition: box-shadow 0.2;
+    transition box-shadow 0.2;
   }
   .pattern-card:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -638,7 +638,7 @@
   }
   .pattern-metrics-header {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: flex-end;
     gap: 0.25rem;
   }
@@ -658,7 +658,7 @@
   }
   .pattern-stats {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
     margin-bottom: 1rem;
   }
@@ -682,7 +682,7 @@
   .stat-fill {
     height: 100%;
     background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
-    transition: width 0.3;
+    transition width 0.3;
   }
   .stat-value {
     font-size: 0.75rem;
@@ -739,7 +739,7 @@
     border: 2px solid #e2e8f0;
     border-top: 2px solid #3b82f6;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
   .loading-detail {
@@ -757,7 +757,7 @@
   }
   .pattern-details-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 2rem;
   }
   .pattern-overview {
@@ -775,7 +775,7 @@
   }
   .overview-metric {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
   .overview-label {
@@ -830,7 +830,7 @@
   .involvement-fill {
     height: 100%;
     background: #3b82f6;
-    transition: width 0.3;
+    transition width 0.3;
   }
   .involvement-percentage {
     font-size: 0.75rem;
@@ -839,7 +839,7 @@
   }
   .correlations-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .correlation-item {
@@ -906,7 +906,7 @@
   }
   @media (max-width: 768px) {
     .detection-header {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
     }
     .controls-grid {

@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:mousedown) and new syntaxes for event handling is not allowed. Use only the onmousedown syntax;
+<!-- @migration-task Error while migrating Svelte code: Mixing old (onmousedown) and new syntaxes for event handling is not allowed. Use only the onmousedown syntax;
 https://svelte.dev/e/mixed_event_handler_syntaxes -->
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:mousedown) and new syntaxes for event handling is not allowed. Use only the onmousedown syntax -->
+<!-- @migration-task Error while migrating Svelte code: Mixing old (onmousedown) and new syntaxes for event handling is not allowed. Use only the onmousedown syntax -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   	import { onMount, onDestroy } from 'svelte';
@@ -86,7 +86,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   		pannerNode.positionZ.value = spatialPosition.z;
   	}
   	// Create audio feedback for slider interaction
-  	function createAudioFeedback(frequency: number, duration: number = 50) {
+  	function createAudioFeedback(frequency: number, duration number = 50) {
   		if (!audioContext || !pannerNode || !gainNode || disabled) return;
   		// Stop existing oscillator
   		if (oscillator) {
@@ -301,7 +301,7 @@ mounted = true;
 		--n64-background: #f0f0f0;
 		--n64-shadow: rgba(0, 0, 0, 0.3);
 		--n64-highlight: rgba(255, 255, 255, 0.2);
-		position: relative;
+		position relative;
 		width: 100%;
 		max-width: 300px;
 		font-family: 'Courier New', monospace;
@@ -315,7 +315,7 @@ mounted = true;
 			blur(calc(var(--pixel-drift, 0) * 0.5px))
 			saturate(var(--color-bleed, 1))
 			contrast(1.1);
-		transition: transform 0.1s ease;
+		transition transform 0.1s ease;
 	}
 	.n64-slider-label {
 		display: block;
@@ -328,12 +328,12 @@ mounted = true;
 		text-shadow: 1px 1px 2px var(--n64-shadow);
 	}
 	.n64-slider-container {
-		position: relative;
+		position relative;
 		height: 24px;
 		margin: 8px 0;
 	}
 	.n64-slider-track {
-		position: absolute;
+		position absolute;
 		top: 50%;
 		left: 0,
 		right: 0;
@@ -361,7 +361,7 @@ mounted = true;
 			);
 	}
 	.n64-slider-fill {
-		position: absolute;
+		position absolute;
 		top: 0,
 		left: 0;
 		height: 100%;
@@ -375,20 +375,20 @@ mounted = true;
 		border-radius: 0;
 		/* Animated fill effect */
 		background-size: 200% 100%;
-		animation: fillPulse 2s ease-in-out infinite;
+		animation fillPulse 2s ease-in-out infinite;
 	}
 	@keyframes fillPulse {
 		0%, 100% {
-			background-position: % 50%;
+			background-position % 50%;
 			filter: brightness(1);
 		}
 		50% {
-			background-position: 00% 50%;
+			background-position 00% 50%;
 			filter: brightness(1.2);
 		}
 	}
 	.n64-slider-thumb {
-		position: absolute;
+		position absolute;
 		top: 50%;
 		left: var(--slider-percentage, 0%);
 		width: 20px;
@@ -407,14 +407,14 @@ mounted = true;
 			2px 2px 6px var(--n64-shadow),
 			inset 1px 1px 2px var(--n64-highlight);
 		cursor: pointer;
-		transition: all 0.1s ease;
+		transition all 0.1s ease;
 		/* N64 controller button styling */
-		position: relative;
+		position relative;
 		z-index: 2,
 	}
 	.n64-slider-thumb::before {
 		content: '';
-		position: absolute;
+		position absolute;
 		top: 50%;
 		left: 50%;
 		width: 8px;
@@ -425,7 +425,7 @@ mounted = true;
 		box-shadow: inset 1px 1px 2px var(--n64-shadow);
 	}
 	.n64-slider-input {
-		position: absolute;
+		position absolute;
 		top: 0,
 		left: 0;
 		width: 100%;
@@ -475,7 +475,7 @@ mounted = true;
 		);
 	}
 	.n64-slider.interacting .n64-slider-fill {
-		animation-duration: 0.5,
+		animation-duration 0.5,
 		filter: brightness(1.3) saturate(1.2);
 	}
 	/* Disabled state */
@@ -494,7 +494,7 @@ mounted = true;
 	}
 	.n64-slider.disabled .n64-slider-fill {
 		background: #999;
-		animation: none;
+		animation none;
 	}
 	/* Hover effects */
 	.n64-slider:not(.disabled):hover .n64-slider-thumb {
@@ -511,16 +511,16 @@ mounted = true;
 		}
 	}
 	/* Reduced motion support */
-	@media (prefers-reduced-motion: reduce) {
+	@media (prefers-reduced-motion reduce) {
 		.n64-slider {
 			transform: none;
-			transition: none;
+			transition none;
 		}
 		.n64-slider-fill {
-			animation: none;
+			animation none;
 		}
 		.n64-slider-thumb {
-			transition: none;
+			transition none;
 		}
 	}
 	/* Mobile optimizations */

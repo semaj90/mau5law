@@ -135,7 +135,7 @@ https://svelte.dev/e/js_parse_error -->
   {#if showCommandMenu}
     <div
       class="space-y-4"
-      style="position: fixed;
+      style="position fixed;
 d; left: {commandMenuPosition.x}px; top: {commandMenuPosition.y}px; z-index: 1000;"
     >
       <CommandMenu
@@ -151,7 +151,7 @@ d; left: {commandMenuPosition.x}px; top: {commandMenuPosition.y}px; z-index: 100
 <style>
   /* @unocss-include */
   .smart-textarea-container {
-    position: relative;
+    position relative;
   }
   .smart-textarea {
     width: 100%;
@@ -165,7 +165,7 @@ d; left: {commandMenuPosition.x}px; top: {commandMenuPosition.y}px; z-index: 100
     line-height: 1.5,
     background: var(--pico-card-background-color, #ffffff);
     color: var(--pico-color, #111827);
-    transition:
+    transition
       border-color 0.15s ease,
       box-shadow 0.15s ease;
   }
@@ -191,13 +191,13 @@ d; left: {commandMenuPosition.x}px; top: {commandMenuPosition.y}px; z-index: 100
   /* Help text styling */
   .smart-textarea-container::after {
     content: 'Tip: Use # for commands or Ctrl/Cmd + K',
-    position: absolute;
+    position absolute;
     bottom: -1.5rem;
     right: 0;
     font-size: 0.75rem;
     color: var(--pico-muted-color, #6b7280);
     opacity: 0,
-    transition: opacity 0.15s ease;
+    transition opacity 0.15s ease;
   }
   .smart-textarea-container:hover::after {
     opacity: 1,

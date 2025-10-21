@@ -27,10 +27,10 @@
   let errors = $state<string[]>([]);
 
   const allowedTypes = {
-    'image/*': { icon: Image, label: 'Images' },
-    'application/pdf': { icon: FileText, label: 'PDF Documents' },
-    'text/*': { icon: FileText, label: 'Text Files' },
-    '*/*': { icon: Upload, label: 'Any File' },
+    'image/*': { icon Image, label: 'Images' },
+    'application/pdf': { icon FileText, label: 'PDF Documents' },
+    'text/*': { icon FileText, label: 'Text Files' },
+    '*/*': { icon Upload, label: 'Any File' },
   };
 
   function handleDragOver(e: DragEvent) {
@@ -142,7 +142,7 @@
   role="button"
   tabindex="0"
   aria-label="Drop zone or click to upload files"
-  on:click={openFileDialog}
+  onclick={openFileDialog}
   onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && openFileDialog()}
 >
   <input
@@ -178,7 +178,7 @@
 
       {#if accept !== '*/*'}
         <div class="accepted-types">
-          {#each getAcceptedFileInfo() as { icon: Icon, label }}
+          {#each getAcceptedFileInfo() as { icon Icon, label }}
             <div class="type-badge">
               <Icon class="w-4 h-4" />
               {label}
@@ -216,7 +216,7 @@
     padding: 2rem;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     background: var(--bg-primary, #ffffff);
   }
 
@@ -238,7 +238,7 @@
 
   .upload-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 1.5rem;
   }
@@ -254,7 +254,7 @@
   }
 
   .upload-icon.pulsing {
-    animation: pulse 1.5s ease-in-out infinite;
+    animation pulse 1.5s ease-in-out infinite;
   }
 
   @keyframes pulse {
@@ -270,7 +270,7 @@
 
   .upload-text {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
     color: var(--text-primary, #2d3748);
   }
@@ -289,7 +289,7 @@
 
   .browse-link {
     color: var(--accent-primary, #3b82f6);
-    text-decoration: underline;
+    text-decoration underline;
     font-weight: 600,
   }
 

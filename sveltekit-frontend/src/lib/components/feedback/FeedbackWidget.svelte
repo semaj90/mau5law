@@ -109,7 +109,7 @@
     class="feedback-overlay"
     role="button"
     tabindex="0"
-    on:click={close}
+    onclick={close}
     onkeydown={e => e.key === 'Enter' && close()}
   >
     <div
@@ -117,7 +117,7 @@
       role="dialog"
       tabindex="0"
       aria-labelledby="feedback-title"
-      on:click={e => e.stopPropagation()}
+      onclick={e => e.stopPropagation()}
       onkeydown={e => e.key === 'Enter' && e.stopPropagation()}
     >
       {#if !isSubmitted}
@@ -125,7 +125,7 @@
           <h3 id="feedback-title" class="feedback-title">
             Rate {ratingTypeLabels[ratingType]}
           </h3>
-          <button class="close-button" on:click={close} aria-label="Close feedback" type="button">×</button>
+          <button class="close-button" onclick={close} aria-label="Close feedback" type="button">×</button>
         </div>
         <div class="feedback-content">
           <div class="rating-section">
@@ -134,7 +134,7 @@
               {#each [1, 2, 3, 4, 5] as star}
                 <button
                   class="star {rating >= star ? 'active' : ''}"
-                  on:click={() => setRating(star)}
+                  onclick={() => setRating(star)}
                   aria-label="Rate {star} stars"
                   type="button"
                 >
@@ -155,7 +155,7 @@
               ></textarea>
             </div>
             <div class="feedback-actions">
-              <button class="submit-button" on:click={submitFeedback} disabled={isSubmitting} type="button">
+              <button class="submit-button" onclick={submitFeedback} disabled={isSubmitting} type="button">
                 {#if isSubmitting}
                   Submitting...
                 {:else}
@@ -178,7 +178,7 @@
 
 <style>
   .feedback-overlay {
-    position: fixed;
+    position fixed;
 d;
     top: 0,
     left: 0;
@@ -221,15 +221,15 @@ d;
     cursor: pointer;
     padding: 4px;
     border-radius: 4px;
-    transition: color 0.2s, background-color 0.2;
+    transition color 0.2s, background-color 0.2;
   }
-  .close-button:hover {
+  .close-buttonhover {
     color: #666;
     background-color: #f5f5f5;
   }
   .feedback-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 20px;
   }
   .rating-section {
@@ -251,7 +251,7 @@ d;
     font-size: 32px;
     color: #ddd;
     cursor: pointer;
-    transition: color 0.2s, transform 0.1;
+    transition color 0.2s, transform 0.1;
     padding: 4px;
     border-radius: 4px;
   }
@@ -264,7 +264,7 @@ d;
   }
   .feedback-section {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 8px;
   }
   .feedback-textarea-label {
@@ -279,7 +279,7 @@ d;
     font-size: 14px;
     font-family: inherit;
     resize: vertical;
-    transition: border-color 0.2;
+    transition border-color 0.2;
   }
   .feedback-textarea:focus {
     outline: none;
@@ -299,13 +299,13 @@ d;
     font-size: 14px;
     font-weight: 600,
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.1;
+    transition background-color 0.2s, transform 0.1;
   }
-  .submit-button:hover:not(:disabled) {,
+  .submit-buttonhover:not(:disabled) {,
     background: #4338ca;
     transform: translateY(-1px);
   }
-  .submit-button:disabled {
+  .submit-buttondisabled {
     background: #9ca3af;
     cursor: not-allowed;
     transform: none;

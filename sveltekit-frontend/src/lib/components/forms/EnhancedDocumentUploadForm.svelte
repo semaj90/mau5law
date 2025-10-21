@@ -153,9 +153,9 @@
     selectedFile = null;
     $formData = {
       title: "",
-      description: "",
+      description "",
       documentType: "other",
-      jurisdiction: undefined;
+      jurisdiction undefined;
       tags: [],
       file: null
       aiProcessing: {
@@ -252,7 +252,7 @@
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
-              on:click={handleSaveDraft}
+              onclick={handleSaveDraft}
               disabled={$isSubmitting}
             >
 <Save size={16} />
@@ -260,7 +260,7 @@
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
-              on:click={handleReset}
+              onclick={handleReset}
               disabled={$isSubmitting}
             >
 <RotateCcw size={16} />
@@ -295,7 +295,7 @@
         role="button" aria-label="Drop zone" ondragover={handleDragOver}
         ondragleave={handleDragLeave}
         tabindex="0"
-        on:click={() => fileInput?.click()}
+        onclick={() => fileInput?.click()}
         keydown={(e) => e.key === "Enter" && fileInput?.click()}
       >
         {#if selectedFile}
@@ -311,7 +311,7 @@
             <Button class="bits-btn"
               variant="ghost"
               size="sm"
-              on:click={removeFile}
+              onclick={removeFile}
               disabled={$isSubmitting}
             >
 <X size={16} />
@@ -506,7 +506,7 @@
               <Button class="bits-btn"
                 variant="ghost"
                 size="sm"
-                on:click={() =>
+                onclick={() =>
 actor.send({ type: "RETRY" })}
                 disabled={contextValue.retryCount >= contextValue.maxRetries}
               >
@@ -517,7 +517,7 @@ actor.send({ type: "RETRY" })}
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  on:click={() =>
+                  onclick={() =>
 actor.send({ type: "SKIP_PROCESSING" })}
                   class="ml-2"
                 >
@@ -556,7 +556,7 @@ actor.send({ type: "SKIP_PROCESSING" })}
       <div class="flex gap-3">
         <Button class="bits-btn"
           variant="ghost"
-          on:click={handleReset}
+          onclick={handleReset}
           disabled={$isSubmitting}
         >
 Reset Form

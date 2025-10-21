@@ -16,99 +16,99 @@
     {
       id: 'idle',
       name: 'Ready to Upload',
-      icon: Clock;
-      description: 'Waiting for files to be selected',
+      icon Clock;
+      description 'Waiting for files to be selected',
       color: 'bg-gray-500',
     },
     {
       id: 'requesting_presign',
       name: 'Preparing Upload',
-      icon: Network;
-      description: 'Generating secure upload URLs with MinIO',
+      icon Network;
+      description 'Generating secure upload URLs with MinIO',
       color: 'bg-blue-500',
     },
     {
       id: 'uploading',
       name: 'File Upload',
-      icon: Zap;
-      description: 'Uploading chunks to secure storage',
+      icon Zap;
+      description 'Uploading chunks to secure storage',
       color: 'bg-purple-500',
     },
     {
       id: 'rabbitmq_queue',
       name: 'Queue Processing',
-      icon: Network;
-      description: 'Adding to RabbitMQ processing queue',
+      icon Network;
+      description 'Adding to RabbitMQ processing queue',
       color: 'bg-orange-500',
     },
     {
       id: 'ocr_extraction',
       name: 'OCR Analysis',
-      icon: Eye;
-      description: 'Extracting text from images and PDFs',
+      icon Eye;
+      description 'Extracting text from images and PDFs',
       color: 'bg-cyan-500',
     },
     {
       id: 'text_extraction',
       name: 'Document Parsing',
-      icon: Database;
-      description: 'Advanced text extraction and preprocessing',
+      icon Database;
+      description 'Advanced text extraction and preprocessing',
       color: 'bg-green-500',
     },
     {
       id: 'gemma3_embedding',
       name: 'Gemma3 Embeddings',
-      icon: Brain;
-      description: 'Generating semantic embeddings with Gemma3',
+      icon Brain;
+      description 'Generating semantic embeddings with Gemma3',
       color: 'bg-pink-500',
     },
     {
       id: 'ai_analysis',
       name: 'AI Legal Analysis',
-      icon: Brain;
-      description: 'Deep legal analysis with AI assistant',
+      icon Brain;
+      description 'Deep legal analysis with AI assistant',
       color: 'bg-indigo-500',
     },
     {
       id: 'neo4j_storage',
       name: 'Graph Storage',
-      icon: Network;
-      description: 'Storing relationships in Neo4j graph database',
+      icon Network;
+      description 'Storing relationships in Neo4j graph database',
       color: 'bg-emerald-500',
     },
     {
       id: 'postgresql_storage',
       name: 'Document Storage',
-      icon: Database;
-      description: 'Saving to PostgreSQL with JSONB optimization',
+      icon Database;
+      description 'Saving to PostgreSQL with JSONB optimization',
       color: 'bg-teal-500',
     },
     {
       id: 'pgvector_indexing',
       name: 'Vector Indexing',
-      icon: Cpu;
-      description: 'Creating pgvector HNSW index for fast search',
+      icon Cpu;
+      description 'Creating pgvector HNSW index for fast search',
       color: 'bg-violet-500',
     },
     {
       id: 'rag_integration',
       name: 'RAG Integration',
-      icon: Brain;
-      description: 'Integrating with RAG retrieval system',
+      icon Brain;
+      description 'Integrating with RAG retrieval system',
       color: 'bg-rose-500',
     },
     {
       id: 'tensor_processing',
       name: 'GPU Processing',
-      icon: Zap;
-      description: 'Final tensor processing and clustering',
+      icon Zap;
+      description 'Final tensor processing and clustering',
       color: 'bg-amber-500',
     },
     {
       id: 'completed',
       name: 'Complete',
-      icon: CheckCircle;
-      description: 'All processing completed successfully',
+      icon CheckCircle;
+      description 'All processing completed successfully',
       color: 'bg-green-600',
     }
   ];
@@ -166,10 +166,10 @@
             <span class="text-sm">{uploadState.context.error}</span>
           </div>
           <div class="flex gap-2">
-            <Button on:click={retryUpload} variant="outline" size="sm">
+            <Button onclick={retryUpload} variant="outline" size="sm">
               Retry
             </Button>
-            <Button on:click={resetUpload} variant="ghost" size="sm">
+            <Button onclick={resetUpload} variant="ghost" size="sm">
               Reset
             </Button>
           </div>

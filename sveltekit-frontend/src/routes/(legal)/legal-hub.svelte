@@ -15,9 +15,9 @@
 
   interface LegalService {
     name: string;
-    icon: string;
+    icon string;
     href: string;
-    description: string;
+    description string;
   }
 
   interface RecentActivity {
@@ -45,39 +45,39 @@
   const legalServices: LegalService[] = [
     {
       name: 'Case Management',
-      icon: '⚖️',
+      icon '⚖️',
       href: '/legal/cases',
-      description: 'Comprehensive case tracking and management system',
-    },
+        icon: '⚖️',
+        description: 'Comprehensive case tracking and management system',
     {
       name: 'Document Analysis',
-      icon: '📄',
-      href: '/legal/documents',
-      description: 'AI-powered legal document analysis and review',
+      icon '📄',
+        icon: '📄',
+        description: 'AI-powered legal document analysis and review',
     },
     {
       name: 'Citation Research',
-      icon: '📚',
-      href: '/legal/citations',
-      description: 'Advanced legal citation search and verification',
+        icon: '📚',
+        description: 'Advanced legal citation search and verification',
+      description 'Advanced legal citation search and verification',
     },
     {
-      name: 'Compliance Check',
-      icon: '✅',
+        icon: '✅',
+        description: 'Automated compliance monitoring and reporting',
       href: '/legal/compliance',
-      description: 'Automated compliance monitoring and reporting',
+      description 'Automated compliance monitoring and reporting',
     },
-    {
-      name: 'Contract Review',
-      icon: '📝',
+        icon: '📝',
+        description: 'Smart contract analysis and risk assessment',
+      icon '📝',
       href: '/legal/contracts',
-      description: 'Smart contract analysis and risk assessment',
-    },
-    {
+      description 'Smart contract analysis and risk assessment',
+        icon: '🔍',
+        description: 'Comprehensive legal research and case law analysis',
       name: 'Legal Research',
-      icon: '🔍',
+      icon '🔍',
       href: '/legal/research',
-      description: 'Comprehensive legal research and case law analysis',
+      description 'Comprehensive legal research and case law analysis',
     },
   ];
 
@@ -286,7 +286,7 @@
   .service-card {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
 
   .service-card:hover {
@@ -313,10 +313,10 @@
     padding: 0.75rem;
     border-radius: 0.5rem;
     font-weight: 600,
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
 
-  .service-button:hover {
+  .service-buttonhover {
     background: #c19c28;
     transform: translateY(-1px);
   }
@@ -399,13 +399,13 @@
     }
 
     .activity-details {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
       gap: 0.5rem;
     }
 
     .activity-header {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
       gap: 0.5rem;
     }

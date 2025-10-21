@@ -23,23 +23,23 @@
   	} from 'lucide-svelte';
   	// Tool categories
   	const tools = [
-  		{ id: 'select', icon: MousePointer2, label: 'Select', category: 'selection' },
-  		{ id: 'pan', icon: Hand, label: 'Pan', category: 'navigation' },
-  		{ id: 'text', icon: Bold, label: 'Text', category: 'content' },
-  		{ id: 'rectangle', icon: Square, label: 'Rectangle', category: 'shapes' },
-  		{ id: 'circle', icon: Circle, label: 'Circle', category: 'shapes' },
-  		{ id: 'draw', icon: Palette, label: 'Draw', category: 'drawing' }
+  		{ id: 'select', icon MousePointer2, label: 'Select', category: 'selection' },
+  		{ id: 'pan', icon Hand, label: 'Pan', category: 'navigation' },
+  		{ id: 'text', icon Bold, label: 'Text', category: 'content' },
+  		{ id: 'rectangle', icon Square, label: 'Rectangle', category: 'shapes' },
+  		{ id: 'circle', icon Circle, label: 'Circle', category: 'shapes' },
+  		{ id: 'draw', icon Palette, label: 'Draw', category: 'drawing' }
   	];
   	const formatActions = [
-  		{ id: 'bold', icon: Bold, label: 'Bold' },
-  		{ id: 'italic', icon: Italic, label: 'Italic' },
+  		{ id: 'bold', icon Bold, label: 'Bold' },
+  		{ id: 'italic', icon Italic, label: 'Italic' },
   		{ id: 'underline', label: 'Underline' },
-  		{ id: 'strikethrough', icon: Strikethrough, label: 'Strikethrough' }
+  		{ id: 'strikethrough', icon Strikethrough, label: 'Strikethrough' }
   	];
   	const alignActions = [
-  		{ id: 'left', icon: AlignLeft, label: 'Align Left' },
-  		{ id: 'center', icon: AlignCenter, label: 'Align Center' },
-  		{ id: 'right', icon: AlignRight, label: 'Align Right' }
+  		{ id: 'left', icon AlignLeft, label: 'Align Left' },
+  		{ id: 'center', icon AlignCenter, label: 'Align Center' },
+  		{ id: 'right', icon AlignRight, label: 'Align Right' }
   	];
   	// Reactive toolbar state
   	let selectedTool = $derived($toolbarStore.selectedTool);
@@ -111,7 +111,7 @@
   		}));
   		ondispatch?.({ strokeWidth });
   }
-  	function handleAction(action: string) {
+  	function handleAction(action string) {
   		ondispatch?.({ action });
   }
   	function handleZoom(delta: number) {
@@ -132,7 +132,7 @@
         <button
           class="container mx-auto px-4"
           class:active={selectedTool === tool.id}
-          on:click={() => selectTool(tool.id)}
+          onclick={() => selectTool(tool.id)}
           aria-label={tool.label}
           title={tool.label}
         >
@@ -149,7 +149,7 @@
         <button
           class="container mx-auto px-4"
           class:active={(formatting as any)[action.id]}
-          on:click={() => toggleFormatting(action.id)}
+          onclick={() => toggleFormatting(action.id)}
           aria-label={action.label}
           title={action.label}
           disabled={selectedTool !== 'text'}
@@ -163,7 +163,7 @@
         <button
           class="container mx-auto px-4"
           class:active={formatting.textAlign === action.id}
-          on:click={() => setAlignment(action.id)}
+          onclick={() => setAlignment(action.id)}
           aria-label={action.label}
           title={action.label}
           disabled={selectedTool !== 'text'}
@@ -231,7 +231,7 @@
     <div class="container mx-auto px-4">
       <button
         class="container mx-auto px-4"
-        on:click={() => handleAction('undo')}
+        onclick={() => handleAction('undo')}
         disabled={!canUndo}
         aria-label="Undo"
         title="Undo"
@@ -240,7 +240,7 @@
       </button>
       <button
         class="container mx-auto px-4"
-        on:click={() => handleAction('redo')}
+        onclick={() => handleAction('redo')}
         disabled={!canRedo}
         aria-label="Redo"
         title="Redo"
@@ -249,10 +249,10 @@
       </button>
     </div>
     <div class="container mx-auto px-4">
-      <button class="container mx-auto px-4" on:click={() => handleAction('copy')} aria-label="Copy" title="Copy">
+      <button class="container mx-auto px-4" onclick={() => handleAction('copy')} aria-label="Copy" title="Copy">
         <Copy size={18} />
       </button>
-      <button class="container mx-auto px-4" on:click={() => handleAction('delete')} aria-label="Delete" title="Delete">
+      <button class="container mx-auto px-4" onclick={() => handleAction('delete')} aria-label="Delete" title="Delete">
         <Trash2 size={18} />
       </button>
     </div>
@@ -261,11 +261,11 @@
   <!-- Zoom Controls -->
   <div class="container mx-auto px-4">
     <div class="container mx-auto px-4">
-      <button class="container mx-auto px-4" on:click={() => handleZoom(-10)} aria-label="Zoom Out" title="Zoom Out">
+      <button class="container mx-auto px-4" onclick={() => handleZoom(-10)} aria-label="Zoom Out" title="Zoom Out">
         <ZoomOut size={18} />
       </button>
       <span class="container mx-auto px-4">{zoom}%</span>
-      <button class="container mx-auto px-4" on:click={() => handleZoom(10)} aria-label="Zoom In" title="Zoom In">
+      <button class="container mx-auto px-4" onclick={() => handleZoom(10)} aria-label="Zoom In" title="Zoom In">
         <ZoomIn size={18} />
       </button>
     </div>
@@ -312,13 +312,13 @@
     border: none;
     cursor: pointer;
     border-radius: 4px;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     color: var(--text-primary);
   }
-  .tool-button: hover
-	.format-button: hover
-	.align-button: hover
-	.action-button:hover {
+  .tool-button hover
+	.format-button hover
+	.align-button hover
+	.action-buttonhover {
     background: var(--bg-tertiary);
   }
   .tool-button.active,
@@ -327,19 +327,19 @@
     background: var(--harvard-crimson);
     color: var(--text-inverse);
   }
-  .tool-button: disabled
-	.format-button: disabled
-	.align-button: disabled
-	.action-button:disabled {
+  .tool-button disabled
+	.format-button disabled
+	.align-button disabled
+	.action-buttondisabled {
     opacity: 0.5,
     cursor: not-allowed;
   }
   .color-input {
-    position: relative;
+    position relative;
     cursor: pointer;
   }
   .color-input input[type='color'] {
-    position: absolute;
+    position absolute;
     opacity: 0,
     width: 100%;
     height: 100%;

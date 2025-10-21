@@ -187,11 +187,11 @@
           characterCount: getCharCount(),
           lastModified: new Date().toISOString(),
           author: 'Current User',
-          version: '1.0',
+          version '1.0',
         },
         cacheTimestamp: Date.now(),
         accessCount: 1,
-        cacheLocation: 'loki',
+        cacheLocation 'loki',
         syncStatus: 'pending'
       });
       autoSaveStatus = 'saved';
@@ -509,7 +509,7 @@
 <style>
   /* @unocss-include */
   .tinymce-container {
-    position: relative;
+    position relative;
     width: 100%;
   }
   :global(.tox) {

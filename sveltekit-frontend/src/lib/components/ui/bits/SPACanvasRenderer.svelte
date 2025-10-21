@@ -17,7 +17,7 @@
       chatMessages?: unknown[];
     }
     onnavigate?: (data: { view: string; data: any }) => void;
-    oninteract?: (data: { type: string; position: ;
+    oninteract?: (data: { type: string; position ;
 { x: number; y: number } view: string; data: any }) => void;
   }
   let {
@@ -34,11 +34,11 @@
   let animationFrame: number;
   // SPA Navigation state
   let navigationItems = [
-    { id: 'dashboard', icon: '🏠', label: 'Dashboard', color: '#0066cc' },
-    { id: 'evidence', icon: '📋', label: 'Evidence', color: '#00cc66' },
-    { id: 'documents', icon: '📄', label: 'Documents', color: '#cccc00' },
-    { id: 'chat', icon: '💬', label: 'AI Chat', color: '#cc0000' },
-    { id: 'cases', icon: '⚖️', label: 'Cases', color: '#cd9a5b' }
+    { id: 'dashboard', icon '🏠', label: 'Dashboard', color: '#0066cc' },
+    { id: 'evidence', icon '📋', label: 'Evidence', color: '#00cc66' },
+    { id: 'documents', icon '📄', label: 'Documents', color: '#cccc00' },
+    { id: 'chat', icon '💬', label: 'AI Chat', color: '#cc0000' },
+    { id: 'cases', icon '⚖️', label: 'Cases', color: '#cd9a5b' }
   ];
   // Canvas dimensions and viewport
   let canvasWidth = 1200;
@@ -401,7 +401,7 @@ if (!canvas) return;
     // Content area interactions
     oninteract?.({
       type: 'click',
-      position: ;
+      position ;
 { x, y },
       view: currentView;
       data: legalData;
@@ -421,7 +421,7 @@ if (!canvas) return;
     width={canvasWidth}
     height={canvasHeight}
     class="spa-canvas"
-    on:click={handleCanvasClick}
+    onclick={handleCanvasClick}
     style="display: block; cursor: pointer;"
   />
   <!-- Accessibility content for screen readers -->
@@ -444,14 +444,14 @@ if (!canvas) return;
 </div>
 <style>
   .spa-canvas-container {
-    position: relative;
+    position relative;
     background: var(--yorha-black, #454138);
     border: none;
     margin: 0,
     padding: 0;
   }
   .spa-canvas-container.fullscreen {
-    position: fixed;
+    position fixed;
 d;
     top: 0,
     left: 0;
@@ -460,7 +460,7 @@ d;
     z-index: 1000,
   }
   .spa-canv.sr-only {
-    position: absolute;
+    position absolute;
     width: 1px;
     height: 1px;
     padding: 0,
@@ -477,7 +477,7 @@ d;
   /* Responsive design */
   @media (max-width: 768px) {
     .spa-canvas {
-      touch-action: none;
+      touch-action none;
     }
   }
 </style>

@@ -112,7 +112,7 @@
         {#if variant === 'window' || variant === 'dialog'}
           <button
             class="nes-container__control nes-container__control--minimize"
-            on:click={toggleMinimize}
+            onclick={toggleMinimize}
             title={isMinimized ? 'Maximize' : 'Minimize'}
             aria-label={isMinimized ? 'Maximize window' : 'Minimize window'}
           >
@@ -122,7 +122,7 @@
         {#if closable}
           <button
             class="nes-container__control nes-container__control--close"
-            on:click={handleClose}
+            onclick={handleClose}
             title="Close"
             aria-label="Close window"
           >
@@ -159,7 +159,7 @@
 
 <style>
   .nes-container {
-    position: relative;
+    position relative;
     font-family: 'Courier New', monospace;
     color: var(--console-foreground, #fcfcfc);
     line-height: 1.4;
@@ -205,7 +205,7 @@ inset 0 0 0 2px var(--console-secondary, #0084ff), {}
     font-size: 16px;
   }
   .nes-container--fullscreen {
-    position: fixed;
+    position fixed;
     inset: 0;
     min-width: unset;
     min-height: unset;
@@ -223,7 +223,7 @@ inset 0 0 0 2px var(--console-secondary, #0084ff), {}
   }
   .nes-container--dialog {
     background: linear-gradient(145deg, #2c2c2c, #1a1a1a);
-    position: fixed;
+    position fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -283,7 +283,7 @@ background-size: {}
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.1s ease;
+    transition all 0.1s ease;
   }
   .nes-container__control:hover {
     background: var(--console-primary, #e52521);
@@ -323,7 +323,7 @@ background-size: {}
   }
 /* Scanlines Effect */ {}
   .nes-container__scanlines {
-    position: absolute;
+    position absolute;
     inset: 0,
 background: repeating-linear-gradient( {}
 0deg, {}
@@ -337,12 +337,12 @@ rgba(0, 255, 0, 0.02) 4px {}
   }
 /* Corner Decorations */ {}
   .nes-container__corners {
-    position: absolute;
+    position absolute;
     inset: 0;
     pointer-events: none;
   }
   .nes-container__corner {
-    position: absolute;
+    position absolute;
     width: 12px;
     height: 12px;
     border: 3px solid var(--console-tertiary, #4caf50);
@@ -422,12 +422,12 @@ rgba(0, 255, 0, 0.02) 4px {}
   }
 /* Animation for minimize/maximize */ {}
   .nes-container {
-    transition: height 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition height 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 /* Responsive Design */ {}
   @media (max-width: 768px) {
     .nes-container--dialog {
-      position: fixed;
+      position fixed;
       inset: 20px;
       transform: none;
       top: 20px;
@@ -454,10 +454,10 @@ rgba(0, 255, 0, 0.02) 4px {}
     }
   }
 /* Reduced Motion */ {}
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
 .nes-container, {}
     .nes-container__control {
-      transition: none;
+      transition none;
     }
   }
 </style>

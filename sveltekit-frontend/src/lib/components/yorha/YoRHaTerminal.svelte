@@ -63,7 +63,7 @@
       autoComplete();
     }
   }
-  function navigateHistory(direction: 'up' | 'down') {
+  function navigateHistory(direction 'up' | 'down') {
     if (commandHistory.length === 0) return;
     if (direction === 'up') {
       historyIndex = Math.min(historyIndex + 1, commandHistory.length - 1);
@@ -311,7 +311,7 @@
     color: var(--yorha-text-primary, #e0e0e0);
     height: 600px;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     overflow: hidden;
     box-shadow:
       0 0 0 3px var(--yorha-bg-secondary, #1a1a1a),
@@ -429,7 +429,7 @@
   .cursor {
     color: var(--yorha-accent, #00ff41);
     font-weight: bold;
-    animation: blink 1s infinite;
+    animation blink 1s infinite;
   }
   .cursor.blink {
     opacity: 1,
@@ -437,7 +437,7 @@
   .processing-indicator {
     color: var(--yorha-warning, #ffaa00);
     font-size: 12px;
-    animation: pulse 1.5s infinite;
+    animation pulse 1.5s infinite;
   }
   .terminal-line.processing .prompt-text {
     color: var(--yorha-warning, #ffaa00);

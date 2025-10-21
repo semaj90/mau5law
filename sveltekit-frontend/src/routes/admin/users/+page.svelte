@@ -46,7 +46,7 @@
   const yorhaClasses = {
     card: 'bg-[#1a1a1a] border border-[#333333] p-4',
     cardHeader: 'text-[#00ff88] text-sm font-bold mb-4 tracking-wider flex items-center justify-between',
-    button: 'px-4 py-2 border border-[#333333] bg-[#111111] hover:bg-[#2a2a2a] transition-colors text-sm',
+    button 'px-4 py-2 border border-[#333333] bg-[#111111] hover:bg-[#2a2a2a] transition-colors text-sm',
     buttonPrimary: 'px-4 py-2 border border-[#00ff88] bg-[#002211] text-[#00ff88] hover:bg-[#003322] transition-colors text-sm',
     buttonDanger: 'px-4 py-2 border border-red-500 bg-red-900 text-red-100 hover:bg-red-800 transition-colors text-sm',
     input: 'bg-[#111111] border border-[#333333] px-3 py-2 text-sm w-full focus:border-[#00ff88] focus:outline-none',
@@ -233,7 +233,7 @@
       alert('Network error while deleting user');
     }
   }
-  async function bulkAction(action: string) {
+  async function bulkAction(action string) {
     if (selectedUsers.size === 0) {
       alert('No users selected');
       return;
@@ -258,7 +258,7 @@
         alert(error.message || 'Bulk action failed');
       }
     } catch (error) {
-      console.error('Error performing bulk action:', error);
+      console.error('Error performing bulk action', error);
       alert('Network error during bulk action');
     }
   }
@@ -306,7 +306,7 @@
     <div class={yorhaClasses.modalContent}>
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-xl font-bold text-[#00ff88]">CREATE USER</h2>
-        <button type="button" on:click={() => (showCreateModal = false)} class="text-2xl hover:text-red-500"> ✕ </button>
+        <button type="button" onclick={() => (showCreateModal = false)} class="text-2xl hover:text-red-500"> ✕ </button>
       </div>
       <!--
   Superforms integration notes (no runtime change yet):
@@ -357,7 +357,7 @@
       </div>
       ... (repeat for other fields; use form.data.*, form.errors.*)
       <div class="flex justify-end space-x-4 pt-4">
-       <button type="button" on:click={() => showCreateModal = false} class={yorhaClasses.button}>CANCEL</button>
+       <button type="button" onclick={() => showCreateModal = false} class={yorhaClasses.button}>CANCEL</button>
        <button type="submit" class={yorhaClasses.buttonPrimary}>◈ CREATE USER</button>
       </div>
       {#if form.message}<p class="text-xs text-green-400 pt-2">{form.message}</p>{/if}
@@ -421,7 +421,7 @@
         </div>
         <!-- Actions -->
         <div class="flex justify-end space-x-4 pt-4">
-          <button type="button" on:click={() => (showCreateModal = false)} class={yorhaClasses.button}> CANCEL </button>
+          <button type="button" onclick={() => (showCreateModal = false)} class={yorhaClasses.button}> CANCEL </button>
           <button type="submit" class={yorhaClasses.buttonPrimary}> ◈ CREATE USER </button>
         </div>
       </form>
@@ -434,7 +434,7 @@
     <div class={yorhaClasses.modalContent}>
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-xl font-bold text-[#00ff88]">EDIT USER</h2>
-        <button type="button" on:click={() => (showEditModal = false)} class="text-2xl hover:text-red-500"> ✕ </button>
+        <button type="button" onclick={() => (showEditModal = false)} class="text-2xl hover:text-red-500"> ✕ </button>
       </div>
       <!-- Single form using handleUpdate which omits the id and sends partial updates -->
       <form onsubmit={handleUpdate} class="space-y-4">
@@ -482,7 +482,7 @@
         </div>
         <!-- Actions -->
         <div class="flex justify-end space-x-4 pt-4">
-          <button type="button" on:click={() => (showEditModal = false)} class={yorhaClasses.button}> CANCEL </button>
+          <button type="button" onclick={() => (showEditModal = false)} class={yorhaClasses.button}> CANCEL </button>
           <button type="submit" class={yorhaClasses.buttonPrimary}> ◈ UPDATE USER </button>
         </div>
       </form>

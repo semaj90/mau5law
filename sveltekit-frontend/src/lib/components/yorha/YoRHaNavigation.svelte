@@ -109,7 +109,7 @@ https://svelte.dev/e/js_parse_error -->
             class="nes-nav-item nes-legal-priority-medium yorha-3d-button w-full text-left {isRouteActive(route.route)
               ? 'nes-legal-priority-high neural-sprite-active'
               : ''}"
-            on:click={() => navigateToRoute(route.route)}
+            onclick={() => navigateToRoute(route.route)}
             onmouseenter={() => (hoveredRoute = route.id)}
             onmouseleave={() => (hoveredRoute = null)}
           >
@@ -130,7 +130,7 @@ https://svelte.dev/e/js_parse_error -->
             <!-- Section Header -->
             <button
               class="section-header w-full flex items-center justify-between p-2 rounded hover:bg-yorha-accent-warm/10 transition-colors duration-200"
-              on:click={() => toggleSection(sectionId)}
+              onclick={() => toggleSection(sectionId)}
             >
               <div class="flex items-center gap-2">
                 <span class="text-lg">{getSectionIcon(sectionId)}</span>
@@ -160,7 +160,7 @@ https://svelte.dev/e/js_parse_error -->
                     )
                       ? 'active bg-yorha-accent-warm/20 border-yorha-accent-warm text-yorha-accent-warm'
                       : 'text-yorha-light'}"
-                    on:click={() => navigateToRoute(route.route)}
+                    onclick={() => navigateToRoute(route.route)}
                     onmouseenter={() => (hoveredRoute = route.id)}
                     onmouseleave={title}
                   >
@@ -227,7 +227,7 @@ https://svelte.dev/e/js_parse_error -->
     --yorha-darker: #b8ad98;
   }
   .nav-item {
-    position: relative;
+    position relative;
     cursor: pointer;
     font-family: 'JetBrains Mono', monospace;
   }
@@ -259,12 +259,12 @@ https://svelte.dev/e/js_parse_error -->
   /* Smooth animations */
   .nav-item,
   .section-header {
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
   /* Glow effect for active items */
   .nav-.active::before {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -272,7 +272,7 @@ https://svelte.dev/e/js_parse_error -->
     background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
     border-radius: inherit;
     opacity: 0,
-    animation: glow 2s ease-in-out infinite alternate;
+    animation glow 2s ease-in-out infinite alternate;
   }
   @keyframes glow {
     from {

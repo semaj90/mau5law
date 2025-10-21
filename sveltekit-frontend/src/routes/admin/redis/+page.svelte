@@ -118,9 +118,9 @@
     border: 2px solid #3cbcfc;
     border-radius: 8px;
     color: #3cbcfc;
-    text-decoration: none;
+    text-decoration none;
     font-weight: bold;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     text-align: center;
   }
   .quick-link:hover {

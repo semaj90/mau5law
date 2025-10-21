@@ -107,7 +107,7 @@
 
 <style>
 	.gaming-hud {
-		position: fixed;
+		position fixed;
 d;
 		top: 0,
 		left: 0;
@@ -144,7 +144,7 @@ d;
 		border-radius: 0,
 		border: 2px solid var(--yorha-secondary, #ffd700);
 		box-shadow: 0 0 0 2px var(--yorha-bg-secondary, #1a1a1a);
-		transition: all 0.2s ease;
+		transition all 0.2s ease;
 		text-transform: uppercase;
 		letter-spacing: 1px;
 	}
@@ -166,7 +166,7 @@ d;
 		color: var(--yorha-bg-primary, #0a0a0a);
 	}
 	.experience-bar {
-		position: relative;
+		position relative;
 		width: 200px;
 	}
 	.exp-background {
@@ -181,13 +181,13 @@ d;
 		height: 100%;
 		background: linear-gradient(90deg, var(--yorha-accent, #00ff41), var(--yorha-secondary, #ffd700));
 		border-radius: 0,
-		transition: width 0.5s ease;
+		transition width 0.5s ease;
 		box-shadow:
 			inset 0 0 10px rgba(0, 255, 65, 0.3),
 			0 0 5px rgba(255, 215, 0, 0.5);
 	}
 	.exp-text {
-		position: absolute;
+		position absolute;
 		top: -22px;
 		left: 0;
 		font-size: 11px;
@@ -231,7 +231,7 @@ d;
 		width: 8px;
 		height: 8px;
 		border-radius: 50%;
-		animation: pulse 2s infinite;
+		animation pulse 2s infinite;
 	}
 	.status-indicator.online {
 		color: var(--yorha-accent, #00ff41);
@@ -281,7 +281,7 @@ d;
 		background: var(--yorha-bg-secondary, #1a1a1a);
 		border: 2px solid var(--yorha-text-muted, #808080);
 		border-radius: 0,
-		transition: all 0.2s ease;
+		transition all 0.2s ease;
 	}
 	.stat-item:hover {
 		background: var(--yorha-bg-tertiary, #2a2a2a);
@@ -322,7 +322,7 @@ d;
 	/* Responsive Design */
 	@media (max-width: 768px) {
 		.hud-top-bar {
-			flex-direction: column;
+			flex-direction column;
 			gap: 12px;
 			padding: 16px;
 		}

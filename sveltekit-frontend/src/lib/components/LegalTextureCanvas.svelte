@@ -315,8 +315,8 @@
       evidenceCanvas.addEvidenceItem({
         type: 'photo',
         name: photo.filename,
-        position: { x: width / 2, y: height / 2 },
-        rotation: 0,
+        position { x: width / 2, y: height / 2 },
+        rotation 0,
         scale: 1.0,
         textureId: photo.id,
         metadata: photo.metadata,
@@ -339,8 +339,8 @@
         evidenceCanvas.addEvidenceItem({
           type: 'document',
           name: `${scan.id}_page_${index + 1}`,
-          position: { x: 200 + index * 100, y: 200 },
-          rotation: 0,
+          position { x: 200 + index * 100, y: 200 },
+          rotation 0,
           scale: 1.0,
           textureId: texture.documentId,
           metadata: scan.metadata,
@@ -353,7 +353,7 @@
       throw err;
     }
   }
-  export async function loadCaseVisualization(visualization: CaseVisualization) {
+  export async function loadCaseVisualization(visualization CaseVisualization) {
     try {
       const texture = await textureStreaming.loadCaseVisualization(visualization);
       currentTexture = texture;
@@ -411,7 +411,7 @@
     <div class="error-overlay">
       <p>Error: {error}</p>
       <button
-        on:click={() => {
+        onclick={() => {
           error = null;
         }}>Dismiss</button
       >
@@ -426,28 +426,28 @@
   {#if mode !== 'courtroom' && isReady}
     <div class="controls-overlay">
       <button
-        on:click={() => evidenceCanvas.setMode('view')}
+        onclick={() => evidenceCanvas.setMode('view')}
         class:active={evidenceCanvas.getCanvasState().mode === 'view'}
       >
         View
       </button>
       <button
-        on:click={() => evidenceCanvas.setMode('edit')}
+        onclick={() => evidenceCanvas.setMode('edit')}
         class:active={evidenceCanvas.getCanvasState().mode === 'edit'}
       >
         Edit
       </button>
       <button
-        on:click={() => evidenceCanvas.setMode('present')}
+        onclick={() => evidenceCanvas.setMode('present')}
         class:active={evidenceCanvas.getCanvasState().mode === 'present'}
       >
         Present
       </button>
-      <button on:click={() => evidenceCanvas.toggleConnections()}>
+      <button onclick={() => evidenceCanvas.toggleConnections()}>
         {evidenceCanvas.getCanvasState().showConnections ? 'Hide' : 'Show'} Connections
       </button>
-      <button on:click={fitToContent}>Fit to Content</button>
-      <button on:click={clearCanvas}>Clear</button>
+      <button onclick={fitToContent}>Fit to Content</button>
+      <button onclick={clearCanvas}>Clear</button>
     </div>
   {/if}
 </div>
@@ -456,7 +456,7 @@
   .legal-texture-canvas .texture-canvas {
     display: block;
     cursor: grab;
-    transition: filter 0.2s ease;
+    transition filter 0.2s ease;
   }
   .texture-canvas:active {
     cursor: grabbing;
@@ -469,7 +469,7 @@
     border-color: #ff4444;
   }
   .error-overlay {
-    position: absolute;
+    position absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -481,14 +481,14 @@
     z-index: 1000,
   }
   .loading-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     color: white;
@@ -500,7 +500,7 @@
     border: 4px solid #333;
     border-top: 4px solid #fff;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin-top: 10px;
   }
   @keyframes spin {
@@ -512,11 +512,11 @@
     }
   }
   .controls-overlay {
-    position: absolute;
+    position absolute;
     top: 10px;
     right: 10px;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 5px;
     z-index: 100,
   }
@@ -528,9 +528,9 @@
     border-radius: 3px;
     cursor: pointer;
     font-size: 11px;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
-  .controls-overlay button:hover {
+  .controls-overlay buttonhover {
     background: rgba(0, 0, 0, 0.9);
     border-color: #999;
   }

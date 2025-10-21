@@ -327,7 +327,7 @@ https://svelte.dev/e/js_parse_error -->
   				requiredFeatures: [],
   				requiredLimits: {
   					maxComputeWorkgroupStorageSize: 16384,
-  					maxComputeWorkgroupsPerDimension: 65535,
+  					maxComputeWorkgroupsPerDimension 65535,
   					maxComputeInvocationsPerWorkgroup: 256
   				}
   			});
@@ -403,7 +403,7 @@ https://svelte.dev/e/js_parse_error -->
   		}
   	}
   	// Process tensor operation on GPU
-  	async function processOperationGPU(operation: TensorOperation): Promise<void> {
+  	async function processOperationGPU(operation TensorOperation): Promise<void> {
   		const ctx = $webgpuContext;
   		if (!ctx.device || !ctx.isInitialized) {
   			throw new Error('WebGPU not initialized');
@@ -477,7 +477,7 @@ https://svelte.dev/e/js_parse_error -->
   	}
   	// Queue tensor operation
   	function queueOperation(type: TensorOperation['type'], input: Float32Array, shape: number[], metadata: unknown = {} {
-  		const operation: TensorOperation = {
+  		const operation TensorOperation = {
   			id: `op_${++operationId}`,
   			type,
   			input,
@@ -520,7 +520,7 @@ https://svelte.dev/e/js_parse_error -->
   		}
   	}
   	// CPU fallback processing
-  	async function processOperationCPU(operation: TensorOperation): Promise<void> {
+  	async function processOperationCPU(operation TensorOperation): Promise<void> {
   		const startTime = performance.now();
   		// Simple CPU implementations
   		switch (operation.type) {
@@ -795,7 +795,7 @@ if (enableWebGPU) {
   }
   .attention-heatmap {
     /* @apply bg-white dark: bg-gray-800 p-4 rounded border mb-4; */
-    position: relative;
+    position relative;
   }
   .attention-heatmap h3 {
     /* @apply text-lg font-bold mb-3 text-gray-900 dark:text-white; */
@@ -861,10 +861,10 @@ if (enableWebGPU) {
   }
   /* Animation for smooth updates */
   .progress {
-    transition: width 0.3s ease-out;
+    transition width 0.3s ease-out;
   }
   .attention-region {
-    transition: all 0.2s ease-out;
+    transition all 0.2s ease-out;
   }
   /* Focus and accessibility */
   .operation-log summary:focus {

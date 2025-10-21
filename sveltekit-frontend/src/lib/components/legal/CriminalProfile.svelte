@@ -10,8 +10,8 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     id: string;
     offense: string;
     date: Date;
-    jurisdiction: string;
-    disposition: ;
+    jurisdiction string;
+    disposition ;
 'convicted' | 'acquitted' | 'dismissed' | 'pending' | 'sealed';
     sentence?: string;
     caseNumber?: string;
@@ -37,7 +37,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       hairColor?: string;
       distinguishingMarks?: string[];
     }
-    identification: {
+    identification {
       ssn?: string;
       driverLicense?: string;
       passport?: string;
@@ -90,12 +90,12 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   }
   // Status configurations
   const statusConfig = {
-    at_large: { label: 'At Large', class: 'bg-red-500/20 text-red-400', icon: AlertTriangle },
-    incarcerated: { label: 'Incarcerated', class: 'bg-gray-500/20 text-gray-400', icon: Shield },
-    on_parole: { label: 'On Parole', class: 'bg-yellow-500/20 text-yellow-400', icon: Eye },
-    probation: { label: 'Probation', class: 'bg-blue-500/20 text-blue-400', icon: FileText },
-    deceased: { label: 'Deceased', class: 'bg-gray-500/20 text-gray-400', icon: User },
-    cleared: { label: 'Cleared', class: 'bg-green-500/20 text-green-400', icon: Shield }
+    at_large: { label: 'At Large', class: 'bg-red-500/20 text-red-400', icon AlertTriangle },
+    incarcerated: { label: 'Incarcerated', class: 'bg-gray-500/20 text-gray-400', icon Shield },
+    on_parole: { label: 'On Parole', class: 'bg-yellow-500/20 text-yellow-400', icon Eye },
+    probation { label: 'Probation', class: 'bg-blue-500/20 text-blue-400', icon FileText },
+    deceased: { label: 'Deceased', class: 'bg-gray-500/20 text-gray-400', icon User },
+    cleared: { label: 'Cleared', class: 'bg-green-500/20 text-green-400', icon Shield }
   }
   // Disposition configurations
   const dispositionConfig = {
@@ -159,7 +159,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
       <div class="shrink-0">
         {#if profile.identification.mugshots?.length}
           <button
-            on:click={() => onViewMugshot?.(profile.identification.mugshots[0])}
+            onclick={() => onViewMugshot?.(profile.identification.mugshots[0])}
             class="w-20 h-24 bg-yorha-bg-tertiary border border-yorha-border rounded overflow-hidden hover:border-yorha-primary/30 transition-colors group"
           >
             <div
@@ -397,7 +397,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
                 {/if}
                 {#if interactive && onViewFullRecord}
                   <button
-                    on:click={() => onViewFullRecord?.(record.id)}
+                    onclick={() => onViewFullRecord?.(record.id)}
                     class="mt-2 text-xs font-mono text-yorha-primary hover:text-yorha-accent transition-colors"
                   >
                     View Full Record
@@ -433,7 +433,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     <div class="px-4 py-3 bg-yorha-bg-tertiary border-t border-yorha-border">
       <div class="flex justify-end">
         <button
-          on:click={() => onUpdateProfile?.(profile)}
+          onclick={() => onUpdateProfile?.(profile)}
           class="px-4 py-2 text-sm font-mono bg-yorha-primary/10 text-yorha-primary border border-yorha-primary/20 rounded hover:bg-yorha-primary/20 transition-colors"
         >
           Update Profile
@@ -445,6 +445,6 @@ https://svelte.dev/e/const_tag_invalid_placement -->
 
 <style>
   .criminal-profile {
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
 </style>

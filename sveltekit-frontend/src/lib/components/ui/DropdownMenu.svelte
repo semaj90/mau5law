@@ -51,7 +51,7 @@
           value={item.value}
           href={item.href ?? undefined}
           disabled={item.disabled ?? false}
-          on:click={() => item.onClick?.(item.value)}
+          onclick={() => item.onClick?.(item.value)}
           onselect={() => item.onClick?.(item.value)}
         >
           {#if typeof item.label === 'string'}

@@ -90,7 +90,7 @@ Tests the demo RAG functionality with a working interface
   <div class="chat-header">
     <h3 class="nes-text is-primary">🤖 Demo AI Chat</h3>
     <div class="chat-controls">
-      <button class="nes-btn is-warning" on:click={clearChat}> Clear Chat </button>
+      <button class="nes-btn is-warning" onclick={clearChat}> Clear Chat </button>
     </div>
   </div>
   <!-- Sample Queries -->
@@ -98,7 +98,7 @@ Tests the demo RAG functionality with a working interface
     <p class="nes-text is-disabled">Try these sample queries:</p>
     <div class="query-buttons">
       {#each sampleQueries as sampleQuery}
-        <button class="nes-btn is-normal" on:click={() => useSampleQuery(sampleQuery)}>
+        <button class="nes-btn is-normal" onclick={() => useSampleQuery(sampleQuery)}>
           {sampleQuery}
         </button>
       {/each}
@@ -193,7 +193,7 @@ Tests the demo RAG functionality with a working interface
         rows="3"
       ></textarea>
     </div>
-    <button class="nes-btn is-primary" on:click={sendQuery} disabled={!query.trim() || isLoading}>
+    <button class="nes-btn is-primary" onclick={sendQuery} disabled={!query.trim() || isLoading}>
       {isLoading ? 'Thinking...' : 'Send'}
     </button>
   </div>
@@ -202,7 +202,7 @@ Tests the demo RAG functionality with a working interface
 <style>
   .demo-chat {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     height: 100%;
     max-height: 80vh;
     padding: 1rem;
@@ -239,12 +239,12 @@ Tests the demo RAG functionality with a working interface
     overflow-y: auto;
     margin-bottom: 1rem;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .message {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
   }
   .message-user {
     align-items: flex-end;
@@ -296,7 +296,7 @@ Tests the demo RAG functionality with a working interface
   }
   .source-item {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
     margin-bottom: 0.75rem;
     padding: 0.5rem;
@@ -341,7 +341,7 @@ Tests the demo RAG functionality with a working interface
     margin-bottom: 0.5rem;
   }
   .loading-animation span {
-    animation: pulse 1.5s ease-in-out infinite;
+    animation pulse 1.5s ease-in-out infinite;
     font-size: 1.2em;
     color: #00ff00;
   }
@@ -383,13 +383,13 @@ Tests the demo RAG functionality with a working interface
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .query-buttons {
-      flex-direction: column;
+      flex-direction column;
     }
     .message-content {
       max-width: 95%;
     }
     .chat-input {
-      flex-direction: column;
+      flex-direction column;
       align-items: stretch;
     }
   }

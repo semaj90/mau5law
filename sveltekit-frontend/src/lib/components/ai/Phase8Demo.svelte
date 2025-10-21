@@ -31,7 +31,7 @@ https://svelte.dev/e/js_parse_error -->
     aiBoosts: 0,
   });
   // Demo data
-  const sampleUIDefinition: MatrixUINode[] = [
+  const sampleUIDefinition MatrixUINode[] = [
     {
       type: 'card',
       id: 'evidence-card-1',
@@ -189,7 +189,7 @@ https://svelte.dev/e/js_parse_error -->
         recentActions: sampleUserContext.recentActions,
         caseId: sampleUserContext.currentCase,
         timeOnPage: 30, // safe default (seconds)
-        scrollPosition: 0, // safe default
+        scrollPosition 0, // safe default
         // empty arrays cast to satisfy MouseEvent[] / KeyboardEvent[] without real events
         mouseActivity: [] as unknown as MouseEvent[],
         keyboardActivity: [] as unknown as KeyboardEvent[],
@@ -275,29 +275,29 @@ https://svelte.dev/e/js_parse_error -->
     <div class="demo-controls flex gap-2 mb-4">
       <button
         class="yorha-button px-3 py-1 text-sm {currentDemo === 'reranker' ? 'bg-yellow-400 text-black' : 'bg-gray-700'}"
-        on:click={() => switchDemo('reranker')}
+        onclick={() => switchDemo('reranker')}
       >
         AI Reranker
       </button>
       <button
         class="yorha-button px-3 py-1 text-sm {currentDemo === 'matrix' ? 'bg-yellow-400 text-black' : 'bg-gray-700'}"
-        on:click={() => switchDemo('matrix')}
+        onclick={() => switchDemo('matrix')}
       >
         Matrix Compiler
       </button>
       <button
         class="yorha-button px-3 py-1 text-sm {currentDemo === 'lod' ? 'bg-yellow-400 text-black' : 'bg-gray-700'}"
-        on:click={() => switchDemo('lod')}
+        onclick={() => switchDemo('lod')}
       >
         LOD System
       </button>
       <button
         class="yorha-button px-3 py-1 text-sm {currentDemo === 'prefetch' ? 'bg-yellow-400 text-black' : 'bg-gray-700'}"
-        on:click={() => switchDemo('prefetch')}
+        onclick={() => switchDemo('prefetch')}
       >
         Prefetcher
       </button>
-      <button class="yorha-button px-3 py-1 text-sm bg-blue-600 text-white ml-4" on:click={runPerformanceTest}>
+      <button class="yorha-button px-3 py-1 text-sm bg-blue-600 text-white ml-4" onclick={runPerformanceTest}>
         Performance Test
       </button>
     </div>
@@ -432,7 +432,7 @@ https://svelte.dev/e/js_parse_error -->
     /* emulate ring-2 ring-yellow-400 ring-opacity-50 + bg-yellow-400 bg-opacity-10 */
     outline: 2px solid rgba(245, 158, 11, 0.5); /* yellow-400 at 50% */
     background-color: rgba(245, 158, 11, 0.1); /* yellow-400 at 10% */
-    animation: pulse 2s ease-in-out infinite;
+    animation pulse 2s ease-in-out infinite;
   }
 
   :global(.ai-enhanced) {
@@ -442,7 +442,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   :global(.lod-demo) {
-    transition:
+    transition
       transform 0.3s ease,
       opacity 0.3s ease;
   }

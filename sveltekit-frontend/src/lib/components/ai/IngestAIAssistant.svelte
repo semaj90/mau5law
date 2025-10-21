@@ -49,11 +49,11 @@ https://svelte.dev/e/attribute_duplicate -->
   const hasResults = derived(ingestResults, $results => $results.length > 0);
   // Document types following your legal AI patterns
   const documentTypes = [
-    { value: 'legal', label: 'Legal Document', icon: '⚖️' },
-    { value: 'evidence', label: 'Evidence', icon: '🔍' },
-    { value: 'case', label: 'Case File', icon: '📁' },
-    { value: 'contract', label: 'Contract', icon: '📜' },
-    { value: 'precedent', label: 'Legal Precedent', icon: '📚' },
+    { value: 'legal', label: 'Legal Document', icon '⚖️' },
+    { value: 'evidence', label: 'Evidence', icon '🔍' },
+    { value: 'case', label: 'Case File', icon '📁' },
+    { value: 'contract', label: 'Contract', icon '📜' },
+    { value: 'precedent', label: 'Legal Precedent', icon '📚' },
   ];
   // Enhanced ingest function with AI integration
   async function ingestDocument() {
@@ -226,7 +226,7 @@ https://svelte.dev/e/attribute_duplicate -->
     <Alert variant="destructive" class="mb-4">
       <AlertDescription class="flex items-center justify-between">
         <span>{error.message}</span>
-        <Button class="bits-btn" variant="ghost" size="sm" on:click={() => dismissError(error.id)}>✕</Button>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => dismissError(error.id)}>✕</Button>
       </AlertDescription>
     </Alert>
   {/each}
@@ -280,7 +280,7 @@ https://svelte.dev/e/attribute_duplicate -->
                 class="nes-btn bits-btn justify-start is-small {selectedDocumentType === type.value
                   ? 'is-primary'
                   : ''}"
-                on:click={() => (selectedDocumentType = type.value)}
+                onclick={() => (selectedDocumentType = type.value)}
                 disabled={$isProcessing}
               >
                 <span class="mr-2">{type.icon}</span>
@@ -300,13 +300,13 @@ https://svelte.dev/e/attribute_duplicate -->
           />
         </div>
         <div class="flex space-x-2">
-          <Button on:click={ingestDocument} disabled={!$canIngest || $isProcessing} class="flex-1 bits-btn bits-btn">
+          <Button onclick={ingestDocument} disabled={!$canIngest || $isProcessing} class="flex-1 bits-btn bits-btn">
             {$isProcessing ? 'Processing...' : '🚀 Ingest Document'}
           </Button>
           <Button
             class="bits-btn"
             variant="ghost"
-            on:click={addToBatch}
+            onclick={addToBatch}
             disabled={!documentTitle.trim() || !documentContent.trim() || $isProcessing}
           >
             ➕ Add to Batch
@@ -342,19 +342,19 @@ https://svelte.dev/e/attribute_duplicate -->
                     {doc.type} • {doc.content.length} chars
                   </div>
                 </div>
-                <Button class="bits-btn" variant="ghost" size="sm" on:click={() => removeFromBatch(doc.id)}>✕</Button>
+                <Button class="bits-btn" variant="ghost" size="sm" onclick={() => removeFromBatch(doc.id)}>✕</Button>
               </div>
             {/each}
           </div>
           <div class="space-y-2">
-            <Button on:click={processBatch} disabled={$isProcessing} class="w-full bits-btn bits-btn">
+            <Button onclick={processBatch} disabled={$isProcessing} class="w-full bits-btn bits-btn">
               {$processingStatus === 'batch_processing'
                 ? 'Processing Batch...'
                 : `🔥 Process ${$batchDocuments.length} Documents`}
             </Button>
             <Button
               variant="ghost"
-              on:click={() => batchDocuments.set([])}
+              onclick={() => batchDocuments.set([])}
               disabled={$isProcessing}
               size="sm"
               class="bits-btn w-full"
@@ -576,7 +576,7 @@ https://svelte.dev/e/attribute_duplicate -->
     background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%);
   }
   /* Enhanced focus states following your accessibility patterns */
-  :global(button:focus-visible, input:focus-visible, textarea:focus-visible) {
+  :global(buttonfocus-visible, input:focus-visible, textarea:focus-visible) {
     outline: 2px solid #3b82f6;
     outline-offset: 2px;
   }

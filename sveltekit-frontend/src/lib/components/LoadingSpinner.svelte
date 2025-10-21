@@ -87,6 +87,6 @@
     }
   }
   .animate-spin {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
 </style>

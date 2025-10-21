@@ -118,7 +118,7 @@ https://svelte.dev/e/js_parse_error -->
         <Label for_="thinking-mode" class="flex items-center gap-1"><Search size={16} /> Thinking Mode</Label>
       </div>
     </div>
-    <Button on:click={handleUpload} disabled={isUploading} class="w-full bits-btn bits-btn">
+    <Button onclick={handleUpload} disabled={isUploading} class="w-full bits-btn bits-btn">
 {#if isUploading}
         <Loader2 class="mr-2 h-4 w-4 animate-spin" />
         Uploading...

@@ -34,7 +34,7 @@
   // Reactive state
   let containerElement: HTMLDivElement;
   let svg: d3.Selection<SVGSVGElement, unknown, null, undefined>;
-  let simulation: d3.Simulation<any, any>;
+  let simulation d3.Simulation<any, any>;
   let selectedNode = $state<any>(null);
   let hoveredNode = $state<any>(null);
   let networkMetrics = $state<any>({});
@@ -127,15 +127,15 @@ if (!browser) return;
     // Melt UI component creation removed - replace with bits-ui declarative components
     border-radius: 8px;
     overflow: hidden;
-    position: relative;
+    position relative;
   }
   .controls-panel {
-    position: absolute;
+    position absolute;
     top: 10px;
     left: 10px;
     z-index: 100,
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 10px;
     background: rgba(0, 0, 0, 0.8);
     padding: 15px;
@@ -146,7 +146,7 @@ if (!browser) return;
   }
   .analysis-controls, .view-controls, .action-controls {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 8px;
   }
   .analysis-controls label, .view-controls label {
@@ -172,7 +172,7 @@ if (!browser) return;
     margin: 0,
   }
   .action-controls {
-    flex-direction: row;
+    flex-direction row;
     gap: 5px;
   }
   .btn-control {
@@ -183,14 +183,14 @@ if (!browser) return;
     border-radius: 4px;
     font-size: 12px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .btn-control:hover {
     background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.4);
   }
   .metrics-panel {
-    position: absolute;
+    position absolute;
     top: 10px;
     right: 10px;
     z-index: 100,
@@ -225,7 +225,7 @@ if (!browser) return;
     font-weight: bold;
   }
   .node-details-panel {
-    position: absolute;
+    position absolute;
     bottom: 10px;
     left: 10px;
     z-index: 100,
@@ -267,7 +267,7 @@ if (!browser) return;
     margin: 2px 0;
   }
   .btn-close {
-    position: absolute;
+    position absolute;
     top: 10px;
     right: 10px;
     background: none;
@@ -286,14 +286,14 @@ if (!browser) return;
     color: white;
   }
   .loading-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.9);
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     z-index: 200,
@@ -305,7 +305,7 @@ if (!browser) return;
     border: 3px solid rgba(255, 255, 255, 0.3);
     border-top: 3px solid #4a90e2;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin-bottom: 15px;
   }
   @keyframes spin {
@@ -317,12 +317,12 @@ if (!browser) return;
     height: 100%;
   }
   :global(.network-container .link) {
-    transition: opacity 0.2s ease;
+    transition opacity 0.2s ease;
   }
   :global(.network-container .node) {
-    transition: opacity 0.2s ease;
+    transition opacity 0.2s ease;
   }
   :global(.network-container .label) {
-    transition: opacity 0.2s ease;
+    transition opacity 0.2s ease;
   }
 </style>

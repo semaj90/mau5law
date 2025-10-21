@@ -142,7 +142,7 @@
     border-radius: 0.375rem;
     cursor: pointer;
   }
-  button:hover {
+  buttonhover {
     background: #1e7e34;
   }
 </style>

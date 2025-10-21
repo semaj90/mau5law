@@ -151,7 +151,7 @@
     if (disabled) return;
     // Special handling for evidence actions
     if (evidenceAction) {
-      dispatch('evidenceAction', { action: evidenceAction, confidence, priority });
+      dispatch('evidenceAction', { action evidenceAction, confidence, priority });
     }
     dispatch('click', event);
     onclick?.(event);
@@ -176,7 +176,7 @@
   {disabled}
   onmousedown={handleMouseDown}
   onmouseup={handleMouseUp}
-  on:click={handleClick}
+  onclick={handleClick}
   aria-label={`N64 ${variant.toUpperCase()} button${evidenceAction ? ` - ${evidenceAction} evidence` : ''}`}
   {...restProps}
 >
@@ -193,7 +193,7 @@
         </div>
       {/if}
       {#if evidenceAction}
-        <div class="n64-button__evidence-icon" title="Evidence Action: {evidenceAction}">
+        <div class="n64-button__evidence-icon" title="Evidence Action {evidenceAction}">
           {#if evidenceAction === 'analyze'}
             🔍
           {:else if evidenceAction === 'classify'}
@@ -215,34 +215,34 @@
 
 <style>
   .n64-button {
-    position: relative;
+    position relative;
     border: none;
     background: none;
     cursor: pointer;
     user-select: none;
-    transition: all 0.1s ease;
+    transition all 0.1s ease;
     font-family: 'Courier New', monospace;
     font-weight: bold;
     text-transform: uppercase;
     outline: none;
   }
-  .n64-button:focus-visible {
+  .n64-buttonfocus-visible {
     outline: 3px solid #ffff00;
     outline-offset: 3px;
   }
   .n64-button__surface {
-    position: relative;
+    position relative;
     background: var(--n64-color);
     border: 4px solid #333;
     border-radius: 50%;
-    transition: all 0.1s ease;
+    transition all 0.1s ease;
     overflow: hidden;
   }
   .n64-button__content {
-    position: relative;
+    position relative;
     z-index: 2,
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     width: 100%;
@@ -314,7 +314,7 @@
   }
 /* Glowing effect */ {}
   .n64-button--glowing .n64-button__surface {
-    animation: n64-glow 2s ease-in-out infinite alternate;
+    animation n64-glow 2s ease-in-out infinite alternate;
     box-shadow: 0 0 20px var(--n64-color);
   }
   @keyframes n64-glow {
@@ -333,7 +333,7 @@ box-shadow: {}
   }
   .n64-button--priority-critical .n64-button__surface {
     border-color: #ff0000;
-    animation: critical-pulse 1s ease-in-out infinite;
+    animation critical-pulse 1s ease-in-out infinite;
   }
   @keyframes critical-pulse {
 0%, {}
@@ -347,14 +347,14 @@ box-shadow: {}
     }
   }
   .n64-button__priority-pulse {
-    position: absolute;
+    position absolute;
     top: -4px;
     left: -4px;
     right: -4px;
     bottom: -4px;
     border: 2px solid #ff0000;
     border-radius: inherit;
-    animation: priority-pulse 2s ease-in-out infinite;
+    animation priority-pulse 2s ease-in-out infinite;
     pointer-events: none;
   }
   @keyframes priority-pulse {
@@ -382,7 +382,7 @@ box-shadow: {}
   }
 /* Confidence indicator */ {}
   .n64-button__confidence {
-    position: absolute;
+    position absolute;
     top: -8px;
     right: -8px;
     background: rgba(0, 0, 0, 0.8);
@@ -395,7 +395,7 @@ box-shadow: {}
   }
 /* Evidence action icon */ {}
   .n64-button__evidence-icon {
-    position: absolute;
+    position absolute;
     bottom: -8px;
     left: -8px;
     background: rgba(255, 255, 255, 0.9);
@@ -409,26 +409,26 @@ box-shadow: {}
     z-index: 3,
   }
 /* Hover effects */ {}
-  .n64-button:hover:not(.n64-button--disabled) .n64-button__surface {
+  .n64-buttonhover:not(.n64-button--disabled) .n64-button__surface {
     filter: brightness(1.1);
     transform: translateY(-1px);
   }
 /* Active state */ {}
-  .n64-button:active:not(.n64-button--disabled) .n64-button__surface {
+  .n64-buttonactive:not(.n64-button--disabled) .n64-button__surface {
     transform: scale(0.95) translateY(2px);
     background: var(--n64-color-dark);
   }
 /* Accessibility */ {}
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
 .n64-button, {}
     .n64-button__surface {
-      transition: none;
+      transition none;
     }
     .n64-button--glowing .n64-button__surface {
-      animation: none;
+      animation none;
     }
     .n64-button--priority-critical .n64-button__surface {
-      animation: none;
+      animation none;
     }
   }
 /* High contrast mode */ {}

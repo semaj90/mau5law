@@ -49,7 +49,7 @@
   // System status
   const systemHealth = writable({
     database: 'healthy',
-    authentication: 'healthy',
+    authentication 'healthy',
     fileSystem: 'healthy',
     network: 'healthy',
   });
@@ -217,15 +217,15 @@
       <p class="container mx-auto px-4">Monitor system security events and health status</p>
     </div>
     <div class="container mx-auto px-4">
-      <Button class="bits-btn" variant="ghost" size="sm" on:click={() => loadSecurityEvents()} disabled={loading}>
+      <Button class="bits-btn" variant="ghost" size="sm" onclick={() => loadSecurityEvents()} disabled={loading}>
         <RefreshCw class={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
         Refresh
       </Button>
-      <Button class="bits-btn" variant="ghost" size="sm" on:click={() => exportEvents()}>
+      <Button class="bits-btn" variant="ghost" size="sm" onclick={() => exportEvents()}>
         <Download class="h-4 w-4" />
         Export
       </Button>
-      <Button class="bits-btn container mx-auto px-4" variant="ghost" size="sm" on:click={() => clearAllEvents()}>
+      <Button class="bits-btn container mx-auto px-4" variant="ghost" size="sm" onclick={() => clearAllEvents()}>
         <Trash2 class="h-4 w-4" />
         Clear All
       </Button>
@@ -441,7 +441,7 @@
                     {/if}
                   </div>
                 </div>
-                <Button class="bits-btn" variant="ghost" size="sm" on:click={() => toggleEventDetails(index)}>
+                <Button class="bits-btn" variant="ghost" size="sm" onclick={() => toggleEventDetails(index)}>
                   <Eye class="h-4 w-4" />
                 </Button>
               </div>

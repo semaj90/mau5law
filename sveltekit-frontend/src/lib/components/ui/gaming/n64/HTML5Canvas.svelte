@@ -284,7 +284,7 @@
       transform: gl.getUniformLocation(shaderProgram, 'u_transform'),
       perspective: gl.getUniformLocation(shaderProgram, 'u_perspective'),
       time: gl.getUniformLocation(shaderProgram, 'u_time'),
-      resolution: gl.getUniformLocation(shaderProgram, 'u_resolution'),
+      resolution gl.getUniformLocation(shaderProgram, 'u_resolution'),
       anisotropicLevel: gl.getUniformLocation(shaderProgram, 'u_anisotropicLevel'),
       glowIntensity: gl.getUniformLocation(shaderProgram, 'u_glowIntensity'),
       enableFog: gl.getUniformLocation(shaderProgram, 'u_enableFog'),
@@ -369,7 +369,7 @@
     }
   }
   // Quality adjustment
-  const adjustQuality = (direction: 'up' | 'down') => {
+  const adjustQuality = (direction 'up' | 'down') => {
     if (direction === 'down') {
       // Reduce effects for better performance
       if (enableBloom) enableBloom = false;
@@ -492,7 +492,7 @@
 </div>
 <style>
   .n64-canvas-container {
-    position: relative;
+    position relative;
     display: inline-block;
     width: var(--canvas-width);
     height: var(--canvas-height);
@@ -526,7 +526,7 @@
   }
   /* Post-processing overlay for additional effects */
   .post-processing-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -551,14 +551,14 @@
   }
   /* Loading overlay */
   .canvas-loading {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     gap: 16px;
@@ -573,7 +573,7 @@
     border-top: 3px solid #4a90e2;
     border-right: 2px solid rgba(74, 144, 226, 0.6);
     border-radius: 50%;
-    animation: n64CanvasSpin 1s linear infinite;
+    animation n64CanvasSpin 1s linear infinite;
   }
   @keyframes n64CanvasSpin {
     to { transform: rotate(360deg), }
@@ -587,7 +587,7 @@
   }
   /* Debug information */
   .debug-info {
-    position: absolute;
+    position absolute;
     top: 8px;
     left: 8px;
     background: rgba(0, 0, 0, 0.8);
@@ -619,9 +619,9 @@
     }
   }
   /* Reduced motion support */
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     .n64-canv.n64-spinner {
-      animation: none;
+      animation none;
       border: 3px solid #4a90e2;
       border-right-color: transparent;
     }

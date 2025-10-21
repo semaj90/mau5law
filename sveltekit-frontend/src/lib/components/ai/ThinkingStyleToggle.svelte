@@ -70,7 +70,7 @@
       variant={enabled ? 'crimson' : 'nier'}
       size={size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'default'}
       disabled={loading || (!premium && !enabled)}
-      on:click={handleToggle}
+      onclick={handleToggle}
       class={cn(
         'thinking-toggle-btn transition-all duration-300',
         enabled && 'animate-crimson-glow',
@@ -104,7 +104,7 @@
       <Button
         variant="ghost"
         size="sm"
-        on:click={handleConfigure}
+        onclick={handleConfigure}
         class="config-btn ml-2 bits-btn bits-btn"
         disabled={loading}
       >
@@ -113,13 +113,13 @@
     {/if}
     <!-- Info Button for non-premium users -->
     {#if !premium}
-      <Button variant="ghost" size="sm" on:click={handleUpgrade} class="upgrade-btn ml-2 bits-btn bits-btn">
+      <Button variant="ghost" size="sm" onclick={handleUpgrade} class="upgrade-btn ml-2 bits-btn bits-btn">
         <Info size={14} class="text-harvard-gold" />
       </Button>
     {/if}
     <!-- Tooltip -->
     {#if showTooltip}
-      <div class="tooltip" transitifade={{ duration: 200 }}>
+      <div class="tooltip" transitifade={{ duration 200 }}>
         {#if !premium}
           <div class="tooltip-content premium-required">
             <Crown class="h-4 w-4 text-harvard-gold" />
@@ -162,7 +162,7 @@
   </div>
   <!-- Configuration Panel -->
   {#if showConfig && premium}
-    <div class="config-panel nier-border-glow" transitislide={{ duration: 300 }}>
+    <div class="config-panel nier-border-glow" transitislide={{ duration 300 }}>
       <div class="config-header">
         <h4 class="text-foreground font-semibold">Thinking Style Configuration</h4>
         <p class="nes-text is-disabled text-sm">Customize AI reasoning parameters</p>
@@ -201,21 +201,21 @@
         </div>
       </div>
       <div class="config-actions">
-        <Button class="bits-btn" variant="ghost" size="sm" on:click={() => (showConfig = false)}>Cancel</Button>
+        <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showConfig = false)}>Cancel</Button>
         <Button class="bits-btn" variant="crimson" size="sm">Save Configuration</Button>
       </div>
     </div>
   {/if}
   <!-- Premium Upgrade Banner -->
   {#if !premium}
-    <div class="premium-banner" transitislide={{ duration: 300 }}>
+    <div class="premium-banner" transitislide={{ duration 300 }}>
       <div class="premium-content">
         <Crown class="h-5 w-5 text-harvard-gold" />
         <div class="premium-text">
           <strong>Unlock Advanced AI Reasoning</strong>
           <p>Get step-by-step legal analysis with transparent thinking process</p>
         </div>
-        <Button class="bits-btn" variant="gold" size="sm" on:click={handleUpgrade}>Upgrade Now</Button>
+        <Button class="bits-btn" variant="gold" size="sm" onclick={handleUpgrade}>Upgrade Now</Button>
       </div>
     </div>
   {/if}
@@ -224,13 +224,13 @@
 <style>
   /* @unocss-include */
   .thinking-style-control {
-    position: relative;
+    position relative;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
   }
   .toggle-container {
-    position: relative;
+    position relative;
     display: flex;
     align-items: center;
   }
@@ -251,7 +251,7 @@
     border: 2px solid transparent;
     border-top: 2px solid currentColor;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     0% {
@@ -262,7 +262,7 @@
     }
   }
   .tooltip {
-    position: absolute;
+    position absolute;
     top: calc(100% + 0.5rem);
     left: 0;
     z-index: 50;
@@ -297,7 +297,7 @@
   }
   .feature-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.125rem;
   }
   .feature {
@@ -319,7 +319,7 @@
   }
   .setting-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .setting-label {
@@ -343,7 +343,7 @@
   }
   .checkbox-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
   }
   .checkbox-label {
     display: flex;
@@ -395,11 +395,11 @@
     opacity: 0.9,
   }
   .nier-border-glow {
-    position: relative;
+    position relative;
   }
   .nier-border-glow::before {
     content: '';
-    position: absolute;
+    position absolute;
     inset: -1px;
     padding: 1px;
     background: linear-gradient(45deg, var(--color-accent-crimson), transparent, var(--color-accent-gold));

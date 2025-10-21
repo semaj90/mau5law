@@ -56,7 +56,7 @@
     confirmPassword: '',
     role: 'analyst',
     department: '',
-    jurisdiction: '',
+    jurisdiction '',
     badgeNumber: '',
     agreeToTerms: false,
     agreeToPrivacy: false,
@@ -116,7 +116,7 @@
 
   // File upload UI state
   interface FileTypeIconData {
-    Icon: ComponentType; // Type for Svelte component constructor
+    Icon ComponentType; // Type for Svelte component constructor
     color: string;
     bg: string;
   }
@@ -225,18 +225,18 @@
     const ext = name.split('.').pop()?.toLowerCase() || '';
     switch (ext) {
       case 'pdf':
-        return { Icon: FileText, color: 'text-red-600', bg: 'bg-red-100' };
+        return { Icon FileText, color: 'text-red-600', bg: 'bg-red-100' };
       case 'doc':
       case 'docx':
-        return { Icon: FileText, color: 'text-blue-600', bg: 'bg-blue-100' };
+        return { Icon FileText, color: 'text-blue-600', bg: 'bg-blue-100' };
       case 'png':
       case 'jpg':
       case 'jpeg':
-        return { Icon: FileImage, color: 'text-yellow-600', bg: 'bg-yellow-100' };
+        return { Icon FileImage, color: 'text-yellow-600', bg: 'bg-yellow-100' };
       case 'zip':
-        return { Icon: FileArchive, color: 'text-gray-700', bg: 'bg-gray-100' };
+        return { Icon FileArchive, color: 'text-gray-700', bg: 'bg-gray-100' };
       default:
-        return { Icon: FileIconBase, color: 'text-neutral-700', bg: 'bg-neutral-100' };
+        return { Icon FileIconBase, color: 'text-neutral-700', bg: 'bg-neutral-100' };
     }
   }
 
@@ -495,7 +495,7 @@
             <button
               type="button"
               class="absolute inset-y-0 right-0 pr-3 flex items-center"
-              on:click={togglePasswordVisibility}
+              onclick={togglePasswordVisibility}
               disabled={isLoading}
             >
               {#if showPassword}
@@ -538,7 +538,7 @@
             <button
               type="button"
               class="absolute inset-y-0 right-0 pr-3 flex items-center"
-              on:click={toggleConfirmPasswordVisibility}
+              onclick={toggleConfirmPasswordVisibility}
               disabled={isLoading}
             >
               {#if showConfirmPassword}
@@ -608,7 +608,7 @@
             <Button
               type="button"
               class="w-full sm:w-auto bits-btn bits-btn"
-              on:click={triggerFileInput}
+              onclick={triggerFileInput}
               disabled={isLoading}
             >
               Upload Documents
@@ -619,7 +619,7 @@
             <Button
               type="button"
               class="w-full sm:w-auto bits-btn bits-ghost"
-              on:click={uploadAllPending}
+              onclick={uploadAllPending}
               disabled={isLoading || files.length === 0}
             >
               Upload All Pending
@@ -656,14 +656,14 @@
                     <Button
                       type="button"
                       class="bits-btn bits-ghost text-xs px-2 py-1"
-                      on:click={() => reattachFile(f.id)}
+                      onclick={() => reattachFile(f.id)}
                       disabled={isLoading}>Reattach</Button
                     >
                   {/if}
                   <Button
                     type="button"
                     class="bits-btn bits-ghost text-xs px-2 py-1"
-                    on:click={() => removeFile(f.id)}
+                    onclick={() => removeFile(f.id)}
                     disabled={isLoading}>Remove</Button
                   >
                 </div>
@@ -701,7 +701,7 @@
 
 <style>
   .animate-fade-in {
-    animation: fadeIn 0.18s ease-out;
+    animation fadeIn 0.18s ease-out;
   }
   @keyframes fadeIn {
     from {

@@ -12,7 +12,7 @@
     isTyping?: boolean;
   }
   interface SidebarItem {
-    icon: string;
+    icon string;
     label: string;
     count?: number;
     active?: boolean;
@@ -47,14 +47,14 @@
   let isTestMode = $state(false);
   // Sidebar navigation items
   let sidebarItems: SidebarItem[] = $state([
-    { icon: '🏠', label: 'COMMAND CENTER', active: true },
-    { icon: '📋', label: 'ACTIVE CASES', count: 3 },
-    { icon: '📚', label: 'EVIDENCE LIBRARY' },
-    { icon: '👥', label: 'PERSONS OF INTEREST' },
-    { icon: '🔍', label: 'ANALYSIS CENTER' },
-    { icon: '🌐', label: 'GLOBAL SEARCH' },
-    { icon: '💻', label: 'TERMINAL', active: false },
-    { icon: '⚙️', label: 'SYSTEM CONFIGURATION' },
+    { icon '🏠', label: 'COMMAND CENTER', active: true },
+    { icon '📋', label: 'ACTIVE CASES', count: 3 },
+    { icon '📚', label: 'EVIDENCE LIBRARY' },
+    { icon '👥', label: 'PERSONS OF INTEREST' },
+    { icon '🔍', label: 'ANALYSIS CENTER' },
+    { icon '🌐', label: 'GLOBAL SEARCH' },
+    { icon '💻', label: 'TERMINAL', active: false },
+    { icon '⚙️', label: 'SYSTEM CONFIGURATION' },
   ]);
   let messagesContainer: HTMLElement;
   // Update time periodically
@@ -265,8 +265,8 @@
         <button
           class="nav-item"
           class:active={item.active}
-          on:click={() => selectSidebarItem(index)}
-          transition:fade={{ delay: index * 50 }}
+          onclick={() => selectSidebarItem(index)}
+          transitionfade={{ delay: index * 50 }}
         >
           <span class="nav-icon">{item.icon}</span>
           <span class="nav-label">{item.label}</span>
@@ -324,7 +324,7 @@
         <div class="chat-controls">
           <Button class="control-btn">⭐ TERMINAL</Button>
           <Button class="control-btn active">🤖 AI CHAT</Button>
-          <Button class="control-btn" on:click={clearChat}>🗑️ CLEAR</Button>
+          <Button class="control-btn" onclick={clearChat}>🗑️ CLEAR</Button>
           {#if isTestMode}
             <span class="test-mode-badge">TEST MODE</span>
           {/if}
@@ -343,7 +343,7 @@
             <div
               class="message {message.sender}"
               class:typing={message.isTyping}
-              transition:fly={{ y: 20, duration: 300 }}
+              transitionfly={{ y: 20, duration 300 }}
             >
               <div class="message-header">
                 <span class="message-sender">
@@ -380,7 +380,7 @@
               onkeypress={handleKeyPress}
               disabled={isTyping}
             />
-            <Button class="send-btn" on:click={sendMessage} disabled={!currentInput.trim() || isTyping}>⚡SEND</Button>
+            <Button class="send-btn" onclick={sendMessage} disabled={!currentInput.trim() || isTyping}>⚡SEND</Button>
           </div>
         </div>
       </div>
@@ -403,7 +403,7 @@
     background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
     border-right: 2px solid #555555;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
   }
   .sidebar-header {
     padding: 1.5rem 1rem;
@@ -460,7 +460,7 @@
     font-family: inherit;
     font-size: 0.75rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     border-left: 3px solid transparent;
   }
   .nav-item:hover {
@@ -508,7 +508,7 @@
   .main-content {
     flex: 1,
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     overflow: hidden;
   }
   .main-header {
@@ -564,7 +564,7 @@
     font-family: inherit;
     font-size: 0.75rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .search-btn:hover,
   .auth-btn:hover {
@@ -583,7 +583,7 @@
     border: 2px solid #00ff41;
     border-radius: 8px;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
   }
   .chat-header {
@@ -620,7 +620,7 @@
     font-family: inherit;
     font-size: 0.75rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .control-btn:hover,
   .control-btn.active {
@@ -640,7 +640,7 @@
   .chat-body {
     flex: 1,
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     padding: 1.5rem;
   }
   .system-header {
@@ -691,7 +691,7 @@
   }
   .message.typing {
     border-left: 3px solid #ff6b35;
-    animation: pulse 1s infinite;
+    animation pulse 1s infinite;
   }
   .message-header {
     display: flex;
@@ -754,7 +754,7 @@
     font-family: inherit;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .send-btn:hover:not(:disabled) {
     background: #00cc34;

@@ -297,7 +297,7 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Main button -->
   <button
     class={baseClasses}
-    on:click={handleClick}
+    onclick={handleClick}
     onmouseenter={handleMouseEnter}
     onmouseleave={handleMouseLeave}
     {...restProp}
@@ -306,7 +306,7 @@ https://svelte.dev/e/js_parse_error -->
     {#if loading}
       <div
         class="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
-        transition:fade={ { duration: 200 } }
+        transitionfade={ { duration 200 } }
       ></div>
     {/if}
     <!-- Button content -->
@@ -335,7 +335,7 @@ https://svelte.dev/e/js_parse_error -->
     {#if legalContext?.riskLevel === 'high'}
       <div
         class="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-red-500 animate-ping"
-        transition:fade
+        transitionfade
       ></div>
     {/if}
   </button>

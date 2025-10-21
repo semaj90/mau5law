@@ -106,13 +106,13 @@
           </div>
 
           <div class="flex gap-2">
-            <button type="button" class="btn-outline btn-sm" on:click={() => (searchQuery = 'contract breach')}>
+            <button type="button" class="btn-outline btn-sm" onclick={() => (searchQuery = 'contract breach')}>
               Contract Law
             </button>
-            <button type="button" class="btn-outline btn-sm" on:click={() => (searchQuery = 'patent infringement')}>
+            <button type="button" class="btn-outline btn-sm" onclick={() => (searchQuery = 'patent infringement')}>
               IP Law
             </button>
-            <button type="button" class="btn-outline btn-sm" on:click={() => (searchQuery = 'criminal defense')}>
+            <button type="button" class="btn-outline btn-sm" onclick={() => (searchQuery = 'criminal defense')}>
               Criminal Law
             </button>
           </div>
@@ -156,7 +156,7 @@
             class="card-legal hover-lift cursor-pointer text-left w-full"
             class:ring-2={selectedFeature === feature.id}
             class:ring-legal-primary={selectedFeature === feature.id}
-            on:click={() => selectFeature(feature.id)}
+            onclick={() => selectFeature(feature.id)}
             type="button"
           >
             <div class="flex items-start gap-4">

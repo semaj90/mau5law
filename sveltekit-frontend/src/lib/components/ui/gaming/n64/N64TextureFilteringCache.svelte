@@ -81,7 +81,7 @@ https://svelte.dev/e/js_parse_error -->
     memoryUsage: 0,
     cacheEfficiency: 0,
     filteringQuality: 0,
-    gpuUtilization: 0,
+    gpuUtilization 0,
   });
   // Animation state
   let animationId = $state<number | null >(null);
@@ -431,7 +431,7 @@ if (preloadTextures) {
     <div class="error-overlay">
       <div class="error-icon">⚠️</div>
       <div class="error-message">{errorMessage}</div>
-      <button class="retry-button" on:click={() => initializeTextureCache()}> RETRY </button>
+      <button class="retry-button" onclick={() => initializeTextureCache()}> RETRY </button>
     </div>
   {/if}
   <!-- Debug Information -->
@@ -454,7 +454,7 @@ if (preloadTextures) {
 
 <style>
   .n64-texture-cache-container {
-    position: relative;
+    position relative;
     display: inline-block;
     border-radius: 4px;
     overflow: hidden;
@@ -465,7 +465,7 @@ if (preloadTextures) {
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edge;
     image-rendering: crisp-edge;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: 2px solid rgba(74, 144, 226, 0.3);
   }
   /* Quality-based styling */
@@ -485,7 +485,7 @@ if (preloadTextures) {
   }
   /* Cache Status Overlay */
   .cache-status-overlay {
-    position: absolute;
+    position absolute;
     top: 8px;
     right: 8px;
     z-index: 10;
@@ -507,7 +507,7 @@ if (preloadTextures) {
   }
   .cache-info {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1px;
   }
   .cache-type {
@@ -520,7 +520,7 @@ if (preloadTextures) {
   }
   /* Performance Overlay */
   .performance-overlay {
-    position: absolute;
+    position absolute;
     bottom: 8px;
     left: 8px;
     right: 8px;
@@ -537,7 +537,7 @@ if (preloadTextures) {
   }
   .metric {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 2px;
   }
@@ -560,14 +560,14 @@ if (preloadTextures) {
   }
   .metric-value.critical {
     color: #ff6600;
-    animation: pulse 1s infinite;
+    animation pulse 1s infinite;
   }
   .metric-value.quality-score {
     color: #ff00ff;
   }
   /* Loading Overlay */
   .loading-overlay {
-    position: absolute;
+    position absolute;
     inset: 0;
     display: flex;
     align-items: center;
@@ -577,7 +577,7 @@ if (preloadTextures) {
   }
   .n64-spinner {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 12px;
     color: #4a90e2;
@@ -589,21 +589,21 @@ if (preloadTextures) {
     border-top: 3px solid #4a90e2;
     border-right: 2px solid rgba(74, 144, 226, 0.6);
     border-radius: 50%;
-    animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+    animation spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
   }
   .spinner-text {
     font-size: 10px;
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 1px;
-    animation: pulse 2s ease-in-out infinite;
+    animation pulse 2s ease-in-out infinite;
   }
   /* Error Overlay */
   .error-overlay {
-    position: absolute;
+    position absolute;
     inset: 0;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     gap: 8px;
@@ -630,15 +630,15 @@ if (preloadTextures) {
     font-size: 10px;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
-  .retry-button:hover {
+  .retry-buttonhover {
     background: rgba(255, 255, 255, 0.3);
     transform: translateY(-1px);
   }
   /* Debug Panel */
   .debug-panel {
-    position: absolute;
+    position absolute;
     top: 100%;
     left: 0;
     right: 0;
@@ -727,16 +727,16 @@ if (preloadTextures) {
     }
   }
   /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     .spinner-ring {
-      animation: none;
+      animation none;
       border: 3px solid #4a90e2;
     }
     .spinner-text {
-      animation: none;
+      animation none;
     }
     .metric-value.critical {
-      animation: none;
+      animation none;
       color: #ff0000;
     }
   }

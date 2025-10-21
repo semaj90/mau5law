@@ -119,7 +119,7 @@ Production-ready with native Windows support
       const evidence = {
         id: `generated_${result.id}`,
         title: `AI Generated: ${result.prompt?.substring(0, 50) ?? 'generated image'}...`,
-        description: `Generated image from prompt: ${result.prompt}`,
+        description `Generated image from prompt: ${result.prompt}`,
         evidenceType: 'image',
         fileUrl: result.imageUrl,
         metadata: {
@@ -214,7 +214,7 @@ Production-ready with native Windows support
       <label class="nes-text">Legal Templates:</label>
       <div class="template-buttons">
         {#each legalPromptTemplates as template}
-          <button class="template-btn nes-btn is-primary" on:click={() => (prompt = template.prompt)}>
+          <button class="template-btn nes-btn is-primary" onclick={() => (prompt = template.prompt)}>
             {template.name}
           </button>
         {/each}
@@ -296,7 +296,7 @@ Production-ready with native Windows support
     <div class="generate-section">
       <button
         class="generate-btn nes-btn is-success"
-        on:click={generateImage}
+        onclick={generateImage}
         disabled={$imageGenerationStore.status.isGenerating || !prompt.trim()}
       >
         {#if $imageGenerationStore.status.isGenerating}
@@ -336,20 +336,20 @@ Production-ready with native Windows support
         <div class="image-actions">
           <button
             class="nes-btn is-primary"
-            on:click={() => copyPrompt($imageGenerationStore.currentGeneration!.prompt)}
+            onclick={() => copyPrompt($imageGenerationStore.currentGeneration!.prompt)}
           >
             📋 Copy Prompt
           </button>
           <button
             class="nes-btn is-warning"
-            on:click={() => regenerateWithSeed($imageGenerationStore.currentGeneration!)}
+            onclick={() => regenerateWithSeed($imageGenerationStore.currentGeneration!)}
           >
             🔄 Regenerate
           </button>
           {#if caseId}
             <button
               class="nes-btn is-success"
-              on:click={() => useImageAsEvidence($imageGenerationStore.currentGeneration!)}
+              onclick={() => useImageAsEvidence($imageGenerationStore.currentGeneration!)}
             >
               📁 Use as Evidence
             </button>
@@ -373,13 +373,13 @@ Production-ready with native Windows support
   <!-- History Section -->
   <div class="history-section">
     <div class="history-header">
-      <button class="nes-btn is-normal" on:click={() => (showHistory = !showHistory)}>
+      <button class="nes-btn is-normal" onclick={() => (showHistory = !showHistory)}>
         📚 History ({generationHistory.length})
       </button>
       {#if generationHistory.length > 0}
         <button
           class="nes-btn is-error"
-          on:click={() => {
+          onclick={() => {
             imageGenerationService.clearHistory();
             generationHistory = [];
           }}
@@ -416,7 +416,7 @@ Production-ready with native Windows support
                 }
               ).prompt}
               class="history-thumbnail"
-              on:click={() => (selectedImage = result)}
+              onclick={() => (selectedImage = result)}
             />
             <div class="history-info">
               <p class="history-prompt">
@@ -465,11 +465,11 @@ Production-ready with native Windows support
   </div>
   <!-- Selected Image Modal -->
   {#if selectedImage}
-    <div class="modal-overlay" on:click={() => (selectedImage = null)}>
-      <div class="modal-content nes-container is-rounded" on:click|stopPropagation>
+    <div class="modal-overlay" onclick={() => (selectedImage = null)}>
+      <div class="modal-content nes-container is-rounded" onclick|stopPropagation>
         <div class="modal-header">
           <h4>Generated Image Details</h4>
-          <button class="nes-btn is-error" on:click={() => (selectedImage = null)}>×</button>
+          <button class="nes-btn is-error" onclick={() => (selectedImage = null)}>×</button>
         </div>
         <div class="modal-body">
           <img src={selectedImage.imageUrl} alt={selectedImage.prompt} class="modal-image" />
@@ -482,18 +482,18 @@ Production-ready with native Windows support
           <div class="modal-actions">
             <button
               class="nes-btn is-primary"
-              on:click={() => {
+              onclick={() => {
                 prompt = selectedImage!.prompt;
                 selectedImage = null;
               }}
             >
               Use Prompt
             </button>
-            <button class="nes-btn is-warning" on:click={() => regenerateWithSeed(selectedImage!)}> Regenerate </button>
+            <button class="nes-btn is-warning" onclick={() => regenerateWithSeed(selectedImage!)}> Regenerate </button>
             {#if caseId}
               <button
                 class="nes-btn is-success"
-                on:click={() => {
+                onclick={() => {
                   useImageAsEvidence(selectedImage!);
                   selectedImage = null;
                 }}
@@ -532,17 +532,17 @@ Production-ready with native Windows support
   }
   .generation-controls {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .input-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .template-section {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .template-buttons {
@@ -561,7 +561,7 @@ Production-ready with native Windows support
   }
   .select-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
     flex: 1;
     min-width: 150px;
@@ -571,7 +571,7 @@ Production-ready with native Windows support
   }
   .advanced-controls {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
     padding: 1rem;
   }
@@ -582,14 +582,14 @@ Production-ready with native Windows support
   }
   .param-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
     flex: 1;
     min-width: 100px;
   }
   .generate-section {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
     align-items: center;
   }
@@ -610,7 +610,7 @@ Production-ready with native Windows support
     border: 2px solid transparent;
     border-top: 2px solid currentColor;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin-right: 0.5rem;
   }
   @keyframes spin {
@@ -623,7 +623,7 @@ Production-ready with native Windows support
   }
   .image-result {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .generated-image {
@@ -658,7 +658,7 @@ Production-ready with native Windows support
   }
   .history-item {
     cursor: pointer;
-    transition: transform 0.2s ease;
+    transition transform 0.2s ease;
   }
   .history-item:hover {
     transform: translateY(-2px);
@@ -683,7 +683,7 @@ Production-ready with native Windows support
     margin: 0,
   }
   .modal-overlay {
-    position: fixed;
+    position fixed;
     top: 0,
     left: 0;
     width: 100%;
@@ -729,7 +729,7 @@ Production-ready with native Windows support
   @media (max-width: 768px) {
     .selection-row,
     .parameter-row {
-      flex-direction: column;
+      flex-direction column;
     }
     .history-grid {
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));

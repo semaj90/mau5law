@@ -254,12 +254,12 @@
   }
   .embedding-form {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1.5rem;
   }
   .form-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .form-group label {
@@ -284,7 +284,7 @@
   .result-details {
     margin-top: 1rem;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .result-details code {
@@ -295,7 +295,7 @@
   }
   .recent-embeddings {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .embedding-item {
@@ -325,7 +325,7 @@
     gap: 0.5rem;
   }
   .animate-spin {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     from {

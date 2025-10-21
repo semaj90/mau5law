@@ -242,7 +242,7 @@
     formData.append('uploadData', JSON.stringify({
       caseId,
       title: file.name,
-      description: `Uploaded via enhanced drag-and-drop: ${file.name}`,
+      description `Uploaded via enhanced drag-and-drop: ${file.name}`,
       evidenceType: getEvidenceType(file),
       enableAiAnalysis: true
       enableEmbeddings: true
@@ -359,7 +359,7 @@
     role="button"
     aria-label="Drop zone"
     tabindex="0"
-    on:click={handleClickToSelect}
+    onclick={handleClickToSelect}
   >
     <!-- Drag overlay -->
     {#if dragOver}
@@ -411,7 +411,7 @@
     <div class="file-list mt-4 space-y-2">
       <div class="flex justify-between items-center">
         <h4 class="font-semibold text-gray-700">Upload Queue</h4>
-        <button class="text-xs text-red-600 hover:text-red-800" on:click={clearFiles} disabled={uploading}>
+        <button class="text-xs text-red-600 hover:text-red-800" onclick={clearFiles} disabled={uploading}>
           Clear All
         </button>
       </div>
@@ -442,7 +442,7 @@
               {#if file.status === 'pending' || file.status === 'error'}
                 <button
                   class="text-red-600 hover:text-red-800 text-sm"
-                  on:click={() => removeFile(file.id)}
+                  onclick={() => removeFile(file.id)}
                   disabled={uploading}
                 >
                   ×

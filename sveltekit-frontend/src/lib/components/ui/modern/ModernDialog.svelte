@@ -76,7 +76,7 @@
             {/if}
           </div>
           {#if showClose}
-            <DialogPrimitive.Close class="dialog-close" on:click={handleClose}>
+            <DialogPrimitive.Close class="dialog-close" onclick={handleClose}>
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -101,16 +101,16 @@
 
 <style>
   .dialog-overlay {
-    position: fixed;
+    position fixed;
 d;
     inset: 0,
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(4px);
     z-index: 50,
-    animation: overlayShow 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation overlayShow 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   .dialog-content {
-    position: fixed;
+    position fixed;
 d;
     top: 50%;
     left: 50%;
@@ -124,8 +124,8 @@ d;
     max-height: calc(100vh - var(--golden-xl));
     overflow: hidden;
     display: flex;
-    flex-direction: column;
-    animation: contentShow 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    flex-direction column;
+    animation contentShow 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   .dialog-header {
     padding: var(--golden-xl);
@@ -157,7 +157,7 @@ d;
     background: transparent;
     border: 1px solid var(--yorha-border-primary);
     cursor: pointer;
-    transition: all 200ms ease;
+    transition all 200ms ease;
   }
   .dialog-close:hover {
     color: var(--yorha-text-primary);

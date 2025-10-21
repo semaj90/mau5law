@@ -169,7 +169,7 @@
   {formtarget}
   {name}
   {value}
-  on:click={handleClick}
+  onclick={handleClick}
   onmouseenter={handleHover}
   onfocus={handleFocus}
   class={`nes-8bit-button nes-btn ${nesVariant} ${className}`}
@@ -188,7 +188,7 @@
   :global(.nes-8bit-button) {
     /* Base NES button styling */
     font-family: 'Press Start 2P', 'Courier New', monospace !important;
-    position: relative;
+    position relative;
     overflow: hidden;
     background-color: var(--button-color);
     color: white;
@@ -206,7 +206,7 @@
       2px 2px 0px #000000,
       0px 0px 0px 2px var(--button-color);
     transform: var(--press-transform);
-    transition: transform 50ms ease-out;
+    transition transform 50ms ease-out;
     /* Remove default button styles */
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -248,7 +248,7 @@
     --button-color: #f83800;
   }
   :global(.nes-8bit-button.is-disabled),
-  :global(.nes-8bit-button:disabled) {
+  :global(.nes-8bit-buttondisabled) {
     background-color: #7c7c7c;
     --button-color: #7c7c7c;
     cursor: not-allowed;
@@ -257,20 +257,20 @@
     box-shadow: 1px 1px 0px #000000;
   }
   /* Hover effects */
-  :global(.nes-8bit-button:not(:disabled):hover) {
+  :global(.nes-8bit-buttonnot(:disabled):hover) {
     filter: brightness(1.1);
     box-shadow:
       3px 3px 0px #000000,
       0px 0px 0px 2px var(--button-color);
   }
   /* Active/Pressed state */
-  :global(.nes-8bit-button:not(:disabled):active) {
+  :global(.nes-8bit-buttonnot(:disabled):active) {
     box-shadow:
       1px 1px 0px #000000,
       0px 0px 0px 2px var(--button-color);
   }
   /* Focus styles for accessibility */
-  :global(.nes-8bit-button:focus) {
+  :global(.nes-8bit-buttonfocus) {
     outline: 2px solid #ffffff;
     outline-offset: 2px;
   }
@@ -284,7 +284,7 @@
       border: 2px solid transparent;
       border-top: 2px solid currentColor;
       border-right: 2px solid currentColor;
-      animation: pixelSpin 1s steps(4, end) infinite;
+      animation pixelSpin 1s steps(4, end) infinite;
     }
     @keyframes pixelSpin {
       0% {
@@ -306,7 +306,7 @@
     /* Scanlines effect (optional) */
     :global(.nes-8bit-button.enable-scanlines)::before {
       content: '';
-      position: absolute;
+      position absolute;
       inset: 0,
       background: repeating-linear-gradient(
         0deg,
@@ -330,7 +330,7 @@
       2px 2px 0px #000000;
     /* Retro bounce animation */
     :global(.nes-8bit-button.retro-bounce) {
-      animation: retroBounce 0.3s ease-in-out;
+      animation retroBounce 0.3s ease-in-out;
     }
     @keyframes retroBounce {
       0%,
@@ -343,7 +343,7 @@
     }
     /* Glitch transition effect */
     :global(.nes-8bit-button.glitch-transition) {
-      animation: glitchTransition 0.2s ease-in-out;
+      animation glitchTransition 0.2s ease-in-out;
     }
     @keyframes glitchTransition {
       0% {
@@ -381,7 +381,7 @@
         1px 1px 0px #000000,
         0px 0px 0px 1px var(--button-color);
     }
-    :global(.nes-8bit-button:not(:disabled):hover) {
+    :global(.nes-8bit-buttonnot(:disabled):hover) {
       box-shadow:
         2px 2px 0px #000000,
         0px 0px 0px 1px var(--button-color);

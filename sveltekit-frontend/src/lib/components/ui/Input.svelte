@@ -226,7 +226,7 @@
     {/if}
     <!-- Clear Button -->
     {#if showClearButton}
-      <button type="button" class="space-y-4" on:click={handleClear} tabindex={-1} aria-label="Clear input">
+      <button type="button" class="space-y-4" onclick={handleClear} tabindex={-1} aria-label="Clear input">
         <iconify-icon data-icon="${1}" class="space-y-4"></iconify-icon>
       </button>
     {/if}

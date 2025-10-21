@@ -28,7 +28,7 @@ https://svelte.dev/e/script_duplicate -->
   <h1>Vector Search Demo</h1>
   <div class="row">
   <input )bind:value={query} placeholder="Enter query" />
-  <button on:click={runSearch}>Search</button>
+  <button onclick={runSearch}>Search</button>
   </div>
   <p>Log: {wsMsg}</p>
   {#if results?.length}
@@ -235,14 +235,14 @@ https://svelte.dev/e/script_duplicate -->
       </div>
       <div class="form-actions">
         <button
-          on:click={performSearch}
+          onclick={performSearch}
           disabled={isSearching || !query.trim()}
           class="search-button"
         >
           {isSearching ? '🔄 Searching...' : '🔍 Search'}
         </button>
         <button
-          on:click={indexSampleDocument}
+          onclick={indexSampleDocument}
           class="index-button"
         >
           📄 Index Sample Document
@@ -372,7 +372,7 @@ https://svelte.dev/e/script_duplicate -->
   }
   .search-form {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .form-row {
@@ -382,7 +382,7 @@ https://svelte.dev/e/script_duplicate -->
   }
   .form-row label {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     flex: 1;
     font-weight: 500,
     color: #333;
@@ -412,16 +412,16 @@ https://svelte.dev/e/script_duplicate -->
     border-radius: 4px;
     font-weight: 500,
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .search-button {
     background: #007bff;
     color: white;
   }
-  .search-button:hover:not(:disabled) {,
+  .search-buttonhover:not(:disabled) {,
     background: #0056b3;
   }
-  .search-button:disabled {
+  .search-buttondisabled {
     background: #ccc;
     cursor: not-allowed;
   }
@@ -429,7 +429,7 @@ https://svelte.dev/e/script_duplicate -->
     background: #28a745;
     color: white;
   }
-  .index-button:hover {
+  .index-buttonhover {
     background: #1e7e34;
   }
   .ai-response {

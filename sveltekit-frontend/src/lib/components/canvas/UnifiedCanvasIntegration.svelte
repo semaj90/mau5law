@@ -138,11 +138,11 @@
       mode: currentMode
       evidenceObjects: canvasObjects.filter(obj => obj.type !== 'drawing'),
       drawings: canvasObjects.filter(obj => obj.type === 'drawing'),
-      canvasJson: evidenceCanvasRef?.getCanvasJSON(),
+      canvasJson evidenceCanvasRef?.getCanvasJSON(),
       metadata: {
         objectCount: canvasObjects.length,
         lastSync: Date.now(),
-        version: '1.0',
+        version '1.0',
       }
     }
     ondispatch?.(state);
@@ -171,7 +171,7 @@
       <button class="nes-btn"
         variant={currentMode === 'evidence' ? 'default' : 'outline'}
         size="sm"
-        on:click={() => switchMode('evidence')}
+        onclick={() => switchMode('evidence')}
         class="bits-btn mode-btn"
       >
         📁 Evidence Only
@@ -179,7 +179,7 @@
       <button class="nes-btn"
         variant={currentMode === 'drawing' ? 'default' : 'outline'}
         size="sm"
-        on:click={() => switchMode('drawing')}
+        onclick={() => switchMode('drawing')}
         class="bits-btn mode-btn"
       >
         🎨 Drawing Only
@@ -187,7 +187,7 @@
       <button class="nes-btn"
         variant={currentMode === 'both' ? 'default' : 'outline'}
         size="sm"
-        on:click={() => switchMode('both')}
+        onclick={() => switchMode('both')}
         class="bits-btn mode-btn"
       >
         🔄 Both
@@ -195,7 +195,7 @@
       <Button
         variant="ghost"
         size="sm"
-        on:click={syncCanvasBoards}
+        onclick={syncCanvasBoards}
         disabled={syncInProgress}
         class="sync-btn bits-btn"
       >
@@ -203,7 +203,7 @@
       <Button
         variant="ghost"
         size="sm"
-        on:click={clearAllCanvases}
+        onclick={clearAllCanvases}
         class="clear-btn bits-btn"
       >
 🗑️ Clear
@@ -255,7 +255,7 @@
     </div>
     <div class="status-actions">
       <button
-        on:click={exportCanvasState}
+        onclick={exportCanvasState}
         class="export-btn"
         title="Export Canvas State"
       >
@@ -266,7 +266,7 @@
 <style>
   .unified-canvas-integration {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     height: 100vh;
     background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
     color: #00ff88;
@@ -304,7 +304,7 @@
     color: #00ff88;
     padding: 0.5rem 1rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     font-family: 'Courier New', monospace;
     font-size: 0.8rem;
     font-weight: bold;
@@ -319,13 +319,13 @@
     overflow: hidden;
   }
   .canvas-container.split-view {
-    flex-direction: row;
+    flex-direction row;
   }
   .evidence-canvas-section,
   .yorha-canvas-section {
     flex: 1,
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     min-width: 0,
   }
   .evidence-canvas-section.full-width,
@@ -351,7 +351,7 @@
   }
   .sync-status.syncing {
     color: #ffaa00;
-    animation: pulse 1s ease-in-out infinite;
+    animation pulse 1s ease-in-out infinite;
   }
   .export-btn {
     background: transparent;
@@ -361,7 +361,7 @@
     cursor: pointer;
     font-family: 'Courier New', monospace;
     font-size: 0.7rem;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .export-btn:hover {
     background: rgba(0, 255, 136, 0.1);
@@ -373,7 +373,7 @@
   /* Responsive design */
   @media (max-width: 768px) {
     .canvas-mode-header {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
     }
     .mode-controls {
@@ -382,7 +382,7 @@
       flex-wrap: wrap;
     }
     .canvas-container.split-view {
-      flex-direction: column;
+      flex-direction column;
     }
     .canvas-container.split-view .evidence-canvas-section {
       border-right: none;

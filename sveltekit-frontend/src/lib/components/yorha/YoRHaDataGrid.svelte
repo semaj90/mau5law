@@ -70,7 +70,7 @@
     border-collapse: collapse;
   }
   thead th {
-    position: sticky;
+    position sticky;
     top: 0,
     background: #ffd700;
     color: #000;

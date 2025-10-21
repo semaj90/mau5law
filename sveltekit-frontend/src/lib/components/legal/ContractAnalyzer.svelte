@@ -118,8 +118,8 @@
   }
   function getClauseIcon(type: ContractClause['type']): string {
     const icons = {
-      termination: '🔚',
-      compensation: '💰',
+      termination '🔚',
+      compensation '💰',
       confidentiality: '🔒',
       liability: '⚠️',
       governing_law: '⚖️',
@@ -159,7 +159,7 @@
         </div>
         <div class="contract-actions">
           <Button
-            on:click={analyzeContract}
+            onclick={analyzeContract}
             disabled={isAnalyzing}
             style="background: {contractBuilder.styling.colors.ai}"
           >
@@ -168,9 +168,9 @@
           <div class="export-dropdown">
             <Button class="export-btn">📤 Export</Button>
             <div class="export-menu">
-              <button on:click={() => exportContract('pdf')}>📄 PDF</button>
-              <button on:click={() => exportContract('docx')}>📝 DOCX</button>
-              <button on:click={() => exportContract('json')}>🔧 JSON</button>
+              <button onclick={() => exportContract('pdf')}>📄 PDF</button>
+              <button onclick={() => exportContract('docx')}>📝 DOCX</button>
+              <button onclick={() => exportContract('json')}>🔧 JSON</button>
             </div>
           </div>
         </div>
@@ -219,8 +219,8 @@
             <div
               class="clause-card"
               class:selected={selectedClause === clause.id}
-              on:click={() => selectClause(clause.id)}
-              transition:scale={contractBuilder.animations.enter}
+              onclick={() => selectClause(clause.id)}
+              transitionscale={contractBuilder.animations.enter}
               style="border-color: {getRiskBadgeStyle(clause.riskLevel).color}"
             >
               <div class="clause-header">
@@ -250,7 +250,7 @@
                   </div>
                 </div>
                 {#if clause.recommendations && selectedClause === clause.id}
-                  <div class="recommendations" transition:fly={{ y: 20, duration: 300 }}>
+                  <div class="recommendations" transitionfly={{ y: 20, duration 300 }}>
                     <h4>🔍 AI Recommendations:</h4>
                     <ul>
                       {#each clause.recommendations as recommendation}
@@ -261,7 +261,7 @@
                 {/if}
               </div>
               {#if selectedClause === clause.id}
-                <div class="clause-actions" transition:fade>
+                <div class="clause-actions" transitionfade>
                   <Button size="sm">✏️ Edit</Button>
                   <Button size="sm" variant="outline">💬 Comment</Button>
                   <Button size="sm" variant="outline">🔍 Deep Analysis</Button>
@@ -344,14 +344,14 @@
     align-items: center;
   }
   .export-dropdown {
-    position: relative;
+    position relative;
   }
   .export-btn {
     background: var(--enhanced-bits-secondary);
     color: #000;
   }
   .export-menu {
-    position: absolute;
+    position absolute;
     top: 100%;
     right: 0,
     background: var(--enhanced-bits-background);
@@ -377,7 +377,7 @@
     cursor: pointer;
     text-align: left;
   }
-  .export-menu button:hover {
+  .export-menu buttonhover {
     background: var(--enhanced-bits-muted);
   }
   .search-section {
@@ -436,7 +436,7 @@
   }
   .risk-fill {
     height: 100%;
-    transition: width 300ms ease;
+    transition width 300ms ease;
     border-radius: 4px;
   }
   .risk-count {
@@ -459,7 +459,7 @@
     border-radius: 8px;
     padding: 1.5rem;
     cursor: pointer;
-    transition: all 300ms ease;
+    transition all 300ms ease;
   }
   .clause-card:hover {
     transform: translateY(-2px);
@@ -521,7 +521,7 @@
   }
   .confidence-fill {
     height: 100%;
-    transition: width 300ms ease;
+    transition width 300ms ease;
     border-radius: 3px;
   }
   .confidence-value {
@@ -560,11 +560,11 @@
   }
   @media (max-width: 768px) {
     .contract-title {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
     }
     .search-section {
-      flex-direction: column;
+      flex-direction column;
       align-items: stretch;
     }
     .clauses-grid {

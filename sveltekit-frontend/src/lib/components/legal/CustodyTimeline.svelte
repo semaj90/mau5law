@@ -66,7 +66,7 @@ Displays the chronological chain of custody events with detailed audit trail
         return {
           primary: `Custody transferred`,
           secondary: `From: ${e(vent as CustomEvent).details.fromCustodian} → To: ${e(vent as CustomEvent).details.toCustodian}`,
-          extra: `Reason: ${e(vent as CustomEvent).details.transferReason}`
+          extra: `Reason ${e(vent as CustomEvent).details.transferReason}`
         }
       case 'verification':
         return {
@@ -94,7 +94,7 @@ Displays the chronological chain of custody events with detailed audit trail
           primary: `Custody workflow finalized`,
           secondary: `Total events: ${e(vent as CustomEvent).details.custodyReport?.totalEvents || 0}`,
           extra: e(vent as CustomEvent).details.custodyReport?.totalProcessingTime ?
-            `Duration: ${Math.round(e(vent as CustomEvent).details.custodyReport.totalProcessingTime / 1000)}s` : ''
+            `Duration ${Math.round(e(vent as CustomEvent).details.custodyReport.totalProcessingTime / 1000)}s` : ''
         }
       default:
         return {

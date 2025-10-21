@@ -32,15 +32,15 @@
 /* Scoped UnoCSS integration for enhanced performance */ {}
   .yorha-button {
 /* Base styles handled by UnoCSS shortcuts */ {}
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .yorha-button:hover {
+  .yorha-buttonhover {
     transform: translateY(-1px);
   }
-  .yorha-button:active {
+  .yorha-buttonactive {
     transform: translateY(0);
   }
-  .yorha-button:disabled {
+  .yorha-buttondisabled {
     transform: none;
     cursor: not-allowed;
   }

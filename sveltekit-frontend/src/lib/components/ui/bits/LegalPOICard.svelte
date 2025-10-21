@@ -75,9 +75,9 @@
     // This would typically open a dialog for sighting details
     try {
       await recordSighting(poi.id, {
-        location: 'Manual entry required',
+        location 'Manual entry required',
         date: new Date().toISOString(),
-        description: 'Sighting reported via POI card',
+        description 'Sighting reported via POI card',
         reportedBy: 'System User',
         reliability: 0.5,
         verified: false,
@@ -150,7 +150,7 @@
             {/if}
             {#if poi.criminalProfile.lastKnownLocation}
               <div class="last-known">
-                <strong>Last Known Location:</strong>
+                <strong>Last Known Location</strong>
                 {poi.criminalProfile.lastKnownLocation.address}
                 <span class="date">({new Date(poi.criminalProfile.lastKnownLocation.date).toLocaleDateString()})</span>
               </div>
@@ -188,7 +188,7 @@
             </div>
             {#if poi.metadata.personality.psychologicalProfile}
               <div class="psych-profile">
-                Stability: {Math.round(poi.metadata.personality.psychologicalProfile.stability * 100)}% | Cooperation: {Math.round(
+                Stability: {Math.round(poi.metadata.personality.psychologicalProfile.stability * 100)}% | Cooperation {Math.round(
                   poi.metadata.personality.psychologicalProfile.cooperationLikelihood * 100
                 )}%
               </div>
@@ -199,12 +199,12 @@
       <!-- Action Buttons -->
       <div class="poi-actions">
         {#if poi.role === 'suspect' || poi.role === 'fugitive'}
-          <Button on:click={handleCreateWantedPoster} variant="destructive" size="sm">📋 Create Wanted Poster</Button>
-          <Button on:click={handleAddToFBIMostWanted} variant="outline" size="sm">🎯 Add to FBI Most Wanted</Button>
-          <Button on:click={handleRecordSighting} variant="outline" size="sm">👁️ Record Sighting</Button>
+          <Button onclick={handleCreateWantedPoster} variant="destructive" size="sm">📋 Create Wanted Poster</Button>
+          <Button onclick={handleAddToFBIMostWanted} variant="outline" size="sm">🎯 Add to FBI Most Wanted</Button>
+          <Button onclick={handleRecordSighting} variant="outline" size="sm">👁️ Record Sighting</Button>
         {/if}
-        <Button on:click={() => onEdit?.(poi)} variant="outline" size="sm">✏️ Edit</Button>
-        <Button on:click={() => onDelete?.(poi.id)} variant="destructive" size="sm">🗑️ Delete</Button>
+        <Button onclick={() => onEdit?.(poi)} variant="outline" size="sm">✏️ Edit</Button>
+        <Button onclick={() => onDelete?.(poi.id)} variant="destructive" size="sm">🗑️ Delete</Button>
       </div>
     {:else}
       <!-- Compact view for lists -->
@@ -229,9 +229,9 @@
 
 <style>
   .poi-card {
-    position: relative;
+    position relative;
     margin-bottom: 1rem;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .poi-card: hover {
     box-shadow: var(--enhanced-bits-shadow-lg);
@@ -274,7 +274,7 @@
   }
   .poi-details {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .risk-section {
@@ -335,7 +335,7 @@
   }
   .watch-list-badge[data-priority='critical'] {
     background: var(--enhanced-bits-critical);
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   .last-known {
     font-size: 0.875rem;
@@ -359,7 +359,7 @@
   }
   .danger-badge.armed {
     background: var(--enhanced-bits-critical);
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   .danger-badge.escape {
     background: var(--enhanced-bits-warning);

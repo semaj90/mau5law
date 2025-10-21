@@ -84,7 +84,7 @@
 <button
   class={buttonClasses}
   {disabled}
-  on:click={handleClick}
+  onclick={handleClick}
   onkeydown={handleKeydown}
   onmouseenter={() => (isHovered = true)}
   onmouseleave={() => (isHovered = false)}
@@ -105,14 +105,14 @@
   .yorha-harvard-btn {
     font-family: var(--font-mono);
     font-weight: 600,
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: 2px solid var(--enhanced-border);
     background: var(--enhanced-bg-secondary);
     color: var(--enhanced-text-primary);
     cursor: pointer;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    position: relative;
+    position relative;
     overflow: hidden;
     outline: none;
   }
@@ -167,12 +167,12 @@
     color: var(--yorha-matrix-green);
     border: 2px solid var(--enhanced-accent);
     font-family: var(--font-mono);
-    position: relative;
+    position relative;
   }
 
   .yorha-terminal-btn:before {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -201,23 +201,23 @@
     border: 2px solid var(--enhanced-accent-secondary);
     text-transform: uppercase;
     letter-spacing: 1px;
-    position: relative;
+    position relative;
     overflow: hidden;
   }
 
   .harvard-gaming-badge:before {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: -100%;
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    animation: badge-shine 2s infinite;
+    animation badge-shine 2s infinite;
   }
 
   .gaming-border-accent {
-    position: absolute;
+    position absolute;
     top: -2px;
     left: -2px;
     right: -2px;
@@ -225,7 +225,7 @@
     background: linear-gradient(45deg, var(--enhanced-accent), var(--enhanced-accent-secondary));
     z-index: -1;
     opacity: 0,
-    transition: opacity 0.3s ease;
+    transition opacity 0.3s ease;
   }
 
   .yorha-gaming-btn:hover .gaming-border-accent {
@@ -247,7 +247,7 @@
   }
 
   .loading-spinner {
-    position: absolute;
+    position absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -256,7 +256,7 @@
     border: 2px solid transparent;
     border-top: 2px solid var(--enhanced-accent);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
 
   .pixelated {

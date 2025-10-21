@@ -60,7 +60,7 @@
             <strong>generate-best-practices:</strong> Security, performance, and UI/UX guidelines
           </div>
           <div>
-            <strong>suggest-integration:</strong> Integration patterns for new features
+            <strong>suggest-integration</strong> Integration patterns for new features
           </div>
           <div>
             <strong>resolve-library-id:</strong> Find correct library documentation IDs

@@ -41,8 +41,8 @@
     padding: 20px;
     text-align: center;
     box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.1));
-    transition: all 0.2s ease;
-    position: relative;
+    transition all 0.2s ease;
+    position relative;
     overflow: hidden;
   }
   .stat-card.hoverable:hover {

@@ -111,7 +111,7 @@ https://svelte.dev/e/bindable_invalid_location -->
       case 'legal':
         return {
           ...baseResult,
-          legalOpinion: 'Based on the provided information, there are several key legal considerations...',
+          legalOpinion 'Based on the provided information, there are several key legal considerations...',
           precedents: [
             { name: 'Doe v. Smith', relevance: 0.85, year: 2019 },
             { name: 'Johnson v. State', relevance: 0.72, year: 2020 }
@@ -184,10 +184,10 @@ https://svelte.dev/e/bindable_invalid_location -->
   }
   // Analysis type icons and colors
   const analysisConfig = {
-    legal: { icon: '⚖️', color: '#4f46e5', bgColor: 'rgba(79, 70, 229, 0.1)' },
-    evidence: { icon: '🔍', color: '#059669', bgColor: 'rgba(5, 150, 105, 0.1)' },
-    document: { icon: '📄', color: '#dc2626', bgColor: 'rgba(220, 38, 38, 0.1)' },
-    caseItem: { icon: '📁', color: '#7c2d12', bgColor: 'rgba(124, 45, 18, 0.1)' }
+    legal: { icon '⚖️', color: '#4f46e5', bgColor: 'rgba(79, 70, 229, 0.1)' },
+    evidence: { icon '🔍', color: '#059669', bgColor: 'rgba(5, 150, 105, 0.1)' },
+    document: { icon '📄', color: '#dc2626', bgColor: 'rgba(220, 38, 38, 0.1)' },
+    caseItem: { icon '📁', color: '#7c2d12', bgColor: 'rgba(124, 45, 18, 0.1)' }
   }
   const config = analysisConfig[analysisType];
 </script>
@@ -212,7 +212,7 @@ https://svelte.dev/e/bindable_invalid_location -->
         <small>{loadError.message}</small>
         <button
           class="retry-button"
-          on:click={() => {
+          onclick={() => {
             loadError = null;
             analysisProgress = 0;
             analysisStep = 'Initializing...';
@@ -343,12 +343,12 @@ https://svelte.dev/e/bindable_invalid_location -->
   }
   .analysis-wrapper {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
   }
   /* Error state */
   .analysis-error {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     height: 100%;
@@ -366,15 +366,15 @@ https://svelte.dev/e/bindable_invalid_location -->
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
-  .retry-button:hover {
+  .retry-buttonhover {
     background: rgba(0, 0, 0, 0.2);
   }
   /* Progress state */
   .analysis-progress {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     justify-content: center;
     height: 100%;
     padding: 48px 32px;
@@ -403,7 +403,7 @@ https://svelte.dev/e/bindable_invalid_location -->
   }
   .progress-fill {
     height: 100%;
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
     border-radius: 4px;
   }
   .progress-info {
@@ -504,7 +504,7 @@ https://svelte.dev/e/bindable_invalid_location -->
   }
   .meta-cell {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 4px;
   }
   .meta-label {
@@ -522,14 +522,14 @@ https://svelte.dev/e/bindable_invalid_location -->
   /* AI Placeholder */
   .ai-placeholder-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     gap: 24px;
     padding: 48px;
   }
   .placeholder-ai-brain {
-    position: relative;
+    position relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -537,18 +537,18 @@ https://svelte.dev/e/bindable_invalid_location -->
   .brain-icon {
     font-size: 72px;
     z-index: 2,
-    position: relative;
+    position relative;
   }
   .brain-waves {
-    position: absolute;
+    position absolute;
     width: 120px;
     height: 120px;
   }
   .wave {
-    position: absolute;
+    position absolute;
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
-    animation: brain-wave 2s infinite;
+    animation brain-wave 2s infinite;
   }
   .wave-1 {
     width: 80px;
@@ -612,15 +612,15 @@ https://svelte.dev/e/bindable_invalid_location -->
       grid-template-columns: 1fr;
     }
     .analysis-meta {
-      flex-direction: column;
+      flex-direction column;
       gap: 12px;
     }
   }
   /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     .progress-fill,
     .wave {
-      animation: none;
+      animation none;
     }
     .brain-waves {
       display: none;

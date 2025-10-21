@@ -54,7 +54,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     aria-label={title
       ? `${title} overlay - click or press Enter/Space to close`
       : 'Drawer overlay - press Enter/Space or click to close'}
-    on:click={handleBackdropClick}
+    onclick={handleBackdropClick}
     onkeydown={handleBackdropKey}
   >
     <div
@@ -65,7 +65,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
       aria-label={title ? title : 'Drawer'}
       tabindex="0"
       bind:this={dialogEl}
-      on:click={e => e.stopPropagation()}
+      onclick={e => e.stopPropagation()}
       onkeydown={handleDialogKey}
     >
       <div class="drawer-header">
@@ -77,7 +77,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
             <p class="drawer-description">{description}</p>
           {/if}
         </div>
-        <button class="drawer-close" aria-label="Close drawer" on:click={handleClose}>
+        <button class="drawer-close" aria-label="Close drawer" onclick={handleClose}>
           <X size="24" />
         </button>
       </div>
@@ -91,7 +91,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
 <style>
   /* @unocss-include */
   .drawer-overlay {
-    position: fixed;
+    position fixed;
     top: 0,
     left: 0;
     right: 0,
@@ -105,9 +105,9 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     background: white;
     border-radius: 8px;
     padding: 20px;
-    position: fixed; /* Crucial for drawer behavior */
+    position fixed; /* Crucial for drawer behavior */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transition: transform 0.3s ease-out; /* Animation for sliding in/out */
+    transition transform 0.3s ease-out; /* Animation for sliding in/out */
     overflow-y: auto; /* Allow content to scroll */
   }
 

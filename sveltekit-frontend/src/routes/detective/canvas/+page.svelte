@@ -110,12 +110,12 @@
     </div>
     <div class="flex gap-2">
       <button
-        on:click={addEvidenceItem}
+        onclick={addEvidenceItem}
         class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
       >
         Add Evidence
       </button>
-      <button on:click={clearCanvas} class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors">
+      <button onclick={clearCanvas} class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors">
         Clear Canvas
       </button>
       <a
@@ -207,7 +207,7 @@
     <div class="bg-slate-800 p-8 rounded border border-slate-700 text-center">
       <p class="text-gray-400 mb-4">No evidence items on canvas</p>
       <button
-        on:click={addEvidenceItem}
+        onclick={addEvidenceItem}
         class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
       >
         Add Your First Evidence Item

@@ -3,7 +3,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!--
   Graph Explorer Component - Unified Architecture Demo
-  Demonstrates the complete integration:
+  Demonstrates the complete integration
   Neo4j → Embeddings → Quantization → WebGPU Textures → LokiJS → IndexedDB → Reactive UI
 -->
 <script lang="ts">
@@ -111,7 +111,7 @@ https://svelte.dev/e/js_parse_error -->
         metadata: {
           legalContext: {
             documentType: 'contract',
-            jurisdiction: 'california',
+            jurisdiction 'california',
             practiceArea: 'corporate',
           }
         },
@@ -121,7 +121,7 @@ https://svelte.dev/e/js_parse_error -->
       await db.addGraphNode({
         nodeId: `node_${Date.now()}`,
         label: 'Sample Legal Node',
-        position: {
+        position {
           x: Math.random() * viewport.width,
           y: Math.random() * viewport.height,
         },
@@ -130,7 +130,7 @@ https://svelte.dev/e/js_parse_error -->
         varianceMatrix: Array.from({ length: 16 }, () => Math.random() * 0.1),
         metadata: {
           documentType: 'contract',
-          jurisdiction: 'california',
+          jurisdiction 'california',
           practiceArea: 'corporate',
           confidence: 0.85,
           lastUpdated: new Date(),
@@ -249,7 +249,7 @@ https://svelte.dev/e/js_parse_error -->
         search: searchStats,
         gpu: gpuStats,
         storage: storageStats,
-        quantization: quantizationStats,
+        quantization quantizationStats,
       }
     } catch (error) {
       console.error('Failed to update performance stats:', error);
@@ -322,28 +322,28 @@ https://svelte.dev/e/js_parse_error -->
         class="search-input"
         disabled={isSearching}
       />
-      <button on:click={handleSearch} disabled={isSearching || !searchQuery.trim()} class="search-btn">
+      <button onclick={handleSearch} disabled={isSearching || !searchQuery.trim()} class="search-btn">
         {isSearching ? 'Searching...' : 'Search'}
       </button>
     </div>
     <div class="actions">
-      <button on:click={addSampleData} class="action-btn"> Add Sample Data </button>
-      <button on:click={() => updatePerformanceStats()} class="action-btn"> Refresh Stats </button>
-      <button on:click={clearAllData} class="action-btn danger"> Clear All </button>
+      <button onclick={addSampleData} class="action-btn"> Add Sample Data </button>
+      <button onclick={() => updatePerformanceStats()} class="action-btn"> Refresh Stats </button>
+      <button onclick={clearAllData} class="action-btn danger"> Clear All </button>
     </div>
   </header>
   <main class="main-content">
     <!-- Graph Visualization Canvas -->
     <section class="graph-section">
       <h3>Interactive Graph ({nodes.length} nodes)</h3>
-      <canvas bind:this={canvas} on:click={handleCanvasInteraction} width="800" height="600" class="graph-canvas"
+      <canvas bind:this={canvas} onclick={handleCanvasInteraction} width="800" height="600" class="graph-canvas"
       ></canvas>
       {#if selectedNode}
         <div class="node-details">
           <h4>Selected Node: {selectedNode.label}</h4>
           <p>Confidence: {(+(selectedNode.metadata?.confidence ?? 0) * 100).toFixed(1)}%</p>
           <p>Type: {selectedNode.metadata?.documentType || 'Unknown'}</p>
-          <p>Position: ({selectedNode.position?.x?.toFixed(0)}, {selectedNode.position?.y?.toFixed(0)})</p>
+          <p>Position ({selectedNode.position?.x?.toFixed(0)}, {selectedNode.position?.y?.toFixed(0)})</p>
         </div>
       {/if}
     </section>
@@ -406,7 +406,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="stat-group">
           <h4>Vector Quantization</h4>
           <p>Vectors: {performanceStats.quantization.totalVectors}</p>
-          <p>Compression: {performanceStats.quantization.compressionRatio.toFixed(1)}x</p>
+          <p>Compression {performanceStats.quantization.compressionRatio.toFixed(1)}x</p>
           <p>Memory Saved: {(performanceStats.quantization.memoryReduction * 100).toFixed(1)}%</p>
         </div>
       {/if}
@@ -522,7 +522,7 @@ https://svelte.dev/e/js_parse_error -->
   .main-content {
     grid-area: mai;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
     overflow: auto;
   }
@@ -630,7 +630,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .chat-messages {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
     margin-top: 1rem;
   }

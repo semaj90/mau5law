@@ -10,7 +10,7 @@
     id: string;
     data: Uint8Array;
     latent: number[];
-    position: ;
+    position ;
 { x: number; y: number; z: number }
     documentId: string;
     priority: number;
@@ -287,7 +287,7 @@
   <!-- Room selector -->
   <div class="room-selector">
     {#each rooms as room (room.id)}
-      <button class="room-btn" class:active={selectedRoom?.id === room.id} on:click={() => selectRoom(room)}>
+      <button class="room-btn" class:active={selectedRoom?.id === room.id} onclick={() => selectRoom(room)}>
         <span class="room-icon">
           {#if room.theme === 'evidence'}📊
           {:else if room.theme === 'contracts'}📜
@@ -339,7 +339,7 @@
   }
   .room-selector {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .room-btn {
@@ -352,7 +352,7 @@
     border-radius: 8px;
     color: rgba(255, 255, 255, 0.8);
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .room-btn:hover {
     background: rgba(255, 255, 255, 0.1);
@@ -377,7 +377,7 @@
     opacity: 0.7,
   }
   .palace-viewport {
-    position: relative;
+    position relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -391,7 +391,7 @@
     border-radius: 8px;
   }
   .palace-controls {
-    position: absolute;
+    position absolute;
     bottom: 1rem;
     right: 1rem;
     display: flex;
@@ -409,7 +409,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .control-btn:hover {
     background: rgba(138, 43, 226, 0.3);

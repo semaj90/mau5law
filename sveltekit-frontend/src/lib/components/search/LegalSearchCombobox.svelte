@@ -12,7 +12,7 @@
   import { Search, FileText, Scale, Shield, Users, Zap, Clock } from 'lucide-svelte';
   import { debounce } from 'lodash-es';
   import { cn } from '$lib/utils/cn';
-  // Root element reference to dispatch DOM CustomEvents (parent can listen with on:select)
+  // Root element reference to dispatch DOM CustomEvents (parent can listen with onselect)
   let rootEl: HTMLElement | null = null;
 
   // Types
@@ -133,7 +133,7 @@
           score: typeof r.score === 'number' ? r.score : (typeof r.similarity === 'number' ? r.similarity : 0),
           metadata: {
             date: r.createdAt ?? r.date,
-            jurisdiction: r.jurisdiction,
+            jurisdiction r.jurisdiction,
             status: r.status,
             confidentiality: r.confidentialityLevel,
             caseId: r.caseId,
@@ -190,7 +190,7 @@
         localStorage.setItem('legalSearchHistory', JSON.stringify(recentSearches));
       } catch { /* ignore */ }
     }
-    // forward event via DOM CustomEvent so parent can listen with on:select
+    // forward event via DOM CustomEvent so parent can listen with onselect
     if (rootEl) {
       rootEl.dispatchEvent(new CustomEvent('select', { detail: result, bubbles: true }));
     }
@@ -225,7 +225,7 @@
     type="text"
     placeholder={placeholder}
     value={inputValue}
-    on:input={handleInputChange}
+    oninput={handleInputChange}
     disabled={disabled}
     class="w-full rounded-lg border border-gray-200 bg-white py-2 pl-11 pr-10 text-sm focus:outline-none"
     aria-autocomplete="list"
@@ -248,7 +248,7 @@
     <button
       type="button"
       class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-      on:click={handleClear}
+      onclick={handleClear}
       aria-label="Clear search"
       title="Clear search"
     >
@@ -314,7 +314,7 @@
 -                <ComboboxItem
 -                  value={search}
 -                  class="flex items-center rounded-md px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
--                  on:click={() => { inputValue = search; performSearch(search); }}
+-                  onclick={() => { inputValue = search; performSearch(search); }}
 -                >
 -                  <Search class="mr-3 h-4 w-4 text-gray-400" />
 -                  {search}
@@ -324,8 +324,8 @@
 +                  role="option"
 +                  tabindex="0"
 +                  class="flex items-center rounded-md px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
-+                  on:click={() => { inputValue = search; performSearch(search); }}
-+                  on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); inputValue = search; performSearch(search); } }}
++                  onclick={() => { inputValue = search; performSearch(search); }}
++                  onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); inputValue = search; performSearch(search); } }}
 +                >
 +                  <Search class="mr-3 h-4 w-4 text-gray-400" />
 +                  {search}
@@ -345,7 +345,7 @@
 -                <ComboboxItem
 -                  value={suggestion}
 -                  class="flex items-center rounded-md px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
--                  on:click={() => { inputValue = suggestion; performSearch(suggestion); }}
+-                  onclick={() => { inputValue = suggestion; performSearch(suggestion); }}
 -                >
 -                  <Zap class="mr-3 h-4 w-4 text-purple-400" />
 -                  {suggestion}
@@ -355,8 +355,8 @@
 +                  role="option"
 +                  tabindex="0"
 +                  class="flex items-center rounded-md px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer"
-+                  on:click={() => { inputValue = suggestion; performSearch(suggestion); }}
-+                  on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); inputValue = suggestion; performSearch(suggestion); } }}
++                  onclick={() => { inputValue = suggestion; performSearch(suggestion); }}
++                  onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); inputValue = suggestion; performSearch(suggestion); } }}
 +                >
 +                  <Zap class="mr-3 h-4 w-4 text-purple-400" />
 +                  {suggestion}
@@ -374,8 +374,8 @@
               "flex items-start space-x-3 rounded-md p-3 text-sm",
               "hover:bg-gray-50 cursor-pointer transition-colors"
             )}
-            on:click={() => handleSelect(result)}
-            on:keydown={(e) => handleItemKeydown(e, result)}
+            onclick={() => handleSelect(result)}
+            onkeydown={(e) => handleItemKeydown(e, result)}
           >
             <!-- Type Icon -->
             <div class={cn("flex-shrink-0 mt-1", typeColors[result.type] || 'text-gray-500')}>

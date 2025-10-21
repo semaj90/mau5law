@@ -31,13 +31,13 @@ https://svelte.dev/e/js_parse_error -->
   // Sample graph data for demonstration
   const sampleGraphData = {
     nodes: [
-      { id: 'legal-case-1', label: 'Smith v. Jones', type: 'case', position: ;
+      { id: 'legal-case-1', label: 'Smith v. Jones', type: 'case', position ;
 { x: 100, y: 100 }, metadata: { caseType: 'contract', importance: 0.8 }, embedding: new Float32Array([0.1, 0.2, 0.3, 0.4]) },
-      { id: 'statute-1', label: '15 USC § 1', type: 'statute', position: ;
-{ x: 200, y: 150 }, metadata: { jurisdiction: 'federal', year: 1990 }, embedding: new Float32Array([0.2, 0.3, 0.4, 0.5]) },
-      { id: 'regulation-1', label: '17 CFR 240.10b-5', type: 'regulation', position: ;
+      { id: 'statute-1', label: '15 USC § 1', type: 'statute', position ;
+{ x: 200, y: 150 }, metadata: { jurisdiction 'federal', year: 1990 }, embedding: new Float32Array([0.2, 0.3, 0.4, 0.5]) },
+      { id: 'regulation-1', label: '17 CFR 240.10b-5', type: 'regulation', position ;
 { x: 150, y: 200 }, metadata: { agency: 'SEC', type: 'rule' }, embedding: new Float32Array([0.3, 0.4, 0.5, 0.6]) },
-      { id: 'precedent-1', label: 'Brown v. Board', type: 'precedent', position: ;
+      { id: 'precedent-1', label: 'Brown v. Board', type: 'precedent', position ;
 { x: 250, y: 120 }, metadata: { impact: 'landmark', year: 1954 }, embedding: new Float32Array([0.4, 0.5, 0.6, 0.7]) }
     ],
     edges: [
@@ -105,7 +105,7 @@ https://svelte.dev/e/js_parse_error -->
       const algorithm = algorithms[i];
       try {
         const cacheKey = `graph_vis_${algorithm}_${JSON.stringify(slice)(0, 100)}`;
-        let visualization: GraphVisualizationResult | null = null;
+        let visualization GraphVisualizationResult | null = null;
         // Try cache first if enabled
         if (cacheResults && multiLayerCache) {
           visualization = await multiLayerCache.get('visualization', cacheKey);
@@ -137,7 +137,7 @@ https://svelte.dev/e/js_parse_error -->
           results.push(visualization);
         }
       } catch (error) {
-        console.error(`Failed to generate ${algorithm} visualization:`, error);
+        console.error(`Failed to generate ${algorithm} visualization`, error);
       }
       generationProgress.set((i + 1) / algorithms.length * 100);
     }
@@ -172,7 +172,7 @@ https://svelte.dev/e/js_parse_error -->
         }
       }
     } catch (error) {
-      console.error(`Failed to regenerate ${algorithm} visualization:`, error);
+      console.error(`Failed to regenerate ${algorithm} visualization`, error);
     } finally {
       isGenerating.set(false);
     }
@@ -189,7 +189,7 @@ https://svelte.dev/e/js_parse_error -->
       }
     });
   }
-  function openVisualization(visualization: GraphVisualizationResult) {
+  function openVisualization(visualization GraphVisualizationResult) {
     selectedVisualization.set(visualization);
     showModal.set(true);
   }
@@ -197,7 +197,7 @@ https://svelte.dev/e/js_parse_error -->
     showModal.set(false);
     selectedVisualization.set(null);
   }
-  function getVisualizationPreview(visualization: GraphVisualizationResult): string {
+  function getVisualizationPreview(visualization GraphVisualizationResult): string {
     if (visualization.outputFormat === 'base64' && visualization.imageData) {
       return `data:image/png;base64,${visualization.imageData}`;
     }
@@ -250,7 +250,7 @@ https://svelte.dev/e/js_parse_error -->
       <button class="nes-btn"
         variant="legal"
         disabled={$isGenerating}
-        on:click={() => generateVisualizationsForAllAlgorithms()}
+        onclick={() => generateVisualizationsForAllAlgorithms()}
         class="bits-btn generate-btn"
       >
         {$isGenerating ? 'Generating...' : 'Generate All'}
@@ -269,7 +269,7 @@ https://svelte.dev/e/js_parse_error -->
     <p class="nes-text is-warning">
       🗄️ Cache: {$cachingStats.hits} hits, {$cachingStats.misses} misses
       {#if $cachingStats.compressionRatio > 0}
-        | Compression: {($cachingStats.compressionRatio * 100).toFixed(1)}%
+        | Compression {($cachingStats.compressionRatio * 100).toFixed(1)}%
       {/if}
     </p>
   </div>
@@ -279,7 +279,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="gallery-item nes-container is-rounded" data-algorithm={visualization.metadata.algorithm}>
         <!-- Preview Image -->
         <div class="item-preview" role="button" tabindex="0"
-                on:click={() => openVisualization(visualization)}>
+                onclick={() => openVisualization(visualization)}>
           <img
             src={getVisualizationPreview(visualization)}
             alt="Graph visualization using {visualization.metadata.algorithm}"
@@ -302,7 +302,7 @@ https://svelte.dev/e/js_parse_error -->
           <Button class="bits-btn"
             variant="evidence"
             size="small"
-            on:click={() =>
+            onclick={() =>
 regenerateVisualization(visualization.metadata.algorithm)}
             disabled={$isGenerating}
           >
@@ -328,7 +328,7 @@ regenerateVisualization(visualization.metadata.algorithm)}
       <p class="nes-text is-disabled">No visualizations generated yet.</p>
       <Button class="bits-btn"
         variant="legal"
-        on:click={() =>
+        onclick={() =>
 generateVisualizationsForAllAlgorithms()}
       >
         Generate Visualizations
@@ -347,10 +347,10 @@ generateVisualizationsForAllAlgorithms()}
 <!-- Modal for Full-Size Viewing -->
 {#if $showModal && $selectedVisualization}
   <div class="modal-overlay" role="button" tabindex="0"
-                on:click={closeModal}>
+                onclick={closeModal}>
     <div class="modal-content nes-container is-dark" role="button" tabindex="0"
-                on:click={(e) => e.stopPropagation()}>
-      <button class="modal-close nes-btn is-error" on:click={closeModal}>×
+                onclick={(e) => e.stopPropagation()}>
+      <button class="modal-close nes-btn is-error" onclick={closeModal}>×
 </Button>
       <div class="modal-header">
         <h3 class="nes-text is-primary">
@@ -387,7 +387,7 @@ generateVisualizationsForAllAlgorithms()}
           </div>
           {#if $selectedVisualization.metadata.compressionRatio}
             <div class="metadata-item">
-              <span class="nes-text is-warning">Compression:</span>
+              <span class="nes-text is-warning">Compression</span>
               <span class="nes-text is-success">{($selectedVisualization.metadata.compressionRatio * 100).toFixed(1)}%</span>
             </div>
           {/if}
@@ -443,7 +443,7 @@ generateVisualizationsForAllAlgorithms()}
     border: 2px solid #4a90e2;
     border-radius: 8px;
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition transform 0.3s ease, box-shadow 0.3s ease;
   }
   .gallery-item:hover {
     transform: translateY(-4px);
@@ -462,7 +462,7 @@ generateVisualizationsForAllAlgorithms()}
     border-color: #8e44ad;
   }
   .item-preview {
-    position: relative;
+    position relative;
     cursor: pointer;
     overflow: hidden;
   }
@@ -470,13 +470,13 @@ generateVisualizationsForAllAlgorithms()}
     width: 100%;
     height: 200px;
     object-fit: cover;
-    transition: transform 0.3s ease;
+    transition transform 0.3s ease;
   }
   .item-preview:hover .preview-image {
     transform: scale(1.05);
   }
   .item-overlay {
-    position: absolute;
+    position absolute;
     bottom: 0,
     left: 0;
     right: 0,
@@ -484,7 +484,7 @@ generateVisualizationsForAllAlgorithms()}
     color: white;
     padding: 1rem;
     transform: translateY(100%);
-    transition: transform 0.3s ease;
+    transition transform 0.3s ease;
   }
   .item-preview:hover .item-overlay {
     transform: translateY(0);
@@ -507,7 +507,7 @@ generateVisualizationsForAllAlgorithms()}
   }
   .item-metrics {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
     font-size: 0.8rem;
   }
@@ -518,7 +518,7 @@ generateVisualizationsForAllAlgorithms()}
   }
   /* Modal Styles */
   .modal-overlay {
-    position: fixed;
+    position fixed;
 d;
     top: 0,
     left: 0;
@@ -535,12 +535,12 @@ d;
     max-width: 90vw;
     max-height: 90vh;
     overflow: auto;
-    position: relative;
+    position relative;
     background: #212529;
     border: 2px solid #4a90e2;
   }
   .modal-close {
-    position: absolute;
+    position absolute;
     top: 1rem;
     right: 1rem;
     z-index: 1001,
@@ -581,7 +581,7 @@ d;
   /* Responsive Design */
   @media (max-width: 768px) {
     .gallery-header {
-      flex-direction: column;
+      flex-direction column;
       align-items: stretch;
     }
     .header-controls {
@@ -604,6 +604,6 @@ d;
     50% { opacity: 1, }
   }
   .gallery-item:has(.generate-btn:disabled) {,
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
 </style>

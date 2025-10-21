@@ -53,7 +53,7 @@
   <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet" />
 </svelte:head>
-<button type="button" class={buttonClasses} on:click={openModal}>
+<button type="button" class={buttonClasses} onclick={openModal}>
   {#if icon}{icon}
   {/if}{text}
 </button>
@@ -71,7 +71,7 @@
   }
   /* Button hover effects */
   :global(.nes-btn) {
-    transition: transform 0.1s ease;
+    transition transform 0.1s ease;
   }
   :global($1) {
     transform: scale(1.02);

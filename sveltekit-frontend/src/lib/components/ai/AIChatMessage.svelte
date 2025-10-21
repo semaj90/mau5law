@@ -121,7 +121,7 @@
       <button
         type="button"
         class="action-btn"
-        on:click={() => copyToClipboard()}
+        onclick={() => copyToClipboard()}
         title="Copy message"
         aria-label="Copy message to clipboard"
       >
@@ -141,7 +141,7 @@
         <button
           type="button"
           class="sources-toggle"
-          on:click={() => (isSourcesExpanded = !isSourcesExpanded)}
+          onclick={() => (isSourcesExpanded = !isSourcesExpanded)}
           aria-expanded={isSourcesExpanded}
           aria-label="Toggle sources visibility"
         >
@@ -159,7 +159,7 @@
           Sources ({message.sources.length})
         </button>
         {#if isSourcesExpanded}
-          <div class="sources-list" transition:slide={{ duration: 200 }}>
+          <div class="sources-list" transitionslide={{ duration 200 }}>
             {#each message.sources as source (source.id)}
               <div class="source-item">
                 <div class="source-header">
@@ -181,7 +181,7 @@
         <button
           type="button"
           class="metadata-toggle"
-          on:click={() => (isMetadataExpanded = !isMetadataExpanded)}
+          onclick={() => (isMetadataExpanded = !isMetadataExpanded)}
           aria-expanded={isMetadataExpanded}
           aria-label="Toggle metadata visibility"
         >
@@ -199,7 +199,7 @@
           Details
         </button>
         {#if isMetadataExpanded}
-          <div class="metadata-content" transition:slide={{ duration: 200 }}>
+          <div class="metadata-content" transitionslide={{ duration 200 }}>
             <div class="metadata-item">
               <span class="label">Model:</span>
               <span class="value">{message.metadata.model}</span>
@@ -301,7 +301,7 @@
     border-radius: 4px;
     color: var(--text-muted, #94a3b8);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .action-btn:hover {
     background: var(--bg-hover, rgba(0, 0, 0, 0.05));
@@ -339,7 +339,7 @@
     font-size: 0.875rem;
     color: var(--text-secondary, #64748b);
     cursor: pointer;
-    transition: color 0.2s ease;
+    transition color 0.2s ease;
   }
   .sources-toggle:hover,
   .metadata-toggle:hover {
@@ -347,7 +347,7 @@
   }
   .sources-toggle svg,
   .metadata-toggle svg {
-    transition: transform 0.2s ease;
+    transition transform 0.2s ease;
   }
   .sources-toggle svg.rotated,
   .metadata-toggle svg.rotated {

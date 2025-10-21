@@ -7,7 +7,7 @@
   interface SidebarItem {
     id: string;
     label: string;
-    icon: string;
+    icon string;
     href?: string;
     badge?: string | number;
     disabled?: boolean;
@@ -53,19 +53,19 @@
   const themeClasses = {
     default: {
       sidebar: 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100',
-      homeButton: 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300',
+      homeButton 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300',
       item: 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300',
       activeItem: 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-r-2 border-blue-600 dark:border-blue-400',
     },
     legal: {
       sidebar: 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100',
-      homeButton: 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300',
+      homeButton 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300',
       item: 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300',
       activeItem: 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 border-r-2 border-indigo-600 dark:border-indigo-400',
     },
     gaming: {
       sidebar: 'bg-black border-green-400/30 text-green-400 shadow-[0_0_20px_rgba(0,255,65,0.1)]',
-      homeButton: 'hover:bg-green-400/10 text-green-400 hover:shadow-[0_0_15px_rgba(0,255,65,0.3)]',
+      homeButton 'hover:bg-green-400/10 text-green-400 hover:shadow-[0_0_15px_rgba(0,255,65,0.3)]',
       item: 'hover:bg-green-400/10 text-green-400 hover:shadow-[0_0_10px_rgba(0,255,65,0.2)]',
       activeItem: 'bg-green-400/20 text-green-300 border-r-2 border-green-400 shadow-[0_0_15px_rgba(0,255,65,0.4)]',
     }
@@ -106,8 +106,8 @@
 {#if overlay && isExpanded && backdrop}
   <div
     class="fixed inset-0 bg-black/50 z-30 lg:hidden"
-    on:click={toggleSidebar}
-    transition:fade={{ duration: 200 }}
+    onclick={toggleSidebar}
+    transitionfade={{ duration 200 }}
   ></div>
 {/if}
 <!-- Sidebar Container -->
@@ -127,7 +127,7 @@
   <!-- Home Button (Trigger) -->
   <div class="p-4">
     <button
-      on:click={handleHomeClick}
+      onclick={handleHomeClick}
       class={`
         w-full flex items-center justify-center rounded-lg p-3
         transition-all duration-200 group relative
@@ -149,7 +149,7 @@
       {#if isExpanded}
         <span
           class="ml-3 font-medium whitespace-nowrap"
-          transition:fly={{ x: -20, duration: 200, delay: 100 }}
+          transitionfly={{ x: -20, duration 200, delay: 100 }}
         >
           {homeLabel}
         </span>
@@ -172,7 +172,7 @@
           <li>
             <!-- Main Navigation Item -->
             <button
-              on:click={() => handleItemClick(item)}
+              onclick={() => handleItemClick(item)}
               disabled={item.disabled}
               class={`
                 w-full flex items-center rounded-lg p-3
@@ -196,7 +196,7 @@
               {#if isExpanded}
                 <div
                   class="ml-3 flex-1 flex items-center justify-between min-w-0";
-                  transition:fly={{ x: -20, duration: 200, delay: 50 }}
+                  transitionfly={{ x: -20, duration 200, delay: 50 }}
                 >
                   <span class="font-medium truncate">
                     {item.label}
@@ -241,12 +241,12 @@
             {#if isExpanded && item.children && item.children.length > 0}
               <ul
                 class="mt-2 ml-6 space-y-1 border-l border-gray-200 dark: border-gray-700 pl-4";
-                transition:fly={{ x: -10, duration: 200, delay: 100 }}
+                transitionfly={{ x: -10, duration 200, delay: 100 }}
               >
                 {#each item.children as child (child.id)}
                   <li>
                     <button
-                      on:click={() => handleItemClick(child)}
+                      onclick={() => handleItemClick(child)}
                       disabled={child.disabled}
                       class={`
                         w-full flex items-center rounded-md p-2 text-sm
@@ -288,7 +288,7 @@
   {#if !overlay}
     <div class="p-4 border-t border-gray-200 dark:border-gray-700">
       <button
-        on:click={toggleSidebar}
+        onclick={toggleSidebar}
         class={`
           w-full flex items-center justify-center rounded-lg p-2
           transition-all duration-200
@@ -306,7 +306,7 @@
         {#if isExpanded}
           <span
             class="ml-2 text-sm font-medium"
-            transition:fly={{ x: -20, duration: 200, delay: 50 }}
+            transitionfly={{ x: -20, duration 200, delay: 50 }}
           >
             {isCollapsed ? 'Expand' : 'Collapse'}
           </span>
@@ -322,7 +322,7 @@
   }
   /* Smooth transitions for all states */
   button {
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
   /* Custom scrollbar for navigation */
   nav {

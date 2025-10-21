@@ -114,7 +114,7 @@ https://svelte.dev/e/js_parse_error -->
             variant="ghost"
             size="sm"
             class="space-y-4 bits-btn bits-btn"
-            on:click={() => copyToClipboard()}
+            onclick={() => copyToClipboard()}
             title="Copy message"
           >
             <Copy class="space-y-4" />
@@ -124,7 +124,7 @@ https://svelte.dev/e/js_parse_error -->
             variant="ghost"
             size="sm"
             class="space-y-4 bits-btn bits-btn"
-            on:click={() => toggleSaved()}
+            onclick={() => toggleSaved()}
             title={message.saved ? 'Remove from saved' : 'Save message'}
           >
             {#if message.saved}

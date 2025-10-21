@@ -54,7 +54,7 @@
     aria-label="Search"
   />
   {#if value}
-    <button class="clear-button" on:click={clearValue} aria-label="Clear search" type="button">
+    <button class="clear-button" onclick={clearValue} aria-label="Clear search" type="button">
       <X size={16} />
     </button>
   {/if}
@@ -63,13 +63,13 @@
 <style>
   /* @unocss-include */
   .search-input-container {
-    position: relative;
+    position relative;
     display: flex;
     align-items: center;
     background: var(--bg-primary);
     border: 1px solid var(--border-light);
     border-radius: 8px;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     min-height: 40px;
   }
   .search-input-container:hover {
@@ -110,13 +110,13 @@
     cursor: pointer;
     color: var(--text-muted);
     border-radius: 4px;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
-  .clear-button:hover {
+  .clear-buttonhover {
     color: var(--text-primary);
     background: var(--bg-tertiary);
   }
-  .clear-button:active {
+  .clear-buttonactive {
     transform: scale(0.95);
   }
 </style>

@@ -44,7 +44,7 @@
   let wsManager: DetectiveWebSocketManager | null = null;
   let isConnectedToCollaboration = $state(false);
   let collaborativeUsers = $state<CollaborativeUser[]>([]);
-  let collaborationStats = $state({ connectedUsers: 0, typingUsers: 0, focusDistribution: { evidence: 0, connections: 0, analysis: 0 } });
+  let collaborationStats = $state({ connectedUsers: 0, typingUsers: 0, focusDistribution { evidence: 0, connections: 0, analysis: 0 } });
   // Typing behavior element binding
   let typingElement: HTMLTextAreaElement;
   // Reactive derived values
@@ -364,10 +364,10 @@
         rows="8"
       ></textarea>
       <div class="input-actions">
-        <button type="button" on:click={generateConnectionMap} disabled={isGeneratingMap}>
+        <button type="button" onclick={generateConnectionMap} disabled={isGeneratingMap}>
           {isGeneratingMap ? 'Generating...' : 'Generate Connection Map'}
         </button>
-        <button type="button" on:click={clearInput}>Clear</button>
+        <button type="button" onclick={clearInput}>Clear</button>
       </div>
     </section>
     <!-- Contextual prompts display -->
@@ -379,7 +379,7 @@
             <button
               type="button"
               class="prompt-button"
-              on:click={() => selectContextualPrompt(prompt)}
+              onclick={() => selectContextualPrompt(prompt)}
             >
               {prompt}
             </button>
@@ -442,7 +442,7 @@
 <style>
   .contextual-detective-board {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     height: 100vh;
     background: #f8fafc;
     font-family: system-ui, -apple-system, sans-serif;
@@ -472,7 +472,7 @@
   }
   .metric {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 0.25rem;
   }
@@ -495,7 +495,7 @@
   .metric.collaboration-active .value { color: #059669, }
   .metric.typing-indicator .value {
     color: #059669;
-    animation: pulse 1.5s ease-in-out infinite;
+    animation pulse 1.5s ease-in-out infinite;
   }
   @keyframes pulse {
     0%, 100% { opacity: 1, }
@@ -506,7 +506,7 @@
     padding: 2rem;
     overflow-y: auto;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 2rem;
   }
   .input-section {
@@ -533,7 +533,7 @@
     font-weight: 500,
     color: #64748b;
     background: #f1f5f9;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .typing-indicator.active {
     color: #059669;
@@ -565,24 +565,24 @@
     border-radius: 0.375rem;
     font-weight: 500,
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
-  .input-actions button:first-child {
+  .input-actions buttonfirst-child {
     background: #3b82f6;
     color: white;
   }
-  .input-actions button:first-child:hover:not(:disabled) {,
+  .input-actions buttonfirst-child:hover:not(:disabled) {,
     background: #2563eb;
   }
-  .input-actions button:first-child:disabled {
+  .input-actions buttonfirst-child:disabled {
     background: #9ca3af;
     cursor: not-allowed;
   }
-  .input-actions button:last-child {
+  .input-actions buttonlast-child {
     background: #f3f4f6;
     color: #374151;
   }
-  .input-actions button:last-child:hover {
+  .input-actions buttonlast-child:hover {
     background: #e5e7eb;
   }
   .contextual-prompts {
@@ -609,9 +609,9 @@
     border-radius: 1rem;
     font-size: 0.875rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
-  .prompt-button:hover {
+  .prompt-buttonhover {
     background: #0ea5e9;
     color: white;
   }

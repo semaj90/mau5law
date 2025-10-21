@@ -14,28 +14,28 @@
       message: 'Cannot find module "@/components/NonExistentComponent"',
       file: 'src/routes/demo/+page.svelte',
       line: 42,
-      suggestion: 'Check if the import path is correct and the module exists.',
+      suggestion 'Check if the import path is correct and the module exists.',
     },
     {
       level: 'warn' as const,
       message: 'Unused variable "unusedVar" in function scope',
       file: 'src/lib/utils/demo-utils.ts',
       line: 15,
-      suggestion: 'Remove unused variables or prefix with underscore if intentionally unused.',
+      suggestion 'Remove unused variables or prefix with underscore if intentionally unused.',
     },
     {
       level: 'error' as const,
       message: 'Type error: Property "nonExistentProp" does not exist on type',
       file: 'src/lib/components/DemoComponent.svelte',
       line: 28,
-      suggestion: 'Check TypeScript types and ensure the property exists on the object.',
+      suggestion 'Check TypeScript types and ensure the property exists on the object.',
     },
     {
       level: 'info' as const,
       message: 'HMR: File changed, hot reloading...',
       file: 'src/app.html',
       line: 1,
-      suggestion: 'File change detected. No action needed.',
+      suggestion 'File change detected. No action needed.',
     }
   ];
   function loadErrorLog() {
@@ -133,19 +133,19 @@
       <div class="flex flex-wrap gap-4">
         <button
           class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-          on:click={generateDemoError}
+          onclick={generateDemoError}
         >
           🎲 Generate Demo Error
         </button>
         <button
           class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
-          on:click={loadErrorLog}
+          onclick={loadErrorLog}
         >
           🔄 Reload Error Log
         </button>
         <button
           class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
-          on:click={clearErrors}
+          onclick={clearErrors}
         >
           🧹 Clear Errors
         </button>
@@ -153,7 +153,7 @@
           class="px-4 py-2 {isWatching
             ? 'bg-yellow-600 hover:bg-yellow-700'
             : 'bg-purple-600 hover:bg-purple-700'} text-white rounded-md transition-colors"
-          on:click={isWatching ? stopWatching : startWatching}
+          onclick={isWatching ? stopWatching : startWatching}
         >
           {isWatching ? '⏹️ Stop Watching' : '👀 Start Watching'}
         </button>
@@ -243,7 +243,7 @@
                     {#if error.suggestion}
                       <div class="mt-2 p-2 bg-blue-50 border border-blue-200 rounded">
                         <p class="text-sm text-blue-700">
-                          💡 <strong>Suggestion:</strong>
+                          💡 <strong>Suggestion</strong>
                           {error.suggestion}
                         </p>
                       </div>

@@ -219,7 +219,7 @@
         addOutput('Cluster restart not implemented in terminal mode', 'error');
         break;
       default:
-        addOutput(`Unknown cluster action: ${action}`, 'error');
+        addOutput(`Unknown cluster action ${action}`, 'error');
     }
   }
   function clearTerminal() {
@@ -268,7 +268,7 @@
           <span>YoRHa Terminal</span>
         </div>
         <div class="yorha-terminal-controls">
-          <button class="yorha-terminal-control" on:click={() => clearTerminal()}>
+          <button class="yorha-terminal-control" onclick={() => clearTerminal()}>
             <RotateCcw size={14} />
           </button>
           <button class="yorha-terminal-control">
@@ -343,7 +343,7 @@
   .yorha-terminal-page {
     min-height: 100vh;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     background: transparent;
   }
   /* Page Header */
@@ -383,7 +383,7 @@
     border-radius: 8px;
     box-shadow: 0 0 20px rgba(255, 191, 0, 0.3);
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     overflow: hidden;
   }
   /* Terminal Header */
@@ -413,7 +413,7 @@
     border-radius: 4px;
     background: transparent;
     cursor: pointer;
-    transition: background-color 0.15s ease;
+    transition background-color 0.15s ease;
   }
   .yorha-terminal-control:hover {
     background: rgba(0, 0, 0, 0.12);
@@ -459,7 +459,7 @@
   .yorha-terminal-spinner {
     display: inline-block;
     transform-origin: center;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin-right: 0.5rem;
   }
   /* Terminal Input */
@@ -529,7 +529,7 @@
     .yorha-header-title h1 {
       font-size: 1.5rem;
       display: flex;
-      flex-direction: column;
+      flex-direction column;
       align-items: center;
     }
     .yorha-terminal-output {
@@ -544,3 +544,4 @@
     }
   }
 </style>
+

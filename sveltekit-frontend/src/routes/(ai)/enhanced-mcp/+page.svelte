@@ -293,8 +293,8 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     </div>
     <div class="action-buttons">
-      <button on:click={runSystemDiagnostics} class="diagnostic-button"> 🔬 Run System Diagnostics </button>
-      <button on:click={clearLogs} class="clear-logs-button"> 🧹 Clear Logs </button>
+      <button onclick={runSystemDiagnostics} class="diagnostic-button"> 🔬 Run System Diagnostics </button>
+      <button onclick={clearLogs} class="clear-logs-button"> 🧹 Clear Logs </button>
     </div>
   </div>
   <div class="main-integration">
@@ -417,7 +417,7 @@ https://svelte.dev/e/js_parse_error -->
     display: flex;
     align-items: center;
     gap: 1rem;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
   .status-card:hover {
@@ -463,7 +463,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .control-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .control-group label {
@@ -494,14 +494,14 @@ https://svelte.dev/e/js_parse_error -->
     color: white;
     font-weight: 500,
     cursor: pointer;
-    transition: all 0.2s;
+    transition all 0.2s;
     font-size: 0.875rem;
   }
   .clear-logs-button {
     background: linear-gradient(135deg, #6b7280, #4b5563);
   }
-  .diagnostic-button:hover,
-  .clear-logs-button:hover {
+  .diagnostic-buttonhover,
+  .clear-logs-buttonhover {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
   }
@@ -589,7 +589,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 8px;
     padding: 1.5rem;
     text-align: center;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
   .feature-card:hover {

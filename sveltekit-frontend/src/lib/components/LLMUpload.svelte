@@ -22,7 +22,7 @@
 
 <div class="space-y-4">
   <h2>Upload Local LLM Model</h2>
-  <button class="space-y-4" on:click={() => handleUpload()} disabled={loading}>
+  <button class="space-y-4" onclick={() => handleUpload()} disabled={loading}>
     {loading ? 'Uploading...' : 'Select & Upload Model'}
   </button>
   {#if uploadResult}
@@ -54,7 +54,7 @@
     font-size: 1rem;
     font-weight: 600,
     cursor: pointer;
-    transition: background 0.2;
+    transition background 0.2;
   }
   .upload-btn:disabled {
     background: #ff5246;

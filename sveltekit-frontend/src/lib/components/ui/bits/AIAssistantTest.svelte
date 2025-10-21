@@ -111,7 +111,7 @@
       <div class="space-y-2">
         <div class="flex items-center justify-between">
           <h3 class="font-semibold text-sm">AI Chat Messages Component</h3>
-          <Button variant="ghost" size="sm" on:click={clearMessages} class="text-xs">Clear Messages</Button>
+          <Button variant="ghost" size="sm" onclick={clearMessages} class="text-xs">Clear Messages</Button>
         </div>
         <div class="border rounded-lg p-4 max-h-96 overflow-y-auto space-y-3 bg-muted/20">
           {#if testMessages.length === 0}

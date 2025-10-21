@@ -144,7 +144,7 @@
         const notice = document.createElement('div');
         notice.innerHTML = '⚠️ failure default to mock';
         notice.style.cssText =
-          'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+          'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
         document.body.appendChild(notice);
         setTimeout(() => notice.remove(), 3000);
       }
@@ -208,18 +208,18 @@
   open={isOpen}
   title="🎯 Recommendation Engine"
   size="large"
-  on:close={() => {
+  onclose={() => {
     isOpen = false;
   }}
 >
   <div class="space-y-6">
     <!-- Tab Navigation -->
     <div class="flex space-x-2 p-1 bg-slate-800/50 rounded-lg border border-slate-600">
-      <!-- changed: use getTabClass and on:click -->
-      <button class={getTabClass('overview')} on:click={() => (activeTab = 'overview')}> 📊 Overview </button>
-      <button class={getTabClass('search')} on:click={() => (activeTab = 'search')}> 🔍 Search History </button>
-      <button class={getTabClass('work')} on:click={() => (activeTab = 'work')}> 💼 Work Activity </button>
-      <button class={getTabClass('ai')} on:click={() => (activeTab = 'ai')}> 🤖 AI Assistant </button>
+      <!-- changed: use getTabClass and onclick -->
+      <button class={getTabClass('overview')} onclick={() => (activeTab = 'overview')}> 📊 Overview </button>
+      <button class={getTabClass('search')} onclick={() => (activeTab = 'search')}> 🔍 Search History </button>
+      <button class={getTabClass('work')} onclick={() => (activeTab = 'work')}> 💼 Work Activity </button>
+      <button class={getTabClass('ai')} onclick={() => (activeTab = 'ai')}> 🤖 AI Assistant </button>
     </div>
     <!-- Overview Tab -->
     {#if activeTab === 'overview'}
@@ -261,21 +261,21 @@
               <button
                 type="button"
                 class="w-full text-left px-4 py-2 border border-slate-600 rounded text-slate-300 hover:bg-slate-700"
-                on:click={() => (showSearchModal = true)}
+                onclick={() => (showSearchModal = true)}
               >
                 🔍 View Search History
               </button>
               <button
                 type="button"
                 class="w-full text-left px-4 py-2 border border-slate-600 rounded text-slate-300 hover:bg-slate-700"
-                on:click={() => (showWorkModal = true)}
+                onclick={() => (showWorkModal = true)}
               >
                 💼 Work Activity
               </button>
               <button
                 type="button"
                 class="w-full text-left px-4 py-2 border border-slate-600 rounded text-slate-300 hover:bg-slate-700"
-                on:click={() => (showAIModal = true)}
+                onclick={() => (showAIModal = true)}
               >
                 🤖 AI Assistant
               </button>
@@ -334,7 +334,7 @@
             <button
               type="button"
               class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white"
-              on:click={() => (showSearchModal = true)}
+              onclick={() => (showSearchModal = true)}
             >
               Open Search Dashboard
             </button>
@@ -353,7 +353,7 @@
             <button
               type="button"
               class="px-4 py-2 rounded bg-green-600 hover:bg-green-700 text-white"
-              on:click={() => (showWorkModal = true)}
+              onclick={() => (showWorkModal = true)}
             >
               Open Work Dashboard
             </button>
@@ -372,7 +372,7 @@
             <button
               type="button"
               class="px-4 py-2 rounded bg-purple-600 hover:bg-purple-700 text-white"
-              on:click={() => (showAIModal = true)}
+              onclick={() => (showAIModal = true)}
             >
               Launch AI Assistant
             </button>
@@ -382,13 +382,13 @@
     {/if}
   </div>
   <div slot="footer" class="flex justify-between">
-    <button type="button" class="px-3 py-2 border border-slate-600 rounded text-slate-300" on:click={close}
+    <button type="button" class="px-3 py-2 border border-slate-600 rounded text-slate-300" onclick={close}
       >Close Dashboard</button
     >
     <button
       type="button"
       class="px-3 py-2 bg-slate-700 rounded text-white"
-      on:click={() => loadDashboardData()}
+      onclick={() => loadDashboardData()}
       disabled={stats.loading}
     >
       {stats.loading ? '⚡ Loading...' : '🔄 Refresh'}

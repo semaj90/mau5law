@@ -75,7 +75,7 @@ https://svelte.dev/e/js_parse_error -->
         keydown={e => e.key === 'Enter' && performSearch()}
       />
       <button
-        on:click={performSearch}
+        onclick={performSearch}
         disabled={isSearching}
         class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
       >
@@ -169,7 +169,7 @@ https://svelte.dev/e/js_parse_error -->
     <h3 class="font-medium mb-2">Quick API Tests</h3>
     <div class="flex gap-2 flex-wrap">
       <button
-        on:click={() =>
+        onclick={() =>
           fetch('/api/rag/status')
             .then(r => r.json())
             .then(console.log)}
@@ -178,7 +178,7 @@ https://svelte.dev/e/js_parse_error -->
         Test Status API
       </button>
       <button
-        on:click={() =>
+        onclick={() =>
           fetch('/api/ai/embeddings')
             .then(r => r.json())
             .then(console.log)}

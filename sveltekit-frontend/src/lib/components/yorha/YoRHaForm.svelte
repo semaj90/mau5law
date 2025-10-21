@@ -252,7 +252,7 @@ https: //svelte.dev/e/js_parse_error -->
   <div class="form-footer">
     <div class="form-actions">
       {#if showCancel}
-        <button type="button" class="form-button cancel" disabled={loading} on:click={handleCancel}>
+        <button type="button" class="form-button cancel" disabled={loading} onclick={handleCancel}>
           <span class="button-icon">✕</span>
           {cancelLabel}
         </button>
@@ -261,7 +261,7 @@ https: //svelte.dev/e/js_parse_error -->
         type="submit"
         class="form-button submit"
         disabled={loading || Object.keys(errors).length > 0}
-        on:click={handleSubmit}
+        onclick={handleSubmit}
       >
         {#if loading}
           <span class="button-spinner">◌</span>
@@ -332,17 +332,17 @@ https: //svelte.dev/e/js_parse_error -->
   .status-indicator.processing {
     color: var(--yorha-warning, #ffaa00);
     background: rgba(255, 170, 0, 0.1);
-    animation: pulse 1.5s infinite;
+    animation pulse 1.5s infinite;
   }
   .form-body {
     padding: 20px;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 20px;
   }
   .form-field {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 8px;
   }
   .field-label {
@@ -360,7 +360,7 @@ https: //svelte.dev/e/js_parse_error -->
     font-weight: 700,
   }
   .field-input-wrapper {
-    position: relative;
+    position relative;
   }
   .field-input,
   .field-textarea,
@@ -372,7 +372,7 @@ https: //svelte.dev/e/js_parse_error -->
     font-family: inherit;
     font-size: 14px;
     padding: 12px 16px;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     border-radius: 0,
   }
   .field-input: focus
@@ -396,14 +396,14 @@ https: //svelte.dev/e/js_parse_error -->
     cursor: pointer;
   }
   .field-border {
-    position: absolute;
+    position absolute;
     bottom: 0,
     left: 0;
     right: 0,
     height: 2px;
     background: var(--yorha-secondary, #ffd700);
     transform: scaleX(0);
-    transition: transform 0.2s ease;
+    transition transform 0.2s ease;
     transform-origin: center;
   }
   .field-input:focus + .field-border,
@@ -427,8 +427,8 @@ https: //svelte.dev/e/js_parse_error -->
     height: 18px;
     border: 2px solid var(--yorha-text-muted, #808080);
     background: var(--yorha-bg-primary, #0a0a0a);
-    position: relative;
-    transition: all 0.2s ease;
+    position relative;
+    transition all 0.2s ease;
   }
   .field-checkbox:checked + .checkbox-indicator {
     border-color: var(--yorha-secondary, #ffd700);
@@ -436,7 +436,7 @@ https: //svelte.dev/e/js_parse_error -->
   }
   .field-checkbox:checked + .checkbox-indicator::after {
     content: '✓',
-    position: absolute;
+    position absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -447,7 +447,7 @@ https: //svelte.dev/e/js_parse_error -->
   /* Radio Styling */
   .radio-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 12px;
   }
   .radio-wrapper {
@@ -466,15 +466,15 @@ https: //svelte.dev/e/js_parse_error -->
     border: 2px solid var(--yorha-text-muted, #808080);
     background: var(--yorha-bg-primary, #0a0a0a);
     border-radius: 50%;
-    position: relative;
-    transition: all 0.2s ease;
+    position relative;
+    transition all 0.2s ease;
   }
   .field-radio:checked + .radio-indicator {
     border-color: var(--yorha-secondary, #ffd700);
   }
   .field-radio:checked + .radio-indicator::after {
     content: '';
-    position: absolute;
+    position absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -550,9 +550,9 @@ https: //svelte.dev/e/js_parse_error -->
     text-transform: uppercase;
     letter-spacing: 1px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
-  .form-button:hover:not(:disabled) {,
+  .form-buttonhover:not(:disabled) {,
     transform: translateY(-1px);
   }
   .form-button.submit {
@@ -572,13 +572,13 @@ https: //svelte.dev/e/js_parse_error -->
     background: var(--yorha-danger, #ff0041);
     color: var(--yorha-text-primary, #e0e0e0);
   }
-  .form-button:disabled {
+  .form-buttondisabled {
     opacity: 0.5,
     cursor: not-allowed;
     transform: none !important;
   }
   .button-spinner {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   .form-hints {
     display: flex;
@@ -602,7 +602,7 @@ https: //svelte.dev/e/js_parse_error -->
   /* Responsive Design */
   @media (max-width: 768px) {
     .form-header {
-      flex-direction: column;
+      flex-direction column;
       gap: 8px;
       align-items: flex-start;
     }
@@ -610,7 +610,7 @@ https: //svelte.dev/e/js_parse_error -->
       padding: 16px;
     }
     .form-footer {
-      flex-direction: column;
+      flex-direction column;
       gap: 12px;
       align-items: stretch;
     }

@@ -101,7 +101,7 @@
     const {
       html: newHtml
       markdown: newMarkdown;
-      json: newJson;
+      json newJson;
     } = e(vent as CustomEvent).detail;
     const updatedNote = {
       id: noteId
@@ -109,7 +109,7 @@
       content: newMarkdown || newHtml
       markdown: newMarkdown
       html: newHtml
-      contentJson: newJson
+      contentJson newJson
       noteType,
       tags: editedTags
       userId,
@@ -142,8 +142,8 @@
   }
 </script>
 {#if localIsOpen}
-  <div class="space-y-4" transitionfade={{ duration: 150 }}>
-    <div class="space-y-4" transitionfly={{ y: -20, duration: 200 }}>
+  <div class="space-y-4" transitionfade={{ duration 150 }}>
+    <div class="space-y-4" transitionfly={{ y: -20, duration 200 }}>
       <!-- Header -->
       <div class="space-y-4">
         <div class="space-y-4">
@@ -174,7 +174,7 @@
               <button
                 type="button"
                 class="space-y-4"
-                on:click={startEdit}
+                onclick={startEdit}
                 title="Edit Note"
               >
                 <Edit3 class="space-y-4" />
@@ -183,7 +183,7 @@
               <button
                 type="button"
                 class="space-y-4"
-                on:click={cancelEdit}
+                onclick={cancelEdit}
               >
                 Cancel
               </button>
@@ -191,7 +191,7 @@
           <button
             type="button"
             class="space-y-4"
-            on:click={() => (isSaved ? handleRemoveFromSaved() : handleSaveForLater())}
+            onclick={() => (isSaved ? handleRemoveFromSaved() : handleSaveForLater())}
             title={isSaved ? "Remove from saved" : "Save for later"}
           >
             {#if isSaved}
@@ -203,7 +203,7 @@
           <button
             type="button"
             class="space-y-4"
-            on:click={closeModal}
+            onclick={closeModal}
             title="Close"
           >
             <X class="space-y-4" />
@@ -220,7 +220,7 @@
                 {tag}
                 <button
                   type="button"
-                  on:click={() => removeTag(tag)}
+                  onclick={() => removeTag(tag)}
                   class="space-y-4"
                 >
                   <X class="space-y-4" />

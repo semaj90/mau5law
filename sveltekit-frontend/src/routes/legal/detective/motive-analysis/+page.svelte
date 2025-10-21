@@ -42,7 +42,7 @@
     nesRAM: { used: 0, total: 2048 },
     chrROM: { used: 0, total: 8192 },
     glyphCache: { hitRate: 0, entries: 0 },
-    gpuUtilization: 0
+    gpuUtilization 0
   });
   interface SuspectProfile {
     id: string;
@@ -54,8 +54,8 @@
     overallThreatLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
     psychologicalMarkers: string[];
     behaviorAnalysis: {
-      aggression: number;
-      deception: number;
+      aggression number;
+      deception number;
       impulsivity: number;
       planning: number;
     }
@@ -70,7 +70,7 @@
   }
   interface MotiveAnalysis {
     category: 'FINANCIAL' | 'REVENGE' | 'JEALOUSY' | 'POWER' | 'FEAR' | 'MENTAL_HEALTH';
-    description: string;
+    description string;
     probability: number;
     supportingEvidence: string[];
     contradictingEvidence: string[];
@@ -204,7 +204,7 @@
       protectiveFactors: ['Family support', 'Employment stability'],
       assessmentScore: {
         violence: 78,
-        manipulation: 65,
+        manipulation 65,
         impulsivity: 89,
         planning: 45,
       },
@@ -222,21 +222,21 @@
         type: 'Digital Communication',
         correlationScore: 0.92,
         motiveSupport: ['REVENGE', 'FINANCIAL'],
-        timelinePosition: '2024-01-15T10:30:00Z',
+        timelinePosition '2024-01-15T10:30:00Z',
       },
       {
         evidenceId: 'E002',
         type: 'Financial Records',
         correlationScore: 0.78,
         motiveSupport: ['FINANCIAL'],
-        timelinePosition: '2024-01-20T14:15:00Z',
+        timelinePosition '2024-01-20T14:15:00Z',
       },
       {
         evidenceId: 'E003',
         type: 'Witness Statement',
         correlationScore: 0.85,
         motiveSupport: ['REVENGE', 'JEALOUSY'],
-        timelinePosition: '2024-02-01T09:00:00Z',
+        timelinePosition '2024-02-01T09:00:00Z',
       }
     ];
   }
@@ -244,7 +244,7 @@
     return [
       {
         category: 'FINANCIAL',
-        description: 'Significant financial pressures and potential monetary gain',
+        description 'Significant financial pressures and potential monetary gain',
         probability: 0.82,
         supportingEvidence: ['Bank records show debt', 'Insurance policy discovered', 'Recent job loss'],
         contradictingEvidence: ['Alternative income sources', 'Family financial support'],
@@ -253,7 +253,7 @@
       },
       {
         category: 'REVENGE',
-        description: 'Personal vendetta based on perceived injustices',
+        description 'Personal vendetta based on perceived injustices',
         probability: 0.74,
         supportingEvidence: ['Threatening messages', 'History of conflict', 'Public humiliation'],
         contradictingEvidence: ['Recent reconciliation attempts', 'Third-party mediation'],
@@ -262,7 +262,7 @@
       },
       {
         category: 'MENTAL_HEALTH',
-        description: 'Psychological breakdown affecting judgment',
+        description 'Psychological breakdown affecting judgment',
         probability: 0.68,
         supportingEvidence: ['Medication changes', 'Behavioral changes', 'Social isolation'],
         contradictingEvidence: ['Treatment compliance', 'Support system'],
@@ -294,19 +294,19 @@
     return [
       {
         priority: 'IMMEDIATE',
-        action: 'Increase surveillance and protective measures',
+        action 'Increase surveillance and protective measures',
         rationale: 'High escalation potential with clear opportunity',
         resources: ['Additional security', 'Real-time monitoring'];
       },
       {
         priority: 'URGENT',
-        action: 'Psychological evaluation and intervention',
+        action 'Psychological evaluation and intervention',
         rationale: 'Mental health factors significantly contributing to risk',
         resources: ['Crisis intervention team', 'Mental health professionals'];
       },
       {
         priority: 'IMPORTANT',
-        action: 'Evidence preservation and documentation',
+        action 'Evidence preservation and documentation',
         rationale: 'Strong evidentiary support for multiple motive categories',
         resources: ['Forensic team', 'Digital evidence specialists'];
       }
@@ -328,8 +328,8 @@
       overallThreatLevel: 'HIGH',
       psychologicalMarkers: ['Narcissistic traits', 'Poor impulse control', 'Financial stress'],
       behaviorAnalysis: {
-        aggression: 78,
-        deception: 65,
+        aggression 78,
+        deception 65,
         impulsivity: 89,
         planning: 45,
       },
@@ -471,17 +471,17 @@
   <!-- Analysis Controls -->
   <div class="flex gap-4">
     <Button
-      on:click={analyzeMotives}
+      onclick={analyzeMotives}
       disabled={analysisInProgress || !suspectProfile}
       class="bg-blue-600 hover:bg-blue-700"
     >
 {analysisInProgress ? 'Analyzing...' : 'Start Motive Analysis'}
-    <button class="nes-btn" variant="ghost" on:click={() => activeTab = 'profile'}>
+    <button class="nes-btn" variant="ghost" onclick={() => activeTab = 'profile'}>
       View Suspect Profile
-    <button class="nes-btn" variant="ghost" on:click={() => activeTab = 'motives'}>
+    <button class="nes-btn" variant="ghost" onclick={() => activeTab = 'motives'}>
       Motive Matrix
     </button>
-    <button class="nes-btn" variant="ghost" on:click={() => activeTab = 'risk'}>
+    <button class="nes-btn" variant="ghost" onclick={() => activeTab = 'risk'}>
       Risk Assessment
     </button>
   </div>
@@ -646,7 +646,7 @@
                 </div>
                 <div class="text-gray-700 mb-2">{event.event}</div>
                 <div class="flex items-center gap-4 text-sm text-gray-600">
-                  <span>Correlation: {(event.correlationScore * 100).toFixed(1)}%</span>
+                  <span>Correlation {(event.correlationScore * 100).toFixed(1)}%</span>
                   <span>Evidence: {event.evidenceIds.join(', ')}</span>
                 </div>
               </div>

@@ -221,7 +221,7 @@ let processingErrors = $state<Record<string, string>>({});
     }
   }
 </script>
-<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg" transition:fade>
+<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg" transitionfade>
   <div class="mb-8">
     <h2 class="text-2xl font-bold text-gray-900 mb-2">Document Upload</h2>
     <p class="text-gray-600">Upload legal documents, contracts, evidence, and other case materials</p>
@@ -238,7 +238,7 @@ let processingErrors = $state<Record<string, string>>({});
     ondrop={handleDrop}
     role="button"
     tabindex="0"
-    on:click={() => fileInput?.click()}
+    onclick={() => fileInput?.click()}
     onkeydown={(e) => e.key === 'Enter' && fileInput?.click()}
   >
     <div class="space-y-4">
@@ -263,7 +263,7 @@ let processingErrors = $state<Record<string, string>>({});
   />
   <!-- Uploaded Files List -->
   {#if formData.uploaded_files.length > 0}
-    <div class="mt-8" transition:slide>
+    <div class="mt-8" transitionslide>
       <h3 class="text-lg font-medium text-gray-900 mb-4">
         Uploaded Files ({formData.uploaded_files.length})
       </h3>
@@ -271,7 +271,7 @@ let processingErrors = $state<Record<string, string>>({});
         {#each formData.uploaded_files as file, index}
           {@const progress = uploadProgress[file.name] || 0}
           {@const error = processingErrors[file.name]}
-          <div class="border border-gray-200 rounded-lg p-4" transition:fade>
+          <div class="border border-gray-200 rounded-lg p-4" transitionfade>
             <div class="flex items-center justify-between">
               <div class="flex items-center space-x-3 flex-1">
                 <span class="text-2xl">{getFileIcon(file.type)}</span>
@@ -296,7 +296,7 @@ let processingErrors = $state<Record<string, string>>({});
                   </div>
                 {/if}
                 <button class="nes-btn"
-                  on:click={() => removeFile(index)}
+                  onclick={() => removeFile(index)}
                   class="p-1 text-red-600 hover:text-red-800 focus:outline-none bits-btn"
                 >
                   🗑️
@@ -328,7 +328,7 @@ let processingErrors = $state<Record<string, string>>({});
   {/if}
   <!-- OCR Results Summary -->
   {#if formData.ocr_results.length > 0}
-    <div class="mt-8" transition:slide>
+    <div class="mt-8" transitionslide>
       <h3 class="text-lg font-medium text-gray-900 mb-4">
         OCR Processing Results ({formData.ocr_results.length})
       </h3>
@@ -351,7 +351,7 @@ let processingErrors = $state<Record<string, string>>({});
   {/if}
   <!-- Processing Status Indicator -->
   {#if formData.processing_status === 'processing'}
-    <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4" transition:fade>
+    <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4" transitionfade>
       <div class="flex items-center">
         <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 mr-3"></div>
         <div>
@@ -363,7 +363,7 @@ let processingErrors = $state<Record<string, string>>({});
   {/if}
   <!-- Error Summary -->
   {#if Object.keys(errors).length > 0}
-    <div class="mt-6 bg-red-50 border border-red-200 rounded-lg p-4" transition:fade>
+    <div class="mt-6 bg-red-50 border border-red-200 rounded-lg p-4" transitionfade>
       <h4 class="text-sm font-medium text-red-800 mb-2">Processing Errors:</h4>
       <ul class="text-xs text-red-600 space-y-1">
         {#each Object.entries(processingErrors) as [filename, error]}
@@ -375,20 +375,20 @@ let processingErrors = $state<Record<string, string>>({});
   <!-- Form Actions -->
   <div class="flex justify-between pt-6 mt-8 border-t border-gray-200">
     <Button
-      on:click={handlePrevious}
+      onclick={handlePrevious}
       class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
     >
 ← Previous
 </Button>
     <div class="flex space-x-3">
       <Button
-        on:click={handleSaveDraft}
+        onclick={handleSaveDraft}
         class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
       >
 Save Draft
 </Button>
       <Button
-        on:click={handleNext}
+        onclick={handleNext}
         disabled={formData.uploaded_files.length === 0 || formData.processing_status === 'processing'}
         class="px-6 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed bits-btn"
       >

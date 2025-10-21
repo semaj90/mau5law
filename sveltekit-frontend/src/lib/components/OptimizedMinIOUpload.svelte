@@ -7,7 +7,7 @@
 
 	let file: File | null = null;
 	let status: 'idle' | 'uploading' | 'done' | 'error' = 'idle';
-	let gpu = { webgpu: false, webgl2: false, cssHardwareAcceleration: false };
+	let gpu = { webgpu: false, webgl2: false, cssHardwareAcceleration false };
 
 	onMount(() => {
 		try {
@@ -30,10 +30,10 @@
 
 <div class="optimized-minio-upload">
 	<label>
-		<input type="file" accept={accept} on:change={(e) => (file = (e.target as HTMLInputElement).files?.[0] ?? null)} />
+		<input type="file" accept={accept} onchange={(e) => (file = (e.target as HTMLInputElement).files?.[0] ?? null)} />
 	</label>
 
-	<button on:click={upload} disabled={!file || status === 'uploading'}>{status === 'uploading' ? 'Uploading…' : 'Upload'}</button>
+	<button onclick={upload} disabled={!file || status === 'uploading'}>{status === 'uploading' ? 'Uploading…' : 'Upload'}</button>
 
 	<div class="status">Status: {status}</div>
 	<div class="gpu">GPU: {gpu.webgpu ? 'WebGPU' : gpu.webgl2 ? 'WebGL2' : 'None detected'}</div>
@@ -42,6 +42,6 @@
 </div>
 
 <style>
-	.optimized-minio-upload { display: flex; flex-direction: column; gap: 0.5rem; }
+	.optimized-minio-upload { display: flex; flex-direction column; gap: 0.5rem; }
 	button[disabled] { opacity: 0.6; cursor: not-allowed; }
 </style>

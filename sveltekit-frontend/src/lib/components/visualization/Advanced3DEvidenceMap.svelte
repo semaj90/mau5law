@@ -65,7 +65,7 @@ if (!browser) return;
       }
       isLoading = false;
     } catch (error) {
-      console.error('Failed to initialize 3D visualization:', error);
+      console.error('Failed to initialize 3D visualization', error);
       isLoading = false;
     }
     })();
@@ -244,7 +244,7 @@ if (!browser) return;
     // Create timeline path
     createTimelinePath(sortedEvidence);
   }
-  function createEvidenceNode(evidence: any, position: ;
+  function createEvidenceNode(evidence: any, position ;
 THREE.Vector3): THREE.Object3D {
     const group = new THREE.Group();
     group.position.copy(position);
@@ -302,7 +302,7 @@ THREE.Vector3): THREE.Object3D {
     scene.add(labelObject);
     return group;
   }
-  function createNetworkNode(evidence: any, position: ;
+  function createNetworkNode(evidence: any, position ;
 THREE.Vector3): THREE.Object3D {
     const group = new THREE.Group();
     group.position.copy(position);
@@ -320,7 +320,7 @@ THREE.Vector3): THREE.Object3D {
     group.add(mesh);
     return group;
   }
-  function createTimelineNode(evidence: any, position: ;
+  function createTimelineNode(evidence: any, position ;
 THREE.Vector3): THREE.Object3D {
     const group = new THREE.Group();
     group.position.copy(position);
@@ -541,25 +541,25 @@ THREE.Vector3): THREE.Object3D {
 
 <div
   class="visualization-container"
-  style="position: relative;
+  style="position relative;
 e; width: {width}px; height: {height}px;"
 >
   <!-- Controls -->
   <div class="controls-panel">
     <div class="view-controls flex gap-2">
-      <Button variant={viewMode === '3d' ? 'default' : 'outline'} on:click={() => changeViewMode('3d')} size="sm">
+      <Button variant={viewMode === '3d' ? 'default' : 'outline'} onclick={() => changeViewMode('3d')} size="sm">
         🌍 3D Map
       </Button>
       <Button
         variant={viewMode === 'network' ? 'default' : 'outline'}
-        on:click={() => changeViewMode('network')}
+        onclick={() => changeViewMode('network')}
         size="sm"
       >
         🕸️ Network
       </Button>
       <Button
         variant={viewMode === 'timeline' ? 'default' : 'outline'}
-        on:click={() => changeViewMode('timeline')}
+        onclick={() => changeViewMode('timeline')}
         size="sm"
       >
         🕰️ Timeline
@@ -575,8 +575,8 @@ e; width: {width}px; height: {height}px;"
       </select>
     </div>
     <div class="action-controls">
-      <Button variant="ghost" on:click={resetView} size="sm">🔄 Reset View</Button>
-      <Button variant="ghost" on:click={exportVisualization} size="sm">📤 Export</Button>
+      <Button variant="ghost" onclick={resetView} size="sm">🔄 Reset View</Button>
+      <Button variant="ghost" onclick={exportVisualization} size="sm">📤 Export</Button>
     </div>
   </div>
   <!-- Loading indicator -->
@@ -596,7 +596,7 @@ e; width: {width}px; height: {height}px;"
         <p><strong>AI Summary:</strong> {selectedEvidence.aiSummary}</p>
       {/if}
       <div class="evidence-actions">
-        <button class="btn-primary" on:click={() => (selectedEvidence = null)}>Close</button>
+        <button class="btn-primary" onclick={() => (selectedEvidence = null)}>Close</button>
       </div>
     </div>
   {/if}
@@ -609,10 +609,10 @@ e; width: {width}px; height: {height}px;"
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
     border-radius: 8px;
     overflow: hidden;
-    position: relative;
+    position relative;
   }
   .controls-panel {
-    position: absolute;
+    position absolute;
     top: 10px;
     left: 10px;
     z-index: 100,
@@ -638,7 +638,7 @@ e; width: {width}px; height: {height}px;"
     border-radius: 4px;
     font-size: 12px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .btn-control:hover {
     background: rgba(255, 255, 255, 0.2);
@@ -657,14 +657,14 @@ e; width: {width}px; height: {height}px;"
     font-size: 12px;
   }
   .loading-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.9);
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     z-index: 200,
@@ -676,7 +676,7 @@ e; width: {width}px; height: {height}px;"
     border: 3px solid rgba(255, 255, 255, 0.3);
     border-top: 3px solid #4a90e2;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin-bottom: 15px;
   }
   @keyframes spin {
@@ -688,7 +688,7 @@ e; width: {width}px; height: {height}px;"
     }
   }
   .evidence-panel {
-    position: absolute;
+    position absolute;
     top: 10px;
     right: 10px;
     width: 300px;
@@ -723,7 +723,7 @@ e; width: {width}px; height: {height}px;"
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
-    transition: background 0.2s ease;
+    transition background 0.2s ease;
   }
   .btn-primary:hover {
     background: #357abd;
@@ -731,7 +731,7 @@ e; width: {width}px; height: {height}px;"
   .three-container {
     width: 100%;
     height: 100%;
-    position: relative;
+    position relative;
   }
   :global(.evidence-label) {
     pointer-events: none !important;

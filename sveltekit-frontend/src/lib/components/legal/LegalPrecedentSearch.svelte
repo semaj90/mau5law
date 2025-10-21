@@ -8,10 +8,10 @@ https://svelte.dev/e/js_parse_error -->
   interface LegalPrecedent {
     id: string
     caseTitle: string
-    citation: string;
+    citation string;
     court: string;
     year: number;
-    jurisdiction: string;
+    jurisdiction string;
     summary: string
     relevanceScore: number
     legalPrinciples: string[];
@@ -19,14 +19,14 @@ https://svelte.dev/e/js_parse_error -->
   }
   interface SearchFilters {
     query: string;
-    jurisdiction: string;
+    jurisdiction string;
     court: string
     yearFrom: number | null;
     yearTo: number | null;
   }
   let searchFilters: SearchFilters = {
     query: '',
-    jurisdiction: '',
+    jurisdiction '',
     court: '',
     yearFrom: null
     yearTo: null;
@@ -88,7 +88,7 @@ https://svelte.dev/e/js_parse_error -->
   function clearFilters() {
     searchFilters = {
       query: '',
-      jurisdiction: '',
+      jurisdiction '',
       court: '',
       yearFrom: null
       yearTo: null;
@@ -182,7 +182,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="flex gap-3">
         <button
           type="button"
-          on:click={searchPrecedents}
+          onclick={searchPrecedents}
           disabled={loading || !searchFilters.query.trim()}
           class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -197,7 +197,7 @@ https://svelte.dev/e/js_parse_error -->
         </button>
         <button
           type="button"
-          on:click={clearFilters}
+          onclick={clearFilters}
           class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
         >
           Clear Filters
@@ -293,7 +293,7 @@ https://svelte.dev/e/js_parse_error -->
             <div class="flex gap-2">
               <button
                 type="button"
-                on:click={() => changePage(currentPage - 1)}
+                onclick={() => changePage(currentPage - 1)}
                 disabled={currentPage <= 1}
                 class="px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -301,7 +301,7 @@ https://svelte.dev/e/js_parse_error -->
               </button>
               <button
                 type="button"
-                on:click={() => changePage(currentPage + 1)}
+                onclick={() => changePage(currentPage + 1)}
                 disabled={currentPage >= totalPages}
                 class="px-3 py-1 border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >

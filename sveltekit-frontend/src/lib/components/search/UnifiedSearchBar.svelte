@@ -84,7 +84,7 @@ await initializeSearchServices();
         includeMatches: true
         minMatchCharLength: 2,
         useExtendedSearch: true
-        ignoreLocation: true,
+        ignoreLocation true,
       }
       fuseIndex = new Fuse(evidenceData, fuseOptions);
       console.log('✅ Fuse.js initialized with', evidenceData.length, 'evidence items');
@@ -386,7 +386,7 @@ await initializeSearchServices();
     <!-- Clear button -->
     {#if searchQuery}
       <button
-        on:click={() => { searchQuery = ''; searchResults = []; showDropdown = false, }}
+        onclick={() => { searchQuery = ''; searchResults = []; showDropdown = false, }}
         class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
       >
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -440,7 +440,7 @@ await initializeSearchServices();
         <div
           class="px-4 py-3 cursor-pointer hover:bg-gray-50 border-b border-gray-100 last:border-b-0 {selectedIndex === index ? 'bg-blue-50' : ''}"
           role="button" tabindex="0"
-                on:click={() => handleResultClick(result)}
+                onclick={() => handleResultClick(result)}
         >
           <div class="flex items-start justify-between gap-3">
             <div class="flex-1 min-w-0">
@@ -478,7 +478,7 @@ await initializeSearchServices();
       <!-- View all results -->
       <div class="px-4 py-3 border-t bg-gray-50">
         <button
-          on:click={() => goto(`/evidence/search?q=${encodeURIComponent(searchQuery)}`)}
+          onclick={() => goto(`/evidence/search?q=${encodeURIComponent(searchQuery)}`)}
           class="w-full text-sm text-blue-600 hover:text-blue-800 font-medium"
         >
           View all results for "{searchQuery}" →
@@ -495,7 +495,7 @@ await initializeSearchServices();
         </svg>
         <p class="text-sm">No evidence found for "{searchQuery}"</p>
         <button
-          on:click={() => goto('/evidence/upload')}
+          onclick={() => goto('/evidence/upload')}
           class="mt-2 text-xs text-blue-600 hover:text-blue-800"
         >
           Upload new evidence

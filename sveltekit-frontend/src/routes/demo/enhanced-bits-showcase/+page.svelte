@@ -23,14 +23,14 @@
   let showNESModal = $state(false);
   let showEvidenceBoard = $state(false);
   const demoSections = [
-    { id: 'overview', title: 'Overview', icon: '🏠' },
-    { id: 'buttons', title: 'Buttons', icon: '🔘' },
-    { id: 'cards', title: 'Cards', icon: '🎴' },
-    { id: 'search', title: 'Search', icon: '🔍' },
-    { id: 'nes-gaming', title: 'NES Gaming', icon: '🎮' },
-    { id: 'yorha', title: 'YoRHa Theme', icon: '🤖' },
-    { id: 'evidence', title: 'Evidence Board', icon: '📋' },
-    { id: 'integration', title: 'Integration', icon: '🔧' },
+    { id: 'overview', title: 'Overview', icon '🏠' },
+    { id: 'buttons', title: 'Buttons', icon '🔘' },
+    { id: 'cards', title: 'Cards', icon '🎴' },
+    { id: 'search', title: 'Search', icon '🔍' },
+    { id: 'nes-gaming', title: 'NES Gaming', icon '🎮' },
+    { id: 'yorha', title: 'YoRHa Theme', icon '🤖' },
+    { id: 'evidence', title: 'Evidence Board', icon '📋' },
+    { id: 'integration', title: 'Integration', icon '🔧' },
   ];
   function handleSearchDemo(_event: CustomEvent) {
     const { query } = e(vent as CustomEvent).detail;
@@ -48,7 +48,7 @@
       </div>
       <div class="header-controls">
         <ThemeToggle />
-        <Button variant="primary" on:click={() => window.open('/all-routes', '_blank')}>View All Routes</Button>
+        <Button variant="primary" onclick={() => window.open('/all-routes', '_blank')}>View All Routes</Button>
       </div>
     </div>
   </div>
@@ -59,7 +59,7 @@
         {#each demoSections as section}
           <button
             class="tab-trigger {activeDemo === section.id ? 'active' : ''}"
-            on:click={() => (activeDemo = section.id)}
+            onclick={() => (activeDemo = section.id)}
           >
             <span class="tab-icon">{section.icon}</span>
             <span class="tab-label">{section.title}</span>
@@ -213,7 +213,7 @@
               </div>
             </NESCard>
           </div>
-          <NESButton on:click={() => (showNESModal = true)}>Open NES Modal</NESButton>
+          <NESButton onclick={() => (showNESModal = true)}>Open NES Modal</NESButton>
         </Card>
         <!-- Full NES Gaming Showcase -->
         <Card title="Complete NES Gaming Interface" class="demo-card">
@@ -244,7 +244,7 @@
                 </div>
               </div>
             </div>
-            <Button on:click={() => (showYoRHaModal = true)}>Open YoRHa Modal</Button>
+            <Button onclick={() => (showYoRHaModal = true)}>Open YoRHa Modal</Button>
           </div>
         </Card>
       </div>
@@ -253,7 +253,7 @@
       <div class="evidence-demo">
         <Card title="Interactive Evidence Board" class="demo-card">
           <p>Drag-and-drop evidence management system with YoRHa styling</p>
-          <Button on:click={() => (showEvidenceBoard = true)}>Open Evidence Board</Button>
+          <Button onclick={() => (showEvidenceBoard = true)}>Open Evidence Board</Button>
         </Card>
       </div>
     {:else if activeDemo === 'integration'}
@@ -265,9 +265,9 @@
               <h4>Toolbar Integration</h4>
               <Toolbar
                 tools={[
-                  { id: 'search', icon: '🔍', label: 'Search' },
-                  { id: 'filter', icon: '🔽', label: 'Filter' },
-                  { id: 'export', icon: '📤', label: 'Export' },
+                  { id: 'search', icon '🔍', label: 'Search' },
+                  { id: 'filter', icon '🔽', label: 'Filter' },
+                  { id: 'export', icon '📤', label: 'Export' },
                 ]}
               />
             </div>
@@ -302,7 +302,7 @@
         <div>Theme: NES Gaming</div>
         <div>Framework: Svelte 5</div>
       </div>
-      <NESButton on:click={() => (showNESModal = false)}>Close Modal</NESButton>
+      <NESButton onclick={() => (showNESModal = false)}>Close Modal</NESButton>
     </div>
   </NESModal>
   <DraggableModal bind:open={showYoRHaModal} title="YoRHa System Interface" theme="yorha">
@@ -387,7 +387,7 @@
     cursor: pointer;
     border-radius: 0.5rem;
     font-weight: 500,
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     white-space: nowrap;
   }
   .tab-trigger:hover {
@@ -404,7 +404,7 @@
   }
   .demo-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 2rem;
   }
   .demo-card {
@@ -423,7 +423,7 @@
     padding: 1.5rem;
     border: 2px solid var(--color-border, #e5e7eb);
     border-radius: 0.5rem;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .feature-item:hover {
     border-color: var(--color-primary, #4a90e2);
@@ -458,7 +458,7 @@
   }
   .interactive-card {
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .interactive-card:hover {
     transform: translateY(-4px);
@@ -487,7 +487,7 @@
   }
   .nes-stat-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
     font-size: 0.75rem;
   }
@@ -512,7 +512,7 @@
   }
   .status-indicators {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .status-item {
@@ -538,7 +538,7 @@
   /* Integration Demo */
   .integration-examples {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 2rem;
   }
   .example-section h4 {
@@ -561,7 +561,7 @@
   .modal-demo-content,
   .yorha-modal-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .modal-stats,
@@ -582,7 +582,7 @@
       padding: 1rem;
     }
     .header-content {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
       text-align: center;
     }
@@ -605,7 +605,7 @@
       grid-template-columns: 1fr;
     }
     .operation-buttons {
-      flex-direction: column;
+      flex-direction column;
     }
   }
 </style>

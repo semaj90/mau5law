@@ -67,11 +67,11 @@
   <div
     class="fixed inset-0 z-50 flex items-center justify-center p-4"
     style="background: rgba(0, 0, 20, {backgroundOpacity})"
-    transitifade={{ duration: 300 }}
+    transitifade={{ duration 300 }}
     role="dialog"
     aria-modal="true"
     aria-labelledby="modal-title"
-    on:click={handleClose}
+    onclick={handleClose}
     keydown={handleKeydown}
     tabindex="-1"
     ;
@@ -82,7 +82,7 @@
       class="relative {sizeClasses[size]} bg-gradient-to-br {typeColors[type]}
              border-2 border-amber-400/80 shadow-2xl overflow-hidden
              {cornerClasses[cornerStyle]}"
-      transitiscale={{ duration: 400, easing: quintOut, start: 0.8 }}
+      transitiscale={{ duration 400, easing: quintOut, start: 0.8 }}
       bind:this={contentElement}
     >
       <!-- FF-Style Corner Decorations -->
@@ -108,7 +108,7 @@
           <button
             class="absolute top-2 right-2 w-6 h-6 text-white hover:text-red-300
                    transition-colors duration-200 font-bold text-xl leading-none"
-            on:click={handleClose}
+            onclick={handleClose}
             aria-label="Close modal"
           >
             ×
@@ -150,11 +150,11 @@ calc(100% - 8px) 100%, {}
   }
   .ff-corner-modern {
     border-radius: 0.5rem;
-    position: relative;
+    position relative;
   }
   .ff-corner-modern::before {
     content: '';
-    position: absolute;
+    position absolute;
     inset: -2px;
     background: linear-gradient(45deg, #fbbf24, #f59e0b, #d97706, #92400e);
     border-radius: 0.5rem;
@@ -204,9 +204,9 @@ calc(100% - 12px) 100%, {}
   }
   .ff-corner-classic::after {
     content: '';
-    position: absolute;
+    position absolute;
     inset: 0,
     background: linear-gradient(45deg, transparent 48%, rgba(255, 255, 255, 0.1) 50%, transparent 52%);
-    animation: ff-shimmer 3s ease-in-out infinite;
+    animation ff-shimmer 3s ease-in-out infinite;
   }
 </style>

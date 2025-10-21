@@ -88,11 +88,11 @@
     });
   });
   const organizationModes = [
-    { value: 'category', label: 'By Category', icon: '🗂️' },
-    { value: 'timeline', label: 'Timeline', icon: '📅' },
-    { value: 'priority', label: 'By Priority', icon: '⭐' },
-    { value: 'ai_clusters', label: 'AI Clusters', icon: '🧠' },
-    { value: 'chain_custody', label: 'Chain of Custody', icon: '🔗' }
+    { value: 'category', label: 'By Category', icon '🗂️' },
+    { value: 'timeline', label: 'Timeline', icon '📅' },
+    { value: 'priority', label: 'By Priority', icon '⭐' },
+    { value: 'ai_clusters', label: 'AI Clusters', icon '🧠' },
+    { value: 'chain_custody', label: 'Chain of Custody', icon '🔗' }
   ];
   /**
    * Initialize component
@@ -190,7 +190,7 @@ await loadCaseEvidence();
       if (wsManager) {
         wsManager.send.toISOString(),
           data: {
-            action: 'reorganized',
+            action 'reorganized',
             mode: organizationMode;
             structure: organizationStructur;
           }
@@ -449,7 +449,7 @@ await loadCaseEvidence();
     return clusters.map((cluster, index) => ({
       id: `cluster_${index}`,
       name: cluster.name || `Cluster ${index + 1}`,
-      description: cluster.description || generateClusterDescription(cluster.evidence),
+      description cluster.description || generateClusterDescription(cluster.evidence),
       evidence: cluster.evidence,
       count: cluster.evidence.length,
       similarity: cluster.averageSimilarity || 0.8,
@@ -592,7 +592,7 @@ await loadCaseEvidence();
           type="button"
           class="mode-button"
           class:active={organizationMode === mode.value}
-          on:click={() => handleModeChange(mode.value)}
+          onclick={() => handleModeChange(mode.value)}
         >
           <span class="mode-icon">{mode.icon}</span>
           <span class="mode-label">{mode.label}</span>
@@ -682,7 +682,7 @@ await loadCaseEvidence();
                 <div
                   class="evidence-nier-bits-card"
                   class:selected={selectedEvidence.includes(evidence)}
-                  on:click={() => selectEvidence(evidence, 'category')}
+                  onclick={() => selectEvidence(evidence, 'category')}
                 >
                   <div class="evidence-header">
                     <h4>{evidence.title}</h4>
@@ -721,7 +721,7 @@ await loadCaseEvidence();
                 <div
                   class="timeline-item"
                   class:selected={selectedEvidence.includes(evidence)}
-                  on:click={() => selectEvidence(evidence, 'timeline')}
+                  onclick={() => selectEvidence(evidence, 'timeline')}
                 >
                   <div class="timeline-marker"></div>
                   <div class="timeline-content">
@@ -767,7 +767,7 @@ await loadCaseEvidence();
                 <div
                   class="evidence-nier-bits-card compact"
                   class:selected={selectedEvidence.includes(evidence)}
-                  on:click={() => selectEvidence(evidence, 'cluster')}
+                  onclick={() => selectEvidence(evidence, 'cluster')}
                 >
                   <h4>{evidence.title}</h4>
                   <span class="evidence-type">{evidence.evidenceType}</span>
@@ -796,7 +796,7 @@ await loadCaseEvidence();
                 <div
                   class="evidence-nier-bits-card custody"
                   class:selected={selectedEvidence.includes(evidence)}
-                  on:click={() => selectEvidence(evidence, 'custody')}
+                  onclick={() => selectEvidence(evidence, 'custody')}
                 >
                   <div class="evidence-header">
                     <h4>{evidence.title}</h4>
@@ -827,7 +827,7 @@ await loadCaseEvidence();
 <style>
   .case-evidence-organizer {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     height: 100vh;
     background: #f8fafc;
     font-family:
@@ -877,9 +877,9 @@ await loadCaseEvidence();
     border: 1px solid #e2e8f0;
     border-radius: 0.5rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
-  .mode-button:hover {
+  .mode-buttonhover {
     background: #e2e8f0;
   }
   .mode-button.active {
@@ -910,7 +910,7 @@ await loadCaseEvidence();
   }
   .metric {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     text-align: center;
   }
@@ -969,7 +969,7 @@ await loadCaseEvidence();
   .progress-fill {
     height: 100%;
     background: #3b82f6;
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .spinner {
     width: 2rem;
@@ -977,7 +977,7 @@ await loadCaseEvidence();
     border: 3px solid #f3f4f6;
     border-top: 3px solid #3b82f6;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin: 1rem auto;
   }
   @keyframes spin {
@@ -999,7 +999,7 @@ await loadCaseEvidence();
     border-radius: 0.5rem;
     padding: 1rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .evidence-card:hover {
     border-color: #3b82f6;
@@ -1066,7 +1066,7 @@ await loadCaseEvidence();
   /* Category organization styles */
   .category-organization {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 2rem;
   }
   .category-group {
@@ -1102,7 +1102,7 @@ await loadCaseEvidence();
   /* Timeline organization styles */
   .timeline-organization {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 2rem;
   }
   .timeline-period {
@@ -1127,7 +1127,7 @@ await loadCaseEvidence();
     border-radius: 0.375rem;
     margin-bottom: 0.75rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .timeline-item:hover {
     border-color: #3b82f6;
@@ -1159,7 +1159,7 @@ await loadCaseEvidence();
   /* Clusters organization styles */
   .clusters-organization {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 2rem;
   }
   .cluster-group {
@@ -1215,7 +1215,7 @@ await loadCaseEvidence();
   /* Chain of custody styles */
   .custody-organization {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 2rem;
   }
   .custody-chain {

@@ -125,11 +125,11 @@
 					</div>
 
 					<div class="actions">
-						<Button on:click={checkSystemStatus} disabled={loading} aria-busy={loading}>
+						<Button onclick={checkSystemStatus} disabled={loading} aria-busy={loading}>
 							{#if loading}Checking...{#else}Run Health Check{/if}
 						</Button>
-						<Button variant="secondary" on:click={openAssistant}>Open Assistant</Button>
-						<Button variant="ghost" on:click={handleUpload}>Upload Document</Button>
+						<Button variant="secondary" onclick={openAssistant}>Open Assistant</Button>
+						<Button variant="ghost" onclick={handleUpload}>Upload Document</Button>
 					</div>
 
 					{#if error}
@@ -145,7 +145,7 @@
 				</CardHeader>
 				<CardContent>
 					<ul class="insights">
-						<li>Recent ingestion: 3 documents (last 24h)</li>
+						<li>Recent ingestion 3 documents (last 24h)</li>
 						<li>Vector DB: 12,312 vectors · top similarity cache hit 82%</li>
 						<li>Pending OCR jobs: 1 · GPU queue depth: low</li>
 					</ul>
@@ -181,8 +181,8 @@
 				<CardContent>
 					<p class="muted">Need immediate help? Check service logs or run the health check. For deeper issues, open the diagnostics dashboard.</p>
 					<div class="actions">
-						<Button variant="secondary" on:click={() => pushToast('Diagnostics opened (stub)', 'info')}>Open Diagnostics</Button>
-						<Button variant="ghost" on:click={() => pushToast('Logs tail started (stub)', 'info')}>Tail Logs</Button>
+						<Button variant="secondary" onclick={() => pushToast('Diagnostics opened (stub)', 'info')}>Open Diagnostics</Button>
+						<Button variant="ghost" onclick={() => pushToast('Logs tail started (stub)', 'info')}>Tail Logs</Button>
 					</div>
 				</CardContent>
 			</Card>
@@ -201,7 +201,7 @@
 
 <style>
 	.ai-dashboard-container{padding:1rem;max-width:1200px;margin:0 auto}
-	.header{display:flex;flex-direction:column;gap:.25rem;margin-bottom:1rem}
+	.header{display:flex;flex-directioncolumn;gap:.25rem;margin-bottom:1rem}
 	.title{font-size:1.25rem;margin:0}
 	.subtitle{color:var(--muted,#6b7280);font-size:.95rem;margin:0}
 
@@ -224,7 +224,7 @@
 	.health-table th{text-align:left;padding:.5rem 0;color:var(--muted,#6b7280);font-size:.85rem}
 	.health-table td{padding:.5rem 0}
 
-	.toasts{position:fixed;right:1rem;top:1rem;display:flex;flex-direction:column;gap:.5rem;z-index:9999}
+	.toasts{positionfixed;right:1rem;top:1rem;display:flex;flex-directioncolumn;gap:.5rem;z-index:9999}
 	.toast{padding:.5rem .75rem;border-radius:6px;color:white;box-shadow:0 2px 6px rgba(0,0,0,.08);font-size:.92rem}
 	.toast.info{background:#2b6cb0}
 	.toast.success{background:#2f855a}

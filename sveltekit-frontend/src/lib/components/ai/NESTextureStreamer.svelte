@@ -53,7 +53,7 @@
       pageDistance: distance,
       readingMode,
       documentImportance,
-      userInteraction: userInteracting
+      userInteraction userInteracting
     }) ?? 3;
   });
   // LOD level description
@@ -290,7 +290,7 @@
           LOD 3
         </button>
       </div>
-      <div class="zoom-controls">
+        <div class="zoom-controls">
         <button on:click={() => handleZoomChange(-0.1)}>🔍-</button>
         <span>Zoom: {zoomLevel.toFixed(1)}x</span>
         <button on:click={() => handleZoomChange(0.1)}>🔍+</button>

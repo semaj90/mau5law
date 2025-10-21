@@ -93,7 +93,7 @@
 <div
   bind:this={containerElement}
   class={`expand-grid ${state.expanded ? 'expanded' : ''} ${className}`}
-  style={`--columns:${currentColumns};--gap:${gap};--expand-duration:${expandDuration};--easing:${easing};`}
+  style={`--columns:${currentColumns};--gap:${gap};--expand-duration${expandDuration};--easing:${easing};`}
   role="grid"
   tabindex={0}
 >
@@ -108,7 +108,7 @@
     display: grid;
     grid-template-columns: repeat(var(--columns), 1fr);
     gap: var(--gap);
-    transition:
+    transition
       grid-template-columns var(--expand-duration) var(--easing),
       background-color var(--expand-duration) var(--easing),
       box-shadow var(--expand-duration) var(--easing);
@@ -129,12 +129,12 @@
   }
   /* Grid items (opt-in with .grid-item class) */
   .expand-grid :global(.grid-item) {
-    transition:
+    transition
       transform var(--expand-duration) var(--easing),
       box-shadow var(--expand-duration) var(--easing);
     border-radius: 0.375rem;
     overflow: hidden;
-    position: relative;
+    position relative;
   }
   .expand-grid.expanded :global(.grid-item) {
     transform: scale(1.015);

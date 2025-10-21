@@ -22,7 +22,7 @@ https://svelte.dev/e/js_parse_error -->
   interface OnboardingStep {
   id: string;
   title: string;
-  description: string;
+  description string;
   target?: string;
   targetSelector?: string;
   position?: 'top' | 'bottom' | 'left' | 'right' | 'center';
@@ -246,7 +246,7 @@ https://svelte.dev/e/js_parse_error -->
       class="w-4 h-4"
       role="button"
       tabindex={0}
-      on:click={() => closeOnboarding()}
+      onclick={() => closeOnboarding()}
       keydown={(e: KeyboardEvent) => {
         if (e.key === "Escape") {
           closeOnboarding();
@@ -286,7 +286,7 @@ https://svelte.dev/e/js_parse_error -->
               class="bits-btn w-4 h-4"
               variant="ghost"
               size="sm"
-              on:click={() =>
+              onclick={() =>
 toggleAutoProgress()}
               aria-label={isPlaying
                 ? "Pause auto-progress"
@@ -302,7 +302,7 @@ toggleAutoProgress()}
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 closeOnboarding()}
             aria-label="Close onboarding"
           >
@@ -364,7 +364,7 @@ closeOnboarding()}
       <div class="w-4 h-4">
         <div class="w-4 h-4">
           {#if allowSkip}
-            <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
+            <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 skipOnboarding()}>
               <SkipForward class="w-4 h-4" />
               Skip Tour
@@ -379,7 +379,7 @@ skipOnboarding()}>
                   class="w-4 h-4"
                   class:active={index === currentStep}
                   class:completed={index < currentStep}
-                  on:click={() => goToStep(index)}
+                  onclick={() => goToStep(index)}
                   aria-label={"Go to step " + (index + 1) + ": " + step.title}
                 >
                   {#if index < currentStep}
@@ -396,14 +396,14 @@ skipOnboarding()}>
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 previousStep()}
             disabled={currentStep === 0}
           >
             <ArrowLeft class="w-4 h-4" />
             Back
 </Button>
-          <Button class="bits-btn" on:click={() =>
+          <Button class="bits-btn" onclick={() =>
 nextStep()} size="sm">
             {#if currentStep === steps.length - 1}
               <Check class="w-4 h-4" />
@@ -421,7 +421,7 @@ nextStep()} size="sm">
 <style>
   /* @unocss-include */
   .onboarding-overlay {
-    position: fixed;
+    position fixed;
 d;
     top: 0,
     left: 0;
@@ -431,7 +431,7 @@ d;
     pointer-events: auto;
 }
   .overlay-backdrop {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -440,7 +440,7 @@ d;
     backdrop-filter: blur(2px);
 }
   .highlight-box {
-    position: absolute;
+    position absolute;
     border: 3px solid #3b82f6;
     border-radius: 8px;
     box-shadow:
@@ -448,7 +448,7 @@ d;
       0 0 20px rgba(59, 130, 246, 0.3);
     background: rgba(255, 255, 255, 0.1);
     pointer-events: none;
-    animation: highlight-pulse 2s infinite;
+    animation highlight-pulse 2s infinite;
     z-index: 10001,
 }
   @keyframes highlight-pulse {
@@ -464,7 +464,7 @@ d;
         0 0 30px rgba(59, 130, 246, 0.5);
 }}
   .onboarding-tooltip {
-    position: absolute;
+    position absolute;
     background: white;
     border-radius: 12px;
     box-shadow:
@@ -474,7 +474,7 @@ d;
     max-width: 400px;
     min-width: 320px;
     z-index: 10002,
-    animation: tooltip-appear 0.3s ease-out;
+    animation tooltip-appear 0.3s ease-out;
 }
   @keyframes tooltip-appear {
     from {
@@ -572,7 +572,7 @@ d;
   .progress-fill {
     height: 100%;
     background: #3b82f6;
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
 }
   .progress-text {
     font-size: 0.75rem;
@@ -614,7 +614,7 @@ d;
     font-weight: 500,
     color: #6b7280;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
 }
   .step-dot: hover {
     border-color: #3b82f6;
@@ -669,7 +669,7 @@ d;
       margin: 1rem;
 }
     .tooltip-navigation {
-      flex-direction: column;
+      flex-direction column;
       gap: 0.75rem;
 }
     .nav-left,

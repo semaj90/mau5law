@@ -33,7 +33,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       };
       unifiedInsights?: unknown;
     };
-    position: { x: number; y: number };
+    position { x: number; y: number };
     previewUrl?: string;
   }
   interface SearchSuggestion {
@@ -221,7 +221,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     }, 300);
   }
   // Apply search suggestion
-  function applySuggestion(suggestion: SearchSuggestion) {
+  function applySuggestion(suggestion SearchSuggestion) {
     searchQuery = suggestion.text;
     showSuggestions = false;
     filterEvidence();
@@ -261,7 +261,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     await uploadFiles(files, position);
   }
   // File upload with AI processing
-  async function uploadFiles(files: File[], position: { x: number; y: number }) {
+  async function uploadFiles(files: File[], position { x: number; y: number }) {
     isUploading = true;
     processingStatus = 'processing';
     for (const file of files) {
@@ -275,7 +275,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
           status: 'uploading',
           size: file.size,
           mimeType: file.type,
-          position: {
+          position {
             x: position.x + evidenceItems.length * 20,
             y: position.y + evidenceItems.length * 20,
           },
@@ -364,7 +364,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
               }
             }
           } catch (err) {
-            console.error('Upload exception:', err);
+            console.error('Upload exception', err);
             evidenceItems = evidenceItems.map(item => (item.id === evidenceId ? { ...item, status: 'error' } : item));
           }
         } else {
@@ -481,7 +481,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         }
       } catch (err) {
         remoteOk = false;
-        console.warn('Remote delete exception:', err);
+        console.warn('Remote delete exception', err);
         toastMessage = `Remote delete exception`;
         showToast = true;
         setTimeout(() => {
@@ -571,7 +571,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
             similarityThreshold: 0.7,
             strategyType: 'comprehensive',
             correlationConfidence: 0.6,
-            includeVisualization: true,
+            includeVisualization true,
           },
           context: {
             caseType: 'commercial',
@@ -654,7 +654,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     searchSuggestions = dedup.slice(0, 10);
   }
   // Fabric.js Canvas Event Handlers
-  function handleEvidenceMove(evidenceId: string, position: { x: number; y: number }) {
+  function handleEvidenceMove(evidenceId: string, position { x: number; y: number }) {
     evidenceItems = evidenceItems.map(item => (item.id === evidenceId ? { ...item, position } : item));
   }
   function handleEvidenceSelect(evidenceId: string | null) {
@@ -738,7 +738,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
             <button
               type="button"
               class="nes-btn {gamingMode ? 'is-success' : ''}"
-              on:click={() => (gamingMode = !gamingMode)}
+              onclick={() => (gamingMode = !gamingMode)}
               title="Toggle Gaming Mode"
             >
               🎮 Gaming
@@ -746,7 +746,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
             <button
               type="button"
               class="nes-btn {retroTerminalMode ? 'is-primary' : ''}"
-              on:click={() => (retroTerminalMode = !retroTerminalMode)}
+              onclick={() => (retroTerminalMode = !retroTerminalMode)}
               title="Toggle Terminal Mode"
             >
               💻 Terminal
@@ -781,7 +781,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                 <button
                   type="button"
                   class="w-full text-left p-2 hover:bg-nier-accent hover:text-white transition-colors rounded mb-1"
-                  on:click={() => applySuggestion(suggestion)}
+                  onclick={() => applySuggestion(suggestion)}
                 >
                   <div class="flex justify-between items-center">
                     <span class="font-medium">{suggestion.text}</span>
@@ -840,7 +840,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
           <button
             type="button"
             class="nes-btn"
-            on:click={() => {
+            onclick={() => {
               if (selectedEvidence.length === filteredEvidence.length) {
                 selectedEvidence = [];
               } else {
@@ -871,7 +871,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
           <button
             type="button"
             class="nes-btn {isAnalyzing ? 'is-disabled' : 'is-primary'}"
-            on:click={performAdvancedAnalysis}
+            onclick={performAdvancedAnalysis}
             disabled={selectedEvidence.length === 0 || isAnalyzing}
           >
             {#if isAnalyzing}
@@ -947,7 +947,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                       <button
                         type="button"
                         class="nes-btn is-primary text-sm"
-                        on:click={() => (currentBucket = b)}
+                        onclick={() => (currentBucket = b)}
                         title={`Select bucket ${b}`}
                       >
                         📦 {b}
@@ -1031,7 +1031,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
                   <button
                     type="button"
                     class="ml-2 nes-btn is-error is-small"
-                    on:click={() => removeEvidence(evidence.id)}
+                    onclick={() => removeEvidence(evidence.id)}
                     title="Remove evidence"
                   >
                     ✖
@@ -1144,8 +1144,8 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
         present.
       </p>
       <div class="flex justify-end gap-2">
-        <button class="nes-btn" on:click={cancelDelete}>Cancel</button>
-        <button class="nes-btn is-error" on:click={confirmDelete}>Delete</button>
+        <button class="nes-btn" onclick={cancelDelete}>Cancel</button>
+        <button class="nes-btn is-error" onclick={confirmDelete}>Delete</button>
       </div>
     </div>
   </div>
@@ -1153,7 +1153,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
 
 <style>
   .animate-spin {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     from {
@@ -1178,12 +1178,12 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       0 10px 10px -5px rgba(0, 0, 0, 0.04),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
     border: 2px solid rgba(59, 130, 246, 0.2);
-    position: relative;
+    position relative;
     overflow: hidden;
   }
   .evidence-canvas-container::before {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -1195,7 +1195,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   /* Glow effect when the container that actually gets class:retro-glow wraps the canvas */
   /* Enhanced NES × N64 hybrid glow + CRT / pixel layering */
   :global(.retro-glow) .evidence-canvas-container {
-    position: relative;
+    position relative;
     --accent-a: 59 130 246; /* blue */
     --accent-b: 139 92 246; /* purple */
     --accent-c: 6 182 212; /* cyan */
@@ -1208,8 +1208,8 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       0 0 52px 10px rgb(var(--accent-d) / 0.22),
       inset 0 0 0 1px rgba(255 255 255 / 0.12),
       inset 0 0 6px 2px rgb(var(--accent-b) / 0.25);
-    animation: canvasGlow 3.4s ease-in-out infinite alternate;
-    transition:
+    animation canvasGlow 3.4s ease-in-out infinite alternate;
+    transition
       box-shadow 350ms ease,
       border-color 350ms ease,
       transform 400ms;
@@ -1220,7 +1220,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   :global(.retro-glow) .evidence-canvas-container::before {
     content: '';
     pointer-events: none;
-    position: absolute;
+    position absolute;
     inset: 0;
     border-radius: 10px;
   }
@@ -1238,7 +1238,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       radial-gradient(circle at 80% 70%, rgba(var(--accent-c) / 0.18), transparent 70%);
     mix-blend-mode: overlay;
     opacity: 0.55,
-    animation: scanDrift 9s linear infinite;
+    animation scanDrift 9s linear infinite;
   }
   /* NES-style pixel grid & edge glow */
   :global(.retro-glow) .evidence-canvas-container::after {
@@ -1248,7 +1248,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     filter: brightness(1.05) saturate(1.15);
     mix-blend-mode: soft-light;
     opacity: 0.75,
-    animation: hueShift 12s ease-in-out infinite;
+    animation hueShift 12s ease-in-out infinite;
   }
   /* Depth pop for N64 'cartridge slot' vibe when combined with .n64-depth parent */
   :global(.retro-glow .n64-depth) .evidence-canvas-container {
@@ -1265,7 +1265,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   /* YoRHa highlight pulse when drag active (parent toggles .yorha-glow) */
   :global(.yorha-glow) .evidence-canvas-container {
     outline: 2px solid rgba(var(--accent-c) / 0.8);
-    animation:
+    animation
       canvasGlow 2.1s ease-in-out infinite alternate,
       pulseRing 1.8s ease-in-out infinite;
   }
@@ -1276,15 +1276,15 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       0 0 0 1px rgba(0 255 120 / 0.4),
       0 0 12px 2px rgba(0 255 120 / 0.25),
       inset 0 0 8px rgba(0 255 120 / 0.2);
-    animation: none;
+    animation none;
     filter: contrast(1.05) saturate(0.85);
   }
   /* Accessibility: respect reduced motion */
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     :global(.retro-glow) .evidence-canvas-container,
     :global(.retro-glow) .evidence-canvas-container::before,
     :global(.retro-glow) .evidence-canvas-container::after {
-      animation: none !important;
+      animation none !important;
     }
   }
   @keyframes scanDrift {

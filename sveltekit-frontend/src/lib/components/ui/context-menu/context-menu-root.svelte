@@ -31,6 +31,6 @@
 <style>
   /* @unocss-include */
   .context-menu-root {
-    position: relative;
+    position relative;
   }
 </style>

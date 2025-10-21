@@ -39,7 +39,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         type: selectedPipeline
         enableGPU: true
         enableConcurrency: true
-        enableMemoryOptimization: true,
+        enableMemoryOptimization true,
       });
       results = [result, ...results.slice(0, 9)]; // Keep last 10 results
       updateMetrics();
@@ -196,7 +196,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
         </div>
         <div class="flex items-end">
           <Button
-            on:click={executePipeline}
+            onclick={executePipeline}
             disabled={isProcessing}
             class="w-full bits-btn bits-btn"
           >
@@ -206,29 +206,29 @@ https://svelte.dev/e/unexpected_reserved_word -->
       <!-- Advanced Controls -->
       <div class="flex flex-wrap gap-2">
         <Button class="bits-btn"
-          on:click={autoExecutePipeline}
+          onclick={autoExecutePipeline}
           disabled={isProcessing}
           variant="ghost"
         >
 🧠 Auto-Select Optimal
         <Button class="bits-btn"
-          on:click={batchProcess}
+          onclick={batchProcess}
           disabled={isProcessing}
           variant="ghost"
         >
 📦 Batch Process
         <Button class="bits-btn"
-          on:click={checkSystemHealth}
+          onclick={checkSystemHealth}
           variant="ghost"
         >
 🏥 Health Check
         <Button class="bits-btn"
-          on:click={generateReport}
+          onclick={generateReport}
           variant="ghost"
         >
 📈 Performance Report
         <Button class="bits-btn"
-          on:click={cleanup}
+          onclick={cleanup}
           variant="error"
         >
 🧹 Cleanup
@@ -249,7 +249,7 @@ https://svelte.dev/e/unexpected_reserved_word -->
           placeholder="Search across all pipelines..."
           onkeypress={(e) => e.key === 'Enter' && searchPipelines()}
         />
-        <Button class="bits-btn" on:click={searchPipelines}>
+        <Button class="bits-btn" onclick={searchPipelines}>
 🔍 Search
       </div>
       {#if searchResults}

@@ -109,7 +109,7 @@
       <span class="status-indicator {servicesHealth?.recommendationEngine ? 'online' : 'offline'}">
         Recommendation Engine {servicesHealth?.recommendationEngine ? '🟢' : '🔴'}
       </span>
-      <button on:click={checkServicesHealth} class="refresh-btn">🔄</button>
+      <button onclick={checkServicesHealth} class="refresh-btn">🔄</button>
     </div>
   </div>
   <!-- Step Indicator -->
@@ -142,7 +142,7 @@
     <div class="error-message">
       <span class="error-icon">❌</span>
       <span>{error}</span>
-      <button on:click={reset} class="retry-btn">Try Again</button>
+      <button onclick={reset} class="retry-btn">Try Again</button>
     </div>
   {/if}
   <!-- Upload Section -->
@@ -188,7 +188,7 @@
           Risk Assessment
         </label>
       </div>
-      <button on:click={processDocument} disabled={!canProcess} class="process-btn">
+      <button onclick={processDocument} disabled={!canProcess} class="process-btn">
         {isProcessing ? 'Processing...' : 'Analyze Document'}
       </button>
     </div>
@@ -322,7 +322,7 @@
                 <span class="value">{recommendation.legal_domain}</span>
               </div>
               <div class="detail">
-                <span class="label">Jurisdiction:</span>
+                <span class="label">Jurisdiction</span>
                 <span class="value">{recommendation.jurisdiction}</span>
               </div>
             </div>
@@ -341,8 +341,8 @@
   <!-- Action Buttons -->
   {#if currentStep === 'complete'}
     <div class="action-buttons">
-      <button on:click={reset} class="secondary-btn">Analyze Another Document</button>
-      <button on:click={() => ondispatch?.({ analysisResult, recommendations })} class="primary-btn">
+      <button onclick={reset} class="secondary-btn">Analyze Another Document</button>
+      <button onclick={() => ondispatch?.({ analysisResult, recommendations })} class="primary-btn">
         Export Results
       </button>
     </div>
@@ -398,11 +398,11 @@
     }
     .step {
         display: flex;
-        flex-direction: column;
+        flex-direction column;
         align-items: center;
         gap: 0.5rem;
         opacity: 0.5,
-        transition: opacity 0.3;
+        transition opacity 0.3;
     }
     .step.active {
         opacity: 1,
@@ -462,7 +462,7 @@
         border-radius: 0.5rem;
         text-align: center;
         cursor: pointer;
-        transition: border-color 0.2;
+        transition border-color 0.2;
     }
     .file-input-label: hover {
         border-color: #3b82f6;
@@ -492,7 +492,7 @@
         font-weight: 600,
         cursor: pointer;
         width: 100%;
-        transition: background 0.2;
+        transition background 0.2;
     }
     .process-btn:hover:not(:disabled) {,
         background: #2563eb;
@@ -514,7 +514,7 @@
     .progress-fill {
         height: 100%;
         background: #3b82f6;
-        transition: width 0.3;
+        transition width 0.3;
     }
     .progress-text {
         margin-top: 0.5rem;
@@ -614,7 +614,7 @@
         border: 1px solid #e5e7eb;
         border-radius: 0.75rem;
         padding: 1.5rem;
-        transition: box-shadow 0.2;
+        transition box-shadow 0.2;
     }
     .recommendation-card:hover {
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -662,7 +662,7 @@
         font-weight: 600,
         cursor: pointer;
         border: none;
-        transition: all 0.2;
+        transition all 0.2;
     }
     .primary-btn {
         background: #059669;

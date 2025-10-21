@@ -690,6 +690,58 @@
       },
       "problemMatcher": [],
       "detail": "Auto-fixes common linting errors (working directory: sveltekit-frontend)"
+    },
+    {
+      "label": "Svelte: check (json)",
+      "type": "shell",
+      "command": "npx",
+      "args": [
+        "svelte-check",
+        "--tsconfig",
+        "sveltekit-frontend/tsconfig.json"
+      ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "detail": "Run svelte-check and write output to stdout (use the compound task to also parse)"
+    },
+    {
+      "label": "Svelte: check -> JSON (file)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-Command",
+        "& { npx svelte-check --tsconfig sveltekit-frontend/tsconfig.json | Out-File -FilePath svelte-check-output.json -Encoding utf8 }"
+      ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "detail": "Run svelte-check and capture ANSI-output into svelte-check-output.json for parsing"
+    },
+    {
+      "label": "Parse svelte-check output",
+      "type": "shell",
+      "command": "node",
+      "args": ["scripts/parse-svelte-check.cjs"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "detail": "Parse the captured svelte-check output and produce top100.txt"
+    },
+    {
+      "label": "Svelte: check + parse",
+      "dependsOn": [
+        "Svelte: check -> JSON (file)",
+        "Parse svelte-check output"
+      ],
+      "dependsOrder": "sequence",
+      "type": "shell",
+      "command": "echo",
+      "args": ["Running svelte-check and parsing output..."],
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "problemMatcher": [],
+      "detail": "Compound task: run svelte-check and then the parser"
     }
   ]
 }

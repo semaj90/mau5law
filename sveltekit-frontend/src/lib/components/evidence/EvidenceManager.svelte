@@ -156,7 +156,7 @@
       const response = await fetch('/api/evidence-embeddings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'backfill' })
+        body: JSON.stringify({ action 'backfill' })
       });
       const result = await (response as { json?: unknown }).json();
       if ((result as { success?: unknown; items?: unknown; stats?: unknown; error?: unknown; duplicate?: unknown; result?: unknown; results?: unknown; title?: unknown; description?: unknown; evidence_type?: unknown; mime_type?: unknown; uploaded_at?: unknown; file_size?: unknown; similarity?: unknown }).success) {
@@ -270,7 +270,7 @@ export default ;
       </div>
       <div class="flex gap-2">
         <Button
-          on:click={loadEmbeddingStats}
+          onclick={loadEmbeddingStats}
           disabled={loading.stats}
           variant="ghost"
           class="text-sm bits-btn bits-btn"
@@ -278,7 +278,7 @@ export default ;
 {loading.stats ? 'Refreshing...' : '🔄 Refresh Stats'}
 </Button>
         <Button
-          on:click={triggerEmbeddingBackfill}
+          onclick={triggerEmbeddingBackfill}
           disabled={loading.backfill || embeddingStats.withoutEmbeddings === 0}
           variant="secondary"
           class="text-sm bits-btn bits-btn"
@@ -317,7 +317,7 @@ export default ;
             <p class="text-lg mb-2">Drop files here or click to browse</p>
             <p class="text-sm text-gray-600 mb-4">Supports PDFs, images, documents, and more</p>
             <Button class="bits-btn"
-              on:click={() =>
+              onclick={() =>
 fileInput?.click()}
               disabled={loading.upload}
             >
@@ -349,7 +349,7 @@ fileInput?.click()}
             onkeydown={(e) => e.key === 'Enter' && performSemanticSearch()}
           />
           <Button class="bits-btn"
-            on:click={performSemanticSearch}
+            onclick={performSemanticSearch}
             disabled={loading.search || !searchQuery.trim()}
           >
 {loading.search ? 'Searching...' : 'Search'}
@@ -360,7 +360,7 @@ fileInput?.click()}
             <div class="flex justify-between items-center mb-4">
               <h4 class="font-semibold">Search Results ({searchResults.length})</h4>
               <button class="nes-btn"
-                on:click={() => { showSearchResults = false; searchResults = [], }}
+                onclick={() => { showSearchResults = false; searchResults = [], }}
                 variant="ghost"
                 class="bits-btn text-sm"
               >
@@ -408,7 +408,7 @@ fileInput?.click()}
       <div class="flex justify-between items-center">
         <h3 class="nes-text is-primary">📋 Evidence Files ({evidenceFiles.length})</h3>
         <Button
-          on:click={loadEvidenceFiles}
+          onclick={loadEvidenceFiles}
           disabled={loading.files}
           variant="ghost"
           class="text-sm bits-btn bits-btn"
@@ -476,7 +476,7 @@ fileInput?.click()}
           <h4 class="error-title">Error</h4>
           <p class="error-message">{error}</p>
           <button class="nes-btn"
-            on:click={() => { error = '', }}
+            onclick={() => { error = '', }}
             variant="ghost"
             class="bits-btn mt-3 text-xs dismiss-btn"
           >
@@ -492,7 +492,7 @@ fileInput?.click()}
   .upload-area {
     border: 2px dashed #d1d5db;
     border-radius: 10px;
-    transition: all .25;
+    transition all .25;
     cursor: pointer;
     background:
       radial-gradient(circle at 30% 25%, rgba(59 130 246 / 0.08), transparent 60%),
@@ -515,12 +515,12 @@ fileInput?.click()}
     background: linear-gradient(145deg, #f9fafb, #f1f5f9);
     border-radius: 10px;
     border: 1px solid #e2e8f0;
-    position: relative;
+    position relative;
     overflow: hidden;
   }
   .stat-item::after {
     content:'';
-    position: absolute;
+    position absolute;
     inset:0,
     background:
       linear-gradient(120deg,
@@ -529,7 +529,7 @@ fileInput?.click()}
         transparent 70%);
     opacity: 0,
     transform: translateX(-30%);
-    transition: opacity .6s, transform .6;
+    transition opacity .6s, transform .6;
     pointer-events:none;
   }
   .stat-item:hover::after {
@@ -542,12 +542,12 @@ fileInput?.click()}
   }
   .evidence-file-item,
   .search-result-item {
-    transition: transform .18s ease, box-shadow .25s ease, background .25;
+    transition transform .18s ease, box-shadow .25s ease, background .25;
     background:
       linear-gradient(180deg, #ffffff, #f8fafc);
     border: 1px solid #e2e8f0;
     border-radius: 10px;
-    position: relative;
+    position relative;
   }
   .evidence-file-item: hover
   .search-result-item:hover {
@@ -571,13 +571,13 @@ fileInput?.click()}
       0 0 0 1px rgba(248 113 113 / 0.45),
       0 4px 18px -4px rgba(239 68 68 / 0.35),
       inset 0 0 12px -2px rgba(239 68 68 / 0.25);
-    position: relative;
+    position relative;
     overflow:hidden;
   }
   .error-box:: before
   .error-box::after {
     content:'';
-    position: absolute;
+    position absolute;
     inset:0;
     pointer-events:none;
   }
@@ -599,13 +599,13 @@ fileInput?.click()}
         transparent);
     width: 60px;
     transform:translateX(-120%) skewX(-12deg);
-    animation: sweep 4.2s linear infinite;
+    animation sweep 4.2s linear infinite;
   }
   .error-icon {
     font-size:1.35rem;
     line-height: 1,
     filter: drop-shadow(0 0 4px rgba(239 68 68 / 0.6));
-    animation: pulseErr 1.9s ease-in-out infinite;
+    animation pulseErr 1.9s ease-in-out infinite;
   }
   .error-title {
     font-weight: 600,
@@ -621,7 +621,7 @@ fileInput?.click()}
   /* NES / N64 inspired dismiss button */
   :global(.dismiss-btn) {
     --nes-border: #e11d48;
-    position:relative;
+    positionrelative;
     font-family: "Press Start 2P", ui-monospace, monospace;
     font-size: .55rem;
     letter-spacing: .5px;
@@ -636,7 +636,7 @@ fileInput?.click()}
       0 2px 6px -2px rgba(190 18 60 / 0.55),
       inset 0 0 0 1px #fff;
     text-shadow: 0 0 4px rgba(254 226 226 / .75);
-    transition: transform .18s, box-shadow .25s, background .25;
+    transition transform .18s, box-shadow .25s, background .25;
     will-change: transform;
     cursor: pointer;
   }
@@ -659,11 +659,11 @@ fileInput?.click()}
   }
   /* Scan + flicker */
   .retro-scan {
-    position:relative;
+    positionrelative;
   }
   .retro-scan::before {
     content:'';
-    position: absolute;
+    position absolute;
     inset:0,
     background:
       repeating-linear-gradient(
@@ -673,11 +673,11 @@ fileInput?.click()}
       );
     mix-blend-mode: multiply;
     opacity:.35;
-    animation: scanMove 9s linear infinite;
+    animation scanMove 9s linear infinite;
     pointer-events:none;
   }
   .flicker {
-    animation: flicker 4.5s linear infinite;
+    animation flicker 4.5s linear infinite;
   }
   @keyframes pulseErr {
     0%,100% { transform: scale(1); opacity:1, }
@@ -698,15 +698,15 @@ fileInput?.click()}
     98% { opacity:.55, }
     99% { opacity:.85, }
   }
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     .error-box:: after
     .error-icon,
     .retro-scan:: before
     .flicker,
     :global(.dismiss-btn),
     :global($1) {
-      animation:none !important;
-      transition:none !important;
+      animationnone !important;
+      transitionnone !important;
     }
   }
 </style>

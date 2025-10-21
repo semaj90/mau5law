@@ -34,12 +34,12 @@
   });
   // Tabs configuration
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: '📊' },
-    { id: 'cases', label: 'Cases', icon: '⚖️' },
-    { id: 'evidence', label: 'Evidence', icon: '🔍' },
-    { id: 'reports', label: 'Reports', icon: '📄' },
-    { id: 'persons', label: 'Persons', icon: '👤' },
-    { id: 'processing', label: 'Processing', icon: '⚙️' },
+    { id: 'overview', label: 'Overview', icon '📊' },
+    { id: 'cases', label: 'Cases', icon '⚖️' },
+    { id: 'evidence', label: 'Evidence', icon '🔍' },
+    { id: 'reports', label: 'Reports', icon '📄' },
+    { id: 'persons', label: 'Persons', icon '👤' },
+    { id: 'processing', label: 'Processing', icon '⚙️' },
   ];
   // Load dashboard data
   const loadDashboardData = async () => {
@@ -86,7 +86,7 @@
     } catch (err: any) {
       console.error('Dashboard load error:', err);
       error = err instanceof Error ? err.message : 'Failed to load dashboard data';
-      toast.error('Failed to load dashboard', { description: error });
+      toast.error('Failed to load dashboard', { description error });
     } finally {
       loading = false;
     }
@@ -116,7 +116,7 @@
     try {
       const caseData = {
         title: `New Case - ${new Date().toLocaleDateString()}`,
-        description: 'Quick case created from dashboard',
+        description 'Quick case created from dashboard',
         status: 'open' as const,
         priority: 'medium' as const,
       };
@@ -222,7 +222,7 @@
         </div>
         <div class="flex items-center space-x-4">
           <button
-            on:click={loadDashboardData}
+            onclick={loadDashboardData}
             class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             disabled={loading}
           >
@@ -243,7 +243,7 @@
             Refresh
           </button>
           <button
-            on:click={createQuickCase}
+            onclick={createQuickCase}
             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -262,7 +262,7 @@
       <div class="flex space-x-8">
         {#each tabs as tab}
           <button
-            on:click={() => (selectedTab = tab.id)}
+            onclick={() => (selectedTab = tab.id)}
             class="py-4 px-1 border-b-2 font-medium text-sm transition-colors"
             class:border-blue-500={selectedTab === tab.id}
             class:text-blue-600={selectedTab === tab.id}
@@ -692,7 +692,7 @@
 
 <style>
   .animate-spin {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     from {

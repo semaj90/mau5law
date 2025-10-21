@@ -165,7 +165,7 @@
           <span class="font-semibold">Performance</span>
         </div>
         <button
-          on:click={toggleVisibility}
+          onclick={toggleVisibility}
           class="text-gray-400 hover:text-white transition-colors"
           aria-label="Close performance monitor"
         >

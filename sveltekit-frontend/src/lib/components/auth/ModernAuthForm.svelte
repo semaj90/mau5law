@@ -93,12 +93,12 @@
     <!--
     NOTE: Using the non-standard 'onsubmit' attribute intentionally for Svelte 5 runes compatibility.
     See: https://github.com/sveltejs/rfcs/blob/main/text/0127-runes.md and Svelte 5 migration docs.
-    If migrating to a different event system or reverting to idiomatic Svelte, use 'on:submit={handleSubmit}' instead.
+    If migrating to a different event system or reverting to idiomatic Svelte, use 'onsubmit={handleSubmit}' instead.
     This workaround is required for compatibility with the current runes-based event handling.
 
-    MIGRATION INSTRUCTION:
+    MIGRATION INSTRUCTIon
     - If you are upgrading away from Svelte 5 runes or restoring standard Svelte event handling,
-      replace 'onsubmit={handleSubmit}' with 'on:submit={handleSubmit}' below.
+      replace 'onsubmit={handleSubmit}' with 'onsubmit={handleSubmit}' below.
   -->
     <form onsubmit={handleSubmit} class="space-y-4 mt-4">
       {#if success}
@@ -150,13 +150,13 @@
         {loading ? 'Processing...' : mode === 'login' ? 'Sign In' : 'Create Account'}
       </Button>
 
-      <!-- replace deprecated on:click with onclick attribute -->
-      <button type="button" on:click={toggleMode} class="nes-btn is-dark is-small">
+      <!-- replace deprecated onclick with onclick attribute -->
+      <button type="button" onclick={toggleMode} class="nes-btn is-dark is-small">
         {mode === 'login' ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
       </button>
     </form>
 
-    <button type="button" on:click={() => (open = false)} class="absolute right-4 top-4 nes-btn is-error is-small">
+    <button type="button" onclick={() => (open = false)} class="absolute right-4 top-4 nes-btn is-error is-small">
       ×
     </button>
   </div>

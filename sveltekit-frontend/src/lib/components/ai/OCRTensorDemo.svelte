@@ -224,7 +224,7 @@ try {
       {/if}
       <div class="action-buttons">
         <button
-          on:click={processImage}
+          onclick={processImage}
           disabled={!uploadedFile || !initialized || processing}
         >
           {#if processing}
@@ -234,13 +234,13 @@ try {
           {/if}
         </button>
         <button
-          on:click={processBatchDemo}
+          onclick={processBatchDemo}
           disabled={!initialized || processing}
         >
           📊 Batch Demo
         </button>
         <button
-          on:click={clearResults}
+          onclick={clearResults}
           disabled={results.length === 0}
         >
           🗑️ Clear Results
@@ -379,7 +379,7 @@ try {
   .status-bar.processing {
     background: #fef3c7;
     color: #92400;
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   .status-dot {
     width: 8px;
@@ -433,17 +433,17 @@ try {
     border-radius: 0.5rem;
     font-weight: 500,
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
-  .action-buttons button:disabled {
+  .action-buttons buttondisabled {
     opacity: 0.6,
     cursor: not-allowed;
   }
-  .action-buttons button:first-child {
+  .action-buttons buttonfirst-child {
     background: #3b82f6;
     color: white;
   }
-  .action-buttons button:first-child:hover:not(:disabled) {,
+  .action-buttons buttonfirst-child:hover:not(:disabled) {,
     background: #2563eb;
   }
   .metrics-grid,
@@ -455,7 +455,7 @@ try {
   .metric,
   .stat {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
   .metric label,
@@ -480,7 +480,7 @@ try {
   }
   .results-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .result-card {

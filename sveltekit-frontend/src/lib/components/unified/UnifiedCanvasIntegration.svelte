@@ -26,7 +26,7 @@ https://svelte.dev/e/attribute_duplicate -->
   		detectiveActive: false
   		aiProcessingActive: false
   		realTimeSync: false
-  		gpuAcceleration: false
+  		gpuAcceleration false
   	});
   	let performanceMetrics = $state({
   		canvasFrameRate: 60,
@@ -157,7 +157,7 @@ await initializeUnifiedSystems();
 						<Button class="bits-btn"
 							variant={viewMode === 'canvas' ? 'default' : 'ghost'}
 							size="sm"
-							on:click={() =>
+							onclick={() =>
 switchViewMode('canvas')}
 							class="h-8 px-3"
 						>
@@ -166,7 +166,7 @@ switchViewMode('canvas')}
 						<Button class="bits-btn"
 							variant={viewMode === 'board' ? 'default' : 'ghost'}
 							size="sm"
-							on:click={() =>
+							onclick={() =>
 switchViewMode('board')}
 							class="h-8 px-3"
 						>
@@ -175,7 +175,7 @@ switchViewMode('board')}
 						<Button class="bits-btn"
 							variant={viewMode === 'hybrid' ? 'default' : 'ghost'}
 							size="sm"
-							on:click={() =>
+							onclick={() =>
 switchViewMode('hybrid')}
 							class="h-8 px-3"
 						>
@@ -220,11 +220,11 @@ switchViewMode('hybrid')}
 					</div>
 				</div>
 				<div class="flex gap-2">
-					<Button class="bits-btn" variant="ghost" size="sm" on:click={syncCanvasToBoard}>
+					<Button class="bits-btn" variant="ghost" size="sm" onclick={syncCanvasToBoard}>
 Sync Canvas → Board
-					<Button class="bits-btn" variant="ghost" size="sm" on:click={syncBoardToCanvas}>
+					<Button class="bits-btn" variant="ghost" size="sm" onclick={syncBoardToCanvas}>
 Sync Board → Canvas
-					<Button class="bits-btn" variant="default" size="sm" on:click={processUnifiedAnalysis}>
+					<Button class="bits-btn" variant="default" size="sm" onclick={processUnifiedAnalysis}>
 Analyze All Evidence
 				</div>
 			</div>
@@ -335,6 +335,6 @@ Analyze All Evidence
 		}
 	}
 	.status-indicator-active {
-		animation: pulse-green 2s ease-in-out infinite;
+		animation pulse-green 2s ease-in-out infinite;
 	}
 </style>

@@ -35,7 +35,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
 
-<Dialog.Root {isOpen} on:close={closeModal}>
+<Dialog.Root {isOpen} onclose={closeModal}>
   <Dialog.Content size="lg">
     <Dialog.Header>
       <Dialog.Title>AI Summary</Dialog.Title>
@@ -64,7 +64,7 @@ https://svelte.dev/e/js_parse_error -->
             <div class="flex items-center gap-2">
               <Button
                 class="bits-btn"
-                on:click={copyToClipboard}
+                onclick={copyToClipboard}
                 variant="ghost"
                 size="sm"
                 aria-label="Copy summary to clipboard"
@@ -96,7 +96,7 @@ https://svelte.dev/e/js_parse_error -->
 
     <Dialog.Footer>
       <Dialog.Close asChild>
-        <Button class="bits-btn" on:click={closeModal} variant="secondary" aria-label="Close summary modal">
+        <Button class="bits-btn" onclick={closeModal} variant="secondary" aria-label="Close summary modal">
           <X />
           <span>Close</span>
         </Button>

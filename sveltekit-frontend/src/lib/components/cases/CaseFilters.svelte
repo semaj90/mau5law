@@ -129,7 +129,7 @@
     variant="ghost"
     size="sm"
     class="bits-btn"
-    on:click={() => sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'}
+    onclick={() => sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'}
   >
     {#if sortOrder === 'asc'}
       <SortAsc class="w-4 h-4 mr-2" />

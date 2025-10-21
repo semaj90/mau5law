@@ -48,10 +48,10 @@
     }
     evidence: {
       itemNumber: string;
-      description: string
+      description string
       chainOfCustody: string[];
       dateCollected: string
-      location: string;
+      location string;
     }
     methodology: {
       procedures: string[];
@@ -92,9 +92,9 @@
   Credentials: ${report.analyst.credentials}
   Department: ${report.analyst.department}
   EVIDENCE DETAILS
-  Description: ${report.evidence.description}
+  Description ${report.evidence.description}
   Collection Date: ${report.evidence.dateCollected}
-  Collection Location: ${report.evidence.location}
+  Collection Location ${report.evidence.location}
   Chain of Custody: ${report.evidence.chainOfCustody.join(" → ")}
   METHODOLOGY
   Procedures: ${report.methodology.procedures.join(", ")}
@@ -207,7 +207,7 @@
         </div>
         {#if allowExport}
           <button
-            on:click={exportReport}
+            onclick={exportReport}
             class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
             title="Export Report"
           >
@@ -270,7 +270,7 @@
               <strong>Date:</strong>
               {new Date(reportData.evidence.dateCollected).toLocaleString()}
             </p>
-            <p><strong>Location:</strong> {reportData.evidence.location}</p>
+            <p><strong>Location</strong> {reportData.evidence.location}</p>
           </div>
         </div>
         <div>

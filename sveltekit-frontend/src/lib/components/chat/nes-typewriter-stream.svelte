@@ -363,7 +363,7 @@
     padding: 8px;
     border: 2px solid transparent;
     word-wrap: break-word;
-    position: relative;
+    position relative;
   }
   /* Theme variations */
   .nes-classic {
@@ -394,7 +394,7 @@
   }
   /* Emphasis effect for special characters */
   .nes-typewriter-text :global(.nes-text-emphasis) {
-    animation: emphasize 0.3s ease-out;
+    animation emphasize 0.3s ease-out;
   }
   @keyframes emphasize {
     0% {
@@ -418,7 +418,7 @@
     opacity: 1,
   }
   .nes-typewriter-cursor.blinking {
-    animation: blink 1s infinite;
+    animation blink 1s infinite;
   }
   @keyframes blink {
     0%,
@@ -462,13 +462,13 @@
     }
   }
   /* Reduced motion support */
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     .nes-typewriter-cursor {
-      animation: none;
+      animation none;
       opacity: 1,
     }
     .nes-typewriter-text :global(.nes-text-emphasis) {
-      animation: none;
+      animation none;
     }
   }
 </style>

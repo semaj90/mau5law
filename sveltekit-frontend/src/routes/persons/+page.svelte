@@ -30,7 +30,7 @@
     }
     tags: string[];
     caseIds: string[];
-    position: { x?: number; y?: number; z?: number }
+    position { x?: number; y?: number; z?: number }
     createdBy?: string;
     createdAt: string;
     updatedAt: string;
@@ -58,10 +58,10 @@
       threatLevel: 'high',
       status: 'active',
       profileData: {
-        occupation: 'Software Engineer',
+        occupation 'Software Engineer',
         knownAssociates: ['Sarah Kim', 'David Rodriguez'],
-        lastKnownLocation: 'Downtown Tech District',
-        physicalDescription: '5\'10", Brown hair, Brown eyes, 180 lbs',
+        lastKnownLocation 'Downtown Tech District',
+        physicalDescription '5\'10", Brown hair, Brown eyes, 180 lbs',
         vehicleInfo: '2021 Tesla Model 3, License: 8XYZ123',
         contactInfo: 'marcus.chen@techcorp.com, (555) 012-3456',
         criminalHistory: ['Computer Fraud - 2019', 'Identity Theft - 2020'],
@@ -70,7 +70,7 @@
       },
       tags: ['cybercrime', 'fraud', 'high-tech'],
       caseIds: ['case-2024-001', 'case-2024-007'],
-      position: { x: 37.7749, y: -122.4194 },
+      position { x: 37.7749, y: -122.4194 },
       createdBy: 'detective-001',
       createdAt: '2024-12-20T10:30:00Z',
       updatedAt: '2024-12-21T15:45:00Z'
@@ -85,10 +85,10 @@
       threatLevel: 'low',
       status: 'active',
       profileData: {
-        occupation: 'Financial Analyst',
+        occupation 'Financial Analyst',
         knownAssociates: ['James Wilson', 'Maria Garcia'],
-        lastKnownLocation: 'Financial District',
-        physicalDescription: '5\'6", Black hair, Green eyes, 140 lbs',
+        lastKnownLocation 'Financial District',
+        physicalDescription '5\'6", Black hair, Green eyes, 140 lbs',
         vehicleInfo: '2020 Honda Civic, License: ABC789',
         contactInfo: 'i.santos@financegroup.com, (555) 987-6543',
         criminalHistory: [],
@@ -97,7 +97,7 @@
       },
       tags: ['finance', 'witness', 'cooperative'],
       caseIds: ['case-2024-003'],
-      position: { x: 37.7849, y: -122.4094 },
+      position { x: 37.7849, y: -122.4094 },
       createdBy: 'detective-002',
       createdAt: '2024-12-19T09:15:00Z',
       updatedAt: '2024-12-21T11:20:00Z'
@@ -112,10 +112,10 @@
       threatLevel: 'critical',
       status: 'active',
       profileData: {
-        occupation: 'Unknown',
+        occupation 'Unknown',
         knownAssociates: ['Alexei Petrov', 'Dmitri Volkov'],
-        lastKnownLocation: 'Industrial Warehouse Complex',
-        physicalDescription: '6\'2", Blonde hair, Blue eyes, 200 lbs, Scar on left cheek',
+        lastKnownLocation 'Industrial Warehouse Complex',
+        physicalDescription '6\'2", Blonde hair, Blue eyes, 200 lbs, Scar on left cheek',
         vehicleInfo: 'Multiple vehicles, frequently changes',
         contactInfo: 'Multiple burner phones',
         criminalHistory: ['Organized Crime - 2010', 'Arms Trafficking - 2015', 'Racketeering - 2018'],
@@ -124,7 +124,7 @@
       },
       tags: ['organized-crime', 'dangerous', 'armed'],
       caseIds: ['case-2024-001', 'case-2024-004', 'case-2024-008'],
-      position: { x: 37.7649, y: -122.3894 },
+      position { x: 37.7649, y: -122.3894 },
       createdBy: 'detective-001',
       createdAt: '2024-12-18T14:20:00Z',
       updatedAt: '2024-12-21T16:30:00Z'
@@ -244,7 +244,7 @@
         <div class="flex flex-wrap gap-3">
           <button
             class="nes-legal-priority-medium yorha-3d-button"
-            on:click={() => showFilters = !showFilters}
+            onclick={() => showFilters = !showFilters}
           >
             <Filter class="w-4 h-4 mr-2" />
             <span class="hidden sm:inline">FILTERS</span>
@@ -259,14 +259,14 @@
           </select>
           <button
             class="nes-legal-priority-medium yorha-3d-button"
-            on:click={exportData}
+            onclick={exportData}
           >
             <Download class="w-4 h-4 mr-2" />
             <span class="hidden sm:inline">EXPORT</span>
           </button>
           <button
             class="nes-legal-priority-high yorha-3d-button"
-            on:click={() => showAddModal = true}
+            onclick={() => showAddModal = true}
           >
             <Plus class="w-4 h-4 mr-2" />
             <span class="hidden sm:inline">ADD PERSON</span>
@@ -347,7 +347,7 @@
               </select>
               <button
                 class="px-3 py-1 bg-gray-700 border border-yellow-600 rounded text-yellow-400 hover:bg-gray-600"
-                on:click={() => sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'}
+                onclick={() => sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'}
               >
                 {sortOrder === 'asc' ? '↑' : '↓'}
               </button>
@@ -361,7 +361,7 @@
           </span>
           <button
             class="nes-legal-priority-medium yorha-3d-button text-sm"
-            on:click={clearFilters}
+            onclick={clearFilters}
           >
             Clear All Filters
           </button>
@@ -382,7 +382,7 @@
       {#if !searchQuery}
         <button
           class="nes-legal-priority-high yorha-3d-button"
-          on:click={() => showAddModal = true}
+          onclick={() => showAddModal = true}
         >
           <Plus class="w-4 h-4 mr-2" />
           Add First Person
@@ -545,7 +545,7 @@
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
   }
   .person-card {
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .person-card:hover {
     box-shadow: 0 8px 32px rgba(255, 215, 0, 0.1);

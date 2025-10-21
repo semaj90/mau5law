@@ -38,9 +38,9 @@ https://svelte.dev/e/js_parse_error -->
   // Event dispatcher
   // Camera and animation state
   let camera = {
-    position: ;
+    position ;
 { x: 0, y: 0, z: 50 },
-    rotation: { x: 0, y: 0, z: 0 },
+    rotation { x: 0, y: 0, z: 0 },
     fov: 45,
     target: { x: 0, y: 0, z: 0 }
   }
@@ -141,7 +141,7 @@ https://svelte.dev/e/js_parse_error -->
         const streamId = await neo4j3DEngine.startQUICStreaming(nodeId, {
           chunkSize: 8192,
           priority: 'high',
-          compression: true,
+          compression true,
         });
         streamingActive = true;
         ondispatch?.({ streamId });
@@ -368,7 +368,7 @@ mounted = true;
   <!-- WebGPU Canvas -->
   <canvas
     bind:this={canvasRef}
-    on:click={handleCanvasClick}
+    onclick={handleCanvasClick}
     onmousemove={handleCanvasClick}
     class="render-canvas"
     aria-label="3D Neo4j Knowledge Graph Visualization"
@@ -417,7 +417,7 @@ mounted = true;
       <div class="error-message">{error}</div>
       <button
         class="retry-button"
-        on:click={loadRecommendations}
+        onclick={loadRecommendations}
         disabled={isLoading}
       >
         Retry Loading
@@ -451,14 +451,14 @@ mounted = true;
   <div class="camera-controls">
     <button
       class="control-button"
-      on:click={() => animation.enabled = !animation.enabled}
+      onclick={() => animation.enabled = !animation.enabled}
       title="Toggle Animation"
     >
       {animation.enabled ? '⏸️' : '▶️'}
     </button>
     <button
       class="control-button"
-      on:click={() => camera = { ...camera, position: ;
+      onclick={() => camera = { ...camera, position ;
 { x: 0, y: 0, z: 50 } }}
       title="Reset Camera"
     >
@@ -477,7 +477,7 @@ mounted = true;
 <!-- Styles -->
 <style>
   .neo4j-3d-viewer {
-    position: relative;
+    position relative;
     width: 100%;
     height: 100%;
     min-height: 400px;
@@ -500,7 +500,7 @@ mounted = true;
   }
   /* Progress Bar Styles */
   .progress-container {
-    position: absolute;
+    position absolute;
     top: 20px;
     left: 20px;
     right: 20px;
@@ -518,7 +518,7 @@ mounted = true;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   }
   .progress-bar {
-    position: relative;
+    position relative;
     width: 100%;
     height: 8px;
     background: rgba(255, 255, 255, 0.1);
@@ -527,27 +527,27 @@ mounted = true;
     margin-bottom: 8px;
   }
   .progress-segment {
-    position: absolute;
+    position absolute;
     top: 0,
     height: 100%;
     background: var(--segment-color, #0ea5e9);
     width: var(--segment-width, 8.33%);
     left: calc(var(--segment-start, 0) * 1%);
     opacity: 0,
-    transition: opacity 0.2s ease;
+    transition opacity 0.2s ease;
   }
   .progress-segment.active {
     opacity: 0.6,
-    animation: pulse 0.5s ease-in-out;
+    animation pulse 0.5s ease-in-out;
   }
   .progress-fill {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     height: 100%;
     background: linear-gradient(90deg, #0ea5e9, #06b6d4);
     border-radius: 4px;
-    transition: width 0.3s ease-out;
+    transition width 0.3s ease-out;
   }
   .yorha-theme .progress-fill {
     background: linear-gradient(90deg, #00ff00, #00cc00);
@@ -562,11 +562,11 @@ mounted = true;
   .streaming-indicator {
     color: #00ff00;
     font-weight: 600,
-    animation: blink 1s infinite;
+    animation blink 1s infinite;
   }
   /* Stats Overlay */
   .stats-overlay {
-    position: absolute;
+    position absolute;
     bottom: 20px;
     left: 20px;
     background: rgba(0, 0, 0, 0.8);
@@ -597,7 +597,7 @@ mounted = true;
   }
   /* Camera Controls */
   .camera-controls {
-    position: absolute;
+    position absolute;
     bottom: 20px;
     right: 20px;
     display: flex;
@@ -612,10 +612,10 @@ mounted = true;
     color: white;
     font-size: 16px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     backdrop-filter: blur(8px);
   }
-  .control-button:hover {
+  .control-buttonhover {
     background: rgba(14, 165, 233, 0.2);
     border-color: #0ea5e9;
     transform: translateY(-2px);
@@ -623,11 +623,11 @@ mounted = true;
   .control-button.streaming {
     border-color: #00ff00;
     color: #00ff00;
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   /* Error Display */
   .error-container {
-    position: absolute;
+    position absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -657,9 +657,9 @@ mounted = true;
     border-radius: 4px;
     font-weight: 600,
     cursor: pointer;
-    transition: opacity 0.2s ease;
+    transition opacity 0.2s ease;
   }
-  .retry-button:disabled {
+  .retry-buttondisabled {
     opacity: 0.5,
     cursor: not-allowed;
   }

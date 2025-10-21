@@ -20,9 +20,9 @@
       title: string;
       client_name: string;
       case_type: string;
-      jurisdiction: string;
+      jurisdiction string;
       priority: 'low' | 'medium' | 'high' | 'urgent';
-      description: string;
+      description string;
       key_dates: string[];
     };
     documents: {
@@ -47,7 +47,7 @@
       final_review: string;
       quality_score: number;
       completeness_check: boolean;
-      ready_for_submission: boolean;
+      ready_for_submission boolean;
     };
   }
 
@@ -56,9 +56,9 @@
       title: '',
       client_name: '',
       case_type: '',
-      jurisdiction: '',
+      jurisdiction '',
       priority: 'medium',
-      description: '',
+      description '',
       key_dates: [],
     },
     documents: {
@@ -83,7 +83,7 @@
       final_review: '',
       quality_score: 0,
       completeness_check: false,
-      ready_for_submission: false,
+      ready_for_submission false,
     },
   });
 
@@ -309,13 +309,13 @@
       currentStep={$currentStep}
       {totalSteps}
       stepTitles={['Case Information', 'Document Upload', 'Evidence Analysis', 'AI Analysis', 'Review & Submit']}
-      on:stepclick={e => goToStep((e as CustomEvent).detail)}
+      onstepclick={e => goToStep((e as CustomEvent).detail)}
     />
   </div>
 
   <!-- Loading Overlay -->
   {#if $isLoading}
-    <div class="loading-overlay" transition:fade={{ duration: 300 }}>
+    <div class="loading-overlay" transitionfade={{ duration 300 }}>
       <LoadingSpinner />
       <p class="loading-message">{$processingMessage}</p>
     </div>
@@ -324,21 +324,21 @@
   <!-- Form Steps -->
   <div class="form-container" class:loading={$isLoading}>
     {#if $currentStep === 1}
-      <div transition:slide={{ duration: 300, easing: cubicOut }}>
+      <div transitionslide={{ duration 300, easing: cubicOut }}>
         <CaseInfoForm
           data={$formData.caseInfo}
-          on:update={(e: CustomEvent) => formData.update(d => ({ ...d, caseInfo: e.detail }))}
+          onupdate={(e: CustomEvent) => formData.update(d => ({ ...d, caseInfo: e.detail }))}
           next={nextStep}
           isValid={$stepValidation}
         />
       </div>
     {:else if $currentStep === 2}
-      <div transition:slide={{ duration: 300, easing: cubicOut }}>
+      <div transitionslide={{ duration 300, easing: cubicOut }}>
         {#if DocumentUploadComp}
           <svelte:component
             this={DocumentUploadComp}
             data={$formData.documents}
-            on:process={(e: CustomEvent<File[]>) => processDocuments(e.detail)}
+            onprocess={(e: CustomEvent<File[]>) => processDocuments(e.detail)}
             next={nextStep}
             prev={prevStep}
             isValid={$stepValidation}
@@ -348,13 +348,13 @@
         {/if}
       </div>
     {:else if $currentStep === 3}
-      <div transition:slide={{ duration: 300, easing: cubicOut }}>
+      <div transitionslide={{ duration 300, easing: cubicOut }}>
         {#if EvidenceAnalysisComp}
           <svelte:component
             this={EvidenceAnalysisComp}
             data={$formData.evidence}
             ocrResults={$formData.documents.ocr_results}
-            on:extract={() => extractEvidence()}
+            onextract={() => extractEvidence()}
             next={nextStep}
             prev={prevStep}
           />
@@ -366,31 +366,31 @@
           this={AIAnalysisFormAny}
           data={$formData.ai_analysis}
           caseData={$formData}
-          on:analyze={() => performAIAnalysis()}
+          onanalyze={() => performAIAnalysis()}
           next={nextStep}
           prev={prevStep}
           isValid={$stepValidation}
         />
       </div>
     {:else if $currentStep === 4}
-      <div transition:slide={{ duration: 300, easing: cubicOut }}>
+      <div transitionslide={{ duration 300, easing: cubicOut }}>
         <!-- second occurrence replaced similarly -->
         <svelte:component
           this={AIAnalysisFormAny}
           data={$formData.ai_analysis}
           caseData={$formData}
-          on:analyze={() => performAIAnalysis()}
+          onanalyze={() => performAIAnalysis()}
           next={nextStep}
           prev={prevStep}
           isValid={$stepValidation}
         />
       </div>
     {:else if $currentStep === 5}
-      <div transition:slide={{ duration: 300, easing: cubicOut }}>
+      <div transitionslide={{ duration 300, easing: cubicOut }}>
         <ReviewSubmitForm
           data={$formData.review}
           fullCaseData={$formData}
-          on:submit={() => submitForm()}
+          onsubmit={() => submitForm()}
           prev={prevStep}
           isValid={$stepValidation}
         />
@@ -414,20 +414,20 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
-    position: relative;
+    position relative;
   }
   .progress-header {
     margin-bottom: 3rem;
   }
   .loading-overlay {
-    position: fixed;
+    position fixed;
     top: 0,
     left: 0;
     right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.7);
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     z-index: 1000,
@@ -439,7 +439,7 @@
     text-align: center;
   }
   .form-container {
-    transition: opacity 0.3s ease;
+    transition opacity 0.3s ease;
   }
   .form-container.loading {
     opacity: 0.3;

@@ -234,7 +234,7 @@ https://svelte.dev/e/js_parse_error -->
   				method: 'POST',
   				headers: { 'Content-Type': 'application/json' },
   				body: JSON.stringify({,
-  					action: 'restart_service',
+  					action 'restart_service',
   					target: serviceId;
   				})
   			});
@@ -251,7 +251,7 @@ https://svelte.dev/e/js_parse_error -->
   			const response = await fetch('/api/v1/coordinator', {
   				method: 'POST',
   				headers: { 'Content-Type': 'application/json' },
-  				body: JSON.stringify({ action: 'start_all' })
+  				body: JSON.stringify({ action 'start_all' })
   			});
   			if (response.ok) {
   				console.log('Starting all services...');
@@ -266,7 +266,7 @@ https://svelte.dev/e/js_parse_error -->
   			const response = await fetch('/api/v1/coordinator', {
   				method: 'POST',
   				headers: { 'Content-Type': 'application/json' },
-  				body: JSON.stringify({ action: 'force_health_check' })
+  				body: JSON.stringify({ action 'force_health_check' })
   			});
   			if (response.ok) {
   				console.log('Forced health check initiated');
@@ -321,7 +321,7 @@ https://svelte.dev/e/js_parse_error -->
       <p class="text-gray-600 mt-1">Legal AI Platform - CUDA GPU Integration Status</p>
     </div>
     <button
-      on:click={fetchHealth}
+      onclick={fetchHealth}
       class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
       disabled={$loading}
     >

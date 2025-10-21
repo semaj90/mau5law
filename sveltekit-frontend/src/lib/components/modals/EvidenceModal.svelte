@@ -16,7 +16,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     item: {
       jsonData: {
         title: string;
-        description: string;
+        description string;
         tags?: string[];
         tagsString?: string;
         type?: string;
@@ -35,8 +35,8 @@ https://svelte.dev/e/attribute_invalid_name -->
     initial: 'view',
     context: { item },
     states: {
-      view: { on: { EDIT: 'edit' } },
-      edit: { on: { SAVE: 'view', CANCEL: 'view' } }
+      view: { on { EDIT: 'edit' } },
+      edit: { on { SAVE: 'view', CANCEL: 'view' } }
     }
   });
   // Use initialState property for xstate v5+ or .initialState for v4
@@ -88,7 +88,7 @@ form = await superValidate(zod(evidenceSchema), { initialValues: item
         <!-- Add other view-only fields as needed -->
       </div>
       <div class="flex gap-2 mt-2">
-        <Button class="bits-btn" on:click={handleEdit}>
+        <Button class="bits-btn" onclick={handleEdit}>
 Edit
       </div>
     {:else}
@@ -100,13 +100,13 @@ Edit
         <div class="flex gap-2 mt-2">
           <Button type="submit" class="uno-bg-green-600 uno-text-white uno-px-3 uno-py-1 uno-rounded bits-btn bits-btn">
 Save
-          <Button class="bits-btn" variant="ghost" on:click={handleCancel}>
+          <Button class="bits-btn" variant="ghost" onclick={handleCancel}>
 Cancel
         </div>
       </form>
     {/if}
     <div class="mt-4 flex justify-end">
-      <Button class="bits-btn" on:click={() =>
+      <Button class="bits-btn" onclick={() =>
 (open = false)} variant="ghost">Close
     </div>
   </div>

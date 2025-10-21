@@ -15,8 +15,8 @@ https://svelte.dev/e/js_parse_error -->
   interface CommandItem {
     id: string;
     title: string;
-    description: string;
-    icon: unknown;
+    description string;
+    icon unknown;
     category: string;
     href?: string;
     shortcut?: string[];
@@ -41,8 +41,8 @@ https://svelte.dev/e/js_parse_error -->
     {
       id: 'nav-dashboard',
       title: 'Dashboard',
-      description: 'Overview of cases and evidence',
-      icon: Search,
+      description 'Overview of cases and evidence',
+      icon Search,
       category: 'Navigation',
       href: '/',
       shortcut: ['⌘', 'H'],
@@ -50,8 +50,8 @@ https://svelte.dev/e/js_parse_error -->
     {
       id: 'nav-evidence',
       title: 'Evidence Management',
-      description: 'Upload and analyze evidence',
-      icon: File,
+      description 'Upload and analyze evidence',
+      icon File,
       category: 'Navigation',
       href: '/evidence',
       shortcut: ['⌘', 'E'],
@@ -59,8 +59,8 @@ https://svelte.dev/e/js_parse_error -->
     {
       id: 'nav-cases',
       title: 'Case Management',
-      description: 'Manage legal cases and documents',
-      icon: Briefcase,
+      description 'Manage legal cases and documents',
+      icon Briefcase,
       category: 'Navigation',
       href: '/cases',
       shortcut: ['⌘', 'C'],
@@ -69,35 +69,35 @@ https://svelte.dev/e/js_parse_error -->
     {
       id: 'action-new-case',
       title: 'Create New Case',
-      description: 'Start a new legal case',
-      icon: Briefcase,
+      description 'Start a new legal case',
+      icon Briefcase,
       category: 'Actions',
-      action: () => console.log('Create new case'),
+      action () => console.log('Create new case'),
       shortcut: ['⌘', 'N'],
     },
     {
       id: 'action-upload-evidence',
       title: 'Upload Evidence',
-      description: 'Add new evidence to a case',
-      icon: File,
+      description 'Add new evidence to a case',
+      icon File,
       category: 'Actions',
-      action: () => console.log('Upload evidence'),
+      action () => console.log('Upload evidence'),
       shortcut: ['⌘', 'U'],
     },
     // Settings
     {
       id: 'settings-profile',
       title: 'Profile Settings',
-      description: 'Manage your user profile',
-      icon: UserIcon,
+      description 'Manage your user profile',
+      icon UserIcon,
       category: 'Settings',
       href: '/profile',
     },
     {
       id: 'settings-system',
       title: 'System Settings',
-      description: 'Configure system preferences',
-      icon: Settings,
+      description 'Configure system preferences',
+      icon Settings,
       category: 'Settings',
       href: '/settings',
     },
@@ -154,7 +154,7 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Backdrop -->
   <div
     class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
-    on:click={close}
+    onclick={close}
     role="button"
     tabindex="0"
     keydown={e => e.key === 'Enter' && close()}
@@ -163,7 +163,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg">
       <div
         class="bg-nier-surface border border-nier-gray rounded-lg shadow-2xl nier-border-glow"
-        on:click={e => e.stopPropagation()}
+        onclick={e => e.stopPropagation()}
         role="dialog"
         tabindex="0"
       >
@@ -207,7 +207,7 @@ https://svelte.dev/e/js_parse_error -->
                         ? 'bg-harvard-crimson text-white shadow-nier-glow'
                         : 'hover:bg-nier-surface-light text-foreground'
                     )}
-                    on:click={() => selectItem(item)}
+                    onclick={() => selectItem(item)}
                     onmouseenter={() => (selectedIndex = globalIndex)}
                   >
                     <div class="flex items-center">
@@ -293,12 +293,12 @@ https://svelte.dev/e/js_parse_error -->
 <style>
   /* @unocss-include */
   .nier-border-glow {
-    position: relative;
+    position relative;
     box-shadow: 0 0 30px rgba(165, 28, 48, 0.3);
   }
   .nier-border-glow::before {
     content: '';
-    position: absolute;
+    position absolute;
     inset: -1px;
     padding: 1px;
     background: linear-gradient(45deg, var(--color-accent-crimson), transparent, var(--color-accent-gold));

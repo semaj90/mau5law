@@ -201,7 +201,7 @@ https://svelte.dev/e/js_parse_error -->
     ondispatch?.({ step: 'evidence', data: formData });
   }
 </script>
-<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg" transition:fade>
+<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg" transitionfade>
   <div class="mb-8">
     <h2 class="text-2xl font-bold text-gray-900 mb-2">Evidence Analysis</h2>
     <p class="text-gray-600">Extract entities, identify key facts, and analyze legal issues from uploaded documents</p>
@@ -217,7 +217,7 @@ https://svelte.dev/e/js_parse_error -->
           </p>
         </div>
         <Button.Root
-          on:click={performAutomatedAnalysis}
+          onclick={performAutomatedAnalysis}
           class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
         >
           🤖 Start Analysis
@@ -227,7 +227,7 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
   <!-- Analysis Progress -->
   {#if isAnalyzing}
-    <div class="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-4" transition:slide>
+    <div class="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-4" transitionslide>
       <div class="space-y-3">
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-medium text-blue-900">Analyzing Documents...</h3>
@@ -249,7 +249,7 @@ https://svelte.dev/e/js_parse_error -->
     {#if formData.extracted_entities.length > 0}
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {#each formData.extracted_entities as entity, index}
-          <div class="bg-gray-50 border border-gray-200 rounded-lg p-3" transition:fade>
+          <div class="bg-gray-50 border border-gray-200 rounded-lg p-3" transitionfade>
             <div class="flex items-center justify-between">
               <div class="flex-1 min-w-0">
                 <p class="text-sm font-medium text-gray-900 truncate">{entity.value}</p>
@@ -260,7 +260,7 @@ https://svelte.dev/e/js_parse_error -->
                   {Math.round(entity.confidence * 100)}%
                 </span>
                 <button class="nes-btn".Root
-                  on:click={() => removeEntity(index)}
+                  onclick={() => removeEntity(index)}
                   class="bits-btn p-1 text-red-600 hover:text-red-800 focus:outline-none"
                 >
                   ×
@@ -279,7 +279,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-lg font-medium text-gray-900">Key Facts</h3>
       <Button.Root
-        on:click={addKeyFact}
+        onclick={addKeyFact}
         class="px-3 py-1 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 bits-btn"
       >
         + Add Fact
@@ -288,7 +288,7 @@ https://svelte.dev/e/js_parse_error -->
     {#if formData.key_facts.length > 0}
       <div class="space-y-3">
         {#each formData.key_facts as fact, index}
-          <div class="flex gap-3" transition:fade>
+          <div class="flex gap-3" transitionfade>
             <div class="flex-1">
               <textarease;
                 bind:value={formData.key_facts[index]}
@@ -298,7 +298,7 @@ https://svelte.dev/e/js_parse_error -->
               ></textarea>
             </div>
             <button class="nes-btn".Root
-              on:click={() => removeKeyFact(index)}
+              onclick={() => removeKeyFact(index)}
               class="px-3 py-2 text-red-600 hover:text-red-800 focus:outline-none bits-btn"
             >
               Remove
@@ -315,7 +315,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-lg font-medium text-gray-900">Legal Issues</h3>
       <Button.Root
-        on:click={addLegalIssue}
+        onclick={addLegalIssue}
         class="px-3 py-1 text-sm bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 bits-btn"
       >
         + Add Issue
@@ -324,7 +324,7 @@ https://svelte.dev/e/js_parse_error -->
     {#if formData.legal_issues.length > 0}
       <div class="space-y-3">
         {#each formData.legal_issues as issue, index}
-          <div class="flex gap-3" transition:fade>
+          <div class="flex gap-3" transitionfade>
             <select;
               bind:value={formData.legal_issues[index]}
               class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -335,7 +335,7 @@ https://svelte.dev/e/js_parse_error -->
               {/each}
             </select>
             <button class="nes-btn".Root
-              on:click={() => removeLegalIssue(index)}
+              onclick={() => removeLegalIssue(index)}
               class="px-3 py-2 text-red-600 hover:text-red-800 focus:outline-none bits-btn"
             >
               Remove
@@ -353,7 +353,7 @@ https://svelte.dev/e/js_parse_error -->
       <h3 class="text-lg font-medium text-gray-900 mb-4">Relevant Precedents</h3>
       <div class="space-y-3">
         {#each formData.precedents as precedent}
-          <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4" transition:fade>
+          <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4" transitionfade>
             <div class="flex items-start justify-between">
               <div class="flex-1">
                 <h4 class="text-sm font-medium text-yellow-900">{precedent.case_name}</h4>
@@ -371,20 +371,20 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Form Actions -->
   <div class="flex justify-between pt-6 border-t border-gray-200">
     <Button.Root
-      on:click={handlePrevious}
+      onclick={handlePrevious}
       class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
     >
       ← Previous
     </Button.Root>
     <div class="flex space-x-3">
       <Button.Root
-        on:click={handleSaveDraft}
+        onclick={handleSaveDraft}
         class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 bits-btn"
       >
         Save Draft
       </Button.Root>
       <Button.Root
-        on:click={handleNext}
+        onclick={handleNext}
         disabled={formData.key_facts.length === 0}
         class="px-6 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed bits-btn"
       >

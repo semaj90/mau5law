@@ -42,7 +42,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     tokensPerSecond: 0,
     latency: 0,
     cacheHitRate: 0,
-    gpuUtilization: 0, // fixed trailing semicolon -> comma
+    gpuUtilization 0, // fixed trailing semicolon -> comma
   });
   // Gemma3 Bridge Instance
   let gemma3Bridge = $state<Gemma3WASMBridge | null >(null);
@@ -79,7 +79,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     tokensPerSecond: number;
     latency: number;
     cacheHitRate: number;
-    gpuUtilization: number;
+    gpuUtilization number;
   }
   // State machine for chat workflow
   const chatMachine = createMachine({
@@ -95,7 +95,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     },
     states: {
       idle: {
-        on: {
+        on {
           SEND_MESSAGE: {
             target: 'processing',
             actions: ['storeQuery'], // <- changed: previously ended with a semicolon which caused parse error
@@ -484,14 +484,14 @@ https://svelte.dev/e/attribute_invalid_name -->
       </ScrollArea>
       <!-- Input Area -->
       <div class="p-4 border-t">
-        <form on:submit|preventDefault={sendMessage} class="flex gap-2">
+        <form onsubmit|preventDefault={sendMessage} class="flex gap-2">
           <Textarea
             bind:value={userInput}
             placeholder="Ask a legal question..."
             class="flex-1"
             rows={3}
             disabled={ $isProcessing }  <!-- markup store access is OK here -->
-            on:keydown={(e: KeyboardEvent) => {
+            onkeydown={(e: KeyboardEvent) => {
               if ((e as KeyboardEvent).key === 'Enter' && !(e as KeyboardEvent).shiftKey) {
                 e.preventDefault();
                 sendMessage();

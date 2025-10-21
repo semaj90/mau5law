@@ -121,7 +121,7 @@
         </div>
 
         <div class="search-actions">
-          <Button on:click={performVectorSearch} disabled={!query.trim() || loading} class="search-button">
+          <Button onclick={performVectorSearch} disabled={!query.trim() || loading} class="search-button">
             {#if loading}
               🔄 Searching...
             {:else}
@@ -275,7 +275,7 @@
 
   .option-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
 
@@ -321,7 +321,7 @@
     border: 3px solid rgba(0, 204, 255, 0.3);
     border-top: 3px solid var(--text-primary, #00ccff);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
 
@@ -366,7 +366,7 @@
   .result-card {
     background: var(--surface-secondary, #111111);
     border: 1px solid var(--border-primary, #00ccff);
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
 
   .result-card:hover {
@@ -455,7 +455,7 @@
     }
 
     .results-header {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
       gap: 0.5rem;
     }

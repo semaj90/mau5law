@@ -305,28 +305,28 @@
         </div>
         <div class="nier-footer flex justify-between items-center mt-4 gap-2">
           {#if isEditing}
-            <button type="button" class="nier-btn nier-btn-accent" on:click={saveChanges}><Save class="w-4 h-4" /> Save</button>
-            <button type="button" class="nier-btn nier-nes-btn" on:click={cancelEditing}><X class="w-4 h-4" /> Cancel</button>
+            <button type="button" class="nier-btn nier-btn-accent" onclick={saveChanges}><Save class="w-4 h-4" /> Save</button>
+            <button type="button" class="nier-btn nier-nes-btn" onclick={cancelEditing}><X class="w-4 h-4" /> Cancel</button>
           {:else}
-            <button type="button" class="nier-btn nier-nes-btn" on:click={startEditing}><Edit class="w-4 h-4" /> Edit</button>
-            <button type="button" class="nier-btn nier-nes-btn" on:click={summarizePOI}><Sparkles class="w-4 h-4" /> Summarize</button>
+            <button type="button" class="nier-btn nier-nes-btn" onclick={startEditing}><Edit class="w-4 h-4" /> Edit</button>
+            <button type="button" class="nier-btn nier-nes-btn" onclick={summarizePOI}><Sparkles class="w-4 h-4" /> Summarize</button>
           {/if}
         </div>
       </div>
     </div>
   </ContextMenu.Trigger>
   <ContextMenu.Content class="container mx-auto px-4">
-    <ContextMenu.Item on:select={startEditing}>
+    <ContextMenu.Item onselect={startEditing}>
       <Edit class="container mx-auto px-4" />
       Edit Profile
     </ContextMenu.Item>
-    <ContextMenu.Item on:select={summarizePOI}>
+    <ContextMenu.Item onselect={summarizePOI}>
       <Sparkles class="container mx-auto px-4" />
       AI Summary
     </ContextMenu.Item>
     <ContextMenu.Separator />
     <ContextMenu.Item;
-      on:select={() => {
+      onselect={() => {
         poi = { ...poi, threatLevel: "low" }
         dispatch('update', poi);
       }}
@@ -335,7 +335,7 @@
       Low
     </ContextMenu.Item>
     <ContextMenu.Item
-      on:select={() => {
+      onselect={() => {
         poi = { ...poi, threatLevel: "medium" }
         dispatch('update', poi);
       }}
@@ -344,7 +344,7 @@
       Medium
     </ContextMenu.Item>
     <ContextMenu.Item
-      on:select={() => {
+      onselect={() => {
         poi = { ...poi, threatLevel: "high" }
         dispatch('update', poi);
       }}
@@ -353,7 +353,7 @@
       High
     </ContextMenu.Item>
     <ContextMenu.Separator />
-    <ContextMenu.Item on:select={() => dispatch('delete', poi.id)}>
+    <ContextMenu.Item onselect={() => dispatch('delete', poi.id)}>
       <X class="container mx-auto px-4" />
       Delete POI
     </ContextMenu.Item>
@@ -405,7 +405,7 @@
   font-size: 1em;
   margin-top: 0.2em;
   margin-bottom: 0.2em;
-  transition: border 0.2;
+  transition border 0.2;
 }
 .nier-input: focus {
   border-color: #a3e7fc;
@@ -420,7 +420,7 @@
   font-size: 1em;
   font-weight: 600,
   cursor: pointer;
-  transition: background 0.2s, color 0.2s, border 0.2;
+  transition background 0.2s, color 0.2s, border 0.2;
   display: inline-flex;
   align-items: center;
   gap: 0.4em;

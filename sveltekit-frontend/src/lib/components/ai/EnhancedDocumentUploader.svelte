@@ -395,14 +395,14 @@
     bind:this={dropZone}
     class="drop-zone"
     class:dragging={$isDragging}
-    on:dragover={handleDragOver}
-    on:dragleave={handleDragLeave}
-    on:drop={handleDrop}
+    ondragover={handleDragOver}
+    ondragleave={handleDragLeave}
+    ondrop={handleDrop}
     role="button"
     aria-label="Drop zone"
     tabindex="0"
-    on:click={() => fileInput?.click()}
-    on:keydown={e => e.key === 'Enter' && fileInput?.click()}
+    onclick={() => fileInput?.click()}
+    onkeydown={e => e.key === 'Enter' && fileInput?.click()}
   >
     <div class="drop-zone-content">
       <Upload class="drop-zone-icon" size={48} />
@@ -420,7 +420,7 @@
         bind:this={fileInput}
         multiple
         accept={acceptedTypes}
-        on:change={handleFileSelect}
+        onchange={handleFileSelect}
         aria-hidden="true"
         class="sr-only"
       />
@@ -484,7 +484,7 @@
                       class="bits-btn"
                       variant="ghost"
                       size="sm"
-                      on:click={() => openMetadataDialog(file)}
+                      onclick={() => openMetadataDialog(file)}
                     >
                       Edit
                     </svelte:component>
@@ -494,7 +494,7 @@
                     class="bits-btn"
                     variant="ghost"
                     size="sm"
-                    on:click={() => removeFile(file.id)}
+                    onclick={() => removeFile(file.id)}
                     disabled={file.status === 'uploading' || file.status === 'processing'}
                   >
                     <X size={16} />
@@ -511,7 +511,7 @@
       <svelte:component
         this={ButtonComponent}
         class="bits-btn mr-4"
-        on:click={uploadFiles}
+        onclick={uploadFiles}
         disabled={$isProcessing || $files.every(f => f.status !== 'pending')}
       >
         {#if $isProcessing}
@@ -526,7 +526,7 @@
         this={ButtonComponent}
         class="bits-btn"
         variant="ghost"
-        on:click={() => files.set([])}
+        onclick={() => files.set([])}
         disabled={$isProcessing}
       >
         Clear All
@@ -599,10 +599,10 @@
             </div>
           </div>
           <div class="dialog-actions">
-            <svelte:component this={ButtonComponent} class="bits-btn" variant="ghost" on:click={cancelMetadataDialog}>
+            <svelte:component this={ButtonComponent} class="bits-btn" variant="ghost" onclick={cancelMetadataDialog}>
               Cancel
             </svelte:component>
-            <svelte:component this={ButtonComponent} class="bits-btn" on:click={saveMetadataFromDialog}>
+            <svelte:component this={ButtonComponent} class="bits-btn" onclick={saveMetadataFromDialog}>
               Save
             </svelte:component>
           </div>
@@ -622,7 +622,7 @@
     padding: 2rem;
     text-align: center;
     cursor: pointer;
-    transition:
+    transition
       border-color 0.2s,
       background 0.2s;
     background: #f9fafb;
@@ -658,7 +658,7 @@
     margin-bottom: 0.75rem;
   }
   .file-item {
-    transition: box-shadow 0.2s;
+    transition box-shadow 0.2s;
   }
   .file-item:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -710,7 +710,7 @@
   }
   .file-actions {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: flex-end;
     gap: 0.5rem;
   }
@@ -730,7 +730,7 @@
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .dialog-actions {

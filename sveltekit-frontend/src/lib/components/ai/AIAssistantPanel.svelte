@@ -71,7 +71,7 @@
         console.log('🚀 AI Assistant acceleration enabled');
       }
     } catch (error) {
-      console.error('Failed to initialize acceleration:', error);
+      console.error('Failed to initialize acceleration', error);
       accelerationStatus = 'error';
     }
   }
@@ -84,7 +84,7 @@
     try {
       // Use the unified store's sendMessage method with acceleration support
       await aiAssistant.sendMessage(caseId, prompt, selectedEvidenceIds, {
-        useAcceleration: useAcceleration && accelerationStatus === 'ready',
+        useAcceleration useAcceleration && accelerationStatus === 'ready',
         includeHistory: true,
         legalContext: `Evidence IDs: ${selectedEvidenceIds.join(', ')}`,
       });
@@ -104,7 +104,7 @@
           ? `Please analyze evidence item ${selectedEvidenceIds[0]} and provide insights.`
           : `Please analyze the connections between evidence items: ${selectedEvidenceIds.join(', ')}`;
       await aiAssistant.sendMessage(caseId, prompt, selectedEvidenceIds, {
-        useAcceleration: useAcceleration && accelerationStatus === 'ready',
+        useAcceleration useAcceleration && accelerationStatus === 'ready',
         legalContext: 'Evidence analysis request',
       });
     } catch (error) {
@@ -118,7 +118,7 @@
     try {
       const prompt = 'Based on the current evidence, what should be the next steps in this investigation?';
       const response = await aiAssistant.sendMessage(caseId, prompt, selectedEvidenceIds, {
-        useAcceleration: useAcceleration && accelerationStatus === 'ready',
+        useAcceleration useAcceleration && accelerationStatus === 'ready',
         legalContext: 'Investigation planning',
       });
       // Trigger action suggestions in parent component
@@ -179,7 +179,7 @@
               : ''} {accelerationStatus === 'initializing' ? 'initializing' : ''} {accelerationStatus === 'error'
               ? 'error'
               : ''}"
-            on:click={() => {
+            onclick={() => {
               useAcceleration = !useAcceleration;
               if (useAcceleration && accelerationStatus === 'disabled') {
                 initializeAcceleration();
@@ -197,7 +197,7 @@
         <Button
           size="sm"
           variant={currentContext === 'general' ? 'default' : 'outline'}
-          on:click={() => setContext('general')}
+          onclick={() => setContext('general')}
           class="text-xs"
         >
           General
@@ -205,7 +205,7 @@
         <Button
           size="sm"
           variant={currentContext === 'analysis' ? 'default' : 'outline'}
-          on:click={() => setContext('analysis')}
+          onclick={() => setContext('analysis')}
           class="text-xs"
         >
           Analysis
@@ -213,7 +213,7 @@
         <Button
           size="sm"
           variant={currentContext === 'connection' ? 'default' : 'outline'}
-          on:click={() => setContext('connection')}
+          onclick={() => setContext('connection')}
           class="text-xs"
         >
           Connections
@@ -221,7 +221,7 @@
         <Button
           size="sm"
           variant={currentContext === 'investigation' ? 'default' : 'outline'}
-          on:click={() => setContext('investigation')}
+          onclick={() => setContext('investigation')}
           class="text-xs"
         >
           Next Steps
@@ -258,7 +258,7 @@
                     <button
                       type="button"
                       class="evidence-ref-btn text-xs bg-primary/10 text-primary px-2 py-1 rounded hover:bg-primary/20 transition-colors"
-                      on:click={() => onEvidenceSelect?.({ evidenceId })}
+                      onclick={() => onEvidenceSelect?.({ evidenceId })}
                       aria-label={`Select evidence ${evidenceId}`}
                     >
                       {evidenceId}
@@ -276,14 +276,14 @@
           <Button
             size="sm"
             variant="ghost"
-            on:click={analyzeSelectedEvidence}
+            onclick={analyzeSelectedEvidence}
             disabled={selectedEvidenceIds.length === 0 || isLoading}
             class="text-xs"
           >
             <FileText class="w-3 h-3 mr-1" />
             Analyze Selected
           </Button>
-          <Button size="sm" variant="ghost" on:click={suggestNextSteps} disabled={isLoading} class="text-xs">
+          <Button size="sm" variant="ghost" onclick={suggestNextSteps} disabled={isLoading} class="text-xs">
             <Search class="w-3 h-3 mr-1" />
             Next Steps
           </Button>
@@ -292,7 +292,7 @@
       <!-- AI Search Input Area -->
       <div class="input-area">
         {#if AISearchBarComponent}
-          <!-- Dynamic components are supported by default in Svelte runes - use direct element and on:search -->
+          <!-- Dynamic components are supported by default in Svelte runes - use direct element and onsearch -->
           <AISearchBarComponent
             placeholder={`Ask about ${currentContext === 'general' ? 'the case' : currentContext}...`}
             userContext={{
@@ -301,7 +301,7 @@
               context: currentContext,
             }}
             analyticsLog={(event: CustomEvent) => console.log('AI Search Analytics:', event)}
-            on:search={async (e: CustomEvent<string>) => {
+            onsearch={async (e: CustomEvent<string>) => {
               const query = e.detail;
               userInput = query;
               await handleSendMessage();
@@ -312,7 +312,7 @@
       <!-- Acceleration Results Panel -->
       {#if useAcceleration && lastAccelerationResults}
         <div class="acceleration-panel">
-          <button class="acceleration-header" on:click={() => (showSuggestions = !showSuggestions)}>
+          <button class="acceleration-header" onclick={() => (showSuggestions = !showSuggestions)}>
             <Zap class="w-4 h-4" />
             <span>GPU Acceleration Results</span>
           </button>
@@ -326,7 +326,7 @@
                   >
                 </div>
                 <div class="metric">
-                  <span class="metric-label">Acceleration:</span>
+                  <span class="metric-label">Acceleration</span>
                   <span class="metric-value">{lastAccelerationResults.processingMetrics.accelerationUsed}</span>
                 </div>
                 <div class="metric">
@@ -356,14 +356,14 @@
       <!-- Insights Panel -->
       {#if showInsights && insights.length > 0}
         <div class="insights-panel">
-          <button class="insights-header" on:click={() => (showInsights = !showInsights)}>
+          <button class="insights-header" onclick={() => (showInsights = !showInsights)}>
             <Lightbulb class="w-4 h-4" />
             <span>AI Insights ({insights.length})</span>
           </button>
           {#if showInsights}
             <div class="insights-content">
               {#each insights.slice(0, 3) as insight}
-                <button class="insight-item" on:click={() => handleInsightClick(insight)}>
+                <button class="insight-item" onclick={() => handleInsightClick(insight)}>
                   <div class="insight-type">{insight.type}</div>
                   <div class="insight-description">{insight.description}</div>
                   <div class="insight-confidence">
@@ -415,7 +415,7 @@
     background-color: rgba(234, 179, 8, 0.08); /* yellow-500/10 */
     color: #b45309; /* yellow-600 */
     border-color: rgba(234, 179, 8, 0.12);
-    animation: pulse 2s infinite;
+    animation pulse 2s infinite;
   }
   .acceleration-toggle.error {
     /* @apply bg-red-500/10 text-red-600 border-red-500/20; */

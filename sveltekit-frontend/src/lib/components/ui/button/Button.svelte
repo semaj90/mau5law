@@ -195,7 +195,7 @@
     border: 2px solid currentColor;
     border-right-color: transparent;
     border-radius: 50%;
-    animation: spin 0.75s linear infinite;
+    animation spin 0.75s linear infinite;
     display: inline-block;
     vertical-align: middle;
   }

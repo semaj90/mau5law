@@ -207,7 +207,7 @@ if (browser) {
         }
       }
     } catch (error) {
-      console.warn('Failed to initialize chat session:', error);
+      console.warn('Failed to initialize chat session', error);
     }
   }
   /**
@@ -1066,7 +1066,7 @@ if (browser) {
             {/each}
           </div>
           <!-- Settings Toggle -->
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 (showSettings = !showSettings)}>
             <Settings class="w-4 h-4" />
 </Button>
@@ -1146,7 +1146,7 @@ if (browser) {
               </div>
               <div class="space-y-1 text-gray-600">
                 {#if currentSessionId}
-                  <div>Session: {currentSessionId.slice(0, 8)}...</div>
+                  <div>Session {currentSessionId.slice(0, 8)}...</div>
                 {/if}
                 {#if lastSyncTime}
                   <div>Last Sync: {lastSyncTime.toLocaleTimeString()}</div>
@@ -1295,7 +1295,7 @@ if (browser) {
           </div>
           <!-- Message Actions -->
           <div class="flex-shrink-0 flex flex-col gap-1">
-            <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
+            <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 copyToClipboard(message.content)}>
               <FileText class="w-3 h-3" />
 </Button>
@@ -1304,7 +1304,7 @@ copyToClipboard(message.content)}>
       </div>
     {/each}
     {#if isProcessing}
-      <div class="flex items-center justify-center py-4" transition:fade>
+      <div class="flex items-center justify-center py-4" transitionfade>
         <div class="flex items-center gap-2 text-gray-600">
           <Loader2 class="w-4 h-4 animate-spin" />
           <span>Processing with advanced AI pipeline...</span>
@@ -1321,7 +1321,7 @@ copyToClipboard(message.content)}>
       keydown={handleKeyDown}
       disabled={isProcessing}
       class="flex-1" />
-    <Button class="bits-btn" on:click={sendMessage} disabled={!currentInput.trim() || isProcessing}>
+    <Button class="bits-btn" onclick={sendMessage} disabled={!currentInput.trim() || isProcessing}>
 {#if isProcessing}
         <Loader2 class="w-4 h-4 animate-spin" />
       {:else}
@@ -1335,7 +1335,7 @@ copyToClipboard(message.content)}>
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center justify-between">
           Detailed Analysis
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={() =>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() =>
 (showAdvancedAnalysis = false)}>
             ×
 </Button>
@@ -1378,7 +1378,7 @@ copyToClipboard(message.content)}>
   :global(.typewriter-cursor) {
     display: inline-block;
     color: #3B82F6;
-    animation: blink 1.2s infinite;
+    animation blink 1.2s infinite;
     font-weight: bold;
     margin-left: 2px;
   }
@@ -1392,13 +1392,13 @@ copyToClipboard(message.content)}>
   }
   /* Streaming message container */
   .streaming-message {
-    position: relative;
+    position relative;
     overflow: hidden;
   }
   /* Character reveal animation */
   .streaming-character {
     opacity: 0,
-    animation: characterReveal 0.1s ease-in forward;
+    animation characterReveal 0.1s ease-in forward;
   }
   @keyframes characterReveal {
     from {
@@ -1414,7 +1414,7 @@ copyToClipboard(message.content)}>
   .streaming-chunk {
     display: inline-block;
     opacity: 0,
-    animation: chunkFadeIn 0.3s ease-out forward;
+    animation chunkFadeIn 0.3s ease-out forward;
   }
   @keyframes chunkFadeIn {
     from {
@@ -1441,7 +1441,7 @@ copyToClipboard(message.content)}>
     height: 4px;
     background: currentColor;
     border-radius: 50%;
-    animation: pulse 1.5s infinite;
+    animation pulse 1.5s infinite;
   }
   @keyframes pulse {
     0%, 100% {
@@ -1473,7 +1473,7 @@ copyToClipboard(message.content)}>
     width: 20px;
     border-radius: 50%;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   input[type="range"]::-webkit-slider-thumb:hover {
     background: #2563EB;
@@ -1492,7 +1492,7 @@ copyToClipboard(message.content)}>
     border-radius: 50%;
     border: none;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   input[type="range"]::-moz-range-thumb:hover {
     background: #2563EB;
@@ -1500,7 +1500,7 @@ copyToClipboard(message.content)}>
   }
   /* Enhanced message animations */
   .message-bubble {
-    animation: messageSlideIn 0.3s ease-out;
+    animation messageSlideIn 0.3s ease-out;
   }
   @keyframes messageSlideIn {
     from {
@@ -1522,7 +1522,7 @@ copyToClipboard(message.content)}>
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    animation: streamingPulse 2s infinite;
+    animation streamingPulse 2s infinite;
   }
   @keyframes streamingPulse {
     0%, 100% {

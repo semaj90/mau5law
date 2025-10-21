@@ -173,7 +173,7 @@ https://svelte.dev/e/expected_token -->
         ctx.fillRect(0, 0, 200, 80);
         ctx.fillStyle = 'white';
         ctx.font = '12px monospace';
-        ctx.fillText(`Compression: ${glyphResult.simd_shader_data.compression_ratio.toFixed(1)}:1`, 8, 20);
+        ctx.fillText(`Compression ${glyphResult.simd_shader_data.compression_ratio.toFixed(1)}:1`, 8, 20);
         ctx.fillText(`Tiles: ${glyphResult.simd_shader_data.tile_map.length}`, 8, 35);
         ctx.fillText(`Processing: ${glyphResult.simd_shader_data.performance_stats.total_optimization_time_ms}ms`, 8, 50);
       }
@@ -301,7 +301,7 @@ https://svelte.dev/e/expected_token -->
         </div>
         {#if glyphResult.simd_shader_data}
           <div>
-            <span class="text-gray-400">Compression:</span>
+            <span class="text-gray-400">Compression</span>
             <span class="ml-2 text-yellow-400">{glyphResult.simd_shader_data.compression_ratio.toFixed(1)}:1</span>
           </div>
           <div>
@@ -315,14 +315,14 @@ https://svelte.dev/e/expected_token -->
   <!-- Controls -->
   <div class="mt-4 flex gap-2">
     <button
-      on:click={startRendering}
+      onclick={startRendering}
       disabled={isRendering}
       class="px-3 py-1 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white text-sm rounded transition-colors"
     >
       Start
     </button>
     <button
-      on:click={stopRendering}
+      onclick={stopRendering}
       disabled={!isRendering}
       class="px-3 py-1 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 text-white text-sm rounded transition-colors"
     >

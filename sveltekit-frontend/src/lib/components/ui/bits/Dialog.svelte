@@ -99,7 +99,7 @@
 </script>
 
 {#if BitsDialogRoot}
-  <BitsDialogRoot {open} on:openChange={(e: CustomEvent) => handleOpenChange((e as any).detail ?? e)}>
+  <BitsDialogRoot {open} onopenChange={(e: CustomEvent) => handleOpenChange((e as any).detail ?? e)}>
     {#if BitsDialogPortal}
       <BitsDialogPortal>
         {#if BitsDialogOverlay}
@@ -175,10 +175,10 @@
 <style>
   /* @unocss-include */
   :global(.bits-dialog-overlay) {
-    animation: overlay-show 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation overlay-show 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   :global(.bits-dialog-content) {
-    animation: content-show 300ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation content-show 300ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   @keyframes overlay-show {
     from {
@@ -206,7 +206,7 @@
 
   :global(.bits-dialog-accent) {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -226,7 +226,7 @@
       linear-gradient(45deg, rgba(0, 0, 0, 0.02) 75%, transparent 75%),
       linear-gradient(-45deg, rgba(0, 0, 0, 0.02) 75%, transparent 75%);
     background-size: 20px 20px;
-    background-position:
+    background-position
       0,
       0 10px,
       10px -10px,
@@ -241,7 +241,7 @@
   }
 
   :global([data-ssr-dialog-overlay]) {
-    position: fixed;
+    position fixed;
     inset: 0;
     z-index: 50;
     background-color: rgba(0, 0, 0, 0.5);
@@ -257,7 +257,7 @@
   }
 
   :global([data-ssr-dialog-content]) {
-    position: fixed;
+    position fixed;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);

@@ -475,7 +475,7 @@
           <h3 class="font-medium mb-2">Framework Details</h3>
           <div class="space-y-2 text-sm">
             <div><strong>Framework:</strong> {context.context7Analysis.framework}</div>
-            <div><strong>Version:</strong> {context.context7Analysis.version}</div>
+            <div><strong>Version</strong> {context.context7Analysis.version}</div>
             <div><strong>Libraries:</strong> {context.context7Analysis.libraries?.join(', ')}</div>
             <div><strong>Patterns:</strong> {context.context7Analysis.patterns?.join(', ')}</div>
           </div>

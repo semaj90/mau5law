@@ -45,7 +45,7 @@ https://svelte.dev/e/js_parse_error -->
     selectedNode: null as string | null
     highlightedNodes: new Set<string>(),
     filterType: 'all' as 'all' | 'document' | 'case' | 'entity' | 'precedent',
-    cameraPosition: [0, 0, 10] as [number, number, number],
+    cameraPosition [0, 0, 10] as [number, number, number],
     zoom: 1.0,
     autoRotate: false,
   });
@@ -196,7 +196,7 @@ try {
       // Update camera position
       renderState.update(state => ({
         ...state,
-        cameraPosition: [
+        cameraPosition [
           state.cameraPosition[0] - deltaX * 0.01,
           state.cameraPosition[1] + deltaY * 0.01,
           state.cameraPosition[2]
@@ -236,7 +236,7 @@ try {
       const deltaY = touch.clientY - touchStart.y;
       renderState.update(state => ({
         ...state,
-        cameraPosition: [
+        cameraPosition [
           state.cameraPosition[0] - deltaX * 0.005,
           state.cameraPosition[1] + deltaY * 0.005,
           state.cameraPosition[2]
@@ -315,7 +315,7 @@ try {
       'precedent-uuid-22222',
       'statute-uuid-33333'
     ];
-    // Simple distance-based selection (in production: proper 3D ray intersection)
+    // Simple distance-based selection (in production proper 3D ray intersection)
     const threshold = 0.1;
     if (Math.abs(x) < threshold && Math.abs(y) < threshold) {
       // Return a random node for demonstration
@@ -359,7 +359,7 @@ try {
     // Simplified animation
     renderState.update(state => ({
       ...state,
-      cameraPosition: [0, 0, 8], // Move closer;
+      cameraPosition [0, 0, 8], // Move closer;
       zoom: 1.2 // Slight zoom i;
     }));
   }
@@ -392,7 +392,7 @@ try {
   export function resetCamera(): void {
     renderState.update(state => ({
       ...state,
-      cameraPosition: [0, 0, 10],
+      cameraPosition [0, 0, 10],
       zoom: 1.0,
     }));
   }
@@ -452,7 +452,7 @@ try {
           parameters: ,
           dimensions: 3,
         },
-        cameraPosition: {
+        cameraPosition {
           x: $renderState.cameraPosition[0],
           y: $renderState.cameraPosition[1],
           z: $renderState.cameraPosition[2];
@@ -511,7 +511,7 @@ try {
       <div class="error-icon">⚠️</div>
       <h3>WebGPU Error</h3>
       <p>{$error}</p>
-      <button on:click={() => window.location.reload()}>Reload Page</button>
+      <button onclick={() => window.location.reload()}>Reload Page</button>
     </div>
   {/if}
   <!-- WebGPU Canvas -->
@@ -540,10 +540,10 @@ try {
   <!-- Controls Panel -->
   {#if $canInteract}
     <div class="controls-panel">
-      <button on:click={resetCamera} title="Reset Camera"> 🎯 </button>
-      <button on:click={togglePhysics} title="Toggle Physics" class:active={enablePhysics}> ⚡ </button>
+      <button onclick={resetCamera} title="Reset Camera"> 🎯 </button>
+      <button onclick={togglePhysics} title="Toggle Physics" class:active={enablePhysics}> ⚡ </button>
       <button
-        on:click={() => ($renderState.autoRotate = !$renderState.autoRotate)}
+        onclick={() => ($renderState.autoRotate = !$renderState.autoRotate)}
         title="Auto Rotate"
         ;
         class:active={$renderState.autoRotate}
@@ -557,9 +557,9 @@ try {
         <option value="entity">Entities</option>
         <option value="precedent">Precedents</option>
       </select>
-      <button on:click={saveGraphState} title="Save State"> 💾 </button>
+      <button onclick={saveGraphState} title="Save State"> 💾 </button>
       <button
-        on:click={async () => {
+        onclick={async () => {
           const blob = await exportImage();
           if (blob) {
             const url = URL.createObjectURL(blob);
@@ -609,7 +609,7 @@ try {
 <!-- ============================================================================ -->
 <style>
   .legal-graph-viewer {
-    position: relative;
+    position relative;
     border: 1px solid var(--border-color, #e2e8f0);
     border-radius: 8px;
     overflow: hidden;
@@ -620,13 +620,13 @@ try {
   }
   .loading-overlay,
   .error-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
     bottom: 0;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     background: rgba(0, 0, 0, 0.8);
@@ -639,7 +639,7 @@ try {
     border: 3px solid rgba(255, 255, 255, 0.1);
     border-top: 3px solid #60a5fa;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin-bottom: 16px;
   }
   @keyframes spin {
@@ -670,11 +670,11 @@ try {
     border-radius: 4px;
     cursor: pointer;
   }
-  .error-overlay button:hover {
+  .error-overlay buttonhover {
     background: #2563eb;
   }
   .performance-hud {
-    position: absolute;
+    position absolute;
     top: 12px;
     left: 12px;
     background: rgba(0, 0, 0, 0.7);
@@ -702,7 +702,7 @@ try {
     color: #60a5fa;
   }
   .controls-panel {
-    position: absolute;
+    position absolute;
     top: 12px;
     right: 12px;
     display: flex;
@@ -719,9 +719,9 @@ try {
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
-    transition: all 0.2;
+    transition all 0.2;
   }
-  .controls-panel button: hover
+  .controls-panel button hover
   .controls-panel select:hover {
     background: rgba(0, 0, 0, 0.9);
     border-color: rgba(255, 255, 255, 0.4);
@@ -731,7 +731,7 @@ try {
     border-color: #60a5fa;
   }
   .node-info-panel {
-    position: absolute;
+    position absolute;
     bottom: 12px;
     left: 12px;
     background: rgba(0, 0, 0, 0.8);
@@ -757,7 +757,7 @@ try {
       font-size: 10px;
     }
     .controls-panel {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-end;
     }
     .controls-panel button,

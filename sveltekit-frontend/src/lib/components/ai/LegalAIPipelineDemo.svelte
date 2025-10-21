@@ -26,7 +26,7 @@ https://svelte.dev/e/expected_token -->
     content: 'This contract contains provisions under 15 U.S.C. § 1001 and references Supreme Court case 456 U.S. 789. The parties agree to binding arbitration in the District Court.',
     metadata: {
       document_type: 'contract',
-      jurisdiction: 'federal',
+      jurisdiction 'federal',
       confidence: 0.95,
       content: 'This contract contains provisions under 15 U.S.C. § 1001 and references Supreme Court case 456 U.S. 789. The parties agree to binding arbitration in the District Court.',
       vectorEmbedding: Array(384).fill.map(() => Math.random() * 2 - 1),
@@ -73,8 +73,8 @@ https://svelte.dev/e/expected_token -->
       const startTime = performance.now();
       const result = await processLegalDoc(lastProcessedDoc || sampleLegalDocument, {
         enableClustering: true
-        enableEntityExtraction: true
-        enableGPUAcceleration: true
+        enableEntityExtraction true
+        enableGPUAcceleration true
         cacheKey: 'demo-single-doc'
       });
       processingTime = performance.now() - startTime;
@@ -115,7 +115,7 @@ https://svelte.dev/e/expected_token -->
         content: doc.content,
         metadata: {
           document_type: 'brief',
-          jurisdiction: 'federal',
+          jurisdiction 'federal',
           confidence: 0.8,
           content: doc.content,
           vectorEmbedding: Array(384).fill.map(() => Math.random() * 2 - 1);
@@ -239,7 +239,7 @@ https://svelte.dev/e/expected_token -->
       <h3>📄 Single Document Processing</h3>
       <div class="processing-controls">
         <button
-          on:click={processSingleDocument}
+          onclick={processSingleDocument}
           disabled={!$pipelineReady || isProcessing}
           class="btn nes-btn is-primary"
         >
@@ -250,7 +250,7 @@ https://svelte.dev/e/expected_token -->
           {/if}
         </button>
         <button
-          on:click={() => lastProcessedDoc = sampleLegalDocument}
+          onclick={() => lastProcessedDoc = sampleLegalDocument}
           class="btn nes-btn"
         >
           📋 Load Sample
@@ -265,7 +265,7 @@ https://svelte.dev/e/expected_token -->
           class="document-input"
         ></textarea>
         <button
-          on:click={testCustomDocument}
+          onclick={testCustomDocument}
           disabled={!$pipelineReady || isProcessing || !lastProcessedDoc.trim()}
           class="btn nes-btn is-primary"
         >
@@ -326,7 +326,7 @@ https://svelte.dev/e/expected_token -->
       <h3>🔄 Bulk Document Processing</h3>
       <div class="bulk-controls">
         <button
-          on:click={processBulkDocuments}
+          onclick={processBulkDocuments}
           disabled={!$pipelineReady || isBulkProcessing}
           class="btn nes-btn is-primary"
         >
@@ -379,7 +379,7 @@ https://svelte.dev/e/expected_token -->
     <div class="panel log-panel">
       <div class="log-header">
         <h3>📝 Processing Log</h3>
-        <button on:click={clearLogs} class="btn btn-small">🧹 Clear</button>
+        <button onclick={clearLogs} class="btn btn-small">🧹 Clear</button>
       </div>
       <div class="log-container">
         {#each processingLog as logEntry}
@@ -435,7 +435,7 @@ https://svelte.dev/e/expected_token -->
   .progress-fill {
     height: 100%;
     background: #3b82f6;
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .demo-content {
     display: grid;
@@ -477,7 +477,7 @@ https://svelte.dev/e/expected_token -->
   }
   .metric {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 4px;
   }
   .metric-label {
@@ -507,7 +507,7 @@ https://svelte.dev/e/expected_token -->
     border-radius: 8px;
     font-weight: 500,
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     font-size: 14px;
   }
   .btn:disabled {
@@ -648,7 +648,7 @@ https://svelte.dev/e/expected_token -->
     }
     .processing-controls,
     .bulk-controls {
-      flex-direction: column;
+      flex-direction column;
     }
   }
 </style>

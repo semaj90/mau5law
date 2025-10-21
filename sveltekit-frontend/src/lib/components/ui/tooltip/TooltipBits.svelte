@@ -48,7 +48,7 @@
         documentationContent = data.content || '';
       }
     } catch (error) {
-      console.warn('Failed to fetch documentation:', error);
+      console.warn('Failed to fetch documentation', error);
       documentationContent = content; // Fallback to original content
     } finally {
       isLoadingDocs = false;
@@ -77,7 +77,7 @@
     {align}
     {sideOffset}
     transition={scale}
-    transitionConfig={{ duration: 150, start: 0.95 }}
+    transitionConfig={{ duration 150, start: 0.95 }}
   >
     {#if isLoadingDocs}
       <div class="flex items-center gap-2">

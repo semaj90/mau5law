@@ -34,44 +34,44 @@
     {
       value: 'semantic',
       label: 'Semantic Search',
-      description: 'AI-powered contextual understanding',
+      description 'AI-powered contextual understanding',
       category: 'AI-Powered',
     },
     {
       value: 'vector',
       label: 'Vector Similarity',
-      description: 'Embedding-based similarity matching',
+      description 'Embedding-based similarity matching',
       category: 'AI-Powered',
     },
     {
       value: 'hybrid',
       label: 'Hybrid Search',
-      description: 'Combined semantic and keyword search',
+      description 'Combined semantic and keyword search',
       category: 'AI-Powered',
     },
     {
       value: 'legal',
       label: 'Legal Precedent',
-      description: 'Case law and precedent matching',
+      description 'Case law and precedent matching',
       category: 'Legal-Specific',
     },
     {
       value: 'citation',
       label: 'Citation Analysis',
-      description: 'Legal citation and reference tracking',
+      description 'Legal citation and reference tracking',
       category: 'Legal-Specific',
     },
   ];
   const confidenceFilters: SelectOption[] = [
-    { value: 'all', label: 'All Results', description: 'Show all confidence levels' },
-    { value: 'high', label: 'High Confidence', description: '90%+ confidence scores' },
-    { value: 'medium', label: 'Medium Confidence', description: '70-89% confidence scores' },
-    { value: 'low', label: 'Low Confidence', description: 'Below 70% confidence' },
+    { value: 'all', label: 'All Results', description 'Show all confidence levels' },
+    { value: 'high', label: 'High Confidence', description '90%+ confidence scores' },
+    { value: 'medium', label: 'Medium Confidence', description '70-89% confidence scores' },
+    { value: 'low', label: 'Low Confidence', description 'Below 70% confidence' },
   ];
   const analysisOptions: SelectOption[] = [
-    { value: 'quick', label: 'Quick Analysis', description: 'Basic semantic parsing' },
-    { value: 'standard', label: 'Standard Analysis', description: 'Full entity recognition' },
-    { value: 'deep', label: 'Deep Analysis', description: 'Advanced relationship mapping' },
+    { value: 'quick', label: 'Quick Analysis', description 'Basic semantic parsing' },
+    { value: 'standard', label: 'Standard Analysis', description 'Full entity recognition' },
+    { value: 'deep', label: 'Deep Analysis', description 'Advanced relationship mapping' },
   ];
   // Mock search results data
   const mockSearchResults: VectorSearchResult[] = [
@@ -99,7 +99,7 @@
         'Employment termination dispute involving alleged discrimination based on protected class status under Title VII enforcement guidelines.',
       metadata: {
         caseNumber: 'EM-2024-042',
-        jurisdiction: 'Federal District Court',
+        jurisdiction 'Federal District Court',
         statute: 'Title VII Civil Rights Act',
         precedent: 'McDonnell Douglas test',
       },
@@ -119,7 +119,7 @@
         patentNumber: 'US 10,123,456',
         filingDate: '2020-03-15',
         inventor: 'Dr. Jane Smith',
-        classification: 'G06F 16/00',
+        classification 'G06F 16/00',
       },
       score: 0.82,
       highlights: ['intellectual property', 'patent claims', 'prior art'],
@@ -155,21 +155,21 @@
   });
   // Entity type icons mapping
   const entityIcons = {
-    person: Users,
-    organization: Scale,
-    location: MapPin,
+    person Users,
+    organization Scale,
+    location MapPin,
     date: Calendar,
     legal_term: FileText,
-    case_citation: Scale,
+    case_citation Scale,
   };
   // Entity type colors
   const entityColors = {
-    person: 'semantic-entity-person',
-    organization: 'semantic-entity-organization',
-    location: 'semantic-entity-location',
+    person 'semantic-entity-person',
+    organization 'semantic-entity-organization',
+    location 'semantic-entity-location',
     date: 'semantic-entity-date',
     legal_term: 'semantic-entity-legal',
-    case_citation: 'semantic-entity-legal',
+    case_citation 'semantic-entity-legal',
   };
   // Helpers for safe highlight injection
   function escapeHtml(str: string) {
@@ -298,7 +298,7 @@
         variant="primary"
         legal
         loading={isSearching}
-        on:click={performVectorSearch}
+        onclick={performVectorSearch}
         disabled={!searchQuery.trim()}
       >
         {#if isSearching}
@@ -310,7 +310,7 @@
         {/if}
       </Button>
       {#if searchResults.length > 0}
-        <Button class="bits-btn" variant="ghost" on:click={clearResults}>Clear</Button>
+        <Button class="bits-btn" variant="ghost" onclick={clearResults}>Clear</Button>
       {/if}
     </div>
     <!-- Search Status -->
@@ -428,7 +428,7 @@
         <Button
           class="bits-btn"
           variant="ghost"
-          on:click={() => (searchQuery = 'contract breach non-disclosure agreement')}
+          onclick={() => (searchQuery = 'contract breach non-disclosure agreement')}
         >
           Try Sample Query
         </Button>
@@ -488,7 +488,7 @@
     margin-bottom: 1rem;
   }
   :global(.semantic-entity-tag) {
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     cursor: pointer;
   }
   :global(.semantic-entity-tag:hover) {
@@ -505,7 +505,7 @@
   /* Processing overlay enhancement */
   :global(.processing-overlay) {
     backdrop-filter: blur(4px);
-    animation: processing-pulse 2s ease-in-out infinite;
+    animation processing-pulse 2s ease-in-out infinite;
   }
   @keyframes processing-pulse {
     0%,
@@ -518,19 +518,19 @@
   }
   /* Vector result item enhancements */
   :global(.vector-result-item) {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
+    transition all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position relative;
     overflow: hidden;
   }
   :global(.vector-result-item::after) {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: -100%;
     width: 100%;
     height: 2px;
     background: linear-gradient(90deg, transparent, var(--color-ai-status-online), transparent);
-    transition: left 0.5s ease;
+    transition left 0.5s ease;
   }
   :global(.vector-result-item:hover::after) {
     left: 100%;

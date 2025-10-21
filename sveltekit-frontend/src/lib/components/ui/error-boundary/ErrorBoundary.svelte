@@ -68,7 +68,7 @@
       hasError = true;
       error = err;
       errorId = `ERR_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
-      logError(err, { type: 'unhandled_rejection', reason: reasonAny });
+      logError(err, { type: 'unhandled_rejection', reason reasonAny });
     }
   }
   // Reset error state
@@ -126,9 +126,9 @@
               <span class="col-span-3 text-red-400">{errorId}</span>
               <span class="text-nier-text-secondary">Message:</span>
               <span class="col-span-3 text-nier-text-primary">{error?.message ?? 'Unknown error'}</span>
-              <span class="text-nier-text-secondary">Location:</span>
+              <span class="text-nier-text-secondary">Location</span>
               <span class="col-span-3 text-nier-text-primary">{globalThis.$page?.url?.pathname ?? 'unknown'}</span>
-              <span class="text-nier-text-secondary">Location:</span>
+              <span class="text-nier-text-secondary">Location</span>
               <span class="col-span-3 text-nier-text-primary">{globalThis.location?.pathname ?? 'unknown'}</span>
             </div>
           </div>
@@ -148,14 +148,14 @@
         <!-- Action Buttons -->
         <div class="flex flex-col sm:flex-row gap-golden-sm justify-center">
           <Button
-            on:click={resetError}
+            onclick={resetError}
             variant="yorha"
             class="bg-gradient-to-r from-nier-accent-warm to-nier-accent-cool text-nier-bg-primary"
           >
             Try Again
           </Button>
           <Button
-            on:click={reloadPage}
+            onclick={reloadPage}
             variant="ghost"
             class="border-nier-accent-cool text-nier-accent-cool hover:bg-nier-accent-cool hover:text-nier-bg-primary"
           >
@@ -190,7 +190,7 @@
   details summary::before {
     content: '▶';
     margin-right: 0.5rem;
-    transition: transform 0.2s ease;
+    transition transform 0.2s ease;
   }
   details[open] summary::before {
     transform: rotate(90deg);

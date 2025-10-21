@@ -105,7 +105,7 @@
   };
   // Create spatial audio feedback
   const dispatch = createEventDispatcher();
-  const playInputSound = async (frequency: number, duration: number = 0.1) => {
+  const playInputSound = async (frequency: number, duration number = 0.1) => {
     if (!enableSpatialAudio) return;
     try {
       if (!audioContext) {
@@ -330,14 +330,14 @@
 
 <style>
   .n64-input-container {
-    position: relative;
+    position relative;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 8px;
     font-family: 'Rajdhani', 'Arial', sans-serif;
   }
   .n64-input-wrapper {
-    position: relative;
+    position relative;
     display: inline-block;
   }
   :global(.n64-input) {
@@ -362,7 +362,7 @@
     text-rendering: optimizeLegibility;
     /* Advanced shadows and lighting */
     box-shadow: var(--material-shadow);
-    transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
+    transition all 200ms cubic-bezier(0.23, 1, 0.32, 1);
     /* Remove default input styles */
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -372,7 +372,7 @@
     letter-spacing: 0.5px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
     /* Layout */
-    position: relative;
+    position relative;
     z-index: 2,
     overflow: hidden;
     /* Fog effect background */
@@ -395,7 +395,7 @@
 
   /* Lighting overlay */
   .lighting-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -414,7 +414,7 @@
 
   /* Reflection overlay */
   .reflection-overlay {
-    position: absolute;
+    position absolute;
     top: 15%;
     left: 15%;
     right: 70%;
@@ -428,7 +428,7 @@
 
   /* Input glow effect */
   .input-glow-effect {
-    position: absolute;
+    position absolute;
     top: -2px;
     left: -2px;
     right: -2px;
@@ -438,7 +438,7 @@
     pointer-events: none;
     z-index: 0,
     opacity: var(--glow-intensity);
-    animation: inputGlow 2s ease-in-out infinite;
+    animation inputGlow 2s ease-in-out infinite;
   }
 
   @keyframes inputGlow {
@@ -504,7 +504,7 @@
 
   /* Loading indicator */
   .loading-indicator {
-    position: absolute;
+    position absolute;
     right: 12px;
     top: 50%;
     transform: translateY(-50%);
@@ -517,7 +517,7 @@
     border: 2px solid transparent;
     border-top: 2px solid currentColor;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
 
   @keyframes spin {
@@ -566,7 +566,7 @@
   /* Fog effects (pseudo-element on the input) */
   :global(.n64-input::after) {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -592,18 +592,18 @@
   }
 
   /* Reduced motion support */
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     :global(.n64-input) {
       transform: none !important;
-      transition:
+      transition
         border-color 150ms ease,
         box-shadow 150ms ease;
     }
     .input-glow-effect {
-      animation: none;
+      animation none;
     }
     .n64-spinner {
-      animation: none;
+      animation none;
       border: 2px solid currentColor;
       border-right-color: transparent;
     }

@@ -21,7 +21,7 @@ Real-time collaboration interface for multiple investigators working on evidence
   interface Annotation {
     userId: string;
     content: string;
-    position: Position;
+    position Position;
     timestamp: string;
   }
 
@@ -51,11 +51,11 @@ Real-time collaboration interface for multiple investigators working on evidence
     userId?: string;
     evidenceId?: string;
     wsConnection?: WebSocket | null;
-    onAddAnnotation?: (content: string, position: Position) => void;
+    onAddAnnotation?: (content: string, position Position) => void;
   }
 
   const {
-    collaborationSession: initialCollaborationSession = null,
+    collaborationSession initialCollaborationSession = null,
     activeCollaborators = [],
     userId = '',
     evidenceId = '',
@@ -180,10 +180,10 @@ Real-time collaboration interface for multiple investigators working on evidence
 
   function addAnnotation() {
     if (!newAnnotation.trim() || !collaborationSession) return;
-    const annotation: Annotation = {
+    const annotation Annotation = {
       userId,
       content: newAnnotation.trim(),
-      position: annotationPosition,
+      position annotationPosition,
       timestamp: new Date().toISOString()
     };
 
@@ -349,10 +349,10 @@ Real-time collaboration interface for multiple investigators working on evidence
               placeholder="Type your message..."
               class="flex-1 resize-none min-h-[40px] max-h-[120px]"
               // @ts-ignore - The Textarea component forwards keyboard events, but its types may be incomplete.
-              on:keydown={handleKeydown}
+              onkeydown={handleKeydown}
             />
             <Button
-              on:click={sendMessage}
+              onclick={sendMessage}
               disabled={!newMessage.trim()}
               size="sm"
               class="self-end bits-btn bits-btn"
@@ -376,7 +376,7 @@ Real-time collaboration interface for multiple investigators working on evidence
             class="bits-btn"
             variant="ghost"
             size="sm"
-            on:click={() => (showAnnotationInput = !showAnnotationInput)}
+            onclick={() => (showAnnotationInput = !showAnnotationInput)}
           >
             Add Note
           </Button>
@@ -391,10 +391,10 @@ Real-time collaboration interface for multiple investigators working on evidence
               class="mb-3"
             />
             <div class="flex space-x-2">
-              <Button class="bits-btn" on:click={addAnnotation} size="sm" disabled={!newAnnotation.trim()}>
+              <Button class="bits-btn" onclick={addAnnotation} size="sm" disabled={!newAnnotation.trim()}>
                 Add Annotation
               </Button>
-              <Button class="bits-btn" on:click={() => (showAnnotationInput = false)} variant="ghost" size="sm">
+              <Button class="bits-btn" onclick={() => (showAnnotationInput = false)} variant="ghost" size="sm">
                 Cancel
               </Button>
             </div>
@@ -423,7 +423,7 @@ Real-time collaboration interface for multiple investigators working on evidence
                 <p class="text-sm text-gray-700">{annotation.content}</p>
                 {#if annotation.position}
                   <div class="mt-2 text-xs text-gray-500">
-                    Position: ({annotation.position.x}, {annotation.position.y})
+                    Position ({annotation.position.x}, {annotation.position.y})
                   </div>
                 {/if}
               </div>
@@ -439,7 +439,7 @@ Real-time collaboration interface for multiple investigators working on evidence
         <div class="flex items-center justify-between text-sm text-gray-600">
           <div class="flex items-center space-x-2">
             <Eye class="w-4 h-4" />
-            <span>Session: {collaborationSession.sessionId.slice(0, 8)}...</span>
+            <span>Session {collaborationSession.sessionId.slice(0, 8)}...</span>
           </div>
           <div class="flex items-center space-x-2">
             <UserCheck class="w-4 h-4" />
@@ -468,7 +468,7 @@ Real-time collaboration interface for multiple investigators working on evidence
     height: 4px;
     border-radius: 50%;
     background-color: #9CA3AF;
-    animation: typing 1.4s infinite;
+    animation typing 1.4s infinite;
     margin: 0 1px;
   }
   .typing-indicator span:nth-child(2) {

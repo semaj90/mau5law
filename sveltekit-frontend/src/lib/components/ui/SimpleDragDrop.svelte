@@ -162,7 +162,7 @@ https://svelte.dev/e/js_parse_error -->
   ondragleave={handleDragLeave}
   role="button" ondrop={handleDrop}
   tabindex="0"
-  on:click={openFileDialog}
+  onclick={openFileDialog}
   onkeydown={(e) => e.key === 'Enter' && openFileDialog()}
   aria-label="Drag and drop files here or click to select"
 >
@@ -212,7 +212,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <button
           class="remove-file"
-          on:click={() => removeFile(index)}
+          onclick={() => removeFile(index)}
           aria-label="Remove {file.name}"
         >
           <X size={14} />
@@ -223,13 +223,13 @@ https://svelte.dev/e/js_parse_error -->
 {/if}
 <style>
   .drag-drop-zone {
-    position: relative;
+    position relative;
     min-height: 200px;
     border: 3px dashed var(--nes-blue, #3cbcfc);
     border-radius: 8px;
     background: var(--yorha-bg-secondary, #1a1a1a);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     overflow: hidden;
   }
   .drag-drop-zone:hover:not(.disabled) {
@@ -241,7 +241,7 @@ https://svelte.dev/e/js_parse_error -->
   .drag-drop-zone.drag-over {
     border-color: var(--nes-yellow, #f7d51d);
     background: var(--yorha-bg-tertiary, #2a2a2a);
-    animation: pulse-glow 1s ease-in-out infinite alternate;
+    animation pulse-glow 1s ease-in-out infinite alternate;
   }
   .drag-drop-zone.disabled {
     opacity: 0.5,
@@ -253,7 +253,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   /* Drag Overlay */
   .drag-overlay {
-    position: absolute;
+    position absolute;
     inset: 0,
     background: linear-gradient(135deg,
       rgba(255, 215, 0, 0.1) 0%,
@@ -265,7 +265,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .drag-content {
     text-align: center;
-    animation: float-glow 2s ease-in-out infinite alternate;
+    animation float-glow 2s ease-in-out infinite alternate;
   }
   .drag-icon {
     color: var(--nes-yellow, #f7d51d);
@@ -281,7 +281,7 @@ https://svelte.dev/e/js_parse_error -->
   /* Default Content */
   .drop-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     padding: 32px 16px;
@@ -291,7 +291,7 @@ https://svelte.dev/e/js_parse_error -->
   .upload-icon {
     color: var(--nes-blue, #3cbcfc);
     margin-bottom: 16px;
-    transition: color 0.3s ease;
+    transition color 0.3s ease;
   }
   .upload-title {
     font-size: 20px;
@@ -321,7 +321,7 @@ https://svelte.dev/e/js_parse_error -->
   /* Processing State */
   .processing-state {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 16px;
   }
@@ -331,7 +331,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 4px solid rgba(60, 188, 252, 0.3);
     border-top: 4px solid var(--nes-blue, #3cbcfc);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   .processing-text {
     color: var(--nes-blue, #3cbcfc);
@@ -362,7 +362,7 @@ https://svelte.dev/e/js_parse_error -->
     background: var(--yorha-bg-tertiary, #2a2a2a);
     border-radius: 6px;
     margin-bottom: 8px;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .file-item:hover {
     background: var(--yorha-bg-primary, #0a0a0a);
@@ -375,7 +375,7 @@ https://svelte.dev/e/js_parse_error -->
   .file-info {
     flex: 1,
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 2px;
   }
   .file-name {
@@ -394,7 +394,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     padding: 4px;
     border-radius: 4px;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .remove-file:hover {
     background: rgba(248, 56, 0, 0.1);
@@ -441,7 +441,7 @@ https://svelte.dev/e/js_parse_error -->
       padding: 24px 16px;
     }
     .upload-specs {
-      flex-direction: column;
+      flex-direction column;
       gap: 8px;
     }
   }

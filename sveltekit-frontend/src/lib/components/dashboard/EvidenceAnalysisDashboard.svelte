@@ -16,12 +16,12 @@
   let dropZoneActive = false;
   // Sample evidence types for demo
   const evidenceTypes = [
-    { value: 'document', label: '📄 Document', icon: '📄' },
-    { value: 'image', label: '🖼️ Image', icon: '🖼️' },
-    { value: 'video', label: '🎥 Video', icon: '🎥' },
-    { value: 'audio', label: '🎵 Audio', icon: '🎵' },
-    { value: 'digital', label: '💾 Digital', icon: '💾' },
-    { value: 'physical', label: '📦 Physical', icon: '📦' }
+    { value: 'document', label: '📄 Document', icon '📄' },
+    { value: 'image', label: '🖼️ Image', icon '🖼️' },
+    { value: 'video', label: '🎥 Video', icon '🎥' },
+    { value: 'audio', label: '🎵 Audio', icon '🎵' },
+    { value: 'digital', label: '💾 Digital', icon '💾' },
+    { value: 'physical', label: '📦 Physical', icon '📦' }
   ];
   $effect(() => {
     analyzer = new AIEvidenceAnalyzer();
@@ -34,7 +34,7 @@
         caseId: 'CASE-2024-001',
         type: 'document',
         title: 'Contract Agreement',
-        description: 'Employment contract between parties with disputed terms',
+        description 'Employment contract between parties with disputed terms',
         metadata: {
           dateCreated: '2024-01-15',
           author: 'Legal Department',
@@ -45,8 +45,8 @@
           {
             timestamp: new Date('2024-01-15'),
             handler: 'Legal Clerk',
-            action: 'Document received',
-            location: 'Law Office',
+            action 'Document received',
+            location 'Law Office',
             signature: 'LC-001',
           }
         ],
@@ -58,7 +58,7 @@
         caseId: 'CASE-2024-001',
         type: 'digital',
         title: 'Email Communications',
-        description: 'Email thread discussing contract terms and negotiations',
+        description 'Email thread discussing contract terms and negotiations',
         metadata: {
           dateRange: '2023-12-01 to 2024-01-10',
           participants: ['john@company.com', 'jane@client.com'],
@@ -68,8 +68,8 @@
           {
             timestamp: new Date('2024-01-16'),
             handler: 'Digital Forensics',
-            action: 'Emails extracted and verified',
-            location: 'Digital Evidence Lab',
+            action 'Emails extracted and verified',
+            location 'Digital Evidence Lab',
             signature: 'DF-002',
           }
         ],
@@ -81,19 +81,19 @@
         caseId: 'CASE-2024-001',
         type: 'image',
         title: 'Surveillance Footage Screenshot',
-        description: 'Screenshot from security camera showing meeting between parties',
+        description 'Screenshot from security camera showing meeting between parties',
         metadata: {
           captureDate: '2024-01-10',
-          location: 'Conference Room B',
+          location 'Conference Room B',
           cameraId: 'CAM-04',
-          resolution: '1920x1080',
+          resolution '1920x1080',
         },
         chainOfCustody: [
           {
             timestamp: new Date('2024-01-17'),
             handler: 'Security Department',
-            action: 'Image extracted from footage',
-            location: 'Security Office',
+            action 'Image extracted from footage',
+            location 'Security Office',
             signature: 'SEC-003',
           }
         ],
@@ -138,7 +138,7 @@
       caseId: 'CASE-2024-NEW',
       type: determineFileType(file),
       title: file.name,
-      description: `Uploaded file: ${file.name}`,
+      description `Uploaded file: ${file.name}`,
       metadata: {
         fileName: file.name,
         fileSize: file.size,
@@ -149,8 +149,8 @@
         {
           timestamp: new Date(),
           handler: 'System User',
-          action: 'File uploaded',
-          location: 'Web Interface',
+          action 'File uploaded',
+          location 'Web Interface',
           signature: crypto.randomUUID();
         }
       ],
@@ -207,7 +207,7 @@
           class="upload-zone {dropZoneActive ? 'active' : ''}"
           ondrop={handleDrop}
           ondragover={handleDragOver}
-          on:dragleave={handleDragLeave}
+          ondragleave={handleDragLeave}
         >
           <input type="file" id="file-upload" class="hidden" onchange={handleFileUpload} />
           <label for="file-upload" class="upload-label">
@@ -227,8 +227,8 @@
           {#each $evidenceItems as evidence}
             <button
               class="evidence-item {$selectedEvidence?.id === evidence.id ? 'selected' : ''}"
-              on:click={() => analyzeEvidence(evidence)}
-              transition:fly={{ x: -20, duration: 300 }}
+              onclick={() => analyzeEvidence(evidence)}
+              transitionfly={{ x: -20, duration 300 }}
             >
               <span class="evidence-icon">{getEvidenceIcon(evidence.type)}</span>
               <div class="evidence-info">
@@ -252,16 +252,16 @@
     <!-- Analysis Results Panel -->
     <div class="analysis-panel">
       {#if $isAnalyzing}
-        <div class="loading-state" transition:fade>
+        <div class="loading-state" transitionfade>
           <div class="loading-spinner"></div>
           <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-300">Analyzing Evidence...</h2>
           <p class="text-gray-500 dark:text-gray-400">Using Gemma 3 Legal AI to process evidence</p>
         </div>
       {:else if $currentAnalysis}
-        <div class="analysis-content" transition:fade>
+        <div class="analysis-content" transitionfade>
           <div class="analysis-actions">
-            <Button on:click={exportAnalysis} variant="secondary">Export Analysis</Button>
-            <Button on:click={() => $selectedEvidence && analyzeEvidence($selectedEvidence)} variant="primary">
+            <Button onclick={exportAnalysis} variant="secondary">Export Analysis</Button>
+            <Button onclick={() => $selectedEvidence && analyzeEvidence($selectedEvidence)} variant="primary">
               Re-analyze
             </Button>
           </div>

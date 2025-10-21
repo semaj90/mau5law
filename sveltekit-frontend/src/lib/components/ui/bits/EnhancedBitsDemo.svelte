@@ -22,29 +22,29 @@
   let evidenceUploadProgress = $state(0);
   // Mock data for demos
   const caseTypes: SelectOption[] = [
-    { value: 'criminal', label: 'Criminal Cases', description: 'Criminal law proceedings and investigations' },
-    { value: 'civil', label: 'Civil Litigation', description: 'Civil disputes and tort claims' },
-    { value: 'family', label: 'Family Law', description: 'Divorce, custody, and family matters' },
-    { value: 'corporate', label: 'Corporate Law', description: 'Business and corporate legal affairs' },
-    { value: 'contract', label: 'Contract Law', description: 'Contract disputes and negotiations' },
-    { value: 'intellectual', label: 'Intellectual Property', description: 'Patents, trademarks, and IP disputes' },
+    { value: 'criminal', label: 'Criminal Cases', description 'Criminal law proceedings and investigations' },
+    { value: 'civil', label: 'Civil Litigation', description 'Civil disputes and tort claims' },
+    { value: 'family', label: 'Family Law', description 'Divorce, custody, and family matters' },
+    { value: 'corporate', label: 'Corporate Law', description 'Business and corporate legal affairs' },
+    { value: 'contract', label: 'Contract Law', description 'Contract disputes and negotiations' },
+    { value: 'intellectual', label: 'Intellectual Property', description 'Patents, trademarks, and IP disputes' },
   ];
   const evidenceCategories: SelectOption[] = [
     {
       value: 'critical',
       label: 'Critical Evidence',
-      description: 'High-priority evidence for case',
+      description 'High-priority evidence for case',
       category: 'Priority',
     },
     {
       value: 'supporting',
       label: 'Supporting Evidence',
-      description: 'Additional supporting materials',
+      description 'Additional supporting materials',
       category: 'Priority',
     },
-    { value: 'document', label: 'Legal Documents', description: 'Contracts, motions, briefs', category: 'Type' },
-    { value: 'multimedia', label: 'Multimedia Evidence', description: 'Audio, video, images', category: 'Type' },
-    { value: 'witness', label: 'Witness Testimony', description: 'Depositions and statements', category: 'Type' },
+    { value: 'document', label: 'Legal Documents', description 'Contracts, motions, briefs', category: 'Type' },
+    { value: 'multimedia', label: 'Multimedia Evidence', description 'Audio, video, images', category: 'Type' },
+    { value: 'witness', label: 'Witness Testimony', description 'Depositions and statements', category: 'Type' },
   ];
   const mockEvidenceItems = [
     {
@@ -53,7 +53,7 @@
       type: 'document',
       priority: 'critical' as const,
       confidence: 'high' as const,
-      description: 'Modified terms regarding liability clauses',
+      description 'Modified terms regarding liability clauses',
     },
     {
       id: '2',
@@ -61,7 +61,7 @@
       type: 'video',
       priority: 'high' as const,
       confidence: 'medium' as const,
-      description: 'Incident recording from 2024-01-15',
+      description 'Incident recording from 2024-01-15',
     },
     {
       id: '3',
@@ -69,7 +69,7 @@
       type: 'document',
       priority: 'medium' as const,
       confidence: 'high' as const,
-      description: 'Technical analysis by Dr. Smith',
+      description 'Technical analysis by Dr. Smith',
     },
   ];
   // Demo functions
@@ -102,10 +102,10 @@
     });
   }
   let demoSections = $derived([
-    { id: 'buttons', label: 'Enhanced Buttons', icon: FileText },
-    { id: 'inputs', label: 'Smart Inputs', icon: Search },
-    { id: 'dialogs', label: 'Legal Dialogs', icon: Scale },
-    { id: 'cards', label: 'Evidence Cards', icon: Brain },
+    { id: 'buttons', label: 'Enhanced Buttons', icon FileText },
+    { id: 'inputs', label: 'Smart Inputs', icon Search },
+    { id: 'dialogs', label: 'Legal Dialogs', icon Scale },
+    { id: 'cards', label: 'Evidence Cards', icon Brain },
   ]);
 </script>
 
@@ -121,7 +121,7 @@
   <div class="border-b border-nier-border-secondary mb-6">
     <nav class="flex space-x-8">
       {#each demoSections as section (section.id)}
-        <button class={tabClasses(section.id)} on:click={() => (currentTab = section.id)}>
+        <button class={tabClasses(section.id)} onclick={() => (currentTab = section.id)}>
           <div class="flex items-center gap-2">
             <section.icon class="w-4 h-4" />
             {section.label}
@@ -258,11 +258,11 @@
           Modal dialogs optimized for legal workflows with evidence analysis and case management features.
         </p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Button class="bits-btn" variant="default" on:click={() => (dialogOpen = true)}>Case Management</Button>
-          <Button class="bits-btn" variant="primary" on:click={() => (evidenceDialogOpen = true)}>
+          <Button class="bits-btn" variant="default" onclick={() => (dialogOpen = true)}>Case Management</Button>
+          <Button class="bits-btn" variant="primary" onclick={() => (evidenceDialogOpen = true)}>
             Evidence Upload
           </Button>
-          <Button class="bits-btn" variant="ghost" on:click={runAIAnalysis} loading={aiAnalysisLoading}>
+          <Button class="bits-btn" variant="ghost" onclick={runAIAnalysis} loading={aiAnalysisLoading}>
             {#if aiAnalysisLoading}
               Running AI Analysis...
             {:else}
@@ -320,7 +320,7 @@
               </div>
             </div>
             <div class="bits-dialog-footer">
-              <Button class="bits-btn" variant="ghost" on:click={() => (dialogOpen = false)}>Cancel</Button>
+              <Button class="bits-btn" variant="ghost" onclick={() => (dialogOpen = false)}>Cancel</Button>
               <Button class="bits-btn" variant="primary">Create Case</Button>
             </div>
           </div>
@@ -365,8 +365,8 @@
               {/if}
             </div>
             <div class="bits-dialog-footer">
-              <Button class="bits-btn" variant="ghost" on:click={() => (evidenceDialogOpen = false)}>Cancel</Button>
-              <Button class="bits-btn" variant="primary" on:click={uploadEvidence} disabled={evidenceUploadProgress > 0}>
+              <Button class="bits-btn" variant="ghost" onclick={() => (evidenceDialogOpen = false)}>Cancel</Button>
+              <Button class="bits-btn" variant="primary" onclick={uploadEvidence} disabled={evidenceUploadProgress > 0}>
                 Upload Evidence
               </Button>
             </div>
@@ -388,7 +388,7 @@
               class:ring-2={selectedEvidenceCard === item.id}
               class:ring-nier-border-primary={selectedEvidenceCard === item.id}
               aria-pressed={selectedEvidenceCard === item.id}
-              on:click={() => selectEvidenceCard(item.id)}
+              onclick={() => selectEvidenceCard(item.id)}
             >
               <div class="space-y-3">
                 <div class="flex items-start justify-between">
@@ -466,7 +466,7 @@
   }
   /* Enhanced demo styling */
   :global(.demo-config-section) {
-    animation: demo-section-enter 0.5s ease-out;
+    animation demo-section-enter 0.5s ease-out;
   }
   @keyframes demo-section-enter {
     from {
@@ -502,7 +502,7 @@
     background-size: 20px 20px;
     border: 2px dashed var(--color-nier-border-secondary);
     border-radius: 8px;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   :global(.yorha-drop-zone:hover) {
     border-color: var(--color-nier-border-primary);
@@ -518,6 +518,6 @@
   :global(.processing-indicator) {
     height: 100%;
     background: linear-gradient(90deg, var(--color-ai-status-online), var(--color-ai-status-processing));
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
 </style>

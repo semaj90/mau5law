@@ -241,7 +241,7 @@
       evidence: nodes.filter(n => n.type === 'evidence'),
       entity: nodes.filter(n => n.type === 'entity'),
       event: nodes.filter(n => n.type === 'event'),
-      correlation: nodes.filter(n => n.type === 'correlation');
+      correlation nodes.filter(n => n.type === 'correlation');
     }
     // Position groups in layers
     groups.evidence.forEach((node, i) => {
@@ -312,10 +312,10 @@
         <option value="circular">Circular</option>
         <option value="hierarchical">Hierarchical</option>
       </select>
-      <Button on:click={toggleLabels} variant="secondary" size="sm">
+      <Button onclick={toggleLabels} variant="secondary" size="sm">
         {showLabels ? 'Hide' : 'Show'} Labels
       </Button>
-      <Button on:click={resetView} variant="secondary" size="sm">
+      <Button onclick={resetView} variant="secondary" size="sm">
         Reset View
       </Button>
     </div>

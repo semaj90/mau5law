@@ -79,7 +79,7 @@
   <div class="ring-container">
     <div class="ring-outer">
       {#each Array(8) as _, i}
-        <div class="ring-segment" style="--delay: {i * 0.125}s; --rotation: {i * 45}deg"></div>
+        <div class="ring-segment" style="--delay: {i * 0.125}s; --rotation {i * 45}deg"></div>
       {/each}
     </div>
     <!-- Inner rotating core -->
@@ -101,7 +101,7 @@
     <!-- Sparkle effects -->
     <div class="sparkle-layer">
       {#each Array(6) as _, i}
-        <div class="sparkle" style="--delay: {i * 0.3}s; --rotation: {i * 60}deg"></div>
+        <div class="sparkle" style="--delay: {i * 0.3}s; --rotation {i * 60}deg"></div>
       {/each}
     </div>
   </div>
@@ -109,7 +109,7 @@
 
 <style>
   .n64-loading-ring {
-    position: relative;
+    position relative;
     width: var(--size);
     height: var(--size);
     display: flex;
@@ -117,21 +117,21 @@
     justify-content: center;
   }
   .ring-container {
-    position: relative;
+    position relative;
     width: 100%;
     height: 100%;
   }
   .ring-outer {
-    position: absolute;
+    position absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    animation: rotate var(--speed) linear infinite;
+    animation rotate var(--speed) linear infinite;
   }
   .ring-segment {
-    position: absolute;
+    position absolute;
     top: 10%;
     left: 50%;
     width: 8%;
@@ -140,46 +140,46 @@
     border-radius: 2px;
     transform-origin: 50% 200%;
     transform: translateX(-50%) rotate(var(--rotation));
-    animation: pulse-segment calc(var(--speed) * 2) ease-in-out infinite var(--delay);
+    animation pulse-segment calc(var(--speed) * 2) ease-in-out infinite var(--delay);
     box-shadow:
       0 0 4px var(--glow),
       inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
   .ring-core {
-    position: absolute;
+    position absolute;
     top: 25%;
     left: 25%;
     width: 50%;
     height: 50%;
     border-radius: 50%;
     background: radial-gradient(circle, var(--primary) 0%, var(--secondary) 70%, var(--accent) 100%);
-    animation: rotate-reverse calc(var(--speed) * 1.5) linear infinite;
+    animation rotate-reverse calc(var(--speed) * 1.5) linear infinite;
     box-shadow:
       0 0 8px var(--glow),
       inset 0 0 4px rgba(0, 0, 0, 0.3);
   }
   .core-inner {
-    position: absolute;
+    position absolute;
     top: 20%;
     left: 20%;
     width: 60%;
     height: 60%;
     border-radius: 50%;
     background: var(--primary);
-    animation: pulse-core calc(var(--speed) * 0.8) ease-in-out infinite;
+    animation pulse-core calc(var(--speed) * 0.8) ease-in-out infinite;
   }
   .core-crystal {
-    position: absolute;
+    position absolute;
     top: 30%;
     left: 30%;
     width: 40%;
     height: 40%;
     background: #fff;
     clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-    animation: crystal-shine calc(var(--speed) * 1.2) ease-in-out infinite;
+    animation crystal-shine calc(var(--speed) * 1.2) ease-in-out infinite;
   }
   .percentage-ring {
-    position: absolute;
+    position absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -189,7 +189,7 @@
     justify-content: center;
   }
   .percentage-svg {
-    position: absolute;
+    position absolute;
     width: 100%;
     height: 100%;
     transform: rotate(-90deg);
@@ -206,11 +206,11 @@
     stroke-linecap: round;
     stroke-dasharray: 283; /* 2 * π * 45 */
     stroke-dashoffset: calc(283 - (283 * var(--percentage) / 100));
-    transition: stroke-dashoffset 0.5s ease;
+    transition stroke-dashoffset 0.5s ease;
     filter: drop-shadow(0 0 2px var(--glow));
   }
   .percentage-text {
-    position: relative;
+    position relative;
     color: var(--primary);
     font-family: 'Courier New', monospace;
     font-weight: bold;
@@ -223,7 +223,7 @@
     z-index: 10,
   }
   .sparkle-layer {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     width: 100%;
@@ -231,7 +231,7 @@
     pointer-events: none;
   }
   .sparkle {
-    position: absolute;
+    position absolute;
     top: 15%;
     left: 50%;
     width: 4px;
@@ -239,7 +239,7 @@
     background: #fff;
     border-radius: 50%;
     transform: translateX(-50%) rotate(var(--rotation)) translateY(-200%);
-    animation: sparkle-twinkle calc(var(--speed) * 3) ease-in-out infinite var(--delay);
+    animation sparkle-twinkle calc(var(--speed) * 3) ease-in-out infinite var(--delay);
     box-shadow: 0 0 6px var(--glow);
   }
   /* Animations */
@@ -306,16 +306,16 @@
     }
   }
   /* Reduced motion support */
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     .ring-outer,
     .ring-core {
-      animation-duration: 10,
+      animation-duration 10,
     }
     .ring-segment,
     .core-inner,
     .core-crystal,
     .sparkle {
-      animation: none;
+      animation none;
     }
   }
 </style>

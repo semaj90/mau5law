@@ -122,7 +122,7 @@ https://svelte.dev/e/js_parse_error -->
   		ondispatch?.({ fieldName, value, confidence });
   	}
   	// Apply suggestion to field
-  	const applySuggestion = (fieldName: string, suggestion: string) => {
+  	const applySuggestion = (fieldName: string, suggestion string) => {
   		handleFieldChange(fieldName, suggestion, 0.8);
   	}
   	// Field validation
@@ -266,7 +266,7 @@ https://svelte.dev/e/js_parse_error -->
 						<Button
 							variant="ghost"
 							class="mt-4 bits-btn"
-							on:click={() =>
+							onclick={() =>
 fileInput.click()}
 						>
 							Browse Files
@@ -275,7 +275,7 @@ fileInput.click()}
 				</div>
 				<!-- Processing Status -->
 				{#if $processing}
-					<div class="space-y-2" transition:fade>
+					<div class="space-y-2" transitionfade>
 						<div class="flex items-center justify-between">
 							<span class="text-sm text-yorha-text-secondary">Processing document...</span>
 							<span class="text-sm text-yorha-text-secondary">{Math.round($progress)}%</span>
@@ -319,7 +319,7 @@ fileInput.click()}
 			<form onsubmit|preventDefault={handleSubmit} class="space-y-6">
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 					{#each populatedFields as field (field.name)}
-						<div class="space-y-2" transition:fade>
+						<div class="space-y-2" transitionfade>
 							<!-- Field Label -->
 							<div class="flex items-center justify-between">
 								<Label class="flex items-center space-x-2">
@@ -358,7 +358,7 @@ fileInput.click()}
 							{/if}
 							<!-- Field Error -->
 							{#if $formErrors[field.name]}
-								<p class="text-xs text-yorha-danger" transition:scale>
+								<p class="text-xs text-yorha-danger" transitionscale>
 									{$formErrors[field.name]}
 								</p>
 							{/if}
@@ -372,7 +372,7 @@ fileInput.click()}
 												variant="ghost"
 												size="sm"
 												class="text-xs h-6 px-2 bits-btn"
-												on:click={() =>
+												onclick={() =>
 applySuggestion(field.name, suggestion)}
 											>
 												{suggestion}
@@ -406,7 +406,7 @@ applySuggestion(field.name, suggestion)}
 					<div class="flex items-center space-x-3">
 						<Button class="bits-btn"
 							variant="ghost"
-							on:click={() =>
+							onclick={() =>
 {
 								populatedFields = populatedFields.map(f => ({ ...f, value: '' }));
 								formErrors.set( );
@@ -436,7 +436,7 @@ Submit Form
 					<Button class="bits-btn"
 						variant="ghost"
 						size="sm"
-						on:click={() =>
+						onclick={() =>
 showPreview = !showPreview}
 					>
 						{showPreview ? 'Hide' : 'Show'}

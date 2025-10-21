@@ -36,7 +36,7 @@
   let newCase = $state({
     caseNumber: `CASE-${Date.now()}`,
     title: 'Authenticated Test Case',
-    description: 'Testing CRUD operations with authenticated user and PostgreSQL integration',
+    description 'Testing CRUD operations with authenticated user and PostgreSQL integration',
     priority: 'medium' as 'low' | 'medium' | 'high' | 'critical',
     status: 'draft' as 'draft' | 'open' | 'in_progress' | 'review' | 'closed',
     category: 'testing',
@@ -283,7 +283,7 @@
     try {
       const updateData = {
         title: 'Updated Authenticated Test Case',
-        description: 'Updated via authenticated API test with new embeddings',
+        description 'Updated via authenticated API test with new embeddings',
         status: 'in_progress',
         priority: 'high',
         tags: ['updated', 'authenticated', 'pgvector'],
@@ -453,7 +453,7 @@
       {:else if authError}
         <div class="text-red-600 space-y-2">
           <p><strong>Error:</strong> {authError}</p>
-          <Button class="bits-btn" on:click={goToLogin} variant="default">Go to Login</Button>
+          <Button class="bits-btn" onclick={goToLogin} variant="default">Go to Login</Button>
         </div>
       {:else}
         <p class="text-gray-500">Checking authentication...</p>
@@ -469,18 +469,18 @@
       <div class="flex flex-wrap gap-3">
         <Button
           class="bits-btn"
-          on:click={runAuthenticatedCRUDTest}
+          onclick={runAuthenticatedCRUDTest}
           disabled={isLoading || !isAuthenticated}
           variant="default"
         >
           {isLoading ? '⏳ Testing...' : '🚀 Run Authenticated CRUD Test'}
         </Button>
-        <Button class="bits-btn" on:click={() => checkAuth()} disabled={isLoading} variant="secondary">
+        <Button class="bits-btn" onclick={() => checkAuth()} disabled={isLoading} variant="secondary">
           🔍 Check Auth
         </Button>
         <Button
           class="bits-btn"
-          on:click={testAuthenticatedGET}
+          onclick={testAuthenticatedGET}
           disabled={isLoading || !isAuthenticated}
           variant="secondary"
         >
@@ -488,7 +488,7 @@
         </Button>
         <Button
           class="bits-btn"
-          on:click={testAuthenticatedPOST}
+          onclick={testAuthenticatedPOST}
           disabled={isLoading || !isAuthenticated}
           variant="secondary"
         >
@@ -496,7 +496,7 @@
         </Button>
         <Button
           class="bits-btn"
-          on:click={() => testAuthenticatedPUT()}
+          onclick={() => testAuthenticatedPUT()}
           disabled={isLoading || !isAuthenticated}
           variant="secondary"
         >
@@ -504,13 +504,13 @@
         </Button>
         <Button
           class="bits-btn"
-          on:click={() => testAuthenticatedDELETE()}
+          onclick={() => testAuthenticatedDELETE()}
           disabled={isLoading || !isAuthenticated}
           variant="secondary"
         >
           🗑️ Test DELETE
         </Button>
-        <Button class="bits-btn" on:click={clearResults} variant="ghost">🧹 Clear Results</Button>
+        <Button class="bits-btn" onclick={clearResults} variant="ghost">🧹 Clear Results</Button>
       </div>
       {#if !isAuthenticated}
         <p class="text-sm text-gray-500 mt-2">⚠️ Authentication required to run tests. Please log in first.</p>

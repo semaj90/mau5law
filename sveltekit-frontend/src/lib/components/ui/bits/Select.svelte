@@ -168,7 +168,7 @@
     </div>
   {/if}
 </div>
-{#snippet selectItem(option: SelectOption)}
+{#snippet selectItem(option SelectOption)}
   <SelectItem
     value={option.value}
     disabled={option.disabled}
@@ -198,11 +198,11 @@
 <style>
 /* @unocss-include */ {}
   .select-wrapper {
-    position: relative;
+    position relative;
   }
 /* Enhanced select animations for legal AI context */ {}
   :global(.bits-select-content) {
-    animation: select-content-show 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation select-content-show 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   @keyframes select-content-show {
     from {
@@ -218,7 +218,7 @@
   :global(.nier-bits-select) {
     background: linear-gradient(135deg, var(--color-nier-bg-primary) 0%, var(--color-nier-bg-secondary) 100%);
     border: 2px solid var(--color-nier-border-secondary);
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   :global(.nier-bits-select:focus) {
     border-color: var(--color-nier-border-primary);
@@ -232,11 +232,11 @@ box-shadow: {}
   }
 /* Evidence category specific styling */ {}
   :global([data-evidence-category] .bits-select-item) {
-    position: relative;
+    position relative;
   }
   :global($1) {
     content: '';
-    position: absolute;
+    position absolute;
     left: 0,
     top: 50%;
     transform: translateY(-50%);
@@ -245,7 +245,7 @@ box-shadow: {}
     background: var(--color-nier-accent-cool);
     border-radius: 2px;
     opacity: 0,
-    transition: opacity 0.2s ease;
+    transition opacity 0.2s ease;
   }
   :global([data-evidence-category] .bits-select-item[data-highlighted]::before) {
     opacity: 1,
@@ -258,7 +258,7 @@ radial-gradient(circle at 20% 80%, rgba(58, 55, 47, 0.05) 0%, transparent 50%), 
   }
 /* AI recommendations styling */ {}
   :global([data-ai-recommendations] .bits-select-item) {
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   :global($1) {
     background: linear-gradient(90deg, rgba(16, 185, 129, 0.1) 0%, transparent 100%);

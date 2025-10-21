@@ -26,17 +26,17 @@
     id: string;
     name: string;
     category: 'litigation' | 'contract' | 'compliance' | 'discovery' | 'pleading';
-    description: string;
+    description string;
     complexity: 'basic' | 'intermediate' | 'advanced';
     estimatedTime: string;
     requiredFields: DocumentField[];
-    icon: string;
+    icon string;
   }
   interface DocumentTemplate {
     id: string;
     name: string;
     documentTypeId: string;
-    description: string;
+    description string;
     content: string;
     variables: TemplateVariable[];
     lastUpdated: string;
@@ -46,7 +46,7 @@
     name: string;
     type: 'text' | 'date' | 'number' | 'select' | 'boolean';
     required: boolean;
-    description: string;
+    description string;
     options?: string[];
     default_value?: any;
   }
@@ -67,7 +67,7 @@
       caseId?: string;
       createdAt: string;
       lastModified: string;
-      version: number;
+      version number;
       wordCount: number;
       completionScore: number;
     };
@@ -78,8 +78,8 @@
   interface AISuggestion {
     id: string;
     type: 'content' | 'structure' | 'legal_point' | 'citation' | 'language';
-    position: number;
-    suggestion: string;
+    position number;
+    suggestion string;
     reasoning: string;
     confidence: number;
     applied: boolean;
@@ -272,7 +272,7 @@
       console.error('Error saving document:', error);
     }
   }
-  async function applySuggestion(suggestion: AISuggestion) {
+  async function applySuggestion(suggestion AISuggestion) {
     if (!currentDocument) return;
     try {
       const response = await fetch(`/api/ai/document-drafting/suggestions/${suggestion.id}/apply`, {
@@ -296,7 +296,7 @@
         }
       }
     } catch (error) {
-      console.error('Error applying suggestion:', error);
+      console.error('Error applying suggestion', error);
     }
   }
   function getDocumentTypeIcon(category: string): string {
@@ -390,10 +390,10 @@
     </div>
     <div class="header-actions">
       {#if currentDocument}
-        <button type="button" class="nes-btn" on:click={saveDocument}>Save Draft</button>
-        <button type="button" class="nes-btn btn-ghost" on:click={() => (showPreview = true)}>Preview</button>
+        <button type="button" class="nes-btn" onclick={saveDocument}>Save Draft</button>
+        <button type="button" class="nes-btn btn-ghost" onclick={() => (showPreview = true)}>Preview</button>
       {:else}
-        <button type="button" class="nes-btn" on:click={startNewDocument} disabled={!selectedDocumentType || isDrafting}>
+        <button type="button" class="nes-btn" onclick={startNewDocument} disabled={!selectedDocumentType || isDrafting}>
           {isDrafting ? 'Creating...' : 'Start New Document'}
         </button>
       {/if}
@@ -542,10 +542,10 @@
                   <p class="suggestion-text">{suggestion.suggestion}</p>
                   <p class="suggestion-reasoning">{suggestion.reasoning}</p>
                   <div class="suggestion-actions">
-                    <button class="nes-btn btn-sm" on:click={() => applySuggestion(suggestion)}> Apply </button>
+                    <button class="nes-btn btn-sm" onclick={() => applySuggestion(suggestion)}> Apply </button>
                     <button
                       class="nes-btn btn-ghost btn-sm"
-                      on:click={() => {
+                      onclick={() => {
                         /* dismiss TODO */
                       }}
                     >
@@ -563,7 +563,7 @@
           <div class="quick-actions">
             <button
               class="nes-btn btn-ghost btn-sm"
-              on:click={() => {
+              onclick={() => {
                 /* Add Introduction TODO */
               }}
             >
@@ -571,7 +571,7 @@
             </button>
             <button
               class="nes-btn btn-ghost btn-sm"
-              on:click={() => {
+              onclick={() => {
                 /* Add Conclusion TODO */
               }}
             >
@@ -579,7 +579,7 @@
             </button>
             <button
               class="nes-btn btn-ghost btn-sm"
-              on:click={() => {
+              onclick={() => {
                 /* Improve Language TODO */
               }}
             >
@@ -587,7 +587,7 @@
             </button>
             <button
               class="nes-btn btn-ghost btn-sm"
-              on:click={() => {
+              onclick={() => {
                 /* Add Citations TODO */
               }}
             >
@@ -616,7 +616,7 @@
                 </div>
                 <div class="card-content">
                   <div class="required-fields">
-                    <h4>Required Information:</h4>
+                    <h4>Required Information</h4>
                     <ul>
                       {#each selectedDocType.requiredFields as field}
                         <li>{field.label} {field.required ? '(Required)' : '(Optional)'}</li>
@@ -640,7 +640,7 @@
               <button
                 class="nes-btn btn-ghost btn-sm"
                 disabled={isGenerating}
-                on:click={() => {
+                onclick={() => {
                   /* AI Assist TODO */
                 }}
               >
@@ -666,7 +666,7 @@
               <button
                 class="nes-btn btn-sm"
                 disabled={isGenerating}
-                on:click={() => {
+                onclick={() => {
                   /* quick generate TODO */
                 }}
               >
@@ -717,8 +717,8 @@
 </div>
 
 {#if showPreview}
-  <div class="modal-overlay" on:click={() => (showPreview = false)}>
-    <div class="modal-content document-preview-dialog" on:click|stopPropagation>
+  <div class="modal-overlay" onclick={() => (showPreview = false)}>
+    <div class="modal-content document-preview-dialog" onclick|stopPropagation>
       {#if currentDocument}
         <div class="preview-content">
           <div class="preview-header">
@@ -738,7 +738,7 @@
           </div>
         </div>
         <div class="dialog-actions">
-          <button class="nes-btn btn-ghost" on:click={() => (showPreview = false)}> Close Preview </button>
+          <button class="nes-btn btn-ghost" onclick={() => (showPreview = false)}> Close Preview </button>
           <button class="nes-btn"> Export PDF </button>
         </div>
       {/if}
@@ -791,7 +791,7 @@
   .sidebar-section {
     margin-bottom: 2rem;
   }
-  .sidebar-section:last-child {
+  .sidebar-sectionlast-child {
     margin-bottom: 0,
   }
   .sidebar-section h3 {
@@ -802,7 +802,7 @@
   }
   .document-types-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
   }
   .document-type-option {
@@ -813,7 +813,7 @@
     border: 1px solid #e5e7eb;
     border-radius: 0.375rem;
     background: white;
-    transition: all 0.2s;
+    transition all 0.2s;
   }
   .document-type-card:hover {
     border-color: #3b82f6;
@@ -893,12 +893,12 @@
   }
   .config-form {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .form-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .form-group label {
@@ -950,7 +950,7 @@
   }
   .suggestions-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
     max-height: 300px;
     overflow-y: auto;
@@ -999,7 +999,7 @@
   }
   .quick-actions {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .drafting-main {
@@ -1041,7 +1041,7 @@
   }
   .document-editor {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     height: 70vh;
   }
   .editor-toolbar {
@@ -1124,7 +1124,7 @@
   }
   .draft-card {
     border: 1px solid #e2e8f0;
-    transition: box-shadow 0.2s;
+    transition box-shadow 0.2s;
   }
   .draft-card:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -1219,7 +1219,7 @@
   }
   /* Modal overlay used in place of external Dialog component */
   .modal-overlay {
-    position: fixed;
+    position fixed;
     inset: 0,
     background: rgba(0, 0, 0, 0.45);
     display: flex;
@@ -1250,11 +1250,11 @@
   }
   @media (max-width: 768px) {
     .drafting-header {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
     }
     .toolbar-right {
-      flex-direction: column;
+      flex-direction column;
       gap: 0.5rem;
     }
     .title-input {

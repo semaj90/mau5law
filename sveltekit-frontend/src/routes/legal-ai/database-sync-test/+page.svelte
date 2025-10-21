@@ -49,7 +49,7 @@
     - Billing cycle: Monthly
     This agreement shall be governed by Delaware law.
   `;
-  let selectedSession: string | null = null;
+  let selectedSession string | null = null;
   let testResults: unknown = null;
   let testLog: string[] = [];
   // ===== DATABASE SYNC TESTING FUNCTIONS =====
@@ -75,7 +75,7 @@
       addToLog('❌ No session selected for loading test');
       return;
     }
-    addToLog(`Loading session: ${selectedSession}`);
+    addToLog(`Loading session ${selectedSession}`);
     try {
       await langchainServiceLogic.loadSession(selectedSession);
       addToLog('✅ Session loaded successfully');
@@ -426,7 +426,7 @@
     background: white;
     border: 1px solid #ddd;
     border-radius: 6px;
-    transition: border-color 0.2;
+    transition border-color 0.2;
   }
   .status-card.online {
     border-color: #28a745;
@@ -471,7 +471,7 @@
     border-radius: 4px;
     background: white;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .session-item: hover {
     border-color: #0066cc;
@@ -535,7 +535,7 @@
     border-radius: 6px;
     font-size: 1rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -583,7 +583,7 @@
     border: 3px solid #f3f3f3;
     border-top: 3px solid #0066cc;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   .progress-bar {
     flex: 1,
@@ -595,7 +595,7 @@
   .progress-fill {
     height: 100%;
     background: #0066cc;
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   @keyframes spin {
     0% { transform: rotate(0deg), }
@@ -696,7 +696,7 @@
       grid-template-columns: 1fr;
     }
     .test-actions {
-      flex-direction: column;
+      flex-direction column;
     }
     .test-btn {
       width: 100%;

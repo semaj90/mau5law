@@ -23,7 +23,7 @@
 {#if visibleOperations.length > 0}
   <div class="fixed {positionClasses[position]} z-40 space-y-2 max-w-sm w-full pointer-events-none">
     {#each visibleOperations as operation (operation.id)}
-      <div class="pointer-events-auto" in:fly={{ y: 20, duration: 300 }} out:fade={{ duration: 200 }}>
+      <div class="pointer-events-auto" in:fly={{ y: 20, duration 300 }} out:fade={{ duration 200 }}>
         <AILoadingIndicator
           isLoading={operation.status === 'loading'}
           title={operation.title}
@@ -43,7 +43,7 @@
       <div
         class="text-xs text-gray-500 dark: text-gray-400 text-center bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded px-2 py-1"
         ;
-        in:fade={{ duration: 200 }}
+        in:fade={{ duration 200 }}
       >
         +{operations.length - maxVisible} more operations
       </div>

@@ -25,7 +25,7 @@
     warning: "text-yellow-400",
     info: "text-blue-400",
   }
-  function handleClose(notification: Notification) {
+  function handleClose(notification Notification) {
     notifications.remove.id);
   }
   // Clean up notifications on component destroy (e.g., app shutdown or navigation)
@@ -34,8 +34,8 @@
     notifications.clear && notifications.clear();
   });
   function handleAction(
-    notification: Notification;
-    action: NonNullable<Notification["actions"]>[0]
+    notification Notification;
+    action NonNullable<Notification["actions"]>[0]
   ) {
     action.action();
     notifications.remove.id);
@@ -49,8 +49,8 @@
         relative p-4 rounded-lg border shadow-lg backdrop-blur-sm
         ${colorClasses[(notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).type]}
       `}
-      in:fly={{ x: 300, duration: 300, easing: quintOut }}
-      out:fly={{ x: 300, duration: 200, easing: quintOut  }}
+      in:fly={{ x: 300, duration 300, easing: quintOut }}
+      out:fly={{ x: 300, duration 200, easing: quintOut  }}
     >
       <div class="space-y-4">
         <!-- Icon -->
@@ -77,7 +77,7 @@
                 <Button class="bits-btn"
                   size="sm"
                   variant={action.variant || "secondary"}
-                  on:click={() =>
+                  onclick={() =>
 handleAction(notification, action)}
                 >
                   {action.label}
@@ -91,7 +91,7 @@ handleAction(notification, action)}
           <button
             type="button"
             class="space-y-4"
-            on:click={() => handleClose(notification)}
+            onclick={() => handleClose(notification)}
           >
             <span class="space-y-4">Dismiss</span>
             <iconify-icon icon="ph:x" class="space-y-4"></iconify-icon>
@@ -105,7 +105,7 @@ handleAction(notification, action)}
         >
           <div
             class="space-y-4"
-            style="animation: shrink {(notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).duration}ms linear forwards;"
+            style="animation shrink {(notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).duration}ms linear forwards;"
           ></div>
         </div>
       {/if}

@@ -1,6 +1,6 @@
 <!--
   Case Relationship Graph LOD Component - N64-Inspired Node Culling
-  Implements progressive graph detail similar to N64 polygon reduction:
+  Implements progressive graph detail similar to N64 polygon reduction
   - LOD 0: All nodes visible (1000+ nodes)
   - LOD 1: High importance nodes (500 nodes)
   - LOD 2: Core entities only (200 nodes)
@@ -39,7 +39,7 @@
     label: string;
     importance: number; // 0-1, affects LOD visibility
     connections: string[];
-    position: { x: number; y: number; z?: number };
+    position { x: number; y: number; z?: number };
     size: number;
     color: string;
     metadata: { [key: string]: any };
@@ -107,11 +107,11 @@
 
   // Filter controls
   let nodeTypeFilters = {
-    person: true,
+    person true,
     entity: true,
     document: true,
     event: true,
-    location: true,
+    location true,
   };
   let importanceThreshold = 0.1;
 
@@ -122,7 +122,7 @@
       maxEdges: 2000,
       minImportance: 0.0,
       clusterDistance: 0,
-      description: 'Ultra High (All Nodes)',
+      description 'Ultra High (All Nodes)',
       renderComplexity: 1.0,
     },
     1: {
@@ -130,7 +130,7 @@
       maxEdges: 1000,
       minImportance: 0.2,
       clusterDistance: 5,
-      description: 'High Detail',
+      description 'High Detail',
       renderComplexity: 0.7,
     },
     2: {
@@ -138,7 +138,7 @@
       maxEdges: 400,
       minImportance: 0.4,
       clusterDistance: 15,
-      description: 'Medium Detail',
+      description 'Medium Detail',
       renderComplexity: 0.4,
     },
     3: {
@@ -146,7 +146,7 @@
       maxEdges: 100,
       minImportance: 0.7,
       clusterDistance: 30,
-      description: 'Low Detail (N64 Style)',
+      description 'Low Detail (N64 Style)',
       renderComplexity: 0.2,
     },
   } as const;
@@ -267,11 +267,11 @@
 
   function getNodeTypeImportance(type: string): number {
     const typeWeights: Record<string, number> = {
-      person: 0.9,
+      person 0.9,
       entity: 0.8,
       document: 0.6,
       event: 0.7,
-      location: 0.5,
+      location 0.5,
     };
     return typeWeights[type] ?? 0.5;
   }
@@ -579,7 +579,7 @@
         label: 'John Doe',
         importance: 0.9,
         connections: ['entity_1', 'document_1'],
-        position: { x: 0, y: 0 },
+        position { x: 0, y: 0 },
         size: 15,
         color: '#4ade80',
         metadata: { role: 'defendant' },
@@ -590,7 +590,7 @@
         label: 'ABC Corp',
         importance: 0.8,
         connections: ['person_1', 'document_2'],
-        position: { x: 50, y: 50 },
+        position { x: 50, y: 50 },
         size: 12,
         color: '#3b82f6',
         metadata: { type: 'corporation' },
@@ -621,16 +621,16 @@
   <!-- Graph Controls -->
   <div class="graph-controls">
     <div class="view-controls">
-      <LoadingButton on:click={handleZoomIn} variant="ghost" size="sm">
+      <LoadingButton onclick={handleZoomIn} variant="ghost" size="sm">
         {#snippet children()}<ZoomIn class="w-4 h-4" />{/snippet}
       </LoadingButton>
       <span class="zoom-info">
         {Math.round(zoomLevel * 100)}%
       </span>
-      <LoadingButton on:click={handleZoomOut} variant="ghost" size="sm">
+      <LoadingButton onclick={handleZoomOut} variant="ghost" size="sm">
         {#snippet children()}<ZoomOut class="w-4 h-4" />{/snippet}
       </LoadingButton>
-      <LoadingButton on:click={handleResetView} variant="ghost" size="sm">
+      <LoadingButton onclick={handleResetView} variant="ghost" size="sm">
         {#snippet children()}<RotateCcw class="w-4 h-4" />{/snippet}
       </LoadingButton>
     </div>
@@ -692,7 +692,7 @@
       width="800"
       height="600"
       class="graph-canvas"
-      on:click={handleCanvasClick}
+      onclick={handleCanvasClick}
       onmousemove={handleCanvasHover}
     ></canvas>
     <!-- Loading overlay -->
@@ -792,11 +792,11 @@
     justify-self: end;
   }
   .filter-dropdown {
-    position: relative;
+    position relative;
     background: rgba(0, 0, 0, 0.5);
   }
   .filter-content {
-    position: absolute;
+    position absolute;
     top: 100%;
     right: 0;
     z-index: 10,
@@ -818,7 +818,7 @@
     margin-top: 1rem;
   }
   .graph-canvas-container {
-    position: relative;
+    position relative;
     background: #1a1a2e;
     border: 2px solid #444;
     border-radius: 4px;
@@ -826,20 +826,20 @@
     overflow: hidden;
   }
   .graph-canvas-container .loading-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     justify-content: center;
     align-items: center;
     gap: 1rem;
   }
   .node-info-panel {
-    position: absolute;
+    position absolute;
     top: 1rem;
     right: 1rem;
     background: rgba(0, 0, 0, 0.9);
@@ -891,7 +891,7 @@
     }
   }
   .nes-progress-bar.indeterminate {
-    animation: indeterminate 1.5s linear infinite;
+    animation indeterminate 1.5s linear infinite;
   }
   /* Responsive adjustments */
   @media (max-width: 768px) {
@@ -905,7 +905,7 @@
       justify-self: center;
     }
     .graph-canvas-container {
-      position: static;
+      position static;
       margin-top: 1rem;
     }
     .stats-grid {

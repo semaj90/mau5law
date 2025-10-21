@@ -100,12 +100,12 @@
       <span class="icon">🔮</span>
       Case Outcome Prediction
     </h2>
-    <button class="refresh-btn" style:color={currentTheme.accentColor} on:click={loadPrediction} disabled={loading}>
+    <button class="refresh-btn" style:color={currentTheme.accentColor} onclick={loadPrediction} disabled={loading}>
       {loading ? '⏳' : '🔄'}
     </button>
   </div>
   {#if loading}
-    <div class="loading-container" transition:fade>
+    <div class="loading-container" transitionfade>
       <div class="loading-spinner {consoleTheme}"></div>
       <p>Analyzing case data...</p>
       <div class="loading-bar">
@@ -113,13 +113,13 @@
       </div>
     </div>
   {:else if error}
-    <div class="error-container" transition:fade>
+    <div class="error-container" transitionfade>
       <div class="error-icon">❌</div>
       <p class="error-message">{error}</p>
-      <button class="retry-btn nes-btn is-error" on:click={loadPrediction}> Retry Analysis </button>
+      <button class="retry-btn nes-btn is-error" onclick={loadPrediction}> Retry Analysis </button>
     </div>
   {:else if prediction}
-    <div class="prediction-content" transitionfly={{ y: 20, duration: 400 }}>
+    <div class="prediction-content" transitionfly={{ y: 20, duration 400 }}>
       <!-- Main Prediction Display -->
       <div class="main-prediction">
         <div class="probability-circle" style:border-color={getProbabilityColor(prediction.winProbability)}>
@@ -229,10 +229,10 @@
       </div>
     </div>
   {:else}
-    <div class="empty-state" transition:fade>
+    <div class="empty-state" transitionfade>
       <div class="empty-icon">🔮</div>
       <p>Click "Analyze Case" to generate outcome prediction</p>
-      <button class="analyze-btn nes-btn is-primary" on:click={loadPrediction}> Analyze Case </button>
+      <button class="analyze-btn nes-btn is-primary" onclick={loadPrediction}> Analyze Case </button>
     </div>
   {/if}
 </div>
@@ -243,7 +243,7 @@
     border-radius: 8px;
     padding: 1.5rem;
     min-height: 400px;
-    position: relative;
+    position relative;
     overflow: hidden;
   }
   .prediction-display.n64 {
@@ -287,7 +287,7 @@
     cursor: pointer;
     border-radius: 4px;
     font-size: 1.2rem;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .refresh-btn:hover:not(:disabled) {,
     transform: scale(1.1);
@@ -306,7 +306,7 @@
     border: 3px solid rgba(255,255,255,0.3);
     border-top: 3px solid currentColor;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
   .loading-bar {
@@ -321,7 +321,7 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, currentColor, transparent);
-    animation: loading-slide 2s infinite;
+    animation loading-slide 2s infinite;
   }
   .main-prediction {
     display: flex;
@@ -338,7 +338,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
+    position relative;
   }
   .probability-text {
     text-align: center;
@@ -375,7 +375,7 @@
   }
   .meter-fill {
     height: 100%;
-    transition: width 1s ease-in-out;
+    transition width 1s ease-in-out;
     border-radius: 6px;
   }
   .confidence-label {
@@ -451,7 +451,7 @@
   }
   .cases-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .case-header {
@@ -522,7 +522,7 @@
   }
   .empty-state {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 1rem;
   }
@@ -543,14 +543,14 @@
   /* Responsive design */
   @media (max-width: 768px) {
     .main-prediction {
-      flex-direction: column;
+      flex-direction column;
       text-align: center;
     }
     .factors-grid {
       grid-template-columns: 1fr;
     }
     .factor-header {
-      flex-direction: column;
+      flex-direction column;
       gap: 0.5rem;
       align-items: flex-start;
     }

@@ -18,7 +18,7 @@
     type: 'evidence-card' | 'document-viewer' | 'chat-interface' | 'case-timeline';
     title?: string;
     priority?: 'critical' | 'high' | 'medium' | 'low';
-    oninteract?: (data: { type: string; position: ;
+    oninteract?: (data: { type: string; position ;
 { x: number; y: number } data: any }) => void;
   }
   let {
@@ -236,7 +236,7 @@ if (!canvas) return;
     // Dispatch events back to parent
     oninteract?.({
       type: 'click',
-      position: ;
+      position ;
 { x, y },
       data: data;
     });
@@ -257,7 +257,7 @@ if (!canvas) return;
     height="300"
     class="glyph-engine-canvas"
     style="width: 100%; height: auto; max-height: 300px;"
-    on:click={handleCanvasClick}
+    onclick={handleCanvasClick}
   />
   <!-- Accessibility text for screen readers -->
   <div class="sr-only">
@@ -277,10 +277,10 @@ if (!canvas) return;
     background: var(--yorha-black);
     border: 2px solid var(--n64-blue);
     border-radius: 0,
-    position: relative;
+    position relative;
   }
   .glyph-engine-canv.sr-only {
-    position: absolute;
+    position absolute;
     width: 1px;
     height: 1px;
     padding: 0,

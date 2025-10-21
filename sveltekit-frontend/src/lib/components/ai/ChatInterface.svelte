@@ -152,7 +152,7 @@ https://svelte.dev/e/js_parse_error -->
       }
       if (analysisData.legal_implications) {
         response += `**Legal Implications:**\n`;
-        analysisData.legal_implications.forEach((implication: string) => {
+        analysisData.legal_implications.forEach((implication string) => {
           response += `• ${implication}\n`;
         });
         response += `\n`;
@@ -249,7 +249,7 @@ https://svelte.dev/e/js_parse_error -->
       chatActions.addMessage(content, "assistant", {
         ...analysis.metadata,
         analysisResult: analysis
-        quickAction: true
+        quickAction true
       });
       setTimeout(scrollToBottom, 100);
     } catch (error) {
@@ -326,7 +326,7 @@ https://svelte.dev/e/js_parse_error -->
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            on:click={quickAnalyzeEvidence}
+            onclick={quickAnalyzeEvidence}
             disabled={$isLoading}
           >
 🔍 Quick Analysis
@@ -433,7 +433,7 @@ https://svelte.dev/e/js_parse_error -->
         variant="default"
         size="sm"
         class="mx-auto px-4 max-w-7xl bits-btn bits-btn"
-        on:click={() => sendMessage()}
+        onclick={() => sendMessage()}
         disabled={$isLoading || !messageInput.trim()}
       >
         {#if $isLoading}

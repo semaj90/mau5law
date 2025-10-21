@@ -237,7 +237,7 @@
             <button
               type="button"
               class="p-1 hover:bg-gray-100 rounded"
-              on:click={handleSearch}
+              onclick={handleSearch}
               disabled={!inputValue.trim()}
             >
               <Search class="h-4 w-4 text-gray-500" />
@@ -309,7 +309,7 @@
                 <button
                   type="button"
                   class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2 text-sm outline-none hover:bg-gray-50"
-                  on:click={() => handleSelect(result)}
+                  onclick={() => handleSelect(result)}
                 >
                   <div class="mt-1 text-lg">{getResultTypeIcon((result as any).type)}</div>
                   <div class="flex-1 min-w-0">
@@ -372,7 +372,7 @@
                 <button
                   type="button"
                   class="relative flex cursor-default select-none items-start gap-3 rounded-sm px-3 py-2 text-sm outline-none hover:bg-gray-50"
-                  on:click={() => handleSelect(result)}
+                  onclick={() => handleSelect(result)}
                 >
                   <div class="mt-1 text-lg">{getResultTypeIcon((result as any).type)}</div>
                   <div class="flex-1 min-w-0">
@@ -410,7 +410,7 @@
                 <button
                   type="button"
                   class="block w-full text-left text-xs text-gray-600 hover:text-gray-900 py-1"
-                  on:click={() => handleInputChange(query)}
+                  onclick={() => handleInputChange(query)}
                 >
                   {query}
                 </button>
@@ -480,7 +480,7 @@
     /* The @apply rule typically requires PostCSS and Tailwind CSS to be configured in your build process. */
     /* If you intend to use Tailwind CSS, ensure your svelte.config.js and postcss.config.js are set up correctly. */
     /* For a direct fix within this file, we replace it with standard CSS: */
-    position: relative;
+    position relative;
     width: 100%;
     max-width: 42rem; /* Equivalent to Tailwind's max-w-2xl */
     margin-left: auto;

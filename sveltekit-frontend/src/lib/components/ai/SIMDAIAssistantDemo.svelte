@@ -116,7 +116,7 @@ export default ;
         metadata: {
           model: (result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).model,
           tokensPerSecond: (result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).performance_metrics.tokens_per_second,
-          totalDuration: (result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).total_duration,
+          totalDuration (result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).total_duration,
           simdResults: (result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).simd_results
         }
       });
@@ -124,7 +124,7 @@ export default ;
       if ((result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).simd_results?.enabled) {
         simdResults = (result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).simd_result;
         await generateLiveComponents((result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).simd_results);
-        addLog(`✅ SIMD compression: ${(result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).simd_results.total_compression_ratio.toFixed(1)}:1 ratio`);
+        addLog(`✅ SIMD compression ${(result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).simd_results.total_compression_ratio.toFixed(1)}:1 ratio`);
         addLog(`🎨 Generated ${(result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).simd_results.instant_ui_components.length} UI components`);
       }
       addLog(`⚡ Response generated: ${(result as { response?: any; model?: any; performance_metrics?: any; total_duration?: any; simd_results?: any }).performance_metrics.tokens_per_second?.toFixed(1)} tokens/sec`);
@@ -228,7 +228,7 @@ export default ;
             {qualityTier.toUpperCase()}
           </span>
           <div class="text-sm">
-            Session: <span class="font-mono text-blue-600">{context.sessionId?.slice(-8)}</span>
+            Session <span class="font-mono text-blue-600">{context.sessionId?.slice(-8)}</span>
           </div>
         </div>
       </h3>
@@ -305,7 +305,7 @@ export default ;
           </div>
         </div>
         <div class="flex items-end">
-          <Button on:click={toggleSIMD} variant="ghost" class="w-full text-sm bits-btn bits-btn">
+          <Button onclick={toggleSIMD} variant="ghost" class="w-full text-sm bits-btn bits-btn">
 {enableSIMD ? '🔧 Disable SIMD' : '⚡ Enable SIMD'}
         </div>
       </div>
@@ -321,7 +321,7 @@ export default ;
             onkeydown={(e) => e.key === 'Enter' && submitQuery()}
           />
           <Button
-            on:click={submitQuery}
+            onclick={submitQuery}
             disabled={isProcessing || !queryInput.trim()}
             class={isProcessing ? 'processing' : ''}
           >
@@ -331,7 +331,7 @@ export default ;
         <div class="flex flex-wrap gap-2">
           {#each sampleQueries as sample, index}
             <Button class="bits-btn"
-              on:click={() =>
+              onclick={() =>
 loadSampleQuery(index)}
               variant="ghost"
               size="sm"
@@ -340,7 +340,7 @@ loadSampleQuery(index)}
             >
               Sample {index + 1}
           {/each}
-          <Button class="bits-btn" on:click={clearConversation} variant="ghost" size="sm">
+          <Button class="bits-btn" onclick={clearConversation} variant="ghost" size="sm">
 Clear All
         </div>
       </div>
@@ -456,7 +456,7 @@ Clear All
           <div class="mt-4 text-sm text-gray-600 space-y-1">
             <div><strong>Model:</strong> {context.metadata.model}</div>
             <div><strong>Speed:</strong> {context.metadata.tokensPerSecond?.toFixed(1)} tokens/sec</div>
-            <div><strong>Duration:</strong> {(context.metadata.totalDuration / 1000000).toFixed(0)}ms</div>
+            <div><strong>Duration</strong> {(context.metadata.totalDuration / 1000000).toFixed(0)}ms</div>
             {#if context.metadata.simdResults?.enabled}
               <div><strong>SIMD Worker:</strong> {context.metadata.simdResults.processing_stats.web_worker_used ? 'Yes' : 'No'}</div>
             {/if}
@@ -501,7 +501,7 @@ Clear All
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex justify-between items-center">
           📝 System Logs
-          <Button class="bits-btn" on:click={() =>
+          <Button class="bits-btn" onclick={() =>
 processingLogs = []} variant="ghost" size="sm">
             Clear Logs
         </h3>
@@ -533,11 +533,11 @@ processingLogs = []} variant="ghost" size="sm">
     50% { opacity: 0.7, }
   }
   .processing {
-    animation: processing-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    animation processing-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
   /* Live component animations */
   .live-component {
-    transition: all 0.3s ease-in-out;
+    transition all 0.3s ease-in-out;
   }
   .live-component:hover {
     transform: scale(1.02);

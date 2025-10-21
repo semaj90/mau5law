@@ -172,7 +172,7 @@ https://svelte.dev/e/js_parse_error -->
       </p>
       <div class="flex gap-4 mt-4">
         <button
-          on:click={isMonitoring ? stopMonitoring : startMonitoring}
+          onclick={isMonitoring ? stopMonitoring : startMonitoring}
           class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
         >
           {isMonitoring ? '⏸️ Stop Monitoring' : '▶️ Start Monitoring'}
@@ -211,7 +211,7 @@ https://svelte.dev/e/js_parse_error -->
             <span class="font-mono">{(systemStatus.mlCaching.hitRate * 100).toFixed(1)}%</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-slate-300">Compression:</span>
+            <span class="text-slate-300">Compression</span>
             <span class="font-mono">{(systemStatus.mlCaching.compressionRatio * 100).toFixed(1)}%</span>
           </div>
           <div class="flex justify-between">
@@ -266,7 +266,7 @@ https://svelte.dev/e/js_parse_error -->
           Test the SOM clustering, neural memory optimization, and recommendation engine
         </p>
         <button
-          on:click={runRAGSearch}
+          onclick={runRAGSearch}
           class="w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors"
         >
           Run RAG Search
@@ -287,7 +287,7 @@ https://svelte.dev/e/js_parse_error -->
         <h3 class="text-lg font-semibold mb-4">⚡ Cache Optimization</h3>
         <p class="text-slate-300 text-sm mb-4">Trigger ML-based cache optimization and memory rebalancing</p>
         <button
-          on:click={optimizeCache}
+          onclick={optimizeCache}
           class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
         >
           Optimize Cache
@@ -298,7 +298,7 @@ https://svelte.dev/e/js_parse_error -->
         <h3 class="text-lg font-semibold mb-4">🏗️ Test Worker System</h3>
         <p class="text-slate-300 text-sm mb-4">Submit a test job to the specialized worker system</p>
         <button
-          on:click={testWorkerSystem}
+          onclick={testWorkerSystem}
           disabled={isSubmittingJob}
           class="w-full px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 rounded-lg transition-colors"
         >

@@ -22,7 +22,7 @@
   // Form state for different workflows
   let legalResearchForm = $state({
     query: '',
-    jurisdiction: 'federal',
+    jurisdiction 'federal',
     userRole: 'attorney',
     maxResults: 10,
   });
@@ -33,9 +33,9 @@
   });
   let caseCreationForm = $state({
     title: '',
-    description: '',
+    description '',
     caseType: 'civil',
-    jurisdiction: 'federal',
+    jurisdiction 'federal',
     clientId: '';
   });
   // Reactive derived values
@@ -47,7 +47,7 @@
   const demoData = {
     legalResearch: {
       query: 'breach of contract damages in commercial agreements',
-      jurisdiction: 'federal',
+      jurisdiction 'federal',
       userRole: 'attorney',
     },
     documentProcessing: {
@@ -60,9 +60,9 @@
   [Additional standard terms and conditions...]`,
       documentType: 'contract',
     },
-    caseCreation: {
+    caseCreation {
       title: 'Smith v. Johnson Contract Dispute',
-      description: 'Commercial contract dispute involving breach of delivery terms and damages claim. Client seeks recovery of $75,000 in damages plus attorney fees.',
+      description 'Commercial contract dispute involving breach of delivery terms and damages claim. Client seeks recovery of $75,000 in damages plus attorney fees.',
       caseType: 'civil',
     }
   }
@@ -97,7 +97,7 @@
         case 'legal-research':
           const researchRequest: LegalResearchWorkflowRequest = {
             query: legalResearchForm.query,
-            jurisdiction: legalResearchForm.jurisdiction,
+            jurisdiction legalResearchForm.jurisdiction,
             userRole: legalResearchForm.userRole,
             maxResults: legalResearchForm.maxResults,
             includeAI: true,
@@ -115,9 +115,9 @@
         case 'case-creation':
           const caseRequest: CaseCreationWorkflowRequest = {
             title: caseCreationForm.title,
-            description: caseCreationForm.description,
+            description caseCreationForm.description,
             caseType: caseCreationForm.caseType,
-            jurisdiction: caseCreationForm.jurisdiction,
+            jurisdiction caseCreationForm.jurisdiction,
             clientId: caseCreationForm.clientId || 'demo_client';
           }
           result = await workflowOrchestrator.createCase(caseRequest);
@@ -210,7 +210,7 @@
           </div>
           <Button
             variant="ghost"
-            on:click={loadDemoData}
+            onclick={loadDemoData}
             class="w-full bits-btn bits-btn"
           >
 Load Demo Data
@@ -337,7 +337,7 @@ Load Demo Data
           <!-- Execute Button -->
           <div class="pt-4 border-t border-gray-200">
             <Button
-              on:click={executeWorkflow}
+              onclick={executeWorkflow}
               disabled={isProcessing || !systemHealthy}
               class="w-full {isProcessing ? 'opacity-50 cursor-not-allowed' : ''} bits-btn bits-btn"
             >
@@ -477,7 +477,7 @@ Load Demo Data
 <style>
   /* Custom styles for enhanced UI */
   .animate-spin {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     from {

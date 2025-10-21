@@ -109,7 +109,7 @@
 
     <div class="flex gap-2">
       <Button
-        on:click={handleSummarize}
+        onclick={handleSummarize}
         disabled={!user || ($aiGlobalStore as AIStore).context.loading}
         variant="primary"
         class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn"
@@ -124,7 +124,7 @@
       </Button>
 
       <Button
-        on:click={saveSummary}
+        onclick={saveSummary}
         disabled={!($aiGlobalStore as AIStore).context.summary || ($aiGlobalStore as AIStore).context.loading}
         variant="primary"
         class="relative overflow-hidden transition-all duration-300 hover:translate-y--0.5 hover:shadow-lg bits-btn"
@@ -195,12 +195,12 @@
   }
 
   :global(.nier-button) {
-    position: relative;
+    position relative;
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
 
-  :global(.nier-button:hover) {
+  :global(.nier-buttonhover) {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }

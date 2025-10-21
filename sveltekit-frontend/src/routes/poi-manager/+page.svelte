@@ -37,7 +37,7 @@
     status: 'person_of_interest',
     priority: 'medium',
     threatLevel: 'low',
-    physicalDescription: {
+    physicalDescription {
       height: '',
       weight: '',
       hair: '',
@@ -49,7 +49,7 @@
       knownHabits: [],
       associates: [],
     },
-    lastKnownLocation: '',
+    lastKnownLocation '',
     lastSeen: '',
     dangerLevel: 0,
     notes: '',
@@ -176,7 +176,7 @@
       status: 'person_of_interest',
       priority: 'medium',
       threatLevel: 'low',
-      physicalDescription: {
+      physicalDescription {
         height: '',
         weight: '',
         hair: '',
@@ -188,7 +188,7 @@
         knownHabits: [],
         associates: [],
       },
-      lastKnownLocation: '',
+      lastKnownLocation '',
       lastSeen: '',
       dangerLevel: 0,
       notes: '',
@@ -208,7 +208,7 @@
       status: poi.status,
       priority: poi.priority,
       threatLevel: poi.threatLevel,
-      physicalDescription: poi.physicalDescription || {
+      physicalDescription poi.physicalDescription || {
         height: '',
         weight: '',
         hair: '',
@@ -220,7 +220,7 @@
         knownHabits: [],
         associates: [],
       },
-      lastKnownLocation: poi.lastKnownLocation || '',
+      lastKnownLocation poi.lastKnownLocation || '',
       lastSeen: poi.lastSeen ? new Date(poi.lastSeen).toISOString().split('T')[0] : '',
       dangerLevel: poi.dangerLevel || 0,
       notes: poi.notes || '',
@@ -302,7 +302,7 @@
         class="bits-btn {showFilters ? 'bg-blue-50 border-blue-300' : ''}"
         variant="ghost"
         size="sm"
-        on:click={() => (showFilters = !showFilters)}
+        onclick={() => (showFilters = !showFilters)}
       >
         <Filter class="w-4 h-4 mr-2" />
         Filters
@@ -311,7 +311,7 @@
         class="bits-btn"
         variant="ghost"
         size="sm"
-        on:click={() => (viewMode = viewMode === 'grid' ? 'list' : 'grid')}
+        onclick={() => (viewMode = viewMode === 'grid' ? 'list' : 'grid')}
       >
         {#if viewMode === 'grid'}
           <List class="w-4 h-4" />
@@ -319,7 +319,7 @@
           <Grid class="w-4 h-4" />
         {/if}
       </Button>
-      <Button class="bits-btn" on:click={() => (showCreateDialog = true)}>
+      <Button class="bits-btn" onclick={() => (showCreateDialog = true)}>
         <Plus class="w-4 h-4 mr-2" />
         Add Person
       </Button>
@@ -409,7 +409,7 @@
         {searchQuery ? 'Try adjusting your search criteria' : 'Add persons to get started'}
       </p>
       {#if !searchQuery}
-        <Button class="bits-btn" on:click={() => (showCreateDialog = true)}>
+        <Button class="bits-btn" onclick={() => (showCreateDialog = true)}>
           <Plus class="w-4 h-4 mr-2" />
           Add First Person
         </Button>
@@ -455,11 +455,11 @@
           </div>
 
           <div class="flex gap-2">
-            <Button size="sm" class="flex-1 bits-btn" on:click={() => editPoi(poi)}>
+            <Button size="sm" class="flex-1 bits-btn" onclick={() => editPoi(poi)}>
               <Edit class="w-3 h-3 mr-1" />
               Edit
             </Button>
-            <Button variant="ghost" size="sm" class="flex-1 bits-btn" on:click={() => deletePoi(poi)}>
+            <Button variant="ghost" size="sm" class="flex-1 bits-btn" onclick={() => deletePoi(poi)}>
               <Trash2 class="w-3 h-3 mr-1" />
               Delete
             </Button>
@@ -487,11 +487,11 @@
               </div>
             </div>
             <div class="flex gap-2">
-              <Button class="bits-btn" size="sm" on:click={() => editPoi(poi)}>
+              <Button class="bits-btn" size="sm" onclick={() => editPoi(poi)}>
                 <Edit class="w-3 h-3 mr-1" />
                 Edit
               </Button>
-              <Button class="bits-btn" variant="ghost" size="sm" on:click={() => deletePoi(poi)}>
+              <Button class="bits-btn" variant="ghost" size="sm" onclick={() => deletePoi(poi)}>
                 <Trash2 class="w-3 h-3 mr-1" />
                 Delete
               </Button>
@@ -507,7 +507,7 @@
 <Dialog bind:open={showCreateDialog}>
   <div class="p-6">
     <h2 class="text-lg font-semibold mb-4">Add New Person of Interest</h2>
-    <form on:submit|preventDefault={createPoi} class="space-y-4">
+    <form onsubmit|preventDefault={createPoi} class="space-y-4">
       <div class="grid grid-cols-2 gap-4">
         <div>
           <Label for="name">Name *</Label>
@@ -566,7 +566,7 @@
       </div>
 
       <div class="flex justify-end gap-2">
-        <Button type="button" variant="ghost" on:click={() => (showCreateDialog = false)}>Cancel</Button>
+        <Button type="button" variant="ghost" onclick={() => (showCreateDialog = false)}>Cancel</Button>
         <Button type="submit" disabled={isSubmitting || !formData.name.trim()}>
           {isSubmitting ? 'Creating...' : 'Create POI'}
         </Button>
@@ -579,7 +579,7 @@
 <Dialog bind:open={showEditDialog}>
   <div class="p-6">
     <h2 class="text-lg font-semibold mb-4">Edit Person of Interest</h2>
-    <form on:submit|preventDefault={updatePoi} class="space-y-4">
+    <form onsubmit|preventDefault={updatePoi} class="space-y-4">
       <div class="grid grid-cols-2 gap-4">
         <div>
           <Label for="edit-name">Name *</Label>
@@ -638,7 +638,7 @@
       </div>
 
       <div class="flex justify-end gap-2">
-        <Button type="button" variant="ghost" on:click={() => (showEditDialog = false)}>Cancel</Button>
+        <Button type="button" variant="ghost" onclick={() => (showEditDialog = false)}>Cancel</Button>
         <Button type="submit" disabled={isSubmitting || !formData.name.trim()}>
           {isSubmitting ? 'Updating...' : 'Update POI'}
         </Button>

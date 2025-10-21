@@ -47,7 +47,7 @@
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <div
         class="sidebar-overlay nes-container is-dark"
-        on:click={() => (sidebarOpen = false)}
+        onclick={() => (sidebarOpen = false)}
         role="button"
         tabindex="0"
         onkeydown={e => e.key === 'Enter' && (sidebarOpen = false)}
@@ -91,13 +91,13 @@
 
   /* Skip Navigation */
   .skip-nav {
-    position: absolute;
+    position absolute;
     top: -40px;
     left: 6px;
     background: var(--n64-primary, #4a90e2);
     color: white;
     padding: 8px;
-    text-decoration: none;
+    text-decoration none;
     border-radius: 4px;
     z-index: 100;
     font-size: 14px;
@@ -119,7 +119,7 @@
 
   /* Sidebar Overlay for Mobile */
   .sidebar-overlay {
-    position: fixed;
+    position fixed;
     inset: 0,
     background: rgba(0, 0, 0, 0.5);
     z-index: 25,
@@ -309,10 +309,10 @@
   }
 
   /* Reduced motion support */
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     * {
-      transition: none !important;
-      animation: none !important;
+      transition none !important;
+      animation none !important;
     }
   }
 </style>

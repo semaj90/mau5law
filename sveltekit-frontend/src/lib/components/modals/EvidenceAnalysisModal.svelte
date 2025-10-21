@@ -137,7 +137,7 @@ https: //svelte.dev/e/js_parse_error -->
             class="bits-btn"
             variant="secondary"
             size="sm"
-            on:click={() => {
+            onclick={() => {
               /* export handler placeholder */
             }}
           >
@@ -149,7 +149,7 @@ https: //svelte.dev/e/js_parse_error -->
             class="bits-btn"
             variant="primary"
             size="sm"
-            on:click={() => analyzeEvidence()}
+            onclick={() => analyzeEvidence()}
             disabled={isAnalyzing}
           >
             {#if isAnalyzing}
@@ -267,7 +267,7 @@ https: //svelte.dev/e/js_parse_error -->
             <!-- Add Tags -->
             <div class="space-y-4">
               <Input bind:value={newTags} placeholder="Add tags (comma-separated)" class="space-y-4" />
-              <Button class="bits-btn" size="sm" on:click={() => updateTags()} disabled={!newTags.trim()}>Add</Button>
+              <Button class="bits-btn" size="sm" onclick={() => updateTags()} disabled={!newTags.trim()}>Add</Button>
             </div>
           </div>
         </GridItem>
@@ -291,7 +291,7 @@ https: //svelte.dev/e/js_parse_error -->
     </div>
   {/if}
   {#snippet footer({ close })}
-    <Button class="bits-btn" variant="secondary" on:click={() => close()}>Close</Button>
-    <Button class="bits-btn" variant="primary" on:click={() => onsaveAnalysis?.()}>Save Analysis</Button>
+    <Button class="bits-btn" variant="secondary" onclick={() => close()}>Close</Button>
+    <Button class="bits-btn" variant="primary" onclick={() => onsaveAnalysis?.()}>Save Analysis</Button>
   {/snippet}
 </Dialog.Root>;

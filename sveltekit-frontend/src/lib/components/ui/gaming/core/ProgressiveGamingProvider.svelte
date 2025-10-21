@@ -49,7 +49,7 @@ https://svelte.dev/e/js_parse_error -->
     currentEra: initialEra,
     availableEras: ['8bit', '16bit', 'n64'],
     isTransitioning: false,
-    transitionDuration: 300,
+    transitionDuration 300,
     performanceLevel: 'medium',
     era: initialEra,
     colorPalette: ['#0f0f0f', '#fcfcfc', '#7c7c7c', '#bcbcbc'],
@@ -65,7 +65,7 @@ https://svelte.dev/e/js_parse_error -->
     fallbackToLowQuality: true,
     adaptiveFrameRate: true,
     thermalThrottling: true,
-    batteryOptimization: true,
+    batteryOptimization true,
     nesSettings: {
       strictPalette: true,
       enableScanlines: false,
@@ -89,7 +89,7 @@ https://svelte.dev/e/js_parse_error -->
       enableRealTimeReflections: false,
       textureQuality: 'medium',
     },
-    yorhaIntegration: integrateWithYorha,
+    yorhaIntegration integrateWithYorha,
     bitsUICompatibility: true,
     ...config,
   });
@@ -240,15 +240,15 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
       <div class="debug-controls">
-        <button on:click={() => setEra('8bit')}>8-Bit</button>
-        <button on:click={() => setEra('16bit')}>16-Bit</button>
-        <button on:click={() => setEra('n64')}>N64</button>
+        <button onclick={() => setEra('8bit')}>8-Bit</button>
+        <button onclick={() => setEra('16bit')}>16-Bit</button>
+        <button onclick={() => setEra('n64')}>N64</button>
       </div>
     </div>
   {/if}
   <!-- Gaming Era Transition Overlay -->
   {#if $gamingState.isTransitioning}
-    <div class="transition-overlay" style="animation-duration: {$gamingState.transitionDuration}ms">
+    <div class="transition-overlay" style="animation-duration {$gamingState.transitionDuration}ms">
       <div class="transition-content">
         <div class="era-indicator">
           Switching to {$gamingState.currentEra.toUpperCase()} Era...
@@ -268,7 +268,7 @@ https://svelte.dev/e/js_parse_error -->
 <style>
   .progressive-gaming-provider {
     /* Base provider styles */
-    position: relative;
+    position relative;
     display: block;
     min-height: 100%;
     /* Era-specific base styling */
@@ -282,7 +282,7 @@ https://svelte.dev/e/js_parse_error -->
     -webkit-font-smoothing: var(--font-smoothing);
     -moz-osx-font-smoothing: var(--font-smoothing);
     /* Transitions */
-    transition: all var(--transition-speed) ease;
+    transition all var(--transition-speed) ease;
   }
   /* Era-specific provider styles */
   .progressive-gaming-provider.era-8bit {
@@ -337,12 +337,12 @@ https://svelte.dev/e/js_parse_error -->
   }
   /* Main content area */
   .gaming-content {
-    position: relative;
+    position relative;
     z-index: 1,
   }
   /* Transition overlay */
   .transition-overlay {
-    position: fixed;
+    position fixed;
     top: 0,
     left: 0;
     right: 0,
@@ -352,7 +352,7 @@ https://svelte.dev/e/js_parse_error -->
     align-items: center;
     justify-content: center;
     z-index: 9999,
-    animation: fadeInOut 1s ease-in-out;
+    animation fadeInOut 1s ease-in-out;
   }
   .transition-content {
     text-align: center;
@@ -374,7 +374,7 @@ https://svelte.dev/e/js_parse_error -->
     border-top: 3px solid var(--yorha-secondary, #ffd700);
     border-radius: 50%;
     margin: 0 auto;
-    animation: transitionSpin 1s linear infinite;
+    animation transitionSpin 1s linear infinite;
   }
   @keyframes fadeInOut {
     0% {
@@ -400,7 +400,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   /* Debug panel */
   .debug-panel {
-    position: fixed;
+    position fixed;
     top: 10px;
     right: 10px;
     background: rgba(0, 0, 0, 0.9);
@@ -449,7 +449,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     font-family: inherit;
   }
-  .debug-controls button:hover {
+  .debug-controls buttonhover {
     background: var(--yorha-secondary, #ffd700);
     color: black;
   }
@@ -464,7 +464,7 @@ https://svelte.dev/e/js_parse_error -->
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .debug-panel {
-      position: static;
+      position static;
       margin: 1rem;
       max-width: none;
     }
@@ -477,12 +477,12 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   /* Reduced motion support */
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     .progressive-gaming-provider,
     .transition-overlay,
     .transition-spinner {
-      animation: none !important;
-      transition: none !important;
+      animation none !important;
+      transition none !important;
     }
     .progressive-gaming-provider.transitioning .gaming-content {
       filter: none;

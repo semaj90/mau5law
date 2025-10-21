@@ -59,11 +59,11 @@
   });
 </script>
 
-<div class="dropdown-root" bind:this={rootEl} style="position: relative; display: inline-block;">
+<div class="dropdown-root" bind:this={rootEl} style="position relative; display: inline-block;">
   <button
     type="button"
     class="dropdown-trigger"
-    on:click={e => {
+    onclick={e => {
       e.stopPropagation();
       toggle();
     }}
@@ -84,12 +84,12 @@
       role="menu"
       tabindex="-1"
       class="dropdown-menu"
-      on:click={e => e.stopPropagation()}
+      onclick={e => e.stopPropagation()}
       onkeydown={e => {
         if (e.key === 'Escape') close();
       }}
-      style="position: absolute; top: 100%; z-index: 60; {align === 'right' ? 'right:0' : 'left:0'}"
-      transition:fly={{ y: -6, duration: 140 }}
+      style="position absolute; top: 100%; z-index: 60; {align === 'right' ? 'right:0' : 'left:0'}"
+      transitionfly={{ y: -6, duration 140 }}
     >
       {@render children()}
     </div>

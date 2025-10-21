@@ -35,27 +35,27 @@
   const categoryConfig = {
     crime: {
       color: 'bg-red-100 text-red-800 border-red-200',
-      icon: '🚨',
+      icon '🚨',
       label: 'Crime Event',
     },
     witness: {
       color: 'bg-blue-100 text-blue-800 border-blue-200',
-      icon: '👁️',
+      icon '👁️',
       label: 'Witness Account',
     },
     discovery: {
       color: 'bg-green-100 text-green-800 border-green-200',
-      icon: '🔍',
+      icon '🔍',
       label: 'Evidence Discovery',
     },
     movement: {
       color: 'bg-purple-100 text-purple-800 border-purple-200',
-      icon: '📍',
+      icon '📍',
       label: 'Movement/Location',
     },
-    communication: {
+    communication {
       color: 'bg-orange-100 text-orange-800 border-orange-200',
-      icon: '📞',
+      icon '📞',
       label: 'Communication',
     }
   }
@@ -134,7 +134,7 @@
                 <div class="flex-1">
                   <button
                     class="text-left w-full flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                    on:click={() => toggleDate(date)}
+                    onclick={() => toggleDate(date)}
                   >
                     <div>
                       <h3 class="font-semibold text-lg">{formatDate(date)}</h3>
@@ -229,7 +229,7 @@
 <style>
   /* Timeline custom styles */
   .timeline-marker {
-    position: absolute;
+    position absolute;
     left: -6px;
     top: 12px;
     width: 12px;
@@ -240,7 +240,7 @@
     box-shadow: 0 0 0 1px #e5e7eb;
   }
   .timeline-connector {
-    position: absolute;
+    position absolute;
     left: -1px;
     top: 24px;
     bottom: -24px;

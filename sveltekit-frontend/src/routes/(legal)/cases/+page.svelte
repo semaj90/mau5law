@@ -56,7 +56,7 @@
 
   <header class="page-header">
     <h1>Legal Cases</h1>
-    <button class="btn-primary" on:click={createNewCase}>
+    <button class="btn-primary" onclick={createNewCase}>
       <span>+</span> New Case
     </button>
   </header>
@@ -71,21 +71,21 @@
       <div class="error-icon">⚠️</div>
       <h2>Error Loading Cases</h2>
       <p>{error}</p>
-      <button class="btn-secondary" on:click={loadCases}>Retry</button>
+      <button class="btn-secondary" onclick={loadCases}>Retry</button>
     </div>
   {:else if cases.length === 0}
     <div class="empty-state">
       <div class="empty-icon">📋</div>
       <h2>No Cases Found</h2>
       <p>Get started by creating your first case</p>
-      <button class="btn-primary" on:click={createNewCase}>Create Case</button>
+      <button class="btn-primary" onclick={createNewCase}>Create Case</button>
     </div>
   {:else}
     <div class="cases-grid">
       {#each cases as caseItem (caseItem.id)}
         <div
           class="case-card"
-          on:click={() => navigateToCase(caseItem.id)}
+          onclick={() => navigateToCase(caseItem.id)}
           onkeydown={e => {
             if (e.key === 'Enter' || e.key === ' ') navigateToCase(caseItem.id);
           }}
@@ -142,7 +142,7 @@
     border-radius: 8px;
     font-size: 1rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition all 0.2s;
   }
 
   .btn-primary {
@@ -179,7 +179,7 @@
     border: 4px solid #333;
     border-top-color: #ffd700;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
 
@@ -207,7 +207,7 @@
     border-radius: 12px;
     padding: 1.5rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition all 0.2s;
   }
 
   .case-card:hover {
@@ -304,7 +304,7 @@
     font-weight: 600;
     border-radius: 8px;
     margin-bottom: 1rem;
-    animation: pulse 2s ease-in-out infinite;
+    animation pulse 2s ease-in-out infinite;
   }
 
   @keyframes pulse {

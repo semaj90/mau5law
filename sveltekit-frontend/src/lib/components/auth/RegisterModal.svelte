@@ -48,7 +48,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     type="button"
     class="overlay"
     aria-label="Close registration modal"
-    on:click={closeModal}
+    onclick={closeModal}
   ></button>
   <div class="content" role="dialog" aria-modal="true" aria-label="Register dialog">
     <h2 class="title">Register</h2>
@@ -72,7 +72,7 @@ https://svelte.dev/e/attribute_invalid_name -->
         <button type="submit" disabled={loading}>
           {loading ? 'Registering...' : 'Register'}
         </button>
-        <button type="button" class="close-btn" on:click={closeModal}>Cancel</button>
+        <button type="button" class="close-btn" onclick={closeModal}>Cancel</button>
       </div>
     </form>
   </div>
@@ -85,12 +85,12 @@ https://svelte.dev/e/attribute_invalid_name -->
   }
   form.form {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.85rem;
   }
   label {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
     font-size: 0.85rem;
     font-weight: 500;

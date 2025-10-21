@@ -39,7 +39,7 @@
     border: 1px solid var(--border, #e5e7eb);
   }
   .avatar-display.layout-vertical {
-    flex-direction: column;
+    flex-direction column;
     text-align: center;
   }
   .avatar-content {
@@ -65,7 +65,7 @@
   }
   @media (max-width: 768px) {
     .avatar-display {
-      flex-direction: column;
+      flex-direction column;
       text-align: center;
     }
   }

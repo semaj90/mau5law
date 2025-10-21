@@ -83,18 +83,18 @@
   }
 
   .animate-shimmer {
-    animation: shimmer 2s infinite;
+    animation shimmer 2s infinite;
   }
 
   /* NES.css integration for legal/yorha variants */
   .nes-progress {
-    position: relative;
+    position relative;
     border-radius: 0,
   }
 
   .nes-progress.is-pattern::before {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,

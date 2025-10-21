@@ -27,7 +27,7 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
 
   // System status state
   let systemStatus = $state({
-    copilotIntegration: true,
+    copilotIntegration true,
     semanticSearch: true,
     memoryMCP: true,
     multiAgent: true,
@@ -69,8 +69,8 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
   // Define the type for architecture features to avoid 'unknown' errors
   type ArchitectureFeature = {
     name: string;
-    icon: typeof Search;
-    description: string;
+    icon typeof Search;
+    description string;
     status: boolean;
     capabilities: string[];
   };
@@ -80,36 +80,36 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
   const architectureFeatures: ArchitectureFeature[] = $derived(() => [
     {
       name: 'Semantic Search',
-      icon: Search,
-      description: 'Intelligent code and documentation search with context awareness',
+      icon Search,
+      description 'Intelligent code and documentation search with context awareness',
       status: systemStatus.semanticSearch, // Access directly
       capabilities: ['Code pattern matching', 'Documentation retrieval', 'Context-aware suggestions'],
     },
     {
       name: 'Memory MCP',
-      icon: Database,
-      description: 'Persistent memory and context management across sessions',
+      icon Database,
+      description 'Persistent memory and context management across sessions',
       status: systemStatus.memoryMCP, // Access directly
       capabilities: ['Session memory', 'Context graphs', 'Historical insights'],
     },
     {
       name: 'Multi-Agent AI',
-      icon: Users,
-      description: 'AutoGen and CrewAI orchestration for complex problem-solving',
+      icon Users,
+      description 'AutoGen and CrewAI orchestration for complex problem-solving',
       status: systemStatus.multiAgent, // Access directly
       capabilities: ['Conversational agents', 'Task-based crews', 'Expert coordination'],
     },
     {
       name: 'Autonomous Engineering',
-      icon: Cog,
-      description: 'Self-directed problem analysis and solution generation',
+      icon Cog,
+      description 'Self-directed problem analysis and solution generation',
       status: systemStatus.autonomousEngineering, // Access directly
       capabilities: ['Problem diagnosis', 'Solution planning', 'Execution strategies'],
     },
     {
       name: 'Service Workers',
-      icon: Zap,
-      description: 'Multi-threaded AI processing for parallel execution',
+      icon Zap,
+      description 'Multi-threaded AI processing for parallel execution',
       status: systemStatus.serviceWorkers, // Access directly
       capabilities: ['Parallel processing', 'Load balancing', 'Real-time monitoring'],
     },
@@ -117,7 +117,7 @@ Comprehensive demo of Copilot self-prompting with multi-agent AI orchestration
   const integrationExamples = [
     {
       title: 'VS Code Copilot Integration',
-      description: 'Direct integration with GitHub Copilot for enhanced suggestions',
+      description 'Direct integration with GitHub Copilot for enhanced suggestions',
       code: `// In VS Code, Copilot can now leverage our autonomous system
 await copilotSelfPrompt("Fix TypeScript errors", {
   useAutonomousEngineering: true,
@@ -126,7 +126,7 @@ await copilotSelfPrompt("Fix TypeScript errors", {
     },
     {
       title: 'Cline Extension Integration',
-      description: 'Autonomous engineering for Cline AI assistant',
+      description 'Autonomous engineering for Cline AI assistant',
       code: `// Cline can use our API for comprehensive analysis
 const response = await fetch('/api/copilot/self-prompt', {
   method: 'POST',
@@ -139,7 +139,7 @@ const response = await fetch('/api/copilot/self-prompt', {
     },
     {
       title: 'Roo Extension Integration',
-      description: 'Multi-agent coordination for Roo AI workflows',
+      description 'Multi-agent coordination for Roo AI workflows',
       code: `// Roo can leverage multi-agent analysis
 const analysis = await copilotSelfPrompt(userRequest, {
   useMultiAgent: true,
@@ -149,7 +149,7 @@ const analysis = await copilotSelfPrompt(userRequest, {
     },
     {
       title: 'Custom Extension Development',
-      description: 'Build your own VS Code extension with our AI stack',
+      description 'Build your own VS Code extension with our AI stack',
       code: `// Custom extension using our autonomous engineering
 import { copilotSelfPrompt } from './autonomous-ai';
 export function activate(context: vscode.ExtensionContext) {
@@ -168,26 +168,26 @@ export function activate(context: vscode.ExtensionContext) {
   const useCases = [
     {
       title: 'Automated Bug Fixing',
-      description: 'Autonomous identification and resolution of software bugs',
-      icon: Code,
+      description 'Autonomous identification and resolution of software bugs',
+      icon Code,
       benefits: ['Faster resolution', 'Pattern recognition', 'Preventive analysis'],
     },
     {
       title: 'Performance Optimization',
-      description: 'Cross-platform performance analysis and optimization',
-      icon: Zap,
+      description 'Cross-platform performance analysis and optimization',
+      icon Zap,
       benefits: ['Multi-threaded analysis', 'Comprehensive profiling', 'Automated tuning'],
     },
     {
       title: 'Security Auditing',
-      description: 'Multi-agent security analysis and vulnerability assessment',
-      icon: Globe,
+      description 'Multi-agent security analysis and vulnerability assessment',
+      icon Globe,
       benefits: ['Expert coordination', 'Comprehensive coverage', 'Risk prioritization'],
     },
     {
       title: 'Architecture Review',
-      description: 'Intelligent architectural analysis and recommendations',
-      icon: Settings,
+      description 'Intelligent architectural analysis and recommendations',
+      icon Settings,
       benefits: ['Best practices', 'Scalability analysis', 'Modernization guidance'],
     },
   ];
@@ -278,7 +278,7 @@ export function activate(context: vscode.ExtensionContext) {
             <Code class="h-5 w-5" />
             System Architecture
           </span>
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={() => (showArchitecture = !showArchitecture)}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showArchitecture = !showArchitecture)}>
             {showArchitecture ? 'Hide' : 'Show'} Details
           </Button>
         </h3>
@@ -334,7 +334,7 @@ export function activate(context: vscode.ExtensionContext) {
             <Code class="h-5 w-5" />
             VS Code Extension Integration
           </span>
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={() => (showIntegration = !showIntegration)}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showIntegration = !showIntegration)}>
             {showIntegration ? 'Hide' : 'Show'} Examples
           </Button>
         </h3>
@@ -357,7 +357,7 @@ export function activate(context: vscode.ExtensionContext) {
           <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
             <h3 class="font-semibold text-blue-800 dark:text-blue-300 mb-2">API Endpoint</h3>
             <p class="text-sm text-blue-700 dark:text-blue-400 mb-2">
-              All integrations can use our REST API for seamless integration:
+              All integrations can use our REST API for seamless integration
             </p>
             <div class="bg-blue-100 dark:bg-blue-900/40 rounded p-3 text-sm font-mono">
               POST /api/copilot/self-prompt<br />

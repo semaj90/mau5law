@@ -257,13 +257,13 @@
     <Dialog.Footer class="border-t border-gray-100 p-6 flex justify-end space-x-3">
       <Button class="bits-btn"
         variant="ghost"
-        on:click={() =>
+        onclick={() =>
 onOpenChange(false)}
         disabled={loading.analysis}
       >
         Cancel
       <Button
-        on:click={handleAnalysis}
+        onclick={handleAnalysis}
         disabled={!selectedCaseForAnalysis || loading.analysis || analysisStatus === 'analyzing'}
         class="bg-blue-600 hover:bg-blue-700 text-white bits-btn bits-btn"
       >
@@ -286,7 +286,7 @@ onOpenChange(false)}
 </Dialog.Root>
 <style>
   .legal-dialog {
-    animation: dialog-content-show 150ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation dialog-content-show 150ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   @keyframes dialog-content-show {
     from {
@@ -299,7 +299,7 @@ onOpenChange(false)}
     }
   }
   .legal-action-btn {
-    transition: all 0.2s ease-in-out;
+    transition all 0.2s ease-in-out;
   }
   .legal-action-btn:hover {
     transform: translateY(-1px);

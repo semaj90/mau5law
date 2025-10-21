@@ -7,7 +7,7 @@
   import { citationsManager, type Citation, type CitationCollection } from '$lib/modules/citations-manager';
 
   // Use Svelte 5 runes $props() instead of export let
-  type OnDispatch = (payload: { citation: Citation; success?: boolean; error?: string }) => void;
+  type OnDispatch = (payload: { citation Citation; success?: boolean; error?: string }) => void;
   let {
     citation,
     size = 'sm',
@@ -15,7 +15,7 @@
     showText = true,
     ondispatch = undefined,
   } = $props<{
-    citation: Citation;
+    citation Citation;
     size?: 'sm' | 'md' | 'lg';
     variant?: 'primary' | 'secondary' | 'ghost' | 'outline';
     showText?: boolean;
@@ -133,7 +133,7 @@
       {variant}
       {size}
       class={`citation-save-btn ${isSaved ? 'saved' : ''}`}
-      on:click={isSaved ? handleRemove : handleSave}
+      onclick={isSaved ? handleRemove : handleSave}
       disabled={isSaving}
       title={isSaved ? 'Remove from saved citations' : 'Save citation'}
     >
@@ -150,7 +150,7 @@
       variant="ghost"
       {size}
       class="collection-selector-btn"
-      on:click={() => (showCollectionSelector = !showCollectionSelector)}
+      onclick={() => (showCollectionSelector = !showCollectionSelector)}
       title="Save to collection"
     >
       📁
@@ -160,11 +160,11 @@
       <div class="collection-selector">
         <div class="collection-header">
           <h4>Save to Collection</h4>
-          <button class="close-btn" on:click={() => (showCollectionSelector = false)}>✕</button>
+          <button class="close-btn" onclick={() => (showCollectionSelector = false)}>✕</button>
         </div>
         <div class="collection-list">
           {#each collections as collection}
-            <button class="collection-item" on:click={() => handleSaveToCollection(collection.id)}>
+            <button class="collection-item" onclick={() => handleSaveToCollection(collection.id)}>
               <span class="collection-name">{collection.name}</span>
               <span class="collection-count">
                 {collection.citations.length} citations
@@ -179,7 +179,7 @@
 
 <style>
   .citation-save-container {
-    position: relative;
+    position relative;
     display: flex;
     gap: 0.25rem;
     align-items: center;
@@ -194,7 +194,7 @@
     cursor: not-allowed;
   }
   .collection-selector {
-    position: absolute;
+    position absolute;
     top: 100%;
     right: 0;
     z-index: 1000;
@@ -234,7 +234,7 @@
   }
   .collection-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
     max-height: 200px;
     overflow-y: auto;
@@ -248,7 +248,7 @@
     border: 1px solid rgba(74, 144, 226, 0.3);
     border-radius: 4px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     text-align: left;
   }
   .collection-item:hover {
@@ -267,7 +267,7 @@
   /* Mobile responsiveness */
   @media (max-width: 768px) {
     .collection-selector {
-      position: fixed;
+      position fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);

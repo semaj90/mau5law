@@ -76,7 +76,7 @@ https://svelte.dev/e/js_parse_error -->
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({,
-          question: query;
+          question query;
           context: { content, documentType, caseId },
           options: { includeReferences: true },
         }),
@@ -94,7 +94,7 @@ https://svelte.dev/e/js_parse_error -->
     } finally {
       isProcessingAI = false;
   }}
-  function insertCitation(citation: (typeof citations)[0]) {
+  function insertCitation(citation (typeof citations)[0]) {
     const citationText = `[${citation.source}]`;
     content += citationText;
     citations = [...citations, citation];
@@ -281,7 +281,7 @@ https://svelte.dev/e/js_parse_error -->
       }, "");
     }
     return {
-      duration: params.duration ?? 150,
+      duration params.duration ?? 150,
       delay: 0,
       css: (t: number) => {
         const y = scaleConversion(t, [0, 1], [params.y ?? 0, 0]);
@@ -328,7 +328,7 @@ https://svelte.dev/e/js_parse_error -->
             <ChevronDown class="container mx-auto px-4" />
           </button>
           <button
-            on:click={() => manualSaveDocument()}
+            onclick={() => manualSaveDocument()}
             class="container mx-auto px-4"
             disabled={readonly || loadingDocument || isSaving}
           >
@@ -389,7 +389,7 @@ https://svelte.dev/e/js_parse_error -->
                     <AlertCircle class="container mx-auto px-4" />
                     <p class="container mx-auto px-4">Failed to load document</p>
                     <p class="container mx-auto px-4">{documentLoadError}</p>
-                    <button class="container mx-auto px-4" on:click={() => loadDocument()}> Try Again </button>
+                    <button class="container mx-auto px-4" onclick={() => loadDocument()}> Try Again </button>
                   </div>
                 </div>
               {:else}
@@ -431,7 +431,7 @@ https://svelte.dev/e/js_parse_error -->
               {/if}
               <button
                 class="container mx-auto px-4"
-                on:click={() =>
+                onclick={() =>
                   insertCitation({
                     id: Math.random.toString(),
                     text: 'Sample Citation',
@@ -482,8 +482,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- AI Assistant Dialog -->
 {#if $aiOpen}
   <div>
-    <div class="container mx-auto px-4" transitifade={{ duration: 150 }}></div>
-    <div class="container mx-auto px-4" transitiflyAndScale={{ duration: 150, y: 8, start: 0.96 }}>
+    <div class="container mx-auto px-4" transitifade={{ duration 150 }}></div>
+    <div class="container mx-auto px-4" transitiflyAndScale={{ duration 150, y: 8, start: 0.96 }}>
       <div class="container mx-auto px-4">
         <h2 class="container mx-auto px-4">
           <Brain class="container mx-auto px-4" />
@@ -517,7 +517,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="container mx-auto px-4">
             <button class="container mx-auto px-4" disabled={isProcessingAI}> Cancel </button>
             <button
-              on:click={() => handleAIRequest()}
+              onclick={() => handleAIRequest()}
               class="container mx-auto px-4"
               disabled={!query.trim() || isProcessingAI}
             >
@@ -567,7 +567,7 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.875rem;
     border: 1px solid #d1d5db;
     border-radius: 0.25rem;
-    transition: background-color 0.2;
+    transition background-color 0.2;
   }
   .toolbar-btn:hover {
     background-color: #f9fafb;
@@ -581,7 +581,7 @@ https://svelte.dev/e/js_parse_error -->
     border-color: #93c5fd;
     color: #1d4ed8;
   }
-  .ai-button:hover {
+  .ai-buttonhover {
     background-color: #dbeaf;
   }
 </style>

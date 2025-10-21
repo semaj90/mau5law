@@ -126,11 +126,11 @@ https://svelte.dev/e/expected_token -->
 
 <style>
   .enhanced-page-layout {
-    position: relative;
+    position relative;
     min-height: 100vh;
   }
   .gpu-status-overlay {
-    position: fixed;
+    position fixed;
     top: 20px;
     left: 20px;
     z-index: 1000;
@@ -154,7 +154,7 @@ https://svelte.dev/e/expected_token -->
   }
   .metric {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     padding: 4px;
     background: rgba(0, 255, 65, 0.1);
@@ -175,7 +175,7 @@ https://svelte.dev/e/expected_token -->
     color: #00ff41;
   }
   .welcome-overlay {
-    position: fixed;
+    position fixed;
     top: 20px;
     right: 20px;
     z-index: 999;
@@ -188,7 +188,7 @@ https://svelte.dev/e/expected_token -->
     box-shadow: 0 0 25px rgba(0, 255, 65, 0.3);
   }
   .animate-slide-in {
-    animation: slideInRight 0.6s ease-out;
+    animation slideInRight 0.6s ease-out;
   }
   @keyframes slideInRight {
     from {
@@ -207,7 +207,7 @@ https://svelte.dev/e/expected_token -->
   }
   .feature {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 4px;
   }
@@ -220,7 +220,7 @@ https://svelte.dev/e/expected_token -->
     text-align: center;
   }
   .page-content {
-    position: relative;
+    position relative;
     z-index: 1;
   }
   .page-content.with-overlays {
@@ -241,7 +241,7 @@ https://svelte.dev/e/expected_token -->
   @media (max-width: 768px) {
     .gpu-status-overlay,
     .welcome-overlay {
-      position: relative;
+      position relative;
       top: auto;
       left: auto;
       right: auto;

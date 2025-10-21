@@ -45,7 +45,7 @@ https://svelte.dev/e/js_parse_error -->
     completedDocuments?: ProcessingResult[];
     errorDocuments?: ProcessingResult[];
     serviceHealth?: { gpu: string; webgpu: string; vectorDb: string };
-    metrics?: { queueLength: number; concurrentJobs: number; successRate: number; gpuUtilization: number };
+    metrics?: { queueLength: number; concurrentJobs: number; successRate: number; gpuUtilization number };
   };
   type GPUState = {
     matches: (s: string) => boolean;
@@ -62,7 +62,7 @@ https://svelte.dev/e/js_parse_error -->
   let completedDocuments = (state.context?.completedDocuments ?? []) as ProcessingResult[];
   let errorDocuments = (state.context?.errorDocuments ?? []) as ProcessingResult[];
   let serviceHealth = state.context?.serviceHealth ?? { gpu: 'unknown', webgpu: 'unknown', vectorDb: 'unknown' };
-  let metrics = state.context?.metrics ?? { queueLength: 0, concurrentJobs: 0, successRate: 0, gpuUtilization: 0 };
+  let metrics = state.context?.metrics ?? { queueLength: 0, concurrentJobs: 0, successRate: 0, gpuUtilization 0 };
 
   // UI state (replace $state usages)
   let selectedTab = 'queue';
@@ -73,7 +73,7 @@ https://svelte.dev/e/js_parse_error -->
   let priority = 5;
 
   // Subscription handles
-  let subscription: { unsubscribe: () => void } | null = null;
+  let subscription { unsubscribe: () => void } | null = null;
   let healthCheckInterval: ReturnType<typeof setInterval> | null = null;
 
   onMount(() => {
@@ -89,7 +89,7 @@ https://svelte.dev/e/js_parse_error -->
       completedDocuments = (state.context?.completedDocuments ?? []) as ProcessingResult[];
       errorDocuments = (state.context?.errorDocuments ?? []) as ProcessingResult[];
       serviceHealth = state.context?.serviceHealth ?? { gpu: 'unknown', webgpu: 'unknown', vectorDb: 'unknown' };
-      metrics = state.context?.metrics ?? { queueLength: 0, concurrentJobs: 0, successRate: 0, gpuUtilization: 0 };
+      metrics = state.context?.metrics ?? { queueLength: 0, concurrentJobs: 0, successRate: 0, gpuUtilization 0 };
     });
 
     if (autoStart && documents.length > 0) {
@@ -207,18 +207,18 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Controls -->
   <div class="control-panel">
     <div class="control-group">
-      <button class="btn btn-primary nes-btn is-primary" on:click={processBatch} disabled={documents.length === 0}>
+      <button class="btn btn-primary nes-btn is-primary" onclick={processBatch} disabled={documents.length === 0}>
         🚀 Start Batch Processing
       </button>
       {#if isProcessing}
-        <button class="btn btn-warning" on:click={pauseProcessing}> ⏸️ Pause </button>
+        <button class="btn btn-warning" onclick={pauseProcessing}> ⏸️ Pause </button>
       {/if}
       {#if isPaused}
-        <button class="btn btn-success" on:click={resumeProcessing}> ▶️ Resume </button>
+        <button class="btn btn-success" onclick={resumeProcessing}> ▶️ Resume </button>
       {/if}
-      <button class="btn btn-danger" on:click={clearQueue}> 🗑️ Clear Queue </button>
+      <button class="btn btn-danger" onclick={clearQueue}> 🗑️ Clear Queue </button>
       {#if errorDocuments.length > 0}
-        <button class="btn btn-info" on:click={retryFailed}>
+        <button class="btn btn-info" onclick={retryFailed}>
           🔄 Retry Failed ({errorDocuments.length})
         </button>
       {/if}
@@ -244,22 +244,22 @@ https://svelte.dev/e/js_parse_error -->
       <input type="range" bind:value={priority} min="1" max="10" class="priority-slider" />
       <span class="priority-label">Priority: {priority}</span>
     </div>
-    <button class="btn btn-primary nes-btn is-primary" on:click={addDocument} disabled={!newDocumentContent.trim()}>
+    <button class="btn btn-primary nes-btn is-primary" onclick={addDocument} disabled={!newDocumentContent.trim()}>
       ➕ Add to Queue
     </button>
   </div>
   <!-- Tabs -->
   <div class="tabs">
-    <button class="tab {selectedTab === 'queue' ? 'active' : ''}" on:click={() => (selectedTab = 'queue')}>
+    <button class="tab {selectedTab === 'queue' ? 'active' : ''}" onclick={() => (selectedTab = 'queue')}>
       📋 Queue ({processingQueue.length})
     </button>
-    <button class="tab {selectedTab === 'active' ? 'active' : ''}" on:click={() => (selectedTab = 'active')}>
+    <button class="tab {selectedTab === 'active' ? 'active' : ''}" onclick={() => (selectedTab = 'active')}>
       ⚙️ Processing ({activeProcessing.size})
     </button>
-    <button class="tab {selectedTab === 'completed' ? 'active' : ''}" on:click={() => (selectedTab = 'completed')}>
+    <button class="tab {selectedTab === 'completed' ? 'active' : ''}" onclick={() => (selectedTab = 'completed')}>
       ✅ Completed ({completedDocuments.length})
     </button>
-    <button class="tab {selectedTab === 'errors' ? 'active' : ''}" on:click={() => (selectedTab = 'errors')}>
+    <button class="tab {selectedTab === 'errors' ? 'active' : ''}" onclick={() => (selectedTab = 'errors')}>
       ❌ Errors ({errorDocuments.length})
     </button>
   </div>
@@ -268,7 +268,7 @@ https://svelte.dev/e/js_parse_error -->
     {#if selectedTab === 'queue'}
       <div class="document-list">
         {#each processingQueue as doc, i (doc.documentId)}
-          <div class="document-item" in:fade={{ duration: 300 }}>
+          <div class="document-item" in:fade={{ duration 300 }}>
             <div class="document-info">
               <h4>{doc.title || `Document ${i + 1}`}</h4>
               <p class="document-preview">{doc.content.substring(0, 100)}...</p>
@@ -289,7 +289,7 @@ https://svelte.dev/e/js_parse_error -->
     {#if selectedTab === 'active'}
       <div class="document-list">
         {#each Array.from(activeProcessing.values()) as doc (doc.documentId)}
-          <div class="document-item processing" in:fly={{ x: -20, duration: 300 }}>
+          <div class="document-item processing" in:fly={{ x: -20, duration 300 }}>
             <div class="document-info">
               <h4>{doc.title || 'Processing Document'}</h4>
               <p class="document-preview">{doc.content.substring(0, 100)}...</p>
@@ -311,7 +311,7 @@ https://svelte.dev/e/js_parse_error -->
     {#if selectedTab === 'completed'}
       <div class="document-list">
         {#each completedDocuments as result (result.documentId)}
-          <div class="document-item completed" in:fade={{ duration: 300 }}>
+          <div class="document-item completed" in:fade={{ duration 300 }}>
             <div class="document-info">
               <h4>Document Completed</h4>
               <div class="result-summary">
@@ -340,7 +340,7 @@ https://svelte.dev/e/js_parse_error -->
     {#if selectedTab === 'errors'}
       <div class="document-list">
         {#each errorDocuments as result (result.documentId)}
-          <div class="document-item error" in:fade={{ duration: 300 }}>
+          <div class="document-item error" in:fade={{ duration 300 }}>
             <div class="document-info">
               <h4>Processing Failed</h4>
               <p class="error-message">
@@ -443,7 +443,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: 500,
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -542,7 +542,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     border-bottom: 3px solid transparent;
     font-size: 0.9rem;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .tab:hover {
     background: #f8f9fa;
@@ -557,7 +557,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .document-list {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .document-item {
@@ -568,7 +568,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 1px solid #ddd;
     border-radius: 8px;
     background: white;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .document-item:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -617,7 +617,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 2px solid #f3f3f3;
     border-top: 2px solid #ffc107;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     0% {
@@ -674,7 +674,7 @@ https://svelte.dev/e/js_parse_error -->
       padding: 1rem;
     }
     .orchestrator-header {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
       align-items: flex-start;
     }
@@ -682,10 +682,10 @@ https://svelte.dev/e/js_parse_error -->
       flex-wrap: wrap;
     }
     .control-group {
-      flex-direction: column;
+      flex-direction column;
     }
     .form-row {
-      flex-direction: column;
+      flex-direction column;
       align-items: stretch;
     }
     .tabs {
@@ -693,7 +693,7 @@ https://svelte.dev/e/js_parse_error -->
       flex-wrap: nowrap;
     }
     .document-item {
-      flex-direction: column;
+      flex-direction column;
       align-items: stretch;
       gap: 1rem;
     }
@@ -706,7 +706,7 @@ https://svelte.dev/e/js_parse_error -->
       flex-wrap: nowrap;
     }
     .document-item {
-      flex-direction: column;
+      flex-direction column;
       align-items: stretch;
       gap: 1rem;
     }

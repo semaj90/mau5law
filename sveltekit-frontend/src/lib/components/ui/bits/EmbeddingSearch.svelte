@@ -103,7 +103,7 @@
       const queryEmbedding = await generateEmbedding(query);
       // Search for similar embeddings
       const searchParams = new URLSearchParams({
-        action: 'search',
+        action 'search',
         query,
         embedding: JSON.stringify(queryEmbedding),
         limit: limit.toString(),
@@ -156,7 +156,7 @@
               nesStyle={true}
               disabled={!isValidQuery || isSearching}
               loading={isSearching}
-              on:click={handleSearch}
+              onclick={handleSearch}
             >
               {#if isSearching}
                 <Zap class="inline-icon animate-spin" />
@@ -233,7 +233,7 @@
         </div>
         <div class="search-results">
           {#each results as result}
-            <div class="result-item" on:click={() => selectResult(result)}>
+            <div class="result-item" onclick={() => selectResult(result)}>
               <div class="result-header">
                 <div class="similarity-score">
                   <span class="nes-text is-success">
@@ -278,17 +278,17 @@
     margin: 0 auto;
     padding: 1rem;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 2rem;
   }
   .search-form {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1.5rem;
   }
   .form-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .form-group label {
@@ -316,7 +316,7 @@
   }
   .control-group {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .nes-range {
@@ -328,7 +328,7 @@
   }
   .search-results {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .result-item {
@@ -337,7 +337,7 @@
     border-radius: 4px;
     background: rgba(255, 255, 255, 0.05);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .result-item: hover {
     border-color: #66b3ff;
@@ -383,7 +383,7 @@
     vertical-align: text-bottom;
   }
   .animate-spin {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     from {
@@ -399,11 +399,11 @@
       grid-template-columns: 1fr;
     }
     .search-input-group {
-      flex-direction: column;
+      flex-direction column;
       align-items: stretch;
     }
     .result-header {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
       gap: 0.5rem;
     }

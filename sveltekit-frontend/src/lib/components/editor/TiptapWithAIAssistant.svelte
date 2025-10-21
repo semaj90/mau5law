@@ -303,7 +303,7 @@ await initializeEditor();
       showNotification('Failed to start review', 'error');
     }
   }
-  function applySuggestion(suggestion: any) {
+  function applySuggestion(suggestion any) {
     if (!editor) return;
     // Apply the suggestion to the editor
     if (suggestion.position !== undefined) {
@@ -317,7 +317,7 @@ await initializeEditor();
     send({ type: 'ACCEPT_RECOMMENDATION', recommendationId: suggestion.id });
     showNotification('Suggestion applied', 'success');
   }
-  function rejectSuggestion(suggestion: any) {
+  function rejectSuggestion(suggestion any) {
     send({ type: 'REJECT_RECOMMENDATION', recommendationId: suggestion.id });
     showNotification('Suggestion rejected', 'info');
   }
@@ -363,7 +363,7 @@ await initializeEditor();
       showSuggestions = true;
     }
   }
-  function checkForRecommendationAtSelection(selection: any): void {
+  function checkForRecommendationAtSelection(selection any): void {
     // Check if current selection contains any pending recommendations
     const recommendations = $state.context.currentRecommendation;
     for (const rec of recommendations) {
@@ -431,23 +431,23 @@ await initializeEditor();
   {#if aiAssistantVisible}
     <div
       class="ai-assistant-panel absolute top-0 right-0 w-80 bg-white border border-gray-300 rounded-lg shadow-lg p-4 z-10"
-      transitionslide={{ axis: 'x', duration: 200 }}
+      transitionslide={{ axis: 'x', duration 200 }}
     >
       <div class="flex items-center justify-between mb-4">
         <h3 class="font-semibold text-gray-800">AI Assistant</h3>
-        <button on:click={() => (aiAssistantVisible = false)} class="text-gray-500 hover:text-gray-700"> ✕ </button>
+        <button onclick={() => (aiAssistantVisible = false)} class="text-gray-500 hover:text-gray-700"> ✕ </button>
       </div>
       <!-- Quick Actions -->
       <div class="space-y-2 mb-4">
         <button
-          on:click={startCrewAIReview}
+          onclick={startCrewAIReview}
           class="w-full bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700 transition-colors"
           disabled={isProcessing}
         >
           {isProcessing ? 'Review in Progress...' : 'Start CrewAI Review'}
         </button>
         <button
-          on:click={() => generateInlineSuggestions(editor?.getHTML() || '')}
+          onclick={() => generateInlineSuggestions(editor?.getHTML() || '')}
           class="w-full bg-green-600 text-white px-3 py-2 rounded text-sm hover:bg-green-700 transition-colors"
         >
           Generate Suggestions
@@ -458,7 +458,7 @@ await initializeEditor();
         <div class="recommendations">
           <h4 class="font-medium text-gray-700 mb-2">Recommendations</h4>
           {#each $state.context.currentRecommendations as rec (rec.id)}
-            <div class="recommendation-item p-2 border border-gray-200 rounded mb-2" transitionfade={{ duration: 150 }}>
+            <div class="recommendation-item p-2 border border-gray-200 rounded mb-2" transitionfade={{ duration 150 }}>
               <div class="flex items-start justify-between">
                 <div class="flex-1">
                   <div class="text-sm text-gray-800">{rec.text}</div>
@@ -468,14 +468,14 @@ await initializeEditor();
                 </div>
                 <div class="flex space-x-1 ml-2">
                   <button
-                    on:click={() => applySuggestion(rec)}
+                    onclick={() => applySuggestion(rec)}
                     class="text-green-600 hover:text-green-800 text-xs px-2 py-1 rounded"
                     title="Accept"
                   >
                     ✓
                   </button>
                   <button
-                    on:click={() => rejectSuggestion(rec)}
+                    onclick={() => rejectSuggestion(rec)}
                     class="text-red-600 hover:text-red-800 text-xs px-2 py-1 rounded"
                     title="Reject"
                   >
@@ -500,15 +500,15 @@ await initializeEditor();
     <div
       class="inline-suggestion absolute bg-yellow-50 border border-yellow-300 rounded-lg p-3 shadow-lg z-20 max-w-xs"
       style="left: {recommendationPosition.x}px; top: {recommendationPosition.y + 25}px;"
-      transitionfade={{ duration: 150 }}
+      transitionfade={{ duration 150 }}
     >
       <div class="text-sm text-gray-800 mb-2">{currentRecommendation}</div>
       <div class="flex justify-end space-x-2">
-        <button on:click={() => (showSuggestions = false)} class="text-xs text-gray-500 hover:text-gray-700 px-2 py-1">
+        <button onclick={() => (showSuggestions = false)} class="text-xs text-gray-500 hover:text-gray-700 px-2 py-1">
           Dismiss
         </button>
         <button
-          on:click={() => applySuggestion({ text: currentRecommendation })}
+          onclick={() => applySuggestion({ text: currentRecommendation })}
           class="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700"
         >
           Apply
@@ -546,7 +546,7 @@ await initializeEditor();
     overflow-y: auto;
   }
   .inline-suggestion {
-    animation: slideInUp 0.2s ease-out;
+    animation slideInUp 0.2s ease-out;
   }
   @keyframes slideInUp {
     from {

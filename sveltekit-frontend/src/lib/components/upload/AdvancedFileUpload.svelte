@@ -509,7 +509,7 @@
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
     tabindex={0}
-    on:click={() => !disabled && fileInput.click()}
+    onclick={() => !disabled && fileInput.click()}
     onkeydown={(e) => {
       if ((e.key === "Enter" || e.key === " ") && !disabled) {
         e.preventDefault();
@@ -545,7 +545,7 @@
         {#if enableCameraCapture}
           <Button class="bits-btn"
             variant="secondary"
-            on:click={handleCameraCaptureClick}
+            onclick={handleCameraCaptureClick}
             {disabled}
           >
 <Camera class="container mx-auto px-4" />
@@ -554,7 +554,7 @@
         {/if}
         {#if enableAudioRecording}
           <button class="nes-btn"
-            on:click={handleAudioRecordingClick}
+            onclick={handleAudioRecordingClick}
             {disabled}
             class={isRecording ? "bg-red-100 text-red-700" : ""}
           >
@@ -586,7 +586,7 @@
           {#if !autoUpload && files.some((f) => f.status === "pending")}
             <Button class="bits-btn"
               size="sm"
-              on:click={() =>
+              onclick={() =>
 uploadFiles()}
               disabled={isUploading}
             >
@@ -601,7 +601,7 @@ uploadFiles()}
           <Button class="bits-btn"
             variant="ghost"
             size="sm"
-            on:click={() =>
+            onclick={() =>
 (files = [])}
             disabled={isUploading}
           >
@@ -671,7 +671,7 @@ uploadFiles()}
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  on:click={() =>
+                  onclick={() =>
 window.open(file.url, "_blank")}
                   aria-label="View {file.name}"
                 >
@@ -682,7 +682,7 @@ window.open(file.url, "_blank")}
                 <Button class="bits-btn"
                   variant="ghost"
                   size="sm"
-                  on:click={() =>
+                  onclick={() =>
 retryUpload(file.id)}
                   aria-label="Retry upload of {file.name}"
                 >
@@ -692,7 +692,7 @@ retryUpload(file.id)}
               <Button class="bits-btn"
                 variant="ghost"
                 size="sm"
-                on:click={() =>
+                onclick={() =>
 removeFile(file.id)}
                 disabled={file.status === "uploading"}
                 aria-label="Remove {file.name}"
@@ -717,7 +717,7 @@ removeFile(file.id)}
     padding: 3rem 2rem;
     text-align: center;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     background: #fafafa;
 }
   .drop-zone: hover:not(.disabled) {
@@ -784,7 +784,7 @@ removeFile(file.id)}
   .progress-fill {
     height: 100%;
     background: #3b82f6;
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
 }
   .progress-text {
     font-size: 0.875rem;
@@ -803,7 +803,7 @@ removeFile(file.id)}
     gap: 1rem;
     padding: 1rem;
     border-bottom: 1px solid #e5e7eb;
-    transition: background-color 0.2s ease;
+    transition background-color 0.2s ease;
 }
   .file-item:last-child {
     border-bottom: none;
@@ -885,16 +885,16 @@ removeFile(file.id)}
       padding: 2rem 1rem;
 }
     .upload-actions {
-      flex-direction: column;
+      flex-direction column;
       align-items: center;
 }
     .file-list-header {
-      flex-direction: column;
+      flex-direction column;
       align-items: stretch;
       gap: 1rem;
 }
     .file-item {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
       gap: 0.75rem;
 }
@@ -910,11 +910,11 @@ removeFile(file.id)}
       border-bottom-width: 2px;
 }}
   /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     .drop-zone,
     .file-item,
     .progress-fill {
-      transition: none !important;
+      transition none !important;
 }
     .drop-zone.drag-over {
       transform: none;

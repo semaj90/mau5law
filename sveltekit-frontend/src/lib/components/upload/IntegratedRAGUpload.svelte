@@ -129,7 +129,7 @@
       aria-label="Upload area - click or drag files to upload"
       ondragover={handleDragOver}
       ondrop={handleDrop}
-      on:click={handleClick}
+      onclick={handleClick}
       onkeydown={e => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
@@ -204,7 +204,7 @@
         placeholder="Search across uploaded documents..."
         onkeydown={e => e.key === 'Enter' && searchDocuments()}
       />
-      <button on:click={searchDocuments} disabled={searching || !searchQuery.trim()}>
+      <button onclick={searchDocuments} disabled={searching || !searchQuery.trim()}>
         {searching ? 'Searching...' : 'Search'}
       </button>
     </div>
@@ -231,7 +231,7 @@
 <style>
   .integrated-rag-upload {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 2rem;
     max-width: 800px;
     margin: 0 auto;
@@ -256,7 +256,7 @@
     padding: 3rem 2rem;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s;
+    transition all 0.3s;
     background: white;
   }
 
@@ -272,7 +272,7 @@
 
   .drop-zone-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 0.5rem;
   }
@@ -282,7 +282,7 @@
   }
 
   .progress-indicator {
-    position: relative;
+    position relative;
     width: 100%;
     max-width: 300px;
     margin: 0 auto;
@@ -292,7 +292,7 @@
     height: 8px;
     background: #007bff;
     border-radius: 4px;
-    transition: width 0.3s;
+    transition width 0.3s;
   }
 
   .progress-indicator span {
@@ -364,7 +364,7 @@
     font-weight: 600,
   }
 
-  .search-input-group button:disabled {
+  .search-input-group buttondisabled {
     opacity: 0.5,
     cursor: not-allowed;
   }

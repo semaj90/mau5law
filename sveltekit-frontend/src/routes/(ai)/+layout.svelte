@@ -12,18 +12,18 @@
 
   // AI navigation items - route groups (ai) are invisible in URLs
   const aiRoutes = [
-    { name: 'AI Assistant', href: '/assistant', icon: '🤖' },
-    { name: 'AI Chat', href: '/chat', icon: '💬' },
-    { name: 'GPU Chat', href: '/gpu-chat', icon: '⚡' },
-    { name: 'AI Dashboard', href: '/dashboard', icon: '📊' },
-    { name: 'RAG System', href: '/rag', icon: '🧠' },
-    { name: 'Vector Search', href: '/vector-search', icon: '🔍' },
-    { name: 'Recommendations', href: '/recommendations', icon: '💡' },
-    { name: 'Case Scoring', href: '/case-scoring', icon: '⚖️' },
-    { name: 'Document Drafting', href: '/document-drafting', icon: '📝' },
-    { name: 'Pattern Detection', href: '/pattern-detection', icon: '🎯' },
-    { name: 'Orchestrator', href: '/orchestrator', icon: '🎼' },
-    { name: 'Processing', href: '/processing', icon: '⚙️' },
+    { name: 'AI Assistant', href: '/assistant', icon '🤖' },
+    { name: 'AI Chat', href: '/chat', icon '💬' },
+    { name: 'GPU Chat', href: '/gpu-chat', icon '⚡' },
+    { name: 'AI Dashboard', href: '/dashboard', icon '📊' },
+    { name: 'RAG System', href: '/rag', icon '🧠' },
+    { name: 'Vector Search', href: '/vector-search', icon '🔍' },
+    { name: 'Recommendations', href: '/recommendations', icon '💡' },
+    { name: 'Case Scoring', href: '/case-scoring', icon '⚖️' },
+    { name: 'Document Drafting', href: '/document-drafting', icon '📝' },
+    { name: 'Pattern Detection', href: '/pattern-detection', icon '🎯' },
+    { name: 'Orchestrator', href: '/orchestrator', icon '🎼' },
+    { name: 'Processing', href: '/processing', icon '⚙️' },
   ];
 
   // AI-focused console theme (cyberpunk for AI work)
@@ -99,7 +99,7 @@
   .ai-layout {
     min-height: 100vh;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     background: var(--surface-primary, #0a0a0a);
     color: var(--text-primary, #00ccff);
     font-family: 'JetBrains Mono', 'Courier New', monospace;
@@ -157,23 +157,23 @@
     padding: 0.5rem 1rem;
     border: 1px solid var(--border-primary, #00ccff);
     border-radius: 0.5rem;
-    text-decoration: none;
+    text-decoration none;
     color: var(--text-secondary, #66ccff);
     background: var(--surface-primary, #0a0a0a);
-    transition: all 0.3s ease;
-    position: relative;
+    transition all 0.3s ease;
+    position relative;
     overflow: hidden;
   }
 
   .ai-nav-item::before {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: -100%;
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(0, 204, 255, 0.2), transparent);
-    transition: left 0.5s ease;
+    transition left 0.5s ease;
   }
 
   .ai-nav-item:hover::before {
@@ -211,13 +211,13 @@
     flex: 1;
     overflow-y: auto;
     background: var(--surface-primary, #0a0a0a);
-    position: relative;
+    position relative;
   }
 
   /* Cyberpunk grid background */
   .ai-content::before {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -235,7 +235,7 @@
     margin: 0 auto;
     padding: 2rem;
     min-height: 100%;
-    position: relative;
+    position relative;
     z-index: 1,
   }
 
@@ -294,10 +294,10 @@
     padding: 0.5rem 1rem;
     border: 1px solid var(--border-primary, #00ccff);
     border-radius: 0.5rem;
-    text-decoration: none;
+    text-decoration none;
     color: var(--text-primary, #00ccff);
     background: var(--surface-primary, #0a0a0a);
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     font-size: 0.9rem;
   }
 
@@ -315,7 +315,7 @@
     }
 
     .ai-footer-content {
-      flex-direction: column;
+      flex-direction column;
       text-align: center;
       gap: 1rem;
     }

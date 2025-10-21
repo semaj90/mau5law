@@ -34,11 +34,11 @@
 <style>
 /* @unocss-include */ {}
   .tooltip-wrapper {
-    position: relative;
+    position relative;
     display: inline-block;
   }
   .tooltip {
-    position: absolute;
+    position absolute;
     z-index: 9999,
     background: #1f2937;
     color: white;

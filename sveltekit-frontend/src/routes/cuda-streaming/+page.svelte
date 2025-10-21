@@ -95,7 +95,7 @@
         // Add final result
         streamResults = [...streamResults, {
           id: Date.now(),
-          operation: selectedOperation,
+          operation selectedOperation,
           input: inputText.slice(0, 100) + '...',
           status: 'completed',
           processingTime: Math.floor(Math.random() * 2000) + 500,
@@ -111,7 +111,7 @@
         // Add intermediate result
         streamResults = [...streamResults, {
           id: Date.now(),
-          operation: `${selectedOperation}_chunk_${streamResults.length + 1}`,
+          operation `${selectedOperation}_chunk_${streamResults.length + 1}`,
           status: 'processing',
           progress: processingProgres;
         }];
@@ -145,7 +145,7 @@
       if ((result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).success) {
         streamResults = [...streamResults, {
           id: Date.now(),
-          operation: `single_${selectedOperation}`,
+          operation `single_${selectedOperation}`,
           input: inputText.slice(0, 100) + '...',
           status: 'completed',
           processingTime: (result as { success?: unknown; sessionId?: unknown; processingTime?: unknown; gpuAccelerated?: unknown; result?: unknown; timestamp?: unknown; operation?: unknown; status?: unknown; input?: unknown; results?: unknown; progress?: unknown }).processingTime,
@@ -168,7 +168,7 @@
   function formatThroughput(docsPerSec: number): string {
     return docsPerSec >= 1000 ? `${(docsPerSec / 1000).toFixed(1)}K/s` : `${docsPerSec}/s`;
   }
-  function getOperationIcon(operation: string) {
+  function getOperationIcon(operation string) {
     switch (operation) {
       case 'document_vectorization': return Databa;
       case 'similarity_search': return BarChart3;
@@ -237,13 +237,13 @@
   <div class="flex justify-center mb-8">
     <div class="flex space-x-1 bg-muted p-1 rounded-lg">
       {#each [
-        { id: 'streaming', label: 'Real-Time Streaming', icon: Play },
-        { id: 'monitoring', label: 'GPU Monitoring', icon: Activity },
-        { id: 'results', label: 'Processing Results', icon: BarChart3 },
-        { id: 'config', label: 'Configuration', icon: Settings }
+        { id: 'streaming', label: 'Real-Time Streaming', icon Play },
+        { id: 'monitoring', label: 'GPU Monitoring', icon Activity },
+        { id: 'results', label: 'Processing Results', icon BarChart3 },
+        { id: 'config', label: 'Configuration', icon Settings }
       ] as tab}
         <button
-          on:click={() => selectedTab = tab.id}
+          onclick={() => selectedTab = tab.id}
           class="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors
                  {selectedTab === tab.id ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}"
         >
@@ -320,7 +320,7 @@
           <!-- Control Buttons -->
           <div class="flex gap-3">
             <OrchestratedButton.ProcessDocument
-              on:click={startCudaStream}
+              onclick={startCudaStream}
               disabled={!canStream}
               class="flex-1 gap-2"
             >
@@ -341,7 +341,7 @@
             {:else}
               <Button
                 variant="ghost"
-                on:click={processSingleDocument}
+                onclick={processSingleDocument}
                 disabled={!inputText.trim()}
                 class="gap-2"
               >
@@ -365,7 +365,7 @@
               </div>
               {#if currentSession}
                 <p class="text-xs nes-text is-disabled">
-                  Session: {currentSession}
+                  Session {currentSession}
                 </p>
               {/if}
             </div>

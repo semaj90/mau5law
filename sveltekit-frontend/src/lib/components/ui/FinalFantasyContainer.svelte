@@ -112,7 +112,7 @@ calc(100% - 8px) 100%, {}
 /* Subtle background pattern */ {}
   .ff-container::before {
     content: '';
-    position: absolute;
+    position absolute;
     inset: 0;
 background-image: {}
 radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%), {}

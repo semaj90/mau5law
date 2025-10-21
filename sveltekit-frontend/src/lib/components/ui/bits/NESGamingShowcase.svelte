@@ -20,37 +20,37 @@
     {
       id: 'legal-ai',
       title: 'Legal AI System',
-      description: 'Advanced neural networks for legal analysis',
+      description 'Advanced neural networks for legal analysis',
       status: 'online',
-      icon: '⚖️',
+      icon '⚖️',
     },
     {
       id: 'evidence',
       title: 'Evidence Processing',
-      description: 'Blockchain-verified evidence management',
+      description 'Blockchain-verified evidence management',
       status: 'processing',
-      icon: '🔍',
+      icon '🔍',
     },
     {
       id: 'knowledge',
       title: 'Knowledge Graph',
-      description: 'Connected legal precedent database',
+      description 'Connected legal precedent database',
       status: 'online',
-      icon: '🧠',
+      icon '🧠',
     },
     {
       id: 'gpu-cluster',
       title: 'GPU Cluster',
-      description: 'High-performance tensor operations',
+      description 'High-performance tensor operations',
       status: 'warning',
-      icon: '⚡',
+      icon '⚡',
     }
   ];
   function handleCardSelect(cardId: string) {
     selectedCard = cardId;
     showModal = true;
   }
-  function handleGameAction(action: string) {
+  function handleGameAction(action string) {
     switch (action) {
       case 'start':
         isPlaying = true;
@@ -100,10 +100,10 @@
   <div class="showcase-header">
     <h1 class="showcase-title">{title}</h1>
     <div class="header-controls">
-      <NESButton variant="primary" on:click={() => handleGameAction('start')}>
+      <NESButton variant="primary" onclick={() => handleGameAction('start')}>
         {isPlaying ? 'Playing...' : 'Start Demo'}
       </NESButton>
-      <NESButton variant="warning" on:click={() => handleGameAction('reset')}>Reset</NESButton>
+      <NESButton variant="warning" onclick={() => handleGameAction('reset')}>Reset</NESButton>
     </div>
   </div>
   <!-- Stats Bar -->
@@ -141,7 +141,7 @@
         title={feature.title}
         subtitle={feature.description}
         elevated={selectedCard === feature.id}
-        on:click={() => handleCardSelect(feature.id)}
+        onclick={() => handleCardSelect(feature.id)}
       >
         <div class="feature-content">
           <div class="feature-icon">{feature.icon}</div>
@@ -156,12 +156,12 @@
   </div>
   <!-- Action Buttons Grid -->
   <div class="actions-grid">
-    <NESButton variant="success" on:click={() => handleGameAction('powerup')}>Power Up! (+100)</NESButton>
-    <NESButton variant="warning" on:click={() => handleGameAction('pause')}>
+    <NESButton variant="success" onclick={() => handleGameAction('powerup')}>Power Up! (+100)</NESButton>
+    <NESButton variant="warning" onclick={() => handleGameAction('pause')}>
       {isPlaying ? 'Pause' : 'Resume'}
     </NESButton>
-    <NESButton variant="danger" on:click={() => handleGameAction('damage')}>Take Damage (-1 Life)</NESButton>
-    <NESButton variant="primary" on:click={() => (showModal = true)}>Show Modal</NESButton>
+    <NESButton variant="danger" onclick={() => handleGameAction('damage')}>Take Damage (-1 Life)</NESButton>
+    <NESButton variant="primary" onclick={() => (showModal = true)}>Show Modal</NESButton>
   </div>
   <!-- Demo Modal -->
   <NESModal bind:open={showModal} title="System Information" variant="dark" size="lg">
@@ -220,8 +220,8 @@
         </div>
       {/if}
       <div class="modal-actions">
-        <NESButton variant="success" on:click={() => (showModal = false)}>Awesome!</NESButton>
-        <NESButton variant="default" on:click={() => (selectedCard = null)}>Clear Selection</NESButton>
+        <NESButton variant="success" onclick={() => (showModal = false)}>Awesome!</NESButton>
+        <NESButton variant="default" onclick={() => (selectedCard = null)}>Clear Selection</NESButton>
       </div>
     </div>
   </NESModal>
@@ -272,7 +272,7 @@
     font-weight: bold;
   }
   .stat-value.animate {
-    animation: score-pulse 0.3s ease-in-out;
+    animation score-pulse 0.3s ease-in-out;
   }
   .life-icon {
     color: theme('colors.nes.red');
@@ -306,19 +306,19 @@
   }
   .status-indicator.online {
     color: theme('colors.nes.green');
-    animation: status-blink 2s ease-in-out infinite;
+    animation status-blink 2s ease-in-out infinite;
   }
   .status-indicator.processing {
     color: theme('colors.nes.yellow');
-    animation: status-pulse 1s ease-in-out infinite;
+    animation status-pulse 1s ease-in-out infinite;
   }
   .status-indicator.warning {
     color: theme('colors.nes.orange');
-    animation: status-blink 1s ease-in-out infinite;
+    animation status-blink 1s ease-in-out infinite;
   }
   .status-indicator.error {
     color: theme('colors.nes.red');
-    animation: status-urgent 0.5s ease-in-out infinite;
+    animation status-urgent 0.5s ease-in-out infinite;
   }
   .actions-grid {
     display: grid;
@@ -327,13 +327,13 @@
   }
   .modal-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1.5rem;
   }
   .feature-details,
   .system-info {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .feature-header {
@@ -348,7 +348,7 @@
   .feature-stats,
   .system-stats {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
     padding: 1rem;
     border: 2px solid currentColor;
@@ -413,7 +413,7 @@
       padding: 1rem;
     }
     .showcase-header {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
       text-align: center;
     }
@@ -430,7 +430,7 @@
       grid-template-columns: repeat(2, 1fr);
     }
     .modal-actions {
-      flex-direction: column;
+      flex-direction column;
     }
   }
   @media (max-width: 480px) {
@@ -438,7 +438,7 @@
       grid-template-columns: 1fr;
     }
     .header-controls {
-      flex-direction: column;
+      flex-direction column;
       width: 100%;
     }
   }

@@ -42,7 +42,7 @@
   let realityMetrics = $state({
     stability: 1,
     glitchLevel: 0,
-    temporalDistortion: 0,
+    temporalDistortion 0,
     paradoxes: 0,
   });
   let isInitialized = $state(false);
@@ -94,7 +94,7 @@ await initializeQuantumVisualization();
           fieldSize: { x: 10, y: 6, z: 10 },
           quantumCoherence: consciousness.awakening,
           entanglementStrength: 0.6,
-          waveFunction: 'superposition',
+          waveFunction 'superposition',
           uncertaintyPrinciple: true,
           dimensions: 8,
         },
@@ -109,7 +109,7 @@ await initializeQuantumVisualization();
         },
         reality: {
           matrixGlitchIntensity: 0.1,
-          temporalDistortion: 0.05,
+          temporalDistortion 0.05,
           spatialWarp: { x: 0, y: 0, z: 0 },
           causalityLoop: false
           realityStability: 0.9
@@ -127,7 +127,7 @@ await initializeQuantumVisualization();
       isInitialized = true;
       console.log('🌌 YoRHa Quantum Visualization initialized successfully');
     } catch (error) {
-      console.error('Failed to initialize quantum visualization:', error);
+      console.error('Failed to initialize quantum visualization', error);
     }
   }
   function startAnimation() {
@@ -211,7 +211,7 @@ await initializeQuantumVisualization();
     secretFeatures.aiWhispererMode = !secretFeatures.aiWhispererMod;
   }
 </script>
-<!-- Svelte 5: use on:resize for window resize listener -->
+<!-- Svelte 5: use onresize for window resize listener -->
 <svelte:window onresize={handleResize} />
 <div class="quantum-visualization-container">
   <div class="visualization-header">
@@ -221,25 +221,25 @@ await initializeQuantumVisualization();
       <div class="control-buttons">
         <button
           class="quantum-btn {secretFeatures.quantumDebugEnabled ? 'active' : ''}"
-          on:click={toggleQuantumMode}
+          onclick={toggleQuantumMode}
         >
           ⚛️ Quantum
         </button>
         <button
           class="quantum-btn {secretFeatures.aiWhispererMode ? 'active' : ''}"
-          on:click={toggleAIWhisperer}
+          onclick={toggleAIWhisperer}
         >
           🧠 Consciousness
         </button>
         <button
           class="quantum-btn {secretFeatures.matrixMode ? 'active' : ''}"
-          on:click={toggleMatrixMode}
+          onclick={toggleMatrixMode}
         >
           🕶️ Matrix
         </button>
         <button
           class="quantum-btn"
-          on:click={captureQuantumState}
+          onclick={captureQuantumState}
         >
           📸 Capture
         </button>
@@ -375,7 +375,7 @@ await initializeQuantumVisualization();
     border-radius: 4px;
     font-size: 0.8rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .quantum-btn:hover {
     background: rgba(255, 255, 255, 0.2);
@@ -387,7 +387,7 @@ await initializeQuantumVisualization();
     color: #00ff41;
   }
   .visualization-content {
-    position: relative;
+    position relative;
     border-radius: 4px;
     overflow: hidden;
     margin-bottom: 1rem;
@@ -397,14 +397,14 @@ await initializeQuantumVisualization();
     border-radius: 4px;
   }
   .loading-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     color: #fff;
@@ -415,7 +415,7 @@ await initializeQuantumVisualization();
     border: 4px solid rgba(255, 255, 255, 0.1);
     border-left: 4px solid #00ff41;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin-bottom: 1rem;
   }
   @keyframes spin {
@@ -460,7 +460,7 @@ await initializeQuantumVisualization();
   }
   .metric-fill {
     height: 100%;
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
     border-radius: 4px;
   }
   .metric-fill.quantum { background: linear-gradient(90deg, #00bfff, #1e90ff), }
@@ -488,7 +488,7 @@ await initializeQuantumVisualization();
   /* Responsive design */
   @media (max-width: 768px) {
     .controls-row {
-      flex-direction: column;
+      flex-direction column;
       gap: 0.5rem;
       align-items: stretch;
     }

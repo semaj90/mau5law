@@ -28,7 +28,7 @@
     content: string;
     timestamp: Date;
     performance?: {
-      duration: number;
+      duration number;
       tokens: number;
       promptTokens?: number;
       tokensPerSecond: number;
@@ -218,7 +218,7 @@
       sendMessage();
     }
   }
-  function selectSuggestion(suggestion: string) {
+  function selectSuggestion(suggestion string) {
     message = suggestion;
   }
   function clearChat() {
@@ -273,11 +273,11 @@
             {/each}
           </select>
           <!-- Settings Toggle -->
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={() => (showSettings = !showSettings)}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showSettings = !showSettings)}>
             <Settings class="w-4 h-4" />
           </Button>
           <!-- Health Check -->
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={checkOllamaHealth} disabled={isLoading}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={checkOllamaHealth} disabled={isLoading}>
             <RefreshCw class="w-4 h-4" />
           </Button>
         </div>
@@ -381,7 +381,7 @@
                     class="bits-btn text-xs"
                     variant="ghost"
                     size="sm"
-                    on:click={() => selectSuggestion(suggestion)}
+                    onclick={() => selectSuggestion(suggestion)}
                   >
                     {suggestion}
                   </Button>
@@ -424,7 +424,7 @@
       />
     </div>
     <Button
-      on:click={sendMessage}
+      onclick={sendMessage}
       disabled={!canSend || ollamaStatus !== 'healthy'}
       class="h-12 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium bits-btn bits-btn"
       data-testid="send-button"
@@ -438,8 +438,8 @@
       {/if}
     </Button>
     <!-- Additional Actions -->
-    <Button class="bits-btn" variant="ghost" on:click={clearChat} disabled={chatHistory.length === 0}>Clear</Button>
-    <Button class="bits-btn" variant="ghost" on:click={exportChat} disabled={chatHistory.length === 0}>Export</Button>
+    <Button class="bits-btn" variant="ghost" onclick={clearChat} disabled={chatHistory.length === 0}>Clear</Button>
+    <Button class="bits-btn" variant="ghost" onclick={exportChat} disabled={chatHistory.length === 0}>Export</Button>
   </div>
   <!-- Chat Stats -->
   {#if messageCount > 0}
@@ -454,7 +454,7 @@
 <style>
   .ollama-chat-interface {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     height: 100vh;
     max-width: 64rem;
     margin-left: auto;

@@ -81,7 +81,7 @@ https://svelte.dev/e/js_parse_error -->
   // Indeterminate animation style
   let indeterminateStyle = $derived(
     indeterminate
-      ? 'animation: indeterminate 2s infinite linear;'
+      ? 'animation indeterminate 2s infinite linear;'
       : `width: ${percentage}%;`
   );
 </script>
@@ -127,17 +127,17 @@ https://svelte.dev/e/js_parse_error -->
   }
   /* YoRHa specific animations */
   :global(.yorha-progress) {
-    position: relative;
+    position relative;
   }
   :global($1) {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
     bottom: 0;
     background: linear-gradient(90deg, transparent 0%, rgba(212, 175, 55, 0.1) 50%, transparent 100%);
-    animation: yorha-scan 2s infinite linear;
+    animation yorha-scan 2s infinite linear;
   }
   @keyframes yorha-scan {
     0% {

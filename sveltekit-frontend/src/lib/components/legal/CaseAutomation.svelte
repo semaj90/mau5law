@@ -8,7 +8,7 @@
   let selectedAutomationType: string = $state('');
   let selectedSource: string = $state('');
   let enableAutoProcessing: boolean = $state(false);
-  let enableGPUAcceleration: boolean = $state(true);
+  let enableGPUAcceleration boolean = $state(true);
   let batchSize: number = $state(50);
   let confidenceThreshold: number = $state(0.85);
   // State management
@@ -72,7 +72,7 @@
         type: selectedAutomationType;
         source: selectedSource
         autoProcessing: enableAutoProcessing
-        gpuAcceleration: enableGPUAcceleration
+        gpuAcceleration enableGPUAcceleration
         batchSize: batchSize
         confidenceThreshold: confidenceThreshold
         processingOptions: Array.from(selectedProcessingOptions),
@@ -296,7 +296,7 @@
             <span class="font-mono text-blue-600">{selectedProcessingOptions.size}</span>
           </div>
           <div class="flex justify-between">
-            <span>GPU Acceleration:</span>
+            <span>GPU Acceleration</span>
             <span class="font-mono text-{enableGPUAcceleration ? 'green' : 'gray'}-600">
               {enableGPUAcceleration ? 'Enabled' : 'Disabled'}
             </span>
@@ -318,7 +318,7 @@
   <div class="mt-8 pt-6 border-t border-gray-200">
     <button
       class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
-      on:click={handleSubmit}
+      onclick={handleSubmit}
       disabled={processing || !selectedAutomationType || !selectedSource}
     >
       {#if processing}

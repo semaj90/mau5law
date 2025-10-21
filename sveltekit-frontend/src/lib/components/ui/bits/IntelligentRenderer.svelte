@@ -92,17 +92,17 @@
   function handleInteraction(event: (Event & { detail?: any }) | CustomEvent) {
     const detail = (event as any)?.detail ?? { type: (event as any)?.type ?? 'unknown' };
     // Pure event handling logic (safe logging)
-    console.log('User interaction:', detail);
+    console.log('User interaction', detail);
   }
 </script>
 
 <!--
-  Intelligent Decision: Use regular DOM (90% of cases) or canvas (10% for heavy processes)
+  Intelligent Decision Use regular DOM (90% of cases) or canvas (10% for heavy processes)
 -->
 {#if useGlyphEngine}
   <!-- Gaming LOD: Use canvas for glyph-heavy processes -->
   <div class="glyph-engine-container gaming-transition" role="application">
-    <GlyphEngineRenderer {data} {type} {title} {priority} on:interact={handleInteraction} />
+    <GlyphEngineRenderer {data} {type} {title} {priority} oninteract={handleInteraction} />
   </div>
 {:else}
   <!-- Regular Enhanced-Bits + NES.css UI (90% of app) -->
@@ -144,7 +144,7 @@
                 <svelte:component
                   this={ButtonComponent}
                   class="enhanced-bits-button is-small"
-                  on:click={handleInteraction}
+                  onclick={handleInteraction}
                 >
                   Analyze
                 </svelte:component>
@@ -181,7 +181,7 @@
         <svelte:component
           this={ButtonComponent}
           class="enhanced-bits-button nes-btn is-primary gaming-transition"
-          on:click={handleInteraction}
+          onclick={handleInteraction}
         >
           Process
         </svelte:component>
@@ -190,7 +190,7 @@
           this={ButtonComponent}
           class="enhanced-bits-button nes-btn gaming-transition"
           variant="ghost"
-          on:click={handleInteraction}
+          onclick={handleInteraction}
         >
           Details
         </svelte:component>

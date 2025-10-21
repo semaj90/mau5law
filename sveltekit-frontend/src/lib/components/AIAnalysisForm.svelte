@@ -92,7 +92,7 @@
   <h3 class="text-xl font-bold mb-4">AI Legal Analysis</h3>
   <div class="mb-6">
     <Button
-      on:click={startAnalysis}
+      onclick={startAnalysis}
       disabled={isAnalyzing}
       class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg disabled:opacity-50 bits-btn bits-btn"
     >
@@ -100,7 +100,7 @@
     </Button>
   </div>
   {#if isAnalyzing}
-    <div class="analysis-progress mb-6" transition:slide>
+    <div class="analysis-progress mb-6" transitionslide>
       <div class="progress-bar bg-gray-200 rounded-full h-3 mb-2">
         <div
           class="bg-blue-600 h-full rounded-full transition-all duration-300"
@@ -111,7 +111,7 @@
     </div>
   {/if}
   {#if $analysisResults}
-    <div class="analysis-results mt-6" transition:fade>
+    <div class="analysis-results mt-6" transitionfade>
       <h4 class="text-lg font-semibold mb-4">Analysis Results</h4>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="result-nier-bits-card p-4 bg-gray-50 rounded-lg">
@@ -155,7 +155,7 @@
     overflow: hidden;
   }
   .result-card {
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .result-card:hover {
     transform: translateY(-2px);

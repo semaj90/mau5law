@@ -31,7 +31,7 @@ https://svelte.dev/e/js_parse_error -->
     onactionsreceived?: (actions: any[]) => void;
     onmessage?: (_event: any) => void;
     onclose?: () => void;
-    onaction?: (action: any) => void;
+    onaction?: (action any) => void;
   }
   // Svelte 5 props with defaults
   let {
@@ -65,34 +65,34 @@ https://svelte.dev/e/js_parse_error -->
     {
       id: "professional",
       label: "Professional",
-      icon: Scale;
-      description: "Formal legal analysis",
+      icon Scale;
+      description "Formal legal analysis",
     },
     {
       id: "investigative",
       label: "Investigative",
-      icon: Brain;
-      description: "Deep case analysis",
+      icon Brain;
+      description "Deep case analysis",
     },
     {
       id: "evidence",
       label: "Evidence Focus",
-      icon: FileText;
-      description: "Evidence-centered responses",
+      icon FileText;
+      description "Evidence-centered responses",
     },
     {
       id: "strategic",
       label: "Strategic",
-      icon: Zap;
-      description: "Case strategy planning",
+      icon Zap;
+      description "Case strategy planning",
     },
   ]);
   // Quick actions
   const quickActions = [
-    { text: "Analyze evidence timeline", icon: FileText },
-    { text: "Review witness statements", icon: User },
-    { text: "Check legal precedents", icon: Scale },
-    { text: "Suggest next steps", icon: Zap },
+    { text: "Analyze evidence timeline", icon FileText },
+    { text: "Review witness statements", icon User },
+    { text: "Check legal precedents", icon Scale },
+    { text: "Suggest next steps", icon Zap },
   ];
   $effect(() => {
     try {
@@ -145,7 +145,7 @@ https://svelte.dev/e/js_parse_error -->
       closeChat();
     }
   }
-  function handleQuickAction(action: string) {
+  function handleQuickAction(action string) {
     currentMessage = action;
     sendMessage();
   }
@@ -267,7 +267,7 @@ https://svelte.dev/e/js_parse_error -->
   function formatTimestamp(timestamp: Date): string {
     return new Intl.DateTimeFormat.format(timestamp);
   }
-  function handleActionClick(action: any) {
+  function handleActionClick(action any) {
     if (onaction) onaction(action);
   }
 </script>
@@ -277,7 +277,7 @@ https://svelte.dev/e/js_parse_error -->
     <p>The chat component encountered an error:</p>
     <p class="error-message">{componentError.message}</p>
     <button
-      on:click={() => { componentError = null, }}
+      onclick={() => { componentError = null, }}
       aria-label="Dismiss error and retry"
     >
       Retry
@@ -287,8 +287,8 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Chat overlay -->
   <div
     class="chat-overlay"
-    transitifade={{ duration: 200 }}
-    on:click={(e) => { if (e.target === e.currentTarget) closeChat(), }}
+    transitifade={{ duration 200 }}
+    onclick={(e) => { if (e.target === e.currentTarget) closeChat(), }}
     onkeydown={(e) => e.key === "Escape" && closeChat()}
     role="dialog"
     aria-modal="true"
@@ -314,7 +314,7 @@ https://svelte.dev/e/js_parse_error -->
             <button
               class="mode-button"
               class:active={showModeSelector}
-              on:click={() => (showModeSelector = !showModeSelector)}
+              onclick={() => (showModeSelector = !showModeSelector)}
               title="Select AI mode"
               aria-label="Select AI mode"
               aria-expanded={showModeSelector}
@@ -329,13 +329,13 @@ https://svelte.dev/e/js_parse_error -->
             {#if showModeSelector}
               <div
                 class="mode-dropdown"
-                transitiscale={{ duration: 200, easing: elasticOut }}
+                transitiscale={{ duration 200, easing: elasticOut }}
               >
                 {#each aiModes as mode}
                   <button
                     class="mode-option";
                     class:selected={mode.id === selectedMode}
-                    on:click={() => {
+                    onclick={() => {
                       selectedMode = mode.id;
                       showModeSelector = false;
                     }}
@@ -356,7 +356,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="header-actions">
           <button
             class="header-action"
-            on:click={() => clearConversation()}
+            onclick={() => clearConversation()}
             title="Clear conversation"
             disabled={isGenerating}
             aria-label="Clear conversation"
@@ -365,7 +365,7 @@ https://svelte.dev/e/js_parse_error -->
           </button>
           <button
             class="header-action"
-            on:click={() => closeChat()}
+            onclick={() => closeChat()}
             title="Close chat"
             aria-label="Close chat"
           >
@@ -419,9 +419,9 @@ https://svelte.dev/e/js_parse_error -->
                     {#each message.actions as action}
                       <button
                         class="action-button"
-                        on:click={() => handleActionClick(action)}
+                        onclick={() => handleActionClick(action)}
                         title={action.text}
-                        aria-label="Action: {action.text}"
+                        aria-label="Action {action.text}"
                       >
                         {action.text}
                       </button>
@@ -454,9 +454,9 @@ https://svelte.dev/e/js_parse_error -->
             {#each quickActions as action}
               <button
                 class="quick-action"
-                on:click={() => handleQuickAction(action.text)}
+                onclick={() => handleQuickAction(action.text)}
                 disabled={isGenerating}
-                aria-label="Quick action: {action.text}"
+                aria-label="Quick action {action.text}"
               >
                 <svelte:component this={action.icon} size={20} />
                 {action.text}
@@ -482,7 +482,7 @@ https://svelte.dev/e/js_parse_error -->
             class="send-button"
             class:sending={isGenerating}
             disabled={!currentMessage.trim() || isGenerating}
-            on:click={() => sendMessage()}
+            onclick={() => sendMessage()}
             title="Send message"
             aria-label="Send message"
           >
@@ -531,7 +531,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
   }
   .chat-overlay {
-    position: fixed;
+    position fixed;
     top: 0,
     left: 0;
     right: 0,
@@ -552,7 +552,7 @@ https://svelte.dev/e/js_parse_error -->
     max-width: 600px;
     max-height: 80vh;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     overflow: hidden;
   }
   .chat-header {
@@ -589,7 +589,7 @@ https://svelte.dev/e/js_parse_error -->
     font-weight: 600,
   }
   .mode-section {
-    position: relative;
+    position relative;
   }
   .mode-button {
     background: rgba(255, 255, 255, 0.1);
@@ -602,13 +602,13 @@ https://svelte.dev/e/js_parse_error -->
     gap: 0.5rem;
     font-size: 0.875rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
-  .mode-button:hover {
+  .mode-buttonhover {
     background: rgba(255, 255, 255, 0.2);
   }
   .mode-dropdown {
-    position: absolute;
+    position absolute;
     top: 100%;
     right: 0;
     margin-top: 0.5rem;
@@ -628,10 +628,10 @@ https://svelte.dev/e/js_parse_error -->
     align-items: center;
     gap: 0.75rem;
     cursor: pointer;
-    transition: background 0.2;
+    transition background 0.2;
     color: #374151;
   }
-  .mode-option:hover {
+  .mode-optionhover {
     background: #f3f4f6;
   }
   .mode-option.selected {
@@ -640,7 +640,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .mode-info {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: flex-start;
   }
   .mode-name {
@@ -662,15 +662,15 @@ https://svelte.dev/e/js_parse_error -->
     padding: 0.5rem;
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  .header-action:hover {
+  .header-actionhover {
     background: rgba(255, 255, 255, 0.2);
   }
-  .header-action:disabled {
+  .header-actiondisabled {
     opacity: 0.5,
     cursor: not-allowed;
   }
@@ -679,7 +679,7 @@ https://svelte.dev/e/js_parse_error -->
     overflow-y: auto;
     padding: 1rem;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
   }
   .message {
@@ -689,7 +689,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .message.user {
     align-self: flex-end;
-    flex-direction: row-rever;
+    flex-direction row-rever;
   }
   .message.assistant {
     align-self: flex-start;
@@ -744,7 +744,7 @@ https://svelte.dev/e/js_parse_error -->
     height: 6px;
     background: #9ca3af;
     border-radius: 50%;
-    animation: typing 1.4s infinite;
+    animation typing 1.4s infinite;
   }
   .typing-dots span:nth-child(2) {
     animation-delay: 0.2,
@@ -794,17 +794,17 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 6px;
     font-size: 0.75rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
   }
   .message.assistant .action-button {
     background: #e5e7eb;
     border-color: #d1d5db;
     color: #374151;
   }
-  .action-button:hover {
+  .action-buttonhover {
     background: rgba(255, 255, 255, 0.3);
   }
-  .message.assistant .action-button:hover {
+  .message.assistant .action-buttonhover {
     background: #d1d5db;
   }
   .message-meta {
@@ -840,19 +840,19 @@ https://svelte.dev/e/js_parse_error -->
     padding: 1rem;
     border-radius: 8px;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     gap: 0.5rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
     color: #374151;
   }
-  .quick-action:hover {
+  .quick-actionhover {
     background: #f1f5f9;
     border-color: #cbd5e1;
     transform: translateY(-1px);
   }
-  .quick-action:disabled {
+  .quick-actiondisabled {
     opacity: 0.5,
     cursor: not-allowed;
     transform: none;
@@ -879,7 +879,7 @@ https://svelte.dev/e/js_parse_error -->
     min-height: 44px;
     max-height: 120px;
     background: white;
-    transition: border-color 0.2;
+    transition border-color 0.2;
   }
   .message-input:focus {
     outline: none;
@@ -897,17 +897,17 @@ https://svelte.dev/e/js_parse_error -->
     padding: 0.75rem;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2;
+    transition all 0.2;
     display: flex;
     align-items: center;
     justify-content: center;
     min-width: 44px;
     height: 44px;
   }
-  .send-button:hover {
+  .send-buttonhover {
     background: #2563eb;
   }
-  .send-button:disabled {
+  .send-buttondisabled {
     background: #9ca3af;
     cursor: not-allowed;
   }
@@ -917,7 +917,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 2px solid transparent;
     border-top: 2px solid currentColor;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes typing {
     0%,
@@ -946,7 +946,7 @@ https://svelte.dev/e/js_parse_error -->
       padding: 1rem;
     }
     .header-content {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
       gap: 0.75rem;
     }

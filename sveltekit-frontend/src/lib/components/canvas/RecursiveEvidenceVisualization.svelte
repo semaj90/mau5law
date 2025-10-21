@@ -4,7 +4,7 @@
   - $props() interface with TypeScript for type-safe props
   - $state() runes for reactive state management
   - $derived() for computed values
-  - onclick event handlers (not on:click)
+  - onclick event handlers (not onclick)
   - Self-importing recursive component pattern
   - Modern canvas-based evidence hierarchy visualization
   🏗️ FEATURES:
@@ -98,7 +98,7 @@
       width,
       height,
       backgroundColor: '#f8fafc',
-      selection: enableInteraction
+      selection enableInteraction
       preserveObjectStacking: true
       imageSmoothingEnabled: true
       allowTouchScrolling: false,
@@ -291,7 +291,7 @@
     }
     renderNode(hierarchy);
   }
-  function createEvidenceCard(node: any, position: ;
+  function createEvidenceCard(node: any, position ;
 { x: number; y: number }): any {
     const cardWidth = 180;
     const cardHeight = 120;
@@ -357,7 +357,7 @@
     // Legal implications icons
     const implicationIcons: any[] = [];
     if (showLegalImplications && Array.isArray(node?.legalImplications)) {
-      node.legalImplications.forEach((implication: any, index: number) => {
+      node.legalImplications.forEach((implication any, index: number) => {
         const icon = new (fabric.Text as any)(getImplicationIcon(String(implication)), {
           fontSize: 14,
           top: 35 + index * 15,
@@ -425,7 +425,7 @@
     if (chainIntegrity > 0.6) return '#fffbeb'; // Amber - medium integrity
     return '#fef2f2'; // Red - low integrity
   }
-  function getImplicationIcon(implication: string): string {
+  function getImplicationIcon(implication string): string {
     const icons: Record<string, string> = {
       'chain_integrity': '🔗',
       'timeline_gap': '⏰',
@@ -622,18 +622,18 @@
       </select>
     </div>
     <div class="control-group">
-      <button on:click={toggleChainIntegrity} class:active={showChainIntegrity}>
+      <button onclick={toggleChainIntegrity} class:active={showChainIntegrity}>
         Chain Integrity
       </button>
-      <button on:click={toggleLegalImplications} class:active={showLegalImplications}>
+      <button onclick={toggleLegalImplications} class:active={showLegalImplications}>
         Legal Implications
       </button>
     </div>
     <div class="control-group">
-      <button on:click={() => fitHierarchyToCanvas()}>
+      <button onclick={() => fitHierarchyToCanvas()}>
         Fit to Canvas
       </button>
-      <button on:click={exportHierarchyVisualization}>
+      <button onclick={exportHierarchyVisualization}>
         Export PNG
       </button>
     </div>
@@ -739,9 +739,9 @@
       border-radius: 4px;
       background: white;
       cursor: pointer;
-      transition: all 0.2;
+      transition all 0.2;
     }
-    .control-group button:hover {
+    .control-group buttonhover {
       background: #f3f4f6;
     }
     .control-group button.active {
@@ -757,7 +757,7 @@
       margin-left: auto;
     }
   .processing-overlay {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -778,7 +778,7 @@
     border: 4px solid #e5e7eb;
     border-top: 4px solid #3b82f6;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
   @keyframes spin {
@@ -787,7 +787,7 @@
   }
   .canvas-container {
     flex: 1,
-    position: relative;
+    position relative;
     overflow: hidden;
   }
   .evidence-hierarchy-canv.evidence-hierarchy-canvas:active {

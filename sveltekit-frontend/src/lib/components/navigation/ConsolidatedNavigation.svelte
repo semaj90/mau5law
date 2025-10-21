@@ -28,7 +28,7 @@
 
 <nav class="consolidated-navigation" class:expanded={isExpanded}>
   <div class="nav-header">
-    <button on:click={() => (isExpanded = !isExpanded)} class="nav-toggle" aria-label="Toggle Navigation">
+    <button onclick={() => (isExpanded = !isExpanded)} class="nav-toggle" aria-label="Toggle Navigation">
       <span class="nav-icon">{isExpanded ? '✕' : '☰'}</span>
       <span class="nav-title">Legal AI Platform</span>
     </button>
@@ -97,7 +97,7 @@
 
 <style>
   .consolidated-navigation {
-    position: fixed;
+    position fixed;
     top: 0,
     left: 0;
     z-index: 1000,
@@ -105,7 +105,7 @@
     border-right: 1px solid var(--border-primary, #333333);
     height: 100vh;
     width: 64px;
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
     overflow: hidden;
   }
 
@@ -129,7 +129,7 @@
     cursor: pointer;
     padding: 0.5rem;
     border-radius: 4px;
-    transition: background 0.2s;
+    transition background 0.2s;
   }
 
   .nav-toggle:hover {
@@ -186,7 +186,7 @@
 
   .group-routes {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 2px;
   }
 
@@ -196,8 +196,8 @@
     gap: 0.75rem;
     padding: 0.75rem 1rem;
     color: var(--text-primary, #ffffff);
-    text-decoration: none;
-    transition: all 0.2s;
+    text-decoration none;
+    transition all 0.2s;
     border-left: 3px solid transparent;
   }
 
@@ -259,7 +259,7 @@
     .consolidated-navigation {
       width: 100%;
       height: auto;
-      position: relative;
+      position relative;
       border-right: none;
       border-bottom: 1px solid var(--border-primary, #333333);
     }

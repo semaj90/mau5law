@@ -159,13 +159,13 @@ https://svelte.dev/e/attribute_duplicate -->
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Test Controls</h2>
       <div class="flex gap-4 mb-6">
         <Button
-          on:click={runAllTests}
+          onclick={runAllTests}
           disabled={isLoading}
           class="bg-yorha-secondary text-yorha-bg-primary hover:bg-yorha-secondary-dark bits-btn bits-btn"
         >
 {isLoading ? 'Running Tests...' : 'Run All Tests'}
         <Button
-          on:click={calculateRouteStats}
+          onclick={calculateRouteStats}
           variant="ghost"
           class="border-yorha-accent text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary bits-btn bits-btn"
         >
@@ -231,7 +231,7 @@ Refresh Stats
           <Button class="bits-btn"
             size="sm"
             variant="ghost"
-            on:click={() =>
+            onclick={() =>
 navigateToRoute('/')}
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
@@ -239,7 +239,7 @@ navigateToRoute('/')}
           <Button class="bits-btn"
             size="sm"
             variant="ghost"
-            on:click={() =>
+            onclick={() =>
 navigateToRoute('/demo')}
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
@@ -247,7 +247,7 @@ navigateToRoute('/demo')}
           <Button class="bits-btn"
             size="sm"
             variant="ghost"
-            on:click={() =>
+            onclick={() =>
 navigateToRoute('/dev/mcp-tools')}
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
@@ -255,7 +255,7 @@ navigateToRoute('/dev/mcp-tools')}
           <Button class="bits-btn"
             size="sm"
             variant="ghost"
-            on:click={() =>
+            onclick={() =>
 navigateToRoute('/cases')}
             class="w-full justify-start text-yorha-accent hover:bg-yorha-accent hover:text-yorha-bg-primary"
           >
@@ -278,7 +278,7 @@ navigateToRoute('/cases')}
                 {#each categoryRoutes.slice(0, 5) as route}
                   <button
                     class="block w-full text-left text-sm text-yorha-text-secondary hover:text-yorha-accent hover:bg-yorha-bg-secondary p-1 rounded transition-colors"
-                    on:click={() => navigateToRoute(route.route)}
+                    onclick={() => navigateToRoute(route.route)}
                   >
                     {route.icon} {route.label}
                 {/each}

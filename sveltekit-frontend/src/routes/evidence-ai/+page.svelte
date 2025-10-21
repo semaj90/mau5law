@@ -553,7 +553,7 @@
                 <p class="text-sm text-slate-400">{formatFileSize(selectedFile.size)}</p>
                 <button
                   class="text-xs text-red-400 hover:text-red-300 mt-2"
-                  on:click={() => selectedFile = null}
+                  onclick={() => selectedFile = null}
                 >
                   Remove
                 </button>
@@ -584,7 +584,7 @@
           <!-- Upload Button -->
           <button
             class="w-full mt-4 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            on:click={uploadFile}
+            onclick={uploadFile}
             disabled={!selectedFile || !wsConnected || isStreaming}
           >
             {isStreaming ? '🔄 Processing...' : '🚀 Upload & Analyze'}
@@ -678,7 +678,7 @@
             />
             <button
               class="px-6 py-3 bg-purple-500 hover:bg-purple-600 rounded-lg font-medium transition-colors disabled:opacity-50"
-              on:click={performSearch}
+              onclick={performSearch}
               disabled={isSearching || !searchQuery.trim()}
             >
               {isSearching ? '🔄' : '🔍'}
@@ -693,7 +693,7 @@
                 {#each aiSuggestions as suggestion}
                   <button
                     class="px-3 py-1 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 rounded-full text-sm transition-colors"
-                    on:click={() => searchQuery = suggestion.insight}
+                    onclick={() => searchQuery = suggestion.insight}
                   >
                     {suggestion.insight}
                   </button>

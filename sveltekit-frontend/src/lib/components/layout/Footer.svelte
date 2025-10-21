@@ -11,15 +11,15 @@
   let currentPath = $derived($page.url.pathname);
   let isDemoRoute = $derived(currentPath?.startsWith('/demo') ?? false);
   const quickLinks = [
-    { path: '/help', label: 'Help', icon: '❓' },
-    { path: '/privacy', label: 'Privacy', icon: '🔒' },
-    { path: '/terms', label: 'Terms', icon: '📄' },
-    { path: '/contact', label: 'Contact', icon: '📧' },
+    { path: '/help', label: 'Help', icon '❓' },
+    { path: '/privacy', label: 'Privacy', icon '🔒' },
+    { path: '/terms', label: 'Terms', icon '📄' },
+    { path: '/contact', label: 'Contact', icon '📧' },
   ];
   const socialLinks = [
-    { href: '#', label: 'GitHub', icon: '🔗' },
-    { href: '#', label: 'Documentation', icon: '📚' },
-    { href: '#', label: 'Community', icon: '👥' },
+    { href: '#', label: 'GitHub', icon '🔗' },
+    { href: '#', label: 'Documentation', icon '📚' },
+    { href: '#', label: 'Community', icon '👥' },
   ];
 </script>
 
@@ -171,7 +171,7 @@
   }
   .footer-section {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .footer-title {
@@ -206,7 +206,7 @@
   /* Footer Navigation */
   .footer-nav {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   :global(.footer-link) {
@@ -225,7 +225,7 @@
   /* Status Indicators */
   .status-indicators {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.75rem;
   }
   .status-item {
@@ -248,7 +248,7 @@
   /* Resource Links */
   .resource-links {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.5rem;
   }
   .resource-link {
@@ -257,7 +257,7 @@
     justify-content: flex-start !important;
     padding: 0.25rem 0.5rem !important;
     font-size: 0.5rem !important;
-    text-decoration: none !important;
+    text-decoration none !important;
   }
   .resource-icon {
     margin-right: 0.5rem;
@@ -317,7 +317,7 @@
   }
   .demo-info {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 1rem;
     align-items: center;
   }
@@ -340,18 +340,18 @@
       gap: 1.5rem;
     }
     .footer-bottom {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
     }
     .tech-stack {
       align-self: stretch;
     }
     .minimal-footer {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
     }
     .demo-actions {
-      flex-direction: column;
+      flex-direction column;
       width: 100%;
     }
   }

@@ -194,11 +194,11 @@
     let response = '';
     let confidence = Math.floor(Math.random() * 20) + 80;
     if (command.toLowerCase().includes('analyze')) {
-      response = `[ANALYSIS COMPLETE]\n\nDetected patterns in case evidence suggest high probability of digital tampering.\nCross-referencing with legal precedent database...\n\nRecommendation: Focus investigation on metadata inconsistencies found in Evidence-ID: ${Math.floor(Math.random() * 1000)}`;
+      response = `[ANALYSIS COMPLETE]\n\nDetected patterns in case evidence suggest high probability of digital tampering.\nCross-referencing with legal precedent database...\n\nRecommendation Focus investigation on metadata inconsistencies found in Evidence-ID: ${Math.floor(Math.random() * 1000)}`;
     } else if (command.toLowerCase().includes('search')) {
-      response = `[SEARCH INITIATED]\n\nScanning ${Math.floor(Math.random() * 500 + 100)} case files...\nFound ${Math.floor(Math.random() * 15 + 3)} relevant matches.\n\nHighest correlation: Case #2024-${Math.floor(Math.random() * 999)} (${confidence}% similarity)`;
+      response = `[SEARCH INITIATED]\n\nScanning ${Math.floor(Math.random() * 500 + 100)} case files...\nFound ${Math.floor(Math.random() * 15 + 3)} relevant matches.\n\nHighest correlation Case #2024-${Math.floor(Math.random() * 999)} (${confidence}% similarity)`;
     } else if (command.toLowerCase().includes('status')) {
-      response = `[SYSTEM STATUS]\n\nYoRHa Legal AI: OPERATIONAL\nDatabase Connection: STABLE\nAnalysis Engine: ${systemStatus.toUpperCase()}\nCase Context: ${caseContext?.title || 'None'}\n\nAll systems nominal.`;
+      response = `[SYSTEM STATUS]\n\nYoRHa Legal AI: OPERATIONAL\nDatabase Connection STABLE\nAnalysis Engine: ${systemStatus.toUpperCase()}\nCase Context: ${caseContext?.title || 'None'}\n\nAll systems nominal.`;
     } else {
       response = `[PROCESSING COMPLETE]\n\nQuery processed successfully.\nAnalysis confidence: ${confidence}%\n\nAdditional context required for enhanced analysis. Please provide specific case parameters or evidence identifiers.`;
     }
@@ -260,8 +260,8 @@
 {#if showAIInterface}
   <div
     class="fixed inset-4 z-40 flex items-center justify-center"
-    in:scale={{ duration: 400, start: 0.9 }}
-    out:scale={{ duration: 300, start: 0.9 }}
+    in:scale={{ duration 400, start: 0.9 }}
+    out:scale={{ duration 300, start: 0.9 }}
   >
     <!-- Background Overlay -->
     <div
@@ -269,8 +269,8 @@
       role="button"
       tabindex="0"
       aria-label="Close AI Interface"
-      on:click={() => (showAIInterface = false)}
-      on:keydown={e => {
+      onclick={() => (showAIInterface = false)}
+      onkeydown={e => {
         if (e.key === 'Enter' || e.key === ' ') showAIInterface = false;
       }}
     ></div>
@@ -306,7 +306,7 @@
         <div class="flex items-center gap-2">
           <button
             type="button"
-            on:click={() =>
+            onclick={() =>
               (currentTheme =
                 currentTheme === 'yorha' ? 'cyberpunk' : currentTheme === 'cyberpunk' ? 'matrix' : 'yorha')}
             class="p-2 rounded-lg hover:bg_gray-700/50 transition-colors"
@@ -316,7 +316,7 @@
           </button>
           <button
             type="button"
-            on:click={openNierAssistant}
+            onclick={openNierAssistant}
             class="p-2 rounded-lg hover:bg-gray-700/50 transition-colors"
             title="Open Full Assistant"
           >
@@ -324,7 +324,7 @@
           </button>
           <button
             type="button"
-            on:click={() => (showAIInterface = false)}
+            onclick={() => (showAIInterface = false)}
             class="p-2 rounded-lg hover:bg-red-500/20 transition-colors"
           >
             <X class="w-5 h-5 text-red-400" />
@@ -355,7 +355,7 @@
               <div
                 class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}"
                 ;
-                in:fly={{ x: message.role === 'user' ? 20 : -20, duration: 200 }}
+                in:fly={{ x: message.role === 'user' ? 20 : -20, duration 200 }}
               >
                 <div class="max-w-[80%]">
                   {#if message.role === 'assistant' || message.role === 'system'}
@@ -414,7 +414,7 @@
           <!-- Input Area -->
           <div class="p-4 border-t {theme.border}">
             <form
-              on:submit={e => {
+              onsubmit={e => {
                 e.preventDefault();
                 sendMessage(inputValue);
               }}
@@ -444,7 +444,7 @@
             <div class="flex gap-2 mt-3">
               {#each ['analyze case', 'search evidence', 'system status', 'generate report'] as cmd}
                 <button
-                  on:click={() => {
+                  onclick={() => {
                     inputValue = cmd;
                     sendMessage(cmd);
                   }}
@@ -462,9 +462,9 @@
           <h3 class="text-sm font-bold {theme.primary} mb-4 uppercase">AI Control Panel</h3>
           <!-- AI Modes -->
           <div class="space-y-2 mb-6">
-            {#each [{ id: 'analysis', label: 'Deep Analysis', icon: Brain }, { id: 'search', label: 'Evidence Search', icon: Search }, { id: 'document', label: 'Document Gen', icon: FileText }, { id: 'rapid', label: 'Rapid Response', icon: Zap }] as mode}
+            {#each [{ id: 'analysis', label: 'Deep Analysis', icon Brain }, { id: 'search', label: 'Evidence Search', icon Search }, { id: 'document', label: 'Document Gen', icon FileText }, { id: 'rapid', label: 'Rapid Response', icon Zap }] as mode}
               <button
-                on:click={() => processAICommand(`switch to ${mode.label.toLowerCase()}`)}
+                onclick={() => processAICommand(`switch to ${mode.label.toLowerCase()}`)}
                 class="w-full flex items-center gap-3 p-3 rounded-lg border {theme.border}
                        hover:bg-gray-700/30 transition-colors text-left"
               >
@@ -479,7 +479,7 @@
           <div class="space-y-3">
             <h4 class="text-xs font-bold {theme.secondary} uppercase">System Monitor</h4>
             <div class="space-y-2 text-xs {theme.secondary} font-mono">
-              <div>Connection: <span class="text-green-400">STABLE</span></div>
+              <div>Connection <span class="text-green-400">STABLE</span></div>
               <div>AI Model: <span class={theme.accent}>YoRHa-Legal-v2</span></div>
               <div>Uptime: <span class={theme.accent}>72:14:39</span></div>
               <div>Response Time: <span class="text-green-400">1.2s avg</span></div>

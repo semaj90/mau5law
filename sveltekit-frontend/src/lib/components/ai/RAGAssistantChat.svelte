@@ -39,38 +39,38 @@
   const workflowSteps = [
     {
       key: 'what',
-      question: 'What happened? Please describe the incident or situation in detail.',
-      icon: '🔍',
+      question 'What happened? Please describe the incident or situation in detail.',
+      icon '🔍',
       placeholder: 'Describe what occurred, the nature of the incident, key events...',
     },
     {
       key: 'who',
-      question: 'Who was involved? Identify all parties, witnesses, and key individuals.',
-      icon: '👥',
+      question 'Who was involved? Identify all parties, witnesses, and key individuals.',
+      icon '👥',
       placeholder: 'List suspects, victims, witnesses, law enforcement, experts...',
     },
     {
       key: 'when',
-      question: 'When did this occur? Provide timeline details and chronology.',
-      icon: '⏰',
+      question 'When did this occur? Provide timeline details and chronology.',
+      icon '⏰',
       placeholder: 'Dates, times, sequence of events, duration...',
     },
     {
       key: 'where',
-      question: 'Where did it happen? Specify all relevant locations.',
-      icon: '📍',
+      question 'Where did it happen? Specify all relevant locations.',
+      icon '📍',
       placeholder: 'Crime scene, addresses, jurisdictions, related locations...',
     },
     {
       key: 'why',
-      question: 'Why did this happen? What was the motive or underlying cause?',
-      icon: '💭',
+      question 'Why did this happen? What was the motive or underlying cause?',
+      icon '💭',
       placeholder: 'Motive, intent, circumstances, contributing factors...',
     },
     {
       key: 'how',
-      question: 'How was it carried out? Describe the method and execution.',
-      icon: '⚙️',
+      question 'How was it carried out? Describe the method and execution.',
+      icon '⚙️',
       placeholder: 'Method of operation, tools used, sequence of actions...',
     },
   ];
@@ -84,7 +84,7 @@
     workflow_start: [
       "I'll guide you through our systematic 'Who, What, Why, How' prosecution methodology.",
       'This approach ensures we capture all critical case elements for optimal prosecution strategy.',
-      "Let's start with the first question:",
+      "Let's start with the first question",
     ],
     step_complete: [
       "Excellent. I'm analyzing this information and building your case profile.",
@@ -212,7 +212,7 @@
     try {
       const caseData = {
         title: `Case: ${String(workflowData.what || '').slice(0, 50)}...`,
-        description: `WHO: ${workflowData.who}\n\nWHAT: ${workflowData.what}\n\nWHEN: ${workflowData.when}\n\nWHERE: ${workflowData.where}\n\nWHY: ${workflowData.why}\n\nHOW: ${workflowData.how}`,
+        description `WHO: ${workflowData.who}\n\nWHAT: ${workflowData.what}\n\nWHEN: ${workflowData.when}\n\nWHERE: ${workflowData.where}\n\nWHY: ${workflowData.why}\n\nHOW: ${workflowData.how}`,
         category: workflowData.category,
         priority: workflowData.priority,
         status: 'open',
@@ -336,7 +336,7 @@
   </div>
   <!-- RAG Ingestion Progress -->
   {#if isIngesting}
-    <div class="rag-progress" transition:fly={{ y: -20, duration: 300 }}>
+    <div class="rag-progress" transitionfly={{ y: -20, duration 300 }}>
       <div class="progress-header">
         <span>🧠 RAG Analysis</span>
         <span>{ingestionProgress}%</span>
@@ -348,7 +348,7 @@
   {/if}
   <!-- RAG Context -->
   {#if ragContext.length > 0}
-    <div class="rag-context" transition:scale={{ duration: 300 }}>
+    <div class="rag-context" transitionscale={{ duration 300 }}>
       <h4>📚 Found Legal Context</h4>
       {#each ragContext as context (context.title)}
         <div class="context-item">
@@ -362,7 +362,7 @@
   <!-- Chat Messages -->
   <div class="chat-container" bind:this={chatContainer}>
     {#each messages as message (message.id)}
-      <div class="message message-{message.type}" transition:fly={{ y: 20, duration: 300 }}>
+      <div class="message message-{message.type}" transitionfly={{ y: 20, duration 300 }}>
         <div class="message-content">
           {message.content}
         </div>
@@ -372,7 +372,7 @@
       </div>
     {/each}
     {#if isTyping}
-      <div class="message message-assistant typing-indicator" transition:fade>
+      <div class="message message-assistant typing-indicator" transitionfade>
         <div class="typing-dots">
           <span></span>
           <span></span>
@@ -383,7 +383,7 @@
   </div>
   <!-- Workflow Interface -->
   {#if workflowActive && currentStep < workflowSteps.length}
-    <div class="workflow-interface" transition:fly={{ y: 20, duration: 400 }}>
+    <div class="workflow-interface" transitionfly={{ y: 20, duration 400 }}>
       <div class="workflow-header">
         <span class="workflow-icon">{workflowSteps[currentStep].icon}</span>
         <span class="workflow-title">{workflowSteps[currentStep].key.toUpperCase()}</span>
@@ -398,7 +398,7 @@
       <div class="workflow-actions">
         <button
           class="workflow-btn primary"
-          on:click={e => {
+          onclick={e => {
             const wrapper = (e.currentTarget as HTMLElement).closest('.workflow-interface');
             const textarea = wrapper?.querySelector('.workflow-input') as HTMLTextAreaElement | null;
             handleQuickAnswerFromText(textarea);
@@ -427,13 +427,13 @@
             }
           }}
         ></textarea>
-        <button class="send-button" on:click={handleChatMessage} disabled={!currentMessage.trim() || isProcessing}>
+        <button class="send-button" onclick={handleChatMessage} disabled={!currentMessage.trim() || isProcessing}>
           🚀
         </button>
       </div>
       <div class="quick-actions">
-        <button class="quick-btn" on:click={startWorkflow}> 📋 Start Case Workflow </button>
-        <button class="quick-btn" on:click={handleChatMessage}> 🔍 Analyze Evidence </button>
+        <button class="quick-btn" onclick={startWorkflow}> 📋 Start Case Workflow </button>
+        <button class="quick-btn" onclick={handleChatMessage}> 🔍 Analyze Evidence </button>
       </div>
     </div>
   {/if}
@@ -464,7 +464,7 @@
     box-shadow: 0 6px 30px rgba(16, 24, 40, 0.06);
     overflow: hidden;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 12px;
     padding: 16px;
   }
@@ -483,12 +483,12 @@
     height: 56px;
     border-radius: 10px;
     background: linear-gradient(135deg, #f6f9ff, #eef7ff);
-    position: relative;
+    position relative;
     flex-shrink: 0,
-    transition: transform 200ms ease;
+    transition transform 200ms ease;
   }
   .assistant-avatar.pulsing {
-    animation: pulse 1.6s infinite;
+    animation pulse 1.6s infinite;
   }
   @keyframes pulse {
     0% {
@@ -505,7 +505,7 @@
     font-size: 22px;
   }
   .status-dot {
-    position: absolute;
+    position absolute;
     right: -2px;
     bottom: -2px;
     width: 12px;
@@ -514,7 +514,7 @@
     background: #cbd5e1;
     border: 2px solid #fff;
     box-shadow: 0 1px 3px rgba(2, 6, 23, 0.08);
-    transition: background 150ms ease;
+    transition background 150ms ease;
   }
   .status-dot.active {
     background: #34d399; /* green */
@@ -555,7 +555,7 @@
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #60a5fa, #7c3aed);
-    transition: width 280ms ease;
+    transition width 280ms ease;
   }
   /* RAG context */
   .rag-context {
@@ -605,7 +605,7 @@
     overflow-y: auto;
     padding: 12px;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 10px;
   }
   .message {
@@ -614,7 +614,7 @@
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(2, 6, 23, 0.04);
     display: inline-block;
-    position: relative;
+    position relative;
     word-break: break-word;
   }
   .message-user {
@@ -665,7 +665,7 @@
     background: #94a3b8;
     border-radius: 50%;
     opacity: 0.8,
-    animation: blink 1s infinite;
+    animation blink 1s infinite;
   }
   .typing-dots span:nth-child(2) {
     animation-delay: 0.12s;
@@ -692,7 +692,7 @@
     border-top: 1px dashed rgba(16, 24, 40, 0.04);
     padding-top: 12px;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 10px;
   }
   .workflow-header {
@@ -747,7 +747,7 @@
     border-top: 1px dashed rgba(16, 24, 40, 0.04);
     padding-top: 10px;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 8px;
   }
   .input-wrapper {
@@ -776,7 +776,7 @@
     display: inline-grid;
     place-items: center;
   }
-  .send-button:disabled {
+  .send-buttondisabled {
     opacity: 0.5,
     cursor: not-allowed;
   }

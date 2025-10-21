@@ -142,7 +142,7 @@ https://svelte.dev/e/js_parse_error -->
       class:border-blue-500={dragover}
       class:bg-blue-50={dragover}
       class:border-gray-300={!dragover}
-      on:dragover|preventDefault={() => (dragover = true)}
+      ondragover|preventDefault={() => (dragover = true)}
       ondragleave={() => (dragover = false)}
       ondrop={handleDrop}
       role="button"
@@ -160,12 +160,12 @@ https://svelte.dev/e/js_parse_error -->
         onchange={handleFileSelect}
         class="hidden"
       />
-      <Button class="bits-btn mt-2" variant="ghost" on:click={() => fileInput?.click()}>Select File</Button>
+      <Button class="bits-btn mt-2" variant="ghost" onclick={() => fileInput?.click()}>Select File</Button>
     </div>
   {/if}
   <!-- Selected File Info -->
   {#if selectedFile && !processing && !completed}
-    <div class="file-info bg-gray-50 p-4 rounded-lg mb-6" transition:fade>
+    <div class="file-info bg-gray-50 p-4 rounded-lg mb-6" transitionfade>
       <div class="flex items-center justify-between">
         <div>
           <p class="font-medium text-gray-900">{selectedFile.name}</p>
@@ -175,8 +175,8 @@ https://svelte.dev/e/js_parse_error -->
           <p class="text-sm text-blue-600 mt-1">Evidence ID: {evidenceId}</p>
         </div>
         <div class="flex gap-2">
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={handleReset}>Change File</Button>
-          <Button on:click={startProcessing} class="bg-blue-600 hover:bg-blue-700 bits-btn">Process Evidence</Button>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>Change File</Button>
+          <Button onclick={startProcessing} class="bg-blue-600 hover:bg-blue-700 bits-btn">Process Evidence</Button>
         </div>
       </div>
     </div>
@@ -220,7 +220,7 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
   <!-- Completion Status -->
   {#if completed}
-    <div class="completion-status bg-green-50 p-4 rounded-lg" transition:fade>
+    <div class="completion-status bg-green-50 p-4 rounded-lg" transitionfade>
       <div class="flex items-center gap-3 mb-3">
         <CheckCircle class="w-6 h-6 text-green-600" />
         <div>
@@ -230,10 +230,10 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       {#if artifactUrl}
         <div class="flex gap-2 mt-4">
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={() => window.open(artifactUrl, '_blank')}>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => window.open(artifactUrl, '_blank')}>
             Download Artifact
           </Button>
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={handleReset}>Process Another</Button>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>Process Another</Button>
         </div>
       {/if}
     </div>
@@ -245,8 +245,8 @@ https://svelte.dev/e/js_parse_error -->
       <AlertDescription>
         <div class="mb-2">{error}</div>
         <div class="flex gap-2">
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={handleRetry}>Retry</Button>
-          <Button class="bits-btn" variant="ghost" size="sm" on:click={handleReset}>Reset</Button>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleRetry}>Retry</Button>
+          <Button class="bits-btn" variant="ghost" size="sm" onclick={handleReset}>Reset</Button>
         </div>
       </AlertDescription>
     </Alert>
@@ -256,7 +256,7 @@ https://svelte.dev/e/js_parse_error -->
 <style>
   .drop-zone {
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .drop-zone:hover {
     border-color: #3b82f6;
@@ -269,7 +269,7 @@ https://svelte.dev/e/js_parse_error -->
     background-color: #f9fafb;
   }
   .completion-status {
-    animation: slideInUp 0.3s ease-out;
+    animation slideInUp 0.3s ease-out;
   }
   @keyframes slideInUp {
     from {

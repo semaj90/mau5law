@@ -56,7 +56,7 @@
 
 <style>
   .control-wrapper {
-    position: relative;
+    position relative;
   }
   .default-input {
     width: 100%;
@@ -64,7 +64,7 @@
     border: 1px solid rgb(209, 213, 219);
     border-radius: 0.375rem;
     font-size: 0.875rem;
-transition: {}
+transition {}
 border-color 0.15s ease-in-out, {}
       box-shadow 0.15s ease-in-out;
   }
@@ -83,7 +83,7 @@ border-color 0.15s ease-in-out, {}
   }
   .error-messages {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
   }
   .error-message {

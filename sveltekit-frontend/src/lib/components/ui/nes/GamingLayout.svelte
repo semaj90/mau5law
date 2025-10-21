@@ -39,12 +39,12 @@
   			accuracyScore: 94.2
   		},
   		navigation = [
-  			{ label: 'Dashboard', href: '/', icon: '🏠' },
-  			{ label: 'Cases', href: '/cases', icon: '📁' },
-  			{ label: 'Evidence', href: '/evidence', icon: '📋' },
-  			{ label: 'Documents', href: '/documents', icon: '📄' },
-  			{ label: 'Analysis', href: '/analysis', icon: '🔍' },
-  			{ label: 'Reports', href: '/reports', icon: '📊' },
+  			{ label: 'Dashboard', href: '/', icon '🏠' },
+  			{ label: 'Cases', href: '/cases', icon '📁' },
+  			{ label: 'Evidence', href: '/evidence', icon '📋' },
+  			{ label: 'Documents', href: '/documents', icon '📄' },
+  			{ label: 'Analysis', href: '/analysis', icon '🔍' },
+  			{ label: 'Reports', href: '/reports', icon '📊' },
   		],
   		children
   	} = $props();
@@ -87,7 +87,7 @@
         </div>
         <button
           class="collapse-button"
-          on:click={toggleSidebar}
+          onclick={toggleSidebar}
           aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {sidebarCollapsed ? '▶' : '◀'}
@@ -140,20 +140,20 @@
 
 <style>
 	.gaming-layout {
-position: relative;
+position relative;
 min-height: 100vh;
 		font-family: var(--gaming-font-secondary);
 	}
 	.main-container {
 display: flex;
 min-height: 100vh;
-		transition: padding-top 0.3s ease;
+		transition padding-top 0.3s ease;
 	}
 	.main-container.hud-offset {
 		padding-top: 120px; /* Adjust based on HUD height */
 	}
 /* YoRHa Terminal Sidebar */ .sidebar {
-position: fixed;
+position fixed;
 left: 0,
 		top: 0;
 		bottom: 0,
@@ -161,7 +161,7 @@ left: 0,
 		background: var(--yorha-bg-secondary, #1a1a1a);
 		border-right: 3px solid var(--yorha-secondary, #ffd700);
 box-shadow: 3px 0 0 0 var(--yorha-secondary, #ffd700), 6px 0 20px rgba(0, 0, 0, 0.8);
-		transition: all 0.2s ease;
+		transition all 0.2s ease;
 		z-index: 900;
 overflow-y: auto }
 	.sidebar.collapsed {
@@ -215,10 +215,10 @@ display: flex; align-items: center; justify-content: center; width: 32px;
 		border: 2px solid var(--yorha-text-muted, #808080);
 		border-radius: 0,
 		color: var(--yorha-text-secondary, #b0b0b0);
-cursor: pointer; transition: all 0.2s ease;
+cursor: pointer; transition all 0.2s ease;
 		font-size: 12px;
 	}
-	.collapse-button:hover {
+	.collapse-buttonhover {
 		background: var(--yorha-secondary, #ffd700);
 		border-color: var(--yorha-secondary, #ffd700);
 		color: var(--yorha-bg-primary, #0a0a0a);
@@ -229,14 +229,14 @@ cursor: pointer; transition: all 0.2s ease;
 		padding: 20px 12px;
 	}
 	.nav-item {
-position: relative;
+position relative;
 e; display: flex; align-items: center; gap: 12px;
 		padding: 12px 16px;
 		margin-bottom: 8px;
 		color: var(--yorha-text-secondary, #b0b0b0);
-text-decoration: none; border-radius: 0,
+text-decoration none; border-radius: 0,
 		border: 2px solid transparent;
-		transition: all 0.2s ease;
+		transition all 0.2s ease;
 overflow: hidden;
 n; font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
 text-transform: uppercase;
@@ -263,7 +263,7 @@ text-align: center }
 		letter-spacing: 0.5px;
 white-space: nowrap }
 	.active-indicator {
-position: absolute;
+position absolute;
 right: 8px;
 		top: 50%;
 		transform: translateY(-50%);
@@ -280,7 +280,7 @@ box-shadow: 0 0 0 1px var(--yorha-bg-secondary, #1a1a1a), 0 0 8px rgba(255, 215,
 	}
 	.system-status {
 display: flex;
-flex-direction: column gap: 8px;
+flex-direction column gap: 8px;
 	}
 	.status-item {
 display: flex;
@@ -295,7 +295,7 @@ text-transform: uppercase;
 		width: 8px;
 		height: 8px;
 		border-radius: 0,
-		animation: pulse 2s infinite;
+		animation pulse 2s infinite;
 		border: 1px solid currentColor;
 	}
 	.status-dot.online {
@@ -307,7 +307,7 @@ box-shadow: 0 0 0 1px var(--yorha-bg-secondary, #1a1a1a), 0 0 8px rgba(0, 255, 6
 		flex: 1;
 		margin-left: 280px;
 		padding: 24px;
-		transition: margin-left 0.2s ease;
+		transition margin-left 0.2s ease;
 		background: var(--yorha-bg-primary, #0a0a0a);
 		min-height: 100vh;
 		border-left: 1px solid var(--yorha-text-muted, #808080);
@@ -316,14 +316,14 @@ box-shadow: 0 0 0 1px var(--yorha-bg-secondary, #1a1a1a), 0 0 8px rgba(0, 255, 6
 		margin-left: 80px;
 	}
 /* YoRHa Terminal Effects */ .scan-overlay {
-position: fixed;
+position fixed;
 top: 0,
 		left: 0;
 		right: 0,
 		height: 1px;
 		background: linear-gradient(90deg, transparent 0%, var(--yorha-secondary, #ffd700) 50%, transparent 100%);
 		opacity: 0.8,
-		animation: scan-horizontal 6s ease-in-out infinite;
+		animation scan-horizontal 6s ease-in-out infinite;
 pointer-events: none z-index: 1100,
 	}
 /* Animations */ @keyframes pulse {

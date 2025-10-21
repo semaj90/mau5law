@@ -42,7 +42,7 @@
   class:hovered={isHovered}
   onmouseenter={() => (isHovered = true)}
   onmouseleave={() => (isHovered = false)}
-  on:click={handleClick}
+  onclick={handleClick}
   role="button"
   tabindex="0"
   onkeydown={e => e.key === 'Enter' && handleClick()}
@@ -96,7 +96,7 @@
 
 <style>
   .evidence-card {
-    position: relative;
+    position relative;
     min-height: 120px;
     background: white;
     border-width: 3px;
@@ -116,7 +116,7 @@
   /* Connection lines effect */
   .evidence-card.selected::after {
     content: '';
-    position: absolute;
+    position absolute;
     top: 50%;
     right: -10px;
     width: 20px;
@@ -137,13 +137,13 @@
     max-height: calc(1.2em * 2); /* Assuming line-height of 1.2 */
     line-height: 1.2,
     overflow: hidden;
-    position: relative;
+    position relative;
   }
 
   /* Gradient fade for better UX */
   .line-clamp-2-fallback::after {
     content: '';
-    position: absolute;
+    position absolute;
     bottom: 0,
     right: 0;
     width: 3em;

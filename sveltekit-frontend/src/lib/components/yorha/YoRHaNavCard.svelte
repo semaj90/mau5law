@@ -7,9 +7,9 @@ https://svelte.dev/e/js_parse_error -->
 
   // export props with safe defaults and concrete constructor typing for icon
   export let title: string = '';
-  export let description: string = '';
+  export let description string = '';
   export let path: string = '';
-  export let icon: typeof SvelteComponent | null = null;
+  export let icon typeof SvelteComponent | null = null;
   export let ariaLabel: string = '';
 
   // ensure ariaLabel defaults to title if not provided
@@ -32,8 +32,8 @@ https://svelte.dev/e/js_parse_error -->
   role="button"
   tabindex="0"
   aria-label={ariaLabel}
-  on:click={handleNavigate}
-  on:keydown={handleKey}
+  onclick={handleNavigate}
+  onkeydown={handleKey}
   data-path={path}
 >
   <div class="yorha-nav-header">

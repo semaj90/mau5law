@@ -20,7 +20,7 @@
   .card-content-ssr {
     /* Ensure consistent spacing and layout in SSR context */
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     height: 100%;
     min-height: 200px;
     padding: 1rem;
@@ -54,7 +54,7 @@
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
     border-radius: 0.375rem;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   /* Loading state for SSR hydration */
   :global(.card-content-ssr.loading) {

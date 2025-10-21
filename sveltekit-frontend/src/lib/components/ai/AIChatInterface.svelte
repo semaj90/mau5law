@@ -19,7 +19,7 @@ https://svelte.dev/e/attribute_invalid_name -->
   		streaming?: boolean;
   		error?: boolean;
   	}
-				<button type="button" class="close-btn" on:click={close} aria-label="Close chat">
+				<button type="button" class="close-btn" onclick={close} aria-label="Close chat">
 					<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
 						<path d="M6 6l12 12M6 18L18 6" />
 					</svg>
@@ -369,8 +369,8 @@ https://svelte.dev/e/attribute_invalid_name -->
 			top: {position.y}px;
 			transform: scale({isDragging ? 1.02 : 1});
 		"
-		in:scale={{ duration: 300, easing: elasticOut }}
-		out:scale={{ duration: 200 }}
+		in:scale={{ duration 300, easing: elasticOut }}
+		out:scale={{ duration 200 }}
 	>
 		<div class="absolute inset-0 overflow-hidden pointer-events-none">
 			{#each Array(5) as _, i}
@@ -379,7 +379,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 					style=";
 						left: {10 + (i * 20)}%;
 						animation-delay: {i * 0.8}
-						animation-duration: {6 + (i * 2)}
+						animation-duration {6 + (i * 2)}
 					"
 				></div>
 			{/each}
@@ -420,7 +420,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 				<button
 					type="button"
 					class="w-8 h-8 flex items-center justify-center border border-yorha-border text-yorha-text-secondary hover:border-yorha-primary hover:text-yorha-primary focus:border-yorha-primary focus:outline-none focus:ring-2 focus:ring-yorha-primary/50 transition-colors"
-					on:click={(_event: MouseEvent) => toggleSettings}
+					onclick={(_event: MouseEvent) => toggleSettings}
 					aria-label={settingsOpen ? 'Close settings' : 'Open settings'}
 					aria-expanded={settingsOpen}
 				>
@@ -432,7 +432,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 				<button
 					type="button"
 					class="w-8 h-8 flex items-center justify-center border border-yorha-border text-yorha-text-secondary hover:border-yorha-primary hover:text-yorha-primary focus:border-yorha-primary focus:outline-none focus:ring-2 focus:ring-yorha-primary/50 transition-colors"
-					on:click={(_event: MouseEvent) => minimizeWindow}
+					onclick={(_event: MouseEvent) => minimizeWindow}
 					aria-label={minimized ? 'Restore window' : 'Minimize window'}
 				>
 					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -446,7 +446,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 				<button
 					type="button"
 					class="w-8 h-8 flex items-center justify-center border border-yorha-border text-yorha-text-secondary hover:border-red-500 hover:text-red-500 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 transition-colors"
-					on:click={(_event: MouseEvent) => closeWindow}
+					onclick={(_event: MouseEvent) => closeWindow}
 					aria-label="Close chat window"
 				>
 					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -475,10 +475,10 @@ https://svelte.dev/e/attribute_invalid_name -->
 			<input aria-label="Input field" id="max-tokens" type="number" min="100" max="2048" bind:value={settings.maxTokens} class="w-full bg-yorha-bg-tertiary border border-yorha-border text-yorha-text-primary text-xs p-2 focus:border-yorha-primary">
 						</div>
 						<div class="flex space-x-2">
-							<button aria-label="Action button" type="button" on:click={(_event: MouseEvent) => updateSettings} class="flex-1 bg-yorha-primary text-yorha-bg-primary text-xs p-2 hover:bg-yorha-secondary transition-colors">
+							<button aria-label="Action button" type="button" onclick={(_event: MouseEvent) => updateSettings} class="flex-1 bg-yorha-primary text-yorha-bg-primary text-xs p-2 hover:bg-yorha-secondary transition-colors">
 								Apply
 							</button>
-							<button aria-label="Action button" type="button" on:click={(_event: MouseEvent) => clearChat} class="flex-1 bg-yorha-error text-white text-xs p-2 hover:bg-red-600 transition-colors">
+							<button aria-label="Action button" type="button" onclick={(_event: MouseEvent) => clearChat} class="flex-1 bg-yorha-error text-white text-xs p-2 hover:bg-red-600 transition-colors">
 								Clear
 							</button>
 						</div>
@@ -487,7 +487,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 			{/if}
 			<main bind:this={messagesContainer} class="flex-1 overflow-y-auto p-4 bg-yorha-bg-primary space-y-4" role="log" aria-live="polite" aria-label="Chat conversation">
 				{#each messages as message (message.id)}
-					<article class="flex" class:justify-end={message.role === 'user'} class:justify-start={message.role !== 'user'} in:fly={{ y: 20, duration: 300 }}>
+					<article class="flex" class:justify-end={message.role === 'user'} class:justify-start={message.role !== 'user'} in:fly={{ y: 20, duration 300 }}>
 						<div
 							class="max-w-[85%] border border-yorha-border p-3 relative shadow-sm"
 						 class:bg-yorha-bg-tertiary={message.role === 'user'}
@@ -504,7 +504,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 							</div>
 							{#if message.error}
 								<div class="mt-2 text-xs text-red-400" role="alert">
-									Failed to get response. <button type="button" on:click={(_event: MouseEvent) => sendMessage} class="underline hover:no-underline focus:outline-none focus:ring-2 focus:ring-red-400/50" aria-label="Retry sending message">Retry</button>
+									Failed to get response. <button type="button" onclick={(_event: MouseEvent) => sendMessage} class="underline hover:no-underline focus:outline-none focus:ring-2 focus:ring-red-400/50" aria-label="Retry sending message">Retry</button>
 								</div>
 							{/if}
 							<time class="mt-2 text-xs text-yorha-text-muted" datetime={message.timestamp.toISOString()}>
@@ -601,9 +601,9 @@ https://svelte.dev/e/attribute_invalid_name -->
 		}
 	}
 	.animate-float {
-		animation: float linear infinite;
+		animation float linear infinite;
 	}
 	.animate-scan {
-		animation: scan 3s linear infinite;
+		animation scan 3s linear infinite;
 	}
 </style>

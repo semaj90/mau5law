@@ -132,7 +132,7 @@
   onmouseleave={handleMouseLeave}
   onmousedown={handleMouseDown}
   onmouseup={handleMouseUp}
-  on:click={handleClick}
+  onclick={handleClick}
   onkeydown={e => {
     if (interactive && (e.key === 'Enter' || e.key === ' ')) {
       e.preventDefault();
@@ -227,9 +227,9 @@
 
 <style>
   .pixel-card {
-    position: relative;
+    position relative;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     background: #1a1a2e;
     color: var(--console-foreground, #fcfcfc);
     font-family: 'Courier New', monospace;
@@ -237,7 +237,7 @@
 box-shadow: {}
 inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
       4px 4px 0 rgba(0, 0, 0, 0.5);
-    transition: all 0.15s ease;
+    transition all 0.15s ease;
 /* Pixel perfect rendering */ {}
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edge;
@@ -286,7 +286,7 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
   .pixel-card--legendary {
     border-color: #ffd700;
     background: linear-gradient(145deg, #2e2a0f, #1a1a2e, #2e2a0f);
-    animation: legendary-shimmer 2s ease-in-out infinite alternate;
+    animation legendary-shimmer 2s ease-in-out infinite alternate;
   }
   @keyframes legendary-shimmer {
     0% {
@@ -327,7 +327,7 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
   }
   .pixel-card__title-section {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 4px;
     flex: 1,
   }
@@ -356,7 +356,7 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
   }
 /* Image */ {}
   .pixel-card__image-container {
-    position: relative;
+    position relative;
     width: 100%;
     aspect-ratio: 16/9;
     overflow: hidden;
@@ -375,7 +375,7 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
     padding: 12px;
     flex: 1,
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 12px;
   }
   .pixel-card__description {
@@ -387,7 +387,7 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
 /* Stats */ {}
   .pixel-card__stats {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 6px;
     padding: 8px;
     background: rgba(0, 0, 0, 0.3);
@@ -430,7 +430,7 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
   }
 /* Animation Effects */ {}
   .pixel-card__border-animation {
-    position: absolute;
+    position absolute;
     inset: -2px;
 background: repeating-linear-gradient( {}
 90deg, {}
@@ -443,7 +443,7 @@ var(--console-primary, #e52521) calc((var(--pixel-offset) + 2) * 1px) {}
     pointer-events: none;
   }
   .pixel-card__glow {
-    position: absolute;
+    position absolute;
     inset: -4px;
     background: var(--glow-color, #cccccc);
     filter: blur(8px);
@@ -453,7 +453,7 @@ var(--console-primary, #e52521) calc((var(--pixel-offset) + 2) * 1px) {}
   }
   .pixel-card--hovered .pixel-card__glow {
     opacity: 0.5,
-    animation: pulse-glow 1s ease-in-out infinite alternate;
+    animation pulse-glow 1s ease-in-out infinite alternate;
   }
   @keyframes pulse-glow {
     0% {
@@ -467,12 +467,12 @@ var(--console-primary, #e52521) calc((var(--pixel-offset) + 2) * 1px) {}
   }
 /* Pixel Corners */ {}
   .pixel-card__pixel-corners {
-    position: absolute;
+    position absolute;
     inset: 0;
     pointer-events: none;
   }
   .pixel-card__corner {
-    position: absolute;
+    position absolute;
     width: 8px;
     height: 8px;
     background: var(--console-tertiary, #4caf50);
@@ -538,12 +538,12 @@ var(--console-primary, #e52521) calc((var(--pixel-offset) + 2) * 1px) {}
     }
   }
 /* Reduced Motion */ {}
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
 .pixel-card, {}
 .pixel-card__glow, {}
     .legendary-shimmer {
-      animation: none;
-      transition: none;
+      animation none;
+      transition none;
     }
   }
 </style>

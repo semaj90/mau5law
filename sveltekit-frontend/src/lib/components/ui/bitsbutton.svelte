@@ -2,6 +2,7 @@
   // Svelte 5 runes are auto-imported
   import { cva, type VariantProps } from 'class-variance-authority';
   import { cn } from '$lib/utils';
+  import { createEventDispatcher } from 'svelte';
   import { browser } from '$app/environment';
   import { userAnalyticsStore  } from '$lib/stores/unified';
   import { lokiButtonCache } from '$lib/services/loki-cache';
@@ -27,11 +28,11 @@
   					yorha: 'yorha-3d-button bg-black/80 text-yellow-400 border-2 border-yellow-400',
   					neural: 'neural-sprite-active bg-gradient-to-r from-purple-600 to-blue-600 text-white border-2 border-purple-400',
   				},
-  				size: {
+  					size: {
   					default: 'h-10 px-4 py-2',
   					sm: 'h-9 rounded-md px-3',
   					lg: 'h-11 rounded-md px-8',
-  					icon: 'h-8 w-8',
+  					icon 'h-8 w-8',
   					icon_sm: 'h-6 w-6',
   					icon_lg: 'h-12 w-12',
   					xs: 'h-8 rounded px-2 text-xs',
@@ -50,9 +51,9 @@
 	interface BitsButtonProps {
 		children?: unknown;
 		variant?: ButtonVariant;
-		size?: ButtonSiz;
+		size?: ButtonSize;
 		disabled?: boolean;
-		type?: ButtonTyp;
+		type?: ButtonType;
 		href?: string;
 		target?: string;
 		loading?: boolean;
@@ -84,7 +85,7 @@
 		onclick = undefined,
 		id = (typeof globalThis !== 'undefined' && (globalThis.crypto as any)?.randomUUID)
 			? (globalThis.crypto as any).randomUUID()
-			: `bits-btn-${Math.random.toString-slice(2, 9)}`,
+			: `bits-btn-${Math.random().toString(36).slice(2, 9)}`,
 		analyticsCategory = 'ui',
 		analyticsAction = 'click',
 		analyticsLabel = '',
@@ -99,12 +100,11 @@
 		// import { Button as BitsButton } from 'bits-ui'
 		// and replace the <button>/<a> markup below, keeping handleClick + analytics.
 		// Updated to avoid deprecated typed signature of createEventDispatcher
-		const _dispatch = createEventDispatcher();
-		type Dispatch = <T extends 'click' | 'analytics' | 'cache'>(
-			type: T;
-			detail: T extends 'cache' ? { key: string; action: string } : ButtonAnalyticsEvent
-		) => void;
-		const dispatch = _dispatch as Dispatch;
+		const dispatch = createEventDispatcher<{
+			click: MouseEvent;
+			analytics: ButtonAnalyticsEvent;
+			cache: { key: string; action string };
+		}>();
 		// Derived state (Svelte 5 rune style)
 		let isDisabled = $derived(disabled || loading);
 		let buttonClass = $derived(cn(buttonVariants({ variant, size }), className));
@@ -115,27 +115,27 @@
 		}
 		const analyticsEvent: ButtonAnalyticsEvent = {
 			id,
-			category: analyticsCategory
-			action: analyticsAction
-			label: analyticsLabel || (event.currentTarget as HTMLElement)?.textContent || '',
+			category: analyticsCategory,
+			action analyticsAction,
+			label: analyticsLabel || ((_event.currentTarget as HTMLElement)?.textContent || ''),
 			timestamp: Date.now(),
-			context: xstateContext;
+			context: xstateContext,
 			variant: (variant ?? 'default') as string,
-			size: (size ?? 'default') as string;
-		}
+			size: (size ?? 'default') as string,
+		};
 		if (browser) {
 			userAnalyticsStore.trackButtonClick(analyticsEvent);
-			ondispatch?.(analyticsEvent);
+			dispatch('analytics', analyticsEvent);
 			if (cacheKey) {
 				lokiButtonCache.recordInteraction(cacheKey, analyticsEvent);
-				ondispatch?.({ key: cacheKey, action: 'click' });
+				dispatch('cache', { key: cacheKey, action 'click' });
 			}
 			if (searchKeywords.length > 0) {
 				searchableButtonIndex.addButton({ id, keywords: searchKeywords });
 			}
 		}
-		ondispatch?.(analyticsEvent);
-		if (onclick) onclick(event);
+		if (onclick) onclick(_event);
+		dispatch('click', _event);
 	}
 </script>
 
@@ -149,7 +149,7 @@
     tabindex="0"
     aria-disabled={isDisabled}
     data-testid={dataTestid || 'bits-button'}
-    on:click={handleClick}
+    onclick={handleClick}
   >
     {#if loading}
       <svg
@@ -178,7 +178,7 @@
     disabled={isDisabled}
     class={buttonClass}
     data-testid={dataTestid || 'bits-button'}
-    on:click={handleClick}
+    onclick={handleClick}
   >
     {#if loading}
       <svg

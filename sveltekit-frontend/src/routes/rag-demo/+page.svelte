@@ -19,7 +19,7 @@
 </script>
 
 <input bind:value={query} placeholder="Ask the RAG system..." />
-<button on:click={searchDocs}>Search</button>
+<button onclick={searchDocs}>Search</button>
 
 <ul>
   {#each results as r}

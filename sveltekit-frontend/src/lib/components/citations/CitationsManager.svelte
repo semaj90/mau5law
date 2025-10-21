@@ -216,7 +216,7 @@ await loadCitations();
 			caseId: caseId
 		};
 		try {
-			console.log('💾 Saving citation:', citation.title);
+			console.log('💾 Saving citation', citation.title);
 			// Save to server (stubbed)
 			const response = await fetch('/api/legal/citations', {
 				method: 'POST',
@@ -233,13 +233,13 @@ await loadCitations();
 				console.warn('Save returned non-OK response', response.status);
 			}
 		} catch (error) {
-			console.error('❌ Failed to save citation:', error);
-	function viewCitationDetails(citation: any) {
+			console.error('❌ Failed to save citation', error);
+	function viewCitationDetails(citation any) {
 		selectedCitation = citation;
 		showDetailModal = true;
 	}
   	}
-  	function viewCitationDetails(citation: any) {
+  	function viewCitationDetails(citation any) {
   		selectedCitation = citatio;
   		showDetailModal = true;
 	async function deleteCitation(citationId: string) {
@@ -259,15 +259,15 @@ await loadCitations();
 				console.warn('Delete returned non-OK response', response.status);
 			}
 		} catch (error) {
-			console.error('❌ Failed to delete citation:', error);
+			console.error('❌ Failed to delete citation', error);
 		}
 	}
   			}
   		} catch (error) {
-  			console.error('❌ Failed to delete citation:', error);
+  			console.error('❌ Failed to delete citation', error);
   		}
   	}
-  	function formatCitation(citation: any): string {
+  	function formatCitation(citation any): string {
   		// Generate proper legal citation format
   		switch (citation.category) {
   			case 'cases':
@@ -276,7 +276,7 @@ await loadCitations();
 	async function exportCitations() {
 		console.log('📄 Exporting citations...');
 		const exportData = filteredCitations.map(citation => ({
-			formattedCitation: formatCitation(citation),
+			formattedCitation formatCitation(citation),
 			...citation
 		}));
 		// Create downloadable file
@@ -319,7 +319,7 @@ await loadCitations();
 							class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-add-btn"
 							variant="ghost"
 							size="sm"
-							on:click={showAddCitationForm}
+							onclick={showAddCitationForm}
 							aria-label="Open dialog to add a new legal citation"
 							aria-describedby="add-citation-help"
 							role="button"
@@ -338,7 +338,7 @@ await loadCitations();
 						class="enhanced-bits-btn nes-citation-control n64-enhanced lod-optimized retro-export-btn"
 						variant="ghost"
 						size="sm"
-						on:click={exportCitations}
+						onclick={exportCitations}
 						aria-label="Export citations to downloadable file"
 						aria-describedby="export-help"
 						role="button"
@@ -378,7 +378,7 @@ await loadCitations();
 						class="enhanced-bits-btn nes-citation-sort n64-enhanced lod-optimized retro-sort-btn"
 						variant={sortBy === 'date' ? 'default' : 'outline'}
 						size="sm"
-						on:click={() =>
+						onclick={() =>
 changeSortBy('date')}
 						aria-label={sortBy === 'date' ? 'Currently sorting by date' : 'Sort citations by date added'}
 						aria-describedby="sort-date-help"
@@ -398,7 +398,7 @@ changeSortBy('date')}
 						class="enhanced-bits-btn nes-citation-sort n64-enhanced lod-optimized retro-sort-btn"
 						variant={sortBy === 'title' ? 'default' : 'outline'}
 						size="sm"
-						on:click={() =>
+						onclick={() =>
 changeSortBy('title')}
 						aria-label={sortBy === 'title' ? 'Currently sorting by title' : 'Sort citations alphabetically by title'}
 						aria-describedby="sort-title-help"
@@ -418,7 +418,7 @@ changeSortBy('title')}
 						class="enhanced-bits-btn nes-citation-sort n64-enhanced lod-optimized retro-sort-btn"
 						variant={sortBy === 'relevance' ? 'default' : 'outline'}
 						size="sm"
-						on:click={() =>
+						onclick={() =>
 changeSortBy('relevance')}
 						aria-label={sortBy === 'relevance' ? 'Currently sorting by relevance score' : 'Sort citations by relevance score'}
 						aria-describedby="sort-relevance-help"
@@ -451,7 +451,7 @@ changeSortBy('relevance')}
 						class="w-full flex justify-between items-center p-2 rounded text-sm hover: bg-muted transition-colors";
 						class:bg-primary={selectedCategory === category.id}
 						class:text-primary-foreground={selectedCategory === category.id}
-						on:click={() => selectCategory(category.id)}
+						onclick={() => selectCategory(category.id)}
 					>
 						<span>{category.label}</span>
 						<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{category.count}</span>
@@ -526,7 +526,7 @@ changeSortBy('relevance')}
 									<button class="nes-btn"
 										variant="ghost"
 										size="sm"
-										on:click={() => viewCitationDetails(citation)}
+										onclick={() => viewCitationDetails(citation)}
 										class="h-8 w-8 p-0"
 									>
 										<Eye class="w-4 h-4" />
@@ -536,7 +536,7 @@ changeSortBy('relevance')}
 											class="enhanced-bits-btn nes-citation-action n64-enhanced lod-optimized retro-external-btn h-8 w-8 p-0"
 											variant="ghost"
 											size="sm"
-											on:click={() =>
+											onclick={() =>
 window.open(citation.url, '_blank')}
 											aria-label="Open citation source in new tab"
 											aria-describedby={`external-${citation.id}-help`}
@@ -553,7 +553,7 @@ window.open(citation.url, '_blank')}
 											class="enhanced-bits-btn nes-citation-action n64-enhanced lod-optimized retro-delete-btn danger-variant h-8 w-8 p-0 text-destructive hover:text-destructive"
 											variant="ghost"
 											size="sm"
-											on:click={() =>
+											onclick={() =>
 deleteCitation(citation.id)}
 											aria-label="Delete this citation permanently"
 											aria-describedby={`delete-${citation.id}-help`}
@@ -578,7 +578,7 @@ deleteCitation(citation.id)}
 <!-- Add Citation Modal -->
 {#if showAddForm}
 	<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50" role="button" tabindex="0"
-                on:click={(e) => { if (e.target === e.currentTarget) hideAddCitationForm(), }}>
+                onclick={(e) => { if (e.target === e.currentTarget) hideAddCitationForm(), }}>
 		<div class="w-full max-w-2xl max-h-[90vh] overflow-y-auto nes-container">
 			<div class="yorha-panel-header">
 				<h3 class="nes-text is-primary">Add New Citation</h3>
@@ -633,7 +633,7 @@ deleteCitation(citation.id)}
 					<Button
 						class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-cancel-btn"
 						variant="ghost"
-						on:click={hideAddCitationForm}
+						onclick={hideAddCitationForm}
 						aria-label="Cancel adding citation and close dialog"
 						role="button"
 						data-nes-theme="dialog-secondary"
@@ -643,7 +643,7 @@ Cancel
 </Button>
 					<Button
 						class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-save-btn"
-						on:click={saveCitation}
+						onclick={saveCitation}
 						aria-label="Save new citation to collection"
 						aria-describedby="save-citation-help"
 						role="button"
@@ -713,7 +713,7 @@ Save Citation
 							<Button
 								class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-external-btn"
 								variant="ghost"
-								on:click={() =>
+								onclick={() =>
 window.open(selectedCitation.url, '_blank')}
 								aria-label="Open citation source link in new tab"
 								role="button"
@@ -727,7 +727,7 @@ window.open(selectedCitation.url, '_blank')}
 						{/if}
 						<Button
 							class="enhanced-bits-btn nes-dialog-control n64-enhanced lod-optimized retro-close-btn"
-							on:click={hideDetailModal}
+							onclick={hideDetailModal}
 							aria-label="Close citation details dialog"
 							role="button"
 							data-nes-theme="dialog-primary"

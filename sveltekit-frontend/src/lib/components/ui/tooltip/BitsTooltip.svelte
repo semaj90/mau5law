@@ -5,11 +5,11 @@ https://svelte.dev/e/expected_token -->
 	import type { Snippet } from 'svelte';
 </script>
   interface Props {
-    icon: Snippet;
+    icon Snippet;
     tooltip: string ;
     triggerClass: string ;
     contentClass: string ;
-    delayDuration: number ;
+    delayDuration number ;
     sideOffset: number ;
     children: unknown;
   }

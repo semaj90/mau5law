@@ -269,7 +269,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({,
-          operation: 'analyze',
+          operation 'analyze',
           documentId: evidenceFile.id,
           data: Array.from(tensorData),
           options: { timeout: 15000 }
@@ -386,18 +386,18 @@
         onchange={handleFileSelect}
         style="display: none"
       />
-      <button class="browse-button" on:click={() => document.getElementById('file-input')?.click()}>
+      <button class="browse-button" onclick={() => document.getElementById('file-input')?.click()}>
         📁 Browse Files
       </button>
     </div>
   </div>
   <!-- Processing Stats -->
   {#if files.length > 0}
-    <div class="processing-stats" in:fade={{ duration: 300 }}>
+    <div class="processing-stats" in:fade={{ duration 300 }}>
       <div class="stats-header">
         <h4>📊 Processing Statistics</h4>
         {#if files.length > 1}
-          <button class="clear-button" on:click={clearAll}> 🗑️ Clear All </button>
+          <button class="clear-button" onclick={clearAll}> 🗑️ Clear All </button>
         {/if}
       </div>
       <div class="stats-grid">
@@ -428,10 +428,10 @@
   {/if}
   <!-- File List -->
   {#if files.length > 0}
-    <div class="file-list" in:fade={{ duration: 300 }}>
+    <div class="file-list" in:fade={{ duration 300 }}>
       <h4>📂 Evidence Files ({files.length})</h4>
       {#each files as file (file.id)}
-        <div class="file-item" in:fly={{ x: -20, duration: 300 }} out:scale={{ duration: 200 }}>
+        <div class="file-item" in:fly={{ x: -20, duration 300 }} out:scale={{ duration 200 }}>
           <div class="file-info">
             <div class="file-header">
               <span class="file-icon">{getStatusIcon(file.status)}</span>
@@ -444,7 +444,7 @@
                   {/if}
                 </div>
               </div>
-              <button class="remove-button" on:click={() => removeFile(file.id)}> ❌ </button>
+              <button class="remove-button" onclick={() => removeFile(file.id)}> ❌ </button>
             </div>
             {#if file.progress > 0 && file.status !== 'completed'}
               <div class="progress-bar">
@@ -503,7 +503,7 @@
     padding: 3rem 2rem;
     text-align: center;
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
     cursor: pointer;
     margin-bottom: 2rem;
   }
@@ -570,13 +570,13 @@
     border-radius: 8px;
     font-size: 1rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
     display: flex;
     align-items: center;
     gap: 0.5rem;
     margin: 0 auto;
   }
-  .browse-button:hover {
+  .browse-buttonhover {
     background: #2563eb;
     transform: translateY(-1px);
   }
@@ -654,7 +654,7 @@
   }
   .file-item {
     border-bottom: 1px solid #e5e7eb;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .file-item:hover {
     background: #f9fafb;
@@ -696,9 +696,9 @@
     cursor: pointer;
     font-size: 1rem;
     opacity: 0.7,
-    transition: opacity 0.2s ease;
+    transition opacity 0.2s ease;
   }
-  .remove-button:hover {
+  .remove-buttonhover {
     opacity: 1,
   }
   .progress-bar {
@@ -711,7 +711,7 @@
   }
   .progress-fill {
     height: 100%;
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .file-status {
     margin: 0.5rem 0;
@@ -752,18 +752,18 @@
       padding: 2rem 1rem;
     }
     .upload-info {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
     }
     .stats-grid {
       grid-template-columns: repeat(2, 1fr);
     }
     .file-header {
-      flex-direction: column;
+      flex-direction column;
       gap: 0.5rem;
     }
     .file-tags {
-      flex-direction: column;
+      flex-direction column;
     }
   }
 </style>

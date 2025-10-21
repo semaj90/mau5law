@@ -64,7 +64,7 @@ https://svelte.dev/e/js_parse_error -->
       isInitialized = true;
       startPerformanceTracking();
     } catch (error) {
-      console.error('Failed to initialize real-time communication:', error);
+      console.error('Failed to initialize real-time communication', error);
     } finally {
       isInitializing = false;
     }
@@ -84,7 +84,7 @@ https://svelte.dev/e/js_parse_error -->
     });
     realtimeComm.onMessage('system_notification', (message) => {
       if (message.data.type !== 'heartbeat') {
-        console.log('System notification:', message);
+        console.log('System notification', message);
       }
     });
   }
@@ -232,7 +232,7 @@ https://svelte.dev/e/js_parse_error -->
     const colors = {
       ai_response: 'bg-blue-100 text-blue-800',
       document_analysis: 'bg-green-100 text-green-800',
-      system_notification: 'bg-gray-100 text-gray-800',
+      system_notification 'bg-gray-100 text-gray-800',
       user_activity: 'bg-purple-100 text-purple-800',
       rag_result: 'bg-yellow-100 text-yellow-800',
       gpu_compute: 'bg-red-100 text-red-800',
@@ -266,10 +266,10 @@ https://svelte.dev/e/js_parse_error -->
       <h3 class="nes-text is-primary flex items-center justify-between">
         <span>Connection Status</span>
         {#if !isInitialized}
-          <Button on:click={initializeConnection} disabled={isInitializing} class="px-4 py-2 bits-btn bits-btn">
+          <Button onclick={initializeConnection} disabled={isInitializing} class="px-4 py-2 bits-btn bits-btn">
 {isInitializing ? 'Initializing...' : 'Connect'}
         {:else}
-          <Button on:click={disconnect} class="px-4 py-2 bg-red-600 hover:bg-red-700 bits-btn bits-btn">
+          <Button onclick={disconnect} class="px-4 py-2 bg-red-600 hover:bg-red-700 bits-btn bits-btn">
 Disconnect
         {/if}
       </h3>
@@ -369,7 +369,7 @@ Disconnect
                 </select>
               </div>
             </div>
-            <Button on:click={sendTestMessage} class="w-full bits-btn bits-btn">
+            <Button onclick={sendTestMessage} class="w-full bits-btn bits-btn">
 Send Message
           </div>
         </div>
@@ -400,7 +400,7 @@ Send Message
                 <option value="semantic_analysis">Semantic Analysis</option>
               </select>
             </div>
-            <Button on:click={startStreamingRequest} class="w-full bits-btn bits-btn">
+            <Button onclick={startStreamingRequest} class="w-full bits-btn bits-btn">
 Start Stream
           </div>
         </div>
@@ -411,7 +411,7 @@ Start Stream
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center justify-between">
           <span>Performance Metrics</span>
-          <Button on:click={testPerformance} class="text-sm px-3 py-1 bits-btn bits-btn">
+          <Button onclick={testPerformance} class="text-sm px-3 py-1 bits-btn bits-btn">
 Run Performance Test
         </h3>
       </div>
@@ -545,7 +545,7 @@ Run Performance Test
   .connection-item,
   .message-item,
   .stream-item {
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .connection-item: hover
   .message-item: hover
@@ -567,7 +567,7 @@ Run Performance Test
     border-radius: 3px;
   }
   .metric-item {
-    transition: transform 0.2s ease;
+    transition transform 0.2s ease;
   }
   .metric-item:hover {
     transform: translateY(-2px);

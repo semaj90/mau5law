@@ -106,7 +106,7 @@
     {compact ? 'text-sm' : ''}
     {draggable ? 'cursor-grab active:cursor-grabbing' : ''}
     {isHovered ? 'scale-105 z-10 shadow-2xl' : ''}"
-  transition:scale={{ duration: 200, easing: quintOut }}
+  transitionscale={{ duration 200, easing: quintOut }}
   onmouseenter={handleMouseEnter}
   onmouseleave={handleMouseLeave}
   role="article"
@@ -141,7 +141,7 @@
       {:else if showCompare}
         <button
           class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100 hover:text-blue-600"
-          on:click={handleCompareClick}
+          onclick={handleCompareClick}
           title={comparing ? 'Analyzing…' : 'Analyze & compare'}
           aria-busy={comparing}
           disabled={comparing}

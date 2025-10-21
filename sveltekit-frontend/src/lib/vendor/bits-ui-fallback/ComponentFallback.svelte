@@ -69,7 +69,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     padding: 0.5rem 1rem;
     border-radius: 0.375rem;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   :global(.bits-ui-fallback[role="button"]:hover:not(.disabled)) {,
     opacity: 0.8;

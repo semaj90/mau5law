@@ -76,10 +76,10 @@ https://svelte.dev/e/js_parse_error -->
       }
       results = {
         semanticClusters: spatialPoints.length,
-        dimensionalityReduction: `${embeddingDimensions}D → 3D`,
+        dimensionalityReduction `${embeddingDimensions}D → 3D`,
         spatialAccuracy: 0.94,
         processingMethod: 'WebGPU + WebAssembly',
-        lodOptimization: `Level ${processingStats.lodLevel}`,
+        lodOptimization `Level ${processingStats.lodLevel}`,
         performance: {
           tokensPerSecond: Math.round(processingStats.tokensProcessed / (processingTime / 1000)),
           embeddingsPerSecond: Math.round(processingStats.embeddingsGenerated / (processingTime / 1000))
@@ -229,7 +229,7 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Process Button -->
         <div class="flex items-center gap-4">
           <button
-            on:click={processSemanticStructure}
+            onclick={processSemanticStructure}
             disabled={!inputText.trim() || processing}
             class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
@@ -272,7 +272,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         {#if spatialPoints.length > 0}
           <div class="mt-4 text-sm text-gray-600">
-            <p><strong>Interaction:</strong> Automatic rotation • 3D projection • LOD optimization</p>
+            <p><strong>Interaction</strong> Automatic rotation • 3D projection • LOD optimization</p>
             <p><strong>Nodes:</strong> {spatialPoints.length} semantic clusters in 3D space</p>
           </div>
         {/if}
@@ -348,7 +348,7 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 <style>
   .animate-spin {
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   @keyframes spin {
     from {

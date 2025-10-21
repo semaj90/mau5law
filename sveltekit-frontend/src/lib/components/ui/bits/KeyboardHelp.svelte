@@ -10,7 +10,7 @@
   interface KeyboardShortcut {
     id: string;
     keys: string[];
-    description: string;
+    description string;
     category: string;
     enabled?: boolean;
   }
@@ -44,48 +44,48 @@
   // Default legal shortcuts for display
   const defaultShortcuts: KeyboardShortcut[] = [
     // Case Management
-    { id: 'new-case', keys: ['ctrl', 'shift', 'c'], description: 'Create New Case', category: 'Case Management' },
-    { id: 'case-search', keys: ['ctrl', 'shift', 'f'], description: 'Search Cases', category: 'Case Management' },
-    { id: 'case-list', keys: ['ctrl', 'shift', 'l'], description: 'View All Cases', category: 'Case Management' },
+    { id: 'new-case', keys: ['ctrl', 'shift', 'c'], description 'Create New Case', category: 'Case Management' },
+    { id: 'case-search', keys: ['ctrl', 'shift', 'f'], description 'Search Cases', category: 'Case Management' },
+    { id: 'case-list', keys: ['ctrl', 'shift', 'l'], description 'View All Cases', category: 'Case Management' },
     // Evidence Management
-    { id: 'upload-evidence', keys: ['ctrl', 'u'], description: 'Upload Evidence', category: 'Evidence' },
+    { id: 'upload-evidence', keys: ['ctrl', 'u'], description 'Upload Evidence', category: 'Evidence' },
     {
       id: 'evidence-analysis',
       keys: ['ctrl', 'shift', 'a'],
-      description: 'AI Evidence Analysis',
+      description 'AI Evidence Analysis',
       category: 'Evidence',
     },
-    { id: 'evidence-search', keys: ['ctrl', 'e'], description: 'Search Evidence', category: 'Evidence' },
+    { id: 'evidence-search', keys: ['ctrl', 'e'], description 'Search Evidence', category: 'Evidence' },
     // AI Tools
-    { id: 'ai-assistant', keys: ['ctrl', 'shift', 'i'], description: 'Open AI Assistant', category: 'AI Tools' },
-    { id: 'legal-research', keys: ['ctrl', 'shift', 'r'], description: 'Legal Research', category: 'AI Tools' },
+    { id: 'ai-assistant', keys: ['ctrl', 'shift', 'i'], description 'Open AI Assistant', category: 'AI Tools' },
+    { id: 'legal-research', keys: ['ctrl', 'shift', 'r'], description 'Legal Research', category: 'AI Tools' },
     {
       id: 'document-drafting',
       keys: ['ctrl', 'shift', 'd'],
-      description: 'AI Document Drafting',
+      description 'AI Document Drafting',
       category: 'AI Tools',
     },
     // Documents
-    { id: 'new-document', keys: ['ctrl', 'n'], description: 'New Document', category: 'Documents' },
-    { id: 'save-document', keys: ['ctrl', 's'], description: 'Save Document', category: 'Documents' },
-    { id: 'document-review', keys: ['ctrl', 'r'], description: 'Document Review', category: 'Documents' },
+    { id: 'new-document', keys: ['ctrl', 'n'], description 'New Document', category: 'Documents' },
+    { id: 'save-document', keys: ['ctrl', 's'], description 'Save Document', category: 'Documents' },
+    { id: 'document-review', keys: ['ctrl', 'r'], description 'Document Review', category: 'Documents' },
     // Navigation
-    { id: 'dashboard', keys: ['ctrl', 'h'], description: 'Go to Dashboard', category: 'Navigation' },
-    { id: 'quick-search', keys: ['ctrl', 'k'], description: 'Quick Search', category: 'Navigation' },
-    { id: 'settings', keys: ['ctrl', ','], description: 'Open Settings', category: 'Navigation' },
+    { id: 'dashboard', keys: ['ctrl', 'h'], description 'Go to Dashboard', category: 'Navigation' },
+    { id: 'quick-search', keys: ['ctrl', 'k'], description 'Quick Search', category: 'Navigation' },
+    { id: 'settings', keys: ['ctrl', ','], description 'Open Settings', category: 'Navigation' },
     // Accessibility
     {
       id: 'accessibility-panel',
       keys: ['ctrl', 'alt', 'a'],
-      description: 'Accessibility Panel',
+      description 'Accessibility Panel',
       category: 'Accessibility',
     },
-    { id: 'screen-reader', keys: ['ctrl', 'alt', 's'], description: 'Screen Reader Mode', category: 'Accessibility' },
-    { id: 'high-contrast', keys: ['ctrl', 'alt', 'h'], description: 'High Contrast Mode', category: 'Accessibility' },
+    { id: 'screen-reader', keys: ['ctrl', 'alt', 's'], description 'Screen Reader Mode', category: 'Accessibility' },
+    { id: 'high-contrast', keys: ['ctrl', 'alt', 'h'], description 'High Contrast Mode', category: 'Accessibility' },
     // Help
-    { id: 'keyboard-help', keys: ['shift', '?'], description: 'Keyboard Shortcuts Help', category: 'Help' },
-    { id: 'documentation', keys: ['f1'], description: 'Open Documentation', category: 'Help' },
-    { id: 'support', keys: ['ctrl', 'shift', 'h'], description: 'Contact Support', category: 'Help' },
+    { id: 'keyboard-help', keys: ['shift', '?'], description 'Keyboard Shortcuts Help', category: 'Help' },
+    { id: 'documentation', keys: ['f1'], description 'Open Documentation', category: 'Help' },
+    { id: 'support', keys: ['ctrl', 'shift', 'h'], description 'Contact Support', category: 'Help' },
   ];
 
   // Reactive derived data using Svelte 5 runes
@@ -192,8 +192,8 @@
 {#if open}
   <div
     class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-    on:click={handleBackdropClick}
-    on:keydown={handleKeydown}
+    onclick={handleBackdropClick}
+    onkeydown={handleKeydown}
     role="dialog"
     aria-modal="true"
     aria-labelledby="keyboard-help-title"
@@ -207,7 +207,7 @@
           <h2 id="keyboard-help-title" class="text-2xl font-bold text-nier-text-primary">⌨️ Keyboard Shortcuts</h2>
           <p class="text-sm text-nier-text-secondary mt-1">Boost your productivity with these keyboard shortcuts</p>
         </div>
-        <button class="nes-btn" aria-label="Close keyboard shortcuts help" on:click={() => (open = false)}>
+        <button class="nes-btn" aria-label="Close keyboard shortcuts help" onclick={() => (open = false)}>
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>

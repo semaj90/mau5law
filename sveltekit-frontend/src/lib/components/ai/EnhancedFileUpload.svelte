@@ -385,7 +385,7 @@ connectStatusSocket();
           class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <button
-          on:click={handleSearch}
+          onclick={handleSearch}
           disabled={isSearching || !searchQuery.trim()}
           class="px-6 py-2 bg-blue-500 text-white rounded-lg disabled:opacity-50 hover:bg-blue-600 flex items-center gap-2"
         >
@@ -523,14 +523,14 @@ connectStatusSocket();
     padding: 2rem;
     text-align: center;
     cursor: pointer;
-    transition: border-color 0.2;
+    transition border-color 0.2;
   }
   .upload-area:hover {
     border-color: #60a5fa;
   }
   .upload-label {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     align-items: center;
     justify-content: center;
     cursor: pointer;
@@ -548,7 +548,7 @@ connectStatusSocket();
   }
   .result-item {
     cursor: pointer;
-    transition: background-color 0.15;
+    transition background-color 0.15;
   }
   .result-item:hover {
     background: #f9fafb;

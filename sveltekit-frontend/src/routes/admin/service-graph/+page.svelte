@@ -13,10 +13,10 @@
     label: string;
     type: string;
     port: number;
-    description: string;
+    description string;
     capabilities: string[];
     protocol: string | string[];
-    dependsOn: string[];
+    dependson string[];
     health?: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
     responseTime?: number;
     uptime?: number;
@@ -40,7 +40,7 @@
     core: 'bg-teal-500',
     gpu: 'bg-blue-500',
     cache: 'bg-yellow-500',
-    orchestration: 'bg-purple-500',
+    orchestration 'bg-purple-500',
     ai: 'bg-cyan-500',
     vector: 'bg-green-500',
     infrastructure: 'bg-indigo-500',
@@ -211,19 +211,19 @@
       <!-- Action Buttons -->
       <div class="flex gap-2 flex-wrap">
         <button
-          on:click={loadGraph}
+          onclick={loadGraph}
           class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded"
         >
           🔄 Refresh
         </button>
         <button
-          on:click={exportAsJSON}
+          onclick={exportAsJSON}
           class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded"
         >
           📥 Export JSON
         </button>
         <button
-          on:click={exportAsCSV}
+          onclick={exportAsCSV}
           class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded"
         >
           📥 Export CSV
@@ -241,7 +241,7 @@
         <div class="space-y-2">
           {#each getFilteredServices() as service (service.id)}
             <button
-              on:click={() => selectService(service)}
+              onclick={() => selectService(service)}
               class={`w-full text-left p-3 rounded border-2 transition ${
                 selectedService?.id === service.id
                   ? 'border-blue-500 bg-gray-700'
@@ -302,7 +302,7 @@
                   {/if}
                 </div>
                 <button
-                  on:click={() => selectedService && checkServiceHealth(selectedService.id)}
+                  onclick={() => selectedService && checkServiceHealth(selectedService.id)}
                   class="mt-2 px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs"
                 >
                   Check Now

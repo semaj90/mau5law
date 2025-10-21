@@ -24,7 +24,7 @@
   ]);
 
   // Results
-  let embeddingResult = $state<{ embedding: number[]; strategy: string; duration: number; model: string } | null>(null);
+  let embeddingResult = $state<{ embedding: number[]; strategy: string; duration number; model: string } | null>(null);
   let similarityResults = $state<Array<{ text: string; score: number; metadata?: any }>>([]);
   let isProcessing = $state(false);
   let error = $state<string | null>(null);
@@ -65,7 +65,7 @@
       embeddingResult = result;
       console.log('✅ Embedding generated:', {
         strategy: result.strategy,
-        duration: result.duration,
+        duration result.duration,
         dimensions: result.embedding.length
       });
     } catch (err) {
@@ -201,7 +201,7 @@
     <div class="flex gap-4">
       <button
         class="nes-btn is-primary"
-        on:click={generateEmbedding}
+        onclick={generateEmbedding}
         disabled={isProcessing || !isInitialized}
       >
         <Activity size={16} class="inline" />
@@ -210,7 +210,7 @@
 
       <button
         class="nes-btn is-success"
-        on:click={findSimilarDocuments}
+        onclick={findSimilarDocuments}
         disabled={isProcessing || !isInitialized}
       >
         <Zap size={16} class="inline" />

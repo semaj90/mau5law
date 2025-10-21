@@ -14,7 +14,7 @@ https://svelte.dev/e/js_parse_error -->
   // Performance metrics interface
   interface PerformanceMetrics {
     timestamp: number;
-    gpuUtilization: number;
+    gpuUtilization number;
     memoryUsage: number;
     neuralEfficiency: number;
     processingSpeed: number;
@@ -72,7 +72,7 @@ https://svelte.dev/e/js_parse_error -->
     const baseGpuUtilization = 70 + Math.sin(now / 10000) * 20;
     return {
       timestamp: now
-      gpuUtilization: Math.max(0, Math.min(100, baseGpuUtilization + (Math.random() - 0.5) * 10)),
+      gpuUtilization Math.max(0, Math.min(100, baseGpuUtilization + (Math.random() - 0.5) * 10)),
       memoryUsage: 60 + Math.random() * 30,
       neuralEfficiency: 85 + Math.sin(now / 15000) * 10 + (Math.random() - 0.5) * 5,
       processingSpeed: 1200 + Math.sin(now / 8000) * 300 + (Math.random() - 0.5) * 100,
@@ -187,9 +187,9 @@ https://svelte.dev/e/js_parse_error -->
       </select>
       <div class="control-buttons">
         {#if isMonitoring}
-          <button class="btn btn-warning" on:click={stopMonitoring}> ⏸️ Pause </button>
+          <button class="btn btn-warning" onclick={stopMonitoring}> ⏸️ Pause </button>
         {:else}
-          <button class="btn nes-btn is-primary" on:click={startMonitoring}> ▶️ Start </button>
+          <button class="btn nes-btn is-primary" onclick={startMonitoring}> ▶️ Start </button>
         {/if}
       </div>
     </div>
@@ -493,7 +493,7 @@ https://svelte.dev/e/js_parse_error -->
     padding: 1.5rem;
     border-radius: 12px;
     border: 1px solid #334155;
-    transition: all 0.3s ease;
+    transition all 0.3s ease;
   }
   .metric-card:hover {
     transform: translateY(-2px);
@@ -549,7 +549,7 @@ https://svelte.dev/e/js_parse_error -->
     height: 100%;
     background: linear-gradient(90deg, #3b82f6, #10b981);
     border-radius: 3px;
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .service-status {
     background: linear-gradient(145deg, #1e293b, #0f172a);
@@ -576,7 +576,7 @@ https://svelte.dev/e/js_parse_error -->
     background: rgba(255, 255, 255, 0.05);
     border-radius: 8px;
     border: 1px solid transparent;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .service-item:hover {
     border-color: #3b82f6;
@@ -638,20 +638,20 @@ https://svelte.dev/e/js_parse_error -->
     background: #f59e0b;
   }
   .simple-chart {
-    position: relative;
+    position relative;
     height: 150px;
     background: rgba(0, 0, 0, 0.2);
     border-radius: 6px;
     margin-top: 1rem;
   }
   .chart-point {
-    position: absolute;
+    position absolute;
     width: 2px;
   }
   .point-gpu,
   .point-neural,
   .point-memory {
-    position: absolute;
+    position absolute;
     width: 2px;
     height: 2px;
     border-radius: 50%;
@@ -693,12 +693,12 @@ https://svelte.dev/e/js_parse_error -->
       padding: 1rem;
     }
     .dashboard-header {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
       align-items: stretch;
     }
     .performance-grade {
-      flex-direction: column;
+      flex-direction column;
       gap: 1rem;
       text-align: center;
     }

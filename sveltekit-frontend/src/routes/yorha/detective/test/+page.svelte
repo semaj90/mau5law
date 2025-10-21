@@ -54,14 +54,14 @@
   <div class="space-y-4 mb-8">
     <button
       class="px-4 py-2 bg-blue-600 text-white border border-blue-400 hover:bg-blue-700 transition-colors disabled:opacity-50"
-      on:click={testCaseCreation}
+      onclick={testCaseCreation}
       disabled={isLoading}
     >
       {isLoading ? 'Testing...' : 'Test Case Creation'}
     </button>
     <button
       class="px-4 py-2 bg-green-600 text-white border border-green-400 hover:bg-green-700 transition-colors disabled:opacity-50"
-      on:click={testCaseList}
+      onclick={testCaseList}
       disabled={isLoading}
     >
       {isLoading ? 'Testing...' : 'Test Case Listing'}

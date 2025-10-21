@@ -121,8 +121,8 @@ try {
       updatedAt: new Date(),
       title: 'Custom Evidence',
       summary: evidenceText.trim.substring(0, 100) + '...',
-      description: evidenceText.trim(),
-      location: '',
+      description evidenceText.trim(),
+      location '',
       tags: [],
       aiSummary: '',
       aiTags: [],
@@ -143,7 +143,7 @@ try {
       aiAnalysis: ,
       isAdmissible: false
       confidentialityLevel: 'internal',
-      canvasPosition: ,
+      canvasPosition ,
       uploadedBy: null
       uploadedAt: new Date(),
       content: evidenceText.trim(),
@@ -254,7 +254,7 @@ try {
             />
             <button
               class="bits-btn bits-btn w-full"
-              on:click={addCustomEvidence}
+              onclick={addCustomEvidence}
               disabled={!evidenceText.trim() || processingActive}
             >
               Process Evidence
@@ -275,7 +275,7 @@ try {
                   {demo.content.slice(0, 100)}...
                 </p>
                 <button type="button" class="bits-btn bits-btn w-full"
-                  on:click={() => addDemoEvidence(demo)}
+                  onclick={() => addDemoEvidence(demo)}
                   disabled={processingActive}
                 >
                   Process This Evidence
@@ -290,16 +290,16 @@ try {
             <h3 class="nes-text is-primary">System Controls</h3>
           </div>
           <div class="yorha-panel-content space-y-3">
-            <button type="button" class="bits-btn bits-btn w-full" on:click={() => checkSystemHealth()}>
+            <button type="button" class="bits-btn bits-btn w-full" onclick={() => checkSystemHealth()}>
               Health Check
             </button>
-            <button type="button" class="bits-btn bits-btn w-full" on:click={() => syncCache()}>
+            <button type="button" class="bits-btn bits-btn w-full" onclick={() => syncCache()}>
               Sync Cache
             </button>
-            <button type="button" class="bits-btn bits-btn w-full" on:click={() => clearErrors()}>
+            <button type="button" class="bits-btn bits-btn w-full" onclick={() => clearErrors()}>
               Clear Errors
             </button>
-            <button type="button" class="bits-btn bits-btn w-full" on:click={() => clearCache()}>
+            <button type="button" class="bits-btn bits-btn w-full" onclick={() => clearCache()}>
               Clear Cache
             </button>
           </div>
@@ -517,11 +517,11 @@ try {
     50% { opacity: 0.5, }
   }
   .processing-indicator {
-    animation: pulse-processing 2s infinite;
+    animation pulse-processing 2s infinite;
   }
   /* Smooth transitions for dynamic content */
   .transition-all {
-    transition: all 0.3s ease-in-out;
+    transition all 0.3s ease-in-out;
   }
   /* Custom scrollbar for better UX */
   .overflow-y-auto::-webkit-scrollbar {

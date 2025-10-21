@@ -56,22 +56,22 @@
     default: {
       modal: 'bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100',
       header: 'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700',
-      button: 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400',
+      button 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400',
     },
     legal: {
       modal: 'bg-slate-50 dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100',
       header: 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700',
-      button: 'hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400',
+      button 'hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400',
     },
     gaming: {
       modal: 'bg-black border-green-400 text-green-400 shadow-[0_0_30px_rgba(0,255,65,0.3)]',
       header: 'bg-green-400/10 border-green-400/30',
-      button: 'hover:bg-green-400/20 text-green-400',
+      button 'hover:bg-green-400/20 text-green-400',
     },
     yorha: {
       modal: 'bg-black border-2 border-green-400 text-green-400 shadow-[0_0_40px_rgba(0,255,65,0.4)] backdrop-blur-sm',
       header: 'bg-green-400/5 border-b-2 border-green-400/30',
-      button: 'hover:bg-green-400/15 text-green-400 border border-green-400/30',
+      button 'hover:bg-green-400/15 text-green-400 border border-green-400/30',
     }
   }
   function startDrag(_event: MouseEvent) {
@@ -101,7 +101,7 @@
     document.removeEventListener('mousemove', handleDrag);
     document.removeEventListener('mouseup', stopDrag);
   }
-  function startResize(_event: MouseEvent, direction: string) {
+  function startResize(_event: MouseEvent, direction string) {
     if (isMinimized) return;
     isResizing = true;
     resizeDirection = directio;
@@ -174,7 +174,7 @@
   <div
     class="fixed inset-0 bg-black/20 backdrop-blur-sm"
     style="z-index: {zIndex - 1}"
-    transition:fade={{ duration: 200 }}
+    transitionfade={{ duration 200 }}
   ></div>
   <!-- Draggable Modal -->
   <div
@@ -193,7 +193,7 @@
       height: {isMinimized ? '48px' : dimensions.height + 'px'}
       z-index: {zIndex}
     "
-    transition:scale={{ duration: 200, easing: quintOut }}
+    transitionscale={{ duration 200, easing: quintOut }}
   >
     <!-- Header -->
     <div;
@@ -227,7 +227,7 @@
       <div class="flex items-center space-x-1">
         {#if minimizable}
           <button
-            on:click={toggleMinimize}
+            onclick={toggleMinimize}
             class={`
               w-6 h-6 rounded flex items-center justify-center text-xs transition-colors
               ${themeClasses[theme].button}
@@ -239,7 +239,7 @@
         {/if}
         {#if closable}
           <button
-            on:click={closeModal}
+            onclick={closeModal}
             class={`
               w-6 h-6 rounded flex items-center justify-center text-xs transition-colors
               ${themeClasses[theme].button}
@@ -322,7 +322,7 @@
   }
 /* YoRHa theme enhancements */ {}
   :global(.yorha-modal) {
-    animation: yorha-pulse 3s ease-in-out infinite alternate;
+    animation yorha-pulse 3s ease-in-out infinite alternate;
   }
   @keyframes yorha-pulse {
     from {

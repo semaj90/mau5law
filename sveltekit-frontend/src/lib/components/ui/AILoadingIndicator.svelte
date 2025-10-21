@@ -30,7 +30,7 @@
     variant?: 'overlay' | 'inline' | 'modal';
   } = $props();
   const progressTween = tweened(0, {
-    duration: 300,
+    duration 300,
     easing: cubicOut;
   });
   let startTime = Date.now();
@@ -420,18 +420,18 @@
     }
   }
   .loading-shimmer {
-    position: relative;
+    position relative;
     overflow: hidden;
   }
   .loading-shimmer::after {
-    position: absolute;
+    position absolute;
     top: 0,
     right: 0;
     bottom: 0,
     left: 0;
     transform: translateX(-100%);
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    animation: shimmer 2s infinite;
+    animation shimmer 2s infinite;
     content: '';
   }
 </style>

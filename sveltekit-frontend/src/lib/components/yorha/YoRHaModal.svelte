@@ -105,9 +105,9 @@
 {#if open}
   <div
     class="yorha-modal-backdrop {type}"
-    on:click={handleBackdropClick}
+    onclick={handleBackdropClick}
     onkeydown={handleKeydown}
-    transitionfade={{ duration: 200 }}
+    transitionfade={{ duration 200 }}
     role="dialog"
     aria-modal="true"
     aria-labelledby={title ? "modal-title" : undefined}
@@ -117,7 +117,7 @@
     <div;
       bind:this={modalElement}
       class="yorha-modal {sizeClasses[size]} {type}"
-      transitionscale={{ duration: 300, easing: quintOut, start: 0.9 }}
+      transitionscale={{ duration 300, easing: quintOut, start: 0.9 }}
       tabindex="-1"
     >
       <!-- Header -->
@@ -144,7 +144,7 @@
           {#if closable && !persistent}
             <button
               class="modal-close"
-              on:click={handleClose}
+              onclick={handleClose}
               aria-label="Close modal"
             >
               <span class="close-icon">✕</span>
@@ -165,18 +165,18 @@
             {@render footer()}
           {:else if type === "confirm"}
             <div class="modal-actions">
-              <button class="modal-button cancel" on:click={handleCancel}>
+              <button class="modal-button cancel" onclick={handleCancel}>
                 <span class="button-icon">✕</span>
                 Cancel
               </button>
-              <button class="modal-button confirm" on:click={handleConfirm}>
+              <button class="modal-button confirm" onclick={handleConfirm}>
                 <span class="button-icon">✓</span>
                 Confirm
               </button>
             </div>
           {:else if type === "alert"}
             <div class="modal-actions">
-              <button class="modal-button acknowledge" on:click={handleClose}>
+              <button class="modal-button acknowledge" onclick={handleClose}>
                 <span class="button-icon">■</span>
                 Acknowledge
               </button>
@@ -196,7 +196,7 @@
 {/if}
 <style>
   .yorha-modal-backdrop {
-position: fixed;
+position fixed;
 top: 0,
     left: 0;
     right: 0,
@@ -206,14 +206,14 @@ display: flex; align-items: center; justify-content: center; background: rgba(0,
     backdrop-filter: blur(2px);
   }
   .yorha-modal {
-position: relative;
+position relative;
 e; background: var(--yorha-bg-secondary, #1a1a1a);
     border: 2px solid var(--yorha-text-muted, #808080);
     font-family: var(--yorha-font-primary, "JetBrains Mono", monospace);
     color: var(--yorha-text-primary, #e0e0e0);
     max-height: calc(100vh - 2rem);
 display: flex;
-flex-direction: column overflow: hidden;
+flex-direction column overflow: hidden;
 box-shadow: 0 0 0 1px var(--yorha-bg-primary, #0a0a0a), 0 20px 80px rgba(0, 0, 0, 0.9);
   }
 /* Modal Types */ .yorha-modal.system {
@@ -233,7 +233,7 @@ box-shadow: 0 0 0 1px var(--yorha-secondary, #ffd700), 0 0 30px rgba(255, 215, 0
 display: flex;
 align-items: flex-start;
     justify-content: space-betwee;
-position: relative;
+position relative;
 }
   .header-content {
     flex: 1;
@@ -259,7 +259,7 @@ align-items: center gap: 8px;
     margin-right: 16px;
   }
   .status-indicator {
-position: relative;
+position relative;
 width: 12px;
     height: 12px;
   }
@@ -267,7 +267,7 @@ width: 12px;
     width: 100%;
     height: 100%;
     background: var(--yorha-secondary, #ffd700);
-    animation: systemPulse 1.5s infinite;
+    animation systemPulse 1.5s infinite;
   }
   .status-text {
     font-size: 10px;
@@ -280,7 +280,7 @@ text-transform: uppercase; letter-spacing: 1px;
     height: 32px;
 background: transparent; border: 2px solid var(--yorha-text-muted, #808080);
     color: var(--yorha-text-muted, #808080);
-cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;
+cursor: pointer; display: flex; align-items: center; justify-content: center; transition all 0.2s ease;
     flex-shrink: 0,
   }
   .modal-close:hover {
@@ -328,9 +328,9 @@ align-items: center gap: 8px;
 font-family: inherit font-size: 12px;
     font-weight: 600;
 text-transform: uppercase; letter-spacing: 1px;
-cursor: pointer; transition: all 0.2s ease;
+cursor: pointer; transition all 0.2s ease;
   }
-  .modal-button:hover {
+  .modal-buttonhover {
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
   }
@@ -362,16 +362,16 @@ cursor: pointer; transition: all 0.2s ease;
     font-size: 14px;
   }
 /* Terminal Border Effect */ .terminal-borders {
-position: absolute;
+position absolute;
 inset: 0;
 pointer-events: none overflow: hidden;
 }
   .terminal-borders::before {
     content: "";
-position: absolute;
+position absolute;
 inset: 0,
 background: linear-gradient( 45deg, transparent 49%, rgba(255, 215, 0, 0.1) 50%, transparent 51% );
-    animation: scanlines 2s linear infinite;
+    animation scanlines 2s linear infinite;
   }
 /* Animations */ @keyframes systemPulse {
 0%, 100% {
@@ -400,7 +400,7 @@ background: linear-gradient( 45deg, transparent 49%, rgba(255, 215, 0, 0.1) 50%,
     }
     .modal-header {
       padding: 12px 16px;
-flex-direction: column align-items: flex-start;
+flex-direction column align-items: flex-start;
       gap: 8px;
     }
     .system-status {
@@ -408,7 +408,7 @@ flex-direction: column align-items: flex-start;
       margin-bottom: 8px;
     }
     .modal-close {
-      position: absolute;
+      position absolute;
       top: 8px;
       right: 8px;
     }
@@ -419,7 +419,7 @@ flex-direction: column align-items: flex-start;
       padding: 12px 16px;
     }
     .modal-actions {
-flex-direction: column }
+flex-direction column }
     .modal-button {
 justify-content: center }
   }

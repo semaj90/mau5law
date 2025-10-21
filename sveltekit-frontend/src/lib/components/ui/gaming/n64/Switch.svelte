@@ -105,7 +105,7 @@
     ...renderOptions
   }
   // Create spatial audio for switch actions
-  const playSwitchSound = async (isOn: boolean) => {
+  const playSwitchSound = async (ison boolean) => {
     if (!enableSpatialAudio) return;
     try {
       if (!audioContext) {
@@ -218,13 +218,13 @@
       const particle = document.createElement('div');
       particle.className = 'n64-switch-particle';
       particle.style.cssText = `
-        position: absolute;
+        position absolute;
         width: 3px;
         height: 3px;
         background: ${checked ? '#4a90e2' : '#6c757d'}
         border-radius: 50%;
         pointer-events: none;
-        animation: switchParticleExplosion 0.6s ease-out forward;
+        animation switchParticleExplosion 0.6s ease-out forward;
         --angle: ${(360 / particles) * i}deg;
         --distance: ${20 + Math.random() * 15}px;
         top: 50%;
@@ -239,35 +239,35 @@
     }
   }
   // Get material styles based on state and variant
-  const getMaterialStyles = (variant: string, material: string, isOn: boolean) => {
+  const getMaterialStyles = (variant: string, material: string, ison boolean) => {
     const baseColors = {
       primary: {
         off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on: { base: '#4a90e2', highlight: '#6bb3ff', shadow: '#2d5aa0' }
+        on { base: '#4a90e2', highlight: '#6bb3ff', shadow: '#2d5aa0' }
       },
       secondary: {
         off: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' },
-        on: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' }
+        on { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' }
       },
       success: {
         off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on: { base: '#28a745', highlight: '#48c662', shadow: '#1e7e34' }
+        on { base: '#28a745', highlight: '#48c662', shadow: '#1e7e34' }
       },
       warning: {
         off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on: { base: '#ffc107', highlight: '#ffcd39', shadow: '#d39e00' }
+        on { base: '#ffc107', highlight: '#ffcd39', shadow: '#d39e00' }
       },
       error: {
         off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on: { base: '#dc3545', highlight: '#e85563', shadow: '#c82333' }
+        on { base: '#dc3545', highlight: '#e85563', shadow: '#c82333' }
       },
       info: {
         off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on: { base: '#17a2b8', highlight: '#3dd5f3', shadow: '#138496' }
+        on { base: '#17a2b8', highlight: '#3dd5f3', shadow: '#138496' }
       }
     }
     const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary;
-    const stateColors = isOn ? colors.on: colors.off;
+    const stateColors = isOn ? colors.on colors.off;
     const materialMap = {
       basic: {
         trackBackground: isOn ? stateColors.base: '#2d3748',
@@ -394,8 +394,8 @@
       --knob-transform: {knobTransform};
       --fog-color: {effectiveRenderOptions.fogColor};
       --glow-intensity: {glowIntensity};
-      --animation-duration: {animationDuration}ms;
-      --spring-tension: {springTension};
+      --animation-duration {animationDuration}ms;
+      --spring-tension {springTension};
     "
     role="switch"
     tabindex={disabled ? -1 : 0}
@@ -405,7 +405,7 @@
     aria-disabled={disabled}
     aria-labelledby={label ? 'switch-label' : undefined}
     aria-describedby={description ? 'switch-description' : undefined}
-    on:click={handleToggle}
+    onclick={handleToggle}
     onfocus={handleFocus}
     onblur={handleBlur}
     onmouseenter={handleHover}
@@ -443,7 +443,7 @@
       {readonly}
       {disabled}
       bind:checked
-      style="position: absolute; opacity: 0; pointer-events: none;"
+      style="position absolute; opacity: 0; pointer-events: none;"
     />
   </div>
   {#if label || description}
@@ -471,7 +471,7 @@
   }
   .n64-switch {
     /* Base N64 switch styling */
-    position: relative;
+    position relative;
     width: var(--switch-width);
     height: var(--switch-height);
     cursor: pointer;
@@ -483,7 +483,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    transition: all var(--animation-duration) cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition all var(--animation-duration) cubic-bezier(0.34, 1.56, 0.64, 1);
     /* Remove default styles */
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -493,7 +493,7 @@
     will-change: transform;
   }
   .switch-track {
-    position: relative;
+    position relative;
     width: 100%;
     height: 100%;
     background: var(--track-bg);
@@ -507,7 +507,7 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
   .switch-knob {
-    position: absolute;
+    position absolute;
     top: 2px;
     width: var(--knob-size);
     height: var(--knob-size);
@@ -518,14 +518,14 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
     /* Smooth mechanical animation */
     transform: var(--knob-transform);
-    transition: transform var(--animation-duration) cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transition transform var(--animation-duration) cubic-bezier(0.68, -0.55, 0.265, 1.55);
     /* Performance optimization */
     will-change: transform;
     transform-style: preserve-3d;
   }
   /* Knob lighting overlay */
   .knob-lighting {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -541,7 +541,7 @@
   }
   /* Knob reflection */
   .knob-reflection {
-    position: absolute;
+    position absolute;
     top: 15%;
     left: 15%;
     right: 60%;
@@ -553,7 +553,7 @@
   }
   /* Knob loading indicator */
   .knob-loading {
-    position: absolute;
+    position absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -565,7 +565,7 @@
     border: 2px solid transparent;
     border-top: 2px solid rgba(255, 255, 255, 0.8);
     border-radius: 50%;
-    animation: switchSpin 1s linear infinite;
+    animation switchSpin 1s linear infinite;
   }
   @keyframes switchSpin {
     to {
@@ -574,7 +574,7 @@
   }
   /* Track fog effect */
   .track-fog {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     right: 0,
@@ -586,7 +586,7 @@
   }
   /* Toggle glow effect */
   .toggle-glow {
-    position: absolute;
+    position absolute;
     top: -4px;
     left: -4px;
     right: -4px;
@@ -600,7 +600,7 @@
     pointer-events: none;
     filter: blur(8px);
     z-index: -1;
-    animation: toggleGlowPulse 2s ease-in-out infinite;
+    animation toggleGlowPulse 2s ease-in-out infinite;
   }
   @keyframes toggleGlowPulse {
     0%,
@@ -616,7 +616,7 @@
   /* Switch content styling */
   .switch-content {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 4px;
     flex: 1,
   }
@@ -698,7 +698,7 @@
   }
   /* Spring physics animation for enabled switches */
   .n64-switch:not(.disabled).animating .switch-knob {
-    transition: transform var(--animation-duration) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition transform var(--animation-duration) cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
   /* Mobile optimizations */
   @media (max-width: 480px) {
@@ -713,19 +713,19 @@
     }
   }
   /* Reduced motion support */
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     .n64-switch {
       transform: none !important;
-      transition: opacity 150ms ease;
+      transition opacity 150ms ease;
     }
     .switch-knob {
-      transition: transform 150ms ease;
+      transition transform 150ms ease;
     }
     .toggle-glow {
-      animation: none;
+      animation none;
     }
     .n64-spinner {
-      animation: none;
+      animation none;
       border: 2px solid rgba(255, 255, 255, 0.8);
       border-right-color: transparent;
     }

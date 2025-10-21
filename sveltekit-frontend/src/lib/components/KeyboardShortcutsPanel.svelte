@@ -122,7 +122,7 @@ https://svelte.dev/e/js_parse_error -->
 
   function getCategoryIcon(category: string): string {
     const icons: Record<string, string> = {
-      navigation: '🧭',
+      navigation '🧭',
       ai: '🤖',
       cases: '📁',
       evidence: '📋',
@@ -150,7 +150,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="p-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-2xl font-bold text-green-400">⌨️ Keyboard Shortcuts</h2>
-          <button type="button" class="bits-btn ghost" on:click={() => (helpModalVisible = false)}> ✕ </button>
+          <button type="button" class="bits-btn ghost" onclick={() => (helpModalVisible = false)}> ✕ </button>
         </div>
         <!-- Search and filters -->
         <div class="flex gap-4 mb-4">
@@ -200,7 +200,7 @@ https://svelte.dev/e/js_parse_error -->
                         </div>
                         <div class="flex items-center gap-2">
                           <Switch checked={shortcut.enabled} onchange={() => toggleShortcut(shortcut)} />
-                          <button type="button" class="bits-btn sm ghost" on:click={() => executeShortcut(shortcut)}>
+                          <button type="button" class="bits-btn sm ghost" onclick={() => executeShortcut(shortcut)}>
                             Test
                           </button>
                         </div>
@@ -218,7 +218,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="mt-4 p-3 bg-green-900 border border-green-700 rounded-lg">
             <div class="flex items-center gap-2">
               <span class="text-green-400">🔗 Connected to remote control</span>
-              <button type="button" class="bits-btn sm ghost" on:click={() => (remoteStatusVisible = true)}>
+              <button type="button" class="bits-btn sm ghost" onclick={() => (remoteStatusVisible = true)}>
                 View Status
               </button>
             </div>
@@ -227,7 +227,7 @@ https://svelte.dev/e/js_parse_error -->
           <div class="mt-4 p-3 bg-yellow-900 border border-yellow-700 rounded-lg">
             <div class="flex items-center gap-2">
               <span class="text-yellow-400">⚠️ Remote control disconnected</span>
-              <button type="button" class="bits-btn sm ghost" on:click={connectRemote}> Connect </button>
+              <button type="button" class="bits-btn sm ghost" onclick={connectRemote}> Connect </button>
             </div>
           </div>
         {/if}
@@ -242,7 +242,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="p-6">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-bold text-green-400">📡 Remote Control Status</h2>
-          <button type="button" class="bits-btn ghost" on:click={() => (remoteStatusVisible = false)}> ✕ </button>
+          <button type="button" class="bits-btn ghost" onclick={() => (remoteStatusVisible = false)}> ✕ </button>
         </div>
         <!-- Connection status -->
         <div class="mb-6">
@@ -281,11 +281,11 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Controls -->
         <div class="flex gap-2">
           {#if $isRemoteConnected}
-            <button type="button" class="bits-btn ghost" on:click={disconnectRemote}> Disconnect </button>
+            <button type="button" class="bits-btn ghost" onclick={disconnectRemote}> Disconnect </button>
           {:else}
-            <button type="button" class="bits-btn" on:click={connectRemote}> Reconnect </button>
+            <button type="button" class="bits-btn" onclick={connectRemote}> Reconnect </button>
           {/if}
-          <button type="button" class="bits-btn ghost" on:click={clearRemoteHistory}> Clear History </button>
+          <button type="button" class="bits-btn ghost" onclick={clearRemoteHistory}> Clear History </button>
         </div>
       </div>
     </div>

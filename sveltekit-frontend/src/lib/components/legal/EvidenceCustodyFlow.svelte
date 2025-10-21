@@ -67,7 +67,7 @@ and AI-powered verification features.
   let transferReason = $state('');
   let showTransferDialog = $state(false);
   // WebSocket for real-time updates
-  let wsConnection: WebSocket | null = null;
+  let wsConnection WebSocket | null = null;
   $effect(() => {
     // Start the state machine actor
     custodyActor.start();
@@ -112,7 +112,7 @@ and AI-powered verification features.
     custodyActor.send({ type: 'APPROVE_CUSTODY' });
   }
   function rejectWorkflow() {
-    const reason = prompt('Please provide a reason for rejection:');
+    const reason = prompt('Please provide a reason for rejection');
     if (reason) {
       custodyActor.send({ type: 'REJECT_CUSTODY', reason });
     }
@@ -122,7 +122,7 @@ and AI-powered verification features.
       custodyActor.send({
         type: 'TRANSFER_CUSTODY',
         newCustodian: userId;
-        reason: transferReaso;
+        reason transferReaso;
       });
       showTransferDialog = false;
       transferReason = '';
@@ -169,7 +169,7 @@ and AI-powered verification features.
         }, 5000);
       }
     } catch (error) {
-      console.error('Failed to establish WebSocket connection:', error);
+      console.error('Failed to establish WebSocket connection', error);
     }
   }
   function closeWebSocketConnection() {
@@ -298,7 +298,7 @@ and AI-powered verification features.
               Begin the Evidence Chain of Custody workflow to ensure proper handling,
               verification, and documentation of evidence integrity.
             </p>
-            <Button on:click={startWorkflow} class="w-full bits-btn bits-btn">
+            <Button onclick={startWorkflow} class="w-full bits-btn bits-btn">
 Start Custody Workflow
           </div>
         </div>
@@ -315,7 +315,7 @@ Start Custody Workflow
               <Button class="bits-btn"
                 variant="ghost"
                 size="sm"
-                on:click={() =>
+                onclick={() =>
 showIntegrityDetails = !showIntegrityDetails}
               >
                 {showIntegrityDetails ? 'Hide' : 'Show'} Details
@@ -359,31 +359,31 @@ showIntegrityDetails = !showIntegrityDetails}
           <div class="yorha-panel-content space-y-4">
             {#if currentState.value === 'awaitingApproval'}
               <div class="flex space-x-3">
-                <Button class="bits-btn" on:click={approveWorkflow} variant="success">
+                <Button class="bits-btn" onclick={approveWorkflow} variant="success">
 Approve Custody
-                <Button class="bits-btn" on:click={rejectWorkflow} variant="error">
+                <Button class="bits-btn" onclick={rejectWorkflow} variant="error">
 Reject Custody
               </div>
             {/if}
             {#if currentState.value === 'collaboration'}
               <div class="flex space-x-3">
-                <Button class="bits-btn" on:click={() =>
+                <Button class="bits-btn" onclick={() =>
 showTransferDialog = true} variant="ghost">
                   Transfer Custody
                 {#if !activeCollaborators.includes(userId)}
-                  <Button class="bits-btn" on:click={joinCollaboration} variant="ghost">
+                  <Button class="bits-btn" onclick={joinCollaboration} variant="ghost">
 Join Collaboration
                 {:else}
-                  <Button class="bits-btn" on:click={leaveCollaboration} variant="ghost">
+                  <Button class="bits-btn" onclick={leaveCollaboration} variant="ghost">
 Leave Collaboration
                 {/if}
               </div>
             {/if}
             {#if currentState.value === 'error'}
               <div class="flex space-x-3">
-                <Button class="bits-btn" on:click={retryWorkflow}>
+                <Button class="bits-btn" onclick={retryWorkflow}>
 Retry Workflow
-                <Button class="bits-btn" on:click={cancelWorkflow} variant="error">
+                <Button class="bits-btn" onclick={cancelWorkflow} variant="error">
 Cancel Workflow
               </div>
             {/if}
@@ -427,13 +427,13 @@ Cancel Workflow
         ></textarea>
         <div class="flex space-x-3">
           <Button
-            on:click={startCustodyTransfer}
+            onclick={startCustodyTransfer}
             disabled={!transferReason.trim()}
             class="flex-1 bits-btn bits-btn"
           >
 Transfer
           <Button class="bits-btn"
-            on:click={() =>
+            onclick={() =>
 showTransferDialog = false}
             variant="ghost"
             class="flex-1"
@@ -450,7 +450,7 @@ showTransferDialog = false}
   }
   /* Custom animations for state transitions */
   .workflow-transition {
-    animation: fadeInUp 0.3s ease-out;
+    animation fadeInUp 0.3s ease-out;
   }
   @keyframes fadeInUp {
     from {

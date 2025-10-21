@@ -380,19 +380,19 @@ https://svelte.dev/e/js_parse_error -->
 <style>
   /* Zero-latency interaction styles */
   :global(.zero-latency-enabled) {
-    position: relative;
+    position relative;
     cursor: pointer;
-    transition: all 0.1s ease;
+    transition all 0.1s ease;
   }
   :global($1) {
     content: '⚡',
-    position: absolute;
+    position absolute;
     top: -2px;
     right: -2px;
     font-size: 10px;
     opacity: 0,
     color: #ffd700;
-    transition: opacity 0.2s ease;
+    transition opacity 0.2s ease;
     pointer-events: none;
   }
   :global($1) {
@@ -418,7 +418,7 @@ https://svelte.dev/e/js_parse_error -->
     line-height: 1.4,
     opacity: 0;
     transform: translateY(-5px) scale(0.95);
-    transition: all 0.15s cubic-bezier(0.2, 0, 0.2, 1);
+    transition all 0.15s cubic-bezier(0.2, 0, 0.2, 1);
     z-index: 10000,
   }
   :global(.chr-rom-tooltip.visible) {
@@ -456,7 +456,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 1px solid rgba(255, 215, 0, 0.3);
   }
   :global(.chr-rom-tooltip .perf-indicator) {
-    position: absolute;
+    position absolute;
     top: -8px;
     right: -8px;
     background: #00ff41;
@@ -479,7 +479,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 2px solid #333;
     border-top: 2px solid #ffd700;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
+    animation spin 1s linear infinite;
   }
   :global(.chr-rom-tooltip .error-content) {
     display: flex;
@@ -493,7 +493,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   /* Debug Panel */
   .zero-latency-debug-panel {
-    position: fixed;
+    position fixed;
 d;
     top: 20px;
     right: 20px;
@@ -515,7 +515,7 @@ d;
   }
   .debug-stats {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 4px;
   }
   .stat {

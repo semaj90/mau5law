@@ -1,58 +1,68 @@
-import type { RequestHandler } from './$types.js'
-import { json } from '@sveltejs/kit'
-import { withSSRHandler, createSSRResponse, createSSRErrorResponse } from '$lib/server/api-ssr-helpers.js'
-/*
- * Legal AI Orchestrator - Central API Router
- * Coordinates all legal AI services in end-to-end workflows
- * Handles complex multi-step operations with proper error handling and monitoring
- */
-interface OrchestrationRequest {
-  workflow: 'legal-research' | 'document-processing' | 'case-creation' | 'evidence-analysis',
-  parameters: { [key: string]: any }
-  options?: {
-    useGPU?: boolean
-    cacheResults?: boolean
-    priority?: 'low' | 'medium' | 'high'
-    timeout?: number
-  }
-}
-interface OrchestrationResult {
-  workflowId: string
-  workflow: string
-  status: 'processing' | 'completed' | 'failed',
-  steps: WorkflowStep[]
-  result?: any
-  error?: string
-  metrics: {
-    totalTime: number
-    apiCalls: number
-    cacheHits: number
-    gpuAccelerated: boolean
-  }
-}
-interface WorkflowStep {
-  name: string
-  status: 'pending' | 'processing' | 'completed' | 'failed'
-  result?: any
-  error?: string
-  duration: number
-  apiEndpoint: string
-}
+import type { RequestHandler } from './$types.js';
+import {
+  withSSRHandler,
+  createSSRResponse,
+  createSSRErrorResponse,
+  type BitsUICompatibleData, // Import BitsUICompatibleData
+} from '$lib/server/api-ssr-helpers.js';
+import type { RequestEvent } from '@sveltejs/kit'; // Import RequestEvent
 
-// --- New Interfaces for Step Executors ---
-
-// Generic interface for previous results, can be refined further if specific structures are known
-interface WorkflowStepResult {
-  [key: string]: any;
-}
-
-// Define a common type for the options parameter
+// Define WorkflowStepOptions based on OrchestrationRequest's options
 interface WorkflowStepOptions {
   useGPU?: boolean;
   cacheResults?: boolean;
   priority?: 'low' | 'medium' | 'high';
   timeout?: number;
 }
+
+/*
+ * Legal AI Orchestrator - Central API Router
+ * Coordinates all legal AI services in end-to-end workflows
+ * Handles complex multi-step operations with proper error handling and monitoring
+ */
+interface OrchestrationRequest {
+  workflow: 'legal-research' | 'document-processing' | 'case-creation' | 'evidence-analysis' | 'qlora-distillation';
+  parameters: { [key: string]: BitsUICompatibleData | BitsUICompatibleData[] }; // Updated type
+  options?: {
+    useGPU?: boolean;
+    cacheResults?: boolean;
+    priority?: 'low' | 'medium' | 'high';
+    timeout?: number;
+  };
+}
+interface OrchestrationResult extends BitsUICompatibleObject {
+  // Removed broad index signature that caused type conflicts
+  workflowId: string;
+  workflow: string;
+  status: 'processing' | 'completed' | 'failed';
+  steps: WorkflowStep[];
+  // Change: allow object-shaped results (previously BitsUICompatibleData caused many mismatch errors)
+  result?: BitsUICompatibleObject;
+  error?: string;
+  metrics: {
+    totalTime: number;
+    apiCalls: number;
+    cacheHits: number;
+    gpuAccelerated: boolean;
+  };
+  extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
+}
+
+interface WorkflowStep extends BitsUICompatibleObject {
+  // Removed broad index signature that caused type conflicts
+  name: string;
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  result?: WorkflowStepResult;
+  error?: string;
+  duration: number;
+  apiEndpoint: string;
+  // Optional flexible container for additional step-level data
+  extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
+}
+
+// --- New Interfaces for Step Executors ---
+
+type WorkflowStepResult = BitsUICompatibleObject; // Simplified to extend the object type
 
 // Search Legal Documents
 interface SearchLegalDocumentsParams {
@@ -62,20 +72,36 @@ interface SearchLegalDocumentsParams {
   useAI?: boolean;
   previousResults?: WorkflowStepResult[];
 }
-interface EnhancedLegalSearchResult {
-  results: any[]; // Assuming the structure from the API call
+
+interface LegalSearchResultItem extends BitsUICompatibleObject {
+  // Removed broad index signature
+  title: string;
+  url: string;
+  snippet: string;
+  source: string;
+  date?: string;
+  relevanceScore?: number;
+  extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
+}
+
+interface EnhancedLegalSearchResult extends BitsUICompatibleObject {
+  // Removed broad index signature
+  results: LegalSearchResultItem[];
+  extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
 }
 
 // Analyze Precedents
 interface AnalyzePrecedentsParams {
-  query: string; // Renamed from 'topic' in body to 'query' for consistency with params
+  query: string;
   jurisdiction: string;
   userRole?: string;
   previousResults?: WorkflowStepResult[];
 }
-interface LegalResearchAnalysisResult {
-  analysis: string;
-  recommendations?: string[];
+interface LegalResearchAnalysisResult extends BitsUICompatibleObject {
+  // Removed broad index signature
+  analysis: BitsUICompatibleData;
+  recommendations?: BitsUICompatibleData[];
+  extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
 }
 
 // Generate Research Summary
@@ -83,8 +109,10 @@ interface GenerateResearchSummaryParams {
   query: string;
   previousResults?: WorkflowStepResult[];
 }
-interface ChatResponse {
-  response: string;
+interface ChatResponse extends BitsUICompatibleObject {
+  // Removed broad index signature
+  response: BitsUICompatibleData;
+  extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
 }
 
 // Extract Document Entities
@@ -95,20 +123,34 @@ interface ExtractDocumentEntitiesParams {
   includeKeyTerms?: boolean;
   previousResults?: WorkflowStepResult[];
 }
-interface DocumentEntityExtractionResult {
-  entities: any[];
-  keyTerms?: string[];
+
+interface ExtractedEntity extends BitsUICompatibleObject {
+  // Removed broad index signature
+  text: BitsUICompatibleData;
+  type: BitsUICompatibleData;
+  start?: BitsUICompatibleData;
+  end?: BitsUICompatibleData;
+  extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
+}
+
+interface DocumentEntityExtractionResult extends BitsUICompatibleObject {
+  // Removed broad index signature
+  entities: ExtractedEntity[];
+  keyTerms?: BitsUICompatibleData[];
+  extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
 }
 
 // Analyze Document Content
 interface AnalyzeDocumentContentParams {
-  content: string; // Renamed from 'text' in body to 'content' for consistency with params
+  content: string;
   analysisType?: string;
   includeMetadata?: boolean;
   previousResults?: WorkflowStepResult[];
 }
-interface DocumentAnalysisResult {
-  analysis: any; // Can be refined
+interface DocumentAnalysisResult extends BitsUICompatibleObject {
+  // Removed broad index signature
+  analysis: { [key: string]: BitsUICompatibleData | BitsUICompatibleData[] };
+  extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
 }
 
 // Generate Document Summary
@@ -119,10 +161,12 @@ interface GenerateDocumentSummaryParams {
   legalFocus?: boolean;
   previousResults?: WorkflowStepResult[];
 }
-interface DocumentSummaryResult {
-  summary: string;
-  keyPoints?: string[];
-  keyTerms?: string[];
+interface DocumentSummaryResult extends BitsUICompatibleObject {
+  // Removed broad index signature
+  summary: BitsUICompatibleData;
+  keyPoints?: BitsUICompatibleData[];
+  keyTerms?: BitsUICompatibleData[];
+  extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
 }
 
 // Score Case Strength
@@ -133,8 +177,10 @@ interface ScoreCaseStrengthParams {
   jurisdiction: string;
   previousResults?: WorkflowStepResult[];
 }
-interface CaseScoringResult {
-  score: number;
+interface CaseScoringResult extends BitsUICompatibleObject {
+  // Removed broad index signature
+  score: BitsUICompatibleData;
+  extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
 }
 
 // Suggest Research Topics
@@ -145,28 +191,35 @@ interface SuggestResearchTopicsParams {
   maxSuggestions?: number;
   previousResults?: WorkflowStepResult[];
 }
-interface ResearchSuggestionsResult {
-  suggestions: string[];
+interface ResearchSuggestionsResult extends BitsUICompatibleObject {
+  // Removed broad index signature
+  suggestions: BitsUICompatibleData[];
+  extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
 }
 
 // Create Case Timeline
 interface CreateCaseTimelineParams {
   previousResults?: WorkflowStepResult[];
 }
-interface CaseTimelineResult {
-  milestones: { name: string; date: Date; type: string }[];
-  generated: Date;
+interface CaseTimelineResult extends BitsUICompatibleObject {
+  // Removed broad index signature
+  milestones: Array<BitsUICompatibleObject>;
+  // Allow ISO string timestamps (now.toISOString()) as well as BitsUICompatibleData
+  generated: BitsUICompatibleData | string;
+  extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
 }
 
 // Process Evidence Metadata
 interface ProcessEvidenceMetadataParams {
   evidenceId: string;
-  metadata: Record<string, any>;
+  metadata: { [key: string]: BitsUICompatibleData | BitsUICompatibleData[] };
   extractAdditional?: boolean;
   previousResults?: WorkflowStepResult[];
 }
-interface EvidenceMetadataProcessingResult {
-  metadata: Record<string, any>;
+interface EvidenceMetadataProcessingResult extends BitsUICompatibleObject {
+  // Removed broad index signature
+  metadata: { [key: string]: BitsUICompatibleData | BitsUICompatibleData[] };
+  extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
 }
 
 // Analyze Evidence Relevance
@@ -177,8 +230,10 @@ interface AnalyzeEvidenceRelevanceParams {
   analysisDepth?: string;
   previousResults?: WorkflowStepResult[];
 }
-interface EvidenceRelevanceAnalysisResult {
+interface EvidenceRelevanceAnalysisResult extends BitsUICompatibleObject {
+  // Removed broad index signature
   relevanceScore: number;
+  extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
 }
 
 // Generate Evidence Report
@@ -186,9 +241,42 @@ interface GenerateEvidenceReportParams {
   evidenceId: string;
   previousResults?: WorkflowStepResult[];
 }
-interface EvidenceReportResult {
+interface EvidenceReportResult extends BitsUICompatibleObject {
+  // Removed broad index signature
   report: string;
+  extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
 }
+
+// --- New Interfaces for QLoRA Distillation Workflow ---
+interface TriggerQLoRADistillationParams {
+  userId: string;
+  domain: string;
+  triggerType: 'manual' | 'automatic' | 'scheduled';
+  parameters?: {
+    minFeedbackCount?: number;
+    qualityThreshold?: number;
+    maxTrainingTime?: number;
+    modelSize?: 'small' | 'medium' | 'large';
+    optimizeFor?: 'speed' | 'quality' | 'size';
+  };
+  feedbackData?: Array<BitsUICompatibleData>;
+}
+
+interface TriggerQLoRADistillationResult extends BitsUICompatibleObject {
+  // Removed broad index signature
+  success: boolean;
+  jobId: string;
+  status: 'queued' | 'processing' | 'completed' | 'failed';
+  message: string;
+  estimatedDuration: string;
+  statusUrl: string;
+  extras?: Record<string, BitsUICompatibleData | BitsUICompatibleData[]>;
+}
+
+// Add a local alias for BitsUICompatibleObject built from BitsUICompatibleData
+// This mirrors the shape previously expected by the file and avoids importing a non-existent symbol.
+// Widened to accept primitives and nested objects so explicit properties like `name: string` and `duration: number` are valid.
+type BitsUICompatibleObject = Record<string, unknown>;
 
 // Workflow orchestration class
 class LegalAIOrchestrator {
@@ -199,21 +287,92 @@ class LegalAIOrchestrator {
   }
   private initializeStepExecutors() {
     // Legal research workflow steps
-    this.stepExecutors.set('search-legal-documents', this.executeSearchLegalDocuments.bind(this));
-    this.stepExecutors.set('analyze-precedents', this.executeAnalyzePrecedents.bind(this));
-    this.stepExecutors.set('generate-research-summary', this.executeGenerateResearchSummary.bind(this));
+    this.stepExecutors.set(
+      'search-legal-documents',
+      this.executeSearchLegalDocuments.bind(this) as (
+        params: unknown,
+        options?: WorkflowStepOptions
+      ) => Promise<unknown>
+    );
+    this.stepExecutors.set(
+      'analyze-precedents',
+      this.executeAnalyzePrecedents.bind(this) as (params: unknown, options?: WorkflowStepOptions) => Promise<unknown>
+    );
+    this.stepExecutors.set(
+      'generate-research-summary',
+      this.executeGenerateResearchSummary.bind(this) as (
+        params: unknown,
+        options?: WorkflowStepOptions
+      ) => Promise<unknown>
+    );
     // Document processing workflow steps
-    this.stepExecutors.set('extract-document-entities', this.executeExtractDocumentEntities.bind(this));
-    this.stepExecutors.set('analyze-document-content', this.executeAnalyzeDocumentContent.bind(this));
-    this.stepExecutors.set('generate-document-summary', this.executeGenerateDocumentSummary.bind(this));
+    this.stepExecutors.set(
+      'extract-document-entities',
+      this.executeExtractDocumentEntities.bind(this) as (
+        params: unknown,
+        options?: WorkflowStepOptions
+      ) => Promise<unknown>
+    );
+    this.stepExecutors.set(
+      'analyze-document-content',
+      this.executeAnalyzeDocumentContent.bind(this) as (
+        params: unknown,
+        options?: WorkflowStepOptions
+      ) => Promise<unknown>
+    );
+    this.stepExecutors.set(
+      'generate-document-summary',
+      this.executeGenerateDocumentSummary.bind(this) as (
+        params: unknown,
+        options?: WorkflowStepOptions
+      ) => Promise<unknown>
+    );
     // Case creation workflow steps
-    this.stepExecutors.set('score-case-strength', this.executeScoreCaseStrength.bind(this));
-    this.stepExecutors.set('suggest-research-topics', this.executeSuggestResearchTopics.bind(this));
-    this.stepExecutors.set('create-case-timeline', this.executeCreateCaseTimeline.bind(this));
+    this.stepExecutors.set(
+      'score-case-strength',
+      this.executeScoreCaseStrength.bind(this) as (params: unknown, options?: WorkflowStepOptions) => Promise<unknown>
+    );
+    this.stepExecutors.set(
+      'suggest-research-topics',
+      this.executeSuggestResearchTopics.bind(this) as (
+        params: unknown,
+        options?: WorkflowStepOptions
+      ) => Promise<unknown>
+    );
+    this.stepExecutors.set(
+      'create-case-timeline',
+      this.executeCreateCaseTimeline.bind(this) as (params: unknown, options?: WorkflowStepOptions) => Promise<unknown>
+    );
     // Evidence analysis workflow steps
-    this.stepExecutors.set('process-evidence-metadata', this.executeProcessEvidenceMetadata.bind(this));
-    this.stepExecutors.set('analyze-evidence-relevance', this.executeAnalyzeEvidenceRelevance.bind(this));
-    this.stepExecutors.set('generate-evidence-report', this.executeGenerateEvidenceReport.bind(this));
+    this.stepExecutors.set(
+      'process-evidence-metadata',
+      this.executeProcessEvidenceMetadata.bind(this) as (
+        params: unknown,
+        options?: WorkflowStepOptions
+      ) => Promise<unknown>
+    );
+    this.stepExecutors.set(
+      'analyze-evidence-relevance',
+      this.executeAnalyzeEvidenceRelevance.bind(this) as (
+        params: unknown,
+        options?: WorkflowStepOptions
+      ) => Promise<unknown>
+    );
+    this.stepExecutors.set(
+      'generate-evidence-report',
+      this.executeGenerateEvidenceReport.bind(this) as (
+        params: unknown,
+        options?: WorkflowStepOptions
+      ) => Promise<unknown>
+    );
+    // QLoRA Distillation workflow steps
+    this.stepExecutors.set(
+      'trigger-qlora-distillation',
+      this.executeTriggerQLoRADistillation.bind(this) as (
+        params: unknown,
+        options?: WorkflowStepOptions
+      ) => Promise<unknown>
+    );
   }
   async executeWorkflow(request: OrchestrationRequest): Promise<OrchestrationResult> {
     const workflowId = this.generateWorkflowId();
@@ -248,10 +407,11 @@ class LegalAIOrchestrator {
           if (!executor) {
             throw new Error(`No executor found for step: ${stepConfig.name}`);
           }
-          step.result = await executor(
+          step.result = (await executor(
+            // Explicitly cast the result to WorkflowStepResult
             { ...request.parameters, previousResults: this.getPreviousResults(result.steps) },
             request.options
-          );
+          )) as WorkflowStepResult;
           step.status = 'completed';
         } catch (error) {
           step.status = 'failed';
@@ -299,13 +459,12 @@ class LegalAIOrchestrator {
     params: AnalyzePrecedentsParams,
     _options?: WorkflowStepOptions
   ): Promise<LegalResearchAnalysisResult> {
-    // Fix: Use a type guard to correctly type 'r' and ensure 'results' property exists.
-    // The retrieved search results are now passed to the legal-research API for enhanced context.
+    // The type predicate is now valid because EnhancedLegalSearchResult includes the index signature.
     const searchResults =
       params.previousResults?.find(
         (r): r is EnhancedLegalSearchResult =>
-          (r as EnhancedLegalSearchResult).results !== undefined &&
-          Array.isArray((r as EnhancedLegalSearchResult).results)
+          r.results !== undefined && // 'r' is correctly narrowed to EnhancedLegalSearchResult here
+          Array.isArray(r.results)
       )?.results || [];
     const response = await fetch('/api/ai/legal-research', {
       method: 'POST',
@@ -322,7 +481,7 @@ class LegalAIOrchestrator {
     if (!response.ok) {
       throw new Error(`Precedent analysis failed: ${response.status}`);
     }
-    return await response.json();
+    return (await response.json()) as LegalResearchAnalysisResult; // Explicitly cast
   }
 
   private async executeGenerateResearchSummary(
@@ -330,12 +489,14 @@ class LegalAIOrchestrator {
     _options?: WorkflowStepOptions
   ): Promise<ChatResponse> {
     // Fix: Use a type guard to correctly type 'r' and ensure 'analysis' property exists
-    const precedentData =
-      params.previousResults?.find(
-        (r): r is LegalResearchAnalysisResult =>
-          (r as LegalResearchAnalysisResult).analysis !== undefined &&
-          typeof (r as LegalResearchAnalysisResult).analysis === 'string'
-      )?.analysis || '';
+    const precedentAnalysisResult = params.previousResults?.find(
+      (r): r is LegalResearchAnalysisResult =>
+        (r as LegalResearchAnalysisResult).analysis !== undefined &&
+        typeof (r as LegalResearchAnalysisResult).analysis === 'string'
+    );
+    // Ensure precedentData is treated as a string before calling substring
+    const precedentData = (precedentAnalysisResult?.analysis || '') as string;
+
     const response = await fetch('/api/ai/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -348,7 +509,7 @@ class LegalAIOrchestrator {
     if (!response.ok) {
       throw new Error(`Summary generation failed: ${response.status}`);
     }
-    return await response.json();
+    return (await response.json()) as ChatResponse; // Explicitly cast
   }
 
   private async executeExtractDocumentEntities(
@@ -450,17 +611,27 @@ class LegalAIOrchestrator {
   }
 
   private async executeCreateCaseTimeline(
-    params: CreateCaseTimelineParams,
+    _params: CreateCaseTimelineParams,
     _options?: WorkflowStepOptions
   ): Promise<CaseTimelineResult> {
-    // This would typically integrate with a calendar/timeline service
-    const timeline = {
+    // Use ISO strings for dates so they conform to BitsUICompatibleData (primitive/string)
+    const now = new Date();
+    const timeline: CaseTimelineResult = {
       milestones: [
-        { name: 'Case Created', date: new Date(), type: 'created' },
-        { name: 'Initial Research Due', date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), type: 'deadline' },
-        { name: 'Discovery Phase', date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), type: 'phase' },
+        { name: 'Case Created', date: now.toISOString(), type: 'created' },
+        {
+          name: 'Initial Research Due',
+          date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+          type: 'deadline',
+        },
+        {
+          name: 'Discovery Phase',
+          date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          type: 'phase',
+        },
       ],
-      generated: new Date(),
+      // Allow ISO string timestamps (now.toISOString()) as well as BitsUICompatibleData
+      generated: now.toISOString(),
     };
     return timeline;
   }
@@ -507,7 +678,13 @@ class LegalAIOrchestrator {
     params: GenerateEvidenceReportParams,
     _options?: WorkflowStepOptions
   ): Promise<EvidenceReportResult> {
-    const relevanceData = params.previousResults?.find((r: any) => r?.relevanceScore)?.relevanceScore || 0.5;
+    // Fix: Use a type guard to correctly type 'r' and ensure 'relevanceScore' property exists.
+    const relevanceData =
+      params.previousResults?.find(
+        (r): r is EvidenceRelevanceAnalysisResult =>
+          (r as EvidenceRelevanceAnalysisResult).relevanceScore !== undefined &&
+          typeof (r as EvidenceRelevanceAnalysisResult).relevanceScore === 'number'
+      )?.relevanceScore || 0.5;
     const response = await fetch('/api/ai/generate-report', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -523,9 +700,28 @@ class LegalAIOrchestrator {
     }
     return await response.json();
   }
+
+  private async executeTriggerQLoRADistillation(
+    params: TriggerQLoRADistillationParams,
+    _options?: WorkflowStepOptions
+  ): Promise<TriggerQLoRADistillationResult> {
+    const response = await fetch('/api/qlora-distillation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params),
+    });
+
+    if (!response.ok) {
+      throw new Error(`QLoRA distillation trigger failed: ${response.status}`);
+    }
+    return await response.json();
+  }
   // Helper methods
-  private getWorkflowSteps(workflow: string) {
-    const workflows = {
+  private getWorkflowSteps(workflow: OrchestrationRequest['workflow']) {
+    // Use specific workflow type
+    type WorkflowConfig = { name: string; endpoint: string }[];
+    const workflows: Record<OrchestrationRequest['workflow'], WorkflowConfig> = {
+      // Explicitly type workflows object
       'legal-research': [
         { name: 'search-legal-documents', endpoint: '/api/ai/enhanced-legal-search' },
         { name: 'analyze-precedents', endpoint: '/api/ai/legal-research' },
@@ -546,11 +742,21 @@ class LegalAIOrchestrator {
         { name: 'analyze-evidence-relevance', endpoint: '/api/ai/evidence-search' },
         { name: 'generate-evidence-report', endpoint: '/api/ai/generate-report' },
       ],
+      'qlora-distillation': [
+        // New workflow
+        { name: 'trigger-qlora-distillation', endpoint: '/api/qlora-distillation' },
+      ],
     };
     return workflows[workflow] || [];
   }
   private getPreviousResults(steps: WorkflowStep[]): WorkflowStepResult[] {
-    return steps.filter(step => step.status === 'completed' && step.result).map(step => step.result);
+    // Use a type predicate to ensure step.result is not undefined
+    return steps
+      .filter(
+        (step): step is WorkflowStep & { result: WorkflowStepResult } =>
+          step.status === 'completed' && step.result !== undefined
+      )
+      .map(step => step.result);
   }
 
   private aggregateWorkflowResults(steps: WorkflowStep[], workflow: string): OrchestrationResult['result'] {
@@ -565,39 +771,51 @@ class LegalAIOrchestrator {
       case 'legal-research':
         return {
           ...baseResult,
-          searchResults: (results[0] as EnhancedLegalSearchResult)?.results || [],
-          precedentAnalysis: (results[1] as LegalResearchAnalysisResult)?.analysis || '',
-          summary: (results[2] as ChatResponse)?.response || '',
-          recommendations: (results[1] as LegalResearchAnalysisResult)?.recommendations || [],
-        };
+          searchResults: (results[0] as unknown as EnhancedLegalSearchResult)?.results || [],
+          precedentAnalysis: (results[1] as unknown as LegalResearchAnalysisResult)?.analysis || '',
+          summary: (results[2] as unknown as ChatResponse)?.response || '',
+          recommendations: (results[1] as unknown as LegalResearchAnalysisResult)?.recommendations || [],
+        } as BitsUICompatibleObject;
       case 'document-processing':
         return {
           ...baseResult,
-          entities: (results[0] as DocumentEntityExtractionResult)?.entities || [],
-          analysis: (results[1] as DocumentAnalysisResult)?.analysis || {},
-          summary: (results[2] as DocumentSummaryResult)?.summary || '',
-          keyTerms: (results[2] as DocumentSummaryResult)?.keyTerms || [],
-        };
+          entities: (results[0] as unknown as DocumentEntityExtractionResult)?.entities || [],
+          analysis: (results[1] as unknown as DocumentAnalysisResult)?.analysis || {},
+          summary: (results[2] as unknown as DocumentSummaryResult)?.summary || '',
+          keyTerms: (results[2] as unknown as DocumentSummaryResult)?.keyTerms || [],
+        } as BitsUICompatibleObject;
       case 'case-creation':
         return {
           ...baseResult,
-          caseScore: (results[0] as CaseScoringResult)?.score || 0,
-          researchSuggestions: (results[1] as ResearchSuggestionsResult)?.suggestions || [],
-          timeline: (results[2] as CaseTimelineResult) || {},
-        };
+          caseScore: (results[0] as unknown as CaseScoringResult)?.score || 0,
+          researchSuggestions: (results[1] as unknown as ResearchSuggestionsResult)?.suggestions || [],
+          // Provide a typed empty default to satisfy the expected CaseTimelineResult shape
+          timeline: (results[2] as unknown as CaseTimelineResult) || ({} as CaseTimelineResult),
+        } as BitsUICompatibleObject;
       case 'evidence-analysis':
         return {
           ...baseResult,
-          metadata: (results[0] as EvidenceMetadataProcessingResult) || {},
-          relevanceAnalysis: (results[1] as EvidenceRelevanceAnalysisResult) || {},
-          report: (results[2] as EvidenceReportResult)?.report || '',
-        };
+          metadata:
+            (results[0] as unknown as EvidenceMetadataProcessingResult) || ({} as EvidenceMetadataProcessingResult),
+          relevanceAnalysis:
+            (results[1] as unknown as EvidenceRelevanceAnalysisResult) || ({} as EvidenceRelevanceAnalysisResult),
+          report: (results[2] as unknown as EvidenceReportResult)?.report || '',
+        } as BitsUICompatibleObject;
+      case 'qlora-distillation': // New case
+        return {
+          ...baseResult,
+          distillationJob:
+            (results[0] as unknown as TriggerQLoRADistillationResult) || ({} as TriggerQLoRADistillationResult),
+          message:
+            (results[0] as unknown as TriggerQLoRADistillationResult)?.message || 'QLoRA distillation job initiated.',
+          statusUrl: (results[0] as unknown as TriggerQLoRADistillationResult)?.statusUrl || '',
+        } as BitsUICompatibleObject;
       default:
-        return { ...baseResult, results };
+        return { ...baseResult, results } as BitsUICompatibleObject;
     }
   }
   private generateWorkflowId(): string {
-    return `workflow_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `workflow_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`; // Changed substr to slice
   }
   getWorkflowStatus(workflowId: string): OrchestrationResult | null {
     return this.activeWorkflows.get(workflowId) || null;
@@ -610,19 +828,28 @@ class LegalAIOrchestrator {
 const orchestrator = new LegalAIOrchestrator();
 // API handlers
 export const POST: RequestHandler = withSSRHandler(
-  async ({ request }) => {
+  // handler
+  async (event: RequestEvent) => {
+    const { request } = event;
     const requestData: OrchestrationRequest = await request.json();
     // Validate request
     if (!requestData.workflow || !requestData.parameters) {
       return createSSRErrorResponse('Missing required fields: workflow and parameters', 400);
     }
-    const validWorkflows = ['legal-research', 'document-processing', 'case-creation', 'evidence-analysis'];
-    if (!validWorkflows.includes(requestData.workflow)) {
+    const validWorkflows = [
+      'legal-research',
+      'document-processing',
+      'case-creation',
+      'evidence-analysis',
+      'qlora-distillation', // Add new workflow
+    ] as const;
+    if (!validWorkflows.includes(requestData.workflow as (typeof validWorkflows)[number])) {
       return createSSRErrorResponse(`Invalid workflow. Must be one of: ${validWorkflows.join(', ')}`, 400);
     }
     try {
       const result = await orchestrator.executeWorkflow(requestData);
-      return createSSRResponse(result, {
+      // Cast to BitsUICompatibleData using unknown to satisfy the helper's expected type
+      return createSSRResponse(result as unknown as BitsUICompatibleData, {
         gpuAccelerated: requestData.options?.useGPU,
         cacheKey: requestData.options?.cacheResults ? `orchestrator_${result.workflowId}` : undefined,
       });
@@ -633,49 +860,11 @@ export const POST: RequestHandler = withSSRHandler(
       );
     }
   },
+  // options
   {
-    gpuAccelerated: true,
-    cacheKey: event => {
+    cacheKey: (event: RequestEvent) => {
       const url = new URL(event.request.url);
       return `orchestrator_${url.searchParams.get('workflow')}_${Date.now()}`;
     },
   }
 );
-export const GET: RequestHandler = withSSRHandler(async ({ url }) => {
-  const workflowId = url.searchParams.get('workflowId')
-  if (workflowId) {
-    const workflow = orchestrator.getWorkflowStatus(workflowId)
-    if (!workflow) {
-      return createSSRErrorResponse('Workflow not found', 404)
-    }
-    return createSSRResponse(workflow)
-  }
-  // List active workflows
-  const activeWorkflows = orchestrator.listActiveWorkflows()
-  return createSSRResponse({
-    activeWorkflows,
-    total: activeWorkflows.length,
-    timestamp: new Date().toISOString()
-  })
-})
-// Health check
-export const OPTIONS: RequestHandler = withSSRHandler(async () => {
-  return createSSRResponse({
-    service: 'legal-ai-orchestrator',
-    status: 'healthy',
-    supportedWorkflows: [
-      { label: 'legal-research' },
-      { label: 'document-processing' },
-      { label: 'case-creation' },
-      { label: 'evidence-analysis' },
-    ],
-    features: [
-      { label: 'Multi-step workflow orchestration' },
-      { label: 'GPU acceleration support' },
-      { label: 'Result caching' },
-      { label: 'Error recovery' },
-      { label: 'Progress tracking' },
-    ],
-    version: '1.0.0',
-  });
-});

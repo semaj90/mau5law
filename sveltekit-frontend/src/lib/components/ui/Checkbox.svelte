@@ -33,9 +33,9 @@ https://svelte.dev/e/js_parse_error -->
     border: 2px solid #ccc;
     border-radius: 0.25rem;
     cursor: pointer;
-    position: relative;
+    position relative;
     outline: none;
-    transition: all 0.2s ease-in-out;
+    transition all 0.2s ease-in-out;
   }
   .checkbox-input:checked {
     background-color: #007bff;
@@ -43,7 +43,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .checkbox-input:checked::after {
     content: '';
-    position: absolute;
+    position absolute;
     top: 0.1875rem;
     left: 0.1875rem;
     width: 0.625rem;

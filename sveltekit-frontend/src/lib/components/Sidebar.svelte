@@ -122,14 +122,14 @@
   {#if sidebarOpen}
     <div
       class="yorha-3d-panel-inner neural-sprite-active"
-      transition:slide={{ duration: 300, easing: quintOut, axis: 'x' }}
+      transitionslide={{ duration 300, easing: quintOut, axis: 'x' }}
     >
       <div class="nes-legal-header yorha-3d-button">
         <h3 class="nes-legal-title">CONTENT LIBRARY</h3>
         <div class="nes-header-actions">
           <button
             class={`nes-legal-priority-medium yorha-3d-button ${isPinned ? 'nes-legal-priority-high' : ''}`}
-            on:click={togglePin}
+            onclick={togglePin}
             aria-label={isPinned ? 'Unpin sidebar' : 'Pin sidebar'}
             type="button"
           >
@@ -138,7 +138,7 @@
           {#if !isPinned}
             <button
               class="nes-legal-priority-low yorha-3d-button"
-              on:click={() => (isHovered = false)}
+              onclick={() => (isHovered = false)}
               aria-label="Close sidebar"
               type="button"
             >
@@ -155,7 +155,7 @@
           <button
             class="nes-tab-trigger nes-legal-priority-medium"
             class:active={activeTab === 'evidence'}
-            on:click={() => handleTabChange('evidence')}
+            onclick={() => handleTabChange('evidence')}
             type="button"
           >
             <Folder size={16} /> EVIDENCE
@@ -163,7 +163,7 @@
           <button
             class="nes-tab-trigger nes-legal-priority-medium"
             class:active={activeTab === 'notes'}
-            on:click={() => handleTabChange('notes')}
+            onclick={() => handleTabChange('notes')}
             type="button"
           >
             <FileText size={16} /> NOTES
@@ -171,7 +171,7 @@
           <button
             class="nes-tab-trigger nes-legal-priority-medium"
             class:active={activeTab === 'canvas'}
-            on:click={() => handleTabChange('canvas')}
+            onclick={() => handleTabChange('canvas')}
             type="button"
           >
             <Tag size={16} /> CANVAS
@@ -212,14 +212,14 @@
 <style>
   /* @unocss-include */
   .sidebar-container {
-    position: fixed;
+    position fixed;
     top: 60px; /* Header height */
     left: 0,
     bottom: 0;
     width: 320px;
     z-index: 20;
     pointer-events: none;
-    transition: transform 0.3s ease;
+    transition transform 0.3s ease;
     transform: translateX(-100%);
   }
   .sidebar-container.open {
@@ -227,7 +227,7 @@
     pointer-events: all;
   }
   .hover-trigger {
-    position: absolute;
+    position absolute;
     top: 0,
     left: 0;
     width: 20px;
@@ -243,7 +243,7 @@
     border-right: 1px solid var(--border-light);
     box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     overflow: hidden;
   }
   .header-actions {
@@ -266,8 +266,8 @@
     justify-content: center;
     color: var(--text-primary);
   }
-  .pin-button:hover,
-  .close-button:hover {
+  .pin-buttonhover,
+  .close-buttonhover {
     background: var(--bg-tertiary);
   }
   .search-section {
@@ -289,7 +289,7 @@
     border: none;
     color: var(--text-muted);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition all 0.2s ease;
   }
   .tab-trigger:hover {
     background: var(--bg-tertiary);
@@ -304,12 +304,12 @@
     flex: 1,
     overflow: hidden;
     display: flex;
-    flex-direction: column;
+    flex-direction column;
   }
   .tabs-container {
     flex: 1,
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     overflow: hidden;
   }
   .tags-section {

@@ -39,33 +39,33 @@ https://svelte.dev/e/js_parse_error -->
       name: 'Evidence Analysis',
       key: 'evidence_analysis',
       status: 'pending',
-      description: 'Structuring document and extracting key facts',
-      icon: '📋',
-      duration: '30-45s',
+      description 'Structuring document and extracting key facts',
+      icon '📋',
+      duration '30-45s',
     },
     {
       name: 'Person Extraction',
       key: 'persons_extracted',
       status: 'pending',
-      description: 'Identifying persons of interest and roles',
-      icon: '👥',
-      duration: '20-30s',
+      description 'Identifying persons of interest and roles',
+      icon '👥',
+      duration '20-30s',
     },
     {
       name: 'Relationship Mapping',
       key: 'neo4j_updates',
       status: 'pending',
-      description: 'Building knowledge graph connections',
-      icon: '🔗',
-      duration: '15-25s',
+      description 'Building knowledge graph connections',
+      icon '🔗',
+      duration '15-25s',
     },
     {
       name: 'Case Synthesis',
       key: 'case_synthesis',
       status: 'pending',
-      description: 'Generating prosecutorial analysis',
-      icon: '⚖️',
-      duration: '25-35s',
+      description 'Generating prosecutorial analysis',
+      icon '⚖️',
+      duration '25-35s',
     },
   ];
   // Evidence type options
@@ -164,7 +164,7 @@ https://svelte.dev/e/js_parse_error -->
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock';
       notice.style.cssText =
-        'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+        'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Generate mock analysis results
@@ -324,8 +324,8 @@ https://svelte.dev/e/js_parse_error -->
         {/if}
       </div>
       <div class="flex gap-2">
-        <Button class="bits-btn" variant="ghost" on:click={resetForm} disabled={analyzing}>Reset</Button>
-        <Button class="bits-btn" on:click={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
+        <Button class="bits-btn" variant="ghost" onclick={resetForm} disabled={analyzing}>Reset</Button>
+        <Button class="bits-btn" onclick={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
           {analyzing ? 'Analyzing...' : 'Start Analysis'}
         </Button>
       </div>
@@ -450,7 +450,7 @@ https://svelte.dev/e/js_parse_error -->
                   variant="ghost"
                   size="sm"
                   class="mt-2 bits-btn bits-btn"
-                  on:click={() => viewDetailedResults(data)}
+                  onclick={() => viewDetailedResults(data)}
                 >
                   View Details →
                 </Button>
@@ -459,8 +459,8 @@ https://svelte.dev/e/js_parse_error -->
           {/each}
         </div>
         <DialogFooter>
-          <Button class="bits-btn" variant="ghost" on:click={() => (showResults = false)}>Close</Button>
-          <Button class="bits-btn" on:click={() => goto(`/cases/${caseId}`)}>View Case Details</Button>
+          <Button class="bits-btn" variant="ghost" onclick={() => (showResults = false)}>Close</Button>
+          <Button class="bits-btn" onclick={() => goto(`/cases/${caseId}`)}>View Case Details</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -479,6 +479,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   .animate-pulse-glow {
-    animation: pulse-glow 2s infinite;
+    animation pulse-glow 2s infinite;
   }
 </style>

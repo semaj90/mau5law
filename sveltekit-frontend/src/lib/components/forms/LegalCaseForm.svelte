@@ -13,10 +13,10 @@
     caseNumber: '',
     clientName: '',
     practiceArea: '',
-    jurisdiction: '',
+    jurisdiction '',
     courtLevel: '',
     priority: '',
-    description: '',
+    description '',
     assignedAttorney: '',
     estimatedHours: '',
     budget: '',
@@ -62,10 +62,10 @@
         caseNumber: '',
         clientName: '',
         practiceArea: '',
-        jurisdiction: '',
+        jurisdiction '',
         courtLevel: '',
         priority: '',
-        description: '',
+        description '',
         assignedAttorney: '',
         estimatedHours: '',
         budget: '',
@@ -329,7 +329,7 @@
                   >
                 </div>
                 <div class="review-item">
-                  <strong>Jurisdiction:</strong>
+                  <strong>Jurisdiction</strong>
                   <span>{jurisdictions.find(j => j.value === formData.jurisdiction)?.label || 'Not selected'}</span>
                 </div>
                 <div class="review-item">
@@ -343,7 +343,7 @@
               </div>
               {#if formData.description}
                 <div class="review-description">
-                  <strong>Description:</strong>
+                  <strong>Description</strong>
                   <p>{formData.description}</p>
                 </div>
               {/if}
@@ -365,17 +365,17 @@
         <TooltipBits content="Clear all form data">
           <ButtonBits
             variant="ghost"
-            on:click={() => {
+            onclick={() => {
               if (confirm('Are you sure you want to clear all form data?')) {
                 formData = {
                   caseTitle: '',
                   caseNumber: '',
                   clientName: '',
                   practiceArea: '',
-                  jurisdiction: '',
+                  jurisdiction '',
                   courtLevel: '',
                   priority: '',
-                  description: '',
+                  description '',
                   assignedAttorney: '',
                   estimatedHours: '',
                   budget: '',
@@ -394,7 +394,7 @@
             variant="primary"
             loading={isSubmitting}
             disabled={!isFormValid || isSubmitting}
-            on:click={handleSubmit}
+            onclick={handleSubmit}
           >
             {isSubmitting ? '⏳ Creating Case...' : '⚖️ Create Case'}
           </ButtonBits>
@@ -437,7 +437,7 @@
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #f59e0b, #d97706);
-    transition: width 0.3s ease;
+    transition width 0.3s ease;
   }
   .progress-text {
     font-size: 0.875rem;
@@ -457,7 +457,7 @@
   }
   .form-field {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
   }
   .form-field.full-width {
     grid-column: 1 / -1;
@@ -476,7 +476,7 @@
     color: var(--legal-ai-text-primary, #f1f5f9);
     font-family: inherit;
     font-size: 0.875rem;
-    transition: border-color 0.2s ease;
+    transition border-color 0.2s ease;
     resize: vertical;
   }
   .form-textarea:focus {
@@ -506,7 +506,7 @@
   }
   .review-item {
     display: flex;
-    flex-direction: column;
+    flex-direction column;
     gap: 0.25rem;
     padding: 1rem;
     background: var(--legal-ai-surface-secondary, #1e293b);
@@ -569,7 +569,7 @@
   }
   @media (max-width: 640px) {
     .form-header {
-      flex-direction: column;
+      flex-direction column;
       align-items: flex-start;
     }
     .form-grid {

@@ -40,8 +40,8 @@ mcp<script lang="ts">
     });
     return unsubscrib;
   });
-  function announceNotification(notification: Notification) {
-    const message = `${(notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).type} notification: ${(notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).title}. ${(notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).message}`;
+  function announceNotification(notification Notification) {
+    const message = `${(notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).type} notification ${(notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).title}. ${(notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).message}`;
     FocusManager.announceToScreenReader.type === "error" ? "assertive" : "polite"
     );
   }
@@ -121,18 +121,18 @@ mcp<script lang="ts">
       default:
         return "bg-blue-50 border-blue-200 text-blue-800";
   }}
-  function handleNotificationAction(notification: Notification, action: unknown) {
+  function handleNotificationAction(notification Notification, action unknown) {
     if (action.callback) {
       action.callback();
   }
     if (action.dismissOnClick !== false) {
       dismissNotification((notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).id);
   }}
-  function pauseTimer(notification: Notification) {
+  function pauseTimer(notification Notification) {
     // Timer functionality could be implemented here if needed
     // For now, this is a placeholder
   }
-  function resumeTimer(notification: Notification) {
+  function resumeTimer(notification Notification) {
     // Timer functionality could be implemented here if needed
     // For now, this is a placeholder
   }
@@ -178,7 +178,7 @@ mcp<script lang="ts">
         class="bits-btn container mx-auto px-4"
         variant="ghost"
         size="sm"
-        on:click={() =>
+        onclick={() =>
 (maxVisible += 5)}
       >
         +{hiddenCount} more notifications
@@ -249,7 +249,7 @@ mcp<script lang="ts">
                           variant={action.variant === "primary"
                             ? "default"
                             : "ghost"}
-                          on:click={() =>
+                          onclick={() =>
 handleNotificationAction(notification, action)}
                           class="container mx-auto px-4"
                         >
@@ -264,7 +264,7 @@ handleNotificationAction(notification, action)}
                   <Button class="bits-btn"
                     variant="ghost"
                     size="sm"
-                    on:click={() =>
+                    onclick={() =>
 dismissNotification((notification as { type?: unknown; title?: unknown; message?: unknown; id?: unknown; duration?: unknown; actions?: unknown }).id)}
                     class="container mx-auto px-4"
                     aria-label="Dismiss notification"
@@ -285,7 +285,7 @@ dismissNotification((notification as { type?: unknown; title?: unknown; message?
       <Button class="bits-btn"
         variant="ghost"
         size="sm"
-        on:click={() =>
+        onclick={() =>
 dismissAll()}
         class="container mx-auto px-4"
       >
@@ -374,15 +374,15 @@ dismissAll()}
       transform: translateY(-1rem) scale(0.95);
 }}
   .notification-item {
-    animation: notification-enter 0.3s ease-out;
+    animation notification-enter 0.3s ease-out;
 }
   /* Reduce motion for accessibility */
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion reduce) {
     .notification-item {
-      animation: none;
+      animation none;
 }
     .transition-all {
-      transition: none !important;
+      transition none !important;
 }}
   /* High contrast mode support */
   @media (prefers-contrast: high) {
@@ -396,7 +396,7 @@ dismissAll()}
 }
   /* Screen reader only content */
   .sr-only {
-    position: absolute;
+    position absolute;
     width: 1px;
     height: 1px;
     padding: 0,
