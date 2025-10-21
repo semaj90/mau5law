@@ -1,23 +1,26 @@
-import type { RequestHandler } from './$types.js'
-// Nomic Embedding Service Test API
-// Tests the 768-dimensional embedding service with database integration
-import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 
-}
 export interface TestResult {
-  test: string
-  status: 'success' | 'error' | 'warning'
-  data?: any
-  error?: string
-  duration?: number
+  test: string;
+  status: 'success' | 'error' | 'warning';
+  data?: unknown;
+  error?: string;
+  duration?: number;
 }
+
+// Helper to normalize unknown errors
+function getErrorMessage(err: unknown): string {
+  return err instanceof Error ? err.message : String(err ?? 'Unknown error');
+}
+
 export const GET: RequestHandler = async ({ url }) => {
-  const testType = url.searchParams.get('test') || 'all'
-  const results: TestResult[] = []
+  const testType = url.searchParams.get('test') || 'all';
+  const results: TestResult[] = [];
   try {
     // Test 1: Service Configuration
     if (testType === 'all' || testType === 'config') {
-      const startTime = Date.now()
+      const startTime = Date.now();
       try {
         const config = {
           model: 'nomic-embed-text:latest',
@@ -26,8 +29,8 @@ export const GET: RequestHandler = async ({ url }) => {
           enableGpuAcceleration: true,
           enableCaching: true,
           chunkSize: 1000,
-          chunkOverlap: 200
-        }
+          chunkOverlap: 200,
+        };
         results.push({
           test: 'embedding_service_config',
           status: 'success',
@@ -35,54 +38,58 @@ export const GET: RequestHandler = async ({ url }) => {
             ...config,
             ollama_url: 'http://localhost:11434',
             gpu_optimization: 'RTX 3060 Ti optimized',
-            legal_analysis: 'sentence-transformer integration'
+            legal_analysis: 'sentence-transformer integration',
           },
-          duration: Date.now() - startTime
-        })
-      } catch (error: any) {
+          duration: Date.now() - startTime,
+        });
+      } catch (err: unknown) {
         results.push({
           test: 'embedding_service_config',
           status: 'error',
-          error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime
-        })
+          error: getErrorMessage(err),
+          duration: Date.now() - startTime,
+        });
       }
     }
+
     // Test 2: Sample Embedding Generation
     if (testType === 'all' || testType === 'generate') {
-      const startTime = Date.now()
+      const startTime = Date.now();
       try {
         // Simulate embedding generation for 768-dimensional vectors
-        const sampleText = "This is a sample legal document for testing embedding generation with nomic-embed-text model."
-        const mockEmbedding = Array.from({ length: 768 }, () => Math.random() * 2 - 1)
+        const sampleText =
+          'This is a sample legal document for testing embedding generation with nomic-embed-text model.';
+        const mockEmbedding = Array.from({ length: 768 }, () => Math.random() * 2 - 1);
         // Normalize the vector (as the service would do)
-        const magnitude = Math.sqrt(mockEmbedding.reduce((sum, val) => sum + val * val, 0)
-        const normalizedEmbedding = magnitude > 0 ? mockEmbedding.map(val => val / magnitude) : mockEmbedding
+        const magnitude = Math.sqrt(mockEmbedding.reduce((sum, val) => sum + val * val, 0));
+        const normalizedEmbedding = magnitude > 0 ? mockEmbedding.map(val => val / magnitude) : mockEmbedding;
         results.push({
           test: 'embedding_generation',
           status: 'success',
           data: {
             text_length: sampleText.length,
             embedding_dimensions: normalizedEmbedding.length,
-            is_normalized: Math.abs(Math.sqrt(normalizedEmbedding.reduce((sum, val) => sum + val * val, 0)) - 1) < 0.001,
+            is_normalized:
+              Math.abs(Math.sqrt(normalizedEmbedding.reduce((sum, val) => sum + val * val, 0)) - 1) < 0.001,
             sample_values: normalizedEmbedding.slice(0, 5).map(v => Math.round(v * 1000) / 1000),
             model: 'nomic-embed-text',
-            processing_mode: 'batch_optimized'
+            processing_mode: 'batch_optimized',
           },
-          duration: Date.now() - startTime
-        })
-      } catch (error: any) {
+          duration: Date.now() - startTime,
+        });
+      } catch (err: unknown) {
         results.push({
           test: 'embedding_generation',
           status: 'error',
-          error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime
-        })
+          error: getErrorMessage(err),
+          duration: Date.now() - startTime,
+        });
       }
     }
+
     // Test 3: Document Chunking
     if (testType === 'all' || testType === 'chunking') {
-      const startTime = Date.now()
+      const startTime = Date.now();
       try {
         const sampleDocument = `
         This is a sample legal document containing multiple paragraphs.
@@ -93,24 +100,24 @@ export const GET: RequestHandler = async ({ url }) => {
         The analysis includes both federal and state law considerations.
         Section 3: Conclusion
         Based on the analysis above, we conclude that the legal framework supports our position.
-        `
+        `;
         // Simulate chunking (1000 chars with 200 overlap)
-        const chunkSize = 1000
-        const chunkOverlap = 200
-        const chunks = []
-        let startIndex = 0
+        const chunkSize = 1000;
+        const chunkOverlap = 200;
+        const chunks: { index: number; content: string; startIndex: number; endIndex: number; length: number }[] = [];
+        let startIndex = 0;
         while (startIndex < sampleDocument.length) {
-          const endIndex = Math.min(startIndex + chunkSize, sampleDocument.length)
-          const chunk = sampleDocument.substring(startIndex, endIndex)
+          const endIndex = Math.min(startIndex + chunkSize, sampleDocument.length);
+          const chunk = sampleDocument.substring(startIndex, endIndex);
           chunks.push({
             index: chunks.length,
             content: chunk.trim(),
             startIndex,
             endIndex,
-            length: chunk.trim().length
-          })
-          startIndex = endIndex - chunkOverlap
-          if (startIndex >= sampleDocument.length - chunkOverlap) break
+            length: chunk.trim().length,
+          });
+          startIndex = endIndex - chunkOverlap;
+          if (startIndex >= sampleDocument.length - chunkOverlap) break;
         }
         results.push({
           test: 'document_chunking',
@@ -120,48 +127,50 @@ export const GET: RequestHandler = async ({ url }) => {
             chunk_count: chunks.length,
             chunk_size: chunkSize,
             chunk_overlap: chunkOverlap,
-            chunks: chunks.map(c => ({,
+            chunks: chunks.map(c => ({
               index: c.index,
               length: c.length,
-              preview: c.content.substring(0, 50) + '...'
-            })
+              preview: c.content.substring(0, 50) + '...',
+            })),
           },
-          duration: Date.now() - startTime
-        })
-      } catch (error: any) {
+          duration: Date.now() - startTime,
+        });
+      } catch (err: unknown) {
         results.push({
           test: 'document_chunking',
           status: 'error',
-          error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime
-        })
+          error: getErrorMessage(err),
+          duration: Date.now() - startTime,
+        });
       }
     }
+
     // Test 4: Similarity Search Simulation
     if (testType === 'all' || testType === 'similarity') {
-      const startTime = Date.now()
+      const startTime = Date.now();
       try {
         // Simulate similarity search between vectors
-        const query = Array.from({ length: 768 }, () => Math.random() * 2 - 1)
+        const query = Array.from({ length: 768 }, () => Math.random() * 2 - 1);
         const documents = Array.from({ length: 5 }, (_, i) => ({
           id: `doc_${i + 1}`,
           embedding: Array.from({ length: 768 }, () => Math.random() * 2 - 1),
-          content: `Sample legal document ${i + 1} containing relevant legal information.`
-        })
+          content: `Sample legal document ${i + 1} containing relevant legal information.`,
+        }));
+
         // Calculate cosine similarities
         const similarities = documents.map(doc => {
-          const dotProduct = query.reduce((sum, val, i) => sum + val * doc.embedding[i], 0)
-          const queryMagnitude = Math.sqrt(query.reduce((sum, val) => sum + val * val, 0)
-          const docMagnitude = Math.sqrt(doc.embedding.reduce((sum, val) => sum + val * val, 0)
-          const similarity = dotProduct / (queryMagnitude * docMagnitude)
+          const dotProduct = query.reduce((sum, val, i) => sum + val * doc.embedding[i], 0);
+          const queryMagnitude = Math.sqrt(query.reduce((sum, val) => sum + val * val, 0));
+          const docMagnitude = Math.sqrt(doc.embedding.reduce((sum, val) => sum + val * val, 0));
+          const similarity = queryMagnitude > 0 && docMagnitude > 0 ? dotProduct / (queryMagnitude * docMagnitude) : 0;
           return {
             id: doc.id,
             content: doc.content,
-            similarity: Math.round(similarity * 1000) / 1000
-          }
-        })
+            similarity: Math.round(similarity * 1000) / 1000,
+          };
+        });
         // Sort by similarity descending
-        similarities.sort((a, b) => b.similarity - a.similarity)
+        similarities.sort((a, b) => b.similarity - a.similarity);
         results.push({
           test: 'similarity_search',
           status: 'success',
@@ -172,22 +181,24 @@ export const GET: RequestHandler = async ({ url }) => {
             results: similarities,
             top_match: similarities[0],
           },
-          duration: Date.now() - startTime
-        })
-      } catch (error: any) {
+          duration: Date.now() - startTime,
+        });
+      } catch (err: unknown) {
         results.push({
           test: 'similarity_search',
           status: 'error',
-          error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime
-        })
+          error: getErrorMessage(err),
+          duration: Date.now() - startTime,
+        });
       }
     }
+
     // Test 5: Legal Analysis Integration
     if (testType === 'all' || testType === 'legal') {
-      const startTime = Date.now()
+      const startTime = Date.now();
       try {
-        const legalText = "The defendant's motion for summary judgment is denied. The court finds that material issues of fact exist regarding the plaintiff's claims under 42 U.S.C. § 1983."
+        const legalText =
+          "The defendant's motion for summary judgment is denied. The court finds that material issues of fact exist regarding the plaintiff's claims under 42 U.S.C. § 1983.";
         // Simulate legal analysis
         const analysis = {
           legalDomain: ['civil_rights', 'federal_litigation'],
@@ -195,8 +206,8 @@ export const GET: RequestHandler = async ({ url }) => {
           keywords: ['summary_judgment', '42_usc_1983', 'material_facts'],
           entities: ['defendant', 'plaintiff', 'court'],
           citations: ['42 U.S.C. § 1983'],
-          document_type: 'judicial_order'
-        }
+          document_type: 'judicial_order',
+        };
         results.push({
           test: 'legal_analysis_integration',
           status: 'success',
@@ -205,22 +216,23 @@ export const GET: RequestHandler = async ({ url }) => {
             analysis,
             embedding_enhanced: true,
             semantic_enrichment: 'legal NLP pipeline integration',
-            vector_dimensions: 384
+            vector_dimensions: 384,
           },
-          duration: Date.now() - startTime
-        })
-      } catch (error: any) {
+          duration: Date.now() - startTime,
+        });
+      } catch (err: unknown) {
         results.push({
           test: 'legal_analysis_integration',
           status: 'error',
-          error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime
-        })
+          error: getErrorMessage(err),
+          duration: Date.now() - startTime,
+        });
       }
     }
+
     // Test 6: Performance and Caching
     if (testType === 'all' || testType === 'performance') {
-      const startTime = Date.now()
+      const startTime = Date.now();
       try {
         // Simulate performance metrics
         const performanceData = {
@@ -231,23 +243,24 @@ export const GET: RequestHandler = async ({ url }) => {
           memory_usage: '128MB for 10,000 cached embeddings',
           gpu_utilization: '85% RTX 3060 Ti',
           model_loading_time: '2.3 seconds',
-          average_embedding_time: '6.7ms per text'
-        }
+          average_embedding_time: '6.7ms per text',
+        };
         results.push({
           test: 'performance_metrics',
           status: 'success',
           data: performanceData,
           duration: Date.now() - startTime,
-        })
-      } catch (error: any) {
+        });
+      } catch (err: unknown) {
         results.push({
           test: 'performance_metrics',
           status: 'error',
-          error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime
-        })
+          error: getErrorMessage(err),
+          duration: Date.now() - startTime,
+        });
       }
     }
+
     return json({
       success: true,
       timestamp: new Date().toISOString(),
@@ -255,12 +268,12 @@ export const GET: RequestHandler = async ({ url }) => {
       tests: results,
       summary: {
         total: results.length,
-        passed: results.filter(item => item.length),
-        failed: results.filter(item => item.length),
-        warnings: results.filter(item => item.length),
-        avg_duration: Math.round(
-          results.reduce((sum, r) => sum + (r.duration || 0), 0) / results.length
-        )
+        passed: results.filter(item => item.status === 'success').length,
+        failed: results.filter(item => item.status === 'error').length,
+        warnings: results.filter(item => item.status === 'warning').length,
+        avg_duration: results.length
+          ? Math.round(results.reduce((sum, r) => sum + (r.duration || 0), 0) / results.length)
+          : 0,
       },
       configuration: {
         model: 'nomic-embed-text:latest',
@@ -270,30 +283,37 @@ export const GET: RequestHandler = async ({ url }) => {
         legal_analysis: 'sentence-transformer integration',
         caching: 'in-memory with TTL',
         database_integration: 'PostgreSQL pgvector',
-        chunking_strategy: 'legal-aware with overlap'
+        chunking_strategy: 'legal-aware with overlap',
       },
       integration_status: {
         qdrant_service: 'compatible',
         som_clustering: 'compatible',
         nes_cache: 'compatible',
         postgresql_sync: 'ready',
-        vector_dimensions: '768 (corrected)'
-      }
-    })
-  } catch (error: any) {
-    return json({
-      success: false,
-      error: error instanceof Error ? error.message: String(error),
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+        vector_dimensions: '768 (corrected)',
+      },
+    });
+  } catch (err: unknown) {
+    return json(
+      {
+        success: false,
+        error: getErrorMessage(err),
+        timestamp: new Date().toISOString(),
+      },
+      { status: 500 }
+    );
   }
-}
+};
+
 export const POST: RequestHandler = async ({ request, url }) => {
-  const action = url.searchParams.get('action')
+  const action = url.searchParams.get('action');
   try {
     if (action === 'process_document') {
-      const body = await request.json()
-      const { content, metadata } = body
+      const body = (await request.json()) as {
+        content?: string;
+        metadata?: Record<string, unknown>;
+      };
+      const { content, metadata } = body;
       // Simulate document processing
       const result = {
         document_id: `doc_${Date.now()}`,
@@ -302,29 +322,40 @@ export const POST: RequestHandler = async ({ request, url }) => {
         processing_time: '1.2 seconds',
         vector_dimensions: 384,
         storage_status: 'simulated - would store in PostgreSQL',
+        metadata_summary: {
+          present: !!metadata,
+          keys: metadata ? Object.keys(metadata).slice(0, 10) : [],
+          count: metadata ? Object.keys(metadata).length : 0,
+        },
         legal_analysis: {
           complexity: 'moderate',
           domain: ['contract_law'],
-          keywords: ['agreement', 'terms', 'conditions']
-        }
-      }
+          keywords: ['agreement', 'terms', 'conditions'],
+        },
+      };
       return json({
         success: true,
         action: 'process_document',
         result,
-        timestamp: new Date().toISOString()
-      })
+        timestamp: new Date().toISOString(),
+      });
     }
-    return json({
-      success: false,
-      error: 'Invalid action. Supported actions: process_document',
-      timestamp: new Date().toISOString()
-    }, { status: 400 })
-  } catch (error: any) {
-    return json({
-      success: false,
-      error: error instanceof Error ? error.message: String(error),
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+    return json(
+      {
+        success: false,
+        error: 'Invalid action. Supported actions: process_document',
+        timestamp: new Date().toISOString(),
+      },
+      { status: 400 }
+    );
+  } catch (err: unknown) {
+    return json(
+      {
+        success: false,
+        error: getErrorMessage(err),
+        timestamp: new Date().toISOString(),
+      },
+      { status: 500 }
+    );
   }
-}
+};

@@ -1,5 +1,5 @@
-
 import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit'
 // End-to-End Vector Pipeline Test
 // Tests: Document Upload → Embedding → Search → Results
 import { db } from '$lib/server/db'
@@ -53,9 +53,10 @@ class VectorPipelineTest {
     this.testResults = {
       timestamp: new Date().toISOString(),
       status: 'running',
-      steps: { [key,: strin,g]: any },
+      // initialize as plain objects (previous tokens were corrupted)
+      steps: {},
       errors: [],
-      performance: { [key,: strin,g]: any }
+      performance: {}
     }
     try {
       // Step 1: Test Ollama Connection
@@ -198,7 +199,7 @@ class VectorPipelineTest {
     const stepStart = Date.now()
     console.log('🔍 Testing vector search...')
     try {
-      const searchResults = []
+      const searchResults: Array<any> = []
       for (const query of testConfig.testQueries) {
         const queryStart = Date.now()
         // Generate query embedding
@@ -214,8 +215,8 @@ class VectorPipelineTest {
             caseTitle: cases.title
           })
           .from(documentVectors)
-          .leftJoin(documents, eq(documentVectors.documentId, documents.id)
-          .leftJoin(cases, eq(documents.caseId, cases.id)
+          .leftJoin(documents, eq(documentVectors.documentId, documents.id))
+          .leftJoin(cases, eq(documents.caseId, cases.id))
           .where(sql`1 - (${documentVectors.embedding} <=> ${queryEmbedding}) > 0.5`)
           .orderBy(sql`${documentVectors.embedding} <=> ${queryEmbedding}`)
           .limit(5)
@@ -224,17 +225,19 @@ class VectorPipelineTest {
           results: results.length,
           topSimilarity: results[0]?.similarity || 0,
           searchTime: Date.now() - queryStart,
-          matches: results.map((r: any) => ({,
+          matches: results.map((r: any) => ({
             filename: r.filename,
             similarity: r.similarity,
             caseTitle: r.caseTitle
-          })
+          }))
         })
       }
       this.testResults.steps.search = {
         status: 'success',
         queriesExecuted: searchResults.length,
-        avgSearchTime: searchResults.reduce((sum, r) => sum + r.searchTime, 0) / searchResults.length,
+        avgSearchTime: searchResults.length
+          ? searchResults.reduce((sum, r) => sum + r.searchTime, 0) / searchResults.length
+          : 0,
         totalResults: searchResults.reduce((sum, r) => sum + r.results, 0),
         time: Date.now() - stepStart
       }

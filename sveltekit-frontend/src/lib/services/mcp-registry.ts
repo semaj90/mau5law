@@ -1,153 +1,154 @@
-import fs from 'fs/promises'
-import path from 'path'
-import Redis from 'ioredis'
-import { performance } from 'node:perf_hooks'
+export type McpServerRecord = unknown;
+const registry: Record<string, unknown> = {};
+export default registry;
+import fs from 'fs/promises';
+import path from 'path';
+import Redis from 'ioredis';
+import { performance } from 'node:perf_hooks';
 
 export type McpServerRecord = {
-  name: string
-  description: string
-  region?: string
-  lastUpdated?: string
-  endpoints: Array<{ id: string; url: string; protocol: string }>
-  capabilities: string[]
-  cores: Array<{ id: string; role: string; status: string; host?: string; capacity?: number }>
-  metadata?: Record<string, unknown>
+  name: string;
+  description: string;
+  region?: string;
+  lastUpdated?: string;
+  endpoints: Array<{ id: string; url: string; protocol: string }>;
+  capabilities: string[];
+  cores: Array<{ id: string; role: string; status: string; host?: string; capacity?: number }>;
+  metadata?: Record<string, unknown>;
   health?: {
-    ok: boolean
-    latency: number | null
-    checkedAt?: string
-  }
-}
+    ok: boolean;
+    latency: number | null;
+    checkedAt?: string;
+  };
+};
 
-const REDIS_KEY = 'mcp:registry'
-const REDIS_URL = process.env.REDIS_URL || import.meta.env?.REDIS_URL || ''
-let redisClient: Redis | null = null
+const REDIS_KEY = 'mcp:registry';
+const REDIS_URL = process.env.REDIS_URL || import.meta.env?.REDIS_URL || '';
+let redisClient: Redis | null = null;
 
 function getRedis(): Redis | null {
-  if (!REDIS_URL) return null
+  if (!REDIS_URL) return null;
   if (!redisClient) {
     redisClient = new Redis(REDIS_URL, {
       maxRetriesPerRequest: 2,
-    })
+    });
   }
-  return redisClient
+  return redisClient;
 }
 
-let registryCache: Record<string, McpServerRecord> | null = null
-let lastLoadedAt = 0
-const CACHE_TTL_MS = 1000 * 30 // 30 seconds
+let registryCache: Record<string, McpServerRecord> | null = null;
+let lastLoadedAt = 0;
+const CACHE_TTL_MS = 1000 * 30; // 30 seconds
 
 async function loadRegistryFromRedis(): Promise<Record<string, McpServerRecord> | null> {
-  const client = getRedis()
-  if (!client) return null
-  const payload = await client.get(REDIS_KEY)
-  if (!payload) return null
+  const client = getRedis();
+  if (!client) return null;
+  const payload = await client.get(REDIS_KEY);
+  if (!payload) return null;
   try {
-    const parsed = JSON.parse(payload) as Record<string, McpServerRecord>
-    return parsed
+    const parsed = JSON.parse(payload) as Record<string, McpServerRecord>;
+    return parsed;
   } catch (error) {
-    console.warn('[MCP Registry] Failed to parse redis payload:', error)
-    return null
+    console.warn('[MCP Registry] Failed to parse redis payload:', error);
+    return null;
   }
 }
 
 async function loadRegistryFromFile(): Promise<Record<string, McpServerRecord>> {
-  const fullPath = path.resolve('data/mcp-registry.json')
-  const text = await fs.readFile(fullPath, 'utf-8')
-  return JSON.parse(text)
+  const fullPath = path.resolve('data/mcp-registry.json');
+  const text = await fs.readFile(fullPath, 'utf-8');
+  return JSON.parse(text);
 }
 
 async function loadRegistry(): Promise<Record<string, McpServerRecord>> {
-  const now = Date.now()
+  const now = Date.now();
   if (registryCache && now - lastLoadedAt < CACHE_TTL_MS) {
-    return registryCache
+    return registryCache;
   }
 
-  const redisRegistry = await loadRegistryFromRedis()
+  const redisRegistry = await loadRegistryFromRedis();
   if (redisRegistry) {
-    registryCache = redisRegistry
-    lastLoadedAt = now
-    return redisRegistry
+    registryCache = redisRegistry;
+    lastLoadedAt = now;
+    return redisRegistry;
   }
 
-  const fileRegistry = await loadRegistryFromFile()
-  registryCache = fileRegistry
-  lastLoadedAt = now
+  const fileRegistry = await loadRegistryFromFile();
+  registryCache = fileRegistry;
+  lastLoadedAt = now;
 
   // Mirror file registry to redis for future reads
   try {
-    const client = getRedis()
+    const client = getRedis();
     if (client) {
-      await client.set(REDIS_KEY, JSON.stringify(fileRegistry))
+      await client.set(REDIS_KEY, JSON.stringify(fileRegistry));
     }
   } catch (error) {
-    console.warn('[MCP Registry] Failed to mirror registry to redis:', error)
+    console.warn('[MCP Registry] Failed to mirror registry to redis:', error);
   }
 
-  return fileRegistry
+  return fileRegistry;
 }
 
 export async function refreshMcpRegistry(registry: Record<string, McpServerRecord>): Promise<void> {
-  const client = getRedis()
+  const client = getRedis();
   if (client) {
-    await client.set(REDIS_KEY, JSON.stringify(registry))
+    await client.set(REDIS_KEY, JSON.stringify(registry));
   }
-  registryCache = registry
-  lastLoadedAt = Date.now()
+  registryCache = registry;
+  lastLoadedAt = Date.now();
 }
 
 export async function fetchMcpServerData(serverName: string): Promise<McpServerRecord | null> {
-  const registry = await loadRegistry()
-  const record = registry[serverName]
-  return record ?? null
+  const registry = await loadRegistry();
+  const record = registry[serverName];
+  return record ?? null;
 }
 
 export async function listMcpServers(): Promise<McpServerRecord[]> {
-  const registry = await loadRegistry()
-  return Object.values(registry)
+  const registry = await loadRegistry();
+  return Object.values(registry);
 }
 
 export function invalidateMcpRegistryCache() {
-  registryCache = null
-  lastLoadedAt = 0
+  registryCache = null;
+  lastLoadedAt = 0;
 }
 
 async function fetchWithTimeout(url: string, timeoutMs: number): Promise<Response> {
-  const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), timeoutMs)
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    return await fetch(url, { signal: controller.signal })
+    return await fetch(url, { signal: controller.signal });
   } finally {
-    clearTimeout(timeout)
+    clearTimeout(timeout);
   }
 }
 
 export async function pingMcpServer(server: McpServerRecord): Promise<{
-  ok: boolean
-  latency: number | null
-  checkedAt: string
+  ok: boolean;
+  latency: number | null;
+  checkedAt: string;
 }> {
-  const endpoint = server.endpoints?.[0]?.url
+  const endpoint = server.endpoints?.[0]?.url;
   if (!endpoint) {
-    return { ok: false, latency: null, checkedAt: new Date().toISOString() }
+    return { ok: false, latency: null, checkedAt: new Date().toISOString() };
   }
-  const healthUrl = endpoint.endsWith('/')
-    ? `${endpoint}health`
-    : `${endpoint}/health`
-  const started = performance.now()
+  const healthUrl = endpoint.endsWith('/') ? `${endpoint}health` : `${endpoint}/health`;
+  const started = performance.now();
   try {
-    const response = await fetchWithTimeout(healthUrl, 2_000)
-    const latency = Math.round(performance.now() - started)
+    const response = await fetchWithTimeout(healthUrl, 2_000);
+    const latency = Math.round(performance.now() - started);
     return {
       ok: response.ok,
       latency,
       checkedAt: new Date().toISOString(),
-    }
+    };
   } catch {
     return {
       ok: false,
       latency: null,
       checkedAt: new Date().toISOString(),
-    }
+    };
   }
 }

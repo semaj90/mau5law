@@ -1,3 +1,4 @@
+export const redisService: unknown = {};
 /**
  * Production Redis Service for Legal AI Platform
  * Handles connection pooling, reconnection, and distributed caching

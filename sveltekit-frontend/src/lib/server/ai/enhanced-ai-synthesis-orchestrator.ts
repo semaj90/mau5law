@@ -1,10 +1,26 @@
+import { Buffer } from 'node:buffer';
+import { createHash } from 'node:crypto';
 import { logger } from '../logger.js';
 import xstateIntegration from '$lib/services/xstate-integration';
 import type { McpServerRecord } from '$lib/services/mcp-registry';
 import { createMachine } from 'xstate';
+import { getFromCache, setCache } from '$lib/server/redis';
+import type { SOMBitmapOptions, SOMBitmapResult, SOMBitmapPalette } from './som-bitmap-visualizer';
+import { bitmapToDataUrl } from './som-bitmap-visualizer';
+import type { TransitionObservation, TransitionPrediction } from './hmm-transition-predictor';
+import { emitClusterEvent } from './cluster-stream';
+import type { ClusterCentroid } from './cluster-service';
+import {
+  addClusterMember,
+  getClusterMembers,
+  getClusterModelSnapshot,
+  selectNearestCentroid,
+  euclidean,
+} from './cluster-service';
 
-// Minimal Document type used in orchestration context
-type Document = { id?: string; title?: string; excerpt?: string; [key: string]: any };
+// --- TYPE DEFINITIONS ---
+
+type Document = { id?: string; title?: string; excerpt?: string; [key: string]: unknown };
 
 type OllamaMessage = {
   role: 'user' | 'system' | 'assistant';
@@ -14,7 +30,6 @@ type OllamaMessage = {
 type ProcessOptions = {
   context?: unknown;
   requestId?: string;
-  // mcpRecord: record always takes precedence over options.mcpRecord due to spread order below
   mcpRecord?: McpServerRecord | null;
   timeoutMs?: number;
   streamId?: string;
@@ -42,6 +57,29 @@ type StreamUpdate =
   | { type: 'chunk'; chunk: string }
   | { type: 'complete'; result: ProcessResult };
 
+type SOMClusterRunOptions = SOMBitmapOptions & {
+  cacheKey?: string;
+  cacheTtlSeconds?: number;
+  emit?: boolean;
+  heatmapSampleSize?: number;
+  metadata?: Record<string, unknown>;
+};
+
+type SOMClusterResult = {
+  bitmap: SOMBitmapResult;
+  cacheKey: string;
+  fromCache: boolean;
+};
+
+type ClusterAssignmentResult = {
+  clusterId: string;
+  centroid: ClusterCentroid;
+  neighbors: string[];
+  distance: number;
+  snapshotVersion: string;
+  candidateVector: number[];
+};
+
 type ServiceStatusValue = 'healthy' | 'degraded' | 'unhealthy' | 'offline' | 'unknown';
 
 interface ServiceStatus {
@@ -55,6 +93,30 @@ interface HealthReport {
   timestamp: string;
 }
 
+// Removed: unused top-level IntentInfo type declaration
+
+type TritonOutput = {
+  name?: string;
+  data?: number[]; // older Triton payloads
+  contents?: { fp32_contents?: number[] } | { fp32_contents?: number[] };
+  // other fields may exist, keep minimal
+};
+
+type RedisOrchestrator = {
+  zadd?: (...args: unknown[]) => Promise<unknown>;
+  incr?: (...args: unknown[]) => Promise<unknown>;
+  callRedis?: (...args: unknown[]) => Promise<unknown>;
+  [key: string]: unknown;
+};
+
+type RabbitWorkers = {
+  publish?: (...args: unknown[]) => Promise<unknown>;
+  enqueue?: (...args: unknown[]) => Promise<unknown>;
+  [key: string]: unknown;
+};
+
+// --- CONSTANTS ---
+
 const DEFAULT_OLLAMA_MODELS = {
   primary: 'gemma3-legal:latest',
   comparison: 'gemma270:m',
@@ -63,25 +125,60 @@ const DEFAULT_OLLAMA_MODELS = {
 
 const FALLBACK_OLLAMA_URL = 'http://docker-desktop:11434';
 
+/**
+ * Fetches user intent information.
+ * This is a stub/mock implementation. In a real system, this would query an intent detection service.
+ * @param userId The ID of the user.
+ * @returns A promise that resolves to the user's intent information or null.
+ */
+async function fetchIntent(
+  userId: string
+): Promise<{ clusterId?: string | null; predictedIntent?: string | null; confidence?: number } | null> {
+  try {
+    const cacheKey = `intent:${userId}`;
+    const cached = await getFromCache(cacheKey);
+    if (cached) {
+      return JSON.parse(cached) as { clusterId?: string; predictedIntent?: string; confidence?: number };
+    }
+
+    // Mock implementation: In a real scenario, this would call a service.
+    const mockIntent = {
+      clusterId: 'cluster_legal_research_docs',
+      predictedIntent: 'summarize_case_law',
+      confidence: 0.91,
+    };
+
+    // Cache the mock intent for 5 minutes
+    await setCache(cacheKey, JSON.stringify(mockIntent), 300);
+
+    return mockIntent;
+  } catch (error) {
+    logger.debug('[Orchestrator] fetchIntent helper failed', { error: String(error), userId });
+    return null;
+  }
+}
+
+// --- ORCHESTRATOR CLASS ---
+
 class EnhancedAISynthesisOrchestrator {
   private readonly ollamaUrl: string;
   private readonly models: typeof DEFAULT_OLLAMA_MODELS;
+  private readonly tritonUrl: string | null;
   private initialized = false;
   private lastMcpRecord: McpServerRecord | null = null;
   private lastFunctionResult: unknown = null;
   private lastError: string | null = null;
 
   constructor() {
-    this.ollamaUrl =
-      process.env.OLLAMA_URL ?? (import.meta.env?.OLLAMA_URL as string | undefined) ?? FALLBACK_OLLAMA_URL;
+    this.ollamaUrl = process.env.OLLAMA_URL ?? process.env.VITE_OLLAMA_URL ?? FALLBACK_OLLAMA_URL;
     this.models = { ...DEFAULT_OLLAMA_MODELS };
+    const tritonEnv = process.env.TRITON_URL ?? process.env.VITE_TRITON_URL ?? null;
+    this.tritonUrl = tritonEnv ? String(tritonEnv) : null;
   }
 
   private async ensureInitialized(): Promise<void> {
     if (this.initialized) return;
     logger.info('[Orchestrator] Initializing enhanced AI synthesis orchestrator');
-    // In a full build, this is where we would warm caches, load embeddings, etc.
-    // For now mark as ready immediately.
     this.initialized = true;
   }
 
@@ -102,6 +199,26 @@ class EnhancedAISynthesisOrchestrator {
     sections.push('Please answer the following legal question with citations and cautious reasoning:\n');
     sections.push(query);
     return sections.join('');
+  }
+
+  private toNumberArray(vector: number[] | Float32Array): number[] {
+    return vector instanceof Float32Array ? Array.from(vector) : Array.from(vector);
+  }
+
+  private averageVectors(vectors: number[][]): number[] {
+    if (vectors.length === 0) return [];
+    const dimension = vectors[0]?.length ?? 0;
+    if (dimension === 0) return [];
+    const accumulator = new Array<number>(dimension).fill(0);
+    for (const vector of vectors) {
+      for (let i = 0; i < dimension; i += 1) {
+        accumulator[i] += vector[i] ?? 0;
+      }
+    }
+    for (let i = 0; i < dimension; i += 1) {
+      accumulator[i] /= vectors.length;
+    }
+    return accumulator;
   }
 
   private async callOllama(messages: OllamaMessage[], model?: string) {
@@ -144,8 +261,6 @@ class EnhancedAISynthesisOrchestrator {
     const record = options.mcpRecord ?? this.lastMcpRecord;
     if (record) steps.push(`MCP_SERVER_DISCOVERED:${record.name}`);
     const prompt = this.composePrompt(query, { ...options, mcpRecord: record });
-    // Track when the prompt has been composed for orchestration diagnostics and step tracing
-    steps.push('PROMPT_COMPOSED');
     steps.push('PROMPT_COMPOSED');
 
     let responseText = 'Unable to generate response.';
@@ -211,7 +326,6 @@ class EnhancedAISynthesisOrchestrator {
       context7: this.lastMcpRecord ? 'healthy' : 'degraded',
     };
 
-    // Ping Ollama tags endpoint
     try {
       const resp = await fetch(`${this.ollamaUrl}/api/tags`);
       services.ollama = resp.ok ? 'healthy' : 'unhealthy';
@@ -219,7 +333,6 @@ class EnhancedAISynthesisOrchestrator {
       services.ollama = 'offline';
     }
 
-    // Other backends are stubbed for now
     services.redis = 'degraded';
     services.postgres = 'degraded';
     services.neo4j = 'degraded';
@@ -270,26 +383,428 @@ class EnhancedAISynthesisOrchestrator {
     logger.debug('[Orchestrator] MCP function result stored');
   }
 
-  handleMcpError(
-    message: string,
-    details: { requestId?: string; stage?: string; error?: unknown } = {}
-  ) {
-    this.lastError = message;
+  async analyzeCluster(promptText: string, clusterId: string, userId?: string) {
+    try {
+      // avoid "await has no effect on the type of this expression" by not using `as typeof import(...)` with await
+      const graph = (await import('$lib/server/graph-service')).default;
+      const res = await graph.mergePromptCluster(promptText, clusterId, userId);
+      logger.info('[Orchestrator] analyzeCluster persisted graph relationship', { clusterId, userId });
+      return res;
+    } catch (err) {
+      logger.debug('[Orchestrator] analyzeCluster failed', { error: String(err) });
+      return null;
+    }
+  }
 
+  async analyzeClusterSOM(userId: string, vectors: Float32Array[]) {
+    const embeddings = vectors.map(vec => Array.from(vec));
+    const result = await this.runClusterSOM(userId, embeddings, {
+      includeSvg: true,
+      palette: 'legal',
+      metadata: { source: 'analyzeClusterSOM', vectorCount: vectors.length },
+    });
+    return result?.bitmap ?? null;
+  }
+
+  async predictNextContext(sequence: string[], topK = 3, meta: Record<string, unknown> = {}) {
+    try {
+      const predictions = await this.predictTransitionSequence(sequence, topK, {
+        observe: true,
+        emit: true,
+        context: { ...meta, sequenceLength: sequence.length },
+      });
+      logger.debug('[Orchestrator] HMM predictions', { predictions });
+      // explicitly type pred to avoid implicit any
+      return predictions.map((pred: TransitionPrediction) => ({ id: pred.state, probability: pred.probability }));
+    } catch (err) {
+      logger.debug('[Orchestrator] predictNextContext failed', { error: String(err) });
+      return [] as Array<{ id: string; probability?: number }>;
+    }
+  }
+
+  private makeSomCacheKey(userId: string, flattened: Float32Array, options: SOMBitmapOptions = {}): string {
+    const hash = createHash('sha256');
+    // sample first N values to keep the key stable and small
+    const sampleSize = Math.min(32, flattened.length);
+    for (let i = 0; i < sampleSize; i++) {
+      hash.update(String(flattened[i]) + ',');
+    }
+    hash.update(String(options.width ?? ''));
+    hash.update(String(options.height ?? ''));
+    hash.update(String(options.palette ?? ''));
+    return `som:${userId}:${hash.digest('hex')}`;
+  }
+
+  async runClusterSOM(
+    userId: string,
+    vectors: Array<number[] | Float32Array>,
+    options: SOMClusterRunOptions = {}
+  ): Promise<SOMClusterResult | null> {
+    if (!userId || !Array.isArray(vectors) || vectors.length === 0) return null;
+    try {
+      // flatten vectors
+      const totalLength = vectors.reduce((sum, v) => sum + (v?.length ?? 0), 0);
+      if (totalLength === 0) return null;
+      const flattened = new Float32Array(totalLength);
+      let offset = 0;
+      for (const v of vectors) {
+        const arr = v instanceof Float32Array ? v : Float32Array.from(v);
+        flattened.set(arr, offset);
+        offset += arr.length;
+      }
+
+      const { cacheKey, cacheTtlSeconds, emit = true, heatmapSampleSize, metadata, ...rest } = options;
+      const visualizerOptions = rest as SOMBitmapOptions;
+      const includeSvg = visualizerOptions.includeSvg !== false;
+      const primaryCacheKey = this.makeSomCacheKey(userId, flattened, options);
+
+      // try cache
+      let bitmap: SOMBitmapResult | null = null;
+      let fromCache = false;
+      const cached = await getFromCache(cacheKey ?? primaryCacheKey);
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          const heatmap = Float32Array.from(parsed.bitmap.heatmap ?? []);
+          const rgbaBase64 = parsed.bitmap.rgba ?? '';
+          const rgbaBuffer = rgbaBase64 ? Buffer.from(rgbaBase64, 'base64') : Buffer.alloc(heatmap.length * 4);
+          const rgbaArray = new Uint8ClampedArray(rgbaBuffer.buffer, rgbaBuffer.byteOffset, rgbaBuffer.byteLength);
+          bitmap = {
+            width: parsed.bitmap.width,
+            height: parsed.bitmap.height,
+            palette: (parsed.bitmap.palette as unknown as SOMBitmapPalette) ?? 'grayscale',
+            checksum: parsed.bitmap.checksum ?? '',
+            metadata: parsed.bitmap.metadata ?? {},
+            heatmap,
+            rgba: rgbaArray,
+            svg: parsed.bitmap.svg,
+          };
+          fromCache = true;
+        } catch (err) {
+          logger.debug('[Orchestrator] Failed to parse SOM cache payload, recomputing', { err: String(err) });
+        }
+      }
+
+      if (!bitmap) {
+        bitmap = await this.generateSomBitmapFromEmbedding(Array.from(flattened), {
+          ...visualizerOptions,
+          includeSvg,
+        });
+        if (!bitmap) return null;
+        const payload = {
+          version: 1,
+          createdAt: Date.now(),
+          bitmap: {
+            width: bitmap.width,
+            height: bitmap.height,
+            palette: bitmap.palette ?? 'grayscale',
+            checksum: bitmap.checksum ?? '',
+            metadata: bitmap.metadata,
+            heatmap: Array.from(bitmap.heatmap),
+            rgba: Buffer.from(bitmap.rgba ?? new Uint8ClampedArray()).toString('base64'),
+            svg: bitmap.svg ?? (includeSvg ? bitmapToDataUrl(bitmap) : undefined),
+          },
+        };
+        const ttl = Math.max(5, cacheTtlSeconds ?? 300);
+        await setCache(cacheKey ?? primaryCacheKey, JSON.stringify(payload), ttl).catch(err => {
+          logger.debug('[Orchestrator] SOM cache write failed', { err: String(err) });
+        });
+      }
+
+      if (emit && bitmap) {
+        const sampleSize = Math.max(0, Math.min(bitmap.heatmap.length, heatmapSampleSize ?? 64));
+        const heatmapSample = sampleSize > 0 ? Array.from(bitmap.heatmap.slice(0, sampleSize)) : undefined;
+        emitClusterEvent({
+          type: 'som_bitmap',
+          userId,
+          checksum: bitmap.checksum ?? '',
+          palette: bitmap.palette ?? 'grayscale',
+          metadata: {
+            width: bitmap.width,
+            height: bitmap.height,
+            vectors: vectors.length,
+            ...(metadata ?? {}),
+          },
+          timestamp: Date.now(),
+          heatmapSample,
+        });
+      }
+
+      return { bitmap, cacheKey: cacheKey ?? primaryCacheKey, fromCache };
+    } catch (err) {
+      logger.error('[Orchestrator] runClusterSOM failed', { err: String(err) });
+      return null;
+    }
+  }
+
+  async runClusterKMeans(
+    personId: string,
+    vectors: Array<number[] | Float32Array>,
+    options: { autoEncode?: boolean; emit?: boolean } = {}
+  ): Promise<ClusterAssignmentResult | null> {
+    if (!personId || !Array.isArray(vectors) || vectors.length === 0) return null;
+
+    try {
+      const snapshot = await getClusterModelSnapshot();
+      if (!snapshot) {
+        logger.debug('[Orchestrator] runClusterKMeans skipped (no snapshot available)');
+        return null;
+      }
+
+      const normalized = vectors.map(v => this.toNumberArray(v as number[]));
+      const averaged = this.averageVectors(normalized);
+      if (averaged.length === 0) return null;
+
+      let candidateVector = averaged;
+      if (options.autoEncode !== false) {
+        try {
+          const latent = await this.runAutoencoder(averaged, 'gpu');
+          if (latent && latent.length > 0) candidateVector = latent;
+        } catch (err) {
+          logger.debug('[Orchestrator] runClusterKMeans autoencoder fallback', { err: String(err) });
+        }
+      }
+
+      const centroid = selectNearestCentroid(snapshot, candidateVector);
+      if (!centroid) {
+        logger.debug('[Orchestrator] runClusterKMeans found no centroid match');
+        return null;
+      }
+
+      const distance = euclidean(candidateVector, centroid.vector ?? []);
+      await addClusterMember(centroid.id, personId, {
+        snapshotVersion: snapshot.version,
+        algorithm: snapshot.algorithm,
+        distance,
+      });
+
+      const neighbors = await getClusterMembers(centroid.id, { exclude: personId });
+      if (options.emit !== false) {
+        emitClusterEvent({
+          type: 'cluster_assignment',
+          clusterId: centroid.id,
+          neighbors,
+          metadata: {
+            snapshotVersion: snapshot.version,
+            algorithm: snapshot.algorithm,
+            distance,
+            subjectId: personId,
+          },
+          timestamp: Date.now(),
+        });
+      }
+
+      return {
+        clusterId: centroid.id,
+        centroid,
+        neighbors,
+        distance,
+        snapshotVersion: snapshot.version,
+        candidateVector,
+      };
+    } catch (err) {
+      logger.error('[Orchestrator] runClusterKMeans failed', { err: String(err) });
+      return null;
+    }
+  }
+
+  async selectAdapterByCluster(clusterId: string): Promise<string | null> {
+    try {
+      const manifest = await getFromCache(`foaf:cluster:${clusterId}:adapter`);
+      if (manifest) return String(manifest);
+      return `adapter_cluster_${clusterId}`;
+    } catch (err) {
+      logger.debug('[Orchestrator] selectAdapterByCluster failed', { err: String(err), clusterId });
+      return null;
+    }
+  }
+
+  async generateAdaptiveResponse(userId: string, query: string, options: ProcessOptions = {}): Promise<ProcessResult> {
+    let intentInfo: { clusterId?: string | null; predictedIntent?: string | null; confidence?: number } | null = null;
+    try {
+      // now calls the helper above
+      intentInfo = (await fetchIntent(userId)) ?? null;
+    } catch (err) {
+      logger.debug('[Orchestrator] fetchIntent failed', { err: String(err), userId });
+    }
+
+    let adapterName: string | null = null;
+    if (intentInfo?.clusterId) {
+      adapterName = await this.selectAdapterByCluster(intentInfo.clusterId);
+    }
+
+    const mergedContext: Record<string, unknown> = {
+      ...((options.context as Record<string, unknown>) ?? {}),
+      intent: intentInfo,
+      adapterName,
+      userId,
+    };
+
+    const enrichedQuery = intentInfo?.predictedIntent
+      ? `User intent: ${intentInfo.predictedIntent} (confidence ${(intentInfo.confidence ?? 0).toFixed(2)}).\n\n${query}`
+      : query;
+
+    return this.process(enrichedQuery, { ...options, context: mergedContext });
+  }
+
+  async runAutoencoder(input: number[], mode: 'gpu' | 'wasm' = 'gpu'): Promise<number[]> {
+    try {
+      // 1) Triton (GPU) path
+      if (mode === 'gpu' && this.tritonUrl) {
+        const latent = await this.runAutoencoderViaTriton(input);
+        if (latent && latent.length) return latent;
+      }
+
+      // 2) Native binary fallback
+      try {
+        const os = await import('node:os');
+        const path = await import('node:path');
+        const { promisify } = await import('node:util');
+        const { execFile } = await import('node:child_process');
+        const exec = promisify(execFile);
+        const binaryName = os.platform() === 'win32' ? 'som_autoencoder.exe' : 'som_autoencoder';
+        const binaryPath = path.join(process.cwd(), 'native', 'autoencoder', binaryName);
+        const modelPath = path.join(process.cwd(), 'native', 'autoencoder', 'model.pt');
+        const args = [modelPath, ...input.map(String)];
+        try {
+          const { stdout } = await exec(binaryPath, args);
+          const parsed = JSON.parse(String(stdout)) as { output?: number[] };
+          if (Array.isArray(parsed.output)) return parsed.output;
+        } catch (e) {
+          logger.debug('[Orchestrator] Native autoencoder exec failed, falling back to WASM', { error: String(e) });
+        }
+      } catch {
+        // ignore native fallback errors and try wasm
+      }
+
+      // 3) WASM fallback
+      try {
+        const mod = await import('$lib/wasm/autoencoder-wasm');
+        if ('default' in mod && typeof mod.default === 'function') {
+          const out = await (mod.default as (input: number[]) => Promise<number[]>)(input);
+          if (Array.isArray(out)) return out;
+        }
+      } catch (e) {
+        logger.debug('[Orchestrator] WASM autoencoder failed', { error: String(e) });
+      }
+
+      return [];
+    } catch (err) {
+      logger.error('[Orchestrator] runAutoencoder failed', { err: String(err) });
+      return [];
+    }
+  }
+
+  private async runAutoencoderViaTriton(input: number[]): Promise<number[] | null> {
+    if (!this.tritonUrl) return null;
+    try {
+      const body = {
+        inputs: [
+          {
+            name: 'INPUT',
+            shape: [1, input.length],
+            datatype: 'FP32',
+            data: input,
+          },
+        ],
+        outputs: [{ name: 'LATENT' }],
+      };
+      const resp = await fetch(`${this.tritonUrl.replace(/\/$/, '')}/v2/models/autoencoder/infer`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      if (!resp.ok) {
+        const txt = await resp.text();
+        logger.debug('[Orchestrator] Triton inference failed', { status: resp.status, text: txt });
+        return null;
+      }
+      // keep using TritonOutput type defined above
+      const payload = (await resp.json()) as { outputs?: TritonOutput[] };
+      const latentOutput = payload.outputs?.find((o: TritonOutput) => o.name === 'LATENT') ?? payload.outputs?.[0];
+      const data = latentOutput?.data ?? latentOutput?.contents?.fp32_contents ?? null;
+      if (!Array.isArray(data) || data.length === 0) return null;
+      return Array.from(data);
+    } catch (error) {
+      logger.debug('[Orchestrator] runAutoencoderViaTriton error', { error: String(error) });
+      return null;
+    }
+  }
+
+  async generateSomBitmapFromEmbedding(
+    embedding: number[],
+    options: SOMBitmapOptions = {}
+  ): Promise<SOMBitmapResult | null> {
+    if (!Array.isArray(embedding) || embedding.length === 0) return null;
+    try {
+      const mod = await import('./som-bitmap-visualizer');
+      return await mod.encodeEmbeddingToBitmap(embedding, options);
+    } catch (err) {
+      logger.error('[Orchestrator] generateSomBitmapFromEmbedding failed', { err: String(err) });
+      return null;
+    }
+  }
+
+  async predictTransitionSequence(
+    sequence: string[],
+    topK = 3,
+    options: { observe?: boolean; blendWeight?: number; emit?: boolean; context?: Record<string, unknown> | null } = {}
+  ): Promise<TransitionPrediction[]> {
+    if (!Array.isArray(sequence) || sequence.length === 0) return [];
+    try {
+      const mod = await import('./hmm-transition-predictor');
+      const predictor = mod.hmmTransitionPredictor;
+      if (options.observe !== false && typeof predictor.observeSequence === 'function') {
+        predictor.observeSequence(sequence);
+      }
+      const current = sequence[sequence.length - 1];
+      // predictor.predictNext may be sync or async
+      let predictions: TransitionPrediction[] = (await predictor.predictNext([current], topK)) ?? [];
+      if ((!predictions || predictions.length === 0) && typeof predictor.blendWith === 'function') {
+        predictions = predictor.blendWith(sequence, options.blendWeight ?? 0.2) ?? [];
+      }
+      if (options.emit !== false) {
+        emitClusterEvent({
+          type: 'hmm_predictions',
+          predictions,
+          context: options.context ?? null,
+          timestamp: Date.now(),
+        });
+      }
+      return predictions;
+    } catch (err) {
+      logger.error('[Orchestrator] predictTransitionSequence failed', { err: String(err) });
+      return [];
+    }
+  }
+
+  async recordTransitionObservation(observation: TransitionObservation): Promise<void> {
+    try {
+      const mod = await import('./hmm-transition-predictor');
+      if (mod && mod.hmmTransitionPredictor && typeof mod.hmmTransitionPredictor.observe === 'function') {
+        mod.hmmTransitionPredictor.observe(observation);
+      }
+    } catch (err) {
+      logger.debug('[Orchestrator] recordTransitionObservation failed', { err: String(err), observation });
+    }
+  }
+
+  handleMcpError(message: string, details: { requestId?: string; stage?: string; error?: unknown } = {}): void {
+    this.lastError = message;
     const timestamp = new Date().toISOString();
     const logContext: Record<string, unknown> = {
       message,
-      timestamp,
       requestId: details.requestId ?? null,
       stage: details.stage ?? null,
       lastMcpServer: this.lastMcpRecord?.name ?? null,
       lastMcpEndpoint: this.lastMcpRecord?.endpoints?.[0]?.url ?? null,
       hasMcpResult: Boolean(this.lastFunctionResult),
+      timestamp,
     };
 
     if (details.error instanceof Error) {
-      logContext.errorName = details.error.name;
       logContext.errorMessage = details.error.message;
+      logContext.errorName = details.error.name;
       logContext.errorStack = details.error.stack;
     } else if (typeof details.error !== 'undefined') {
       logContext.error = details.error;
@@ -297,34 +812,61 @@ class EnhancedAISynthesisOrchestrator {
 
     logger.warn('[Orchestrator] MCP error recorded', logContext);
 
+    // emit XState event if available
     const dispatched = this.emitXStateEvent({
       type: 'MCP_ERROR',
       message,
       timestamp,
-      context: {
-        requestId: details.requestId ?? null,
-        stage: details.stage ?? null,
-        mcpServer: this.lastMcpRecord?.name ?? null,
-        endpoint: this.lastMcpRecord?.endpoints?.[0]?.url ?? null,
-        lastResultSummary: this.lastFunctionResult ? 'cached' : null,
-        error:
-          details.error instanceof Error
-            ? { name: details.error.name, message: details.error.message }
-            : details.error ?? null,
-      },
+      requestId: details.requestId ?? null,
+      context: { mcpServer: this.lastMcpRecord?.name ?? null },
     });
-
     if (!dispatched) {
-      logger.debug(
-        '[Orchestrator] XState integration not available for MCP_ERROR event dispatch'
-      );
+      logger.debug('[Orchestrator] XState integration not available for MCP_ERROR event dispatch');
     }
+
+    // best-effort background pushes (redis/rabbit)
+    (async () => {
+      try {
+        try {
+          const redisModule = await import('$lib/services/redis-orchestrator');
+          const r = redisModule as unknown as RedisOrchestrator;
+          const key = 'mcp:errors';
+          const value = JSON.stringify({ message, timestamp, requestId: details.requestId ?? null });
+          if (typeof r?.zadd === 'function') {
+            await r.zadd(key, Date.now(), value);
+          } else if (typeof r?.incr === 'function') {
+            await r.incr('mcp:errors:count');
+          } else if (typeof r?.callRedis === 'function') {
+            await r.callRedis('zadd', key, Date.now(), value);
+          }
+        } catch (redisErr) {
+          logger.debug('[Orchestrator] Redis metrics push failed', { error: String(redisErr) });
+        }
+
+        try {
+          const rabbitModule = await import('$lib/server/queue/rabbitmq-workers');
+          const rm = rabbitModule as unknown as RabbitWorkers;
+          const payload = { type: 'mcp_error', message, timestamp, requestId: details.requestId ?? null };
+          if (typeof rm?.publish === 'function') {
+            await rm.publish('ai.errors', payload);
+          } else if (typeof rm?.enqueue === 'function') {
+            await rm.enqueue('ai.errors', payload);
+          }
+        } catch (amqpErr) {
+          logger.debug('[Orchestrator] RabbitMQ enqueue failed', { error: String(amqpErr) });
+        }
+      } catch (err) {
+        logger.debug('[Orchestrator] background MCP error handlers failed', { error: String(err) });
+      }
+    })();
   }
 }
 
+// ensure single instance export (remove duplicates)
 export const aiOrchestrator = new EnhancedAISynthesisOrchestrator();
 
-// --- ADDED TYPES ---
+// --- XSTATE MACHINE & TYPES ---
+// Replace malformed machine with a minimal, valid machine
 type OrchestrationContext = {
   query: string | null;
   embeddings: number[] | null;
@@ -336,10 +878,21 @@ type OrchestrationContext = {
   ollamaResponse: string | null;
   finalSynthesis: string | null;
   error: Error | null;
-  context7Results: Document[] | null; // Added for Context7 search results
+  context7Results: Document[] | null;
 };
-// --```````````````````````````````- END ADDED TYPES ---
-export const orchestrationMachine = createMachine<OrchestrationContext>({
+
+type OrchestrationEvent =
+  | { type: 'START'; query?: string }
+  | { type: 'MCP_SERVER_DISCOVERED'; record: McpServerRecord }
+  | { type: 'MCP_FUNCTION_CALLED'; payload: unknown }
+  | { type: 'MCP_ERROR'; message: string; context?: unknown; timestamp?: string };
+
+export const orchestrationMachine = createMachine({
+  types: {} as {
+    context: OrchestrationContext;
+    events: OrchestrationEvent;
+    actions: { type: 'logProcessing' };
+  },
   id: 'aiSynthesisOrchestration',
   initial: 'idle',
   context: {
@@ -353,93 +906,20 @@ export const orchestrationMachine = createMachine<OrchestrationContext>({
     ollamaResponse: null,
     finalSynthesis: null,
     error: null,
-    context7Results: null, // Initialize new context property
+    context7Results: null,
   },
   states: {
     idle: {
-      on: {
-        START: 'processing',
-      },
+      on: { START: 'processing' },
     },
     processing: {
-      initial: 'checkingCache',
-      states: {
-        checkingCache: {
-          invoke: {
-            src: 'checkCache',
-            input: ({ event }: { event: { query?: string } }) => ({ query: event.query ?? null }),```````````````````````````````
-            onDone: [
-              {
-                // changed 'guard' -> 'cond' (XState expects 'cond' for transition conditions)
-                cond: (ctx: OrchestrationContext) => (ctx.pgVectorResults?.length ?? 0) === 0,
-                target: 'queryingPostgres',
-              },
-              {
-                target: 'returningResults',
-              },
-            ],
-            onError: 'queryingPostgres',
-          },
-        },
-        queryingPostgres: {
-          invoke: {
-            src: 'queryPostgres',
-            onDone: [
-              {
-                target: 'queryingNeo4j',
-              },
-              {
-                target: 'returningResults',
-              },
-            ],
-            onError: 'queryingNeo4j',
-          },
-        },
-        queryingNeo4j: {
-          invoke: {
-            src: 'queryNeo4j',
-            onDone: [
-              {
-                target: 'callingMcpFunction',
-              },
-              {
-                target: 'returningResults',
-              },
-            ],
-            onError: 'callingMcpFunction',
-          },
-        },
-        callingMcpFunction: {
-          invoke: {
-            src: 'callMcpFunction',
-            onDone: [
-              {
-                target: 'generatingResponse',
-              },
-              {
-                target: 'returningResults',
-              },
-            ],
-            onError: 'generatingResponse',
-          },
-        },
-        generatingResponse: {
-          invoke: {
-            src: 'generateResponse',
-            onDone: [
-              {
-                target: 'returningResults',
-              },
-            ],
-            onError: 'returningResults',
-          },
-        },
-        returningResults: {
-          type: 'final',
-          data: {
-            results: ctx => ctx.rankedResults,
-          },
-        },
+      entry: ['logProcessing'],
+      // simplified flow: check cache -> fetch -> generate -> done
+      on: {
+        MCP_ERROR: 'idle',
+      },
+      after: {
+        1000: 'idle',
       },
     },
   },

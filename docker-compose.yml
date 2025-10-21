@@ -1,4 +1,55 @@
+version: "3.9"
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  triton:
+    image: nvcr.io/nvidia/tritonserver:23.09-py3
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: ["gpu"]
+    command: ["tritonserver", "--model-repository=/models", "--strict-model-config=false"]
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./native/autoencoder/triton_model_repository:/models
+
+  analytics-bridge:
+    build:
+      context: .
+      dockerfile: native/autoencoder/Dockerfile.bridge
+    env_file:
+      - native/autoencoder/.env.bridge.example
+    ports:
+      - "8001:8001"
+    depends_on:
+      - redis
+      - triton
+
+  sveltekit:
+    build:
+      context: ./sveltekit-frontend
+      dockerfile: Dockerfile
+    env_file:
+      - ./sveltekit-frontend/.env
+    ports:
+      - "5173:5173"
+    depends_on:
+      - analytics-bridge
 version: '3.8'
+
+x-phaseh-bridge-build: &phaseh-bridge-build
+  context: .
+  dockerfile: native/autoencoder/Dockerfile.bridge
 
 services:
   # SvelteKit Frontend Service - Main
@@ -119,7 +170,7 @@ services:
     container_name: legal-ai-redis
     ports:
       - "6379:6379"   # Redis port
-      - "8001:8001"   # RedisInsight port
+      - "18001:8001"   # RedisInsight port (shifted to avoid analytics bridge port)
     command: >
       redis-server
       --appendonly yes
@@ -209,6 +260,183 @@ services:
       retries: 3
     depends_on:
       - redis
+
+  analytics-bridge:
+    build:
+      <<: *phaseh-bridge-build
+    container_name: phase-h-analytics-bridge
+    command: ["uvicorn", "native.autoencoder.analytics_bridge:app", "--host", "0.0.0.0", "--port", "8001"]
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - USER_ANALYTICS_STREAM=user.analytics
+      - USER_INTENT_HASH_NAMESPACE=user:intent
+      - RL_FEEDBACK_STREAM=rl.feedback
+      - TRITON_URL=http://triton:8000
+      - PG_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+      - PG_INTENT_TABLE=user_intent_transitions
+      - PORT=8001
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./native/autoencoder/artifacts:/app/native/autoencoder/artifacts
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      triton:
+        condition: service_started
+    networks:
+      - legal-ai-network
+    healthcheck:
+      test: ["CMD-SHELL", "/app/native/autoencoder/scripts/healthcheck.sh analytics-bridge"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  cpu-synthesizer:
+    build:
+      <<: *phaseh-bridge-build
+    container_name: phase-h-cpu-synthesizer
+    command: ["uvicorn", "native.autoencoder.cpu_synthesizer:app", "--host", "0.0.0.0", "--port", "8101"]
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - CPU_SYNTH_MAX_TOKENS=256
+    ports:
+      - "8101:8101"
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - legal-ai-network
+    healthcheck:
+      test: ["CMD-SHELL", "/app/native/autoencoder/scripts/healthcheck.sh http http://127.0.0.1:8101/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  behavior-router:
+    build:
+      <<: *phaseh-bridge-build
+    container_name: phase-h-behavior-router
+    command: ["python", "-m", "native.autoencoder.behavior_router"]
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - USER_ANALYTICS_STREAM=user.analytics
+      - USER_INTENT_HASH_NAMESPACE=user:intent
+      - RL_FEEDBACK_STREAM=rl.feedback
+      - PG_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+      - PG_INTENT_TABLE=user_intent_transitions
+    volumes:
+      - ./native/autoencoder/artifacts:/app/native/autoencoder/artifacts
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      analytics-bridge:
+        condition: service_started
+    networks:
+      - legal-ai-network
+    healthcheck:
+      test: ["CMD-SHELL", "/app/native/autoencoder/scripts/healthcheck.sh redis"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  qlora-trainer:
+    build:
+      <<: *phaseh-bridge-build
+    container_name: phase-h-qlora-trainer
+    command: ["python", "-m", "native.autoencoder.qlora_trainer_stream"]
+    runtime: nvidia
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - RL_FEEDBACK_STREAM=rl.feedback
+      - TRITON_URL=http://triton:8000
+      - ADAPTER_ARTIFACT_DIR=/app/native/autoencoder/artifacts
+      - TRITON_MODEL_NAME=gemma3_legal
+      - QLORA_BASE_MODEL=google/gemma-2b-it
+    volumes:
+      - ./native/autoencoder/artifacts:/app/native/autoencoder/artifacts
+      - ./native/autoencoder/triton_model_repository:/models:ro
+    depends_on:
+      redis:
+        condition: service_healthy
+      triton:
+        condition: service_started
+    networks:
+      - legal-ai-network
+    healthcheck:
+      test: ["CMD-SHELL", "/app/native/autoencoder/scripts/healthcheck.sh redis"]
+      interval: 60s
+      timeout: 15s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  adapter-merge-worker:
+    build:
+      <<: *phaseh-bridge-build
+    container_name: phase-h-adapter-merge-worker
+    command: ["python", "-m", "native.autoencoder.adapter_merge_worker"]
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - TRITON_URL=http://triton:8000
+    volumes:
+      - ./native/autoencoder/artifacts:/app/native/autoencoder/artifacts
+      - ./native/autoencoder/triton_model_repository:/models
+    depends_on:
+      redis:
+        condition: service_healthy
+      qlora-trainer:
+        condition: service_started
+    networks:
+      - legal-ai-network
+    healthcheck:
+      test: ["CMD-SHELL", "/app/native/autoencoder/scripts/healthcheck.sh redis"]
+      interval: 60s
+      timeout: 15s
+      retries: 3
+      start_period: 60s
+
+  triton:
+    image: nvcr.io/nvidia/tritonserver:23.09-py3
+    container_name: phase-h-triton
+    shm_size: 1g
+    command: ["tritonserver", "--model-repository=/models", "--log-verbose=0"]
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    ports:
+      - "8000:8000"
+      - "8002:8002"
+    volumes:
+      - ./native/autoencoder/triton_model_repository:/models
+      - ./native/autoencoder/artifacts:/adapters
+    networks:
+      - legal-ai-network
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/v2/health/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
 
   # QUIC Server for high-performance protocols
   quic-server:

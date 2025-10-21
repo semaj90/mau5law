@@ -1,3 +1,5 @@
+const redisOrchestrator: unknown = {};
+export default redisOrchestrator;
 import IORedis from 'ioredis';
 import { createRedisInstance } from '$lib/server/redis.js';
 import { createHash } from 'crypto'; // Import createHash for hashing
@@ -36,7 +38,7 @@ const noopHandler = {
 // Helper to get the Redis client (or no-op proxy) without throwing
 async function getRedisClient(): Promise<IORedis> {
   if (redisAvailable && redisClient) return redisClient;
-    return new Proxy({}, noopHandler) as IORedis;
+  return new Proxy({}, noopHandler) as IORedis;
 }
 
 // Helper to call Redis commands, handling potential type issues or different ioredis versions

@@ -1,67 +1,106 @@
-
 // QdrantService.ts - Production Implementation
 // Fixed: 384-dimensional vectors for nomic-embed-text
-import { QdrantClient } from "@qdrant/js-client-rest";
-import * as crypto from "crypto";
+import { QdrantClient } from '@qdrant/js-client-rest';
+import * as crypto from 'crypto';
+
 // Simple logger implementation
 const logger = {
-  info: (msg: string, ...args: any[]) => console.log(`[INFO] ${msg}`, ...args),
-  error: (msg: string, ...args: any[]) => console.error(`[ERROR] ${msg}`, ...args),
-  warn: (msg: string, ...args: any[]) => console.warn(`[WARN] ${msg}`, ...args),
-  debug: (msg: string, ...args: any[]) => console.debug(`[DEBUG] ${msg}`, ...args)
-}
-// Environment fallback
+  info: (msg: string, ...args: unknown[]) => console.log(`[INFO] ${msg}`, ...args),
+  error: (msg: string, ...args: unknown[]) => console.error(`[ERROR] ${msg}`, ...args),
+  warn: (msg: string, ...args: unknown[]) => console.warn(`[WARN] ${msg}`, ...args),
+  debug: (msg: string, ...args: unknown[]) => console.debug(`[DEBUG] ${msg}`, ...args),
+};
+
+// Environment fallback (typed)
+const metaEnv = (import.meta as unknown as { env?: Record<string, string | undefined> }).env;
 const env = {
-  QDRANT_URL: import.meta.env.QDRANT_URL || "http://localhost:6333"
+  QDRANT_URL: metaEnv?.QDRANT_URL ?? 'http://localhost:6333',
+};
+
+// Minimal internal client shape to avoid casting to `any`
+interface QdrantClientLike {
+  upsert(collection: string, body: Record<string, unknown>): Promise<unknown>;
+  search(collection: string, body: Record<string, unknown>): Promise<Array<Record<string, unknown>>>;
+  retrieve(collection: string, body: Record<string, unknown>): Promise<Array<Record<string, unknown>>>;
+  delete(collection: string, body: Record<string, unknown>): Promise<unknown>;
+  updatePoints(collection: string, body: Record<string, unknown>): Promise<unknown>;
+  getCollection(collection: string): Promise<Record<string, unknown> | undefined>;
+  getCollections(): Promise<{ collections?: Array<{ name: string }> }>;
+  createCollection(name: string, body: Record<string, unknown>): Promise<unknown>;
+  updateCollection(name: string, body: Record<string, unknown>): Promise<unknown>;
+  createSnapshot(collection: string): Promise<Record<string, unknown>>;
 }
+
 // Simplified types for QdrantService
 export interface VectorSearchResult {
   id: string;
   score: number;
-  metadata: any;
+  payload?: Record<string, unknown>;
+  vector?: number[];
+  similarity?: number;
+  content?: string;
+  title?: string;
+  type?: string;
+  metadata?: Record<string, unknown>;
+  case_id?: string;
+  created_at?: string;
+  relevance_score?: number;
 }
-}
+
 export interface DocumentVector {
-  id: string;
+  id?: string;
   vector: number[];
-  metadata?: any;
+  content?: string;
+  title?: string;
+  type?: string;
+  metadata?: Record<string, unknown>;
+  case_id?: string;
+  relevance_score?: number;
 }
-}
+
 export interface SearchOptions {
   limit?: number;
   threshold?: number;
-  filter?: any;
+  filter?: Record<string, unknown>;
+  collection?: string;
+  includePayload?: boolean;
+  includeVector?: boolean;
 }
-}
+
 export interface CollectionInfo {
   name: string;
-  vectors_count: number;
-  status: string;
+  vectors_count?: number;
+  status?: string;
+  config?: Record<string, unknown>;
+  [k: string]: unknown;
 }
-}
+
 export interface BatchUpsertResult {
   operation_id: string;
   status: string;
+  successful?: boolean;
 }
+
 export class QdrantService {
-  private client: InstanceType<typeof QdrantClient>;
+  private client: QdrantClientLike;
   private readonly VECTOR_SIZE = 384; // Fixed for nomic-embed-text
-  private readonly DEFAULT_COLLECTION = "legal_documents";
+  private readonly DEFAULT_COLLECTION = 'legal_documents';
   private readonly COLLECTIONS = {
-    documents: "legal_documents",
-    cases: "case_embeddings",
-    evidence: "evidence_vectors"
-  }
+    documents: 'legal_documents',
+    cases: 'case_embeddings',
+    evidence: 'evidence_vectors',
+  };
+
   constructor() {
-    const qdrantUrl = env.QDRANT_URL || "http://localhost:6333"
-    this.client = new QdrantClient({
-      url: qdrantUrl
-    });
-    logger.info("QdrantService initialized", {
+    const qdrantUrl = env.QDRANT_URL || 'http://localhost:6333';
+    // Use the real client but type it as QdrantClientLike
+    this.client = new QdrantClient({ url: qdrantUrl }) as unknown as QdrantClientLike;
+    logger.info('QdrantService initialized', {
       url: qdrantUrl,
       vectorSize: this.VECTOR_SIZE,
     });
   }
+
   /**
    * Initialize collections with proper 384-dim configuration
    */
@@ -72,131 +111,128 @@ export class QdrantService {
         if (!exists) {
           await this.createCollection(collectionName, {
             vectorSize: this.VECTOR_SIZE,
-            distance: "Cosine",
+            distance: 'Cosine',
             onDisk: false,
-            shardNumber: key === "documents" ? 2 : 1,
+            shardNumber: key === 'documents' ? 2 : 1,
             replicationFactor: 1,
             optimizersConfig: {
               indexingThreshold: 20000,
               memmapThreshold: 50000,
-              maxOptimizationThreads: 2
+              maxOptimizationThreads: 2,
             },
             hnswConfig: {
               m: 16,
               efConstruct: 200,
               fullScanThreshold: 10000,
-              maxIndexingThreads: 4
+              maxIndexingThreads: 4,
             },
-          )});
+          });
           logger.info(`Created collection: ${collectionName}`);
         } else {
           // Verify dimensions
           const info = await this.getCollectionInfo(collectionName);
-          if (info.config?.params?.vectors?.size !== this.VECTOR_SIZE) {
-            logger.error()
-              `Collection ${collectionName} has wrong dimensions: ${info.config?.params?.vectors?.size}`
-            );
+          const actual =
+            (info?.config as Record<string, unknown> | undefined)?.['params'] &&
+            ((info!.config as Record<string, unknown>)['params'] as Record<string, unknown>)['vectors'] &&
+            (
+              ((info!.config as Record<string, unknown>)['params'] as Record<string, unknown>)['vectors'] as Record<
+                string,
+                unknown
+              >
+            )['size'];
+          if (actual && Number(actual) !== this.VECTOR_SIZE) {
+            logger.error(`Collection ${collectionName} has wrong dimensions: ${actual}`);
             throw new Error(`Vector dimension mismatch in ${collectionName}`);
           }
         }
       }
-    } catch (error: any) {
-      logger.error("Failed to initialize collections", error);
-      throw error;
+    } catch (error: unknown) {
+      logger.error('Failed to initialize collections', error);
+      throw error instanceof Error ? error : new Error(String(error));
     }
   }
+
   /**
    * Store document with vector embedding
    */
-  async storeDocument(_document,: DocumentVector): Promise<string> {
+  async storeDocument(document: DocumentVector): Promise<string> {
     try {
       // Validate vector dimensions
-      if (document,.vector.length !== this.VECTOR_SIZ,E) {
-        throw new Error()
-          `Invalid vector size: expected ${this.VECTOR_SIZE}, got ${document.vector.length}`
-        );
+      if (!Array.isArray(document.vector) || document.vector.length !== this.VECTOR_SIZE) {
+        throw new Error(`Invalid vector size: expected ${this.VECTOR_SIZE}, got ${document.vector?.length}`);
       }
       const point = {
         id: document.id || crypto.randomUUID(),
         vector: document.vector,
         payload: {
-          content: (document as any).content,
-          title: (document as any).title || "",
-          type: (document as any).type || "document",
-          metadata: (document as any).metadata || {},
+          content: document.content ?? '',
+          title: document.title ?? '',
+          type: document.type ?? 'document',
+          metadata: document.metadata ?? {},
           created_at: new Date().toISOString(),
-          case_id: (document as any).case_id,
-          relevance_score: (document as any).relevance_score || 1.0
-        }
-      }
+          case_id: document.case_id ?? null,
+          relevance_score: document.relevance_score ?? 1.0,
+        },
+      };
+      // upsert via client
       await this.client.upsert(this.DEFAULT_COLLECTION, {
         points: [point],
         wait: true,
-      )});
-      logger.info("Document stored in Qdrant", { id: point.id });
-      return point.id.toString());
-    } catch (error: any) {
-      logger.error("Failed to store document", error);
-      throw error;
+      });
+      logger.info('Document stored in Qdrant', { id: point.id });
+      return String(point.id);
+    } catch (error: unknown) {
+      logger.error('Failed to store document', error);
+      throw error instanceof Error ? error : new Error(String(error));
     }
   }
+
   /**
    * Batch store multiple documents
    */
-  async batchStoreDocuments()
-    documents: DocumentVector[];
-  ): Promise<BatchUpsertResult> {
+  async batchStoreDocuments(documents: DocumentVector[]): Promise<BatchUpsertResult> {
     try {
       // Validate all vectors
-      const invalidDocs = documents.filter(
-        (d) => d.vector.length !== this.VECTOR_SIZE
-      );
-      if (invalidDocs,.length >, 0) {
-        throw new Error()
-          `${invalidDocs.length} documents have invalid vector dimensions`
-        );
+      const invalidDocs = documents.filter(d => !Array.isArray(d.vector) || d.vector.length !== this.VECTOR_SIZE);
+      if (invalidDocs.length > 0) {
+        throw new Error(`${invalidDocs.length} documents have invalid vector dimensions`);
       }
-      const points = documents.map((doc) => ({
+      const points = documents.map(doc => ({
         id: doc.id || crypto.randomUUID(),
         vector: doc.vector,
         payload: {
-          content: (doc as any).content,
-          title: (doc as any).title || "",
-          type: (doc as any).type || "document",
-          metadata: (doc as any).metadata || {},
+          content: doc.content ?? '',
+          title: doc.title ?? '',
+          type: doc.type ?? 'document',
+          metadata: doc.metadata ?? {},
           created_at: new Date().toISOString(),
-          case_id: (doc as any).case_id,
-          relevance_score: (doc as any).relevance_score || 1.0
-        }
-      });
-      const result = await this.client.upsert(this.DEFAULT_COLLECTION, {
+          case_id: doc.case_id ?? null,
+          relevance_score: doc.relevance_score ?? 1.0,
+        },
+      }));
+      await this.client.upsert(this.DEFAULT_COLLECTION, {
         points,
         wait: true,
-      )});
+      });
       logger.info(`Batch stored ${points.length} documents`);
       return {
-        operation_id: Date.now().toString()),
-        status: "completed" as const,
-        successful: true
-      } as any;
-    } catch (error: any) {
-      logger.error("Failed to batch store documents", error);
-      throw error;
+        operation_id: Date.now().toString(),
+        status: 'completed',
+        successful: true,
+      };
+    } catch (error: unknown) {
+      logger.error('Failed to batch store documents', error);
+      throw error instanceof Error ? error : new Error(String(error));
     }
   }
+
   /**
    * Search for similar documents
    */
-  async searchSimilar()
-    queryVector: number[]
-    options: SearchOptions = {}
-  ): Promise<VectorSearchResult[]> {
+  async searchSimilar(queryVector: number[], options: SearchOptions = {}): Promise<VectorSearchResult[]> {
     try {
-      // Validate query vector
-      if (queryVector,.length !== this.VECTOR_SIZ,E) {
-        throw new Error()
-          `Invalid query vector size: expected ${this.VECTOR_SIZE}, got ${queryVector.length}`
-        );
+      if (!Array.isArray(queryVector) || queryVector.length !== this.VECTOR_SIZE) {
+        throw new Error(`Invalid query vector size: expected ${this.VECTOR_SIZE}, got ${queryVector?.length}`);
       }
       const {
         limit = 10,
@@ -204,235 +240,243 @@ export class QdrantService {
         filter = {},
         collection = this.DEFAULT_COLLECTION,
         includePayload = true,
-        includeVector = false
-      } = options as any;
-      // Build Qdrant filter
-      const qdrantFilter: any = {}
-      if (filter.case_id) {
-        qdrantFilter.must = [
-          { key: "case_id", match: { value: filter.case_id } }
-        ];
-      }
-      if (filter.type) {
-        qdrantFilter.must = qdrantFilter.must || [];
-        qdrantFilter.must.push({ key: "type", match: { value: filter.type } });
-      }
-      if (filter.date_range) {
-        qdrantFilter.must = qdrantFilter.must || [];
+        includeVector = false,
+      } = options;
+
+      // Build Qdrant filter (compatible shape)
+      // Narrow the type so `must` is recognized as an array and can use .push()
+      const qdrantFilter: { must?: Array<Record<string, unknown>> } = {};
+      const filterRecord = filter ?? {};
+      if (filterRecord['case_id']) {
+        if (!qdrantFilter.must) qdrantFilter.must = [];
         qdrantFilter.must.push({
-          key: "created_at",
-          range: {
-            gte: filter.date_range.start,
-            lte: filter.date_range.end
-          }
+          key: 'case_id',
+          match: { value: filterRecord['case_id'] },
         });
       }
-      const searchParams: any = {
+      if (filterRecord['type']) {
+        if (!qdrantFilter.must) qdrantFilter.must = [];
+        qdrantFilter.must.push({
+          key: 'type',
+          match: { value: filterRecord['type'] },
+        });
+      }
+      if (filterRecord['date_range'] && typeof filterRecord['date_range'] === 'object') {
+        const dr = filterRecord['date_range'] as Record<string, unknown>;
+        if (!qdrantFilter.must) qdrantFilter.must = [];
+        qdrantFilter.must.push({
+          key: 'created_at',
+          range: {
+            gte: dr['start'],
+            lte: dr['end'],
+          },
+        });
+      }
+
+      const searchParams: Record<string, unknown> = {
         vector: queryVector,
         limit,
         with_payload: includePayload,
         with_vector: includeVector,
         score_threshold: threshold,
-      }
+      };
       if (Object.keys(qdrantFilter).length > 0) {
         searchParams.filter = qdrantFilter;
       }
+
       const results = await this.client.search(collection, searchParams);
-      return results.map((result) => ({
-        id: (result as { id?: any; score?: any; payload?: any; vector?: any; name?: any }).id.toString()),
-        score,: (result as { id?: any; score?: any; payload?: any; vector?: any; name?: any }).score,
-        payload,: (result as { id?: any; score?: any; payload?: any; vector?: any; name?: any }).payload || {},
-        vector,:
-          includeVector && Array.isArray((result as { id?: any; score?: any; payload?: any; vector?: any); name?: any }).vector)
-            ? ((result as { id?: any; score?: any; payload?: any; vector?: any; name?: any }).vector as number[])
-            : undefined
-        similarity: (result as { id?: any; score?: any; payload?: any; vector?: any; name?: any }).score, // Cosine similarity
-        content,: (result as { id?: any; score?: any; payload?: any; vector?: any; name?: any }).payload ? String((result as { id?: any; score?: any; payload?: any; vector?: an,y); name?: any }).payload.content ||, "") : "",
-        title,: (result as { id?: any; score?: any; payload?: any; vector?: any; name?: any }).payload ? String((result as { id?: any; score?: any; payload?: any; vector?: an,y); name?: any }).payload.title ||, "") : "",
-        type,: (result as { id?: any; score?: any; payload?: any; vector?: any; name?: any }).payload
-          ? String((result as { id?: any; score?: any; payload?: any; vector?: any); name?: any }).payload.type || "document,")
-          : "document",
-        metadata,: (result as { id?: any; score?: any; payload?: any; vector?: any; name?: any }).payload?.metadata || {},
-        case_id,: (result as { id?: any; score?: any; payload?: any; vector?: any; name?: any }).payload ? String((result as { id?: any; score?: any; payload?: any; vector?: an,y); name?: any }).payload.case_id ||, "") : "",
-        created_at,: (result as { id?: any; score?: any; payload?: any; vector?: any; name?: any }).payload?.created_at,
-        relevance_score,: (result as { id?: any; score?: any; payload?: any; vector?: any; name?: any }).payload
-          ? Number((result as { id?: any; score?: any; payload?: any; vector?: any); name?: any }).payload.relevance_score || (result as { id?: any; score?: any; payload?: any; vector?: any; name?: any }).scor,e)
-          : (result as { id?: any; score?: any; payload?: any; vector?: any; name?: any }).score
+      return results.map(res => {
+        const payload = (res['payload'] as Record<string, unknown> | undefined) ?? {};
+        return {
+          id: String(res['id']),
+          score: Number(res['score']),
+          payload,
+          vector: includeVector ? (res['vector'] as number[] | undefined) : undefined,
+          similarity: Number(res['score']),
+          content: String(payload['content'] ?? ''),
+          title: String(payload['title'] ?? ''),
+          type: String(payload['type'] ?? 'document'),
+          metadata: (payload['metadata'] as Record<string, unknown> | undefined) ?? {},
+          case_id: payload['case_id'] ? String(payload['case_id']) : undefined,
+          created_at: payload['created_at'] as string | undefined,
+          relevance_score: Number(payload['relevance_score'] ?? res['score']),
+        } as VectorSearchResult;
       });
-    } catch (error: any) {
-      logger.error("Failed to search similar documents", error);
-      throw error;
+    } catch (error: unknown) {
+      logger.error('Failed to search similar documents', error);
+      throw error instanceof Error ? error : new Error(String(error));
     }
   }
+
   /**
    * Get document by ID
    */
-  async getDocument()
-    id: string;
-    collection: string = this.DEFAULT_COLLECTION;
-  ): Promise<DocumentVector | null> {
+  async getDocument(id: string, collection: string = this.DEFAULT_COLLECTION): Promise<DocumentVector | null> {
     try {
-      const results = await (this.client as any).retrieve(collection, {
+      const results = await this.client.retrieve(collection, {
         ids: [id],
         with_payload: true,
         with_vector: true,
       });
-      if (results,.length ===, 0) {
-        return nul,l;
+      if (!Array.isArray(results) || results.length === 0) {
+        return null;
       }
-      const point = results[0,];
+      const point = results[0];
+      const payload = (point['payload'] as Record<string, unknown> | undefined) ?? {};
       return {
-        id: point.id.toString()),
-        vector: point.vector as number[],
-        content: point.payload ? String(point.payload.content || "") : "",
-        title: point.payload ? String(point.payload.title || "") : "",
-        type: point.payload
-          ? String(point.payload.type || "document")
-          : "document",
-        metadata: point.payload?.metadata || {},
-        case_id: point.payload
-          ? String(point.payload.case_id || "")
-          : undefined,
-        relevance_score: point.payload,
-          ? Number(point.payload.relevance_score || 0)
-          : undefined,
-      } as any;
-    } catch (error: any) {
-      logger.error("Failed to get document", error);
-      throw error;
+        id: String(point['id']),
+        vector: (point['vector'] as number[]) ?? [],
+        content: String(payload['content'] ?? ''),
+        title: String(payload['title'] ?? ''),
+        type: String(payload['type'] ?? 'document'),
+        metadata: (payload['metadata'] as Record<string, unknown> | undefined) ?? {},
+        case_id: payload['case_id'] ? String(payload['case_id']) : undefined,
+        relevance_score: payload['relevance_score'] ? Number(payload['relevance_score']) : undefined,
+      } as DocumentVector;
+    } catch (error: unknown) {
+      logger.error('Failed to get document', error);
+      throw error instanceof Error ? error : new Error(String(error));
     }
   }
+
   /**
    * Delete documents
    */
-  async deleteDocuments()
-    ids: string[];
-    collection: string = this.DEFAULT_COLLECTION;
-  ): Promise<void> {
+  async deleteDocuments(ids: string[], collection: string = this.DEFAULT_COLLECTION): Promise<void> {
     try {
       await this.client.delete(collection, {
-        points: ids;
+        points: ids,
         wait: true,
-      )});
-      logger,.info(`Deleted ${ids.length} documents from ${collection}`);
-    } catch (error: any) {
-      logger.error("Failed to delete documents", error);
-      throw error;
+      });
+      logger.info(`Deleted ${ids.length} documents from ${collection}`);
+    } catch (error: unknown) {
+      logger.error('Failed to delete documents', error);
+      throw error instanceof Error ? error : new Error(String(error));
     }
   }
+
   /**
    * Update document metadata
    */
-  async updateDocumentMetadata()
-    id: string
-    metadata: { [key,: string,]: any },
-    collection,: string = this.DEFAULT_COLLECTION;
+  async updateDocumentMetadata(
+    id: string,
+    metadata: Record<string, unknown>,
+    collection: string = this.DEFAULT_COLLECTION
   ): Promise<void> {
     try {
-      await (this.client as an,y).updatePoints(collection, {
-        points: [{,
-          id,: id,
-          payload,: { metadata },
-        },],
-        wait,: true,
+      await this.client.updatePoints(collection, {
+        points: [
+          {
+            id,
+            payload: { metadata },
+          },
+        ],
+        wait: true,
       });
-      logger,.info("Updated document metadata", { id });
-    } catch (error: any) {
-      logger.error("Failed to update metadata", error);
-      throw error;
+      logger.info('Updated document metadata', { id });
+    } catch (error: unknown) {
+      logger.error('Failed to update metadata', error);
+      throw error instanceof Error ? error : new Error(String(error));
     }
   }
+
   /**
    * Get collection statistics
    */
-  async getCollectionStats()
-    collection: string = this.DEFAULT_COLLECTION;
-  ): Promise<any> {
+  async getCollectionStats(collection: string = this.DEFAULT_COLLECTION): Promise<Record<string, unknown>> {
     try {
       const info = await this.client.getCollection(collection);
       return {
         name: collection,
-        vectorsCount: info.vectors_count,
-        pointsCount: info.points_count,
-        segmentsCount: info.segments_count,
-        config: info.config,
-        status: info.status,
-        optimizersStatus: info.optimizer_status
-      }
-    } catch (error: any) {
-      logger.error("Failed to get collection stats", error);
-      throw error;
+        vectorsCount: info?.['vectors_count'],
+        pointsCount: info?.['points_count'],
+        segmentsCount: info?.['segments_count'],
+        config: info?.['config'],
+        status: info?.['status'],
+        optimizersStatus: info?.['optimizer_status'],
+      };
+    } catch (error: unknown) {
+      logger.error('Failed to get collection stats', error);
+      throw error instanceof Error ? error : new Error(String(error));
     }
   }
+
   /**
    * Optimize collection for better search performance
    */
-  async optimizeCollection()
-    collection: string = this.DEFAULT_COLLECTION;
-  ): Promise<void> {
+  async optimizeCollection(collection: string = this.DEFAULT_COLLECTION): Promise<void> {
     try {
-      await (this.client as an,y).updateCollection(collection, {
+      await this.client.updateCollection(collection, {
         optimizers_config: {
           indexing_threshold: 20000,
-          max_optimization_threads: 4
-        }
+          max_optimization_threads: 4,
+        },
       });
-      logger,.info(`Optimized collection: ${collection}`);
-    } catch (error: any) {
-      logger.error("Failed to optimize collection", error);
-      throw error;
+      logger.info(`Optimized collection: ${collection}`);
+    } catch (error: unknown) {
+      logger.error('Failed to optimize collection', error);
+      throw error instanceof Error ? error : new Error(String(error));
     }
   }
+
   /**
    * Create a snapshot for backup
    */
-  async createSnapshot()
-    collection: string = this.DEFAULT_COLLECTION;
-  ): Promise<string> {
+  async createSnapshot(collection: string = this.DEFAULT_COLLECTION): Promise<string> {
     try {
-      const result = await (this.client as any).createSnapshot(collection);
-      logger,.info(`Created snapshot for ${collection}`, result);
-      return (result, as, {, id?:, any; score?:, any; payload?,: any; vector,?: any; name,?: any, }).name;
-    } catch (error: any) {
-      logger.error("Failed to create snapshot", error);
-      throw error;
+      const result = await this.client.createSnapshot(collection);
+      logger.info(`Created snapshot for ${collection}`, result);
+      return (result?.['name'] as string) ?? String(Date.now());
+    } catch (error: unknown) {
+      logger.error('Failed to create snapshot', error);
+      throw error instanceof Error ? error : new Error(String(error));
     }
   }
+
   /**
    * Helper methods
    */
-  private async collectionExists(name,: string): Promise<boolean> {
+  private async collectionExists(name: string): Promise<boolean> {
     try {
       const collections = await this.client.getCollections();
-      return collections.collections.some((c) => c.name === name);
-    } catch (error: any) {
-      logger.error("Failed to check collection existence", error);
+      return Array.isArray(collections.collections) && collections.collections.some(c => c.name === name);
+    } catch (error: unknown) {
+      logger.error('Failed to check collection existence', error);
       return false;
     }
   }
-  private async createCollection(name,: string, confi,g: an,y): Promise<void> {
-    await thi,s.client.createCollection(name, {
-      vectors: {
-        size: config.vectorSize,
-        distance: config.distance,
-        on_disk: config.onDisk
-      },
-      shard_number: config.shardNumber,
-      replication_factor: config.replicationFactor,
-      optimizers_config: config.optimizersConfig,
-      hnsw_config: config.hnswConfig,
-    )});
+
+  private async createCollection(name: string, config: Record<string, unknown>): Promise<void> {
+    try {
+      await this.client.createCollection(name, {
+        vectors: {
+          size: config['vectorSize'],
+          distance: config['distance'],
+          on_disk: config['onDisk'],
+        },
+        shard_number: config['shardNumber'],
+        replication_factor: config['replicationFactor'],
+        optimizers_config: config['optimizersConfig'],
+        hnsw_config: config['hnswConfig'],
+      } as Record<string, unknown>);
+    } catch (error: unknown) {
+      logger.error('Failed to create collection', error);
+      throw error instanceof Error ? error : new Error(String(error));
+    }
   }
-  private async getCollectionInfo(name,: string): Promise<any> {
+
+  private async getCollectionInfo(name: string): Promise<Record<string, unknown> | undefined> {
     return await this.client.getCollection(name);
   }
+
   /**
    * Cleanup and maintenance
    */
-  async cleanup(),: Promise<void> {
+  async cleanup(): Promise<void> {
     // Cleanup resources if needed
-    logger,.info("QdrantService cleanup completed");
+    logger.info('QdrantService cleanup completed');
   }
 }
+
 // Export singleton instance
 export const qdrantService = new QdrantService();
