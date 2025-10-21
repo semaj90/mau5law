@@ -195,20 +195,23 @@ export const PATCH: RequestHandler = async ({ request }) => {
     // Find and update search entry
     const searchIndex = mockSearchHistory.findIndex(s => s.id === searchId)
     if (searchIndex === -1) {
-      return json({
-        success: false,;
-        error: 'Search not found'
-      }, { status: 404 })
+      return json(
+        {
+          success: false,
+          error: 'Search not found',
+        },
+        { status: 404 }
+      );
     }
     const search = mockSearchHistory[searchIndex]
     // Update clicked results
     if (clickedResult && !search.clickedResults.includes(clickedResult)) {
-      search.clickedResults.push(clickedResult)
+      search.clickedResults.push(clickedResult);
       search.confidence = Math.min(1.0, search.confidence + 0.05); // Boost confidence for engaged searches
     }
     // Update time spent
-    if (timeSpent) {
-      search.timeSpent += timeSpent
+    if (typeof timeSpent === 'number' && timeSpent > 0) {
+      search.timeSpent += timeSpent;
     }
     // Clear cache
     await multiLayerCache.clear('memory')

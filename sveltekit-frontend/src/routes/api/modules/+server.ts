@@ -69,7 +69,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         // Simulate module loading
         module.status = 'loading'
         // Would call actual module loading service
-        await new Promise(resolve => setTimeout(resolve, 1000)
+        await new Promise(resolve => setTimeout(resolve, 1000));
         module.status = 'loaded'
         module.metadata.loadTime = Date.now()
         module.metadata.memoryUsage = '512MB'
@@ -115,15 +115,18 @@ export const POST: RequestHandler = async ({ request, url }) => {
         }
         const targetModule = moduleRegistry.get(toModule)
         if (!targetModule) {
-          return json({
-            success: false,;
-            error: `Target module not found: ${toModule}`
-          }, { status: 404 })
+          return json(
+            {
+              success: false,
+              error: `Target module not found: ${toModule}`,
+            },
+            { status: 404 }
+          );
         }
         // Load target module if not loaded
         if (targetModule.status !== 'loaded') {
           targetModule.status = 'loading'
-          await new Promise(resolve => setTimeout(resolve, 500)
+          await new Promise(resolve => setTimeout(resolve, 500));
           targetModule.status = 'loaded'
           targetModule.metadata.loadTime = Date.now()
         }
@@ -143,10 +146,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
         })
       }
       default:
-        return json({,
-          success: false,
-          error: `Unknown action: ${action}`
-        }, { status: 400 })
+        return json(
+          {
+            success: false,
+            error: `Unknown action: ${action}`,
+          },
+          { status: 400 }
+        );
     }
   } catch (error: any) {
     return json({
@@ -174,9 +180,8 @@ export const GET: RequestHandler = async ({ url }) => {
       })
     }
     // Return all active modules
-    const activeModules = Array.from(moduleRegistry.values()
-      .filter(module => module.status === 'loaded')
-    const allModules = Array.from(moduleRegistry.values()
+    const activeModules = Array.from(moduleRegistry.values()).filter(module => module.status === 'loaded');
+    const allModules = Array.from(moduleRegistry.values());
     return json({
       service: 'module-manager',
       status: 'operational',

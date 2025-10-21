@@ -1,4 +1,4 @@
-import { EventEmitter } from "events";
+import { EventEmitter } from 'events';
 /**
  * JSON to WebAssembly Optimization Engine
  * High-performance JSON processing with WebAssembly and ECMAScript optimization
@@ -31,37 +31,85 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
   private wasmModule: WebAssemblyModule | null = null;
   private initialized = false;
   private performance_stats = new Map<string, number[]>();
-  private cache = new Map<string, any>();
+  // changed: avoid `any` by using `unknown`
+  private cache = new Map<string, unknown>();
   private optimization_level = 'high';
   constructor() {
     super();
     this.initializeWASM();
   }
+
+  // helper: robust base64 -> Uint8Array
+  private decodeBase64ToUint8Array(base64: string): Uint8Array {
+    // prefer Node Buffer when available (use globalThis guard to keep typings safe)
+    const maybeBuffer = (globalThis as unknown as { Buffer?: typeof Buffer }).Buffer;
+    if (typeof maybeBuffer !== 'undefined' && typeof maybeBuffer.from === 'function') {
+      return Uint8Array.from(maybeBuffer.from(base64, 'base64'));
+    }
+
+    // browser fallback using globalThis.atob if available
+    if (typeof (globalThis as unknown as { atob?: (s: string) => string }).atob === 'function') {
+      const binary = (globalThis as unknown as { atob: (s: string) => string }).atob(base64);
+      const len = binary.length;
+      const bytes = new Uint8Array(len);
+      for (let i = 0; i < len; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return bytes;
+    }
+
+    // Last-resort: attempt to decode safely by stripping whitespace and using Buffer if present
+    const cleaned = base64.replace(/\s+/g, '');
+    try {
+      if (typeof maybeBuffer !== 'undefined' && typeof maybeBuffer.from === 'function') {
+        return Uint8Array.from(maybeBuffer.from(cleaned, 'base64'));
+      }
+    } catch {
+      // swallow and return empty fallback
+    }
+
+    // Fallback empty array to avoid throwing at compile-time
+    return new Uint8Array(0);
+  }
+
   private async initializeWASM(): Promise<void> {
     try {
-      // Decode base64 WASM binary
-      const wasmBytes = Uint8Array.from(atob(WASM_JSON_PARSER_BINARY), (c: any) => c.charCodeAt(0);
-      // Create WebAssembly module
-      const module = await WebAssembly.compile(wasmBytes);
+      // Decode base64 WASM binary (use helper to avoid inlined arrow mapping)
+      const wasmBytes = this.decodeBase64ToUint8Array(WASM_JSON_PARSER_BINARY.trim());
+
+      // Ensure we pass a proper ArrayBuffer to WebAssembly.compile to satisfy TypeScript overloads.
+      // Some environments may have ArrayBufferLike (or SharedArrayBuffer) as the .buffer type,
+      // so create a safe ArrayBuffer copy/slice that is guaranteed to be a plain ArrayBuffer.
+      const wasmArrayBuffer: ArrayBuffer =
+        wasmBytes.buffer instanceof ArrayBuffer
+          ? // slice to the exact byte range of the Uint8Array view
+            wasmBytes.buffer.slice(wasmBytes.byteOffset, wasmBytes.byteOffset + wasmBytes.byteLength)
+          : // fallback: create a new Uint8Array copy whose .buffer will be a plain ArrayBuffer
+            Uint8Array.from(wasmBytes).buffer;
+
+      // Create WebAssembly module from ArrayBuffer
+      const module = await WebAssembly.compile(wasmArrayBuffer);
       const instance = await WebAssembly.instantiate(module, {
         env: {
           malloc: (size: number) => {
-            // Simple malloc implementation for WASM
-            return size * 4; // Placeholder
-          }
-        }
+            // Simple malloc implementation for WASM (placeholder)
+            return size * 4;
+          },
+        },
       });
-      this.wasmModule = instance.exports as any as WebAssemblyModule;
+      // safer cast to WebAssemblyModule
+      this.wasmModule = instance.exports as unknown as WebAssemblyModule;
       this.initialized = true;
       this.emit('wasm_initialized');
-    } catch (error: any) {
-      console.warn('WebAssembly initialization failed, using JS fallback:', error);
+    } catch (error: unknown) {
+      // avoid `any` in catch clause
+      console.warn('WebAssembly initialization failed, using JS fallback:', String(error));
       this.initialized = false;
     }
   }
   // === High-Performance JSON Operations ===
-  async parseJSON<T = any>(jsonString: string): Promise<any> {
-    const startTime = performance.now();
+  async parseJSON<T = unknown>(jsonString: string): Promise<{ data: T; stats: OptimizedJSON }> {
+    const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     let result: T;
     let wasm_acceleration = false;
     try {
@@ -73,11 +121,12 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
         // Fallback to optimized JavaScript
         result = this.parseJSONOptimized<T>(jsonString);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Final fallback to native JSON.parse
       result = JSON.parse(jsonString) as T;
     }
-    const parseTime = performance.now() - startTime;
+    const parseTime =
+      typeof performance !== 'undefined' && performance.now ? performance.now() - startTime : Date.now() - startTime;
     this.recordPerformance('parse', parseTime);
     const stats: OptimizedJSON = {
       original_size: jsonString.length,
@@ -85,12 +134,13 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
       compression_ratio: 1,
       parse_time_ms: parseTime,
       stringify_time_ms: 0,
-      wasm_acceleration
-    }
-    return { data: result, stats }
+      wasm_acceleration,
+    };
+    return { data: result, stats };
   }
-  async stringifyJSON(data: any): Promise<any> {
-    const startTime = performance.now();
+
+  async stringifyJSON(data: unknown): Promise<{ json: string; stats: OptimizedJSON }> {
+    const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     let result: string;
     let wasm_acceleration = false;
     try {
@@ -102,64 +152,80 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
         // Optimized JavaScript stringify
         result = this.stringifyJSONOptimized(data);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Fallback to native JSON.stringify
       result = JSON.stringify(data);
     }
-    const stringifyTime = performance.now() - startTime;
+    const stringifyTime =
+      typeof performance !== 'undefined' && performance.now ? performance.now() - startTime : Date.now() - startTime;
     this.recordPerformance('stringify', stringifyTime);
     const stats: OptimizedJSON = {
-      original_size: (result as { length?: any }).length,
+      original_size: (result as { length?: number }).length ?? 0,
       compressed_size: 0,
       compression_ratio: 1,
       parse_time_ms: 0,
       stringify_time_ms: stringifyTime,
-      wasm_acceleration
-    }
-    return { json: result, stats }
+      wasm_acceleration,
+    };
+    return { json: result, stats };
   }
+
   // === Compression with LZ4 ===
-  async compressJSON(data: any): Promise<any> {
+  async compressJSON(data: unknown): Promise<{ compressed: Uint8Array; stats: OptimizedJSON }> {
     const { json, stats } = await this.stringifyJSON(data);
-    const startTime = performance.now();
+    const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     let compressed: Uint8Array;
-    if (this.initialized && this.wasmModule) {
-      compressed = await this.compressWithWASM(json);
-    } else {
-      compressed = this.compressWithJS(json);
+    try {
+      if (this.initialized && this.wasmModule) {
+        compressed = await this.compressWithWASM(json);
+      } else {
+        compressed = this.compressWithJS(json);
+      }
+    } catch (error: unknown) {
+      // if compression fails, return empty compressed payload
+      compressed = new Uint8Array(0);
     }
-    const compressionTime = performance.now() - startTime;
-    const compression_ratio = json.length / compressed.length;
+    const compressionTime =
+      typeof performance !== 'undefined' && performance.now ? performance.now() - startTime : Date.now() - startTime;
+    const compression_ratio = json.length > 0 && compressed.length > 0 ? json.length / compressed.length : 1;
     return {
       compressed,
       stats: {
         ...stats,
         compressed_size: compressed.length,
         compression_ratio,
-        stringify_time_ms: stats.stringify_time_ms + compressionTime
-      }
-    }
+        stringify_time_ms: stats.stringify_time_ms + compressionTime,
+      },
+    };
   }
-  async decompressJSON<T = any>(compressed: Uint8Array): Promise<any> {
-    const startTime = performance.now();
+
+  async decompressJSON<T = unknown>(compressed: Uint8Array): Promise<{ data: T; stats: OptimizedJSON }> {
+    const startTime = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
     let decompressed: string;
-    if (this.initialized && this.wasmModule) {
-      decompressed = await this.decompressWithWASM(compressed);
-    } else {
-      decompressed = this.decompressWithJS(compressed);
+    try {
+      if (this.initialized && this.wasmModule) {
+        decompressed = await this.decompressWithWASM(compressed);
+      } else {
+        decompressed = this.decompressWithJS(compressed);
+      }
+    } catch (error: unknown) {
+      decompressed = '';
     }
-    const decompressionTime = performance.now() - startTime;
+    const decompressionTime =
+      typeof performance !== 'undefined' && performance.now ? performance.now() - startTime : Date.now() - startTime;
     const { data, stats } = await this.parseJSON<T>(decompressed);
     return {
       data,
       stats: {
         ...stats,
         compressed_size: compressed.length,
-        compression_ratio: decompressed.length / compressed.length,
-        parse_time_ms: stats.parse_time_ms + decompressionTime
-      }
-    }
+        compression_ratio:
+          decompressed.length > 0 && compressed.length > 0 ? decompressed.length / compressed.length : 1,
+        parse_time_ms: stats.parse_time_ms + decompressionTime,
+      },
+    };
   }
+
   // === WebAssembly Implementation ===
   private async parseJSONWithWASM<T>(jsonString: string): Promise<T> {
     if (!this.wasmModule) throw new Error('WASM not initialized');
@@ -182,7 +248,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
     const resultString = decoder.decode(resultBytes);
     return JSON.parse(resultString) as T;
   }
-  private async stringifyJSONWithWASM(data: any): Promise<string> {
+  private async stringifyJSONWithWASM(data: unknown): Promise<string> {
     if (!this.wasmModule) throw new Error('WASM not initialized');
     // Convert to JSON string first (WASM will optimize the formatting)
     const jsonString = JSON.stringify(data);
@@ -238,8 +304,9 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
     // Use native parser with optimized string
     return JSON.parse(optimized) as T;
   }
-  private stringifyJSONOptimized(data: any): string {
+  private stringifyJSONOptimized(data: unknown): string {
     // Custom stringify with optimizations
+    // JSON.stringify accepts unknown; replacer returns unknown values as well.
     return JSON.stringify(data, this.getReplacer(), this.optimization_level === 'high' ? 0 : 2);
   }
   private removeWhitespacePreservingStrings(json: string): string {
@@ -271,20 +338,21 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
     }
     return result;
   }
-  private getReplacer(): ((_key: string, value: any) => any) | undefined {
+  private getReplacer(): ((_key: string, value: unknown) => unknown) | undefined {
     if (this.optimization_level === 'high') {
-      return (_key: string, value: any) => {
+      return (_key: string, value: unknown) => {
         // Remove null values and empty objects/arrays
         if (value === null) return undefined;
         if (Array.isArray(value) && value.length === 0) return undefined;
-        if (typeof value === 'object' && value !== null && Object.keys(value).length === 0) return undefined;
+        if (typeof value === 'object' && value !== null && Object.keys(value as Record<string, unknown>).length === 0)
+          return undefined;
         // Optimize numbers
         if (typeof value === 'number') {
           if (Number.isInteger(value)) return value;
           return Math.round(value * 1000) / 1000; // Round to 3 decimal places
         }
         return value;
-      }
+      };
     }
     return undefined;
   }
@@ -315,8 +383,8 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
     // Convert to Uint8Array (simplified)
     const result = new Uint8Array(compressed.length * 2);
     for (let i = 0; i < compressed.length; i++) {
-      result[i * 2] = compressed[i] & 0xFF;
-      result[i * 2 + 1] = (compressed[i] >> 8) & 0xFF;
+      result[i * 2] = compressed[i] & 0xff;
+      result[i * 2 + 1] = (compressed[i] >> 8) & 0xff;
     }
     return result;
   }
@@ -324,7 +392,7 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
     // Reverse of the compression algorithm
     const codes: number[] = [];
     for (let i = 0; i < compressed.length; i += 2) {
-      codes.push(compressed[i] | (compressed[i + 1] << 8);
+      codes.push(compressed[i] | (compressed[i + 1] << 8));
     }
     const dictionary = new Map<number, string>();
     let dictSize = 256;
@@ -363,8 +431,8 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
       stats.shift();
     }
   }
-  private estimateSize(data: any): number {
-    if (typeof data === 'string') return (data as { length?: any }).length * 2;
+  private estimateSize(data: unknown): number {
+    if (typeof data === 'string') return (data as string).length * 2;
     if (typeof data === 'number') return 8;
     if (typeof data === 'boolean') return 1;
     if (data === null || data === undefined) return 0;
@@ -373,13 +441,13 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
   }
   // === Public API ===
   getPerformanceStats(): Record<string, { avg: number; min: number; max: number; count: number }> {
-    const result: Record<string, { avg: number; min: number; max: number; count: number }> = {}
+    const result: Record<string, { avg: number; min: number; max: number; count: number }> = {};
     for (const [operation, times] of this.performance_stats) {
       if (times.length === 0) continue;
       const avg = times.reduce((sum, time) => sum + time, 0) / times.length;
       const min = Math.min(...times);
       const max = Math.max(...times);
-      result[operation] = { avg, min, max, count: times.length }
+      result[operation] = { avg, min, max, count: times.length };
     }
     return result;
   }
@@ -394,14 +462,17 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
   }
   // === TypeScript Barrel Export Optimization ===
   generateBarrelExports(modules: string[]): string {
-    const exports = modules.map((module: any) => {
-      const name = module.split('/').pop()?.replace('.ts', '') || module;
-      return `export { default as ${this.toCamelCase(name)} } from './${module}.js';`;
-    }).join('\n');
-    return `// Auto-generated barrel exports for tree-shaking optimization\n${exports}\n`
+    const exports = modules
+      .map((module: string) => {
+        const name = module.split('/').pop()?.replace('.ts', '') || module;
+        return `export { default as ${this.toCamelCase(name)} } from './${module}.js';`;
+      })
+      .join('\n');
+    return `// Auto-generated barrel exports for tree-shaking optimization\n${exports}\n`;
   }
   private toCamelCase(str: string): string {
-    return str.replace(/-([a-z])/g, (g) => g[1].toUpperCase();
+    // convert kebab-case to camelCase
+    return str.replace(/-([a-z])/g, (_m: string, p1: string) => p1.toUpperCase());
   }
   // === ECMAScript Module Optimization ===
   optimizeESModules(code: string): string {
@@ -416,48 +487,69 @@ class JSONWebAssemblyOptimizer extends EventEmitter {
     return optimized;
   }
   private removeUnusedImports(code: string): string {
-    // removed unused lines assignment
+    // Build lines, collect imports and usages, then remove unused named imports
     const imports = new Set<string>();
     const usages = new Set<string>();
-    // Extract imports
-    lines.forEach((line: any) => {
-      const importMatch = line.match(/import\s+\{([^}]+)\}\s+from/);
+    const lines = code.split('\n');
+
+    // Use RegExp constructor to avoid any parser ambiguity with curly braces
+    const importRegex = new RegExp('import\\s+\\{([^}]+)\\}\\s+from');
+
+    // Extract named imports
+    lines.forEach((line: string) => {
+      const importMatch = line.match(importRegex);
       if (importMatch) {
-        const namedImports = importMatch[1].split(',').map((s: any) => s.trim();
-        namedImports.forEach((imp: any) => imports.add(imp);
+        const namedImports = importMatch[1]
+          .split(',')
+          .map((s: string) => s.trim())
+          .filter(Boolean);
+        namedImports.forEach((imp: string) => imports.add(imp));
       }
     });
-    // Find usages
-    lines.forEach((line: any) => {
-      imports.forEach((imp: any) => {
-        if (line.includes(imp) && !line.startsWith('import')) {
-          usages.add(imp);
-        }
-      });
-    });
-    // Remove unused imports
-    return lines.map((line: any) => {
-      const importMatch = line.match(/import\s+\{([^}]+)\}\s+from/);
-      if (importMatch) {
-        const namedImports = importMatch[1].split(',').map((s: any) => s.trim();
-        const usedImports = namedImports.filter((imp: any) => usages.has(imp);
-        if (usedImports.length === 0) return '';
-        if (usedImports.length !== namedImports.length) {
-          return line.replace(/\{[^}]+\}/, `{ ${usedImports.join(', ')} }`);
-        }
+
+    // Find usages of those imports in non-import lines (use word boundaries)
+    lines.forEach((line: string) => {
+      if (line.trim().startsWith('import')) return;
+      for (const imp of imports) {
+        // simple word-boundary check to avoid matching substrings
+        const usageRegex = new RegExp('\\b' + imp.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b');
+        if (usageRegex.test(line)) usages.add(imp);
       }
-      return line;
-    }).filter((line: any) => line !== '').join('\n');
+    });
+
+    // Rebuild code removing unused named imports
+    return lines
+      .map((line: string) => {
+        const importMatch = line.match(importRegex);
+        if (importMatch) {
+          const namedImports = importMatch[1]
+            .split(',')
+            .map((s: string) => s.trim())
+            .filter(Boolean);
+          const usedImports = namedImports.filter((imp: string) => usages.has(imp));
+          if (usedImports.length === 0) return '';
+          if (usedImports.length !== namedImports.length) {
+            return line.replace(/\{[^}]+\}/, `{ ${usedImports.join(', ')} }`);
+          }
+        }
+        return line;
+      })
+      .filter((l: string) => l !== '')
+      .join('\n');
   }
   private optimizeExports(code: string): string {
     // Combine multiple exports into barrel exports
-    const exportLines = code.split('\n').filter((line: any) => line.startsWith('export');
-    const otherLines = code.split('\n').filter((line: any) => !line.startsWith('export');
+    const allLines = code.split('\n');
+    const exportLines = allLines.filter((line: string) => line.startsWith('export'));
+    const otherLines = allLines.filter((line: string) => !line.startsWith('export'));
     if (exportLines.length > 5) {
-      const exports = exportLines.map((line: any) => {
-        const match = line.match(/export\s+(?:const|let|var|function|class)\s+(\w+)/);
-        return match ? match[1] : null;
-      }).filter(Boolean);
+      const exports = exportLines
+        .map((line: string) => {
+          const match = line.match(/export\s+(?:const|let|var|function|class)\s+(\w+)/);
+          return match ? match[1] : null;
+        })
+        .filter((v): v is string => Boolean(v)); // type-guard so exports is string[]
+      if (exports.length === 0) return code;
       return otherLines.join('\n') + '\n\n' + `export { ${exports.join(', ')} }`;
     }
     return code;
@@ -487,29 +579,33 @@ export function createHighPerformanceJSONProcessor(): JSONWebAssemblyOptimizer {
 // === Global Instance ===
 export const jsonWasmOptimizer = new JSONWebAssemblyOptimizer();
 // === Utility Functions ===
-export async function optimizeJSONForTransport(data: any): Promise<any> {
+export async function optimizeJSONForTransport(data: unknown): Promise<{
+  optimized: string | Uint8Array;
+  stats: OptimizedJSON;
+  useCompression: boolean;
+}> {
   const { json, stats: stringifyStats } = await jsonWasmOptimizer.stringifyJSON(data);
   // Decide whether to use compression based on size
   if (json.length > 1024) {
     const { compressed, stats: compressStats } = await jsonWasmOptimizer.compressJSON(data);
     if (compressStats.compression_ratio > 1.5) {
       return {
-        optimized: compressed;
+        optimized: compressed,
         stats: compressStats,
         useCompression: true,
-      }
+      };
     }
   }
   return {
-    optimized: json;
+    optimized: json,
     stats: stringifyStats,
     useCompression: false,
-  }
+  };
 }
-export async function parseOptimizedTransport<T = any>(
+export async function parseOptimizedTransport<T = unknown>(
   data: string | Uint8Array,
-  isCompressed: boolean;
-): Promise<any> {
+  isCompressed: boolean
+): Promise<{ data: T; stats: OptimizedJSON }> {
   if (isCompressed && data instanceof Uint8Array) {
     return jsonWasmOptimizer.decompressJSON<T>(data);
   } else {

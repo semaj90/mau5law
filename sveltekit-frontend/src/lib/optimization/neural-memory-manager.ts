@@ -4,7 +4,70 @@ import { EventEmitter } from "events";
  * Advanced LOD (Level of Detail) resource management with k-means clustering
  * Optimized for VS Code extension performance and Docker memory efficiency
  */
+
+type ScikitKMeans = {
+  fit: (data: ArrayLike<ArrayLike<number>>) => Promise<unknown> | unknown;
+  labels?: Iterable<number>;
+  clusterCenters?: ArrayLike<ArrayLike<number>>;
+};
+
+export async function computeKMeansPlusPlus(vectors: number[][], k = 32) {
+  if (!Array.isArray(vectors) || vectors.length === 0) {
+    throw new Error("computeKMeansPlusPlus requires a non-empty vector set");
+  }
+
+  const sanitized = vectors.filter((row) => Array.isArray(row) && row.length > 0);
+  if (sanitized.length === 0) {
+    throw new Error("computeKMeansPlusPlus received no valid vectors");
+  }
+
+  const dimensions = sanitized[0].length;
+  const homogeneous = sanitized.filter((row) => row.length === dimensions);
+  if (homogeneous.length < sanitized.length) {
+    throw new Error("computeKMeansPlusPlus requires all vectors to share the same dimensionality");
+  }
+
+  const desiredClusters = Math.min(Math.max(1, k), homogeneous.length);
+
+  let KMeansCtor: new (options: Record<string, unknown>) => ScikitKMeans;
+  try {
+    const scikitModule = (await import("scikitjs")) as unknown as { KMeans: typeof KMeansCtor };
+    KMeansCtor = scikitModule.KMeans;
+  } catch (error) {
+    throw new Error(`scikitjs is not installed. Install it with "npm install scikitjs scikitjs-node". ${String(error)}`);
+  }
+
+  try {
+    await import("scikitjs-node");
+  } catch {
+    // If the native bindings fail to load (e.g., browser build), scikitjs falls back to a slower backend.
+  }
+
+  const km = new KMeansCtor({
+    nClusters: desiredClusters,
+    init: "kmeans++",
+    nInit: 10,
+    tol: 1e-4,
+    maxIter: 500,
+  });
+
+  const matrix = homogeneous.map((row) => Float64Array.from(row));
+  const result = (await km.fit(matrix)) as Record<string, unknown> | undefined;
+  const kmAny = km as unknown as Record<string, unknown>;
+
+  const labelsSource =
+    (result?.labels as Iterable<number> | undefined) ?? (kmAny.labels as Iterable<number> | undefined) ?? [];
+  const centersSource =
+    ((result?.clusterCenters as ArrayLike<ArrayLike<number>> | undefined) ??
+      (kmAny.clusterCenters as ArrayLike<ArrayLike<number>> | undefined) ??
+      []) as ArrayLike<ArrayLike<number>>;
+
+  const labels = Array.from(labelsSource);
+  const clusterCenters = Array.from(centersSource, (center) => Array.from(center as Iterable<number>));
+
+  return { labels, clusterCenters };
 }
+
 export interface MemoryPool {
   id: string;
   size: number;
@@ -16,8 +79,8 @@ export interface MemoryPool {
 }
 export interface LODLevel {
   level: number;
-  name: "ultra" | "high" | "medium" | "low";
-  memoryLimit: number; // MB,
+  name: 'ultra' | 'high' | 'medium' | 'low';
+  memoryLimit: number; // MB
   quality: number; // 0-1
   compressionRatio: number;
   cacheSize: number;
@@ -26,14 +89,14 @@ export interface LODLevel {
     vectorProcessing: boolean;
     neuralNetworking: boolean;
     rapidJSON: boolean;
-  }
+  };
 }
 export interface MemoryPrediction {
   expectedUsage: number;
   confidence: number;
-  timeHorizon: number; // minutes,
+  timeHorizon: number; // minutes
   recommendations: string[];
-  optimizations: Array<any>;
+  optimizations: Optimization[]; // changed from any[]
 }
 export interface ClusterMetrics {
   centroid: number[];
@@ -43,18 +106,45 @@ export interface ClusterMetrics {
   lastUpdate: number;
   compressionLevel: number;
 }
+// New typed interfaces
+export interface UsageEntry {
+  timestamp: number;
+  memory: number;
+  operations: number;
+}
+export type OptimizationType = 'compress' | 'cluster' | 'other';
+export interface Optimization {
+  type: OptimizationType;
+  priority: number;
+  estimatedSavings: number;
+  details?: Record<string, unknown>;
+}
+export interface PerformanceReport {
+  memoryEfficiency: number;
+  lodLevel: LODLevel;
+  poolUtilization: Record<string, number>;
+  clusterCount: number;
+  predictions: MemoryPrediction;
+  recommendations: string[];
+}
+export interface RecentMetrics {
+  avgMemory: number;
+  avgOperations: number;
+  trend: number;
+  cacheHitRate: number;
+}
 export class NeuralMemoryManager extends EventEmitter {
   private memoryPools: Map<string, MemoryPool> = new Map();
   private currentLOD: LODLevel;
   private clusters: Map<string, ClusterMetrics> = new Map();
-  private usageHistory: Array<any> = [];
+  private usageHistory: Array<UsageEntry> = []; // changed from Array<any>
   private neuralWeights: number[][][] = [];
   private maxMemoryMB: number;
   private isTraining = false;
   private lodLevels: Record<string, LODLevel> = {
     ultra: {
       level: 4,
-      name: "ultra",
+      name: 'ultra',
       memoryLimit: 4096,
       quality: 1.0,
       compressionRatio: 1.0,
@@ -64,11 +154,11 @@ export class NeuralMemoryManager extends EventEmitter {
         vectorProcessing: true,
         neuralNetworking: true,
         rapidJSON: true,
-      }
+      },
     },
     high: {
       level: 3,
-      name: "high",
+      name: 'high',
       memoryLimit: 2048,
       quality: 0.85,
       compressionRatio: 0.7,
@@ -78,11 +168,11 @@ export class NeuralMemoryManager extends EventEmitter {
         vectorProcessing: true,
         neuralNetworking: false,
         rapidJSON: true,
-      }
+      },
     },
     medium: {
       level: 2,
-      name: "medium",
+      name: 'medium',
       memoryLimit: 1024,
       quality: 0.6,
       compressionRatio: 0.5,
@@ -92,11 +182,11 @@ export class NeuralMemoryManager extends EventEmitter {
         vectorProcessing: true,
         neuralNetworking: false,
         rapidJSON: true,
-      }
+      },
     },
     low: {
       level: 1,
-      name: "low",
+      name: 'low',
       memoryLimit: 512,
       quality: 0.3,
       compressionRatio: 0.3,
@@ -106,9 +196,9 @@ export class NeuralMemoryManager extends EventEmitter {
         vectorProcessing: false,
         neuralNetworking: false,
         rapidJSON: false,
-      }
-    }
-  }
+      },
+    },
+  };
   constructor(maxMemoryMB: number = 2048) {
     super();
     this.maxMemoryMB = maxMemoryMB;
@@ -121,16 +211,15 @@ export class NeuralMemoryManager extends EventEmitter {
    * Initialize neural network for memory prediction
    */
   private initializeNeuralNetwork(): void {
-    // Simple 3-layer neural network: [input(5), hidden(8), output(3)]
+    // Simple 2-layer neural network: input -> hidden -> output
     const inputSize = 5; // memory, operations, time, cache_hit_rate, cluster_count
     const hiddenSize = 8;
     const outputSize = 3; // memory_prediction, operation_prediction, cluster_prediction
-    // Initialize weights randomly
     this.neuralWeights = [
       this.randomMatrix(inputSize, hiddenSize), // input to hidden
       this.randomMatrix(hiddenSize, outputSize), // hidden to output
     ];
-    console.log("🧠 Neural network initialized for memory prediction");
+    console.log('🧠 Neural network initialized for memory prediction');
   }
   /**
    * Initialize memory pools based on current LOD level
@@ -138,35 +227,35 @@ export class NeuralMemoryManager extends EventEmitter {
   private initializeMemoryPools(): void {
     const poolConfigs = [
       {
-        id: "json_pool",
-        type: "high" as const,
+        id: 'json_pool',
+        type: 'high' as const,
         size: this.currentLOD.memoryLimit * 0.3,
-        resourceType: "json" as const
+        resourceType: 'json' as const,
       },
       {
-        id: "vector_pool",
-        type: "medium" as const,
+        id: 'vector_pool',
+        type: 'medium' as const,
         size: this.currentLOD.memoryLimit * 0.25,
-        resourceType: "vector" as const
+        resourceType: 'vector' as const,
       },
       {
-        id: "cache_pool",
-        type: "medium" as const,
+        id: 'cache_pool',
+        type: 'medium' as const,
         size: this.currentLOD.memoryLimit * 0.2,
-        resourceType: "cache" as const
+        resourceType: 'cache' as const,
       },
       {
-        id: "wasm_pool",
-        type: "high" as const,
+        id: 'wasm_pool',
+        type: 'high' as const,
         size: this.currentLOD.memoryLimit * 0.15,
-        resourceType: "wasm" as const
+        resourceType: 'wasm' as const,
       },
       {
-        id: "emergency_pool",
-        type: "emergency" as const,
+        id: 'emergency_pool',
+        type: 'emergency' as const,
         size: this.currentLOD.memoryLimit * 0.1,
-        resourceType: "cache" as const
-      }
+        resourceType: 'cache' as const,
+      },
     ];
     for (const config of poolConfigs) {
       this.memoryPools.set(config.id, {
@@ -174,14 +263,12 @@ export class NeuralMemoryManager extends EventEmitter {
         size: config.size,
         used: 0,
         type: config.type,
-        priority: config.type === "high" ? 3 : config.type === "medium" ? 2 : 1,
+        priority: config.type === 'high' ? 3 : config.type === 'medium' ? 2 : 1,
         lastAccessed: Date.now(),
-        resourceType: config.resourceType
+        resourceType: config.resourceType,
       });
     }
-    console.log(
-      `🏊 Memory pools initialized for ${this.currentLOD.name} LOD level`
-    );
+    console.log(`🏊 Memory pools initialized for ${this.currentLOD.name} LOD level`);
   }
   /**
    * Start memory monitoring and predictive optimization
@@ -203,15 +290,12 @@ export class NeuralMemoryManager extends EventEmitter {
    * Collect current memory usage metrics
    */
   private collectMemoryMetrics(): void {
-    const totalUsed = Array.from(this.memoryPools.values()).reduce(
-      (sum, pool) => sum + pool.used,
-      0
-    );
+    const totalUsed = Array.from(this.memoryPools.values()).reduce((sum, pool) => sum + pool.used, 0);
     const operationsCount = this.clusters.size;
     this.usageHistory.push({
       timestamp: Date.now(),
-      memory: totalUsed;
-      operations: operationsCount
+      memory: totalUsed,
+      operations: operationsCount,
     });
     // Keep only last 100 entries
     if (this.usageHistory.length > 100) {
@@ -220,10 +304,10 @@ export class NeuralMemoryManager extends EventEmitter {
     // Emit memory pressure warning if needed
     const memoryPressure = totalUsed / this.currentLOD.memoryLimit;
     if (memoryPressure > 0.8) {
-      this.emit("memory_pressure", {
+      this.emit('memory_pressure', {
         level: memoryPressure,
-        used: totalUsed;
-        limit: this.currentLOD.memoryLimit
+        used: totalUsed,
+        limit: this.currentLOD.memoryLimit,
       });
     }
   }
@@ -232,69 +316,66 @@ export class NeuralMemoryManager extends EventEmitter {
    */
   private async performKMeansMemoryClustering(): Promise<void> {
     if (this.usageHistory.length < 10) return;
-    const k = Math.min(5, Math.floor(this.usageHistory.length / 5);
-    const dataPoints = this.usageHistory.map((h) => [
-      h.memory,
-      h.operations,
-      h.timestamp % 86400000
-    ]); // Include time of day
+    const k = Math.min(5, Math.max(1, Math.floor(this.usageHistory.length / 5)));
+    const dataPoints = this.usageHistory.map(h => [h.memory, h.operations, h.timestamp % 86400000]); // Include time of day
     const clusters = await this.kMeansCluster(dataPoints, k);
     // Update cluster metrics
     clusters.forEach((cluster, index) => {
       const clusterKey = `memory_cluster_${index}`;
       this.clusters.set(clusterKey, {
         centroid: cluster.centroid,
-        documents: cluster.points.map((p) => p.toString()),
+        documents: cluster.points.map(p => p.toString()),
         memoryFootprint: cluster.centroid[0],
         accessFrequency: cluster.points.length,
         lastUpdate: Date.now(),
-        compressionLevel: this.calculateOptimalCompression(cluster.centroid[0])
+        compressionLevel: this.calculateOptimalCompression(cluster.centroid[0]),
       });
     });
-    console.log(
-      `🎯 K-means clustering complete: ${clusters.length} memory pattern clusters`
-    );
+    console.log(`🎯 K-means clustering complete: ${clusters.length} memory pattern clusters`);
   }
   /**
    * K-means clustering implementation
    */
   private async kMeansCluster(
-    points: number[][];
-    k: number;
-  ): Promise<Array<any>, {
+    points: number[][],
+    k: number
+  ): Promise<Array<{ centroid: number[]; points: number[][] }>> {
+    if (!points || points.length === 0) return [];
     const dimensions = points[0].length;
-    let centroids = Array.from({ length: k }, () =>
-      Array.from({ length: dimensions }, () => Math.random()
-    );
-    for (let iteration = 0; iteration < 20; iteration++) {
-      const clusters = Array.from({ length: k }, () => ({
-        centroid: [] as number[],
-        points: [] as number[][]
-      });
+    // Initialize centroids by sampling
+    const centroids: number[][] = [];
+    for (let i = 0; i < k; i++) {
+      centroids.push(Array.from({ length: dimensions }, () => Math.random() * (Math.max(...points.flat()) || 1)));
+    }
+
+    for (let iteration = 0; iteration < 50; iteration++) {
+      const clusters: Array<{ centroid: number[]; points: number[][] }> = Array.from({ length: k }, () => ({
+        centroid: [],
+        points: [] as number[][],
+      }));
       // Assign points to clusters
       for (const point of points) {
         let minDistance = Infinity;
-        let closestCluster = 0;
+        let closest = 0;
         for (let i = 0; i < k; i++) {
-          const distance = this.euclideanDistance(point, centroids[i]);
-          if (distance < minDistance) {
-            minDistance = distance;
-            closestCluster = i;
+          const dist = this.euclideanDistance(point, centroids[i]);
+          if (dist < minDistance) {
+            minDistance = dist;
+            closest = i;
           }
         }
-        clusters[closestCluster].points.push(point);
+        clusters[closest].points.push(point);
       }
-      // Update centroids
+      // Update centroids and check convergence
       let converged = true;
       for (let i = 0; i < k; i++) {
-        if (clusters[i].points.length === 0) continue;
-        const newCentroid = Array.from()>
+        const pts = clusters[i].points;
+        if (pts.length === 0) continue;
+        const newCentroid = Array.from(
           { length: dimensions },
-          (_, dim) =>
-            clusters[i].points.reduce((sum, point) => sum + point[dim], 0) /
-            clusters[i].points.length
+          (_, dim) => pts.reduce((s, p) => s + (p[dim] || 0), 0) / pts.length
         );
-        if (this.euclideanDistance(newCentroid, centroids[i]) > 0.01) {
+        if (this.euclideanDistance(newCentroid, centroids[i]) > 0.001) {
           converged = false;
         }
         centroids[i] = newCentroid;
@@ -303,8 +384,8 @@ export class NeuralMemoryManager extends EventEmitter {
       if (converged) break;
     }
     return Array.from({ length: k }, (_, i) => ({
-      centroid: centroids[i];
-      points: points.filter((point) => {
+      centroid: centroids[i],
+      points: points.filter(point => {
         let minDistance = Infinity;
         let closestCluster = 0;
         for (let j = 0; j < k; j++) {
@@ -315,8 +396,8 @@ export class NeuralMemoryManager extends EventEmitter {
           }
         }
         return closestCluster === i;
-      })
-    });
+      }),
+    }));
   }
   /**
    * Train neural network for memory prediction
@@ -326,23 +407,23 @@ export class NeuralMemoryManager extends EventEmitter {
     this.isTraining = true;
     try {
       const trainingData = this.prepareTrainingData();
-      for (let epoch = 0; epoch < 50; epoch++) {
+      for (let epoch = 0; epoch < 20; epoch++) {
         let totalError = 0;
         for (const sample of trainingData) {
           const prediction = this.forwardPass(sample.input);
-          const error = this.calculateError(prediction, sample.target);
-          totalError += error;
+          const sampleError = this.calculateError(prediction, sample.target);
+          totalError += sampleError;
           this.backwardPass(sample.input, prediction, sample.target);
         }
-        if (epoch % 10 === 0) {
+        if (epoch % 5 === 0) {
           console.log(
-            `🧠 Neural training epoch ${epoch}, error: ${(totalError / trainingData.length).toFixed(4)}`
+            `🧠 Neural training epoch ${epoch}, error: ${(totalError / Math.max(trainingData.length, 1)).toFixed(4)}`
           );
         }
       }
-      console.log("✅ Neural network training completed");
-    } catch (error: any) {
-      console.error("❌ Neural training error:", error);
+      console.log('✅ Neural network training completed');
+    } catch (err: unknown) {
+      console.error('❌ Neural training error:', err instanceof Error ? err : String(err));
     } finally {
       this.isTraining = false;
     }
@@ -350,17 +431,15 @@ export class NeuralMemoryManager extends EventEmitter {
   /**
    * Predict future memory usage using neural network
    */
-  async predictMemoryUsage(
-    timeHorizonMinutes: number = 10;
-  ): Promise<MemoryPrediction> {
+  async predictMemoryUsage(timeHorizonMinutes: number = 10): Promise<MemoryPrediction> {
     if (this.usageHistory.length < 5) {
       return {
         expectedUsage: this.getCurrentMemoryUsage(),
         confidence: 0.1,
         timeHorizon: timeHorizonMinutes,
-        recommendations: ["Insufficient data for prediction"],
-        optimizations: []
-      }
+        recommendations: ['Insufficient data for prediction'],
+        optimizations: [],
+      };
     }
     const recentMetrics = this.getRecentMetrics();
     const prediction = this.forwardPass([
@@ -368,58 +447,49 @@ export class NeuralMemoryManager extends EventEmitter {
       recentMetrics.avgOperations,
       recentMetrics.trend,
       recentMetrics.cacheHitRate,
-      this.clusters.size
+      this.clusters.size,
     ]);
     const expectedUsage = prediction[0] * this.currentLOD.memoryLimit;
-    const confidence = Math.min(
-      0.95,
-      Math.max(0.1, 1 - Math.abs(prediction[1])
-    );
-    const recommendations = this.generateRecommendations(
-      expectedUsage,
-      confidence
-    );
+    const confidence = Math.min(0.95, Math.max(0.1, 1 - Math.abs(prediction[1] || 0)));
+    const recommendations = this.generateRecommendations(expectedUsage, confidence);
     const optimizations = this.generateOptimizations(expectedUsage);
     return {
       expectedUsage,
       confidence,
       timeHorizon: timeHorizonMinutes,
       recommendations,
-      optimizations
-    }
+      optimizations,
+    };
   }
   /**
    * Dynamically adjust LOD level based on memory pressure
    */
   async adjustLODLevel(memoryPressure: number): Promise<void> {
-    const newLOD = this.selectOptimalLOD(
-      this.maxMemoryMB * (1 - memoryPressure)
-    );
+    const newLOD = this.selectOptimalLOD(this.maxMemoryMB * (1 - memoryPressure));
+    const oldLOD = this.currentLOD;
     if (newLOD.level !== this.currentLOD.level) {
-      console.log(
-        `🎚️ Adjusting LOD from ${this.currentLOD.name} to ${newLOD.name}`
-      );
+      console.log(`🎚️ Adjusting LOD from ${this.currentLOD.name} to ${newLOD.name}`);
       this.currentLOD = newLOD;
       await this.reconfigureMemoryPools();
       await this.applyLODOptimizations();
-      this.emit("lod_changed", { oldLevel: this.currentLOD, newLevel: newLOD });
+      this.emit('lod_changed', { oldLevel: oldLOD, newLevel: newLOD });
     }
   }
   /**
    * Apply LOD-specific optimizations
    */
   private async applyLODOptimizations(): Promise<void> {
-    const optimizations = [];
+    const optimizations: Promise<void>[] = []; // typed Promise<void>[]
     // Compression optimization
     if (this.currentLOD.compressionRatio < 0.7) {
-      optimizations.push(this.enableAggressiveCompression();
+      optimizations.push(this.enableAggressiveCompression());
     }
     // Feature toggling
     if (!this.currentLOD.features.webAssembly) {
-      optimizations.push(this.disableWebAssembly();
+      optimizations.push(this.disableWebAssembly());
     }
     if (!this.currentLOD.features.neuralNetworking) {
-      optimizations.push(this.pauseNeuralTraining();
+      optimizations.push(this.pauseNeuralTraining());
     }
     await Promise.all(optimizations);
     console.log(`🔧 Applied ${optimizations.length} LOD optimizations`);
@@ -427,27 +497,21 @@ export class NeuralMemoryManager extends EventEmitter {
   /**
    * Generate performance report
    */
-  async generatePerformanceReport(): Promise<any> {
-    const totalMemory = Array.from(this.memoryPools.values()).reduce(
-      (sum, pool) => sum + pool.size,
-      0
-    );
-    const usedMemory = Array.from(this.memoryPools.values()).reduce(
-      (sum, pool) => sum + pool.used,
-      0
-    );
-    const poolUtilization: Record<string, number> = {}
+  async generatePerformanceReport(): Promise<PerformanceReport> {
+    const totalMemory = Array.from(this.memoryPools.values()).reduce((sum, pool) => sum + pool.size, 0);
+    const usedMemory = Array.from(this.memoryPools.values()).reduce((sum, pool) => sum + pool.used, 0);
+    const poolUtilization: Record<string, number> = {};
     for (const [id, pool] of this.memoryPools) {
-      poolUtilization[id] = pool.used / pool.size;
+      poolUtilization[id] = pool.size > 0 ? pool.used / pool.size : 0;
     }
     return {
-      memoryEfficiency: (totalMemory - usedMemory) / totalMemory,
+      memoryEfficiency: totalMemory > 0 ? (totalMemory - usedMemory) / totalMemory : 0,
       lodLevel: this.currentLOD,
       poolUtilization,
       clusterCount: this.clusters.size,
       predictions: await this.predictMemoryUsage(),
-      recommendations: this.generateSystemRecommendations()
-    }
+      recommendations: this.generateSystemRecommendations(),
+    };
   }
   // Utility methods
   private selectOptimalLOD(availableMemoryMB: number): LODLevel {
@@ -457,142 +521,142 @@ export class NeuralMemoryManager extends EventEmitter {
     return this.lodLevels.low;
   }
   private randomMatrix(rows: number, cols: number): number[][] {
-    return Array.from({ length: rows }, () =>
-      Array.from({ length: cols }, () => (Math.random() - 0.5) * 2)
-    );
+    return Array.from({ length: rows }, () => Array.from({ length: cols }, () => (Math.random() - 0.5) * 2));
   }
   private euclideanDistance(a: number[], b: number[]): number {
-    return Math.sqrt(
-      a.reduce((sum, val, i) => sum + Math.pow(val - b[i], 2), 0)
-    );
+    if (!a || !b) return Infinity;
+    const length = Math.min(a.length, b.length);
+    if (length === 0) return Infinity;
+    let sum = 0;
+    for (let i = 0; i < length; i++) {
+      const da = a[i] ?? 0;
+      const db = b[i] ?? 0;
+      const d = da - db;
+      sum += d * d;
+    }
+    return Math.sqrt(sum / length);
   }
   public getCurrentMemoryUsage(): number {
-    return Array.from(this.memoryPools.values()).reduce(
-      (sum, pool) => sum + pool.used,
-      0
-    );
+    return Array.from(this.memoryPools.values()).reduce((sum, pool) => sum + pool.used, 0);
   }
   private calculateOptimalCompression(memoryUsage: number): number {
-    return Math.min(
-      0.9,
-      Math.max(0.1, memoryUsage / this.currentLOD.memoryLimit)
-    );
+    return Math.min(0.9, Math.max(0.1, memoryUsage / this.currentLOD.memoryLimit));
   }
-  private prepareTrainingData(): Array< {
-    // Implementation for preparing neural network training data
-    return [];
+  private prepareTrainingData(): Array<{ input: number[]; target: number[] }> {
+    // Build simple supervised samples from usageHistory: predict normalized usage next step
+    const samples: Array<{ input: number[]; target: number[] }> = [];
+    const recent = this.usageHistory.slice(-50);
+    for (let i = 0; i < recent.length - 1; i++) {
+      const cur = recent[i];
+      const nxt = recent[i + 1];
+      const input = [
+        (cur.memory || 0) / Math.max(1, this.currentLOD.memoryLimit),
+        cur.operations || 0,
+        (cur.timestamp % 86400000) / 86400000,
+        0.75, // placeholder cache hit rate
+        this.clusters.size,
+      ];
+      const target = [(nxt.memory || 0) / Math.max(1, this.currentLOD.memoryLimit), 0, 0];
+      samples.push({ input, target });
+    }
+    return samples;
   }
-  private forwardPass(input,: number[]): number[,] {
-    // Simple neural network forward pass
-    let current = input;
+  private forwardPass(input: number[]): number[] {
+    // Simple matrix multiply through weights with tanh activation
+    let current = input.slice();
     for (const weights of this.neuralWeights) {
-      const next = new Array(weights[0] ? weights[0].length: 0).fill(0);
+      const next = new Array(weights[0]?.length ?? 0).fill(0);
       for (let i = 0; i < weights.length; i++) {
-        if (weights[i]) {
-          for (let j = 0; j < weights[i].length; j++) {
-            next[j] += current[i] * weights[i][j];
-          }
+        const row = weights[i];
+        if (!row) continue;
+        for (let j = 0; j < row.length; j++) {
+          next[j] += (current[i] ?? 0) * row[j];
         }
       }
-      current = next.map((x) => Math.tanh(x); // Activation function
+      current = next.map(x => Math.tanh(x));
     }
     return current;
   }
-  private calculateError(prediction,: number[], targe,t: number[,]): number {
-    return prediction.reduce(
-      (sum, pred, i) => sum + Math.pow(pred - target[i], 2),
-      0
-    );
+  private calculateError(prediction: number[], target: number[]): number {
+    return prediction.reduce((sum, pred, i) => sum + Math.pow(pred - (target[i] ?? 0), 2), 0);
   }
-  private backwardPass(
-    input,: number[]
-    prediction,: number[,];
-    target: number[];
-  ): void {
-    // Simplified backpropagation - in real implementation would need proper gradient calculation
-    const learningRate = 0.0,1;
-    const error = prediction.map((pred, i) => target[i] - pred);
-    // Update weights (simplified)
-    for (let i =, 0;, i < t,his.neuralWeights.le,ng,t,h; i++) {
-      for (let j = 0; j < this.neuralWeights[i].length; j++) {
-        if (this.neuralWeights[i][j]) {
-          for (let k = 0; k < this.neuralWeights[i][j].length; k++) {
-            this.neuralWeights[i][j][k] +=
-              learningRate * error[k % error.length] * 0.1;
-          }
+  private backwardPass(input: number[], prediction: number[], target: number[]): void {
+    // Very small, illustrative gradient update (not a real NN framework)
+    const learningRate = 0.01;
+    const error = prediction.map((pred, i) => (target[i] ?? 0) - pred);
+    for (let layer = this.neuralWeights.length - 1; layer >= 0; layer--) {
+      const weightMatrix = this.neuralWeights[layer];
+      for (let i = 0; i < weightMatrix.length; i++) {
+        for (let j = 0; j < weightMatrix[i].length; j++) {
+          // gradient proxy
+          const grad = (error[j] ?? 0) * 0.1 * (input[i] ?? 0);
+          weightMatrix[i][j] += learningRate * grad;
         }
       }
     }
   }
-  private getRecentMetrics(), {
+  private getRecentMetrics(): RecentMetrics {
     const recent = this.usageHistory.slice(-10);
-    return {
-      avgMemory: recent.reduce((sum, h) => sum + h.memory, 0) / recent.length,
-      avgOperations:
-        recent.reduce((sum, h) => sum + h.operations, 0) / recent.length,
-      trend:
-        recent.length > 1
-          ? recent[recent.length - 1].memory - recent[0].memory: 0,
-      cacheHitRate: 0.75, // Placeholder
+    if (recent.length === 0) {
+      return { avgMemory: 0, avgOperations: 0, trend: 0, cacheHitRate: 0.75 };
     }
+    return {
+      avgMemory: recent.reduce((sum, h) => sum + (h.memory || 0), 0) / recent.length,
+      avgOperations: recent.reduce((sum, h) => sum + (h.operations || 0), 0) / recent.length,
+      trend: recent.length > 1 ? (recent[recent.length - 1].memory || 0) - (recent[0].memory || 0) : 0,
+      cacheHitRate: 0.75, // Placeholder
+    };
   }
-  private generateRecommendations(
-    expectedUsage,: number
-    confidence,: numbe,r;
-  ): string[], {
-    const recommendations = [];
+  private generateRecommendations(expectedUsage: number, confidence: number): string[] {
+    const recommendations: string[] = [];
     if (expectedUsage > this.currentLOD.memoryLimit * 0.9) {
-      recommendations.push(
-        "High memory usage predicted - consider reducing LOD level"
-      );
+      recommendations.push('High memory usage predicted - consider reducing LOD level');
     }
     if (confidence < 0.5) {
-      recommendations.push(
-        "Low prediction confidence - increase monitoring frequency"
-      );
+      recommendations.push('Low prediction confidence - increase monitoring frequency');
     }
     return recommendations;
   }
-  private generateOptimizations(expectedUsage,: number), {
-    return [>;
+  private generateOptimizations(expectedUsage: number): Optimization[] {
+    return [
       {
-        type: "compress" as const,
+        type: 'compress',
         priority: expectedUsage > this.currentLOD.memoryLimit * 0.8 ? 3 : 1,
-        estimatedSavings: expectedUsage * 0.2
+        estimatedSavings: expectedUsage * 0.2,
       },
       {
-        type: "cluster" as const,
+        type: 'cluster',
         priority: 2,
-        estimatedSavings: expectedUsage * 0.1
-      }
+        estimatedSavings: expectedUsage * 0.1,
+      },
     ];
   }
-  private generateSystemRecommendations(),: string[], {
+  private generateSystemRecommendations(): string[] {
     return [
-      "Memory optimization active",
+      'Memory optimization active',
       `Current LOD: ${this.currentLOD.name}`,
-      `Active clusters: ${this.clusters.size}`
+      `Active clusters: ${this.clusters.size}`,
     ];
   }
-  private async reconfigureMemoryPools(),: Promise<void> {
+  private async reconfigureMemoryPools(): Promise<void> {
     this.memoryPools.clear();
     this.initializeMemoryPools();
   }
-  private async enableAggressiveCompression(),: Promise<void> {
-    console,.log("🗜️ Enabling aggressive compression");
+  private async enableAggressiveCompression(): Promise<void> {
+    console.log('🗜️ Enabling aggressive compression');
   }
-  private async disableWebAssembly(),: Promise<void> {
-    console,.log("🚫 Disabling WebAssembly features");
+  private async disableWebAssembly(): Promise<void> {
+    console.log('🚫 Disabling WebAssembly features');
   }
-  private async pauseNeuralTraining(),: Promise<void> {
-    this.isTraining = fals,e;
-    console,.log("⏸️ Pausing neural network training");
+  private async pauseNeuralTraining(): Promise<void> {
+    this.isTraining = false;
+    console.log('⏸️ Pausing neural network training');
   }
-  public optimizeMemoryAllocation(),: void {
+  public optimizeMemoryAllocation(): void {
     // Implement memory allocation optimization logic
-    for (const [id, pool], o,f t,his.memoryP,ools) {
-      if (pool.used / pool.size > 0.9) {
-        this.emit("pool_pressure", {
+    for (const [id, pool] of this.memoryPools) {
+      if (pool.size > 0 && pool.used / pool.size > 0.9) {
+        this.emit('pool_pressure', {
           poolId: id,
           utilization: pool.used / pool.size,
         });
@@ -602,37 +666,39 @@ export class NeuralMemoryManager extends EventEmitter {
   /**
    * Update memory usage predictions
    */
-  private updatePredictions(),: void {
+  private updatePredictions(): void {
     try {
       const currentState = this.getCurrentMemoryState();
-      if (currentState,.length >, 0) {
-        this.predictMemoryUsage();
+      if (currentState.length > 0) {
+        // fire & forget
+        void this.predictMemoryUsage();
       }
-    } catch (error: any) {
-      console.warn("⚠️ Failed to update predictions:", error);
+    } catch (err: unknown) {
+      console.warn('⚠️ Failed to update predictions:', err instanceof Error ? err : String(err));
     }
   }
   /**
    * Get current memory state as input vector
    */
-  private getCurrentMemoryState(),: number[], {
-    const pools = Array.from(this.memoryPools.values();
+  private getCurrentMemoryState(): number[] {
+    const pools = Array.from(this.memoryPools.values());
     return [
-      pools.reduce((sum, p) => sum + p.used, 0) / 1024, // Total used MB
+      pools.reduce((sum, p) => sum + p.used, 0) / 1024, // Total used MB normalized
       pools.length, // Pool count
       this.clusters.size, // Cluster count
-      Date.now() % 100000, // Time factor
+      (Date.now() % 100000) / 100000, // Time factor normalized
+      0.75, // placeholder cache hit rate
     ];
   }
   /**
    * Dispose of resources and clean up
    */
-  public dispose(),: void {
+  public dispose(): void {
     this.memoryPools.clear();
     this.clusters.clear();
-    this.usageHistory = [,];
-    this.neuralWeights = [,];
-    console,.log("🧠 Neural Memory Manager disposed");
+    this.usageHistory = [];
+    this.neuralWeights = [];
+    console.log('🧠 Neural Memory Manager disposed');
   }
 }
 export default NeuralMemoryManager;

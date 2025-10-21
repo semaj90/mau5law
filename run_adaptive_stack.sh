@@ -53,10 +53,15 @@ else
   echo "==> Skipping GPU diagnostics (per flag)."
 fi
 
-echo "==> Building services: ${SERVICES[*]}"
-docker compose build "${SERVICES[@]}"
+COMPOSE_FILE="docker-compose.phase-h.yml"
+if [[ ! -f "$COMPOSE_FILE" ]]; then
+  COMPOSE_FILE="docker-compose.yml"
+fi
+
+echo "==> Building services: ${SERVICES[*]} (using $COMPOSE_FILE)"
+docker compose -f "$COMPOSE_FILE" build "${SERVICES[@]}"
 
 echo "==> Starting services (Ctrl+C to stop)..."
-docker compose up "${UP_ARGS[@]}" "${SERVICES[@]}"
+docker compose -f "$COMPOSE_FILE" up "${UP_ARGS[@]}" "${SERVICES[@]}"
 
 popd >/dev/null

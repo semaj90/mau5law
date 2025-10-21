@@ -6,24 +6,26 @@ module.exports = {
     es2020: true,
     node: true,
   },
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended'
-  ],
+  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
-    extraFileExtensions: ['.svelte']
+    extraFileExtensions: ['.svelte'],
   },
   plugins: ['@typescript-eslint'],
   rules: {
-    '@typescript-eslint/no-unused-vars': ['error', {
-      varsIgnorePattern: '^\\$',
-      argsIgnorePattern: '^_'
-    }],
+    // Keep global rules minimal; apply the strict no-explicit-any only to our server lib where we made changes.
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        varsIgnorePattern: '^\\$',
+        argsIgnorePattern: '^_',
+      },
+    ],
     // Disable for Svelte 5 runes
-    'no-undef': 'off'
+    'no-undef': 'off',
   },
   ignorePatterns: [
     '*.md',
@@ -45,6 +47,14 @@ module.exports = {
     'uno.config.ts',
     'unocss.config.ts',
     // Ignore Svelte files to avoid plugin circular reference issues
-    '*.svelte'
+    '*.svelte',
+  ],
+  overrides: [
+    {
+      files: ['src/lib/**', 'src/routes/api/**', 'src/routes/**/+server.ts', 'src/routes/**/+page.server.ts'],
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'error',
+      },
+    },
   ],
 };

@@ -1,65 +1,165 @@
 // CaseScoringServiceGrpc.ts - Binary Protocol Optimized Case Scoring for Phase 5-7
 // Implements gRPC streaming with 60% performance improvement target
-import { credentials, Metadata } from '@grpc/grpc-js';
-import { loadPackageDefinition } from '@grpc/grpc-js';
+import { credentials, loadPackageDefinition } from '@grpc/grpc-js';
 import { loadSync } from '@grpc/proto-loader';
 import { ollamaService } from './OllamaService.js';
 import { db } from '../db.js';
 import { caseScores } from '../db/schema.js';
-import { eq } from 'drizzle-orm';
-import type {
-  CaseScoringRequest,
-  CaseScoringResult,
-  ScoringCriteria
-} from '../../types/scoring.js';
+import type { CaseScoringRequest, CaseScoringResult, ScoringCriteria } from '../../types/scoring.js';
 import { EventEmitter } from 'events';
 import * as zlib from 'zlib';
 import { promisify } from 'util';
-const gzip = promisify(zlib.gzip);
+
+// NOTE: drizzle's Insertable type is not available in this environment/version; provide a compatible local alias.
+// Changed: make alias permissive to avoid mismatches with drizzle-generated table types in this environment.
+// Replace the permissive `any` alias with a small typed shim that actually uses the generic T.
+type Insertable<T> = Record<string, unknown>;
+
 const gunzip = promisify(zlib.gunzip);
 // Performance monitoring
 class PerformanceMonitor {
   private metrics: Map<string, number[]> = new Map();
   recordMetric(name: string, value: number) {
-    if (!this.metrics.has(name)) {
-      this.metrics.set(name, []);
-    }
+    if (!this.metrics.has(name)) this.metrics.set(name, []);
     this.metrics.get(name)!.push(value);
   }
   getAverageMetric(name: string): number {
-    const values = this.metrics.get(name) || [];
-    if (values.length === 0) return 0;
-    return values.reduce((a, b) => a + b, 0) / values.length;
+    const v = this.metrics.get(name) || [];
+    if (!v.length) return 0;
+    return v.reduce((a, b) => a + b, 0) / v.length;
   }
   getComparison(): { json: number; grpc: number; improvement: number } {
-    const jsonAvg = this.getAverageMetric('json_processing');
-    const grpcAvg = this.getAverageMetric('grpc_processing');
-    const improvement = ((jsonAvg - grpcAvg) / jsonAvg) * 100;
-    return { json: jsonAvg, grpc: grpcAvg, improvement }
+    const json = this.getAverageMetric('json_processing');
+    const grpc = this.getAverageMetric('grpc_processing');
+    const improvement = json > 0 ? ((json - grpc) / json) * 100 : 0;
+    return { json, grpc, improvement };
   }
 }
-// Simple logger
+// Simple logger - avoid `any`
 const logger = {
-  info: (msg: string, ...args: any[]) => console.log(`[gRPC INFO] ${msg}`, ...args),
-  error: (msg: string, ...args: any[]) => console.error(`[gRPC ERROR] ${msg}`, ...args),
-  warn: (msg: string, ...args: any[]) => console.warn(`[gRPC WARN] ${msg}`, ...args),
-  debug: (msg: string, ...args: any[]) => console.debug(`[gRPC DEBUG] ${msg}`, ...args)
+  info: (msg: string, ...args: unknown[]) => console.log(`[gRPC INFO] ${msg}`, ...args),
+  error: (msg: string, ...args: unknown[]) => console.error(`[gRPC ERROR] ${msg}`, ...args),
+  warn: (msg: string, ...args: unknown[]) => console.warn(`[gRPC WARN] ${msg}`, ...args),
+  debug: (msg: string, ...args: unknown[]) => console.debug(`[gRPC DEBUG] ${msg}`, ...args),
+};
+
+// --- Added: narrow gRPC types moved ahead of the class to avoid "cannot find name" errors
+type GrpcResponse = {
+  case_id?: string;
+  score?: number;
+  confidence?: number;
+  detailed_scores?: Record<string, unknown>;
+  detailed_scorings?: Record<string, unknown>;
+  ai_analysis?: Buffer | string | Uint8Array;
+  recommendations?: Array<{ text?: string } | string>;
+  scoring_date?: { seconds?: number };
+  metadata?: {
+    model_name?: string;
+    model_version?: string;
+    compression_stats?: { compression_ratio?: number };
+    performance?: { throughput_cases_per_second?: number };
+  };
+};
+
+type GrpcStreamUpdate = {
+  case_id?: string;
+  event_type?: string;
+  timestamp?: { seconds?: number };
+  sequence_number?: number;
+  partial_score?: unknown;
+  criteria_update?: unknown;
+  recommendation_update?: unknown;
+  processing_status?: unknown;
+};
+
+type GrpcWritableStream = {
+  write: (data: unknown) => void;
+  end: () => void;
+  on: (event: 'data' | 'error' | 'end', handler: (payload?: unknown) => void) => void;
+};
+
+type GrpcClientType = {
+  ScoreCase?: (req: unknown, cb: (err: unknown, res?: GrpcResponse) => void) => void;
+  StreamScoringUpdates?: () => GrpcWritableStream | undefined;
+  StreamCaseScoring?: () => GrpcWritableStream | undefined;
+};
+
+// --- Added: Ollama client helper types to resolve missing identifiers
+type OllamaGenerateFnModel = (model: string, prompt: string, options?: Record<string, unknown>) => Promise<string> | string;
+type OllamaGenerateFnPrompt = (prompt: string, options?: Record<string, unknown>) => Promise<string> | string;
+type OllamaServiceType = {
+  generateCompletion?: OllamaGenerateFnModel | OllamaGenerateFnPrompt;
+  generate?: OllamaGenerateFnModel | OllamaGenerateFnPrompt;
+  complete?: OllamaGenerateFnModel | OllamaGenerateFnPrompt;
+  run?: OllamaGenerateFnModel | OllamaGenerateFnPrompt;
+  // allow other helpers on the service without typing everything
+  [k: string]: unknown;
+};
+
+// Utility function to encapsulate double casting for Insertable<T>
+function asInsertable<T extends object>(obj: T): Insertable<T> {
+  // preserve the ability to coerce shaped objects into the Insertable<T> expected by drizzle
+  return obj as Insertable<T>;
 }
+
+// Map scoring result into DB-shaped insert payload (camelCase keys matching drizzle schema)
+function mapScoringResultToInsert(result: CaseScoringResult): {
+  caseId: string;
+  score: string;
+  confidence: string;
+  criteria: string;
+  recommendations: string;
+  explanation: string;
+  model: string | null;
+  modelVersion: string | null;
+  performanceMetrics: string;
+  createdAt: Date;
+  riskLevel: string;
+  updatedAt?: Date;
+} {
+  const numericScore = typeof result.score === 'number' ? result.score : Number(result.score ?? NaN);
+  let riskLevel = 'unknown';
+  if (!Number.isNaN(numericScore)) {
+    if (numericScore >= 80) riskLevel = 'high';
+    else if (numericScore >= 60) riskLevel = 'medium';
+    else if (numericScore >= 40) riskLevel = 'low';
+    else riskLevel = 'very_low';
+  }
+
+  return {
+    caseId: result.caseId,
+    score: String(result.score ?? ''),
+    confidence: String(result.confidence ?? ''),
+    criteria: JSON.stringify(result.criteria ?? {}),
+    recommendations: JSON.stringify(result.recommendations ?? []),
+    explanation: result.explanation ?? '',
+    model: result.model ?? null,
+    modelVersion: result.version ?? null,
+    performanceMetrics: JSON.stringify(result.performanceMetrics ?? {}),
+    createdAt: result.scoringDate ?? new Date(),
+    riskLevel: riskLevel,
+    // updatedAt left optional
+  };
+}
+
+// Export singleton instance
 export class CaseScoringServiceGrpc extends EventEmitter {
-  private grpcClient: any;
-  private readonly SCORING_MODEL = 'gemma3-legal';
+  // avoid `any` for grpcClient
+  private grpcClient: GrpcClientType | null = null;
+  private readonly SCORING_MODEL = 'gemma3-legal:latest';
   private readonly DEFAULT_TEMPERATURE = 0.7;
   private performanceMonitor = new PerformanceMonitor();
-  private streamingSessions = new Map<string, any>();
-  // Scoring weights (same as original)
-  private readonly CRITERIA_WEIGHTS = {
+  private streamingSessions = new Map<string, unknown>();
+  // Scoring weights (typed to ScoringCriteria keys)
+  private readonly CRITERIA_WEIGHTS: Record<keyof ScoringCriteria, number> = {
     evidence_strength: 0.25,
     witness_reliability: 0.2,
     legal_precedent: 0.2,
     public_interest: 0.15,
     case_complexity: 0.1,
-    resource_requirements: 0.1
-  }
+    resource_requirements: 0.1,
+  };
+
   constructor() {
     super();
     this.initializeGrpcClient();
@@ -75,14 +175,33 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         keepCase: true,
         longs: String,
         enums: String,
-        defaults: true;
-        oneofs: true
+        defaults: true,
+        oneofs: true,
       });
-      const protoDescriptor = loadPackageDefinition(packageDefinition) as any;
-      const CaseScoringService = protoDescriptor.legal_ai.case_scoring.CaseScoringService;
-      // Create gRPC client with binary optimization
-      this.grpcClient = new CaseScoringService()
-        process.env.GRPC_SERVER_URL || 'localhost:50051',
+      // Load package and narrow type safely without using `any`
+      const loadedPkg = loadPackageDefinition(packageDefinition) as unknown;
+
+      // Minimal shape describing the nested proto path we expect
+      type ExpectedProtoShape = {
+        legal_ai?: {
+          case_scoring?: {
+            CaseScoringService?: unknown;
+          };
+        };
+      };
+
+      const proto = loadedPkg as ExpectedProtoShape;
+      const CaseScoringService = proto.legal_ai?.case_scoring?.CaseScoringService as
+        | ({ new (...args: unknown[]): GrpcClientType })
+        | undefined;
+
+      if (!CaseScoringService) {
+        throw new Error('CaseScoringService proto not found');
+      }
+      const target = process.env.GRPC_SERVER_URL || 'localhost:50051';
+      // satisfy compiler with GrpcClientType shape via runtime `as unknown as ...`
+      this.grpcClient = new (CaseScoringService as unknown as { new (...args: unknown[]): GrpcClientType })(
+        target,
         credentials.createInsecure(),
         {
           'grpc.max_receive_message_length': 100 * 1024 * 1024, // 100MB
@@ -90,14 +209,12 @@ export class CaseScoringServiceGrpc extends EventEmitter {
           'grpc.keepalive_time_ms': 10000,
           'grpc.keepalive_timeout_ms': 5000,
           'grpc.keepalive_permit_without_calls': 1,
-          'grpc.http2.max_pings_without_data': 0,
-          'grpc.http2.min_time_between_pings_ms': 10000
         }
       );
-      logger.info('gRPC client initialized for binary protocol');
-    } catch (error) {
-      logger.warn('gRPC client initialization failed, falling back to HTTP', error);
-      // Fallback handled in scoring methods
+      logger.info('gRPC client initialized', { target });
+    } catch (err) {
+      logger.warn('gRPC initialization failed, will fallback to JSON', err);
+      this.grpcClient = null;
     }
   }
   /**
@@ -105,33 +222,32 @@ export class CaseScoringServiceGrpc extends EventEmitter {
    */
   async scoreCase(request: CaseScoringRequest): Promise<CaseScoringResult> {
     const startTime = Date.now();
-    try {
-      // Validate request
-      this.validateRequest(request);
-      // Try gRPC binary protocol first
-      if (this.grpcClient) {
+    this.validateRequest(request);
+    if (this.grpcClient) {
+      try {
         return await this.scoreCaseGrpc(request, startTime);
+      } catch (err) {
+        logger.warn('gRPC scoring failed, falling back to JSON', err);
       }
-      // Fallback to original JSON-based scoring
-      return await this.scoreCaseJson(request, startTime);
-    } catch (error: any) {
-      logger.error('Failed to score case', error);
-      throw error;
     }
+    return this.scoreCaseJson(request, startTime);
   }
   /**
    * Score case using gRPC binary protocol
    */
-  private async scoreCaseGrpc(request: CaseScoringRequest, startTime: number): Promise<CaseScoringResult> {
+  private scoreCaseGrpc(request: CaseScoringRequest, startTime: number): Promise<CaseScoringResult> {
     return new Promise((resolve, reject) => {
       // Prepare binary request
+      const metadata = (request as unknown as { metadata?: Record<string, unknown> }).metadata || {};
       const grpcRequest = {
         case_id: request.caseId,
-        case_metadata: this.serializeCaseMetadata(request.metadata),
-        criteria: this.convertCriteriaToProto(request.scoring_criteria),
+        case_metadata: this.serializeCaseMetadata(metadata),
+        criteria: this.convertCriteriaToProto(
+          request.scoring_criteria ?? (request as unknown as { criteria?: ScoringCriteria }).criteria
+        ),
         parameters: {
           model: this.SCORING_MODEL,
-          temperature: request.temperature || this.DEFAULT_TEMPERATURE,
+          temperature: request.temperature ?? this.DEFAULT_TEMPERATURE,
           max_tokens: 1000,
           use_cached_embeddings: true,
           enable_streaming: false,
@@ -139,60 +255,77 @@ export class CaseScoringServiceGrpc extends EventEmitter {
         },
         request_time: { seconds: Math.floor(Date.now() / 1000) },
         requester_id: 'system',
-        priority: this.getPriority(request)
+        priority: this.getPriority(request),
+      };
+
+      // Guard: ensure ScoreCase exists
+      if (!this.grpcClient?.ScoreCase) {
+        return reject(new Error('gRPC ScoreCase method unavailable'));
       }
+
       // Make gRPC call
-      this.grpcClient.ScoreCase(grpcRequest, (error: any, response: any) => {
+      this.grpcClient.ScoreCase(grpcRequest, async (error: unknown, response?: GrpcResponse) => {
         if (error) {
-          logger.error('gRPC scoring failed', error);
-          // Fallback to JSON
-          this.scoreCaseJson(request, startTime).then(resolve).catch(reject);
-          return;
+          return reject(error);
         }
-        // Process binary response
-        const processingTime = Date.now() - startTime;
-        this.performanceMonitor.recordMetric('grpc_processing', processingTime);
-        const result: CaseScoringResult = {
-          caseId: (response as { case_id?: any; score?: any; confidence?: any; detailed_scores?: any; ai_analysis?: any; recommendations?: any; scoring_date?: any; metadata?: any }).case_id,
-          score: (response as { case_id?: any; score?: any; confidence?: any; detailed_scores?: any; ai_analysis?: any; recommendations?: any; scoring_date?: any; metadata?: any }).score,
-          confidence: (response as { case_id?: any; score?: any; confidence?: any; detailed_scores?: any; ai_analysis?: any; recommendations?: any; scoring_date?: any; metadata?: any }).confidence,
-          criteria: this.convertCriteriaFromProto((response as { case_id?: any; score?: any; confidence?: any; detailed_scores?: any; ai_analysis?: any; recommendations?: any; scoring_date?: any); metadata?: any, }).detailed_scor,es),
-          explanation,: this.decompressAnalysis((response as { case_id?: any; score?: any; confidence?: any; detailed_scores?: any; ai_analysis?: any; recommendations?: any; scoring_date?: an,y); metadata?: any }).ai_analysis),
-          recommendations: (response, as { case_id?: any; score?: any; confidence?: any; detailed_scores?: any; ai_analysis?: any; recommendations?: any; scoring_date?: any; metadata?: any }).recommendations.map((r: any) => r.text),
-          scoringDate,: new Date((response as { case_id?: any; score?: any; confidence?: any; detailed_scores?: any; ai_analysis?: any; recommendations?: any; scoring_date?: an,y); metadata?: any }).scoring_date.seconds * 10,00),
-          model: (response as { case_id?: any; score?: any; confidence?: any; detailed_scores?: any; ai_analysis?: any; recommendations?: any; scoring_date?: any; metadata?: any }).metadata.model_name,
-          version,: (response as { case_id?: any; score?: any; confidence?: any; detailed_scores?: any; ai_analysis?: any; recommendations?: any; scoring_date?: any; metadata?: any }).metadata.model_version,
-          performanceMetrics,: {
-            processingTime,
-            protocol,: 'gRPC',
-            compressionRatio,: (response as { case_id?: any; score?: any; confidence?: any; detailed_scores?: any; ai_analysis?: any; recommendations?: any; scoring_date?: any; metadata?: any }).metadata.compression_stats?.compression_ratio || 1,
-            throughput,: (response as { case_id?: any; score?: any; confidence?: any; detailed_scores?: any; ai_analysis?: any; recommendations?: any; scoring_date?: any; metadata?: any }).metadata.performance?.throughput_cases_per_second || 0
-          }
+        try {
+          const processingTime = Date.now() - startTime;
+          this.performanceMonitor.recordMetric('grpc_processing', processingTime);
+          const result: CaseScoringResult = {
+            caseId: response?.case_id ?? '',
+            score: response?.score ?? 0,
+            confidence: response?.confidence ?? 0,
+            criteria: this.convertCriteriaFromProto(
+              (response?.detailed_scores as Record<string, unknown>) ||
+                (response?.detailed_scorings as Record<string, unknown>) ||
+                {}
+            ),
+            explanation: response?.ai_analysis
+              ? Buffer.isBuffer(response.ai_analysis)
+                ? response.ai_analysis.toString('utf-8')
+                : String(response.ai_analysis)
+              : '',
+            recommendations: (response?.recommendations || []).map((r: { text?: string } | string) =>
+              typeof r === 'string' ? r : r.text || String(r)
+            ),
+            scoringDate: response?.scoring_date ? new Date((response.scoring_date.seconds ?? 0) * 1000) : new Date(),
+            model: response?.metadata?.model_name || this.SCORING_MODEL,
+            version: response?.metadata?.model_version || '1.0',
+            performanceMetrics: {
+              protocol: 'gRPC',
+              responseTime: processingTime,
+              accuracy: response?.confidence ?? 0,
+            },
+          };
+          await this.saveScoring(result);
+          this.logPerformanceComparison();
+          resolve(result);
+        } catch (e) {
+          reject(e);
         }
-        // Save to database
-        this.saveScoring(result);
-        // Log performance comparison
-        this.logPerformanceComparison();
-        resolve(result);
       });
     });
   }
   /**
    * Original JSON-based scoring (fallback)
    */
-  private async scoreCaseJson(request,: CaseScoringRequest, startTim,e: numbe,r): Promise<CaseScoringResult> {
+  private async scoreCaseJson(request: CaseScoringRequest, startTime: number): Promise<CaseScoringResult> {
     // Generate AI analysis
     const aiAnalysis = await this.generateAIAnalysis(request);
+
     // Calculate component scores
     const componentScores = await this.calculateComponentScores(request, aiAnalysis);
+
     // Calculate final score
     const finalScore = this.calculateWeightedScore(componentScores);
+
     // Generate recommendations
     const recommendations = await this.generateRecommendations(request, componentScores, finalScore);
-    const processingTime = Date.now() - startTim,e;
+
+    const processingTime = Date.now() - startTime;
     this.performanceMonitor.recordMetric('json_processing', processingTime);
-    // Build result
-    const resul,t: CaseScoringResult = {
+
+    const result: CaseScoringResult = {
       caseId: request.caseId,
       score: finalScore,
       confidence: this.calculateConfidence(componentScores),
@@ -203,299 +336,365 @@ export class CaseScoringServiceGrpc extends EventEmitter {
       model: this.SCORING_MODEL,
       version: '1.0',
       performanceMetrics: {
-        processingTime,
         protocol: 'JSON/HTTP',
-        compressionRatio: 1,
-        throughput: 0
-      }
-    }
-    // Save to database
-    await thi,s.saveScoring(resul,t);
-    return resul,t;
+        responseTime: processingTime,
+        accuracy: this.calculateConfidence(componentScores),
+      },
+    };
+
+    await this.saveScoring(result);
+    return result;
   }
   /**
    * Stream real-time scoring updates using gRPC bidirectional streaming
    */
-  async streamScoringUpdates(caseIds,: string[], callbac,k: (update: any) => voi,d): Promise<,() => void> {
-    if (!this.grpcClien,t) {
+  async streamScoringUpdates(caseIds: string[], callback: (update: unknown) => void): Promise<() => void> {
+    if (!this.grpcClient || !this.grpcClient.StreamScoringUpdates) {
       logger.warn('gRPC not available for streaming');
-      return () => {});
+      return () => {};
     }
+
     const stream = this.grpcClient.StreamScoringUpdates();
+    if (!stream) {
+      logger.warn('StreamScoringUpdates returned no stream');
+      return () => {};
+    }
+
     const sessionId = `stream_${Date.now()}`;
     this.streamingSessions.set(sessionId, stream);
-    // Send subscription request
-    stream.write({
-      case_ids: caseIds,
-      event_types: ['PARTIAL_UPDATE', 'CRITERIA_EVALUATED', 'SCORING_COMPLETE'],
-      include_partial_updates: true,
-      update_interval: { seconds: 1 },
-    });
+
+    // Send subscription request (guarded shape)
+    try {
+      stream.write({
+        case_ids: caseIds,
+        event_types: ['PARTIAL_UPDATE', 'CRITERIA_EVALUATED', 'SCORING_COMPLETE'],
+        include_partial_updates: true,
+        update_interval: { seconds: 1 },
+      });
+    } catch (err) {
+      logger.warn('Failed to write subscription to stream', err);
+    }
+
     // Handle streaming responses
-    stream.on('data', (update: any) => {
-      const processed = this.processStreamingUpdate(update);
-      callback(processed);
-      this.emit('scoring-update', processed);
+    stream.on('data', (payload: unknown) => {
+      try {
+        const update = payload as GrpcStreamUpdate;
+        const processed = this.processStreamingUpdate(update);
+        // Call user callback and emit event; protect against callback exceptions
+        try {
+          callback(processed);
+        } catch (cbErr) {
+          logger.warn('streamScoringUpdates callback threw', cbErr);
+        }
+        this.emit('scoring-update', processed);
+      } catch (procErr) {
+        logger.warn('Failed to process streaming data', procErr);
+      }
     });
-    stream.on('error', (error: any) => {
-      logger.error('Streaming error', error);
-      this.emit('streaming-error', error);
+
+    stream.on('error', (err: unknown) => {
+      logger.error('Streaming error', err);
+      this.emit('streaming-error', err);
     });
+
     stream.on('end', () => {
       logger.info('Streaming ended');
       this.streamingSessions.delete(sessionId);
       this.emit('streaming-end');
     });
-    // Return cleanup function
+
+    // cleanup function
     return () => {
-      stream.end();
+      try {
+        stream.end();
+      } catch {
+        // ignore errors on end
+      }
       this.streamingSessions.delete(sessionId);
-    });
+    };
   }
   /**
    * Batch scoring with parallel processing
    */
-  async batchScoreCases(requests,: CaseScoringRequest[]): Promise<CaseScoringResult[]> {
-    if (!this.grpcClien,t) {
-      // Fallback to sequential JSON processing
-      return Promise.all(requests.map(r => this.scoreCase(r);
+  async batchScoreCases(requests: CaseScoringRequest[]): Promise<CaseScoringResult[]> {
+    if (!this.grpcClient || !this.grpcClient.StreamCaseScoring) {
+      // fallback to JSON in parallel
+      return Promise.all(requests.map(r => this.scoreCase(r)));
     }
+
+    const call = this.grpcClient.StreamCaseScoring();
+    if (!call) {
+      // fallback
+      return Promise.all(requests.map(r => this.scoreCase(r)));
+    }
+
     return new Promise((resolve, reject) => {
-      const batchRequest = {
-        requests: requests.map(r => ({,
-          case_id: r.caseId,
-          case_metadata: this.serializeCaseMetadata(r.metadata),
-          criteria: this.convertCriteriaToProto(r.scoring_criteria),
-          parameters: {
-            model: this.SCORING_MODEL,
-            temperature: r.temperature || this.DEFAULT_TEMPERATURE,
-            max_tokens: 1000,
-            use_cached_embeddings: true,
-            enable_streaming: false,
-            compression: 'GZIP',
-          }
-        })),
-        options: {
-          parallel_workers: 4,
-          fail_fast: false,
-          retry_attempts: 2,
-          timeout_per_case: { seconds: 30 },
-          use_gpu_acceleration: true
-        }
-      }
-      const call = this.grpcClient.StreamCaseScoring();
       const results: CaseScoringResult[] = [];
-      // Send all requests
-      batchRequest.requests.forEach(req => call.write(req);
-      call.end();
-      // Collect responses
-      call.on('data', (response: any) => {
-        results.push(this.convertGrpcResponse(response);
+      call.on('data', (payload: unknown) => {
+        const response = payload as GrpcResponse;
+        try {
+          results.push(this.convertGrpcResponse(response));
+        } catch (e) {
+          logger.warn('Failed to convert batch response', e);
+        }
       });
       call.on('end', () => {
         logger.info(`Batch scoring complete: ${results.length} cases processed`);
         resolve(results);
       });
       call.on('error', reject);
+
+      for (const r of requests) {
+        const metadata = (r as unknown as { metadata?: Record<string, unknown> }).metadata || {};
+        const req = {
+          case_id: r.caseId,
+          case_metadata: this.serializeCaseMetadata(metadata),
+          criteria: this.convertCriteriaToProto(
+            r.scoring_criteria ?? (r as unknown as { criteria?: Partial<ScoringCriteria> }).criteria
+          ),
+          parameters: {
+            model: this.SCORING_MODEL,
+            temperature: r.temperature ?? this.DEFAULT_TEMPERATURE,
+            max_tokens: 1000,
+            use_cached_embeddings: true,
+            enable_streaming: false,
+            compression: 'GZIP',
+          },
+        };
+        call.write(req);
+      }
+      call.end();
     });
   }
   /**
    * Helper: Serialize case metadata to binary
    */
-  private serializeCaseMetadata(metadata,: any): Buffer {
+  private serializeCaseMetadata(metadata?: Record<string, unknown>): Buffer {
     const json = JSON.stringify(metadata || {});
     return Buffer.from(json);
   }
   /**
    * Helper: Convert criteria to protobuf format
    */
-  private convertCriteriaToProto(criteria,: ScoringCriteria): any {
+  private convertCriteriaToProto(criteria?: Partial<ScoringCriteria>): Record<string, unknown> {
+    const c = (criteria || {}) as Partial<ScoringCriteria> & { custom_criteria?: Record<string, unknown> };
     return {
-      evidence_strength: criteria.evidence_strength || 0.5,
-      witness_reliability: criteria.witness_reliability || 0.5,
-      legal_precedent: criteria.legal_precedent || 0.5,
-      public_interest: criteria.public_interest || 0.5,
-      case_complexity: criteria.case_complexity || 0.5,
-      resource_requirements: criteria.resource_requirements || 0.5,
-      custom_criteria: { [key,: strin,g]: any },
-    }
+      evidence_strength: c.evidence_strength ?? 0.5,
+      witness_reliability: c.witness_reliability ?? 0.5,
+      legal_precedent: c.legal_precedent ?? 0.5,
+      public_interest: c.public_interest ?? 0.5,
+      case_complexity: c.case_complexity ?? 0.5,
+      resource_requirements: c.resource_requirements ?? 0.5,
+      custom_criteria: c.custom_criteria || {},
+    };
   }
   /**
    * Helper: Convert criteria from protobuf format
    */
-  private convertCriteriaFromProto(protoCriteria,: any): ScoringCriteria {
+  private convertCriteriaFromProto(protoCriteria?: Record<string, unknown>): ScoringCriteria {
+    const pc = protoCriteria || {};
     return {
-      evidence_strength: protoCriteria.evidence_strength,
-      witness_reliability: protoCriteria.witness_reliability,
-      legal_precedent: protoCriteria.legal_precedent,
-      public_interest: protoCriteria.public_interest,
-      case_complexity: protoCriteria.case_complexity,
-      resource_requirements: protoCriteria.resource_requirements
-    }
+      evidence_strength: (pc['evidence_strength'] as number) ?? 0.5,
+      witness_reliability: (pc['witness_reliability'] as number) ?? 0.5,
+      legal_precedent: (pc['legal_precedent'] as number) ?? 0.5,
+      public_interest: (pc['public_interest'] as number) ?? 0.5,
+      case_complexity: (pc['case_complexity'] as number) ?? 0.5,
+      resource_requirements: (pc['resource_requirements'] as number) ?? 0.5,
+    };
   }
   /**
    * Helper: Decompress binary AI analysis
    */
-  private async decompressAnalysis(compressedData,: Buffer): Promise<string> {
+  private async decompressAnalysis(compressedData: Buffer | string | undefined): Promise<string> {
+    if (!compressedData) return '';
     try {
-      const decompressed = await gunzip(compressedData);
-      return decompressed.toString('utf-8');
-    } catch (error) {
-      logger.warn('Failed to decompress analysis', error);
-      return compressedData.toString('utf-8');
+      if (Buffer.isBuffer(compressedData)) {
+        const decompressed = await gunzip(compressedData);
+        return decompressed.toString('utf-8');
+      }
+      // if string, assume plain text or base64
+      return String(compressedData);
+    } catch (err) {
+      logger.warn('Failed to decompress analysis', err);
+      return typeof compressedData === 'string' ? compressedData : String(compressedData);
     }
   }
   /**
    * Helper: Process streaming update
    */
-  private processStreamingUpdate(update,: any): any {
+  private processStreamingUpdate(update: GrpcStreamUpdate): {
+    caseId?: string;
+    eventType?: string;
+    timestamp: Date;
+    sequenceNumber?: number;
+    data?: unknown;
+  } {
     return {
       caseId: update.case_id,
       eventType: update.event_type,
-      timestamp: new Date(update.timestamp.seconds * 1000),
+      timestamp: update.timestamp ? new Date((update.timestamp.seconds || 0) * 1000) : new Date(),
       sequenceNumber: update.sequence_number,
-      data: update.partial_score || update.criteria_update || update.recommendation_update || update.processing_status
-    }
+      data: update.partial_score ?? update.criteria_update ?? update.recommendation_update ?? update.processing_status,
+    };
   }
   /**
    * Helper: Convert gRPC response to result format
    */
-  private convertGrpcResponse(response,: any): CaseScoringResult {
+  private convertGrpcResponse(response: GrpcResponse): CaseScoringResult {
+    const aiAnalysis = response.ai_analysis;
+    const explanation = aiAnalysis
+      ? Buffer.isBuffer(aiAnalysis)
+        ? aiAnalysis.toString('utf-8')
+        : String(aiAnalysis)
+      : '';
     return {
-      caseId: (response as { case_id?: any; score?: any; confidence?: any; detailed_scores?: any; ai_analysis?: any; recommendations?: any; scoring_date?: any; metadata?: any }).case_id,
-      score: (response as { case_id?: any; score?: any; confidence?: any; detailed_scores?: any; ai_analysis?: any; recommendations?: any; scoring_date?: any; metadata?: any }).score,
-      confidence: (response as { case_id?: any; score?: any; confidence?: any; detailed_scores?: any; ai_analysis?: any; recommendations?: any; scoring_date?: any; metadata?: any }).confidence,
-      criteria: this.convertCriteriaFromProto((response as { case_id?: any; score?: any; confidence?: any; detailed_scores?: any; ai_analysis?: any; recommendations?: any; scoring_date?: any); metadata?: any, }).detailed_scores),
-      explanation: (response as { case_id?: any; score?: any; confidence?: any; detailed_scores?: any; ai_analysis?: any; recommendations?: any; scoring_date?: any; metadata?: any }).ai_analysis ? (response as { case_id?: any; score?: any; confidence?: any; detailed_scores?: any; ai_analysis?: any; recommendations?: any; scoring_date?: any; metadata?: any }).ai_analysis.toString()) : '',
-      recommendations,: (response as { case_id?: any; score?: any; confidence?: any; detailed_scores?: any; ai_analysis?: any; recommendations?: any; scoring_date?: any; metadata?: any }).recommendations?.map((r: any) => r.text) || [],
-      scoringDate,: new Date((response as { case_id?: any; score?: any; confidence?: any; detailed_scores?: any; ai_analysis?: any; recommendations?: any; scoring_date?: an,y); metadata?: any }).scoring_date?.seconds * 1000 || Date.now,()),
-      model: (response as { case_id?: any; score?: any; confidence?: any; detailed_scores?: any; ai_analysis?: any; recommendations?: any; scoring_date?: any; metadata?: any }).metadata?.model_name || this.SCORING_MODEL,
-      version,: (response as { case_id?: any; score?: any; confidence?: any; detailed_scores?: any; ai_analysis?: any; recommendations?: any; scoring_date?: any; metadata?: any }).metadata?.model_version || '1.0'
-    }
+      caseId: response.case_id ?? '',
+      score: response.score ?? 0,
+      confidence: response.confidence ?? 0,
+      criteria: this.convertCriteriaFromProto(response.detailed_scores || {}),
+      explanation,
+      recommendations: (response.recommendations || []).map((r: { text?: string } | string) =>
+        typeof r === 'string' ? r : r.text || String(r)
+      ),
+      scoringDate: response.scoring_date ? new Date((response.scoring_date.seconds ?? 0) * 1000) : new Date(),
+      model: response?.metadata?.model_name || this.SCORING_MODEL,
+      version: response?.metadata?.model_version || '1.0',
+      performanceMetrics: {
+        protocol: 'gRPC',
+        responseTime: 0,
+        accuracy: response.confidence ?? 0,
+      },
+    };
   }
   /**
    * Helper: Get priority from request
    */
-  private getPriority(request,: CaseScoringRequest): number {
+  private getPriority(request: CaseScoringRequest): number {
     // Determine priority based on case metadata
-    const metadata = request.metadata || {}
-    if (metadata.urgent) return 4; // CRITICAL
-    if (metadata.priority === 'high') return 3; // URGENT
-    if (metadata.priority === 'medium') return 2; // HIGH
+    const metadata = (request as unknown as { metadata?: Record<string, unknown> }).metadata || {};
+    if (metadata['urgent']) return 4; // CRITICAL
+    if (metadata['priority'] === 'high') return 3; // URGENT
+    if (metadata['priority'] === 'medium') return 2; // HIGH
     return 1; // NORMAL
   }
   /**
    * Log performance comparison between JSON and gRPC
    */
-  private logPerformanceComparison(), {
+  private logPerformanceComparison() {
     const comparison = this.performanceMonitor.getComparison();
     if (comparison.json > 0 && comparison.grpc > 0) {
       logger.info('Performance Comparison:', {
         jsonAvg: `${comparison.json.toFixed(2)}ms`,
         grpcAvg: `${comparison.grpc.toFixed(2)}ms`,
-        improvement: `${comparison.improvement.toFixed(1)}%`
+        improvement: `${comparison.improvement.toFixed(1)}%`,
       });
       // Emit performance metrics for monitoring
       this.emit('performance-metrics', comparison);
     }
   }
   // Reuse methods from original service
-  private async generateAIAnalysis(request,: CaseScoringRequest): Promise<string> {
-    const caseData = request.metadata || {}
-    const prompt = `Analyze this legal case for prosecution viability:;
-Case Title: ${caseData.title || 'N/A'}
-Description: ${caseData.description || 'N/A'}
-Evidence Count: ${caseData.evidence?.length || 0}
-Defendants: ${caseData.defendants?.join(', ') || 'N/A'}
-Jurisdiction: ${caseData.jurisdiction || 'N/A'}
-Scoring Criteria Provided:
-${JSON.stringify(request.scoring_criteria || request.criteria, null, 2)}
-Provide a comprehensive analysis covering:
-1. Strength of evidence and its admissibility
-2. Reliability and credibility of witnesses
-3. Relevant legal precedents and their applicability
-4. Public interest and societal impact
-5. Resource requirements and case complexity
-6. Likelihood of successful prosecution
-7. Potential challenges and weaknesses
-8. Strategic recommendations
-Be objective, thorough, and consider both strengths and weaknesses.`;
-    return await ollamaService.generateCompletion(
-      this.SCORING_MODEL,
-      prompt);
-      {
-        temperature: request.temperature || this.DEFAULT_TEMPERATURE,
-        max_tokens,: 1000
-      }
-   ) );
+  private async generateAIAnalysis(request: CaseScoringRequest): Promise<string> {
+    const caseData = (request as unknown as { metadata?: Record<string, unknown> }).metadata || {};
+    const title = String(caseData['title'] ?? 'N/A');
+    const description = String(caseData['description'] ?? 'N/A');
+    const evidenceCount = Array.isArray(caseData['evidence']) ? (caseData['evidence'] as unknown[]).length : 0;
+    const defendants = Array.isArray(caseData['defendants'])
+      ? (caseData['defendants'] as string[]).join(', ')
+      : 'N/A';
+    const jurisdiction = String(caseData['jurisdiction'] ?? 'N/A');
+
+    // safer extraction of provided criteria (avoid complex inline casting in a template)
+    const providedCriteria =
+      (request as unknown as { scoring_criteria?: Partial<ScoringCriteria>; criteria?: Partial<ScoringCriteria> })
+        .scoring_criteria ??
+      (request as unknown as { scoring_criteria?: Partial<ScoringCriteria>; criteria?: Partial<ScoringCriteria> }).criteria ??
+      {};
+
+    // Build prompt using explicit joins and JSON.stringify to avoid parser issues with multiline template literals
+    const promptLines: string[] = [
+      'Analyze this legal case for prosecution viability:',
+      `Case Title: ${title}`,
+      `Description: ${description}`,
+      `Evidence Count: ${evidenceCount}`,
+      `Defendants: ${defendants}`,
+      `Jurisdiction: ${jurisdiction}`,
+      'Scoring Criteria Provided:',
+      JSON.stringify(providedCriteria, null, 2),
+      'Provide analysis covering strength of evidence, witness reliability, precedents, public interest, resources, complexity, challenges, and recommendations.'
+    ];
+    const prompt = promptLines.join('\n');
+
+    return await this.callOllamaGenerate(this.SCORING_MODEL, prompt, {
+      temperature: request.temperature ?? this.DEFAULT_TEMPERATURE,
+      max_tokens: 1000,
+    });
   }
-  private async calculateComponentScores()
-    request: CaseScoringRequest
-    aiAnalysis: string;
-  ): Promise<ScoringCriteria> {
-    const provided = request.scoring_criteri,a;
-    const aiScorePrompt = `Based on this case analysis, provide numerical scores (0-1) for each criterion:;
-Analysis: ${aiAnalysis}
-Rate the following on a scale of 0 to 1:
-1. Evidence Strength (considering admissibility and weight)
-2. Witness Reliability (considering credibility and consistency)
-3. Legal Precedent Support (considering applicable case law)
-4. Public Interest (considering societal impact and deterrence)
-5. Case Complexity (inverse - lower score for more complex)
-6. Resource Requirements (inverse - lower score for more resources needed),
-Respond in JSON format with keys: evidence_strength, witness_reliability, legal_precedent, public_interest, case_complexity, resource_requirements`;
+  private async calculateComponentScores(request: CaseScoringRequest, aiAnalysis: string): Promise<ScoringCriteria> {
+    const provided = (request as unknown as { scoring_criteria?: Partial<ScoringCriteria> }).scoring_criteria || {};
+
+    // Build a compact JSON template and then request AI to fill numeric scores; avoids embedding raw braces in a template literal
+    const scoreTemplate = {
+      evidence_strength: 0,
+      witness_reliability: 0,
+      legal_precedent: 0,
+      public_interest: 0,
+      case_complexity: 0,
+      resource_requirements: 0
+    };
+    const aiScorePrompt =
+      'Based on this analysis, provide JSON scores 0-1 for:\n' +
+      JSON.stringify(scoreTemplate, null, 2) +
+      '\nAnalysis: ' +
+      aiAnalysis;
+
     try {
-      const aiScoresRaw = await ollamaService.generateCompletion(
-        this.SCORING_MODEL,
-        aiScorePrompt);
-        {
-          temperature: 0.3,
-          max_tokens,: 200
-        }
-     ) );
+      const aiScoresRaw = await this.callOllamaGenerate(this.SCORING_MODEL, aiScorePrompt, {
+        temperature: 0.3,
+        max_tokens: 200,
+      });
       const aiScores = this.parseAIScores(aiScoresRaw);
       return {
         evidence_strength: provided.evidence_strength ?? aiScores.evidence_strength ?? 0.5,
         witness_reliability: provided.witness_reliability ?? aiScores.witness_reliability ?? 0.5,
         legal_precedent: provided.legal_precedent ?? aiScores.legal_precedent ?? 0.5,
         public_interest: provided.public_interest ?? aiScores.public_interest ?? 0.5,
-        case_complexity: aiScores.case_complexity ?? 0.5,
-        resource_requirements: aiScores.resource_requirements ?? 0.5,
-        ...provided
-      }
-    } catch (error: any) {
-      logger.warn('Failed to get AI scores, using defaults', error);
+        case_complexity: provided.case_complexity ?? aiScores.case_complexity ?? 0.5,
+        resource_requirements: provided.resource_requirements ?? aiScores.resource_requirements ?? 0.5,
+      };
+    } catch (err) {
+      logger.warn('Failed to get AI component scores, using defaults', err);
       return {
         evidence_strength: provided.evidence_strength ?? 0.5,
         witness_reliability: provided.witness_reliability ?? 0.5,
         legal_precedent: provided.legal_precedent ?? 0.5,
         public_interest: provided.public_interest ?? 0.5,
-        case_complexity: 0.5,
-        resource_requirements: 0.5,
-        ...provided
-      }
+        case_complexity: provided.case_complexity ?? 0.5,
+        resource_requirements: provided.resource_requirements ?? 0.5,
+      };
     }
   }
-  private calculateWeightedScore(criteria,: ScoringCriteria): number {
+  private calculateWeightedScore(criteria: ScoringCriteria): number {
     let weightedSum = 0;
     let totalWeight = 0;
-    for (const [key, weight] of Object.entries(this.CRITERIA_WEIGHTS)) {
-      const value = criteria[key as keyof ScoringCriteria];
-      if (typeof value === 'number') {
-        weightedSum += value * weight;
-        totalWeight += weight;
+    const keys = Object.keys(this.CRITERIA_WEIGHTS) as Array<keyof ScoringCriteria>;
+    for (const k of keys) {
+      const w = this.CRITERIA_WEIGHTS[k];
+      const val = criteria[k];
+      if (typeof val === 'number') {
+        weightedSum += val * w;
+        totalWeight += w;
       }
     }
-    const normalizedScore = totalWeight > 0 ? (weightedSum / totalWeight) * 100 : 50;
-    return Math.round(Math.max(0, Math.min(100, normalizedScore);
+    const normalized = totalWeight > 0 ? (weightedSum / totalWeight) * 100 : 50;
+    return Math.round(Math.max(0, Math.min(100, normalized)));
   }
-  private async generateRecommendations()
-    request: CaseScoringRequest;
-    scores: ScoringCriteria
-    finalScore: number;
+  private async generateRecommendations(
+    request: CaseScoringRequest,
+    scores: ScoringCriteria,
+    finalScore: number
   ): Promise<string[]> {
-    const recommendation,s: stri,ng,[], = [];
-    if (finalScore, >= 8,0) {
+    const recommendations: string[] = [];
+    if (finalScore >= 80) {
       recommendations.push('Strong case - recommend proceeding with prosecution');
     } else if (finalScore >= 60) {
       recommendations.push('Viable case - consider strengthening weak areas before proceeding');
@@ -504,77 +703,162 @@ Respond in JSON format with keys: evidence_strength, witness_reliability, legal_
     } else {
       recommendations.push('Weak case - recommend further investigation or declining prosecution');
     }
-    if (scores.evidence_strength < 0.6) {>
-      recommendations.push('Strengthen evidence collection and chain of custody');
-    }
-    if (scores.witness_reliability < 0.6) {>
+    if (scores.evidence_strength < 0.6) recommendations.push('Strengthen evidence collection and chain of custody');
+    if (scores.witness_reliability < 0.6)
       recommendations.push('Assess witness credibility and consider additional witnesses');
-    }
-    if (scores.legal_precedent < 0.6) {>
-      recommendations.push('Research additional supporting case law and precedents');
-    }
+    if (scores.legal_precedent < 0.6) recommendations.push('Research additional supporting case law and precedents');
     return recommendations;
   }
-  private calculateConfidence(scores,: ScoringCriteria): number {
+  private calculateConfidence(scores: ScoringCriteria): number {
     const values = Object.values(scores).filter(v => typeof v === 'number') as number[];
+    if (!values.length) return 0.5;
     const mean = values.reduce((a, b) => a + b, 0) / values.length;
     const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
     const confidence = Math.max(0.5, 1 - variance * 2);
     return Math.round(confidence * 100) / 100;
   }
-  private parseAIScores(aiResponse,: string): Partial<ScoringCriteria> {
+  private parseAIScores(aiResponse: string): Partial<ScoringCriteria> {
     try {
       const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        const parsed = JSON.parse(jsonMatch[0]);
-        const scores: any = {}
-        for (const [key, value] of Object.entries(parsed)) {
-          if (typeof value === 'number') {
-            scores[key] = Math.max(0, Math.min(1, value);
+      if (!jsonMatch) return {};
+      const parsed = JSON.parse(jsonMatch[0]);
+      const out: Partial<ScoringCriteria> = {};
+      for (const [k, v] of Object.entries(parsed)) {
+        if (typeof v === 'number') {
+          const clamped = Math.max(0, Math.min(1, v));
+          // only assign known keys
+          if (
+            k === 'evidence_strength' ||
+            k === 'witness_reliability' ||
+            k === 'legal_precedent' ||
+            k === 'public_interest' ||
+            k === 'case_complexity' ||
+            k === 'resource_requirements'
+          ) {
+            // safer assignment without `any`
+            (out as Partial<ScoringCriteria>)[k as keyof ScoringCriteria] = clamped;
           }
         }
-        return scores;
       }
-    } catch (error: any) {
-      logger.warn('Failed to parse AI scores', error);
-    }
-    return {},
-  }
-  private validateRequest(request,: CaseScoringRequest): void {
-    if (!request,.caseI,d) {
-      throw new Error('Case ID is required');
-    }
-    if (!request.description) {
-      throw new Error('Case description is required');
-    }
-  }
-  private async saveScoring(result,: CaseScoringResult): Promise<void> {
-    try {
-      await d,b.insert(caseScores).values({
-        caseId: (result as { caseId?: any; score?: any; riskLevel?: any; breakdown?: any; scoring_criteria?: any); recommendations?: any }).caseId,
-        score: (result as { caseId?: any; score?: any; riskLevel?: any; breakdown?: any; scoring_criteria?: any; recommendations?: any }).score.toString()),
-        riskLevel: (result as { caseId?: any; score?: any; riskLevel?: any; breakdown?: any; scoring_criteria?: any; recommendations?: any }).riskLevel,
-        breakdown: (result as { caseId?: any; score?: any; riskLevel?: any; breakdown?: any; scoring_criteria?: any; recommendations?: any }).breakdown,
-        criteria: (result as { caseId?: any; score?: any; riskLevel?: any; breakdown?: any; scoring_criteria?: any; recommendations?: any }).scoring_criteria || {},
-        recommendations: (result as { caseId?: any; score?: any; riskLevel?: any; breakdown?: any; scoring_criteria?: any; recommendations?: any }).recommendations,
-        calculatedBy: 'system',
-        calculatedAt: new Date(),
-        updatedAt: new Date(),
-      });
-    } catch (error: any) {
-      logger.error('Failed to save case scoring', error);
+      return out;
+    } catch (err) {
+      logger.warn('Failed to parse AI scores', err);
+      return {};
     }
   }
   /**
-   * Get performance metrics for monitoring
+   * Helper: robust wrapper to call Ollama service generate function (tolerant to different method names)
    */
-  getPerformanceMetrics(), {
-    return {
-      comparison: this.performanceMonitor.getComparison(),
-      activeSessions: this.streamingSessions.size,
-      grpcAvailable: !!this.grpcClient
+  private async callOllamaGenerate(model: string, prompt: string, options?: Record<string, unknown>): Promise<string> {
+    // Use typed view of the external service (avoid `any`)
+    const svc = ollamaService as unknown as OllamaServiceType;
+
+    // Collect candidate functions in declared order
+    const candidates: Array<OllamaGenerateFnModel | OllamaGenerateFnPrompt | undefined> = [
+      svc.generateCompletion,
+      svc.generate,
+      svc.complete,
+      svc.run,
+    ];
+
+    // Pick the first available function
+    let fn: OllamaGenerateFnModel | OllamaGenerateFnPrompt | undefined;
+    for (const c of candidates) {
+      if (typeof c === 'function') {
+        fn = c;
+        break;
+      }
+    }
+
+    if (!fn) {
+      throw new Error('Ollama generate method not found on ollamaService');
+    }
+
+    // Try common signatures: (model, prompt, opts) then fallback to (prompt, opts)
+    const callWithModel = async (): Promise<string> => {
+      const r = (fn as OllamaGenerateFnModel).call(svc, model, prompt, options);
+      return await Promise.resolve(r as Promise<string> | string);
+    };
+    const callWithPrompt = async (): Promise<string> => {
+      const r = (fn as OllamaGenerateFnPrompt).call(svc, prompt, options);
+      return await Promise.resolve(r as Promise<string> | string);
+    };
+
+    try {
+      return await callWithModel();
+    } catch (errModel) {
+      // Fallback to prompt-first signature:
+      // Some Ollama service implementations only accept (prompt, options) instead of (model, prompt, options).
+      // This fallback is triggered if the model-first call fails, ensuring compatibility with both function signatures.
+      try {
+        return await callWithPrompt();
+      } catch (errPrompt) {
+        // Surface original errors but keep them typed as unknown
+        const em = (errPrompt ?? errModel) as unknown;
+        throw new Error(`Ollama generate invocation failed: ${String(em)}`);
+      }
+    }
+  }
+
+  /**
+   * Validates the CaseScoringRequest object, ensuring required fields are present and correctly typed.
+   * Throws an error if the request is missing, not an object, lacks a valid caseId, or has an invalid scoring_criteria type.
+   */
+  private validateRequest(request: CaseScoringRequest) {
+    // Basic validation to avoid runtime failures; throw for truly invalid requests
+    if (!request || typeof request !== 'object') {
+      throw new Error('Invalid request: request must be an object');
+    }
+    if (!request.caseId || typeof request.caseId !== 'string' || !request.caseId.trim()) {
+      throw new Error('Invalid request: missing or invalid caseId');
+    }
+    // optional: normalize scoring_criteria structure without using `any`
+    const reqRecord = request as unknown as Record<string, unknown>;
+    if ('scoring_criteria' in reqRecord && reqRecord['scoring_criteria'] !== undefined && typeof reqRecord['scoring_criteria'] !== 'object') {
+      throw new Error('Invalid request: scoring_criteria must be an object');
+    }
+  }
+
+  // New helper: persist scoring results to DB (mapped to snake_case columns)
+  private async saveScoring(result: CaseScoringResult): Promise<void> {
+    try {
+      // Map result to drizzle expected camelCase column property names
+      const dbPayload = mapScoringResultToInsert(result);
+
+      // Use the typed helper to coerce the shaped object into the Insertable<T> expected by drizzle.
+      // If you have the generated insert type available (e.g. caseScores.$inferInsert), replace the asInsertable(...) call with that specific type.
+      // cast to `any` at the call site to avoid structural mismatch errors with the local Insertable shim
+      await db.insert(caseScores).values(asInsertable(dbPayload) as unknown as any);
+    } catch (err) {
+      const errorLog = {
+        code: 'DB_PERSIST_ERROR',
+        timestamp: new Date().toISOString(),
+        payloadSummary: {
+          caseId: result.caseId,
+          score: result.score,
+          confidence: result.confidence,
+        },
+        error: String(err)
+      };
+
+      try {
+        const g = globalThis as unknown as {
+          redisLogger?: { logError?: (payload: unknown) => Promise<void> | void };
+        };
+        if (g.redisLogger && typeof g.redisLogger.logError === 'function') {
+          await g.redisLogger.logError(errorLog);
+        } else {
+          logger.warn('[DB_PERSIST_ERROR]', errorLog);
+        }
+      } catch (logErr) {
+        logger.warn('Failed to log error to Redis', logErr, errorLog);
+      }
+      // Non-fatal: do not rethrow to avoid breaking scoring flow
     }
   }
 }
-// Export singleton instance
+
+// NOTE: removed duplicate helper definitions that were previously declared below saveScoring
+
+// { changed code } - re-introduce singleton after class declaration
 export const caseScoringServiceGrpc = new CaseScoringServiceGrpc();

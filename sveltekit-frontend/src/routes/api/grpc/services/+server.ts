@@ -6,16 +6,18 @@
 import type { RequestHandler } from '@sveltejs/kit'
 import { json } from '@sveltejs/kit'
 import { logger } from '$lib/server/production-logger'
+
 // gRPC Service Interface for Legal AI Platform
 interface GRPCServiceEndpoint {
   name: string
   host: string
   port: number
   protocols: ('grpc' | 'http')[]
-  status: 'healthy' | 'unhealthy' | 'unknown',
+  status: 'healthy' | 'unhealthy' | 'unknown'
   lastHealthCheck: Date
   capabilities: string[]
 }
+
 // Legal AI Platform Service Registry (matches Go implementation)
 const LEGAL_AI_SERVICES: Record<string, GRPCServiceEndpoint> = {
   // Core AI Services
@@ -150,12 +152,14 @@ const LEGAL_AI_SERVICES: Record<string, GRPCServiceEndpoint> = {
     capabilities: ['authentication', 'authorization', 'jwt-validation']
   }
 }
+
 /**
  * gRPC Client Manager for Legal AI Platform
  */
 class LegalAIGRPCClient {
   private services: Map<string, GRPCServiceEndpoint> = new Map()
   private healthCheckInterval: NodeJS.Timeout | null = null
+
   constructor() {
     // Initialize services
     Object.entries(LEGAL_AI_SERVICES).forEach(([name, service]) => {
@@ -163,127 +167,139 @@ class LegalAIGRPCClient {
     })
     this.startHealthChecking()
   }
+
   /**
    * Start periodic health checking of all services
    */
-  private startHealthChecking() {
-    this.healthCheckInterval = setInterval(async () => {
-      await this.performHealthChecks()
-    }, 30000); // Check every 30 seconds
+  private startHealthChecking(): void {
+    if (this.healthCheckInterval) return
+    this.healthCheckInterval = setInterval(() => {
+      // fire-and-forget; errors are logged per-service
+      void this.performHealthChecks()
+    }, 30_000)
   }
+
   /**
    * Perform health checks on all registered services
    */
   private async performHealthChecks(): Promise<void> {
-    const healthPromises = Array.from(this.services.values()).map(async (service) => {
+    const checks = Array.from(this.services.values()).map(async (service) => {
       try {
-        // Try gRPC health check first, fallback to HTTP
-        const response = await this.httpHealthCheck(service)
-        service.status = response ? 'healthy' : 'unhealthy'
+        const ok = await this.httpHealthCheck(service)
+        service.status = ok ? 'healthy' : 'unhealthy'
         service.lastHealthCheck = new Date()
-      } catch (error) {
+      } catch (err) {
         service.status = 'unhealthy'
         service.lastHealthCheck = new Date()
-        logger.error(`Health check failed for ${service.name}`, error as Error, {
+        logger.error(`Health check failed for ${service.name}`, err as Error, {
           service: service.name,
           port: service.port
         })
       }
     })
-    await Promise.allSettled(healthPromises)
+    await Promise.allSettled(checks)
   }
+
   /**
    * HTTP health check fallback
    */
   private async httpHealthCheck(service: GRPCServiceEndpoint): Promise<boolean> {
     try {
       const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), 5000)
+      const timeoutId = setTimeout(() => controller.abort(), 5_000)
       const response = await fetch(`http://${service.host}:${service.port}/health`, {
-        signal: controller.signal,
         method: 'GET',
-      )}),
+        signal: controller.signal
+      })
       clearTimeout(timeoutId)
       return response.ok
-    } catch (error) {
+    } catch {
       return false
     }
   }
+
   /**
    * Get service endpoint information
    */
-  getServiceEndpoint(serviceName,: string,): GRPCServiceEndpoint | nul,l {
-    return this.services.get(serviceName) || null
+  getServiceEndpoint(serviceName: string): GRPCServiceEndpoint | null {
+    return this.services.get(serviceName) ?? null
   }
+
   /**
    * Get all healthy services
    */
-  getHealthyServices(),: GRPCServiceEndpoint[], {
-    return Array.from(this.services.values()).filter(service => service.status === 'healthy')
+  getHealthyServices(): GRPCServiceEndpoint[] {
+    return Array.from(this.services.values()).filter((s) => s.status === 'healthy')
   }
+
   /**
    * Get services by capability
    */
-  getServicesByCapability(capability,: string,): GRPCServiceEndpoint[,] {
-    return Array.from(this.services.values()).filter(service =>
-      service.capabilities.includes(capability) && service.status === 'healthy'
+  getServicesByCapability(capability: string): GRPCServiceEndpoint[] {
+    return Array.from(this.services.values()).filter(
+      (service) => service.capabilities.includes(capability) && service.status === 'healthy'
     )
   }
+
   /**
    * Make gRPC request with fallback to HTTP
    */
-  async makeRequest(serviceName,: string, metho,d: string, da,ta: a,ny): Promise<any> {
-    const, service = this.services.get(serviceName),
-    if (!service) {
-      throw new Error(`Service ${serviceName} not found`)
-    }
-    // Try gRPC first if available
-    if (service,.protocols.includes('grpc') && service.status === 'healthy,') {
+  async makeRequest(serviceName: string, method: string, data?: Record<string, unknown>): Promise<unknown> {
+    const service = this.services.get(serviceName)
+    if (!service) throw new Error(`Service ${serviceName} not found`)
+
+    if (service.protocols.includes('grpc') && service.status === 'healthy') {
       try {
         return await this.makeGRPCRequest(service, method, data)
-      } catch (error) {
-        logger.error(`gRPC request failed for ${serviceName}, falling back to HTTP`, error as Error)
+      } catch (err) {
+        logger.error(`gRPC request failed for ${serviceName}, falling back to HTTP`, err as Error)
       }
     }
-    // Fallback to HTTP
+
     if (service.protocols.includes('http')) {
       return await this.makeHTTPRequest(service, method, data)
     }
+
     throw new Error(`No available protocols for service ${serviceName}`)
   }
+
   /**
    * Make gRPC request (placeholder - requires actual gRPC client implementation)
+   * Prefix unused args with underscore to satisfy unused-arg lint rule.
    */
-  private async makeGRPCRequest(service,: GRPCServiceEndpoint, metho,d: string, da,ta: a,ny): Promise<any> {
-    // TODO: Implement actual gRPC client when protocol buffers are generated
-    throw, new Error('gRPC client not yet implemented - requires protobuf generation')
+  private async makeGRPCRequest(_service: GRPCServiceEndpoint, _method: string, _data?: Record<string, unknown>): Promise<unknown> {
+    // Placeholder: real implementation requires protobuf-generated clients.
+    throw new Error('gRPC client not yet implemented - requires protobuf generation')
   }
+
   /**
    * Make HTTP request as fallback
    */
-  private async makeHTTPRequest(service,: GRPCServiceEndpoint, metho,d: string, da,ta: a,ny): Promise<any> {
-    const, endpoint = `http://${service.host}:${service.port}/${method}`
-    const, response = await fetch(endpoint, {
+  private async makeHTTPRequest(service: GRPCServiceEndpoint, method: string, data?: Record<string, unknown>): Promise<unknown> {
+    const endpoint = `http://${service.host}:${service.port}/${method}`
+    const payload = data ?? {}
+    const res = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-Client-Type': 'legal-ai-frontend',
         'X-Request-Source': 'grpc-fallback'
       },
-      body: JSON.stringify(data)
-    }),
-    if (!response,.o,k) {
-      throw new Error(`HTTP request failed: ${response.status} ${response.statusText}`)
+      body: JSON.stringify(payload)
+    })
+    if (!res.ok) {
+      throw new Error(`HTTP request failed: ${res.status} ${res.statusText}`)
     }
-    return await response.json()
+    return (await res.json()) as unknown
   }
+
   /**
    * Get comprehensive service status
    */
-  getServiceStatus(),: { [ke,y: strin,g]: any } {
-    const serviceStatus: { [key: string]: any } = {}
+  getServiceStatus(): Record<string, unknown> {
+    const out: Record<string, unknown> = {}
     this.services.forEach((service, name) => {
-      serviceStatus[name] = {
+      out[name] = {
         name: service.name,
         host: service.host,
         port: service.port,
@@ -294,34 +310,36 @@ class LegalAIGRPCClient {
         endpoint: `${service.host}:${service.port}`
       }
     })
-    return serviceStatus
+    return out
   }
+
   /**
    * Cleanup resources
    */
-  destroy(), {
+  destroy(): void {
     if (this.healthCheckInterval) {
       clearInterval(this.healthCheckInterval)
       this.healthCheckInterval = null
     }
   }
 }
-// Singleton instance
+
+// Singleton
 const grpcClient = new LegalAIGRPCClient()
-// Export client and handlers
 export { grpcClient }
+
 /**
  * SvelteKit API Handler for gRPC Service Status
  */
 export const GET: RequestHandler = async () => {
   try {
     const serviceStatus = grpcClient.getServiceStatus()
-    const healthyServices = grpcClient.getHealthyServices()
+    const healthy = grpcClient.getHealthyServices()
     return json({
       success: true,
       totalServices: Object.keys(serviceStatus).length,
-      healthyServices: healthyServices.length,
-      unhealthyServices: Object.keys(serviceStatus).length - healthyServices.length,
+      healthyServices: healthy.length,
+      unhealthyServices: Object.keys(serviceStatus).length - healthy.length,
       services: serviceStatus,
       capabilities: {
         'legal-analysis': grpcClient.getServicesByCapability('legal-analysis').length,
@@ -331,41 +349,36 @@ export const GET: RequestHandler = async () => {
       },
       timestamp: new Date().toISOString()
     })
-  } catch (error) {
-    logger.error('Failed to get gRPC service status', error as Error)
-    return json({
-      success: false,
-      error: 'Failed to retrieve service status',
-      details: error instanceof Error ? error.message: 'Unknown error'
-    }, { status: 500 })
+  } catch (err) {
+    logger.error('Failed to get gRPC service status', err as Error)
+    return json(
+      {
+        success: false,
+        error: 'Failed to retrieve service status',
+        details: err instanceof Error ? err.message : 'Unknown error'
+      },
+      { status: 500 }
+    )
   }
 }
+
 /**
  * SvelteKit API Handler for Making gRPC Requests
  */
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { service, method, data } = await request.json();)
+    const payload = (await request.json()) ?? {}
+    const { service, method, data } = payload as { service?: string; method?: string; data?: Record<string, unknown> }
     if (!service || !method) {
-      return json({
-        success: false,
-        error: 'Missing required fields: service, method'
-      }, { status: 400 })
+      return json({ success: false, error: 'Missing required fields: service, method' }, { status: 400 })
     }
-    const result = await grpcClient.makeRequest(service, method, data || {)})
-    return json({
-      success: true,
-      service,
-      method,
-      result,
-      timestamp: new Date().toISOString()
-    })
-  }, catch (error) {
-    logger.error('gRPC request failed', error as Error)
-    return json({
-      success: false,
-      error: 'gRPC request failed',
-      details: error instanceof Error ? error.message: 'Unknown error'
-    }, { status: 500 })
+    const result = await grpcClient.makeRequest(service, method, data ?? {})
+    return json({ success: true, service, method, result, timestamp: new Date().toISOString() })
+  } catch (err) {
+    logger.error('gRPC request failed', err as Error)
+    return json(
+      { success: false, error: 'gRPC request failed', details: err instanceof Error ? err.message : 'Unknown error' },
+      { status: 500 }
+    )
   }
 }

@@ -1,3 +1,13 @@
+// Minimal xstate integration stub (triage)
+const xstateIntegration: {
+  getGlobalState: () => unknown;
+  sendEvent: (id: string, evt: unknown) => void;
+} = {
+  getGlobalState: () => ({}),
+  sendEvent: (_id: string, _evt: unknown) => undefined,
+};
+
+export default xstateIntegration;
 /**
  * XState Integration Service - Complete Component Wiring
  * Connects all XState machines with Svelte components for comprehensive state management
@@ -122,21 +132,27 @@ export class XStateIntegrationService {
     this.authActor = createActor(authMachine, {
       input: {
         deviceInfo: this.getDeviceInfo(),
-        timestamp: new Date().toISOString()
-      }
+        timestamp: new Date().toISOString(),
+      },
     }) as ActorRefFrom<typeof authMachine>;
-    this.sessionActor = createActor(sessionMachine.provide({
-      actors: {},
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      actions: (sessionActions ?? {}) as any
-    })) as ActorRefFrom<typeof sessionMachine>;
+    this.sessionActor = createActor(
+      sessionMachine.provide({
+        actors: {},
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        actions: (sessionActions ?? {}) as any,
+      })
+    ) as ActorRefFrom<typeof sessionMachine>;
     this.aiAssistantActor = createActor(aiAssistantMachine) as ActorRefFrom<typeof aiAssistantMachine>;
     this.agentShellActor = createActor(agentShellMachine) as ActorRefFrom<typeof agentShellMachine>;
     // Initialize stores
     // defensive snapshot access in case actor snapshot api differs or is undefined at init
     const authCtx = (this.authActor.getSnapshot ? this.authActor.getSnapshot().context : {}) as AuthContext;
-    const sessionCtx = (this.sessionActor.getSnapshot ? this.sessionActor.getSnapshot().context as unknown : {}) as SessionContext;
-    const aiCtx = (this.aiAssistantActor.getSnapshot ? this.aiAssistantActor.getSnapshot().context as unknown : {}) as AIAssistantContext;
+    const sessionCtx = (
+      this.sessionActor.getSnapshot ? (this.sessionActor.getSnapshot().context as unknown) : {}
+    ) as SessionContext;
+    const aiCtx = (
+      this.aiAssistantActor.getSnapshot ? (this.aiAssistantActor.getSnapshot().context as unknown) : {}
+    ) as AIAssistantContext;
     const agentCtx: AgentShellContext = {}; // Stub for now - agentShellActor doesn't have .context in XState v5
     this.authState = writable(authCtx);
     this.sessionState = writable(sessionCtx);
@@ -145,41 +161,32 @@ export class XStateIntegrationService {
     // Initialize global state
     this.globalState = writable({
       auth: this.authActor.getSnapshot().context,
-      session: (sessionCtx as unknown) as SessionContext,
-      aiAssistant: (aiCtx as unknown) as AIAssistantContext,
+      session: sessionCtx as unknown as SessionContext,
+      aiAssistant: aiCtx as unknown as AIAssistantContext,
       agentShell: agentCtx,
       ui: {
         theme: 'system',
         sidebarOpen: false,
         currentRoute: '/',
         notifications: [],
-        isLoading: false
+        isLoading: false,
       },
       legal: {
         activeCases: [],
         currentCase: null,
         documents: [],
-        evidence: []
-      }
+        evidence: [],
+      },
     } as GlobalAppState);
     // Create derived stores
-    this.isAuthenticated = derived(
-      this.authState,
-      ($authState) => !!$authState.user && !!$authState.session
-    );
+    this.isAuthenticated = derived(this.authState, $authState => !!$authState.user && !!$authState.session);
 
-    this.currentUser = derived(
-      this.authState,
-      ($authState) => $authState.user
-    );
+    this.currentUser = derived(this.authState, $authState => $authState.user);
 
-    this.hasPermission = derived(
-      this.authState,
-      ($authState) => (permission: string) => {
-        const perms = Array.isArray($authState.user?.permissions) ? $authState.user!.permissions as string[] : [];
-        return perms.includes(permission) || perms.includes('all');
-      }
-    );
+    this.hasPermission = derived(this.authState, $authState => (permission: string) => {
+      const perms = Array.isArray($authState.user?.permissions) ? ($authState.user!.permissions as string[]) : [];
+      return perms.includes(permission) || perms.includes('all');
+    });
 
     this.systemHealth = derived(
       [this.authState, this.sessionState, this.aiAssistantState],
@@ -204,7 +211,7 @@ export class XStateIntegrationService {
           auth: authHealthy,
           ai: aiHealthy,
           services: sessionHealthy,
-          overall
+          overall,
         };
       }
     );
@@ -215,11 +222,11 @@ export class XStateIntegrationService {
 
   private setupActorSubscriptions(): void {
     // Auth actor subscription
-    const authSub = this.authActor.subscribe((state) => {
+    const authSub = this.authActor.subscribe(state => {
       this.authState.set(state.context);
       this.globalState.update(global => ({
         ...global,
-        auth: state.context
+        auth: state.context,
       }));
       // Handle authentication state changes
       if (state.value === 'authenticated') {
@@ -230,17 +237,17 @@ export class XStateIntegrationService {
         this.showNotification({
           type: 'error',
           title: 'Authentication Error',
-          message: state.context.error || 'Authentication failed'
+          message: state.context.error || 'Authentication failed',
         });
       }
     });
     // Session actor subscription
-    const sessionSub = this.sessionActor.subscribe((state) => {
+    const sessionSub = this.sessionActor.subscribe(state => {
       // narrow the incoming actor context to our SessionContext to satisfy the Writable type
       this.sessionState.set(state.context as SessionContext);
       this.globalState.update(global => ({
         ...global,
-        session: state.context as SessionContext
+        session: state.context as SessionContext,
       }));
       // Handle session events
       if (state.value === 'expired') {
@@ -248,16 +255,16 @@ export class XStateIntegrationService {
         this.showNotification({
           type: 'warning',
           title: 'Session Expired',
-          message: 'Your session has expired. Please login again.'
+          message: 'Your session has expired. Please login again.',
         });
       }
     });
     // AI Assistant actor subscription
-    const aiSub = this.aiAssistantActor.subscribe((state) => {
+    const aiSub = this.aiAssistantActor.subscribe(state => {
       this.aiAssistantState.set(state.context);
       this.globalState.update(global => ({
         ...global,
-        aiAssistant: state.context
+        aiAssistant: state.context,
       }));
       // Handle AI responses
       if (state.context.response && state.context.response !== '') {
@@ -265,12 +272,12 @@ export class XStateIntegrationService {
       }
     });
     // Agent Shell actor subscription
-    const agentSub = this.agentShellActor.subscribe((state) => {
+    const agentSub = this.agentShellActor.subscribe(state => {
       if ('context' in state) {
         this.agentShellState.set(state.context as AgentShellContext);
         this.globalState.update(global => ({
           ...global,
-          agentShell: state.context as AgentShellContext
+          agentShell: state.context as AgentShellContext,
         }));
       }
     });
@@ -295,14 +302,14 @@ export class XStateIntegrationService {
         user: {
           ...(authContext.user as User),
           createdAt: (authContext.user as User).createdAt || new Date(),
-          updatedAt: (authContext.user as User).updatedAt || new Date()
+          updatedAt: (authContext.user as User).updatedAt || new Date(),
         } as User,
-        sessionId: (authContext.session as { id?: string }).id || 'temp_session'
+        sessionId: (authContext.session as { id?: string }).id || 'temp_session',
       });
       // Initialize AI assistant with user context
       this.aiAssistantActor.send({
         type: 'SET_MODEL',
-        model: 'gemma3-legal:latest'
+        model: 'gemma3-legal:latest',
       });
       // Check service health
       this.aiAssistantActor.send({ type: 'CHECK_SERVICE_HEALTH' });
@@ -310,7 +317,7 @@ export class XStateIntegrationService {
       this.showNotification({
         type: 'success',
         title: 'Welcome!',
-        message: `Welcome back, ${authContext.user.firstName || authContext.user.email || 'User'}!`
+        message: `Welcome back, ${authContext.user.firstName || authContext.user.email || 'User'}!`,
       });
       // Load user-specific data
       await this.loadUserData(authContext.user);
@@ -327,17 +334,17 @@ export class XStateIntegrationService {
         activeCases: [],
         currentCase: null,
         documents: [],
-        evidence: []
+        evidence: [],
       },
       ui: {
         ...global.ui,
-        notifications: []
-      }
+        notifications: [],
+      },
     }));
     this.showNotification({
       type: 'info',
       title: 'Logged Out',
-      message: 'You have been successfully logged out.'
+      message: 'You have been successfully logged out.',
     });
   }
   private async loadUserData(user: User): Promise<void> {
@@ -353,15 +360,15 @@ export class XStateIntegrationService {
       const casesResponse = {
         success: false,
         data: { cases: [] },
-        queriedForUserId: user?.id ?? null
+        queriedForUserId: user?.id ?? null,
       };
       if (casesResponse.success) {
         this.globalState.update(global => ({
           ...global,
           legal: {
             ...global.legal,
-            activeCases: casesResponse.data?.cases || []
-          }
+            activeCases: casesResponse.data?.cases || [],
+          },
         }));
       }
     } catch (error: unknown) {
@@ -376,21 +383,21 @@ export class XStateIntegrationService {
       language: navigator.language,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       screenResolution: `${screen.width}x${screen.height}`,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
   private showNotification(notification: Omit<Notification, 'id' | 'timestamp'>): void {
     const fullNotification: Notification = {
       ...notification,
       id: `notification_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
-      timestamp: new Date()
-    }
+      timestamp: new Date(),
+    };
     this.globalState.update(global => ({
       ...global,
       ui: {
         ...global.ui,
-        notifications: [...global.ui.notifications, fullNotification]
-      }
+        notifications: [...global.ui.notifications, fullNotification],
+      },
     }));
     // Auto-remove after 5 seconds for non-error notifications
     if (notification.type !== 'error') {
@@ -401,10 +408,14 @@ export class XStateIntegrationService {
   }
 
   // Public API methods
-  public login(email: string, password: string, options: {
-    rememberMe?: boolean;
-    twoFactorCode?: string
-  } = {}): void {
+  public login(
+    email: string,
+    password: string,
+    options: {
+      rememberMe?: boolean;
+      twoFactorCode?: string;
+    } = {}
+  ): void {
     this.authActor.send({
       type: 'START_LOGIN',
       data: {
@@ -412,8 +423,8 @@ export class XStateIntegrationService {
         password,
         rememberMe: options.rememberMe,
         twoFactorCode: options.twoFactorCode,
-        deviceInfo: this.getDeviceInfo()
-      }
+        deviceInfo: this.getDeviceInfo(),
+      },
     });
   }
 
@@ -422,7 +433,7 @@ export class XStateIntegrationService {
     // Start by copying any provided fields to avoid duplicate keys in a single literal
     const payload = {
       ...(registrationData as RegistrationData),
-      deviceInfo: this.getDeviceInfo()
+      deviceInfo: this.getDeviceInfo(),
     } as RegistrationData;
 
     // Ensure safe defaults for commonly expected properties
@@ -432,7 +443,7 @@ export class XStateIntegrationService {
 
     this.authActor.send({
       type: 'START_REGISTRATION',
-      data: payload
+      data: payload,
     });
   }
 
@@ -444,7 +455,7 @@ export class XStateIntegrationService {
     this.aiAssistantActor.send({
       type: 'SEND_MESSAGE',
       message,
-      useContext7
+      useContext7,
     });
   }
 
@@ -460,8 +471,8 @@ export class XStateIntegrationService {
       ...global,
       ui: {
         ...global.ui,
-        theme
-      }
+        theme,
+      },
     }));
   }
 
@@ -470,8 +481,8 @@ export class XStateIntegrationService {
       ...global,
       ui: {
         ...global.ui,
-        sidebarOpen: open
-      }
+        sidebarOpen: open,
+      },
     }));
   }
 
@@ -480,8 +491,8 @@ export class XStateIntegrationService {
       ...global,
       ui: {
         ...global.ui,
-        notifications: global.ui.notifications.filter(n => n.id !== id)
-      }
+        notifications: global.ui.notifications.filter(n => n.id !== id),
+      },
     }));
   }
 
@@ -489,14 +500,14 @@ export class XStateIntegrationService {
     this.sessionActor.send({
       type: 'ACTIVITY',
       route,
-      action
+      action,
     });
   }
 
   public checkPermission(permission: string): boolean {
     const authState = this.authActor.getSnapshot?.() ? this.authActor.getSnapshot().context : {};
     const user = (authState as AuthContext).user as User | undefined;
-    const perms = Array.isArray(user?.permissions) ? user!.permissions as string[] : [];
+    const perms = Array.isArray(user?.permissions) ? (user!.permissions as string[]) : [];
     return perms.includes(permission) || perms.includes('all');
   }
 
@@ -516,7 +527,7 @@ export class XStateIntegrationService {
         this.showNotification({
           type: 'success',
           title: 'Upload Complete',
-          message: `${file.name} has been uploaded successfully.`
+          message: `${file.name} has been uploaded successfully.`,
         });
         // Refresh documents
       }
@@ -526,7 +537,7 @@ export class XStateIntegrationService {
       this.showNotification({
         type: 'error',
         title: 'Upload Failed',
-        message: error instanceof Error ? error.message : `Could not upload ${file.name}.`
+        message: error instanceof Error ? error.message : `Could not upload ${file.name}.`,
       });
       return { success: false, error };
     }
@@ -550,7 +561,7 @@ export class XStateIntegrationService {
         websocketUrl: this.getWebSocketUrl(),
         httpUrl: `http://${typeof window !== 'undefined' ? window.location.host : 'localhost:5173'}/api/realtime`,
         maxReconnectAttempts: 3,
-        reconnectInterval: 1000
+        reconnectInterval: 1000,
       });
 
       // Start WebTransport connection (non-blocking)
@@ -571,50 +582,34 @@ export class XStateIntegrationService {
       // Subscribe AI Assistant to analysis queue
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const aiActor1 = this.aiAssistantActor as unknown as ActorRefFrom<any>;
-      await rabbitmqXStateBridge.subscribe(
-        'ai.analysis',
-        aiActor1,
-        (msg) => ({
-          type: 'ANALYZE',
-          payload: msg.data
-        })
-      );
+      await rabbitmqXStateBridge.subscribe('ai.analysis', aiActor1, msg => ({
+        type: 'ANALYZE',
+        payload: msg.data,
+      }));
 
       // Subscribe Session actor to evidence processing queue
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const sessionActor1 = this.sessionActor as unknown as ActorRefFrom<any>;
-      await rabbitmqXStateBridge.subscribe(
-        'evidence.process',
-        sessionActor1,
-        (msg) => ({
-          type: 'PROCESS_EVIDENCE',
-          payload: msg.data
-        })
-      );
+      await rabbitmqXStateBridge.subscribe('evidence.process', sessionActor1, msg => ({
+        type: 'PROCESS_EVIDENCE',
+        payload: msg.data,
+      }));
 
       // Subscribe AI Assistant to embedding queue
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const aiActor2 = this.aiAssistantActor as unknown as ActorRefFrom<any>;
-      await rabbitmqXStateBridge.subscribe(
-        'ai.embedding',
-        aiActor2,
-        (msg) => ({
-          type: 'GENERATE_EMBEDDING',
-          payload: msg.data
-        })
-      );
+      await rabbitmqXStateBridge.subscribe('ai.embedding', aiActor2, msg => ({
+        type: 'GENERATE_EMBEDDING',
+        payload: msg.data,
+      }));
 
       // Subscribe Session to notifications
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const sessionActor2 = this.sessionActor as unknown as ActorRefFrom<any>;
-      await rabbitmqXStateBridge.subscribe(
-        'notification.email',
-        sessionActor2,
-        (msg) => ({
-          type: 'SEND_NOTIFICATION',
-          payload: msg.data
-        })
-      );
+      await rabbitmqXStateBridge.subscribe('notification.email', sessionActor2, msg => ({
+        type: 'SEND_NOTIFICATION',
+        payload: msg.data,
+      }));
 
       console.info('✅ Messaging services initialized successfully');
     } catch (error) {
@@ -653,7 +648,7 @@ export class XStateIntegrationService {
     return {
       connected: this.webTransport !== null,
       transport: this.webTransport !== null ? 'connected' : 'disconnected',
-      messaging: rabbitmqXStateBridge.getStatus()
+      messaging: rabbitmqXStateBridge.getStatus(),
     };
   }
 

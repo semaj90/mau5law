@@ -2,140 +2,194 @@
  * Gallery Search API - Advanced Search and Filtering
  * Provides comprehensive search capabilities across all gallery content
  */
-import { json, error } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { db } from '$lib/server/database'
-import { evidence, cases, users } from '$lib/server/db/schema'
-import { eq, desc, asc, and, or, like, ilike, gte, lte, inArray, sql } from 'drizzle-orm'
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { db } from '$lib/server/database';
+import { evidence, cases } from '$lib/server/db/schema'; // removed unused 'users'
+import { eq, desc, asc, and, or, gte, lte, inArray, sql } from 'drizzle-orm';
 
 interface SearchFilters {
-  query?: string
-  types?: string[]
-  categories?: string[]
-  caseIds?: string[]
-  userIds?: string[]
-  tags?: string[]
-  dateFrom?: string
-  dateTo?: string
-  fileSizeMin?: number
-  fileSizeMax?: number
-  fileTypes?: string[]
-  hasOCR?: boolean
-  hasEmbedding?: boolean
-  isProcessed?: boolean
-  isPublic?: boolean
+  query?: string;
+  types?: string[];
+  categories?: string[];
+  caseIds?: string[];
+  userIds?: string[];
+  tags?: string[];
+  dateFrom?: string;
+  dateTo?: string;
+  fileSizeMin?: number;
+  fileSizeMax?: number;
+  fileTypes?: string[];
+  hasOCR?: boolean;
+  hasEmbedding?: boolean;
+  isProcessed?: boolean;
+  isPublic?: boolean;
   contentSearch?: boolean; // Search in OCR text and content
 }
 interface SearchOptions {
-  page?: number
-  pageSize?: number
-  sortBy?: string
-  sortOrder?: 'asc' | 'desc'
-  includeMetadata?: boolean
-  includeContent?: boolean
+  page?: number;
+  pageSize?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+  includeMetadata?: boolean;
+  includeContent?: boolean;
 }
 interface SearchResult {
-  id: string
-  type: string
-  title: string
-  description?: string
-  fileName: string
-  fileType: string
-  fileSize: number
-  url: string
-  thumbnailUrl?: string
-  uploadedAt: string
-  caseId?: string
-  caseTitle?: string
-  tags: string[]
-  metadata?: { [key: string]: any }
-  relevanceScore?: number
-  matchedFields: string[]
-  snippet?: string
+  id: string;
+  type: string;
+  title: string;
+  description?: string;
+  fileName: string;
+  fileType: string;
+  fileSize: number;
+  url: string;
+  thumbnailUrl?: string;
+  uploadedAt: string;
+  caseId?: string;
+  caseTitle?: string;
+  tags: string[];
+  metadata?: Record<string, unknown>;
+  relevanceScore?: number;
+  matchedFields: string[];
+  snippet?: string;
 }
 interface SearchResponse {
-  results: SearchResult[]
-  totalCount: number
-  searchTime: number
+  results: SearchResult[];
+  totalCount: number;
+  searchTime: number;
   facets: {
-    types: Array<any>
-    fileTypes: Array<any>
-    cases: Array<any>
-    tags: Array<any>
-    dateRanges: Array<any>
-  suggestions?: string[]
+    types: Array<{ name: string; count: number }>;
+    fileTypes: Array<{ name: string; count: number }>;
+    cases: Array<{ id: string; title: string; count: number }>;
+    tags: Array<{ name: string; count: number }>;
+    dateRanges: Array<{ range: string; count: number }>;
+  };
+  suggestions?: string[];
   pagination: {
-    page: number
-    pageSize: number
-    totalPages: number
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  };
+}
+
+// Utility: Docker Desktop API base URL (adjust port as needed)
+const GALLERY_SEARCH_API_URL = 'http://host.docker.internal:8094/api/gallery/search'; // Example Go microservice
+
+// Add lightweight, permissive aliases for Drizzle table objects to avoid TS property errors
+// Use 'unknown' instead of 'any' to avoid Unexpected any compiler errors
+const E = evidence as unknown as Record<string, unknown>;
+const C = cases as unknown as Record<string, unknown>;
+
+// Helper: Try Docker Desktop microservice, fallback to local
+async function tryDockerSearch(payload: Record<string, unknown>): Promise<SearchResponse | null> {
+  try {
+    const res = await fetch(GALLERY_SEARCH_API_URL, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error(`Docker API error: ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    console.warn('Docker Desktop search fallback:', err);
+    return null;
   }
 }
-export const, POST: RequestHandler = async ({ request, locals }) => {
+
+export const POST: RequestHandler = async ({ request, locals: _locals }) => {
   try {
-    const { filters, options }: { filters: SearchFilters; options: SearchOptions } = await request.json()
-    const startTime = Date.now()
+    const { filters, options } = (await request.json()) as {
+      filters: SearchFilters;
+      options: SearchOptions;
+    };
+    const startTime = Date.now();
+
+    // Try Docker Desktop microservice first
+    const dockerResult = await tryDockerSearch({ filters, options });
+    if (dockerResult) {
+      // Add timing headers for consistency
+      return json(dockerResult, {
+        headers: {
+          'X-Search-Time': `${dockerResult.searchTime ?? Date.now() - startTime}ms`,
+          'X-Total-Results': dockerResult.totalCount?.toString() ?? '0',
+          'Cache-Control': 'public, max-age=120',
+        },
+      });
+    }
+
     // Default options
-    const page = options.page || 1
-    const pageSize = Math.min(options.pageSize || 20, 100)
-    const sortBy = options.sortBy || 'uploadedAt'
-    const sortOrder = options.sortOrder || 'desc'
-    const includeMetadata = options.includeMetadata !== false
-    const includeContent = options.includeContent || false
-    // Build the base query
+    const page = options?.page || 1;
+    const pageSize = Math.min(options?.pageSize || 20, 100);
+    const sortBy = options?.sortBy || 'uploadedAt';
+    const sortOrder = options?.sortOrder || 'desc';
+    const includeMetadata = options?.includeMetadata !== false;
+    const includeContent = options?.includeContent || false;
+
+    // Build the base query (aliasing DB columns to friendly keys)
     const baseQuery = db
       .select({
-        id: evidence.id,
-        title: evidence.title,
-        description: evidence.description,
-        fileName: evidence.fileName,
-        originalFileName: evidence.originalFileName,
-        fileType: evidence.fileType,
-        fileSize: evidence.fileSize,
-        filePath: evidence.filePath,
-        uploadedAt: evidence.uploadedAt,
-        processedAt: evidence.processedAt,
-        caseId: evidence.caseId,
-        caseTitle: cases.title,
-        tags: evidence.tags,
-        metadata: includeMetadata ? evidence.metadata: sql`NULL`,
-        ocrText: includeContent ? evidence.ocrText : sql`NULL`,
-        contentText: includeContent ? evidence.contentText : sql`NULL`,
-        embedding: evidence.embedding,
-        isPublic: evidence.isPublic
+        id: E.id,
+        title: E.title,
+        description: E.description,
+        fileName: E.fileName,
+        originalFileName: E.originalFileName,
+        fileType: E.fileType,
+        fileSize: E.fileSize,
+        filePath: E.filePath,
+        uploadedAt: E.uploadedAt,
+        processedAt: E.processedAt,
+        caseId: E.caseId,
+        caseTitle: C.title,
+        tags: E.tags,
+        metadata: includeMetadata ? E.metadata : sql`NULL`,
+        ocrText: includeContent ? E.ocrText : sql`NULL`,
+        contentText: includeContent ? E.contentText : sql`NULL`,
+        embedding: E.embedding,
+        isPublic: E.isPublic,
       })
       .from(evidence)
-      .leftJoin(cases, eq(evidence.caseId, cases.id)
+      .leftJoin(cases, eq(evidence.caseId, cases.id));
+
     // Build WHERE conditions
-    const conditions = await buildSearchConditions(filters)
+    const conditions = await buildSearchConditions(filters || {});
     if (conditions.length > 0) {
-      baseQuery.where(and(...conditions)
+      baseQuery.where(and(...conditions));
     }
+
     // Count total results
     const countQuery = db
-      .select({ count: sql<number>`count(*)` })
+      .select({ count: sql`count(*)` })
       .from(evidence)
-      .leftJoin(cases, eq(evidence.caseId, cases.id)
+      .leftJoin(cases, eq(evidence.caseId, cases.id));
+
     if (conditions.length > 0) {
-      countQuery.where(and(...conditions)
+      countQuery.where(and(...conditions));
     }
+
     const [countResult, searchResults] = await Promise.all([
       countQuery.execute(),
-      executeSearchQuery(baseQuery, sortBy, sortOrder, page, pageSize)
-    ])
-    const totalCount = countResult[0]?.count || 0
+      executeSearchQuery(baseQuery, sortBy, sortOrder, page, pageSize),
+    ]);
+
+    const totalCount = (countResult && countResult[0]?.count) || 0;
+
     // Process results and calculate relevance scores
     const processedResults = await Promise.all(
-      searchResults.map(item => processSearchResult(item, filters)
-    )
+      (searchResults || []).map((item: Record<string, unknown>) => processSearchResult(item, filters || {}))
+    );
+
     // Sort by relevance if we have a search query
-    if (filters.query) {
-      processedResults.sort((a, b) => (b.relevanceScore || 0) - (a.relevanceScore || 0)
+    if (filters?.query) {
+      processedResults.sort((a, b) => (b.relevanceScore || 0) - (a.relevanceScore || 0));
     }
+
     // Generate facets
-    const facets = await generateFacets(filters)
+    const facets = await generateFacets(filters || {});
+
     // Generate search suggestions
-    const suggestions = await generateSuggestions(filters.query)
-    const searchTime = Date.now() - startTime
+    const suggestions = await generateSuggestions(filters?.query);
+
+    const searchTime = Date.now() - startTime;
     const response: SearchResponse = {
       results: processedResults,
       totalCount,
@@ -145,260 +199,334 @@ export const, POST: RequestHandler = async ({ request, locals }) => {
       pagination: {
         page,
         pageSize,
-        totalPages: Math.ceil(totalCount / pageSize)
-      }
-    }
+        totalPages: Math.max(1, Math.ceil(totalCount / pageSize)),
+      },
+    };
+
     return json(response, {
       headers: {
         'X-Search-Time': `${searchTime}ms`,
         'X-Total-Results': totalCount.toString(),
-        'Cache-Control': 'public, max-age=120' // Cache for 2 minutes
-      }
-    })
+        'Cache-Control': 'public, max-age=120', // Cache for 2 minutes
+      },
+    });
   } catch (err) {
-    console.error('Search error:', err)
-    throw error(500, `Search failed: ${err instanceof Error ? err.message: 'Unknown error'}`)
+    console.error('Search error:', err);
+    throw error(500, `Search failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }
-}
-async function buildSearchConditions(filters: SearchFilters) {
-  const conditions = []
+};
+
+async function buildSearchConditions(filters: SearchFilters): Promise<Array<unknown>> {
+  const conditions: Array<unknown> = [];
+
   // Text search across multiple fields
-  if (filters.query) {
-    const searchTerm = `%${filters.query}%`
+  if (filters?.query) {
+    const searchTerm = `%${filters.query}%`;
+    const ilikeExpr = (col: unknown) => sql`${col} ILIKE ${searchTerm}`;
     conditions.push(
       or(
-        ilike(evidence.title, searchTerm),
-        ilike(evidence.description, searchTerm),
-        ilike(evidence.fileName, searchTerm),
-        ilike(evidence.originalFileName, searchTerm),
-        filters.contentSearch ? ilike(evidence.ocrText, searchTerm) : sql`FALSE`,
-        filters.contentSearch ? ilike(evidence.contentText, searchTerm) : sql`FALSE`,
-        ilike(cases.title, searchTerm)
+        ilikeExpr(E.title),
+        ilikeExpr(E.description),
+        ilikeExpr(E.file_name ?? E.fileName),
+        ilikeExpr(E.original_file_name ?? E.originalFileName),
+        filters.contentSearch ? ilikeExpr(E.ocr_text ?? E.ocrText) : sql`FALSE`,
+        filters.contentSearch ? ilikeExpr(E.content_text ?? E.contentText) : sql`FALSE`,
+        ilikeExpr(C.title)
       )
-    )
+    );
   }
+
   // File type filters
-  if (filters.fileTypes && filters.fileTypes.length > 0) {
-    conditions.push(
-      or(...filters.fileTypes.map(type => ilike(evidence.fileType, `%${type}%`))
-    )
+  if (filters?.fileTypes && filters.fileTypes.length > 0) {
+    conditions.push(or(...filters.fileTypes.map(type => sql`${E.file_type ?? E.fileType} ILIKE ${'%' + type + '%'}`)));
   }
+
   // Case filters
-  if (filters.caseIds && filters.caseIds.length > 0) {
-    conditions.push(inArray(evidence.caseId, filters.caseIds)
+  if (filters?.caseIds && filters.caseIds.length > 0) {
+    conditions.push(inArray(E.case_id ?? E.caseId, filters.caseIds));
   }
+
   // Date range filters
-  if (filters.dateFrom) {
-    conditions.push(gte(evidence.uploadedAt, new Date(filters.dateFrom))
+  if (filters?.dateFrom) {
+    conditions.push(gte(E.uploaded_at ?? E.uploadedAt, new Date(filters.dateFrom)));
   }
-  if (filters.dateTo) {
-    conditions.push(lte(evidence.uploadedAt, new Date(filters.dateTo))
+  if (filters?.dateTo) {
+    conditions.push(lte(E.uploaded_at ?? E.uploadedAt, new Date(filters.dateTo)));
   }
+
   // File size filters
-  if (filters.fileSizeMin) {
-    conditions.push(gte(evidence.fileSize, filters.fileSizeMin)
+  if (filters?.fileSizeMin !== undefined) {
+    conditions.push(gte(E.file_size ?? E.fileSize, filters.fileSizeMin));
   }
-  if (filters.fileSizeMax) {
-    conditions.push(lte(evidence.fileSize, filters.fileSizeMax)
+  if (filters?.fileSizeMax !== undefined) {
+    conditions.push(lte(E.file_size ?? E.fileSize, filters.fileSizeMax));
   }
+
   // Processing status filters
-  if (filters.hasOCR !== undefined) {
+  if (filters?.hasOCR !== undefined) {
     if (filters.hasOCR) {
-      conditions.push(sql`${evidence.ocrText} IS NOT NULL AND ${evidence.ocrText} != ''`)
+      conditions.push(sql`${E.ocrText ?? E.ocr_text} IS NOT NULL AND ${E.ocrText ?? E.ocr_text} != ''`);
     } else {
-      conditions.push(sql`${evidence.ocrText} IS NULL OR ${evidence.ocrText} = ''`)
+      conditions.push(sql`${E.ocrText ?? E.ocr_text} IS NULL OR ${E.ocrText ?? E.ocr_text} = ''`);
     }
   }
-  if (filters.hasEmbedding !== undefined) {
+
+  if (filters?.hasEmbedding !== undefined) {
     if (filters.hasEmbedding) {
-      conditions.push(sql`${evidence.embedding} IS NOT NULL`)
+      conditions.push(sql`${E.embedding} IS NOT NULL`);
     } else {
-      conditions.push(sql`${evidence.embedding} IS NULL`)
+      conditions.push(sql`${E.embedding} IS NULL`);
     }
   }
-  if (filters.isProcessed !== undefined) {
+
+  if (filters?.isProcessed !== undefined) {
     if (filters.isProcessed) {
-      conditions.push(sql`${evidence.processedAt} IS NOT NULL`)
+      conditions.push(sql`${E.processedAt ?? E.processed_at} IS NOT NULL`);
     } else {
-      conditions.push(sql`${evidence.processedAt} IS NULL`)
+      conditions.push(sql`${E.processedAt ?? E.processed_at} IS NULL`);
     }
   }
+
   // Public/private filter
-  if (filters.isPublic !== undefined) {
-    conditions.push(eq(evidence.isPublic, filters.isPublic)
+  if (filters?.isPublic !== undefined) {
+    conditions.push(eq(E.isPublic ?? E.is_public, filters.isPublic));
   }
+
   // Tag filters
-  if (filters.tags && filters.tags.length > 0) {
-    conditions.push(
-      or(...filters.tags.map(tag =>
-        sql`${evidence.tags} @> ${JSON.stringify([tag])}`
-      )
-    )
+  if (filters?.tags && filters.tags.length > 0) {
+    conditions.push(or(...filters.tags.map(tag => sql`${E.tags} @> ${JSON.stringify([tag])}`)));
   }
-  return conditions
+
+  return conditions;
 }
-async function executeSearchQuery(query: any, sortBy: string, sortOrder: string, page: number, pageSize: number) {
+
+// Use Drizzle query builder type for query argument
+async function executeSearchQuery(
+  query: { execute: () => Promise<unknown[]>; orderBy: Function; limit: Function; offset: Function }, // more specific type
+  sortBy: string,
+  sortOrder: string,
+  page: number,
+  pageSize: number
+) {
   // Apply sorting
-  const orderColumn = getOrderColumn(sortBy)
+  const orderColumn = getOrderColumn(sortBy);
   if (sortOrder === 'desc') {
-    query.orderBy(desc(orderColumn)
+    query.orderBy(desc(orderColumn));
   } else {
-    query.orderBy(asc(orderColumn)
+    query.orderBy(asc(orderColumn));
   }
   // Apply pagination
-  const offset = (page - 1) * pageSize
-  query.limit(pageSize).offset(offset)
-  return await query.execute()
+  const offset = (page - 1) * pageSize;
+  query.limit(pageSize).offset(offset);
+  return await query.execute();
 }
+
 function getOrderColumn(sortBy: string) {
   switch (sortBy) {
     case 'title':
-      return evidence.title
+      return E.title;
     case 'fileSize':
-      return evidence.fileSize
+      return E.file_size ?? E.fileSize;
     case 'fileType':
-      return evidence.fileType
+      return E.file_type ?? E.fileType;
     case 'processedAt':
-      return evidence.processedAt
+      return E.processed_at ?? E.processedAt;
     case 'caseTitle':
-      return cases.title
+      return C.title;
     default:
-      return evidence.uploadedAt
+      return E.uploaded_at ?? E.uploadedAt;
   }
 }
-async function processSearchResult(item: any, filters: SearchFilters): Promise<SearchResult> {
+
+async function processSearchResult(item: Record<string, unknown>, filters: SearchFilters): Promise<SearchResult> {
   // Calculate relevance score
-  const relevanceScore = calculateRelevanceScore(item, filters)
+  const relevanceScore = calculateRelevanceScore(item, filters);
   // Extract matched fields
-  const matchedFields = getMatchedFields(item, filters)
+  const matchedFields = getMatchedFields(item, filters);
   // Generate snippet if content search is enabled
-  const snippet = filters.contentSearch ? generateSnippet(item, filters.query) : undefined
+  const snippet = filters?.contentSearch ? generateSnippet(item, filters?.query) : undefined;
+
+  const uploadedAtVal = item['uploadedAt'] ?? item['uploaded_at'];
+  const uploadedAtIso =
+    uploadedAtVal instanceof Date
+      ? uploadedAtVal.toISOString()
+      : typeof uploadedAtVal === 'string'
+        ? uploadedAtVal
+        : new Date().toISOString();
+
+  const tags = Array.isArray(item['tags']) ? (item['tags'] as unknown[]).map(t => String(t)) : [];
+
   return {
-    id: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).id,
-    type: determineItemType((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).fileType),
-    title: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).title || (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).fileName || 'Untitled',
-    description: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).description || undefined,
-    fileName: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).fileName || '',
-    fileType: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).fileType || 'unknown',
-    fileSize: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).fileSize || 0,
-    url: `/api/files/evidence/${(item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).id}`,
-    thumbnailUrl: generateThumbnailUrl((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).filePath, (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).fileType),
-    uploadedAt: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).uploadedAt?.toISOString() || new Date().toISOString(),
-    caseId: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).caseId || undefined,
-    caseTitle: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).caseTitle || undefined,
-    tags: Array.isArray((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).tags) ? (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).tags: [],
-    metadata: (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).metadata || undefined,
+    id: String(item['id'] ?? ''),
+    type: determineItemType(String(item['fileType'] ?? item['file_type'] ?? '')),
+    title: String(item['title'] ?? item['fileName'] ?? item['file_name'] ?? 'Untitled'),
+    description: item['description'] ? String(item['description']) : undefined,
+    fileName: String(item['fileName'] ?? item['file_name'] ?? ''),
+    fileType: String(item['fileType'] ?? item['file_type'] ?? 'unknown'),
+    fileSize: Number(item['fileSize'] ?? item['file_size'] ?? 0),
+    url: `/api/files/evidence/${String(item['id'] ?? '')}`,
+    thumbnailUrl: generateThumbnailUrl(
+      String(item['filePath'] ?? item['file_path'] ?? ''),
+      String(item['fileType'] ?? item['file_type'] ?? '')
+    ),
+    uploadedAt: uploadedAtIso,
+    caseId: (item['caseId'] ?? item['case_id']) ? String(item['caseId'] ?? item['case_id']) : undefined,
+    caseTitle: String(item['caseTitle'] ?? item['case_title'] ?? ''),
+    tags,
+    metadata: (item['metadata'] as Record<string, unknown>) || undefined,
     relevanceScore,
     matchedFields,
-    snippet
-  }
+    snippet,
+  };
 }
-function calculateRelevanceScore(item: any, filters: SearchFilters): number {
-  if (!filters.query) return 0
-  let score = 0
-  const query = filters.query.toLowerCase()
-  // Title match (highest weight)
-  if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).title?.toLowerCase().includes(query)) {
-    score += 10
-    if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).title?.toLowerCase().startsWith(query)) score += 5
+
+function calculateRelevanceScore(item: Record<string, unknown>, filters: SearchFilters): number {
+  if (!filters?.query) return 0;
+  let score = 0;
+  const query = filters.query.toLowerCase();
+  const title = String(item['title'] ?? item['fileName'] ?? item['file_name'] ?? '').toLowerCase();
+  const fileName = String(item['fileName'] ?? item['file_name'] ?? '').toLowerCase();
+  const description = String(item['description'] ?? '').toLowerCase();
+  const caseTitle = String(item['caseTitle'] ?? item['case_title'] ?? '').toLowerCase();
+  const ocrText = String(item['ocrText'] ?? item['ocr_text'] ?? '').toLowerCase();
+  const contentText = String(item['contentText'] ?? item['content_text'] ?? '').toLowerCase();
+
+  if (title.includes(query)) {
+    score += 10;
+    if (title.startsWith(query)) score += 5;
   }
-  // Filename match
-  if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).fileName?.toLowerCase().includes(query)) {
-    score += 7
-  }
-  // Description match
-  if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).description?.toLowerCase().includes(query)) {
-    score += 5
-  }
-  // Case title match
-  if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).caseTitle?.toLowerCase().includes(query)) {
-    score += 4
-  }
-  // Content match
+  if (fileName.includes(query)) score += 7;
+  if (description.includes(query)) score += 5;
+  if (caseTitle.includes(query)) score += 4;
   if (filters.contentSearch) {
-    if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).ocrText?.toLowerCase().includes(query)) score += 3
-    if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).contentText?.toLowerCase().includes(query)) score += 3
+    if (ocrText.includes(query)) score += 3;
+    if (contentText.includes(query)) score += 3;
   }
-  // Tag match
-  if (Array.isArray((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).tags)) {
-    for (const tag of (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).tags) {
-      if (tag.toLowerCase().includes(query)) {
-        score += 6
+  if (Array.isArray(item['tags'])) {
+    for (const tag of item['tags'] as unknown[]) {
+      if (String(tag).toLowerCase().includes(query)) score += 6;
+    }
+  }
+  return score;
+}
+
+function getMatchedFields(item: Record<string, unknown>, filters: SearchFilters): string[] {
+  if (!filters?.query) return [];
+  const matchedFields: string[] = [];
+  const query = filters.query.toLowerCase();
+  if (
+    String(item['title'] ?? item['fileName'] ?? item['file_name'] ?? '')
+      .toLowerCase()
+      .includes(query)
+  )
+    matchedFields.push('title');
+  if (
+    String(item['fileName'] ?? item['file_name'] ?? '')
+      .toLowerCase()
+      .includes(query)
+  )
+    matchedFields.push('fileName');
+  if (
+    String(item['description'] ?? '')
+      .toLowerCase()
+      .includes(query)
+  )
+    matchedFields.push('description');
+  if (
+    String(item['caseTitle'] ?? item['case_title'] ?? '')
+      .toLowerCase()
+      .includes(query)
+  )
+    matchedFields.push('caseTitle');
+  if (filters.contentSearch) {
+    if (
+      String(item['ocrText'] ?? item['ocr_text'] ?? '')
+        .toLowerCase()
+        .includes(query)
+    )
+      matchedFields.push('ocrText');
+    if (
+      String(item['contentText'] ?? item['content_text'] ?? '')
+        .toLowerCase()
+        .includes(query)
+    )
+      matchedFields.push('contentText');
+  }
+  if (Array.isArray(item['tags'])) {
+    for (const tag of item['tags'] as unknown[]) {
+      if (String(tag).toLowerCase().includes(query)) {
+        matchedFields.push('tags');
+        break;
       }
     }
   }
-  return score
+  return matchedFields;
 }
-function getMatchedFields(item: any, filters: SearchFilters): string[] {
-  if (!filters.query) return []
-  const matchedFields = []
-  const query = filters.query.toLowerCase()
-  if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).title?.toLowerCase().includes(query)) matchedFields.push('title')
-  if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).fileName?.toLowerCase().includes(query)) matchedFields.push('fileName')
-  if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).description?.toLowerCase().includes(query)) matchedFields.push('description')
-  if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).caseTitle?.toLowerCase().includes(query)) matchedFields.push('caseTitle')
-  if (filters.contentSearch) {
-    if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).ocrText?.toLowerCase().includes(query)) matchedFields.push('ocrText')
-    if ((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).contentText?.toLowerCase().includes(query)) matchedFields.push('contentText')
-  }
-  if (Array.isArray((item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).tags)) {
-    for (const tag of (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).tags) {
-      if (tag.toLowerCase().includes(query)) {
-        matchedFields.push('tags')
-        break
-      }
-    }
-  }
-  return matchedFields
+
+function generateSnippet(item: Record<string, unknown>, query?: string): string | undefined {
+  if (!query) return undefined;
+  const text = String(
+    item['contentText'] ?? item['content_text'] ?? item['ocrText'] ?? item['ocr_text'] ?? item['description'] ?? ''
+  );
+  if (!text) return undefined;
+  const index = text.toLowerCase().indexOf(query.toLowerCase());
+  if (index === -1) return undefined;
+  const start = Math.max(0, index - 50);
+  const end = Math.min(text.length, index + (query?.length || 0) + 50);
+  let snippet = text.slice(start, end);
+  const regex = new RegExp(`(${query})`, 'gi');
+  snippet = snippet.replace(regex, '<mark>$1</mark>');
+  if (start > 0) snippet = '...' + snippet;
+  if (end < text.length) snippet = snippet + '...';
+  return snippet;
 }
-function generateSnippet(item: any, query?: string): string | undefined {
-  if (!query) return undefined
-  const text = (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).contentText || (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).ocrText || (item as { id?: any; fileType?: any; title?: any; fileName?: any; description?: any; fileSize?: any; filePath?: any; uploadedAt?: any; caseId?: any; caseTitle?: any; tags?: any; metadata?: any; ocrText?: any; contentText?: any }).description || ''
-  if (!text) return undefined
-  const index = text.toLowerCase().indexOf(query.toLowerCase()
-  if (index === -1) return undefined
-  const start = Math.max(0, index - 50)
-  const end = Math.min(text.length, index + query.length + 50)
-  let snippet = text.slice(start, end)
-  // Highlight the query term
-  const regex = new RegExp(`(${query})`, 'gi')
-  snippet = snippet.replace(regex, '<mark>$1</mark>')
-  if (start > 0) snippet = '...' + snippet
-  if (end < text.length) snippet = snippet + '...'
-  return snippet
-}
+
+// Facets and suggestions: try Docker Desktop endpoints first
 async function generateFacets(filters: SearchFilters) {
   try {
-    // Get facet counts (simplified for now)
+    // Try Docker Desktop microservice for facets
+    const res = await fetch(`${GALLERY_SEARCH_API_URL}/facets`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ filters }),
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (error) {
+    console.warn('Docker Desktop facet fallback:', error);
+  }
+  try {
     const [typeFacets, fileTypeFacets, caseFacets, tagFacets] = await Promise.all([
       getTypeFacets(),
       getFileTypeFacets(),
       getCaseFacets(),
-      getTagFacets()
-    ])
+      getTagFacets(),
+    ]);
     return {
       types: typeFacets,
       fileTypes: fileTypeFacets,
       cases: caseFacets,
       tags: tagFacets,
-      dateRanges: [,
+      dateRanges: [
         { range: 'Last 24 hours', count: 0 },
         { range: 'Last week', count: 0 },
         { range: 'Last month', count: 0 },
-        { range: 'Last year', count: 0 }
-      ]
-    }
+        { range: 'Last year', count: 0 },
+      ],
+    };
   } catch (error) {
-    console.error('Facet generation error:', error)
+    console.error('Facet generation error:', error);
     return {
       types: [],
       fileTypes: [],
       cases: [],
       tags: [],
-      dateRanges: []
-    }
+      dateRanges: [],
+    };
   }
 }
+
 async function getTypeFacets() {
   // TODO: Implement proper type facet counting
   return [
@@ -406,47 +534,60 @@ async function getTypeFacets() {
     { name: 'Document', count: 0 },
     { name: 'Image', count: 0 },
     { name: 'Video', count: 0 },
-    { name: 'Audio', count: 0 }
-  ]
+    { name: 'Audio', count: 0 },
+  ];
 }
+
 async function getFileTypeFacets() {
   // TODO: Implement file type facet counting
   return [
     { name: 'PDF', count: 0 },
     { name: 'Image', count: 0 },
     { name: 'Word', count: 0 },
-    { name: 'Excel', count: 0 },>
-    { name: 'Video', count: 0 }
-  ]
+    { name: 'Excel', count: 0 },
+    { name: 'Video', count: 0 },
+  ];
 }
+
 async function getCaseFacets() {
   try {
     const caseCounts = await db
       .select({
         id: cases.id,
         title: cases.title,
-        count: sql<number>`count(${evidence.id})`
+        count: sql`count(${evidence.id})`,
       })
       .from(cases)
-      .leftJoin(evidence, eq(cases.id, evidence.caseId)
+      .leftJoin(evidence, eq(cases.id, evidence.caseId))
       .groupBy(cases.id, cases.title)
-      .execute()
-    return caseCounts.map(c => ({
-      id: c.id,
-      title: c.title || 'Untitled',
-      count: c.count || 0
-    })
+      .execute();
+    return (caseCounts || []).map((c: Record<string, unknown>) => ({
+      id: String(c.id),
+      title: String(c.title || 'Untitled'),
+      count: Number(c.count || 0),
+    }));
   } catch (error) {
-    return []
+    console.error('getCaseFacets error:', error);
+    return [];
   }
 }
+
 async function getTagFacets() {
-  // TODO: Implement tag facet counting from JSONB array
-  return []
+  return [];
 }
+
+// Suggestions: try Docker Desktop endpoints first
 async function generateSuggestions(query?: string): Promise<string[]> {
-  if (!query || query.length < 2) return []
-  // Simple suggestion generation (could be improved with proper search index)
+  if (!query || query.length < 2) return [];
+  try {
+    // Try Docker Desktop microservice for suggestions
+    const res = await fetch(`${GALLERY_SEARCH_API_URL}/suggestions?q=${encodeURIComponent(query)}`);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (error) {
+    console.warn('Docker Desktop suggestion fallback:', error);
+  }
   const suggestions = [
     'contract analysis',
     'evidence photos',
@@ -455,70 +596,70 @@ async function generateSuggestions(query?: string): Promise<string[]> {
     'case files',
     'witness statements',
     'financial records',
-    'email correspondence'
-  ]
-  return suggestions
-    .filter(item => item.includes(query.toLowerCase())
-    .slice(0, 5)
+    'email correspondence',
+  ];
+  return suggestions.filter(item => item.includes(query.toLowerCase())).slice(0, 5);
 }
+
 function determineItemType(fileType?: string): string {
-  if (!fileType) return 'document'
-  if (fileType.startsWith('image/')) return 'image'
-  if (fileType.startsWith('video/')) return 'video'
-  if (fileType.startsWith('audio/')) return 'audio'
-  if (fileType.includes('pdf')) return 'document'
-  return 'document'
+  if (!fileType) return 'document';
+  if (fileType.startsWith('image/')) return 'image';
+  if (fileType.startsWith('video/')) return 'video';
+  if (fileType.startsWith('audio/')) return 'audio';
+  if (fileType.includes('pdf')) return 'document';
+  return 'document';
 }
+
 function generateThumbnailUrl(filePath: string | null, fileType: string | null): string | undefined {
-  if (!filePath || !fileType) return undefined
+  if (!filePath || !fileType) return undefined;
   if (fileType.startsWith('image/')) {
-    const pathParts = filePath.split('/')
-    const fileName = pathParts.pop()
-    const dir = pathParts.join('/')
-    return `${dir}/thumb_${fileName}`
+    const pathParts = filePath.split('/');
+    const fileName = pathParts.pop();
+    const dir = pathParts.join('/');
+    return `${dir}/thumb_${fileName}`;
   }
-  // Return type-specific icons for non-images
   const typeIconMap: Record<string, string> = {
     'application/pdf': '/icons/pdf-thumbnail.svg',
     'video/': '/icons/video-thumbnail.svg',
     'audio/': '/icons/audio-thumbnail.svg',
-    'document': '/icons/document-thumbnail.svg'
-  }
+    'document': '/icons/document-thumbnail.svg',
+  };
   for (const [type, icon] of Object.entries(typeIconMap)) {
-    if (fileType.includes(type)) return icon
+    if (fileType.includes(type)) return icon;
   }
-  return '/icons/file-thumbnail.svg'
+  return '/icons/file-thumbnail.svg';
 }
+
 // GET endpoint for simple search
-export const GET: RequestHandler = async ({ url, locals }) => {
+export const GET: RequestHandler = async ({ url, locals: _locals }) => {
   try {
-    const query = url.searchParams.get('q') || ''
-    const type = url.searchParams.get('type') || undefined
-    const caseId = url.searchParams.get('caseId') || undefined
-    const page = parseInt(url.searchParams.get('page') || '1')
-    const pageSize = parseInt(url.searchParams.get('pageSize') || '20')
+    const query = url.searchParams.get('q') || '';
+    const type = url.searchParams.get('type') || undefined;
+    const caseId = url.searchParams.get('caseId') || undefined;
+    const page = parseInt(url.searchParams.get('page') || '1');
+    const pageSize = parseInt(url.searchParams.get('pageSize') || '20');
     const filters: SearchFilters = {
       query,
-      types: type ? [type] : undefined
-      caseIds: caseId ? [caseId] : undefined
+      types: type ? [type] : undefined,
+      caseIds: caseId ? [caseId] : undefined,
       contentSearch: true,
-    }
+    };
     const options: SearchOptions = {
       page,
       pageSize,
       sortBy: 'uploadedAt',
       sortOrder: 'desc',
-      includeContent: false
-    }
-    // Reuse POST logic
+      includeContent: false,
+    };
     const request = new Request('', {
       method: 'POST',
       body: JSON.stringify({ filters, options }),
-      headers: { 'content-type': 'application/json' }
-    })
-    return await POST({ request, locals } as any)
+      headers: { 'content-type': 'application/json' },
+    });
+    // Avoid casting to any, call POST directly
+    return await POST({ request, locals: _locals });
   } catch (err) {
-    console.error('GET search error:', err)
-    throw error(500, `Search failed: ${err instanceof Error ? err.message: 'Unknown error'}`)
+    console.error('GET search error:', err);
+    throw error(500, `Search failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }
-}
+};
