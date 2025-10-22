@@ -15,9 +15,9 @@
 
   interface LegalService {
     name: string;
-    icon string;
+    icon: string;
     href: string;
-    description string;
+    description: string;
   }
 
   interface RecentActivity {
@@ -41,44 +41,44 @@
     complianceScore: 96.2,
   };
 
-  // Legal services
+  // Legal services - corrected and well-formed
   const legalServices: LegalService[] = [
     {
       name: 'Case Management',
-      icon '⚖️',
+      icon: '⚖️',
       href: '/legal/cases',
-        icon: '⚖️',
-        description: 'Comprehensive case tracking and management system',
+      description: 'Comprehensive case tracking and management system'
+    },
     {
       name: 'Document Analysis',
-      icon '📄',
-        icon: '📄',
-        description: 'AI-powered legal document analysis and review',
+      icon: '📄',
+      href: '/legal/documents',
+      description: 'AI-powered legal document analysis and review'
     },
     {
       name: 'Citation Research',
-        icon: '📚',
-        description: 'Advanced legal citation search and verification',
-      description 'Advanced legal citation search and verification',
+      icon: '📚',
+      href: '/legal/citations',
+      description: 'Advanced legal citation search and verification'
     },
     {
-        icon: '✅',
-        description: 'Automated compliance monitoring and reporting',
+      name: 'Compliance Monitoring',
+      icon: '✅',
       href: '/legal/compliance',
-      description 'Automated compliance monitoring and reporting',
+      description: 'Automated compliance monitoring and reporting'
     },
-        icon: '📝',
-        description: 'Smart contract analysis and risk assessment',
-      icon '📝',
+    {
+      name: 'Contracts',
+      icon: '📝',
       href: '/legal/contracts',
-      description 'Smart contract analysis and risk assessment',
-        icon: '🔍',
-        description: 'Comprehensive legal research and case law analysis',
-      name: 'Legal Research',
-      icon '🔍',
-      href: '/legal/research',
-      description 'Comprehensive legal research and case law analysis',
+      description: 'Smart contract analysis and risk assessment'
     },
+    {
+      name: 'Legal Research',
+      icon: '🔍',
+      href: '/legal/research',
+      description: 'Comprehensive legal research and case law analysis'
+    }
   ];
 
   // Recent legal activities
@@ -157,16 +157,15 @@
           </CardHeader>
           <CardContent>
             <p class="service-description">{service.description}</p>
-            <Button
+            <a
               href={service.href}
               class="service-button"
+              role="button"
               data-umami-event="legal-service-navigate"
               data-umami-event-service={service.name}
             >
-              {#snippet children()}
-                Access Service
-              {/snippet}
-            </Button>
+              Access Service
+            </a>
           </CardContent>
         </Card>
       {/each}
@@ -199,7 +198,9 @@
             <div class="activity-title">{activity.title}</div>
             <div class="activity-details">
               {#if activity.type === 'case_update'}
-                <span class="status">Status: {activity.status.replace('_', ' ').toUpperCase()}</span>
+                <span class="status">
+                  Status: {activity.status ? activity.status.replace('_', ' ').toUpperCase() : 'UNKNOWN'}
+                </span>
               {:else if activity.type === 'document_review'}
                 <span>Confidence: <strong>{activity.confidence}%</strong></span>
                 <span>{activity.pages} pages reviewed</span>
@@ -250,7 +251,8 @@
     margin-bottom: 3rem;
   }
 
-  .stat-card {
+  /* Change selectors to :global so Svelte recognizes classes applied to component roots */
+  :global(.stat-card) {
     background: rgba(212, 175, 55, 0.1);
     border: 1px solid rgba(212, 175, 55, 0.3);
   }
@@ -283,13 +285,13 @@
     gap: 1.5rem;
   }
 
-  .service-card {
+  :global(.service-card) {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
 
-  .service-card:hover {
+  :global(.service-card:hover) {
     background: rgba(212, 175, 55, 0.1);
     border-color: rgba(212, 175, 55, 0.3);
     transform: translateY(-2px);
@@ -312,11 +314,13 @@
     border: none;
     padding: 0.75rem;
     border-radius: 0.5rem;
-    font-weight: 600,
-    transition all 0.3s ease;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-align: center;
   }
 
-  .service-buttonhover {
+  .service-button:hover {
     background: #c19c28;
     transform: translateY(-1px);
   }
@@ -332,7 +336,7 @@
     gap: 1rem;
   }
 
-  .activity-card {
+  :global(.activity-card) {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
@@ -345,7 +349,7 @@
   }
 
   .activity-type {
-    font-weight: 600,
+    font-weight: 600;
     color: #d4af37;
   }
 
@@ -355,12 +359,12 @@
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     font-size: 0.75rem;
-    font-weight: 600,
+    font-weight: 600;
   }
 
   .activity-title {
     font-size: 1.1rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #fff;
     margin-bottom: 0.75rem;
   }
@@ -371,18 +375,6 @@
     align-items: center;
     font-size: 0.9rem;
     color: #a1a1aa;
-  }
-
-  .status,
-  .verified,
-  .score {
-    color: #d4af37;
-    font-weight: 600,
-  }
-
-  .issues {
-    color: #ef4444;
-    font-weight: 600,
   }
 
   @media (max-width: 768px) {
@@ -399,13 +391,13 @@
     }
 
     .activity-details {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-start;
       gap: 0.5rem;
     }
 
     .activity-header {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-start;
       gap: 0.5rem;
     }

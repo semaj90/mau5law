@@ -2,6 +2,101 @@
 // Unified Ollama configuration module (consolidated)
 // Provides model registry, fallback chains, and helper utilities used by server AI services.
 import type { OllamaConfig, ModelConfig } from './types.js';
+
+export type OllamaEndpoint =
+  | 'generate'
+  | 'chat'
+  | 'embeddings'
+  | 'models'
+  | 'health'
+  | 'pull'
+  | 'version';
+
+const FALLBACK_PATHS: Record<OllamaEndpoint, string> = {
+  generate: '/api/generate',
+  chat: '/api/chat',
+  embeddings: '/api/embeddings',
+  models: '/api/tags',
+  health: '/api/version',
+  pull: '/api/pull',
+  version: '/api/version'
+};
+
+function getEnv(name: string): string | undefined {
+  if (typeof import.meta !== 'undefined' && import.meta.env) {
+    const value = import.meta.env[name as keyof typeof import.meta.env];
+    if (typeof value === 'string' && value.length > 0) return value;
+  }
+  if (typeof process !== 'undefined' && process.env) {
+    const value = process.env[name];
+    if (typeof value === 'string' && value.length > 0) return value;
+  }
+  return undefined;
+}
+
+function normalizeBaseUrl(url: string | undefined, fallback: string): string {
+  const trimmed = url?.trim();
+  if (!trimmed) return fallback;
+  return trimmed.endsWith('/') ? trimmed.slice(0, -1) : trimmed;
+}
+
+function parseEndpointOverrides(): Partial<Record<OllamaEndpoint, string>> {
+  const explicitEndpoints: Partial<Record<OllamaEndpoint, string>> = {};
+
+  const overridesRaw = getEnv('OLLAMA_ENDPOINTS');
+  if (overridesRaw) {
+    try {
+      const parsed = JSON.parse(overridesRaw) as Record<string, unknown>;
+      Object.entries(parsed).forEach(([key, value]) => {
+        const endpoint = key.toLowerCase() as OllamaEndpoint;
+        if (FALLBACK_PATHS[endpoint] && typeof value === 'string') {
+          explicitEndpoints[endpoint] = value;
+        }
+      });
+    } catch (error) {
+      console.warn('[Ollama] Failed to parse OLLAMA_ENDPOINTS env as JSON:', error);
+    }
+  }
+
+  (Object.keys(FALLBACK_PATHS) as OllamaEndpoint[]).forEach(endpoint => {
+    const envKey = `OLLAMA_${endpoint.toUpperCase()}_URL`;
+    const value = getEnv(envKey);
+    if (value) explicitEndpoints[endpoint] = value;
+  });
+
+  return explicitEndpoints;
+}
+
+const BASE_URL = normalizeBaseUrl(
+  getEnv('OLLAMA_BASE_URL') || getEnv('OLLAMA_URL'),
+  'http://localhost:11434'
+);
+const ENDPOINT_OVERRIDES = parseEndpointOverrides();
+
+export const OLLAMA_ENDPOINTS: Record<OllamaEndpoint, string> = (Object.keys(FALLBACK_PATHS) as OllamaEndpoint[]).reduce(
+  (acc, key) => {
+    const explicit = ENDPOINT_OVERRIDES[key];
+    acc[key] = explicit ?? `${BASE_URL}${FALLBACK_PATHS[key]}`;
+    return acc;
+  },
+  {} as Record<OllamaEndpoint, string>
+);
+
+function applyPath(base: string, path: string): string {
+  return `${base}${path.startsWith('/') ? path : `/${path}`}`;
+}
+
+export function getOllamaEndpoint(endpoint: OllamaEndpoint, baseOverride?: string): string {
+  if (baseOverride) {
+    const normalizedBase = normalizeBaseUrl(baseOverride, BASE_URL);
+    const explicit = ENDPOINT_OVERRIDES[endpoint];
+    if (explicit) {
+      return /^https?:\/\//i.test(explicit) ? explicit : applyPath(normalizedBase, explicit);
+    }
+    return applyPath(normalizedBase, FALLBACK_PATHS[endpoint]);
+  }
+  return OLLAMA_ENDPOINTS[endpoint];
+}
 /**
  * Ollama Configuration for High-Performance AI Assistant
  * Using local gemma3-legal:latest model with legal-bert fallback
@@ -60,7 +155,8 @@ export const FALLBACK_CHAIN = {
   ]
 }
 export const OLLAMA_CONFIG: OllamaConfig = {
-  baseUrl: import.meta.env.OLLAMA_BASE_URL || 'http://localhost:11434',
+  baseUrl: BASE_URL,
+  endpoints: OLLAMA_ENDPOINTS,
   defaultModel: 'gemma3-legal:latest',
   embeddingModel: 'embeddinggemma',
   fallbackModel: 'gemma3-legal:latest',
@@ -95,6 +191,7 @@ export const OLLAMA_CONFIG: OllamaConfig = {
     intelligentFallback: true, // Enable smart model selection
   }
 }
+// TODO: Add dynamic registration hooks for PyTorch/TensorRT-LLM inference endpoints (REST, gRPC, QUIC/WebTransport).
 /**
  * Get model configuration with fallback support
  */

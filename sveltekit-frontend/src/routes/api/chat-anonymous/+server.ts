@@ -1,6 +1,7 @@
 // Anonymous Chat API - No authentication required
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
+import { getOllamaEndpoint } from '$lib/services/providers/ollama/config';
 interface ChatRequest {
   messages: Array<any>;
   model?: string;
@@ -36,7 +37,7 @@ User Question: ${lastUserMessage.content}
 Legal Analysis:`;
     try {
       // Call Ollama service directly
-      const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
+      const ollamaResponse = await fetch(getOllamaEndpoint('generate'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

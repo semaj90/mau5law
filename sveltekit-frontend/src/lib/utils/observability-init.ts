@@ -6,6 +6,7 @@ import { browser } from '$app/environment';
 import { page } from '$app/stores';
 import { observabilityClient, trackPageLoad } from './observability-client.js';
 import { timingMetrics } from './timing-metrics.js';
+import type { Readable } from 'svelte/store';
 // Global observability state
 let isInitialized = false;
 let currentRouteId: string | null = null;
@@ -23,8 +24,7 @@ export function initializeObservability() {
     metricsEndpoint: '/api/v1/observability/client',
     batchSize: 5, // Smaller batch for development visibility
     flushInterval: 15000, // 15 seconds for development
-    debugMode: window.location.hostname === 'localhost' ||
-               window.location.search.includes('debug-observability')
+    debugMode: window.location.hostname === 'localhost' || window.location.search.includes('debug-observability'),
   });
   // Track initial page load
   if (typeof document !== 'undefined' && document.readyState === 'loading') {
@@ -64,7 +64,7 @@ function trackInitialPageLoad() {
 function setupNavigationTracking() {
   // Listen to page store changes for SvelteKit navigation
   if (typeof page !== 'undefined' && page.subscribe) {
-    page.subscribe(($page) => {
+    page.subscribe($page => {
       if ($page.route?.id && $page.route.id !== currentRouteId) {
         const newRouteId = $page.route.id;
         currentRouteId = newRouteId;
@@ -82,31 +82,32 @@ function setupNavigationTracking() {
       currentRouteId = routeId;
       trackPageLoad(routeId);
     }
-  }
+  };
   window.addEventListener('popstate', trackNavigation);
   // Override pushState and replaceState to track programmatic navigation
   const originalPushState = history.pushState;
   const originalReplaceState = history.replaceState;
-  history.pushState = function(...args) {
+  history.pushState = function (...args) {
     originalPushState.apply(history, args);
     setTimeout(trackNavigation, 0);
-  }
-  history.replaceState = function(...args) {
+  };
+  history.replaceState = function (...args) {
     originalReplaceState.apply(history, args);
     setTimeout(trackNavigation, 0);
-  }
+  };
 }
 function setupPerformanceMonitoring() {
   // Monitor long tasks
   if ('PerformanceObserver' in window) {
     try {
-      const longTaskObserver = new PerformanceObserver((list) => {
+      const longTaskObserver = new PerformanceObserver(list => {
         for (const entry of list.getEntries()) {
-          if (entry.duration > 50) { // Tasks longer than 50ms
+          if (entry.duration > 50) {
+            // Tasks longer than 50ms
             console.warn(`⚡ Long task detected: ${Math.round(entry.duration)}ms`, {
               name: entry.name,
               startTime: entry.startTime,
-              duration: entry.duration
+              duration: entry.duration,
             });
           }
         }
@@ -119,14 +120,21 @@ function setupPerformanceMonitoring() {
   // Monitor resource loading
   if (window.performance && window.performance.getEntriesByType) {
     setTimeout(() => {
-      const resources = performance.getEntriesByType('resource');
-      const slowResources = resources.filter((resource: any) => resource.duration > 1000);
+      // Cast entries to PerformanceResourceTiming[] so we can access transferSize and duration with proper types
+      const resources = performance.getEntriesByType('resource') as PerformanceResourceTiming[];
+      const slowResources = resources.filter((resource: PerformanceResourceTiming) => resource.duration > 1000);
       if (slowResources.length > 0) {
-        console.warn('🐌 Slow resources detected:', slowResources.map((r: any) => ({,
-          name: r.name.split('/').pop(),
-          duration: `${Math.round(r.duration)}ms`,
-          size: r.transferSize ? `${Math.round(r.transferSize / 1024)}KB` : 'unknown'
-        }));
+        console.warn(
+          '🐌 Slow resources detected:',
+          slowResources.map((r: PerformanceResourceTiming) => ({
+            name: (r.name || '').split('/').pop(),
+            duration: `${Math.round(r.duration)}ms`,
+            size:
+              typeof r.transferSize === 'number' && r.transferSize > 0
+                ? `${Math.round(r.transferSize / 1024)}KB`
+                : 'unknown',
+          }))
+        );
       }
     }, 2000);
   }
@@ -151,13 +159,17 @@ function extractRouteId(): string {
   if (pathname.startsWith('/api/')) return pathname;
   if (pathname.includes('[')) return pathname; // Already parameterized
   // Convert pathname to route-like format
-  return pathname.replace(/\/\d+/g, '/[id]')
-                 .replace(/\/[^\/]+\.(json|html|xml)$/, '/[file]');
+  return pathname.replace(/\/\d+/g, '/[id]').replace(/\/[^/]+\.(json|html|xml)$/, '/[file]');
 }
 // Svelte store getter fallback
-function get(store: any) {
-  let value: any;
-  const unsubscribe = store.subscribe((v: any) => { value = v, });
+function get<T>(store?: Readable<T> | { subscribe: (run: (v: T) => void) => () => void } | null): T | undefined {
+  // Guard against invalid store
+  if (!store || typeof (store as { subscribe?: unknown }).subscribe !== 'function') return undefined;
+  let value: T | undefined;
+  // Subscribe synchronously, capture value, then unsubscribe
+  const unsubscribe = (store as Readable<T>).subscribe((v: T) => {
+    value = v;
+  });
   unsubscribe();
   return value;
 }
@@ -171,10 +183,11 @@ export function createObservableFetch() {
 /**
  * Track a custom performance event
  */
-export function trackCustomEvent(name: string, data?: any) {
+export function trackCustomEvent(name: string, data?: unknown) {
   if (!browser || !isInitialized) return;
   timingMetrics.mark(`custom-${name}`);
   if (observabilityClient.getCapabilities()?.debugMode) {
+    // log unknown data for debugging; keep as-is to avoid losing information
     console.log(`📊 Custom event tracked: ${name}`, data);
   }
 }
@@ -183,15 +196,15 @@ export function trackCustomEvent(name: string, data?: any) {
  */
 export function getObservabilityStatus() {
   if (!browser) {
-    return { initialized: false, browser: false }
+    return { initialized: false, browser: false };
   }
   return {
     initialized: isInitialized,
     browser: true,
-    currentRoute: currentRouteId;
+    currentRoute: currentRouteId,
     capabilities: observabilityClient.getCapabilities(),
-    performanceSnapshot: isInitialized ? observabilityClient.getPerformanceSnapshot() : null
-  }
+    performanceSnapshot: isInitialized ? observabilityClient.getPerformanceSnapshot() : null,
+  };
 }
 // Auto-initialize if in browser
 if (browser) {

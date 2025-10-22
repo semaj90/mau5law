@@ -3,6 +3,7 @@ import { EventEmitter } from 'events';
 // Real-time streaming service for AI synthesis with progressive updates
 import { logger } from './logger.js';
 import { aiAssistantSynthesizer } from './ai-assistant-input-synthesizer.js';
+import { OLLAMA_CONFIG, getOllamaEndpoint } from './config';
 
 // Helper to safely format unknown errors
 const getErrorMessage = (err: unknown): string => {
@@ -597,8 +598,17 @@ export const streamingService = new StreamingService();
 // Support for Ollama local LLM integration
 export class OllamaStreamingAdapter {
   private ollamaUrl: string;
-  constructor(ollamaUrl: string = 'http://localhost:11434') {
-    this.ollamaUrl = ollamaUrl;
+  constructor(ollamaUrl: string = OLLAMA_CONFIG.baseUrl) {
+    const resolved = (ollamaUrl ?? OLLAMA_CONFIG.baseUrl).trim();
+    this.ollamaUrl = (resolved.length ? resolved : OLLAMA_CONFIG.baseUrl).replace(/\/$/, '');
+  }
+
+  private resolveEndpoint(endpoint: 'generate' | 'chat' | 'embeddings' | 'models' | 'health' | 'pull' | 'version'): string {
+    return getOllamaEndpoint(endpoint, this.ollamaUrl);
+  }
+
+  private buildUrl(path: string): string {
+    return `${this.ollamaUrl}${path.startsWith('/') ? path : `/${path}`}`;
   }
 
   /**
@@ -611,7 +621,7 @@ export class OllamaStreamingAdapter {
     onComplete: (response: string) => void
   ): Promise<void> {
     try {
-      const response = await fetch(`${this.ollamaUrl}/api/generate`, {
+      const response = await fetch(this.resolveEndpoint('generate'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -668,7 +678,7 @@ export class OllamaStreamingAdapter {
    */
   async checkAvailability(): Promise<boolean> {
     try {
-      const response = await fetch(`${this.ollamaUrl}/api/status`);
+      const response = await fetch(this.buildUrl('/api/status'));
       return response.ok;
     } catch (error: unknown) {
       logger.debug(`[OllamaStreamingAdapter] Availability check failed: ${getErrorMessage(error)}`);

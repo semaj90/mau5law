@@ -55,9 +55,9 @@
     alias: '',
     threat_level: 'low',
     status: 'surveillance',
-    description '',
+    description: '',
     last_seen: '',
-    location '',
+    location: ''
   });
   let isLoading = $state(false);
   let error: string | null = $state(null);
@@ -157,9 +157,9 @@
         alias: '',
         threat_level: 'low',
         status: 'surveillance',
-        description '',
+        description: '',
         last_seen: '',
-        location '',
+        location: ''
       };
       showNewPersonModal = false;
       error = null;
@@ -495,9 +495,9 @@
               alias: '',
               threat_level: 'low',
               status: 'surveillance',
-              description '',
+              description: '',
               last_seen: '',
-              location '',
+              location: ''
             };
           }}
         >
@@ -526,7 +526,7 @@
     background: #1a1a1a;
     border-right: 1px solid #3a3a3a;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
   }
   .yorha-logo {
     padding: 20px 15px;
@@ -536,7 +536,7 @@
     font-size: 18px;
     font-weight: bold;
     color: #d4af37;
-    line-height: 1,
+    line-height: 1;
   }
   .yorha-subtext {
     font-size: 10px;
@@ -547,7 +547,7 @@
   .yorha-nav {
     padding: 10px 0;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 6px;
     padding-left: 8px;
   }
@@ -556,11 +556,9 @@
     align-items: center;
     padding: 8px 12px;
     color: #888;
-    text-decoration none;
+    text-decoration: none;
     cursor: pointer;
-    transition
-      background 0.15s,
-      color 0.15s;
+    transition: background 0.15s, color 0.15s;
     justify-content: space-between;
     font-size: 11px;
   }
@@ -584,9 +582,9 @@
 
   /* Main area */
   .yorha-main {
-    flex: 1,
+    flex: 1;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     background: #2a2a2a;
     overflow: hidden;
   }
@@ -616,7 +614,7 @@
     font-size: 24px;
     font-weight: bold;
     color: #d4af37;
-    margin: 0,
+    margin: 0;
   }
   .persons-subtitle {
     font-size: 12px;
@@ -633,13 +631,13 @@
     border-bottom: 1px solid #3a3a3a;
   }
   .search-input-wrapper {
-    position relative;
+    position: relative;
     display: flex;
     align-items: center;
     gap: 12px;
   }
   :global(.search-icon) {
-    position absolute;
+    position: absolute;
     left: 10px;
   }
   :global(.search-input) {
@@ -688,7 +686,7 @@
     gap: 20px;
     padding: 20px;
     overflow-y: auto;
-    flex: 1,
+    flex: 1;
   }
   :global(.person-nier-bits-card) {
     background: #1a1a1a !important;
@@ -714,7 +712,7 @@
     color: #666;
   }
   .person-basic-info {
-    flex: 1,
+    flex: 1;
   }
   .person-name {
     font-size: 16px;
@@ -731,7 +729,7 @@
   }
   .person-badges {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 6px;
   }
   .person-details {
@@ -753,7 +751,7 @@
   .person-description {
     font-size: 11px;
     color: #ccc;
-    line-height: 1.4,
+    line-height: 1.4;
     margin: 8px 0;
   }
   .person-cases {
@@ -781,7 +779,7 @@
   /* Empty / loading / error */
   .empty-state {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 24px;
@@ -817,7 +815,7 @@
   }
   .loading-state {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 60px 20px;
@@ -829,7 +827,7 @@
     border: 2px solid #3a3a3a;
     border-top: 2px solid #d4af37;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin-bottom: 12px;
   }
   @keyframes spin {
@@ -843,13 +841,13 @@
 
   /* Modal styles */
   .modal-overlay {
-    position fixed;
-    inset: 0,
+    position: fixed;
+    inset: 0;
     background: rgba(0, 0, 0, 0.6);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 50,
+    z-index: 50;
   }
   .yorha-modal {
     width: 720px;
@@ -882,7 +880,7 @@
 
   .modal-form {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     padding: 8px 0 0 0;
   }
   .form-grid {
@@ -892,7 +890,7 @@
   }
   .form-field {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 6px;
   }
   .form-field-full {

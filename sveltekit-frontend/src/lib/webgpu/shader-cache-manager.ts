@@ -1,12 +1,9 @@
-// @ts-nocheck - Advanced experimental service
-/**
- * WebGPU Shader Cache Manager
+/** * WebGPU Shader Cache Manager
  * Compiles, caches, and serves WGSL shaders with logging
  * Integrates with centralized Redis cache and Loki.js logging
  */
 import { cache, cacheShader, getCachedShader } from '$lib/server/cache/redis.js';
 import { browser } from '$app/environment';
-}
 export interface ShaderConfig {
   type: 'compute' | 'vertex' | 'fragment';
   entryPoint: string;
@@ -30,7 +27,7 @@ export interface CompiledShader {
     description: string;
     tags: string[];
     operation: string;
-  }
+  };
   embedding?: number[]; // Semantic embedding for search
 }
 export interface ShaderSearchQuery {
@@ -48,7 +45,7 @@ export interface ShaderSearchResult extends CompiledShader {
 export class ShaderCacheManager {
   private device: GPUDevice | null = null;
   private shaders = new Map<string, CompiledShader>();
-  private compileQueue = new Map<string, Promise<CompiledShader>();
+  private compileQueue = new Map<string, Promise<CompiledShader>>(); // Fixed: Added missing '>'
   private readonly SHADER_CACHE_PREFIX = 'webgpu_shader:';
   private readonly EMBEDDING_CACHE_PREFIX = 'shader_embed:';
   async initialize(device: GPUDevice): Promise<void> {
@@ -85,9 +82,9 @@ export class ShaderCacheManager {
   }
   private async compileShader(
     id: string,
-    wgsl: string;
+    wgsl: string,
     config: ShaderConfig,
-    startTime: number;
+    startTime: number
   ): Promise<CompiledShader> {
     if (!this.device) {
       throw new Error('WebGPU device not initialized');
@@ -105,7 +102,7 @@ export class ShaderCacheManager {
       // Compile shader module
       const shaderModule = this.device.createShaderModule({
         label: `shader_${id}`,
-        code: wgsl
+        code: wgsl,
       });
       // Create pipeline based on shader type
       let pipeline: GPUComputePipeline | GPURenderPipeline;
@@ -117,7 +114,7 @@ export class ShaderCacheManager {
           compute: {
             module: shaderModule,
             entryPoint: config.entryPoint,
-          }
+          },
         });
         bindGroupLayout = (pipeline as GPUComputePipeline).getBindGroupLayout(0);
       } else {
@@ -127,16 +124,19 @@ export class ShaderCacheManager {
           layout: 'auto',
           vertex: {
             module: shaderModule,
-            entryPoint: config.type === 'vertex' ? config.entryPoint: 'main',
+            entryPoint: config.type === 'vertex' ? config.entryPoint : 'main',
           },
-          fragment: config.type === 'fragment' ? {,
-            module: shaderModule,
-            entryPoint: config.entryPoint,
-            targets: [{ format: 'bgra8unorm' }]
-          } : undefined
+          fragment:
+            config.type === 'fragment'
+              ? {
+                  module: shaderModule,
+                  entryPoint: config.entryPoint,
+                  targets: [{ format: 'bgra8unorm' }],
+                }
+              : undefined,
           primitive: {
-            topology: 'triangle-list'
-          }
+            topology: 'triangle-list',
+          },
         });
         bindGroupLayout = (pipeline as GPURenderPipeline).getBindGroupLayout(0);
       }
@@ -152,9 +152,9 @@ export class ShaderCacheManager {
           compiledAt: Date.now(),
           lastUsed: Date.now(),
           compileTime,
-          cacheHit
-        }
-      }
+          cacheHit,
+        },
+      };
       // Store in memory cache
       this.shaders.set(id, compiled);
       // Cache on server-side
@@ -177,20 +177,20 @@ export class ShaderCacheManager {
    */
   async createTensorShader(
     operation: 'embedding' | 'similarity' | 'quantize' | 'simd_parse',
-    dimensions: number;
+    dimensions: number
   ): Promise<CompiledShader> {
     const id = `tensor_${operation}_${dimensions}`;
     const wgsl = this.generateTensorWGSL(operation, dimensions);
     return this.getShader(id, wgsl, {
       type: 'compute',
       entryPoint: 'main',
-      workgroupSize: [64, 1, 1]
+      workgroupSize: [64, 1, 1],
     });
   }
   /**
    * Generate optimized tensor operation WGSL
    */
-  private generateTensorWGSL(operation: string, dimensions: number): string {
+  private generateTensorWGSL(operation: string, _dimensions: number): string {
     const workgroupSize = 64;
     switch (operation) {
       case 'embedding':
@@ -234,7 +234,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     norm_a += a_val * a_val;
     norm_b += b_val * b_val;
   }
-  let cosine_sim = dot_product / (sqrt(norm_a) * sqrt(norm_b);
+  let cosine_sim = dot_product / (sqrt(norm_a) * sqrt(norm_b));
   similarities[pair_idx] = cosine_sim;
 }`;
       case 'simd_parse':
@@ -267,18 +267,14 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   /**
    * Execute tensor operation on GPU
    */
-  async executeTensorOperation(
-    shader: CompiledShader;
-    inputs: GPUBuffer[],
-    outputSize: number;
-  ): Promise<GPUBuffer> {
+  async executeTensorOperation(shader: CompiledShader, inputs: GPUBuffer[], outputSize: number): Promise<GPUBuffer> {
     if (!this.device || !shader.pipeline || !shader.bindGroupLayout) {
       throw new Error('Shader not properly compiled');
     }
     // Create output buffer
     const outputBuffer = this.device.createBuffer({
-      size: outputSize;
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+      size: outputSize,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
     });
     // Create bind group
     const bindGroup = this.device.createBindGroup({
@@ -290,16 +286,16 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         })),
         {
           binding: inputs.length,
-          resource: { buffer: outputBuffer }
-        }
-      ]
+          resource: { buffer: outputBuffer },
+        },
+      ],
     });
     // Execute compute shader
     const commandEncoder = this.device.createCommandEncoder();
     const passEncoder = commandEncoder.beginComputePass();
     passEncoder.setPipeline(shader.pipeline as GPUComputePipeline);
     passEncoder.setBindGroup(0, bindGroup);
-    passEncoder.dispatchWorkgroups(Math.ceil(outputSize / (4 * 64)); // Workgroup size
+    passEncoder.dispatchWorkgroups(Math.ceil(outputSize / (4 * 64))); // Workgroup size
     passEncoder.end();
     this.device.queue.submit([commandEncoder.finish()]);
     return outputBuffer;
@@ -311,9 +307,9 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     const logData = {
       shader_id: id,
       cache_type: type,
-      compile_time_ms: duration;
-      timestamp: Date.now()
-    }
+      compile_time_ms: duration,
+      timestamp: Date.now(),
+    };
     // Send to Loki.js for observability
     if (typeof window !== 'undefined') {
       console.log('🔧 Shader:', logData);
@@ -328,8 +324,8 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       shader_id: id,
       error_message: error.message,
       error_stack: error.stack,
-      timestamp: Date.now()
-    }
+      timestamp: Date.now(),
+    };
     console.error('❌ Shader compilation failed:', errorData);
     // TODO: Send to actual Loki.js endpoint
   }
@@ -339,22 +335,19 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   private async generateShaderEmbedding(wgsl: string, metadata: CompiledShader['metadata']): Promise<number[]> {
     try {
       // Create comprehensive text for embedding
-      const embeddingText = [
-        wgsl,
-        metadata.description,
-        metadata.operation,
-        ...metadata.tags
-      ].filter(Boolean).join(' ');
+      const embeddingText = [wgsl, metadata.description, metadata.operation, ...metadata.tags]
+        .filter(Boolean)
+        .join(' ');
       // Use existing embedding service
       const response = await fetch('/api/ocr/langextract', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           text: embeddingText,
           model: 'nomic-embed-text',
           tags: ['shader', 'webgpu', ...metadata.tags],
-          type: 'shader'
-        })
+          type: 'shader',
+        }),
       });
       if (response.ok) {
         const data = await response.json();
@@ -372,21 +365,21 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
    */
   private generateFallbackEmbedding(wgsl: string): number[] {
     const features = new Array(384).fill(0);
-    // removed unused lines assignment
+    const lines = wgsl.split('\n'); // Define lines variable
     lines.forEach((line, index) => {
       const hash = this.simpleHash(line);
       const featureIndex = hash % features.length;
       features[featureIndex] += 1 / (index + 1);
     });
     // Normalize
-    const magnitude = Math.sqrt(features.reduce((sum, val) => sum + val * val, 0);
+    const magnitude = Math.sqrt(features.reduce((sum, val) => sum + val * val, 0));
     return magnitude > 0 ? features.map(val => val / magnitude) : features;
   }
   private simpleHash(str: string): number {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash;
     }
     return Math.abs(hash);
@@ -397,7 +390,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   async searchShaders(query: ShaderSearchQuery): Promise<ShaderSearchResult[]> {
     try {
       // Get all shader IDs from cache index
-      const shaderIndex = await cache.get<string[]>('webgpu_shader_index') || [];
+      const shaderIndex = (await cache.get<string[]>('webgpu_shader_index')) || [];
       const results: ShaderSearchResult[] = [];
       for (const shaderId of shaderIndex) {
         const shaderData = await cache.get<CompiledShader>(`${this.SHADER_CACHE_PREFIX}${shaderId}`);
@@ -407,7 +400,8 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         // Apply filters
         if (query.operation && shaderData.metadata.operation !== query.operation) continue;
         if (query.tags && query.tags.length > 0) {
-          const matchingTags = shaderData.metadata.tags.filter(item => item.includes(queryTag.toLowerCase())
+          const matchingTags = shaderData.metadata.tags.filter(shaderTag =>
+            query.tags!.some(queryTag => shaderTag.toLowerCase().includes(queryTag.toLowerCase()))
           );
           if (matchingTags.length === 0) continue;
           relevanceScore += matchingTags.length * 0.2;
@@ -419,8 +413,10 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
             shaderData.wgsl,
             shaderData.metadata.description,
             shaderData.metadata.operation,
-            ...shaderData.metadata.tags
-          ].join(' ').toLowerCase();
+            ...shaderData.metadata.tags,
+          ]
+            .join(' ')
+            .toLowerCase();
           if (shaderText.includes(searchText)) {
             relevanceScore += 0.5;
           }
@@ -436,7 +432,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
                 averageExecutionTime: 0,
                 description: query.text,
                 tags: query.tags || [],
-                operation: 'query'
+                operation: 'query',
               });
               embeddingSimilarity = this.calculateCosineSimilarity(shaderData.embedding, queryEmbedding);
               relevanceScore += embeddingSimilarity * 0.7;
@@ -456,15 +452,17 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         results.push({
           ...shaderData,
           relevanceScore,
-          embeddingSimilarity
+          embeddingSimilarity,
         });
       }
       // Sort results
       results.sort((a, b) => {
         switch (query.sortBy) {
           case 'performance':
-            return (a.metadata.averageExecutionTime || Number.MAX_VALUE) -
-                   (b.metadata.averageExecutionTime || Number.MAX_VALUE);
+            return (
+              (a.metadata.averageExecutionTime || Number.MAX_VALUE) -
+              (b.metadata.averageExecutionTime || Number.MAX_VALUE)
+            );
           case 'usage':
             return b.metadata.usageCount - a.metadata.usageCount;
           case 'recent':
@@ -502,8 +500,8 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
   async cacheShaderWithEmbedding(
     shader: CompiledShader,
     description: string,
-    operation: string;
-    tags: string[] = [];
+    operation: string,
+    tags: string[] = []
   ): Promise<void> {
     try {
       // Update metadata
@@ -517,7 +515,7 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
       // Cache the shader
       await cache.set(`${this.SHADER_CACHE_PREFIX}${shader.id}`, shader, 24 * 60 * 60 * 1000);
       // Update search index
-      const index = await cache.get<string[]>('webgpu_shader_index') || [];
+      const index = (await cache.get<string[]>('webgpu_shader_index')) || [];
       if (!index.includes(shader.id)) {
         index.push(shader.id);
         await cache.set('webgpu_shader_index', index, 24 * 60 * 60 * 1000);
@@ -555,8 +553,8 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     averagePerformance: number;
     totalUsage: number;
   }> {
-    const shaderIndex = await cache.get<string[]>('webgpu_shader_index') || [];
-    const operations: Record<string, number> = {}
+    const shaderIndex = (await cache.get<string[]>('webgpu_shader_index')) || [];
+    const operations: Record<string, number> = {};
     let totalPerformance = 0;
     let totalUsage = 0;
     let performanceCount = 0;
@@ -574,14 +572,14 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     const topOperations = Object.entries(operations)
       .sort(([, a], [, b]) => b - a)
       .slice(0, 10)
-      .map(([operation, count]) => ({ operation, count });
+      .map(([operation, count]) => ({ operation, count }));
     return {
       totalShaders: shaderIndex.length,
       memoryCount: this.shaders.size,
       topOperations,
       averagePerformance: performanceCount > 0 ? totalPerformance / performanceCount : 0,
-      totalUsage
-    }
+      totalUsage,
+    };
   }
   /**
    * Clean up resources

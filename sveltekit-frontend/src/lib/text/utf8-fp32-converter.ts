@@ -1,15 +1,13 @@
 /**
  * UTF-8 to FP32 Text Converter for SvelteKit
- * Converts UTF-8 encoded text to 32-bit floating point arrays
  * Optimized for GPU processing and neural network inputs
  */
-}
 export interface TextConversionOptions {
   normalizationMethod: 'unicode' | 'range' | 'gaussian' | 'sigmoid';
   outputRange: [number, number]; // Min/max values for FP32 output
   paddingValue: number; // Value to use for padding
   maxLength?: number; // Maximum sequence length
-  preserveSpecialChars: boolean; // Keep special characters vs normalize them,
+  preserveSpecialChars: boolean; // Keep special characters vs normalize them
   encoding: 'utf8' | 'utf16' | 'ascii' | 'latin1';
 }
 export interface ConversionResult {
@@ -24,73 +22,97 @@ export interface ConversionResult {
     meanValue: number;
     uniqueChars: number;
     byteLength: number;
-  }
+  };
 }
 export interface SpecialCharacterMap {
   [char: string]: number;
 }
 export class UTF8ToFP32Converter {
-  private specialCharMap: SpecialCharacterMap = {}
+  private specialCharMap: SpecialCharacterMap = {};
   private textEncoder = new TextEncoder();
   private textDecoder = new TextDecoder();
   // Legal text special characters with FP32 mappings
   private readonly LEGAL_SPECIAL_CHARS: SpecialCharacterMap = {
-    '§': 0.95,  // Section symbol
-    '¶': 0.93,  // Paragraph symbol
-    '©': 0.91,  // Copyright
-    '®': 0.89,  // Registered trademark
-    '™': 0.87,  // Trademark
-    '°': 0.85,  // Degree symbol
-    '±': 0.83,  // Plus-minus
-    '×': 0.81,  // Multiplication
-    '÷': 0.79,  // Division
-    '≤': 0.77,  // Less than or equal
-    '≥': 0.75,  // Greater than or equal
-    '≠': 0.73,  // Not equal
-    '≈': 0.71,  // Approximately equal
-    '∞': 0.69,  // Infinity
-    '→': 0.67,  // Right arrow
-    '←': 0.65,  // Left arrow
-    '↑': 0.63,  // Up arrow
-    '↓': 0.61,  // Down arrow
-    '"': 0.59,  // Left double quote
-    '"': 0.57,  // Right double quote
-    "'": 0.55,  // Left single quote
-    "'": 0.53,  // Right single quote
-    '–': 0.51,  // En dash
-    '—': 0.49,  // Em dash
-    '…': 0.47,  // Ellipsis
-    '•': 0.45,  // Bullet point
-    '◦': 0.43,  // White bullet
-    '▪': 0.41,  // Black small square
-    '▫': 0.39,  // White small square
-    '†': 0.37,  // Dagger
-    '‡': 0.35,  // Double dagger
-    '‰': 0.33,  // Per mille
-    '′': 0.31,  // Prime
-    '″': 0.29,  // Double prime
-    '‹': 0.27,  // Single left angle quote
-    '›': 0.25,  // Single right angle quote
-    '«': 0.23,  // Double left angle quote
-    '»': 0.21   // Double right angle quote
-  }
+    '§': 0.95, // Section symbol
+    '¶': 0.93, // Paragraph symbol
+    '©': 0.91, // Copyright
+    '®': 0.89, // Registered trademark
+    '™': 0.87, // Trademark
+    '°': 0.85, // Degree symbol
+    '±': 0.83, // Plus-minus
+    '×': 0.81, // Multiplication
+    '÷': 0.79, // Division
+    '≤': 0.77, // Less than or equal
+    '≥': 0.75, // Greater than or equal
+    '≠': 0.73, // Not equal
+    '≈': 0.71, // Approximately equal
+    '∞': 0.69, // Infinity
+    '→': 0.67, // Right arrow
+    '←': 0.65, // Left arrow
+    '↑': 0.63, // Up arrow
+    '↓': 0.61, // Down arrow
+    '“': 0.59, // Left double quote (smart)
+    '”': 0.57, // Right double quote (smart)
+    '‘': 0.55, // Left single quote (smart)
+    '’': 0.53, // Right single quote (smart)
+    '–': 0.51, // En dash
+    '—': 0.49, // Em dash
+    '…': 0.47, // Ellipsis
+    '•': 0.45, // Bullet point
+    '◦': 0.43, // White bullet
+    '▪': 0.41, // Black small square
+    '▫': 0.39, // White small square
+    '†': 0.37, // Dagger
+    '‡': 0.35, // Double dagger
+    '‰': 0.33, // Per mille
+    '′': 0.31, // Prime
+    '″': 0.29, // Double prime
+    '‹': 0.27, // Single left angle quote
+    '›': 0.25, // Single right angle quote
+    '«': 0.23, // Double left angle quote
+    '»': 0.21, // Double right angle quote
+  };
   constructor() {
     this.initializeSpecialCharacterMap();
   }
   private initializeSpecialCharacterMap(): void {
     // Initialize with legal special characters
-    this.specialCharMap = { ...this.LEGAL_SPECIAL_CHARS }
+    this.specialCharMap = { ...this.LEGAL_SPECIAL_CHARS };
     // Add common programming/markup characters
     const programmingChars: SpecialCharacterMap = {
-      '{': 0.19, '}': 0.17, '[': 0.15, ']': 0.13,
-      '<': 0.11, '>': 0.09, '|': 0.07, '\\': 0.05,
-      '/': 0.03, '~': 0.01, '`': -0.01, '^': -0.03,
-      '%': -0.05, '#': -0.07, '@': -0.09, '&': -0.11,
-      '*': -0.13, '+': -0.15, '=': -0.17, '_': -0.19,
-      '-': -0.21, ':': -0.23, ';': -0.25, '!': -0.27,
-      '?': -0.29, '.': -0.31, ',': -0.33, "'": -0.35,
-      '"': -0.37, '(': -0.39, ')': -0.41, '$': -0.43
-    }
+      '{': 0.19,
+      '}': 0.17,
+      '[': 0.15,
+      ']': 0.13,
+      '<': 0.11,
+      '>': 0.09,
+      '|': 0.07,
+      '\\': 0.05,
+      '/': 0.03,
+      '~': 0.01,
+      '`': -0.01,
+      '^': -0.03,
+      '%': -0.05,
+      '#': -0.07,
+      '@': -0.09,
+      '&': -0.11,
+      '*': -0.13,
+      '+': -0.15,
+      '=': -0.17,
+      '_': -0.19,
+      '-': -0.21,
+      ':': -0.23,
+      ';': -0.25,
+      '!': -0.27,
+      '?': -0.29,
+      '.': -0.31,
+      ',': -0.33,
+      "'": -0.35,
+      '"': -0.37,
+      '(': -0.39,
+      ')': -0.41,
+      '$': -0.43,
+    };
     Object.assign(this.specialCharMap, programmingChars);
     console.log(`📝 Initialized special character map with ${Object.keys(this.specialCharMap).length} characters`);
   }
@@ -104,10 +126,10 @@ export class UTF8ToFP32Converter {
       outputRange: [-1.0, 1.0],
       paddingValue: 0.0,
       maxLength: undefined,
-      preserveSpecialChars: true;
+      preserveSpecialChars: true,
       encoding: 'utf8',
-      ...options
-    }
+      ...options,
+    };
     try {
       // Step 1: Encode text to bytes based on encoding type
       const bytes = this.encodeText(text, config.encoding);
@@ -130,8 +152,8 @@ export class UTF8ToFP32Converter {
         paddedLength: finalArray.length,
         specialCharsCount: this.countSpecialCharacters(text),
         conversionTime,
-        metadata
-      }
+        metadata,
+      };
       console.log(`🔢 Converted "${text.substring(0, 30)}..." to FP32 in ${conversionTime.toFixed(2)}ms`);
       console.log(`📊 Original: ${text.length} chars → FP32: ${finalArray.length} values`);
       console.log(`📈 Range: [${metadata.minValue.toFixed(4)}, ${metadata.maxValue.toFixed(4)}]`);
@@ -145,14 +167,15 @@ export class UTF8ToFP32Converter {
     switch (encoding) {
       case 'utf8':
         return this.textEncoder.encode(text);
-      case 'utf16':
+      case 'utf16': {
         // UTF-16 encoding (simplified)
         const utf16Array = new Uint16Array(text.length);
         for (let i = 0; i < text.length; i++) {
           utf16Array[i] = text.charCodeAt(i);
         }
         return new Uint8Array(utf16Array.buffer);
-      case 'ascii':
+      }
+      case 'ascii': {
         // ASCII encoding (7-bit)
         const asciiArray = new Uint8Array(text.length);
         for (let i = 0; i < text.length; i++) {
@@ -160,7 +183,8 @@ export class UTF8ToFP32Converter {
           asciiArray[i] = code > 127 ? 63 : code; // Replace non-ASCII with '?'
         }
         return asciiArray;
-      case 'latin1':
+      }
+      case 'latin1': {
         // Latin-1 encoding (8-bit)
         const latin1Array = new Uint8Array(text.length);
         for (let i = 0; i < text.length; i++) {
@@ -168,11 +192,12 @@ export class UTF8ToFP32Converter {
           latin1Array[i] = code > 255 ? 63 : code; // Replace non-Latin1 with '?'
         }
         return latin1Array;
+      }
       default:
         return this.textEncoder.encode(text);
     }
   }
-  private bytesToFP32(bytes: Uint8Array, config: TextConversionOptions): Float32Array {
+  private bytesToFP32(bytes: Uint8Array, _config: TextConversionOptions): Float32Array {
     const fp32Array = new Float32Array(bytes.length);
     // Convert each byte to initial FP32 value
     for (let i = 0; i < bytes.length; i++) {
@@ -183,27 +208,26 @@ export class UTF8ToFP32Converter {
   private mapSpecialCharacters(
     originalText: string,
     fp32Values: Float32Array,
-    config: TextConversionOptions;
+    config: TextConversionOptions
   ): Float32Array {
     const result = new Float32Array(fp32Values);
-    const bytes = this.encodeText(originalText, config.encoding);
     let byteIndex = 0;
     for (let charIndex = 0; charIndex < originalText.length; charIndex++) {
       const char = originalText[charIndex];
-      if (this.specialCharMap.hasOwnProperty(char)) {
-        // Map special character to predefined FP32 value
+      const charBytes = this.encodeText(char, config.encoding);
+      // Use safe hasOwnProperty access to avoid prototype pollution lint error
+      if (Object.prototype.hasOwnProperty.call(this.specialCharMap, char)) {
         const specialValue = this.specialCharMap[char];
-        // Find corresponding byte indices for this character
-        const charBytes = this.encodeText(char, config.encoding);
-        for (let i = 0; i < charBytes.length && byteIndex < (result as { length?: any; reduce?: any; fp32Array?: any }).length; i++) {
+        for (let i = 0; i < charBytes.length && byteIndex < result.length; i++) {
           result[byteIndex] = specialValue;
           byteIndex++;
         }
       } else {
-        // Skip to next character's bytes
-        const charBytes = this.encodeText(char, config.encoding);
+        // Advance by the number of bytes for this char
         byteIndex += charBytes.length;
       }
+      // Guard against overruns
+      if (byteIndex >= result.length) break;
     }
     return result;
   }
@@ -211,49 +235,59 @@ export class UTF8ToFP32Converter {
     const result = new Float32Array(fp32Values);
     const [minRange, maxRange] = config.outputRange;
     switch (config.normalizationMethod) {
-      case 'range':
+      case 'range': {
         // Min-max normalization to specified range
-        const currentMin = Math.min(...result);
-        const currentMax = Math.max(...result);
+        let currentMin = Infinity;
+        let currentMax = -Infinity;
+        for (let i = 0; i < result.length; i++) {
+          if (result[i] < currentMin) currentMin = result[i];
+          if (result[i] > currentMax) currentMax = result[i];
+        }
         const currentRange = currentMax - currentMin;
         if (currentRange > 0) {
           const targetRange = maxRange - minRange;
-          for (let i = 0; i < (result as { length?: any; reduce?: any; fp32Array?: any }).length; i++) {
+          for (let i = 0; i < result.length; i++) {
             result[i] = minRange + ((result[i] - currentMin) / currentRange) * targetRange;
           }
         }
         break;
-      case 'unicode':
+      }
+      case 'unicode': {
         // Normalize based on Unicode code point ranges
-        for (let i = 0; i < (result as { length?: any; reduce?: any; fp32Array?: any }).length; i++) {
+        for (let i = 0; i < result.length; i++) {
           // Normalize to [-1, 1] based on full Unicode range (0-1114111)
-          result[i] = (result[i] / 557055.5) - 1.0;
-          // Then scale to target range
-          result[i] = minRange + ((result[i] + 1) / 2) * (maxRange - minRange);
+          const v = result[i] / 557055.5 - 1.0;
+          result[i] = minRange + ((v + 1) / 2) * (maxRange - minRange);
         }
         break;
-      case 'gaussian':
+      }
+      case 'gaussian': {
         // Gaussian normalization (z-score)
-        const mean = (result as { length?: any; reduce?: any; fp32Array?: any }).reduce((sum, val) => sum + val, 0) / (result as { length?: any; reduce?: any; fp32Array?: any }).length;
-        const variance = (result as { length?: any; reduce?: any; fp32Array?: any }).reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / (result as { length?: any; reduce?: any; fp32Array?: any }).length;
+        let sum = 0;
+        for (let i = 0; i < result.length; i++) sum += result[i];
+        const mean = sum / result.length;
+        let varianceSum = 0;
+        for (let i = 0; i < result.length; i++) varianceSum += Math.pow(result[i] - mean, 2);
+        const variance = varianceSum / result.length;
         const stdDev = Math.sqrt(variance);
         if (stdDev > 0) {
-          for (let i = 0; i < (result as { length?: any; reduce?: any; fp32Array?: any }).length; i++) {
-            result[i] = (result[i] - mean) / stdDev;
-            // Scale to target range (assuming ~99.7% of values within 3 std devs)
-            result[i] = Math.max(-3, Math.min(3, result[i]); // Clip to [-3, 3]
-            result[i] = minRange + ((result[i] + 3) / 6) * (maxRange - minRange);
+          for (let i = 0; i < result.length; i++) {
+            let z = (result[i] - mean) / stdDev;
+            // Clip to [-3, 3]
+            z = Math.max(-3, Math.min(3, z));
+            result[i] = minRange + ((z + 3) / 6) * (maxRange - minRange);
           }
         }
         break;
-      case 'sigmoid':
+      }
+      case 'sigmoid': {
         // Sigmoid normalization for smooth mapping
-        for (let i = 0; i < (result as { length?: any; reduce?: any; fp32Array?: any }).length; i++) {
-          // Apply sigmoid function: 1 / (1 + e^(-x/32)
-          const normalized = 1 / (1 + Math.exp(-result[i] / 32);
+        for (let i = 0; i < result.length; i++) {
+          const normalized = 1 / (1 + Math.exp(-result[i] / 32));
           result[i] = minRange + normalized * (maxRange - minRange);
         }
         break;
+      }
     }
     return result;
   }
@@ -283,13 +317,14 @@ export class UTF8ToFP32Converter {
       maxValue: Math.max(...values),
       meanValue: values.reduce((sum, val) => sum + val, 0) / values.length,
       uniqueChars,
-      byteLength: bytes.length
-    }
+      byteLength: bytes.length,
+    };
   }
   private countSpecialCharacters(text: string): number {
     let count = 0;
     for (const char of text) {
-      if (this.specialCharMap.hasOwnProperty(char)) {
+      // Use safe hasOwnProperty access
+      if (Object.prototype.hasOwnProperty.call(this.specialCharMap, char)) {
         count++;
       }
     }
@@ -321,17 +356,18 @@ export class UTF8ToFP32Converter {
       normalizationMethod: 'range',
       outputRange: [-1.0, 1.0],
       paddingValue: 0.0,
-      preserveSpecialChars: true;
+      maxLength: undefined,
+      preserveSpecialChars: true,
       encoding: 'utf8',
-      ...options
-    }
+      ...options,
+    };
     try {
       // Reverse normalization to get byte values
       const denormalized = this.reverseNormalization(fp32Array, config);
       // Convert back to bytes
       const bytes = new Uint8Array(denormalized.length);
       for (let i = 0; i < denormalized.length; i++) {
-        bytes[i] = Math.round(Math.max(0, Math.min(255, denormalized[i]));
+        bytes[i] = Math.round(Math.max(0, Math.min(255, denormalized[i])));
       }
       // Decode bytes back to text
       const reconstructed = this.textDecoder.decode(bytes);
@@ -346,35 +382,41 @@ export class UTF8ToFP32Converter {
     const result = new Float32Array(fp32Array);
     const [minRange, maxRange] = config.outputRange;
     switch (config.normalizationMethod) {
-      case 'range':
+      case 'range': {
         // Reverse min-max normalization (assuming original range was 0-255)
         const targetRange = maxRange - minRange;
-        for (let i = 0; i < (result as { length?: any; reduce?: any; fp32Array?: any }).length; i++) {
+        for (let i = 0; i < result.length; i++) {
           result[i] = ((result[i] - minRange) / targetRange) * 255;
         }
         break;
-      case 'unicode':
+      }
+      case 'unicode': {
         // Reverse Unicode normalization
-        for (let i = 0; i < (result as { length?: any; reduce?: any; fp32Array?: any }).length; i++) {
+        for (let i = 0; i < result.length; i++) {
           const normalized = ((result[i] - minRange) / (maxRange - minRange)) * 2 - 1;
           result[i] = (normalized + 1) * 557055.5;
         }
         break;
-      case 'gaussian':
+      }
+      case 'gaussian': {
         // Reverse Gaussian normalization (approximate)
-        for (let i = 0; i < (result as { length?: any; reduce?: any; fp32Array?: any }).length; i++) {
+        for (let i = 0; i < result.length; i++) {
           const normalized = ((result[i] - minRange) / (maxRange - minRange)) * 6 - 3;
           result[i] = normalized * 32 + 128; // Approximate reverse
         }
         break;
-      case 'sigmoid':
+      }
+      case 'sigmoid': {
         // Reverse sigmoid normalization
-        for (let i = 0; i < (result as { length?: any; reduce?: any; fp32Array?: any }).length; i++) {
+        for (let i = 0; i < result.length; i++) {
           const sigmoid = (result[i] - minRange) / (maxRange - minRange);
-          const logit = Math.log(sigmoid / (1 - sigmoid);
+          // clamp sigmoid to avoid division by zero / log of zero
+          const s = Math.max(1e-6, Math.min(1 - 1e-6, sigmoid));
+          const logit = Math.log(s / (1 - s));
           result[i] = logit * 32;
         }
         break;
+      }
     }
     return result;
   }
@@ -389,24 +431,28 @@ export class UTF8ToFP32Converter {
    * Get current special character mappings
    */
   getSpecialCharacterMap(): SpecialCharacterMap {
-    return { ...this.specialCharMap }
+    return { ...this.specialCharMap };
   }
   /**
    * Clear all special character mappings
    */
   clearSpecialCharacters(): void {
-    this.specialCharMap = {}
+    this.specialCharMap = {};
     console.log('🧹 Cleared all special character mappings');
   }
   /**
    * Export conversion settings for reproducibility
    */
-  exportSettings(_options: TextConversionOptions): string {
-    return JSON.stringify({
-      options,
-      specialCharMap: this.specialCharMap,
-      timestamp: Date.now()
-    }, null, 2);
+  exportSettings(options: TextConversionOptions): string {
+    return JSON.stringify(
+      {
+        options,
+        specialCharMap: this.specialCharMap,
+        timestamp: Date.now(),
+      },
+      null,
+      2
+    );
   }
   /**
    * Import conversion settings
@@ -445,7 +491,8 @@ export function normalizeTextForGPU(text: string, maxLength: number = 512): Floa
     outputRange: [-1.0, 1.0],
     maxLength,
     paddingValue: 0.0,
-    preserveSpecialChars: true
+    preserveSpecialChars: true,
+    encoding: 'utf8',
   });
-  return (result as { length?: any; reduce?: any; fp32Array?: any }).fp32Array;
+  return result.fp32Array;
 }

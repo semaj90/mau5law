@@ -72,7 +72,7 @@ export function toFloat32Array(data: BufferLike): Float32Array {
   if (Array.isArray(data)) {
     return new Float32Array(data);
   }
-  throw new Error(`Unsupported buffer type: ${(data as any)?.constructor?.name || typeof data}`);
+  throw new Error(`Unsupported buffer type: ${getConstructorName(data)}`);
 }
 /**
  * Convert any BufferLike to ArrayBuffer safely
@@ -81,17 +81,19 @@ export function toArrayBuffer(data: BufferLike): ArrayBuffer {
   if (data instanceof ArrayBuffer) {
     return data;
   }
-  if (data instanceof Float32Array ||
-      data instanceof Uint8Array ||
-      data instanceof Int32Array ||
-      data instanceof Uint32Array) {
+  if (
+    data instanceof Float32Array ||
+    data instanceof Uint8Array ||
+    data instanceof Int32Array ||
+    data instanceof Uint32Array
+  ) {
     return float32ArrayToArrayBuffer(data as Float32Array);
   }
   if (Array.isArray(data)) {
     const float32Array = new Float32Array(data);
     return float32ArrayToArrayBuffer(float32Array);
   }
-  throw new Error(`Unsupported buffer type: ${(data as any)?.constructor?.name || typeof data}`);
+  throw new Error(`Unsupported buffer type: ${getConstructorName(data)}`);
 }
 /**
  * Create a properly aligned buffer for WebGPU operations
@@ -104,11 +106,7 @@ export function createAlignedBuffer(sizeInBytes: number): ArrayBuffer {
 /**
  * Copy data between buffers with proper alignment
  */
-export function copyBufferAligned(
-  source: BufferLike;
-  target: ArrayBuffer,
-  targetOffset = 0
-): void {
+export function copyBufferAligned(source: BufferLike, target: ArrayBuffer, targetOffset = 0): void {
   const sourceUint8 = new Uint8Array(toArrayBuffer(source));
   const targetUint8 = new Uint8Array(target, targetOffset);
   if (targetUint8.length < sourceUint8.length) {
@@ -141,7 +139,7 @@ export class WebGPUBufferUtils {
     const buffer = toArrayBuffer(data);
     const byteLength = buffer.byteLength;
     const elementCount = data instanceof Float32Array ? data.length : byteLength / 4;
-    return { buffer, byteLength, elementCount }
+    return { buffer, byteLength, elementCount };
   }
   /**
    * Calculate proper buffer size with padding for WebGPU
@@ -156,18 +154,20 @@ export class WebGPUBufferUtils {
  * Type guards for buffer types
  */
 export const BufferTypeGuards = {
-  isArrayBuffer: (data: any): data is ArrayBuffer => data instanceof ArrayBuffer,
-  isFloat32Array: (data: any): data is Float32Array => data instanceof Float32Array,
-  isTypedArray: (data: any): data is Float32Array | Uint8Array | Int32Array | Uint32Array => {
-    return data instanceof Float32Array ||
-           data instanceof Uint8Array ||
-           data instanceof Int32Array ||
-           data instanceof Uint32Array;
+  isArrayBuffer: (data: unknown): data is ArrayBuffer => data instanceof ArrayBuffer,
+  isFloat32Array: (data: unknown): data is Float32Array => data instanceof Float32Array,
+  isTypedArray: (data: unknown): data is Float32Array | Uint8Array | Int32Array | Uint32Array => {
+    return (
+      data instanceof Float32Array ||
+      data instanceof Uint8Array ||
+      data instanceof Int32Array ||
+      data instanceof Uint32Array
+    );
   },
-  isBufferLike: (data: any): data is BufferLike => {
-    return data instanceof ArrayBuffer || BufferTypeGuards.isTypedArray(data);
-  }
-}
+  isBufferLike: (data: unknown): data is BufferLike => {
+    return data instanceof ArrayBuffer || BufferTypeGuards.isTypedArray(data) || Array.isArray(data);
+  },
+};
 /**
  * Debug utilities for buffer inspection
  */
@@ -202,8 +202,8 @@ export const BufferDebugUtils = {
       byteLength,
       elementCount,
       alignment,
-      isAligned: alignment === 0
-    }
+      isAligned: alignment === 0,
+    };
   },
   /**
    * Log buffer info for debugging
@@ -212,12 +212,15 @@ export const BufferDebugUtils = {
     const info = this.inspectBuffer(data);
     console.log(`${label}:`, {
       ...info,
-      preview: data instanceof Float32Array
-        ? `[${Array.from(data.slice(0, 5)).map(n => n.toFixed(3)).join(', ')}...]`
-        : `${info.byteLength} bytes`
+      preview:
+        data instanceof Float32Array
+          ? `[${Array.from(data.slice(0, 5))
+              .map(n => n.toFixed(3))
+              .join(', ')}...]`
+          : `${info.byteLength} bytes`,
     });
-  }
-}
+  },
+};
 /**
  * Extended WebGPU Buffer Utilities with Quantization Support
  */
@@ -227,18 +230,31 @@ export class WebGPUBufferUtils_Advanced {
    */
   static createFloat32ArrayFromMappedRangeWithQuantization(
     mappedRange: ArrayBuffer,
-    originalQuantization?: 'fp32' | 'fp16' | 'int8'
+    _originalQuantization?: 'fp32' | 'fp16' | 'int8'
   ): Float32Array {
-    // For now, treat all as Float32Array - quantization handling is in typed-array-quantization.ts
+    // Create a copy to avoid issues with unmapped buffers
     const copy = new ArrayBuffer(mappedRange.byteLength);
     new Uint8Array(copy).set(new Uint8Array(mappedRange));
+
+    // If the data was quantized as int8, dequantize into float32 (-1..1)
+    if (_originalQuantization === 'int8') {
+      const int8 = new Int8Array(copy);
+      const out = new Float32Array(int8.length);
+      for (let i = 0; i < int8.length; i++) {
+        // Map int8 [-128,127] to float32 [-1,1], clamped for safety
+        out[i] = Math.max(-1, Math.min(1, int8[i] / 127));
+      }
+      return out;
+    }
+
+    // Note: fp16 handling can be added later if needed.
     return arrayBufferToFloat32Array(copy);
   }
   /**
    * Enhanced buffer preparation that considers quantization needs
    */
   static prepareForUploadAdvanced(
-    data: BufferLike;
+    data: BufferLike,
     options: {
       alignment?: number;
       quantizationHint?: 'precision' | 'performance' | 'storage';
@@ -259,8 +275,25 @@ export class WebGPUBufferUtils_Advanced {
     } else if (options.quantizationHint === 'performance' || byteLength > 1024 * 1024) {
       recommendedQuantization = 'fp16';
     }
-    return { buffer, byteLength, elementCount, recommendedQuantization }
+    return { buffer, byteLength, elementCount, recommendedQuantization };
   }
+}
+/**
+ * Helper: safely get a readable constructor/type name for unknown values
+ */
+function getConstructorName(data: unknown): string {
+  // explicit null/undefined handling
+  if (data === null) return 'null';
+  if (data === undefined) return 'undefined';
+
+  // Objects and arrays usually have a constructor with a name
+  if (typeof data === 'object') {
+    const ctor = (data as { constructor?: { name?: string } })?.constructor;
+    if (ctor && typeof ctor === 'function' && ctor.name) return ctor.name;
+  }
+
+  // Fallback to typeof for primitives
+  return typeof data;
 }
 export default {
   arrayBufferToFloat32Array,

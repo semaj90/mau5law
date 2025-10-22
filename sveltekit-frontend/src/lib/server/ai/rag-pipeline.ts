@@ -35,12 +35,13 @@ import { StringOutputParser } from '@langchain/core/output_parsers';
 import type { Document as LangChainDocument } from '@langchain/core/documents';
 const postgres = require('postgres');
 import { drizzle } from 'drizzle-orm/postgres-js';
+import { OLLAMA_CONFIG, getOllamaEndpoint } from '$lib/services/providers/ollama/config';
 // Import schema directly (same path used across project). If it fails at runtime we degrade gracefully.
 // Configuration
 const EMBEDDING_MODEL = 'nomic-embed-text:latest';
 const EMBEDDING_DIMENSIONS = 768;
 const LLM_MODEL = 'gemma3-legal:latest';
-const OLLAMA_BASE_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
+const OLLAMA_BASE_URL = OLLAMA_CONFIG.baseUrl;
 // Initialize PostgreSQL connection
 const sql = postgres({
   host: process.env.DATABASE_HOST || 'localhost',
@@ -81,7 +82,8 @@ class OllamaEmbeddingsClient {
   model: string;
   requestOptions: Record<string, any>;
   constructor(opts: OllamaEmbeddingsOptions) {
-    this.baseUrl = opts.baseUrl || OLLAMA_BASE_URL;
+    const resolvedBase = (opts.baseUrl ?? OLLAMA_BASE_URL).trim();
+    this.baseUrl = (resolvedBase.length ? resolvedBase : OLLAMA_BASE_URL).replace(/\/$/, '');
     this.model = opts.model;
     this.requestOptions = opts.requestOptions || {};
   }
@@ -102,7 +104,7 @@ class OllamaEmbeddingsClient {
       delete payload.options.numThread;
     }
 
-    const res = await fetch(`${this.baseUrl}/embeddings`, {
+    const res = await fetch(getOllamaEndpoint('embeddings', this.baseUrl), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),

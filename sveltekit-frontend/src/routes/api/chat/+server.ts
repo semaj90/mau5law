@@ -9,16 +9,17 @@ import { chatSessions, chatMessages } from '$lib/server/db/schema-unified';
 import type { InferInsertModel } from 'drizzle-orm';
 import { eq, desc } from 'drizzle-orm';
 import { buildUserContextPrompt } from '$lib/server/prompt/contextual-engine';
+import { getOllamaEndpoint } from '$lib/services/providers/ollama/config';
 // Type aliases for insert operations
 type NewChatSession = InferInsertModel<typeof chatSessions>;
 type NewChatMessage = InferInsertModel<typeof chatMessages>;
 // Local ID helper to avoid missing import issues
 const generateId = () => randomUUID();
-const OLLAMA_URL = 'http://localhost:11434';
 const CUDA_SERVER_URL = 'http://localhost:8096';
 const TRITON_SERVER_URL = 'http://localhost:8000';
 const ENHANCED_GRPO_ENDPOINT = '/api/v1/submit';
 const TRITON_ENDPOINT = '/generate';
+const OLLAMA_GENERATE_ENDPOINT = getOllamaEndpoint('generate');
 interface ChatRequest {
   messages: Array<any>;
   sessionId?: string;
@@ -248,7 +249,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           // Stream from Ollama first (primary)
           let response: Response;
           try {
-            response = await fetch(`${OLLAMA_URL}/api/generate`, {
+            response = await fetch(OLLAMA_GENERATE_ENDPOINT, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -416,7 +417,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 async function fetchOllamaResponse(query: string): Promise<CudaStreamResponse> {
   try {
     console.log('🚀 Using Ollama with gemma3-legal:latest');
-    const response = await fetch(`${OLLAMA_URL}/api/generate`, {
+    const response = await fetch(OLLAMA_GENERATE_ENDPOINT, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

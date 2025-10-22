@@ -173,7 +173,6 @@ export interface PerformanceMetrics {
   uptime?: number;
 }
 export type LLMStatus = 'online' | 'offline' | 'busy' | 'loading';
-}
 export interface SearchResult {
   id: string;
   title: string;
@@ -186,7 +185,7 @@ export interface SearchFilters {
   dateRange?: {
     start: Date;
     end: Date;
-  }
+  };
   jurisdiction?: string;
   documentType?: string[];
   relevanceThreshold?: number;
@@ -217,17 +216,26 @@ export type AnalysisType =
   | 'entity_extraction'
   | 'sentiment'
   | 'risk_assessment';
-}
 export interface SelectOption {
   value: string;
   label: string;
   disabled?: boolean;
   description?: string;
 }
+// Add a strongly-typed CaseTypeOption to avoid `any`
+export interface CaseTypeOption {
+  id: string;
+  label: string;
+  description?: string;
+  // optional taxonomy/category for filtering/grouping
+  category?: 'civil' | 'criminal' | 'administrative' | 'family' | 'corporate' | string;
+  metadata?: Record<string, unknown>;
+}
+
 // Bits UI Demo Props
 export interface BitsDemoProps extends BaseComponentProps {
-  caseTypes?: Array<any>;
-  useLibrary?: 'bits-ui' | 'melt-ui';
+  caseTypes?: CaseTypeOption[];
+  useLibrary?: 'bits-ui';
 }
 // Document Upload Form Props
 export interface DocumentUploadFormProps extends BaseComponentProps {

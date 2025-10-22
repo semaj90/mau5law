@@ -808,16 +808,3 @@
   }
 }
 </style>
-  }
-  .yorha-metrics-grid {
-    /* approximate of Tailwind 'grid-cols-1 gap-4' */
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  .yorha-charts-grid {
-    /* approximate of Tailwind 'grid-cols-1 gap-4' */
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-}
-</style>

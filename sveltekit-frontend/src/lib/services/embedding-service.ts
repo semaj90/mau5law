@@ -1,3 +1,134 @@
+/**
+ * Embedding Service wrapper
+ * - Provides a small, environment-configurable API for generating embeddings.
+ * - Modes: "server" (calls backend endpoints), "wasm" (uses local worker), "gpu" (attempts GPU bridge)
+ * - ENV used:
+ *    EMBEDDING_MODE: 'server' | 'wasm' | 'gpu' (default: 'server')
+ *    EMBEDDING_SERVICE_URL: base URL for server mode (default: '/api/embeddings/generate')
+ */
+import { browser } from '$app/environment';
+import { createWorkerPool, getWorkerPool } from '$lib/workers/legal-ai-worker-pool';
+
+export type EmbeddingOptions = {
+  normalize?: boolean;
+  model?: string;
+  chunkSize?: number;
+  overlap?: number;
+  useCache?: boolean;
+};
+
+const DEFAULT_SERVICE_URL = '/api/embeddings/generate';
+
+function env(name: string, fallback?: string): string | undefined {
+  try {
+    // access via import.meta.env in Vite/SvelteKit or process.env on server
+    // keep simple and prefer process.env for Node and import.meta for browser builds
+    // This helper intentionally returns undefined for missing values.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const meta = typeof import.meta !== 'undefined' ? (import.meta as any) : undefined;
+    if (meta && meta.env && meta.env[name] !== undefined) return String(meta.env[name]);
+  } catch {}
+  try {
+    // @ts-ignore
+    if (typeof process !== 'undefined' && process.env && process.env[name] !== undefined)
+      return String(process.env[name]);
+  } catch {}
+  return fallback;
+}
+
+const MODE = (env('EMBEDDING_MODE') || 'server') as 'server' | 'wasm' | 'gpu';
+const SERVICE_URL = (env('EMBEDDING_SERVICE_URL') || DEFAULT_SERVICE_URL) as string;
+
+async function callServerEmbeddings(texts: string[] | string, options?: EmbeddingOptions) {
+  const body = Array.isArray(texts)
+    ? { texts: texts, model: options?.model, options }
+    : { text: texts, model: options?.model, options };
+  const resp = await fetch(SERVICE_URL + (Array.isArray(texts) ? '?action=batch' : ''), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!resp.ok) {
+    throw new Error(`Embedding server error: ${resp.status} ${resp.statusText}`);
+  }
+  const json = await resp.json();
+  if (!json || json.success === false) {
+    throw new Error(`Embedding server returned failure: ${json?.error || 'unknown'}`);
+  }
+  // Normalise response shapes: prefer { data.embeddings } or { embeddings }
+  if (json.data?.embeddings) return json.data.embeddings as number[][];
+  if (json.embeddings) return json.embeddings as number[][];
+  if (json.data?.embedding) return Array.isArray(json.data.embedding[0]) ? json.data.embedding : [json.data.embedding];
+  if (json.data?.embedding) return [json.data.embedding];
+  // last attempt: assume top-level `data` is the embedding or embeddings
+  if (json.data && Array.isArray(json.data)) return json.data as number[][];
+  throw new Error('Unexpected embedding response shape from server');
+}
+
+async function callWasmWorker(texts: string[] | string, options?: EmbeddingOptions) {
+  if (!browser) throw new Error('WASM worker can only be used in browser environment');
+  // Use singleton worker pool (the pool's internal embedding path calls /api/embeddings/generate by default)
+  let pool = getWorkerPool();
+  if (!pool) pool = createWorkerPool({ maxWorkers: 2, enableSIMD: true });
+  if (Array.isArray(texts)) {
+    // sequentially generate embeddings for the batch to keep worker protocol simple
+    const results: number[][] = [];
+    for (const t of texts) {
+      const res = await pool.generateEmbeddings(t, options?.model, options);
+      if (!res.success) throw new Error(res.error || 'Worker embedding failed');
+      // worker returns data as-is; try to normalize
+      const data = res.data as any;
+      if (Array.isArray(data?.embeddings)) results.push(...(data.embeddings as number[][]));
+      else if (Array.isArray(data?.embedding)) results.push(data.embedding as number[]);
+      else if (Array.isArray(data)) results.push(data as number[]);
+      else throw new Error('Unexpected worker embedding shape');
+    }
+    return results;
+  } else {
+    const res = await pool.generateEmbeddings(texts, options?.model, options);
+    if (!res.success) throw new Error(res.error || 'Worker embedding failed');
+    const data = res.data as any;
+    if (Array.isArray(data?.embedding)) return data.embedding as number[];
+    if (Array.isArray(data)) return data as number[];
+    throw new Error('Unexpected worker embedding shape');
+  }
+}
+
+async function callGpuBridge(texts: string[] | string, options?: EmbeddingOptions) {
+  // GPU bridge uses the gpu-integration-bridge service which may call local FastAPI/Ollama
+  const GPU_URL = env('GPU_EMBEDDING_URL') || '/api/gpu/embeddings';
+  const body = Array.isArray(texts)
+    ? { texts, model: options?.model, options }
+    : { text: texts, model: options?.model, options };
+  const resp = await fetch(GPU_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!resp.ok) throw new Error(`GPU embedding bridge error: ${resp.status}`);
+  const json = await resp.json();
+  if (json?.embeddings) return json.embeddings as number[][];
+  if (json?.embedding) return Array.isArray(json.embedding[0]) ? json.embedding : [json.embedding];
+  throw new Error('Unexpected GPU bridge response');
+}
+
+export async function generateEmbeddings(
+  texts: string[] | string,
+  options?: EmbeddingOptions
+): Promise<number[][] | number[]> {
+  const mode = (options && (options as any).mode) || MODE;
+  switch (mode) {
+    case 'wasm':
+      return callWasmWorker(texts, options);
+    case 'gpu':
+      return callGpuBridge(texts, options);
+    case 'server':
+    default:
+      return callServerEmbeddings(texts, options);
+  }
+}
+
+export default { generateEmbeddings };
 // Lightweight embedding service shim for local/dev usage
 // Provides both default and named exports used across the codebase
 export type EmbeddingResponse = { embeddings: number[][]; model?: string };
