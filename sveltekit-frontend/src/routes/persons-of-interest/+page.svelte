@@ -145,9 +145,16 @@
       }
     }
   ]);
-  // Initialize selectedPerson immediately from the demo data to avoid transient undefined access
-  let selectedPerson FugitiveDexPerson | null = $state(persons.length > 0 ? persons[0] : null);
+  // Initialize selectedPerson without capturing the initial value of `persons`
+  let selectedPerson: FugitiveDexPerson | null = $state<FugitiveDexPerson | null>(null);
   let searchQuery = $state('');
+
+  // Ensure we set a default selected person whenever `persons` becomes non-empty
+  $effect(() => {
+    if (persons.length > 0 && selectedPerson === null) {
+      selectedPerson = persons[0];
+    }
+  });
 
   // Function to load POIs from API
   async function loadPersonsFromAPI() {
@@ -157,20 +164,20 @@
         const result = await response.json();
         const apiPersons: APIPerson[] = result.success ? result.data : [];
         // Transform API data to FugitiveDex format
-        const transformedPersons: FugitiveDexPerson[] = apiPersons.map((person APIPerson, index) => ({ // Removed extra ',' and typed 'person'
-          id: (index + 1).toString().padStart(3, '0'), // Used index for ID, fixed toString.padStart
+        const transformedPersons: FugitiveDexPerson[] = apiPersons.map((person: APIPerson, index: number) => ({
+          id: (index + 1).toString().padStart(3, '0'),
           name: person.name,
           alias: (person.aliases && person.aliases.length > 0) ? person.aliases[0] : (person.name ? person.name.split(' ')[0] : 'Unknown'),
           role: person.profileData?.role || 'Unknown',
           status: person.status?.toUpperCase() || 'UNKNOWN',
           priority: typeof person.threatLevel === 'string' ? person.threatLevel.toUpperCase() : 'LOW',
           height: person.profileData?.height || 'Unknown',
-          age: person.profileData?.age || 'Unknown',
+          age: person.profileData?.age ?? 'Unknown',
           hair: person.profileData?.hair || 'Unknown',
           eyes: person.profileData?.eyes || 'Unknown',
           modusOperandi: person.profileData?.what || 'Unknown',
           lastSeen: person.profileData?.lastKnownLocation || 'Unknown',
-          dangerLevel: person.profileData?.dangerLevel ||
+          dangerLevel: person.profileData?.dangerLevel ??
                        (person.threatLevel === 'high' ? 7.5 :
                         person.threatLevel === 'medium' ? 5.0 : 2.0),
           photo: '/placeholder-person.jpg',
@@ -188,7 +195,7 @@
           }
         }));
         if (transformedPersons.length > 0) {
-          persons = transformedPersons; // Fixed typo: 'transformedPerson' to 'transformedPersons'
+          persons = transformedPersons;
           selectedPerson = transformedPersons[0];
         }
       }
@@ -440,12 +447,12 @@
     min-height: 100vh;
     color: #f0f6fc;
     font-family: 'JetBrains Mono', monospace;
-    position relative;
+    position: relative;
   }
   .fugitive-dex::before {
     content: '';
-    position fixed;
-    top: 0,
+    position: fixed;
+    top: 0;
     left: 0;
     width: 100%;
     height: 100%;
@@ -551,7 +558,7 @@
     border-radius: 4px;
     margin-bottom: 0.5rem;
     cursor: pointer;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     text-align: left;
   }
   .person-entry:hover {
@@ -605,7 +612,7 @@
     color: #f0f6fc;
     border-radius: 4px;
     cursor: pointer;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .filter-btn.active,
   .filter-btn:hover {
@@ -644,7 +651,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction column;
+    flex-direction: column;
   }
   .placeholder-photo span {
     font-size: 3rem;
@@ -653,11 +660,11 @@
   .placeholder-photo p {
     color: #9ca3af;
     font-size: 0.75rem;
-    margin: 0,
+    margin: 0;
   }
   .basic-info {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .info-row {
@@ -720,7 +727,7 @@
   }
   .physical-stats {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .stat {
@@ -761,7 +768,7 @@
   .associates-list,
   .habits-list {
     list-style: none;
-    padding: 0,
+    padding: 0;
     margin: 0;
   }
   .associates-list li,
@@ -774,7 +781,7 @@
   }
   .associates-list li::before,
   .habits-list li::before {
-    content: '• ',
+    content: '• ';
     color: #10b981;
     font-weight: bold;
     margin-right: 0.5rem;
@@ -842,7 +849,7 @@
     text-transform: capitalize;
   }
   .attr-bar {
-    flex: 1,
+    flex: 1;
     height: 12px;
     background: rgba(30, 41, 59, 0.8);
     border: 1px solid #6b7280;
@@ -852,7 +859,7 @@
   .attr-fill {
     height: 100%;
     background: linear-gradient(90deg, #10b981, #34d399);
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
     box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
   }
   .attr-value {
@@ -890,7 +897,7 @@
     cursor: pointer;
     background: rgba(16, 185, 129, 0.08);
     color: #e6fffa;
-    transition all 0.15s ease;
+    transition: all 0.15s ease;
   }
 
   /* Variant styles to approximate ButtonBits look */

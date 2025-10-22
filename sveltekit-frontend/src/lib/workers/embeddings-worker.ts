@@ -1,6 +1,28 @@
 // WASM + Web Worker embeddings preprocessing
 // Uses WebAssembly for high-performance text preprocessing and embeddings generation
-import type { EmbeddingRequest, EmbeddingResponse, BatchEmbeddingRequest } from '../types/embeddings';
+
+// Local request/response types (kept here to avoid depending on an external types file
+// which may not be present in all workspaces). These match the worker message protocol.
+interface EmbeddingRequest {
+  text: string;
+  startTime?: number;
+  model?: string;
+  // optional flags for runtime behavior
+  useGPU?: boolean;
+}
+
+interface EmbeddingResponse {
+  success: boolean;
+  embedding?: number[]; // array representation for posting across worker boundary
+  processingTime?: number;
+  error?: string;
+}
+
+interface BatchEmbeddingRequest {
+  texts: string[];
+  startTime?: number;
+  model?: string;
+}
 // WASM module interface
 interface WASMEmbeddings {
   memory: WebAssembly.Memory;
@@ -20,19 +42,40 @@ class EmbeddingsWorker {
       // Load WASM module
       const wasmResponse = await fetch('/wasm/embeddings.wasm');
       const wasmBytes = await wasmResponse.arrayBuffer();
-      const wasmModule = await WebAssembly.instantiate(wasmBytes, {
+
+      // Create a local memory instance and use it from imports.env so helper functions can access it
+      const memory = new WebAssembly.Memory({ initial: 256, maximum: 512 });
+      const imports = {
         env: {
-          memory: new WebAssembly.Memory({ initial: 256, maximum: 512 }),
+          memory,
           __linear_memory_base: 0,
           __table_base: 0,
-          abort: () => { throw new Error('WASM abort'), },
+          abort: () => {
+            throw new Error('WASM abort');
+          },
           _emscripten_memcpy_big: (dest: number, src: number, num: number) => {
-            const memory = new Uint8Array(this.wasmModule!.memory.buffer);
-            memory.copyWithin(dest, src, src + num);
-          }
-        }
-      });
-      this.wasmModule = wasmModule.instance.exports as WASMEmbeddings;
+            const mem = new Uint8Array(memory.buffer);
+            mem.copyWithin(dest, src, src + num);
+            return dest;
+          },
+        },
+      };
+
+      const wasmModule = await WebAssembly.instantiate(wasmBytes, imports);
+      // Cast via `unknown` to satisfy TypeScript when Exports doesn't fully overlap.
+      this.wasmModule = wasmModule.instance.exports as unknown as WASMEmbeddings;
+      // Runtime sanity checks to catch mismatched/partial exports early.
+      if (
+        !this.wasmModule ||
+        !(this.wasmModule.memory instanceof WebAssembly.Memory) ||
+        typeof this.wasmModule.preprocess_text !== 'function' ||
+        typeof this.wasmModule.generate_embeddings !== 'function' ||
+        typeof this.wasmModule.get_embedding_dim !== 'function' ||
+        typeof this.wasmModule.malloc !== 'function' ||
+        typeof this.wasmModule.free !== 'function'
+      ) {
+        throw new Error('WASM module missing required exports (memory or functions)');
+      }
       this.embeddingDim = this.wasmModule.get_embedding_dim();
       this.isInitialized = true;
       console.log('✅ WASM Embeddings module initialized');
@@ -49,7 +92,7 @@ class EmbeddingsWorker {
     const ptr = this.wasmModule.malloc(bytes.length);
     const memory = new Uint8Array(this.wasmModule.memory.buffer);
     memory.set(bytes, ptr);
-    return { ptr, length: bytes.length }
+    return { ptr, length: bytes.length };
   }
   private readFloatArrayFromWasm(ptr: number, length: number): Float32Array {
     if (!this.wasmModule) throw new Error('WASM module not initialized');
@@ -95,32 +138,34 @@ class EmbeddingsWorker {
       } catch (error) {
         console.warn(`⚠️ Failed to generate embedding for text: ${text.substring(0, 50)}...`);
         // Return zero vector on failure
-        results.push(new Float32Array(this.embeddingDim);
+        results.push(new Float32Array(this.embeddingDim));
       }
     }
     return results;
   }
-  async preprocessTextForVector(text: string): Promise<{,
-    cleanText,: string;
+  async preprocessTextForVector(text: string): Promise<{
+    cleanText: string;
     tokens: string[];
     metadata: {
       originalLength: number;
       cleanedLength: number;
       tokenCount: number;
       hasSpecialChars: boolean;
-    }
+    };
   }> {
-    if (!this.isInitialized || !this.wasmModul,e) {
+    if (!this.isInitialized || !this.wasmModule) {
       throw new Error('WASM module not initialized');
     }
     try {
       const { ptr: textPtr, length: textLen } = this.copyStringToWasm(text);
       const preprocessedPtr = this.wasmModule.preprocess_text(textPtr, textLen);
       // Read preprocessed data (implementation would depend on WASM module)
-      const memory = new Uint8Array(this.wasmModule.memory.buffer);
-      const decoder = new TextDecoder();
       // This is a simplified version - actual implementation would read structured data
-      const cleanText = text.toLowerCase().replace(/[^\w\s]/g, ' ').replace(/\s+/g, ' ').trim();
+      const cleanText = text
+        .toLowerCase()
+        .replace(/[^\w\s]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
       const tokens = cleanText.split(' ').filter(token => token.length > 0);
       // Cleanup
       this.wasmModule.free(textPtr);
@@ -132,9 +177,9 @@ class EmbeddingsWorker {
           originalLength: text.length,
           cleanedLength: cleanText.length,
           tokenCount: tokens.length,
-          hasSpecialChars: /[^\w\s]/.test(text)
-        }
-      }
+          hasSpecialChars: /[^\w\s]/.test(text),
+        },
+      };
     } catch (error) {
       console.error('❌ Text preprocessing failed:', error);
       throw error;
@@ -143,55 +188,81 @@ class EmbeddingsWorker {
 }
 // Worker instance
 const embeddingsWorker = new EmbeddingsWorker();
-// Message handler
-self.addEventListener('message', async (event) => {
-  const { type, id, data } = event.data;
+
+// Well-typed incoming message envelope
+type WorkerIncomingMessage =
+  | { type: 'initialize'; id?: string }
+  | { type: 'generate_embedding'; id?: string; data: EmbeddingRequest }
+  | { type: 'generate_batch_embeddings'; id?: string; data: BatchEmbeddingRequest }
+  | { type: 'preprocess_text'; id?: string; data: { text: string; startTime?: number } }
+  | { type: 'ping'; id?: string };
+
+// Outgoing message shapes
+type WorkerOutgoingMessage =
+  | { type: 'initialized'; id?: string; success: true }
+  | { type: 'embedding_result'; id?: string; data: EmbeddingResponse }
+  | { type: 'batch_embedding_result'; id?: string; data: { success: true; embeddings: number[][]; count: number; processingTime: number } }
+  | { type: 'preprocess_result'; id?: string; data: ReturnType<EmbeddingsWorker['preprocessTextForVector']> }
+  | { type: 'pong'; timestamp: number }
+  | { type: 'error'; id?: string; error: string };
+
+self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessage>) => {
+  const msg = event.data;
   try {
-    switch (type) {
+    switch (msg.type) {
       case 'initialize':
         await embeddingsWorker.initialize();
-        self.postMessage({ type: 'initialized', id, success: true });
+        (self as DedicatedWorkerGlobalScope).postMessage({ type: 'initialized', id: msg.id, success: true } as WorkerOutgoingMessage);
         break;
-      case 'generate_embedding':
-        const { text } = data as EmbeddingRequest;
-        const embedding = await embeddingsWorker.generateEmbedding(text);
+      case 'generate_embedding': {
+        const req = msg.data;
+        if (!req || typeof req.text !== 'string') throw new Error('Invalid generate_embedding request');
+        const embedding = await embeddingsWorker.generateEmbedding(req.text);
         const response: EmbeddingResponse = {
+          success: true,
           embedding: Array.from(embedding),
-          dimension: embedding.length,
-          processingTime: performance.now() - (data.startTime || 0)
-        }
-        self.postMessage({ type: 'embedding_result', id, data: response });
+          processingTime: performance.now() - (req.startTime ?? performance.now()),
+        };
+        (self as DedicatedWorkerGlobalScope).postMessage({ type: 'embedding_result', id: msg.id, data: response } as WorkerOutgoingMessage);
         break;
-      case 'generate_batch_embeddings':
-        const { texts } = data as BatchEmbeddingRequest;
-        const embeddings = await embeddingsWorker.generateBatchEmbeddings(texts);
+      }
+      case 'generate_batch_embeddings': {
+        const req = msg.data;
+        if (!req || !Array.isArray(req.texts)) throw new Error('Invalid generate_batch_embeddings request');
+        const embeddings = await embeddingsWorker.generateBatchEmbeddings(req.texts);
         const batchResponse = {
-          embeddings: embeddings.map(emb => Array.from(emb)),
+          success: true,
+          embeddings: embeddings.map(e => Array.from(e)),
           count: embeddings.length,
-          dimension: embeddings[0]?.length || 0,
-          processingTime: performance.now() - (data.startTime || 0)
-        }
-        self.postMessage({ type: 'batch_embedding_result', id, data: batchResponse });
+          processingTime: performance.now() - (req.startTime ?? performance.now()),
+        };
+        (self as DedicatedWorkerGlobalScope).postMessage({ type: 'batch_embedding_result', id: msg.id, data: batchResponse } as WorkerOutgoingMessage);
         break;
-      case 'preprocess_text':
-        const preprocessResult = await embeddingsWorker.preprocessTextForVector(data.text);
-        self.postMessage({ type: 'preprocess_result', id, data: preprocessResult });
+      }
+      case 'preprocess_text': {
+        const text = msg.data?.text;
+        if (typeof text !== 'string') throw new Error('Invalid preprocess_text request');
+        const preprocessResult = await embeddingsWorker.preprocessTextForVector(text);
+        (self as DedicatedWorkerGlobalScope).postMessage({ type: 'preprocess_result', id: msg.id, data: preprocessResult } as WorkerOutgoingMessage);
+        break;
+      }
+      case 'ping':
+        (self as DedicatedWorkerGlobalScope).postMessage({ type: 'pong', timestamp: Date.now() } as WorkerOutgoingMessage);
         break;
       default:
-        throw new Error(`Unknown message type: ${type}`);
+        // Exhaustive check
+        const _exhaustiveCheck: never = msg;
+        throw new Error(`Unhandled message type: ${JSON.stringify(_exhaustiveCheck)}`);
     }
-  } catch (error) {
-    console.error('❌ Worker error:', error);
-    self.postMessage({
-      type: 'error',
-      id,
-      error: error instanceof Error ? error.message: 'Unknown error'
-    });
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : String(err);
+    console.error('❌ Worker error:', errorMessage);
+    (self as DedicatedWorkerGlobalScope).postMessage({ type: 'error', id: (msg as any).id, error: errorMessage } as WorkerOutgoingMessage);
   }
 });
 // Health check
-self.addEventListener('message', (event) => {
-  if (event.data.type === 'ping') {
+self.addEventListener('message', (event: MessageEvent) => {
+  if ((event.data as { type?: string }).type === 'ping') {
     self.postMessage({ type: 'pong', timestamp: Date.now() });
   }
 });

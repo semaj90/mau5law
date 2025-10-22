@@ -3,9 +3,10 @@ import type { RequestHandler } from './$types';
 import { db } from '$lib/server/db';
 import { ragSessions, ragMessages, userAiQueries } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
+import { getOllamaEndpoint } from '$lib/services/providers/ollama/config';
 
-const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
 const MODEL = 'gemma3-legal:latest';
+const OLLAMA_CHAT_ENDPOINT = getOllamaEndpoint('chat');
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
@@ -68,7 +69,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     // Stream response from Ollama
     const startTime = Date.now();
-    const ollamaResponse = await fetch(`${OLLAMA_URL}/api/chat`, {
+    const ollamaResponse = await fetch(OLLAMA_CHAT_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

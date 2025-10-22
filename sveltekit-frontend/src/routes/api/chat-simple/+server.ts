@@ -1,8 +1,9 @@
 // Simple Ollama Chat Endpoint (no database)
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
+import { getOllamaEndpoint } from '$lib/services/providers/ollama/config';
 
-const OLLAMA_URL = 'http://localhost:11434';
+const OLLAMA_GENERATE_ENDPOINT = getOllamaEndpoint('generate');
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -20,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     console.log('🚀 Sending to Ollama:', lastUserMessage.content);
 
-    const response = await fetch(`${OLLAMA_URL}/api/generate`, {
+    const response = await fetch(OLLAMA_GENERATE_ENDPOINT, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -54,8 +54,6 @@ export interface ModelMetadata {
   updated: string;
   tags: string[];
 }
-}
-// Embedding Types
 export interface EmbeddingModel extends AIModel {
   dimensions: number;
   normalization: boolean;
@@ -109,7 +107,7 @@ export interface VectorCollection {
   metric: 'cosine' | 'euclidean' | 'dot_product';
   vectorCount: number;
   indexType: 'ivfflat' | 'hnsw' | 'exact';
-  metadata: { [key: string]: any }
+  metadata: Record<string, unknown>;
   created: string;
   updated: string;
 }
@@ -117,7 +115,7 @@ export interface VectorIndex {
   name: string;
   collection: string;
   type: 'ivfflat' | 'hnsw' | 'exact';
-  parameters: { [key: string]: any }
+  parameters: Record<string, unknown>;
   performance: IndexPerformance;
 }
 export interface IndexPerformance {
@@ -141,8 +139,8 @@ export interface LangChainChain {
   id: string;
   name: string;
   type: ChainType;
-  components: ChainComponent[];
   config: ChainConfig;
+  components: ChainComponent[];
   memory: ChainMemory;
   tools: ChainTool[];
   status: ChainStatus;
@@ -156,12 +154,11 @@ export type ChainType =
   | 'agent'
   | 'workflow'
   | 'custom';
-}
-export interface ChainComponent {
+export interface ChainComponent<TConfig = Record<string, unknown>> {
   id: string;
   type: 'llm' | 'prompt' | 'memory' | 'tool' | 'parser' | 'retriever';
   name: string;
-  config: { [key: string]: any }
+  config: TConfig;
   inputs: string[];
   outputs: string[];
   dependencies: string[];
@@ -174,7 +171,7 @@ export interface ChainConfig {
   returnIntermediateSteps: boolean;
   maxIterations: number;
   timeout: number;
-  retryOptions: RetryOptions;
+  retryOptions?: RetryOptions;
 }
 export interface ChainMemory {
   type: 'buffer' | 'summary' | 'vector' | 'knowledge_graph' | 'entity';
@@ -185,7 +182,7 @@ export interface ChainMemory {
   memoryKey: string;
   aiPrefix: string;
   humanPrefix: string;
-  config: { [key: string]: any }
+  config: Record<string, unknown>;
 }
 export interface ChainTool {
   name: string;
@@ -211,7 +208,7 @@ export interface ParameterProperty {
   pattern?: string;
 }
 export type ChainStatus = 'idle' | 'running' | 'completed' | 'error' | 'cancelled';
-}
+
 export interface RetryOptions {
   maxRetries: number;
   backoffMultiplier: number;
@@ -241,7 +238,6 @@ export type DocumentType =
   | 'correspondence'
   | 'transcript'
   | 'report';
-}
 export interface DocumentClassification {
   confidentiality: 'public' | 'confidential' | 'attorney_client' | 'work_product';
   sensitivity: 'low' | 'medium' | 'high' | 'critical';
@@ -367,7 +363,6 @@ export interface DocumentProcessing {
   errors: ProcessingError[];
 }
 export type ProcessingStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'retry';
-}
 export interface DocumentChunk {
   id: string;
   index: number;
@@ -394,7 +389,7 @@ export interface NamedEntity {
   confidence: number;
   startChar: number;
   endChar: number;
-  metadata: { [key: string]: any }
+  metadata: Record<string, unknown>;
 }
 export type EntityLabel =
   | 'PERSON'
@@ -410,7 +405,6 @@ export type EntityLabel =
   | 'ATTORNEY'
   | 'CONTRACT_TERM'
   | 'LEGAL_CONCEPT';
-}
 export interface ChunkRelationship {
   type: 'reference' | 'contradiction' | 'support' | 'elaboration' | 'example';
   targetChunkId: string;
@@ -430,7 +424,7 @@ export interface ProcessingError {
   message: string;
   code: string;
   timestamp: string;
-  context: { [key: string]: any }
+  context: Record<string, unknown>;
   resolved: boolean;
 }
 export interface LegalAnalysis {
@@ -468,7 +462,6 @@ export type FindingCategory =
   | 'contract_term'
   | 'breach'
   | 'defense';
-}
 export interface EvidenceReference {
   documentId: string;
   chunkId?: string;
@@ -502,7 +495,6 @@ export type IssueCategory =
   | 'immigration'
   | 'environmental'
   | 'tax';
-}
 export interface ApplicableLaw {
   type: 'statute' | 'regulation' | 'case_law' | 'constitutional' | 'administrative';
   citation: string;
@@ -520,7 +512,6 @@ export interface LegalElement {
   strength: number;
 }
 export type IssueStrength = 'weak' | 'moderate' | 'strong' | 'very_strong';
-}
 export interface Counterargument {
   description: string;
   strength: number;
@@ -536,7 +527,6 @@ export interface RiskAssessment {
   probabilityAnalysis: ProbabilityAnalysis;
 }
 export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
-}
 export interface RiskCategory {
   type: RiskType;
   level: RiskLevel;
@@ -546,15 +536,7 @@ export interface RiskCategory {
   factors: RiskFactor[];
   timeline: string;
 }
-export type RiskType =
-  | 'liability'
-  | 'financial'
-  | 'reputational'
-  | 'operational'
-  | 'compliance'
-  | 'strategic'
-  | 'procedural';
-}
+export type RiskType = 'liability' | 'financial' | 'reputational' | 'operational' | 'compliance' | 'strategic' | 'procedural';
 export interface RiskFactor {
   name: string;
   impact: number;
@@ -625,7 +607,6 @@ export type RecommendationCategory =
   | 'expert_witness'
   | 'investigation';
 export type Priority = 'low' | 'medium' | 'high' | 'urgent' | 'critical';
-}
 export interface ActionStep {
   order: number;
   description: string;
@@ -636,7 +617,6 @@ export interface ActionStep {
   status: ActionStatus;
 }
 export type ActionStatus = 'not_started' | 'in_progress' | 'completed' | 'blocked' | 'cancelled';
-}
 export interface RequiredResource {
   type: 'person' | 'document' | 'expert' | 'technology' | 'funding';
   description: string;
@@ -707,7 +687,6 @@ export interface LegalChange {
   cases: string[];
 }
 export type ChangeReason = 'legislation' | 'judicial_decision' | 'social_change' | 'technology' | 'economic';
-}
 export interface PredictiveInsight {
   prediction: string;
   confidence: number;
@@ -735,7 +714,6 @@ export type TimelineCategory =
   | 'settlement'
   | 'compliance'
   | 'deadline';
-}
 export interface DocumentRelationship {
   type: RelationshipType;
   targetDocumentId: string;
@@ -849,7 +827,7 @@ export interface ErrorEvent {
   service: string;
   message: string;
   stack?: string;
-  context: { [key: string]: any }
+  context: { [key: string]: unknown };
   resolved: boolean;
 }
 export interface UsageMetrics {
@@ -868,7 +846,6 @@ export interface HealthMetrics {
   alerts: Alert[];
 }
 export type HealthStatus = 'healthy' | 'degraded' | 'unhealthy' | 'critical';
-}
 export interface ServiceHealth {
   status: HealthStatus;
   uptime: number;
@@ -893,7 +870,7 @@ export interface Alert {
   timestamp: string;
   acknowledged: boolean;
   resolved: boolean;
-  details: { [key: string]: any }
+  details: Record<string, unknown>;
 }
 export type AlertSeverity = 'info' | 'warning' | 'error' | 'critical';
 // Configuration Types
@@ -940,19 +917,19 @@ export interface ChainConfiguration {
   prompt: string;
   memory: string;
   tools: string[];
-  config: { [key: string]: any }
+  config: Record<string, unknown>;
 }
 export interface MemoryConfiguration {
   type: string;
   maxTokens: number;
   persistence: boolean;
   compression: boolean;
-  config: { [key: string]: any }
+  config: Record<string, unknown>;
 }
 export interface ToolConfiguration {
   name: string;
   enabled: boolean;
-  config: { [key: string]: any }
+  config: Record<string, unknown>;
   permissions: string[];
   rateLimits: RateLimit[];
 }
@@ -960,7 +937,7 @@ export interface CallbackConfiguration {
   name: string;
   enabled: boolean;
   events: string[];
-  config: { [key: string]: any }
+  config: Record<string, unknown>;
 }
 export interface AIPerformanceConfiguration {
   gpu: GPUConfiguration;
@@ -1071,7 +1048,7 @@ export interface BackupConfiguration {
 }
 export interface BackupDestination {
   type: 's3' | 'gcs' | 'azure' | 'local';
-  config: { [key: string]: any }
+  config: Record<string, unknown>;
   priority: number;
 }
 export interface CacheConfiguration {
@@ -1146,7 +1123,7 @@ export interface AuthProvider {
   name: string;
   type: 'local' | 'oauth' | 'saml' | 'ldap';
   enabled: boolean;
-  config: { [key: string]: any }
+  config: Record<string, unknown>;
   priority: number;
 }
 export interface SessionConfig {
@@ -1165,7 +1142,7 @@ export interface MFAConfig {
 export interface MFAMethod {
   type: 'totp' | 'sms' | 'email' | 'hardware';
   enabled: boolean;
-  config: { [key: string]: any }
+  config: Record<string, unknown>;
 }
 export interface PasswordPolicy {
   minLength: number;
@@ -1210,7 +1187,7 @@ export interface PolicyRule {
 export interface Condition {
   attribute: string;
   operator: 'eq' | 'ne' | 'in' | 'nin' | 'gt' | 'lt' | 'gte' | 'lte';
-  value: any;
+  value: unknown;
 }
 export interface EncryptionConfig {
   atRest: EncryptionSettings;
@@ -1228,7 +1205,7 @@ export interface KeyManagementConfig {
   provider: 'local' | 'aws_kms' | 'azure_keyvault' | 'gcp_kms';
   rotation: boolean;
   rotationInterval: number;
-  config: { [key: string]: any }
+  config: Record<string, unknown>;
 }
 export interface AuditConfig {
   enabled: boolean;
@@ -1247,7 +1224,7 @@ export interface AuditStorage {
   type: 'database' | 'file' | 'external';
   encryption: boolean;
   compression: boolean;
-  config: { [key: string]: any }
+  config: Record<string, unknown>;
 }
 export interface ComplianceConfig {
   standards: ComplianceStandard[];
@@ -1308,13 +1285,13 @@ export interface LoggingConfig {
 }
 export interface LogOutput {
   type: 'console' | 'file' | 'syslog' | 'elasticsearch' | 'external';
-  config: { [key: string]: any }
+  config: Record<string, unknown>;
   filters: LogFilter[];
 }
 export interface LogFilter {
   field: string;
   operator: string;
-  value: any;
+  value: unknown;
   action: 'include' | 'exclude' | 'mask';
 }
 export interface SamplingConfig {
@@ -1336,7 +1313,7 @@ export interface AlertingConfig {
 export interface AlertChannel {
   name: string;
   type: 'email' | 'slack' | 'webhook' | 'sms' | 'pagerduty';
-  config: { [key: string]: any }
+  config: Record<string, unknown>;
   enabled: boolean;
 }
 export interface AlertRule {
@@ -1372,7 +1349,7 @@ export interface DashboardPanel {
   type: 'graph' | 'table' | 'stat' | 'gauge' | 'heatmap';
   query: string;
   position: PanelPosition;
-  config: { [key: string]: any }
+  config: Record<string, unknown>;
 }
 export interface PanelPosition {
   x: number;
@@ -1389,7 +1366,7 @@ export interface DashboardVariable {
 }
 export interface VariableOption {
   text: string;
-  value: any;
+  value: unknown;
   selected: boolean;
 }
 export interface DeploymentConfiguration {
@@ -1574,7 +1551,7 @@ export interface WAFCondition {
   type: 'ip' | 'geo' | 'size' | 'sql_injection' | 'xss' | 'rate_limit';
   field: string;
   operator: string;
-  value: any;
+  value: unknown;
 }
 export interface DDoSProtectionConfig {
   enabled: boolean;
@@ -1700,7 +1677,12 @@ export interface ArchivalConfig {
 }
 export interface ArchivalCriteria {
   type: 'age' | 'size' | 'access' | 'custom';
-  value: any;
+  /**
+   * Value is intentionally typed as `unknown` to avoid unsafe `any`.
+   * Consumers should narrow/cast this to the expected shape (e.g. number, string, object)
+   * depending on `type`.
+   */
+  value: unknown;
   action: 'archive' | 'delete';
 }
 export interface StorageEncryptionConfig {
@@ -1734,7 +1716,7 @@ export interface MonitoringPolicy {
   retention: number;
 }
 // API Response Types
-export interface APIResponse<T = any> {
+export interface APIResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: APIError;
@@ -1743,7 +1725,7 @@ export interface APIResponse<T = any> {
 export interface APIError {
   code: string;
   message: string;
-  details?: { [key: string]: any }
+  details?: Record<string, unknown>;
   timestamp: string;
   requestId: string;
   stack?: string;
@@ -1782,7 +1764,7 @@ export interface SearchQuery {
 export interface SearchFilter {
   field: string;
   operator: 'eq' | 'ne' | 'in' | 'nin' | 'gt' | 'lt' | 'gte' | 'lte' | 'contains' | 'starts_with' | 'ends_with';
-  value: any;
+  value: unknown;
   boost?: number;
 }
 export interface SortOption {
@@ -1817,7 +1799,7 @@ export interface HighlightOptions {
   preTag: string;
   postTag: string;
 }
-export interface SearchResult<T = any> {
+export interface SearchResult<T = unknown> {
   hits: SearchHit<T>[];
   total: number;
   maxScore: number;
@@ -1825,7 +1807,7 @@ export interface SearchResult<T = any> {
   suggestions: Suggestion[];
   executionTime: number;
 }
-export interface SearchHit<T = any> {
+export interface SearchHit<T = unknown> {
   id: string;
   score: number;
   source: T;
@@ -1874,7 +1856,6 @@ export interface Workflow {
   metadata: WorkflowMetadata;
 }
 export type WorkflowStatus = 'draft' | 'active' | 'paused' | 'deprecated' | 'error';
-}
 export interface WorkflowTrigger {
   type: 'manual' | 'schedule' | 'event' | 'webhook' | 'api';
   config: TriggerConfig;
@@ -1912,7 +1893,7 @@ export interface SignatureConfig {
 export interface TriggerCondition {
   field: string;
   operator: string;
-  value: any;
+  value: unknown;
   required: boolean;
 }
 export interface WorkflowStep {
@@ -1939,10 +1920,9 @@ export type StepType =
   | 'api_call'
   | 'file_operation'
   | 'notification';
-}
 export interface StepConfig {
   template?: string;
-  parameters: { [key: string]: any }
+  parameters: Record<string, unknown>;
   resources: ResourceRequirement[];
   permissions: string[];
 }
@@ -1963,18 +1943,18 @@ export interface StepOutput {
   name: string;
   type: string;
   destination: 'variable' | 'database' | 'file' | 'api';
-  destinationConfig?: { [key: string]: any }
+  destinationConfig?: Record<string, unknown>;
   transformation?: TransformationRule[];
 }
 export interface TransformationRule {
   type: 'map' | 'filter' | 'reduce' | 'format' | 'validate';
-  config: { [key: string]: any }
+  config: Record<string, unknown>;
   script?: string;
 }
 export interface StepCondition {
   field: string;
   operator: string;
-  value: any;
+  value: unknown;
   action: 'continue' | 'skip' | 'retry' | 'fail';
 }
 export interface RetryPolicy {
@@ -1999,7 +1979,7 @@ export interface ErrorHandlingConfig {
 export interface ErrorHandler {
   errorType: string;
   action: 'retry' | 'skip' | 'rollback' | 'notify' | 'custom';
-  config: { [key: string]: any }
+  config: Record<string, unknown>;
 }
 export interface WorkflowLoggingConfig {
   level: 'debug' | 'info' | 'warning' | 'error';
@@ -2039,11 +2019,10 @@ export interface WorkflowExecution {
   error?: ExecutionError;
 }
 export type ExecutionStatus = 'pending' | 'running' | 'completed' | 'failed' | 'cancelled' | 'timeout';
-}
 export interface ExecutionTrigger {
   type: string;
   source: string;
-  data: { [key: string]: any }
+  data: Record<string, unknown>;
   timestamp: string;
 }
 export interface StepExecution {
@@ -2052,8 +2031,8 @@ export interface StepExecution {
   startTime: string;
   endTime?: string;
   duration?: number;
-  inputs: { [key: string]: any }
-  outputs: { [key: string]: any }
+  inputs: Record<string, unknown>;
+  outputs: Record<string, unknown>;
   error?: StepError;
   retries: number;
   logs: LogEntry[];
@@ -2062,12 +2041,12 @@ export interface StepError {
   type: string;
   message: string;
   code?: string;
-  details?: { [key: string]: any }
+  details?: Record<string, unknown>;
   stack?: string;
   recoverable: boolean;
 }
 export interface ExecutionContext {
-  variables: { [key: string]: any }
+  variables: Record<string, unknown>;
   environment: string;
   user?: string;
   permissions: string[];
@@ -2084,7 +2063,7 @@ export interface ExecutionError {
   message: string;
   step?: string;
   code?: string;
-  details?: { [key: string]: any }
+  details?: Record<string, unknown>;
   stack?: string;
   timestamp: string;
 }
@@ -2092,7 +2071,6 @@ export interface LogEntry {
   timestamp: string;
   level: string;
   message: string;
-  context: { [key: string]: any }
+  context: Record<string, unknown>;
   source: string;
 }
-// All types are already exported individually above - no namespace needed

@@ -1,6 +1,7 @@
 // Use process.env instead of SvelteKit env for server-side code
 // import { env } from "$env/dynamic/private"
 import { OLLAMA_CONFIG, getOptimalModel } from '../ai/ollama-config.js';
+import { getOllamaEndpoint } from '$lib/services/providers/ollama/config';
 export interface EmbeddingProvider {
   name: string;
   endpoint: string;
@@ -11,7 +12,7 @@ export interface EmbeddingProvider {
 const providers: Record<string, EmbeddingProvider> = {
   ollama: {
     name: 'Ollama',
-    endpoint: OLLAMA_CONFIG.baseUrl + '/api/embeddings',
+    endpoint: getOllamaEndpoint('embeddings'),
     model: OLLAMA_CONFIG.embeddingModel, // embeddinggemma
     dimensions: 768, // Updated for embeddinggemma dimensions
   },

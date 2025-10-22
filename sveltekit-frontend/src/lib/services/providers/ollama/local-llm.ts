@@ -1,6 +1,7 @@
 // providers/ollama/local-llm.ts
 // Clean, minimal Ollama local LLM adapter
 import { logger } from './logger.js';
+import { OLLAMA_CONFIG, getOllamaEndpoint, type OllamaEndpoint } from './config';
 
 export interface OllamaModel {
   name: string;
@@ -71,8 +72,17 @@ export class OllamaLocalLLM {
   private availableModels = new Map<string, OllamaModel>();
   private modelCache = new Map<string, { loaded: boolean; lastUsed: number }>();
 
-  constructor(baseUrl = 'http://localhost:11434') {
-    this.baseUrl = baseUrl.replace(/\/$/, '');
+  private resolveEndpoint(endpoint: OllamaEndpoint): string {
+    return getOllamaEndpoint(endpoint, this.baseUrl);
+  }
+
+  private buildUrl(path: string): string {
+    return `${this.baseUrl}${path.startsWith('/') ? path : `/${path}`}`;
+  }
+
+  constructor(baseUrl = OLLAMA_CONFIG.baseUrl) {
+    const resolved = (baseUrl ?? OLLAMA_CONFIG.baseUrl).trim();
+    this.baseUrl = (resolved.length ? resolved : OLLAMA_CONFIG.baseUrl).replace(/\/$/, '');
     // initialize but don't await in constructor
     this.initialize().catch((e) => logger.warn('[OllamaLLM] init failed', e));
   }
@@ -95,7 +105,7 @@ export class OllamaLocalLLM {
 
   async checkAvailability(): Promise<boolean> {
     try {
-      const resp = await fetch(`${this.baseUrl}/models`);
+      const resp = await fetch(this.resolveEndpoint('models'));
       return resp.ok;
     } catch (err) {
       return false;
@@ -104,7 +114,7 @@ export class OllamaLocalLLM {
 
   async loadAvailableModels(): Promise<void> {
     try {
-      const resp = await fetch(`${this.baseUrl}/models`);
+      const resp = await fetch(this.resolveEndpoint('models'));
       if (!resp.ok) throw new Error(`Failed to fetch models: ${resp.status}`);
       const data = await resp.json();
       this.availableModels.clear();
@@ -134,7 +144,7 @@ export class OllamaLocalLLM {
   async generate(options: OllamaGenerateOptions): Promise<OllamaResponse | null> {
     try {
       const model = this.selectBestModel(options.model);
-      const resp = await fetch(`${this.baseUrl}/completions`, {
+      const resp = await fetch(this.resolveEndpoint('generate'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ model, prompt: options.prompt, ...options.options }),
@@ -152,7 +162,7 @@ export class OllamaLocalLLM {
   async generateEmbeddings(text: string, model?: string): Promise<number[] | null> {
     try {
       const m = model || 'nomic-embed-text';
-      const resp = await fetch(`${this.baseUrl}/embeddings`, {
+      const resp = await fetch(this.resolveEndpoint('embeddings'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ model: m, input: text }),
@@ -173,7 +183,7 @@ export class OllamaLocalLLM {
   async chat(messages: Array<Record<string, unknown>>, model?: string): Promise<string | null> {
     try {
       const m = this.selectBestModel(model);
-      const resp = await fetch(`${this.baseUrl}/chat`, {
+      const resp = await fetch(this.resolveEndpoint('chat'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ model: m, messages, stream: false }),
@@ -197,7 +207,7 @@ export class OllamaLocalLLM {
    */
   async unloadModel(model: string): Promise<void> {
     try {
-      await fetch(`${this.baseUrl}/api/generate`, {
+      await fetch(this.resolveEndpoint('generate'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -221,7 +231,7 @@ export class OllamaLocalLLM {
    */
   async getModelInfo(model: string): Promise<OllamaModelInfo | null> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/show`, {
+      const response = await fetch(this.buildUrl('/api/show'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: model })
@@ -245,7 +255,7 @@ export class OllamaLocalLLM {
   async pullModel(model: string): Promise<boolean> {
     try {
       logger.info(`[OllamaLLM] Pulling model ${model}...`);
-      const response = await fetch(`${this.baseUrl}/api/pull`, {
+      const response = await fetch(this.resolveEndpoint('pull'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: model, stream: true }) // Explicitly request streaming

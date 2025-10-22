@@ -3,6 +3,7 @@
  */
 export interface OllamaConfig {
   baseUrl: string;
+  endpoints?: Record<string, string>;
   defaultModel: string;
   embeddingModel: string;
   fallbackModel?: string;

@@ -23,8 +23,9 @@
   interface ApiEndpoint {
     id: string;
     name: string;
-    description string;
-    icon typeof TestTube;
+    description: string;
+    // lucide-svelte icons are component constructors; keep the type permissive
+    icon: typeof TestTube | typeof Server | typeof Cpu | typeof Search | typeof Activity;
     method: HttpMethod;
     url: string;
     category: 'system' | 'ai' | 'data' | 'infrastructure' | 'messaging';
@@ -51,28 +52,28 @@
     {
       id: 'system-status',
       name: 'System Status',
-      description 'Real-time system health and performance metrics.',
-      icon Server,
+      description: 'Real-time system health and performance metrics.',
+      icon: Server,
       method: 'GET',
       url: '/api/yorha/system/status',
       category: 'system',
-      timeoutMs: 5000
+      timeoutMs: 5000,
     },
     {
       id: 'database-health',
       name: 'Database Health',
-      description 'PostgreSQL, Redis and Neo4j connectivity check.',
-      icon Database,
+      description: 'PostgreSQL, Redis and Neo4j connectivity check.',
+      icon: Database,
       method: 'GET',
       url: '/api/v1/database/health',
       category: 'infrastructure',
-      timeoutMs: 5000
+      timeoutMs: 5000,
     },
     {
       id: 'vector-search',
       name: 'Vector Search',
-      description 'PostgreSQL pgvector similarity search pipeline.',
-      icon Search,
+      description: 'PostgreSQL pgvector similarity search pipeline.',
+      icon: Search,
       method: 'POST',
       url: '/api/v1/vector/search',
       category: 'data',
@@ -81,14 +82,14 @@
       payload: {
         query: 'Employment law discrimination case precedents',
         limit: 10,
-        threshold: 0.7
-      }
+        threshold: 0.7,
+      },
     },
     {
       id: 'enhanced-rag',
       name: 'Enhanced RAG',
-      description 'AI retrieval augmented generation service.',
-      icon Cpu,
+      description: 'AI retrieval augmented generation service.',
+      icon: Cpu,
       method: 'POST',
       url: '/api/yorha/enhanced-rag',
       category: 'ai',
@@ -100,15 +101,15 @@
         options: {
           maxResults: 5,
           includeMetadata: true,
-          model: 'gemma3-legal:latest'
-        }
-      }
+          model: 'gemma3-legal:latest',
+        },
+      },
     },
     {
       id: 'ai-inference',
       name: 'AI Inference',
-      description 'Ollama Gemma3 legal inference with summarisation.',
-      icon Activity,
+      description: 'Ollama Gemma3 legal inference with summarisation.',
+      icon: Activity,
       method: 'POST',
       url: '/api/v1/ai/inference',
       category: 'ai',
@@ -118,9 +119,9 @@
         prompt: 'Summarise contract force majeure clause risk.',
         model: 'gemma3-legal',
         temperature: 0.3,
-        maxTokens: 800
-      }
-    }
+        maxTokens: 800,
+      },
+    },
   ];
 
   let testResults = $state<TestResult[]>([]);

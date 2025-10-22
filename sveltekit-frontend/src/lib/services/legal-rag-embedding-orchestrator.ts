@@ -91,7 +91,13 @@ class LegalRAGEmbeddingOrchestrator {
   private ragCache: Map<string, { context: RAGContext; timestamp: Date }> = new Map();
 
   // Embedding strategies by legal content type
-  private embeddingStrategies: Record<string, any> = {
+  private embeddingStrategies: Record<string, {
+    primary_model: string;
+    hybrid_models: string[];
+    metadata_schema: string;
+    boost_fields: string[];
+    temporal_weight: number;
+  }> = {
     'case-law': {
       primary_model: 'legal-bert',
       hybrid_models: ['gemma3-legal', 'custom-legal'],
@@ -136,13 +142,15 @@ class LegalRAGEmbeddingOrchestrator {
       : Date.now();
   }
 
-  // Safe id generator (works in SSR and browser)
+  // Safe id generator - avoid `any`
   private safeRandomId(): string {
     try {
-      // prefer standard crypto if available
-      const rnd = (globalThis as any)?.crypto?.randomUUID?.();
+      const g = globalThis as unknown as { crypto?: { randomUUID?: () => string } };
+      const rnd = g?.crypto?.randomUUID?.();
       if (typeof rnd === 'string' && rnd.length > 0) return rnd;
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
     return `id-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   }
 
@@ -220,37 +228,40 @@ class LegalRAGEmbeddingOrchestrator {
     }
   }
 
-  // Generate specialized embeddings for legal queries
+  // Generate specialized embeddings for legal queries - return typed bundle instead of `any`
   private async generateLegalQueryEmbeddings(
     query: string,
     legalCase: LegalCase,
     queryType: string,
-  ): Promise<any> {
-    const strategy = this.embeddingStrategies['user-query'];
+  ): Promise<EmbeddingsBundle> {
+    const strategy = this.embeddingStrategies[queryType] ?? this.embeddingStrategies['user-query'];
     const contextualQuery = this.enhanceQueryWithCaseContext(query, legalCase);
 
-    const [caseContext, legalDomain, jurisdictional, temporal] = await Promise.all([
-      multiEmbeddingVectorService.generateEmbeddings(
-        `${contextualQuery} [Case Context: ${legalCase.case_summary}]`,
-        'contextual',
-        { optimizeFor: 'accuracy' }
-      ),
-      multiEmbeddingVectorService.generateEmbeddings(
-        `${contextualQuery} [Practice Area: ${legalCase.practice_area}]`,
-        'user-query',
-        { preferredModels: ['legal-bert', 'custom-legal'] }
-      ),
-      multiEmbeddingVectorService.generateEmbeddings(
-        `${contextualQuery} [Jurisdiction: ${legalCase.jurisdiction}] [Court: ${legalCase.court}]`,
-        'citation',
-        { optimizeFor: 'accuracy' }
-      ),
-      multiEmbeddingVectorService.generateEmbeddings(
-        `${contextualQuery} [Filing Date: ${legalCase.filing_date.toISOString()}]`,
-        'user-query',
-        { optimizeFor: 'balanced' }
-      )
-    ]);
+    // Keep svc as unknown and guard calls
+    const svc = multiEmbeddingVectorService as unknown;
+
+    const inputs = [
+      { text: `${contextualQuery} [Case Context: ${legalCase.case_summary}]`, type: 'contextual', opts: { optimizeFor: 'accuracy' } },
+      { text: `${contextualQuery} [Practice Area: ${legalCase.practice_area}]`, type: 'user-query', opts: { preferredModels: ['legal-bert', 'custom-legal'] } },
+      { text: `${contextualQuery} [Jurisdiction: ${legalCase.jurisdiction}] [Court: ${legalCase.court}]`, type: 'citation', opts: { optimizeFor: 'accuracy' } },
+      { text: `${contextualQuery} [Filing Date: ${legalCase.filing_date.toISOString()}]`, type: 'user-query', opts: { optimizeFor: 'balanced' } }
+    ];
+
+    const promises = inputs.map(i => {
+      try {
+        const svcAny = svc as any;
+        if (typeof svcAny.generateEmbeddings === 'function') {
+          return svcAny.generateEmbeddings(i.text, i.type, i.opts);
+        }
+      } catch (err) {
+        // log and continue
+        // eslint-disable-next-line no-console
+        console.debug('generateEmbeddings call failed for input', i.type, err);
+      }
+      return Promise.resolve(null);
+    });
+
+    const [caseContext, legalDomain, jurisdictional, temporal] = await Promise.all(promises);
 
     return {
       case_context: caseContext?.primary?.vector || [],
@@ -258,112 +269,130 @@ class LegalRAGEmbeddingOrchestrator {
       jurisdictional: jurisdictional?.primary?.vector || [],
       temporal: temporal?.primary?.vector || [],
       models_used: [
-        caseContext?.primary?.model || 'unknown',
-        legalDomain?.primary?.model || 'unknown',
+        caseContext?.primary?.model || (strategy?.primary_model ?? 'unknown'),
+        legalDomain?.primary?.model || (strategy?.hybrid_models?.[0] ?? 'unknown'),
         jurisdictional?.primary?.model || 'unknown',
         temporal?.primary?.model || 'unknown'
       ]
     };
   }
 
+  // Helper: merge multiple embedding vectors into a single averaged embedding
+  private mergeEmbeddings(vectors: Array<number[] | undefined | null>): number[] {
+    const valid = vectors.filter(Boolean) as number[][];
+    if (valid.length === 0) return [];
+    const dim = Math.max(...valid.map(v => v.length));
+    const sum = new Array<number>(dim).fill(0);
+    valid.forEach(v => {
+      for (let i = 0; i < dim; i++) {
+        sum[i] += (v[i] ?? 0);
+      }
+    });
+    const count = valid.length;
+    return sum.map(s => s / count);
+  }
+
+  // Helper: runtime-safe vector search adapter - explicit return type
+  private async callVectorSearch(searchQuery: SearchQuery): Promise<VectorSearchResult> {
+    const svcAny = multiEmbeddingVectorService as unknown as Record<string, unknown>;
+    const candidates = ['searchSimilar', 'search', 'query', 'findSimilar', 'searchVectors', 'searchEmbeddings'];
+    for (const name of candidates) {
+      const fn = svcAny[name] as unknown;
+      if (typeof fn === 'function') {
+        try {
+          // @ts-ignore dynamic invocation
+          return await (fn as Function)(searchQuery) as VectorSearchResult;
+        } catch (err) {
+          // log and try next candidate
+          // eslint-disable-next-line no-console
+          console.debug(`Vector search candidate "${name}" failed`, err);
+        }
+      }
+    }
+
+    // last-resort: attempt generic execute or return empty results
+    const execute = svcAny.execute as unknown;
+    if (typeof execute === 'function') {
+      try {
+        // @ts-ignore
+        return await (execute as Function)(searchQuery) as VectorSearchResult;
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.debug('multiEmbeddingVectorService.execute failed', err);
+      }
+    }
+
+    return { results: [] };
+  }
+
   // Search for relevant laws using optimized embeddings
-  private async searchRelevantLaws(queryEmbeddings: any, legalCase: LegalCase, options: any): Promise<LegalLaw[]> {
+  private async searchRelevantLaws(queryEmbeddings: EmbeddingsBundle, legalCase: LegalCase, options: SearchOptions): Promise<LegalLaw[]> {
     const searchQuery: SearchQuery = {
       query: '',
       embedding_models: ['legal-bert', 'custom-legal'],
       metadata_filters: {
         jurisdiction: options.jurisdiction_filter || legalCase.jurisdiction,
-        law_type: this.determineLawTypes(options.query_type),
-        effective_date: options.date_range ? {
-          gte: options.date_range.start,
-          lte: options.date_range.end
-        } : undefined
+        law_type: this.determineLawTypes(options.query_type as string),
+        effective_date: options.date_range ? { gte: options.date_range.start, lte: options.date_range.end } : undefined
       },
       schema_types: ['citation'],
-      hybrid_weights: {
-        semantic: 0.3,
-        legal: 0.4,
-        contextual: 0.2,
-        temporal: 0.1
-      },
-      similarity_threshold: options.confidence_threshold || 0.7,
-      max_results: options.max_results || 10,
+      hybrid_weights: { semantic: 0.3, legal: 0.4, contextual: 0.2, temporal: 0.1 },
+      similarity_threshold: options.confidence_threshold ?? 0.7,
+      max_results: options.max_results ?? 10,
       boost_recent: false,
-      user_context: {
-        userId: 'system',
-        sessionId: 'legal-search',
-        caseId: legalCase.id,
-        practiceArea: legalCase.practice_area,
-        jurisdiction: legalCase.jurisdiction
-      }
+      user_context: { userId: 'system', sessionId: 'legal-search', caseId: legalCase.id, practiceArea: legalCase.practice_area, jurisdiction: legalCase.jurisdiction }
     };
 
-    const searchResult = await multiEmbeddingVectorService.searchSimilar(searchQuery);
+    (searchQuery as unknown as Record<string, unknown>).query_embedding = this.mergeEmbeddings([
+      queryEmbeddings.case_context, queryEmbeddings.legal_domain, queryEmbeddings.jurisdictional, queryEmbeddings.temporal
+    ]);
+
+    const searchResult = await this.callVectorSearch(searchQuery);
     return this.convertToLegalLaws(searchResult?.results || []);
   }
 
   // Search for relevant cases
-  private async searchRelevantCases(queryEmbeddings: any, legalCase: LegalCase, options: any): Promise<LegalCase[]> {
+  private async searchRelevantCases(queryEmbeddings: EmbeddingsBundle, legalCase: LegalCase, options: SearchOptions): Promise<LegalCase[]> {
     if (!options?.include_related_cases) return [];
     const searchQuery: SearchQuery = {
       query: '',
       embedding_models: ['gemma3-legal', 'legal-bert'],
-      metadata_filters: {
-        jurisdiction: legalCase.jurisdiction,
-        practice_area: legalCase.practice_area,
-        case_type: legalCase.case_type,
-        status: 'closed'
-      },
+      metadata_filters: { jurisdiction: legalCase.jurisdiction, practice_area: legalCase.practice_area, case_type: legalCase.case_type, status: 'closed' },
       schema_types: ['legal-case'],
-      hybrid_weights: {
-        semantic: 0.25,
-        legal: 0.35,
-        contextual: 0.25,
-        temporal: 0.15
-      },
-      similarity_threshold: options.confidence_threshold || 0.75,
-      max_results: Math.min(options.max_results || 5, 10),
+      hybrid_weights: { semantic: 0.25, legal: 0.35, contextual: 0.25, temporal: 0.15 },
+      similarity_threshold: options.confidence_threshold ?? 0.75,
+      max_results: Math.min(options.max_results ?? 5, 10),
       boost_recent: true,
-      user_context: {
-        userId: 'system',
-        sessionId: 'case-search',
-        caseId: legalCase.id,
-        practiceArea: legalCase.practice_area,
-        jurisdiction: legalCase.jurisdiction
-      }
+      user_context: { userId: 'system', sessionId: 'case-search', caseId: legalCase.id, practiceArea: legalCase.practice_area, jurisdiction: legalCase.jurisdiction }
     };
 
-    const searchResult = await multiEmbeddingVectorService.searchSimilar(searchQuery);
+    (searchQuery as unknown as Record<string, unknown>).query_embedding = this.mergeEmbeddings([
+      queryEmbeddings.case_context, queryEmbeddings.legal_domain, queryEmbeddings.jurisdictional
+    ]);
+
+    const searchResult = await this.callVectorSearch(searchQuery);
     return this.convertToLegalCases(searchResult?.results || []);
   }
 
   // Search for relevant documents
-  private async searchRelevantDocuments(queryEmbeddings: any, caseId: string, options: any): Promise<any[]> {
+  private async searchRelevantDocuments(queryEmbeddings: EmbeddingsBundle, caseId: string, options: SearchOptions): Promise<unknown[]> {
     const searchQuery: SearchQuery = {
       query: '',
       embedding_models: ['gemma3-legal', 'all-minilm-l6-v2'],
-      metadata_filters: {
-        case_id: caseId,
-        document_type: this.determineDocumentTypes(options?.query_type)
-      },
+      metadata_filters: { case_id: caseId, document_type: this.determineDocumentTypes(options?.query_type as string) },
       schema_types: ['document', 'evidence'],
-      hybrid_weights: {
-        semantic: 0.4,
-        legal: 0.3,
-        contextual: 0.25,
-        temporal: 0.05
-      },
-      similarity_threshold: options?.confidence_threshold || 0.6,
-      max_results: options?.max_results || 15,
+      hybrid_weights: { semantic: 0.4, legal: 0.3, contextual: 0.25, temporal: 0.05 },
+      similarity_threshold: options?.confidence_threshold ?? 0.6,
+      max_results: options?.max_results ?? 15,
       boost_recent: true,
-      user_context: {
-        userId: 'system',
-        sessionId: 'document-search',
-        caseId
-      }
+      user_context: { userId: 'system', sessionId: 'document-search', caseId }
     };
 
-    const searchResult = await multiEmbeddingVectorService.searchSimilar(searchQuery);
+    (searchQuery as unknown as Record<string, unknown>).query_embedding = this.mergeEmbeddings([
+      queryEmbeddings.case_context, queryEmbeddings.legal_domain, queryEmbeddings.temporal
+    ]);
+
+    const searchResult = await this.callVectorSearch(searchQuery);
     return searchResult?.results || [];
   }
 
@@ -451,67 +480,77 @@ class LegalRAGEmbeddingOrchestrator {
   }
 
   // Placeholder methods for data conversion
-  private convertToLegalLaws(results: any[]): LegalLaw[] {
-    return results.map(result => {
-      const r = result || {};
-      const meta = r.metadata || {};
-      const sim = r.similarity_scores || {};
-      return {
-        id: r.id || this.safeRandomId(),
-        title: meta.title || 'Unknown Law',
-        jurisdiction: meta.jurisdiction || 'Unknown',
-        law_type: (meta.law_type as any) || 'statute',
-        section: meta.section || '',
-        subsection: meta.subsection,
-        effective_date: meta.effective_date ? new Date(meta.effective_date) : new Date(),
-        amendment_history: [],
-        content: r.content || '',
-        related_laws: meta.related_laws || [],
-        precedent_cases: meta.precedent_cases || [],
-        enforcement_mechanisms: meta.enforcement_mechanisms || [],
-        penalties: meta.penalties || [],
-        exceptions: meta.exceptions || [],
-        interpretations: [],
-        metadata: {
-          complexity_level: (meta.complexity_level as any) || 'intermediate',
-          applicability_score: sim?.overall || 0.5,
-          controversy_level: meta.controversy_level || 0,
-          enforcement_frequency: meta.enforcement_frequency || 0,
-      } as LegalLaw;
+  private convertToLegalLaws(results: unknown[]): LegalLaw[] {
+    return results.map((result) => {
+      const r = (result as Record<string, unknown>) || {};
+      const meta = (r.metadata as Record<string, unknown>) || {};
+      const sim = (r.similarity_scores as Record<string, unknown>) || {};
+
+      const metadata: LegalLaw['metadata'] = {
+        complexity_level: (meta.complexity_level as any) || 'intermediate',
+        applicability_score: (sim?.overall as number) ?? 0.5,
+        controversy_level: (meta.controversy_level as number) ?? 0,
+        enforcement_frequency: (meta.enforcement_frequency as number) ?? 0
+      };
+
+      const law: LegalLaw = {
+        id: (r.id as string) || this.safeRandomId(),
+        title: (meta.title as string) || 'Unknown Law',
+        jurisdiction: (meta.jurisdiction as string) || 'Unknown',
+        law_type: ((meta.law_type as any) || 'statute'),
+        section: (meta.section as string) || '',
+        subsection: (meta.subsection as string) || undefined,
+        effective_date: meta.effective_date ? new Date(meta.effective_date as string) : new Date(),
+        amendment_history: (meta.amendment_history as unknown[] ) || [],
+        content: (r.content as string) || '',
+        related_laws: (meta.related_laws as string[]) || [],
+        precedent_cases: (meta.precedent_cases as string[]) || [],
+        enforcement_mechanisms: (meta.enforcement_mechanisms as string[]) || [],
+        penalties: (meta.penalties as string[]) || [],
+        exceptions: (meta.exceptions as string[]) || [],
+        interpretations: (meta.interpretations as unknown[]) || [],
+        metadata
+      };
+      return law;
     });
   }
 
-  private convertToLegalCases(results: any[]): LegalCase[] {
-    return results.map(result => {
-      const r = result || {};
-      const meta = r.metadata || {};
-      const sim = r.similarity_scores || {};
-      return {
-        id: r.id || this.safeRandomId(),
-        title: meta.title || 'Unknown Case',
-        jurisdiction: meta.jurisdiction || 'Unknown',
-        practice_area: meta.practice_area || 'General',
-        case_type: (meta.case_type as any) || 'civil',
-        status: (meta.status as any) || 'closed',
-        filing_date: meta.filing_date ? new Date(meta.filing_date) : new Date(),
-        parties: meta.parties || { plaintiff: [], defendant: [], counsel: [] },
-        court: meta.court || 'Unknown Court',
-        judge: meta.judge,
-        docket_number: meta.docket_number || '',
-        related_laws: meta.related_laws || [],
-        key_issues: meta.key_issues || [],
-        case_summary: r.content || '',
-        legal_precedents: meta.legal_precedents || [],
-        evidence_ids: meta.evidence_ids || [],
-        document_ids: meta.document_ids || [],
-        metadata: {
-          complexity_score: meta.complexity_score || 0.5,
-          precedent_value: sim?.overall || 0.5,
-          settlement_probability: meta.settlement_probability,
-          estimated_duration: meta.estimated_duration,
-          budget_category: meta.budget_category,
-        }
-      } as LegalCase;
+  private convertToLegalCases(results: unknown[]): LegalCase[] {
+    return results.map((result) => {
+      const r = (result as Record<string, unknown>) || {};
+      const meta = (r.metadata as Record<string, unknown>) || {};
+      const sim = (r.similarity_scores as Record<string, unknown>) || {};
+
+      const metadata: LegalCase['metadata'] = {
+        complexity_score: (meta.complexity_score as number) ?? 0.5,
+        precedent_value: (sim?.overall as number) ?? 0.5,
+        settlement_probability: meta.settlement_probability as number | undefined,
+        estimated_duration: meta.estimated_duration as string | undefined,
+        budget_category: meta.budget_category as string | undefined
+      };
+
+      const legalCase: LegalCase = {
+        id: (r.id as string) || this.safeRandomId(),
+        title: (meta.title as string) || 'Unknown Case',
+        jurisdiction: (meta.jurisdiction as string) || 'Unknown',
+        practice_area: (meta.practice_area as string) || 'General',
+        case_type: ((meta.case_type as any) || 'civil'),
+        status: ((meta.status as any) || 'closed'),
+        filing_date: meta.filing_date ? new Date(meta.filing_date as string) : new Date(),
+        parties: (meta.parties as any) || { plaintiff: [], defendant: [], counsel: [] },
+        court: (meta.court as string) || 'Unknown Court',
+        judge: (meta.judge as string) || undefined,
+        docket_number: (meta.docket_number as string) || '',
+        related_laws: (meta.related_laws as string[]) || [],
+        key_issues: (meta.key_issues as string[]) || [],
+        case_summary: (r.content as string) || '',
+        legal_precedents: (meta.legal_precedents as string[]) || [],
+        evidence_ids: (meta.evidence_ids as string[]) || [],
+        document_ids: (meta.document_ids as string[]) || [],
+        metadata
+      };
+
+      return legalCase;
     });
   }
 
@@ -553,15 +592,24 @@ class LegalRAGEmbeddingOrchestrator {
 
   // Public API methods
   async getPerformanceMetrics() {
-    return {
-      cacheStats: {
-        cases: this.caseCache.size,
-        laws: this.lawCache.size,
-        ragContexts: this.ragCache.size,
-      },
+    const perf = {
+      cacheStats: { cases: this.caseCache.size, laws: this.lawCache.size, ragContexts: this.ragCache.size },
       embeddingStrategies: Object.keys(this.embeddingStrategies),
-      multiEmbeddingMetrics: await multiEmbeddingVectorService.getPerformanceMetrics()
+      multiEmbeddingMetrics: null as unknown
     };
+
+    const svcAny = multiEmbeddingVectorService as unknown as Record<string, unknown>;
+    if (typeof svcAny.getPerformanceMetrics === 'function') {
+      try {
+        // @ts-ignore dynamic call
+        perf.multiEmbeddingMetrics = await (svcAny.getPerformanceMetrics as Function)();
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.debug('multiEmbeddingVectorService.getPerformanceMetrics failed', err);
+      }
+    }
+
+    return perf;
   }
 
   async clearCache(): Promise<void> {

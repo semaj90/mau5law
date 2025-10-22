@@ -26,12 +26,19 @@ const logger = {
  * Create a new Redis instance
  */
 export function createRedisInstance(config?: RedisOptions): IORedis {
-  const redisUrl = process.env.REDIS_URL || 'redis://:redis@localhost:6379';
+  const redisUrl =
+    process.env.REDIS_URL ?? process.env.VITE_REDIS_URL ?? '';
+  const redisHost = process.env.REDIS_HOST ?? '127.0.0.1';
+  const redisPort = Number(process.env.REDIS_PORT ?? 6379);
+  const redisUsername =
+    process.env.REDIS_USERNAME ?? process.env.VITE_REDIS_USERNAME ?? '';
+  const redisPassword =
+    process.env.REDIS_PASSWORD ?? process.env.VITE_REDIS_PASSWORD ?? '';
 
   const defaultConfig: RedisOptions = {
     maxRetriesPerRequest: 3,
     enableReadyCheck: true,
-    lazyConnect: false,
+    lazyConnect: true,
     retryStrategy(times: number) {
       const delay = Math.min(times * 50, 2000);
       logger.warn('Redis retry attempt', { attempt: times, delay });
@@ -39,9 +46,59 @@ export function createRedisInstance(config?: RedisOptions): IORedis {
     },
   };
 
-  const redis = new IORedis(redisUrl, {
+  const mergedConfig: RedisOptions = {
     ...defaultConfig,
     ...config,
+  };
+
+  if (!config?.lazyConnect && mergedConfig.lazyConnect !== false) {
+    mergedConfig.lazyConnect = true;
+  }
+
+  if (redisUsername) {
+    mergedConfig.username = redisUsername;
+  }
+  if (redisPassword) {
+    mergedConfig.password = redisPassword;
+  }
+
+  if (!redisUrl) {
+    mergedConfig.host = mergedConfig.host ?? redisHost;
+    mergedConfig.port = mergedConfig.port ?? redisPort;
+  }
+
+  const redis = redisUrl
+    ? new IORedis(redisUrl, mergedConfig)
+    : new IORedis(mergedConfig);
+
+  let authErrorLogged = false;
+
+  const handleAuthError = (error: unknown) => {
+    const message = error instanceof Error ? error.message : String(error);
+    if (/NOAUTH|WRONGPASS/i.test(message)) {
+      if (!authErrorLogged) {
+        authErrorLogged = true;
+        logger.error(
+          'Redis authentication failed. Provide REDIS_URL/REDIS_PASSWORD or disable Redis-backed features.',
+          { message }
+        );
+      }
+      if (redis.status !== 'end') {
+        try {
+          redis.disconnect();
+        } catch {
+          // ignore disconnect failures during auth errors
+        }
+      }
+      return true;
+    }
+    return false;
+  };
+
+  redis.on('error', error => {
+    if (handleAuthError(error)) return;
+    const message = error instanceof Error ? error.message : String(error);
+    logger.error('Redis error', { error: message });
   });
 
   redis.on('connect', () => {
@@ -52,10 +109,6 @@ export function createRedisInstance(config?: RedisOptions): IORedis {
     logger.info('Redis ready');
   });
 
-  redis.on('error', (error) => {
-    logger.error('Redis error', { error: error.message });
-  });
-
   redis.on('close', () => {
     logger.warn('Redis connection closed');
   });
@@ -63,6 +116,14 @@ export function createRedisInstance(config?: RedisOptions): IORedis {
   redis.on('reconnecting', () => {
     logger.info('Redis reconnecting...');
   });
+
+  if (mergedConfig.lazyConnect) {
+    redis.connect().catch(error => {
+      if (handleAuthError(error)) return;
+      const message = error instanceof Error ? error.message : String(error);
+      logger.error('Redis initial connection failed', { error: message });
+    });
+  }
 
   return redis;
 }

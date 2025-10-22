@@ -1,13 +1,3 @@
-// Minimal xstate integration stub (triage)
-const xstateIntegration: {
-  getGlobalState: () => unknown;
-  sendEvent: (id: string, evt: unknown) => void;
-} = {
-  getGlobalState: () => ({}),
-  sendEvent: (_id: string, _evt: unknown) => undefined,
-};
-
-export default xstateIntegration;
 /**
  * XState Integration Service - Complete Component Wiring
  * Connects all XState machines with Svelte components for comprehensive state management

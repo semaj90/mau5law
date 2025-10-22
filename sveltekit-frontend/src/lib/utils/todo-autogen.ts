@@ -5,7 +5,7 @@ import { getLocalOllamaUrl } from "$lib/constants/local-llm-config";
  */
 import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
-}
+
 export interface TodoEntry {
   id: string;
   timestamp: string;
@@ -14,13 +14,13 @@ export interface TodoEntry {
   title: string;
   description: string;
   stackTrace?: string;
-  context?: { [key: string]: any }
+  context?: { [key: string]: any };
   llmAttempts?: number;
   memoryUsage?: {
     heapUsed: number;
     heapTotal: number;
     external: number;
-  }
+  };
 }
 export interface LLMMisfireData {
   model: string;
@@ -30,6 +30,36 @@ export interface LLMMisfireData {
   retryCount: number;
   gpuMemory?: number;
 }
+
+// New: explicit types for performance issue details to avoid `any`
+type MemoryPerformanceDetails = {
+  heapUsedMB: number;
+  heapTotalMB: number;
+  externalMB?: number;
+  threshold?: number;
+  samples?: Array<{ timestamp: number; heapUsedMB: number }>;
+};
+
+type GPUPerformanceDetails = {
+  gpuId?: string;
+  memoryUsedMB?: number;
+  memoryTotalMB?: number;
+  utilizationPercent?: number;
+  processIds?: number[];
+  note?: string;
+};
+
+type TimeoutPerformanceDetails = {
+  operation: string;
+  durationMs: number;
+  retries?: number;
+  backoffStrategy?: string;
+  lastError?: string;
+};
+
+// Fallback for other/unknown detail shapes
+type GenericPerformanceDetails = Record<string, unknown>;
+
 class TodoAutogen {
   private readonly todoBasePath = join(process.cwd(), 'todos');
   private readonly unresolvedPath = join(this.todoBasePath, 'unresolved');
@@ -46,12 +76,12 @@ class TodoAutogen {
       join(this.unresolvedPath, 'performance'),
       join(this.todoBasePath, 'autogen'),
       join(this.todoBasePath, 'crewai'),
-      join(this.todoBasePath, 'resolved')
+      join(this.todoBasePath, 'resolved'),
     ];
     for (const dir of dirs) {
       try {
         await mkdir(dir, { recursive: true });
-      } catch (error: any) {
+      } catch (error: unknown) {
         // Directory exists or creation failed
       }
     }
@@ -59,21 +89,21 @@ class TodoAutogen {
   /**
    * Log LLM misfire for review
    */
-  async logLLMMisfire(data: LLMMisfireData, context?: unknown): Promise<string> {
+  async logLLMMisfire(data: LLMMisfireData, _context?: unknown): Promise<string> {
     const id = `llm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const todo: TodoEntry = {
       id,
       timestamp: new Date().toISOString(),
       category: 'llm-misfire',
       severity: data.retryCount > 3 ? 'critical' : 'high',
-      title: `LLM Failure: ${data?.model || "unknown" // @ts-ignore - Model property access} - ${data.error.substring(0, 50)}...`,
-      description: `Model: ${data?.model || "unknown" // @ts-ignore - Model property access}\nError: ${data.error}\nPrompt length: ${data.prompt.length}\nRetries: ${data.retryCount}`,
+      title: `LLM Failure: ${data?.model || 'unknown'} - ${data.error.substring(0, 50)}...`,
+      description: `Model: ${data?.model || 'unknown'}\nError: ${data.error}\nPrompt length: ${data.prompt.length}\nRetries: ${data.retryCount}`,
       context: {
         ...data,
         timestamp: Date.now(),
-        memoryUsage: this.getMemoryUsage()
-      }
-    }
+        memoryUsage: this.getMemoryUsage(),
+      },
+    };
     await this.saveTodo(todo, 'llm-misfires');
     // Auto-queue for CrewAI review if critical
     if (todo.severity === 'critical') {
@@ -92,13 +122,13 @@ class TodoAutogen {
       category: 'typescript',
       severity: error.includes('error TS') ? 'high' : 'medium',
       title: `TypeScript Error: ${file}${lineNumber ? `:${lineNumber}` : ''}`,
-      description: error;
+      description: error,
       context: {
         file,
         lineNumber,
-        memoryUsage: this.getMemoryUsage()
-      }
-    }
+        memoryUsage: this.getMemoryUsage(),
+      },
+    };
     await this.saveTodo(todo, 'typescript');
     return id;
   }
@@ -117,16 +147,19 @@ class TodoAutogen {
       stackTrace: error.stack,
       context: {
         ...context,
-        memoryUsage: this.getMemoryUsage()
-      }
-    }
+        memoryUsage: this.getMemoryUsage(),
+      },
+    };
     await this.saveTodo(todo, 'runtime');
     return id;
   }
   /**
    * Log performance/memory issues
    */
-  async logPerformanceIssue(type: 'memory' | 'gpu' | 'timeout', details: any): Promise<string> {
+  async logPerformanceIssue(
+    type: 'memory' | 'gpu' | 'timeout',
+    details: MemoryPerformanceDetails | GPUPerformanceDetails | TimeoutPerformanceDetails | GenericPerformanceDetails
+  ): Promise<string> {
     const id = `perf-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const todo: TodoEntry = {
       id,
@@ -138,9 +171,9 @@ class TodoAutogen {
       context: {
         type,
         details,
-        memoryUsage: this.getMemoryUsage()
-      }
-    }
+        memoryUsage: this.getMemoryUsage(),
+      },
+    };
     await this.saveTodo(todo, 'performance');
     return id;
   }
@@ -151,9 +184,9 @@ class TodoAutogen {
     const filename = `${todo.id}.json`;
     const filepath = join(this.unresolvedPath, category, filename);
     try {
-      await writeFile(filepath, JSON.stringify(todo, null, 2);
+      await writeFile(filepath, JSON.stringify(todo, null, 2));
       console.log(`📝 TODO logged: ${filepath}`);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to save TODO:', error);
     }
   }
@@ -166,12 +199,12 @@ class TodoAutogen {
       todoId: todo.id,
       priority: todo.severity,
       timestamp: new Date().toISOString(),
-      instructions: this.generateReviewInstructions(todo)
-    }
+      instructions: this.generateReviewInstructions(todo),
+    };
     try {
-      await writeFile(queueFile, JSON.stringify(queueEntry, null, 2);
+      await writeFile(queueFile, JSON.stringify(queueEntry, null, 2));
       console.log(`🤖 Queued for ${agent} review: ${todo.id}`);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(`Failed to queue for ${agent}:`, error);
     }
   }
@@ -199,7 +232,7 @@ class TodoAutogen {
     if (typeof process !== 'undefined' && process.memoryUsage) {
       return process.memoryUsage();
     }
-    return { heapUsed: 0, heapTotal: 0, external: 0 }
+    return { heapUsed: 0, heapTotal: 0, external: 0 };
   }
 }
 // Singleton instance
@@ -207,32 +240,27 @@ export const todoAutogen = new TodoAutogen();
 /**
  * LLM Retry Logic with Automated TODO Generation
  */
-export async function retryLLMCall<T>(
-  llmCall: () => Promise<T>,
-  model: string;
-  prompt: string,
-  maxRetries = 3;
-): Promise<T> {
+export async function retryLLMCall<T>(llmCall: () => Promise<T>, model: string, prompt: string, maxRetries = 3): Promise<T> {
   let lastError: Error;
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       return await llmCall();
-    } catch (error: any) {
+    } catch (error: unknown) {
       lastError = error as Error;
-      console.warn(`🔄 LLM retry ${attempt}/${maxRetries}:`, error.message);
+      console.warn(`🔄 LLM retry ${attempt}/${maxRetries}:`, lastError.message);
       // Log misfire if multiple attempts
       if (attempt >= 2) {
         await todoAutogen.logLLMMisfire({
           model,
           prompt: prompt.substring(0, 500) + '...', // Truncate for logging;
-          error: error.message,
-          retryCount: attempt
+          error: lastError.message,
+          retryCount: attempt,
         });
       }
       // Exponential backoff with jitter
       const delay = Math.min(2000 * Math.pow(2, attempt - 1), 10000);
       const jitter = Math.random() * 1000;
-      await new Promise((resolve: any) => setTimeout(resolve, delay + jitter);
+      await new Promise(resolve => setTimeout(resolve, delay + jitter));
     }
   }
   // Final attempt failed - log critical misfire
@@ -240,7 +268,7 @@ export async function retryLLMCall<T>(
     model,
     prompt: prompt.substring(0, 500) + '...',
     error: lastError.message,
-    retryCount: maxRetries
+    retryCount: maxRetries,
   });
   throw lastError;
 }
@@ -253,15 +281,16 @@ export function startMemoryMonitoring() {
     const usage = process.memoryUsage();
     const heapUsedMB = usage.heapUsed / 1024 / 1024;
     // Log if memory usage exceeds threshold
-    if (heapUsedMB > 2048) { // 2GB threshold
+    if (heapUsedMB > 2048) {
+      // 2GB threshold
       await todoAutogen.logPerformanceIssue('memory', {
         heapUsedMB,
         heapTotalMB: usage.heapTotal / 1024 / 1024,
         externalMB: usage.external / 1024 / 1024,
-        threshold: 2048
+        threshold: 2048,
       });
     }
   }, 30000); // Check every 30 seconds
   // Cleanup on process exit
-  process.on('beforeExit', () => clearInterval(interval);
+  process.on('beforeExit', () => clearInterval(interval));
 }

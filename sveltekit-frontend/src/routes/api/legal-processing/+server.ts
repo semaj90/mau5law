@@ -3,12 +3,13 @@
  * Handles database synchronization for LangChain document processing
  * Integrates with our decoupled architecture stores
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { db } from '$lib/server/db/index.js'
-import { legalDocuments, ragSessions } from '$lib/server/db/schema-postgres.js'
-import { eq, desc } from 'drizzle-orm'
-import { langExtractService } from '$lib/services/langextract-ollama-service.js'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { db } from '$lib/server/db/index.js';
+import { legalDocuments, ragSessions } from '$lib/server/db/schema-postgres.js';
+import { eq, desc } from 'drizzle-orm';
+import { langExtractService } from '$lib/services/langextract-ollama-service.js';
+import type { DocumentType } from '$lib/services/langextract-ollama-service.js'; // added import for the expected DocumentType
 
 // Define specific types for extracted data
 interface LegalEntity {
@@ -35,10 +36,10 @@ interface DocumentSummary {
 
 // Types for API requests/responses
 interface ProcessDocumentRequest {
-  text: string
-  documentType: 'contract' | 'case' | 'statute' | 'brief'
-  practiceArea?: string
-  sessionId?: string
+  text: string;
+  documentType: DocumentType; // switched to service type to match langExtractService
+  practiceArea?: string;
+  sessionId?: string;
 }
 interface ProcessDocumentResponse {
   id: string;
@@ -55,6 +56,7 @@ interface DocumentSessionResponse {
   documents: DocumentSummary[]; // Changed from Array<any>
   totalProcessed: number;
 }
+
 /**
  * GET /api/legal-processing
  * Retrieve recent document processing sessions
@@ -111,6 +113,46 @@ export const GET: RequestHandler = async ({ url }) => {
  * Process a legal document and store results in database
  */
 export const POST: RequestHandler = async ({ request }) => {
+  // --- Move helpers here (function body root) ---
+  const normalizeSummaryResult = (val: unknown): { summary: string; keyTerms: string[] } => {
+    if (!val) return { summary: 'Processing completed', keyTerms: [] };
+    if (typeof val === 'string') return { summary: val, keyTerms: [] };
+    if (Array.isArray(val)) return { summary: JSON.stringify(val), keyTerms: [] };
+    const asObj = val as Record<string, unknown>;
+    // safely access nested .data.summary without using `any`
+    const dataObj = asObj.data && typeof asObj.data === 'object' ? (asObj.data as Record<string, unknown>) : undefined;
+    const summary =
+      (typeof asObj.summary === 'string' && asObj.summary) ||
+      (typeof asObj.text === 'string' && asObj.text) ||
+      (typeof dataObj?.summary === 'string' && dataObj!.summary) ||
+      'Processing completed';
+    const keyTerms = Array.isArray(asObj.keyTerms)
+      ? (asObj.keyTerms as string[])
+      : Array.isArray(asObj.key_terms)
+        ? (asObj.key_terms as string[])
+        : [];
+    return { summary, keyTerms };
+  };
+
+  const normalizeEntities = (val: unknown): LegalEntity[] => {
+    if (!val) return [];
+    if (Array.isArray(val)) return val as LegalEntity[];
+    const asObj = val as Record<string, unknown>;
+    if (Array.isArray(asObj.entities)) return asObj.entities as LegalEntity[];
+    if (Array.isArray(asObj.results)) return asObj.results as LegalEntity[];
+    return [];
+  };
+
+  const normalizeContractTerms = (val: unknown): ContractTerm[] => {
+    if (!val) return [];
+    if (Array.isArray(val)) return val as ContractTerm[];
+    const asObj = val as Record<string, unknown>;
+    if (Array.isArray(asObj.terms)) return asObj.terms as ContractTerm[];
+    if (Array.isArray(asObj.contractTerms)) return asObj.contractTerms as ContractTerm[];
+    return [];
+  };
+  // --- end helpers ---
+
   try {
     const body: ProcessDocumentRequest = await request.json();
     const { text, documentType, practiceArea, sessionId } = body;
@@ -134,17 +176,24 @@ export const POST: RequestHandler = async ({ request }) => {
     // Process document with LangChain
     const [summaryResult, entitiesResult, contractTermsResult] = await Promise.allSettled([
       langExtractService.generateLegalSummary(text, documentType),
-      langExtractService.extractLegalEntities({ text, documentType }),
+      // include required `extractionType` property to conform to LegalExtractionRequest
+      langExtractService.extractLegalEntities({ text, documentType, extractionType: 'entities' }),
       documentType === 'contract' ? langExtractService.extractContractTerms(text) : Promise.resolve(null),
     ]);
-    // Extract results safely
-    const summary =
+
+    // Extract results safely using normalizers
+    const { summary, keyTerms } =
       summaryResult.status === 'fulfilled'
-        ? summaryResult.value?.summary || 'Processing completed'
-        : 'Summary generation failed';
-    const keyTerms = summaryResult.status === 'fulfilled' ? summaryResult.value?.keyTerms || [] : [];
-    const entities = entitiesResult.status === 'fulfilled' ? entitiesResult.value || [] : [];
-    const contractTerms = contractTermsResult.status === 'fulfilled' ? contractTermsResult.value?.terms || [] : [];
+        ? normalizeSummaryResult(summaryResult.value)
+        : { summary: 'Summary generation failed', keyTerms: [] };
+
+    const entities = entitiesResult.status === 'fulfilled' ? normalizeEntities(entitiesResult.value) : [];
+
+    const contractTerms =
+      contractTermsResult && contractTermsResult.status === 'fulfilled'
+        ? normalizeContractTerms(contractTermsResult.value)
+        : [];
+
     const processingTime = Date.now() - startTime;
     // Store in database
     const [documentRecord] = await db
@@ -216,7 +265,9 @@ export const POST: RequestHandler = async ({ request }) => {
  */
 export const PUT: RequestHandler = async ({ request, params }) => {
   try {
-    const documentId = params.id;
+    // Cast params to a known string-keyed record so TS knows 'id' exists
+    const typedParams = params as Record<string, string | undefined>;
+    const documentId = typedParams.id;
     if (!documentId) {
       return json({ error: 'Document ID required' }, { status: 400 });
     }
@@ -227,7 +278,7 @@ export const PUT: RequestHandler = async ({ request, params }) => {
         ...updates,
         updatedAt: new Date(),
       })
-      .where(eq(legalDocuments.id, documentId)) // Added missing ')'
+      .where(eq(legalDocuments.id, documentId))
       .returning();
     if (!updatedDocument) {
       return json({ error: 'Document not found' }, { status: 404 });
@@ -235,10 +286,7 @@ export const PUT: RequestHandler = async ({ request, params }) => {
     return json(updatedDocument);
   } catch (error) {
     console.error('Failed to update document:', error);
-    return json(
-      { error: 'Failed to update document' }, // Removed ')'
-      { status: 500 }
-    );
+    return json({ error: 'Failed to update document' }, { status: 500 });
   }
 };
 /**
@@ -247,17 +295,16 @@ export const PUT: RequestHandler = async ({ request, params }) => {
  */
 export const DELETE: RequestHandler = async ({ params }) => {
   try {
-    const documentId = params.id;
+    // Cast params to a known string-keyed record so TS knows 'id' exists
+    const typedParams = params as Record<string, string | undefined>;
+    const documentId = typedParams.id;
     if (!documentId) {
       return json({ error: 'Document ID required' }, { status: 400 });
     }
-    await db.delete(legalDocuments).where(eq(legalDocuments.id, documentId)); // Added missing ')'
+    await db.delete(legalDocuments).where(eq(legalDocuments.id, documentId));
     return json({ success: true });
   } catch (error) {
-    console.error('Failed to delete document:', error)
-    return json(
-      { error: 'Failed to delete document' }, // Removed ')'
-      { status: 500 }
-    );
+    console.error('Failed to delete document:', error);
+    return json({ error: 'Failed to delete document' }, { status: 500 });
   }
-}
+};
