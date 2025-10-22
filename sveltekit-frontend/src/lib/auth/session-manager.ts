@@ -411,7 +411,7 @@ export class SessionManager {
       clearInterval(this.cleanupTimer);
     }
     this.cleanupTimer = setInterval(() => {
-      this.cleanupExpiredSessions().catch((error) => {
+      this.cleanupExpiredSessions().catch(error => {
         console.error('Error during session cleanup:', error instanceof Error ? error.message : error);
       });
     }, this.config.cleanupInterval);

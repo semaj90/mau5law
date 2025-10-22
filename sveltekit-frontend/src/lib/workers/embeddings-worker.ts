@@ -201,7 +201,11 @@ type WorkerIncomingMessage =
 type WorkerOutgoingMessage =
   | { type: 'initialized'; id?: string; success: true }
   | { type: 'embedding_result'; id?: string; data: EmbeddingResponse }
-  | { type: 'batch_embedding_result'; id?: string; data: { success: true; embeddings: number[][]; count: number; processingTime: number } }
+  | {
+      type: 'batch_embedding_result';
+      id?: string;
+      data: { success: true; embeddings: number[][]; count: number; processingTime: number };
+    }
   | { type: 'preprocess_result'; id?: string; data: ReturnType<EmbeddingsWorker['preprocessTextForVector']> }
   | { type: 'pong'; timestamp: number }
   | { type: 'error'; id?: string; error: string };
@@ -212,7 +216,11 @@ self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessag
     switch (msg.type) {
       case 'initialize':
         await embeddingsWorker.initialize();
-        (self as DedicatedWorkerGlobalScope).postMessage({ type: 'initialized', id: msg.id, success: true } as WorkerOutgoingMessage);
+        (self as DedicatedWorkerGlobalScope).postMessage({
+          type: 'initialized',
+          id: msg.id,
+          success: true,
+        } as WorkerOutgoingMessage);
         break;
       case 'generate_embedding': {
         const req = msg.data;
@@ -223,7 +231,11 @@ self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessag
           embedding: Array.from(embedding),
           processingTime: performance.now() - (req.startTime ?? performance.now()),
         };
-        (self as DedicatedWorkerGlobalScope).postMessage({ type: 'embedding_result', id: msg.id, data: response } as WorkerOutgoingMessage);
+        (self as DedicatedWorkerGlobalScope).postMessage({
+          type: 'embedding_result',
+          id: msg.id,
+          data: response,
+        } as WorkerOutgoingMessage);
         break;
       }
       case 'generate_batch_embeddings': {
@@ -236,28 +248,46 @@ self.addEventListener('message', async (event: MessageEvent<WorkerIncomingMessag
           count: embeddings.length,
           processingTime: performance.now() - (req.startTime ?? performance.now()),
         };
-        (self as DedicatedWorkerGlobalScope).postMessage({ type: 'batch_embedding_result', id: msg.id, data: batchResponse } as WorkerOutgoingMessage);
+        (self as DedicatedWorkerGlobalScope).postMessage({
+          type: 'batch_embedding_result',
+          id: msg.id,
+          data: batchResponse,
+        } as WorkerOutgoingMessage);
         break;
       }
       case 'preprocess_text': {
         const text = msg.data?.text;
         if (typeof text !== 'string') throw new Error('Invalid preprocess_text request');
         const preprocessResult = await embeddingsWorker.preprocessTextForVector(text);
-        (self as DedicatedWorkerGlobalScope).postMessage({ type: 'preprocess_result', id: msg.id, data: preprocessResult } as WorkerOutgoingMessage);
+        (self as DedicatedWorkerGlobalScope).postMessage({
+          type: 'preprocess_result',
+          id: msg.id,
+          data: preprocessResult,
+        } as WorkerOutgoingMessage);
         break;
       }
       case 'ping':
-        (self as DedicatedWorkerGlobalScope).postMessage({ type: 'pong', timestamp: Date.now() } as WorkerOutgoingMessage);
+        (self as DedicatedWorkerGlobalScope).postMessage({
+          type: 'pong',
+          timestamp: Date.now(),
+        } as WorkerOutgoingMessage);
         break;
-      default:
-        // Exhaustive check
-        const _exhaustiveCheck: never = msg;
+      default: {
+        // Exhaustive check - will error at compile time if a branch is missing
+        const _exhaustiveCheck: never = msg as never;
         throw new Error(`Unhandled message type: ${JSON.stringify(_exhaustiveCheck)}`);
+      }
     }
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : String(err);
     console.error('❌ Worker error:', errorMessage);
-    (self as DedicatedWorkerGlobalScope).postMessage({ type: 'error', id: (msg as any).id, error: errorMessage } as WorkerOutgoingMessage);
+    // msg may not always have an id; extract gracefully
+    const maybeId = msg && typeof (msg as any).id === 'string' ? (msg as any).id : undefined;
+    (self as DedicatedWorkerGlobalScope).postMessage({
+      type: 'error',
+      id: maybeId,
+      error: errorMessage,
+    } as WorkerOutgoingMessage);
   }
 });
 // Health check
