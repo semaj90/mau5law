@@ -2,6 +2,7 @@ import type { Handle } from '@sveltejs/kit';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import Redis from 'ioredis';
+import { initBackends } from '$lib/server/init/backends';
 // Avoid static import of lucia/sveltekit integration at top-level to prevent
 // module resolution errors during Vite SSR/hot reload. We'll lazy-import when needed.
 
@@ -56,6 +57,7 @@ function initRedis() {
 // Initialize at module import so hooks can attach them quickly (best-effort)
 initPostgres();
 initRedis();
+initBackends();
 
 // App.Locals augmentation so we can attach typed locals without `any`
 // module augmentation for SvelteKit's App namespace

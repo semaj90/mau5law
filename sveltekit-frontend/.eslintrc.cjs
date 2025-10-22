@@ -26,6 +26,13 @@ module.exports = {
     ],
     // Disable for Svelte 5 runes
     'no-undef': 'off',
+    'no-restricted-syntax': [
+      'error',
+      {
+        selector: "Literal[value='http://localhost:11434']",
+        message: 'Use getOllamaEndpoint() instead of hardcoded Ollama URLs.',
+      },
+    ],
   },
   ignorePatterns: [
     '*.md',

@@ -24,7 +24,8 @@ const FALLBACK_PATHS: Record<OllamaEndpoint, string> = {
 
 function getEnv(name: string): string | undefined {
   if (typeof import.meta !== 'undefined' && import.meta.env) {
-    const value = import.meta.env[name as keyof typeof import.meta.env];
+    const envRecord = import.meta.env as unknown as Record<string, string | undefined>;
+    const value = envRecord[name];
     if (typeof value === 'string' && value.length > 0) return value;
   }
   if (typeof process !== 'undefined' && process.env) {
@@ -73,6 +74,7 @@ const BASE_URL = normalizeBaseUrl(
 );
 const ENDPOINT_OVERRIDES = parseEndpointOverrides();
 
+const BACKENDS = new Map<string, string>();
 export const OLLAMA_ENDPOINTS: Record<OllamaEndpoint, string> = (Object.keys(FALLBACK_PATHS) as OllamaEndpoint[]).reduce(
   (acc, key) => {
     const explicit = ENDPOINT_OVERRIDES[key];
@@ -81,6 +83,7 @@ export const OLLAMA_ENDPOINTS: Record<OllamaEndpoint, string> = (Object.keys(FAL
   },
   {} as Record<OllamaEndpoint, string>
 );
+BACKENDS.set('ollama', BASE_URL);
 
 function applyPath(base: string, path: string): string {
   return `${base}${path.startsWith('/') ? path : `/${path}`}`;
@@ -96,6 +99,16 @@ export function getOllamaEndpoint(endpoint: OllamaEndpoint, baseOverride?: strin
     return applyPath(normalizedBase, FALLBACK_PATHS[endpoint]);
   }
   return OLLAMA_ENDPOINTS[endpoint];
+}
+
+export function registerBackend(name: string, url: string): void {
+  if (!name || typeof name !== 'string') return;
+  if (!url || typeof url !== 'string') return;
+  BACKENDS.set(name, normalizeBaseUrl(url, url));
+}
+
+export function getBackend(name = 'ollama'): string {
+  return BACKENDS.get(name) ?? BASE_URL;
 }
 /**
  * Ollama Configuration for High-Performance AI Assistant

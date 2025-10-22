@@ -1,93 +1,105 @@
-<!-- Demo Showcase - Overview of All Available Demos -->
 <script lang="ts">
-  // Demo showcase data
-  const demoCategories = [
+  type DemoFeature = {
+    slug: string;
+    name: string;
+    description: string;
+    features: string[];
+    status: 'active' | 'beta' | 'coming-soon';
+    complexity: 'low' | 'medium' | 'high';
+  };
+
+  type DemoCategory = {
+    name: string;
+    icon: string;
+    demos: DemoFeature[];
+  };
+
+  const demoCategories: DemoCategory[] = [
     {
       name: 'AI & Processing',
-      icon '🤖',
+      icon: '🤖',
       demos: [
         {
           slug: 'ai-assistant',
           name: 'AI Legal Assistant',
-          description 'Intelligent legal research and document analysis with Gemma embeddings',
+          description: 'Intelligent legal research and document analysis with Gemma embeddings.',
           features: ['Legal Research', 'Document Analysis', 'Case Recommendations'],
           status: 'active',
-          complexity: 'high',
+          complexity: 'high'
         },
         {
           slug: 'cuda-streaming',
           name: 'CUDA Streaming',
-          description 'Real-time GPU-accelerated document processing pipeline',
+          description: 'Real-time GPU-accelerated document processing pipeline.',
           features: ['GPU Processing', 'Real-time Streaming', 'CUDA Integration'],
           status: 'active',
-          complexity: 'high',
+          complexity: 'high'
         },
         {
           slug: 'vector-search',
           name: 'Vector Intelligence',
-          description 'Semantic search using vector embeddings and similarity matching',
+          description: 'Semantic search using vector embeddings and similarity matching.',
           features: ['Vector Embeddings', 'Semantic Search', 'Similarity Scoring'],
           status: 'active',
-          complexity: 'medium',
-        },
-      ],
+          complexity: 'medium'
+        }
+      ]
     },
     {
       name: 'Legal Workflow',
-      icon '⚖️',
+      icon: '⚖️',
       demos: [
         {
           slug: 'evidence-canvas',
           name: 'Evidence Canvas',
-          description 'Interactive evidence organization and case visualization',
+          description: 'Interactive evidence organization and case visualization.',
           features: ['Evidence Management', 'Visual Organization', 'Case Building'],
           status: 'active',
-          complexity: 'medium',
+          complexity: 'medium'
         },
         {
           slug: 'legal-research',
           name: 'Legal Research',
-          description 'Advanced legal document search with precedent matching',
+          description: 'Advanced legal document search with precedent matching.',
           features: ['Document Search', 'Precedent Analysis', 'Legal Citations'],
           status: 'active',
-          complexity: 'medium',
-        },
-      ],
+          complexity: 'medium'
+        }
+      ]
     },
     {
       name: 'Performance & UI',
-      icon '🎮',
+      icon: '⚡',
       demos: [
         {
           slug: 'webgpu',
           name: 'WebGPU Acceleration',
-          description 'Hardware-accelerated computing for legal AI processing',
+          description: 'Hardware-accelerated computing for legal AI processing.',
           features: ['WebGPU Computing', 'Shader Programs', 'GPU Optimization'],
           status: 'active',
-          complexity: 'high',
+          complexity: 'high'
         },
         {
           slug: 'gaming-ui',
           name: 'Gaming UI System',
-          description 'YoRHa-inspired aesthetic with professional legal functionality',
+          description: 'YoRHa-inspired aesthetic with professional legal functionality.',
           features: ['Gaming Aesthetics', 'Professional UI', 'Theme System'],
           status: 'active',
-          complexity: 'low',
+          complexity: 'low'
         },
         {
           slug: 'performance',
           name: 'Performance Dashboard',
-          description 'Real-time system performance monitoring and optimization',
+          description: 'Real-time system performance monitoring and optimization.',
           features: ['Performance Metrics', 'Real-time Monitoring', 'System Health'],
           status: 'active',
-          complexity: 'medium',
-        },
-      ],
-    },
+          complexity: 'medium'
+        }
+      ]
+    }
   ];
 
-  // Get status styling
-  function getStatusClass(status: string) {
+  function statusLabelClass(status: DemoFeature['status']): string {
     switch (status) {
       case 'active':
         return 'status-active';
@@ -96,12 +108,11 @@
       case 'coming-soon':
         return 'status-coming-soon';
       default:
-        return 'status-unknown';
+        return '';
     }
   }
 
-  // Get complexity styling
-  function getComplexityClass(complexity: string) {
+  function complexityLabelClass(complexity: DemoFeature['complexity']): string {
     switch (complexity) {
       case 'low':
         return 'complexity-low';
@@ -110,405 +121,235 @@
       case 'high':
         return 'complexity-high';
       default:
-        return 'complexity-unknown';
+        return '';
     }
   }
 </script>
 
 <svelte:head>
   <title>Demo Showcase - Legal AI Platform</title>
-  <meta
-    name="description"
-    content="Explore all available demos of the Legal AI Platform featuring gaming-inspired UI and professional legal tools"
-  />
+  <meta name="description" content="Explore interactive demos across the YoRHa Legal AI platform." />
 </svelte:head>
 
-<div class="showcase">
-  <!-- Header -->
-  <header class="showcase-header">
-    <div class="header-content">
-      <h1 class="showcase-title">🎮 Legal AI Demo Showcase</h1>
-      <p class="showcase-subtitle">
-        Explore cutting-edge legal AI technology with gaming-inspired user experience. Each demo showcases different
-        aspects of our platform's capabilities.
-      </p>
-    </div>
-
-    <div class="showcase-stats">
-      <div class="stat-item">
-        <span class="stat-value">8</span>
-        <span class="stat-label">Demos</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-value">3</span>
-        <span class="stat-label">Categories</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-value">UnoCSS</span>
-        <span class="stat-label">CSS Framework</span>
-      </div>
-    </div>
+<div class="showcase-layout">
+  <header class="showcase-hero">
+    <h1>YoRHa Demo Showcase</h1>
+    <p>
+      Explore interactive demonstrations of the YoRHa Legal AI capabilities. Each demo highlights
+      specialized workflows, GPU acceleration, and legal analytics.
+    </p>
   </header>
 
-  <!-- Demo Categories -->
-  <main class="showcase-content">
+  <section class="category-section">
     {#each demoCategories as category}
-      <section class="demo-category">
+      <article class="category">
         <header class="category-header">
           <span class="category-icon">{category.icon}</span>
-          <h2 class="category-title">{category.name}</h2>
-          <span class="category-count">{category.demos.length} demos</span>
+          <h2>{category.name}</h2>
         </header>
-
         <div class="demo-grid">
           {#each category.demos as demo}
-            <article class="demo-card">
-              <header class="demo-card-header">
-                <div class="demo-card-title">
-                  <h3>{demo.name}</h3>
-                  <div class="demo-badges">
-                    <span class="status-badge {getStatusClass(demo.status)}">
-                      {demo.status}
-                    </span>
-                    <span class="complexity-badge {getComplexityClass(demo.complexity)}">
-                      {demo.complexity}
-                    </span>
-                  </div>
-                </div>
-              </header>
-
-              <div class="demo-card-body">
-                <p class="demo-description">{demo.description}</p>
-
-                <div class="demo-features">
-                  {#each demo.features as feature}
-                    <span class="feature-tag">{feature}</span>
-                  {/each}
-                </div>
+            <div class="demo-card">
+              <div class="demo-card-header">
+                <h3>{demo.name}</h3>
+                <span class={`status-label ${statusLabelClass(demo.status)}`}>{demo.status}</span>
               </div>
-
-              <footer class="demo-card-footer">
-                <a href="/demo/{demo.slug}" class="demo-launch-btn"> 🚀 Launch Demo </a>
+              <p class="demo-description">{demo.description}</p>
+              <ul class="demo-features">
+                {#each demo.features as feature}
+                  <li>{feature}</li>
+                {/each}
+              </ul>
+              <footer class="demo-meta">
+                <span class={`complexity-label ${complexityLabelClass(demo.complexity)}`}>
+                  {demo.complexity} complexity
+                </span>
+                <a class="demo-launch" href={`/demo/${demo.slug}`}>
+                  Launch Demo →
+                </a>
               </footer>
-            </article>
+            </div>
           {/each}
         </div>
-      </section>
+      </article>
     {/each}
-  </main>
-
-  <!-- Footer -->
-  <footer class="showcase-footer">
-    <div class="footer-content">
-      <p class="footer-text">
-        Built with <strong>SvelteKit 2</strong>, <strong>UnoCSS</strong>, and <strong>WebGPU</strong>
-      </p>
-      <div class="footer-links">
-        <a href="/">← Back to Main App</a>
-        <a href="/auth/login">Login to Platform</a>
-      </div>
-    </div>
-  </footer>
+  </section>
 </div>
 
 <style>
-  .showcase {
-    min-height: 100vh;
-    background: var(--nier-bg-primary);
-  }
-
-  /* Header */
-  .showcase-header {
-    background: linear-gradient(135deg, var(--nier-bg-secondary), var(--nier-bg-tertiary));
-    padding: 3rem 2rem;
-    border-bottom: 2px solid var(--nier-accent-warm);
-  }
-
-  .header-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-
-  .showcase-title {
-    font-size: 3rem;
-    font-weight: bold;
-    color: var(--nier-accent-warm);
-    margin: 0 0 1rem 0;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  }
-
-  .showcase-subtitle {
-    font-size: 1.2rem;
-    color: var(--nier-text-secondary);
-    max-width: 600px;
-    margin: 0 auto;
-    line-height: 1.6,
-  }
-
-  .showcase-stats {
+  .showcase-layout {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     gap: 3rem;
-    max-width: 1200px;
-    margin: 0 auto;
+    padding: 2rem;
+    min-height: 100%;
   }
 
-  .stat-item {
+  .showcase-hero {
+    text-align: center;
     display: flex;
-    flex-direction column;
-    align-items: center;
-    gap: 0.5rem;
+    flex-direction: column;
+    gap: 1rem;
   }
 
-  .stat-value {
-    font-size: 2rem;
-    font-weight: bold;
-    color: var(--nier-accent-cool);
+  .showcase-hero h1 {
+    font-size: 2.5rem;
+    margin: 0;
   }
 
-  .stat-label {
-    font-size: 0.9rem;
-    color: var(--nier-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  /* Content */
-  .showcase-content {
-    max-width: 1200px;
+  .showcase-hero p {
     margin: 0 auto;
-    padding: 3rem 2rem;
+    max-width: 720px;
+    color: var(--text-muted);
   }
 
-  /* Categories */
-  .demo-category {
-    margin-bottom: 4rem;
+  .category-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .category {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
   }
 
   .category-header {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
+    gap: 0.75rem;
+  }
+
+  .category-header h2 {
+    margin: 0;
+    font-size: 1.75rem;
   }
 
   .category-icon {
-    font-size: 2rem;
+    font-size: 1.75rem;
   }
 
-  .category-title {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: var(--nier-text-primary);
-    margin: 0,
-  }
-
-  .category-count {
-    background: var(--nier-accent-cool);
-    color: var(--nier-bg-primary);
-    padding: 0.25rem 0.75rem;
-    border-radius: 1rem;
-    font-size: 0.8rem;
-    font-weight: bold;
-  }
-
-  /* Demo Grid */
   .demo-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
 
-  /* Demo Cards */
   .demo-card {
-    background: var(--nier-bg-secondary);
-    border: 1px solid var(--nier-border-primary);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border-muted);
     border-radius: 1rem;
-    overflow: hidden;
-    transition all 0.3s ease;
-  }
-
-  .demo-card:hover {
-    border-color: var(--nier-accent-warm);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    background: var(--surface-primary);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   }
 
   .demo-card-header {
-    padding: 1.5rem 1.5rem 0 1.5rem;
-  }
-
-  .demo-card-title {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     gap: 1rem;
-    margin-bottom: 1rem;
   }
 
-  .demo-card-title h3 {
-    font-size: 1.3rem;
-    font-weight: bold;
-    color: var(--nier-accent-warm);
-    margin: 0,
-  }
-
-  .demo-badges {
-    display: flex;
-    gap: 0.5rem;
-    flex-shrink: 0,
-  }
-
-  .status-badge,
-  .complexity-badge {
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.5rem;
-    font-size: 0.7rem;
-    font-weight: bold;
-    text-transform: uppercase;
-  }
-
-  .status-active {
-    background: #10b981;
-    color: white;
-  }
-
-  .status-beta {
-    background: #f59e0b;
-    color: white;
-  }
-
-  .status-coming-soon {
-    background: #6b7280;
-    color: white;
-  }
-
-  .complexity-low {
-    background: var(--nier-accent-cool);
-    color: var(--nier-bg-primary);
-  }
-
-  .complexity-medium {
-    background: #f59e0b;
-    color: white;
-  }
-
-  .complexity-high {
-    background: #ef4444;
-    color: white;
-  }
-
-  .demo-card-body {
-    padding: 0 1.5rem 1.5rem 1.5rem;
+  .demo-card-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
   }
 
   .demo-description {
-    color: var(--nier-text-secondary);
-    line-height: 1.5,
-    margin: 0 0 1.5rem 0;
+    margin: 0;
+    color: var(--text-secondary);
+    line-height: 1.5;
   }
 
   .demo-features {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    margin-bottom: 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
-  .feature-tag {
-    background: var(--nier-bg-tertiary);
-    color: var(--nier-text-primary);
-    border: 1px solid var(--nier-border-muted);
+  .demo-features li {
     padding: 0.25rem 0.5rem;
     border-radius: 0.5rem;
-    font-size: 0.8rem;
+    background: var(--surface-secondary);
+    border: 1px solid var(--border-muted);
+    font-size: 0.85rem;
   }
 
-  .demo-card-footer {
-    padding: 0 1.5rem 1.5rem 1.5rem;
-  }
-
-  .demo-launch-btn {
-    display: block;
-    width: 100%;
-    padding: 1rem;
-    background: var(--nier-accent-warm);
-    color: var(--nier-bg-primary);
-    text-decoration none;
-    text-align: center;
-    border-radius: 0.5rem;
-    font-weight: bold;
-    transition all 0.2s ease;
-  }
-
-  .demo-launch-btn:hover {
-    background: var(--nier-accent-cool);
-    transform: translateY(-1px);
-  }
-
-  /* Footer */
-  .showcase-footer {
-    background: var(--nier-bg-secondary);
-    border-top: 1px solid var(--nier-border-primary);
-    padding: 2rem;
-    margin-top: 3rem;
-  }
-
-  .footer-content {
-    max-width: 1200px;
-    margin: 0 auto;
+  .demo-meta {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 2rem;
-  }
-
-  .footer-text {
-    color: var(--nier-text-muted);
-    margin: 0,
-  }
-
-  .footer-links {
-    display: flex;
     gap: 1rem;
   }
 
-  .footer-links a {
-    color: var(--nier-accent-cool);
-    text-decoration none;
+  .status-label,
+  .complexity-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 600;
   }
 
-  .footer-links a:hover {
-    color: var(--nier-accent-warm);
+  .status-active {
+    background: rgba(16, 185, 129, 0.15);
+    color: rgb(16, 185, 129);
   }
 
-  /* Responsive */
+  .status-beta {
+    background: rgba(245, 158, 11, 0.15);
+    color: rgb(245, 158, 11);
+  }
+
+  .status-coming-soon {
+    background: rgba(148, 163, 184, 0.15);
+    color: rgb(100, 116, 139);
+  }
+
+  .complexity-low {
+    background: rgba(59, 130, 246, 0.12);
+    color: rgb(59, 130, 246);
+  }
+
+  .complexity-medium {
+    background: rgba(139, 92, 246, 0.12);
+    color: rgb(139, 92, 246);
+  }
+
+  .complexity-high {
+    background: rgba(249, 115, 22, 0.12);
+    color: rgb(249, 115, 22);
+  }
+
+  .demo-launch {
+    text-decoration: none;
+    font-weight: 600;
+    color: var(--accent-color, rgb(59, 130, 246));
+    transition: color 0.2s ease;
+  }
+
+  .demo-launch:hover {
+    color: var(--accent-emphasis, rgb(37, 99, 235));
+  }
+
   @media (max-width: 768px) {
-    .showcase-header {
-      padding: 2rem 1rem;
+    .showcase-layout {
+      padding: 1.5rem;
     }
 
-    .showcase-title {
-      font-size: 2rem;
-    }
-
-    .showcase-stats {
-      gap: 2rem;
-    }
-
-    .showcase-content {
-      padding: 2rem 1rem;
-    }
-
-    .demo-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .footer-content {
-      flex-direction column;
-      text-align: center;
+    .demo-meta {
+      flex-direction: column;
+      align-items: flex-start;
     }
   }
 </style>

@@ -18,6 +18,16 @@
 import { json } from "@sveltejs/kit"
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 import type { RequestHandler } from './$types.js'
+import { aiPipeline } from '$lib/ai/ai-pipeline.server'; // Adjust path as per actual file location
+
+// Define the expected structure of the ingestion result
+interface IngestionResult {
+  documentId?: string;
+  embeddingId?: string;
+  analysis?: Record<string, unknown>; // More specific than 'any' but still flexible
+  processingTime?: number;
+}
+
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const formData = await request.formData()
@@ -39,7 +49,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     // Initialize AI pipeline
     await aiPipeline.initialize()
     // Process document with full AI pipeline
-    const result = await aiPipeline.ingestLegalDocument(content, {
+    const result: IngestionResult = await aiPipeline.ingestLegalDocument(content, {
       title: title || file.name,
       documentType: documentType || "unknown",
       practiceArea,
@@ -50,10 +60,10 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
     })
     return json({
       success: true,
-      documentId: (result as { documentId?: any; embeddingId?: any; analysis?: any; processingTime?: any }).documentId,
-      embeddingId: (result as { documentId?: any; embeddingId?: any; analysis?: any; processingTime?: any }).embeddingId,
-      analysis: (result as { documentId?: any; embeddingId?: any; analysis?: any; processingTime?: any }).analysis,
-      processingTime: (result as { documentId?: any; embeddingId?: any; analysis?: any; processingTime?: any }).processingTime,
+      documentId: result.documentId,
+      embeddingId: result.embeddingId,
+      analysis: result.analysis,
+      processingTime: result.processingTime,
       timestamp: new Date().toISOString(),
       metadata: {
         filename: file.name,
@@ -61,13 +71,13 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         mimeType: file.type
       }
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Document ingestion error:", error)
-    return json()
+    return json(
       {
         error: "Document ingestion failed",
-        message,: error instanceof Error ? error.message: "Unknown error",
-        timestamp,: new Date().toISOString()
+        message: error instanceof Error ? error.message : String(error),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     )
@@ -83,12 +93,13 @@ const originalGETHandler: RequestHandler = async () => {
       stats,
       timestamp: new Date().toISOString()
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Ingestion stats error:", error)
-    return json({
+    return json(
+      {
         error: "Failed to get statistics",
-        message: error instanceof Error ? error.message: "Unknown error"
-      },)
+        message: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     )
   }

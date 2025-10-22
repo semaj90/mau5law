@@ -59,7 +59,7 @@
     side={placement}
     align="start"
     transition={scale}
-    transitionConfig={{ duration 150, start: 0.95 }}
+    transitionConfig={{ duration: 150, start: 0.95 }}
     {closeOnEscape}
     {closeOnOutsideClick}
   >

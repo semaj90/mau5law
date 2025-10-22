@@ -1,433 +1,277 @@
-/**
- * Simplified Worker Pool for Multimodal Ingestion
- *
- * Multi-core worker pool that processes jobs through worker threads:
- * - MinIO object fetching and processing
- * - OCR for images/PDFs
- * - Audio extraction and embedding
- * - Video frame sampling
- * - JSON parsing with simdjson-wasm
- * - Direct database insertion with pgvector
- */
-import { Worker } from "worker_threads";
-import { EventEmitter } from "events";
-import * as path from "path";
-import * as os from "os";
-const cpus = os.cpus;
+import { Worker } from 'worker_threads';
+import { cpus } from 'os';
+import { EventEmitter } from 'events';
+import path from 'path';
+import { generateEmbeddings } from '$lib/server/services/embedding-service';
+
+export type JobType = 'ocr' | 'audio' | 'video' | 'document' | 'embedding' | 'json' | 'other';
+
 export type Job = {
   id: string;
-  minioUrl?: string;
-  fileBuffer?: Buffer;
-  filename?: string;
-  userId: string;
-  contentType?: string;
-  metadata?: { [key: string]: any }
-}
-}
-export interface WorkerJobData {
-  id: string;
-  type: 'ocr' | 'audio' | 'video' | 'document' | 'embedding' | 'json';
-  payload: any;
-  options?: JobOptions;
-}
-export interface WorkerJobResult {
-  success: boolean;
-  data?: any;
-  error?: string;
-  processingTime: number;
-  metadata?: { [key: string]: any }
-}
-export interface JobOptions {
-  priority?: number;
-  timeout?: number;
-  retryAttempts?: number;
-  metadata?: { [key: string]: any }
-}
+  type: JobType;
+  payload?: unknown; // Changed from 'any' to 'unknown'
+  options?: { priority?: number; timeoutMs?: number; __resolve?: (r: JobResult) => void; [key: string]: unknown }; // Changed from 'any' to 'unknown'
+};
+
+export type JobResult = { success: boolean; data?: unknown; error?: string; processingTimeMs?: number }; // Changed from 'any' to 'unknown'
+
+// Interface for Worker Pool Options
 export interface WorkerPoolOptions {
-  maxWorkers?: number;
   minWorkers?: number;
-  idleTimeout?: number;
-  jobTimeout?: number;
-  retryAttempts?: number;
+  maxWorkers?: number;
+  idleTimeout?: number; // in milliseconds
+  cleanupIntervalMs?: number; // how often to check for idle workers
 }
-export class SimpleWorkerPool {
-  pool: Worker[] = [];
-  queue: Job[] = [];
-  free: boolean[] = [];
-  private jobCallbacks = new Map<string, { resolve: Function; reject: Function }>();
-  constructor(num = Math.max(1, Math.floor(os.cpus().length / 2))) {
-    for (let i = 0; i < num; i++) {
-      const workerPath = new URL('./ingest-worker.js', import.meta.url).pathname;
-      const w = new Worker(workerPath);
-      this.pool.push(w);
-      this.free.push(true);
-      w.on("message", (message) => {
-        // Worker finished job -> mark free and resolve/reject promise
-        const idx = this.pool.indexOf(w);
-        this.free[idx] = true;
-        if (message.jobId && this.jobCallbacks.has(message.jobId)) {
-          const { resolve, reject } = this.jobCallbacks.get(message.jobId)!;
-          this.jobCallbacks.delete(message.jobId);
-          if (message.error) {
-            reject(new Error(message.error);
-          } else {
-            resolve(message);
-          }
-        }
-        this.maybeProcessQueue();
-      });
-      w.on("error", (err) => {
-        console.error("Worker error:", err);
-        const idx = this.pool.indexOf(w);
-        this.free[idx] = true;
-        this.maybeProcessQueue();
+
+class WorkerSlot {
+  worker: Worker;
+  busy = false;
+  lastUsed: number; // Track last usage time for idle cleanup
+  constructor(worker: Worker) {
+    this.worker = worker;
+    this.lastUsed = Date.now(); // Initialize
+  }
+}
+
+export class ServerIngestWorkerPool extends EventEmitter {
+  private slots: WorkerSlot[] = [];
+  private queue: Job[] = [];
+  private options: Required<WorkerPoolOptions>; // Store pool configuration options
+  private activeJobs: number = 0; // Track currently active jobs
+  private totalProcessed: number = 0; // Track total jobs processed
+  private isShuttingDown: boolean = false; // Flag to indicate shutdown state
+  private cleanupInterval: NodeJS.Timeout | null = null; // Interval for idle worker cleanup
+
+  constructor(options: WorkerPoolOptions = {}) {
+    super();
+    // Initialize options with defaults
+    this.options = {
+      minWorkers: options.minWorkers ?? 1,
+      maxWorkers: options.maxWorkers ?? Math.max(2, Math.floor(cpus().length / 2)),
+      idleTimeout: options.idleTimeout ?? 5 * 60 * 1000, // Default 5 minutes
+      cleanupIntervalMs: options.cleanupIntervalMs ?? 60 * 1000, // Default 1 minute
+    };
+
+    // Start min workers
+    for (let i = 0; i < this.options.minWorkers; i++) this.addWorker();
+
+    // Start periodic cleanup for idle workers
+    this.cleanupInterval = setInterval(() => this.cleanupIdleWorkers(), this.options.cleanupIntervalMs);
+  }
+
+  private addWorker() {
+    if (this.slots.length >= this.options.maxWorkers) return; // Use this.options.maxWorkers
+    const workerPath = path.join(process.cwd(), 'sveltekit-frontend', 'dist', 'server', 'workers', 'ingest-worker.js');
+    const w = new Worker(workerPath, { eval: false });
+    const slot = new WorkerSlot(w);
+    w.on('message', msg => this.onWorkerMessage(slot, msg));
+    w.on('error', err => this.onWorkerError(slot, err));
+    w.on('exit', code => this.onWorkerExit(slot, code));
+    this.slots.push(slot);
+    this.emit('workerAdded', { total: this.slots.length });
+  }
+
+  // Method to remove a worker gracefully
+  private removeWorker(slot: WorkerSlot) {
+    slot.worker.terminate();
+    this.slots = this.slots.filter(s => s !== slot);
+    this.emit('workerRemoved', { total: this.slots.length });
+  }
+
+  private onWorkerMessage(slot: WorkerSlot, msg: JobResult) {
+    slot.busy = false;
+    slot.lastUsed = Date.now(); // Update lastUsed timestamp
+    this.activeJobs--; // Decrement active jobs count
+    this.totalProcessed++; // Increment total processed jobs count
+    this.emit('jobResult', msg);
+    this.maybeProcess();
+  }
+
+  private onWorkerError(slot: WorkerSlot, err: Error) {
+    slot.busy = false;
+    slot.lastUsed = Date.now(); // Update lastUsed timestamp
+    this.activeJobs--; // Decrement active jobs count
+    this.emit('workerError', err.message || String(err));
+    this.maybeProcess();
+  }
+
+  private onWorkerExit(slot: WorkerSlot, code: number) {
+    this.slots = this.slots.filter(s => s !== slot);
+    this.emit('workerExit', { code, total: this.slots.length });
+    if (this.slots.length < this.options.minWorkers && !this.isShuttingDown) this.addWorker(); // Use this.options.minWorkers, check isShuttingDown
+  }
+
+  async push(job: Job): Promise<JobResult> {
+    // Check if pool is shutting down
+    if (this.isShuttingDown) {
+      return { success: false, error: 'Worker pool is shutting down' };
+    }
+
+    if (job.type === 'embedding') {
+      const start = Date.now();
+      try {
+        const texts: string[] = Array.isArray(job.payload?.texts)
+          ? job.payload.texts
+          : job.payload?.text
+            ? [job.payload.text]
+            : [];
+        const model = job.payload?.model;
+        const res = await generateEmbeddings({ texts, model });
+        const processingTimeMs = Date.now() - start;
+        this.totalProcessed++; // Increment for embedding jobs too
+        return { success: true, data: res, processingTimeMs };
+      } catch (err: unknown) {
+        // Changed 'any' to 'unknown'
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        return { success: false, error: errorMessage, processingTimeMs: Date.now() - start };
+      }
+    }
+
+    let slot = this.slots.find(s => !s.busy); // Use 'let'
+    if (!slot && this.slots.length < this.options.maxWorkers) {
+      // Use this.options.maxWorkers
+      this.addWorker();
+      slot = this.slots[this.slots.length - 1]; // Get the newly added worker
+    }
+
+    if (!slot) {
+      // No free workers and cannot add more, queue the job
+      return await new Promise<JobResult>(resolve => {
+        this.queue.push({ ...job, options: { ...(job.options || {}), __resolve: resolve } });
+        this.maybeProcess(); // Attempt to process if a worker becomes free
       });
     }
+    return await this.runJobOnSlot(slot, job); // Added non-null assertion as slot is guaranteed or job is queued
   }
-  async processJob(job: Job): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.jobCallbacks.set(job.id, { resolve, reject });
-      this.queue.push(job);
-      this.maybeProcessQueue();
+
+  private maybeProcess() {
+    // Prevent processing if shutting down
+    if (this.isShuttingDown) return;
+
+    // Use a while loop to process as many jobs as possible
+    while (this.queue.length > 0) {
+      const freeSlot = this.slots.find(s => !s.busy);
+      if (!freeSlot) break; // No free workers, wait
+
+      const job = this.queue.shift(); // Take the first job from the queue
+      if (!job) continue; // Should not happen if queue.length > 0
+
+      const resolve = job.options?.__resolve as ((r: JobResult) => void) | undefined;
+      this.runJobOnSlot(freeSlot, job).then(r => resolve?.(r));
+    }
+  }
+
+  private runJobOnSlot(slot: WorkerSlot, job: Job): Promise<JobResult> {
+    slot.busy = true;
+    slot.lastUsed = Date.now(); // Update lastUsed when job starts
+    this.activeJobs++; // Increment active jobs
+
+    return new Promise<JobResult>(resolve => {
+      const start = Date.now();
+      const timeout = job.options?.timeoutMs ?? 5 * 60 * 1000; // default 5m
+      const timer = setTimeout(() => {
+        slot.worker.removeListener('message', listener); // Remove listener to prevent memory leaks
+        slot.busy = false;
+        this.activeJobs--; // Decrement active jobs on timeout
+        resolve({ success: false, error: 'job timeout', processingTimeMs: Date.now() - start });
+        this.maybeProcess(); // Try to process next job
+      }, timeout);
+
+      const listener = (msg: JobResult) => {
+        clearTimeout(timer);
+        slot.busy = false;
+        slot.lastUsed = Date.now(); // Update lastUsed on completion
+        this.activeJobs--; // Decrement active jobs
+        this.totalProcessed++; // Increment total processed jobs
+        resolve({ success: true, data: msg, processingTimeMs: Date.now() - start });
+        this.maybeProcess(); // Try to process next job
+      };
+
+      slot.worker.once('message', listener);
+      slot.worker.postMessage({ id: job.id, type: job.type, payload: job.payload });
     });
   }
-  push(job: Job): void {
-    this.queue.push(job);
-    this.maybeProcessQueue();
-  }
-  private maybeProcessQueue(): void {
-    for (let i = 0; i < this.pool.length; i++) {
-      if (!this.free[i]) continue;
-      const job = this.queue.shift();
-      if (!job) return;
-      this.free[i] = false;
-      this.pool[i].postMessage(job);
+
+  // New method to clean up idle workers (contains the problematic code block)
+  private cleanupIdleWorkers() {
+    if (this.isShuttingDown) return; // Prevent cleanup during shutdown
+
+    const now = Date.now();
+    const workersToRemove: WorkerSlot[] = [];
+
+    for (const slot of this.slots) {
+      if (!slot.busy && this.slots.length > this.options.minWorkers && now - slot.lastUsed > this.options.idleTimeout) {
+        workersToRemove.push(slot);
+      }
+    }
+
+    for (const slot of workersToRemove) {
+      this.removeWorker(slot);
     }
   }
+
+  // Merged with the "rewritten" getStats
   getStats() {
     return {
-      totalWorkers: this.pool.length,
-      busyWorkers: this.free.filter(item => item.length),
-      freeWorkers: this.free.filter(item => item.length),
+      totalWorkers: this.slots.length,
+      activeJobs: this.activeJobs,
       queuedJobs: this.queue.length,
-      pendingCallbacks: this.jobCallbacks.size
-    }
-  }
-  async shutdown(): Promise<void> {
-    // Terminate all workers
-    for (const worker of this.pool) {
-      await worker.terminate();
-    }
-    this.pool = [];
-    this.free = [];
-    this.queue = [];
-    this.jobCallbacks.clear();
-  }
-}
-// Instantiate a shared pool export
-export const sharedWorkerPool = new SimpleWorkerPool();
-class WorkerInstance {
-  public readonly id: string;
-  public readonly worker: Worker;
-  public busy = false;
-  public currentJobId?: string;
-  public lastUsed = Date.now();
-  private jobTimeout?: NodeJS.Timeout;
-  constructor(id: string, workerScript: string) {
-    this.id = id;
-    this.worker = new Worker(workerScript);
-  }
-  async executeJob(jobData: WorkerJobData, timeout: number): Promise<WorkerJobResult> {
-    if (this.busy) {
-      throw new Error(`Worker ${this.id} is already busy`);
-    }
-    this.busy = true;
-    this.currentJobId = jobData.id;
-    this.lastUsed = Date.now();
-    return new Promise((resolve, reject) => {
-      // Set timeout
-      this.jobTimeout = setTimeout(() => {
-        this.worker.terminate();
-        reject(new Error(`Job ${jobData.id} timed out after ${timeout}ms`);
-      }, timeout);
-      // Listen for result
-      const onMessage = (result: WorkerJobResult) => {
-        this.cleanup();
-        resolve(result);
-      }
-      const onError = (error: Error) => {
-        this.cleanup();
-        reject(error);
-      }
-      const onExit = (code: number) => {
-        this.cleanup();
-        reject(new Error(`Worker exited with code ${code}`);
-      }
-      this.worker.once('message', onMessage);
-      this.worker.once('error', onError);
-      this.worker.once('exit', onExit);
-      // Send job to worker
-      this.worker.postMessage(jobData);
-    });
-  }
-  private cleanup() {
-    this.busy = false;
-    this.currentJobId = undefined;
-    if (this.jobTimeout) {
-      clearTimeout(this.jobTimeout);
-      this.jobTimeout = undefined;
-    }
-  }
-  terminate() {
-    this.cleanup();
-    this.worker.terminate();
-  }
-}
-class PriorityQueue<T> {
-  private items: Array<any> = [];
-  enqueue(item: T, priority = 0) {
-    this.items.push({ priority, item });
-    this.items.sort((a, b) => b.priority - a.priority); // Higher priority first
-  }
-  dequeue(): T | undefined {
-    return this.items.shift()?.item;
-  }
-  get length() {
-    return this.items.length;
-  }
-  clear() {
-    this.items = [];
-  }
-}
-export class AdvancedWorkerPool extends EventEmitter {
-  private workers: Map<string, WorkerInstance> = new Map();
-  private jobQueue = new PriorityQueue();
-  private readonly options: Required<WorkerPoolOptions>;
-  private readonly workerScript: string;
-  private activeJobs = 0;
-  private totalProcessed = 0;
-  private cleanupInterval?: NodeJS.Timeout;
-  private isShuttingDown = false;
-  constructor(_options: WorkerPoolOptions = {}) {
-    super();
-    const cpuCount = cpus().length;
-    this.options = {
-      maxWorkers: options.maxWorkers || Math.max(2, cpuCount - 1),
-      minWorkers: options.minWorkers || 1,
-      idleTimeout: options.idleTimeout || 30000, // 30 seconds
-      jobTimeout: options.jobTimeout || 300000, // 5 minutes
-      retryAttempts: options.retryAttempts || 2
-    }
-    // Worker script path
-    this.workerScript = new URL('./worker.js', import.meta.url).pathname;
-    // Start with minimum workers
-    this.scaleWorkers();
-    // Periodic cleanup of idle workers
-    this.cleanupInterval = setInterval(() => {
-      this.cleanupIdleWorkers();
-    }, this.options.idleTimeout / 2);
-    this.emit('initialized', {
-      maxWorkers: this.options.maxWorkers,
-      minWorkers: this.options.minWorkers
-    });
-  }
-  async processJob(
-    type: WorkerJobData['type'],
-    payload: any;
-    options: JobOptions = {}
-  ): Promise<WorkerJobResult> {
-    if (this.isShuttingDown) {
-      throw new Error('Worker pool is shutting down');
-    }
-    const jobId = `${type}_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-    const jobData: WorkerJobData = {
-      id: jobId,
-      type,
-      payload,
-      options
-    }
-    return new Promise((resolve, reject) => {
-      this.jobQueue.enqueue()
-        { jobData, resolve, reject, options },
-        options.priority || 0
-      );
-      this.emit('jobQueued', { jobId, type, queueLength: this.jobQueue.length });
-      this.processNextJob();
-    });
-  }
-  private async processNextJob(), {
-    if (this.jobQueue.length === 0) return;
-    const availableWorker = this.getAvailableWorker();
-    if (!availableWorker) {
-      // Try to scale up if possible
-      if (this.workers.size < this.options.maxWorkers) {
-        this.addWorker();
-        // Retry after adding worker
-        setTimeout(() => this.processNextJob(), 10);
-      }
-      return;
-    }
-    const queueItem = this.jobQueue.dequeue();
-    if (!queueItem) return;
-    const { jobData, resolve, reject, options } = queueItem;
-    this.activeJobs++;
-    this.emit('jobStarted', {
-      jobId: jobData.id,
-      type: jobData.type,
-      workerId: availableWorker.id,
-      activeJobs: this.activeJobs,
-    });
-    try {
-      const timeout = options.timeout || this.options.jobTimeout;
-      const result = await availableWorker.executeJob(jobData, timeout);
-      this.activeJobs--;
-      this.totalProcessed++;
-      this.emit('jobCompleted', {
-        jobId: jobData.id,
-        type: jobData.type,
-        workerId: availableWorker.id,
-        processingTime: (result as { processingTime?: any; success?: any }).processingTime,
-        success: (result as { processingTime?: any; success?: any }).success
-      });
-      resolve(result);
-    } catch (error) {
-      this.activeJobs--;
-      this.emit('jobFailed', {
-        jobId: jobData.id,
-        type: jobData.type,
-        workerId: availableWorker.id,
-        error: error instanceof Error ? error.message: String(error)
-      });
-      // Retry logic
-      const maxRetries = options.retryAttempts ?? this.options.retryAttempts;
-      const currentAttempt = (jobData.options?.metadata?.attempt || 0) + 1;
-      if (currentAttempt <= maxRetries) {
-        // Retry with exponential backoff
-        const retryDelay = Math.min(1000 * Math.pow(2, currentAttempt - 1), 10000);
-        setTimeout(() => {
-          jobData.options = {
-            ...jobData.options,
-            metadata: { ...jobData.options?.metadata, attempt: currentAttempt }
-          }
-          this.jobQueue.enqueue({ jobData, resolve, reject, options }, options.priority || 0);
-          this.processNextJob();
-        }, retryDelay);
-      } else {
-        reject(error instanceof Error ? error : new Error(String(error));
-      }
-    }
-    // Process next job if queue has items
-    if (this.jobQueue.length > 0) {
-      setTimeout(() => this.processNextJob(), 0);
-    }
-  }
-  private getAvailableWorker(),: WorkerInstance | null, {
-    for (const worker of Array.from(this.workers.values())) {
-      if (!worker.busy) {
-        return worker;
-      }
-    }
-    return null;
-  }
-  private addWorker(), {
-    if (this.workers.size >= this.options.maxWorkers) return;
-    const workerId = `worker_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-    const worker = new WorkerInstance(workerId, this.workerScript);
-    worker.worker.on('error', (error) => {
-      this.emit('workerError', { workerId, error: error.message });
-      this.removeWorker(workerId);
-    });
-    worker.worker.on('exit', (code) => {
-      if (code !== 0) {
-        this.emit('workerExit', { workerId, code });
-      }
-      this.removeWorker(workerId);
-    });
-    this.workers.set(workerId, worker);
-    this.emit('workerAdded', { workerId, totalWorkers: this.workers.size });
-  }
-  private removeWorker(workerId,: string), {
-    const worker = this.workers.get(workerId);
-    if (worker) {
-      worker.terminate();
-      this.workers.delete(workerId);
-      this.emit('workerRemoved', { workerId, totalWorkers: this.workers.size });
-    }
-  }
-  private scaleWorkers(), {
-    const currentWorkers = this.workers.size;
-    const targetWorkers = Math.max(
-      this.options.minWorkers,
-      Math.min(this.options.maxWorkers, this.jobQueue.length + this.activeJobs)
-    );
-    if (currentWorkers < targetWorkers) {
-      for (let i = currentWorkers; i < targetWorkers; i++) {
-        this.addWorker();
-      }
-    }
-  }
-  private cleanupIdleWorkers(), {
-    if (this.isShuttingDown) return;
-    const now = Date.now();
-    const workersToRemove: string[] = [];
-    for (const [workerId, worker] of Array.from(this.workers.entries())) {
-      if (
-        !worker.busy &&
-        this.workers.size > this.options.minWorkers &&
-        now - worker.lastUsed > this.options.idleTimeout;
-      ) {
-        workersToRemove.push(workerId);
-      }
-    }
-    for (const workerId of workersToRemove) {
-      this.removeWorker(workerId);
-    }
-  }
-  getStats(), {
-    return {
-      totalWorkers: this.workers.size,
-      activeJobs: this.activeJobs,
-      queuedJobs: this.jobQueue.length,
       totalProcessed: this.totalProcessed,
-      busyWorkers: Array.from(this.workers.values()).filter(item => item.length),
-      idleWorkers: Array.from(this.workers.values()).filter(item => item.length)
-    }
+      busyWorkers: this.slots.filter(s => s.busy).length,
+      idleWorkers: this.slots.filter(s => !s.busy).length,
+    };
   }
-  async shutdown(graceful = true, timeout = 30000),: Promise<void> {
-    this.isShuttingDown = tru,e;
-    if (this.cleanupInterva,l) {
+
+  // Merged with the "rewritten" shutdown
+  async shutdown(graceful = true, timeout = 30000): Promise<void> {
+    this.isShuttingDown = true;
+    if (this.cleanupInterval) {
       clearInterval(this.cleanupInterval);
+      this.cleanupInterval = null;
     }
+
     if (graceful && this.activeJobs > 0) {
-      // Wait for active jobs to complete
       const startTime = Date.now();
       while (this.activeJobs > 0 && Date.now() - startTime < timeout) {
-        await new Promise(resolve => setTimeout(resolve, 100);
+        await new Promise(resolve => setTimeout(resolve, 100));
       }
     }
-    // Clear queue
-    this.jobQueue.clear();
-    // Terminate all workers
-    for (const worker of Array.from(this.workers.values())) {
-      worker.terminate();
+
+    // Clear queue and resolve any pending jobs with an error
+    while (this.queue.length > 0) {
+      const job = this.queue.shift();
+      if (job && job.options?.__resolve) {
+        job.options.__resolve({ success: false, error: 'Worker pool shut down before job could be processed' });
+      }
     }
-    this.workers.clear();
+
+    // Terminate all workers
+    for (const slot of this.slots) {
+      slot.worker.terminate();
+    }
+    this.slots = [];
+
     this.emit('shutdown', { graceful, totalProcessed: this.totalProcessed });
   }
 }
-// Singleton instance
-let workerPool: AdvancedWorkerPool | null = null;
-export function getWorkerPool(options?: WorkerPoolOptions): AdvancedWorkerPool {
-  if (!workerPool) {
-    workerPool = new AdvancedWorkerPool(options);
+
+// Singleton instance management
+let workerPoolInstance: ServerIngestWorkerPool | null = null;
+
+export function getWorkerPool(options?: WorkerPoolOptions): ServerIngestWorkerPool {
+  if (!workerPoolInstance) {
+    workerPoolInstance = new ServerIngestWorkerPool(options);
   }
-  return workerPool;
+  return workerPoolInstance;
 }
-// Export the primary WorkerPool as the AdvancedWorkerPool
-export { AdvancedWorkerPool as WorkerPool }
+
+// Export the primary WorkerPool as the ServerIngestWorkerPool
+export { ServerIngestWorkerPool as WorkerPool };
+
 export async function shutdownWorkerPool(graceful = true, timeout = 30000): Promise<void> {
-  if (workerPool) {
-    await workerPool.shutdown(graceful, timeout);
-    workerPool = null;
+  if (workerPoolInstance) {
+    // Use workerPoolInstance
+    await workerPoolInstance.shutdown(graceful, timeout);
+    workerPoolInstance = null;
   }
 }

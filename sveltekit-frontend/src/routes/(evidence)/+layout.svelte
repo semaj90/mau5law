@@ -4,43 +4,39 @@
   import { page } from '$app/stores';
 
   interface Props {
-    data?: any;
+    data?: unknown;
     children?: Snippet;
   }
 
-  let { data, children }: Props = $props();
+  let { data: _data, children }: Props = $props();
 
-  // Evidence navigation items
   const evidenceRoutes = [
-    { name: 'Evidence List', href: '/evidence', icon '📋' },
-    { name: 'Upload Evidence', href: '/evidence/upload', icon '⬆️' },
-    { name: 'Analysis Dashboard', href: '/evidence/analysis', icon '🔍' },
-    { name: 'Evidence Canvas', href: '/evidence/canvas', icon '🎨' },
-    { name: 'Evidence Board', href: '/evidence/board', icon '📊' },
-    { name: 'Workspace', href: '/evidence/workspace', icon '🏢' },
-    { name: 'Interactive Tools', href: '/evidence/interactive', icon '⚡' },
+    { name: 'Evidence List', href: '/evidence', icon: '📋' },
+    { name: 'Upload Evidence', href: '/evidence/upload', icon: '⬆️' },
+    { name: 'Analysis Dashboard', href: '/evidence/analysis', icon: '🔍' },
+    { name: 'Evidence Canvas', href: '/evidence/canvas', icon: '🎨' },
+    { name: 'Evidence Board', href: '/evidence/board', icon: '📊' },
+    { name: 'Workspace', href: '/evidence/workspace', icon: '🗂️' },
+    { name: 'Interactive Tools', href: '/evidence/interactive', icon: '⚡' }
   ];
 
-  // Get current route
   let currentPath = $derived($page.url.pathname);
 </script>
 
 <div class="evidence-layout">
-  <!-- Evidence Header -->
   <header class="evidence-header">
     <div class="evidence-brand">
-      <span class="evidence-icon">⚖️</span>
+      <span class="evidence-icon">🧾</span>
       <h1 class="evidence-title">Evidence Management</h1>
       <span class="evidence-badge">Legal AI Platform</span>
     </div>
 
-    <!-- Evidence Navigation -->
     <nav class="evidence-nav">
       {#each evidenceRoutes as route}
         <a
           href={route.href}
           class="evidence-nav-item"
-          class:active={currentPath === route.href || currentPath.startsWith(route.href + '/')}
+          class:active={currentPath === route.href || currentPath.startsWith(`${route.href}/`)}
         >
           <span class="evidence-nav-icon">{route.icon}</span>
           <span class="evidence-nav-text">{route.name}</span>
@@ -49,25 +45,25 @@
     </nav>
   </header>
 
-  <!-- Evidence Content -->
   <main class="evidence-content">
     <div class="evidence-container">
       {#if children}
         {@render children()}
       {:else}
         <div class="evidence-placeholder">
-          <h2>🔍 Evidence Processing</h2>
+          <h2>🧠 Evidence Processing Ready</h2>
           <p>Select an evidence management tool from the navigation above.</p>
         </div>
       {/if}
     </div>
   </main>
 
-  <!-- Evidence Footer -->
   <footer class="evidence-footer">
     <div class="evidence-footer-content">
       <div class="evidence-info">
-        <span class="evidence-current">Current: <strong>{currentPath}</strong></span>
+        <span class="evidence-current">
+          Current: <strong>{currentPath}</strong>
+        </span>
         <span class="evidence-separator">•</span>
         <span class="evidence-tech">AI-Powered Evidence Analysis</span>
       </div>
@@ -82,12 +78,12 @@
   .evidence-layout {
     min-height: 100vh;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     background: var(--nier-bg-primary, #0a0a0a);
     color: var(--nier-text-primary, #f0f0f0);
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
   }
 
-  /* Header */
   .evidence-header {
     background: var(--nier-bg-secondary, #1a1a1a);
     border-bottom: 2px solid var(--nier-accent-warm, #d4af37);
@@ -109,7 +105,7 @@
     font-size: 1.5rem;
     font-weight: bold;
     color: var(--nier-accent-warm, #d4af37);
-    margin: 0,
+    margin: 0;
   }
 
   .evidence-badge {
@@ -121,7 +117,6 @@
     font-weight: bold;
   }
 
-  /* Navigation */
   .evidence-nav {
     display: flex;
     flex-wrap: wrap;
@@ -135,16 +130,15 @@
     padding: 0.5rem 1rem;
     border: 1px solid var(--nier-border-primary, #333);
     border-radius: 0.5rem;
-    text-decoration none;
-    color: var(--nier-text-secondary, #ccc);
+    text-decoration: none;
+    color: var(--nier-text-secondary, #d0d0d0);
     background: var(--nier-bg-primary, #0a0a0a);
-    transition all 0.2s ease;
+    transition: all 0.25s ease;
   }
 
   .evidence-nav-item:hover {
     border-color: var(--nier-accent-warm, #d4af37);
     color: var(--nier-accent-warm, #d4af37);
-    background: var(--nier-bg-tertiary, #2a2a2a);
   }
 
   .evidence-nav-item.active {
@@ -155,14 +149,13 @@
   }
 
   .evidence-nav-icon {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
 
   .evidence-nav-text {
     font-size: 0.9rem;
   }
 
-  /* Content */
   .evidence-content {
     flex: 1;
     overflow-y: auto;
@@ -189,7 +182,6 @@
     margin-bottom: 1rem;
   }
 
-  /* Footer */
   .evidence-footer {
     border-top: 2px solid var(--nier-border-primary, #333);
     background: var(--nier-bg-secondary, #1a1a1a);
@@ -227,10 +219,10 @@
     padding: 0.5rem 1rem;
     border: 1px solid var(--nier-border-primary, #333);
     border-radius: 0.5rem;
-    text-decoration none;
+    text-decoration: none;
     color: var(--nier-text-primary, #f0f0f0);
     background: var(--nier-bg-primary, #0a0a0a);
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     font-size: 0.9rem;
   }
 
@@ -239,14 +231,13 @@
     color: var(--nier-accent-warm, #d4af37);
   }
 
-  /* Responsive */
   @media (max-width: 768px) {
     .evidence-container {
       padding: 1rem;
     }
 
     .evidence-footer-content {
-      flex-direction column;
+      flex-direction: column;
       text-align: center;
       gap: 1rem;
     }
@@ -256,7 +247,6 @@
     }
   }
 
-  /* Custom scrollbar */
   .evidence-content::-webkit-scrollbar {
     width: 8px;
   }
