@@ -1,19 +1,22 @@
 <!-- Dynamic Demo Page - Showcase Individual Demos -->
 <script lang="ts">
-  import { page } from '$app/stores';
   import { onMount } from 'svelte';
+  import { page } from '$app/stores';
+  import type { SvelteComponent } from 'svelte';
 
   interface Props {
-    data: any;
+    data?: unknown;
   }
 
   let { data }: Props = $props();
 
-  // Get current demo slug from URL parameters
-  let demoSlug = $derived($page.params.slug);
+  // Define a type for a Svelte component constructor
+  type SvelteComponentConstructor = new (...args: any[]) => SvelteComponent;
 
-  // Demo component mapping
-  const demoComponents = {
+  // Refine DemoLoader to expect a module that *might* have a default export, or *is* the component itself
+  type DemoLoader = () => Promise<SvelteComponentConstructor | { default: SvelteComponentConstructor }>;
+
+  const demoComponents: Record<string, DemoLoader> = {
     webgpu: () => import('$lib/components/ai/webgpu/CacheOptimizerDemo.svelte'),
     'cuda-streaming': () => import('$lib/components/ai/OCRTensorDemo.svelte'),
     'ai-assistant': () => import('$lib/components/ai/EnhancedRAGDemo.svelte'),
@@ -25,37 +28,38 @@
     'neural-topology': () => import('$lib/components/ai/NeuralTopology3DDemo.svelte'),
     'simd-ai': () => import('$lib/components/ai/SIMDAIAssistantDemo.svelte'),
     'realtime-comm': () => import('$lib/components/ai/RealtimeCommunicationDemo.svelte'),
-    'autonomous-eng': () => import('$lib/components/ai/copilot/AutonomousEngineeringDemo.svelte'),
+    'autonomous-eng': () => import('$lib/components/ai/copilot/AutonomousEngineeringDemo.svelte')
   };
 
-  // Component loading state
-  let currentComponent = $state(null);
+  let demoSlug = $derived($page.params.slug ?? 'showcase');
+  let currentComponent = $state<SvelteComponentConstructor | null>(null);
   let loading = $state(true);
-  let error = $state(null);
+  let error = $state<string | null>(null);
 
-  // Load demo component dynamically
   async function loadDemoComponent(slug: string) {
     loading = true;
     error = null;
 
     try {
-      const componentLoader = demoComponents[slug];
-      if (componentLoader) {
-        const module = await componentLoader();
-        currentComponent = module.default;
-      } else {
-        error = `Demo "${slug}" not found`;
+      const loader = demoComponents[slug];
+      if (!loader) {
+        error = `Demo "${slug}" not found.`;
         currentComponent = null;
+        return;
       }
+
+      const module = await loader();
+      // Handle both cases: module is the component constructor directly, or it has a default export
+      currentComponent = (module as { default: SvelteComponentConstructor }).default ?? (module as SvelteComponentConstructor);
     } catch (err) {
-      error = `Failed to load demo: ${err.message}`;
+      const message = err instanceof Error ? err.message : String(err);
+      error = `Failed to load demo: ${message}`;
       currentComponent = null;
     } finally {
       loading = false;
     }
   }
 
-  // Load component when slug changes
   $effect(() => {
     if (demoSlug) {
       loadDemoComponent(demoSlug);
@@ -68,71 +72,80 @@
     }
   });
 
-  // Demo metadata
   const demoMetadata = {
     webgpu: {
       title: 'WebGPU Cache Optimizer',
-      description 'Hardware-accelerated cache optimization with WebGPU',
-      tags: ['WebGPU', 'Cache', 'Performance'],
+      description: 'Hardware-accelerated cache optimization with WebGPU.',
+      tags: ['WebGPU', 'Cache', 'Performance']
     },
     'cuda-streaming': {
       title: 'CUDA OCR & Tensor Processing',
-      description 'Real-time GPU-accelerated document OCR and tensor operations',
-      tags: ['CUDA', 'OCR', 'GPU'],
+      description: 'Real-time GPU-accelerated document OCR and tensor operations.',
+      tags: ['CUDA', 'OCR', 'GPU']
     },
     'ai-assistant': {
       title: 'Enhanced RAG AI Assistant',
-      description 'Retrieval-Augmented Generation for legal research',
-      tags: ['RAG', 'AI', 'Legal'],
+      description: 'Retrieval-Augmented Generation for legal research.',
+      tags: ['RAG', 'AI', 'Legal']
     },
     'evidence-canvas': {
       title: 'Evidence Board Canvas',
-      description 'Interactive evidence organization and visualization',
-      tags: ['Evidence', 'Canvas', 'Visualization'],
+      description: 'Interactive evidence organization and visualization.',
+      tags: ['Evidence', 'Canvas', 'Visualization']
     },
     'legal-research': {
       title: 'Legal AI Pipeline',
-      description 'End-to-end legal document processing pipeline',
-      tags: ['Pipeline', 'Legal', 'AI'],
+      description: 'End-to-end legal document processing pipeline.',
+      tags: ['Pipeline', 'Legal', 'AI']
     },
     'vector-search': {
       title: 'Vector Intelligence Search',
-      description 'Semantic search using vector embeddings and SIMD',
-      tags: ['Vector', 'Search', 'SIMD'],
+      description: 'Semantic search using vector embeddings and SIMD.',
+      tags: ['Vector', 'Search', 'SIMD']
     },
     'gaming-ui': {
       title: 'Gaming Cache Demo',
-      description 'YoRHa-inspired caching system with Redis integration',
-      tags: ['Cache', 'Gaming', 'Redis'],
+      description: 'YoRHa-inspired caching system with Redis integration.',
+      tags: ['Cache', 'Gaming', 'Redis']
     },
     performance: {
       title: 'Cache Performance Dashboard',
-      description 'Real-time cache performance monitoring and optimization',
-      tags: ['Performance', 'Cache', 'Monitoring'],
+      description: 'Real-time cache performance monitoring and optimization.',
+      tags: ['Performance', 'Cache', 'Monitoring']
     },
     'neural-topology': {
       title: 'Neural Topology 3D Visualization',
-      description '3D visualization of neural network topology',
-      tags: ['3D', 'Neural', 'Visualization'],
+      description: '3D visualization of neural network topology.',
+      tags: ['3D', 'Neural', 'Visualization']
     },
     'simd-ai': {
       title: 'SIMD AI Assistant',
-      description 'CPU-optimized AI assistant using SIMD instructions',
-      tags: ['SIMD', 'AI', 'Performance'],
+      description: 'CPU-optimized AI assistant using SIMD instructions.',
+      tags: ['SIMD', 'AI', 'Performance']
     },
     'realtime-comm': {
       title: 'Real-time Communication',
-      description 'WebSocket-based real-time AI communication',
-      tags: ['WebSocket', 'Real-time', 'Communication'],
+      description: 'WebSocket-based real-time AI communication.',
+      tags: ['WebSocket', 'Real-time', 'Communication']
     },
     'autonomous-eng': {
       title: 'Autonomous Engineering Copilot',
-      description 'AI-powered autonomous code generation and engineering',
-      tags: ['Copilot', 'Autonomous', 'Engineering'],
-    },
-  };
+      description: 'AI-powered autonomous code generation and engineering.',
+      tags: ['Copilot', 'Autonomous', 'Engineering']
+    }
+  } satisfies Record<
+    string,
+    {
+      title: string;
+      description: string;
+      tags: string[];
+    }
+  >;
 
-  let metadata = $derived(demoMetadata[demoSlug] || { title: 'Unknown Demo', description '', tags: [] });
+  // safely index metadata by casting slug as key of demoMetadata
+  let metadata = $derived(() =>
+    demoMetadata[demoSlug as keyof typeof demoMetadata] ?? { title: 'Unknown Demo', description: '', tags: [] }
+  );
 </script>
 
 <svelte:head>
@@ -141,10 +154,9 @@
 </svelte:head>
 
 <div class="demo-page">
-  <!-- Demo Header -->
   <header class="demo-page-header">
     <div class="demo-breadcrumb">
-      <a href="/demo/showcase" class="breadcrumb-link">🏠 Demos</a>
+      <a href="/demo/showcase" class="breadcrumb-link">← Demos</a>
       <span class="breadcrumb-separator">›</span>
       <span class="breadcrumb-current">{demoSlug}</span>
     </div>
@@ -163,7 +175,6 @@
     </div>
   </header>
 
-  <!-- Demo Content -->
   <main class="demo-content">
     {#if loading}
       <div class="demo-loading">
@@ -176,19 +187,21 @@
         <h2>Demo Load Failed</h2>
         <p>{error}</p>
         <div class="error-actions">
-          <button onclick={() => loadDemoComponent(demoSlug)}>🔄 Retry</button>
-          <a href="/demo/showcase">← Back to Demos</a>
+          <!-- use standard onclick attribute in runes mode -->
+          <button type="button" onclick={() => loadDemoComponent(demoSlug)}>Retry</button>
+          <a href="/demo/showcase">Back to Demos</a>
         </div>
       </div>
     {:else if currentComponent}
-      <div class="demo-wrapper">
-        <currentComponent {data}></currentComponent>
-      </div>
+        <div class="demo-wrapper">
+          <!-- use Svelte dynamic component to render loaded demo -->
+          <currentComponent {data}></currentComponent>
+        </div>
     {:else}
       <div class="demo-placeholder">
-        <h2>🚧 Demo Under Construction</h2>
+        <h2>Demo Under Construction</h2>
         <p>The "{demoSlug}" demo is being prepared.</p>
-        <a href="/demo/showcase">← Browse Other Demos</a>
+        <a href="/demo/showcase">Browse Other Demos</a>
       </div>
     {/if}
   </main>
@@ -199,12 +212,10 @@
     min-height: 100%;
   }
 
-  /* Header */
   .demo-page-header {
+    padding: 2rem;
     background: var(--nier-bg-secondary);
-    border-bottom: 1px solid var(--nier-border-primary);
-    padding: 1.5rem;
-    margin-bottom: 0,
+    border-bottom: 1px solid var(--nier-border-muted);
   }
 
   .demo-breadcrumb {
@@ -212,78 +223,74 @@
     align-items: center;
     gap: 0.5rem;
     font-size: 0.9rem;
+    color: var(--nier-text-muted);
     margin-bottom: 1rem;
   }
 
   .breadcrumb-link {
-    color: var(--nier-accent-cool);
-    text-decoration none;
+    color: var(--nier-accent-warm);
+    text-decoration: none;
   }
 
   .breadcrumb-link:hover {
-    color: var(--nier-accent-warm);
-  }
-
-  .breadcrumb-separator {
-    color: var(--nier-text-muted);
+    text-decoration: underline;
   }
 
   .breadcrumb-current {
-    color: var(--nier-text-primary);
-    font-weight: bold;
     text-transform: uppercase;
-  }
-
-  .demo-meta {
-    max-width: 800px;
+    letter-spacing: 0.08em;
   }
 
   .demo-title {
     font-size: 2rem;
-    font-weight: bold;
-    color: var(--nier-accent-warm);
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 0.5rem;
+    color: var(--nier-text-primary);
   }
 
   .demo-description {
-    font-size: 1.1rem;
+    margin: 0;
     color: var(--nier-text-secondary);
-    margin: 0 0 1rem 0;
-    line-height: 1.5,
   }
 
   .demo-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
+    margin-top: 1rem;
   }
 
   .demo-tag {
-    background: var(--nier-accent-cool);
-    color: var(--nier-bg-primary);
     padding: 0.25rem 0.75rem;
-    border-radius: 1rem;
+    border-radius: 999px;
+    background: var(--nier-bg-tertiary);
+    color: var(--nier-text-secondary);
+    border: 1px solid var(--nier-border-muted);
     font-size: 0.8rem;
-    font-weight: bold;
   }
 
-  /* Content */
   .demo-content {
-    padding: 0,
+    padding: 2rem;
   }
 
   .demo-wrapper {
     background: var(--nier-bg-primary);
   }
 
-  /* Loading State */
-  .demo-loading {
+  .demo-loading,
+  .demo-error,
+  .demo-placeholder {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 4rem;
     text-align: center;
+    border-radius: 1rem;
+  }
+
+  .demo-loading {
+    gap: 1rem;
+    background: var(--nier-bg-secondary);
   }
 
   .loading-spinner {
@@ -292,8 +299,7 @@
     border: 3px solid var(--nier-border-muted);
     border-top: 3px solid var(--nier-accent-warm);
     border-radius: 50%;
-    animation spin 1s linear infinite;
-    margin-bottom: 1rem;
+    animation: spin 1s linear infinite;
   }
 
   @keyframes spin {
@@ -305,34 +311,19 @@
     }
   }
 
-  /* Error State */
   .demo-error {
-    display: flex;
-    flex-direction column;
-    align-items: center;
-    justify-content: center;
-    padding: 4rem;
-    text-align: center;
     background: var(--nier-bg-secondary);
     border: 2px dashed var(--nier-border-error);
-    border-radius: 1rem;
-    margin: 2rem;
+    gap: 1rem;
   }
 
   .error-icon {
     font-size: 3rem;
-    margin-bottom: 1rem;
-  }
-
-  .demo-error h2 {
-    color: var(--nier-text-error);
-    margin-bottom: 0.5rem;
   }
 
   .error-actions {
     display: flex;
     gap: 1rem;
-    margin-top: 1.5rem;
   }
 
   .error-actions button,
@@ -340,60 +331,49 @@
     padding: 0.75rem 1.5rem;
     border: 1px solid var(--nier-border-primary);
     border-radius: 0.5rem;
-    text-decoration none;
     background: var(--nier-bg-primary);
     color: var(--nier-text-primary);
-    transition all 0.2s ease;
+    text-decoration: none;
+    transition: all 0.2s ease;
     cursor: pointer;
   }
 
-  .error-actions buttonhover,
+  .error-actions button:hover,
   .error-actions a:hover {
     border-color: var(--nier-accent-warm);
     color: var(--nier-accent-warm);
   }
 
-  /* Placeholder State */
   .demo-placeholder {
-    display: flex;
-    flex-direction column;
-    align-items: center;
-    justify-content: center;
-    padding: 4rem;
-    text-align: center;
     background: var(--nier-bg-secondary);
     border: 2px dashed var(--nier-border-muted);
-    border-radius: 1rem;
-    margin: 2rem;
-  }
-
-  .demo-placeholder h2 {
-    color: var(--nier-accent-warm);
-    margin-bottom: 1rem;
+    gap: 1rem;
   }
 
   .demo-placeholder a {
     color: var(--nier-accent-cool);
-    text-decoration none;
-    margin-top: 1rem;
+    text-decoration: none;
   }
 
   .demo-placeholder a:hover {
-    color: var(--nier-accent-warm);
+    text-decoration: underline;
   }
 
-  /* Responsive */
   @media (max-width: 768px) {
     .demo-page-header {
-      padding: 1rem;
+      padding: 1.5rem;
     }
 
-    .demo-title {
-      font-size: 1.5rem;
+    .demo-content {
+      padding: 1.5rem 1rem;
     }
 
     .error-actions {
-      flex-direction column;
+      flex-direction: column;
+    }
+  }
+</style>
+      flex-direction: column;
     }
   }
 </style>

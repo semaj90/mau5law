@@ -5,6 +5,7 @@ import { db, getDatabaseHealth } from '$lib/server/db';
 import { legal_documents, evidence, cases } from '$lib/server/db/schema-postgres';
 import { cognitiveCacheManager } from '$lib/services/cognitive-cache-integration';
 import { sql, eq, and, or, gte, lte } from 'drizzle-orm';
+import { generateEmbedding } from '$lib/server/services/embedding-service';
 // Ensure database is initialized
 const dbInitialized = false;
 export const POST: RequestHandler = async ({ request }) => {
@@ -53,19 +54,9 @@ export const POST: RequestHandler = async ({ request }) => {
     let queryEmbedding = embedding;
     if (query && !queryEmbedding) {
       try {
-        console.log('[Search] Generating query embedding...');
-        const embResponse = await fetch('/api/embeddings/generate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            text: query,
-            model: 'embeddinggemma:latest',
-          }),
-        });
-        if (embResponse.ok) {
-          const embResult = await embResponse.json();
-          queryEmbedding = embResult.embedding;
-        }
+        console.log('[Search] Generating query embedding (server-side)...');
+        const emb = await generateEmbedding(query, { model: 'embeddinggemma:latest', mode: undefined });
+        queryEmbedding = emb.embedding;
       } catch (embError) {
         console.warn('[Search] Failed to generate query embedding:', embError);
       }

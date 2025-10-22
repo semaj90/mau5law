@@ -8,7 +8,6 @@ import Dexie, { type Table, liveQuery } from 'dexie';
 // ============================================================================
 // DATABASE SCHEMA DEFINITIONS
 // ============================================================================
-}
 export interface ChatMessage {
   id?: number;
   role: 'user' | 'assistant' | 'system';
@@ -61,25 +60,44 @@ export interface GraphEdge {
   toNodeId: string;
   weight: number;
   edgeType: 'citation' | 'reference' | 'similarity' | 'precedent';
-  metadata?: { [key: string]: any }
+  metadata?: Record<string, unknown>; // Changed from any
 }
+
+export interface SessionActivity {
+  // New interface for session activities
+  type: 'search' | 'chat' | 'document_view' | 'graph_explore';
+  data: Record<string, unknown>; // Changed from any
+  timestamp: Date;
+}
+
 export interface UserSession {
   id?: number;
   sessionId: string;
   userId?: string;
   startTime: Date;
   endTime?: Date;
-  activities: Array<any>;
+  activities: Array<SessionActivity>; // Changed from Array<any>
 }
 export interface CacheEntry {
   id?: number;
   key: string;
-  data: any;
+  data: unknown; // Changed from any
   createdAt: Date;
   expiresAt: Date;
   size: number;
   hitCount: number;
 }
+
+// New interface for exported data structure
+export interface ExportedData {
+  chatHistory: ChatMessage[];
+  legalDocuments: LegalDocument[];
+  graphNodes: GraphNode[];
+  graphEdges: GraphEdge[];
+  userSessions: UserSession[];
+  exportedAt: string; // ISO string
+}
+
 // ============================================================================
 // DEXIE DATABASE CLASS
 // ============================================================================
@@ -100,24 +118,33 @@ export class LegalAIDatabase extends Dexie {
       graphNodes: '++id, nodeId, [metadata.documentType], [metadata.jurisdiction], [metadata.practiceArea]',
       graphEdges: '++id, fromNodeId, toNodeId, edgeType, weight',
       userSessions: '++id, sessionId, userId, startTime',
-      cache: '++id, key, createdAt, expiresAt, hitCount'
+      cache: '++id, key, createdAt, expiresAt, hitCount',
     });
     // Version 2: Add indexes for performance
     this.version(2).stores({
       chatHistory: '++id, timestamp, role, [metadata.legalContext.documentType], [metadata.legalContext.jurisdiction]',
       legalDocuments: '++id, title, documentType, jurisdiction, practiceArea, created, modified, *tags',
-      graphNodes: '++id, nodeId, [metadata.documentType], [metadata.jurisdiction], [metadata.practiceArea], [metadata.confidence]',
+      graphNodes:
+        '++id, nodeId, [metadata.documentType], [metadata.jurisdiction], [metadata.practiceArea], [metadata.confidence]',
       graphEdges: '++id, fromNodeId, toNodeId, edgeType, weight',
       userSessions: '++id, sessionId, userId, startTime, endTime',
-      cache: '++id, key, createdAt, expiresAt, hitCount, size'
+      cache: '++id, key, createdAt, expiresAt, hitCount, size',
     });
     // Hooks for automatic cleanup and maintenance
-    this.cache.hook('creating', (primKey, obj, trans) => {
-      (obj as any).hitCount = 0;
-      (obj as any).createdAt = new Date();
+    this.cache.hook('creating', (_primKey, obj, _trans) => {
+      obj.hitCount = 0;
+      obj.createdAt = new Date();
     });
-    this.graphNodes.hook('updating', (modifications, primKey, obj, trans) => {
-      (modifications as any).metadata = { ...(obj as any).metadata, lastUpdated: new Date() }
+    this.graphNodes.hook('updating', (modifications: Partial<GraphNode>, _primKey, obj, _trans) => {
+      // Ensure that if metadata is being updated, or if any other field is updated,
+      // the lastUpdated timestamp within metadata is also updated.
+      // We need to merge the existing metadata, any metadata provided in the modifications,
+      // and then explicitly set lastUpdated.
+      modifications.metadata = {
+        ...(obj.metadata || {}), // Start with the existing metadata from the object
+        ...(modifications.metadata || {}), // Overlay any metadata changes provided in the update operation
+        lastUpdated: new Date(), // Explicitly set or override lastUpdated
+      };
     });
   }
   // ========================================================================
@@ -126,18 +153,12 @@ export class LegalAIDatabase extends Dexie {
   async addChatMessage(message: Omit<ChatMessage, 'id' | 'timestamp'>): Promise<number> {
     return await this.chatHistory.add({
       ...message,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
   }
   // Reactive query - automatically updates UI when data changes
   getChatHistory(limit = 100) {
-    return liveQuery(() =>
-      this.chatHistory
-        .orderBy('timestamp')
-        .reverse()
-        .limit(limit)
-        .toArray()
-    );
+    return liveQuery(() => this.chatHistory.orderBy('timestamp').reverse().limit(limit).toArray());
   }
   getChatHistoryByContext(legalContext: { documentType?: string; jurisdiction?: string; practiceArea?: string }) {
     return liveQuery(() => {
@@ -162,34 +183,27 @@ export class LegalAIDatabase extends Dexie {
   // ========================================================================
   async addLegalDocument(_document: Omit<LegalDocument, 'id' | 'created' | 'modified'>): Promise<number> {
     return await this.legalDocuments.add({
-      ...document,
+      ..._document, // Changed 'document' to '_document'
       created: new Date(),
-      modified: new Date()
+      modified: new Date(),
     });
   }
   getLegalDocuments() {
-    return liveQuery(() =>
-      this.legalDocuments
-        .orderBy('modified')
-        .reverse()
-        .toArray()
-    );
+    return liveQuery(() => this.legalDocuments.orderBy('modified').reverse().toArray());
   }
   getLegalDocumentsByType(documentType: LegalDocument['documentType']) {
-    return liveQuery(() =>
-      this.legalDocuments
-        .where('documentType')
-        .equals(documentType)
-        .reverse()
-        .toArray()
-    );
+    return liveQuery(() => this.legalDocuments.where('documentType').equals(documentType).reverse().toArray());
   }
   async searchLegalDocuments(query: string): Promise<LegalDocument[]> {
     const searchTerm = query.toLowerCase();
     return await this.legalDocuments
-      .filter(item => item.includes)(searchTerm) ||
-        doc.content.toLowerCase().includes(searchTerm) ||
-        doc.tags.some(tag => tag.toLowerCase().includes(searchTerm)
+      .filter(
+        (
+          item // Corrected filter usage and property access
+        ) =>
+          item.title.toLowerCase().includes(searchTerm) ||
+          item.content.toLowerCase().includes(searchTerm) ||
+          item.tags.some(tag => tag.toLowerCase().includes(searchTerm))
       )
       .toArray();
   }
@@ -201,53 +215,43 @@ export class LegalAIDatabase extends Dexie {
       ...node,
       metadata: {
         ...node.metadata,
-        lastUpdated: new Date()
-      }
+        lastUpdated: new Date(),
+      },
     });
   }
   async addGraphEdge(edge: Omit<GraphEdge, 'id'>): Promise<number> {
     return await this.graphEdges.add(edge);
   }
   getGraphNodes() {
-    return liveQuery(() => this.graphNodes.toArray();
+    return liveQuery(() => this.graphNodes.toArray()); // Added missing ')'
   }
   getGraphNodesByRegion(bounds: { x: number; y: number; width: number; height: number }) {
     return liveQuery(() =>
       this.graphNodes
-        .filter(node =>
-          node.position.x >= bounds.x &&
-          node.position.x <= bounds.x + bounds.width &&
-          node.position.y >= bounds.y &&
-          node.position.y <= bounds.y + bounds.height
+        .filter(
+          node =>
+            node.position.x >= bounds.x &&
+            node.position.x <= bounds.x + bounds.width &&
+            node.position.y >= bounds.y &&
+            node.position.y <= bounds.y + bounds.height
         )
         .toArray()
     );
   }
   async getConnectedNodes(nodeId: string): Promise<GraphNode[]> {
-    const edges = await this.graphEdges
-      .where('fromNodeId')
-      .equals(nodeId)
-      .or('toNodeId')
-      .equals(nodeId)
-      .toArray();
+    const edges = await this.graphEdges.where('fromNodeId').equals(nodeId).or('toNodeId').equals(nodeId).toArray();
     const connectedNodeIds = edges
-      .map(edge => edge.fromNodeId === nodeId ? edge.toNodeId: edge.fromNodeId)
+      .map(edge => (edge.fromNodeId === nodeId ? edge.toNodeId : edge.fromNodeId))
       .filter((id, index, arr) => arr.indexOf(id) === index); // Remove duplicates
-    return await this.graphNodes
-      .where('nodeId')
-      .anyOf(connectedNodeIds)
-      .toArray();
+    return await this.graphNodes.where('nodeId').anyOf(connectedNodeIds).toArray();
   }
   async updateGraphNodePosition(nodeId: string, position: { x: number; y: number; z?: number }): Promise<void> {
-    await this.graphNodes
-      .where('nodeId')
-      .equals(nodeId)
-      .modify({ position });
+    await this.graphNodes.where('nodeId').equals(nodeId).modify({ position });
   }
   // ========================================================================
   // CACHE METHODS
   // ========================================================================
-  async setCache(_key: string, data: any, ttlMs = 300000): Promise<number> {
+  async setCache(key: string, data: unknown, ttlMs = 300000): Promise<number> {
     const expiresAt = new Date(Date.now() + ttlMs);
     const size = JSON.stringify(data).length;
     // Remove existing entry
@@ -258,10 +262,10 @@ export class LegalAIDatabase extends Dexie {
       createdAt: new Date(),
       expiresAt,
       size,
-      hitCount: 0
+      hitCount: 0,
     });
   }
-  async getCache(_key: string): Promise<any | null> {
+  async getCache(key: string): Promise<unknown | null> {
     const entry = await this.cache.where('key').equals(key).first();
     if (!entry) return null;
     // Check expiration
@@ -270,7 +274,10 @@ export class LegalAIDatabase extends Dexie {
       return null;
     }
     // Increment hit count
-    await this.cache.where('key').equals(key).modify({ hitCount: entry.hitCount + 1 });
+    await this.cache
+      .where('key')
+      .equals(key)
+      .modify({ hitCount: entry.hitCount + 1 });
     return entry.data;
   }
   async clearExpiredCache(): Promise<void> {
@@ -284,57 +291,48 @@ export class LegalAIDatabase extends Dexie {
       sessionId,
       userId,
       startTime: new Date(),
-      activities: []
+      activities: [],
     });
   }
   async addSessionActivity(
     sessionId: string,
-    activity: { type: "search" | "chat" | "document_view" | "graph_explore"; data: { [key: string]: any } }
+    activity: { type: 'search' | 'chat' | 'document_view' | 'graph_explore'; data: Record<string, unknown> } // Updated data type
   ): Promise<void> {
     const session = await this.userSessions.where('sessionId').equals(sessionId).first();
     if (session) {
       const newActivity = {
         ...activity,
-        timestamp: new Date()
-      }
+        timestamp: new Date(),
+      };
       session.activities.push(newActivity);
       await this.userSessions.where('sessionId').equals(sessionId).modify({
-        activities: session.activities
+        activities: session.activities,
       });
     }
   }
   async endSession(sessionId: string): Promise<void> {
     await this.userSessions.where('sessionId').equals(sessionId).modify({
-      endTime: new Date()
+      endTime: new Date(),
     });
   }
   getActiveSession(sessionId: string) {
-    return liveQuery(() =>
-      this.userSessions.where('sessionId').equals(sessionId).first()
-    );
+    return liveQuery(() => this.userSessions.where('sessionId').equals(sessionId).first());
   }
   // ========================================================================
   // MAINTENANCE & ANALYTICS
   // ========================================================================
   async getDatabaseStats() {
-    const [
-      chatCount,
-      documentsCount,
-      nodesCount,
-      edgesCount,
-      sessionsCount,
-      cacheCount
-    ] = await Promise.all([
+    const [chatCount, documentsCount, nodesCount, edgesCount, sessionsCount, cacheCount] = await Promise.all([
       this.chatHistory.count(),
       this.legalDocuments.count(),
       this.graphNodes.count(),
       this.graphEdges.count(),
       this.userSessions.count(),
-      this.cache.count()
+      this.cache.count(),
     ]);
-    const cacheSize = await this.cache.toArray().then(entries =>
-      entries.reduce((total, entry) => total + entry.size, 0)
-    );
+    const cacheSize = await this.cache
+      .toArray()
+      .then(entries => entries.reduce((total, entry) => total + entry.size, 0));
     return {
       chatHistory: chatCount,
       legalDocuments: documentsCount,
@@ -345,18 +343,14 @@ export class LegalAIDatabase extends Dexie {
         entries: cacheCount,
         totalSize: cacheSize,
       },
-      estimatedSize: cacheSize + (chatCount * 1000) + (documentsCount * 5000) // Rough estimate
-    }
+      estimatedSize: cacheSize + chatCount * 1000 + documentsCount * 5000, // Rough estimate
+    };
   }
   async cleanupDatabase(): Promise<void> {
     // Clear expired cache
     await this.clearExpiredCache();
     // Remove old chat messages (keep last 1000)
-    const oldMessages = await this.chatHistory
-      .orderBy('timestamp')
-      .reverse()
-      .offset(1000)
-      .primaryKeys();
+    const oldMessages = await this.chatHistory.orderBy('timestamp').reverse().offset(1000).primaryKeys();
     if (oldMessages.length > 0) {
       await this.chatHistory.bulkDelete(oldMessages);
     }
@@ -372,11 +366,11 @@ export class LegalAIDatabase extends Dexie {
       graphNodes: await this.graphNodes.toArray(),
       graphEdges: await this.graphEdges.toArray(),
       userSessions: await this.userSessions.toArray(),
-      exportedAt: new Date().toISOString()
-    }
+      exportedAt: new Date().toISOString(),
+    };
     return data;
   }
-  async importData(data: any): Promise<void> {
+  async importData(data: ExportedData): Promise<void> {
     await this.transaction('rw', this.tables, async () => {
       if (data.chatHistory) await this.chatHistory.bulkAdd(data.chatHistory);
       if (data.legalDocuments) await this.legalDocuments.bulkAdd(data.legalDocuments);
@@ -390,7 +384,7 @@ export class LegalAIDatabase extends Dexie {
 // ============================================================================
 // SINGLETON INSTANCE
 // ============================================================================
-export // removed unused db assignment
+export const db = new LegalAIDatabase();
 // ============================================================================
 // REACTIVE STORES FOR SVELTE COMPONENTS
 // ============================================================================

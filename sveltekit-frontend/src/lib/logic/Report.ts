@@ -16,8 +16,8 @@ export class Report {
   public id: string;
   public title: Writable<string>;
   public content: Writable<ContentNode[]>;
-  public position: Writable;
-  public size: Writable;
+  public position: Writable<{ x: number; y: number }>;
+  public size: Writable<{ width: number; height: number }>;
   public isDirty: Writable<boolean>;
   public version: Writable<number>;
   public historyManager: HistoryManager;
@@ -40,19 +40,19 @@ export class Report {
     createdBy: string;
   }) {
     this.id = data.id || crypto.randomUUID();
-    this.title = writable(data.title || "Untitled Report");
+    this.title = writable(data.title || 'Untitled Report');
     // Initialize with default content if none provided
     const initialContent: ContentNode[] = data.content || [
       {
-        type: "paragraph",
-        children: [{ type: "text", text: "" }]
-      }
+        type: 'paragraph',
+        children: [{ type: 'text', text: '' }],
+      },
     ];
     this.content = writable(initialContent);
     this.position = writable({ x: data.posX || 50, y: data.posY || 50 });
     this.size = writable({
       width: data.width || 650,
-      height: data.height || 450
+      height: data.height || 450,
     });
     this.isDirty = writable(false);
     this.version = writable(data.version || 1);
@@ -104,7 +104,7 @@ export class Report {
    */
   markClean(): void {
     this.isDirty.set(false);
-    this.version.update((v) => v + 1);
+    this.version.update(v => v + 1);
   }
   /**
    * Undo last change
@@ -146,17 +146,17 @@ export class Report {
    * Get serializable data for persistence
    */
   toJSON() {
-    let currentTitle = "";
+    let currentTitle = '';
     let currentContent: ContentNode[] = [];
-    let currentPosition = { x: 0, y: 0 }
-    let currentSize = { width: 0, height: 0 }
+    let currentPosition = { x: 0, y: 0 };
+    let currentSize = { width: 0, height: 0 };
     let currentVersion = 0;
     // Get current values from stores
-    this.title.subscribe((value) => (currentTitle = value))();
-    this.content.subscribe((value) => (currentContent = value))();
-    this.position.subscribe((value) => (currentPosition = value))();
-    this.size.subscribe((value) => (currentSize = value))();
-    this.version.subscribe((value) => (currentVersion = value))();
+    this.title.subscribe(value => (currentTitle = value))();
+    this.content.subscribe(value => (currentContent = value))();
+    this.position.subscribe(value => (currentPosition = value))();
+    this.size.subscribe(value => (currentSize = value))();
+    this.version.subscribe(value => (currentVersion = value))();
     return {
       id: this.id,
       title: currentTitle,
@@ -170,84 +170,70 @@ export class Report {
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
       createdBy: this.createdBy,
-      lastModifiedBy: this.lastModifiedBy
+      lastModifiedBy: this.lastModifiedBy,
+    };
+  }
+}
+
+/**
+ * Add a typed shape for incoming serialized report objects
+ */
+export type ReportSerialized = {
+  id?: string;
+  title?: string;
+  content?: ContentNode[] | string;
+  posX?: number | string;
+  posY?: number | string;
+  width?: number | string;
+  height?: number | string;
+  caseId?: string;
+  version?: number | string;
+  createdAt?: string | Date;
+  updatedAt?: string | Date;
+  createdBy?: string;
+  lastModifiedBy?: string;
+};
+
+/**
+ * Create a Report instance from database data
+ */
+export function fromJSON(data: ReportSerialized, createdBy: string): Report {
+  const parseNumber = (v: number | string | undefined, fallback: number) => {
+    if (typeof v === 'number' && Number.isFinite(v)) return v;
+    if (typeof v === 'string' && v.trim() !== '') {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : fallback;
+    }
+    return fallback;
+  };
+
+  let contentParsed: ContentNode[] | undefined = undefined;
+  if (Array.isArray(data.content)) {
+    contentParsed = data.content as ContentNode[];
+  } else if (typeof data.content === 'string') {
+    try {
+      const parsed = JSON.parse(data.content);
+      if (Array.isArray(parsed)) contentParsed = parsed as ContentNode[];
+    } catch {
+      // leave undefined and fallback to default in constructor
     }
   }
-  /**
-   * Create a Report instance from database data
-   */
-  static fromJSON(data: any, createdBy: string): Report {
-    return new Report({
-      id: data.id,
-      title: data.title,
-      content: data.content,
-      posX: parseFloat(data.posX) || 50,
-      posY: parseFloat(data.posY) || 50,
-      width: parseFloat(data.width) || 650,
-      height: parseFloat(data.height) || 450,
-      caseId: data.caseId,
-      version: data.version,
-      createdBy: createdBy
-    });
-  }
-  /**
-   * Get current content as text (for search/analysis)
-   */
-  getTextContent(): string {
-    const extractText = (nodes: ContentNode[]): string => {
-      return nodes;
-        .map((node) => {
-          if (node.text) {
-            return node.text;
-          }
-          if (node.children) {
-            return extractText(node.children);
-          }
-          return "";
-        })
-        .join("");
-    }
-    let content = "";
-    this.content.subscribe((value) => {
-      content = extractText(value);
-    })();
-    return content;
-  }
-  /**
-   * Get word count
-   */
-  getWordCount(),: number {
-    const text = this.getTextContent();
-    return text
-      .trim()
-      .split(/\s+/)
-      .filter((word: string) => word.length > 0).length;
-  }
-  /**
-   * Clone this report
-   */
-  clone(),: Report {
-    const clonedReport = new Report({
-      title: "",
-      content: [],
-      posX: 0,
-      posY: 0,
-      width: 0,
-      height: 0,
-      caseId: this.caseId,
-      createdBy: this.createdBy
-    });
-    // Subscribe to get current values and clone them
-    this.title.subscribe((title) =>
-      clonedReport.title.set(`${title} (Copy)`),
-    )();
-    this.content.subscribe((content) =>
-      clonedReport.content.set(JSON.parse(JSON.stringify(content))),
-    )();
-    this.position.subscribe((pos) =>
-      clonedReport.position.set({ x: pos.x + 20, y: pos.y + 20 }),
-    )();
-    this.size.subscribe((size) => clonedReport.size.set({ ...size }))();
-    return clonedReport;
-  }
+
+  return new Report({
+    id: data.id,
+    title: data.title,
+    content: contentParsed,
+    posX: parseNumber(data.posX, 50),
+    posY: parseNumber(data.posY, 50),
+    width: parseNumber(data.width, 650),
+    height: parseNumber(data.height, 450),
+    caseId: data.caseId,
+    version:
+      typeof data.version === 'number'
+        ? data.version
+        : typeof data.version === 'string'
+          ? parseInt(data.version) || 1
+          : 1,
+    createdBy: createdBy,
+  });
 }

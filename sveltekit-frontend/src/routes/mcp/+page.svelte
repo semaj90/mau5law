@@ -1,58 +1,61 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { mcpApi } from '$lib/api/mcp-client.js';
   import { writable } from 'svelte/store';
+
   // Server status
   const serverStatus = writable({
     status: 'checking',
     workers: 0,
     uptime: 0,
-    version 'Unknown',
+    version: 'Unknown',
   });
+
   // Quick stats
   let totalProcessed = 1247;
   let avgProcessingTime = 2.3;
   let successRate = 97.8;
   let gpuAcceleration = true;
+
   // Feature cards data
   const features = [
     {
       title: 'Document Analysis',
-      description
-        'AI-powered legal document processing with entity extraction, risk assessment, and compliance checking',
-      icon '📄',
+      description: 'AI-powered legal document processing with entity extraction, risk assessment, and compliance checking',
+      icon: '📄',
       href: '/mcp/demo',
       stats: { processed: '450+ docs', accuracy: '95%' },
       color: 'blue',
     },
     {
       title: 'Legal Processor',
-      description 'Batch document processing with parallel worker threads and real-time progress tracking',
-      icon '⚖️',
+      description: 'Batch document processing with parallel worker threads and real-time progress tracking',
+      icon: '⚖️',
       href: '/mcp/processor',
       stats: { workers: '4 cores', speed: '2.3s avg' },
       color: 'purple',
     },
     {
       title: 'Server Dashboard',
-      description 'Real-time monitoring of MCP server performance, GPU utilization, and system metrics',
-      icon '📊',
+      description: 'Real-time monitoring of MCP server performance, GPU utilization, and system metrics',
+      icon: '📊',
       href: '/mcp/dashboard',
       stats: { uptime: '99.9%', gpu: 'RTX 3060 Ti' },
       color: 'green',
     },
   ];
+
   // Recent activity (mock data)
   const recentActivity = [
-    { time: '2 min ago', action 'Processed employment contract', status: 'completed', risk: 25 },
-    { time: '5 min ago', action 'Analyzed NDA template', status: 'completed', risk: 15 },
-    { time: '8 min ago', action 'Real estate agreement review', status: 'completed', risk: 42 },
-    { time: '12 min ago', action 'Corporate merger LOI', status: 'completed', risk: 38 },
-    { time: '15 min ago', action 'Partnership agreement scan', status: 'completed', risk: 22 },
+    { time: '2 min ago', action: 'Processed employment contract', status: 'completed', risk: 25 },
+    { time: '5 min ago', action: 'Analyzed NDA template', status: 'completed', risk: 15 },
+    { time: '8 min ago', action: 'Real estate agreement review', status: 'completed', risk: 42 },
+    { time: '12 min ago', action: 'Corporate merger LOI', status: 'completed', risk: 38 },
+    { time: '15 min ago', action: 'Partnership agreement scan', status: 'completed', risk: 22 },
   ];
-  // Check server status on mount
+
+  // Check server status on mount / reactive effect
   $effect(() => {
     (async () => {
       try {
@@ -61,13 +64,14 @@
           status: health.status,
           workers: health.workers,
           uptime: health.uptime,
-          version health.version,
+          version: health.version,
         });
       } catch (error) {
         console.error('Failed to get server status:', error);
       }
     })();
   });
+
   function navigateToFeature(href: string) {
     goto(href);
   }
@@ -305,18 +309,4 @@
   </div>
 </div>
 
-<style>
-  /* Custom animations */
-  @keyframes pulse-slow {
-    0%,
-    100% {
-      opacity: 1,
-    }
-    50% {
-      opacity: 0.7,
-    }
-  }
-  .animate-pulse-slow {
-    animation pulse-slow 2s infinite;
-  }
-</style>
+<style></style>

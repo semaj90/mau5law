@@ -4,26 +4,27 @@
   import { page } from '$app/stores';
 
   interface Props {
-    data?: any;
+    data?: unknown;
     children?: Snippet;
   }
 
-  let { data, children }: Props = $props();
+  // avoid unused `data` warning
+  let { data: _data, children }: Props = $props();
 
   // Demo navigation items
   const demoRoutes = [
-    { name: 'WebGPU Test', slug: 'webgpu', icon '🖥️' },
-    { name: 'CUDA Streaming', slug: 'cuda-streaming', icon '⚡' },
-    { name: 'AI Assistant', slug: 'ai-assistant', icon '🤖' },
-    { name: 'Evidence Canvas', slug: 'evidence-canvas', icon '🎨' },
-    { name: 'Legal Research', slug: 'legal-research', icon '⚖️' },
-    { name: 'Vector Search', slug: 'vector-search', icon '🔍' },
-    { name: 'Gaming UI', slug: 'gaming-ui', icon '🎮' },
-    { name: 'Performance', slug: 'performance', icon '📊' },
+    { name: 'WebGPU Test', slug: 'webgpu', icon: '🖥️' },
+    { name: 'CUDA Streaming', slug: 'cuda-streaming', icon: '⚡' },
+    { name: 'AI Assistant', slug: 'ai-assistant', icon: '🤖' },
+    { name: 'Evidence Canvas', slug: 'evidence-canvas', icon: '🎨' },
+    { name: 'Legal Research', slug: 'legal-research', icon: '⚖️' },
+    { name: 'Vector Search', slug: 'vector-search', icon: '🔍' },
+    { name: 'Gaming UI', slug: 'gaming-ui', icon: '🎮' },
+    { name: 'Performance', slug: 'performance', icon: '📊' }
   ];
 
-  // Get current demo from URL
-  let currentDemo = $derived($page.params.slug || 'showcase');
+  // Track the current demo slug
+  let currentDemo = $derived($page.params.slug ?? 'showcase');
 </script>
 
 <div class="demo-layout">
@@ -38,7 +39,11 @@
     <!-- Demo Navigation -->
     <nav class="demo-nav">
       {#each demoRoutes as route}
-        <a href="/demo/{route.slug}" class="demo-nav-item" class:active={currentDemo === route.slug}>
+        <a
+          href={`/demo/${route.slug}`}
+          class="demo-nav-item"
+          class:active={currentDemo === route.slug}
+        >
           <span class="demo-nav-icon">{route.icon}</span>
           <span class="demo-nav-text">{route.name}</span>
         </a>
@@ -53,7 +58,7 @@
         {@render children()}
       {:else}
         <div class="demo-placeholder">
-          <h2>🚧 Demo Coming Soon</h2>
+          <h2>🎮 Demo Coming Soon</h2>
           <p>This demo component is being prepared.</p>
         </div>
       {/if}
@@ -66,10 +71,10 @@
       <div class="demo-info">
         <span class="demo-current">Current: <strong>{currentDemo}</strong></span>
         <span class="demo-separator">•</span>
-        <span class="demo-tech">UnoCSS + WebGPU + CUDA</span>
+        <span class="demo-tech">UnoCSS • WebGPU • CUDA</span>
       </div>
       <div class="demo-controls">
-        <a href="/demo/showcase" class="demo-home-btn">🏠 Demo Home</a>
+        <a href="/demo/showcase" class="demo-home-btn">← Demo Home</a>
         <a href="/" class="demo-main-btn">← Main App</a>
       </div>
     </div>
@@ -80,7 +85,7 @@
   .demo-layout {
     min-height: 100vh;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     background: var(--nier-bg-primary);
     color: var(--nier-text-primary);
   }
@@ -107,7 +112,7 @@
     font-size: 1.5rem;
     font-weight: bold;
     color: var(--nier-accent-warm);
-    margin: 0,
+    margin: 0;
   }
 
   .demo-badge {
@@ -133,16 +138,15 @@
     padding: 0.5rem 1rem;
     border: 1px solid var(--nier-border-primary);
     border-radius: 0.5rem;
-    text-decoration none;
+    text-decoration: none;
     color: var(--nier-text-secondary);
     background: var(--nier-bg-primary);
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
 
   .demo-nav-item:hover {
     border-color: var(--nier-accent-warm);
     color: var(--nier-accent-warm);
-    background: var(--nier-bg-tertiary);
   }
 
   .demo-nav-item.active {
@@ -226,10 +230,10 @@
     padding: 0.5rem 1rem;
     border: 1px solid var(--nier-border-primary);
     border-radius: 0.5rem;
-    text-decoration none;
+    text-decoration: none;
     color: var(--nier-text-primary);
     background: var(--nier-bg-primary);
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     font-size: 0.9rem;
   }
 
@@ -246,7 +250,7 @@
     }
 
     .demo-footer-content {
-      flex-direction column;
+      flex-direction: column;
       text-align: center;
       gap: 1rem;
     }

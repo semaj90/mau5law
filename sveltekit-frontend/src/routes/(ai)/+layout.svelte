@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import { page } from '$app/stores';
+  import { afterNavigate } from '$app/navigation';
+  import { browser } from '$app/environment';
   import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
 
   interface Props {
@@ -8,32 +9,54 @@
     children?: Snippet;
   }
 
-  let { data, children }: Props = $props();
+  // avoid unused 'data' warning by renaming to `_data`
+  let { data: _data, children }: Props = $props();
 
   // AI navigation items - route groups (ai) are invisible in URLs
   const aiRoutes = [
-    { name: 'AI Assistant', href: '/assistant', icon '🤖' },
-    { name: 'AI Chat', href: '/chat', icon '💬' },
-    { name: 'GPU Chat', href: '/gpu-chat', icon '⚡' },
-    { name: 'AI Dashboard', href: '/dashboard', icon '📊' },
-    { name: 'RAG System', href: '/rag', icon '🧠' },
-    { name: 'Vector Search', href: '/vector-search', icon '🔍' },
-    { name: 'Recommendations', href: '/recommendations', icon '💡' },
-    { name: 'Case Scoring', href: '/case-scoring', icon '⚖️' },
-    { name: 'Document Drafting', href: '/document-drafting', icon '📝' },
-    { name: 'Pattern Detection', href: '/pattern-detection', icon '🎯' },
-    { name: 'Orchestrator', href: '/orchestrator', icon '🎼' },
-    { name: 'Processing', href: '/processing', icon '⚙️' },
+    { name: 'AI Assistant', href: '/assistant', icon: '🤖' },
+    { name: 'AI Chat', href: '/chat', icon: '💬' },
+    { name: 'GPU Chat', href: '/gpu-chat', icon: '⚡' },
+    { name: 'AI Dashboard', href: '/dashboard', icon: '📊' },
+    { name: 'RAG System', href: '/rag', icon: '🧠' },
+    { name: 'Vector Search', href: '/vector-search', icon: '🔍' },
+    { name: 'Recommendations', href: '/recommendations', icon: '💡' },
+    { name: 'Case Scoring', href: '/case-scoring', icon: '⚖️' },
+    { name: 'Document Drafting', href: '/document-drafting', icon: '📝' },
+    { name: 'Pattern Detection', href: '/pattern-detection', icon: '🎯' },
+    { name: 'Orchestrator', href: '/orchestrator', icon: '🎼' },
+    { name: 'Processing', href: '/processing', icon: '⚙️' },
   ];
 
   // AI-focused console theme (cyberpunk for AI work)
   const consolePalette: ConsolePaletteName = 'cyberpunk';
 
-  // Get current route
-  let currentPath = $derived($page.url.pathname);
+  // Get current route (make reactive with Svelte 5 runes)
+  let currentPath = $state('');
 
+  // Use $effect for side-effects in runes mode.
+  // Initialize palette and keep currentPath in sync using afterNavigate (SSR-safe).
   $effect(() => {
     applyConsolePalette(consolePalette);
+
+    if (!browser) return; // no navigation on server
+
+    // set initial path
+    currentPath = window.location.pathname;
+
+    // Register navigation handler. afterNavigate may be typed to return void,
+    // so cast via unknown and treat as optional unsubscribe to avoid invalid cast.
+    const maybeUnsub = afterNavigate((nav) => {
+      // `to` may be undefined in some cases; fallback to window.location
+      currentPath = nav?.to?.url?.pathname ?? window.location.pathname;
+    }) as unknown as (() => void) | void;
+
+    // Return cleanup that only calls unsubscribe if it's actually a function.
+    return () => {
+      if (typeof maybeUnsub === 'function') {
+        maybeUnsub();
+      }
+    };
   });
 </script>
 
@@ -99,7 +122,7 @@
   .ai-layout {
     min-height: 100vh;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     background: var(--surface-primary, #0a0a0a);
     color: var(--text-primary, #00ccff);
     font-family: 'JetBrains Mono', 'Courier New', monospace;
@@ -157,23 +180,23 @@
     padding: 0.5rem 1rem;
     border: 1px solid var(--border-primary, #00ccff);
     border-radius: 0.5rem;
-    text-decoration none;
+    text-decoration: none;
     color: var(--text-secondary, #66ccff);
     background: var(--surface-primary, #0a0a0a);
-    transition all 0.3s ease;
-    position relative;
+    transition: all 0.3s ease;
+    position: relative;
     overflow: hidden;
   }
 
   .ai-nav-item::before {
     content: '';
-    position absolute;
-    top: 0,
+    position: absolute;
+    top: 0;
     left: -100%;
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(0, 204, 255, 0.2), transparent);
-    transition left 0.5s ease;
+    transition: left 0.5s ease;
   }
 
   .ai-nav-item:hover::before {
@@ -211,23 +234,23 @@
     flex: 1;
     overflow-y: auto;
     background: var(--surface-primary, #0a0a0a);
-    position relative;
+    position: relative;
   }
 
   /* Cyberpunk grid background */
   .ai-content::before {
     content: '';
-    position absolute;
-    top: 0,
+    position: absolute;
+    top: 0;
     left: 0;
-    right: 0,
+    right: 0;
     bottom: 0;
     background-image:
       linear-gradient(45deg, transparent 49%, rgba(0, 204, 255, 0.03) 50%, transparent 51%),
       linear-gradient(-45deg, transparent 49%, rgba(0, 204, 255, 0.03) 50%, transparent 51%);
     background-size: 40px 40px;
     pointer-events: none;
-    opacity: 0.5,
+    opacity: 0.5;
   }
 
   .ai-container {
@@ -235,8 +258,8 @@
     margin: 0 auto;
     padding: 2rem;
     min-height: 100%;
-    position relative;
-    z-index: 1,
+    position: relative;
+    z-index: 1;
   }
 
   .ai-placeholder {
@@ -294,10 +317,10 @@
     padding: 0.5rem 1rem;
     border: 1px solid var(--border-primary, #00ccff);
     border-radius: 0.5rem;
-    text-decoration none;
+    text-decoration: none;
     color: var(--text-primary, #00ccff);
     background: var(--surface-primary, #0a0a0a);
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     font-size: 0.9rem;
   }
 
@@ -315,7 +338,7 @@
     }
 
     .ai-footer-content {
-      flex-direction column;
+      flex-direction: column;
       text-align: center;
       gap: 1rem;
     }

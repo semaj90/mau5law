@@ -6,63 +6,71 @@
 import { writable, derived } from 'svelte/store';
 import type { Writable, Readable } from 'svelte/store';
 import { browser } from '$app/environment';
-// Import existing services
 import { qloraTrainingService, userAnalytics as qloraAnalytics } from './qlora-training-service.js';
 import { recommendationOrchestrator } from './recommendation-orchestrator.js';
 import { MoogleGraphSynthesizer } from '../ai/moogle-graph-synthesizer.js';
-}
+
 export interface UserHistoryEntry {
   id: string;
   userId: string;
   sessionId: string;
   timestamp: number;
   action: {
-    type: 'document_open' | 'search' | 'ai_query' | 'case_create' | 'evidence_upload' | 'analysis_run' | 'connection_made' | 'insight_generated';
-  target: string;
-  parameters: { [key: string]: any }
-  context: { [key: string]: any }
-  }
+    type:
+      | 'document_open'
+      | 'search'
+      | 'ai_query'
+      | 'case_create'
+      | 'evidence_upload'
+      | 'analysis_run'
+      | 'connection_made'
+      | 'insight_generated';
+    target: string;
+    // tightened types (no `any`)
+    parameters: Record<string, unknown>;
+    context: Record<string, unknown>;
+  };
   outcome: {
     success: boolean;
     duration: number;
-    result?: any;
+    result?: unknown;
     error?: string;
     userFeedback?: 'positive' | 'negative' | 'neutral';
     confidence?: number;
-  }
+  };
   environment: {
     page: string;
-    viewport: { width: number; height: number }
+    viewport: { width: number; height: number };
     userAgent: string;
     timestamp: number;
-  }
+  };
   metadata: {
     caseId?: string;
     documentIds?: string[];
     tags?: string[];
     complexity?: number;
-  }
+  };
 }
+
 export interface UserAnalyticsProfile {
   userId: string;
   createdAt: number;
   lastUpdated: number;
-  // Behavioral patterns
   patterns: {
-    activeHours: Record<number, number>; // Hour -> activity level
-    commonWorkflows: Array<any>;
+    activeHours: Record<number, number>;
+    // use structured generic records instead of Array<any>
+    commonWorkflows: Array<Record<string, unknown>>;
     documentPreferences: {
       types: Record<string, number>;
-      complexityRange: { min: number; max: number; preferred: number }
+      complexityRange: { min: number; max: number; preferred: number };
       averageProcessingTime: Record<string, number>;
-    }
+    };
     searchPatterns: {
-      commonTerms: Array<any>;
+      commonTerms: string[]; // tightened
       queryComplexity: number;
       refinementRate: number;
-    }
-  }
-  // Performance metrics
+    };
+  };
   performance: {
     overallProductivity: number;
     taskCompletionRate: number;
@@ -70,10 +78,9 @@ export interface UserAnalyticsProfile {
     accuracyRate: number;
     learningVelocity: number;
     expertiseLevel: 'novice' | 'intermediate' | 'advanced' | 'expert';
-  }
-  // Reinforcement learning profile
+  };
   reinforcement: {
-    rewardHistory: Array<any>;
+    rewardHistory: RewardEntry[]; // replaced Array<any> with RewardEntry[]
     actionPreferences: Record<string, { weight: number; successRate: number; averageReward: number }>;
     explorationTendency: number;
     adaptationRate: number;
@@ -81,38 +88,148 @@ export interface UserAnalyticsProfile {
       stability: number;
       consistency: number;
       improvement: number;
-    }
-  }
-  // Predictive insights
+    };
+  };
   predictions: {
-    nextLikelyActions: Array<any>;
+    nextLikelyActions: NextLikelyAction[]; // tightened
     optimalWorkflow: string[];
     recommendedComplexity: number;
     estimatedTaskTimes: Record<string, number>;
-    riskFactors: Array<any>;
+    riskFactors: string[]; // tightened
+  };
 }
+
 export interface ProductivityCache {
   id: string;
   userId: string;
   context: {
     caseId?: string;
-  documentTypes: string[];
-  complexity: number;
-  timeframe: string;
-  }
+    documentTypes: string[];
+    complexity: number;
+    timeframe: string;
+  };
   cached: {
-    insights: any[];
-    connections: any[];
-    recommendations: any[];
-    analysis: any;
+    insights: unknown[];        // tightened from any[]
+    connections: unknown[];     // tightened from any[]
+    recommendations: unknown[]; // tightened from any[]
+    analysis: unknown;          // tightened from any
     timestamp: number;
-  }
+  };
   performance: {
     cacheHitRate: number;
     averageResponseTime: number;
     concurrentProcesses: number;
-  }
+  };
 }
+
+// New: explicit types to avoid `any`
+type ActionType = UserHistoryEntry['action']['type'];
+
+interface GraphNode {
+  id: string;
+  type: ActionType;
+  properties: {
+    target: string;
+    frequency: number;
+    avgDuration: number;
+    successRate: number;
+    lastAccessed: number;
+  };
+  metadata: {
+    complexity: number;
+    timestamp: number;
+  };
+  score?: number;
+}
+
+interface GraphEdge {
+  id: string;
+  source: string;
+  target: string;
+  type: 'sequence';
+  weight: number;
+  properties: {
+    timeDelta: number;
+    success: boolean;
+  };
+}
+
+interface GraphPath {
+  id: string;
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+  totalScore: number;
+  metadata: {
+    pathType: string;
+    sessionId: string;
+    userId: string;
+  };
+}
+
+interface NodePosition {
+  id: string;
+  pageRankScore?: number;
+  avgDuration?: number;
+  [key: string]: unknown;
+}
+
+interface Visualization {
+  metadata?: {
+    nodePositions?: NodePosition[];
+    [k: string]: unknown;
+  };
+}
+
+interface NextLikelyAction {
+  action: string;
+  probability?: number;
+  confidence?: number;
+}
+
+interface PredictionsPayload {
+  nextLikelyActions?: NextLikelyAction[];
+  optimalWorkflow?: string[];
+  recommendedComplexity?: number;
+  estimatedTaskTimes?: Record<string, number>;
+  riskFactors?: string[];
+}
+
+interface PatternPayload {
+  description?: string;
+  confidence?: number;
+  [k: string]: unknown;
+}
+
+interface AnalyticsUpdatePayload extends Partial<UserAnalyticsProfile> {}
+
+// New: typed reward entry (replaces Array<any> uses)
+interface RewardEntry {
+  timestamp: number;
+  reward: number;
+  action: string;
+  context?: string;
+  state?: string; // added to carry encoded RL state
+}
+
+// New: recommendation types to avoid `any` casts
+interface Recommendation {
+  id: string;
+  type: 'detective' | 'legal' | 'evidence' | 'ai' | string;
+  title: string;
+  description?: string;
+  confidence?: number;
+  priority?: 'low' | 'medium' | 'high';
+  source?: string;
+  action?: (() => void) | string;
+  createdAt?: number;
+  metadata?: Record<string, unknown>;
+}
+
+interface RecommendationOrchestrator {
+  addRecommendation(rec: Recommendation): void;
+  updateDetectiveContext?(ctx: Record<string, unknown>): void;
+}
+
 export class UserAnalyticsRLIntegration {
   private userHistory: Writable<UserHistoryEntry[]>;
   private analyticsProfile: Writable<UserAnalyticsProfile | null>;
@@ -127,6 +244,8 @@ export class UserAnalyticsRLIntegration {
   private sessionId: string;
   private userId: string;
   private startTime: number;
+  // keep a reference to the unload handler so we can remove it later
+  private unloadHandler?: () => void;
   constructor() {
     this.userHistory = writable<UserHistoryEntry[]>([]);
     this.analyticsProfile = writable<UserAnalyticsProfile | null>(null);
@@ -134,6 +253,7 @@ export class UserAnalyticsRLIntegration {
     // Initialize Moogle Graph Synthesizer
     this.moogleSynthesizer = new MoogleGraphSynthesizer();
     this.sessionId = this.generateSessionId();
+    // safe userId generation that does not access localStorage on server
     this.userId = this.generateUserId();
     this.startTime = Date.now();
     this.initializeService();
@@ -162,50 +282,52 @@ export class UserAnalyticsRLIntegration {
    */
   private async initializeWorkers() {
     try {
+      // mark processing state as active (prevents "declared but never read")
+      this.isProcessing = true;
+
       // Analytics processing workers
-      for (let i = 0; i < this.maxConcurrentProcesses; i++) {>
+      for (let i = 0; i < this.maxConcurrentProcesses; i++) {
         const worker = new Worker('/workers/analytics-processor.js');
-        worker.onmessage = (event) => {
-          this.handleWorkerMessage(i, event.data);
-        });
+        worker.onmessage = event => this.handleWorkerMessage(i, event.data);
         worker.postMessage({
           type: 'init',
-          workerId: i;
+          workerId: i,
           config: {
             enableReinforcement: true,
             cacheStrategy: 'aggressive',
-            concurrentProcessing: true
-          }
+            concurrentProcessing: true,
+          },
         });
         this.processingWorkers.push(worker);
       }
       // Cache management worker
       this.cacheWorker = new Worker('/workers/cache-manager.js');
-      this.cacheWorker.onmessage = (event) => {
-        this.handleCacheMessage(event.data);
-      });
+      this.cacheWorker.onmessage = event => this.handleCacheMessage(event.data);
       this.cacheWorker.postMessage({
         type: 'init',
         config: {
           maxCacheSize: 500,
           ttl: 30 * 60 * 1000, // 30 minutes
-          cleanupInterval: 5 * 60 * 1000 // 5 minutes
-        }
+          cleanupInterval: 5 * 60 * 1000, // 5 minutes
+        },
       });
     } catch (error) {
       console.error('Failed to initialize workers:', error);
+      // if worker init fails, ensure flag reflects that we're not processing
+      this.isProcessing = false;
     }
   }
   /**
    * Track user action and update analytics
    */
-  async trackUserAction()
+  async trackUserAction(
     actionType: UserHistoryEntry['action']['type'],
-    target: string
-    parameters: { [key: string]: any } = {},
-    context: { [key: string]: any } = {}
-  ): Promise<string>, {
-    const actionId = `action_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    target: string,
+    parameters: Record<string, unknown> = {},
+    context: Record<string, unknown> = {}
+  ): Promise<string> {
+    // use slice instead of deprecated substr
+    const actionId = `action_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
     const historyEntry: UserHistoryEntry = {
       id: actionId,
       userId: this.userId,
@@ -215,28 +337,30 @@ export class UserAnalyticsRLIntegration {
         type: actionType,
         target,
         parameters,
-        context
+        context,
       },
       outcome: {
         success: false, // Will be updated when action completes
-        duration: 0
+        duration: 0,
       },
       environment: {
-        page: window.location.pathname,
+        // guard browser-only globals
+        page: browser ? window.location.pathname : '/server',
         viewport: {
-          width: window.innerWidth,
-          height: window.innerHeight
+          width: browser ? window.innerWidth : 0,
+          height: browser ? window.innerHeight : 0,
         },
-        userAgent: navigator.userAgent,
-        timestamp: Date.now()
+        userAgent: browser ? navigator.userAgent : 'server',
+        timestamp: Date.now(),
       },
       metadata: {
-        caseId: context.caseId,
-        documentIds: context.documentIds || [],
-        tags: context.tags || [],
-        complexity: context.complexity || 0.5
-      }
-    }
+        caseId: (context as any).caseId, // preserve previous behavior for optional fields
+        documentIds: (context as any).documentIds || [],
+        tags: (context as any).tags || [],
+        complexity: (context as any).complexity || 0.5,
+      },
+    };
+
     // Add to history
     this.userHistory.update(history => [historyEntry, ...history.slice(0, 999)]);
     // Send to processing worker for real-time analysis
@@ -246,39 +370,49 @@ export class UserAnalyticsRLIntegration {
   /**
    * Complete tracked action with outcome
    */
-  async completeAction()
-    actionId: string
+  async completeAction(
+    actionId: string,
     outcome: {
       success: boolean;
-      result?: any;
+      result?: unknown; // tightened from any -> unknown
       error?: string;
       userFeedback?: 'positive' | 'negative' | 'neutral';
-      confidence?: number);
+      confidence?: number;
     }
   ): Promise<void> {
-    const startTime = Date.now();
+    const endTime = Date.now();
+    // Use immutable update to avoid accidental mutations and parser issues
+    let completedAction: UserHistoryEntry | undefined;
     this.userHistory.update(history => {
-      const actionIndex = history.findIndex(entry => entry.id === actionId);
-      if (actionIndex >= 0) {
-        const action = history[actionIndex]);
-        action,.outcome = {
-          ...outcome,
-          duration: startTime - action.timestamp,
-        });
-        // Trigger reinforcement learning update
-        this.updateReinforcementLearning(action);
-        // Update productivity insights
-        this.updateProductivityCache(action);
-      }
-      return history;
+      const newHistory = history.map(entry => {
+        if (entry.id !== actionId) return entry;
+        const updated: UserHistoryEntry = {
+          ...entry,
+          outcome: {
+            ...entry.outcome,
+            ...outcome,
+            duration: endTime - entry.timestamp,
+          },
+        };
+        completedAction = updated;
+        return updated;
+      });
+      return newHistory;
     });
-    // Generate recommendations based on completed action
+
+    if (!completedAction) return;
+
+    // RL update and cache update using the captured immutable action
+    this.updateReinforcementLearning(completedAction);
+    this.updateProductivityCache(completedAction);
+
+    // Generate recommendations based on completed action (await to ensure sequencing)
     await this.generateActionBasedRecommendations(actionId, outcome);
   }
   /**
    * Process action analytics with concurrent workers
    */
-  private async processActionAnalytics(action,: UserHistoryEntry), {
+  private async processActionAnalytics(action: UserHistoryEntry) {
     const availableWorker = this.getAvailableWorker();
     if (availableWorker) {
       availableWorker.postMessage({
@@ -290,63 +424,72 @@ export class UserAnalyticsRLIntegration {
           parameters: action.action.parameters,
           context: action.action.context,
           timestamp: action.timestamp,
-          userId: action.userId
-        }
+          userId: action.userId,
+        },
       });
     }
   }
   /**
    * Update reinforcement learning based on action outcomes
    */
-  private updateReinforcementLearning(action,: UserHistoryEntry), {
+  private updateReinforcementLearning(action: UserHistoryEntry) {
     const reward = this.calculateReward(action);
-    const state = this.encodeActionState(action);
+    const state = this.encodeActionState(action); // now used below
     const actionKey = `${action.action.type}_${action.action.target}`;
+
     this.analyticsProfile.update(profile => {
       if (!profile) return profile;
-      // Add to reward history
-      profile.reinforcement.rewardHistory.push({
+      // Add to reward history (now strongly typed)
+      const rewardEntry: RewardEntry = {
         timestamp: action.timestamp,
         reward,
-        action: actionKey;
-        context: JSON.stringify(action.action.context)
-      });
+        action: actionKey,
+        context: JSON.stringify(action.action.context),
+        state, // include encoded state for downstream RL analysis
+      };
+      profile.reinforcement.rewardHistory.push(rewardEntry);
+
       // Update action preferences
       if (!profile.reinforcement.actionPreferences[actionKey]) {
         profile.reinforcement.actionPreferences[actionKey] = {
           weight: 0,
           successRate: 0,
-          averageReward: 0
-        }
+          averageReward: 0,
+        };
       }
       const pref = profile.reinforcement.actionPreferences[actionKey];
-      const count = profile.reinforcement.rewardHistory.filter(item => item.length);
+      const historyForKey = profile.reinforcement.rewardHistory.filter((r: RewardEntry) => r.action === actionKey);
+      const count = Math.max(1, historyForKey.length);
       pref.averageReward = (pref.averageReward * (count - 1) + reward) / count;
-      pref.successRate = profile.reinforcement.rewardHistory
-        .filter(r => r.action === actionKey && r.reward > 0)
-        .length / count;
+      pref.successRate = historyForKey.filter((r: RewardEntry) => r.reward > 0).length / count;
       pref.weight = pref.averageReward * pref.successRate;
+
       // Limit history size
       if (profile.reinforcement.rewardHistory.length > 1000) {
         profile.reinforcement.rewardHistory = profile.reinforcement.rewardHistory.slice(-500);
       }
       return profile;
     });
-    // Send to NES-RL agent in recommendation orchestrator
-    recommendationOrchestrator.updateDetectiveContext({
-      lastAnalysis: `RL update: ${actionKey} -> ${reward.toFixed(3)}`,
-      timeInMode: Date.now() - this.startTime,
-    });
+
+    // Send to NES-RL agent in recommendation orchestrator (typed)
+    const recOrch = recommendationOrchestrator as unknown as RecommendationOrchestrator;
+    if (recOrch.updateDetectiveContext) {
+      recOrch.updateDetectiveContext({
+        lastAnalysis: `RL update: ${actionKey} -> ${reward.toFixed(3)}`,
+        timeInMode: Date.now() - this.startTime,
+        encodedState: state, // include state so it's actually used by the orchestrator
+      } as Record<string, unknown>);
+    }
   }
   /**
    * Calculate reward based on action outcome
    */
-  private calculateReward(action,: UserHistoryEntry): number {
+  private calculateReward(action: UserHistoryEntry): number {
     let reward = 0;
     // Base reward for success/failure
     reward += action.outcome.success ? 1.0 : -0.5;
     // Time-based reward (faster is better, with reasonable limits)
-    const optimalTimes = {
+    const optimalTimes: Record<string, number> = {
       'document_open': 2000,
       'search': 5000,
       'ai_query': 10000,
@@ -354,33 +497,31 @@ export class UserAnalyticsRLIntegration {
       'evidence_upload': 8000,
       'analysis_run': 20000,
       'connection_made': 3000,
-      'insight_generated': 12000
-    }
-    const optimalTime = optimalTimes[action.action.type] || 5000;
-    const timeRatio = Math.min(optimalTime / Math.max(action.outcome.duration, 1000), 2);
+      'insight_generated': 12000,
+    };
+    const optimalTime = optimalTimes[action.action.type] ?? 5000;
+    const timeRatio = Math.min(optimalTime / Math.max(action.outcome.duration || 1000, 1000), 2);
     reward += (timeRatio - 1) * 0.5;
     // User feedback reward
     if (action.outcome.userFeedback === 'positive') reward += 0.5;
     if (action.outcome.userFeedback === 'negative') reward -= 0.3;
     // Confidence-based reward
-    if (action.outcome.confidence) {
-      reward += (action.outcome.confidence - 0.5) * 0.3;
-    }
+    if (action.outcome.confidence) reward += (action.outcome.confidence - 0.5) * 0.3;
     // Complexity adjustment
-    const complexity = action.metadata.complexity || 0.5;
+    const complexity = action.metadata.complexity ?? 0.5;
     if (complexity > 0.7) reward *= 1.2; // Bonus for handling complex tasks
-    return Math.max(-2, Math.min(2, reward);
+    return Math.max(-2, Math.min(2, reward));
   }
   /**
    * Encode action state for reinforcement learning
    */
-  private encodeActionState(action,: UserHistoryEntry): string {
-    return `${action.action.type}_${action.environment.page}_${Math.floor((action.metadata.complexity || 0.5) * 10)}`;
+  private encodeActionState(action: UserHistoryEntry): string {
+    return `${action.action.type}_${action.environment.page}_${Math.floor((action.metadata.complexity ?? 0.5) * 10)}`;
   }
   /**
    * Update productivity cache with completed actions
    */
-  private updateProductivityCache(action,: UserHistoryEntry), {
+  private updateProductivityCache(action: UserHistoryEntry) {
     if (!this.cacheWorker) return;
     this.cacheWorker.postMessage({
       type: 'update_cache',
@@ -392,18 +533,15 @@ export class UserAnalyticsRLIntegration {
         context: {
           caseId: action.metadata.caseId,
           complexity: action.metadata.complexity,
-          page: action.environment.page
-        }
-      }
+          page: action.environment.page,
+        },
+      },
     });
   }
   /**
    * Generate action-based recommendations using Moogle Graph Synthesizer
    */
-  private async generateActionBasedRecommendations()
-    actionId: string
-    outcome: any;
-  ) {
+  private async generateActionBasedRecommendations(actionId: string, _outcome: Partial<UserHistoryEntry['outcome']>) {
     try {
       const action = this.getAction(actionId);
       if (!action) return;
@@ -415,26 +553,27 @@ export class UserAnalyticsRLIntegration {
       const paths = this.convertActionsToGraphPaths(recentActions);
       // Use enhanced Moogle synthesizer with user analytics
       const visualization = await this.moogleSynthesizer.synthesize2D(
-        paths);
+        paths,
         {
           layout: 'legal-context',
-          reinforcementLearning,: {
-            enabled: true
-            showTrainingProgress: false
-            highlightOptimalPaths: true
-            showRewardHeatmap: true
-            qValueVisualization: false
-          }
+          reinforcementLearning: {
+            enabled: true,
+            showTrainingProgress: false,
+            highlightOptimalPaths: true,
+            showRewardHeatmap: true,
+            qValueVisualization: false,
+          },
         },
         profile,
         reinforcementData
-     ) );
+      );
       // Extract insights from visualization metadata
       const insights = this.extractInsightsFromVisualization(visualization, action);
       // Generate targeted recommendations
+      const recOrch = recommendationOrchestrator as unknown as RecommendationOrchestrator;
       for (const insight of insights) {
-        recommendationOrchestrator.addRecommendation({
-          id: `rl_insight_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        recOrch.addRecommendation({
+          id: `rl_insight_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
           type: insight.type,
           title: insight.title,
           description: insight.description,
@@ -446,8 +585,8 @@ export class UserAnalyticsRLIntegration {
           metadata: {
             basedOnAction: actionId,
             reinforcementScore: insight.reinforcementScore,
-            productivityImpact: insight.productivityImpact
-          }
+            productivityImpact: insight.productivityImpact,
+          },
         });
       }
     } catch (error) {
@@ -457,10 +596,10 @@ export class UserAnalyticsRLIntegration {
   /**
    * Convert user actions to graph paths for Moogle analysis
    */
-  private convertActionsToGraphPaths(actions,: UserHistoryEntry[]): any[,] {
-    const paths = [];
-    const nodeMap = new Map();
-    const edges = [];
+  private convertActionsToGraphPaths(actions: UserHistoryEntry[]): GraphPath[] {
+    const paths: GraphPath[] = [];
+    const nodeMap = new Map<string, GraphNode>();
+    const edges: GraphEdge[] = [];
     // Create nodes from actions
     for (const action of actions) {
       const nodeId = `${action.action.type}_${action.action.target}`;
@@ -473,17 +612,16 @@ export class UserAnalyticsRLIntegration {
             frequency: 1,
             avgDuration: action.outcome.duration,
             successRate: action.outcome.success ? 1 : 0,
-            lastAccessed: action.timestamp
+            lastAccessed: action.timestamp,
           },
           metadata: {
-            complexity: action.metadata.complexity || 0.5,
+            complexity: action.metadata.complexity ?? 0.5,
             timestamp: action.timestamp,
-            lastAccessed: action.timestamp
           },
-          score: action.outcome.success ? 0.8 : 0.3
+          score: action.outcome.success ? 0.8 : 0.3,
         });
       } else {
-        const node = nodeMap.get(nodeId);
+        const node = nodeMap.get(nodeId)!;
         node.properties.frequency++;
         node.properties.avgDuration = (node.properties.avgDuration + action.outcome.duration) / 2;
         node.properties.successRate = (node.properties.successRate + (action.outcome.success ? 1 : 0)) / 2;
@@ -491,7 +629,7 @@ export class UserAnalyticsRLIntegration {
       }
     }
     // Create edges between sequential actions
-    for (let i = 0; i < actions.length - 1; i++) {>
+    for (let i = 0; i < actions.length - 1; i++) {
       const sourceNode = `${actions[i].action.type}_${actions[i].action.target}`;
       const targetNode = `${actions[i + 1].action.type}_${actions[i + 1].action.target}`;
       edges.push({
@@ -499,53 +637,65 @@ export class UserAnalyticsRLIntegration {
         source: sourceNode,
         target: targetNode,
         type: 'sequence',
-        weight: 1 / Math.max(1, actions[i + 1].timestamp - actions[i].timestamp / 1000),
+        weight: 1 / Math.max(1, (actions[i + 1].timestamp - actions[i].timestamp) / 1000),
         properties: {
           timeDelta: actions[i + 1].timestamp - actions[i].timestamp,
-          success: actions[i].outcome.success && actions[i + 1].outcome.success
-        }
+          success: !!(actions[i].outcome.success && actions[i + 1].outcome.success),
+        },
       });
     }
     // Create a single path from all nodes and edges
     paths.push({
       id: 'user_workflow_path',
       nodes: Array.from(nodeMap.values()),
-      edges: edges,
-      totalScore: Array.from(nodeMap.values()).reduce((sum, node) => sum + node.score, 0),
+      edges,
+      totalScore: Array.from(nodeMap.values()).reduce((sum, node) => sum + (node.score ?? 0), 0),
       metadata: {
         pathType: 'user_workflow',
         sessionId: this.sessionId,
-        userId: this.userId
-      }
+        userId: this.userId,
+      },
     });
     return paths;
   }
   /**
    * Extract actionable insights from Moogle visualization
    */
-  private extractInsightsFromVisualization(visualization,: any, triggerActio,n: UserHistoryEntry) {
-    const insights = [];
+  private extractInsightsFromVisualization(visualization: Visualization, _triggerAction: UserHistoryEntry) {
+    const insights: Array<{
+      // tighten type so assignments to orchestrator types compile
+      type: 'detective' | 'legal' | 'evidence' | 'ai';
+      title: string;
+      description: string;
+      confidence: number;
+      priority: 'low' | 'medium' | 'high';
+      reinforcementScore: number;
+      productivityImpact: number;
+      action: () => void;
+    }> = [];
+
+    const nodePositions: NodePosition[] = (visualization?.metadata?.nodePositions ?? []) as NodePosition[];
     // Analyze node positions and PageRank scores
-    const highScoreNodes = visualization.metadata.nodePositions;
-      .filter((node: any) => node.pageRankScore > 1.2)
-      .sort((a: any, b: any) => b.pageRankScore - a.pageRankScore);
+    const highScoreNodes = nodePositions
+      .filter(node => typeof node.pageRankScore === 'number' && node.pageRankScore > 1.2)
+      .sort((a, b) => (b.pageRankScore ?? 0) - (a.pageRankScore ?? 0));
     if (highScoreNodes.length > 0) {
       const topNode = highScoreNodes[0];
       insights.push({
         type: 'ai',
         title: 'High-Value Action Identified',
-        description: `Based on your usage patterns, "${topNode.id}" shows high productivity value (${(topNode.pageRankScore * 100).toFixed(0)} score).`,
+        description: `Based on your usage patterns, "${topNode.id}" shows high productivity value (${Math.round((topNode.pageRankScore ?? 0) * 100)} score).`,
         confidence: 0.85,
         priority: 'medium',
-        reinforcementScore: topNode.pageRankScore,
+        reinforcementScore: topNode.pageRankScore ?? 0,
         productivityImpact: 0.7,
-        action: () => this.suggestWorkflowOptimization(topNode.id)
+        action: () => this.suggestWorkflowOptimization(topNode.id),
       });
     }
     // Identify workflow bottlenecks
-    const slowNodes = visualization.metadata.nodePositions;
-      .filter((node: any) => node.avgDuration > 10000)
-      .sort((a: any, b: any) => b.avgDuration - a.avgDuration);
+    const slowNodes = nodePositions
+      .filter(node => (typeof node.avgDuration === 'number' ? (node.avgDuration ?? 0) > 10000 : false))
+      .sort((a, b) => (b.avgDuration ?? 0) - (a.avgDuration ?? 0));
     if (slowNodes.length > 0) {
       insights.push({
         type: 'detective',
@@ -555,90 +705,111 @@ export class UserAnalyticsRLIntegration {
         priority: 'high',
         reinforcementScore: -0.5,
         productivityImpact: 0.9,
-        action: () => this.provideOptimizationTips(slowNodes[0].id)
+        action: () => this.provideOptimizationTips(slowNodes[0].id),
       });
     }
     // Suggest next best actions
     const profile = this.getAnalyticsProfile();
-    if (profile?.predictions.nextLikelyActions.length > 0) {
-      const nextAction = profile.predictions.nextLikelyActions[0];
+    if (
+      profile &&
+      profile.predictions &&
+      Array.isArray(profile.predictions.nextLikelyActions) &&
+      profile.predictions.nextLikelyActions.length > 0
+    ) {
+      const nextAction = profile.predictions.nextLikelyActions[0] as NextLikelyAction;
       insights.push({
         type: 'ai',
         title: 'Suggested Next Action',
-        description: `Based on your patterns, consider: ${nextAction.action} (${(nextAction.probability * 100).toFixed(0)}% likely)`,
-        confidence: nextAction.confidence,
+        description: `Based on your patterns, consider: ${nextAction.action} (${Math.round((nextAction.probability ?? 0) * 100)}% likely)`,
+        confidence: nextAction.confidence ?? 0.5,
         priority: 'low',
         reinforcementScore: 0.3,
         productivityImpact: 0.5,
-        action: () => this.executeNextAction(nextAction.action)
+        action: () => this.executeNextAction(nextAction.action),
       });
     }
     return insights;
   }
+
   // Worker message handlers
-  private handleWorkerMessage(workerId,: number, dat,a: any) {
-    const { type, payload } = dat;a;
+  private handleWorkerMessage(_workerId: number, data: { type: string; payload?: unknown }) {
+    const { type, payload } = data;
     switch (type) {
       case 'analytics_updated':
-        this.updateAnalyticsProfile(payload);
+        if (payload && typeof payload === 'object') {
+          this.updateAnalyticsProfile(payload as AnalyticsUpdatePayload);
+        }
         break;
       case 'pattern_identified':
-        this.handlePatternIdentified(payload);
+        if (payload && typeof payload === 'object') {
+          this.handlePatternIdentified(payload as PatternPayload);
+        }
         break;
       case 'prediction_generated':
-        this.updatePredictions(payload);
+        if (payload && typeof payload === 'object') {
+          this.updatePredictions(payload as PredictionsPayload);
+        }
+        break;
+      default:
         break;
     }
   }
-  private handleCacheMessage(data,: any), {
-    const { type, payload } = dat;a;
+
+  private handleCacheMessage(data: { type: string; payload?: unknown }) {
+    const { type, payload } = data;
     switch (type) {
       case 'cache_updated':
-        this.productivityCache.update(cache => {
-          const existingIndex = cache.findIndex(c => c.id === payload.id);
-          if (existingIndex >= 0) {
-            cache[existingIndex] = payload;
-          } else {
-            cache.push(payload);
-          }
-          return cache.slice(0, 100); // Limit cache size
-        });
+        if (payload && typeof payload === 'object' && 'id' in payload) {
+          const p = payload as ProductivityCache;
+          this.productivityCache.update(cache => {
+            const existingIndex = cache.findIndex(c => c.id === p.id);
+            if (existingIndex >= 0) {
+              cache[existingIndex] = p;
+            } else {
+              cache.push(p);
+            }
+            return cache.slice(0, 100); // Limit cache size
+          });
+        }
         break;
       case 'cache_hit':
         console.log('Cache hit:', payload);
         break;
+      default:
+        break;
     }
   }
   // Utility methods
-  private getAvailableWorker(),: Worker | null, {
-    return this.processingWorkers[0]; // Simplified - would implement proper worker pool
+  private getAvailableWorker(): Worker | null {
+    return this.processingWorkers.length > 0 ? this.processingWorkers[0] : null;
   }
-  private updateAnalyticsProfile(updates,: Partial<UserAnalyticsProfile>), {
+  private updateAnalyticsProfile(updates: Partial<UserAnalyticsProfile>) {
     this.analyticsProfile.update(profile => {
       if (!profile) {
-        return this.createDefaultProfile();
+        const def = this.createDefaultProfile();
+        return { ...def, ...updates, lastUpdated: Date.now() };
       }
-      return { ...profile, ...updates, lastUpdated: Date.now() },
+      return { ...profile, ...updates, lastUpdated: Date.now() };
     });
   }
-  private createDefaultProfile(),: UserAnalyticsProfile {
+  private createDefaultProfile(): UserAnalyticsProfile {
     return {
       userId: this.userId,
       createdAt: Date.now(),
       lastUpdated: Date.now(),
       patterns: {
-        activeHours: { [key,: strin,g]: any },
+        activeHours: {},
         commonWorkflows: [],
         documentPreferences: {
-          types: { [key,: strin,g]: any },
+          types: {},
           complexityRange: { min: 0.2, max: 0.8, preferred: 0.5 },
-          averageProcessingTime: { [key,: strin,g]: any },
+          averageProcessingTime: {},
         },
         searchPatterns: {
           commonTerms: [],
           queryComplexity: 0.5,
-          refinementRate: 0.2
-        }
+          refinementRate: 0.2,
+        },
       },
       performance: {
         overallProductivity: 0.5,
@@ -646,157 +817,166 @@ export class UserAnalyticsRLIntegration {
         averageTaskDuration: 5000,
         accuracyRate: 0.5,
         learningVelocity: 0.5,
-        expertiseLevel: 'novice'
+        expertiseLevel: 'novice',
       },
       reinforcement: {
         rewardHistory: [],
-        actionPreferences: { [key,: strin,g]: any },
+        actionPreferences: {},
         explorationTendency: 0.3,
         adaptationRate: 0.1,
-        convergenceMetrics: {
-          stability: 0.5,
-          consistency: 0.5,
-          improvement: 0.5
-        }
+        convergenceMetrics: { stability: 0.5, consistency: 0.5, improvement: 0.5 },
       },
       predictions: {
         nextLikelyActions: [],
         optimalWorkflow: [],
         recommendedComplexity: 0.5,
-        estimatedTaskTimes: { [key,: strin,g]: any },
-        riskFactors: []
-      }
-    }
+        estimatedTaskTimes: {},
+        riskFactors: [],
+      },
+    };
   }
-  private handlePatternIdentified(pattern,: any), {
-    recommendationOrchestrator.addRecommendation({
-      id: `pattern_${Date.now()}`,
+  private handlePatternIdentified(pattern: PatternPayload) {
+    const recOrch = recommendationOrchestrator as unknown as RecommendationOrchestrator;
+    recOrch.addRecommendation({
+      id: `pattern_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
       type: 'ai',
       title: 'Usage Pattern Identified',
-      description: `New pattern detected: ${pattern.description}`,
-      confidence: pattern.confidence,
+      description: `New pattern detected: ${pattern.description ?? 'unspecified'}`,
+      confidence: pattern.confidence ?? 0.5,
       priority: 'low',
       source: 'user-analytics-rl',
       createdAt: Date.now(),
     });
   }
-  private updatePredictions(predictions,: any), {
+
+  private updatePredictions(predictions: PredictionsPayload) {
     this.analyticsProfile.update(profile => {
-      if (!profile) return profile);
-      profile.predictions = { ...profile.predictions, ...predictions });
+      if (!profile) return profile;
+      profile.predictions = { ...profile.predictions, ...predictions };
       return profile;
     });
   }
-  private generateSessionId(),: string {
-    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  private generateSessionId(): string {
+    return `session_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
   }
-  private generateUserId(),: string {
-    // In production, this would come from authentication
-    return localStorage.getItem('userId') || `user_${Date.now()}`;
+  private generateUserId(): string {
+    // Safe access to localStorage only in browser
+    if (browser && typeof localStorage !== 'undefined') {
+      return localStorage.getItem('userId') || `user_${Date.now()}`;
+    }
+    return `user_${Date.now()}`;
   }
-  private async loadUserData(), {
+  private async loadUserData() {
     // Load from localStorage and server
     try {
-      const stored = localStorage.getItem(`user_analytics_${this.userId}`);
-      if (stored) {
-        const data = JSON.parse(stored);
-        this.analyticsProfile.set(data.profile || this.createDefaultProfile();
-        this.userHistory.set(data.history || []);
+      if (browser && typeof localStorage !== 'undefined') {
+        const stored = localStorage.getItem(`user_analytics_${this.userId}`);
+        if (stored) {
+          const data = JSON.parse(stored);
+          this.analyticsProfile.set(data.profile || this.createDefaultProfile());
+          this.userHistory.set(data.history || []);
+        }
       }
     } catch (error) {
       console.warn('Failed to load stored user data:', error);
     }
   }
-  private setupUserTracking(), {
+  private setupUserTracking() {
+    if (!browser) return;
     // Auto-save data periodically
-    setInterval(() => {
-      this.saveUserData();
-    }, 60000); // Save every minute
-    // Save on page unload
-    window.addEventListener('beforeunload', () => {
-      this.saveUserData();
-    });
+    setInterval(() => this.saveUserData(), 60000); // Save every minute
+    // Use a stable handler so we can remove it in destroy()
+    this.unloadHandler = () => this.saveUserData();
+    window.addEventListener('beforeunload', this.unloadHandler);
   }
-  private saveUserData(), {
+  private saveUserData() {
     try {
+      if (!browser || typeof localStorage === 'undefined') return;
       const data = {
         profile: this.getAnalyticsProfile(),
-        history: this.getUserHistory().slice(0, 500) // Limit stored history
-      }
-      localStorage.setItem(`user_analytics_${this.userId}`, JSON.stringify(data);
+        history: this.getUserHistory().slice(0, 500), // Limit stored history
+      };
+      localStorage.setItem(`user_analytics_${this.userId}`, JSON.stringify(data));
     } catch (error) {
       console.warn('Failed to save user data:', error);
     }
   }
-  private startCacheManagement(), {
+  private startCacheManagement() {
     // Cleanup cache periodically
-    setInterval(() => {
-      this.productivityCache.update(cache =>)
-        cache.filter(c => Date.now() - c.cached.timestamp < 30 * 60 * 1000)
-      );
-    }, 5 * 60 * 1000);
+    setInterval(
+      () => {
+        this.productivityCache.update(cache =>
+          cache.filter(c => Date.now() - (c.cached?.timestamp || 0) < 30 * 60 * 1000)
+        );
+      },
+      5 * 60 * 1000
+    );
   }
   // Action suggestion methods
-  private suggestWorkflowOptimization(nodeId,: string), {
+  private suggestWorkflowOptimization(nodeId: string) {
     console.log('Suggesting workflow optimization for:', nodeId);
   }
-  private provideOptimizationTips(nodeId,: string), {
+  private provideOptimizationTips(nodeId: string) {
     console.log('Providing optimization tips for:', nodeId);
   }
-  private executeNextAction(action,: string), {
+  private executeNextAction(action: string) {
     console.log('Executing suggested next action:', action);
   }
   // Getters for stores
-  private getUserHistory(),: UserHistoryEntry[], {
-    let history: UserHistoryEntry[] = [];
-    this.userHistory.subscribe(h => history = h();
-    return history;
+  private getUserHistory(): UserHistoryEntry[] {
+    let value: UserHistoryEntry[] = [];
+    const unsub = this.userHistory.subscribe(v => (value = v));
+    unsub();
+    return value;
   }
-  private getAnalyticsProfile(),: UserAnalyticsProfile | null, {
-    let profile: UserAnalyticsProfile | null = null;
-    this.analyticsProfile.subscribe(p => profile = p();
-    return profile;
+  private getAnalyticsProfile(): UserAnalyticsProfile | null {
+    let value: UserAnalyticsProfile | null = null;
+    const unsub = this.analyticsProfile.subscribe(v => (value = v));
+    unsub();
+    return value;
   }
-  private getAction(actionId,: string): UserHistoryEntry | undefine,d {
-    return this.getUserHistory().find(action => action.id === actionId);
+  private getAction(actionId: string): UserHistoryEntry | undefined {
+    return this.getUserHistory().find(a => a.id === actionId);
   }
   // Public API
-  public getUserHistoryStore(),: Readable<UserHistoryEntry[]> {
-    return this.userHistor,y;
+  public getUserHistoryStore(): Readable<UserHistoryEntry[]> {
+    return this.userHistory;
   }
-  public getAnalyticsProfileStore(),: Readable<UserAnalyticsProfile | null> {
-    return this.analyticsProfil,e;
+  public getAnalyticsProfileStore(): Readable<UserAnalyticsProfile | null> {
+    return this.analyticsProfile;
   }
-  public getProductivityCacheStore(),: Readable<ProductivityCache[]> {
-    return this.productivityCach,e;
+  public getProductivityCacheStore(): Readable<ProductivityCache[]> {
+    return this.productivityCache;
   }
-  public async clearHistory(),: Promise<void> {
+  public async clearHistory(): Promise<void> {
     this.userHistory.set([]);
-    localStorage,.removeItem(`user_analytics_${this.userId}`);
+    localStorage.removeItem(`user_analytics_${this.userId}`);
   }
-  public async exportData(),: Promise<any> {
+  public async exportData(): Promise<{
+    userId: string;
+    history: UserHistoryEntry[];
+    analytics: UserAnalyticsProfile | null;
+    exportedAt: number;
+  }> {
     return {
       userId: this.userId,
       history: this.getUserHistory(),
       analytics: this.getAnalyticsProfile(),
-      exportedAt: Date.now()
-    }
+      exportedAt: Date.now(),
+    };
   }
-  public destroy(), {
+  public isCurrentlyProcessing(): boolean {
+    // small accessor to make `isProcessing` used/read externally if needed
+    return this.isProcessing;
+  }
+  public destroy() {
     // Cleanup workers
     for (const worker of this.processingWorkers) {
-      worker.terminate();
+      try {
+        worker.terminate();
+      } catch (e) {
+        /* ignore */
+      }
     }
-    if (this.cacheWorker) {
-      this.cacheWorker.terminate();
-    }
-    // Save final data
-    this.saveUserData();
-  }
-}
-// Export singleton instance
-export const userAnalyticsRLIntegration = new UserAnalyticsRLIntegration();
-// Export derived stores for components
-export const userHistory = userAnalyticsRLIntegration.getUserHistoryStore();
-export const analyticsProfile = userAnalyticsRLIntegration.getAnalyticsProfileStore();
-export const productivityCache = userAnalyticsRLIntegration.getProductivityCacheStore();
+    this.processingWorkers = [];
+    if
