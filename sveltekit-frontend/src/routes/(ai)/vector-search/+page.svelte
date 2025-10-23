@@ -275,7 +275,7 @@
 
   .option-group {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
 
@@ -349,7 +349,7 @@
 
   .results-header h3 {
     color: var(--text-primary, #00ccff);
-    margin: 0,
+    margin: 0;
   }
 
   .results-meta {
@@ -366,7 +366,7 @@
   .result-card {
     background: var(--surface-secondary, #111111);
     border: 1px solid var(--border-primary, #00ccff);
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
 
   .result-card:hover {
@@ -438,7 +438,7 @@
 
   .tips-list {
     color: var(--text-secondary, #888888);
-    line-height: 1.6,
+    line-height: 1.6;
   }
 
   .tips-list li {
@@ -455,7 +455,7 @@
     }
 
     .results-header {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-start;
       gap: 0.5rem;
     }

@@ -7,8 +7,9 @@ import (
 	"sort"
 	"time"
 
-	"gorm.io/gorm"
+	"github.com/bytedance/sonic" // High-performance JSON library with SIMD
 	"github.com/redis/go-redis/v9"
+	"gorm.io/gorm"
 )
 
 // MemoryEngine handles contextual memory management with CUDA acceleration
@@ -17,6 +18,149 @@ type MemoryEngine struct {
 	redis      *redis.Client
 	embedder   *EmbeddingService
 	cudaWorker *CudaWorker
+	jsonParser *sonic.API // High-performance JSON parser with SIMD
+}
+
+// NewMemoryEngine creates a new memory engine with optimized JSON processing
+func NewMemoryEngine(db *gorm.DB, redis *redis.Client, embedder *EmbeddingService, cudaWorker *CudaWorker) *MemoryEngine {
+	return &MemoryEngine{
+		db:         db,
+		redis:      redis,
+		embedder:   embedder,
+		cudaWorker: cudaWorker,
+		jsonParser: sonic.ConfigDefault, // Use default sonic config with SIMD optimizations
+	}
+}
+
+// FastJSONMarshal uses sonic for high-performance JSON marshaling with SIMD
+func (me *MemoryEngine) FastJSONMarshal(v interface{}) ([]byte, error) {
+	return me.jsonParser.Marshal(v)
+}
+
+// FastJSONUnmarshal uses sonic for high-performance JSON unmarshaling with SIMD
+func (me *MemoryEngine) FastJSONUnmarshal(data []byte, v interface{}) error {
+	return me.jsonParser.Unmarshal(data, v)
+}
+
+// FastJSONGet uses sonic's AST for ultra-fast JSON field extraction
+func (me *MemoryEngine) FastJSONGet(data []byte, path string) (interface{}, error) {
+	node, err := me.jsonParser.Get(data, path)
+	if err != nil {
+		return nil, err
+	}
+	return node.Interface(), nil
+}
+
+// JSONBToMap converts PostgreSQL JSONB to Go map with sonic
+func (me *MemoryEngine) JSONBToMap(jsonbData []byte) (map[string]interface{}, error) {
+	var result map[string]interface{}
+	err := me.FastJSONUnmarshal(jsonbData, &result)
+	return result, err
+}
+
+// MapToJSONB converts Go map to PostgreSQL JSONB with sonic
+func (me *MemoryEngine) MapToJSONB(data map[string]interface{}) ([]byte, error) {
+	return me.FastJSONMarshal(data)
+}
+
+// SaveMemoryWithJSONB saves memory with optimized JSONB storage
+func (me *MemoryEngine) SaveMemoryWithJSONB(ctx context.Context, caseID string, memory *MemoryContext) error {
+	// Convert memory to JSONB with sonic
+	jsonbData, err := me.FastJSONMarshal(memory)
+	if err != nil {
+		return fmt.Errorf("failed to marshal memory to JSONB: %w", err)
+	}
+
+	// Save to Redis with JSONB
+	redisKey := fmt.Sprintf("case:memory:%s", caseID)
+	err = me.redis.Set(ctx, redisKey, jsonbData, 24*time.Hour).Err()
+	if err != nil {
+		return fmt.Errorf("failed to save memory to Redis: %w", err)
+	}
+
+	// Save to PostgreSQL with JSONB
+	query := `
+		INSERT INTO case_memories (case_id, memory_json, updated_at) 
+		VALUES ($1, $2, $3) 
+		ON CONFLICT (case_id) 
+		DO UPDATE SET memory_json = $2, updated_at = $3
+	`
+	
+	_, err = me.db.Exec(query, caseID, jsonbData, time.Now())
+	if err != nil {
+		return fmt.Errorf("failed to save memory to PostgreSQL: %w", err)
+	}
+
+	return nil
+}
+
+// LoadMemoryWithJSONB loads memory with optimized JSONB parsing
+func (me *MemoryEngine) LoadMemoryWithJSONB(ctx context.Context, caseID string) (*MemoryContext, error) {
+	// Try Redis first
+	redisKey := fmt.Sprintf("case:memory:%s", caseID)
+	jsonbData, err := me.redis.Get(ctx, redisKey).Bytes()
+	if err == nil && len(jsonbData) > 0 {
+		var memory MemoryContext
+		err = me.FastJSONUnmarshal(jsonbData, &memory)
+		if err == nil {
+			return &memory, nil
+		}
+	}
+
+	// Fallback to PostgreSQL
+	var memory MemoryContext
+	var jsonbBytes []byte
+	
+	err = me.db.Raw(`
+		SELECT memory_json FROM case_memories 
+		WHERE case_id = $1 
+		ORDER BY updated_at DESC 
+		LIMIT 1
+	`, caseID).Scan(&jsonbBytes).Error
+	
+	if err != nil {
+		return nil, fmt.Errorf("failed to load memory from PostgreSQL: %w", err)
+	}
+
+	if len(jsonbBytes) == 0 {
+		return nil, fmt.Errorf("no memory found for case %s", caseID)
+	}
+
+	err = me.FastJSONUnmarshal(jsonbBytes, &memory)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal memory JSONB: %w", err)
+	}
+
+	// Cache in Redis for future access
+	me.redis.Set(ctx, redisKey, jsonbBytes, 24*time.Hour)
+
+	return &memory, nil
+}
+
+// FastMemorySearch performs vector similarity search with JSONB metadata
+func (me *MemoryEngine) FastMemorySearch(ctx context.Context, query string, caseID string, limit int) ([]MemoryInteraction, error) {
+	// Get query embedding
+	queryEmbedding, err := me.embedder.GenerateEmbedding(query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate query embedding: %w", err)
+	}
+
+	// Perform vector similarity search with JSONB filtering
+	var results []MemoryInteraction
+	err = me.db.Raw(`
+		SELECT id, user_id, case_id, session_id, type, content, response, 
+		       embedding, metadata, importance, decay, created_at, accessed_at
+		FROM memory_interactions 
+		WHERE case_id = $1 
+		ORDER BY embedding <-> $2 
+		LIMIT $3
+	`, caseID, queryEmbedding, limit).Scan(&results).Error
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to perform vector search: %w", err)
+	}
+
+	return results, nil
 }
 
 // Memory interaction record

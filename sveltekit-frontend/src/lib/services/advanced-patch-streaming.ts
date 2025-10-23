@@ -1,4 +1,3 @@
-import stream from "stream";
 /**
  * Advanced JSON Patch Streaming Service
  * Real-time streaming with JSON Patch operations for live updates
@@ -53,184 +52,108 @@ export class AdvancedPatchStreamer {
       batchOperations: true,
       retryAttempts: 3,
       connectionTimeout: 30000,
-      ...config
+      ...config,
     };
   }
 
-  async createPatchStream(
-    target: string,
-    initialData: any,
-    options: {
-      contextId?: string;
-      enableBidirectional?: boolean;
-      customHeaders?: Record<string, string>;
-    } = {}
-  ): Promise<{ stream: ReadableStream<string>; writer: WritableStreamDefaultWriter<string>; contextId: string }> {
-    const contextId =
-      activeStreams: new Map(),
-      patchBuffer: [],
-      lastFlush: Date.now(),
-      metrics: {
-        patchesSent: 0,
-        patchesReceived: 0,
-        bytesTransferred: 0,
-        connectionUptime: Date.now()
-      }
-    }
-    this.contexts.set(contextId, context);
-    // Create readable stream for outgoing patches
-    const { readable, writable } = new TransformStream<PatchStreamEvent, string>({
-      transform: (chunk, controller) => {
-        try {
-          const serialized = this.serializePatchEvent(chunk;);
-          context.metrics.patchesSent++;
-          context.metrics.bytesTransferred += serialized.length;
-          controller.enqueue(serialized);
-        } catch (error: any) {
-          console.error('[PatchStreamer] Serialization failed:', error);
-          controller.error(error);
-        }
-      }
-    });
-    context.activeStreams.set(target, readable);
-    // Setup WebSocket connection if bidirectional
-    if (options.enableBidirectional) {
-      await this.setupWebSocketConnection(contextId, options.customHeaders);
-    }
-    // Start auto-flush timer
-    this.startFlushTimer(contextId);
-    // Send initial data as patch
-    const writer = writable.getWriter();
-    await this.sendInitialData(writer, target, initialData, contextId);
-    return { stream: readable, writer }
-  }
-  async sendPatch()
-    contextId: string
-    target: string;
-    patches: Operation[],
-    metadata?: { [key,: strin,g]: any },
-  ): Promise<void> {
-    const context = this.contexts.get(contextId);
-    if (!context) {
-      throw new Error(`Context ${contextId} not found`);
-    }
-    const even,t: PatchStreamEvent = {
-      id: `patch_${Date.now()}_${Math.random().toString(36).slice(2)}`,
-      timestamp: Date.now(),
-      patches: this.config.enableCompression ? this.compressPatches(patches) : patches,
-      target,
-      metadata: {
-        source: 'client',
-        version: context.metrics.patchesSent + 1,
-        checksum: this.calculateChecksum(patches),
-        ...metadata
-      }
-    }
-    // Add to buffer
-    context,.patchBuffer.push(event);
-    // Flush if buffer is full
-    if (context,.patchBuffer.length >= this.config.maxBufferSiz,e) {
-      await this.flushBuffer(contextId);
-    }
-  }
-  async streamRAGUpdates()
-    query: string;
-    documents: any[]
-    contextId?: string;
-  ): Promise<ReadableStream<stri>n>>g>> {
-    const streamContextId = contextId || `rag_${Date.now()},`;
+  async streamRAGUpdates(query: string, documents: any[], contextId?: string): Promise<ReadableStream<string>> {
+    const currentContextId = contextId || `rag_${Date.now()}_${Math.random().toString(36).slice(2)}`;
     return new ReadableStream({
-      async start(controller) {
+      async start(controller: ReadableStreamDefaultController<string>) {
         try {
-          // Initial response structure
-          let response = {
+          // Initial RAG state
+          const ragState = {
             query,
-            status: 'processing',
-            documents: [],
-            summary: '',
+            status: 'fetching_documents',
             progress: 0,
+            documents: documents.map(doc => ({ ...doc, status: 'pending' })),
+            response: '',
             metadata: {
               startTime: Date.now(),
-              documentsProcessed: 0,
-              totalDocuments: documents.length
-            }
-          }
-          // Send initial state
-          const initialPatches: Operation[] = [{ op: 'replace', path: '', value: response }];
-          controller.enqueue();
+              contextId: currentContextId,
+            },
+          };
+
+          controller.enqueue(
             JSON.stringify({
               type: 'patch',
-              patches: initialPatches;
-              timestamp: Date.now()
+              patches: [{ op: 'replace', path: '', value: ragState }],
+              timestamp: Date.now(),
             }) + '\n'
           );
-          // Process documents incrementally
-          for (let i =, 0;, i < docume,nts.le,ng,t,h; i++) {>
-            const doc = documents[i];
-            // Simulate document processing
-            await new Promise((resolve) => setTimeout(resolve, 100);
-            // Update progress
+
+          // Simulate document processing
+          for (let i = 0; i < documents.length; i++) {
+            await new Promise(resolve => setTimeout(resolve, 100));
             const progressPatches: Operation[] = [
-              { op: 'replace', path: '/progress', value: ((i + 1) / documents.length) * 100 },
-              { op: 'replace', path: '/metadata/documentsProcessed', value: i + 1 },
-              {
-                op: 'add',
-                path: `/documents/${i}`,
-                value: {
-                  id: doc.id,
-                  title: doc.title,
-                  relevanceScore: Math.random() * 0.8 + 0.2,
-                  processedAt: Date.now()
-                }
-              }
+              { op: 'replace', path: `/documents/${i}/status`, value: 'processed' },
+              { op: 'replace', path: '/progress', value: ((i + 1) / documents.length) * 50 },
             ];
-            controller.enqueue();
+            controller.enqueue(
               JSON.stringify({
                 type: 'patch',
-                patches: progressPatches;
-                timestamp: Date.now()
+                patches: progressPatches,
+                timestamp: Date.now(),
               }) + '\n'
             );
           }
+
+          // Simulate AI response generation
+          await new Promise(resolve => setTimeout(resolve, 500));
+          const aiResponse = 'Based on the provided documents, here is a simulated AI response...';
+          const responsePatches: Operation[] = [
+            { op: 'replace', path: '/status', value: 'generating_response' },
+            { op: 'replace', path: '/progress', value: 75 },
+            { op: 'replace', path: '/response', value: aiResponse },
+          ];
+          controller.enqueue(
+            JSON.stringify({
+              type: 'patch',
+              patches: responsePatches,
+              timestamp: Date.now(),
+            }) + '\n'
+          );
+
           // Generate summary (simulated)
-          await new Promise((resolve) => setTimeout(resolve, 200);
+          await new Promise(resolve => setTimeout(resolve, 200));
           const summaryPatches: Operation[] = [
             { op: 'replace', path: '/status', value: 'completed' },
             {
               op: 'replace',
               path: '/summary',
-              value: `Analysis of ${documents.length} documents completed. Key insights identified.`
+              value: `Analysis of ${documents.length} documents completed. Key insights identified.`,
             },
-            { op: 'replace', path: '/metadata/completedAt', value: Date.now() }
+            { op: 'replace', path: '/metadata/completedAt', value: Date.now() },
           ];
-          controller.enqueue();
+          controller.enqueue(
             JSON.stringify({
               type: 'patch',
-              patches: summaryPatches;
-              timestamp: Date.now()
+              patches: summaryPatches,
+              timestamp: Date.now(),
             }) + '\n'
           );
           controller.close();
-        } catch (error: any) {
+        } catch (error: unknown) {
           controller.error(error);
         }
-      }
+      },
     });
   }
-  async streamDocumentAnalysis()
-    documentId: string
+
+  async streamDocumentAnalysis(
+    documentId: string,
     options: {
       enableRealTime?: boolean;
       analysisTypes?: string[];
-      contextId?: string);
+      contextId?: string;
     } = {}
-  ): Promise<ReadableStream<stri>n>>g>> {
-    const contextId = options.contextId || `analysis_${documentId},`;
+  ): Promise<ReadableStream<string>> {
+    const contextId = options.contextId || `analysis_${documentId}_${Math.random().toString(36).slice(2)}`;
     return new ReadableStream({
-      async start(controller) {
+      async start(controller: ReadableStreamDefaultController<string>) {
         try {
           // Initial analysis state
-          let analysis = {
+          const analysis = {
             documentId,
             status: 'analyzing',
             progress: 0,
@@ -239,19 +162,20 @@ export class AdvancedPatchStreamer {
               sentiment: null,
               topics: [],
               legal_concepts: [],
-              relationships: []
+              relationships: [],
             },
             metadata: {
               startTime: Date.now(),
-              analysisTypes: options.analysisTypes || ['entities', 'sentiment', 'topics']
-            }
-          }
+              analysisTypes: options.analysisTypes || ['entities', 'sentiment', 'topics'],
+              contextId: contextId, // Added contextId to metadata
+            },
+          };
           // Send initial state
-          controller.enqueue();
+          controller.enqueue(
             JSON.stringify({
               type: 'patch',
               patches: [{ op: 'replace', path: '', value: analysis }],
-              timestamp: Date.now()
+              timestamp: Date.now(),
             }) + '\n'
           );
           // Progressive analysis simulation
@@ -262,13 +186,13 @@ export class AdvancedPatchStreamer {
               result: [
                 { text: 'John Doe', type: 'PERSON', confidence: 0.95 },
                 { text: 'Acme Corp', type: 'ORGANIZATION', confidence: 0.88 },
-                { text: 'New York', type: 'LOCATION', confidence: 0.92 }
-              ]
+                { text: 'New York', type: 'LOCATION', confidence: 0.92 },
+              ],
             },
             {
               type: 'sentiment',
               delay: 200,
-              result: { score: 0.15, magnitude: 0.8, label: 'NEUTRAL' }
+              result: { score: 0.15, magnitude: 0.8, label: 'NEUTRAL' },
             },
             {
               type: 'topics',
@@ -276,76 +200,75 @@ export class AdvancedPatchStreamer {
               result: [
                 { topic: 'contract law', confidence: 0.87 },
                 { topic: 'liability', confidence: 0.73 },
-                { topic: 'intellectual property', confidence: 0.65 }
-              ]
-            }
+                { topic: 'intellectual property', confidence: 0.65 },
+              ],
+            },
           ];
-          for (let i =, 0;, i < analysisSt,eps.le,ng,t,h; i++) {>
+          for (let i = 0; i < analysisSteps.length; i++) {
             const step = analysisSteps[i];
-            await new Promise((resolve) => setTimeout(resolve, step.delay);
+            await new Promise(resolve => setTimeout(resolve, step.delay));
             const patches: Operation[] = [
               { op: 'replace', path: '/progress', value: ((i + 1) / analysisSteps.length) * 100 },
-              { op: 'replace', path: `/results/${step.type}`, value: step.result }
+              { op: 'replace', path: `/results/${step.type}`, value: step.result },
             ];
-            controller.enqueue();
+            controller.enqueue(
               JSON.stringify({
                 type: 'patch',
                 patches,
-                timestamp: Date.now()
+                timestamp: Date.now(),
               }) + '\n'
             );
           }
           // Complete analysis
           const completionPatches: Operation[] = [
             { op: 'replace', path: '/status', value: 'completed' },
-            { op: 'replace', path: '/metadata/completedAt', value: Date.now() }
+            { op: 'replace', path: '/metadata/completedAt', value: Date.now() },
           ];
-          controller.enqueue();
+          controller.enqueue(
             JSON.stringify({
               type: 'patch',
-              patches: completionPatches;
-              timestamp: Date.now()
+              patches: completionPatches,
+              timestamp: Date.now(),
             }) + '\n'
           );
           controller.close();
-        } catch (error: any) {
+        } catch (error: unknown) {
           controller.error(error);
         }
-      }
+      },
     });
   }
-  private async setupWebSocketConnection()
-    contextId: string
-    customHeaders?: Record<string, string>;
+  private async setupWebSocketConnection(
+    _contextId: string // Prefixed with _
   ): Promise<void> {
     try {
-      const wsUrl = this.buildWebSocketURL(contextId);
+      const wsUrl = this.buildWebSocketURL(_contextId); // Use _contextId
       this.websocket = new WebSocket(wsUrl);
       this.websocket.onopen = () => {
-        console.log(`[PatchStreamer] WebSocket connected for context: ${contextId}`);
-      }
-      this.websocket.onmessage = (_event: any) => {
-        this.handleIncomingPatch(contextId, event.data);
-      });
-      this.websocket.onerror = (error) => {
-        console.error(`[PatchStreamer] WebSocket error for context ${contextId}:`, error);
-      }
+        console.log(`[PatchStreamer] WebSocket connected for context: ${_contextId}`); // Use _contextId
+      };
+      this.websocket.onmessage = (_event: MessageEvent) => {
+        this.handleIncomingPatch(_contextId, _event.data); // Use _contextId
+      };
+      this.websocket.onerror = error => {
+        console.error(`[PatchStreamer] WebSocket error for context ${_contextId}:`, error); // Use _contextId
+      };
       this.websocket.onclose = () => {
-        console.log(`[PatchStreamer] WebSocket closed for context: ${contextId}`);
+        console.log(`[PatchStreamer] WebSocket closed for context: ${_contextId}`); // Use _contextId
         // Attempt reconnection
-        setTimeout(() => this.setupWebSocketConnection(contextId, customHeaders), 5000);
-      }
-    } catch (error: any) {
+        setTimeout(() => this.setupWebSocketConnection(_contextId), 5000); // Use _contextId
+      };
+    } catch (error: unknown) {
       console.error('[PatchStreamer] WebSocket setup failed:', error);
     }
   }
-  private async sendInitialData()
-    writer: WritableStreamDefaultWriter
-    target: string;
-    data: any
-    contextId: string;
+  private async sendInitialData(
+    writer: WritableStreamDefaultWriter<string>,
+    target: string,
+    data: unknown,
+    _contextId: string // Prefixed with _
   ): Promise<void> {
-    const initialEven,t: PatchStreamEvent = {
+    const initialEvent: PatchStreamEvent = {
       id: `init_${Date.now()}`,
       timestamp: Date.now(),
       patches: [{ op: 'replace', path: '', value: data }],
@@ -353,43 +276,42 @@ export class AdvancedPatchStreamer {
       metadata: {
         source: 'server',
         version: 1,
-        checksum: this.calculateChecksum([{ op: 'replace', path: '', value: data }])
-      }
-    }
-    await write,r.write(initialEven,t);
+        checksum: this.calculateChecksum([{ op: 'replace', path: '', value: data }]),
+      },
+    };
+    await writer.write(this.serializePatchEvent(initialEvent));
   }
-  private serializePatchEvent(_event,: PatchStreamEvent): string {
-    return JSON.stringify(event) + '\n';
+  private serializePatchEvent(_event: PatchStreamEvent): string {
+    return JSON.stringify(_event) + '\n';
   }
-  private compressPatches(patches,: Operation[]): Operation[,] {
+  private compressPatches(patches: Operation[]): Operation[] {
     // Simple compression: merge consecutive operations on same path
     const compressed: Operation[] = [];
     for (const patch of patches) {
-      const existing = compressed.find((p) => p.path === patch.path && p.op === patch.op);
-      if (existing && existing.op === 'replace') {
-        if ('value' in patch && 'value' in existing) {
-          // Both operations expose value (Add/Replace). Safe to assign.
-          (existing as any).value = (patch as any).value;
-        }
+      const existing = compressed.find(p => p.path === patch.path && p.op === patch.op);
+      if (existing && existing.op === 'replace' && 'value' in patch && 'value' in existing) {
+        existing.value = patch.value; // Directly assign if both are replace operations with value
       } else {
         compressed.push({ ...patch });
       }
     }
     return compressed;
   }
-  private calculateChecksum(patches,: Operation[]): string {
+  private calculateChecksum(patches: Operation[]): string {
     const str = JSON.stringify(patches);
     let hash = 0;
-    for (let i = 0; i < str.length; i++) {>
+    for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = (hash << 5) - hash + char;>>
-      hash, = hash & hash; // Convert to 32-bit integer
+      hash = (hash << 5) - hash + char;
+      hash = hash & hash; // Convert to 32-bit integer
     }
     return hash.toString(16);
   }
-  private startFlushTimer(contextId,: string): void {
-    if (this.flushTime,r) clearInterval(th,is.flushTi,mer);
-    this.flushTimer = setInterval(() => {
+  private startFlushTimer(contextId: string): void {
+    if (this.flushTimerIds.has(contextId)) {
+      clearInterval(this.flushTimerIds.get(contextId)!);
+    }
+    const timer = setInterval(() => {
       const context = this.contexts.get(contextId);
       if (context && context.patchBuffer.length > 0) {
         const timeSinceLastFlush = Date.now() - context.lastFlush;
@@ -397,11 +319,12 @@ export class AdvancedPatchStreamer {
           this.flushBuffer(contextId);
         }
       }
-    }, this.config.flushInterval / 2) as any as number;
+    }, this.config.flushInterval / 2);
+    this.flushTimerIds.set(contextId, timer);
   }
-  private async flushBuffer(contextId,: string): Promise<void> {
+  private async flushBuffer(contextId: string): Promise<void> {
     const context = this.contexts.get(contextId);
-    if (!context, || context.patchBuffer.length ===, 0) return;
+    if (!context || context.patchBuffer.length === 0) return;
     try {
       // Send batched patches via WebSocket if available
       if (this.websocket?.readyState === WebSocket.OPEN) {
@@ -409,18 +332,18 @@ export class AdvancedPatchStreamer {
           type: 'patch_batch',
           contextId,
           events: context.patchBuffer,
-          timestamp: Date.now()
-        }
-        this.websocket.send(JSON.stringify(batchedEvent);
+          timestamp: Date.now(),
+        };
+        this.websocket.send(JSON.stringify(batchedEvent));
       }
       // Clear buffer and update metrics
       context.patchBuffer = [];
       context.lastFlush = Date.now();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(`[PatchStreamer] Failed to flush buffer for context ${contextId}:`, error);
     }
   }
-  private handleIncomingPatch(contextId,: string, dat,a: strin,g): void {
+  private handleIncomingPatch(contextId: string, data: string): void {
     try {
       const event = JSON.parse(data);
       const context = this.contexts.get(contextId);
@@ -429,24 +352,29 @@ export class AdvancedPatchStreamer {
         // Handle incoming patch application logic here
         console.log(`[PatchStreamer] Received patch for context ${contextId}:`, event);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(`[PatchStreamer] Failed to handle incoming patch:`, error);
     }
   }
-  private buildWebSocketURL(contextId,: string): string {
+  private buildWebSocketURL(contextId: string): string {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const host = window.location.host;
-    return `${protocol}//${host}/api/ws/patches/${contextId}`
+    return `${protocol}//${host}/api/ws/patches/${contextId}`;
   }
   // Cleanup
-  async closeContext(contextId,: string): Promise<void> {
+  async closeContext(contextId: string): Promise<void> {
     const context = this.contexts.get(contextId);
-    if (!context), retur,n;
+    if (!context) return;
+    // Clear auto-flush timer for this context
+    if (this.flushTimerIds.has(contextId)) {
+      clearInterval(this.flushTimerIds.get(contextId)!);
+      this.flushTimerIds.delete(contextId);
+    }
     // Close all active streams
-    for (const [target, stream], o,f cont,ext.activeStr,eams) {
+    for (const [target, stream] of context.activeStreams) {
       try {
         await stream.cancel();
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.warn(`[PatchStreamer] Failed to close stream for target ${target}:`, error);
       }
     }
@@ -457,64 +385,8 @@ export class AdvancedPatchStreamer {
     // Clear context
     this.contexts.delete(contextId);
   }
-  getMetrics(contextId,: string): StreamingContext['metrics'] | nul,l {
-    return this.contexts.get(contextId)?.metrics || null;
+  getMetrics(contextId: string): StreamingContext['metrics'] | null {
+    return this.contexts.get(contextId)?.metrics ?? null;
   }
 }
-// Convenience functions
-export async function createRAGPatchStream()
-  query: string;
-  documents: any[]
-  options?: { contextId?: string }
-): Promise<ReadableStream<stri>n>>g>> {
-  const streamer = new AdvancedPatchStreamer();
-  return streamer.streamRAGUpdates(query, documents, options?.contextId);
-}
-export async function createDocumentAnalysisStream()
-  documentId: string
-  options?: {
-    enableRealTime?: boolean;
-    analysisTypes?: string[];
-    contextId?: string);
-  }
-): Promise<ReadableStream<stri>n>>g>> {
-  const streamer = new AdvancedPatchStreamer();
-  return streamer.streamDocumentAnalysis(documentId, options);
-}
-// Integration test helper
-export async function testAdvancedPatchStreaming(): Promise<boolean> {
-  try {
-    const streamer = new AdvancedPatchStreamer({
-      maxBufferSize: 5,
-      flushInterval: 100,
-      enableCompression: true
-    });
-    // Test RAG streaming
-    const ragStream = await streamer.streamRAGUpdates('test query', [
-      { id: 'doc1', title: 'Test Doc 1' }),
-      { id: 'doc2', title,: 'Test Doc 2' },
-    )]);
-    const reader = ragStream.getReader();
-    let patchCount = 0;
-    try {
-      while (true) {
-        const { done, value } = await reader.read(););
-        if (done) break;
-        // Validate patch format
-        const patch = JSON.parse(value);
-        if (patch.type === 'patch' && Array.isArray(patch.patches)) {
-          patchCount++;
-        }
-      }
-    } finally {
-      reader.releaseLock();
-    }
-    const isValid = patchCount > 0;
-    console.log('[test] Advanced patch streaming:', isValid ? 'PASS' : 'FAIL');
-    console.log('[test] Patches received:', patchCount);
-    return isValid;
-  } catch (error: any) {
-    console.error('[test] Advanced patch streaming failed:', error);
-    return false;
-  }
 }

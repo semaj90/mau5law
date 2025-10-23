@@ -1,3 +1,4 @@
+/// <reference lib="dom" />
 // Local standalone types; avoid importing SvelteKit types to prevent conflicts
 /**
  * 🎯 COMPREHENSIVE TYPE DEFINITIONS
@@ -518,8 +519,6 @@ declare global {
   // Enhanced window interface
   interface Window {
     comprehensivePackageBarrelStore?: unknown;
-    webkitSpeechRecognition?: unknown;
-    SpeechRecognition?: unknown;
   }
   // Enhanced console interface
   interface Console {

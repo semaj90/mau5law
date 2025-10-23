@@ -1,12 +1,7 @@
 // GRPO (Guided Reasoning and Policy Optimization) Thinking Response Embedding Service
 // Specialized service for indexing and searching reasoning chain patterns with timestamps
-import { db, sql } from "$lib/server/db";
-import { eq, desc, and, gte, lte } from "drizzle-orm";
-import {
-  generateEmbedding,
-  generateEmbeddingsBatch,
-  type VectorSearchResult
-} from './vectorDBService.js';
+import { db, sql } from '$lib/server/db';
+import { generateEmbedding, generateEmbeddingsBatch } from './vectorDBService.js';
 import { createHash } from 'node:crypto';
 // GRPO Thinking Response interface
 export interface GrpoThinkingResponse {
@@ -24,15 +19,35 @@ export interface GrpoThinkingResponse {
   thinkingType: 'analysis' | 'synthesis' | 'evaluation' | 'application';
   metadata?: {
     processingTime?: number;
-  model?: string;
-  complexity?: 'low' | 'medium' | 'high';
-  jurisdiction?: string;
-  practiceArea?: string[];
-  timestamp?: string;
-  }
+    model?: string;
+    complexity?: 'low' | 'medium' | 'high';
+    jurisdiction?: string;
+    practiceArea?: string[];
+    timestamp?: string;
+  };
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+// Interface for the raw row data returned from searchGrpoThinkingResponses SQL query
+interface SearchGrpoRow {
+  message_id: string;
+  conversation_id: string;
+  original_query: string;
+  thinking_chain: string;
+  conclusion: string;
+  confidence_level: string; // DECIMAL(3,2) from DB, will be string
+  reasoning_steps: string; // JSONB from DB, will be string
+  evidence_cited: string; // JSONB from DB, will be string
+  legal_principles: string; // JSONB from DB, will be string
+  thinking_type: 'analysis' | 'synthesis' | 'evaluation' | 'application';
+  metadata: Record<string, unknown>; // JSONB from DB
+  created_at: Date;
+  similarity: string; // DECIMAL from DB, will be string
+  recency_score: string; // DECIMAL from DB, will be string
+  combined_score: string; // DECIMAL from DB, will be string
+}
+
 // Recommendation engine interface
 export interface ThinkingRecommendation {
   id: string;
@@ -47,6 +62,7 @@ export interface ThinkingRecommendation {
   relevanceScore: number;
   combinedScore: number;
 }
+
 // Batch processing interface for worker operations
 export interface GrpoBatchJob {
   jobId: string;
@@ -57,68 +73,101 @@ export interface GrpoBatchJob {
   createdAt: Date;
   completedAt?: Date;
 }
-// In-memory cache for GRPO embeddings
-const grpoEmbeddingCache = new Map<string, number[]>();
+// In-memory cache for GRPO embeddings (LRU-like using insertion order)
+type GrpoCacheEntry = { embedding: number[]; ts: number };
+const grpoEmbeddingCache = new Map<string, GrpoCacheEntry>();
+const grpoInProgress = new Map<string, Promise<number[] | null>>();
 const grpoCacheMaxSize = 2000;
 const grpoCacheTimeout = 1000 * 60 * 45; // 45 minutes
 // Specialized logger for GRPO operations
 const grpoLogger = {
-  info: (message: string, metadata?: any) =>
+  info: (message: string, metadata?: unknown) =>
     console.log(`[${new Date().toISOString()}] GRPO-INFO: ${message}`, metadata ? JSON.stringify(metadata) : ''),
-  warn: (message: string, metadata?: any) =>
+  warn: (message: string, metadata?: unknown) =>
     console.warn(`[${new Date().toISOString()}] GRPO-WARN: ${message}`, metadata ? JSON.stringify(metadata) : ''),
-  error: (message: string, error?: Error, metadata?: any) =>
-    console.error(`[${new Date().toISOString()}] GRPO-ERROR: ${message}`, error?.message || '', metadata ? JSON.stringify(metadata) : '')
-}
+  error: (message: string, error?: Error, metadata?: unknown) =>
+    console.error(
+      `[${new Date().toISOString()}] GRPO-ERROR: ${message}`,
+      error?.message || '',
+      metadata ? JSON.stringify(metadata) : ''
+    ),
+};
 // Generate hash for thinking chain deduplication
 function generateThinkingHash(thinkingChain: string): string {
-  return createHash('sha256');
-    .update(thinkingChain.toLowerCase().replace(/\s+/g, ' ').trim()
+  return createHash('sha256')
+    .update(thinkingChain.toLowerCase().replace(/\s+/g, ' ').trim())
     .digest('hex')
     .slice(0, 16);
 }
 // Enhanced embedding generation with GRPO-specific optimizations
-export async function generateGrpoEmbedding()
-  thinkingChain: string
-  useCache: boolean = true;
-): Promise<number[] | null> {
-  const cacheKey = `grpo_${generateThinkingHash(thinkingChain)},`;
-  if (useCache, && grpoEmbeddingCache.has(cacheKey)) {
-    grpoLogger.info('GRPO embedding cache hit', { cacheKey });
-    return grpoEmbeddingCache.get(cacheKey)!;
-  }
-  try {
-    // Use enhanced prompt for thinking chain embeddings
-    const enhancedPrompt = `Legal reasoning chain: ${thinkingChain}`;
-    const embedding = await generateEmbedding(enhancedPrompt, false);
-    if (!embedding) {
-      grpoLogger.warn('Failed to generate GRPO embedding', { thinkingChain: thinkingChain.slice(0, 100) });
-      return null;
+export async function generateGrpoEmbedding(thinkingChain: string, useCache: boolean = true): Promise<number[] | null> {
+  const cacheKey = `grpo_${generateThinkingHash(thinkingChain)}`;
+
+  // Fast path: cache hit
+  if (useCache) {
+    const entry = grpoEmbeddingCache.get(cacheKey);
+    if (entry) {
+      // Touch entry to mark recent use: re-insert to end (Map preserves insertion order)
+      grpoEmbeddingCache.delete(cacheKey);
+      grpoEmbeddingCache.set(cacheKey, { ...entry, ts: Date.now() });
+      grpoLogger.info('GRPO embedding cache hit', { cacheKey });
+      return entry.embedding;
     }
-    // Cache with size management
-    if (useCache) {
-      if (grpoEmbeddingCache.size >= grpoCacheMaxSize) {
-        const firstKey = grpoEmbeddingCache.keys().next().value;
-        grpoEmbeddingCache.delete(firstKey);
+
+    // If a generation is already in progress for this key, wait for it
+    const inProg = grpoInProgress.get(cacheKey);
+    if (inProg) {
+      grpoLogger.info('Awaiting in-progress GRPO embedding', { cacheKey });
+      return inProg;
+    }
+  }
+
+  // Otherwise create and register generation promise to dedupe concurrent calls
+  const generatePromise = (async () => {
+    try {
+      // Use enhanced prompt for thinking chain embeddings
+      const enhancedPrompt = `Legal reasoning chain: ${thinkingChain}`;
+      const embedding = await generateEmbedding(enhancedPrompt, false);
+      if (!embedding) {
+        grpoLogger.warn('Failed to generate GRPO embedding', { thinkingChain: thinkingChain.slice(0, 100) });
+        return null;
       }
-      grpoEmbeddingCache.set(cacheKey, embedding);
-      grpoLogger.info('GRPO embedding cached', { cacheKey, embeddingLength: embedding.length });
+
+      // Cache with size management
+      if (useCache) {
+        if (grpoEmbeddingCache.size >= grpoCacheMaxSize) {
+          // Evict oldest (first inserted) entry
+          const firstKey = grpoEmbeddingCache.keys().next().value as string | undefined;
+          if (firstKey) grpoEmbeddingCache.delete(firstKey);
+        }
+        grpoEmbeddingCache.set(cacheKey, { embedding, ts: Date.now() });
+        grpoLogger.info('GRPO embedding cached', { cacheKey, embeddingLength: embedding.length });
+      }
+      return embedding;
+    } catch (error: unknown) {
+      grpoLogger.error('GRPO embedding generation failed', error instanceof Error ? error : undefined, {
+        thinkingChain: thinkingChain.slice(0, 100),
+      });
+      return null;
+    } finally {
+      // remove in-progress marker
+      grpoInProgress.delete(cacheKey);
     }
-    return embedding;
-  } catch (error: any) {
-    grpoLogger.error('GRPO embedding generation failed', error, { thinkingChain: thinkingChain.slice(0, 100) });
-    return null;
-  }
+  })();
+
+  // register in-progress before awaiting so concurrent callers wait on same promise
+  if (useCache) grpoInProgress.set(cacheKey, generatePromise);
+  return generatePromise;
 }
 // Store GRPO thinking response with batch optimization
 export async function storeGrpoThinkingResponse(response: GrpoThinkingResponse): Promise<void> {
   try {
     grpoLogger.info('Storing GRPO thinking response', {
       messageId: response.messageId,
-      thinkingType: response.thinkingType
+      thinkingType: response.thinkingType,
     });
     // Generate embedding if not provided
-    let embedding = response.embedding;
+    let embedding: number[] | null = response.embedding; // Explicitly declare as number[] | null
     if (!embedding || embedding.length === 0) {
       embedding = await generateGrpoEmbedding(response.thinkingChain, true);
       if (!embedding) {
@@ -127,10 +176,11 @@ export async function storeGrpoThinkingResponse(response: GrpoThinkingResponse):
       }
     }
     // Convert embedding to pgvector format
+    // At this point, 'embedding' is guaranteed to be 'number[]' due to the check above.
     const vectorString = `[${embedding.join(',')}]`;
     // Store in specialized GRPO table
-    await db.execute()
-      sql`INSERT INTO grpo_thinking_responses ()
+    await db.execute(
+      sql`INSERT INTO grpo_thinking_responses (
         conversation_id,
         message_id,
         original_query,
@@ -145,7 +195,7 @@ export async function storeGrpoThinkingResponse(response: GrpoThinkingResponse):
         metadata,
         created_at,
         updated_at
-     ) ) VALUES (
+      ) VALUES (
         ${response.conversationId},
         ${response.messageId},
         ${response.originalQuery},
@@ -155,7 +205,7 @@ export async function storeGrpoThinkingResponse(response: GrpoThinkingResponse):
         ${JSON.stringify(response.reasoningSteps)},
         ${JSON.stringify(response.evidenceCited)},
         ${JSON.stringify(response.legalPrinciples)},
-        ${vectorString}: vector
+        ${vectorString}::vector,
         ${response.thinkingType},
         ${JSON.stringify(response.metadata || {})},
         NOW(),
@@ -173,26 +223,26 @@ export async function storeGrpoThinkingResponse(response: GrpoThinkingResponse):
     );
     grpoLogger.info('GRPO thinking response stored successfully', {
       messageId: response.messageId,
-      embeddingLength: embedding.length
+      embeddingLength: embedding.length,
     });
-  } catch (error: any) {
-    grpoLogger.error('Failed to store GRPO thinking response', error, {
-      messageId: response.messageId
+  } catch (error: unknown) {
+    grpoLogger.error('Failed to store GRPO thinking response', error instanceof Error ? error : undefined, {
+      messageId: response.messageId,
     });
     throw error;
   }
 }
 // Advanced GRPO thinking search with timestamp-based recommendations
-export async function searchGrpoThinkingResponses()
-  query: string;
+export async function searchGrpoThinkingResponses(
+  query: string,
   options: {
     limit?: number;
     threshold?: number;
     thinkingType?: string;
-    timeRange?: { from: Date; to: Date },
+    timeRange?: { from: Date; to: Date };
     includeRecentBias?: boolean;
     confidenceThreshold?: number;
-    practiceArea?: string[]);
+    practiceArea?: string[];
   } = {}
 ): Promise<ThinkingRecommendation[]> {
   const {
@@ -202,12 +252,12 @@ export async function searchGrpoThinkingResponses()
     timeRange,
     includeRecentBias = true,
     confidenceThreshold = 0.5,
-    practiceArea
-  } = option;,s;
+    practiceArea,
+  } = options;
   try {
-    grpoLogger,.info('Searching GRPO thinking responses', {
+    grpoLogger.info('Searching GRPO thinking responses', {
       query: query.slice(0, 50),
-      options
+      options,
     });
     // Generate query embedding
     const queryEmbedding = await generateGrpoEmbedding(query, true);
@@ -215,27 +265,32 @@ export async function searchGrpoThinkingResponses()
       grpoLogger.warn('Cannot search without query embedding');
       return [];
     }
-    const vectorString = `[${queryEmbedding.join(',')}],`;
+    const vectorString = `[${queryEmbedding.join(',')}]`;
     // Build dynamic query conditions
-    let timeCondition = sql`,`;
+    let timeCondition = sql``;
     if (timeRange) {
       timeCondition = sql`AND created_at >= ${timeRange.from} AND created_at <= ${timeRange.to}`;
     }
-    let typeCondition = sql`,`;
+    let typeCondition = sql``;
     if (thinkingType) {
       typeCondition = sql`AND thinking_type = ${thinkingType}`;
     }
-    let confidenceCondition = sql`,`;
+    let confidenceCondition = sql``;
     if (confidenceThreshold) {
       confidenceCondition = sql`AND confidence_level >= ${confidenceThreshold}`;
     }
-    let practiceAreaCondition = sql`,`;
-    if (practiceArea, && practiceArea.length >, 0) {
-      practiceAreaCondition = sql`AND (metadata->'practiceArea' ?| array[${practiceArea.join(',')}])`;
+    let practiceAreaCondition = sql``;
+    if (practiceArea && practiceArea.length > 0) {
+      // Correctly format array for PostgreSQL '?' operator
+      const practiceAreaArray = sql`ARRAY[${sql.join(
+        practiceArea.map(pa => sql`${pa}`),
+        sql`, `
+      )}]`;
+      practiceAreaCondition = sql`AND (metadata->'practiceArea' ?| ${practiceAreaArray})`;
     }
     // Execute advanced similarity search with timestamp weighting
     const results = await db.execute(
-      sql`WITH similarity_scores AS ()
+      sql`WITH similarity_scores AS (
         SELECT
           message_id,
           conversation_id,
@@ -249,7 +304,7 @@ export async function searchGrpoThinkingResponses()
           thinking_type,
           metadata,
           created_at,
-          1 - (embedding <=> ${vectorString}: vector) as similarity,
+          1 - (embedding <=> ${vectorString}::vector) as similarity,
           -- Recency score: newer responses get higher scores
           CASE
             WHEN ${includeRecentBias} THEN
@@ -257,7 +312,7 @@ export async function searchGrpoThinkingResponses()
             ELSE 1.0
           END as recency_score
         FROM grpo_thinking_responses
-        WHERE 1 - (embedding <=> ${vectorString}: vector) > ${threshold}
+        WHERE 1 - (embedding <=> ${vectorString}::vector) > ${threshold}
         ${timeCondition}
         ${typeCondition}
         ${confidenceCondition}
@@ -266,14 +321,14 @@ export async function searchGrpoThinkingResponses()
       SELECT
         *,
         -- Combined score: weighted similarity + recency + confidence
-        (similarity * 0.6 +)
+        (similarity * 0.6 +
          recency_score * 0.3 +
          confidence_level * 0.1) as combined_score
       FROM similarity_scores
       ORDER BY combined_score DESC, similarity DESC, created_at DESC
       LIMIT ${limit}`
     );
-    const recommendations: ThinkingRecommendation[] = results.rows.map((row: any) => ({,
+    const recommendations: ThinkingRecommendation[] = results.rows.map((row: SearchGrpoRow) => ({
       id: row.message_id,
       similarity: parseFloat(row.similarity),
       thinkingChain: row.thinking_chain,
@@ -282,17 +337,19 @@ export async function searchGrpoThinkingResponses()
       reasoningSteps: JSON.parse(row.reasoning_steps),
       relatedQuery: row.original_query,
       timestamp: row.created_at.toISOString(),
-      recencyScore: parseFloat(row.recency_score || 0),
+      recencyScore: parseFloat(row.recency_score || '0'),
       relevanceScore: parseFloat(row.similarity),
-      combinedScore: parseFloat(row.combined_score)
-    });
+      combinedScore: parseFloat(row.combined_score),
+    }));
     grpoLogger.info('GRPO search completed', {
       resultsFound: recommendations.length,
-      topScore: recommendations[0]?.combinedScore || 0
+      topScore: recommendations[0]?.combinedScore || 0,
     });
     return recommendations;
-  } catch (error: any) {
-    grpoLogger.error('GRPO thinking search failed', error, { query: query.slice(0, 50) });
+  } catch (error: unknown) {
+    grpoLogger.error('GRPO thinking search failed', error instanceof Error ? error : undefined, {
+      query: query.slice(0, 50),
+    });
     return [];
   }
 }
@@ -302,7 +359,7 @@ export async function processBatchGrpoResponses(job: GrpoBatchJob): Promise<void
   grpoLogger.info('Starting GRPO batch processing', {
     jobId: job.jobId,
     responseCount: job.responses.length,
-    priority: job.priority
+    priority: job.priority,
   });
   try {
     // Mark job as processing
@@ -310,7 +367,7 @@ export async function processBatchGrpoResponses(job: GrpoBatchJob): Promise<void
     job.workerId = `grpo-worker-${Date.now()}`;
     // Process in smaller batches for memory efficiency
     const batchSize = job.priority === 'urgent' ? 5 : 10;
-    for (let i = 0; i < job.responses.length; i += batchSize) {>
+    for (let i = 0; i < job.responses.length; i += batchSize) {
       const batch = job.responses.slice(i, i + batchSize);
       // Generate embeddings in parallel for the batch
       const thinkingChains = batch.map(r => r.thinkingChain);
@@ -327,7 +384,7 @@ export async function processBatchGrpoResponses(job: GrpoBatchJob): Promise<void
       grpoLogger.info(`Processed batch ${Math.floor(i / batchSize) + 1}`, {
         jobId: job.jobId,
         batchSize: batch.length,
-        totalProgress: Math.round(((i + batchSize) / job.responses.length) * 100)
+        totalProgress: Math.round(((i + batchSize) / job.responses.length) * 100),
       });
     }
     // Mark job as completed
@@ -338,43 +395,63 @@ export async function processBatchGrpoResponses(job: GrpoBatchJob): Promise<void
       jobId: job.jobId,
       responseCount: job.responses.length,
       processingTime,
-      workerId: job.workerId
+      workerId: job.workerId,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     job.status = 'failed';
-    grpoLogger.error('GRPO batch processing failed', error, {
+    grpoLogger.error('GRPO batch processing failed', error instanceof Error ? error : undefined, {
       jobId: job.jobId,
-      responseCount: job.responses.length
+      responseCount: job.responses.length,
     });
     throw error;
   }
 }
+
+// Interface for the raw row data returned from getTrendingGrpoPatterns SQL query
+interface TrendingGrpoRow {
+  thinking_type: 'analysis' | 'synthesis' | 'evaluation' | 'application';
+  pattern: string;
+  frequency: string; // COUNT(*) from DB, will be string
+  avg_confidence: string; // AVG(confidence_level) from DB, will be string
+  recent_examples: string[]; // ARRAY_AGG from DB
+  trend: 'increasing' | 'stable' | 'decreasing';
+}
+
+// Recommendation engine interface for trending patterns
+export interface TrendingPattern {
+  thinkingType: 'analysis' | 'synthesis' | 'evaluation' | 'application';
+  pattern: string;
+  frequency: number;
+  avgConfidence: number;
+  recentExamples: string[];
+  trend: 'increasing' | 'stable' | 'decreasing';
+}
+
 // Get trending GRPO thinking patterns with timestamp analysis
-export async function getTrendingGrpoPatterns()
-  timeWindow: 'hour' | 'day' | 'week' | 'month', = 'day',
-  limit,: number = 20;
-): Promise<Array<a>n>>y>> {
+export async function getTrendingGrpoPatterns(
+  timeWindow: 'hour' | 'day' | 'week' | 'month' = 'day',
+  limit: number = 20
+): Promise<TrendingPattern[]> {
   try {
-    grpoLogger,.info('Analyzing GRPO thinking trends', { timeWindow, limit });
+    grpoLogger.info('Analyzing GRPO thinking trends', { timeWindow, limit });
     const timeCondition = {
       hour: sql`created_at >= NOW() - INTERVAL '1 hour'`,
       day: sql`created_at >= NOW() - INTERVAL '1 day'`,
       week: sql`created_at >= NOW() - INTERVAL '1 week'`,
       month: sql`created_at >= NOW() - INTERVAL '1 month'`,
     }[timeWindow];
-    const results = await db.execute(
-      sql`WITH thinking_patterns AS ()
+    const results = await db.execute(sql`WITH thinking_patterns AS (
         SELECT
           thinking_type,
           -- Extract common reasoning patterns
-          regexp_split_to_array(thinking_chain, '\\. )') as reasoning_sentences,
+          regexp_split_to_array(thinking_chain, '\\. ') as reasoning_sentences,
           confidence_level,
           thinking_chain,
           created_at
         FROM grpo_thinking_responses
         WHERE ${timeCondition}
       ),
-      pattern_analysis AS ()
+      pattern_analysis AS (
         SELECT
           thinking_type,
           unnest(reasoning_sentences) as pattern,
@@ -384,7 +461,7 @@ export async function getTrendingGrpoPatterns()
         FROM thinking_patterns
         WHERE array_length(reasoning_sentences, 1) > 0
       ),
-      aggregated_patterns AS ()
+      aggregated_patterns AS (
         SELECT
           thinking_type,
           pattern,
@@ -393,11 +470,11 @@ export async function getTrendingGrpoPatterns()
           ARRAY_AGG(DISTINCT thinking_chain LIMIT 3) as recent_examples,
           -- Calculate trend by comparing first and second half of time period
           CASE
-            WHEN COUNT(CASE WHEN created_at >= NOW() - INTERVAL '${timeWindow}'/2 THEN 1 END) >
-                 COUNT(CASE WHEN created_at < NOW() - INTERVAL '${timeWindow}'/2 THEN 1 END) * 1.2>
+            WHEN COUNT(CASE WHEN created_at >= NOW() - INTERVAL '1 ${timeWindow}' / 2 THEN 1 END) >
+                 COUNT(CASE WHEN created_at < NOW() - INTERVAL '1 ${timeWindow}' / 2 THEN 1 END) * 1.2
             THEN 'increasing'
-            WHEN COUNT(CASE WHEN created_at >= NOW() - INTERVAL '${timeWindow}'/2 THEN 1 END) <
-                 COUNT(CASE WHEN created_at < NOW() - INTERVAL '${timeWindow}'/2 THEN 1 END) * 0.8>
+            WHEN COUNT(CASE WHEN created_at >= NOW() - INTERVAL '1 ${timeWindow}' / 2 THEN 1 END) <
+                 COUNT(CASE WHEN created_at < NOW() - INTERVAL '1 ${timeWindow}' / 2 THEN 1 END) * 0.8
             THEN 'decreasing'
             ELSE 'stable'
           END as trend
@@ -409,23 +486,22 @@ export async function getTrendingGrpoPatterns()
       FROM aggregated_patterns
       WHERE frequency >= 2  -- At least 2 occurrences
       ORDER BY frequency DESC, avg_confidence DESC
-      LIMIT ${limit}`
-    );
-    const patterns = results.rows.map((row: any) => ({,
+      LIMIT ${limit}`);
+    const patterns: TrendingPattern[] = results.rows.map((row: TrendingGrpoRow) => ({
       thinkingType: row.thinking_type,
       pattern: row.pattern,
       frequency: parseInt(row.frequency),
       avgConfidence: parseFloat(row.avg_confidence),
       recentExamples: row.recent_examples,
-      trend: row.trend as 'increasing' | 'stable' | 'decreasing'
-    });
-    grpoLogger,.info('GRPO trend analysis completed', {
+      trend: row.trend as 'increasing' | 'stable' | 'decreasing',
+    }));
+    grpoLogger.info('GRPO trend analysis completed', {
       patternsFound: patterns.length,
-      timeWindow
+      timeWindow,
     });
-    return pattern,s;
-  } catch (error: any) {
-    grpoLogger.error('GRPO trend analysis failed', error, { timeWindow });
+    return patterns;
+  } catch (error: unknown) {
+    grpoLogger.error('GRPO trend analysis failed', error instanceof Error ? error : undefined, { timeWindow });
     return [];
   }
 }
@@ -434,10 +510,10 @@ export async function initializeGrpoThinkingTable(): Promise<void> {
   try {
     grpoLogger.info('Initializing GRPO thinking responses table');
     // Enable pgvector extension if not already enabled
-    await db.execute(sql`CREATE EXTENSION IF NOT EXISTS vector)`);
+    await db.execute(sql`CREATE EXTENSION IF NOT EXISTS vector`);
     // Create GRPO thinking responses table
-    await db.execute()
-      sql`CREATE TABLE IF NOT EXISTS grpo_thinking_responses ()
+    await db.execute(
+      sql`CREATE TABLE IF NOT EXISTS grpo_thinking_responses (
         id SERIAL PRIMARY KEY,
         conversation_id VARCHAR(255) NOT NULL,
         message_id VARCHAR(255) UNIQUE NOT NULL,
@@ -456,34 +532,34 @@ export async function initializeGrpoThinkingTable(): Promise<void> {
       )`
     );
     // Create specialized indexes for GRPO search performance
-    await db.execute()
+    await db.execute(
       sql`CREATE INDEX IF NOT EXISTS idx_grpo_thinking_vector_hnsw
       ON grpo_thinking_responses USING hnsw (embedding vector_cosine_ops)
       WITH (m = 16, ef_construction = 64)`
     );
     // Index for conversation lookup
-    await db.execute()
+    await db.execute(
       sql`CREATE INDEX IF NOT EXISTS idx_grpo_thinking_conversation
       ON grpo_thinking_responses (conversation_id, created_at DESC)`
     );
     // Index for thinking type filtering
-    await db.execute()
+    await db.execute(
       sql`CREATE INDEX IF NOT EXISTS idx_grpo_thinking_type_confidence
       ON grpo_thinking_responses (thinking_type, confidence_level, created_at DESC)`
     );
     // GIN index for metadata search
-    await db.execute()
+    await db.execute(
       sql`CREATE INDEX IF NOT EXISTS idx_grpo_thinking_metadata
       ON grpo_thinking_responses USING gin (metadata)`
     );
     // Composite index for timestamp-based recommendations
-    await db.execute()
+    await db.execute(
       sql`CREATE INDEX IF NOT EXISTS idx_grpo_thinking_recommendations
       ON grpo_thinking_responses (created_at DESC, confidence_level DESC, thinking_type)`
     );
     grpoLogger.info('GRPO thinking responses table initialized successfully');
-  } catch (error: any) {
-    grpoLogger.error('Failed to initialize GRPO thinking responses table', error);
+  } catch (error: unknown) {
+    grpoLogger.error('Failed to initialize GRPO thinking responses table', error instanceof Error ? error : undefined);
     throw error;
   }
 }

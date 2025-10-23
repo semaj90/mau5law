@@ -6,6 +6,7 @@ import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { getCudaServiceUrl, getEmbeddingModel } from '$lib/config/pgvector-gpu-config.js';
 import { MinIOService } from '$lib/server/minio-service';
+import { generateEmbeddings } from '$lib/server/services/embedding-service';
 interface ChunkingRequest {
   text?: string;
   minioUrl?: string;
@@ -82,36 +83,40 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     // Perform chunking based on method
     let chunks: SemanticChunk[];
-    if (useSemanticChunking && useCUDA) {
-      chunks = await performSemanticChunking(text, {
-        chunkSize,
-        chunkOverlap,
-        minChunkSize,
-        maxChunkSize,
-        extractMetadata,
-      });
-    } else if (preserveParagraphs) {
-      chunks = await performParagraphAwareChunking(text, {
-        chunkSize,
-        chunkOverlap,
-        minChunkSize,
-        maxChunkSize,
-        extractMetadata,
-      });
-    } else {
-      chunks = await performBasicChunking(text, {
-        chunkSize,
-        chunkOverlap,
-        extractMetadata,
-      });
-    }
+      if (useSemanticChunking && useCUDA) {
+        chunks = await performSemanticChunking(text, {
+          chunkSize,
+          chunkOverlap,
+          minChunkSize,
+          maxChunkSize,
+          extractMetadata,
+        });
+      } else if (preserveParagraphs) {
+        chunks = await performParagraphAwareChunking(text, {
+          chunkSize,
+          chunkOverlap,
+          minChunkSize,
+          maxChunkSize,
+          extractMetadata,
+        });
+      } else {
+        chunks = await performBasicChunking(text, {
+          chunkSize,
+          chunkOverlap,
+          extractMetadata,
+        });
+      }
     // Generate embeddings if requested
     let embeddings: number[][] | undefined;
     if (generateEmbeddings && useCUDA) {
-      embeddings = await generateChunkEmbeddings(
-        chunks.map(c => c.content),
-        useCUDA
-      );
+      // Prefer centralized server embedding wrapper which can route to CUDA/TensorRT
+      const texts = chunks.map(c => c.content);
+      const resp = await generateEmbeddings({
+        texts,
+        model: getEmbeddingModel(),
+        mode: useCUDA ? 'tensorrt' : undefined,
+      });
+      embeddings = resp.embeddings;
       // Add embeddings to chunks
       chunks.forEach((chunk, index) => {
         chunk.embedding = embeddings![index];

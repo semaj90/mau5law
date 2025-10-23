@@ -1,8 +1,9 @@
 import { createClient } from 'redis';
 import type { RedisClientType } from 'redis';
+import { CONFIG } from '$lib/config/env.server';
 
-const REDIS_URL = process.env.REDIS_URL ?? 'redis://127.0.0.1:6379';
-const REDIS_PASSWORD = process.env.REDIS_PASSWORD;
+const REDIS_URL = CONFIG.REDIS_URL;
+const REDIS_PASSWORD = CONFIG.REDIS_PASSWORD;
 
 let instance: RedisClientType | null = null;
 

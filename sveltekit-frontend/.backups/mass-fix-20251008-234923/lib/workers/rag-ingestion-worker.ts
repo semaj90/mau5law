@@ -62,8 +62,8 @@ class SIMDTextProcessor {
       this.wasmModule = await WebAssembly.compile(wasmBinary);
       this.wasmInstance = await WebAssembly.instantiate(this.wasmModule, {
         env: {
-          memory: new WebAssembly.Memory({ initial: 10 })
-        }
+          memory: new WebAssembly.Memory({ initial: 10 }),
+        },
       });
       console.log('🔥 SIMD Text Processor initialized');
     } catch (error) {
@@ -97,8 +97,8 @@ class SIMDTextProcessor {
       text: 'SIMD-extracted text content...',
       metadata: { pages: 1, creator: 'SIMD Parser' },
       pages: 1,
-      extractionTime: 0
-    }
+      extractionTime: 0,
+    };
   }
   private async parsePDFFallback(buffer: ArrayBuffer): Promise<any> {
     // JavaScript fallback for PDF parsing
@@ -107,15 +107,20 @@ class SIMDTextProcessor {
       text: 'Fallback extracted text content...',
       metadata: { pages: 1, creator: 'Fallback Parser' },
       pages: 1,
-      extractionTime: 0
-    }
+      extractionTime: 0,
+    };
   }
   async parseText(text: string, options: { useSimd: boolean }): Promise<any> {
     const startTime = performance.now();
-    if (options.useSimd && this.wasmInstance) {
-      return this.parseTextWithSIMD(text);
-    } else {
-      return this.parseTextFallback(text);
+    try {
+      if (options.useSimd && this.wasmInstance) {
+        return this.parseTextWithSIMD(text);
+      } else {
+        return this.parseTextFallback(text);
+      }
+    } finally {
+      // optional timing log
+      // console.log(`Text parsing time: ${performance.now() - startTime}ms`);
     }
   }
   private async parseTextWithSIMD(text: string): Promise<any> {
@@ -125,8 +130,8 @@ class SIMDTextProcessor {
     return {
       tokens,
       entities,
-      processingTime: performance.now()
-    }
+      processingTime: performance.now(),
+    };
   }
   private async parseTextFallback(text: string): Promise<any> {
     const tokens = text.split(/\s+/);
@@ -134,48 +139,56 @@ class SIMDTextProcessor {
     return {
       tokens,
       entities,
-      processingTime: performance.now()
-    }
+      processingTime: performance.now(),
+    };
   }
   private extractEntitiesSIMD(text: string): any[] {
-    // SIMD-accelerated named entity recognition
-    const entities = [];
-    // Legal entity patterns
-    const patterns = [
-      { type: 'case_citation', regex: /\d+\s+\w+\s+\d+/ },
-      { type: 'statute', regex: /\d+\s+U\.S\.C\.\s+§\s*\d+/ },
-      { type: 'court', regex: /(Supreme Court|District Court|Court of Appeals)/i },
-      { type: 'legal_term', regex: /(plaintiff|defendant|appellant|appellee)/i }
+    // SIMD-accelerated named entity recognition (logical, uses JS here)
+    const entities: Array<{ text: string; type: string; start: number; end: number; confidence: number }> = [];
+    // Legal entity patterns - use RegExp with global flag so matchAll works
+    const patterns: Array<{ type: string; regex: RegExp }> = [
+      { type: 'case_citation', regex: /\d+\s+\w+\s+\d+/g },
+      { type: 'statute', regex: /\d+\s+U\.S\.C\.\s+§\s*\d+/gi },
+      { type: 'court', regex: /(Supreme Court|District Court|Court of Appeals)/gi },
+      { type: 'legal_term', regex: /(plaintiff|defendant|appellant|appellee)/gi },
     ];
     for (const pattern of patterns) {
-      const matches = text.matchAll(new RegExp(pattern.regex, 'gi'),;
+      const matches = text.matchAll(pattern.regex);
       for (const match of matches) {
+        const matchedText = match[0];
+        const idx = (match as RegExpMatchArray).index ?? 0;
         entities.push({
-          text: match[0]
+          text: matchedText,
           type: pattern.type,
-          start: match.index,
-          end: match.index + match[0].length,
-          confidence: 0.9
+          start: idx,
+          end: idx + matchedText.length,
+          confidence: 0.9,
         });
       }
     }
     return entities;
   }
   private extractEntitiesFallback(text: string): any[] {
-    // Simple fallback entity extraction
+    // Simple fallback entity extraction - here reuse SIMD extraction for parity
     return this.extractEntitiesSIMD(text);
   }
 }
 // Vector embedding cache with GPU integration
 class VectorEmbeddingCache {
-  private cache = new Map<string, Float32Array>();
-  private gpuBuffers = new Map<string, ArrayBuffer>();
+  private cache: Map<string, Float32Array> = new Map();
+  private gpuBuffers: Map<string, ArrayBuffer> = new Map();
   private maxCacheSize = 1000;
+  // compressionEnabled is optional for future use
   private compressionEnabled = true;
-  async store(_key: string, embedding: Float32Array, options: {
-    quantization?: 'FP32' | 'FP16' | 'INT8';
-    nesBank?: string;
-  } = {}): Promise<void> {
+
+  async store(
+    key: string,
+    embedding: Float32Array,
+    options: {
+      quantization?: 'FP32' | 'FP16' | 'INT8';
+      nesBank?: string;
+    } = {}
+  ): Promise<void> {
     // Apply quantization if requested
     let finalEmbedding = embedding;
     if (options.quantization === 'FP16') {
@@ -183,25 +196,30 @@ class VectorEmbeddingCache {
     } else if (options.quantization === 'INT8') {
       finalEmbedding = this.quantizeToINT8(embedding);
     }
-    // Store in appropriate cache based on NES bank assignment
+    // Store in cache
     this.cache.set(key, finalEmbedding);
-    // Store GPU buffer for fast access
-    this.gpuBuffers.set(key, finalEmbedding.buffer);
+    // Store GPU buffer for fast access (Float32Array.buffer is ArrayBuffer)
+    this.gpuBuffers.set(key, finalEmbedding.buffer as ArrayBuffer);
     // Cleanup if cache is full
     if (this.cache.size > this.maxCacheSize) {
       this.evictOldestEntries();
     }
     console.log(`💾 Cached embedding for ${key} (${finalEmbedding.length}D, ${options.quantization || 'FP32'})`);
   }
-  async retrieve(_key: string): Promise<Float32Array | null> {
+
+  async retrieve(key: string): Promise<Float32Array | null> {
     return this.cache.get(key) || null;
   }
-  async search(queryEmbedding: Float32Array, options: {
-    limit: number;
-    threshold: number;
-    filters?: any;
-  }): Promise<Array<any>, {
-    const results: Array<any> = [];
+
+  async search(
+    queryEmbedding: Float32Array,
+    options: {
+      limit: number;
+      threshold: number;
+      filters?: any;
+    }
+  ): Promise<Array<{ key: string; similarity: number; embedding: Float32Array }>> {
+    const results: Array<{ key: string; similarity: number; embedding: Float32Array }> = [];
     for (const [key, embedding] of this.cache.entries()) {
       const similarity = this.calculateCosineSimilarity(queryEmbedding, embedding);
       if (similarity >= options.threshold) {
@@ -209,26 +227,27 @@ class VectorEmbeddingCache {
       }
     }
     // Sort by similarity and limit results
-    return results
-      .sort((a, b) => b.similarity - a.similarity)
-      .slice(0, options.limit);
+    return results.sort((a, b) => b.similarity - a.similarity).slice(0, options.limit);
   }
+
   private quantizeToFP16(embedding: Float32Array): Float32Array {
-    // Simple FP16 quantization (placeholder implementation)
+    // Simple FP16-like quantization (placeholder)
     const quantized = new Float32Array(embedding.length);
     for (let i = 0; i < embedding.length; i++) {
       quantized[i] = Math.round(embedding[i] * 32767) / 32767;
     }
     return quantized;
   }
+
   private quantizeToINT8(embedding: Float32Array): Float32Array {
-    // Simple INT8 quantization (placeholder implementation)
+    // Simple INT8-like quantization (placeholder)
     const quantized = new Float32Array(embedding.length);
     for (let i = 0; i < embedding.length; i++) {
       quantized[i] = Math.round(embedding[i] * 127) / 127;
     }
     return quantized;
   }
+
   private calculateCosineSimilarity(a: Float32Array, b: Float32Array): number {
     if (a.length !== b.length) return 0;
     let dotProduct = 0;
@@ -239,17 +258,21 @@ class VectorEmbeddingCache {
       normA += a[i] * a[i];
       normB += b[i] * b[i];
     }
-    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB),;
+    const denom = Math.sqrt(normA) * Math.sqrt(normB);
+    if (denom === 0) return 0;
+    return dotProduct / denom;
   }
+
   private evictOldestEntries(): void {
-    const entries = Array.from(this.cache.entries(),;
-    const toRemove = Math.floor(this.maxCacheSize * 0.1); // Remove 10%
-    for (let i = 0; i < toRemove; i++) {
+    const entries = Array.from(this.cache.entries());
+    const toRemove = Math.max(1, Math.floor(this.maxCacheSize * 0.1)); // Remove 10% (at least 1)
+    for (let i = 0; i < toRemove && i < entries.length; i++) {
       const key = entries[i][0];
       this.cache.delete(key);
       this.gpuBuffers.delete(key);
     }
   }
+
   getStats(): {
     cacheSize: number;
     memoryUsage: number;
@@ -262,8 +285,8 @@ class VectorEmbeddingCache {
     return {
       cacheSize: this.cache.size,
       memoryUsage,
-      hitRate: 0.85 // Placeholder - would track actual hit rate
-    }
+      hitRate: 0.85, // Placeholder - would track actual hit rate
+    };
   }
 }
 // Main RAG ingestion worker
@@ -285,6 +308,7 @@ class RAGIngestionWorker {
       console.error('Failed to initialize RAG worker:', error);
     }
   }
+
   async processMessage(message: WorkerMessage): Promise<any> {
     if (!this.isInitialized) {
       await this.initialize();
@@ -309,6 +333,7 @@ class RAGIngestionWorker {
       throw error;
     }
   }
+
   private async processDocument(payload: DocumentProcessingPayload): Promise<any> {
     const startTime = performance.now();
     try {
@@ -321,7 +346,7 @@ class RAGIngestionWorker {
           const parseResult = await this.simdProcessor.parsePDF(payload.content);
           extractedText = parseResult.text;
           entities = parseResult.metadata.entities || [];
-        } else {
+        } else if (typeof payload.content === 'string') {
           extractedText = payload.content;
         }
       }
@@ -329,10 +354,10 @@ class RAGIngestionWorker {
       if (payload.options.generateEmbeddings && extractedText) {
         embeddings = await this.generateGemmaEmbeddings(extractedText);
         // Cache embeddings with quantization
-        if (payload.options.cacheResults) {
+        if (payload.options.cacheResults && embeddings) {
           await this.vectorCache.store(payload.documentId, embeddings, {
             quantization: this.selectQuantizationLevel(payload.options.priority),
-            nesBank: this.assignNESBank(payload.options.priority)
+            nesBank: this.assignNESBank(payload.options.priority),
           });
         }
       }
@@ -343,37 +368,41 @@ class RAGIngestionWorker {
       }
       const processingTime = performance.now() - startTime;
       return {
-        success: true
+        success: true,
         documentId: payload.documentId,
         extractedText,
         embeddings,
         entities,
-        processingTime
-      }
+        processingTime,
+      };
     } catch (error) {
       return {
-        success: false
+        success: false,
         documentId: payload.documentId,
-        processingTime: performance.now() - startTime
-      }
+        processingTime: performance.now() - startTime,
+        error: error instanceof Error ? error.message : String(error),
+      };
     }
   }
+
   private async generateEmbeddings(payload: EmbeddingPayload): Promise<Float32Array> {
     // Check cache first
-    const cacheKey = this.getCacheKey(payload.text, payload?.model || "unknown" // @ts-ignore - Model property access)
-    let, embedding = await this.vectorCache.retrieve(cacheKey,);
-    if (embedding) {
+    const modelName = payload.model ?? 'unknown';
+    const cacheKey = this.getCacheKey(payload.text, modelName);
+    const cached = await this.vectorCache.retrieve(cacheKey);
+    if (cached) {
       console.log(`⚡ Cache hit for embedding: ${cacheKey}`);
-      return embedding;
+      return cached;
     }
     // Generate new embedding via API
-    embedding = await this.generateGemmaEmbeddings(payload.text, payload?.model || "unknown" // @ts-ignore - Model property access)
+    const embedding = await this.generateGemmaEmbeddings(payload.text, modelName);
     // Cache with appropriate quantization
     await this.vectorCache.store(cacheKey, embedding, {
-      quantization: payload.options.quantization
-    }),;
+      quantization: payload.options?.quantization,
+    });
     return embedding;
   }
+
   private async generateGemmaEmbeddings(text: string, model: string = 'embeddinggemma:latest'): Promise<Float32Array> {
     try {
       const response = await fetch('/api/embeddings', {
@@ -381,58 +410,72 @@ class RAGIngestionWorker {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model,
-          prompt: text
-        })
+          prompt: text,
+        }),
       });
-      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
-        throw new Error(`Embedding API failed: ${(response as { ok?: any; statusText?: any; json?: any }).statusText}`);
+      if (!response.ok) {
+        throw new Error(`Embedding API failed: ${response.statusText}`);
       }
-      const result = await (response as { ok?: any; statusText?: any; json?: any }).json();
-      return new Float32Array((result as { embedding?: any }).embedding || []);
+      const result = await response.json();
+      return new Float32Array(result.embedding || []);
     } catch (error) {
       console.error('Failed to generate Gemma embeddings:', error);
       // Return fallback embedding
       return new Float32Array(384).fill(0.1);
     }
   }
+
   private async simdParse(payload: SIMDParsePayload): Promise<any> {
     switch (payload.format) {
       case 'pdf':
         return await this.simdProcessor.parsePDF(payload.buffer);
-      case 'txt':
+      case 'txt': {
         const text = new TextDecoder().decode(payload.buffer);
         return await this.simdProcessor.parseText(text, payload.options);
+      }
       default:
         throw new Error(`Unsupported format: ${payload.format}`);
     }
   }
+
   private async indexVectors(payload: VectorIndexPayload): Promise<void> {
     await this.vectorCache.store(payload.documentId, payload.embedding, {
-      nesBank: payload.nesBank
+      nesBank: payload.nesBank,
     });
   }
+
   private async searchSimilarity(payload: any): Promise<any> {
     return await this.vectorCache.search(payload.queryEmbedding, {
       limit: payload.limit || 20,
       threshold: payload.threshold || 0.7,
-      filters: payload.filters
+      filters: payload.filters,
     });
   }
+
   private selectQuantizationLevel(priority: string): 'FP32' | 'FP16' | 'INT8' {
     switch (priority) {
-      case 'critical': return 'FP32';
-      case 'high': return 'FP16';
-      default: return 'INT8';
+      case 'critical':
+        return 'FP32';
+      case 'high':
+        return 'FP16';
+      default:
+        return 'INT8';
     }
   }
+
   private assignNESBank(priority: string): string {
     switch (priority) {
-      case 'critical': return 'INTERNAL_RAM';
-      case 'high': return 'CHR_ROM';
-      case 'medium': return 'PRG_ROM';
-      default: return 'SAVE_RAM';
+      case 'critical':
+        return 'INTERNAL_RAM';
+      case 'high':
+        return 'CHR_ROM';
+      case 'medium':
+        return 'PRG_ROM';
+      default:
+        return 'SAVE_RAM';
     }
   }
+
   private getCacheKey(text: string, model: string): string {
     // Simple hash function for cache key
     let hash = 0;
@@ -442,39 +485,44 @@ class RAGIngestionWorker {
     }
     return `embedding_${Math.abs(hash)}`;
   }
+
   getWorkerStats(): any {
     return {
       initialized: this.isInitialized,
       vectorCache: this.vectorCache.getStats(),
-      timestamp: Date.now()
-    }
+      timestamp: Date.now(),
+    };
   }
 }
 // Global worker instance
 const ragWorker = new RAGIngestionWorker();
 // Service Worker message handler
-self.addEventListener('message', async (event) => {
+self.addEventListener('message', async (event: MessageEvent) => {
   const message = event.data as WorkerMessage;
   try {
     const result = await ragWorker.processMessage(message);
+    // post success
+    // @ts-ignore - worker global
     self.postMessage({
       id: message.id,
-      success: true
-      result
+      success: true,
+      result,
     });
   } catch (error) {
+    // @ts-ignore - worker global
     self.postMessage({
       id: message.id,
-      success: false,;
-      error: error instanceof Error ? error.message: 'Unknown error'
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
 });
 // Initialize worker
 ragWorker.initialize().then(() => {
+  // @ts-ignore - worker global
   self.postMessage({
     type: 'worker_ready',
-    timestamp: Date.now()
+    timestamp: Date.now(),
   });
 });
-export {}
+export {};

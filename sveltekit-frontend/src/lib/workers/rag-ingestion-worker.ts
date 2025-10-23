@@ -1,671 +1,551 @@
-/**
- * Service Worker: RAG/Ingestion with Vector Embeddings & SIMD Parser
- * High-performance document processing pipeline for legal AI
- * Integrates with Gemma embeddings and NES-GPU cache system
- */
+// Clean minimal RAG ingestion worker
 
-// Domain types
-type Priority = 'low' | 'medium' | 'high' | 'critical';
+// Use centralized environment config for service endpoints
+import { CONFIG } from '$lib/config/env.server';
 
-interface Entity {
-  text: string;
-  type: string;
-  start: number;
-  end: number;
-  confidence: number;
-}
+// Replace loose types with explicit definitions
+type ProcessOptions = {
+  id?: string;
+  caseId?: string;
+  metadata?: Record<string, unknown>;
+  priority?: 'low' | 'medium' | 'high';
+};
 
-interface ParseResult {
-  text: string;
-  metadata: Record<string, unknown> & { pages?: number; creator?: string; entities?: Entity[] };
-  pages: number;
-  extractionTime: number;
-  entities?: Entity[];
-}
-
-interface TextParseResult {
-  tokens: string[];
-  entities: Entity[];
-  processingTime: number;
-}
-
-interface EmbeddingPayload {
-  text: string;
-  model?: 'embeddinggemma:latest' | 'embeddinggemma' | 'nomic-embed-text' | string;
-  options?: {
-    dimensions?: number;
-    normalize?: boolean;
-    quantization?: 'FP32' | 'FP16' | 'INT8';
-  };
-}
-
-interface DocumentProcessingPayload {
+type ProcessDocumentPayload = {
   documentId: string;
-  objectPath: string;
+  objectPath?: string;
   content?: ArrayBuffer | string;
-  contentType: string;
-  options: {
-    extractText: boolean;
-    generateEmbeddings: boolean;
-    performAnalysis: boolean;
-    cacheResults: boolean;
-    priority: Priority;
-  };
+  options?: ProcessOptions;
+};
+
+type GenerateEmbeddingsPayload = { text: string; model?: string };
+type SIMDParsePayload = { buffer: ArrayBuffer };
+type IndexVectorsPayload = { documentId: string; embedding: Float32Array };
+type SearchSimilarityPayload = { queryEmbedding: Float32Array; limit?: number; threshold?: number };
+
+// Renamed to avoid collision with global/ambient WorkerMessage types
+type IngestionWorkerMessage =
+  | { id: string; type: 'process_document'; payload: ProcessDocumentPayload }
+  | { id: string; type: 'generate_embeddings'; payload: GenerateEmbeddingsPayload }
+  | { id: string; type: 'simd_parse'; payload: SIMDParsePayload }
+  | { id: string; type: 'index_vectors'; payload: IndexVectorsPayload }
+  | { id: string; type: 'search_similarity'; payload: SearchSimilarityPayload };
+
+// Generic, typed worker response payload
+type WorkerResponse<T = Record<string, unknown>> = {
+  id: string | null;
+  success: boolean;
+  stage: string;
+  status?: string;
+  error?: string;
+  payload?: T;
+};
+
+// --- Service interfaces to avoid `any` ---
+interface MinIOService {
+  getObjectBuffer(objectPath: string): Promise<ArrayBuffer | Uint8Array | Buffer>;
+  getTextContent?(objectPath: string): Promise<{ content?: string } | null>;
 }
 
-interface SIMDParsePayload {
-  buffer: ArrayBuffer;
-  format: 'pdf' | 'docx' | 'txt' | 'image';
-  options: {
-    useSimd: boolean;
-    extractMetadata: boolean;
-    performOCR: boolean;
-  };
+type PerformOCR = (buf: ArrayBuffer, opts?: { lang?: string; timeoutMs?: number }) => Promise<{ text?: string }>;
+
+interface AnalyzeResultItem {
+  type?: string;
+  results?: unknown;
+}
+interface AdvancedEvidenceAnalyzer {
+  analyzeEvidence(args: {
+    evidenceId: string;
+    analysisTypes: string[];
+    priority?: string;
+    textOverride?: string;
+  }): Promise<{ summary?: string; analyses?: AnalyzeResultItem[] }>;
 }
 
-interface VectorIndexPayload {
-  documentId: string;
-  embedding: Float32Array;
-  metadata: {
-    documentType: string;
-    riskLevel: string;
-    keywords: string[];
-    entities: Entity[];
-  };
-  nesBank: 'INTERNAL_RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM';
+interface EvidenceGraphService {
+  updateEvidenceGraph?(
+    meta: { id: string; summary: string; caseId?: string | null },
+    entities: Array<{ name: string; type?: string | null }>,
+    edges: unknown[]
+  ): Promise<void>;
+  // some modules may export a callable shape
+  (
+    meta: { id: string; summary: string; caseId?: string | null },
+    entities: Array<{ name: string; type?: string | null }>,
+    edges: unknown[]
+  ): Promise<void>;
 }
 
-interface SearchPayload {
-  queryEmbedding: Float32Array;
-  limit?: number;
-  threshold?: number;
-  filters?: Record<string, unknown>;
-}
-
-type WorkerPayload =
-  | DocumentProcessingPayload
-  | EmbeddingPayload
-  | SIMDParsePayload
-  | VectorIndexPayload
-  | SearchPayload;
-
-interface WorkerMessage {
+interface GraphNode {
   id: string;
-  type: 'process_document' | 'generate_embeddings' | 'simd_parse' | 'index_vectors' | 'search_similarity';
-  payload: WorkerPayload;
+  type: 'Evidence' | 'Entity' | 'Case';
+  label: string;
+}
+interface GraphEdge {
+  from: string;
+  to: string;
+  relation: string;
 }
 
-// WebAssembly SIMD text processor
 class SIMDTextProcessor {
-  private wasmModule: WebAssembly.Module | null = null;
-  private wasmInstance: WebAssembly.Instance | null = null;
-
-  async initialize(): Promise<void> {
-    try {
-      // Load WebAssembly module for SIMD text processing
-      const wasmBinary = await this.loadWasmBinary();
-      this.wasmModule = await WebAssembly.compile(wasmBinary);
-      this.wasmInstance = await WebAssembly.instantiate(this.wasmModule, {
-        env: {
-          memory: new WebAssembly.Memory({ initial: 10 }),
-        },
-      });
-      console.log('🔥 SIMD Text Processor initialized');
-    } catch (error) {
-      console.warn('SIMD processor failed to initialize, using fallback:', error);
-    }
+  async initialize() {}
+  async parsePDF(buf: ArrayBuffer) {
+    return { text: new TextDecoder().decode(buf), pages: 1 };
   }
-
-  private async loadWasmBinary(): Promise<ArrayBuffer> {
-    // In real implementation, this would load actual WASM binary
-    // For now, return empty binary as placeholder
-    return new ArrayBuffer(0);
-  }
-
-  async parsePDF(buffer: ArrayBuffer): Promise<ParseResult> {
-    const startTime = performance.now();
-    try {
-      if (this.wasmInstance) {
-        // Use WASM SIMD for high-performance PDF parsing
-        return this.parsePDFWithSIMD(buffer);
-      } else {
-        // Fallback to JavaScript parsing
-        return this.parsePDFFallback(buffer);
-      }
-    } finally {
-      const extractionTime = performance.now() - startTime;
-      console.log(`📄 PDF parsing completed in ${extractionTime.toFixed(2)}ms`);
-    }
-  }
-
-  private async parsePDFWithSIMD(_buffer: ArrayBuffer): Promise<ParseResult> {
-    // Parameter intentionally unused in this stub implementation; prefixed with _ to satisfy linter
-    // SIMD-accelerated PDF parsing implementation (placeholder)
-    return {
-      text: 'SIMD-extracted text content...',
-      metadata: { pages: 1, creator: 'SIMD Parser', entities: [] },
-      pages: 1,
-      extractionTime: 0,
-      entities: [],
-    };
-  }
-
-  private async parsePDFFallback(_buffer: ArrayBuffer): Promise<ParseResult> {
-    // JavaScript fallback for PDF parsing (placeholder)
-    return {
-      text: 'Fallback extracted text content...',
-      metadata: { pages: 1, creator: 'Fallback Parser', entities: [] },
-      pages: 1,
-      extractionTime: 0,
-      entities: [],
-    };
-  }
-
-  async parseText(text: string, options: { useSimd: boolean }): Promise<TextParseResult> {
-    const startTime = performance.now();
-    if (options.useSimd && this.wasmInstance) {
-      const result = await this.parseTextWithSIMD(text);
-      // compute actual processing time using startTime
-      result.processingTime = performance.now() - startTime;
-      return result;
-    } else {
-      const result = await this.parseTextFallback(text);
-      result.processingTime = performance.now() - startTime;
-      return result;
-    }
-  }
-
-  private async parseTextWithSIMD(text: string): Promise<TextParseResult> {
-    // SIMD-accelerated text tokenization and entity extraction (placeholder)
-    const tokens = text.split(/\s+/);
-    const entities = this.extractEntitiesSIMD(text);
-    return {
-      tokens,
-      entities,
-      processingTime: 0, // will be set by caller using startTime
-    };
-  }
-
-  private async parseTextFallback(text: string): Promise<TextParseResult> {
-    const tokens = text.split(/\s+/);
-    const entities = this.extractEntitiesFallback(text);
-    return {
-      tokens,
-      entities,
-      processingTime: 0, // will be set by caller using startTime
-    };
-  }
-
-  private extractEntitiesSIMD(text: string): Entity[] {
-    // SIMD-accelerated named entity recognition (placeholder logic)
-    const entities: Entity[] = [];
-    // Legal entity patterns
-    const patterns = [
-      { type: 'case_citation', regex: /\d+\s+\w+\s+\d+/ },
-      { type: 'statute', regex: /\d+\s+U\.S\.C\.\s+§\s*\d+/ },
-      { type: 'court', regex: /(Supreme Court|District Court|Court of Appeals)/i },
-      { type: 'legal_term', regex: /(plaintiff|defendant|appellant|appellee)/i },
-    ];
-    for (const pattern of patterns) {
-      const re =
-        pattern.regex instanceof RegExp ? new RegExp(pattern.regex.source, 'gi') : new RegExp(String(pattern.regex), 'gi');
-      const matches = text.matchAll(re);
-      for (const match of matches) {
-        entities.push({
-          text: match[0],
-          type: pattern.type,
-          start: match.index ?? 0,
-          end: (match.index ?? 0) + match[0].length,
-          confidence: 0.9,
-        });
-      }
-    }
-    return entities;
-  }
-
-  private extractEntitiesFallback(text: string): Entity[] {
-    // Simple fallback entity extraction
-    return this.extractEntitiesSIMD(text);
-  }
-}
-
-// Vector embedding cache with GPU integration
-interface SearchHit {
-  key: string;
-  similarity: number;
-  embedding: Float32Array;
 }
 
 class VectorEmbeddingCache {
-  private cache = new Map<string, Float32Array>();
-  private gpuBuffers = new Map<string, ArrayBuffer>();
-  private maxCacheSize = 1000;
-  private compressionEnabled = true;
-
-  async store(
-    key: string,
-    embedding: Float32Array,
-    options: {
-      quantization?: 'FP32' | 'FP16' | 'INT8';
-      nesBank?: string;
-    } = {}
-  ): Promise<void> {
-    // Apply quantization if requested
-    let finalEmbedding = embedding;
-    if (options.quantization === 'FP16') {
-      finalEmbedding = this.quantizeToFP16(embedding);
-    } else if (options.quantization === 'INT8') {
-      finalEmbedding = this.quantizeToINT8(embedding);
-    }
-
-    // Use compression flag (placeholder usage so the variable is considered used)
-    if (this.compressionEnabled) {
-      // Placeholder: in real implementation compress finalEmbedding here
-      // no-op now
-      void finalEmbedding;
-    }
-
-    // Store in appropriate cache based on NES bank assignment
-    this.cache.set(key, finalEmbedding);
-    // Store GPU buffer for fast access (cast to ArrayBuffer)
-    this.gpuBuffers.set(key, finalEmbedding.buffer as ArrayBuffer);
-    // Cleanup if cache is full
-    if (this.cache.size > this.maxCacheSize) {
-      this.evictOldestEntries();
-    }
-    console.log(`💾 Cached embedding for ${key} (${finalEmbedding.length}D, ${options.quantization || 'FP32'})`);
+  private c = new Map<string, Float32Array>();
+  async store(k: string, v: Float32Array) {
+    this.c.set(k, v);
   }
-
-  async retrieve(key: string): Promise<Float32Array | null> {
-    return this.cache.get(key) || null;
+  async retrieve(k: string) {
+    return this.c.get(k) ?? null;
   }
-
-  async search(
-    queryEmbedding: Float32Array,
-    options: {
-      limit: number;
-      threshold: number;
-      filters?: Record<string, unknown>;
-    }
-  ): Promise<SearchHit[]> {
-    const results: SearchHit[] = [];
-    for (const [key, embedding] of this.cache.entries()) {
-      const similarity = this.calculateCosineSimilarity(queryEmbedding, embedding);
-      if (similarity >= options.threshold) {
-        results.push({ key, similarity, embedding });
+  async search(q: Float32Array, opts: { limit: number; threshold: number }) {
+    const out: Array<{ key: string; similarity: number }> = [];
+    for (const [k, v] of this.c.entries()) {
+      if (!v || v.length !== q.length) continue;
+      let dot = 0,
+        na = 0,
+        nb = 0;
+      for (let i = 0; i < v.length; i++) {
+        dot += v[i] * q[i];
+        na += v[i] * v[i];
+        nb += q[i] * q[i];
       }
+      const sim = dot / Math.sqrt(na * nb || 1);
+      if (sim >= (opts.threshold || 0.7)) out.push({ key: k, similarity: sim });
     }
-    // Sort by similarity and limit results
-    return results.sort((a, b) => b.similarity - a.similarity).slice(0, options.limit);
-  }
-
-  private quantizeToFP16(embedding: Float32Array): Float32Array {
-    // Simple FP16 quantization (placeholder implementation)
-    const quantized = new Float32Array(embedding.length);
-    for (let i = 0; i < embedding.length; i++) {
-      quantized[i] = Math.round(embedding[i] * 32767) / 32767;
-    }
-    return quantized;
-  }
-
-  private quantizeToINT8(embedding: Float32Array): Float32Array {
-    // Simple INT8 quantization (placeholder implementation)
-    const quantized = new Float32Array(embedding.length);
-    for (let i = 0; i < embedding.length; i++) {
-      quantized[i] = Math.round(embedding[i] * 127) / 127;
-    }
-    return quantized;
-  }
-
-  private calculateCosineSimilarity(a: Float32Array, b: Float32Array): number {
-    if (a.length !== b.length) return 0;
-    let dotProduct = 0;
-    let normA = 0;
-    let normB = 0;
-    for (let i = 0; i < a.length; i++) {
-      dotProduct += a[i] * b[i];
-      normA += a[i] * a[i];
-      normB += b[i] * b[i];
-    }
-    const denom = Math.sqrt(normA) * Math.sqrt(normB);
-    if (!denom || Number.isNaN(denom) || !isFinite(denom)) return 0;
-    return dotProduct / denom;
-  }
-
-  private evictOldestEntries(): void {
-    const entries = Array.from(this.cache.entries());
-    const toRemove = Math.floor(this.maxCacheSize * 0.1); // Remove 10%
-    for (let i = 0; i < toRemove; i++) {
-      const key = entries[i][0];
-      this.cache.delete(key);
-      this.gpuBuffers.delete(key);
-    }
-  }
-
-  getStats(): { cacheSize: number; memoryUsage: number; hitRate: number } {
-    let memoryUsage = 0;
-    for (const embedding of this.cache.values()) {
-      memoryUsage += embedding.byteLength;
-    }
-    return {
-      cacheSize: this.cache.size,
-      memoryUsage,
-      hitRate: 0.85, // Placeholder - would track actual hit rate
-    };
+    return out.sort((a, b) => b.similarity - a.similarity).slice(0, opts.limit || 10);
   }
 }
 
-// Main RAG ingestion worker
+const EMBEDDING_MODEL = process.env.EMBEDDING_MODEL ?? 'embeddinggemma:latest';
+const VECTOR_INDEX_URL = process.env.VECTOR_INDEX_URL ?? null;
+const NEO4J_CREATE_SIMILARITY_LINKS = (process.env.NEO4J_CREATE_SIMILARITY_LINKS ?? 'false') === 'true';
+
 class RAGIngestionWorker {
-  private simdProcessor: SIMDTextProcessor;
-  private vectorCache: VectorEmbeddingCache;
-  private isInitialized = false;
+  private simd = new SIMDTextProcessor();
+  private cache = new VectorEmbeddingCache();
+  private initialized = false;
+  private services: {
+    MinIOService?: MinIOService;
+    performOCR?: PerformOCR;
+    advancedEvidenceAnalyzer?: AdvancedEvidenceAnalyzer;
+    evidenceGraphService?: EvidenceGraphService;
+  } = {};
 
-  constructor() {
-    this.simdProcessor = new SIMDTextProcessor();
-    this.vectorCache = new VectorEmbeddingCache();
-  }
+  // helper: convert various binary types to ArrayBuffer
+  private toArrayBuffer(input: ArrayBuffer | ArrayBufferView | Uint8Array | unknown): ArrayBuffer {
+    // If already an ArrayBuffer, return as-is
+    if (input instanceof ArrayBuffer) return input;
 
-  async initialize(): Promise<void> {
-    if (this.isInitialized) return;
-    try {
-      await this.simdProcessor.initialize();
-      this.isInitialized = true;
-      console.log('🚀 RAG Ingestion Worker initialized');
-    } catch (error) {
-      console.error('Failed to initialize RAG worker:', error);
-    }
-  }
+    // If it's a view (Uint8Array / Buffer / etc.), handle safely
+    if (ArrayBuffer.isView(input)) {
+      const view = input as Uint8Array;
 
-  async processMessage(message: WorkerMessage): Promise<unknown> {
-    if (!this.isInitialized) {
-      await this.initialize();
-    }
-    try {
-      switch (message.type) {
-        case 'process_document':
-          return await this.processDocument(message.payload as DocumentProcessingPayload);
-        case 'generate_embeddings':
-          return await this.generateEmbeddings(message.payload as EmbeddingPayload);
-        case 'simd_parse':
-          return await this.simdParse(message.payload as SIMDParsePayload);
-        case 'index_vectors':
-          return await this.indexVectors(message.payload as VectorIndexPayload);
-        case 'search_similarity':
-          return await this.searchSimilarity(message.payload as SearchPayload);
-        default:
-          throw new Error(`Unknown message type: ${message.type}`);
+      // If the view covers a plain ArrayBuffer entirely, we can return that ArrayBuffer directly.
+      if (view.buffer instanceof ArrayBuffer && view.byteOffset === 0 && view.byteLength === view.buffer.byteLength) {
+        return view.buffer as ArrayBuffer;
       }
-    } catch (error) {
-      console.error(`Worker error processing ${message.type}:`, error);
-      throw error;
+
+      // Otherwise (partial view or SharedArrayBuffer), create a copied ArrayBuffer slice.
+      const copied = new Uint8Array(view.buffer, view.byteOffset, view.byteLength).slice();
+      return copied.buffer;
+    }
+
+    // Fallback: try to coerce via Uint8Array view (covers Node Buffer in some runtimes)
+    try {
+      // If given a string, encode as UTF-8 bytes
+      if (typeof input === 'string') {
+        return new TextEncoder().encode(input).buffer;
+      }
+
+      // If it is array-like (has numeric length), construct a Uint8Array
+      const maybeArrayLike = input as ArrayLike<number> | undefined;
+      if (maybeArrayLike && typeof maybeArrayLike.length === 'number') {
+        const u = new Uint8Array(maybeArrayLike);
+        return u.slice().buffer;
+      }
+
+      // If it's iterable (e.g., Buffer in some runtimes), convert to Array first
+      if (input && typeof input === 'object' && Symbol.iterator in Object(input)) {
+        const arr = Array.from(input as Iterable<number>);
+        const u = new Uint8Array(arr);
+        return u.buffer;
+      }
+
+      // No known coercion path found
+      return new ArrayBuffer(0);
+    } catch (e) {
+      // As a last resort, return an empty buffer to avoid throwing inside worker
+      return new ArrayBuffer(0);
     }
   }
 
-  private async processDocument(payload: DocumentProcessingPayload): Promise<{
-    success: boolean;
-    documentId: string;
-    extractedText?: string;
-    embeddings?: Float32Array;
-    entities?: Entity[];
-    processingTime: number;
-  }> {
-    const startTime = performance.now();
-    try {
-      let extractedText = '';
-      let embeddings: Float32Array | undefined;
-      let entities: Entity[] = [];
+  // safe entity extraction
+  private extractEntity(item: unknown): { name: string; type?: string | null } {
+    if (!item) return { name: 'unknown', type: 'unknown' };
+    if (typeof item === 'string') return { name: item, type: 'unknown' };
+    if (typeof item === 'object') {
+      const obj = item as Record<string, unknown>;
+      const name = String(obj['text'] ?? obj['name'] ?? obj['value'] ?? 'unknown');
+      const type = typeof obj['type'] === 'string' ? (obj['type'] as string) : 'unknown';
+      return { name, type };
+    }
+    return { name: String(item), type: 'unknown' };
+  }
 
-      // Step 1: Text extraction with SIMD parsing
-      if (payload.options.extractText && payload.content) {
-        if (payload.content instanceof ArrayBuffer) {
-          const parseResult = await this.simdProcessor.parsePDF(payload.content);
-          extractedText = parseResult.text;
-          entities = (parseResult.metadata.entities as Entity[]) || [];
-        } else {
-          extractedText = String(payload.content);
+  // Helper to safely extract an id from an unknown message without using `any`
+  public extractMsgId(m: unknown): string | null {
+    const candidate = m as Partial<IngestionWorkerMessage> | undefined;
+    return candidate && typeof candidate.id === 'string' ? candidate.id : null;
+  }
+
+  async initialize() {
+    if (this.initialized) return;
+    await this.simd.initialize();
+    try {
+      const m = await import('$lib/server/minio-service');
+      // defensive cast via unknown to avoid unsafe direct cast errors
+      this.services.MinIOService = m as unknown as MinIOService;
+    } catch (e: unknown) {
+      console.debug('minio import failed', e);
+    }
+
+    try {
+      const o = await import('$lib/ocr/ocr-client');
+      this.services.performOCR =
+        (o as unknown as { performOCR?: PerformOCR }).performOCR ?? (o as unknown as PerformOCR);
+    } catch (e: unknown) {
+      console.debug('ocr import failed', e);
+    }
+
+    try {
+      const a = await import('$lib/services/advanced-evidence-analyzer');
+      this.services.advancedEvidenceAnalyzer = a as unknown as AdvancedEvidenceAnalyzer;
+    } catch (e: unknown) {
+      console.debug('advanced analyzer import failed', e);
+    }
+
+    try {
+      const gModule = await import('$lib/server/graph/evidence-graph-service');
+      // module shape may vary; accept object with method or callable default export
+      const candidate: unknown = gModule;
+      // Try evidenceGraphService export first
+      const exportedSvc = (candidate as { evidenceGraphService?: unknown }).evidenceGraphService;
+      const defaultExport = (candidate as { default?: unknown }).default;
+      // Accept an object that matches EvidenceGraphService or a callable default export
+      if (exportedSvc) {
+        this.services.evidenceGraphService = exportedSvc as EvidenceGraphService;
+      } else if (defaultExport) {
+        this.services.evidenceGraphService = defaultExport as EvidenceGraphService;
+      } else if (typeof candidate === 'function' || typeof candidate === 'object') {
+        // fallback to the raw module shape
+        this.services.evidenceGraphService = candidate as EvidenceGraphService;
+      }
+    } catch (e: unknown) {
+      console.debug('graph service import failed', e);
+    }
+
+    this.initialized = true;
+  }
+
+  async processMessage(msg: IngestionWorkerMessage) {
+    if (!this.initialized) await this.initialize();
+    switch (msg.type) {
+      case 'process_document':
+        return this.processDocument(msg.payload);
+      case 'generate_embeddings':
+        return this.generateGemmaEmbeddings(
+          String(msg.payload.text || ''),
+          String(msg.payload.model || EMBEDDING_MODEL)
+        );
+      case 'simd_parse':
+        return this.simd.parsePDF(msg.payload.buffer);
+      case 'index_vectors':
+        await this.cache.store(msg.payload.documentId, msg.payload.embedding);
+        return { success: true };
+      case 'search_similarity':
+        return this.cache.search(msg.payload.queryEmbedding, {
+          limit: msg.payload.limit || 10,
+          threshold: msg.payload.threshold || 0.7,
+        });
+      default:
+        throw new Error('Unknown message type');
+    }
+  }
+
+  private async processDocument(payload: ProcessDocumentPayload) {
+    const id = payload.documentId;
+    try {
+      let text = '';
+      if (payload.content instanceof ArrayBuffer) {
+        const p = await this.simd.parsePDF(payload.content);
+        text = String(p?.text || '');
+      } else if (typeof payload.content === 'string') {
+        text = payload.content;
+      }
+
+      if (
+        !text &&
+        payload.objectPath &&
+        String(payload.objectPath).startsWith('minio://') &&
+        this.services.MinIOService
+      ) {
+        try {
+          const buf = await this.services.MinIOService.getObjectBuffer(payload.objectPath);
+          const arr = this.toArrayBuffer(buf);
+          if (this.services.performOCR) {
+            const o = await this.services.performOCR(arr, { lang: 'eng', timeoutMs: 30000 });
+            text = String(o?.text || text);
+            this.post({ id, success: true, stage: 'ocr', status: 'completed' });
+          }
+        } catch (err: unknown) {
+          this.post({ id, success: false, stage: 'ocr', status: 'error', error: String(err) });
         }
       }
 
-      // Step 2: Generate embeddings with Gemma
-      if (payload.options.generateEmbeddings && extractedText) {
-        embeddings = await this.generateGemmaEmbeddings(extractedText);
-        // Cache embeddings with quantization
-        if (payload.options.cacheResults && embeddings) {
-          await this.vectorCache.store(payload.documentId, embeddings, {
-            quantization: this.selectQuantizationLevel(payload.options.priority),
-            nesBank: this.assignNESBank(payload.options.priority),
+      let analysis: { summary?: string; analyses?: AnalyzeResultItem[] } | null = null;
+      if (text && this.services.advancedEvidenceAnalyzer) {
+        try {
+          this.post({ id, success: true, stage: 'analysis', status: 'started' });
+          analysis = await this.services.advancedEvidenceAnalyzer.analyzeEvidence({
+            evidenceId: id,
+            analysisTypes: ['summary', 'entities'],
+            priority: 'medium',
+            textOverride: text,
+          });
+          this.post({ id, success: true, stage: 'analysis', status: 'completed' });
+        } catch (err: unknown) {
+          this.post({ id, success: false, stage: 'analysis', status: 'error', error: String(err) });
+        }
+      }
+
+      const embText = analysis?.summary ?? text ?? '';
+      const emb = await this.generateGemmaEmbeddings(embText);
+      await this.cache.store(id, emb);
+      if (VECTOR_INDEX_URL) {
+        try {
+          await fetch(VECTOR_INDEX_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, embedding: Array.from(emb) }),
+          });
+        } catch (e: unknown) {
+          console.warn('vector push failed', e);
+        }
+      }
+      this.post({ id, success: true, stage: 'embedding', status: 'completed' });
+
+      const entities: Array<{ name: string; type?: string | null }> = [];
+      const entityEntry = analysis?.analyses?.find(a => a.type === 'entities');
+      if (entityEntry && Array.isArray(entityEntry.results as unknown)) {
+        for (const item of entityEntry.results as unknown as Array<unknown>) {
+          entities.push(this.extractEntity(item));
+        }
+      }
+
+      // rename sim variable to explicit typed name to avoid implicit any
+      if (NEO4J_CREATE_SIMILARITY_LINKS) {
+        const simResults: Array<{ key: string; similarity: number }> = await this.cache.search(emb, {
+          limit: 5,
+          threshold: 0.85,
+        });
+        if (simResults && simResults.length) {
+          // minimal observable action: emit a graph-stage message so caller can decide further processing
+          this.post({
+            id,
+            success: true,
+            stage: 'neo4j_similarity_candidates',
+            status: 'found',
+            payload: { candidates: simResults },
           });
         }
       }
 
-      // Step 3: Advanced text analysis
-      if (payload.options.performAnalysis && extractedText) {
-        const analysisResult = await this.simdProcessor.parseText(extractedText, { useSimd: true });
-        entities = [...entities, ...analysisResult.entities];
+      if (this.services.evidenceGraphService) {
+        try {
+          const svc = this.services.evidenceGraphService as EvidenceGraphService;
+          // If it's an object exposing updateEvidenceGraph, call it.
+          if (svc && typeof (svc as { updateEvidenceGraph?: unknown }).updateEvidenceGraph === 'function') {
+            await (
+              svc as {
+                updateEvidenceGraph: (
+                  meta: { id: string; summary: string; caseId?: string | null },
+                  entities: Array<{ name: string; type?: string | null }>,
+                  edges: unknown[]
+                ) => Promise<void>;
+              }
+            ).updateEvidenceGraph(
+              { id, summary: analysis?.summary ?? '', caseId: payload?.options?.caseId ?? null },
+              entities,
+              []
+            );
+          } else if (typeof svc === 'function') {
+            // Callable shape
+            const callable = svc as unknown as (
+              meta: { id: string; summary: string; caseId?: string | null },
+              entities: Array<{ name: string; type?: string | null }>,
+              edges: unknown[]
+            ) => Promise<void>;
+            await callable(
+              { id, summary: analysis?.summary ?? '', caseId: payload?.options?.caseId ?? null },
+              entities,
+              []
+            );
+          }
+          this.post({
+            id,
+            success: true,
+            stage: 'graph',
+            status: 'completed',
+            payload: this.formatGraphData(id, payload?.options?.caseId, entities),
+          });
+        } catch (err: unknown) {
+          this.post({ id, success: false, stage: 'graph', status: 'error', error: String(err) });
+        }
+      } else {
+        this.post({
+          id,
+          success: true,
+          stage: 'graph',
+          status: 'completed',
+          payload: this.formatGraphData(id, payload?.options?.caseId, entities),
+        });
       }
 
-      const processingTime = performance.now() - startTime;
-      return {
-        success: true,
-        documentId: payload.documentId,
-        extractedText,
-        embeddings,
-        entities,
-        processingTime,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        documentId: payload.documentId,
-        processingTime: performance.now() - startTime,
-      };
+      this.post({ id, success: true, stage: 'complete', status: 'done' });
+      return { success: true };
+    } catch (err: unknown) {
+      this.post({ id, success: false, stage: 'error', status: 'error', error: String(err) });
+      return { success: false, error: String(err) };
     }
   }
 
-  private async generateEmbeddings(payload: EmbeddingPayload): Promise<Float32Array> {
-    // Check cache first
-    const modelName = payload.model ?? 'unknown';
-    const cacheKey = this.getCacheKey(payload.text, modelName);
-    const embedding = await this.vectorCache.retrieve(cacheKey);
-    if (embedding) {
-      console.log(`⚡ Cache hit for embedding: ${cacheKey}`);
-      return embedding;
+  private formatGraphData(
+    evidenceId: string,
+    caseId?: string,
+    entities?: Array<{ name: string; type?: string | null }>
+  ) {
+    const nodes: GraphNode[] = [
+      { id: `evidence:${evidenceId}`, type: 'Evidence', label: `E:${String(evidenceId).slice(0, 6)}` },
+    ];
+    const edges: GraphEdge[] = [];
+    if (caseId) {
+      nodes.push({ id: `case:${caseId}`, type: 'Case', label: `C:${String(caseId).slice(0, 6)}` });
+      edges.push({ from: `evidence:${evidenceId}`, to: `case:${caseId}`, relation: 'ASSOCIATED_WITH' });
     }
-
-    // Generate new embedding via API
-    const generated = await this.generateGemmaEmbeddings(payload.text, modelName);
-    await this.vectorCache.store(cacheKey, generated, {
-      quantization: payload.options?.quantization,
-    });
-    return generated;
+    for (const ent of entities || []) {
+      const nodeId = `entity:${ent.name}`;
+      if (!nodes.some(n => n.id === nodeId)) nodes.push({ id: nodeId, type: 'Entity', label: ent.name });
+      edges.push({ from: `evidence:${evidenceId}`, to: nodeId, relation: 'MENTIONS' });
+    }
+    return { nodes, edges };
   }
 
-  private async generateGemmaEmbeddings(text: string, model: string = 'embeddinggemma:latest'): Promise<Float32Array> {
+  private post<T = Record<string, unknown>>(msg: WorkerResponse<T>) {
     try {
-      // If text is large, split into chunks and request embeddings in a single batch
+      const gw = self as unknown as { postMessage: (m: unknown) => void };
+      gw.postMessage(msg);
+    } catch (err: unknown) {
+      console.debug('postMessage failed', err);
+    }
+  }
+
+  private async generateGemmaEmbeddings(text: string, model = EMBEDDING_MODEL): Promise<Float32Array> {
+    try {
       const chunks = this.splitTextIntoChunks(text, 1024);
       if (chunks.length > 1) {
         const batch = await this.generateEmbeddingsBatch(chunks, model);
-        // Average chunk embeddings to get a document-level embedding
-        const averaged = this.averageEmbeddings(batch);
-        return averaged;
+        return this.averageEmbeddings(batch);
       }
-
-      const body = { text, model };
-      const response = await fetch('/api/embeddings/generate', {
+      const endpoint =
+        typeof CONFIG !== 'undefined' && CONFIG?.OLLAMA_URL
+          ? `${CONFIG.OLLAMA_URL.replace(/\/$/, '')}/api/embeddings`
+          : '/api/embeddings/generate';
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ text, model }),
       });
-      if (!response.ok) throw new Error(`Embedding API failed: ${response.status} ${response.statusText}`);
-      const result = (await response.json()) as { embedding?: number[]; embeddings?: number[][] };
-      // Compatibility route returns { embedding } or { embeddings }
-      if (Array.isArray(result?.embeddings) && result.embeddings.length > 0) {
-        return new Float32Array(result.embeddings[0] || []);
-      }
-      if (Array.isArray(result?.embedding)) {
-        return new Float32Array(result.embedding);
-      }
-      // fallback
-      throw new Error('Embedding response malformed');
-    } catch (error) {
-      console.error('Failed to generate Gemma embeddings:', error);
+      if (!res.ok) throw new Error(`Embedding API ${res.status}`);
+      const body = await res.json();
+      const emb = Array.isArray(body.embedding)
+        ? body.embedding
+        : Array.isArray(body.embeddings)
+          ? body.embeddings[0]
+          : [];
+      return new Float32Array(emb || new Array(384).fill(0.1));
+    } catch (e: unknown) {
+      console.warn('embed failed', e);
       return new Float32Array(384).fill(0.1);
     }
   }
 
-  // Request embeddings for an array of texts via the compatibility endpoint
   private async generateEmbeddingsBatch(texts: string[], model: string): Promise<Float32Array[]> {
     try {
-      const body = { texts, model };
-      const response = await fetch('/api/embeddings/generate', {
+      const endpoint =
+        typeof CONFIG !== 'undefined' && CONFIG?.OLLAMA_URL
+          ? `${CONFIG.OLLAMA_URL.replace(/\/$/, '')}/api/embeddings`
+          : '/api/embeddings/generate';
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ texts, model }),
       });
-      if (!response.ok) throw new Error(`Embedding batch API failed: ${response.status}`);
-      const result = (await response.json()) as { embeddings?: number[][]; embedding?: number[] };
-      // Expect { embeddings: number[][] }
-      if (Array.isArray(result?.embeddings)) {
-        return result.embeddings.map((e) => new Float32Array(e || []));
-      }
-      // Single embedding fallback
-      if (Array.isArray(result?.embedding)) {
-        return [new Float32Array(result.embedding)];
-      }
-      return texts.map(() => new Float32Array(384).fill(0.1));
-    } catch (err) {
-      console.error('Batch embedding request failed:', err);
+      if (!res.ok) throw new Error(`batch ${res.status}`);
+      const b = await res.json();
+      const embeds = Array.isArray(b.embeddings) ? b.embeddings : Array.isArray(b.embedding) ? [b.embedding] : [];
+      return embeds.map((e: unknown) => new Float32Array((e as number[]) || []));
+    } catch (e: unknown) {
+      console.warn('batch fail', e);
       return texts.map(() => new Float32Array(384).fill(0.1));
     }
   }
 
-  // Simple helper: average multiple Float32Array embeddings
-  private averageEmbeddings(embeddings: Float32Array[]): Float32Array {
-    if (!embeddings || embeddings.length === 0) return new Float32Array(384).fill(0.1);
-    const dim = embeddings[0].length || 384;
+  private averageEmbeddings(arr: Float32Array[]) {
+    if (!arr || arr.length === 0) return new Float32Array(384).fill(0.1);
+    const dim = arr[0].length || 384;
     const out = new Float32Array(dim);
-    for (const emb of embeddings) {
-      for (let i = 0; i < dim; i++) out[i] = (out[i] || 0) + (emb[i] || 0);
-    }
-    for (let i = 0; i < dim; i++) out[i] = out[i] / embeddings.length;
+    for (const a of arr) for (let i = 0; i < dim; i++) out[i] += a[i] || 0;
+    for (let i = 0; i < dim; i++) out[i] /= arr.length;
     return out;
   }
 
-  // Naive chunking by character length (can be replaced with smarter sentence-based split)
-  private splitTextIntoChunks(text: string, maxChunkSize = 1024): string[] {
-    if (!text || text.length <= maxChunkSize) return [text];
-    const chunks: string[] = [];
-    let start = 0;
-    while (start < text.length) {
-      const end = Math.min(start + maxChunkSize, text.length);
-      chunks.push(text.slice(start, end));
-      start = end;
+  private splitTextIntoChunks(text: string, maxChunk = 1024) {
+    if (!text) return [];
+    if (text.length <= maxChunk) return [text];
+    const out: string[] = [];
+    let i = 0;
+    while (i < text.length) {
+      out.push(text.slice(i, i + maxChunk));
+      i += maxChunk;
     }
-    return chunks;
-  }
-
-  private async simdParse(payload: SIMDParsePayload): Promise<ParseResult | TextParseResult> {
-    switch (payload.format) {
-      case 'pdf':
-        return await this.simdProcessor.parsePDF(payload.buffer);
-      case 'txt':
-        {
-          const text = new TextDecoder().decode(payload.buffer);
-          return await this.simdProcessor.parseText(text, payload.options);
-        }
-      default:
-        throw new Error(`Unsupported format: ${payload.format}`);
-    }
-  }
-
-  private async indexVectors(payload: VectorIndexPayload): Promise<void> {
-    await this.vectorCache.store(payload.documentId, payload.embedding, {
-      nesBank: payload.nesBank,
-    });
-  }
-
-  private async searchSimilarity(payload: SearchPayload): Promise<SearchHit[]> {
-    return await this.vectorCache.search(payload.queryEmbedding, {
-      limit: payload.limit ?? 20,
-      threshold: payload.threshold ?? 0.7,
-      filters: payload.filters,
-    });
-  }
-
-  private selectQuantizationLevel(priority: Priority): 'FP32' | 'FP16' | 'INT8' {
-    switch (priority) {
-      case 'critical':
-        return 'FP32';
-      case 'high':
-        return 'FP16';
-      default:
-        return 'INT8';
-    }
-  }
-
-  private assignNESBank(priority: Priority): string {
-    switch (priority) {
-      case 'critical':
-        return 'INTERNAL_RAM';
-      case 'high':
-        return 'CHR_ROM';
-      case 'medium':
-        return 'PRG_ROM';
-      default:
-        return 'SAVE_RAM';
-    }
-  }
-
-  private getCacheKey(text: string, model: string): string {
-    // Simple hash function for cache key
-    let hash = 0;
-    const combined = text + model;
-    for (let i = 0; i < combined.length; i++) {
-      hash = ((hash << 5) - hash + combined.charCodeAt(i)) & 0xffffffff;
-    }
-    return `embedding_${Math.abs(hash)}`;
-  }
-
-  getWorkerStats(): { initialized: boolean; vectorCache: ReturnType<VectorEmbeddingCache['getStats']>; timestamp: number } {
-    return {
-      initialized: this.isInitialized,
-      vectorCache: this.vectorCache.getStats(),
-      timestamp: Date.now(),
-    };
+    return out;
   }
 }
 
-// Global worker instance
 const ragWorker = new RAGIngestionWorker();
-
-// Service Worker message handler
-self.addEventListener('message', async (event: MessageEvent) => {
-  const message = event.data as WorkerMessage;
+// Hook into worker messages. Cast ev.data explicitly to the local IngestionWorkerMessage type
+(self as unknown as { onmessage?: (ev: MessageEvent) => void }).onmessage = async (ev: MessageEvent) => {
+  const m = ev.data as IngestionWorkerMessage;
   try {
-    const result = await ragWorker.processMessage(message);
-    // Post structured response
-    self.postMessage({
-      id: message.id,
-      success: true,
-      result,
-    });
-  } catch (error) {
-    self.postMessage({
-      id: message.id,
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    });
+    const r = await ragWorker.processMessage(m);
+    const gw = self as unknown as { postMessage: (m: unknown) => void };
+    gw.postMessage({ id: ragWorker.extractMsgId(m), success: true, result: r });
+  } catch (e: unknown) {
+    const errMsg = e instanceof Error ? e.message : String(e);
+    try {
+      const gw = self as unknown as { postMessage: (m: unknown) => void };
+      // use the worker instance helper if available
+      gw.postMessage({ id: ragWorker.extractMsgId(ev.data), success: false, error: errMsg });
+    } catch (err: unknown) {
+      // swallow - nothing else we can do in a worker environment
+      console.debug('worker postMessage failed during error handling', err);
+    }
   }
-});
+};
 
-// Initialize worker
-ragWorker.initialize().then(() => {
-  self.postMessage({
-    type: 'worker_ready',
-    timestamp: Date.now(),
-  });
-});
-
-export {};
+// End of worker file

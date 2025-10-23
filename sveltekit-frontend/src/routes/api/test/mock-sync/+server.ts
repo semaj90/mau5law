@@ -3,8 +3,15 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { initializeMockDataWithEmbeddings, mockApiResponses } from '$lib/data/mock-legal-data.js'
-// Database connection (with fallback for development)
-let db: any = null
+
+// Define a type for the database client based on its observed usage.
+// The 'db' object is expected to have an 'execute' method that takes a SQL string
+// and returns a Promise resolving to an array of records of type T.
+interface CustomDbClient {
+  execute: <T = unknown>(sql: string) => Promise<T[]>;
+}
+
+let db: CustomDbClient | null = null
 let dbStatus = 'disconnected'
 async function initializeDatabase() {
   try {
@@ -33,13 +40,25 @@ async function initializeDatabase() {
 }
 // Initialize on first request
 let initialized = false
+// Define interfaces for better type safety
+interface TableQueryResultRow {
+  table_name: string;
+}
+
+interface DatabaseTestResults {
+  connection: string;
+  tables: string;
+  pgvector: string;
+  found_tables?: string[]; // Optional, as it's only set if tables are found
+}
+
 export const GET: RequestHandler = async ({ url }) => {
   if (!initialized) {
-    await initializeDatabase()
-    initialized = true
+    await initializeDatabase();
+    initialized = true;
   }
-  const action = url.searchParams.get('action') || 'status'
-  const format = url.searchParams.get('format') || 'json'
+  const action = url.searchParams.get('action') || 'status';
+  // const format = url.searchParams.get('format') || 'json' // Removed: 'format' is assigned a value but never used.
   try {
     switch (action) {
       case 'status':
@@ -48,27 +67,28 @@ export const GET: RequestHandler = async ({ url }) => {
           database: {
             status: dbStatus,
             available: db !== null,
-            pgvector: dbStatus === 'connected' ? 'available' : 'unknown'
+            pgvector: dbStatus === 'connected' ? 'available' : 'unknown',
           },
           mock_data: {
             users: 2,
             cases: 2,
             evidence: 2,
             documents: 1,
-            chat_messages: 2
+            chat_messages: 2,
           },
           api_endpoints: {
             cases: '/api/cases',
             evidence: '/api/evidence',
             search: '/api/search',
-            mock_sync: '/api/test/mock-sync'
+            mock_sync: '/api/test/mock-sync',
           },
           sveltekit_version: '2.x',
           drizzle_orm: 'configured',
-          timestamp: new Date().toISOString()
-        })
-      case 'mock-data':
-        const mockData = initializeMockDataWithEmbeddings()
+          timestamp: new Date().toISOString(),
+        });
+      case 'mock-data': {
+        // Added block scope
+        const mockData = initializeMockDataWithEmbeddings();
         return json({
           success: true,
           data: mockData,
@@ -80,10 +100,11 @@ export const GET: RequestHandler = async ({ url }) => {
               cases: mockData.cases.length,
               evidence: mockData.evidence.length,
               documents: mockData.legalDocuments.length,
-              messages: mockData.chatMessages.length
-            }
-          }
-        })
+              messages: mockData.chatMessages.length,
+            },
+          },
+        });
+      } // End block scope
       case 'api-examples':
         return json({
           success: true,
@@ -94,9 +115,9 @@ export const GET: RequestHandler = async ({ url }) => {
             evidence_list: 'GET /api/evidence?caseId=xxx',
             evidence_create: 'POST /api/evidence',
             vector_search: 'POST /api/search',
-            health_check: 'GET /api/test/mock-sync?action=status'
-          }
-        })
+            health_check: 'GET /api/test/mock-sync?action=status',
+          },
+        });
       case 'database-test':
         if (dbStatus !== 'connected') {
           return json({
@@ -104,64 +125,87 @@ export const GET: RequestHandler = async ({ url }) => {
             error: 'Database not connected',
             status: dbStatus,
             suggestion: 'Ensure PostgreSQL is running on localhost:5432 with legal_ai_db database',
-          })
+          });
+        }
+        // Ensure db is not null before proceeding with database operations
+        if (!db) {
+          console.error('Database client is null despite dbStatus being "connected". This should not happen.');
+          return json(
+            {
+              success: false,
+              error: 'Database client not initialized',
+              details: 'Internal server error: Database client is null.',
+            },
+            { status: 500 }
+          );
         }
         try {
           // Test basic database operations
-          const testResults: any = {
+          const testResults: DatabaseTestResults = {
+            // Changed type from any
             connection: 'ok',
             tables: 'unknown',
-            pgvector: 'unknown'
-          }
+            pgvector: 'unknown',
+          };
           // Test table existence (safe queries)
           try {
-            const tableQuery = await db.execute(`
+            const tableQuery: TableQueryResultRow[] = await db.execute<TableQueryResultRow>(`
               SELECT table_name
               FROM information_schema.tables
               WHERE table_schema = 'public'
               AND table_name IN ('users', 'cases', 'evidence', 'legal_documents')
-              ORDER BY table_name)
-            `)
-            testResults.tables = tableQuery.length > 0 ? 'ok' : 'missing'
-            testResults.found_tables = tableQuery.map((row: any) => row.table_name)
+              ORDER BY table_name
+            `);
+            testResults.tables = tableQuery.length > 0 ? 'ok' : 'missing';
+            testResults.found_tables = tableQuery.map(row => row.table_name);
           } catch (err) {
-            testResults.tables = 'error'
+            testResults.tables = 'error';
           }
           // Test pgvector
           try {
-            await db.execute('SELECT \'[1,2,3]\'::vector;')
-            testResults.pgvector = 'ok'
+            await db.execute("SELECT '[1,2,3]'::vector;");
+            testResults.pgvector = 'ok';
           } catch (err) {
-            testResults.pgvector = 'error'
+            testResults.pgvector = 'error';
           }
           return json({
             success: true,
             database_test: testResults,
-            recommendations: testResults.tables === 'missing',
-              ? ['Run database migrations: npm run db:migrate', 'Seed test data: npm run db:seed']
-              : ['Database appears ready for use']
-          })
+            recommendations:
+              testResults.tables === 'missing'
+                ? ['Run database migrations: npm run db:migrate', 'Seed test data: npm run db:seed']
+                : ['Database appears ready for use'],
+          });
         } catch (error) {
-          return json({
-            success: false,
-            error: 'Database test failed',
-            details: error instanceof Error ? error.message: 'Unknown error'
-          }, { status: 500 })
+          return json(
+            {
+              success: false,
+              error: 'Database test failed',
+              details: error instanceof Error ? error.message : 'Unknown error',
+            },
+            { status: 500 }
+          );
         }
       default:
-        return json({,
-          success: false,
-          error: `Unknown action: ${action}`,
-          available_actions: ['status', 'mock-data', 'api-examples', 'database-test']
-        }, { status: 400 })
+        return json(
+          {
+            success: false, // Removed extra comma here
+            error: `Unknown action: ${action}`,
+            available_actions: ['status', 'mock-data', 'api-examples', 'database-test'],
+          },
+          { status: 400 }
+        );
     }
   } catch (error) {
-    console.error('Mock sync API error:', error)
-    return json({
-      success: false,
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message: 'Unknown error'
-    }, { status: 500 })
+    console.error('Mock sync API error:', error);
+    return json(
+      {
+        success: false,
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    );
   }
 }
 export const POST: RequestHandler = async ({ request }) => {
@@ -170,15 +214,15 @@ export const POST: RequestHandler = async ({ request }) => {
     initialized = true
   }
   try {
-    const { action, data } = await request.json()
+    const { action /*, data */ } = await request.json(); // Removed 'data' as it was unused
     switch (action) {
       case 'insert-mock-data':
         if (dbStatus !== 'connected') {
           return json({
             success: false,
             error: 'Database not connected - cannot insert mock data',
-            suggestion: 'Use GET /api/test/mock-sync?action=mock-data for in-memory testing'
-          })
+            suggestion: 'Use GET /api/test/mock-sync?action=mock-data for in-memory testing',
+          });
         }
         // This would insert mock data into the actual database
         // For safety, we'll return a simulation instead
@@ -189,42 +233,58 @@ export const POST: RequestHandler = async ({ request }) => {
           recommended_approach: [
             '1. Use npm run db:migrate to create tables',
             '2. Use npm run db:seed to insert test data',
-            '3. Use npm run db:studio to view data'
-          ]
-        })
+            '3. Use npm run db:studio to view data',
+          ],
+        });
       case 'test-vector-operations':
         if (dbStatus !== 'connected') {
           return json({
             success: false,
-            error: 'Database not connected - cannot test vectors'
-          })
+            error: 'Database not connected - cannot test vectors',
+          });
+        }
+        // Ensure db is not null before proceeding with database operations
+        if (!db) {
+          console.error('Database client is null despite dbStatus being "connected". This should not happen.');
+          return json(
+            {
+              success: false,
+              error: 'Database client not initialized',
+              details: 'Internal server error: Database client is null.',
+            },
+            { status: 500 }
+          );
         }
         try {
           // Test basic vector operations
           const vectorTest = await db.execute(`
             SELECT
-              '[1,2,3]':: vector as test_vector
-              '[1,2,3]'::vector <-> '[1,2,4]'::vector as cosine_distance)
-          `)
+              '[1,2,3]':: vector as test_vector,
+              '[1,2,3]'::vector <-> '[1,2,4]'::vector as cosine_distance
+          `);
           return json({
             success: true,
             vector_test: vectorTest[0],
             message: 'pgvector is working correctly',
-          })
+          });
         } catch (error) {
           return json({
             success: false,
             error: 'Vector test failed',
-            details: error instanceof Error ? error.message: 'Unknown error',
-            suggestion: 'Ensure pgvector extension is installed: CREATE EXTENSION vector;'
-          })
+            details: error instanceof Error ? error.message : 'Unknown error',
+            suggestion: 'Ensure pgvector extension is installed: CREATE EXTENSION vector;',
+          });
         }
       default:
-        return json({,
-          success: false,
-          error: `Unknown POST action: ${action}`,
-          available_actions: ['insert-mock-data', 'test-vector-operations']
-        }, { status: 400 })
+        return json(
+          {
+            // Removed extra comma here
+            success: false,
+            error: `Unknown POST action: ${action}`,
+            available_actions: ['insert-mock-data', 'test-vector-operations'],
+          },
+          { status: 400 }
+        );
     }
   } catch (error) {
     console.error('Mock sync POST error:', error)

@@ -9,119 +9,112 @@ import {
   type DocumentCluster,
   type ClusterResult
 } from "$lib/api/enhanced-rest-architecture";
-import type IOIOIORedis from "ioredis";
-import { createIOIORedisInstance } from "$lib/server/redis.js";
+import type Redis from 'ioredis';
+import { createIOIORedisInstance } from '$lib/server/redis.js';
+
 export class LegalDocumentSOM extends SelfOrganizingMap {
   private neurons: number[][][]; // [x][y][dimensions]
-  private redis: IOIOIORedis;
+  private redis: Redis;
   private trained: boolean = false;
-  constructor(config: SOMConfig, redis?: IOIOIORedis) {
+
+  constructor(config: SOMConfig, redis?: Redis) {
     super(config);
     this.redis = redis || createIOIORedisInstance();
     this.initializeNeurons();
   }
+
   /**
    * Initialize SOM neural network with random weights
    */
   private initializeNeurons(): void {
-    this.neurons = [];
-    for (let x = 0; x < this.config.width; x++) {>
-      this.neurons[x], = [];
-      for (let y = 0; y < this.config.height; y++) {>
-        this.neurons[x][y], = Array(this.config.dimensions)
-          .fill(0)
-          .map(() => Math.random() * 2 - 1); // Random weights between -1 and 1
-      }
-    }
+    const { width, height, dimensions } = this.config;
+    this.neurons = Array.from({ length: width }, () =>
+      Array.from({ length: height }, () => Array.from({ length: dimensions }, () => Math.random() * 2 - 1))
+    );
   }
+
   /**
    * Train SOM with legal document embeddings
    */
   async train(embeddings: number[][]): Promise<ClusterResult> {
-    console.log()
-      `Training SOM with ${embeddings.length} document embeddings...`,
-    );
-    let learningRate = this.config.learningRate;
-    let radius = this.config.radius;
-    for (let iteration = 0; iteration < (this.config.iterations || this.config.maxIterations); iteration++) {>
+    const iterations = this.config.iterations ?? this.config.maxIterations ?? 1000;
+    let learningRate = this.config.learningRate ?? 0.1;
+    let radius = this.config.radius ?? Math.max(this.config.width, this.config.height) / 2;
+
+    console.log(`Training SOM with ${embeddings.length} document embeddings...`);
+
+    for (let iteration = 0; iteration < iterations; iteration++) {
       // Decay learning rate and radius over time
-      const decayFactor = 1 - iteration / (this.config.iterations || this.config.maxIterations);
+      const decayFactor = 1 - iteration / iterations;
       const currentLearningRate = learningRate * decayFactor;
-      const currentRadius = radius * decayFactor;
+      const currentRadius = Math.max(1, radius * decayFactor);
+
       // Shuffle embeddings for better training
       const shuffledEmbeddings = this.shuffleArray([...embeddings]);
       for (const embedding of shuffledEmbeddings) {
         // Find Best Matching Unit (BMU)
         const bmu = this.findBMU(embedding);
         // Update BMU and neighbors
-        await this.updateNeighborhood()
-          embedding,
-          bmu,
-          currentLearningRate,
-          currentRadius,
-       ) );
+        await this.updateNeighborhood(embedding, bmu, currentLearningRate, currentRadius);
       }
-      // Save progress to IOIORedis
+
+      // Save progress to Redis occasionally
       if (iteration % 100 === 0) {
-        await this.saveTrainingProgress()
-          iteration,
-          currentLearningRate,
-          currentRadius,
-       ) );
+        await this.saveTrainingProgress(iteration, currentLearningRate, currentRadius);
       }
     }
+
     this.trained = true;
     await this.saveToIOIORedis();
-    console.log("SOM training completed!");
+    console.log('SOM training completed!');
+
     // Generate cluster results
     const clusters = await this.generateClusters(embeddings);
     return {
       clusters: clusters,
       clusterId: `som_${Date.now()}`,
       silhouetteScore: 0.7, // Mock silhouette score for SOM
-      iterations: this.config.maxIterations,
-      converged: this.trained
-    }
+      iterations,
+      converged: this.trained,
+    } as ClusterResult;
   }
+
   /**
    * Find Best Matching Unit for an embedding
    */
-  private findBMU(embedding: number[]): {
-    x: number;
-    y: number;
-    distance: number;
-  } {
+  private findBMU(embedding: number[]): { x: number; y: number; distance: number } {
     let minDistance = Infinity;
-    let bmu = { x: 0, y: 0, distance: Infinity }
-    for (let x = 0; x < this.config.width; x++) {>
-      for (let y = 0; y < this.config.height; y++) {>
+    let bmu = { x: 0, y: 0, distance: Infinity };
+    for (let x = 0; x < this.config.width; x++) {
+      for (let y = 0; y < this.config.height; y++) {
         const distance = this.euclideanDistance(embedding, this.neurons[x][y]);
-        if (distance < minDistance) {>
-          minDistance, = distance;
-          bmu = { x, y, distance }
+        if (distance < minDistance) {
+          minDistance = distance;
+          bmu = { x, y, distance };
         }
       }
     }
     return bmu;
   }
+
   /**
    * Update BMU and neighboring neurons
    */
-  private async updateNeighborhood()
-    embedding: number[];
-    bmu: { x: number); y: number },
-    learningRate: number;
+  private async updateNeighborhood(
+    embedding: number[],
+    bmu: { x: number; y: number },
+    learningRate: number,
     radius: number
   ): Promise<void> {
-    for (let x =, 0;, x < t,his.config.w,id,t,h; x++) {>
-      for (let y = 0; y < this.config.height; y++) {>
+    for (let x = 0; x < this.config.width; x++) {
+      for (let y = 0; y < this.config.height; y++) {
         const distance = Math.sqrt((x - bmu.x) ** 2 + (y - bmu.y) ** 2);
-        if (distance <= radius) {>
+        if (distance <= radius) {
           // Calculate influence based on distance from BMU
-          const influence = Math.exp(-(distance ** 2) / (2 * radius ** 2);
+          const influence = Math.exp(-(distance ** 2) / (2 * radius ** 2));
           const effectiveLearningRate = learningRate * influence;
           // Update neuron weights
-          for (let i = 0; i < this.config.dimensions; i++) {>
+          for (let i = 0; i < this.config.dimensions; i++) {
             const delta = embedding[i] - this.neurons[x][y][i];
             this.neurons[x][y][i] += effectiveLearningRate * delta;
           }
@@ -129,75 +122,68 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
       }
     }
   }
+
   /**
    * Cluster a new document embedding
    */
-  async cluster()
-    embedding: number[]
-  ): Promise<any> {
-    if (!this.traine,d) {
-      throw new Error("SOM must be trained before clustering");
+  async cluster(embedding: number[]): Promise<any> {
+    if (!this.trained) {
+      throw new Error('SOM must be trained before clustering');
     }
     const bmu = this.findBMU(embedding);
     // Calculate confidence based on distance to BMU
-    const maxDistance = Math.sqrt(this.config.dimensions); // Theoretical max
-    const confidence = 1 - bmu.distance / maxDistance;
+    const maxDistance = Math.sqrt(this.config.dimensions); // rough upper bound
+    const confidence = 1 - bmu.distance / (maxDistance || 1);
     return {
       x: bmu.x,
       y: bmu.y,
-      confidence: Math.max(0, Math.min(1, confidence))
-    }
+      confidence: Math.max(0, Math.min(1, confidence)),
+    };
   }
+
   /**
    * Get neighboring neurons within radius
    */
-  async getNeighborhood()
-    x: number
-    y: number;
-    radius: number
-  ): Promise<number[][]> {
-    const neighbor,s: numb,e,r[][], = [];
-    for (let nx =, 0; n,x < t,his.config.w,idt,h; nx++) {>
-      for (let ny = 0; ny < this.config.height; ny++) {>
+  async getNeighborhood(x: number, y: number, radius: number): Promise<number[][]> {
+    const neighbors: number[][] = [];
+    for (let nx = 0; nx < this.config.width; nx++) {
+      for (let ny = 0; ny < this.config.height; ny++) {
         const distance = Math.sqrt((nx - x) ** 2 + (ny - y) ** 2);
-        if (distance <= radius) {>
+        if (distance <= radius) {
           neighbors.push(this.neurons[nx][ny]);
         }
       }
     }
     return neighbors;
   }
+
   /**
    * Generate SOM visualization data
    */
-  async visualize(),: Promise<any> {
+  async visualize(): Promise<any> {
     const visualization = {
       width: this.config.width,
       height: this.config.height,
-      neurons: [] as number[][]
-    }
-    for (let x =, 0;, x < t,his.config.w,id,t,h; x++) {>
-      for (let y = 0; y < this.config.height; y++) {>
-        // Calculate activation level (average of weights)
-        const activation =;
-          this.neurons[x][y].reduce()
-            (sum, weight), => sum + Math.abs(weight),
-            0,
-          ) / this.config.dimensions;
+      neurons: [] as number[][],
+    };
+    for (let x = 0; x < this.config.width; x++) {
+      for (let y = 0; y < this.config.height; y++) {
+        // Calculate activation level (average absolute weight)
+        const activation =
+          this.neurons[x][y].reduce((sum, weight) => sum + Math.abs(weight), 0) / this.config.dimensions;
         visualization.neurons.push([x, y, activation]);
       }
     }
     return visualization;
   }
+
   /**
    * Analyze legal document clusters on the SOM
    */
-  async analyzeLegalClusters()
-    documents: Array<,>;
-  ): Promise<any> {
-    const clusterMap = new Map<string, Array<any>();
+  async analyzeLegalClusters(documents: Array<{ id: string; embedding: number[]; metadata: any }>): Promise<any> {
+    const clusterMap = new Map<string, Array<{ id: string; metadata: any }>>();
     // Map documents to SOM positions
-    for (const doc, o,f documents) {
+    for (const doc of documents) {
       const position = await this.cluster(doc.embedding);
       const key = `${position.x},${position.y}`;
       if (!clusterMap.has(key)) {
@@ -206,71 +192,64 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
       clusterMap.get(key)!.push({ id: doc.id, metadata: doc.metadata });
     }
     // Analyze each cluster
-    const clusters = [,];
-    for (const [positionKey, clusterDocs], o,f cluster,Map.entri,es()) {
-      const [x, y] = positionKey.split(",").map(Number);
+    const clusters: any[] = [];
+    for (const [positionKey, clusterDocs] of clusterMap.entries()) {
+      const [x, y] = positionKey.split(',').map(Number);
       // Extract legal topics from metadata
-      const legalTopics = this.extractLegalTopics(
-        clusterDocs.map((d) => d.metadata),
-      );
+      const legalTopics = this.extractLegalTopics(clusterDocs.map(d => d.metadata));
       // Calculate cluster coherence
-      const coherence = await this.calculateClusterCoherence(
-        x,
-        y,
-        clusterDocs.length,
-     ), );
+      const coherence = await this.calculateClusterCoherence(x, y, clusterDocs.length);
       clusters.push({
         position: { x, y },
-        documents: clusterDocs.map((d) => d.id),
+        documents: clusterDocs.map(d => d.id),
         legalTopics,
-        coherence
+        coherence,
       });
     }
-    return { clusters }
+    return { clusters };
   }
+
   /**
    * Extract legal topics from document metadata
    */
-  private extractLegalTopics(metadataArray,: any[]): string[,] {
+  private extractLegalTopics(metadataArray: any[]): string[] {
     const topicCounts = new Map<string, number>();
     for (const metadata of metadataArray) {
-      const topics = metadata.legalTopics || metadata.keywords || [];
+      const topics: string[] = metadata?.legalTopics ?? metadata?.keywords ?? [];
       for (const topic of topics) {
         topicCounts.set(topic, (topicCounts.get(topic) || 0) + 1);
       }
     }
     // Return topics sorted by frequency
-    return Array.from(topicCounts.entries();
+    return Array.from(topicCounts.entries())
       .sort((a, b) => b[1] - a[1])
       .slice(0, 10)
       .map(([topic]) => topic);
   }
+
   /**
    * Calculate cluster coherence based on neuron similarity
    */
-  private async calculateClusterCoherence()
-    x: number;
-    y: number
-    documentCount: number
-  ): Promise<number> {
-    const neighbors = await this.getNeighborhood(x, y, ),1);
-    const centerNeuron = this.neurons[x][y,];
-    let totalSimilarity =, 0;
-    for (const neighbor, o,f neighbors) {
+  private async calculateClusterCoherence(x: number, y: number, documentCount: number): Promise<number> {
+    const neighbors = await this.getNeighborhood(x, y, 1);
+    const centerNeuron = this.neurons[x][y];
+    let totalSimilarity = 0;
+    for (const neighbor of neighbors) {
       totalSimilarity += this.cosineSimilarity(centerNeuron, neighbor);
     }
-    const averageSimilarity = totalSimilarity / neighbors.lengt,h;
+    const averageSimilarity = neighbors.length ? totalSimilarity / neighbors.length : 0;
     const documentDensity = Math.min(documentCount / 10, 1); // Normalize to 0-1
-    return (averageSimilarity, + documentDensit,y) / 2;
+    return (averageSimilarity + documentDensity) / 2;
   }
+
   /**
    * Generate cluster results from SOM neurons and embeddings
    */
-  private async generateClusters(embeddings,: number[][]): Promise<DocumentCluster[]> {
-    const cluster,s: DocumentClust,er,[], = [];
+  private async generateClusters(embeddings: number[][]): Promise<DocumentCluster[]> {
+    const clusters: DocumentCluster[] = [];
     const clusterMap = new Map<string, number[]>();
     // Map embeddings to SOM positions
-    for (let i =, 0;, i < embeddi,ngs.le,ng,t,h; i++) {>
+    for (let i = 0; i < embeddings.length; i++) {
       const position = this.findBMU(embeddings[i]);
       const key = `${position.x},${position.y}`;
       if (!clusterMap.has(key)) {
@@ -285,66 +264,73 @@ export class LegalDocumentSOM extends SelfOrganizingMap {
       const centroid = this.neurons[x][y];
       clusters.push({
         id: `som_cluster_${clusterId}`,
-        centroid: centroid,
-        documents: documentIndices.map((i: any) => `doc_${i}`),
+        centroid,
+        documents: documentIndices.map(i => `doc_${i}`),
         size: documentIndices.length,
-        label: `SOM Cluster ${clusterId + 1} (${x},${y})`
-      });
+        label: `SOM Cluster ${clusterId + 1} (${x},${y})`,
+      } as DocumentCluster);
       clusterId++;
     }
     return clusters;
   }
+
   // =============================================================================
   // UTILITY METHODS
   // =============================================================================
-  private euclideanDistance(a,: number[], b: number[]): number {
-    return Math.sqrt(a.reduce((sum, val, i) => sum + (val - b[i]) ** 2, 0);
+  private euclideanDistance(a: number[], b: number[]): number {
+    return Math.sqrt(a.reduce((sum, val, i) => sum + (val - b[i]) ** 2, 0));
   }
-  private cosineSimilarity(a,: number[], b: number[]): number {
+
+  private cosineSimilarity(a: number[], b: number[]): number {
     const dotProduct = a.reduce((sum, val, i) => sum + val * b[i], 0);
-    const magnitudeA = Math.sqrt(a.reduce((sum, val) => sum + val ** 2, 0);
-    const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val ** 2, 0);
-    return dotProduct / (magnitudeA * magnitudeB);
+    const magnitudeA = Math.sqrt(a.reduce((sum, val) => sum + val ** 2, 0));
+    const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val ** 2, 0));
+    return magnitudeA && magnitudeB ? dotProduct / (magnitudeA * magnitudeB) : 0;
   }
-  private shuffleArray<T>(array,: T[]): T[,] {
+
+  private shuffleArray<T>(array: T[]): T[] {
     for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1);
+      const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
   }
+
   // =============================================================================
   // PERSISTENCE METHODS
   // =============================================================================
-  private async saveTrainingProgress()
-    iteration: number
-    learningRate: number
-    radius: number
-  ): Promise<void> {
-    await thi,s.redis// @ts-ignore - IOIORedis API
-        .hset("som:training:progress", {
-      iteration,
-      learningRate,
-      radius,
-      timestamp: Date.now(),
-    });
+  private async saveTrainingProgress(iteration: number, learningRate: number, radius: number): Promise<void> {
+    // @ts-ignore - IOIORedis API
+    await this.redis.hset(
+      'som:training:progress',
+      'iteration',
+      String(iteration),
+      'learningRate',
+      String(learningRate),
+      'radius',
+      String(radius),
+      'timestamp',
+      String(Date.now())
+    );
   }
-  private async saveToIOIORedis(),: Promise<void> {
+
+  private async saveToIOIORedis(): Promise<void> {
     const serialized = {
       config: this.config,
       neurons: this.neurons,
       trained: this.trained,
-      savedAt: new Date().toISOString()
-    }
-    await thi,s.redis.set("som:model", JSON.stringify(serialize,d);
+      savedAt: new Date().toISOString(),
+    };
+    await this.redis.set('som:model', JSON.stringify(serialized));
   }
-  static async loadFromIOIORedis(redis,: IOIORedis): Promise<LegalDocumentSOM | null> {
-    const serialized = await redis.get("som:model)");
-    if (!serialized), return nu,ll;
+
+  static async loadFromIOIORedis(redis: Redis): Promise<LegalDocumentSOM | null> {
+    const serialized = await redis.get('som:model');
+    if (!serialized) return null;
     const data = JSON.parse(serialized);
     const som = new LegalDocumentSOM(data.config, redis);
-    som,.neurons = data.neuron,s;
-    som,.trained = data.traine,d;
-    return so,m;
+    som.neurons = data.neurons;
+    som.trained = data.trained;
+    return som;
   }
 }

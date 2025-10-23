@@ -12,50 +12,57 @@ import * as THREE from 'three';
 import { YoRHa3DComponent, YORHA_COLORS, type YoRHaStyle } from './YoRHaUI3D.js';
 import { nesCacheOrchestrator } from '$lib/services/nes-cache-orchestrator';
 import type { InteractiveCanvasState } from '$lib/types/canvas';
-// Import hybrid GPU context for acceleration
-import type { HybridGPUContext } from '../../gpu/hybrid-gpu-context.js';
-// Import advanced GPU context provider with type narrowing
-import { gpuContextProvider, type GPUBackendType, type ShaderResources } from '../../gpu/gpu-context-provider.js';
+
+// GPU context provider (import only the runtime object)
+import { gpuContextProvider } from '../../gpu/gpu-context-provider.js';
+
+// Local, minimal shape/type aliases to avoid "namespace as type" issues
+// These describe just the pieces used in this file.
+type GPUBackendType = 'webgpu' | 'webgl2' | 'webgl1' | 'cpu';
+
+interface ShaderResources {
+  // flexible bag of resources per backend (buffers, modules, compiled shaders, metadata, ...)
+  [key: string]: unknown;
+}
+
+interface HybridGPUContext {
+  getActiveContextType(): GPUBackendType;
+  getActiveContext(): GPUDevice | WebGL2RenderingContext | WebGLRenderingContext | null;
+  runComputeShader(shader: string, inputs: Record<string, unknown>): Promise<Record<string, unknown> | undefined>;
+}
+
 // NES + YoRHa Color Palette Fusion
 export const NES_YORHA_PALETTE = {
-  // NES 8-bit colors mapped to YoRHa aesthetic
-  nesBlack: 0x0f0f0f,        // Pure NES black
-  nesWhite: 0xfcfcfc,        // NES white
-  nesGray: 0x7c7c7c,         // NES gray
-  nesLightGray: 0xbcbcbc,    // NES light gray
-  // YoRHa colors with NES pixel-perfect quantization
+  nesBlack: 0x0f0f0f,
+  nesWhite: 0xfcfcfc,
+  nesGray: 0x7c7c7c,
+  nesLightGray: 0xbcbcbc,
   yorhaGold: YORHA_COLORS.accent.gold,
   yorhaBeige: YORHA_COLORS.primary.beige,
   yorhaBlack: YORHA_COLORS.primary.black,
-  // Hybrid colors (quantized YoRHa palette)
-  hybridAccent: 0xd4af00,    // Quantized gold
-  hybridBackground: 0xd4c500, // Quantized beige
-  hybridBorder: 0x0a0a00,    // Quantized black
-  // NES-style status colors
-  nesSuccess: 0x00d800,      // Bright green
-  nesWarning: 0xfc9838,      // Orange
-  nesError: 0xf83800,        // Red
-  nesInfo: 0x3cbcfc,         // Blue
+  hybridAccent: 0xd4af00,
+  hybridBackground: 0xd4c500,
+  hybridBorder: 0x0a0a00,
+  nesSuccess: 0x00d800,
+  nesWarning: 0xfc9838,
+  nesError: 0xf83800,
+  nesInfo: 0x3cbcfc,
 } as const;
-}
+
 export interface NESYoRHaHybridStyle extends YoRHaStyle {
-  // NES.css integration
   nesCssClass?: string;
   nesContainer?: 'with-title' | 'is-rounded' | 'is-dark' | 'is-centered';
   nesButton?: 'is-primary' | 'is-success' | 'is-warning' | 'is-error' | 'is-disabled';
-  // Hybrid rendering mode
   renderMode?: '2d-overlay' | '3d-embedded' | 'hybrid-sync';
   domOverlay?: HTMLElement;
-  // NES-style pixelation
   pixelPerfect?: boolean;
   pixelScale?: number;
-  // Retro effects
   crtEffect?: boolean;
   scanlines?: boolean;
   ghosting?: boolean;
-  // Animation style
   animationStyle?: 'nes-8bit' | 'yorha-smooth' | 'hybrid-morphing';
 }
+
 export interface DOMSyncData {
   domElement: HTMLElement;
   position: THREE.Vector3;
@@ -65,6 +72,7 @@ export interface DOMSyncData {
   nesCssClasses: string[];
   syncFrequency: number;
 }
+
 export class NESYoRHaHybrid3D extends YoRHa3DComponent {
   protected hybridStyle: NESYoRHaHybridStyle;
   protected domOverlay: HTMLElement | null = null;
@@ -73,23 +81,22 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
   protected crtShader: THREE.ShaderMaterial | null = null;
   protected nesStateCache: Map<string, InteractiveCanvasState> = new Map();
   protected syncAnimationFrame: number | null = null;
-  // Hybrid GPU acceleration with type narrowing
-  protected hybridGPU: any | null = null;  // HybridGPUContext type
+  protected hybridGPU: HybridGPUContext | null = null;
   protected useGPUAcceleration = true;
   protected gpuPixelBuffer: GPUBuffer | null = null;
-  protected activeBackend: any = 'cpu';  // GPUBackendType
-  protected shaderResources: Map<string, any> = new Map();  // ShaderResources type
+  protected activeBackend: GPUBackendType = 'cpu';
+  protected shaderResources: Map<string, ShaderResources> = new Map();
+
   constructor(hybridStyle: NESYoRHaHybridStyle = {}) {
-    // Merge NES + YoRHa default styles
     const mergedStyle = {
       backgroundColor: NES_YORHA_PALETTE.yorhaBeige,
       borderColor: NES_YORHA_PALETTE.nesBlack,
-      borderWidth: 0.1, // Thicker borders for NES aesthetic
-      borderRadius: 0,   // Sharp corners like NES
+      borderWidth: 0.1,
+      borderRadius: 0,
       pixelPerfect: true,
       renderMode: 'hybrid-sync',
       animationStyle: 'hybrid-morphing',
-      ...hybridStyle
+      ...hybridStyle,
     } as NESYoRHaHybridStyle;
     super(mergedStyle);
     this.hybridStyle = mergedStyle;
@@ -98,39 +105,40 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
     this.setupNESCaching();
     this.createDOMOverlay();
   }
+
   protected createGeometry(): void {
-    // Create pixelated geometry for NES aesthetic
     const width = this.hybridStyle.width || 2;
     const height = this.hybridStyle.height || 1;
     const depth = this.hybridStyle.depth || 0.1;
     if (this.hybridStyle.pixelPerfect) {
-      // Create low-poly geometry with sharp edges
       this.geometry = new THREE.BoxGeometry(width, height, depth, 1, 1, 1);
-      // Modify vertices for pixelated effect
       this.pixelateGeometry();
     } else {
       this.geometry = new THREE.BoxGeometry(width, height, depth);
     }
   }
+
   protected createMaterial(): void {
+    // Normalize color into a THREE.ColorRepresentation without using `any`
+    const colorValue: THREE.ColorRepresentation = (this.hybridStyle.backgroundColor ??
+      NES_YORHA_PALETTE.yorhaBeige) as unknown as THREE.ColorRepresentation;
     const materialProps: THREE.MeshStandardMaterialParameters = {
-      color: this.hybridStyle.backgroundColor,
-      opacity: this.hybridStyle.opacity || 1,
-      transparent: (this.hybridStyle.opacity || 1) < 1,
-      metalness: 0, // No metallic for 8-bit look
-      roughness: 1, // Completely rough for matte finish
-    }
-    // Apply NES-style material enhancements
+      color: colorValue,
+      opacity: this.hybridStyle.opacity ?? 1,
+      transparent: (this.hybridStyle.opacity ?? 1) < 1,
+      metalness: 0,
+      roughness: 1,
+    };
     if (this.hybridStyle.crtEffect) {
       this.material = this.createCRTMaterial(materialProps);
     } else {
-      this.material = new THREE.MeshBasicMaterial(materialProps); // Basic material for flat shading
+      this.material = new THREE.MeshBasicMaterial(materialProps);
     }
-    // Apply scanlines if requested
     if (this.hybridStyle.scanlines) {
       this.addScanlineEffect();
     }
   }
+
   private createCRTMaterial(baseProps: THREE.MeshStandardMaterialParameters): THREE.ShaderMaterial {
     this.crtShader = new THREE.ShaderMaterial({
       uniforms: {
@@ -139,7 +147,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         baseColor: { value: new THREE.Color(baseProps.color) },
         scanlineIntensity: { value: 0.8 },
         curvature: { value: 2.0 },
-        brightness: { value: 1.2 }
+        brightness: { value: 1.2 },
       },
       vertexShader: `
         varying vec2 vUv;
@@ -182,7 +190,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
           color += noise * 0.05;
           gl_FragColor = vec4(color, 1.0);
         }
-      `
+      `,
     });
     return this.crtShader;
   }
@@ -195,7 +203,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
     const scanlineMaterial = new THREE.ShaderMaterial({
       transparent: true,
       uniforms: {
-        time: { value: 0 }
+        time: { value: 0 },
       },
       vertexShader: `
         varying vec2 vUv;
@@ -211,14 +219,24 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
           float scanlines = sin(vUv.y * 100.0 + time * 2.0) * 0.04;
           gl_FragColor = vec4(0.0, 0.0, 0.0, scanlines);
         }
-      `
+      `,
     });
     const scanlineMesh = new THREE.Mesh(scanlineGeometry, scanlineMaterial);
     scanlineMesh.position.z = 0.001; // Slightly in front
     this.add(scanlineMesh);
     // Animate scanlines
-    this.addCustomAnimation('scanlines', (deltaTime) => {
-      (scanlineMaterial.uniforms.time as any).value += deltaTime;
+    // Narrow uniforms type to a record of numeric-value uniforms and update safely
+    type NumericUniform = { value: number };
+    const uniforms = scanlineMaterial.uniforms as unknown as Record<string, NumericUniform | undefined>;
+    // Ensure a numeric 'time' uniform exists
+    if (!uniforms.time) uniforms.time = { value: 0 };
+    this.addCustomAnimation('scanlines', (deltaTime: number) => {
+      const u = scanlineMaterial.uniforms as unknown as Record<string, NumericUniform | undefined>;
+      if (u.time && typeof u.time.value === 'number') {
+        u.time.value += deltaTime;
+      } else {
+        u.time = { value: deltaTime };
+      }
     });
   }
   private pixelateGeometry(): void {
@@ -289,20 +307,20 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
     // Load NES pixel processing shaders for different backends
     const nesPixelShaders = await gpuContextProvider.loadShaderResources('nes-pixel-processing', {
       webgpu: {
-        compute: this.createWebGPUPixelShader()
+        compute: this.createWebGPUPixelShader(),
       },
       webgl2: {
         vertex: this.createWebGL2VertexShader(),
-        fragment: this.createWebGL2FragmentShader()
+        fragment: this.createWebGL2FragmentShader(),
       },
       webgl1: {
         vertex: this.createWebGL1VertexShader(),
-        fragment: this.createWebGL1FragmentShader()
+        fragment: this.createWebGL1FragmentShader(),
       },
       cpu: {
         // CPU implementation metadata
-        uniforms: { processingMode: 'nes-quantization' }
-      }
+        uniforms: { processingMode: 'nes-quantization' },
+      },
     });
     if (nesPixelShaders) {
       this.shaderResources.set('nes-pixel-processing', nesPixelShaders);
@@ -311,16 +329,16 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
     // Load CRT effect shaders
     const crtShaders = await gpuContextProvider.loadShaderResources('crt-effects', {
       webgpu: {
-        compute: this.createWebGPUCRTShader()
+        compute: this.createWebGPUCRTShader(),
       },
       webgl2: {
         vertex: this.createWebGL2VertexShader(),
-        fragment: this.createWebGL2CRTFragmentShader()
+        fragment: this.createWebGL2CRTFragmentShader(),
       },
       webgl1: {
         vertex: this.createWebGL1VertexShader(),
-        fragment: this.createWebGL1CRTFragmentShader()
-      }
+        fragment: this.createWebGL1CRTFragmentShader(),
+      },
     });
     if (crtShaders) {
       this.shaderResources.set('crt-effects', crtShaders);
@@ -336,7 +354,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
     // Create pixel buffer for 256x240 NES resolution with RGBA format
     this.gpuPixelBuffer = device.createBuffer({
       size: 256 * 240 * 4 * 4, // RGBA float32
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST,
     });
   }
   /**
@@ -351,13 +369,54 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
       const results = await this.hybridGPU.runComputeShader(pixelShader, {
         inputPixels: pixelData,
         config: new Float32Array([
-          256, 240, // Resolution
+          256,
+          240, // Resolution
           this.hybridStyle.pixelScale || 1,
-          this.hybridStyle.scanlines ? 1 : 0
-        ])
+          this.hybridStyle.scanlines ? 1 : 0,
+        ]),
       });
-      console.log(`🎮 GPU pixel processing (${effect}) complete`);
-      return results.outputPixels as Float32Array;
+
+      // Defensive checks: results may be undefined or contain various typed representations
+      if (!results || results.outputPixels == null) {
+        console.warn('🔄 GPU returned no outputPixels, falling back to CPU');
+        return this.processPixelsCPU(pixelData, effect);
+      }
+
+      const out: unknown = results.outputPixels;
+
+      // 1) Already a Float32Array
+      if (out instanceof Float32Array) {
+        return out;
+      }
+
+      // 2) TypedArray / ArrayBufferView (Uint8Array, Uint16Array, Float32Array, DataView, etc.)
+      if (ArrayBuffer.isView(out)) {
+        const view = out as ArrayBufferView; // typed view with buffer/byteOffset/byteLength
+        const offset = typeof (view as { byteOffset?: number }).byteOffset === 'number' ? (view as { byteOffset?: number }).byteOffset! : 0;
+        const byteLength = typeof (view as { byteLength?: number }).byteLength === 'number' ? (view as { byteLength?: number }).byteLength! : view.buffer.byteLength - offset;
+        const elementCount = Math.floor(byteLength / Float32Array.BYTES_PER_ELEMENT);
+        return new Float32Array(view.buffer, offset, Math.max(0, elementCount));
+      }
+
+      // 3) Raw ArrayBuffer
+      if (out instanceof ArrayBuffer) {
+        return new Float32Array(out);
+      }
+
+      // 4) JS Array of numbers
+      if (Array.isArray(out)) {
+        return new Float32Array(out as number[]);
+      }
+
+      // 5) Array-like object (has numeric length and numeric indices)
+      if (typeof out === 'object' && out !== null && 'length' in out && typeof (out as { length: unknown }).length === 'number') {
+        const arrayLike = out as ArrayLike<number>;
+        return new Float32Array(Array.from(arrayLike));
+      }
+
+      // Fallback: unable to coerce -> CPU
+      console.warn('🔄 Unable to coerce GPU output to Float32Array, falling back to CPU');
+      return this.processPixelsCPU(pixelData, effect);
     } catch (error) {
       console.warn(`🔄 GPU pixel processing failed, falling back to CPU:`, error);
       return this.processPixelsCPU(pixelData, effect);
@@ -383,39 +442,57 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
     `;
     switch (effect) {
       case 'quantize':
-        return baseShader + `
+        return (
+          baseShader +
+          `
         // NES color quantization (8-bit style)
         var quantized = pixel;
         quantized.r = round(pixel.r * 3.0) / 3.0;
         quantized.g = round(pixel.g * 3.0) / 3.0;
         quantized.b = round(pixel.b * 3.0) / 3.0;
         outputPixels[index] = quantized;
-      }`;
+      }`
+        );
       case 'scanlines':
-        return baseShader + `
+        return (
+          baseShader +
+          `
         // Horizontal scanline effect
         var result = pixel;
-        if (y % 2 == 1) {
+        if ((y % 2u) == 1u) {
           result = result * 0.7; // Darken odd lines
         }
         outputPixels[index] = result;
-      }`;
+      }`
+        );
       case 'crt':
-        return baseShader + `
-        // CRT phosphor glow effect
+        // corrected WGSL-style implementation (no TS fragments, balanced parens)
+        return (
+          baseShader +
+          `
+        // CRT phosphor glow + vignette effect (WGSL style)
         let centerX = f32(width) * 0.5;
         let centerY = f32(height) * 0.5;
-        let distFromCenter = distance(vec2f(f32(x), f32(y)), vec2f(centerX, centerY);
-        let maxDist = distance(vec2f(0.0), vec2f(centerX, centerY);
+        let px = f32(x);
+        let py = f32(y);
+        let distFromCenter = distance(vec2f(px, py), vec2f(centerX, centerY));
+        let maxDist = distance(vec2f(0.0, 0.0), vec2f(centerX, centerY));
         let vignette = 1.0 - (distFromCenter / maxDist) * 0.3;
         var result = pixel * vignette;
-        // Add phosphor color shift
-        (result as { g?: any; b?: any }).g *= 1.1;
-        (result as { g?: any; b?: any }).b *= 0.9;
+        // Slight phosphor color shift
+        result.g = result.g * 1.1;
+        result.b = result.b * 0.9;
         outputPixels[index] = result;
-      }`;
+      }`
+        );
       default:
-        return baseShader + `outputPixels[index] = pixel, }`;
+        // ensure valid shader fallback (semicolon and balanced braces)
+        return (
+          baseShader +
+          `
+        outputPixels[index] = pixel;
+      }`
+        );
     }
   }
   /**
@@ -432,7 +509,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
       let r = pixelData[i];
       let g = pixelData[i + 1];
       let b = pixelData[i + 2];
-      let a = pixelData[i + 3];
+      const a = pixelData[i + 3]; // changed to const (never reassigned)
       switch (effect) {
         case 'quantize':
           r = Math.round(r * 3) / 3;
@@ -446,7 +523,8 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
             b *= 0.7;
           }
           break;
-        case 'crt':
+        case 'crt': {
+          // Scoped block prevents lexical-declaration-in-case-block errors
           const centerX = width * 0.5;
           const centerY = height * 0.5;
           const distFromCenter = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);
@@ -456,6 +534,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
           g *= vignette * 1.1; // Green phosphor boost
           b *= vignette * 0.9; // Blue phosphor reduction
           break;
+        }
       }
       output[i] = r;
       output[i + 1] = g;
@@ -514,14 +593,14 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         let index = y * width + x;
         var pixel = inputPixels[index];
         // Scanline effect
-        if (y % 2 == 1) {
+        if ((y % 2u) == 1u) {
           pixel = pixel * (1.0 - scanlines * 0.5);
         }
         // Vignette effect
         let centerX = f32(width) * 0.5;
         let centerY = f32(height) * 0.5;
-        let dist = distance(vec2f(f32(x), f32(y)), vec2f(centerX, centerY);
-        let maxDist = distance(vec2f(0.0), vec2f(centerX, centerY);
+        let dist = distance(vec2f(f32(x), f32(y)), vec2f(centerX, centerY));
+        let maxDist = distance(vec2f(0.0, 0.0), vec2f(centerX, centerY));
         let vignetteAmount = 1.0 - (dist / maxDist) * vignette;
         outputPixels[index] = pixel * vignetteAmount;
       }
@@ -703,46 +782,55 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         renderMode: this.hybridStyle.renderMode,
         nesCssClass: this.hybridStyle.nesCssClass,
         yorhaVariant: this.hybridStyle.variant,
-        cacheRegion: 'CHR_ROM'
-      }
-    }
-    // Cache using NES orchestrator
-    await nesCacheOrchestrator.cacheCanvasStateAsSprite(
-      'hybrid_component',
-      [canvasState]);
-      {
+        cacheRegion: 'CHR_ROM',
+      },
+    };
+
+    // Corrected cache call (array + options)
+    try {
+      await nesCacheOrchestrator.cacheCanvasStateAsSprite('hybrid_component', [canvasState], {
         priority: 2,
-        compression,: true
-      }
-    );
-    this.nesStateCache.set(stateId, canvasState);
+        compression: true,
+      });
+      this.nesStateCache.set(stateId, canvasState);
+    } catch (err) {
+      console.warn('Failed to cache NES state:', err);
+    }
   }
+
+  private colorToHex(color: number | string | undefined, fallback = 'd4c5a9'): string {
+    if (!color) return fallback;
+    if (typeof color === 'string') return color.replace('#', '');
+    return color.toString(16).padStart(6, '0');
+  }
+
   private serializeToFabricJSON(): string {
-    // Convert Three.js component to Fabric.js-compatible format
     const fabricData = {
       version: '5.3.0',
-      objects: [{,
-        type,: 'yorha-3d-component',
-        left,: this.position.x * 100,
-        top,: this.position.y * 100,
-        width,: (this.hybridStyle.width || 2) * 100,
-        height,: (this.hybridStyle.height || 1) * 100,
-        fill,: `#${this.hybridStyle.backgroundColor?.toString(16) || 'd4c5a9'}`,
-        stroke,: `#${this.hybridStyle.borderColor?.toString(16) || '0a0a0a'}`,
-        strokeWidth,: (this.hybridStyle.borderWidth || 0.1) * 100,
-        nesStyle,: {
-          cssClass: this.hybridStyle.nesCssClass,
-          container: this.hybridStyle.nesContainer,
-          pixelPerfect: this.hybridStyle.pixelPerfect
-        }
-      },]
-    }
+      objects: [
+        {
+          type: 'yorha-3d-component',
+          left: this.position.x * 100,
+          top: this.position.y * 100,
+          width: (this.hybridStyle.width || 2) * 100,
+          height: (this.hybridStyle.height || 1) * 100,
+          fill: `#${this.colorToHex(this.hybridStyle.backgroundColor)}`,
+          stroke: `#${this.colorToHex(this.hybridStyle.borderColor)}`,
+          strokeWidth: (this.hybridStyle.borderWidth || 0.1) * 100,
+          nesStyle: {
+            cssClass: this.hybridStyle.nesCssClass,
+            container: this.hybridStyle.nesContainer,
+            pixelPerfect: this.hybridStyle.pixelPerfect,
+          },
+        },
+      ],
+    };
     return JSON.stringify(fabricData);
   }
-  private setupPredictiveCaching(),: void {
-    // Pre-cache likely next states based on user interaction patterns
-    const likelyVariants = ['primary', 'secondary', 'accent', 'hover', 'active',];
-    likelyVariants,.forEach(async (variant) => {
+
+  private setupPredictiveCaching(): void {
+    const likelyVariants = ['primary', 'secondary', 'accent', 'hover', 'active'];
+    likelyVariants.forEach(async variant => {
       const predictiveState: InteractiveCanvasState = {
         id: `hybrid_${variant}_predicted`,
         nodes: [],
@@ -754,221 +842,145 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
         metadata: {
           renderMode: this.hybridStyle.renderMode,
           predictive: true,
-          variant
-        }
-      }
-      if (predictiveState.id) {
-        this.nesStateCache.set(predictiveState.id, predictiveState);
-      }
+          variant,
+        },
+      };
+      // Ensure key is a confirmed string before using as Map key
+      const key: string = predictiveState.id ?? `hybrid_${variant}_predicted`;
+      predictiveState.id = key;
+      this.nesStateCache.set(key, predictiveState);
     });
   }
-  private generateVariantFabricJSON(variant,: string): object {
-    const colorMap = {
+
+  private generateVariantFabricJSON(variant: string): object {
+    const colorMap: Record<string, number> = {
       primary: NES_YORHA_PALETTE.yorhaGold,
       secondary: NES_YORHA_PALETTE.nesGray,
       accent: NES_YORHA_PALETTE.hybridAccent,
       hover: NES_YORHA_PALETTE.nesLightGray,
-      active: NES_YORHA_PALETTE.nesSuccess
-    }
-    const baseJSON = JSON.parse(this.serializeToFabricJSON();
+      active: NES_YORHA_PALETTE.nesSuccess,
+    };
+    const baseJSON = JSON.parse(this.serializeToFabricJSON());
     if (baseJSON.objects?.[0]) {
-      baseJSON.objects[0].fill = `#${(colorMap[variant as keyof typeof colorMap] || NES_YORHA_PALETTE.yorhaBeige).toString(16)}`;
+      baseJSON.objects[0].fill = `#${this.colorToHex(colorMap[variant] ?? NES_YORHA_PALETTE.yorhaBeige)}`;
     }
     return baseJSON;
   }
-  private syncDOMPosition(),: void {
-    if (!this.domOverla,y) retu,rn;
-    // Convert 3D world position to screen coordinates
+
+  private syncDOMPosition(): void {
+    if (!this.domOverlay) return;
     const vector = this.position.clone();
-    vector,.project(this.getCamera();
-    const x = (vector.x * 0.5 + 0.5) * window.innerWidt,h;
-    const y = (vector.y * -0.5 + 0.5) * window.innerHeigh,t;
-    this.domOverlay.style.position = 'fixed,';
-    this.domOverlay.style.left = `${x}px,`;
-    this.domOverlay.style.top = `${y}px,`;
-    this.domOverlay.style.transform = 'translate(-50%, -50%),';
-    this.domOverlay.style.pointerEvents = 'auto,';
-    this.domOverlay.style.zIndex = '1000,';
+    vector.project(this.getCamera());
+    const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
+    const y = (vector.y * -0.5 + 0.5) * window.innerHeight;
+    this.domOverlay.style.position = 'fixed';
+    this.domOverlay.style.left = `${x}px`;
+    this.domOverlay.style.top = `${y}px`;
+    this.domOverlay.style.transform = 'translate(-50%, -50%)';
+    this.domOverlay.style.pointerEvents = 'auto';
+    this.domOverlay.style.zIndex = '1000';
   }
-  private getCamera(),: THREE.Camera, {
-    // Find camera in scene hierarchy (simplified)
-    let current = this.parent;
+
+  private getCamera(): THREE.Camera {
+    // Simplified camera lookup; fallback to a default camera
+    let current: THREE.Object3D | null = this.parent as THREE.Object3D | null;
     while (current && !(current instanceof THREE.Scene)) {
-      current = current.parent;
+      current = current.parent as THREE.Object3D | null;
     }
-    // Return a default camera if not found
-    return new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+    if (current && current instanceof THREE.Scene) {
+      // Try immediate children first
+      const found = current.children.find((c): c is THREE.Camera => c instanceof THREE.Camera);
+      if (found) return found;
+
+      // Traverse scene to find nested camera
+      let cam: THREE.Camera | null = null;
+      current.traverse((obj) => {
+        if (!cam && obj instanceof THREE.Camera) cam = obj;
+      });
+      if (cam) return cam;
+    }
+
+    // Fallback to a default camera (guard window for SSR)
+    const aspect =
+      typeof window !== 'undefined' && window.innerWidth && window.innerHeight
+        ? window.innerWidth / window.innerHeight
+        : 1;
+    return new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
   }
-  private startDOMSyncLoop(),: void {
+
+  private startDOMSyncLoop(): void {
     const syncLoop = () => {
       if (this.domOverlay && this.hybridStyle.renderMode === 'hybrid-sync') {
         this.syncDOMPosition();
         this.syncAnimationFrame = requestAnimationFrame(syncLoop);
       }
-    }
+    };
     syncLoop();
   }
+
   // =============================================================================
   // NES-STYLE ANIMATION METHODS
   // =============================================================================
-  public async switchToNESState(stateId,: string): Promise<void> {
-    // Instant state switching like NES sprite frames
-    const cachedState = await nesCacheOrchestrator.loadSpriteSheet('hybrid_component');
-    if (cachedState) {
-      const state = cachedState.find(s => s.id && s.id === stateId);
-      if (state) {
-        this.applyNESState(state);
-        console.log(`🎮 Switched to NES state: ${stateId}`);
+  public async switchToNESState(stateId: string): Promise<void> {
+    try {
+      // explicitly type cachedState to allow null (loader may return null)
+      const cachedState: InteractiveCanvasState[] | null =
+        await nesCacheOrchestrator.loadSpriteSheet('hybrid_component');
+
+      if (!cachedState || cachedState.length === 0) {
+        console.warn(`No NES sprite sheet available for 'hybrid_component'`);
+        return;
       }
-    }
-  }
-  private applyNESState(state,: InteractiveCanvasState): void {
-    if (!state,.fabricJSO,N) retu,rn;
-    const fabricData = JSON.parse(state.fabricJSON);
-    if (fabricData,.objects?.[0,]) {
-      const obj = fabricData.objects[0];
-      // Apply position
-      this.position.set(obj.left / 100, obj.top / 100, this.position.z);
-      // Apply color
-      if (obj.fill && this.mesh.material instanceof THREE.MeshBasicMaterial) {
-        this.mesh.material.color.setHex(parseInt(obj.fill.replace('#', ''), 16);
+
+      const foundState = cachedState.find(s => s.id === stateId);
+      if (!foundState) {
+        console.warn(`NES state '${stateId}' not found in cached sprite sheet`);
+        return;
       }
-      // Apply scale
-      this.scale.set(obj.width / 200, obj.height / 100, 1);
-      // Update DOM overlay if it exists
-      if (this.domOverlay && obj.nesStyle?.cssClass) {
-        this.domOverlay.className = `nes-container ${obj.nesStyle.cssClass}`;
+
+      // Store in local NES state cache
+      this.nesStateCache.set(stateId, foundState);
+
+      // Apply viewport/transform info if available (defensive)
+      try {
+        if (foundState.viewport) {
+          if (typeof foundState.viewport.x === 'number') this.position.x = foundState.viewport.x;
+          if (typeof foundState.viewport.y === 'number') this.position.y = foundState.viewport.y;
+          if (typeof foundState.viewport.zoom === 'number') this.scale.setScalar(foundState.viewport.zoom);
+        }
+      } catch (e) {
+        console.warn('Failed to apply viewport from NES state (non-fatal):', e);
       }
+
+      // Render a lightweight representation into the DOM overlay (if present)
+      if (this.domOverlay) {
+        try {
+          this.domOverlay.innerHTML = ''; // clear previous
+          const header = document.createElement('div');
+          header.className = 'nes-title';
+          header.textContent = `NES State: ${stateId}`;
+          const pre = document.createElement('pre');
+          pre.style.maxHeight = '180px';
+          pre.style.overflow = 'auto';
+          pre.textContent = foundState.fabricJSON ?? JSON.stringify(foundState, null, 2);
+          this.domOverlay.appendChild(header);
+          this.domOverlay.appendChild(pre);
+        } catch (e) {
+          console.warn('Failed to render NES state preview in DOM overlay:', e);
+        }
+      }
+
+      // Ensure transforms are updated in the scene
+      try {
+        this.updateMatrixWorld(true);
+      } catch {
+        // If updateMatrixWorld is not available for some reason, ignore (non-fatal)
+      }
+
+      console.info(`Switched to NES state '${stateId}'`);
+    } catch (error) {
+      console.error('❌ switchToNESState failed:', error);
     }
   }
-  public createNESAnimation(frames,: string[], duratio,n: number = 10,0): void {
-    // Create NES-style frame-based animation
-    let currentFrame =, 0;
-    const frameLoop = () => {
-      const frameId = frames[currentFrame];
-      this.switchToNESState(frameId);
-      currentFrame = (currentFrame + 1) % frames.length;
-      setTimeout(frameLoop, duration);
-    }
-    frameLoop();
-  }
-  // =============================================================================
-  // HYBRID INTERACTION METHODS
-  // =============================================================================
-  protected onHover(),: void {
-    super,.onHover();
-    // Add NES-style hover effects
-    if (this.domOverla,y) {
-      this.domOverlay.style.transform = 'translate(-50%, -50%) scale(1.05)';
-      this.domOverlay.style.filter = 'brightness(1.2)';
-    }
-    // Switch to hover state using NES caching
-    this.switchToNESState(`hybrid_hover_${Date.now()}`);
-  }
-  protected onUnhover(),: void {
-    super,.onUnhover();
-    if (this.domOverla,y) {
-      this.domOverlay.style.transform = 'translate(-50%, -50%) scale(1.0)';
-      this.domOverlay.style.filter = 'brightness(1.0)';
-    }
-  }
-  protected onClick(),: void {
-    super,.onClick();
-    // NES-style click animation
-    this.playNESClickAnimation();
-    // Update DOM overlay
-    if (this.domOverla,y) {
-      this.domOverlay.style.animation = 'nesClick 0.2s ease-in-out';
-    }
-  }
-  private playNESClickAnimation(),: void {
-    // Quick scale animation like NES button press
-    const originalScale = this.scale.clone();
-    this.scale.multiplyScalar(0.95);
-    setTimeout((), => {
-      this.scale.copy(originalScale);
-    }, 100);
-  }
-  // =============================================================================
-  // CLEANUP AND DISPOSAL
-  // =============================================================================
-  public dispose(),: void {
-    super,.dispose();
-    // Clean up DOM overlay
-    if (this.domOverlay && this.domOverlay.parentNod,e) {
-      this.domOverlay.parentNode.removeChild(this.domOverlay);
-    }
-    // Cancel sync loop
-    if (this.syncAnimationFrame) {
-      cancelAnimationFrame(this.syncAnimationFrame);
-    }
-    // Clean up NES cache
-    this.nesStateCache.clear();
-    // Clean up pixel canvas
-    if (this.pixelCanvas) {
-      this.pixelCanvas.remove();
-    }
-    console.log('🎮 NES + YoRHa Hybrid component disposed');
-  }
-}
-// =============================================================================
-// FACTORY FUNCTIONS FOR COMMON COMPONENTS
-// =============================================================================
-export function createNESButton(_options: {
-  text: string;
-  variant?: 'is-primary' | 'is-success' | 'is-warning' | 'is-error';
-  size?: 'small' | 'normal' | 'large';
-  onClick?: () => void;
-}): NESYoRHaHybrid3D {
-  return new NESYoRHaHybrid3D({
-    width: options.size === 'large' ? 3 : options.size === 'small' ? 1.5 : 2,
-    height: options.size === 'large' ? 1 : options.size === 'small' ? 0.5 : 0.8,
-    nesButton: options.variant || 'is-primary',
-    variant: 'default',
-    renderMode: 'hybrid-sync',
-    pixelPerfect: true,
-    crtEffect: true,
-    scanlines: true,
-    animationStyle: 'hybrid-morphing',
-  });
-}
-export function createNESContainer(_options: {
-  title?: string;
-  rounded?: boolean;
-  dark?: boolean;
-  children?: NESYoRHaHybrid3D[];
-}): NESYoRHaHybrid3D {
-  return new NESYoRHaHybrid3D({
-    width: 4,
-    height: 3,
-    nesContainer: options.rounded
-      ? 'is-rounded'
-      : options.dark
-        ? 'is-dark'
-        : 'with-title',
-    variant: 'outlined',
-    renderMode: '2d-overlay',
-    backgroundColor: options.dark
-      ? NES_YORHA_PALETTE.nesBlack: NES_YORHA_PALETTE.yorhaBeige,
-    pixelPerfect: true
-  });
-}
-export function createNESProgressBar(_options: {
-  value: number;
-  max?: number;
-  variant?: 'is-primary' | 'is-success' | 'is-warning' | 'is-error' | 'is-pattern';
-}): NESYoRHaHybrid3D {
-  return new NESYoRHaHybrid3D({
-    width: 3,
-    height: 0.3,
-    variant: 'filled',
-    renderMode: 'hybrid-sync',
-    backgroundColor: NES_YORHA_PALETTE.yorhaGold,
-    pixelPerfect: true,
-    animation: {
-      type: 'pulse',
-      duration: 1000,
-      loop: true
-    }
-  });
 }

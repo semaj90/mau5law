@@ -18,7 +18,7 @@
     { name: 'AI Chat', href: '/chat', icon: '💬' },
     { name: 'GPU Chat', href: '/gpu-chat', icon: '⚡' },
     { name: 'AI Dashboard', href: '/dashboard', icon: '📊' },
-    { name: 'RAG System', href: '/rag', icon: '🧠' },
+    { name: 'RAG System', href: '/ai-rag', icon: '🧠' },
     { name: 'Vector Search', href: '/vector-search', icon: '🔍' },
     { name: 'Recommendations', href: '/recommendations', icon: '💡' },
     { name: 'Case Scoring', href: '/case-scoring', icon: '⚖️' },

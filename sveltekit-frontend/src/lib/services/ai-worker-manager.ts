@@ -1,84 +1,153 @@
-// Minimal AIWorkerManager stub (single-responsibility, syntactically clean)
 import crypto from 'crypto';
 import type { AITask, WorkerStatus } from '$lib/services/types/service-types.js';
 
-export class AIWorkerManager {
-  private activeTasks = new Map<string, Promise<string>>();
-  private initialized = false;
+// Stub interfaces for missing types
+export interface WorkerConfiguration {
+  maxConcurrentTasks: number;
+  enableLogging: boolean;
+  enableMetrics: boolean;
+  // Use a generic record to avoid `any` while remaining flexible for provider configs
+  providers: Record<string, unknown>;
+  defaultTimeout: number;
+}
 
-  constructor(private opts: Partial<{ enableLogging: boolean }> = {}) {}
+export interface AIResponse {
+  tokensUsed?: number;
+  // Allow additional response fields but avoid `any`
+  [key: string]: unknown;
+}
+
+export interface ProcessingMetrics {
+  taskId: string;
+  startTime: number;
+  endTime?: number;
+  processingTime?: number;
+  queueTime: number;
+  retries: number;
+  provider: string;
+  model: string;
+  tokensProcessed: number;
+  success: boolean;
+  error?: string;
+}
+
+export interface TaskResult {
+  taskId: string;
+  status: 'completed' | 'failed' | 'cancelled';
+  response?: AIResponse;
+  error?: Error;
+  metrics: ProcessingMetrics;
+}
+
+interface ActiveTask {
+  task: AITask;
+  startTime: number;
+  resolve: (result: TaskResult) => void;
+  // Use unknown for rejection reasons to avoid `any`
+  reject: (reason?: unknown) => void;
+}
+
+export interface WorkerPool {
+  workers: Worker[];
+  currentLoad: number[];
+  completedTasks: number;
+  failedTasks: number;
+}
+
+export interface WorkerMessage {
+  type: string;
+  // Incoming worker payloads are unknown; cast at use sites to concrete types
+  payload: unknown;
+  taskId: string;
+}
+
+export class AIWorkerManager {
+  private config: WorkerConfiguration;
+  private workerPool: WorkerPool;
+  private activeTasks: Map<string, ActiveTask>;
+  private metrics: Map<string, ProcessingMetrics>;
+  private isInitialized = false;
+
+  public onTaskComplete?: (taskId: string, response: AIResponse) => void;
+  public onTaskError?: (taskId: string, error: Error) => void;
+  public onStatusUpdate?: (status: WorkerStatus) => void;
+
+  constructor(config: Partial<WorkerConfiguration> = {}) {
+    this.config = {
+      maxConcurrentTasks: typeof navigator !== 'undefined' ? navigator.hardwareConcurrency || 4 : 4,
+      enableLogging: false,
+      enableMetrics: true,
+      providers: {},
+      defaultTimeout: 30000,
+      ...config,
+    };
+    this.workerPool = { workers: [], currentLoad: [], completedTasks: 0, failedTasks: 0 };
+    this.activeTasks = new Map();
+    this.metrics = new Map();
+  }
 
   async initialize(): Promise<void> {
-    if (this.initialized) return;
-    this.initialized = true;
-    if (this.opts.enableLogging) console.log('AIWorkerManager initialized (stub)');
+    if (this.isInitialized) return;
+    this.isInitialized = true;
+    if (this.config.enableLogging) console.log('AIWorkerManager initialized');
   }
 
   async submitTask(task: AITask): Promise<string> {
-    if (!this.initialized) await this.initialize();
-    const id = (task as any).taskId || crypto.randomUUID();
-    this.activeTasks.set(id, Promise.resolve(id));
+    if (!this.isInitialized) await this.initialize();
+    // Safely obtain optional taskId without using `any`
+    const maybeTaskId = (task as unknown as Record<string, unknown>)['taskId'];
+    const id = typeof maybeTaskId === 'string' && maybeTaskId.length > 0 ? maybeTaskId : crypto.randomUUID();
+    const promise = new Promise<TaskResult>((resolve, reject) => {
+      this.activeTasks.set(id, { task, startTime: Date.now(), resolve, reject });
+    });
+    promise.catch(() => {
+      /* Prevent unhandled promise rejection */
+    });
+    // In a real implementation, this would queue the task and assign to a worker
     return id;
   }
 
-  async cancelTask(_taskId: string): Promise<void> {
-    // stubbed
+  async cancelTask(taskId: string): Promise<void> {
+    this.handleTaskCancelled(taskId, -1); // -1 for unknown worker
   }
 
   async getStatus(): Promise<WorkerStatus> {
-    return { totalWorkers: 0, activeTasks: this.activeTasks.size, completedTasks: 0, failedTasks: 0 } as unknown as WorkerStatus;
+    return {
+      totalWorkers: this.workerPool.workers.length,
+      activeTasks: this.activeTasks.size,
+      completedTasks: this.workerPool.completedTasks,
+      failedTasks: this.workerPool.failedTasks,
+    } as unknown as WorkerStatus;
   }
 
-  async shutdown(): Promise<void> {
-    this.activeTasks.clear();
-    this.initialized = false;
-  }
-}
-
-export const aiWorkerManager = new AIWorkerManager();
-// Minimal, clean AIWorkerManager stub
-import crypto from 'crypto';
-import type { AITask, WorkerStatus } from '$lib/services/types/service-types.js';
-
-export class AIWorkerManager {
-  private activeTasks = new Map<string, Promise<string>>();
-  private initialized = false;
-
-  constructor(private opts: Partial<{ enableLogging: boolean }> = {}) {}
-
-  async initialize(): Promise<void> {
-    if (this.initialized) return;
-    this.initialized = true;
-    if (this.opts.enableLogging) console.log('AIWorkerManager initialized (minimal stub)');
-  }
-
-  async submitTask(task: AITask): Promise<string> {
-    if (!this.initialized) await this.initialize();
-    const id = (task as any).taskId || crypto.randomUUID();
-    this.activeTasks.set(id, Promise.resolve(id));
-    return id;
+  private setupWorkerEventHandlers(worker: Worker, workerId: number) {
+    worker.onerror = error => this.handleWorkerError(workerId, error);
+    // Cast payloads to expected shapes at the call sites to remain type-safe
+    worker.onmessage = (event: MessageEvent<WorkerMessage>) => {
+      const { type, taskId } = event.data;
+      const payload = event.data.payload;
+      switch (type) {
+        case 'TASK_STARTED':
+          this.handleTaskStarted(taskId, workerId);
+          break;
+        case 'TASK_COMPLETED':
+          // payload should be an AIResponse
+          this.handleTaskCompleted(taskId, payload as AIResponse, workerId);
+          break;
+        case 'TASK_ERROR':
+          // payload expected shape: { message?: string }
+          this.handleTaskError(taskId, payload as { message?: string }, workerId);
+          break;
+        case 'STATUS_UPDATE':
+          // payload expected to be WorkerStatus
+          this.handleStatusUpdate(payload as WorkerStatus);
+          break;
+      }
+    };
   }
 
-  async cancelTask(_taskId: string): Promise<void> {
-    // no-op in stub
-  }
-
-  async getStatus(): Promise<WorkerStatus> {
-    return { totalWorkers: 0, activeTasks: this.activeTasks.size, completedTasks: 0, failedTasks: 0 } as unknown as WorkerStatus;
-  }
-
-  async shutdown(): Promise<void> {
-    this.activeTasks.clear();
-    this.initialized = false;
-  }
-}
-
-export const aiWorkerManager = new AIWorkerManager();
-  private async getWorkerStatus()
-    worker: Worker
-    workerId: number
-  ): Promise<WorkerStatus> {
-    return new Promise((resolve) => {
+  private async getWorkerStatus(worker: Worker, workerId: number): Promise<WorkerStatus> {
+    return new Promise(resolve => {
       const timeoutId = setTimeout(() => {
         resolve({
           activeRequests: this.workerPool.currentLoad[workerId],
@@ -87,71 +156,67 @@ export const aiWorkerManager = new AIWorkerManager();
           maxConcurrent: this.config.maxConcurrentTasks,
           uptime: 0,
           totalProcessed: 0,
-          errors: 0
-        });
+          errors: 0,
+        } as unknown as WorkerStatus);
       }, 1000);
-      const messageHandler = (_event: MessageEvent<WorkerMessage>) => {
-        if (event.data.type === "STATUS_UPDATE") {
+      const messageHandler = (event: MessageEvent<WorkerMessage>) => {
+        if (event.data.type === 'STATUS_UPDATE') {
           clearTimeout(timeoutId);
-          worker.removeEventListener("message", messageHandler);
-          resolve(event.data.payload);
+          worker.removeEventListener('message', messageHandler);
+          // Cast the payload to WorkerStatus when resolving
+          resolve(event.data.payload as WorkerStatus);
         }
-      }
-      worker.addEventListener("message", messageHandler);
+      };
+      worker.addEventListener('message', messageHandler);
       worker.postMessage({
-        type: "GET_STATUS",
+        type: 'GET_STATUS',
         taskId: `status-${workerId}`,
-        payload: null
+        payload: null,
       });
     });
   }
-  async shutdown(),: Promise<void> {
-    // Cancel all active tasks
-    const cancelPromises = Array.from(this.activeTasks.keys()).map((taskId) =>;
-      this.cancelTask(taskId),
-    );
-    await Promis,e.all(cancelPromise,s);
-    // Terminate all workers
-    this.workerPool.workers.forEach((worker) => worker.terminate();
-    // Clear state
-    this.workerPool.workers = [,];
-    this.workerPool.currentLoad = [,];
+  async shutdown(): Promise<void> {
+    const cancelPromises = Array.from(this.activeTasks.keys()).map(taskId => this.cancelTask(taskId));
+    await Promise.all(cancelPromises);
+    this.workerPool.workers.forEach(worker => worker.terminate());
+    this.workerPool.workers = [];
+    this.workerPool.currentLoad = [];
     this.activeTasks.clear();
     this.metrics.clear();
-    this.isInitialized = fals,e;
-    if (this.config.enableLoggin,g) {
-      console.log("AI Worker Manager shutdown completed");
+    this.isInitialized = false;
+    if (this.config.enableLogging) {
+      console.log('AI Worker Manager shutdown completed');
     }
   }
-  private handleTaskStarted(taskId,: string, workerI,d: number) {
+  private handleTaskStarted(taskId: string, workerId: number) {
     const activeTask = this.activeTasks.get(taskId);
     if (activeTask && this.config.enableMetrics) {
+      // mark worker as busy
+      this.workerPool.currentLoad[workerId] = (this.workerPool.currentLoad[workerId] || 0) + 1;
+
       const metrics: ProcessingMetrics = {
         taskId,
         startTime: Date.now(),
         queueTime: Date.now() - activeTask.startTime,
         retries: 0,
-        provider: activeTask.task.providerId,
-        model: activeTask.task?.model || "unknown", // @ts-ignore - Model property access,
+        // ensure provider/model are strings (avoid string | undefined)
+        provider: activeTask.task.providerId ?? 'unknown',
+        model: activeTask.task.model ?? 'unknown',
         tokensProcessed: 0,
-        success: false
-      }
+        success: false,
+      };
       this.metrics.set(taskId, metrics);
     }
   }
-  private handleTaskCompleted()
-    taskId: string
-    response: AIResponse
-    workerId: number
-  ) {
+  private handleTaskCompleted(taskId: string, response: AIResponse, workerId: number) {
     const activeTask = this.activeTasks.get(taskId);
     if (!activeTask) return;
     const result: TaskResult = {
       taskId,
-      status: "completed",
+      status: 'completed',
       response,
-      metrics: this.updateMetrics(taskId, response, true)
-    }
+      metrics: this.updateMetrics(taskId, response, true),
+    };
     activeTask.resolve(result);
     this.cleanupTask(taskId, workerId);
     this.workerPool.completedTasks++;
@@ -159,16 +224,11 @@ export const aiWorkerManager = new AIWorkerManager();
       this.onTaskComplete(taskId, response);
     }
   }
-  private handleTaskError(taskId,: string, erro,r: any, worker,Id: numbe,r) {
+  private handleTaskError(taskId: string, error: { message?: string }, workerId: number) {
     const activeTask = this.activeTasks.get(taskId);
     if (!activeTask) return;
-    const errorObj = new Error(error.message || "Unknown worker error");
-    const result: TaskResult = {
-      taskId,
-      status: "failed",
-      error: errorObj;
-      metrics: this.updateMetrics(taskId, null, false, error.message)
-    }
+    const errorObj = new Error(error.message || 'Unknown worker error');
+    this.updateMetrics(taskId, null, false, error.message);
     activeTask.reject(errorObj);
     this.cleanupTask(taskId, workerId);
     this.workerPool.failedTasks++;
@@ -176,49 +236,46 @@ export const aiWorkerManager = new AIWorkerManager();
       this.onTaskError(taskId, errorObj);
     }
   }
-  private handleTaskCancelled(taskId,: string, workerI,d: number) {
+  private handleTaskCancelled(taskId: string, workerId: number) {
     const activeTask = this.activeTasks.get(taskId);
     if (!activeTask) return;
-    const result: TaskResult = {
-      taskId,
-      status: "cancelled",
-      metrics: this.updateMetrics(taskId, null, false, "Cancelled")
-    }
-    activeTask.reject(new Error("Task was cancelled");
+    this.updateMetrics(taskId, null, false, 'Cancelled');
+    activeTask.reject(new Error('Task was cancelled'));
     this.cleanupTask(taskId, workerId);
   }
-  private handleStatusUpdate(status,: WorkerStatus), {
+  private handleStatusUpdate(status: WorkerStatus) {
     if (this.onStatusUpdate) {
       this.onStatusUpdate(status);
     }
   }
-  private handleWorkerError(workerId,: number, erro,r: ErrorEvent) {
+  private handleWorkerError(workerId: number, error: ErrorEvent) {
     console.error(`Worker ${workerId} encountered an error:`, error);
-    // Restart worker if needed
     if (this.workerPool.workers[workerId]) {
       this.workerPool.workers[workerId].terminate();
-      const newWorker = new Worker(
-        new URL("../workers/ai-service-worker.ts", import.meta.url),
-        { type: "module" },
-      );
+      const newWorker = new Worker(new URL('../workers/ai-service-worker.ts', import.meta.url), {
+        type: 'module',
+      });
       this.setupWorkerEventHandlers(newWorker, workerId);
       this.workerPool.workers[workerId] = newWorker;
       this.workerPool.currentLoad[workerId] = 0;
     }
   }
-  private cleanupTask(taskId,: string, workerI,d: number) {
+  private cleanupTask(taskId: string, workerId: number) {
     this.activeTasks.delete(taskId);
-    if (this.workerPool.currentLoad[workerId] > 0) {
+    if (workerId >= 0 && this.workerPool.currentLoad[workerId] > 0) {
       this.workerPool.currentLoad[workerId]--;
     }
   }
-  private updateMetrics()
-    taskId: string
-    response: AIResponse | null;
-    success: boolean
+  private updateMetrics(
+    taskId: string,
+    response: AIResponse | null,
+    success: boolean,
     error?: string
   ): ProcessingMetrics {
     const existing = this.metrics.get(taskId);
+    // Read tokens safely without casting to `any`
+    const tokens = response?.tokensUsed ?? 0;
+
     if (!existing) {
       return {
         taskId,
@@ -227,49 +284,49 @@ export const aiWorkerManager = new AIWorkerManager();
         processingTime: 0,
         queueTime: 0,
         retries: 0,
-        provider: "unknown",
-        model: "unknown",
-        tokensProcessed: (response as any)?.tokensUsed || 0,
+        provider: 'unknown',
+        model: 'unknown',
+        tokensProcessed: tokens,
         success,
-        error
-      }
+        error,
+      };
     }
     const updated: ProcessingMetrics = {
       ...existing,
       endTime: Date.now(),
       processingTime: Date.now() - existing.startTime,
-      tokensProcessed: (response as any)?.tokensUsed || 0,
+      tokensProcessed: tokens,
       success,
-      error
-    }
+      error,
+    };
     this.metrics.set(taskId, updated);
     return updated;
   }
   // Public methods for configuration and monitoring
-  updateConfiguration(config,: Partial<WorkerConfiguration>), {
-    this.config = { ...this.config, ...config }
+  updateConfiguration(config: Partial<WorkerConfiguration>) {
+    this.config = { ...this.config, ...config };
     // Update workers with new config
     this.workerPool.workers.forEach((worker, index) => {
       worker.postMessage({
-        type: "UPDATE_PROVIDER_CONFIG",
+        type: 'UPDATE_PROVIDER_CONFIG',
         taskId: `config-update-${index}`,
-        payload: this.config.providers
+        payload: this.config.providers,
       });
     });
   }
-  getMetrics(),: ProcessingMetrics[], {
-    return Array.from(this.metrics.values();
+  getMetrics(): ProcessingMetrics[] {
+    return Array.from(this.metrics.values());
   }
-  getWorkerPoolStatus(),: WorkerPool {
-    return { ...this.workerPool }
+  getWorkerPoolStatus(): WorkerPool {
+    return { ...this.workerPool };
   }
   // Helper method to submit multiple tasks in parallel
-  async submitBatchTasks(tasks,: AITask[]): Promise<string[]> {
-    const promises = tasks.map((task) => this.submitTask(task);
+  async submitBatchTasks(tasks: AITask[]): Promise<string[]> {
+    const promises = tasks.map(task => this.submitTask(task));
     return Promise.all(promises);
   }
   // Helper method to wait for specific task completion
-  async waitForTask(taskId,: string): Promise<TaskResult> {
+  async waitForTask(taskId: string): Promise<TaskResult> {
     return new Promise((resolve, reject) => {
       const checkInterval = setInterval(() => {
         const metrics = this.metrics.get(taskId);
@@ -277,15 +334,16 @@ export const aiWorkerManager = new AIWorkerManager();
           clearInterval(checkInterval);
           resolve({
             taskId,
-            status: metrics.success ? "completed" : "failed",
-            metrics
+            status: metrics.success ? 'completed' : 'failed',
+            metrics,
+            error: metrics.error ? new Error(metrics.error) : undefined,
           });
         }
       }, 100);
       // Timeout after 2x the default timeout
       setTimeout(() => {
         clearInterval(checkInterval);
-        reject(new Error(`Timeout waiting for task ${taskId}`);
+        reject(new Error(`Timeout waiting for task ${taskId}`));
       }, this.config.defaultTimeout * 2);
     });
   }
@@ -293,61 +351,61 @@ export const aiWorkerManager = new AIWorkerManager();
 // Singleton instance for global use
 export const aiWorkerManager = new AIWorkerManager();
 // Helper functions for common task types
-export function createGenerationTask()
-  prompt: string
-  model: string
-  providerId: string;
-  options: Partial<AITask> = {},
+export function createGenerationTask(
+  prompt: string,
+  model: string,
+  providerId: string,
+  options: Partial<AITask> = {}
 ): AITask {
   const id = crypto.randomUUID();
   return {
     id,
     taskId: id,
-    type: "generate",
+    type: 'generate',
     providerId,
     model,
     prompt,
     timestamp: Date.now(),
-    priority: "medium",
-    ...options
-  }
+    priority: 'medium',
+    ...options,
+  } as AITask;
 }
-export function createAnalysisTask()
-  content: string
-  analysisType: string
-  model: string
-  providerId: string;
-  options: Partial<AITask> = {},
+export function createAnalysisTask(
+  content: string,
+  analysisType: string,
+  model: string,
+  providerId: string,
+  options: Partial<AITask> = {}
 ): AITask {
   const id = crypto.randomUUID();
   return {
     id,
     taskId: id,
-    type: "analyze",
+    type: 'analyze',
     providerId,
     model,
     prompt: `Analyze the following content for ${analysisType}:\n\n${content}`,
     timestamp: Date.now(),
-    priority: "medium",
-    ...options
-  }
+    priority: 'medium',
+    ...options,
+  } as AITask;
 }
-export function createEmbeddingTask()
-  text: string
-  model: string = "nomic-embed-text",
-  providerId,: string = "ollama",
-  options,: Partial<AITask> = {},
+export function createEmbeddingTask(
+  text: string,
+  model = 'nomic-embed-text',
+  providerId = 'ollama',
+  options: Partial<AITask> = {}
 ): AITask {
   const id = crypto.randomUUID();
   return {
     id,
     taskId: id,
-    type: "embed",
+    type: 'embed',
     providerId,
     model,
     prompt: text,
     timestamp: Date.now(),
-    priority: "low",
-    ...options
-  }
+    priority: 'low',
+    ...options,
+  } as AITask;
 }

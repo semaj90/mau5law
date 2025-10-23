@@ -80,8 +80,8 @@
   type AvatarSize = (typeof avatarSizes)[number];
   // Mock session actions for demo
   const mockSessionActions = {
-    setSession (user: any, session any) => console.log('Mock setSession', user, session),
-    clearSession () => console.log('Mock clearSession'),
+    setSession: (user: any, session: any) => console.log('Mock setSession', user, session),
+    clearSession: () => console.log('Mock clearSession'),
     init: (data: any) => console.log('Mock init:', data),
   };
 
@@ -616,7 +616,7 @@
   /* Session Demo Styles */
   .session-controls {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .status-display {
@@ -661,7 +661,7 @@
   /* Formatting Demo Styles */
   .formatting-demos {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1.5rem;
   }
   .demo-group h3 {
@@ -672,7 +672,7 @@
   .filename-examples,
   .case-examples {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .timestamp-row {
@@ -736,7 +736,7 @@
   /* Sidebar Demo Styles */
   .sidebar-controls {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .control-group {

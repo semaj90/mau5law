@@ -1,4 +1,4 @@
-// @ts-nocheck - Advanced experimental service
+//Advanced experimental service
 /**
  * WebAssembly Client-Side Ranking Cache
  * High-performance vector ranking with service worker concurrency
@@ -57,7 +57,7 @@ export interface CacheMetrics {
 class WebASMRankingCache {
   private wasmModule: WebAssembly.Module | null = null;
   private wasmInstance: WebAssembly.Instance | null = null;
-  private serviceWorker: SWRegLike | null = null;
+  private serviceWorker: SWRegistrationLike | null = null;
   private cache = new Map<string, WASMRankingEntry>();
   private pendingRequests = new Map<string, Promise<RankingResponse>>();
   private metrics: CacheMetrics = {
@@ -224,7 +224,7 @@ class WebASMRankingCache {
           const installing = reg.installing as ServiceWorkerLike;
           await new Promise<void>(resolve => {
             const onStateChange = () => {
-              if ((installing as any).state === 'activated') {
+              if (installing.state === 'activated') {
                 installing.removeEventListener?.('statechange', onStateChange);
                 resolve();
               }
@@ -414,7 +414,7 @@ class WebASMRankingCache {
 
   private setCachedResult(key: string, entry: WASMRankingEntry): void {
     if (this.cache.size >= this.config.maxEntries) {
-      const oldestKey = this.cache.keys().next().value;
+      const oldestKey = this.cache.keys().next().value!; // Add non-null assertion
       this.cache.delete(oldestKey);
     }
     this.cache.set(key, entry);
@@ -480,7 +480,8 @@ class WebASMRankingCache {
     };
   }
 
-  private calculateCRC32(buffer: ArrayBuffer): number {
+  private calculateCRC32(buffer: ArrayBufferLike): number {
+    // Change ArrayBuffer to ArrayBufferLike
     const table = new Uint32Array(256);
     for (let i = 0; i < 256; i++) {
       let c = i;

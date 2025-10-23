@@ -1,8 +1,7 @@
-<!-- Advanced Rich Text Editor with Google Slides/Photoshop-like Features -->
 <script lang="ts">
-  import ErrorBoundary from '$lib/components/ErrorBoundary.svelte';
-  // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
+  import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'
+  // Svelte 5 runes are auto-imported with Advanced Rich Text Editor/Google Slides/Photoshop-like Features
+  import { onMount, onDestroy, $state, $bindable, $effect, $props } from 'svelte';
   import { Editor as TiptapEditor } from "@tiptap/core";
   import Color from "@tiptap/extension-color";
   import FontFamily from "@tiptap/extension-font-family";
@@ -47,7 +46,9 @@
     ZoomIn,
     ZoomOut,
   } from "lucide-svelte";
-  import { writable } from "svelte/store";
+
+  // Import LokiJS client functions
+  import { saveDraft, loadDraft } from '$lib/client/db/loki-client';
 
   // Svelte 5 props
   let {
@@ -113,11 +114,8 @@
     isQuote: false,
   };
 
-  const editorState = writable<EditorState>(defaultEditorState);
-
   // local plain object used in template for property access
-  let state: EditorState = defaultEditorState;
-  const unsubscribeEditorState = editorState.subscribe((v) => (state = v));
+  let state: EditorState = $state(defaultEditorState);
 
   // Color palettes for quick access
   const colorPalettes = {
@@ -170,10 +168,15 @@
     "Merriweather",
   ];
   // Auto-save functionality
-  onMount(() => { // Corrected onMount syntax
-    initializeEditor();
-    setupKeyboardShortcuts();
+  onMount(() => {
+    const draft = loadDraft(reportId, caseId);
+    if (draft && !content) {
+      $content = draft.content; // Update the bindable prop
+      wordCount = draft.wordCount;
+      characterCount = draft.characterCount;
+    }
   });
+
   onDestroy(() => {
     if (editor) {
       editor.destroy();
@@ -182,9 +185,42 @@
       clearTimeout(autoSaveTimeout);
       autoSaveTimeout = null;
     }
-    // unsubscribe from the editor state store
-    unsubscribeEditorState?.();
   });
+
+  // Initialize editor only after editorElement is bound
+  $: if (editorElement && !editor) {
+    initializeEditor();
+  }
+
+  // Top-level $effect for keyboard shortcuts, reacting to editor initialization
+  $effect(() => {
+    if (!editor) return; // Only set up shortcuts when editor is initialized
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey || e.metaKey) {
+        switch (e.key) {
+          case "s":
+            e.preventDefault();
+            saveContent(editor); // editor is guaranteed to be non-null here
+            break;
+          case "z":
+            if (e.shiftKey) {
+              editor.commands.redo();
+            } else {
+              editor.commands.undo();
+            }
+            break;
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  });
+
   function initializeEditor() {
     editor = new TiptapEditor({
       element: editorElement,
@@ -239,7 +275,7 @@
   }
   function updateEditorState() {
     if (!editor) return;
-    editorState.set({ // Corrected set method call
+    state = {
       canUndo: editor.can.undo(),
       canRedo: editor.can.redo(),
       isBold: editor.isActive("bold"),
@@ -263,7 +299,7 @@
       isList: editor.isActive("bulletList"),
       isOrderedList: editor.isActive("orderedList"),
       isQuote: editor.isActive("blockquote"),
-    });
+    };
   }
 
   // typed functions accepting the editor instance
@@ -285,8 +321,14 @@
 
   async function saveContent(editorInstance: InstanceType<typeof TiptapEditor> | null): Promise<void> {
     if (!editorInstance) return;
-    const content = editorInstance.getJSON();
+    const jsonContent = editorInstance.getJSON(); // Renamed to avoid conflict with prop 'content'
     const html = editorInstance.getHTML();
+    // Update the bindable prop to reflect the latest content
+    $content = jsonContent;
+
+    // Save offline immediately (Loki)
+    saveDraft({ reportId, caseId, content: jsonContent, html, wordCount, characterCount });
+
     try {
       const response = await fetch("/api/reports/save", {
         method: "POST",
@@ -296,10 +338,10 @@
         body: JSON.stringify({
           reportId,
           caseId,
-          content,
+          content: jsonContent, // Use jsonContent here
           html,
-          wordCount,
-          characterCount,
+          // wordCount, // Removed from fetch body as per prompt example
+          // characterCount, // Removed from fetch body as per prompt example
         }),
       });
       if (!response.ok) {
@@ -307,7 +349,7 @@
       }
       showSaveIndicator();
     } catch (error: any) {
-      console.error("Auto-save failed:", error);
+      console.warn("Server save failed, kept local draft", error); // Changed to console.warn as per prompt
       errorMessage = error && error.message ? error.message : 'An error occurred';
     }
   }
@@ -323,33 +365,34 @@
       document.body.removeChild(indicator);
     }, 2000);
   }
-  function setupKeyboardShortcuts() {
-  $effect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => { // Corrected effect syntax
-      if (e.ctrlKey || e.metaKey) {
-        switch (e.key) {
-          case "s":
-            e.preventDefault();
-            if (editor) { // Ensure editor is initialized before saving
-              saveContent(editor);
-            }
-            break;
-          case "z":
-            if (e.shiftKey) {
-              editor?.commands.redo();
-            } else {
-              editor?.commands.undo();
-            }
-            break;
-        }
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  });
-  }
+  // Removed the setupKeyboardShortcuts function as it's now a top-level $effect
+  // function setupKeyboardShortcuts() {
+  // $effect(() => {
+  //   const handleKeyDown = (e: KeyboardEvent) => { // Corrected effect syntax
+  //     if (e.ctrlKey || e.metaKey) {
+  //       switch (e.key) {
+  //         case "s":
+  //           e.preventDefault();
+  //           if (editor) { // Ensure editor is initialized before saving
+  //             saveContent(editor);
+  //           }
+  //           break;
+  //         case "z":
+  //           if (e.shiftKey) {
+  //             editor?.commands.redo();
+  //           } else {
+  //             editor?.commands.undo();
+  //           }
+  //           break;
+  //       }
+  //     }
+  //   };
+  //   document.addEventListener("keydown", handleKeyDown);
+  //   return () => {
+  //     document.removeEventListener('keydown', handleKeyDown);
+  //   };
+  // });
+  // }
   // Toolbar actions
   function toggleBold() {
     editor?.chain().focus().toggleBold().run();
@@ -449,7 +492,6 @@
         reader.readAsText(file);
       }
     }
-    input.click();
   }
   // Reactive statements
   // 'state' is updated via the editorState subscription above and used in the template.
@@ -471,7 +513,7 @@
         <button
           aria-label="Action button"
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-          onclick={() => saveContent(editor)}
+          on:click={() => saveContent(editor)}
           title="Save (Ctrl+S)"
         >
           <Save size="18" />
@@ -479,7 +521,7 @@
         <button
           aria-label="Action button"
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-          onclick={() => importDocument()}
+          on:click={() => importDocument()}
           title="Import Document"
         >
           <Upload size="18" />
@@ -498,17 +540,17 @@
             <button
               aria-label="Action button"
               class="w-full text-left px-3 py-2 bg-transparent border-none cursor-pointer transition-colors duration-200 hover:bg-gray-100"
-              onclick={() => exportDocument("html")}>Export as HTML</button
+              on:click={() => exportDocument("html")}>Export as HTML</button
             >
             <button
               aria-label="Action button"
               class="w-full text-left px-3 py-2 bg-transparent border-none cursor-pointer transition-colors duration-200 hover:bg-gray-100"
-              onclick={() => exportDocument("json")}>Export as JSON</button
+              on:click={() => exportDocument("json")}>Export as JSON</button
             >
             <button
               aria-label="Action button"
               class="w-full text-left px-3 py-2 bg-transparent border-none cursor-pointer transition-colors duration-200 hover:bg-gray-100"
-              onclick={() => exportDocument("pdf")}>Export as PDF</button
+              on:click={() => exportDocument("pdf")}>Export as PDF</button
             >
           </div>
         </div>
@@ -520,7 +562,7 @@
           aria-label="Action button"
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:disabled={!state.canUndo}
-          onclick={() => editor?.commands.undo()}
+          on:click={() => editor?.commands.undo()}
           title="Undo (Ctrl+Z)"
         >
           <Undo size="18" />
@@ -529,7 +571,7 @@
           aria-label="Action button"
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:disabled={!state.canRedo}
-          onclick={() => editor?.commands.redo()}
+          on:click={() => editor?.commands.redo()}
           title="Redo (Ctrl+Shift+Z)"
         >
           <Redo size="18" />
@@ -542,7 +584,7 @@
           <select
             class="border border-gray-300 rounded-md px-2 py-1 text-sm"
             value={state.currentFontFamily}
-            onchange={(e) => setFontFamily((e.target as HTMLSelectElement).value)}
+            on:change={(e) => { e.preventDefault(); setFontFamily((e.target as HTMLSelectElement).value); }}
           >
             {#each fontFamilies as font}
               <option value={font}>{font}</option>
@@ -554,7 +596,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.isBold}
           class:text-blue-700={state.isBold}
-          onclick={() => toggleBold()}
+          on:click={() => toggleBold()}
           title="Bold (Ctrl+B)"
         >
           <Bold size="18" />
@@ -564,7 +606,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.isItalic}
           class:text-blue-700={state.isItalic}
-          onclick={() => toggleItalic()}
+          on:click={() => toggleItalic()}
           title="Italic (Ctrl+I)"
         >
           <Italic size="18" />
@@ -574,7 +616,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.isUnderline}
           class:text-blue-700={state.isUnderline}
-          onclick={() => toggleUnderline()}
+          on:click={() => toggleUnderline()}
           title="Underline (Ctrl+U)"
         >
           <UnderlineIcon size="18" />
@@ -584,7 +626,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.isStrike}
           class:text-blue-700={state.isStrike}
-          onclick={() => toggleStrike()}
+          on:click={() => toggleStrike()}
           title="Strikethrough"
         >
           <Strikethrough size="18" />
@@ -599,10 +641,11 @@
           <input
             type="color"
             class="absolute inset-0 opacity-0 cursor-pointer"
-            bind:value={state.currentColor}
-            onchange={(e) => setTextColor((e.target as HTMLInputElement).value)}
+            value={state.currentColor}
+            on:input={(e) => setTextColor((e.target as HTMLInputElement).value)}
             title="Text Color"
           />
+          <!-- The browser's default color input swatch will correctly display the selected color based on the 'value' attribute. -->
           <Type size="18" />
         </div>
         <div class="relative group">
@@ -623,7 +666,12 @@
                   : `Highlight with ${color}`}
                 class="w-6 h-6 rounded-md border border-gray-300 cursor-pointer"
                 style="background-color: {color}"
-                onclick={() => setHighlight(color)}
+                on:click={() => setHighlight(color)}
+                title={color === "transparent"
+                  ? "Remove highlight"
+                  : `Highlight with ${color}`}
+                style="background-color: {color}"
+                on:click={() => setHighlight(color)}
                 title={color === "transparent"
                   ? "Remove highlight"
                   : `Highlight with ${color}`}
@@ -640,7 +688,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.currentAlignment === "left"}
           class:text-blue-700={state.currentAlignment === "left"}
-          onclick={() => setAlignment("left")}
+          on:click={() => setAlignment("left")}
           title="Align Left"
         >
           <AlignLeft size="18" />
@@ -650,7 +698,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.currentAlignment === "center"}
           class:text-blue-700={state.currentAlignment === "center"}
-          onclick={() => setAlignment("center")}
+          on:click={() => setAlignment("center")}
           title="Align Center"
         >
           <AlignCenter size="18" />
@@ -660,7 +708,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.currentAlignment === "right"}
           class:text-blue-700={state.currentAlignment === "right"}
-          onclick={() => setAlignment("right")}
+          on:click={() => setAlignment("right")}
           title="Align Right"
         >
           <AlignRight size="18" />
@@ -670,7 +718,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.currentAlignment === "justify"}
           class:text-blue-700={state.currentAlignment === "justify"}
-          onclick={() => setAlignment("justify")}
+          on:click={() => setAlignment("justify")}
           title="Align Justify"
         >
           <AlignJustify size="18" />
@@ -684,7 +732,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.isList}
           class:text-blue-700={state.isList}
-          onclick={() => editor?.chain().focus().toggleBulletList().run()}
+          on:click={() => editor?.chain().focus().toggleBulletList().run()}
           title="Bullet List"
         >
           <List size="18" />
@@ -694,7 +742,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.isOrderedList}
           class:text-blue-700={state.isOrderedList}
-          onclick={() => editor?.chain().focus().toggleOrderedList().run()}
+          on:click={() => editor?.chain().focus().toggleOrderedList().run()}
           title="Numbered List"
         >
           <ListOrdered size="18" />
@@ -704,7 +752,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.isQuote}
           class:text-blue-700={state.isQuote}
-          onclick={() => editor?.chain().focus().toggleBlockquote().run()}
+          on:click={() => editor?.chain().focus().toggleBlockquote().run()}
           title="Quote"
         >
           <Quote size="18" />
@@ -714,7 +762,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={state.isCode}
           class:text-blue-700={state.isCode}
-          onclick={() => editor?.chain().focus().toggleCode().run()}
+          on:click={() => editor?.chain().focus().toggleCode().run()}
           title="Code"
         >
           <Code size="18" />
@@ -726,7 +774,7 @@
         <button
           aria-label="Action button"
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-          onclick={() => insertImage()}
+          on:click={() => insertImage()}
           title="Insert Image"
         >
           <ImageIcon size="18" />
@@ -734,7 +782,7 @@
         <button
           aria-label="Action button"
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-          onclick={() => insertTable()}
+          on:click={() => insertTable()}
           title="Insert Table"
         >
           <TableIcon size="18" />
@@ -746,7 +794,7 @@
         <button
           aria-label="Action button"
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-          onclick={() => adjustZoom(-10)}
+          on:click={() => adjustZoom(-10)}
           title="Zoom Out"
         >
           <ZoomOut size="18" />
@@ -757,7 +805,7 @@
         <button
           aria-label="Action button"
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-          onclick={() => adjustZoom(10)}
+          on:click={() => adjustZoom(10)}
           title="Zoom In"
         >
           <ZoomIn size="18" />
@@ -767,7 +815,7 @@
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
           class:bg-blue-100={showGrid}
           class:text-blue-700={showGrid}
-          onclick={() => (showGrid = !showGrid)}
+          on:click={() => (showGrid = !showGrid)}
           title="Toggle Grid"
         >
           <Grid size="18" />
@@ -775,7 +823,7 @@
         <button
           aria-label="Action button"
           class="p-2 rounded-md border-none bg-transparent cursor-pointer flex items-center justify-center min-w-9 h-9 transition-colors duration-200 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-          onclick={() => toggleFullscreen()}
+          on:click={() => toggleFullscreen()}
           title="Toggle Fullscreen"
         >
           {#if isFullscreen}
@@ -827,5 +875,14 @@
   </div>
   <!-- All styles have been moved to UnoCSS classes in the markup. -->
 </ErrorBoundary>
+    >
+      <div bind:this={editorElement} class="flex-grow p-6 min-h-full"></div>
+    </div>
+  </div>
   <!-- All styles have been moved to UnoCSS classes in the markup. -->
-</svelte:component>
+</ErrorBoundary>
+    </div>
+  </div>
+  <!-- All styles have been moved to UnoCSS classes in the markup. -->
+</ErrorBoundary>
+

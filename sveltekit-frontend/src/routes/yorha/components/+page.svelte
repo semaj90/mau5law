@@ -197,52 +197,52 @@
   function resetConfig() {
     switch (selectedComponent) {
       case 'button':
-        buttonConfig = {
-          text: 'YoRHa Button',
-          variant: 'primary',
-          size: 'medium',
-          icon 'terminal',
-          loading: false,
-          disabled: false,
-          glowEffect: true,
-          hoverAnimation true,
-        }; // Added semicolon
-        break;
-      case 'panel':
-        panelConfig = {
-          title: 'YoRHa Panel',
-          variant: 'default',
-          width: 400,
-          height: 300,
-          scrollable: true,
-          collapsible: true,
-          glitchEffect: false,
-          borderGlow: true,
-        }; // Added semicolon
-        break;
-      case 'input':
-        inputConfig = {
-          placeholder: 'Enter command...',
-          type: 'text',
-          variant: 'default',
-          value: '',
-          error: false,
-          focused: false,
-          scanlineEffect: true,
-          terminalMode: true,
-        }; // Added semicolon
-        break;
-      case 'modal':
-        modalConfig = {
-          title: 'YoRHa Modal',
-          variant: 'default',
-          size: 'medium',
-          closable: true,
-          open: false,
-          backdropBlur: true,
-          hologramEffect: true,
-        }; // Added semicolon
-        break;
+      buttonConfig = {
+        text: 'YoRHa Button',
+        variant: 'primary',
+        size: 'medium',
+        icon: 'terminal',
+        loading: false,
+        disabled: false,
+        glowEffect: true,
+        hoverAnimation: true,
+      };
+       break;
+    case 'panel':
+      panelConfig = {
+        title: 'YoRHa Panel',
+        variant: 'default',
+        width: 400,
+        height: 300,
+        scrollable: true,
+        collapsible: true,
+        glitchEffect: false,
+        borderGlow: true,
+      }; // Added semicolon
+      break;
+    case 'input':
+      inputConfig = {
+        placeholder: 'Enter command...',
+        type: 'text',
+        variant: 'default',
+        value: '',
+        error: false,
+        focused: false,
+        scanlineEffect: true,
+        terminalMode: true,
+      }; // Added semicolon
+      break;
+    case 'modal':
+      modalConfig = {
+        title: 'YoRHa Modal',
+        variant: 'default',
+        size: 'medium',
+        closable: true,
+        open: false,
+        backdropBlur: true,
+        hologramEffect: true,
+      }; // Added semicolon
+      break;
     }
     updatePreview();
   }
@@ -273,16 +273,20 @@
         </h3>
         <div class="yorha-component-list">
           {#each componentTypes as component}
-                class="yorha-component-btn"
-                class:yorha-component-active={selectedComponent === component.id}
-                on:click={() => onComponentChange(component.id)}
-            >
-              <div class="yorha-component-info">
-                <span class="yorha-component-label">{component.label}</span>
-                <span class="yorha-component-desc">{component.description}</span>
-              </div>
-            </button>
-          {/each}
+  <button
+    class="yorha-component-btn"
+    class:yorha-component-active={selectedComponent === component.id}
+    onclick={() => onComponentChange(component.id)}
+    type="button"
+  >
+    <!-- render icon (dynamic component syntax) -->
+    <svelte:component this={component.icon} size={18} />
+    <div class="yorha-component-info">
+      <span class="yorha-component-label">{component.label}</span>
+      <span class="yorha-component-desc">{component.description}</span>
+    </div>
+  </button>
+{/each}
         </div>
       </section>
       <!-- Preview Mode -->
@@ -296,7 +300,7 @@
             <button
               class="yorha-mode-btn"
               class:yorha-mode-active={previewMode === mode.id}
-              on:click={() => (previewMode = mode.id)}
+              onclick={() => (previewMode = mode.id)}
             >
               <span>{mode.label}</span>
             </button>
@@ -652,7 +656,7 @@
   }
   .yorha-loading-spinner {
     @apply w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   /* Code View */
   .yorha-code-view {

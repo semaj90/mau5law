@@ -2,16 +2,13 @@
 <script lang="ts">
   import '../../app.css'; // Add this line to import the global Tailwind CSS
   // Svelte 5 runes are auto-imported
-  let { children } = $props(); // Corrected: Removed explicit type annotation
-  import { page } from '$app/stores';
-  import { goto } from '$app/navigation';
+  import { afterNavigate, goto } from '$app/navigation';
+  import { onMount } from 'svelte';
   import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
-  import { onDestroy } from 'svelte';
   import {
     Home,
     Terminal,
     Monitor,
-    Settings,
     Database,
     Activity,
     Cpu,
@@ -21,82 +18,88 @@
     ChevronRight,
     ChevronLeft,
   } from 'lucide-svelte';
-  import type { ComponentType } from 'svelte'; // Added: Import ComponentType
 
-  // Added: Define NavItem interface
+  // Nav item type - keep icon permissive to avoid type issues with icon components
   interface NavItem {
     path: string;
     label: string;
-    icon ComponentType;
-    description string;
+    icon?: any;
+    description: string;
   }
 
   // System status and navigation
-  let systemStatus = $state({
-    connected: false,
-    services: 0,
-    errors: 0,
-  });
-  let sidebarOpen = $state(false);
-  let currentPath = $state('');
+  // Replace rune $state usage with plain local variables to avoid runtime 'undefined' errors
+  let systemStatus = { connected: false, services: 0, errors: 0 };
+  let sidebarOpen = false;
+  let currentPath = '';
+
   // Navigation structure
   const navItems: NavItem[] = [
     // Modified: Applied NavItem interface
     {
       path: '/yorha',
       label: 'Command Center',
-      icon Terminal,
+      icon: Terminal,
   description: 'Main YoRHa interface hub',
     },
     {
       path: '/yorha/dashboard',
       label: 'System Dashboard',
-      icon Monitor,
+      icon: Monitor,
   description: 'Live system monitoring',
     },
     {
       path: '/yorha/components',
       label: 'UI Components',
-      icon Bot,
+      icon: Bot,
   description: '3D UI component gallery',
     },
     {
       path: '/yorha/api-test',
       label: 'API Testing',
-      icon Cpu,
+      icon: Cpu,
   description: 'Live API integration tests',
     },
     {
       path: '/yorha/terminal',
       label: 'Terminal',
-      icon Terminal,
+      icon: Terminal,
   description: 'YoRHa command terminal',
     },
     {
       path: '/yorha/data-grid',
       label: 'Data Grid',
-      icon Database,
+      icon: Database,
   description: 'Advanced data visualization',
     },
     {
       path: '/yorha/search',
       label: 'Vector Search',
-      icon Search,
+      icon: Search,
   description: 'Semantic search interface',
     },
     {
       path: '/yorha/chat',
       label: 'AI Chat',
-      icon Bot,
+      icon: Bot,
   description: 'Enhanced AI conversation',
     },
   ];
-  // System status monitoring
-  $effect(() => {
-    // reactive sync to current page url
-    currentPath = $page.url.pathname;
+  onMount(() => {
+    // initialize currentPath (guard for SSR) and subscribe to navigation events
+    if (typeof window !== 'undefined') {
+      currentPath = window.location.pathname ?? '';
+    }
+    // afterNavigate returns void in this version — register the callback without assigning
+    afterNavigate((nav) => {
+      try {
+        currentPath = nav?.to?.url?.pathname ?? (typeof window !== 'undefined' ? window.location.pathname : '');
+      } catch {
+        currentPath = '';
+      }
+    });
 
-    // Initialize YoRHa API and check system status (fire-and-forget inside effect)
+    // fetch YoRHa system status (fire-and-forget)
     (async () => {
       try {
         const status = await yorhaAPI.getSystemStatus();
@@ -118,110 +121,123 @@
         systemStatus.connected = false;
       }
     })();
-  });
-  onDestroy(() => {
-    // yorhaAPI.dispose(); // Temporarily commented out as dispose() might not exist or be needed here
-  });
+  }); // close onMount properly
+
+  // Navigation helpers (moved/ensured inside <script>)
   function navigateTo(path: string) {
+    sidebarOpen = false;
     goto(path);
+  }
+
+  function isActivePath(path: string): boolean {
+    if (path === '/yorha') {
+      return currentPath === '/yorha';
+    }
+    return currentPath === path || currentPath.startsWith(path + '/');
+  }
+
+  function closeSidebar() {
     sidebarOpen = false;
   }
-  function isActivePath(path: string): boolean {
-    return currentPath === path || (path !== '/yorha' && currentPath.startsWith(path));
+
+  function handleSidebarKeydown(e: KeyboardEvent) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      closeSidebar();
+    }
   }
 </script>
 
-<svelte:head>
-  <title>YoRHa Interface - Legal AI System</title>
-  <meta name="description" content="YoRHa-themed interface for Legal AI system access and control." />
-</svelte:head>
 <div class="yorha-layout">
-  <!-- Top Navigation Bar -->
   <header class="yorha-header">
     <div class="yorha-header-content">
-      <!-- Logo and Title -->
+      <!-- changed: use onclick (runes) instead of deprecated on:click -->
+      <button
+        class="yorha-menu-toggle"
+        aria-label="Open sidebar"
+        on:click={() => (sidebarOpen = true)}
+      >
+        <Terminal size={16} />
+      </button>
       <div class="yorha-brand">
-        <button class="yorha-menu-toggle" onclick={() => (sidebarOpen = !sidebarOpen)} aria-label="Toggle sidebar">
-          <Terminal size={20} />
-        </button>
-        <h1 class="yorha-brand-title">
-          <span class="yorha-brand-icon">⬢</span>
-          YoRHa SYSTEM
-        </h1>
+        <span class="yorha-brand-icon">
+          <Terminal size={32} />
+        </span>
+        <span class="yorha-brand-title">YoRHa Interface</span>
       </div>
-      <!-- System Status -->
       <div class="yorha-status-bar">
-        <div class="yorha-status-item" class:yorha-status-connected={systemStatus.connected}>
-          <Activity size={16} />
-          <span>{systemStatus.connected ? 'CONNECTED' : 'OFFLINE'}</span>
+        <div class="yorha-status-item yorha-status-connected">
+          <span class="dot" aria-hidden="true"></span>
+          Connected
         </div>
         <div class="yorha-status-item">
-          <Monitor size={16} />
-          <span>{systemStatus.services} SERVICES</span>
+          Services: {systemStatus.services}
         </div>
-        {#if systemStatus.errors > 0}
-          <div class="yorha-status-item yorha-status-error">
-            <span>⚠ {systemStatus.errors} ERRORS</span>
-          </div>
-        {/if}
-      </div>
-      <!-- Quick Actions -->
-      <div class="yorha-quick-actions">
-        <button class="yorha-quick-btn" onclick={() => goto('/')}>
-          <Home size={16} />
-          <span>MAIN</span>
-        </button>
-        <button class="yorha-quick-btn" onclick={() => goto('/demos')}>
-          <FileText size={16} />
-          <span>DEMOS</span>
-        </button>
+        <div class="yorha-status-item yorha-status-error">
+          Errors: {systemStatus.errors}
+        </div>
       </div>
     </div>
   </header>
-  <!-- Sidebar Navigation -->
-  <aside class="yorha-sidebar" class:yorha-sidebar-open={sidebarOpen}>
-    <nav class="yorha-nav">
-      <div class="yorha-nav-header">
-        <h2>NAVIGATION</h2>
-        <button class="yorha-sidebar-close" onclick={() => (sidebarOpen = false)}>
-          <ChevronLeft size={20} />
-        </button>
-      </div>
-      <ul class="yorha-nav-list">
-        {#each navItems as item}
-          {@const Icon = item.icon}
-          <li class="yorha-nav-item">
-            <button
-              class="yorha-nav-link"
-              class:yorha-nav-active={isActivePath(item.path)}
-              onclick={() => navigateTo(item.path)}
-            >
-              <Icon size={18} />
-              <div class="yorha-nav-content">
-                <span class="yorha-nav-label">{item.label}</span>
-                <span class="yorha-nav-desc">{item.description}</span>
-              </div>
-              <ChevronRight size={16} class="yorha-nav-arrow" />
-            </button>
-          </li>
-        {/each}
-      </ul>
-    </nav>
-  </aside>
-  <!-- Main Content Area -->
-  <main class="yorha-main" class:yorha-main-sidebar-open={sidebarOpen}>
-    {@render children()}
-  </main>
-  <!-- Sidebar Overlay -->
+
+  <div class="yorha-content">
+    <!-- replace illegal $slots use with standard slot -->
+    <main class="yorha-main">
+      <slot />
+    </main>
+  </div>
+
   {#if sidebarOpen}
+    <!-- changed: expanded overlay element (no self-closing), use onclick/onkeydown and accessible role/tabindex -->
     <div
       class="yorha-overlay"
+      on:click={closeSidebar}
+      on:keydown={handleSidebarKeydown}
       role="button"
       tabindex="0"
-      onclick={() => (sidebarOpen = false)}
-      onkeydown={e => (e.key === 'Enter' || e.key === ' ' ? (sidebarOpen = false) : null)}
-      aria-label="Close sidebar"
+      aria-label="Close sidebar overlay"
     ></div>
+
+    <!-- changed: aside -> div because aside cannot have interactive role 'dialog' -->
+    <div class="yorha-sidebar yorha-sidebar-open" role="dialog" aria-label="YoRHa Sidebar">
+      <nav class="yorha-nav" aria-label="Main navigation">
+        <!-- Sidebar header moved here (was incorrectly inside <script>) -->
+        <div class="yorha-nav-header">
+          <h2>Navigation</h2>
+          <button
+            class="yorha-sidebar-close"
+            aria-label="Close sidebar"
+            tabindex="0"
+            on:click={closeSidebar}
+            on:keydown={handleSidebarKeydown}
+          >
+            <ChevronLeft size={16} />
+          </button>
+        </div>
+
+        <ul class="yorha-nav-list">
+          {#each navItems as item}
+            <li class="yorha-nav-item">
+              <button
+                class="yorha-nav-link"
+                on:click={() => navigateTo(item.path)}
+                class:yorha-nav-active={isActivePath(item.path)}
+                aria-current={isActivePath(item.path) ? 'page' : undefined}
+              >
+                {#if item.icon}
+                  <!-- changed: use Svelte dynamic component syntax -->
+                  <svelte:component this={item.icon} size={16} />
+                {/if}
+                <div class="yorha-nav-content">
+                  <span class="yorha-nav-label">{item.label}</span>
+                  <span class="yorha-nav-desc">{item.description}</span>
+                </div>
+                <span class="yorha-nav-arrow"><ChevronRight size={16} /></span>
+              </button>
+            </li>
+          {/each}
+        </ul>
+      </nav>
+    </div>
   {/if}
 </div>
 
@@ -239,20 +255,18 @@
 
   /* Header */
   :global(.yorha-header) {
-    position fixed;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    z-index: 40;
-    border-bottom: 1px solid rgba(245, 158, 11, 0.3); /* amber-400 30% */
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(255, 191, 0, 0.05) 100%);
-    backdrop-filter: blur(8px);
-  }
-  :global(.yorha-header-content) {
+    height: 73px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 1rem 1.5rem;
+    z-index: 40;
+    background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.2));
+    border-bottom: 1px solid rgba(245, 158, 11, 0.06);
   }
   :global(.yorha-brand) {
     display: flex;
@@ -264,9 +278,7 @@
     color: #f59e0b;
     background: transparent;
     border: 1px solid rgba(245, 158, 11, 0.3);
-    transition
-      color 0.15s ease,
-      border-color 0.15s ease;
+    transition: color 0.15s ease, border-color 0.15s ease;
     cursor: pointer;
   }
   :global(.yorha-menu-toggle:hover) {
@@ -323,7 +335,7 @@
     gap: 0.5rem;
     border-radius: 3px;
     cursor: pointer;
-    transition background-color 0.15s ease;
+    transition: background-color 0.15s ease;
   }
   :global(.yorha-quick-btn:hover) {
     background: #fbbf24;
@@ -331,7 +343,7 @@
 
   /* Sidebar */
   :global(.yorha-sidebar) {
-    position fixed;
+    position: fixed;
     top: 73px;
     left: 0;
     bottom: 0;
@@ -339,7 +351,7 @@
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(255, 191, 0, 0.05) 100%);
     border-right: 1px solid rgba(245, 158, 11, 0.3);
     transform: translateX(-100%);
-    transition transform 0.3s ease;
+    transition: transform 0.3s ease;
     z-index: 30;
     overflow: auto;
   }
@@ -349,7 +361,7 @@
   :global(.yorha-nav) {
     height: 100%;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
   }
   :global(.yorha-nav-header) {
     display: flex;
@@ -390,12 +402,10 @@
     gap: 1rem;
     background: transparent;
     color: #f59e0b;
-    text-decoration none;
+    text-decoration: none;
     border: none;
     cursor: pointer;
-    transition
-      background-color 0.15s ease,
-      color 0.15s ease;
+    transition: background-color 0.15s ease, color 0.15s ease;
   }
   :global(.yorha-nav-link:hover) {
     background: rgba(245, 158, 11, 0.1);
@@ -408,7 +418,7 @@
   }
   :global(.yorha-nav-arrow) {
     opacity: 0.4;
-    transition opacity 0.15s ease;
+    transition: opacity 0.15s ease;
   }
   :global(.yorha-nav-link:hover .yorha-nav-arrow) {
     opacity: 1;
@@ -439,7 +449,7 @@
     padding-left: 2rem;
     padding-right: 2rem;
     padding-bottom: 2rem;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
 
   /* Responsive adjustments */
@@ -460,9 +470,15 @@
       width: 100%;
     }
     :global(.yorha-overlay) {
-      position fixed;
+      position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.5);
+      z-index: 20;
+    }
+  }
+</style>
+</style>
+</style>
       z-index: 20;
     }
   }

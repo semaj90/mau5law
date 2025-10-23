@@ -9,6 +9,8 @@ import { tmpdir } from 'os';
 import { db } from '$lib/server/db';
 import { sql } from 'drizzle-orm';
 import { queueVectorEmbedding } from '$lib/server/services/background-job-queue';
+import { generateEmbeddings as serverGenerateEmbeddings } from '$lib/server/services/embedding-service';
+import { queueDocumentProcessing, DocumentProcessingJobData } from '$lib/services/queue-service';
 
 const execAsync = promisify(exec);
 
@@ -175,73 +177,38 @@ export const POST = async ({ request, locals }) => {
     // 4. Chunk text (3000 chars, 500 overlap)
     const chunks = chunkText(extractedText, { maxChunkChars: 3000, overlapChars: 500 });
 
-    // 5. Generate embeddings using embeddinggemma:latest from Ollama (primary)
-    console.log('🧠 [Upload] Step 4/6: Generating embeddings...');
+    // 5. Generate embeddings for all chunks via server embedding-service
+    console.log('🧠 [Upload] Step 4/6: Generating embeddings via server embedding-service...');
     let embeddings: number[][] = [];
     let embeddingModel = 'none';
-
     try {
-      // Primary: Try Ollama embeddinggemma:latest first
-      const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
-      console.log(`🔍 [Upload] Trying embeddinggemma:latest from Ollama (${ollamaUrl})...`);
+      const result = await serverGenerateEmbeddings({ texts: chunks, model: 'embeddinggemma:latest' });
+      embeddings = result.embeddings;
+      embeddingModel = result.source || 'server-embedding-service';
+      console.log(`✅ [Upload] Generated ${embeddings.length} embeddings using ${embeddingModel}`);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn('⚠️ [Upload] Server embedding-service failed, falling back to remote services:', msg);
 
-      // Generate embeddings for each chunk using Ollama
-      for (const chunk of chunks) {
-        const ollamaResp = await fetch(`${ollamaUrl}/api/embeddings`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model: 'embeddinggemma:latest',
-            prompt: chunk,
-          }),
-          signal: AbortSignal.timeout(30000), // 30s per chunk
-        });
-
-        if (ollamaResp.ok) {
-          const ollamaData = await ollamaResp.json();
-          if (ollamaData.embedding) {
-            embeddings.push(ollamaData.embedding);
-          }
-        } else {
-          throw new Error(`Ollama returned status ${ollamaResp.status}`);
-        }
-      }
-
-      if (embeddings.length === chunks.length) {
-        embeddingModel = 'embeddinggemma:latest';
-        console.log(`✅ [Upload] Generated ${embeddings.length} embeddings using embeddinggemma:latest from Ollama`);
-      } else {
-        throw new Error('Incomplete embeddings from Ollama');
-      }
-    } catch (ollamaError: unknown) {
-      const msg = ollamaError instanceof Error ? ollamaError.message : String(ollamaError);
-      console.warn(`⚠️ [Upload] embeddinggemma:latest failed: ${msg}. Trying fallback...`);
-      embeddings = []; // Reset
-
-      // Fallback: Try embedding service (nomic-embed-text)
+      // Fallback: Try existing remote fallback embedding service URL
       try {
         const embeddingServiceUrl = process.env.EMBEDDING_SERVICE_URL || 'http://localhost:8094/api/embed';
-        console.log(`🔍 [Upload] Trying fallback embedding service (${embeddingServiceUrl})...`);
-
         const fallbackResp = await fetch(embeddingServiceUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ texts: chunks }),
           signal: AbortSignal.timeout(60000),
         });
-
         if (fallbackResp.ok) {
           const fallbackData = await fallbackResp.json();
           embeddings = fallbackData.embeddings || [];
-          embeddingModel = fallbackData.model || 'nomic-embed-text';
-          console.log(`✅ [Upload] Generated ${embeddings.length} embeddings using ${embeddingModel} (fallback)`);
+          embeddingModel = fallbackData.model || 'nomic-embed-text-fallback';
+          console.log(`✅ [Upload] Generated ${embeddings.length} embeddings using fallback ${embeddingModel}`);
         } else {
           console.warn(`⚠️ [Upload] Fallback embedding service returned status: ${fallbackResp.status}`);
         }
       } catch (fallbackError: unknown) {
-        const msg = fallbackError instanceof Error ? fallbackError.message : String(fallbackError);
-        console.warn('⚠️ [Upload] All embedding services failed:', msg);
-        // Continue without embeddings - document will still be stored
+        console.warn('⚠️ [Upload] All embedding services failed (fallback):', fallbackError);
       }
     }
 
@@ -297,6 +264,32 @@ export const POST = async ({ request, locals }) => {
     } catch (qErr: unknown) {
       const msg = qErr instanceof Error ? qErr.message : String(qErr);
       console.warn('[Upload] Failed to enqueue embedding job:', msg);
+    }
+
+    // Enqueue document processing job (entity extraction, summary, additional embeddings)
+    try {
+      const jobData: DocumentProcessingJobData = {
+        documentId,
+        content: extractedText || `[Stored at minio://${minioResult.bucket}/${minioResult.objectName}]`,
+        documentType: 'legal',
+        caseId: caseId ?? undefined,
+        filePath: `minio://${minioResult.bucket}/${minioResult.objectName}`,
+        options: {
+          extractEntities: true,
+          generateSummary: true,
+          assessRisk: false,
+          generateEmbedding: false, // embedding job already queued
+          storeInDatabase: true,
+          useGemma3Legal: true,
+        },
+      };
+      const { jobId: procJobId, estimated } = (await queueDocumentProcessing(jobData, 1)) as {
+        jobId: string;
+        estimated: number;
+      };
+      console.log(`[Upload] Enqueued document processing job ${procJobId} (est ${estimated}s)`);
+    } catch (procErr: unknown) {
+      console.warn('[Upload] Failed to enqueue document processing job:', procErr);
     }
 
     // 7. Index in Qdrant (fire-and-forget)

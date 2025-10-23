@@ -1,133 +1,297 @@
-// @ts-nocheck - Advanced experimental service
+//Advanced experimental service
 // Enhanced Caching Service - Production Implementation
 // Integrated with NES-Style Cache Orchestrator and Advanced Caching
-import type {     Writable     } from 'svelte/store';
-import { writable } from "svelte/store";
-// Import advanced cache manager for L1-L7 caching integration
-import type { AdvancedCacheManager } from '$lib/caching/advanced-cache-manager';
 // ============================================================================
 // CACHE SERVICE INTERFACE
 // ============================================================================
-}
+
 export interface CacheOptions {
   ttl?: number; // Time to live in milliseconds
   tags?: string[];
   priority?: 'low' | 'medium' | 'high';
   layer?: 'memory' | 'loki' | 'redis' | 'postgres' | 'all';
 }
-}
+
 export interface SearchCacheOptions extends CacheOptions {
   similarity?: number;
   maxResults?: number;
   includeMetadata?: boolean;
 }
+
+// Add narrow interfaces to match runtime usage from external cache modules
+import type { AdvancedCacheManager as AdvancedCacheManagerType } from '../../lib/caching/advanced-cache-manager';
+import type { NESCacheOrchestrator as NESCacheOrchestratorType } from './nes-cache-orchestrator';
+
+type AdvancedCacheManagerLike =
+  | AdvancedCacheManagerType
+  | {
+      initialize?: () => Promise<void>;
+      get?: <T = unknown>(key: string, options?: CacheOptions) => Promise<T | null>;
+      // Accept either TTL number or full options object
+      set?: (
+        key: string,
+        value: unknown,
+        ttlOrOptions?: number | CacheOptions
+      ) => Promise<boolean | undefined> | Promise<void>;
+      getStats?: () => Record<string, unknown>;
+    };
+
+type NESCacheOrchestratorLike =
+  | NESCacheOrchestratorType
+  | {
+      initialize?: () => Promise<void>;
+      getFromOptimalTier?: <T = unknown>(key: string, options?: CacheOptions) => Promise<T | null>;
+      setToOptimalTier?: (
+        key: string,
+        value: unknown,
+        options?: CacheOptions
+      ) => Promise<boolean | undefined> | Promise<void>;
+      // fallback generic API
+      get?: <T = unknown>(key: string, options?: CacheOptions) => Promise<T | null>;
+      set?: (
+        key: string,
+        value: unknown,
+        ttlOrOptions?: number | CacheOptions
+      ) => Promise<boolean | undefined> | Promise<void>;
+      getMemoryUsage?: () => string | number;
+      getCacheHierarchy?: () => unknown;
+      getPerformanceMetrics?: () => unknown;
+    };
+
+// Helper type-guards / wrappers to avoid unsafe 'any' and handle multiple function signatures
+function hasInitialize(obj: unknown): obj is { initialize: () => Promise<void> } {
+  return !!obj && typeof (obj as { initialize?: unknown }).initialize === 'function';
+}
+// removed unused generic parameter to avoid "T is defined but never used"
+function hasConstructorNamed(mod: unknown, name: string): boolean {
+  return !!mod && typeof (mod as Record<string, unknown>)[name] === 'function';
+}
+
+// New runtime helper: safely fetch a method from any object/module using bracket access.
+// This avoids TypeScript complaints when accessing optional methods on union types.
+// NOTE: return `unknown` and cast at call sites to avoid unsafe `Function` or `any`.
+function getMethod(target: unknown, name: string): unknown | undefined {
+  if (!target) return undefined;
+  const maybe = (target as Record<string, unknown>)[name];
+  if (typeof maybe === 'function') {
+    return maybe;
+  }
+  return undefined;
+}
+
+async function tryCallGetter<T>(target: unknown, key: string, options?: CacheOptions): Promise<T | null> {
+  if (!target) return null;
+  // prefer getFromOptimalTier
+  const candidate1 = getMethod(target, 'getFromOptimalTier') as
+    | ((k: string, o?: CacheOptions) => Promise<T | null>)
+    | undefined;
+  if (candidate1) {
+    try {
+      return (await candidate1.call(target, key, options)) as T | null;
+    } catch {
+      /* ignore and try next */
+    }
+  }
+  const candidate2 = getMethod(target, 'get') as ((k: string, o?: CacheOptions) => Promise<T | null>) | undefined;
+  if (candidate2) {
+    try {
+      return (await candidate2.call(target, key, options)) as T | null;
+    } catch {
+      /* ignore */
+    }
+  }
+  return null;
+}
+
+async function tryCallSetter(target: unknown, key: string, value: unknown, options?: CacheOptions): Promise<boolean> {
+  if (!target) return false;
+  const candidateFn = (getMethod(target, 'setToOptimalTier') ?? getMethod(target, 'set')) as
+    | ((k: string, v: unknown, o?: CacheOptions | number) => Promise<boolean | undefined> | Promise<void>)
+    | undefined;
+  if (candidateFn) {
+    // try calling with full options
+    try {
+      const res = await candidateFn.call(target, key, value, options);
+      // treat void/undefined as success
+      return res === undefined ? true : Boolean(res);
+    } catch {
+      // try fallback where third arg is ttl number
+      try {
+        const ttl = options?.ttl;
+        const res2 = await candidateFn.call(target, key, value, typeof ttl === 'number' ? ttl : undefined);
+        return res2 === undefined ? true : Boolean(res2);
+      } catch {
+        return false;
+      }
+    }
+  }
+  return false;
+}
+
 // ============================================================================
 // ENHANCED CACHING SERVICE
 // ============================================================================
 class EnhancedCachingService {
-  private cache = new Map<string, any>();
+  private cache = new Map<string, unknown>();
   private stats = {
     requests: 0,
     hits: 0,
     misses: 0,
-    errors: 0
-  }
-  private nesCacheOrchestrator?: any; // Dynamic import to avoid circular deps
-  private advancedCacheManager?: AdvancedCacheManager; // L1-L7 cache integration
+    errors: 0,
+  };
+  private nesCacheOrchestrator?: NESCacheOrchestratorLike; // Dynamic import to avoid circular deps
+  private advancedCacheManager?: AdvancedCacheManagerLike; // L1-L7 cache integration
   constructor() {
     // Initialize with NES Cache Orchestrator integration
     this.initializeNESCacheOrchestrator();
     this.initializeAdvancedCacheManager();
   }
-  private async initializeNESCacheOrchestrator() {
+  // make public so external helpers can call without unsafe casts
+  public async initializeNESCacheOrchestrator() {
     try {
       // Lazy load the NES cache orchestrator to avoid circular dependencies
-      const { NESCacheOrchestrator } = await import('./nes-cache-orchestrator.js'););
-      this.nesCacheOrchestrator = new NESCacheOrchestrator();
-      await this.nesCacheOrchestrator.initialize();
-    } catch (error: any) {
-      console.warn('NES Cache Orchestrator not available, using fallback cache:', error);
+      const mod = await import('./nes-cache-orchestrator');
+      // module might export a constructor, a singleton, or an initialize fn
+      if (hasInitialize(mod)) {
+        // module exposes initializer
+        const maybeInstance = mod as unknown as NESCacheOrchestratorLike;
+        this.nesCacheOrchestrator = maybeInstance;
+        await this.nesCacheOrchestrator.initialize?.();
+        return;
+      }
+      // constructor exported under named key
+      if (hasConstructorNamed(mod, 'NESCacheOrchestrator')) {
+        const ctor = (mod as Record<string, unknown>).NESCacheOrchestrator as new () => NESCacheOrchestratorLike;
+        this.nesCacheOrchestrator = new ctor();
+        await this.nesCacheOrchestrator.initialize?.();
+        return;
+      }
+      // default export instance or constructor
+      const def = (mod as { default?: unknown }).default;
+      if (def) {
+        if (hasInitialize(def)) {
+          this.nesCacheOrchestrator = def as NESCacheOrchestratorLike;
+          await this.nesCacheOrchestrator.initialize?.();
+        } else if (typeof def === 'function') {
+          // default is a constructor
+          this.nesCacheOrchestrator = new (def as new () => NESCacheOrchestratorLike)();
+          await this.nesCacheOrchestrator.initialize?.();
+        } else {
+          this.nesCacheOrchestrator = def as NESCacheOrchestratorLike;
+          await this.nesCacheOrchestrator.initialize?.();
+        }
+      }
+    } catch (error) {
+      console.warn('NES Cache Orchestrator not available, using fallback cache:', String(error));
     }
   }
-  private async initializeAdvancedCacheManager() {
+  // make public to allow explicit initialization if needed
+  public async initializeAdvancedCacheManager() {
     try {
       // Lazy load the advanced cache manager
-      const { AdvancedCacheManager } = await import('../../lib/caching/advanced-cache-manager.js'););
-      this.advancedCacheManager = new AdvancedCacheManager();
-      await this.advancedCacheManager.initialize();
-    } catch (error: any) {
-      console.warn('Advanced Cache Manager not available, using fallback cache:', error);
+      const imported = await import('../../lib/caching/advanced-cache-manager');
+      if (hasInitialize(imported)) {
+        this.advancedCacheManager = imported as AdvancedCacheManagerLike;
+        await this.advancedCacheManager.initialize?.();
+        return;
+      }
+      if (hasConstructorNamed(imported, 'AdvancedCacheManager')) {
+        const Ctor = (imported as Record<string, unknown>).AdvancedCacheManager as new () => AdvancedCacheManagerLike;
+        this.advancedCacheManager = new Ctor();
+        await this.advancedCacheManager.initialize?.();
+        return;
+      }
+      const def = (imported as { default?: unknown }).default;
+      if (def) {
+        if (hasInitialize(def)) {
+          this.advancedCacheManager = def as AdvancedCacheManagerLike;
+          await this.advancedCacheManager.initialize?.();
+        } else if (typeof def === 'function') {
+          this.advancedCacheManager = new (def as new () => AdvancedCacheManagerLike)();
+          await this.advancedCacheManager.initialize?.();
+        } else {
+          this.advancedCacheManager = def as AdvancedCacheManagerLike;
+          await this.advancedCacheManager.initialize?.();
+        }
+      }
+    } catch (error) {
+      console.warn('Advanced Cache Manager not available, using fallback cache:', String(error));
     }
   }
   // ============================================================================
   // BASIC CACHE OPERATIONS
   // ============================================================================
-  async get<T>(_key: string, options: CacheOptions = {}): Promise<T | null> {
+  async get<T>(key: string, options: CacheOptions = {}): Promise<T | null> {
     this.stats.requests++;
     try {
       // Priority 1: Try NES Cache Orchestrator first (fastest, NES-inspired efficiency)
       if (this.nesCacheOrchestrator && options.layer !== 'memory') {
-        const nesResult = await this.nesCacheOrchestrator.getFromOptimalTier(key, options);
-        if (nesResult !== null) {
+        const nesResult = await tryCallGetter<T>(this.nesCacheOrchestrator, key, options);
+        if (nesResult != null) {
           this.stats.hits++;
           return nesResult;
         }
       }
       // Priority 2: Try Advanced Cache Manager (L1-L7 intelligent tiers)
       if (this.advancedCacheManager && options.layer !== 'memory') {
-        const advancedResult = await this.advancedCacheManager.get(key, options);
-        if (advancedResult !== null) {
-          this.stats.hits++;
-          return advancedResult;
+        const advGet = (this.advancedCacheManager as AdvancedCacheManagerLike).get;
+        if (typeof advGet === 'function') {
+          try {
+            const advancedResult = await (advGet as (k: string, o?: CacheOptions) => Promise<T | null>).call(
+              this.advancedCacheManager,
+              key,
+              options
+            );
+            if (advancedResult != null) {
+              this.stats.hits++;
+              return advancedResult;
+            }
+          } catch {
+            // fallthrough to local cache
+          }
         }
       }
       // Priority 3: Fallback to local cache
-      const result = this.cache.get(key);
-      if (result) {
+      const result = this.cache.get(key) as T | undefined;
+      if (result !== undefined && result !== null) {
         this.stats.hits++;
         return result;
-      } else {
-        this.stats.misses++;
-        return null;
       }
-    } catch (error: any) {
+      this.stats.misses++;
+      return null;
+    } catch (error) {
       this.stats.errors++;
-      console.error('Cache get error:', error);
+      console.error('Cache get error:', String(error));
       return null;
     }
   }
-  async set<T>(_key: string, value: T, options: CacheOptions = {}): Promise<boolean> {
+  async set<T>(key: string, value: T, options: CacheOptions = {}): Promise<boolean> {
     try {
       // Priority 1: Store in NES Cache Orchestrator if available
       if (this.nesCacheOrchestrator && options.layer !== 'memory') {
-        const nesSuccess = await this.nesCacheOrchestrator.setToOptimalTier(key, value, options);
-        if (nesSuccess) {
-          return true;
-        }
+        const nesSuccess = await tryCallSetter(this.nesCacheOrchestrator, key, value, options);
+        if (nesSuccess === true) return true;
       }
       // Priority 2: Store in Advanced Cache Manager (L1-L7 intelligent placement)
       if (this.advancedCacheManager && options.layer !== 'memory') {
-        const advancedSuccess = await this.advancedCacheManager.set(key, value, options);
-        if (advancedSuccess) {
-          return true;
-        }
+        const advancedSuccess = await tryCallSetter(this.advancedCacheManager, key, value, options);
+        if (advancedSuccess === true) return true;
       }
       // Priority 3: Fallback to local cache
-      // @ts-ignore - Cache API compatibility
-      (this.cache as any).set(key, value);
+      this.cache.set(key, value);
       return true;
-    } catch (error: any) {
+    } catch (error) {
       this.stats.errors++;
-      console.error('Cache set error:', error);
+      console.error('Cache set error:', String(error));
       return false;
     }
   }
-  async delete(_key: string): Promise<boolean> {
+  async delete(key: string): Promise<boolean> {
     try {
       return this.cache.delete(key);
-    } catch (error: any) {
+    } catch (error) {
       this.stats.errors++;
-      console.error('Cache delete error:', error);
+      console.error('Cache delete error:', String(error));
       return false;
     }
   }
@@ -135,20 +299,16 @@ class EnhancedCachingService {
     try {
       this.cache.clear();
       return true;
-    } catch (error: any) {
+    } catch (error) {
       this.stats.errors++;
-      console.error('Cache clear error:', error);
+      console.error('Cache clear error:', String(error));
       return false;
     }
   }
   // ============================================================================
   // SPECIALIZED CACHE METHODS
   // ============================================================================
-  async getWithFallback<T>()
-    key: string
-    fallbackFn: () => Promise<T>,
-    options: CacheOptions = {}
-  ): Promise<T>, {
+  async getWithFallback<T>(key: string, fallbackFn: () => Promise<T>, options: CacheOptions = {}): Promise<T> {
     const cached = await this.get<T>(key, options);
     if (cached !== null) {
       return cached;
@@ -158,12 +318,12 @@ class EnhancedCachingService {
     await this.set(key, value, options);
     return value;
   }
-  async batchGet<T>(keys: string[], options: CacheOptions = {}): Promise<Map<string>,>> >>T>> {
+  async batchGet<T>(keys: string[], options: CacheOptions = {}): Promise<Map<string, T>> {
     const results = new Map<string, T>();
     // Individual gets for simple implementation
-    const promises = keys.map(async (key) => {
+    const promises = keys.map(async key => {
       const value = await this.get<T>(key, options);
-      return { key, value });
+      return { key, value };
     });
     const results_array = await Promise.all(promises);
     for (const { key, value } of results_array) {
@@ -173,16 +333,16 @@ class EnhancedCachingService {
     }
     return results;
   }
-  async batchSet<T>(items,: Array<): Promise<boolea,n[>]>> {
+  async batchSet<T>(items: Array<{ key: string; value: T; options?: CacheOptions }>): Promise<boolean[]> {
     // Individual sets for simple implementation
-    const promises = items.map((item) => this.set((item as { key?: any; value?: an,y); options?: any, }).key, (item as { key?: any; value?: any; options?: any }).value, (item as { key?: any; value?: any; options?: any }).options ||, {});
+    const promises = items.map(item => this.set(item.key, item.value, item.options || {}));
     return await Promise.all(promises);
   }
   // ============================================================================
   // LEGAL AI SPECIFIC METHODS
   // ============================================================================
-  async cacheSearchResults(query,: string, result,s: any[], optio,ns: SearchCacheOptions =, {}): Promise<void> {
-    const cacheKey = `search:${this.hashQuery(query)},`;
+  async cacheSearchResults(query: string, results: unknown[], options: SearchCacheOptions = {}): Promise<void> {
+    const cacheKey = `search:${this.hashQuery(query)}`;
     const cacheData = {
       query,
       results,
@@ -190,132 +350,137 @@ class EnhancedCachingService {
       metadata: {
         resultCount: results.length,
         similarity: options.similarity,
-        maxResults: options.maxResults
-      }
-    }
-    await thi,s.set(cacheKey, cacheData, {
+        maxResults: options.maxResults,
+      },
+    };
+    await this.set(cacheKey, cacheData, {
       ttl: options.ttl || 600000, // 10 minutes default for search results
-      tags: ['search', 'legal-ai', ...(options.tags || [)])],
-      priority: options.priority || 'medium'
+      tags: ['search', 'legal-ai', ...(options.tags || [])],
+      priority: options.priority || 'medium',
     });
   }
-  async getCachedSearchResults(query,: string, option,s: SearchCacheOptions = {}): Promise<any[] | null> {
-    const cacheKey = `search:${this.hashQuery(query)},`;
-    const cached = await this.get<any>(cacheKey, options);
-    if (cached, && cached.result,s) {
+  async getCachedSearchResults(query: string, options: SearchCacheOptions = {}): Promise<unknown[] | null> {
+    const cacheKey = `search:${this.hashQuery(query)}`;
+    const cached = await this.get<Record<string, unknown> & { results?: unknown[] }>(cacheKey, options);
+    if (cached && Array.isArray(cached.results)) {
       return cached.results;
     }
     return null;
   }
-  async cacheDocumentAnalysis(documentId,: string, analysi,s: any, optio,ns: CacheOptions =, {}): Promise<void> {
-    const cacheKey = `analysis:${documentId},`;
-    await thi,s.set(cacheKey, analysis, {
+  async cacheDocumentAnalysis(documentId: string, analysis: unknown, options: CacheOptions = {}): Promise<void> {
+    const cacheKey = `analysis:${documentId}`;
+    await this.set(cacheKey, analysis, {
       ttl: options.ttl || 3600000, // 1 hour default for document analysis
-      tags: ['analysis', 'document', documentId, ...(options.tags || [)])],
-      priority: options.priority || 'high'
+      tags: ['analysis', 'document', documentId, ...(options.tags || [])],
+      priority: options.priority || 'high',
     });
   }
-  async getCachedDocumentAnalysis(documentId,: string, option,s: CacheOptions = {}): Promise<any | null> {
-    const cacheKey = `analysis:${documentId},`;
-    return await this.get<any>(cacheKey, options);
+  async getCachedDocumentAnalysis(documentId: string, options: CacheOptions = {}): Promise<unknown | null> {
+    const cacheKey = `analysis:${documentId}`;
+    return await this.get<unknown>(cacheKey, options);
   }
-  async cacheVectorSimilarity(queryHash,: string, result,s: any[], optio,ns: CacheOptions =, {}): Promise<void> {
-    const cacheKey = `vector:${queryHash},`;
-    await thi,s.set(cacheKey, results, {
+  async cacheVectorSimilarity(queryHash: string, results: unknown[], options: CacheOptions = {}): Promise<void> {
+    const cacheKey = `vector:${queryHash}`;
+    await this.set(cacheKey, results, {
       ttl: options.ttl || 1800000, // 30 minutes default for vector results
-      tags: ['vector', 'similarity', ...(options.tags || [)])],
-      priority: options.priority || 'high'
+      tags: ['vector', 'similarity', ...(options.tags || [])],
+      priority: options.priority || 'high',
     });
   }
-  async getCachedVectorSimilarity(queryHash,: string, option,s: CacheOptions = {}): Promise<any[] | null> {
-    const cacheKey = `vector:${queryHash},`;
-    return await this.get<any[]>(cacheKey, options);
+  async getCachedVectorSimilarity(queryHash: string, options: CacheOptions = {}): Promise<unknown[] | null> {
+    const cacheKey = `vector:${queryHash}`;
+    return await this.get<unknown[]>(cacheKey, options);
   }
   // ============================================================================
   // CACHE INVALIDATION
   // ============================================================================
-  async invalidateByTag(tag,: string): Promise<number> {
+  async invalidateByTag(_tag: string): Promise<number> {
     try {
       // Simple implementation: clear all cache
-      await thi,s.clear,();
+      await this.clear();
       return 1;
-    } catch (error: any) {
+    } catch (error) {
       this.stats.errors++;
-      console.error('Cache invalidation error:', error);
+      console.error('Cache invalidation error:', String(error));
       return 0;
     }
   }
-  async invalidateDocument(documentId,: string): Promise<void> {
-    await Promis,e.all([),
-      this.delete(`analysis:${documentId})`),
+  async invalidateDocument(documentId: string): Promise<void> {
+    await Promise.all([
+      this.delete(`analysis:${documentId}`),
       this.invalidateByTag(documentId),
       this.invalidateByTag('document'),
     ]);
   }
-  async invalidateSearchCache(),: Promise<void> {
-    await thi,s.invalidateByTag('search),');
+  async invalidateSearchCache(): Promise<void> {
+    await this.invalidateByTag('search');
   }
   // ============================================================================
   // STATISTICS AND HEALTH
   // ============================================================================
-  async getStats(),: Promise<any> {
-    const layerStats = nul,l; // Simple implementation
+  async getStats(): Promise<Record<string, unknown>> {
+    const layerStats = null; // Simple implementation
     return {
       service: {
         ...this.stats,
-        hitRate: this.stats.requests > 0 ? this.stats.hits / this.stats.requests: 0,
-        errorRate: this.stats.requests > 0 ? this.stats.errors / this.stats.requests : 0
+        hitRate: this.stats.requests > 0 ? this.stats.hits / this.stats.requests : 0,
+        errorRate: this.stats.requests > 0 ? this.stats.errors / this.stats.requests : 0,
       },
-      layers: layerStats
-    }
+      layers: layerStats,
+    };
   }
-  async healthCheck(),: Promise<any> {
-    let serviceHealthy = tru,e;
+  async healthCheck(): Promise<Record<string, unknown>> {
+    let serviceHealthy = true;
     try {
       // Test basic cache operations
-      const testKey = '__health_check__,';
-      await thi,s.set(testKey, 'test),');
-      const result = await this.get(testKey);
-      await thi,s.delete(testKe,y);
+      const testKey = '__health_check__';
+      await this.set(testKey, 'test');
+      const result = await this.get<string>(testKey);
+      await this.delete(testKey);
       serviceHealthy = result === 'test';
-    } catch, {
+    } catch {
       serviceHealthy = false;
     }
-    const layerHealth = nul,l; // Simple implementation
+    const layerHealth = null; // Simple implementation
     return {
       healthy: serviceHealthy,
-      service: serviceHealthy;
-      layers: layerHealth
-    }
+      service: serviceHealthy,
+      layers: layerHealth,
+    };
   }
   // ============================================================================
   // UTILITY METHODS
   // ============================================================================
-  private convertPriority(priority?: 'low' | 'medium' | 'high'),: number {
+  private _convertPriority(priority?: 'low' | 'medium' | 'high'): number {
     switch (priority) {
-      case 'low': return 1;
-      case 'medium': return 5;
-      case 'high': return 10;
-      default: return 5;
+      case 'low':
+        return 1;
+      case 'medium':
+        return 5;
+      case 'high':
+        return 10;
+      default:
+        return 5;
     }
   }
-  private hashQuery(query,: string): string {
+  private hashQuery(query: string): string {
     // Simple hash function for cache keys
     let hash = 0;
-    for (let i = 0; i < query.length; i++) {>
+    for (let i = 0; i < query.length; i++) {
       const char = query.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;>>
-      hash, = hash & hash; // Convert to 32-bit integer
+      hash = (hash << 5) - hash + char;
+      // make 32-bit explicit
+      hash = hash & 0xffffffff;
     }
     return Math.abs(hash).toString(36);
   }
-  resetStats(),: void {
+  resetStats(): void {
     this.stats = {
       requests: 0,
       hits: 0,
       misses: 0,
-      errors: 0
-    }
+      errors: 0,
+    };
   }
 }
 // ============================================================================
@@ -328,60 +493,71 @@ export const cachingService = new EnhancedCachingService();
 export async function initializeNESCacheIntegration(): Promise<boolean> {
   try {
     // Force initialization of NES Cache Orchestrator if not already done
-    await (cachingService as any).initializeNESCacheOrchestrator();
+    await cachingService.initializeNESCacheOrchestrator();
     return true;
-  } catch (error: any) {
-    console.error('Failed to initialize NES Cache integration:', error);
+  } catch (error) {
+    console.error('Failed to initialize NES Cache integration:', String(error));
     return false;
   }
 }
-export function getNESCacheStats(): any {
-  const nesOrchestrator = (cachingService as any).nesCacheOrchestrator;
+export function getNESCacheStats(): Record<string, unknown> {
+  const nesOrchestrator = cachingService['nesCacheOrchestrator'] as NESCacheOrchestratorLike | undefined;
   if (nesOrchestrator) {
+    // Use getMethod helper to avoid "possibly undefined" invocation errors
+    const memFn = getMethod(nesOrchestrator, 'getMemoryUsage') as (() => unknown) | undefined;
+    const hierFn = getMethod(nesOrchestrator, 'getCacheHierarchy') as (() => unknown) | undefined;
+    const perfFn = getMethod(nesOrchestrator, 'getPerformanceMetrics') as (() => unknown) | undefined;
+
     return {
       initialized: true,
-      memoryUsage: nesOrchestrator.getMemoryUsage?.() || 'N/A',
-      cacheHierarchy: nesOrchestrator.getCacheHierarchy?.() || 'N/A',
-      performance: nesOrchestrator.getPerformanceMetrics?.() || 'N/A'
-    }
+      memoryUsage: memFn ? memFn.call(nesOrchestrator) : 'N/A',
+      cacheHierarchy: hierFn ? hierFn.call(nesOrchestrator) : 'N/A',
+      performance: perfFn ? perfFn.call(nesOrchestrator) : 'N/A',
+    };
   }
-  return { initialized: false }
+  return { initialized: false };
 }
-// ============================================================================
-// CONVENIENCE FUNCTIONS
-// ============================================================================
-export async function getCached<T>(_key: string, options?: CacheOptions): Promise<T | null> {
-  return cachingService.get<T>(key, options);
+
+// --- Consolidated Public API Exports ---
+export async function getCacheStats(): Promise<Record<string, unknown>> {
+  return cachingService.getStats();
 }
-export async function setCached<T>(_key: string, value: T, options?: CacheOptions): Promise<boolean> {
-  return cachingService.set(key, value, options);
+
+export async function getCacheHealth(): Promise<Record<string, unknown>> {
+  return cachingService.healthCheck();
 }
-export async function getCachedWithFallback<T>()
-  key: string
-  fallbackFn: () => Promise<T>,
-  options?: CacheOptions;
-): Promise<T> {
+
+export async function getWithFallback<T>(key: string, fallbackFn: () => Promise<T>, options?: CacheOptions): Promise<T> {
   return cachingService.getWithFallback(key, fallbackFn, options);
 }
-export async function cacheSearchResults(query: string, results: any[], options?: SearchCacheOptions): Promise<void> {
+
+export async function cacheSearchResults(
+  query: string,
+  results: unknown[],
+  options?: SearchCacheOptions
+): Promise<void> {
   return cachingService.cacheSearchResults(query, results, options);
 }
-export async function getCachedSearchResults(query: string, options?: SearchCacheOptions): Promise<any[] | null> {
+
+export async function getCachedSearchResults(query: string, options?: SearchCacheOptions): Promise<unknown[] | null> {
   return cachingService.getCachedSearchResults(query, options);
 }
-export async function cacheDocumentAnalysis(documentId: string, analysis: any, options?: CacheOptions): Promise<void> {
+
+export async function cacheDocumentAnalysis(
+  documentId: string,
+  analysis: unknown,
+  options?: CacheOptions
+): Promise<void> {
   return cachingService.cacheDocumentAnalysis(documentId, analysis, options);
 }
-export async function getCachedDocumentAnalysis(documentId: string, options?: CacheOptions): Promise<any | null> {
+
+export async function getCachedDocumentAnalysis(documentId: string, options?: CacheOptions): Promise<unknown | null> {
   return cachingService.getCachedDocumentAnalysis(documentId, options);
 }
+
 export async function invalidateDocument(documentId: string): Promise<void> {
   return cachingService.invalidateDocument(documentId);
 }
-export async function getCacheStats(): Promise<any> {
-  return cachingService.getStats();
-}
-export async function getCacheHealth(): Promise<any> {
-  return cachingService.healthCheck();
-}
+
+// single default export
 export default cachingService;
