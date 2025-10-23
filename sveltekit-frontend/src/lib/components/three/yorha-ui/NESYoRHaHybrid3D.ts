@@ -392,8 +392,14 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
       // 2) TypedArray / ArrayBufferView (Uint8Array, Uint16Array, Float32Array, DataView, etc.)
       if (ArrayBuffer.isView(out)) {
         const view = out as ArrayBufferView; // typed view with buffer/byteOffset/byteLength
-        const offset = typeof (view as { byteOffset?: number }).byteOffset === 'number' ? (view as { byteOffset?: number }).byteOffset! : 0;
-        const byteLength = typeof (view as { byteLength?: number }).byteLength === 'number' ? (view as { byteLength?: number }).byteLength! : view.buffer.byteLength - offset;
+        const offset =
+          typeof (view as { byteOffset?: number }).byteOffset === 'number'
+            ? (view as { byteOffset?: number }).byteOffset!
+            : 0;
+        const byteLength =
+          typeof (view as { byteLength?: number }).byteLength === 'number'
+            ? (view as { byteLength?: number }).byteLength!
+            : view.buffer.byteLength - offset;
         const elementCount = Math.floor(byteLength / Float32Array.BYTES_PER_ELEMENT);
         return new Float32Array(view.buffer, offset, Math.max(0, elementCount));
       }
@@ -409,7 +415,12 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
       }
 
       // 5) Array-like object (has numeric length and numeric indices)
-      if (typeof out === 'object' && out !== null && 'length' in out && typeof (out as { length: unknown }).length === 'number') {
+      if (
+        typeof out === 'object' &&
+        out !== null &&
+        'length' in out &&
+        typeof (out as { length: unknown }).length === 'number'
+      ) {
         const arrayLike = out as ArrayLike<number>;
         return new Float32Array(Array.from(arrayLike));
       }
@@ -895,7 +906,7 @@ export class NESYoRHaHybrid3D extends YoRHa3DComponent {
 
       // Traverse scene to find nested camera
       let cam: THREE.Camera | null = null;
-      current.traverse((obj) => {
+      current.traverse(obj => {
         if (!cam && obj instanceof THREE.Camera) cam = obj;
       });
       if (cam) return cam;

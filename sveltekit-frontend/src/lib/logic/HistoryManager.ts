@@ -1,4 +1,3 @@
-
 // Simple content node interface
 export interface ContentNode {
   type: string;
@@ -25,9 +24,19 @@ export class HistoryManager {
   addSnapshot(_value: ContentNode[]): void {
     // Remove any history after current index (when making changes after undo)
     this.history = this.history.slice(0, this.currentIndex + 1);
+
+    // Deep clone the incoming value and avoid pushing if identical to the current snapshot
+    const snapshot: ContentNode[] = JSON.parse(JSON.stringify(_value));
+    const lastSnapshot = this.history[this.currentIndex];
+    if (lastSnapshot && JSON.stringify(lastSnapshot) === JSON.stringify(snapshot)) {
+      // no changes compared to current snapshot
+      return;
+    }
+
     // Add new snapshot
-    this.history.push(JSON.parse(JSON.stringify(value));
+    this.history.push(snapshot);
     this.currentIndex = this.history.length - 1;
+
     // Limit history size
     if (this.history.length > this.maxHistorySize) {
       this.history = this.history.slice(-this.maxHistorySize);
@@ -40,7 +49,7 @@ export class HistoryManager {
   undo(): ContentNode[] | null {
     if (this.canUndo()) {
       this.currentIndex--;
-      return JSON.parse(JSON.stringify(this.history[this.currentIndex]);
+      return JSON.parse(JSON.stringify(this.history[this.currentIndex]));
     }
     return null;
   }
@@ -50,7 +59,7 @@ export class HistoryManager {
   redo(): ContentNode[] | null {
     if (this.canRedo()) {
       this.currentIndex++;
-      return JSON.parse(JSON.stringify(this.history[this.currentIndex]);
+      return JSON.parse(JSON.stringify(this.history[this.currentIndex]));
     }
     return null;
   }
@@ -71,7 +80,7 @@ export class HistoryManager {
    */
   getCurrentSnapshot(): ContentNode[] | null {
     if (this.currentIndex >= 0 && this.currentIndex < this.history.length) {
-      return JSON.parse(JSON.stringify(this.history[this.currentIndex]);
+      return JSON.parse(JSON.stringify(this.history[this.currentIndex]));
     }
     return null;
   }
@@ -90,7 +99,7 @@ export class HistoryManager {
       totalSnapshots: this.history.length,
       currentIndex: this.currentIndex,
       canUndo: this.canUndo(),
-      canRedo: this.canRedo()
-    }
+      canRedo: this.canRedo(),
+    };
   }
 }

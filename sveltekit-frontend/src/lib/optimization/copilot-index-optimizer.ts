@@ -5,7 +5,8 @@ import type { RAGSearchResult } from "$lib/types/rag";
  * Optimizes the copilot.md context for enhanced GitHub Copilot suggestions
  */
 import { simdIndexProcessor, type CopilotIndex, type CopilotIndexEntry } from './simd-json-index-processor.js';
-import { enhancedRAGStore  } from '$lib/stores/unified";
+import { enhancedRAGStore } from '$lib/stores/unified';
+
 // Context7 MCP integration patterns
 export interface Context7Pattern {
   id: string;
@@ -15,6 +16,7 @@ export interface Context7Pattern {
   boostFactor: number;
   keywords: string[];
 }
+
 // Enhanced index optimization configuration
 export interface OptimizationConfig {
   enableContext7Boost: boolean;
@@ -106,7 +108,8 @@ export class CopilotIndexOptimizer {
     cacheHits: 0,
     totalOptimizations: 0,
     patternMatches: 0
-  }
+  };
+
   constructor(config: Partial<OptimizationConfig> = {}) {
     this.config = {
       enableContext7Boost: true,
@@ -117,7 +120,7 @@ export class CopilotIndexOptimizer {
       maxCacheSize: 1000,
       compressionRatio: 0.7,
       ...config
-    }
+    };
   }
   /**
    * Optimize the copilot.md content for enhanced suggestions
@@ -153,9 +156,10 @@ export class CopilotIndexOptimizer {
       this.performanceMetrics.optimizationTime = performance.now() - startTime;
       this.performanceMetrics.totalOptimizations++;
       return this.optimizedIndex;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Copilot index optimization failed:', error);
-      throw new Error(`Optimization failed: ${error.message}`);
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`Optimization failed: ${message}`);
     }
   }
   /**
@@ -196,7 +200,10 @@ export class CopilotIndexOptimizer {
       const rankedResults = await this.applyIntelligentRanking(query, enhancedResults);
       // Step 4: Filter and limit results
       const finalResults = rankedResults
-        .filter((result: any) => (result as { score?: any; document?: any; explanation?: any; type?: any }).score >= this.config.minRelevanceThreshold)
+        .filter((result) => {
+          const r = result as RAGSearchResult & Record<string, unknown>;
+          return typeof r.score === 'number' && r.score >= this.config.minRelevanceThreshold;
+        })
         .slice(0, limit);
       // Cache results
       if (useCache && this.searchCache.size < this.config.maxCacheSize) {
@@ -204,9 +211,10 @@ export class CopilotIndexOptimizer {
       }
       this.performanceMetrics.searchTime += performance.now() - startTime;
       return finalResults;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Enhanced semantic search failed:', error);
-      throw new Error(`Search failed: ${error.message}`);
+      const message = error instanceof Error ? error.message : String(error);
+      throw new Error(`Search failed: ${message}`);
     }
   }
 
@@ -226,7 +234,7 @@ export class CopilotIndexOptimizer {
       return suggestions
         .sort((a: CopilotSuggestion, b: CopilotSuggestion) => b.priority * b.confidence - a.priority * a.confidence)
         .slice(0, 10);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Suggestion generation failed:', error);
       return [];
     }
@@ -279,7 +287,7 @@ export class CopilotIndexOptimizer {
     // Split by headers and code blocks
     const headerRegex = /^(#{1,6})\s+(.+)$/gm;
     const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
-    let lastIndex = 0;
+    // lastIndex removed (unused)
     let match;
     let sectionId = 0;
     // Extract headers and their content
@@ -291,7 +299,7 @@ export class CopilotIndexOptimizer {
       const nextHeaderRegex = new RegExp(`^#{1,${headerLevel}}\\s+`, 'gm');
       nextHeaderRegex.lastIndex = headerStart + match[0].length;
       const nextMatch = nextHeaderRegex.exec(content);
-      const sectionEnd = nextMatch ? nextMatch.index: content.length;
+      const sectionEnd = nextMatch ? nextMatch.index : content.length;
       const sectionContent = content.substring(headerStart, sectionEnd);
       sections.push({
         id: `section_${sectionId++}`,
@@ -320,15 +328,15 @@ export class CopilotIndexOptimizer {
    * Apply Context7 patterns to boost relevant entries
    */
   private async applyContext7Patterns(entries: CopilotIndexEntry[]): Promise<CopilotIndexEntry[]> {
-    return entries.map((entry: any) => {
+    return entries.map((entry: CopilotIndexEntry) => {
       const matchingPatterns = this.findMatchingPatterns(entry.content);
       if (matchingPatterns.length > 0) {
         // Calculate boost based on matching patterns
         const totalBoost = matchingPatterns.reduce((sum, pattern) => sum + pattern.boostFactor, 0);
         // Apply boost to relevance score
-        entry.metadata.relevanceScore = Math.min(1.0, entry.metadata.relevanceScore + totalBoost);
+        entry.metadata.relevanceScore = Math.min(1.0, (entry.metadata.relevanceScore ?? 0) + totalBoost);
         // Update priority if we have high-priority patterns
-        const hasHighPriority = matchingPatterns.some((p: any) => p.priority === 'high');
+        const hasHighPriority = matchingPatterns.some((p) => p.priority === 'high');
         if (hasHighPriority && entry.metadata.priority !== 'high') {
           entry.metadata.priority = 'high';
         }
@@ -342,25 +350,26 @@ export class CopilotIndexOptimizer {
    */
   private async applyContext7Boosting(query: string, results: RAGSearchResult[]): Promise<RAGSearchResult[]> {
     const queryPatterns = this.findMatchingPatterns(query);
-    return results.map((result: any) => {
-      const contentPatterns = this.findMatchingPatterns((result as { score?: any; document?: any; explanation?: any; type?: any }).document.content);
+    return results.map((result) => {
+      const r = result as RAGSearchResult & Record<string, any>;
+      const contentPatterns = this.findMatchingPatterns(String(r.document?.content ?? ''));
       // Find overlapping patterns between query and content
-      const overlappingPatterns = queryPatterns.filter((qp: any) =>
-        contentPatterns.some((cp: any) => cp.category === qp.category)
+      const overlappingPatterns = queryPatterns.filter((qp) =>
+        contentPatterns.some((cp) => cp.category === qp.category)
       );
       if (overlappingPatterns.length > 0) {
         const boost = overlappingPatterns.reduce((sum, pattern) => sum + pattern.boostFactor, 0);
-        (result as { score?: any; document?: any; explanation?: any; type?: any }).score = Math.min(1.0, (result as { score?: any; document?: any; explanation?: any; type?: any }).score + boost);
-        (result as { score?: any; document?: any; explanation?: any; type?: any }).explanation += ` [Context7 boost: +${boost.toFixed(2)}]`;
+        r.score = Math.min(1.0, (typeof r.score === 'number' ? r.score : 0) + boost);
+        r.explanation = String((r.explanation ?? '') + ` [Context7 boost: +${boost.toFixed(2)}]`);
       }
       // Ensure required properties are present
-      if (!(result as { score?: any; document?: any; explanation?: any; type?: any }).type && (result as { score?: any; document?: any; explanation?: any; type?: any }).document?.type) {
-        (result as { score?: any; document?: any; explanation?: any; type?: any }).type = (result as { score?: any; document?: any; explanation?: any; type?: any }).document.type;
+      if (!r.type && r.document?.type) {
+        r.type = r.document.type;
       }
-      if (!(result as { score?: any; document?: any; explanation?: any; type?: any }).type) {
-        (result as { score?: any; document?: any; explanation?: any; type?: any }).type = 'document'; // Default fallback
+      if (!r.type) {
+        r.type = 'document'; // Default fallback
       }
-      return result;
+      return r as RAGSearchResult;
     });
   }
   /**
@@ -371,12 +380,12 @@ export class CopilotIndexOptimizer {
     if (this.patternCache.has(cacheKey)) {
       return this.patternCache.get(cacheKey)!;
     }
-    const matchingPatterns = CONTEXT7_PATTERNS.filter((pattern: any) => {
+    const matchingPatterns = CONTEXT7_PATTERNS.filter((pattern: Context7Pattern) => {
       // Check if pattern regex matches content
       const regex = new RegExp(pattern.pattern, 'gi');
       const hasMatch = regex.test(content);
       // Check if any keywords are present
-      const hasKeywords = pattern.keywords.some((keyword: any) =>
+      const hasKeywords = pattern.keywords.some((keyword: string) =>
         content.toLowerCase().includes(keyword.toLowerCase())
       );
       return hasMatch || hasKeywords;
@@ -392,7 +401,8 @@ export class CopilotIndexOptimizer {
     const { somRAG } = enhancedRAGStore;
     // Train with all embeddings
     for (const entry of entries) {
-      await somRAG.trainIncremental(Array.from(entry.embedding), {
+      // if embedding is Float32Array, convert to Array<number>
+      await somRAG.trainIncremental(Array.from(entry.embedding || []), {
         id: entry.id,
         title: entry.filePath.split('/').pop() || entry.id,
         content: entry.content,
@@ -411,12 +421,13 @@ export class CopilotIndexOptimizer {
       });
     }
     const booleanClusters = somRAG.getClusters();
-    // Transform BooleanCluster to expected format
-    return booleanClusters.map((cluster, index) => ({
+    // Define a small cluster type to avoid 'any'
+    type BooleanCluster = { members?: Array<{ id: string }>; terms?: string[] };
+    return (booleanClusters as BooleanCluster[]).map((cluster: BooleanCluster, index: number) => ({
       id: `cluster_${index}`,
-      centroid: new Float32Array([]), // Empty for now, could be calculated from members
-      memberIds: [], // Could be extracted from cluster data if available
-      relevantTerms: [], // Could be derived from cluster analysis
+      centroid: new Float32Array([]),
+      memberIds: Array.isArray(cluster.members) ? cluster.members.map((m) => m.id) : [],
+      relevantTerms: cluster.terms || []
     }));
   }
   /**
@@ -425,17 +436,16 @@ export class CopilotIndexOptimizer {
   private async createOptimizedSearchIndex(entries: CopilotIndexEntry[]) {
     // Create inverted index for fast text search
     const invertedIndex = new Map<string, string[]>();
-    entries.forEach((entry: any) => {
-      const words = entry.content
+    entries.forEach((entry: CopilotIndexEntry) => {
+      const words = (entry.content || '')
         .toLowerCase()
         .replace(/[^\w\s]/g, ' ')
         .split(/\s+/)
-        .filter((word: any) => word.length > 2);
-      words.forEach((word: any) => {
-        if (!invertedIndex.has(word)) {
-          invertedIndex.set(word, []);
-        }
-        invertedIndex.get(word)!.push(entry.id);
+        .filter((w: string) => w.length > 2);
+      words.forEach((word: string) => {
+        const list = invertedIndex.get(word) || [];
+        list.push(entry.id);
+        invertedIndex.set(word, list);
       });
     });
     return invertedIndex;
@@ -444,19 +454,15 @@ export class CopilotIndexOptimizer {
    * Apply performance optimizations
    */
   private async applyPerformanceOptimizations(entries: CopilotIndexEntry[]): Promise<CopilotIndexEntry[]> {
-    if (!this.config.enablePerformanceOptimization) {
-      return entries;
-    }
-    // Sort by relevance and priority
-    entries.sort((a, b) => {
-      const priorityWeight = { high: 3, medium: 2, low: 1 }
-      const aScore = a.metadata.relevanceScore + (priorityWeight[a.metadata.priority] * 0.1);
-      const bScore = b.metadata.relevanceScore + (priorityWeight[b.metadata.priority] * 0.1);
+    if (!this.config.enablePerformanceOptimization) return entries;
+    const priorityWeight: Record<string, number> = { high: 3, medium: 2, low: 1 };
+    entries.sort((a: any, b: any) => {
+      const aScore = (a.metadata?.relevanceScore || 0) + (priorityWeight[a.metadata?.priority || 'medium'] * 0.1);
+      const bScore = (b.metadata?.relevanceScore || 0) + (priorityWeight[b.metadata?.priority || 'medium'] * 0.1);
       return bScore - aScore;
     });
-    // Apply compression to reduce memory usage
     if (this.config.compressionRatio < 1.0) {
-      const targetSize = Math.floor(entries.length * this.config.compressionRatio);
+      const targetSize = Math.max(1, Math.floor(entries.length * this.config.compressionRatio));
       entries = entries.slice(0, targetSize);
     }
     return entries;
@@ -465,29 +471,22 @@ export class CopilotIndexOptimizer {
    * Apply intelligent ranking based on multiple factors
    */
   private async applyIntelligentRanking(query: string, results: RAGSearchResult[]): Promise<RAGSearchResult[]> {
-    const queryPatterns = this.findMatchingPatterns(query);
     const queryEmbedding = await simdIndexProcessor.generateEmbeddings(query);
-    return results.map((result: any) => {
-      let finalScore = (result as { score?: any; document?: any; explanation?: any; type?: any }).score;
-      // Factor 1: Semantic similarity (already calculated)
-      // Factor 2: Pattern matching bonus
-      const contentPatterns = this.findMatchingPatterns((result as { score?: any; document?: any; explanation?: any; type?: any }).document.content);
+    return results.map((result) => {
+      const r = result as RAGSearchResult & Record<string, any>;
+      let finalScore = typeof r.score === 'number' ? r.score : 0;
+      const content = String(r.document?.content ?? '');
+      const contentPatterns = this.findMatchingPatterns(content);
       const patternBonus = contentPatterns.length * 0.05;
-      // Factor 3: Priority bonus
-      const priorityBonus = (result as { score?: any; document?: any; explanation?: any; type?: any }).document.metadata.practiceArea?.[0] === 'enhanced_local_index' ? 0.1 : 0;
-      // Factor 4: Recency bonus (for newer content)
-      const age = Date.now() - (result as { score?: any; document?: any; explanation?: any; type?: any }).document.metadata.lastModified.getTime();
-      const recencyBonus = Math.max(0, 0.05 - (age / (1000 * 60 * 60 * 24 * 30))); // Decay over 30 days
+      const priorityBonus = (r.document?.metadata?.practiceArea?.[0] === 'enhanced_local_index') ? 0.1 : 0;
+      const lastModified = r.document?.metadata?.lastModified;
+      const age = lastModified instanceof Date ? (Date.now() - lastModified.getTime()) : Number.MAX_SAFE_INTEGER;
+      const recencyBonus = Math.max(0, 0.05 - (age / (1000 * 60 * 60 * 24 * 30)));
       finalScore = Math.min(1.0, finalScore + patternBonus + priorityBonus + recencyBonus);
-      (result as { score?: any; document?: any; explanation?: any; type?: any }).score = finalScore;
-      // Ensure required properties are present
-      if (!(result as { score?: any; document?: any; explanation?: any; type?: any }).type && (result as { score?: any; document?: any; explanation?: any; type?: any }).document?.type) {
-        (result as { score?: any; document?: any; explanation?: any; type?: any }).type = (result as { score?: any; document?: any; explanation?: any; type?: any }).document.type;
-      }
-      if (!(result as { score?: any; document?: any; explanation?: any; type?: any }).type) {
-        (result as { score?: any; document?: any; explanation?: any; type?: any }).type = 'document'; // Default fallback
-      }
-      return result;
+      r.score = finalScore;
+      if (!r.type && r.document?.type) r.type = r.document.type;
+      if (!r.type) r.type = 'document';
+      return r as RAGSearchResult;
     });
   }
   /**
@@ -636,30 +635,33 @@ export class CopilotIndexOptimizer {
       return 'high';
     }
     if (highPriorityPatterns.some((pattern: string) => code.includes(pattern))) {
-    if (highPriorityPatterns.some((pattern: string) => code.includes(pattern))) {
       return 'high';
     }
     return 'medium';
+  }
+
   private calculateIndexSize(entries: CopilotIndexEntry[]): number {
     const totalBytes = entries.reduce((sum, entry) => {
-  private, calculateIndexSize(entrie,s: CopilotIndexEntry[,]): numb,er {
-    const totalBytes = entries.reduce((sum, entry) => {
-      return sum + entry.content.length + (entry.embedding.length * 4); // 4 bytes per float
+      const contentBytes = (entry.content || '').length;
+      const embeddingBytes = (entry.embedding ? entry.embedding.length * 4 : 0);
+      return sum + contentBytes + embeddingBytes;
     }, 0);
-    return totalBytes / (1024 * 1024); // Convert to MB
+    return totalBytes / (1024 * 1024);
   }
-  private, hashContent(conten,t: strin,g): stri,ng {
-    let hash =, 0;
-    for (let i =, 0; i < cont,ent.le,ng,th;, i++) {
+
+  private hashContent(content: string): string {
+    // simple non-cryptographic hash -> base36 string
+    let hash = 0;
+    for (let i = 0; i < content.length; i++) {
       const char = content.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
-      hash = hash & hash;
+      hash |= 0;
     }
-    return hash.toString(36);
+    return Math.abs(hash).toString(36);
   }
-  private async integrateWithRAG(), {
+
+  private async integrateWithRAG(): Promise<void> {
     if (!this.optimizedIndex) return;
-    // Add optimized entries to RAG store
     for (const entry of this.optimizedIndex.entries) {
       const ragDocument = {
         id: entry.id,
@@ -678,25 +680,21 @@ export class CopilotIndexOptimizer {
           tags: [entry.metadata.priority, entry.metadata.source]
         },
         version: '1.0'
-      }
+      };
       await enhancedRAGStore.addDocument(ragDocument);
     }
   }
-  /**
-   * Performance monitoring
-   */
-  getPerformanceMetrics(), {
+
+  getPerformanceMetrics() {
     return {
       ...this.performanceMetrics,
       cacheHitRate: this.performanceMetrics.cacheHits / Math.max(this.performanceMetrics.totalOptimizations, 1),
       avgOptimizationTime: this.performanceMetrics.optimizationTime / Math.max(this.performanceMetrics.totalOptimizations, 1),
-      avgSearchTime: this.performanceMetrics.searchTime / Math.max(this.performanceMetrics.totalOptimizations, 1)
+      avgSearchTime: this.performanceMetrics.searchTime / Math.max(1, this.performanceMetrics.totalOptimizations)
     };
   }
-  /**
-   * Clear caches and reset
-   */
-  clearCaches(), {
+
+  clearCaches() {
     this.patternCache.clear();
     this.searchCache.clear();
     this.performanceMetrics = {
@@ -707,7 +705,37 @@ export class CopilotIndexOptimizer {
       patternMatches: 0,
     };
   }
+
+  /**
+   * Simple semantic chunker for copilot sections (used by parseCopilotContent)
+   */
+  private async generateSemanticChunks(content: string, maxChunkSize = 800): Promise<string[]> {
+    const paragraphs = content.split(/\n\s*\n/).map(p => p.trim()).filter(p => p.length > 0);
+    const chunks: string[] = [];
+    for (const para of paragraphs) {
+      if (para.length <= maxChunkSize) {
+        chunks.push(para);
+        continue;
+      }
+      // fallback: split long paragraph by sentences
+      const sentences = para.split(/(?<=[.?!])\s+/);
+      let buffer = '';
+      for (const sentence of sentences) {
+        if ((buffer + ' ' + sentence).trim().length <= maxChunkSize) {
+          buffer = (buffer + ' ' + sentence).trim();
+        } else {
+          if (buffer) chunks.push(buffer);
+          buffer = sentence.trim();
+        }
+      }
+      if (buffer) chunks.push(buffer);
+    }
+    // Ensure at least one chunk
+    if (chunks.length === 0 && content.trim().length > 0) chunks.push(content.trim().slice(0, maxChunkSize));
+    return chunks;
+  }
 }
+
 // Export singleton instance
 export const copilotIndexOptimizer = new CopilotIndexOptimizer({
   enableContext7Boost: true,
@@ -718,6 +746,7 @@ export const copilotIndexOptimizer = new CopilotIndexOptimizer({
   maxCacheSize: 500,
   compressionRatio: 0.8
 });
+
 // API endpoint to trigger optimization
 export const POST: RequestHandler = async ({ request }) => {
   try {

@@ -1,5 +1,5 @@
-import type { LegalDocument, Evidence, User } from "$lib/types/legal-types";
-import crypto from "crypto";
+import type { LegalDocument, Evidence } from '$lib/types/legal-types';
+import crypto from 'crypto';
 // SIMD-optimized JSON parser for legal document processing
 // Achieves 4-6 GB/s parsing speed for large legal documents
 /**
@@ -19,40 +19,47 @@ export class SIMDJSONParser {
       // Use Web Worker for SIMD operations to avoid blocking main thread
       this.worker = new Worker('/workers/simd-json-worker.js');
       this.initialized = true;
-    } catch (error: any) {
-      console.warn('SIMD Worker not available, falling back to native JSON');
+    } catch (error: unknown) {
+      console.warn('SIMD Worker not available, falling back to native JSON', error);
     }
   }
   /**
    * Parse large JSON buffer with SIMD acceleration
    * Target: 4-6 GB/s throughput for legal document processing
    */
-  async parseBuffer(buffer: ArrayBuffer | SharedArrayBuffer): Promise<any> {
+  async parseBuffer(buffer: ArrayBuffer | SharedArrayBuffer): Promise<unknown> {
     if (!this.initialized || !this.worker) {
       return this.fallbackParse(buffer);
     }
-    return new Promise((resolve, reject) => {
+
+    type WorkerResponse = { error?: string; result?: unknown };
+
+    return new Promise<unknown>((resolve, reject) => {
       const timeoutId = setTimeout(() => {
-        reject(new Error('SIMD JSON parsing timeout');
+        reject(new Error('SIMD JSON parsing timeout'));
       }, 30000); // 30 second timeout
-      this.worker!.onmessage = (_event: any) => {
+
+      this.worker!.onmessage = (event: MessageEvent) => {
         clearTimeout(timeoutId);
-        if (event.data.error) {
-          reject(new Error(event.data.error);
+        const data = (event.data as WorkerResponse) ?? {};
+        if (data && data.error) {
+          reject(new Error(String(data.error)));
         } else {
-          resolve(event.data.result);
+          resolve(data.result);
         }
-      }
-      this.worker!.onerror = (error) => {
+      };
+
+      this.worker!.onerror = (error: ErrorEvent) => {
         clearTimeout(timeoutId);
         reject(error);
-      }
-      // Transfer buffer to worker for processing
-      this.worker!.postMessage({ buffer }, [buffer]);
+      };
+
+      // Transfer buffer to worker for processing - cast to Transferable in a type-safe way
+      this.worker!.postMessage({ buffer }, [buffer as unknown as Transferable]);
     });
   }
   /**
-   * Parse legal document JSON with validation and optimization
+   * Parse legal document string into LegalDocument object
    */
   async parseLegalDocument(jsonString: string): Promise<LegalDocument> {
     const encoded = new TextEncoder().encode(jsonString);
@@ -68,23 +75,26 @@ export class SIMDJSONParser {
     const encoded = new TextEncoder().encode(jsonString);
     const buffer = encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
     const parsed = await this.parseBuffer(buffer);
+
     if (!Array.isArray(parsed)) {
       throw new Error('Expected evidence array');
     }
-    return parsed.map((item: any) => this.validateEvidence(item);
+
+    return parsed.map((item: unknown) => this.validateEvidence(item));
   }
   /**
    * Parse streaming legal case data (for real-time processing)
    */
-  async parseStreamingCaseData(chunks: string[]): Promise<any[]> {
-    const results = [];
+  async parseStreamingCaseData(chunks: string[]): Promise<unknown[]> {
+    const results: unknown[] = [];
     // Process chunks in parallel using SIMD
-    const promises = chunks.map(async (chunk) => {
+    const promises = chunks.map(async chunk => {
       const encoded = new TextEncoder().encode(chunk);
       const buffer = encoded.buffer.slice(encoded.byteOffset, encoded.byteOffset + encoded.byteLength);
       return this.parseBuffer(buffer);
     });
-    const parsedChunks = await Promise.all(promises);
+    const parsedChunks = (await Promise.all(promises)) as unknown[];
+
     // Merge and deduplicate results
     for (const chunk of parsedChunks) {
       if (Array.isArray(chunk)) {
@@ -107,40 +117,87 @@ export class SIMDJSONParser {
   /**
    * Validate legal document structure and sanitize sensitive data
    */
-  private validateLegalDocument(data: any): LegalDocument {
+  private validateLegalDocument(data: unknown): LegalDocument {
     if (!data || typeof data !== 'object') {
       throw new Error('Invalid legal document format');
     }
-    // Ensure required fields exist
-    const required = ['id', 'title', 'documentType'];
-    for (const field of required) {
-      if (!data[field]) {
-        throw new Error(`Missing required field: ${field}`);
-      }
+    const obj = data as Record<string, unknown>;
+
+    // Ensure required fields exist and are strings
+    const id = obj.id;
+    const title = obj.title;
+    const documentType = obj.documentType;
+    if (typeof id !== 'string') throw new Error('Missing or invalid field: id');
+    if (typeof title !== 'string') throw new Error('Missing or invalid field: title');
+    if (typeof documentType !== 'string') throw new Error('Missing or invalid field: documentType');
+
+    // Normalize documentType to allowed union values
+    const allowedDocumentTypes = new Set([
+      'motion', 'brief', 'contract', 'evidence', 'correspondence', 'pleading',
+      'statute', 'regulation', 'case_law', 'memo', 'other'
+    ]);
+    const documentTypeNormalized = allowedDocumentTypes.has(documentType)
+      ? (documentType as LegalDocument['documentType'])
+      : 'other';
+    
+    // Build a sanitized LegalDocument object (preserve known optional fields where safe)
+    const doc: Partial<LegalDocument> = {
+      id,
+      title,
+      documentType: documentTypeNormalized,
+    };
+
+    if (typeof obj.content === 'string') doc.content = obj.content;
+    if (Array.isArray(obj.parties)) doc.parties = obj.parties as unknown as LegalDocument['parties'];
+    // citations may not be declared on the LegalDocument type in this codebase;
+    // assign it via a safe index signature to avoid TS errors while preserving runtime data.
+    if (Array.isArray(obj.citations)) (doc as Record<string, unknown>).citations = obj.citations;
+
+    if (typeof obj.socialSecurityNumber === 'string') {
+      (doc as Record<string, unknown>).socialSecurityNumber = this.maskSensitiveData(obj.socialSecurityNumber);
     }
-    // Sanitize sensitive fields
-    if (data.socialSecurityNumber) {
-      data.socialSecurityNumber = this.maskSensitiveData(data.socialSecurityNumber);
-    }
-    return data as LegalDocument;
+
+    return doc as LegalDocument;
   }
   /**
    * Validate evidence structure
    */
-  private validateEvidence(data: any): Evidence {
+  private validateEvidence(data: unknown): Evidence {
     if (!data || typeof data !== 'object') {
       throw new Error('Invalid evidence format');
     }
-    // Ensure required fields
-    if (!data.id || !data.title || !data.evidenceType) {
-      throw new Error('Missing required evidence fields');
-    }
-    return data as Evidence;
+    const obj = data as Record<string, unknown>;
+    const id = obj.id;
+    const title = obj.title;
+    const evidenceType = obj.evidenceType;
+
+    if (typeof id !== 'string') throw new Error('Missing or invalid evidence field: id');
+    if (typeof title !== 'string') throw new Error('Missing or invalid evidence field: title');
+    if (typeof evidenceType !== 'string') throw new Error('Missing or invalid evidence field: evidenceType');
+
+    // Normalize evidenceType to allowed union values
+    const allowedEvidenceTypes = new Set([
+      'other', 'document', 'image', 'video', 'audio', 'digital', 'physical', 'testimony'
+    ]);
+    const evidenceTypeNormalized = allowedEvidenceTypes.has(evidenceType)
+      ? (evidenceType as Evidence['evidenceType'])
+      : 'other';
+    
+    const ev: Partial<Evidence> = {
+      id,
+      title,
+      evidenceType: evidenceTypeNormalized,
+    };
+
+    if (typeof obj.description === 'string') ev.description = obj.description;
+    if (obj.metadata && typeof obj.metadata === 'object') ev.metadata = obj.metadata as Record<string, unknown>;
+
+    return ev as Evidence;
   }
   /**
    * Mask sensitive data for compliance
    */
-  private maskSensitiveData(_value: string): string {
+  private maskSensitiveData(value: string): string {
     if (typeof value !== 'string') return '';
     // Mask all but last 4 characters
     if (value.length > 4) {
@@ -155,17 +212,25 @@ export class SIMDJSONParser {
     return {
       simdEnabled: this.initialized,
       workerAvailable: !!this.worker,
-      memoryUsage: this.getMemoryUsage()
-    }
+      memoryUsage: this.getMemoryUsage(),
+    };
   }
   private getMemoryUsage() {
-    if (typeof performance !== 'undefined' && (performance as any).memory) {
-      const memory = (performance as any).memory;
+    type PerformanceMemory = {
+      usedJSHeapSize: number;
+      totalJSHeapSize: number;
+      jsHeapSizeLimit: number;
+    };
+    const perf = (typeof performance !== 'undefined' ? performance : undefined) as
+      | (Performance & { memory?: PerformanceMemory })
+      | undefined;
+    if (perf?.memory) {
+      const memory = perf.memory;
       return {
         used: Math.round(memory.usedJSHeapSize / 1024 / 1024), // MB
-        total: Math.round(memory.totalJSHeapSize / 1024 / 1024), // MB;
+        total: Math.round(memory.totalJSHeapSize / 1024 / 1024), // MB
         limit: Math.round(memory.jsHeapSizeLimit / 1024 / 1024), // MB
-      }
+      };
     }
     return null;
   }
@@ -189,8 +254,8 @@ export class SIMDPerformanceTester {
     const results = {
       simd: 0,
       native: 0,
-      speedup: 0
-    }
+      speedup: 0,
+    };
     // Test SIMD parsing
     const simdStart = performance.now();
     for (let i = 0; i < iterations; i++) {
@@ -221,8 +286,8 @@ export class SIMDPerformanceTester {
     return {
       sizeGB: sizeGB.toFixed(3),
       elapsed: elapsed.toFixed(3),
-      throughput: throughput.toFixed(2)
-    }
+      throughput: throughput.toFixed(2),
+    };
   }
   private static generateTestLegalDocument(sizeKB: number) {
     const baseDoc = {
@@ -231,8 +296,8 @@ export class SIMDPerformanceTester {
       documentType: 'contract',
       content: '',
       parties: [],
-      citations: []
-    }
+      citations: [],
+    };
     // Fill with test data to reach target size
     const targetSize = sizeKB * 1024;
     let content = '';

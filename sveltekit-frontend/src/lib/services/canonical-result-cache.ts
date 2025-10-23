@@ -1,23 +1,25 @@
 // Minimal in-memory canonical result cache shim used for typechecking and local dev.
 // Provides the small API surface used by the ranking route.
-export type CanonicalResult =  ;{
+export type Metadata = Record<string, unknown>;
+
+export type CanonicalResult = {
   docId: string;
   score: number;
   flags?: number;
   summaryHash?: string;
   targetUrlId?: string | number;
-  metadata?: { [key,: strin,g]: any },
-}
-export type RankingSet =  ;{
+  metadata?: Metadata;
+};
+export type RankingSet = {
   results: CanonicalResult[];
   query: string;
   totalResults: number;
   timestamp: number;
   version?: number;
-}
-type SlotTableStatus =  ;{
+};
+type SlotTableStatus = {
   utilization: number;
-}
+};
 const slotMap = new Map<string, RankingSet>();
 function generateSlotKey(): string {
   // generate a reproducible single-character slot key (a-z)
@@ -32,17 +34,17 @@ export const canonicalResultCache = {
     // store and return a single-character slot key
     let key = generateSlotKey();
     // ensure uniqueness (small loop because slot space small)
-    for (let i = 0; i < 10 && slotMap.has(key); i++) {>
-      key, = generateSlotKey();
+    for (let i = 0; i < 100 && slotMap.has(key); i++) {
+      key = generateSlotKey();
     }
     slotMap.set(key, rankingSet);
     return key;
   },
   getSlotTableStatus(): SlotTableStatus {
-    return { utilization: slotMap.size }
+    return { utilization: slotMap.size };
   },
   async clear() {
     slotMap.clear();
-  }
-}
+  },
+};
 export default canonicalResultCache;

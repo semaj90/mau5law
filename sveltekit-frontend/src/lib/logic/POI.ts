@@ -1,5 +1,4 @@
-
-import { writable, type Writable } from "svelte/store";
+import { writable, type Writable } from 'svelte/store';
 // Interface for the structured profile data (Who, What, Why, How)
 export interface POIProfile {
   who: string; // Biography, background, identity
@@ -60,7 +59,7 @@ export class POI {
   }
   // Method to update the profile from a form
   updateProfile(newData: Partial<POIProfile>) {
-    this.profileData.update((p) => ({ ...p, ...newData });
+    this.profileData.update(p => ({ ...p, ...newData }));
     this.isDirty = true;
   }
   // Method to update position when dragged
@@ -81,12 +80,9 @@ export class POI {
   }) {
     if (updates.name !== undefined) this.name.set(updates.name);
     if (updates.aliases !== undefined) this.aliases.set(updates.aliases);
-    if (updates.profileImageUrl !== undefined)
-      this.profileImageUrl.set(updates.profileImageUrl);
-    if (updates.relationship !== undefined)
-      this.relationship.set(updates.relationship);
-    if (updates.threatLevel !== undefined)
-      this.threatLevel.set(updates.threatLevel);
+    if (updates.profileImageUrl !== undefined) this.profileImageUrl.set(updates.profileImageUrl);
+    if (updates.relationship !== undefined) this.relationship.set(updates.relationship);
+    if (updates.threatLevel !== undefined) this.threatLevel.set(updates.threatLevel);
     if (updates.status !== undefined) this.status.set(updates.status);
     if (updates.tags !== undefined) this.tags.set(updates.tags);
     this.isDirty = true;
@@ -108,13 +104,13 @@ export class POI {
       tags: this.getValueFromStore(this.tags),
       createdBy: this.createdBy,
       createdAt: this.createdAt,
-      updatedAt: new Date()
-    }
+      updatedAt: new Date(),
+    };
   }
   // Helper to get current value from writable store
   private getValueFromStore<T>(store: Writable<T>): T {
     let value: T;
-    store.subscribe((v) => (value = v))();
+    store.subscribe(v => (value = v))();
     return value!;
   }
   // Reset dirty flag after successful save

@@ -1,11 +1,10 @@
 /**
- * Legal Cache Warmer - NES-Inspired Proactive Memory Loading
- * Pre-loads critical legal assets into fast memory banks based on user context
+ * Legal Cache Warmer - Proactive preloading for legal assets
  */
 import { calculateDocumentPriority, selectMemoryBank, type LegalDocument, type DocumentType, type LegalCategory } from '$lib/config/legal-priorities';
 import { componentTextureRegistry } from '$lib/registry/texture-component-registry';
 import { lodManager } from '$lib/services/N64LODManager';
-}
+
 export interface UserProfile {
   userId: string;
   practiceAreas: LegalCategory[];
@@ -14,7 +13,7 @@ export interface UserProfile {
   workingStyle: 'litigator' | 'transactional' | 'research' | 'hybrid';
   memoryPreference: 'performance' | 'balanced' | 'conservative';
 }
-}
+
 export interface CacheWarmingStrategy {
   name: string;
   description: string;
@@ -23,7 +22,7 @@ export interface CacheWarmingStrategy {
   preloadLODs: number[];
   memoryBudget: number; // bytes
 }
-}
+
 export interface WarmingResult {
   documentsProcessed: number;
   texturesLoaded: number;
@@ -33,15 +32,16 @@ export interface WarmingResult {
   strategy: CacheWarmingStrategy;
   warnings: string[];
 }
-}
+
 export interface CaseContext {
   caseId: string;
-  caseType: LegalCategory;
+  caseType: LegalCategory | string;
   urgency: 'low' | 'medium' | 'high' | 'critical';
   documents: LegalDocument[];
   relatedCases: string[];
   upcomingDeadlines: Date[];
 }
+
 /**
  * Pre-defined warming strategies for different use cases
  */
@@ -62,7 +62,7 @@ export const WARMING_STRATEGIES: Record<string, CacheWarmingStrategy> = {
     priorityThreshold: 150,
     maxDocuments: 50,
     preloadLODs: [1, 2, 3], // Medium quality mipmaps
-    memoryBudget: 1.5 * 1024 * 1024 // 1.5MB across L1/L2
+    memoryBudget: Math.floor(1.5 * 1024 * 1024) // 1.5MB across L1/L2
   },
   // Background warming for research sessions
   research_session: {
@@ -82,7 +82,8 @@ export const WARMING_STRATEGIES: Record<string, CacheWarmingStrategy> = {
     preloadLODs: [3], // Thumbnail quality only
     memoryBudget: 512 * 1024 // 512KB
   }
-}
+};
+
 export class LegalCacheWarmer {
   private isWarming = false;
   private lastWarmingTime = 0;
@@ -95,7 +96,7 @@ export class LegalCacheWarmer {
     if (this.isWarming) {
       throw new Error('Cache warming already in progress');
     }
-    const startTime = performance.now();
+    const startTime = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
     this.isWarming = true;
     try {
       console.log(`🎮 Starting cache warming for case ${caseContext.caseId}...`);
@@ -103,18 +104,14 @@ export class LegalCacheWarmer {
       const strategy = this.selectWarmingStrategy(userProfile, caseContext);
       console.log(`🎮 Using strategy: ${strategy.name}`);
       // Analyze and prioritize documents
-      const prioritizedDocs = await this.prioritizeDocumentsForWarming(
-        caseContext.documents,
-        userProfile,
-        strategy
-     ), );
+      const prioritizedDocs = await this.prioritizeDocumentsForWarming(caseContext.documents || [], userProfile, strategy);
       // Pre-load textures into memory banks
       const textureResults = await this.preloadTextures(prioritizedDocs, strategy);
       // Warm CHR-ROM patterns for UI elements
       const chrRomResults = await this.warmChrRomPatterns(prioritizedDocs, strategy);
       // Update user behavior data for future optimizations
       this.updateUserBehaviorData(userProfile.userId, caseContext, strategy);
-      const processingTime = performance.now() - startTime;
+      const processingTime = ((typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now()) - startTime;
       const result: WarmingResult = {
         documentsProcessed: prioritizedDocs.length,
         texturesLoaded: textureResults.texturesLoaded,
@@ -123,11 +120,12 @@ export class LegalCacheWarmer {
         processingTime,
         strategy,
         warnings: [...textureResults.warnings, ...chrRomResults.warnings]
-      }
+      };
+
       this.warmingHistory.push(result);
       this.lastWarmingTime = Date.now();
       console.log(`🎮 Cache warming complete in ${processingTime.toFixed(2)}ms`);
-      console.log(`🎮 Loaded ${(result as { texturesLoaded?: any); memoryUsed?: any }).texturesLoaded} textures, using, ${((result as { texturesLoaded?: any; memoryUsed?: any }).memoryUsed / 1024).toFixed(1)}KB`);
+      console.log(`🎮 Loaded ${result.texturesLoaded} textures, using ${(result.memoryUsed / 1024).toFixed(1)}KB`);
       return result;
     } finally {
       this.isWarming = false;
@@ -137,73 +135,63 @@ export class LegalCacheWarmer {
    * Select optimal warming strategy based on context
    */
   private selectWarmingStrategy(userProfile: UserProfile, caseContext: CaseContext): CacheWarmingStrategy {
-    // Emergency strategy for critical deadlines
-    const hasUrgentDeadline = caseContext.upcomingDeadlines.some(deadline => {
+    const hasUrgentDeadline = (caseContext.upcomingDeadlines || []).some(deadline => {
       const hoursUntil = (deadline.getTime() - Date.now()) / (1000 * 60 * 60);
-      return hoursUntil < 24; // Less than 24 hours;>
+      return hoursUntil < 24;
     });
+
     if (caseContext.urgency === 'critical' || hasUrgentDeadline) {
       return WARMING_STRATEGIES.litigation_emergency;
     }
-    // Active case strategy for litigation work
-    if (caseContext.urgency === 'high' ||)
-        userProfile.workingStyle === 'litigator' ||;
-        caseContext.caseType === 'litigation') {
+
+    if (caseContext.urgency === 'high' || userProfile.workingStyle === 'litigator' || String(caseContext.caseType).toLowerCase().includes('litig')) {
       return WARMING_STRATEGIES.active_case_prep;
     }
-    // Research strategy for transactional work
-    if (userProfile.workingStyle === 'research' ||);
-        caseContext.caseType === 'transactional') {
+
+    if (userProfile.workingStyle === 'research' || String(caseContext.caseType).toLowerCase().includes('transact')) {
       return WARMING_STRATEGIES.research_session;
     }
-    // Conservative memory preference
+
     if (userProfile.memoryPreference === 'conservative') {
       return WARMING_STRATEGIES.background_maintenance;
     }
-    // Default to balanced approach
+
     return WARMING_STRATEGIES.active_case_prep;
   }
   /**
    * Prioritize documents for cache warming
    */
-  private async prioritizeDocumentsForWarming()
-    documents: LegalDocument[]
-    userProfile: UserProfile;
-    strategy: CacheWarmingStrategy;
+  private async prioritizeDocumentsForWarming(
+    documents: LegalDocument[],
+    userProfile: UserProfile,
+    strategy: CacheWarmingStrategy
   ): Promise<LegalDocument[]> {
-    // Calculate priority scores with user context
-    const scoredDocs = documents.map(doc => ({
-      document: doc;
-      priority: this.calculateContextualPriority(doc, userProfile),
-      memoryBank: selectMemoryBank(calculateDocumentPriority(doc)
+    const scoredDocs = documents.map(doc => {
+      const base = calculateDocumentPriority(doc) || 0;
+      const priority = this.calculateContextualPriority(doc, userProfile, base);
+      const memoryBank = selectMemoryBank(base);
+      return { document: doc, priority, memoryBank };
     });
-    // Filter by strategy priority threshold
-    const eligibleDocs = scoredDocs.filter(item => item.priority) >= strategy.priorityThreshold;
-    );
-    // Sort by priority (highest first)
+
+    const eligibleDocs = scoredDocs.filter(item => item.priority >= strategy.priorityThreshold);
     eligibleDocs.sort((a, b) => b.priority - a.priority);
-    // Limit to strategy maximum
-    const selectedDocs = eligibleDocs;
-      .slice(0, strategy.maxDocuments)
-      .map(item => (item as { priority?: any); document?: any }).document);
-    console.log(`🎮 Selected ${selectedDocs.length} documents for, warming (threshol,d:, ${strat,egy.priorityThreshold})`);
+    const selectedDocs = eligibleDocs.slice(0, strategy.maxDocuments).map(item => item.document);
+    console.log(`🎮 Selected ${selectedDocs.length} documents for warming (threshold ${strategy.priorityThreshold})`);
     return selectedDocs;
   }
   /**
    * Calculate priority with user-specific context
    */
-  private calculateContextualPriority(_document: LegalDocument, userProfile: UserProfile): number {
-    let priority = calculateDocumentPriority(document);
-    // Boost for user's practice areas
-    if (userProfile.practiceAreas.includes(document.category)) {
+  private calculateContextualPriority(document: LegalDocument, userProfile: UserProfile, basePriority?: number): number {
+    let priority = typeof basePriority === 'number' ? basePriority : calculateDocumentPriority(document) || 0;
+
+    if (userProfile.practiceAreas && userProfile.practiceAreas.includes((document as any).category)) {
       priority = Math.min(255, priority * 1.2);
     }
-    // Boost for preferred document types
-    if (userProfile.preferredDocumentTypes.includes(document.type)) {
+    if (userProfile.preferredDocumentTypes && userProfile.preferredDocumentTypes.includes((document as any).type)) {
       priority = Math.min(255, priority * 1.15);
     }
-    // Boost for recent cases
-    if (userProfile.recentCases.some(caseId => document.id.includes(caseId))) {
+    if (userProfile.recentCases && userProfile.recentCases.some(caseId => (document as any).id?.includes(caseId))) {
       priority = Math.min(255, priority * 1.3);
     }
     return Math.floor(priority);
@@ -211,159 +199,131 @@ export class LegalCacheWarmer {
   /**
    * Pre-load textures into memory banks
    */
-  private async preloadTextures()
-    documents: LegalDocument[];
-    strategy: CacheWarmingStrategy;
-  ): Promise<any> {
+  private async preloadTextures(documents: LegalDocument[], strategy: CacheWarmingStrategy): Promise<{ texturesLoaded: number; memoryUsed: number; warnings: string[] }> {
     let texturesLoaded = 0;
     let memoryUsed = 0;
     const warnings: string[] = [];
+
     for (const document of documents) {
       try {
-        const memoryBank = selectMemoryBank(calculateDocumentPriority(document);
-        // Register a temporary component for this document
-        const componentId = `,cache_warmer_,${docume,nt.id}`;
+        const docPriority = calculateDocumentPriority(document);
+        const memoryBank = selectMemoryBank(docPriority);
+        const componentId = `cache_warmer_${document.id}`;
+
         const registered = componentTextureRegistry.register(componentId, {
-          componentName: componentId
-          textureSlots: strategy.preloadLODs.map(lod => `,lod_${lod}`),
+          componentName: componentId,
+          textureSlots: strategy.preloadLODs.map(lod => `lod_${lod}`),
           memoryBank,
           sharingPolicy: 'shared',
           updateFrequency: 'static',
-          priority: calculateDocumentPriority(document)
+          priority: docPriority
         });
+
         if (!registered) {
-          warnings.push(`,Failed to register component for, documen,t ${docum,ent.id}`);
+          warnings.push(`Failed to register component for document ${document.id}`);
           continue;
         }
-        // Load textures at specified LOD levels
+
         for (const lodLevel of strategy.preloadLODs) {
           try {
-            const textureChunk = await lodManager.streamTexture(document.id, lodLevel as any);
-            if (textureChunk) {
-              const textureSize = textureChunk.data.byteLength;
-              // Allocate texture in registry
-              const textureId = componentTextureRegistry.allocateTexture(
-                componentId,
-                `,lod_${lodLevel}`,
-                textureSize
-              );
-              if (textureId) {
-                texturesLoaded++;
-                memoryUsed += textureSize;
-                // Check memory budget
-                if (memoryUsed > strategy.memoryBudget) {
-                  warnings.push(`,Memory budget exceeded, stopping, texture loading`);
-                  return { texturesLoaded, memoryUsed, warnings }
-                }
-              }
+            const textureChunk = await lodManager.streamTexture(document.id, lodLevel);
+            if (!textureChunk || !textureChunk.data) {
+              warnings.push(`No texture data for ${document.id} lod ${lodLevel}`);
+              continue;
             }
-          } catch (error) {
-            warnings.push(`Failed to load LOD ${lodLevel} for, document, ${docume,nt.,id}: ${error}`);
+
+            // Determine size defensively: accept ArrayBuffer-like or array-like buffers
+            const textureSize = (() => {
+              const d: any = textureChunk.data;
+              if (typeof d.byteLength === 'number') return d.byteLength;
+              if (Array.isArray(d)) return d.length;
+              try {
+                // fallback: stringify small objects (very defensive)
+                return JSON.stringify(d).length;
+              } catch {
+                return 0;
+              }
+            })();
+
+            const textureId = componentTextureRegistry.allocateTexture(componentId, `lod_${lodLevel}`, textureSize);
+            if (!textureId) {
+              warnings.push(`Allocation failed for ${document.id} lod ${lodLevel}`);
+              continue;
+            }
+
+            texturesLoaded += 1;
+            memoryUsed += textureSize;
+          } catch (innerErr) {
+            warnings.push(`Error loading texture for ${document.id} lod ${lodLevel}: ${(innerErr as Error).message || String(innerErr)}`);
           }
         }
-        // Keep component registered for cache persistence
-        // It will be cleaned up by garbage collection
-      } catch (error) {
-        warnings.push(`,Error processing document ${document.id}: ${error}`);
+      } catch (err) {
+        warnings.push(`Unexpected error processing document ${document.id}: ${(err as Error).message || String(err)}`);
       }
     }
-    return { texturesLoaded, memoryUsed, warnings }
+
+    return { texturesLoaded, memoryUsed, warnings };
   }
   /**
-   * Warm CHR-ROM patterns for UI elements
+   * Warm CHR-ROM UI patterns (lightweight placeholder implementation)
+   * Returns a minimal result object so callers can sum memory usages and warnings.
    */
-  private async warmChrRomPatterns()
-    documents: LegalDocument[];
-    strategy: CacheWarmingStrategy;
-  ): Promise<any> {
-    let memoryUsed = 0;
+  private async warmChrRomPatterns(documents: LegalDocument[], strategy: CacheWarmingStrategy): Promise<{ memoryUsed: number; warnings: string[]; patternsLoaded: number }> {
     const warnings: string[] = [];
-    // This would integrate with your existing CHR-ROM caching system
-    // For now, simulate pattern warming
-    const patternsToWarm = [
-      'document_icon',
-      'risk_gauge',
-      'confidence_badge',
-      'category_color'
-    ];
-    for (const document of documents.slice(0, 20)) { // Limit for demo
-      for (const patternType of patternsToWarm) {
-        try {
-          // Simulate pattern generation/caching
-          const patternSize = Math.floor(Math.random() * 500) + 100; // 100-600 bytes
-          memoryUsed += patternSize;
-          // This would call your CHR-ROM pattern generation
-          console.log(`🎮 Warmed ${patternType} pattern for, ${documen,t.id}, (${patternSiz,e} bytes)`);
-        } catch (error) {
-          warnings.push(`,Failed, to warm ${patternType} pattern fo,r ${docum,ent.id}`);
-        }
+    let memoryUsed = 0;
+    let patternsLoaded = 0;
+
+    // Minimal deterministic work: simulate small memory usage per document and record warnings if any.
+    try {
+      for (const doc of documents) {
+        // cheap heuristic: only "warm" a pattern for higher-priority docs
+        const p = calculateDocumentPriority(doc);
+        if (p < strategy.priorityThreshold) continue;
+        // simulate a small pattern size (e.g., 2KB per warmed pattern)
+        const patternSize = 2 * 1024;
+        memoryUsed += patternSize;
+        patternsLoaded += 1;
       }
+    } catch (err) {
+      warnings.push(`CHR-ROM warm failed: ${(err as Error).message || String(err)}`);
     }
-    return { memoryUsed, warnings }
+
+    // Keep the function non-failing and fast.
+    return { memoryUsed, warnings, patternsLoaded };
   }
   /**
-   * Update user behavior data for machine learning optimization
+   * Update internal user-behavior telemetry used for future warming decisions.
+   * Lightweight and non-blocking.
    */
-  private updateUserBehaviorData(userId: string, caseContext: CaseContext, strategy: CacheWarmingStrategy) {
-    const behaviorData = this.userBehaviorData.get(userId) || {
-      strategiesUsed: [],
-      caseTypes: [],
-      documentPreferences: [],
-      performanceMetrics: []
+  private updateUserBehaviorData(userId: string, caseContext: CaseContext, strategy: CacheWarmingStrategy): void {
+    try {
+      const existing = this.userBehaviorData.get(userId) || { sessions: 0, lastCaseId: null, strategies: {} };
+      existing.sessions = (existing.sessions || 0) + 1;
+      existing.lastCaseId = caseContext.caseId;
+      existing.strategies = existing.strategies || {};
+      existing.strategies[strategy.name] = (existing.strategies[strategy.name] || 0) + 1;
+      existing.updatedAt = Date.now();
+      this.userBehaviorData.set(userId, existing);
+    } catch {
+      // swallow errors to avoid affecting the warming flow
     }
-    behaviorData.strategiesUsed.push({
-      strategy: strategy.name,
-      timestamp: Date.now(),
-      caseType: caseContext.caseType
-    });
-    this.userBehaviorData.set(userId, behaviorData);
   }
   /**
-   * Estimate cache hit rate improvement
+   * Heuristic estimate for cache hit improvement produced by the chosen strategy.
+   * Returns a percentage (0-100). Keep deterministic and simple.
    */
   private estimateCacheHitImprovement(strategy: CacheWarmingStrategy): number {
-    // This would be based on historical data and machine learning
-    // For now, return estimated improvement based on strategy
-    const improvements = {
-      'Litigation Emergency': 0.65,      // 65% hit rate improvement
-      'Active Case Preparation': 0.45,   // 45% hit rate improvement
-      'Research Session': 0.35,          // 35% hit rate improvement
-      'Background Maintenance': 0.25     // 25% hit rate improvement
-    }
-    return improvements[strategy.name as keyof typeof improvements] || 0.3;
-  }
-  /**
-   * Get warming statistics
-   */
-  getWarmingStats() {
-    const recentResults = this.warmingHistory.slice(-10); // Last 10 warmings
-    return {
-      totalWarmings: this.warmingHistory.length,
-      averageProcessingTime: recentResults.reduce((sum, r) => sum + r.processingTime, 0) / recentResults.length || 0,
-      averageDocumentsProcessed: recentResults.reduce((sum, r) => sum + r.documentsProcessed, 0) / recentResults.length || 0,
-      averageMemoryUsed: recentResults.reduce((sum, r) => sum + r.memoryUsed, 0) / recentResults.length || 0,
-      lastWarmingTime: this.lastWarmingTime,
-      isCurrentlyWarming: this.isWarming,
-      recentResults: recentResults.map(r => ({,
-        strategy: r.strategy.name,
-        documentsProcessed: r.documentsProcessed,
-        processingTime: r.processingTime,
-        cacheHitImprovement: r.cacheHitRateImprovement
-      })
+    // Base on priorityThreshold, maxDocuments and memoryBudget.
+    // Higher thresholds and more documents => higher expected improvement up to cap.
+    try {
+      const thresholdFactor = Math.max(0, Math.min(1, (strategy.priorityThreshold - 80) / 175)); // map [80..255] -> [0..1]
+      const docFactor = Math.max(0, Math.min(1, strategy.maxDocuments / 200)); // normalized against 200 docs
+      const memoryFactor = Math.max(0, Math.min(1, strategy.memoryBudget / (2 * 1024 * 1024))); // normalized against 2MB
+
+      const raw = (0.5 * thresholdFactor) + (0.3 * docFactor) + (0.2 * memoryFactor);
+      const pct = Math.round(Math.min(0.95, raw) * 100); // cap at 95% optimistic
+      return pct;
+    } catch {
+      return 0;
     }
   }
-  /**
-   * Trigger opportunistic warming based on user activity
-   */
-  async opportunisticWarming(userId: string, currentActivity: string) {
-    // This could trigger background warming based on user patterns
-    // For example, if user opens case management, pre-warm case documents
-    const behaviorData = this.userBehaviorData.get(userId);
-    if (!behaviorData) return;
-    // Simple pattern matching for demo
-    if (currentActivity.includes('case') && !this.isWarming) {
-      console.log('🎮 Triggering opportunistic warming for case activity');
-      // Would trigger background warming here
-    }
-  }
-}
