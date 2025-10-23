@@ -1,20 +1,230 @@
 // Legal Vector Operations with Drizzle ORM
 // Production-ready vector search for gemma3-legal:latest + pgvector
 import { drizzle } from 'drizzle-orm/postgres-js';
-import { sql, desc, asc, eq, and, or, gt, lt, isNotNull } from 'drizzle-orm';
+import { sql, desc, eq, or, gt, isNotNull, and } from 'drizzle-orm';
+import type { SQL } from 'drizzle-orm';
 import postgres from 'postgres';
-import { legalDocuments, vectorSimilarityQueries, legalAnalysisCache, type LegalDocument, type NewLegalDocument } from './schema.js';
+import { legalDocuments, vectorSimilarityQueries, legalAnalysisCache } from './schema.js';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+
 // Database connection
-const connectionString = process.env.DATABASE_URL || 'postgresql://legal_admin:legal_pass_2025@localhost:5432/legal_ai'
+const connectionString = process.env.DATABASE_URL || 'postgresql://legal_admin:legal_pass_2025@localhost:5432/legal_ai';
 const client = postgres(connectionString);
-export // removed unused db assignment
+const db = drizzle(client);
+
+// --- Added types to avoid `any` and improve safety ---
+type LegalDocument = {
+  id: number;
+  title: string;
+  content: string;
+  documentType: string;
+  practiceArea?: string | null;
+  jurisdiction?: string | null;
+  caseId?: string | null;
+  clientId?: string | null;
+  confidentialityLevel?: string | null;
+  documentStatus?: string | null;
+  processingTimeMs?: number | null;
+  modelVersion?: string | null;
+  documentHash?: string | null;
+  originalFilename?: string | null;
+  fileSize?: number | null;
+  mimeType?: string | null;
+  createdAt?: Date | null;
+  updatedAt?: Date | null;
+  lastAccessedAt?: Date | null;
+};
+
+type SearchResultDocument = LegalDocument & { similarity: number };
+
+type SimilarityQueryLog = {
+  queryText: string;
+  queryEmbedding: number[];
+  userId?: string;
+  sessionId?: string;
+  practiceAreaFilter?: string;
+  documentTypeFilter?: string;
+  responseTimeMs: number;
+  resultsCount: number;
+  similarityThreshold: number;
+  topResults: Array<SearchResultDocument | Record<string, unknown>>;
+  queryIntent?: string;
+  userSatisfaction?: number;
+};
+
+type LegalAnalysisCache = {
+  id: number;
+  inputHash: string;
+  promptText: string;
+  contextDocuments?: Record<string, unknown> | null; // <-- replaced `any`
+  analysisType: string;
+  analysisContent: string;
+  analysisEmbedding?: number[] | null;
+  processingTimeMs: number;
+  tokenCount: number;
+  expiresAt?: Date | null;
+  accessCount?: number;
+  lastAccessedAt?: Date | null;
+};
+// --- end added types ---
+
+// --- new helpers to normalize DB rows that may return string ids/numeric-as-string ---
+
+/*
+PRODUCTION TODOs
+
+1. Security & Auth
+   - Ensure all public API entrypoints that call into this service are authenticated and authorized.
+   - Enforce RBAC rules for storing/searching sensitive documents.
+
+2. Validation & Sanitization
+   - Move lightweight runtime validation below to a shared validation layer (e.g. Zod) for richer schema checks.
+   - Sanitize all user-provided text before storing or including in SQL/JSON to avoid injection.
+
+3. Rate limiting & Quotas
+   - Add request-rate limiting and per-user quotas for embedding and search endpoints.
+
+4. Observability
+   - Emit structured telemetry (traces, metrics) for request durations, cache-hit rates, and error counts.
+   - Add slow-query logging for long-running vector searches.
+
+5. Error handling
+   - Replace lightweight ServiceError below with a domain-specific error mapper and proper HTTP status translation.
+
+6. Robustness
+   - Add retries/backoff around transient DB errors and connection pool monitoring.
+   - Consider moving heavy vector operations into a dedicated worker process.
+
+7. Input size & costs
+   - Enforce hard limits on document size, embedding dimensions, and batch sizes to protect resources.
+*/
+
+// Lightweight runtime validation & error codes (suitable for quick wins; replace with schema validators in prod)
+class ServiceError extends Error {
+  code: string;
+  status: number;
+  details?: unknown;
+  constructor(code: string, message: string, status = 400, details?: unknown) {
+    super(message);
+    this.code = code;
+    this.status = status;
+    this.details = details;
+    Object.setPrototypeOf(this, ServiceError.prototype);
+  }
+}
+
+const ERR = {
+  INVALID_INPUT: 'INVALID_INPUT',
+  NOT_FOUND: 'NOT_FOUND',
+  DB_ERROR: 'DB_ERROR',
+  RATE_LIMIT: 'RATE_LIMIT',
+} as const;
+
+function validateEmbedding(embedding: unknown, minDim = 16, maxDim = 4096) {
+  if (!Array.isArray(embedding) || embedding.length === 0) {
+    throw new ServiceError(ERR.INVALID_INPUT, 'Embedding must be a non-empty array of numbers');
+  }
+  if (embedding.length < minDim || embedding.length > maxDim) {
+    throw new ServiceError(ERR.INVALID_INPUT, `Embedding dimension must be between ${minDim} and ${maxDim}`);
+  }
+  for (const v of embedding) {
+    if (typeof v !== 'number' || !Number.isFinite(v)) {
+      throw new ServiceError(ERR.INVALID_INPUT, 'Embedding array must contain finite numbers');
+    }
+  }
+}
+
+function validatePositiveInt(n: unknown, defaultVal = 10) {
+  const num = typeof n === 'number' ? n : Number(n);
+  if (!Number.isFinite(num) || num <= 0) return defaultVal;
+  return Math.floor(num);
+}
+function toNumberOrNull(v: unknown): number | null {
+  if (v === null || v === undefined) return null;
+  if (typeof v === 'number') return Number.isFinite(v) ? v : null;
+  const s = String(v).trim();
+  if (s === '') return null;
+  const n = Number(s);
+  return Number.isFinite(n) ? n : null;
+}
+
+function toDateOrNull(v: unknown): Date | null {
+  if (v === null || v === undefined) return null;
+  if (v instanceof Date) return isNaN(v.getTime()) ? null : v;
+  const d = new Date(String(v));
+  return isNaN(d.getTime()) ? null : d;
+}
+
+function toStringOrNull(v: unknown): string | null {
+  if (v === null || v === undefined) return null;
+  if (typeof v === 'string') return v;
+  const s = String(v).trim();
+  return s === '' ? null : s;
+}
+
+function toNumberArrayOrNull(v: unknown): number[] | null {
+  if (!Array.isArray(v)) return null;
+  const nums = v.map((item: unknown) => toNumberOrNull(item)).filter((n): n is number => n !== null);
+  return nums.length > 0 ? nums : null;
+}
+
+function normalizeDocumentRow(row: Record<string, unknown>): LegalDocument {
+  return {
+    id: toNumberOrNull(row.id) ?? 0,
+    title: toStringOrNull(row.title) ?? '',
+    content: toStringOrNull(row.content) ?? '',
+    documentType: toStringOrNull(row.documentType) ?? '',
+    practiceArea: toStringOrNull(row.practiceArea),
+    jurisdiction: toStringOrNull(row.jurisdiction),
+    caseId: toStringOrNull(row.caseId),
+    clientId: toStringOrNull(row.clientId),
+    confidentialityLevel: toStringOrNull(row.confidentialityLevel),
+    documentStatus: toStringOrNull(row.documentStatus),
+    processingTimeMs: toNumberOrNull(row.processingTimeMs),
+    modelVersion: toStringOrNull(row.modelVersion),
+    documentHash: toStringOrNull(row.documentHash),
+    originalFilename: toStringOrNull(row.originalFilename),
+    fileSize: toNumberOrNull(row.fileSize),
+    mimeType: toStringOrNull(row.mimeType),
+    createdAt: toDateOrNull(row.createdAt),
+    updatedAt: toDateOrNull(row.updatedAt),
+    lastAccessedAt: toDateOrNull(row.lastAccessedAt),
+  };
+}
+
+function normalizeSearchResultRow(row: Record<string, unknown>): SearchResultDocument {
+  const base = normalizeDocumentRow(row);
+  return {
+    ...base,
+    similarity: toNumberOrNull(row.similarity) ?? 0,
+  };
+}
+
+function normalizeAnalysisCacheRow(row: Record<string, unknown>): LegalAnalysisCache {
+  return {
+    id: toNumberOrNull(row.id) ?? 0,
+    inputHash: toStringOrNull(row.inputHash) ?? '',
+    promptText: toStringOrNull(row.promptText) ?? '',
+    contextDocuments: (row.contextDocuments as Record<string, unknown>) ?? null,
+    analysisType: toStringOrNull(row.analysisType) ?? '',
+    analysisContent: toStringOrNull(row.analysisContent) ?? '',
+    analysisEmbedding: toNumberArrayOrNull(row.analysisEmbedding),
+    processingTimeMs: toNumberOrNull(row.processingTimeMs) ?? 0,
+    tokenCount: toNumberOrNull(row.tokenCount) ?? 0,
+    expiresAt: toDateOrNull(row.expiresAt),
+    accessCount: toNumberOrNull(row.accessCount) ?? 0,
+    lastAccessedAt: toDateOrNull(row.lastAccessedAt),
+  };
+}
+// --- end new helpers ---
+
 export class LegalVectorService {
   constructor(private database: PostgresJsDatabase = db) {}
+
   /**
    * Store document with embedding from gemma3-legal:latest
    */
-  async storeDocumentWithEmbedding(_document: {
+  async storeDocumentWithEmbedding(document: {
     title: string;
     content: string;
     documentType: string;
@@ -29,58 +239,92 @@ export class LegalVectorService {
     mimeType?: string;
     processingTimeMs: number;
   }): Promise<LegalDocument> {
-    // Generate document hash for duplicate detection
+    // Basic input validation (throws ServiceError on invalid inputs)
+    if (!document || typeof document !== 'object') {
+      throw new ServiceError(ERR.INVALID_INPUT, 'Document payload is required');
+    }
+    if (typeof document.title !== 'string' || document.title.trim() === '') {
+      throw new ServiceError(ERR.INVALID_INPUT, 'Document title is required');
+    }
+    if (typeof document.content !== 'string' || document.content.trim() === '') {
+      throw new ServiceError(ERR.INVALID_INPUT, 'Document content is required');
+    }
+    validateEmbedding(document.embedding);
+
     const crypto = await import('crypto');
     const documentHash = crypto.createHash('sha256').update(document.content).digest('hex');
-    // Check for existing document
+
     const existingDoc = await this.database
       .select()
       .from(legalDocuments)
-      .where(eq(legalDocuments.documentHash, documentHash)
+      .where(eq(legalDocuments.documentHash, documentHash))
       .limit(1);
+
     if (existingDoc.length > 0) {
       console.log('Document already exists:', existingDoc[0].id);
-      return existingDoc[0];
+      // normalize id from string -> number
+      return normalizeDocumentRow(existingDoc[0]);
     }
-    const result = await this.database.insert(legalDocuments).values({
-      title: document.title,
-      content: document.content,
-      documentType: document.documentType,
-      embedding: sql`${JSON.stringify(document.embedding)}::vector`,
-      practiceArea: document.practiceArea,
-      jurisdiction: document.jurisdiction,
-      caseId: document.caseId,
-      clientId: document.clientId,
-      confidentialityLevel: document.confidentialityLevel || 'standard',
-      documentStatus: 'active',
-      processingTimeMs: document.processingTimeMs,
-      modelVersion: 'gemma3-legal:latest',
-      documentHash,
-      originalFilename: document.originalFilename,
-      fileSize: document.fileSize,
-      mimeType: document.mimeType
-    }).returning();
-    console.log(`✅ Stored legal document: ${result[0].title} (ID: ${result[0].id})`);
-    return result[0];
+
+    const result = await this.database
+      .insert(legalDocuments)
+      .values({
+        title: document.title,
+        content: document.content,
+        documentType: document.documentType,
+        embedding: sql`${JSON.stringify(document.embedding)}::vector`,
+        practiceArea: document.practiceArea,
+        jurisdiction: document.jurisdiction,
+        caseId: document.caseId,
+        clientId: document.clientId,
+        confidentialityLevel: document.confidentialityLevel || 'standard',
+        documentStatus: 'active',
+        processingTimeMs: document.processingTimeMs,
+        modelVersion: 'gemma3-legal:latest',
+        documentHash,
+        originalFilename: document.originalFilename,
+        fileSize: document.fileSize,
+        mimeType: document.mimeType,
+      })
+      .returning();
+
+    // normalize returned row(s)
+    const normalized = normalizeDocumentRow(result[0]);
+    console.log(`✅ Stored legal document: ${normalized.title} (ID: ${normalized.id})`);
+    return normalized;
   }
+
   /**
    * Vector similarity search with pgvector cosine similarity
    */
-  async findSimilarDocuments(queryEmbedding: number[], options: {
-    threshold?: number;
-    limit?: number;
-    documentType?: string;
-    practiceArea?: string;
-    jurisdiction?: string;
-    caseId?: string;
-    clientId?: string;
-    confidentialityLevel?: string;
-    excludeDocumentIds?: number[];
-  } = {}): Promise<Array<LegalDocument & { similarity: number }>, {
-    const threshold = options.threshold ?? 0.7;
-    const limit = options.limit ?? 10;
-    // Build base query with similarity calculation
-    let query = this.database;
+  async findSimilarDocuments(
+    queryEmbedding: number[],
+    options: {
+      threshold?: number;
+      limit?: number;
+      documentType?: string;
+      practiceArea?: string;
+      jurisdiction?: string;
+      caseId?: string;
+      clientId?: string;
+      confidentialityLevel?: string;
+      excludeDocumentIds?: number[];
+    } = {}
+  ): Promise<SearchResultDocument[]> {
+    // Validate input
+    try {
+      validateEmbedding(queryEmbedding);
+    } catch (err) {
+      if (err instanceof ServiceError) throw err;
+      throw new ServiceError(ERR.INVALID_INPUT, 'Invalid query embedding');
+    }
+
+    const threshold = typeof options.threshold === 'number' ? options.threshold : 0.7;
+    const limit = validatePositiveInt(options.limit, 10);
+
+    const similarityExpr = sql<number>`1 - (${legalDocuments.embedding} <=> ${sql`${JSON.stringify(queryEmbedding)}::vector`})`;
+
+    const baseSelect = this.database
       .select({
         id: legalDocuments.id,
         title: legalDocuments.title,
@@ -101,69 +345,70 @@ export class LegalVectorService {
         createdAt: legalDocuments.createdAt,
         updatedAt: legalDocuments.updatedAt,
         lastAccessedAt: legalDocuments.lastAccessedAt,
-        similarity: sql<number>`1 - (${legalDocuments.embedding} <=> ${sql`${JSON.stringify(queryEmbedding)}::vector`})`
+        similarity: similarityExpr,
       })
       .from(legalDocuments);
-    // Apply filters
-    const conditions = [
-      sql`1 - (${legalDocuments.embedding} <=> ${sql`${JSON.stringify(queryEmbedding)}::vector`}) > ${threshold}`,
-      eq(legalDocuments.documentStatus, 'active')
-    ];
+
+    // Build typed SQL conditions (avoid `any` casts)
+    const conditions: SQL[] = [sql`${similarityExpr} > ${threshold}`, sql`${legalDocuments.documentStatus} = 'active'`];
+
     if (options.documentType) {
-      conditions.push(eq(legalDocuments.documentType, options.documentType);
+      conditions.push(sql`${legalDocuments.documentType} = ${options.documentType}`);
     }
     if (options.practiceArea) {
-      conditions.push(eq(legalDocuments.practiceArea, options.practiceArea);
+      conditions.push(sql`${legalDocuments.practiceArea} = ${options.practiceArea}`);
     }
     if (options.jurisdiction) {
-      conditions.push(eq(legalDocuments.jurisdiction, options.jurisdiction);
+      conditions.push(sql`${legalDocuments.jurisdiction} = ${options.jurisdiction}`);
     }
     if (options.caseId) {
-      conditions.push(eq(legalDocuments.caseId, options.caseId);
+      conditions.push(sql`${legalDocuments.caseId} = ${options.caseId}`);
     }
     if (options.clientId) {
-      conditions.push(eq(legalDocuments.clientId, options.clientId);
+      conditions.push(sql`${legalDocuments.clientId} = ${options.clientId}`);
     }
     if (options.confidentialityLevel) {
-      conditions.push(eq(legalDocuments.confidentialityLevel, options.confidentialityLevel);
+      conditions.push(sql`${legalDocuments.confidentialityLevel} = ${options.confidentialityLevel}`);
     }
     if (options.excludeDocumentIds && options.excludeDocumentIds.length > 0) {
-      conditions.push(sql`${legalDocuments.id} NOT IN (${sql.join(options.excludeDocumentIds.map(id => sql`${id}`), sql`, `)})`);
+      const excludedSQL = sql.join(
+        options.excludeDocumentIds.map(id => sql`${id}`),
+        sql`, `
+      );
+      conditions.push(sql`${legalDocuments.id} NOT IN (${excludedSQL})`);
     }
-    // Apply all conditions
-    query = query.where(and(...conditions);
-    // Order by similarity and limit results
-    const results = await query
-      .orderBy(desc(sql`1 - (${legalDocuments.embedding} <=> ${sql`${JSON.stringify(queryEmbedding)}::vector`})`)
-      .limit(limit);
-    // Update last accessed timestamp
+
+    // Join conditions into a single SQL expression (no `any` cast)
+    const combinedWhere = sql`(${sql.join(conditions, sql` AND `)})`;
+
+    const query = baseSelect.where(combinedWhere).orderBy(desc(similarityExpr)).limit(limit);
+
+    // Use `unknown` instead of `any` to maintain strong typing
+    const rawResults = (await query) as Array<Record<string, unknown>>;
+    // normalize results to typed SearchResultDocument with numeric id & similarity
+    const results = rawResults.map(r => normalizeSearchResultRow(r));
+
     if (results.length > 0) {
       const documentIds = results.map(r => r.id);
       await this.database
         .update(legalDocuments)
         .set({ lastAccessedAt: sql`NOW()` })
-        .where(sql`${legalDocuments.id} IN (${sql.join(documentIds.map(id => sql`${id}`), sql`, `)})`);
+        .where(
+          sql`${legalDocuments.id} IN (${sql.join(
+            documentIds.map(id => sql`${id}`),
+            sql`, `
+          )})`
+        );
     }
+
     console.log(`🔍 Found ${results.length} similar documents (threshold: ${threshold})`);
     return results;
   }
+
   /**
    * Store similarity query for analytics
    */
-  async logSimilarityQuery(query: {
-    queryText: string;
-    queryEmbedding: number[];
-    userId?: string;
-    sessionId?: string;
-    practiceAreaFilter?: string;
-    documentTypeFilter?: string;
-    responseTimeMs: number;
-    resultsCount: number;
-    similarityThreshold: number;
-    topResults: any[];
-    queryIntent?: string;
-    userSatisfaction?: number;
-  }) {
+  async logSimilarityQuery(query: SimilarityQueryLog) {
     return await this.database.insert(vectorSimilarityQueries).values({
       queryText: query.queryText,
       queryEmbedding: sql`${JSON.stringify(query.queryEmbedding)}::vector`,
@@ -176,45 +421,47 @@ export class LegalVectorService {
       similarityThreshold: query.similarityThreshold,
       topResults: query.topResults,
       queryIntent: query.queryIntent,
-      userSatisfaction: query.userSatisfaction
+      userSatisfaction: query.userSatisfaction,
     });
   }
+
   /**
    * Get cached legal analysis
    */
-  async getCachedAnalysis(inputHash: string): Promise<any | null> {
+  async getCachedAnalysis(inputHash: string): Promise<LegalAnalysisCache | null> {
     const results = await this.database
       .select()
       .from(legalAnalysisCache)
-      .where(and(
-        eq(legalAnalysisCache.inputHash, inputHash),
-        or(
-          sql`${legalAnalysisCache.expiresAt} IS NULL`,
-          gt(legalAnalysisCache.expiresAt, sql`NOW()`)
+      .where(
+        and(
+          eq(legalAnalysisCache.inputHash, inputHash),
+          or(sql`${legalAnalysisCache.expiresAt} IS NULL`, gt(legalAnalysisCache.expiresAt, sql`NOW()`))
         )
       )
       .limit(1);
+
     if (results.length > 0) {
-      // Update access count and timestamp
       await this.database
-        .update(legalAnalysisCache);
+        .update(legalAnalysisCache)
         .set({
           accessCount: sql`${legalAnalysisCache.accessCount} + 1`,
-          lastAccessedAt: sql`NOW()`
+          lastAccessedAt: sql`NOW()`,
         })
-        .where(eq(legalAnalysisCache.id, results[0].id);
+        .where(eq(legalAnalysisCache.id, results[0].id));
+
       console.log(`💾 Cache hit for analysis: ${inputHash}`);
-      return results[0];
+      return normalizeAnalysisCacheRow(results[0]);
     }
     return null;
   }
+
   /**
    * Store legal analysis in cache
    */
   async storeCachedAnalysis(analysis: {
     inputHash: string;
     promptText: string;
-    contextDocuments?: any;
+    contextDocuments?: Record<string, unknown> | null; // <-- replaced `any`
     analysisType: string;
     analysisContent: string;
     analysisEmbedding?: number[];
@@ -222,100 +469,166 @@ export class LegalVectorService {
     tokenCount: number;
     expiresInHours?: number;
   }) {
-    const expiresAt = analysis.expiresInHours
-      ? sql`NOW() + INTERVAL '${analysis.expiresInHours} hours'`
-      : null;
+    // Basic validation
+    if (!analysis || typeof analysis !== 'object') {
+      throw new ServiceError(ERR.INVALID_INPUT, 'Analysis payload is required');
+    }
+    if (typeof analysis.inputHash !== 'string' || analysis.inputHash.trim() === '') {
+      throw new ServiceError(ERR.INVALID_INPUT, 'inputHash is required');
+    }
+    if (typeof analysis.promptText !== 'string') {
+      throw new ServiceError(ERR.INVALID_INPUT, 'promptText must be a string');
+    }
+    if (!Number.isFinite(Number(analysis.processingTimeMs))) {
+      throw new ServiceError(ERR.INVALID_INPUT, 'processingTimeMs must be a number');
+    }
+    if (!Number.isFinite(Number(analysis.tokenCount))) {
+      throw new ServiceError(ERR.INVALID_INPUT, 'tokenCount must be a number');
+    }
+
+    const expiresAt = analysis.expiresInHours ? sql`NOW() + INTERVAL '${analysis.expiresInHours} hours'` : null;
+
     return await this.database.insert(legalAnalysisCache).values({
       inputHash: analysis.inputHash,
       promptText: analysis.promptText,
       contextDocuments: analysis.contextDocuments,
       analysisType: analysis.analysisType,
       analysisContent: analysis.analysisContent,
-      analysisEmbedding: analysis.analysisEmbedding
-        ? sql`${JSON.stringify(analysis.analysisEmbedding)}::vector`
-        : null
+      analysisEmbedding: analysis.analysisEmbedding ? sql`${JSON.stringify(analysis.analysisEmbedding)}::vector` : null,
       processingTimeMs: analysis.processingTimeMs,
       tokenCount: analysis.tokenCount,
-      expiresAt
+      expiresAt,
     });
   }
+
   /**
    * Get document statistics
    */
   async getDocumentStatistics() {
-    const stats = await this.database;
+    const stats = await this.database
       .select({
         totalDocuments: sql<number>`COUNT(*)`,
-        documentTypes: sql<any>`json_object_agg(${legalDocuments.documentType}, COUNT(*))`,
-        practiceAreas: sql<any>`json_object_agg(${legalDocuments.practiceArea}, COUNT(*))`,
+        // Provide a concrete generic type for json aggregation result
+        documentTypes: sql<Record<string, number>>`json_object_agg(${legalDocuments.documentType}, COUNT(*))`,
+        practiceAreas: sql<Record<string, number>>`json_object_agg(${legalDocuments.practiceArea}, COUNT(*))`,
         avgProcessingTime: sql<number>`AVG(${legalDocuments.processingTimeMs})`,
         totalFileSize: sql<number>`SUM(${legalDocuments.fileSize})`,
-        recentDocuments: sql<number>`COUNT(*) FILTER (WHERE ${legalDocuments.createdAt} > NOW() - INTERVAL '24 hours')`
+        recentDocuments: sql<number>`COUNT(*) FILTER (WHERE ${legalDocuments.createdAt} > NOW() - INTERVAL '24 hours')`,
       })
       .from(legalDocuments)
-      .where(eq(legalDocuments.documentStatus, 'active');
+      .where(eq(legalDocuments.documentStatus, 'active'));
+
     return stats[0];
   }
+
   /**
    * Bulk vector search for multiple queries
    */
-  async bulkSimilaritySearch(queries: Array<{,
-    embedding,: numbe,r,[];
-    threshold?: number;
-    limit?: number;
-    filters?: any;
-  }>): Promise<Array<Array<LegalDocument & { similarity: number }> {
+  async bulkSimilaritySearch(
+    queries: Array<{
+      embedding: number[];
+      threshold?: number;
+      limit?: number;
+      // Restrict filters to allowed keys and concrete types
+      filters?: Partial<{
+        documentType: string;
+        practiceArea: string;
+        jurisdiction: string;
+        caseId: string;
+        clientId: string;
+        confidentialityLevel: string;
+        excludeDocumentIds: number[];
+      }>;
+    }>
+  ): Promise<Array<Array<SearchResultDocument>>> {
+    // Basic validation for bulk queries
+    if (!Array.isArray(queries) || queries.length === 0) {
+      throw new ServiceError(ERR.INVALID_INPUT, 'Queries must be a non-empty array');
+    }
+
     const results = await Promise.all(
-      queries.map(query =>
-        this.findSimilarDocuments(
-          query.embedding);
-          {
-            threshold: query.threshold || 0.7,
-            limit,: query.limit || 10,
-            ...query.filters
-          }
-        )
-      )
+      queries.map(q => {
+        // Map incoming generic filters into strongly typed options
+        const mappedOptions: {
+          threshold?: number;
+          limit?: number;
+          documentType?: string;
+          practiceArea?: string;
+          jurisdiction?: string;
+          caseId?: string;
+          clientId?: string;
+          confidentialityLevel?: string;
+          excludeDocumentIds?: number[];
+        } = {};
+
+        if (q.threshold !== undefined) mappedOptions.threshold = q.threshold;
+        if (q.limit !== undefined) mappedOptions.limit = q.limit;
+
+        const f = q.filters;
+        if (f) {
+          if (typeof f.documentType === 'string') mappedOptions.documentType = f.documentType;
+          if (typeof f.practiceArea === 'string') mappedOptions.practiceArea = f.practiceArea;
+          if (typeof f.jurisdiction === 'string') mappedOptions.jurisdiction = f.jurisdiction;
+          if (typeof f.caseId === 'string') mappedOptions.caseId = f.caseId;
+          if (typeof f.clientId === 'string') mappedOptions.clientId = f.clientId;
+          if (typeof f.confidentialityLevel === 'string') mappedOptions.confidentialityLevel = f.confidentialityLevel;
+          if (Array.isArray(f.excludeDocumentIds)) mappedOptions.excludeDocumentIds = f.excludeDocumentIds;
+        }
+
+        validateEmbedding(q.embedding);
+        return this.findSimilarDocuments(q.embedding, mappedOptions);
+      })
     );
     console.log(`🔍 Bulk search completed: ${queries.length} queries`);
     return results;
   }
+
   /**
    * Clean up expired cache entries
    */
-  async cleanupExpiredCache(),: Promise<number> {
+  async cleanupExpiredCache(): Promise<number> {
     const result = await this.database
       .delete(legalAnalysisCache)
-      .where(and(
-        isNotNull(legalAnalysisCache.expiresAt),
-        lt(legalAnalysisCache.expiresAt, sql`NOW()`)
-      )
+      .where(and(isNotNull(legalAnalysisCache.expiresAt), sql`${legalAnalysisCache.expiresAt} < NOW()`))
       .returning({ id: legalAnalysisCache.id });
-    console,.log(`🧹 Cleaned up ${result.length} expired cache entries`);
-    return result.lengt,h;
+
+    console.log(`🧹 Cleaned up ${result.length} expired cache entries`);
+    return result.length;
   }
+
   /**
    * Update document embeddings with new model version
    */
-  async updateDocumentEmbeddings(documentIds,: number[], newEmbedding,s: number[][], modelVersi,on: string = 'gemma3-legal:latest,') {
+  async updateDocumentEmbeddings(
+    documentIds: number[],
+    newEmbeddings: number[][],
+    modelVersion: string = 'gemma3-legal:latest'
+  ) {
     if (documentIds.length !== newEmbeddings.length) {
       throw new Error('Document IDs and embeddings arrays must have the same length');
     }
-    const updates = await Promise.all(documentIds.map(async (id, index) => {
-        return this.database
-          .update(legalDocuments);
+
+    const updates = await Promise.all(
+      documentIds.map(async (id, index) => {
+        const res = await this.database
+          .update(legalDocuments)
           .set({
             embedding: sql`${JSON.stringify(newEmbeddings[index])}::vector`,
             modelVersion,
-            updatedAt: sql`NOW()`
+            updatedAt: sql`NOW()`,
           })
-          .where(eq(legalDocuments.id, id)
-          .returning({ id: legalDocuments.id, title: legalDocuments.title }));
+          .where(eq(legalDocuments.id, id))
+          .returning({ id: legalDocuments.id, title: legalDocuments.title });
+
+        // normalize id type
+        return { id: toNumberOrNull(res[0].id) ?? 0, title: res[0].title };
       })
     );
+
     console.log(`🔄 Updated embeddings for ${updates.length} documents with ${modelVersion}`);
     return updates.flat();
   }
 }
+
 // Export singleton instance
 export const legalVectorService = new LegalVectorService();

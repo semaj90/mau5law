@@ -4,735 +4,716 @@
  * Inspired by Nintendo NES Character ROM for instant 0ms UI responses
  */
 import { browser } from '$app/environment';
-import { writable, derived, get } from 'svelte/store';
-import { nesGPUBridge } from '../gpu/nes-gpu-memory-bridge.js';
-import { ultraJSONParser } from '../wasm/ultra-json-parser.js';
-// CHR-ROM UI Pattern Types
+import { writable, get } from 'svelte/store';
+
+// --- Typed interfaces for external services (requested) ---
+export type UltraJSONParser = {
+  parse: (s: string) => unknown;
+  stringify: (v: unknown) => string;
+};
+
+export type WasmClusteringService = {
+  clusterEmbeddings: (embeddings: number[][], options?: Record<string, unknown>) => Promise<number[]>;
+};
+
+export type NESGPUBridge = {
+  createFlatBufferFromDocument: (doc: any) => Promise<Uint8Array>;
+  submitTensor?: (tensor: Float32Array) => Promise<void>;
+  getDeviceInfo?: () => Promise<Record<string, unknown>>;
+};
+
+// Minimal adapters for server-side integration (safe wrappers)
+export type OllamaEmbeddingResult = { embedding?: number[]; model?: string };
+export async function getOllamaEndpoint(): Promise<string> {
+  const serverEnv = typeof process !== 'undefined' && process.env ? (process.env.OLLAMA_API_URL || process.env.OLLAMA_URL) : undefined;
+  let viteEnv: string | undefined;
+  try {
+    // @ts-ignore
+    const meta: any = typeof import.meta !== 'undefined' ? (import.meta as any) : undefined;
+    viteEnv = meta?.env?.VITE_OLLAMA_API_URL || meta?.env?.VITE_OLLAMA_URL;
+  } catch {
+    viteEnv = undefined;
+  }
+  const fallback = 'http://localhost:11434';
+  return (serverEnv || viteEnv || fallback).replace(/\/+$/, '');
+}
+
+export async function ollamaEmbed(texts: string[], model = 'embeddinggemma:latest'): Promise<OllamaEmbeddingResult[]> {
+  try {
+    const endpoint = await getOllamaEndpoint();
+    const resp = await fetch(`${endpoint}/api/embeddings`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model, prompt: Array.isArray(texts) && texts.length === 1 ? texts[0] : texts })
+    });
+    if (!resp.ok) {
+      const bodyText = await resp.text().catch(() => '');
+      console.warn('ollamaEmbed failed', resp.status, bodyText);
+      return texts.map(() => ({}));
+    }
+    const body = await resp.json().catch(() => ({}));
+    if (Array.isArray(body?.embedding)) {
+      const emb = (body.embedding as unknown[]).map(Number);
+      return texts.map((_t, i) => (i === 0 ? { embedding: emb, model } : ({})));
+    }
+    if (Array.isArray(body?.embeddings)) {
+      return (body.embeddings as unknown[]).map(e => ({ embedding: Array.isArray(e) ? (e as unknown[]).map(Number) : undefined, model }));
+    }
+    return texts.map(() => ({}));
+  } catch (err) {
+    console.warn('ollamaEmbed error', err);
+    return texts.map(() => ({}));
+  }
+}
+
+// Redis adapter (calls backend api route)
+export const redisAdapter = {
+  async get(key: string) {
+    try {
+      const r = await fetch(`/api/redis/get?key=${encodeURIComponent(key)}`);
+      if (!r.ok) return null;
+      return await r.json();
+    } catch {
+      return null;
+    }
+  },
+  async set(key: string, value: unknown, ttlSeconds?: number) {
+    try {
+      const r = await fetch('/api/redis/set', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, value, ttlSeconds })
+      });
+      return r.ok;
+    } catch {
+      return false;
+    }
+  }
+};
+
+// Qdrant adapter (calls backend api)
+export const qdrantAdapter = {
+  async upsertCollection(collection: string, vectors: Array<{ id: string; values: number[]; payload?: Record<string, unknown> }>) {
+    try {
+      const r = await fetch('/api/qdrant/upsert', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ collection, vectors })
+      });
+      return r.ok;
+    } catch {
+      return false;
+    }
+  },
+  async search(collection: string, vector: number[], limit = 10, filter: Record<string, unknown> = {}) {
+    try {
+      const r = await fetch('/api/qdrant/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ collection, vector, limit, filter })
+      });
+      if (!r.ok) return [];
+      return (await r.json().catch(() => [])) as unknown[];
+    } catch {
+      return [];
+    }
+  }
+};
+
+// Postgres JSONB store adapter (server endpoints)
+export const pgJsonStore = {
+  async upsertDocument(doc: { id: string; body: Record<string, unknown> }) {
+    try {
+      const r = await fetch('/api/postgres/json/upsert', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(doc)
+      });
+      return r.ok;
+    } catch {
+      return false;
+    }
+  },
+  async queryByField(field: string, value: unknown) {
+    try {
+      const r = await fetch('/api/postgres/json/query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ field, value })
+      });
+      if (!r.ok) return [];
+      return (await r.json().catch(() => [])) as Record<string, unknown>[];
+    } catch {
+      return [];
+    }
+  }
+};
+
+// --- CHR-ROM UI Pattern Types ---
 export interface CHRROMPattern {
   id: string;
   type: 'text_block' | 'component_state' | 'svg_icon' | 'summary_card' | 'entity_list' | 'citation_block';
-  priority: 1 | 2 | 3 | 4 | 5; // 1 = highest priority (most likely to be needed),
-  bankId: number; // NES memory bank (0-7)
-  compressedData: Uint8Array; // Compressed UI pattern data,
-  renderableHTML: string; // Pre-rendered HTML for instant display
+  priority: 1 | 2 | 3 | 4 | 5;
+  bankId: number;
+  compressedData: Uint8Array;
+  renderableHTML: string;
   metadata: {
     cacheKey: string;
     createdAt: number;
     expiresAt: number;
     useCount: number;
     lastAccessed: number;
-    userContext: string; // User ID or session identifier,
-    documentContext: string[]; // Related document IDs
-    actionTrigger: string; // What user action this pattern anticipates
-  }
+    userContext: string;
+    documentContext: string[];
+    actionTrigger: string;
+    [key: string]: unknown;
+  };
 }
-// User Activity Prediction
+
+// New: explicit type for patterns generated by worker or fallback
+export interface GeneratedPattern {
+  type?: CHRROMPattern['type'];
+  renderableHTML?: string;
+  metadata?: Record<string, unknown>;
+  originalType?: string;
+  taskId?: string;
+  [key: string]: unknown;
+}
+
+// New: Prediction shape used by behavior analysis
+export type Prediction = {
+  action: string;
+  probability: number;
+  estimatedTimeUntilAction?: number;
+  requiredPatterns?: string[];
+};
+
+// Update: use Prediction[] instead of Array<any>
 export interface UserActivityPattern {
   userId: string;
   currentContext: {
     documentId?: string;
-  caseId?: string;
-  searchQuery?: string;
-  viewedDocuments: string[];
-  timeOnPage: number;
-  scrollPosition: number;
-  lastInteraction: string;
-  }
-  predictedActions: Array<any>
-// Pre-computation Configuration
+    caseId?: string;
+    searchQuery?: string;
+    viewedDocuments?: string[];
+    timeOnPage?: number;
+    scrollPosition?: number;
+    lastInteraction?: string;
+    [key: string]: unknown;
+  };
+  predictedActions: Prediction[];
+}
+
 export interface PrecomputationConfig {
   enableBackgroundProcessing: boolean;
-  maxCacheSize: number; // MB
-  patternExpirationTime: number; // milliseconds,
-  predictionAccuracy: number; // 0-1
-  backgroundProcessingInterval: number; // milliseconds,
+  maxCacheSize: number;
+  patternExpirationTime: number;
+  predictionAccuracy: number;
+  backgroundProcessingInterval: number;
   maxConcurrentComputations: number;
-  priorityThresholds: {
-    high: number; // probability threshold for high priority
-    medium: number;
-  low: number;
-  }
+  priorityThresholds: { high: number; medium: number; low: number };
 }
+
 export class CHRROMPrecomputationService {
   private config: PrecomputationConfig;
   private patternCache = new Map<string, CHRROMPattern>();
-  private userActivityHistory = new Map<string, UserActivityPattern[]>();
+  private _userActivityHistory = new Map<string, UserActivityPattern[]>(); // renamed to indicate intentionally unused
   private backgroundWorker: Worker | null = null;
-  private precomputationQueue: Array<any> = [];
+  private precomputationQueue: Array<{ pattern: string; priority: number }> = [];
   private isProcessing = false;
-  // Reactive stores
-  public cacheStatus = writable;
-    backgroundTasksActive: number;
-  }>({
+
+  public cacheStatus = writable({
     totalPatterns: 0,
     cacheSize: 0,
     hitRate: 0,
     missRate: 0,
-    topPatterns: [],
+    topPatterns: [] as Array<{ id: string; useCount: number; type: string }>,
     backgroundTasksActive: 0
   });
-  public userPredictions = writable;
-    confidenceScore: number;
-  }>({
+
+  public userPredictions = writable({
     currentUser: '',
-    predictedActions: [],
+    predictedActions: [] as Array<{ action: string; probability: number; timeUntilAction?: number; preparationStatus: string }>, // explicit shape instead of any
     confidenceScore: 0
   });
-  constructor(config,: Partial<PrecomputationConfig> = {}), {
+
+  constructor(config: Partial<PrecomputationConfig> = {}) {
     this.config = {
       enableBackgroundProcessing: true,
-      maxCacheSize: 256, // 256MB cache
-      patternExpirationTime: 5 * 60 * 1000, // 5 minutes
+      maxCacheSize: 256,
+      patternExpirationTime: 5 * 60 * 1000,
       predictionAccuracy: 0.75,
-      backgroundProcessingInterval: 2000, // 2 seconds
+      backgroundProcessingInterval: 2000,
       maxConcurrentComputations: 4,
-      priorityThresholds: {
-        high: 0.8,
-        medium: 0.5,
-        low: 0.2
-      },
+      priorityThresholds: { high: 0.8, medium: 0.5, low: 0.2 },
       ...config
-    }
-    if (browser) {
-      this.initialize();
-    }
+    };
+
+    if (browser) void this.initialize();
   }
+
   /**
    * Initialize CHR-ROM pre-computation service
    */
-  private async initialize(),: Promise<void> {
-    console,.log('🎮 Initializing CHR-ROM Pre-computation Service...');
-    // Initialize background worker for pattern generation
-    if (this.config.enableBackgroundProcessin,g) {
-      await this.initializeBackgroundWorker();
+  private async initialize(): Promise<void> {
+    if (this.config.enableBackgroundProcessing) {
+      await this.initializeBackgroundWorker().catch((err) => {
+        console.warn('Background worker init failed:', err);
+        this.config.enableBackgroundProcessing = false;
+      });
     }
-    // Start activity monitoring
     this.startUserActivityMonitoring();
-    // Start background processing loop
     this.startBackgroundProcessing();
     console.log('✅ CHR-ROM Pre-computation Service initialized');
   }
+
   /**
    * Initialize Web Worker for background pattern generation
    */
-  private async initializeBackgroundWorker(),: Promise<void> {
+  private async initializeBackgroundWorker(): Promise<void> {
     try {
       const workerCode = this.generateWorkerCode();
-      const workerBlob = new Blob([workerCode], { type: 'application/javascript' });
-      const workerURL = URL.createObjectURL(workerBlob);
-      this.backgroundWorker = new Worker(workerURL);
-      this.backgroundWorker.onmessage = (event) => {
-        const { type, data } = event.dat;a;
-        switch (type) {
-          case 'pattern_generated':
-            this.handleGeneratedPattern(data);
-            break;
-          case 'computation_error':
-            console.warn('Background computation error:', data);
-            break;
-          case 'status_update':
-            this.updateBackgroundTaskStatus(data);
-            break;
-        }
-      }
-      console,.log('🔧 Background worker initialized for pattern generation');
+      const blob = new Blob([workerCode], { type: 'application/javascript' });
+      const url = URL.createObjectURL(blob);
+      this.backgroundWorker = new Worker(url);
+      this.backgroundWorker.onmessage = (event: MessageEvent) => {
+        const { type, data } = event.data || {};
+        if (type === 'pattern_generated') this.handleGeneratedPattern(data);
+        else if (type === 'computation_error') console.warn('Background computation error:', data);
+        else if (type === 'status_update') this.updateBackgroundTaskStatus(data);
+      };
+      console.log('🔧 Background worker initialized for pattern generation');
     } catch (error) {
       console.warn('Failed to initialize background worker:', error);
-      this.config.enableBackgroundProcessing = false;
+      this.backgroundWorker = null;
     }
   }
-  /**
-   * Generate Web Worker code for background processing
-   */
-  private generateWorkerCode(),: string {
-    return `;
+
+  // richer worker logic (clean, valid JS)
+  private generateWorkerCode(): string {
+    return `
       class PatternGenerator {
+        extractKeyPoints(content) {
+          if (!content) return '';
+          const sentences = content.split(/(?<=\\.|\\?|!)(\\s+)/).filter(s => s.trim().length > 0);
+          return sentences.slice(0, 3).join(' ').trim();
+        }
+        calculateConfidence(text) {
+          return Math.min(0.98, 0.5 + Math.min(1, text.length / 400) * 0.5);
+        }
+        extractTopics(content) {
+          const terms = ['contract','agreement','liability','damages','breach','statute','court'];
+          const lower = (content||'').toLowerCase();
+          return terms.filter(t => lower.includes(t));
+        }
         generateSummaryPattern(documentData) {
-          // Simulate AI summary generation
-          const summary = this.extractKeyPoints(documentData.content || '');
+          const text = (documentData && documentData.content) || '';
+          const summary = this.extractKeyPoints(text) || text.slice(0, 200);
           const confidence = this.calculateConfidence(summary);
           return {
             type: 'summary_card',
-            renderableHTML: \`
-              <div class="chr-rom-summary-card">
-                <h4>Quick Summary</h4>
-                <p>\${summary}</p>
-                <div class="confidence-bar">
-                  <div class="fill" style="width: \${confidence * 100}%"></div>
-                </div>
-              </div>
-            \`,
-            metadata: {
-              confidence,
-              wordCount: summary.split(' ').length,
-              keyTopics: this.extractTopics(documentData.content || '')
-            }
-          }
-        }
-        extractKeyPoints(content) {
-          // Simple keyword extraction for demo
-          const sentences = content.split('. ').slice(0, 3);
-          return sentences.join('. ') + (sentences.length === 3 ? '...' : '');
-        }
-        calculateConfidence(summary) {
-          // Mock confidence calculation
-          return Math.min(0.95, 0.6 + (summary.length / 200) * 0.3);
-        }
-        extractTopics(content) {
-          const legalTerms = ['contract', 'agreement', 'liability', 'damages', 'breach'];
-          return legalTerms.filter(item => item.includes)(term);
+            renderableHTML: \`<div class="chr-rom-summary-card"><h4>Quick Summary</h4><p>\${summary}</p><div class="confidence">\${Math.round(confidence*100)}%</div></div>\`,
+            metadata: { confidence, wordCount: summary.split(/\\s+/).filter(Boolean).length, keyTopics: this.extractTopics(text) }
+          };
         }
         generateEntityPattern(entities) {
-          const entityHTML = entities.map(entity => \`;
-            <span class="chr-rom-entity-tag entity-\${entity.type}">
-              \${entity.text}
-              <span class="confidence">\${Math.round(entity.confidence * 100)}%</span>
-            </span>
-          \`).join('');
+          entities = entities || [];
+          const entityHTML = entities.map(e => \`<span class="chr-entity \${e.type}">\${e.text}<small>\${Math.round((e.confidence||0)*100)}%</small></span>\`).join('');
           return {
             type: 'entity_list',
-            renderableHTML: \`
-              <div class="chr-rom-entity-list">
-                <h5>Legal Entities (\${entities.length})</h5>
-                <div class="entity-tags">
-                  \${entityHTML}
-                </div>
-              </div>
-            \`,
-            metadata: {
-              entityCount: entities.length,
-              entityTypes: [...new Set(entities.map(e => e.type))],
-              avgConfidence: entities.reduce((sum, e) => sum + e.confidence, 0) / entities.length
-            }
-          }
+            renderableHTML: \`<div class="chr-rom-entity-list"><h5>Entities (\${entities.length})</h5><div>\${entityHTML}</div></div>\`,
+            metadata: { entityCount: entities.length, entityTypes: [...new Set(entities.map(e=>e.type))], avgConfidence: entities.length ? entities.reduce((s,e)=>s+(e.confidence||0),0)/entities.length : 0 }
+          };
         }
         generateCitationPattern(citations) {
-          const citationHTML = citations.map(citation => \`;
-            <div class="chr-rom-citation-item">
-              <span class="citation-text">\${citation.citation}</span>
-              <span class="citation-court">\${citation.court}</span>
-            </div>
-          \`).join('');
+          citations = citations || [];
+          const citationHTML = citations.map(c => \`<div class="chr-citation"><strong>\${c.citation}</strong> <em>\${c.court||''}</em></div>\`).join('');
           return {
             type: 'citation_block',
-            renderableHTML: \`
-              <div class="chr-rom-citation-block">
-                <h5>Legal Citations (\${citations.length})</h5>
-                <div class="citation-list">
-                  \${citationHTML}
-                </div>
-              </div>
-            \`,
-            metadata: {
-              citationCount: citations.length,
-              courts: [...new Set(citations.map(c => c.court))],
-              hasSupremeCourt: citations.some(c => c.court === 'Supreme Court')
-            }
-          }
+            renderableHTML: \`<div class="chr-rom-citation-block"><h5>Citations (\${citations.length})</h5>\${citationHTML}</div>\`,
+            metadata: { citationCount: citations.length, courts: [...new Set(citations.map(c=>c.court))] }
+          };
         }
       }
       const generator = new PatternGenerator();
-      self.onmessage = function(event) {
-        const { type, data, taskId } = event.dat;a;
+      self.onmessage = function(e) {
         try {
+          const { type, data, taskId } = e.data || {};
           let result;
-          switch (type) {
-            case 'generate_summary':
-              result = generator.generateSummaryPattern(data);
-              break;
-            case 'generate_entities':
-              result = generator.generateEntityPattern(data);
-              break;
-            case 'generate_citations':
-              result = generator.generateCitationPattern(data);
-              break;
-            default:
-              throw new Error(\`Unknown pattern type: \${type}\`);
-          }
-          self.postMessage({
-            type: 'pattern_generated',
-            data: { ...result, taskId, originalType: type }
-          });
-        } catch (error) {
-          self.postMessage({
-            type: 'computation_error',
-            data: { taskId, error: error.message }
-          });
+          if (type === 'generate_summary') result = generator.generateSummaryPattern(data);
+          else if (type === 'generate_entities') result = generator.generateEntityPattern(data);
+          else if (type === 'generate_citations') result = generator.generateCitationPattern(data);
+          else throw new Error('Unknown pattern type: ' + type);
+          self.postMessage({ type: 'pattern_generated', data: { ...result, taskId, originalType: type } });
+        } catch (err) {
+          self.postMessage({ type: 'computation_error', data: { error: err && err.message } });
         }
-      }
+      };
     `;
   }
+
   /**
    * Start monitoring user activity for prediction
    */
-  private startUserActivityMonitoring(),: void {
-    if (!browser), retur,n;
-    // Track mouse movement for interaction prediction
-    let mouseIdleTimer: number | null, = nu,ll;
-    document,.addEventListener('mousemove', (event) => {
+  private startUserActivityMonitoring(): void {
+    if (!browser) return;
+    let mouseIdleTimer: number | null = null;
+    document.addEventListener('mousemove', (event: MouseEvent) => {
       if (mouseIdleTimer) clearTimeout(mouseIdleTimer);
       mouseIdleTimer = window.setTimeout(() => {
-        this.predictUserAction('mouse_idle', {
-          x: event.clientX,
-          y: event.clientY,
-          target: event.target
-        });
+        this.predictUserAction('mouse_idle', { x: event.clientX, y: event.clientY, target: event.target });
       }, 1000);
     });
-    // Track scroll behavior
-    let scrollTimer: number | null, = nu,ll;
-    window,.addEventListener('scroll', () => {
+    let scrollTimer: number | null = null;
+    window.addEventListener('scroll', () => {
       if (scrollTimer) clearTimeout(scrollTimer);
       scrollTimer = window.setTimeout(() => {
-        this.predictUserAction('scroll_pause', {
-          scrollY: window.scrollY,
-          documentHeight: document.documentElement.scrollHeight
-        });
+        this.predictUserAction('scroll_pause', { scrollY: window.scrollY, documentHeight: document.documentElement.scrollHeight });
       }, 500);
     });
-    // Track hover events on legal elements
-    document,.addEventListener('mouseenter', (event) => {
-      // removed unused target assignment
-      if (target.matches('[data-legal-id], [data-case-id], [data-document-id]')) {
-        this.predictUserAction('hover_legal_element', {
-          elementType: target.tagName.toLowerCase(),
-          dataAttributes: this.extractDataAttributes(target)
-        });
+    document.addEventListener('mouseover', (evt) => {
+      const target = evt.target as Element | null;
+      if (!target) return;
+      if (target.matches && (target.matches('[data-legal-id]') || target.matches('[data-case-id]') || target.matches('[data-document-id]'))) {
+        this.predictUserAction('hover_legal_element', { elementType: target.tagName.toLowerCase(), dataAttributes: this.extractDataAttributes(target as HTMLElement) });
       }
     }, true);
-    console,.log('👁️ User activity monitoring started for CHR-ROM predictions');
+    console.log('👁️ User activity monitoring started for CHR-ROM predictions');
   }
+
   /**
    * Predict user action and queue pre-computation
    */
-  private async predictUserAction(action,: string, contex,t: an,y): Promise<void> {
+  private async predictUserAction(action: string, context: Record<string, unknown>): Promise<void> {
     const predictions = this.analyzeUserBehavior(action, context);
-    for (const prediction, o,f predictions) {
-      if (prediction.probability >= this.config.priorityThresholds.low) {
-        await this.queuePatternGeneration(prediction);
-      }
+    for (const p of predictions) {
+      if (p.probability >= this.config.priorityThresholds.low) await this.queuePatternGeneration(p);
     }
-    // Update user predictions store
-    this.userPredictions.update(current => ({
+    this.userPredictions.update((current) => ({
       ...current,
-      predictedActions: predictions.map(p => ({,
-        action: p.action,
-        probability: p.probability,
-        timeUntilAction: p.estimatedTimeUntilAction,
-        preparationStatus: this.getPatternStatus(p.requiredPatterns)
-      })),
-      confidenceScore: predictions.length > 0 ?
-        predictions.reduce((sum, p) => sum + p.probability, 0) / predictions.length: 0
-    });
+      predictedActions: predictions.map((p: Prediction) => ({ action: p.action, probability: p.probability, timeUntilAction: p.estimatedTimeUntilAction, preparationStatus: this.getPatternStatus(p.requiredPatterns || []) })),
+      confidenceScore: predictions.length ? (predictions.reduce((s: number, x: Prediction) => s + x.probability, 0) / predictions.length) : 0
+    }));
   }
+
   /**
    * Analyze user behavior and predict next actions
    */
-  private analyzeUserBehavior(action,: string, contex,t: an,y): Array< {>,
-    const predictions: Array<any> = [];
+  private analyzeUserBehavior(action: string, context: Record<string, unknown>): Prediction[] {
+    const predictions: Prediction[] = [];
     switch (action) {
-      case 'hover_legal_element':
-        const elementId = context.dataAttributes['legal-id'] ||;
-                         context.dataAttributes['case-id'] ||
-                         context.dataAttributes['document-id'];
+      case 'hover_legal_element': {
+        const attrs = (context?.dataAttributes as Record<string, string> | undefined) ?? {}; // cast to known shape
+        const elementId = attrs['legal-id'] || attrs['case-id'] || attrs['document-id'];
         if (elementId) {
-          predictions.push({
-            action: 'view_document_summary',
-            probability: 0.85,
-            estimatedTimeUntilAction: 1500,
-            requiredPatterns: [`summary_${elementId}`, `entities_${elementId}`]
-          });
-          predictions.push({
-            action: 'view_related_cases',
-            probability: 0.65,
-            estimatedTimeUntilAction: 3000,
-            requiredPatterns: [`related_cases_${elementId}`]
-          });
+          predictions.push({ action: 'view_document_summary', probability: 0.85, estimatedTimeUntilAction: 1500, requiredPatterns: [`summary_${elementId}`, `entities_${elementId}`] });
+          predictions.push({ action: 'view_related_cases', probability: 0.65, estimatedTimeUntilAction: 3000, requiredPatterns: [`related_cases_${elementId}`] });
         }
         break;
-      case 'scroll_pause':
-        const scrollPercentage = context.scrollY / (context.documentHeight - window.innerHeight);
-        if (scrollPercentage > 0.7) {
-          predictions.push({
-            action: 'view_document_end_actions',
-            probability: 0.75,
-            estimatedTimeUntilAction: 2000,
-            requiredPatterns: ['document_actions', 'next_steps']
-          });
-        }
+      }
+      case 'scroll_pause': {
+        const scrollY = context?.scrollY as number | undefined || 0;
+        const docH = context?.documentHeight as number | undefined || 1;
+        const scrollPercentage = scrollY / Math.max(1, (docH - window.innerHeight));
+        if (scrollPercentage > 0.7) predictions.push({ action: 'view_document_end_actions', probability: 0.75, estimatedTimeUntilAction: 2000, requiredPatterns: ['document_actions', 'next_steps'] });
         break;
+      }
       case 'mouse_idle':
-        predictions.push({
-          action: 'show_context_menu',
-          probability: 0.45,
-          estimatedTimeUntilAction: 2500,
-          requiredPatterns: ['context_menu', 'quick_actions']
-        });
+        predictions.push({ action: 'show_context_menu', probability: 0.45, estimatedTimeUntilAction: 2500, requiredPatterns: ['context_menu', 'quick_actions'] });
+        break;
+      default:
         break;
     }
     return predictions.filter(p => p.probability >= this.config.priorityThresholds.low);
   }
+
   /**
    * Queue pattern generation for background processing
    */
-  private async queuePatternGeneration(prediction,: {
-    action: string;
-    probability: number;
-    requiredPatterns: string[]);
-  }): Promise<void> {
+  private async queuePatternGeneration(prediction: Prediction): Promise<void> { // accept Prediction (requiredPatterns optional)
     const priority = this.calculatePriority(prediction.probability);
-    for (const patternId, o,f predict,ion.requiredPatt,erns) {
-      // Check if pattern already exists in cache
+    for (const patternId of prediction.requiredPatterns || []) { // safely handle undefined
       if (this.patternCache.has(patternId)) {
         const pattern = this.patternCache.get(patternId)!;
-        // Update access time and use count
         pattern.metadata.lastAccessed = Date.now();
         pattern.metadata.useCount++;
         continue;
       }
-      // Queue for generation
-      this.precomputationQueue.push({
-        pattern: patternId,
-        priority
-      });
+      this.precomputationQueue.push({ pattern: patternId, priority });
     }
-    // Sort queue by priority
     this.precomputationQueue.sort((a, b) => b.priority - a.priority);
+    this.updateCacheStatus();
   }
+
   /**
    * Calculate priority based on probability
    */
-  private calculatePriority(probability,: number): number {
+  private calculatePriority(probability: number): number {
     if (probability >= this.config.priorityThresholds.high) return 5;
     if (probability >= this.config.priorityThresholds.medium) return 3;
     return 1;
   }
+
   /**
    * Start background processing loop
    */
-  private startBackgroundProcessing(),: void {
-    if (!this.config.enableBackgroundProcessin,g) retu,rn;
-    setInterval((), => {
-      if (!this.isProcessing && this.precomputationQueue.length > 0) {
-        this.processNextPattern();
-      }
+  private startBackgroundProcessing(): void {
+    if (!this.config.enableBackgroundProcessing) return;
+    setInterval(() => {
+      if (!this.isProcessing && this.precomputationQueue.length > 0) void this.processNextPattern();
     }, this.config.backgroundProcessingInterval);
   }
+
   /**
    * Process next pattern in queue
    */
-  private async processNextPattern(),: Promise<void> {
-    if (this.precomputationQueue.length ===, 0) retu,rn;
-    this.isProcessing = tru,e;
-    const { pattern: patternId, priority } = this.precomputationQueue.shift();!;
+  private async processNextPattern(): Promise<void> {
+    if (this.precomputationQueue.length === 0) return;
+    this.isProcessing = true;
+    const task = this.precomputationQueue.shift()!;
     try {
-      const pattern = await this.generatePattern(patternId, priority);
-      if (pattern) {
-        await this.storePatternInCHRROM(pattern);
-      }
+      const pattern = await this.generatePattern(task.pattern, task.priority);
+      if (pattern) await this.storePatternInCHRROM(pattern);
     } catch (error) {
-      console.warn(`Failed to generate pattern ${patternId}:`, error);
+      console.warn(`Failed to generate pattern ${task.pattern}:`, error);
     } finally {
       this.isProcessing = false;
+      this.updateCacheStatus();
     }
   }
+
   /**
-   * Generate UI pattern based on pattern ID
+   * Generate UI pattern based on pattern ID (minimal / safe implementation)
    */
-  private async generatePattern(patternId,: string, priorit,y: numbe,r): Promise<CHRROMPattern | null> {
+  private async generatePattern(patternId: string, priority: number): Promise<CHRROMPattern | null> {
     const [type, contextId] = patternId.split('_');
-    try {
-      // Fetch relevant data for pattern generation
-      const contextData = await this.fetchContextData(type, contextId);
-      if (!contextData), return nu,ll;
-      // Generate pattern using background worker
-      if (this.backgroundWorke,r) {
-        return new Promise((resolve, reject) => {
-          const taskId = `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-          const timeout = setTimeout(() => {
-            reject(new Error('Pattern generation timeout');
-          }, 10000);
-          const messageHandler = (_event: MessageEvent) => {
-            const { type, data } = event.dat;a;
-            if (data.taskId === taskId) {
-              this.backgroundWorker!.removeEventListener('message', messageHandler);
-              clearTimeout(timeout);
-              if (type === 'pattern_generated') {
-                resolve(this.createCHRROMPattern(patternId, data, priority, contextId);
-              } else if (type === 'computation_error') {
-                reject(new Error(data.error);
-              }
-            }
+    const contextData = await this.fetchContextData(type, contextId);
+    if (!contextData) return null;
+
+    // Safe worker usage: capture local reference and bail if absent
+    const worker = this.backgroundWorker;
+    if (worker) {
+      return await new Promise<CHRROMPattern | null>((resolve) => {
+        const taskId = `task_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+        const handler = (ev: MessageEvent) => {
+          const payload = ev.data as { type?: string; data?: GeneratedPattern } | undefined;
+          if (payload?.type === 'pattern_generated' && payload.data?.taskId === taskId) {
+            try { worker.removeEventListener('message', handler); } catch (e) { /* ignore */ }
+            resolve(this.createCHRROMPattern(patternId, payload.data, priority, contextId));
           }
-          this.backgroundWorker!.addEventListener('message', messageHandler);
-          // Send generation task to worker
-          this.backgroundWorker!.postMessage({
-            type: `generate_${type}`,
-            data: contextData,
-            taskId
-          });
-        });
-      }
-      return null;
-    } catch (error) {
-      console.warn(`Pattern generation failed for ${patternId}:`, error);
-      return null;
+        };
+        try {
+          worker.addEventListener('message', handler);
+          worker.postMessage({ type: `generate_${type}`, data: contextData, taskId });
+        } catch (err) {
+          try { worker.removeEventListener('message', handler); } catch (e) { /* ignore */ }
+          resolve(null);
+          return;
+        }
+        // timeout safety
+        setTimeout(() => {
+          try { worker.removeEventListener('message', handler); } catch (e) { /* ignore */ }
+          resolve(null);
+        }, 10000);
+      });
     }
+
+    // fallback if no worker available
+    const generated: GeneratedPattern = { type: 'summary_card', renderableHTML: `<div>Generated quick summary for ${contextId}</div>`, originalType: 'summary' };
+    return this.createCHRROMPattern(patternId, generated, priority, contextId);
   }
+
   /**
-   * Fetch context data for pattern generation
+   * Fetch context data for pattern generation (mock fallback)
    */
-  private async fetchContextData(type,: string, contextI,d: strin,g): Promise<any> {
-    // Mock data fetching - in production, this would call actual APIs
+  private async fetchContextData(type: string, contextId: string): Promise<unknown | null> {
+    if (!contextId) return null;
     switch (type) {
-      case, 'summary,':
-        return {
-          id: contextId,
-          content: `This is a mock legal document for ${contextId}. It contains important legal provisions under 15 U.S.C. § 1001 and references Supreme Court case 456 U.S. 789. The document establishes binding agreements and jurisdictional clauses.`,
-          metadata: { documentType: 'contract', jurisdiction: 'federal' }
-        }
-      case, 'entities,':
-        return [
-          { type: 'statute', text: '15 U.S.C. § 1001', confidence: 0.95 },
-          { type: 'case_citation', text: '456 U.S. 789', confidence: 0.88 },
-          { type: 'court', text: 'Supreme Court', confidence: 0.92 },
-        ];
-      case, 'related,':
-        return {
-          cases: [
-            { id: 'case_001', title: 'Similar Contract Dispute', relevance: 0.85 },
-            { id: 'case_002', title: 'Jurisdictional Precedent', relevance: 0.72 },
-            { id: 'case_003', title: 'Statutory Interpretation', relevance: 0.68 }
-          ]
-        }
-      default:
-        return nul,l;
+      case 'summary': return { id: contextId, content: `Mock legal document for ${contextId}.`, metadata: { documentType: 'contract' } };
+      case 'entities': return [{ type: 'statute', text: '15 U.S.C. § 1001', confidence: 0.95 }, { type: 'case_citation', text: '456 U.S. 789', confidence: 0.88 }];
+      case 'related': return { cases: [] };
+      default: return null;
     }
   }
+
   /**
    * Create CHR-ROM pattern from generated data
    */
-  private createCHRROMPattern()
-    patternId: string
-    generatedData: any
-    priority: number
-    contextId: string;
-  ): CHRROMPattern {
+  private createCHRROMPattern(patternId: string, generatedData: GeneratedPattern, priority: number, contextId: string): CHRROMPattern {
     const compressedData = this.compressPatternData(generatedData);
+    const typeVal = (generatedData && (generatedData.type as CHRROMPattern['type'])) || 'text_block';
+    const renderHTML = typeof generatedData?.renderableHTML === 'string' ? generatedData.renderableHTML : '';
     return {
       id: patternId,
-      type: generatedData.type,
+      type: typeVal,
       priority: priority as 1 | 2 | 3 | 4 | 5,
       bankId: this.assignMemoryBank(priority),
       compressedData,
-      renderableHTML: generatedData.renderableHTML,
+      renderableHTML: renderHTML,
       metadata: {
         cacheKey: patternId,
         createdAt: Date.now(),
         expiresAt: Date.now() + this.config.patternExpirationTime,
         useCount: 0,
         lastAccessed: Date.now(),
-        userContext: 'current_user', // Would be actual user ID
-        documentContext: [contextId],
-        actionTrigger: generatedData.originalType || 'unknown'
+        userContext: 'current_user',
+        documentContext: contextId ? [contextId] : [],
+        actionTrigger: (generatedData && (generatedData.originalType as string)) || 'unknown'
       }
-    }
+    };
   }
+
+  /**
+   * Assign a memory bank id for CHR-ROM (simple deterministic mapping)
+   */
+  private assignMemoryBank(priority: number): number {
+    // map priority 1..5 into bank 0..(maxConcurrentComputations-1)
+    const banks = Math.max(1, Math.floor(this.config.maxConcurrentComputations) || 1);
+    return Math.abs(Math.floor(priority)) % banks;
+  }
+
   /**
    * Compress pattern data for efficient storage
    */
-  private compressPatternData(data,: any): Uint8Array {
-    const jsonString = JSON.stringify(data);
-    const encoder = new TextEncoder();
-    return encoder.encode(jsonString); // In production, would use actual compression
-  }
-  /**
-   * Assign memory bank based on priority
-   */
-  private assignMemoryBank(priority,: number): number {
-    // High priority patterns go to faster memory banks (0-1)
-    // Lower priority patterns go to slower banks (6-7)
-    switch (priority) {
-      case 5: return 0; // Fastest bank
-      case 4: return 1;
-      case 3: return 2;
-      case 2: return 3;
-      case 1: return 4;
-      default: return 7; // Slowest bank
-    }
-  }
-  /**
-   * Store pattern in CHR-ROM memory bridge
-   */
-  private async storePatternInCHRROM(pattern,: CHRROMPattern): Promise<void> {
-    // Store in pattern cache
-    this.patternCache.set(pattern.id, pattern);
-    // Store in NES GPU bridge for GPU-accelerated access
+  private compressPatternData(data: unknown): Uint8Array {
     try {
-      if (pattern,.metadata.documentContext.length >, 0) {
-        // Create a legal document structure for the NES bridge
-        const mockDocument: import('../memory/nes-memory-architecture').LegalDocument = {
-          id: pattern.id,
-          type: 'brief' as const,
-          priority: pattern.priority,
-          size: pattern.compressedData.length,
-          confidenceLevel: 0.9,
-          riskLevel: 'low' as const,
-          lastAccessed: Date.now(),
-          bankId: pattern.bankId,
-          compressed: true,
-          metadata: {
-            caseId: pattern.id,
-            jurisdiction: 'system',
-            documentClass: 'chr-rom-pattern',
-            aiGenerated: true,
-            vectorEmbedding: undefined,
-          }
-        }
-        const flatBuffer = await nesGPUBridge.createFlatBufferFromDocument(mockDocument);
-        console.log(`🎮 Stored CHR-ROM pattern ${pattern.id} in bank ${pattern.bankId}`);
-      }
-    } catch (error) {
-      console.warn(`Failed to store pattern in NES bridge:`, error);
+      return new TextEncoder().encode(JSON.stringify(data ?? {}));
+    } catch (err) {
+      // fallback to empty bytes on unexpected serialization error
+      return new Uint8Array();
     }
-    // Update cache status
+  }
+
+  /**
+   * Store pattern in CHR-ROM memory bridge (safe - dynamic import)
+   */
+  private async storePatternInCHRROM(pattern: CHRROMPattern): Promise<void> {
+    this.patternCache.set(pattern.id, pattern);
+    try {
+      const mod = await import('../gpu/nes-gpu-memory-bridge.js').catch(() => null) as unknown;
+      const isBridgeModule = (m: unknown): m is { nesGPUBridge?: NESGPUBridge; default?: NESGPUBridge } =>
+        typeof m === 'object' && m !== null && (('nesGPUBridge' in (m as object)) || ('default' in (m as object)));
+      if (isBridgeModule(mod)) {
+        const bridgeCandidate = (mod as { nesGPUBridge?: NESGPUBridge; default?: NESGPUBridge }).nesGPUBridge ?? (mod as { nesGPUBridge?: NESGPUBridge; default?: NESGPUBridge }).default ?? null;
+        if (bridgeCandidate && typeof bridgeCandidate.createFlatBufferFromDocument === 'function') {
+          const nesGPUBridge = bridgeCandidate as NESGPUBridge;
+          const mockDocument = { id: pattern.id, type: 'brief', priority: pattern.priority, size: pattern.compressedData.length, lastAccessed: Date.now(), bankId: pattern.bankId, compressed: true, metadata: { caseId: pattern.id } };
+          await nesGPUBridge.createFlatBufferFromDocument(mockDocument).catch(() => undefined);
+        }
+      }
+    } catch (err) {
+      // non-critical; ignore errors from optional GPU integration
+    }
     this.updateCacheStatus();
   }
+
   /**
-   * Retrieve pattern from CHR-ROM cache (0ms response time)
+   * Retrieve pattern from CHR-ROM cache
    */
-  async getCHRROMPattern(patternId,: string): Promise<CHRROMPattern | null> {
+  async getCHRROMPattern(patternId: string): Promise<CHRROMPattern | null> {
     const pattern = this.patternCache.get(patternId);
     if (!pattern) {
-      // Cache miss - trigger background generation for future use
       this.precomputationQueue.push({ pattern: patternId, priority: 2 });
       return null;
     }
-    // Check expiration
-    if (Date,.now() > pattern.metadata.expiresA,t) {
+    if (Date.now() > pattern.metadata.expiresAt) {
       this.patternCache.delete(patternId);
-      // Trigger regeneration
       this.precomputationQueue.push({ pattern: patternId, priority: 3 });
       return null;
     }
-    // Cache hit - update access statistics
     pattern.metadata.lastAccessed = Date.now();
     pattern.metadata.useCount++;
-    console.log(`⚡ CHR-ROM cache hit for ${patternId} - 0ms response time!`);
     return pattern;
   }
+
   /**
    * Get status of pattern preparation
    */
-  private getPatternStatus(patternIds,: string[]): 'pending' | 'cached' | 'expired,' {
+  private getPatternStatus(patternIds: string[]): 'pending' | 'cached' | 'expired' {
     const statuses = patternIds.map(id => {
-      const pattern = this.patternCache.get(id);
-      if (!pattern) return 'pending';
-      if (Date.now() > pattern.metadata.expiresAt) return 'expired';
+      const p = this.patternCache.get(id);
+      if (!p) return 'pending';
+      if (Date.now() > p.metadata.expiresAt) return 'expired';
       return 'cached';
     });
     if (statuses.every(s => s === 'cached')) return 'cached';
     if (statuses.includes('expired')) return 'expired';
     return 'pending';
   }
+
   /**
    * Handle generated pattern from background worker
    */
-  private handleGeneratedPattern(data,: any): void {
-    console,.log(`🔧 Background worker generated pattern:`, data.taskId);
+  private handleGeneratedPattern(data: GeneratedPattern | undefined): void {
+    if (!data) return;
+    const gd = data;
+    const id = (gd.taskId && String(gd.taskId)) || `gen_${Date.now()}`;
+    const patternId = (gd.originalType && `${gd.originalType}_${id}`) || id;
+    const pattern = this.createCHRROMPattern(patternId, gd, 3, id);
+    this.patternCache.set(pattern.id, pattern);
+    this.updateCacheStatus();
   }
-  /**
-   * Update background task status
-   */
-  private updateBackgroundTaskStatus(data,: any): void {
-    // Update metrics or UI status
-  }
+
+  private updateBackgroundTaskStatus(_data: unknown): void { /* noop placeholder - intentionally minimal */ }
+
   /**
    * Extract data attributes from HTML element
    */
-  private extractDataAttributes(element,: HTMLElement): Record<string, string> {
-    const attribute,s: Record<string, string,> = {}
-    for (const attr of element.attributes) {
-      if (attr.name.startsWith('data-')) {
-        attributes[attr.name.substring(5)] = attr.value;
-      }
+  private extractDataAttributes(element: HTMLElement): Record<string, string> {
+    const attributes: Record<string, string> = {};
+    for (const attr of Array.from(element.attributes)) {
+      if (attr.name.startsWith('data-')) attributes[attr.name.substring(5)] = attr.value;
     }
     return attributes;
   }
+
   /**
    * Update cache status metrics
    */
-  private updateCacheStatus(),: void {
-    const patterns = Array.from(this.patternCache.values();
+  private updateCacheStatus(): void {
+    const patterns = Array.from(this.patternCache.values());
     const totalSize = patterns.reduce((sum, p) => sum + p.compressedData.length, 0);
     const totalUses = patterns.reduce((sum, p) => sum + p.metadata.useCount, 0);
-    const topPatterns = pattern,s;
-      .sort((a, b) => b.metadata.useCount - a.metadata.useCount),
-      .slice(0, 5);
-      .map(p => ({
-        id: p.id,
-        useCount: p.metadata.useCount,
-        type: p.type
-      });
+    const topPatterns = patterns.slice().sort((a, b) => b.metadata.useCount - a.metadata.useCount).slice(0, 5).map(p => ({ id: p.id, useCount: p.metadata.useCount, type: p.type }));
     this.cacheStatus.set({
       totalPatterns: patterns.length,
-      cacheSize: totalSize / (1024 * 1024), // Convert to MB
+      cacheSize: totalSize / (1024 * 1024),
       hitRate: totalUses > 0 ? (totalUses / (totalUses + this.precomputationQueue.length)) * 100 : 0,
       missRate: totalUses > 0 ? (this.precomputationQueue.length / (totalUses + this.precomputationQueue.length)) * 100 : 0,
       topPatterns,
-      backgroundTasksActive: this.precomputationQueue.length,
+      backgroundTasksActive: this.precomputationQueue.length
     });
   }
+
   /**
    * Clear expired patterns
    */
-  clearExpiredPatterns(),: void {
+  clearExpiredPatterns(): void {
     const now = Date.now();
-    const expiredPattern,s: stri,ng,[], = [];
-    for (const [id, pattern], o,f t,his.patternC,ache) {
-      if (now > pattern.metadata.expiresAt) {
-        expiredPatterns.push(id);
-      }
-    }
-    expiredPatterns.forEach(id => this.patternCache.delete(id);
-    if (expiredPatterns.length > 0) {
-      console.log(`🧹 Cleared ${expiredPatterns.length} expired CHR-ROM patterns`);
-      this.updateCacheStatus();
-    }
+    const expired: string[] = [];
+    for (const [id, pattern] of this.patternCache.entries()) if (now > pattern.metadata.expiresAt) expired.push(id);
+    for (const id of expired) this.patternCache.delete(id);
+    if (expired.length > 0) { console.log(`🧹 Cleared ${expired.length} expired CHR-ROM patterns`); this.updateCacheStatus(); }
   }
+
   /**
    * Get performance metrics
    */
-  getPerformanceMetrics(),: {
-    totalPatterns: number;
-    cacheHitRate: number;
-    averageResponseTime: number;
-    memoryUsage: number;
-    backgroundEfficiency: number;
-  } {
+  getPerformanceMetrics(): { totalPatterns: number; cacheHitRate: number; averageResponseTime: number; memoryUsage: number; backgroundEfficiency: number } {
     const cacheData = get(this.cacheStatus);
-    return {
-      totalPatterns: cacheData.totalPatterns,
-      cacheHitRate: cacheData.hitRate,
-      averageResponseTime: 0, // 0ms for cache hits!
-      memoryUsage: cacheData.cacheSize,
-      backgroundEfficiency: cacheData.backgroundTasksActive > 0 ?
-        (cacheData.totalPatterns / cacheData.backgroundTasksActive) * 100 : 100
-    }
+    return { totalPatterns: cacheData.totalPatterns, cacheHitRate: cacheData.hitRate, averageResponseTime: 0, memoryUsage: cacheData.cacheSize, backgroundEfficiency: cacheData.backgroundTasksActive > 0 ? (cacheData.totalPatterns / cacheData.backgroundTasksActive) * 100 : 100 };
   }
 }
-// Export singleton instance
+
+// Export singleton
 export const chrRomService = new CHRROMPrecomputationService({
   enableBackgroundProcessing: true,
   maxCacheSize: 256,
   predictionAccuracy: 0.85,
   backgroundProcessingInterval: 1500,
-  priorityThresholds: {
-    high: 0.8,
-    medium: 0.5,
-    low: 0.3
-  }
+  maxConcurrentComputations: 4,
+  priorityThresholds: { high: 0.8, medium: 0.5, low: 0.3 }
 });
-// Convenience functions for UI components
+
 export const getCachedPattern = (patternId: string) => chrRomService.getCHRROMPattern(patternId);
 export const clearExpiredCache = () => chrRomService.clearExpiredPatterns();

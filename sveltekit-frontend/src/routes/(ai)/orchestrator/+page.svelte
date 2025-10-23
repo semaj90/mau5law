@@ -31,16 +31,18 @@ Showcases the service worker-based AI orchestration system
   import LLMSelector from '$lib/components/ai/LLMSelector.svelte';
   import { aiWorkerManager, createGenerationTask, createAnalysisTask } from '$lib/services/ai-worker-manager.js';
   import type { AITask, LLMModel } from '$lib/types/ai-worker.js';
-  // Demo state
-  let selectedModel: LLMModel | undefined = $state();
-  let userPrompt = $state('Analyze the following legal document for key terms, potential issues, and recommendations...');
-  let isProcessing = $state(false);
-  let demoResults = $state<any[]>([]);
+
+  // Local demo state (avoid runtime $state magic here for compile stability)
+  let selectedModel: LLMModel | undefined;
+  let userPrompt = 'Analyze the following legal document for key terms, potential issues, and recommendations...';
+  let isProcessing = false;
+  let demoResults: any[] = [];
+
   // Demo scenarios
   const demoScenarios = [
     {
       name: 'Legal Document Analysis',
-      description 'Parallel analysis across multiple AI models',
+      description: 'Parallel analysis across multiple AI models',
       prompt: 'Analyze this contract for potential legal issues, key terms, and compliance requirements.',
       tasks: [
         { provider: 'ollama', model: 'gemma3-legal', focus: 'Legal compliance analysis' },
@@ -50,7 +52,7 @@ Showcases the service worker-based AI orchestration system
     },
     {
       name: 'Evidence Processing',
-      description 'Multi-stage evidence analysis pipeline',
+      description: 'Multi-stage evidence analysis pipeline',
       prompt: 'Process and categorize evidence files for case preparation.',
       tasks: [
         { provider: 'ollama', model: 'nomic-embed-text', focus: 'Text embedding generation' },
@@ -60,7 +62,7 @@ Showcases the service worker-based AI orchestration system
     },
     {
       name: 'Case Research',
-      description 'Comprehensive legal research workflow',
+      description: 'Comprehensive legal research workflow',
       prompt: 'Research relevant case law and statutes for this legal matter.',
       tasks: [
         { provider: 'autogen', model: 'autogen-agents', focus: 'Legal research coordination' },
@@ -69,19 +71,14 @@ Showcases the service worker-based AI orchestration system
       ]
     }
   ];
-  $effect(() => {
-        capabilities: ['legal-analysis', 'case-research', 'document-review'],
-        endpoint: 'http://localhost:11434',
-      }
-    }
-  });
-  async function runDemoScenario(scenario: unknown) {
+
+  // Run a demo scenario by creating analysis tasks and submitting them to the aiWorkerManager.
+  async function runDemoScenario(scenario: any) {
     if (!selectedModel) return;
     isProcessing = true;
     demoResults = [];
     try {
-      // Create tasks for the scenario
-      const tasks = scenario.tasks.map((taskConfig: unknown) =>
+      const tasks = (scenario.tasks || []).map((taskConfig: any) =>
         createAnalysisTask(
           `${scenario.prompt}\n\nFocus: ${taskConfig.focus}`,
           taskConfig.focus,
@@ -94,26 +91,26 @@ Showcases the service worker-based AI orchestration system
           }
         )
       );
-      // Submit all tasks in parallel
-      const taskPromises = tasks.map(async (task) => {
+
+      const taskPromises = tasks.map(async (task: any) => {
         try {
           demoResults = [...demoResults, { task }];
           const taskId = await aiWorkerManager.submitTask(task);
           const result = await aiWorkerManager.waitForTask(taskId);
-          // Update result
-          const index = demoResults.findIndex(r => r.task.taskId === task.taskId);
+          const index = demoResults.findIndex((r) => (r.task as any).taskId === (task as any).taskId);
           if (index >= 0) {
-            demoResults[index] = { task, response: result }
+            demoResults[index] = { task, response: result };
           }
           return result;
         } catch (error) {
           console.error('Task failed:', error);
-          const index = demoResults.findIndex(r => r.task.taskId === task.taskId);
+          const index = demoResults.findIndex((r) => (r.task as any).taskId === (task as any).taskId);
           if (index >= 0) {
-            demoResults[index] = { task, error: (error as Error).message }
+            demoResults[index] = { task, error: (error as Error).message ?? String(error) };
           }
         }
       });
+
       await Promise.all(taskPromises);
       console.log(`Demo scenario "${scenario.name}" completed`);
     } catch (error) {
@@ -122,14 +119,15 @@ Showcases the service worker-based AI orchestration system
       isProcessing = false;
     }
   }
+
   async function submitCustomTask() {
-    if (!selectedModel || !userPrompt.trim()) return;
+    if (!selectedModel || !userPrompt || !userPrompt.trim()) return;
     isProcessing = true;
     try {
       const task = createGenerationTask(
         userPrompt,
-        selectedModel.name,
-        selectedModel.provider,
+        (selectedModel as any).name,
+        (selectedModel as any).provider,
         {
           priority: 'high',
           temperature: 0.1,
@@ -143,23 +141,31 @@ Showcases the service worker-based AI orchestration system
       console.log('Custom task completed:', result);
     } catch (error) {
       console.error('Custom task failed:', error);
-      demoResults = [{ task: demoResults[0]?.task, error: (error as Error).message }];
+      demoResults = [{ task: demoResults[0]?.task, error: (error as Error).message ?? String(error) }];
     } finally {
       isProcessing = false;
     }
   }
+
   function clearResults() {
     demoResults = [];
   }
+
   function getProviderIcon(providerId: string) {
     switch (providerId) {
-      case 'ollama': return Cpu;
-      case 'vllm': return Zap;
-      case 'autogen': return Brai;
-      case 'crewai': return Databa;
-      default: return Activity;
+      case 'ollama':
+        return Cpu;
+      case 'vllm':
+        return Zap;
+      case 'autogen':
+        return Brain;
+      case 'crewai':
+        return Database;
+      default:
+        return Activity;
     }
   }
+
   function formatDuration(ms: number): string {
     if (ms < 1000) return `${ms}ms`;
     if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
