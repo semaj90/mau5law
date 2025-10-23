@@ -3,7 +3,6 @@
  * High-performance attention mechanism for legal AI processing
  * Optimized for RTX 3060 Ti 8GB VRAM
  */
-}
 export interface FlashAttention2Config {
   maxSequenceLength: number;
   batchSize: number;
@@ -12,17 +11,17 @@ export interface FlashAttention2Config {
   enableGPUOptimization: boolean;
   memoryOptimization: 'balanced' | 'speed' | 'memory';
 }
-}
+
 export interface AttentionResult {
   embeddings: Float32Array;
   attentionWeights: Float32Array;
-  contextualEmbeddings: Float32Array;
+  contextualEmbeddings?: Float32Array;
   processingTime: number;
   memoryUsage: number;
   confidence: number;
   sequenceLength: number;
 }
-}
+
 export interface LegalContextAnalysis {
   relevanceScore: number;
   conceptClusters: string[];
@@ -35,19 +34,30 @@ export interface LegalContextAnalysis {
   recommendations?: string[];
   confidenceMetrics: {
     semantic: number;
-  syntactic: number;
-  contextual: number;
-  }
+    syntactic: number;
+    contextual: number;
+  };
 }
+
+// --- Minimal local GPU types to avoid 'any' casts ---
+type GPUDeviceLike = Record<string, unknown>;
+type GPUAdapterLike = { requestDevice?: (desc?: unknown) => Promise<GPUDeviceLike | null> | null };
+type NavigatorWithGPU = { gpu?: { requestAdapter?: (opts?: unknown) => Promise<GPUAdapterLike | null> | null } };
+
 /**
- * RTX 3060 Ti optimized FlashAttention2 implementation
- * Uses NVIDIA's memory-efficient attention patterns
+ * Add a small Performance type that includes optional memory to avoid 'any' casts
+ */
+type PerformanceWithMemory = Performance & { memory?: { usedJSHeapSize?: number } };
+
+/**
+ * RTX 3060 Ti optimized FlashAttention2 implementation (simulated)
  */
 export class FlashAttention2RTX3060Service {
   private config: FlashAttention2Config;
   private isInitialized = false;
-  private gpuDevice: any = null;
+  private gpuDevice: unknown | null = null;
   private memoryPool: Float32Array[] = [];
+
   constructor(config: Partial<FlashAttention2Config> = {}) {
     this.config = {
       maxSequenceLength: 2048,
@@ -57,177 +67,146 @@ export class FlashAttention2RTX3060Service {
       enableGPUOptimization: true,
       memoryOptimization: 'balanced',
       ...config
-    }
+    };
   }
-  /**
-   * Initialize GPU resources and memory pools
-   */
+
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
-    console.log('🚀 Initializing FlashAttention2 RTX 3060 Ti service...');
     try {
-      // Check for GPU availability (browser environment)
       if (typeof navigator !== 'undefined' && 'gpu' in navigator) {
-        this.gpuDevice = await (navigator as any).gpu?.requestAdapter();
-        console.log('✅ WebGPU adapter acquired');
+        // typed navigator to avoid 'any'
+        const nav = navigator as unknown as NavigatorWithGPU;
+        const adapter = await nav.gpu?.requestAdapter?.();
+        if (adapter) {
+          this.gpuDevice = (await adapter.requestDevice?.()) ?? null;
+        }
       }
-      // Pre-allocate memory pools for RTX 3060 Ti (8GB VRAM)
-      this.initializeMemoryPools();
-      this.isInitialized = true;
-      console.log('✅ FlashAttention2 RTX 3060 Ti service initialized');
-    } catch (error: any) {
-      console.warn('⚠️ GPU initialization failed, falling back to CPU', error);
+    } catch (err) {
+      // ignore and fall back to CPU
       this.config.enableGPUOptimization = false;
-      this.isInitialized = true;
     }
+    this.initializeMemoryPools();
+    this.isInitialized = true;
   }
-  /**
-   * Pre-allocate memory pools optimized for RTX 3060 Ti
-   */
+
   private initializeMemoryPools(): void {
-    const poolSize = this.config.enableGPUOptimization ?;
-      Math.floor(6 * 1024 * 1024 * 1024 / 4), : // 6GB of 8GB VRAM for safety
-      64 * 1024 * 1024; // 256MB for CPU fallback
-    // Create attention matrix pools
-    for (let i = 0; i < 4; i++) {>
-      this.memoryPool.push(new Float32Array(poolSize / 4);
+    // Reserve either 6GB (GPU-enabled path) or 64MB (CPU fallback) and split into 4 pools.
+    const bytes = this.config.enableGPUOptimization
+      ? 6 * 1024 * 1024 * 1024 // 6 GB
+      : 64 * 1024 * 1024; // 64 MB
+    const totalFloatCount = Math.floor(bytes / 4); // Float32 = 4 bytes
+    const poolCount = 4;
+    const poolSize = Math.max(1, Math.floor(totalFloatCount / poolCount));
+    this.memoryPool = [];
+    for (let i = 0; i < poolCount; i++) {
+      this.memoryPool.push(new Float32Array(poolSize));
     }
-    console.log(`📊 Memory pools initialized: ${this.memoryPool.length} pools of ${poolSize / 4} elements each`);
+    // Note: pool elements are zero-initialized
+    // console.log intentionally omitted for concise module behavior
   }
-  /**
-   * Process legal text with FlashAttention2 for enhanced context understanding
-   */
-  async processLegalText()
-    text: string;
+
+  async processLegalText(
+    text: string,
     context: string[] = [],
-    analysisType: 'semantic' | 'legal' | 'precedent' = 'legal';
-  ): Promise<AttentionResult, & { legalAnalysis: LegalContextAnalysis }> {
-    await thi,s.initialize,();
-    const startTime = performance.now();
+    analysisType: 'semantic' | 'legal' | 'precedent' = 'legal'
+  ): Promise<AttentionResult & { legalAnalysis: LegalContextAnalysis }> {
+    await this.initialize();
+    const startTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
     const memoryBefore = this.getMemoryUsage();
-    console,.log(`🔍 Processing legal text (${text.length} chars) with FlashAttention2...`);
-    try {
-      // Tokenize and prepare input sequences
-      const tokens = this.tokenizeLegalText(text);
-      const contextTokens = context.map(ctx => this.tokenizeLegalText(ctx);
-      // Apply FlashAttention2 algorithm
-      const attentionResult = await this.computeFlashAttention(tokens, contextTokens, analysisType);
-      // Legal-specific analysis
-      const legalAnalysis = await this.analyzeLegalContext(text, attentionResult, context);
-      const processingTime = performance.now() - startTim,e;
-      const memoryAfter = this.getMemoryUsage();
-      console,.log(`✅ FlashAttention2 processing complete (${processingTime.toFixed(2)}ms)`);
-      return {
-        ...attentionResult,
-        legalAnalysis,
-        processingTime,
-        memoryUsage: memoryAfter - memoryBefore
-      }
-    } catch (error: any) {
-      console.error('❌ FlashAttention2 processing failed:', error);
-      throw new Error(`FlashAttention2 processing failed: ${error.message}`);
-    }
+
+    // Tokenize inputs
+    const tokens = this.tokenizeLegalText(text);
+    const contextTokens = context.map((c) => this.tokenizeLegalText(c));
+
+    // Compute attention (simulated). Choose GPU or CPU path based on availability.
+    const attentionStart = typeof performance !== 'undefined' ? performance.now() : Date.now();
+    const attentionResult = await this.computeFlashAttention(tokens, contextTokens, analysisType);
+    const attentionTime = (typeof performance !== 'undefined' ? performance.now() : Date.now()) - attentionStart;
+
+    // use attentionTime so it is not unused
+    attentionResult.processingTime = attentionTime;
+
+    // Do legal-specific lightweight analysis
+    const legalAnalysis = await this.analyzeLegalContext(text, attentionResult, context);
+
+    const processingTime = (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime;
+    const memoryAfter = this.getMemoryUsage();
+    const totalMemoryUsed = Math.max(0, memoryAfter - memoryBefore);
+
+    return {
+      ...attentionResult,
+      processingTime: processingTime,
+      memoryUsage: totalMemoryUsed,
+      sequenceLength: Math.min(tokens.length, this.config.maxSequenceLength),
+      legalAnalysis
+    };
   }
-  /**
-   * Tokenize legal text with domain-specific vocabulary
-   */
-  private tokenizeLegalText(text,: string): number[,] {
-    // Legal domain-specific tokenization
-    const legalTerms = {
-      'indemnification': 1001,
-      'liability': 1002,
-      'breach': 1003,
-      'damages': 1004,
-      'precedent': 1005,
-      'jurisdiction': 1006,
-      'contract': 1007,
-      'evidence': 1008,
-      'testimony': 1009,
-      'statute': 1010
-    }
-    // Simple tokenization with legal term enhancement
-    const words = text.toLowerCase();
+
+  private tokenizeLegalText(text: string): number[] {
+    if (!text) return [];
+    const legalTerms: Record<string, number> = {
+      indemnification: 1001,
+      liability: 1002,
+      breach: 1003,
+      damages: 1004,
+      precedent: 1005,
+      jurisdiction: 1006,
+      contract: 1007,
+      evidence: 1008,
+      testimony: 1009,
+      statute: 1010
+    };
+    const words = text
+      .toLowerCase()
       .replace(/[^\w\s]/g, ' ')
       .split(/\s+/)
-      .filter(word => word.length > 0);
-    return words.map(word => {
-      if (word in legalTerms) {
-        return legalTerms[word as keyof typeof legalTerms];
+      .filter(Boolean);
+    return words.map((w) => {
+      if (w in legalTerms) return legalTerms[w];
+      // simple deterministic hash in 16-bit space + offset
+      let h = 0;
+      for (let i = 0; i < w.length; i++) {
+        h = ((h << 5) - h + w.charCodeAt(i)) & 0xffff;
       }
-      // Simple hash for other words
-      return Math.abs(word.split('').reduce((hash, char) =>;
-        ((hash << 5) - hash + char.charCodeAt(0)) & 0xFFFF, 0>>
-      )) + 100;
+      return Math.abs(h) + 200;
     });
   }
-  /**
-   * Core FlashAttention2 computation optimized for RTX 3060 Ti
-   */
-  private async computeFlashAttention()
-    tokens: number[]
-    contextTokens: number[][]
-    analysisType: string;
+
+  private async computeFlashAttention(
+    tokens: number[],
+    contextTokens: number[][],
+    _analysisType: string // prefixed with underscore to avoid unused-arg lint
   ): Promise<AttentionResult> {
-    const seqLen = Math.min(tokens.length, this.config.maxSequenceLength);
-    const embedDim = this.config.numHeads * this.config.headDi,m;
-    // Memory-efficient attention computation
-    const embeddings = new Float32Array(embedDim);
-    const attentionWeights = new Float32Array(seqLen * seqLen);
-    if (this.config.enableGPUOptimization && this.gpuDevic,e) {
+    const seqLen = Math.min(tokens.length || 1, this.config.maxSequenceLength);
+    const embedDim = this.config.numHeads * this.config.headDim;
+    const embeddings = new Float32Array(embedDim).fill(0);
+    const attentionWeights = new Float32Array(seqLen * seqLen).fill(0);
+
+    if (this.config.enableGPUOptimization && this.gpuDevice) {
       return this.computeGPUAttention(tokens, contextTokens, embeddings, attentionWeights);
     } else {
       return this.computeCPUAttention(tokens, contextTokens, embeddings, attentionWeights);
     }
   }
-  /**
-   * GPU-accelerated attention computation
-   */
-  private async computeGPUAttention()
-    tokens: number[]
-    contextTokens: number[][];
-    embeddings: Float32Array
-    attentionWeights: Float32Array;
+
+  private async computeGPUAttention(
+    tokens: number[],
+    _contextTokens: number[][], // prefixed with underscore
+    embeddings: Float32Array,
+    attentionWeights: Float32Array
   ): Promise<AttentionResult> {
-    // Simulate GPU computation with optimized patterns
-    for (let i =, 0;, i < embeddi,ngs.le,ng,t,h; i++) {>
-      embeddings[i], = Math.tanh(tokens[i % tokens.length] * 0.001 + Math.random() * 0.1);
+    // Simulated GPU-accelerated computation (deterministic pseudo-random for reproducibility)
+    const seqLen = Math.min(tokens.length || 1, this.config.maxSequenceLength);
+    for (let i = 0; i < embeddings.length; i++) {
+      embeddings[i] = Math.tanh(((tokens[i % tokens.length] || 0) % 1000) * 0.001 + ((i % 7) * 0.01));
     }
-    // Flash attention pattern: O(n) memory complexity
-    for (let i = 0; i < Math.min(tokens.length, Math.sqrt(attentionWeights.length); i++) {>
-      for (let j = 0; j < Math.min(tokens.length, Math.sqrt(attentionWeights.length); j++) {>
-        const idx = i * Math.sqrt(attentionWeights.length) + j;
-        if (idx < attentionWeights.length) {>
-          attentionWeights[idx], = Math.exp(-(i - j) * (i - j) / 100) * (0.8 + Math.random() * 0.4);
-        }
-      }
-    }
-    return {
-      embeddings,
-      attentionWeights,
-      processingTime: 0, // Will be set by caller
-      memoryUsage: 0,    // Will be set by caller
-      confidence: 0.85 + Math.random() * 0.1
-    }
-  }
-  /**
-   * CPU fallback attention computation
-   */
-  private async computeCPUAttention()
-    tokens: number[]
-    contextTokens: number[][];
-    embeddings: Float32Array
-    attentionWeights: Float32Array;
-  ): Promise<AttentionResult> {
-    // CPU-optimized attention with reduced memory usage
-    for (let i =, 0;, i < embeddi,ngs.le,ng,t,h; i++) {>
-      embeddings[i], = Math.tanh(tokens[i % tokens.length] * 0.0005 + Math.random() * 0.05);
-    }
-    // Sparse attention pattern for CPU efficiency
-    for (let i = 0; i < Math.min(tokens.length, 64); i++) {>
-      for (let j = Math.max(0, i - 8); j < Math.min(tokens.length, i + 8); j++) {>
-        const idx = i * 64 + (j - Math.max(0, i - 8);
-        if (idx < attentionWeights.length) {>
-          attentionWeights[idx], = Math.exp(-(i - j) * (i - j) / 50) * (0.7 + Math.random() * 0.3);
+    const dim = Math.floor(Math.sqrt(attentionWeights.length)) || seqLen;
+    for (let i = 0; i < Math.min(seqLen, dim); i++) {
+      for (let j = 0; j < Math.min(seqLen, dim); j++) {
+        const idx = i * dim + j;
+        if (idx < attentionWeights.length) {
+          const d = (i - j) * (i - j);
+          attentionWeights[idx] = Math.exp(-d / 100) * (0.8 + ((i + j) % 10) * 0.01);
         }
       }
     }
@@ -236,27 +215,58 @@ export class FlashAttention2RTX3060Service {
       attentionWeights,
       processingTime: 0,
       memoryUsage: 0,
-      confidence: 0.75 + Math.random() * 0.15
-    }
+      confidence: 0.85,
+      sequenceLength: seqLen
+    };
   }
-  /**
-   * Analyze legal context from attention results
-   */
-  private async analyzeLegalContext()
-    text: string
-    attentionResult: AttentionResult;
-    context: string[];
+
+  private async computeCPUAttention(
+    tokens: number[],
+    _contextTokens: number[][], // prefixed with underscore
+    embeddings: Float32Array,
+    attentionWeights: Float32Array
+  ): Promise<AttentionResult> {
+    const seqLen = Math.min(tokens.length || 1, this.config.maxSequenceLength);
+    for (let i = 0; i < embeddings.length; i++) {
+      embeddings[i] = Math.tanh(((tokens[i % tokens.length] || 0) % 1000) * 0.0005 + ((i % 5) * 0.005));
+    }
+    const dim = Math.floor(Math.sqrt(attentionWeights.length)) || seqLen;
+    // Sparse local-window attention
+    const localWindow = Math.min(seqLen, 64);
+    for (let i = 0; i < localWindow; i++) {
+      const start = Math.max(0, i - 8);
+      const end = Math.min(seqLen, i + 8);
+      for (let j = start; j < end; j++) {
+        const idx = i * dim + (j - start);
+        if (idx < attentionWeights.length) {
+          const d = (i - j) * (i - j);
+          attentionWeights[idx] = Math.exp(-d / 50) * (0.7 + ((i + j) % 7) * 0.01);
+        }
+      }
+    }
+    return {
+      embeddings,
+      attentionWeights,
+      processingTime: 0,
+      memoryUsage: 0,
+      confidence: 0.75,
+      sequenceLength: seqLen
+    };
+  }
+
+  private async analyzeLegalContext(
+    text: string,
+    attentionResult: AttentionResult,
+    context: string[]
   ): Promise<LegalContextAnalysis> {
-    const words = text.toLowerCase().split(/\s+/);
-    // Extract legal entities and concepts
-    const legalEntities = words.filter(word =>;
-      ['plaintiff', 'defendant', 'court', 'judge', 'jury', 'attorney', 'counsel'],.includes(word),
+    const words = (text || '').toLowerCase().split(/\s+/).filter(Boolean);
+    const legalEntities = words.filter((w) =>
+      ['plaintiff', 'defendant', 'court', 'judge', 'jury', 'attorney', 'counsel'].includes(w)
     );
     const conceptClusters = this.extractConceptClusters(words, attentionResult.attentionWeights);
     const precedentReferences = this.extractPrecedentReferences(text);
-    // Calculate confidence metrics based on attention patterns
     const semantic = Math.min(1.0, attentionResult.confidence * 1.2);
-    const syntactic = Math.min(1.0, this.calculateSyntacticConfidence(words);
+    const syntactic = Math.min(1.0, this.calculateSyntacticConfidence(words));
     const contextual = Math.min(1.0, context.length > 0 ? 0.9 : 0.6);
     return {
       relevanceScore: (semantic + syntactic + contextual) / 3,
@@ -268,77 +278,58 @@ export class FlashAttention2RTX3060Service {
         syntactic,
         contextual
       }
-    }
+    };
   }
-  /**
-   * Extract concept clusters from attention weights
-   */
-  private extractConceptClusters(words,: string[], attentionWeight,s: Float32Arra,y): string,[] {
+
+  private extractConceptClusters(words: string[], attentionWeights: Float32Array): string[] {
     const clusters: string[] = [];
     const threshold = 0.7;
-    // Simplified clustering based on attention weights
-    for (let i = 0; i < Math.min(words.length, 20); i++) {>
-      if (i < Math.sqrt(attentionWeights.length)) {>
-        const weight = attentionWeights[i * Math.sqrt(attentionWeights.length) + i];
-        if (weight > threshold && words[i]) {
-          clusters.push(words[i]);
-        }
-      }
+    const dim = Math.floor(Math.sqrt(Math.max(1, attentionWeights.length)));
+    for (let i = 0; i < Math.min(words.length, dim, 20); i++) {
+      const weight = attentionWeights[i * dim + i] ?? 0;
+      if (weight > threshold && words[i]) clusters.push(words[i]);
     }
-    return [...new Set(clusters)].slice(0, 10);
+    return Array.from(new Set(clusters)).slice(0, 10);
   }
-  /**
-   * Extract precedent references from text
-   */
-  private extractPrecedentReferences(text,: string): string[,] {
+
+  private extractPrecedentReferences(text: string): string[] {
     const precedentPatterns = [
-      /\b\d+\s+[A-Z][a-z]+\s+\d+\b/g, // Citation patterns like "123 F.3d 456"
-      /\b[A-Z][a-zA-Z\s]+\s+v\.\s+[A-Z][a-zA-Z\s]+\b/g, // Case names
-      /\b\d+\s+U\.S\.\s+\d+\b/g // US Reports citations
+      /\b\d+\s+[A-Z][a-z]+\s+\d+\b/g,
+      /\b[A-Z][a-zA-Z\s]+\s+v\.\s+[A-Z][a-zA-Z\s]+\b/g,
+      /\b\d+\s+U\.S\.\s+\d+\b/g
     ];
-    const references: string[] = [];
-    for (const pattern of precedentPatterns) {
-      const matches = text.match(pattern);
-      if (matches) {
-        references.push(...matches);
-      }
+    const refs: string[] = [];
+    for (const p of precedentPatterns) {
+      const m = text.match(p);
+      if (m) refs.push(...m);
     }
-    return [...new Set(references)].slice(0, 5);
+    return Array.from(new Set(refs)).slice(0, 5);
   }
-  /**
-   * Calculate syntactic confidence based on legal writing patterns
-   */
-  private calculateSyntacticConfidence(words,: string[]): number {
+
+  private calculateSyntacticConfidence(words: string[]): number {
     const legalIndicators = [
       'whereas', 'therefore', 'heretofore', 'aforementioned',
       'pursuant', 'notwithstanding', 'covenant', 'stipulate'
     ];
-    const legalCount = words.filter(word => legalIndicators.includes(word)).length;
-    return Math.min(1.0, legalCount / Math.max(1, words.length * 0.05);
+    const legalCount = words.filter((w) => legalIndicators.includes(w)).length;
+    return Math.min(1.0, legalCount / Math.max(1, words.length * 0.05));
   }
-  /**
-   * Get current memory usage
-   */
-  private getMemoryUsage(),: number {
-    if (typeof performance !== 'undefined' && 'memory' in performance) {
-      return (performance as any).memory?.usedJSHeapSize || 0;
+
+  private getMemoryUsage(): number {
+    if (typeof performance !== 'undefined') {
+      const perf = performance as PerformanceWithMemory;
+      return perf.memory?.usedJSHeapSize ?? 0;
     }
     return 0;
   }
-  /**
-   * Cleanup resources
-   */
-  async cleanup(),: Promise<void> {
-    if (this.memoryPool.length >, 0) {
-      this.memoryPool.length = 0;
-      console.log('🧹 FlashAttention2 memory pools cleaned up');
-    }
+
+  async cleanup(): Promise<void> {
+    this.memoryPool.length = 0;
+    this.gpuDevice = null;
     this.isInitialized = false;
   }
-  /**
-   * Get service status and performance metrics
-   */
-  getStatus(), {
+
+  getStatus() {
     return {
       initialized: this.isInitialized,
       gpuEnabled: this.config.enableGPUOptimization && !!this.gpuDevice,
@@ -346,29 +337,30 @@ export class FlashAttention2RTX3060Service {
       memoryPools: this.memoryPool.length,
       maxSequenceLength: this.config.maxSequenceLength,
       batchSize: this.config.batchSize
-    }
+    };
   }
 }
+
 // Global service instance
 export const flashAttention2Service = new FlashAttention2RTX3060Service({
   maxSequenceLength: 2048,
   batchSize: 8,
   enableGPUOptimization: true,
-  memoryOptimization: 'balanced',
+  memoryOptimization: 'balanced'
 });
+
 /**
  * GPU Error Processing System with FlashAttention2
- * Specialized for Gemma3-Legal GGUF model errors
  */
 export interface GPUErrorContext {
   errorType: 'compilation' | 'runtime' | 'memory' | 'model' | 'inference';
-  modelVersion: 'gemma3-legal' | 'nomic-embed-text';
+  modelVersion: 'gemma3-legal' | 'nomic-embed-text' | string;
   errorMessage: string;
   stackTrace?: string;
   gpuMemoryUsage?: number;
   timestamp: number;
 }
-}
+
 export interface ErrorProcessingResult {
   resolved: boolean;
   suggestion: string;
@@ -377,181 +369,89 @@ export interface ErrorProcessingResult {
   processingTime: number;
   memoryOptimized: boolean;
 }
+
 export class GPUErrorProcessor {
   private flashAttentionService: FlashAttention2RTX3060Service;
   private errorCache = new Map<string, ErrorProcessingResult>();
+
   constructor(flashAttentionService: FlashAttention2RTX3060Service) {
+    // use the injected instance rather than the global
     this.flashAttentionService = flashAttentionService;
   }
-  /**
-   * Process GPU errors using FlashAttention2 analysis
-   */
+
+  private generateCacheKey(ctx: GPUErrorContext): string {
+    return `${ctx.errorType}_${ctx.modelVersion}_${ctx.errorMessage.slice(0, 50)}`;
+  }
+
   async processGPUError(errorContext: GPUErrorContext): Promise<ErrorProcessingResult> {
-    console.log(`🔧 Processing GPU error for ${errorContext.modelVersion}:`, errorContext.errorType);
-    // Check cache first
     const cacheKey = this.generateCacheKey(errorContext);
     if (this.errorCache.has(cacheKey)) {
-      console.log('🎯 Using cached error solution');
       return this.errorCache.get(cacheKey)!;
     }
-    const startTime = performance.now();
+    const start = typeof performance !== 'undefined' ? performance.now() : Date.now();
     try {
-      // Use FlashAttention2 to analyze error context
       const attentionResult = await this.flashAttentionService.processLegalText(
-        errorContext.errorMessage + (errorContext.stackTrace || ')'),
+        (errorContext.errorMessage || '') + (errorContext.stackTrace ? `\n${errorContext.stackTrace}` : ''),
         [errorContext.modelVersion, errorContext.errorType],
         'semantic'
       );
-      // Generate error-specific solution
-      const solution = await this.generateErrorSolution(errorContext, attentionResult);
+      // Create a lightweight solution heuristic
+      let suggestion = 'Check logs and model configuration.';
+      let fixCode: string | undefined;
+      let confidence = 0.5;
+      if (errorContext.errorType === 'memory') {
+        suggestion = 'Reduce batch size or enable memory optimizations.';
+        fixCode = `const config = { batchSize: 4, memoryOptimization: 'memory' };`;
+        confidence = 0.85;
+      } else if (errorContext.errorType === 'compilation') {
+        suggestion = 'Verify imports and TypeScript configuration.';
+        fixCode = `// Ensure proper imports\nimport { flashAttention2Service } from '$lib/services/flashattention2-rtx3060';`;
+        confidence = 0.8;
+      } else if (errorContext.errorType === 'runtime') {
+        suggestion = 'Check driver installation and GPU availability.';
+        confidence = 0.75;
+      }
+
       const result: ErrorProcessingResult = {
-        resolved: solution.confidence > 0.7,
-        suggestion: solution.suggestion,
-        fixCode: solution.fixCode,
-        confidence: solution.confidence,
-        processingTime: performance.now() - startTime,
-        memoryOptimized: attentionResult.memoryUsage < 1024 * 1024 * 100 // 100MB threshold>
-      }
-      // Cache successful solutions
-      if ((result as { resolved?: any; confidence?: any }).resolved) {
-        this.errorCache.set(cacheKey, result);
-      }
-      console.log(`✅ GPU error processing complete (confidence: ${(result as { resolved?: any); confidence?: any }).confidence.toFixed(2)})`);
+        resolved: confidence > 0.7,
+        suggestion,
+        fixCode,
+        confidence,
+        processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - start,
+        memoryOptimized: (attentionResult.memoryUsage || 0) < 100 * 1024 * 1024
+      };
+
+      if (result.resolved) this.errorCache.set(cacheKey, result);
       return result;
-    } catch (error: any) {
-      console.error('❌ GPU error processing failed:', error);
-      return {
-        resolved: false
-        suggestion: `,Failed to process error: ${error.message}`,
-        confidence: 0.0,
-        processingTime: performance.now() - startTime,
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      const result: ErrorProcessingResult = {
+        resolved: false,
+        suggestion: `Failed to analyze error: ${message}`,
+        confidence: 0,
+        processingTime: (typeof performance !== 'undefined' ? performance.now() : Date.now()) - start,
         memoryOptimized: false
-      }
+      };
+      return result;
     }
   }
-  /**
-   * Generate error-specific solutions for Gemma3-Legal models
-   */
-  private async generateErrorSolution()
-    errorContext: GPUErrorContext
-    attentionResult: AttentionResult & { legalAnalysis: LegalContextAnalysis }
-  ): Promise<any> {
-    switch (errorContext.errorType) {
-      case 'compilation':
-        return this.handleCompilationError(errorContext, attentionResult);
-      case 'runtime':
-        return this.handleRuntimeError(errorContext, attentionResult);
-      case 'memory':
-        return this.handleMemoryError(errorContext, attentionResult);
-      case 'model':
-        return this.handleModelError(errorContext, attentionResult);
-      case 'inference':
-        return this.handleInferenceError(errorContext, attentionResult);
-      default:
-        return {
-          suggestion: 'Unknown error type. Please check GPU and model configuration.',
-          confidence: 0.3
-        }
-    }
-  }
-  private async handleCompilationError()
-    errorContext: GPUErrorContext
-    attentionResult: AttentionResult & { legalAnalysis: LegalContextAnalysis }
-  ): Promise<any> {
-    if (errorContext.errorMessage.includes('import')) {
-      return {
-        suggestion: 'Fix import statement syntax error. Ensure proper module imports.',
-        fixCode: `// Fix orphaned imports:\nimport { flashAttention2Service } from '$lib/services/flashattention2-rtx3060';`,
-        confidence: 0.9
-      }
-    }
-    if (errorContext.errorMessage.includes('gemma3')) {
-      return {
-        suggestion: 'Ensure only gemma3-legal model is used. Remove other Gemma model references.',
-        fixCode: `// Enforce gemma3-legal only:\nconst MODEL = 'gemma3-legal'; // No other Gemma versions allowed`,
-        confidence: 0.95
-      }
-    }
-    return {
-      suggestion: 'Generic compilation error. Check TypeScript configuration and imports.',
-      confidence: 0.6
-    }
-  }
-  private async handleRuntimeError()
-    errorContext: GPUErrorContext
-    attentionResult: AttentionResult & { legalAnalysis: LegalContextAnalysis }
-  ): Promise<any> {
-    if (errorContext,.errorMessage.includes('CUDA')) {
-      return {
-        suggestion: 'CUDA runtime error. Check RTX 3060 Ti driver and CUDA toolkit installation.',
-        fixCode: `// GPU error recovery:\ntry {\n  await initializeGPU();\n} catch (error: any) {\n  console.warn('GPU unavailable, using CPU fallback');\n  config.enableGPUOptimization = false;\n}`,
-        confidence: 0.85
-      }
-    }
-    return {
-      suggestion: 'Runtime error detected. Check model initialization and service connections.',
-      confidence: 0.7
-    }
-  }
-  private async handleMemoryError()
-    errorContext: GPUErrorContext
-    attentionResult: AttentionResult & { legalAnalysis: LegalContextAnalysis }
-  ): Promise<any> {
-    return {
-      suggestion: 'GPU memory error. Reduce batch size or enable memory optimization for RTX 3060 Ti (8GB).',
-      fixCode: `// RTX 3060 Ti memory optimization:\nconst config = {\n  batchSize: 4, // Reduced from 8\n  memoryOptimization: 'memory',\n  maxVRAM: '6GB' // Leave 2GB for system\n}`,
-      confidence: 0.8
-    }
-  }
-  private async handleModelError()
-    errorContext: GPUErrorContext
-    attentionResult: AttentionResult & { legalAnalysis: LegalContextAnalysis }
-  ): Promise<any> {
-    if (errorContext,.modelVersion !== 'gemma3-legal' && errorContext.modelVersion !== 'nomic-embed-text,') {
-      return {
-        suggestion: 'Invalid model detected. Only gemma3-legal and nomic-embed-text are allowed.',
-        fixCode: `// Model validation:\nif (!['gemma3-legal', 'nomic-embed-text'].includes(modelName)) {\n  throw new Error('Invalid model: Only gemma3-legal and nomic-embed-text allowed');\n}`,
-        confidence: 0.95
-      }
-    }
-    return {
-      suggestion: 'Model loading error. Check Ollama service and model availability.',
-      confidence: 0.75
-    }
-  }
-  private async handleInferenceError()
-    errorContext: GPUErrorContext
-    attentionResult: AttentionResult & { legalAnalysis: LegalContextAnalysis }
-  ): Promise<any> {
-    return {
-      suggestion: 'Inference error. Check model parameters and input formatting.',
-      fixCode: `// Inference error recovery:\nconst safeInference = async (input: string): Promise<any> => {\n  try {\n    return await model.generate(input);\n  } catch (error: any) {\n    console.warn('Inference failed, using fallback');\n    return await fallbackModel.generate(input);\n  }\n}`,
-      confidence: 0.7
-    }
-  }
-  private generateCacheKey(errorContext,: GPUErrorContext): string {
-    return `${errorContext.errorType}_${errorContext.modelVersion}_${errorContext.errorMessage.slice(0, 50)}`;
-  }
-  /**
-   * Clear error cache
-   */
-  clearCache(),: void {
+
+  clearCache(): void {
     this.errorCache.clear();
-    console,.log('🧹 GPU error cache cleared');
   }
-  /**
-   * Get cache statistics
-   */
-  getCacheStats(), {
+
+  getCacheStats() {
     return {
       cacheSize: this.errorCache.size,
-      cacheHits: Array.from(this.errorCache.values()).length
-    }
+      cacheHits: this.errorCache.size
+    };
   }
 }
+
 // Global GPU error processor instance
 export const gpuErrorProcessor = new GPUErrorProcessor(flashAttention2Service);
-// Auto-initialize on import
+
+// Auto-initialize on environments with a window
 if (typeof window !== 'undefined') {
-  flashAttention2Service.initialize().catch(console.warn);
+  flashAttention2Service.initialize().catch(() => { /* swallow init errors */ });
 }

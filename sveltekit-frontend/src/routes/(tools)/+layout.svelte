@@ -4,26 +4,22 @@
   import { page } from '$app/stores';
 
   interface Props {
-    data?: any;
     children?: Snippet;
   }
 
-  let { data, children }: Props = $props();
+  let { children }: Props = $props();
 
   // Tools navigation items
   const toolsRoutes = [
-  { name: 'Search Tools', href: '/tools/search', icon: '🔍' },
-  { name: 'CUDA Search', href: '/tools/search/cuda', icon: '⚡' },
-  { name: 'Text Editor', href: '/tools/editor', icon: '📝' },
-  { name: 'Report Builder', href: '/tools/reports', icon: '📊' },
-  { name: 'Upload Tools', href: '/tools/upload', icon: '⬆️' },
-  { name: 'Cache Manager', href: '/tools/cache', icon: '💾' },
-  { name: 'Brain Interface', href: '/tools/brain', icon: '🧠' },
-  { name: 'Detective Tools', href: '/tools/detective', icon: '🕵️' },
+    { name: 'Search Tools', href: '/tools/search', icon: '🔍' },
+    { name: 'CUDA Search', href: '/tools/search/cuda', icon: '⚡' },
+    { name: 'Text Editor', href: '/tools/editor', icon: '📝' },
+    { name: 'Report Builder', href: '/tools/reports', icon: '📊' },
+    { name: 'Upload Tools', href: '/tools/upload', icon: '⬆️' },
+    { name: 'Cache Manager', href: '/tools/cache', icon: '💾' },
+    { name: 'Brain Interface', href: '/tools/brain', icon: '🧠' },
+    { name: 'Detective Tools', href: '/tools/detective', icon: '🕵️' },
   ];
-
-  // Get current route
-  let currentPath = $derived($page.url.pathname);
 </script>
 
 <div class="tools-layout">
@@ -41,7 +37,7 @@
         <a
           href={route.href}
           class="tools-nav-item"
-          class:active={currentPath === route.href || currentPath.startsWith(route.href + '/')}
+          class:active={$page.url.pathname === route.href || $page.url.pathname.startsWith(route.href + '/')}
         >
           <span class="tools-nav-icon">{route.icon}</span>
           <span class="tools-nav-text">{route.name}</span>
@@ -68,7 +64,7 @@
   <footer class="tools-footer">
     <div class="tools-footer-content">
       <div class="tools-info">
-        <span class="tools-current">Current: <strong>{currentPath}</strong></span>
+        <span class="tools-current">Current: <strong>{$page.url.pathname}</strong></span>
         <span class="tools-separator">•</span>
         <span class="tools-tech">Development & Utility Tools</span>
       </div>
@@ -83,7 +79,7 @@
   .tools-layout {
     min-height: 100vh;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     background: var(--nier-bg-primary, #0a0a0a);
     color: var(--nier-text-primary, #f0f0f0);
   }
@@ -110,7 +106,7 @@
     font-size: 1.5rem;
     font-weight: bold;
     color: var(--nier-accent-cool, #87ceeb);
-    margin: 0,
+    margin: 0;
   }
 
   .tools-badge {
@@ -136,10 +132,10 @@
     padding: 0.5rem 1rem;
     border: 1px solid var(--nier-border-primary, #333);
     border-radius: 0.5rem;
-    text-decoration none;
+    text-decoration: none;
     color: var(--nier-text-secondary, #ccc);
     background: var(--nier-bg-primary, #0a0a0a);
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
 
   .tools-nav-item:hover {
@@ -228,10 +224,10 @@
     padding: 0.5rem 1rem;
     border: 1px solid var(--nier-border-primary, #333);
     border-radius: 0.5rem;
-    text-decoration none;
+    text-decoration: none;
     color: var(--nier-text-primary, #f0f0f0);
     background: var(--nier-bg-primary, #0a0a0a);
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     font-size: 0.9rem;
   }
 
@@ -247,7 +243,7 @@
     }
 
     .tools-footer-content {
-      flex-direction column;
+      flex-direction: column;
       text-align: center;
       gap: 1rem;
     }

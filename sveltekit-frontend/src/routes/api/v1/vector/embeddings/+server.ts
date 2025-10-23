@@ -6,6 +6,7 @@ import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { PGVECTOR_CONFIG, getCudaServiceUrl, getEmbeddingModel } from '$lib/config/pgvector-gpu-config.js';
 import { MinIOService } from '$lib/server/minio-service';
+import { generateEmbeddings } from '$lib/server/services/embedding-service';
 interface EmbeddingRequest {
   texts: string[];
   model?: string;
@@ -100,25 +101,16 @@ async function handleEmbeddings(request: Request, requestId: string, apiStartTim
   const shouldUseCUDA =
     useCUDA && (processedTexts.length > 10 || textComplexity > 75 || processedTexts.some(text => text.length > 2000));
   if (shouldUseCUDA) {
-    // Route to CUDA service for GPU-accelerated embedding
-    const cudaResult = await processCUDAEmbeddings({
-      texts: processedTexts,
-      model,
-      normalize,
-      batchSize,
-      requestId,
-    });
-    embeddings = cudaResult.embeddings;
-    cudaTime = cudaResult.gpuTime;
-    parallelWorkers = cudaResult.parallelWorkers;
+    // Ask the centralized service to use the CUDA/TensorRT backend
+    const resp = await generateEmbeddings({ texts: processedTexts, model, mode: 'tensorrt' });
+    embeddings = resp.embeddings;
+    // Note: gpuTime/parallelWorkers are not returned by the wrapper currently
+    cudaTime = 0;
+    parallelWorkers = 1;
   } else {
-    // Fallback to CPU/Ollama processing
-    embeddings = await processOllamaEmbeddings({
-      texts: processedTexts,
-      model,
-      normalize,
-      batchSize,
-    });
+    // Ask centralized service to use default Ollama backend
+    const resp = await generateEmbeddings({ texts: processedTexts, model });
+    embeddings = resp.embeddings;
   }
   const totalTime = Date.now() - startTime;
   const tokensProcessed = processedTexts.reduce((acc, text) => acc + estimateTokens(text), 0);

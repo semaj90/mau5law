@@ -11,35 +11,41 @@ import { readBodyFastWithMetrics } from '$lib/simd/simd-json-integration.js'
 export const GET: RequestHandler = async ({ url }) => {
   const startTime = performance.now()
   try {
-    const docId = url.searchParams.get('docId')
-    const patternType = url.searchParams.get('type')
+    const docId = url.searchParams.get('docId');
+    const patternType = url.searchParams.get('type');
     if (!docId || !patternType) {
-      return json({
-        success: false,
-        error: 'docId and type parameters required'
-      }, { status: 400 })
+      return json(
+        {
+          success: false,
+          error: 'docId and type parameters required',
+        },
+        { status: 400 }
+      );
     }
-    // Get pattern with zero-latency cache lookup
-    const result = await chrROMCacheReader.getPattern(docId, patternType)
-    const totalLatency = performance.now() - startTime
-    return json({
-      success: true,
-      docId,
-      patternType,
-      pattern: (result as { pattern?: any; source?: any; latency?: any }).pattern,
-      source: (result as { pattern?: any; source?: any; latency?: any }).source,
-      latency: {
-        pattern: (result as { pattern?: any; source?: any; latency?: any }).latency,
-        total: totalLatency
+    // Get pattern with zero-latency cache lookup, do not generate on miss for GET
+    const result = await chrROMCacheReader.getPattern(docId, patternType, false);
+    const totalLatency = performance.now() - startTime;
+    return json(
+      {
+        success: true,
+        docId,
+        patternType,
+        pattern: result.pattern,
+        source: result.source,
+        latency: {
+          pattern: result.latency,
+          total: totalLatency,
+        },
+        cached: result.source === 'cache',
       },
-      cached: (result as { pattern?: any; source?: any; latency?: any }).source === 'cache'
-    }, {
-      headers: {
-        'Cache-Control': (result as { pattern?: any; source?: any; latency?: any }).source === 'cache' ? 'public, max-age=300' : 'no-cache',
-        'X-CHR-ROM-Source': (result as { pattern?: any; source?: any; latency?: any }).source,
-        'X-Response-Time': `${totalLatency.toFixed(2)}ms`
+      {
+        headers: {
+          'Cache-Control': result.source === 'cache' ? 'public, max-age=300' : 'no-cache',
+          'X-CHR-ROM-Source': result.source,
+          'X-Response-Time': `${totalLatency.toFixed(2)}ms`,
+        },
       }
-    })
+    );
   } catch (error: any) {
     return json({
       success: false,
@@ -65,11 +71,14 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'get_stats':
         return await handleGetStats(startTime)
       default:
-        return json({,
-          success: false,
-          error: `Unknown operation: ${operation}`,
-          available_operations: ['get_pattern', 'get_batch', 'prefetch', 'get_stats']
-        }, { status: 400 })
+        return json(
+          {
+            success: false,
+            error: `Unknown operation: ${operation}`,
+            available_operations: ['get_pattern', 'get_batch', 'prefetch', 'get_stats'],
+          },
+          { status: 400 }
+        );
     }
   } catch (error: any) {
     return json({
@@ -91,71 +100,84 @@ async function handleSinglePattern(data: any, startTime: number) {
     }, { status: 400 })
   }
   const result = await chrROMCacheReader.getPattern(docId, patternType, generateOnMiss)
-  return json({
-    success: true,
-    operation: 'get_pattern',
-    result: {
-      docId,
-      patternType,
-      pattern: (result as { pattern?: any; source?: any; latency?: any }).pattern,
-      source: (result as { pattern?: any; source?: any; latency?: any }).source,
-      latency: (result as { pattern?: any; source?: any; latency?: any }).latency
+  return json(
+    {
+      success: true,
+      operation: 'get_pattern',
+      result: {
+        docId,
+        patternType,
+        pattern: result.pattern,
+        source: result.source,
+        latency: result.latency,
+      },
+      total_latency: performance.now() - startTime,
     },
-    total_latency: performance.now() - startTime
-  }, {
-    headers: {
-      'X-CHR-ROM-Source': (result as { pattern?: any; source?: any; latency?: any }).source,
-      'X-CHR-ROM-Latency': `${(result as { pattern?: any; source?: any; latency?: any }).latency.toFixed(2)}ms`
+    {
+      headers: {
+        'X-CHR-ROM-Source': result.source,
+        'X-CHR-ROM-Latency': `${result.latency.toFixed(2)}ms`,
+      },
     }
-  })
+  );
 }
 /**
  * Handle batch pattern retrieval (optimized for lists/tables)
  */
 async function handleBatchPatterns(data: any, startTime: number) {
-  const { requests, maxConcurrency = 10 } = data
+  const { requests } = data; // Removed maxConcurrency as it was unused
   if (!Array.isArray(requests) || requests.length === 0) {
-    return json({
-      success: false,
-      error: 'requests array required'
-    }, { status: 400 })
+    return json(
+      {
+        success: false,
+        error: 'requests array required',
+      },
+      { status: 400 }
+    );
   }
   // Validate request format
-  const validRequests = requests.filter(req =>
-    req && typeof req.docId === 'string' && typeof req.patternType === 'string'
-  )
+  const validRequests = requests.filter(
+    req => req && typeof req.docId === 'string' && typeof req.patternType === 'string'
+  );
   if (validRequests.length === 0) {
-    return json({
-      success: false,
-      error: 'No valid requests found. Each request needs docId and patternType.'
-    }, { status: 400 })
+    return json(
+      {
+        success: false,
+        error: 'No valid requests found. Each request needs docId and patternType.',
+      },
+      { status: 400 }
+    );
   }
   // Execute batch retrieval with controlled concurrency
-  const batchResults = await chrROMCacheReader.getBatchPatterns(validRequests)
+  const batchResults = await chrROMCacheReader.getBatchPatterns(validRequests);
   // Calculate batch statistics
-  const cacheHits = batchResults.filter(item => item.length)
-  const avgLatency = batchResults.reduce((sum, r) => sum + r.latency, 0) / batchResults.length
-  return json({
-    success: true,
-    operation: 'get_batch',
-    result: {
-      patterns: batchResults,
-      statistics: {
-        total: batchResults.length,
-        cacheHits,
-        hitRate: cacheHits / batchResults.length,
-        avgLatency: avgLatency,
-        fastestResponse: Math.min(...batchResults.map(r => r.latency)),
-        slowestResponse: Math.max(...batchResults.map(r => r.latency),
-      }
+  const cacheHits = batchResults.filter(item => item.source === 'cache').length; // Fixed: Filter by source and get length
+  const avgLatency =
+    batchResults.reduce((sum: number, r: (typeof batchResults)[number]) => sum + r.latency, 0) / batchResults.length; // Fixed: Added types
+  return json(
+    {
+      success: true,
+      operation: 'get_batch',
+      result: {
+        patterns: batchResults,
+        statistics: {
+          total: batchResults.length,
+          cacheHits,
+          hitRate: cacheHits / batchResults.length,
+          avgLatency: avgLatency,
+          fastestResponse: Math.min(...batchResults.map((r: (typeof batchResults)[number]) => r.latency)), // Fixed: Added type
+          slowestResponse: Math.max(...batchResults.map((r: (typeof batchResults)[number]) => r.latency)), // Fixed: Removed trailing comma and added type
+        },
+      },
+      total_latency: performance.now() - startTime,
     },
-    total_latency: performance.now() - startTime
-  }, {
-    headers: {
-      'X-CHR-ROM-Batch-Size': batchResults.length.toString(),
-      'X-CHR-ROM-Hit-Rate': `${((cacheHits / batchResults.length) * 100).toFixed(1)}%`
+    {
+      headers: {
+        'X-CHR-ROM-Batch-Size': batchResults.length.toString(),
+        'X-CHR-ROM-Hit-Rate': `${((cacheHits / batchResults.length) * 100).toFixed(1)}%`,
+      },
     }
-  })
+  );
 }
 /**
  * Handle prefetch operation

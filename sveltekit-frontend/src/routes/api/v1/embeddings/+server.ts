@@ -5,6 +5,7 @@
  */
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
+import { generateEmbedding, generateEmbeddings } from '$lib/server/services/embedding-service';
 
 /**
  * POST /api/v1/embeddings - Generate embeddings using multiple models
@@ -34,14 +35,18 @@ export const POST: RequestHandler = async ({ request }) => {
       throw error(400, 'All texts must be non-empty strings');
     }
 
-    const embeddings = [];
+    // Use centralized server-side embedding service
+    const isBatchMode = isBatch;
+    let embeddings: number[][] = [];
     let totalTokens = 0;
-
-    // Process embeddings (could be parallelized for better performance)
-    for (const inputText of inputTexts) {
-      const embedding = await generateEmbedding(inputText, model);
-      embeddings.push(embedding);
-      totalTokens += inputText.split(' ').length; // Rough token estimate
+    if (isBatchMode) {
+      const resp = await generateEmbeddings({ texts: inputTexts, model });
+      embeddings = resp.embeddings;
+      totalTokens = inputTexts.reduce((acc, t) => acc + t.split(' ').length, 0);
+    } else {
+      const single = await generateEmbedding(inputTexts[0], { model });
+      embeddings = [single.embedding];
+      totalTokens = inputTexts[0].split(' ').length;
     }
 
     const processingTime = performance.now() - startTime;

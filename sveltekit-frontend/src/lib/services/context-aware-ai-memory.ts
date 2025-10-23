@@ -1,629 +1,869 @@
 /**
- * Context-Aware AI Memory Service - Phase 4 Implementation
- * Full case history memory for AI agents with gaming UI integration
+ * Context-Aware AI Memory Service
+ * This service manages the loading, updating, and retrieval of case-specific AI memory.
+ * It defensively handles data from various sources (Redis, VectorSearchService, EvidenceGraphService)
+ * to ensure robustness against missing data or schema inconsistencies.
  */
+import { CONFIG } from '$lib/config/env.server';
 import { redis } from '$lib/server/redis';
 import { VectorSearchService } from '$lib/server/db/drizzle-vector-config';
-import type { Case, Evidence, Document } from '$lib/server/db/drizzle-vector-config';
-}
-export interface CaseContextMemory {
+import { evidenceGraphService } from '$lib/server/graph/evidence-graph-service'; // use exported instance
+import type * as Types from './context-aware-ai-memory-types';
+import { RabbitMQXStateIntegration } from '$lib/messaging/rabbitmq-xstate-integration'; // Import RabbitMQ integration
+import { adaptiveIndexOrchestrator } from '$lib/services/adaptive-index-orchestrator';
+import { aiAnalyticsService } from '$lib/services/ai-analytics-service';
+import { db } from '$lib/server/db';
+
+// --- Local narrow helper types (keep minimal and defensive) ---
+type QdrantClient = {
+  search?: (collection: string, body: Record<string, unknown>) => Promise<Array<Record<string, unknown>>>;
+  upsert?: (collection: string, body: Record<string, unknown>) => Promise<void>;
+};
+
+type RedisLike = Partial<{
+  zIncrBy: (key: string, increment: number, member: string) => Promise<number>;
+  zAdd: (key: string, members: Array<{ score: number; value: string }>) => Promise<number>;
+  zRangeWithScores: (key: string, start: number, stop: number) => Promise<Array<{ value?: string; score?: number }>>;
+  zRevRangeWithScores: (key: string, start: number, stop: number) => Promise<Array<{ value?: string; score?: number }>>;
+  zRange: (key: string, start: number, stop: number) => Promise<string[]>;
+  zScore: (key: string, member: string) => Promise<number | null>;
+  get: (key: string) => Promise<string | null>;
+  set: (key: string, value: string, opts?: Record<string, unknown>) => Promise<void>;
+}>;
+
+type RabbitMQIntegrationLike = Partial<{
+  publishEvent: (event: string, payload: Record<string, unknown>) => Promise<unknown> | unknown;
+  publish: (event: string, payload: Record<string, unknown>) => Promise<unknown> | unknown;
+  send: (event: string, payload: Record<string, unknown>) => Promise<unknown> | unknown;
+}>;
+
+type VectorServiceLike = Partial<{
+  search: (embedding: number[], threshold?: number, limit?: number, caseNum?: number) => Promise<Array<Record<string, unknown>>>;
+  searchAll: (caseIds: string[], threshold?: number, limit?: number) => Promise<Array<Record<string, unknown>>>;
+  searchDocuments: (embedding: number[], caseNum?: number) => Promise<Array<Record<string, unknown>>>;
+  searchEvidence: (args: unknown[], caseNum?: number) => Promise<Array<Record<string, unknown>>>;
+  upsertDocument: (payload: Record<string, unknown>) => Promise<unknown>;
+  upsert: (payload: Record<string, unknown>) => Promise<unknown>;
+}>;
+
+
+// Placeholder for the expected payload structure for VectorSearchService.upsertDocument
+// This should align with your Drizzle schema for embeddings.
+interface DocumentEmbeddingPayload {
+  id: string; // Unique ID for the document/evidence
   caseId: string;
-  contextVersion: number;
-  lastUpdated: string;
-  // Core case memory
-  caseProfile: CaseProfile;
-  evidenceTimeline: EvidenceTimelineEntry[];
-  documentMap: DocumentMemory[];
-  relationshipGraph: ContextRelationship[];
-  // AI processing memory
-  aiMemory: {
-    conversationHistory: AIConversation[];
-  learningPatterns: LearningPattern[];
-  contextualInsights: ContextualInsight[];
-  predictiveModels: PredictiveModel[];
-  }
-  // Gaming memory visualization
-  gameMemory: {
-    consoleTheme: string;
-    memoryVisualization: 'memory_palace' | 'skill_tree' | 'inventory_system' | 'character_sheet';
-    experienceLevel: number;    // Case complexity level (1-100)
-    memoryCapacity: number;     // Used/total memory,
-    achievementUnlocked: string[];
-  }
-}
-export interface Person {
-  id: string;
-  name: string;
-  role: 'client' | 'defendant' | 'witness' | 'expert' | 'attorney' | 'judge' | 'other';
-  contact?: string;
-  significance: number; // 1-10 importance scale
-}
-}
-export interface LegalIssue {
-  id: string;
-  type: string;
-  description: string;
-  status: 'pending' | 'resolved' | 'disputed' | 'appealed';
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  relatedLaw?: string;
-}
-}
-export interface ImportantDate {
-  id: string;
-  date: string;
-  event: string;
-  type: 'deadline' | 'hearing' | 'filing' | 'discovery' | 'milestone';
-  status: 'upcoming' | 'completed' | 'missed';
-  reminder?: boolean;
-}
-}
-export interface StrategyNote {
-  id: string;
+  type: 'document' | 'evidence';
   title: string;
-  content: string;
-  type: 'approach' | 'argument' | 'research' | 'precedent' | 'risk';
-  priority: 'low' | 'medium' | 'high';
-  createdAt: string;
-  updatedAt: string;
-}
-}
-export interface CaseProfile {
-  title: string;
-  description: string;
-  status: string;
-  priority: string;
-  keyPersons: Person[];
-  legalIssues: LegalIssue[];
-  jurisdiction: string;
-  importantDates: ImportantDate[];
-  caseStrategy: StrategyNote[];
-}
-}
-export interface EvidenceTimelineEntry {
-  evidenceId: string;
+  content: string; // The original text that was embedded
+  embedding: number[]; // The vector embedding
   timestamp: string;
-  eventType: 'added' | 'analyzed' | 'linked' | 'disputed' | 'verified';
-  significance: number;        // 1-10 importance scale
-  contextualNotes: string;
-  relatedEvidence: string[];   // Connected evidence IDs
+  [key: string]: any;
 }
-}
-export interface DocumentMemory {
-  documentId: string;
-  title: string;
-  processingStatus: string;
-  keyExtracts: string[];
-  aiSummary: string;
-  relevanceToCase: number;     // 0-1 relevance score
-  lastAnalyzed: string;
-}
-}
-export interface ContextRelationship {
-  fromType: 'case' | 'evidence' | 'document' | 'person' | 'legal_issue';
-  fromId: string;
-  toType: 'case' | 'evidence' | 'document' | 'person' | 'legal_issue';
-  toId: string;
-  relationshipType: string;
-  strength: number;            // 0-1 relationship strength
-  contextualNote: string;
-}
-}
-export interface AIConversation {
-  timestamp: string;
-  userQuery: string;
-  aiResponse: string;
-  contextUsed: string[];       // Which memory elements influenced the response
-  confidenceScore: number;     // AI's confidence in the response,
-  followUpSuggestions: string[];
-}
-}
-export interface LearningPattern {
-  patternType: 'legal_strategy' | 'evidence_correlation' | 'case_outcome' | 'user_preference';
-  pattern: string;
-  confidence: number;
-  examplesCount: number;
-  lastReinforced: string;
-}
-}
-export interface ContextualInsight {
-  insight: string;
-  category: 'legal' | 'procedural' | 'strategic' | 'evidence' | 'timeline';
-  confidence: number;
-  supportingEvidence: string[];
-  generatedAt: string;
-}
-}
-export interface PredictiveModel {
-  modelType: 'outcome_prediction' | 'evidence_relevance' | 'timeline_estimation' | 'strategy_recommendation';
-  accuracy: number;
-  lastTrained: string;
-  trainingDataSize: number;
-  predictions: any[];
-}
+
 export class ContextAwareAIMemoryService {
-  private vectorService = new VectorSearchService();
-  private memoryCache = new Map<string, CaseContextMemory>();
+  private memoryCache = new Map<string, Types.CaseContextMemory>();
   private readonly MEMORY_RETENTION_DAYS = 30;
-  /**
-   * Load or create case context memory
-   */
-  async loadCaseMemory(caseId: string, consoleTheme: string = 'n64'): Promise<CaseContextMemory> {
-    // Check cache first
-    if (this.memoryCache.has(caseId)) {
-      const cached = this.memoryCache.get(caseId)!;
-      if (this.isMemoryFresh(cached)) {
-        return cached;
+  private graph = evidenceGraphService; // use exported instance (may be a no-op stub in tests)
+  private qdrantClient: QdrantClient; // lightweight resilient client wrapper
+
+  // add a narrow type for allowed visualizations
+  private typeAllowedVisualizations = undefined as unknown as ('memory_palace' | 'skill_tree' | 'inventory_system' | 'character_sheet');
+
+  constructor() {
+    const cfg = CONFIG as unknown as Record<string, unknown>;
+    const baseUrl = String(cfg.QDRANT_URL ?? cfg.QDRANT_ENDPOINT ?? 'http://localhost:6333');
+    this.qdrantClient = {
+      search: async (collection: string, body: Record<string, unknown>) => {
+        try {
+          const url = `${baseUrl.replace(/\/$/, '')}/collections/${collection}/points/search`;
+          const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+          const json = await res.json().catch(() => ({} as Record<string, unknown>));
+          return (json?.result as Array<Record<string, unknown>> | undefined) ?? [];
+        } catch (e) { console.debug('qdrant.search fallback error', e); return []; }
+      },
+      upsert: async (collection: string, body: Record<string, unknown>) => {
+        try {
+          const url = `${baseUrl.replace(/\/$/, '')}/collections/${collection}/points?wait=true`;
+          await fetch(url, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        } catch (e) { console.debug('qdrant.upsert fallback error', e); }
       }
-    }
-    // Build comprehensive case memory
-    const memory = await this.buildCaseMemory(caseId, consoleTheme);
-    // Cache for quick access
-    this.memoryCache.set(caseId, memory);
-    // Persist to database (you could add a memory table to your schema)
-    await this.persistMemory(memory);
-    return memory;
+    } as QdrantClient;
   }
-  /**
-   * Build comprehensive case memory from all available data
-   */
-  private async buildCaseMemory(caseId: string, consoleTheme: string): Promise<CaseContextMemory> {
-    const startTime = Date.now();
+
+  private ensureGraph() {
+    return this.graph;
+  }
+
+  // PUBLIC API
+  async loadCaseMemory(caseId: string, consoleTheme = 'n64'): Promise<Types.CaseContextMemory> {
+    const cached = this.memoryCache.get(caseId);
+    if (cached && this.isMemoryFresh(cached)) return cached;
+
     try {
-      // Gather all case-related data in parallel
-      const [caseData, evidenceData, documentData, conversationHistory] = await Promise.all([
-        this.loadCaseProfile(caseId),
-        this.loadEvidenceTimeline(caseId),
-        this.loadDocumentMemory(caseId),
-        this.loadConversationHistory(caseId)
-      ]);
-      // Build relationship graph
-      const relationshipGraph = await this.buildRelationshipGraph(caseData, evidenceData, documentData);
-      // Generate AI insights and learning patterns
-      const aiMemory = await this.generateAIMemory(caseId, evidenceData, documentData, conversationHistory);
-      // Calculate experience level and memory usage
-      const gameMemory = this.generateGameMemory(caseData, evidenceData, documentData, consoleTheme);
-      const memory: CaseContextMemory = {
-        caseId,
-        contextVersion: 1,
-        lastUpdated: new Date().toISOString(),
-        caseProfile: caseData,
-        evidenceTimeline: evidenceData,
-        documentMap: documentData,
-        relationshipGraph,
-        aiMemory,
-        gameMemory
+      const rclient = redis as unknown as RedisLike;
+  const raw = await rclient.get?.(`case:memory:${caseId}`) ?? await (redis as unknown as RedisLike).get?.(`case:memory:${caseId}`);
+      if (raw) {
+        const parsed = JSON.parse(raw) as Types.CaseContextMemory;
+        if (this.isMemoryFresh(parsed)) {
+          this.memoryCache.set(caseId, parsed);
+          return parsed;
+        }
       }
-      console.log(`✅ Built case memory for ${caseId} in ${Date.now() - startTime}ms`);
-      return memory;
-    } catch (error) {
-      console.error('Failed to build case memory:', error);
-      return this.createEmptyMemory(caseId, consoleTheme);
+    } catch (e: unknown) {
+      console.debug('redis.get failed for case memory', caseId, e);
     }
+
+    const built = await this.buildCaseMemory(caseId, consoleTheme);
+    this.memoryCache.set(caseId, built);
+    try { await redis.set(`case:memory:${caseId}`, JSON.stringify(built)); } catch (e: unknown) { /* ignore */ }
+    return built;
   }
-  /**
-   * Get contextual AI response using case memory
-   */
-  async getContextualAIResponse()
-    caseId: string
-    userQuery: string
-    consoleTheme: string = 'n64';
-  ): Promise<any>, {
-    // Load case memory
+
+  async getContextualAIResponse(caseId: string, userQuery: string, consoleTheme = 'n64'): Promise<Types.AIResponse> {
     const memory = await this.loadCaseMemory(caseId, consoleTheme);
-    // Find relevant context for the query
-    const relevantContext = await this.findRelevantContext(userQuery, memory);
-    // Generate contextual prompt
-    const contextualPrompt = this.buildContextualPrompt(userQuery, relevantContext, memory);
-    // Call your existing OLLAMA integration with context
-    const aiResponse = await this.callContextualAI(contextualPrompt, memory);
-    // Record the conversation
-    const conversation: AIConversation = {
+    const contextItems = await this.findRelevantContext(userQuery, memory);
+
+    try {
+      const topkKey = `topk:case:${caseId}`;
+      const rclient = redis as unknown as RedisLike;
+      for (const it of contextItems) {
+        const member = `${it.type}:${it.id}`;
+        if (typeof rclient.zIncrBy === 'function') {
+          await rclient.zIncrBy(topkKey, 1, member).catch(() => { });
+        } else if (typeof (redis as unknown as RedisLike).zAdd === 'function') {
+          await ((redis as unknown as RedisLike).zAdd as Function)(topkKey, [{ score: 1, value: member }]).catch(() => { });
+        }
+      }
+    } catch (e: unknown) {
+      console.debug('Redis Top-K increment failed', e);
+    }
+
+    const prompt = this.buildContextualPrompt(userQuery, contextItems, memory);
+    const aiResult = await this.callContextualAI(prompt, memory);
+
+    const convo: Types.AIConversation = {
       timestamp: new Date().toISOString(),
       userQuery,
-      aiResponse: aiResponse.response,
-      contextUsed: relevantContext.map(c => c.type + ':' + c.id),
-      confidenceScore: aiResponse.confidence,
-      followUpSuggestions: aiResponse.suggestions
-    }
-    // Update memory with new conversation
-    memory.aiMemory.conversationHistory.push(conversation);
-    await this.updateMemory(memory);
+      aiResponse: aiResult.text,
+      contextUsed: contextItems.map(c => `${c.type}:${c.id}`),
+      confidenceScore: aiResult.confidence,
+      followUpSuggestions: aiResult.suggestions ?? [],
+    };
+  memory.aiMemory = memory.aiMemory ?? ({} as unknown as Types.CaseContextMemory['aiMemory']);
+    memory.aiMemory.conversationHistory = memory.aiMemory.conversationHistory || [];
+    memory.aiMemory.conversationHistory.push(convo);
+    memory.lastUpdated = new Date().toISOString();
+    memory.contextVersion = (memory.contextVersion || 0) + 1;
+    await this.updateMemory(memory).catch(() => { });
+
     return {
-      response: aiResponse.response,
-      contextUsed: conversation.contextUsed,
-      confidence: aiResponse.confidence,
-      suggestions: aiResponse.suggestions,
-      gameElements: this.generateResponseGameElements(aiResponse, consoleTheme)
-    }
+      response: aiResult.text,
+      confidence: aiResult.confidence,
+      contextUsed: contextItems.map(c => c.id),
+      suggestions: aiResult.suggestions ?? [],
+      gameElements: this.generateResponseGameElements(aiResult, consoleTheme),
+    };
   }
-  /**
-   * Update case memory with new information
-   */
-  async updateMemoryWithNewEvidence(caseId: string, evidenceId: string): Promise<void> {
-    const memory = await this.loadCaseMemory(caseId);
-    // Add new evidence to timeline
-    const newTimelineEntry: EvidenceTimelineEntry = {
+
+  async updateMemoryWithNewEvidence(caseId: string, evidenceId: string, evidenceContent: string, evidenceTitle: string = 'New Evidence'): Promise<void> {
+    const mem = await this.loadCaseMemory(caseId);
+    mem.evidenceTimeline = mem.evidenceTimeline || [];
+    mem.evidenceTimeline.push({
       evidenceId,
       timestamp: new Date().toISOString(),
       eventType: 'added',
-      significance: 5, // Default significance
-      contextualNotes: 'New evidence added to case',
+      significance: 5,
+      contextualNotes: 'New evidence',
       relatedEvidence: [],
-    }
-    memory.evidenceTimeline.push(newTimelineEntry);
-    // Analyze relationships with existing evidence
-    const relationships = await this.analyzeEvidenceRelationships(evidenceId, memory);
-    memory.relationshipGraph.push(...relationships);
-    // Generate new insights
-    const insights = await this.generateInsightsFromNewEvidence(evidenceId, memory);
-    memory.aiMemory.contextualInsights.push(...insights);
-    // Update gaming elements
-    memory.gameMemory.experienceLevel = Math.min(100, memory.gameMemory.experienceLevel + 2);
-    memory.gameMemory.memoryCapacity += 1;
-    // Update version and timestamp
-    memory.contextVersion += 1;
-    memory.lastUpdated = new Date().toISOString();
-    await this.updateMemory(memory);
-  }
-  /**
-   * Private helper methods
-   */
-  private async loadCaseProfile(caseId: string): Promise<CaseProfile> {
-    // Load case data using your existing vector service
-    const caseResults = await this.vectorService.searchAll([0], 0.9, ),1);
-    // Mock case profile - replace with actual database query
-    return {
-      title: 'Legal Case Analysis',
-      description: 'Complex legal matter requiring comprehensive analysis',
-      status: 'active',
-      priority: 'high',
-      keyPersons: [],
-      legalIssues: [],
-      jurisdiction: 'Federal',
-      importantDates: [],
-      caseStrategy: []
-    }
-  }
-  private async loadEvidenceTimeline(caseId: string): Promise<EvidenceTimelineEntry[]> {
-    const evidenceResults = await this.vectorService.searchEvidence([0], parseInt(caseId);
-    return evidenceResults.map((evidence: any, index: number): EvidenceTimelineEntry => ({,
-      evidenceId: evidence.id || index.toString(),
-      timestamp: evidence.created_at || new Date().toISOString(),
-      eventType: 'added',
-      significance: evidence.relevance_score ? Math.round(evidence.relevance_score / 10) : 5,
-      contextualNotes: evidence.description || 'Evidence processed',
-      relatedEvidence: []
     });
-  }
-  private async loadDocumentMemory(caseId: string): Promise<DocumentMemory[]> {
-    const documentResults = await this.vectorService.searchDocuments([0], parseInt(caseId);
-    return documentResults.map((doc: any, index: number): DocumentMemory => ({,
-      documentId: doc.id || index.toString(),
-      title: doc.title || 'Untitled Document',
-      processingStatus: doc.processing_status || 'completed',
-      keyExtracts: [],
-      aiSummary: doc.content || 'Document summary pending',
-      relevanceToCase: 0.8,
-      lastAnalyzed: doc.updated_at || new Date().toISOString()
-    });
-  }
-  private async loadConversationHistory(caseId: string): Promise<AIConversation[]> {
-    // Load previous AI conversations - could be stored in Redis or database
-    return [];
-  }
-  private async buildRelationshipGraph()
-    caseData: CaseProfile
-    evidenceData: EvidenceTimelineEntry[]
-    documentData: DocumentMemory[];
-  ): Promise<ContextRelationship,[,]> {
-    const relationship,s: ContextRelationsh,ip,[], = [];
-    // Create relationships between evidence and documents
-    evidenceData,.forEach(evidence => {
-      documentData.forEach(document => {
-        // Simple relationship based on timing and relevance
-        if (Math.abs(new Date(evidence.timestamp).getTime() -
-                    new Date(document.lastAnalyzed).getTime()) < 24 * 60 * 60 * 1000) {>;
-          relationships.push({
-            fromType: 'evidence',
-            fromId: evidence.evidenceId,
-            toType: 'document',
-            toId: document.documentId,
-            relationshipType: 'temporal_correlation',
-            strength: 0.6,
-            contextualNote: 'Evidence and document processed around the same time'
-          });
+    mem.lastUpdated = new Date().toISOString();
+    mem.contextVersion = (mem.contextVersion || 0) + 1;
+
+    try {
+      const graph = this.ensureGraph();
+      const graphLocal = graph as unknown as { buildRelationships?: (caseId: string, evidenceTimeline: Types.EvidenceTimelineEntry[], documentMap: Types.DocumentMemory[]) => Promise<any[]> };
+      if (typeof graphLocal.buildRelationships === 'function') {
+        const rels = await graphLocal.buildRelationships(caseId, mem.evidenceTimeline, mem.documentMap || []);
+        mem.relationshipGraph = mem.relationshipGraph || [];
+        mem.relationshipGraph.push(...(Array.isArray(rels) ? rels : []));
+      }
+    } catch (e: unknown) {
+      console.debug('graph build skipped', e);
+    }
+
+    await this.updateMemory(mem).catch(() => { });
+
+    try {
+      await this.publishToRabbit('document_ingestion', {
+        caseId,
+        evidenceId,
+        timestamp: new Date().toISOString(),
+        source: 'ContextAwareAIMemoryService',
+      });
+    } catch (e: unknown) {
+      console.error('Failed to publish document_ingestion event to RabbitMQ', e);
+    }
+
+    try {
+      await this.processAndStoreEmbedding({
+        id: evidenceId,
+        caseId,
+        type: 'evidence',
+        text: evidenceContent,
+        title: evidenceTitle,
+        metadata: {
+          significance: 5,
+          contextualNotes: 'New evidence',
         }
       });
-    });
-    return relationship,s;
-  }
-  private async generateAIMemory()
-    caseId: string
-    evidenceData: EvidenceTimelineEntry[]
-    documentData: DocumentMemory[]
-    conversationHistory: AIConversation[];
-  ): Promise<CaseContextMemory['aiMemory']> {
-    return {
-      conversationHistory,
-      learningPatterns: await this.identifyLearningPatterns(evidenceData),
-      contextualInsights: await this.generateContextualInsights(evidenceData, documentData),
-      predictiveModels: await this.buildPredictiveModels(caseId, evidenceData)
+    } catch (e: unknown) {
+      console.error('Failed to process and store embedding for new evidence:', e);
     }
   }
-  private generateGameMemory()
-    caseData: CaseProfile
-    evidenceData: EvidenceTimelineEntry[]
-    documentData: DocumentMemory[]
-    consoleTheme: string;
-  ): CaseContextMemory['gameMemory'], {
-    const totalItems = evidenceData.length + documentData.length;
+
+  // INTERNAL ----------------------------------------------------------------
+
+  private async buildCaseMemory(caseId: string, consoleTheme: string): Promise<Types.CaseContextMemory> {
+    try {
+      const [caseProfile, evidenceTimeline, documentMap] = await Promise.all([
+        this.loadCaseProfile(caseId),
+        this.loadEvidenceTimeline(caseId),
+        this.loadDocumentMemory(caseId),
+      ]);
+      const graph = this.ensureGraph();
+      let relationshipGraph: Types.ContextRelationship[] = [];
+      try {
+        const graphLocal = graph as unknown as { buildRelationships?: (caseId: string, evidenceTimeline: Types.EvidenceTimelineEntry[], documentMap: Types.DocumentMemory[]) => Promise<any[]> };
+        if (typeof graphLocal.buildRelationships === 'function') {
+          relationshipGraph = (await graphLocal.buildRelationships(caseId, evidenceTimeline, documentMap)) || [];
+        }
+      } catch (e: unknown) {
+        relationshipGraph = [];
+      }
+
+      const aiMemory = await this.generateAIMemory(caseId, evidenceTimeline, documentMap, []);
+      const gameMemory = this.generateGameMemory(caseProfile, evidenceTimeline, documentMap, consoleTheme);
+
+      return {
+        caseId,
+        contextVersion: 1,
+        lastUpdated: new Date().toISOString(),
+        caseProfile,
+        evidenceTimeline,
+        documentMap,
+        relationshipGraph,
+        aiMemory,
+        gameMemory,
+      } as Types.CaseContextMemory;
+    } catch (e: unknown) {
+      return this.createEmptyMemory(caseId, consoleTheme);
+    }
+  }
+
+  private isMemoryFresh(memory: Types.CaseContextMemory): boolean {
+    try {
+      const ageMs = Date.now() - new Date(memory.lastUpdated).getTime();
+      const maxMs = this.MEMORY_RETENTION_DAYS * 24 * 60 * 60 * 1000;
+      return ageMs < maxMs;
+    } catch (e: unknown) {
+      return false;
+    }
+  }
+
+  private async updateMemory(memory: Types.CaseContextMemory): Promise<void> {
+    try {
+      await redis.set(`case:memory:${memory.caseId}`, JSON.stringify(memory));
+    } catch (e: unknown) {
+      console.debug('Redis update failed', e);
+    }
+    this.memoryCache.set(memory.caseId, memory);
+    try {
+      await this.publishToRabbit('memory.updated', { caseId: memory.caseId, version: memory.contextVersion });
+    } catch (e: unknown) {
+      console.error('Failed to publish memory.updated event to RabbitMQ', e);
+    }
+  }
+
+  // External loaders (defensive wrappers)
+  private async loadCaseProfile(caseId: string): Promise<Types.CaseProfile> {
+    try {
+      const results: unknown =
+        typeof VectorSearchService.searchAll === 'function'
+          ? await VectorSearchService.searchAll([caseId], 0.9, 1)
+          : [];
+      const r = Array.isArray(results) ? (results[0] ?? {}) : (results as Partial<Record<string, unknown>> ?? {});
+      return {
+        title: this.extractString(r, 'title') ?? `Case ${caseId}`,
+        description: this.extractString(r, 'description') ?? '',
+        status: this.extractString(r, 'status') ?? 'active',
+        priority: this.extractString(r, 'priority') ?? 'normal',
+        keyPersons: this.normalizeStringArray(r, 'keyPersons', 'key_persons'),
+        legalIssues: this.normalizeStringArray(r, 'legalIssues', 'legal_issues'),
+        jurisdiction: this.extractString(r, 'jurisdiction') ?? 'N/A',
+        importantDates: [],
+        caseStrategy: [],
+      } as Types.CaseProfile;
+    } catch (e: unknown) {
+      return this.createEmptyMemory(caseId, 'n64').caseProfile;
+    }
+  }
+
+  private async loadEvidenceTimeline(caseId: string): Promise<Types.EvidenceTimelineEntry[]> {
+    try {
+      const caseNum = this.parseCaseIdToNumber(caseId);
+      const raw: unknown =
+        typeof VectorSearchService.searchEvidence === 'function'
+          ? await VectorSearchService.searchEvidence([], caseNum)
+          : [];
+      const arr = Array.isArray(raw) ? raw as Partial<Record<string, unknown>>[] : [];
+      return arr.map((e, i) => ({
+        evidenceId: this.extractString(e, 'id', 'evidenceId') ?? String(i),
+        timestamp: this.extractDateString(e, 'createdAt', 'created_at'),
+        eventType: 'added',
+        significance: this.extractNumber(e, 'relevanceScore', 'relevance_score') ? Math.max(1, Math.min(10, Math.round((this.extractNumber(e, 'relevanceScore', 'relevance_score') as number) / 10))) : 5,
+        contextualNotes: this.extractString(e, 'description', 'notes') ?? 'Evidence',
+        relatedEvidence: [],
+      } as Types.EvidenceTimelineEntry));
+    } catch (e: unknown) {
+      return [];
+    }
+  }
+
+  private async loadDocumentMemory(caseId: string): Promise<Types.DocumentMemory[]> {
+    try {
+      const caseNum = this.parseCaseIdToNumber(caseId);
+      const raw: unknown =
+        typeof VectorSearchService.searchDocuments === 'function'
+          ? await VectorSearchService.searchDocuments([], caseNum)
+          : [];
+      const arr = Array.isArray(raw) ? raw as Partial<Record<string, unknown>>[] : [];
+      return arr.map((d, i) => ({
+        documentId: this.extractString(d, 'id') ?? `doc_${i}`,
+        title: this.extractString(d, 'title') ?? 'Untitled Document',
+        processingStatus: this.extractString(d, 'processingStatus', 'processing_status') ?? 'completed',
+        keyExtracts: [],
+        aiSummary: this.extractString(d, 'content', 'summary') ?? 'Pending',
+        relevanceToCase: this.extractNumber(d, 'relevanceScore', 'relevance') ?? 0.8,
+        lastAnalyzed: this.extractDateString(d, 'updatedAt', 'updated_at'),
+      } as Types.DocumentMemory));
+    } catch (e: unknown) {
+      return [];
+    }
+  }
+
+  private async loadConversationHistory(caseId: string): Promise<Types.AIConversation[]> {
+    const start = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+    let source: 'redis' | 'postgres' | 'cold' = 'cold';
+    let conversations: Types.AIConversation[] = [];
+
+    try {
+      const cached = await redis.get(`conversation:${caseId}`);
+      if (cached) {
+        conversations = JSON.parse(cached) as Types.AIConversation[];
+        source = 'redis';
+        return conversations;
+      }
+
+      // Narrowed local type for db shape access (avoid 'any')
+      type DrizzleDBLike = {
+        schema?: Record<string, unknown> & { aiConversations?: unknown };
+        aiConversations?: unknown;
+        eq?: (...args: unknown[]) => unknown;
+        desc?: (...args: unknown[]) => unknown;
+      };
+      const dbTyped = db as unknown as DrizzleDBLike;
+
+      const rows = await db.select()
+        .from(dbTyped.schema?.aiConversations ?? dbTyped.aiConversations)
+        .where(typeof dbTyped.eq === 'function' ? (dbTyped.eq as Function)((dbTyped.schema?.aiConversations as Record<string, unknown> | undefined)?.caseId ?? 'caseId', caseId) : undefined)
+        .limit(100)
+        .orderBy(typeof dbTyped.desc === 'function' ? (dbTyped.desc as Function)((dbTyped.schema?.aiConversations as Record<string, unknown> | undefined)?.timestamp ?? 'timestamp') : undefined);
+
+      if (rows && (rows as unknown) && (rows as Array<Record<string, unknown>>).length > 0) {
+        const typedRows = rows as Array<Record<string, unknown>>;
+        conversations = typedRows.map((row) => ({
+          timestamp: (row.timestamp as string) ?? undefined,
+          userQuery: (row.userQuery as string) ?? undefined,
+          aiResponse: (row.aiResponse as string) ?? undefined,
+          contextUsed: (Array.isArray(row.contextUsed) ? (row.contextUsed as string[]) : []),
+          confidenceScore: typeof row.confidenceScore === 'number' ? row.confidenceScore as number : (typeof row.confidenceScore === 'string' ? Number(row.confidenceScore) : undefined),
+          followUpSuggestions: Array.isArray(row.followUpSuggestions) ? row.followUpSuggestions as string[] : [],
+        })) as Types.AIConversation[];
+        source = 'postgres';
+        await redis.set(`conversation:${caseId}`, JSON.stringify(conversations), { EX: 3600 }).catch(() => { });
+        return conversations;
+      }
+
+      return [];
+    } catch (e: unknown) {
+      console.error('Failed to load conversation history:', e);
+      return [];
+    } finally {
+      await aiAnalyticsService.publishEvent('memory.load', {
+        caseId,
+        source,
+        latency: ((typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now()) - start,
+        recordCount: conversations.length,
+        memoryType: 'conversationHistory',
+      }).catch(() => { });
+    }
+  }
+
+  private async generateAIMemory(caseId: string, evidenceData: Types.EvidenceTimelineEntry[], documentData: Types.DocumentMemory[], conversationHistory: Types.AIConversation[]): Promise<Types.CaseContextMemory['aiMemory']> {
+    const conv = Array.isArray(conversationHistory) ? conversationHistory : await this.loadConversationHistory(caseId);
+    const evidenceArr = Array.isArray(evidenceData) ? evidenceData : [];
+    const docArr = Array.isArray(documentData) ? documentData : [];
+    return {
+      conversationHistory: conv,
+      learningPatterns: await this.identifyLearningPatterns(evidenceArr),
+      contextualInsights: await this.generateContextualInsights(evidenceArr, docArr),
+      predictiveModels: await this.buildPredictiveModels(caseId, evidenceArr),
+    };
+  }
+
+  private generateGameMemory(_caseData: Types.CaseProfile, evidenceData: Types.EvidenceTimelineEntry[], documentData: Types.DocumentMemory[], consoleTheme: string): Types.CaseContextMemory['gameMemory'] {
+    const evidenceCount = Array.isArray(evidenceData) ? evidenceData.length : 0;
+    const documentCount = Array.isArray(documentData) ? documentData.length : 0;
+    const totalItems = evidenceCount + documentCount;
     const experienceLevel = Math.min(100, totalItems * 2);
     return {
       consoleTheme,
       memoryVisualization: this.selectMemoryVisualization(consoleTheme),
       experienceLevel,
       memoryCapacity: totalItems,
-      achievementUnlocked: this.calculateAchievements(experienceLevel, totalItems)
+      achievementUnlocked: this.calculateAchievements(experienceLevel, totalItems),
+    };
+  }
+
+  private async findRelevantContext(query: string, memory: Types.CaseContextMemory): Promise<Types.ContextItem[]> {
+    const relevantItems: Types.ContextItem[] = [];
+    const caseNum = this.parseCaseIdToNumber(memory.caseId);
+
+    const queryEmbedding = await this.embedTextWithOrchestrator(query);
+    if (!queryEmbedding) {
+      console.warn('Failed to generate embedding for query.');
+      return [];
     }
-  }
-  private async findRelevantContext(query,: string, memor,y: CaseContextMemor,y): Promise<any[]> {
-    // Use embedding similarity to find relevant context
-    const queryEmbedding = await this.generateQueryEmbedding(query);
-    // Score all memory elements for relevance
-    const relevantItem,s: a,ny,[], = [];
-    // Add high-significance evidence
-    memory,.evidenceTimeline
-      .filter(e => e.significance >= 7)
-      .forEach(e => relevantItems.push({ type: 'evidence', id: e.evidenceId, data: e });
-    // Add relevant documents
-    memory,.documentMap
-      .filter(d => d.relevanceToCase >= 0.7)
-      .forEach(d => relevantItems.push({ type: 'document', id: d.documentId, data: d });
-    // Add recent insights
-    memory,.aiMemory.contextualInsights
-      .filter(i => i.confidence >= 0.7)
-      .slice(0, 3), // Most recent
-      .forEach(i => relevantItems.push({ type: 'insight', id: 'insight', data: i });
-    return relevantItems.slice(0, 10); // Top 10 relevant items
-  }
-  private buildContextualPrompt(query,: string, contex,t: any[], memo,ry: CaseContextMemo,ry): string {
-    const contextStrings = context.map(c => {
-      switch (c.type) {
-        case 'evidence':
-          return `Evidence: ${c.data.contextualNotes}`;
-        case 'document':
-          return `Document: ${c.data.aiSummary}`;
-        case 'insight':
-          return `Previous insight: ${c.data.insight}`;
-        default:
-          return '';
+
+    try {
+      type VectorServiceLike = { search?: Function; searchAll?: Function };
+      const vs = VectorSearchService as unknown as VectorServiceLike;
+      const pgVectorResults = typeof vs.search === 'function'
+        ? await (vs.search as Function)(queryEmbedding, 0.7, 5, caseNum)
+        : (typeof vs.searchAll === 'function' ? await (vs.searchAll as Function)([memory.caseId], 0.7, 5) : []);
+      const pgTyped = Array.isArray(pgVectorResults) ? pgVectorResults as Array<Record<string, unknown>> : [];
+      pgTyped.forEach((r) => {
+        if (r?.type === 'evidence') relevantItems.push({ type: 'evidence', id: String(r.id), data: r } as unknown as Types.ContextItem);
+        else if (r?.type === 'document') relevantItems.push({ type: 'document', id: String(r.id), data: r } as unknown as Types.ContextItem);
+      });
+    } catch (e: unknown) {
+      console.debug('pgvector search failed', e);
+    }
+
+    try {
+      const qdrantCollection = (CONFIG as unknown as Record<string, unknown>).QDRANT_COLLECTION_NAME ?? 'legal_docs';
+      const qdrantResults = await this.qdrantClient.search(qdrantCollection as string, {
+        vector: queryEmbedding,
+        limit: 5,
+        score_threshold: 0.7,
+      });
+      const qdrantTyped = Array.isArray(qdrantResults) ? qdrantResults as Array<Record<string, unknown>> : [];
+      qdrantTyped.forEach((r) => {
+        const payload = (r?.payload ?? r) as Record<string, unknown>;
+        if (payload?.type && payload?.id) {
+          relevantItems.push({
+            // cast to the ContextItem type-safe union
+            type: String(payload.type) as unknown as Types.ContextItem['type'],
+            id: String(payload.id),
+            data: payload as Record<string, unknown>,
+          } as Types.ContextItem);
+        }
+      });
+    } catch (e: unknown) {
+      console.debug('Qdrant search failed', e);
+    }
+
+    const evidenceTimeline = Array.isArray(memory?.evidenceTimeline) ? memory.evidenceTimeline : [];
+    const documentMap = Array.isArray(memory?.documentMap) ? memory.documentMap : [];
+    const contextualInsights = Array.isArray(memory?.aiMemory?.contextualInsights) ? memory.aiMemory.contextualInsights : [];
+
+    evidenceTimeline.filter(e => (e?.significance ?? 0) >= 7).forEach(e => {
+      if (!relevantItems.some(item => item.id === e.evidenceId && item.type === 'evidence')) {
+        relevantItems.push({ type: 'evidence', id: e.evidenceId, data: e });
       }
     });
-    return `You are a legal AI assistant with comprehensive knowledge of case ${memory.caseId}.;
-Case Context:
-- Title: ${memory.caseProfile.title}
-- Status: ${memory.caseProfile.status}
-- Priority: ${memory.caseProfile.priority}
-- Jurisdiction: ${memory.caseProfile.jurisdiction}
-Relevant Context:
-${contextStrings.join('\n')}
-User Query: ${query}
-Please provide a detailed, contextual response that takes into account all the case history and context provided above.`;
+    documentMap.filter(d => (d?.relevanceToCase ?? 0) >= 0.7).forEach(d => {
+      if (!relevantItems.some(item => item.id === d.documentId && item.type === 'document')) {
+        relevantItems.push({ type: 'document', id: d.documentId, data: d });
+      }
+    });
+    contextualInsights.filter(i => (i?.confidence ?? 0) >= 0.7).slice(0, 3).forEach((i, idx) => {
+      const insightId = `insight:${idx}`;
+      if (!relevantItems.some(item => item.id === insightId && item.type === 'insight')) {
+        relevantItems.push({ type: 'insight', id: insightId, data: i });
+      }
+    });
+
+    const uniqueItems = Array.from(new Map(relevantItems.map(item => [`${item.type}:${item.id}`, item])).values());
+    return uniqueItems.slice(0, 10);
   }
-  private async callContextualAI(prompt,: string, memor,y: CaseContextMemor,y): Promise<any> {
+
+  private async callContextualAI(prompt: string, memory: Types.CaseContextMemory) {
     try {
-      const response = await fetch('http://localhost:11434/api/generate', {
+      const ollamaUrl = CONFIG.OLLAMA_URL?.replace(/\/+$/, '') ?? 'http://localhost:11434';
+      const url = `${ollamaUrl}/api/generate`;
+      const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          model: 'gemma2:latest',
-          prompt: prompt,
-          stream: false,
+        body: JSON.stringify({
+          model: 'gemma3',
+          prompt,
+          context: memory.caseId,
           options: {
-            temperature: 0.3, // Lower temperature for more consistent legal advice
-            top_p: 0.9,
+            temperature: 0.7,
+            num_ctx: 2048,
           }
-        )}),
+        }),
       });
-      const data = await response.json();
+      const data = await res.json().catch(() => ({}));
       return {
-        response: data.response || 'I apologize, but I could not generate a response at this time.',
-        confidence: 0.8, // High confidence due to contextual information;
-        suggestions: [
-          'Would you like me to analyze specific evidence?',
-          'Should I provide case strategy recommendations?',
-          'Do you need precedent research for this issue?'
-        ]
-      }
-    } catch (error) {
-      console.error('Contextual AI call failed:', error);
-      return {
-        response: 'I encountered an error processing your request. Please try again.',
-        confidence: 0.1,
-        suggestions: []
-      }
+        text: (data?.response as string) ?? (data?.text as string) ?? 'AI service returned no content',
+        confidence: typeof data?.confidence === 'number' ? data.confidence : 0.7,
+        suggestions: Array.isArray(data?.suggestions) ? data.suggestions : [],
+        contextUsed: Array.isArray(data?.context) ? data.context : [],
+      };
+    } catch (e: unknown) {
+      console.error('Ollama AI call failed:', e);
+      return { text: 'AI call failed (stub response)', confidence: 0.5, suggestions: [], contextUsed: [] };
     }
   }
-  // Additional helper methods...
-  private isMemoryFresh(memory,: CaseContextMemory): boolean {
-    const ageMs = Date.now() - new Date(memory.lastUpdated).getTime();
-    return ageMs < (this.MEMORY_RETENTION_DAYS * 24 * 60 * 60 * 1000);>
+
+  private async embedTextWithOrchestrator(text: string): Promise<number[] | undefined> {
+    try {
+      const embedding = await adaptiveIndexOrchestrator.orchestrateEmbedding({
+        id: `temp-query-${Date.now()}`,
+        caseId: 'N/A',
+        type: 'query',
+        text,
+        title: 'User Query Embedding',
+      });
+      if (!embedding) {
+        console.warn('adaptiveIndexOrchestrator returned undefined embedding.');
+        return undefined;
+      }
+      return embedding;
+    } catch (err) {
+      console.error('Failed to orchestrate embedding with adaptiveIndexOrchestrator:', err);
+      return undefined;
+    }
   }
-  private async persistMemory(memory,: CaseContextMemory): Promise<void> {
-    // Store memory in Redis or database
-    // Implementation depends on your storage preference
+
+  private buildContextualPrompt(query: string, ctx: Types.ContextItem[], memory: Types.CaseContextMemory): string {
+    const caseTitle = memory.caseProfile?.title ?? memory.caseId;
+    let contextString = `Case: ${caseTitle}\n\n`;
+    ctx.forEach(item => {
+      contextString += `  - Type: ${item.type}, ID: ${item.id}\n`;
+      if (item.type === 'document' && (item.data as Types.DocumentMemory)?.aiSummary) {
+        contextString += `    Summary: ${(item.data as Types.DocumentMemory).aiSummary}\n`;
+      } else if (item.type === 'evidence' && (item.data as Types.EvidenceTimelineEntry)?.contextualNotes) {
+        contextString += `    Notes: ${(item.data as Types.EvidenceTimelineEntry).contextualNotes}\n`;
+      }
+    });
+    contextString += `\nUser Query:\n${query}\n\n`;
+    return contextString;
   }
-  private async updateMemory(memory,: CaseContextMemory): Promise<void> {
-    this.memoryCache.set(memory.caseId, memory);
-    await thi,s.persistMemory(memor,y);
+
+  private generateResponseGameElements(_ai: { confidence?: number } | null, theme: string): Types.GameElements {
+    const confidence = _ai?.confidence ?? 0.5;
+    return {
+      confidenceDisplay: confidence > 0.8 ? 'high' : confidence > 0.5 ? 'medium' : 'low',
+      responseRarity: theme === 'n64' ? 'retro' : 'common',
+      experienceGained: 1,
+    };
   }
-  private createEmptyMemory(caseId,: string, consoleThem,e: strin,g): CaseContextMemory {
+
+  // --- utilities ---
+  private parseCaseIdToNumber(caseId: string): number {
+    const n = Number((caseId || '').replace(/\D/g, '')) || 0;
+    return Math.max(0, Math.floor(n));
+  }
+
+  private extractString(obj: Partial<Record<string, unknown>> | undefined, ...keys: string[]): string | undefined {
+    if (!obj) return undefined;
+    for (const k of keys) {
+      const v = (obj as Record<string, unknown>)[k];
+      if (typeof v === 'string' && v) return v;
+      if (v instanceof Date) return v.toISOString();
+      if (typeof v === 'number') return String(v);
+    }
+    return undefined;
+  }
+
+  private extractNumber(obj: Partial<Record<string, unknown>> | undefined, ...keys: string[]): number | undefined {
+    if (!obj) return undefined;
+    for (const k of keys) {
+      const v = (obj as Record<string, unknown>)[k];
+      if (typeof v === 'number' && !Number.isNaN(v)) return v;
+      if (typeof v === 'string' && v.trim()) {
+        const n = Number(v);
+        if (!Number.isNaN(n)) return n;
+      }
+    }
+    return undefined;
+  }
+
+  private extractDateString(obj: Partial<Record<string, unknown>> | undefined, ...keys: string[]): string {
+    const s = this.extractString(obj, ...keys);
+    if (s) return s;
+    return new Date().toISOString();
+  }
+
+  private extractArray(obj: Partial<Record<string, unknown>> | undefined, ...keys: string[]): unknown[] | undefined {
+    if (!obj) return undefined;
+    for (const key of keys) {
+      const v = (obj as Record<string, unknown>)[key];
+      if (Array.isArray(v)) return v;
+    }
+    return undefined;
+  }
+
+  private normalizeStringArray(obj: Partial<Record<string, unknown>> | undefined, ...keys: string[]): string[] {
+    if (!obj) return [];
+    for (const key of keys) {
+      const arr = this.extractArray(obj, key);
+      if (!arr) continue;
+      const out: string[] = [];
+      for (const it of arr as unknown[]) {
+        if (typeof it === 'string') out.push(it);
+        else if (typeof it === 'number' || typeof it === 'boolean') out.push(String(it));
+      }
+      return out;
+    }
+    return [];
+  }
+
+  private createEmptyMemory(caseId: string, consoleTheme = 'n64'): Types.CaseContextMemory {
     return {
       caseId,
-      contextVersion: 0,
+      contextVersion: 1,
       lastUpdated: new Date().toISOString(),
-      caseProfile: {
-        title: 'Unknown Case',
-        description: '',
-        status: 'unknown',
-        priority: 'medium',
-        keyPersons: [],
-        legalIssues: [],
-        jurisdiction: 'Unknown',
-        importantDates: [],
-        caseStrategy: []
-      },
+      caseProfile: { title: `Case ${caseId}`, description: '', status: 'active', priority: 'normal', keyPersons: [] as unknown as Types.Person[], legalIssues: [] as unknown as Types.LegalIssue[], jurisdiction: 'N/A', importantDates: [], caseStrategy: [] },
       evidenceTimeline: [],
       documentMap: [],
       relationshipGraph: [],
-      aiMemory: {
-        conversationHistory: [],
-        learningPatterns: [],
-        contextualInsights: [],
-        predictiveModels: []
-      },
-      gameMemory: {
-        consoleTheme,
-        memoryVisualization: 'memory_palace',
-        experienceLevel: 1,
-        memoryCapacity: 0,
-        achievementUnlocked: []
+      aiMemory: { conversationHistory: [], learningPatterns: [], contextualInsights: [], predictiveModels: [] },
+      gameMemory: { consoleTheme, memoryVisualization: 'memory_palace', experienceLevel: 0, memoryCapacity: 0, achievementUnlocked: [] },
+    } as Types.CaseContextMemory;
+  }
+
+  // Lightweight stubs for AI-related processing to keep compile-time safe
+  private async identifyLearningPatterns(_evidence: Types.EvidenceTimelineEntry[]): Promise<any[]> { return []; }
+  private async generateContextualInsights(_evidence: Types.EvidenceTimelineEntry[], _docs: Types.DocumentMemory[]): Promise<any[]> { return []; }
+  private async buildPredictiveModels(_caseId: string, _evidence: Types.EvidenceTimelineEntry[]): Promise<any[]> { return []; }
+  private selectMemoryVisualization(_theme: string): 'memory_palace' | 'skill_tree' | 'inventory_system' | 'character_sheet' {
+    // Map known console/theme identifiers to the allowed visualization literals.
+    // Default to 'memory_palace' for unknown themes.
+    try {
+      const theme = String(_theme || '').toLowerCase();
+      if (theme.includes('n64') || theme.includes('retro') || theme === '') return 'memory_palace';
+      if (theme.includes('skill') || theme.includes('tree') || theme.includes('rpg')) return 'skill_tree';
+      if (theme.includes('inventory') || theme.includes('items') || theme.includes('shop')) return 'inventory_system';
+      if (theme.includes('character') || theme.includes('sheet') || theme.includes('avatar')) return 'character_sheet';
+      return 'memory_palace';
+    } catch {
+      return 'memory_palace';
+    }
+  }
+  private calculateAchievements(_experienceLevel: number, _totalItems: number): string[] { return []; }
+
+  // Defensive RabbitMQ publish helper (handles different integration shapes)
+  private async publishToRabbit(event: string, payload: any) {
+    try {
+      const m = RabbitMQXStateIntegration as unknown as RabbitMQIntegrationLike;
+      if (m && typeof m.publishEvent === 'function') return await m.publishEvent(event, payload);
+      if (m && typeof m.publish === 'function') return await m.publish(event, payload);
+      if (m && typeof m.send === 'function') return await m.send(event, payload);
+      if (typeof RabbitMQXStateIntegration === 'function') {
+        // If the integration exports a callable function, call it defensively
+        const fn = RabbitMQXStateIntegration as unknown;
+        if (typeof fn === 'function') return await (fn as Function)(event, payload);
       }
+      console.debug('No publish method found on RabbitMQXStateIntegration');
+    } catch (e) {
+      console.error('Failed to publish to RabbitMQ (defensive helper)', e);
     }
   }
-  // Gaming-specific helper methods
-  private selectMemoryVisualization(theme,: string): CaseContextMemory['gameMemory']['memoryVisualization',] {
-    const visualizations = {
-      n64: 'memory_palace',
-      nes: 'inventory_system',
-      snes: 'skill_tree',
-      yorha: 'character_sheet'
-    }
-    return visualizations[theme as keyof typeof visualizations] || 'memory_palace';
-  }
-  private calculateAchievements(level,: number, itemCoun,t: numbe,r): string,[] {
-    const achievements: string[] = [];
-    if (level >= 10) achievements.push('Legal Apprentice');
-    if (level >= 25) achievements.push('Evidence Collector');
-    if (level >= 50) achievements.push('Case Master');
-    if (level >= 75) achievements.push('Legal Scholar');
-    if (level >= 100) achievements.push('Legendary Advocate');
-    if (itemCount >= 50) achievements.push('Information Hoarder');
-    if (itemCount >= 100) achievements.push('Data Archivist');
-    return achievements;
-  }
-  private generateResponseGameElements(response,: any, them,e: strin,g): any {
-    return {
-      confidenceDisplay: this.mapConfidenceToGameElement(response.confidence, theme),
-      responseRarity: response.confidence > 0.8 ? 'epic' : response.confidence > 0.6 ? 'rare' : 'common',
-      experienceGained: Math.round(response.confidence * 10)
-    }
-  }
-  private mapConfidenceToGameElement(confidence,: number, them,e: strin,g): string {
-    if (confidence >= 0.9) return 'legendary_insight';
-    if (confidence >= 0.7) return 'epic_analysis';
-    if (confidence >= 0.5) return 'solid_advice';
-    return 'basic_guidance';
-  }
-  // Placeholder methods for complex operations
-  private async identifyLearningPatterns(evidenceData,: EvidenceTimelineEntry[]): Promise<LearningPattern[]> { retur,n [], },
-  private async generateContextualInsights(evidenceData,: EvidenceTimelineEntry[], documentDat,a: DocumentMemory[,]): Promise<ContextualInsight[]> { retu,rn [], },
-  private async buildPredictiveModels(caseId,: string, evidenceDat,a: EvidenceTimelineEntry[,]): Promise<PredictiveModel[]> { retu,rn [], },
-  private async generateQueryEmbedding(query,: string): Promise<number[]> { retur,n [], },
-  private async analyzeEvidenceRelationships(evidenceId,: string, memor,y: CaseContextMemor,y): Promise<ContextRelationship[]> { retu,rn [], },
-  private async generateInsightsFromNewEvidence(evidenceId,: string, memor,y: CaseContextMemor,y): Promise<ContextualInsight[]> { retu,rn [], }
-}
-export const contextAwareMemory = {
-  /**
-   * Get contextual AI response using Redis-backed memory.
-   * Forwards prompt to an Ollama-like endpoint (Triton bridge).
-   */
-  async getContextualAIResponse(
-    caseId: string,
-    query: string,
-    consoleTheme = 'n64',
-    options: { updateMemory?: boolean } = {}
-  ): Promise<AIResponse> {
-    // Step 1 — Load memory context (simplified)
-    const memoryKey = `memory:${caseId}`;
-    const memoryContext = (await redis.hgetall(memoryKey)) as Record<string, string>;
-    const contextString = Object.values(memoryContext).filter(Boolean).join('\n');
 
-    // Step 2 — Prepare payload for Triton/Ollama
-    const prompt = [
-      `Theme: ${consoleTheme}`,
-      'Context:',
-      contextString || '[no prior context]',
-      '',
-      `User: ${query}`
-    ].join('\n');
+  // NEW: Method to process text, generate embeddings, and store in pgvector and Qdrant
+  private async processAndStoreEmbedding(
+    item: {
+      id: string;
+      caseId: string;
+      type: 'document' | 'evidence';
+      text: string;
+      title: string;
+      metadata?: Record<string, any>;
+    }
+  ): Promise<void> {
+    const { id, caseId, type, text, title, metadata } = item;
 
-    const payload = {
-      model: process.env.OLLAMA_MODEL ?? 'gemma3',
-      prompt,
-      stream: false,
-      options: { temperature: 0.3 }
+    // 1. Orchestrate embedding using the AdaptiveIndexOrchestrator
+    let embedding: number[] | undefined;
+    try {
+      embedding = await adaptiveIndexOrchestrator.orchestrateEmbedding({
+        id,
+        caseId,
+        type,
+        text,
+        title,
+        metadata,
+      });
+    } catch (err) {
+      console.error('orchestrateEmbedding failed:', err);
+      embedding = undefined;
+    }
+
+    if (!embedding || !Array.isArray(embedding) || embedding.length === 0) {
+      console.warn(`No embedding generated for ${type} ${id}. Skipping storage.`);
+      return;
+    }
+
+    const commonPayload = {
+      id,
+      caseId,
+      type,
+      title,
+      content: text,
+      timestamp: new Date().toISOString(),
+      ...(metadata ?? {}),
     };
 
-    // Step 3 — Forward to Ollama API (served by Triton backend)
-    const ollamaUrl = process.env.OLLAMA_API ?? 'http://localhost:11434/api/generate';
-    const res = await globalThis.fetch(ollamaUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-
-    if (!res.ok) {
-      const text = await res.text().catch(() => res.statusText);
-      throw new Error(`Ollama/Triton inference failed: ${res.status} ${text}`);
+    // 2. Store in pgvector via Drizzle (VectorSearchService) - defensive
+    try {
+      const vs = VectorSearchService as unknown as VectorServiceLike;
+      if (vs && typeof vs.upsertDocument === 'function') {
+        await (vs.upsertDocument as Function)({
+          ...commonPayload,
+          embedding,
+        });
+        console.log(`Stored ${type} ${id} embedding in pgvector.`);
+      } else if (vs && typeof vs.upsert === 'function') {
+        await (vs.upsert as Function)({ ...commonPayload, vector: embedding });
+        console.log(`Stored ${type} ${id} embedding via vs.upsert.`);
+      } else {
+        console.debug('No upsert handler on VectorSearchService - skipping pgvector store.');
+      }
+    } catch (e) {
+      console.error(`Failed to store ${type} ${id} embedding in pgvector:`, e);
     }
 
-    const data = await res.json().catch(() => ({}));
-
-    // Optionally update memory (minimal stub; callers handle persistence in real app)
-    if (options.updateMemory !== false) {
-      try {
-        await redis.hset(memoryKey, `last_query:${Date.now()}`, query);
-      } catch (e) {
-        console.warn('Failed to update memory index:', e);
-      }
+    // 3. Store in Qdrant for semantic tagging and search - defensive wrapper
+    try {
+      const cfg = CONFIG as unknown as Record<string, unknown>;
+      const qdrantCollection = String(cfg.QDRANT_COLLECTION_NAME ?? 'legal_docs');
+      await this.qdrantClient.upsert?.(qdrantCollection, {
+        points: [
+          {
+            id,
+            vector: embedding,
+            payload: commonPayload,
+          },
+        ],
+        wait: true,
+      });
+      console.log(`Stored ${type} ${id} embedding in Qdrant.`);
+    } catch (e) {
+      console.error(`Failed to store ${type} ${id} embedding in Qdrant:`, e);
     }
 
-    return {
-      response: typeof data.response === 'string' ? data.response : (data.output ?? ''),
-      confidence: typeof data.confidence === 'number' ? data.confidence : 0.85,
-      contextUsed: Object.keys(memoryContext),
-      suggestions: Array.isArray(data.suggestions) ? data.suggestions : [],
-      gameElements: data.gameElements ?? null
-    };
-  },
-
-  /**
-   * Load the case memory and return a normalized object for the GET handler.
-   */
-  async loadCaseMemory(caseId: string, theme = 'n64') {
-    const memoryKey = `memory:${caseId}`;
-    const memory = (await redis.hgetall(memoryKey)) as Record<string, string>;
-
-    // safe parsing helpers
-    const safeParse = (v?: string) => {
-      if (!v) return null;
-      try {
-        return JSON.parse(v);
-      } catch {
-        return v;
+    // 4. Cache embedding in Redis (for hot items and quick retrieval)
+    try {
+      const rclient = redis as unknown as RedisLike;
+      if (typeof rclient.set === 'function') {
+        await (rclient.set as Function)(`embedding:${type}:${id}`, JSON.stringify(embedding), { EX: 3600 }).catch(() => { });
+      } else if (typeof (redis as unknown as RedisLike).set === 'function') {
+        await ((redis as unknown as RedisLike).set!)(`embedding:${type}:${id}`, JSON.stringify(embedding), { EX: 3600 }).catch(() => { });
       }
-    };
+      console.log(`Cached ${type} ${id} embedding in Redis.`);
+    } catch (e: unknown) {
+      console.debug(`Failed to cache ${type} ${id} embedding in Redis:`, e);
+    }
+  }
+
+  // PUBLIC: Return a summary of case memory, evidence counts, conversation metrics, and simple analytics
+  async getMemorySummary(caseId: string) {
+    const memory = await this.loadCaseMemory(caseId).catch(() => this.createEmptyMemory(caseId));
+    const evidenceCount = Array.isArray(memory.evidenceTimeline) ? memory.evidenceTimeline.length : 0;
+    const documentCount = Array.isArray(memory.documentMap) ? memory.documentMap.length : 0;
+    const conversationCount = Array.isArray(memory.aiMemory?.conversationHistory) ? memory.aiMemory!.conversationHistory.length : 0;
+    const lastUpdated = memory.lastUpdated ?? null;
+    const contextVersion = memory.contextVersion ?? 0;
+    const ageDays = lastUpdated ? Math.max(0, Math.round((Date.now() - new Date(lastUpdated).getTime()) / (24 * 60 * 60 * 1000))) : null;
+
+    // Fetch Redis top-k (defensive shortcuts for different redis client shapes)
+    const topkKey = `topk:case:${caseId}`;
+    let topk: Array<{ member: string; score: number }> = [];
+    try {
+      const r = redis as unknown as RedisLike;
+      if (typeof r.zRangeWithScores === 'function') {
+        const items = await r.zRangeWithScores(topkKey, -10, -1) as Array<{ value?: string; score?: number }>;
+        topk = (items || []).map((it) => ({ member: (it.value ?? '') as string, score: Number(it.score ?? 0) }));
+      } else if (typeof r.zRevRangeWithScores === 'function') {
+        const items = await r.zRevRangeWithScores(topkKey, 0, 9) as Array<{ value?: string; score?: number }>;
+        topk = (items || []).map((it) => ({ member: (it.value ?? '') as string, score: Number(it.score ?? 0) }));
+      } else if (typeof r.zRange === 'function' && typeof r.zScore === 'function') {
+        const members = await r.zRange(topkKey, 0, -1);
+        const tail = (members || []).slice(-10);
+        topk = await Promise.all(tail.map(async (m: string) => ({ member: m, score: Number(await (r.zScore!(topkKey, m) as Promise<number | null>) ?? 0) })));
+      } else {
+        // fallback: try zRevRange
+        if (typeof (r as unknown as RedisLike).zRevRange === 'function') {
+          const zRevRangeFn = (r as unknown as Record<string, unknown>)['zRevRange'] as unknown as ((k: string, s: number, e: number) => Promise<string[]>);
+          const members = await zRevRangeFn(topkKey, 0, 9);
+          topk = (members || []).map((m: string) => ({ member: m, score: 0 }));
+        }
+      }
+    } catch (e) {
+      console.debug('Failed reading top-k from Redis', e);
+    }
+
+    // Attempt to fetch lightweight analytics (defensive)
+    let analytics: Record<string, unknown> | null = null;
+    try {
+      const svc = aiAnalyticsService as unknown as { getMetrics?: (caseId: string) => Promise<Record<string, unknown>>; query?: (q: Record<string, unknown>) => Promise<Record<string, unknown>> };
+      if (svc) {
+        if (typeof svc.getMetrics === 'function') analytics = await svc.getMetrics(caseId).catch(() => null);
+        else if (typeof svc.query === 'function') analytics = await svc.query({ caseId }).catch(() => null);
+        else analytics = null;
+      }
+    } catch (e) {
+      console.debug('aiAnalyticsService fetch failed', e);
+    }
+
+    // Basic conversation stats (if conversation history present)
+    const conversationSummary: { total: number; latest?: string } = { total: conversationCount };
+    if (conversationCount > 0) {
+      const lastConv = memory.aiMemory?.conversationHistory?.[memory.aiMemory.conversationHistory.length - 1];
+      (conversationSummary as { total: number; latest?: string }).latest = lastConv?.timestamp ?? undefined;
+    }
 
     return {
       caseId,
-      contextVersion: process.env.OLLAMA_MODEL ? `${process.env.OLLAMA_MODEL}-triton` : 'gemma3-triton',
-      lastUpdated: new Date().toISOString(),
-      evidenceTimeline: safeParse(memory.evidenceTimeline) ?? [],
-      documentMap: safeParse(memory.documentMap) ?? {},
-      relationshipGraph: safeParse(memory.relationshipGraph) ?? [],
-      aiMemory: safeParse(memory.aiMemory) ?? {},
-      gameMemory: safeParse(memory.gameMemory) ?? {}
+      counts: {
+        evidence: evidenceCount,
+        documents: documentCount,
+        conversations: conversationCount,
+      },
+      lastUpdated,
+      ageDays,
+      contextVersion,
+      topk,
+      analytics,
+      conversationSummary,
     };
   }
-};
+
+} // end class ContextAwareAIMemoryService
+
+// Single export instance (ensure only one export)
+export const contextAwareAIMemoryService = new ContextAwareAIMemoryService();

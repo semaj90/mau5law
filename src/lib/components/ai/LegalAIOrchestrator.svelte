@@ -1,18 +1,31 @@
-<!-- Legal AI Multi-Model Orchestrator Interface -->
-<!-- Nintendo-Style UI with Memory Bank Visualization -->
+<!-- Legal ai orchestrator nintendo-Style UI with Memory Bank Visualization -->
 
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { legalAIOrchestrator } from '$lib/services/legal-ai-orchestrator';
-  import Button from '$lib/components/ui/Button.svelte';
-  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { onMount, onDestroy } from 'svelte';
+  // use relative imports to avoid IDE / tsserver resolution issues with $lib aliases
+  import { legalAIOrchestrator } from '../../services/legal-ai-orchestrator';
+  import Button from '../ui/Button.svelte';
+  import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+
+  // Types
+  type ServiceHealth = Record<string, boolean>;
+  type MemoryBank = { used: number; total: number; status: string };
+  type MemoryBanks = Record<string, MemoryBank>;
+  type OrchestrationResult = {
+    answer: string;
+    model_used: string;
+    cache_hit: boolean;
+    memory_bank_used: string;
+    response_time_ms: number;
+    cost_saved: number;
+  } | null;
 
   // Svelte 5 Runes
   let query = $state('');
   let isProcessing = $state(false);
-  let result = $state(null);
-  let serviceHealth = $state({});
-  let memoryBanks = $state({
+  let result = $state<OrchestrationResult>(null);
+  let serviceHealth = $state<ServiceHealth>({});
+  let memoryBanks = $state<MemoryBanks>({
     L1_GPU_VRAM: { used: 0, total: 100, status: 'idle' },
     L2_SYSTEM_RAM: { used: 0, total: 100, status: 'idle' },
     L3_REDIS_CACHE: { used: 0, total: 100, status: 'idle' }
@@ -47,6 +60,8 @@
     }
   ];
 
+  let healthInterval: ReturnType<typeof setInterval> | null = null;
+
   onMount(async () => {
     await checkServiceHealth();
     startHealthMonitoring();
@@ -61,7 +76,7 @@
   }
 
   function startHealthMonitoring() {
-    setInterval(async () => {
+    healthInterval = setInterval(async () => {
       await checkServiceHealth();
       updateMemoryBanks();
     }, 10000); // Check every 10 seconds
@@ -76,21 +91,21 @@
 
   async function processQuery() {
     if (!query.trim()) return;
-    
+
     isProcessing = true;
     result = null;
-    
+
     try {
       const orchestrationResult = await legalAIOrchestrator.processQuery(query);
       result = orchestrationResult;
-      
+
       // Add to history
       queryHistory = [{
         query,
         result: orchestrationResult,
         timestamp: new Date().toLocaleTimeString()
       }, ...queryHistory.slice(0, 9)]; // Keep last 10
-      
+
     } catch (error) {
       result = {
         answer: `Error: ${error.message}`,
@@ -105,7 +120,7 @@
     }
   }
 
-  function useExampleQuery(exampleQuery) {
+  function useExampleQuery(exampleQuery: string) {
     query = exampleQuery;
     selectedExample = exampleQuery;
   }
@@ -116,17 +131,17 @@
     selectedExample = '';
   }
 
-  function getServiceStatusIcon(serviceName) {
+  function getServiceStatusIcon(serviceName: string): string {
     return serviceHealth[serviceName] ? '🟢' : '🔴';
   }
 
-  function getMemoryBankColor(usage) {
+  function getMemoryBankColor(usage: number): string {
     if (usage < 30) return 'bg-green-500';
-    if (usage < 70) return 'bg-yellow-500'; 
+    if (usage < 70) return 'bg-yellow-500';
     return 'bg-red-500';
   }
 
-  function getModelDisplayName(modelUsed) {
+  function getModelDisplayName(modelUsed: string) {
     const modelMap = {
       'gemma-3-270m': '🚀 Fast Router (270M)',
       'gemma-3-legal-2b': '⚖️ Legal Expert (2B)',
@@ -137,6 +152,13 @@
     };
     return modelMap[modelUsed] || modelUsed;
   }
+
+  onDestroy(() => {
+    if (healthInterval) {
+      clearInterval(healthInterval);
+      healthInterval = null;
+    }
+  });
 </script>
 
 <div class="legal-ai-orchestrator p-6 max-w-6xl mx-auto">
@@ -164,7 +186,7 @@
           </div>
         {/each}
       </div>
-      
+
       <!-- Nintendo Memory Banks -->
       <div class="nintendo-memory-banks">
         <h4 class="font-semibold mb-3 text-gray-800">🎮 Nintendo Memory Banks</h4>
@@ -176,7 +198,7 @@
                 <span class="text-xs text-gray-600">{bank.used.toFixed(1)}%</span>
               </div>
               <div class="w-full bg-gray-200 rounded-full h-2">
-                <div 
+                <div
                   class="h-2 rounded-full transition-all duration-500 {getMemoryBankColor(bank.used)}"
                   style="width: {bank.used}%"
                 ></div>

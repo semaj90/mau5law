@@ -1,149 +1,159 @@
 version: '3.8'
 
 services:
-  # Redis for caching and sessions
+  # Redis with authentication
   redis:
     image: redis:7-alpine
-    container_name: legal-ai-redis-dev
+    container_name: deeds-redis
     ports:
       - "6379:6379"
     command: redis-server --requirepass redis
-    volumes:
-      - redis-dev-data:/data
-    networks:
-      - legal-ai-network
-    restart: unless-stopped
-
-  # PostgreSQL with pgvector for embeddings
-  postgres:
-    image: pgvector/pgvector:pg17
-    container_name: legal-ai-postgres-dev
     environment:
-      POSTGRES_DB: legal_ai_db
-      POSTGRES_USER: legal_admin
-      POSTGRES_PASSWORD: 123456
-      PGUSER: legal_admin
+      - REDIS_PASSWORD=redis
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # PostgreSQL with pgvector extension
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: deeds-postgres
     ports:
       - "5432:5432"
+    environment:
+      POSTGRES_DB: deeds
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     volumes:
-      - postgres-dev-data:/var/lib/postgresql/data
-      - ./src/lib/server/db/migrations:/docker-entrypoint-initdb.d
-    networks:
-      - legal-ai-network
-    restart: unless-stopped
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U legal_admin -d legal_ai_db"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-  # Ollama for Gemma3 local LLM
-  ollama:
-    image: ollama/ollama:latest
-    container_name: legal-ai-ollama-dev
+  # Neo4j Graph Database
+  neo4j:
+    image: neo4j:5-community
+    container_name: deeds-neo4j
     ports:
-      - "11434:11434"
-    volumes:
-      - ollama-dev-data:/root/.ollama
-    networks:
-      - legal-ai-network
-    restart: unless-stopped
+      - "7474:7474"
+      - "7687:7687"
     environment:
-      - OLLAMA_GPU_LAYERS=35
-      - CUDA_VISIBLE_DEVICES=0
-    # Note: For GPU support, add runtime: nvidia and deploy.resources.reservations.devices
-
-  # SvelteKit development server
-  vite-dev:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    container_name: legal-ai-vite-dev
-    ports:
-      - "5174:5174"
-      - "24678:24678" # HMR WebSocket
+      NEO4J_AUTH: neo4j/password
+      NEO4J_PLUGINS: '["apoc"]'
     volumes:
-      - ./src:/app/src
-      - ./static:/app/static
-      - ./scripts:/app/scripts
-      - ./package.json:/app/package.json
-      - ./package-lock.json:/app/package-lock.json
-      - ./vite.config.js:/app/vite.config.js
-      - ./svelte.config.js:/app/svelte.config.js
-      - ./tailwind.config.ts:/app/tailwind.config.ts
-      - ./tsconfig.json:/app/tsconfig.json
-    environment:
-      - NODE_ENV=development
-      - REDIS_PASSWORD=redis
-      - REDIS_URL=redis://redis:6379
-      - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
-      - OLLAMA_URL=http://ollama:11434
-      - ENABLE_GPU=true
-      - RTX_3060_OPTIMIZATION=true
-      - CONTEXT7_MULTICORE=true
-      - OLLAMA_GPU_LAYERS=30
-    networks:
-      - legal-ai-network
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_started
-      ollama:
-        condition: service_started
-    restart: unless-stopped
-    command: npm run dev:docker
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    healthcheck:
+      test: ["CMD", "cypher-shell", "-u", "neo4j", "-p", "password", "RETURN 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-  # Caddy reverse proxy with QUIC/HTTP3 support
-  caddy:
-    image: caddy:2.8-alpine
-    container_name: legal-ai-caddy-dev
-    ports:
-      - "80:80"
-      - "443:443"
-      - "5178:5178"   # Development QUIC port
-      - "5179:5179"   # Alternative port
-      - "8082:8082"   # Health check
-    volumes:
-      - ./Caddyfile.docker:/etc/caddy/Caddyfile
-      - caddy-dev-data:/data
-      - caddy-dev-config:/config
-    networks:
-      - legal-ai-network
-    depends_on:
-      - vite-dev
-    restart: unless-stopped
-    environment:
-      - CADDY_INGRESS_NETWORKS=legal-ai-network
-
-  # MinIO for document storage (optional)
+  # MinIO Object Storage
   minio:
     image: minio/minio:latest
-    container_name: legal-ai-minio-dev
+    container_name: deeds-minio
     ports:
       - "9000:9000"
       - "9001:9001"
-    volumes:
-      - minio-dev-data:/data
-    networks:
-      - legal-ai-network
     environment:
       MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin123
+      MINIO_ROOT_PASSWORD: minioadmin
     command: server /data --console-address ":9001"
-    restart: unless-stopped
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Qdrant Vector Database
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: deeds-qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Ollama AI Service
+  ollama:
+    image: ollama/ollama:latest
+    container_name: deeds-ollama
+    ports:
+      - "11434:11434"
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    volumes:
+      - ollama_data:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Enhanced RAG Service (Go)
+  rag-service:
+    build:
+      context: ./go-enhanced-rag-service
+      dockerfile: Dockerfile
+    container_name: deeds-rag-service
+    ports:
+      - "8094:8094"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - REDIS_PASSWORD=redis
+      - POSTGRES_URL=postgres://postgres:postgres@postgres:5432/deeds
+      - NEO4J_URL=bolt://neo4j:7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=password
+      - OLLAMA_URL=http://ollama:11434
+      - QDRANT_URL=http://qdrant:6333
+      - MINIO_URL=http://minio:9000
+      - ENABLE_CUDA=true
+      - ENABLE_SIMD_JSON=true
+    depends_on:
+      - redis
+      - postgres
+      - neo4j
+      - ollama
+      - qdrant
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8094/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 volumes:
-  redis-dev-data:
-  postgres-dev-data:
-  ollama-dev-data:
-  caddy-dev-data:
-  caddy-dev-config:
-  minio-dev-data:
+  redis_data:
+  postgres_data:
+  neo4j_data:
+  neo4j_logs:
+  minio_data:
+  qdrant_data:
+  ollama_data:
 
 networks:
-  legal-ai-network:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
+  default:
+    name: deeds-network

@@ -78,23 +78,17 @@ async function initializeQdrantCollection() {
   }
 }
 
+import {
+  generateEmbeddings as serverGenerateEmbeddings,
+  generateEmbedding as serverGenerateEmbedding,
+} from '$lib/server/services/embedding-service';
+
 async function generateEmbedding(text: string): Promise<number[]> {
   try {
-    const response = await fetch('http://localhost:11434/api/embeddings', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'embeddinggemma:latest',
-        prompt: text.slice(0, 2000), // Limit context
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Embedding API error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data.embedding || Array(384).fill(0.01 * Math.random());
+    const trimmed = text.slice(0, 2000);
+    const { embedding } = await serverGenerateEmbedding(trimmed, { model: 'embeddinggemma:latest' });
+    if (!Array.isArray(embedding)) throw new Error('Embedding service returned invalid embedding');
+    return embedding;
   } catch (error) {
     console.warn('⚠️ Embedding generation failed, using fallback:', error);
     return Array(384).fill(0.01 * Math.random());

@@ -375,6 +375,43 @@ export class Context7Service {
     this.cacheEnabled = enabled ?? !this.cacheEnabled;
     if (!this.cacheEnabled) this.clearCache();
   }
+
+  /**
+   * Suggests integrations based on system and security aspects.
+   * @param system The system requiring integration (e.g., 'document upload system').
+   * @param securityAspect The security aspect to consider (e.g., 'security and virus scanning').
+   * @returns A list of suggested integrations.
+   */
+  async suggestIntegration(system: string, securityAspect: string): Promise<string[]> {
+    console.log(`Context7: Suggesting integration for '${system}' with security aspect '${securityAspect}'`);
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 150));
+    return [
+      `Integrate with secure file storage for ${system}`,
+      `Implement real-time virus scanning for ${securityAspect}`,
+      `Ensure data encryption at rest and in transit`,
+    ];
+  }
+
+  /**
+   * Generates best practices for a given area.
+   * @param area The area for which to generate best practices (e.g., 'performance').
+   * @returns A list of best practice recommendations.
+   */
+  async generateBestPractices(area: string): Promise<string[]> {
+    console.log(`Context7: Generating best practices for area '${area}'`);
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 120));
+    if (area === 'performance') {
+      return [
+        'Implement semantic caching for common queries',
+        'Utilize cluster workers for parallel processing',
+        'Optimize database queries and indexing',
+        'Leverage WebAssembly for client-side inference',
+      ];
+    }
+    return ['General best practice 1', 'General best practice 2'];
+  }
 }
 
 // Export class and a singleton instance for convenience

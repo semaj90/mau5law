@@ -2,6 +2,38 @@ import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 import { glyphDiffusionService } from '$lib/services/glyph-diffusion-service.js'
 import { embeddingService } from '$lib/services/embedding-service.js'
+
+// Define the structure of metadata within a glyph manifest
+interface GlyphManifestMetadata {
+  style?: string;
+  prompt?: string;
+  // Add other metadata properties as needed
+}
+
+// Define the structure of a glyph manifest
+interface GlyphManifest {
+  metadata?: GlyphManifestMetadata;
+  // Add other manifest properties as needed
+}
+
+// Define the structure of a single glyph search result item
+interface GlyphSearchResult {
+  id?: string;
+  manifest?: GlyphManifest;
+  created_at?: string; // Assuming it's a string timestamp
+  access_count?: number;
+  // Add other properties that might be returned by the search service
+}
+
+// Declare a type for the service that includes the missing method
+interface GlyphDiffusionServiceWithSearch {
+  searchSimilarTensors(embedding: number[], limit: number): Promise<GlyphSearchResult[]>;
+  // Add any other methods that glyphDiffusionService might have if known
+}
+
+// Cast the imported service to the extended type
+const typedGlyphDiffusionService: GlyphDiffusionServiceWithSearch = glyphDiffusionService as unknown as GlyphDiffusionServiceWithSearch;
+
 /*
  * Glyph Tensor Search API
  *
@@ -11,7 +43,7 @@ import { embeddingService } from '$lib/services/embedding-service.js'
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const query = url.searchParams.get('q')
-    const limit = parseInt(url.searchParams.get('limit') || '10')
+    const limit: number = parseInt(url.searchParams.get('limit') || '10')
     const style = url.searchParams.get('style')
     if (!query) {
       return json({
@@ -31,34 +63,31 @@ export const GET: RequestHandler = async ({ url }) => {
       }, { status: 500 })
     }
     // Search for similar tensors
-    const results = await glyphDiffusionService.searchSimilarTensors(
-      queryEmbedding.embedding,
-      limit
-    )
+    const results = await typedGlyphDiffusionService.searchSimilarTensors(queryEmbedding.embedding, limit);
     // Filter by style if specified
     const filteredResults = style
-      ? results.filter(r => r.manifest?.metadata?.style === style)
-      : results
+      ? results.filter((r: GlyphSearchResult) => r.manifest?.metadata?.style === style)
+      : results;
     return json({
       success: true,
       data: {
         query: query,
-        results: filteredResults.map(result => ({,
-          id: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).id,
-          manifest: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).manifest,
-          created_at: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).created_at,
-          access_count: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).access_count,
-          style: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).manifest?.metadata?.style,
-          prompt: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).manifest?.metadata?.prompt
+        results: filteredResults.map((result: GlyphSearchResult) => ({
+          id: result.id,
+          manifest: result.manifest,
+          created_at: result.created_at,
+          access_count: result.access_count,
+          style: result.manifest?.metadata?.style,
+          prompt: result.manifest?.metadata?.prompt,
         })),
         count: filteredResults.length,
         search_stats: {
           total_candidates: results.length,
           filtered_by_style: !!style,
-          embedding_dimensions: queryEmbedding.embedding.length
-        }
-      }
-    })
+          embedding_dimensions: queryEmbedding.embedding.length,
+        },
+      },
+    });
   } catch (error) {
     console.error('Tensor search error:', error)
     return json({
@@ -78,30 +107,30 @@ export const POST: RequestHandler = async ({ request }) => {
       }, { status: 400 })
     }
     // Search using provided embedding
-    const results = await glyphDiffusionService.searchSimilarTensors(embedding, limit)
+    const results = await typedGlyphDiffusionService.searchSimilarTensors(embedding, limit);
     // Filter by style if specified
     const filteredResults = style
-      ? results.filter(r => r.manifest?.metadata?.style === style)
-      : results
+      ? results.filter((r: GlyphSearchResult) => r.manifest?.metadata?.style === style)
+      : results;
     return json({
       success: true,
       data: {
-        results: filteredResults.map(result => ({
-          id: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).id,
-          manifest: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).manifest,
-          created_at: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).created_at,
-          access_count: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).access_count,
-          style: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).manifest?.metadata?.style,
-          prompt: (result as { id?: any; manifest?: any; created_at?: any; access_count?: any }).manifest?.metadata?.prompt
+        results: filteredResults.map((result: GlyphSearchResult) => ({
+          id: result.id,
+          manifest: result.manifest,
+          created_at: result.created_at,
+          access_count: result.access_count,
+          style: result.manifest?.metadata?.style,
+          prompt: result.manifest?.metadata?.prompt,
         })),
         count: filteredResults.length,
         search_stats: {
           total_candidates: results.length,
           filtered_by_style: !!style,
-          embedding_dimensions: embedding.length
-        }
-      }
-    })
+          embedding_dimensions: embedding.length,
+        },
+      },
+    });
   } catch (error) {
     console.error('Tensor vector search error:', error)
     return json({

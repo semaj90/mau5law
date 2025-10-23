@@ -1,4 +1,4 @@
-// Re-export predictor types from the real TS module to avoid parsing errors in this .d.ts
+// Re-export predictor types from the real module to avoid duplicate/malformed declarations
 export * from '$lib/types/predictor';
   action: string;
   topK: number;

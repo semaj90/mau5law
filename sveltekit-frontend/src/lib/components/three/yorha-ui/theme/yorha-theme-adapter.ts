@@ -54,7 +54,10 @@ function readCssVar(name: string): string | undefined {
 // 4. Uno token -> try css var --uno-color-name (common pattern)
 // 5. NES palette fallback
 // 6. YORHA_COLORS fallback
-export function resolveColorToken(tokenOrHex: string | number | undefined, fallback: number = YORHA_COLORS.primary.beige): number {
+export function resolveColorToken(
+  tokenOrHex: string | number | undefined,
+  fallback: number = YORHA_COLORS.primary.beige
+): number {
   if (tokenOrHex === undefined) return fallback;
   if (typeof tokenOrHex === 'number') return tokenOrHex;
   if (resolvedCache.has(tokenOrHex)) return resolvedCache.get(tokenOrHex)!;
@@ -75,11 +78,7 @@ export function resolveColorToken(tokenOrHex: string | number | undefined, fallb
     }
   }
   // Uno token -> attempt CSS var naming: --color-NAME or --uno-NAME (project-specific)
-  const candidateVars = [
-    `--${tokenOrHex}`,
-    `--color-${tokenOrHex}`,
-    `--uno-${tokenOrHex}`
-  ];
+  const candidateVars = [`--${tokenOrHex}`, `--color-${tokenOrHex}`, `--uno-${tokenOrHex}`];
   for (const cv of candidateVars) {
     const cssVal = readCssVar(cv);
     if (cssVal && isHexColor(cssVal)) {
@@ -89,8 +88,8 @@ export function resolveColorToken(tokenOrHex: string | number | undefined, fallb
     }
   }
   // NES palette fallback
-  if ((NES_PALETTE as any)[tokenOrHex]) {
-    const v = hexToNumber((NES_PALETTE as any)[tokenOrHex]);
+  if (typeof tokenOrHex === 'string' && tokenOrHex in NES_PALETTE) {
+    const v = hexToNumber(NES_PALETTE[tokenOrHex as keyof typeof NES_PALETTE]);
     resolvedCache.set(tokenOrHex, v);
     return v;
   }
@@ -101,8 +100,8 @@ export interface VariantResolvedStyle {
   backgroundColor: number;
   borderColor: number;
   textColor: number;
-  hover?: { backgroundColor?: number; textColor?: number; opacity?: number }
-  glow?: { enabled: boolean; color?: number; intensity?: number }
+  hover?: { backgroundColor?: number; textColor?: number; opacity?: number };
+  glow?: { enabled: boolean; color?: number; intensity?: number };
   opacity?: number;
   borderWidth?: number;
 }
@@ -111,11 +110,13 @@ export function resolveVariantStyle(variant: string, options?: { enableGlow?: bo
   const backgroundColor = resolveColorToken(role.bg, YORHA_COLORS.primary.beige);
   const borderColor = resolveColorToken(role.border, YORHA_COLORS.primary.black);
   const textColor = resolveColorToken(role.text, YORHA_COLORS.primary.black);
-  const glow = options?.enableGlow ? {
-    enabled: true,
-    color: backgroundColor;
-    intensity: 0.35
-  } : undefined;
+  const glow = options?.enableGlow
+    ? {
+        enabled: true,
+        color: backgroundColor,
+        intensity: 0.35,
+      }
+    : undefined;
   // Derive simple hover (lighten by adding small value) – naive approach
   const hoverColor = Math.min(backgroundColor + 0x111111, 0xffffff);
   return {
@@ -123,8 +124,8 @@ export function resolveVariantStyle(variant: string, options?: { enableGlow?: bo
     borderColor,
     textColor,
     glow,
-    hover: { backgroundColor: hoverColor }
-  }
+    hover: { backgroundColor: hoverColor },
+  };
 }
 // Central exported theme adapter
 export const yoRHaThemeAdapter = {

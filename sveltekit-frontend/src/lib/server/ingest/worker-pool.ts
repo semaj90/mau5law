@@ -15,6 +15,13 @@ export type Job = {
 
 export type JobResult = { success: boolean; data?: unknown; error?: string; processingTimeMs?: number }; // Changed from 'any' to 'unknown'
 
+// Interface for embedding job payload
+export interface EmbeddingJobPayload {
+  texts?: string[];
+  text?: string;
+  model?: string;
+}
+
 // Interface for Worker Pool Options
 export interface WorkerPoolOptions {
   minWorkers?: number;
@@ -110,12 +117,14 @@ export class ServerIngestWorkerPool extends EventEmitter {
     if (job.type === 'embedding') {
       const start = Date.now();
       try {
-        const texts: string[] = Array.isArray(job.payload?.texts)
-          ? job.payload.texts
-          : job.payload?.text
-            ? [job.payload.text]
+        // Type assert job.payload to EmbeddingJobPayload
+        const embeddingPayload = job.payload as EmbeddingJobPayload;
+        const texts: string[] = Array.isArray(embeddingPayload.texts)
+          ? embeddingPayload.texts
+          : embeddingPayload.text
+            ? [embeddingPayload.text]
             : [];
-        const model = job.payload?.model;
+        const model = embeddingPayload.model;
         const res = await generateEmbeddings({ texts, model });
         const processingTimeMs = Date.now() - start;
         this.totalProcessed++; // Increment for embedding jobs too

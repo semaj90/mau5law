@@ -7,6 +7,7 @@ import { db } from '$lib/server/db';
 import { evidence, cases, reports, personsOfInterest, userEmbeddings } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { createId } from '@paralleldrive/cuid2';
+import { CONFIG } from '$lib/config/env.server';
 
 // Job queue schemas
 export const JobSchema = z.object({
@@ -403,7 +404,11 @@ export class LegalAIJobQueue {
   private async generateVectorEmbedding(text: string): Promise<number[]> {
     try {
       // Example: Call Ollama embedding API (adjust endpoint as needed)
-      const response = await fetch('http://localhost:11434/api/embeddings', {
+      const ollamaEndpoint =
+        typeof CONFIG !== 'undefined' && CONFIG?.OLLAMA_URL
+          ? `${CONFIG.OLLAMA_URL.replace(/\/$/, '')}/api/embeddings`
+          : 'http://localhost:11434/api/embeddings';
+      const response = await fetch(ollamaEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

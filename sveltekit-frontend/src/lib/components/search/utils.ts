@@ -1,53 +1,89 @@
 // Utility functions for legal search components
 import type { SearchResult, SearchFilter } from './types.js';
+
+// Define a common type for the raw search result object to simplify type assertions
+type RawSearchResult = {
+  id?: string | number;
+  title?: string;
+  name?: string;
+  firstName?: string;
+  lastName?: string;
+  type?: string;
+  content?: string;
+  description?: string;
+  summary?: string;
+  notes?: string;
+  score?: number;
+  similarity?: number;
+  createdAt?: string | Date;
+  date?: string | Date;
+  jurisdiction?: string;
+  status?: string;
+  confidentialityLevel?: string;
+  caseId?: string;
+  tags?: string[];
+  highlights?: string[];
+  caseNumber?: string;
+  case_id?: string;
+  evidenceType?: string;
+  evidence_type?: string;
+  documentType?: string;
+  document_type?: string;
+  citation?: string;
+  precedent?: string;
+  statute?: string;
+  law?: string;
+};
+
 /**
  * Create search filters from user input
  */
-export function createSearchFilters(filters: { [key: string]: any }): SearchFilter[] {
+export function createSearchFilters(filters: {
+  [key: string]: string | number | boolean | string[] | number[] | undefined;
+}): SearchFilter[] {
   return Object.entries(filters)
-    .filter(([_, value]) => value !== null && value !== undefined && value !== '');
+    .filter(([_, value]) => value !== null && value !== undefined && value !== '')
     .map(([field, value]) => ({
       field,
       operator: Array.isArray(value) ? 'in' : 'contains',
-      value
-    });
+      value,
+    }));
 }
 /**
  * Format search results for display
  */
-export function formatSearchResults(results: any[]): SearchResult[] {
-  return results.map(result => ({
-    id: (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).id,
-    title: (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).title || (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).name || `${(result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).firstName || ''} ${(result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).lastName || ''}`.trim(),
-    type: (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).type || inferType(result),
-    content: (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).content || (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).description || (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).summary || (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).notes || '',
-    score: (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).score || (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).similarity || calculateDefaultScore(result),
-    metadata: {
-      date: (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).createdAt || (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).date,
-      jurisdiction: (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).jurisdiction,
-      status: (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).status,
-      confidentiality: (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).confidentialityLevel,
-      caseId: (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).caseId,
-      tags: Array.isArray((result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).tags) ? (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).tags: []
-    },
-    highlights: (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).highlights,
-    createdAt: (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).createdAt
+export function formatSearchResults(results: RawSearchResult[]): SearchResult[] {
+  return results.map(result => {
+    const r = result as RawSearchResult; // Cast once to the new type alias
+    return {
+      id: r.id,
+      title: r.title || r.name || `${r.firstName || ''} ${r.lastName || ''}`.trim(),
+      type: r.type || inferType(r),
+      content: r.content || r.description || r.summary || r.notes || '',
+      score: r.score || r.similarity || calculateDefaultScore(r),
+      metadata: {
+        date: r.createdAt || r.date,
+        jurisdiction: r.jurisdiction,
+        status: r.status,
+        confidentiality: r.confidentialityLevel,
+        caseId: r.caseId,
+        tags: Array.isArray(r.tags) ? r.tags : [],
+      },
+      highlights: r.highlights,
+      createdAt: r.createdAt,
+    };
   });
 }
 /**
  * Calculate relevance score for search results
  */
-export function calculateRelevanceScore(query: string, text: string, options?: {
-  exactMatchBonus?: number;
-  wordMatchWeight?: number;
-  positionWeight?: boolean;
-}): number {
+export function calculateRelevanceScore(
+  query: string,
+  text: string,
+  options?: { exactMatchBonus?: number; wordMatchWeight?: number; positionWeight?: boolean }
+): number {
   if (!query || !text) return 0;
-  const {
-    exactMatchBonus = 0.3,
-    wordMatchWeight = 0.8,
-    positionWeight = true
-  } = options || {}
+  const { exactMatchBonus = 0.3, wordMatchWeight = 0.8, positionWeight = true } = options || {};
   const queryLower = query.toLowerCase().trim();
   const textLower = text.toLowerCase();
   // Exact match gets highest score
@@ -68,7 +104,7 @@ export function calculateRelevanceScore(query: string, text: string, options?: {
         let score = wordMatchWeight;
         // Position weighting - words earlier in text are more relevant
         if (positionWeight) {
-          const positionBonus = Math.max(0, 1 - (i / textWords.length)) * 0.2;
+          const positionBonus = Math.max(0, 1 - i / textWords.length) * 0.2;
           score += positionBonus;
         }
         // Exact word match bonus
@@ -85,34 +121,34 @@ export function calculateRelevanceScore(query: string, text: string, options?: {
   // Apply match ratio penalty - partial matches get reduced score
   const matchRatio = matches / queryWords.length;
   const finalScore = normalizedScore * Math.pow(matchRatio, 0.5);
-  return Math.min(0.95, Math.max(0, finalScore);
+  return Math.min(0.95, Math.max(0, finalScore));
 }
 /**
  * Infer entity type from result data
  */
-function inferType(result: any): SearchResult['type'] {
-  if ((result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).caseNumber || (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).case_id) return 'case';
-  if ((result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).evidenceType || (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).evidence_type) return 'evidence';
-  if ((result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).firstName && (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).lastName) return 'criminal';
-  if ((result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).documentType || (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).document_type) return 'document';
-  if ((result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).citation || (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).precedent) return 'precedent';
-  if ((result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).statute || (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).law) return 'statute';
+function inferType(result: RawSearchResult): SearchResult['type'] {
+  if (result.caseNumber || result.case_id) return 'case';
+  if (result.evidenceType || result.evidence_type) return 'evidence';
+  if (result.firstName && result.lastName) return 'criminal';
+  if (result.documentType || result.document_type) return 'document';
+  if (result.citation || result.precedent) return 'precedent';
+  if (result.statute || result.law) return 'statute';
   return 'document';
 }
 /**
  * Calculate default score when none provided
  */
-function calculateDefaultScore(result: any): number {
+function calculateDefaultScore(result: RawSearchResult): number {
   let score = 0.5; // Base score
   // Boost score for more complete records
-  if ((result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).title) score += 0.1;
-  if ((result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).description || (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).content) score += 0.1;
-  if ((result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).tags && (result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).tags.length > 0) score += 0.1;
-  if ((result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).createdAt) score += 0.05;
+  if (result.title) score += 0.1;
+  if (result.description || result.content) score += 0.1;
+  if (result.tags && result.tags.length > 0) score += 0.1;
+  if (result.createdAt) score += 0.05;
   // Boost for legal-specific fields
-  if ((result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).caseNumber) score += 0.1;
-  if ((result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).evidenceType) score += 0.1;
-  if ((result as { id?: any; title?: any; name?: any; firstName?: any; lastName?: any; type?: any; content?: any; description?: any; summary?: any; notes?: any; score?: any; similarity?: any; createdAt?: any; date?: any; jurisdiction?: any; status?: any; confidentialityLevel?: any; caseId?: any; tags?: any; highlights?: any; caseNumber?: any; case_id?: any; evidenceType?: any; evidence_type?: any; documentType?: any; document_type?: any; citation?: any; precedent?: any; statute?: any; law?: any }).jurisdiction) score += 0.05;
+  if (result.caseNumber) score += 0.1;
+  if (result.evidenceType) score += 0.1;
+  if (result.jurisdiction) score += 0.05;
   return Math.min(0.9, score);
 }
 /**
@@ -157,15 +193,12 @@ export function highlightSearchTerms(text: string, query: string, options?: {
 /**
  * Debounce function for search input
  */
-export function debounce<T extends (...args: any[]) => any>(,
-  func: T;
-  delay: number;
-): (...args: Parameters<T>) => void {
+export function debounce<T extends (...args: any[]) => any>(func: T, delay: number): (...args: Parameters<T>) => void {
   let timeoutId: NodeJS.Timeout;
   return (...args: Parameters<T>) => {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => func(...args), delay);
-  }
+  };
 }
 /**
  * Get search category display name

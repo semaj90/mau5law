@@ -2,7 +2,7 @@
  * Context7 MCP Integration Service
  * Provides legal AI best practices and MCP-enhanced recommendations
  */
-import { writable, derived, get } from "svelte/store";
+import { writable, get } from "svelte/store";
 // Types and Interfaces
 export interface Context7BestPractice {
   id: string;
@@ -17,7 +17,7 @@ export interface Context7BestPractice {
   tags: string[];
   legalSpecific: boolean;
 }
-}
+
 export interface Context7Integration {
   component: string;
   context: string;
@@ -29,14 +29,22 @@ export interface Context7Integration {
   lighthouse_score: number;
   }
 }
+
+export interface AIRecommendation {
+  type?: string;
+  category?: 'speed' | 'safety' | 'a11y' | string;
+  confidence?: number;
+  [key: string]: unknown;
+}
+
 export interface MCPEnhancedRecommendation {
-  originalRecommendation: any;
+  originalRecommendation: AIRecommendation;
   context7Enhancement: Context7BestPractice;
   combinedConfidence: number;
   implementationPlan: string[];
   riskMitigation: string[];
 }
-}
+
 export interface RecommendationContext {
   component?: string;
   userBehavior?: unknown;
@@ -45,14 +53,9 @@ export interface RecommendationContext {
 }
 // Mock services to resolve import issues
 const aiRecommendationEngine = {
-  generateRecommendations: async (context: RecommendationContext) => []
-}
-const advancedCache = {
-  get: async <T>(_key: string): Promise<T | null> => null,
-  set: async (_key: string, value: any, options?: unknown) => {},
-  invalidateByTags: async (tags: string[]) => {}
-}
-function recordStageLatency(stage: any, delta: number): void {
+  generateRecommendations: async (_context: RecommendationContext): Promise<AIRecommendation[]> => []
+};
+function recordStageLatency(stage: string, delta: number): void {
   console.debug(`Stage ${stage} took ${delta}ms`);
 }
 class Context7MCPIntegration {
@@ -72,7 +75,7 @@ await advancedCache.set('doc_' + documentId, document, {
   ttl: 3600,
   tags: ['legal', 'confidential', caseId],
   priority: 'high'
-)});`,
+});`,
       priority: 'high',
       estimatedEffort: '4-6 hours',
       dependencies: ['advanced-cache-manager', 'legal-security-utils'],
@@ -88,9 +91,9 @@ await advancedCache.set('doc_' + documentId, document, {
       codeExample: `// Generate legal recommendations
 const recommendations = await aiRecommendationEngine.generateRecommendations({
   component: 'legal-search',
-  userBehavior: userActivity
+  userBehavior: userActivity,
   legalContext: caseData
-)});`,
+});`,
       priority: 'high',
       estimatedEffort: '6-8 hours',
       dependencies: ['ai-recommendation-engine', 'legal-knowledge-base'],
@@ -108,7 +111,7 @@ const observer = new IntersectionObserver(async (entries) => {
   for (const entry of entries) {
     if (entry.isIntersecting) {
       const data = await fetch('/api/legal/documents/' + documentId);
-      await advancedCache.set(cacheKey, data, { priority: 'high' )});
+      await advancedCache.set(cacheKey, data, { priority: 'high' });
     }
   }
 });`,
@@ -128,11 +131,11 @@ const observer = new IntersectionObserver(async (entries) => {
 const encryptedData = await encryptLegalData(document, {
   privileged: document.isPrivileged,
   classification: document.securityLevel
-)});
+});
 await advancedCache.set(cacheKey, encryptedData, {
   priority: 'critical',
   tags: ['encrypted', 'privileged', document.caseId]
-)});`,
+});`,
       priority: 'critical',
       estimatedEffort: '8-12 hours',
       dependencies: ['encryption-utils', 'audit-logger', 'access-control'],
@@ -175,7 +178,7 @@ await advancedCache.set(cacheKey, encryptedData, {
       // Set connection status
       this.mcpConnectionStatus.set('connected');
       console.log('✅ Context7 MCP Integration initialized');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ Context7 MCP Integration failed:', error);
       this.mcpConnectionStatus.set('error');
     }
@@ -186,32 +189,33 @@ await advancedCache.set(cacheKey, encryptedData, {
   async getBestPracticesForComponent(component: string): Promise<Context7BestPractice[]> {
     const allPractices = get(this.bestPracticesStore);
     // Filter practices relevant to the component
-    return allPractices.filter(item => item.includes)(tag) ||;
-        tag.includes(component.toLowerCase()
-      )
+    return allPractices.filter(practice =>
+      practice.tags.some(tag => tag.toLowerCase().includes(component.toLowerCase()))
     );
   }
   /**
    * Generate enhanced recommendations using MCP and Context7
    */
-  async generateEnhancedRecommendations()
-    context: RecommendationContext;
-  ): Promise<MCPEnhancedRecommendation,[,]> {
+  async generateEnhancedRecommendations(
+    context: RecommendationContext
+  ): Promise<MCPEnhancedRecommendation[]> {
     try {
       const startTime = Date.now();
       // Get AI recommendations
       const aiRecommendations = await aiRecommendationEngine.generateRecommendations(context);
       // Get relevant Context7 best practices
-      const component = context.component || 'general,';
+      const component = context.component || 'general';
       const bestPractices = await this.getBestPracticesForComponent(component);
       // Combine AI recommendations with Context7 best practices
-      const enhancedRecommendation,s: MCPEnhancedRecommendati,on,[], = [];
-      for (const aiRec, o,f aiRecommendations) {
+      const enhancedRecommendations: MCPEnhancedRecommendation[] = [];
+      for (const aiRec of aiRecommendations) {
         // Find most relevant best practice
-        const relevantPractice = bestPractices.find(practice =>;
-          practice.category === this.categorizeRecommendation(aiRec) ||
-          practice.tags.some(tag => this.matchesRecommendation(aiRec, tag)
-        ) || bestPractices[0]; // fallback to first practice
+        const relevantPractice =
+          bestPractices.find(
+            practice =>
+              practice.category === this.categorizeRecommendation(aiRec) ||
+              practice.tags.some(tag => this.matchesRecommendation(aiRec, tag))
+          ) || bestPractices[0]; // fallback to first practice
         if (relevantPractice) {
           enhancedRecommendations.push({
             originalRecommendation: aiRec,
@@ -222,9 +226,9 @@ await advancedCache.set(cacheKey, encryptedData, {
           });
         }
       }
-      recordStageLatency('enhanced-recommendations', Date,.now() - startTim,e);
-      return enhancedRecommendation,s;
-    } catch (error: any) {
+      recordStageLatency('enhanced-recommendations', Date.now() - startTime);
+      return enhancedRecommendations;
+    } catch (error: unknown) {
       console.error('Enhanced recommendations failed:', error);
       return [];
     }
@@ -232,12 +236,12 @@ await advancedCache.set(cacheKey, encryptedData, {
   /**
    * Create Context7 integration for a component
    */
-  async createIntegration()
-    component: string;
-    context: string;
+  async createIntegration(
+    component: string,
+    context: string
   ): Promise<Context7Integration> {
     const bestPractices = await this.getBestPracticesForComponent(component);
-    const integratio,n: Context7Integration = {
+    const integration: Context7Integration = {
       component,
       context,
       bestPractices,
@@ -247,31 +251,31 @@ await advancedCache.set(cacheKey, encryptedData, {
         bundle_size: Math.random() * 50 + 20,
         lighthouse_score: Math.random() * 20 + 80
       }
-    }
+    };
     // Store integration
     this.integrationsStore.update(integrations => [...integrations, integration]);
-    return integratio,n;
+    return integration;
   }
   /**
    * Get all stored integrations
    */
-  getIntegrations(), {
+  getIntegrations() {
     return this.integrationsStore;
   }
   /**
    * Get best practices store
    */
-  getBestPractices(), {
+  getBestPractices() {
     return this.bestPracticesStore;
   }
   /**
    * Get MCP connection status
    */
-  getConnectionStatus(), {
+  getConnectionStatus() {
     return this.mcpConnectionStatus;
   }
   // Helper methods
-  private categorizeRecommendation(recommendation,: any): Context7BestPractice['category',] {
+  private categorizeRecommendation(recommendation: AIRecommendation): Context7BestPractice['category'] {
     if (recommendation.type?.includes('performance') || recommendation.category === 'speed') {
       return 'performance';
     }
@@ -283,18 +287,23 @@ await advancedCache.set(cacheKey, encryptedData, {
     }
     return 'maintainability';
   }
-  private matchesRecommendation(recommendation,: any, ta,g: strin,g): boolean {
+  private matchesRecommendation(recommendation: AIRecommendation, tag: string): boolean {
     const recText = JSON.stringify(recommendation).toLowerCase();
-    return recText.includes(tag.toLowerCase();
+    return recText.includes(tag.toLowerCase());
   }
-  private calculateCombinedConfidence(aiRec,: any, practic,e: Context7BestPractic,e): number {
+  private calculateCombinedConfidence(aiRec: AIRecommendation, practice: Context7BestPractice): number {
     const aiConfidence = aiRec.confidence || 0.7;
-    const practiceRelevance = practice.priority === 'critical' ? 0.9 :;
-                             practice.priority === 'high' ? 0.8 :
-                             practice.priority === 'medium' ? 0.6 : 0.4;
+    const practiceRelevance =
+      practice.priority === 'critical'
+        ? 0.9
+        : practice.priority === 'high'
+        ? 0.8
+        : practice.priority === 'medium'
+        ? 0.6
+        : 0.4;
     return (aiConfidence + practiceRelevance) / 2;
   }
-  private generateImplementationPlan(aiRec,: any, practic,e: Context7BestPractic,e): string,[] {
+  private generateImplementationPlan(_aiRec: AIRecommendation, practice: Context7BestPractice): string[] {
     return [
       `Review ${practice.title} best practice`,
       `Analyze current implementation`,
@@ -304,7 +313,7 @@ await advancedCache.set(cacheKey, encryptedData, {
       `Document changes`
     ];
   }
-  private generateRiskMitigation(practice,: Context7BestPractice): string[,] {
+  private generateRiskMitigation(practice: Context7BestPractice): string[] {
     const baseMitigation = [
       'Create backup before implementation',
       'Test in development environment',
@@ -312,7 +321,7 @@ await advancedCache.set(cacheKey, encryptedData, {
       'Have rollback plan ready'
     ];
     if (practice.legalSpecific) {
-      baseMitigation.push()
+      baseMitigation.push(
         'Verify legal compliance requirements',
         'Check attorney-client privilege protection',
         'Validate data security measures'
@@ -320,11 +329,11 @@ await advancedCache.set(cacheKey, encryptedData, {
     }
     return baseMitigation;
   }
-  private generateIntegrationGuide(component,: string, practice,s: Context7BestPractice[,]): string {
-    return `;
+  private generateIntegrationGuide(component: string, practices: Context7BestPractice[]): string {
+    return `
 # Context7 Integration Guide for ${component}
 ## Best Practices Applied:
-${practices.map(p => `- }${p.title}: ${p.description}`).join('\n')}
+${practices.map(p => `- ${p.title}: ${p.description}`).join('\n')}
 ## Implementation Steps:
 1. Review component requirements
 2. Apply relevant best practices
@@ -332,21 +341,24 @@ ${practices.map(p => `- }${p.title}: ${p.description}`).join('\n')}
 4. Monitor performance
 5. Document integration
 ## Legal Considerations:
-${practices.filter(item => item.map)(p => `- }${p.title}`).join('\n')}
+${practices.filter(p => p.legalSpecific).map(p => `- ${p.title}`).join('\n')}
     `.trim();
   }
   /**
    * Search best practices by criteria
    */
-  searchBestPractices()
-    query: string
+  searchBestPractices(
+    query: string,
     category?: Context7BestPractice['category'],
-    legalSpecific?: boolean;
-  ): Context7BestPractice[], {
+    legalSpecific?: boolean
+  ): Context7BestPractice[] {
     const allPractices = get(this.bestPracticesStore);
-    return allPractices.filter(item => item.includes)(query.toLowerCase()) ||;
-        practice.description.toLowerCase().includes(query.toLowerCase()) ||
-        practice.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase();
+    return allPractices.filter(practice => {
+      const q = query.toLowerCase();
+      const matchesQuery =
+        practice.title.toLowerCase().includes(q) ||
+        practice.description.toLowerCase().includes(q) ||
+        practice.tags.some(tag => tag.toLowerCase().includes(q));
       const matchesCategory = !category || practice.category === category;
       const matchesLegalFilter = legalSpecific === undefined || practice.legalSpecific === legalSpecific;
       return matchesQuery && matchesCategory && matchesLegalFilter;
@@ -355,14 +367,15 @@ ${practices.filter(item => item.map)(p => `- }${p.title}`).join('\n')}
   /**
    * Get system status
    */
-  getSystemStatus(), {
+  getSystemStatus() {
     return {
       initialized: true,
       mcpConnected: get(this.mcpConnectionStatus) === 'connected',
       bestPracticesCount: get(this.bestPracticesStore).length,
       integrationsCount: get(this.integrationsStore).length,
-      legalSpecificPractices: get(this.bestPracticesStore).filter(item => item.length)
-    }
+      legalSpecificPractices: get(this.bestPracticesStore).filter(item => item.legalSpecific)
+        .length
+    };
   }
 }
 // Export singleton instance
@@ -372,10 +385,10 @@ export const bestPracticesStore = context7MCPIntegration.getBestPractices();
 export const integrationsStore = context7MCPIntegration.getIntegrations();
 export const mcpConnectionStatus = context7MCPIntegration.getConnectionStatus();
 // Export utility functions
-export async function getEnhancedRecommendations(context: RecommendationContext): Promise<any> {
+export async function getEnhancedRecommendations(context: RecommendationContext): Promise<MCPEnhancedRecommendation[]> {
   return context7MCPIntegration.generateEnhancedRecommendations(context);
 }
-export async function createComponentIntegration(component: string, context: string): Promise<any> {
+export async function createComponentIntegration(component: string, context: string): Promise<Context7Integration> {
   return context7MCPIntegration.createIntegration(component, context);
 }
 export function searchLegalBestPractices(query: string) {

@@ -6,7 +6,6 @@
 import { base64FP32Quantizer } from '../text/base64-fp32-quantizer.js';
 import { chrRomPatternCache } from '../cache/chr-rom-pattern-cache.js';
 import { enhancedCachingRevolutionaryBridge } from '../services/enhanced-caching-revolutionary-bridge.js';
-}
 export interface GlyphTexture {
   char: string;
   charCode: number;
@@ -50,14 +49,14 @@ export interface SynthesizedGlyph {
 }
 export class GlyphCacheSystem {
   private fonts = new Map<string, GlyphFont>();
-  private renderCanvas: HTMLCanvasElement;
-  private renderContext: CanvasRenderingContext2D;
+  private renderCanvas: HTMLCanvasElement | null = null;
+  private renderContext: CanvasRenderingContext2D | null = null;
   private readonly GLYPH_SIZE = 8; // 8x8 NES standard
   private readonly MAX_CACHE_SIZE = 50 * 1024 * 1024; // 50MB max cache
   private readonly CACHE_CLEANUP_INTERVAL = 300000; // 5 minutes
   // LLM Integration for "did you mean" suggestions
   private llmCache = new Map<string, string[]>();
-  private ollamaUrl: string = 'http://localhost:11437'
+  private ollamaUrl: string = 'http://localhost:11437';
   // Performance metrics
   private metrics: GlyphCacheMetrics = {
     totalGlyphs: 0,
@@ -69,11 +68,11 @@ export class GlyphCacheSystem {
   }
   private cacheHits = 0;
   private cacheRequests = 0;
-  private cleanupInterval: number;
+  private cleanupInterval?: number;
   constructor() {
     this.initializeRenderingSystem();
     this.startCacheCleanup();
-    this.loadPersistedCache();
+    void this.loadPersistedCache();
   }
   private initializeRenderingSystem(): void {
     if (typeof window === 'undefined') return;
@@ -93,17 +92,19 @@ export class GlyphCacheSystem {
     console.log('🎨 Glyph rendering system initialized');
   }
   private startCacheCleanup(): void {
-    this.cleanupInterval = setInterval(() => {
+    if (typeof window === 'undefined') return;
+    this.cleanupInterval = window.setInterval(() => {
       this.optimizeCache();
     }, this.CACHE_CLEANUP_INTERVAL);
   }
   private async loadPersistedCache(): Promise<void> {
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') return;
     try {
       // Try to load cached glyphs from localStorage or IndexedDB
       const persistedData = localStorage.getItem('glyph_cache_system');
       if (persistedData) {
         const cacheData = JSON.parse(persistedData);
-        console.log(`💾 Loaded ${Object.keys(cacheData).length} font caches from storage`);
+        console.log(`💾 Loaded ${Object.keys(cacheData || {}).length} font caches from storage`);
       }
     } catch (error) {
       console.warn('⚠️ Failed to load persisted glyph cache:', error);
@@ -115,9 +116,9 @@ export class GlyphCacheSystem {
   async getGlyph(
     char: string,
     fontStyle: 'classic' | 'modern' | 'legal' | 'retro' = 'legal',
-    fontSize: number = 8;
+    fontSize: number = 8
   ): Promise<GlyphTexture> {
-    const startTime = performance.now();
+    const startTime = (typeof performance !== 'undefined' ? performance.now() : Date.now());
     this.cacheRequests++;
     const fontKey = `${fontStyle}_${fontSize}`;
     // Get or create font cache
@@ -130,7 +131,7 @@ export class GlyphCacheSystem {
       const glyph = font.glyphs.get(char)!;
       glyph.accessCount++;
       this.cacheHits++;
-      const renderTime = performance.now() - startTime;
+      const renderTime = (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime;
       this.updateMetrics(renderTime, true);
       console.log(`🎯 Glyph cache hit: '${char}' (${renderTime.toFixed(2)}ms)`);
       return glyph;
@@ -141,20 +142,20 @@ export class GlyphCacheSystem {
     font.totalGlyphs++;
     // Store in CHR-ROM system
     await this.storeToCHRROM(glyph);
-    const renderTime = performance.now() - startTime;
+    const renderTime = (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime;
     this.updateMetrics(renderTime, false);
     console.log(`✨ Generated new glyph: '${char}' (${renderTime.toFixed(2)}ms)`);
     return glyph;
   }
   private async createFontCache(
     fontKey: string,
-    fontStyle: string,
+    fontStyle: GlyphFont['fontStyle'],
     fontSize: number
   ): Promise<void> {
     const font: GlyphFont = {
       fontName: fontKey,
       fontSize,
-      fontStyle: fontStyle as any,
+      fontStyle,
       glyphs: new Map(),
       totalGlyphs: 0,
       cacheSize: 0,
@@ -165,7 +166,7 @@ export class GlyphCacheSystem {
   }
   private async generateGlyph(
     char: string,
-    fontStyle: string,
+    fontStyle: GlyphFont['fontStyle'],
     fontSize: number
   ): Promise<GlyphTexture> {
     const charCode = char.charCodeAt(0);
@@ -195,8 +196,7 @@ export class GlyphCacheSystem {
     }
     return glyph;
   }
-  private generateNESPattern(char: string, fontStyle: string): Uint8Array {
-    const pattern = new Uint8Array(64); // 8x8 pattern
+  private generateNESPattern(char: string, fontStyle: GlyphFont['fontStyle']): Uint8Array {
     const charCode = char.charCodeAt(0);
     // Style-specific pattern generation
     switch (fontStyle) {
@@ -215,7 +215,7 @@ export class GlyphCacheSystem {
   private generateClassicNESPattern(char: string, charCode: number): Uint8Array {
     const pattern = new Uint8Array(64);
     // Classic NES font patterns
-    const patterns = {
+    const patterns: Record<string, number[]> = {
       'A': [0x18, 0x3C, 0x66, 0x7E, 0x66, 0x66, 0x66, 0x00],
       'B': [0x7C, 0x66, 0x66, 0x7C, 0x66, 0x66, 0x7C, 0x00],
       'C': [0x3C, 0x66, 0x60, 0x60, 0x60, 0x66, 0x3C, 0x00],
@@ -246,7 +246,7 @@ export class GlyphCacheSystem {
         if (char === 'O' || char === 'o') {
           // Circle pattern
           pattern[index] = distance < 3 && distance > 1 ? 255 : 0;
-        } else if (char.match(/[A-Z]/)) {
+        } else if (/[A-Z]/.test(char)) {
           // Bold uppercase
           pattern[index] = ((x + y + charCode) % 3 === 0) ? 255 : 128;
         } else {
@@ -271,7 +271,7 @@ export class GlyphCacheSystem {
           // Paragraph symbol
           const isParagraphPattern = (x <= 3 && y >= 2 && y <= 5) || (x === 4 && y === 3);
           pattern[index] = isParagraphPattern ? 255 : 0;
-        } else if (char.match(/[A-Z]/)) {
+        } else if (/[A-Z]/.test(char)) {
           // Professional uppercase
           pattern[index] = ((x === 0 || x === 7 || y === 0 || y === 7) && (x + y) % 2 === 0) ? 255 : 0;
         } else {
@@ -307,7 +307,7 @@ export class GlyphCacheSystem {
   private renderGlyphTexture(
     char: string,
     nesPattern: Uint8Array,
-    fontStyle: string;
+    fontStyle: GlyphFont['fontStyle']
   ): ImageData | null {
     if (!this.renderContext) return null;
     // Clear canvas
@@ -316,7 +316,7 @@ export class GlyphCacheSystem {
     const imageData = this.renderContext.createImageData(this.GLYPH_SIZE, this.GLYPH_SIZE);
     const data = imageData.data;
     // Style-specific colors
-    const styleColors = {
+    const styleColors: Record<string, [number, number, number, number]> = {
       classic: [255, 255, 255, 255], // White
       modern: [0, 255, 0, 255],      // Green
       legal: [255, 215, 0, 255],     // Gold;
@@ -342,7 +342,7 @@ export class GlyphCacheSystem {
     try {
       // Convert pattern to base64 for quantization
       const patternString = Array.from(nesPattern).join(',');
-      const base64Pattern = btoa(patternString);
+      const base64Pattern = (typeof btoa !== 'undefined') ? btoa(patternString) : Buffer.from(patternString).toString('base64');
       // Quantize using our FP32 system
       const quantizationResult = await base64FP32Quantizer.quantizeGemmaOutput(base64Pattern, {
         quantizationBits: 8,
@@ -386,26 +386,25 @@ export class GlyphCacheSystem {
       console.warn(`⚠️ CHR-ROM storage failed for '${glyph.char}':`, error);
     }
   }
-  private updateMetrics(renderTime: number, cacheHit: boolean): void {
+  private updateMetrics(renderTime: number, _cacheHit: boolean): void {
     this.metrics.renderingTime = (this.metrics.renderingTime + renderTime) / 2;
-    this.metrics.cacheHitRate = this.cacheHits / this.cacheRequests;
+    this.metrics.cacheHitRate = this.cacheHits / Math.max(1, this.cacheRequests);
     // Calculate memory usage
     let totalMemory = 0;
-    this.fonts.forEach(font => {
+    Array.from(this.fonts.values()).forEach(font => {
       font.glyphs.forEach(glyph => {
         totalMemory += 64 + (glyph.quantizedData.byteLength || 0) +
                       (glyph.textureData ? glyph.textureData.data.byteLength: 0);
       });
     });
     this.metrics.memoryUsage = totalMemory;
-    this.metrics.totalGlyphs = Array.from(this.fonts.values()
-      .reduce((sum, font) => sum + font.totalGlyphs, 0);
+    this.metrics.totalGlyphs = Array.from(this.fonts.values()).reduce((sum, font) => sum + font.totalGlyphs, 0);
   }
   private optimizeCache(): void {
     console.log('🧹 Optimizing glyph cache...');
     const cutoffTime = Date.now() - (30 * 60 * 1000); // 30 minutes
     let removedCount = 0;
-    this.fonts.forEach((font, fontKey) => {
+    this.fonts.forEach((font, _fontKey) => {
       const toRemove: string[] = [];
       font.glyphs.forEach((glyph, char) => {
         // Remove old, rarely accessed glyphs
@@ -420,15 +419,33 @@ export class GlyphCacheSystem {
       });
       font.lastOptimized = Date.now();
     });
+    // If memory still exceeds threshold, perform aggressive trim (least-accessed)
+    if (this.metrics.memoryUsage > this.MAX_CACHE_SIZE) {
+      console.log('⚠️ Memory exceeds MAX_CACHE_SIZE, performing aggressive trim');
+      const allGlyphs: { fontKey: string; char: string; access: number }[] = [];
+      this.fonts.forEach((font, fontKey) => {
+        font.glyphs.forEach((g, c) => allGlyphs.push({ fontKey, char: c, access: g.accessCount }));
+      });
+      allGlyphs.sort((a, b) => a.access - b.access);
+      for (const item of allGlyphs.slice(0, Math.min(100, allGlyphs.length))) {
+        const font = this.fonts.get(item.fontKey);
+        if (font && font.glyphs.has(item.char)) {
+          font.glyphs.delete(item.char);
+          font.totalGlyphs--;
+          removedCount++;
+        }
+      }
+    }
     console.log(`🗑️ Removed ${removedCount} unused glyphs from cache`);
     // Persist optimized cache
-    this.persistCache();
+    void this.persistCache();
   }
   private persistCache(): void {
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') return;
     try {
-      const cacheData = {}
+      const cacheData: Record<string, any> = {}
       this.fonts.forEach((font, key) => {
-        const glyphData = {}
+        const glyphData: Record<string, any> = {}
         font.glyphs.forEach((glyph, char) => {
           glyphData[char] = {
             charCode: glyph.charCode,
@@ -437,9 +454,9 @@ export class GlyphCacheSystem {
             accessCount: glyph.accessCount
           }
         });
-        cacheData[key] = { ...font, glyphs: glyphData }
+        cacheData[key] = { fontName: font.fontName, fontSize: font.fontSize, glyphs: glyphData, totalGlyphs: font.totalGlyphs, lastOptimized: font.lastOptimized };
       });
-      localStorage.setItem('glyph_cache_system', JSON.stringify(cacheData);
+      localStorage.setItem('glyph_cache_system', JSON.stringify(cacheData));
       console.log('💾 Glyph cache persisted to storage');
     } catch (error) {
       console.warn('⚠️ Failed to persist glyph cache:', error);
@@ -454,9 +471,9 @@ export class GlyphCacheSystem {
       '.,:!?-()[]{}"\' ' +
       '§¶©®™'; // Legal symbols
     console.log(`📚 Preloading ${commonChars.length} common glyphs...`);
-    const promises = [];
+    const promises: Promise<GlyphTexture>[] = [];
     for (const char of commonChars) {
-      promises.push(this.getGlyph(char, fontStyle);
+      promises.push(this.getGlyph(char, fontStyle));
     }
     await Promise.all(promises);
     console.log(`✅ Preloaded ${commonChars.length} glyphs for ${fontStyle} style`);
@@ -474,7 +491,9 @@ export class GlyphCacheSystem {
     this.fonts.clear();
     this.cacheHits = 0;
     this.cacheRequests = 0;
-    localStorage.removeItem('glyph_cache_system');
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      localStorage.removeItem('glyph_cache_system');
+    }
     console.log('🧹 Glyph cache cleared');
   }
   /**
@@ -489,6 +508,7 @@ export class GlyphCacheSystem {
     const glyph = font.glyphs.get(char)!;
     if (!glyph.textureData) return null;
     // Create temporary canvas
+    if (typeof document === 'undefined') return null;
     const canvas = document.createElement('canvas');
     canvas.width = this.GLYPH_SIZE;
     canvas.height = this.GLYPH_SIZE;
@@ -505,27 +525,29 @@ export class GlyphCacheSystem {
       return this.llmCache.get(cacheKey)!;
     }
     try {
+      const payload = {
+        model: 'gemma3:legal-latest',
+        prompt: `Given the text "${inputText}", provide 3-5 "did you mean" suggestions for legal terminology. Focus on legal terms, case names, and professional language. Respond only with suggestions separated by commas.`,
+        stream: false,
+        options: {
+          temperature: 0.3,
+          top_p: 0.9,
+          max_tokens: 100
+        }
+      };
       const response = await fetch(`${this.ollamaUrl}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          model: 'gemma3:legal-latest',
-          prompt: `Given the text "${inputText}", provide 3-5 "did you mean" suggestions for legal terminology. Focus on legal terms, case names, and professional language. Respond only with suggestions separated by commas.`,
-          stream: false,
-          options: {
-            temperature: 0.3,
-            top_p: 0.9,
-            max_tokens: 100
-          }
-        })
+        body: JSON.stringify(payload)
       });
       if (!response.ok) {
         throw new Error(`LLM request failed: ${response.status}`);
       }
       const data = await response.json();
-      const suggestions = data.response
+      const textResponse = (typeof data.response === 'string') ? data.response : String(data?.output ?? '');
+      const suggestions = textResponse
         .split(',')
-        .map((s: string) => s.trim()
+        .map((s: string) => s.trim())
         .filter((s: string) => s.length > 0)
         .slice(0, 5);
       this.llmCache.set(cacheKey, suggestions);
@@ -541,13 +563,14 @@ export class GlyphCacheSystem {
    */
   async generateEmbedding(text: string): Promise<Float32Array> {
     try {
+      const payload = {
+        model: 'gemma3:legal-latest',
+        prompt: text
+      };
       const response = await fetch(`${this.ollamaUrl}/api/embeddings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          model: 'gemma3:legal-latest',
-          prompt: text
-        })
+        body: JSON.stringify(payload)
       });
       if (!response.ok) {
         throw new Error(`Embedding request failed: ${response.status}`);
@@ -573,7 +596,7 @@ export class GlyphCacheSystem {
         synthesized: combo,
         confidence: this.calculateConfidence(combo, inputGlyphs),
         didYouMean,
-        llmGenerated: true;
+        llmGenerated: true,
         embeddings: embedding
       });
     }
@@ -588,9 +611,9 @@ export class GlyphCacheSystem {
     const text = glyphs.join('');
     // Generate variations
     combinations.push(text); // Original
-    combinations.push(text.toLowerCase(); // Lowercase
-    combinations.push(text.toUpperCase(); // Uppercase
-    combinations.push(text.replace(/\s+/g, ''); // No spaces
+    combinations.push(text.toLowerCase()); // Lowercase
+    combinations.push(text.toUpperCase()); // Uppercase
+    combinations.push(text.replace(/\s+/g, '')); // No spaces
     // Legal document variations
     if (text.includes('contract')) {
       combinations.push('agreement', 'deed', 'covenant');
@@ -617,20 +640,20 @@ export class GlyphCacheSystem {
    * Calculate Levenshtein similarity
    */
   private calculateLevenshteinSimilarity(a: string, b: string): number {
-    const matrix = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(null);
+    const matrix = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(null));
     for (let i = 0; i <= a.length; i++) matrix[0][i] = i;
     for (let j = 0; j <= b.length; j++) matrix[j][0] = j;
     for (let j = 1; j <= b.length; j++) {
       for (let i = 1; i <= a.length; i++) {
         const indicator = a[i - 1] === b[j - 1] ? 0 : 1;
         matrix[j][i] = Math.min(
-          matrix[j][i - 1] + 1,     // deletion
-          matrix[j - 1][i] + 1,     // insertion
-          matrix[j - 1][i - 1] + indicator // substitution
+          (matrix[j][i - 1] as number) + 1,     // deletion
+          (matrix[j - 1][i] as number) + 1,     // insertion
+          (matrix[j - 1][i - 1] as number) + indicator // substitution
         );
       }
     }
-    const distance = matrix[b.length][a.length];
+    const distance = matrix[b.length][a.length] as number;
     const maxLength = Math.max(a.length, b.length);
     return maxLength === 0 ? 1 : 1 - distance / maxLength;
   }
@@ -644,7 +667,7 @@ export class GlyphCacheSystem {
         pattern: Array.from(glyph.nesPattern),
         quantized: Array.from(glyph.quantizedData),
         bankId: glyph.chrRomBankId
-      });
+      }));
       await enhancedCachingRevolutionaryBridge.storeTextureStream('glyph_cache', textureData);
       console.log(`🎮 Streamed ${glyphs.length} glyphs to texture cache`);
     } catch (error) {
@@ -655,10 +678,10 @@ export class GlyphCacheSystem {
    * Dispose resources
    */
   dispose(): void {
-    if (this.cleanupInterval) {
+    if (this.cleanupInterval !== undefined) {
       clearInterval(this.cleanupInterval);
     }
-    this.persistCache();
+    void this.persistCache();
     this.fonts.clear();
     console.log('🗑️ Glyph cache system disposed');
   }
@@ -671,8 +694,8 @@ export const glyphCacheSystem = new GlyphCacheSystem();
  * Convenience functions
  */
 export async function getCachedGlyph(
-  char: string;
-  style: 'classic' | 'modern' | 'legal' | 'retro' = 'legal';
+  char: string,
+  style: 'classic' | 'modern' | 'legal' | 'retro' = 'legal'
 ): Promise<GlyphTexture> {
   return await glyphCacheSystem.getGlyph(char, style);
 }

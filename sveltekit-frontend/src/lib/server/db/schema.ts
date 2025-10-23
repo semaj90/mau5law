@@ -3,6 +3,8 @@ import { pgTable, uuid, timestamp, text, boolean, varchar, json, jsonb, real, in
 // removed incompatible customVector import
 // import { customVector as vector } from '@useverk/drizzle-pgvector';
 import { users } from './schema-postgres';
+import { vector } from '@knaadh/drizzle-pg-vector'; // For pgvector support
+import { sql } from 'drizzle-orm';
 
 // Re-export the PostgreSQL schema as the main schema
 export * from './schema-postgres';
@@ -51,6 +53,8 @@ export const evidence = pgTable('evidence', {
   location: text('location'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  embedding: vector('embedding', { dimensions: 768 }), // ADDED: Embedding column for pgvector
+  metadata: jsonb('metadata'), // ADDED: Metadata column for AI analysis results
 });
 
 export const documents = pgTable('documents', cols => ({
@@ -72,3 +76,59 @@ export const sessions = pgTable('sessions', {
     mode: 'date',
   }).notNull(),
 });
+
+// Define the chat_messages table
+export const chatMessages = pgTable('chat_messages', {
+  id: varchar('id', { length: 256 }).primaryKey(),
+  userId: varchar('user_id', { length: 256 }).notNull(),
+  content: text('content').notNull(),
+  timestamp: timestamp('timestamp', { withTimezone: true }).defaultNow().notNull(),
+  sessionId: varchar('session_id', { length: 256 }).notNull(),
+  messageType: varchar('message_type', { length: 50, enum: ['user', 'assistant', 'system'] }).notNull(),
+  metadata: jsonb('metadata').$type<{
+    intent?: string;
+    confidence?: number;
+    topics?: string[];
+    sentiment?: 'positive' | 'negative' | 'neutral';
+    urgency?: 'low' | 'medium' | 'high' | 'critical';
+    legalContext?: {
+      documentType?: 'contract' | 'evidence' | 'brief' | 'citation';
+      practiceArea?: string[];
+      jurisdiction?: string;
+    };
+  }>(),
+});
+
+// Define the chat_embeddings table
+export const chatEmbeddings = pgTable(
+  'chat_embeddings',
+  {
+    chatId: varchar('chat_id', { length: 256 })
+      .notNull()
+      .references(() => chatMessages.id, { onDelete: 'cascade' }),
+    embedding: vector('embedding', { dimensions: 768 }).notNull(), // Gemma embedding size
+    // Store quantized embedding as bytea (binary data) or text (base64 encoded)
+    // For Float32Array, bytea is more efficient.
+    quantizedEmbedding: text('quantized_embedding').notNull(), // Storing as base64 string for simplicity in JS
+    timestamp: timestamp('timestamp', { withTimezone: true }).defaultNow().notNull(),
+    temporalContext: jsonb('temporal_context')
+      .$type<{
+        dayOfWeek: number;
+        hourOfDay: number;
+        monthOfYear: number;
+        seasonality: 'spring' | 'summer' | 'fall' | 'winter';
+        businessHours: boolean;
+      }>()
+      .notNull(),
+    semanticHash: varchar('semantic_hash', { length: 256 }).notNull(),
+  },
+  table => {
+    return {
+      pk: primaryKey({ columns: [table.chatId] }),
+      // Add an index for efficient vector search
+      embeddingIndex: sql`CREATE INDEX ON ${table.embedding} USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);`,
+    };
+  }
+);
+
+console.log('📝 Drizzle ORM schema defined');

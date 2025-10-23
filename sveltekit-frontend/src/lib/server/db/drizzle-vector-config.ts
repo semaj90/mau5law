@@ -1,6 +1,12 @@
 /**
  * Drizzle ORM Configuration with Vector Operations
  * Production-ready database schema with pgvector support
+ * 
+ * TODO: Ensure drizzle schema `case_memories` table exists (case_id, memory_json, updated_at)
+ * TODO: Add relations: evidence.case_id → cases.id
+ * TODO: Confirm embeddings vector column uses pgvector extension
+ * TODO: Add indexes for vector similarity search performance
+ * TODO: Implement JSONB for memory storage with proper indexing
  */
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { pgTable, serial, varchar, text, integer, timestamp, jsonb, boolean, index } from 'drizzle-orm/pg-core';
@@ -22,6 +28,18 @@ const vector = customType({
     return vectorString.slice(1, -1).split(',').map(Number);
   },
 });
+
+// Case memories table for context-aware AI memory
+export const caseMemories = pgTable('case_memories', {
+  id: serial('id').primaryKey(),
+  caseId: varchar('case_id', { length: 255 }).notNull(),
+  memoryJson: jsonb('memory_json').notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => ({
+  caseIdIdx: index('case_memories_case_id_idx').on(table.caseId),
+  updatedAtIdx: index('case_memories_updated_at_idx').on(table.updatedAt),
+}));
 // Database connection
 const connectionString =
   import.meta.env.DATABASE_URL ||

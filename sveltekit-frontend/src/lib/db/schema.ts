@@ -20,6 +20,12 @@ import { vector } from 'pgvector/drizzle-orm';
 import { relations, type Relations } from 'drizzle-orm';
 import { createSelectSchema, createUpdateSchema, createInsertSchema } from 'drizzle-zod';
 
+// TODO: Ensure there is a dedicated `case_memories` table for storing serialized
+// case-level AI memory blobs (case_id uuid -> memory_json jsonb, updated_at timestamp).
+// This file currently does not declare `case_memories`. Add it when migrating
+// persistent AI memory from Redis to Postgres/Drizzle for deterministic backups.
+
+
 // Base Users table
 export const users = pgTable(
   'users',
@@ -97,6 +103,10 @@ export const documents = pgTable(
     embeddingIndex: index('documents_embedding_idx').using('ivfflat', table.embedding).with({ lists: 100 }),
   })
 );
+
+  // TODO: Verify that `documents.case_id` and `evidence.case_id` maintain referential
+  // integrity to `cases.id` in migrations and that cascade/delete behaviors match
+  // business rules (soft-delete vs hard-delete).
 
 // Evidence table
 export const evidence = pgTable(
@@ -264,11 +274,26 @@ export const citations = pgTable('citations', {
 // Sessions table for authentication
 export const sessions = pgTable('sessions', {
   id: text('id').primaryKey(),
-  user_id: integer('user_id')
-    .references(() => users.id, { onDelete: 'cascade' })
+  user_id: integer('user_id').notNull(),
+  expires_at: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull(),
+  created_at: timestamp('created_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull(), // Added or updated
+  messageCount: integer('message_count').default(0).notNull(), // Added or updated
+});
+
+// Messages table
+export const messages = pgTable('messages', {
+  id: text('id').primaryKey(),
+  sessionId: text('session_id')
+    .references(() => sessions.id)
     .notNull(),
-  expires_at: timestamp('expires_at', { withTimezone: true }).notNull(),
-  created_at: timestamp('created_at').defaultNow().notNull(),
+  content: text('content').notNull(),
+  role: text('role').notNull(), // e.g., 'user', 'assistant'
+  timestamp: timestamp('timestamp', { withTimezone: true, mode: 'date' }).defaultNow().notNull(),
+  embedding: jsonb('embedding'), // Store as JSONB for vector data
+  metadata: jsonb('metadata'), // For additional message metadata
+  model: text('model').default('gemma3-legal').notNull(),
+  confidence: integer('confidence'), // Assuming confidence is an integer percentage or similar
 });
 // AI History table for agent interactions
 export const aiHistory = pgTable('ai_history', {

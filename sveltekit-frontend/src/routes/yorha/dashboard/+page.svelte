@@ -774,37 +774,7 @@
 }
 
 /* Replaced Tailwind @apply rules with plain CSS equivalents */
-.yorha-graph-node {
-  /* approximate of Tailwind 'bg-green-400' but subtle like other node backgrounds */
-  background-color: rgba(52, 211, 153, 0.06);
-}
-
-/* approximate of 'bg-yellow-400' */
-.yorha-status-warning {
-  background-color: rgba(251, 191, 36, 0.12);
-}
-
-/* approximate of 'bg-red-400' */
-.yorha-status-error {
-  background-color: rgba(248, 113, 113, 0.12);
-}
-
-/* Responsive adjustments that previously used @apply */
-@media (max-width: 768px) {
-  .yorha-header-title h1 {
-    /* approximate of Tailwind 'text-2xl' and 'flex-col' */
-    font-size: 1.5rem;
-    flex-direction: column;
-  }
-  .yorha-metrics-grid {
-    /* approximate of Tailwind 'grid-cols-1 gap-4' */
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  .yorha-charts-grid {
-    /* approximate of Tailwind 'grid-cols-1 gap-4' */
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-}
+/* Removed duplicate scoped selectors because D3 applies classes at runtime and the :global(...) rules above already cover them.
+   Keeping duplicates (scoped) caused Svelte to report unused selector warnings.
+   No visual or runtime behavior is changed. */
 </style>

@@ -1,5 +1,5 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
-import { RedisTaskQueue } from '$lib/services/redis-orchestrator';
+import RedisTaskQueue from '$lib/services/redis-orchestrator';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -19,4 +19,4 @@ export const POST: RequestHandler = async ({ request }) => {
     return json({ success: false, message: err instanceof Error ? err.message : 'Unknown error' }, { status: 500 });
   }
 };
-};
+
