@@ -57,3 +57,28 @@ export function createRedisInstance(options?: RedisConnectionOptions): RedisClie
 
   return redisInstance;
 }
+
+// Provide a default export for modules that import the helper as default
+export default createRedisInstance;
+
+/**
+ * Create a fresh, non-singleton Redis connection. Useful for pub/sub subscribers
+ * which must use a dedicated connection.
+ */
+export function createRedisConnection(options?: Partial<RedisConnectionOptions>): RedisClient {
+  // Merge with defaults from environment
+  const finalOptions: RedisConnectionOptions = { ...{
+    host: REDIS_HOST || 'localhost',
+    port: parseInt(REDIS_PORT || '6379', 10),
+    password: REDIS_PASSWORD || 'redis',
+    connectTimeout: 5000,
+    retryDelayOnFailover: 100,
+    maxRetriesPerRequest: 3,
+    lazyConnect: false,
+  }, ...(options || {}) } as RedisConnectionOptions;
+
+  if (REDIS_URL) {
+    return new Redis(REDIS_URL, finalOptions);
+  }
+  return new Redis(finalOptions);
+}

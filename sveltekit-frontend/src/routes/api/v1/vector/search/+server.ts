@@ -6,8 +6,10 @@
  * This ensures we use the same connection pool (node-postgres adapter) as the rest of the app
  */
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { getCudaServiceUrl } from '$lib/config/pgvector-gpu-config.js';
+import type { RequestHandler } from '@sveltejs/kit';
+// getCudaServiceUrl was removed in favor of centralized embedding service
+import { withValidationAndRate } from '$lib/server/middleware/validate-and-rate';
+import { generateEmbeddings } from '$lib/server/services/embedding-service';
 // Use canonical database connection (node-postgres adapter with connection pooling)
 import { db, sql } from '$lib/server/db'; // Add concrete types to avoid `any`
 type SearchFilters = {
@@ -61,9 +63,9 @@ interface SearchResponse {
 // NOTE: Removed postgres-js client initialization - now using shared db connection from $lib/server/db
 // The 'db' and 'sql' are already imported from '$lib/server/db' above
 
-export const POST: RequestHandler = async ({ request }) => {
+const handler: RequestHandler = async event => {
+  const { request } = event;
   const startTime = performance.now();
-  // use slice instead of deprecated substr to create a stable request id
   const requestId = `srch_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
   try {
     const body: VectorSearchRequest = await request.json();
@@ -78,11 +80,16 @@ export const POST: RequestHandler = async ({ request }) => {
       useCUDA = true,
       rerank = false,
     } = body;
+
     // clientHints may be produced during embedding generation; declare in outer scope
     let clientHints: Record<string, unknown> | undefined = undefined;
     if (!query && !providedEmbedding) {
       throw error(400, 'Either query text or embedding vector is required');
     }
+
+    // narrow query to a non-undefined string for downstream helpers
+    const q = query ?? '';
+
     let queryEmbedding: number[];
     let embeddingTime = 0;
     if (providedEmbedding) {
@@ -91,14 +98,13 @@ export const POST: RequestHandler = async ({ request }) => {
       // Generate embedding for the query
       const embeddingStart = Date.now();
       // Enhanced routing with CHR-ROM optimization
-      const queryComplexity = calculateSearchComplexity(query, filters);
-      // generate client hints (mark function as used and include in response later)
-      clientHints = generateSearchClientHints(query, filters, queryComplexity);
-      const shouldUseCUDA = useCUDA && (query.length > 100 || queryComplexity > 60 || Object.keys(filters).length > 2);
+      const queryComplexity = calculateSearchComplexity(q, filters);
+      clientHints = generateSearchClientHints(q, filters, queryComplexity);
+      const shouldUseCUDA = useCUDA && (q.length > 100 || queryComplexity > 60 || Object.keys(filters).length > 2);
       if (shouldUseCUDA) {
-        queryEmbedding = await generateCUDAEmbedding(query, requestId);
+        queryEmbedding = await generateCUDAEmbedding(q, requestId);
       } else {
-        queryEmbedding = await generateOllamaEmbedding(query);
+        queryEmbedding = await generateOllamaEmbedding(q);
       }
       embeddingTime = Date.now() - embeddingStart;
     }
@@ -144,57 +150,22 @@ export const POST: RequestHandler = async ({ request }) => {
     throw error(500, `Vector search failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }
 };
+
+// Wrap exported POST with validation + rate limiting middleware
+export const POST = withValidationAndRate(handler, null, {
+  capacity: 60,
+  refillPerSecond: 2,
+  keyPrefix: 'rl:v1:vector:search:',
+});
 async function generateCUDAEmbedding(text: string, requestId?: string): Promise<number[]> {
-  const cudaUrl = getCudaServiceUrl('submit');
-  const payload = {
-    type: 'embedding_single',
-    text,
-    model: 'embeddinggemma:latest',
-    request_id: requestId || `emb_${Date.now()}`,
-    config: {
-      normalize: true,
-      use_tensor_cores: true,
-      memory_optimization: 'CHR_ROM_search_aligned',
-      legal_text_optimization: true,
-      context_window_size: Math.min(512, text.length),
-    },
-    search_specific: {
-      query_type: 'legal_search',
-      semantic_enhancement: true,
-      entity_aware_embedding: true,
-      precedent_similarity_boost: true,
-    },
-  };
-  const response = await fetch(cudaUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
-  });
-  if (!response.ok) {
-    throw new Error(`CUDA embedding service error: ${response.statusText}`);
-  }
-  const result = await response.json();
-  return result.embedding || [];
+  // Route CUDA/TensorRT requests through the centralized embedding service when available.
+  const resp = await generateEmbeddings({ texts: [text], model: 'embeddinggemma:latest', mode: 'tensorrt', requestId });
+  return (resp?.embeddings && resp.embeddings[0]) || [];
 }
 async function generateOllamaEmbedding(text: string): Promise<number[]> {
-  const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11436';
-  const response = await fetch(`${ollamaUrl}/api/embeddings`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: 'embeddinggemma:latest',
-      prompt: text,
-    }),
-  });
-  if (!response.ok) {
-    throw new Error(`Ollama embedding failed: ${response.statusText}`);
-  }
-  const result = await response.json();
-  return result.embedding as number[];
+  // Use the canonical embedding service (which may call Ollama, FastAPI, or other backends)
+  const resp = await generateEmbeddings({ texts: [text], model: 'embeddinggemma:latest' });
+  return (resp?.embeddings && resp.embeddings[0]) || [];
 }
 async function performVectorSearch(params: {
   embedding: number[];

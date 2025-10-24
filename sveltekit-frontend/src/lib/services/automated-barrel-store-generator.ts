@@ -18,7 +18,8 @@ export interface MissingImportAnalysis {
   errorsByCategory: MapStringTo<string[]>;
 }
 export interface BarrelStoreGeneration {
-  packages: MapStringTo<any>;
+  // packages previously used MapStringTo<any> — tighten to unknown to avoid `any`
+  packages: MapStringTo<unknown>;
   implementations: MapStringTo<string>;
   typeDefinitions: MapStringTo<string>;
   imports: MapStringTo<string[]>;
@@ -68,21 +69,19 @@ export interface NESGPUBridge {
 }
 
 // Add helper to centralize endpoint resolution (use instead of inline hardcoded URL)
-function getOllamaEndpoint(): string {
-  // prefer explicit server env, then Vite-style, fallback to host default
+function getOllamaEndpoint(): string | null {
+  // prefer explicit server env, then Vite-style; if neither set, return null so callers can fallback safely
   return (
-    (process?.env?.OLLAMA_URL as string | undefined) ||
-    (process?.env?.VITE_OLLAMA_URL as string | undefined) ||
-    'http://localhost:11434'
+    (process?.env?.OLLAMA_URL as string | undefined) || (process?.env?.VITE_OLLAMA_URL as string | undefined) || null
   );
 }
 
 /* Server-side helpers (minimal, safe fallbacks) */
 export async function ollamaEmbed(texts: string[], model = 'embeddinggemma:latest'): Promise<number[][]> {
-  // Try real request if fetch is available; otherwise deterministic fallback
+  // Try real request if fetch is available and an endpoint is provided; otherwise deterministic fallback
   try {
     const base = getOllamaEndpoint();
-    if (typeof fetch !== 'undefined') {
+    if (base && typeof fetch !== 'undefined') {
       const resp = await fetch(`${base}/embed`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -104,7 +103,7 @@ export async function ollamaEmbed(texts: string[], model = 'embeddinggemma:lates
       }
     }
   } catch (e) {
-    console.warn('ollamaEmbed: request failed, falling back to deterministic embeddings', e);
+    console.warn('ollamaEmbed: request failed or no endpoint configured, falling back to deterministic embeddings', e);
   }
 
   // Deterministic fallback: produce stable pseudo-embeddings based on text content
@@ -218,7 +217,8 @@ export class PostgresJSONStore {
 /* Main class */
 export class AutomatedBarrelStoreGenerator {
   private errorPatterns = new Map<string, string[]>();
-  private resolutionCache = new Map<string, any>();
+  // tighten resolution cache type to avoid `any` — store fetched implementations or unknown fallbacks
+  private resolutionCache = new Map<string, FetchImplementation | unknown>();
   constructor() {
     this.initializeErrorPatterns();
   }

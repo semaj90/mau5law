@@ -23,16 +23,17 @@ const client = postgres(DATABASE_URL, {
     vector: {
       to: 1184,
       from: [1184],
-      serialize: (_value: number[]) => `[${value.join(',')}]`,
+      // use the declared parameter name _value
+      serialize: (_value: number[]) => `[${_value.join(',')}]`,
       parse: (_value: string) => {
-        const matches = value.match(/^\[(.*)\]$/);
+        const matches = _value.match(/^\[(.*)\]$/);
         if (!matches) return [];
         return matches[1] ? matches[1].split(',').map(Number) : [];
-      }
-    }
+      },
+    },
   },
   // SSL configuration for production
-  ssl: import.meta.env.NODE_ENV === 'production' ? 'require' : false
+  ssl: import.meta.env.NODE_ENV === 'production' ? 'require' : false,
 });
 // Create Drizzle database instance with schema
 export const db: PostgresJsDatabase<typeof schema> = drizzle(client, {
@@ -59,15 +60,28 @@ export async function testConnection(): Promise<boolean> {
       WHERE table_schema = 'public'
       ORDER BY table_name
     `;
-    console.log('✅ Available Tables:', tables.map(t => t.table_name);
+    console.log(
+      '✅ Available Tables:',
+      tables.map(t => t.table_name)
+    );
     return true;
   } catch (error) {
     console.error('❌ Database Connection Failed:', error);
     return false;
   }
 }
+// add small typed aliases near the top of the file (below imports / client / db definitions)
+type DBRow = Record<string, unknown>;
+
+export interface DatabaseHealth {
+  connected: boolean;
+  pgvectorEnabled: boolean;
+  tablesCount: number;
+  version: string;
+  uptime?: string | null;
+}
 // Enhanced health check with vector capabilities
-export async function getDatabaseHealth(): Promise<any> {
+export async function getDatabaseHealth(): Promise<DatabaseHealth> {
   try {
     // Basic connection test
     const versionResult = await client`SELECT version()`;
@@ -94,16 +108,16 @@ export async function getDatabaseHealth(): Promise<any> {
       pgvectorEnabled,
       tablesCount,
       version,
-      uptime: uptime?.toString()
-    }
+      uptime: uptime?.toString(),
+    };
   } catch (error) {
     console.error('Database health check failed:', error);
     return {
       connected: false,
       pgvectorEnabled: false,
       tablesCount: 0,
-      version: 'Unknown'
-    }
+      version: 'Unknown',
+    };
   }
 }
 // Vector operations helper functions
@@ -130,8 +144,8 @@ export class VectorOperations {
     vectorColumn: string,
     queryVector: number[],
     limit: number = 10,
-    threshold: number = 0.7;
-  ): Promise<any[]> {
+    threshold: number = 0.7
+  ): Promise<DBRow[]> {
     try {
       const result = await client`
         SELECT *,
@@ -141,7 +155,7 @@ export class VectorOperations {
         ORDER BY ${vectorColumn} <=> ${queryVector}::vector
         LIMIT ${limit}
       `;
-      return result;
+      return result as DBRow[];
     } catch (error) {
       console.error('Vector similarity search failed:', error);
       return [];

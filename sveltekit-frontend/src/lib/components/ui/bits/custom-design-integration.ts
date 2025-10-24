@@ -196,7 +196,7 @@ export const MinimalDesignSystem: DesignSystem = {
 // ======================================================================
 export function createDesignSystem(
   name: string,
-  customTokens: Partial<CustomDesignTokens>;
+  customTokens: Partial<CustomDesignTokens> = {},
   options: {
     baseSystem?: DesignSystem;
     animations?: Partial<AnimationConfig>;
@@ -204,19 +204,35 @@ export function createDesignSystem(
   } = {}
 ): DesignSystem {
   const baseSystem = options.baseSystem || NESDesignSystem;
+
+  // Safely extract possible typography overrides without using `any`
+  const typographyOverride = (customTokens.typography as unknown as TypographyOverride) ?? {};
+  // Safely extract cssVariables and components overrides
+  const cssVarsOverride = (customTokens as unknown as { cssVariables?: CssVariablesOverride }).cssVariables ?? {};
+  const componentsOverride = (customTokens as unknown as { components?: ComponentsOverride }).components ?? {};
+
   return {
     name,
     tokens: {
-      colors: { ...baseSystem.tokens.colors, ...customTokens.colors },
-      spacing: { ...baseSystem.tokens.spacing, ...customTokens.spacing },
-      typography: { ...baseSystem.tokens.typography, ...customTokens.typography },
-      nes: { ...baseSystem.tokens.nes, ...customTokens.nes },
+      colors: { ...baseSystem.tokens.colors, ...(customTokens.colors ?? {}) },
+      spacing: { ...baseSystem.tokens.spacing, ...(customTokens.spacing ?? {}) },
+      typography: {
+        ...baseSystem.tokens.typography,
+        ...(customTokens.typography ?? {}),
+        // ensure fontSize and lineHeight fall back safely (no `any`)
+        fontSize: { ...baseSystem.tokens.typography.fontSize, ...(typographyOverride.fontSize ?? {}) },
+        lineHeight: { ...baseSystem.tokens.typography.lineHeight, ...(typographyOverride.lineHeight ?? {}) },
+      },
+      nes: { ...baseSystem.tokens.nes, ...(customTokens.nes ?? {}) },
     },
-    cssVariables: { ...baseSystem.cssVariables },
-    components: { ...baseSystem.components },
-    animations: { ...baseSystem.animations, ...options.animations },
-    breakpoints: { ...baseSystem.breakpoints, ...options.breakpoints },
-  }
+    cssVariables: { ...baseSystem.cssVariables, ...cssVarsOverride },
+    components: { ...baseSystem.components, ...componentsOverride },
+    animations: {
+      ...baseSystem.animations,
+      ...(options.animations ?? {}),
+    },
+    breakpoints: { ...baseSystem.breakpoints, ...(options.breakpoints ?? {}) },
+  };
 }
 export function generateCSSVariables(designSystem: DesignSystem): string {
   const { tokens, cssVariables } = designSystem;

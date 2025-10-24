@@ -2,24 +2,28 @@
  * Dynamic Component Loader for Enhanced-Bits
  * Supports lazy loading and error boundaries
  */
-import type { ComponentType } from 'svelte';
+import type { SvelteComponent } from 'svelte';
+
+// Use `typeof SvelteComponent` for a modern, correct Svelte component constructor type.
+export type ComponentConstructor = typeof SvelteComponent;
+
 export interface ComponentModule {
-  default: ComponentType;
+  default: ComponentConstructor;
 }
 export interface LoadComponentOptions {
-  fallback?: ComponentType;
+  fallback?: ComponentConstructor | null;
   retryAttempts?: number;
   timeout?: number;
 }
 // Component registry for faster lookups
-const componentCache = new Map<string, Promise<ComponentType | null>>();
+const componentCache = new Map<string, Promise<ComponentConstructor | null>>();
 /**
  * Dynamically load a Svelte component
  */
 export async function loadComponent(
-  name: string;
+  name: string,
   options: LoadComponentOptions = {}
-): Promise<ComponentType | null> {
+): Promise<ComponentConstructor | null> {
   const { fallback = null, retryAttempts = 3, timeout = 5000 } = options;
   // Check cache first
   if (componentCache.has(name)) {
@@ -38,9 +42,9 @@ export async function loadComponent(
 }
 async function loadComponentWithRetry(
   name: string,
-  retryAttempts: number;
+  retryAttempts: number,
   timeout: number
-): Promise<ComponentType | null> {
+): Promise<ComponentConstructor | null> {
   for (let attempt = 1; attempt <= retryAttempts; attempt++) {
     try {
       return await loadComponentSingle(name, timeout);
@@ -54,14 +58,14 @@ async function loadComponentWithRetry(
   }
   return null;
 }
-async function loadComponentSingle(name: string, timeout: number): Promise<ComponentType | null> {
+async function loadComponentSingle(name: string, timeout: number): Promise<ComponentConstructor | null> {
   const timeoutPromise = new Promise<never>((_, reject) => {
     setTimeout(() => reject(new Error('Component load timeout')), timeout);
   });
   const loadPromise = tryLoadFromPaths(name);
   return Promise.race([loadPromise, timeoutPromise]);
 }
-async function tryLoadFromPaths(name: string): Promise<ComponentType | null> {
+async function tryLoadFromPaths(name: string): Promise<ComponentConstructor | null> {
   // Define possible paths to search
   const searchPaths = [
     `../components/${name}.svelte`,
@@ -81,86 +85,137 @@ async function tryLoadFromPaths(name: string): Promise<ComponentType | null> {
   // Try each path
   for (const path of searchPaths) {
     try {
-      const module = await import(path) as ComponentModule;
+      const module = (await import(/* @vite-ignore */ path)) as ComponentModule;
       if (module.default) {
         return module.default;
       }
     } catch (error) {
       // Continue to next path
-      continue;
-    }
-  }
-  throw new Error(`Component ${name} not found in any search path`);
-}
-/**
- * Preload commonly used components
- */
-export async function preloadCoreComponents(): Promise<void> {
-  const coreComponents = [
-    'Button',
-    'Card',
-    'CardHeader',
-    'CardTitle',
-    'CardContent',
-    'Dialog',
-    'Input',
-    'Label'
-  ];
-  const loadPromises = coreComponents.map(name =>
-    loadComponent(name).catch(error => {
-      console.warn(`Failed to preload ${name}:`, error);
-      return null;
-    })
-  );
-  await Promise.all(loadPromises);
-}
-/**
- * Clear component cache
- */
-export function clearComponentCache(): void {
-  componentCache.clear();
-}
-/**
- * Get cached component without loading
- */
-export function getCachedComponent(name: string): Promise<ComponentType | null> | undefined {
-  return componentCache.get(name);
-}
-/**
- * Gaming-specific component loader
- */
-export async function loadGamingComponent(
-  name: 'N64Button' | 'NESContainer' | 'PixelCard' | 'ConsoleCard' | 'RetroDialog'
-): Promise<ComponentType | null> {
-  try {
-    const module = await import(`../components/gaming/${name}.svelte`) as ComponentModule;
-    return module.default;
-  } catch (error) {
-    console.warn(`Gaming component ${name} not found:`, error);
-    return null;
-  }
-}
-/**
- * Legal AI specific component loader
- */
-export async function loadLegalComponent(
-  name: string
-): Promise<ComponentType | null> {
-  const legalPaths = [
-    `../components/legal/${name}.svelte`,
-    `../components/ai/${name}.svelte`,
-    `../components/evidence/${name}.svelte`,
-    `../components/case/${name}.svelte`
-  ];
-  for (const path of legalPaths) {
-    try {
-      const module = await import(path) as ComponentModule;
-      if (module.default) {
-        return module.default;
-      }
-    } catch (error) {
-      continue;
     }
   }
   return null;
+}
+
+// --- External Service Interfaces ---
+
+/**
+ * Interface for a high-performance JSON parser, possibly implemented in WebAssembly.
+ */
+export interface UltraJSONParser {
+  parse<T = unknown>(json: string | Uint8Array): Promise<T>;
+  stringify(obj: unknown): Promise<string>;
+}
+
+/**
+ * Interface for a WebAssembly-based clustering service.
+ */
+export interface WasmClusteringService {
+  /**
+   * Clusters a set of vectors into k clusters.
+   * @param vectors - An array of vectors (each vector is a number array).
+   * @param k - The number of clusters to form.
+   * @returns A promise that resolves to an array of cluster assignments for each vector.
+   */
+  cluster(vectors: number[][], k: number): Promise<number[]>;
+}
+
+/**
+ * Interface for bridging with nes.css styled WebGPU components.
+ */
+export interface NesGPUBridge {
+  /**
+   * Renders a nes.css-style container using WebGPU.
+   * @param element - The canvas element to render on.
+   * @param options - Rendering options.
+   */
+  renderContainer(element: HTMLCanvasElement, options: { theme: 'dark' | 'light' }): Promise<void>;
+}
+
+// --- Server-Side Integration Helpers (Stubs) ---
+
+/**
+ * Helper for generating embeddings using the Ollama API.
+ * This would typically be a server-side (+server.ts) or server-only function.
+ */
+export async function getOllamaEmbeddings(text: string, model = 'embeddinggemma:latest'): Promise<number[]> {
+  // In a real implementation, this would make a fetch call to a SvelteKit API route,
+  // which in turn calls the Ollama service.
+  console.log(`[Server Helper Stub] Generating embeddings for text with model ${model}: "${text.substring(0, 50)}..."`);
+  // Mocked response
+  return Array.from({ length: 384 }, () => Math.random() * 2 - 1);
+}
+
+/**
+ * Interface for a Redis cache client.
+ */
+export interface RedisCacheClient {
+  get<T>(key: string): Promise<T | null>;
+  set(key: string, value: unknown, ttlSeconds?: number): Promise<void>;
+  del(key: string): Promise<void>;
+  exists(key: string): Promise<boolean>;
+}
+
+/**
+ * Helper for caching data with Redis.
+ * This is a server-only function.
+ */
+export const redisCache: RedisCacheClient = {
+  async get<T>(key: string): Promise<T | null> {
+    console.log(`[Server Helper Stub] Getting key from Redis: ${key}`);
+    return null; // Mocked response
+  },
+  async set(key: string, value: unknown, ttlSeconds?: number): Promise<void> {
+    console.log(`[Server Helper Stub] Setting key in Redis: ${key} with TTL ${ttlSeconds}s`);
+  },
+  async del(key: string): Promise<void> {
+    console.log(`[Server Helper Stub] Deleting key from Redis: ${key}`);
+  },
+  async exists(key: string): Promise<boolean> {
+    console.log(`[Server Helper Stub] Checking if key exists in Redis: ${key}`);
+    return false; // Mocked response
+  },
+};
+
+/**
+ * Interface for a Qdrant point/document.
+ */
+export interface QdrantPoint {
+  id: string | number;
+  vector: number[];
+  payload: Record<string, unknown>;
+}
+
+/**
+ * Helper for indexing documents in Qdrant.
+ * This is a server-only function.
+ */
+export async function indexInQdrant(document: QdrantPoint): Promise<boolean> {
+  console.log(`[Server Helper Stub] Indexing document in Qdrant: ${document.id}`);
+  return true; // Mocked response
+}
+
+/**
+ * Helper for persisting data with Drizzle ORM to a Postgres JSONB column.
+ * This is a server-only function.
+ * Persists a JSONB object to the specified table and id in Postgres using Drizzle ORM.
+ * @param table - The name of the database table to persist data to.
+ * @param id - The unique identifier for the record.
+ * @param data - The JSON object to be persisted in the JSONB column.
+ * @returns A promise that resolves when the operation is complete.
+ * @remarks
+ *   This stub does not actually persist data or propagate errors.
+ *   If an error occurs, it will be logged to the console but not thrown.
+ */
+export async function persistJsonbData<T extends Record<string, unknown>>(
+  table: string,
+  id: string,
+  _data: T
+): Promise<void> {
+  try {
+    console.log(`[Server Helper Stub] Persisting JSONB data to table '${table}' for id: ${id}`);
+    // No actual persistence in stub.
+  } catch (error) {
+    console.error(`[Server Helper Stub] Error persisting JSONB data:`, error);
+    // Error is logged but not thrown.
+  }
 }

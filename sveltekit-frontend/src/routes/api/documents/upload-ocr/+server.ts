@@ -1,10 +1,10 @@
 import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
+import { withValidationAndRate } from '$lib/server/middleware/validate-and-rate';
 import { db } from '$lib/server/database';
 import { documents, embeddings } from '$lib/server/db/schema-postgres';
 import { gpuRAGService } from '$lib/services/gpu-rag-service';
-import { qdrantService } from '$lib/services/qdrant-vector-service';
-import type { VectorPoint } from '$lib/services/qdrant-vector-service';
+import { QdrantVectorService } from '$lib/server/services';
 import { env } from '$env/dynamic/private';
 
 /**
@@ -118,7 +118,7 @@ function generateTags(content: string): string[] {
   return [...new Set(tags)];
 }
 
-export const POST: RequestHandler = async ({ request, fetch }) => {
+const handler: RequestHandler = async ({ request, fetch }) => {
   const results: UploadResult[] = [];
 
   try {
@@ -227,7 +227,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
               },
             };
 
-            await qdrantService.upsertVectors([vectorPoint]);
+            // QdrantVectorService exposes upsertVector per-point
+            await QdrantVectorService.upsertVector(String(vectorPoint.id), vectorPoint.vector, vectorPoint.payload);
             result.qdrantStored = true;
           } catch (qdrantErr) {
             console.warn('Qdrant storage failed:', qdrantErr);
@@ -263,12 +264,25 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
   }
 };
 
+export const POST = withValidationAndRate(handler, null, {
+  capacity: 20,
+  refillPerSecond: 0.5,
+  keyPrefix: 'rl:docs:upload-ocr:',
+});
+
 /**
  * GET: Check upload endpoint health
  */
 export const GET: RequestHandler = async () => {
   try {
-    const qdrantHealthy = await qdrantService.healthCheck();
+    // probe Qdrant by performing a lightweight search for an empty vector (should not error)
+    let qdrantHealthy = false;
+    try {
+      const probe = await QdrantVectorService.searchVector(Array(768).fill(0), 1);
+      qdrantHealthy = Array.isArray(probe);
+    } catch (err) {
+      qdrantHealthy = false;
+    }
     const dbConnected = !!db;
 
     return json({

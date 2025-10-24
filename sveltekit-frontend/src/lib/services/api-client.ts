@@ -25,19 +25,72 @@
 //   type PaginationResult
 // } from '$lib/server/services/user-scoped-crud'
 // Temporary stub types
-export type CreateCaseData = { title: strin;g; description?: string }
-export type UpdateCaseData = { id: strin;g; title?: string; description?: string }
-export type CreateEvidenceData = { title: strin;g; caseId: string }
-export type UpdateEvidenceData = { id: strin;g; title?: string }
-export type CreateReportData = { title: strin;g; content: string }
-export type UpdateReportData = { id: strin;g; title?: string; content?: string }
-export type CreatePersonOfInterestData = { name: strin;g; role: string }
-export type UpdatePersonOfInterestData = { id: strin;g; name?: string; role?: string }
-export type PaginationOptions = { page?: numbe;r; limit?: number }
-export type PaginationResult<T> = { data: T[]; total: number; page: number; limit: number }
-import { z } from 'zod';
-// API Response Types
-interface APIResponse<T = any> {
+export type CreateCaseData = { title: string; description?: string };
+export type UpdateCaseData = { id: string; title?: string; description?: string };
+export type CreateEvidenceData = {
+  title: string;
+  caseId: string;
+  evidenceType?: string;
+  description?: string;
+  contentText?: string;
+  metadata?: Record<string, unknown>;
+};
+export type UpdateEvidenceData = { id: string; title?: string };
+export type CreateReportData = { title: string; content: string };
+export type UpdateReportData = { id: string; title?: string; content?: string };
+export type CreatePersonOfInterestData = { name: string; role: string };
+export type UpdatePersonOfInterestData = { id: string; name?: string; role?: string };
+export type PaginationOptions = { page?: number; limit?: number };
+export type PaginationResult<T> = { data: T[]; total: number; page: number; limit: number };
+
+// Entity Types
+export interface Case {
+  id: string;
+  title: string;
+  description?: string;
+  status: 'open' | 'closed' | 'pending' | 'archived';
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Evidence {
+  id: string;
+  caseId: string;
+  title: string;
+  evidenceType?: string;
+  description?: string;
+  contentText?: string;
+  isPublic?: boolean;
+  metadata?: Record<string, unknown>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Report {
+  id: string;
+  caseId?: string;
+  title: string;
+  content: string;
+  status?: 'draft' | 'review' | 'approved' | 'published';
+  reportType?: 'analysis' | 'summary' | 'investigation' | 'final';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PersonOfInterest {
+  id: string;
+  name: string;
+  role: string;
+  riskLevel?: 'low' | 'medium' | 'high' | 'critical';
+  status?: 'active' | 'inactive' | 'archived';
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Clean, correctly-formed API response type.
+// Removed the unused APIError interface to eliminate "defined but never used" errors.
+interface APIResponse<T = unknown> {
   success: boolean;
   data?: T;
   message?: string;
@@ -48,19 +101,14 @@ interface APIResponse<T = any> {
     totalPages: number;
     hasNext: boolean;
     hasPrev: boolean;
-  }
+  };
   meta?: {
     userId?: string;
     timestamp: string;
-    [key: string]: any;
-  }
+    [key: string]: unknown;
+  };
 }
-interface APIError {
-  success: false;
-  message: string;
-  code: string;
-  details?: any;
-}
+
 // === OCR Types ===
 export interface OCRResult {
   text: string;
@@ -68,7 +116,6 @@ export interface OCRResult {
   wordCount: number;
   processingTime: number; // ms
   format?: string;
-}
 }
 export interface OCRBatchItem extends OCRResult {
   fileName: string;
@@ -82,7 +129,6 @@ export interface OCRBatchResult {
   failed: number;
   processingTime: number;
 }
-}
 export interface OCRHealthStatus {
   service: 'OCR Service';
   status: 'operational' | 'degraded' | 'offline';
@@ -90,10 +136,49 @@ export interface OCRHealthStatus {
   features: string[];
   performance: {
     avgProcessingTime: number;
-  documentsProcessed: number;
-  errorRate: number;
-  }
+    documentsProcessed: number;
+    errorRate: number;
+  };
 }
+
+// === External Service Types ===
+export interface UltraJSONParseResult<T> {
+  data: T;
+  performance: {
+    parseTime: number; // in ms
+    isFastPath: boolean;
+  };
+}
+export interface WasmClusterPoint {
+  id: string;
+  vector: number[];
+  metadata?: Record<string, unknown>;
+}
+export interface WasmClusterResult {
+  clusters: {
+    centroid: number[];
+    points: WasmClusterPoint[];
+  }[];
+  noise: WasmClusterPoint[];
+  performance: {
+    computationTime: number; // in ms
+  };
+}
+export interface NesGpuTask {
+  taskId: string;
+  shader: string;
+  inputBuffers: Record<string, unknown>; // Using 'any' for GPUBuffer to avoid browser/node conflicts
+  outputBufferSize: number;
+}
+export interface NesGpuResult {
+  taskId: string;
+  outputBuffer: ArrayBuffer;
+  performance: {
+    gpuTime: number; // in ms
+    dataTransferTime: number; // in ms
+  };
+}
+
 // API Client Class
 export class LegalAIApiClient {
   private baseUrl: string;
@@ -103,24 +188,21 @@ export class LegalAIApiClient {
   /**
    * Generic API request handler with error handling
    */
-  private async apiRequest<T>()
-    endpoint: string
-    options: RequestInit = {}
-  ): Promise<APIResponse,<T> {
+  private async apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<APIResponse<T>> {
     try {
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         headers: {
           'Content-Type': 'application/json',
-          ...options.headers
+          ...options.headers,
         },
-        ...options
-      )});
+        ...options,
+      });
       const data = await response.json();
-      if (!response,.o,k) {
+      if (!response.ok) {
         throw new Error(data.message || 'API request failed');
       }
       return data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(`API Error [${endpoint}]:`, error);
       throw error;
     }
@@ -129,31 +211,33 @@ export class LegalAIApiClient {
   /**
    * Get all cases for the authenticated user
    */
-  async getCases(_options,: PaginationOptions & {
-    status?: 'open' | 'closed' | 'pending' | 'archived';
-    priority?: 'low' | 'medium' | 'high' | 'urgent');
-  } = {}): Promise<APIResponse<any>[>>]>> {
+  async getCases(
+    options: PaginationOptions & {
+      status?: 'open' | 'closed' | 'pending' | 'archived';
+      priority?: 'low' | 'medium' | 'high' | 'urgent';
+    } = {}
+  ): Promise<APIResponse<Case[]>> {
     const params = new URLSearchParams();
-    Object,.entries(options).forEach(([key, value]) => {
+    Object.entries(options).forEach(([key, value]) => {
       if (value !== undefined) {
-        params.append(key, String(value);
+        params.append(key, String(value));
       }
     });
-    return this.apiRequest(`/cases?${params}`);
+    return this.apiRequest(`/cases?${params.toString()}`);
   }
   /**
    * Get a specific case by ID
    */
-  async getCase(caseId,: string): Promise<APIResponse<a>n>>y>> {
+  async getCase(caseId: string): Promise<APIResponse<Case>> {
     return this.apiRequest(`/cases/${caseId}`);
   }
   /**
    * Create a new case
    */
-  async createCase(data,: CreateCaseData): Promise<APIResponse<a>n>>y>> {
+  async createCase(data: CreateCaseData): Promise<APIResponse<Case>> {
     // Validate with Zod before sending (temporarily disabled until schemas are defined)
     // const validatedData = CreateCaseSchema.parse(data)
-    const validatedData = dat,a;
+    const validatedData = data;
     return this.apiRequest('/cases', {
       method: 'POST',
       body: JSON.stringify(validatedData),
@@ -162,20 +246,20 @@ export class LegalAIApiClient {
   /**
    * Update an existing case
    */
-  async updateCase(caseId,: string, dat,a: Partial<UpdateCaseData,>): Promise<APIResponse<a>n>>y>> {
-    // Validate with Zod before sending (temporarily disabled until schemas are defined)
+  async updateCase(caseId: string, data: Partial<UpdateCaseData>): Promise<APIResponse<Case>> {
     // const validatedData = UpdateCaseSchema.parse({ id: caseId, ...data })
-    const validatedData = { id: caseId, ...data }
-    const { id, ...updateData } = validatedDa,t;a;
+    const validatedData = { id: caseId, ...data } as Record<string, unknown>;
+    // build update payload by omitting `id` via destructuring (avoids `any` and delete)
+    const { id: $id, ...payload } = validatedData;
     return this.apiRequest(`/cases/${caseId}`, {
       method: 'PUT',
-      body: JSON.stringify(updateData),
+      body: JSON.stringify(payload),
     });
   }
   /**
    * Delete a case
    */
-  async deleteCase(caseId,: string): Promise<APIResponse<a>n>>y>> {
+  async deleteCase(caseId: string): Promise<APIResponse<Record<string, unknown>>> {
     return this.apiRequest(`/cases/${caseId}`, {
       method: 'DELETE',
     });
@@ -184,31 +268,33 @@ export class LegalAIApiClient {
   /**
    * Get all evidence for the authenticated user
    */
-  async getEvidence(_options,: PaginationOptions & {
-    caseId?: string;
-    evidenceType?: string;
-    isPublic?: boolean);
-  } = {}): Promise<APIResponse<any>[>>]>> {
+  async getEvidence(
+    options: PaginationOptions & {
+      caseId?: string;
+      evidenceType?: string;
+      isPublic?: boolean;
+    } = {}
+  ): Promise<APIResponse<Evidence[]>> {
     const params = new URLSearchParams();
-    Object,.entries(options).forEach(([key, value]) => {
+    Object.entries(options).forEach(([key, value]) => {
       if (value !== undefined) {
-        params.append(key, String(value);
+        params.append(key, String(value));
       }
     });
-    return this.apiRequest(`/evidence?${params}`);
+    return this.apiRequest(`/evidence?${params.toString()}`);
   }
   /**
    * Get specific evidence by ID
    */
-  async getEvidenceById(evidenceId,: string): Promise<APIResponse<a>n>>y>> {
+  async getEvidenceById(evidenceId: string): Promise<APIResponse<Evidence>> {
     return this.apiRequest(`/evidence/${evidenceId}`);
   }
   /**
    * Create new evidence
    */
-  async createEvidence(data,: CreateEvidenceData): Promise<APIResponse<a>n>>y>> {
+  async createEvidence(data: CreateEvidenceData): Promise<APIResponse<Evidence>> {
     // const validatedData = CreateEvidenceSchema.parse(data)
-    const validatedData = dat,a;
+    const validatedData = data;
     return this.apiRequest('/evidence', {
       method: 'POST',
       body: JSON.stringify(validatedData),
@@ -217,19 +303,19 @@ export class LegalAIApiClient {
   /**
    * Update existing evidence
    */
-  async updateEvidence(evidenceId,: string, dat,a: Partial<UpdateEvidenceData,>): Promise<APIResponse<a>n>>y>> {
+  async updateEvidence(evidenceId: string, data: Partial<UpdateEvidenceData>): Promise<APIResponse<Evidence>> {
     // const validatedData = UpdateEvidenceSchema.parse({ id: evidenceId, ...data })
-    const validatedData = { id: evidenceId, ...data }
-    const { id, ...updateData } = validatedDa,t;a;
+    const validatedData = { id: evidenceId, ...data } as Record<string, unknown>;
+    const { id: $id, ...payload } = validatedData;
     return this.apiRequest(`/evidence/${evidenceId}`, {
       method: 'PUT',
-      body: JSON.stringify(updateData),
+      body: JSON.stringify(payload),
     });
   }
   /**
    * Delete evidence
    */
-  async deleteEvidence(evidenceId,: string): Promise<APIResponse<a>n>>y>> {
+  async deleteEvidence(evidenceId: string): Promise<APIResponse<Record<string, unknown>>> {
     return this.apiRequest(`/evidence/${evidenceId}`, {
       method: 'DELETE',
     });
@@ -238,31 +324,33 @@ export class LegalAIApiClient {
   /**
    * Get all reports for the authenticated user
    */
-  async getReports(_options,: PaginationOptions & {
-    caseId?: string;
-    status?: 'draft' | 'review' | 'approved' | 'published';
-    reportType?: 'analysis' | 'summary' | 'investigation' | 'final');
-  } = {}): Promise<APIResponse<any>[>>]>> {
+  async getReports(
+    options: PaginationOptions & {
+      caseId?: string;
+      status?: 'draft' | 'review' | 'approved' | 'published';
+      reportType?: 'analysis' | 'summary' | 'investigation' | 'final';
+    } = {}
+  ): Promise<APIResponse<Report[]>> {
     const params = new URLSearchParams();
-    Object,.entries(options).forEach(([key, value]) => {
+    Object.entries(options).forEach(([key, value]) => {
       if (value !== undefined) {
-        params.append(key, String(value);
+        params.append(key, String(value));
       }
     });
-    return this.apiRequest(`/reports?${params}`);
+    return this.apiRequest(`/reports?${params.toString()}`);
   }
   /**
    * Get specific report by ID
    */
-  async getReport(reportId,: string): Promise<APIResponse<a>n>>y>> {
+  async getReport(reportId: string): Promise<APIResponse<Report>> {
     return this.apiRequest(`/reports/${reportId}`);
   }
   /**
    * Create new report
    */
-  async createReport(data,: CreateReportData): Promise<APIResponse<a>n>>y>> {
+  async createReport(data: CreateReportData): Promise<APIResponse<Report>> {
     // const validatedData = CreateReportSchema.parse(data)
-    const validatedData = dat,a;
+    const validatedData = data;
     return this.apiRequest('/reports', {
       method: 'POST',
       body: JSON.stringify(validatedData),
@@ -271,19 +359,19 @@ export class LegalAIApiClient {
   /**
    * Update existing report
    */
-  async updateReport(reportId,: string, dat,a: Partial<UpdateReportData,>): Promise<APIResponse<a>n>>y>> {
+  async updateReport(reportId: string, data: Partial<UpdateReportData>): Promise<APIResponse<Report>> {
     // const validatedData = UpdateReportSchema.parse({ id: reportId, ...data })
-    const validatedData = { id: reportId, ...data }
-    const { id, ...updateData } = validatedDa,t;a;
+    const validatedData = { id: reportId, ...data } as Record<string, unknown>;
+    const { id: $id, ...payload } = validatedData;
     return this.apiRequest(`/reports/${reportId}`, {
       method: 'PUT',
-      body: JSON.stringify(updateData),
+      body: JSON.stringify(payload),
     });
   }
   /**
    * Delete report
    */
-  async deleteReport(reportId,: string): Promise<APIResponse<a>n>>y>> {
+  async deleteReport(reportId: string): Promise<APIResponse<Record<string, unknown>>> {
     return this.apiRequest(`/reports/${reportId}`, {
       method: 'DELETE',
     });
@@ -292,31 +380,33 @@ export class LegalAIApiClient {
   /**
    * Get all persons of interest for the authenticated user
    */
-  async getPersonsOfInterest(_options,: PaginationOptions & {
-    riskLevel?: 'low' | 'medium' | 'high' | 'critical';
-    status?: 'active' | 'inactive' | 'archived';
-    search?: string);
-  } = {}): Promise<APIResponse<any>[>>]>> {
+  async getPersonsOfInterest(
+    options: PaginationOptions & {
+      riskLevel?: 'low' | 'medium' | 'high' | 'critical';
+      status?: 'active' | 'inactive' | 'archived';
+      search?: string;
+    } = {}
+  ): Promise<APIResponse<PersonOfInterest[]>> {
     const params = new URLSearchParams();
-    Object,.entries(options).forEach(([key, value]) => {
+    Object.entries(options).forEach(([key, value]) => {
       if (value !== undefined) {
-        params.append(key, String(value);
+        params.append(key, String(value));
       }
     });
-    return this.apiRequest(`/persons-of-interest?${params}`);
+    return this.apiRequest(`/persons-of-interest?${params.toString()}`);
   }
   /**
    * Get specific person of interest by ID
    */
-  async getPersonOfInterest(personId,: string): Promise<APIResponse<a>n>>y>> {
+  async getPersonOfInterest(personId: string): Promise<APIResponse<PersonOfInterest>> {
     return this.apiRequest(`/persons-of-interest/${personId}`);
   }
   /**
    * Create new person of interest
    */
-  async createPersonOfInterest(data,: CreatePersonOfInterestData): Promise<APIResponse<a>n>>y>> {
+  async createPersonOfInterest(data: CreatePersonOfInterestData): Promise<APIResponse<PersonOfInterest>> {
     // const validatedData = CreatePersonOfInterestSchema.parse(data)
-    const validatedData = dat,a;
+    const validatedData = data;
     return this.apiRequest('/persons-of-interest', {
       method: 'POST',
       body: JSON.stringify(validatedData),
@@ -325,145 +415,206 @@ export class LegalAIApiClient {
   /**
    * Update existing person of interest
    */
-  async updatePersonOfInterest(personId,: string, dat,a: Partial<UpdatePersonOfInterestData,>): Promise<APIResponse<a>n>>y>> {
+  async updatePersonOfInterest(
+    personId: string,
+    data: Partial<UpdatePersonOfInterestData>
+  ): Promise<APIResponse<PersonOfInterest>> {
     // const validatedData = UpdatePersonOfInterestSchema.parse({ id: personId, ...data })
-    const validatedData = { id: personId, ...data }
-    const { id, ...updateData } = validatedDa,t;a;
+    const validatedData = { id: personId, ...data } as Record<string, unknown>;
+    const { id: $id, ...payload } = validatedData;
     return this.apiRequest(`/persons-of-interest/${personId}`, {
       method: 'PUT',
-      body: JSON.stringify(updateData),
+      body: JSON.stringify(payload),
     });
   }
   /**
    * Delete person of interest
    */
-  async deletePersonOfInterest(personId,: string): Promise<APIResponse<a>n>>y>> {
+  async deletePersonOfInterest(personId: string): Promise<APIResponse<Record<string, unknown>>> {
     return this.apiRequest(`/persons-of-interest/${personId}`, {
       method: 'DELETE',
     });
   }
+
+  // ==== AI & VECTOR SERVICES ====
+  /**
+   * Generate embeddings for a list of texts using Ollama.
+   * This endpoint should be protected and used server-to-server or with strict auth.
+   */
+  async generateEmbeddings(
+    texts: string[],
+    model = 'nomic-embed-text'
+  ): Promise<APIResponse<{ embeddings: number[][]; model: string }>> {
+    return this.apiRequest('/ai/embeddings', {
+      method: 'POST',
+      body: JSON.stringify({ texts, model }),
+    });
+  }
+
+  /**
+   * Index a document in the vector database (e.g., Qdrant).
+   */
+  async indexDocument(document: {
+    id: string;
+    content: string;
+    metadata: Record<string, unknown>;
+  }): Promise<APIResponse<{ success: boolean; id: string }>> {
+    return this.apiRequest('/vector/index', {
+      method: 'POST',
+      body: JSON.stringify(document),
+    });
+  }
+
+  /**
+   * Perform a vector search.
+   */
+  async vectorSearch(
+    queryVector: number[],
+    limit = 10,
+    collection = 'documents'
+  ): Promise<APIResponse<WasmClusterPoint[]>> {
+    return this.apiRequest('/vector/search', {
+      method: 'POST',
+      body: JSON.stringify({ vector: queryVector, limit, collection }),
+    });
+  }
+
+  // ==== CACHING SERVICE (Redis) ====
+  /**
+   * Get a value from the Redis cache.
+   */
+  async getCache(key: string): Promise<APIResponse<{ key: string; value: unknown }>> {
+    return this.apiRequest(`/cache/${encodeURIComponent(key)}`);
+  }
+
+  /**
+   * Set a value in the Redis cache with an optional TTL (in seconds).
+   */
+  async setCache(key: string, value: unknown, ttl?: number): Promise<APIResponse<{ key: string; success: boolean }>> {
+    return this.apiRequest(`/cache/${encodeURIComponent(key)}`, {
+      method: 'POST',
+      body: JSON.stringify({ value, ttl }),
+    });
+  }
+
+  /**
+   * Invalidate/delete a cache key from Redis.
+   */
+  async invalidateCache(key: string): Promise<APIResponse<{ key: string; success: boolean }>> {
+    return this.apiRequest(`/cache/${encodeURIComponent(key)}`, {
+      method: 'DELETE',
+    });
+  }
+
   // ==== UTILITY METHODS ====
   /**
    * Health check for API
    */
-  async healthCheck(),: Promise<APIResponse<a>n>>y>> {
+  async healthCheck(): Promise<APIResponse<Record<string, unknown>>> {
     return this.apiRequest('/health');
   }
   /**
    * Get user statistics
    */
-  async getUserStats(),: Promise<APIResponse> {
+  async getUserStats(): Promise<APIResponse<Record<string, unknown>>> {
     return this.apiRequest('/stats');
   }
   // ==== OCR SERVICE INTEGRATION ====
-  private ocrBase(),: string {
-    // Allow override via env; fallback to relative API proxy path
-    return (globalThis as any).__OCR_BASE__ || '/api/ocr';
+  private ocrBase(): string {
+    // use a narrowly typed access to globalThis to avoid `any`
+    const g = globalThis as unknown as { __OCR_BASE__?: string };
+    return g.__OCR_BASE__ || '/api/ocr';
   }
-  async processDocumentOCR(file,: File): Promise<APIResponse<OCRResu>l>>t>> {
+
+  async processDocumentOCR(file: File): Promise<APIResponse<OCRResult>> {
     const formData = new FormData();
-    formData,.append('file', file);
-    try {
-      const response = await fetch(`${this.ocrBase()}/extract`, {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await response.json();
-      return dat,a;
-    } catch (e) {
-      throw e;
+    formData.append('file', file);
+
+    const response = await fetch(`${this.ocrBase()}/extract`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      // normalize error into APIResponse shape for OCRResult
+      const err = await response.json().catch(() => ({ message: response.statusText }));
+      return { success: false, message: err?.message || 'OCR service error' };
     }
+
+    return (await response.json()) as APIResponse<OCRResult>;
   }
-  async batchProcessOCR(files,: File[]): Promise<APIResponse<OCRBatchResu>l>>t>> {
+
+  async batchProcessOCR(files: File[]): Promise<APIResponse<OCRBatchResult>> {
     const formData = new FormData();
-    files,.forEach(f => formData.append('files', f);
-    // removed unused response assignment
-    const data = await response.json();
-    return dat,a;
+    files.forEach(f => formData.append('files', f));
+
+    const response = await fetch(`${this.ocrBase()}/batch-extract`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({ message: response.statusText }));
+      return { success: false, message: err?.message || 'OCR batch service error' } as APIResponse<OCRBatchResult>;
+    }
+
+    return (await response.json()) as APIResponse<OCRBatchResult>;
   }
-  async getOCRStatus(),: Promise<APIResponse<OCRHealthStat>u>>s>> {
-    // removed unused response assignment
-    return response.json();
+
+  async getOCRStatus(): Promise<APIResponse<OCRHealthStatus>> {
+    const response = await fetch(`${this.ocrBase()}/health`);
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({ message: response.statusText }));
+      return { success: false, message: err?.message || 'OCR health check failed' } as APIResponse<OCRHealthStatus>;
+    }
+
+    return (await response.json()) as APIResponse<OCRHealthStatus>;
   }
-  async createEvidenceWithOCR(caseId,: string, fil,e: File, metada,ta: { [,key: st,ring]: any }, = {}): Promise<APIResponse<a>n>>y>> {
+
+  async createEvidenceWithOCR(
+    caseId: string,
+    file: File,
+    metadata: { [key: string]: unknown } = {}
+  ): Promise<APIResponse<Evidence>> {
     const ocr = await this.processDocumentOCR(file);
-    if (!ocr,.succes,s) retur,n ocr as, any;
+    // if OCR failed, return a typed APIResponse<Evidence> indicating failure
+    if (!ocr.success || !ocr.data) {
+      return {
+        success: false,
+        message: ocr.message || 'OCR processing failed',
+        data: undefined,
+      };
+    }
+
     return this.createEvidence({
       caseId,
       evidenceType: 'document',
       title: file.name,
-      description: metadata.description || 'OCR processed document',
-      contentText: (ocr.data as any)?.text,
+      description: (metadata.description as string) || 'OCR processed document',
+      contentText: ocr.data.text,
       metadata: {
         ...metadata,
         ocr: {
-          confidence: (ocr.data as any)?.confidence,
-          wordCount: (ocr.data as any)?.wordCount,
-          processingTime: (ocr.data as any)?.processingTime
-        }
-      }
-    } as any);
+          confidence: ocr.data.confidence,
+          wordCount: ocr.data.wordCount,
+          processingTime: ocr.data.processingTime,
+        },
+      },
+    });
   }
 }
 // Export singleton instance
 export const apiClient = new LegalAIApiClient();
 // Reactive API client wrapper for component usage
 export const reactiveApiClient = {
-  subscribe: (_key: string, callback: (data: any) => void) => {
+  subscribe: (_key: string, _callback: (data: unknown) => void) => {
     // Simple reactive wrapper - implement proper store subscription when needed
-    return () => {}); // unsubscribe function
+    console.warn('reactiveApiClient.subscribe is a placeholder and not fully implemented.');
+    return () => {}; // unsubscribe function
   },
-  ...apiClient
-}
-
-// ensure we follow the declared shape from types/api.ts
-const baseEndpoint = endpoint.replace(/\/$/, '');
-
-// small helpers used by UI components (ModularDialog expects these)
-async function fetchCase(id: string, cache = true) {
-  const url = `${baseEndpoint}/cases/${encodeURIComponent(id)}?cache=${cache ? '1' : '0'}`;
-  const res = await fetch(url, { ...options });
-  if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    throw new Error(`Failed to fetch case (${res.status}): ${text}`);
-  }
-  return res.json();
-}
-
-async function getEvidence(id: string) {
-  const url = `${baseEndpoint}/evidence/${encodeURIComponent(id)}`;
-  const res = await fetch(url, { ...options });
-  if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    throw new Error(`Failed to fetch evidence (${res.status}): ${text}`);
-  }
-  return res.json();
-}
-
-// if a document endpoint exists, expose a generic getDocument as well
-async function getDocument(id: string) {
-  const url = `${baseEndpoint}/documents/${encodeURIComponent(id)}`;
-  const res = await fetch(url, { ...options });
-  if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    throw new Error(`Failed to fetch document (${res.status}): ${text}`);
-  }
-  return res.json();
-}
-
-// attach helpers to the exported reactiveApiClient object
-// If reactiveApiClient is created as a const object below, include these functions on it.
-// Example: (if reactiveApiClient was previously exported as { endpoint, options, subscribe })
-export const reactiveApiClient = {
-  // ...existing properties like endpoint, options, subscribe ...
-  endpoint,
-  options,
-  subscribe,
-  // new methods
-  fetchCase,
-  getEvidence,
-  getDocument
-} as const;
+  ...apiClient,
+};
 
 // Export for custom instances
 export default LegalAIApiClient;

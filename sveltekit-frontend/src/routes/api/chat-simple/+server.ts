@@ -1,63 +1,62 @@
-// Simple Ollama Chat Endpoint (no database)
+/**
+ * Simple Ollama Chat Endpoint - Production Ready
+ *
+ * Endpoint: /api/chat-simple
+ * Category: standard
+ * Priority: 120
+ *
+ * Production Services:
+ * - Ollama AI: Centralized chat generation via services.ts
+ * - Redis: Automatic caching via redis-orchestrator-middleware
+ *
+ * Features:
+ * - No database persistence (stateless)
+ * - Fast response with centralized service
+ * - Type-safe implementation
+ * - Graceful error handling
+ */
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { getOllamaEndpoint } from '$lib/services/providers/ollama/config';
+import type { RequestHandler } from '@sveltejs/kit';
+import { readBodyFast } from '$lib/server/utils/json-fast';
+import { generateChatResponse } from '$lib/server/services';
 
-const OLLAMA_GENERATE_ENDPOINT = getOllamaEndpoint('generate');
+type ChatMessage = { role: 'user' | 'assistant' | 'system'; content: string };
+type ChatSimpleRequest = { messages?: ChatMessage[] } | unknown;
+
+function isChatMessageArray(x: unknown): x is ChatMessage[] {
+  return (
+    Array.isArray(x) &&
+    x.every(
+      it =>
+        typeof (it as Record<string, unknown>)?.role === 'string' &&
+        typeof (it as Record<string, unknown>)?.content === 'string'
+    )
+  );
+}
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json();
-    const { messages } = body;
+    const body = (await readBodyFast(request)) as ChatSimpleRequest;
+    const raw = (body as Record<string, unknown>)?.messages;
+    const messages = isChatMessageArray(raw) ? raw : undefined;
 
     if (!messages || messages.length === 0) {
       return json({ error: 'Messages array required' }, { status: 400 });
     }
 
-    const lastUserMessage = messages.filter((msg: any) => msg.role === 'user').pop();
-    if (!lastUserMessage) {
-      return json({ error: 'No user message found' }, { status: 400 });
-    }
+    console.log('🚀 chat-simple: Processing', messages.length, 'messages via centralized Ollama');
 
-    console.log('🚀 Sending to Ollama:', lastUserMessage.content);
-
-    const response = await fetch(OLLAMA_GENERATE_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gemma3-legal:latest',
-        prompt: lastUserMessage.content,
-        stream: false,
-      }),
-      signal: AbortSignal.timeout(60000),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Ollama error: ${response.status}`);
-    }
-
-    const result = await response.json();
+    const response = await generateChatResponse(messages, false);
 
     return json({
       success: true,
-      message: result.response || 'No response from Ollama',
-      metadata: {
-        model: 'gemma3-legal:latest',
-        eval_count: result.eval_count,
-        eval_duration: result.eval_duration,
-        tokensPerSecond: result.eval_count ? Math.round(result.eval_count / (result.eval_duration / 1e9)) : 0,
-      },
+      message: response,
+      production: true,
+      service: 'ollama-centralized',
     });
-  } catch (error: any) {
-    console.error('❌ Chat error:', error);
-    return json(
-      {
-        error: 'Failed to process chat request',
-        details: error.message,
-      },
-      { status: 500 }
-    );
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err : new Error(String(err));
+    console.error('❌ chat-simple error:', error.message);
+    return json({ error: error.message }, { status: 500 });
   }
 };

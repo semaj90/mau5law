@@ -3,9 +3,64 @@
  * Extends the Redis Legal Orchestrator for complete platform integration
  * Implements Nintendo-inspired memory optimization across all legal AI components
  */
-import { RedisLegalOrchestrator, RedisLLMCache, RedisTaskQueue } from '$lib/services/redis-orchestrator';
+import * as RedisModule from '$lib/services/redis-orchestrator';
 import { componentTextureRegistry } from '$lib/registry/texture-component-registry';
 import { chrROMCacheReader } from '$lib/services/chr-rom-cache-reader';
+
+// Define a small, explicit result shape used by the Redis orchestrator to avoid `any`
+type OrchestratorQueryResult = {
+  cached?: boolean;
+  confidence?: number;
+  sources?: Array<Record<string, unknown>>;
+  source?: string;
+  response?: unknown;
+  // allow extra fields but keep typed shape
+  [key: string]: unknown;
+};
+
+// Lightweight local interfaces for used surface area (keeps file typed and avoids `any`)
+type OrchestratorModuleShape = {
+  RedisLegalOrchestrator?: {
+    getRedisStats?: () => Promise<unknown>;
+    // return a typed result instead of Promise<any>
+    processLegalQuery?: (
+      query: string,
+      sessionId: string,
+      opts?: Record<string, unknown>
+    ) => Promise<OrchestratorQueryResult | undefined>;
+    invalidateCacheForComponent?: (name: string) => Promise<void>;
+    clearComponentCache?: (name: string) => Promise<void>;
+    removeKeysByPattern?: (pattern: string) => Promise<void>;
+  };
+  RedisLLMCache?: { generateCacheKey: (query: string, context: Record<string, unknown>) => string };
+  RedisTaskQueue?: {
+    // avoid `any` for ctx by using a typed generic record
+    queueComplexTask: (
+      taskType: string,
+      query: string,
+      ctx: Record<string, unknown>,
+      priority: number
+    ) => Promise<string>;
+  };
+};
+
+const Redis = RedisModule as unknown as OrchestratorModuleShape;
+const LLMCache = Redis.RedisLLMCache;
+const Orchestrator = Redis.RedisLegalOrchestrator;
+const TaskQueue = Redis.RedisTaskQueue;
+
+type ComponentTextureRegistryShape = {
+  getMemoryUsage: () => unknown;
+  register: (id: string, opts: Record<string, unknown>) => void;
+  unregister: (id: string) => void;
+};
+const textureRegistry = componentTextureRegistry as unknown as ComponentTextureRegistryShape;
+
+type ChrRomReaderShape = {
+  getPattern?: (key: string, slot: string) => Promise<{ data?: string } | undefined>;
+  cachePattern?: (key: string, slot: string, data: string, opts?: { ttl?: number }) => Promise<void>;
+};
+const chrReader = chrROMCacheReader as unknown as ChrRomReaderShape;
 
 type OrchestratorContext = {
   endpoint: string;
@@ -24,7 +79,8 @@ export class AppRedisOrchestrator {
   // Use a safe time provider that works in Node and browsers
   private static now(): number {
     try {
-      const p = (globalThis as any)?.performance;
+      // type-safe access to performance without using `any`
+      const p = (globalThis as unknown as { performance?: Performance })?.performance;
       if (p && typeof p.now === 'function') return p.now();
     } catch {
       // ignore
@@ -50,22 +106,22 @@ export class AppRedisOrchestrator {
     const startTime = this.now();
     try {
       if (!context.requiresFresh) {
-        const cacheKey = `ai_query:${context.endpoint}:${(RedisLLMCache as any).generateCacheKey(query, context)}`;
-        const chrRomPattern = await (chrROMCacheReader as any).getPattern(cacheKey, 'ui_response');
+        const cacheKey = `ai_query:${context.endpoint}:${LLMCache?.generateCacheKey?.(query, context) ?? ''}`;
+        const chrRomPattern = await chrReader.getPattern?.(cacheKey, 'ui_response');
         if (chrRomPattern?.data) {
           return {
             response: JSON.parse(chrRomPattern.data).response,
             source: 'cache',
             processing_time: this.now() - startTime,
             cached: true,
-            redis_stats: await (async () => {
+            redis_stats: (async () => {
               try {
-                return await (RedisLegalOrchestrator as any).getRedisStats();
+                return await Orchestrator?.getRedisStats?.();
               } catch {
                 return null;
               }
             })(),
-            nes_memory_usage: (componentTextureRegistry as any).getMemoryUsage(),
+            nes_memory_usage: textureRegistry.getMemoryUsage(),
           };
         }
       }
@@ -75,22 +131,22 @@ export class AppRedisOrchestrator {
 
     try {
       if (!context.requiresFresh) {
-        const { endpoint: _endpoint, ...rest } = context;
-        const result = await (RedisLegalOrchestrator as any).processLegalQuery(query, sessionId, {
+        const { endpoint: $endpoint, ...rest } = context;
+        const result = await Orchestrator?.processLegalQuery?.(query, sessionId, {
           ...rest,
         });
         if (result?.cached) {
           await this.cacheChrRomUIPatterns(query, result, context);
           return {
             ...result,
-            redis_stats: await (async () => {
+            redis_stats: (async () => {
               try {
-                return await (RedisLegalOrchestrator as any).getRedisStats();
+                return await Orchestrator?.getRedisStats?.();
               } catch {
                 return null;
               }
             })(),
-            nes_memory_usage: (componentTextureRegistry as any).getMemoryUsage(),
+            nes_memory_usage: textureRegistry.getMemoryUsage(),
           };
         }
       }
@@ -122,7 +178,7 @@ export class AppRedisOrchestrator {
     if (isHighComplexity) {
       try {
         const taskType = this.determineTaskType(context.endpoint);
-        const taskId = await (RedisTaskQueue as any).queueComplexTask(
+        const taskId = await TaskQueue?.queueComplexTask?.(
           taskType,
           query,
           { ...context, sessionId },
@@ -138,12 +194,12 @@ export class AppRedisOrchestrator {
           cached: false,
           redis_stats: await (async () => {
             try {
-              return await (RedisLegalOrchestrator as any).getRedisStats();
+              return await Orchestrator?.getRedisStats?.();
             } catch {
               return null;
             }
           })(),
-          nes_memory_usage: (componentTextureRegistry as any).getMemoryUsage(),
+          nes_memory_usage: textureRegistry.getMemoryUsage(),
         };
       } catch {
         // Fall through to direct processing
@@ -157,12 +213,12 @@ export class AppRedisOrchestrator {
       cached: false,
       redis_stats: await (async () => {
         try {
-          return await (RedisLegalOrchestrator as any).getRedisStats();
+          return await Orchestrator?.getRedisStats?.();
         } catch {
           return null;
         }
       })(),
-      nes_memory_usage: (componentTextureRegistry as any).getMemoryUsage(),
+      nes_memory_usage: textureRegistry.getMemoryUsage(),
     };
   }
 
@@ -171,9 +227,10 @@ export class AppRedisOrchestrator {
     result: { confidence?: number; sources?: Array<Record<string, unknown>>; source?: string },
     context: OrchestratorContext
   ): Promise<void> {
+    let componentId: string | undefined;
     try {
-      const componentId = `${context.endpoint}_ui_${Date.now()}`;
-      (componentTextureRegistry as any).register(componentId, {
+      componentId = `${context.endpoint}_ui_${Date.now()}`;
+      textureRegistry.register(componentId, {
         componentName: `${context.endpoint}_response`,
         textureSlots: ['ui_response', 'metadata', 'stats'],
         memoryBank: 'CHR_ROM',
@@ -193,14 +250,24 @@ export class AppRedisOrchestrator {
         },
       };
 
-      const cacheKey = `ai_query:${context.endpoint}:${(RedisLLMCache as any).generateCacheKey(query, context)}`;
-      await (chrROMCacheReader as any).cachePattern(cacheKey, 'ui_response', JSON.stringify(uiOptimizedResult), {
-        ttl: 3600,
-      });
+      const cacheKey = `ai_query:${context.endpoint}:${LLMCache?.generateCacheKey?.(query, context) ?? ''}`;
 
-      (componentTextureRegistry as any).unregister(componentId);
+      // Call cachePattern only if it exists to avoid awaiting undefined
+      const cacheFn = chrReader.cachePattern;
+      if (typeof cacheFn === 'function') {
+        await cacheFn(cacheKey, 'ui_response', JSON.stringify(uiOptimizedResult), {
+          ttl: 3600,
+        });
+      }
     } catch {
       // Non-critical; ignore errors
+    } finally {
+      // Ensure we always attempt to unregister the texture if we registered one
+      try {
+        if (componentId) textureRegistry.unregister(componentId);
+      } catch {
+        // ignore unregister errors
+      }
     }
   }
 
@@ -216,7 +283,7 @@ export class AppRedisOrchestrator {
       .map(
         source =>
           `<span style="background: #3cbcfc; color: white; padding: 1px 4px; font-size: 8px; margin: 1px;">${
-            typeof (source as any)?.type === 'string' ? (source as any).type : 'DOC'
+            typeof (source as { type?: string })?.type === 'string' ? (source as { type?: string }).type : 'DOC'
           }</span>`
       )
       .join('');
@@ -272,7 +339,7 @@ export class AppRedisOrchestrator {
     getStats: () => Promise<Record<string, unknown>>;
     clearCache: () => Promise<void>;
   }> {
-    (componentTextureRegistry as any).register(`${componentName}_redis`, {
+    textureRegistry.register(`${componentName}_redis`, {
       componentName,
       textureSlots: ['cache', 'memory', 'queue'],
       memoryBank: config.memoryBank,
@@ -291,29 +358,29 @@ export class AppRedisOrchestrator {
         } as OrchestratorContext),
       getStats: async () => ({
         component: componentName,
-        redis: await (async () => {
+        redis: (async () => {
           try {
-            return await (RedisLegalOrchestrator as any).getRedisStats();
+            return await Orchestrator?.getRedisStats?.();
           } catch {
             return null;
           }
         })(),
-        nes_memory: (componentTextureRegistry as any).getMemoryUsage(),
+        nes_memory: textureRegistry.getMemoryUsage(),
         config,
       }),
       clearCache: async () => {
         try {
-          if (typeof (RedisLegalOrchestrator as any).invalidateCacheForComponent === 'function') {
-            await (RedisLegalOrchestrator as any).invalidateCacheForComponent(componentName);
+          if (typeof Orchestrator?.invalidateCacheForComponent === 'function') {
+            await Orchestrator!.invalidateCacheForComponent!(componentName);
             return;
           }
-          if (typeof (RedisLegalOrchestrator as any).clearComponentCache === 'function') {
-            await (RedisLegalOrchestrator as any).clearComponentCache(componentName);
+          if (typeof Orchestrator?.clearComponentCache === 'function') {
+            await Orchestrator!.clearComponentCache!(componentName);
             return;
           }
           // Best-effort fallback: attempt to remove keys by pattern (if supported)
-          if (typeof (RedisLegalOrchestrator as any).removeKeysByPattern === 'function') {
-            await (RedisLegalOrchestrator as any).removeKeysByPattern(`ai_query:${componentName}:*`);
+          if (typeof Orchestrator?.removeKeysByPattern === 'function') {
+            await Orchestrator!.removeKeysByPattern!(`ai_query:${componentName}:*`);
           }
         } catch {
           // ignore cache-clear failures (non-critical)
@@ -325,23 +392,32 @@ export class AppRedisOrchestrator {
   static async getSystemHealth(): Promise<Record<string, unknown>> {
     const redisStats = await (async () => {
       try {
-        return await (RedisLegalOrchestrator as any).getRedisStats();
+        return await Orchestrator?.getRedisStats?.();
       } catch {
         return null;
       }
     })();
-    const memoryStats = (componentTextureRegistry as any).getMemoryUsage() || { banks: {} };
+    const memoryStats = textureRegistry.getMemoryUsage() || { banks: {} };
 
     let status: 'healthy' | 'degraded' | 'critical' = 'healthy';
     const recommendations: string[] = [];
 
     try {
-      const llmCacheHit = (redisStats as any)?.llm_cache?.hit_rate_estimate;
+      // Local, narrow type for the Redis stats we read
+      type RedisStatsShape = {
+        llm_cache?: { hit_rate_estimate?: number };
+        task_queue?: { queued_tasks?: number };
+        [k: string]: unknown;
+      };
+      const rs = redisStats && typeof redisStats === 'object' ? (redisStats as RedisStatsShape) : null;
+
+      const llmCacheHit = rs?.llm_cache?.hit_rate_estimate;
       if (typeof llmCacheHit === 'number' && llmCacheHit < 60) {
         status = 'degraded';
         recommendations.push('LLM cache hit rate is low - consider cache warming');
       }
-      const queued = (redisStats as any)?.task_queue?.queued_tasks;
+
+      const queued = rs?.task_queue?.queued_tasks;
       if (typeof queued === 'number' && queued > 100) {
         status = 'critical';
         recommendations.push('Task queue is overloaded - scale workers immediately');
@@ -351,11 +427,16 @@ export class AppRedisOrchestrator {
     }
 
     try {
-      const banks = (memoryStats as any).banks || {};
+      // Local shapes for memory stats/banks (avoid any)
+      type MemoryBankShape = { used?: number; capacity?: number; [k: string]: unknown };
+      type MemoryStatsShape = { banks?: Record<string, MemoryBankShape> } & Record<string, unknown>;
+      const ms = memoryStats && typeof memoryStats === 'object' ? (memoryStats as MemoryStatsShape) : { banks: {} };
+
       // If banks expose capacity+used compute per-bank ratio, otherwise attempt a coarse heuristic
-      for (const [name, bank] of Object.entries(banks)) {
-        const used = (bank as any)?.used;
-        const capacity = (bank as any)?.capacity;
+      for (const [name, bankAny] of Object.entries(ms.banks || {})) {
+        const bank = bankAny as MemoryBankShape;
+        const used = bank?.used;
+        const capacity = bank?.capacity;
         if (typeof used === 'number' && typeof capacity === 'number' && capacity > 0) {
           const ratio = used / capacity;
           if (ratio > 0.9) {

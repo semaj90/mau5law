@@ -1,83 +1,74 @@
 /**
- * Ollama Text Generation API Proxy
+ * Ollama Text Generation API Proxy - Production Ready
  *
- * Allows browser to call Ollama gemma3:270m via API
+ * Endpoint: /api/ollama/generate
+ * Category: standard
+ * Priority: 110
+ *
+ * Allows browser to call Ollama via centralized service
  *
  * POST /api/ollama/generate
- * Body: { prompt: string, model?: string, stream?: boolean }
- * Response: { response: string, duration: number }
+ * Body: { prompt: string } or { messages: Array<{role, content}> }
+ * Response: { result: string, duration: number }
+ *
+ * Production Services:
+ * - Ollama AI: Centralized generation via services.ts
+ * - Redis: Automatic caching
+ * - Dynamic model configuration from environment
  */
-
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from '@sveltejs/kit';
+import { readBodyFast } from '$lib/server/utils/json-fast';
+import { generateChatResponse, services } from '$lib/server/services';
 
-const OLLAMA_BASE_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
-const DEFAULT_MODEL = 'gemma3:270m';
+type ChatMessage = { role: 'user' | 'assistant' | 'system'; content: string };
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { prompt, model = DEFAULT_MODEL, stream = false, options = {} } = await request.json();
+  const body = await readBodyFast(request);
+  const messages = (Array.isArray(body?.messages) ? (body.messages as ChatMessage[]) : body?.prompt ? [{ role: 'user', content: String(body.prompt) }] : null) as ChatMessage[] | null;
 
-    if (!prompt) {
-      throw error(400, 'Missing required field: prompt');
+    if (!messages) {
+      return json({ error: 'messages or prompt required' }, { status: 400 });
     }
 
     const startTime = Date.now();
 
-    // Call Ollama API
-    const response = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model,
-        prompt,
-        stream,
-        options: {
-          temperature: options.temperature ?? 0.7,
-          top_p: options.topP ?? 0.9,
-          top_k: options.topK ?? 50,
-          num_predict: options.maxTokens ?? 512,
-          ...options
-        }
-      }),
-      signal: AbortSignal.timeout(30000) // 30s timeout
-    });
+    console.log('🚀 ollama/generate: Using centralized service with', services.env.ollamaConfig.chatModel);
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw error(response.status, `Ollama API error: ${errorText}`);
-    }
-
-    const data = await response.json();
+  const response = await generateChatResponse(messages, false);
 
     return json({
-      response: data.response,
-      model: data.model || model,
+      result: response,
+      response: response, // backward compatibility
       duration: Date.now() - startTime,
-      context: data.context,
-      total_duration: data.total_duration,
-      load_duration: data.load_duration,
-      prompt_eval_count: data.prompt_eval_count,
-      eval_count: data.eval_count
+      model: services.env.ollamaConfig.chatModel,
+      production: true,
+      service: 'ollama-centralized'
     });
   } catch (err) {
-    console.error('❌ [Ollama API] Generation failed:', err);
+    console.error('❌ ollama/generate error:', err);
 
     if (err instanceof Response) {
       throw err;
     }
 
-    throw error(500, `Ollama generation failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    return json(
+      { error: err instanceof Error ? err.message : 'Unknown error' },
+      { status: 500 }
+    );
   }
 };
 
 /**
- * GET endpoint to check Ollama availability
+ * GET endpoint to check Ollama availability via centralized service
  */
 export const GET: RequestHandler = async () => {
   try {
-    const response = await fetch(`${OLLAMA_BASE_URL}/api/tags`, {
-      signal: AbortSignal.timeout(2000)
+    const ollamaUrl = services.env.ollamaConfig.baseUrl;
+
+    const response = await fetch(`${ollamaUrl}/api/tags`, {
+      signal: AbortSignal.timeout(2000),
     });
 
     if (!response.ok) {
@@ -85,17 +76,18 @@ export const GET: RequestHandler = async () => {
     }
 
     const data = await response.json();
-    const models = data.models || [];
-
-    const hasGemma = models.some((m: any) =>
-      m.name === DEFAULT_MODEL || m.name.startsWith('gemma')
-    );
+    const models = Array.isArray(data.models) ? (data.models as unknown[]) : [];
+    const modelNames = models.map((m) => String((m as Record<string, unknown>)?.name ?? ''));
+    const hasGemma = modelNames.some((n) => n === services.env.ollamaConfig.chatModel || n.startsWith('gemma'));
 
     return json({
       status: 'online',
-      ollama_url: OLLAMA_BASE_URL,
-      available_models: models.map((m: any) => m.name),
-      gemma3_270m_available: hasGemma
+      ollama_url: ollamaUrl,
+      configured_model: services.env.ollamaConfig.chatModel,
+      available_models: modelNames,
+      gemma_available: hasGemma,
+      production: true,
+      service: 'ollama-centralized'
     });
   } catch (err) {
     console.error('❌ [Ollama API] Health check failed:', err);

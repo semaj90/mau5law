@@ -1,17 +1,34 @@
 import type { LegalDocument, Evidence } from "$lib/types/legal-types";
-// Client-side embedding generation using nomic-embed or llama.cpp WASM
-// 70% memory reduction through optimized client processing
+// New: typed worker message shapes and memory stats
+type MemoryStats = {
+  rss?: number;
+  heapTotal?: number;
+  heapUsed?: number;
+  external?: number;
+  [key: string]: unknown;
+};
+
+type WorkerToMain =
+  | { type: 'initialized' }
+  | { type: 'memory_stats'; stats: MemoryStats }
+  | { type: 'response'; success: boolean; embedding?: number[]; embeddings?: number[][]; error?: string }
+  | { type: 'optimize_done' };
+
 /**
  * Client-side embedding generator for legal documents
  * Uses WebAssembly for efficient client-side vector generation
  */
 export class ClientEmbeddingGenerator {
-  private wasmModule: any = null;
   private initialized = false;
   private worker: Worker | null = null;
-  private embedModel: 'nomic-embed' | 'llama-cpp' = 'nomic-embed';
-  constructor(model: 'nomic-embed' | 'llama-cpp' = 'nomic-embed') {
+  private embedModel: 'nomic-embed' | 'llama-cpp' | 'ollama-embedding' = 'ollama-embedding';
+  private ollamaUrl: string;
+  constructor(
+    model: 'nomic-embed' | 'llama-cpp' | 'ollama-embedding' = 'ollama-embedding',
+    ollamaUrl = 'http://localhost:11434'
+  ) {
     this.embedModel = model;
+    this.ollamaUrl = ollamaUrl;
   }
   /**
    * Initialize the embedding generator with WASM module
@@ -23,26 +40,33 @@ export class ClientEmbeddingGenerator {
       this.worker = new Worker('/workers/embedding-worker.js');
       // Wait for worker initialization
       await new Promise((resolve, reject) => {
-        const timeout: ReturnType<typeof setTimeout> = setTimeout(() => reject(new Error('Worker initialization timeout')), 30000);
-        this.worker!.onmessage = (_event: any) => {
-          if (event.data.type === 'initialized') {
+        const timeout: ReturnType<typeof setTimeout> = setTimeout(
+          () => reject(new Error('Worker initialization timeout')),
+          30000
+        );
+
+        // typed message event
+        this.worker!.onmessage = (e: MessageEvent<WorkerToMain>) => {
+          const data = e.data;
+          if (data?.type === 'initialized') {
             clearTimeout(timeout);
             this.initialized = true;
             resolve(true);
           }
-        }
-        this.worker!.onerror = (error) => {
+        };
+        this.worker!.onerror = error => {
           clearTimeout(timeout);
           reject(error);
-        }
+        };
         this.worker!.postMessage({
           type: 'initialize',
-          model: this.embedModel
+          model: this.embedModel,
         });
       });
       console.log(`Client embedding generator initialized with ${this.embedModel}`);
       return true;
-    } catch (error: any) {
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err));
       console.error('Failed to initialize embedding generator:', error);
       this.initialized = false;
       return false;
@@ -53,6 +77,10 @@ export class ClientEmbeddingGenerator {
    * Optimized for legal terminology and case law
    */
   async generateEmbedding(text: string): Promise<Float32Array | null> {
+    // If using Ollama remote embedding model, call the Ollama HTTP API directly
+    if (this.embedModel === 'ollama-embedding') {
+      return await this.callOllamaEmbedding(text);
+    }
     if (!this.initialized || !this.worker) {
       console.warn('Embedding generator not initialized');
       return null;
@@ -62,14 +90,22 @@ export class ClientEmbeddingGenerator {
         const timeout: ReturnType<typeof setTimeout> = setTimeout(() => {
           reject(new Error('Embedding generation timeout'));
         }, 60000); // 60 second timeout
-        this.worker!.onmessage = (_event: any) => {
+
+        this.worker!.onmessage = (e: MessageEvent<WorkerToMain>) => {
           clearTimeout(timeout);
-          if (event.data.success) {
-            resolve(new Float32Array(event.data.embedding));
+          const data = e.data;
+
+          if ('success' in data) {
+            if (data.success && Array.isArray(data.embedding)) {
+              resolve(new Float32Array(data.embedding));
+            } else {
+              reject(new Error(data.error ?? 'Unknown worker error'));
+            }
           } else {
-            reject(new Error(event.data.error));
+            reject(new Error('Unexpected worker message'));
           }
-        }
+        };
+
         this.worker!.postMessage({
           type: 'generate_embedding',
           text: text,
@@ -77,10 +113,11 @@ export class ClientEmbeddingGenerator {
             maxLength: 8192, // Legal documents can be long
             normalize: true,
             legal_mode: true,
-          }
+          },
         });
       });
-    } catch (error: any) {
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err));
       console.error('Embedding generation failed:', error);
       return null;
     }
@@ -88,12 +125,13 @@ export class ClientEmbeddingGenerator {
   /**
    * Generate embeddings for legal documents with legal-specific preprocessing
    */
-  async generateLegalDocumentEmbedding(_document: LegalDocument): Promise<Float32Array | null> {
+  async generateLegalDocumentEmbedding(document: LegalDocument): Promise<Float32Array | null> {
     try {
       // Construct legal-optimized text for embedding
       const embeddingText = this.prepareLegalText(document);
       return await this.generateEmbedding(embeddingText);
-    } catch (error: any) {
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err));
       console.error('Legal document embedding failed:', error);
       return null;
     }
@@ -103,6 +141,10 @@ export class ClientEmbeddingGenerator {
    * Optimized for memory efficiency (70% reduction target)
    */
   async generateBatchEmbeddings(texts: string[]): Promise<Float32Array[]> {
+    // If using Ollama remote embedding model, call the Ollama HTTP API for batches
+    if (this.embedModel === 'ollama-embedding') {
+      return await this.callOllamaBatch(texts);
+    }
     if (!this.initialized || !this.worker) {
       console.warn('Embedding generator not initialized');
       return [];
@@ -112,17 +154,23 @@ export class ClientEmbeddingGenerator {
         const timeout: ReturnType<typeof setTimeout> = setTimeout(() => {
           reject(new Error('Batch embedding timeout'));
         }, 120000); // 2 minute timeout for batches
-        this.worker!.onmessage = (_event: any) => {
+
+        this.worker!.onmessage = (e: MessageEvent<WorkerToMain>) => {
           clearTimeout(timeout);
-          if (event.data.success) {
-            const embeddings = event.data.embeddings.map((emb: number[]) =>
-              new Float32Array(emb)
-            );
-            resolve(embeddings);
+          const data = e.data;
+
+          if ('success' in data) {
+            if (data.success && Array.isArray(data.embeddings)) {
+              const embeddings = (data.embeddings ?? []).map((emb: number[]) => new Float32Array(emb));
+              resolve(embeddings);
+            } else {
+              reject(new Error(data.error ?? 'Unknown worker error'));
+            }
           } else {
-            reject(new Error(event.data.error);
+            reject(new Error('Unexpected worker message'));
           }
-        }
+        };
+
         this.worker!.postMessage({
           type: 'generate_batch_embeddings',
           texts: texts,
@@ -131,10 +179,11 @@ export class ClientEmbeddingGenerator {
             maxLength: 4096,
             normalize: true,
             legal_mode: true,
-          }
+          },
         });
       });
-    } catch (error: any) {
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err));
       console.error('Batch embedding generation failed:', error);
       return [];
     }
@@ -146,7 +195,8 @@ export class ClientEmbeddingGenerator {
     try {
       const embeddingText = this.prepareEvidenceText(evidence);
       return await this.generateEmbedding(embeddingText);
-    } catch (error: any) {
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err));
       console.error('Evidence embedding failed:', error);
       return null;
     }
@@ -154,50 +204,52 @@ export class ClientEmbeddingGenerator {
   /**
    * Prepare legal document text for optimal embedding generation
    */
-  private prepareLegalText(_document: LegalDocument): string {
-    const components = [];
+  private prepareLegalText(document: LegalDocument): string {
+    const components: string[] = [];
+    const doc = document as Partial<LegalDocument>;
+
     // Add document title with legal emphasis
-    if (document.title) {
-      components.push(`Title: ${document.title}`);
+    if (typeof doc.title === 'string' && doc.title.trim()) {
+      components.push(`Title: ${doc.title}`);
     }
     // Add document type for legal categorization
-    if (document.documentType) {
-      components.push(`Document Type: ${document.documentType}`);
+    if (typeof doc.documentType === 'string' && doc.documentType.trim()) {
+      components.push(`Document Type: ${doc.documentType}`);
     }
     // Add jurisdiction for legal context
-    if (document.jurisdiction) {
-      components.push(`Jurisdiction: ${document.jurisdiction}`);
+    if (typeof doc.jurisdiction === 'string' && doc.jurisdiction.trim()) {
+      components.push(`Jurisdiction: ${doc.jurisdiction}`);
     }
     // Add court information
-    if (document.court) {
-      components.push(`Court: ${document.court}`);
+    if (typeof doc.court === 'string' && doc.court.trim()) {
+      components.push(`Court: ${doc.court}`);
     }
     // Add parties for case context
-    if (document.parties) {
-      const partyInfo = Object.entries(document.parties)
+    if (doc.parties && typeof doc.parties === 'object') {
+      const partyInfo = Object.entries(doc.parties as Record<string, unknown>)
         .filter(([_, value]) => value)
-        .map(([role, name]) => `${role}: ${name}`)
+        .map(([role, name]) => `${role}: ${String(name)}`)
         .join(', ');
       if (partyInfo) {
         components.push(`Parties: ${partyInfo}`);
       }
     }
     // Add legal principles/topics
-    if (document.topics && document.topics.length > 0) {
-      components.push(`Legal Topics: ${document.topics.join(', ')}`);
+    if (Array.isArray(doc.topics) && doc.topics.length > 0) {
+      const topics = doc.topics.filter(t => typeof t === 'string').join(', ');
+      if (topics) components.push(`Legal Topics: ${topics}`);
     }
     // Add summary or headnotes (prioritized content)
-    if (document.headnotes) {
-      components.push(`Headnotes: ${document.headnotes}`);
-    } else if (document.summary) {
-      components.push(`Summary: ${document.summary}`);
+    if (typeof doc.headnotes === 'string' && doc.headnotes.trim()) {
+      components.push(`Headnotes: ${doc.headnotes}`);
+    } else if (typeof doc.summary === 'string' && doc.summary.trim()) {
+      components.push(`Summary: ${doc.summary}`);
     }
     // Add full content (truncated if too long)
-    if (document.fullText) {
+    if (typeof doc.fullText === 'string' && doc.fullText.length > 0) {
       const maxContentLength = 6000; // Leave room for metadata
-      const content = document.fullText.length > maxContentLength
-        ? document.fullText.substring(0, maxContentLength) + '...'
-        : document.fullText;
+      const content =
+        doc.fullText.length > maxContentLength ? doc.fullText.substring(0, maxContentLength) + '...' : doc.fullText;
       components.push(`Content: ${content}`);
     }
     return components.join('\n\n');
@@ -237,40 +289,99 @@ export class ClientEmbeddingGenerator {
    * Get embedding model information
    */
   getModelInfo(): { model: string; dimensions: number; initialized: boolean } {
-    const dimensions = this.embedModel === 'nomic-embed' ? 384 : 512;
+    const dimensions = this.embedModel === 'nomic-embed' ? 384 : this.embedModel === 'ollama-embedding' ? 1536 : 512;
     return {
       model: this.embedModel,
       dimensions: dimensions,
       initialized: this.initialized,
-    }
+    };
   }
   /**
    * Check if the client can support embedding generation
    */
   static isSupported(): boolean {
-    return (
-      typeof Worker !== 'undefined' &&
-      typeof WebAssembly !== 'undefined' &&
-      typeof Float32Array !== 'undefined'
-    );
+    // Support if either worker+WASM is present or fetch is available for remote Ollama
+    const hasWasmWorker = typeof Worker !== 'undefined' && typeof WebAssembly !== 'undefined';
+    const hasFetch = typeof fetch === 'function';
+    return typeof Float32Array !== 'undefined' && (hasWasmWorker || hasFetch);
+  }
+  /**
+   * Call Ollama embedding endpoint for a single input.
+   */
+  private async callOllamaEmbedding(text: string): Promise<Float32Array | null> {
+    try {
+      const payload = { model: 'embeddinggemma:latest', input: text };
+      const res = await fetch(`${this.ollamaUrl}/embeddings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        console.error('Ollama embedding request failed', await res.text());
+        return null;
+      }
+      const json = await res.json().catch(() => null);
+      if (!json) return null;
+      // handle common shapes: { embedding: [...] } or { embeddings: [[...]] } or { data: [{embedding: [...]}] }
+      let vec: number[] | undefined;
+      if (Array.isArray(json.embedding)) vec = json.embedding;
+      else if (Array.isArray(json.embeddings) && Array.isArray(json.embeddings[0])) vec = json.embeddings[0];
+      else if (Array.isArray(json.data) && json.data[0] && Array.isArray(json.data[0].embedding))
+        vec = json.data[0].embedding;
+      if (!vec) return null;
+      return new Float32Array(vec);
+    } catch (err) {
+      console.error('Ollama embedding error', err);
+      return null;
+    }
+  }
+  /**
+   * Call Ollama embedding endpoint for a batch of inputs.
+   */
+  private async callOllamaBatch(texts: string[]): Promise<Float32Array[]> {
+    try {
+      const payload = { model: 'embeddinggemma:latest', input: texts };
+      const res = await fetch(`${this.ollamaUrl}/embeddings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        console.error('Ollama batch embedding request failed', await res.text());
+        return [];
+      }
+      const json = await res.json().catch(() => null);
+      if (!json) return [];
+      // Normalize shapes: { embeddings: [[...], ...] or { data: [{embedding:[...]}, ...] }
+      let arrays: number[][] = [];
+      if (Array.isArray(json.embeddings)) arrays = json.embeddings;
+      else if (Array.isArray(json.data)) arrays = json.data.map((d: any) => d.embedding).filter(Array.isArray);
+      else if (Array.isArray(json.embedding) && Array.isArray(json.embedding[0])) arrays = json.embedding;
+      return arrays.map(a => new Float32Array(a));
+    } catch (err) {
+      console.error('Ollama batch embedding error', err);
+      return [];
+    }
   }
   /**
    * Get memory usage statistics for optimization monitoring
    */
-  async getMemoryStats(): Promise<any> {
+  async getMemoryStats(): Promise<MemoryStats | null> {
     if (!this.worker) return null;
     try {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         const timeout: ReturnType<typeof setTimeout> = setTimeout(() => resolve(null), 5000);
-        this.worker!.onmessage = (_event: any) => {
-          if (event.data.type === 'memory_stats') {
+        this.worker!.onmessage = (e: MessageEvent<WorkerToMain>) => {
+          const data = e.data;
+          if (data?.type === 'memory_stats') {
             clearTimeout(timeout);
-            resolve(event.data.stats);
+            resolve(data.stats);
           }
-        }
+        };
         this.worker!.postMessage({ type: 'get_memory_stats' });
       });
-    } catch (error: any) {
+    } catch (err) {
+      // swallow and return null on error
       return null;
     }
   }
@@ -282,8 +393,8 @@ export class ClientEmbeddingGenerator {
       this.worker.postMessage({ type: 'optimize_memory' });
     }
     // Trigger garbage collection if available
-    if ((globalThis as any).gc) {
-      (globalThis as any).gc();
+    if (typeof (globalThis as unknown as { gc?: () => void }).gc === 'function') {
+      (globalThis as unknown as { gc: () => void }).gc();
     }
   }
   /**
@@ -295,11 +406,10 @@ export class ClientEmbeddingGenerator {
       this.worker = null;
     }
     this.initialized = false;
-    this.wasmModule = null;
   }
 }
-// Singleton instance for application use
-export const clientEmbeddingGenerator = new ClientEmbeddingGenerator('nomic-embed');
+// Singleton instance for application use (default wired to Ollama embeddinggemma:latest)
+export const clientEmbeddingGenerator = new ClientEmbeddingGenerator('ollama-embedding', typeof process !== 'undefined' && (process.env?.OLLAMA_URL as string) ? (process.env.OLLAMA_URL as string) : 'http://localhost:11434');
 // Utility functions for embedding management
 export class EmbeddingCache {
   private cache = new Map<string, { embedding: Float32Array; timestamp: number }>();
@@ -311,7 +421,7 @@ export class EmbeddingCache {
   async getCachedEmbedding(text: string): Promise<Float32Array | null> {
     const cacheKey = this.generateCacheKey(text);
     const cached = this.cache.get(cacheKey);
-    if (cached && (Date.now() - cached.timestamp) < this.maxAge) {
+    if (cached && Date.now() - cached.timestamp < this.maxAge) {
       return cached.embedding;
     }
     // Generate new embedding
@@ -343,7 +453,7 @@ export class EmbeddingCache {
     let hash = 0;
     for (let i = 0; i < text.length; i++) {
       const char = text.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return hash.toString(36);
@@ -353,7 +463,7 @@ export class EmbeddingCache {
    */
   private cleanup(): void {
     const now = Date.now();
-    const entries = Array.from(this.cache.entries();
+    const entries = Array.from(this.cache.entries());
     // Sort by timestamp and remove oldest entries
     entries.sort((a, b) => a[1].timestamp - b[1].timestamp);
     // Remove oldest 20% of entries
@@ -370,8 +480,8 @@ export class EmbeddingCache {
       size: this.cache.size,
       maxSize: this.maxCacheSize,
       hitRate: 0, // Would need to track hits/misses
-      memoryUsage: this.cache.size * 384 * 4 // Approximate bytes
-    }
+      memoryUsage: this.cache.size * 384 * 4, // Approximate bytes
+    };
   }
 }
 export const embeddingCache = new EmbeddingCache();

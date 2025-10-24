@@ -4,9 +4,9 @@
 // ======================================================================
 import { gpuLokiErrorAPI } from './gpu-loki-error-orchestrator.js';
 import { parallelAnalysisAPI } from './parallel-error-analyzer.js';
-import { browser } from '$app/environment';
+// import { browser } from '$app/environment'; // removed: unused
 import { writable, derived } from 'svelte/store';
-}
+
 export interface FixAttempt {
   id: string;
   errorId: string;
@@ -19,7 +19,7 @@ export interface FixAttempt {
   timestamp: Date;
   llmModel?: string;
 }
-}
+
 export interface ErrorFix {
   errorId: string;
   file: string;
@@ -32,17 +32,86 @@ export interface ErrorFix {
   dependencies: string[];
   validated: boolean;
 }
-}
+
 export interface AIFixConfig {
-  model: 'gemma3-legal';
+  model: string;
   endpoint: string;
   maxRetries: number;
   confidenceThreshold: number;
   batchSize: number;
   validateFixes: boolean;
-  embeddingModel: 'nomic-embed-text';
+  embeddingModel: string;
 }
-class AIErrorFixer {
+
+// New: typed shape for analyzer results (replace many 'any' occurrences)
+export interface ErrorAnalysisResult {
+  id: string;
+  file?: string;
+  line?: number;
+  originalCode?: string;
+  code?: string;
+  message?: string;
+  category?: string;
+  fixable?: boolean;
+  confidence?: number;
+  dependencies?: string[];
+  [key: string]: unknown;
+}
+
+// --- Added typed interfaces for external services & server-side helpers ---
+export interface UltraJSONParser {
+  parse<T = unknown>(input: string): Promise<T>;
+  stringify(obj: unknown): Promise<string>;
+}
+
+export interface WasmClusteringService {
+  clusterEmbeddings(embeddings: Float32Array | number[][]): Promise<number[]>;
+  // returns cluster assignments or centroids depending on implementation
+}
+
+export interface NesGPUBridge {
+  computeSimilarity(a: Float32Array, b: Float32Array): Promise<number>;
+  // low-level GPU compute helper (WebGPU / CUDA bridge)
+}
+
+export interface OllamaEmbeddingsHelper {
+  embed(text: string, model?: string): Promise<number[]>;
+}
+
+export interface RedisCacheHelper {
+  get<T = unknown>(key: string): Promise<T | null>;
+  set<T = unknown>(key: string, value: T, ttlSeconds?: number): Promise<void>;
+  del(key: string): Promise<void>;
+}
+
+export interface QdrantIndexer {
+  upsert(
+    collection: string,
+    vectors: Array<{ id: string; vector: number[]; payload?: Record<string, unknown> }>
+  ): Promise<void>;
+  search(
+    collection: string,
+    vector: number[],
+    topK?: number
+  ): Promise<Array<{ id: string; score: number; payload?: Record<string, unknown> }>>;
+}
+
+export interface PGJsonPersistence {
+  upsert(table: string, id: string, json: Record<string, unknown>): Promise<void>;
+  query(table: string, filter: Record<string, unknown>): Promise<Record<string, unknown>[]>;
+}
+// --- end interfaces ---
+
+export class AIErrorFixer {
+  // New: optional injected helpers / adapters (declare to avoid implicit any)
+  private ultraJSONParser?: UltraJSONParser;
+  private wasmClusteringService?: WasmClusteringService;
+  private nesGPUBridge?: NesGPUBridge;
+  private ollamaEmbeddings?: OllamaEmbeddingsHelper;
+  private redisCache?: RedisCacheHelper;
+  private qdrantIndexer?: QdrantIndexer;
+  private pgPersistence?: PGJsonPersistence;
+
   private config: AIFixConfig = {
     model: 'gemma3-legal',
     endpoint: 'http://localhost:11434/api/generate',
@@ -51,14 +120,21 @@ class AIErrorFixer {
     batchSize: 10,
     validateFixes: true,
     embeddingModel: 'nomic-embed-text',
-  }
+  };
+
   private fixHistory = new Map<string, FixAttempt[]>();
+
+  // Minimal Ollama wrapper
   private ollama = this.initializeOllama();
+
   private initializeOllama() {
+    // capture config values in closure to avoid `this`-typing issues inside returned object
+    const endpoint = this.config.endpoint;
+    const defaultModel = this.config.model;
     return {
-      async generate(prompt: string, model: string = 'gemma3-legal:latest') {
+      async generate(prompt: string, model: string = defaultModel) {
         try {
-          const response = await fetch('http://localhost:11434/api/generate', {
+          const resp = await fetch(endpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -66,171 +142,199 @@ class AIErrorFixer {
               prompt,
               stream: false,
               options: {
-                temperature: 0.1, // Low temperature for consistent fixes
+                temperature: 0.1,
                 top_p: 0.9,
-                max_tokens: 1000
-              }
-            )}),
+                max_tokens: 1000,
+              },
+            }),
           });
-          if (!(response as { ok?: any; json?: any; match?: any }).ok) throw new Error('Ollama request failed');
-          const data = await (response as { ok?: any; json?: any; match?: any }).json();
-          return (data as { response?: any }).response || '';
-        } catch (error: any) {
-          console.error('Ollama generation failed:', error);
+          if (!resp.ok) throw new Error(`Ollama request failed: ${resp.status}`);
+          const data = await resp.json();
+          // Accept different shapes, prefer `response` or `text`
+          return (data as { response?: string; text?: string }).response || (data as { response?: string; text?: string }).text || String(data);
+        } catch (err) {
+          // keep behavior but avoid leaking types
+          // eslint-disable-next-line no-console
+          console.error('Ollama generation failed:', err);
           return '';
         }
-      }
-    }
+      },
+    };
   }
-  async fixErrors(errors,: any[]): Promise<ErrorFix[]> {
-    if (!errors,.lengt,h) retur,n, [];
-    console,.log(`🔧 AI fixing ${errors.length} errors...`);
-    const startTime = performance.now();
-    // Filter fixable errors
-    const fixableErrors = errors.filter(error => error.fixable && error.confidence > this.config.confidenceThreshold);
-    if (!fixableErrors,.lengt,h) {
-      console.log('ℹ️ No fixable errors found');
-      return [];
-    }
-    console.log(`🎯 Attempting to fix ${fixableErrors.length} errors`);
-    // Process errors in batches
+
+  async fixErrors(errors: ErrorAnalysisResult[]): Promise<ErrorFix[]> {
+    if (!errors || errors.length === 0) return [];
+    const startTime = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+
+    const fixableErrors = errors.filter(
+      (e) => e && e.fixable && (typeof e.confidence === 'number' ? e.confidence > this.config.confidenceThreshold : true)
+    );
+
+    if (fixableErrors.length === 0) return [];
+
     const batches = this.createBatches(fixableErrors, this.config.batchSize);
     const allFixes: ErrorFix[] = [];
+
     for (const batch of batches) {
       const batchFixes = await this.processBatch(batch);
       allFixes.push(...batchFixes);
     }
-    const processingTime = performance.now() - startTime;
-    console.log(`✅ AI fixing completed in ${processingTime.toFixed(2)}ms`);
+
+    const processingTime = ((typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now()) - startTime;
+    // eslint-disable-next-line no-console
+    console.log(`AI fixing completed in ${processingTime.toFixed(2)}ms`);
     return allFixes;
   }
-  private async processBatch(errors,: any[]): Promise<ErrorFix[]> {
-    const fixe,s: ErrorF,ix,[], = [];
-    for (const error, o,f errors) {
+
+  private async processBatch(errors: ErrorAnalysisResult[]): Promise<ErrorFix[]> {
+    const fixes: ErrorFix[] = [];
+    for (const err of errors) {
       try {
-        const fix = await this.generateFix(error);
+        const fix = await this.generateFix(err);
         if (fix) {
           fixes.push(fix);
-          // Cache the fix attempt
-          await this.cacheFixAttempt(error.id, fix);
+          await this.cacheFixAttempt(err.id, fix);
         }
-      } catch (error: any) {
-        console.error('Error fixing failed:', error);
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Error fixing failed for', err?.id, e);
       }
     }
-    return fixe,s;
+    return fixes;
   }
-  private async generateFix(error,: any): Promise<ErrorFix | null> {
-    // Check cache first
-    const cachedFix = await this.getCachedFix(error.id);
-    if (cachedFix), return cachedF,ix;
-    // Generate new fix using AI
+
+  private async generateFix(error: ErrorAnalysisResult): Promise<ErrorFix | null> {
+    const cached = await this.getCachedFix(error.id);
+    if (cached) return cached;
+
     const fix = await this.generateAIFix(error);
-    if (this.config.validateFixes && fi,x) {
+    if (fix && this.config.validateFixes) {
       fix.validated = await this.validateFix(fix);
     }
     return fix;
   }
-  private async generateAIFix(error,: any): Promise<ErrorFix | null> {
+
+  private async generateAIFix(error: ErrorAnalysisResult): Promise<ErrorFix | null> {
     const prompt = this.createFixPrompt(error);
     try {
-      // removed unused response assignment
-      if (!response), return nu,ll;
-      return this.parseFixResponse(error, response);
-    } catch (error: any) {
-      console.error('AI fix generation failed:', error);
+      const responseText = await this.ollama.generate(prompt, `${this.config.model}:latest`);
+      if (!responseText) return null;
+      return this.parseFixResponse(error, responseText);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('AI fix generation failed:', e);
       return null;
     }
   }
-  private createFixPrompt(error,: any): string {
-    return `You are a TypeScript expert. Fix this error:;
-Error: ${error.code} - ${error.message}
-File: ${error.file}
-Line: ${error.line}
-Category: ${error.category}
-Context around line ${error.line}:
+
+  private createFixPrompt(error: ErrorAnalysisResult): string {
+    const line = error.line || 0;
+    const original = error.originalCode ?? '// Code not available';
+    return `You are a TypeScript expert. Fix this error:
+Error: ${error.code || 'unknown'} - ${error.message || ''}
+File: ${error.file || 'unknown'}
+Line: ${line}
+Category: ${error.category || 'general'}
+Context around line ${line}:
 \`\`\`typescript
-// Line ${error.line - 1}:
-// Line ${error.line}: ${error.originalCode || '// Code not available'}
-// Line ${error.line + 1}:
+// Line ${Math.max(0, line - 1)}:
+// Line ${line}: ${original}
 \`\`\`
-Provide ONLY the fixed code for line ${error.line}, with this format:
-FIXED_CODE: [your fix here],
+Provide ONLY the fixed code for line ${line} with this format:
+FIXED_CODE: [your fix here]
 REASONING: [brief explanation]
 CONFIDENCE: [0.0-1.0]
-Common fixes for ${error.code}:
-${this.getCommonFixes(error.code)}`;
+Common fixes for ${error.code || 'unknown'}:
+${this.getCommonFixes(error.code || '')}`;
   }
-  private getCommonFixes(code,: string): string {
+
+  private getCommonFixes(code: string): string {
     const fixes: Record<string, string> = {
-      'TS1434': '- Remove unexpected keyword\n- Fix identifier syntax\n- Check for typos',
-      'TS2304': '- Add missing import\n- Declare the variable\n- Check spelling',
-      'TS2307': '- Fix module path\n- Install missing package\n- Check file exists',
-      'TS2457': '- Rename type alias\n- Use different name\n- Avoid reserved keywords',
-      'TS1005': '- Add missing semicolon\n- Add missing comma\n- Check syntax',
-      'TS1128': '- Add missing declaration\n- Complete the statement\n- Fix syntax'
-    }
+      TS1434: '- Remove unexpected keyword\n- Fix identifier syntax\n- Check for typos',
+      TS2304: '- Add missing import\n- Declare the variable\n- Check spelling',
+      TS2307: '- Fix module path\n- Install missing package\n- Check file exists',
+      TS2457: '- Rename type alias\n- Use different name\n- Avoid reserved keywords',
+      TS1005: '- Add missing semicolon\n- Add missing comma\n- Check syntax',
+      TS1128: '- Add missing declaration\n- Complete the statement\n- Fix syntax',
+    };
     return fixes[code] || '- Manual review required\n- Check TypeScript documentation';
   }
-  private parseFixResponse(error,: any, respons,e: strin,g): ErrorFix | nu,ll {
+
+  private parseFixResponse(error: ErrorAnalysisResult, response: string): ErrorFix | null {
     try {
-      const fixedCodeMatch = (response as { ok?: any; json?: any; match?: any }).match(/FIXED_CODE:\s*(.+?)(?:\n|$)/);
-      const reasoningMatch = (response as { ok?: any; json?: any; match?: any }).match(/REASONING:\s*(.+?)(?:\n|$)/);
-      const confidenceMatch = (response as { ok?: any; json?: any; match?: any }).match(/CONFIDENCE:\s*([\d.]+)/);
+      const fixedCodeMatch = response.match(/FIXED_CODE:\s*([\s\S]*?)(?:\nREASONING:|\nCONFIDENCE:|$)/i);
+      const reasoningMatch = response.match(/REASONING:\s*([\s\S]*?)(?:\nCONFIDENCE:|$)/i);
+      const confidenceMatch = response.match(/CONFIDENCE:\s*([\d.]+)/i);
+
       if (!fixedCodeMatch) return null;
+
+      const fixedText = fixedCodeMatch[1].trim();
+      const reasoning = (reasoningMatch && reasoningMatch[1].trim()) || 'AI generated fix';
+      const confidence = parseFloat(confidenceMatch?.[1] || '0.5');
+
       const fix: ErrorFix = {
         errorId: error.id,
-        file: error.file,
-        line: error.line,
+        file: error.file || 'unknown',
+        line: error.line || 0,
         originalText: error.originalCode || '',
-        fixedText: fixedCodeMatch[1].trim(),
+        fixedText,
         strategy: this.getFixStrategy(error.code),
-        confidence: parseFloat(confidenceMatch?.[1] || '0.5'),
-        reasoning: reasoningMatch?.[1]?.trim() || 'AI generated fix',
-        dependencies: error.dependencies || [],
-        validated: false
-      }
+        confidence,
+        reasoning,
+        dependencies: (error.dependencies as string[]) || [],
+        validated: false,
+      };
       return fix;
-    } catch (error: any) {
-      console.error('Failed to parse fix response:', error);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to parse fix response:', e);
       return null;
     }
   }
-  private getFixStrategy(code,: string): string {
+
+  private getFixStrategy(code?: string): string {
     const strategies: Record<string, string> = {
-      'TS1434': 'syntax_cleanup',
-      'TS2304': 'add_import',
-      'TS2307': 'fix_module_path',
-      'TS2457': 'rename_type',
-      'TS1005': 'add_punctuation',
-      'TS1128': 'add_declaration'
-    }
-    return strategies[code] || 'manual_fix';
+      TS1434: 'syntax_cleanup',
+      TS2304: 'add_import',
+      TS2307: 'fix_module_path',
+      TS2457: 'rename_type',
+      TS1005: 'add_punctuation',
+      TS1128: 'add_declaration',
+    };
+    return (code && strategies[code]) || 'manual_fix';
   }
-  private async validateFix(fix,: ErrorFix): Promise<boolean> {
-    // Basic validation checks
-    if (!fix,.fixedText || fix.fixedText === fix.originalTex,t) retur,n fa,lse;
-    if (fix,.confidence < this.config.confidenceThreshol,d) retur,n fa,lse;>
-    // Syntax validation
+
+  private async validateFix(fix: ErrorFix): Promise<boolean> {
+    if (!fix || !fix.fixedText) return false;
+    if (fix.fixedText === fix.originalText) return false;
+    if (fix.confidence < this.config.confidenceThreshold) return false;
+
+    // Basic heuristics: strategy-based minimal checks
     try {
-      // Check for common syntax issues
-      if (fix.strategy === 'add_punctuation' && !fix.fixedText.match(/[]/)) return false;
-      if (fix.strategy === 'add_import' && !fix.fixedText.includes('import')) return false;
+      if (fix.strategy === 'add_punctuation' && !/[;,.{}()[\]]/.test(fix.fixedText)) return false;
+      if (fix.strategy === 'add_import' && !/import\s+/.test(fix.fixedText)) return false;
       return true;
-    } catch (error: any) {
+    } catch {
       return false;
     }
   }
-  private async getCachedFix(errorId,: string): Promise<ErrorFix | null> {
+
+  private async getCachedFix(errorId: string): Promise<ErrorFix | null> {
     try {
-      // Check cache using enhanced Loki
-      const cached = await gpuLokiErrorAPI.getStats();
-      return nul,l; // Implement cache retrieval
-    } catch, {
-      return nul,l;
+      // Placeholder: use gpuLokiErrorAPI for stats/cache if available
+      if (gpuLokiErrorAPI && typeof gpuLokiErrorAPI.get === 'function') {
+        const r = await (gpuLokiErrorAPI.get as (id: string) => Promise<any>)(errorId).catch(() => null);
+        if (r && r.fixed) {
+          return r as ErrorFix;
+        }
+      }
+      return null;
+    } catch {
+      return null;
     }
   }
-  private async cacheFixAttempt(errorId,: string, fi,x: ErrorFix) {
+
+  private async cacheFixAttempt(errorId: string, fix: ErrorFix) {
     const attempt: FixAttempt = {
       id: `fix_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       errorId,
@@ -241,109 +345,216 @@ ${this.getCommonFixes(error.code)}`;
       applied: false,
       result: 'success',
       timestamp: new Date(),
-      llmModel: this.config?.model || "unknown" // @ts-ignore - Model property access
-    }
+      llmModel: this.config.model,
+    };
     const history = this.fixHistory.get(errorId) || [];
     history.push(attempt);
     this.fixHistory.set(errorId, history);
-  }
-  private createBatches<T>(items,: T[], batchSiz,e: numbe,r): T[],[] {
-    const batches = [];
-    for (let i = 0; i < items.length; i += batchSize) {>
-      batches.push(items.slice(i, i + batchSize);
+
+    // Optionally persist to gpuLokiErrorAPI (best-effort)
+    try {
+      if (gpuLokiErrorAPI && typeof gpuLokiErrorAPI.put === 'function') {
+        await gpuLokiErrorAPI.put(errorId, attempt).catch(() => {});
+      }
+    } catch {
+      // ignore
     }
-    return batches;
+
+    // --- New: best-effort side-effects for integrations ---
+    (async () => {
+      try {
+        // cache in Redis if available
+        if (this.redisCache) {
+          await this.redisCache.set(`fix:${errorId}`, fix, 60 * 60); // 1h TTL
+        }
+
+        // index embedding into Qdrant if available
+        if (this.qdrantIndexer) {
+          try {
+            const vector =
+              (this.ollamaEmbeddings && (await this.ollamaEmbeddings.embed(fix.fixedText, this.config.embeddingModel))) ||
+              (await this.generateEmbedding(fix.fixedText));
+            if (vector && vector.length) {
+              await this.qdrantIndexer.upsert('ai_fixes', [{ id: errorId, vector, payload: { file: fix.file, line: fix.line } }]);
+            }
+          } catch (e) {
+            // non-fatal
+          }
+        }
+
+        // persist metadata to Postgres jsonb table if available
+        if (this.pgPersistence) {
+          await this.pgPersistence.upsert('ai_fixes', errorId, {
+            errorId,
+            file: fix.file,
+            line: fix.line,
+            strategy: fix.strategy,
+            confidence: fix.confidence,
+            reasoning: fix.reasoning,
+            timestamp: attempt.timestamp.toISOString(),
+          });
+        }
+      } catch {
+        // swallow any integration errors - non-blocking
+      }
+    })();
+    // --- end side-effects ---
   }
-  async applyFixes(fixes,: ErrorFix[]): Promise<any> {
-    console,.log(`📝 Applying ${fixes.length} fixes...`);
-    const results = [,];
-    let applied =, 0;
-    let failed =, 0;
-    for (const fix, o,f fixes) {
+
+  // --- New: setters for integrations (callers can inject implementations) ---
+  setUltraJSONParser(parser: UltraJSONParser) {
+    this.ultraJSONParser = parser;
+  }
+
+  setWasmClusteringService(svc: WasmClusteringService) {
+    this.wasmClusteringService = svc;
+  }
+
+  setNesGPUBridge(bridge: NesGPUBridge) {
+    this.nesGPUBridge = bridge;
+  }
+
+  setOllamaEmbeddings(helper: OllamaEmbeddingsHelper) {
+    this.ollamaEmbeddings = helper;
+  }
+
+  setRedisCache(helper: RedisCacheHelper) {
+    this.redisCache = helper;
+  }
+
+  setQdrantIndexer(indexer: QdrantIndexer) {
+    this.qdrantIndexer = indexer;
+  }
+
+  setPGPersistence(persistence: PGJsonPersistence) {
+    this.pgPersistence = persistence;
+  }
+  // --- end setters ---
+
+  // --- New helper: local embedding generation fallback / adapter ---
+  private async generateEmbedding(text: string): Promise<number[]> {
+    // prefer injected Ollama embeddings helper
+    if (this.ollamaEmbeddings) {
+      try {
+        return await this.ollamaEmbeddings.embed(text, this.config.embeddingModel);
+      } catch {
+        // fallback to fetch-based endpoint if available
+      }
+    }
+
+    // fallback: attempt to call local server-side embeddings endpoint (best-effort)
+    try {
+      const resp = await fetch('/api/embeddings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: this.config.embeddingModel, text }),
+      });
+      if (!resp.ok) return [];
+      const data = await resp.json();
+      // assume shape: { embedding: number[] } or { embeddings: number[] }
+      return data.embedding || data.embeddings || [];
+    } catch {
+      return [];
+    }
+  }
+  // --- end helper ---
+
+  async applyFixes(fixes: ErrorFix[]): Promise<{ applied: number; failed: number; results: any[] }> {
+    const results: any[] = [];
+    let applied = 0;
+    let failed = 0;
+
+    for (const fix of fixes) {
       try {
         if (fix.validated && fix.confidence >= this.config.confidenceThreshold) {
           const result = await this.applyFix(fix);
           results.push(result);
-          if ((result as { success?: any }).success) {
-            applied++;
-          } else {
-            failed++;
-          }
+          if (result.success) applied++;
+          else failed++;
         } else {
-          results.push({
-            errorId: fix.errorId,
-            success: false;
-            reason: 'Fix not validated or confidence too low'
-          });
+          results.push({ errorId: fix.errorId, success: false, reason: 'Fix not validated or confidence too low' });
           failed++;
         }
-      } catch (error: any) {
-        console.error(`Failed to apply fix for ${fix.errorId}:`, error);
+      } catch (e) {
+        console.error(`Failed to apply fix for ${fix.errorId}:`, e);
+        results.push({ errorId: fix.errorId, success: false, reason: String(e) });
         failed++;
       }
     }
-    console,.log(`✅ Applied: ${applied}, Failed: ${failed}`);
-    return { applied, failed, results }
+
+    return { applied, failed, results };
   }
-  private async applyFix(fix,: ErrorFix): Promise<any> {
+
+  private async applyFix(fix: ErrorFix): Promise<any> {
     try {
-      // Read the file
-      const response = await fetch(`/api/files/read`, {
+      // Read file via API; the endpoint must exist on the server-side
+      const resp = await fetch(`/api/files/read`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ file: fix.file, )}),
+        body: JSON.stringify({ file: fix.file }),
       });
-      if (!(response as { ok?: any; json?: any; match?: any }).ok) {
-        return { errorId: fix.errorId, success: false, reason: 'Could not read file' }
+      if (!resp.ok) return { errorId: fix.errorId, success: false, reason: 'Could not read file' };
+
+      const { content } = await resp.json();
+      const lines = typeof content === 'string' ? content.split(/\r?\n/) : [];
+
+      if (fix.line <= 0 || fix.line > lines.length + 1) {
+        return { errorId: fix.errorId, success: false, reason: 'Line number out of range' };
       }
-      const { content } = await (response as { ok?: an;y; json?: any; match?: any }).json();
-      // removed unused lines assignment
-      // Apply the fix
-      if (fix.line <= lines.length) {>
-        lines[fix.line - 1], = fix.fixedText;
-        // Write the file back
-        const writeResponse = await fetch(`/api/files/write`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({,
-            file: fix.file,
-            content: lines.join('\n)')
-          })
-        });
-        if (writeResponse.ok) {
-          return { errorId: fix.errorId, success: true }
-        } else {
-          return { errorId: fix.errorId, success: false, reason: 'Could not write file' }
-        }
-      } else {
-        return { errorId: fix.errorId, success: false, reason: 'Line number out of range' }
+
+      // Replace or insert line (line numbers are 1-based)
+      lines[fix.line - 1] = fix.fixedText;
+
+      const writeResp = await fetch(`/api/files/write`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ file: fix.file, content: lines.join('\n') }),
+      });
+
+      if (!writeResp.ok) {
+        return { errorId: fix.errorId, success: false, reason: 'Could not write file' };
       }
-    } catch (error: any) {
-      return { errorId: fix.errorId, success: false, reason: String(error) }
+
+      // Mark latest attempt as applied
+      const history = this.fixHistory.get(fix.errorId) || [];
+      const last = history[history.length - 1];
+      if (last) last.applied = true;
+
+      return { errorId: fix.errorId, success: true };
+    } catch (e) {
+      return { errorId: fix.errorId, success: false, reason: String(e) };
     }
   }
-  getFixHistory(errorId?: string),: FixAttempt[], {
-    if (errorId) {
-      return this.fixHistory.get(errorId) || [];
-    } else {
-      return Array.from(this.fixHistory.values()).flat();
-    }
+
+  getFixHistory(errorId?: string): FixAttempt[] {
+    if (errorId) return this.fixHistory.get(errorId) || [];
+    return Array.from(this.fixHistory.values()).flat();
   }
-  getStats(), {
+
+  getStats() {
     const allAttempts = this.getFixHistory();
-    return {
-      totalAttempts: allAttempts.length,
-      successfulFixes: allAttempts.filter(item => item.length),
-      failedFixes: allAttempts.filter(item => item.length),
-      averageConfidence: allAttempts.reduce((sum, a) => sum + a.confidence, 0) / allAttempts.length || 0,
-      appliedFixes: allAttempts.filter(item => item.length)
+    const totalAttempts = allAttempts.length;
+    const successfulFixes = allAttempts.filter((a) => a.result === 'success').length;
+    const failedFixes = allAttempts.filter((a) => a.result === 'failed').length;
+    const averageConfidence =
+      allAttempts.reduce((sum, a) => sum + (a.confidence || 0), 0) / (allAttempts.length || 1);
+    const appliedFixes = allAttempts.filter((a) => a.applied).length;
+    return { totalAttempts, successfulFixes, failedFixes, averageConfidence, appliedFixes };
+  }
+
+  private createBatches<T>(items: T[], size: number): T[][] {
+    const out: T[][] = [];
+    for (let i = 0; i < items.length; i += size) {
+      out.push(items.slice(i, i + size));
     }
+    return out;
   }
 }
 // ======================================================================
 // STORE INTEGRATION
 // ======================================================================
 export const aiErrorFixer = new AIErrorFixer();
+
 export const errorFixerStore = writable({
   initialized: false,
   fixing: false,
@@ -355,61 +566,65 @@ export const errorFixerStore = writable({
     successfulFixes: 0,
     failedFixes: 0,
     averageConfidence: 0,
-    appliedFixes: 0
-  }
+    appliedFixes: 0,
+  },
 });
+
 export const fixerProgressStore = derived(errorFixerStore, ($store) => ({
   active: $store.fixing,
   totalFixes: $store.fixes.length,
   applied: $store.appliedFixes,
   failed: $store.failedFixes,
-  successRate: $store.appliedFixes / ($store.appliedFixes + $store.failedFixes) || 0
-});
-// ======================================================================
-// PUBLIC API
-// ======================================================================
+  successRate:
+    $store.appliedFixes + $store.failedFixes > 0
+      ? $store.appliedFixes / ($store.appliedFixes + $store.failedFixes)
+      : 0,
+}));
+
 export const aiErrorFixerAPI = {
   async initialize() {
-    await gpuLokiErrorAPI.initialize();
-    await parallelAnalysisAPI.initialize();
-    errorFixerStore.update(state => ({ ...state, initialized: true });
+    await Promise.allSettled([gpuLokiErrorAPI?.initialize?.(), parallelAnalysisAPI?.initialize?.()]);
+    errorFixerStore.update((s) => ({ ...s, initialized: true }));
   },
+
   async processAndFixErrors(tscOutput: string) {
-    errorFixerStore.update(state => ({ ...state, fixing: true });
+    errorFixerStore.update((s) => ({ ...s, fixing: true }));
     try {
-      // 1. Process errors with GPU orchestrator
-      const analysisResults = await gpuLokiErrorAPI.processErrors(tscOutput);
-      // 2. Generate fixes with AI
+      const analysisResults =
+        (await gpuLokiErrorAPI?.processErrors?.(tscOutput)) || (await parallelAnalysisAPI?.analyze?.(tscOutput)) || [];
+
       const fixes = await aiErrorFixer.fixErrors(analysisResults);
-      // 3. Apply validated fixes
       const applyResults = await aiErrorFixer.applyFixes(fixes);
-      // 4. Update store
       const stats = aiErrorFixer.getStats();
-      errorFixerStore.update(state => ({
+
+      errorFixerStore.update((state) => ({
         ...state,
         fixing: false,
         fixes,
         appliedFixes: applyResults.applied,
         failedFixes: applyResults.failed,
-        stats
-      });
+        stats,
+      }));
+
       return {
         totalErrors: analysisResults.length,
         fixableErrors: fixes.length,
         appliedFixes: applyResults.applied,
         failedFixes: applyResults.failed,
-        fixes: fixes
-      }
-    } catch (error: any) {
+        fixes,
+      };
+    } catch (error) {
       console.error('Error fixing pipeline failed:', error);
-      errorFixerStore.update(state => ({ ...state, fixing: false });
+      errorFixerStore.update((s) => ({ ...s, fixing: false }));
       throw error;
     }
   },
+
   async getStats() {
     return aiErrorFixer.getStats();
   },
+
   async getFixHistory(errorId?: string) {
     return aiErrorFixer.getFixHistory(errorId);
-  }
-}
+  },
+};

@@ -2,116 +2,42 @@
 version: '3.8'
 
 services:
-  # Legal Expert Model - Large specialized model for complex legal analysis
-  vllm-legal-expert:
-    image: vllm/vllm-openai:latest
-    command: >
-      --model ollama/gemma-3-legal-2b-instruct-q6_k
-      --host 0.0.0.0
-      --port 8000
-      --gpu-memory-utilization 0.6
-      --max-model-len 8192
-      --tensor-parallel-size 1
+  # Neo4j Graph Database
+  neo4j:
+    image: neo4j:5-community
     ports:
-      - "8000:8000"
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
+      - "7474:7474"
+      - "7687:7687"
     volumes:
-      - ./ollama_models:/root/.ollama/models
-      - ./logs/vllm-legal:/logs
+      - neo4j_data:/data
     environment:
-      - CUDA_VISIBLE_DEVICES=0
-      - OLLAMA_HOST=0.0.0.0
+      - NEO4J_AUTH=neo4j/legal123456
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider localhost:7474 || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 120s
-
-  # Fast Router Model - Small quick model for routing and simple queries
-  vllm-fast-router:
-    image: vllm/vllm-openai:latest
-    command: >
-      --model ollama/gemma-3-270m-instruct-q6_k
-      --host 0.0.0.0
-      --port 8000
-      --gpu-memory-utilization 0.2
-      --max-model-len 4096
-    ports:
-      - "8001:8000"
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
-    volumes:
-      - ./ollama_models:/root/.ollama/models
-      - ./logs/vllm-router:/logs
-    environment:
-      - CUDA_VISIBLE_DEVICES=0
-      - OLLAMA_HOST=0.0.0.0
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 15s
-      timeout: 5s
-      retries: 3
       start_period: 60s
 
-  # Redis with Nintendo Memory Budgeting
-  legal-ai-redis:
-    image: redis/redis-stack:latest
+  # Qdrant Vector Search Engine
+  qdrant:
+    image: qdrant/qdrant:latest
     ports:
-      - "6379:6379"
-      - "8002:8001" # RedisInsight UI
+      - "6333:6333"
+      - "6334:6334"
     volumes:
-      - redis_data:/data
-      - ./redis.conf:/usr/local/etc/redis/redis.conf
-    command: redis-server /usr/local/etc/redis/redis.conf
-    environment:
-      - REDIS_ARGS="--maxmemory 1gb --maxmemory-policy allkeys-lru"
+      - qdrant_data:/qdrant/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "curl", "-f", "http://localhost:6333/health"]
       interval: 10s
       timeout: 5s
       retries: 3
 
-  # Embedding Service - Dedicated embedding generation
-  ollama-embeddings:
-    image: ollama/ollama:latest
-    ports:
-      - "11434:11434"
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
-    volumes:
-      - ./ollama_models:/root/.ollama/models
-      - ./logs/ollama:/logs
-    environment:
-      - CUDA_VISIBLE_DEVICES=0
-      - OLLAMA_HOST=0.0.0.0
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
   # PostgreSQL with pgvector for document storage
-  legal-db:
-    image: pgvector/pgvector:pg16
+  postgres:
+    image: pgvector/pgvector:pg17
     ports:
-      - "5433:5432"
+      - "5432:5432"
     environment:
       - POSTGRES_DB=legal_ai_db
       - POSTGRES_USER=legal_admin
@@ -126,9 +52,103 @@ services:
       timeout: 5s
       retries: 3
 
+  # PostgreSQL for testing
+  postgres-test:
+    image: pgvector/pgvector:pg17
+    ports:
+      - "5434:5432"
+    environment:
+      - POSTGRES_DB=legal_ai_test_db
+      - POSTGRES_USER=legal_admin
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_INITDB_ARGS="--encoding=UTF-8"
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U legal_admin -d legal_ai_test_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Redis for testing
+  redis-test:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_test_data:/data
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # MinIO Object Storage
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    environment:
+      - MINIO_ROOT_USER=minio
+      - MINIO_ROOT_PASSWORD=minio123
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # RabbitMQ Message Broker
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=legal_admin
+      - RABBITMQ_DEFAULT_PASS=123456
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis with Nintendo Memory Budgeting (main Redis instance)
+  legal-ai-redis:
+    image: redis/redis-stack:latest
+    ports:
+      - "6379:6379"
+      - "8002:8001" # RedisInsight UI
+    volumes:
+      - redis_data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_ARGS="--maxmemory 1gb --maxmemory-policy allkeys-lru"
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf", "--requirepass", "${REDIS_PASSWORD}"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
 volumes:
-  redis_data:
+  neo4j_data:
+  qdrant_data:
   postgres_data:
+  postgres_test_data:
+  redis_test_data:
+  minio_data:
+  rabbitmq_data:
+  redis_data:
 
 networks:
   default:

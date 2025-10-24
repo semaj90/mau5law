@@ -1,64 +1,72 @@
-import { reports } from '$lib/server/db/schema-postgres'
-import { db } from '$lib/server/db/index'
-import { eq } from 'drizzle-orm'
-import type { RequestHandler } from './$types.js'
+import { reports } from '$lib/server/db/schema-postgres';
+import { db } from '$lib/server/db/index';
+import { eq } from 'drizzle-orm';
+import type { RequestHandler } from './$types'; // fixed import path
+import { json } from '@sveltejs/kit';
+
+// typed helper to extract user id from SvelteKit locals without using `any`
+function getUserId(locals: unknown): string {
+  // locals shape is app-specific; guard safely
+  try {
+    const maybeId = (locals as { user?: { id?: string } })?.user?.id;
+    return maybeId ?? 'system';
+  } catch {
+    return 'system';
+  }
+}
+
 export const POST: RequestHandler = async ({ params, request, locals }) => {
   try {
-    if (!locals.user) {
-      return json({ error: "Not authenticated" }, { status: 401 })
+    if (!locals?.user) {
+      return json({ error: 'Not authenticated' }, { status: 401 });
     }
     if (!db) {
-      return json({ error: "Database not available" }, { status: 500 })
+      return json({ error: 'Database not available' }, { status: 500 });
     }
-    const reportId = params.reportId
+    const reportId = params.reportId;
     if (!reportId) {
-      return json({ error: "Report ID is required" }, { status: 400 })
+      return json({ error: 'Report ID is required' }, { status: 400 });
     }
     // Check if report exists
-    const reportResult = await db
-      .select()
-      .from(reports)
-      .where(eq(reports.id, reportId)
-      .limit(1)
-    if (!reportResult.length) {
-      return json({ error: "Report not found" }, { status: 404 })
+    const reportResult = await db.select().from(reports).where(eq(reports.id, reportId)).limit(1);
+    if (!reportResult || reportResult.length === 0) {
+      return json({ error: 'Report not found' }, { status: 404 });
     }
-    const report = reportResult[0]
-    const data = await request.json()
-    // PDF export options
+    const report = reportResult[0];
+    const data = await request.json();
+
+    // Use nullish coalescing so explicit false is preserved
     const exportOptions = {
-      format: data.format || "legal-brief",
-      includeMetadata: data.includeMetadata || true,
-      includeCitations: data.includeCitations || true,
-      includeCanvas: data.includeCanvas || false,
-      watermark: data.watermark || "",
-      orientation: data.orientation || "portrait",
-      margins: data.margins || { top: 1, right: 1, bottom: 1, left: 1 }
-    }
-    // For now, return a success response indicating PDF would be generated
-    // In a real implementation, this would:
-    // 1. Generate PDF using a library like PDFKit
-    // 2. Store the PDF file
-    // 3. Return download URL, localstorage or stream the PDF
+      format: data?.format ?? 'legal-brief',
+      includeMetadata: data?.includeMetadata ?? true,
+      includeCitations: data?.includeCitations ?? true,
+      includeCanvas: data?.includeCanvas ?? false,
+      watermark: data?.watermark ?? '',
+      orientation: data?.orientation ?? 'portrait',
+      margins: data?.margins ?? { top: 1, right: 1, bottom: 1, left: 1 },
+    };
+
     const pdfMetadata = {
-      reportId: reportId,
-      reportTitle: report.title,
+      reportId,
+      reportTitle: report.title ?? '',
       generatedBy: getUserId(locals),
       generatedAt: new Date().toISOString(),
       format: exportOptions.format,
       options: exportOptions,
-      estimatedPages: 10, // Rough estimate
-      fileSize: "~2.5MB", // Placeholder
-      downloadUrl: `/api/reports/${reportId}/export/pdf/download?token=${Date.now()}`, // Placeholder URL
-    }
+      estimatedPages: 10,
+      fileSize: '~2.5MB',
+      downloadUrl: `/api/reports/${encodeURIComponent(reportId)}/export/pdf/download?token=${Date.now()}`,
+    };
     return json({
       success: true,
-      message: "PDF export initiated successfully",
+      message: 'PDF export initiated successfully',
       metadata: pdfMetadata,
-      note: "This is a mock response. In production, actual PDF generation would occur here."
-    })
-  } catch (error: any) {
-    console.error("Error initiating PDF export:", error)
-    return json({ error: "Failed to initiate PDF export" }, { status: 500 })
+      note: 'This is a mock response. In production, actual PDF generation would occur here.',
+    });
+  } catch (error: unknown) {
+    // Narrow unknown to a safe message instead of using `any`
+    const errorMessage = error instanceof Error ? error.message : typeof error === 'string' ? error : String(error);
+    console.error('Error initiating PDF export:', errorMessage);
+    return json({ error: 'Failed to initiate PDF export' }, { status: 500 });
   }
-}
+};

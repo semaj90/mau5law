@@ -2,12 +2,11 @@
  * AutoGen Orchestra with GGUF Model Integration
  * Multi-agent orchestration using Gemma3-Legal GGUF with GPU acceleration
  */
-import { writable, derived, type Writable } from 'svelte/store';
+import { writable, derived } from 'svelte/store';
 import { browser } from '$app/environment';
 import { createGGUFRuntime, type GGUFInferenceRequest, type GGUFInferenceResponse } from './gguf-runtime.js';
-import { nodeJSOrchestrator } from './nodejs-orchestrator.js';
 import { flashAttentionMulticoreBridge } from '$lib/integrations/flashattention-multicore-bridge.js';
-// AutoGen Agent Types
+// Integrates FlashAttention2 for GPU-accelerated attention mechanism in GGUF inference
 export type AgentType =
   | 'USER_PROXY'
   | 'LEGAL_ANALYST'
@@ -32,14 +31,14 @@ export interface OrchestraTask {
   id: string;
   type: 'LEGAL_ANALYSIS' | 'DOCUMENT_REVIEW' | 'RESEARCH' | 'COMPLIANCE_CHECK' | 'MULTI_AGENT_COLLABORATION';
   input: string;
-  context?: unknown;
-  agents: string[]; // Agent IDs,
-  workflow: OrchestraWorkflowStep[];
+  agents: string[]; // Agent IDs
+  workflow: OrchestraWorkflowStep[]; // single definition
   priority: 'HIGH' | 'MEDIUM' | 'LOW';
   timeout: number;
   retryCount: number;
   maxRetries: number;
-  metadata?: { [key: string]: any };
+  metadata?: Record<string, unknown>; // tightened type, avoid `any`
+  context?: unknown; // optional task-level context used by steps
 }
 // Workflow Step
 export interface OrchestraWorkflowStep {
@@ -304,7 +303,7 @@ export class AutoGenGGUFOrchestra {
     }
     const fullTask: OrchestraTask = {
       ...taskInput,
-      id: `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: `task_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`, // use slice instead of deprecated substr
       retryCount: 0,
     };
     this.activeTasks.set(fullTask.id, fullTask);
@@ -396,8 +395,8 @@ export class AutoGenGGUFOrchestra {
         topK: 40,
         repeatPenalty: 1.1,
         stopTokens: ['END_RESPONSE', '\n\n---'],
-        // map our agent priority into a request-level field if supported
-        priority: agent.priority ?? 'MEDIUM',
+        // map our agent priority (uppercase) into the lowercase request-level field expected by runtimes
+        priority: (agent.priority ?? 'MEDIUM').toLowerCase() as unknown as 'low' | 'medium' | 'high' | 'critical',
       };
       // Execute with GGUF runtime (GPU accelerated) - safe call with fallback
       const stepStartTime = Date.now();
@@ -594,10 +593,7 @@ export class AutoGenGGUFOrchestra {
       initialized: this.isInitialized,
       agents: Array.from(this.agents.values()),
       activeTasks: this.activeTasks.size,
-      ggufStatus:
-        typeof this.ggufRuntime?.isReady === 'function'
-          ? !!this.ggufRuntime?.isReady()
-          : Boolean(this.ggufRuntime?.derived?.isReady),
+      ggufStatus: Boolean(this.ggufRuntime?.derived?.isReady), // safe presence check for readiness store
       flashAttentionEnabled: true,
     };
   }

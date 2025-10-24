@@ -14,6 +14,6 @@
 <style>
   :global(.shadcn-card-content) {
     padding: 1.5rem;
-    padding-top: 0,
+    padding-top: 0;
   }
 </style>

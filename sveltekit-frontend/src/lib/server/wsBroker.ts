@@ -1,8 +1,8 @@
 // src/lib/server/wsBroker.ts
 import WebSocket from 'ws';
-import Redis from 'ioredis';
 import type { ProgressMsg } from '$lib/types/progress';
 import type { Redis as IORedisRedis } from 'ioredis';
+import { createRedisInstance } from '$lib/server/redis';
 
 // Use the exported Redis type so .on / .status are recognized by TS
 type RedisClient = IORedisRedis;
@@ -10,28 +10,25 @@ type RedisClient = IORedisRedis;
 // In-memory session registry
 const sessions = new Map<string, Set<WebSocket>>();
 
-// Redis client for pub/sub across instances
+// Redis client for pub/sub across instances (use centralized factory)
 let redis: RedisClient | null = null;
 let subscriber: RedisClient | null = null;
 
 export async function initializeWsBroker(): Promise<void> {
   try {
     // Narrowly type import.meta.env access to avoid `any`
-    const env = (import.meta as unknown as { env?: { REDIS_URL?: string; REDIS_PASSWORD?: string } }).env;
-    const redisUrl = env?.REDIS_URL ?? 'redis://localhost:6379';
-    const redisPassword = env?.REDIS_PASSWORD || process.env.REDIS_PASSWORD || 'redis';
-
-    const redisConfig = {
-      password: redisPassword,
-      lazyConnect: true,
-      maxRetriesPerRequest: 3,
-      enableOfflineQueue: false
-    };
-
-    // Publisher redis connection
-    redis = new Redis(redisUrl, redisConfig);
-    // Subscriber redis connection (separate connection required for pub/sub)
-    subscriber = new Redis(redisUrl, redisConfig);
+    // Use the centralized factory to get a Redis client. The factory reads env and applies defaults.
+    try {
+      // Publisher: singleton instance
+      redis = createRedisInstance({ lazyConnect: true });
+      // Subscriber: dedicated fresh connection for pub/sub
+      subscriber = createRedisConnection({ lazyConnect: true });
+    } catch (e) {
+      // If factory can't create Redis (e.g., missing env in some runtimes), fall back to null and run local-only mode
+      console.warn('⚠️ createRedisInstance failed, running wsBroker in local-only mode:', e);
+      redis = null;
+      subscriber = null;
+    }
 
     // Subscribe to progress messages channel (defensive but typed)
     // Subscribe to progress messages channel (defensive but typed)
@@ -195,8 +192,10 @@ export async function getMissedMessages(sessionId: string, since?: string): Prom
       .filter((m: unknown) => {
         if (!since) return true;
         if (m && typeof m === 'object' && 'timestamp' in m) {
-          const ts = (m as any).timestamp;
-          return !!ts && new Date(ts) > new Date(since);
+          const rawTs = (m as Record<string, unknown>)['timestamp'];
+          const tsStr =
+            typeof rawTs === 'string' ? rawTs : rawTs instanceof Date ? rawTs.toISOString() : String(rawTs ?? '');
+          return !!tsStr && new Date(tsStr) > new Date(since);
         }
         return false;
       })

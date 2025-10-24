@@ -5,6 +5,7 @@
 import Redis from 'ioredis';
 import { env } from '$env/dynamic/private';
 import dotenv from 'dotenv';
+import { createRedisInstance } from '$lib/server/redis';
 dotenv.config();
 
 export interface RedisConfig {
@@ -53,52 +54,30 @@ let isConnected = false;
  * Get Redis client instance
  */
 export async function getRedisClient(): Promise<IORedisClient | null> {
-  if (redis && isConnected) {
-    return redis;
-  }
+  if (redis && isConnected) return redis;
   try {
-    const retryStrategy = (times: number) => {
-      console.log(`🔄 Redis connection retry attempt ${times}`);
-      return Math.min(times * 100, 2000);
-    };
-
-    if (redisUrl.includes('redis://')) {
-      // cast to our minimal interface to satisfy TS while preserving runtime behavior
-      redis = new Redis({
-        url: redisUrl,
-        maxRetriesPerRequest: 3,
-        retryStrategy,
-      }) as unknown as IORedisClient;
-    } else {
-      redis = new Redis({
-        host: defaultConfig.host,
-        port: defaultConfig.port,
-        password: defaultConfig.password,
-        db: defaultConfig.db,
-        maxRetriesPerRequest: 3,
-        retryStrategy,
-      }) as unknown as IORedisClient;
-    }
-
-    // typed event handlers (the minimal interface exposes `on`)
-    redis.on('connect', () => {
+    // Delegate creation to centralized helper which manages URL/password and options
+    const instance = createRedisInstance();
+    // attach minimal-typed event handlers
+    instance.on('connect', () => {
       isConnected = true;
       console.log('🎮 Redis connected successfully');
     });
-    redis.on('error', (error: Error) => {
+    instance.on('error', (error: Error) => {
       isConnected = false;
-      console.warn('🔴 Redis connection error:', error?.message ?? String(error));
+      console.warn('🔴 Redis connection error:', (error && (error as Error).message) || String(error));
     });
-    redis.on('close', () => {
+    instance.on('close', () => {
       isConnected = false;
       console.log('🔴 Redis connection closed');
     });
 
-    // Test connection
-    await redis.ping();
+    // test ping - returns 'PONG' on success
+    await (instance as unknown as { ping?: () => Promise<string> }).ping?.();
+    redis = instance as unknown as IORedisClient;
     return redis;
   } catch (error) {
-    console.warn('🔴 Failed to connect to Redis:', error);
+    console.warn('🔴 Failed to connect to Redis via createRedisInstance():', error);
     redis = null;
     isConnected = false;
     return null;
@@ -139,6 +118,11 @@ export async function closeRedisConnection(): Promise<void> {
  * Create Redis client for specific use case
  */
 export function createRedisClient(customConfig: Partial<RedisConfig> = {}): IORedisClient {
+  // For custom clients we can still construct a new ioredis instance, but
+  // prefer delegating to createRedisInstance when no custom config is needed.
+  if (Object.keys(customConfig).length === 0) {
+    return createRedisInstance() as unknown as IORedisClient;
+  }
   const config = { ...defaultConfig, ...customConfig };
   const client = new Redis({
     host: config.host,

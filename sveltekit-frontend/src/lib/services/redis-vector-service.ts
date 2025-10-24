@@ -2,185 +2,227 @@
 /**
  * Redis Vector Service for caching and vector operations
  */
-import Redis from "ioredis";
-import { logger } from "$lib/utils/logger";
+import type { RedisOptions } from 'ioredis';
+// Use centralized Redis factory for consistent configuration across server code
+import { createRedisInstance } from '$lib/server/redis';
+
+// Minimal shape used from ioredis in this module. Keep small and explicit to avoid depending on exact ioredis types.
+interface RedisLike {
+  on(event: string, cb: (...args: unknown[]) => void): void;
+  ping(): Promise<string>;
+  hset(key: string, field: string, value: string): Promise<number> | Promise<void>;
+  hget(key: string, field: string): Promise<string | null>;
+  sadd(key: string, member: string): Promise<number>;
+  srem(key: string, member: string): Promise<number>;
+  smembers(key: string): Promise<string[]>;
+  setex(key: string, ttl: number, value: string): Promise<'OK' | null>;
+  get(key: string): Promise<string | null>;
+  del(key: string): Promise<number>;
+  quit(): Promise<void>;
 }
+import { logger } from '$lib/utils/logger';
 export interface VectorSearchResult {
   id: string;
   score: number;
-  payload: any;
+  payload: unknown;
   vector?: number[];
 }
 export interface DocumentVector {
   id: string;
   vector: number[];
-  payload: any;
+  payload: unknown;
   metadata?: unknown;
 }
 export class RedisVectorService {
-  private redis: Redis;
+  // Use a minimal Redis-like interface to avoid coupling to a specific ioredis type version
+  private redis: RedisLike | null = null;
   private isConnected = false;
   constructor() {
     // Prefer REDIS_URL; fall back to host/port. Default port aligned with start-full-quic.bat (4005).
-    const url = (import.meta as any)?.env?.REDIS_URL as string | undefined;
-    if (url) {
-      this.redis = new (Redis as any)(url, { maxRetriesPerRequest: 3 });
-    } else {
-      const redisOptions = {
-        host: (import.meta as any)?.env?.REDIS_HOST || "localhost",
-        port: parseInt(((import.meta as any)?.env?.REDIS_PORT as string) || "4005"),
-        password: (import.meta as any)?.env?.REDIS_PASSWORD,
-        db: parseInt(((import.meta as any)?.env?.REDIS_DB as string) || "0"),
-        maxRetriesPerRequest: 3
-      } as any;
-      this.redis = new (Redis as any)(redisOptions);
-    }
-    (this.redis as any).on("connect", () => {
+    const env = (import.meta as unknown as { env?: Record<string, string | undefined> }).env ?? {};
+    const url = env.REDIS_URL as string | undefined;
+    // Construct options once and pass a single options object to the constructor.
+    const baseOptions: RedisOptions = {
+      host: env.REDIS_HOST || 'localhost',
+      port: parseInt((env.REDIS_PORT as string) || '4005', 10),
+      password: env.REDIS_PASSWORD,
+      db: parseInt((env.REDIS_DB as string) || '0', 10),
+      maxRetriesPerRequest: 3,
+    };
+    const options: RedisOptions = url ? { ...baseOptions, url } : baseOptions;
+
+    // Initialize via centralized factory (keeps connection options consistent)
+    const rawClient = createRedisInstance(options as unknown as Record<string, unknown>);
+    const client = rawClient as unknown as RedisLike;
+    this.redis = client;
+
+    client.on('connect', () => {
       this.isConnected = true;
-      logger.info("Redis Vector Service connected");
+      logger.info('Redis Vector Service connected');
     });
-  (this.redis as any).on("error", (error: unknown) => {
+    client.on('error', (error: unknown) => {
       this.isConnected = false;
-      logger.error("Redis Vector Service error", error);
+      logger.error('Redis Vector Service error', error);
     });
   }
   async isHealthy(): Promise<boolean> {
+    if (!this.redis) {
+      logger.warn('Redis client not initialized for health check');
+      return false;
+    }
     try {
-      await (this.redis as any).ping();
-      return this.isConnected;
-    } catch (error: any) {
-      logger.error("Redis health check failed", error);
+      const pong = await this.redis.ping();
+      return this.isConnected && (pong === 'PONG' || !!pong);
+    } catch (error: unknown) {
+      logger.error('Redis health check failed', { error });
       return false;
     }
   }
-  async storeVector(id: string, vector: number[], payload: any): Promise<void> {
+  async storeVector(id: string, vector: number[], payload: unknown): Promise<void> {
+    if (!this.redis) throw new Error('Redis client not initialized');
     try {
       const vectorData = {
         id,
         vector,
         payload,
-        timestamp: Date.now()
-      }
-      await (this.redis as any).hset(`vector:${id}`, "data", JSON.stringify(vectorData);
+        timestamp: Date.now(),
+      };
+      await this.redis.hset(`vector:${id}`, 'data', JSON.stringify(vectorData));
       // Also store in a set for quick lookup
-      await (this.redis as any).sadd("vectors:all", id);
+      await this.redis.sadd('vectors:all', id);
       logger.debug(`Stored vector for ID: ${id}`);
-    } catch (error: any) {
-      logger.error("Failed to store vector", { id, error });
+    } catch (error: unknown) {
+      logger.error('Failed to store vector', { id, error });
       throw error;
     }
   }
   async getVector(id: string): Promise<DocumentVector | null> {
+    if (!this.redis) {
+      logger.warn('Redis client not initialized for getVector');
+      return null;
+    }
     try {
-      const data = await (this.redis as any).hget(`vector:${id}`, "data");
+      const data = await this.redis.hget(`vector:${id}`, 'data');
       if (!data) return null;
-      const vectorData = JSON.parse(data);
+      const vectorData = JSON.parse(data) as { id: string; vector: number[]; payload: unknown; metadata?: unknown };
       return {
         id: vectorData.id,
         vector: vectorData.vector,
         payload: vectorData.payload,
-        metadata: vectorData.metadata
-      }
-    } catch (error: any) {
-      logger.error("Failed to get vector", { id, error });
+        metadata: vectorData.metadata,
+      };
+    } catch (error: unknown) {
+      logger.error('Failed to get vector', { id, error });
       return null;
     }
   }
   async deleteVector(id: string): Promise<void> {
+    if (!this.redis) throw new Error('Redis client not initialized');
     try {
-      await this.redis.del(`vector:${id})`);
-      await (this.redis as any).srem("vectors:all", id);
+      await this.redis.del(`vector:${id}`);
+      await this.redis.srem('vectors:all', id);
       logger.debug(`Deleted vector for ID: ${id}`);
-    } catch (error: any) {
-      logger.error("Failed to delete vector", { id, error });
+    } catch (error: unknown) {
+      logger.error('Failed to delete vector', { id, error });
       throw error;
     }
   }
-  async searchVectors()
-    queryVector: number[]
+  async searchVectors(
+    queryVector: number[],
     options: {
       limit?: number;
       threshold?: number;
-      collection?: string);
+      collection?: string;
     } = {}
-  ): Promise<VectorSearchResult,[]> {
+  ): Promise<VectorSearchResult[]> {
+    if (!this.redis) {
+      logger.warn('Redis client not initialized for searchVectors');
+      return [];
+    }
     try {
-      // This is a simple implementation - in production you'd use Redis Search or RedisAI
-      const allVectorIds = await (this.redis as any).smembers("vectors:all");
-      const result,s: VectorSearchResu,lt,[], = [];
-      for (const id, o,f allVectorIds) {
+      // Simple in-memory similarity over stored vectors. For production use RedisSearch/RedisAI/pgvector/Qdrant.
+      const allVectorIds = (await this.redis.smembers('vectors:all')) as string[];
+      const results: VectorSearchResult[] = [];
+      for (const id of allVectorIds) {
         const vectorData = await this.getVector(id);
         if (!vectorData) continue;
-        const similarity = this.cosineSimilarity(
-          queryVector,
-          vectorData.vector
-        );
-        if (similarity >= (options.threshold || 0.7)) {
+        const similarity = this.cosineSimilarity(queryVector, vectorData.vector);
+        if (similarity >= (options.threshold ?? 0.7)) {
           results.push({
             id,
             score: similarity,
             payload: vectorData.payload,
-            vector: vectorData.vector
+            vector: vectorData.vector,
           });
         }
       }
-      // Sort by score and limit
-      results,.sort((a, b) => b.score - a.score);
-      return results.slice(0, options.limit || 10);
-    } catch (error: any) {
-      logger.error("Failed to search vectors", error);
+      // Sort by score descending and apply limit
+      results.sort((a, b) => b.score - a.score);
+      return results.slice(0, options.limit ?? 10);
+    } catch (error: unknown) {
+      logger.error('Failed to search vectors', { error });
       return [];
     }
   }
-  async cacheEmbedding()
-    text: string
-    embedding: number[];
-    model: string;
-  ): Promise<void> {
+  async cacheEmbedding(text: string, embedding: number[], model: string): Promise<void> {
+    if (!this.redis) {
+      logger.warn('Redis client not initialized for cacheEmbedding');
+      return;
+    }
     try {
-      const key = `embedding:${this.hashText(text)}:${model},`;
-      await (this.redis as an,y).setex(key, 3600, JSON.stringify(embeddin,g); // Cache for 1 hour
-    } catch (error: any) {
-      logger.error("Failed to cache embedding", error);
+      const key = `embedding:${this.hashText(text)}:${model}`;
+      await this.redis.setex(key, 3600, JSON.stringify(embedding)); // Cache for 1 hour
+    } catch (error: unknown) {
+      logger.error('Failed to cache embedding', { error });
     }
   }
-  async getCachedEmbedding()
-    text: string;
-    model: string;
-  ): Promise<number[] | null> {
+  async getCachedEmbedding(text: string, model: string): Promise<number[] | null> {
+    if (!this.redis) {
+      logger.warn('Redis client not initialized for getCachedEmbedding');
+      return null;
+    }
     try {
-      const key = `embedding:${this.hashText(text)}:${model},`;
+      const key = `embedding:${this.hashText(text)}:${model}`;
       const cached = await this.redis.get(key);
-      return cached ? JSON.parse(cached) : nul,l;
-    } catch (error: any) {
-      logger.error("Failed to get cached embedding", error);
+      return cached ? (JSON.parse(cached) as number[]) : null;
+    } catch (error: unknown) {
+      logger.error('Failed to get cached embedding', { error });
       return null;
     }
   }
-  private cosineSimilarity(a,: number[], b: number[]): number {
-    if (a.length !== b.length) return 0;
+  private cosineSimilarity(a: number[], b: number[]): number {
+    if (!a || !b || a.length !== b.length) return 0;
     let dotProduct = 0;
     let normA = 0;
     let normB = 0;
-    for (let i = 0; i < a.length; i++) {>
-      dotProduct, += a[i] * b[i];
+    for (let i = 0; i < a.length; i++) {
+      dotProduct += a[i] * b[i];
       normA += a[i] * a[i];
       normB += b[i] * b[i];
     }
-    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB);
+    if (normA === 0 || normB === 0) return 0;
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
   }
-  private hashText(text,: string): string {
+  private hashText(text: string): string {
     let hash = 0;
-    for (let i = 0; i < text.length; i++) {>
+    for (let i = 0; i < text.length; i++) {
       const char = text.charCodeAt(i);
-      hash = (hash << 5) - hash + char;>>
-      hash, = hash & hash; // Convert to 32-bit integer
+      hash = (hash << 5) - hash + char;
+      hash = hash & hash; // Convert to 32-bit integer
     }
-    return hash.toString(36);
+    // Produce a compact positive string
+    return (hash >>> 0).toString(36);
   }
-  async close(),: Promise<void> {
-    await (this.redis as an,y).quit,();
-    this.isConnected = fals,e;
+  async close(): Promise<void> {
+    if (!this.redis) return;
+    try {
+      await this.redis.quit();
+    } catch (e) {
+      // ignore
+    } finally {
+      this.isConnected = false;
+      this.redis = null;
+    }
   }
 }
 export const redisVectorService = new RedisVectorService();
