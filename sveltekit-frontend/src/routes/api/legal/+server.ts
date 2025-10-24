@@ -1,15 +1,24 @@
 // Enhanced SvelteKit API routes for legal AI integration
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types';
 import { lucia } from '$lib/auth/lucia';
-import Redis from 'ioredis';
-// Redis client for coordination with MCP server
-const redisClient = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
+// Requires node-redis v4+ for createClient and RedisClientType (legacy v3 uses different API)
+import { createClient } from 'redis';
+import type { RedisClientType } from 'redis';
+import { REDIS_URL } from '$env/static/private'; // Use SvelteKit's env module for server-side variables
+
+// Redis client for coordination with MCP server (node-redis)
+// Use non-null assertion (!) on createClient to satisfy TypeScript, assuming 'redis' package is correctly installed and exports it.
+const redisClient: RedisClientType = createClient!({
+  url: REDIS_URL || 'redis://localhost:6379',
+});
+// connect asynchronously (non-blocking)
+redisClient.connect().catch((err: unknown) => console.error('Redis connect error:', err));
 // MCP server endpoint
 const MCP_ENDPOINT = process.env.MCP_ENDPOINT || 'http://localhost:3000';
 interface LegalJobRequest {
   case_id: string;
-  messages: Array<any>;
+  messages: LegalMessage[];
   model_config?: {
     model_type?: 'gemma3' | 'gemma-local' | 'autogen' | 'crewai';
     temperature?: number;
@@ -24,17 +33,39 @@ interface LegalJobRequest {
   };
   workflow_config?: {
     workflow_type?: 'autogen' | 'crewai' | 'sequential';
-    agents?: Array<any>;
+    agents?: AgentConfig[];
   };
 }
+
+// Add lightweight, explicit types to avoid `any`
+type MessageRole = 'user' | 'assistant' | 'system' | 'tool';
+
+export interface LegalMessage {
+  message_id?: string;
+  role: MessageRole | string;
+  content: string | Record<string, unknown>;
+  timestamp?: number;
+  // allow extra fields while avoiding `any`
+  metadata?: Record<string, unknown>;
+}
+
+export interface AgentConfig {
+  id?: string;
+  name?: string;
+  type?: 'autogen' | 'llm' | 'tool' | string;
+  capabilities?: string[];
+  config?: Record<string, unknown>;
+}
+
 // POST /api/legal - Submit legal AI job
 export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
     // Authentication check
     const sessionId = cookies.get('lucia_session');
     let user = null;
-    if (sessionId) {
-      const { session } = await lucia.validateSession(sessionId);
+    if (sessionId && lucia && typeof lucia.validateSession === 'function') {
+      const validated = await lucia.validateSession(sessionId);
+      const { session } = validated ?? {};
       if (session) {
         user = session.user;
       }
@@ -86,8 +117,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       throw error(500, 'Failed to submit job to processing server');
     }
     const mcpResult = await mcpResponse.json();
-    // Store job metadata for tracking
-    await redisClient.setex(
+    // Store job metadata for tracking (node-redis setEx)
+    await redisClient.setEx(
       `job_tracking:${mcpResult.job_id}`,
       3600, // 1 hour TTL
       JSON.stringify({
@@ -107,12 +138,22 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       polling_url: `/api/legal/status/${mcpResult.job_id}`,
       result_url: `/api/legal/result/${mcpResult.job_id}`,
     });
-  } catch (err) {
+  } catch (err: unknown) {
     console.error('Legal API error:', err);
-    const e = err as any;
-    if (e?.status) {
-      throw e; // Re-throw SvelteKit errors
+    // If the error is already a SvelteKit `error` object (has status and message properties),
+    // re-throw it directly to ensure SvelteKit handles it correctly.
+    if (
+      typeof err === 'object' &&
+      err !== null &&
+      'status' in err &&
+      typeof (err as { status: unknown }).status === 'number' &&
+      'message' in err &&
+      typeof (err as { message: unknown }).message === 'string'
+    ) {
+      const svelteKitError = err as { status: number; message: string };
+      throw error(svelteKitError.status, svelteKitError.message); // Re-throw the SvelteKit error object directly
     }
+    // For any other type of error, throw a generic 500 internal server error.
     throw error(500, 'Internal server error');
   }
 };
@@ -128,14 +169,14 @@ export const GET: RequestHandler = async ({ url }) => {
     }
     const jobData = JSON.parse(jobTracking);
     // Check if result is available
-    const result = await redisClient.getBuffer(`legal:result:${jobId}`);
-    if (result) {
-      // Parse protobuf result (simplified - would use actual protobuf parser)
+    // stored as JSON string (if binary/protobuf is required, adapt storage & retrieval accordingly)
+    const resultStr = await redisClient.get(`legal:result:${jobId}`);
+    if (resultStr) {
+      // Simplified parsing; real code should decode protobuf if using binary storage
       return json({
         job_id: jobId,
         status: 'completed',
         result: {
-          // This would be parsed from protobuf
           response: 'Legal analysis completed',
           confidence: 0.9,
           processing_time: Date.now() - jobData.submitted_at,

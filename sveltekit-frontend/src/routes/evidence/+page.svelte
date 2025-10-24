@@ -31,7 +31,7 @@
   // Form data
   let formData = $state({
     title: '',
-    description '',
+    description: '',
     evidenceType: 'document',
     tags: '',
     isAdmissible: true,
@@ -135,7 +135,7 @@
     uploadProgress = 0;
     formData = {
       title: '',
-      description '',
+      description: '',
       evidenceType: 'document',
       tags: '',
       isAdmissible: true,

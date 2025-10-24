@@ -76,13 +76,30 @@ export interface QUICPerformanceMetrics {
   bandwidthSaved: number;
 }
 
+// New: Interface for streaming legal processing data
+export interface StreamProcessingData {
+  status: 'processing' | 'completed' | 'failed';
+  progress?: number;
+  message?: string;
+  result?: Record<string, unknown>; // Or a more specific type if known
+}
+
+// New: Interface for health status data
+export interface HealthStatusData {
+  status: 'ok' | 'degraded' | 'unhealthy';
+  message: string;
+  timestamp: string;
+  details?: Record<string, unknown>;
+  protocol?: 'HTTP/3' | 'HTTP/2' | 'HTTP/1.1';
+}
+
 /**
  * QUIC Gateway Client Class
  */
 export class QUICGatewayClient {
   private config: QUICGatewayConfig;
-  private connectionPool: Map<string, any> = new Map();
-  private requestCache: Map<string, { response: QUICResponse<any>; timestamp: number }> = new Map();
+  private connectionPool: Map<string, WebTransport> = new Map();
+  private requestCache: Map<string, { response: QUICResponse<unknown>; timestamp: number }> = new Map();
   private performanceData: Array<{
     timestamp: number;
     responseTime: number;
@@ -151,7 +168,7 @@ export class QUICGatewayClient {
       this.isInitialized = true;
       this.isReady.set(true);
       console.log(`✅ QUIC Gateway Client initialized (${this.config.baseURL}:${this.config.http3Port})`);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('❌ QUIC Gateway Client initialization failed:', error);
       if (this.config.fallbackToHTTP2) {
         console.log('🔄 Falling back to HTTP/2 mode');
@@ -214,7 +231,7 @@ export class QUICGatewayClient {
       } else {
         throw new Error(`Gateway health check failed: ${response.status}`);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.warn('⚠️ QUIC Gateway connection test failed:', error);
       throw error;
     }
@@ -223,7 +240,7 @@ export class QUICGatewayClient {
   /**
    * Send request via QUIC Gateway with retries and caching
    */
-  public async request<T = any>(request: QUICRequest): Promise<QUICResponse<T>> {
+  public async request<T = unknown>(request: QUICRequest): Promise<QUICResponse<T>> {
     if (!this.isInitialized) {
       await this.initialize();
     }
@@ -233,7 +250,7 @@ export class QUICGatewayClient {
 
     const cacheKey = this.generateCacheKey(request);
     if (request.method === 'GET') {
-      const cached = this.getCachedResponse(cacheKey);
+      const cached = this.getCachedResponse<T>(cacheKey);
       if (cached) {
         return {
           ...cached,
@@ -252,7 +269,7 @@ export class QUICGatewayClient {
         }
         this.updatePerformanceMetrics(response);
         return response;
-      } catch (error: any) {
+      } catch (error: unknown) {
         lastError = error instanceof Error ? error : new Error(String(error));
         attempt++;
         if (attempt < maxAttempts) {
@@ -281,7 +298,7 @@ export class QUICGatewayClient {
   /**
    * Execute individual request (single attempt)
    */
-  private async executeRequest<T = any>(request: QUICRequest, startTime: number): Promise<QUICResponse<T>> {
+  private async executeRequest<T = unknown>(request: QUICRequest, startTime: number): Promise<QUICResponse<T>> {
     const url = `${this.config.baseURL}:${this.config.http3Port}${request.endpoint}`;
     const timeout = request.timeout ?? this.config.requestTimeout;
 
@@ -329,9 +346,9 @@ export class QUICGatewayClient {
         connectionReused: this.isConnectionReused(raw),
         zeroRTT: this.isZeroRTT(raw),
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       clearTimeout(timeoutId);
-      throw new Error(`Request failed: ${error?.message ?? String(error)}`);
+      throw new Error(`Request failed: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 
@@ -341,7 +358,7 @@ export class QUICGatewayClient {
   public async analyzeLegalDocument(
     document: string,
     analysisType: 'contract' | 'evidence' | 'case_brief' | 'statute' = 'contract'
-  ): Promise<QUICResponse<any>> {
+  ): Promise<QUICResponse<Record<string, unknown>>> {
     return this.request({
       method: 'POST',
       endpoint: '/legal/analyze',
@@ -354,7 +371,7 @@ export class QUICGatewayClient {
   /**
    * Stream legal document processing
    */
-  public async streamLegalProcessing(documentId: string): Promise<QUICResponse<any>> {
+  public async streamLegalProcessing(documentId: string): Promise<QUICResponse<StreamProcessingData>> {
     return this.request({
       method: 'GET',
       endpoint: `/legal/stream/${documentId}`,
@@ -366,7 +383,7 @@ export class QUICGatewayClient {
   /**
    * Get gateway health status
    */
-  public async getHealthStatus(): Promise<QUICResponse<any>> {
+  public async getHealthStatus(): Promise<QUICResponse<HealthStatusData>> {
     return this.request({
       method: 'GET',
       endpoint: '/health',
@@ -414,11 +431,11 @@ export class QUICGatewayClient {
   /**
    * Get cached response
    */
-  private getCachedResponse(cacheKey: string): QUICResponse<any> | null {
+  private getCachedResponse<T = unknown>(cacheKey: string): QUICResponse<T> | null {
     const cached = this.requestCache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < 300_000) {
       // 5 minutes TTL
-      return cached.response;
+      return cached.response as QUICResponse<T>; // Assert to T
     }
     return null;
   }
@@ -426,7 +443,7 @@ export class QUICGatewayClient {
   /**
    * Cache response
    */
-  private cacheResponse(cacheKey: string, response: QUICResponse<any>): void {
+  private cacheResponse(cacheKey: string, response: QUICResponse<unknown>): void {
     this.requestCache.set(cacheKey, { response, timestamp: Date.now() });
     // LRU-like simple eviction
     const MAX_ENTRIES = 100;
@@ -439,7 +456,7 @@ export class QUICGatewayClient {
   /**
    * Update performance metrics
    */
-  private updatePerformanceMetrics(response: QUICResponse<any>): void {
+  private updatePerformanceMetrics(response: QUICResponse<unknown>): void {
     this.performanceData.push({
       timestamp: Date.now(),
       responseTime: response.responseTime,
@@ -489,7 +506,7 @@ export class QUICGatewayClient {
           errorRate: healthResponse.success ? status.errorRate : Math.min(1, status.errorRate + 0.1),
         }));
         if (healthResponse.success) this.reconnectAttempts = 0;
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.warn('⚠️ Connection monitoring failed:', error);
         this.handleConnectionFailure();
       }
@@ -512,7 +529,7 @@ export class QUICGatewayClient {
         connectionReused: false,
         zeroRTT: false,
         error: undefined,
-      } as QUICResponse<any>);
+      } as QUICResponse<unknown>);
     }, 5_000);
   }
 

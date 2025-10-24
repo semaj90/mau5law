@@ -142,7 +142,7 @@
     border-radius: 8px;
     font-size: 1rem;
     cursor: pointer;
-    transition all 0.2s;
+    transition: all 0.2s;
   }
 
   .btn-primary {
@@ -179,7 +179,7 @@
     border: 4px solid #333;
     border-top-color: #ffd700;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
 
@@ -207,7 +207,7 @@
     border-radius: 12px;
     padding: 1.5rem;
     cursor: pointer;
-    transition all 0.2s;
+    transition: all 0.2s;
   }
 
   .case-card:hover {
@@ -304,7 +304,7 @@
     font-weight: 600;
     border-radius: 8px;
     margin-bottom: 1rem;
-    animation pulse 2s ease-in-out infinite;
+    animation: pulse 2s ease-in-out infinite;
   }
 
   @keyframes pulse {

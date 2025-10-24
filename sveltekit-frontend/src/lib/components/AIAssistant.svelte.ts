@@ -6,14 +6,14 @@ export class AIAssistant {
   async queryOllama(prompt: string) {
     this.isLoading.set(true);
     try {
-      const response = await fetch("http://localhost:11434/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({,
-          model: "gemma3-legal:latest",
+      const response = await fetch('http://localhost:11434/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'gemma3-legal:latest',
           prompt,
-          stream: false
-        })
+          stream: false,
+        }),
       });
       const data = await response.json();
       this.response.set(data.response);

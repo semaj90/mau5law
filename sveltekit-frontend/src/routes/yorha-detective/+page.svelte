@@ -75,7 +75,7 @@
     </div>
   </div>
 {:else}
-  <div transitionfade={{ delay: 300, duration 800 }}>
+  <div transition:fade={{ delay: 300, duration: 800 }}>
     <YorHADetectiveInterface />
   </div>
 {/if}
@@ -143,7 +143,7 @@
   }
   .loading-dots {
     color: #00ff41;
-    animation loading-dots 1.5s infinite;
+    animation: loading-dots 1.5s infinite;
   }
   .boot-footer {
     border-top: 1px solid #333333;
@@ -186,7 +186,7 @@
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .boot-logo {
-      flex-direction column;
+      flex-direction: column;
       gap: 0.5rem;
     }
     .logo-symbol {

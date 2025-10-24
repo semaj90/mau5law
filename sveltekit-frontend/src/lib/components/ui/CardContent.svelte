@@ -17,10 +17,9 @@
 <div class={classes}>
   {#if children}
     {@render children()}
-  {:else}
-    <slot />
   {/if}
 </div>
+
 <style>
 /* SSR-optimized CardContent for consistent rendering */
 .card-content-ssr {

@@ -143,7 +143,7 @@
   >;
 
   // safely index metadata by casting slug as key of demoMetadata
-  let metadata = $derived(() =>
+  let metadata = $derived(
     demoMetadata[demoSlug as keyof typeof demoMetadata] ?? { title: 'Unknown Demo', description: '', tags: [] }
   );
 </script>
@@ -194,8 +194,8 @@
       </div>
     {:else if currentComponent}
         <div class="demo-wrapper">
-          <!-- use Svelte dynamic component to render loaded demo -->
-          <currentComponent {data}></currentComponent>
+          <!-- Svelte 5: components are dynamic by default in runes mode -->
+          <svelte:component this={currentComponent} data={data ?? {}} />
         </div>
     {:else}
       <div class="demo-placeholder">
@@ -369,10 +369,6 @@
     }
 
     .error-actions {
-      flex-direction: column;
-    }
-  }
-</style>
       flex-direction: column;
     }
   }

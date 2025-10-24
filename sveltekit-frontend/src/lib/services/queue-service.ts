@@ -32,8 +32,8 @@ const redis = new Redis({
   enableReadyCheck: false
 });
 
-// Document processing queue
-export const documentQueue = new Queue('document-processing', {
+// Document processing queue - add generics for data/result to avoid `any` casts
+export const documentQueue = new Queue<DocumentProcessingJobData, DocumentProcessingJobResult>('document-processing', {
   connection: redis,
   defaultJobOptions: {
     removeOnComplete: 100,
@@ -125,6 +125,21 @@ type InternalJob = BullJob<
   moveToFailed?: (err: Error, reason: string) => Promise<void>;
 };
 
+/* helper: normalize raw state string to the union used in JobStatusResult */
+function normalizeJobState(state: string): JobStatusResult['status'] {
+	// allowed states in our JobStatusResult
+	const allowed = new Set(['completed', 'failed', 'waiting', 'active', 'delayed']);
+	if (allowed.has(state)) return state as JobStatusResult['status'];
+	// fallback to 'waiting' when unknown (keeps typing safe)
+	return 'waiting';
+}
+
+// Typed helper to call getJobCounts() without using `any`
+// We use `unknown` -> tight interface so TS doesn't complain about `any`.
+async function getJobCountsFromQueue(q: Queue): Promise<BullJobCounts> {
+  return (q as unknown as { getJobCounts: () => Promise<BullJobCounts> }).getJobCounts();
+}
+
 /**
  * Add document processing job to queue
  */
@@ -138,7 +153,8 @@ export async function queueDocumentProcessing(
   });
 
   // Get queue metrics for estimation (typed)
-  const jobCounts: BullJobCounts = await documentQueue.getJobCounts();
+  // use typed helper to avoid `any`
+  const jobCounts: BullJobCounts = await getJobCountsFromQueue(documentQueue);
   const waitingCount = jobCounts.waiting || 0;
   const activeCount = jobCounts.active || 0;
 
@@ -146,7 +162,7 @@ export async function queueDocumentProcessing(
   const estimatedSeconds = (waitingCount * 30) + (activeCount > 0 ? 15 : 0);
 
   return {
-    jobId: job.id as string,
+    jobId: String(job.id),
     estimated: estimatedSeconds
   }
 }
@@ -155,14 +171,16 @@ export async function queueDocumentProcessing(
  * Get job status and result
  */
 export async function getJobStatus(jobId: string): Promise<JobStatusResult> {
-  const job = (await documentQueue.getJob(jobId)) as
-    | BullJob<DocumentProcessingJobData, DocumentProcessingJobResult>
-    | null;
+  // cast to any because installed Queue typings may not include getJob()
+  const job = (await (documentQueue as any).getJob(jobId)) as
+     | BullJob<DocumentProcessingJobData, DocumentProcessingJobResult>
+     | null;
   if (!job) {
     return { status: 'not_found', error: 'Job not found', progress: 0 }
   }
 
-  const state = await job.getState();
+  const rawState = await job.getState();
+  const state = normalizeJobState(rawState);
 
   // Use InternalJob to avoid `any` and handle both function/property progress shapes
   const ijob = job as InternalJob;
@@ -198,8 +216,8 @@ export async function getJobStatus(jobId: string): Promise<JobStatusResult> {
  * Get queue statistics
  */
 export async function getQueueStats(): Promise<QueueStatsResult> {
-  // BullMQ v5+ uses getJobCounts()
-  const jobCounts: BullJobCounts = await documentQueue.getJobCounts();
+  // BullMQ v5+ uses getJobCounts() - use helper to avoid `any`
+  const jobCounts: BullJobCounts = await getJobCountsFromQueue(documentQueue);
 
   return {
     waiting: jobCounts.waiting || 0,
@@ -215,16 +233,19 @@ export async function getQueueStats(): Promise<QueueStatsResult> {
  */
 export async function cancelJob(jobId: string): Promise<boolean> {
   try {
-    const job = (await documentQueue.getJob(jobId)) as
-      | BullJob<DocumentProcessingJobData, DocumentProcessingJobResult>
-      | null;
+    // cast to any because installed Queue typings may not include getJob()
+    const job = (await (documentQueue as any).getJob(jobId)) as
+       | BullJob<DocumentProcessingJobData, DocumentProcessingJobResult>
+       | null;
 
     if (!job) {
       // nothing to cancel
       return false;
     }
 
-    const state = await job.getState();
+    const rawState = await job.getState();
+    const state = normalizeJobState(rawState);
+
     // If already finished, remove it for cleanup
     if (state === 'completed' || state === 'failed') {
       await job.remove();

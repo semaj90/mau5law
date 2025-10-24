@@ -38,6 +38,7 @@ export class StackCache {
     this.memory = new Map();
   }
   async get(_key: string): Promise<any> {
+    const key = _key;
     // Try Redis first, fallback to memory
     if (this.redis) {
       const cached = await this.redis.get(key);
@@ -46,8 +47,9 @@ export class StackCache {
     return this.memory.get(key);
   }
   async set(_key: string, value: any, ttl: number): Promise<void> {
+    const key = _key;
     if (this.redis) {
-      await this.redis.setex(key, ttl, JSON.stringify(value);
+      await this.redis.setex(key, ttl, JSON.stringify(value));
     }
     this.memory.set(key, value);
     setTimeout(() => this.memory.delete(key), ttl * 1000);

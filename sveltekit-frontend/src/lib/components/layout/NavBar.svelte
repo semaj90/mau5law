@@ -154,7 +154,7 @@
 
 <style>
   .navbar {
-    position sticky;
+    position: sticky;
     top: 0;
     z-index: 1000;
     background: var(--console-gradient-main, linear-gradient(45deg, #0f0f23, #1a1a2e));
@@ -187,7 +187,7 @@
     border: none;
     cursor: pointer;
     border-radius: 4px;
-    transition background 0.2s;
+    transition: background 0.2s;
   }
 
   .sidebar-toggle:hover {
@@ -196,10 +196,10 @@
 
   .hamburger {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     width: 20px;
     height: 16px;
-    position relative;
+    position: relative;
   }
 
   .hamburger span {
@@ -236,7 +236,7 @@
     font-weight: bold;
     cursor: pointer;
     border-radius: 6px;
-    transition all 0.2s;
+    transition: all 0.2s;
   }
 
   .logo-btn:hover {
@@ -260,9 +260,9 @@
     gap: 0.5rem;
     padding: 0.75rem 1rem;
     color: var(--console-fg, white);
-    text-decoration none;
+    text-decoration: none;
     border-radius: 6px;
-    transition all 0.2s;
+    transition: all 0.2s;
     font-weight: 500;
   }
 
@@ -287,7 +287,7 @@
   }
 
   .theme-selector {
-    position relative;
+    position: relative;
   }
 
   .theme-btn {
@@ -300,7 +300,7 @@
     color: var(--console-fg, white);
     border-radius: 6px;
     cursor: pointer;
-    transition all 0.2s;
+    transition: all 0.2s;
     font-size: 0.9rem;
   }
 
@@ -310,7 +310,7 @@
 
   .dropdown-arrow {
     font-size: 0.8rem;
-    transition transform 0.2s;
+    transition: transform 0.2s;
   }
 
   .dropdown-arrow.open {
@@ -318,7 +318,7 @@
   }
 
   .theme-dropdown {
-    position absolute;
+    position: absolute;
     top: 100%;
     right: 0;
     margin-top: 0.5rem;

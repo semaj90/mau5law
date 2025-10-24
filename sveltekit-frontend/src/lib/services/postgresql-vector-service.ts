@@ -5,14 +5,18 @@ export interface VectorSearchResult {
   id: string;
   content: string;
   similarity: number;
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: unknown };
 }
 export interface VectorDocument {
   id: string;
   content: string;
   embedding?: number[];
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: unknown };
 }
+
+// Define a more specific type for legal analysis results
+export type LegalAnalysisResult = Record<string, unknown>;
+
 export class PostgreSQLVectorService {
   private isConnected = false;
   private documents: VectorDocument[] = [];
@@ -34,11 +38,11 @@ export class PostgreSQLVectorService {
   }
   async storeDocument(_document: VectorDocument): Promise<boolean> {
     try {
-      if (!document.embedding) {
+      if (!_document.embedding) {
         // Generate simple embedding if not provided
-        document.embedding = this.generateSimpleEmbedding(document.content);
+        _document.embedding = this.generateSimpleEmbedding(_document.content);
       }
-      this.documents.push(document);
+      this.documents.push(_document);
       return true;
     } catch (error) {
       console.error('Failed to store document:', error);
@@ -52,7 +56,7 @@ export class PostgreSQLVectorService {
           id: doc.id,
           content: doc.content,
           similarity: this.cosineSimilarity(queryEmbedding, doc.embedding || []),
-          metadata: doc.metadata
+          metadata: doc.metadata,
         }))
         .sort((a, b) => b.similarity - a.similarity)
         .slice(0, limit);
@@ -69,7 +73,7 @@ export class PostgreSQLVectorService {
   private generateSimpleEmbedding(text: string): number[] {
     const words = text.toLowerCase().split(/\s+/);
     const embedding = new Array(384).fill(0);
-    for (let i = 0; i < words.length; i++) {>
+    for (let i = 0; i < words.length; i++) {
       const hash = this.simpleHash(words[i]);
       embedding[hash % 384] += 1 / words.length;
     }
@@ -82,8 +86,8 @@ export class PostgreSQLVectorService {
     let dotProduct = 0;
     let magnitudeA = 0;
     let magnitudeB = 0;
-    for (let i = 0; i < a.length; i++) {>
-      dotProduct, += a[i] * b[i];
+    for (let i = 0; i < a.length; i++) {
+      dotProduct += a[i] * b[i];
       magnitudeA += a[i] * a[i];
       magnitudeB += b[i] * b[i];
     }
@@ -93,10 +97,10 @@ export class PostgreSQLVectorService {
   }
   private simpleHash(str: string): number {
     let hash = 0;
-    for (let i = 0; i < str.length; i++) {>
+    for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;>>
-      hash, = hash & hash;
+      hash = (hash << 5) - hash + char;
+      hash = hash & hash;
     }
     return Math.abs(hash);
   }
@@ -104,8 +108,8 @@ export class PostgreSQLVectorService {
     return {
       connected: this.isConnected,
       documentCount: this.documents.length,
-      fallbackMode: true
-    }
+      fallbackMode: true,
+    };
   }
   async clearDocuments(): Promise<boolean> {
     this.documents = [];
@@ -117,7 +121,7 @@ export class PostgreSQLVectorService {
       textChunks?: string[];
       embeddings?: number[][];
       ocrText?: string;
-      analysisResults?: { [key: string]: any }
+      analysisResults?: LegalAnalysisResult; // Changed from any
     }
   ): Promise<boolean> {
     // Update or create document mapping
@@ -132,9 +136,9 @@ export class PostgreSQLVectorService {
           ...this.documents[existingIndex].metadata,
           ocrText: mapping.ocrText,
           analysisResults: mapping.analysisResults,
-          lastUpdated: new Date().toISOString()
-        }
-      }
+          lastUpdated: new Date().toISOString(),
+        },
+      };
     } else {
       // Create new document
       this.documents.push({
@@ -144,11 +148,47 @@ export class PostgreSQLVectorService {
         metadata: {
           ocrText: mapping.ocrText,
           analysisResults: mapping.analysisResults,
-          created: new Date().toISOString()
-        }
+          created: new Date().toISOString(),
+        },
       });
     }
     return true;
+  }
+  /**
+   * Generates a vector embedding for the given text using the Ollama API.
+   * @param text The text to embed.
+   * @returns A Promise that resolves to a Float32Array representing the embedding.
+   */
+  async generateEmbedding(text: string): Promise<Float32Array> {
+    try {
+      const response = await fetch('http://localhost:11434/api/embeddings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'nomic-embed-text', // Using 'nomic-embed-text' as per instructions
+          prompt: text,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Ollama embedding failed: ${response.status} - ${errorData.error || 'Unknown error'}`);
+      }
+
+      const data = await response.json();
+      if (!data.embedding || !Array.isArray(data.embedding)) {
+        throw new Error('Invalid embedding response from Ollama: missing or malformed embedding array.');
+      }
+
+      return new Float32Array(data.embedding);
+    } catch (error) {
+      console.error('Error generating embedding with Ollama:', error);
+      // Return a zero-filled vector as a fallback in case of error
+      // Assuming a common embedding dimension like 384, adjust if your model differs.
+      return new Float32Array(384).fill(0);
+    }
   }
 }
 export const postgresqlVectorService = new PostgreSQLVectorService();

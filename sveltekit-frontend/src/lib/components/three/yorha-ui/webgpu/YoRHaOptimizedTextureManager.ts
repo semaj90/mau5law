@@ -6,7 +6,6 @@
 /// <reference types="@webgpu/types" />
 import { yorhaMipmapShaders, type MipmapChainResult, type MipmapConfig } from './YoRHaMipmapShaders.js';
 import type { LegalDocument, MemoryBank } from '../../../../memory/nes-memory-architecture.js';
-}
 export interface TextureBankConfig {
   bankType: 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM' | 'EXPANSION_ROM';
   maxTextures: number;
@@ -29,6 +28,7 @@ export interface TextureEntry {
     qualityScore: number;
   }
 }
+
 export interface TextureStreamingSession {
   sessionId: string;
   sourceTexture: GPUTexture;
@@ -196,18 +196,18 @@ export class YoRHaOptimizedTextureManager {
           enableOptimizations: true,
           rtxOptimized: bank.config.rtxOptimization,
           enableStreaming: streamingEnabled
-        }
-        mipmapResult = await yorhaMipmapShaders.generateMipmapChain(sourceTexture, mipmapConfig);
+        };
+            mipmapResult = await yorhaMipmapShaders.generateMipmapChain(sourceTexture, mipmapConfig);
       }
       // Calculate memory usage
       const textureMemory = this.calculateTextureMemory(sourceTexture);
-      const mipmapMemory = mipmapResult ? mipmapResult.memoryUsed: 0;
+  const mipmapMemory = mipmapResult ? mipmapResult.memoryUsed : 0;
       const totalMemory = textureMemory + mipmapMemory;
       // Create texture entry
       const textureEntry: TextureEntry = {
         id: textureId,
-        texture: sourceTexture;
-        mipmaps: mipmapResult ? mipmapResult.mipmapLevels: [],
+        texture: sourceTexture,
+        mipmaps: mipmapResult ? mipmapResult.mipmapLevels : [],
         memoryBank: bankName,
         lastAccessed: Date.now(),
         memoryUsed: totalMemory,
@@ -217,7 +217,7 @@ export class YoRHaOptimizedTextureManager {
           compressionRatio: bank.config.compressionEnabled ? this.estimateCompressionRatio(sourceTexture) : 1.0,
           qualityScore: this.calculateQualityScore(mipmapResult)
         }
-      }
+      };
       // Store in bank
       bank.textures.set(textureId, textureEntry);
       bank.memoryUsed += totalMemory;

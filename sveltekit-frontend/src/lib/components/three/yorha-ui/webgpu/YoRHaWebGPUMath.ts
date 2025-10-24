@@ -77,9 +77,9 @@ export class YoRHaWebGPUMath {
   private async setupComputePipelines(): Promise<void> {
     if (!this.device) return;
     // Vector operations shader
-    const vectorOpsShader = `;
+    const vectorOpsShader = `
       struct VectorData {
-        data: array<vec3<f32>
+        data: array<vec3<f32>>
       }
       @group(0) @binding(0) var<storage, read> inputA: VectorData;
       @group(0) @binding(1) var<storage, read> inputB: VectorData;
@@ -95,9 +95,9 @@ export class YoRHaWebGPUMath {
       }
     `;
     // Matrix operations shader
-    const matrixOpsShader = `;
+    const matrixOpsShader = `
       struct MatrixData {
-        data: array<mat4x4<f32>
+        data: array<mat4x4<f32>>
       }
       @group(0) @binding(0) var<storage, read> inputA: MatrixData;
       @group(0) @binding(1) var<storage, read> inputB: MatrixData;
@@ -113,12 +113,12 @@ export class YoRHaWebGPUMath {
       }
     `;
     // Physics simulation shader
-    const physicsShader = `;
+    const physicsShader = `
       struct Particle {
-        position: vec3<f32>
-        velocity: vec3<f32>
-        force: vec3<f32>
-        mass: f32
+        position: vec3<f32>;
+        velocity: vec3<f32>;
+        force: vec3<f32>;
+        mass: f32;
       }
       struct ParticleSystem {
         particles: array<Particle>
@@ -150,7 +150,7 @@ export class YoRHaWebGPUMath {
       }
     `;
     // Layout computation shader
-    const layoutShader = `;
+    const layoutShader = `
       struct LayoutNode {
         position: vec3<f32>
         size: vec3<f32>
@@ -207,28 +207,28 @@ export class YoRHaWebGPUMath {
         module: this.device.createShaderModule({ code: vectorOpsShader }),
         entryPoint: 'main'
       }
-    });
+    }));
     this.computePipelines.set('matrixOps', this.device.createComputePipeline({
       layout: 'auto',
       compute: {
         module: this.device.createShaderModule({ code: matrixOpsShader }),
         entryPoint: 'main'
       }
-    });
+    }));
     this.computePipelines.set('physics', this.device.createComputePipeline({
       layout: 'auto',
       compute: {
         module: this.device.createShaderModule({ code: physicsShader }),
         entryPoint: 'main'
       }
-    });
+    }));
     this.computePipelines.set('layout', this.device.createComputePipeline({
       layout: 'auto',
       compute: {
         module: this.device.createShaderModule({ code: layoutShader }),
         entryPoint: 'main'
       }
-    });
+    }));
   }
   // Vector Operations
   async vectorAdd(vectorsA: Vector3GPU[], vectorsB: Vector3GPU[]): Promise<YoRHaComputeResult> {

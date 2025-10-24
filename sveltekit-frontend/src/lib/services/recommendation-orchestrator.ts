@@ -13,14 +13,16 @@ import { vectorService } from './postgresql-vector-service.js';
 // Add/adjusted types for incoming messages
 type Priority = 'low' | 'medium' | 'high' | 'critical';
 
-interface Recommendation {
+export type RecommendationSource = 'nes-rl' | 'idle-detection' | 'rabbit-mq' | 'manual' | 'qlora-training';
+
+export interface Recommendation {
   id: string;
   type: 'detective' | 'legal' | 'evidence' | 'ai';
   title: string;
   description: string;
   confidence: number;
   priority: Priority;
-  source: 'nes-rl' | 'idle-detection' | 'rabbit-mq' | 'manual';
+  source: RecommendationSource;
   context?: Record<string, unknown>;
   action?: () => void;
   createdAt: number;
@@ -369,8 +371,6 @@ export class RecommendationOrchestrator {
       title: 'AI Learning Suggestion',
       description: String(data.suggestion ?? ''),
       confidence: data.confidence ?? 0,
-      priority: (data.confidence ?? 0) > 0.8 ? 'high' : 'medium',
-      source: 'nes-rl',
       context: data.context,
       action: () => this.executeNESRLAction(data),
       createdAt: Date.now(),
@@ -446,7 +446,7 @@ export class RecommendationOrchestrator {
   /**
    * Add recommendation to store
    */
-  private addRecommendation(recommendation: Recommendation) {
+  public addRecommendation(recommendation: Recommendation) {
     this.recommendations.update(state => {
       const existing = state.recommendations.find(r => r.id === recommendation.id);
       if (existing) return state;

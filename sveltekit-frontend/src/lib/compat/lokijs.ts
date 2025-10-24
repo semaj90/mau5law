@@ -41,40 +41,40 @@ class LokiMemoryAdapter {
 	// Placeholder for API compatibility
 }
 class Loki {
-	filename: string;
-	options: any;
-	private collections = new Map < string, MemoryCollection<any>();
-	static LokiMemoryAdapter = LokiMemoryAdapter;
-	constructor(filename: string, options?: any) {
-		this.filename = filename;
-		this.options = options || {}
-		if (typeof this.options?.autoloadCallback === 'function') {
-			// Defer to simulate async load
-			setTimeout(() => this.options.autoloadCallback?.(), 0);
-		}
-	}
-	addCollection<T extends Doc = Doc>(name: string): MemoryCollection<T> {
-		const existing = this.collections.get(name);
-		if (existing) return existing as MemoryCollection<T>;
-		const col = new MemoryCollection<T>(name);
-		this.collections.set(name, col);
-		return col as MemoryCollection<T>;
-	}
-	getCollection<T extends Doc = Doc>(name: string): MemoryCollection<T> | null {
-		return (this.collections.get(name) as MemoryCollection<T>) || null;
-	}
-	getCollections(): MemoryCollection<any>[] {
-		return Array.from(this.collections.values());
-	}
-	removeCollection(name: string) {
-		this.collections.delete(name);
-	}
-	saveDatabase(cb?: (err?: any) => void) {
-		cb?.();
-	}
-	close(cb?: () => void) {
-		cb?.();
-	}
+  filename: string;
+  options: any;
+  private collections = new Map<string, MemoryCollection<any>>();
+  static LokiMemoryAdapter = LokiMemoryAdapter;
+  constructor(filename: string, options?: any) {
+    this.filename = filename;
+    this.options = options || {};
+    if (typeof this.options?.autoloadCallback === 'function') {
+      // Defer to simulate async load
+      setTimeout(() => this.options.autoloadCallback?.(), 0);
+    }
+  }
+  addCollection<T extends Doc = Doc>(name: string): MemoryCollection<T> {
+    const existing = this.collections.get(name);
+    if (existing) return existing as MemoryCollection<T>;
+    const col = new MemoryCollection<T>(name);
+    this.collections.set(name, col);
+    return col as MemoryCollection<T>;
+  }
+  getCollection<T extends Doc = Doc>(name: string): MemoryCollection<T> | null {
+    return (this.collections.get(name) as MemoryCollection<T>) || null;
+  }
+  getCollections(): MemoryCollection<any>[] {
+    return Array.from(this.collections.values());
+  }
+  removeCollection(name: string) {
+    this.collections.delete(name);
+  }
+  saveDatabase(cb?: (err?: any) => void) {
+    cb?.();
+  }
+  close(cb?: () => void) {
+    cb?.();
+  }
 }
 export default Loki;
 export type Collection<T = any> = MemoryCollection<T>;

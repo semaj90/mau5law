@@ -1,20 +1,22 @@
 // Minimal frontend logging helper to standardize structure and allow future trace context injection.
-export interface LogFields { [k: string]: any }
+export interface LogFields {
+  [k: string]: unknown;
+}
 function base() {
   return {
-    ts: new Date().toISOString()
-  }
+    ts: new Date().toISOString(),
+  };
 }
-export function logInfo(_event: string, fields: LogFields = {}) {
+export function logInfo(event: string, fields: LogFields = {}) {
   // eslint-disable-next-line no-console
-  console.info(JSON.stringify({ level: 'info', event, ...base(), ...fields });
+  console.info(JSON.stringify({ level: 'info', event, ...base(), ...fields }));
 }
-export function logWarn(_event: string, fields: LogFields = {}) {
+export function logWarn(event: string, fields: LogFields = {}) {
   // eslint-disable-next-line no-console
-  console.warn(JSON.stringify({ level: 'warn', event, ...base(), ...fields });
+  console.warn(JSON.stringify({ level: 'warn', event, ...base(), ...fields }));
 }
-export function logError(_event: string, error: unknown, fields: LogFields = {}) {
-  const errObj = error instanceof Error ? { message: error.message, stack: error.stack } : { message: String(error) }
+export function logError(event: string, error: unknown, fields: LogFields = {}) {
+  const errObj = error instanceof Error ? { message: error.message, stack: error.stack } : { message: String(error) };
   // eslint-disable-next-line no-console
-  console.error(JSON.stringify({ level: 'error', event, ...base(), ...fields, error: errObj });
+  console.error(JSON.stringify({ level: 'error', event, ...base(), ...fields, error: errObj }));
 }

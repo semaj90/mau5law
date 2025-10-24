@@ -104,10 +104,10 @@
 		autotag: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 }
 	};
 
-	let stats = { totalCases: 0, totalEvidence: 0, processingJobs: 0 };
-	let loading = true;
-	let userQuery = '';
-	let registerOpen = false;
+	let stats = $state({ totalCases: 0, totalEvidence: 0, processingJobs: 0 });
+	let loading = $state(true);
+	let userQuery = $state('');
+	let registerOpen = $state(false);
   // ---------------------------------------------------------------
 
   function openRegister() {
@@ -279,9 +279,17 @@
         <LoginButton />
       </div>
       <div>
-        <button class="nes-btn is-success" on:click={openRegister}>Register</button>
+        <button class="nes-btn is-success" onclick={openRegister}>Register</button>
       </div>
-      <RegisterModal bind:open={registerOpen} on:success={() => { /* on success, reload to reflect session cookie */ window.location.reload(); }} />
+
+      <!-- Svelte 5: components are dynamic by default in runes mode -->
+      <RegisterModal
+        bind:open={registerOpen}
+        onsuccess={() => {
+          /* on success, reload to reflect session cookie */
+          window.location.reload();
+        }}
+      />
     </div>
   </div>
 
@@ -523,8 +531,8 @@
   <div class="nes-container is-dark with-title ai-query-section-custom">
     <p class="title">🧠 AI Query Interface</p>
     <div class="query-box">
-      <input type="text" placeholder="Enter your legal query..." bind:value={userQuery} on:keydown={onKey} />
-      <button on:click={handleSubmit}>Run</button>
+      <input type="text" placeholder="Enter your legal query..." bind:value={userQuery} onkeydown={onKey} />
+      <button onclick={handleSubmit}>Run</button>
     </div>
 
     {#if $engineState === 'processing'}
@@ -574,7 +582,7 @@
   <input
     type="file"
     multiple
-    on:change={(e) => {
+    onchange={(e) => {
       const target = e.currentTarget as HTMLInputElement;
       if (target.files) uploader.addFiles(target.files);
       }}

@@ -97,7 +97,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 
   type CategoryInfo = {
     name: string;
-    icon string;
+    icon: string;
     color?: string;
     priority: 'production' | 'testing' | 'consolidation' | 'demo' | 'other' | string;
   };
@@ -118,17 +118,17 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
 
   // Enhanced route categorization with separation of core vs demo vs API testing
   const routeCategories: Record<string, CategoryInfo> = {
-    'core-user': { name: 'Core User Routes', icon '👤', color: 'blue', priority: 'production' },
-    'core-legal': { name: 'Legal Core', icon '⚖️', color: 'indigo', priority: 'production' },
-    'core-admin': { name: 'Administration', icon '👨‍💼', color: 'red', priority: 'production' },
-    'api-production': { name: 'Production APIs', icon '🚀', color: 'green', priority: 'production' },
-    'api-testing': { name: 'APIs Need Testing', icon '🧪', color: 'yellow', priority: 'testing' },
-    'api-unversioned': { name: 'APIs Need Versioning', icon '⚠️', color: 'orange', priority: 'consolidation' },
-    'demo-development': { name: 'Development Demos', icon '🛠️', color: 'purple', priority: 'demo' },
-    'demo-showcase': { name: 'Feature Showcase', icon '✨', color: 'pink', priority: 'demo' },
-    'demo-games': { name: 'Game Demos', icon '🎮', color: 'cyan', priority: 'demo' },
-    infrastructure: { name: 'Infrastructure', icon '🏗️', color: 'gray', priority: 'production' },
-    other: { name: 'Other', icon '📄', color: 'slate', priority: 'other' },
+    'core-user': { name: 'Core User Routes', icon: '👤', color: 'blue', priority: 'production' },
+    'core-legal': { name: 'Legal Core', icon: '⚖️', color: 'indigo', priority: 'production' },
+    'core-admin': { name: 'Administration', icon: '👨‍💼', color: 'red', priority: 'production' },
+    'api-production': { name: 'Production APIs', icon: '🚀', color: 'green', priority: 'production' },
+    'api-testing': { name: 'APIs Need Testing', icon: '🧪', color: 'yellow', priority: 'testing' },
+    'api-unversioned': { name: 'APIs Need Versioning', icon: '⚠️', color: 'orange', priority: 'consolidation' },
+    'demo-development': { name: 'Development Demos', icon: '🛠️', color: 'purple', priority: 'demo' },
+    'demo-showcase': { name: 'Feature Showcase', icon: '✨', color: 'pink', priority: 'demo' },
+    'demo-games': { name: 'Game Demos', icon: '🎮', color: 'cyan', priority: 'demo' },
+    infrastructure: { name: 'Infrastructure', icon: '🏗️', color: 'gray', priority: 'production' },
+    other: { name: 'Other', icon: '📄', color: 'slate', priority: 'other' },
   };
   function categorizeRoute(path: string): string {
     // Core User Routes - Main user-facing functionality
@@ -237,7 +237,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
           name: route.path.replace(/\//g, ' → '),
           type: 'configured',
           icon route.icon || '📄',
-          description route.description,
+          description: route.description,
           category: categorizeRoute(route.path),
         });
       });
@@ -249,7 +249,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
           path: route,
           name: route.replace(/\//g, ' → '),
           type: 'file-based',
-          icon '🔗',
+          icon: '🔗',
           description `Auto-discovered route`,
           category: categorizeRoute(route),
         });
@@ -264,9 +264,9 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
       byCategory: {},
       byType: { configured: 0, 'file-based': 0 },
       byPriority: {
-        production 0,
+        production: 0,
         testing: 0,
-        consolidation 0,
+        consolidation: 0,
         demo: 0,
         other: 0,
       },
