@@ -94,6 +94,12 @@ type SourceDataType = {
   createdAt?: string | Date;
   updatedAt?: string | Date;
   metadata?: Record<string, unknown>;
+  // added optional fields to avoid `any` casts
+  evidenceType?: string;
+  caseId?: string;
+  tags?: string[];
+  reportType?: string;
+  status?: string;
 }; // <-- closed the type
 
 async function ensureQdrantCollectionFallback(collectionName: string, dimension: number): Promise<void> {
@@ -125,7 +131,7 @@ async function handleVectorUpsert(ownerType: string, ownerId: string, _vectorId?
 
   // Fetch source row depending on ownerType
   let sd: SourceDataType | undefined = undefined;
-  let collectionName = ownerType === 'evidence' ? 'legal_evidence' : 'legal_reports';
+  const collectionName = ownerType === 'evidence' ? 'legal_evidence' : 'legal_reports';
   if (ownerType === 'evidence') {
     [sd] = await db.select().from(evidence).where(eq(evidence.id, ownerId)).limit(1);
   } else if (ownerType === 'report') {
@@ -144,22 +150,15 @@ async function handleVectorUpsert(ownerType: string, ownerId: string, _vectorId?
     metadata: sd?.metadata ?? {},
   };
 
-  // Add conditional fields for specific types
-  if (ownerType === 'evidence') {
-    // these properties may exist on the evidence row; guard access
-    const anySd = sd as any;
-    if (anySd) {
-      if (anySd.evidenceType !== undefined) payload.evidenceType = anySd.evidenceType;
-      if (anySd.caseId !== undefined) payload.caseId = anySd.caseId;
-      if (Array.isArray(anySd.tags)) payload.tags = anySd.tags;
-    }
-  } else if (ownerType === 'report') {
-    const anySd = sd as any;
-    if (anySd) {
-      if (anySd.reportType !== undefined) payload.reportType = anySd.reportType;
-      if (anySd.caseId !== undefined) payload.caseId = anySd.caseId;
-      if (anySd.status !== undefined) payload.status = anySd.status;
-    }
+  // Add conditional fields for specific types (typed, no `any`)
+  if (ownerType === 'evidence' && sd) {
+    if (sd.evidenceType !== undefined) payload.evidenceType = sd.evidenceType;
+    if (sd.caseId !== undefined) payload.caseId = sd.caseId;
+    if (Array.isArray(sd.tags)) payload.tags = sd.tags;
+  } else if (ownerType === 'report' && sd) {
+    if (sd.reportType !== undefined) payload.reportType = sd.reportType;
+    if (sd.caseId !== undefined) payload.caseId = sd.caseId;
+    if (sd.status !== undefined) payload.status = sd.status;
   }
 
   // Ensure Qdrant collection exists via helper or HTTP fallback
@@ -239,44 +238,36 @@ async function handleVectorDeletion(ownerType: string, ownerId: string): Promise
     } catch (e) {
       // ignore; we already failed delete
     }
-    return { action: 'deleted', collection: collectionName, pointId: ownerId, qdrantResult: { ok: false, error: err instanceof Error ? err.message : String(err) } };
+    return {
+      action: 'deleted',
+      collection: collectionName,
+      pointId: ownerId,
+      qdrantResult: { ok: false, error: err instanceof Error ? err.message : String(err) },
+    };
   }
 }
 
-// Health check endpoint
+// Health check endpoint (cleaned up, single definition)
 export const GET: RequestHandler = async () => {
   try {
     // Check Qdrant connection (use env or default)
     const qdrantUrl = env.QDRANT_URL || 'http://localhost:6333';
     const response = await fetch(`${qdrantUrl.replace(/\/$/, '')}/collections`);
     const collections = response.ok ? await response.json() : null;
+
     // Check PostgreSQL connection
     const [pgTest] = await db.select().from(vectors).limit(1);
+
     // Check Redis connection (ioredis)
     let redisOk = false;
     try {
       type RedisLike = { ping?: () => Promise<string> };
       const pong = await (redis as unknown as RedisLike | null)?.ping?.();
       redisOk = pong === 'PONG' || pong === 'pong';
-    } catch (error) {
+    } catch {
       // ignore
     }
-    return json({
-      success: true,
-      services: {
-        qdrant: { connected: response.ok, collections: collections?.result?.collections || collections || [] },
-        postgresql: { connected: !!pgTest },
-        redis: { connected: redisOk },
-      },
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error: unknown) {
-    return json(
-      { success: false, error: error instanceof Error ? error.message : 'Health check failed' },
-      { status: 500 }
-    );
-  }
-};
+
     return json({
       success: true,
       services: {
