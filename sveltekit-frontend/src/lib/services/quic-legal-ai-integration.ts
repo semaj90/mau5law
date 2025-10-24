@@ -1,7 +1,8 @@
 import { GPUAIService } from '$lib/services/gpu-ai-service';
-import { RedisLLMCache, RedisTaskQueue } from '$lib/services/redis-orchestrator';
+import RedisOrchestrator from '$lib/services/redis-orchestrator';
 import { productionServiceClient } from '$lib/api/production-service-client';
 import { createHash } from 'crypto';
+import { getOllamaEndpoint } from '$lib/server/services/ollama-client'; // add import for endpoint helper
 
 // Define types for better clarity and type safety
 interface LegalAIStatus {
@@ -14,15 +15,17 @@ interface LegalAIStatus {
   gpuAvailable: boolean;
 }
 
+type ServiceStatus = 'healthy' | 'warning' | 'critical';
+
 interface SystemHealth {
-  overall: 'healthy' | 'warning' | 'critical';
+  overall: ServiceStatus;
   services: {
-    ollama: 'healthy' | 'warning' | 'critical';
-    qdrant: 'healthy' | 'warning' | 'critical';
-    redis: 'healthy' | 'warning' | 'critical';
-    goMicroservices: 'healthy' | 'warning' | 'critical';
-    quicServer: 'healthy' | 'warning' | 'critical';
-    gpuOrchestrator: 'healthy' | 'warning' | 'critical';
+    ollama: ServiceStatus;
+    qdrant: ServiceStatus;
+    redis: ServiceStatus;
+    goMicroservices: ServiceStatus;
+    quicServer: ServiceStatus;
+    gpuOrchestrator: ServiceStatus;
   };
   details: Record<string, unknown>;
 }
@@ -55,6 +58,25 @@ interface AutosolveResult {
   recommendations?: string[];
 }
 
+// New: explicit model result shape to avoid `any`
+type ModelResult = {
+  summary?: string;
+  response?: string;
+  insights?: string[];
+  suggestions?: unknown[];
+  model?: string;
+  model_used?: string;
+} | null;
+
+// Add narrow types to avoid `any`
+type TaskType = 'document_analysis' | 'case_synthesis' | 'risk_assessment' | 'unknown_task';
+
+type ServiceClientResponse<T = unknown> = {
+	// productionServiceClient responses usually have a status and optional data
+	status?: number;
+	data?: T;
+} & Record<string, unknown>;
+
 export class QUICLegalAIIntegration {
   private gpuAIService: GPUAIService;
   private currentStatus: LegalAIStatus;
@@ -66,7 +88,7 @@ export class QUICLegalAIIntegration {
       message: 'Initializing QUIC-Enhanced Legal AI System',
       config: {
         quicPort: 4433,
-        ollamaUrl: 'http://localhost:11434',
+        ollamaUrl: getOllamaEndpoint(), // use helper instead of hardcoded URL
         redisUrl: 'redis://:redis@localhost:6379/0',
       },
       lastUpdated: new Date().toISOString(),
@@ -132,37 +154,53 @@ export class QUICLegalAIIntegration {
       details: {},
     };
 
+    // Helper to map HTTP checks to ServiceStatus
+    const checkHttpHealth = async (url: string): Promise<ServiceStatus> => {
+      try {
+        const res = await fetch(url);
+        return res.ok ? 'healthy' : 'critical';
+      } catch {
+        return 'critical';
+      }
+    };
+
     try {
-      // Check Ollama
-      const ollamaHealth = await fetch('http://localhost:11434/health').then(res => res.ok ? 'healthy' : 'critical').catch(() => 'critical');
+      const ollamaEndpoint = getOllamaEndpoint();
+       // Check Ollama
+      const ollamaHealth = await checkHttpHealth(`${ollamaEndpoint.replace(/\/$/, '')}/health`);
       health.services.ollama = ollamaHealth;
       if (ollamaHealth === 'critical') health.overall = 'warning';
 
       // Check Qdrant
-      const qdrantHealth = await fetch('http://localhost:6333/health').then(res => res.ok ? 'healthy' : 'critical').catch(() => 'critical');
+      const qdrantHealth = await checkHttpHealth('http://localhost:6333/health');
       health.services.qdrant = qdrantHealth;
       if (qdrantHealth === 'critical') health.overall = 'warning';
 
-      // Check Redis (using productionServiceClient for Go service that might wrap Redis health)
-      // Or directly check Redis if a client is available here
-      // For now, simulate a check
-      const redisHealth = await productionServiceClient.makeRequest('/redis/health', {}).then(res => res.status === 200 ? 'healthy' : 'critical').catch(() => 'critical');
+      // Check Redis via productionServiceClient - await and narrow the response type
+      const redisResp = (await productionServiceClient
+        .makeRequest('/redis/health', { method: 'GET' })
+        .catch(() => null)) as ServiceClientResponse | null;
+      const redisHealth: ServiceStatus = redisResp?.status === 200 ? 'healthy' : 'critical';
+
       health.services.redis = redisHealth;
       if (redisHealth === 'critical') health.overall = 'warning';
 
-      // Check Go Microservices (example: legal-gateway)
-      const goHealth = await productionServiceClient.makeRequest('/legal-gateway/health', {}).then(res => res.status === 200 ? 'healthy' : 'critical').catch(() => 'critical');
+      // Check Go Microservices (example) - await and narrow the response type
+      const goResp = (await productionServiceClient
+        .makeRequest('/legal-gateway/health', { method: 'GET' })
+        .catch(() => null)) as ServiceClientResponse | null;
+      const goHealth: ServiceStatus = goResp?.status === 200 ? 'healthy' : 'critical';
+
       health.services.goMicroservices = goHealth;
       if (goHealth === 'critical') health.overall = 'warning';
 
-      // Check QUIC Server (via GPUAIService's internal check or direct health endpoint)
-      // Assuming GPUAIService has a way to report this
-      const quicHealth = this.currentStatus.quicEnabled ? 'healthy' : 'critical'; // Simplified
+      // Check QUIC Server (via currentStatus boolean)
+      const quicHealth: ServiceStatus = this.currentStatus.quicEnabled ? 'healthy' : 'critical';
       health.services.quicServer = quicHealth;
       if (quicHealth === 'critical') health.overall = 'warning';
 
-      // Check GPU Orchestrator (via GPUAIService)
-      const gpuHealth = this.currentStatus.gpuAvailable ? 'healthy' : 'critical'; // Simplified
+      // Check GPU Orchestrator (via currentStatus boolean)
+      const gpuHealth: ServiceStatus = this.currentStatus.gpuAvailable ? 'healthy' : 'critical';
       health.services.gpuOrchestrator = gpuHealth;
       if (gpuHealth === 'critical') health.overall = 'warning';
 
@@ -192,8 +230,8 @@ export class QUICLegalAIIntegration {
 
       // Queue tasks based on recommendations
       for (const rec of recommendations) {
-        await RedisTaskQueue.queueComplexTask(
-          rec.taskType as any, // Type assertion for simplicity, should be validated
+        await RedisOrchestrator.RedisTaskQueue.queueComplexTask(
+          rec.taskType, // now strongly typed TaskType
           rec.query,
           { source: 'autosolve', recommendationId: createHash('sha256').update(rec.query).digest('hex') },
           rec.priority
@@ -228,20 +266,35 @@ export class QUICLegalAIIntegration {
     return ['document_ingestion_needed', 'case_similarity_search', 'risk_assessment_update'];
   }
 
-  private generateRecommendations(patterns: string[]): Array<{ taskType: string; query: string; priority: number }> {
-    // Placeholder for generating specific AI tasks
-    console.log('Generating recommendations based on patterns:', patterns);
-    const recommendations = [];
-    if (patterns.includes('document_ingestion_needed')) {
-      recommendations.push({ taskType: 'document_analysis', query: 'Identify and ingest new legal documents from watch folders.', priority: 80 });
-    }
-    if (patterns.includes('case_similarity_search')) {
-      recommendations.push({ taskType: 'case_synthesis', query: 'Find similar cases to the active case based on recent activity.', priority: 90 });
-    }
-    if (patterns.includes('risk_assessment_update')) {
-      recommendations.push({ taskType: 'risk_assessment', query: 'Update risk assessment for all open cases.', priority: 70 });
-    }
-    return recommendations;
+  private generateRecommendations(patterns: string[]): Array<{ taskType: TaskType; query: string; priority: number }> {
+	// Placeholder for generating specific AI tasks
+	console.log('Generating recommendations based on patterns:', patterns);
+
+	// Explicitly type the recommendations array so TypeScript doesn't widen literals to string
+	const recommendations: Array<{ taskType: TaskType; query: string; priority: number }> = [];
+
+	if (patterns.includes('document_ingestion_needed')) {
+		recommendations.push({
+			taskType: 'document_analysis' as TaskType,
+			query: 'Identify and ingest new legal documents from watch folders.',
+			priority: 80,
+		});
+	}
+	if (patterns.includes('case_similarity_search')) {
+		recommendations.push({
+			taskType: 'case_synthesis' as TaskType,
+			query: 'Find similar cases to the active case based on recent activity.',
+			priority: 90,
+		});
+	}
+	if (patterns.includes('risk_assessment_update')) {
+		recommendations.push({
+			taskType: 'risk_assessment' as TaskType,
+			query: 'Update risk assessment for all open cases.',
+			priority: 70,
+		});
+	}
+	return recommendations;
   }
 
   /**
@@ -250,10 +303,10 @@ export class QUICLegalAIIntegration {
   public async processLegalDocument(content: string, options: ProcessDocumentOptions = {}): Promise<ProcessDocumentResult> {
     const startTime = performance.now();
     const documentId = createHash('sha256').update(content).digest('hex');
-    const cacheKey = RedisLLMCache.generateCacheKey(content, { caseId: options.caseId, documentType: options.documentType });
+    const cacheKey = RedisOrchestrator.RedisLLMCache.generateCacheKey(content, { caseId: options.caseId, documentType: options.documentType });
 
     // 1. Check LLM Cache first
-    const cachedResponse = await RedisLLMCache.getCachedResponse(content, { caseId: options.caseId, documentType: options.documentType });
+    const cachedResponse = await RedisOrchestrator.RedisLLMCache.getCachedResponse(content, { caseId: options.caseId, documentType: options.documentType });
     if (cachedResponse) {
       console.log(`[QUICLegalAIIntegration] Cache hit for document ${documentId.substring(0, 8)}`);
       return {
@@ -270,28 +323,82 @@ export class QUICLegalAIIntegration {
 
     // 2. Prepare AI request
     const aiRequest = {
-    if (this.quicClien,t) {
-      this.quicClient.disconnect();
+      id: documentId,
+      content,
+      metadata: {
+        caseId: options.caseId,
+        documentType: options.documentType,
+        priority: options.priority ?? 50,
+      },
+      useQuic: Boolean(options.useQuic && this.currentStatus.quicEnabled),
+    };
+
+    // 3. Try QUIC/GPU path first, fallback to HTTP service
+    let modelResult: ModelResult = null;
+    try {
+      if (aiRequest.useQuic && this.gpuAIService?.generateResponse) {
+        // GPUAIService.expected parameter type may not include `metadata`.
+        // Cast the payload to the GPUAIService input parameter type so we don't add unknown properties directly.
+        const gpuPayload = {
+          text: content,
+          useQuic: true,
+          // keep metadata but cast below to match GPUAIService param type
+          metadata: aiRequest.metadata,
+        } as unknown as Parameters<GPUAIService['generateResponse']>[0];
+
+        // Call service and cast result to ModelResult to avoid `any`
+        modelResult = (await this.gpuAIService.generateResponse(gpuPayload)) as unknown as ModelResult;
+       } else {
+         // Fallback HTTP request to production service
+         const res = await productionServiceClient.makeRequest('/ai/process', {
+           method: 'POST',
+           headers: { 'Content-Type': 'application/json' },
+           body: JSON.stringify(aiRequest),
+         }).catch(err => {
+           // ensure error doesn't short-circuit outer try
+           console.warn('HTTP AI fallback failed', err);
+           return null;
+         });
+         modelResult = res?.data ?? res;
+       }
+     } catch (err) {
+      console.error('AI processing failed:', err);
+      modelResult = null;
     }
-    if (this.selfPrompting) {
-      this.selfPrompting.destroy();
+
+    // 4. Build result object with sensible fallbacks
+    const processingTimeMs = Math.round(performance.now() - startTime);
+    const summary = String(modelResult?.summary ?? modelResult?.response ?? String(content).slice(0, 1024));
+    const insights = (modelResult?.insights as string[]) ?? [];
+    const suggestions = modelResult?.suggestions ?? undefined;
+    const modelUsed = modelResult?.model ?? modelResult?.model_used ?? 'unknown';
+
+    const result: ProcessDocumentResult = {
+      documentId,
+      summary,
+      insights,
+      suggestions,
+      processingTimeMs,
+      modelUsed,
+      quicUsed: Boolean(aiRequest.useQuic),
+      cached: false,
+    };
+
+    // 5. Cache result if cache API is available
+    try {
+      await RedisOrchestrator.RedisLLMCache.cacheResponse?.(cacheKey, {
+        response: summary,
+        model_used: modelUsed,
+        processing_time: processingTimeMs,
+        sources: suggestions,
+      });
+    } catch {
+      /* ignore cache errors */
     }
-    // Note: Cluster manager handles its own shutdown via signals
-    console.log('✅ Shutdown complete');
+
+    return result;
   }
 }
 // Export singleton instance
-export const legalAIIntegration = new QUICLegalAIIntegration({
-  quicEnabled: typeof window !== 'undefined' && import.meta.env.PUBLIC_QUIC_ENABLED === 'true',
-  services: {
-    quicGateway: import.meta.env.PUBLIC_QUIC_GATEWAY || 'http://localhost:8443',
-    ragProxy: import.meta.env.PUBLIC_QUIC_RAG_PROXY || 'http://localhost:8095',
-    vectorProxy: import.meta.env.PUBLIC_QUIC_VECTOR_PROXY || 'http://localhost:8216',
-    uploadService: import.meta.env.PUBLIC_API_URL || 'http://localhost:8093',
-    enhancedRAG: import.meta.env.PUBLIC_API_URL || 'http://localhost:8094'
-  }
-});
-// Auto-initialize on import (browser only)
-if (typeof window !== 'undefined') {
-  legalAIIntegration.initialize().catch(console.error);
-}
+export const legalAIIntegration = new QUICLegalAIIntegration();
+// Auto-initialize on import (constructor already calls initialize)

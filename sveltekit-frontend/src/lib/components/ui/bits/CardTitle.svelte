@@ -15,7 +15,7 @@
   :global(.shadcn-card-title) {
     font-size: 1.25rem;
     font-weight: 600;
-    line-height: 1.6,
+    line-height: 1.6;
     color: var(--color-foreground, hsl(var(--foreground)));
   }
 </style>

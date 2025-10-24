@@ -5,21 +5,20 @@
  * Producers append messages with fields: { seq: <number>, chunk: <string>, meta: <json> }
  * Consumers read with XRANGE/XREAD to replay tokens for resume semantics.
  */
+import Redis from 'ioredis'; // Import the Redis constructor
 import type RedisType from 'ioredis';
-import Redis from 'ioredis';
+// Use centralized factory for Redis connections (singleton for producers/read, fresh for blocking consumers)
+import { redis } from '$lib/server/redis';
+import redisConnection from '$lib/server/redis'; // <-- fixed: default import for connection options
 
-// Use the shared RedisService if available in the project. Fall back to a local client for tests/dev.
 let client: RedisType | null = null;
-// Try to reuse a global redis client if a RedisService initialized one is available
-const maybeGlobal = (globalThis as unknown as Record<string, unknown>).__REDIS;
-client = (maybeGlobal as unknown as RedisType) || null;
-if (!client) {
-  client = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
-    password: process.env.REDIS_PASSWORD || 'redis',
-    lazyConnect: true,
-    maxRetriesPerRequest: 3,
-    enableOfflineQueue: false
-  });
+try {
+  // Prefer a lazy singleton so module load doesn't try to connect during SSR build steps
+  // Use the already existing singleton 'redis' client
+  client = redis as unknown as RedisType;
+} catch (err) {
+  // Fallback: leave client null and error will be thrown when functions try to use it
+  client = null;
 }
 
 export type TokenEntry = { id: string; seq: number; chunk: string; meta: Record<string, unknown> };
@@ -90,6 +89,24 @@ export async function trimTokenStream(requestId: string, maxLen = 1000): Promise
 }
 
 /**
+ * Helper to call raw Redis commands on a specific client instance.
+ */
+async function callRedisRaw(reader: RedisType, ...args: string[]): Promise<unknown> {
+  const c = reader as unknown as {
+    call?: (...a: unknown[]) => Promise<unknown>;
+    sendCommand?: (...a: unknown[]) => Promise<unknown>;
+  };
+  if (typeof c.call === 'function') return c.call(...args);
+  if (typeof c.sendCommand === 'function') return c.sendCommand(args as unknown[]);
+  // Last-resort attempt using index signature
+  const anyClient = reader as unknown as Record<string, unknown>;
+  const maybeCall = anyClient['call'] as unknown;
+  if (typeof maybeCall === 'function')
+    return (maybeCall as (...a: unknown[]) => Promise<unknown>).apply(reader, args as unknown[]);
+  return Promise.reject(new Error('Redis client does not support call/sendCommand'));
+}
+
+/**
  * Consume new entries (XREAD) from the stream starting at `fromId` and invoke callback for each.
  * Stops after `stopAfterMs` of inactivity.
  */
@@ -103,21 +120,49 @@ export async function consumeTokenStream(
   const key = streamKey(requestId);
   let lastId = fromId;
   const start = Date.now();
-  while (Date.now() - start < stopAfterMs) {
-    const resRaw = await redisCall('XREAD', 'COUNT', '50', 'BLOCK', '5000', 'STREAMS', key, lastId);
-    const res = resRaw as Array<[string, Array<[string, string[]]>]> | null;
-    if (!res) continue; // timeout
-    // res shape: [[key, [[id, [field, value, ...]], ...]]]
-    for (const [, entries] of res) {
-      for (const [id, fields] of entries) {
-        const obj: Record<string, string> = {};
-        for (let i = 0; i < fields.length; i += 2) obj[fields[i]] = fields[i + 1];
-        const meta = obj.meta ? safeJsonParse(obj.meta, {}) : {};
-        const seq = obj.seq ? Number(obj.seq) : 0;
-        const entry: TokenEntry = { id, seq, chunk: obj.chunk ?? '', meta };
-        await callback(entry);
-        lastId = id;
+
+  // Use a dedicated connection for blocking XREAD so we don't block the shared client
+  // Create a new Redis instance using the shared connection options and ensure lazyConnect
+  const reader = new Redis({ ...redisConnection, lazyConnect: true }) as unknown as RedisType;
+  try {
+    while (Date.now() - start < stopAfterMs) {
+      // Use the reader's call/sendCommand API directly
+      const rawRes = (await callRedisRaw(
+        reader,
+        'XREAD',
+        'COUNT',
+        '50',
+        'BLOCK',
+        '5000',
+        'STREAMS',
+        key,
+        lastId
+      )) as Array<[string, Array<[string, string[]]>]> | null;
+
+      const res = rawRes as Array<[string, Array<[string, string[]]>]> | null;
+      if (!res) continue; // timeout
+
+      // res shape: [[key, [[id, [field, value, ...]], ...]]]
+      for (const [, entries] of res) {
+        for (const [id, fields] of entries) {
+          const obj: Record<string, string> = {};
+          for (let i = 0; i < fields.length; i += 2) obj[fields[i]] = fields[i + 1];
+          const meta = obj.meta ? safeJsonParse(obj.meta, {}) : {};
+          const seq = obj.seq ? Number(obj.seq) : 0;
+          const entry: TokenEntry = { id, seq, chunk: obj.chunk ?? '', meta };
+          await callback(entry);
+          lastId = id;
+        }
       }
+    }
+  } finally {
+    try {
+      // ioredis may expose quit() to gracefully close connection; fall back to disconnect()
+      const rAny = reader as unknown as Record<string, unknown>;
+      if (typeof (rAny.quit as unknown) === 'function') await (rAny.quit as (...a: unknown[]) => Promise<unknown>)();
+      else if (typeof (rAny.disconnect as unknown) === 'function') (rAny.disconnect as (...a: unknown[]) => void)();
+    } catch {
+      // ignore disconnect errors
     }
   }
 }
@@ -147,3 +192,108 @@ function redisCall(...args: string[]): Promise<unknown> {
 }
 
 export { client as redisClient };
+
+// --- Server-Side Integration Helpers & Typed Interfaces ---
+
+// 1. Typed Interfaces for External Services
+
+/**
+ * Interface for a high-performance JSON parser, potentially implemented in WASM.
+ */
+export interface UltraJSONParser {
+  parse<T = unknown>(json: string | Uint8Array): T;
+  stringify(obj: unknown): string;
+}
+
+/**
+ * Interface for a WASM-based clustering service running server-side.
+ */
+export interface WasmClusteringService {
+  cluster(vectors: number[][], options: { numClusters: number }): Promise<number[]>;
+}
+
+/**
+ * Interface for bridging with nes.css styled WebGPU components.
+ */
+export interface NesGPUBridge {
+  getDeviceInfo(): Promise<{ adapter: string; device: string }>;
+  runComputeShader(shader: string, data: Buffer): Promise<Buffer>;
+}
+
+// 2. Server-Side Integration Helpers
+
+/**
+ * Ollama Embeddings Helper
+ */
+export class OllamaEmbeddings {
+  static async getEmbedding(text: string, model = 'embeddinggemma:latest'): Promise<number[]> {
+    const response = await fetch('http://localhost:11434/api/embeddings', {
+      method: 'POST',
+      body: JSON.stringify({ model, prompt: text }),
+    });
+    if (!response.ok) {
+      throw new Error(`Ollama API error: ${response.statusText}`);
+    }
+    const data = await response.json();
+    return data.embedding;
+  }
+}
+
+/**
+ * Redis Cache Helper (extends existing Redis usage)
+ */
+export class RedisCache {
+  static async get<T>(key: string): Promise<T | null> {
+    if (!client) return null;
+    const data = await client.get(key);
+    return data ? (JSON.parse(data) as T) : null;
+  }
+
+  static async set(key: string, value: unknown, ttlSeconds = 3600): Promise<void> {
+    if (!client) return;
+    await client.set(key, JSON.stringify(value), 'EX', ttlSeconds);
+  }
+}
+
+/**
+ * Qdrant Indexing Helper
+ */
+export class QdrantIndexer {
+  static async upsertPoints(
+    collection: string,
+    points: { id: string | number; vector: number[]; payload?: Record<string, unknown> }[]
+  ) {
+    const response = await fetch(`http://localhost:6333/collections/${collection}/points`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ points }),
+    });
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Qdrant upsert failed: ${response.statusText} - ${errorBody}`);
+    }
+    return response.json();
+  }
+}
+
+/**
+ * Postgres JSONB Persistence Helper (requires a Drizzle instance)
+ * Example: assumes a 'documents' table with 'id' and 'data' (jsonb) columns.
+ */
+export class PostgresJsonbPersistence {
+  // NOTE: `db` would be your imported Drizzle instance.
+  // This is a conceptual helper.
+  /*
+  static async getDocument<T>(db: DrizzleDB, id: string): Promise<T | null> {
+    const result = await db.select({ data: documents.data }).from(documents).where(eq(documents.id, id));
+    return result.length > 0 ? (result[0].data as T) : null;
+  }
+
+  static async saveDocument(db: DrizzleDB, id: string, data: Record<string, unknown>): Promise<void> {
+    await db.insert(documents).values({ id, data }).onConflictDoUpdate({
+      target: documents.id,
+      set: { data },
+    });
+  }
+  */
+}

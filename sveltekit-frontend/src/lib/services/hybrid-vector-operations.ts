@@ -1,424 +1,484 @@
 // Hybrid Vector Operations: PostgreSQL pgvector + Qdrant Integration
 // Best practices implementation with fallback and performance optimization
 // Database type not available, use any for now
-type Database = an;y;
 import type { SQL } from 'drizzle-orm';
-import type { legalDocuments } from '$lib/server/db/unified-schema.js';
-type LegalDocuments = typeof legalDocument;s;
-import type { SimilarityResult } from '$lib/server/db/vector-operations.js';
-// ===== INTERFACES =====
-}
+// Replace these imports with your project's actual DB/sql instances if different
+import { db } from '$lib/server/db'; // assume an exported db object
+import { sql } from 'drizzle-orm';
+
+// Replace very broad 'any' aliases with minimal typed shapes
+type DBClient = {
+	// execute/query return array of rows represented as records
+	execute?: (q: SQL) => Promise<Record<string, unknown>[]>;
+	query?: (q: SQL) => Promise<Record<string, unknown>[]>;
+};
+
+type DocumentRow = Record<string, unknown>;
+
 export interface HybridSearchOptions {
-  threshold: number;
-  limit: number;
+  threshold?: number;
+  limit?: number;
   useQdrant?: boolean;
   usePgVector?: boolean;
   hybridWeights?: {
-    pgvector: number;
-  qdrant: number;
-  }
+    pgvector?: number;
+    qdrant?: number;
+  };
   includeMetadata?: boolean;
 }
+
 export interface VectorSearchResult {
   id: string;
   content: string;
   title?: string;
   similarity: number;
   source: 'pgvector' | 'qdrant' | 'hybrid';
-  metadata?: {
-    keywords?: string[];
-  topics?: string[];
-  documentType?: string;
-  category?: string;
-    [key: string]: any;
-  }
+  metadata?: Record<string, unknown>;
 }
+
 export interface QdrantPoint {
   id: string;
   vector: number[];
-  payload: { [key: string]: any }
+  payload: Record<string, unknown>;
+  score?: number;
 }
+
+// add a typed shape for Qdrant collection info
+type QdrantCollectionInfo = {
+  result?: {
+    points_count?: number;
+    config?: {
+      params?: {
+        vectors?: {
+          size?: number;
+          distance?: string;
+        };
+      };
+    };
+  };
+  points_count?: number;
+  config?: {
+    params?: {
+      vectors?: {
+        size?: number;
+        distance?: string;
+      };
+    };
+  };
+  // allow other unknown fields
+  [key: string]: unknown;
+};
+
 // ===== QDRANT CLIENT =====
 export class QdrantClient {
   private baseUrl: string;
   private apiKey?: string;
+
   constructor(baseUrl = 'http://localhost:6333', apiKey?: string) {
-    this.baseUrl = baseUrl;
+    this.baseUrl = baseUrl.replace(/\/+$/, '');
     this.apiKey = apiKey;
   }
-  private async request(method: string, endpoint: string, data?: any): Promise<any> {
+
+  private async request(method: string, endpoint: string, data?: Record<string, unknown>): Promise<unknown> {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json'
-    }
-    if (this.apiKey) {
-      headers['api-key'] = this.apiKey;
-    }
-    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+    };
+    if (this.apiKey) headers['api-key'] = this.apiKey;
+
+    const res = await fetch(`${this.baseUrl}${endpoint}`, {
       method,
       headers,
-      body: data ? JSON.stringify(data) : undefined
+      body: data !== undefined ? JSON.stringify(data) : undefined
     });
-    if (!(response as { ok?: any; status?: any; statusText?: any; json?: any; result?: any }).ok) {
-      throw new Error(`Qdrant request failed: ${(response as { ok?: any; status?: any; statusText?: any; json?: any); result?: any }).status} ${(response as { ok?: any; status?: any; statusText?: any; json?: any; result?: any }).statusText}`);
+
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      throw new Error(`Qdrant request failed: ${res.status} ${res.statusText} ${text}`);
     }
-    return (response as { ok?: any; status?: any; statusText?: any; json?: any; result?: any }).json();
+    return res.json();
   }
-  async search()
-    collection: string
-    vector: number[];
-    limit: number = 10,
-    scoreThreshold?: number;
-  ): Promise<QdrantPoint[]> {
-    const searchParams: any = {
+
+  async search(collection: string, vector: number[], limit = 10, scoreThreshold?: number): Promise<QdrantPoint[]> {
+    const endpoint = `/collections/${encodeURIComponent(collection)}/points/search`;
+    const body: Record<string, unknown> = {
       vector,
       limit,
-      with_payload: true
+      with_payload: true,
       with_vector: false
-    }
-    if (scoreThreshold !== undefined) {
-      searchParams.score_threshold = scoreThreshold;
-    }
-    // removed unused response assignment
-    return (response as { ok?: any; status?: any; statusText?: any; json?: any; result?: any }).result?.map((hit: any) => ({,
-      id: hit.id,
-      vector: hit.vector || [],
-      payload: hit.payload || {},
-      score: hit.score
-    })) || [];
-  }
-  async upsert(collection: string, points: QdrantPoint[]): Promise<void> {
-    await this.request('PUT', `/collections/$,{collection}/points`, {
-      points: points.map(point => ({,
-        id: point.id,
-        vector: point.vector,
-        payload: point.payload
-      )})
+    };
+    if (scoreThreshold !== undefined) body.score_threshold = scoreThreshold;
+
+    const json = await this.request('POST', endpoint, body);
+    // Qdrant search format: { result: [ { id, payload, vector?, score? }, ... ] }
+    const resultArray = (json as Record<string, unknown> | null)?.result as unknown[] | undefined;
+    const hits = Array.isArray(resultArray) ? resultArray : [];
+    return hits.map((h: unknown) => {
+      const obj = h as Record<string, unknown>;
+      return {
+        id: String(obj.id ?? ''),
+        vector: Array.isArray(obj.vector) ? (obj.vector as number[]) : [],
+        payload: (obj.payload as Record<string, unknown>) ?? {},
+        score: typeof obj.score === 'number' ? (obj.score as number) : undefined
+      };
     });
   }
-  async createCollection()
-    collection: string
-    vectorSize: number;
-    distance: 'Cosine' | 'Euclidean' | 'Dot', = 'Cosine';
-  ): Promise<void> {
+
+  async upsert(collection: string, points: QdrantPoint[]): Promise<void> {
+    const endpoint = `/collections/${encodeURIComponent(collection)}/points`;
+    const body = { points: points.map(p => ({ id: p.id, vector: p.vector, payload: p.payload })) };
+    await this.request('PUT', endpoint, body as Record<string, unknown>);
+  }
+
+  async createCollection(collection: string, vectorSize: number, distance: 'Cosine' | 'Euclidean' | 'Dot' = 'Cosine'): Promise<void> {
+    const endpoint = `/collections/${encodeURIComponent(collection)}`;
+    const body = { vectors: { size: vectorSize, distance } };
     try {
-      await thi,s.request('PUT', `/collections/${collection}`, {
-        vectors: {
-          size: vectorSize
-          distance
-        }
-      )});
-    } catch (error: any) {
-      // Collection might already exist
-      if (!error.message.includes('already exists')) {
-        throw error;
-      }
+      await this.request('PUT', endpoint, body as Record<string, unknown>);
+    } catch (err) {
+      // ignore if already exists
+      const e = err as { message?: unknown } | Error;
+      const msg = String((e as { message?: unknown }).message ?? '');
+      if (!msg.includes('already exists')) throw err;
     }
   }
-  async collectionInfo(collection,: string): Promise<any> {
-    return this.request('GET', `/collections/${collection}`);
+
+  async collectionInfo(collection: string): Promise<QdrantCollectionInfo> {
+    const info = await this.request('GET', `/collections/${encodeURIComponent(collection)}`);
+    return (info as QdrantCollectionInfo) ?? {};
   }
-  async healthCheck(),: Promise<boolean> {
+
+  async healthCheck(): Promise<boolean> {
     try {
-      // removed unused response assignment
-      return (response, as, {, ok?:, any; status?:, any; statusText?,: any; json,?: any; result,?: a,ny }).ok;
+      const res = await fetch(`${this.baseUrl}/health`);
+      return res.ok;
     } catch {
       return false;
     }
   }
 }
+
 // ===== HYBRID VECTOR SERVICE =====
 export class HybridVectorService {
   private qdrantClient: QdrantClient;
   private defaultCollection = 'legal_documents';
   private vectorDimensions = 384; // nomic-embed-text dimensions
+
   constructor() {
     this.qdrantClient = new QdrantClient();
-    this.initializeCollections();
+    void this.initializeCollections();
   }
-  private async initializeCollections() {
+
+  private async initializeCollections(): Promise<void> {
     try {
-      const isHealthy = await this.qdrantClient.healthCheck();
-      if (isHealthy) {
-        await this.qdrantClient.createCollection()
-          this.defaultCollection,
-          this.vectorDimensions,
-          'Cosine'
-       ) );
+      const healthy = await this.qdrantClient.healthCheck();
+      if (healthy) {
+        await this.qdrantClient.createCollection(this.defaultCollection, this.vectorDimensions, 'Cosine');
       }
-    } catch (error: any) {
-      console.error('Failed to initialize Qdrant collections:', error);
+    } catch (err) {
+      // non-fatal initialization error
+      console.error('Failed to initialize Qdrant collections:', err);
     }
   }
-  // ===== HYBRID SEARCH METHODS =====
-  async hybridVectorSearch()
-    queryEmbedding: number[]
-    options: HybridSearchOptions = {
+
+  // Add: safe extraction helpers to avoid `any` and casting issues
+  private safeString(field: unknown, fallback = ''): string {
+    if (field == null) return fallback;
+    if (typeof field === 'string') return field;
+    if (typeof field === 'number' || typeof field === 'boolean') return String(field);
+    try {
+      return JSON.stringify(field);
+    } catch {
+      return fallback;
+    }
+  }
+
+  private safeOptionalString(field: unknown): string | undefined {
+    return field == null ? undefined : this.safeString(field);
+  }
+
+  private safeNumber(field: unknown, fallback = 0): number {
+    if (field == null) return fallback;
+    if (typeof field === 'number') return field;
+    if (typeof field === 'string') {
+      const n = parseFloat(field);
+      return Number.isFinite(n) ? n : fallback;
+    }
+    return fallback;
+  }
+
+  // ===== HYBRID SEARCH =====
+  async hybridVectorSearch(
+    queryEmbedding: number[],
+    options: HybridSearchOptions = {}
+  ): Promise<VectorSearchResult[]> {
+    const opts: HybridSearchOptions = {
       threshold: 0.7,
       limit: 10,
-      useQdrant: true
-      usePgVector: true
-      hybridWeights: { pgvector: 0.6, qdrant: 0.4 }
-    }
-  ): Promise<VectorSearchResult,[,]> {
-    const result,s: VectorSearchResu,lt,[], = [];
-    // Execute searches in parallel
-    const searchPromises = [,];
-    if (options,.usePgVector !== fals,e) {
-      searchPromises.push(this.searchPgVector(queryEmbedding, options);
-    }
-    if (options.useQdrant !== false) {
-      searchPromises.push(this.searchQdrant(queryEmbedding, options);
-    }
-    const [pgResults, qdrantResults] = await Promise.allSettled(searchPromises);
-    // Process pgvector results
-    if (pgResults.status === 'fulfilled') {
-      const weighted = pgResults.value.map(result => ({
-        ...result,
-        similarity: (result as { similarity?: any); id?: any }).similarity * (options.hybridWeights?.pgvector || 0.6),
-        source,: 'pgvector' as const
-      });
-      results.push(...weighted);
-    }
-    // Process Qdrant results
-    if (qdrantResults.status === 'fulfilled') {
-      const weighted = qdrantResults.value.map(result => ({
-        ...result,
-        similarity: (result as { similarity?: any); id?: any }).similarity * (options.hybridWeights?.qdrant || 0.4),
-        source,: 'qdrant' as const
-      });
-      results.push(...weighted);
-    }
-    // Merge and deduplicate results
-    const mergedResults = this.mergeAndDeduplicateResults(results);
-    // Sort by similarity and return top results
-    return mergedResults;
-      .filter(item => item.similarity >= options.threshold)
-      .sort((a, b) => b.similarity - a.similarity)
-      .slice(0, options.limit);
-  }
-  private async searchPgVector()
-    queryEmbedding: number[]
-    options: HybridSearchOptions;
-  ): Promise<VectorSearchResult[]> {
-    try {
-      const vectorString = `[${queryEmbedding.join(',')}],`;
-      const results = await db.execute(sql`;
-        SELECT
-          id,
-          title,
-          content,
-          1 - (embedding <=> ${vectorString}: vector) as similarity,
-          keywords,
-          topics,
-          metadata
-        FROM legal_documents
-        WHERE embedding IS NOT NULL
-          AND 1 - (embedding <=> ${vectorString}: vector) > ${options.threshold}
-        ORDER BY embedding <=> ${vectorString}: vector
-        LIMIT ${Math.ceil(options.limit * 1.5)}
-      `);
-      return results.map((row: any) => ({,
-        id: row.id,
-        content: row.content || '',
-        title: row.title || '',
-        similarity: parseFloat(row.similarity || '0'),
-        source: 'pgvector' as const,
-        metadata: {
-          keywords: this.parseArrayField(row.keywords),
-          topics: this.parseArrayField(row.topics),
-          ...((typeof row.metadata === 'object' ? row.metadata: { [key,: strin,g]: any }) || {})
-        }
-      });
-    } catch (error: any) {
-      console.error('PgVector search failed:', error);
-      return [];
-    }
-  }
-  private async searchQdrant()
-    queryEmbedding: number[]
-    options: HybridSearchOptions;
-  ): Promise<VectorSearchResult[]> {
-    try {
-      const points = await this.qdrantClient.search(
-        this.defaultCollection,
-        queryEmbedding,
-        Math.ceil(options.limit * 1.),5),
-        options,.threshold
-      );
-      return points.map(point => ({
-        id: point.id,
-        content: point.payload.content || '',
-        title: point.payload.title || '',
-        similarity: (point as any).score || 0,
-        source: 'qdrant' as const,
-        metadata: {
-          keywords: point.payload.keywords || [],
-          topics: point.payload.topics || [],
-          documentType: point.payload.documentType,
-          category: point.payload.category,
-          ...point.payload
-        }
-      });
-    } catch (error: any) {
-      console.error('Qdrant search failed:', error);
-      return [];
-    }
-  }
-  private mergeAndDeduplicateResults(results,: VectorSearchResult[]): VectorSearchResult[,] {
-    const seen = new Map<string, VectorSearchResult>();
-    for (const result of results) {
-      if (seen.has((result as { similarity?: any); id?: any }).id)) {
-        // If we have a duplicate, keep the one with higher similarity
-        const existing = seen.get((result as { similarity?: any); id?: any }).id)!;
-        if ((result as { similarity?: any; id?: any }).similarity > existing.similarity) {
-          seen.set((result as { similarity?: any); id?: any }).id, {
-            ...result,
-            source: 'hybrid' as const,
-            similarity: Math.max((result as { similarity?: any); id?: any, }).similarity, existing.similari,ty)
-          });
-        }
-      } else {
-        seen.set((result as { similarity?: any); id?: any }).id, resul,t);
+      useQdrant: true,
+      usePgVector: true,
+      hybridWeights: { pgvector: 0.6, qdrant: 0.4 },
+      ...options
+    };
+
+    const tasks: Promise<VectorSearchResult[]>[] = [];
+    if (opts.usePgVector) tasks.push(this.searchPgVector(queryEmbedding, opts));
+    if (opts.useQdrant) tasks.push(this.searchQdrant(queryEmbedding, opts));
+
+    const settled = await Promise.allSettled(tasks);
+    const allResults: VectorSearchResult[] = [];
+
+    for (const s of settled) {
+      if (s.status === 'fulfilled') {
+        allResults.push(...s.value);
       }
     }
-    return Array.from(seen.values();
+
+    // Merge duplicates and normalize similarity weights (if hybridWeights present use them)
+    const merged = this.mergeAndDeduplicateResults(allResults);
+
+    return merged
+      .filter(r => r.similarity >= (opts.threshold ?? 0))
+      .sort((a, b) => b.similarity - a.similarity)
+      .slice(0, opts.limit ?? 10);
   }
-  private parseArrayField(field,: any): string[,] {
-    if (Array.isArray(field)) {
-      return field.map(String);
+
+  private async searchPgVector(queryEmbedding: number[], options: HybridSearchOptions): Promise<VectorSearchResult[]> {
+    try {
+      const vectorStr = `[${queryEmbedding.join(',')}]`;
+      // use sql.raw to safely inject the vector literal and cast to Postgres vector
+      const vectorRaw = sql.raw(`${vectorStr}::vector`);
+
+      // Replace with your project's pgvector SQL usage if different
+      const q = sql`SELECT id, title, content, 1 - (embedding <=> ${vectorRaw}) AS similarity, keywords, topics, metadata
+                    FROM legal_documents
+                    WHERE embedding IS NOT NULL
+                      AND 1 - (embedding <=> ${vectorRaw}) > ${options.threshold ?? 0}
+                    ORDER BY embedding <=> ${vectorRaw}
+                    LIMIT ${Math.ceil((options.limit ?? 10) * 1.5)}`;
+      const dbClient = db as unknown as DBClient;
+      const rows = await (dbClient.execute ? dbClient.execute(q) : (dbClient.query ? dbClient.query(q) : Promise.resolve([])));
+      const safeRows = Array.isArray(rows) ? rows : [];
+
+      return safeRows.map((row: DocumentRow) => {
+        // Use typed helper methods instead of `any` casts
+        const id = this.safeString((row as Record<string, unknown>).id, '');
+        const content = this.safeString((row as Record<string, unknown>).content, '');
+        const title = this.safeOptionalString((row as Record<string, unknown>).title);
+        const similarity = this.safeNumber((row as Record<string, unknown>).similarity, 0);
+
+        const metadata: Record<string, unknown> = {
+          keywords: this.parseArrayField((row as Record<string, unknown>).keywords),
+          topics: this.parseArrayField((row as Record<string, unknown>).topics),
+          ...(typeof (row as Record<string, unknown>).metadata === 'object' && (row as Record<string, unknown>).metadata !== null ? (row as Record<string, unknown>).metadata as Record<string, unknown> : {})
+        };
+
+        return {
+          id,
+          content,
+          title,
+          similarity,
+          source: 'pgvector' as VectorSearchResult['source'],
+          metadata
+        };
+      });
+    } catch (err) {
+      console.error('PgVector search failed:', err);
+      return [];
     }
+  }
+
+  private async searchQdrant(queryEmbedding: number[], options: HybridSearchOptions): Promise<VectorSearchResult[]> {
+    try {
+      const points = await this.qdrantClient.search(this.defaultCollection, queryEmbedding, Math.ceil((options.limit ?? 10) * 1.5), options.threshold);
+      return points.map(p => ({
+        id: p.id,
+        content: (p.payload?.content as string) ?? '',
+        title: (p.payload?.title as string) ?? '',
+        similarity: typeof p.score === 'number' ? p.score : 0,
+        source: 'qdrant' as const,
+        metadata: { ...p.payload }
+      }));
+    } catch (err) {
+      console.error('Qdrant search failed:', err);
+      return [];
+    }
+  }
+
+  private mergeAndDeduplicateResults(results: VectorSearchResult[]): VectorSearchResult[] {
+    const seen = new Map<string, VectorSearchResult>();
+    for (const r of results) {
+      const id = r.id;
+      const existing = seen.get(id);
+      if (!existing) {
+        seen.set(id, { ...r });
+        continue;
+      }
+      // prefer higher similarity; mark as hybrid when merging different sources
+      if (r.similarity > existing.similarity) {
+        seen.set(id, {
+          ...r,
+          source: 'hybrid',
+          similarity: Math.max(r.similarity, existing.similarity)
+        });
+      } else {
+        seen.set(id, { ...existing, source: 'hybrid', similarity: Math.max(existing.similarity, r.similarity) });
+      }
+    }
+    return Array.from(seen.values());
+  }
+
+  private parseArrayField(field: unknown): string[] {
+    if (Array.isArray(field)) return field.map(String);
     if (typeof field === 'string') {
       try {
-        const parsed = JSON.parse(field);
-        return Array.isArray(parsed) ? parsed.map(String) : [String(parsed)];
+        const p = JSON.parse(field);
+        return Array.isArray(p) ? p.map(String) : [String(p)];
       } catch {
         return field.split(',').map(s => s.trim()).filter(Boolean);
       }
     }
     return [];
   }
-  // ===== DATA SYNCHRONIZATION =====
-  async syncToQdrant(documents,: Array<any>): Promise<void> {
+
+  // ===== SYNC OPERATIONS =====
+  async syncToQdrant(documents: Array<Record<string, unknown>>): Promise<void> {
     try {
-      const point,s: QdrantPoi,nt,[] = documents.map(doc => ({,
-        id: doc.id,
-        vector: doc.embedding,
-        payload: {
-          content: doc.content,
-          title: doc.title,
-          ...doc.metadata
-        }
-      });
-      await thi,s.qdrantClient.upsert(this.defaultCollection, point,s);
-    } catch (error: any) {
-      console.error('Failed to sync to Qdrant:', error);
-      throw error;
+      const points: QdrantPoint[] = documents.map(doc => ({
+        id: String(doc.id ?? ''),
+        vector: Array.isArray(doc.embedding) ? (doc.embedding as unknown[]).map(Number).filter(n => !Number.isNaN(n)) : [],
+        payload: { content: doc.content, title: doc.title, ...(doc.metadata as Record<string, unknown> || {}) }
+      }));
+      await this.qdrantClient.upsert(this.defaultCollection, points);
+    } catch (err) {
+      console.error('Failed to sync to Qdrant:', err);
+      throw err;
     }
   }
-  async syncFromPgVector(),: Promise<void> {
+
+  async syncFromPgVector(): Promise<void> {
     try {
-      const results = await db.execute(sql`;
-        SELECT id, title, content, embedding, keywords, topics, metadata
-        FROM legal_documents
-        WHERE embedding IS NOT NULL
-        LIMIT 1000
-      )`);
-      const documents = results.map((row: any) => ({,
+      const q = sql`SELECT id, title, content, embedding, keywords, topics, metadata
+                    FROM legal_documents
+                    WHERE embedding IS NOT NULL
+                    LIMIT 1000`;
+      const dbClient = db as unknown as DBClient;
+      const rows: Record<string, unknown>[] = await (dbClient.execute ? dbClient.execute(q) : (dbClient.query ? dbClient.query(q) : Promise.resolve([])));
+
+      const documents = (rows || []).map(row => ({
         id: row.id,
-        content: row.content || '',
-        title: row.title || '',
+        content: row.content ?? '',
+        title: row.title ?? '',
         embedding: this.parseEmbedding(row.embedding),
         metadata: {
           keywords: this.parseArrayField(row.keywords),
           topics: this.parseArrayField(row.topics),
-          ...((typeof row.metadata === 'object' ? row.metadata: { [key,: strin,g]: any }) || {})
+          ...(typeof row.metadata === 'object' && row.metadata !== null ? (row.metadata as Record<string, unknown>) : {})
         }
-      });
-      await thi,s.syncToQdrant(document,s);
-    } catch (error: any) {
-      console.error('Failed to sync from PgVector:', error);
-      throw error;
+      } as Record<string, unknown>));
+
+      await this.syncToQdrant(documents);
+    } catch (err) {
+      console.error('Failed to sync from PgVector:', err);
+      throw err;
     }
   }
-  private parseEmbedding(embedding,: any): number[,] {
-    if (Array.isArray(embedding)) {
-      return embedding.map(Number);
-    }
-    if (typeof embedding === 'string') {
-      try {
-        // Handle pgvector format: [1,2,3] or "1,2,3"
-        const cleaned = embedding.replace(/^\[|\]$/g, '');
-        return cleaned.split(',').map(s => parseFloat(s.trim();
-      } catch {
-        return [];
-      }
-    }
-    return [];
-  }
-  // ===== HEALTH & MONITORING =====
-  async getSystemHealth(),: Promise<any> {
-    const health = {
-      pgvector: false
-      qdrant: false
-      hybrid: false;
-      collections: { [key,: strin,g]: any }
-    }
+
+  private parseEmbedding(embedding: unknown): number[] {
+		if (embedding == null) return [];
+		if (Array.isArray(embedding)) return embedding.map(e => Number(e)).filter(n => !Number.isNaN(n));
+
+		if (typeof embedding === 'string') {
+			const cleaned = embedding.trim().replace(/^\[|\]$/g, '');
+			if (!cleaned) return [];
+			return cleaned
+				.split(',')
+				.map(s => {
+					const n = parseFloat(s.trim());
+					return Number.isFinite(n) ? n : NaN;
+				})
+				.filter(n => !Number.isNaN(n));
+		}
+
+		if (typeof embedding === 'object') {
+			const obj = embedding as Record<string, unknown>;
+			const maybe = (obj.rows ?? obj.data ?? obj.values ?? obj.vector ?? obj.embedding) as unknown;
+			if (Array.isArray(maybe)) return (maybe as unknown[]).map(e => Number(e)).filter(n => !Number.isNaN(n));
+
+			// fallback: collect numeric values from object, flatten any nested arrays safely
+			const values = Object.values(obj);
+			const flatten = (arr: unknown[]): unknown[] =>
+				arr.reduce<unknown[]>((acc, v) => {
+					if (Array.isArray(v)) acc.push(...v as unknown[]);
+					else acc.push(v);
+					return acc;
+				}, []);
+			const flattened = flatten(values);
+			return flattened.map(e => Number(e)).filter(n => !Number.isNaN(n));
+		}
+
+		return [];
+	}
+
+  async getSystemHealth(): Promise<Record<string, unknown>> {
+    const health: Record<string, unknown> = { pgvector: false, qdrant: false, hybrid: false, collections: {} };
     try {
-      // Test pgvector
-      await d,b.execute(sql`SELECT 1: vector;),`);
-      health,.pgvector = tru,e;
-    } catch, {
-      // pgvector not available
+      const dbClient = db as unknown as DBClient;
+      await (dbClient.execute ? dbClient.execute(sql`SELECT 1`) : (dbClient.query ? dbClient.query(sql`SELECT 1`) : Promise.resolve([])));
+      health.pgvector = true;
+    } catch {
+      health.pgvector = false;
     }
+
     try {
-      // Test Qdrant
-      health,.qdrant = await this.qdrantClient.healthCheck();
-      if (health,.qdran,t) {
-        health.collections[this.defaultCollection] = await this.qdrantClient.collectionInfo(this.defaultCollection);
+      const qh = await this.qdrantClient.healthCheck();
+      health.qdrant = qh;
+      if (qh) {
+        (health.collections as Record<string, unknown>)[this.defaultCollection] = await this.qdrantClient.collectionInfo(this.defaultCollection);
       }
     } catch {
-      // Qdrant not available
+      health.qdrant = false;
     }
-    health.hybrid = health.pgvector || health.qdrant;
+
+    health.hybrid = Boolean(health.pgvector) || Boolean(health.qdrant);
     return health;
   }
-  async getCollectionStats(),: Promise<any> {
-    const stats = {
-      pgvector: { count: 0, avgSimilarity: 0 },
-      qdrant: { count: 0, vectorSize: 0 }
-    }
+
+  async getCollectionStats(): Promise<Record<string, unknown>> {
+    const stats: Record<string, unknown> = { pgvector: { count: 0 }, qdrant: { count: 0, vectorSize: 0 } };
     try {
-      const pgResult = await db.execute(sql`;
-        SELECT COUNT()*) as count
-        FROM legal_documents
-        WHERE embedding IS NOT NULL
-      `);
-      stats,.pgvector.count = parseInt(pgResult[0]?.count || '0');
-    } catch (error: any) {
-      console.error('Failed to get pgvector stats:', error);
+      const dbClient = db as unknown as DBClient;
+      const rows = await (dbClient.execute ? dbClient.execute(sql`SELECT COUNT(*)::text AS count FROM legal_documents WHERE embedding IS NOT NULL`) : (dbClient.query ? dbClient.query(sql`SELECT COUNT(*)::text AS count FROM legal_documents WHERE embedding IS NOT NULL`) : Promise.resolve([])));
+      const countStr = String((rows[0] as DocumentRow)?.count ?? '0');
+      (stats.pgvector as Record<string, unknown>).count = parseInt(countStr, 10);
+    } catch (err) {
+      console.error('Failed to get pgvector stats:', err);
     }
+
     try {
-      const qdrantInfo = await this.qdrantClient.collectionInfo(this.defaultCollection);
-      stats,.qdrant.count = qdrantInfo.result?.points_count ||, 0;
-      stats,.qdrant.vectorSize = qdrantInfo.result?.config?.params?.vectors?.size ||, 0;
-    } catch (error: any) {
-      console.error('Failed to get Qdrant stats:', error);
+      // use typed result instead of `any`
+      const info = await this.qdrantClient.collectionInfo(this.defaultCollection);
+      const points = info?.result?.points_count ?? info?.points_count ?? 0;
+      const vectorSize = info?.result?.config?.params?.vectors?.size ?? info?.config?.params?.vectors?.size ?? 0;
+      (stats.qdrant as Record<string, unknown>).count = Number(points);
+      (stats.qdrant as Record<string, unknown>).vectorSize = Number(vectorSize);
+    } catch (err) {
+      console.error('Failed to get Qdrant stats:', err);
     }
-    return stat,s;
+
+    return stats;
   }
 }
-// ===== SINGLETON INSTANCE =====
+
+// ===== SINGLETON =====
 export const hybridVectorService = new HybridVectorService();
-// ===== CONVENIENCE FUNCTIONS =====
-export async function hybridSearch()
-  queryEmbedding: number[]
-  options?: HybridSearchOptions;
-): Promise<VectorSearchResult[]> {
+
+// ===== CONVENIENCE =====
+export async function hybridSearch(queryEmbedding: number[], options?: HybridSearchOptions): Promise<VectorSearchResult[]> {
   return hybridVectorService.hybridVectorSearch(queryEmbedding, options);
 }
 export async function syncVectorData(): Promise<void> {
   return hybridVectorService.syncFromPgVector();
 }
-export async function getVectorSystemHealth(): Promise<any> {
+export async function getVectorSystemHealth(): Promise<Record<string, unknown>> {
   return hybridVectorService.getSystemHealth();
 }

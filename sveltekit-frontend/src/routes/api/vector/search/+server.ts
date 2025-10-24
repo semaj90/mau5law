@@ -1,126 +1,37 @@
-import type { RequestHandler } from './$types.js';
-/*
- * Vector Intelligence Search API Endpoint
- * Provides semantic search capabilities with Phase 4 Vector Intelligence
+/**
+ * @endpoint  POST /api/vector/search
+ * @desc      Semantic vector search using Qdrant (with optional Ollama embedding)
  */
-import { json, error } from '@sveltejs/kit';
-import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service.js';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from '@sveltejs/kit';
+import { generateEmbedding, searchSimilarDocuments as findSimilarDocuments } from '$lib/server/services';
+import { mapErrorToHttp } from '$lib/server/utils/http-error-mapper';
+import { SearchPayload } from '$lib/server/utils/vector-schemas';
+import { withValidationAndRate, schemaFor } from '$lib/server/middleware/validate-and-rate';
 
-export const POST: RequestHandler = async ({ request }) => {
+const handler: RequestHandler = async ({ request }) => {
   try {
     const body = await request.json();
-    const {
-      query,
-      options = {},
-    }: {
-      query: string;
-      options: Partial<VectorSearchOptions>;
-    } = body;
-    if (!query || typeof query !== 'string') {
-      throw error(400, 'Invalid query: must be a non-empty string');
-    }
-    console.log(`🔍 Vector intelligence search: "${query.substring(0, 100)}..."`);
-    // Configure search options with intelligent defaults
-    const searchOptions: VectorSearchOptions = {
-      query,
-      threshold: options.threshold ?? 0.7,
-      limit: options.limit ?? 10,
-      includeMetadata: options.includeMetadata !== false,
-      contextFilter: options.contextFilter,
-    };
-    // Perform enhanced semantic search with vector intelligence
-    const results = await vectorIntelligenceService.semanticSearch(searchOptions);
-    // Get system health for response metadata
-    const systemHealth = await vectorIntelligenceService.getSystemHealth();
-    return json({
-      success: true,
-      query,
-      results,
-      metadata: {
-        totalResults: results.length,
-        processingTime: Date.now(),
-        searchOptions,
-        systemHealth: {
-          status: systemHealth.systemHealth,
-          confidence: systemHealth.modelConfidence,
-          indexedDocuments: systemHealth.indexedDocuments,
-        },
-      },
-    });
-  } catch (err: unknown) {
-    console.error('❌ Vector intelligence search API error:', err);
-    const errorMessage = err instanceof Error ? err.message : typeof err === 'string' ? err : 'Unknown error';
-    let statusCode = 500;
-    if (err && typeof err === 'object' && 'status' in err) {
-      const s = (err as { status?: unknown }).status;
-      if (typeof s === 'number') statusCode = s;
-      else if (typeof s === 'string') {
-        const parsed = Number.parseInt(s, 10);
-        if (!Number.isNaN(parsed)) statusCode = parsed;
-      }
-    }
-    throw error(statusCode, errorMessage);
+    const parsed = SearchPayload.safeParse(body);
+    if (!parsed.success) return json({ error: 'Invalid payload', details: parsed.error.flatten() }, { status: 400 });
+    const { queryText, queryVector, limit = 5 } = parsed.data;
+    let vector: number[];
+    if (Array.isArray(queryVector)) vector = queryVector;
+    else if (typeof queryText === 'string') vector = await generateEmbedding(queryText);
+    else return json({ error: 'queryText or queryVector required' }, { status: 400 });
+
+    const results = await findSimilarDocuments(vector, limit);
+    return json({ success: true, count: results.length, results });
+  } catch (err) {
+    const mapped = mapErrorToHttp(err);
+    if (mapped.status === 500) console.error('❌ /api/vector/search error:', err);
+    return json(mapped.body, { status: mapped.status });
   }
 };
-export const GET: RequestHandler = async ({ url }) => {
-  const query = url.searchParams.get('q');
-  const limit = parseInt(url.searchParams.get('limit') || '10');
-  const threshold = parseFloat(url.searchParams.get('threshold') || '0.7');
-  const caseId = url.searchParams.get('caseId');
-  const evidenceType = url.searchParams.get('evidenceType');
-  if (!query) {
-    // Return API documentation and system status
-    const systemHealth = await vectorIntelligenceService.getSystemHealth();
-    return json({
-      message: 'Vector Intelligence Search API - Phase 4',
-      endpoints: {
-        'POST /api/vector/search': 'Enhanced semantic search with vector intelligence',
-        'GET /api/vector/search?q=query': 'Quick search via query parameter',
-      },
-      parameters: {
-        query: 'Search query (required)',
-        limit: 'Max results (default: 10)',
-        threshold: 'Similarity threshold (default: 0.7)',
-        caseId: 'Filter by case ID (optional)',
-        evidenceType: 'Filter by evidence type (optional)',
-      },
-      systemHealth,
-      capabilities: [
-        'Semantic vector search',
-        'Multi-modal embedding support',
-        'Contextual filtering',
-        'Relevance scoring',
-        'Intelligent caching',
-        'Real-time health monitoring',
-      ],
-    });
-  }
-  try {
-    // Build search options from query parameters
-    const searchOptions: VectorSearchOptions = {
-      query,
-      threshold,
-      limit,
-      includeMetadata: true,
-      contextFilter: {
-        ...(caseId && { caseId }),
-        ...(evidenceType && { evidenceType }),
-      },
-    };
-    const results = await vectorIntelligenceService.semanticSearch(searchOptions);
-    return json({
-      success: true,
-      query,
-      results,
-      metadata: {
-        totalResults: results.length,
-        processingTime: Date.now(),
-        searchOptions,
-      },
-    });
-  } catch (err: unknown) {
-    console.error('❌ Vector intelligence GET search error:', err);
-    const msg = err instanceof Error ? err.message : typeof err === 'string' ? err : 'Search failed';
-    throw error(500, msg);
-  }
-};
+
+// Wrap with Zod validation (SearchPayload) and a conservative rate limit
+export const POST = withValidationAndRate(handler, schemaFor(SearchPayload), {
+  capacity: 30,
+  refillPerSecond: 1,
+  keyPrefix: 'rl:vector-search:',
+});

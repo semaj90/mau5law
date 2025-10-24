@@ -259,14 +259,11 @@ class UnifiedDocumentProcessor extends EventEmitter {
     return `proc-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
   }
 
-  // Safe runtime wrappers for legalNLP capabilities.
-  // These try several common method names and provide conservative fallbacks so TS doesn't fail when
-  // the external service shape differs.
   private async safeChunkText(text: string, chunkSize = 500, overlap = 50): Promise<string[]> {
-    const svc: any = legalNLP as any;
+    const svc = legalNLP as unknown as LegalNLPService;
     try {
-      if (typeof svc?.chunkText === 'function') return svc.chunkText(text, chunkSize, overlap);
-      if (typeof svc?.splitText === 'function') return svc.splitText(text, chunkSize, overlap);
+      if (typeof svc?.chunkText === 'function') return (await svc.chunkText(text, chunkSize, overlap)) as string[];
+      if (typeof svc?.splitText === 'function') return (await svc.splitText(text, chunkSize, overlap)) as string[];
       // naive fallback: simple sliding window chunker
       const out: string[] = [];
       for (let i = 0; i < text.length; i += chunkSize - overlap) {
@@ -279,10 +276,10 @@ class UnifiedDocumentProcessor extends EventEmitter {
   }
 
   private async safeEmbedText(text: string): Promise<number[]> {
-    const svc: any = legalNLP as any;
+    const svc = legalNLP as unknown as LegalNLPService;
     try {
-      if (typeof svc?.embedText === 'function') return await svc.embedText(text);
-      if (typeof svc?.embed === 'function') return await svc.embed(text);
+      if (typeof svc?.embedText === 'function') return (await svc.embedText(text)) as number[];
+      if (typeof svc?.embed === 'function') return (await svc.embed(text)) as number[];
       // Last-resort zero-vector of length 384 to preserve shape (calls can replace this with real embedding)
       return new Array(384).fill(0);
     } catch {
@@ -321,6 +318,40 @@ class UnifiedDocumentProcessor extends EventEmitter {
     const warnings: string[] = [];
 
     this.activeProcessors.add(processingId);
+
+    // Move helper to function-body root to satisfy TS rules
+    const performLegalAnalysis = async (
+      text: string
+    ): Promise<{ summary: string; keywords: string[]; legalDomains: string[] }> => {
+      if (!text) return { summary: '', keywords: [], legalDomains: [] };
+      const svc = legalNLP as unknown as LegalNLPService;
+      if (typeof svc?.analyzeLegalDocument === 'function') {
+        return await svc.analyzeLegalDocument(text);
+      }
+      if (typeof svc?.analyze === 'function') {
+        return await svc.analyze(text);
+      }
+      if (typeof svc?.summarize === 'function') {
+        const res = await svc.summarize(text);
+        return {
+          summary: res?.summary ?? String(res ?? '').slice(0, 1000),
+          keywords: (res?.keywords ?? []) as string[],
+          legalDomains: (res?.legalDomains ?? []) as string[],
+        };
+      }
+      const summary = String(text).slice(0, 1000);
+      const words = (text.toLowerCase().match(/\b[a-z]{4}\b/g) || []).slice(0, 500);
+      const freq: Record<string, number> = {};
+      for (const w of words) freq[w] = (freq[w] || 0) + 1;
+      const keywords = Object.keys(freq)
+        .sort((a, b) => freq[b] - freq[a])
+        .slice(0, 10);
+      const legalDomains: string[] = [];
+      if (keywords.some(k => /contract|agreement|breach|warranty/.test(k))) legalDomains.push('contract');
+      if (keywords.some(k => /court|judge|plaintiff|defendant|motion|case/.test(k))) legalDomains.push('litigation');
+      if (keywords.some(k => /compliance|regulation|gdpr|privacy|policy/.test(k))) legalDomains.push('compliance');
+      return { summary, keywords, legalDomains: Array.from(new Set(legalDomains)) };
+    };
 
     const baseResult: ProcessingResult = {
       success: false,
@@ -403,50 +434,6 @@ class UnifiedDocumentProcessor extends EventEmitter {
         baseResult.metadata.performance.ocrTime = Date.now() - t0;
         stagesCompleted.push('OCR');
       }
-
-      // --- Add helper to safely perform legal analysis using available methods on legalNLP ---
-      async function performLegalAnalysis(
-        text: string
-      ): Promise<{ summary: string; keywords: string[]; legalDomains: string[] }> {
-        // quick guard
-        if (!text) return { summary: '', keywords: [], legalDomains: [] };
-
-        const svc: any = legalNLP as any;
-
-        // Try a few likely method names safely
-        if (typeof svc?.analyzeLegalDocument === 'function') {
-          return await svc.analyzeLegalDocument(text);
-        }
-        if (typeof svc?.analyze === 'function') {
-          return await svc.analyze(text);
-        }
-        if (typeof svc?.summarize === 'function') {
-          // some services expose a summarize method that returns useful output
-          const res = await svc.summarize(text);
-          return {
-            summary: res?.summary ?? String(res ?? '').slice(0, 1000),
-            keywords: res?.keywords ?? [],
-            legalDomains: res?.legalDomains ?? [],
-          };
-        }
-
-        // Fallback: conservative local analysis (non-LLM) to keep types/stubs consistent
-        const summary = String(text).slice(0, 1000);
-        const words = (text.toLowerCase().match(/\b[a-z]{4}\b/g) || []).slice(0, 500);
-        const freq: Record<string, number> = {};
-        for (const w of words) freq[w] = (freq[w] || 0) + 1;
-        const keywords = Object.keys(freq)
-          .sort((a, b) => freq[b] - freq[a])
-          .slice(0, 10);
-
-        const legalDomains: string[] = [];
-        if (keywords.some(k => /contract|agreement|breach|warranty/.test(k))) legalDomains.push('contract');
-        if (keywords.some(k => /court|judge|plaintiff|defendant|motion|case/.test(k))) legalDomains.push('litigation');
-        if (keywords.some(k => /compliance|regulation|gdpr|privacy|policy/.test(k))) legalDomains.push('compliance');
-        // ensure uniqueness
-        return { summary, keywords, legalDomains: Array.from(new Set(legalDomains)) };
-      }
-      // --- end helper ---
 
       // Legal analysis stub (safe call using helper)
       if (config.enableLegalAnalysis && baseResult.ocr.extractedText) {
@@ -559,7 +546,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
     results: Array<{
       content: string;
       similarity: number;
-      metadata?: any;
+      metadata?: Record<string, unknown> | null;
       documentId?: string;
       chunkId?: string;
     }>;
@@ -570,12 +557,12 @@ class UnifiedDocumentProcessor extends EventEmitter {
     try {
       const queryEmbedding = await this.safeEmbedText(query);
       const hits = await this.searchEmbeddings(queryEmbedding, options);
-      const results = (hits || []).map((r: any) => ({
-        content: r.payload?.content ?? r.content ?? '',
+      const results = (hits || []).map((r: SearchHit) => ({
+        content: (r.payload?.content as string) ?? r.content ?? '',
         similarity: typeof r.score === 'number' ? r.score : (r.similarity ?? 0),
-        metadata: options.includeMetadata ? (r.payload ?? r.metadata) : undefined,
-        documentId: r.payload?.documentId ?? r.documentId,
-        chunkId: r.payload?.chunkId ?? r.chunkId,
+        metadata: options.includeMetadata ? (r.payload ?? r.metadata ?? null) : undefined,
+        documentId: (r.payload?.documentId as string) ?? r.documentId,
+        chunkId: (r.payload?.chunkId as string) ?? r.chunkId,
       }));
       return {
         results,
@@ -592,7 +579,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
   private async searchEmbeddings(
     queryEmbedding: number[],
     options: { limit?: number; documentType?: string; filter?: Record<string, unknown> } = {}
-  ): Promise<any[]> {
+  ): Promise<SearchHit[]> {
     const limit = options?.limit ?? 10;
     try {
       if (VECTOR_DB === 'qdrant') {
@@ -632,20 +619,18 @@ class UnifiedDocumentProcessor extends EventEmitter {
         }
 
         if (!res.ok) {
-          // Include parsed JSON when available for better diagnostics
           const payloadSummary = jsonBody ? JSON.stringify(jsonBody).slice(0, 200) : '';
           throw new Error(`Qdrant search failed: ${res.status} ${res.statusText} ${payloadSummary}`);
         }
 
-        // Qdrant can return different shapes; normalize result array
-        const jbAny = jsonBody as any;
-        const resultArray = jbAny?.result ?? jbAny?.matches ?? jbAny?.data?.result ?? [];
-        return (resultArray || []).map((row: any) => ({
-          id: row.id ?? row.payload?.id ?? null,
-          payload: row.payload ?? row.payloads ?? row.payload ?? null,
+        // Qdrant can return different shapes; normalize result array with typed interfaces
+        const jb = jsonBody as QdrantResponse;
+        const resultArray = jb?.result ?? jb?.matches ?? jb?.data?.result ?? [];
+        return (resultArray || []).map((row: QdrantHit) => ({
+          id: row.id ?? null,
+          payload: (row.payload ?? null) as Record<string, unknown> | null,
           score: typeof row.score === 'number' ? row.score : (row.value ?? 0),
         }));
-        // --- end safe parsing/fallbacks ---
       } else {
         // pgvector approach: use parameterized query and pass the embedding as text literal for casting
         const vectorLiteral = `[${queryEmbedding.join(',')}]`;
@@ -656,10 +641,13 @@ class UnifiedDocumentProcessor extends EventEmitter {
           ORDER BY similarity ASC
           LIMIT $2
         `;
-        const params: unknown[] = [vectorLiteral, limit];
+        const params: (string | number)[] = [vectorLiteral, limit];
         if (options?.documentType) params.push(options.documentType);
-        const { rows } = await pgPool.query(queryText, params as any[]);
-        return rows.map((r: any) => ({
+
+        // Do not use QueryResult<T> generic; use pg's QueryResult and assert row shape explicitly
+        const res = await pgPool.query(queryText, params);
+        const rows = (res.rows ?? []) as PgRow[]; // explicit cast for row shape
+        return rows.map(r => ({
           documentId: r.document_id,
           chunkId: r.chunk_id,
           content: r.content,
@@ -680,7 +668,7 @@ class UnifiedDocumentProcessor extends EventEmitter {
     details: Record<string, unknown>;
   }> {
     // Avoid reading private properties on external service; use runtime safe checks
-    const svc: any = legalNLP as any;
+    const svc = legalNLP as unknown as LegalNLPService;
     const ready = Boolean(svc?.isReady ?? svc?.initialized ?? svc?.isInitialized ?? true);
     return {
       overall: true,
@@ -777,4 +765,328 @@ export const documentProcessingUtils = {
   },
 };
 
+/* Add search/result types to remove `any` usage */
+export interface SearchHit {
+  id?: string | number | null;
+  payload?: Record<string, unknown> | null;
+  content?: string;
+  score?: number;
+  similarity?: number;
+  value?: number;
+  documentId?: string;
+  chunkId?: string;
+  metadata?: Record<string, unknown> | null;
+}
+
+// --- changed: ensure QdrantHit.id is required so returned items match declared API ---
+interface QdrantHit {
+  id: string | number; // was optional; make required to satisfy QdrantIndexer return type
+  payload?: Record<string, unknown>;
+  score?: number;
+  value?: number;
+}
+
+interface QdrantResponse {
+  result?: QdrantHit[];
+  matches?: QdrantHit[];
+  data?: { result?: QdrantHit[] };
+}
+
+// <-- NEW: typed row shape returned by pg query
+interface PgRow {
+  document_id: string;
+  chunk_id: string;
+  content: string;
+  similarity: number;
+  metadata?: Record<string, unknown> | null;
+}
+
+// New: explicit type for summarize() result to avoid `any`
+export interface SummarizeResult {
+  summary?: string;
+  keywords?: string[];
+  legalDomains?: string[];
+  confidence?: number;
+  highlights?: string[]; // optional extracted highlights
+  sections?: Array<{ title?: string; summary?: string; pageRange?: { start: number; end: number } }>;
+  raw?: Record<string, unknown>; // preserve additional provider-specific fields
+}
+
+// Add/restore a top-level interface for the external legalNLP adapter so casts compile:
+export interface LegalNLPService {
+  chunkText?: (text: string, chunkSize?: number, overlap?: number) => string[] | Promise<string[]>;
+  splitText?: (text: string, chunkSize?: number, overlap?: number) => string[] | Promise<string[]>;
+  embedText?: (text: string) => number[] | Promise<number[]>;
+  embed?: (text: string) => number[] | Promise<number[]>;
+  analyzeLegalDocument?: (text: string) => Promise<{ summary: string; keywords: string[]; legalDomains: string[] }>;
+  analyze?: (text: string) => Promise<{ summary: string; keywords: string[]; legalDomains: string[] }>;
+  summarize?: (text: string) => Promise<SummarizeResult>; // <-- typed result
+  isReady?: boolean;
+  initialized?: boolean;
+  isInitialized?: boolean;
+}
+
+// New: External service interfaces and lightweight server-side helpers
+
+export interface UltraJSONParser {
+  parse<T = unknown>(input: string): T;
+  stringify(input: unknown): string;
+  tryParse<T = unknown>(input: string): T | null;
+}
+
+export const ultraJSONParser: UltraJSONParser = {
+  parse: <T = unknown>(input: string) => JSON.parse(input) as T,
+  stringify: (input: unknown) => JSON.stringify(input),
+  tryParse: <T = unknown>(input: string) => {
+    try {
+      return JSON.parse(input) as T;
+    } catch {
+      return null;
+    }
+  },
+};
+
+export interface WasmClusteringService {
+  cluster(vectors: number[][], options?: { k?: number }): Promise<number[]>;
+  loadModule?(url: string): Promise<void>;
+}
+
+export const wasmClusteringService: WasmClusteringService = {
+  async cluster(_vectors: number[][]) {
+    // Fallback: trivial single-cluster assignment
+    return new Array(_vectors.length).fill(0);
+  },
+  async loadModule(_url: string) {
+    // noop stub: real implementation should load/instantiate WASM
+    return;
+  },
+};
+
+export interface NesGPUBridge {
+  computeSimilarity(a: Float32Array, b: Float32Array): number;
+  isAvailable(): boolean;
+}
+
+export const nesGPUBridge: NesGPUBridge = {
+  computeSimilarity(a: Float32Array, b: Float32Array) {
+    // simple CPU fallback cosine similarity
+    let dot = 0;
+    let na = 0;
+    let nb = 0;
+    for (let i = 0; i < Math.min(a.length, b.length); i++) {
+      dot += a[i] * b[i];
+      na += a[i] * a[i];
+      nb += b[i] * b[i];
+    }
+    const denom = Math.sqrt(na) * Math.sqrt(nb);
+    return denom === 0 ? 0 : dot / denom;
+  },
+  isAvailable() {
+    return false; // stub - replace with runtime GPU detection
+  },
+};
+
+// Ollama embeddings helper (server-side safe wrapper)
+export interface OllamaClient {
+  embed(text: string): Promise<number[]>;
+  ping(): Promise<boolean>;
+}
+
+export const ollamaClient: OllamaClient = {
+  async embed(text: string) {
+    const url = getOllamaEndpoint();
+    try {
+      const res = await fetch(`${url}/embeddings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: process.env.OLLAMA_EMBED_MODEL || 'embeddinggemma:latest', text }),
+      });
+      if (!res.ok) throw new Error(`Ollama embed failed ${res.status}`);
+      const body = await res.json().catch(() => null);
+      // try common shapes, otherwise fallback to zero vector
+      if (Array.isArray(body?.data)) return (body.data[0]?.embedding as number[]) ?? new Array(384).fill(0);
+      if (Array.isArray(body?.embedding)) return body.embedding as number[];
+      return new Array(384).fill(0);
+    } catch {
+      return new Array(384).fill(0);
+    }
+  },
+
+  async ping() {
+    try {
+      const url = getOllamaEndpoint();
+      const r = await fetch(`${url}/health`).catch(() => null);
+      return Boolean(r?.ok);
+    } catch {
+      return false;
+    }
+  },
+};
+
+// Redis cache helper with in-memory fallback (typed)
+export interface RedisCacheService {
+  get<T = unknown>(key: string): Promise<T | null>;
+  set(key: string, value: unknown, ttlSeconds?: number): Promise<void>;
+  del(key: string): Promise<void>;
+  ping(): Promise<boolean>;
+}
+
+const inMemoryCache = new Map<string, { value: unknown; expiresAt?: number }>();
+
+export const redisCacheService: RedisCacheService = {
+  async get<T = unknown>(key: string) {
+    const item = inMemoryCache.get(key);
+    if (!item) return null;
+    if (item.expiresAt && Date.now() > item.expiresAt) {
+      inMemoryCache.delete(key);
+      return null;
+    }
+    return item.value as T;
+  },
+
+  async set(key: string, value: unknown, ttlSeconds?: number) {
+    const expiresAt = ttlSeconds ? Date.now() + ttlSeconds * 1000 : undefined;
+    inMemoryCache.set(key, { value, expiresAt });
+  },
+
+  async del(key: string) {
+    inMemoryCache.delete(key);
+  },
+
+  async ping() {
+    return true; // in-memory always healthy; real Redis client should implement ping
+  },
+};
+
+import createQdrantAdapter from '$lib/server/adapters/qdrant-adapter';
+
+// Qdrant indexer helper (HTTP) - minimal typed wrapper
+export interface QdrantIndexer {
+  upsert(
+    collection: string,
+    points: Array<{ id: string | number; vector: number[]; payload?: Record<string, unknown> }>
+  ): Promise<boolean>;
+  search(
+    collection: string,
+    vector: number[],
+    limit?: number
+  ): Promise<Array<{ id: string | number; score: number; payload?: Record<string, unknown> }>>;
+}
+
+// Try to create a typed adapter when QDRANT is configured; fallback to the in-file HTTP helper
+const qdrantAdapter = VECTOR_DB === 'qdrant' ? createQdrantAdapter({ url: QDRANT_URL }) : null;
+
+export const qdrantIndexer: QdrantIndexer = {
+  async upsert(collection, points) {
+    try {
+      if (qdrantAdapter) {
+        await qdrantAdapter.indexCollection(
+          collection,
+          points.map(p => ({ id: String(p.id), vector: p.vector, payload: p.payload }))
+        );
+        return true;
+      }
+      const url = `${QDRANT_URL}/collections/${encodeURIComponent(collection)}/points?wait=true`;
+      const res = await fetch(url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ points }),
+      });
+      return res.ok;
+    } catch (e) {
+      console.warn('qdrant upsert failed', e);
+      return false;
+    }
+  },
+
+  async search(collection, vector, limit = 10) {
+    try {
+      if (qdrantAdapter) {
+        return await qdrantAdapter.search(collection, vector, limit);
+      }
+      const url = `${QDRANT_URL}/collections/${encodeURIComponent(collection)}/points/search`;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vector, limit, with_payload: true }),
+      });
+      if (!res.ok) return [];
+      const jb = await res.json().catch(() => null);
+
+      // Use typed QdrantHit[] instead of Array<any>
+      const results = (jb?.result ?? jb?.matches ?? []) as QdrantHit[];
+
+      // Filter out any hits that lack a valid id and normalize payload to optional
+      const valid = results.filter((r): r is QdrantHit => r != null && r.id !== undefined && r.id !== null);
+
+      return valid.map((r: QdrantHit) => ({
+        id: r.id,
+        score: typeof r.score === 'number' ? r.score : (r.value ?? 0),
+        payload: r.payload ?? undefined,
+      }));
+    } catch (e) {
+      console.warn('qdrant search failed', e);
+      return [];
+    }
+  },
+};
+
+// Postgres JSONB persistence helper (typed)
+export interface PostgresPersistence {
+  upsertDocument(id: string, data: Record<string, unknown>): Promise<boolean>;
+  getDocument(id: string): Promise<Record<string, unknown> | null>;
+}
+
+export const pgPersistence: PostgresPersistence = {
+  async upsertDocument(id, data) {
+    try {
+      const q = `INSERT INTO documents (id, data) VALUES ($1, $2) ON CONFLICT (id) DO UPDATE SET data = $2`;
+      await pgPool.query(q, [id, data]);
+      return true;
+    } catch (err) {
+      console.warn('pgPersistence.upsertDocument failed', err);
+      return false;
+    }
+  },
+
+  async getDocument(id) {
+    try {
+      // Avoid QueryResult<T> generic; access rows then cast first row shape
+      const r = await pgPool.query('SELECT data FROM documents WHERE id = $1 LIMIT 1', [id]);
+      const row = (r.rows[0] ?? null) as { data?: Record<string, unknown> } | null;
+      return row?.data ?? null;
+    } catch (err) {
+      console.warn('pgPersistence.getDocument failed', err);
+      return null;
+    }
+  },
+};
+
+// Ensure a single default export and remove trailing/malformed tokens
 export default unifiedDocumentProcessor;
+
+// --- NEW/UPDATED: centralized, exported Ollama endpoint helper (moved earlier) ---
+export function getOllamaEndpoint(): string {
+  // Priority:
+  // 1. Explicit override via OLLAMA_URL
+  // 2. If running with dockerized Ollama use 11435 when OLLAMA_USE_DOCKER=1
+  // 3. Host override via OLLAMA_HOST / OLLAMA_HOST_DOCKER + OLLAMA_PORT
+  // 4. Fallback to localhost default port 11434
+  const envUrl = process.env.OLLAMA_URL?.trim();
+  if (envUrl && envUrl.length > 0) return envUrl;
+
+  const useDocker = process.env.OLLAMA_USE_DOCKER === '1' || process.env.OLLAMA_USE_DOCKER === 'true';
+  if (useDocker) {
+    return 'http://localhost:11435';
+  }
+
+  const dockerHost = process.env.OLLAMA_HOST || process.env.OLLAMA_HOST_DOCKER;
+  const port = process.env.OLLAMA_PORT || '11434';
+
+  if (dockerHost && dockerHost.trim().length > 0) {
+    // If dockerHost already includes protocol, respect it; otherwise prepend http://
+    return dockerHost.startsWith('http') ? `${dockerHost}:${port}` : `http://${dockerHost}:${port}`;
+  }
+
+  return `http://localhost:${port}`;
+}

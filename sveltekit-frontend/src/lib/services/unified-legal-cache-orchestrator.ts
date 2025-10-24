@@ -4,14 +4,20 @@
  * Integrates with Nintendo-style memory management and existing infrastructure
  */
 import { Redis } from 'ioredis';
-import { Pool, QueryResult } from 'pg'; // Import QueryResult
+import { Pool } from 'pg';
 import { createHash } from 'crypto';
 import { NintendoMemoryManager, Priority } from './nintendo-memory-manager.js';
 import type { LegalDocument, APIResponse } from '$lib/types';
 // REMOVE: import { getEmbeddingFromOllama } from '$lib/server/services/ollama-api';
 
 // ADD: Imports for server-side integration helpers and their types
-import { ollamaEmbed, type EmbeddingResult } from './cached-rag-service.js';
+import { ollamaEmbed } from './cached-rag-service.js';
+
+// Local type matching the shape returned by cached-rag-service's ollamaEmbed
+// (module does not export this type, so define it locally for compilation)
+type EmbeddingResult = {
+  embedding?: number[]; // numeric array embedding (may be undefined on error)
+};
 
 // ADD: Imports for external service types from chr-rom-precomputation-service.ts
 import type { UltraJSONParser, WasmClusteringService, NESGPUBridge } from './chr-rom-precomputation-service.js';
@@ -580,12 +586,15 @@ export class UnifiedLegalCacheOrchestrator {
     // Minimal safe implementation that uses docId (avoids unused var warning).
     // Try a lightweight Postgres lookup; return null if not found or on error.
     try {
-      const res: QueryResult = await this.pgPool.query(
+      // Use non-generic query (pg Pool.query does not accept type args in this setup).
+      // Cast rows to the expected shape after runtime validation.
+      const res = await this.pgPool.query(
         'SELECT id, title, content, metadata FROM legal_documents WHERE id = $1 LIMIT 1',
         [docId]
       );
-      if (res && Array.isArray(res.rows) && res.rows.length > 0) {
-        const row = res.rows[0] as LegalDocumentRow;
+      const rows = Array.isArray((res as any).rows) ? ((res as any).rows as LegalDocumentRow[]) : [];
+      if (rows.length > 0) {
+        const row = rows[0];
         // Cast to LegalDocument for callers; adapt actual shape when integrating
         return {
           id: row.id,

@@ -2,7 +2,7 @@
  * Centralized Database Configuration
  * Single source of truth for all database connections across the legal AI platform
  */
-}
+
 export interface DatabaseConfig {
   host: string;
   port: number;
@@ -25,27 +25,30 @@ export interface DatabaseUrls {
 export function getDatabaseConfig(): DatabaseConfig {
   return {
     host: process.env.POSTGRES_HOST || 'localhost',
-    port: parseInt(process.env.POSTGRES_PORT || '5432'),
+    port: parseInt(process.env.POSTGRES_PORT || '5432', 10),
     database: process.env.POSTGRES_DB || 'legal_ai_db',
     user: process.env.POSTGRES_USER || 'legal_admin',
     password: process.env.POSTGRES_PASSWORD || '123456',
     ssl: process.env.NODE_ENV === 'production',
-    maxConnections: parseInt(process.env.DB_MAX_CONNECTIONS || '20'),
-    idleTimeoutMs: parseInt(process.env.DB_IDLE_TIMEOUT || '30000'),
-    connectionTimeoutMs: parseInt(process.env.DB_CONNECTION_TIMEOUT || '10000')
-  }
+    maxConnections: parseInt(process.env.DB_MAX_CONNECTIONS || '20', 10),
+    idleTimeoutMs: parseInt(process.env.DB_IDLE_TIMEOUT || '30000', 10),
+    connectionTimeoutMs: parseInt(process.env.DB_CONNECTION_TIMEOUT || '10000', 10),
+  };
 }
 /**
  * Generate standardized database URLs
  */
 export function getDatabaseUrls(): DatabaseUrls {
   const config = getDatabaseConfig();
-  const baseUrl = `postgresql://${config.user}:${config.password}@${config.host}:${config.port}/${config.database}`
+  // URL-encode user and password to avoid invalid URI characters
+  const encodedUser = encodeURIComponent(config.user);
+  const encodedPassword = encodeURIComponent(config.password);
+  const baseUrl = `postgresql://${encodedUser}:${encodedPassword}@${config.host}:${config.port}/${config.database}`;
   return {
     connectionString: process.env.DATABASE_URL || baseUrl,
     appUrl: process.env.DATABASE_URL || baseUrl,
-    adminUrl: process.env.ADMIN_DATABASE_URL || baseUrl
-  }
+    adminUrl: process.env.ADMIN_DATABASE_URL || baseUrl,
+  };
 }
 /**
  * Get connection string for specific service types
@@ -74,35 +77,42 @@ export function validateDatabaseConfig(): { valid: boolean; errors: string[] } {
   if (!config.password) errors.push('Database password is required');
   return {
     valid: errors.length === 0,
-    errors
-  }
+    errors,
+  };
 }
+export interface PoolConfig {
+  connectionString: string;
+  max: number;
+  idleTimeoutMillis: number;
+  connectionTimeoutMillis: number;
+}
+
 /**
  * Get pool configuration for different environments
  */
-export function getPoolConfig(environment: 'development' | 'production' | 'test' = 'development') {
+export function getPoolConfig(environment: 'development' | 'production' | 'test' = 'development'): PoolConfig {
   const config = getDatabaseConfig();
-  const poolConfigs = {
+  const poolConfigs: Record<'development' | 'production' | 'test', Omit<PoolConfig, 'connectionString'>> = {
     development: {
       max: 5,
       idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 10000
+      connectionTimeoutMillis: 10000,
     },
     production: {
       max: config.maxConnections || 20,
       idleTimeoutMillis: config.idleTimeoutMs || 60000,
-      connectionTimeoutMillis: config.connectionTimeoutMs || 5000
+      connectionTimeoutMillis: config.connectionTimeoutMs || 5000,
     },
     test: {
       max: 2,
       idleTimeoutMillis: 10000,
-      connectionTimeoutMillis: 5000
-    }
-  }
+      connectionTimeoutMillis: 5000,
+    },
+  };
   return {
     connectionString: getConnectionString(),
-    ...poolConfigs[environment]
-  }
+    ...poolConfigs[environment],
+  };
 }
 /**
  * Export commonly used constants
@@ -115,13 +125,20 @@ export const DATABASE_CONSTANTS = {
   VECTOR_DIMENSIONS: {
     EMBEDDING_GEMMA: 768,
     NOMIC_EMBED: 768,
-    OPENAI_ADA: 1536
-  }
+    OPENAI_ADA: 1536,
+  },
 } as const;
 /**
  * Browser-safe configuration (no sensitive data)
  */
-export function getBrowserSafeDatabaseInfo() {
+export function getBrowserSafeDatabaseInfo(): {
+  host: string;
+  port: number;
+  database: string;
+  user: string;
+  ssl?: boolean;
+  connected: boolean;
+} {
   const config = getDatabaseConfig();
   return {
     host: config.host,
@@ -130,6 +147,6 @@ export function getBrowserSafeDatabaseInfo() {
     user: config.user,
     // Never expose password in browser
     ssl: config.ssl,
-    connected: true // This would be updated by a connection test
-  }
+    connected: true, // This would be updated by a connection test
+  };
 }

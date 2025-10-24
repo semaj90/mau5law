@@ -4,23 +4,24 @@
  */
 import { createServiceConfig, redisKeys } from '$lib/config/redis-config';
 import { db } from '$lib/server/db/connection';
-import Redis from 'ioredis';
+import { createRedisInstance, type RedisClient } from '$lib/server/redis';
 import { sql } from 'drizzle-orm';
 import { env } from '$env/dynamic/private';
 import { createHash } from 'crypto';
+import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
 // Configuration
-const OLLAMA_ENDPOINT = env.OLLAMA_ENDPOINT || 'http://localhost:11434';
+const OLLAMA_ENDPOINT = getOllamaEndpoint();
 const GEMMA_EMBEDDING_MODEL = env.GEMMA_EMBEDDING_MODEL || 'embeddinggemma:latest';
 const EMBEDDING_DIMENSIONS = 512; // Gemma embeddings standard dimension (512-dim GPU-accelerated)
 // Redis clients
-const gemmaRedis = new Redis(createServiceConfig('GEMMA_EMBEDDINGS'));
-const pgvectorRedis = new Redis(createServiceConfig('PGVECTOR_CACHE'));
+const gemmaRedis: RedisClient = createRedisInstance(createServiceConfig('GEMMA_EMBEDDINGS'));
+// const pgvectorRedis: RedisClient = createRedisInstance(createServiceConfig('PGVECTOR_CACHE')); // Removed as it was unused
 export interface EmbeddingRequest {
   text: string;
   model?: string;
   normalize?: boolean;
   document_type?: 'legal_document' | 'evidence' | 'case' | 'note';
-  metadata?: { [key: string]: any };
+  metadata?: Record<string, unknown>;
 }
 export interface EmbeddingResponse {
   success: boolean;
@@ -37,7 +38,7 @@ export interface VectorSearchRequest {
   limit?: number;
   similarity_threshold?: number;
   document_types?: string[];
-  filters?: { [key: string]: any };
+  filters?: Record<string, unknown>;
 }
 export interface VectorSearchResult {
   id: string;
@@ -214,13 +215,21 @@ class GemmaEmbeddingsService {
       }
       query = sql`${query} ORDER BY similarity DESC LIMIT ${limit}`;
       const results = await db.execute(query);
-      return results.rows.map((row: any) => ({
-        id: row.id,
-        similarity: parseFloat(row.similarity),
-        content: row.content,
-        metadata: row.metadata || {},
-        document_type: row.document_type || 'unknown',
-      }));
+      return results.rows.map(
+        (row: {
+          id: string;
+          similarity: string;
+          content: string;
+          metadata: Record<string, unknown>;
+          document_type: string;
+        }) => ({
+          id: row.id,
+          similarity: parseFloat(row.similarity),
+          content: row.content,
+          metadata: row.metadata || {},
+          document_type: row.document_type || 'unknown',
+        })
+      );
     } catch (error) {
       console.error('Vector search failed:', error);
       return [];
@@ -247,8 +256,8 @@ class GemmaEmbeddingsService {
         WHERE e1.id != e2.id
         LIMIT 1000
       `);
-      const row = stats.rows[0] as any;
-      const avgRow = avgSimilarity.rows[0] as any;
+      const row = stats.rows[0] as { total_vectors: string; index_size: string; last_updated: string };
+      const avgRow = avgSimilarity.rows[0] as { avg_similarity: string };
       return {
         total_vectors: parseInt(row.total_vectors),
         dimensions: EMBEDDING_DIMENSIONS,
@@ -274,7 +283,7 @@ class GemmaEmbeddingsService {
     texts: string[],
     options: {
       document_type?: string;
-      metadata?: { [key: string]: any };
+      metadata?: Record<string, unknown>;
       model?: string;
     } = {}
   ): Promise<EmbeddingResponse[]> {
@@ -374,7 +383,12 @@ class GemmaEmbeddingsService {
       if (result.rows.length === 0) {
         return null;
       }
-      const row = result.rows[0] as any;
+      const row = result.rows[0] as {
+        embedding: string;
+        model: string;
+        document_type: string;
+        metadata: Record<string, unknown>;
+      };
       return {
         success: true,
         embedding: JSON.parse(row.embedding),
@@ -443,8 +457,11 @@ class GemmaEmbeddingsService {
    * Cleanup resources
    */
   async cleanup(): Promise<void> {
-    await gemmaRedis.quit();
-    await pgvectorRedis.quit();
+    // The createRedisInstance returns a singleton, so we don't need to quit it here.
+    // The singleton instance will be managed globally.
+    // If a dedicated connection was created (e.g., for pub/sub), it would need to be quit.
+    // await gemmaRedis.quit();
+    // await pgvectorRedis.quit();
   }
 }
 // Export singleton instance

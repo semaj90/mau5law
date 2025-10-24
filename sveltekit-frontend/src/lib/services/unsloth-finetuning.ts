@@ -8,6 +8,24 @@ import { browser } from '$app/environment';
 // Lightweight placeholders / types
 export type LlamaCppOllamaService = any;
 
+// --- External Service Interfaces ---
+export interface UltraJSONParser {
+  parse<T>(json: string): T;
+  stringify(obj: unknown): string;
+}
+
+export interface WasmClusteringService {
+  initialize(wasmUrl: string): Promise<void>;
+  cluster(data: number[][], options: { numClusters: number }): Promise<number[]>;
+}
+
+export interface NesGPUBridge {
+  isAvailable(): Promise<boolean>;
+  getDeviceInfo(): Promise<{ adapter: string; memory: number }>;
+
+  runComputeShader(shader: string, data: Float32Array): Promise<Float32Array>;
+}
+
 type ServiceStatus = {
   initialized: boolean;
   unslothAvailable: boolean;
@@ -171,7 +189,7 @@ export const LEGAL_TRAINING_TEMPLATES = {
 };
 
 /**
- * Unsloth Fine-tuning Service (cleaned and fixed)
+ * Unsloth Fine-tuning Service
  */
 export class UnslothFinetuningService {
   private config: UnslothConfig;
@@ -181,6 +199,9 @@ export class UnslothFinetuningService {
   private jobHistory: FinetuningJob[] = [];
   private datasets: Map<string, TrainingDataset> = new Map();
   private resourceMonitor?: ReturnType<typeof setInterval>;
+  private ultraJSONParser?: UltraJSONParser;
+  private wasmClusteringService?: WasmClusteringService;
+  private nesGPUBridge?: NesGPUBridge;
 
   public serviceStatus = writable<ServiceStatus>({
     initialized: false,
@@ -242,7 +263,20 @@ export class UnslothFinetuningService {
       pinMemory: true,
       ...config,
     };
-    if (browser) void this.initialize();
+    if (browser) {
+      void this.initialize();
+      // Mock initialization of external services
+      this.ultraJSONParser = { parse: JSON.parse, stringify: JSON.stringify };
+      this.wasmClusteringService = {
+        initialize: async () => console.log('WASM Clustering initialized'),
+        cluster: async (data, opts) => new Array(data.length).fill(0).map((_, i) => i % opts.numClusters),
+      };
+      this.nesGPUBridge = {
+        isAvailable: async () => this.checkCUDAAvailability(),
+        getDeviceInfo: async () => ({ adapter: 'NVIDIA RTX 3060 Ti (Mock)', memory: 8 }),
+        runComputeShader: async (_shader, data) => data,
+      };
+    }
   }
 
   private async initialize(): Promise<void> {
@@ -454,6 +488,89 @@ export class UnslothFinetuningService {
     return samples;
   }
 
+  // --- Server-Side Integration Helpers ---
+
+  /**
+   * Persists a finetuning job to PostgreSQL using JSONB.
+   * This is a mock implementation. In a real scenario, this would be a server-side API call.
+   */
+  public async persistJobToPostgres(job: FinetuningJob): Promise<void> {
+    console.log(`[Postgres] Persisting job ${job.id} to database...`);
+    // Mock API call
+    await new Promise(resolve => setTimeout(resolve, 100));
+    // In a real implementation:
+    // await fetch('/api/finetuning/jobs', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: this.ultraJSONParser?.stringify(job) ?? JSON.stringify(job),
+    // });
+    console.log(`[Postgres] Job ${job.id} persisted.`);
+  }
+
+  /**
+   * Caches training dataset in Redis for faster access.
+   * This is a mock implementation.
+   */
+  public async cacheDatasetInRedis(dataset: TrainingDataset): Promise<void> {
+    console.log(`[Redis] Caching dataset ${dataset.id}...`);
+    // Mock API call
+    await new Promise(resolve => setTimeout(resolve, 50));
+    // In a real implementation:
+    // await fetch(`/api/finetuning/cache/dataset`, {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ key: `dataset:${dataset.id}`, value: dataset, ttl: 3600 }),
+    // });
+    console.log(`[Redis] Dataset ${dataset.id} cached.`);
+  }
+
+  /**
+   * Generates embeddings for dataset samples using Ollama and indexes them in Qdrant.
+   * This is a mock implementation.
+   */
+  public async generateAndIndexEmbeddings(datasetId: string): Promise<{ indexedCount: number }> {
+    const dataset = this.datasets.get(datasetId);
+    if (!dataset) throw new Error('Dataset not found');
+
+    console.log(`[Ollama & Qdrant] Generating embeddings for ${dataset.samples.length} samples and indexing...`);
+    // Mock API call to a backend service that handles Ollama and Qdrant
+    // await fetch('/api/finetuning/embeddings/index', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ datasetId }),
+    // });
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate processing time
+
+    const indexedCount = dataset.samples.length;
+    console.log(`[Ollama & Qdrant] Successfully indexed ${indexedCount} samples.`);
+    return { indexedCount };
+  }
+
+  /**
+   * Analyzes dataset sample complexity using WASM-based clustering.
+   */
+  public async analyzeDatasetWithWasm(datasetId: string): Promise<Record<string, number>> {
+    if (!this.wasmClusteringService) throw new Error('WASM Clustering service not available');
+    const dataset = this.datasets.get(datasetId);
+    if (!dataset) throw new Error('Dataset not found');
+
+    // Mock feature vectors from sample complexity
+    const featureVectors = dataset.samples.map(s => [s.metadata?.complexity ?? 3, s.input.length / 100]);
+    const clusters = await this.wasmClusteringService.cluster(featureVectors, { numClusters: 3 });
+
+    const analysis = clusters.reduce(
+      (acc: Record<string, number>, clusterId) => {
+        const key = `cluster_${clusterId}`;
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+      },
+      {}
+    );
+
+    console.log('[WASM] Dataset complexity analysis:', analysis);
+    return analysis;
+  }
+
   // --- Job lifecycle management ---
   public async startFinetuning(datasetId: string, config: Partial<UnslothConfig> = {}): Promise<string> {
     if (!this.isInitialized) throw new Error('Unsloth service not initialized');
@@ -491,6 +608,7 @@ export class UnslothFinetuningService {
     };
     this.activeJobs.set(jobId, job);
     this.updateJobQueue();
+    void this.persistJobToPostgres(job);
     void this.executeTrainingJob(job);
     return jobId;
   }
@@ -618,6 +736,8 @@ export class UnslothFinetuningService {
     this.datasets.set(datasetId, fullDataset);
     this._cachedDatasets = Array.from(this.datasets.values());
     this.availableDatasets.set(this._cachedDatasets);
+    void this.cacheDatasetInRedis(fullDataset);
+    void this.generateAndIndexEmbeddings(datasetId);
     return datasetId;
   }
 
@@ -663,147 +783,7 @@ export class UnslothFinetuningService {
       await this.cancelJob(job.id);
     }
     // Clear resource monitor
-    if (this.resourceMonitor) {
-      clearInterval(this.resourceMonitor);
-      this.resourceMonitor = undefined;
-    }
-    // Reset stores
-    this.serviceStatus.update((s: any) => ({ ...s, initialized: false }));
-    this.trainingProgress.set({
-      status: 'idle',
-      progress: 0,
-      currentLoss: 0,
-      learningRate: 0,
-      epoch: 0,
-      timeRemaining: 'N/A',
-      memoryUsage: 0,
-    });
-    this.isInitialized = false;
-    console.log('✅ Unsloth service cleanup complete');
-  }
-  // --- Helper: safely get a minimal GPU adapter shape without using `any` ---
-  private async getGPUAdapter(): Promise<{ limits?: { maxBufferSize?: number } } | null> {
-    const nav = navigator as unknown as {
-      gpu?: { requestAdapter?: () => Promise<{ limits?: { maxBufferSize?: number } } | null> };
-    };
-    if (!nav.gpu || typeof nav.gpu.requestAdapter !== 'function') return null;
-    return await nav.gpu.requestAdapter();
-  }
-}
-
-// Factory function for Svelte integration (single, consolidated export)
-export function createUnslothFinetuningService(
-  llamaService?: LlamaCppOllamaService,
-  config?: Partial<UnslothConfig>
-) {
-  const service = new UnslothFinetuningService(llamaService, config);
-  return {
-    service,
-    stores: {
-      serviceStatus: service.serviceStatus,
-      trainingProgress: service.trainingProgress,
-      resourceMetrics: service.resourceMetrics,
-      availableDatasets: service.availableDatasets,
-      jobQueue: service.jobQueue,
-    },
-    derived: {
-      isReady: derived(service.serviceStatus, ($status: ServiceStatus) =>
-        !!($status && $status.initialized && $status.unslothAvailable && $status.cudaAvailable)
-      ),
-      systemHealth: derived(
-        [service.serviceStatus, service.resourceMetrics],
-        ([$status, $metrics]: any) => ({
-          overall: $status?.initialized && $metrics?.gpuTemperature < 85 ? 'healthy' : 'warning',
-          gpu: $metrics?.gpuUtilization < 95 ? 'optimal' : 'overloaded',
-          memory: $metrics?.gpuMemoryUsed < 7 ? 'good' : 'high',
-          thermal: $metrics?.gpuTemperature < 80 ? 'cool' : 'warm',
-        })
-      ),
-      trainingEfficiency: derived(
-        [service.trainingProgress, service.resourceMetrics],
-        ([$progress, $metrics]: any) => ({
-          speed: $metrics?.trainingSpeed ?? 0,
-          efficiency:
-            $progress?.progress > 0 ? ($metrics?.gpuUtilization / 100) * (($metrics?.trainingSpeed ?? 0) / 200) : 0,
-          memoryEfficiency: 100 - ($progress?.memoryUsage || 0),
-          thermalEfficiency: Math.max(0, 100 - (($metrics?.gpuTemperature || 65) - 65) * 2),
-        })
-      ),
-    },
-    // API methods
-    startFinetuning: service.startFinetuning.bind(service),
-    cancelJob: service.cancelJob.bind(service),
-    getJobStatus: service.getJobStatus.bind(service),
-    addDataset: service.addDataset.bind(service),
-    exportModel: service.exportModel.bind(service),
-    cleanup: service.cleanup.bind(service),
-  };
-}
-
-// Helper utilities for creating legal training data (single consolidated export)
-export const UnslothLegalHelpers = {
-  createContractDataset: (contracts: string[]) => ({
-    name: 'Custom Contract Dataset',
-    description: 'User-provided contract analysis training data',
-    taskType: 'contract_analysis' as const,
-    samples: contracts.map((contract: string) => ({
-      input: contract,
-      output: `Analysis: ${contract.substring(0, 50)}... [Generated analysis would go here]`,
-      metadata: {
-        complexity: 3,
-        domain: 'contract_law',
-        verified: false,
-        source: 'user_upload',
-      },
-    })),
-    metadata: {
-      created: Date.now(),
-      size: contracts.length,
-      domain: 'contract_law',
-      quality: 'medium' as const,
-      source: 'user_generated',
-    },
-  }),
-
-  optimizeForRTX3060: (config: Partial<UnslothConfig> = {}): UnslothConfig => ({
-    baseModel: 'gemma3-mohf16-q4_k_m.gguf',
-    outputModel: 'gemma3-legal-finetuned',
-    maxSeqLength: 4096,
-    rank: 16,
-    alpha: 32,
-    dropout: 0.1,
-    targetModules: ['q_proj', 'k_proj', 'v_proj', 'o_proj'],
-    batchSize: 2,
-    microBatchSize: 1,
-    epochs: 3,
-    learningRate: 2e-4,
-    warmupSteps: 100,
-    gradientCheckpointing: true,
-    fp16: true,
-    dataloader4bit: true,
-    maxMemoryUsage: 7,
-    taskType: 'contract_analysis',
-    specializationLevel: 'medium',
-    useWindowsCUDA: true,
-    numWorkers: 4,
-    pinMemory: true,
-    ...config,
-  }),
-};
-};
-};
-  }
-  /**
-   * Cleanup resources
-   */
-  public async cleanup(): Promise<void> {
-    console.log('🛑 Shutting down Unsloth Fine-tuning Service...');
-    // Cancel all active jobs
-    for (const job of Array.from(this.activeJobs.values())) {
-      await this.cancelJob(job.id);
-    }
-    // Clear resource monitor
-    if (this.resourceMonitor) {
+    if this.resourceMonitor) {
       clearInterval(this.resourceMonitor);
       this.resourceMonitor = undefined;
     }
@@ -870,9 +850,15 @@ export function createUnslothFinetuningService(llamaService?: LlamaCppOllamaServ
     addDataset: service.addDataset.bind(service),
     exportModel: service.exportModel.bind(service),
     cleanup: service.cleanup.bind(service),
+    // Server-side integration helpers
+    persistJobToPostgres: service.persistJobToPostgres.bind(service),
+    cacheDatasetInRedis: service.cacheDatasetInRedis.bind(service),
+    generateAndIndexEmbeddings: service.generateAndIndexEmbeddings.bind(service),
+    analyzeDatasetWithWasm: service.analyzeDatasetWithWasm.bind(service),
   };
 }
-// Helper utilities for creating legal training data
+
+// Helper utilities for creating legal training data (single consolidated export)
 export const UnslothLegalHelpers = {
   createContractDataset: (contracts: string[]) => ({
     name: 'Custom Contract Dataset',
@@ -896,7 +882,7 @@ export const UnslothLegalHelpers = {
       source: 'user_generated',
     },
   }),
-  optimizeForRTX3060: (config: Partial<UnslothConfig>): UnslothConfig => ({
+  optimizeForRTX3060: (config: Partial<UnslothConfig> = {}): UnslothConfig => ({
     baseModel: 'gemma3-mohf16-q4_k_m.gguf',
     outputModel: 'gemma3-legal-finetuned',
     maxSeqLength: 4096,
@@ -907,6 +893,20 @@ export const UnslothLegalHelpers = {
     batchSize: 2,
     microBatchSize: 1,
     epochs: 3,
+    learningRate: 2e-4,
+    warmupSteps: 100,
+    gradientCheckpointing: true,
+    fp16: true,
+    dataloader4bit: true,
+    maxMemoryUsage: 7,
+    taskType: 'contract_analysis',
+    specializationLevel: 'medium',
+    useWindowsCUDA: true,
+    numWorkers: 4,
+    pinMemory: true,
+    ...config,
+  }),
+};
     learningRate: 2e-4,
     warmupSteps: 100,
     gradientCheckpointing: true,

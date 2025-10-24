@@ -1,8 +1,5 @@
 // Re-export predictor types from the real module to avoid duplicate/malformed declarations
 export * from '$lib/types/predictor';
-  action: string;
-  topK: number;
-}
 export interface PredictorStats {
   totalTransitions: number;
   uniqueActions: number;

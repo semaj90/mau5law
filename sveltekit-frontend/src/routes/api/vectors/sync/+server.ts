@@ -1,82 +1,38 @@
-import type { RequestHandler } from './$types.js';
-// src/routes/api/vectors/sync/+server.ts
-// Automatic vector synchronization to Qdrant after CUDA processing
-// Triggered by Go microservice after successful vector generation
+import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
-// Use canonical database connection (node-postgres with connection pooling)
 import { db } from '$lib/server/db';
-import { createRedisInstance } from '$lib/server/redis';
-import { vectors, vectorJobs, evidence, reports } from '$lib/server/db/schema-postgres.js';
+import createRedisInstance from '$lib/server/redis'; // default export
+import { QdrantVectorService } from '$lib/server/services/qdrant-vector'; // import module (no .js, no constructor)
+import { env } from '$env/dynamic/private';
 import { eq } from 'drizzle-orm';
+import { vectors, vectorJobs, evidence, reports } from '$lib/server/db/schema-postgres.js';
 
-// Redis connection
+const DEFAULT_VECTOR_DIMENSION = 1536; // Platform-wide fallback for vector dimension
+
+const qdrant = QdrantVectorService; // use the exported service object directly
+
+// Add a small typed adapter to avoid `any` and to check optional helpers safely
+type QdrantExt = {
+  ensureCollection?: (name: string) => Promise<unknown>;
+  upsertVector?: (
+    id: string,
+    vector: number[],
+    payload?: Record<string, unknown>,
+    collectionName?: string
+  ) => Promise<unknown>;
+  deletePoint?: (collection: string, id: string) => Promise<unknown>;
+};
+
+const qdrantExt = qdrant as unknown as QdrantExt;
+
+// For Redis caching/operations the canonical createRedisInstance is used for low-level ops
 let redis: ReturnType<typeof createRedisInstance> | null = null;
 try {
   redis = createRedisInstance();
 } catch {
-  // Unable to create redis instance; leave as null and warn. Avoid requiring optional dependency at build-time.
-  console.warn('createRedisInstance failed; continuing without Redis. Set REDIS_URL to enable Redis.');
+  console.warn('createRedisInstance failed; continuing without low-level Redis. Use higher-level RedisCacheService for cached ops.');
   redis = null;
 }
-
-// Qdrant client (simple HTTP implementation)
-class QdrantClient {
-  private _baseUrl: string;
-  constructor(baseUrl = 'http://localhost:6333') {
-    this._baseUrl = baseUrl;
-  }
-  get baseUrl() {
-    return this._baseUrl;
-  }
-  async upsertPoint(
-    collectionName: string,
-    pointData: { id: string; vector: number[]; payload: Record<string, unknown> }
-  ) {
-    const response = await fetch(`${this._baseUrl}/collections/${collectionName}/points`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ points: [pointData] }),
-    });
-    if (!response.ok) {
-      throw new Error(`Qdrant upsert failed: ${response.statusText}`);
-    }
-    return await response.json();
-  }
-  async deletePoint(collectionName: string, pointId: string) {
-    const response = await fetch(`${this._baseUrl}/collections/${collectionName}/points/delete`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ points: [pointId] }),
-    });
-    if (!response.ok) {
-      throw new Error(`Qdrant delete failed: ${response.statusText}`);
-    }
-    return await response.json();
-  }
-  async ensureCollection(collectionName: string, vectorSize = 768) {
-    try {
-      // Check if collection exists
-      const checkResponse = await fetch(`${this._baseUrl}/collections/${collectionName}`);
-      if (checkResponse.ok) {
-        return; // Collection already exists
-      }
-      // Create collection
-      const createResponse = await fetch(`${this._baseUrl}/collections/${collectionName}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ vectors: { size: vectorSize, distance: 'Cosine' } }),
-      });
-      if (!createResponse.ok) {
-        throw new Error(`Failed to create collection: ${createResponse.statusText}`);
-      }
-      console.log(`✅ Created Qdrant collection: ${collectionName}`);
-    } catch (error: unknown) {
-      console.error(`❌ Qdrant collection error for ${collectionName}:`, error);
-      throw error;
-    }
-  }
-}
-const qdrant = new QdrantClient();
 
 export const POST: RequestHandler = async ({ request }) => {
   let body: unknown;
@@ -138,93 +94,161 @@ type SourceDataType = {
   createdAt?: string | Date;
   updatedAt?: string | Date;
   metadata?: Record<string, unknown>;
-  evidenceType?: string;
-  caseId?: string;
-  tags?: string[];
-  reportType?: string;
-  status?: string;
-};
+}; // <-- closed the type
+
+async function ensureQdrantCollectionFallback(collectionName: string, dimension: number): Promise<void> {
+  try {
+    const qdrantUrl = (env.QDRANT_URL || 'http://localhost:6333').replace(/\/$/, '');
+    const checkResp = await fetch(`${qdrantUrl}/collections/${encodeURIComponent(collectionName)}`);
+    if (!checkResp.ok) {
+      await fetch(`${qdrantUrl}/collections/${encodeURIComponent(collectionName)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          vectors: { size: dimension, distance: 'Cosine' },
+          // minimal default config; adjust if your platform uses HNSW or other params
+        }),
+      });
+    }
+  } catch (err) {
+    // best-effort; continue to upsert (some Qdrant setups allow implicit collection creation via points upsert)
+    console.warn('Qdrant collection ensure fallback failed', err);
+  }
+}
 
 async function handleVectorUpsert(ownerType: string, ownerId: string, _vectorId?: string): Promise<unknown> {
   // Get vector from PostgreSQL
   const [vector] = await db.select().from(vectors).where(eq(vectors.ownerId, ownerId)).limit(1);
-  if (!vector || !vector.embedding) {
+  if (!vector || !Array.isArray(vector.embedding) || vector.embedding.length === 0) {
     throw new Error('Vector not found or embedding missing');
   }
-  // Get source data for payload
-  let sourceData: unknown;
-  let collectionName: string;
-  switch (ownerType) {
-    case 'evidence':
-      [sourceData] = await db.select().from(evidence).where(eq(evidence.id, ownerId)).limit(1);
-      collectionName = 'legal_evidence';
-      break;
-    case 'report':
-      [sourceData] = await db.select().from(reports).where(eq(reports.id, ownerId)).limit(1);
-      collectionName = 'legal_reports';
-      break;
-    default:
-      throw new Error(`Unsupported owner type: ${ownerType}`);
+
+  // Fetch source row depending on ownerType
+  let sd: SourceDataType | undefined = undefined;
+  let collectionName = ownerType === 'evidence' ? 'legal_evidence' : 'legal_reports';
+  if (ownerType === 'evidence') {
+    [sd] = await db.select().from(evidence).where(eq(evidence.id, ownerId)).limit(1);
+  } else if (ownerType === 'report') {
+    [sd] = await db.select().from(reports).where(eq(reports.id, ownerId)).limit(1);
   }
-  if (!sourceData) {
-    throw new Error(`Source data not found for ${ownerType}:${ownerId}`);
+
+  // Prepare point data
+  const pointVector = vector.embedding as unknown as number[];
+  const payload: Record<string, unknown> = {
+    ownerType,
+    ownerId,
+    title: sd?.title ?? null,
+    description: sd?.description ?? null,
+    createdAt: sd?.createdAt ? new Date(sd.createdAt).toISOString() : undefined,
+    updatedAt: sd?.updatedAt ? new Date(sd.updatedAt).toISOString() : undefined,
+    metadata: sd?.metadata ?? {},
+  };
+
+  // Add conditional fields for specific types
+  if (ownerType === 'evidence') {
+    // these properties may exist on the evidence row; guard access
+    const anySd = sd as any;
+    if (anySd) {
+      if (anySd.evidenceType !== undefined) payload.evidenceType = anySd.evidenceType;
+      if (anySd.caseId !== undefined) payload.caseId = anySd.caseId;
+      if (Array.isArray(anySd.tags)) payload.tags = anySd.tags;
+    }
+  } else if (ownerType === 'report') {
+    const anySd = sd as any;
+    if (anySd) {
+      if (anySd.reportType !== undefined) payload.reportType = anySd.reportType;
+      if (anySd.caseId !== undefined) payload.caseId = anySd.caseId;
+      if (anySd.status !== undefined) payload.status = anySd.status;
+    }
   }
-  // Ensure Qdrant collection exists
-  await qdrant.ensureCollection(collectionName);
-  // Prepare point data for Qdrant
-  const sd = sourceData as SourceDataType;
-  const toIso = (v?: string | Date) => {
-    if (!v) return undefined;
-    if (typeof v === 'string') return new Date(v).toISOString();
-    if (v instanceof Date) return v.toISOString();
-    return undefined;
-  };
-  const pointData = {
-    id: ownerId,
-    vector: Array.isArray(vector.embedding) ? vector.embedding : [],
-    payload: {
-      ownerType,
-      title: sd.title ?? '',
-      description: sd.description ?? '',
-      createdAt: toIso(sd.createdAt),
-      updatedAt: toIso(sd.updatedAt),
-      metadata: sd.metadata ?? {},
-      // Add specific fields based on type
-      ...(ownerType === 'evidence' && {
-        evidenceType: sd.evidenceType,
-        caseId: sd.caseId,
-        tags: sd.tags,
-      }),
-      ...(ownerType === 'report' && {
-        reportType: sd.reportType,
-        caseId: sd.caseId,
-        status: sd.status,
-      }),
-    },
-  };
-  // Upsert to Qdrant
-  const qdrantResult = await qdrant.upsertPoint(collectionName, pointData);
+
+  // Ensure Qdrant collection exists via helper or HTTP fallback
+  if (typeof qdrantExt.ensureCollection === 'function') {
+    await qdrantExt.ensureCollection(collectionName);
+  } else {
+    await ensureQdrantCollectionFallback(collectionName, pointVector.length || DEFAULT_VECTOR_DIMENSION);
+  }
+
+  // Upsert to Qdrant using service helper or HTTP REST fallback
+  let qdrantResult: unknown;
+  if (typeof qdrantExt.upsertVector === 'function') {
+    qdrantResult = await qdrantExt.upsertVector(ownerId, pointVector, payload, collectionName);
+  } else {
+    try {
+      const qdrantUrl = (env.QDRANT_URL || 'http://localhost:6333').replace(/\/$/, '');
+      const body = {
+        points: [
+          {
+            id: ownerId,
+            vector: pointVector,
+            payload,
+          },
+        ],
+      };
+      const resp = await fetch(`${qdrantUrl}/collections/${encodeURIComponent(collectionName)}/points?wait=true`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      qdrantResult = resp.ok ? await resp.json() : { ok: false, status: resp.status, text: await resp.text() };
+    } catch (err) {
+      qdrantResult = { ok: false, error: err instanceof Error ? err.message : String(err) };
+    }
+  }
+
   return {
     action: 'upserted',
     collection: collectionName,
     pointId: ownerId,
-    vectorDimensions: pointData.vector.length,
+    vectorDimensions: pointVector.length,
     qdrantResult,
   };
 }
 
 async function handleVectorDeletion(ownerType: string, ownerId: string): Promise<unknown> {
   const collectionName = ownerType === 'evidence' ? 'legal_evidence' : 'legal_reports';
-  // Delete from Qdrant
-  const qdrantResult = await qdrant.deletePoint(collectionName, ownerId);
-  return { action: 'deleted', collection: collectionName, pointId: ownerId, qdrantResult };
+  // Prefer service helper if available
+  if (typeof qdrantExt.deletePoint === 'function') {
+    const r = await qdrantExt.deletePoint(collectionName, ownerId);
+    return { action: 'deleted', collection: collectionName, pointId: ownerId, qdrantResult: r };
+  }
+
+  // HTTP fallback: call Qdrant points delete endpoint
+  try {
+    const qdrantUrl = (env.QDRANT_URL || 'http://localhost:6333').replace(/\/$/, '');
+    const resp = await fetch(`${qdrantUrl}/collections/${encodeURIComponent(collectionName)}/points/delete?wait=true`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ points: [ownerId] }),
+    });
+    const result = resp.ok ? await resp.json() : { ok: false, status: resp.status, text: await resp.text() };
+    return { action: 'deleted', collection: collectionName, pointId: ownerId, qdrantResult: result };
+  } catch (err) {
+    // Best-effort fallback: upsert tombstone marker if deletes fail
+    try {
+      if (typeof qdrantExt.upsertVector === 'function') {
+        await qdrantExt.upsertVector(ownerId, [], { deleted: true }, collectionName);
+      } else {
+        const qdrantUrl = (env.QDRANT_URL || 'http://localhost:6333').replace(/\/$/, '');
+        await fetch(`${qdrantUrl}/collections/${encodeURIComponent(collectionName)}/points?wait=true`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ points: [{ id: ownerId, vector: [], payload: { deleted: true } }] }),
+        });
+      }
+    } catch (e) {
+      // ignore; we already failed delete
+    }
+    return { action: 'deleted', collection: collectionName, pointId: ownerId, qdrantResult: { ok: false, error: err instanceof Error ? err.message : String(err) } };
+  }
 }
 
 // Health check endpoint
 export const GET: RequestHandler = async () => {
   try {
-    // Check Qdrant connection
-    const response = await fetch(`${qdrant.baseUrl || 'http://localhost:6333'}/collections`);
+    // Check Qdrant connection (use env or default)
+    const qdrantUrl = env.QDRANT_URL || 'http://localhost:6333';
+    const response = await fetch(`${qdrantUrl.replace(/\/$/, '')}/collections`);
     const collections = response.ok ? await response.json() : null;
     // Check PostgreSQL connection
     const [pgTest] = await db.select().from(vectors).limit(1);
@@ -240,7 +264,7 @@ export const GET: RequestHandler = async () => {
     return json({
       success: true,
       services: {
-        qdrant: { connected: response.ok, collections: collections?.result?.collections || [] },
+        qdrant: { connected: response.ok, collections: collections?.result?.collections || collections || [] },
         postgresql: { connected: !!pgTest },
         redis: { connected: redisOk },
       },
@@ -253,3 +277,20 @@ export const GET: RequestHandler = async () => {
     );
   }
 };
+    return json({
+      success: true,
+      services: {
+        qdrant: { connected: response.ok, collections: collections?.result?.collections || collections || [] },
+        postgresql: { connected: !!pgTest },
+        redis: { connected: redisOk },
+      },
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error: unknown) {
+    return json(
+      { success: false, error: error instanceof Error ? error.message : 'Health check failed' },
+      { status: 500 }
+    );
+  }
+};
+

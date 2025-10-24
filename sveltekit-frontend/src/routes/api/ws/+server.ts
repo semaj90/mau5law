@@ -5,7 +5,6 @@ import { createRedisInstance } from '$lib/server/redis';
 import { createPubSubHelper } from '$lib/server/redisPubSub';
 import { registerCleanup } from '$lib/server/shutdown';
 import type { RequestHandler } from './$types.js';
-import Redis from 'ioredis';
 // WebSocket server for real-time updates
 let io: Server | null = null;
 // Legacy single redis client usage replaced by dedicated pub/sub helper set.
@@ -32,16 +31,15 @@ function initializeWebSocket() {
   });
   // Initialize Redis subscriber for job progress
   // Initialize Redis primary (non-subscriber) for auxiliary commands (get/set)
+  // Use the centralized Redis instance creator which handles URL/password
+  // injection and lifecycle (connect/retry). If it throws or returns null,
+  // leave redisPrimary null and allow pub/sub helper or other consumers to
+  // handle the absence gracefully.
   try {
     redisPrimary = createRedisInstance();
   } catch (e) {
-    // fallback to ioredis default import (no require)
-    redisPrimary = new Redis({
-      host: String(import.meta.env.REDIS_HOST || 'localhost'),
-      port: parseInt(String(import.meta.env.REDIS_PORT || '6379'), 10),
-      password: import.meta.env.REDIS_PASSWORD as string | undefined,
-      lazyConnect: true,
-    });
+    console.warn('[ws] createRedisInstance failed, continuing without redisPrimary:', e);
+    redisPrimary = null;
   }
   // Handle WebSocket connections
   io.on('connection', socket => {

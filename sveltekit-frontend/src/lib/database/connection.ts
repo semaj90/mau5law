@@ -1,87 +1,148 @@
 /// <reference types="vite/client" />
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from 'postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres, { type ParameterOrJSON } from 'postgres';
 import * as schema from './schema.js';
 // Get DATABASE_URL from environment with fallback
-const DATABASE_URL = import.meta.env.VITE_DATABASE_URL ||
+const DATABASE_URL =
+  import.meta.env.VITE_DATABASE_URL ||
   import.meta.env.DATABASE_URL ||
-  'postgresql://legal_admin:123456@localhost:5434/legal_ai_db'
+  'postgresql://legal_admin:123456@localhost:5434/legal_ai_db';
 // Create PostgreSQL connection using postgres.js
 const sql = postgres(DATABASE_URL, {
   max: 10,
   idle_timeout: 30,
-  connect_timeout: 2
+  connect_timeout: 2,
 });
-// Create Drizzle instance with schema
-export // removed unused db assignment
+// Create Drizzle instance with schema (avoid unused import errors)
+// avoid `any` by using unknown-based cast
+export const db = drizzle(sql, { schema: schema as unknown as Record<string, unknown> });
 // Export sql connection for direct queries
-export { sql }
+export { sql };
 export const pool = sql; // alias for consistency (postgres.js instance)
-// Connection health check
-export async function testDatabaseConnection(): Promise<any> {
+
+// New typed helper types and error normalizer
+type DBResult<T = unknown> = {
+  success: boolean;
+  message?: string;
+  results?: T;
+  data?: T;
+  count: number;
+  rowCount?: number;
+  error?: string;
+  details?: Record<string, unknown> | null;
+  query?: string;
+  queryEmbedding?: number[];
+};
+
+// small alias for param lists used with postgres.js unsafe calls
+// make the generic explicit to satisfy the compiler
+type ParamList = unknown[];
+
+// add a safe row type for returned rows
+type DBRow = Record<string, unknown>;
+
+// ---- new helper to normalize params for pool.unsafe ----
+/**
+ * Normalize and cast params to the exact ParameterOrJSON[] type expected by postgres.js.
+ * Use this wrapper wherever we previously did: pool.unsafe(query, ...(params as ParameterOrJSON<...>[]))
+ */
+async function unsafeQuery<T = DBRow>(query: string, params?: ParamList): Promise<T[]> {
+  // Use unknown-based ParameterOrJSON alias to avoid `any` and typing mismatches
+  type JSONParam = ParameterOrJSON<unknown>;
+  const castParams = (params ?? []) as unknown as JSONParam[];
+
+  // Call unsafe via a typed wrapper on pool without using generic type arguments on the call itself.
+  const unsafeCaller = (
+    pool as unknown as {
+      unsafe: (q: string, p?: JSONParam[]) => Promise<unknown>;
+    }
+  ).unsafe;
+
+  const raw = await unsafeCaller(query, castParams);
+  return raw as unknown as T[];
+}
+
+function getErrorMessage(e: unknown): string {
+  if (e instanceof Error) return e.message;
   try {
-    // Test basic connection
-    const result = await pool`SELECT version();`;
+    return String(e);
+  } catch {
+    return 'Unknown error';
+  }
+}
+
+// Connection health check
+export async function testDatabaseConnection(): Promise<DBResult> {
+  try {
+    // Test basic connection using the typed unsafeQuery helper
+    const result = await unsafeQuery<{ version?: string }>('SELECT version();');
     // Test pgvector extension
-    const vectorTest = await pool`SELECT extname FROM pg_extension WHERE extname = 'vector';`;
+    const vectorTest = await unsafeQuery<{ extname?: string }>(
+      "SELECT extname FROM pg_extension WHERE extname = 'vector';"
+    );
     const hasVector = Array.isArray(vectorTest) && vectorTest.length > 0;
+    const postgresVersion = Array.isArray(result) ? (result[0]?.version ?? null) : null;
     return {
       success: true,
       message: 'Database connection successful',
+      count: Array.isArray(result) ? result.length : 0,
       details: {
-        postgresVersion: (result as any)[0]?.version,
+        postgresVersion,
         pgvectorEnabled: hasVector,
         poolSize: 'n/a',
-        timestamp: new Date().toISOString()
-      }
-    }
-  } catch (error: any) {
+        timestamp: new Date().toISOString(),
+      },
+    };
+  } catch (error: unknown) {
     return {
       success: false,
-      message: `Database connection failed: ${(error as Error).message}`,
+      message: `Database connection failed: ${getErrorMessage(error)}`,
+      error: getErrorMessage(error),
+      count: 0,
       details: {
-        error: (error as Error).stack,
-        timestamp: new Date().toISOString()
-      }
-    }
+        timestamp: new Date().toISOString(),
+      },
+    };
   }
 }
+
 // Vector similarity search helper
 export async function vectorSimilaritySearch(
   table: 'documents' | 'search_index',
   queryEmbedding: number[],
   limit: number = 10,
-  threshold: number = 0.8;
-): Promise<any> {
+  threshold: number = 0.8
+): Promise<DBResult> {
   try {
     const tableName = table === 'documents' ? 'documents' : 'search_index';
-    // Use pgvector's cosine distance operator
+    // Use pgvector's cosine distance operator and cast param as ::vector
     const query = `
-      SELECT *, 1 - (embedding <=> $1) AS similarity
+      SELECT *, 1 - (embedding <=> $1::vector) AS similarity
       FROM ${tableName}
-      WHERE 1 - (embedding <=> $1) > $2
-      ORDER BY embedding <=> $1
+      WHERE 1 - (embedding <=> $1::vector) > $2
+      ORDER BY embedding <=> $1::vector
       LIMIT $3
     `;
-    const result = await pool.unsafe(query, [
-      JSON.stringify(queryEmbedding),
-      threshold,
-      limit
-    ]);
+    // pass embedding as a vector literal string
+    const params: ParamList = [`[${queryEmbedding.join(',')}]`, threshold, limit];
+    // use helper to avoid TS spreading errors
+    const result = await unsafeQuery<DBRow>(query, params);
+    const count = Array.isArray(result) ? result.length : 0;
     return {
       success: true,
       results: result,
-      count: Array.isArray(result) ? (result as { length?: any }).length: 0,
-    }
-  } catch (error: any) {
+      count,
+    };
+  } catch (error: unknown) {
     return {
       success: false,
-      error: (error as Error).message,
+      error: getErrorMessage(error),
       results: [],
-      count: 0
-    }
+      count: 0,
+    };
   }
 }
+
 // Hybrid semantic search combining multiple tables
 export async function hybridSemanticSearch(
   query: string,
@@ -91,36 +152,45 @@ export async function hybridSemanticSearch(
     threshold?: number;
     entityTypes?: string[];
     caseId?: string;
-    userId?: string;
   } = {}
-): Promise<any> {
-  const { limit = 10, threshold = 0.7, entityTypes, caseId, userId } = options;
+): Promise<DBResult> {
+  const { limit = 10, threshold = 0.7, entityTypes, caseId } = options;
   try {
-    let whereClause = `WHERE 1 - (si.embedding <=> $1) > $2`;
-    const params: any[] = [JSON.stringify(queryEmbedding), threshold];
-    let paramIndex = 2;
+    // Prepare embedding as a pgvector literal and cast in SQL with ::vector
+    const embeddingParam = `[${queryEmbedding.join(',')}]`; // e.g. "[0.1,0.2,0.3]"
+    const params: ParamList = [embeddingParam, threshold];
+    const whereClauses: string[] = ['1 - (si.embedding <=> $1::vector) > $2'];
+
     if (entityTypes && entityTypes.length > 0) {
-      paramIndex++;
-      whereClause += ` AND si.entity_type = ANY($${paramIndex})`;
+      // ensure text[] cast for ANY()
       params.push(entityTypes);
+      whereClauses.push(`si.entity_type = ANY($${params.length}::text[])`);
     }
+
     if (caseId) {
-      paramIndex++;
-      whereClause += ` AND (
-        (si.entity_type = 'case' AND si.entity_id = $${paramIndex}) OR
+      // cast caseId to uuid for safe comparisons
+      params.push(caseId);
+      const idx = params.length;
+      whereClauses.push(`(
+        (si.entity_type = 'case' AND si.entity_id = $${idx}::uuid) OR
         (si.entity_type = 'document' AND EXISTS (
-          SELECT 1 FROM documents d WHERE d.id = si.entity_id AND d.case_id = $${paramIndex}
+          SELECT 1 FROM documents d WHERE d.id = si.entity_id AND d.case_id = $${idx}::uuid
         )) OR
         (si.entity_type = 'evidence' AND EXISTS (
-          SELECT 1 FROM evidence e WHERE e.id = si.entity_id AND e.case_id = $${paramIndex}
-        )
-      )`;
-      params.push(caseId);
+          SELECT 1 FROM evidence e WHERE e.id = si.entity_id AND e.case_id = $${idx}::uuid
+        ))
+      )`);
     }
+
+    // push limit as last param
+    params.push(limit);
+    const limitPlaceholderIndex = params.length;
+
+    const whereClause = whereClauses.join(' AND ');
     const searchQuery = `
       SELECT
         si.*,
-        1 - (si.embedding <=> $1) AS similarity,
+        1 - (si.embedding <=> $1::vector) AS similarity,
         CASE si.entity_type
           WHEN 'document' THEN d.title
           WHEN 'evidence' THEN e.title
@@ -131,36 +201,37 @@ export async function hybridSemanticSearch(
       LEFT JOIN documents d ON si.entity_type = 'document' AND si.entity_id = d.id
       LEFT JOIN evidence e ON si.entity_type = 'evidence' AND si.entity_id = e.id
       LEFT JOIN cases c ON si.entity_type = 'case' AND si.entity_id = c.id
-      ${whereClause}
-      ORDER BY si.embedding <=> $1
-      LIMIT $${paramIndex + 1}
+      WHERE ${whereClause}
+      ORDER BY si.embedding <=> $1::vector
+      LIMIT $${limitPlaceholderIndex}
     `;
-    params.push(limit);
-    const result = await pool.unsafe(searchQuery, params);
+    const result = await unsafeQuery<DBRow>(searchQuery, params);
+    const count = Array.isArray(result) ? result.length : 0;
     return {
       success: true,
       results: result,
-      count: Array.isArray(result) ? (result as { length?: any }).length: 0,
-      query,
-      queryEmbedding: queryEmbedding.slice(0, 5)
-    }
-  } catch (error: any) {
+      count,
+      query, // original input search string
+      queryEmbedding: queryEmbedding.slice(0, 5),
+    };
+  } catch (error: unknown) {
     return {
       success: false,
-      error: (error as Error).message,
+      error: getErrorMessage(error),
       results: [],
       count: 0,
-      query
-    }
+      query, // original input search string for debugging
+    };
   }
 }
+
 // Initialize database with extensions and basic setup
-export async function initializeDatabase(): Promise<any> {
+export async function initializeDatabase(): Promise<DBResult> {
   try {
     console.log('🔄 Initializing database...');
-    // Create extensions
-    await pool`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`;
-    await pool`CREATE EXTENSION IF NOT EXISTS vector;`;
+    // Create extensions using the safe helper
+    await unsafeQuery('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
+    await unsafeQuery('CREATE EXTENSION IF NOT EXISTS vector;');
     console.log('✅ Database extensions created');
     // Run migrations would go here
     // await migrate(db, { migrationsFolder: './drizzle' })
@@ -172,30 +243,35 @@ export async function initializeDatabase(): Promise<any> {
       console.error('❌ Database initialization failed:', health.message);
     }
     return health;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Database initialization error:', error);
     return {
       success: false,
-      message: `Initialization failed: ${(error as Error).message}`
-    }
+      message: `Initialization failed: ${getErrorMessage(error)}`,
+      count: 0,
+    };
   }
 }
+
 // Graceful shutdown
-export async function closeDatabaseConnection(): Promise<any> {
+export async function closeDatabaseConnection(): Promise<void> {
   try {
     await pool.end();
     console.log('✅ Database connection pool closed');
-  } catch (error: any) {
-    console.error('❌ Error closing database connection:', error);
+  } catch (error: unknown) {
+    console.error('❌ Error closing database connection:', getErrorMessage(error));
   }
 }
+
 // Note: pool exported once at declaration to avoid duplicate export errors
 // Direct SQL for complex vector operations
-export async function executeSQL(query: string, params: any[] = []) {
+export async function executeSQL(query: string, params: unknown[] = []): Promise<DBResult> {
   try {
-    const result = await pool.unsafe(query, params);
-    return { success: true, data: result, rowCount: Array.isArray(result) ? (result as { length?: any }).length: 0 }
-  } catch (error: any) {
-    return { success: false, error: error.message }
+    const p: ParamList = params as ParamList;
+    const result = await unsafeQuery<DBRow>(query, p);
+    const rowCount = Array.isArray(result) ? result.length : 0;
+    return { success: true, data: result, rowCount, count: rowCount };
+  } catch (error: unknown) {
+    return { success: false, error: getErrorMessage(error), count: 0 };
   }
 }

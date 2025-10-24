@@ -12,10 +12,12 @@
  */
 import Dexie from 'dexie';
 import type { Table } from 'dexie';
+import { writable } from 'svelte/store';
+import { liveQuery } from 'dexie';
+
 // ============================================================================
 // TYPE DEFINITIONS
 // ============================================================================
-}
 export interface ChatMessage {
   id?: number;
   sessionId: string;
@@ -29,7 +31,7 @@ export interface ChatMessage {
     confidence?: number;
     sources?: string[];
     ragContext?: boolean;
-  }
+  };
 }
 export interface DocumentCache {
   id?: number;
@@ -43,11 +45,11 @@ export interface DocumentCache {
   metadata: {
     aiSummary?: string;
     keyTerms?: string[];
-    legalEntities?: any;
+    legalEntities?: DocumentEntitySummary[]; // was any -> strongly typed summary
     riskLevel?: string;
     jurisdiction?: string;
     documentType?: string;
-  }
+  };
 }
 export interface SearchHistory {
   id?: number;
@@ -60,15 +62,57 @@ export interface SearchHistory {
   filters?: {
     evidenceType?: string[];
     priority?: string[];
-    dateRange?: { start: Date; end: Date }
+    dateRange?: { start: Date; end: Date };
     jurisdiction?: string[];
-  }
+  };
 }
+// New small helper types to avoid `any`
+type QueryResultItem = {
+  id?: string | number;
+  title?: string;
+  score?: number;
+  snippet?: string;
+  source?: string;
+  metadata?: Record<string, unknown>;
+  [key: string]: unknown;
+};
+
+type DocumentEntitySummary = {
+  id?: number | string;
+  name: string;
+  type: 'person' | 'organization' | 'court' | 'statute' | 'case' | 'concept';
+  aliases?: string[];
+  confidence?: number; // 0-1
+  excerpt?: string; // short text snippet where entity was found
+  extractedFrom?: {
+    documentId?: string;
+    chunkId?: string;
+    context?: string;
+  };
+  metadata?: Record<string, unknown>;
+};
+
+type GraphNode = {
+  id: string;
+  label?: string;
+  group?: string;
+  attributes?: Record<string, unknown>;
+};
+
+type GraphEdge = {
+  id?: string;
+  from: string;
+  to: string;
+  label?: string;
+  weight?: number;
+  metadata?: Record<string, unknown>;
+};
+
 export interface VectorSearchCache {
   id?: number;
   queryHash: string; // MD5 of query + filters for deduplication,
   query: string;
-  results: Array<any>;
+  results: QueryResultItem[]; // was Array<any>
   timestamp: Date;
   expiresAt: Date;
   lodLevel: number;
@@ -84,7 +128,7 @@ export interface UserAnnotation {
     start: number;
     end: number;
     page?: number;
-  }
+  };
   tags: string[];
   importance: 'low' | 'medium' | 'high' | 'critical';
   userId?: string;
@@ -109,21 +153,21 @@ export interface LegalEntity {
     dates?: string[];
     role?: string;
     importance?: number;
-  }
+  };
   lastUpdated: Date;
 }
 export interface GraphVisualizationData {
   id?: number;
   graphId: string;
   graphType: 'document-similarity' | 'legal-entities' | 'case-relationships' | 'citation-network';
-  nodes: Array<any>;
-  edges: Array<any>;
+  nodes: GraphNode[]; // was Array<any>
+  edges: GraphEdge[]; // was Array<any>
   layout: {
     algorithm: string;
-    parameters: any;
+    parameters: Record<string, unknown>; // was any
     dimensions: 2 | 3;
-  }
-  cameraPosition?: { x: number; y: number; z: number }
+  };
+  cameraPosition?: { x: number; y: number; z: number };
   createdAt: Date;
   lastAccessed: Date;
   computationTime: number;
@@ -133,7 +177,7 @@ export interface AIAnalysisCache {
   contentHash: string;
   analysisType: 'summary' | 'entities' | 'risk' | 'classification' | 'similarity';
   input: string;
-  result: any;
+  result: unknown; // was any
   model: string;
   confidence: number;
   processingTime: number;
@@ -151,20 +195,20 @@ export interface UserPreferences {
       maxDocuments: number;
       maxSearchResults: number;
       cacheExpiry: number; // hours
-    }
+    };
     visualization: {
       defaultGraphType: string;
       showLabels: boolean;
       enablePhysics: boolean;
       colorScheme: string;
-    }
+    };
     ai: {
       preferredModel: string;
       temperature: number;
       includeAnalysis: boolean;
       autoSummarize: boolean;
-    }
-  }
+    };
+  };
   lastUpdated: Date;
 }
 // ============================================================================
@@ -172,15 +216,15 @@ export interface UserPreferences {
 // ============================================================================
 export class LegalAIClientDB extends Dexie {
   // Table declarations with proper Dexie typing
-  chatHistory!: Dexie.Table<ChatMessage, number>;
-  documentCache!: Dexie.Table<DocumentCache, number>;
-  searchHistory!: Dexie.Table<SearchHistory, number>;
-  vectorSearchCache!: Dexie.Table<VectorSearchCache, number>;
-  userAnnotations!: Dexie.Table<UserAnnotation, number>;
-  legalEntities!: Dexie.Table<LegalEntity, number>;
-  graphVisualizationData!: Dexie.Table<GraphVisualizationData, number>;
-  aiAnalysisCache!: Dexie.Table<AIAnalysisCache, number>;
-  userPreferences!: Dexie.Table<UserPreferences, number>;
+  chatHistory!: Table<ChatMessage, number>;
+  documentCache!: Table<DocumentCache, number>;
+  searchHistory!: Table<SearchHistory, number>;
+  vectorSearchCache!: Table<VectorSearchCache, number>;
+  userAnnotations!: Table<UserAnnotation, number>;
+  legalEntities!: Table<LegalEntity, number>;
+  graphVisualizationData!: Table<GraphVisualizationData, number>;
+  aiAnalysisCache!: Table<AIAnalysisCache, number>;
+  userPreferences!: Table<UserPreferences, number>;
   constructor() {
     super('LegalAIClientDB');
     // Database schema with optimized indexes
@@ -193,18 +237,26 @@ export class LegalAIClientDB extends Dexie {
       legalEntities: '++id, name, type, lastUpdated, confidence',
       graphVisualizationData: '++id, graphId, graphType, lastAccessed, createdAt',
       aiAnalysisCache: '++id, contentHash, analysisType, timestamp, expiresAt',
-      userPreferences: '++id, userId, lastUpdated'
+      userPreferences: '++id, userId, lastUpdated',
     });
     // Hooks for data management
-    this.chatHistory.hook('creating', (primaryKey, obj, trans) => {
-      obj.timestamp = new Date();
+    // Dexie passes (primaryKey, obj, transaction). We prefix unused args with "_" to satisfy linting.
+    this.chatHistory.hook('creating', (_primaryKey, obj: Partial<ChatMessage>, _trans) => {
+      if (!obj.timestamp) obj.timestamp = new Date();
     });
-    this.userAnnotations.hook('creating', (primaryKey, obj, trans) => {
-      (obj as any).createdAt = new Date();
-      (obj as any).updatedAt = new Date();
+
+    this.userAnnotations.hook('creating', (_primaryKey, obj: Partial<UserAnnotation>, _trans) => {
+      obj.createdAt = new Date();
+      obj.updatedAt = new Date();
     });
-    this.userAnnotations.hook('updating', (modifications, primaryKey, obj, trans) => {
-      (modifications as any).updatedAt = new Date();
+
+    // Register the 'updating' hook with a properly typed table reference to avoid `any`
+    const uaTable = this.userAnnotations as Table<UserAnnotation, number>;
+    uaTable.hook('updating', (modifications, _primaryKey, _obj, _trans) => {
+      // Cast inside the function to avoid parser/type issues
+      const mods = modifications as Partial<UserAnnotation>;
+      mods.updatedAt = new Date();
+      return mods;
     });
   }
 }
@@ -220,15 +272,9 @@ export class LegalDBUtils {
   static async cleanupExpiredCache(): Promise<void> {
     const now = new Date();
     // Remove expired vector search cache
-    await legalDB.vectorSearchCache
-      .where('expiresAt')
-      .below(now)
-      .delete();
+    await legalDB.vectorSearchCache.where('expiresAt').below(now).delete();
     // Remove expired AI analysis cache
-    await legalDB.aiAnalysisCache
-      .where('expiresAt')
-      .below(now)
-      .delete();
+    await legalDB.aiAnalysisCache.where('expiresAt').below(now).delete();
     console.log('[ClientDB] Cleaned up expired cache entries');
   }
   /**
@@ -250,14 +296,23 @@ export class LegalDBUtils {
   /**
    * Get database statistics
    */
-  static async getStorageStats(): Promise<any> {
-    const stats = {
+  static async getStorageStats(): Promise<{
+    totalRecords: number;
+    storageUsed: string;
+    tables: Array<{ name: string; count: number }>;
+  }> {
+    const stats: {
+      totalRecords: number;
+      storageUsed: string;
+      tables: Array<{ name: string; count: number }>;
+    } = {
       totalRecords: 0,
       storageUsed: 'Unknown',
-      tables: [] as Array<
-    }
-    // Count records in each table
-    const tables = [
+      tables: [],
+    };
+
+    // List of table property names on legalDB
+    const tableNames = [
       'chatHistory',
       'documentCache',
       'searchHistory',
@@ -266,20 +321,34 @@ export class LegalDBUtils {
       'legalEntities',
       'graphVisualizationData',
       'aiAnalysisCache',
-      'userPreferences'
-    ];
-    for (const tableName of tables) {
-      const count = await (legalDB as any)[tableName].count();
-      stats.tables.push({ name: tableName, count });
-      stats.totalRecords += count;
-    }
-    // Estimate storage usage (if available)
-    if ('storage' in navigator && 'estimate' in navigator.storage) {
-      const estimate = await navigator.storage.estimate();
-      if (estimate.usage) {
-        stats.storageUsed = `${(estimate.usage / 1024 / 1024).toFixed(2)} MB`;
+      'userPreferences',
+    ] as const;
+
+    // Use a typed map to avoid any
+    const tableMap = legalDB as unknown as Record<string, Table<unknown, number>>;
+
+    for (const tableName of tableNames) {
+      const table = tableMap[tableName];
+      if (table) {
+        const count = await table.count();
+        stats.tables.push({ name: tableName, count });
+        stats.totalRecords += count;
+      } else {
+        stats.tables.push({ name: tableName, count: 0 });
       }
     }
+
+    // Estimate storage usage (if available) with safe guards and typed estimate result
+    if (typeof navigator !== 'undefined' && 'storage' in navigator) {
+      const navStorage = navigator.storage as StorageManager | undefined;
+      if (navStorage && typeof navStorage.estimate === 'function') {
+        const estimate = await navStorage.estimate();
+        if (estimate && typeof estimate.usage === 'number') {
+          stats.storageUsed = `${(estimate.usage / 1024 / 1024).toFixed(2)} MB`;
+        }
+      }
+    }
+
     return stats;
   }
   /**
@@ -290,7 +359,7 @@ export class LegalDBUtils {
     if (content.length === 0) return hash.toString();
     for (let i = 0; i < content.length; i++) {
       const char = content.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return Math.abs(hash).toString(36);
@@ -306,8 +375,8 @@ export class LegalDBUtils {
     await legalDB.vectorSearchCache
       .where('hitCount')
       .below(2) // Remove rarely used cached searches
-      .and(item => {
-        const daysSinceCreated = (Date.now() - (item as { timestamp?: any }).timestamp.getTime()) / (1000 * 60 * 60 * 24);
+      .and((item: VectorSearchCache) => {
+        const daysSinceCreated = (Date.now() - item.timestamp.getTime()) / (1000 * 60 * 60 * 24);
         return daysSinceCreated > 7; // Older than a week
       })
       .delete();
@@ -315,37 +384,24 @@ export class LegalDBUtils {
     await this.manageDocumentCacheSize(1000);
     // 4. Remove old graph visualization data (keep only recent)
     const oneMonthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    await legalDB.graphVisualizationData
-      .where('lastAccessed')
-      .below(oneMonthAgo)
-      .delete();
+    await legalDB.graphVisualizationData.where('lastAccessed').below(oneMonthAgo).delete();
     console.log('[ClientDB] Intelligent cleanup completed');
   }
 }
 // ============================================================================
 // REACTIVE STORES FOR SVELTE
 // ============================================================================
-import { writable, derived } from 'svelte/store';
-import { liveQuery } from 'dexie';
 /**
  * Reactive store for recent chat messages
  */
 export const recentChatMessages = liveQuery(async () => {
-  return await legalDB.chatHistory
-    .orderBy('timestamp')
-    .reverse()
-    .limit(50)
-    .toArray();
+  return await legalDB.chatHistory.orderBy('timestamp').reverse().limit(50).toArray();
 });
 /**
  * Reactive store for search history
  */
 export const searchHistory = liveQuery(async () => {
-  return await legalDB.searchHistory
-    .orderBy('timestamp')
-    .reverse()
-    .limit(20)
-    .toArray();
+  return await legalDB.searchHistory.orderBy('timestamp').reverse().limit(20).toArray();
 });
 /**
  * Reactive store for cached documents count
@@ -362,7 +418,10 @@ export const annotationsCount = liveQuery(async () => {
 /**
  * Storage usage monitor
  */
-export const storageStats = writable({ totalRecords: 0, storageUsed: 'Unknown', tables: [] });
+type StorageTableStat = { name: string; count: number };
+type StorageStats = { totalRecords: number; storageUsed: string; tables: StorageTableStat[] };
+
+export const storageStats = writable<StorageStats>({ totalRecords: 0, storageUsed: 'Unknown', tables: [] });
 // Update storage stats periodically
 if (typeof window !== 'undefined') {
   setInterval(async () => {

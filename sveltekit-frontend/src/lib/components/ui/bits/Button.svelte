@@ -82,7 +82,7 @@
         sm: 'h-8 px-3 text-xs rounded',
         md: 'h-10 px-4 py-2 text-sm rounded-md',
         lg: 'h-12 px-6 text-base rounded-lg',
-        icon 'h-10 w-10 rounded-md', // Changed semicolon to comma
+        icon: 'h-10 w-10 rounded-md',
       };
       classes.push(sizeClasses[size]);
       // Variant classes (UnoCSS)
@@ -125,20 +125,20 @@
   /* Import NES.css for retro styling option */
   /* Custom NieR enhancements using UnoCSS theme colors */
   button {
-    position relative;
+    position: relative;
     overflow: hidden;
   }
 
   /* NieR-style shimmer effect (fixed selectors and removed theme() call)
      Using CSS variable fallback or hex to avoid preprocessing theme() errors */
-  .yorha-buttonbefore {
+  .yorha-button::before {
     content: '';
   }
 
   .yorha-button-primary::before {
     content: '';
-    position absolute;
-    top: 0,
+    position: absolute;
+    top: 0;
     left: -100%;
     width: 100%;
     height: 100%;

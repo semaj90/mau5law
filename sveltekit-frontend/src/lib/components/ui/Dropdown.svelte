@@ -76,7 +76,9 @@
     aria-haspopup="true"
     aria-expanded={open}
   >
-    {@render trigger({ open })}
+    {#if trigger}
+      {@render trigger({ open })}
+    {/if}
   </button>
 
   {#if open}
@@ -89,9 +91,11 @@
         if (e.key === 'Escape') close();
       }}
       style="position absolute; top: 100%; z-index: 60; {align === 'right' ? 'right:0' : 'left:0'}"
-      transitionfly={{ y: -6, duration 140 }}
+      transition:fly={{ y: -6, duration: 140 }}
     >
-      {@render children()}
+      {#if children}
+        {@render children()}
+      {/if}
     </div>
   {/if}
 </div>

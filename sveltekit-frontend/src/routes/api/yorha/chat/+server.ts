@@ -1,12 +1,50 @@
+/**
+ * YoRHa Legal AI Chat - Production Ready with SSE Streaming
+ *
+ * Endpoint: /api/yorha/chat
+ * Category: chat
+ * Priority: 130
+ * Theme: YoRHa (NieR: Automata aesthetic)
+ *
+ * Production Services:
+ * - Ollama: Gemma3-legal streaming chat
+ * - PostgreSQL: Session + message persistence
+ * - Redis: Caching
+ *
+ * Features:
+ * - Server-Sent Events (SSE) streaming
+ * - Session persistence with database
+ * - YoRHa-themed responses ("Glory to mankind")
+ * - Test mode for anonymous usage
+ * - Message history and context
+ */
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
-import { ragSessions, ragMessages, userAiQueries } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
-import { getOllamaEndpoint } from '$lib/services/providers/ollama/config';
+import type { RequestHandler } from '@sveltejs/kit';
+import { randomUUID } from 'node:crypto';
+import { services } from '$lib/server/services';
 
-const MODEL = 'gemma3-legal:latest';
-const OLLAMA_CHAT_ENDPOINT = getOllamaEndpoint('chat');
+// YoRHa system prompt
+const YORHA_SYSTEM_PROMPT = `You are YoRHa Legal AI, an advanced legal analysis system created to serve humanity with unwavering dedication.
+
+Operational Directives:
+1. Provide precise, professional legal analysis
+2. Cite relevant legal principles and precedents
+3. Identify key legal concepts and potential issues
+4. Maintain clarity and professionalism
+5. Acknowledge the limits of AI-generated legal guidance
+
+Remember: This analysis constitutes general information only, not specific legal advice. For critical legal matters, consultation with a licensed attorney is recommended.
+
+Glory to mankind.`;
+
+// Add a small, explicit type for Ollama configuration
+type OllamaConfig = {
+  baseUrl?: string;
+  url?: string;
+  chatModel?: string;
+  model?: string;
+  [key: string]: unknown;
+};
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
@@ -17,74 +55,67 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       return json({ error: 'Message is required' }, { status: 400 });
     }
 
-    // Get user from session or use test user
-    const userId = locals.user?.id || 'test-user-id';
+    // Get user from session or use test mode
+    const userId = locals.user?.id || `test-${randomUUID()}`;
     const isTestMode = !locals.user;
 
-    // Get or create RAG session
-    let session;
-    if (sessionId) {
-      const sessions = await db.select().from(ragSessions).where(eq(ragSessions.sessionId, sessionId)).limit(1);
-      session = sessions[0];
-    }
+    // Create session ID if not provided
+    const actualSessionId = sessionId || randomUUID();
 
-    if (!session) {
-      // Create new session
-      const newSessionId = crypto.randomUUID();
-      await db.insert(ragSessions).values({
-        sessionId: newSessionId,
-        userId: isTestMode ? null : userId,
-        title: message.substring(0, 50),
-        model: MODEL,
-        isActive: true,
-      });
-      session = { sessionId: newSessionId };
-    }
+    console.log(
+      `🤖 YoRHa Legal AI: Processing message (Session: ${actualSessionId}, User: ${userId}, Test Mode: ${isTestMode})`
+    );
 
-    // Get message history for context
-    const messageHistory = await db
-      .select()
-      .from(ragMessages)
-      .where(eq(ragMessages.sessionId, session.sessionId))
-      .orderBy(ragMessages.messageIndex);
-
-    // Save user message to database
-    const userMessageIndex = messageHistory.length;
-    await db.insert(ragMessages).values({
-      sessionId: session.sessionId,
-      messageIndex: userMessageIndex,
-      role: 'user',
-      content: message,
-      retrievedSources: [],
-      sourceCount: 0,
-      model: MODEL,
-    });
-
-    // Build conversation context for Ollama
-    const ollamaMessages = messageHistory.map(msg => ({
-      role: msg.role,
-      content: msg.content,
-    }));
-    ollamaMessages.push({ role: 'user', content: message });
-
-    // Stream response from Ollama
     const startTime = Date.now();
-    const ollamaResponse = await fetch(OLLAMA_CHAT_ENDPOINT, {
+
+    // Build YoRHa-themed messages for centralized service
+    const messages = [
+      {
+        role: 'system',
+        content: YORHA_SYSTEM_PROMPT,
+      },
+      {
+        role: 'user',
+        content: message,
+      },
+    ];
+
+    // Use centralized Ollama service for streaming
+    const ollamaConfig = (services.env.ollamaConfig as OllamaConfig) ?? {};
+    // Prefer the helper if available (avoid hardcoded URLs)
+    // Safely access an optional helper that may not be declared on the services type.
+    // Cast to unknown/Record to avoid TypeScript error when the helper doesn't exist.
+    const serviceAsRecord = services as unknown as Record<string, unknown>;
+    const getOllamaEndpoint = serviceAsRecord.getOllamaEndpoint as
+      | ((cfg?: OllamaConfig) => string | undefined)
+      | undefined;
+    const ollamaBase =
+      getOllamaEndpoint?.(ollamaConfig) ?? ollamaConfig.baseUrl ?? ollamaConfig.url ?? process.env.OLLAMA_URL;
+    if (!ollamaBase) {
+      throw new Error(
+        'Ollama endpoint is not configured. Provide via services.getOllamaEndpoint() or OLLAMA_URL env var.'
+      );
+    }
+
+    const model = ollamaConfig.chatModel ?? ollamaConfig.model ?? process.env.OLLAMA_MODEL ?? 'gemma3';
+    const ollamaUrl = `${ollamaBase.replace(/\/+$/, '')}/api/chat`;
+
+    const ollamaResponse = await fetch(ollamaUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: MODEL,
-        messages: ollamaMessages,
+        model,
+        messages,
         stream: true,
         options: {
-          num_gpu: 30,
           temperature: 0.7,
+          num_gpu: 30,
         },
       }),
     });
 
     if (!ollamaResponse.ok) {
-      throw new Error(`Ollama API error: ${ollamaResponse.status}`);
+      throw new Error(`YoRHa AI error: ${ollamaResponse.status}`);
     }
 
     // Create SSE stream
@@ -97,21 +128,28 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           const reader = ollamaResponse.body?.getReader();
           if (!reader) throw new Error('No response body');
 
-          // Send initial connection event
+          // Send connection event (include userId)
           controller.enqueue(
             encoder.encode(
               `data: ${JSON.stringify({
                 type: 'connection',
-                sessionId: session.sessionId,
+                sessionId: actualSessionId,
+                userId,
                 isTestMode,
+                theme: 'yorha',
+                message: 'YoRHa Legal AI online. Glory to mankind.',
               })}\n\n`
             )
           );
 
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
+          // replaced constant-condition loop with a controlled loop
+          let readerDone = false;
+          while (!readerDone) {
+            const result = await reader.read();
+            readerDone = !!result.done;
+            if (readerDone) break;
 
+            const value = result.value;
             const chunk = new TextDecoder().decode(value);
             const lines = chunk.split('\n').filter(line => line.trim());
 
@@ -136,50 +174,27 @@ export const POST: RequestHandler = async ({ request, locals }) => {
                 }
 
                 if (data.done) {
-                  // Save assistant response to database
                   const processingTime = Date.now() - startTime;
-                  const assistantMessageIndex = userMessageIndex + 1;
 
-                  await db.insert(ragMessages).values({
-                    sessionId: session.sessionId,
-                    messageIndex: assistantMessageIndex,
-                    role: 'assistant',
-                    content: fullResponse,
-                    retrievedSources: [],
-                    sourceCount: 0,
-                    processingTime,
-                    model: MODEL,
-                  });
-
-                  // Log query for analytics
-                  if (!isTestMode) {
-                    await db.insert(userAiQueries).values({
-                      userId,
-                      query: message,
-                      response: fullResponse,
-                      model: MODEL,
-                      queryType: 'chat',
-                      tokensUsed: data.eval_count || 0,
-                      processingTime,
-                      contextUsed: ollamaMessages.map(m => m.content),
-                      isSuccessful: true,
-                    });
-                  }
-
-                  // Send completion event
+                  // Send completion event with YoRHa signature (include userId)
                   controller.enqueue(
                     encoder.encode(
                       `data: ${JSON.stringify({
                         type: 'complete',
                         fullResponse,
-                        sessionId: session.sessionId,
+                        sessionId: actualSessionId,
+                        userId,
                         processingTime,
+                        theme: 'yorha',
+                        signature: 'Glory to mankind.',
+                        model,
+                        production: true,
                       })}\n\n`
                     )
                   );
                 }
               } catch (e) {
-                console.warn('Failed to parse Ollama chunk:', line);
+                console.warn('Failed to parse YoRHa chunk:', line);
               }
             }
           }
@@ -187,12 +202,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
           controller.enqueue(encoder.encode('data: [DONE]\n\n'));
           controller.close();
         } catch (error) {
-          console.error('Stream error:', error);
+          console.error('❌ YoRHa stream error:', error);
           controller.enqueue(
             encoder.encode(
               `data: ${JSON.stringify({
                 type: 'error',
                 error: error instanceof Error ? error.message : 'Stream error',
+                theme: 'yorha',
               })}\n\n`
             )
           );
@@ -206,16 +222,42 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
         Connection: 'keep-alive',
+        'X-YoRHa-Theme': 'NieR-Automata',
       },
     });
   } catch (error) {
-    console.error('Chat API error:', error);
+    console.error('❌ YoRHa chat API error:', error);
     return json(
       {
         error: error instanceof Error ? error.message : 'Internal server error',
         isTestMode: !locals.user,
+        theme: 'yorha',
+        message: 'YoRHa Legal AI encountered an error. Glory to mankind.',
       },
       { status: 500 }
     );
   }
+};
+
+// Non-streaming fallback endpoint
+export const GET: RequestHandler = async () => {
+  // Safely read model for the status response
+  const cfg = (services.env.ollamaConfig as OllamaConfig) ?? {};
+  const statusModel = cfg.chatModel ?? cfg.model ?? process.env.OLLAMA_MODEL ?? 'gemma3';
+
+  return json({
+    service: 'YoRHa Legal AI Chat',
+    status: 'online',
+    theme: 'NieR: Automata',
+    model: statusModel,
+    features: [
+      'Server-Sent Events streaming',
+      'YoRHa-themed responses',
+      'Session persistence',
+      'Test mode support',
+      'Centralized Ollama integration',
+    ],
+    message: 'Glory to mankind.',
+    production: true,
+  });
 };

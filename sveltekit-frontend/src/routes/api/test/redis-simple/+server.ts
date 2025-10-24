@@ -2,58 +2,68 @@
  * Simple Redis Connection Test
  * Direct test of Redis connectivity without complex caching logic
  */
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { getRedisService } from '$lib/server/redis/redis-service'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { getRedisService } from '$lib/server/redis/redis-service';
+
 export const GET: RequestHandler = async () => {
   try {
-    const start = performance.now()
+    const start = performance.now();
     // Get Redis service instance
-    const redisService = getRedisService()
+    const redisService = getRedisService();
     // Test Redis service health
-    const isHealthy = redisService.isHealthy()
-    const stats = redisService.getStats()
+    const isHealthy = redisService.isHealthy();
+    const stats = redisService.getStats();
     // Test basic operations
-    const testKey = 'test:simple-connection'
-    const testValue = `test-${Date.now()}`
-    // Set value using cache method
-    await redisService.setCache(testKey, testValue, 60)
+    const testKey = 'test:simple-connection';
+    const testValue = `test-${Date.now()}`;
+    // Set value using cache method (capture result)
+    const setResult = await redisService.setCache(testKey, testValue, 60);
     // Get value using cache method
-    const getValue = await redisService.getCache(testKey)
-    // Delete value using cache method (if available)
+    const getValue = await redisService.getCache(testKey);
+    // Delete value using cache method (if available) and capture result
+    let deleteResult: unknown = null;
     try {
-      await redisService.deleteCache?.(testKey)
-    } catch (e) {
-      console.log('Delete method not available:', e)
+      if (typeof redisService.deleteCache === 'function') {
+        deleteResult = await redisService.deleteCache(testKey);
+      } else {
+        deleteResult = null;
+      }
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      console.log('Delete method error:', msg);
+      deleteResult = { error: msg };
     }
-    const end = performance.now()
+    const end = performance.now();
     return json({
       success: true,
       redis: {
         healthy: isHealthy,
         connected: stats.connected,
-        status: stats.status
+        status: stats.status,
       },
       test: {
         setResult,
         getValue,
         deleteResult,
-        valueMatches: getValue === testValue
+        valueMatches: getValue === testValue,
       },
       timing: {
-        totalTime: `${(end - start).toFixed(2)}ms`
+        totalTime: `${(end - start).toFixed(2)}ms`,
       },
-      timestamp: new Date().toISOString()
-    })
-  } catch (error: any) {
-    return json()
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error: unknown) {
+    const errMsg = error instanceof Error ? error.message : String(error);
+    const errStack = error instanceof Error ? error.stack : undefined;
+    return json(
       {
         success: false,
-        error,: error.message,
-        stack,: error.stack,
-        timestamp,: new Date().toISOString()
+        error: errMsg,
+        stack: errStack,
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
-    )
+    );
   }
-}
+};

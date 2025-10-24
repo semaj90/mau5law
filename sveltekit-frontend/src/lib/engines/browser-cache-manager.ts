@@ -1,409 +1,543 @@
-import stream from "stream";
+// (removed unused `import stream from "stream";`)
+
 /**
  * Browser Cache Manager for Neural Sprite JSON States
  * Multi-layer caching with compression and Service Worker integration
  */
-}
 export interface BrowserCacheConfig {
   cachePrefix: string;
   maxCacheSize: number; // bytes
   enableCompression: boolean;
   enableServiceWorkerIntegration: boolean;
 }
+
+// tighter types instead of `any`
+type SpritePayload = { id: string } & Record<string, unknown>;
+type SpriteData = Record<string, unknown> | unknown[] | string | number | null;
+
 export interface CachedSprite {
   id: string;
-  data: any;
+  data: SpriteData | null;
   compressed: boolean;
   timestamp: number;
   accessCount: number;
   size: number;
 }
+
+interface CompressionStreamConstructor {
+  new (format: string): {
+    readable: ReadableStream<Uint8Array>;
+    writable: WritableStream<Uint8Array>;
+  };
+}
+
+interface DecompressionStreamConstructor {
+  new (format: string): {
+    readable: ReadableStream<Uint8Array>;
+    writable: WritableStream<Uint8Array>;
+  };
+}
+
 export class BrowserCacheManager {
   private config: BrowserCacheConfig;
   private memoryCache: Map<string, CachedSprite> = new Map();
   private currentCacheSize = 0;
   private serviceWorkerRegistration?: ServiceWorkerRegistration;
+
   constructor(config: BrowserCacheConfig) {
     this.config = config;
-    this.initializeServiceWorker();
+    this.initializeServiceWorker().catch(e => {
+      // fail gracefully; SW integration is optional
+      console.warn('Service worker init failed:', e);
+    });
     this.loadPersistedCache();
   }
+
+  // Initialize service worker if enabled and supported
   private async initializeServiceWorker(): Promise<void> {
-    if (
-      !this.config.enableServiceWorkerIntegration ||
-      !("serviceWorker" in navigator);
-    ) {
+    if (!this.config.enableServiceWorkerIntegration || !('serviceWorker' in navigator)) {
       return;
     }
     try {
-      // Register our sprite caching service worker
-      this.serviceWorkerRegistration = await navigator.serviceWorker.register(
-        "/workers/sprite-cache-sw.js",
-      );
-      console.log("Sprite cache service worker registered");
-      // Listen for cache updates from service worker
-      navigator.serviceWorker.addEventListener(
-        "message",
-        this.handleServiceWorkerMessage.bind(this),
-      );
-    } catch (error: any) {
-      console.warn("Failed to register sprite cache service worker:", error);
+      this.serviceWorkerRegistration = await navigator.serviceWorker.register('/workers/sprite-cache-sw.js');
+      navigator.serviceWorker.addEventListener('message', this.handleServiceWorkerMessage.bind(this));
+      console.log('Sprite cache service worker registered');
+    } catch (error: unknown) {
+      console.warn('Failed to register sprite cache service worker:', this.formatError(error));
     }
   }
-  private handleServiceWorkerMessage(_event: MessageEvent): void {
-    const { type, data } = event.data;
-    switch (type) {
-      case "SPRITE_CACHED":
-        console.log(`Sprite ${data.spriteId} cached in Service Worker`);
-        break;
-      case "CACHE_FULL":
-        console.warn(
-          "Service Worker sprite cache is full, evicting old sprites",
-        );
-        break;
+
+  // Handle messages from Service Worker
+  private handleServiceWorkerMessage(event: MessageEvent): void {
+    try {
+      const { type, data } = event.data || {};
+      switch (type) {
+        case 'SPRITE_CACHED':
+          console.log(`Sprite ${data?.spriteId} cached in Service Worker`);
+          break;
+        case 'CACHE_FULL':
+          console.warn('Service Worker sprite cache is full');
+          break;
+      }
+    } catch (e) {
+      // swallow
     }
   }
+
+  // Load index metadata from localStorage (no actual sprite bodies)
   private loadPersistedCache(): void {
     try {
-      // Load compressed cache index from localStorage
-      const cacheIndex = localStorage.getItem(
-        `${this.config.cachePrefix}index`,
-      );
+      const cacheIndex = localStorage.getItem(`${this.config.cachePrefix}index`);
       if (!cacheIndex) return;
-      const parsed = JSON.parse(cacheIndex);
-      for (const [key, metadata] of Object.entries(parsed)) {
-        // Only load metadata, actual data loaded on demand
-        const sprite = metadata as CachedSprite;
-        sprite.data = null; // Will be loaded from IndexedDB on access
+      const parsed = JSON.parse(cacheIndex) as Record<string, Omit<CachedSprite, 'data'>>;
+      for (const [key, meta] of Object.entries(parsed)) {
+        const sprite: CachedSprite = {
+          id: meta.id,
+          data: null, // lazy load from IDB
+          compressed: !!meta.compressed,
+          timestamp: meta.timestamp,
+          accessCount: meta.accessCount || 0,
+          size: meta.size || 0,
+        };
         this.memoryCache.set(key, sprite);
+        this.currentCacheSize += sprite.size;
       }
-    } catch (error: any) {
-      console.warn("Failed to load persisted sprite cache:", error);
+    } catch (error: unknown) {
+      console.warn('Failed to load persisted sprite cache:', this.formatError(error));
     }
   }
-  public async getSprite(spriteId: string): Promise<any | null> {
+
+  // Public getter
+  public async getSprite(spriteId: string): Promise<SpriteData | null> {
     const cacheKey = this.getCacheKey(spriteId);
-    // 1. Check memory cache first (fastest)
-    let cached = this.memoryCache.get(cacheKey);
-    if (cached && cached.data) {
+
+    // memory
+    const cached = this.memoryCache.get(cacheKey);
+    if (cached && cached.data != null) {
       cached.accessCount++;
       cached.timestamp = Date.now();
-      return this.decompressData(cached.data, cached.compressed);
+      return await this.decompressData(cached.data, cached.compressed);
     }
-    // 2. Check Service Worker cache
-    if (this.serviceWorkerRegistration) {
+
+    // service worker
+    const swActive = this.serviceWorkerRegistration?.active ?? null;
+    if (swActive) {
       const swCached = await this.getFromServiceWorker(spriteId);
       if (swCached) {
-        // Store in memory cache for next access
-        await this.cacheSprite(swCached);
+        await this.cacheSprite(swCached as SpritePayload); // best-effort cast; stored payload must include id
         return swCached;
       }
     }
-    // 3. Check IndexedDB (persistent storage)
+
+    // indexedDB
     const idbCached = await this.getFromIndexedDB(cacheKey);
     if (idbCached) {
-      // Restore to memory cache
-      cached = {
+      const restored: CachedSprite = {
         id: spriteId,
         data: idbCached,
         compressed: true,
         timestamp: Date.now(),
         accessCount: 1,
-        size: JSON.stringify(idbCached).length
-      }
-      this.memoryCache.set(cacheKey, cached);
-      return this.decompressData(idbCached, true);
+        size: JSON.stringify(idbCached).length,
+      };
+      this.memoryCache.set(cacheKey, restored);
+      this.currentCacheSize += restored.size;
+      return await this.decompressData(idbCached, true);
     }
+
     return null;
   }
-  public async cacheSprite(sprite: any): Promise<void> {
+
+  // Public cache writer
+  public async cacheSprite(sprite: SpritePayload): Promise<void> {
     const cacheKey = this.getCacheKey(sprite.id);
-    const spriteData = { ...sprite }
-    // Compress JSON data if enabled
-    const compressed = this.config.enableCompression
+    const spriteData = { ...sprite };
+
+    const compressedData = this.config.enableCompression
       ? await this.compressData(spriteData)
-      : spriteData;
-    const size = JSON.stringify(compressed).length;
-    // Check cache size limits
+      : JSON.stringify(spriteData);
+
+    const size = new Blob([compressedData]).size;
+
     if (this.currentCacheSize + size > this.config.maxCacheSize) {
-      await this.evictLeastUsedSprites(size);
+      await this.evictLeastUsedSprites(this.currentCacheSize + size - this.config.maxCacheSize);
     }
+
     const cached: CachedSprite = {
       id: sprite.id,
-      data: compressed,
+      data: compressedData,
       compressed: this.config.enableCompression,
       timestamp: Date.now(),
       accessCount: 1,
-      size
-    }
-    // Store in memory cache
+      size,
+    };
+
     this.memoryCache.set(cacheKey, cached);
     this.currentCacheSize += size;
-    // Store in IndexedDB for persistence
-    await this.storeInIndexedDB(cacheKey, compressed);
-    // Cache in Service Worker for cross-tab sharing
-    if (this.serviceWorkerRegistration) {
+
+    await this.storeInIndexedDB(cacheKey, compressedData);
+
+    const sw = this.serviceWorkerRegistration?.active ?? null;
+    if (sw) {
       this.cacheInServiceWorker(sprite);
     }
-    // Update persistent cache index
+
     this.updateCacheIndex();
   }
-  private async getFromServiceWorker(spriteId: string): Promise<any | null> {
-    if (!this.serviceWorkerRegistration?.active) {
-      return null;
-    }
-    return new Promise((resolve) => {
+
+  // Ask service worker for sprite (MessageChannel)
+  private async getFromServiceWorker(spriteId: string): Promise<SpriteData | null> {
+    const sw = this.serviceWorkerRegistration?.active ?? null;
+    if (!sw) return null;
+
+    return new Promise(resolve => {
+      let settled = false;
       const messageChannel = new MessageChannel();
-      messageChannel.port1.onmessage = (_event: any) => {
-        const { data } = event.data;
-        resolve(data || null);
-      }
-      this.serviceWorkerRegistration!.active!.postMessage();
-        {
-          type: "GET_SPRITE",
-          spriteId
-        },
-        [messageChannel.port2],
-      );
-      // Timeout after 100ms
-      setTimeout(() => resolve(null), 100);
-    });
-  }
-  private cacheInServiceWorker(sprite,: any): void {
-    if (!this.serviceWorkerRegistration?.activ,e) {
-      return;
-    }
-    this.serviceWorkerRegistration.active.postMessage({
-      type: "CACHE_SPRITE",
-      sprite
-    });
-  }
-  private async getFromIndexedDB(_key,: string): Promise<any | null> {
-    return new Promise((resolve) => {
-      const request = indexedDB.open(`${this.config.cachePrefix}db`, 1);
-      request.onerror = () => resolve(null);
-      request.onsuccess = (_event: any) => {
-        // removed unused db assignment
-        const transaction = db.transaction(["sprites"], "readonly");
-        const store = transaction.objectStore("sprites");
-        const getRequest = store.get(key);
-        getRequest.onsuccess = () => resolve(getRequest.result?.data || null);
-        getRequest.onerror = () => resolve(null);
-      }
-      request.onupgradeneeded = (_event: any) => {
-        // removed unused db assignment
-        if (!db.objectStoreNames.contains("sprites")) {
-          db.createObjectStore("sprites", { keyPath: "key" });
+      const timer = setTimeout(() => {
+        if (!settled) {
+          settled = true;
+          try {
+            messageChannel.port1.close();
+          } catch (e) {
+            console.debug('messageChannel.port1.close() failed (timeout):', e);
+          }
+          resolve(null);
+        }
+      }, 200);
+
+      messageChannel.port1.onmessage = (ev: MessageEvent) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        try {
+          messageChannel.port1.close();
+        } catch (e) {
+          console.debug('messageChannel.port1.close() failed (onmessage):', e);
+        }
+        resolve(ev.data?.result ?? null);
+      };
+
+      try {
+        sw.postMessage({ type: 'GET_SPRITE', spriteId }, [messageChannel.port2]);
+      } catch (e) {
+        if (!settled) {
+          settled = true;
+          clearTimeout(timer);
+          try {
+            messageChannel.port1.close();
+          } catch (err) {
+            console.debug('messageChannel.port1.close() failed (postMessage error):', err);
+          }
+          console.debug('postMessage to service worker failed:', e);
+          resolve(null);
         }
       }
     });
   }
-  private async storeInIndexedDB(_key,: string, dat,a: an,y): Promise<void> {
+
+  // Send sprite to service worker
+  private cacheInServiceWorker(sprite: SpritePayload): void {
+    const sw = this.serviceWorkerRegistration?.active ?? null;
+    if (!sw) return;
+    try {
+      sw.postMessage({ type: 'CACHE_SPRITE', sprite });
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  // IndexedDB get
+  private async getFromIndexedDB(key: string): Promise<SpriteData | null> {
+    return new Promise(resolve => {
+      const request = indexedDB.open(`${this.config.cachePrefix}db`, 1);
+      request.onerror = () => resolve(null);
+      request.onupgradeneeded = () => {
+        const db = request.result;
+        if (!db.objectStoreNames.contains('sprites')) {
+          db.createObjectStore('sprites', { keyPath: 'key' });
+        }
+      };
+      request.onsuccess = () => {
+        const db = request.result;
+        try {
+          const tx = db.transaction(['sprites'], 'readonly');
+          const store = tx.objectStore('sprites');
+          const getReq = store.get(key);
+          getReq.onsuccess = () => {
+            resolve(getReq.result?.data ?? null);
+            db.close();
+          };
+          getReq.onerror = () => {
+            resolve(null);
+            db.close();
+          };
+        } catch (e) {
+          console.debug('IndexedDB read failed:', e);
+          resolve(null);
+          db.close();
+        }
+      };
+    });
+  }
+
+  // IndexedDB put
+  private async storeInIndexedDB(key: string, data: string): Promise<void> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(`${this.config.cachePrefix}db`, 1);
       request.onerror = () => reject(request.error);
-      request.onsuccess = (_event: any) => {
-        // removed unused db assignment
-        const transaction = db.transaction(["sprites"], "readwrite");
-        const store = transaction.objectStore("sprites");
-        store.put({ key, data, timestamp: Date.now() });
-        transaction.oncomplete = () => resolve();
-        transaction.onerror = () => reject(transaction.error);
-      }
-      request.onupgradeneeded = (_event: any) => {
-        // removed unused db assignment
-        if (!db.objectStoreNames.contains("sprites")) {
-          db.createObjectStore("sprites", { keyPath: "key" });
+      request.onupgradeneeded = () => {
+        const db = request.result;
+        if (!db.objectStoreNames.contains('sprites')) {
+          db.createObjectStore('sprites', { keyPath: 'key' });
         }
-      }
+      };
+      request.onsuccess = () => {
+        const db = request.result;
+        try {
+          const tx = db.transaction(['sprites'], 'readwrite');
+          const store = tx.objectStore('sprites');
+          store.put({ key, data, timestamp: Date.now() });
+          tx.oncomplete = () => {
+            resolve();
+            db.close();
+          };
+          tx.onerror = () => {
+            reject(tx.error);
+            db.close();
+          };
+        } catch (e: unknown) {
+          const err = e instanceof Error ? e : new Error(String(e));
+          reject(err);
+          db.close();
+        }
+      };
     });
   }
-  private async compressData(data,: any): Promise<string> {
-    if (!this.config.enableCompressio,n) {
-      return data;
-    }
-    // Use CompressionStream API if available (Chrome 80+)
-    if ("CompressionStream" in window) {
+
+  // Compression helper - returns base64/gzipped string when possible, otherwise JSON string (possibly shortened)
+  private async compressData(obj: unknown): Promise<string> {
+    const jsonString = JSON.stringify(obj);
+    if (!this.config.enableCompression) return jsonString;
+
+    const CS = (window as unknown as { CompressionStream?: CompressionStreamConstructor }).CompressionStream;
+    if (CS) {
       try {
-        const jsonString = JSON.stringify(data);
-        const stream = new CompressionStream("gzip");
-        const writer = stream.writable.getWriter();
-        const reader = stream.readable.getReader();
-        writer.write(new TextEncoder().encode(jsonString);
-        writer.close();
-        const chunks: Uint8Array[] = [];
-        let done = false;
-        while (!done) {
-          const { value, done: readerDone } = await reader.read();
-          done = readerDone;
-          if (value) {
-            chunks.push(value);
-          }
-        }
-        // Convert to base64 for storage
-        const totalLength = chunks.reduce(
-          (acc, chunk) => acc + chunk.length,
-          0,
-        );
-        const compressed = new Uint8Array(totalLength);
-        let offset = 0;
-        for (let i = 0; i < chunks.length; i++) {
-          const chunk = chunks[i];
-          compressed.set(chunk, offset);
-          offset += chunk.length;
-        }
-        return btoa(String.fromCharCode.apply(null, Array.from(compressed));
-      } catch (error: any) {
-        console.warn("Compression failed, storing uncompressed:", error);
-        return JSON.stringify(data);
+        const cs = new CS('gzip');
+        const writer = cs.writable.getWriter();
+        const encoder = new TextEncoder();
+        writer.write(encoder.encode(jsonString));
+        await writer.close();
+        const compressedStream = cs.readable;
+        const resp = new Response(compressedStream);
+        const arrayBuffer = await resp.arrayBuffer();
+        const uint8 = new Uint8Array(arrayBuffer);
+        // safe base64
+        const binary = Array.from(uint8)
+          .map(b => String.fromCharCode(b))
+          .join('');
+        return btoa(binary);
+      } catch (e) {
+        console.warn('CompressionStream failed, falling back to JSON string:', e);
+        return jsonString;
       }
     }
-    // Fallback: Simple JSON stringification with manual compression
-    const jsonString = JSON.stringify(data);
-    // Basic string compression (replace common patterns)
-    return jsonString.replace(/\"([^\"]{1,10})\"/g, (match, key) => {
-      // Replace common JSON keys with shorter versions
-      const shortcuts: Record<string, string> = {
-        jsonState: "j",
-        metadata: "m",
-        objects: "o",
-        complexity: "c",
-        triggers: "t",
-        usageCount: "u",
-        createdAt: "ca"
-      }
-      return shortcuts[key] ? `"${shortcuts[key]}"` : match;
-    });
+
+    // Fallback simple key-shortening compression
+    const shortcuts: Record<string, string> = {
+      '"jsonState"': '"j"',
+      '"metadata"': '"m"',
+      '"objects"': '"o"',
+      '"complexity"': '"c"',
+      '"triggers"': '"t"',
+      '"usageCount"': '"u"',
+      '"createdAt"': '"ca"',
+    };
+    let compact = jsonString;
+    for (const [longKey, shortKey] of Object.entries(shortcuts)) {
+      compact = compact.replace(new RegExp(longKey, 'g'), shortKey);
+    }
+    return compact;
   }
-  private decompressData(data,: any, compresse,d: boolea,n): unknown {
+
+  // Decompression helper - accepts base64 gzipped or compacted JSON
+  private async decompressData(data: unknown, compressed: boolean): Promise<SpriteData> {
     if (!compressed) {
-      return data;
+      if (typeof data === 'string') {
+        try {
+          return JSON.parse(data);
+        } catch {
+          return data;
+        }
+      }
+      return data as SpriteData;
     }
-    if (typeof data === "string" && data.length > 0) {
+
+    if (typeof data !== 'string') return data as SpriteData;
+
+    // If looks like JSON already
+    if (data.trim().startsWith('{') || data.trim().startsWith('[')) {
       try {
-        // Try to parse as compressed data first
-        if ("DecompressionStream" in window && !data.startsWith("{")) {
-          // TODO: Implement gzip decompression
-          // For now, fall back to JSON parsing
-        }
-        // Handle manually compressed JSON
-        let jsonString = data;
-        // Reverse the compression shortcuts
-        const shortcuts: Record<string, string> = {
-          '"j"': '"jsonState"',
-          '"m"': '"metadata"',
-          '"o"': '"objects"',
-          '"c"': '"complexity"',
-          '"t"': '"triggers"',
-          '"u"': '"usageCount"',
-          '"ca"': '"createdAt"'
-        }
-        for (const [short, long] of Object.entries(shortcuts)) {
-          jsonString = jsonString.replace(new RegExp(short, "g"), long);
-        }
-        return JSON.parse(jsonString);
-      } catch (error: any) {
-        console.warn("Decompression failed:", error);
-        return data;
+        return JSON.parse(data);
+      } catch {
+        return data as SpriteData;
       }
     }
-    return data;
-  }
-  private async evictLeastUsedSprites(requiredSize,: number): Promise<void> {
-    // Sort by access count and timestamp (LRU)
-    const entries = Array.from(this.memoryCache.entries();
-    const sorted = entries.sort(([, a], [, b]) => {
-      if (a.accessCount !== b.accessCount) {
-        return a.accessCount - b.accessCount;
+
+    // Try DecompressionStream path (base64 gzipped)
+    const DS = (window as unknown as { DecompressionStream?: DecompressionStreamConstructor }).DecompressionStream;
+    if (DS) {
+      try {
+        const binaryString = atob(data);
+        const len = binaryString.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) bytes[i] = binaryString.charCodeAt(i);
+        const ds = new DS('gzip');
+        const decompressedStream = new Response(bytes).body!.pipeThrough(ds);
+        const arrayBuffer = await new Response(decompressedStream).arrayBuffer();
+        const text = new TextDecoder().decode(arrayBuffer);
+        return JSON.parse(text);
+      } catch (e) {
+        console.warn('DecompressionStream failed, trying fallback parse:', e);
       }
+    }
+
+    // Fallback: expand shortcuts back to full JSON keys
+    try {
+      const shortcuts: Record<string, string> = {
+        '"j"': '"jsonState"',
+        '"m"': '"metadata"',
+        '"o"': '"objects"',
+        '"c"': '"complexity"',
+        '"t"': '"triggers"',
+        '"u"': '"usageCount"',
+        '"ca"': '"createdAt"',
+      };
+      let jsonString = data;
+      for (const [short, long] of Object.entries(shortcuts)) {
+        jsonString = jsonString.replace(new RegExp(short, 'g'), long);
+      }
+      return JSON.parse(jsonString);
+    } catch (e) {
+      console.warn('Fallback decompression/parse failed:', e);
+      return data as SpriteData;
+    }
+  }
+
+  // Evict least-used sprites until required bytes are freed
+  private async evictLeastUsedSprites(requiredBytes: number): Promise<void> {
+    const entries = Array.from(this.memoryCache.entries());
+    const sorted = entries.sort(([, a], [, b]) => {
+      if (a.accessCount !== b.accessCount) return a.accessCount - b.accessCount;
       return a.timestamp - b.timestamp;
     });
-    let freedSize =, 0;
-    const toRemov,e: stri,ng,[], = [];
-    for (const [key, sprite], o,f sorted) {
-      if (freedSize >= requiredSize) {
-        break;
-      }
+    let freed = 0;
+    const toRemove: string[] = [];
+    for (const [key, sprite] of sorted) {
+      if (freed >= requiredBytes) break;
       toRemove.push(key);
-      freedSize += sprite.size;
+      freed += sprite.size;
     }
-    // Remove from memory cache
-    for (const key, o,f toRemove) {
-      const sprite = this.memoryCache.get(key);
-      if (sprite) {
-        this.currentCacheSize -= sprite.size;
-        this.memoryCache.delete(key);
+    for (const key of toRemove) {
+      const s = this.memoryCache.get(key);
+      if (s) this.currentCacheSize -= s.size;
+      this.memoryCache.delete(key);
+      // also remove from IDB
+      try {
+        const request = indexedDB.open(`${this.config.cachePrefix}db`, 1);
+        request.onsuccess = () => {
+          const db = request.result;
+          const tx = db.transaction(['sprites'], 'readwrite');
+          const store = tx.objectStore('sprites');
+          store.delete(key);
+          tx.oncomplete = () => db.close();
+          tx.onerror = () => db.close();
+        };
+      } catch (e) {
+        console.debug('Failed to schedule IDB delete for evicted sprite:', e);
       }
     }
-    console,.log(`Evicted ${toRemove.length} sprites, freed ${freedSize} bytes`);
+    this.updateCacheIndex();
+    console.log(`Evicted ${toRemove.length} sprites, freed ${freed} bytes`);
   }
-  private getCacheKey(spriteId,: string): string {
+
+  // Utility key
+  private getCacheKey(spriteId: string): string {
     return `${this.config.cachePrefix}${spriteId}`;
   }
-  private updateCacheIndex(),: void {
+
+  // Persist index of cache metadata (no sprite bodies)
+  private updateCacheIndex(): void {
     try {
-      const inde,x: Record<string, Om,it<CachedSprite, "data"> = {}
-      const cacheEntries = Array.from(this.memoryCache.entries();
-      for (let i =, 0;, i < cacheEntr,ies.le,ng,t,h; i++) {
-        const [key, sprite] = cacheEntries[i];
+      const index: Record<string, Omit<CachedSprite, 'data'>> = {};
+      for (const [key, sprite] of this.memoryCache.entries()) {
         index[key] = {
           id: sprite.id,
           compressed: sprite.compressed,
           timestamp: sprite.timestamp,
           accessCount: sprite.accessCount,
-          size: sprite.size
-        }
+          size: sprite.size,
+        };
       }
-      localStorage.setItem(
-        `${this.config.cachePrefix}index`,
-        JSON.stringify(index),
-      );
-    } catch (error: any) {
-      console.warn("Failed to update cache index:", error);
+      localStorage.setItem(`${this.config.cachePrefix}index`, JSON.stringify(index));
+    } catch (error: unknown) {
+      console.warn('Failed to update cache index:', this.formatError(error));
     }
   }
-  public getCacheStats(),: {
+
+  // Stats
+  public getCacheStats(): {
     memorySprites: number;
     totalSize: number;
     compressionRatio: number;
     hitRate: number;
   } {
-    const cacheValues = Array.from(this.memoryCache.values();
-    const totalAccess = cacheValues.reduce(
-      (sum, sprite) => sum + sprite.accessCount,
-      0,
-    );
-    const compressedSprites = cacheValues.filter((sprite) => sprite.compressed);
+    const cacheValues = Array.from(this.memoryCache.values());
+    const totalAccess = cacheValues.reduce((sum, s) => sum + s.accessCount, 0);
+    const compressedCount = cacheValues.filter(s => s.compressed).length;
     return {
       memorySprites: this.memoryCache.size,
       totalSize: this.currentCacheSize,
-      compressionRatio: compressedSprites.length / this.memoryCache.size,
-      hitRate:
-        totalAccess > 0
-          ? (totalAccess - this.memoryCache.size) / totalAccess
-          : 0
+      compressionRatio: this.memoryCache.size ? compressedCount / this.memoryCache.size : 0,
+      hitRate: totalAccess > 0 ? (totalAccess - this.memoryCache.size) / totalAccess : 0,
+    };
+  }
+
+  // Clear all caches
+  public async clearCache(): Promise<void> {
+    this.memoryCache.clear();
+    this.currentCacheSize = 0;
+    try {
+      await new Promise<void>(resolve => {
+        const req = indexedDB.deleteDatabase(`${this.config.cachePrefix}db`);
+        req.onsuccess = () => resolve();
+        req.onerror = () => resolve();
+        req.onblocked = () => resolve();
+      });
+    } catch (e) {
+      console.warn('Failed to clear IndexedDB cache:', e);
+    }
+    try {
+      localStorage.removeItem(`${this.config.cachePrefix}index`);
+    } catch (e) {
+      console.debug('Failed to remove cache index from localStorage:', e);
+    }
+    const sw = this.serviceWorkerRegistration?.active ?? null;
+    if (sw) {
+      try {
+        sw.postMessage({ type: 'CLEAR_CACHE' });
+      } catch (e) {
+        console.debug('ServiceWorker CLEAR_CACHE postMessage failed:', e);
+      }
     }
   }
-  public async clearCache(),: Promise<void> {
-    this.memoryCache.clear();
-    this.currentCacheSize =, 0;
-    // Clear IndexedDB
+
+  // Small helper to safely convert unknown errors to readable strings / Error objects
+  private formatError(err: unknown): string {
+    if (err instanceof Error) return err.message;
     try {
-      const request = indexedDB.deleteDatabase(`${this.config.cachePrefix}db`);
-      await new, Promise((resolve) => {
-        request.onsuccess = () => resolve(void 0);
-        request.onerror = () => resolve(void 0);
-      });
-    } catch (error: any) {
-      console.warn("Failed to clear IndexedDB cache:", error);
-    }
-    // Clear localStorage index
-    localStorage,.removeItem(`${this.config.cachePrefix}index`);
-    // Clear Service Worker cache
-    if (this.serviceWorkerRegistration?.activ,e) {
-      this.serviceWorkerRegistration.active.postMessage({
-        type: "CLEAR_CACHE"
-      });
+      return String(err);
+    } catch {
+      return 'Unknown error';
     }
   }
 }

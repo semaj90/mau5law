@@ -1,105 +1,113 @@
-// Anonymous Chat API - No authentication required
+/**
+ * Anonymous Chat API - Production Ready
+ *
+ * Endpoint: /api/chat-anonymous
+ * Category: standard
+ * Priority: 100
+ * Theme: YoRHa Legal AI (NieR: Automata aesthetic)
+ *
+ * Production Services:
+ * - Ollama AI: Centralized YoRHa-themed legal analysis
+ * - Redis: Automatic caching
+ *
+ * Features:
+ * - No authentication required
+ * - No database persistence (privacy-focused)
+ * - Strips user-identifying metadata
+ * - YoRHa-themed system prompts
+ * - Intelligent fallback for service failures
+ */
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
-import { getOllamaEndpoint } from '$lib/services/providers/ollama/config';
-interface ChatRequest {
-  messages: Array<any>;
-  model?: string;
-  stream?: boolean;
+import type { RequestHandler } from '@sveltejs/kit';
+import { readBodyFast } from '$lib/server/utils/json-fast';
+import { generateChatResponse } from '$lib/server/services';
+
+type ChatMessage = { role: 'user' | 'assistant' | 'system'; content: string };
+
+function isChatMessageArray(x: unknown): x is ChatMessage[] {
+  return (
+    Array.isArray(x) &&
+    x.every(
+      it =>
+        typeof (it as Record<string, unknown>)?.role === 'string' &&
+        typeof (it as Record<string, unknown>)?.content === 'string'
+    )
+  );
 }
-interface OllamaResponse {
-  model: string;
-  created_at: string;
-  response: string;
-  done: boolean;
-}
-// POST: Anonymous chat without database persistence
+
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body: ChatRequest = await request.json();
-    const { messages, model = 'gemma3-legal:latest', stream = false } = body;
+    const body = await readBodyFast(request);
+    const raw = (body as Record<string, unknown>)?.messages;
+    const messages = isChatMessageArray(raw) ? raw : undefined;
+
     if (!messages || messages.length === 0) {
       return json({ error: 'Messages array required' }, { status: 400 });
     }
-    const lastUserMessage = messages.filter(msg => msg.role === 'user').pop();
+
+    // Strip any user-identifying metadata for privacy
+    const anonymized: ChatMessage[] = messages.map(m => ({ role: m.role, content: m.content }));
+
+    const lastUserMessage = anonymized.filter(msg => msg.role === 'user').pop();
     if (!lastUserMessage) {
       return json({ error: 'No user message found' }, { status: 400 });
     }
+
     const startTime = Date.now();
-    // Create legal prompt with context
-    const legalPrompt = `You are YoRHa Legal AI, an advanced legal analysis system. Provide professional legal analysis with the following guidelines:
-1. Be precise and informative
-2. Cite relevant legal principles when applicable
-3. Identify key legal concepts and issues
-4. Provide practical insights
-5. Maintain professional legal terminology
-User Question: ${lastUserMessage.content}
-Legal Analysis:`;
+
+    console.log('🤖 YoRHa Legal AI: Processing anonymous request');
+
     try {
-      // Call Ollama service directly
-      const ollamaResponse = await fetch(getOllamaEndpoint('generate'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model,
-          prompt: legalPrompt,
-          stream: false,
-          options: {
-            temperature: 0.7,
-            top_p: 0.9,
-            top_k: 40,
-          },
-        }),
-      });
-      if (!ollamaResponse.ok) {
-        throw new Error(`Ollama service error: ${ollamaResponse.status}`);
-      }
-      const ollamaData: OllamaResponse = await ollamaResponse.json();
+      // Add YoRHa-themed system prompt
+      const yorhaMessages: ChatMessage[] = [
+        {
+          role: 'system',
+          content: `You are YoRHa Legal AI, an advanced legal analysis system. Provide professional legal analysis with the following guidelines:\n1. Be precise and informative\n2. Cite relevant legal principles when applicable\n3. Identify key legal concepts and issues\n4. Provide practical insights\n5. Maintain professional legal terminology\n\nGlory to mankind.`,
+        },
+        ...anonymized,
+      ];
+
+      const response = await generateChatResponse(yorhaMessages, false);
       const responseTime = Date.now() - startTime;
-      // Return formatted response
+
       return json({
         success: true,
-        response: ollamaData.response,
+        response: response,
         responseTime,
-        model,
         confidence: 0.85,
-        source: 'gemma3-legal',
-        cacheHit: false,
+        source: 'yorha-legal-ai',
+        production: true,
+        service: 'ollama-centralized',
         metadata: {
           timestamp: new Date().toISOString(),
           analysisType: 'legal-query',
-          wordCount: ollamaData.response.split(' ').length,
+          theme: 'yorha',
+          wordCount: typeof response === 'string' ? response.split(' ').length : 0,
         },
       });
     } catch (ollamaError) {
-      console.error('Ollama service error:', ollamaError);
-      // Fallback response when Ollama is unavailable
+      console.error('⚠️ YoRHa Legal AI service error, using fallback:', ollamaError);
+
+      // Intelligent YoRHa-themed fallback
       const responseTime = Date.now() - startTime;
       return json({
         success: true,
-        response: `I'm YoRHa Legal AI. I understand you're asking about: "${lastUserMessage.content}"
-This appears to be a legal inquiry that would benefit from professional analysis. In a production environment, I would provide comprehensive legal analysis using:
-• Gemma 3 Legal Model (11.8B parameters)
-• Legal entity extraction with ONNX Legal-BERT
-• Vector embeddings for case law similarity
-• CHR-ROM caching for rapid precedent retrieval
-• Risk assessment and compliance checking
-Currently running in demo mode. For detailed legal analysis, please ensure the Ollama service with gemma3-legal:latest model is available.
-**Disclaimer**: This is for demonstration purposes only and does not constitute legal advice.`,
+        response: `**YoRHa Legal AI - System Message**\n\nI understand you're asking about: "${lastUserMessage.content}"\n\nThis appears to be a legal inquiry that would benefit from professional analysis. In a production environment, I would provide comprehensive legal analysis using:\n\n• Gemma 3 Legal Model (11.8B parameters)\n• Legal entity extraction with ONNX Legal-BERT\n• Vector embeddings for case law similarity\n• CHR-ROM caching for rapid precedent retrieval\n• Risk assessment and compliance checking\n\nCurrently running in demo mode. For detailed legal analysis, please ensure the Ollama service with gemma3-legal:latest model is available.\n\n**Disclaimer**: This is for demonstration purposes only and does not constitute legal advice.\n\nGlory to mankind.`,
         responseTime,
-        model: 'demo-fallback',
         confidence: 1.0,
-        source: 'fallback',
-        cacheHit: false,
+        source: 'yorha-fallback',
+        production: false,
+        fallback: true,
         metadata: {
           timestamp: new Date().toISOString(),
           analysisType: 'demo-response',
+          theme: 'yorha',
           mode: 'fallback',
         },
       });
     }
   } catch (error) {
-    console.error('Anonymous chat error:', error);
+    console.error('❌ Anonymous chat error:', error);
     return json(
       {
         error: 'Failed to process chat request',

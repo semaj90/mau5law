@@ -14,17 +14,19 @@ beforeAll(async () => {
   console.log('\n📡 Checking service availability:');
   for (const service of services) {
     try {
-      const response = await fetch(service.url, {
-        method: 'GET',
-        timeout: 2000,
-      )});
+      // Use AbortController for request timeout (fetch does not accept `timeout` option)
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), 2000);
+      const response = await fetch(service.url, { method: 'GET', signal: controller.signal });
+      clearTimeout(id);
       if (response.ok) {
         console.log(`   ✅ ${service.name} - Available`);
       } else {
         console.log(`   ⚠️  ${service.name} - Responding but not healthy (${response.status})`);
       }
     } catch (error) {
-      console.log(`   ❌ ${service.name} - Unavailable (${error.message})`);
+      const msg = error instanceof Error ? error.message : String(error);
+      console.log(`   ❌ ${service.name} - Unavailable (${msg})`);
     }
   }
   console.log('\n📊 Integration test configuration:');
@@ -38,7 +40,7 @@ afterAll(async () => {
   console.log('\n🧹 Integration test cleanup completed');
 });
 // Global test utilities for integration tests
-global.integrationTestConfig = {
+;(global as any).integrationTestConfig = {
   baseUrl: 'http://localhost:8080',
   timeout: 5000,
   retries: 2,
@@ -47,7 +49,7 @@ global.integrationTestConfig = {
 // Mock only unavailable external services, not internal ones
 vi.mock('external-payment-service', () => ({
   processPayment: vi.fn().mockResolvedValue({ success: true, transactionId: 'mock-tx-123' })
-});
+}));
 vi.mock('external-email-service', () => ({
   sendEmail: vi.fn().mockResolvedValue({ messageId: 'mock-email-123' })
-});
+}));

@@ -477,9 +477,3 @@
     }
   }
 </style>
-</style>
-</style>
-      z-index: 20;
-    }
-  }
-</style>

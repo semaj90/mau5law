@@ -3,8 +3,35 @@
  * Uses Q-Learning and Deep Q-Networks for GPU cache optimization
  * Integrates with GPU Cache Orchestrator for predictive analytics
  */
-import { EventEmitter } from 'events';
-import { performance } from 'perf_hooks';
+// Lightweight local EventEmitter replacement to avoid Node-only 'events' import in frontend code
+type Listener = (...args: unknown[]) => void;
+class LocalEventEmitter {
+ private listeners = new Map<string, Listener[]>();
+ on(event: string, fn: Listener) {
+   const arr = this.listeners.get(event) ?? [];
+   arr.push(fn);
+   this.listeners.set(event, arr);
+   return () => this.off(event, fn);
+ }
+ off(event: string, fn?: Listener) {
+   if (!fn) {
+     this.listeners.delete(event);
+     return;
+   }
+   const arr = this.listeners.get(event);
+   if (!arr) return;
+   this.listeners.set(event, arr.filter(l => l !== fn));
+ }
+ emit(event: string, ...args: unknown[]) {
+   const arr = this.listeners.get(event);
+   if (!arr) return false;
+   for (const fn of arr.slice()) {
+     try { fn(...args); } catch { /* swallow listener errors */ }
+   }
+   return true;
+ }
+}
+
 // === RL Configuration ===
 export interface RLConfig {
   algorithm: 'q-learning' | 'dqn' | 'a3c';
@@ -42,16 +69,17 @@ export interface CacheState {
   vectorDimensionality: number;
   tagDensity: number;
 }
-}
+
 export interface CacheAction {
   type: 'prefetch' | 'evict' | 'compress' | 'promote' | 'demote' | 'replicate';
   target: string; // Cache key or pattern
   priority: number; // 0-1,
   parameters: {
     compressionLevel?: number;
-  replicationFactor?: number;
-  evictionStrategy?: 'lru' | 'lfu' | 'fifo' | 'random';
-  }
+    replicationFactor?: number;
+    evictionStrategy?: 'lru' | 'lfu' | 'fifo' | 'random';
+    [key: string]: unknown;
+  };
 }
 export interface Experience {
   state: CacheState;
@@ -61,19 +89,32 @@ export interface Experience {
   done: boolean;
   timestamp: number;
 }
+
+// New: strongly-typed cache metrics used across methods (replace previous `any` usage)
+export interface CacheMetrics {
+  hitRatio?: number;
+  averageRetrievalMs?: number;
+  gpuMemoryUsage?: number;
+  maxGpuMemory?: number;
+  cacheUtilization?: number;
+  gpuTemperature?: number;
+  // allow other optional numeric metrics from implementation
+  [key: string]: unknown;
+}
+
 // === Neural Network Architecture (Simplified) ===
 export interface NeuralNetwork {
   layers: {
     inputSize: number;
-  hiddenSizes: number[];
-  outputSize: number;
-  }
+    hiddenSizes: number[];
+    outputSize: number;
+  };
   weights: Float32Array[];
   biases: Float32Array[];
   activationFunction: 'relu' | 'tanh' | 'sigmoid';
 }
 // === Reinforcement Learning Cache Optimizer ===
-export class ReinforcementLearningCacheOptimizer extends EventEmitter {
+export class ReinforcementLearningCacheOptimizer extends LocalEventEmitter {
   private config: RLConfig;
   private qTable: Map<string, Float32Array> = new Map(); // Q-Learning table
   private neuralNetwork: NeuralNetwork | null = null; // DQN network
@@ -91,7 +132,7 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
     learningProgress: 0,
     cacheOptimizationGain: 0,
     predictiveAccuracy: 0
-  }
+  };
   // State normalization parameters
   private stateNormalization = {
     cacheUtilization: { min: 0, max: 1 },
@@ -109,7 +150,8 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
     compressionRatio: { min: 0.1, max: 1 },
     vectorDimensionality: { min: 64, max: 4096 },
     tagDensity: { min: 0, max: 1 }
-  }
+  } as const;
+
   constructor(config: RLConfig) {
     super();
     this.config = config;
@@ -124,9 +166,10 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
       }
       this.emit('initialized');
       console.log(`✅ RL Optimizer initialized with ${this.config.algorithm.toUpperCase()}`);
-    } catch (error: any) {
-      console.error('❌ Failed to initialize RL Optimizer:', error);
-      throw error;
+    } catch (error: unknown) {
+      const err = toError(error);
+      console.error('❌ Failed to initialize RL Optimizer:', err);
+      throw err;
     }
   }
   // === Core RL Methods ===
@@ -135,9 +178,9 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
    */
   selectAction(state: CacheState): CacheAction {
     const stateVector = this.stateToVector(state);
-    const stateKey = stateVector.join(',');
+    const stateKey = this.stateVectorKey(stateVector);
     // Epsilon-greedy exploration vs exploitation
-    if (Math.random() < this.config.explorationRate) {>
+    if (Math.random() < this.config.explorationRate) {
       // Explore: random action
       return this.generateRandomAction();
     } else {
@@ -151,10 +194,10 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
   updateQValues(experience: Experience): void {
     const stateVector = this.stateToVector(experience.state);
     const nextStateVector = this.stateToVector(experience.nextState);
-    const stateKey = stateVector.join(',');
+    const stateKey = this.stateVectorKey(stateVector);
     // Initialize Q-values if not exist
     if (!this.qTable.has(stateKey)) {
-      this.qTable.set(stateKey, new Float32Array(6).fill(0); // 6 action types
+      this.qTable.set(stateKey, new Float32Array(6).fill(0)); // 6 action types
     }
     const qValues = this.qTable.get(stateKey)!;
     const actionIndex = this.actionToIndex(experience.action);
@@ -173,21 +216,19 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
    */
   async trainDQN(): Promise<void> {
     if (this.config.algorithm !== 'dqn' || !this.neuralNetwork) return;
-    if (this.experienceReplay.length < this.config.batchSize) return;>
-    this.isTraining, = true;
+    if (this.experienceReplay.length < this.config.batchSize) return;
+    this.isTraining = true;
     try {
       // Sample random batch from experience replay
       const batch = this.sampleExperienceBatch();
       // Prepare training data
-      const states = batch.map(exp => this.stateToVector(exp.state);
-      const actions = batch.map(exp => this.actionToIndex(exp.action);
+      const states = batch.map(exp => this.stateToVector(exp.state));
+      const actions = batch.map(exp => this.actionToIndex(exp.action));
       const rewards = batch.map(exp => exp.reward);
-      const nextStates = batch.map(exp => this.stateToVector(exp.nextState);
+      const nextStates = batch.map(exp => this.stateToVector(exp.nextState));
       const doneFlags = batch.map(exp => exp.done);
       // Calculate target Q-values
-      const targetQValues = await this.calculateTargetQValues(
-        states, actions, rewards, nextStates, doneFlags
-     ), );
+      const targetQValues = await this.calculateTargetQValues(states, actions, rewards, nextStates, doneFlags);
       // Perform gradient descent (simplified)
       await this.performGradientDescent(states, targetQValues);
       // Update target network periodically
@@ -195,9 +236,10 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
         this.updateTargetNetwork();
       }
       this.emit('dqnTrainingComplete', { batchSize: batch.length, episode: this.trainingEpisodes });
-    } catch (error: any) {
-      console.error('DQN training error:', error);
-      this.emit('trainingError', error);
+    } catch (error: unknown) {
+      const err = toError(error);
+      console.error('DQN training error:', err);
+      this.emit('trainingError', err);
     } finally {
       this.isTraining = false;
     }
@@ -220,30 +262,30 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
   /**
    * Calculate reward based on cache performance improvement
    */
-  calculateReward()
-    previousMetrics: any
-    currentMetrics: any
-    action: CacheAction;
+  calculateReward(
+    previousMetrics: CacheMetrics,
+    currentMetrics: CacheMetrics,
+    action: CacheAction
   ): number {
     let reward = 0;
     // Hit ratio improvement (most important)
-    const hitRatioImprovement = currentMetrics.hitRatio - previousMetrics.hitRatio;
+    const hitRatioImprovement = (Number(currentMetrics.hitRatio ?? 0)) - (Number(previousMetrics.hitRatio ?? 0));
     reward += hitRatioImprovement * 100; // Scale up
     // Retrieval time improvement
-    const latencyImprovement = previousMetrics.averageRetrievalMs - currentMetrics.averageRetrievalMs;
+    const latencyImprovement = (Number(previousMetrics.averageRetrievalMs ?? 0)) - (Number(currentMetrics.averageRetrievalMs ?? 0));
     reward += (latencyImprovement / 10); // Scale down
     // GPU memory efficiency
-    const memoryEfficiency = 1 - (currentMetrics.gpuMemoryUsage / currentMetrics.maxGpuMemory);
+    const memoryEfficiency = 1 - ((Number(currentMetrics.gpuMemoryUsage ?? 0)) / (Number(currentMetrics.maxGpuMemory ?? 1)));
     reward += memoryEfficiency * 20;
     // Cache utilization optimization
     const idealUtilization = 0.8; // 80% is optimal
-    const utilizationScore = 1 - Math.abs(currentMetrics.cacheUtilization - idealUtilization);
+    const utilizationScore = 1 - Math.abs((Number(currentMetrics.cacheUtilization ?? 0)) - idealUtilization);
     reward += utilizationScore * 15;
     // Action-specific bonuses/penalties
     switch (action.type) {
       case 'prefetch':
         // Bonus if prefetch resulted in cache hit
-        if (currentMetrics.hitRatio > previousMetrics.hitRatio) {
+        if ((Number(currentMetrics.hitRatio ?? 0)) > (Number(previousMetrics.hitRatio ?? 0))) {
           reward += 25;
         } else {
           reward -= 10; // Penalty for unnecessary prefetch
@@ -251,32 +293,34 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
         break;
       case 'evict':
         // Bonus if eviction freed up memory without hurting hit ratio
-        if (currentMetrics.gpuMemoryUsage < previousMetrics.gpuMemoryUsage &&)>;
-            currentMetrics.hitRatio >= previousMetrics.hitRatio) {
+        if ((Number(currentMetrics.gpuMemoryUsage ?? 0) < Number(previousMetrics.gpuMemoryUsage ?? 0))
+          && (Number(currentMetrics.hitRatio ?? 0) >= Number(previousMetrics.hitRatio ?? 0))) {
           reward += 15;
         }
         break;
       case 'compress':
         // Bonus for compression that saves memory
-        const memoryTempSaved = previousMetrics.gpuMemoryUsage - currentMetrics.gpuMemoryUsage;
-        reward += Math.max(0, memoryTempSaved / 1024); // Bonus per MB saved
+        {
+          const memorySaved = (Number(previousMetrics.gpuMemoryUsage ?? 0)) - (Number(currentMetrics.gpuMemoryUsage ?? 0));
+          reward += Math.max(0, memorySaved / 1024); // Bonus per MB saved
+        }
         break;
     }
     // Penalty for high GPU temperature (thermal throttling risk)
-    if (currentMetrics.gpuTemperature > 80) {
-      reward -= (currentMetrics.gpuTemperature - 80) * 2;
+    if ((Number(currentMetrics.gpuTemperature ?? 0)) > 80) {
+      reward -= ((Number(currentMetrics.gpuTemperature ?? 0)) - 80) * 2;
     }
     // Bonus for maintaining low latency
-    if (currentMetrics.averageRetrievalMs < 10) {>
-      reward, += 10;
+    if ((Number(currentMetrics.averageRetrievalMs ?? 999)) < 10) {
+      reward += 10;
     }
-    return Math.max(-100, Math.min(100, reward); // Clamp between -100 and 100
+    return Math.max(-100, Math.min(100, reward)); // Clamp between -100 and 100
   }
   // === Predictive Analytics ===
   /**
    * Predict optimal actions for given state
    */
-  predictOptimalActions(state,: CacheState, top,K: number =, 3): CacheAction,[] {
+  predictOptimalActions(state: CacheState, topK: number = 3): CacheAction[] {
     const stateVector = this.stateToVector(state);
     const actions: { action: CacheAction; score: number }[] = [];
     // Generate possible actions and score them
@@ -286,20 +330,15 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
       actions.push({ action, score });
     }
     // Sort by score and return top K
-    return actions;
+    return actions
       .sort((a, b) => b.score - a.score)
       .slice(0, topK)
-      .map(item => (item as { action?: any }).action);
+      .map(item => item.action);
   }
   /**
    * Predict cache performance for given state and action
    */
-  predictCachePerformance(state,: CacheState, actio,n: CacheActio,n): {
-    expectedHitRatio: number;
-    expectedLatency: number;
-    expectedGpuUtilization: number;
-    confidence: number;
-  } {
+  predictCachePerformance(state: CacheState, action: CacheAction) {
     const stateVector = this.stateToVector(state);
     const actionIndex = this.actionToIndex(action);
     // Use neural network for prediction if available
@@ -310,7 +349,7 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
         expectedLatency: Math.max(1, state.averageRetrievalTime + (prediction[1] * 50)),
         expectedGpuUtilization: Math.max(0, Math.min(1, state.gpuUtilization + (prediction[2] * 0.2))),
         confidence: this.calculatePredictionConfidence(stateVector, actionIndex)
-      }
+      };
     }
     // Fallback to heuristic-based prediction
     return this.heuristicPrediction(state, action);
@@ -318,11 +357,7 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
   /**
    * Generate recommendations based on current system state
    */
-  generateCacheOptimizationRecommendations(state,: CacheState): {
-    recommendations: string[];
-    actions: CacheAction[];
-    expectedImprovement: number;
-  } {
+  generateCacheOptimizationRecommendations(state: CacheState) {
     const optimalActions = this.predictOptimalActions(state, 3);
     const recommendations: string[] = [];
     let expectedImprovement = 0;
@@ -335,41 +370,41 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
           recommendations.push(`Prefetch data pattern "${action.target}" to improve hit ratio by ${(improvement * 100).toFixed(1)}%`);
           break;
         case 'evict':
-          recommendations.push(`Evict underused entries using ${action.parameters.evictionStrategy} strategy`);
+          recommendations.push(`Evict underused entries using ${action.parameters.evictionStrategy ?? 'lru'} strategy`);
           break;
         case 'compress':
-          recommendations.push(`Apply compression level ${action.parameters.compressionLevel} to save GPU memory`);
+          recommendations.push(`Apply compression level ${action.parameters.compressionLevel ?? 1} to save GPU memory`);
           break;
         case 'promote':
           recommendations.push(`Promote frequently accessed entry "${action.target}" to faster cache tier`);
           break;
         case 'replicate':
-          recommendations.push(`Replicate critical data "${action.target}" with factor ${action.parameters.replicationFactor}`);
+          recommendations.push(`Replicate critical data "${action.target}" with factor ${action.parameters.replicationFactor ?? 1}`);
           break;
       }
     }
     return {
       recommendations,
       actions: optimalActions,
-      expectedImprovement: expectedImprovement * 100,
-    }
+      expectedImprovement: expectedImprovement * 100
+    };
   }
   // === Training and Learning ===
   /**
    * Run training episode with GPU cache interaction
    */
-  async runTrainingEpisode()
+  async runTrainingEpisode(
     getCacheState: () => Promise<CacheState>,
-    executeCacheAction,: (action: CacheAction) => Promise<any>,
-    getCacheMetrics,: () => Promise<any>;
-  ): Promise<any> {
-    let episodeReward =, 0;
-    let actionsExecuted =, 0;
-    const maxStepsPerEpisode = 10,0;
+    executeCacheAction: (action: CacheAction) => Promise<CacheActionResult>,
+    getCacheMetrics: () => Promise<CacheMetrics>
+  ): Promise<TrainingEpisodeResult> {
+    let episodeReward = 0;
+    let actionsExecuted = 0;
+    const maxStepsPerEpisode = 100;
     try {
       let currentState = await getCacheState();
       let previousMetrics = await getCacheMetrics();
-      for (let step =, 0; ste,p < maxStepsPerEpis,ode;, s,tep++) {>
+      for (let step = 0; step < maxStepsPerEpisode; step++) {
         // Select action
         const action = this.selectAction(currentState);
         // Execute action in cache system
@@ -389,7 +424,7 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
           nextState,
           done: step === maxStepsPerEpisode - 1,
           timestamp: Date.now()
-        }
+        };
         // Add to experience replay
         this.addExperience(experience);
         // Train network if using DQN
@@ -400,7 +435,7 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
         currentState = nextState;
         previousMetrics = currentMetrics;
         // Early termination if cache performance is optimal
-        if (currentMetrics.hitRatio > 0.95 && currentMetrics.averageRetrievalMs < 5) {
+        if ((Number(currentMetrics.hitRatio ?? 0)) > 0.95 && (Number(currentMetrics.averageRetrievalMs ?? 999) < 5)) {
           console.log(`🎯 Optimal cache performance achieved in ${step + 1} steps`);
           break;
         }
@@ -421,15 +456,20 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
       return {
         totalReward: episodeReward,
         actionsExecuted,
-        averageReward: episodeReward / actionsExecuted
-      }
-    } catch (error: any) {
-      console.error('Training episode error:', error);
-      throw error;
+        averageReward: actionsExecuted > 0 ? episodeReward / actionsExecuted : 0
+      };
+    } catch (error: unknown) {
+      const err = toError(error);
+      console.error('Training episode error:', err);
+      throw err;
     }
   }
   // === Utility Methods ===
-  private stateToVector(state,: CacheState): Float32Array {
+  private stateVectorKey(stateVector: Float32Array): string {
+    // centralize key creation to avoid repeated Array.from(...).join(',') sites
+    return Array.from(stateVector).join(',');
+  }
+  private stateToVector(state: CacheState): Float32Array {
     return new Float32Array([
       this.normalizeValue(state.cacheUtilization, 'cacheUtilization'),
       this.normalizeValue(state.hitRatio, 'hitRatio'),
@@ -448,17 +488,22 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
       this.normalizeValue(state.tagDensity, 'tagDensity')
     ]);
   }
-  private normalizeValue(_value,: number, featur,e: keyo,f typeof this.stateNormalizati,on): number {
+  private normalizeValue(value: number, feature: keyof typeof this.stateNormalization): number {
     const norm = this.stateNormalization[feature];
-    return Math.max(0, Math.min(1, (value - norm.min) / (norm.max - norm.min);
+    const v = Number(value ?? 0);
+    return Math.max(0, Math.min(1, (v - norm.min) / (norm.max - norm.min || 1)));
   }
-  private actionToIndex(action,: CacheAction): number {
+  private actionToIndex(action: CacheAction): number {
     const actionTypes = ['prefetch', 'evict', 'compress', 'promote', 'demote', 'replicate'];
-    return actionTypes.indexOf(action.type);
+    return Math.max(0, actionTypes.indexOf(action.type));
   }
-  private generateRandomAction(),: CacheAction {
+  private generateRandomAction(): CacheAction {
     const actionTypes: CacheAction['type'][] = ['prefetch', 'evict', 'compress', 'promote', 'demote', 'replicate'];
     const type = actionTypes[Math.floor(Math.random() * actionTypes.length)];
+    // Use a readonly tuple so the indexed result has the precise literal union type
+    const evictionOptions = ['lru', 'lfu', 'fifo', 'random'] as const;
+    const evictionStrategy = evictionOptions[Math.floor(Math.random() * evictionOptions.length)] as CacheAction['parameters']['evictionStrategy'];
+
     return {
       type,
       target: `cache_key_${Math.floor(Math.random() * 1000)}`,
@@ -466,54 +511,54 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
       parameters: {
         compressionLevel: Math.floor(Math.random() * 9) + 1,
         replicationFactor: Math.floor(Math.random() * 3) + 1,
-        evictionStrategy: ['lru', 'lfu', 'fifo', 'random'][Math.floor(Math.random() * 4)] as any
+        evictionStrategy
       }
-    }
+    };
   }
-  private getBestAction(state,: CacheState, stateKe,y: strin,g): CacheAction {
+  private getBestAction(state: CacheState, stateKey: string): CacheAction {
     const qValues = this.qTable.get(stateKey);
     if (!qValues) {
       return this.generateRandomAction();
     }
     // Find action with highest Q-value
-    const bestActionIndex = qValues.indexOf(Math.max(...qValues);
+    const bestActionIndex = qValues.indexOf(Math.max(...qValues));
     const actionTypes: CacheAction['type'][] = ['prefetch', 'evict', 'compress', 'promote', 'demote', 'replicate'];
+    const idx = Math.max(0, Math.min(actionTypes.length - 1, bestActionIndex));
     return {
-      type: actionTypes[bestActionIndex],
+      type: actionTypes[idx],
       target: `optimized_${Date.now()}`,
       priority: 0.8,
       parameters: {
-        compressionLevel: Math.floor(qValues[bestActionIndex] * 9) + 1,
+        compressionLevel: Math.floor(qValues[idx] * 9) + 1,
         replicationFactor: 2,
         evictionStrategy: 'lru'
       }
-    }
+    };
   }
-  private getMaxQValue(stateVector,: Float32Array): number {
-    const stateKey = Array.from(stateVector).join(',');
+  private getMaxQValue(stateVector: Float32Array): number {
+    const stateKey = this.stateVectorKey(stateVector);
     const qValues = this.qTable.get(stateKey);
     if (!qValues) return 0;
     return Math.max(...qValues);
   }
-  private updateExplorationRate(),: void {
-    this.config.explorationRate = Math.max(),
+  private updateExplorationRate(): void {
+    this.config.explorationRate = Math.max(
       this.config.minExplorationRate,
       this.config.explorationRate * this.config.explorationDecay
     );
-    this.metrics.explorationRate = this.config.explorationRat,e;
+    this.metrics.explorationRate = this.config.explorationRate;
   }
-  private updateMetrics(episodeReward,: number, actionsExecute,d: numbe,r): void {
-    this.metrics.episodesCompleted = this.trainingEpisode,s;
-    this.metrics.averageReward = this.averageRewar,d;
+  private updateMetrics(episodeReward: number, actionsExecuted: number): void {
+    this.metrics.episodesCompleted = this.trainingEpisodes;
+    this.metrics.averageReward = this.averageReward;
     this.metrics.learningProgress = Math.min(1, this.trainingEpisodes / 1000);
-    this.metrics.cacheOptimizationGain = Math.max(0, episodeReward / actionsExecuted);
-    // Calculate predictive accuracy (simplified)
-    this.metrics.predictiveAccuracy = Math.max(0.5, 1 - (this.config.explorationRate * 0.5);
+    this.metrics.cacheOptimizationGain = actionsExecuted > 0 ? Math.max(0, episodeReward / actionsExecuted) : 0;
+    this.metrics.predictiveAccuracy = Math.max(0.5, 1 - (this.config.explorationRate * 0.5));
   }
   // Placeholder methods for neural network operations
-  private async initializeNeuralNetwork(),: Promise<void> {
-    const inputSize = 1,5; // State vector size
-    const outputSize =, 6; // Number of actions
+  private async initializeNeuralNetwork(): Promise<void> {
+    const inputSize = 15; // State vector size
+    const outputSize = 6; // Number of actions
     this.neuralNetwork = {
       layers: {
         inputSize,
@@ -533,35 +578,33 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
         new Float32Array(outputSize)
       ],
       activationFunction: 'relu'
-    }
-    // Initialize target network as copy
-    this.targetNetwork = JSON.parse(JSON.stringify(this.neuralNetwork);
-    console,.log('🧠 Neural network initialized with architecture:', this.neuralNetwork.layers);
+    };
+    // shallow copy for target network
+    this.targetNetwork = JSON.parse(JSON.stringify(this.neuralNetwork)) as NeuralNetwork;
+    console.log('🧠 Neural network initialized with architecture:', this.neuralNetwork.layers);
   }
-  private sampleExperienceBatch(),: Experience[], {
+  private sampleExperienceBatch(): Experience[] {
     const batchSize = Math.min(this.config.batchSize, this.experienceReplay.length);
     const batch: Experience[] = [];
-    for (let i = 0; i < batchSize; i++) {>
+    for (let i = 0; i < batchSize; i++) {
       const randomIndex = Math.floor(Math.random() * this.experienceReplay.length);
       batch.push(this.experienceReplay[randomIndex]);
     }
     return batch;
   }
-  private async calculateTargetQValues()
-    states: Float32Array[]
-    actions: number[];
-    rewards: number[]
-    nextStates: Float32Array[]
-    doneFlags: boolean[];
+  private async calculateTargetQValues(
+    states: Float32Array[],
+    actions: number[],
+    rewards: number[],
+    nextStates: Float32Array[],
+    doneFlags: boolean[]
   ): Promise<Float32Array[]> {
-    // Simplified target Q-value calculation
-    const target,s: Float32Arr,ay,[], = [];
-    for (let i =, 0;, i < sta,tes.le,ng,t,h; i++) {>
-      const currentQ = this.forwardPass(this.neuralNetwork!, states[i]);
-      // removed unused target assignment
+    const targets: Float32Array[] = [];
+    for (let i = 0; i < states.length; i++) {
+      const target = new Float32Array(6).fill(0);
       if (!doneFlags[i]) {
         const nextQ = this.forwardPass(this.targetNetwork!, nextStates[i]);
-        const maxNextQ = Math.max(...nextQ);
+        const maxNextQ = Math.max(...Array.from(nextQ));
         target[actions[i]] = rewards[i] + (this.config.discountFactor * maxNextQ);
       } else {
         target[actions[i]] = rewards[i];
@@ -570,20 +613,18 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
     }
     return targets;
   }
-  private forwardPass(network,: NeuralNetwork, inpu,t: Float32Arra,y): Float32Array {
-    // Simplified neural network forward pass
-    let activation = new Float32Array(input);
-    // Process each layer
-    for (let layer = 0; layer < network.weights.length; layer++) {>
+  private forwardPass(network: NeuralNetwork, input: Float32Array): Float32Array {
+    let activation = input.slice();
+    for (let layer = 0; layer < network.weights.length; layer++) {
       const weights = network.weights[layer];
       const biases = network.biases[layer];
-      const prevSize = layer === 0 ? network.layers.inputSize: network.layers.hiddenSizes[layer - 1];
-      const currentSize = layer === network.weights.length - 1 ? network.layers.outputSize: network.layers.hiddenSizes[layer];
+      const prevSize = layer === 0 ? network.layers.inputSize : network.layers.hiddenSizes[layer - 1];
+      const currentSize = layer === network.weights.length - 1 ? network.layers.outputSize : network.layers.hiddenSizes[layer];
       const newActivation = new Float32Array(currentSize);
-      for (let i = 0; i < currentSize; i++) {>
-        let sum = biases[i];
-        for (let j = 0; j < prevSize; j++) {>
-          sum, += activation[j] * weights[i * prevSize + j];
+      for (let i = 0; i < currentSize; i++) {
+        let sum = biases[i] || 0;
+        for (let j = 0; j < prevSize; j++) {
+          sum += (activation[j] || 0) * (weights[i * prevSize + j] || 0);
         }
         newActivation[i] = this.applyActivation(sum, network.activationFunction);
       }
@@ -591,37 +632,42 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
     }
     return activation;
   }
-  private applyActivation(x,: number, fun,c: strin,g): number {
+  private applyActivation(x: number, func: string): number {
     switch (func) {
       case 'relu': return Math.max(0, x);
       case 'tanh': return Math.tanh(x);
-      case 'sigmoid': return 1 / (1 + Math.exp(-x);
+      case 'sigmoid': return 1 / (1 + Math.exp(-x));
       default: return x;
     }
   }
-  private async performGradientDescent(states,: Float32Array[], target,s: Float32Array[,]): Promise<void> {
-    // Simplified gradient descent implementation
-    // In a real implementation, this would use proper backpropagation
-    console,.log(`📈 Performing gradient descent on ${states.length} samples`);
+  private async performGradientDescent(states: Float32Array[], _targets: Float32Array[]): Promise<void> {
+    // Placeholder: no-op simplified gradient step
+    // `_targets` intentionally unused (prefixed with underscore to satisfy lint/TS)
+    console.log(`📈 Performing gradient descent on ${states.length} samples`);
+    // keep method async and non-blocking — resolve by returning from async function
+    return;
   }
-  private updateTargetNetwork(),: void {
-    if (!this.targetNetwork || !this.neuralNetwor,k) retu,rn;
-    // Copy weights from main network to target network
-    for (let i =, 0;, i < t,his.neuralNetwork.weights.le,ng,t,h; i++) {>
-      this.targetNetwork.weights[i], = new Float32Array(this.neuralNetwork.weights[i]);
+
+  private updateTargetNetwork(): void {
+    if (!this.targetNetwork || !this.neuralNetwork) return;
+    for (let i = 0; i < this.neuralNetwork.weights.length; i++) {
+      // Ensure deep copy of Float32Array data
+      this.targetNetwork.weights[i] = new Float32Array(this.neuralNetwork.weights[i]);
+      this.targetNetwork.biases[i] = new Float32Array(this.neuralNetwork.biases[i]);
     }
     console.log('🎯 Target network updated');
   }
-  private generatePossibleActions(state,: CacheState): CacheAction[,] {
+
+  private generatePossibleActions(state: CacheState): CacheAction[] {
     const actions: CacheAction[] = [];
     // Generate context-aware actions based on state
     if (state.cacheUtilization > 0.9) {
       actions.push({ type: 'evict', target: 'lru_candidates', priority: 0.9, parameters: { evictionStrategy: 'lru' } });
       actions.push({ type: 'compress', target: 'large_entries', priority: 0.8, parameters: { compressionLevel: 7 } });
     }
-    if (state.hitRatio < 0.7) {>
-      actions.push({ type: 'prefetch', target: 'predicted_access', priority: 0.9, parameters: { [key,: strin,g]: any } });
-      actions.push({ type: 'promote', target: 'frequent_entries', priority: 0.7, parameters: { [key,: strin,g]: any } });
+    if (state.hitRatio < 0.7) {
+      actions.push({ type: 'prefetch', target: 'predicted_access', priority: 0.9, parameters: {} });
+      actions.push({ type: 'promote', target: 'frequent_entries', priority: 0.7, parameters: {} });
     }
     if (state.gpuMemoryUsage > 0.8) {
       actions.push({ type: 'compress', target: 'memory_intensive', priority: 0.9, parameters: { compressionLevel: 8 } });
@@ -629,10 +675,10 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
     }
     return actions;
   }
-  private scoreAction(stateVector,: Float32Array, actio,n: CacheActio,n): number {
+  private scoreAction(stateVector: Float32Array, action: CacheAction): number {
     if (this.neuralNetwork) {
       const qValues = this.forwardPass(this.neuralNetwork, stateVector);
-      return qValues[this.actionToIndex(action)];
+      return qValues[this.actionToIndex(action)] || 0;
     }
     // Fallback heuristic scoring
     let score = Math.random() * 0.5; // Base randomness
@@ -640,7 +686,7 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
     const state = this.vectorToState(stateVector);
     switch (action.type) {
       case 'prefetch':
-        if (state.hitRatio < 0.7) score += 0.3;>
+        if (state.hitRatio < 0.7) score += 0.3;
         break;
       case 'evict':
         if (state.cacheUtilization > 0.8) score += 0.4;
@@ -651,59 +697,63 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
     }
     return score;
   }
-  private vectorToState(vector,: Float32Array): CacheState {
+  private vectorToState(vector: Float32Array): CacheState {
     return {
-      cacheUtilization: vector[0],
-      hitRatio: vector[1],
-      averageRetrievalTime: vector[2],
-      gpuMemoryUsage: vector[3],
-      gpuUtilization: vector[4],
-      temperature: vector[5],
-      requestFrequency: vector[6],
-      dataSize: vector[7],
-      accessPattern: vector[8],
-      timeOfDay: vector[9],
-      dayOfWeek: vector[10];
-      seasonality: vector[11],
-      compressionRatio: vector[12],
-      vectorDimensionality: vector[13],
-      tagDensity: vector[14],
-    }
+      cacheUtilization: vector[0] ?? 0,
+      hitRatio: vector[1] ?? 0,
+      averageRetrievalTime: vector[2] ?? 0,
+      gpuMemoryUsage: vector[3] ?? 0,
+      gpuUtilization: vector[4] ?? 0,
+      temperature: vector[5] ?? 0,
+      requestFrequency: vector[6] ?? 0,
+      dataSize: vector[7] ?? 0,
+      accessPattern: vector[8] ?? 0,
+      timeOfDay: vector[9] ?? 0,
+      dayOfWeek: vector[10] ?? 0,
+      seasonality: vector[11] ?? 0,
+      compressionRatio: vector[12] ?? 0,
+      vectorDimensionality: vector[13] ?? 0,
+      tagDensity: vector[14] ?? 0
+    };
   }
-  private calculatePredictionConfidence(stateVector,: Float32Array, actionInde,x: numbe,r): number {
-    // Simplified confidence calculation
-    const stateKey = Array.from(stateVector).join(',');
+  private calculatePredictionConfidence(stateVector: Float32Array, actionIndex: number): number {
+    const stateKey = this.stateVectorKey(stateVector);
     const qValues = this.qTable.get(stateKey);
     if (!qValues) return 0.5; // Low confidence for unseen states
     const maxQ = Math.max(...qValues);
     const minQ = Math.min(...qValues);
-    const actionQ = qValues[actionIndex];
+    const actionQ = qValues[actionIndex] ?? 0;
     // Confidence based on how much better this action is compared to others
     return maxQ === minQ ? 0.5 : (actionQ - minQ) / (maxQ - minQ);
   }
-  private heuristicPrediction(state,: CacheState, actio,n: CacheAction) {
+  private heuristicPrediction(state: CacheState, _action: CacheAction): {
+    expectedHitRatio: number;
+    expectedLatency: number;
+    expectedGpuUtilization: number;
+    confidence: number;
+  } {
     // Fallback heuristic prediction
     return {
       expectedHitRatio: Math.max(0, Math.min(1, state.hitRatio + (Math.random() - 0.5) * 0.1)),
       expectedLatency: Math.max(1, state.averageRetrievalTime + (Math.random() - 0.5) * 10),
       expectedGpuUtilization: Math.max(0, Math.min(1, state.gpuUtilization + (Math.random() - 0.5) * 0.1)),
       confidence: 0.6
-    }
+    };
   }
   // === Public API ===
-  getMetrics(), {
-    return { ...this.metrics }
+  getMetrics() {
+    return { ...this.metrics };
   }
-  getQTableSize(),: number {
+  getQTableSize(): number {
     return this.qTable.size;
   }
-  getExperienceReplaySize(),: number {
+  getExperienceReplaySize(): number {
     return this.experienceReplay.length;
   }
-  isTrainingActive(),: boolean {
+  isTrainingActive(): boolean {
     return this.isTraining;
   }
-  async saveModel(filepath,: string): Promise<void> {
+  async saveModel(filepath: string): Promise<void> {
     const modelData = {
       config: this.config,
       qTable: Object.fromEntries(this.qTable),
@@ -711,15 +761,16 @@ export class ReinforcementLearningCacheOptimizer extends EventEmitter {
       trainingEpisodes: this.trainingEpisodes,
       neuralNetwork: this.neuralNetwork,
       timestamp: Date.now()
-    }
+    };
     // In a real implementation, this would save to filesystem
-    console,.log(`💾 Model saved to ${filepath} (${JSON.stringify(modelData).length} bytes)`);
+    console.log(`💾 Model saved to ${filepath} (${JSON.stringify(modelData).length} bytes)`);
   }
-  async loadModel(filepath,: string): Promise<void> {
+  async loadModel(filepath: string): Promise<void> {
     // In a real implementation, this would load from filesystem
-    console,.log(`📁 Loading model from ${filepath}`);
+    console.log(`📁 Loading model from ${filepath}`);
   }
-}
+} // end class ReinforcementLearningCacheOptimizer
+
 // === Default Configuration ===
 export const createDefaultRLConfig = (): RLConfig => ({
   algorithm: 'dqn',
@@ -734,5 +785,28 @@ export const createDefaultRLConfig = (): RLConfig => ({
   targetNetworkUpdateFrequency: 100,
   enableCUDAAcceleration: true
 });
+
 // === Export singleton ===
-export const reinforcementLearningCacheOptimizer = new ReinforcementLearningCacheOptimizer(createDefaultRLConfig();
+export const reinforcementLearningCacheOptimizer = new ReinforcementLearningCacheOptimizer(createDefaultRLConfig());
+
+// Add: strong types to replace `any` use in action execution and episode return
+export interface CacheActionResult {
+  success: boolean;
+  info?: unknown;
+}
+
+export interface TrainingEpisodeResult {
+  totalReward: number;
+  actionsExecuted: number;
+  averageReward: number;
+}
+
+// Helper: convert unknown to Error for safe handling
+function toError(err: unknown): Error {
+  if (err instanceof Error) return err;
+  try {
+    return new Error(typeof err === 'string' ? err : JSON.stringify(err));
+  } catch {
+    return new Error(String(err));
+  }
+}

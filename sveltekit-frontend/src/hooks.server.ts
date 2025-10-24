@@ -2,6 +2,8 @@ import type { Handle } from '@sveltejs/kit';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import Redis from 'ioredis';
+import createRedisAdapter from '$lib/server/adapters/redis-adapter';
+import type { RedisCacheService } from '$lib/types/external-services';
 import { initBackends } from '$lib/server/init/backends';
 // Avoid static import of lucia/sveltekit integration at top-level to prevent
 // module resolution errors during Vite SSR/hot reload. We'll lazy-import when needed.
@@ -14,6 +16,7 @@ type DrizzleDB = ReturnType<typeof drizzle> | null;
 let _pgConnection: PgConnection = null;
 let _db: DrizzleDB = null;
 let _redis: Redis | null = null;
+let _redisAdapter: RedisCacheService | null = null;
 
 function initPostgres() {
   if (_pgConnection) return _pgConnection;
@@ -47,6 +50,14 @@ function initRedis() {
     const host = process.env.REDIS_HOST || 'localhost';
     const port = parseInt(process.env.REDIS_PORT || '6379', 10);
     _redis = new Redis({ host, port });
+    // Create the typed adapter for consumers to use instead of raw Redis client
+    try {
+      _redisAdapter = createRedisAdapter(_redis);
+    } catch (e) {
+      // adapter creation failed - leave adapter null and allow consumers to fallback
+      _redisAdapter = null;
+      console.warn('[hooks.server] Redis adapter creation failed:', e);
+    }
   } catch (_e) {
     // ignore redis init failures; let consumers handle null
     _redis = null;
@@ -390,4 +401,4 @@ const handle: Handle = async ({ event, resolve }) => {
   return resolve(event);
 };
 
-export { _db as db, _pgConnection as pgConnection, _redis as redis, handle };
+export { _db as db, _pgConnection as pgConnection, _redis as redis, _redisAdapter as redisAdapter, handle };

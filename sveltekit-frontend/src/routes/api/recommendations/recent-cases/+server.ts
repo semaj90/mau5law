@@ -2,27 +2,28 @@
  * 🎯 Recent Cases Recommendation API
  * Returns the most recent 5 cases with priority scoring
  */
-import type { RequestHandler } from './$types'
-import { json } from '@sveltejs/kit'
-import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem'
-import { calculateDocumentPriority } from '$lib/config/legal-priorities'
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem';
+import { calculateDocumentPriority } from '$lib/config/legal-priorities';
+import type { LegalDocument } from '$lib/config/legal-priorities'; // added import
 interface CaseRecommendation {
-  id: string
-  title: string
-  status: 'active' | 'pending' | 'closed',
-  lastAccessed: string
-  confidence: number
-  priority: number
-  caseType: string
-  urgency: 'low' | 'normal' | 'high' | 'critical'
-  glyphSignature?: string
+  id: string;
+  title: string;
+  status: 'active' | 'pending' | 'closed';
+  lastAccessed: string;
+  confidence: number;
+  priority: number;
+  caseType: string;
+  urgency: 'low' | 'medium' | 'high' | 'critical';
+  glyphSignature?: string;
   metadata: {
-    clientName: string
-    practiceArea: string
-    daysOpen: number
-    documentCount: number
-    lastActivity: string
-  }
+    clientName: string;
+    practiceArea: string;
+    daysOpen: number;
+    documentCount: number;
+    lastActivity: string;
+  };
 }
 // Mock database - in production this would query PostgreSQL
 const mockCases: CaseRecommendation[] = [
@@ -40,8 +41,8 @@ const mockCases: CaseRecommendation[] = [
       practiceArea: 'Employment Law',
       daysOpen: 45,
       documentCount: 127,
-      lastActivity: 'Evidence review session'
-    }
+      lastActivity: 'Evidence review session',
+    },
   },
   {
     id: 'case-002',
@@ -57,8 +58,8 @@ const mockCases: CaseRecommendation[] = [
       practiceArea: 'Corporate Law',
       daysOpen: 12,
       documentCount: 89,
-      lastActivity: 'Contract negotiations'
-    }
+      lastActivity: 'Contract negotiations',
+    },
   },
   {
     id: 'case-003',
@@ -68,14 +69,14 @@ const mockCases: CaseRecommendation[] = [
     confidence: 0.72,
     priority: 0,
     caseType: 'estate',
-    urgency: 'normal',
+    urgency: 'medium',
     metadata: {
       clientName: 'Johnson Family',
       practiceArea: 'Estate Planning',
       daysOpen: 23,
       documentCount: 34,
-      lastActivity: 'Asset valuation'
-    }
+      lastActivity: 'Asset valuation',
+    },
   },
   {
     id: 'case-004',
@@ -91,8 +92,8 @@ const mockCases: CaseRecommendation[] = [
       practiceArea: 'Intellectual Property',
       daysOpen: 78,
       documentCount: 203,
-      lastActivity: 'Prior art research'
-    }
+      lastActivity: 'Prior art research',
+    },
   },
   {
     id: 'case-005',
@@ -108,8 +109,8 @@ const mockCases: CaseRecommendation[] = [
       practiceArea: 'Real Estate',
       daysOpen: 156,
       documentCount: 67,
-      lastActivity: 'Lease execution'
-    }
+      lastActivity: 'Lease execution',
+    },
   },
   {
     id: 'case-006',
@@ -125,59 +126,64 @@ const mockCases: CaseRecommendation[] = [
       practiceArea: 'Criminal Defense',
       daysOpen: 89,
       documentCount: 178,
-      lastActivity: 'Witness interviews'
-    }
-  }
-]
-export const GET: RequestHandler = async ({ url, request }) => {
-  const limit = parseInt(url.searchParams.get('limit') || '5')
-  const cacheKey = `recent-cases-${limit}`
+      lastActivity: 'Witness interviews',
+    },
+  },
+];
+export const GET: RequestHandler = async ({ url }) => {
+  const limit = parseInt(url.searchParams.get('limit') || '5');
+  const cacheKey = `recent-cases-${limit}`;
   try {
     // Check cache first (60-second TTL for recent cases)
-    const cached = await multiLayerCache.get<CaseRecommendation[]>(cacheKey)
+    const cached = await multiLayerCache.get<CaseRecommendation[]>(cacheKey);
     if (cached) {
       return json({
         success: true,
         data: cached,
         fromCache: true,
         timestamp: new Date().toISOString(),
-      })
+      });
     }
     // Calculate priorities for each case
     const casesWithPriorities = mockCases.map(caseItem => {
-      const priority = calculateDocumentPriority({
-        type: caseItem.caseType as any,
-        category: caseItem.metadata.practiceArea.toLowerCase().replace(/\s+/g, '-') as any,
-        urgency: caseItem.urgency,
-        complexity: caseItem.metadata.documentCount > 100 ? 'highly_complex' : 'normal',
+      // Build a properly typed LegalDocument to satisfy calculateDocumentPriority
+      const docForPriority: LegalDocument = {
+        id: caseItem.id,
+        type: caseItem.caseType as unknown as LegalDocument['type'],
+        category: caseItem.metadata.practiceArea
+          .toLowerCase()
+          .replace(/\s+/g, '-') as unknown as LegalDocument['category'],
+        urgency: caseItem.urgency as LegalDocument['urgency'],
+        complexity: caseItem.metadata.documentCount > 100 ? 'highly_complex' : 'moderate',
         activeReview: caseItem.status === 'active',
         lastAccessed: new Date(caseItem.lastAccessed),
         fileSize: caseItem.metadata.documentCount * 1024 * 50, // Estimate file size
-        isEvidenceCritical: caseItem.caseType === 'criminal' || caseItem.caseType === 'litigation'
-      })
+        isEvidenceCritical: caseItem.caseType === 'criminal' || caseItem.caseType === 'litigation',
+      };
+      const priority = calculateDocumentPriority(docForPriority);
       // Generate simple glyph signature based on case ID
       const glyphSignature = Array.from(caseItem.id)
         .map(char => char.charCodeAt(0).toString(16))
         .join('')
-        .substring(0, 8)
+        .substring(0, 8);
       return {
         ...caseItem,
         priority,
-        glyphSignature
-      }
-    })
+        glyphSignature,
+      };
+    });
     // Sort by priority (highest first) and recency
     const sortedCases = casesWithPriorities
       .sort((a, b) => {
         // Primary sort: priority
-        const priorityDiff = b.priority - a.priority
-        if (priorityDiff !== 0) return priorityDiff
+        const priorityDiff = b.priority - a.priority;
+        if (priorityDiff !== 0) return priorityDiff;
         // Secondary sort: recency
-        return new Date(b.lastAccessed).getTime() - new Date(a.lastAccessed).getTime()
+        return new Date(b.lastAccessed).getTime() - new Date(a.lastAccessed).getTime();
       })
-      .slice(0, limit)
+      .slice(0, limit);
     // Cache the results (60-second TTL, high priority)
-    await multiLayerCache.set(cacheKey, sortedCases, 60, 180)
+    await multiLayerCache.set(cacheKey, sortedCases, 60, 180);
     return json({
       success: true,
       data: sortedCases,
@@ -188,11 +194,11 @@ export const GET: RequestHandler = async ({ url, request }) => {
         returnedCases: sortedCases.length,
         highestPriority: sortedCases[0]?.priority || 0,
         algorithm: 'priority-weighted-recency',
-        cacheExpiry: 60
-      }
-    })
+        cacheExpiry: 60,
+      },
+    });
   } catch (error) {
-    console.error('Error fetching recent cases:', error)
+    console.error('Error fetching recent cases:', error);
     // Return mock data with "failure default to mock" error message
     const mockFallbackCases = [
       {
@@ -210,8 +216,8 @@ export const GET: RequestHandler = async ({ url, request }) => {
           practiceArea: 'Employment Law',
           daysOpen: 30,
           documentCount: 85,
-          lastActivity: 'Mock evidence review'
-        }
+          lastActivity: 'Mock evidence review',
+        },
       },
       {
         id: 'mock-case-002',
@@ -228,81 +234,95 @@ export const GET: RequestHandler = async ({ url, request }) => {
           practiceArea: 'Corporate Law',
           daysOpen: 15,
           documentCount: 45,
-          lastActivity: 'Mock contract review'
-        }
-      }
-    ]
-    return json({
-      success: false,
-      error: 'failure default to mock',
-      data: mockFallbackCases,
-      fromCache: false,
-      timestamp: new Date().toISOString(),
-      meta: {
-        totalCases: mockFallbackCases.length,
-        returnedCases: mockFallbackCases.length,
-        highestPriority: 200,
-        algorithm: 'mock-fallback',
-        cacheExpiry: 0
-      }
-    }, { status: 500 })
+          lastActivity: 'Mock contract review',
+        },
+      },
+    ];
+    return json(
+      {
+        success: false,
+        error: 'failure default to mock',
+        data: mockFallbackCases,
+        fromCache: false,
+        timestamp: new Date().toISOString(),
+        meta: {
+          totalCases: mockFallbackCases.length,
+          returnedCases: mockFallbackCases.length,
+          highestPriority: 200,
+          algorithm: 'mock-fallback',
+          cacheExpiry: 0,
+        },
+      },
+      { status: 500 }
+    );
   }
-}
+};
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json()
-    const { caseId, action } = body
+    const body = await request.json();
+    const { caseId, action } = body;
     if (!caseId || !action) {
-      return json({
-        success: false,
-        error: 'Missing required fields: caseId, action'
-      }, { status: 400 })
+      return json(
+        {
+          success: false,
+          error: 'Missing required fields: caseId, action',
+        },
+        { status: 400 }
+      );
     }
     // Update case based on action
-    const caseIndex = mockCases.findIndex(c => c.id === caseId)
+    const caseIndex = mockCases.findIndex(c => c.id === caseId);
     if (caseIndex === -1) {
-      return json({
-        success: false,
-        error: 'Case not found'
-      }, { status: 404 })
+      return json(
+        {
+          success: false,
+          error: 'Case not found',
+        },
+        { status: 404 }
+      );
     }
-    const caseItem = mockCases[caseIndex]
+    const caseItem = mockCases[caseIndex];
     switch (action) {
       case 'access':
         // Update last accessed time
-        caseItem.lastAccessed = new Date().toISOString()
-        break
+        caseItem.lastAccessed = new Date().toISOString();
+        break;
       case 'boost':
         // Temporarily boost priority
-        caseItem.confidence = Math.min(1.0, caseItem.confidence + 0.1)
-        break
+        caseItem.confidence = Math.min(1.0, caseItem.confidence + 0.1);
+        break;
       case 'dismiss':
         // Lower priority
-        caseItem.confidence = Math.max(0.1, caseItem.confidence - 0.2)
-        break
+        caseItem.confidence = Math.max(0.1, caseItem.confidence - 0.2);
+        break;
       default:
-        return json({,
-          success: false,
-          error: 'Invalid action'
-        }, { status: 400 })
+        return json(
+          {
+            success: false,
+            error: 'Invalid action',
+          },
+          { status: 400 }
+        );
     }
-    // Clear cache to force refresh
-    const cacheKey = 'recent-cases-5'
-    await multiLayerCache.clear('memory')
+    // Clear caches to force refresh. multiLayerCache.clear expects a storage target ('memory'|'indexeddb'|'redis'|'all')
+    await multiLayerCache.clear('all');
     return json({
       success: true,
       message: `Case ${caseId} updated with action: ${action}`,
       updatedCase: caseItem,
       timestamp: new Date().toISOString(),
-    })
+    });
   } catch (error) {
-    console.error('Error updating case:', error)
-    return json({
-      success: false,
-      error: 'failure default to mock - case update simulated',
-      message: 'Mock update: Case action processed locally',
-      updatedCase: null,
-      timestamp: new Date().toISOString(),
-    }, { status: 500 })
+    console.error('Error updating case:', error);
+    return json(
+      {
+        success: false,
+        error: 'failure default to mock - case update simulated',
+        message: 'Mock update: Case action processed locally',
+        updatedCase: null,
+        timestamp: new Date().toISOString(),
+      },
+      { status: 500 }
+    );
   }
-}
+};
