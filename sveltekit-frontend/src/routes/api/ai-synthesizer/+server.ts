@@ -40,23 +40,6 @@ type StreamChunk = { type: 'chunk'; chunk: string };
 type StreamComplete = { type: 'complete'; result: ProcessResult };
 type StreamUpdate = StreamStage | StreamChunk | StreamComplete;
 
-// Typed test result for the /test runner
-type TestResult =
-	| {
-			query: string;
-			success: true;
-			processingTime: number;
-			confidence: number;
-			sourcesUsed: unknown[];
-			expectedSources?: string[];
-	  }
-	| {
-			query: string;
-			success: false;
-			error: string;
-			processingTime: number;
-	  };
-
 // Safe error-to-string helper
 function errToString(err: unknown): string {
   if (err instanceof Error) return err.message;
@@ -412,6 +395,4 @@ setInterval(() => {
     }
   }
 }, 60000); // Check every minute
-// Export for testing
-export { activeStreams };
-export { activeStreams };
+

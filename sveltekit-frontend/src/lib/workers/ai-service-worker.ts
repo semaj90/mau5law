@@ -5,7 +5,7 @@
 /// <reference lib="webworker" />
 import type { LLMModel, AITask, AIResponse, WorkerMessage } from '$lib/types/ai-worker.js';
 declare const self: DedicatedWorkerGlobalScope;
-}
+
 export interface AIProviderConfig {
   id: string;
   type: 'ollama' | 'llamacpp' | 'autogen' | 'crewai';
@@ -23,16 +23,19 @@ const getUUID = (): string => {
   // Fallback
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
+
 class AIServiceWorker {
   private providers: Map<string, AIProviderConfig> = new Map();
   private activeRequests: Map<string, AbortController> = new Map();
   private requestQueue: AITask[] = [];
   private maxConcurrentRequests = 3;
   private activeRequestCount = 0;
+
   constructor() {
     this.initializeProviders();
     this.setupMessageHandlers();
   }
+
   private initializeProviders() {
     // Initialize supported AI providers
     this.providers.set('ollama', {
@@ -64,9 +67,10 @@ class AIServiceWorker {
       retries: 1
     });
   }
+
   private setupMessageHandlers() {
-    self.addEventListener('message', async (_event: MessageEvent<WorkerMessage>) => {
-      const { type, payload, taskId } = event.data;
+    self.addEventListener('message', async (event: MessageEvent<WorkerMessage>) => {
+      const { type, payload, taskId } = event.data; // use local event variable
       try {
         switch (type) {
           case 'PROCESS_AI_TASK':
@@ -79,7 +83,7 @@ class AIServiceWorker {
             this.sendStatus();
             break;
           case 'UPDATE_PROVIDER_CONFIG':
-            this.updateProviderConfig(payload);
+            this.updateProviderConfig(payload as Partial<AIProviderConfig>);
             break;
           default:
             console.warn('Unknown message type:', type);
@@ -89,10 +93,11 @@ class AIServiceWorker {
       }
     });
   }
-  private async processAITask(_task: AITask, taskId: string) {
+
+  private async processAITask(task: AITask, taskId: string) {
     // Add to queue if at max capacity
     if (this.activeRequestCount >= this.maxConcurrentRequests) {
-      this.requestQueue.push({ ...task, taskId });
+      this.requestQueue.push({ ...task, taskId } as AITask);
       this.sendMessage({
         type: 'TASK_QUEUED',
         taskId,
@@ -100,9 +105,11 @@ class AIServiceWorker {
       });
       return;
     }
+
     this.activeRequestCount++;
     const abortController = new AbortController();
     this.activeRequests.set(taskId, abortController);
+
     try {
       this.sendMessage({
         type: 'TASK_STARTED',
@@ -116,7 +123,7 @@ class AIServiceWorker {
         payload: result
       });
     } catch (error: any) {
-      if (error instanceof Error && error.name === 'AbortError') {
+      if (error && (error.name === 'AbortError' || error.message === 'timeout')) {
         this.sendMessage({
           type: 'TASK_CANCELLED',
           taskId,
@@ -131,16 +138,18 @@ class AIServiceWorker {
       this.processQueue();
     }
   }
-  private async executeAITask(_task: AITask, signal: AbortSignal): Promise<AIResponse> {
+
+  private async executeAITask(task: AITask, signal: AbortSignal): Promise<AIResponse> {
     const provider = this.providers.get(task.providerId);
     if (!provider) {
       throw new Error(`Provider ${task.providerId} not found`);
     }
+
     let lastError: Error | null = null;
     // Retry logic
     for (let attempt = 0; attempt <= provider.retries; attempt++) {
       try {
-        // removed unused response assignment
+        const response = await this.callProvider(provider, task, signal);
         return response;
       } catch (error: any) {
         lastError = error as Error;
@@ -153,24 +162,29 @@ class AIServiceWorker {
     }
     throw lastError || new Error('Unknown error during AI task execution');
   }
+
   private async callProvider(
     provider: AIProviderConfig,
-    task: AITask;
-    signal: AbortSignal;
+    task: AITask,
+    signal: AbortSignal
   ): Promise<AIResponse> {
+    const timeoutController = new AbortController();
+    const combinedSignal = this.mergeAbortSignals(signal, timeoutController.signal);
     const timeoutId = setTimeout(() => {
-      if (!signal.aborted) {
-        signal.dispatchEvent(new Event('timeout');
-      }
+      timeoutController.abort();
     }, provider.timeout);
+
     try {
       switch (provider.type) {
         case 'ollama':
-          return await this.callOllama(provider, task, signal);
+          return await this.callOllama(provider, task, combinedSignal);
         case 'autogen':
-          return await this.callAutoGen(provider, task, signal);
+          return await this.callAutoGen(provider, task, combinedSignal);
         case 'crewai':
-          return await this.callCrewAI(provider, task, signal);
+          return await this.callCrewAI(provider, task, combinedSignal);
+        case 'llamacpp':
+          // If llamacpp needs a dedicated handler, implement similar to ollama
+          return await this.callOllama(provider, task, combinedSignal);
         default:
           throw new Error(`Unsupported provider type: ${provider.type}`);
       }
@@ -178,37 +192,39 @@ class AIServiceWorker {
       clearTimeout(timeoutId);
     }
   }
+
   private async callOllama(
     provider: AIProviderConfig,
-    task: AITask;
-    signal: AbortSignal;
+    task: AITask,
+    signal: AbortSignal
   ): Promise<AIResponse> {
     const response = await fetch(`${provider.endpoint}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
-        model: task?.model || "unknown" // @ts-ignore - Model property access,
+      body: JSON.stringify({
+        model: (task as any)?.model ?? 'unknown',
         prompt: task.prompt,
-        system: task.systemPrompt,
+        system: (task as any)?.systemPrompt ?? undefined,
         stream: false,
         options: {
-          temperature: task.temperature || 0.1,
-          top_p: task.topP || 0.9,
-          top_k: task.topK || 40,
-          repeat_penalty: task.repeatPenalty || 1.05
+          temperature: (task as any)?.temperature ?? 0.1,
+          top_p: (task as any)?.topP ?? 0.9,
+          top_k: (task as any)?.topK ?? 40,
+          repeat_penalty: (task as any)?.repeatPenalty ?? 1.05
         }
       }),
       signal
     });
+
     if (!response.ok) {
       throw new Error(`Ollama API error: ${response.status} ${response.statusText}`);
     }
     const data = await response.json();
     return {
       id: getUUID(),
-      content: data.response,
+      content: data.response ?? data.output ?? '',
       providerId: provider.id,
-      model: task?.model || "unknown" // @ts-ignore - Model property access,
+      model: (task as any)?.model ?? 'unknown',
       tokensUsed: data.eval_count || 0,
       responseTime: data.total_duration ? Math.round(data.total_duration / 1000000) : 0,
       metadata: {
@@ -216,84 +232,90 @@ class AIServiceWorker {
         evalDuration: data.eval_duration,
         loadDuration: data.load_duration
       }
-    }
+    };
   }
+
   private async callAutoGen(
     provider: AIProviderConfig,
-    task: AITask;
-    signal: AbortSignal;
+    task: AITask,
+    signal: AbortSignal
   ): Promise<AIResponse> {
     const response = await fetch(`${provider.endpoint}/api/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
-        agents: task.agents || ['assistant'],
+      body: JSON.stringify({
+        agents: (task as any).agents ?? ['assistant'],
         message: task.prompt,
-        max_rounds: task.maxRounds || 5,
-        context: task.context || {}
+        max_rounds: (task as any).maxRounds ?? 5,
+        context: (task as any).context ?? {}
       }),
       signal
     });
+
     if (!response.ok) {
       throw new Error(`AutoGen API error: ${response.status} ${response.statusText}`);
     }
     const data = await response.json();
     return {
       id: getUUID(),
-      content: data.final_response,
+      content: data.final_response ?? data.output ?? '',
       providerId: provider.id,
       model: 'autogen-agents',
       tokensUsed: data.total_tokens || 0,
-      responseTime: Date.now() - task.timestamp,
+      responseTime: Date.now() - ((task as any).timestamp || Date.now()),
       metadata: {
         rounds: data.rounds,
         agents: data.agent_responses,
         conversationId: data.conversation_id
       }
-    }
+    };
   }
+
   private async callCrewAI(
     provider: AIProviderConfig,
-    task: AITask;
-    signal: AbortSignal;
+    task: AITask,
+    signal: AbortSignal
   ): Promise<AIResponse> {
     const response = await fetch(`${provider.endpoint}/api/crew/execute`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
-        crew_id: task.crewId || 'legal-analysis-crew',
+      body: JSON.stringify({
+        crew_id: (task as any).crewId ?? 'legal-analysis-crew',
         task: task.prompt,
-        context: task.context || {},
-        agents: task.agents || ['researcher', 'analyst', 'writer']
+        context: (task as any).context ?? {},
+        agents: (task as any).agents ?? ['researcher', 'analyst', 'writer']
       }),
       signal
     });
+
     if (!response.ok) {
       throw new Error(`CrewAI API error: ${response.status} ${response.statusText}`);
     }
     const data = await response.json();
     return {
       id: getUUID(),
-      content: data.final_output,
+      content: data.final_output ?? data.output ?? '',
       providerId: provider.id,
       model: 'crewai-agents',
       tokensUsed: data.total_tokens || 0,
-      responseTime: Date.now() - task.timestamp,
+      responseTime: Date.now() - ((task as any).timestamp || Date.now()),
       metadata: {
         taskId: data.task_id,
         agents: data.agent_outputs,
         executionTime: data.execution_time
       }
-    }
+    };
   }
+
   private processQueue() {
     if (this.requestQueue.length > 0 && this.activeRequestCount < this.maxConcurrentRequests) {
       const task = this.requestQueue.shift();
-      if (task) {
-        this.processAITask(task, task.taskId);
+      if (task && (task as any).taskId) {
+        this.processAITask(task, (task as any).taskId);
       }
     }
   }
+
   private cancelTask(taskId: string) {
     const controller = this.activeRequests.get(taskId);
     if (controller) {
@@ -301,14 +323,16 @@ class AIServiceWorker {
       this.activeRequests.delete(taskId);
     }
     // Remove from queue if present
-    this.requestQueue = this.requestQueue.filter((task) => task.taskId !== taskId);
+    this.requestQueue = this.requestQueue.filter((t) => (t as any).taskId !== taskId);
   }
+
   private updateProviderConfig(config: Partial<AIProviderConfig>) {
     if (config.id && this.providers.has(config.id)) {
       const existing = this.providers.get(config.id)!;
       this.providers.set(config.id, { ...existing, ...config });
     }
   }
+
   private sendStatus() {
     this.sendMessage({
       type: 'STATUS_UPDATE',
@@ -321,9 +345,11 @@ class AIServiceWorker {
       }
     });
   }
+
   private sendMessage(message: WorkerMessage) {
     self.postMessage(message);
   }
+
   private sendError(taskId: string, error: Error) {
     this.sendMessage({
       type: 'TASK_ERROR',
@@ -335,10 +361,9 @@ class AIServiceWorker {
       }
     });
   }
+
   private delay(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms);
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
-}
-// Initialize the worker
-new AIServiceWorker();
-export {}
+
+  // Merge two AbortSignals into a
