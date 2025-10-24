@@ -4,12 +4,17 @@
  * Supports SIMD acceleration and multi-core parallelism
  */
 /// <reference lib="webworker" />
-interface WorkerMessage {
+interface CacheWorkerMessage {
   type: 'init' | 'compress' | 'decompress' | 'serialize' | 'deserialize' | 'batch';
   id?: string;
-  data?: any;
+  // narrowed type (was any)
+  data?: Uint8Array | Float32Array | string | Record<string, unknown>;
   config?: WorkerConfig;
-  operations?: any[];
+  // narrowed type for batch operations (was any[])
+  operations?: Array<{
+    type: 'compress' | 'decompress' | 'serialize' | 'deserialize';
+    data?: Uint8Array | Float32Array | string | Record<string, unknown>;
+  }>;
 }
 interface WorkerConfig {
   poolType: string;
@@ -17,47 +22,52 @@ interface WorkerConfig {
   rtxOptimizations: boolean;
   simdEnabled: boolean;
 }
+type InputData = Uint8Array | Float32Array | string | Record<string, unknown> | ArrayBuffer;
+
 class CacheWorker {
   private config: WorkerConfig | null = null;
   private simdSupport: boolean = false;
   constructor() {
     this.detectSIMDSupport();
+    // bind handler that expects MessageEvent<CacheWorkerMessage>
     self.addEventListener('message', this.handleMessage.bind(this));
   }
   private detectSIMDSupport(): void {
     try {
-      // Check for SIMD support
-      this.simdSupport = typeof WebAssembly !== 'undefined' &&
-                       WebAssembly.validate(new Uint8Array([
-                         0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00,
-                         0x01, 0x05, 0x01, 0x60, 0x00, 0x01, 0x7b,
-                         0x03, 0x02, 0x01, 0x00,
-                         0x0a, 0x0a, 0x01, 0x08, 0x00, 0xfd, 0x0c, 0xfd, 0x0c, 0x1a, 0x0b
-                       ]);
+      // Check for SIMD support (guard against environments without WebAssembly.validate)
+      this.simdSupport =
+        typeof WebAssembly !== 'undefined' &&
+        typeof WebAssembly.validate === 'function' &&
+        WebAssembly.validate(
+          new Uint8Array([
+            0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, 0x01, 0x05, 0x01, 0x60, 0x00, 0x01, 0x7b, 0x03, 0x02, 0x01,
+            0x00, 0x0a, 0x0a, 0x01, 0x08, 0x00, 0xfd, 0x0c, 0xfd, 0x0c, 0x1a, 0x0b,
+          ])
+        );
     } catch (error) {
       this.simdSupport = false;
     }
   }
-  private async handleMessage(_event: MessageEvent<WorkerMessage>): Promise<void> {
+  private async handleMessage(event: MessageEvent<CacheWorkerMessage>): Promise<void> {
     const { type, id, data, config, operations } = event.data;
     try {
-      let result: any;
+      let result: unknown;
       switch (type) {
         case 'init':
           this.config = config!;
-          result = { initialized: true, simdSupport: this.simdSupport }
+          result = { initialized: true, simdSupport: this.simdSupport };
           break;
         case 'compress':
-          result = await this.compressData(data);
+          result = await this.compressData(data as InputData);
           break;
         case 'decompress':
-          result = await this.decompressData(data);
+          result = await this.decompressData(data as Uint8Array);
           break;
         case 'serialize':
-          result = await this.serializeData(data);
+          result = await this.serializeData(data as InputData);
           break;
         case 'deserialize':
-          result = await this.deserializeData(data);
+          result = await this.deserializeData(data as Uint8Array);
           break;
         case 'batch':
           result = await this.processBatch(operations!);
@@ -69,25 +79,28 @@ class CacheWorker {
         type: 'result',
         id,
         result,
-        success: true
+        success: true,
       });
     } catch (error) {
       self.postMessage({
         type: 'error',
         id,
-        error: error instanceof Error ? error.message: String(error),
-        success: false
+        error: error instanceof Error ? error.message : String(error),
+        success: false,
       });
     }
   }
   /**
    * High-performance data compression using optimized algorithms
    */
-  private async compressData(data: any): Promise<Uint8Array> {
+  private async compressData(data: InputData): Promise<Uint8Array> {
     if (data instanceof Float32Array) {
       return this.compressFloatArray(data);
     } else if (typeof data === 'string') {
       return this.compressString(data);
+    } else if (data instanceof ArrayBuffer) {
+      // treat ArrayBuffer as raw binary -> wrap then compress as binary (here: return raw bytes)
+      return new Uint8Array(data);
     } else {
       // JSON compress
       const jsonString = JSON.stringify(data);
@@ -171,7 +184,7 @@ class CacheWorker {
   /**
    * Decompress data based on type detection
    */
-  private async decompressData(compressedData: Uint8Array): Promise<any> {
+  private async decompressData(compressedData: Uint8Array): Promise<string | Float32Array> {
     // Detect compression type from header or metadata
     if (compressedData.length >= 4 && compressedData[0] === 255) {
       // RLE compressed string
@@ -220,55 +233,54 @@ class CacheWorker {
   /**
    * High-performance serialization
    */
-  private async serializeData(data: any): Promise<Uint8Array> {
+  private async serializeData(data: InputData): Promise<Uint8Array> {
     if (data instanceof Float32Array || data instanceof ArrayBuffer) {
       // Binary data - no serialization needed
       return data instanceof ArrayBuffer ? new Uint8Array(data) : new Uint8Array(data.buffer);
     }
     // Use optimized JSON serialization
-    const jsonString = JSON.stringify(data, this.jsonReplacer);
+    const jsonString = JSON.stringify(data, this.jsonReplacer.bind(this));
     const encoder = new TextEncoder();
     return encoder.encode(jsonString);
   }
   /**
    * JSON replacer for optimized serialization
    */
-  private jsonReplacer(_key: string, value: any): any {
+  private jsonReplacer(_key: string, value: unknown): unknown {
     // Handle special types that JSON can't serialize natively
     if (value instanceof Float32Array) {
       return {
         __type: 'Float32Array',
-        __data: Array.from(value)
-      }
+        __data: Array.from(value),
+      };
     }
     if (value instanceof ArrayBuffer) {
       return {
         __type: 'ArrayBuffer',
-        __data: Array.from(new Uint8Array(value))
-      }
+        __data: Array.from(new Uint8Array(value)),
+      };
     }
     return value;
   }
   /**
    * High-performance deserialization
    */
-  private async deserializeData(serialized: Uint8Array): Promise<any> {
+  private async deserializeData(serialized: Uint8Array): Promise<unknown> {
     const decoder = new TextDecoder();
     const jsonString = decoder.decode(serialized);
-    return JSON.parse(jsonString, this.jsonReviver);
+    return JSON.parse(jsonString, this.jsonReviver.bind(this));
   }
   /**
    * JSON reviver for optimized deserialization
    */
-  private jsonReviver(_key: string, value: any): any {
-    if (value && typeof value === 'object' && value.__type) {
-      switch (value.__type) {
-        case 'Float32Array':
-          return new Float32Array(value.__data);
-        case 'ArrayBuffer':
-          return new Uint8Array(value.__data).buffer;
-        default:
-          return value;
+  private jsonReviver(_key: string, value: unknown): unknown {
+    if (value && typeof value === 'object') {
+      const v = value as Record<string, unknown>;
+      if (v.__type === 'Float32Array' && Array.isArray(v.__data)) {
+        return new Float32Array(v.__data as number[]);
+      }
+      if (v.__type === 'ArrayBuffer' && Array.isArray(v.__data)) {
+        return new Uint8Array(v.__data as number[]).buffer;
       }
     }
     return value;
@@ -276,26 +288,34 @@ class CacheWorker {
   /**
    * Process batch operations efficiently
    */
-  private async processBatch(operations: any[]): Promise<any[]> {
-    const results: any[] = [];
+  private async processBatch(
+    operations: Array<{
+      type: 'compress' | 'decompress' | 'serialize' | 'deserialize';
+      data?: Uint8Array | Float32Array | string | Record<string, unknown>;
+    }>
+  ): Promise<Array<Uint8Array | string | Float32Array | unknown>> {
+    // allow unknown here because deserializeData returns unknown
+    const results: Array<Uint8Array | string | Float32Array | unknown> = [];
     const batchSize = 16; // Process in chunks to avoid blocking
     for (let i = 0; i < operations.length; i += batchSize) {
       const batch = operations.slice(i, i + batchSize);
-      const batchResults = await Promise.all(batch.map(async (op) => {
+      const batchResults = (await Promise.all(
+        batch.map(async op => {
           switch (op.type) {
             case 'compress':
-              return await this.compressData(op.data);
+              return await this.compressData(op.data as InputData);
             case 'decompress':
-              return await this.decompressData(op.data);
+              return await this.decompressData(op.data as Uint8Array);
             case 'serialize':
-              return await this.serializeData(op.data);
+              return await this.serializeData(op.data as InputData);
             case 'deserialize':
-              return await this.deserializeData(op.data);
+              return await this.deserializeData(op.data as Uint8Array);
             default:
               throw new Error(`Unknown batch operation: ${op.type}`);
           }
         })
-      );
+      )) as Array<Uint8Array | string | Float32Array | unknown>;
+
       results.push(...batchResults);
       // Yield to event loop to prevent blocking
       if (i + batchSize < operations.length) {

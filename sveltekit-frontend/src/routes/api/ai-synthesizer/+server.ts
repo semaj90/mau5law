@@ -19,6 +19,44 @@ type SynthResult = {
 
 type Metric = { name: string; value: number };
 
+// --- added typed interfaces to replace 'any' usage ---
+type CacheStats = {
+	hits: number;
+	misses: number;
+	hitRate: number;
+	memoryUsage: number;
+};
+
+type CacheModule = {
+	getStats?: () => Promise<CacheStats>;
+	getMetrics?: () => Promise<CacheStats>;
+	stats?: CacheStats;
+};
+
+// Stream update/result shapes returned by aiOrchestrator.processStream
+type ProcessResult = SynthResult;
+type StreamStage = { type: 'stage'; stage: string; detail?: string };
+type StreamChunk = { type: 'chunk'; chunk: string };
+type StreamComplete = { type: 'complete'; result: ProcessResult };
+type StreamUpdate = StreamStage | StreamChunk | StreamComplete;
+
+// Typed test result for the /test runner
+type TestResult =
+	| {
+			query: string;
+			success: true;
+			processingTime: number;
+			confidence: number;
+			sourcesUsed: unknown[];
+			expectedSources?: string[];
+	  }
+	| {
+			query: string;
+			success: false;
+			error: string;
+			processingTime: number;
+	  };
+
 // Safe error-to-string helper
 function errToString(err: unknown): string {
   if (err instanceof Error) return err.message;
@@ -150,7 +188,8 @@ export const GET: RequestHandler = async ({ url }) => {
           expectedSources: ['neo4j', 'context7', 'ollama'],
         },
       ];
-      const results: Array<any> = [];
+      // renamed to avoid accidental redeclaration collisions in this file
+      const testResults: TestResult[] = [];
       for (const test of testQueries) {
         const startTime = Date.now();
         try {
@@ -158,16 +197,21 @@ export const GET: RequestHandler = async ({ url }) => {
             test: true,
             timeout: 10000,
           })) as SynthResult;
-          results.push({
+
+          // Safely extract sourcesUsed, ensuring it's an array
+          const rawSourcesUsed = (raw.metadata as Record<string, unknown>)?.['sourcesUsed'];
+          const sourcesUsedArray: unknown[] = Array.isArray(rawSourcesUsed) ? rawSourcesUsed : [];
+
+          testResults.push({
             query: test.query,
             success: true,
             processingTime: Date.now() - startTime,
             confidence: raw.confidence ?? 0,
-            sourcesUsed: (raw.metadata as Record<string, unknown>)?.['sourcesUsed'] ?? [],
+            sourcesUsed: sourcesUsedArray,
             expectedSources: test.expectedSources,
           });
         } catch (err: unknown) {
-          results.push({
+          testResults.push({
             query: test.query,
             success: false,
             error: errToString(err),
@@ -175,15 +219,17 @@ export const GET: RequestHandler = async ({ url }) => {
           });
         }
       }
-      const successCount = results.filter(r => r.success).length;
+      const successCount = testResults.filter(r => r.success).length;
       const avgProcessingTime =
-        results.length > 0 ? results.reduce((sum, r) => sum + (r.processingTime || 0), 0) / results.length : 0;
+        testResults.length > 0
+          ? testResults.reduce((sum, r) => sum + (r.processingTime || 0), 0) / testResults.length
+          : 0;
       return json({
-        success: successCount === results.length,
-        testsRun: results.length,
+        success: successCount === testResults.length,
+        testsRun: testResults.length,
         testsPassed: successCount,
         avgProcessingTime: Math.round(avgProcessingTime),
-        results,
+        results: testResults,
         services: await aiOrchestrator.health(),
         timestamp: new Date().toISOString(),
       });
@@ -194,20 +240,16 @@ export const GET: RequestHandler = async ({ url }) => {
     const health = await aiOrchestrator.health();
 
     // Safe cache stats retrieval: try known function names, fall back to defaults
-    let cacheStats: {
-      hits: number;
-      misses: number;
-      hitRate: number;
-      memoryUsage: number;
-    } = { hits: 0, misses: 0, hitRate: 0, memoryUsage: 0 };
+    let cacheStats: CacheStats = { hits: 0, misses: 0, hitRate: 0, memoryUsage: 0 };
 
     try {
-      if (typeof (caching as any).getStats === 'function') {
-        cacheStats = await (caching as any).getStats();
-      } else if (typeof (caching as any).getMetrics === 'function') {
-        cacheStats = await (caching as any).getMetrics();
-      } else if ((caching as any).stats) {
-        cacheStats = (caching as any).stats;
+      const cacheModule = caching as unknown as CacheModule;
+      if (typeof cacheModule.getStats === 'function') {
+        cacheStats = await cacheModule.getStats();
+      } else if (typeof cacheModule.getMetrics === 'function') {
+        cacheStats = await cacheModule.getMetrics();
+      } else if (cacheModule.stats) {
+        cacheStats = cacheModule.stats;
       }
     } catch (e) {
       console.debug('cache stats retrieval failed, using defaults:', String(e));
@@ -215,7 +257,8 @@ export const GET: RequestHandler = async ({ url }) => {
 
     // Get monitoring metrics
     const metricsRaw = await monitoringService.getMetrics();
-    const metrics = (metricsRaw as Metric[]) ?? [];
+    // cast via unknown to avoid incompatible-structure errors
+    const metrics = (metricsRaw as unknown as Metric[]) ?? [];
 
     // Compile comprehensive health status
     const status = {
@@ -243,11 +286,9 @@ export const GET: RequestHandler = async ({ url }) => {
         memoryUsage: cacheStats.memoryUsage,
       },
       monitoring: {
-        totalRequests:
-          (metrics.find(m => m?.name === 'api_requests_total') as Metric | undefined)?.value ?? 0,
+        totalRequests: (metrics.find(m => m?.name === 'api_requests_total') as Metric | undefined)?.value ?? 0,
         totalErrors: (metrics.find(m => m?.name === 'api_errors_total') as Metric | undefined)?.value ?? 0,
-        avgResponseTime:
-          (metrics.find(m => m?.name === 'api_request_duration_avg') as Metric | undefined)?.value ?? 0,
+        avgResponseTime: (metrics.find(m => m?.name === 'api_request_duration_avg') as Metric | undefined)?.value ?? 0,
         uptime: process.uptime(),
       },
       features: {
@@ -304,26 +345,37 @@ async function processStreamingRequest(
       stream.status = 'processing';
     }
     // Process with streaming
-    const generator = aiOrchestrator.processStream(query, {
+    const streamGenerator = aiOrchestrator.processStream(query, {
       ...(options ?? {}),
       context,
       streamId,
-    });
-    // Collect stream updates
-    const updates: unknown[] = [];
-    for await (const update of generator as AsyncIterable<any>) {
-      updates.push(update);
-      // Update stream state
+    }) as AsyncIterable<StreamUpdate>;
+
+    // Collect stream updates (typed) and avoid name collisions
+    const streamUpdates: StreamUpdate[] = [];
+    for await (const update of streamGenerator) {
+      streamUpdates.push(update);
+      // Update stream state (only after null-check)
       if (stream) {
         stream.lastUpdate = update;
-        stream.updates = updates;
+        stream.updates = [...streamUpdates];
       }
     }
-    // Mark as complete (safely access .result / .chunk)
+    // Mark as complete (use type guard before accessing .result)
     if (stream) {
       stream.status = 'complete';
-      const last = updates.length ? (updates[updates.length - 1] as any) : undefined;
-      stream.result = last?.result ?? last?.chunk ?? last;
+      const last = streamUpdates.length ? streamUpdates[streamUpdates.length - 1] : undefined;
+      if (last) {
+        if ('type' in last && last.type === 'complete') {
+          // last is StreamComplete
+          stream.result = last.result;
+        } else if ('type' in last && last.type === 'chunk') {
+          // last is StreamChunk
+          stream.result = (last as StreamChunk).chunk;
+        } else {
+          stream.result = last;
+        }
+      }
     }
   } catch (err: unknown) {
     const errMsg = errToString(err);
@@ -346,5 +398,20 @@ setInterval(() => {
     }
   }
 }, 60000); // Check every minute
+
 // Export for testing
+export { activeStreams };
+// Cleanup old streams periodically
+setInterval(() => {
+  const now = Date.now();
+  const maxAge = 5 * 60 * 1000; // 5 minutes
+  for (const [streamId, streamState] of activeStreams.entries()) {
+    if (now - streamState.startTime > maxAge) {
+      activeStreams.delete(streamId);
+      logger.debug(`[API] Cleaned up old stream ${streamId}`);
+    }
+  }
+}, 60000); // Check every minute
+// Export for testing
+export { activeStreams };
 export { activeStreams };

@@ -45,7 +45,7 @@ function Start-MCPServer {
     Write-Cyan "🚀 Starting MCP Multicore Server..."
 
     # Check if already running
-    $existing = Get-Process -Name "node" -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -like "*mcp-multicore-server*" }
+    $existing = Get-Process -Name $mcpConfig.ProcessName -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -like "*$($mcpConfig.ScriptPath)*" }
     if ($existing) {
         Write-Yellow "⚠️ MCP Server already running (PID: $($existing.Id))"
         return
@@ -76,7 +76,7 @@ function Start-MCPServer {
 function Stop-MCPServer {
     Write-Yellow "🔄 Stopping MCP Server..."
 
-    $processes = Get-Process -Name "node" -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -like "*mcp-multicore-server*" }
+    $processes = Get-Process -Name $mcpConfig.ProcessName -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -like "*$($mcpConfig.ScriptPath)*" }
 
     if ($processes) {
         foreach ($process in $processes) {
