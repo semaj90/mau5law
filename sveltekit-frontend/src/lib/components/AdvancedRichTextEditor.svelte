@@ -1,7 +1,7 @@
 <script lang="ts">
   import ErrorBoundary from '$lib/components/ErrorBoundary.svelte'
   // Svelte 5 runes are auto-imported with Advanced Rich Text Editor/Google Slides/Photoshop-like Features
-  import { onMount, onDestroy, $state, $bindable, $effect, $props } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import { Editor as TiptapEditor } from "@tiptap/core";
   import Color from "@tiptap/extension-color";
   import FontFamily from "@tiptap/extension-font-family";
@@ -57,6 +57,12 @@
     autosave = true,
     reportId = "",
     caseId = ""
+  }: {
+    content?: any;
+    placeholder?: string;
+    autosave?: boolean;
+    reportId?: string;
+    caseId?: string;
   } = $props();
 
   // typed editor and elements
@@ -64,7 +70,6 @@
   let editorElement: HTMLElement | null;
   let isFullscreen = $state(false);
   let errorMessage = $state('');
-  let isLoading = $state(false);
   let currentZoom = $state(100);
   let showGrid = $state(false);
   let showRuler = $state(true);
@@ -152,7 +157,7 @@
       "#92400e",
       "#166534",
     ],
-  }
+  };
   // Font options
   const fontFamilies = [
     "Inter",
@@ -171,7 +176,7 @@
   onMount(() => {
     const draft = loadDraft(reportId, caseId);
     if (draft && !content) {
-      $content = draft.content; // Update the bindable prop
+      content = draft.content; // Update the bindable prop
       wordCount = draft.wordCount;
       characterCount = draft.characterCount;
     }
@@ -188,9 +193,11 @@
   });
 
   // Initialize editor only after editorElement is bound
-  $: if (editorElement && !editor) {
-    initializeEditor();
-  }
+  $effect(() => {
+    if (editorElement && !editor) {
+      initializeEditor();
+    }
+  });
 
   // Top-level $effect for keyboard shortcuts, reacting to editor initialization
   $effect(() => {
@@ -324,7 +331,7 @@
     const jsonContent = editorInstance.getJSON(); // Renamed to avoid conflict with prop 'content'
     const html = editorInstance.getHTML();
     // Update the bindable prop to reflect the latest content
-    $content = jsonContent;
+    content = jsonContent;
 
     // Save offline immediately (Loki)
     saveDraft({ reportId, caseId, content: jsonContent, html, wordCount, characterCount });
@@ -472,6 +479,10 @@
     a.click();
     URL.revokeObjectURL(url);
   }
+  /**
+   * Opens a file picker dialog to import a document into the editor.
+   * Supports JSON (TipTap format) and HTML files; attempts JSON parse first, falls back to HTML if parsing fails.
+   */
   function importDocument() {
     const input = document.createElement("input");
     input.type = "file";
@@ -496,6 +507,7 @@
   // Reactive statements
   // 'state' is updated via the editorState subscription above and used in the template.
 </script>
+
 
 <ErrorBoundary>
   <div
@@ -665,11 +677,6 @@
                   ? "Remove highlight"
                   : `Highlight with ${color}`}
                 class="w-6 h-6 rounded-md border border-gray-300 cursor-pointer"
-                style="background-color: {color}"
-                on:click={() => setHighlight(color)}
-                title={color === "transparent"
-                  ? "Remove highlight"
-                  : `Highlight with ${color}`}
                 style="background-color: {color}"
                 on:click={() => setHighlight(color)}
                 title={color === "transparent"
@@ -875,14 +882,5 @@
   </div>
   <!-- All styles have been moved to UnoCSS classes in the markup. -->
 </ErrorBoundary>
-    >
-      <div bind:this={editorElement} class="flex-grow p-6 min-h-full"></div>
-    </div>
-  </div>
-  <!-- All styles have been moved to UnoCSS classes in the markup. -->
-</ErrorBoundary>
-    </div>
-  </div>
-  <!-- All styles have been moved to UnoCSS classes in the markup. -->
-</ErrorBoundary>
+
 

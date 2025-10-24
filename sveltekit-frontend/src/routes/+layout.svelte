@@ -1,6 +1,7 @@
-<!-- Minimal layout for testing -->
-<script>
-  // Minimal imports to test if the issue is with specific components
+<!-- Root layout - Global styles and configuration -->
+<script lang="ts">
+  // Import UnoCSS globally to avoid FOUC and component-level overhead
+  import 'uno.css';
 </script>
 
 <div class="min-h-screen bg-gray-900 text-white">

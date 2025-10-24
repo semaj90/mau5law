@@ -3,15 +3,17 @@
   import { user } from '$lib/stores/unified';
   import Button from '$lib/components/ui/Button.svelte';
   import * as Dialog from '$lib/components/ui/dialog';
+  import { ContextService } from '$lib/services/context-service'; // Import ContextService
 
   let cases = $state([
     { id: 'case-1', name: 'State v. John Doe' },
     { id: 'case-2', name: 'People v. Jane Smith' },
   ]);
   let showModal = $state(false);
-  function selectCase(caseId: string) {
-    // assume user has a selectCase method
-    (user as any).selectCase?.(caseId);
+  async function selectCase(caseId: string) {
+    // Update the application context with the selected case
+    console.log(`Selected case: ${caseId}`);
+    await ContextService.updateCaseContext({ caseId });
     showModal = false;
   }
 </script>

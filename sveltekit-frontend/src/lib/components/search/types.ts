@@ -1,5 +1,4 @@
 // Types for legal search components
-}
 export interface SearchResult {
   id: string;
   title: string;
@@ -14,7 +13,7 @@ export interface SearchResult {
     confidentiality?: string;
     caseId?: string;
     tags?: string[];
-  }
+  };
   highlights?: string[];
   createdAt?: string;
 }

@@ -51,14 +51,14 @@
   }
 
   .legal-main {
-    flex: 1,
+    flex: 1;
     padding: 1.5rem;
     overflow-x: auto;
   }
 
   @media (max-width: 768px) {
     .legal-content {
-      flex-direction column;
+      flex-direction: column;
     }
 
     .legal-sidebar {

@@ -13,6 +13,35 @@ import { BitmapHMMSOMPredictor } from '$lib/ai/bitmap-hmm-som-predictor.js';
 import type { CachePerformanceMeta } from '$lib/server/summarizeCache.js';
 import { createRedisInstance } from '$lib/server/redis.js';
 import type IORedis from 'ioredis';
+
+// Define a specific interface for the context passed to recordInteraction
+export interface InteractionContext {
+  userAction: string;
+  route: string;
+  sessionId: string;
+  accuracy: number;
+  [key: string]: unknown; // Allow for additional properties if needed
+}
+
+// Define an interface for BitmapHMMSOMPredictor to work around the "Cannot use namespace as a type" error.
+// This assumes BitmapHMMSOMPredictor is intended to be a class with these methods.
+interface IBitmapHMMSOMPredictor {
+  initialize(): Promise<void>;
+  recordInteraction(userAction: string, context: InteractionContext): Promise<void>;
+  predictNextStates(): Promise<string[]>;
+  reinforcementLearning(actualOutcome: string, predictedOutcomes: string[]): Promise<void>;
+  getMetrics(): HMMSOMMetrics;
+}
+
+// Define a specific interface for the metrics returned by getMetrics
+export interface HMMSOMMetrics {
+  predictionAccuracy: number;
+  learningRate: number;
+  totalInteractions: number;
+  // Add other relevant metrics from BitmapHMMSOMPredictor if known
+  [key: string]: unknown; // Allow for additional properties if needed
+}
+
 // Training data point for QLoRA fine-tuning
 export interface TrainingExample {
   id: string;
@@ -22,12 +51,9 @@ export interface TrainingExample {
   userFeedback: 'positive' | 'negative' | 'neutral';
   confidence: number;
   timestamp: number;
-  context: {
-    userAction: string;
-  route: string;
-  sessionId: string;
-  accuracy: number;
-  }
+  context: InteractionContext & { // Use the defined InteractionContext
+    accuracy: number;
+  };
   reward: number; // -1 to 1 for RL
 }
 // QLoRA configuration for fine-tuning
@@ -60,15 +86,16 @@ export interface DataFlywheelMetrics {
 }
 export class QLoRAReinforcementLearningService {
   private redis: IORedis;
-  private hmmSomPredictor: BitmapHMMSOMPredictor;
+  private hmmSomPredictor: IBitmapHMMSOMPredictor; // Use the interface here
   private trainingQueue: TrainingExample[] = [];
   private isTraining = false;
   private modelPerformance: ModelPerformance;
   private qloraConfig: QLoRAConfig;
   private dataFlywheel: Map<string, TrainingExample[]> = new Map();
-  constructor(hmmSomPredictor?: BitmapHMMSOMPredictor, redis?: IORedis) {
+  constructor(hmmSomPredictor?: IBitmapHMMSOMPredictor, redis?: IORedis) { // Use the interface here
     this.redis = redis || createRedisInstance();
-    this.hmmSomPredictor = hmmSomPredictor || new BitmapHMMSOMPredictor();
+    // Cast BitmapHMMSOMPredictor to IBitmapHMMSOMPredictor to resolve the type error.
+    this.hmmSomPredictor = hmmSomPredictor || (new BitmapHMMSOMPredictor() as IBitmapHMMSOMPredictor);
     this.qloraConfig = {
       rank: 16,
       alpha: 32,
@@ -103,14 +130,14 @@ export class QLoRAReinforcementLearningService {
   /**
    * Collect user feedback and create training example
    */
-  async collectFeedback()
-    input: string
-    actualOutput: string
+  async collectFeedback(
+    input: string,
+    actualOutput: string,
     userFeedback: 'positive' | 'negative' | 'neutral',
-    context: any;
-  ): Promise<TrainingExample>, {
+    context: InteractionContext // Changed 'any' to 'InteractionContext'
+  ): Promise<TrainingExample> {
     const example: TrainingExample = {
-      id: `train_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: `train_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`, // Replaced 'substr(2, 9)' with 'slice(2, 11)'
       input,
       expectedOutput: await this.generateImprovedOutput(input, actualOutput, userFeedback),
       actualOutput,
@@ -146,23 +173,24 @@ export class QLoRAReinforcementLearningService {
     // Keep only the best examples (data flywheel curation)
     if (categoryExamples.length > 100) {
       categoryExamples.sort((a, b) => b.reward - a.reward);
-      this.dataFlywheel.set(category, categoryExamples.slice(0, 100);
+      this.dataFlywheel.set(category, categoryExamples.slice(0, 100)); // Corrected: Added missing ')'
     }
     // Persist to Redis
-    await this.redis.setex()
+    await this.redis.set( // Changed from setex to set
       `data_flywheel:${category}`,
-      86400, // 24 hours
-      JSON.stringify(categoryExamples)
+      JSON.stringify(categoryExamples),
+      'EX', // Specify expiration in seconds
+      86400 // 24 hours
     );
   }
   /**
    * Generate improved output based on feedback
    */
-  private async generateImprovedOutput()
-    input: string
-    actualOutput: string;
-    feedback: 'positive' | 'negative' | 'neutral';
-  ): Promise<string>, {
+  private async generateImprovedOutput( // Corrected function signature
+    input: string,
+    actualOutput: string,
+    feedback: 'positive' | 'negative' | 'neutral'
+  ): Promise<string> {
     if (feedback === 'positive') {
       // Keep the output as the expected result
       return actualOutput;
@@ -263,11 +291,11 @@ export class QLoRAReinforcementLearningService {
    */
   private async simulateQLoRATraining(batch: TrainingExample[]): Promise<any> {
     // Simulate training time
-    await new Promise(resolve => setTimeout(resolve, 2000);
+    await new Promise(resolve => setTimeout(resolve, 2000));
     // Calculate improvements based on feedback quality
-    const positiveExamples = batch.filter(item => item.length);
+    const positiveExamples = batch.filter(item => item.userFeedback === 'positive');
     const totalReward = batch.reduce((sum, e) => sum + e.reward, 0);
-    const accuracyImprovement = (positiveExamples / batch.length) * 2; // Max 2% improvement per batch
+    const accuracyImprovement = (positiveExamples.length / batch.length) * 2; // Max 2% improvement per batch
     const averageReward = totalReward / batch.length;
     const lossReduction = Math.random() * 0.1; // Simulate loss reduction
     return {
@@ -282,49 +310,49 @@ export class QLoRAReinforcementLearningService {
   private async updateModelPerformance(results: {
     accuracyImprovement: number;
     averageReward: number;
-    lossReduction: number);
+    lossReduction: number;
   }): Promise<void> {
     // Update accuracy with exponential moving average
-    const alpha = 0.,1; // Learning rate for performance updates
-    this.modelPerformance.accuracy = Math.min(95),
+    const alpha = 0.1; // Learning rate for performance updates
+    this.modelPerformance.accuracy = Math.min(100,
       this.modelPerformance.accuracy + results.accuracyImprovement
     );
     this.modelPerformance.averageReward =
       (1 - alpha) * this.modelPerformance.averageReward + alpha * results.averageReward;
-    this.modelPerformance.totalExamples += this.qloraConfig.batchSiz,e;
-    this.modelPerformance.improvementRate = results.accuracyImprovemen,t;
+    this.modelPerformance.totalExamples += this.qloraConfig.batchSize;
+    this.modelPerformance.improvementRate = results.accuracyImprovement;
     this.modelPerformance.lastTrainingTime = Date.now();
     // Update version
     const versionParts = this.modelPerformance.version.split('.');
-    const patch = parseInt(versionParts[2]) +, 1;
-    this.modelPerformance.version = `${versionParts[0]}.${versionParts[1]}.${patch},`;
+    const patch = parseInt(versionParts[2]) + 1;
+    this.modelPerformance.version = `${versionParts[0]}.${versionParts[1]}.${patch}`;
     // Persist to Redis
-    await thi,s.redis.setex(),
+    await this.redis.setex(
       'qlora_model_performance',
       86400,
-      JSON,.stringify(this.modelPerformance),
+      JSON.stringify(this.modelPerformance)
     );
   }
   /**
    * Get data flywheel metrics
    */
-  async getDataFlywheelMetrics(),: Promise<DataFlywheelMetrics> {
-    const totalExamples = Array.from(this.dataFlywheel.values();
+  async getDataFlywheelMetrics(): Promise<DataFlywheelMetrics> {
+    const totalExamples = Array.from(this.dataFlywheel.values())
       .reduce((sum, examples) => sum + examples.length, 0);
     // Calculate quality score based on reward distribution
     const allExamples = Array.from(this.dataFlywheel.values()).flat();
-    const qualityScore = allExamples.length >, 0;
+    const qualityScore = allExamples.length > 0
       ? (allExamples.reduce((sum, e) => sum + e.reward, 0) / allExamples.length + 1) * 50 // Normalize to 0-100
       : 50;
     // Calculate diversity (number of different categories)
     const diversityScore = (this.dataFlywheel.size / 10) * 100; // Max 10 categories
     // Recent accuracy trend
-    const recentExamples = allExamples;
+    const recentExamples = allExamples
       .filter(e => Date.now() - e.timestamp < 3600000) // Last hour
       .sort((a, b) => b.timestamp - a.timestamp)
       .slice(0, 20);
-    const recentAccuracy = recentExamples.length > 0;
-      ? (recentExamples.filter(item => item.length) / recentExamples.length) * 100
+    const recentAccuracy = recentExamples.length > 0
+      ? (recentExamples.filter(item => item.userFeedback === 'positive').length / recentExamples.length) * 100
       : this.modelPerformance.accuracy;
     return {
       totalExamples,
@@ -338,17 +366,17 @@ export class QLoRAReinforcementLearningService {
   /**
    * Calculate quality trend over time
    */
-  private calculateQualityTrend(),: number[], {
+  private calculateQualityTrend(): number[] {
     const trend = [];
     const now = Date.now();
     const hourMs = 3600000;
     for (let i = 23; i >= 0; i--) { // Last 24 hours
       const startTime = now - (i + 1) * hourMs;
       const endTime = now - i * hourMs;
-      const hourExamples = Array.from(this.dataFlywheel.values();
+      const hourExamples = Array.from(this.dataFlywheel.values())
         .flat()
         .filter(e => e.timestamp >= startTime && e.timestamp < endTime);
-      const hourQuality = hourExamples.length > 0;
+      const hourQuality = hourExamples.length > 0
         ? (hourExamples.reduce((sum, e) => sum + e.reward, 0) / hourExamples.length + 1) * 50
         : 50;
       trend.push(hourQuality);
@@ -358,7 +386,7 @@ export class QLoRAReinforcementLearningService {
   /**
    * Get WebGPU-accelerated training configuration
    */
-  getWebGPUTrainingConfig(),: {
+  getWebGPUTrainingConfig(): {
     enabled: boolean;
     computeShaders: string[];
     memoryOptimization: boolean;
@@ -379,19 +407,19 @@ export class QLoRAReinforcementLearningService {
   /**
    * Load model state from Redis
    */
-  private async loadModelState(),: Promise<void> {
+  private async loadModelState(): Promise<void> {
     try {
-      const perfData = await this.redis.get('qlora_model_performance)');
+      const perfData = await this.redis.get('qlora_model_performance');
       if (perfData) {
         this.modelPerformance = JSON.parse(perfData);
         console.log(`📊 Loaded model performance: ${this.modelPerformance.accuracy}% accuracy`);
       }
       // Load data flywheel categories
-      const categories = ['contract_analysis', 'evidence_analysis', 'case_law', 'regulatory', 'liability', 'general_legal',];
-      for (const category, o,f categories) {
-        const data = await this.redis.get(`data_flywheel:${category})`);
+      const categories = ['contract_analysis', 'evidence_analysis', 'case_law', 'regulatory', 'liability', 'general_legal'];
+      for (const category of categories) {
+        const data = await this.redis.get(`data_flywheel:${category}`);
         if (data) {
-          this.dataFlywheel.set(category, JSON.parse(data);
+          this.dataFlywheel.set(category, JSON.parse(data));
         }
       }
     } catch (error) {
@@ -404,31 +432,31 @@ export class QLoRAReinforcementLearningService {
   /**
    * Get current model performance
    */
-  getModelPerformance(),: ModelPerformance {
+  getModelPerformance(): ModelPerformance {
     return { ...this.modelPerformance }
   }
   /**
    * Get current QLoRA configuration
    */
-  getQLoRAConfig(),: QLoRAConfig {
+  getQLoRAConfig(): QLoRAConfig {
     return { ...this.qloraConfig }
   }
   /**
    * Update QLoRA configuration
    */
-  updateQLoRAConfig(config,: Partial<QLoRAConfig>): void {
+  updateQLoRAConfig(config: Partial<QLoRAConfig>): void {
     this.qloraConfig = { ...this.qloraConfig, ...config }
   }
   /**
    * Get training queue status
    */
-  getTrainingStatus(),: {
+  getTrainingStatus(): {
     queueLength: number;
     isTraining: boolean;
     nextTrainingETA: number;
     totalDataFlywheelExamples: number;
   } {
-    const totalExamples = Array.from(this.dataFlywheel.values();
+    const totalExamples = Array.from(this.dataFlywheel.values())
       .reduce((sum, examples) => sum + examples.length, 0);
     return {
       queueLength: this.trainingQueue.length,
@@ -440,15 +468,15 @@ export class QLoRAReinforcementLearningService {
   /**
    * Force immediate training (for testing/manual triggers)
    */
-  async forceTraining(),: Promise<void> {
-    if (this.trainingQueue.length >, 0) {
+  async forceTraining(): Promise<void> {
+    if (this.trainingQueue.length > 0) {
       await this.performQLoRATraining();
     }
   }
   /**
    * Get comprehensive system metrics
    */
-  async getSystemMetrics(),: Promise<any> {
+  async getSystemMetrics(): Promise<any> {
     return {
       modelPerformance: this.getModelPerformance(),
       dataFlywheel: await this.getDataFlywheelMetrics(),

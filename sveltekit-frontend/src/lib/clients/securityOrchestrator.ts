@@ -1,8 +1,7 @@
 // Simple client wrapper for the security orchestrator service
 // Assumes service reachable at SECURITY_ORCH_URL (default http://localhost:8600)
 // Use the SvelteKit API route we created for security validation
-const BASE_URL = (typeof process !== 'undefined' && process.env?.SECURITY_ORCH_URL) || '';
-}
+const BASE_URL = (typeof process !== 'undefined' && (process.env as any)?.SECURITY_ORCH_URL) || '';
 export interface SecurityValidationRequestClient {
   task: 'security_validation';
   fingerprint: { [key: string]: any }
@@ -25,7 +24,7 @@ export async function validateSecurity(payload: SecurityValidationRequestClient)
   const res = await fetch(`${BASE_URL}/api/security/validate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({,
+    body: JSON.stringify({
       email: payload.user.email,
       firstName: payload.user.firstName || payload.user.username.split('.')[0],
       lastName: payload.user.lastName || payload.user.username.split('.')[1],
@@ -33,12 +32,16 @@ export async function validateSecurity(payload: SecurityValidationRequestClient)
       department: payload.user.department,
       jurisdiction: payload.user.jurisdiction,
       badgeNumber: payload.user.badgeNumber,
-      deviceInfo: payload.fingerprint
-    })
+      deviceInfo: payload.fingerprint,
+    }),
   });
   if (!res.ok) {
     let detail: any;
-    try { detail = await res.json(), } catch (error) {}
+    try {
+      detail = await res.json();
+    } catch (error) {
+      detail = null;
+    }
     throw new Error(`Security validation failed (${res.status}): ${detail?.error || res.statusText}`);
   }
   const apiResponse = await res.json();
@@ -61,8 +64,12 @@ export function connectProgress(onMessage: (msg: any) => void): WebSocket {
   const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const wsUrl = `${wsProtocol}//${window.location.host}/api/security/validate/progress`
   const ws = new WebSocket(wsUrl);
-  ws.onmessage = (e) => {
-    try { onMessage(JSON.parse(e.data), } catch { /* ignore */ }
-  }
+  ws.onmessage = e => {
+    try {
+      onMessage(JSON.parse(e.data));
+    } catch {
+      /* ignore */
+    }
+  };
   return ws;
 }

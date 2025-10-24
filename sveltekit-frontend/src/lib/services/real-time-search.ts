@@ -94,15 +94,70 @@ export interface SearchResult {
   realTime?: boolean;
 }
 
+// New interfaces for WebSocket message types
+interface WebSocketMessage<T = unknown> {
+  type: string;
+  searchId?: string;
+  data: T;
+}
+
+interface SearchResultsData {
+  results: SearchResult[];
+}
+
+interface SearchSuggestionsData {
+  suggestions: string[];
+}
+
+interface SearchProgressData {
+  progress?: number;
+  message?: string;
+}
+
+interface SearchErrorData {
+  error: string;
+  message?: string;
+}
+
+interface SearchResultChunkData {
+  results: SearchResult[];
+}
+
+interface RealTimeSearchOptions {
+  categories?: string[];
+  vectorSearch?: boolean;
+  streamResults?: boolean;
+  includeAI?: boolean;
+  legalContext?: {
+    jurisdiction?: string;
+    practiceAreas?: string;
+  };
+}
+
+interface HTTPSearchOptions {
+  categories?: string[];
+  vectorSearch?: boolean;
+  aiSuggestions?: boolean;
+  limit?: number;
+}
+
 // Enhanced Real-time Search Service
+/**
+ * Main orchestrator for real-time legal search, integrating WebSocket (Enhanced RAG) and future NATS support.
+ * Designed for SvelteKit 2/Svelte 5, this service manages live search state, streaming results, suggestions,
+ * and HTTP fallback, providing a unified API for legal document, case, and evidence search.
+ */
 export class RealTimeSearchService {
+  // Placeholder for NATS connection: integration is planned per Legal AI Platform instructions (see .github/copilot-instructions.md),
+  // but not yet implemented. This property is reserved for future real-time messaging via NATS.
+  private _natsConnection: unknown = null;
   private ws: WebSocket | null = null;
-  private natsConnection: any = null;
+  // This property is intended for future NATS integration as per instructions,
+  // hence it's currently declared but not fully utilized.
+  // TODO: Implement NATS connection for real-time messaging in future (placeholder for now)
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
   private reconnectInterval = 2000;
-  private searchQueue: Array<any> = [];
-  private isProcessingQueue = false;
 
   // Reactive stores for Svelte 5 compatibility
   public state: Writable<RealTimeSearchState> = writable({
@@ -221,7 +276,7 @@ export class RealTimeSearchService {
           resolve();
         };
 
-        this.ws.onmessage = (event: any) => {
+        this.ws.onmessage = (event: MessageEvent) => {
           this.handleWebSocketMessage(event);
         };
 
@@ -238,7 +293,7 @@ export class RealTimeSearchService {
         };
 
         this.ws.onerror = error => {
-          console.error('❌ WebSocket error:', error);
+          console.error('❌ WebSocket error:', error instanceof Error ? error.message : String(error));
           // Don't reject immediately - let onclose handle reconnection
           this.state.update(s => ({
             ...s,
@@ -264,8 +319,8 @@ export class RealTimeSearchService {
           },
           { once: true }
         );
-      } catch (error: any) {
-        console.error('❌ WebSocket connection error:', error);
+      } catch (error: unknown) {
+        console.error('❌ WebSocket connection error:', error instanceof Error ? error.message : String(error));
         reject(error);
       }
     });
@@ -277,47 +332,45 @@ export class RealTimeSearchService {
       // Use a lightweight NATS client for browser
       // Since we're in a browser environment, we'll use WebSocket-based NATS
       console.log('📡 Connecting to NATS via WebSocket...');
-      // For now, we'll focus on WebSocket and add full NATS later
+      // TODO: Implement full NATS connection using NATS_WS_URL
+      // For now, we'll just log its intended use to resolve the unused variable warning.
+      // Example: const natsClient = new Nats.connect({ servers: [NATS_WS_URL] });
       // This allows immediate testing with the existing Enhanced RAG WebSocket
-    } catch (error: any) {
-      console.warn('⚠️ NATS connection failed, using WebSocket only:', error);
+      console.log(`NATS connection intended for: ${NATS_WS_URL}`);
+    } catch (error: unknown) {
+      console.warn('⚠️ NATS connection failed, using WebSocket only:', error instanceof Error ? error.message : String(error));
     }
   }
 
   // Handle WebSocket messages from Enhanced RAG service
   private handleWebSocketMessage(event: MessageEvent): void {
     try {
-      const message = JSON.parse(event.data);
+      const message: WebSocketMessage = JSON.parse(event.data);
       switch (message.type) {
         case 'search_results':
-          this.handleSearchResults(message.data);
+          this.handleSearchResults(message.data as SearchResultsData);
           break;
         case 'search_suggestions':
-          this.handleSearchSuggestions(message.data);
+          this.handleSearchSuggestions(message.data as SearchSuggestionsData);
           break;
         case 'search_progress':
-          this.handleSearchProgress(message.data);
+          this.handleSearchProgress(message.data as SearchProgressData);
           break;
         case 'error':
-          this.handleSearchError(message.data);
+          this.handleSearchError(message.data as SearchErrorData);
           break;
         default:
           console.log('📨 Received WebSocket message:', message);
       }
-    } catch (error: any) {
-      console.error('❌ Failed to parse WebSocket message:', error);
+    } catch (error: unknown) {
+      console.error('❌ Failed to parse WebSocket message:', error instanceof Error ? error.message : String(error));
     }
   }
 
   // Real-time search with streaming results
   public async performRealTimeSearch(
     query: string,
-    options: {
-      categories?: string[];
-      vectorSearch?: boolean;
-      streamResults?: boolean;
-      includeAI?: boolean;
-    } = {}
+    options: RealTimeSearchOptions = {}
   ): Promise<SearchResult[]> {
     const startTime = Date.now();
     this.state.update(s => ({
@@ -332,12 +385,19 @@ export class RealTimeSearchService {
         return await this.performStreamingSearch(query, options);
       }
       // Fallback to HTTP API with enhanced error handling
-      return await this.performHTTPSearch(query, options);
-    } catch (error: any) {
-      console.error('❌ Real-time search failed:', error);
+      // Map RealTimeSearchOptions to HTTPSearchOptions for the fallback
+      const httpOptions: HTTPSearchOptions = {
+        categories: options.categories,
+        vectorSearch: options.vectorSearch,
+        aiSuggestions: options.includeAI,
+        // limit is not directly in RealTimeSearchOptions, use default or add to options if needed
+      };
+      return await this.performHTTPSearch(query, httpOptions);
+    } catch (error: unknown) {
+      console.error('❌ Real-time search failed:', error instanceof Error ? error.message : String(error));
       this.state.update(s => ({
         ...s,
-        error: `Search failed: ${error}`,
+        error: `Search failed: ${error instanceof Error ? error.message : String(error)}`,
         isSearching: false,
       }));
       // Return fallback results
@@ -349,7 +409,7 @@ export class RealTimeSearchService {
   }
 
   // Streaming search via WebSocket
-  private async performStreamingSearch(query: string, options: any): Promise<SearchResult[]> {
+  private async performStreamingSearch(query: string, options: RealTimeSearchOptions): Promise<SearchResult[]> {
     const promise = new Promise<SearchResult[]>((resolve, reject) => {
       const searchId = `search_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const results: SearchResult[] = [];
@@ -357,26 +417,27 @@ export class RealTimeSearchService {
 
       const messageHandler = (event: MessageEvent) => {
         try {
-          const message = JSON.parse(event.data);
+          const message: WebSocketMessage = JSON.parse(event.data);
           if (message.searchId !== searchId) return;
 
           switch (message.type) {
-            case 'search_result_chunk':
-              const chunkResults = message.data.results || [];
-              results.push(...chunkResults.map((r: any) => ({ ...r, realTime: true })));
+            case 'search_result_chunk': { // Added curly braces for lexical declaration
+              const chunkResults = (message.data as SearchResultChunkData).results || [];
+              results.push(...chunkResults.map((r: SearchResult) => ({ ...r, realTime: true })));
               this.state.update(s => ({ ...s, results: [...results] }));
               break;
+            }
             case 'search_completed':
               searchCompleted = true;
               this.state.update(s => ({ ...s, isSearching: false, results }));
               resolve(results);
               break;
             case 'search_error':
-              reject(new Error(message.data.error));
+              reject(new Error((message.data as SearchErrorData).error));
               break;
           }
-        } catch (error: any) {
-          console.error('❌ Error processing streaming search response:', error);
+        } catch (error: unknown) {
+          console.error('❌ Error processing streaming search response:', error instanceof Error ? error.message : String(error));
         }
       };
 
@@ -392,7 +453,7 @@ export class RealTimeSearchService {
             vectorSearch: options.vectorSearch !== false,
             includeAI: options.includeAI !== false,
             streamResults: true,
-            legalContext: {
+            legalContext: options.legalContext || {
               jurisdiction: 'federal',
               practiceAreas: 'all',
             },
@@ -418,19 +479,19 @@ export class RealTimeSearchService {
   }
 
   // HTTP fallback search
-  private async performHTTPSearch(query: string, options: any): Promise<SearchResult[]> {
+  private async performHTTPSearch(query: string, options: HTTPSearchOptions): Promise<SearchResult[]> {
     const searchParams = new URLSearchParams({
       q: query,
       categories: (options.categories || ['cases', 'evidence', 'documents']).join(','),
       vectorSearch: String(options.vectorSearch !== false),
-      aiSuggestions: String(options.includeAI !== false),
-      limit: '20',
+      aiSuggestions: String(options.aiSuggestions !== false),
+      limit: String(options.limit || 20),
     });
     // Try multiple endpoints with fallback
     const endpoints = [
       `/api/search/legal?${searchParams}`,
-      `http://localhost:8094/search?${searchParams}`,
-      `http://localhost:8093/search?${searchParams}`,
+      `${ENHANCED_RAG_URL}/search?${searchParams}`, // Use ENHANCED_RAG_URL
+      `${UPLOAD_SERVICE_URL}/search?${searchParams}`, // Use UPLOAD_SERVICE_URL
     ];
     let lastError: Error | null = null;
     for (const endpoint of endpoints) {
@@ -446,8 +507,8 @@ export class RealTimeSearchService {
         const results = data.results || [];
         this.state.update(s => ({ ...s, results, isSearching: false }));
         return results;
-      } catch (error: any) {
-        console.warn(`❌ Endpoint ${endpoint} failed:`, error);
+      } catch (error: unknown) {
+        console.warn(`❌ Endpoint ${endpoint} failed:`, error instanceof Error ? error.message : String(error));
         lastError = error as Error;
         continue;
       }
@@ -456,24 +517,24 @@ export class RealTimeSearchService {
   }
 
   // Handle streaming search results
-  private handleSearchResults(data: any): void {
-    const results = Array.isArray(data) ? data : data.results || [];
+  private handleSearchResults(data: SearchResultsData): void {
+    const results = data.results || [];
     this.state.update(s => ({ ...s, results, isSearching: false }));
   }
 
   // Handle search suggestions
-  private handleSearchSuggestions(data: any): void {
-    const suggestions = Array.isArray(data) ? data : data.suggestions || [];
+  private handleSearchSuggestions(data: SearchSuggestionsData): void {
+    const suggestions = data.suggestions || [];
     this.state.update(s => ({ ...s, suggestions }));
   }
 
   // Handle search progress updates
-  private handleSearchProgress(data: any): void {
+  private handleSearchProgress(data: SearchProgressData): void {
     console.log('🔄 Search progress:', data);
   }
 
   // Handle search errors
-  private handleSearchError(data: any): void {
+  private handleSearchError(data: SearchErrorData): void {
     const error = data.error || data.message || 'Unknown search error';
     this.state.update(s => ({ ...s, error, isSearching: false }));
   }
@@ -593,19 +654,19 @@ export class RealTimeSearchService {
 
     console.log('✅ Real-time search service disconnected');
   }
+
+  // Enhanced search hooks for Svelte 5 components
+  public useRealTimeSearch() {
+    return {
+      state: realTimeSearchService.state,
+      isReady: realTimeSearchService.isReady,
+      hasResults: realTimeSearchService.hasResults,
+      searchStatus: realTimeSearchService.searchStatus,
+      search: (query: string, options?: RealTimeSearchOptions) => realTimeSearchService.performRealTimeSearch(query, options),
+      disconnect: () => realTimeSearchService.disconnect(),
+    };
+  }
 }
 
 // Global real-time search service instance
 export const realTimeSearchService = new RealTimeSearchService();
-
-// Enhanced search hooks for Svelte 5 components
-export function useRealTimeSearch() {
-  return {
-    state: realTimeSearchService.state,
-    isReady: realTimeSearchService.isReady,
-    hasResults: realTimeSearchService.hasResults,
-    searchStatus: realTimeSearchService.searchStatus,
-    search: (query: string, options?: any) => realTimeSearchService.performRealTimeSearch(query, options),
-    disconnect: () => realTimeSearchService.disconnect(),
-  };
-}

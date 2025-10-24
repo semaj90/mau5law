@@ -112,21 +112,37 @@ export interface NeuralSpriteLegalProcessing {
   nametablePosition: number
   attributeData: number
 }
+
+// Add a typed interface for SOM cache implementations to avoid `any` casts
+type SOMCacheLike = {
+  storeVector?: (id: string, vector: number[] | Float32Array, metadata?: Record<string, unknown>) => Promise<void>
+  addVector?: (id: string, vector: number[] | Float32Array, metadata?: Record<string, unknown>) => Promise<void>
+  put?: (id: string, vector: number[] | Float32Array, metadata?: Record<string, unknown>) => Promise<void>
+  // typed fallback name used by some implementations
+  store?: (id: string, vector: number[] | Float32Array, metadata?: Record<string, unknown>) => Promise<void>
+  getStats?: () => unknown
+}
+
 export class QLorARLLangExtractOrchestrator {
   private nesMemory: NESMemoryArchitecture
-  private somCache: WebGPUSOMCache
+  private somCache: SOMCacheLike
   private rlAgent: Worker | null
   private langextractServiceUrl: string
   private qloraTrainingQueue: Map<string, QLorATrainingJob>
   private extractionHistory: Map<string, RLGuidedExtraction[]>
-  constructor(_options: {
+  constructor(options: {
     langextractServiceUrl?: string
     nesMemoryConfig?: Record<string, unknown>
     somCacheConfig?: Record<string, unknown>
   } = {}) {
+    // use the provided options parameter (was referencing undefined `options`)
     this.langextractServiceUrl = options.langextractServiceUrl || 'http://localhost:3001'
     this.nesMemory = new NESMemoryArchitecture()
-    this.somCache = new WebGPUSOMCache()
+    // keep concrete instantiation; the SOMCacheLike accepts several method names
+    // TS: WebGPUSOMCache may not be structurally identical to SOMCacheLike.
+    // Use a safe assertion here so we can runtime-dispatch to available methods.
+    // Replace with a proper adapter if you want stricter typing later.
+    this.somCache = (new WebGPUSOMCache() as unknown) as SOMCacheLike
     this.qloraTrainingQueue = new Map()
     this.extractionHistory = new Map()
     this.rlAgent = null
@@ -144,8 +160,9 @@ export class QLorARLLangExtractOrchestrator {
         explorationBonus: 0.1
       }
       worker.postMessage({ type: 'init', config: rlConfig })
-      worker.onmessage = (_event: MessageEvent<RLWorkerOutboundMessage>) => {
-        const { type } = event.data
+      // use the handler arg and reference evt.data (typed) to avoid using the global `event`
+      worker.onmessage = (evt: MessageEvent<RLWorkerOutboundMessage>) => {
+        const { type } = evt.data
         if (type === 'initialized') {
           console.log('🎯 NES-RL agent initialized for legal processing')
           this.rlAgent = worker
@@ -155,7 +172,7 @@ export class QLorARLLangExtractOrchestrator {
       console.error('❌ Failed to initialize RL agent:', error)
     }
   }
-  async processLegalDocument(_document: LegalDocument,
+  async processLegalDocument(document: LegalDocument,
     extractionSchema: Record<string, unknown>,
     userFeedback?: { quality: number; usefulness: number; accuracy: number }
   ): Promise<{
@@ -179,7 +196,7 @@ export class QLorARLLangExtractOrchestrator {
     }
     return { extractedData, rlGuidance, neuralSprite, qloraJobId }
   }
-  private async generateStateEmbedding(_document: LegalDocument): Promise<Float32Array> {
+  private async generateStateEmbedding(document: LegalDocument): Promise<Float32Array> {
     const contextVector = new Float32Array(1536)
     const ve = getVectorEmbedding(document)
     if (ve instanceof Float32Array) {
@@ -204,10 +221,10 @@ export class QLorARLLangExtractOrchestrator {
     }
     return new Promise((resolve) => {
       this.rlAgent!.postMessage({ type: 'selectAction', state: Array.from(stateEmbedding) })
-      this.rlAgent!.onmessage = (_event: MessageEvent<RLWorkerOutboundMessage>) => {
-        const { type } = event.data
+      this.rlAgent!.onmessage = (evt: MessageEvent<RLWorkerOutboundMessage>) => {
+        const { type } = evt.data
         if (type === 'actionSelected') {
-          const data = (event.data as Extract<RLWorkerOutboundMessage, { type: 'actionSelected' }>).data
+          const data = (evt.data as Extract<RLWorkerOutboundMessage, { type: 'actionSelected' }>).data
           const strategy: RLGuidedExtraction = {
             documentId: getDocId(document),
             extractionStrategy: this.mapActionToStrategy(data.action),
@@ -222,14 +239,14 @@ export class QLorARLLangExtractOrchestrator {
       }
     })
   }
-  private async callLangExtractService(_document: LegalDocument,
+  private async callLangExtractService(document: LegalDocument,
     schema: Record<string, unknown>,
     rlGuidance: RLGuidedExtraction
   ): Promise<Record<string, JsonValue>> {
     const response = await fetch(`${this.langextractServiceUrl}/extract`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         text: `Legal Document: ${getDocId(document)}\nType: ${getDocType(document)}\nContent: [Document content would be here]`,
         schema,
         options: {
@@ -242,7 +259,7 @@ export class QLorARLLangExtractOrchestrator {
     })
     return (await response.json()) as Record<string, JsonValue>
   }
-  private async createNeuralSprite(_document: LegalDocument,
+  private async createNeuralSprite(document: LegalDocument,
     extractedData: Record<string, JsonValue>,
     stateEmbedding: Float32Array
   ): Promise<NeuralSpriteLegalProcessing> {
@@ -265,7 +282,7 @@ export class QLorARLLangExtractOrchestrator {
     const attributeData = this.calculateAttributeData(document)
     return { spriteId, patternBuffer, vertexBuffer, embeddingVector: stateEmbedding, nametablePosition, attributeData }
   }
-  private async storeInNESMemory(_document: LegalDocument,
+  private async storeInNESMemory(document: LegalDocument,
     extractedData: Record<string, JsonValue>,
     neuralSprite: NeuralSpriteLegalProcessing
   ): Promise<void> {
@@ -274,15 +291,28 @@ export class QLorARLLangExtractOrchestrator {
       neuralSprite.patternBuffer,
       { preferredBank: 'CHR_ROM', compress: true }
     )
-    await this.somCache.storeVector(
-      neuralSprite.spriteId,
-      Array.from(neuralSprite.embeddingVector),
-      {
-        documentId: getDocId(document),
-        extractedData,
-        vertexBuffer: Array.from(neuralSprite.vertexBuffer)
-      }
-    )
+
+    // prepare vector + metadata
+    const vector = Array.from(neuralSprite.embeddingVector)
+    const meta = {
+      documentId: getDocId(document),
+      extractedData,
+      vertexBuffer: Array.from(neuralSprite.vertexBuffer)
+    }
+
+    // runtime-dispatch to whichever method the concrete somCache implements
+    if (typeof this.somCache.storeVector === 'function') {
+      await this.somCache.storeVector(neuralSprite.spriteId, vector, meta)
+    } else if (typeof this.somCache.addVector === 'function') {
+      await this.somCache.addVector(neuralSprite.spriteId, vector, meta)
+    } else if (typeof this.somCache.put === 'function') {
+      await this.somCache.put(neuralSprite.spriteId, vector, meta)
+    } else if (typeof this.somCache.store === 'function') {
+      // fallback for uncommon API names (now typed)
+      await this.somCache.store(neuralSprite.spriteId, vector, meta)
+    } else {
+      console.warn('SOM cache does not implement storeVector/addVector/put/store - skipping vector store', { spriteId: neuralSprite.spriteId })
+    }
   }
   private async triggerQLoRAFineTuning(documentType: string): Promise<string> {
     const jobId = `qlora_flywheel_${documentType}_${Date.now()}`
@@ -414,7 +444,7 @@ export class QLorARLLangExtractOrchestrator {
                 dataFlywheelMode: true,
               }
             },
-            dataPoints: job.trainingData.map((example) => ({,
+            dataPoints: job.trainingData.map((example) => ({
               prompt: example.input,
               completion: JSON.stringify(example.output),
               metadata: example.metadata
@@ -422,17 +452,17 @@ export class QLorARLLangExtractOrchestrator {
           }
         }
       })
-      worker.onmessage = async (_event: MessageEvent<TrainerMessage>) => {
-        const { type } = event.data
+      worker.onmessage = async (evt: MessageEvent<TrainerMessage>) => {
+        const { type } = evt.data
         if (type === 'training_progress') {
-          await this.handleFlywheelProgress(job, (event.data as Extract<TrainerMessage, { type: 'training_progress' }>).data)
+          await this.handleFlywheelProgress(job, (evt.data as Extract<TrainerMessage, { type: 'training_progress' }>).data)
         } else if (type === 'training_completed') {
-          await this.handleFlywheelCompletion(job, (event.data as Extract<TrainerMessage, { type: 'training_completed' }>).data)
+          await this.handleFlywheelCompletion(job, (evt.data as Extract<TrainerMessage, { type: 'training_completed' }>).data)
         } else if (type === 'training_error') {
-          console.error(`❌ DATA FLYWHEEL training error:`, (event.data as Extract<TrainerMessage, { type: 'training_error' }>).data.error)
+          console.error(`❌ DATA FLYWHEEL training error:`, (evt.data as Extract<TrainerMessage, { type: 'training_error' }>).data.error)
           job.status = 'failed'
         } else if (type === 'reinforcement_update') {
-          await this.handleFlywheelRLUpdate(job, (event.data as Extract<TrainerMessage, { type: 'reinforcement_update' }>).data)
+          await this.handleFlywheelRLUpdate(job, (evt.data as Extract<TrainerMessage, { type: 'reinforcement_update' }>).data)
         }
       }
     } catch (error) {
@@ -506,7 +536,7 @@ export class QLorARLLangExtractOrchestrator {
   private collectTrainingData(_documentType: string): LegalExtractionExample[] {
     return []
   }
-  private getDefaultStrategy(_document: LegalDocument): RLGuidedExtraction {
+  private getDefaultStrategy(document: LegalDocument): RLGuidedExtraction {
     return {
       documentId: getDocId(document),
       extractionStrategy: 'balanced',
@@ -534,7 +564,7 @@ export class QLorARLLangExtractOrchestrator {
     }
     return tile
   }
-  private calculateAttributeData(_document: LegalDocument): number {
+  private calculateAttributeData(document: LegalDocument): number {
     const riskColor = this.mapRiskLevel(getRiskLevel(document) || 'medium') * 3
     const typeColor = this.mapDocType(getDocType(document)) * 3
     const priority = (getNumberProp(document, 'priority') || 0) > 128 ? 1 : 0
@@ -605,7 +635,7 @@ export class QLorARLLangExtractOrchestrator {
   }
   private async updateRLAgent(
     stateEmbedding: Float32Array,
-    action: RLGuidedExtraction;
+    action: RLGuidedExtraction,
     reward: number
   ): Promise<void> {
     if (this.rlAgent) {
@@ -618,7 +648,7 @@ export class QLorARLLangExtractOrchestrator {
       activeQLoRAJobs: Array.from(this.qloraTrainingQueue.values()).filter((job) => job.status === 'training' || job.status === 'pending'),
       completedQLoRAJobs: Array.from(this.qloraTrainingQueue.values()).filter((job) => job.status === 'completed'),
       nesMemoryUsage: this.nesMemory.getMemoryStats(),
-      somCacheStats: this.somCache.getStats()
+      somCacheStats: typeof this.somCache.getStats === 'function' ? this.somCache.getStats() : undefined
     }
   }
 }

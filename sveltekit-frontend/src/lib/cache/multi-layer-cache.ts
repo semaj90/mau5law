@@ -51,10 +51,7 @@ export class MultiLayerCacheSystem {
       this.currentSize.set(config.name, 0);
     });
   }
-  async set<T>(_key: string
-    value: T,
-    layerName?: string
-  ): Promise<boolean> {
+  async set<T>(key: string, value: T, layerName?: string): Promise<boolean> {
     const targetLayer = layerName || this.selectOptimalLayer(value);
     const layer = this.layers.get(targetLayer);
     const config = this.layerConfigs.find(c => c.name === targetLayer);
@@ -70,19 +67,19 @@ export class MultiLayerCacheSystem {
       timestamp: Date.now(),
       accessCount: 0,
       size,
-      layer: targetLayer
-    }
+      layer: targetLayer,
+    };
     layer.set(key, entry);
     this.currentSize.set(targetLayer, this.currentSize.get(targetLayer)! + size);
     return true;
   }
-  async get<T>(_key: string, layerName?: string): Promise<T | null> {
+  async get<T>(key: string, layerName?: string): Promise<T | null> {
     if (layerName) {
       return this.getFromLayer<T>(key, layerName);
     }
     // Search all layers by priority
-    const sortedLayers = this.layerConfigs.sort((a, b) =>
-      this.getPriorityValue(b.priority) - this.getPriorityValue(a.priority)
+    const sortedLayers = this.layerConfigs.sort(
+      (a, b) => this.getPriorityValue(b.priority) - this.getPriorityValue(a.priority)
     );
     for (const config of sortedLayers) {
       const result = this.getFromLayer<T>(key, config.name);
@@ -90,7 +87,7 @@ export class MultiLayerCacheSystem {
     }
     return null;
   }
-  private getFromLayer<T>(_key: string, layerName: string): T | null {
+  private getFromLayer<T>(key: string, layerName: string): T | null {
     const layer = this.layers.get(layerName);
     const config = this.layerConfigs.find(c => c.name === layerName);
     if (!layer || !config) return null;
@@ -106,7 +103,7 @@ export class MultiLayerCacheSystem {
     entry.timestamp = Date.now();
     return entry.value;
   }
-  delete(_key: string, layerName?: string): boolean {
+  delete(key: string, layerName?: string): boolean {
     if (layerName) {
       return this.deleteFromLayer(key, layerName);
     }
@@ -116,7 +113,7 @@ export class MultiLayerCacheSystem {
     }
     return deleted;
   }
-  private deleteFromLayer(_key: string, layerName: string): boolean {
+  private deleteFromLayer(key: string, layerName: string): boolean {
     const layer = this.layers.get(layerName);
     if (!layer) return false;
     const entry = layer.get(key);
@@ -174,7 +171,7 @@ export class MultiLayerCacheSystem {
     const firstEntry = layer.entries().next();
     return firstEntry.done ? null : firstEntry.value[0];
   }
-  private selectOptimalLayer(_value: any): string {
+  private selectOptimalLayer(value: any): string {
     const size = this.estimateSize(value);
     // Select layer based on size and available space
     for (const config of this.layerConfigs) {
@@ -184,11 +181,9 @@ export class MultiLayerCacheSystem {
       }
     }
     // If no layer has space, return the largest one
-    return this.layerConfigs.reduce((largest, current) =>
-      current.maxSize > largest.maxSize ? current : largest
-    ).name;
+    return this.layerConfigs.reduce((largest, current) => (current.maxSize > largest.maxSize ? current : largest)).name;
   }
-  private estimateSize(_value: any): number {
+  private estimateSize(value: any): number {
     if (typeof value === 'string') return value.length * 2; // UTF-16
     if (typeof value === 'number') return 8;
     if (typeof value === 'boolean') return 1;
@@ -203,15 +198,19 @@ export class MultiLayerCacheSystem {
   }
   private getPriorityValue(priority: CacheLayer['priority']): number {
     switch (priority) {
-      case 'high': return 3;
-      case 'medium': return 2;
-      case 'low': return 1;
-      default: return 0;
+      case 'high':
+        return 3;
+      case 'medium':
+        return 2;
+      case 'low':
+        return 1;
+      default:
+        return 0;
     }
   }
   // Utility methods for monitoring
   getStats(): { [key: string]: any } {
-    const stats: { [key: string]: any } = {}
+    const stats: { [key: string]: any } = {};
     for (const config of this.layerConfigs) {
       const layer = this.layers.get(config.name);
       const currentSize = this.currentSize.get(config.name) || 0;
@@ -221,8 +220,8 @@ export class MultiLayerCacheSystem {
         maxSize: config.maxSize,
         utilization: (currentSize / config.maxSize) * 100,
         priority: config.priority,
-        evictionPolicy: config.evictionPolicy
-      }
+        evictionPolicy: config.evictionPolicy,
+      };
     }
     return stats;
   }

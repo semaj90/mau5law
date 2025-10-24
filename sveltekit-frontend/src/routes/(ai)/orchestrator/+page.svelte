@@ -3,15 +3,8 @@ Multi-LLM Orchestrator Demo Page
 Showcases the service worker-based AI orchestration system
 -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/enhanced-bits';
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
+  import { Button } from '$lib/components/ui/enhanced-bits';
   import { Badge } from '$lib/components/ui/badge';
   import { Textarea } from '$lib/components/ui/textarea';
   import {
@@ -27,16 +20,31 @@ Showcases the service worker-based AI orchestration system
     Users,
     Workflow
   } from 'lucide-svelte';
-  import MultiLLMOrchestrator from '$lib/components/ai/MultiLLMOrchestrator.svelte';
   import LLMSelector from '$lib/components/ai/LLMSelector.svelte';
   import { aiWorkerManager, createGenerationTask, createAnalysisTask } from '$lib/services/ai-worker-manager.js';
   import type { AITask, LLMModel } from '$lib/types/ai-worker.js';
+  // dynamic orchestrator component (workaround for modules without a typed default export)
+  let OrchestratorComponent: any = null;
+  onMount(async () => {
+    try {
+      const mod = await import('$lib/components/ai/MultiLLMOrchestrator.svelte');
+      OrchestratorComponent = (mod && (mod as any).default) ?? (mod as any).MultiLLMOrchestrator ?? mod;
+    } catch (err) {
+      console.warn('Failed to load orchestrator component dynamically:', err);
+    }
+  });
+
+  interface DemoResult {
+    task: AITask;
+    response?: any;
+    error?: string;
+  }
 
   // Local demo state (avoid runtime $state magic here for compile stability)
   let selectedModel: LLMModel | undefined;
   let userPrompt = 'Analyze the following legal document for key terms, potential issues, and recommendations...';
   let isProcessing = false;
-  let demoResults: any[] = [];
+  let demoResults: DemoResult[] = [];
 
   // Demo scenarios
   const demoScenarios = [
@@ -78,36 +86,35 @@ Showcases the service worker-based AI orchestration system
     isProcessing = true;
     demoResults = [];
     try {
-      const tasks = (scenario.tasks || []).map((taskConfig: any) =>
+      const tasks: AITask[] = (scenario.tasks || []).map((taskConfig: any) =>
         createAnalysisTask(
           `${scenario.prompt}\n\nFocus: ${taskConfig.focus}`,
           taskConfig.focus,
           taskConfig.model,
           taskConfig.provider,
-          {
+          ({
             priority: 'high',
-            temperature: 0.1,
             maxTokens: 512,
-          }
+            params: { temperature: 0.1 }
+          } as any)
         )
       );
 
-      const taskPromises = tasks.map(async (task: any) => {
+      demoResults = tasks.map((task) => ({ task }));
+
+      const taskPromises = tasks.map(async (task) => {
         try {
-          demoResults = [...demoResults, { task }];
-          const taskId = await aiWorkerManager.submitTask(task);
+          const taskId = await aiWorkerManager.submitTask(task as any);
           const result = await aiWorkerManager.waitForTask(taskId);
-          const index = demoResults.findIndex((r) => (r.task as any).taskId === (task as any).taskId);
-          if (index >= 0) {
-            demoResults[index] = { task, response: result };
-          }
+          demoResults = demoResults.map((r) =>
+            r.task === task ? { ...r, response: result } : r
+          );
           return result;
         } catch (error) {
           console.error('Task failed:', error);
-          const index = demoResults.findIndex((r) => (r.task as any).taskId === (task as any).taskId);
-          if (index >= 0) {
-            demoResults[index] = { task, error: (error as Error).message ?? String(error) };
-          }
+          demoResults = demoResults.map((r) =>
+            r.task === task ? { ...r, error: (error as Error).message ?? String(error) } : r
+          );
         }
       });
 
@@ -123,25 +130,31 @@ Showcases the service worker-based AI orchestration system
   async function submitCustomTask() {
     if (!selectedModel || !userPrompt || !userPrompt.trim()) return;
     isProcessing = true;
+    let task: AITask | undefined;
     try {
-      const task = createGenerationTask(
+      task = createGenerationTask(
         userPrompt,
         (selectedModel as any).name,
         (selectedModel as any).provider,
-        {
+        ({
           priority: 'high',
-          temperature: 0.1,
           maxTokens: 1024,
-        }
-      );
-      demoResults = [{ task }];
-      const taskId = await aiWorkerManager.submitTask(task);
-      const result = await aiWorkerManager.waitForTask(taskId);
-      demoResults = [{ task, response: result }];
-      console.log('Custom task completed:', result);
+          params: { temperature: 0.1 }
+        } as any)
+      ) as any;
+
+      if (task) {
+        demoResults = [{ task }];
+        const taskId = await aiWorkerManager.submitTask(task as any);
+        const result = await aiWorkerManager.waitForTask(taskId);
+        demoResults = [{ task, response: result }];
+        console.log('Custom task completed:', result);
+      }
     } catch (error) {
       console.error('Custom task failed:', error);
-      demoResults = [{ task: demoResults[0]?.task, error: (error as Error).message ?? String(error) }];
+      if (task) {
+        demoResults = [{ task, error: (error as Error).message ?? String(error) }];
+      }
     } finally {
       isProcessing = false;
     }
@@ -256,6 +269,7 @@ runDemoScenario(scenario)}
                   <Play class="h-4 w-4 mr-2" />
                   Run Demo
                 {/if}
+              </Button>
             </div>
           {/each}
         </div>
@@ -272,16 +286,18 @@ runDemoScenario(scenario)}
         </div>
         <div class="yorha-panel-content space-y-4">
           <div>
-            <label class="block text-sm font-medium mb-2">Select AI Model</label>
-            <LLMSelector;
+            <label for="llm-selector" class="block text-sm font-medium mb-2">Select AI Model</label>
+            <LLMSelector
+              id="llm-selector"
               bind:selectedModel={selectedModel}
               showMetrics={true}
               filterBy="all"
             />
           </div>
           <div>
-            <label class="block text-sm font-medium mb-2">Task Prompt</label>
-            <Textarease;
+            <label for="task-prompt" class="block text-sm font-medium mb-2">Task Prompt</label>
+            <Textarea
+              id="task-prompt"
               bind:value={userPrompt}
               placeholder="Enter your AI task prompt..."
               rows={4}
@@ -294,15 +310,17 @@ runDemoScenario(scenario)}
               disabled={isProcessing || !selectedModel}
               class="flex-1 bits-btn bits-btn"
             >
-{#if isProcessing}
+              {#if isProcessing}
                 <Pause class="h-4 w-4 mr-2" />
                 Processing...
               {:else}
                 <Play class="h-4 w-4 mr-2" />
                 Submit Task
               {/if}
+            </Button>
             <Button class="bits-btn" variant="ghost" onclick={clearResults}>
-<RotateCcw class="h-4 w-4" />
+              <RotateCcw class="h-4 w-4" />
+            </Button>
           </div>
         </div>
       </div>
@@ -316,7 +334,8 @@ runDemoScenario(scenario)}
             </span>
             {#if demoResults.length > 0}
               <Button class="bits-btn" variant="ghost" size="sm" onclick={clearResults}>
-Clear
+                Clear
+              </Button>
             {/if}
           </h3>
         </div>
@@ -329,23 +348,23 @@ Clear
           {:else}
             <div class="space-y-3 max-h-96 overflow-y-auto">
               {#each demoResults as result}
-                {@const SvelteComponent_1 = getProviderIcon((result as { task?: unknown; error?: unknown; response?: unknown }).task.providerId)}
-                <div class="border rounded-lg p-3 {(result as { task?: unknown; error?: unknown; response?: unknown }).error ? 'border-red-200 bg-red-50 dark:bg-red-900/20' : (result as { task?: unknown; error?: unknown; response?: unknown }).response ? 'border-green-200 bg-green-50 dark:bg-green-900/20' : 'border-yellow-200 bg-yellow-50 dark:bg-yellow-900/20'}">
+                {@const SvelteComponent_1 = getProviderIcon(result.task.providerId)}
+                <div class="border rounded-lg p-3 {result.error ? 'border-red-200 bg-red-50 dark:bg-red-900/20' : result.response ? 'border-green-200 bg-green-50 dark:bg-green-900/20' : 'border-yellow-200 bg-yellow-50 dark:bg-yellow-900/20'}">
                   <div class="flex items-start justify-between mb-2">
                     <div class="flex items-center gap-2">
                       <SvelteComponent_1
                         class="h-4 w-4 text-blue-500"
                       />
                       <span class="font-medium text-sm">
-                        {(result as { task?: unknown; error?: unknown; response?: unknown }).task.providerId} - {(result as { task?: unknown; error?: unknown; response?: unknown }).task.model}
+                        {result.task.providerId} - {result.task.model}
                       </span>
-                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { task?: unknown; error?: unknown; response?: unknown }).task.type}</span>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result.task.type}</span>
                     </div>
-                    {#if (result as { task?: unknown; error?: unknown; response?: unknown }).response}
+                    {#if result.response}
                       <Badge class="bg-green-100 text-green-800 text-xs">
                         Completed
                       </Badge>
-                    {:else if (result as { task?: unknown; error?: unknown; response?: unknown }).error}
+                    {:else if result.error}
                       <Badge class="bg-red-100 text-red-800 text-xs">
                         Failed
                       </Badge>
@@ -356,25 +375,25 @@ Clear
                     {/if}
                   </div>
                   <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">
-                    {(result as { task?: unknown; error?: unknown; response?: unknown }).task.prompt.substring(0, 100)}...
+                    {result.task.prompt.substring(0, 100)}...
                   </p>
-                  {#if (result as { task?: unknown; error?: unknown; response?: unknown }).response}
+                  {#if result.response}
                     <div class="mt-2 p-2 bg-white dark:bg-gray-800 rounded text-xs">
                       <p class="font-medium mb-1">Response:</p>
                       <p class="text-gray-700 dark:text-gray-300">
-                        {(result as { task?: unknown; error?: unknown; response?: unknown }).response.response?.content || 'Task completed successfully'}
+                        {result.response.response?.content || 'Task completed successfully'}
                       </p>
-                      {#if (result as { task?: unknown; error?: unknown; response?: unknown }).response.metrics}
+                      {#if result.response.metrics}
                         <div class="flex items-center gap-4 mt-2 text-xs text-gray-500">
-                          <span>Processing: {formatDuration((result as { task?: unknown; error?: unknown; response?: unknown }).response.metrics.processingTime || 0)}</span>
-                          <span>Tokens: {(result as { task?: unknown; error?: unknown; response?: unknown }).response.metrics.tokensProcessed || 0}</span>
+                          <span>Processing: {formatDuration(result.response.metrics.processingTime || 0)}</span>
+                          <span>Tokens: {result.response.metrics.tokensProcessed || 0}</span>
                         </div>
                       {/if}
                     </div>
-                  {:else if (result as { task?: unknown; error?: unknown; response?: unknown }).error}
+                  {:else if result.error}
                     <div class="mt-2 p-2 bg-red-100 dark:bg-red-900/30 rounded text-xs">
                       <p class="font-medium text-red-700 dark:text-red-400 mb-1">Error:</p>
-                      <p class="text-red-600 dark:text-red-400">{(result as { task?: unknown; error?: unknown; response?: unknown }).error}</p>
+                      <p class="text-red-600 dark:text-red-400">{result.error}</p>
                     </div>
                   {:else}
                     <div class="mt-2 flex items-center gap-2 text-xs text-gray-500">
@@ -390,12 +409,15 @@ Clear
       </div>
     </div>
     <!-- Main Orchestrator Component -->
-    <MultiLLMOrchestrator
-      autoStart={true}
-      showMetrics={true}
-      maxConcurrenttasks={3}
-      enabledProviders={['ollama', 'vllm', 'autogen', 'crewai']}
-    />
+    {#if OrchestratorComponent}
+      <svelte:component
+        this={OrchestratorComponent}
+        autoStart={true}
+        showMetrics={true}
+        maxConcurrenttasks={3}
+        enabledProviders={['ollama', 'vllm', 'autogen', 'crewai']}
+      />
+    {/if}
     <!-- Architecture Information -->
     <div class="nes-container">
       <div class="yorha-panel-header">
@@ -458,4 +480,4 @@ Clear
 </div>
 <style>
   /* @unocss-include */
-</style>;
+</style>

@@ -347,7 +347,7 @@ curl http://localhost:6333/collections
    - Example: Ollama on host is `http://host.docker.internal:11434` from container
 9. **Database Connection Errors**:
    - Check if PostgreSQL is on 5432 or 5434 (docker-compose uses 5434)
-   - Redis password is `redis` (not empty)
+   - Redis doesn't have a password but if it requires one use `redis`
    - Neo4j auth is `neo4j/legal123456`
 10. **Vector Search Performance**:
     - Use pgvector for primary searches (fastest for < 1M vectors)
@@ -420,13 +420,319 @@ curl http://localhost:6333/collections
 - Use `ReturnType<typeof>` for complex return types
 - Stub missing external types rather than ignore errors
 
-### Svelte 5 Runes
+### Svelte 5 Runes - Complete Migration Guide
+
+**CRITICAL**: This project uses Svelte 5 with runes. All components MUST follow these patterns.
+
+#### Core Principles
+1. **Runes are auto-imported** - Never manually import `$state`, `$derived`, `$effect`, `$props`, or `$bindable`
+2. **No `export let`** - Use `$props()` instead
+3. **No `$:` reactive statements** - Use `$derived()` or `$effect()` instead
+4. **No `<slot>`** - Use `{#snippet}` instead
+
+#### State Management Patterns
+
 ```svelte
-<script>
-  let count = $state(0)
-  let doubled = $derived(count * 2)
-  let { prop = $bindable() } = $props()
+<script lang="ts">
+  // ❌ WRONG - Old Svelte 4 patterns
+  import { $state, $props } from 'svelte'; // Don't import runes!
+  export let count = 0; // Don't use export let
+  $: doubled = count * 2; // Don't use $: reactive statements
+
+  // ✅ CORRECT - Svelte 5 runes (auto-imported)
+  import { onMount, onDestroy } from 'svelte'; // Only lifecycle imports
+
+  // Props with $props()
+  let {
+    count = $bindable(0),
+    title = "Default Title",
+    onUpdate
+  }: {
+    count?: number;
+    title?: string;
+    onUpdate?: (value: number) => void;
+  } = $props();
+
+  // Reactive state with $state()
+  let isActive = $state(false);
+  let items = $state<string[]>([]);
+  let user = $state({ name: '', email: '' });
+
+  // Derived values with $derived()
+  let doubled = $derived(count * 2);
+  let activeCount = $derived(items.filter(i => i.active).length);
+  let fullName = $derived(`${user.firstName} ${user.lastName}`);
+
+  // Side effects with $effect()
+  $effect(() => {
+    console.log('Count changed:', count);
+    onUpdate?.(count);
+  });
+
+  // Cleanup effects
+  $effect(() => {
+    const interval = setInterval(() => tick++, 1000);
+    return () => clearInterval(interval);
+  });
 </script>
+```
+
+#### Component Props & Bindable
+
+```svelte
+<script lang="ts">
+  // ❌ WRONG - Svelte 4 style
+  export let value: string;
+  export let readonly = false;
+
+  // ✅ CORRECT - Svelte 5 with $props()
+  let {
+    value = $bindable(""),
+    readonly = false,
+    placeholder = "Enter text...",
+    onchange
+  }: {
+    value?: string;
+    readonly?: boolean;
+    placeholder?: string;
+    onchange?: (val: string) => void;
+  } = $props();
+
+  // Update bindable prop directly (no $ prefix needed)
+  function handleInput(e: Event) {
+    value = (e.target as HTMLInputElement).value;
+    onchange?.(value);
+  }
+</script>
+
+<input
+  bind:value={value}
+  {placeholder}
+  {readonly}
+  oninput={handleInput}
+/>
+```
+
+#### Reactive Statements → $derived & $effect
+
+```svelte
+<script lang="ts">
+  // ❌ WRONG - Old $: reactive statements
+  $: if (count > 10) {
+    alert("Too high!");
+  }
+  $: doubled = count * 2;
+  $: console.log(count);
+
+  // ✅ CORRECT - Use $derived for computed values
+  let doubled = $derived(count * 2);
+  let isHigh = $derived(count > 10);
+
+  // ✅ CORRECT - Use $effect for side effects
+  $effect(() => {
+    console.log('Count:', count);
+  });
+
+  $effect(() => {
+    if (count > 10) {
+      alert("Too high!");
+    }
+  });
+
+  // Effect with dependencies and cleanup
+  $effect(() => {
+    const subscription = dataStore.subscribe(count);
+    return () => subscription.unsubscribe();
+  });
+</script>
+```
+
+#### Slots → Snippets
+
+```svelte
+<!-- ❌ WRONG - Old Svelte 4 slots -->
+<script>
+  export let header;
+  export let footer;
+</script>
+
+<div class="card">
+  <slot name="header" />
+  <slot /> <!-- default slot -->
+  <slot name="footer" />
+</div>
+
+<!-- ✅ CORRECT - Svelte 5 snippets -->
+<script lang="ts">
+  import type { Snippet } from 'svelte';
+
+  let {
+    header,
+    children,
+    footer
+  }: {
+    header?: Snippet;
+    children?: Snippet;
+    footer?: Snippet;
+  } = $props();
+</script>
+
+<div class="card">
+  {#if header}
+    {@render header()}
+  {/if}
+
+  {#if children}
+    {@render children()}
+  {/if}
+
+  {#if footer}
+    {@render footer()}
+  {/if}
+</div>
+```
+
+#### Component Imports
+
+```typescript
+// ❌ WRONG - Named imports for components
+import { Button } from '$lib/components/ui/Button.svelte';
+import { Card, CardContent } from '$lib/components/ui/card';
+
+// ✅ CORRECT - Default imports
+import Button from '$lib/components/ui/Button.svelte';
+import { Card, CardContent } from '$lib/components/ui/card'; // This is OK if re-exported
+```
+
+#### Event Handlers
+
+```svelte
+<script lang="ts">
+  let count = $state(0);
+
+  // ❌ WRONG - Old on: syntax in some contexts
+  // (on: still works but oninput is preferred for native events)
+
+  // ✅ CORRECT - Use oninput, onclick, etc. for native events
+  function handleClick() {
+    count++;
+  }
+</script>
+
+<button onclick={handleClick}>
+  Count: {count}
+</button>
+
+<!-- Both work, but prefer onclick for consistency -->
+<button on:click={handleClick}>Also works</button>
+```
+
+#### Advanced Patterns
+
+```svelte
+<script lang="ts">
+  // Context with Svelte 5
+  import { setContext, getContext } from 'svelte';
+
+  // Stores still work with Svelte 5
+  import { writable, derived } from 'svelte/store';
+
+  const theme = writable('dark');
+  const isDark = derived(theme, $theme => $theme === 'dark');
+
+  // Use $state for component state, stores for shared state
+  let localCount = $state(0);
+
+  // Effect with store subscription
+  $effect(() => {
+    console.log('Theme:', $theme); // Auto-subscribes in effect
+  });
+
+  // Complex derived state
+  let stats = $derived({
+    total: items.length,
+    active: items.filter(i => i.active).length,
+    percentage: items.length > 0
+      ? (items.filter(i => i.active).length / items.length) * 100
+      : 0
+  });
+</script>
+```
+
+#### Common Migration Errors & Fixes
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `Module 'svelte' has no exported member '$state'` | Manually importing runes | Remove import, runes are auto-imported |
+| `Block-scoped variable '$state' used before declaration` | Import conflict | Remove manual import |
+| `Cannot use 'state' as a store` | Using `$state` as store | Remove `$` when accessing $state variables |
+| `',' expected` | Missing semicolon after object | Add `;` after const/let objects |
+| `export let` not working | Old Svelte 4 syntax | Use `$props()` destructuring |
+| Reactive statement not updating | Using `$:` | Replace with `$derived()` or `$effect()` |
+
+#### Real-World Example: Form Component
+
+```svelte
+<script lang="ts">
+  import type { Snippet } from 'svelte';
+
+  let {
+    formData = $bindable({ email: '', password: '' }),
+    onSubmit,
+    children
+  }: {
+    formData?: { email: string; password: string };
+    onSubmit?: (data: typeof formData) => void;
+    children?: Snippet;
+  } = $props();
+
+  let isValid = $derived(
+    formData.email.includes('@') &&
+    formData.password.length >= 8
+  );
+
+  let errorMessage = $state('');
+
+  $effect(() => {
+    if (!isValid && formData.email) {
+      errorMessage = 'Please check your inputs';
+    } else {
+      errorMessage = '';
+    }
+  });
+
+  function handleSubmit(e: SubmitEvent) {
+    e.preventDefault();
+    if (isValid) {
+      onSubmit?.(formData);
+    }
+  }
+</script>
+
+<form onsubmit={handleSubmit}>
+  <input
+    type="email"
+    bind:value={formData.email}
+    placeholder="Email"
+  />
+  <input
+    type="password"
+    bind:value={formData.password}
+    placeholder="Password"
+  />
+
+  {#if errorMessage}
+    <p class="error">{errorMessage}</p>
+  {/if}
+
+  {#if children}
+    {@render children()}
+  {/if}
+
+  <button type="submit" disabled={!isValid}>
+    Submit
+  </button>
+</form>
 ```
 
 ### Error Handling
@@ -493,3 +799,261 @@ class QUICLegalDataStream {
 ```
 
 This codebase represents **next-generation AI architecture** that surpasses current market leaders through local control, legal domain specialization, and cutting-edge WebAssembly/QUIC optimizations. The platform combines the best aspects of ChatGPT (model orchestration), Perplexity (search capabilities), and Claude (context handling) while adding legal-specific innovations like evidence canvas collaboration and unlimited persistent context.
+
+## Bits UI Best Practices
+
+### Overview
+Bits UI is a headless component library for Svelte 5 that provides accessible, unstyled primitives. This means **you are responsible for ALL styling** (spacing, colors, positioning, etc.).
+
+### Critical Setup Requirements
+
+#### 1. Global CSS Import
+**DON'T** import `uno.css` in every component's `onMount()` - this causes overhead and FOUC.
+
+```svelte
+<!-- ❌ WRONG - Component-level import -->
+<script>
+  import { onMount } from 'svelte';
+  onMount(async () => {
+    await import('uno.css');
+  });
+</script>
+
+<!-- ✅ CORRECT - Global import in root layout -->
+<!-- src/routes/+layout.svelte -->
+<script>
+  import 'uno.css'; // Import once at root level
+</script>
+```
+
+#### 2. SSR Considerations
+- Ensure UnoCSS/Tailwind is properly configured in `vite.config.js` for SSR
+- Avoid double CSS imports that cause FOUC (Flash of Unstyled Content)
+- Use `@unocss/reset` to normalize styles across browsers
+
+```typescript
+// vite.config.js
+import UnoCSS from 'unocss/vite';
+
+export default {
+  plugins: [
+    UnoCSS({
+      mode: 'svelte-scoped' // Prevents SSR issues
+    })
+  ]
+};
+```
+
+#### 3. API Version - Svelte 5 Migration
+Bits UI v1+ has breaking changes for Svelte 5. Key differences:
+
+```svelte
+<!-- Old Bits UI (pre-v1) -->
+<Dialog.Root bind:open={isOpen}>
+  <Dialog.Trigger>Open</Dialog.Trigger>
+  <Dialog.Content>
+    <slot />
+  </Dialog.Content>
+</Dialog.Root>
+
+<!-- New Bits UI v1 (Svelte 5) -->
+<Dialog.Root bind:open={isOpen}>
+  <Dialog.Trigger>Open</Dialog.Trigger>
+  <Dialog.Content>
+    {#if children}
+      {@render children()}
+    {/if}
+  </Dialog.Content>
+</Dialog.Root>
+```
+
+### Transitions & Animations
+
+Bits UI requires the `forceMount` + child snippet pattern for custom transitions:
+
+```svelte
+<script lang="ts">
+  import * as Dialog from 'bits-ui';
+  import { fade, fly } from 'svelte/transition';
+  import type { Snippet } from 'svelte';
+
+  let { open = $bindable(false) }: { open?: boolean } = $props();
+</script>
+
+<Dialog.Root bind:open={open}>
+  <Dialog.Trigger>Open Dialog</Dialog.Trigger>
+
+  <!-- Use forceMount to control transitions manually -->
+  <Dialog.Portal forceMount>
+    {#if open}
+      <Dialog.Overlay transition:fade={{ duration: 200 }} />
+      <Dialog.Content transition:fly={{ y: 10, duration: 200 }}>
+        <Dialog.Title>Title</Dialog.Title>
+        <Dialog.Description>Description</Dialog.Description>
+        <!-- Content -->
+      </Dialog.Content>
+    {/if}
+  </Dialog.Portal>
+</Dialog.Root>
+```
+
+### Accessibility Requirements
+
+Even though Bits UI handles ARIA attributes, **you must ensure**:
+
+#### 1. Focus States
+All interactive elements need visible focus indicators:
+
+```css
+/* ✅ CORRECT - Visible focus for retro theme */
+.nes-btn:focus-visible,
+.dialog-close:focus-visible {
+  outline: 2px solid #d4af37; /* Gold accent */
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.2);
+}
+
+/* ❌ WRONG - Removing focus outline */
+button:focus {
+  outline: none; /* Never do this without alternative */
+}
+```
+
+#### 2. Color Contrast
+Ensure WCAG AA compliance (4.5:1 for normal text, 3:1 for large text):
+
+```css
+/* ✅ CORRECT - High contrast for legal platform */
+.dialog-content {
+  background: #212529; /* Dark background */
+  color: #d4af37; /* Gold text - meets WCAG AA */
+}
+
+.nes-btn.is-primary {
+  background: #0066cc;
+  color: #ffffff; /* 7.5:1 contrast ratio */
+}
+
+/* ❌ WRONG - Low contrast */
+.button {
+  background: #555;
+  color: #666; /* Fails WCAG */
+}
+```
+
+#### 3. Keyboard Navigation
+Test that all Bits UI components work with:
+- **Tab/Shift+Tab**: Navigate through interactive elements
+- **Enter/Space**: Activate buttons/toggles
+- **Escape**: Close dialogs/popovers
+- **Arrow keys**: Navigate menus/lists
+
+```svelte
+<!-- ✅ CORRECT - Proper keyboard handling -->
+<Dialog.Root bind:open={open}>
+  <Dialog.Trigger>
+    <button class="nes-btn is-primary">
+      Open Dialog
+    </button>
+  </Dialog.Trigger>
+
+  <Dialog.Content>
+    <Dialog.Title>Title</Dialog.Title>
+    <Dialog.Close aria-label="Close dialog">
+      <X class="h-4 w-4" />
+    </Dialog.Close>
+  </Dialog.Content>
+</Dialog.Root>
+```
+
+### Dark/Light Mode Support
+
+Configure UnoCSS dark mode variants:
+
+```typescript
+// uno.config.ts
+import { defineConfig, presetUno } from 'unocss';
+
+export default defineConfig({
+  presets: [
+    presetUno({
+      dark: 'class' // or 'media' for system preference
+    })
+  ],
+  shortcuts: {
+    'dialog-overlay': 'fixed inset-0 bg-black/80 dark:bg-black/90',
+    'dialog-content': 'bg-slate-900 dark:bg-slate-950 text-slate-100 dark:text-slate-50'
+  }
+});
+```
+
+```svelte
+<!-- Usage in components -->
+<Dialog.Overlay class="dialog-overlay" />
+<Dialog.Content class="dialog-content border border-slate-700 dark:border-slate-600">
+  <!-- Content adapts to theme -->
+</Dialog.Content>
+```
+
+### Legal AI Platform Styling Standards
+
+Our retro NES.css + UnoCSS theme requires:
+
+```css
+/* Primary color palette */
+:root {
+  --nier-bg-primary: #212529;      /* Dark background */
+  --nier-bg-secondary: #1a1d20;    /* Darker sections */
+  --nier-accent-gold: #d4af37;     /* Primary accent */
+  --nier-accent-cool: #4a90e2;     /* Links/info */
+  --nier-accent-warm: #e67e22;     /* Warnings */
+  --nier-border: #d4af37;          /* Gold borders */
+}
+
+/* Bits UI component styling example */
+.dialog-content {
+  background: var(--nier-bg-primary);
+  border: 4px solid var(--nier-border);
+  border-radius: 0; /* Retro square corners */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  font-size: 12px;
+  padding: 1.5rem;
+}
+
+.dialog-overlay {
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+}
+```
+
+### Common Pitfalls & Solutions
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| FOUC on page load | Multiple CSS imports | Import `uno.css` once in root `+layout.svelte` |
+| Transitions not working | Missing `forceMount` | Use `forceMount` + `{#if open}` pattern |
+| Low contrast text | Dark theme without proper colors | Test with WCAG contrast checker tools |
+| Focus not visible | Browser default overridden | Add explicit `:focus-visible` styles |
+| SSR hydration mismatch | Client-only CSS | Configure UnoCSS for SSR in `vite.config.js` |
+| Dialog not closing on Escape | Missing accessibility props | Ensure Dialog.Content has proper ARIA attributes |
+
+### Testing Checklist
+
+Before deploying Bits UI components:
+
+- [ ] Test with keyboard only (no mouse)
+- [ ] Test with screen reader (NVDA/JAWS)
+- [ ] Verify color contrast meets WCAG AA
+- [ ] Check focus indicators are visible
+- [ ] Test in dark/light mode
+- [ ] Verify no FOUC on initial load
+- [ ] Test SSR/hydration in production build
+- [ ] Verify transitions work smoothly
+
+### Resources
+
+- **Bits UI Docs**: https://bits-ui.com/docs/introduction
+- **Svelte 5 Migration**: https://bits-ui.com/docs/migration
+- **WCAG Contrast Checker**: https://webaim.org/resources/contrastchecker/
+- **UnoCSS Dark Mode**: https://unocss.dev/presets/uno#dark-mode

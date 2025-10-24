@@ -4,10 +4,8 @@
  * Uses: XState, RabbitMQ, Redis, QUIC/gRPC
  */
 
-import { setup, assign, fromPromise } from 'xstate';
+import { setup, assign, fromPromise, createActor, type StateFrom } from 'xstate';
 import { hybridVectorSearch } from './hybrid-vector-search';
-import { gemmaEmbeddingsService } from './gemma-embeddings-service';
-import type { EmbeddingRequest } from './gemma-embeddings-service';
 
 // RAG Ingestion Types
 export interface RAGDocument {
@@ -19,7 +17,7 @@ export interface RAGDocument {
   uploaded_at: Date;
   user_id?: string;
   case_id?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>; // Changed 'any' to 'unknown'
 }
 
 export interface RAGChunk {
@@ -29,7 +27,7 @@ export interface RAGChunk {
   chunk_index: number;
   chunk_size: number;
   overlap_size: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>; // Changed 'any' to 'unknown'
 }
 
 export interface RAGEmbedding {
@@ -61,6 +59,8 @@ export interface IngestionContext {
     processing_time_ms: number;
     storage_engines: string[];
   };
+  initialFile?: File | Buffer; // Added to context
+  initialOptions?: IngestionInput['options']; // Added to context
 }
 
 export interface IngestionInput {
@@ -69,7 +69,7 @@ export interface IngestionInput {
   file_type: 'pdf' | 'docx' | 'txt' | 'image' | 'html';
   user_id?: string;
   case_id?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>; // Changed 'any' to 'unknown'
   options?: {
     enable_ocr?: boolean;
     chunk_size?: number;
@@ -77,6 +77,9 @@ export interface IngestionInput {
     sync_to_qdrant?: boolean;
   };
 }
+
+// Explicitly define the StateValue type for clarity and use in type assertions
+type RagIngestionStateValue = 'idle' | 'uploading' | 'ocr' | 'chunking' | 'embedding' | 'complete' | 'error';
 
 /**
  * XState Machine for RAG Ingestion Workflow
@@ -86,13 +89,15 @@ export const ragIngestionMachine = setup({
     context: {} as IngestionContext,
     input: {} as IngestionInput,
     events: {} as
-      | { type: 'START_INGESTION' }
+      | (IngestionInput & { type: 'START_INGESTION' }) // Modified to carry IngestionInput payload
       | { type: 'OCR_COMPLETE'; ocrResult: OCRResult }
       | { type: 'CHUNKING_COMPLETE'; chunks: RAGChunk[] }
       | { type: 'EMBEDDING_COMPLETE'; embeddings: RAGEmbedding[] }
       | { type: 'STORAGE_COMPLETE' }
       | { type: 'ERROR'; error: string }
       | { type: 'RETRY' },
+    // Explicitly define the possible state values for TypeScript inference
+    // value: 'idle' | 'uploading' | 'ocr' | 'chunking' | 'embedding' | 'complete' | 'error', // REMOVED
   },
 
   actors: {
@@ -114,7 +119,11 @@ export const ragIngestionMachine = setup({
     }),
 
     performOCR: fromPromise(
-      async ({ input }: { input: { document: RAGDocument; file: File | Buffer; options?: any } }) => {
+      async ({
+        input,
+      }: {
+        input: { document: RAGDocument; file: File | Buffer; options?: IngestionInput['options'] };
+      }) => {
         const startTime = Date.now();
 
         // Check if OCR is needed
@@ -135,7 +144,13 @@ export const ragIngestionMachine = setup({
         if (input.file instanceof File) {
           formData.append('file', input.file);
         } else {
-          formData.append('file', new Blob([input.file]), input.document.filename);
+          // Convert Buffer to ArrayBuffer slice for Blob compatibility
+          // This handles cases where Buffer from @types/node might not be directly compatible with BlobPart in browser contexts.
+          const arrayBufferSlice = input.file.buffer.slice(
+            input.file.byteOffset,
+            input.file.byteOffset + input.file.byteLength
+          );
+          formData.append('file', new Blob([arrayBufferSlice]), input.document.filename);
         }
         formData.append('enable_gpu', 'true');
 
@@ -159,7 +174,8 @@ export const ragIngestionMachine = setup({
     ),
 
     chunkDocument: fromPromise(
-      async ({ input }: { input: { document: RAGDocument; content: string; options?: any } }) => {
+      async ({ input }: { input: { document: RAGDocument; content: string; options?: IngestionInput['options'] } }) => {
+        // Changed 'any' to 'IngestionInput['options']'
         const chunkSize = input.options?.chunk_size || 600;
         const chunkOverlap = input.options?.chunk_overlap || 100;
 
@@ -198,7 +214,12 @@ export const ragIngestionMachine = setup({
     ),
 
     generateEmbeddings: fromPromise(
-      async ({ input }: { input: { chunks: RAGChunk[]; document: RAGDocument; options?: any } }) => {
+      async ({
+        input,
+      }: {
+        input: { chunks: RAGChunk[]; document: RAGDocument; options?: IngestionInput['options'] };
+      }) => {
+        // Changed 'any' to 'IngestionInput['options']'
         const texts = input.chunks.map(chunk => chunk.content);
 
         // Batch generate embeddings using embeddinggemma:latest (512-dim)
@@ -214,7 +235,8 @@ export const ragIngestionMachine = setup({
         });
 
         // Map to RAGEmbedding format
-        const embeddings: RAGEmbedding[] = input.chunks.map((chunk, index) => ({
+        const embeddings: RAGEmbedding[] = input.chunks.map((chunk, _index) => ({
+          // Changed 'index' to '_index'
           chunk_id: chunk.id,
           embedding: [], // Embeddings are stored in DB, not returned
           dimensions: 512,
@@ -241,13 +263,16 @@ export const ragIngestionMachine = setup({
     },
 
     uploading: {
-      entry: assign({
+      entry: assign(({ event }) => ({
+        // Access event directly as it now carries IngestionInput
         progress: 10,
         stage: 'Uploading document...',
-      }),
+        initialFile: event.file, // Store initial file
+        initialOptions: event.options, // Store initial options
+      })),
       invoke: {
         src: 'uploadDocument',
-        input: ({ event }) => event as unknown as IngestionInput,
+        input: ({ event }) => event, // Event is already IngestionInput & { type: 'START_INGESTION' }
         onDone: {
           target: 'ocr',
           actions: assign({
@@ -271,10 +296,11 @@ export const ragIngestionMachine = setup({
       }),
       invoke: {
         src: 'performOCR',
-        input: ({ context, event }) => ({
+        input: ({ context }) => ({
+          // Use context for file and options
           document: context.document!,
-          file: (event as any).file,
-          options: (event as any).options,
+          file: context.initialFile!,
+          options: context.initialOptions,
         }),
         onDone: {
           target: 'chunking',
@@ -299,10 +325,11 @@ export const ragIngestionMachine = setup({
       }),
       invoke: {
         src: 'chunkDocument',
-        input: ({ context, event }) => ({
+        input: ({ context }) => ({
+          // Use context for options
           document: context.document!,
           content: context.ocrResult!.text,
-          options: (event as any).options,
+          options: context.initialOptions,
         }),
         onDone: {
           target: 'embedding',
@@ -327,10 +354,11 @@ export const ragIngestionMachine = setup({
       }),
       invoke: {
         src: 'generateEmbeddings',
-        input: ({ context, event }) => ({
+        input: ({ context }) => ({
+          // Use context for options
           chunks: context.chunks!,
           document: context.document!,
-          options: (event as any).options,
+          options: context.initialOptions,
         }),
         onDone: {
           target: 'complete',
@@ -377,7 +405,7 @@ export class RAGIngestionService {
   async ingestDocument(input: IngestionInput): Promise<{
     success: boolean;
     document_id?: string;
-    stats?: any;
+    stats?: IngestionContext['stats']; // Refined type
     error?: string;
   }> {
     try {
@@ -385,22 +413,26 @@ export class RAGIngestionService {
       await hybridVectorSearch.initialize();
 
       // Create state machine actor
-      const actor = ragIngestionMachine.provide({}).create();
+      const actor = createActor(ragIngestionMachine);
 
       // Start ingestion
       actor.start();
-      actor.send({ type: 'START_INGESTION', ...input } as any);
+      actor.send({ type: 'START_INGESTION', ...input });
 
       // Wait for completion
       return new Promise(resolve => {
-        actor.subscribe(state => {
+        actor.subscribe((state: StateFrom<typeof ragIngestionMachine>) => {
+          // Explicitly type state
+          // Use type assertion for state.matches to resolve 'never' issue
           if (state.matches('complete')) {
+            // Removed 'as RagIngestionStateValue'
             resolve({
               success: true,
               document_id: state.context.document?.id,
               stats: state.context.stats,
             });
           } else if (state.matches('error')) {
+            // Removed 'as RagIngestionStateValue'
             resolve({
               success: false,
               error: state.context.error,

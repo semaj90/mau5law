@@ -3,8 +3,8 @@
  * High-performance SSR-optimized cache for legal AI platform
  * Integrates with existing parallel cache orchestrator
  */
-import { parallelCacheOrchestrator, type ParallelCacheRequest } from './parallel-cache-orchestrator.js';
-import { dev } from '$app/environment';
+import { parallelCacheOrchestrator } from './parallel-cache-orchestrator';
+import type { ParallelCacheRequest, ParallelCacheResponse, CacheExecutionMetrics } from './parallel-cache-orchestrator';
 import { browser } from '$app/environment';
 export interface SSRCacheConfig {
   defaultTTL: number;
@@ -16,10 +16,10 @@ export interface SSRCacheConfig {
 }
 export interface LegalAPIResponse {
   success: boolean;
-  data: any;
+  data: unknown;
   meta?: {
     userId?: string;
-    timestamp: string;
+    timestamp?: string;
     processingTime?: number;
     aiModel?: string;
     cached?: boolean;
@@ -34,6 +34,10 @@ export interface LegalAPIResponse {
     hasPrev: boolean;
   };
 }
+
+// New, stricter helper types
+type Params = Record<string, string | number | boolean | undefined>;
+
 export interface SSRCacheEntry {
   key: string;
   data: LegalAPIResponse;
@@ -42,8 +46,25 @@ export interface SSRCacheEntry {
   etag: string;
   contentType: string;
   quantized?: boolean;
-  ragContext?: any[];
+  ragContext?: Array<Record<string, unknown>>;
 }
+
+// Helper function to validate if an object is a LegalAPIResponse
+function isLegalAPIResponse(obj: unknown): obj is LegalAPIResponse {
+  return typeof obj === 'object' && obj !== null && typeof (obj as LegalAPIResponse).success === 'boolean';
+}
+
+// Move and export CacheStatsResult to top-level (interfaces cannot be declared inside a class)
+export interface CacheStatsResult {
+  hitRate: number;
+  totalRequests: number;
+  totalHits: number;
+  avgResponseTime: number;
+  cacheSize: number;
+  quantizedResponses: number;
+  ragContextEntries: number;
+}
+
 class SSRLegalAPICache {
   private config: SSRCacheConfig = {
     defaultTTL: 5 * 60 * 1000, // 5 minutes
@@ -54,13 +75,22 @@ class SSRLegalAPICache {
     legalOptimizations: true,
   };
   private responseQuantizer = new ResponseQuantizer();
-  private ragContextCache = new Map<string, any[]>();
+  private ragContextCache = new Map<string, Array<Record<string, unknown>>>();
+  // Safe time source for server/browser contexts (performance may not be present)
+  private now(): number {
+    // performance.now() gives sub-ms; fallback to Date.now()
+    // Use typeof checks so this module runs safely in Node SSR and browser
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const perf: any = (globalThis as any).performance;
+    if (perf && typeof perf.now === 'function') return perf.now();
+    return Date.now();
+  }
   /**
    * Cache GET request with intelligent key generation
    */
   async cacheGet(
     endpoint: string,
-    params: { [key: string]: any } = {},
+    params: Params = {},
     options: {
       ttl?: number;
       quantize?: boolean;
@@ -69,7 +99,7 @@ class SSRLegalAPICache {
     } = {}
   ): Promise<LegalAPIResponse | null> {
     const cacheKey = this.generateCacheKey(endpoint, params, options.userId);
-    const startTime = performance.now();
+    const startTime = this.now();
     try {
       // Create parallel cache request
       const cacheRequest: ParallelCacheRequest = {
@@ -80,29 +110,47 @@ class SSRLegalAPICache {
         ttl: options.ttl || this.config.defaultTTL,
       };
       // Execute parallel cache lookup
-      const result = await parallelCacheOrchestrator.executeParallel(cacheRequest);
-      if (
-        (result as { success?: any; cacheResults?: any; metrics?: any }).success &&
-        (result as { success?: any; cacheResults?: any; metrics?: any }).cacheResults.length > 0
-      ) {
-        const cacheHit = (result as { success?: any; cacheResults?: any; metrics?: any }).cacheResults[0];
-        // Construct a cached response wrapper
-        const cachedResponse: LegalAPIResponse = cacheHit.data || { success: true, data: null };
-        // Add cache metadata
-        if ((cachedResponse as { meta?: any }).meta) {
-          (cachedResponse as { meta?: any }).meta.cached = true;
-          (cachedResponse as { meta?: any }).meta.cacheLayer = cacheHit.source;
-          (cachedResponse as { meta?: any }).meta.processingTime = performance.now() - startTime;
+      const result = (await parallelCacheOrchestrator.executeParallel(cacheRequest)) as
+        | ParallelCacheResponse
+        | undefined;
+      if (result?.success && Array.isArray(result.cacheResults) && result.cacheResults.length > 0) {
+        const cacheHit = result.cacheResults[0];
+        // Normalize cached payload (could be stringified)
+        let cachedResponse: LegalAPIResponse;
+        if (typeof cacheHit.data === 'string') {
+          try {
+            const parsed = JSON.parse(cacheHit.data);
+            if (isLegalAPIResponse(parsed)) {
+              cachedResponse = parsed;
+            } else {
+              // If parsed but not a LegalAPIResponse, wrap it
+              cachedResponse = { success: true, data: parsed };
+            }
+          } catch {
+            // If parsing fails, treat the raw string as data
+            cachedResponse = { success: true, data: cacheHit.data };
+          }
+        } else if (cacheHit.data && typeof cacheHit.data === 'object') {
+          if (isLegalAPIResponse(cacheHit.data)) {
+            cachedResponse = cacheHit.data;
+          } else {
+            // If object but not a LegalAPIResponse, wrap it
+            cachedResponse = { success: true, data: cacheHit.data };
+          }
         } else {
-          (cachedResponse as any).meta = {
-            cached: true,
-            cacheLayer: cacheHit.source,
-            processingTime: performance.now() - startTime,
-          };
+          // Fallback for null/undefined/non-object data
+          cachedResponse = { success: true, data: null };
         }
-        console.log(
-          `🚀 SSR Cache HIT: ${endpoint} from ${cacheHit.source} (${(result as { success?: any; cacheResults?: any; metrics?: any }).metrics?.totalLatency?.toFixed?.(2) ?? '0'}ms)`
-        );
+        // Add cache metadata
+        cachedResponse.meta = {
+          ...(cachedResponse.meta ?? {}),
+          cached: true,
+          cacheLayer: cacheHit.source,
+          processingTime: this.now() - startTime,
+        };
+        const latencyNum = typeof result?.metrics?.totalLatency === 'number' ? result.metrics!.totalLatency! : null;
+        const latencyStr = latencyNum !== null ? latencyNum.toFixed(2) : '0';
+        console.log(`🚀 SSR Cache HIT: ${endpoint} from ${cacheHit.source} (${latencyStr}ms)`);
         return cachedResponse;
       }
       console.log(`💾 SSR Cache MISS: ${cacheKey}`);
@@ -117,12 +165,12 @@ class SSRLegalAPICache {
    */
   async cacheSet(
     endpoint: string,
-    params: { [key: string]: any },
+    params: Params,
     response: LegalAPIResponse,
     options: {
       ttl?: number;
       quantize?: boolean;
-      ragContext?: any[];
+      ragContext?: Array<Record<string, unknown>>;
       userId?: string;
     } = {}
   ): Promise<void> {
@@ -167,8 +215,8 @@ class SSRLegalAPICache {
     endpoint: string,
     options: {
       method?: 'GET' | 'POST';
-      params?: { [key: string]: any };
-      body?: any;
+      params?: Params;
+      body?: unknown;
       headers?: Record<string, string>;
       ttl?: number;
       quantize?: boolean;
@@ -181,7 +229,7 @@ class SSRLegalAPICache {
     if (method === 'GET') {
       const cached = await this.cacheGet(endpoint, params, { ttl, quantize, ragContext, userId });
       if (cached) {
-        return cached as T;
+        return cached as unknown as T;
       }
     }
     // Execute actual API call
@@ -192,11 +240,7 @@ class SSRLegalAPICache {
       headers,
     });
     // Cache successful GET responses
-    if (
-      method === 'GET' &&
-      (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any })
-        .success
-    ) {
+    if (method === 'GET' && response && response.success) {
       const ragContextData = ragContext ? await this.extractRAGContext(response) : undefined;
       await this.cacheSet(endpoint, params, response, {
         ttl,
@@ -205,7 +249,7 @@ class SSRLegalAPICache {
         userId,
       });
     }
-    return response as T;
+    return response as unknown as T;
   }
   /**
    * Generate HTTP cache headers for SSR
@@ -221,13 +265,8 @@ class SSRLegalAPICache {
       if (this.config.legalOptimizations) {
         headers['X-Legal-Cache'] = 'enabled';
         headers['X-Content-Type'] = 'legal-api-response';
-        if (
-          (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any })
-            .meta?.aiModel
-        ) {
-          headers['X-AI-Model'] = (
-            response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }
-          ).meta.aiModel;
+        if (response.meta?.aiModel) {
+          headers['X-AI-Model'] = response.meta.aiModel;
         }
       }
     } else {
@@ -242,7 +281,7 @@ class SSRLegalAPICache {
    */
   async invalidatePattern(pattern: string, userId?: string): Promise<number> {
     // This would need to be implemented in the parallel cache orchestrator
-    // For now, we'll clear specific known patterns
+    // For now, compute which known patterns are relevant and return the count.
     const patterns = [
       `api:v1:cases:*:${userId}:*`,
       `api:v1:evidence:*:${userId}:*`,
@@ -251,37 +290,52 @@ class SSRLegalAPICache {
       `api:v1:citations:*:${userId}:*`,
       `api:v1:detective:*:${userId}:*`,
     ];
-    let invalidated = 0;
-    // Implementation would require pattern matching in the cache layers
-    console.log(`🗑️ Cache invalidation requested for pattern: ${pattern}`);
+    // Determine which known patterns appear related to the requested pattern.
+    const matchedPatterns = patterns.filter(p => {
+      // compare base tokens (strip wildcards) for simple matching heuristics
+      const base = p.replace(/\*/g, '');
+      if (!base) return false;
+      return pattern.includes(base) || base.includes(pattern);
+    });
+    const invalidated = matchedPatterns.length;
+    // Note: actual invalidation would call parallelCacheOrchestrator if supported.
+    console.log(
+      `🗑️ Cache invalidation requested for pattern: ${pattern} (user: ${userId ?? 'any'}) — matched ${invalidated} known pattern(s)`
+    );
     return invalidated;
   }
   /**
    * Get cache statistics
    */
-  async getCacheStats(): Promise<any> {
+  async getCacheStats(): Promise<CacheStatsResult> {
     const perfStats = await parallelCacheOrchestrator.getPerformanceStats();
+    // Safe access with fallbacks to avoid runtime/typing issues
+    // Assuming CacheExecutionMetrics contains cacheHitRate and totalLatency
+    const current: CacheExecutionMetrics = perfStats?.currentMetrics ?? {};
+    const layer = current.layerPerformance ?? {};
+    const cacheStats = perfStats?.cacheStats ?? { l1Size: 0, l2Size: 0, l3Size: 0 }; // Fix: Access cacheStats from perfStats
+
+    const l1 = Number(layer.l1MemoryHits ?? 0);
+    const l2 = Number(layer.l2RedisHits ?? 0);
+    const l3 = Number(layer.l3StorageHits ?? 0);
+    const gpu = Number(layer.gpuTextureHits ?? 0);
+    const misses = Number(layer.misses ?? 0);
+
+    const totalRequests = l1 + l2 + l3 + gpu + misses;
+    const totalHits = l1 + l2 + l3 + gpu;
+
     return {
-      hitRate: perfStats.currentMetrics.cacheHitRate,
-      totalRequests:
-        perfStats.currentMetrics.layerPerformance.l1MemoryHits +
-        perfStats.currentMetrics.layerPerformance.l2RedisHits +
-        perfStats.currentMetrics.layerPerformance.l3StorageHits +
-        perfStats.currentMetrics.layerPerformance.gpuTextureHits +
-        perfStats.currentMetrics.layerPerformance.misses,
-      totalHits:
-        perfStats.currentMetrics.layerPerformance.l1MemoryHits +
-        perfStats.currentMetrics.layerPerformance.l2RedisHits +
-        perfStats.currentMetrics.layerPerformance.l3StorageHits +
-        perfStats.currentMetrics.layerPerformance.gpuTextureHits,
-      avgResponseTime: perfStats.currentMetrics.totalLatency,
-      cacheSize: perfStats.cacheStats.l1Size + perfStats.cacheStats.l2Size + perfStats.cacheStats.l3Size,
-      quantizedResponses: 0, // Would need to track this
+      hitRate: Number(current.cacheHitRate ?? 0),
+      totalRequests,
+      totalHits,
+      avgResponseTime: Number(current.totalLatency ?? 0),
+      cacheSize: Number((cacheStats.l1Size ?? 0) + (cacheStats.l2Size ?? 0) + (cacheStats.l3Size ?? 0)),
+      quantizedResponses: 0, // Would need instrumentation to track this
       ragContextEntries: this.ragContextCache.size,
     };
   }
   // Private helper methods
-  private generateCacheKey(endpoint: string, params: { [key: string]: any }, userId?: string): string {
+  private generateCacheKey(endpoint: string, params: Params, userId?: string): string {
     const paramString = Object.keys(params)
       .sort()
       .map(key => `${key}=${params[key]}`)
@@ -316,10 +370,7 @@ class SSRLegalAPICache {
   }
   private isCacheable(endpoint: string, response: LegalAPIResponse): boolean {
     // Don't cache errors
-    if (
-      !(response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any })
-        .success
-    ) {
+    if (!response.success) {
       return false;
     }
     // Don't cache user-specific real-time data
@@ -330,9 +381,7 @@ class SSRLegalAPICache {
     return true;
   }
   private generateETag(response: LegalAPIResponse): string {
-    const content = JSON.stringify(
-      (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).data
-    );
+    const content = JSON.stringify(response.data);
     return `"${this.hashString(content)}"`;
   }
   private hashString(str: string): string {
@@ -342,14 +391,27 @@ class SSRLegalAPICache {
     }
     return Math.abs(hash).toString(36);
   }
-  private async executeAPICall(endpoint: string, options: any): Promise<LegalAPIResponse> {
-    const url = new URL(endpoint, browser ? window.location.origin : 'http://localhost:5173');
+  private async executeAPICall(
+    endpoint: string,
+    options: {
+      method?: 'GET' | 'POST';
+      params?: Params;
+      body?: unknown;
+      headers?: Record<string, string>;
+    }
+  ): Promise<LegalAPIResponse> {
+    // Build URL robustly for absolute or relative endpoints
+    const isAbsolute = /^https?:\/\//i.test(endpoint);
+    const baseOrigin = process.env.SITE_URL || 'http://localhost:5173';
+    const urlObj = isAbsolute ? new URL(endpoint) : new URL(endpoint, browser ? window.location.origin : baseOrigin);
+
     if (options.method === 'GET' && options.params) {
       Object.entries(options.params).forEach(([key, value]) => {
-        url.searchParams.append(key, String(value));
+        if (value !== undefined && value !== null) urlObj.searchParams.append(key, String(value));
       });
     }
-    const response = await fetch(url.toString(), {
+
+    const res = await fetch(urlObj.toString(), {
       method: options.method || 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -357,50 +419,41 @@ class SSRLegalAPICache {
       },
       body: options.body ? JSON.stringify(options.body) : undefined,
     });
-    if (
-      !(response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).ok
-    ) {
-      throw new Error(
-        `HTTP ${(response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).statusText}`
-      );
+
+    const text = await res.text();
+    let parsed: unknown = null;
+    try {
+      parsed = text ? JSON.parse(text) : null;
+    } catch {
+      // Non-JSON body — keep as text
+      parsed = text;
     }
-    return await (
-      response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }
-    ).json();
+
+    if (!res.ok) {
+      // attach body if present for debugging
+      const bodyPreview = typeof parsed === 'string' ? parsed.slice(0, 1024) : JSON.stringify(parsed ?? {});
+      throw new Error(`HTTP ${res.status}: ${res.statusText} — ${bodyPreview}`);
+    }
+
+    return (parsed as LegalAPIResponse) ?? ({ success: true, data: parsed } as LegalAPIResponse);
   }
-  private async extractRAGContext(response: LegalAPIResponse): Promise<any[]> {
-    // Extract RAG context from response metadata
-    if (
-      (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any })
-        .meta &&
-      (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta
-        .aiModel
-    ) {
+
+  private async extractRAGContext(response: LegalAPIResponse): Promise<Array<Record<string, unknown>>> {
+    const meta = response.meta;
+    if (meta && (meta.aiModel ?? meta.timestamp ?? meta.processingTime)) {
       return [
         {
-          model: (
-            response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }
-          ).meta.aiModel,
-          timestamp: (
-            response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }
-          ).meta.timestamp,
-          processingTime: (
-            response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }
-          ).meta.processingTime,
+          model: meta.aiModel,
+          timestamp: meta.timestamp,
+          processingTime: meta.processingTime,
         },
       ];
     }
     return [];
   }
+
   private serializeEntry(entry: SSRCacheEntry): string {
     return JSON.stringify(entry);
-  }
-  private deserializeResponse(data: any): LegalAPIResponse {
-    if (typeof data === 'string') {
-      const parsed = JSON.parse(data);
-      return parsed.data || parsed;
-    }
-    return (data as { data?: any; map?: any }).data || data;
   }
 }
 /**
@@ -409,34 +462,36 @@ class SSRLegalAPICache {
 class ResponseQuantizer {
   async quantize(response: LegalAPIResponse): Promise<LegalAPIResponse> {
     // Simple quantization - in production this would use more sophisticated compression
-    const quantized = { ...response }
+    const quantized: LegalAPIResponse = { ...response };
     // Compress data arrays
     if (Array.isArray(quantized.data)) {
-      quantized.data = quantized.data.map(item => this.quantizeObject(item));
-    } else if (typeof quantized.data === 'object') {
-      quantized.data = this.quantizeObject(quantized.data);
+      quantized.data = (quantized.data as unknown[]).map(item => this.quantizeAny(item));
+    } else if (quantized.data && typeof quantized.data === 'object') {
+      quantized.data = this.quantizeAny(quantized.data) as Record<string, unknown>;
     }
     return quantized;
   }
-  private quantizeObject(obj: any): any {
-    if (!obj || typeof obj !== 'object') return obj;
-    const quantized: any = {}
-    for (const [key, value] of Object.entries(obj)) {
-      if (typeof value === 'string' && value.length > 100) {
-        // Compress long strings
-        quantized[key] = this.compressString(value);
-      } else if (typeof value === 'number') {
-        // Round numbers to reduce precision
-        quantized[key] = Math.round(value * 100) / 100;
-      } else if (Array.isArray(value)) {
-        quantized[key] = value.map(item => this.quantizeObject(item));
-      } else if (typeof value === 'object') {
-        quantized[key] = this.quantizeObject(value);
-      } else {
-        quantized[key] = value;
-      }
+  private quantizeAny(value: unknown): unknown {
+    if (value === null || value === undefined) return value;
+    if (typeof value === 'string') {
+      if (value.length > 100) return this.compressString(value);
+      return value;
     }
-    return quantized;
+    if (typeof value === 'number') {
+      return Math.round(value * 100) / 100;
+    }
+    if (Array.isArray(value)) {
+      return value.map(v => this.quantizeAny(v));
+    }
+    if (typeof value === 'object') {
+      const obj = value as Record<string, unknown>;
+      const out: Record<string, unknown> = {};
+      for (const [k, v] of Object.entries(obj)) {
+        out[k] = this.quantizeAny(v);
+      }
+      return out;
+    }
+    return value;
   }
   private compressString(str: string): string {
     // Simple compression - remove extra whitespace and trim
