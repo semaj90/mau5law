@@ -22,45 +22,55 @@ export const GET: RequestHandler = async ({ url }) => {
   const cpuCount = os.cpus().length
   const workerCount = workers || cpuCount
   const segmentSize = Math.ceil(max / workerCount)
+
+  type PrimeWorkerResult = { count: number; primes?: number[] };
+
   const scriptPath = path.resolve('src/lib/workers/prime-worker.ts')
   const started = performance.now()
-  const promises: Promise<[], = []
+
+  const promises: Promise<PrimeWorkerResult>[] = [];
+
   for (let i = 0; i < workerCount; i++) {
     const start = i * segmentSize
     const end = Math.min(start + segmentSize, max)
     if (start >= end) break
-    promises.push(new Promise((resolve, reject) => {
+
+    promises.push(
+      new Promise<PrimeWorkerResult>((resolve, reject) => {
         const worker = new Worker(scriptPath, {
-          workerData: { start, end, mode }
-        })
-        worker.on('message', (msg) => resolve(msg)
-        worker.on('error', reject)
-        worker.on('exit', (code) => {
-          if (code !== 0) reject(new Error(`Worker ${i} exited with code ${code}`)
-        })
+          workerData: { start, end, mode },
+        });
+        worker.on('message', (msg: PrimeWorkerResult) => resolve(msg));
+        worker.on('error', err => reject(err));
+        worker.on('exit', code => {
+          if (code !== 0) reject(new Error(`Worker ${i} exited with code ${code}`));
+        });
       })
-    )
+    );
   }
+
   try {
-    const results = await Promise.all(promises)
-    const totalCount = results.reduce((acc, r) => acc + r.count, 0)
-    const primes = mode === 'list' ? results.flatMap(r => r.primes || []) : undefined
-    const durationMs = performance.now() - started
-    return new Response(JSON.stringify({
+    const results = await Promise.all(promises);
+    const totalCount = results.reduce((acc, r) => acc + (r.count ?? 0), 0);
+    const primes = mode === 'list' ? results.flatMap(r => r.primes ?? []) : undefined;
+    const durationMs = performance.now() - started;
+
+    return new Response(
+      JSON.stringify({
         max,
         mode,
         workers: workerCount,
         totalCount,
         primes,
         durationMs: Math.round(durationMs),
-        throughput: Math.round(totalCount / (durationMs / 1000),
+        throughput: Math.round(totalCount / (durationMs / 1000)),
       }),
       { headers: { 'Content-Type': 'application/json' } }
-    )
+    );
   } catch (error) {
     return new Response(
-      JSON.stringify({ error: 'Computation failed', message: error instanceof Error ? error.message: String(error) }),
+      JSON.stringify({ error: 'Computation failed', message: error instanceof Error ? error.message : String(error) }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
-    )
+    );
   }
 }

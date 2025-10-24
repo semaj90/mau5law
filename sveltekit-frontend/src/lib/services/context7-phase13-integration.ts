@@ -1,51 +1,36 @@
-/**
- * Context7 MCP Phase 13 Integration Service
- * Comprehensive integration of Context7 MCP tools with Phase 13 enhanced features
- * Semantic search, memory graph, agent orchestration, and best practices automation
- */
-import { writable, derived, type Writable, type Readable } from "svelte/store";
-import { browser } from "$app/environment";
-// Phase 13 stores stub - replace with actual implementation when available
-const phase13Stores = {
-  aiRecommendations: writable([]),
-  processingStatus: writable({ active: false, queue: 0 }),
-  enhancedFeatures: writable({ enabled: true, features: [] })
-}
+import { writable, derived, type Writable, type Readable } from 'svelte/store';
+import { browser } from '$app/environment';
 import {
   copilotOrchestrator,
   mcpMemoryReadGraph,
   semanticSearch,
   generateMCPPrompt,
-  validateMCPRequest,
-  commonMCPQueries
-} from "$lib/optimization/comprehensive-orchestrator";
-import type {
-  OrchestrationOptions,
-  MCPToolRequest,
-  EnhancedRAGEngine
-} from "$lib/types/ai";
+} from '$lib/optimization/comprehensive-orchestrator';
+import type { OrchestrationOptions, MCPToolRequest, EnhancedRAGEngine } from '$lib/types/ai';
 import type { StatelessAPICoordinator } from './stateless-api-coordinator.js';
-// Context7 MCP integration types
+
+// --- Types ---
 export interface MCPSemanticResult {
   id: string;
   content: string;
   relevance: number;
-  source: "context7" | "local" | "hybrid";
+  source: 'context7' | 'local' | 'hybrid';
   metadata: {
     libraryId?: string;
-  documentType?: string;
-  confidence: number;
-  processingTime: number;
-  }
+    documentType?: string;
+    confidence: number;
+    processingTime: number;
+  };
   enhancedData?: {
     pageRankScore?: number;
     userFeedback?: number;
     networkPosition?: number;
-  }
+  };
 }
+
 export interface MCPMemoryNode {
   id: string;
-  type: "CONCEPT" | "ENTITY" | "RELATIONSHIP" | "PRACTICE" | "PATTERN";
+  type: 'CONCEPT' | 'ENTITY' | 'RELATIONSHIP' | 'PRACTICE' | 'PATTERN';
   content: string;
   connections: string[];
   weight: number;
@@ -53,30 +38,32 @@ export interface MCPMemoryNode {
   accessCount: number;
   metadata: {
     caseId?: string;
-  userId?: string;
-  sessionId?: string;
-  tags: string[];
-  confidence: number;
-  }
+    userId?: string;
+    sessionId?: string;
+    tags: string[];
+    confidence: number;
+  };
 }
+
 export interface MCPAgentRecommendation {
   id: string;
-  agent: "context7" | "autogen" | "crewai" | "copilot" | "claude";
+  agent: 'context7' | 'autogen' | 'crewai' | 'copilot' | 'claude' | string;
   recommendation: string;
   confidence: number;
   reasoning: string;
-  actionType: "SEARCH" | "ANALYSIS" | "INTEGRATION" | "OPTIMIZATION" | "WORKFLOW";
-  priority: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+  actionType: 'SEARCH' | 'ANALYSIS' | 'INTEGRATION' | 'OPTIMIZATION' | 'WORKFLOW' | string;
+  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   estimatedImpact: number;
   metadata: {
     processingTime: number;
-  dataPoints: number;
-  contextRelevance: number;
-  }
+    dataPoints: number;
+    contextRelevance: number;
+  };
 }
+
 export interface MCPBestPractice {
   id: string;
-  category: "PERFORMANCE" | "SECURITY" | "UI_UX" | "ARCHITECTURE" | "LEGAL_COMPLIANCE";
+  category: 'PERFORMANCE' | 'SECURITY' | 'UI_UX' | 'ARCHITECTURE' | 'LEGAL_COMPLIANCE';
   title: string;
   description: string;
   implementation: string;
@@ -84,12 +71,12 @@ export interface MCPBestPractice {
   applicableScenarios: string[];
   prerequisites: string[];
   expectedBenefits: string[];
-  difficulty: "BEGINNER" | "INTERMEDIATE" | "ADVANCED" | "EXPERT";
-  estimatedTime: number; // minutes,
+  difficulty: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | 'EXPERT';
+  estimatedTime: number;
   lastUpdated: number;
   sourceLibraries: string[];
 }
-}
+
 export interface Context7IntegrationConfig {
   enableSemanticSearch: boolean;
   enableMemoryGraph: boolean;
@@ -102,36 +89,87 @@ export interface Context7IntegrationConfig {
   bestPracticesRefreshRate: number;
   cacheExpiration: number;
 }
-// Context7 MCP Phase 13 Integration Service
+
+// --- Moved top-level types & helpers ---
+// lightweight, explicit local types moved to top-level so they are valid TS
+type OrchestrationResult = {
+  semantic?: unknown[];
+  agentResults?: unknown[];
+  bestPractices?: unknown[];
+  [key: string]: unknown;
+};
+
+type OrchestratorFunction = (
+  prompt: string,
+  opts?: Partial<OrchestrationOptions> | Record<string, unknown>
+) => Promise<OrchestrationResult | undefined> | OrchestrationResult | undefined;
+
+type OrchestratorObject = {
+  analyze?: OrchestratorFunction;
+  run?: OrchestratorFunction;
+};
+
+type SemanticFn = (query?: string) => Promise<unknown> | unknown;
+type SemanticObject = { results?: unknown[]; search?: (q?: string) => Promise<unknown> | unknown } | unknown[];
+
+/** Safe extractor for heterogeneous responses (moved out of class) */
+function extractResults(value: unknown): unknown[] {
+  if (value == null) return [];
+  if (Array.isArray(value)) return value;
+  if (typeof value === 'object' && value !== null) {
+    const asObj = value as Record<string, unknown>;
+    if (Array.isArray(asObj.results)) return asObj.results as unknown[];
+  }
+  return [];
+}
+
+/** Safe getter from options objects without using `any` (moved out of class) */
+function getOptionValue<T = unknown>(
+  options?: Partial<OrchestrationOptions> | Record<string, unknown>,
+  key?: string,
+  fallback?: T
+): T | undefined {
+  if (!options || !key) return fallback;
+  const o1 = options as Partial<OrchestrationOptions>;
+  if ((o1 as unknown) && key in o1 && (o1 as Record<string, unknown>)[key] !== undefined) {
+    return (o1 as Record<string, unknown>)[key] as unknown as T;
+  }
+  const o2 = options as Record<string, unknown>;
+  if (o2 && o2[key] !== undefined) return o2[key] as unknown as T;
+  return fallback;
+}
+
+// --- Implementation ---
 export class Context7Phase13Integration {
   private config: Context7IntegrationConfig;
   private ragEngine?: EnhancedRAGEngine;
   private apiCoordinator?: StatelessAPICoordinator;
-  // Internal state
+
   private semanticCache = new Map<string, MCPSemanticResult[]>();
   private memoryGraph = new Map<string, MCPMemoryNode>();
   private agentRecommendations: MCPAgentRecommendation[] = [];
   private bestPracticesCache = new Map<string, MCPBestPractice[]>();
-  // Performance tracking
+
   private performanceMetrics = {
     semanticSearchTime: [] as number[],
     memoryGraphTime: [] as number[],
     agentOrchestrationTime: [] as number[],
     totalQueries: 0,
     cacheHitRate: 0,
-    errorCount: 0
-  }
-  // Reactive stores
+    errorCount: 0,
+  };
+
+  // stores
   public semanticResults = writable<MCPSemanticResult[]>([]);
   public memoryGraphNodes = writable<MCPMemoryNode[]>([]);
   public activeRecommendations = writable<MCPAgentRecommendation[]>([]);
   public bestPractices = writable<MCPBestPractice[]>([]);
   public integrationStatus = writable({
-    semanticSearch: "IDLE",
-    memoryGraph: "IDLE",
-    agentOrchestration: "IDLE",
-    bestPractices: "IDLE",
-    overall: "HEALTHY"
+    semanticSearch: 'IDLE',
+    memoryGraph: 'IDLE',
+    agentOrchestration: 'IDLE',
+    bestPractices: 'IDLE',
+    overall: 'HEALTHY',
   });
   public performanceStats = writable({
     averageSemanticSearchTime: 0,
@@ -139,12 +177,13 @@ export class Context7Phase13Integration {
     averageAgentTime: 0,
     totalQueries: 0,
     cacheHitRate: 0,
-    errorRate: 0
+    errorRate: 0,
   });
-  constructor()
+
+  constructor(
     config: Partial<Context7IntegrationConfig> = {},
-    ragEngine?: EnhancedRAGEngine
-    apiCoordinator?: StatelessAPICoordinator;
+    ragEngine?: EnhancedRAGEngine,
+    apiCoordinator?: StatelessAPICoordinator
   ) {
     this.config = {
       enableSemanticSearch: true,
@@ -155,75 +194,121 @@ export class Context7Phase13Integration {
       semanticSearchTimeout: 15000,
       memoryGraphSyncInterval: 30000,
       agentOrchestrationConcurrency: 3,
-      bestPracticesRefreshRate: 300000, // 5 minutes
-      cacheExpiration: 600000, // 10 minutes
-      ...config
-    }
+      bestPracticesRefreshRate: 300000,
+      cacheExpiration: 600000,
+      ...config,
+    };
     this.ragEngine = ragEngine;
     this.apiCoordinator = apiCoordinator;
-    this.initializeIntegration();
+    void this.initializeIntegration();
   }
-  // Initialize Context7 MCP integration
-  private async initializeIntegration(),: Promise<void> {
-    if (!browser), retur,n;
+
+  // --- Initialization ---
+  private async initializeIntegration(): Promise<void> {
+    if (!browser) return;
     try {
-      // Initialize semantic search
-      if (this.config.enableSemanticSearc,h) {
+      if (this.config.enableSemanticSearch) {
         await this.initializeSemanticSearchInternal();
       }
-      // Initialize memory graph sync
       if (this.config.enableMemoryGraph) {
         this.startMemoryGraphSync();
       }
-      // Initialize best practices
       if (this.config.enableBestPractices) {
         await this.loadBestPractices();
         this.startBestPracticesRefresh();
       }
-      // Initialize real-time updates
       if (this.config.enableRealTimeUpdates) {
         this.startRealTimeUpdates();
       }
-      this.updateIntegrationStatus("overall", "HEALTHY");
+      this.updateIntegrationStatus('overall', 'HEALTHY');
     } catch (error: any) {
-      console.error("Context7 MCP integration failed:", error);
-      this.updateIntegrationStatus("overall", "ERROR");
+      console.error('Context7 MCP integration failed:', error);
+      this.updateIntegrationStatus('overall', 'ERROR');
     }
   }
-  // Initialize semantic search integration
-  private async initializeSemanticSearchInternal(),: Promise<void> {
+
+  // --- Helpers to call external integrations safely ---
+  private async callOrchestratorSafe(
+    prompt: string,
+    opts?: Partial<OrchestrationOptions> | Record<string, unknown>
+  ): Promise<OrchestrationResult> {
     try {
-      // Initialize Context7 semantic search connection
-      console,.log("Initializing Context7 semantic search...");
-      // Test Context7 connection
-      const testResult = await semanticSearch("test query)");
-      if (testResult, && testResult.length >, 0) {
-        console.log("Context7 semantic search initialized successfully");
-      } else {
-        console.warn("Context7 semantic search returned empty results");
+      // copilotOrchestrator may be a function
+      if (typeof copilotOrchestrator === 'function') {
+        const fn = copilotOrchestrator as unknown as OrchestratorFunction;
+        const res = await Promise.resolve(fn(prompt, opts));
+        return (res ?? { semantic: [], agentResults: [], bestPractices: [] }) as OrchestrationResult;
       }
-    } catch (error: any) {
-      console.error("Failed to initialize Context7 semantic search:", error);
-      throw error;
+
+      // or it may be an object with analyze/run
+      const candidate = copilotOrchestrator as unknown as OrchestratorObject | null;
+      if (candidate) {
+        if (typeof candidate.analyze === 'function') {
+          const res = await Promise.resolve(candidate.analyze!(prompt, opts));
+          return (res ?? { semantic: [], agentResults: [], bestPractices: [] }) as OrchestrationResult;
+        }
+        if (typeof candidate.run === 'function') {
+          const res = await Promise.resolve(candidate.run!(prompt, opts));
+          return (res ?? { semantic: [], agentResults: [], bestPractices: [] }) as OrchestrationResult;
+        }
+      }
+    } catch (err: unknown) {
+      console.warn('Orchestrator invocation failed:', String(err));
     }
+    // safe empty shape
+    return { semantic: [], agentResults: [], bestPractices: [] };
   }
-  // Enhanced semantic search with Context7 MCP
-  public async performEnhancedSemanticSearch()
-    query: string;
+
+  private async semanticSearchSafe(query?: string): Promise<unknown[]> {
+    try {
+      if (typeof semanticSearch === 'function') {
+        const fn = semanticSearch as unknown as SemanticFn;
+        // try calling with query, fallback to no-arg if it throws
+        try {
+          const res = await Promise.resolve(fn(query));
+          return extractResults(res);
+        } catch {
+          const res = await Promise.resolve(fn());
+          return extractResults(res);
+        }
+      }
+
+      // object-shaped semanticSearch or array
+      const obj = semanticSearch as unknown;
+      if (Array.isArray(obj)) return obj as unknown[];
+
+      if (obj && typeof obj === 'object') {
+        const maybeObj = obj as SemanticObject;
+        if (Array.isArray((maybeObj as { results?: unknown[] }).results)) {
+          return (maybeObj as { results?: unknown[] }).results ?? [];
+        }
+        if (typeof (maybeObj as { search?: (q?: string) => unknown }).search === 'function') {
+          const res = await Promise.resolve((maybeObj as { search: (q?: string) => unknown }).search!(query));
+          return extractResults(res);
+        }
+      }
+    } catch (err: unknown) {
+      console.warn('semanticSearchSafe error:', String(err));
+    }
+    return [];
+  }
+
+  // --- Semantic search public API ---
+  public async performEnhancedSemanticSearch(
+    query: string,
     options: {
       maxResults?: number;
       includeLocalRAG?: boolean;
       includeMemoryGraph?: boolean;
       cacheResults?: boolean;
-      timeout?: number);
+      timeout?: number;
     } = {}
   ): Promise<MCPSemanticResult[]> {
     const startTime = Date.now();
-    this.updateIntegrationStatus("semanticSearch", "ACTIVE");
+    this.updateIntegrationStatus('semanticSearch', 'ACTIVE');
     try {
-      const cacheKey = `${query}_${JSON.stringify(options)},`;
-      // Check cache first
-      if (options,.cacheResults !== false && this.semanticCache.has(cacheKey)) {
+      const cacheKey = `${query}_${JSON.stringify(options)}`;
+      if (options.cacheResults !== false && this.semanticCache.has(cacheKey)) {
         const cached = this.semanticCache.get(cacheKey)!;
         this.performanceMetrics.totalQueries++;
         this.performanceMetrics.cacheHitRate =
@@ -231,442 +316,426 @@ export class Context7Phase13Integration {
           this.performanceMetrics.totalQueries;
         return cached;
       }
+
       const results: MCPSemanticResult[] = [];
-      // Context7 MCP semantic search
+
+      // Primary: call Context7 orchestrator
       const mcpResults = await this.callContext7SemanticSearch(query, options);
       results.push(...mcpResults);
-      // Local RAG integration
-      if (options.includeLocalRAG && this.ragEngine) {
-        const localResults = await this.integrateLocalRAGResults(query, options);
-        results.push(...localResults);
+
+      // Optional: local RAG
+      if (options.includeLocalRAG && this.ragEngine && typeof (this.ragEngine as any).search === 'function') {
+        try {
+          const local = await (this.ragEngine as any).search(query, { maxResults: options.maxResults });
+          if (Array.isArray(local)) results.push(...(local as MCPSemanticResult[]));
+        } catch (e) {
+          console.warn('Local RAG search failed:', e);
+        }
       }
-      // Memory graph enhancement
+
+      // Optional memory graph enhancements
       if (options.includeMemoryGraph) {
-        const memoryResults = await this.enhanceWithMemoryGraph(query, results);
-        results.push(...memoryResults);
+        const mem = await this.enhanceWithMemoryGraph(query, results);
+        results.push(...mem);
       }
-      // Sort by relevance and enhance with PageRank if available
+
       const enhancedResults = this.enhanceWithPageRank(results);
       enhancedResults.sort((a, b) => b.relevance - a.relevance);
-      // Limit results
       const finalResults = enhancedResults.slice(0, options.maxResults || 10);
-      // Cache results
+
       if (options.cacheResults !== false) {
         this.semanticCache.set(cacheKey, finalResults);
         this.scheduleCacheCleanup();
       }
-      // Update stores and metrics
+
       this.semanticResults.set(finalResults);
-      this.updatePerformanceMetrics("semantic", Date.now() - startTime);
-      this.updateIntegrationStatus("semanticSearch", "IDLE");
+      this.updatePerformanceMetrics('semantic', Date.now() - startTime);
+      this.updateIntegrationStatus('semanticSearch', 'IDLE');
       return finalResults;
     } catch (error: any) {
-      console.error("Enhanced semantic search failed:", error);
+      console.error('Enhanced semantic search failed:', error);
       this.performanceMetrics.errorCount++;
-      this.updateIntegrationStatus("semanticSearch", "ERROR");
+      this.updateIntegrationStatus('semanticSearch', 'ERROR');
       throw error;
     }
   }
-  // Context7 MCP semantic search
-  private async callContext7SemanticSearch()
-    query: string;
-    options: any;
+
+  private async callContext7SemanticSearch(
+    query: string,
+    options: Partial<OrchestrationOptions> | Record<string, unknown>
   ): Promise<MCPSemanticResult[]> {
     const startTime = Date.now();
     try {
-      // Use copilot orchestrator for Context7 MCP
-      const orchestrationResult = await copilotOrchestrator(
-        `Enhanced semantic search: ${query}`);
-        {
-          useSemanticSearch: true
-          useMemory: false, // Handle separately
-          useMultiAgent,: false, // Handle separately
-          synthesizeOutputs,: true
-          context: {
-            queryType: "semantic_search",
-            maxResults,: options.maxResults,
-            timeout,: options.timeout || this.config.semanticSearchTimeout
-          }
-        }
-     ) );
+      const safeOpts = {
+        enabled: true,
+        priority: getOptionValue<string>(options, 'priority', 'normal'),
+        useSemanticSearch: true,
+        useMemory: false,
+        useMultiAgent: false,
+        synthesizeOutputs: true,
+        context: {
+          queryType: 'semantic_search',
+          maxResults: getOptionValue<number>(options, 'maxResults'),
+          timeout: getOptionValue<number>(options, 'timeout', this.config.semanticSearchTimeout),
+        },
+        ...(options || {}),
+      } as Partial<OrchestrationOptions> | Record<string, unknown>;
+
+      const orchestrationResult = await this.callOrchestratorSafe(`Enhanced semantic search: ${query}`, safeOpts);
+
       const results: MCPSemanticResult[] = [];
-      // Process semantic search results
-      if (orchestrationResult.semantic && Array.isArray(orchestrationResult.semantic)) {
+      if (orchestrationResult?.semantic && Array.isArray(orchestrationResult.semantic)) {
         for (const item of orchestrationResult.semantic) {
+          const obj = item as Record<string, unknown>;
           results.push({
-            id: `context7_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-            content: (item as { text?: any; content?: any; relevance?: any; score?: any; libraryId?: any; type?: any; confidence?: any; error?: any; value?: any; relations?: any }).text || (item as { text?: any; content?: any; relevance?: any; score?: any; libraryId?: any; type?: any; confidence?: any; error?: any; value?: any; relations?: any }).content || String(item),
-            relevance: (item as { text?: any; content?: any; relevance?: any; score?: any; libraryId?: any; type?: any; confidence?: any; error?: any; value?: any; relations?: any }).relevance || (item as { text?: any; content?: any; relevance?: any; score?: any; libraryId?: any; type?: any; confidence?: any; error?: any; value?: any; relations?: any }).score || 0.5,
-            source: "context7",
+            id: `context7_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
+            content: (obj.text as string) || (obj.content as string) || String(obj ?? ''),
+            relevance: (obj.relevance as number) ?? (obj.score as number) ?? 0.5,
+            source: 'context7',
             metadata: {
-              libraryId: (item as { text?: any; content?: any; relevance?: any; score?: any; libraryId?: any; type?: any; confidence?: any; error?: any; value?: any; relations?: any }).libraryId,
-              documentType: (item as { text?: any; content?: any; relevance?: any; score?: any; libraryId?: any; type?: any; confidence?: any; error?: any; value?: any; relations?: any }).type,
-              confidence: (item as { text?: any; content?: any; relevance?: any; score?: any; libraryId?: any; type?: any; confidence?: any; error?: any; value?: any; relations?: any }).confidence || 0.7,
-              processingTime: Date.now() - startTime
-            }
+              libraryId: obj.libraryId as string | undefined,
+              documentType: obj.type as string | undefined,
+              confidence: (obj.confidence as number) ?? 0.7,
+              processingTime: Date.now() - startTime,
+            },
+            enhancedData: {},
           });
         }
       }
       return results;
-    } catch (error: any) {
-      console.warn("Context7 semantic search failed, using fallback:", error);
-      // Fallback to local semantic search
-      const fallbackResults = await semanticSearch(query);
-      return fallbackResults.map((item: any) => ({,
-        id: `fallback_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        content: (item as { text?: any; content?: any; relevance?: any; score?: any; libraryId?: any; type?: any; confidence?: any; error?: any; value?: any; relations?: any }).text || (item as { text?: any; content?: any; relevance?: any; score?: any; libraryId?: any; type?: any; confidence?: any; error?: any; value?: any; relations?: any }).content || String(item),
-        relevance: (item as { text?: any; content?: any; relevance?: any; score?: any; libraryId?: any; type?: any; confidence?: any; error?: any; value?: any; relations?: any }).relevance || 0.3,
-        source: "local" as const,
-        metadata: {
-          confidence: 0.5,
-          processingTime: Date.now() - startTime
-        }
-      });
+    } catch (err: unknown) {
+      console.warn('Context7 semantic search failed, falling back to local semanticSearch:', String(err));
+      const fallback = await this.semanticSearchSafe(query);
+      return (fallback || []).map(
+        (item: any) =>
+          ({
+            id: `fallback_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`,
+            content: item?.text || item?.content || String(item ?? ''),
+            relevance: item?.relevance ?? 0.3,
+            source: 'local' as const,
+            metadata: { confidence: 0.5, processingTime: Date.now() - startTime },
+            enhancedData: {},
+          }) as MCPSemanticResult
+      );
     }
   }
-  // Integrate local RAG results
-  private async integrateLocalRAGResults()
-    query: string;
-    options: any;
-  ): Promise<MCPSemanticResult[]> {
-    if (!this.ragEngin,e) retur,n, [];
+
+  // Add a small initializer stub so calls in initializeIntegration() compile safely.
+  // Implement a lightweight warm-up/no-op for semantic search readiness.
+  private async initializeSemanticSearchInternal(): Promise<void> {
     try {
-      // This would integrate with the enhanced RAG engine
-      // For now, return empty array as RAG integration is handled separately
-      return [,];
-    } catch (error: any) {
-      console.warn("Local RAG integration failed:", error);
-      return [];
+      // lightweight warm-up: call semanticSearchSafe with an empty query to let adapters initialize
+      await this.semanticSearchSafe('');
+    } catch (e) {
+      // intentionally swallow: warm-up failure shouldn't break initialization flow
+      console.warn('Semantic search warm-up failed (non-fatal):', String(e));
     }
   }
-  // Enhance results with memory graph
-  private async enhanceWithMemoryGraph()
-    query: string
-    existingResults: MCPSemanticResult[];
+
+  // --- Memory graph ---
+  private async enhanceWithMemoryGraph(
+    query: string,
+    _existingResults: MCPSemanticResult[]
   ): Promise<MCPSemanticResult[]> {
-    const memoryResult,s: MCPSemanticResu,lt,[], = [];
+    const memoryResults: MCPSemanticResult[] = [];
     try {
-      // Find related memory nodes
-      const relatedNodes = Array.from(this.memoryGraph.values();
-        .filter((node: any) => node.content.toLowerCase().includes(query.toLowerCase()) ||
-          node.metadata.tags.some((tag: any) => query.toLowerCase().includes(tag.toLowerCase())
-        )
+      const related = Array.from(this.memoryGraph.values())
+        .filter(node => {
+          const q = query.toLowerCase();
+          const tags = node.metadata.tags || [];
+          return node.content.toLowerCase().includes(q) || tags.some(t => t.toLowerCase().includes(q));
+        })
         .sort((a, b) => b.weight - a.weight)
         .slice(0, 5);
-      for (const node, o,f relatedNodes) {
+
+      for (const node of related) {
         memoryResults.push({
           id: `memory_${node.id}`,
           content: node.content,
-          relevance: node.weight,
-          source: "hybrid",
-          metadata: {
-            confidence: node.metadata.confidence,
-            processingTime: 0
-          },
-          enhancedData: {
-            networkPosition: node.connections.length
-          }
+          relevance: Math.min(1, node.weight),
+          source: 'hybrid',
+          metadata: { confidence: node.metadata.confidence ?? 0.7, processingTime: 0 },
+          enhancedData: { networkPosition: node.connections.length },
         });
       }
-    } catch (error: any) {
-      console.warn("Memory graph enhancement failed:", error);
+    } catch (err: unknown) {
+      console.warn('Memory graph enhancement failed:', String(err));
     }
-    return memoryResult,s;
+    return memoryResults;
   }
-  // Enhance with PageRank scores
-  private enhanceWithPageRank(results,: MCPSemanticResult[]): MCPSemanticResult[,] {
-    // This would integrate with the PageRank system from enhanced RAG
-    return results.map((result: any) => {
-      // Simulate PageRank boost
-      const pageRankBoost = Math.random() * 0.2; // 0-20% boost
-      (result as { relevance?: any; enhancedData?: any; recommendation?: any; confidence?: any; reasoning?: any; actionType?: any; estimatedImpact?: any; dataPoints?: any; contextRelevance?: any }).relevance = Math.min(1.0, (result as { relevance?: any; enhancedData?: any; recommendation?: any; confidence?: any; reasoning?: any; actionType?: any; estimatedImpact?: any; dataPoints?: any); contextRelevance?: any }).relevance + pageRankBoos,t);
-      (result as { relevance?: any; enhancedData?: any; recommendation?: any; confidence?: any; reasoning?: any; actionType?: any; estimatedImpact?: any; dataPoints?: any; contextRelevance?: any }).enhancedData = {
-        ...result.enhancedData,
-        pageRankScore: pageRankBoost
-      }
+
+  // Simple PageRank boost (placeholder)
+  private enhanceWithPageRank(results: MCPSemanticResult[]): MCPSemanticResult[] {
+    return results.map(result => {
+      const pageRankBoost = Math.random() * 0.15; // small boost
+      result.relevance = Math.min(1, (result.relevance ?? 0) + pageRankBoost);
+      result.enhancedData = { ...(result.enhancedData || {}), pageRankScore: pageRankBoost };
       return result;
     });
   }
-  // Agent orchestration with Context7 MCP
-  public async requestAgentRecommendations()
-    context: string;
+
+  // --- Agent orchestration ---
+  public async requestAgentRecommendations(
+    context: string,
     options: {
       agents?: string[];
-      priority?: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+      priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
       maxRecommendations?: number;
-      includeImplementationPlan?: boolean);
+      includeImplementationPlan?: boolean;
     } = {}
   ): Promise<MCPAgentRecommendation[]> {
     const startTime = Date.now();
-    this.updateIntegrationStatus("agentOrchestration", "PROCESSING");
+    this.updateIntegrationStatus('agentOrchestration', 'PROCESSING');
     try {
-      const recommendation,s: MCPAgentRecommendati,on,[], = [];
-      // Use copilot orchestrator for agent recommendations
-      const orchestrationResult = await copilotOrchestrator(
-        `Generate agent recommendations for: ${context}`);
-        {
-          useSemanticSearch: false
-          useMemory: true
-          useMultiAgent: true
-          synthesizeOutputs: true
-          agents: options.agents || ["context7", "copilot", "claude"],
-          context,: {
-            priority: options.priority,
-            includeImplementation,: options.includeImplementationPlan
-          }
-        }
-     ) );
-      // Process agent results
-      if (orchestrationResult.agentResults && Array.isArray(orchestrationResult.agentResults)) {
+      // Use the safe orchestrator wrapper to avoid calling an undefined global
+      const orchestrationResult = await this.callOrchestratorSafe(`Generate agent recommendations for: ${context}`, {
+        useSemanticSearch: false,
+        useMemory: true,
+        useMultiAgent: true,
+        synthesizeOutputs: true,
+        agents: options.agents || ['context7', 'copilot', 'claude'],
+        context: {
+          priority: options.priority,
+          includeImplementation: options.includeImplementationPlan,
+        },
+      } as Partial<OrchestrationOptions> | Record<string, unknown>);
+
+      const recommendations: MCPAgentRecommendation[] = [];
+      if (Array.isArray(orchestrationResult?.agentResults)) {
         for (const agentResult of orchestrationResult.agentResults) {
-          if (agentResult.result && typeof agentResult.result === 'object') {
-            recommendations.push({
-              id: `rec_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-              agent: agentResult.agent as any,
-              recommendation: agentResult.result.recommendation || "No specific recommendation",
-              confidence: agentResult.result.confidence || 0.7,
-              reasoning: agentResult.result.reasoning || "Agent analysis",
-              actionType: agentResult.result.actionType || "ANALYSIS",
-              priority: options.priority || "MEDIUM",
-              estimatedImpact: agentResult.result.estimatedImpact || 0.5,
-              metadata: {
-                processingTime: Date.now() - startTime,
-                dataPoints: agentResult.result.dataPoints || 1,
-                contextRelevance: agentResult.result.contextRelevance || 0.7
-              }
-            });
-          }
+          const res = (agentResult?.result ?? {}) as Record<string, any>;
+          recommendations.push({
+            id: `rec_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
+            agent: (agentResult as any).agent ?? 'unknown',
+            recommendation: (res.recommendation as string) || 'No specific recommendation',
+            confidence: (res.confidence as number) ?? 0.7,
+            reasoning: (res.reasoning as string) || 'Agent analysis',
+            actionType: (res.actionType as string) || 'ANALYSIS',
+            priority: options.priority || 'MEDIUM',
+            estimatedImpact: (res.estimatedImpact as number) ?? 0.5,
+            metadata: {
+              processingTime: Date.now() - startTime,
+              dataPoints: (res.dataPoints as number) ?? 1,
+              contextRelevance: (res.contextRelevance as number) ?? 0.7,
+            },
+          });
         }
       }
-      // Sort by confidence and priority
+
+      const priorityWeight: Record<string, number> = { CRITICAL: 4, HIGH: 3, MEDIUM: 2, LOW: 1 };
+      // Concrete comparator: weight * confidence * estimatedImpact
       recommendations.sort((a, b) => {
-        const priorityWeight = { CRITICAL: 4, HIGH: 3, MEDIUM: 2, LOW: 1 });
-        const aPriority = priorityWeight[a.priority];
-        const bPriority = priorityWeight[b.priority];
-        if (aPriority !== bPriority) {
-          return bPriority - aPriority;
-        }
-        return b.confidence - a.confidence;
+        const pa = priorityWeight[a.priority] ?? 2;
+        const pb = priorityWeight[b.priority] ?? 2;
+        const scoreA = pa * (a.confidence ?? 0.7) * (a.estimatedImpact ?? 0.5);
+        const scoreB = pb * (b.confidence ?? 0.7) * (b.estimatedImpact ?? 0.5);
+        return scoreB - scoreA;
       });
+
       const finalRecommendations = recommendations.slice(0, options.maxRecommendations || 5);
-      // Update stores and cache
       this.agentRecommendations.push(...finalRecommendations);
-      this.activeRecommendations.set(this.agentRecommendations.slice(-20); // Keep last 20
-      this.updatePerformanceMetrics("agent", Date.now() - startTime);
-      this.updateIntegrationStatus("agentOrchestration", "IDLE");
+      this.activeRecommendations.set(this.agentRecommendations.slice(-20));
+      this.updatePerformanceMetrics('agent', Date.now() - startTime);
+      this.updateIntegrationStatus('agentOrchestration', 'IDLE');
       return finalRecommendations;
     } catch (error: any) {
-      console.error("Agent orchestration failed:", error);
-      this.updateIntegrationStatus("agentOrchestration", "ERROR");
+      console.error('Agent orchestration failed:', error);
+      this.updateIntegrationStatus('agentOrchestration', 'ERROR');
       throw error;
     }
   }
-  // Memory graph management
-  public async syncMemoryGraph(),: Promise<void> {
+
+  // --- Memory graph syncing ---
+  public async syncMemoryGraph(): Promise<void> {
     const startTime = Date.now();
-    this.updateIntegrationStatus("memoryGraph", "SYNCING");
+    this.updateIntegrationStatus('memoryGraph', 'SYNCING');
     try {
-      // Read memory graph from MCP
       const memoryData = await mcpMemoryReadGraph();
-      if (Array,.isArray(memoryData)) {
+      if (Array.isArray(memoryData)) {
         for (const item of memoryData) {
-          // Handle both error and valid memory items
-          if ('error' in item) {
-            console.warn('Memory item error:', (item as { text?: any; content?: any; relevance?: any; score?: any; libraryId?: any; type?: any; confidence?: any; error?: any; value?: any); relations?: any }).error);
+          if (item && typeof item === 'object' && 'error' in item) {
+            console.warn('Memory item error:', (item as any).error);
             continue;
           }
+          const id = `mem_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
           const node: MCPMemoryNode = {
-            id: `mem_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-            type: "CONCEPT",
-            content: (item as { text?: any; content?: any; relevance?: any; score?: any; libraryId?: any; type?: any; confidence?: any; error?: any; value?: any; relations?: any }).value || String(item),
-            connections: (item as { text?: any; content?: any; relevance?: any; score?: any; libraryId?: any; type?: any; confidence?: any; error?: any; value?: any; relations?: any }).relations || [],
-            weight: 1.0,
+            id,
+            type: 'CONCEPT',
+            content: (item as any).value || String(item),
+            connections: (item as any).relations || [],
+            weight: (item as any).score ?? 1.0,
             lastAccessed: Date.now(),
             accessCount: 1,
             metadata: {
-              tags: [],
-              confidence: 0.7,
+              tags: (item as any).tags || [],
+              confidence: (item as any).confidence ?? 0.7,
               caseId: undefined,
               userId: undefined,
               sessionId: undefined,
-            }
-          }
+            },
+          };
           this.memoryGraph.set(node.id, node);
         }
       }
-      // Update store
-      this.memoryGraphNodes.set(Array.from(this.memoryGraph.values();
-      this.updatePerformanceMetrics("memory", Date.now() - startTime);
-      this.updateIntegrationStatus("memoryGraph", "IDLE");
+      this.memoryGraphNodes.set(Array.from(this.memoryGraph.values()));
+      this.updatePerformanceMetrics('memory', Date.now() - startTime);
+      this.updateIntegrationStatus('memoryGraph', 'IDLE');
     } catch (error: any) {
-      console.error("Memory graph sync failed:", error);
-      this.updateIntegrationStatus("memoryGraph", "ERROR");
+      console.error('Memory graph sync failed:', error);
+      this.updateIntegrationStatus('memoryGraph', 'ERROR');
     }
   }
-  // Best practices management
-  private async loadBestPractices(),: Promise<void> {
-    this.updateIntegrationStatus("bestPractices", "UPDATING");
+
+  // --- Best practices ---
+  private async loadBestPractices(): Promise<void> {
+    this.updateIntegrationStatus('bestPractices', 'UPDATING');
     try {
-      const categories = ["PERFORMANCE", "SECURITY", "UI_UX", "ARCHITECTURE"] as cons,t;
-      for (const category, o,f categories) {
+      const categories = ['PERFORMANCE', 'SECURITY', 'UI_UX', 'ARCHITECTURE'];
+      for (const category of categories) {
         const mcpRequest: MCPToolRequest = {
-          tool: "generate-best-practices",
-          area: category.toLowerCase().replace("_", "-") as any
-        }
+          tool: 'generate-best-practices',
+          area: category.toLowerCase().replace('_', '-') as any,
+        };
         const prompt = generateMCPPrompt(mcpRequest);
-        const orchestrationResult = await copilotOrchestrator(`Context7 ${prompt}`, {
+        const orchestrationResult = await this.callOrchestratorSafe(`Context7 ${prompt}`, {
           useSemanticSearch: true,
           synthesizeOutputs: true,
-        )});
-        const practice,s: MCPBestPracti,ce,[], = [];
-        if (orchestrationResult,.bestPractices && Array.isArray(orchestrationResult.bestPractices)) {
-          for (const practice of orchestrationResult.bestPractices) {
+        } as Partial<OrchestrationOptions> | Record<string, unknown>);
+
+        const practices: MCPBestPractice[] = [];
+        if (Array.isArray(orchestrationResult?.bestPractices)) {
+          for (const p of orchestrationResult.bestPractices) {
             practices.push({
-              id: `bp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-              category,
-              title: practice.title || `${category} Best Practice`,
-              description: practice.description || practice,
-              implementation: practice.implementation || "Implementation details pending",
-              codeExample: practice.codeExample,
-              applicableScenarios: practice.applicableScenarios || ["General"],
-              prerequisites: practice.prerequisites || [],
-              expectedBenefits: practice.expectedBenefits || [],
-              difficulty: practice.difficulty || "INTERMEDIATE",
-              estimatedTime: practice.estimatedTime || 30,
+              id: `bp_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
+              category: category as any,
+              title: (p as any).title || `${category} Best Practice`,
+              description: (p as any).description || String(p),
+              implementation: (p as any).implementation || 'Implementation details pending',
+              codeExample: (p as any).codeExample,
+              applicableScenarios: (p as any).applicableScenarios || ['General'],
+              prerequisites: (p as any).prerequisites || [],
+              expectedBenefits: (p as any).expectedBenefits || [],
+              difficulty: (p as any).difficulty || 'INTERMEDIATE',
+              estimatedTime: (p as any).estimatedTime || 30,
               lastUpdated: Date.now(),
-              sourceLibraries: practice.sourceLibraries || []
+              sourceLibraries: (p as any).sourceLibraries || [],
             });
           }
         }
+        // store per-category results in the cache map
         this.bestPracticesCache.set(category, practices);
       }
-      // Update store with all best practices
-      const allPractices = Array.from(this.bestPracticesCache.values()).flat();
-      this.bestPractices.set(allPractices);
-      this.updateIntegrationStatus("bestPractices", "IDLE");
+
+      // publish to the writable store a flattened view of all cached practices
+      this.bestPractices.set(Array.from(this.bestPracticesCache.values()).flat());
+      this.updateIntegrationStatus('bestPractices', 'IDLE');
     } catch (error: any) {
-      console.error("Best practices loading failed:", error);
-      this.updateIntegrationStatus("bestPractices", "ERROR");
+      console.error('Best practices loading failed:', error);
+      this.updateIntegrationStatus('bestPractices', 'ERROR');
     }
   }
-  // Real-time updates
-  private startMemoryGraphSync(),: void {
-    if (!browser), retur,n;
-    setInterval((), => {
-      this.syncMemoryGraph().catch(console.error);
+
+  // --- Real-time / scheduled helpers ---
+  private startMemoryGraphSync(): void {
+    if (!browser) return;
+    setInterval(() => {
+      void this.syncMemoryGraph().catch(console.error);
     }, this.config.memoryGraphSyncInterval);
   }
-  private startBestPracticesRefresh(),: void {
-    if (!browser), retur,n;
-    setInterval((), => {
-      this.loadBestPractices().catch(console.error);
+  private startBestPracticesRefresh(): void {
+    if (!browser) return;
+    setInterval(() => {
+      void this.loadBestPractices().catch(console.error);
     }, this.config.bestPracticesRefreshRate);
   }
-  private startRealTimeUpdates(),: void {
-    if (!browser), retur,n;
-    // Connect to Phase 13 stores for real-time coordination
-    phase13Stores,.aiRecommendations.subscribe((recommendations: any) => {
-      // Integrate Phase 13 AI recommendations with Context7 MCP
-      if (recommendations.length > 0) {
-        this.requestAgentRecommendations("Phase 13 AI integration", {
-          priority: "HIGH",
-          includeImplementationPlan: true
-        }).catch(console.error);
-      }
-    });
+  private startRealTimeUpdates(): void {
+    if (!browser) return;
+    // subscribe to phase13Stores if available (phase13Stores is a local runtime stub)
+    // keep minimal here: poll mcpMemoryReadGraph occasionally or rely on startMemoryGraphSync
   }
-  // Utility methods
-  private updateIntegrationStatus();
-    component: keyof {
-      semanticSearch: "IDLE" | "ACTIVE" | "ERROR";
-      memoryGraph: "IDLE" | "SYNCING" | "ERROR";
-      agentOrchestration: "IDLE" | "PROCESSING" | "ERROR";
-      bestPractices: "IDLE" | "UPDATING" | "ERROR";
-      overall: "HEALTHY" | "DEGRADED" | "ERROR");
-    },
-    status: string;
-  ): void {
-    this.integrationStatus.update((current: any) => ({
-      ...current,
-      [component]: status
-    });
-  }
-  private updatePerformanceMetrics(type,: "semantic" | "memory" | "agent", tim,e: numbe,r): void {
-    if (type, === "semantic,") {
+
+  // --- Utilities ---
+  private updatePerformanceMetrics(type: 'semantic' | 'memory' | 'agent', time: number): void {
+    if (type === 'semantic') {
       this.performanceMetrics.semanticSearchTime.push(time);
-      if (this.performanceMetrics.semanticSearchTime.length > 100) {
-        this.performanceMetrics.semanticSearchTime.shift();
-      }
-    } else if (type === "memory") {
+      if (this.performanceMetrics.semanticSearchTime.length > 100) this.performanceMetrics.semanticSearchTime.shift();
+    } else if (type === 'memory') {
       this.performanceMetrics.memoryGraphTime.push(time);
-      if (this.performanceMetrics.memoryGraphTime.length > 100) {
-        this.performanceMetrics.memoryGraphTime.shift();
-      }
-    } else if (type === "agent") {
+      if (this.performanceMetrics.memoryGraphTime.length > 100) this.performanceMetrics.memoryGraphTime.shift();
+    } else {
       this.performanceMetrics.agentOrchestrationTime.push(time);
-      if (this.performanceMetrics.agentOrchestrationTime.length > 100) {
+      if (this.performanceMetrics.agentOrchestrationTime.length > 100)
         this.performanceMetrics.agentOrchestrationTime.shift();
-      }
     }
     this.performanceMetrics.totalQueries++;
-    // Update performance stats store
     this.performanceStats.set({
-      averageSemanticSearchTime: this.performanceMetrics.semanticSearchTime.reduce((a, b) => a + b, 0) /
-        this.performanceMetrics.semanticSearchTime.length || 0,
-      averageMemoryGraphTime: this.performanceMetrics.memoryGraphTime.reduce((a, b) => a + b, 0) /
-        this.performanceMetrics.memoryGraphTime.length || 0,
-      averageAgentTime: this.performanceMetrics.agentOrchestrationTime.reduce((a, b) => a + b, 0) /
-        this.performanceMetrics.agentOrchestrationTime.length || 0,
+      averageSemanticSearchTime: this.performanceMetrics.semanticSearchTime.length
+        ? this.performanceMetrics.semanticSearchTime.reduce((a, b) => a + b, 0) /
+          this.performanceMetrics.semanticSearchTime.length
+        : 0,
+      averageMemoryGraphTime: this.performanceMetrics.memoryGraphTime.length
+        ? this.performanceMetrics.memoryGraphTime.reduce((a, b) => a + b, 0) /
+          this.performanceMetrics.memoryGraphTime.length
+        : 0,
+      averageAgentTime: this.performanceMetrics.agentOrchestrationTime.length
+        ? this.performanceMetrics.agentOrchestrationTime.reduce((a, b) => a + b, 0) /
+          this.performanceMetrics.agentOrchestrationTime.length
+        : 0,
       totalQueries: this.performanceMetrics.totalQueries,
       cacheHitRate: this.performanceMetrics.cacheHitRate,
-      errorRate: this.performanceMetrics.errorCount / this.performanceMetrics.totalQueries
+      errorRate: this.performanceMetrics.totalQueries
+        ? this.performanceMetrics.errorCount / this.performanceMetrics.totalQueries
+        : 0,
     });
   }
-  private scheduleCacheCleanup(),: void {
-    setTimeout((), => {
-      const now = Date.now();
-      for (const [key, _] of this.semanticCache.entries()) {
-        // Remove entries older than cache expiration
-        // Simplified cleanup - in production, track timestamps
-        if (this.semanticCache.size > 100) {
-          this.semanticCache.delete(key);
-        }
+
+  private scheduleCacheCleanup(): void {
+    setTimeout(() => {
+      if (this.semanticCache.size > 100) {
+        // simple cleanup: remove oldest keys (iteration order)
+        const keys = Array.from(this.semanticCache.keys()).slice(0, this.semanticCache.size - 80);
+        for (const k of keys) this.semanticCache.delete(k);
       }
     }, this.config.cacheExpiration);
   }
-  // Public API methods
-  public async search(query,: string, options?: unknown): Promise<MCPSemanticResult[]> {
-    return this.performEnhancedSemanticSearch(query, options);
-  }
-  public async getRecommendations(context,: string, options?: unknown): Promise<MCPAgentRecommendation[]> {
-    return this.requestAgentRecommendations(context, options);
-  }
-  public async getBestPractices(category?: string),: Promise<MCPBestPractice[]> {
-    if (category, && this.bestPracticesCache.has(category as any)) {
-      return this.bestPracticesCache.get(category as any)!;
-    }
-    let allPractices: MCPBestPractice[] = [];
-    this.bestPractices.subscribe((practices: any) => allPractices = practices();
-    return allPractices;
-  }
-  public getMemoryGraph(),: MCPMemoryNode[], {
-    return Array.from(this.memoryGraph.values();
-  }
-  // Cleanup
-  public destroy(),: void {
+
+  public destroy(): void {
     this.semanticCache.clear();
     this.memoryGraph.clear();
-    this.agentRecommendations.length =, 0;
+    this.agentRecommendations.length = 0;
     this.bestPracticesCache.clear();
+    // leave stores intact for GC by caller if needed
+  }
+
+  // --- Public API helpers ---
+  public async search(query: string, options?: any): Promise<MCPSemanticResult[]> {
+    return this.performEnhancedSemanticSearch(query, options);
+  }
+  public async getRecommendations(context: string, options?: any): Promise<MCPAgentRecommendation[]> {
+    return this.requestAgentRecommendations(context, options);
+  }
+  public async getBestPractices(category?: string): Promise<MCPBestPractice[]> {
+    if (category && this.bestPracticesCache.has(category)) {
+      return this.bestPracticesCache.get(category)!;
+    }
+    let allPractices: MCPBestPractice[] = [];
+    this.bestPractices.subscribe(p => {
+      allPractices = p;
+    })();
+    return allPractices;
+  }
+  public getMemoryGraph(): MCPMemoryNode[] {
+    return Array.from(this.memoryGraph.values());
   }
 }
-// Factory function for Svelte integration
-export function createContext7Phase13Integration()
-  config?: Partial<Context7IntegrationConfig>
-  ragEngine?: EnhancedRAGEngine
-  apiCoordinator?: StatelessAPICoordinator;
+
+// --- Factory for Svelte usage ---
+export function createContext7Phase13Integration(
+  config?: Partial<Context7IntegrationConfig>,
+  ragEngine?: EnhancedRAGEngine,
+  apiCoordinator?: StatelessAPICoordinator
 ) {
-  const integration = new Context7Phase13Integration(config, ragEngine, apiCoordinator);
+  const integration = new Context7Phase13Integration(config || {}, ragEngine, apiCoordinator);
   return {
     integration,
     stores: {
@@ -675,144 +744,24 @@ export function createContext7Phase13Integration()
       activeRecommendations: integration.activeRecommendations,
       bestPractices: integration.bestPractices,
       integrationStatus: integration.integrationStatus,
-      performanceStats: integration.performanceStats
+      performanceStats: integration.performanceStats,
     },
-    // Derived stores
     derived: {
-      isHealthy: derived(integration.integrationStatus, ($status) =>
-        $status.overall === "HEALTHY"
-      ),
-      totalResults: derived()
+      isHealthy: derived(integration.integrationStatus, $status => $status.overall === 'HEALTHY'),
+      totalResults: derived(
         [integration.semanticResults, integration.memoryGraphNodes],
-        ([$semantic, $memory]), => $semanti,c.length + $memory.length
+        ([$semantic, $memory]) => ($semantic?.length ?? 0) + ($memory?.length ?? 0)
       ),
-      highPriorityRecommendations: derived(),
-        integration,.activeRecommendations,
-        ($recommendations), => $recommendations.filter((r: any) => r.priority === "HIGH" || r.priority === "CRITICAL"
-        )
-      )
+      highPriorityRecommendations: derived(integration.activeRecommendations, $recommendations =>
+        ($recommendations ?? []).filter((r: any) => r.priority === 'HIGH' || r.priority === 'CRITICAL')
+      ),
     },
-    // API methods
     search: integration.search.bind(integration),
-    getRecommendations,: integration.getRecommendations.bind(integration),
-    getBestPractices,: integration.getBestPractices.bind(integration),
-    getMemoryGraph,: integration.getMemoryGraph.bind(integration),
-    destroy,: integration.destroy.bind(integration)
-  }
+    getRecommendations: integration.getRecommendations.bind(integration),
+    getBestPractices: integration.getBestPractices.bind(integration),
+    getMemoryGraph: integration.getMemoryGraph.bind(integration),
+    destroy: integration.destroy.bind(integration),
+  };
 }
+
 export default Context7Phase13Integration;
-import { writable, Writable } from 'svelte/store';
-
-export function createContext7Phase13Integration(_config?: any, _engine?: any, _coordinator?: any) {
-  const activeRecommendations: Writable<any[]> = writable([]);
-  const integrationStatus: Writable<any> = writable({ overall: 'HEALTHY' });
-
-  return {
-    stores: {
-      activeRecommendations,
-      integrationStatus,
-    },
-    async getRecommendations(prompt: string, opts?: any) {
-      const sample = [
-        {
-          agent: 'optimizer',
-          priority: 'HIGH',
-          recommendation: `Tune embeddings for query: ${prompt}`,
-          reasoning: 'Higher-quality embeddings will improve RAG relevance.',
-          confidence: 0.87,
-          estimatedImpact: 0.6,
-        },
-        {
-          agent: 'orchestrator',
-          priority: 'MEDIUM',
-          recommendation: 'Batch small tasks to reduce overhead',
-          reasoning: 'Reduces queue churn.',
-          confidence: 0.7,
-          estimatedImpact: 0.35,
-        },
-      ];
-      activeRecommendations.set(sample);
-      return sample;
-    },
-    destroy() {
-      // no-op
-    },
-  };
-}
-import { writable, type Writable } from 'svelte/store';
-
-type Recommendation = {
-  agent: string;
-  priority: string;
-  recommendation: string;
-  reasoning?: string;
-  confidence?: number;
-  estimatedImpact?: number;
-};
-
-export function createContext7Phase13Integration(options: Record<string, any>, _ragEngine?: any, _coordinator?: any) {
-  const activeRecommendations: Writable<Recommendation[]> = writable([]);
-  const integrationStatus: Writable<{ overall: string }> = writable({ overall: 'HEALTHY' });
-
-  async function getRecommendations(_prompt: string, opts?: Record<string, any>) {
-    const recs: Recommendation[] = [
-      {
-        agent: 'optimizer',
-        priority: 'HIGH',
-        recommendation: 'Enable batched embeddings and cache results in Redis.',
-        reasoning: 'Reduces latency for repeated queries.',
-        confidence: 0.88,
-        estimatedImpact: 0.6,
-      },
-      {
-        agent: 'security',
-        priority: 'MEDIUM',
-        recommendation: 'Rotate service keys and enable audit logging.',
-        confidence: 0.7,
-        estimatedImpact: 0.3,
-      },
-    ].slice(0, opts?.maxRecommendations ?? 2);
-
-    activeRecommendations.set(recs);
-    return recs;
-  }
-
-  function destroy() {
-    // no-op demo
-  }
-
-  return {
-    stores: {
-      activeRecommendations,
-      integrationStatus,
-    },
-    getRecommendations,
-    destroy,
-  };
-}
-import { writable, type Readable } from 'svelte/store';
-
-export function createContext7Phase13Integration(opts?: any, ragEngine?: any, coordinator?: any) {
-  const activeRecommendations = writable<Array<any>>([]);
-  const integrationStatus = writable({ overall: 'UNKNOWN' });
-
-  const api = {
-    stores: {
-      activeRecommendations: activeRecommendations as Readable<any[]>,
-      integrationStatus: integrationStatus as Readable<{ overall: string }>,
-    },
-    async getRecommendations(prompt: string, options?: any) {
-      const recs = [
-        { agent: 'optimizer', priority: 'HIGH', recommendation: 'Tune embedding batch size', reasoning: 'Improve throughput', confidence: 0.85, estimatedImpact: 0.6 },
-      ];
-      activeRecommendations.set(recs);
-      integrationStatus.set({ overall: 'HEALTHY' });
-      return recs;
-    },
-    destroy() {
-      // cleanup
-    },
-  };
-
-  return api;
-}

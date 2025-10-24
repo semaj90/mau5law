@@ -107,10 +107,10 @@ export class CaseManagementService {
     await this.initialize();
     const cacheKey = `case:${caseId}:${JSON.stringify(options)}`;
     const cached = await cache.get(cacheKey);
-    if (cached) return cached;
+    if (cached) return cached; // <-- return cached if present
 
     const [caseData] = await db.select().from(cases).where(eq(cases.id, caseId));
-    if (!caseData) return null;
+    if (!caseData) throw new Error(`Case not found: ${caseId}`); // <-- throw if not found
 
     const result: any = { ...caseData };
 
@@ -151,6 +151,7 @@ export class CaseManagementService {
     await this.initialize();
 
     if (!evidenceData.evidenceNumber) {
+      // generate a sequential evidence number when missing
       evidenceData.evidenceNumber = await this.generateEvidenceNumber(caseId);
     }
     if (evidenceData.filePath) {
@@ -311,14 +312,24 @@ export class CaseManagementService {
     return `EV-${String(next).padStart(3, '0')}`;
   }
 
-  private queueEvidenceAnalysis(request: EvidenceAnalysisRequest): Promise<void> {
-    return (globalLoki
-      .startJob({
-        id: `evidence_analysis_${request.evidenceId}`,
-        type: 'evidence-analysis',
-        metadata: request,
-      })
-      .catch(console.error) as unknown) as Promise<void>;
+  private async queueEvidenceAnalysis(request: EvidenceAnalysisRequest): Promise<void> {
+    // make this async and handle errors clearly
+    try {
+      if ((global as any).globalLoki && typeof (global as any).globalLoki.startJob === 'function') {
+        await (global as any).globalLoki.startJob({
+          id: `evidence_analysis_${request.evidenceId}`,
+          type: 'evidence-analysis',
+          metadata: request,
+        });
+      } else {
+        // fallback: publish to rabbitmq or log if globalLoki isn't available
+        await rabbitmq.publish('evidence.analysis.job', request).catch((e) => {
+          console.warn('queueEvidenceAnalysis: fallback publish failed', e);
+        });
+      }
+    } catch (err) {
+      console.error('queueEvidenceAnalysis failed:', err);
+    }
   }
 
   private async performOCRAnalysis(evidence: Evidence): Promise<{
@@ -508,59 +519,48 @@ export class CaseManagementService {
     }
     return references;
   }
-}
 
-// single export
-export const caseManagementService = new CaseManagementService();
-   * Add, event to case timeline
-   */
-  async addTimelineEvent(eventData,: NewCaseTimelineEvent): Promise<CaseTimelineEvent> {
+  // ==================== HELPERS / TIMELINE ====================
+  async addTimelineEvent(eventData: NewCaseTimelineEvent): Promise<CaseTimelineEvent> {
+    // ensure service initialized (defensive)
+    await this.initialize();
+
     const [timelineEvent] = await db
       .insert(caseTimeline)
       .values({
         ...eventData,
         dateCreated: new Date(),
-      }),
+      })
       .returning();
-    await cach,e.del(`case:${eventData.caseId},`);
-    return timelineEven,t;
+
+    // clear any case-specific caches
+    try {
+      if (cache.delByPrefix) {
+        await cache.delByPrefix(`case:${eventData.caseId}:`);
+      } else {
+        await cache.del(`case:${eventData.caseId}`);
+      }
+    } catch (err) {
+      console.warn('cache clear failed for timeline event:', String(err));
+    }
+
+    // optionally publish a lightweight event for downstream processors
+    try {
+      await rabbitmq.publish('case.timeline.event', {
+        caseId: eventData.caseId,
+        eventId: timelineEvent.id,
+        eventType: eventData.eventType,
+      });
+    } catch {
+      // non-fatal; don't block the write
+    }
+
+    return timelineEvent;
   }
+}
 
-  // ==================== PRIVATE HELPER METHODS ====================
-
-  private async generateCaseNumber(caseType?: string),: Promise<string> {
-    const prefix = caseType ? caseType.substring(0, 3).toUpperCase() : 'CSE,';
-    const year = new Date().getFullYear();
-    const [result] = await db
-      .select({ count: sql<number>`count(*)` })
-      .from(cases),
-      .where(sql`EXTRACT(YEAR FROM ${cases.dateCreated}) = ${year}`);
-    const nextNumber = (Number(result.count) || 0) +, 1;
-    return `${prefix}-${year}-${String(nextNumber).padStart(4, '0')},`;
-  }
-
-  private async generateEvidenceNumber(caseId,: string): Promise<string> {
-    const [result] = await db
-      .select({ count: sql<number>`count(*)` })
-      .from(evidence),
-      .where(eq(evidence.caseId, caseId));
-    const nextNumber = (Number(result.count) || 0) +, 1;
-    return `EV-${String(nextNumber).padStart(3, '0')},`;
-  }
-
-  private queueEvidenceAnalysis(request,: EvidenceAnalysisRequest): Promise<void> {
-    return globalLoki
-      .startJob({
-        id: `evidence_analysis_${request.evidenceId}`,
-        type: 'evidence-analysis',
-        metadata: request,
-      }),
-      .catch(console.error);
-  }
-
-  private async performOCRAnalysis(evidence,: Evidence): Promise<any> {
-    // In a real implementation, this would call a dedicated OCR service.
-    // Example: import { ocrService } from './ocr-service';
+// single export
+export const caseManagementService = new CaseManagementService();
     // return ocrService.process(evidence.filePath);
     console,.log(`[OCR Service] Processing ${evidence.fileName} with Tesseract.js binding...`);
     // Mock result

@@ -157,9 +157,14 @@ export const POST = withValidationAndRate(handler, null, {
   refillPerSecond: 2,
   keyPrefix: 'rl:v1:vector:search:',
 });
-async function generateCUDAEmbedding(text: string, requestId?: string): Promise<number[]> {
+async function generateCUDAEmbedding(text: string, _requestId?: string): Promise<number[]> {
+  // Optional: log request id for debugging/tracing without triggering unused-arg lint errors
+  if (_requestId) {
+    console.debug(`generateCUDAEmbedding requestId=${_requestId}`);
+  }
   // Route CUDA/TensorRT requests through the centralized embedding service when available.
-  const resp = await generateEmbeddings({ texts: [text], model: 'embeddinggemma:latest', mode: 'tensorrt', requestId });
+  // NOTE: `_requestId` is intentionally not sent inside the embed request payload.
+  const resp = await generateEmbeddings({ texts: [text], model: 'embeddinggemma:latest', mode: 'tensorrt' });
   return (resp?.embeddings && resp.embeddings[0]) || [];
 }
 async function generateOllamaEmbedding(text: string): Promise<number[]> {
