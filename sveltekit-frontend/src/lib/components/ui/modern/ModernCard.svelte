@@ -173,7 +173,7 @@
     border: 2px solid var(--yorha-border-primary);
     border-top: 2px solid var(--yorha-accent-gold);
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   @keyframes spin {
     to {

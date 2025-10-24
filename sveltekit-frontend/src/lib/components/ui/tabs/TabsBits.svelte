@@ -124,7 +124,7 @@
   }
   :global(.legal-ai-tabs-content) {
     font-family: var(--legal-ai-font-family-sans);
-    animation legal-ai-fade-in 200ms ease-out;
+    animation: legal-ai-fade-in 200ms ease-out;
   }
   @keyframes legal-ai-fade-in {
     from {

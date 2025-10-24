@@ -379,7 +379,7 @@
   }
   /* YoRHa theme enhancements */
   :global(.yorha-toolbar) {
-    animation yorha-toolbar-pulse 4s ease-in-out infinite alternate;
+    animation: yorha-toolbar-pulse 4s ease-in-out infinite alternate;
   }
   @keyframes yorha-toolbar-pulse {
     from {

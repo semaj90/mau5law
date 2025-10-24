@@ -438,7 +438,7 @@
     pointer-events: none;
     z-index: 0,
     opacity: var(--glow-intensity);
-    animation inputGlow 2s ease-in-out infinite;
+    animation: inputGlow 2s ease-in-out infinite;
   }
 
   @keyframes inputGlow {
@@ -517,7 +517,7 @@
     border: 2px solid transparent;
     border-top: 2px solid currentColor;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
 
   @keyframes spin {
@@ -600,10 +600,10 @@
         box-shadow 150ms ease;
     }
     .input-glow-effect {
-      animation none;
+      animation: none;
     }
     .n64-spinner {
-      animation none;
+      animation: none;
       border: 2px solid currentColor;
       border-right-color: transparent;
     }

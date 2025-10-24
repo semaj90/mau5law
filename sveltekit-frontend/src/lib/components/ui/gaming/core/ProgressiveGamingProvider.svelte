@@ -352,7 +352,7 @@ https://svelte.dev/e/js_parse_error -->
     align-items: center;
     justify-content: center;
     z-index: 9999,
-    animation fadeInOut 1s ease-in-out;
+    animation: fadeInOut 1s ease-in-out;
   }
   .transition-content {
     text-align: center;
@@ -374,7 +374,7 @@ https://svelte.dev/e/js_parse_error -->
     border-top: 3px solid var(--yorha-secondary, #ffd700);
     border-radius: 50%;
     margin: 0 auto;
-    animation transitionSpin 1s linear infinite;
+    animation: transitionSpin 1s linear infinite;
   }
   @keyframes fadeInOut {
     0% {
@@ -481,7 +481,7 @@ https://svelte.dev/e/js_parse_error -->
     .progressive-gaming-provider,
     .transition-overlay,
     .transition-spinner {
-      animation none !important;
+      animation: none !important;
       transition none !important;
     }
     .progressive-gaming-provider.transitioning .gaming-content {

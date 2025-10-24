@@ -167,7 +167,7 @@ d;
     box-shadow: 12px 12px 0px 0px theme('colors.nes.black');
   }
   .nes-modal.is-closing {
-    animation modal-close 0.15s ease-out forward;
+    animation: modal-close 0.15s ease-out forward;
   }
 /* Variant Styles */ {}
   .nes-modal-default {

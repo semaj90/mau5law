@@ -357,7 +357,7 @@
   }
 /* Animation effects */ {}
   .nes-container--animated {
-    animation nes-container-pulse 2s ease-in-out infinite alternate;
+    animation: nes-container-pulse 2s ease-in-out infinite alternate;
   }
   @keyframes nes-container-pulse {
     from {
@@ -369,7 +369,7 @@
   }
 /* Glowing effect */ {}
   .nes-container--glowing {
-    animation nes-container-glow 1.5s ease-in-out infinite alternate;
+    animation: nes-container-glow 1.5s ease-in-out infinite alternate;
   }
   @keyframes nes-container-glow {
     from {
@@ -389,7 +389,7 @@
   }
 /* Processing states */ {}
   .nes-container--processing {
-    animation nes-container-processing 1s linear infinite;
+    animation: nes-container-processing 1s linear infinite;
   }
   @keyframes nes-container-processing {
     0% { border-color: var(--nes-secondary), }
@@ -403,7 +403,7 @@
   .nes-container--error {
     border-color: #ff0000;
     box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
-    animation nes-container-error 0.5s ease-in-out 3;
+    animation: nes-container-error 0.5s ease-in-out 3;
   }
   @keyframes nes-container-error {
     0%, 100% { transform: translateX(0), }
@@ -413,7 +413,7 @@
 /* Priority indicators */ {}
   .nes-container--priority-critical {
     border-color: #ff0000;
-    animation nes-container-critical 1s ease-in-out infinite;
+    animation: nes-container-critical 1s ease-in-out infinite;
   }
   @keyframes nes-container-critical {
     0%, 100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.4), }
@@ -428,7 +428,7 @@
   }
   .nes-container--evidence-digital {
     border-style: dashed;
-    animation nes-container-digital 2s linear infinite;
+    animation: nes-container-digital 2s linear infinite;
   }
   @keyframes nes-container-digital {
     0% { border-style: dashed, }
@@ -542,7 +542,7 @@
   }
   .nes-container__priority--critical {
     color: #ff0000;
-    animation priority-blink 1s infinite;
+    animation: priority-blink 1s infinite;
   }
   @keyframes priority-blink {
     0%, 50% { opacity: 1, }
@@ -572,7 +572,7 @@ rgba(0, 255, 0, 0.1) 2px, {}
 rgba(0, 255, 0, 0.1) 4px {}
     );
     pointer-events: none;
-    animation nes-scanlines 0.1s linear infinite;
+    animation: nes-scanlines 0.1s linear infinite;
   }
   @keyframes nes-scanlines {
     0% { transform: translateY(0), }
@@ -615,7 +615,7 @@ rgba(0, 255, 0, 0.1) 4px {}
 .nes-container__power-led, {}
 .progress-fill, {}
     .confidence-fill {
-      animation none;
+      animation: none;
       transition none;
     }
   }

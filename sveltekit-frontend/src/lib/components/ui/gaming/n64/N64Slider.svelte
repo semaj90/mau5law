@@ -375,7 +375,7 @@ mounted = true;
 		border-radius: 0;
 		/* Animated fill effect */
 		background-size: 200% 100%;
-		animation fillPulse 2s ease-in-out infinite;
+		animation: fillPulse 2s ease-in-out infinite;
 	}
 	@keyframes fillPulse {
 		0%, 100% {
@@ -494,7 +494,7 @@ mounted = true;
 	}
 	.n64-slider.disabled .n64-slider-fill {
 		background: #999;
-		animation none;
+		animation: none;
 	}
 	/* Hover effects */
 	.n64-slider:not(.disabled):hover .n64-slider-thumb {
@@ -517,7 +517,7 @@ mounted = true;
 			transition none;
 		}
 		.n64-slider-fill {
-			animation none;
+			animation: none;
 		}
 		.n64-slider-thumb {
 			transition none;

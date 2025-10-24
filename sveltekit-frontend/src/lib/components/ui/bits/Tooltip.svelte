@@ -102,7 +102,7 @@
 <style>
 /* Gaming theme glow effect */ {}
   :global([data-bits-tooltip-content][data-theme='gaming']) {
-    animation gaming-glow 2s ease-in-out infinite alternate;
+    animation: gaming-glow 2s ease-in-out infinite alternate;
   }
   @keyframes gaming-glow {
     from {

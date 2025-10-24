@@ -306,7 +306,7 @@
     border: 3px solid rgba(255,255,255,0.3);
     border-top: 3px solid currentColor;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
   .loading-bar {
@@ -321,7 +321,7 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, currentColor, transparent);
-    animation loading-slide 2s infinite;
+    animation: loading-slide 2s infinite;
   }
   .main-prediction {
     display: flex;

@@ -153,7 +153,7 @@ d;
     background: #ffffff;
     border: 4px solid #212529;
     box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.3);
-    animation slideInRight 0.3s ease-out;
+    animation: slideInRight 0.3s ease-out;
     position relative;
     padding: 16px;
     font-family: "Press Start 2P", cursiv;
@@ -262,7 +262,7 @@ d;
     }
   }
   .toast-.removing {
-    animation slideOutRight 0.3s ease-in forward;
+    animation: slideOutRight 0.3s ease-in forward;
   }
   @keyframes slideOutRight {
     from {

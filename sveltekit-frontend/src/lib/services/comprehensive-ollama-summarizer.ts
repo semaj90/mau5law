@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * Comprehensive Ollama Summarizer Service
+ * Comprehensive Ollama Summarizer Service (cleaned and fixed)
  *
  * Unified service that integrates all Ollama components:
  * - LangChain + Ollama integration
@@ -12,103 +12,91 @@
  *
  * Ensures app works with fully linked and wired API endpoints
  */
-// LangChain types - using local definitions to avoid missing module errors
-type LangChainConfig =  ;{
-  baseUrl: string;
-  model: string;
-  temperature?: number;
-}
-type ProcessingResult =  ;{
-  content: string;
-  embeddings?: number[];
-  metadata?: any;
-}
-type QueryResult =  ;{
-  content: string;
-  score?: number;
-  metadata?: any;
-}
-// Mock LangChain service for compilation
-const LangChainOllamaService = class {
-  testConnection = async () => ({ status: 'healthy' });
-  queryDocuments = async (query: string, options?: any) => ({ content: query, score: 0.8 });
-  processDocument = async (content: string, options?: any) => ({ content, embeddings: [] });
-}
 import { ollamaCudaService } from './ollama-cuda-service.js';
 import { gemma3LegalService as ollamaGemma3Service } from './ollama-gemma3-service.js';
-import { ollamaService } from './ollama-service.js';
 import { ollamaCluster as ollamaClusterService } from './ollamaClusterService.js';
 import { ollamaChatStream } from './ollamaChatStream.js';
 import { comprehensiveCachingService } from './comprehensive-caching-service.js';
-import { performanceOptimizationService } from './performance-optimization-service.js';
-import stream from "stream";
-// Chat types defined locally to avoid route import issues
-type ChatRequest =  ;{
+
+// --- Types & Interfaces (adjusted) ---
+type ProcessingResult = {
+  content: string;
+  embeddings?: number[];
+  metadata?: Record<string, unknown>;
+};
+
+type QueryResult = {
+  content: string;
+  score?: number;
+  metadata?: Record<string, unknown>;
+  sources?: Array<Record<string, unknown>>;
+};
+
+interface ChatRequest {
   message: string;
   userId?: string;
   sessionId?: string;
   temperature?: number;
+  model?: string;
+  stream?: boolean;
+  useRAG?: boolean;
+  caseId?: string;
 }
-type ChatResponse =  ;{
+
+interface ChatResponse {
   response: string;
   model?: string;
   timestamp: number;
   confidence?: number;
 }
-// ============================================================================
-// TYPES & INTERFACES
-// ============================================================================
-}
+
 export interface SummarizerConfig {
-  // Core Configuration
   baseUrl: string;
   primaryModel: string;
   embeddingModel: string;
   fallbackModel?: string;
-  // Performance Settings
   maxConcurrentRequests: number;
   requestTimeout: number;
   enableCaching: boolean;
   enableGPUAcceleration: boolean;
-  // Model Settings
   defaultTemperature: number;
   maxTokens: number;
   contextWindow: number;
-  // Advanced Features
   enableClustering: boolean;
   enableStreaming: boolean;
   enableFallback: boolean;
   enableMetrics: boolean;
 }
-}
+
 export interface SummarizerStats {
   services: {
-    langchain: { status: string; models: string[] }
-    cuda: { status: string; gpuMemory?: number }
-    gemma3: { status: string; model?: string }
-    cluster: { status: string; nodes: number }
-    streaming: { status: string; activeStreams: number }
-  }
+    langchain: { status: string; models?: string[] };
+    cuda: { status: string; gpuMemory?: number };
+    gemma3: { status: string; model?: string };
+    cluster: { status: string; nodes?: number };
+    streaming: { status: string; activeStreams?: number };
+  };
   performance: {
     requestsProcessed: number;
     averageLatency: number;
     cacheHitRate: number;
     errorRate: number;
-  }
+  };
   models: {
     loaded: string[];
     available: string[];
     gpu: boolean;
-  }
+  };
 }
+
 export interface ComprehensiveSummaryRequest {
   content: string;
   type: 'document' | 'case' | 'evidence' | 'legal-brief' | 'contract';
   context?: {
     caseId?: string;
-  userId?: string;
-  metadata?: { [key: string]: any }
-  }
+    userId?: string;
+    metadata?: { [key: string]: any };
+  };
   options?: {
     includeEmbeddings?: boolean;
     enableRAG?: boolean;
@@ -116,18 +104,19 @@ export interface ComprehensiveSummaryRequest {
     streamResponse?: boolean;
     cacheResult?: boolean;
     model?: string;
-  }
+  };
 }
+
 export interface ComprehensiveSummaryResponse {
   summary: string;
   keyPoints: string[];
   legalAnalysis?: {
     risks: string[];
-  opportunities: string[];
-  recommendations: string[];
-  precedents?: string[];
-  }
-  embeddings?: number[][];
+    opportunities: string[];
+    recommendations: string[];
+    precedents?: string[];
+  };
+  embeddings?: number[];
   confidence: number;
   processingTime: number;
   model: string;
@@ -137,7 +126,9 @@ export interface ComprehensiveSummaryResponse {
     complexity: 'low' | 'medium' | 'high';
     topKeywords: string[];
     entities: Array<any>;
+  };
 }
+
 // ============================================================================
 // MAIN COMPREHENSIVE OLLAMA SUMMARIZER SERVICE
 // ============================================================================
@@ -146,6 +137,7 @@ class ComprehensiveOllamaSummarizer {
   private langChainService: any;
   private isInitialized = false;
   private stats: SummarizerStats;
+
   constructor(config: Partial<SummarizerConfig> = {}) {
     this.config = {
       baseUrl: 'http://localhost:11434',
@@ -164,14 +156,21 @@ class ComprehensiveOllamaSummarizer {
       enableFallback: true,
       enableMetrics: true,
       ...config
-    }
+    };
     this.initializeServices();
     this.initializeStats();
   }
+
   private initializeServices() {
-    // Initialize LangChain service with configuration
+    // LangChain mock or injected implementation
+    const LangChainOllamaService = class {
+      testConnection = async () => ({ status: 'healthy' });
+      queryDocuments = async (query: string, options?: any) => ({ content: query, score: 0.8, sources: [] });
+      processDocument = async (content: string, options?: any) => ({ content, embeddings: [] });
+    };
     this.langChainService = new LangChainOllamaService();
   }
+
   private initializeStats() {
     this.stats = {
       services: {
@@ -192,142 +191,136 @@ class ComprehensiveOllamaSummarizer {
         available: [],
         gpu: false
       }
-    }
+    };
   }
-  // ========================================================================
-  // INITIALIZATION & HEALTH MANAGEMENT
-  // ========================================================================
+
+  // -----------------------------------------------------------------------
+  // Initialization & Health
+  // -----------------------------------------------------------------------
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
     try {
-      console.log('🚀 Initializing Comprehensive Ollama Summarizer...');
-      // Initialize core services
       await this.initializeCoreServices();
-      // Initialize advanced services (check if they exist and have initialize method)
-      if (this.config.enableCaching) {
-        try {
-          if (typeof comprehensiveCachingService?.initialize === 'function') {
-            await comprehensiveCachingService.initialize();
-          }
-        } catch (error: any) {
-          console.warn('Caching service not available:', error);
-        }
+      if (this.config.enableCaching && typeof comprehensiveCachingService?.initialize === 'function') {
+        try { await comprehensiveCachingService.initialize(); } catch (e) { /* ignore */ }
       }
-      if (this.config.enableMetrics) {
-        try {
-          if (!performanceOptimizationService?.isInitialized) {
-            console.log('Performance service already initialized or not available');
-          }
-        } catch (error: any) {
-          console.warn('Performance service not available:', error);
-        }
-      }
-      // Test connections
       await this.validateConnections();
-      // Update stats
       await this.updateStats();
       this.isInitialized = true;
-      console.log('✅ Comprehensive Ollama Summarizer initialized successfully');
     } catch (error: any) {
-      console.error('❌ Failed to initialize Comprehensive Ollama Summarizer:', error);
       throw error;
     }
   }
+
   private async initializeCoreServices(): Promise<void> {
-    const initPromises = [];
-    // Test LangChain connection
-    initPromises.push()
-      this.langChainService.testConnection();
-        .then(connected => {
-          this.stats.services.langchain.status = connected ? 'healthy' : 'unhealthy');
-        });
-        .catch(() => {
-          this.stats.services.langchain.status = 'error';
+    const initPromises: Promise<void>[] = [];
+
+    initPromises.push(
+      Promise.resolve()
+        .then(async () => {
+          try {
+            const connected = await this.langChainService.testConnection();
+            this.stats.services.langchain.status = connected ? 'healthy' : 'unhealthy';
+          } catch {
+            this.stats.services.langchain.status = 'error';
+          }
         })
     );
-    // Check CUDA service if enabled (it auto-initializes as singleton)
+
     if (this.config.enableGPUAcceleration) {
-      initPromises.push()
-        Promise.resolve();
+      initPromises.push(
+        Promise.resolve()
           .then(async () => {
-            if (ollamaCudaService.isInitialized) {
-              this.stats.services.cuda.status = 'healthy';
-            } else {
-              // Try to get system health as initialization test
-              const health = await ollamaCudaService.getSystemHealth();
-              this.stats.services.cuda.status = health.status === 'healthy' ? 'healthy' : 'degraded';
+            try {
+              if (ollamaCudaService?.isInitialized) {
+                this.stats.services.cuda.status = 'healthy';
+              } else if (typeof ollamaCudaService?.getSystemHealth === 'function') {
+                const health = await ollamaCudaService.getSystemHealth();
+                this.stats.services.cuda.status = health?.status === 'healthy' ? 'healthy' : 'degraded';
+              } else {
+                this.stats.services.cuda.status = 'degraded';
+              }
+            } catch {
+              this.stats.services.cuda.status = 'degraded';
             }
-          });
-          .,catch(() => {
+          })
+          .catch(() => {
             this.stats.services.cuda.status = 'error';
           })
       );
     }
-    // Check Gemma3 service (auto-initializes)
-    initPromises.push()
-      Promise.resolve();
+
+    initPromises.push(
+      Promise.resolve()
         .then(() => {
-          // Check if the service is available by testing a method
-          if (typeof ollamaGemma3Service.generateLegalResponse === 'function') {
-            this.stats.services.gemma3.status = 'healthy';
-          } else {
+          try {
+            this.stats.services.gemma3.status = typeof ollamaGemma3Service?.generateLegalResponse === 'function' ? 'healthy' : 'degraded';
+          } catch {
             this.stats.services.gemma3.status = 'degraded';
           }
-        });
-        .,catch(() => {
+        })
+        .catch(() => {
           this.stats.services.gemma3.status = 'error';
         })
     );
-    // Check cluster service if enabled (auto-initializes)
+
     if (this.config.enableClustering) {
-      initPromises.push()
-        Promise.resolve();
+      initPromises.push(
+        Promise.resolve()
           .then(() => {
-            // Check if cluster service methods are available
-            if (typeof ollamaClusterService.getClusterStatus === 'function') {
-              this.stats.services.cluster.status = 'healthy';
-            } else {
+            try {
+              this.stats.services.cluster.status = typeof ollamaClusterService?.getClusterStatus === 'function' ? 'healthy' : 'degraded';
+            } catch {
               this.stats.services.cluster.status = 'degraded';
             }
-          });
-          .,catch(() => {
+          })
+          .catch(() => {
             this.stats.services.cluster.status = 'error';
           })
       );
     }
+
     await Promise.allSettled(initPromises);
   }
-  private async validateConnections(),: Promise<void> {
-    // Test Ollama API connection
+
+  // Validate network connections to Ollama and models
+  private async validateConnections(): Promise<void> {
     try {
-      // removed unused response assignment
-      if (!(response as { ok?: any; status?: any; json?: any; content?: any }).ok) throw, new Error(`HTTP ${(response as { ok?: any; status?: any; json?: a,ny); content?: an,y }).status}`);
-      const data = await (response as { ok?: any; status?: any; json?: any; content?: any }).json();
-      this.stats.models.available = (data as { models?: any }).models?.map((m: any) => m.name) || [];
+      const url = `${this.config.baseUrl}/models`;
+      const response = await fetch(url, { method: 'GET', headers: { 'Accept': 'application/json' } });
+      if (response.ok) {
+        const data = await response.json();
+        this.stats.models.available = Array.isArray(data?.models) ? data.models.map((m: any) => m.name || String(m)) : [];
+      } else {
+        // non-fatal: record degraded models list
+        this.stats.models.available = [];
+      }
     } catch (error: any) {
-      console.warn('Failed to connect to Ollama API:', error);
+      // network error - leave available list empty
+      this.stats.models.available = [];
     }
-    // Test primary model
+
+    // primary model load check (best-effort)
     try {
       await this.langChainService.testConnection();
       this.stats.models.loaded.push(this.config.primaryModel);
-    } catch (error: any) {
-      console.warn('Primary model not available:', error);
+    } catch {
+      // ignore
     }
   }
-  // ========================================================================
-  // MAIN SUMMARIZATION FUNCTIONALITY
-  // ========================================================================
-  async generateComprehensiveSummary()
-    request: ComprehensiveSummaryRequest;
-  ): Promise<ComprehensiveSummaryResponse> {
+
+  // -----------------------------------------------------------------------
+  // Main summarization
+  // -----------------------------------------------------------------------
+  async generateComprehensiveSummary(request: ComprehensiveSummaryRequest): Promise<ComprehensiveSummaryResponse> {
     if (!this.isInitialized) {
       await this.initialize();
     }
     const startTime = Date.now();
     this.stats.performance.requestsProcessed++;
+
     try {
-      // Check cache first
+      // Cache lookup
       let cacheKey = '';
       if (this.config.enableCaching && request.options?.cacheResult !== false) {
         try {
@@ -335,241 +328,221 @@ class ComprehensiveOllamaSummarizer {
             cacheKey = this.generateCacheKey(request);
             const cached = await comprehensiveCachingService.get(cacheKey);
             if (cached && cached.summary) {
+              // update cache hit metric
               this.stats.performance.cacheHitRate =
                 (this.stats.performance.cacheHitRate * (this.stats.performance.requestsProcessed - 1) + 1) /
                 this.stats.performance.requestsProcessed;
               return cached as ComprehensiveSummaryResponse;
             }
           }
-        } catch (error: any) {
-          console.warn('Cache lookup failed:', error);
+        } catch {
+          // continue if cache fails
         }
       }
-      // Process document with embeddings if requested
+
+      // embeddings
       let processingResult: ProcessingResult | null = null;
       if (request.options?.includeEmbeddings) {
-        processingResult = await this.langChainService.processDocument()
-          request.content,
-          {
-            type: request.type,
-            ...request.context?.metadata
-          }
-       ) );
+        processingResult = await this.langChainService.processDocument(request.content, {
+          type: request.type,
+          ...(request.context?.metadata || {})
+        });
       }
-      // Perform RAG query if requested
+
+      // RAG query
       let ragResult: QueryResult | null = null;
       if (request.options?.enableRAG && processingResult) {
         const query = this.generateQueryFromType(request.type);
         ragResult = await this.langChainService.queryDocuments(query, {
           documentTypes: [request.type],
           maxResults: 5
-        )});
+        });
       }
-      // Generate summary using appropriate service
+
+      // Generate summary with fallback logic
       const summary = await this.generateSummaryWithFallback(request);
-      // Extract metadata
+
       const metadata = this.extractMetadata(request.content);
-      // Compile comprehensive response
       const response: ComprehensiveSummaryResponse = {
         summary: summary.content,
-        keyPoints: summary.keyPoints,
-        legalAnalysis: summary.legalAnalysis,
-        embeddings: processingResult?.embeddings,
+        keyPoints: summary.keyPoints || [],
+        legalAnalysis: summary.legalAnalysis || { risks: [], opportunities: [], recommendations: [] },
+        embeddings: processingResult?.embeddings ? [processingResult.embeddings] : undefined,
         confidence: this.calculateConfidence(summary, ragResult),
         processingTime: Date.now() - startTime,
-        model: summary?.model || "unknown" // @ts-ignore - Model property access,
-        sources: ragResult?.sources,
+        model: summary?.model || "unknown",
+        sources: (ragResult as any)?.sources || [],
         metadata
-      }
-      // Cache result if enabled
+      };
+
+      // Cache set
       if (this.config.enableCaching && cacheKey) {
         try {
           if (typeof comprehensiveCachingService?.set === 'function') {
             await comprehensiveCachingService.set(cacheKey, response, {
-              ttl: 3600000, // 1 hour
+              ttl: 3600000,
               strategy: 'persistent',
               tags: [request.type, request.context?.caseId].filter(Boolean)
             });
           }
-        } catch (error: any) {
-          console.warn('Cache set failed:', error);
+        } catch {
+          // ignore cache set errors
         }
       }
-      // Update performance stats
+
       this.updatePerformanceStats(Date.now() - startTime);
       return response;
     } catch (error: any) {
       this.stats.performance.errorRate =
         (this.stats.performance.errorRate * (this.stats.performance.requestsProcessed - 1) + 1) /
         this.stats.performance.requestsProcessed;
-      console.error('Failed to generate comprehensive summary:', error);
       throw error;
     }
   }
-  private async generateSummaryWithFallback()
-    request: ComprehensiveSummaryRequest;
-  ): Promise<any> {
-    const model = request.options??.model || "unknown" // @ts-ignore - Model property access || this.config.primaryModel
+
+  private async generateSummaryWithFallback(request: ComprehensiveSummaryRequest): Promise<any> {
+    const requestedModel = request.options?.model || this.config.primaryModel || 'unknown';
     try {
-      // Primary: Use Gemma3 legal model if available
-      if (model.includes('gemma3') && this.stats.services.gemma3.status === 'healthy') {
+      if (requestedModel.includes('gemma3') && this.stats.services.gemma3.status === 'healthy') {
         return await this.generateWithGemma3Service(request);
       }
-      // Secondary: Use CUDA service if GPU enabled
       if (this.config.enableGPUAcceleration && this.stats.services.cuda.status === 'healthy') {
         return await this.generateWithCudaService(request);
       }
-      // Tertiary: Use LangChain service
       if (this.stats.services.langchain.status === 'healthy') {
         return await this.generateWithLangChainService(request);
       }
-      // Fallback: Use basic Ollama service
       return await this.generateWithBasicService(request);
-    } catch (error: any) {
-      console.warn('Primary service failed, trying fallback:', error);
-      if (this.config.enableFallback) {
-        return await this.generateWithBasicService(request);
-      }
-      throw error;
+    } catch (err) {
+      if (this.config.enableFallback) return await this.generateWithBasicService(request);
+      throw err;
     }
   }
+
   private async generateWithGemma3Service(request: ComprehensiveSummaryRequest) {
     const prompt = this.buildLegalPrompt(request);
-    const response = await ollamaGemma3Service.generateLegalResponse(prompt, {
+    const response: any = await ollamaGemma3Service.generateLegalResponse(prompt, {
       temperature: this.config.defaultTemperature,
       maxTokens: this.config.maxTokens,
-      stream: request.options?.streamResponse || false
-    )});
+      stream: !!request.options?.streamResponse
+    });
+    const text = (response?.content || response?.text || String(response || '')) as string;
     return {
-      content: (response as { ok?: any; status?: any; json?: any; content?: any }).content,
-      keyPoints: this.extractKeyPoints((response as { ok?: any; status?: any; json?: any); content?: any }).content),
-      legalAnalysis: this.extractLegalAnalysis((response as { ok?: any; status?: any; json?: any); content?: any }).content),
+      content: text,
+      keyPoints: this.extractKeyPoints(text),
+      legalAnalysis: this.extractLegalAnalysis(text),
       model: 'gemma3-legal'
-    }
+    };
   }
+
   private async generateWithCudaService(request: ComprehensiveSummaryRequest) {
-    const messages = [{
-      role: 'user' as const,
-      content: this.buildLegalPrompt(request)
-    }];
-    const response = await ollamaCudaService.chatCompletion(messages, {
+    const prompt = this.buildLegalPrompt(request);
+    const messages = [{ role: 'user' as const, content: prompt }];
+    const response: any = await ollamaCudaService.chatCompletion(messages, {
       model: this.config.primaryModel,
       temperature: this.config.defaultTemperature,
       maxTokens: this.config.maxTokens,
-      streaming: request.options?.streamResponse ? {,
-        onToken: (token) => console.log('Token:', token),
-        onStart: () => console.log('Started CUDA generation'),
-        onEnd: () => console.log('Completed CUDA generation')
+      streaming: request.options?.streamResponse ? {
+        onToken: (token: string) => {},
+        onStart: () => {},
+        onEnd: () => {}
       } : undefined
     });
-    const content = typeof response === 'string' ? response : (response as { ok?: any; status?: any; json?: any; content?: any }).content || String(response);
+    const content = typeof response === 'string' ? response : (response?.content || String(response));
     return {
       content,
       keyPoints: this.extractKeyPoints(content),
       legalAnalysis: this.extractLegalAnalysis(content),
       model: 'cuda-accelerated'
-    }
+    };
   }
+
   private async generateWithLangChainService(request: ComprehensiveSummaryRequest) {
     const query = this.buildLegalPrompt(request);
-    const result = await this.langChainService.queryDocuments(query, {
+    const result: any = await this.langChainService.queryDocuments(query, {
       documentTypes: [request.type],
       maxResults: 3
-    )});
+    });
+    const answer = result?.content || result?.answer || '';
     return {
-      content: (result as { answer?: any }).answer,
-      keyPoints: this.extractKeyPoints((result as { answer?: any }).answer),
-      legalAnalysis: this.extractLegalAnalysis((result as { answer?: any }).answer),
+      content: answer,
+      keyPoints: this.extractKeyPoints(answer),
+      legalAnalysis: this.extractLegalAnalysis(answer),
       model: 'langchain-ollama'
-    }
+    };
   }
+
   private async generateWithBasicService(request: ComprehensiveSummaryRequest) {
     const chatRequest: ChatRequest = {
       message: this.buildLegalPrompt(request),
       model: this.config.fallbackModel || this.config.primaryModel,
       temperature: this.config.defaultTemperature,
-      stream: request.options?.streamResponse || false,
-      useRAG: request.options?.enableRAG || false,
+      stream: !!request.options?.streamResponse,
+      useRAG: !!request.options?.enableRAG,
       caseId: request.context?.caseId
-    }
-    // Use the existing API endpoint
+    };
     const response = await fetch('/api/ai/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(chatRequest)
     });
-    if (!(response as { ok?: any; status?: any; json?: any; content?: any }).ok) {
-      throw new Error(`,Chat API failed: ${(response as { ok?: any; status?: any; json?: an,y); content?: any }).status}`);
+    if (!response.ok) {
+      throw new Error(`Chat API failed: ${response.status}`);
     }
-    const chatResponse: ChatResponse = await (response as { ok?: any; status?: any; json?: any; content?: any }).json();
+    const chatResponse: ChatResponse = await response.json();
     return {
       content: chatResponse.response,
       keyPoints: this.extractKeyPoints(chatResponse.response),
       legalAnalysis: this.extractLegalAnalysis(chatResponse.response),
       model: 'basic-ollama'
-    }
+    };
   }
-  // ========================================================================
-  // STREAMING SUPPORT
-  // ========================================================================
-  async *generateStreamingSummary()
-    request: ComprehensiveSummaryRequest;
-  ): AsyncGenerator<Partial<ComprehensiveSummaryResponse>, ComprehensiveSummaryResponse> {
-    if (!this.config.enableStreaming) {
-      throw new Error('Streaming is not enabled');
-    }
+
+  // -----------------------------------------------------------------------
+  // Streaming support
+  // -----------------------------------------------------------------------
+  async *generateStreamingSummary(request: ComprehensiveSummaryRequest): AsyncGenerator<Partial<ComprehensiveSummaryResponse>, ComprehensiveSummaryResponse> {
+    if (!this.config.enableStreaming) throw new Error('Streaming not enabled');
     const startTime = Date.now();
     let partialContent = '';
-    const chunks: string[] = [];
     try {
-      // Initialize streaming
-      const streamRequest = { ...request, options: { ...request.options, streamResponse: true } }
-      // Use streaming chat service
-      const stream = ollamaChatStream.createStream();
-      // Process chunks as they arrive
-      for await (const chunk of stream.processRequest(streamRequest)) {
-        partialContent += chunk.content;
-        chunks.push(chunk.content);
-        // Yield partial response
+      const streamRequest = { ...request, options: { ...request.options, streamResponse: true } };
+      const streamClient = ollamaChatStream.createStream?.() ?? null;
+      if (!streamClient) throw new Error('Streaming client unavailable');
+
+      for await (const chunk of streamClient.processRequest(streamRequest)) {
+        const text = chunk?.content || '';
+        partialContent += text;
         yield {
-          summary: partialContent
+          summary: partialContent,
           keyPoints: this.extractKeyPoints(partialContent),
           confidence: this.calculatePartialConfidence(partialContent),
           processingTime: Date.now() - startTime,
-          model: chunk?.model || "unknown" // @ts-ignore - Model property access || 'streaming'
-        }
+          model: chunk?.model || 'streaming'
+        };
       }
-      // Generate final comprehensive response
+
       const metadata = this.extractMetadata(request.content);
       const finalResponse: ComprehensiveSummaryResponse = {
-        summary: partialContent
+        summary: partialContent,
         keyPoints: this.extractKeyPoints(partialContent),
         legalAnalysis: this.extractLegalAnalysis(partialContent),
         confidence: this.calculateConfidence({ content: partialContent }, null),
         processingTime: Date.now() - startTime,
         model: 'streaming-ollama',
         metadata
-      }
+      };
       return finalResponse;
     } catch (error: any) {
-      console.error('Streaming summary failed:', error);
       throw error;
     }
   }
-  // ========================================================================
-  // UTILITY METHODS
-  // ========================================================================
+
+  // -----------------------------------------------------------------------
+  // Utilities
+  // -----------------------------------------------------------------------
   private buildLegalPrompt(request: ComprehensiveSummaryRequest): string {
-    const basePrompt = `,Analyze the following ${request.type} and provide a comprehensive summary with, ke,y insights:;
-Content:
-${request.content}
-Please provide:
-1., A concise summary of the main content
-2., Key legal points and clauses
-3., Risk analysis and recommendations
-4., Important dates, parties, and, obligations
-Format your response as a, structured analysis suitable for, lega,l professionals.`;
-    // Add context-specific instructions
+    const basePrompt = `Analyze the following ${request.type} and provide a comprehensive summary with key insights.\n\nContent:\n${request.content}\n\nPlease provide:\n1) A concise summary of the main content\n2) Key legal points and clauses\n3) Risk analysis and recommendations\n4) Important dates, parties, and obligations\nFormat your response as a structured analysis suitable for legal professionals.`;
     switch (request.type) {
       case 'contract':
         return basePrompt + '\n\nFocus on: terms, conditions, obligations, termination clauses, liability, and dispute resolution.';
@@ -583,177 +556,163 @@ Format your response as a, structured analysis suitable for, lega,l professional
         return basePrompt;
     }
   }
+
   private generateQueryFromType(type: string): string {
-    const queries = {
+    const queries: Record<string, string> = {
       'document': 'What are the key legal concepts and implications in this document?',
       'case': 'What are the legal precedents and case law relevant to this matter?',
       'evidence': 'How does this evidence support or contradict legal arguments?',
       'legal-brief': 'What legal authorities and precedents support these arguments?',
       'contract': 'What are the key contractual obligations and potential risks?'
-    }
-    return queries[type as keyof typeof queries] || queries.document;
+    };
+    return queries[type] || queries.document;
   }
+
   private extractKeyPoints(content: string): string[] {
-    // Simple extraction logic - could be enhanced with NLP
-    const sentences = content.split(/[.!?]+/).filter(item => item.length) > 20);
-    const keyIndicators = ['important', 'key', 'significant', 'must', 'shall', 'required', 'critical'];
-    return sentences;
-      .filter(item => item.includes)(indicator)
-      )
-      .slice(0, 5)
-      .map(s => s.trim();
+    if (!content) return [];
+    const sentences = content.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 20);
+    const keyIndicators = ['important', 'key', 'significant', 'must', 'shall', 'required', 'critical', 'risk', 'recommend'];
+    return sentences.filter(s => keyIndicators.some(ind => s.toLowerCase().includes(ind))).slice(0, 5);
   }
-  private extractLegalAnalysis(content: string): any {
-    // Extract structured legal analysis - could be enhanced with NLP
-    const risks = this.extractSection(content, ['risk', 'danger', 'liability', 'exposure']);
+
+  private extractLegalAnalysis(content: string) {
+    const risks = this.extractSection(content, ['risk', 'liability', 'exposure']);
     const opportunities = this.extractSection(content, ['opportunity', 'advantage', 'benefit']);
     const recommendations = this.extractSection(content, ['recommend', 'suggest', 'advise', 'should']);
     return {
       risks: risks.slice(0, 3),
       opportunities: opportunities.slice(0, 3),
       recommendations: recommendations.slice(0, 3)
-    }
+    };
   }
+
   private extractSection(content: string, keywords: string[]): string[] {
-    const sentences = content.split(/[.!?]+/).filter(item => item.length) > 15);
-    return sentences;
-      .filter(item => item.includes)(keyword)
-      )
-      .map(s => s.trim();
+    if (!content) return [];
+    const sentences = content.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 15);
+    return sentences.filter(s => keywords.some(k => s.toLowerCase().includes(k))).map(s => s.trim());
   }
+
   private extractMetadata(content: string): ComprehensiveSummaryResponse['metadata'] {
-    const words = content.split(/\s+/).length;
-    const complexity = words > 2000 ? 'high' : words > 500 ? 'medium' : 'low';
-    // Simple keyword extraction
+    const words = content ? content.split(/\s+/).length : 0;
+    const complexity: 'low' | 'medium' | 'high' = words > 2000 ? 'high' : words > 500 ? 'medium' : 'low';
     const wordFreq = new Map<string, number>();
-    content.toLowerCase()
-      .split(/\W+/)
-      .filter(word => word.length > 4)
-      .forEach(word => wordFreq.set(word, (wordFreq.get(word) || 0) + 1);
-    const topKeywords = Array.from(wordFreq.entries();
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 10)
-      .map(([word]) => word);
+    (content || '').toLowerCase().split(/\W+/).filter(w => w.length > 4).forEach(word => {
+      wordFreq.set(word, (wordFreq.get(word) || 0) + 1);
+    });
+    const topKeywords = Array.from(wordFreq.entries()).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([w]) => w);
     return {
-      wordCount: words
+      wordCount: words,
       complexity,
       topKeywords,
-      entities: [] // Could be enhanced with NER
-    }
+      entities: []
+    };
   }
+
   private calculateConfidence(summary: any, ragResult: QueryResult | null): number {
-    let confidence = 0.7; // Base confidence
-    if (summary.content.length > 200) confidence += 0.1;
-    if (ragResult && ragResult.sources.length > 0) confidence += 0.15;
-    if (summary.legalAnalysis) confidence += 0.05;
+    let confidence = 0.7;
+    const contentLen = String(summary?.content || '').length;
+    if (contentLen > 200) confidence += 0.1;
+    if (ragResult && Array.isArray(ragResult.sources) && ragResult.sources.length > 0) confidence += 0.15;
+    if (summary?.legalAnalysis) confidence += 0.05;
     return Math.min(confidence, 0.95);
   }
+
   private calculatePartialConfidence(content: string): number {
     const length = content.length;
     return Math.min(0.5 + (length / 1000) * 0.3, 0.85);
   }
+
   private generateCacheKey(request: ComprehensiveSummaryRequest): string {
-    const hash = this.simpleHash(request.content);
+    const hash = this.simpleHash(request.content || '');
     const context = request.context?.caseId || 'global';
     const options = JSON.stringify(request.options || {});
-    return `,summary-,${request.type},-${hash}-${contex,t}-${this.simpleHash(options)}`;
+    return `summary:${request.type}:${hash}:${context}:${this.simpleHash(options)}`;
   }
+
   private simpleHash(str: string): string {
     let hash = 0;
-    for (let i = 0; i < str.length; i++) {>
-      const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;>>
-      hash = hash & hash; // Convert to 32-bit integer
+    for (let i = 0; i < str.length; i++) {
+      const chr = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + chr;
+      hash |= 0;
     }
     return Math.abs(hash).toString(16);
   }
+
   private updatePerformanceStats(processingTime: number): void {
     const currentAvg = this.stats.performance.averageLatency;
-    const count = this.stats.performance.requestsProcessed;
-    this.stats.performance.averageLatency =
-      ((currentAvg * (count - 1)) + processingTime) / count;
+    const count = this.stats.performance.requestsProcessed || 1;
+    this.stats.performance.averageLatency = ((currentAvg * (count - 1)) + processingTime) / count;
   }
+
   private async updateStats(): Promise<void> {
     try {
-      // Update model information
-      // removed unused response assignment
-      if ((response as { ok?: any; status?: any; json?: any; content?: any }).ok) {
-        const data = await (response as { ok?: any; status?: any; json?: any; content?: any }).json();
-        this.stats.models.available = (data as { models?: any }).models?.map((m: any) => m.name) || [];
-      }
-      // Update service health
       const healthChecks = await Promise.allSettled([
         this.langChainService.testConnection(),
         ollamaCudaService.getSystemHealth?.() || Promise.resolve(null),
         ollamaGemma3Service.healthCheck?.() || Promise.resolve(null),
         ollamaClusterService.getClusterStatus?.() || Promise.resolve(null)
       ]);
-      // Update cluster information
-      if (this.config.enableClustering && healthChecks[3].status === 'fulfilled') {
-        const clusterStats = healthChecks[3].value as any;
+      if (this.config.enableClustering && healthChecks[3]?.status === 'fulfilled') {
+        const clusterStats = (healthChecks[3] as any).value;
         this.stats.services.cluster.nodes = clusterStats?.activeNodes || 0;
       }
-    } catch (error: any) {
-      console.warn('Failed to update stats:', error);
+    } catch {
+      // ignore
     }
   }
-  // ========================================================================
-  // PUBLIC METHODS
-  // ========================================================================
+
+  // -----------------------------------------------------------------------
+  // Public helpers
+  // -----------------------------------------------------------------------
   async getStats(): Promise<SummarizerStats> {
     await this.updateStats();
-    return { ...this.stats }
+    return { ...this.stats };
   }
-  // Backwards-compatible alias used by earlier route code
+
   async summarize(request: ComprehensiveSummaryRequest): Promise<ComprehensiveSummaryResponse> {
     return this.generateComprehensiveSummary(request);
   }
+
   async getHealth(): Promise<any> {
-    const healthyServices = Object.entries(this.stats.services);
-      .filter(([_, service]) => service.status === 'healthy')
-      .map(([name]) => name);
+    const healthyServices = Object.entries(this.stats.services).filter(([_, s]) => s.status === 'healthy').map(([name]) => name);
     const status = healthyServices.length >= 2 ? 'healthy' : 'degraded';
-    return { status, services: healthyServices }
+    return { status, services: healthyServices };
   }
+
   async warmup(): Promise<void> {
-    if (!this.isInitialized) {
-      await this.initialize();
-    }
-    console.log('🔥 Warming up Comprehensive Ollama Summarizer...');
-    // Warm up with a small test request
+    if (!this.isInitialized) await this.initialize();
     const testRequest: ComprehensiveSummaryRequest = {
       content: 'This is a test document for warming up the summarization service.',
       type: 'document',
       options: {
-        cacheResult: false
+        cacheResult: false,
         streamResponse: false
       }
-    }
+    };
     try {
       await this.generateComprehensiveSummary(testRequest);
-      console.log('✅ Warmup completed successfully');
-    } catch (error: any) {
-      console.warn('⚠️ Warmup completed with warnings:', error);
+    } catch {
+      // ignore warmup errors
     }
   }
+
   updateConfig(newConfig: Partial<SummarizerConfig>): void {
-    this.config = { ...this.config, ...newConfig }
-    // Reinitialize services if necessary
+    this.config = { ...this.config, ...newConfig };
     if (newConfig.baseUrl || newConfig.primaryModel) {
       this.isInitialized = false;
     }
   }
+
   async reset(): Promise<void> {
     this.isInitialized = false;
     this.initializeStats();
-    // Clear caches
-    if (this.config.enableCaching) {
-      await comprehensiveCachingService.clearByTags(['summary')]);
+    if (this.config.enableCaching && typeof comprehensiveCachingService?.clearByTags === 'function') {
+      try { await comprehensiveCachingService.clearByTags(['summary']); } catch { /* ignore */ }
     }
   }
 }
-// ============================================================================
-// EXPORT SINGLETON INSTANCE
-// ============================================================================
+
+// Export singleton
 export const comprehensiveOllamaSummarizer = new ComprehensiveOllamaSummarizer();
 // Types are already exported via interface declarations above

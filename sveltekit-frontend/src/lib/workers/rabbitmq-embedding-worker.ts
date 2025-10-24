@@ -2,13 +2,13 @@
  * RabbitMQ Embedding Worker - Server-side Background Job Processing
  * Processes embedding generation jobs via RabbitMQ message queues
  */
-import { rabbitMQService, type JobMessage, type JobResult } from '$lib/services/rabbitmq-connection';
-import { QUEUES } from '$lib/config/rabbitmq-config';
-import { createEmbedding, createEmbeddings } from '$lib/services/embedding-service';
-import { db } from '$lib/server/db/unified-client';
-import { documents, document_chunks, cases } from '$lib/server/schema/documents';
+import { rabbitMQService, type JobMessage, type JobResult } from '../services/rabbitmq-connection';
+import { QUEUES } from '../config/rabbitmq-config';
+import { createEmbedding, createEmbeddings } from '../services/embedding-service';
+import { db } from '../server/db/unified-client';
+import { documents, document_chunks, cases } from '../server/schema/documents';
 import { eq, sql } from 'drizzle-orm';
-import { redis } from '$lib/server/redis';
+import { redis } from '../server/redis';
 
 export interface EmbeddingJobPayload {
   entity_type: 'document' | 'case' | 'chunk';

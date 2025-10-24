@@ -194,7 +194,7 @@ box-shadow: 0 0 0 2px var(--yorha-warning, #ffaa00), 0 0 20px rgba(255, 170, 0, 
 		box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
 	}
 	.gaming-button.glow {
-		animation gaming-glow 2s ease-in-out infinite alternate;
+		animation: gaming-glow 2s ease-in-out infinite alternate;
 	}
 /* Button Content */ .button-content {
 		position relative;
@@ -214,7 +214,7 @@ box-shadow: 0 0 0 2px var(--yorha-warning, #ffaa00), 0 0 20px rgba(255, 170, 0, 
 		border: 2px solid rgba(255, 255, 255, 0.3);
 		border-top: 2px solid currentColor;
 		border-radius: 50%;
-		animation spin 1s linear infinite;
+		animation: spin 1s linear infinite;
 		z-index: 3,
 	}
 /* Gaming Effects */ .button-overlay {
@@ -238,7 +238,7 @@ box-shadow: 0 0 0 2px var(--yorha-warning, #ffaa00), 0 0 20px rgba(255, 170, 0, 
 		height: 1px;
 		background: linear-gradient(90deg, transparent 0%, currentColor 50%, transparent 100%);
 		opacity: 0.6,
-		animation scan 3s ease-in-out infinite;
+		animation: scan 3s ease-in-out infinite;
 		z-index: 1,
 	}
 /* Animations */ @keyframes spin {

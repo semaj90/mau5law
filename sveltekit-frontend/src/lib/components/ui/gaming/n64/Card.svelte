@@ -449,7 +449,7 @@
     border-right: 3px solid rgba(255, 255, 255, 0.6);
     border-bottom: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
-    animation n64CardSpin 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+    animation: n64CardSpin 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
     transform-style: preserve-3d;
   }
   @keyframes n64CardSpin {
@@ -471,7 +471,7 @@
     letter-spacing: 1px;
     text-transform: uppercase;
     font-size: 0.9em;
-    animation pulse 2s ease-in-out infinite;
+    animation: pulse 2s ease-in-out infinite;
   }
   @keyframes pulse {
     0%, 100% { opacity: 1, }
@@ -604,12 +604,12 @@ background: radial-gradient( ellipse at center bottom, var(--fog-color, #404040)
       transition box-shadow 150ms ease, opacity 150ms ease;
     }
     .n64-spinner {
-      animation none;
+      animation: none;
       border: 4px solid currentColor;
       border-right-color: transparent;
     }
     .loading-text {
-      animation none;
+      animation: none;
     }
   }
 /* High contrast mode */ @media (prefers-contrast: high) {

@@ -178,7 +178,7 @@
       console.warn('Could not play completion sound:', error);
     }
   }
-  // Smooth animation of progress value
+  // Smooth animation: of progress value
   const animateProgress = () => {
     if (animatedValue === progressPercentage) {
       isAnimating = false;
@@ -454,7 +454,7 @@
   /* Indeterminate animation */
   .n64-progress.indeterminate .progress-bar {
     width: 30% !important;
-    animation indeterminateProgress 2s ease-in-out infinite;
+    animation: indeterminateProgress 2s ease-in-out infinite;
     transform-origin: left center;
   }
   @keyframes indeterminateProgress {
@@ -482,7 +482,7 @@
       rgba(255, 255, 255, 0.1) 4px,
       rgba(255, 255, 255, 0.1) 8px
     );
-    animation textureStream 1s linear infinite;
+    animation: textureStream 1s linear infinite;
     opacity: 0.6,
   }
   @keyframes textureStream {
@@ -554,7 +554,7 @@
       rgba(255, 255, 255, 0.3) 50%,
       transparent 100%
     );
-    animation waveProgress 2s ease-in-out infinite;
+    animation: waveProgress 2s ease-in-out infinite;
     opacity: 0.6,
   }
   @keyframes waveProgress {
@@ -586,7 +586,7 @@
     height: 2px;
     background: rgba(255, 255, 255, 0.8);
     border-radius: 50%;
-    animation floatProgressParticles 1.5s ease-out infinite;
+    animation: floatProgressParticles 1.5s ease-out infinite;
   }
   .progress-particles::before {
     top: 30%;
@@ -642,7 +642,7 @@
     border: 2px solid transparent;
     border-top: 2px solid rgba(255, 255, 255, 0.8);
     border-radius: 50%;
-    animation progressSpin 1s linear infinite;
+    animation: progressSpin 1s linear infinite;
   }
   @keyframes progressSpin {
     to { transform: rotate(360deg), }
@@ -658,7 +658,7 @@
   }
   /* State variations */
   .n64-progress.complete {
-    animation completeProgress 0.6s ease-out;
+    animation: completeProgress 0.6s ease-out;
   }
   @keyframes completeProgress {
     0% { transform: scale(1), }
@@ -718,7 +718,7 @@
       display: none;
     }
     .texture-stream {
-      animation none;
+      animation: none;
     }
   }
   /* Reduced motion support */
@@ -733,19 +733,19 @@
     .wave-effect,
     .progress-particles:: before
     .progress-particles::after {
-      animation none;
+      animation: none;
     }
     .n64-progress.indeterminate .progress-bar {
-      animation none;
+      animation: none;
       width: 50% !important;
     }
     .n64-spinner {
-      animation none;
+      animation: none;
       border: 2px solid rgba(255, 255, 255, 0.8);
       border-right-color: transparent;
     }
     .n64-progress.complete {
-      animation none;
+      animation: none;
     }
   }
   /* High contrast mode */

@@ -107,7 +107,7 @@ d;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(4px);
     z-index: 50,
-    animation overlayShow 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation: overlayShow 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   .dialog-content {
     position fixed;
@@ -125,7 +125,7 @@ d;
     overflow: hidden;
     display: flex;
     flex-direction column;
-    animation contentShow 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation: contentShow 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   .dialog-header {
     padding: var(--golden-xl);

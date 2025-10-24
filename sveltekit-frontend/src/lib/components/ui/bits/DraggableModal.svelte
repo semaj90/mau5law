@@ -322,7 +322,7 @@
   }
 /* YoRHa theme enhancements */ {}
   :global(.yorha-modal) {
-    animation yorha-pulse 3s ease-in-out infinite alternate;
+    animation: yorha-pulse 3s ease-in-out infinite alternate;
   }
   @keyframes yorha-pulse {
     from {

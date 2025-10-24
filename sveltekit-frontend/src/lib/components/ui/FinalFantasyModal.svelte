@@ -207,6 +207,6 @@ calc(100% - 12px) 100%, {}
     position absolute;
     inset: 0,
     background: linear-gradient(45deg, transparent 48%, rgba(255, 255, 255, 0.1) 50%, transparent 52%);
-    animation ff-shimmer 3s ease-in-out infinite;
+    animation: ff-shimmer 3s ease-in-out infinite;
   }
 </style>

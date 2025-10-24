@@ -383,7 +383,7 @@
     vertical-align: text-bottom;
   }
   .animate-spin {
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   @keyframes spin {
     from {

@@ -504,6 +504,6 @@ $effect(() => {
     }
   }
   .full-stack-legal-ai :global(.animate-pulse-glow) {
-    animation pulse-glow 2s ease-in-out infinite;
+    animation: pulse-glow 2s ease-in-out infinite;
   }
 </style>

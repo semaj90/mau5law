@@ -573,7 +573,7 @@
     border-top: 3px solid #4a90e2;
     border-right: 2px solid rgba(74, 144, 226, 0.6);
     border-radius: 50%;
-    animation n64CanvasSpin 1s linear infinite;
+    animation: n64CanvasSpin 1s linear infinite;
   }
   @keyframes n64CanvasSpin {
     to { transform: rotate(360deg), }
@@ -621,7 +621,7 @@
   /* Reduced motion support */
   @media (prefers-reduced-motion reduce) {
     .n64-canv.n64-spinner {
-      animation none;
+      animation: none;
       border: 3px solid #4a90e2;
       border-right-color: transparent;
     }

@@ -124,7 +124,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     if (gpuAcceleration && container) {
       await initializeGPUContext();
     }
-    // Start animation loop for complex materials
+    // Start animation: loop for complex materials
     if (materialType === 'pbr' || meshComplexity === 'ultra') {
       requestAnimationFrame(animationLoop);
     }
@@ -392,7 +392,7 @@ if (spatialAudio && typeof window !== 'undefined') {
         transparent 75%,
         rgba(255, 0, 65, 0.03) 100%
       );
-    animation anisotropic-sweep 3s ease-in-out infinite;
+    animation: anisotropic-sweep 3s ease-in-out infinite;
   }
   /* Anti-aliasing layers */
   .aa-layer {
@@ -451,7 +451,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     );
     pointer-events: none;
     z-index: 3,
-    animation fog-drift 6s ease-in-out infinite;
+    animation: fog-drift 6s ease-in-out infinite;
   }
   /* Depth of field */
   .dof-layer {
@@ -529,7 +529,7 @@ if (spatialAudio && typeof window !== 'undefined') {
   .reduced-motion .texture-filter-layer,
   .reduced-motion .aa-layer,
   .reduced-motion .fog-layer {
-    animation none !important;
+    animation: none !important;
     transition none !important;
   }
   /* Lighting effects */

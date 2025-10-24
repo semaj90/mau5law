@@ -105,7 +105,7 @@ handleAction(notification, action)}
         >
           <div
             class="space-y-4"
-            style="animation shrink {(notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).duration}ms linear forwards;"
+            style="animation: shrink {(notification as { id?: unknown; type?: unknown; title?: unknown; message?: unknown; actions?: unknown; duration?: unknown }).duration}ms linear forwards;"
           ></div>
         </div>
       {/if}

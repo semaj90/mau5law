@@ -341,7 +341,7 @@
     background: var(--gpu-cache-accent-primary);
     color: var(--gpu-cache-bg-primary);
     box-shadow: var(--gpu-glow-primary);
-    animation pulse 1s ease-in-out infinite alternate;
+    animation: pulse 1s ease-in-out infinite alternate;
   }
   @keyframes pulse {
     from {
@@ -365,11 +365,11 @@
   }
   .cache-status-indicator.querying {
     background: var(--gpu-cache-state-querying);
-    animation var(--gpu-cache-animation-processing);
+    animation: var(--gpu-cache-animation-processing);
   }
   .cache-status-indicator.backgroundRefreshing {
     background: var(--gpu-cache-state-refreshing);
-    animation var(--gpu-cache-animation-refreshing);
+    animation: var(--gpu-cache-animation-refreshing);
   }
   /* YoRHa quantum interface */
   .yorha-quantum-interface {
@@ -409,7 +409,7 @@
     background:
       radial-gradient(circle at 20% 30%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
       radial-gradient(circle at 80% 70%, rgba(255, 0, 255, 0.1) 0%, transparent 50%);
-    animation float 4s ease-in-out infinite alternate;
+    animation: float 4s ease-in-out infinite alternate;
   }
   @keyframes float {
     from {

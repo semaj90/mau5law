@@ -12,27 +12,27 @@ https://svelte.dev/e/js_parse_error -->
 </script>
 
 {#if level === 1}
-  <h1 class={classes} {...restProps}>
+  <h1 class={classes} {...restProp}>
     {@render children?.()}
   </h1>
 {:else if level === 2}
-  <h2 class={classes} {...restProps}>
+  <h2 class={classes} {...restProp}>
     {@render children?.()}
   </h2>
 {:else if level === 3}
-  <h3 class={classes} {...restProps}>
+  <h3 class={classes} {...restProp}>
     {@render children?.()}
   </h3>
 {:else if level === 4}
-  <h4 class={classes} {...restProps}>
+  <h4 class={classes} {...restProp}>
     {@render children?.()}
   </h4>
 {:else if level === 5}
-  <h5 class={classes} {...restProps}>
+  <h5 class={classes} {...restProp}>
     {@render children?.()}
   </h5>
 {:else}
-  <h6 class={classes} {...restProps}>
+  <h6 class={classes} {...restProp}>
     {@render children?.()}
   </h6>
 {/if}
@@ -40,10 +40,10 @@ https://svelte.dev/e/js_parse_error -->
 <style>
   :global(.nier-card-title) {
     font-family: 'Oswald', 'Montserrat', sans-serif;
-    font-weight: 600,
+    font-weight: 600;
     color: #f59e0b;
     margin: 0 0 0.5rem 0;
-    line-height: 1.2,
+    line-height: 1.2;
   }
   .card-title { font-size: 1.1rem; }
 </style>

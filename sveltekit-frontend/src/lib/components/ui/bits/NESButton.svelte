@@ -151,7 +151,7 @@
   }
 /* Loading Animation */ {}
   .loading-spinner {
-    animation nes-blink 0.5s step-end infinite;
+    animation: nes-blink 0.5s step-end infinite;
   }
   .is-loading {
     cursor: wait;

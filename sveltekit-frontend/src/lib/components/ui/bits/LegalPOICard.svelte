@@ -335,7 +335,7 @@
   }
   .watch-list-badge[data-priority='critical'] {
     background: var(--enhanced-bits-critical);
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   .last-known {
     font-size: 0.875rem;
@@ -359,7 +359,7 @@
   }
   .danger-badge.armed {
     background: var(--enhanced-bits-critical);
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   .danger-badge.escape {
     background: var(--enhanced-bits-warning);

@@ -691,7 +691,7 @@
   }
   .message.typing {
     border-left: 3px solid #ff6b35;
-    animation pulse 1s infinite;
+    animation: pulse 1s infinite;
   }
   .message-header {
     display: flex;

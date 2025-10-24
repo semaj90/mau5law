@@ -187,7 +187,7 @@
   }
 
   :global(.snes-16bit-button.plasma) {
-    animation plasmaShift 3s ease-in-out infinite alternate;
+    animation: plasmaShift 3s ease-in-out infinite alternate;
     background-size: 200% 200%;
   }
 
@@ -255,7 +255,7 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
     border-left: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
-    animation enhancedSpin 0.8s ease-in-out infinite;
+    animation: enhancedSpin 0.8s ease-in-out infinite;
   }
 
   @keyframes enhancedSpin {
@@ -279,7 +279,7 @@
       font-size: 11px;
     }
     :global(.snes-16bit-button.plasma) {
-      animation none;
+      animation: none;
       background-size: 100% 100%;
     }
     :global(.snes-16bit-button.mode7) {
@@ -289,14 +289,14 @@
 
   @media (prefers-reduced-motion reduce) {
     :global(.snes-16bit-button) {
-      animation none;
+      animation: none;
       transition opacity 150ms ease;
     }
     :global(.snes-16bit-button.plasma) {
-      animation none;
+      animation: none;
     }
     .enhanced-spinner {
-      animation none;
+      animation: none;
       border: 2px solid currentColor;
     }
   }

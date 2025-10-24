@@ -186,7 +186,7 @@ var(--enhanced-accent) 0%, {}
 var(--enhanced-accent-secondary) 50%, {}
 var(--enhanced-accent) 100% {}
     );
-    animation pulse-glow 2s ease-in-out infinite alternate;
+    animation: pulse-glow 2s ease-in-out infinite alternate;
   }
 
   .terminal-header {

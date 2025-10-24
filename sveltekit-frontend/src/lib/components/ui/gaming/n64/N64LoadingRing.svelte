@@ -128,7 +128,7 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    animation rotate var(--speed) linear infinite;
+    animation: rotate var(--speed) linear infinite;
   }
   .ring-segment {
     position absolute;
@@ -140,7 +140,7 @@
     border-radius: 2px;
     transform-origin: 50% 200%;
     transform: translateX(-50%) rotate(var(--rotation));
-    animation pulse-segment calc(var(--speed) * 2) ease-in-out infinite var(--delay);
+    animation: pulse-segment calc(var(--speed) * 2) ease-in-out infinite var(--delay);
     box-shadow:
       0 0 4px var(--glow),
       inset 0 1px 0 rgba(255, 255, 255, 0.3);
@@ -153,7 +153,7 @@
     height: 50%;
     border-radius: 50%;
     background: radial-gradient(circle, var(--primary) 0%, var(--secondary) 70%, var(--accent) 100%);
-    animation rotate-reverse calc(var(--speed) * 1.5) linear infinite;
+    animation: rotate-reverse calc(var(--speed) * 1.5) linear infinite;
     box-shadow:
       0 0 8px var(--glow),
       inset 0 0 4px rgba(0, 0, 0, 0.3);
@@ -166,7 +166,7 @@
     height: 60%;
     border-radius: 50%;
     background: var(--primary);
-    animation pulse-core calc(var(--speed) * 0.8) ease-in-out infinite;
+    animation: pulse-core calc(var(--speed) * 0.8) ease-in-out infinite;
   }
   .core-crystal {
     position absolute;
@@ -176,7 +176,7 @@
     height: 40%;
     background: #fff;
     clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-    animation crystal-shine calc(var(--speed) * 1.2) ease-in-out infinite;
+    animation: crystal-shine calc(var(--speed) * 1.2) ease-in-out infinite;
   }
   .percentage-ring {
     position absolute;
@@ -239,7 +239,7 @@
     background: #fff;
     border-radius: 50%;
     transform: translateX(-50%) rotate(var(--rotation)) translateY(-200%);
-    animation sparkle-twinkle calc(var(--speed) * 3) ease-in-out infinite var(--delay);
+    animation: sparkle-twinkle calc(var(--speed) * 3) ease-in-out infinite var(--delay);
     box-shadow: 0 0 6px var(--glow);
   }
   /* Animations */
@@ -315,7 +315,7 @@
     .core-inner,
     .core-crystal,
     .sparkle {
-      animation none;
+      animation: none;
     }
   }
 </style>

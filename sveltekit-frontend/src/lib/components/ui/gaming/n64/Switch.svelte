@@ -224,7 +224,7 @@
         background: ${checked ? '#4a90e2' : '#6c757d'}
         border-radius: 50%;
         pointer-events: none;
-        animation switchParticleExplosion 0.6s ease-out forward;
+        animation: switchParticleExplosion 0.6s ease-out forward;
         --angle: ${(360 / particles) * i}deg;
         --distance: ${20 + Math.random() * 15}px;
         top: 50%;
@@ -565,7 +565,7 @@
     border: 2px solid transparent;
     border-top: 2px solid rgba(255, 255, 255, 0.8);
     border-radius: 50%;
-    animation switchSpin 1s linear infinite;
+    animation: switchSpin 1s linear infinite;
   }
   @keyframes switchSpin {
     to {
@@ -600,7 +600,7 @@
     pointer-events: none;
     filter: blur(8px);
     z-index: -1;
-    animation toggleGlowPulse 2s ease-in-out infinite;
+    animation: toggleGlowPulse 2s ease-in-out infinite;
   }
   @keyframes toggleGlowPulse {
     0%,
@@ -696,7 +696,7 @@
   .n64-switch.anisotropic-16x {
     filter: contrast(1.08) brightness(1.02);
   }
-  /* Spring physics animation for enabled switches */
+  /* Spring physics animation: for enabled switches */
   .n64-switch:not(.disabled).animating .switch-knob {
     transition transform var(--animation-duration) cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
@@ -722,10 +722,10 @@
       transition transform 150ms ease;
     }
     .toggle-glow {
-      animation none;
+      animation: none;
     }
     .n64-spinner {
-      animation none;
+      animation: none;
       border: 2px solid rgba(255, 255, 255, 0.8);
       border-right-color: transparent;
     }

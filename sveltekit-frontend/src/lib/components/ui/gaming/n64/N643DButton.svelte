@@ -187,7 +187,7 @@
         background: radial-gradient(circle, #fff, #4a90e2);
         border-radius: 50%;
         pointer-events: none;
-        animation particleExplosion 0.8s ease-out forward;
+        animation: particleExplosion 0.8s ease-out forward;
         --angle: ${(360 / particles) * i}deg;
         --distance: ${50 + Math.random() * 30}px;
         top: 50%;
@@ -457,7 +457,7 @@ box-shadow: var(--material-shadow), 0 0 20px rgba(255, 255, 255, calc(var(--glow
     border-right: 2px solid rgba(255, 255, 255, 0.6);
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
-    animation n64Spin 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+    animation: n64Spin 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
     transform-style: preserve-3d;
   }
   @keyframes n64Spin {
@@ -537,7 +537,7 @@ background: radial-gradient( ellipse at center bottom, var(--fog-color, #404040)
       transition opacity 150ms ease;
     }
     .n64-spinner {
-      animation none;
+      animation: none;
       border: 3px solid currentColor;
       border-right-color: transparent;
     }

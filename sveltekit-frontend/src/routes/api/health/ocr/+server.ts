@@ -24,9 +24,45 @@ interface OCRHealthResponse {
     environment: string
   }
 }
+
+// --- New helpers & types ---
+type ExternalOCRPerformance = {
+  avgProcessingTime?: number
+  documentsProcessed?: number
+  errorRate?: number
+}
+
+type ExternalOCRStatus = {
+  service?: string
+  status?: 'operational' | 'degraded' | 'offline'
+  port?: number
+  features?: string[]
+  performance?: ExternalOCRPerformance
+  version?: string
+}
+
+function getOCRBase(): string {
+  const g = globalThis as unknown as { __OCR_BASE__?: string }
+  return g.__OCR_BASE__ ?? '/api/ocr'
+}
+
+function safeNumber(value: unknown, fallback = 0): number {
+  return typeof value === 'number' && Number.isFinite(value) ? value : fallback
+}
+
+function isAbortError(err: unknown): boolean {
+  return typeof err === 'object' && err !== null && (err as any).name === 'AbortError'
+}
+
+function getErrorMessage(err: unknown): string {
+  if (err instanceof Error) return err.message
+  try { return String(err) } catch { return 'Unknown error' }
+}
+// --- end helpers ---
+
 async function performOCRHealthCheck(): Promise<OCRHealthDetails> {
   const startTime = Date.now()
-  const ocrBaseUrl = (globalThis as any).__OCR_BASE__ || '/api/ocr'
+  const ocrBaseUrl = getOCRBase();
   try {
     console.log(`🔍 Checking OCR service at ${ocrBaseUrl}/status...`)
     const controller = new AbortController()
@@ -42,23 +78,24 @@ async function performOCRHealthCheck(): Promise<OCRHealthDetails> {
     clearTimeout(timeoutId)
     const responseTime = Date.now() - startTime
     if (response.ok) {
-      const data = await response.json()
+      const raw = (await response.json()) as unknown
+      const data = (raw as ExternalOCRStatus) ?? {}
       console.log('✅ OCR service responded successfully:', data)
       return {
-        service: data.service || 'OCR Service',
-        status: data.status || 'operational',
+        service: data.service ?? 'OCR Service',
+        status: data.status ?? 'operational',
         port: data.port,
         endpoint: `${ocrBaseUrl}/status`,
-        features: data.features || [],
-        performance: data.performance || {,
-          avgProcessingTime: 0,
-          documentsProcessed: 0,
-          errorRate: 0
+        features: Array.isArray(data.features) ? data.features : [],
+        performance: {
+          avgProcessingTime: safeNumber(data.performance?.avgProcessingTime, 0),
+          documentsProcessed: safeNumber(data.performance?.documentsProcessed, 0),
+          errorRate: safeNumber(data.performance?.errorRate, 0),
         },
         version: data.version,
         lastChecked: new Date().toISOString(),
-        responseTime
-      }
+        responseTime,
+      };
     } else {
       console.warn(`⚠️ OCR service returned status ${response.status}`)
       return {
@@ -69,27 +106,28 @@ async function performOCRHealthCheck(): Promise<OCRHealthDetails> {
         responseTime
       }
     }
-  } catch (error: any) {
+  } catch (err: unknown) {
     const responseTime = Date.now() - startTime
-    console.error('❌ OCR health check failed:', error)
-    if (error.name === 'AbortError') {
+    console.error('❌ OCR health check failed:', getErrorMessage(err));
+    if (isAbortError(err)) {
       return {
         service: 'OCR Service',
         status: 'offline',
-        endpoint: `${ocrBaseUrl}/status`,
+        endpoint: `${getOCRBase()}/status`,
         lastChecked: new Date().toISOString(),
-        responseTime
-      }
+        responseTime,
+      };
     }
     return {
       service: 'OCR Service',
       status: 'offline',
-      endpoint: `${ocrBaseUrl}/status`,
+      endpoint: `${getOCRBase()}/status`,
       lastChecked: new Date().toISOString(),
       responseTime
     }
   }
 }
+
 function determineOverallStatus(ocrHealth: OCRHealthDetails): OCRHealthResponse['status'] {
   switch (ocrHealth.status) {
     case 'operational':
@@ -101,27 +139,26 @@ function determineOverallStatus(ocrHealth: OCRHealthDetails): OCRHealthResponse[
       return 'unhealthy'
   }
 }
+
 export const GET: RequestHandler = async () => {
-  const startTime = Date.now()
-  const timestamp = new Date().toISOString()
+  const startTime = Date.now();
+  const timestamp = new Date().toISOString();
   try {
-    console.log('🔍 Starting OCR health monitoring check...')
-    const ocrHealth = await performOCRHealthCheck()
-    const overallStatus = determineOverallStatus(ocrHealth)
-    const checkDuration = Date.now() - startTime
+    console.log('🔍 Starting OCR health monitoring check...');
+    const ocrHealth = await performOCRHealthCheck();
+    const overallStatus = determineOverallStatus(ocrHealth);
+    const checkDuration = Date.now() - startTime;
     const response: OCRHealthResponse = {
       status: overallStatus,
       timestamp,
       ocr: ocrHealth,
       metadata: {
         checkDuration,
-        environment: process.env.NODE_ENV || 'development'
-      }
-    }
-    console.log(`✅ OCR health check completed in ${checkDuration}ms - Status: ${overallStatus}`)
-    // Set HTTP status based on health
-    const httpStatus = overallStatus === 'healthy' ? 200 :
-                      overallStatus === 'degraded' ? 206 : 503
+        environment: process.env.NODE_ENV || 'development',
+      },
+    };
+    console.log(`✅ OCR health check completed in ${checkDuration}ms - Status: ${overallStatus}`);
+    const httpStatus = overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 206 : 503;
     return json(response, {
       status: httpStatus,
       headers: {
@@ -131,52 +168,57 @@ export const GET: RequestHandler = async () => {
         'Expires': '0',
         'X-Health-Check': 'ocr-specific',
         'X-OCR-Status': ocrHealth.status,
-        'X-Response-Time': ocrHealth.responseTime.toString()
+        'X-Response-Time': ocrHealth.responseTime.toString(),
+      },
+    });
+  } catch (err: unknown) {
+    const checkDuration = Date.now() - startTime;
+    console.error('❌ OCR health monitoring system failed:', getErrorMessage(err));
+    return json(
+      {
+        status: 'unhealthy',
+        timestamp,
+        error: 'OCR health check system failure',
+        message: getErrorMessage(err),
+        metadata: {
+          checkDuration,
+          environment: process.env.NODE_ENV || 'development',
+        },
+      },
+      {
+        status: 503,
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Health-Check': 'failed',
+        },
       }
-    })
-  } catch (error: any) {
-    const checkDuration = Date.now() - startTime
-    console.error('❌ OCR health monitoring system failed:', error)
-    return json({
-      status: 'unhealthy',
-      timestamp,
-      error: 'OCR health check system failure',
-      message: error instanceof Error ? error.message: 'Unknown error',
-      metadata: {
-        checkDuration,
-        environment: process.env.NODE_ENV || 'development'
-      }
-    }, {
-      status: 503,
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Health-Check': 'failed'
-      }
-    })
+    );
   }
-}
+};
+
 // Support POST for triggering specific OCR health actions
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { action, timeout } = await request.json()
+    const body = (await request.json()) as unknown;
+    const { action, timeout } = (body as { action?: string; timeout?: number }) ?? {};
+
     if (action === 'test-processing') {
       // Test OCR processing capability with a simple test
-      const startTime = Date.now()
-      const ocrBaseUrl = (globalThis as any).__OCR_BASE__ || '/api/ocr'
+      const startTime = Date.now();
+      const ocrBaseUrl = getOCRBase();
       try {
-        // Create a minimal test file for OCR processing
-        const testText = 'Legal AI Health Check Test Document'
-        const testBlob = new Blob([testText], { type: 'text/plain' })
-        const formData = new FormData()
-        formData.append('file', testBlob, 'health-check-test.txt')
+        const testText = 'Legal AI Health Check Test Document';
+        const testBlob = new Blob([testText], { type: 'text/plain' });
+        const formData = new FormData();
+        formData.append('file', testBlob, 'health-check-test.txt');
         const response = await fetch(`${ocrBaseUrl}/extract`, {
           method: 'POST',
           body: formData,
-          signal: AbortSignal.timeout(timeout || 15000),
-        })
-        const responseTime = Date.now() - startTime
+          signal: AbortSignal.timeout(timeout ?? 15000),
+        });
+        const responseTime = Date.now() - startTime;
         if (response.ok) {
-          const result = await response.json()
+          const result = (await response.json()) as unknown;
           return json({
             action: 'test-processing',
             status: 'success',
@@ -184,72 +226,96 @@ export const POST: RequestHandler = async ({ request }) => {
             responseTime,
             testResult: result,
             timestamp: new Date().toISOString(),
-          })
+          });
         } else {
-          return json({
-            action: 'test-processing',
-            status: 'failed',
-            message: `OCR test processing failed with status ${response.status}`,
-            responseTime,
-            timestamp: new Date().toISOString()
-          }, { status: response.status })
+          return json(
+            {
+              action: 'test-processing',
+              status: 'failed',
+              message: `OCR test processing failed with status ${response.status}`,
+              responseTime,
+              timestamp: new Date().toISOString(),
+            },
+            { status: response.status }
+          );
         }
-      } catch (error: any) {
-        return json({
-          action: 'test-processing',
-          status: 'error',
-          message: 'OCR processing test error',
-          error: error.message,
-          responseTime: Date.now() - startTime,
-          timestamp: new Date().toISOString()
-        }, { status: 500 })
+      } catch (err: unknown) {
+        return json(
+          {
+            action: 'test-processing',
+            status: 'error',
+            message: 'OCR processing test error',
+            error: getErrorMessage(err),
+            responseTime: Date.now() - startTime,
+            timestamp: new Date().toISOString(),
+          },
+          { status: 500 }
+        );
       }
     }
+
     if (action === 'detailed-status') {
-      // Get detailed status including batch processing capability
-      const ocrHealth = await performOCRHealthCheck()
+      const ocrHealth = await performOCRHealthCheck();
       return json({
         action: 'detailed-status',
         ...ocrHealth,
         additionalChecks: {
-          batchProcessingAvailable: true, // Could test this endpoint too
+          batchProcessingAvailable: true,
           extractionFormats: ['pdf', 'png', 'jpg', 'jpeg', 'txt'],
-          maxFileSize: '50MB', // Typical OCR service limits
+          maxFileSize: '50MB',
         },
-        timestamp: new Date().toISOString()
-      })
+        timestamp: new Date().toISOString(),
+      });
     }
-    // Default to regular health check
-    return GET()
-  } catch (error: any) {
-    return json({
-      error: 'Invalid request',
-      message: error.message,
-      availableActions: ['test-processing', 'detailed-status']
-    }, { status: 400 })
+
+    // Default to performing the same check as GET (avoid calling GET() without an event)
+    const ocrHealth = await performOCRHealthCheck();
+    const overallStatus = determineOverallStatus(ocrHealth);
+    const checkDuration = 0; // caller didn't require timing here; keep 0 or compute if needed
+    const timestamp = new Date().toISOString();
+    const response = {
+      status: overallStatus,
+      timestamp,
+      ocr: ocrHealth,
+      metadata: {
+        checkDuration,
+        environment: process.env.NODE_ENV || 'development',
+      },
+    };
+    const httpStatus = overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 206 : 503;
+    return json(response, { status: httpStatus });
+  } catch (err: unknown) {
+    return json(
+      {
+        error: 'Invalid request',
+        message: getErrorMessage(err),
+        availableActions: ['test-processing', 'detailed-status'],
+      },
+      { status: 400 }
+    );
   }
 }
+
 // Support HEAD for lightweight health pings
 export const HEAD: RequestHandler = async () => {
   try {
-    const ocrHealth = await performOCRHealthCheck()
-    const overallStatus = determineOverallStatus(ocrHealth)
-    const httpStatus = overallStatus === 'healthy' ? 200 :
-                      overallStatus === 'degraded' ? 206 : 503
+    const ocrHealth = await performOCRHealthCheck();
+    const overallStatus = determineOverallStatus(ocrHealth);
+    const httpStatus = overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 206 : 503;
     return new Response(null, {
       status: httpStatus,
       headers: {
         'X-OCR-Status': ocrHealth.status,
         'X-Response-Time': ocrHealth.responseTime.toString(),
-        'X-Last-Checked': ocrHealth.lastChecked
-      }
-    })
-  } catch (error: any) {
+        'X-Last-Checked': ocrHealth.lastChecked,
+      },
+    });
+  } catch (err: unknown) {
     return new Response(null, {
       status: 503,
       headers: {
-        'X-Health-Check': 'failed'
-      }
-    })
+        'X-Health-Check': 'failed',
+      },
+    });
   }
 }

@@ -78,11 +78,11 @@
 
 <style>
   .dialog-backdrop {
-    animation fadeIn 0.2s ease-out;
+    animation: fadeIn 0.2s ease-out;
   }
 
   .dialog-content {
-    animation slideIn 0.3s ease-out;
+    animation: slideIn 0.3s ease-out;
   }
 
   @keyframes fadeIn {

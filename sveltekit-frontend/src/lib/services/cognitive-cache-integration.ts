@@ -14,12 +14,13 @@ interface ThreadSafeCache {
 }
 interface JsonbDocument {
   id: string;
-  content: any;
+  content: unknown; // Changed from any
   metadata: {
     lastModified: number;
     accessCount: number;
     gpuProcessed: boolean;
     threadId?: string;
+    [key: string]: unknown; // Allow additional metadata properties
   };
 }
 // Simple async mutex for thread synchronization
@@ -54,8 +55,15 @@ const internalCache: ThreadSafeCache = {
   jsonbIndex: new Map(),
   gpuAccelerated: browser && 'gpu' in navigator,
 };
+interface CacheStoreState {
+  totalEntries: number;
+  gpuAccelerated: boolean;
+  threadSafe: boolean;
+  lastOperation: string;
+}
+
 // Store for reactive updates
-export const cacheStore: Writable<any> = writable({
+export const cacheStore: Writable<CacheStoreState> = writable({
   totalEntries: 0,
   gpuAccelerated: internalCache.gpuAccelerated,
   threadSafe: true,
@@ -81,7 +89,8 @@ export const cacheStore: Writable<any> = writable({
    */ private async initializeGPUContext(): Promise<void> {
     if (browser && 'gpu' in navigator) {
       try {
-        const adapter = await (navigator as any).gpu.requestAdapter();
+        // Assuming @webgpu/types is installed, navigator.gpu should be typed as GPU
+        const adapter = await navigator.gpu.requestAdapter();
         if (adapter) {
           this.gpuContext = await adapter.requestDevice();
           internalCache.gpuAccelerated = true;
@@ -96,7 +105,7 @@ export const cacheStore: Writable<any> = writable({
   /**
    * Thread-safe JSONB document insertion
    * Supports concurrent writes with proper locking
-   */ async storeJsonbDocument(id: string, document: any, metadata?: any): Promise<boolean> {
+   */ async storeJsonbDocument(id: string, document: unknown, metadata?: Record<string, unknown>): Promise<boolean> {
     const release = await internalCache.mutex.acquire();
     try {
       const jsonbDoc: JsonbDocument = {
@@ -155,7 +164,7 @@ export const cacheStore: Writable<any> = writable({
    */
   async queryJsonb(
     jsonPath: string,
-    value: any,
+    value: unknown, // Changed from any
     operator: '@>' | '@?' | '@@' | '->' | '->>' = '@>'
   ): Promise<JsonbDocument[]> {
     const release = await internalCache.mutex.acquire();
@@ -206,7 +215,8 @@ export const cacheStore: Writable<any> = writable({
   }
   /**
    * Check if document should use GPU acceleration
-   */ private shouldUseGPU(_document: any): boolean {
+   */ private shouldUseGPU(document: unknown): boolean {
+    // Changed from any
     const serialized = JSON.stringify(document);
     return (
       serialized.length > 1024 || // Large documents
@@ -215,20 +225,22 @@ export const cacheStore: Writable<any> = writable({
   }
   /**
    * Detect complex document structures
-   */ private hasComplexStructure(obj: any, depth = 0): boolean {
+   */ private hasComplexStructure(obj: unknown, depth = 0): boolean {
+    // Changed from any
     if (depth > 3) return true; // Deep nesting
     if (Array.isArray(obj) && obj.length > 100) return true; // Large arrays
     if (typeof obj === 'object' && obj !== null) {
       const keys = Object.keys(obj);
       if (keys.length > 20) return true; // Many properties
-      return keys.some(key => this.hasComplexStructure(obj[key], depth + 1));
+      return keys.some(key => this.hasComplexStructure((obj as Record<string, unknown>)[key], depth + 1));
     }
     return false;
   }
   /**
    * JSONB query matching logic
    */
-  private matchesJsonbQuery(content: any, jsonPath: string, value: any, operator: string): boolean {
+  private matchesJsonbQuery(content: unknown, jsonPath: string, value: unknown, operator: string): boolean {
+    // Changed from any
     try {
       const pathValue = this.getJsonPathValue(content, jsonPath);
       switch (operator) {
@@ -250,18 +262,19 @@ export const cacheStore: Writable<any> = writable({
   }
   /**
    * Extract value from JSON path
-   */ private getJsonPathValue(obj: any, path: string): any {
+   */ private getJsonPathValue(obj: unknown, path: string): unknown {
+    // Changed from any
     const keys = path.split('.');
     let current = obj;
     for (const key of keys) {
-      if (current === null || current === undefined) return undefined;
+      if (current === null || current === undefined || typeof current !== 'object') return undefined;
       if (key.includes('[') && key.includes(']')) {
         // Handle array access like "items[0]"
         const [arrayKey, indexStr] = key.split('[');
         const index = parseInt(indexStr.replace(']', ''), 10);
-        current = current[arrayKey]?.[index];
+        current = (current as Record<string, unknown>)[arrayKey]?.[index];
       } else {
-        current = current[key];
+        current = (current as Record<string, unknown>)[key];
       }
     }
     return current;
@@ -313,7 +326,8 @@ export const cacheStore: Writable<any> = writable({
 export const cognitiveCache = CognitiveCacheService.getInstance();
 // Compatibility layer for existing API expectations
 export const cognitiveCacheManager = {
-  async get(request: { key: string; type: string }, context?: any): Promise<any> {
+  async get(request: { key: string; type: string }, context?: unknown): Promise<unknown | null> {
+    // Changed from any
     const doc = internalCache.jsonbIndex.get(request.key);
     if (doc) {
       return {
@@ -324,8 +338,8 @@ export const cognitiveCacheManager = {
     return null;
   },
   async set(
-    request: { key: string; type: string; context?: any },
-    data: any,
+    request: { key: string; type: string; context?: unknown }, // Changed from any
+    data: unknown, // Changed from any
     options?: { distributeAcrossCaches?: boolean },
     cognitiveValue?: number
   ): Promise<boolean> {
@@ -357,7 +371,12 @@ export const cognitiveCacheManager = {
   },
 };
 // Export utility functions
-export async function storeJsonbDocument(id: string, document: any, metadata?: any): Promise<boolean> {
+export async function storeJsonbDocument(
+  id: string,
+  document: unknown,
+  metadata?: Record<string, unknown>
+): Promise<boolean> {
+  // Changed from any
   const jsonbDoc: JsonbDocument = {
     id,
     content: document,
@@ -376,7 +395,7 @@ export async function retrieveJsonbDocument(id: string): Promise<JsonbDocument |
 }
 export async function queryJsonb(
   jsonPath: string,
-  value: any,
+  value: unknown, // Changed from any
   operator: '@>' | '@?' | '@@' | '->' | '->>' = '@>'
 ): Promise<JsonbDocument[]> {
   // Simple implementation - return all documents for now

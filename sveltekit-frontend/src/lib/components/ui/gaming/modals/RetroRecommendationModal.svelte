@@ -500,7 +500,7 @@ d;
   }
   /* Animation classes */
   .recommendation-item {
-    animation slideIn 0.3s ease-out;
+    animation: slideIn 0.3s ease-out;
   }
   @keyframes slideIn {
     from {

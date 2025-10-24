@@ -241,7 +241,7 @@ https://svelte.dev/e/js_parse_error -->
   .drag-drop-zone.drag-over {
     border-color: var(--nes-yellow, #f7d51d);
     background: var(--yorha-bg-tertiary, #2a2a2a);
-    animation pulse-glow 1s ease-in-out infinite alternate;
+    animation: pulse-glow 1s ease-in-out infinite alternate;
   }
   .drag-drop-zone.disabled {
     opacity: 0.5,
@@ -265,7 +265,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .drag-content {
     text-align: center;
-    animation float-glow 2s ease-in-out infinite alternate;
+    animation: float-glow 2s ease-in-out infinite alternate;
   }
   .drag-icon {
     color: var(--nes-yellow, #f7d51d);
@@ -331,7 +331,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 4px solid rgba(60, 188, 252, 0.3);
     border-top: 4px solid var(--nes-blue, #3cbcfc);
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   .processing-text {
     color: var(--nes-blue, #3cbcfc);

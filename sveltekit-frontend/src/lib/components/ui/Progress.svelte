@@ -83,7 +83,7 @@
   }
 
   .animate-shimmer {
-    animation shimmer 2s infinite;
+    animation: shimmer 2s infinite;
   }
 
   /* NES.css integration for legal/yorha variants */

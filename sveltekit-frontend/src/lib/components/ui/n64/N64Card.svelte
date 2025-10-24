@@ -166,7 +166,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     if (gpuAcceleration && container) {
       await initializeGPUContext();
     }
-    // Start animation loop for PBR materials and ultra mesh complexity
+    // Start animation: loop for PBR materials and ultra mesh complexity
     if (materialType === 'pbr' || meshComplexity === 'ultra' || depthEffect === 'extreme') {
       requestAnimationFrame(animationLoop);
     }
@@ -207,7 +207,7 @@ if (spatialAudio && typeof window !== 'undefined') {
       rotationY = Math.sin(time * 0.5) * 2;
       translateZ = Math.sin(time * 0.3) * 1;
     }
-    // Continue animation for complex configurations
+    // Continue animation: for complex configurations
     if (materialType === 'pbr' || meshComplexity === 'ultra' || depthEffect === 'extreme') {
       requestAnimationFrame(animationLoop);
     }
@@ -458,7 +458,7 @@ background: conic-gradient( from 0deg at 50% 50%, rgba(255, 215, 0, 0.02), rgba(
   }
   .filter-anisotropic .texture-filter-layer {
 background: linear-gradient( calc(var(--mouse-x, 0) * 45deg + 45deg), rgba(255, 215, 0, 0.03) 0%, transparent 25%, rgba(0, 255, 65, 0.03) 50%, transparent 75%, rgba(255, 0, 65, 0.03) 100% );
-    animation anisotropic-sweep 4s ease-in-out infinite;
+    animation: anisotropic-sweep 4s ease-in-out infinite;
   }
 /* Anti-aliasing layers */ .aa-layer {
     position absolute;
@@ -480,7 +480,7 @@ background: radial-gradient( ellipse at top left, rgba(255, 255, 255, 0.01) 0%, 
     right: 0,
     bottom: 0;
 background: linear-gradient( 180deg, rgba(200, 200, 255, 0.08) 0%, transparent 25%, transparent 75%, rgba(200, 200, 255, 0.04) 100% );
-    animation fog-drift 8s ease-in-out infinite;
+    animation: fog-drift 8s ease-in-out infinite;
   }
 /* Shadow layer */ .shadow-layer {
     position absolute;
@@ -612,7 +612,7 @@ background: radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.15) 0%, tr
     font-size: 11px;
   }
 /* Reduced motion */ .reduced-motion .n64-card, .reduced-motion .selection-indicator, .reduced-motion .texture-filter-layer, .reduced-motion .aa-layer, .reduced-motion .fog-layer {
-    animation none !important;
+    animation: none !important;
     transition none !important;
     transform: none !important;
   }

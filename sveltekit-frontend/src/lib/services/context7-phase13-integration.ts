@@ -90,6 +90,15 @@ export interface Context7IntegrationConfig {
   cacheExpiration: number;
 }
 
+// add a concrete type for the integration status store
+type IntegrationStatus = {
+  semanticSearch: string;
+  memoryGraph: string;
+  agentOrchestration: string;
+  bestPractices: string;
+  overall: string;
+};
+
 // --- Moved top-level types & helpers ---
 // lightweight, explicit local types moved to top-level so they are valid TS
 type OrchestrationResult = {
@@ -164,21 +173,44 @@ export class Context7Phase13Integration {
   public memoryGraphNodes = writable<MCPMemoryNode[]>([]);
   public activeRecommendations = writable<MCPAgentRecommendation[]>([]);
   public bestPractices = writable<MCPBestPractice[]>([]);
-  public integrationStatus = writable({
-    semanticSearch: 'IDLE',
-    memoryGraph: 'IDLE',
-    agentOrchestration: 'IDLE',
-    bestPractices: 'IDLE',
-    overall: 'HEALTHY',
-  });
-  public performanceStats = writable({
-    averageSemanticSearchTime: 0,
-    averageMemoryGraphTime: 0,
-    averageAgentTime: 0,
-    totalQueries: 0,
-    cacheHitRate: 0,
-    errorRate: 0,
-  });
+  public integrationStatus: Writable<IntegrationStatus> = writable({
+     semanticSearch: 'IDLE',
+     memoryGraph: 'IDLE',
+     agentOrchestration: 'IDLE',
+     bestPractices: 'IDLE',
+     overall: 'HEALTHY',
+   });
+   public performanceStats = writable({
+     averageSemanticSearchTime: 0,
+     averageMemoryGraphTime: 0,
+     averageAgentTime: 0,
+     totalQueries: 0,
+     cacheHitRate: 0,
+     errorRate: 0,
+   });
+
+  // --- small type-safe helpers (avoids `any` usage) ---
+  private isRecord(v: unknown): v is Record<string, unknown> {
+    return typeof v === 'object' && v !== null && !Array.isArray(v);
+  }
+  private getString(v: unknown, fallback = ''): string {
+    if (typeof v === 'string') return v;
+    if (v == null) return fallback;
+    return String(v);
+  }
+  private getStringArray(v: unknown): string[] {
+    if (Array.isArray(v) && v.every(e => typeof e === 'string')) return v;
+    return [];
+  }
+  private getNumber(v: unknown, fallback = 0): number {
+    return typeof v === 'number' ? v : fallback;
+  }
+
+  // updateIntegrationStatus: consolidates multiple .update usages and enforces allowed keys
+  private updateIntegrationStatus(key: keyof IntegrationStatus, status: IntegrationStatus[keyof IntegrationStatus]): void {
+    // Spread current ensures all required properties are preserved; assert the result as IntegrationStatus
+    this.integrationStatus.update(current => ({ ...current, [key]: status } as IntegrationStatus));
+  }
 
   constructor(
     config: Partial<Context7IntegrationConfig> = {},
@@ -221,8 +253,8 @@ export class Context7Phase13Integration {
         this.startRealTimeUpdates();
       }
       this.updateIntegrationStatus('overall', 'HEALTHY');
-    } catch (error: any) {
-      console.error('Context7 MCP integration failed:', error);
+    } catch (error: unknown) {
+      console.error('Context7 MCP integration failed:', String(error));
       this.updateIntegrationStatus('overall', 'ERROR');
     }
   }
@@ -503,20 +535,21 @@ export class Context7Phase13Integration {
       const recommendations: MCPAgentRecommendation[] = [];
       if (Array.isArray(orchestrationResult?.agentResults)) {
         for (const agentResult of orchestrationResult.agentResults) {
-          const res = (agentResult?.result ?? {}) as Record<string, any>;
+          const ar = this.isRecord(agentResult) ? agentResult : {};
+          const res = this.isRecord(ar.result) ? (ar.result as Record<string, unknown>) : {};
           recommendations.push({
             id: `rec_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
-            agent: (agentResult as any).agent ?? 'unknown',
-            recommendation: (res.recommendation as string) || 'No specific recommendation',
-            confidence: (res.confidence as number) ?? 0.7,
-            reasoning: (res.reasoning as string) || 'Agent analysis',
-            actionType: (res.actionType as string) || 'ANALYSIS',
+            agent: this.getString(ar.agent, 'unknown'),
+            recommendation: this.getString(res.recommendation, 'No specific recommendation'),
+            confidence: this.getNumber(res.confidence, 0.7),
+            reasoning: this.getString(res.reasoning, 'Agent analysis'),
+            actionType: this.getString(res.actionType, 'ANALYSIS'),
             priority: options.priority || 'MEDIUM',
-            estimatedImpact: (res.estimatedImpact as number) ?? 0.5,
+            estimatedImpact: this.getNumber(res.estimatedImpact, 0.5),
             metadata: {
               processingTime: Date.now() - startTime,
-              dataPoints: (res.dataPoints as number) ?? 1,
-              contextRelevance: (res.contextRelevance as number) ?? 0.7,
+              dataPoints: this.getNumber(res.dataPoints, 1),
+              contextRelevance: this.getNumber(res.contextRelevance, 0.7),
             },
           });
         }
@@ -538,8 +571,8 @@ export class Context7Phase13Integration {
       this.updatePerformanceMetrics('agent', Date.now() - startTime);
       this.updateIntegrationStatus('agentOrchestration', 'IDLE');
       return finalRecommendations;
-    } catch (error: any) {
-      console.error('Agent orchestration failed:', error);
+    } catch (error: unknown) {
+      console.error('Agent orchestration failed:', String(error));
       this.updateIntegrationStatus('agentOrchestration', 'ERROR');
       throw error;
     }
@@ -553,25 +586,28 @@ export class Context7Phase13Integration {
       const memoryData = await mcpMemoryReadGraph();
       if (Array.isArray(memoryData)) {
         for (const item of memoryData) {
-          if (item && typeof item === 'object' && 'error' in item) {
-            console.warn('Memory item error:', (item as any).error);
+          if (this.isRecord(item) && 'error' in item) {
+            // item.error may be unknown; stringify safely
+            const errVal = (item as Record<string, unknown>).error;
+            console.warn('Memory item error:', this.getString(errVal as unknown, String(errVal ?? '')));
             continue;
           }
           const id = `mem_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+          const rec = this.isRecord(item) ? (item as Record<string, unknown>) : {};
           const node: MCPMemoryNode = {
             id,
             type: 'CONCEPT',
-            content: (item as any).value || String(item),
-            connections: (item as any).relations || [],
-            weight: (item as any).score ?? 1.0,
+            content: this.getString(rec.value ?? rec.content ?? rec.text ?? String(item)),
+            connections: this.getStringArray(rec.relations ?? rec.connections ?? []),
+            weight: this.getNumber(rec.score ?? rec.weight, 1.0),
             lastAccessed: Date.now(),
             accessCount: 1,
             metadata: {
-              tags: (item as any).tags || [],
-              confidence: (item as any).confidence ?? 0.7,
-              caseId: undefined,
-              userId: undefined,
-              sessionId: undefined,
+              tags: this.getStringArray(rec.tags ?? []),
+              confidence: this.getNumber(rec.confidence, 0.7),
+              caseId: this.getString(rec.caseId, undefined as unknown as string | undefined),
+              userId: this.getString(rec.userId, undefined as unknown as string | undefined),
+              sessionId: this.getString(rec.sessionId, undefined as unknown as string | undefined),
             },
           };
           this.memoryGraph.set(node.id, node);
@@ -580,8 +616,8 @@ export class Context7Phase13Integration {
       this.memoryGraphNodes.set(Array.from(this.memoryGraph.values()));
       this.updatePerformanceMetrics('memory', Date.now() - startTime);
       this.updateIntegrationStatus('memoryGraph', 'IDLE');
-    } catch (error: any) {
-      console.error('Memory graph sync failed:', error);
+    } catch (error: unknown) {
+      console.error('Memory graph sync failed:', String(error));
       this.updateIntegrationStatus('memoryGraph', 'ERROR');
     }
   }
@@ -605,20 +641,25 @@ export class Context7Phase13Integration {
         const practices: MCPBestPractice[] = [];
         if (Array.isArray(orchestrationResult?.bestPractices)) {
           for (const p of orchestrationResult.bestPractices) {
+            const rec = this.isRecord(p) ? (p as Record<string, unknown>) : {};
             practices.push({
               id: `bp_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
               category: category as any,
-              title: (p as any).title || `${category} Best Practice`,
-              description: (p as any).description || String(p),
-              implementation: (p as any).implementation || 'Implementation details pending',
-              codeExample: (p as any).codeExample,
-              applicableScenarios: (p as any).applicableScenarios || ['General'],
-              prerequisites: (p as any).prerequisites || [],
-              expectedBenefits: (p as any).expectedBenefits || [],
-              difficulty: (p as any).difficulty || 'INTERMEDIATE',
-              estimatedTime: (p as any).estimatedTime || 30,
+              title: this.getString(rec.title, `${category} Best Practice`),
+              description: this.getString(rec.description, String(p)),
+              implementation: this.getString(rec.implementation, 'Implementation details pending'),
+              codeExample: this.getString(rec.codeExample, undefined as unknown as string | undefined),
+              applicableScenarios: this.getStringArray(rec.applicableScenarios ?? []),
+              prerequisites: this.getStringArray(rec.prerequisites ?? []),
+              expectedBenefits: this.getStringArray(rec.expectedBenefits ?? []),
+              difficulty: this.getString(rec.difficulty, 'INTERMEDIATE') as unknown as
+                | 'BEGINNER'
+                | 'INTERMEDIATE'
+                | 'ADVANCED'
+                | 'EXPERT',
+              estimatedTime: this.getNumber(rec.estimatedTime, 30),
               lastUpdated: Date.now(),
-              sourceLibraries: (p as any).sourceLibraries || [],
+              sourceLibraries: this.getStringArray(rec.sourceLibraries ?? []),
             });
           }
         }
@@ -629,8 +670,8 @@ export class Context7Phase13Integration {
       // publish to the writable store a flattened view of all cached practices
       this.bestPractices.set(Array.from(this.bestPracticesCache.values()).flat());
       this.updateIntegrationStatus('bestPractices', 'IDLE');
-    } catch (error: any) {
-      console.error('Best practices loading failed:', error);
+    } catch (error: unknown) {
+      console.error('Best practices loading failed:', String(error));
       this.updateIntegrationStatus('bestPractices', 'ERROR');
     }
   }

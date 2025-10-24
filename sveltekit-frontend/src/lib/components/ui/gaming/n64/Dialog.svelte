@@ -460,7 +460,7 @@ d;
 background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(74, 144, 226, 0.1) 0%, transparent 60%), radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.3) 0%, transparent 70%);
     opacity: var(--atmosphere-intensity);
     pointer-events: none;
-    animation atmosphereSwirl 20s ease-in-out infinite;
+    animation: atmosphereSwirl 20s ease-in-out infinite;
   }
   @keyframes atmosphereSwirl {
     0%, 100% {
@@ -512,19 +512,19 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     border-radius: 0,
   }
 /* Entrance animations */ .n64-dialog.entrance-zoom {
-    animation dialogZoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: dialogZoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   .n64-dialog.entrance-slide-up {
-    animation dialogSlideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    animation: dialogSlideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
   .n64-dialog.entrance-slide-down {
-    animation dialogSlideDown 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    animation: dialogSlideDown 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
   .n64-dialog.entrance-fade {
-    animation dialogFadeIn 0.4s ease-out;
+    animation: dialogFadeIn 0.4s ease-out;
   }
   .n64-dialog.entrance-portal {
-    animation dialogPortal 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    animation: dialogPortal 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
   @keyframes dialogZoomIn {
     0% {
@@ -666,7 +666,7 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     border-right: 3px solid rgba(255, 255, 255, 0.6);
     border-bottom: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
-    animation n64DialogSpin 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+    animation: n64DialogSpin 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
     transform-style: preserve-3d;
   }
   @keyframes n64DialogSpin {
@@ -688,7 +688,7 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     letter-spacing: 1.5px;
     text-transform: uppercase;
     font-size: 1.1em;
-    animation pulse 2s ease-in-out infinite;
+    animation: pulse 2s ease-in-out infinite;
   }
   @keyframes pulse {
     0%, 100% { opacity: 1, }
@@ -735,7 +735,7 @@ background: linear-gradient( 45deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 
     height: 3px;
     background: rgba(255, 255, 255, 0.6);
     border-radius: 50%;
-    animation floatParticles 8s ease-in-out infinite;
+    animation: floatParticles 8s ease-in-out infinite;
   }
   .particle-overlay::before {
     top: 20%;
@@ -829,25 +829,25 @@ background: radial-gradient( ellipse at center, transparent 0%, var(--fog-color,
   }
 /* Reduced motion support */ @media (prefers-reduced-motion reduce) {
     .n64-dialog {
-      animation none !important;
+      animation: none !important;
     }
     .n64-dialog-backdrop {
       backdrop-filter: none;
       -webkit-backdrop-filter: none;
     }
     .atmosphere-layer {
-      animation none;
+      animation: none;
     }
 .particle-overlay::before, .particle-overlay::after {
-      animation none;
+      animation: none;
     }
     .n64-spinner {
-      animation none;
+      animation: none;
       border: 4px solid currentColor;
       border-right-color: transparent;
     }
     .loading-text {
-      animation none;
+      animation: none;
     }
   }
 /* High contrast mode */ @media (prefers-contrast: high) {

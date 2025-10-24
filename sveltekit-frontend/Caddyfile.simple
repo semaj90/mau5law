@@ -1,0 +1,27 @@
+# Minimal Caddy Configuration for QUIC/HTTP3 Proxy
+# Proxy from :5178 to Vite dev server on :5173
+
+:5178 {
+    # HTTP/3 QUIC support
+    header Alt-Svc "h3=\":5178\"; ma=3600"
+
+    # CORS for local development
+    header Access-Control-Allow-Origin "*"
+    header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+    header Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With, Accept, Origin"
+    header Access-Control-Allow-Credentials "true"
+
+    # Handle OPTIONS preflight
+    @options method OPTIONS
+    handle @options {
+        respond 200
+    }
+
+    # Proxy to Vite dev server
+    reverse_proxy localhost:5173 {
+        header_up Host {host}
+    }
+
+    encode gzip
+    log
+}
