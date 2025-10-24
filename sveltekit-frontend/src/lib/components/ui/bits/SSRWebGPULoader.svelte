@@ -283,7 +283,7 @@
     font-family: 'Courier New', monospace;
   }
   .nes-loading {
-    animation nes-blink 1s infinite;
+    animation: nes-blink 1s infinite;
     border-color: #3cbcfc;
   }
   .nes-error {
@@ -315,7 +315,7 @@
   }
   .nes-spinner {
     font-size: 16px;
-    animation nes-spin 0.5s infinite;
+    animation: nes-spin 0.5s infinite;
   }
   .nes-loading-text {
     font-size: 8px;

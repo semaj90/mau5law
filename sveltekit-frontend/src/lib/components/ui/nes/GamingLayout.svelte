@@ -295,7 +295,7 @@ text-transform: uppercase;
 		width: 8px;
 		height: 8px;
 		border-radius: 0,
-		animation pulse 2s infinite;
+		animation: pulse 2s infinite;
 		border: 1px solid currentColor;
 	}
 	.status-dot.online {
@@ -323,7 +323,7 @@ top: 0,
 		height: 1px;
 		background: linear-gradient(90deg, transparent 0%, var(--yorha-secondary, #ffd700) 50%, transparent 100%);
 		opacity: 0.8,
-		animation scan-horizontal 6s ease-in-out infinite;
+		animation: scan-horizontal 6s ease-in-out infinite;
 pointer-events: none z-index: 1100,
 	}
 /* Animations */ @keyframes pulse {

@@ -254,7 +254,7 @@
   }
 
   .upload-icon.pulsing {
-    animation pulse 1.5s ease-in-out infinite;
+    animation: pulse 1.5s ease-in-out infinite;
   }
 
   @keyframes pulse {

@@ -560,7 +560,7 @@ if (preloadTextures) {
   }
   .metric-value.critical {
     color: #ff6600;
-    animation pulse 1s infinite;
+    animation: pulse 1s infinite;
   }
   .metric-value.quality-score {
     color: #ff00ff;
@@ -589,14 +589,14 @@ if (preloadTextures) {
     border-top: 3px solid #4a90e2;
     border-right: 2px solid rgba(74, 144, 226, 0.6);
     border-radius: 50%;
-    animation spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+    animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
   }
   .spinner-text {
     font-size: 10px;
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 1px;
-    animation pulse 2s ease-in-out infinite;
+    animation: pulse 2s ease-in-out infinite;
   }
   /* Error Overlay */
   .error-overlay {
@@ -729,14 +729,14 @@ if (preloadTextures) {
   /* Reduced motion */
   @media (prefers-reduced-motion reduce) {
     .spinner-ring {
-      animation none;
+      animation: none;
       border: 3px solid #4a90e2;
     }
     .spinner-text {
-      animation none;
+      animation: none;
     }
     .metric-value.critical {
-      animation none;
+      animation: none;
       color: #ff0000;
     }
   }

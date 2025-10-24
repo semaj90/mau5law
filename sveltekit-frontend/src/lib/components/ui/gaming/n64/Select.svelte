@@ -616,7 +616,7 @@
     border: 2px solid transparent;
     border-top: 2px solid currentColor;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   @keyframes spin {
     to { transform: rotate(360deg), }
@@ -639,7 +639,7 @@
     box-shadow:
       var(--material-shadow),
       0 8px 16px rgba(0, 0, 0, 0.4);
-    animation dropdownOpen 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    animation: dropdownOpen 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
   .select-dropdown.blur {
     backdrop-filter: blur(8px);
@@ -857,14 +857,14 @@
       transition border-color 150ms ease, box-shadow 150ms ease;
     }
     .select-dropdown {
-      animation none;
+      animation: none;
       transform: none;
     }
     .dropdown-arrow {
       transition none;
     }
     .n64-spinner {
-      animation none;
+      animation: none;
       border: 2px solid currentColor;
       border-right-color: transparent;
     }

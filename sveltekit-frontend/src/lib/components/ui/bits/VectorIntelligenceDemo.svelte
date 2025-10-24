@@ -505,7 +505,7 @@
   /* Processing overlay enhancement */
   :global(.processing-overlay) {
     backdrop-filter: blur(4px);
-    animation processing-pulse 2s ease-in-out infinite;
+    animation: processing-pulse 2s ease-in-out infinite;
   }
   @keyframes processing-pulse {
     0%,

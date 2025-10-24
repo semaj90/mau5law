@@ -197,7 +197,7 @@
     transform: translateY(-1px);
   }
   :global([data-bits-tabs-trigger][data-state='active'][data-theme='gaming']) {
-    animation gaming-active 2s ease-in-out infinite alternate;
+    animation: gaming-active 2s ease-in-out infinite alternate;
   }
   @keyframes gaming-active {
     from {
@@ -240,7 +240,7 @@ box-shadow: {}
     right: 0;
     height: 2px;
     background: currentColor;
-    animation underline-expand 0.2s ease-out;
+    animation: underline-expand 0.2s ease-out;
   }
   @keyframes underline-expand {
     from {

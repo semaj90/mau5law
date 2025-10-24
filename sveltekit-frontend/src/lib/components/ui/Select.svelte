@@ -183,7 +183,7 @@
     position relative;
   }
   :global(.bits-select-content) {
-    animation select-content-show 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation: select-content-show 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   @keyframes select-content-show {
     from {

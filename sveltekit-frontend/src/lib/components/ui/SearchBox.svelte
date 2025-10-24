@@ -207,7 +207,7 @@
 		right: 8px;
 		top: 50%;
 		transform: translateY(-50%);
-		animation bounce 1s infinite;
+		animation: bounce 1s infinite;
 	}
 	@keyframes bounce {
 		0%, 20%, 50%, 80%, 100% {

@@ -216,7 +216,7 @@
 <style>
   /* Gaming theme animations */
   button[data-theme='gaming'] {
-    animation gaming-glow 3s ease-in-out infinite alternate;
+    animation: gaming-glow 3s ease-in-out infinite alternate;
   }
   @keyframes gaming-glow {
     from {

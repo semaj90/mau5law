@@ -561,13 +561,13 @@
   }
   /* Quality-specific animations */
   .\38 -bit-nes {
-    animation pixel-flicker 0.1s infinite;
+    animation: pixel-flicker 0.1s infinite;
   }
   .\31 6-bit-snes {
-    animation smooth-glow 2s ease-in-out infinite alternate;
+    animation: smooth-glow 2s ease-in-out infinite alternate;
   }
   .\36 4-bit-n64 {
-    animation premium-shine 3s ease-in-out infinite;
+    animation: premium-shine 3s ease-in-out infinite;
   }
   @keyframes pixel-flicker {
     0%,

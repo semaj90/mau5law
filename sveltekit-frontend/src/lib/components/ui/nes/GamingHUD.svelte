@@ -231,7 +231,7 @@ d;
 		width: 8px;
 		height: 8px;
 		border-radius: 50%;
-		animation pulse 2s infinite;
+		animation: pulse 2s infinite;
 	}
 	.status-indicator.online {
 		color: var(--yorha-accent, #00ff41);

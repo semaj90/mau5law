@@ -504,7 +504,7 @@
 <style>
   /* Smooth animations for YoRHa theme */
   :global(.yorha-evidence-item) {
-    animation yorha-item-glow 2s ease-in-out infinite alternate;
+    animation: yorha-item-glow 2s ease-in-out infinite alternate;
   }
   @keyframes yorha-item-glow {
     from {

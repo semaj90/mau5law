@@ -92,12 +92,12 @@ export interface LegalDocumentBinaryLayout {
 }
 // Binary serialization utilities
 export class LegalDocumentBinarySerializer {
-  private static MAGIC_NUMBER = 0x4C45474C; // "LEGL" in ASCII
+  private static MAGIC_NUMBER = 0x4c45474c; // "LEGL" in ASCII
   private static CURRENT_VERSION = 1;
   /**
    * Serialize legal document to binary format (eliminating JSON)
    */
-  static serialize(_document: any): ArrayBuffer {
+  static serialize(document: any): ArrayBuffer {
     const buffer = new ArrayBuffer(LEGAL_DOCUMENT_BINARY_SIZE);
     const view = new DataView(buffer);
     const uint8View = new Uint8Array(buffer);
@@ -105,24 +105,40 @@ export class LegalDocumentBinarySerializer {
     const float32View = new Float32Array(buffer);
     let offset = 0;
     // Header
-    view.setUint32(offset, this.MAGIC_NUMBER, true); offset += 4;
-    view.setUint32(offset, this.CURRENT_VERSION, true); offset += 4;
-    view.setUint32(offset, this.stringToHash(document.id), true); offset += 4;
-    view.setUint32(offset, LEGAL_DOCUMENT_BINARY_SIZE, true); offset += 4;
-    view.setUint32(offset, this.calculateChecksum(document), true); offset += 4;
-    view.setUint32(offset, this.generateFlags(document), true); offset += 4;
-    view.setBigUint64(offset, BigInt(Date.now()), true); offset += 8;
+    view.setUint32(offset, this.MAGIC_NUMBER, true);
+    offset += 4;
+    view.setUint32(offset, this.CURRENT_VERSION, true);
+    offset += 4;
+    view.setUint32(offset, this.stringToHash(document.id), true);
+    offset += 4;
+    view.setUint32(offset, LEGAL_DOCUMENT_BINARY_SIZE, true);
+    offset += 4;
+    view.setUint32(offset, this.calculateChecksum(document), true);
+    offset += 4;
+    view.setUint32(offset, this.generateFlags(document), true);
+    offset += 4;
+    view.setBigUint64(offset, BigInt(Date.now()), true);
+    offset += 8;
     // Core Fields
-    view.setUint8(offset, this.documentTypeToEnum(document.type); offset += 1;
-    view.setUint8(offset, this.riskLevelToEnum(document.riskLevel); offset += 1;
-    view.setUint8(offset, document.priority || 128); offset += 1;
-    view.setUint8(offset, Math.round((document.confidenceLevel || 0.5) * 255); offset += 1;
-    view.setUint8(offset, document.bankId || 0); offset += 1;
+    view.setUint8(offset, this.documentTypeToEnum(document.type));
+    offset += 1;
+    view.setUint8(offset, this.riskLevelToEnum(document.riskLevel));
+    offset += 1;
+    view.setUint8(offset, document.priority || 128);
+    offset += 1;
+    view.setUint8(offset, Math.round((document.confidenceLevel || 0.5) * 255));
+    offset += 1;
+    view.setUint8(offset, document.bankId || 0);
+    offset += 1;
     offset += 3; // padding
-    view.setBigUint64(offset, BigInt(document.lastAccessed || Date.now()), true); offset += 8;
-    view.setUint32(offset, this.stringToHash(document.metadata?.caseId || ''), true); offset += 4;
-    view.setUint32(offset, this.stringToHash(document.metadata?.userId || ''), true); offset += 4;
-    view.setUint32(offset, this.stringToHash(document.metadata?.jurisdiction || ''), true); offset += 4;
+    view.setBigUint64(offset, BigInt(document.lastAccessed || Date.now()), true);
+    offset += 8;
+    view.setUint32(offset, this.stringToHash(document.metadata?.caseId || ''), true);
+    offset += 4;
+    view.setUint32(offset, this.stringToHash(document.metadata?.userId || ''), true);
+    offset += 4;
+    view.setUint32(offset, this.stringToHash(document.metadata?.jurisdiction || ''), true);
+    offset += 4;
     offset += 4; // padding
     // Position & Matrix
     const position = document.metadata?.position || [0, 0, 0];
@@ -144,12 +160,18 @@ export class LegalDocumentBinarySerializer {
       offset += 4;
     }
     // Content Hashes
-    view.setUint32(offset, this.stringToHash(document.title || ''), true); offset += 4;
-    view.setUint32(offset, this.stringToHash(document.content || ''), true); offset += 4;
-    view.setUint32(offset, this.stringToHash(JSON.stringify(document.metadata || {})), true); offset += 4;
-    view.setUint32(offset, this.arrayToHash(document.tags || []), true); offset += 4;
-    view.setUint32(offset, this.stringToHash(document.summary || ''), true); offset += 4;
-    view.setUint32(offset, this.stringToHash(document.aiAnalysis || ''), true); offset += 4;
+    view.setUint32(offset, this.stringToHash(document.title || ''), true);
+    offset += 4;
+    view.setUint32(offset, this.stringToHash(document.content || ''), true);
+    offset += 4;
+    view.setUint32(offset, this.stringToHash(JSON.stringify(document.metadata || {})), true);
+    offset += 4;
+    view.setUint32(offset, this.arrayToHash(document.tags || []), true);
+    offset += 4;
+    view.setUint32(offset, this.stringToHash(document.summary || ''), true);
+    offset += 4;
+    view.setUint32(offset, this.stringToHash(document.aiAnalysis || ''), true);
+    offset += 4;
     offset += 8; // padding
     // Variable Length Data Offsets (set to 0 for now - would implement full text storage)
     for (let i = 0; i < 8; i++) {
@@ -163,30 +185,49 @@ export class LegalDocumentBinarySerializer {
       offset += 4;
     }
     // Performance Metrics
-    view.setUint32(offset, document.metadata?.accessCount || 0, true); offset += 4;
-    view.setUint32(offset, document.metadata?.cacheHits || 0, true); offset += 4;
-    view.setUint32(offset, document.metadata?.lastQueryTime || 0, true); offset += 4;
-    view.setUint32(offset, document.metadata?.avgProcessingTime || 0, true); offset += 4;
-    view.setUint8(offset, document.metadata?.gpuAccelerationUsed ? 1 : 0); offset += 1;
-    view.setUint8(offset, document.metadata?.wasmAccelerationUsed ? 1 : 0); offset += 1;
-    view.setUint16(offset, Math.round((document.metadata?.compressionRatio || 1.0) * 100), true); offset += 2;
+    view.setUint32(offset, document.metadata?.accessCount || 0, true);
+    offset += 4;
+    view.setUint32(offset, document.metadata?.cacheHits || 0, true);
+    offset += 4;
+    view.setUint32(offset, document.metadata?.lastQueryTime || 0, true);
+    offset += 4;
+    view.setUint32(offset, document.metadata?.avgProcessingTime || 0, true);
+    offset += 4;
+    view.setUint8(offset, document.metadata?.gpuAccelerationUsed ? 1 : 0);
+    offset += 1;
+    view.setUint8(offset, document.metadata?.wasmAccelerationUsed ? 1 : 0);
+    offset += 1;
+    view.setUint16(offset, Math.round((document.metadata?.compressionRatio || 1.0) * 100), true);
+    offset += 2;
     offset += 16; // padding
     // Legal Specific Fields
-    view.setUint32(offset, this.practiceAreaToEnum(document.metadata?.practiceArea), true); offset += 4;
-    view.setUint32(offset, this.courtLevelToEnum(document.metadata?.courtLevel), true); offset += 4;
-    view.setUint32(offset, document.metadata?.parties?.length || 0, true); offset += 4;
-    view.setUint32(offset, document.metadata?.citations?.length || 0, true); offset += 4;
-    view.setUint32(offset, this.evidenceTypeToEnum(document.evidence_type), true); offset += 4;
-    view.setUint32(offset, this.documentClassToEnum(document.metadata?.documentClass), true); offset += 4;
-    view.setUint32(offset, this.riskFactorsToFlags(document.metadata?.riskFactors), true); offset += 4;
-    view.setUint32(offset, this.complianceToFlags(document.metadata?.compliance), true); offset += 4;
+    view.setUint32(offset, this.practiceAreaToEnum(document.metadata?.practiceArea), true);
+    offset += 4;
+    view.setUint32(offset, this.courtLevelToEnum(document.metadata?.courtLevel), true);
+    offset += 4;
+    view.setUint32(offset, document.metadata?.parties?.length || 0, true);
+    offset += 4;
+    view.setUint32(offset, document.metadata?.citations?.length || 0, true);
+    offset += 4;
+    view.setUint32(offset, this.evidenceTypeToEnum(document.evidence_type), true);
+    offset += 4;
+    view.setUint32(offset, this.documentClassToEnum(document.metadata?.documentClass), true);
+    offset += 4;
+    view.setUint32(offset, this.riskFactorsToFlags(document.metadata?.riskFactors), true);
+    offset += 4;
+    view.setUint32(offset, this.complianceToFlags(document.metadata?.compliance), true);
+    offset += 4;
     // Dates
     const dateFiled = document.metadata?.dateFiled ? new Date(document.metadata.dateFiled).getTime() : 0;
     const dateModified = document.metadata?.dateModified ? new Date(document.metadata.dateModified).getTime() : 0;
-    view.setFloat64(offset, dateFiled, true); offset += 8;
-    view.setFloat64(offset, dateModified, true); offset += 8;
-    view.setUint32(offset, this.confidentialityToEnum(document.metadata?.confidentiality), true); offset += 4;
-    view.setUint32(offset, document.metadata?.retentionPeriod || 2555, true); offset += 4; // 7 years default
+    view.setFloat64(offset, dateFiled, true);
+    offset += 8;
+    view.setFloat64(offset, dateModified, true);
+    offset += 8;
+    view.setUint32(offset, this.confidentialityToEnum(document.metadata?.confidentiality), true);
+    offset += 4;
+    view.setUint32(offset, document.metadata?.retentionPeriod || 2555, true);
+    offset += 4; // 7 years default
     offset += 12; // padding
     // Reserved space for future schema evolution
     offset += 128;
@@ -199,33 +240,49 @@ export class LegalDocumentBinarySerializer {
     const view = new DataView(buffer);
     let offset = 0;
     // Validate header
-    const magic = view.getUint32(offset, true); offset += 4;
+    const magic = view.getUint32(offset, true);
+    offset += 4;
     if (magic !== this.MAGIC_NUMBER) {
       throw new Error('Invalid legal document binary format');
     }
-    const version = view.getUint32(offset, true); offset += 4;
-    const documentId = view.getUint32(offset, true); offset += 4;
-    const size = view.getUint32(offset, true); offset += 4;
-    const checksum = view.getUint32(offset, true); offset += 4;
-    const flags = view.getUint32(offset, true); offset += 4;
-    const timestamp = view.getBigUint64(offset, true); offset += 8;
+    const version = view.getUint32(offset, true);
+    offset += 4;
+    const documentId = view.getUint32(offset, true);
+    offset += 4;
+    const size = view.getUint32(offset, true);
+    offset += 4;
+    const checksum = view.getUint32(offset, true);
+    offset += 4;
+    const flags = view.getUint32(offset, true);
+    offset += 4;
+    const timestamp = view.getBigUint64(offset, true);
+    offset += 8;
     // Core Fields
-    const documentType = view.getUint8(offset); offset += 1;
-    const riskLevel = view.getUint8(offset); offset += 1;
-    const priority = view.getUint8(offset); offset += 1;
-    const confidenceLevel = view.getUint8(offset) / 255.0; offset += 1;
-    const bankId = view.getUint8(offset); offset += 1;
+    const documentType = view.getUint8(offset);
+    offset += 1;
+    const riskLevel = view.getUint8(offset);
+    offset += 1;
+    const priority = view.getUint8(offset);
+    offset += 1;
+    const confidenceLevel = view.getUint8(offset) / 255.0;
+    offset += 1;
+    const bankId = view.getUint8(offset);
+    offset += 1;
     offset += 3; // padding
-    const lastAccessed = view.getBigUint64(offset, true); offset += 8;
-    const caseId = view.getUint32(offset, true); offset += 4;
-    const userId = view.getUint32(offset, true); offset += 4;
-    const jurisdictionCode = view.getUint32(offset, true); offset += 4;
+    const lastAccessed = view.getBigUint64(offset, true);
+    offset += 8;
+    const caseId = view.getUint32(offset, true);
+    offset += 4;
+    const userId = view.getUint32(offset, true);
+    offset += 4;
+    const jurisdictionCode = view.getUint32(offset, true);
+    offset += 4;
     offset += 4; // padding
     // Position
     const position = [
       view.getFloat32(offset, true),
       view.getFloat32(offset + 4, true),
-      view.getFloat32(offset + 8, true)
+      view.getFloat32(offset + 8, true),
     ];
     offset += 12;
     // Ranking Matrix
@@ -259,9 +316,9 @@ export class LegalDocumentBinarySerializer {
         rankingMatrix,
         version,
         flags,
-        timestamp: Number(timestamp)
-      }
-    }
+        timestamp: Number(timestamp),
+      },
+    };
   }
   /**
    * Ultra-fast batch serialization for multiple documents
@@ -278,7 +335,7 @@ export class LegalDocumentBinarySerializer {
     let offset = 16;
     for (const document of documents) {
       const docBuffer = this.serialize(document);
-      new Uint8Array(buffer, offset).set(new Uint8Array(docBuffer);
+      new Uint8Array(buffer, offset).set(new Uint8Array(docBuffer));
       offset += LEGAL_DOCUMENT_BINARY_SIZE;
     }
     return buffer;
@@ -300,7 +357,7 @@ export class LegalDocumentBinarySerializer {
     let offset = 16;
     for (let i = 0; i < count; i++) {
       const docBuffer = buffer.slice(offset, offset + LEGAL_DOCUMENT_BINARY_SIZE);
-      documents.push(this.deserialize(docBuffer);
+      documents.push(this.deserialize(docBuffer));
       offset += LEGAL_DOCUMENT_BINARY_SIZE;
     }
     return documents;
@@ -314,13 +371,13 @@ export class LegalDocumentBinarySerializer {
     return Math.abs(hash);
   }
   private static arrayToHash(arr: any[]): number {
-    return this.stringToHash(JSON.stringify(arr.sort());
+    return this.stringToHash(JSON.stringify(arr.sort()));
   }
-  private static calculateChecksum(_document: any): number {
+  private static calculateChecksum(document: any): number {
     // Simple CRC32-like checksum
-    return this.stringToHash(JSON.stringify(document);
+    return this.stringToHash(JSON.stringify(document));
   }
-  private static generateFlags(_document: any): number {
+  private static generateFlags(document: any): number {
     let flags = 0;
     if (document.metadata?.hasEmbedding) flags |= 1;
     if (document.metadata?.isEncrypted) flags |= 2;
@@ -329,7 +386,7 @@ export class LegalDocumentBinarySerializer {
     if (document.metadata?.isConfidential) flags |= 16;
     return flags;
   }
-  private static generateRankingMatrix(_document: any): Float32Array {
+  private static generateRankingMatrix(document: any): Float32Array {
     const matrix = new Float32Array(16);
     // Generate legal importance-based ranking matrix
     const riskWeight = this.riskLevelToWeight(document.riskLevel);
@@ -338,10 +395,22 @@ export class LegalDocumentBinarySerializer {
     const confidenceWeight = document.confidenceLevel || 0.5;
     // 4x4 ranking matrix for legal document importance
     matrix.set([
-      riskWeight,     typeWeight,     priorityWeight, confidenceWeight,
-      typeWeight,     1.0,           0.0,            0.0,
-      priorityWeight, 0.0,           1.0,            0.0,
-      confidenceWeight, 0.0,         0.0,            1.0
+      riskWeight,
+      typeWeight,
+      priorityWeight,
+      confidenceWeight,
+      typeWeight,
+      1.0,
+      0.0,
+      0.0,
+      priorityWeight,
+      0.0,
+      1.0,
+      0.0,
+      confidenceWeight,
+      0.0,
+      0.0,
+      1.0,
     ]);
     return matrix;
   }
@@ -351,8 +420,8 @@ export class LegalDocumentBinarySerializer {
       'evidence': DocumentType.EVIDENCE,
       'brief': DocumentType.BRIEF,
       'citation': DocumentType.CITATION,
-      'precedent': DocumentType.PRECEDENT
-    }
+      'precedent': DocumentType.PRECEDENT,
+    };
     return map[type] || DocumentType.EVIDENCE;
   }
   private static enumToDocumentType(enumValue: number): string {
@@ -361,8 +430,8 @@ export class LegalDocumentBinarySerializer {
       [DocumentType.EVIDENCE]: 'evidence',
       [DocumentType.BRIEF]: 'brief',
       [DocumentType.CITATION]: 'citation',
-      [DocumentType.PRECEDENT]: 'precedent'
-    }
+      [DocumentType.PRECEDENT]: 'precedent',
+    };
     return map[enumValue as DocumentType] || 'evidence';
   }
   private static riskLevelToEnum(risk: string): RiskLevel {
@@ -370,8 +439,8 @@ export class LegalDocumentBinarySerializer {
       'low': RiskLevel.LOW,
       'medium': RiskLevel.MEDIUM,
       'high': RiskLevel.HIGH,
-      'critical': RiskLevel.CRITICAL
-    }
+      'critical': RiskLevel.CRITICAL,
+    };
     return map[risk] || RiskLevel.MEDIUM;
   }
   private static enumToRiskLevel(enumValue: number): string {
@@ -379,20 +448,27 @@ export class LegalDocumentBinarySerializer {
       [RiskLevel.LOW]: 'low',
       [RiskLevel.MEDIUM]: 'medium',
       [RiskLevel.HIGH]: 'high',
-      [RiskLevel.CRITICAL]: 'critical'
-    }
+      [RiskLevel.CRITICAL]: 'critical',
+    };
     return map[enumValue as RiskLevel] || 'medium';
   }
   private static riskLevelToWeight(risk: string): number {
     const map: Record<string, number> = {
-      'low': 0.25, 'medium': 0.5, 'high': 0.75, 'critical': 1.0
-    }
+      'low': 0.25,
+      'medium': 0.5,
+      'high': 0.75,
+      'critical': 1.0,
+    };
     return map[risk] || 0.5;
   }
   private static documentTypeToWeight(type: string): number {
     const map: Record<string, number> = {
-      'evidence': 1.0, 'contract': 0.8, 'brief': 0.6, 'precedent': 0.7, 'citation': 0.4
-    }
+      'evidence': 1.0,
+      'contract': 0.8,
+      'brief': 0.6,
+      'precedent': 0.7,
+      'citation': 0.4,
+    };
     return map[type] || 0.5;
   }
   private static practiceAreaToEnum(area: string): number {

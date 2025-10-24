@@ -3,7 +3,7 @@ import DropdownTrigger from './BitsDropdown/Trigger.svelte';
 import DropdownContent from './BitsDropdown/Content.svelte';
 import DropdownItem from './BitsDropdown/Item.svelte';
 import DropdownSeparator from './BitsDropdown/Separator.svelte';
-import Button from './Button.svelte';
+import Button from './button/Button.svelte';
 import Card from './Card.svelte';
 import CardHeader from './CardHeader.svelte';
 import CardTitle from './CardTitle.svelte';

@@ -2,10 +2,9 @@
  * Bits UI v2 Component Registry - Svelte 5 Compatible
  * Complete mapping of available components with legal AI use cases
  */
-}
 export interface ComponentInfo {
   name: string;
-  package: 'bits-ui' | 'melt-ui' | 'both';
+  package: 'bits-ui' | 'enhanced-bits-ui' | 'both';
   svelte5Compatible: boolean;
   legalAIUseCase: string[];
   priority: 'essential' | 'important' | 'optional';
@@ -261,13 +260,14 @@ export const getEssentialUnimplemented = () =>
  * Get components by legal AI use case
  */
 export const getComponentsByUseCase = (useCase: string) =>
-  BITS_UI_COMPONENTS.filter(item => item.includes)(useCase.toLowerCase())
-  );
+  BITS_UI_COMPONENTS.filter(item => item.legalAIUseCase.some(u => u.toLowerCase() === useCase.toLowerCase()));
 /**
  * Bits UI v2 Exclusive Components (not available in Melt UI)
  * These are the key differentiators that make Bits UI the better choice
  */
-export const BITS_UI_EXCLUSIVE = BITS_UI_COMPONENTS.filter(comp => comp.package === 'bits-ui');
+export const BITS_UI_EXCLUSIVE = BITS_UI_COMPONENTS.filter(
+  comp => comp.package === 'bits-ui' || comp.package === 'enhanced-bits-ui'
+);
 /**
  * Implementation Priority Queue
  * Essential components we should implement next

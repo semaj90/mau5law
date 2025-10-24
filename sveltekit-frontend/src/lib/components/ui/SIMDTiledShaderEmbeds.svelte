@@ -758,7 +758,7 @@ export function getCHRPatterns(): string[] {
 }
 .status-header.processing {
   border-left-color: #f59e0b;
-  animation pulse 2s infinite;
+  animation: pulse 2s infinite;
 }
 .status-indicator {
   display: flex;
@@ -809,7 +809,7 @@ export function getCHRPatterns(): string[] {
   border: 4px solid rgba(255, 255, 255, 0.2);
   border-top: 4px solid #3b82f6;
   border-radius: 50%;
-  animation spin 1s linear infinite;
+  animation: spin 1s linear infinite;
   margin-bottom: 1rem;
 }
 .processing-text {

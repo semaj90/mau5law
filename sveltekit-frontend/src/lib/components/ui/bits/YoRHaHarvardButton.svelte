@@ -213,7 +213,7 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    animation badge-shine 2s infinite;
+    animation: badge-shine 2s infinite;
   }
 
   .gaming-border-accent {
@@ -256,7 +256,7 @@
     border: 2px solid transparent;
     border-top: 2px solid var(--enhanced-accent);
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
 
   .pixelated {

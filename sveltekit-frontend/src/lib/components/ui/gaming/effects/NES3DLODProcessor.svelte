@@ -893,7 +893,7 @@
     font-size: 0.8rem;
   }
   .particle {
-    animation float 3s ease-in-out infinite;
+    animation: float 3s ease-in-out infinite;
   }
   .particle.data {
     border-radius: 50%;
@@ -901,20 +901,20 @@
   .particle.connection {
     border-radius: 25%;
     transform-origin: center;
-    animation spin 2s linear infinite;
+    animation: spin 2s linear infinite;
   }
   .particle.analysis {
     clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
   }
   .particle.result {
     clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-    animation pulse 1s ease-in-out infinite;
+    animation: pulse 1s ease-in-out infinite;
   }
   .connection-line {
     position absolute;
     height: 2px;
     transform-origin: left center;
-    animation flow 2s ease-in-out infinite;
+    animation: flow 2s ease-in-out infinite;
   }
   .ui-overlay {
     position absolute;

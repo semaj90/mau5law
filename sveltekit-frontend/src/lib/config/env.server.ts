@@ -1,13 +1,17 @@
 /**
  * Environment Configuration with Docker Desktop Auto-Mapping
  * Automatically detects Docker environment and maps container URLs
+ *
+ * Note: Uses process.env directly for worker compatibility (no $env imports)
  */
-import { env } from '$env/dynamic/private';
+
+// Use process.env directly for compatibility with workers (no SvelteKit $env)
+const env = process.env;
 
 // Detect if running in Docker environment
 const isDocker = env.DOCKER_ENV === 'true' ||
-                 process.env.HOSTNAME?.includes('docker') ||
-                 process.env.DOCKER_CONTAINER === 'true';
+                 env.HOSTNAME?.includes('docker') ||
+                 env.DOCKER_CONTAINER === 'true';
 
 // Use host.docker.internal for Docker Desktop, localhost for bare metal
 const host = isDocker ? 'host.docker.internal' : 'localhost';

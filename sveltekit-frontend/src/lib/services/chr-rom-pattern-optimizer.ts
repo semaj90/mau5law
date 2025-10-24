@@ -6,7 +6,25 @@
  * - SVG: Clean, scalable UI elements (16-bit SNES aesthetic)
  * - PNG: Authentic 8-bit pixel art (NES aesthetic)
  */
-import type { CHRROMPattern } from './chr-rom-precomputation.js';
+// Removed: import type { CHRROMPattern } from './chr-rom-precomputation.js';
+
+// Define CHRROMPattern interface based on usage in this file
+export interface CHRROMPattern {
+  type: 'icon' | 'indicator' | 'gauge' | 'heatmap' | 'badge' | 'graph' | 'color' | 'default';
+  size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'scalable';
+  data: string; // SVG string, PNG data URL, or hex color
+  metadata: {
+    confidence: number;
+    timestamp: number;
+    version: string;
+    // Added properties for format optimization
+    format?: 'svg' | 'png' | 'hybrid' | 'hex';
+    aesthetic?: 'nes-8bit' | 'snes-16bit' | 'modern';
+    renderingHint?: 'pixelated' | 'crisp-edges' | 'auto';
+    dimensions?: string;
+    [key: string]: any; // Allow other metadata properties
+  };
+}
 // Pattern format specifications
 export interface PatternFormatSpec {
   format: 'svg' | 'png' | 'hybrid';
@@ -106,6 +124,23 @@ const SNES_PALETTE = [
   // Warm colors
   '#FF6347', '#FF7F50', '#FFA07A', '#FFB6C1', '#FFC0CB', '#FFCCCB'
 ];
+
+// Add a typed shape for incoming pattern data instead of `any`
+export type PatternInputData = {
+  documentType?: string;
+  type?: string;
+  category?: string;
+  confidence?: number;
+  processingStatus?: 'pending' | 'processing' | 'completed' | 'error' | string;
+  analysis?: {
+    confidence?: number;
+    riskLevel?: number;
+    entities?: Array<Record<string, unknown>>;
+    similarities?: number[];
+  };
+  [key: string]: unknown;
+};
+
 export class CHRROMPatternOptimizer {
   private canvas: HTMLCanvasElement | null = null;
   private ctx: CanvasRenderingContext2D | null = null;
@@ -118,10 +153,10 @@ export class CHRROMPatternOptimizer {
   /**
    * Generate optimized pattern based on type and spec
    */
-  async generateOptimizedPattern()
-    patternType: string
-    data: any;
-  ): Promise<CHRROMPattern>, {
+  async generateOptimizedPattern(
+    patternType: string,
+    data: PatternInputData
+  ): Promise<CHRROMPattern> {
     const spec = PATTERN_FORMAT_SPECS[patternType];
     if (!spec) {
       throw new Error(`Unknown pattern type: ${patternType}`);
@@ -140,11 +175,11 @@ export class CHRROMPatternOptimizer {
   /**
    * Generate SVG pattern (SNES 16-bit or modern aesthetic)
    */
-  private async generateSVGPattern()
-    patternType: string
-    data: any;
-    spec: PatternFormatSpec;
-  ): Promise<CHRROMPattern>, {
+  private async generateSVGPattern(
+    patternType: string,
+    data: PatternInputData,
+    spec: PatternFormatSpec
+  ): Promise<CHRROMPattern> {
     let svgContent = '';
     switch (patternType) {
       case 'doc_summary_icon':
@@ -172,7 +207,7 @@ export class CHRROMPatternOptimizer {
             format: 'hex',
             renderingHint: 'auto'
           }
-        }
+        };
       default:
         svgContent = this.generateDefaultSVG();
     }
@@ -188,16 +223,16 @@ export class CHRROMPatternOptimizer {
         aesthetic: spec.aesthetic,
         renderingHint: spec.renderingHint
       }
-    }
+    };
   }
   /**
    * Generate PNG pattern (NES 8-bit pixel art aesthetic)
    */
-  private async generatePNGPattern()
-    patternType: string
-    data: any;
-    spec: PatternFormatSpec;
-  ): Promise<CHRROMPattern>, {
+  private async generatePNGPattern(
+    patternType: string,
+    data: PatternInputData,
+    spec: PatternFormatSpec
+  ): Promise<CHRROMPattern> {
     if (!this.canvas || !this.ctx) {
       // Fallback to SVG if canvas not available
       return this.generateSVGPattern(patternType, data, spec);
@@ -233,15 +268,15 @@ export class CHRROMPatternOptimizer {
         renderingHint: spec.renderingHint,
         dimensions: `${width}x${height}`
       }
-    }
+    };
   }
   /**
    * Generate SVG document icon with SNES 16-bit aesthetic
    */
-  private generateSVGDocumentIcon(data: any, spec: PatternFormatSpec): string {
-    const docType = data.documentType || data.type || 'document';
-    const confidence = data.analysis?.confidence || 0.5;
-    const colors = spec.colorPalette === 'snes-256';
+  private generateSVGDocumentIcon(data: PatternInputData, spec: PatternFormatSpec): string {
+    const docType = (data.documentType as string) || (data.type as string) || 'document';
+    const confidence = (data.analysis?.confidence as number) ?? (data.confidence as number) ?? 0.5;
+    const colors = spec.colorPalette === 'snes-256'
       ? this.getSNESColorScheme(docType)
       : this.getModernColorScheme(docType);
     const opacity = Math.max(0.4, confidence);
@@ -250,8 +285,8 @@ export class CHRROMPatternOptimizer {
     return `<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="docGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style="stop-color:${colors.primary}stop-opacity:${opacity}"/>
-          <stop offset="100%" style="stop-color:${colors.secondary}stop-opacity:${opacity * 0.8}"/>
+          <stop offset="0%" style="stop-color:${colors.primary};stop-opacity:${opacity}"/>
+          <stop offset="100%" style="stop-color:${colors.secondary};stop-opacity:${opacity * 0.8}"/>
         </linearGradient>
       </defs>
       <rect x="1" y="1" width="14" height="14" rx="2" fill="url(#docGrad)" stroke="${colors.border}" stroke-width="0.5"/>
@@ -261,10 +296,10 @@ export class CHRROMPatternOptimizer {
   /**
    * Generate SVG risk gauge with smooth modern design
    */
-  private generateSVGRiskGauge(data: any, spec: PatternFormatSpec): string {
-    const riskLevel = data.analysis?.riskLevel || 0.3;
+  private generateSVGRiskGauge(data: PatternInputData, spec: PatternFormatSpec): string {
+    const riskLevel = (data.analysis?.riskLevel as number) ?? 0.3;
     const percentage = Math.round(riskLevel * 100);
-    const color = riskLevel > 0.7 ? '#EF4444' :;
+    const color = riskLevel > 0.7 ? '#EF4444' :
                  riskLevel > 0.4 ? '#F59E0B' : '#10B981';
     return `<svg viewBox="0 0 60 8" xmlns="http://www.w3.org/2000/svg">
       <rect x="0" y="0" width="60" height="8" rx="4" fill="#E5E7EB"/>
@@ -277,21 +312,21 @@ export class CHRROMPatternOptimizer {
   /**
    * Generate PNG status indicator with authentic NES 8-bit pixels
    */
-  private generatePNGStatusIndicator()
-    data: any
-    spec: PatternFormatSpec
-    width: number;
-    height: number;
+  private generatePNGStatusIndicator(
+    data: PatternInputData,
+    spec: PatternFormatSpec,
+    width: number,
+    height: number
   ): string {
-    const status = data.processingStatus || 'pending';
+    const status = (data.processingStatus as string) || 'pending';
     // Use NES color palette
     const statusColors = {
       pending: NES_PALETTE[0x27], // Orange
       processing: NES_PALETTE[0x12], // Blue
-      completed: NES_PALETTE[0x2A], // Green;
+      completed: NES_PALETTE[0x2A], // Green
       error: NES_PALETTE[0x16] // Red
-    }
-    const color = statusColors[status] || statusColors.pending;
+    };
+    const color = statusColors[status as keyof typeof statusColors] || statusColors.pending;
     // Draw 16x16 pixel art status icon
     this.ctx!.fillStyle = color;
     switch (status) {
@@ -316,16 +351,15 @@ export class CHRROMPatternOptimizer {
   /**
    * Generate PNG entity heatmap with NES pixel grid
    */
-  private generatePNGEntityHeatmap()
-    data: any
-    spec: PatternFormatSpec
-    width: number;
-    height: number;
+  private generatePNGEntityHeatmap(
+    data: PatternInputData,
+    spec: PatternFormatSpec,
+    width: number,
+    height: number
   ): string {
-    const entities = data.analysis?.entities || [];
+    const entities = (data.analysis?.entities as Array<Record<string, unknown>>) || [];
     const entityDensity = Math.min(1.0, entities.length / 10);
     // Create 32x32 pixel heatmap using NES palette
-    const baseColor = NES_PALETTE[0x12]; // Blue base
     const heatColors = [
       NES_PALETTE[0x0F], // Black (no activity)
       NES_PALETTE[0x00], // Dark gray
@@ -334,11 +368,11 @@ export class CHRROMPatternOptimizer {
       NES_PALETTE[0x32]  // White (max activity)
     ];
     // Generate pseudo-random but deterministic pattern
-    for (let y = 0; y < height; y++) {>
-      for (let x = 0; x < width; x++) {>
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
         const seed = (x * 31 + y * 17) % 256;
         const intensity = (seed / 255) * entityDensity;
-        const colorIndex = Math.floor(intensity * (heatColors.length - 1);
+        const colorIndex = Math.floor(intensity * (heatColors.length - 1));
         this.ctx!.fillStyle = heatColors[colorIndex];
         this.ctx!.fillRect(x, y, 1, 1);
       }
@@ -348,11 +382,10 @@ export class CHRROMPatternOptimizer {
   /**
    * Draw pixel-perfect checkmark
    */
-  private drawPixelCheckmark(width,: number, heigh,t: number, col,or: stri,ng): void {
-    this.ctx!.fillStyle = colo,r;
+  private drawPixelCheckmark(width: number, height: number, color: string): void {
+    this.ctx!.fillStyle = color;
     // Checkmark pattern for 16x16
     const checkPattern = [
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],
       [0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0],
       [0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0],
@@ -369,8 +402,8 @@ export class CHRROMPatternOptimizer {
       [1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
       [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     ];
-    for (let y =, 0;, y < M,ath.min(height, 16); y++) {>
-      for (let x = 0; x < Math.min(width, 16); x++) {>;
+    for (let y = 0; y < Math.min(height, 16); y++) {
+      for (let x = 0; x < Math.min(width, 16); x++) {
         if (checkPattern[y] && checkPattern[y][x]) {
           this.ctx!.fillRect(x, y, 1, 1);
         }
@@ -380,9 +413,9 @@ export class CHRROMPatternOptimizer {
   /**
    * Draw other pixel art patterns
    */
-  private drawPixelSpinner(width,: number, heigh,t: number, col,or: stri,ng): void {
+  private drawPixelSpinner(width: number, height: number, color: string): void {
     // Simple rotating dots pattern
-    this.ctx!.fillStyle = colo,r;
+    this.ctx!.fillStyle = color;
     const centerX = Math.floor(width / 2);
     const centerY = Math.floor(height / 2);
     // Draw 4 dots in rotating pattern
@@ -391,21 +424,21 @@ export class CHRROMPatternOptimizer {
     this.ctx!.fillRect(centerX, centerY + 3, 2, 2);
     this.ctx!.fillRect(centerX - 3, centerY, 2, 2);
   }
-  private drawPixelX(width,: number, heigh,t: number, col,or: stri,ng): void {
-    this.ctx!.fillStyle = colo,r;
+  private drawPixelX(width: number, height: number, color: string): void {
+    this.ctx!.fillStyle = color;
     // Draw X pattern
-    for (let i =, 0;, i < M,ath.min(width, hei,gh,t); i++) {>
+    for (let i = 0; i < Math.min(width, height); i++) {
       this.ctx!.fillRect(i, i, 1, 1);
       this.ctx!.fillRect(width - 1 - i, i, 1, 1);
     }
   }
-  private drawPixelClock(width,: number, heigh,t: number, col,or: stri,ng): void {
-    this.ctx!.fillStyle = colo,r;
+  private drawPixelClock(width: number, height: number, color: string): void {
+    this.ctx!.fillStyle = color;
     const centerX = Math.floor(width / 2);
     const centerY = Math.floor(height / 2);
     // Draw simple clock face
-    this.ctx!.strokeStyle = colo,r;
-    this.ctx!.lineWidth =, 1;
+    this.ctx!.strokeStyle = color;
+    this.ctx!.lineWidth = 1;
     this.ctx!.beginPath();
     this.ctx!.arc(centerX, centerY, 6, 0, 2 * Math.PI);
     this.ctx!.stroke();
@@ -416,110 +449,172 @@ export class CHRROMPatternOptimizer {
   /**
    * Helper methods
    */
-  private getSNESColorScheme(docType,: string): any {
-    const schemes = {
+  private getSNESColorScheme(docType: string): { primary: string; secondary: string; border: string; text: string } {
+    const schemes: Record<string, { primary: string; secondary: string; border: string; text: string }> = {
       contract: { primary: '#4169E1', secondary: '#1E90FF', border: '#000080', text: '#FFFFFF' },
       nda: { primary: '#FF6347', secondary: '#FF7F50', border: '#8B0000', text: '#FFFFFF' },
       agreement: { primary: '#32CD32', secondary: '#90EE90', border: '#006400', text: '#000000' },
       lease: { primary: '#DAA520', secondary: '#F4A460', border: '#B8860B', text: '#000000' },
       default: { primary: '#808080', secondary: '#A0A0A0', border: '#404040', text: '#FFFFFF' }
-    }
+    };
     return schemes[docType] || schemes.default;
   }
-  private getModernColorScheme(docType,: string): any {
-    const schemes = {
+
+  private getModernColorScheme(docType: string): { primary: string; secondary: string; border: string; text: string } {
+    const schemes: Record<string, { primary: string; secondary: string; border: string; text: string }> = {
       contract: { primary: '#3B82F6', secondary: '#60A5FA', border: '#1E40AF', text: '#FFFFFF' },
       nda: { primary: '#EF4444', secondary: '#F87171', border: '#B91C1C', text: '#FFFFFF' },
       agreement: { primary: '#10B981', secondary: '#34D399', border: '#047857', text: '#FFFFFF' },
       lease: { primary: '#F59E0B', secondary: '#FBBF24', border: '#D97706', text: '#000000' },
       default: { primary: '#6B7280', secondary: '#9CA3AF', border: '#374151', text: '#FFFFFF' }
-    }
+    };
     return schemes[docType] || schemes.default;
   }
-  private selectColorFromPalette(category,: string, palett,e: strin,g): string {
+
+  private selectColorFromPalette(category: string | undefined, palette: PatternFormatSpec['colorPalette']): string {
     if (palette === 'nes-54') {
-      const colorMap = {
+      const colorMap: Record<string, string> = {
         contract: NES_PALETTE[0x12], // Blue
         nda: NES_PALETTE[0x16], // Red
         agreement: NES_PALETTE[0x2A], // Green
-        lease: NES_PALETTE[0x27], // Orange;
+        lease: NES_PALETTE[0x27], // Orange
         default: NES_PALETTE[0x0F] // Gray
-      }
-      return colorMap[category] || colorMap.default;
+      };
+      return colorMap[category || 'default'] || colorMap.default;
     }
     if (palette === 'snes-256') {
-      const colorMap = {
+      const colorMap: Record<string, string> = {
         contract: '#4169E1',
         nda: '#FF6347',
         agreement: '#32CD32',
         lease: '#DAA520',
         default: '#808080'
-      }
-      return colorMap[category] || colorMap.default;
+      };
+      return colorMap[category || 'default'] || colorMap.default;
     }
     // Modern unlimited palette
-    const colorMap = {
+    const colorMap: Record<string, string> = {
       contract: '#3B82F6',
       nda: '#EF4444',
       agreement: '#10B981',
       lease: '#F59E0B',
       default: '#6B7280'
-    }
-    return colorMap[category] || colorMap.default;
+    };
+    return colorMap[category || 'default'] || colorMap.default;
   }
-  private parseSize(sizeStr,: string): [number, number,] {
-    if (sizeStr === 'scalable') return [24, 24]; // Default for SVG
-    const match = sizeStr.match(/^(\d+)x(\d+)$/);
-    if (match) {
-      return [parseInt(match[1]), parseInt(match[2])];
+
+  private async generateHybridPattern(
+    patternType: string,
+    data: PatternInputData,
+    spec: PatternFormatSpec
+  ): Promise<CHRROMPattern> {
+    // This would involve combining SVG and PNG elements, e.g.,
+    // a pixelated background (PNG) with crisp vector overlays (SVG).
+    // For now, return a default SVG or PNG based on a simple heuristic.
+    console.warn(`Hybrid pattern generation not fully implemented for ${patternType}. Falling back.`);
+    if (spec.aesthetic === 'nes-8bit') {
+      return this.generatePNGPattern(patternType, data, spec);
+    }
+    return this.generateSVGPattern(patternType, data, spec);
+  }
+
+  private generateSVGConfidenceBadge(data: PatternInputData, spec: PatternFormatSpec): string {
+    const confidence = (data.confidence as number) ?? 0.75;
+    const percentage = Math.round(confidence * 100);
+    const color = confidence > 0.8 ? '#10B981' :
+                  confidence > 0.5 ? '#F59E0B' : '#EF4444';
+    const textColor = spec.aesthetic === 'snes-16bit' ? '#FFFFFF' : '#000000';
+
+    return `<svg viewBox="0 0 40 12" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="40" height="12" rx="3" fill="${color}"/>
+      <text x="20" y="8" text-anchor="middle" font-family="monospace" font-size="8" fill="${textColor}">${percentage}%</text>
+    </svg>`;
+  }
+
+  private generateSVGSimilarityGraph(data: PatternInputData, spec: PatternFormatSpec): string {
+    const similarities = (data.analysis?.similarities as number[]) || [0.8, 0.7, 0.6, 0.5, 0.4];
+    const maxVal = Math.max(...similarities, 1);
+    const width = 60;
+    const height = 20;
+    const barWidth = (width / similarities.length) * 0.8;
+    const barSpacing = (width / similarities.length) * 0.2;
+
+    let bars = '';
+    similarities.forEach((sim: number, i: number) => {
+      const barHeight = (sim / maxVal) * height * 0.8; // Scale to 80% of height
+      const x = i * (barWidth + barSpacing) + barSpacing / 2;
+      const y = height - barHeight;
+      const color = sim > 0.7 ? '#10B981' : sim > 0.5 ? '#F59E0B' : '#EF4444';
+      bars += `<rect x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" fill="${color}" rx="1"/>`;
+    });
+
+    return `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="${width}" height="${height}" fill="#E5E7EB" rx="2"/>
+      ${bars}
+    </svg>`;
+  }
+
+  private generateDefaultSVG(): string {
+    return `<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="16" height="16" fill="#CCCCCC"/>
+      <text x="8" y="10" text-anchor="middle" font-family="monospace" font-size="8" fill="#FFFFFF">?</text>
+    </svg>`;
+  }
+
+  private getPatternType(patternType: string): CHRROMPattern['type'] {
+    // Map internal string to a valid CHRROMPattern type
+    switch (patternType) {
+      case 'doc_summary_icon': return 'icon';
+      case 'status_indicator': return 'indicator';
+      case 'risk_gauge': return 'gauge';
+      case 'entity_heatmap': return 'heatmap';
+      case 'confidence_badge': return 'badge';
+      case 'similarity_graph': return 'graph';
+      case 'category_color': return 'color';
+      default: return 'default';
+    }
+  }
+
+  private getPatternSize(targetSize: string): CHRROMPattern['size'] {
+    // Map targetSize string to a valid CHRROMPattern size
+    switch (targetSize) {
+      case '16x16': return 'xs';
+      case '32x32': return 'sm';
+      case '64x64': return 'md'; // Assuming larger sizes might exist
+      case '128x128': return 'lg';
+      case '256x256': return 'xl';
+      case 'scalable': return 'scalable';
+      default: return 'scalable'; // Default to scalable for unknown
+    }
+  }
+
+  private generateDefaultPNG(width: number, height: number): string {
+    if (!this.canvas || !this.ctx) return '';
+    this.canvas.width = width;
+    this.canvas.height = height;
+    this.ctx.clearRect(0, 0, width, height);
+    this.ctx.fillStyle = '#888888'; // Gray background
+    this.ctx.fillRect(0, 0, width, height);
+    this.ctx.fillStyle = '#FFFFFF'; // White question mark
+    this.ctx.font = `${Math.floor(height * 0.6)}px monospace`;
+    this.ctx.textAlign = 'center';
+    this.ctx.textBaseline = 'middle';
+    this.ctx.fillText('?', width / 2, height / 2);
+    return this.canvas.toDataURL('image/png');
+  }
+
+  private parseSize(sizeStr: string): [number, number] {
+    if (sizeStr === 'scalable') {
+      return [64, 64]; // Default size for scalable, can be adjusted
+    }
+    const parts = sizeStr.split('x');
+    if (parts.length === 2) {
+      const width = parseInt(parts[0], 10);
+      const height = parseInt(parts[1], 10);
+      if (!isNaN(width) && !isNaN(height)) {
+        return [width, height];
+      }
     }
     return [16, 16]; // Default fallback
   }
-  private getPatternType(patternType,: string): CHRROMPattern['type',] {
-    const typeMap = {
-      doc_summary_icon: 'icon' as const,
-      status_indicator: 'icon' as const,
-      risk_gauge: 'gauge' as const,
-      entity_heatmap: 'heatmap' as const,
-      confidence_badge: 'badge' as const,
-      similarity_graph: 'graph' as const,
-      category_color: 'badge' as const
-    }
-    return typeMap[patternType] || 'icon' as const;
-  }
-  private getPatternSize(targetSize,: string): CHRROMPattern['size',] {
-    if (targetSize.includes('16')) return 'xs';
-    if (targetSize.includes('32')) return 'sm';
-    if (targetSize === 'scalable') return 'md';
-    return 'xs';
-  }
-  private generateDefaultSVG(),: string {
-    return '<svg viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12" rx="2" fill="#6B7280"/></svg>';
-  }
-  private generateDefaultPNG(width,: number, heigh,t: numbe,r): string {
-    this.ctx!.fillStyle = '#6B7280';
-    this.ctx!.fillRect(0, 0, width, height);
-    return this.canvas!.toDataURL('image/png');
-  }
-  /**
-   * Generate CSS classes for optimal rendering
-   */
-  getCSSRenderingClass(pattern,: CHRROMPattern): string {
-    const renderingHint = pattern.metadata?.renderingHint || 'auto';
-    const format = pattern.metadata?.format || 'svg';
-    let classes = [`chr-rom-${format}`];
-    switch (renderingHint) {
-      case 'pixelated':
-        classes.push('chr-rom-pixelated');
-        break;
-      case 'crisp-edges':
-        classes.push('chr-rom-crisp');
-        break;
-      default:
-        classes.push('chr-rom-auto');
-    }
-    return classes.join(' ');
-  }
 }
-// Export singleton
-export const chrROMPatternOptimizer = new CHRROMPatternOptimizer();

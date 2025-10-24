@@ -338,7 +338,7 @@ var(--color-nier-accent-cool) {}
   @media (prefers-reduced-motion reduce) {
     :global(.golden-ratio-grid *) {
       transition none !important;
-      animation none !important;
+      animation: none !important;
     }
   }
 </style>

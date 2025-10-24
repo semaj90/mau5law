@@ -437,7 +437,7 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
   }
 /* Animation effects */ {}
   .pixel-card--animated {
-    animation pixel-card-idle 3s ease-in-out infinite alternate;
+    animation: pixel-card-idle 3s ease-in-out infinite alternate;
   }
   @keyframes pixel-card-idle {
     from {
@@ -449,7 +449,7 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
   }
 /* Glowing effect */ {}
   .pixel-card--glowing {
-    animation pixel-card-glow 2s ease-in-out infinite alternate;
+    animation: pixel-card-glow 2s ease-in-out infinite alternate;
   }
   @keyframes pixel-card-glow {
     from {
@@ -462,7 +462,7 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
 /* Status styling */ {}
   .pixel-card--status-analyzing {
     border-color: #00BFFF;
-    animation pixel-card-analyzing 1s linear infinite;
+    animation: pixel-card-analyzing 1s linear infinite;
   }
   @keyframes pixel-card-analyzing {
     0% { border-color: #00BFFF, }
@@ -474,7 +474,7 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
   }
   .pixel-card--status-error {
     border-color: #FF4500;
-    animation pixel-card-error 0.5s ease-in-out 3;
+    animation: pixel-card-error 0.5s ease-in-out 3;
   }
   @keyframes pixel-card-error {
     0%, 100% { transform: translateX(0), }
@@ -483,7 +483,7 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
   }
   .pixel-card--status-flagged {
     border-color: #DC143C;
-    animation pixel-card-flagged 1s ease-in-out infinite;
+    animation: pixel-card-flagged 1s ease-in-out infinite;
   }
   @keyframes pixel-card-flagged {
     0%, 100% { box-shadow: 0 0 0 0 rgba(220, 20, 60, 0.4), }
@@ -491,7 +491,7 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
   }
 /* Priority styling */ {}
   .pixel-card--priority-urgent {
-    animation pixel-card-urgent 0.8s ease-in-out infinite;
+    animation: pixel-card-urgent 0.8s ease-in-out infinite;
   }
   @keyframes pixel-card-urgent {
     0%, 100% { filter: brightness(1), }
@@ -524,7 +524,7 @@ calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2) 0 rgba(0, 0, 0, 0.3), {}
     height: calc(var(--pixel-size) * 1.5);
     background: var(--pixel-status-color);
     border-radius: 0,
-    animation pixel-dot-blink 1s infinite;
+    animation: pixel-dot-blink 1s infinite;
   }
   @keyframes pixel-dot-blink {
     0%, 50% { opacity: 1, }
@@ -707,7 +707,7 @@ rgba(255, 255, 255, 0.03) calc(var(--pixel-size) * 2) {}
 .pixel-card, {}
 .status-dot, {}
     .pixel-card__scanlines {
-      animation none;
+      animation: none;
     }
   }
 /* High contrast mode */ {}

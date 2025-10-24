@@ -94,7 +94,7 @@ https://svelte.dev/e/js_parse_error -->
       }, time);
     });
   }
-  // GPU utilization animation dots
+  // GPU utilization animation: dots
   let dotAnimations = $derived(() => {
     return Array.from({ length: 8 }, (_, i) => ({
       delay: i * 150,
@@ -224,7 +224,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   .animate-gpu-shimmer {
-    animation gpu-shimmer 2.5s infinite;
+    animation: gpu-shimmer 2.5s infinite;
   }
 /* Custom animations for GPU activity */ @keyframes gpu-pulse {
     0%, 100% {
@@ -237,6 +237,6 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   .animate-gpu-pulse {
-    animation gpu-pulse 1.5s infinite;
+    animation: gpu-pulse 1.5s infinite;
   }
 </style>

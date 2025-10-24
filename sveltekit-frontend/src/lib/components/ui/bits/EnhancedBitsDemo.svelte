@@ -466,7 +466,7 @@
   }
   /* Enhanced demo styling */
   :global(.demo-config-section) {
-    animation demo-section-enter 0.5s ease-out;
+    animation: demo-section-enter 0.5s ease-out;
   }
   @keyframes demo-section-enter {
     from {

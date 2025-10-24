@@ -594,7 +594,7 @@ async function startWorkers() {
 async function startSvelteKit() {
   console.log('\n🔷 Starting SvelteKit Development Server...');
 
-  const vite = spawn('npx', ['vite', 'dev', '--port', '5173', '--host', '127.0.0.1'], {
+  const vite = spawn('npx', ['vite', 'dev', '--port', '5173', '--host', '0.0.0.0'], {
     cwd: projectRoot,
     stdio: 'inherit',
     shell: true,

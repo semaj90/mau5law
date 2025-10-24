@@ -96,7 +96,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    animation fadeIn 0.2s ease-out;
+    animation: fadeIn 0.2s ease-out;
   }
 
   .fallback-dialog {
@@ -108,7 +108,7 @@
     max-height: 90vh;
     overflow: auto;
     box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
-    animation slideIn 0.3s ease-out;
+    animation: slideIn 0.3s ease-out;
   }
 
   @keyframes fadeIn {

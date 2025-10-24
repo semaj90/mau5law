@@ -120,19 +120,19 @@ font-family: 'Orbitron', 'Courier New', monospace;
 		box-shadow: 0 4px 20px rgba(255, 68, 68, 0.2);
 	}
 /* Glow Effect */ .gaming-panel.glow {
-		animation panel-glow 3s ease-in-out infinite alternate;
+		animation: panel-glow 3s ease-in-out infinite alternate;
 	}
 	.gaming-panel.glow.primary {
-		animation panel-glow-primary 3s ease-in-out infinite alternate;
+		animation: panel-glow-primary 3s ease-in-out infinite alternate;
 	}
 	.gaming-panel.glow.success {
-		animation panel-glow-success 3s ease-in-out infinite alternate;
+		animation: panel-glow-success 3s ease-in-out infinite alternate;
 	}
 	.gaming-panel.glow.warning {
-		animation panel-glow-warning 3s ease-in-out infinite alternate;
+		animation: panel-glow-warning 3s ease-in-out infinite alternate;
 	}
 	.gaming-panel.glow.danger {
-		animation panel-glow-danger 3s ease-in-out infinite alternate;
+		animation: panel-glow-danger 3s ease-in-out infinite alternate;
 	}
 /* Minimized State */ .gaming-panel.minimized {
 overflow: visibl;
@@ -230,7 +230,7 @@ top: 0,
 		height: 2px;
 		background: linear-gradient(90deg, transparent 0%, currentColor 50%, transparent 100%);
 		opacity: 0.4,
-		animation scan-horizontal 4s ease-in-out infinite;
+		animation: scan-horizontal 4s ease-in-out infinite;
 		z-index: 0,
 	}
 	.scan-line-vertical {
@@ -241,7 +241,7 @@ top: 0,
 		width: 2px;
 		background: linear-gradient(180deg, transparent 0%, currentColor 50%, transparent 100%);
 		opacity: 0.4,
-		animation scan-vertical 3s ease-in-out infinite rever;
+		animation: scan-vertical 3s ease-in-out infinite rever;
 		z-index: 0,
 	}
 /* Animations */ @keyframes panel-glow {

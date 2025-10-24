@@ -170,7 +170,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     if (gpuAcceleration) {
       await initializeGPUContext();
     }
-    // Start animation loop for fog effects
+    // Start animation: loop for fog effects
     if (fogEffect !== 'none' || materialType === 'pbr') {
       requestAnimationFrame(animationLoop);
     }
@@ -219,7 +219,7 @@ if (spatialAudio && typeof window !== 'undefined') {
       const timeVariation = Math.sin(frameCount * 0.01) * 0.1;
       fogDensity = Math.max(0.1, Math.min(1.0, baseIntensity + timeVariation));
     }
-    // Continue animation for fog or PBR materials
+    // Continue animation: for fog or PBR materials
     if ((fogEffect !== 'none' || materialType === 'pbr') && !reducedMotion) {
       requestAnimationFrame(animationLoop);
     }
@@ -477,15 +477,15 @@ d;
   }
   .fog-layer-1 {
 background: linear-gradient( 45deg, rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.3)) 0%, transparent 50%, rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.2)) 100% );
-    animation fog-drift-1 12s ease-in-out infinite;
+    animation: fog-drift-1 12s ease-in-out infinite;
   }
   .fog-layer-2 {
 background: radial-gradient( ellipse at 30% 70%, rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.4)) 0%, transparent 60% );
-    animation fog-drift-2 15s ease-in-out infinite;
+    animation: fog-drift-2 15s ease-in-out infinite;
   }
   .fog-layer-3 {
 background: radial-gradient( ellipse at 70% 30%, rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.25)) 0%, transparent 70% );
-    animation fog-drift-3 18s ease-in-out infinite;
+    animation: fog-drift-3 18s ease-in-out infinite;
   }
 /* Fog color variations */ .fog-color-blue { --fog-color-rgb: 100, 150, 255, }
   .fog-color-purple { --fog-color-rgb: 150, 100, 255, }
@@ -616,7 +616,7 @@ background: radial-gradient( circle at top left, rgba(255, 255, 255, 0.01) 0%, t
   }
 /* Internal fog layer */ .internal-fog-layer {
 background: linear-gradient( 180deg, rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.1)) 0%, transparent 30%, transparent 70%, rgba(var(--fog-color-rgb, 100, 150, 255), calc(var(--fog-density, 0.5) * 0.05)) 100% );
-    animation internal-fog-drift 10s ease-in-out infinite;
+    animation: internal-fog-drift 10s ease-in-out infinite;
   }
 /* Shadow layer */ .shadow-layer {
 background: radial-gradient( ellipse at bottom center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.1) 50%, transparent 100% );
@@ -733,7 +733,7 @@ background: radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.15) 0%, tr
     font-size: 11px;
   }
 /* Reduced motion */ .reduced-motion .n64-dialog, .reduced-motion .fog-layer, .reduced-motion .internal-fog-layer, .reduced-motion .n64-dialog-close {
-    animation none !important;
+    animation: none !important;
     transition none !important;
     transform: none !important;
   }

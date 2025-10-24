@@ -6,7 +6,6 @@
 import { parallelCacheOrchestrator, type ParallelCacheRequest } from './parallel-cache-orchestrator.js';
 import { dev } from '$app/environment';
 import { browser } from '$app/environment';
-}
 export interface SSRCacheConfig {
   defaultTTL: number;
   maxAge: number;
@@ -25,7 +24,7 @@ export interface LegalAPIResponse {
     aiModel?: string;
     cached?: boolean;
     cacheLayer?: string;
-  }
+  };
   pagination?: {
     page: number;
     limit: number;
@@ -33,7 +32,7 @@ export interface LegalAPIResponse {
     totalPages: number;
     hasNext: boolean;
     hasPrev: boolean;
-  }
+  };
 }
 export interface SSRCacheEntry {
   key: string;
@@ -53,7 +52,7 @@ class SSRLegalAPICache {
     quantizeResponses: true,
     enableRAG: true,
     legalOptimizations: true,
-  }
+  };
   private responseQuantizer = new ResponseQuantizer();
   private ragContextCache = new Map<string, any[]>();
   /**
@@ -78,21 +77,33 @@ class SSRLegalAPICache {
         type: options.ragContext ? 'rag' : 'hybrid',
         priority: this.determinePriority(endpoint),
         keys: [cacheKey],
-        ttl: options.ttl || this.config.defaultTTL
-      }
+        ttl: options.ttl || this.config.defaultTTL,
+      };
       // Execute parallel cache lookup
       const result = await parallelCacheOrchestrator.executeParallel(cacheRequest);
-      if ((result as { success?: any; cacheResults?: any; metrics?: any }).success && (result as { success?: any; cacheResults?: any; metrics?: any }).cacheResults.length > 0) {
+      if (
+        (result as { success?: any; cacheResults?: any; metrics?: any }).success &&
+        (result as { success?: any; cacheResults?: any; metrics?: any }).cacheResults.length > 0
+      ) {
         const cacheHit = (result as { success?: any; cacheResults?: any; metrics?: any }).cacheResults[0];
-        // removed unused response assignment
+        // Construct a cached response wrapper
+        const cachedResponse: LegalAPIResponse = cacheHit.data || { success: true, data: null };
         // Add cache metadata
-        if ((response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta) {
-          (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta.cached = true;
-          (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta.cacheLayer = cacheHit.source;
-          (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta.processingTime = performance.now() - startTime;
+        if ((cachedResponse as { meta?: any }).meta) {
+          (cachedResponse as { meta?: any }).meta.cached = true;
+          (cachedResponse as { meta?: any }).meta.cacheLayer = cacheHit.source;
+          (cachedResponse as { meta?: any }).meta.processingTime = performance.now() - startTime;
+        } else {
+          (cachedResponse as any).meta = {
+            cached: true,
+            cacheLayer: cacheHit.source,
+            processingTime: performance.now() - startTime,
+          };
         }
-        console.log(`🚀 SSR Cache HIT: ${endpoint} from ${cacheHit.source} (${(result as { success?: any; cacheResults?: any; metrics?: any }).metrics.totalLatency.toFixed(2)}ms)`);
-        return response;
+        console.log(
+          `🚀 SSR Cache HIT: ${endpoint} from ${cacheHit.source} (${(result as { success?: any; cacheResults?: any; metrics?: any }).metrics?.totalLatency?.toFixed?.(2) ?? '0'}ms)`
+        );
+        return cachedResponse;
       }
       console.log(`💾 SSR Cache MISS: ${cacheKey}`);
       return null;
@@ -135,19 +146,15 @@ class SSRLegalAPICache {
         etag: this.generateETag(processedResponse),
         contentType: 'application/json',
         quantized: options.quantize !== false && this.config.quantizeResponses,
-        ragContext: options.ragContext
-      }
+        ragContext: options.ragContext,
+      };
       // Store across cache tiers
-      await parallelCacheOrchestrator.storeParallel(
-        cacheKey,
-        this.serializeEntry(cacheEntry),
-        {
-          tier: this.selectOptimalTier(endpoint, processedResponse),
-          ttl: cacheEntry.ttl,
-          priority: this.determinePriority(endpoint) as 'low' | 'normal' | 'high',
-          type: 'ssr_legal_api'
-        }
-      );
+      await parallelCacheOrchestrator.storeParallel(cacheKey, this.serializeEntry(cacheEntry), {
+        tier: this.selectOptimalTier(endpoint, processedResponse),
+        ttl: cacheEntry.ttl,
+        priority: this.determinePriority(endpoint) as 'low' | 'normal' | 'high',
+        type: 'ssr_legal_api',
+      });
       console.log(`💾 SSR Cache SET: ${cacheKey} (quantized: ${cacheEntry.quantized})`);
     } catch (error) {
       console.error('SSR cache store failed:', error);
@@ -160,7 +167,7 @@ class SSRLegalAPICache {
     endpoint: string,
     options: {
       method?: 'GET' | 'POST';
-      params?: { [key: string]: any }
+      params?: { [key: string]: any };
       body?: any;
       headers?: Record<string, string>;
       ttl?: number;
@@ -169,16 +176,7 @@ class SSRLegalAPICache {
       ragContext?: boolean;
     } = {}
   ): Promise<T> {
-    const {
-      method = 'GET',
-      params = {},
-      body,
-      headers = {},
-      ttl,
-      quantize,
-      userId,
-      ragContext = false
-    } = options;
+    const { method = 'GET', params = {}, body, headers = {}, ttl, quantize, userId, ragContext = false } = options;
     // Only cache GET requests
     if (method === 'GET') {
       const cached = await this.cacheGet(endpoint, params, { ttl, quantize, ragContext, userId });
@@ -191,16 +189,20 @@ class SSRLegalAPICache {
       method,
       params,
       body,
-      headers
+      headers,
     });
     // Cache successful GET responses
-    if (method === 'GET' && (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).success) {
+    if (
+      method === 'GET' &&
+      (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any })
+        .success
+    ) {
       const ragContextData = ragContext ? await this.extractRAGContext(response) : undefined;
       await this.cacheSet(endpoint, params, response, {
         ttl,
         quantize,
         ragContext: ragContextData,
-        userId
+        userId,
       });
     }
     return response as T;
@@ -209,17 +211,23 @@ class SSRLegalAPICache {
    * Generate HTTP cache headers for SSR
    */
   generateCacheHeaders(endpoint: string, response: LegalAPIResponse): Record<string, string> {
-    const headers: Record<string, string> = {}
+    const headers: Record<string, string> = {};
     if (this.isCacheable(endpoint, response)) {
-      headers['Cache-Control'] = `public, max-age=${this.config.maxAge}, s-maxage=${this.config.maxAge}, stale-while-revalidate=${this.config.staleWhileRevalidate}`;
+      headers['Cache-Control'] =
+        `public, max-age=${this.config.maxAge}, s-maxage=${this.config.maxAge}, stale-while-revalidate=${this.config.staleWhileRevalidate}`;
       headers['ETag'] = this.generateETag(response);
       headers['Vary'] = 'Accept, Authorization, X-User-ID';
       // Legal-specific headers
       if (this.config.legalOptimizations) {
         headers['X-Legal-Cache'] = 'enabled';
         headers['X-Content-Type'] = 'legal-api-response';
-        if ((response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta?.aiModel) {
-          headers['X-AI-Model'] = (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta.aiModel;
+        if (
+          (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any })
+            .meta?.aiModel
+        ) {
+          headers['X-AI-Model'] = (
+            response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }
+          ).meta.aiModel;
         }
       }
     } else {
@@ -241,7 +249,7 @@ class SSRLegalAPICache {
       `api:v1:timeline:*:${userId}:*`,
       `api:v1:recommendations:*:${userId}:*`,
       `api:v1:citations:*:${userId}:*`,
-      `api:v1:detective:*:${userId}:*`
+      `api:v1:detective:*:${userId}:*`,
     ];
     let invalidated = 0;
     // Implementation would require pattern matching in the cache layers
@@ -255,20 +263,22 @@ class SSRLegalAPICache {
     const perfStats = await parallelCacheOrchestrator.getPerformanceStats();
     return {
       hitRate: perfStats.currentMetrics.cacheHitRate,
-      totalRequests: perfStats.currentMetrics.layerPerformance.l1MemoryHits +
-                    perfStats.currentMetrics.layerPerformance.l2RedisHits +
-                    perfStats.currentMetrics.layerPerformance.l3StorageHits +
-                    perfStats.currentMetrics.layerPerformance.gpuTextureHits +
-                    perfStats.currentMetrics.layerPerformance.misses,
-      totalHits: perfStats.currentMetrics.layerPerformance.l1MemoryHits +
-                perfStats.currentMetrics.layerPerformance.l2RedisHits +
-                perfStats.currentMetrics.layerPerformance.l3StorageHits +
-                perfStats.currentMetrics.layerPerformance.gpuTextureHits,
+      totalRequests:
+        perfStats.currentMetrics.layerPerformance.l1MemoryHits +
+        perfStats.currentMetrics.layerPerformance.l2RedisHits +
+        perfStats.currentMetrics.layerPerformance.l3StorageHits +
+        perfStats.currentMetrics.layerPerformance.gpuTextureHits +
+        perfStats.currentMetrics.layerPerformance.misses,
+      totalHits:
+        perfStats.currentMetrics.layerPerformance.l1MemoryHits +
+        perfStats.currentMetrics.layerPerformance.l2RedisHits +
+        perfStats.currentMetrics.layerPerformance.l3StorageHits +
+        perfStats.currentMetrics.layerPerformance.gpuTextureHits,
       avgResponseTime: perfStats.currentMetrics.totalLatency,
       cacheSize: perfStats.cacheStats.l1Size + perfStats.cacheStats.l2Size + perfStats.cacheStats.l3Size,
       quantizedResponses: 0, // Would need to track this
-      ragContextEntries: this.ragContextCache.size
-    }
+      ragContextEntries: this.ragContextCache.size,
+    };
   }
   // Private helper methods
   private generateCacheKey(endpoint: string, params: { [key: string]: any }, userId?: string): string {
@@ -306,7 +316,10 @@ class SSRLegalAPICache {
   }
   private isCacheable(endpoint: string, response: LegalAPIResponse): boolean {
     // Don't cache errors
-    if (!(response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).success) {
+    if (
+      !(response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any })
+        .success
+    ) {
       return false;
     }
     // Don't cache user-specific real-time data
@@ -317,7 +330,9 @@ class SSRLegalAPICache {
     return true;
   }
   private generateETag(response: LegalAPIResponse): string {
-    const content = JSON.stringify((response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).data);
+    const content = JSON.stringify(
+      (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).data
+    );
     return `"${this.hashString(content)}"`;
   }
   private hashString(str: string): string {
@@ -328,33 +343,52 @@ class SSRLegalAPICache {
     return Math.abs(hash).toString(36);
   }
   private async executeAPICall(endpoint: string, options: any): Promise<LegalAPIResponse> {
-    const url = new URL(endpoint, browser ? window.location.origin: 'http://localhost:5173')
+    const url = new URL(endpoint, browser ? window.location.origin : 'http://localhost:5173');
     if (options.method === 'GET' && options.params) {
       Object.entries(options.params).forEach(([key, value]) => {
-        url.searchParams.append(key, String(value);
+        url.searchParams.append(key, String(value));
       });
     }
     const response = await fetch(url.toString(), {
       method: options.method || 'GET',
       headers: {
         'Content-Type': 'application/json',
-        ...options.headers
+        ...options.headers,
       },
-      body: options.body ? JSON.stringify(options.body) : undefined
+      body: options.body ? JSON.stringify(options.body) : undefined,
     });
-    if (!(response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).ok) {
-      throw new Error(`HTTP ${(response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).statusText}`);
+    if (
+      !(response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).ok
+    ) {
+      throw new Error(
+        `HTTP ${(response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).status}: ${(response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).statusText}`
+      );
     }
-    return await (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).json();
+    return await (
+      response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }
+    ).json();
   }
   private async extractRAGContext(response: LegalAPIResponse): Promise<any[]> {
     // Extract RAG context from response metadata
-    if ((response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta && (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta.aiModel) {
-      return [{
-        model: (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta.aiModel,
-        timestamp: (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta.timestamp,
-        processingTime: (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta.processingTime
-      }];
+    if (
+      (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any })
+        .meta &&
+      (response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }).meta
+        .aiModel
+    ) {
+      return [
+        {
+          model: (
+            response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }
+          ).meta.aiModel,
+          timestamp: (
+            response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }
+          ).meta.timestamp,
+          processingTime: (
+            response as { meta?: any; success?: any; data?: any; ok?: any; status?: any; statusText?: any; json?: any }
+          ).meta.processingTime,
+        },
+      ];
     }
     return [];
   }
@@ -378,7 +412,7 @@ class ResponseQuantizer {
     const quantized = { ...response }
     // Compress data arrays
     if (Array.isArray(quantized.data)) {
-      quantized.data = quantized.data.map(item => this.quantizeObject(item);
+      quantized.data = quantized.data.map(item => this.quantizeObject(item));
     } else if (typeof quantized.data === 'object') {
       quantized.data = this.quantizeObject(quantized.data);
     }
@@ -395,7 +429,7 @@ class ResponseQuantizer {
         // Round numbers to reduce precision
         quantized[key] = Math.round(value * 100) / 100;
       } else if (Array.isArray(value)) {
-        quantized[key] = value.map(item => this.quantizeObject(item);
+        quantized[key] = value.map(item => this.quantizeObject(item));
       } else if (typeof value === 'object') {
         quantized[key] = this.quantizeObject(value);
       } else {

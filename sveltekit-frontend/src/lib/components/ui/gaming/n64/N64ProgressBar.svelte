@@ -179,7 +179,7 @@
   }
   .progress-fill.animated {
     background-size: 200% 100%;
-    animation shimmer 2s linear infinite;
+    animation: shimmer 2s linear infinite;
   }
   .progress-shine {
     position absolute;
@@ -193,7 +193,7 @@
       rgba(255,255,255,0.3) 50%,
       transparent 100%
     );
-    animation shine 1.5s ease-in-out infinite;
+    animation: shine 1.5s ease-in-out infinite;
   }
   .progress-segments {
     position absolute;
@@ -254,17 +254,17 @@
   .sparkle-1 {
     top: 20%;
     left: 30%;
-    animation sparkle 1.2s ease-in-out infinite;
+    animation: sparkle 1.2s ease-in-out infinite;
   }
   .sparkle-2 {
     top: 60%;
     left: 60%;
-    animation sparkle 1.5s ease-in-out infinite 0.3;
+    animation: sparkle 1.5s ease-in-out infinite 0.3;
   }
   .sparkle-3 {
     top: 80%;
     left: 80%;
-    animation sparkle 1.8s ease-in-out infinite 0.6;
+    animation: sparkle 1.8s ease-in-out infinite 0.6;
   }
   /* Retro UI elements */
   .retro-ui {
@@ -378,7 +378,7 @@
     .progress-fill,
     .sparkle,
     .progress-shine {
-      animation none;
+      animation: none;
     }
     .progress-fill {
       transition width 0.2s ease;

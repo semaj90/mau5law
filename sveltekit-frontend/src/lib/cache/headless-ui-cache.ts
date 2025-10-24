@@ -5,7 +5,6 @@
  */
 import { vectorWasm } from '../wasm/vector-wasm-wrapper.js';
 import { browser } from '$app/environment';
-}
 export interface CacheEntry<T = any> {
   key: string;
   data: T;
@@ -19,7 +18,7 @@ export interface CacheEntry<T = any> {
     lastAccess: number;
     source: 'server' | 'client' | 'hybrid';
     computeCost: number; // Relative cost to regenerate
-  }
+  };
 }
 export interface CacheStrategy {
   // Memory tiers (fastest to slowest)
@@ -69,8 +68,8 @@ export class HeadlessUICache {
         syncWithRedis: true,
         conflictResolution: 'server',
       },
-      ...config
-    }
+      ...config,
+    };
     this.initialize();
   }
   private async initialize(): Promise<void> {
@@ -100,22 +99,22 @@ export class HeadlessUICache {
       request.onsuccess = () => {
         this.db = request.result;
         resolve();
-      }
-      request.onupgradeneeded = (event) => {
-        // removed unused db assignment
-        if (!db.objectStoreNames.contains('cache')) {
-          const store = db.createObjectStore('cache', { keyPath: 'key' });
+      };
+      request.onupgradeneeded = event => {
+        const dbUpgrade = (event.target as IDBOpenDBRequest).result;
+        if (!dbUpgrade.objectStoreNames.contains('cache')) {
+          const store = dbUpgrade.createObjectStore('cache', { keyPath: 'key' });
           store.createIndex('timestamp', 'timestamp');
           store.createIndex('version', 'version');
           store.createIndex('lastAccess', 'metadata.lastAccess');
         }
-      }
+      };
     });
   }
   /**
    * Get cached data with semantic similarity fallback
    */
-  async get<T>(_key: string, semanticQuery?: string): Promise<T | null> {
+  async get<T>(key: string, semanticQuery?: string): Promise<T | null> {
     this.totalRequests++;
     // 1. Check memory cache first (fastest)
     if (this.config.strategy.memory) {
@@ -165,11 +164,12 @@ export class HeadlessUICache {
   /**
    * Set cached data with optional semantic embedding
    */
-  async set<T>(_key: string
+  async set<T>(
+    key: string,
     data: T,
-    ttl?: number
+    ttl?: number,
     source: 'client' | 'server' | 'hybrid' = 'client',
-    semanticText?: string;
+    semanticText?: string
   ): Promise<void> {
     const entry: CacheEntry<T> = {
       key,
@@ -182,16 +182,13 @@ export class HeadlessUICache {
         hits: 0,
         lastAccess: Date.now(),
         source,
-        computeCost: this.estimateComputeCost(data)
-      }
-    }
+        computeCost: this.estimateComputeCost(data),
+      },
+    };
     // Generate semantic embedding if text provided
     if (semanticText && this.config.strategy.semantic) {
       try {
-        entry.embedding = await vectorWasm.generateHashEmbedding(
-          semanticText,
-          this.config.embeddingDimensions
-        );
+        entry.embedding = await vectorWasm.generateHashEmbedding(semanticText, this.config.embeddingDimensions);
       } catch (error) {
         console.warn('[HeadlessCache] Failed to generate embedding:', error);
       }
@@ -213,26 +210,17 @@ export class HeadlessUICache {
   /**
    * Find semantically similar cached entries using WASM vector operations
    */
-  private async findSemanticallysimilar<T>(
-    query: string,
-    threshold: number = 0.7;
-  ): Promise<CacheEntry<T> | null> {
+  private async findSemanticallysimilar<T>(query: string, threshold: number = 0.7): Promise<CacheEntry<T> | null> {
     if (!vectorWasm.isInitialized()) return null;
     try {
       // Generate query embedding
-      const queryEmbedding = await vectorWasm.generateHashEmbedding(
-        query,
-        this.config.embeddingDimensions
-      );
+      const queryEmbedding = await vectorWasm.generateHashEmbedding(query, this.config.embeddingDimensions);
       let bestMatch: CacheEntry<T> | null = null;
       let bestSimilarity = 0;
       // Search memory cache
       for (const entry of this.memoryCache.values()) {
         if (entry.embedding && this.isValidEntry(entry)) {
-          const similarity = await vectorWasm.computeCosineSimilarity(
-            queryEmbedding,
-            entry.embedding
-          );
+          const similarity = await vectorWasm.computeCosineSimilarity(queryEmbedding, entry.embedding);
           if (similarity > threshold && similarity > bestSimilarity) {
             bestSimilarity = similarity;
             bestMatch = entry as CacheEntry<T>;
@@ -255,7 +243,7 @@ export class HeadlessUICache {
   private async enforceMemoryLimit(): Promise<void> {
     const currentSize = this.calculateMemorySize();
     if (currentSize <= this.config.maxMemorySize) return;
-    const entries = Array.from(this.memoryCache.entries();
+    const entries = Array.from(this.memoryCache.entries());
     // Sort by eviction priority (lower score = higher priority to evict)
     entries.sort(([, a], [, b]) => {
       let scoreA = this.calculateEvictionScore(a);
@@ -297,7 +285,7 @@ export class HeadlessUICache {
       // Get server cache manifest
       const response = await fetch('/api/cache/manifest', {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       });
       if (!response.ok) return;
       const serverManifest = await response.json();
@@ -316,11 +304,11 @@ export class HeadlessUICache {
       console.error('[HeadlessCache] Server sync failed:', error);
     }
   }
-  private async fetchFromServer<T>(_key: string): Promise<T | null> {
+  private async fetchFromServer<T>(key: string): Promise<T | null> {
     try {
       const response = await fetch(`/api/cache/${encodeURIComponent(key)}`, {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       });
       if (!response.ok) return null;
       const data = await response.json();
@@ -330,11 +318,11 @@ export class HeadlessUICache {
       return null;
     }
   }
-  private queueServerSync(_key: string, entry: CacheEntry): void {
+  private queueServerSync(key: string, entry: CacheEntry): void {
     // Queue for async server sync (implement with a proper queue)
     setTimeout(() => this.syncEntryToServer(key, entry), 100);
   }
-  private async syncEntryToServer(_key: string, entry: CacheEntry): Promise<void> {
+  private async syncEntryToServer(key: string, entry: CacheEntry): Promise<void> {
     try {
       await fetch('/api/cache', {
         method: 'PUT',
@@ -344,8 +332,8 @@ export class HeadlessUICache {
           data: entry.data,
           ttl: entry.ttl,
           version: entry.version,
-          source: 'client'
-        })
+          source: 'client',
+        }),
       });
     } catch (error) {
       console.error('[HeadlessCache] Server sync failed:', error);
@@ -389,12 +377,12 @@ export class HeadlessUICache {
     return total;
   }
   private updateHitRatio(): void {
-    this.hitRatio = this.totalRequests > 0 ? this.cacheHits / this.totalRequests: 0;
+    this.hitRatio = this.totalRequests > 0 ? this.cacheHits / this.totalRequests : 0;
   }
   // IndexedDB helpers
-  private async getFromIndexedDB<T>(_key: string): Promise<CacheEntry<T> | null> {
+  private async getFromIndexedDB<T>(key: string): Promise<CacheEntry<T> | null> {
     if (!this.db) return null;
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const transaction = this.db!.transaction(['cache'], 'readonly');
       const store = transaction.objectStore('cache');
       const request = store.get(key);
@@ -406,7 +394,7 @@ export class HeadlessUICache {
         } else {
           resolve(null);
         }
-      }
+      };
       request.onerror = () => resolve(null);
     });
   }
@@ -422,25 +410,22 @@ export class HeadlessUICache {
   }
   private async searchIndexedDBBySimilarity<T>(
     queryEmbedding: Float32Array,
-    threshold: number;
+    threshold: number
   ): Promise<CacheEntry<T> | null> {
     if (!this.db) return null;
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const transaction = this.db!.transaction(['cache'], 'readonly');
       const store = transaction.objectStore('cache');
       const request = store.openCursor();
       let bestMatch: CacheEntry<T> | null = null;
       let bestSimilarity = 0;
-      request.onsuccess = async (event) => {
+      request.onsuccess = async event => {
         const cursor = (event.target as IDBRequest).result;
         if (cursor) {
           const entry: CacheEntry<T> = cursor.value;
           if (entry.embedding && this.isValidEntry(entry)) {
             try {
-              const similarity = await vectorWasm.computeCosineSimilarity(
-                queryEmbedding,
-                entry.embedding
-              );
+              const similarity = await vectorWasm.computeCosineSimilarity(queryEmbedding, entry.embedding);
               if (similarity > threshold && similarity > bestSimilarity) {
                 bestSimilarity = similarity;
                 bestMatch = entry;
@@ -453,7 +438,7 @@ export class HeadlessUICache {
         } else {
           resolve(bestMatch);
         }
-      }
+      };
       request.onerror = () => resolve(null);
     });
   }
@@ -468,8 +453,8 @@ export class HeadlessUICache {
       memoryEntries: this.memoryCache.size,
       memorySize: this.calculateMemorySize(),
       maxMemorySize: this.config.maxMemorySize,
-      lastSync: this.syncTimer ? 'active' : 'inactive'
-    }
+      lastSync: this.syncTimer ? 'active' : 'inactive',
+    };
   }
   /**
    * Clear all caches

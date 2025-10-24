@@ -729,7 +729,7 @@ if (!browser) return;
     width: 100%;
     height: 2px;
     background: linear-gradient(90deg, transparent, #ffff00, transparent);
-    animation scan 2s linear infinite;
+    animation: scan 2s linear infinite;
   }
   @keyframes scan {
     0% { left: -100%, }
@@ -740,7 +740,7 @@ if (!browser) return;
     font-size: 1.25rem;
     font-weight: bold;
     text-shadow: 0 0 10px #ffff00;
-    animation pulse 1s infinite;
+    animation: pulse 1s infinite;
   }
   @keyframes pulse {
     0%, 100% { opacity: 1, }

@@ -47,7 +47,7 @@
   let isHovered = $state(false);
   let isPressed = $state(false);
   let animationFrame = $state<number | null>(null);
-  // Pixel art animation state
+  // Pixel art animation: state
   let pixelOffset = $state(0);
   let glowIntensity = $state(0);
   function handleMouseEnter() {
@@ -286,7 +286,7 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
   .pixel-card--legendary {
     border-color: #ffd700;
     background: linear-gradient(145deg, #2e2a0f, #1a1a2e, #2e2a0f);
-    animation legendary-shimmer 2s ease-in-out infinite alternate;
+    animation: legendary-shimmer 2s ease-in-out infinite alternate;
   }
   @keyframes legendary-shimmer {
     0% {
@@ -453,7 +453,7 @@ var(--console-primary, #e52521) calc((var(--pixel-offset) + 2) * 1px) {}
   }
   .pixel-card--hovered .pixel-card__glow {
     opacity: 0.5,
-    animation pulse-glow 1s ease-in-out infinite alternate;
+    animation: pulse-glow 1s ease-in-out infinite alternate;
   }
   @keyframes pulse-glow {
     0% {
@@ -542,7 +542,7 @@ var(--console-primary, #e52521) calc((var(--pixel-offset) + 2) * 1px) {}
 .pixel-card, {}
 .pixel-card__glow, {}
     .legendary-shimmer {
-      animation none;
+      animation: none;
       transition none;
     }
   }

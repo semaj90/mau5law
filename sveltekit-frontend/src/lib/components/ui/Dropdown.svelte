@@ -1,41 +1,28 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { fly } from 'svelte/transition';
-  import type { Snippet } from 'svelte';
-  let {
-    align = $bindable('left' as 'left' | 'right'),
-    closeOnSelect = $bindable(true),
-    onopen,
-    onclose,
-    trigger,
-    children,
-  }: {
-    align?: 'left' | 'right';
-    closeOnSelect?: boolean;
-    onopen?: () => void;
-    onclose?: () => void;
-    trigger?: Snippet<[{ open: boolean }]>;
-    children?: Snippet;
-  } = $props();
 
-  let open = $state(false);
-  let rootEl = $state<HTMLElement | null>(null);
+  // replaced prop/runtime handling with standard Svelte exports and dispatcher
+  export let align: 'left' | 'right' = 'left';
+  export let closeOnSelect: boolean = true;
+  const dispatch = createEventDispatcher();
+
+  let open: boolean = false;
+  let rootEl: HTMLElement | null = null;
 
   function toggle() {
     open = !open;
-    if (open) {
-      onopen?.();
-    } else {
-      onclose?.();
-    }
+    if (open) dispatch('open');
+    else dispatch('close');
   }
 
   export function close() {
     if (open) {
       open = false;
-      onclose?.();
+      dispatch('close');
     }
   }
+
   function onDocumentClick(e: MouseEvent) {
     if (!rootEl) return;
     if (!rootEl.contains(e.target as Node)) close();
@@ -57,17 +44,16 @@
     document.removeEventListener('click', onDocumentClick);
     document.removeEventListener('keydown', onKeydown);
   });
+
+  $: menuPosition = align === 'right' ? 'right: 0;' : 'left: 0;';
 </script>
 
-<div class="dropdown-root" bind:this={rootEl} style="position relative; display: inline-block;">
+<div class="dropdown-root" bind:this={rootEl} style="position: relative; display: inline-block;">
   <button
     type="button"
     class="dropdown-trigger"
-    onclick={e => {
-      e.stopPropagation();
-      toggle();
-    }}
-    onkeydown={e => {
+    on:click|stopPropagation={() => toggle()}
+    on:keydown={(e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         toggle();
@@ -76,9 +62,8 @@
     aria-haspopup="true"
     aria-expanded={open}
   >
-    {#if trigger}
-      {@render trigger({ open })}
-    {/if}
+    <!-- named slot for trigger; parent can receive `let:open` -->
+    <slot name="trigger" {open}></slot>
   </button>
 
   {#if open}
@@ -86,16 +71,15 @@
       role="menu"
       tabindex="-1"
       class="dropdown-menu"
-      onclick={e => e.stopPropagation()}
-      onkeydown={e => {
+      on:click|stopPropagation
+      on:keydown={(e) => {
         if (e.key === 'Escape') close();
       }}
-      style="position absolute; top: 100%; z-index: 60; {align === 'right' ? 'right:0' : 'left:0'}"
+      style={`position: absolute; top: 100%; z-index: 60; ${menuPosition}`}
       transition:fly={{ y: -6, duration: 140 }}
     >
-      {#if children}
-        {@render children()}
-      {/if}
+      <!-- default slot used for menu items -->
+      <slot></slot>
     </div>
   {/if}
 </div>
@@ -118,3 +102,4 @@
     min-width: 12rem;
   }
 </style>
+

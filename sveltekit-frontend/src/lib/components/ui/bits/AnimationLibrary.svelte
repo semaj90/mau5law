@@ -232,16 +232,16 @@
       }
     })
   }
-  // Stagger animation helper
-  export function stagger(elements: Element[], animation any, staggerDelay: number = 50): void {
+  // Stagger animation: helper
+  export function stagger(elements: Element[], animation: any, staggerDelay: number = 50): void {
     elements.forEach((element, index) => {
       const delay = index * staggerDelay;
       const animConfig = animation({ delay });
-      // Apply animation to element
+      // Apply animation: to element
       element.setAttribute('data-stagger-delay', delay.toString());
     });
   }
-  // Theme-specific animation selector
+  // Theme-specific animation: selector
   export function getThemeAnimation(animationType: string, themeOverride?: string): any {
     const currentTheme = themeOverride || them;
     switch (currentTheme) {
@@ -281,23 +281,23 @@
 <style>
 /* CSS-only animations for better performance */ {}
   :global(.enhanced-bits-animate-in) {
-animation enhanced-fade-in var(--animation-duration, 300ms) var(--animation-easing, ease-out) {}
+animation: enhanced-fade-in var(--animation-duration, 300ms) var(--animation-easing, ease-out) {}
       var(--animation-delay, 0ms) both;
   }
   :global(.enhanced-bits-animate-slide-up) {
-animation enhanced-slide-up var(--animation-duration, 300ms) var(--animation-easing, ease-out) {}
+animation: enhanced-slide-up var(--animation-duration, 300ms) var(--animation-easing, ease-out) {}
       var(--animation-delay, 0ms) both;
   }
   :global(.enhanced-bits-animate-scale) {
-animation enhanced-scale-in var(--animation-duration, 300ms) var(--animation-easing, ease-out) {}
+animation: enhanced-scale-in var(--animation-duration, 300ms) var(--animation-easing, ease-out) {}
       var(--animation-delay, 0ms) both;
   }
   :global(.enhanced-bits-animate-gaming) {
-animation enhanced-gaming-glitch var(--animation-duration, 500ms) var(--animation-easing, ease-out) {}
+animation: enhanced-gaming-glitch var(--animation-duration, 500ms) var(--animation-easing, ease-out) {}
       var(--animation-delay, 0ms) both;
   }
   :global(.enhanced-bits-animate-legal) {
-animation enhanced-legal-professional var(--animation-duration, 200ms) var(--animation-easing, ease-out) {}
+animation: enhanced-legal-professional var(--animation-duration, 200ms) var(--animation-easing, ease-out) {}
       var(--animation-delay, 0ms) both;
   }
   @keyframes enhanced-fade-in {
@@ -377,10 +377,10 @@ text-shadow: {}
 :global(.enhanced-bits-animate-scale), {}
 :global(.enhanced-bits-animate-gaming), {}
     :global(.enhanced-bits-animate-legal) {
-      animation none !important;
+      animation: none !important;
     }
   }
-/* Stagger animation support */ {}
+/* Stagger animation: support */ {}
   :global([data-stagger-delay]) {
     animation-delay: calc(var(--stagger-delay, 0ms) + var(--animation-delay, 0ms));
   }

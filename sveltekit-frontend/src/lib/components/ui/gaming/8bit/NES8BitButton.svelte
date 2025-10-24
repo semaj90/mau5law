@@ -284,7 +284,7 @@
       border: 2px solid transparent;
       border-top: 2px solid currentColor;
       border-right: 2px solid currentColor;
-      animation pixelSpin 1s steps(4, end) infinite;
+      animation: pixelSpin 1s steps(4, end) infinite;
     }
     @keyframes pixelSpin {
       0% {
@@ -330,7 +330,7 @@
       2px 2px 0px #000000;
     /* Retro bounce animation */
     :global(.nes-8bit-button.retro-bounce) {
-      animation retroBounce 0.3s ease-in-out;
+      animation: retroBounce 0.3s ease-in-out;
     }
     @keyframes retroBounce {
       0%,
@@ -343,7 +343,7 @@
     }
     /* Glitch transition effect */
     :global(.nes-8bit-button.glitch-transition) {
-      animation glitchTransition 0.2s ease-in-out;
+      animation: glitchTransition 0.2s ease-in-out;
     }
     @keyframes glitchTransition {
       0% {

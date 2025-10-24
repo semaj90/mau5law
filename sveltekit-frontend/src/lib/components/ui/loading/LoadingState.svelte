@@ -180,9 +180,9 @@
     }
   }
   .animate-pulse {
-    animation yorha-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    animation: yorha-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
-/* Staggered animation for skeleton items */ {}
+/* Staggered animation: for skeleton items */ {}
   .animate-pulse:nth-child(1) {
     animation-delay: 0ms;
   }

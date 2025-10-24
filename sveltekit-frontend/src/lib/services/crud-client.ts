@@ -1,9 +1,6 @@
-/**
- * TypeScript CRUD Client for Legal AI Platform
- * Type-safe client for interacting with the CRUD REST API
- */
-}
-export interface CrudResponse<T = any> {
+/* Clean, typed CRUD client for the Legal AI platform */
+
+export interface CrudResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -15,22 +12,24 @@ export interface CrudResponse<T = any> {
     cached?: boolean;
     vectorSearch?: boolean;
     fallback?: boolean;
-  }
+  };
 }
+
 export interface PaginationOptions {
   page?: number;
   limit?: number;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
 }
-}
+
 export interface SearchOptions extends PaginationOptions {
   query: string;
   fields?: string[];
   vector?: boolean;
   similarity_threshold?: number;
 }
-// Entity type definitions based on schema
+
+/* Entity type definitions */
 export interface User {
   id: string;
   email: string;
@@ -39,10 +38,10 @@ export interface User {
   name?: string;
   role: string;
   isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string | Date;
+  updatedAt: string | Date;
 }
-}
+
 export interface Case {
   id: string;
   title: string;
@@ -51,10 +50,10 @@ export interface Case {
   priority?: 'low' | 'medium' | 'high' | 'critical';
   caseNumber?: string;
   assignedUserId?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string | Date;
+  updatedAt: string | Date;
 }
-}
+
 export interface Evidence {
   id: string;
   title: string;
@@ -62,12 +61,12 @@ export interface Evidence {
   evidenceType: string;
   caseId?: string;
   filePath?: string;
-  metadata?: any;
+  metadata?: Record<string, unknown>;
   isVerified: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string | Date;
+  updatedAt: string | Date;
 }
-}
+
 export interface LegalDocument {
   id: string;
   title: string;
@@ -75,24 +74,37 @@ export interface LegalDocument {
   content?: string;
   citation?: string;
   jurisdiction?: string;
-  datePublished?: Date;
-  createdAt: Date;
-  updatedAt: Date;
+  datePublished?: string | Date;
+  createdAt: string | Date;
+  updatedAt: string | Date;
 }
-}
+
+// Add a typed alias for criminal history (replace any)
+export type CriminalHistory =
+  | Array<{
+      incidentDate?: string | Date;
+      description?: string;
+      charge?: string;
+      disposition?: string;
+      jurisdiction?: string;
+      [key: string]: unknown;
+    }>
+  | Record<string, unknown>
+  | null;
+
 export interface Criminal {
   id: string;
   firstName: string;
   lastName: string;
   aliasNames?: string[];
-  dateOfBirth?: Date;
+  dateOfBirth?: string | Date;
   address?: string;
   phoneNumber?: string;
-  criminalHistory?: any;
-  createdAt: Date;
-  updatedAt: Date;
+  criminalHistory?: CriminalHistory;
+  createdAt: string | Date;
+  updatedAt: string | Date;
 }
-}
+
 export interface PersonOfInterest {
   id: string;
   firstName: string;
@@ -101,242 +113,230 @@ export interface PersonOfInterest {
   relationship?: string;
   caseId?: string;
   notes?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string | Date;
+  updatedAt: string | Date;
 }
-export type EntityName = | 'users'
+
+/* Union types */
+export type EntityName =
+  | 'users'
   | 'cases'
   | 'evidence'
   | 'legalDocuments'
   | 'criminals'
   | 'personsOfInterest'
-  | 'reports';
-  | 'ragMessages';
+  | 'reports'
+  | 'ragMessages'
   | 'ragSessions';
-export type EntityData = | User
-  | Case
-  | Evidence
-  | LegalDocument ;
-  | Criminal ;
-  | PersonOfInterest;
+
+export type EntityData = User | Case | Evidence | LegalDocument | Criminal | PersonOfInterest;
+
+/* Error class */
 class CrudApiError extends Error {
-  constructor()
-    message: string
-    public status?: number
-    public details?: any;
-  ) {
+  public status?: number;
+  public details?: unknown;
+  constructor(message: string, status?: number, details?: unknown) {
     super(message);
     this.name = 'CrudApiError';
+    this.status = status;
+    this.details = details;
   }
 }
+
+/* Client implementation */
 export class CrudClient {
   private baseUrl = '/api/v1/crud';
-  private async request<T>()
+
+  private async request<T>(
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
-    params?: URLSearchParams | null
-    body?: any;
-  ): Promise<CrudResponse,<T> {
-    const url = params ? `${this.baseUrl}?${params.toString()}` : this.baseUr,l;
-    const option,s: RequestInit = {
+    params?: URLSearchParams | null,
+    body?: unknown
+  ): Promise<CrudResponse<T>> {
+    const url = params ? `${this.baseUrl}?${params.toString()}` : this.baseUrl;
+    const options: RequestInit = {
       method,
       headers: {
-        'Content-Type': 'application/json'
-      }
-    }
+        'Content-Type': 'application/json',
+      },
+    };
     if (body) {
       options.body = JSON.stringify(body);
     }
+
     try {
-      // removed unused response assignment
-      const data = await response.json();
-      if (!response,.o,k) {
-        throw new CrudApiError()
-          data.message || 'Request failed',
-          response.status,
-          data.details
-        );
+      const response = await fetch(url, options);
+      // parse JSON safely; could be non-json response
+      const parsed = await response.json().catch(() => ({}) as Record<string, unknown>);
+
+      const dataObj = typeof parsed === 'object' && parsed !== null ? (parsed as Record<string, unknown>) : {};
+
+      if (!response.ok) {
+        const message =
+          (typeof dataObj.error === 'string' && dataObj.error) ||
+          (typeof dataObj.message === 'string' && dataObj.message) ||
+          'Request failed';
+        throw new CrudApiError(message, response.status, dataObj);
       }
-      return data;
-    } catch (error: any) {
-      if (error instanceof CrudApiError) {
-        throw error;
-      }
-      throw new CrudApiError()
-        error instanceof Error ? error.message: 'Unknown error occurred'
-      );
+
+      return dataObj as unknown as CrudResponse<T>;
+    } catch (err: unknown) {
+      // ensure we never leak unknown typing; normalize message
+      const e = err;
+      if (e instanceof CrudApiError) throw e;
+      const message = e instanceof Error ? e.message : String(e ?? 'Unknown request error');
+      throw new CrudApiError(message);
     }
   }
+
   // Generic CRUD operations
-  async create<T extends EntityData,>()
-    entity: EntityName;
-    data: Partial<T>;
-  ): Promise<CrudResponse<T> {
-    return this.request<T>('POST', null, {
-      action: 'create',
-      entity,
-      data
-    });
+  async create<T extends EntityData>(entity: EntityName, data: Partial<T>): Promise<CrudResponse<T>> {
+    return this.request<T>('POST', null, { action: 'create', entity, data });
   }
-  async read<T extends EntityData,>()
-    entity: EntityName;
-    id: string;
-  ): Promise<CrudResponse<T> {
-    const params = new URLSearchParams({
-      action: 'read',
-      entity,
-      id
-    });
+
+  async read<T extends EntityData>(entity: EntityName, id: string): Promise<CrudResponse<T>> {
+    const params = new URLSearchParams({ action: 'read', entity, id });
     return this.request<T>('GET', params);
   }
-  async update<T extends EntityData,>()
-    entity: EntityName
-    id: string;
-    data: Partial<T>;
-  ): Promise<CrudResponse<T> {
-    return this.request<T>('POST', null, {
-      action: 'update',
-      entity,
-      id,
-      data
-    });
+
+  async update<T extends EntityData>(entity: EntityName, id: string, data: Partial<T>): Promise<CrudResponse<T>> {
+    return this.request<T>('POST', null, { action: 'update', entity, id, data });
   }
-  async delete<T extends EntityData,>()
-    entity: EntityName;
-    id: string;
-  ): Promise<CrudResponse<T> {
-    return this.request<T>('POST', null, {
-      action: 'delete',
-      entity,
-      id
-    });
+
+  async delete<T extends EntityData>(entity: EntityName, id: string): Promise<CrudResponse<T>> {
+    return this.request<T>('POST', null, { action: 'delete', entity, id });
   }
-  async list<T extends EntityData,>()
-    entity: EntityName
-    options: PaginationOptions = {}
-  ): Promise<CrudResponse<T>[>>]>> {
-    const params = new URLSearchParams({
+
+  // List with optional pagination / sorting
+  async list<T extends EntityData>(entity: EntityName, options: PaginationOptions = {}): Promise<CrudResponse<T[]>> {
+    const paramsObj: Record<string, string> = {
       action: 'list',
       entity,
-      ...(options.page && { page: options.page.toString() }),
-      ...(options.limit && { limit: options.limit.toString() }),
-      ...(options.sortBy && { sortBy: options.sortBy }),
-      ...(options.sortOrder && { sortOrder: options.sortOrder }),
-    });
+    };
+    if (options.page != null) paramsObj.page = String(options.page);
+    if (options.limit != null) paramsObj.limit = String(options.limit);
+    if (options.sortBy) paramsObj.sortBy = options.sortBy;
+    if (options.sortOrder) paramsObj.sortOrder = options.sortOrder;
+    const params = new URLSearchParams(paramsObj);
     return this.request<T[]>('GET', params);
   }
-  async search<T extends EntityData,>()
-    entity: EntityName;
-    options: SearchOptions;
-  ): Promise<CrudResponse<T>[>>]>> {
-    const params = new URLSearchParams({
+
+  // Search with support for vector search parameters
+  async search<T extends EntityData>(entity: EntityName, options: SearchOptions): Promise<CrudResponse<T[]>> {
+    const paramsObj: Record<string, string> = {
       action: options.vector ? 'vector_search' : 'search',
       entity,
       search: options.query,
-      ...(options.page && { page: options.page.toString() }),
-      ...(options.limit && { limit: options.limit.toString() }),
-      ...(options.similarity_threshold && {
-        similarity_threshold: options.similarity_threshold.toString()
-      }),
-    });
+    };
+    if (options.page != null) paramsObj.page = String(options.page);
+    if (options.limit != null) paramsObj.limit = String(options.limit);
+    if (options.similarity_threshold != null) paramsObj.similarity_threshold = String(options.similarity_threshold);
+    if (options.fields && options.fields.length) paramsObj.fields = options.fields.join(',');
+    if (options.sortBy) paramsObj.sortBy = options.sortBy;
+    if (options.sortOrder) paramsObj.sortOrder = options.sortOrder;
+    const params = new URLSearchParams(paramsObj);
     return this.request<T[]>('GET', params);
   }
-  // Entity-specific convenience methods
-  async createCase(data,: Partial<Case>): Promise<CrudResponse<Ca>s>>e>> {
+
+  // Entity-specific convenience methods (concise wrappers)
+  async createCase(data: Partial<Case>): Promise<CrudResponse<Case>> {
     return this.create<Case>('cases', data);
   }
-  async getCases(_options,: PaginationOptions = {}): Promise<CrudResponse<Case>[>>]>> {
+  async getCases(options: PaginationOptions = {}): Promise<CrudResponse<Case[]>> {
     return this.list<Case>('cases', options);
   }
-  async updateCase(id,: string, dat,a: Partial<Case,>): Promise<CrudResponse<Ca>s>>e>> {
+  async updateCase(id: string, data: Partial<Case>): Promise<CrudResponse<Case>> {
     return this.update<Case>('cases', id, data);
   }
-  async deleteCase(id,: string): Promise<CrudResponse<Ca>s>>e>> {
+  async deleteCase(id: string): Promise<CrudResponse<Case>> {
     return this.delete<Case>('cases', id);
   }
-  async searchCases(query,: string, option,s: Partial<SearchOptions> = {}): Promise<CrudResponse<Case>[>>]>> {
-    return this.search<Case>('cases', { query, ...options });
+  async searchCases(query: string, opts: Partial<SearchOptions> = {}): Promise<CrudResponse<Case[]>> {
+    return this.search<Case>('cases', { query, ...opts } as SearchOptions);
   }
-  async createEvidence(data,: Partial<Evidence>): Promise<CrudResponse<Eviden>c>>e>> {
+
+  async createEvidence(data: Partial<Evidence>): Promise<CrudResponse<Evidence>> {
     return this.create<Evidence>('evidence', data);
   }
-  async getEvidence(_options,: PaginationOptions = {}): Promise<CrudResponse<Evidence>[>>]>> {
+  async getEvidence(options: PaginationOptions = {}): Promise<CrudResponse<Evidence[]>> {
     return this.list<Evidence>('evidence', options);
   }
-  async updateEvidence(id,: string, dat,a: Partial<Evidence,>): Promise<CrudResponse<Eviden>c>>e>> {
+  async updateEvidence(id: string, data: Partial<Evidence>): Promise<CrudResponse<Evidence>> {
     return this.update<Evidence>('evidence', id, data);
   }
-  async deleteEvidence(id,: string): Promise<CrudResponse<Eviden>c>>e>> {
+  async deleteEvidence(id: string): Promise<CrudResponse<Evidence>> {
     return this.delete<Evidence>('evidence', id);
   }
-  async searchEvidence(query,: string, option,s: Partial<SearchOptions> = {}): Promise<CrudResponse<Evidence>[>>]>> {
-    return this.search<Evidence>('evidence', { query, ...options });
+  async searchEvidence(query: string, opts: Partial<SearchOptions> = {}): Promise<CrudResponse<Evidence[]>> {
+    return this.search<Evidence>('evidence', { query, ...opts } as SearchOptions);
   }
-  async createCriminal(data,: Partial<Criminal>): Promise<CrudResponse<Crimin>a>>l>> {
+
+  async createCriminal(data: Partial<Criminal>): Promise<CrudResponse<Criminal>> {
     return this.create<Criminal>('criminals', data);
   }
-  async getCriminals(_options,: PaginationOptions = {}): Promise<CrudResponse<Criminal>[>>]>> {
+  async getCriminals(options: PaginationOptions = {}): Promise<CrudResponse<Criminal[]>> {
     return this.list<Criminal>('criminals', options);
   }
-  async updateCriminal(id,: string, dat,a: Partial<Criminal,>): Promise<CrudResponse<Crimin>a>>l>> {
+  async updateCriminal(id: string, data: Partial<Criminal>): Promise<CrudResponse<Criminal>> {
     return this.update<Criminal>('criminals', id, data);
   }
-  async deleteCriminal(id,: string): Promise<CrudResponse<Crimin>a>>l>> {
+  async deleteCriminal(id: string): Promise<CrudResponse<Criminal>> {
     return this.delete<Criminal>('criminals', id);
   }
-  async createLegalDocument(data,: Partial<LegalDocument>): Promise<CrudResponse<LegalDocume>n>>t>> {
+
+  async createLegalDocument(data: Partial<LegalDocument>): Promise<CrudResponse<LegalDocument>> {
     return this.create<LegalDocument>('legalDocuments', data);
   }
-  async getLegalDocuments(_options,: PaginationOptions = {}): Promise<CrudResponse<LegalDocument>[>>]>> {
+  async getLegalDocuments(options: PaginationOptions = {}): Promise<CrudResponse<LegalDocument[]>> {
     return this.list<LegalDocument>('legalDocuments', options);
   }
-  async searchLegalDocuments(query,: string, option,s: Partial<SearchOptions> = {}): Promise<CrudResponse<LegalDocument>[>>]>> {
-    return this.search<LegalDocument>('legalDocuments', { query, ...options });
+  async searchLegalDocuments(query: string, opts: Partial<SearchOptions> = {}): Promise<CrudResponse<LegalDocument[]>> {
+    return this.search<LegalDocument>('legalDocuments', { query, ...opts } as SearchOptions);
   }
-  async createPersonOfInterest(data,: Partial<PersonOfInterest>): Promise<CrudResponse<PersonOfIntere>s>>t>> {
+
+  async createPersonOfInterest(data: Partial<PersonOfInterest>): Promise<CrudResponse<PersonOfInterest>> {
     return this.create<PersonOfInterest>('personsOfInterest', data);
   }
-  async getPersonsOfInterest(_options,: PaginationOptions = {}): Promise<CrudResponse<PersonOfInterest>[>>]>> {
+  async getPersonsOfInterest(options: PaginationOptions = {}): Promise<CrudResponse<PersonOfInterest[]>> {
     return this.list<PersonOfInterest>('personsOfInterest', options);
   }
-  // Vector search methods
-  async vectorSearchCases(query,: string, similarity_threshold = 0.7, limit = 20): Promise<CrudResponse<Case>[>>]>> {
-    return this.search<Case>('cases', {
-      query,
-      vector: true,
-      similarity_threshold,
-      limit
-    });
+
+  // Vector search helpers
+  async vectorSearchCases(query: string, similarity_threshold = 0.7, limit = 20): Promise<CrudResponse<Case[]>> {
+    return this.search<Case>('cases', { query, vector: true, similarity_threshold, limit } as SearchOptions);
   }
-  async vectorSearchEvidence(query,: string, similarity_threshold = 0.7, limit = 20): Promise<CrudResponse<Evidence>[>>]>> {
-    return this.search<Evidence>('evidence', {
-      query,
-      vector: true,
-      similarity_threshold,
-      limit
-    });
+  async vectorSearchEvidence(query: string, similarity_threshold = 0.7, limit = 20): Promise<CrudResponse<Evidence[]>> {
+    return this.search<Evidence>('evidence', { query, vector: true, similarity_threshold, limit } as SearchOptions);
   }
-  async vectorSearchLegalDocuments(query,: string, similarity_threshold = 0.7, limit = 20): Promise<CrudResponse<LegalDocument>[>>]>> {
+  async vectorSearchLegalDocuments(
+    query: string,
+    similarity_threshold = 0.7,
+    limit = 20
+  ): Promise<CrudResponse<LegalDocument[]>> {
     return this.search<LegalDocument>('legalDocuments', {
       query,
       vector: true,
       similarity_threshold,
-      limit
-    });
+      limit,
+    } as SearchOptions);
   }
+
   // Health check
-  async healthCheck(),: Promise<CrudResponse> {
+  async healthCheck(): Promise<CrudResponse> {
     try {
       const params = new URLSearchParams({ action: 'health' });
-      return this.request('GET', params);
-    } catch (error: any) {
+      return this.request<unknown>('GET', params);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error ?? 'Health check failed');
       return {
-        success: false;
-        error: error instanceof Error ? error.message: 'Health check failed'
-      }
+        success: false,
+        error: message,
+      };
     }
   }
 }
+
 // Export singleton instance
 export const crudClient = new CrudClient();
+
 // Export error class
-export { CrudApiError }
+export { CrudApiError };

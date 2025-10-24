@@ -446,7 +446,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 2px solid rgb(229 231 235);
     border-top: 2px solid rgb(59 130 246);
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   .loading-text,
   .empty-text {

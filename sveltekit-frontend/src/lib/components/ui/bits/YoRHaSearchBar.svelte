@@ -253,7 +253,7 @@
       inputElement.focus();
     }
   });
-  // Simulated typing animation for placeholder
+  // Simulated typing animation: for placeholder
   let placeholderIndex = $state(0);
   let showingPlaceholder = $state(true);
   const fullPlaceholder = placeholder;
@@ -445,7 +445,7 @@
   }
   /* YoRHa theme enhanced animations */
   :global(.yorha-search) {
-    animation yorha-search-pulse 3s ease-in-out infinite alternate;
+    animation: yorha-search-pulse 3s ease-in-out infinite alternate;
   }
   @keyframes yorha-search-pulse {
     from {
@@ -469,7 +469,7 @@
     }
   }
   input::placeholder {
-    animation cursor-blink 1s infinite;
+    animation: cursor-blink 1s infinite;
   }
   /* Smooth focus transitions */
   input:focus {

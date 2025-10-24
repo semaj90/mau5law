@@ -105,9 +105,9 @@
   .yorha-badge:hover::before {
     left: 100%;
   }
-/* Pulse animation for critical badges */ {}
+/* Pulse animation: for critical badges */ {}
   .badge-critical {
-    animation badge-pulse 2s infinite;
+    animation: badge-pulse 2s infinite;
   }
   @keyframes badge-pulse {
 0%, {}

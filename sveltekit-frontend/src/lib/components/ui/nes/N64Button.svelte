@@ -271,7 +271,7 @@ inset 0 -1px 0 rgba(0, 0, 0, 0.4), {}
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-top: 2px solid currentColor;
     border-radius: 50%;
-    animation n64-spin 0.8s linear infinite;
+    animation: n64-spin 0.8s linear infinite;
   }
   @keyframes n64-spin {
     to { transform: rotate(360deg), }
@@ -284,7 +284,7 @@ inset 0 -1px 0 rgba(0, 0, 0, 0.4), {}
     background: rgba(255, 255, 255, 0.5);
     border-radius: 50%;
     transform: translate(-50%, -50%) scale(0);
-    animation n64-ripple 0.6s ease-out;
+    animation: n64-ripple 0.6s ease-out;
     pointer-events: none;
   }
   @keyframes n64-ripple {
@@ -354,7 +354,7 @@ transform 0.15s ease, {}
 .n64-button, {}
 .n64-button__spinner, {}
     .n64-button__ripple {
-      animation none;
+      animation: none;
       transition none;
     }
   }

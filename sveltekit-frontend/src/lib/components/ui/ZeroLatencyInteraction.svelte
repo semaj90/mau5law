@@ -479,7 +479,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 2px solid #333;
     border-top: 2px solid #ffd700;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   :global(.chr-rom-tooltip .error-content) {
     display: flex;

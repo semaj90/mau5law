@@ -1,14 +1,9 @@
-/**
- * Cross-Encoder Reranking Service
- * Reranks search results using cross-encoder models for improved relevance
- */
 import type { LegalDocument } from './types/legal.js';
-}
+
 export interface SearchResult {
   document: LegalDocument;
   score: number;
-  metadata?: { [key: string]: any }
-  // Additional properties used throughout the codebase
+  metadata?: { [key: string]: any };
   id: string;
   title: string;
   content?: string;
@@ -16,13 +11,13 @@ export interface SearchResult {
   excerpt?: string;
   rank?: number;
 }
-}
+
 export interface RerankingConfig {
-  threshold: number;
-  maxResults: number;
-  useSemanticSimilarity: boolean;
+  threshold?: number;
+  maxResults?: number;
+  useSemanticSimilarity?: boolean;
 }
-}
+
 export interface ScoredResult {
   document: LegalDocument;
   originalScore: number;
@@ -30,293 +25,295 @@ export interface ScoredResult {
   combinedScore: number;
   metadata: {
     modelUsed: string;
-  processingTime: number;
-  confidence: number;
-  }
+    processingTime: number;
+    confidence: number;
+  };
 }
+
 export interface CrossEncoderConfig {
-  model: string; // Model identifier or endpoint,
-  maxResults: number; // Maximum results to rerank
-  scoreWeight: number; // Weight for rerank score vs original,
-  batchSize: number; // Batch size for processing
-  timeout: number; // Request timeout in ms,
-  fallbackEnabled: boolean; // Enable fallback scoring
-  minConfidenceThreshold: number; // Minimum confidence to trust reranking
+  model: string;
+  maxResults: number;
+  scoreWeight: number;
+  batchSize: number;
+  timeout: number;
+  fallbackEnabled: boolean;
+  minConfidenceThreshold: number;
 }
+
 export class CrossEncoderReranker {
   private config: CrossEncoderConfig;
   private modelCache: Map<string, any> = new Map();
   private scoreCache: Map<string, number> = new Map();
+
   constructor(config: Partial<CrossEncoderConfig> = {}) {
     this.config = {
       model: 'cross-encoder/ms-marco-MiniLM-L-12-v2',
       maxResults: 50,
-      scoreWeight: 0.7, // Favor rerank scores over original
+      scoreWeight: 0.7,
       batchSize: 10,
       timeout: 5000,
       fallbackEnabled: true,
       minConfidenceThreshold: 0.3,
-      ...config
-    }
+      ...config,
+    };
   }
-  async rerankResults()
-    query: string;
-    results: SearchResult[]
-    config?: Partial<RerankingConfig>;
-  ): Promise<SearchResult,[,]> {
+
+  // Public entrypoint
+  async rerankResults(
+    query: string,
+    results: SearchResult[],
+    _config?: Partial<RerankingConfig> // Renamed to _config
+  ): Promise<SearchResult[]> {
     const startTime = Date.now();
+    // Merge provided config with instance config for this call
+    const effectiveConfig = { ...this.config, ..._config };
     try {
-      // Limit results to process
-      const toRerank = results.slice(0, this.config.maxResults);
-      // Score each query-document pair
+      const toRerank = results.slice(0, effectiveConfig.maxResults); // Use effectiveConfig
       const scored = await this.scoreQueryDocumentPairs(query, toRerank);
-      // Combine original and rerank scores
       const reranked = this.combineScores(scored);
-      // Sort by combined score
       const sorted = reranked.sort((a, b) => b.combinedScore - a.combinedScore);
-      // Convert back to SearchResult format with enhanced metadata
-      return sorted.map((item) => {
+
+      return sorted.map(item => {
         const rebuilt: SearchResult = {
-          document: (item as { document?: any; combinedScore?: any; originalScore?: any; rerankScore?: any; metadata?: any }).document,
-          id: (item as { document?: any; combinedScore?: any; originalScore?: any; rerankScore?: any; metadata?: any }).document.id,
-          title: (item as { document?: any; combinedScore?: any; originalScore?: any; rerankScore?: any; metadata?: any }).document.title,
-          content: ((item as { document?: any; combinedScore?: any; originalScore?: any; rerankScore?: any; metadata?: any }).document as any).content,
-          score: (item as { document?: any; combinedScore?: any; originalScore?: any; rerankScore?: any; metadata?: any }).combinedScore,
+          document: item.document,
+          id: item.document.id,
+          title: item.document.title,
+          content: (item.document as { content?: string }).content, // More specific type assertion
+          score: item.combinedScore,
           metadata: {
-            ...item.document.metadata,
-            originalScore: (item as { document?: any; combinedScore?: any; originalScore?: any; rerankScore?: any; metadata?: any }).originalScore,
-            rerankScore: (item as { document?: any; combinedScore?: any; originalScore?: any; rerankScore?: any; metadata?: any }).rerankScore,
-            reranking: (item as { document?: any; combinedScore?: any; originalScore?: any; rerankScore?: any; metadata?: any }).metadata,
-            processingTime: Date.now() - startTime
-          }
-        }
+            ...(item.document.metadata || {}),
+            originalScore: item.originalScore,
+            rerankScore: item.rerankScore,
+            reranking: item.metadata,
+            processingTime: Date.now() - startTime,
+          },
+        };
         return rebuilt;
       });
-    } catch (error: any) {
-      console.error('[CrossEncoder] Reranking failed:', error);
+    } catch (error: unknown) {
+      // Changed to unknown
+      console.error('[CrossEncoder] Reranking failed:', error instanceof Error ? error.message : String(error));
       if (this.config.fallbackEnabled) {
         console.warn('[CrossEncoder] Falling back to original scores');
         return results;
       }
-      throw new Error(`Cross-encoder reranking failed: ${error.message}`);
+      throw new Error(`Cross-encoder reranking failed: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
-  private async scoreQueryDocumentPairs()
-    query: string;
-    results: SearchResult[];
-  ): Promise<ScoredResult[]> {
-    const score,d: ScoredResu,lt,[], = [];
-    // Process in batches for efficiency
-    for (let i =, 0;, i < resu,lts.le,ngt,h; i +,= this.config.ba,tchSize) {>
+
+  private async scoreQueryDocumentPairs(query: string, results: SearchResult[]): Promise<ScoredResult[]> {
+    const scored: ScoredResult[] = [];
+    for (let i = 0; i < results.length; i += this.config.batchSize) {
       const batch = results.slice(i, i + this.config.batchSize);
       const batchScores = await this.processBatch(query, batch);
       scored.push(...batchScores);
     }
     return scored;
   }
-  private async processBatch(query,: string, batc,h: SearchResult[,]): Promise<ScoredResult[]> {
+
+  private async processBatch(query: string, batch: SearchResult[]): Promise<ScoredResult[]> {
     const batchStartTime = Date.now();
     try {
-      // Try different scoring approaches in order of preference
       const scores = await this.tryMultipleApproaches(query, batch);
-      return batch.map((result, index) => ({
-        document: result as LegalDocument,
-        originalScore: (result as { score?: any; title?: any; content?: any; summary?: any; excerpt?: any; metadata?: any }).score || 0,
-        rerankScore: scores[index] || 0,
-        combinedScore: 0, // Will be calculated later
-        metadata: {
-          modelUsed: this.config?.model || "unknown", // @ts-ignore - Model property access,
-          processingTime: Date.now() - batchStartTime,
-          confidence: this.calculateConfidence(scores[index] || 0)
-        }
+      return batch.map((result, index) => {
+        const rerankScore = scores[index] ?? 0;
+        const original = result.score ?? 0;
+        return {
+          document: result.document,
+          originalScore: original,
+          rerankScore,
+          combinedScore: 0, // computed later
+          metadata: {
+            modelUsed: this.config.model,
+            processingTime: Date.now() - batchStartTime,
+            confidence: this.calculateConfidence(rerankScore),
+          },
+        };
       });
-    } catch (error: any) {
-      console.warn('[CrossEncoder] Batch processing failed, using fallback scores');
-      // Fallback to lexical similarity scoring
-      return batch.map((result) => ({
-        document: result as LegalDocument,
-        originalScore: (result as { score?: any; title?: any; content?: any; summary?: any; excerpt?: any; metadata?: any }).score || 0,
-        rerankScore: this.lexicalSimilarity(query, this.extractText(result)),
-        combinedScore: 0,
-        metadata: {
-          modelUsed: 'lexical-fallback',
-          processingTime: Date.now() - batchStartTime,
-          confidence: 0.3
-        }
+    } catch (error: unknown) {
+      // Changed to unknown
+      console.warn(
+        '[CrossEncoder] Batch processing failed, using lexical fallback',
+        error instanceof Error ? error.message : String(error)
+      );
+      return batch.map(result => {
+        const fallbackScore = this.lexicalSimilarity(query, this.extractText(result));
+        const original = result.score ?? 0;
+        return {
+          document: result.document,
+          originalScore: original,
+          rerankScore: fallbackScore,
+          combinedScore: 0,
+          metadata: {
+            modelUsed: 'lexical-fallback',
+            processingTime: Date.now() - batchStartTime,
+            confidence: 0.3,
+          },
+        };
       });
     }
   }
-  private async tryMultipleApproaches(query,: string, batc,h: SearchResult[,]): Promise<number[]> {
-    // 1. Try Ollama-based scoring
+
+  private async tryMultipleApproaches(query: string, batch: SearchResult[]): Promise<number[]> {
+    // try Ollama scoring first
     try {
-      return await this.scoreWithOllama(query, batch);
-    } catch (error: any) {
-      console.warn('[CrossEncoder] Ollama scoring failed:', error.message);
+      const s = await this.scoreWithOllama(query, batch);
+      if (s && s.length === batch.length) return s;
+    } catch (e: unknown) {
+      // ignore and fallback
+      console.warn('[CrossEncoder] Ollama scoring failed:', e instanceof Error ? e.message : String(e));
     }
-    // 2. Try external API (if configured)
+
+    // try external API (stub)
     try {
-      return await this.scoreWithExternalAPI(query, batch);
-    } catch (error: any) {
-      console.warn('[CrossEncoder] External API scoring failed:', error.message);
+      const s = await this.scoreWithExternalAPI(query, batch);
+      if (s && s.length === batch.length) return s;
+    } catch (e: unknown) {
+      console.warn('[CrossEncoder] External API scoring failed:', e instanceof Error ? e.message : String(e));
     }
-    // 3. Fallback to local computation
+
+    // final fallback: local computation
     return this.scoreWithLocalComputation(query, batch);
   }
-  private async scoreWithOllama(query,: string, batc,h: SearchResult[,]): Promise<number[]> {
-    const pairs = batch.map((result) => ({
-      query,
-      passage: this.extractText(result)
-    });
-    const response = await fetch('http://localhost:11434/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
-        model: 'llama3.1',
-        prompt: this.buildScoringPrompt(pairs),
-        stream: false,
-        options: {
-          temperature: 0.1,
-          top_p: 0.9,
-          max_tokens: 500
-        }
-      }),
-      signal: AbortSignal.timeout(this.config.timeout),
-    });
-    if (!(response as { ok?: any; status?: any; json?: any; match?: any }).ok) {
-      throw new Error(`Ollama API error: ${(response as { ok?: any; status?: any; json?: any); match?: any }).status}`);
+
+  private async scoreWithOllama(query: string, batch: SearchResult[]): Promise<number[]> {
+    const pairs = batch.map(result => ({ query, passage: this.extractText(result) }));
+    const prompt = this.buildScoringPrompt(pairs);
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), this.config.timeout);
+
+    try {
+      const resp = await fetch('http://localhost:11434/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'llama3.1',
+          prompt,
+          stream: false,
+          options: { temperature: 0.1, top_p: 0.9, max_tokens: 256 },
+        }),
+        signal: controller.signal,
+      });
+      clearTimeout(timeout);
+      if (!resp.ok) throw new Error(`Ollama API error: ${resp.status}`);
+      const data = await resp.json();
+      const text = typeof data === 'string' ? data : (data?.response ?? data?.output ?? JSON.stringify(data));
+      return this.parseScoresFromResponse(String(text), batch.length);
+    } finally {
+      clearTimeout(timeout);
     }
-    const data = await (response as { ok?: any; status?: any; json?: any; match?: any }).json();
-    return this.parseScoresFromResponse((data as { response?: any }).response, batch.length);
   }
-  private async scoreWithExternalAPI(query: string, batch: SearchResult[]): Promise<number[]> {
-    // Placeholder for external cross-encoder API
-    // Could integrate with Hugging Face Inference API, Azure Cognitive Services, etc.
+
+  private async scoreWithExternalAPI(_query: string, _batch: SearchResult[]): Promise<number[]> {
+    // Not configured in this environment
     throw new Error('External API not configured');
   }
+
   private scoreWithLocalComputation(query: string, batch: SearchResult[]): Promise<number[]> {
-    // Local computation using TF-IDF, BM25, or similar algorithms
-    const queryTerms = this.tokenize(query.toLowerCase();
-    const scores = batch.map((result) => {
+    const qTerms = this.tokenize(query);
+    const scores = batch.map(result => {
       const docText = this.extractText(result).toLowerCase();
       const docTerms = this.tokenize(docText);
-      // Enhanced TF-IDF scoring with position and exact match bonuses
-      let score = 0;
-      const docLength = docTerms.length;
-      for (const term of queryTerms) {
-        // Term frequency
-        const termCount = docTerms.filter((t) => t.includes(term)).length;
-        if (termCount > 0) {
-          const tf = termCount / docLength;
-          const idf = Math.log(batch.length / (1 + termCount);
-          score += tf * idf;
-          // Exact match bonus
-          if (docTerms.includes(term)) {
-            score += 0.2;
-          }
-          // Position bonus (early occurrence)
-          const firstIndex = docTerms.findIndex((t) => t.includes(term);
-          if (firstIndex >= 0 && firstIndex < docLength * 0.3) {
-            score += 0.1;
-          }
-        }
-      }
-      // Normalize by query length
-      return score / queryTerms.length;
+      if (qTerms.length === 0 || docTerms.length === 0) return 0;
+      // simple overlap score normalized
+      const qSet = new Set(qTerms);
+      const dSet = new Set(docTerms);
+      const intersect = [...qSet].filter(t => dSet.has(t)).length;
+      return intersect / Math.max(1, qSet.size);
     });
     return Promise.resolve(scores);
   }
-  private buildScoringPrompt(pairs: Array<): string {>
-    const examples = pairs;
-      .map((pair, i) => `,Passage ${i + 1}: "${pair.passage.substring(0, 300)}..."\n`)
-      .join('\n');
-    return `You are a legal document relevance scorer. Rate, how well each passage answers the query on a scale of 0.0, to 1.0.;
-Query: "${pairs[0].query}"
+
+  private buildScoringPrompt(pairs: Array<{ query: string; passage: string }>): string {
+    const examples = pairs.map((pair, i) => `Passage ${i + 1}: "${pair.passage.substring(0, 300)}..."`).join('\n');
+    return `You are a legal document relevance scorer. Rate how well each passage answers the query on a scale of 0.0 to 1.0.
+Query: "${pairs[0]?.query ?? ''}"
 ${examples}
-Provide only the scores in order, separated, by commas. Exampl,e: 0.85, 0.23, 0.67
+Provide only the scores in order, separated by commas. Example: 0.85, 0.23, 0.67
 Scores:`;
   }
+
   private parseScoresFromResponse(response: string, expectedCount: number): number[] {
     try {
-      // Extract numbers from response
-      const numbers = (response as { ok?: any; status?: any; json?: any; match?: any }).match(/\d+\.?\d*/g) || [];
-      const scores = numbers;
-        .slice(0, expectedCount)
-        .map((n) => Math.min(1.0, Math.max(0.0, parseFloat(n);
-      // Pad with fallback scores if needed
-      while (scores.length < expectedCount) {>
-        scores.push(0.5);
-      }
-      return scores;
-    } catch (error: any) {
-      console.warn('[CrossEncoder] Failed to parse scores, using uniform fallback');
+      const matches = response.match(/([0-9]*\.?[0-9]+)/g) || [];
+      const parsed = matches.slice(0, expectedCount).map(n => {
+        const v = Math.min(1, Math.max(0, parseFloat(n)));
+        return Number.isFinite(v) ? v : 0.5;
+      });
+      while (parsed.length < expectedCount) parsed.push(0.5);
+      return parsed;
+    } catch {
       return new Array(expectedCount).fill(0.5);
     }
   }
+
   private combineScores(scored: ScoredResult[]): ScoredResult[] {
-    return scored.map((item) => {
-      // Only trust rerank scores above confidence threshold
-      const useRerank = (item as { document?: any; combinedScore?: any; originalScore?: any; rerankScore?: any; metadata?: any }).metadata.confidence >= this.config.minConfidenceThreshold;
+    return scored.map(item => {
+      const useRerank = item.metadata.confidence >= this.config.minConfidenceThreshold;
       if (useRerank) {
-        (item as { document?: any; combinedScore?: any; originalScore?: any; rerankScore?: any; metadata?: any }).combinedScore =
-          this.config.scoreWeight * (item as { document?: any; combinedScore?: any; originalScore?: any; rerankScore?: any; metadata?: any }).rerankScore +
-          (1 - this.config.scoreWeight) * (item as { document?: any; combinedScore?: any; originalScore?: any; rerankScore?: any; metadata?: any }).originalScore;
+        item.combinedScore =
+          this.config.scoreWeight * item.rerankScore + (1 - this.config.scoreWeight) * item.originalScore;
       } else {
-        // Fall back to original score
-        (item as { document?: any; combinedScore?: any; originalScore?: any; rerankScore?: any; metadata?: any }).combinedScore = (item as { document?: any; combinedScore?: any; originalScore?: any; rerankScore?: any; metadata?: any }).originalScore;
+        item.combinedScore = item.originalScore;
       }
       return item;
     });
   }
+
   private calculateConfidence(score: number): number {
-    // Confidence based on score magnitude and distance from 0.5
     const distance = Math.abs(score - 0.5);
-    return Math.min(1.0, distance * 2);
+    return Math.min(1, distance * 2);
   }
+
   private extractText(result: SearchResult): string {
-    // Extract searchable text from result
     const parts = [
-      (result as { score?: any; title?: any; content?: any; summary?: any; excerpt?: any; metadata?: any }).title || '',
-      (result as { score?: any; title?: any; content?: any; summary?: any; excerpt?: any; metadata?: any }).content || '',
-      (result as { score?: any; title?: any; content?: any; summary?: any; excerpt?: any; metadata?: any }).summary || '',
-      (result as { score?: any; title?: any; content?: any; summary?: any; excerpt?: any; metadata?: any }).excerpt || ''
+      result.title || '',
+      result.content || '',
+      result.summary || '',
+      result.excerpt || '',
+      (result.document && (result.document as any).content) || '',
     ].filter(Boolean);
     return parts.join(' ').trim();
   }
+
   private tokenize(text: string): string[] {
-    return text;
+    return text
       .toLowerCase()
       .replace(/[^\w\s]/g, ' ')
       .split(/\s+/)
-      .filter((token: string) => token.length > 2);
+      .filter(t => t.length > 2);
   }
+
   private lexicalSimilarity(query: string, document: string): number {
-    const queryTokens = new Set(this.tokenize(query);
-    const docTokens = new Set(this.tokenize(document);
-    const intersection = new Set([...queryTokens].filter((token) => docTokens.has(token);
-    const union = new Set([...queryTokens, ...docTokens]);
-    return union.size > 0 ? intersection.size / union.size: 0;
+    const q = new Set(this.tokenize(query));
+    const d = new Set(this.tokenize(document));
+    const inter = [...q].filter(t => d.has(t)).length;
+    const union = new Set([...q, ...d]).size;
+    return union > 0 ? inter / union : 0;
   }
+
   // Cache management
   clearCache(): void {
     this.scoreCache.clear();
     this.modelCache.clear();
   }
+
   getCacheStats(): { scoreCache: number; modelCache: number } {
-    return {
-      scoreCache: this.scoreCache.size,
-      modelCache: this.modelCache.size
-    }
+    return { scoreCache: this.scoreCache.size, modelCache: this.modelCache.size };
   }
 }
+
 // Convenience function for quick reranking
-export async function rerankSearchResults()
-  query: string
-  results: SearchResult[];
+export async function rerankSearchResults(
+  query: string,
+  results: SearchResult[],
   config: Partial<CrossEncoderConfig> = {}
 ): Promise<SearchResult[]> {
   const reranker = new CrossEncoderReranker(config);
   return reranker.rerankResults(query, results);
 }
+
 // Integration test helper
 export async function testCrossEncoderReranking(): Promise<boolean> {
   try {
@@ -331,8 +328,8 @@ export async function testCrossEncoderReranking(): Promise<boolean> {
           id: 'doc1',
           title: 'Contract Formation Requirements',
           documentType: 'contract',
-          content: 'A valid contract requires offer, acceptance, and consideration.'
-        } as any
+          content: 'A valid contract requires offer, acceptance, and consideration.',
+        },
       },
       {
         id: 'doc2',
@@ -344,8 +341,8 @@ export async function testCrossEncoderReranking(): Promise<boolean> {
           id: 'doc2',
           title: 'Employment Termination',
           documentType: 'case',
-          content: 'Employment can be terminated with proper notice.'
-        } as any
+          content: 'Employment can be terminated with proper notice.',
+        },
       },
       {
         id: 'doc3',
@@ -357,35 +354,37 @@ export async function testCrossEncoderReranking(): Promise<boolean> {
           id: 'doc3',
           title: 'Property Rights',
           documentType: 'case',
-          content: 'Property ownership includes the right to exclude others.'
-        } as any
-      }
+          content: 'Property ownership includes the right to exclude others.',
+        },
+      },
     ];
+
     const reranked = await rerankSearchResults('contract requirements formation', mockResults, {
       model: 'local-computation',
       timeout: 1000,
-    )});
-    const isValid =;
+    });
+
+    const isValid =
       reranked.length === mockResults.length &&
-      reranked.every()
-        (result) => typeof (result as { score?: any; title?: any; content?: any; summary?: any; excerpt?: any; metadata?: any }).score === 'number' && (result as { score?: any; title?: any; content?: any; summary?: any; excerpt?: any; metadata?: any }).metadata?.reranking?.modelUsed
-      );
+      reranked.every(result => typeof result.score === 'number' && result.metadata?.reranking !== undefined);
+
     console.log('[test] Cross-encoder reranking:', isValid ? 'PASS' : 'FAIL');
-    console.log()
+    console.log(
       '[test] Reranked scores:',
-      reranked.map((r) => ({
+      reranked.map(r => ({
         id: r.id,
         score: r.score?.toFixed(3),
-        originalScore: r.metadata?.originalScore?.toFixed(3)
-      })
+        originalScore: r.metadata?.originalScore?.toFixed?.(3),
+      }))
     );
     return isValid;
-  } catch (error: any) {
-    console.error('[test] Cross-encoder reranking failed:', error);
+  } catch (error: unknown) {
+    console.error('[test] Cross-encoder reranking failed:', error instanceof Error ? error.message : String(error));
     return false;
   }
 }
-// Export default instance
+
+// Default instance
 const crossEncoderReranker = new CrossEncoderReranker();
-export { crossEncoderReranker }
+export { crossEncoderReranker };
 export default crossEncoderReranker;

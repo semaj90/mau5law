@@ -540,7 +540,7 @@ d;
   .recommendation-container.has-critical {
     border-color: #EF4444;
     box-shadow: 0 8px 32px rgba(239, 68, 68, 0.3);
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   @keyframes pulse {
     0%, 100% {
@@ -629,7 +629,7 @@ d;
   }
   .critical-badge {
     background: #EF4444;
-    animation pulse 1.5s infinite;
+    animation: pulse 1.5s infinite;
   }
   .high-badge {
     background: #F59E0B;
@@ -638,17 +638,17 @@ d;
     background: linear-gradient(135deg, #3B82F6, #8B5CF6);
     color: white;
     font-weight: 600,
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   .loading-badge {
     background: rgba(59, 130, 246, 0.8);
     color: white;
-    animation pulse 1s infinite;
+    animation: pulse 1s infinite;
   }
   .error-badge {
     background: #EF4444;
     color: white;
-    animation pulse 1.5s infinite;
+    animation: pulse 1.5s infinite;
   }
   .collapsible-content {
     overflow: hidden;

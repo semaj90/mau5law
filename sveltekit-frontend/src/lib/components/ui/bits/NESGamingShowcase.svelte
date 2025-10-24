@@ -272,7 +272,7 @@
     font-weight: bold;
   }
   .stat-value.animate {
-    animation score-pulse 0.3s ease-in-out;
+    animation: score-pulse 0.3s ease-in-out;
   }
   .life-icon {
     color: theme('colors.nes.red');
@@ -306,19 +306,19 @@
   }
   .status-indicator.online {
     color: theme('colors.nes.green');
-    animation status-blink 2s ease-in-out infinite;
+    animation: status-blink 2s ease-in-out infinite;
   }
   .status-indicator.processing {
     color: theme('colors.nes.yellow');
-    animation status-pulse 1s ease-in-out infinite;
+    animation: status-pulse 1s ease-in-out infinite;
   }
   .status-indicator.warning {
     color: theme('colors.nes.orange');
-    animation status-blink 1s ease-in-out infinite;
+    animation: status-blink 1s ease-in-out infinite;
   }
   .status-indicator.error {
     color: theme('colors.nes.red');
-    animation status-urgent 0.5s ease-in-out infinite;
+    animation: status-urgent 0.5s ease-in-out infinite;
   }
   .actions-grid {
     display: grid;

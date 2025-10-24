@@ -246,7 +246,7 @@
     gap: 0.5rem;
   }
   .spinner {
-    animation pulse 1.5s ease-in-out infinite;
+    animation: pulse 1.5s ease-in-out infinite;
   }
   @keyframes pulse {
 0%, {}
@@ -321,7 +321,7 @@
 .spinner, {}
 .voice-toggle, {}
     .help-toggle {
-      animation none;
+      animation: none;
       transition none;
     }
   }

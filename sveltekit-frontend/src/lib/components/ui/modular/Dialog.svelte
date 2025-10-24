@@ -146,10 +146,10 @@ https://svelte.dev/e/js_parse_error -->
     color: rgb(212, 175, 55);
   }
 /* Animate dialog entrance */ :global([data-state="open"]) {
-    animation dialog-content-show 0.2s ease-out;
+    animation: dialog-content-show 0.2s ease-out;
   }
   :global([data-state="closed"]) {
-    animation dialog-content-hide 0.2s ease-i;
+    animation: dialog-content-hide 0.2s ease-i;
   }
   @keyframes dialog-content-show {
     from {

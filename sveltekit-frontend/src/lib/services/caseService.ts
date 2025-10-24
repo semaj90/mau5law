@@ -1,7 +1,29 @@
-import crypto from "crypto";
+// Add missing imports so the file is a module and Writable/Readable are defined
+import type { Writable, Readable } from 'svelte/store';
+import { get, writable } from 'svelte/store';
+
+// remove Node default crypto import (can break ESM/browser parsing)
+// provide a cross-runtime id generator that prefers crypto.randomUUID when available
+const generateId = (): string => {
+  try {
+    // globalThis crypto (browser) or node's crypto (if available on global)
+    // @ts-ignore
+    const globalCrypto = typeof globalThis !== 'undefined' ? (globalThis as any).crypto : undefined;
+    if (globalCrypto && typeof globalCrypto.randomUUID === 'function') {
+      return globalCrypto.randomUUID();
+    }
+  } catch {
+    // ignore and fall back
+  }
+  // deterministic fallback UUIDv4
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+};
+
 // Enhanced case service with proper typing and error handling
-import type {     Writable     } from 'svelte/store';
-import { get, writable } from "svelte/store";
 // Types
 export interface Report {
   id: string;
@@ -17,7 +39,7 @@ export interface Report {
   tags?: string[];
   isPublic?: boolean;
   createdBy?: string;
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: any };
   reportType?: string;
 }
 export interface Evidence {
@@ -27,7 +49,7 @@ export interface Evidence {
   posX: number;
   posY: number;
   caseId: string;
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: any };
   createdAt?: string;
   updatedAt?: string;
   // Canvas-specific properties
@@ -54,11 +76,11 @@ export interface POI {
   aliases?: string[];
   profileImageUrl?: string;
   profileData?: {
-    who: string;
-  what: string;
-  why: string;
-  how: string;
-  }
+    who?: string;
+    what?: string;
+    why?: string;
+    how?: string;
+  };
   threatLevel?: string;
   status?: string;
   tags?: string[];
@@ -73,7 +95,7 @@ export interface CaseData {
   pois: POI[];
 }
 // Store creation
-function createCaseService() {
+export function createCaseService() {
   // State stores
   const reports: Writable<Report[]> = writable([]);
   const evidence: Writable<Evidence[]> = writable([]);
@@ -83,41 +105,58 @@ function createCaseService() {
   // Current case ID
   let currentCaseId: string | null = null;
   // Helper function for API calls
-  async function apiCall<T>()
-    url: string;
-    options: RequestInit = {},
-  ): Promise<T> {
+  async function apiCall<T>(url: string, options: RequestInit = {}): Promise<T> {
     try {
-      error,.set(null);
-      const response = await fetch(url, {
-        ...options,
-        headers: {
-          "Content-Type": "application/json",
-          ...options.headers
-        },
-      )});
-      if (!(response as { ok?: any; statusText?: any; json?: any }).ok) {
-        throw new Error(`API Error: ${(response as { ok?: any; statusText?: any); json?: any }).statusText}`);
+      error.set(null);
+
+      // Normalize headers (support Headers instance or plain object)
+      const mergedHeaders = new Headers(options.headers as HeadersInit | undefined);
+      if (!mergedHeaders.has('content-type')) {
+        mergedHeaders.set('Content-Type', 'application/json');
       }
-      return await (response as { ok?: any; statusText?: any; json?: any }).json();
-    } catch (err: any) {
-      const message = err instanceof Error ? err.message: "Unknown error";
+
+      const opts: RequestInit = {
+        ...options,
+        headers: mergedHeaders,
+      };
+
+      const response = await fetch(url, opts);
+      // Read body once
+      const text = await response.text();
+
+      if (!response.ok) {
+        const bodyText = text || response.statusText || '';
+        throw new Error(`API Error: ${response.status} ${bodyText}`.trim());
+      }
+
+      return text ? (JSON.parse(text) as T) : (undefined as unknown as T);
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : typeof err === 'string'
+            ? err
+            : typeof err === 'object' && err !== null
+              ? JSON.stringify(err)
+              : String(err);
       error.set(message);
       throw err;
     }
   }
   // Load case data
-  async function loadCase(caseId: string): Promise<any> {
+  async function loadCase(caseId: string): Promise<void> {
     if (!caseId) return;
     currentCaseId = caseId;
     isLoading.set(true);
     try {
-      const data = await apiCall<CaseData>(`/api/cases/$,{caseId})`);
-      reports.set((data as { reports?: any; evidence?: any); pois?: any }).reports || []);
-      evidence.set((data as { reports?: any; evidence?: any); pois?: any }).evidence || []);
-      pois.set((data as { reports?: any; evidence?: any); pois?: any }).pois || []);
-    } catch (err: any) {
-      console.error("Failed to load case:", err);
+      const data = await apiCall<CaseData>(`/api/cases/${caseId}`);
+      reports.set(data?.reports ?? []);
+      evidence.set(data?.evidence ?? []);
+      pois.set(data?.pois ?? []);
+    } catch (err: unknown) {
+      // Log normalized message but avoid any-typed catch
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error('Failed to load case:', msg);
       // Reset stores on error
       reports.set([]);
       evidence.set([]);
@@ -127,160 +166,158 @@ function createCaseService() {
     }
   }
   // Create report
-  async function createReport(data: Partial<Report>): Promise<any> {
+  async function createReport(data: Partial<Report>): Promise<Report | null> {
     if (!currentCaseId) {
-      error.set("No case loaded");
-      return;
+      error.set('No case loaded');
+      return null;
     }
     try {
-      const newReport = await apiCall<Report>("/api/reports", {
-        method: "POST",
-        body: JSON.stringify({
-          ...data,
-          caseId: currentCaseId;
-          id: crypto.randomUUID(),
-          createdAt: new Date().toISOString()
-        })
+      const payload = {
+        ...data,
+        caseId: currentCaseId,
+        id: generateId(),
+        createdAt: new Date().toISOString(),
+      };
+      const newReport = await apiCall<Report>('/api/reports', {
+        method: 'POST',
+        body: JSON.stringify(payload),
       });
-      reports.update((items) => [...items, newReport]);
+      reports.update(items => [...items, newReport]);
       return newReport;
-    } catch (err: any) {
-      console.error("Failed to create report:", err);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error('Failed to create report:', msg);
       return null;
     }
   }
   // Create evidence
-  async function createEvidence(data: Partial<Evidence>): Promise<any> {
+  async function createEvidence(data: Partial<Evidence>): Promise<Evidence | null> {
     if (!currentCaseId) {
-      error.set("No case loaded");
-      return;
+      error.set('No case loaded');
+      return null;
     }
     try {
-      const newEvidence = await apiCall<Evidence>("/api/evidence", {
-        method: "POST",
-        body: JSON.stringify({
-          ...data,
-          caseId: currentCaseId;
-          id: crypto.randomUUID(),
-          createdAt: new Date().toISOString()
-        })
+      const payload = {
+        ...data,
+        caseId: currentCaseId,
+        id: generateId(),
+        createdAt: new Date().toISOString(),
+      };
+      const newEvidence = await apiCall<Evidence>('/api/evidence', {
+        method: 'POST',
+        body: JSON.stringify(payload),
       });
-      evidence.update((items) => [...items, newEvidence]);
+      evidence.update(items => [...items, newEvidence]);
       return newEvidence;
-    } catch (err: any) {
-      console.error("Failed to create evidence:", err);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error('Failed to create evidence:', msg);
       return null;
     }
   }
   // Create POI
-  async function createPOI(data: Partial<POI>): Promise<any> {
+  async function createPOI(data: Partial<POI>): Promise<POI | null> {
     if (!currentCaseId) {
-      error.set("No case loaded");
-      return;
+      error.set('No case loaded');
+      return null;
     }
     try {
-      const newPOI = await apiCall<POI>("/api/pois", {
-        method: "POST",
-        body: JSON.stringify({
-          ...data,
-          caseId: currentCaseId;
-          id: crypto.randomUUID(),
-          createdAt: new Date().toISOString()
-        })
+      const payload = {
+        ...data,
+        caseId: currentCaseId,
+        id: generateId(),
+        createdAt: new Date().toISOString(),
+      };
+      const newPOI = await apiCall<POI>('/api/pois', {
+        method: 'POST',
+        body: JSON.stringify(payload),
       });
-      pois.update((items) => [...items, newPOI]);
+      pois.update(items => [...items, newPOI]);
       return newPOI;
-    } catch (err: any) {
-      console.error("Failed to create POI:", err);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error('Failed to create POI:', msg);
       return null;
     }
   }
   // Update position
-  async function updatePosition()
-    type: "report" | "evidence" | "poi",
-    id: string;
-    position: { x: number); y: number },
-  ): Promise<any> {
+  async function updatePosition(
+    type: 'report' | 'evidence' | 'poi',
+    id: string,
+    position: { x: number; y: number }
+  ): Promise<void> {
     try {
-      await apiCall(`/api/$,{type}s/,${id}/position`, {
-        method: "PATCH",
-        body,: JSON.stringify({ posX: position.x, posY: position.y, )})
+      await apiCall(`/api/${type}s/${id}/position`, {
+        method: 'PATCH',
+        body: JSON.stringify({ posX: position.x, posY: position.y }),
       });
       // Update local state
+      // Use a generic helper so the returned array preserves the original item type (Report/Evidence/POI)
+      const applyUpdate = <T extends { id: string; posX?: number; posY?: number }>(items: T[]): T[] =>
+        items.map(item => (item.id === id ? ({ ...(item as object), posX: position.x, posY: position.y } as T) : item));
+
       switch (type) {
-        case "report":
-          reports.update((items) =>
-            items.map((item) =>
-              (item as { id?: any }).id === id
-                ? { ...item, posX: position.x, posY: position.y }
-                : item
-            ),
-          );
+        case 'report':
+          reports.update(items => applyUpdate(items));
           break;
-        case "evidence":
-          evidence.update((items) =>
-            items.map((item) =>
-              (item as { id?: any }).id === id
-                ? { ...item, posX: position.x, posY: position.y }
-                : item
-            ),
-          );
+        case 'evidence':
+          evidence.update(items => applyUpdate(items));
           break;
-        case "poi":
-          pois.update((items) =>
-            items.map((item) =>
-              (item as { id?: any }).id === id
-                ? { ...item, posX: position.x, posY: position.y }
-                : item
-            ),
-          );
+        case 'poi':
+          pois.update(items => applyUpdate(items));
           break;
       }
-    } catch (err: any) {
-      console.error(`Failed to update ${type} position:`, err);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error(`Failed to update ${type} position:`, msg);
     }
   }
   // Delete item
-  async function deleteItem(type: "report" | "evidence" | "poi", id: string): Promise<any> {
+  async function deleteItem(type: 'report' | 'evidence' | 'poi', id: string): Promise<void> {
     try {
       await apiCall(`/api/${type}s/${id}`, {
-        method: "DELETE",
-      )});
+        method: 'DELETE',
+      });
       // Update local state
+      // Generic filter preserving the original item type
+      const filterOut = <T extends { id: string }>(items: T[]): T[] => items.filter(item => item.id !== id);
+
       switch (type) {
-        case "report":
-          reports.update((items) => items.filter((item) => (item as { id?: any }).id !== id);
+        case 'report':
+          reports.update(items => filterOut(items));
           break;
-        case "evidence":
-          evidence.update((items) => items.filter((item) => (item as { id?: any }).id !== id);
+        case 'evidence':
+          evidence.update(items => filterOut(items));
           break;
-        case "poi":
-          pois.update((items) => items.filter((item) => (item as { id?: any }).id !== id);
+        case 'poi':
+          pois.update(items => filterOut(items));
           break;
       }
-    } catch (err: any) {
-      console.error(`Failed to delete ${type}:`, err);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error(`Failed to delete ${type}:`, msg);
     }
   }
   // Save all changes
-  async function saveAll(): Promise<any> {
+  async function saveAll(): Promise<void> {
     if (!currentCaseId) {
-      error.set("No case loaded");
+      error.set('No case loaded');
       return;
     }
     isLoading.set(true);
     try {
       await apiCall(`/api/cases/${currentCaseId}/save-all`, {
-        method: "POST",
-        body: JSON.stringify({,
+        method: 'POST',
+        body: JSON.stringify({
           reports: get(reports),
           evidence: get(evidence),
-          pois: get(pois)
-        })
+          pois: get(pois),
+        }),
       });
       error.set(null);
-    } catch (err: any) {
-      console.error("Failed to save all:", err);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error('Failed to save all:', msg);
     } finally {
       isLoading.set(false);
     }
@@ -296,11 +333,12 @@ function createCaseService() {
   }
   return {
     // State stores
-    reports: { subscribe: reports.subscribe },
-    evidence: { subscribe: evidence.subscribe },
-    pois: { subscribe: pois.subscribe },
-    isLoading: { subscribe: isLoading.subscribe },
-    error: { subscribe: error.subscribe },
+    // expose as Readable (only subscribe) to callers
+    reports: { subscribe: reports.subscribe } as Readable<Report[]>,
+    evidence: { subscribe: evidence.subscribe } as Readable<Evidence[]>,
+    pois: { subscribe: pois.subscribe } as Readable<POI[]>,
+    isLoading: { subscribe: isLoading.subscribe } as Readable<boolean>,
+    error: { subscribe: error.subscribe } as Readable<string | null>,
     // Actions
     loadCase,
     createReport,
@@ -309,8 +347,8 @@ function createCaseService() {
     updatePosition,
     deleteItem,
     saveAll,
-    reset
-  }
+    reset,
+  };
 }
 // Export singleton instance
 export const caseService = createCaseService();

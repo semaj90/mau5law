@@ -340,7 +340,7 @@ linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px), {}
   }
 /* Connection lines animation */ {}
   svg path {
-    animation dash 5s linear infinite;
+    animation: dash 5s linear infinite;
   }
   @keyframes dash {
     to {

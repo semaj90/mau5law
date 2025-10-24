@@ -96,12 +96,12 @@
 
 <style>
   :global(.nier-btn[disabled]) {
-    opacity: 0.6,
+    opacity: 0.6;
     cursor: not-allowed;
   }
 
   :global(.nier-btn.btn-loading) {
-    opacity: 0.6,
+    opacity: 0.6;
     cursor: not-allowed;
     background: #23272e;
     color: #bcbcbc;
@@ -195,7 +195,7 @@
     border: 2px solid currentColor;
     border-right-color: transparent;
     border-radius: 50%;
-    animation spin 0.75s linear infinite;
+    animation: spin 0.75s linear infinite;
     display: inline-block;
     vertical-align: middle;
   }

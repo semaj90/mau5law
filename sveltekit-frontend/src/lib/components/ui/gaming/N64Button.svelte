@@ -314,7 +314,7 @@
   }
 /* Glowing effect */ {}
   .n64-button--glowing .n64-button__surface {
-    animation n64-glow 2s ease-in-out infinite alternate;
+    animation: n64-glow 2s ease-in-out infinite alternate;
     box-shadow: 0 0 20px var(--n64-color);
   }
   @keyframes n64-glow {
@@ -333,7 +333,7 @@ box-shadow: {}
   }
   .n64-button--priority-critical .n64-button__surface {
     border-color: #ff0000;
-    animation critical-pulse 1s ease-in-out infinite;
+    animation: critical-pulse 1s ease-in-out infinite;
   }
   @keyframes critical-pulse {
 0%, {}
@@ -354,7 +354,7 @@ box-shadow: {}
     bottom: -4px;
     border: 2px solid #ff0000;
     border-radius: inherit;
-    animation priority-pulse 2s ease-in-out infinite;
+    animation: priority-pulse 2s ease-in-out infinite;
     pointer-events: none;
   }
   @keyframes priority-pulse {
@@ -425,10 +425,10 @@ box-shadow: {}
       transition none;
     }
     .n64-button--glowing .n64-button__surface {
-      animation none;
+      animation: none;
     }
     .n64-button--priority-critical .n64-button__surface {
-      animation none;
+      animation: none;
     }
   }
 /* High contrast mode */ {}

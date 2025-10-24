@@ -278,7 +278,7 @@
     inset: 0;
     border-radius: 0.375rem;
     background: linear-gradient(to right, rgba(233, 213, 255, 0.8), rgba(224, 231, 255, 0.8));
-    animation pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
   /* Dropdown Menu */
   .ai-menu {

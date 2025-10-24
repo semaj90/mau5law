@@ -23,7 +23,7 @@
   </div>
 {/if}
 <style>/* @unocss-include */ .context-menu {
-    animation contextMenuFadeIn 150ms ease-out;
+    animation: contextMenuFadeIn 150ms ease-out;
 }
   @keyframes contextMenuFadeIn {
     from {

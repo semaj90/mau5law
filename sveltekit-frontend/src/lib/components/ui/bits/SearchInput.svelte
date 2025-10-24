@@ -295,7 +295,7 @@
   }
   /* Vector search indicator glow */
   .nes-input:focus-within .text-purple-500 {
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   @keyframes pulse {
     0%,

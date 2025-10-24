@@ -91,7 +91,7 @@
   			return () => clearInterval(interval);
   		}
   	});
-  	// Spiral animation for golden ratio aesthetics
+  	// Spiral animation: for golden ratio aesthetics
   	let spiralPoints = $derived(() => {
   		const points = [];
   		const centerX = 50;
@@ -221,7 +221,7 @@
     }
   }
   .animate-shimmer {
-    animation shimmer 2s infinite;
+    animation: shimmer 2s infinite;
   }
   /* Golden ratio inspired gradients */
   .bg-golden-gradient {

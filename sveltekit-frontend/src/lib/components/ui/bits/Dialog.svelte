@@ -175,10 +175,10 @@
 <style>
   /* @unocss-include */
   :global(.bits-dialog-overlay) {
-    animation overlay-show 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation: overlay-show 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   :global(.bits-dialog-content) {
-    animation content-show 300ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation: content-show 300ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   @keyframes overlay-show {
     from {
