@@ -26,19 +26,19 @@ export const goldenRatioUtils = {
    * @param value - Base value to apply golden ratio to
    * @returns Value multiplied by φ
    */
-  phi: (_value: number): number => value * GOLDEN_RATIO,
+  phi: (value: number): number => value * GOLDEN_RATIO,
   /**
    * Calculate inverse golden ratio proportion of a value
    * @param value - Base value to apply inverse golden ratio to
    * @returns Value multiplied by 1/φ
    */
-  phiInverse: (_value: number): number => value * INVERSE_GOLDEN_RATIO,
+  phiInverse: (value: number): number => value * INVERSE_GOLDEN_RATIO,
   /**
    * Split a value into golden ratio proportions
    * @param total - Total value to split
    * @returns Object with major and minor proportions
    */
-  split: (total: number) => ({,
+  split: (total: number) => ({
     major: total * INVERSE_GOLDEN_RATIO,
     minor: total * (1 - INVERSE_GOLDEN_RATIO)
   }),

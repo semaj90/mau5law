@@ -199,11 +199,11 @@ export const N64_THEME_VARIANTS = {
  */
 export const N64_A11Y_HELPERS = {
   // ARIA label generators
-  generateProgressLabel: (_value: number, max: number) =>
+  generateProgressLabel: (value: number, max: number) =>
     `Progress: ${value} of ${max} (${Math.round((value / max) * 100)}%)`,
   generateSwitchLabel: (checked: boolean, label: string) =>
     `${label}: ${checked ? 'On' : 'Off'}`,
-  generateSelectLabel: (_value: string, options: Array<) => {
+  generateSelectLabel: (value: string, options: Array<{ value: string; label: string }>) => {
     const option = options.find(opt => opt.value === value);
     return option ? `Selected: ${option.label}` : 'No selection';
   },
@@ -229,7 +229,7 @@ export const N64_A11Y_HELPERS = {
 export const N64_UTILS = {
   // Color manipulation
   hexToRgb: (hex: string) => {
-    const result = /^#?([a-f\d]{2}) => [a-f\d]{2}) => [a-f\d]{2})$/i.exec(hex);
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? {
       r: parseInt(result[1], 16),
       g: parseInt(result[2], 16),
@@ -241,7 +241,7 @@ export const N64_UTILS = {
   // Audio context management
   createSpatialAudio: () => {
     try {
-      return new (window.AudioContext || (window as any).webkitAudioContext();
+      return new (window.AudioContext || (window as any).webkitAudioContext)();
     } catch (error) {
       console.warn('Web Audio API not supported');
       return null;

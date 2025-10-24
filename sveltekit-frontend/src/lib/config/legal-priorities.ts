@@ -2,7 +2,7 @@
  * Legal AI Priority System - NES-Inspired Memory Management
  * 8-bit priority scoring (0-255) for legal document classification
  */
-}
+
 export interface LegalDocument {
   id: string;
   type: DocumentType;
@@ -172,7 +172,7 @@ export function calculateDocumentPriority(_document: LegalDocument): number {
     priority *= 0.8;  // Very large file penalty
   }
   // Convert to 8-bit priority (0-255) and clamp
-  return Math.min(255, Math.max(0, Math.floor(priority * 255));
+  return Math.min(255, Math.max(0, Math.floor(priority * 255)));
 }
 /**
  * Select appropriate memory bank based on priority score

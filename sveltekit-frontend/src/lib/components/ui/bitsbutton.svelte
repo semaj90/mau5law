@@ -32,7 +32,7 @@
   					default: 'h-10 px-4 py-2',
   					sm: 'h-9 rounded-md px-3',
   					lg: 'h-11 rounded-md px-8',
-  					icon 'h-8 w-8',
+  					icon: 'h-8 w-8',
   					icon_sm: 'h-6 w-6',
   					icon_lg: 'h-12 w-12',
   					xs: 'h-8 rounded px-2 text-xs',
@@ -103,7 +103,7 @@
 		const dispatch = createEventDispatcher<{
 			click: MouseEvent;
 			analytics: ButtonAnalyticsEvent;
-			cache: { key: string; action string };
+			cache: { key: string; action: string };
 		}>();
 		// Derived state (Svelte 5 rune style)
 		let isDisabled = $derived(disabled || loading);
@@ -116,7 +116,7 @@
 		const analyticsEvent: ButtonAnalyticsEvent = {
 			id,
 			category: analyticsCategory,
-			action analyticsAction,
+			action: analyticsAction,
 			label: analyticsLabel || ((_event.currentTarget as HTMLElement)?.textContent || ''),
 			timestamp: Date.now(),
 			context: xstateContext,
@@ -128,7 +128,7 @@
 			dispatch('analytics', analyticsEvent);
 			if (cacheKey) {
 				lokiButtonCache.recordInteraction(cacheKey, analyticsEvent);
-				dispatch('cache', { key: cacheKey, action 'click' });
+				dispatch('cache', { key: cacheKey, action: 'click' });
 			}
 			if (searchKeywords.length > 0) {
 				searchableButtonIndex.addButton({ id, keywords: searchKeywords });

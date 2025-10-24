@@ -4,7 +4,7 @@
  */
 import * as THREE from 'three';
 import { YoRHa3DComponent } from './YoRHaUI3D.js';
-}
+
 export interface YoRHaLayoutOptions {
   type: 'flex' | 'grid' | 'absolute' | 'stack' | 'flow';
   direction?: 'row' | 'column' | 'row-reverse' | 'column-reverse';
@@ -49,7 +49,7 @@ export class YoRHaLayout3D extends THREE.Group {
   private children3D: Array<any> = [];
   private bounds = new THREE.Box3();
   private needsLayout = true;
-  constructor(_options: YoRHaLayoutOptions) {
+  constructor(options: YoRHaLayoutOptions) {
     super();
     this.options = options;
   }
@@ -108,8 +108,8 @@ export class YoRHaLayout3D extends THREE.Group {
     const childSizes: Array<any> = [];
     this.children3D.forEach(({ component, layout }) => {
       const bounds = this.getComponentBounds(component);
-      const mainSize = isRow ? bounds.x: bounds.y;
-      const crossSize = isRow ? bounds.y: bounds.x;
+      const mainSize = isRow ? bounds.x : bounds.y;
+      const crossSize = isRow ? bounds.y : bounds.x;
       const flex = layout.flex || layout.grow || 0;
       childSizes.push({ main: mainSize, cross: crossSize, flex });
       totalMainSize += mainSize;
@@ -118,10 +118,10 @@ export class YoRHaLayout3D extends THREE.Group {
     });
     // Calculate available space
     const containerBounds = this.getContainerBounds();
-    const availableMain = (isRow ? containerBounds.x: containerBounds.y) -
+    const availableMain = (isRow ? containerBounds.x : containerBounds.y) -
                          padding.left - padding.right -
-                         (gap * (this.children3D.length - 1);
-    const availableCross = (isRow ? containerBounds.y: containerBounds.x) -
+                         (gap * (this.children3D.length - 1));
+    const availableCross = (isRow ? containerBounds.y : containerBounds.x) -
                           padding.top - padding.bottom;
     // Distribute extra space among flex items
     const extraSpace = Math.max(0, availableMain - totalMainSize);
@@ -152,21 +152,21 @@ export class YoRHaLayout3D extends THREE.Group {
   }
   private layoutGrid(): void {
     if (this.children3D.length === 0) return;
-    const columns = this.options.gridColumns || Math.ceil(Math.sqrt(this.children3D.length);
+    const columns = this.options.gridColumns || Math.ceil(Math.sqrt(this.children3D.length));
     const rows = this.options.gridRows || Math.ceil(this.children3D.length / columns);
     const gap = this.options.gap || 0.2;
     const padding = this.normalizePadding(this.options.padding);
     const containerBounds = this.getContainerBounds();
-    const availableWidth = containerBounds.x - padding.left - padding.right - (gap * (columns - 1);
-    const availableHeight = containerBounds.y - padding.top - padding.bottom - (gap * (rows - 1);
+    const availableWidth = containerBounds.x - padding.left - padding.right - (gap * (columns - 1));
+    const availableHeight = containerBounds.y - padding.top - padding.bottom - (gap * (rows - 1));
     const cellWidth = availableWidth / columns;
     const cellHeight = availableHeight / rows;
     this.children3D.forEach(({ component, layout }, index) => {
       // Determine grid position
       let column: number, row: number;
       if (layout.gridColumn !== undefined && layout.gridRow !== undefined) {
-        column = typeof layout.gridColumn === 'number' ? layout.gridColumn: parseInt(layout.gridColumn) - 1;
-        row = typeof layout.gridRow === 'number' ? layout.gridRow: parseInt(layout.gridRow) - 1;
+        column = typeof layout.gridColumn === 'number' ? layout.gridColumn : parseInt(layout.gridColumn) - 1;
+        row = typeof layout.gridRow === 'number' ? layout.gridRow : parseInt(layout.gridRow) - 1;
       } else {
         column = index % columns;
         row = Math.floor(index / columns);
@@ -246,7 +246,7 @@ export class YoRHaLayout3D extends THREE.Group {
       left: padding?.left || 0,
       front: padding?.front || 0,
       back: padding?.back || 0
-    }
+    };
   }
   private getStartPosition(availableMain: number, totalMainSize: number, padding: Required<YoRHaPadding3D>): number {
     const containerBounds = this.getContainerBounds();
@@ -272,7 +272,7 @@ export class YoRHaLayout3D extends THREE.Group {
     childCrossSize: number,
     availableCross: number,
     alignSelf: string | undefined,
-    padding: Required<YoRHaPadding3D>;
+    padding: Required<YoRHaPadding3D>
   ): number {
     const align = alignSelf || this.options.align || 'start';
     switch (align) {
@@ -324,7 +324,7 @@ export class YoRHaLayout3D extends THREE.Group {
   public setChildLayout(component: YoRHa3DComponent, layout: YoRHaChildLayout): void {
     const child = this.children3D.find(c => c.component === component);
     if (child) {
-      child.layout = { ...child.layout, ...layout }
+      child.layout = { ...child.layout, ...layout };
       this.needsLayout = true;
     }
   }

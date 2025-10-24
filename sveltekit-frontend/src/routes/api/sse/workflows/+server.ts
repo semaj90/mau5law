@@ -17,7 +17,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         message += `event: ${type}\n`
         message += `data: ${JSON.stringify(data)}\n\n`
         try {
-          controller.enqueue(encoder.encode(message)
+          controller.enqueue(encoder.encode(message))
         } catch (error) {
           console.error('❌ SSE send error:', error)
         }

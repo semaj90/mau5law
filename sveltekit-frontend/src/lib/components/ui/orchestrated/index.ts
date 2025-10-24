@@ -52,7 +52,7 @@ export const OrchestratedSelect = Object.assign(HeadlessSelectField, {
 });
 // Orchestrated Button - combines loading states with legal actions
 export const OrchestratedButton = Object.assign(LoadingButton, {
-  Enhanced: Button
+  Enhanced: Button,
   // Legal AI specific button variants
   AnalyzeEvidence: LoadingButton,
   ProcessDocument: LoadingButton,
@@ -81,7 +81,7 @@ export const OrchestrationContext = {
   // XState machine integration
   stateMachine: null as any, // Will be injected by the orchestration system
   // Cache coordination
-  cacheService: null as any
+  cacheService: null as any,
   // GPU acceleration status
   webgpuService: null as any,
   // Vector search integration

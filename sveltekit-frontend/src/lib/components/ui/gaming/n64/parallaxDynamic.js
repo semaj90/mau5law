@@ -14,7 +14,7 @@ const DEFAULT_CONFIG = {
   scrollSensitivity: 0.05,
   maxOffset: 50,
   smoothing: 0.1,
-  enableGPUMonitoring: true
+  enableGPUMonitoring: true,
   performanceMode: 'auto', // 'auto', 'high', 'medium', 'low'
   reducedMotion: false
 };
@@ -76,13 +76,13 @@ export function createParallaxInstance(element, config = {}) {
     id: instanceId
   };
   const instance = {
-    id: instanceId
+    id: instanceId,
     element,
-    config: instanceConfig
+    config: instanceConfig,
     currentOffset: { x: 0, y: 0, z: 0 },
     targetOffset: { x: 0, y: 0, z: 0 },
-    isActive: true
-    bounds: null
+    isActive: true,
+    bounds: null,
     lastUpdate: 0,
     // Update method
     update: () => updateInstance(instance),
@@ -118,7 +118,7 @@ export function createParallaxLayers(container, layerConfigs) {
     if (layerElement) {
       const instance = createParallaxInstance(layerElement, {
         ...layerConfig,
-        layerIndex: index
+        layerIndex: index,
         layerDepth: layerConfig.depth || (index + 1) * 0.2,
       });
       if (instance) {
@@ -218,7 +218,7 @@ function calculateScrollInfluence(instance) {
   // Scroll progress (0 to 1 as element passes through viewport)
   const scrollProgress = Math.max(0, Math.min(1,
     (scrollY - elementTop) / (elementBottom - elementTop + viewportSize.height)
-  ),;
+  ));
   // Convert to -1 to 1 range
   const scrollInfluence = (scrollProgress - 0.5) * 2;
   const depthFactor = config.layerDepth || 1;
@@ -236,9 +236,9 @@ function applyTransform(instance) {
   const offset = instance.currentOffset;
   const element = instance.element;
   // Update CSS custom properties for dynamic use
-  element.style.setProperty('--px', offset.x.toFixed(2),;
-  element.style.setProperty('--py', offset.y.toFixed(2),;
-  element.style.setProperty('--pz', offset.z.toFixed(2),;
+  element.style.setProperty('--px', offset.x.toFixed(2));
+  element.style.setProperty('--py', offset.y.toFixed(2));
+  element.style.setProperty('--pz', offset.z.toFixed(2));
   // Apply direct transform for immediate effect
   const transform = `translate3d(${offset.x}px, ${offset.y}px, ${offset.z}px)`;
   element.style.transform = transform;
@@ -486,14 +486,14 @@ export function autoAdjustPerformance() {
  */
 if (typeof window !== 'undefined') {
   window.parallaxDynamic = {
-    init: initParallaxSystem
-    create: createParallaxInstance
-    createLayers: createParallaxLayers
+    init: initParallaxSystem,
+    create: createParallaxInstance,
+    createLayers: createParallaxLayers,
     cleanup,
-    pause: pauseAll
-    resume: resumeAll
+    pause: pauseAll,
+    resume: resumeAll,
     setPerformanceMode,
-    autoAdjust: autoAdjustPerformance
+    autoAdjust: autoAdjustPerformance,
     getStats: getPerformanceStats
   };
 }

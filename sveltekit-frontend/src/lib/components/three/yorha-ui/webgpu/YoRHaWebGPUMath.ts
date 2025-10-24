@@ -4,7 +4,7 @@
  */
 // Import WebGPU types
 /// <reference types="@webgpu/types" />
-}
+import type { LegalDocument as MemoryLegalDocument } from '$lib/memory/nes-memory-architecture';
 export interface WebGPUMathConfig {
   preferWebGPU: boolean;
   fallbackToWebGL: boolean;
@@ -24,6 +24,54 @@ export interface YoRHaComputeResult {
   executionTime: number;
   memoryUsed: number;
 }
+
+// NEW: strongly typed particle & layout structures and benchmark result
+export interface Particle {
+  position: Vector3GPU;
+  velocity: Vector3GPU;
+  force: Vector3GPU;
+  mass: number;
+}
+export interface LayoutNode {
+  position: Vector3GPU;
+  size: Vector3GPU;
+  padding?: [number, number, number, number];
+  margin?: [number, number, number, number];
+}
+export interface BenchmarkResults {
+  webGPUSupported: boolean;
+  vectorOpsPerSecond: number;
+  matrixOpsPerSecond: number;
+  memoryBandwidth: number;
+  computeUnits: number;
+}
+
+// Add new types for texture/legal-document processing
+type MipmapLevelDescriptor =
+  | GPUTexture
+  | { width: number; height: number; bytesPerPixel?: number; estimatedSize?: number };
+
+type MipmapChainResult = {
+  // accept either real GPUTexture objects or simple width/height descriptors returned by alternate implementations
+  mipLevels?: MipmapLevelDescriptor[];
+  mipmapLevels?: MipmapLevelDescriptor[];
+  memoryUsed?: number;
+};
+
+export type LegalDocument = MemoryLegalDocument & { id?: string };
+
+export interface TextureProcessResult {
+  processedTexture: GPUTexture;
+  mipLevels: GPUTexture[]; // normalized name
+  processingTime: number;
+  memoryUsed: number;
+  optimization: {
+    mipmapGenerated: boolean;
+    rtxAcceleration: boolean;
+    streamingUsed: boolean;
+  };
+}
+
 export class YoRHaWebGPUMath {
   private device?: GPUDevice;
   private adapter?: GPUAdapter | null;
@@ -36,8 +84,8 @@ export class YoRHaWebGPUMath {
       fallbackToWebGL: config.fallbackToWebGL ?? true,
       enableProfiling: config.enableProfiling ?? false,
       maxBufferSize: config.maxBufferSize ?? 1024 * 1024 * 16, // 16MB
-      ...config
-    }
+      ...config,
+    };
   }
   async initialize(): Promise<boolean> {
     if (this.isInitialized) return true;
@@ -47,7 +95,7 @@ export class YoRHaWebGPUMath {
         return false;
       }
       this.adapter = await navigator.gpu.requestAdapter({
-        powerPreference: 'high-performance'
+        powerPreference: 'high-performance',
       });
       if (!this.adapter) {
         console.warn('Failed to get WebGPU adapter');
@@ -58,8 +106,8 @@ export class YoRHaWebGPUMath {
         requiredLimits: {
           maxBufferSize: this.config.maxBufferSize,
           maxComputeWorkgroupStorageSize: 16384,
-          maxComputeInvocationsPerWorkgroup: 256
-        }
+          maxComputeInvocationsPerWorkgroup: 256,
+        },
       });
       if (!this.device) {
         console.warn('Failed to get WebGPU device');
@@ -69,7 +117,7 @@ export class YoRHaWebGPUMath {
       this.isInitialized = true;
       console.log('YoRHa WebGPU Math initialized successfully');
       return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to initialize WebGPU:', error);
       return false;
     }
@@ -79,12 +127,12 @@ export class YoRHaWebGPUMath {
     // Vector operations shader
     const vectorOpsShader = `
       struct VectorData {
-        data: array<vec3<f32>>
+        data: array<vec3<f32>>;
       }
       @group(0) @binding(0) var<storage, read> inputA: VectorData;
       @group(0) @binding(1) var<storage, read> inputB: VectorData;
       @group(0) @binding(2) var<storage, read_write> output: VectorData;
-      @compute @workgroup_size(64);
+      @compute @workgroup_size(64)
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let index = global_id.x;
         if (index >= arrayLength(&inputA.data)) {
@@ -97,12 +145,12 @@ export class YoRHaWebGPUMath {
     // Matrix operations shader
     const matrixOpsShader = `
       struct MatrixData {
-        data: array<mat4x4<f32>>
+        data: array<mat4x4<f32>>;
       }
       @group(0) @binding(0) var<storage, read> inputA: MatrixData;
       @group(0) @binding(1) var<storage, read> inputB: MatrixData;
       @group(0) @binding(2) var<storage, read_write> output: MatrixData;
-      @compute @workgroup_size(4, 4, 1);
+      @compute @workgroup_size(4, 4, 1)
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let index = global_id.x;
         if (index >= arrayLength(&inputA.data)) {
@@ -121,17 +169,17 @@ export class YoRHaWebGPUMath {
         mass: f32;
       }
       struct ParticleSystem {
-        particles: array<Particle>
+        particles: array<Particle>;
       }
       struct SimulationParams {
-        deltaTime: f32
+        deltaTime: f32;
         gravity: vec3<f32>;
-        damping: f32
-        particleCount: u32
+        damping: f32;
+        particleCount: u32;
       }
       @group(0) @binding(0) var<storage, read_write> particles: ParticleSystem;
       @group(0) @binding(1) var<uniform> params: SimulationParams;
-      @compute @workgroup_size(64);
+      @compute @workgroup_size(64)
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let index = global_id.x;
         if (index >= params.particleCount) {
@@ -152,25 +200,25 @@ export class YoRHaWebGPUMath {
     // Layout computation shader
     const layoutShader = `
       struct LayoutNode {
-        position: vec3<f32>
-        size: vec3<f32>
-        padding: vec4<f32>
-        margin: vec4<f32>
+        position: vec3<f32>;
+        size: vec3<f32>;
+        padding: vec4<f32>;
+        margin: vec4<f32>;
       }
       struct LayoutSystem {
-        nodes: array<LayoutNode>
+        nodes: array<LayoutNode>;
       }
       struct LayoutParams {
-        containerSize: vec3<f32>
-        direction: u32, // 0 = row, 1 = column
-        justify: u32,   // 0 = start, 1 = center, 2 = end
-        align: u32,     // 0 = start, 1 = center, 2 = end;
-        gap: f32
-        nodeCount: u32
+        containerSize: vec3<f32>;
+        direction: u32; // 0 = row, 1 = column
+        justify: u32;   // 0 = start, 1 = center, 2 = end
+        align: u32;     // 0 = start, 1 = center, 2 = end
+        gap: f32;
+        nodeCount: u32;
       }
       @group(0) @binding(0) var<storage, read_write> layout: LayoutSystem;
       @group(0) @binding(1) var<uniform> params: LayoutParams;
-      @compute @workgroup_size(32);
+      @compute @workgroup_size(32)
       fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
         let index = global_id.x;
         if (index >= params.nodeCount) {
@@ -201,34 +249,46 @@ export class YoRHaWebGPUMath {
       }
     `;
     // Create compute pipelines
-    this.computePipelines.set('vectorOps', this.device.createComputePipeline({
-      layout: 'auto',
-      compute: {
-        module: this.device.createShaderModule({ code: vectorOpsShader }),
-        entryPoint: 'main'
-      }
-    }));
-    this.computePipelines.set('matrixOps', this.device.createComputePipeline({
-      layout: 'auto',
-      compute: {
-        module: this.device.createShaderModule({ code: matrixOpsShader }),
-        entryPoint: 'main'
-      }
-    }));
-    this.computePipelines.set('physics', this.device.createComputePipeline({
-      layout: 'auto',
-      compute: {
-        module: this.device.createShaderModule({ code: physicsShader }),
-        entryPoint: 'main'
-      }
-    }));
-    this.computePipelines.set('layout', this.device.createComputePipeline({
-      layout: 'auto',
-      compute: {
-        module: this.device.createShaderModule({ code: layoutShader }),
-        entryPoint: 'main'
-      }
-    }));
+    this.computePipelines.set(
+      'vectorOps',
+      this.device.createComputePipeline({
+        layout: 'auto',
+        compute: {
+          module: this.device.createShaderModule({ code: vectorOpsShader }),
+          entryPoint: 'main',
+        },
+      })
+    );
+    this.computePipelines.set(
+      'matrixOps',
+      this.device.createComputePipeline({
+        layout: 'auto',
+        compute: {
+          module: this.device.createShaderModule({ code: matrixOpsShader }),
+          entryPoint: 'main',
+        },
+      })
+    );
+    this.computePipelines.set(
+      'physics',
+      this.device.createComputePipeline({
+        layout: 'auto',
+        compute: {
+          module: this.device.createShaderModule({ code: physicsShader }),
+          entryPoint: 'main',
+        },
+      })
+    );
+    this.computePipelines.set(
+      'layout',
+      this.device.createComputePipeline({
+        layout: 'auto',
+        compute: {
+          module: this.device.createShaderModule({ code: layoutShader }),
+          entryPoint: 'main',
+        },
+      })
+    );
   }
   // Vector Operations
   async vectorAdd(vectorsA: Vector3GPU[], vectorsB: Vector3GPU[]): Promise<YoRHaComputeResult> {
@@ -243,12 +303,12 @@ export class YoRHaWebGPUMath {
       const bufferA = this.createVectorBuffer(vectorsA);
       const bufferB = this.createVectorBuffer(vectorsB);
       const bufferOutput = this.device.createBuffer({
-        size: vectorsA.length * 3 * 4, // 3 floats per vector, 4 bytes per float;
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+        size: vectorsA.length * 3 * 4, // 3 floats per vector, 4 bytes per float
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
       });
       const resultBuffer = this.device.createBuffer({
         size: vectorsA.length * 3 * 4,
-        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
       });
       // Create bind group
       const bindGroup = this.device.createBindGroup({
@@ -256,26 +316,22 @@ export class YoRHaWebGPUMath {
         entries: [
           { binding: 0, resource: { buffer: bufferA } },
           { binding: 1, resource: { buffer: bufferB } },
-          { binding: 2, resource: { buffer: bufferOutput } }
-        ]
+          { binding: 2, resource: { buffer: bufferOutput } },
+        ],
       });
       // Execute compute shader
       const commandEncoder = this.device.createCommandEncoder();
       const passEncoder = commandEncoder.beginComputePass();
       passEncoder.setPipeline(pipeline);
       passEncoder.setBindGroup(0, bindGroup);
-      passEncoder.dispatchWorkgroups(Math.ceil(vectorsA.length / 64);
+      passEncoder.dispatchWorkgroups(Math.ceil(vectorsA.length / 64));
       passEncoder.end();
-      commandEncoder.copyBufferToBuffer(
-        bufferOutput, 0,
-        resultBuffer, 0,
-        vectorsA.length * 3 * 4
-      );
+      commandEncoder.copyBufferToBuffer(bufferOutput, 0, resultBuffer, 0, vectorsA.length * 3 * 4);
       this.device.queue.submit([commandEncoder.finish()]);
       // Read result
       await resultBuffer.mapAsync(GPUMapMode.READ);
       const arrayBuffer = resultBuffer.getMappedRange();
-      const result = new Float32Array(arrayBuffer);
+      const result = new Float32Array(arrayBuffer.slice ? arrayBuffer.slice(0) : arrayBuffer);
       const resultCopy = new Float32Array(result);
       resultBuffer.unmap();
       // Cleanup
@@ -287,9 +343,9 @@ export class YoRHaWebGPUMath {
       return {
         data: resultCopy,
         executionTime: endTime - startTime,
-        memoryUsed: vectorsA.length * 3 * 4 * 3 // 3 buffers
-      }
-    } catch (error: any) {
+        memoryUsed: vectorsA.length * 3 * 4 * 3, // 3 buffers
+      };
+    } catch (error: unknown) {
       console.error('WebGPU vector operation failed:', error);
       return this.fallbackVectorAdd(vectorsA, vectorsB);
     }
@@ -307,12 +363,12 @@ export class YoRHaWebGPUMath {
       const bufferA = this.createMatrixBuffer(matricesA);
       const bufferB = this.createMatrixBuffer(matricesB);
       const bufferOutput = this.device.createBuffer({
-        size: matricesA.length * 16 * 4, // 16 floats per matrix, 4 bytes per float;
-        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+        size: matricesA.length * 16 * 4, // 16 floats per matrix, 4 bytes per float
+        usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
       });
       const resultBuffer = this.device.createBuffer({
         size: matricesA.length * 16 * 4,
-        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ
+        usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
       });
       // Create bind group
       const bindGroup = this.device.createBindGroup({
@@ -320,26 +376,22 @@ export class YoRHaWebGPUMath {
         entries: [
           { binding: 0, resource: { buffer: bufferA } },
           { binding: 1, resource: { buffer: bufferB } },
-          { binding: 2, resource: { buffer: bufferOutput } }
-        ]
+          { binding: 2, resource: { buffer: bufferOutput } },
+        ],
       });
       // Execute compute shader
       const commandEncoder = this.device.createCommandEncoder();
       const passEncoder = commandEncoder.beginComputePass();
       passEncoder.setPipeline(pipeline);
       passEncoder.setBindGroup(0, bindGroup);
-      passEncoder.dispatchWorkgroups(Math.ceil(matricesA.length / 16);
+      passEncoder.dispatchWorkgroups(Math.ceil(matricesA.length / 16));
       passEncoder.end();
-      commandEncoder.copyBufferToBuffer(
-        bufferOutput, 0,
-        resultBuffer, 0,
-        matricesA.length * 16 * 4
-      );
+      commandEncoder.copyBufferToBuffer(bufferOutput, 0, resultBuffer, 0, matricesA.length * 16 * 4);
       this.device.queue.submit([commandEncoder.finish()]);
       // Read result
       await resultBuffer.mapAsync(GPUMapMode.READ);
       const arrayBuffer = resultBuffer.getMappedRange();
-      const result = new Float32Array(arrayBuffer);
+      const result = new Float32Array(arrayBuffer.slice ? arrayBuffer.slice(0) : arrayBuffer);
       const resultCopy = new Float32Array(result);
       resultBuffer.unmap();
       // Cleanup
@@ -351,9 +403,9 @@ export class YoRHaWebGPUMath {
       return {
         data: resultCopy,
         executionTime: endTime - startTime,
-        memoryUsed: matricesA.length * 16 * 4 * 3 // 3 buffers
-      }
-    } catch (error: any) {
+        memoryUsed: matricesA.length * 16 * 4 * 3, // 3 buffers
+      };
+    } catch (error: unknown) {
       console.error('WebGPU matrix operation failed:', error);
       return this.fallbackMatrixMultiply(matricesA, matricesB);
     }
@@ -362,7 +414,7 @@ export class YoRHaWebGPUMath {
   async computeLayout(
     nodes: Array<any>,
     containerSize: Vector3GPU,
-    layoutType: 'row' | 'column' | 'grid';
+    layoutType: 'row' | 'column' | 'grid'
   ): Promise<YoRHaComputeResult> {
     if (!this.device || !this.isInitialized) {
       return this.fallbackComputeLayout(nodes, containerSize, layoutType);
@@ -379,19 +431,15 @@ export class YoRHaWebGPUMath {
       return {
         data: positions,
         executionTime: endTime - startTime,
-        memoryUsed: nodes.length * 32 // Estimated
-      }
-    } catch (error: any) {
+        memoryUsed: nodes.length * 32, // Estimated
+      };
+    } catch (error: unknown) {
       console.error('WebGPU layout computation failed:', error);
       return this.fallbackComputeLayout(nodes, containerSize, layoutType);
     }
   }
   // Physics Simulation
-  async simulatePhysics(
-    particles: Array<any>,
-    deltaTime: number;
-    gravity: Vector3GPU;
-  ): Promise<YoRHaComputeResult> {
+  async simulatePhysics(particles: Particle[], deltaTime: number, gravity: Vector3GPU): Promise<YoRHaComputeResult> {
     if (!this.device || !this.isInitialized) {
       return this.fallbackSimulatePhysics(particles, deltaTime, gravity);
     }
@@ -406,32 +454,32 @@ export class YoRHaWebGPUMath {
       return {
         data: result,
         executionTime: endTime - startTime,
-        memoryUsed: particles.length * 48 // Estimated
-      }
-    } catch (error: any) {
+        memoryUsed: particles.length * 48, // Estimated
+      };
+    } catch (error: unknown) {
       console.error('WebGPU physics simulation failed:', error);
       return this.fallbackSimulatePhysics(particles, deltaTime, gravity);
     }
   }
   // Performance Monitoring
-  async getBenchmarkResults(): Promise<any> {
-    const testVectors = Array.from({ length: 1000 }, (_, i) => ({
+  async getBenchmarkResults(): Promise<BenchmarkResults> {
+    const testVectors: Vector3GPU[] = Array.from({ length: 1000 }, () => ({
       x: Math.random(),
       y: Math.random(),
-      z: Math.random()
-    });
-    const testMatrices = Array.from({ length: 100 }, () => ({
-      elements: new Float32Array(16).map(() => Math.random(),
-    });
+      z: Math.random(),
+    }));
+    const testMatrices: Matrix4GPU[] = Array.from({ length: 100 }, () => ({
+      elements: Float32Array.from(Array.from({ length: 16 }, () => Math.random())),
+    }));
     const vectorResult = await this.vectorAdd(testVectors, testVectors);
     const matrixResult = await this.matrixMultiply(testMatrices, testMatrices);
     return {
       webGPUSupported: this.isInitialized,
-      vectorOpsPerSecond: 1000 / vectorResult.executionTime * 1000,
-      matrixOpsPerSecond: 100 / matrixResult.executionTime * 1000,
-      memoryBandwidth: (vectorResult.memoryUsed / vectorResult.executionTime) * 1000,
-      computeUnits: this.adapter?.limits?.maxComputeWorkgroupsPerDimension || 0
-    }
+      vectorOpsPerSecond: (1000 / (vectorResult.executionTime || 1)) * 1000,
+      matrixOpsPerSecond: (100 / (matrixResult.executionTime || 1)) * 1000,
+      memoryBandwidth: ((vectorResult.memoryUsed || 0) / (vectorResult.executionTime || 1)) * 1000,
+      computeUnits: this.adapter?.limits?.maxComputeWorkgroupsPerDimension ?? 0,
+    };
   }
   // Utility Methods
   private createVectorBuffer(vectors: Vector3GPU[]): GPUBuffer {
@@ -442,8 +490,8 @@ export class YoRHaWebGPUMath {
       data[index * 3 + 2] = vector.z;
     });
     const buffer = this.device!.createBuffer({
-      size: (data as { byteLength?: any; set?: any }).byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
+      size: data.byteLength,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     });
     this.device!.queue.writeBuffer(buffer, 0, data);
     return buffer;
@@ -451,11 +499,11 @@ export class YoRHaWebGPUMath {
   private createMatrixBuffer(matrices: Matrix4GPU[]): GPUBuffer {
     const data = new Float32Array(matrices.length * 16);
     matrices.forEach((matrix, index) => {
-      (data as { byteLength?: any; set?: any }).set(matrix.elements, index * 16);
+      data.set(matrix.elements, index * 16);
     });
     const buffer = this.device!.createBuffer({
-      size: (data as { byteLength?: any; set?: any }).byteLength,
-      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
+      size: data.byteLength,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     });
     this.device!.queue.writeBuffer(buffer, 0, data);
     return buffer;
@@ -472,8 +520,8 @@ export class YoRHaWebGPUMath {
     return {
       data: result,
       executionTime: performance.now() - startTime,
-      memoryUsed: vectorsA.length * 3 * 4
-    }
+      memoryUsed: vectorsA.length * 3 * 4,
+    };
   }
   private fallbackMatrixMultiply(matricesA: Matrix4GPU[], matricesB: Matrix4GPU[]): YoRHaComputeResult {
     const startTime = performance.now();
@@ -487,38 +535,62 @@ export class YoRHaWebGPUMath {
     return {
       data: result,
       executionTime: performance.now() - startTime,
-      memoryUsed: matricesA.length * 16 * 4
-    }
+      memoryUsed: matricesA.length * 16 * 4,
+    };
   }
-  private fallbackComputeLayout(nodes: any[], containerSize: Vector3GPU, layoutType: string): YoRHaComputeResult {
+  private fallbackComputeLayout(
+    nodes: LayoutNode[],
+    containerSize: Vector3GPU,
+    layoutType: string
+  ): YoRHaComputeResult {
     const startTime = performance.now();
     const positions = new Float32Array(nodes.length * 3);
-    // Simple CPU layout computation
-    nodes.forEach((node, index) => {
-      if (layoutType === 'row') {
-        positions[index * 3] = (index - nodes.length / 2) * 2;
+    // Use containerSize to lay out nodes consistently on CPU fallback
+    const nodeCount = Math.max(1, nodes.length);
+    if (layoutType === 'row') {
+      const nodeWidth = (containerSize.x || 1) / nodeCount;
+      for (let index = 0; index < nodeCount; index++) {
+        const startX = -containerSize.x * 0.5 + index * nodeWidth + nodeWidth * 0.5;
+        positions[index * 3] = startX;
         positions[index * 3 + 1] = 0;
-      } else {
-        positions[index * 3] = 0;
-        positions[index * 3 + 1] = (nodes.length / 2 - index) * 2;
+        positions[index * 3 + 2] = 0;
+        // update optional node size for consumer if needed
+        nodes[index].size = nodes[index].size || { x: nodeWidth, y: nodes[index].size?.y ?? 1, z: 0 };
       }
-      positions[index * 3 + 2] = 0;
-    });
+    } else {
+      const nodeHeight = (containerSize.y || 1) / nodeCount;
+      for (let index = 0; index < nodeCount; index++) {
+        const startY = containerSize.y * 0.5 - index * nodeHeight - nodeHeight * 0.5;
+        positions[index * 3] = 0;
+        positions[index * 3 + 1] = startY;
+        positions[index * 3 + 2] = 0;
+        nodes[index].size = nodes[index].size || { x: nodes[index].size?.x ?? 1, y: nodeHeight, z: 0 };
+      }
+    }
     return {
       data: positions,
       executionTime: performance.now() - startTime,
-      memoryUsed: nodes.length * 12
-    }
+      memoryUsed: nodes.length * 12,
+    };
   }
-  private fallbackSimulatePhysics(particles: any[], deltaTime: number, gravity: Vector3GPU): YoRHaComputeResult {
+  private fallbackSimulatePhysics(particles: Particle[], deltaTime: number, gravity: Vector3GPU): YoRHaComputeResult {
     const startTime = performance.now();
     const result = new Float32Array(particles.length * 6);
     // Simple CPU physics simulation
     particles.forEach((particle, index) => {
+      // Ensure vector fields exist
+      particle.velocity = particle.velocity || { x: 0, y: 0, z: 0 };
+      particle.position = particle.position || { x: 0, y: 0, z: 0 };
+      particle.force = particle.force || { x: 0, y: 0, z: 0 };
+      particle.mass = particle.mass || 1;
       // Update velocity
-      particle.velocity.x += gravity.x * deltaTime;
-      particle.velocity.y += gravity.y * deltaTime;
-      particle.velocity.z += gravity.z * deltaTime;
+      particle.velocity.x += ((particle.force.x + gravity.x * particle.mass) * deltaTime) / particle.mass;
+      particle.velocity.y += ((particle.force.y + gravity.y * particle.mass) * deltaTime) / particle.mass;
+      particle.velocity.z += ((particle.force.z + gravity.z * particle.mass) * deltaTime) / particle.mass;
+      // Apply simple damping (optional)
+      particle.velocity.x *= 0.999;
+      particle.velocity.y *= 0.999;
+      particle.velocity.z *= 0.999;
       // Update position
       particle.position.x += particle.velocity.x * deltaTime;
       particle.position.y += particle.velocity.y * deltaTime;
@@ -534,8 +606,8 @@ export class YoRHaWebGPUMath {
     return {
       data: result,
       executionTime: performance.now() - startTime,
-      memoryUsed: particles.length * 48
-    }
+      memoryUsed: particles.length * 48,
+    };
   }
   /**
    * 🔥 Advanced Texture Management with Mipmap Generation
@@ -548,130 +620,155 @@ export class YoRHaWebGPUMath {
       filterMode?: 'linear' | 'nearest' | 'cubic';
       rtxOptimized?: boolean;
       enableStreaming?: boolean;
-      legalDocument?: any;
+      legalDocument?: LegalDocument;
     } = {}
-  ): Promise<any> {
+  ): Promise<TextureProcessResult> {
     const startTime = performance.now();
-    const { generateMipmaps = true, filterMode = 'linear', rtxOptimized = true } = options;
+    const {
+      generateMipmaps = true,
+      filterMode = 'linear',
+      rtxOptimized = true,
+      enableStreaming = false,
+      legalDocument,
+    } = options;
     try {
-      // Import mipmap functionality dynamically
-      const { yorhaMipmapShaders } = await import('./YoRHaMipmapShaders');
-      const { yorhaTextureManager } = await import('./YoRHaOptimizedTextureManager');
+      if (!this.device) {
+        throw new Error('WebGPU device not initialized');
+      }
+
+      // Typed dynamic imports (no `any`)
+      const mod1 = (await import('./YoRHaMipmapShaders')) as { yorhaMipmapShaders: YoRHaMipmapShadersModule };
+      const mod2 = (await import('./YoRHaOptimizedTextureManager')) as { yorhaTextureManager: YoRHaTextureManager };
+      const { yorhaMipmapShaders } = mod1;
+      const { yorhaTextureManager } = mod2;
+
       // Initialize if needed
-      await yorhaMipmapShaders.initialize(this.device!);
-      await yorhaTextureManager.initialize(this.device!);
-      let mipmaps: GPUTexture[] = [];
+      await yorhaMipmapShaders.initialize(this.device);
+      await yorhaTextureManager.initialize(this.device);
+
+      const mipLevels: GPUTexture[] = [];
       let totalMemoryUsed = 0;
+
       if (generateMipmaps) {
-        console.log('🔥 Generating optimized mipmaps with RTX acceleration');
-        const mipmapResult = await yorhaMipmapShaders.generateMipmapChain(sourceTexture, {
+        // Call with typed options
+        const rawResult = await yorhaMipmapShaders.generateMipmapChain(sourceTexture, {
           filterMode,
           rtxOptimized,
-          enableStreaming: options.enableStreaming || false,
-          maxMipLevels: 12
+          enableStreaming,
+          maxMipLevels: 12,
         });
-        mipmaps = mipmapResult.mipmapLevels;
-        totalMemoryUsed = mipmapResult.memoryUsed;
-        // Store in texture manager if legal document provided
-        if (options.legalDocument) {
-          await yorhaTextureManager.allocateTexture(
-            `legal_texture_${Date.now()}`,
-            sourceTexture,
-            options.legalDocument,
-            {
-              enableMipmaps: true,
-              streamingEnabled: options.enableStreaming,
-              priority: options.legalDocument.riskLevel === 'critical' ? 'critical' : 'normal'
+
+        const mipmapResult = (rawResult as MipmapChainResult) ?? {};
+        const rawLevels: unknown[] = mipmapResult.mipLevels ?? mipmapResult.mipmapLevels ?? [];
+
+        let estimatedMemory = 0;
+        for (const lvl of rawLevels) {
+          if (!lvl) continue;
+          // If it's a GPUTexture
+          if (isGPUTexture(lvl)) {
+            mipLevels.push(lvl);
+            continue;
+          }
+
+          // If it's a simple descriptor with width/height -> synthesize GPUTexture
+          if (isLevelDescriptor(lvl) && this.device) {
+            try {
+              const desc: GPUTextureDescriptor = {
+                size: { width: lvl.width, height: lvl.height, depthOrArrayLayers: 1 },
+                format: 'rgba8unorm',
+                usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT,
+                mipLevelCount: 1,
+              };
+              const tex = this.device.createTexture(desc);
+              mipLevels.push(tex);
+              estimatedMemory += (lvl.bytesPerPixel ?? 4) * lvl.width * lvl.height;
+            } catch (e) {
+              console.warn('Failed to synthesize GPUTexture for mip level descriptor, skipping:', e);
             }
-          );
+            continue;
+          }
+
+          console.warn('Unknown mip level shape returned by generateMipmapChain, skipping level:', lvl);
+        }
+
+        totalMemoryUsed = mipmapResult.memoryUsed ?? estimatedMemory ?? 0;
+
+        // Optionally store resulting texture for the legal document (typed call)
+        if (legalDocument && typeof yorhaTextureManager.storeTexture === 'function') {
+          try {
+            await yorhaTextureManager.storeTexture(legalDocument.id ?? 'unknown', mipLevels[0] ?? sourceTexture);
+          } catch (e) {
+            console.warn('Failed to store texture in texture manager:', e);
+          }
         }
       }
+
+      const processedTexture = mipLevels.length > 0 ? mipLevels[0] : sourceTexture;
       const processingTime = performance.now() - startTime;
-      console.log(`✅ Texture processing completed in ${processingTime.toFixed(2)}ms`);
-      console.log(`🔥 Generated ${mipmaps.length} mip levels with RTX optimization`);
+
       return {
-        processedTexture: sourceTexture,
-        mipmaps,
+        processedTexture,
+        mipLevels,
         processingTime,
         memoryUsed: totalMemoryUsed,
         optimization: {
-          mipmapGenerated: generateMipmaps && mipmaps.length > 0,
-          rtxAcceleration: rtxOptimized,
-          streamingUsed: options.enableStreaming || false,
-        }
-      }
-    } catch (error) {
-      console.error('Texture processing with mipmaps failed:', error);
-      // Return basic result without mipmaps
+          mipmapGenerated: generateMipmaps && mipLevels.length > 0,
+          rtxAcceleration: Boolean(rtxOptimized),
+          streamingUsed: Boolean(enableStreaming),
+        },
+      };
+    } catch (error: unknown) {
+      console.error('processTextureWithMipmaps failed:', error);
+      const processingTime = performance.now() - startTime;
+      // Return a safe fallback result
       return {
         processedTexture: sourceTexture,
-        mipmaps: [],
-        processingTime: performance.now() - startTime,
+        mipLevels: [],
+        processingTime,
         memoryUsed: 0,
         optimization: {
           mipmapGenerated: false,
-          rtxAcceleration: false,
-          streamingUsed: false,
-        }
-      }
+          rtxAcceleration: Boolean(options.rtxOptimized ?? false),
+          streamingUsed: Boolean(options.enableStreaming ?? false),
+        },
+      };
     }
-  }
-  /**
-   * 🎮 Enhanced GPU Pipeline with Legal Document Processing
-   */
-  async processLegalDocumentTextures(
-    legalDocuments: Array<;
-  ): Promise<any> {
-    if (!this.device) {
-      throw new Error('WebGPU device not initialized');
-    }
-    const startTime = performance.now();
-    console.log(`🚀 Processing ${legalDocuments.length} legal document textures`);
-    try {
-      const { yorhaTextureManager } = await import('./YoRHaOptimizedTextureManager');
-      await yorhaTextureManager.initialize(this.device);
-      let totalMipmaps = 0;
-      const processPromises = legalDocuments.map(async (doc, index) => {
-        // Process with context-aware optimization
-        const result = await this.processTextureWithMipmaps(doc.texture, {
-          generateMipmaps: true,
-          rtxOptimized: doc.riskLevel === 'critical' || doc.priority > 200,
-          enableStreaming: doc.type === 'evidence' && doc.priority > 150,
-          legalDocument: doc
-        });
-        totalMipmaps += (result as { mipmaps?: any }).mipmaps.length;
-        return result;
-      });
-      const results = await Promise.all(processPromises);
-      const totalTime = performance.now() - startTime;
-      console.log(`✅ Legal document processing completed in ${totalTime.toFixed(2)}ms`);
-      console.log(`🔥 Generated ${totalMipmaps} total mip levels across ${legalDocuments.length} documents`);
-      return {
-        processedDocuments: legalDocuments.length,
-        totalProcessingTime: totalTime,
-        mipmapsGenerated: totalMipmaps,
-        memoryOptimized: true,
-      }
-    } catch (error) {
-      console.error('Legal document texture processing failed:', error);
-      throw error;
-    }
-  }
-  dispose(): void {
-    this.computePipelines.clear();
-    if (this.device) {
-      this.device.destroy();
-    }
-    // Dispose integrated systems
-    import('./YoRHaMipmapShaders').then(({ yorhaMipmapShaders }) => {
-      yorhaMipmapShaders.dispose();
-    }).catch(console.warn);
-    import('./YoRHaOptimizedTextureManager').then(({ yorhaTextureManager }) => {
-      yorhaTextureManager.dispose();
-    }).catch(console.warn);
   }
 }
-// Singleton instance
-export const yorhaWebGPU = new YoRHaWebGPUMath();
-// Initialize on module load
-yorhaWebGPU.initialize().catch(console.error);
+
+// Add typed contract for external mipmap/texture modules
+interface YoRHaMipmapShadersModule {
+  initialize(device: GPUDevice): Promise<void>;
+  generateMipmapChain(
+    source: GPUTexture,
+    opts: {
+      filterMode?: 'linear' | 'nearest' | 'cubic';
+      rtxOptimized?: boolean;
+      enableStreaming?: boolean;
+      maxMipLevels?: number;
+    }
+  ): Promise<MipmapChainResult | undefined>;
+}
+
+interface YoRHaTextureManager {
+  initialize(device: GPUDevice): Promise<void>;
+  storeTexture?(id: string, texture: GPUTexture): Promise<void>;
+}
+
+// Type guards to avoid any-casts
+function isGPUTexture(x: unknown): x is GPUTexture {
+  return (
+    typeof x === 'object' &&
+    x !== null &&
+    'createView' in x &&
+    typeof (x as { createView?: unknown }).createView === 'function'
+  );
+}
+function isLevelDescriptor(x: unknown): x is { width: number; height: number; bytesPerPixel?: number } {
+  return (
+    typeof x === 'object' &&
+    x !== null &&
+    typeof (x as { width?: unknown }).width === 'number' &&
+    typeof (x as { height?: unknown }).height === 'number'
+  );
+}

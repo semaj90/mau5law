@@ -321,7 +321,7 @@
     border: 3px solid rgba(0, 204, 255, 0.3);
     border-top: 3px solid var(--text-primary, #00ccff);
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
 
@@ -363,18 +363,20 @@
     gap: 1.5rem;
   }
 
-  .result-card {
+  /* Use global selectors because classes are applied to components
+     (Card / CardTitle) and Svelte's analyzer can't see them otherwise. */
+  :global(.result-card) {
     background: var(--surface-secondary, #111111);
     border: 1px solid var(--border-primary, #00ccff);
     transition: all 0.3s ease;
   }
 
-  .result-card:hover {
+  :global(.result-card:hover) {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 204, 255, 0.2);
   }
 
-  .result-title {
+  :global(.result-title) {
     color: var(--text-primary, #00ccff);
     display: flex;
     align-items: center;

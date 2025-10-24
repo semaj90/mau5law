@@ -1,9 +1,19 @@
 // Move/import Drizzle pg-core symbols near the top of the file
-import { pgTable, uuid, timestamp, text, boolean, varchar, json, jsonb, real, integer } from 'drizzle-orm/pg-core';
-// removed incompatible customVector import
-// import { customVector as vector } from '@useverk/drizzle-pgvector';
+import {
+  pgTable,
+  uuid,
+  timestamp,
+  text,
+  boolean,
+  varchar,
+  json,
+  jsonb,
+  real,
+  integer,
+  vector,
+} from 'drizzle-orm/pg-core';
+// If you have a custom provider for pgvector, prefer the official drizzle/pg-core `vector` where possible.
 import { users } from './schema-postgres';
-import { vector } from '@knaadh/drizzle-pg-vector'; // For pgvector support
 import { sql } from 'drizzle-orm';
 
 // Re-export the PostgreSQL schema as the main schema

@@ -19,7 +19,7 @@
       },
       states: {
         idle: {
-          on {
+          on: {
             QUERY: {
               target: 'querying',
               guard: (_ctx, evt) => !!(evt as any)?.prompt?.trim(),
@@ -82,7 +82,7 @@
           },
         },
         success: {
-          on {
+          on: {
             QUERY: {
               target: 'querying',
               guard: (_ctx, evt) => !!(evt as any)?.prompt?.trim(),
@@ -102,7 +102,7 @@
           },
         },
         error: {
-          on {
+          on: {
             RETRY: {
               target: 'querying',
             },
@@ -125,7 +125,7 @@
   // Use explicit Svelte stores for local UI state
   // Local writable stores
   const promptInput = writable('');
-  type Notification = { id: number; title: string; description string };
+  type Notification = { id: number; title: string; description: string };
   const notifications = writable<Notification[]>([]);
 
   // Derived stores based on the XState snapshot store

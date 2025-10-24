@@ -87,7 +87,7 @@ class ComponentLoader {
   private loadedComponents = new Map<string, any>();
   private loadingPromises = new Map<string, Promise<any>>();
   async loadComponent(
-    name: string;
+    name: string,
     options: Partial<ComponentLoadOptions> = {}
   ): Promise<any> {
     const { category = 'advanced', priority = 'lazy', cache = true } = options;

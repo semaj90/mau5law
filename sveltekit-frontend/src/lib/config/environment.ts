@@ -2,7 +2,7 @@
  * Centralized Environment Configuration
  * Handles Ollama detection and configuration app-wide
  */
-}
+
 export interface EnvironmentConfig {
   ollama: {
     baseUrl: string;

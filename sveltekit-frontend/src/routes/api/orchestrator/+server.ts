@@ -24,7 +24,7 @@ function generateUuidV4(): string {
     ].join('-')
 }
 export const POST: RequestHandler = async ({ request }) => {
-    const body = await request.json().catch(() => ({})
+    const body = await request.json().catch(() => ({}))
     const action = body && typeof body === 'object' && 'action' in body ? String((body as any).action) : null
     switch (action) {
         case 'create': {
