@@ -1,7 +1,4 @@
-// @ts-nocheck - Complex experimental service with external dependencies
-// WebGPU Polyfill with WebGL fallback for vector operations
-// Provides GPU acceleration for legal AI vector processing with fallback support
-import type { WebGPUDevice, WebGPUComputeShader, WebGPUVectorOperation } from '$lib/types/vector-jobs';
+import type { WebGPUDevice, WebGPUComputeShader } from '$lib/types/vector-jobs';
 import { shaderCacheManager } from './shader-cache-manager.js';
 export class WebGPUPolyfill {
   private device: GPUDevice | null = null;
@@ -23,37 +20,39 @@ export class WebGPUPolyfill {
 
   async initialize(): Promise<boolean> {
     // Try WebGPU first
-    if (typeof navigator !== 'undefined' && 'gpu' in navigator) {
-      try {
-        this.adapter = await (navigator as any).gpu.requestAdapter({
-          powerPreference: 'high-performance',
-        });
-        if (this.adapter) {
-          this.device = await this.adapter.requestDevice({
-            requiredFeatures: [],
-            requiredLimits: {
-              // use adapter.limits if available, otherwise rely on defaults
-              maxStorageBufferBindingSize:
-                (this.adapter as any).limits?.maxStorageBufferBindingSize ?? 64 * 1024 * 1024,
-              maxComputeWorkgroupStorageSize: (this.adapter as any).limits?.maxComputeWorkgroupStorageSize ?? 16384,
-              maxComputeInvocationsPerWorkgroup:
-                (this.adapter as any).limits?.maxComputeInvocationsPerWorkgroup ?? 1024,
-            },
+    if (typeof navigator !== 'undefined') {
+      // Safe navigator.gpu access without "any"
+      const nav = navigator as unknown as { gpu?: GPU | undefined };
+      if (nav.gpu) {
+        try {
+          const gpu = nav.gpu;
+          // requestAdapter is optional on some platforms
+          const adapter = await gpu.requestAdapter?.({
+            powerPreference: 'high-performance',
           });
-          this.queue = this.device.queue;
-          this.isWebGPUAvailable = true;
-          // Initialize shader cache manager (if it exists)
-          try {
-            await shaderCacheManager.initialize?.(this.device);
-          } catch (e) {
-            // Non-fatal
+          this.adapter = adapter ?? null;
+          if (this.adapter) {
+            // requestDevice without attempting to mirror adapter.limits (safer)
+            this.device = (await this.adapter.requestDevice?.()) ?? null;
+            if (this.device) {
+              this.queue = this.device.queue;
+              this.isWebGPUAvailable = true;
+              // Initialize shader cache manager (if it exists)
+              try {
+                await shaderCacheManager.initialize?.(this.device);
+              } catch (e: unknown) {
+                // Non-fatal - ignore initialization errors
+                console.debug('shaderCacheManager initialize ignored:', String(e));
+              }
+              console.log('🔥 WebGPU initialized successfully');
+              const adapterInfo = (this.adapter as unknown as { name?: string })?.name ?? String(this.adapter);
+              console.log('GPU adapter info:', adapterInfo);
+              return true;
+            }
           }
-          console.log('🔥 WebGPU initialized successfully');
-          console.log('GPU adapter info:', (this.adapter as any)?.name ?? this.adapter);
-          return true;
+        } catch (error: unknown) {
+          console.warn('WebGPU initialization failed, falling back to WebGL:', String(error));
         }
-      } catch (error: any) {
-        console.warn('WebGPU initialization failed, falling back to WebGL:', error);
       }
     }
     // Fallback to WebGL2
@@ -87,7 +86,7 @@ export class WebGPUPolyfill {
         // ignore if parameter not available
       }
       return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('WebGL initialization failed:', error);
       return false;
     }
@@ -95,25 +94,29 @@ export class WebGPUPolyfill {
 
   getDeviceInfo(): WebGPUDevice {
     if (this.isWebGPUAvailable && this.device && this.adapter) {
+      // Safely extract limits from device or adapter without "any"
+      const deviceLimits = (this.device as unknown as Record<string, unknown>)?.limits ?? {};
+      const adapterLimits = (this.adapter as unknown as Record<string, unknown>)?.limits ?? {};
+      const limitsSource = Object.keys(deviceLimits).length ? deviceLimits : adapterLimits;
       return {
         device: this.device,
         queue: this.queue!,
         adapter: this.adapter,
-        features: Array.from((this.device as any).features || []),
-        limits: Object.fromEntries(,
-          Object.entries((this.device as any).limits || {}).map(([key, value]) => [key, Number(value)])
+        features: Array.from((this.device as unknown as { features?: Iterable<string> })?.features ?? []),
+        limits: Object.fromEntries(
+          Object.entries(limitsSource).map(([key, value]) => [key, Number((value as unknown) ?? 0)])
         ),
         isAvailable: true,
-      } as any;
+      } as unknown as WebGPUDevice;
     }
     return {
-      device: null as any,
-      queue: null as any,
-      adapter: null as any,
+      device: null as unknown,
+      queue: null as unknown,
+      adapter: null as unknown,
       features: [],
       limits: {},
       isAvailable: false,
-    } as any;
+    } as unknown as WebGPUDevice;
   }
 
   // Vector embedding computation using WebGPU compute shaders (safe fallback implementation)
@@ -137,7 +140,7 @@ export class WebGPUPolyfill {
         (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now()) - startTime;
       this.updatePerformanceStats(processingTime);
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Embedding computation failed:', error);
       // Always fall back to CPU computation
       return this.computeEmbeddingCPU(inputVector, dimensions);
@@ -179,19 +182,25 @@ export class WebGPUPolyfill {
       const resultArray = new Float32Array(mapped.slice(0));
       readBuffer.unmap();
 
-      // Clean up
+      // Clean up with guarded handlers (avoid empty catch blocks)
       try {
-        uploadBuffer.destroy();
-      } catch {}
+        uploadBuffer.destroy?.();
+      } catch (e: unknown) {
+        console.debug('uploadBuffer destroy ignored:', String(e));
+      }
       try {
-        readBuffer.destroy();
-      } catch {}
+        readBuffer.destroy?.();
+      } catch (e: unknown) {
+        console.debug('readBuffer destroy ignored:', String(e));
+      }
 
       return Array.from(resultArray.slice(0, dimensions));
-    } catch (e) {
+    } catch (e: unknown) {
       try {
-        uploadBuffer.destroy();
-      } catch {}
+        uploadBuffer.destroy?.();
+      } catch (err: unknown) {
+        console.debug('uploadBuffer destroy ignored after failure:', String(err));
+      }
       throw e;
     }
   }
@@ -235,7 +244,7 @@ export class WebGPUPolyfill {
         (typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now()) - startTime;
       this.updatePerformanceStats(processingTime);
       return similarity;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Similarity computation failed:', error);
       return this.computeSimilarityCPU(vector1, vector2);
     }
@@ -244,12 +253,7 @@ export class WebGPUPolyfill {
   private async computeSimilarityWebGPU(vector1: number[], vector2: number[]): Promise<number> {
     // Safe host-side compute using GPU readback (no shaders used here)
     if (!this.device || !this.queue) throw new Error('WebGPU device not available');
-    const length = vector1.length;
-    const buf1 = new Float32Array(vector1);
-    const buf2 = new Float32Array(vector2);
-
-    // Upload both buffers and read back (we'll do CPU dot-product for now)
-    // This avoids fragile shader logic while keeping correct results
+    // Avoid unused intermediate buffers; delegate to CPU for correctness
     return this.computeSimilarityCPU(vector1, vector2);
   }
 
@@ -293,11 +297,22 @@ export class WebGPUPolyfill {
     // Cleanup WebGPU resources
     if (this.device) {
       try {
-        // GPUDevice.destroy is not standardized everywhere; guard it
-        if (typeof (this.device as any).destroy === 'function') {
-          (this.device as any).destroy();
+        // GPUDevice.destroy is not standardized everywhere; guard it with a precise function type
+        const deviceWithDestroy = this.device as unknown as {
+          destroy?: () => void | Promise<void>;
+        };
+        if (typeof deviceWithDestroy.destroy === 'function') {
+          // Call destroy and handle possible Promise return value
+          try {
+            const maybePromise = deviceWithDestroy.destroy();
+            if (maybePromise && typeof (maybePromise as { then?: unknown }).then === 'function') {
+              (maybePromise as Promise<void>).catch(e => console.debug('device.destroy() rejected:', String(e)));
+            }
+          } catch (callErr: unknown) {
+            console.debug('device.destroy() call threw:', String(callErr));
+          }
         }
-      } catch (e) {
+      } catch (e: unknown) {
         /* ignore */
       }
     }
@@ -309,7 +324,7 @@ export class WebGPUPolyfill {
         if (loseContext) {
           loseContext.loseContext();
         }
-      } catch (e) {
+      } catch (e: unknown) {
         /* ignore */
       }
     }
@@ -319,5 +334,4 @@ export class WebGPUPolyfill {
   }
 }
 
-// Singleton instance for global use
 export const webgpuPolyfill = new WebGPUPolyfill();

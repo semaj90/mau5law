@@ -37,8 +37,8 @@ $mcpConfig = @{
     Port = $Port
     Workers = $Workers
     BaseUrl = "http://localhost:$Port"
-    ProcessName = "node"
-    ScriptPath = "scripts/mcp-multicore-server.mjs"
+    ProcessName = "mcp-context7-optimized"
+    ScriptPath = "scripts/mcp-context7-optimized.mjs"
 }
 
 function Start-MCPServer {

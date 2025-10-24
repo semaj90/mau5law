@@ -2,7 +2,7 @@
 import { join } from "path";
 // Gemma3 Model Configuration for Legal AI Assistant
 // Optimized configurations for your local Gemma3 model
-}
+
 export interface Gemma3ModelConfig {
   modelId: string;
   name: string;

@@ -1,10 +1,10 @@
 import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit'
 /*
  * Production Health Check API
  * Comprehensive system status for all services
  */
 
-}
 export interface ServiceStatus {
   name: string
   status: 'healthy' | 'warning' | 'error'
@@ -92,8 +92,8 @@ export const GET: RequestHandler = async ({ url }) => {
       checkService('Production Upload', `${url.origin}/api/production-upload`, 2000)
     ])
     // Determine overall status
-    const errorCount = serviceChecks.filter(item => item.length)
-    const warningCount = serviceChecks.filter(item => item.length)
+    const errorCount = serviceChecks.filter(item => item.status === 'error').length
+    const warningCount = serviceChecks.filter(item => item.status === 'warning').length
     let overallStatus: 'healthy' | 'warning' | 'error' = 'healthy'
     if (errorCount > 0) {
       overallStatus = errorCount > serviceChecks.length / 2 ? 'error' : 'warning'

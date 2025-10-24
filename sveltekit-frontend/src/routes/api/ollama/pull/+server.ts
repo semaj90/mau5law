@@ -26,8 +26,8 @@ export const POST: RequestHandler = async ({ request }) => {
     })
     if (!res.ok) {
       const text = await res.text()
-      return json()
-        { ok: false, status,: res.status, erro,r: text.slice(0, 2000) },
+      return json(
+        { ok: false, status: res.status, error: text.slice(0, 2000) },
         { status: 502 }
       )
     }
@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
     if (reader) {
       const decoder = new TextDecoder()
       let buffer = ""
-      for () {
+      while (true) {
         const { done, value } = await reader.read()
         if (done) break
         buffer += decoder.decode(value, { stream: true })
@@ -63,8 +63,8 @@ export const POST: RequestHandler = async ({ request }) => {
       }
     }
     return json({ ok: true, done: true, last: lastLine })
-  }, catch (e: any) {
-    const msg = e instanceof Error ? e.message: "pull failed"
+  } catch (e: any) {
+    const msg = e instanceof Error ? e.message : "pull failed"
     return json({ ok: false, error: msg }, { status: 500 })
   }
 }

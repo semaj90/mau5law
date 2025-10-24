@@ -109,13 +109,32 @@ export default defineConfig(({ mode }) => {
             'webgpu-ai': ['$lib/webgpu/webgpu-ai-engine'],
             'cognitive-router': ['$lib/ai/cognitive-smart-router'],
             'gpu-inference': ['$lib/services/cuda-vector-integration'],
+            'bits-ui': ['bits-ui'],
+            'drizzle': ['drizzle-orm'],
+            'langchain': ['langchain', '@langchain/core'],
           },
         },
       },
+      chunkSizeWarningLimit: 1000,
+      reportCompressedSize: false,
     },
     optimizeDeps: {
       exclude: ['@webgpu/types'],
-      include: ['@grpc/grpc-js', '@grpc/proto-loader'],
+      include: [
+        '@grpc/grpc-js',
+        '@grpc/proto-loader',
+        'bits-ui',
+        'drizzle-orm',
+        'svelte',
+        '@sveltejs/kit',
+      ],
+      esbuildOptions: {
+        target: 'ES2022',
+      },
+    },
+    esbuild: {
+      legalComments: 'none',
+      treeShaking: true,
     },
     define: {
       'process.env.NODE_ENV': '"development"',

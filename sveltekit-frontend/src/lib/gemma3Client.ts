@@ -1,11 +1,9 @@
-
 /**
  * Gemma3 API Client for SvelteKit
  * Provides integration with Ollama and llama.cpp servers
  */
-}
 export interface ChatMessage {
-  role: "system" | "user" | "assistant";
+  role: 'system' | 'user' | 'assistant';
   content: string;
 }
 export interface ChatCompletionRequest {
@@ -21,12 +19,13 @@ export interface ChatCompletionResponse {
   object: string;
   created: number;
   model: string;
-  choices: Array<any>;
+  // tightened choice type so accessing .message?.content is type-safe
+  choices: Array<{ index?: number; message?: { role?: string; content?: string }; finish_reason?: string }>;
   usage?: {
     prompt_tokens: number;
     completion_tokens: number;
     total_tokens: number;
-  }
+  };
 }
 export interface CompletionRequest {
   model?: string;
@@ -41,23 +40,20 @@ export interface CompletionResponse {
   object: string;
   created: number;
   model: string;
-  choices: Array<any>;
+  // tightened choice type instead of any
+  choices: Array<{ index?: number; text?: string; finish_reason?: string }>;
   usage?: {
     prompt_tokens: number;
     completion_tokens: number;
     total_tokens: number;
-  }
+  };
 }
 export class Gemma3Client {
   private baseUrl: string;
   private timeout: number;
   private defaultModel: string;
-  constructor(
-    baseUrl: string = "http://localhost:11434",
-    timeout: number = 60000,
-    defaultModel: string = "gemma3-legal",
-  ) {
-    this.baseUrl = baseUrl.replace(/\/$/, ""); // Remove trailing slash
+  constructor(baseUrl: string = getOllamaEndpoint(), timeout: number = 60000, defaultModel: string = 'gemma3-legal') {
+    this.baseUrl = baseUrl.replace(/\/$/, ''); // Remove trailing slash
     this.timeout = timeout;
     this.defaultModel = defaultModel;
   }
@@ -67,100 +63,97 @@ export class Gemma3Client {
   async healthCheck(): Promise<boolean> {
     try {
       const response = await fetch(`${this.baseUrl}/health`, {
-        method: "GET",
-        signal: AbortSignal.timeout(10000)
+        method: 'GET',
+        signal: AbortSignal.timeout(10000),
       });
       return response.ok;
-    } catch (error: any) {
-      console.error("Health check failed:", error);
+    } catch (error: unknown) {
+      console.error('Health check failed:', errorToString(error));
       return false;
     }
   }
   /**
    * Get server information
    */
-  async getServerInfo(): Promise<any> {
+  // safer return type for server info
+  async getServerInfo(): Promise<{ backend?: string; version?: string; [k: string]: unknown }> {
     const response = await fetch(`${this.baseUrl}/health`, {
-      method: "GET",
-      signal: AbortSignal.timeout(10000)
+      method: 'GET',
+      signal: AbortSignal.timeout(10000),
     });
     if (!response.ok) {
       throw new Error(`Server info request failed: ${response.status}`);
     }
-    return response.json();
+    // typed as unknown -> cast to structured object
+    const json = await response.json();
+    return json as { backend?: string; version?: string; [k: string]: unknown };
   }
   /**
    * List available models
    */
-  async listModels(): Promise<any> {
+  async listModels(): Promise<{ models: Array<{ id: string; name?: string; [k: string]: unknown }> }> {
     const response = await fetch(`${this.baseUrl}/v1/models`, {
-      method: "GET",
-      signal: AbortSignal.timeout(10000)
+      method: 'GET',
+      signal: AbortSignal.timeout(10000),
     });
     if (!response.ok) {
       throw new Error(`List models request failed: ${response.status}`);
     }
-    return response.json();
+    const json = await response.json();
+    return json as { models: Array<{ id: string; name?: string; [k: string]: unknown }> };
   }
   /**
    * Create a chat completion
    */
-  async createChatCompletion(
-    request: ChatCompletionRequest
-  ): Promise<ChatCompletionResponse> {
+  async createChatCompletion(request: ChatCompletionRequest): Promise<ChatCompletionResponse> {
     const payload = {
       model: request?.model || this.defaultModel,
       messages: request.messages,
       temperature: request.temperature ?? 0.1,
       top_p: request.top_p ?? 0.9,
       max_tokens: request.max_tokens ?? 1024,
-      stream: request.stream ?? false
-    }
+      stream: request.stream ?? false,
+    };
     const response = await fetch(`${this.baseUrl}/v1/chat/completions`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(this.timeout)
+      signal: AbortSignal.timeout(this.timeout),
     });
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(
-        `Chat completion request failed: ${response.status} - ${errorText}`,
-      );
+      throw new Error(`Chat completion request failed: ${response.status} - ${errorText}`);
     }
     return response.json();
   }
   /**
    * Create a text completion
    */
-  async createCompletion(
-    request: CompletionRequest
-  ): Promise<CompletionResponse> {
+  async createCompletion(request: CompletionRequest): Promise<CompletionResponse> {
     const payload = {
       model: request?.model || this.defaultModel,
       prompt: request.prompt,
       temperature: request.temperature ?? 0.1,
       top_p: request.top_p ?? 0.9,
       max_tokens: request.max_tokens ?? 1024,
-      stream: request.stream ?? false
-    }
+      stream: request.stream ?? false,
+    };
     const response = await fetch(`${this.baseUrl}/v1/completions`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(this.timeout)
+      signal: AbortSignal.timeout(this.timeout),
     });
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(
-        `Completion request failed: ${response.status} - ${errorText}`,
-      );
+      throw new Error(`Completion request failed: ${response.status} - ${errorText}`);
     }
-    return response.json();
+    const json = await response.json();
+    return json as CompletionResponse;
   }
   /**
    * Helper: Ask a legal question with proper context
@@ -168,125 +161,163 @@ export class Gemma3Client {
   async askLegalQuestion(question: string, context?: string): Promise<string> {
     const messages: ChatMessage[] = [
       {
-        role: "system",
-        content: `You are a specialized Legal AI Assistant with expertise in contract analysis, legal document review, case law research, and legal compliance. You provide accurate, professional legal information and analysis. Always maintain professional accuracy and cite relevant legal principles when applicable.${context ? `\n\nAdditional context: ${context}` : ""}`
+        role: 'system',
+        content: `You are a specialized Legal AI Assistant with expertise in contract analysis, legal document review, case law research, and legal compliance. You provide accurate, professional legal information and analysis. Always maintain professional accuracy and cite relevant legal principles when applicable.${context ? `\n\nAdditional context: ${context}` : ''}`,
       },
       {
-        role: "user",
-        content: question
-      }
+        role: 'user',
+        content: question,
+      },
     ];
     const response = await this.createChatCompletion({
       messages,
       temperature: 0.05, // Low temperature for legal accuracy
-      max_tokens: 1024
+      max_tokens: 1024,
     });
-    return response.choices[0]?.message?.content || "";
+    return response.choices[0]?.message?.content || '';
   }
   /**
    * Helper: Analyze a legal document
    */
-  async analyzeDocument(
-    documentText: string,
-    analysisType: string = "general",
-  ): Promise<string> {
+  async analyzeDocument(documentText: string, analysisType: string = 'general'): Promise<string> {
     const messages: ChatMessage[] = [
       {
-        role: "system",
-        content: `You are a specialized Legal AI Assistant for document analysis. Analyze the provided legal document and provide insights on key terms, potential issues, recommendations, and legal compliance. Focus on ${analysisType} analysis.`
+        role: 'system',
+        content: `You are a specialized Legal AI Assistant for document analysis. Analyze the provided legal document and provide insights on key terms, potential issues, recommendations, and legal compliance. Focus on ${analysisType} analysis.`,
       },
       {
-        role: "user",
-        content: `Please analyze this legal document:\n\n${documentText}`
-      }
+        role: 'user',
+        content: `Please analyze this legal document:\n\n${documentText}`,
+      },
     ];
     const response = await this.createChatCompletion({
       messages,
       temperature: 0.05,
-      max_tokens: 2048
+      max_tokens: 2048,
     });
-    return response.choices[0]?.message?.content || "";
+    return response.choices[0]?.message?.content || '';
   }
   /**
    * Helper: Review a contract
    */
-  async reviewContract(
-    contractText: string,
-    reviewFocus?: string
-  ): Promise<string> {
+  async reviewContract(contractText: string, reviewFocus?: string): Promise<string> {
     const messages: ChatMessage[] = [
       {
-        role: "system",
-        content: `You are a specialized Legal AI Assistant for contract review. Analyze the contract for key terms, potential risks, missing clauses, compliance issues, and provide recommendations for improvement.${reviewFocus ? ` Focus particularly on: ${reviewFocus}` : ""}`
+        role: 'system',
+        content: `You are a specialized Legal AI Assistant for contract review. Analyze the contract for key terms, potential risks, missing clauses, compliance issues, and provide recommendations for improvement.${reviewFocus ? ` Focus particularly on: ${reviewFocus}` : ''}`,
       },
       {
-        role: "user",
-        content: `Please review this contract:\n\n${contractText}`
-      }
+        role: 'user',
+        content: `Please review this contract:\n\n${contractText}`,
+      },
     ];
     const response = await this.createChatCompletion({
       messages,
       temperature: 0.05,
-      max_tokens: 2048
+      max_tokens: 2048,
     });
-    return response.choices[0]?.message?.content || "";
+    return response.choices[0]?.message?.content || '';
   }
   /**
    * Helper: Generate legal document template
    */
-  async generateDocumentTemplate(
-    documentType: string,
-    requirements: string,
-  ): Promise<string> {
+  async generateDocumentTemplate(documentType: string, requirements: string): Promise<string> {
     const messages: ChatMessage[] = [
       {
-        role: "system",
-        content: `You are a specialized Legal AI Assistant for document generation. Create professional legal document templates with proper structure, standard clauses, and placeholders for customization.`
+        role: 'system',
+        content: `You are a specialized Legal AI Assistant for document generation. Create professional legal document templates with proper structure, standard clauses, and placeholders for customization.`,
       },
       {
-        role: "user",
-        content: `Generate a ${documentType} template with these requirements:\n\n${requirements}`
-      }
+        role: 'user',
+        content: `Generate a ${documentType} template with these requirements:\n\n${requirements}`,
+      },
     ];
     const response = await this.createChatCompletion({
       messages,
       temperature: 0.1,
-      max_tokens: 2048
+      max_tokens: 2048,
     });
-    return response.choices[0]?.message?.content || "";
+    return response.choices[0]?.message?.content || '';
   }
   /**
    * Helper: Summarize content
    */
   async summarizeContent(
-    content: string;
-    type: string = "general",
+    content: string, // <-- fixed: comma instead of semicolon
+    type: string = 'general'
   ): Promise<string> {
     const messages: ChatMessage[] = [
       {
-        role: "system",
-        content: `You are a specialized Legal AI Assistant for content summarization. Provide concise, accurate summaries that capture the key points, legal implications, and important details. Focus on ${type} summarization.`
+        role: 'system',
+        content: `You are a specialized Legal AI Assistant for content summarization. Provide concise, accurate summaries that capture the key points, legal implications, and important details. Focus on ${type} summarization.`,
       },
       {
-        role: "user",
-        content: `Please summarize this content:\n\n${content}`
-      }
+        role: 'user',
+        content: `Please summarize this content:\n\n${content}`,
+      },
     ];
     const response = await this.createChatCompletion({
       messages,
       temperature: 0.05,
-      max_tokens: 1024
+      max_tokens: 1024,
     });
-    return response.choices[0]?.message?.content || "";
+    return response.choices[0]?.message?.content || '';
   }
 }
+
+// Add a specific ServerInfo type to avoid `any`
+type ServerInfo = { backend?: string; version?: string; [k: string]: unknown };
+
+/**
+ * Helper: resolve Ollama endpoint from env or fallback to documented default.
+ */
+function getOllamaEndpoint(): string {
+  // Prefer Vite-style env in build, then Node process.env, then global override, then fallback
+  try {
+    // @ts-expect-error - import.meta may not exist in some runtimes; guarded by try/catch
+    const meta = import.meta as unknown as { env?: { VITE_OLLAMA_ENDPOINT?: string } } | undefined;
+    if (meta?.env?.VITE_OLLAMA_ENDPOINT) {
+      return meta.env.VITE_OLLAMA_ENDPOINT;
+    }
+  } catch {
+    /* ignore */
+  }
+
+  if (typeof process !== 'undefined' && typeof (process as NodeJS.Process).env?.OLLAMA_ENDPOINT === 'string') {
+    return (process as NodeJS.Process).env.OLLAMA_ENDPOINT as string;
+  }
+
+  const globalAny = globalThis as unknown as { OLLAMA_ENDPOINT?: string } | undefined;
+  if (globalAny && typeof globalAny.OLLAMA_ENDPOINT === 'string') {
+    return globalAny.OLLAMA_ENDPOINT;
+  }
+
+  // Centralized documented default
+  const DEFAULT_OLLAMA_ENDPOINT = 'http://localhost:11434';
+  return DEFAULT_OLLAMA_ENDPOINT;
+}
+
+/**
+ * Safe error -> string extractor
+ */
+function errorToString(err: unknown): string {
+  if (err instanceof Error) return err.message;
+  try {
+    return JSON.stringify(err);
+  } catch {
+    return String(err);
+  }
+}
+
 // Default client instance
 export const gemma3Client = new Gemma3Client();
+
 // Server detection utility
-export async function detectAvailableServer(): Promise<any> {
-  const servers = [
-    { url: "http://localhost:11434", name: "Ollama Server" },
-    { url: "http://localhost:8000", name: "llama.cpp Server" }
+export async function detectAvailableServer(): Promise<{ url: string; backend?: string } | null> {
+  const LLAMA_CPP_ENDPOINT = 'http://localhost:8000';
+  const servers: Array<{ url: string; name: string }> = [
+    { url: getOllamaEndpoint(), name: 'Ollama Server' },
+    { url: LLAMA_CPP_ENDPOINT, name: 'llama.cpp Server' },
   ];
   for (const server of servers) {
     try {
@@ -296,34 +327,35 @@ export async function detectAvailableServer(): Promise<any> {
         const info = await client.getServerInfo();
         return {
           url: server.url,
-          backend: info.backend || server.name
-        }
+          backend: info && info.backend ? String(info.backend) : server.name,
+        };
       }
-    } catch (error: any) {
-      console.debug(`Server ${server.url} not available:`, error);
+    } catch (error: unknown) {
+      console.debug(`Server ${server.url} not available:`, errorToString(error));
     }
   }
   return null;
 }
+
 // Utility functions for SvelteKit stores
 export function createGemma3Store() {
-  if (typeof window === "undefined") {
+  if (typeof window === 'undefined') {
     // Server-side, return a mock
     return {
       subscribe: () => () => {},
       checkHealth: async () => false,
-      askQuestion: async () => "",
-      analyzeDocument: async () => "",
-      reviewContract: async () => "",
-      generateTemplate: async () => ""
-    }
+      askQuestion: async () => '',
+      analyzeDocument: async () => '',
+      reviewContract: async () => '',
+      generateTemplate: async () => '',
+    };
   }
   let client = new Gemma3Client();
-  let serverInfo: any = null;
+  let serverInfo: ServerInfo | null = null;
   return {
-    subscribe: (callback: (info: any) => void) => {
+    subscribe: (callback: (info: ServerInfo | null) => void) => {
       callback(serverInfo);
-      return () => {}
+      return () => {};
     },
     async checkHealth() {
       try {
@@ -335,8 +367,8 @@ export function createGemma3Store() {
         }
         serverInfo = null;
         return false;
-      } catch (error: any) {
-        console.error("Health check failed:", error);
+      } catch (error: unknown) {
+        console.error('Health check failed:', errorToString(error));
         serverInfo = null;
         return false;
       }
@@ -352,6 +384,6 @@ export function createGemma3Store() {
     },
     async generateTemplate(type: string, requirements: string) {
       return client.generateDocumentTemplate(type, requirements);
-    }
-  }
+    },
+  };
 }

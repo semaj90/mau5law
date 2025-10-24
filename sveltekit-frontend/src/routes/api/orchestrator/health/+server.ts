@@ -108,7 +108,7 @@ export const GET: RequestHandler = async ({ url }) => {
     ]
     // Check all HTTP services in parallel
     const serviceChecks = await Promise.all(services.slice(0, 3).map(async (service) => {
-        const { healthy, responseTime } = await checkServiceHealth(service.url),)
+        const { healthy, responseTime } = await checkServiceHealth(service.url)
         return {
           service: service.name,
           status: healthy ? 'healthy' : 'down',
@@ -134,7 +134,7 @@ export const GET: RequestHandler = async ({ url }) => {
     memoryBanks.L2_SYSTEM_RAM.utilization = Math.round((memoryBanks.L2_SYSTEM_RAM.used_mb / memoryBanks.L2_SYSTEM_RAM.total_mb) * 100)
     memoryBanks.L3_REDIS_CACHE.utilization = Math.round((memoryBanks.L3_REDIS_CACHE.used_mb / memoryBanks.L3_REDIS_CACHE.total_mb) * 100)
     // Determine overall status
-    const healthyServices = serviceChecks.filter(item => item.length)
+    const healthyServices = serviceChecks.filter(item => item.status === 'healthy').length
     const totalServices = serviceChecks.length
     let overallStatus: 'healthy' | 'degraded' | 'critical'
     if (healthyServices === totalServices) {
@@ -153,11 +153,15 @@ export const GET: RequestHandler = async ({ url }) => {
     return json(healthResponse, {
       status: overallStatus === 'healthy' ? 200 : overallStatus === 'degraded' ? 206 : 503
     })
-  }, catch (error) {
+  } catch (error) {
     return json({
       overall_status: 'critical',
       services: [],
-      nintendo_memory_banks: { [key,: strin,g]: any },
+      nintendo_memory_banks: {
+        L1_GPU_VRAM: { used_mb: 0, total_mb: 0, utilization: 0 },
+        L2_SYSTEM_RAM: { used_mb: 0, total_mb: 0, utilization: 0 },
+        L3_REDIS_CACHE: { used_mb: 0, total_mb: 0, utilization: 0 }
+      },
       timestamp: new Date().toISOString(),
       error: 'Health check system failure'
     }, { status: 500 })

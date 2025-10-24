@@ -6,7 +6,7 @@ import http from "http";
  * Supports HTTP, gRPC, QUIC, and WebSocket protocols
  * Using existing compiled Go binaries for maximum performance
  */
-}
+
 export interface ServiceConfig {
   name: string;
   port: number;

@@ -55,8 +55,8 @@ export const PGVECTOR_CONFIG = {
     maxParallelWorkers: 8,
     vectorSearchLimit: 100,
     batchSize: 50,
-    cacheEnabled: true
-    cacheTTL: 3600  // 1 hour,
+    cacheEnabled: true,
+    cacheTTL: 3600  // 1 hour
   }
 };
 // Helper function to get database connection string

@@ -221,11 +221,11 @@ class ConfigManager {
           maxConcurrent: parseInt(env.OLLAMA_MAX_CONCURRENT) || (isWindows ? 2 : 4),
           gpuLayers: parseInt(env.OLLAMA_GPU_LAYERS) || (isWindows ? 35 : 30)
         },
-        openai: env.OPENAI_API_KEY ? {,
+        openai: env.OPENAI_API_KEY ? {
           apiKey: env.OPENAI_API_KEY,
           model: env.OPENAI_MODEL || 'gpt-4',
           maxTokens: parseInt(env.OPENAI_MAX_TOKENS) || 4000
-        } : undefined
+        } : undefined,
         embedding: {
           dimensions: parseInt(env.EMBEDDING_DIMENSIONS) || 384,
           batchSize: parseInt(env.EMBEDDING_BATCH_SIZE) || (isWindows ? 16 : 32),
@@ -304,12 +304,12 @@ class ConfigManager {
         level: (env.LOG_LEVEL as any) || (dev ? 'debug' : 'info'),
         format: (env.LOG_FORMAT as any) || 'json',
         outputs: (env.LOG_OUTPUTS || 'console').split(',') as any,
-        file: env.LOG_FILE_PATH ? {,
+        file: env.LOG_FILE_PATH ? {
           path: env.LOG_FILE_PATH,
           maxSize: env.LOG_MAX_SIZE || '10M',
           maxFiles: parseInt(env.LOG_MAX_FILES) || 5,
           rotate: env.LOG_ROTATE !== 'false'
-        } : undefined
+        } : undefined,
         structured: env.LOG_STRUCTURED !== 'false',
         includeStack: env.LOG_INCLUDE_STACK === 'true' || dev
       },
@@ -355,7 +355,7 @@ class ConfigManager {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
     for (let i = 0; i < 64; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length);
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     return result;
   }
