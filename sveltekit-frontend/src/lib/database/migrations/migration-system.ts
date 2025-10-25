@@ -21,9 +21,9 @@ export const migrations = pgTable('schema_migrations', {
   success: boolean('success').notNull().default(true),
   error_message: text('error_message'),
   rollback_sql: text('rollback_sql'),
-  metadata: json('metadata')
+  metadata: json('metadata'),
 });
-}
+
 export interface Migration {
   version: string;
   name: string;

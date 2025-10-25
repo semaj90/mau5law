@@ -11,5 +11,5 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     caseId,
     userId: getUserId(locals)
   })
-  return new Response(JSON.stringify(results)
+  return new Response(JSON.stringify(results));
 }

@@ -66,9 +66,25 @@ const getRedisClient = async () => {
     const maybe = mod as unknown as { default?: IORedisConstructor } | IORedisConstructor;
     const IORedis = (maybe as { default?: IORedisConstructor }).default ?? (maybe as IORedisConstructor);
 
-    // Create a concrete client instance and call .on on it
+    // Create a concrete client instance and attach safe event handlers
     const clientInstance = new IORedis(REDIS_URL);
-    clientInstance.on?.('error', (e: unknown) => console.warn('[Redis] connection error', e));
+    // ioredis may emit 'error' events like ReplyError NOAUTH which, if unhandled,
+    // will crash or propagate. Handle them here and degrade gracefully.
+    clientInstance.on?.('error', (e: unknown) => {
+      try {
+        const msg = e instanceof Error ? e.message : String(e);
+        if (typeof msg === 'string' && msg.includes('NOAUTH')) {
+          console.warn(
+            '[Redis] NOAUTH (authentication required). Redis calls will be disabled until a valid REDIS_URL with credentials is provided.'
+          );
+          return;
+        }
+      } catch {
+        // swallow unexpected errors in the handler
+      }
+      console.warn('[Redis] connection error', e);
+    });
+    clientInstance.on?.('connect', () => console.log('[Redis] connected (ioredis)'));
     _redisClient = clientInstance as RedisLike;
     return _redisClient;
   } catch (e) {

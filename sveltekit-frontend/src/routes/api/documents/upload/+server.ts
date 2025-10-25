@@ -106,27 +106,28 @@ export const POST: RequestHandler = async ({ request }) => {
         processingStatus: 'queued',
         jobQueueStatus: jobPublished ? 'published' : 'failed'
       }, { status: 202 })
-    } catch (uploadError) {
-      console.error('Upload service error:', uploadError)
+    } catch (uploadError: unknown) {
+      const errorMessage = uploadError instanceof Error ? uploadError.message : String(uploadError)
+      console.error('Upload service error:', errorMessage)
       // Update document status to failed
       await db.update(documents)
         .set({
           status: 'upload_failed',
-          error_message: uploadError.message,
+          error_message: errorMessage,
           updated_at: new Date()
         })
         .where({ id: documentId })
       return json({
         error: 'Upload failed',
-        details: uploadError.message,
+        details: errorMessage,
         documentId
       }, { status: 500 })
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Document upload error:', error)
     return json({
       error: 'Internal server error',
-      details: error?.message ?? String(error)
+      details: error instanceof Error ? error.message : String(error)
     }, { status: 500 })
   }
 }
@@ -135,7 +136,6 @@ export const GET: RequestHandler = async ({ url }) => {
     const documentId = url.searchParams.get('documentId')
     const caseId = url.searchParams.get('caseId')
     const userId = url.searchParams.get('userId')
-    let query = db.select().from(documents)
     if (documentId) {
       const document = await db.select()
         .from(documents)
@@ -159,11 +159,11 @@ export const GET: RequestHandler = async ({ url }) => {
       return json({ documents: userDocuments })
     }
     return json({ error: 'Missing required parameters' }, { status: 400 })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Document retrieval error:', error)
     return json({
       error: 'Failed to retrieve documents',
-      details: error.message
+      details: error instanceof Error ? error.message : String(error)
     }, { status: 500 })
   }
 }

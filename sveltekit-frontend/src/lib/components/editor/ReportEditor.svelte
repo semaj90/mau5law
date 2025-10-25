@@ -734,36 +734,44 @@ https://svelte.dev/e/js_parse_error -->
 
 <!-- Modals -->
 <Dialog.Root bind:open={showEvidenceModal}>
-  <Dialog.Content>
+  <Dialog.Portal forceMount>
     {#if showEvidenceModal}
-      <EvidenceForm
-        data={evidenceFormData}
-        evidence={selectedEvidence}
-        success={() => {
-          showEvidenceModal = false;
-          selectedEvidence = null;
-        }}
-        error={(e: CustomEvent) => {
-          console.error('Evidence form error:', e.detail);
-          alert('Error saving evidence');
-        }}
-        cancel={() => {
-          showEvidenceModal = false;
-          selectedEvidence = null;
-        }}
-      />
+      <Dialog.Overlay />
+      <Dialog.Content>
+        <EvidenceForm
+          data={evidenceFormData}
+          evidence={selectedEvidence}
+          success={() => {
+            showEvidenceModal = false;
+            selectedEvidence = null;
+          }}
+          error={(e: CustomEvent) => {
+            console.error('Evidence form error:', e.detail);
+            alert('Error saving evidence');
+          }}
+          cancel={() => {
+            showEvidenceModal = false;
+            selectedEvidence = null;
+          }}
+        />
+      </Dialog.Content>
     {/if}
-  </Dialog.Content>
+  </Dialog.Portal>
 </Dialog.Root>
 
 <Dialog.Root bind:open={showSettingsModal}>
-  <Dialog.Content>
-    <Dialog.Title>Report Settings</Dialog.Title>
-    <div class="settings-form">
-      <p>Settings panel - TODO: Implement settings form</p>
-    </div>
-    <Dialog.Close />
-  </Dialog.Content>
+  <Dialog.Portal forceMount>
+    {#if showSettingsModal}
+      <Dialog.Overlay />
+      <Dialog.Content>
+        <Dialog.Title>Report Settings</Dialog.Title>
+        <div class="settings-form">
+          <p>Settings panel - TODO: Implement settings form</p>
+        </div>
+        <Dialog.Close />
+      </Dialog.Content>
+    {/if}
+  </Dialog.Portal>
 </Dialog.Root>
 
 <style>

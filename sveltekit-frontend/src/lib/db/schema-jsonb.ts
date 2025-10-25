@@ -119,15 +119,15 @@ export interface UserPreferences {
   max_summary_length: number;
   include_citations: boolean;
   auto_summarize: boolean;
-  notification_}); const settings = {
+  notification_settings?: {
     email: boolean;
     push: boolean;
     webhook_url?: string;
-  }
-  api_limits: {
+  };
+  api_limits?: {
     daily_quota: number;
     rate_limit_per_minute: number;
-  }
+  };
 }
 // Main documents table
 export const aiSummarizedDocuments = pgTable('ai_summarized_documents', {
@@ -180,8 +180,8 @@ export const aiSummarizedDocuments = pgTable('ai_summarized_documents', {
     sql`setweight(to_tsvector('english', coalesce(document_name, '')), 'A') ||
         setweight(to_tsvector('english', coalesce(original_text, '')), 'D') ||
         setweight(to_tsvector('english', coalesce(summary->>'executive_summary', '')), 'B')`
-  );
-}, (table: any) => ({,
+  ),
+}, (table: any) => ({
   statusIdx: index('idx_documents_status').on(table.status),
   typeIdx: index('idx_documents_type').on(table.documentType),
   createdAtIdx: index('idx_documents_created_at').on(table.createdAt),
@@ -201,8 +201,8 @@ export const documentEmbeddings = pgTable('document_embeddings', {
   embedding: vector('embedding'),
   metadata: jsonb('metadata').default(sql`'{}'::jsonb`).notNull(),
   modelName: varchar('model_name', { length: 100 }),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow();
-}, (table: any) => ({,
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+}, (table: any) => ({
   documentIdx: index('idx_embeddings_document').on(table.documentId),
   uniqueChunk: uniqueIndex('unique_document_chunk').on(table.documentId, table.chunkIndex),
   // Note: IVFFlat index for vector similarity search would be added via migration

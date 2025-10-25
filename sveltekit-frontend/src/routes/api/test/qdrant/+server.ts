@@ -3,6 +3,12 @@ import type { RequestHandler } from './$types.js'
 // Tests the memory-efficient Qdrant service with SOM clustering and NES cache integration
 import { json } from '@sveltejs/kit'
 import { optimizedQdrantService } from '$lib/services/optimized-qdrant-service';
+
+// NOTE: If you encounter "Property 'methodName' does not exist on type 'OptimizedQdrantService'" errors,
+// it means the type definition for `optimizedQdrantService` in `$lib/services/optimized-qdrant-service.ts`
+// needs to be updated to include the missing methods (e.g., healthCheck, searchVectors, upsertVectors, syncFromPostgreSQL).
+// This fix cannot be applied from this file.
+
 export interface TestResult {
   test: string
   status: 'success' | 'error' | 'warning'
@@ -10,84 +16,98 @@ export interface TestResult {
   error?: string
   duration?: number
 }
+
+// Define a minimal interface for Qdrant search results to improve type safety
+interface QdrantSearchResult {
+  results: any[]; // Adjust 'any[]' to a more specific type if known
+  stats: {
+    searchTimeMs: number;
+    [key: string]: any;
+  };
+  [key: string]: any;
+}
+
 export const GET: RequestHandler = async ({ url }) => {
   const testType = url.searchParams.get('test') || 'all'
   const results: TestResult[] = []
   try {
     // Test 1: Health Check
     if (testType === 'all' || testType === 'health') {
-      const startTime = Date.now()
+      const startTime = Date.now();
       try {
-        const health = await optimizedQdrantService.healthCheck()
+        const health = await optimizedQdrantService.healthCheck();
         results.push({
           test: 'qdrant_health_check',
           status: health.status === 'healthy' ? 'success' : 'warning',
           data: health,
           duration: Date.now() - startTime,
-        })
-      } catch (error: any) {
+        });
+      } catch (error: unknown) {
+        // Changed from any to unknown
         results.push({
           test: 'qdrant_health_check',
           status: 'error',
-          error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime
-        })
+          error: error instanceof Error ? error.message : String(error),
+          duration: Date.now() - startTime,
+        });
       }
     }
     // Test 2: Collection Setup
     if (testType === 'all' || testType === 'collection') {
-      const startTime = Date.now()
+      const startTime = Date.now();
       try {
-        await optimizedQdrantService.ensureCollection()
+        await optimizedQdrantService.ensureCollection();
         results.push({
           test: 'collection_setup',
           status: 'success',
           data: { message: 'Collection ensured with 768-dimensional nomic-embed vectors' },
-          duration: Date.now() - startTime
-        })
-      } catch (error: any) {
+          duration: Date.now() - startTime,
+        });
+      } catch (error: unknown) {
+        // Changed from any to unknown
         results.push({
           test: 'collection_setup',
           status: 'error',
-          error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime
-        })
+          error: error instanceof Error ? error.message : String(error),
+          duration: Date.now() - startTime,
+        });
       }
     }
     // Test 3: Sample Vector Search
     if (testType === 'all' || testType === 'search') {
-      const startTime = Date.now()
+      const startTime = Date.now();
       try {
         // Generate a sample 768-dimensional vector for nomic-embed
-        const sampleVector = Array.from({ length: 768 }, () => Math.random() * 2 - 1)
+        const sampleVector = Array.from({ length: 768 }, () => Math.random() * 2 - 1);
         const searchResult = await optimizedQdrantService.searchVectors(sampleVector, {
           limit: 5,
           threshold: 0.1,
           useCache: true,
           enableSOM: true,
-        })
+        });
         results.push({
           test: 'vector_search',
           status: 'success',
           data: {
             results_count: searchResult.results.length,
             stats: searchResult.stats,
-            sample_vector_dim: sampleVector.length
+            sample_vector_dim: sampleVector.length,
           },
-          duration: Date.now() - startTime
-        })
-      } catch (error: any) {
+          duration: Date.now() - startTime,
+        });
+      } catch (error: unknown) {
+        // Changed from any to unknown
         results.push({
           test: 'vector_search',
           status: 'error',
-          error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime
-        })
+          error: error instanceof Error ? error.message : String(error),
+          duration: Date.now() - startTime,
+        });
       }
     }
     // Test 4: Sample Vector Upsert
     if (testType === 'all' || testType === 'upsert') {
-      const startTime = Date.now()
+      const startTime = Date.now();
       try {
         const sampleVectors = [
           {
@@ -97,8 +117,8 @@ export const GET: RequestHandler = async ({ url }) => {
               type: 'test',
               title: 'Test Document 1',
               content: 'Sample legal document for testing vector operations',
-              created_at: new Date().toISOString()
-            }
+              created_at: new Date().toISOString(),
+            },
           },
           {
             id: `test_${Date.now()}_2`,
@@ -107,11 +127,11 @@ export const GET: RequestHandler = async ({ url }) => {
               type: 'test',
               title: 'Test Document 2',
               content: 'Another sample legal document for testing',
-              created_at: new Date().toISOString()
-            }
-          }
-        ]
-        const upsertResult = await optimizedQdrantService.upsertVectors(sampleVectors)
+              created_at: new Date().toISOString(),
+            },
+          },
+        ];
+        const upsertResult = await optimizedQdrantService.upsertVectors(sampleVectors);
         results.push({
           test: 'vector_upsert',
           status: 'success',
@@ -120,23 +140,24 @@ export const GET: RequestHandler = async ({ url }) => {
             upsert_result: upsertResult,
             vector_dimensions: sampleVectors[0].vector.length,
           },
-          duration: Date.now() - startTime
-        })
-      } catch (error: any) {
+          duration: Date.now() - startTime,
+        });
+      } catch (error: unknown) {
+        // Changed from any to unknown
         results.push({
           test: 'vector_upsert',
           status: 'error',
-          error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime
-        })
+          error: error instanceof Error ? error.message : String(error),
+          duration: Date.now() - startTime,
+        });
       }
     }
     // Test 5: PostgreSQL Sync (dry run)
     if (testType === 'all' || testType === 'sync') {
-      const startTime = Date.now()
+      const startTime = Date.now();
       try {
         // Test sync capability without full sync
-        const health = await optimizedQdrantService.healthCheck()
+        const health = await optimizedQdrantService.healthCheck();
         results.push({
           test: 'postgresql_sync_test',
           status: 'success',
@@ -144,56 +165,60 @@ export const GET: RequestHandler = async ({ url }) => {
             message: 'Sync service initialized and ready',
             qdrant_status: health.status,
             memory_usage: health.memoryUsage,
-            note: 'Use POST /api/test/qdrant?action=sync for full PostgreSQL sync'
+            note: 'Use POST /api/test/qdrant?action=sync for full PostgreSQL sync',
           },
-          duration: Date.now() - startTime
-        })
-      } catch (error: any) {
+          duration: Date.now() - startTime,
+        });
+      } catch (error: unknown) {
+        // Changed from any to unknown
         results.push({
           test: 'postgresql_sync_test',
           status: 'error',
-          error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime
-        })
+          error: error instanceof Error ? error.message : String(error),
+          duration: Date.now() - startTime,
+        });
       }
     }
     // Test 6: Memory Usage and Performance
     if (testType === 'all' || testType === 'performance') {
-      const startTime = Date.now()
+      const startTime = Date.now();
       try {
-        const health = await optimizedQdrantService.healthCheck()
+        const health = await optimizedQdrantService.healthCheck();
         // Simulate multiple search operations to test caching
-        const searchPromises = Array.from({ length: 3 }, async (_, i) => {
-          const vector = Array.from({ length: 768 }, () => Math.random() * 2 - 1)
+        const searchPromises = Array.from({ length: 3 }, async () => {
+          // Removed unused 'i' parameter
+          const vector = Array.from({ length: 768 }, () => Math.random() * 2 - 1);
           return await optimizedQdrantService.searchVectors(vector, {
             limit: 3,
             useCache: true,
             enableSOM: true,
-          })
-        })
-        const searchResults = await Promise.all(searchPromises)
-        const cacheHits = searchResults.filter(item => item.length)
+          });
+        });
+        const searchResults: QdrantSearchResult[] = await Promise.all(searchPromises); // Explicitly typed searchResults
+        const cacheHits = searchResults.filter(item => item.results.length > 0); // Corrected filter logic
         results.push({
           test: 'performance_test',
           status: 'success',
           data: {
-            memory_usage_mb: Math.round(health.memoryUsage / 1024 / 1024 * 100) / 100,
+            memory_usage_mb: Math.round((health.memoryUsage / 1024 / 1024) * 100) / 100,
             cache_entries: health.cacheHits,
-            cache_hit_rate: `${cacheHits}/3`,
+            cache_hit_rate: `${cacheHits.length}/3`, // Corrected to use cacheHits.length
             avg_search_time: Math.round(
-              searchResults.reduce((sum, r) => sum + r.stats.searchTimeMs, 0) / searchResults.length
+              searchResults.reduce((sum: number, r: QdrantSearchResult) => sum + r.stats.searchTimeMs, 0) /
+                searchResults.length // Explicitly typed sum and r
             ),
-            som_clusters_used: searchResults.filter(item => item.length)
+            som_clusters_used: searchResults.filter(item => item.results.length > 0).length, // Corrected filter logic and added .length
           },
-          duration: Date.now() - startTime
-        })
-      } catch (error: any) {
+          duration: Date.now() - startTime,
+        });
+      } catch (error: unknown) {
+        // Changed from any to unknown
         results.push({
           test: 'performance_test',
           status: 'error',
-          error: error instanceof Error ? error.message: String(error),
-          duration: Date.now() - startTime
-        })
+          error: error instanceof Error ? error.message : String(error),
+          duration: Date.now() - startTime,
+        });
       }
     }
     return json({
@@ -203,12 +228,10 @@ export const GET: RequestHandler = async ({ url }) => {
       tests: results,
       summary: {
         total: results.length,
-        passed: results.filter(item => item.length),
-        failed: results.filter(item => item.length),
-        warnings: results.filter(item => item.length),
-        avg_duration: Math.round(
-          results.reduce((sum, r) => sum + (r.duration || 0), 0) / results.length
-        )
+        passed: results.filter(item => item.status === 'success'), // Corrected filter logic
+        failed: results.filter(item => item.status === 'error'), // Corrected filter logic
+        warnings: results.filter(item => item.status === 'warning'), // Corrected filter logic
+        avg_duration: Math.round(results.reduce((sum, r) => sum + (r.duration || 0), 0) / results.length),
       },
       configuration: {
         vector_dimensions: 384,
@@ -216,41 +239,49 @@ export const GET: RequestHandler = async ({ url }) => {
         som_clustering: 'enabled',
         nes_cache: 'enabled',
         batching: 'enabled',
-        memory_limit_mb: 32
-      }
-    })
-  } catch (error: any) {
-    return json({
-      success: false,
-      error: error instanceof Error ? error.message: String(error),
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+        memory_limit_mb: 32,
+      },
+    });
+  } catch (error: unknown) {
+    // Changed from any to unknown
+    return json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : String(error),
+        timestamp: new Date().toISOString(),
+      },
+      { status: 500 }
+    );
   }
 }
 export const POST: RequestHandler = async ({ request, url }) => {
   const action = url.searchParams.get('action')
   if (action === 'sync') {
     try {
-      const body = await request.json()
+      const body = await request.json();
       const options = {
         fullSync: body.fullSync || false,
         batchSize: body.batchSize || 50,
-        sinceTimestamp: body.sinceTimestamp ? new Date(body.sinceTimestamp) : undefined
-      }
-      const syncResult = await optimizedQdrantService.syncFromPostgreSQL(options)
+        sinceTimestamp: body.sinceTimestamp ? new Date(body.sinceTimestamp) : undefined,
+      };
+      const syncResult = await optimizedQdrantService.syncFromPostgreSQL(options);
       return json({
         success: true,
         action: 'postgresql_sync',
         result: syncResult,
         timestamp: new Date().toISOString(),
-      })
-    } catch (error: any) {
-      return json({
-        success: false,
-        action: 'postgresql_sync',
-        error: error instanceof Error ? error.message: String(error),
-        timestamp: new Date().toISOString()
-      }, { status: 500 })
+      });
+    } catch (error: unknown) {
+      // Changed from any to unknown
+      return json(
+        {
+          success: false,
+          action: 'postgresql_sync',
+          error: error instanceof Error ? error.message : String(error),
+          timestamp: new Date().toISOString(),
+        },
+        { status: 500 }
+      );
     }
   }
   return json({

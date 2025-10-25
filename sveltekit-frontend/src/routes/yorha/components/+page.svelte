@@ -280,7 +280,7 @@
     type="button"
   >
     <!-- render icon (dynamic component syntax) -->
-    <svelte:component this={component.icon} size={18} />
+    <component.icon size={18} />
     <div class="yorha-component-info">
       <span class="yorha-component-label">{component.label}</span>
       <span class="yorha-component-desc">{component.description}</span>

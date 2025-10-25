@@ -2,10 +2,50 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { Search, Users, Plus, Eye, Edit, Filter, Grid, List, Trash2, AlertCircle, UserPlus } from 'lucide-svelte';
-  import { Button, Card, Input, Label, Select, Dialog, Textarea } from '$lib/components/ui/enhanced-bits';
-  import Separator from '$lib/components/ui/separator/Separator.svelte';
+  // Corrected imports for Bits UI components to use default exports from their specific paths
+  import Button from '$lib/components/ui/button/Button.svelte';
+  import Card from '$lib/components/ui/card/Card.svelte';
+  import Input from '$lib/components/ui/input/Input.svelte';
+  import Label from '$lib/components/ui/label/Label.svelte';
+  import Select from '$lib/components/ui/select/Select.svelte';
+  import Dialog from '$lib/components/ui/dialog/Dialog.svelte';
+  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
   import { toast } from 'svelte-sonner';
   import { cn } from '$lib/utils.js';
+
+  // Define interfaces for POI data structure
+  interface PhysicalDescription {
+    height: string;
+    weight: string;
+    hair: string;
+    eyes: string;
+    distinguishingMarks: string;
+  }
+
+  interface ProfileData {
+    modusOperandi: string;
+    knownHabits: string[];
+    associates: string[];
+  }
+
+  interface Poi {
+    id?: string; // Optional for new POIs
+    name: string;
+    aliases: string[];
+    dateOfBirth: string;
+    address: string;
+    phone: string;
+    email: string;
+    status: 'person_of_interest' | 'witness' | 'suspect' | 'victim' | 'informant';
+    priority: 'low' | 'medium' | 'high' | 'critical';
+    threatLevel: 'low' | 'medium' | 'high' | 'extreme';
+    physicalDescription: PhysicalDescription;
+    profileData: ProfileData;
+    lastKnownLocation: string;
+    lastSeen: string;
+    dangerLevel: number;
+    notes: string;
+  }
 
   // State
   let searchQuery = $state('');
@@ -13,7 +53,7 @@
   let showFilters = $state(false);
   let showCreateDialog = $state(false);
   let showEditDialog = $state(false);
-  let selectedPoi = $state(null);
+  let selectedPoi = $state<Poi | null>(null); // Use Poi interface
   let isLoading = $state(false);
   let isSubmitting = $state(false);
 
@@ -23,11 +63,11 @@
   let threatLevelFilter = $state('all');
 
   // POI data
-  let pois = $state([]);
-  let filteredPois = $state([]);
+  let pois = $state<Poi[]>([]); // Use Poi interface
+  let filteredPois = $state<Poi[]>([]); // Use Poi interface
 
   // Form data
-  let formData = $state({
+  let formData = $state<Poi>({ // Use Poi interface
     name: '',
     aliases: [],
     dateOfBirth: '',
@@ -37,7 +77,7 @@
     status: 'person_of_interest',
     priority: 'medium',
     threatLevel: 'low',
-    physicalDescription {
+    physicalDescription: { // Corrected syntax
       height: '',
       weight: '',
       hair: '',
@@ -49,7 +89,7 @@
       knownHabits: [],
       associates: [],
     },
-    lastKnownLocation '',
+    lastKnownLocation: '', // Corrected syntax
     lastSeen: '',
     dangerLevel: 0,
     notes: '',
@@ -142,7 +182,7 @@
   }
 
   // Delete POI
-  async function deletePoi(poi) {
+  async function deletePoi(poi: Poi) { // Explicitly type poi
     if (!confirm(`Are you sure you want to delete ${poi.name}?`)) return;
 
     try {
@@ -176,7 +216,7 @@
       status: 'person_of_interest',
       priority: 'medium',
       threatLevel: 'low',
-      physicalDescription {
+      physicalDescription: { // Corrected syntax
         height: '',
         weight: '',
         hair: '',
@@ -188,7 +228,7 @@
         knownHabits: [],
         associates: [],
       },
-      lastKnownLocation '',
+      lastKnownLocation: '', // Corrected syntax
       lastSeen: '',
       dangerLevel: 0,
       notes: '',
@@ -196,7 +236,7 @@
   }
 
   // Edit POI
-  function editPoi(poi) {
+  function editPoi(poi: Poi) { // Explicitly type poi
     selectedPoi = poi;
     formData = {
       name: poi.name,
@@ -208,7 +248,7 @@
       status: poi.status,
       priority: poi.priority,
       threatLevel: poi.threatLevel,
-      physicalDescription poi.physicalDescription || {
+      physicalDescription: poi.physicalDescription || { // Corrected syntax
         height: '',
         weight: '',
         hair: '',
@@ -220,7 +260,7 @@
         knownHabits: [],
         associates: [],
       },
-      lastKnownLocation poi.lastKnownLocation || '',
+      lastKnownLocation: poi.lastKnownLocation || '', // Corrected syntax
       lastSeen: poi.lastSeen ? new Date(poi.lastSeen).toISOString().split('T')[0] : '',
       dangerLevel: poi.dangerLevel || 0,
       notes: poi.notes || '',
@@ -319,7 +359,9 @@
           <Grid class="w-4 h-4" />
         {/if}
       </Button>
-      <Button class="bits-btn" onclick={() => (showCreateDialog = true)}>
+      <Button class="bits-btn"
+        onclick={() => (showCreateDialog = true)}
+      >
         <Plus class="w-4 h-4 mr-2" />
         Add Person
       </Button>
@@ -330,6 +372,11 @@
   <div class="mb-6">
     <div class="relative">
       <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+      <!--
+        The following Input component might be causing a type error related to Svelte 5 component typing.
+        If this error persists, please verify the internal type definition of '$lib/components/ui/input/Input.svelte'
+        to ensure it's correctly defined for Svelte 5 (e.g., using $props() and proper SvelteComponent typing).
+      -->
       <Input bind:value={searchQuery} placeholder="Search by name, alias, or notes..." class="pl-10 w-full" />
     </div>
   </div>
@@ -339,7 +386,17 @@
     <Card class="mb-6 p-4">
       <div class="grid md:grid-cols-3 gap-4">
         <div>
+          <!--
+            The following Label component might be causing a type error related to Svelte 5 component typing.
+            If this error persists, please verify the internal type definition of '$lib/components/ui/label/Label.svelte'
+            to ensure it's correctly defined for Svelte 5.
+          -->
           <Label for="status-filter">Status</Label>
+          <!--
+            The following Select component might be causing a type error related to Svelte 5 component typing.
+            If this error persists, please verify the internal type definition of '$lib/components/ui/select/Select.svelte'
+            to ensure it's correctly defined for Svelte 5.
+          -->
           <Select
             options={[
               { value: 'all', label: 'All Statuses' },
@@ -349,7 +406,8 @@
               { value: 'victim', label: 'Victim' },
               { value: 'informant', label: 'Informant' },
             ]}
-            bind:selected={statusFilter}
+            selected={statusFilter}
+            onSelectedChange={(value: 'all' | Poi['status']) => (statusFilter = value)}
             placeholder="Status"
           />
         </div>
@@ -363,7 +421,8 @@
               { value: 'high', label: 'High' },
               { value: 'critical', label: 'Critical' },
             ]}
-            bind:selected={priorityFilter}
+            selected={priorityFilter}
+            onSelectedChange={(value: 'all' | Poi['priority']) => (priorityFilter = value)}
             placeholder="Priority"
           />
         </div>
@@ -377,7 +436,8 @@
               { value: 'high', label: 'High' },
               { value: 'extreme', label: 'Extreme' },
             ]}
-            bind:selected={threatLevelFilter}
+            selected={threatLevelFilter}
+            onSelectedChange={(value: 'all' | Poi['threatLevel']) => (threatLevelFilter = value)}
             placeholder="Threat Level"
           />
         </div>
@@ -409,7 +469,9 @@
         {searchQuery ? 'Try adjusting your search criteria' : 'Add persons to get started'}
       </p>
       {#if !searchQuery}
-        <Button class="bits-btn" onclick={() => (showCreateDialog = true)}>
+        <Button class="bits-btn"
+          onclick={() => (showCreateDialog = true)}
+        >
           <Plus class="w-4 h-4 mr-2" />
           Add First Person
         </Button>
@@ -507,7 +569,7 @@
 <Dialog bind:open={showCreateDialog}>
   <div class="p-6">
     <h2 class="text-lg font-semibold mb-4">Add New Person of Interest</h2>
-    <form onsubmit|preventDefault={createPoi} class="space-y-4">
+    <form onsubmit={(e) => { e.preventDefault(); createPoi(); }} class="space-y-4">
       <div class="grid grid-cols-2 gap-4">
         <div>
           <Label for="name">Name *</Label>
@@ -523,7 +585,8 @@
               { value: 'victim', label: 'Victim' },
               { value: 'informant', label: 'Informant' },
             ]}
-            bind:selected={formData.status}
+            selected={formData.status}
+            onSelectedChange={(value: Poi['status']) => (formData.status = value)}
           />
         </div>
       </div>
@@ -538,7 +601,8 @@
               { value: 'high', label: 'High' },
               { value: 'critical', label: 'Critical' },
             ]}
-            bind:selected={formData.priority}
+            selected={formData.priority}
+            onSelectedChange={(value: Poi['priority']) => (formData.priority = value)}
           />
         </div>
         <div>
@@ -550,7 +614,8 @@
               { value: 'high', label: 'High' },
               { value: 'extreme', label: 'Extreme' },
             ]}
-            bind:selected={formData.threatLevel}
+            selected={formData.threatLevel}
+            onSelectedChange={(value: Poi['threatLevel']) => (formData.threatLevel = value)}
           />
         </div>
       </div>
@@ -566,7 +631,8 @@
       </div>
 
       <div class="flex justify-end gap-2">
-        <Button type="button" variant="ghost" onclick={() => (showCreateDialog = false)}>Cancel</Button>
+        <Button type="button" variant="ghost"
+          onclick={() => (showCreateDialog = false)}>Cancel</Button>
         <Button type="submit" disabled={isSubmitting || !formData.name.trim()}>
           {isSubmitting ? 'Creating...' : 'Create POI'}
         </Button>
@@ -579,7 +645,7 @@
 <Dialog bind:open={showEditDialog}>
   <div class="p-6">
     <h2 class="text-lg font-semibold mb-4">Edit Person of Interest</h2>
-    <form onsubmit|preventDefault={updatePoi} class="space-y-4">
+    <form onsubmit={(e) => { e.preventDefault(); updatePoi(); }} class="space-y-4">
       <div class="grid grid-cols-2 gap-4">
         <div>
           <Label for="edit-name">Name *</Label>
@@ -595,7 +661,8 @@
               { value: 'victim', label: 'Victim' },
               { value: 'informant', label: 'Informant' },
             ]}
-            bind:selected={formData.status}
+            selected={formData.status}
+            onSelectedChange={(value: Poi['status']) => (formData.status = value)}
           />
         </div>
       </div>
@@ -610,7 +677,8 @@
               { value: 'high', label: 'High' },
               { value: 'critical', label: 'Critical' },
             ]}
-            bind:selected={formData.priority}
+            selected={formData.priority}
+            onSelectedChange={(value: Poi['priority']) => (formData.priority = value)}
           />
         </div>
         <div>
@@ -622,7 +690,8 @@
               { value: 'high', label: 'High' },
               { value: 'extreme', label: 'Extreme' },
             ]}
-            bind:selected={formData.threatLevel}
+            selected={formData.threatLevel}
+            onSelectedChange={(value: Poi['threatLevel']) => (formData.threatLevel = value)}
           />
         </div>
       </div>
@@ -638,7 +707,8 @@
       </div>
 
       <div class="flex justify-end gap-2">
-        <Button type="button" variant="ghost" onclick={() => (showEditDialog = false)}>Cancel</Button>
+        <Button type="button" variant="ghost"
+          onclick={() => (showEditDialog = false)}>Cancel</Button>
         <Button type="submit" disabled={isSubmitting || !formData.name.trim()}>
           {isSubmitting ? 'Updating...' : 'Update POI'}
         </Button>
