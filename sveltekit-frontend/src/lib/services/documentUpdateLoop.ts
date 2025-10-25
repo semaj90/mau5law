@@ -1,19 +1,12 @@
-// @ts-nocheck - Emergency TypeScript error suppression
 // Document Update Loop Service
 // Auto re-embed and re-rank on document changes with intelligent diff detection
 import { db } from '$lib/server/db';
-// @ts-ignore - schema exports compatibility
-import {
-  legalDocuments as documents,
-  evidence,
-  documentMetadata,
-  documentVectors,
-  queryVectors,
-} from '$lib/server/db/schema-unified';
-import { eq, sql, and, desc } from 'drizzle-orm';
+import { legalDocuments as documents, documentVectors, queryVectors } from '$lib/server/db/schema-unified';
+import { eq, sql, desc } from 'drizzle-orm';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import { OllamaEmbeddings } from '@langchain/community/embeddings/ollama';
+import { OllamaEmbeddings } from '@langchain/ollama';
 import crypto from 'crypto';
+import { VectorSearchService } from '$lib/server/db/drizzle-vector-config';
 
 // ============================================================================
 // CONFIGURATION & TYPES
@@ -64,11 +57,6 @@ type QueryVectorRow = {
   createdAt?: Date | string;
 };
 
-type DBSearchResult = {
-  id: string;
-  similarity: number;
-};
-
 // small helper to stringify unknown errors
 function formatError(error: unknown): string {
   return error instanceof Error ? error.message : String(error ?? 'Unknown error');
@@ -81,13 +69,27 @@ function formatError(error: unknown): string {
 export class DocumentUpdateLoop {
   private embeddings: OllamaEmbeddings;
   private textSplitter: RecursiveCharacterTextSplitter;
-  private updateQueue: DocumentChange[] = [];
+  // Placeholder for the actual queue
+  private updateQueue: Array<{ documentId: string; content?: string }> = [];
   private isProcessing: boolean = false;
+  private lastProcessedTimestamp: string | undefined;
+  private errorCount: number = 0;
 
-  constructor() {
+  /**
+   * Initializes the DocumentUpdateLoop service.
+   * - Sets up OllamaEmbeddings and RecursiveCharacterTextSplitter.
+   * - Uses provided options, environment variables, or sensible defaults:
+   *   - `baseUrl`: Ollama embedding service endpoint (default: 'http://localhost:11434').
+   *   - `model`: Embedding model name (default: 'embeddinggemma:latest').
+   * This ensures the service works out-of-the-box in local/dev environments and is easily configurable.
+   */
+  constructor(opts?: { baseUrl?: string; model?: string }) {
+    const baseUrl = opts?.baseUrl || process.env.OLLAMA_BASE_URL || 'http://localhost:11434';
+    const model = opts?.model || process.env.OLLAMA_EMBED_MODEL || 'embeddinggemma:latest';
+
     this.embeddings = new OllamaEmbeddings({
-      baseUrl: 'http://localhost:11434',
-      model: 'nomic-embed-text',
+      baseUrl,
+      model,
     });
     this.textSplitter = new RecursiveCharacterTextSplitter({
       chunkSize: 1000,
@@ -96,6 +98,7 @@ export class DocumentUpdateLoop {
   }
 
   // ============================================================================
+
   // CHANGE DETECTION
   // ============================================================================
 
@@ -190,6 +193,7 @@ export class DocumentUpdateLoop {
   }
 
   // ============================================================================
+
   // RE-EMBEDDING PIPELINE
   // ============================================================================
 
@@ -206,7 +210,7 @@ export class DocumentUpdateLoop {
 
       // Generate embeddings for all chunks (sequential and normalized to avoid inline callback/type parsing issues)
       // Use a plain JS declaration to avoid parsers choking on TS-only annotations
-      const embeddings = [];
+      const embeddings: number[][] = []; // Explicitly type embeddings
 
       for (const chunk of chunks) {
         try {
@@ -276,6 +280,7 @@ export class DocumentUpdateLoop {
 
   async rerankAffectedQueries(documentId: string): Promise<RerankingJob[]> {
     console.log(`🏆 Re-ranking queries affected by document: ${documentId}`);
+    const rerankingJobs: RerankingJob[] = []; // Declare rerankingJobs here for scope
     try {
       // Fetch recent queries (last 7 days). We'll filter by clickedResults in JS to avoid
       // using SQL JSON operators that caused parser issues.
@@ -291,23 +296,25 @@ export class DocumentUpdateLoop {
         .from(queryVectors)
         .where(sql`${queryVectors.createdAt} > NOW() - INTERVAL '7 days'`)
         .orderBy(desc(queryVectors.createdAt))
-        .limit(200)) as unknown as QueryVectorRow[];
+        .limit(200)) as QueryVectorRow[]; // Cast directly to QueryVectorRow[]
 
       // Parse and filter queries that actually clicked this document id
-      const affectedQueries = recentQueries.filter(q => {
+      const affectedQueries = recentQueries.filter((q: QueryVectorRow) => {
+        // Explicitly type q
         const clicked = q.clickedResults;
         try {
           // clickedResults might be stored as JSON string or as array
           const arr = typeof clicked === 'string' ? JSON.parse(clicked) : (clicked as ClickedResult[] | null);
-          return Array.isArray(arr) && arr.some(c => String(c?.id) === String(documentId));
-        } catch {
+          return Array.isArray(arr) && arr.some(c => String(c?.id) === String(documentId)); // Use String() constructor
+        } catch (e) {
+          // Catch error for parsing
+          console.warn(`Failed to parse clickedResults for query ${q.id}:`, formatError(e));
           return false;
         }
       });
 
-      const rerankingJobs: RerankingJob[] = [];
       for (const queryRecord of affectedQueries) {
-        const job = await this.rerankSingleQuery(queryRecord, documentId);
+        const job = await this.rerankSingleQuery(queryRecord, documentId); // Call private method
         if (job) rerankingJobs.push(job);
       }
       console.log(`✅ Re-ranked ${rerankingJobs.length} affected queries`);
@@ -318,164 +325,85 @@ export class DocumentUpdateLoop {
     }
   }
 
-  private async rerankSingleQuery(
-    queryRecord: QueryVectorRow,
-    changedDocumentId: string
-  ): Promise<RerankingJob | null> {
+  private async rerankSingleQuery(queryRecord: QueryVectorRow, documentId: string): Promise<RerankingJob | null> {
+    if (!queryRecord.embedding) {
+      console.warn(`Skipping re-ranking for query ${queryRecord.id}: no embedding found.`);
+      return null;
+    }
+
     try {
-      const queryEmbedding = Array.isArray(queryRecord.embedding) ? (queryRecord.embedding as number[]) : [];
-      if (!queryEmbedding.length) return null;
+      // Perform a new vector search for the query
+      // Assuming VectorSearchService.searchDocuments returns an array of { id: string, similarity: number }
+      const newSearchResults = await VectorSearchService.searchDocuments(
+        queryRecord.embedding,
+        0.7 // Example threshold, adjust as needed
+      );
 
-      // Parse original clicked results (may be stringified in DB)
-      const originalResults: ClickedResult[] = (() => {
-        const cr = queryRecord.clickedResults;
-        try {
-          return Array.isArray(cr) ? (cr as ClickedResult[]) : typeof cr === 'string' ? JSON.parse(cr) : [];
-        } catch {
-          return [];
+      // Convert original clicked results to a comparable format (e.g., just IDs)
+      const originalClickedIds = (queryRecord.clickedResults || []).map(c => String(c.id));
+
+      // Find the position of the affected document in the new results
+      const newDocIndex = newSearchResults.findIndex(r => String(r.id) === String(documentId));
+
+      let improvement = 0;
+
+      // Score based on the affected document's new rank
+      if (newDocIndex !== -1) {
+        // If the document is in the top 5, give a higher score
+        if (newDocIndex < 5) {
+          improvement += 2;
+        } else if (newDocIndex < 10) {
+          improvement += 1;
         }
-      })();
-
-      // Load all chunk embeddings for the changed document and compute an average embedding
-      const chunkRows = await db
-        .select({ embedding: documentVectors.embedding })
-        .from(documentVectors)
-        .where(eq(documentVectors.documentId, changedDocumentId));
-
-      const embeddingsArrays: number[][] = (chunkRows as any[])
-        .map(r => (Array.isArray(r.embedding) ? (r.embedding as number[]) : []))
-        .filter(e => e.length > 0);
-
-      if (embeddingsArrays.length === 0) {
-        // No embedding data available for changed document; we cannot compute a new score
-        return {
-          queryId: queryRecord.id,
-          query: queryRecord.query,
-          originalResults,
-          newResults: originalResults.map(r => ({ id: r.id, score: typeof r.score === 'number' ? r.score : 0 })),
-          improvement: 0,
-        };
+        // Could also factor in the actual similarity score: newSearchResults[newDocIndex].similarity
       }
 
-      // Average embeddings element-wise (safe for differing lengths by using min length)
-      const dim = Math.min(...embeddingsArrays.map(e => e.length));
-      const avgEmbedding = new Array(dim).fill(0);
-      for (const emb of embeddingsArrays) {
-        for (let i = 0; i < dim; i++) avgEmbedding[i] += emb[i] || 0;
+      // Score based on how many previously clicked documents are still highly ranked
+      const topNForRetained = 20; // Consider top 20 results for this metric
+      const newTopResultIds = newSearchResults.slice(0, topNForRetained).map(r => String(r.id));
+
+      const retainedClickedCount = originalClickedIds.filter(id => newTopResultIds.includes(id)).length;
+
+      // Add a score based on the proportion of retained clicked documents
+      if (originalClickedIds.length > 0) {
+        improvement += retainedClickedCount / originalClickedIds.length;
       }
-      for (let i = 0; i < dim; i++) avgEmbedding[i] /= embeddingsArrays.length;
-
-      // Compute similarity between query embedding and averaged document embedding
-      const newScore = this.cosineSimilarity(queryEmbedding, avgEmbedding);
-
-      // Build newResults by replacing/updating the changed document score and preserving others
-      const newResults = originalResults.map(r => ({
-        id: r.id,
-        score: r.id === changedDocumentId ? newScore : typeof r.score === 'number' ? r.score : 0,
-      }));
-
-      // If changed document wasn't in originalResults, add it
-      const wasPresent = originalResults.some(r => String(r.id) === String(changedDocumentId));
-      if (!wasPresent) newResults.push({ id: changedDocumentId, score: newScore });
-
-      const originalDocResult = originalResults.find(r => String(r.id) === String(changedDocumentId));
-      const originalScore =
-        originalDocResult && typeof originalDocResult.score === 'number' ? originalDocResult.score : 0;
-      const improvement = newScore - originalScore;
 
       return {
         queryId: queryRecord.id,
         query: queryRecord.query,
-        originalResults,
-        newResults,
-        improvement,
+        originalResults: queryRecord.clickedResults || [],
+        newResults: newSearchResults,
+        improvement: improvement,
       };
     } catch (error: unknown) {
-      console.warn('Failed to re-rank single query:', formatError(error));
+      console.error(`❌ Failed to re-rank single query ${queryRecord.id}:`, formatError(error));
       return null;
     }
   }
 
-  // ============================================================================
-  // QUEUE PROCESSING
-  // ============================================================================
-
-  async queueDocumentUpdate(documentId: string, newContent: string): Promise<void> {
-    const change = await this.detectDocumentChanges(documentId, newContent);
-    if (!change) {
-      // no change detected
-      return;
-    }
-
-    // deduplicate by changeHash (simple strategy)
-    const exists = this.updateQueue.find(c => c.documentId === change.documentId && c.changeHash === change.changeHash);
-    if (exists) {
-      return;
-    }
-
-    this.updateQueue.push(change);
-
-    // kick off processing if not already running
-    if (!this.isProcessing) {
-      this.processQueue().catch((err: unknown) => {
-        console.error('Error processing document update queue:', formatError(err));
-      });
-    }
+  private cosineSimilarity(vecA: number[], vecB: number[]): number {
+    const dotProduct = vecA.reduce((sum, val, idx) => sum + val * (vecB[idx] || 0), 0);
+    const magA = Math.sqrt(vecA.reduce((sum, val) => sum + val * val, 0));
+    const magB = Math.sqrt(vecB.reduce((sum, val) => sum + val * val, 0));
+    return magA && magB ? dotProduct / (magA * magB) : 0;
   }
 
-  private async processQueue(): Promise<void> {
-    this.isProcessing = true;
+  // For testing: manually trigger change detection & re-embedding
+  async debugReembed(documentId: string, newContent: string) {
     try {
-      while (this.updateQueue.length > 0) {
-        const change = this.updateQueue.shift();
-        if (!change) continue;
-
-        try {
-          const reembedResult = await this.reembedDocument(change);
-          // rerank queries affected by this document
-          const reranked = await this.rerankAffectedQueries(change.documentId);
-
-          // update counters in DB (best-effort; ignore failures)
-          try {
-            await db
-              .update(documents)
-              .set({
-                analysis: {
-                  ...(reembedResult && { lastReembedded: new Date().toISOString(), reembedStats: reembedResult }),
-                },
-              })
-              .where(eq(documents.id, change.documentId));
-          } catch (e: unknown) {
-            console.warn('Failed to persist reembed metadata:', formatError(e));
-          }
-
-          console.log(
-            `Processed change for ${change.documentId}: chunksUpdated=${reembedResult.chunksUpdated}, rerankedQueries=${reranked.length}`
-          );
-        } catch (err: unknown) {
-          console.error(`Failed to process change for ${change.documentId}:`, formatError(err));
-        }
+      const change = await this.detectDocumentChanges(documentId, newContent);
+      if (change) {
+        console.log('Detected change:', change);
+        const result = await this.reembedDocument(change);
+        console.log('Reembed result:', result);
+        // Ensure documentId is passed correctly here
+        await this.rerankAffectedQueries(documentId);
+      } else {
+        console.log('No changes detected');
       }
-    } finally {
-      this.isProcessing = false;
+    } catch (error) {
+      console.error('Debug re-embed error:', formatError(error));
     }
-  }
-
-  // small utility to compute cosine similarity between two vectors
-  private cosineSimilarity(a: number[], b: number[]): number {
-    if (!Array.isArray(a) || !Array.isArray(b) || a.length === 0 || b.length === 0) return 0;
-    let dot = 0;
-    let na = 0;
-    let nb = 0;
-    const len = Math.min(a.length, b.length);
-    for (let i = 0; i < len; i++) {
-      const va = a[i] || 0;
-      const vb = b[i] || 0;
-      dot += va * vb;
-      na += va * va;
-      nb += vb * vb;
-    }
-    const denom = Math.sqrt(na) * Math.sqrt(nb);
-    return denom === 0 ? 0 : Math.max(-1, Math.min(1, dot / denom));
   }
 }

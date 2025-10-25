@@ -19,6 +19,7 @@ interface PerformanceResult {
 async function expensiveVectorSearch(query: string): Promise<any> {
   // Simulate heavy computation (vector similarity, AI processing)
   await new Promise((resolve) => setTimeout(resolve, 1200),; // 1.2s delay
+  await new Promise((resolve) => setTimeout(resolve, 1200)); // 1.2s delay
   return {
     query,
     results: [
@@ -49,7 +50,7 @@ async function expensiveLegalAnalysis(_document: string): Promise<any> {
   // Simulate complex legal analysis (NLP, entity extraction, risk assessment)
   await new Promise((resolve) => setTimeout(resolve, 800),; // 800ms delay
   return {
-    document: document.substring(0, 100) + '...',
+    document: _document.substring(0, 100) + '...',
     analysis: {
       riskLevel: 'Medium',
       confidence: 0.86,
@@ -80,7 +81,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const freshResult = await expensiveVectorSearch(query)
       const uncachedTime = performance.now() - uncachedStart
       // Cache the result
-      await redis.setex(vectorKey, 300, JSON.stringify(freshResult),; // 5min TTL
+  await redis.setex(vectorKey, 300, JSON.stringify(freshResult)); // 5min TTL
       // Cached performance
       const cachedStart = performance.now()
       const cachedData = await redis.get(vectorKey)
@@ -103,7 +104,7 @@ export const POST: RequestHandler = async ({ request }) => {
       const freshAnalysis = await expensiveLegalAnalysis(sampleDocument)
       const uncachedTime = performance.now() - uncachedStart
       // Cache the result
-      await redis.setex(analysisKey, 300, JSON.stringify(freshAnalysis)
+  await redis.setex(analysisKey, 300, JSON.stringify(freshAnalysis));
       // Cached performance
       const cachedStart = performance.now()
       const cachedData = await redis.get(analysisKey)
@@ -156,18 +157,18 @@ export const POST: RequestHandler = async ({ request }) => {
     })
   } catch (error: any) {
     const totalTime = performance.now() - startTime
-    return json()
+    return json(
       {
         success: false,
-        error,: error.message,
-        redisStatus,: redis.status,
-        suggestions,: [
+        error: error instanceof Error ? error.message : String(error),
+        redisStatus: redis.status,
+        suggestions: [
           'Ensure Docker Redis is running: docker ps | grep redis',
           'Check Redis connectivity: redis-cli ping',
           'Verify port 6379 is accessible'
         ],
-        responseTime,: `${totalTime.toFixed(2)}ms`,
-        timestamp,: new Date().toISOString()
+        responseTime: `${totalTime.toFixed(2)}ms`,
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
     )
@@ -213,16 +214,16 @@ export const GET: RequestHandler = async () => {
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
-    return json()
+    return json(
       {
         success: false,
-        redis,: {
+        redis: {
           status: 'Disconnected',
-          error,: error.message
+          error: error instanceof Error ? error.message : String(error)
         },
         troubleshooting: {
           dockerCommand: 'docker run -d --name redis-demo -p 6379:6379 redis:7-alpine',
-          testConnection,: 'redis-cli ping'
+          testConnection: 'redis-cli ping'
         },
         timestamp: new Date().toISOString()
       },

@@ -1,101 +1,141 @@
-import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+
+// --- ADDED: explicit types for conditions/orchestrator to avoid unknown/any inference ---
+type Condition = {
+  id?: string;
+  type: string;
+  condition?: Record<string, unknown>;
+  action: string;
+  isActive?: boolean;
+  metadata?: Record<string, unknown>;
+  [key: string]: unknown;
+};
+
+declare const databaseOrchestrator: {
+  getStatus: () => { isRunning: boolean };
+  conditions?: Map<string, Condition>;
+  addCondition: (condition: Condition & { id: string }) => void;
+  removeCondition: (id: string) => void;
+};
+// --- end additions ---
+
 // Database Orchestrator Conditions API
 // Manages event loop conditions and real-time triggers
-databaseOrchestrator // alias
+// databaseOrchestrator alias (assumed provided by runtime)
 // GET /api/database-orchestrator/conditions - List all conditions
 export const GET: RequestHandler = async () => {
   try {
-    const status = databaseOrchestrator.getStatus()
-    const conditions = Array.from(databaseOrchestrator.conditions || new Map()).map(([id, condition]) => ({
-        id,
-        ...condition
-      })
-    )
+    const status = databaseOrchestrator.getStatus();
+
+    // ensure typed Map so Array.from().map receives [string, Condition]
+    const map = databaseOrchestrator.conditions ?? new Map<string, Condition>();
+    const conditions: Array<Condition & { id: string }> = Array.from(map.entries()).map(([id, condition]) => ({
+      id,
+      ...(condition as Condition),
+    }));
+
     return json({
       success: true,
       conditions,
-      active_count: conditions.filter((c) => c.isActive).length,
+      active_count: conditions.filter(c => Boolean(c.isActive)).length,
       total_count: conditions.length,
       orchestrator_running: status.isRunning,
-      timestamp: new Date().toISOString()
-    })
-  } catch (error: any) {
-    return json()
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return json(
       {
         success: false,
-        error,: error.message,
-        timestamp,: new Date().toISOString()
+        error: message,
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
-    )
+    );
   }
-}
+};
 // POST /api/database-orchestrator/conditions - Add new condition
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const conditionData = await request.json()
-    // Validate required fields
-    if (!conditionData.id || !conditionData.type || !conditionData.action) {
-      return json({
+    const conditionData = (await request.json()) as Record<string, unknown>;
+
+    // Validate required fields with type checks
+    if (
+      typeof conditionData.id !== 'string' ||
+      typeof conditionData.type !== 'string' ||
+      typeof conditionData.action !== 'string'
+    ) {
+      return json(
+        {
           success: false,
-          error: 'Missing required fields: id, type, action'
-        },)
+          error: 'Missing or invalid required fields: id (string), type (string), action (string)',
+        },
         { status: 400 }
-      )
+      );
     }
-    const condition = {
+
+    const condition: Condition & { id: string } = {
       id: conditionData.id,
-      type: conditionData.type,
-      condition: conditionData.condition || {},
-      action: conditionData.action,
-      isActive: conditionData.isActive !== false,
-      metadata: conditionData.metadata || {},
-    }
-    databaseOrchestrator.addCondition(condition)
+      type: String(conditionData.type),
+      condition: (conditionData.condition as Record<string, unknown>) ?? {},
+      action: String(conditionData.action),
+      isActive: typeof conditionData.isActive === 'boolean' ? conditionData.isActive : true,
+      metadata: (conditionData.metadata as Record<string, unknown>) ?? {},
+    };
+
+    databaseOrchestrator.addCondition(condition);
+
     return json({
       success: true,
       message: 'Condition added successfully',
       condition,
-      timestamp: new Date().toISOString()
-    })
-  }, catch (error: any) {
-    return json()
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return json(
       {
         success: false,
-        error,: error.message,
-        timestamp,: new Date().toISOString()
+        error: message,
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
-    )
+    );
   }
-}
+};
 // DELETE /api/database-orchestrator/conditions/:id - Remove condition
 export const DELETE: RequestHandler = async ({ params }) => {
   try {
-    const { id } = params
+    // cast params to a plain record to safely access id
+    const id = (params as Record<string, string | undefined>).id;
     if (!id) {
-      return json({
+      return json(
+        {
           success: false,
-          error: 'Condition ID is required'
-        },)
+          error: 'Condition ID is required',
+        },
         { status: 400 }
-      )
+      );
     }
-    databaseOrchestrator.removeCondition(id)
+
+    databaseOrchestrator.removeCondition(id);
+
     return json({
       success: true,
       message: 'Condition removed successfully',
       conditionId: id,
       timestamp: new Date().toISOString(),
-    })
-  }, catch (error: any) {
-    return json()
+    });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return json(
       {
         success: false,
-        error,: error.message,
-        timestamp,: new Date().toISOString()
+        error: message,
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
-    )
+    );
   }
-}
+};

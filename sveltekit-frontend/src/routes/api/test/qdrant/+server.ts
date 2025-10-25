@@ -2,9 +2,7 @@ import type { RequestHandler } from './$types.js'
 // Optimized Qdrant Service Test API
 // Tests the memory-efficient Qdrant service with SOM clustering and NES cache integration
 import { json } from '@sveltejs/kit'
-import { optimizedQdrantService } from '$lib/services/optimized-qdrant-service'
-
-}
+import { optimizedQdrantService } from '$lib/services/optimized-qdrant-service';
 export interface TestResult {
   test: string
   status: 'success' | 'error' | 'warning'
