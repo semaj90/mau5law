@@ -374,7 +374,8 @@
           <div class="input-container">
             <span class="input-prompt">🕵️</span>
             <Input
-              value={currentInput} on:input={(e) => currentInput = (e.target as HTMLInputElement).value}
+              value={currentInput}
+              on:input={(e) => currentInput = (e.target as HTMLInputElement).value}
               placeholder="Ask 9S about your investigation..."
               class="chat-input"
               onkeypress={handleKeyPress}
