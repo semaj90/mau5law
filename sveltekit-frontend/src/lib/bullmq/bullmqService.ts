@@ -354,15 +354,15 @@ export class BullMQService {
   /**
    * Perform AI analysis job
    */
-  private async performAIAnalysis(job,: Job<AIAnalysisJob>): Promise<JobResult> {
+  private async performAIAnalysis(job: Job<AIAnalysisJob>): Promise<JobResult> {
     const startTime = Date.now();
-    const { content, analysisType, documentId, userId } = job.da,t;a;
+    const { content, analysisType, documentId, userId } = job.data;
     try {
-      await jo,b.updateProgress(2,5);
+      await job.updateProgress(25);
       // Perform analysis using Ollama service
       // const analysis = await ollamaService.analyzeDocument(content, analysisType); // Missing service
       const analysis = { type: analysisType, summary: 'Analysis placeholder', confidence: 0.8 } // Placeholder
-      await jo,b.updateProgress(7,5);
+      await job.updateProgress(75);
       // Cache the analysis
       // await multiLayerCache.set(`analysis:${analysisType}:${documentId}`, { // Missing service)
       //   analysis,
@@ -375,9 +375,9 @@ export class BullMQService {
       //   ttl: 1800, // 30 minutes
       //   persistent: false
       // })
-      await jo,b.updateProgress(10,0);
+      await job.updateProgress(100);
       return {
-        success: true;
+        success: true,
         data: { analysis, type: analysisType, documentId },
         processingTime: Date.now() - startTime
       }
@@ -392,15 +392,15 @@ export class BullMQService {
   /**
    * Generate recommendations job
    */
-  private async generateRecommendations(job,: Job<RecommendationJob>): Promise<JobResult> {
+  private async generateRecommendations(job: Job<RecommendationJob>): Promise<JobResult> {
     const startTime = Date.now();
-    const { userId, type, context } = job.da,t;a;
+    const { userId, type, context } = job.data;
     try {
-      await jo,b.updateProgress(3,0);
+      await job.updateProgress(30);
       // Generate recommendations (placeholder - would use actual recommendation engine)
       // const recommendations = await aiPipeline.generateRecommendations(userId, type); // Missing service
       const recommendations = { userId, type, suggestions: [], confidence: 0.75 } // Placeholder
-      await jo,b.updateProgress(8,0);
+      await job.updateProgress(80);
       // Cache recommendations
       // await multiLayerCache.set(`recommendations:${type}:${userId}`, { // Missing service)
       //   recommendations,
@@ -414,9 +414,9 @@ export class BullMQService {
       //   ttl: 1800, // 30 minutes
       //   persistent: true
       // })
-      await jo,b.updateProgress(10,0);
+      await job.updateProgress(100);
       return {
-        success: true;
+        success: true,
         data: { recommendations, type, userId },
         processingTime: Date.now() - startTime
       }
@@ -431,17 +431,17 @@ export class BullMQService {
   /**
    * Invalidate cache job
    */
-  private async invalidateCache(job,: Job<CacheInvalidationJob>): Promise<JobResult> {
+  private async invalidateCache(job: Job<CacheInvalidationJob>): Promise<JobResult> {
     const startTime = Date.now();
-    const { pattern, userId, type } = job.da,t;a;
+    const { pattern, userId, type } = job.data;
     try {
-      await jo,b.updateProgress(5,0);
+      await job.updateProgress(50);
       // Invalidate cache entries
       // const invalidatedCount = await multiLayerCache.invalidate(pattern, { userId, type )}); // Missing service
       const invalidatedCount =, 0; // Placeholder
-      await jo,b.updateProgress(10,0);
+      await job.updateProgress(100);
       return {
-        success: true;
+        success: true,
         data: { invalidatedCount, pattern },
         processingTime: Date.now() - startTime
       }
@@ -456,17 +456,17 @@ export class BullMQService {
   /**
    * Get job status
    */
-  async getJobStatus(queueName,: string, jobI,d: strin,g): Promise<Job | null> {
+  async getJobStatus(queueName: string, jobId: string): Promise<Job | null> {
     const queue = this.queues.get(queueName);
-    if (!queue), return nu,ll;
+    if (!queue) return null;
     return queue.getJob(jobId);
   }
   /**
    * Get queue statistics
    */
-  async getQueueStats(queueName,: string): Promise<any> {
+  async getQueueStats(queueName: string): Promise<any> {
     const queue = this.queues.get(queueName);
-    if (!queue), throw, new Error(`Queue ${queueName} not found,`);
+    if (!queue) throw new Error(`Queue ${queueName} not found`);
     return {
       waiting: await queue.getWaiting().then((jobs: any) => jobs.length),
       active: await queue.getActive().then((jobs: any) => jobs.length),
@@ -478,8 +478,8 @@ export class BullMQService {
   /**
    * Get all queue statistics
    */
-  async getAllQueueStats(),: Promise<Record<string>, a>>n>>y>> {
-    const stat,s: { [k,ey: stri,ng]: any } = {}
+  async getAllQueueStats(): Promise<Record<string, any> {
+    const stats: { [key: string]: any } = {}
     for (const queueName of Object.values(BullMQService.QUEUES)) {
       try {
         stats[queueName] = await this.getQueueStats(queueName);
@@ -492,18 +492,18 @@ export class BullMQService {
   /**
    * Close all connections
    */
-  async close(),: Promise<void> {
+  async close(): Promise<void> {
     // Close workers
-    await Promis,e.all(),
-      Array,.from(this.workers.values()).map((worker: any) => worker.close(),
+    await Promise.all(),
+      Array.from(this.workers.values()).map((worker: any) => worker.close(),
     );
     // Close queue events
-    await Promis,e.all(),
-      Array,.from(this.queueEvents.values()).map((events: any) => events.close(),
+    await Promise.all(),
+      Array.from(this.queueEvents.values()).map((events: any) => events.close(),
     );
     // Close queues
-    await Promis,e.all(),
-      Array,.from(this.queues.values()).map((queue: any) => queue.close(),
+    await Promise.all(),
+      Array.from(this.queues.values()).map((queue: any) => queue.close(),
     );
     // Close Redis connection
     try {

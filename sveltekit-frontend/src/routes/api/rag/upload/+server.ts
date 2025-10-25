@@ -1,56 +1,66 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { createHash } from 'crypto';
-import { db } from '$lib/server/db';
+import { db, legal_documents } from '$lib/server/db';
 import { documents, documentChunks } from '$lib/server/db/enhanced-embedding-schema';
 import { eq } from 'drizzle-orm';
-import { minio, ensureBucket, putObject } from '$lib/server/minio/client';
-import redis from 'redis';
+import { ensureBucket, putObject } from '$lib/server/minio/client';
+import { createClient, type RedisClientType } from 'redis';
 
-const redisClient = redis.createClient({
-  url: 'redis://:redis@localhost:6379',
-});
+// Initialize Redis client with proper error handling
+// Use REDIS_PASSWORD environment variable, default to 'redis' if not set
+const redisPassword = process.env.REDIS_PASSWORD || 'redis';
+const redisHost = process.env.REDIS_HOST ?? '127.0.0.1';
+const redisPort = Number(process.env.REDIS_PORT ?? 6379);
+
+// Make client creation defensive in case `createClient` is undefined in runtime/type-layer
+// Use the official RedisClientType to satisfy TS constraints
+let redisClient: RedisClientType | null = null;
+try {
+  // ensure createClient is callable
+  if (typeof createClient === 'function') {
+    redisClient = createClient({
+      socket: {
+        host: redisHost,
+        port: redisPort,
+        // typed parameter to avoid implicit any
+        reconnectStrategy: (retries: number) => Math.min(retries * 50, 500),
+      },
+      password: redisPassword,
+      database: 0,
+      legacyMode: false,
+    });
+  } else {
+    console.warn('⚠️ redis.createClient is not available; proceeding without Redis cache');
+  }
+} catch (initErr) {
+  console.warn('⚠️ Failed to initialize Redis client, proceeding without Redis:', initErr);
+  redisClient = null;
+}
+
+// Attach event listeners only when client exists
+if (redisClient) {
+  redisClient.on('error', (err: Error) => {
+    const msg = err?.message ?? String(err);
+    if (msg.includes('NOAUTH') || msg.includes('Authentication required')) {
+      console.warn('⚠️ Redis authentication failed - continuing without Redis cache:', msg);
+    } else {
+      console.warn('⚠️ Redis client error:', msg);
+    }
+  });
+
+  redisClient.on('connect', () => {
+    console.log('✅ Redis client connected');
+  });
+
+  redisClient.on('ready', () => {
+    console.log('✅ Redis client ready');
+  });
+}
 
 // Qdrant configuration
 const QDRANT_URL = 'http://localhost:6333';
 const QDRANT_COLLECTION = 'legal_documents';
-
-let dbInitialized = false;
-
-async function initializeDB() {
-  if (dbInitialized) return;
-
-  try {
-    // Try Redis connection
-    try {
-      await redisClient.connect();
-    } catch (redisError) {
-      console.warn('⚠️ Redis connection failed, continuing without cache:', redisError);
-    }
-
-    // Ensure MinIO bucket exists
-    try {
-      await ensureBucket('legal-documents');
-      console.log('✅ MinIO bucket initialized');
-    } catch (minioError) {
-      console.warn('⚠️ MinIO initialization failed, will use localStorage fallback:', minioError);
-    }
-
-    // Initialize Qdrant collection
-    try {
-      await initializeQdrantCollection();
-      console.log('✅ Qdrant collection initialized');
-    } catch (qdrantError) {
-      console.warn('⚠️ Qdrant initialization failed, will use localStorage fallback:', qdrantError);
-    }
-
-    dbInitialized = true;
-    console.log('✅ RAG services initialized (with fallbacks)');
-  } catch (error) {
-    console.error('❌ Service initialization failed:', error);
-    // Don't throw - allow graceful degradation with localStorage
-  }
-}
 
 async function initializeQdrantCollection() {
   // Check if collection exists
@@ -78,10 +88,51 @@ async function initializeQdrantCollection() {
   }
 }
 
-import {
-  generateEmbeddings as serverGenerateEmbeddings,
-  generateEmbedding as serverGenerateEmbedding,
-} from '$lib/server/services/embedding-service';
+async function initializeRAGServices() {
+  try {
+    // Try Redis connection if client was created
+    if (redisClient) {
+      try {
+        await redisClient.connect();
+        console.log('✅ Redis cache available');
+      } catch (redisError) {
+        const errMsg = redisError instanceof Error ? redisError.message : String(redisError);
+        if (errMsg.includes('NOAUTH') || errMsg.includes('Authentication required')) {
+          console.warn('⚠️ Redis authentication failed - proceeding without Redis cache');
+        } else if (errMsg.includes('ECONNREFUSED')) {
+          console.warn('⚠️ Redis server not running - proceeding without cache');
+        } else {
+          console.warn('⚠️ Redis connection failed:', errMsg);
+        }
+      }
+    } else {
+      console.log('⚠️ Redis client not initialized - proceeding without Redis cache');
+    }
+
+    // Ensure MinIO bucket exists
+    try {
+      await ensureBucket('legal-documents');
+      console.log('✅ MinIO bucket initialized');
+    } catch (minioError) {
+      console.warn('⚠️ MinIO initialization failed, will use localStorage fallback:', minioError);
+    }
+
+    // Initialize Qdrant collection
+    try {
+      await initializeQdrantCollection();
+      console.log('✅ Qdrant collection initialized');
+    } catch (qdrantError) {
+      console.warn('⚠️ Qdrant initialization failed, will use localStorage fallback:', qdrantError);
+    }
+
+    console.log('✅ RAG services initialized (with fallbacks)');
+  } catch (error) {
+    console.error('❌ Service initialization failed:', error);
+    // Don't throw - allow graceful degradation with localStorage
+  }
+}
+
+import { generateEmbedding as serverGenerateEmbedding } from '$lib/server/services/embedding-service';
 
 async function generateEmbedding(text: string): Promise<number[]> {
   try {
@@ -95,7 +146,9 @@ async function generateEmbedding(text: string): Promise<number[]> {
   }
 }
 
-async function storeInQdrant(id: string, embedding: number[], metadata: any, tags: string[]) {
+type QdrantMetadata = Record<string, unknown>;
+
+async function storeInQdrant(id: string, embedding: number[], metadata: QdrantMetadata, tags: string[]) {
   try {
     const response = await fetch(`${QDRANT_URL}/collections/${QDRANT_COLLECTION}/points`, {
       method: 'PUT',
@@ -232,9 +285,19 @@ function extractTags(content: string, filename: string): string[] {
   return [...new Set(tags)].slice(0, 10); // Unique tags, max 10
 }
 
+// Helper: safely extract a string 'code' property from unknown errors
+function getErrorCode(e: unknown): string | undefined {
+  if (e && typeof e === 'object') {
+    const maybe = e as { [key: string]: unknown };
+    const codeVal = maybe['code'];
+    return typeof codeVal === 'string' ? codeVal : undefined;
+  }
+  return undefined;
+}
+
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    await initializeDB();
+    await initializeRAGServices();
 
     const formData = await request.formData();
     const file = formData.get('file') as File;
@@ -289,13 +352,23 @@ export const POST: RequestHandler = async ({ request }) => {
     const buffer = Buffer.from(arrayBuffer);
 
     let minioSuccess = false;
+    let storedUri: string | null = null;
     try {
-      await putObject('legal-documents', minioObject, buffer, {
+      const result = await putObject('legal-documents', minioObject, buffer, {
         'Content-Type': file.type,
         'Original-Filename': file.name,
       });
-      minioSuccess = true;
-      console.log(`✅ Uploaded to MinIO: ${minioObject}`);
+
+      if (typeof result === 'string' && result.startsWith('file://')) {
+        // local fallback path
+        storedUri = result;
+        minioSuccess = false; // stored locally instead of MinIO
+        console.log(`ℹ️ Stored locally (MinIO fallback): ${result}`);
+      } else {
+        minioSuccess = true;
+        storedUri = `minio://legal-documents/${minioObject}`;
+        console.log(`✅ Uploaded to MinIO: ${minioObject}`);
+      }
     } catch (minioError) {
       console.warn('⚠️ MinIO upload failed:', minioError);
     }
@@ -312,28 +385,80 @@ export const POST: RequestHandler = async ({ request }) => {
     const tags = customTags ? [...autoTags, ...customTags.split(',').map(t => t.trim())] : autoTags;
 
     // Store main document (using Drizzle)
-    const [newDocument] = await db
-      .insert(documents)
-      .values({
-        filename: file.name,
-        sourceUri: minioSuccess ? `minio://legal-documents/${minioObject}` : `hash:${contentHash}`,
-        mimeType: file.type,
-        fileSize: file.size,
-        extractedText: content,
-        processingStatus: 'completed',
-        uploadedBy: '00000000-0000-0000-0000-000000000000', // Default system user
-        metadata: {
-          chunksCount: chunks.length,
-          uploadedAt: new Date().toISOString(),
-          extractionMethod: 'text_extraction',
-          tags,
-          contentHash,
-        },
-        processedAt: new Date(),
-      })
-      .returning({ id: documents.id });
+    let documentId: string;
+    try {
+      const [newDocument] = await db
+        .insert(documents)
+        .values({
+          title: file.name.replace(/\.[^/.]+$/, ''), // Remove file extension for title
+          filename: file.name,
+          sourceUri: storedUri ?? (minioSuccess ? `minio://legal-documents/${minioObject}` : `hash:${contentHash}`),
+          mimeType: file.type,
+          fileSize: file.size,
+          extractedText: content,
+          processingStatus: 'completed',
+          uploadedBy: '00000000-0000-0000-0000-000000000000', // Default system user
+          metadata: {
+            chunksCount: chunks.length,
+            uploadedAt: new Date().toISOString(),
+            extractionMethod: 'text_extraction',
+            tags,
+            contentHash,
+          },
+          processedAt: new Date(),
+        })
+        .returning({ id: documents.id });
 
-    const documentId = newDocument.id;
+      documentId = newDocument.id;
+    } catch (insertErr: unknown) {
+      // If the target DB schema doesn't match (e.g. missing columns such as 'title'),
+      // fallback to inserting into the legacy `legal_documents` table with a mapped shape.
+      // Postgres error code 42703 = undefined_column
+      // Narrow the unknown error safely
+      const errCode = getErrorCode(insertErr);
+
+      if (errCode === '42703') {
+        const message = insertErr && insertErr instanceof Error ? insertErr.message : String(insertErr);
+        console.warn(
+          '[RAG Upload] documents table schema mismatch detected, falling back to insert into legal_documents:',
+          message
+        );
+
+        // Use a default case id when none is provided
+        const defaultCaseId = '00000000-0000-0000-0000-000000000000';
+
+        const [newDoc] = await db
+          .insert(legal_documents)
+          .values({
+            case_id: defaultCaseId,
+            filename: file.name,
+            jurisdiction: 'unknown',
+            extracted_text: content,
+            prosecution_score: 0,
+            processing_metadata: {
+              sourceUri: minioSuccess ? `minio://legal-documents/${minioObject}` : `hash:${contentHash}`,
+              mimeType: file.type,
+              fileSize: file.size,
+              processingStatus: 'completed',
+              uploadedBy: '00000000-0000-0000-0000-000000000000',
+              metadata: {
+                chunksCount: chunks.length,
+                uploadedAt: new Date().toISOString(),
+                extractionMethod: 'text_extraction',
+                tags,
+                contentHash,
+              },
+              processedAt: new Date().toISOString(),
+            },
+          })
+          .returning({ id: legal_documents.id });
+
+        documentId = newDoc.id as string;
+      } else {
+        // rethrow for outer catch handler
+        throw insertErr;
+      }
+    }
 
     // Store in Qdrant with tags
     const qdrantId = `doc-${documentId}`;
@@ -386,21 +511,26 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Cache document for quick access
     try {
-      await redisClient.setEx(
-        `rag:doc:${documentId}`,
-        86400, // 24 hours
-        JSON.stringify({
+      const TTL_SECONDS = 86400; // 24 hours
+
+      // node-redis modern API: prefer setEx(key, seconds, value)
+      if (redisClient) {
+        const cacheKey = `rag:doc:${documentId}`;
+        const cacheValue = JSON.stringify({
           id: documentId,
           filename: file.name,
           contentHash,
           chunks: chunks.length,
           embeddings: embeddings.length,
           tags,
-          minioObject: minioSuccess ? minioObject : null,
+          minioObject: minioSuccess ? minioObject : storedUri,
           qdrantId,
           processedAt: new Date().toISOString(),
-        })
-      );
+        });
+
+        // Use setEx to avoid creating an untyped options object
+        await redisClient.setEx(cacheKey, TTL_SECONDS, cacheValue);
+      }
     } catch (redisError) {
       console.warn('⚠️ Redis caching failed, continuing without cache:', redisError);
     }

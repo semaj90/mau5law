@@ -29,15 +29,14 @@
   "include": [
     "uno.config.ts",
     "playwright.config.ts",
-    "sveltekit-frontend/svelte.config.js",
-    "types.d.ts",
-    "sveltekit-frontend/src/**/*"
+    "types.d.ts"
   ],
   "exclude": [
     "node_modules/**",
     "build/**",
     "dist/**",
-    "sveltekit-frontend/.svelte-kit/**",
-    "**/*.svelte.js" // exclude any generated Svelte JS outputs that can cause overwrite conflicts
+    ".svelte-kit/**",
+    "sveltekit-frontend/**",
+    "**/*.svelte.js"
   ]
 }

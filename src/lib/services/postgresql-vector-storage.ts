@@ -737,7 +737,7 @@ export class PostgreSQLVectorStorage {
       const connection = connectionTest.length > 0;
 
       // Test vector extension
-      const vectorTest = await db.execute(sql`SELECT '[1,2,3]'::vector as test_vector`);
+      const vectorTest = await db.execute(sql`SELECT '[12,3]'::vector as test_vector`);
       const vector_extension = vectorTest.length > 0;
 
       // Check document count

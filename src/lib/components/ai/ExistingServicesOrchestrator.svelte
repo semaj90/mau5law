@@ -2,7 +2,7 @@
 <!-- Nintendo-Style UI with Memory Bank Visualization -->
 
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import Button from '$lib/components/ui/Button.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 
@@ -46,6 +46,7 @@
     }
   ];
 
+  let healthInterval: ReturnType<typeof setInterval> | null = null;
   onMount(async () => {
     await checkServiceHealth();
     startHealthMonitoring();
@@ -64,7 +65,7 @@
   }
 
   function startHealthMonitoring() {
-    setInterval(async () => {
+    healthInterval = setInterval(async () => {
       await checkServiceHealth();
       updateMemoryBanks();
     }, 10000); // Check every 10 seconds
@@ -155,6 +156,12 @@
     };
     return modelMap[modelUsed] || modelUsed;
   }
+  onDestroy(() => {
+    if (healthInterval) {
+      clearInterval(healthInterval);
+      healthInterval = null;
+    }
+  });
 </script>
 
 <div class="existing-orchestrator p-6 max-w-6xl mx-auto">

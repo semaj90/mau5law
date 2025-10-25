@@ -1,7 +1,7 @@
 // Enhanced Cache-First Forms Integration
 // Superforms + Zod + LokiJS for Legal AI Platform
 import { z } from 'zod';
-import { superForm, type SuperValidated, type Infer } from 'sveltekit-superforms';
+import { superForm } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { writable, derived, type Writable } from 'svelte/store';
 import { cacheFirstService, CaseSchema, EvidenceSchema } from './cache-first-architecture.js';
@@ -69,10 +69,19 @@ type FormResult<T = unknown> = {
   error?: unknown;
 };
 
+// Add a specific type for chain of custody entries to avoid `any`
+type ChainOfCustodyEntry = {
+  timestamp: Date;
+  handler: string;
+  action: string;
+  notes?: string;
+};
+
 export class CacheFirstFormManager {
   // narrow the cache type
   private formCache = new Map<string, FormCacheData>();
-  private autosaveTimers = new Map<string, NodeJS.Timeout>();
+  // use browser timer number to avoid NodeJS vs DOM timer type conflicts
+  private autosaveTimers = new Map<string, number>();
   // Form state stores - avoid `any`
   public activeForms = writable<string[]>([]);
   public formErrors = writable<Record<string, unknown>>({});
@@ -103,32 +112,40 @@ export class CacheFirstFormManager {
     // Store in cache
     this.formCache.set(formId, defaultData);
     this.updateActiveForm(formId);
-    // Use `as unknown` to avoid excessive type-instantiation in TS while keeping runtime validator
-    const form = superForm({ data: defaultData } as unknown, {
+
+    // Pass a plain Record<string, unknown> to superForm (cast only here)
+    const form = superForm(defaultData as unknown as Record<string, unknown>, {
       SPA: true,
       validators: zod(EnhancedCaseFormSchema),
       resetForm: false,
       invalidateAll: false,
       // Cache-first validation
       onUpdate: ({ form }: { form: unknown }) => {
-        // form is opaque here; treat its `.data` as unknown and pass to handler
         const fd = (form as { data?: unknown }).data as FormCacheData | undefined;
         if (fd) {
           this.handleFormUpdate(formId, fd);
           this.startAutosave(formId, fd);
         }
       },
-      onSubmit: ({ _formData, _cancel }: { _formData?: unknown; _cancel?: () => void }) => {
+      // Accept the standard input shape from sveltekit-superforms and avoid destructuring $-prefixed props
+      onSubmit: (input: {
+        action?: URL;
+        formData?: FormData;
+        formElement?: HTMLFormElement;
+        controller?: AbortController;
+        submitter?: HTMLElement | null;
+        cancel?: () => void;
+      }) => {
         // Prevent submission if not on final step - use cached data
         const currentData = this.formCache.get(formId) as EnhancedCaseForm | undefined;
         if (currentData?.step !== undefined && currentData.step < 4) {
-          _cancel?.();
+          input.cancel?.();
           this.nextStep(formId);
           return;
         }
       },
-      onResult: async ({ result, _formEl, _cancel }: { result: unknown; _formEl?: unknown; _cancel?: () => void }) => {
-        const res = result as FormResult;
+      onResult: async (input: { result: unknown; formElement?: HTMLFormElement; cancel?: () => void }) => {
+        const res = input.result as FormResult;
         if (res.type === 'success') {
           const caseData = res.data as UnknownRecord;
           await cacheFirstService.createCase(caseData);
@@ -179,7 +196,7 @@ export class CacheFirstFormManager {
     };
     this.formCache.set(formId, defaultData);
     this.updateActiveForm(formId);
-    const form = superForm({ data: defaultData } as unknown, {
+    const form = superForm(defaultData as unknown as Record<string, unknown>, {
       SPA: true,
       validators: zod(EvidenceUploadFormSchema),
       onUpdate: ({ form }: { form: unknown }) => {
@@ -195,12 +212,20 @@ export class CacheFirstFormManager {
           }
         }
       },
-      onSubmit: async ({ _formData, _cancel }: { _formData?: unknown; _cancel?: () => void }) => {
-        // Handle file upload first - read from cache / _formData if provided
+      // Use the expected input shape and call cancel via input.cancel
+      onSubmit: async (input: {
+        action?: URL;
+        formData?: FormData;
+        formElement?: HTMLFormElement;
+        controller?: AbortController;
+        submitter?: HTMLElement | null;
+        cancel?: () => void;
+      }) => {
+        // Handle file upload first - read from cache
         const fd = this.formCache.get(formId) as EvidenceUploadForm | undefined;
         const file = fd?.file ?? null;
         if (file) {
-          _cancel?.();
+          input.cancel?.();
           await this.uploadFileWithProgress(formId, file as File);
         }
       },
@@ -260,9 +285,10 @@ export class CacheFirstFormManager {
     const filledFields = requiredFields.filter(field => {
       if (field.includes('.')) {
         const [parent, child] = field.split('.');
-        return (data as UnknownRecord)[parent] && ((data as any)[parent] as UnknownRecord)[child];
+        const parentObj = (data as UnknownRecord)[parent] as UnknownRecord | undefined;
+        return !!(parentObj && parentObj[child]);
       }
-      return (data as UnknownRecord)[field];
+      return !!(data as UnknownRecord)[field];
     });
     return (filledFields.length / requiredFields.length) * 100;
   }
@@ -291,16 +317,16 @@ export class CacheFirstFormManager {
     });
   }
   // ===== AUTOSAVE FUNCTIONALITY =====
-  private startAutosave(formId: string, data: FormCacheData) {
+  private startAutosave(formId: string, _data: FormCacheData) {
     this.clearAutosave(formId);
-    const timer = setTimeout(async () => {
+    const timer = window.setTimeout(async () => {
       await this.saveFormDraft(formId);
     }, 2000); // Autosave after 2 seconds of inactivity
     this.autosaveTimers.set(formId, timer);
   }
   private clearAutosave(formId: string) {
     const timer = this.autosaveTimers.get(formId);
-    if (timer) {
+    if (timer !== undefined) {
       clearTimeout(timer);
       this.autosaveTimers.delete(formId);
     }
@@ -372,39 +398,30 @@ export class CacheFirstFormManager {
   // ===== CHAIN OF CUSTODY =====
   private addChainOfCustodyEntry(formId: string, action: string, handler: string, notes?: string) {
     const formData = this.formCache.get(formId);
-    if (formData) {
-      formData.chain_of_custody = formData.chain_of_custody || [];
-      formData.chain_of_custody.push({
-        timestamp: new Date(),
-        handler,
-        action,
-        notes,
-      });
-      this.formCache.set(formId, formData);
+    if (!formData) return;
+
+    // Ensure chain_of_custody exists and is an array
+    // formData may be EnhancedCaseForm or EvidenceUploadForm; we only touch chain_of_custody if present/needed.
+    const record = formData as UnknownRecord & { chain_of_custody?: ChainOfCustodyEntry[] };
+
+    if (!Array.isArray(record.chain_of_custody)) {
+      record.chain_of_custody = [];
     }
-  }
-  // ===== FORM RECOVERY =====
-  async recoverForms(): Promise<string[]> {
-    const recoveredForms: string[] = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key?.startsWith('draft-')) {
-        try {
-          const draftData = localStorage.getItem(key);
-          if (draftData) {
-            const { data, timestamp } = JSON.parse(draftData);
-            const formId = key.replace('draft-', '');
-            this.formCache.set(formId, data);
-            recoveredForms.push(formId);
-            console.log(`Recovered form ${formId} from ${timestamp}`);
-          }
-        } catch (error) {
-          console.error(`Failed to recover form ${key}:`, error);
-        }
-      }
-    }
-    return recoveredForms;
+
+    const entry: ChainOfCustodyEntry = {
+      timestamp: new Date(),
+      handler,
+      action,
+      notes: notes ?? '',
+    };
+
+    record.chain_of_custody.push(entry);
+
+    // persist updated data back into cache
+    this.formCache.set(formId, formData);
+
+    // update progress and schedule autosave
+    this.updateProgress(formId, this.calculateFormProgress(formData));
+    this.startAutosave(formId, formData);
   }
 }
-// ===== GLOBAL FORM MANAGER =====
-export const formManager = new CacheFirstFormManager();

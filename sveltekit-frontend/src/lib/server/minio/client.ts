@@ -61,7 +61,35 @@ export async function putObject(
   buffer: Buffer,
   meta?: Record<string, string>
 ): Promise<string | undefined> {
-  await ensureBucket(bucketName);
-  // minio.putObject returns a Promise that resolves to a string (object etag) in most SDK versions.
-  return minio.putObject(bucketName, objectName, buffer, meta || {}) as Promise<string | undefined>;
+  try {
+    await ensureBucket(bucketName);
+    // minio.putObject returns a Promise that resolves to a string (object etag) in most SDK versions.
+    return (await minio.putObject(bucketName, objectName, buffer, meta || {})) as string | undefined;
+  } catch (err: unknown) {
+    // If MinIO is not configured or credentials are invalid in dev, fall back to local storage
+    try {
+      // Safe logging
+      console.warn(
+        '⚠️ MinIO putObject failed, falling back to local storage:',
+        err instanceof Error ? err.message : String(err)
+      );
+
+      // Ensure local storage directory exists
+      const path = await import('path');
+      const fs = await import('fs/promises');
+      const projectRoot = path.resolve(process.cwd());
+      const localDir = path.join(projectRoot, '.local_storage', bucketName);
+      await fs.mkdir(localDir, { recursive: true });
+      const localPath = path.join(localDir, objectName);
+
+      await fs.writeFile(localPath, buffer);
+
+      // Return a local file URI so callers can distinguish storage location
+      return `file://${localPath}`;
+    } catch (fsErr) {
+      console.error('MinIO fallback to local storage failed:', fsErr);
+      // rethrow original error to preserve upstream handling
+      throw err;
+    }
+  }
 }

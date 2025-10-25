@@ -4,7 +4,7 @@
  */
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import createRedisConnection, { redis } from '$lib/server/redis';
+import redis, { createRedisConnection } from '$lib/server/redis';
 import amqp from 'amqplib';
 
 interface WorkerStatus {

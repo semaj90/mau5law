@@ -1,8 +1,8 @@
-<!--
-  Production RAG System
-  MinIO + Qdrant + PostgreSQL + embeddinggemma:latest + Fuse.js
--->
 <script lang="ts">
+  import { superForm } from 'sveltekit-superforms/client';
+  import { zod } from 'sveltekit-superforms/adapters';
+  import type { ZodTypeAny } from 'zod';
+  import { DocumentUploadSchema } from './schema';
   import { Search, Upload, Tag, FileText, Database } from 'lucide-svelte';
   import Button from '$lib/components/ui/button/Button.svelte';
   import {
@@ -12,6 +12,16 @@
     getStorageStats,
     type RAGDocument,
   } from '$lib/storage/rag-storage';
+
+  const { data } = $props();
+
+  // Use an `unknown` form payload from server; Superforms client adapter validates on submit
+  // Cast incoming server form to `any` to avoid strict type incompatibilities on the client.
+  const { form, enhance, submitting } = superForm(data?.form as any, {
+    // Cast the schema to ZodTypeAny to satisfy the adapter's expected type and avoid SafeParse type mismatch
+    validators: zod(DocumentUploadSchema as unknown as ZodTypeAny),
+    SPA: true
+  });
 
   // State using Svelte 5 runes
   let selectedFile = $state<File | null>(null);
@@ -179,6 +189,42 @@
     loadDocuments();
   });
 </script>
+
+<h1 class="text-2xl font-bold mb-4">Upload Document to RAG</h1>
+
+<form use:enhance method="POST" enctype="multipart/form-data" class="space-y-3 border p-4 rounded">
+  <label class="block">
+    <span>Title</span>
+    <input name="title" bind:value={form.title} class="border p-2 w-full rounded" />
+  </label>
+
+  <label class="block">
+    <span>File</span>
+    <input type="file" name="file" required class="border p-2 w-full rounded" />
+  </label>
+
+  <label class="block">
+    <span>Tags (comma-separated)</span>
+    <input name="tags" placeholder="case, contract" bind:value={form.tags} class="border p-2 w-full rounded" />
+  </label>
+
+  <button type="submit" disabled={submitting} class="bg-blue-600 text-white px-3 py-1 rounded">
+    {submitting ? 'Uploading…' : 'Upload'}
+  </button>
+</form>
+
+{#if data?.result}
+  {#if data.result.message}
+    <div class="mt-4 bg-green-50 p-3 rounded border text-green-700">
+      ✅ {data.result.message}
+    </div>
+  {:else}
+    <div class="mt-4 bg-red-50 p-3 rounded border text-red-700">
+      ❌ {data.result.error}
+    </div>
+  {/if}
+{/if}
+<!-- merged above -->
 
 <div class="nes-container is-dark" style="min-height: 100vh; background: #212529; padding: 2rem;">
   <!-- Header -->

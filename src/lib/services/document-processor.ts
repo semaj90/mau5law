@@ -210,7 +210,7 @@ export class DocumentProcessor {
     const persons = [...text.matchAll(/\b[A-Z][a-z]+ [A-Z][a-z]+\b/g)].map(m => m[0]);
     const organizations = [...text.matchAll(/\b[A-Z][a-z]+ (?:Inc\.|Corp\.|LLC|Company|Corporation)\b/g)].map(m => m[0]);
     const locations = [...text.matchAll(/\b[A-Z][a-z]+ (?:County|State|City|District)\b/g)].map(m => m[0]);
-    const dates = [...text.matchAll(/\b\d{1,2}\/\d{1,2}\/\d{4}|\b\d{4}-\d{2}-\d{2}\b/g)].map(m => m[0]);
+    const dates = [...text.matchAll(/\b\d{12}\/\d{12}\/\d{4}|\b\d{4}-\d{2}-\d{2}\b/g)].map(m => m[0]);
     const amounts = [...text.matchAll(/\$[\d,]+(?:\.\d{2})?/g)].map(m => m[0]);
 
     return {

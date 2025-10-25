@@ -1,14 +1,14 @@
 {
   "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
+    "target": "ES2022",
+    "module": "ES2022",
     "moduleResolution": "bundler",
     "esModuleInterop": true,
-    "allowJs": true,
+    "allowJs": false,
     "checkJs": false,
     "verbatimModuleSyntax": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "allowSyntheticDefaultImports": true,
@@ -16,10 +16,12 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "lib": ["esnext", "DOM", "DOM.Iterable"],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "noEmit": true,
     "isolatedModules": true,
-    "types": ["svelte", "vite/client", "@sveltejs/kit", "@webgpu/types", "node"]
+    "types": ["svelte", "vite/client", "@sveltejs/kit", "@webgpu/types", "node"],
+    "incremental": false,
+    "tsBuildInfoFile": null
   },
   "include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.svelte"],
   "exclude": [

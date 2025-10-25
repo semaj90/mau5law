@@ -24,8 +24,8 @@ export const CONFIG = {
 
   // Vector & Search Services
   QDRANT_URL: env.QDRANT_URL ?? `http://${host}:6333`,
-  REDIS_URL: env.REDIS_URL ?? `redis://${host}:6380`, // Using port 6380 for test Redis
-  REDIS_PASSWORD: env.REDIS_PASSWORD ?? '', // No password for test Redis
+  REDIS_URL: env.REDIS_URL ?? `redis://${host}:6379`, // Using port 6379 for production Redis
+  REDIS_PASSWORD: env.REDIS_PASSWORD ?? 'redis', // Password required for Redis
 
   // Graph Database
   NEO4J_URL: env.NEO4J_URL ?? `bolt://${host}:7687`,

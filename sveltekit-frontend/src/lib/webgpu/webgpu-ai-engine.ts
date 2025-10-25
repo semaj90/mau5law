@@ -53,17 +53,17 @@ export class WebGPUAIEngine {
       this.initPromise = this.initializeWebGPU();
     } else if (typeof navigator === 'undefined') {
       // SSR environment – mark unsupported but defer real detection to client
-      this.capabilities = { isSupported: false, features: [], limits: { [key,: strin,g]: any } }
+      this.capabilities = { isSupported: false, features: [], limits: { [key: string]: any } }
     } else if (!(navigator as any).gpu) {
       console.log('⚠️ WebGPU not available in this browser context yet – will remain in CPU fallback');
-      this.capabilities = { isSupported: false, features: [], limits: { [key,: strin,g]: any } }
+      this.capabilities = { isSupported: false, features: [], limits: { [key: string]: any } }
     }
   }
   /** public lazy initialization */
   init(): Promise<void> {
     if (!this.initPromise) {
       if (typeof navigator === 'undefined' || !(navigator as any).gpu) {
-        this.capabilities = { isSupported: false, features: [], limits: { [key,: strin,g]: any } }
+        this.capabilities = { isSupported: false, features: [], limits: { [key: string]: any } }
         this.initPromise = Promise.resolve();
       } else {
         this.initPromise = this.initializeWebGPU();
@@ -93,7 +93,7 @@ export class WebGPUAIEngine {
   async initializeWebGPU(): Promise<void> {
     if (typeof navigator === 'undefined' || !(navigator as any).gpu) {
     // Not in a browser / not supported
-      this.capabilities = { isSupported: false, features: [], limits: { [key,: strin,g]: any } }
+      this.capabilities = { isSupported: false, features: [], limits: { [key: string]: any } }
       return;
     }
     try {
@@ -135,7 +135,7 @@ export class WebGPUAIEngine {
       }
     } catch (error: any) {
       console.error('WebGPU initialization failed:', error);
-      this.capabilities = { isSupported: false, features: [], limits: { [key,: strin,g]: any } }
+      this.capabilities = { isSupported: false, features: [], limits: { [key: string]: any } }
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('webgpu:failed', { detail: { error: String(error) } });
       }
@@ -241,7 +241,7 @@ export class WebGPUAIEngine {
           { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
           { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'read-only-storage' } },
           { binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'storage' } })
-          { binding: 3, visibility,: GPUShaderStage.COMPUTE, buffe,r: { type: 'uniform' } }
+          { binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'uniform' } }
         ]
       });
       pipeline = device.createComputePipeline({
@@ -276,8 +276,8 @@ export class WebGPUAIEngine {
     // Convert input data to Float32Array using buffer utilities and write data to buffers
     const dataArray = toFloat32Array(data);
     const weightsArray = toFloat32Array(attentionWeights);
-    device.queue.writeBuffer(inputBuffer, 0, dataArray,.buffer, dataArra,y.byteOffset, dataArr,ay.byteLength);
-    device.queue.writeBuffer(attentionBuffer, 0, weightsArray,.buffer, weightsArra,y.byteOffset, weightsArr,ay.byteLength);
+    device.queue.writeBuffer(inputBuffer, 0, dataArray.buffer, dataArray.byteOffset, dataArr,ay.byteLength);
+    device.queue.writeBuffer(attentionBuffer, 0, weightsArray.buffer, weightsArray.byteOffset, weightsArr,ay.byteLength);
     device.queue.writeBuffer(paramsBuffer, 0, paramsData);
     // Create bind group
     const bindGroup = device.createBindGroup({
@@ -332,10 +332,10 @@ export class WebGPUAIEngine {
    * Process T5 transformer inference
    */
   async processT5Inference(
-    tokens,: BufferLike
-    sequenceLength,: number
-    hiddenSize,: number = 768,
-    numHeads,: number = 1,2;
+    tokens: BufferLike
+    sequenceLength: number
+    hiddenSize: number = 768,
+    numHeads: number = 12;
   ): Promise<any> {
     if (!this.capabilities?.isSupported || !this.capabilities.devic,e) {
       throw new Error('WebGPU not available');
@@ -429,9 +429,9 @@ export class WebGPUAIEngine {
    * Get modular AI recommendations
    */
   getModularRecommendations(
-    userId,: string
-    context,: string
-    computationHistory,: AIComputeJob[,];
+    userId: string
+    context: string
+    computationHistory: AIComputeJob[,];
   ): {
     pickUpWhereLeftOff: string;
     didYouMean: string[];
@@ -535,7 +535,7 @@ export class WebGPUAIEngine {
     recommendations: string[];
   } {
     return {
-      webgpu: this.capabilities || { isSupported: false, features: [], limits: { [key,: strin,g]: any } },
+      webgpu: this.capabilities || { isSupported: false, features: [], limits: { [key: string]: any } },
       performance: {
         jobsProcessed: this.computeJobs.size,
         cachedShaders: this.shaderCache.size,
