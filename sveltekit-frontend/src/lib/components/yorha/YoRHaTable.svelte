@@ -3,7 +3,7 @@
 	import type { Snippet } from 'svelte';
   interface TableColumn {
     key: string;
-    title: string
+    title: string;
     sortable?: boolean;
     width?: string;
     align?: 'left' | 'center' | 'right';
@@ -31,7 +31,8 @@
     theme?: 'dark' | 'light';
     actionsSnippet?: (row: TableRow, index: number) => any;
   }
-  let { columns,
+  let {
+    columns,
     data = [],
     loading = false,
     selectable = false,
@@ -47,24 +48,8 @@
     glitchEffect = false,
     theme = 'dark',
     actionsSnippet
-   }: { columns,
-    data = [],
-    loading = false,
-    selectable = false,
-    sortable = true,
-    pagination = false,
-    pageSize = 10,
-    totalItems = 0,
-    className = '',
-    dense = false,
-    hover = true,
-    striped = true,
-    bordered = true,
-    glitchEffect = false,
-    theme = 'dark',
-    actionsSnippet
-  : unknown } = $props();
-  let selectedRows = $state<Set<string | number>(0)>(new Set());
+  }: TableProps = $props();
+  let selectedRows = $state<Set<string | number>>(new Set());
   let sortColumn = $state<string | null>(null);
   let sortDirection = $state<'asc' | 'desc'>('asc');
   let currentPage = $state(1);
@@ -72,7 +57,9 @@
   const filteredData = $derived.by(() => {
     let filtered = data;
     if (searchQuery) {
-      filtered = data.filter(item => item.some)-toLowerCase.includes(searchQuery.toLowerCase())
+      filtered = data.filter(item =>
+        Object.values(item).some(val =>
+          String(val).toLowerCase().includes(searchQuery.toLowerCase())
         )
       );
     }
@@ -94,11 +81,10 @@
   });
   const paginatedData = $derived.by(() => {
     if (!pagination) return filteredData;
-    const start = (currentPage - 1) * pageSiz;
+    const start = (currentPage - 1) * pageSize;
     return filteredData.slice(start, start + pageSize);
   });
-  const totalPages = $derived(Math.ceil(filteredData.length / pageSize)
-  );
+  const totalPages = $derived(Math.ceil(filteredData.length / pageSize));
   function handleSort(column: TableColumn) {
     if (!column.sortable || !sortable) return;
     if (sortColumn === column.key) {
