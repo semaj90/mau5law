@@ -49,7 +49,8 @@ function initRedis() {
   try {
     const host = process.env.REDIS_HOST || 'localhost';
     const port = parseInt(process.env.REDIS_PORT || '6379', 10);
-    _redis = new Redis({ host, port });
+    const password = process.env.REDIS_PASSWORD || 'redis';
+    _redis = new Redis({ host, port, password });
     // Create the typed adapter for consumers to use instead of raw Redis client
     try {
       _redisAdapter = createRedisAdapter(_redis);

@@ -4,14 +4,14 @@
   "description": "Nintendo-Style Legal AI Platform with Multi-Model Orchestration",
   "type": "module",
   "scripts": {
-    "dev": "node start-development.js",
-    "dev:full": "cd sveltekit-frontend && npm run dev:full",
-    "dev:local": "node scripts/start-local-dev.mjs",
-    "dev:quic:stack": "node scripts/start-quic-stack.mjs",
-    "dev:quic:fast": "node scripts/start-quic-dev.mjs",
-    "dev:quic:frontend": "npm --prefix sveltekit-frontend run dev:quic",
-    "dev:quic:docker": "node scripts/start-quic-docker.mjs",
-    "dev:quic": "node scripts/start-quic-docker.mjs",
+    "dev": "REDIS_PASSWORD=redis node start-development.js",
+    "dev:full": "REDIS_PASSWORD=redis npm --prefix sveltekit-frontend run dev:full",
+    "dev:local": "REDIS_PASSWORD=redis node scripts/start-local-dev.mjs",
+    "dev:quic:stack": "REDIS_PASSWORD=redis node scripts/start-quic-stack.mjs",
+    "dev:quic:fast": "REDIS_PASSWORD=redis node scripts/start-quic-dev.mjs",
+    "dev:quic:frontend": "REDIS_PASSWORD=redis npm --prefix sveltekit-frontend run dev:quic",
+    "dev:quic:docker": "REDIS_PASSWORD=redis node scripts/start-quic-docker.mjs",
+    "dev:quic": "REDIS_PASSWORD=redis node scripts/start-quic-docker.mjs",
     "stop:quic": "node scripts/stop-quic-stack.mjs",
     "start": "node start-production.js",
     "start:development": "node start-development.js",
@@ -34,6 +34,10 @@
     "check:svelte": "npm --prefix sveltekit-frontend run check:svelte",
     "check:svelte:fast": "npm --prefix sveltekit-frontend run check:svelte:fast",
     "check:all": "npm run typecheck:case-scoring",
+    "check": "node scripts/check-unified-simple.mjs",
+    "simd:test": "node scripts/test-simd-integration.mjs",
+    "simd:go:start": "cd go-microservice && ./simd-parser.exe",
+    "check:with:simd": "node scripts/check-unified-simple.mjs",
     "ws:orchestrator": "cd go-services/ws-orchestrator && go run main.go",
     "ws:backend": "cd go-services/websocket-server && go run main.go",
     "ws:check": "curl http://localhost:5173/health",
@@ -94,6 +98,7 @@
     "svelte-check": "^4.3.2",
     "typescript": "^5.9.3",
     "unocss": "^66.5.2",
-    "vite": "^7.1.5"
+    "vite": "^7.1.5",
+    "zx": "^7.2.4"
   }
 }

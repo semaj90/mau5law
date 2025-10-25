@@ -1,438 +1,439 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import SearchBox from '$lib/components/ui/SearchBox.svelte';
-  import { onMount } from 'svelte';
-  let searchResults = $state<any[]>([]);
-  let selectedDocument = $state<any>(null);
-  let isAnalyzing = $state(false);
-  const handleSearchResults = (results: any[]) => {
-    searchResults = result;
-    selectedDocument = null;
-  };
-  const viewDocument = (_document: any) => {
-    selectedDocument = document;
-  };
-  const closeDocument = () => {
-    selectedDocument = null;
-  };
-  const analyzeDocument = async (_document: any) => {
-    isAnalyzing = true;
-    try {
-      // Simulate AI analysis
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      // In a real implementation, this would call your legal AI analysis endpoint
-      console.log('Analyzing document:', document);
-    } catch (error) {
-      console.error('Analysis failed:', error);
-    } finally {
-      isAnalyzing = false;
+  import { superForm } from 'sveltekit-superforms';
+  import { zod } from 'sveltekit-superforms/adapters';
+  import { SearchFormSchema } from './+page.server';
+  import type { PageData } from './$types';
+
+  export let data: PageData;
+  export let searchState: {
+    results: Array<{ id: string; title: string; content: string; similarity: number }>;
+    query: string;
+    responseTime: number;
+    timestamp: string;
+  } | null = null;
+
+  const { form, errors, isSubmitting, constraints, enhance } = superForm(
+    data.form,
+    {
+      validators: zod(SearchFormSchema),
+      taintedMessage: 'Update search to apply changes',
     }
-  };
-  $effect(() => {
-    // Set page title
-    document.title = 'Legal AI Search - Deeds Platform';
-  });
+  );
+
+  let showAdvanced = $state(false);
+  let expandedResults = $state<Set<string>>(new Set());
+
+  function toggleResult(id: string) {
+    if (expandedResults.has(id)) {
+      expandedResults.delete(id);
+    } else {
+      expandedResults.add(id);
+    }
+    expandedResults = expandedResults;
+  }
 </script>
 
-<svelte:head>
-  <title>Legal AI Search - Deeds Platform</title>
-  <meta name="description" content="Search legal documents using AI-powered semantic search" />
-</svelte:head>
-<div class="search-page">
+<div class="search-container">
+  <!-- Header -->
   <header class="search-header">
-    <div class="nes-container is-rounded header-content">
-      <h1 class="page-title">
-        <i class="nes-icon trophy"></i>
-        Legal AI Search
-      </h1>
-      <p class="page-subtitle">Semantic search powered by vector embeddings and GPU acceleration</p>
-    </div>
+    <h1>Legal Document Search</h1>
+    <p>Search across legal documents using vector embeddings</p>
   </header>
-  <main class="search-main">
-    <section class="search-section">
-      <SearchBox
-        placeholder="Search contracts, evidence, briefs, citations..."
-        onResults={handleSearchResults}
-        className="main-search"
+
+  <!-- Search Form -->
+  <form method="POST" action="?/search" use:enhance class="search-form">
+    <!-- Query Input -->
+    <div class="form-group">
+      <label for="query">Search Query</label>
+      <input
+        type="text"
+        id="query"
+        name="query"
+        bind:value={$form.query}
+        placeholder="Enter search query (e.g., 'employment contract termination')"
+        class:error={$errors.query}
+        {...$constraints.query}
       />
-    </section>
-    {#if searchResults.length > 0}
-      <section class="results-section">
-        <div class="nes-container is-rounded">
-          <h2 class="results-title">
-            <i class="nes-icon star"></i>
-            Search Results ({searchResults.length})
-          </h2>
-          <div class="results-grid">
-            {#each searchResults as result, index}
-              <div class="nes-container result-card">
-                <div class="result-header">
-                  <h3 class="result-title">
-                    {result.title || `Document ${index + 1}`}
-                  </h3>
-                  {#if result.similarity}
-                    <div class="similarity-badge">
-                      {Math.round(result.similarity * 100)}%
-                    </div>
-                  {/if}
-                </div>
-                {#if result.content}
-                  <p class="result-content">
-                    {result.content.substring(0, 200)}...
-                  </p>
-                {/if}
-                {#if result.metadata}
-                  <div class="metadata-tags">
-                    {#if result.metadata.caseId}
-                      <span class="nes-badge">
-                        <span class="is-primary">Case: {result.metadata.caseId}</span>
-                      </span>
-                    {/if}
-                    {#if result.metadata.documentType}
-                      <span class="nes-badge">
-                        <span class="is-success">{result.metadata.documentType}</span>
-                      </span>
-                    {/if}
-                    {#if result.metadata.priority}
-                      <span class="nes-badge">
-                        <span class="is-warning">{result.metadata.priority}</span>
-                      </span>
-                    {/if}
-                  </div>
-                {/if}
-                <div class="result-actions">
-                  <button onclick={() => viewDocument(result)} class="nes-btn is-primary action-btn"> View </button>
-                  <button
-                    onclick={() => analyzeDocument(result)}
-                    class="nes-btn is-success action-btn"
-                    disabled={isAnalyzing}
-                  >
-                    {isAnalyzing ? 'Analyzing...' : 'AI Analysis'}
-                  </button>
-                </div>
-              </div>
-            {/each}
-          </div>
-        </div>
-      </section>
-    {/if}
-    {#if selectedDocument}
-      <section class="document-viewer">
-        <div class="nes-container is-rounded document-modal">
-          <div class="modal-header">
-            <h3 class="modal-title">
-              <i class="nes-icon heart"></i>
-              {selectedDocument.title || 'Document Viewer'}
-            </h3>
-            <button onclick={closeDocument} class="nes-btn is-error close-btn"> × </button>
-          </div>
-          <div class="modal-content">
-            {#if selectedDocument.content}
-              <div class="document-content">
-                <h4>Content Preview:</h4>
-                <div class="content-text">
-                  {selectedDocument.content}
-                </div>
-              </div>
-            {/if}
-            {#if selectedDocument.metadata}
-              <div class="document-metadata">
-                <h4>Metadata:</h4>
-                <div class="metadata-grid">
-                  {#each Object.entries(selectedDocument.metadata) as [key, value]}
-                    <div class="metadata-item">
-                      <strong>{key}:</strong>
-                      <span>{typeof value === 'object' ? JSON.stringify(value) : value}</span>
-                    </div>
-                  {/each}
-                </div>
-              </div>
-            {/if}
-            {#if selectedDocument.embedding}
-              <div class="embedding-info">
-                <h4>Vector Information</h4>
-                <p>Embedding dimensions: {selectedDocument.embedding.length || 'N/A'}</p>
-                <p>Vector magnitude: {selectedDocument.vectorMagnitude || 'N/A'}</p>
-              </div>
-            {/if}
-          </div>
-        </div>
-      </section>
-    {/if}
-  </main>
-  <footer class="search-footer">
-    <div class="nes-container footer-content">
-      <p class="footer-text">
-        <i class="nes-icon coin"></i>
-        Powered by Legal AI Platform • Vector Search • GPU Acceleration
-      </p>
-      <div class="footer-stats">
-        <span class="stat">
-          <i class="nes-icon trophy"></i>
-          {searchResults.length} Results
-        </span>
-        <span class="stat">
-          <i class="nes-icon star"></i>
-          Real-time Search
-        </span>
-      </div>
+      {#if $errors.query}
+        <span class="error-message">{$errors.query[0]}</span>
+      {/if}
     </div>
-  </footer>
+
+    <!-- Results Count -->
+    <div class="form-group">
+      <label for="topK">Number of Results</label>
+      <input
+        type="number"
+        id="topK"
+        name="topK"
+        bind:value={$form.topK}
+        {...$constraints.topK}
+      />
+      {#if $errors.topK}
+        <span class="error-message">{$errors.topK[0]}</span>
+      {/if}
+    </div>
+
+    <!-- Advanced Options Toggle -->
+    <button
+      type="button"
+      on:click={() => (showAdvanced = !showAdvanced)}
+      class="toggle-advanced"
+    >
+      {showAdvanced ? '−' : '+'} Advanced Options
+    </button>
+
+    <!-- Advanced Options -->
+    {#if showAdvanced}
+      <div class="advanced-options">
+        <div class="form-group">
+          <label for="threshold">Similarity Threshold</label>
+          <input
+            type="range"
+            id="threshold"
+            name="threshold"
+            bind:value={$form.threshold}
+            min="0"
+            max="1"
+            step="0.1"
+          />
+          <span class="threshold-value">{$form.threshold.toFixed(1)}</span>
+          {#if $errors.threshold}
+            <span class="error-message">{$errors.threshold[0]}</span>
+          {/if}
+        </div>
+      </div>
+    {/if}
+
+    <!-- Submit Button -->
+    <button type="submit" disabled={$isSubmitting} class="btn-search">
+      {#if $isSubmitting}
+        <span class="spinner"></span>
+        Searching...
+      {:else}
+        🔍 Search
+      {/if}
+    </button>
+
+    {#if $errors._problem}
+      <div class="error-alert">
+        {#each $errors._problem as error}
+          <p>{error}</p>
+        {/each}
+      </div>
+    {/if}
+  </form>
+
+  <!-- Search Results -->
+  {#if searchState && searchState.results.length > 0}
+    <section class="results-section">
+      <div class="results-header">
+        <h2>Results for: <span class="query-text">"{searchState.query}"</span></h2>
+        <p class="results-meta">
+          {searchState.results.length} result{searchState.results.length !== 1 ? 's' : ''}
+          found in {searchState.responseTime}ms
+        </p>
+      </div>
+
+      <div class="results-list">
+        {#each searchState.results as result (result.id)}
+          <div
+            class="result-card"
+            class:expanded={expandedResults.has(result.id)}
+          >
+            <button
+              type="button"
+              on:click={() => toggleResult(result.id)}
+              class="result-toggle"
+            >
+              <span class="toggle-icon">
+                {expandedResults.has(result.id) ? '▼' : '▶'}
+              </span>
+            </button>
+
+            <div class="result-content">
+              <h3>{result.title}</h3>
+              <div class="result-meta">
+                <span class="similarity-score">
+                  Similarity: {(result.similarity * 100).toFixed(1)}%
+                </span>
+              </div>
+
+              {#if expandedResults.has(result.id)}
+                <p class="result-preview">
+                  {result.content.slice(0, 500)}
+                  {result.content.length > 500 ? '...' : ''}
+                </p>
+              {/if}
+            </div>
+          </div>
+        {/each}
+      </div>
+    </section>
+  {:else if searchState && searchState.results.length === 0}
+    <div class="no-results">
+      <p>No results found for: <strong>"{searchState.query}"</strong></p>
+      <p>Try adjusting your search query or threshold</p>
+    </div>
+  {/if}
 </div>
 
 <style>
-  .search-page {
-    min-height: 100vh;
-    font-family: 'Press Start 2P', monospace;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    padding: 20px;
-  }
-  .search-header {
-    margin-bottom: 32px;
-  }
-  .header-content {
-    text-align: center;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-  }
-  .page-title {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin-bottom: 16px;
-    font-size: 16px;
-    color: #212529;
-  }
-  .page-subtitle {
-    font-size: 10px;
-    color: #6c757d;
-    margin: 0;
-    line-height: 1.6,
-  }
-  .search-main {
-    max-width: 1200px;
+  .search-container {
+    max-width: 900px;
     margin: 0 auto;
+    padding: 2rem;
+    font-family: 'Press Start 2P', monospace;
   }
-  .search-section {
-    margin-bottom: 32px;
-    display: flex;
-    justify-content: center;
+
+  .search-header {
+    text-align: center;
+    margin-bottom: 2rem;
   }
-  :global(.main-search) {
-    max-width: 800px;
+
+  .search-header h1 {
+    font-size: 2rem;
+    color: #d4af37;
+    margin-bottom: 0.5rem;
+  }
+
+  .search-header p {
+    color: #999;
+    font-size: 0.9rem;
+  }
+
+  .search-form {
+    background: #1a1d20;
+    border: 3px solid #d4af37;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group label {
+    display: block;
+    color: #d4af37;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+  }
+
+  .form-group input[type='text'],
+  .form-group input[type='number'] {
     width: 100%;
+    padding: 0.75rem;
+    background: #212529;
+    color: #fff;
+    border: 2px solid #555;
+    font-family: monospace;
+    font-size: 0.9rem;
   }
-  .results-section {
-    margin-bottom: 32px;
+
+  .form-group input:focus {
+    outline: none;
+    border-color: #d4af37;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
   }
-  .results-title {
+
+  .form-group input.error {
+    border-color: #ff4444;
+  }
+
+  .error-message {
+    display: block;
+    color: #ff4444;
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+  }
+
+  .toggle-advanced {
+    background: transparent;
+    color: #d4af37;
+    border: none;
+    cursor: pointer;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.8rem;
+    padding: 0;
+    margin-bottom: 1rem;
+  }
+
+  .toggle-advanced:hover {
+    text-decoration: underline;
+  }
+
+  .advanced-options {
+    background: #0d0f12;
+    border-left: 3px solid #d4af37;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .threshold-value {
+    color: #d4af37;
+    font-weight: bold;
+    margin-left: 1rem;
+  }
+
+  .btn-search {
+    width: 100%;
+    padding: 1rem;
+    background: #d4af37;
+    color: #000;
+    border: none;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 24px;
-    font-size: 14px;
-    color: #212529;
+    justify-content: center;
+    gap: 0.5rem;
   }
-  .results-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-    gap: 20px;
+
+  .btn-search:hover:not(:disabled) {
+    background: #e6c547;
   }
-  .result-card {
-    background: white;
-    transition transform 0.2s ease;
+
+  .btn-search:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
-  .result-card:hover {
-    transform: translateY(-2px);
+
+  .spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid #000;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
   }
-  .result-header {
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .error-alert {
+    background: #4a0000;
+    border: 2px solid #ff4444;
+    color: #ff8888;
+    padding: 1rem;
+    margin-top: 1rem;
+    font-size: 0.8rem;
+  }
+
+  .results-section {
+    margin-top: 2rem;
+  }
+
+  .results-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .results-header h2 {
+    color: #d4af37;
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .query-text {
+    color: #fff;
+  }
+
+  .results-meta {
+    color: #999;
+    font-size: 0.8rem;
+  }
+
+  .results-list {
     display: flex;
-    justify-content: space-betwee;
-    align-items: flex-start;
-    margin-bottom: 12px;
+    flex-direction: column;
+    gap: 1rem;
   }
-  .result-title {
-    font-size: 12px;
-    color: #212529;
-    margin: 0,
+
+  .result-card {
+    background: #1a1d20;
+    border: 2px solid #444;
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .result-card:hover {
+    border-color: #d4af37;
+  }
+
+  .result-card.expanded {
+    border-color: #d4af37;
+  }
+
+  .result-toggle {
+    background: transparent;
+    border: none;
+    color: #d4af37;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  .toggle-icon {
+    display: inline-block;
+    width: 1.5rem;
+    text-align: center;
+  }
+
+  .result-content {
     flex: 1;
   }
-  .similarity-badge {
-    background: #007bff;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 8px;
-    margin-left: 12px;
+
+  .result-content h3 {
+    color: #d4af37;
+    font-size: 1rem;
+    margin: 0 0 0.5rem 0;
   }
-  .result-content {
-    font-size: 9px;
-    line-height: 1.5,
-    color: #6c757d;
-    margin-bottom: 16px;
-  }
-  .metadata-tags {
+
+  .result-meta {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 16px;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
   }
-  .result-actions {
-    display: flex;
-    gap: 12px;
+
+  .similarity-score {
+    color: #4ade80;
+    font-weight: bold;
   }
-  .action-btn {
-    font-size: 8px;
-    padding: 8px 16px;
-  }
-  .document-viewer {
-    position fixed;
-    top: 0,
-    left: 0;
-    right: 0,
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000,
-    padding: 20px;
-  }
-  .document-modal {
-    background: white;
-    max-width: 800px;
-    max-height: 80vh;
-    width: 100%;
-    overflow-y: auto;
-  }
-  .modal-header {
-    display: flex;
-    justify-content: space-betwee;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 16px;
-    border-bottom: 2px solid #dee2e6;
-  }
-  .modal-title {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 14px;
-    color: #212529;
-    margin: 0,
-  }
-  .close-btn {
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    font-size: 16px;
-    line-height: 1,
-  }
-  .modal-content h4 {
-    font-size: 10px;
-    color: #495057;
-    margin: 20px 0 12px 0;
-  }
-  .content-text {
-    font-size: 9px;
-    line-height: 1.6,
-    color: #212529;
-    background: #f8f9fa;
-    padding: 16px;
-    border-radius: 4px;
+
+  .result-preview {
+    color: #ccc;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    margin-top: 0.5rem;
     white-space: pre-wrap;
+    word-break: break-word;
   }
-  .metadata-grid {
-    display: grid;
-    gap: 8px;
+
+  .no-results {
+    text-align: center;
+    padding: 2rem;
+    background: #1a1d20;
+    border: 2px dashed #d4af37;
+    color: #999;
   }
-  .metadata-item {
-    display: flex;
-    gap: 8px;
-    font-size: 9px;
-    padding: 8px;
-    background: #f8f9fa;
-    border-radius: 4px;
+
+  .no-results p {
+    margin: 0.5rem 0;
   }
-  .metadata-item strong {
-    color: #495057;
-    min-width: 120px;
-  }
-  .embedding-info {
-    font-size: 9px;
-    color: #6c757d;
-    background: #e9ecef;
-    padding: 16px;
-    border-radius: 4px;
-    margin-top: 16px;
-  }
-  .search-footer {
-    margin-top: 40px;
-  }
-  .footer-content {
-    display: flex;
-    justify-content: space-betwee;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.9);
-  }
-  .footer-text {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 8px;
-    color: #6c757d;
-    margin: 0,
-  }
-  .footer-stats {
-    display: flex;
-    gap: 16px;
-  }
-  .stat {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 8px;
-    color: #495057;
-  }
-  /* Responsive design */
-  @media (max-width: 768px) {
-    .search-page {
-      padding: 16px;
-    }
-    .page-title {
-      font-size: 14px;
-    }
-    .page-subtitle {
-      font-size: 8px;
-    }
-    .results-grid {
-      grid-template-columns: 1fr;
-    }
-    .footer-content {
-      flex-direction column;
-      gap: 12px;
-    }
-    .document-viewer {
-      padding: 10px;
-    }
-    .document-modal {
-      max-height: 90vh;
-    }
-  }
-  @media (max-width: 480px) {
-    .result-actions {
-      flex-direction column;
-    }
-    .action-btn {
-      width: 100%;
-    }
-    .modal-header {
-      flex-direction column;
-      gap: 12px;
-    }
-    .close-btn {
-      align-self: flex-end;
-    }
+
+  .no-results strong {
+    color: #d4af37;
   }
 </style>

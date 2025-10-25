@@ -628,6 +628,7 @@ go.sum
 # MinIO local data
 ########################################
 minio-data/
+.local_storage/
 
 ########################################
 # Precompiled vendor drops (track source instead)

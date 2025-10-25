@@ -45,7 +45,7 @@ function indexToXY(index: number, width: number) {
   return { x: index % width, y: Math.floor(index / width) };
 }
 
-/** Initialize weights in the bounding box of the input points, or [0,1] if points empty */
+/** Initialize weights in the bounding box of the input points, or [01] if points empty */
 function initWeights(count: number, dim: number, points: Vector[], rng: () => number): Vector[] {
   const weights: Vector[] = new Array(count);
   const min: number[] = new Array(dim).fill(Infinity);

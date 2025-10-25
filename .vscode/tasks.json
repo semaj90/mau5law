@@ -418,10 +418,7 @@
         "reveal": "always",
         "panel": "dedicated"
       },
-      "problemMatcher": [],
-      "runOptions": {
-        "runOn": "folderOpen"
-      }
+      "problemMatcher": []
     },
     {
       "label": "Clear HMR Error Log",

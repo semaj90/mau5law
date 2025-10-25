@@ -1,10 +1,10 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { db } from '$lib/server/db/client'
-import { users, sessions } from '$lib/server/db/schema-postgres'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { db } from '$lib/server/db/client';
+
 export const POST: RequestHandler = async () => {
   try {
-    console.log('🔄 Setting up database tables...')
+    console.log('🔄 Setting up database tables...');
     // Create the users table if it doesn't exist
     await db.execute(`
       CREATE TABLE IF NOT EXISTS "users" (
@@ -18,12 +18,54 @@ export const POST: RequestHandler = async () => {
         "avatar_url" text,
         "role" varchar(50) DEFAULT 'prosecutor' NOT NULL,
         "is_active" boolean DEFAULT true NOT NULL,
-        "metadata" jsonb DEFAULT '{}':: jsonb
-        "settings" jsonb DEFAULT '{}':: jsonb
+        "metadata" jsonb DEFAULT '{}'::jsonb,
+        "settings" jsonb DEFAULT '{}'::jsonb,
         "created_at" timestamp DEFAULT now() NOT NULL,
         "updated_at" timestamp DEFAULT now() NOT NULL
       )
-    `)
+    `);
+
+    // Create the documents table if it doesn't exist
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS "documents" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+        "title" varchar(512),
+        "filename" varchar(255) NOT NULL,
+        "source_uri" varchar(1024) NOT NULL,
+        "mime_type" varchar(100),
+        "file_size" bigint,
+        "extracted_text" text,
+        "processing_status" varchar(50) DEFAULT 'pending' NOT NULL,
+        "case_id" uuid,
+        "uploaded_by" uuid NOT NULL,
+        "metadata" jsonb DEFAULT '{}'::jsonb,
+        "created_at" timestamp DEFAULT now() NOT NULL,
+        "updated_at" timestamp DEFAULT now() NOT NULL,
+        "processed_at" timestamp
+      );
+    `);
+
+    // Create the document_chunks table if it doesn't exist
+    await db.execute(`
+      CREATE TABLE IF NOT EXISTS "document_chunks" (
+        "id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+        "document_id" uuid NOT NULL REFERENCES "documents"("id") ON DELETE cascade,
+        "chunk_index" integer NOT NULL,
+        "parent_chunk_id" uuid,
+        "level" integer DEFAULT 0 NOT NULL,
+        "text" text NOT NULL,
+        "tokens" integer,
+        "start_offset" integer,
+        "end_offset" integer,
+        "embedding" vector(384),
+        "embedding_model" varchar(100) DEFAULT 'embeddinggemma:latest',
+        "confidence" real,
+        "metadata" jsonb DEFAULT '{}'::jsonb,
+        "created_at" timestamp DEFAULT now() NOT NULL,
+        "updated_at" timestamp DEFAULT now() NOT NULL
+      );
+    `);
+
     // Create the sessions table if it doesn't exist
     await db.execute(`
       CREATE TABLE IF NOT EXISTS "sessions" (
@@ -33,17 +75,36 @@ export const POST: RequestHandler = async () => {
         CONSTRAINT "sessions_user_id_users_id_fk"
           FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE cascade
       )
-    `)
+    `);
+
     // Create indexes for better performance
-    await db.execute('CREATE INDEX IF NOT EXISTS "users_email_idx" ON "users"("email")')
-    await db.execute('CREATE INDEX IF NOT EXISTS "users_role_idx" ON "users"("role")')
-    await db.execute('CREATE INDEX IF NOT EXISTS "sessions_user_id_idx" ON "sessions"("user_id")')
-    await db.execute('CREATE INDEX IF NOT EXISTS "sessions_expires_at_idx" ON "sessions"("expires_at")')
+    // Enable pgvector extension
+    await db.execute('CREATE EXTENSION IF NOT EXISTS vector;');
+
+    await db.execute('CREATE INDEX IF NOT EXISTS "users_email_idx" ON "users"("email")');
+    await db.execute('CREATE INDEX IF NOT EXISTS "users_role_idx" ON "users"("role")');
+    await db.execute('CREATE INDEX IF NOT EXISTS "sessions_user_id_idx" ON "sessions"("user_id")');
+    await db.execute('CREATE INDEX IF NOT EXISTS "sessions_expires_at_idx" ON "sessions"("expires_at")');
+    await db.execute('CREATE INDEX IF NOT EXISTS "idx_documents_status" ON "documents"("processing_status")');
+    await db.execute('CREATE INDEX IF NOT EXISTS "idx_documents_case" ON "documents"("case_id")');
+    await db.execute('CREATE INDEX IF NOT EXISTS "idx_documents_filename" ON "documents"("filename")');
+    await db.execute('CREATE INDEX IF NOT EXISTS "idx_documents_created" ON "documents"("created_at")');
+    await db.execute(
+      'CREATE INDEX IF NOT EXISTS "idx_chunks_document" ON "document_chunks"("document_id", "chunk_index")'
+    );
+    await db.execute(
+      'CREATE INDEX IF NOT EXISTS "idx_chunks_hierarchy" ON "document_chunks"("parent_chunk_id", "level")'
+    );
+    await db.execute('CREATE INDEX IF NOT EXISTS "idx_chunks_created" ON "document_chunks"("created_at")');
+    await db.execute(
+      'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_document_chunks_embedding_hnsw ON document_chunks USING hnsw (embedding vector_cosine_ops) WITH (m = 16, ef_construction = 64);'
+    );
+
     // Insert a test user if none exists
-    const existingUsers = await db.execute('SELECT count(*) as count FROM users')
-    const userCount = existingUsers[0]?.count || 0
+    const existingUsers = await db.execute('SELECT COUNT(*)::int as count FROM users');
+    const userCount = Number(existingUsers[0]?.count ?? 0);
     if (userCount === 0) {
-      console.log('🔄 Creating test user...')
+      console.log('🔄 Creating test user...');
       await db.execute(`
         INSERT INTO users (
           email,
@@ -64,23 +125,31 @@ export const POST: RequestHandler = async () => {
           '{"department": "Legal", "jurisdiction": "CA", "practiceAreas": ["corporate", "litigation"], "permissions": ["admin", "read", "write"]}',
           '{"ui": {"sidebarCollapsed": false, "gridDensity": "standard"}, "notifications": {"email": true, "push": true}}'
         )
-      `)
-      console.log('✅ Test user created')
+      `);
+      console.log('✅ Test user created');
     }
-    console.log('✅ Database setup completed successfully')
+
+    // Re-query to get the final user count after potential insertion
+    const finalUsers = await db.execute('SELECT COUNT(*)::int as count FROM users');
+    const finalUserCount = Number(finalUsers[0]?.count ?? 0);
+
+    console.log('✅ Database setup completed successfully');
     return json({
       success: true,
       message: 'Database tables created and configured successfully',
-      userCount: userCount
-    })
+      userCount: finalUserCount,
+      timestamp: new Date().toISOString(),
+    });
   } catch (error) {
-    console.error('❌ Database setup failed:', error)
-    return json({
+    console.error('❌ Database setup failed:', error);
+    return json(
+      {
         success: false,
         error: 'Database setup failed',
-        details: error instanceof Error ? error.message: 'Unknown error'
-      },)
+        details: error instanceof Error ? error.message : 'Unknown error',
+        timestamp: new Date().toISOString(),
+      },
       { status: 500 }
-    )
+    );
   }
-}
+};

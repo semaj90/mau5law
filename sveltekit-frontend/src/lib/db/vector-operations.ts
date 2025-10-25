@@ -8,7 +8,7 @@ import { legalDocuments, vectorSimilarityQueries, legalAnalysisCache } from './s
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 
 // Database connection
-const connectionString = process.env.DATABASE_URL || 'postgresql://legal_admin:legal_pass_2025@localhost:5432/legal_ai';
+const connectionString = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
 const client = postgres(connectionString);
 const db = drizzle(client);
 

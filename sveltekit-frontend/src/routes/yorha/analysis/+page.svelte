@@ -2,13 +2,14 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   // Svelte 5 runes are built-in, no import needed
-  import * as Card from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button'; // Changed import to directly import Button
+  import CardOriginal from '$lib/components/ui/card';
+  import Button from '$lib/components/ui/button';
   import Progress from '$lib/components/ui/progress/Progress.svelte';
-  import { BarChart, TrendingUp, Target, AlertCircle, Brain, Activity, Database, Clock } from 'lucide-svelte';
+  import { TrendingUp, Target, AlertCircle, Brain, Activity, Database, Clock } from 'lucide-svelte';
 
   // Cast Button to `any` to bypass strict type checks for the `class` prop.
   const ButtonComponent: any = Button;
+  const CardComponent: any = CardOriginal;
 
   // Analysis data
   let analysisData = $state({
@@ -146,15 +147,16 @@
     <div class="analysis-dashboard">
       <!-- Top Row - Key Metrics -->
       <div class="metrics-row">
-        <Card.Root class="metric-nier-bits-card nes-container">
-          <Card.Header class="metric-header nes-container">
-            <BarChart class="metric-icon" />
+        <!-- Top metrics card (Case Metrics) -->
+        <CardComponent class="metric-nier-bits-card nes-container">
+          <div class="metric-header nes-container">
+            <TrendingUp class="metric-icon" />
             <div>
               <h3 class="card-title nes-container">Case Metrics</h3>
               <p class="card-description nes-container">Investigation Progress</p>
             </div>
-          </Card.Header>
-          <Card.Content class="metric-content nes-container">
+          </div>
+          <div class="metric-content nes-container">
             <div class="metric-grid">
               <div class="metric-item">
                 <span class="metric-number">{analysisData.caseMetrics.total}</span>
@@ -169,17 +171,18 @@
                 <span class="metric-label">Success Rate</span>
               </div>
             </div>
-          </Card.Content>
-        </Card.Root>
-        <Card.Root class="metric-nier-bits-card nes-container">
-          <Card.Header class="metric-header nes-container">
+          </div>
+        </CardComponent>
+        <!-- Evidence Analysis card -->
+        <CardComponent class="metric-nier-bits-card nes-container">
+          <div class="metric-header nes-container">
             <Database class="metric-icon" />
             <div>
               <h3 class="card-title nes-container">Evidence Analysis</h3>
               <p class="card-description nes-container">Processing Status</p>
             </div>
-          </Card.Header>
-          <Card.Content class="metric-content nes-container">
+          </div>
+          <div class="metric-content nes-container">
             <div class="progress-section">
               <div class="progress-item">
                 <span class="progress-label"
@@ -199,17 +202,18 @@
                 />
               </div>
             </div>
-          </Card.Content>
-        </Card.Root>
-        <Card.Root class="metric-nier-bits-card nes-container">
-          <Card.Header class="metric-header nes-container">
+          </div>
+        </CardComponent>
+        <!-- Threat Assessment card -->
+        <CardComponent class="metric-nier-bits-card nes-container">
+          <div class="metric-header nes-container">
             <AlertCircle class="metric-icon" />
             <div>
               <h3 class="card-title nes-container">Threat Assessment</h3>
               <p class="card-description nes-container">Risk Analysis</p>
             </div>
-          </Card.Header>
-          <Card.Content class="metric-content nes-container">
+          </div>
+          <div class="metric-content nes-container">
             <div class="threat-grid">
               <div class="threat-item critical">
                 <span class="threat-number">{analysisData.threatAssessment.critical}</span>
@@ -228,18 +232,18 @@
                 <span class="threat-label">Low</span>
               </div>
             </div>
-          </Card.Content>
-        </Card.Root>
+          </div>
+        </CardComponent>
       </div>
       <!-- AI Performance Panel -->
-      <Card.Root class="ai-performance-nier-bits-card nes-container">
-        <Card.Header class="nes-container">
+      <CardComponent class="ai-performance-nier-bits-card nes-container">
+        <div class="nes-container">
           <div class="flex items-center gap-2 nes-container card-title">
             <Brain class="w-5 h-5" />
             <span>AI PERFORMANCE METRICS</span>
           </div>
-        </Card.Header>
-        <Card.Content class="ai-performance-content nes-container">
+        </div>
+        <div class="ai-performance-content nes-container">
           <div class="performance-metrics">
             <div class="performance-item">
               <div class="performance-label">Accuracy</div>
@@ -261,15 +265,15 @@
             <Clock class="w-4 h-4" />
             Last Updated: {analysisData.aiPerformance.last_update}
           </div>
-        </Card.Content>
-      </Card.Root>
+        </div>
+      </CardComponent>
       <!-- Recent Analyses -->
-      <Card.Root class="recent-analyses-nier-bits-card nes-container">
-        <Card.Header class="nes-container">
+      <CardComponent class="recent-analyses-nier-bits-card nes-container">
+        <div class="nes-container">
           <h3 class="card-title nes-container">RECENT ANALYSES</h3>
           <p class="card-description nes-container">Latest AI-powered investigations</p>
-        </Card.Header>
-        <Card.Content>
+        </div>
+        <div>
           <div class="analyses-content nes-container">
             <div class="analyses-list">
               {#each recentAnalyses as analysis (analysis.id)}
@@ -307,8 +311,8 @@
               {/each}
             </div>
           </div>
-        </Card.Content>
-      </Card.Root>
+        </div>
+      </CardComponent>
     </div>
   </main>
 </div>
