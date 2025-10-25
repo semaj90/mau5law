@@ -70,31 +70,76 @@ export const POST: RequestHandler = async ({ request }) => {
         ORDER BY embedding <=> ${`[${queryEmbedding.join(',')}]`}::vector
         LIMIT ${limit}`
       )
-      similarChunks = chatResults.rows.map((row: any) => ({,
-        id: row.conversation_id,
-        chunk_text: row.chunk_text,
-        chunk_sequence: 1,
-        evidence_id: null,
-        embedding: null,
-        similarity: parseFloat(row.similarity),
-        role: row.role,
-        metadata: row.metadata ? JSON.parse(row.metadata) : { [key,: strin,g]: any }
-      })
+  similarChunks = chatResults.rows.map((row: any) => ({
+    id: row.conversation_id,
+    chunk_text: row.chunk_text,
+    chunk_sequence: 1,
+    evidence_id: null,
+    embedding: null,
+    similarity: parseFloat(row.similarity),
+    role: row.role,
+    metadata: row.metadata ? JSON.parse(row.metadata) : {},
+  }));
       console.log(`Found ${similarChunks.length} chat embeddings results`)
     } catch (chatError) {
       console.warn('Chat embeddings search failed, trying keyword fallback:', chatError)
       // Fallback to keyword search
       const keywordResults = await searchSimilarChatsKeyword(query, limit)
       similarChunks = keywordResults.map(result => ({
-        id: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).conversationId,
-        chunk_text: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).content,
+        id: (
+          result as {
+            response?: any;
+            conversationId?: any;
+            content?: any;
+            similarity?: any;
+            role?: any;
+            metadata?: any;
+          }
+        ).conversationId,
+        chunk_text: (
+          result as {
+            response?: any;
+            conversationId?: any;
+            content?: any;
+            similarity?: any;
+            role?: any;
+            metadata?: any;
+          }
+        ).content,
         chunk_sequence: 1,
         evidence_id: null,
-        embedding: null,;
-        similarity: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).similarity,
-        role: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).role,
-        metadata: (result as { response?: any; conversationId?: any; content?: any; similarity?: any; role?: any; metadata?: any }).metadata
-      })
+        embedding: null,
+        similarity: (
+          result as {
+            response?: any;
+            conversationId?: any;
+            content?: any;
+            similarity?: any;
+            role?: any;
+            metadata?: any;
+          }
+        ).similarity,
+        role: (
+          result as {
+            response?: any;
+            conversationId?: any;
+            content?: any;
+            similarity?: any;
+            role?: any;
+            metadata?: any;
+          }
+        ).role,
+        metadata: (
+          result as {
+            response?: any;
+            conversationId?: any;
+            content?: any;
+            similarity?: any;
+            role?: any;
+            metadata?: any;
+          }
+        ).metadata,
+      }));
       console.log(`Used keyword fallback, found ${similarChunks.length} results`)
     }
     let ragResponse = null
@@ -102,16 +147,16 @@ export const POST: RequestHandler = async ({ request }) => {
       ragResponse = await generateRAGResponse(query, similarChunks)
     }
     // Enhance results with conversation context
-    const enhancedResults = similarChunks.map(chunk => ({
+    const enhancedResults = similarChunks.map((chunk: any) => ({
       ...chunk,
       similarity: Math.round(chunk.similarity * 1000) / 1000, // Round to 3 decimal places
       entityInfo: {
         type: 'chat_conversation',
         conversationId: chunk.id,
         role: chunk.role || 'unknown',
-        source: 'chat_embeddings'
-      }
-    })
+        source: 'chat_embeddings',
+      },
+    }));
     return json({
       success: true,
       query,

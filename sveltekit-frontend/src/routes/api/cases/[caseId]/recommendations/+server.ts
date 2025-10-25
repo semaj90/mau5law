@@ -3,166 +3,173 @@ import { db } from "$lib/server/db/index"
 import { caseActivities, cases, evidence, statutes } from "$lib/server/db/index"
 import { eq, sql, ilike } from "drizzle-orm"
 import { QdrantClient } from "@qdrant/js-client-rest"
-import type { RequestHandler } from './$types.js'
+import type { RequestHandler } from './$types';
+
 // Environment variables fallback
-const env = process.env || {}
+const env = process.env || {};
 const qdrantClient = new QdrantClient({
-  url: env.QDRANT_URL || "http://localhost:6333"
-})
-const NLP_SERVICE_URL = env.LLM_SERVICE_URL || "http://localhost:8000"
+  url: env.QDRANT_URL || 'http://localhost:6333',
+});
+const NLP_SERVICE_URL = env.LLM_SERVICE_URL || 'http://localhost:8000';
+
 // Add 'task' type for recommendations
 export interface Recommendation {
-  id: string
-  type:
-    | "missing_info"
-    | "link_case"
-    | "link_statute"
-    | "investigative_step"
-    | "task"
-  title: string
-  description: string
-  confidence: number
-  actionData: { [key: string]: any }
+  id: string;
+  type: 'missing_info' | 'link_case' | 'link_statute' | 'investigative_step' | 'task';
+  title: string;
+  description: string;
+  confidence: number;
+  // replace any with a safer type to avoid Unexpected any
+  actionData: Record<string, unknown>;
 }
+
 export const GET: RequestHandler = async ({ params, locals }) => {
   if (!locals.user) {
-    return json({ error: "Not authenticated" }, { status: 401 })
+    return json({ error: 'Not authenticated' }, { status: 401 });
   }
-  const { caseId } = params
+  const { caseId } = params;
   if (!caseId) {
-    return json({ error: "Case ID is required" }, { status: 400 })
+    return json({ error: 'Case ID is required' }, { status: 400 });
   }
-  const recommendations: Recommendation[] = []
+
+  // use const since the variable reference is not reassigned (array mutates via push)
+  const recommendations: Recommendation[] = [];
+
   try {
     // 1. Fetch the current case data
-    const currentCaseResults = await db
-      .select()
-      .from(cases)
-      .where(eq(cases.id, caseId)
-      .limit(1)
+    const currentCaseResults = await db.select().from(cases).where(eq(cases.id, caseId)).limit(1);
+
     if (!currentCaseResults.length) {
-      return json({ error: "Case not found" }, { status: 404 })
+      return json({ error: 'Case not found' }, { status: 404 });
     }
-    const currentCase = currentCaseResults[0]
+    const currentCase = currentCaseResults[0];
+
     // 2. Recommendation: Check for missing information
     if (!currentCase.description || currentCase.description.length < 50) {
       recommendations.push({
-        id: "rec-desc",
-        type: "missing_info",
-        title: "Expand Case Description",
-        description:
-          "A more detailed description will improve AI analysis and case clarity.",
+        id: 'rec-desc',
+        type: 'missing_info',
+        title: 'Expand Case Description',
+        description: 'A more detailed description will improve AI analysis and case clarity.',
         confidence: 0.9,
-        actionData: { field: "description" }
-      })
+        actionData: { field: 'description' },
+      });
     }
+
     // Check for missing evidence
-    const evidenceCount = await db
+    const evidenceCountResult = await db
       .select({ count: sql<number>`count(*)` })
       .from(evidence)
-      .where(eq(evidence.caseId, caseId)
-    if (evidenceCount[0]?.count === 0) {
+      .where(eq(evidence.caseId, caseId));
+    const evidenceTotal = Number(evidenceCountResult?.[0]?.count ?? 0);
+
+    if (evidenceTotal === 0) {
       recommendations.push({
-        id: "rec-evidence",
-        type: "missing_info",
-        title: "Add Evidence",
-        description:
-          "This case has no evidence attached. Upload relevant documents, images, or other files.",
+        id: 'rec-evidence',
+        type: 'missing_info',
+        title: 'Add Evidence',
+        description: 'This case has no evidence attached. Upload relevant documents, images, or other files.',
         confidence: 0.95,
-        actionData: { relation: "evidence" }
-      })
+        actionData: { relation: 'evidence' },
+      });
     }
+
     // Check for activities
-    const activitiesCount = await db
+    const activitiesCountResult = await db
       .select({ count: sql<number>`count(*)` })
       .from(caseActivities)
-      .where(eq(caseActivities.caseId, caseId)
-    if (currentCase.status === "open" && activitiesCount[0]?.count === 0) {
+      .where(eq(caseActivities.caseId, caseId));
+    const activitiesTotal = Number(activitiesCountResult?.[0]?.count ?? 0);
+
+    if (currentCase.status === 'open' && activitiesTotal === 0) {
       recommendations.push({
-        id: "rec-first-activity",
-        type: "task",
-        title: "Schedule First Activity",
+        id: 'rec-first-activity',
+        type: 'task',
+        title: 'Schedule First Activity',
         description:
-          "This case is open but has no activities. Consider scheduling an initial review or evidence collection.",
+          'This case is open but has no activities. Consider scheduling an initial review or evidence collection.',
         confidence: 0.8,
-        actionData: { activityType: "initial_review" }
-      })
+        actionData: { activityType: 'initial_review' },
+      });
     }
+
     // 3. Recommendation: Find similar cases via Qdrant (simplified)
     try {
-      const textToEmbed =
-        currentCase.aiSummary || currentCase.description || currentCase.title
-      const nlpResponse = await fetch(
-        `${NLP_SERVICE_URL}/analyze-criminal-actions`,)
-        {
-          method: "POST",
-          headers,: { "Content-Type,": "application/json" },
-          body: JSON.stringify({ text: textToEmbed })
-        }
-      )
+      const textToEmbed = currentCase.aiSummary || currentCase.description || currentCase.title || '';
+
+      const nlpResponse = await fetch(`${NLP_SERVICE_URL}/analyze-criminal-actions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: textToEmbed }),
+      });
+
       if (nlpResponse.ok) {
-        const nlpData = await nlpResponse.json()
-        const caseEmbedding = nlpData.embedding
-        const searchResult = await qdrantClient.search("prosecutor_cases", {
-          vector: caseEmbedding,
-          limit: 5,
-          filter: { must_not: [{ key: "id", match: { value: caseId } }] }, // Exclude self
-          with_payload: true
-        })
-        for (const hit of searchResult) {
-          recommendations.push({
-            id: `rec-case-${hit.id}`,
-            type: "link_case",
-            title: `Review Similar Case: ${hit.payload?.title || "Untitled"}`,
-            description: `This case has a similarity score of ${hit.score.toFixed(
-              2
-            )}. It may contain related evidence or criminals.`,
-            confidence: hit.score,
-            actionData: {
-              caseId: hit.id,
-              title: hit.payload?.title,
-              summary: hit.payload?.aiSummary
+        const nlpData: { embedding?: number[] } = await nlpResponse.json();
+        const caseEmbedding = nlpData.embedding;
+        if (Array.isArray(caseEmbedding) && caseEmbedding.length > 0) {
+          const searchResult = await qdrantClient.search('prosecutor_cases', {
+            vector: caseEmbedding,
+            limit: 5,
+            filter: { must_not: [{ key: 'id', match: { value: caseId } }] },
+            with_payload: true,
+          });
+
+          // qdrantClient.search returns an array of hits; guard and iterate
+          if (Array.isArray(searchResult)) {
+            for (const hit of searchResult) {
+              const scoreNum = Number(hit.score ?? 0) || 0;
+              recommendations.push({
+                id: `rec-case-${hit.id}`,
+                type: 'link_case',
+                title: `Review Similar Case: ${hit.payload?.title ?? 'Untitled'}`,
+                description: `This case has a similarity score of ${scoreNum.toFixed(2)}. It may contain related evidence or criminals.`,
+                confidence: scoreNum,
+                actionData: {
+                  caseId: hit.id,
+                  title: hit.payload?.title,
+                  summary: hit.payload?.aiSummary,
+                },
+              });
             }
-          })
+          }
+        } else {
+          console.warn('NLP service returned no embedding, skipping vector search.');
         }
+      } else {
+        console.warn('NLP service returned non-ok status:', nlpResponse.status);
       }
-    }, catch (vectorError) {
-      console.warn("Vector search failed:", vectorError)
+    } catch (vectorError: unknown) {
+      console.warn('Vector search failed:', vectorError);
       // Continue without vector recommendations
     }
-    // 4. Example: Suggest reviewing statutes if case has specific tags
-    if (
-      currentCase.aiTags &&
-      Array.isArray(currentCase.aiTags) &&
-      currentCase.aiTags.includes("fraud")
-    ) {
-      const fraudStatutes = await db
+
+    // 4. Suggest statutes - type DB result and iterate safely
+    if (currentCase.aiTags && Array.isArray(currentCase.aiTags) && currentCase.aiTags.includes('fraud')) {
+      const fraudStatutes: Array<{ id: string; title: string; code?: string }> = await db
         .select()
         .from(statutes)
-        .where(ilike(statutes.title, "%fraud%")
-        .limit(3)
-      fraudStatutes.forEach((statute) => {
+        .where(ilike(statutes.title, '%fraud%'))
+        .limit(3);
+
+      for (const statute of fraudStatutes) {
         recommendations.push({
           id: `rec-statute-${statute.id}`,
-          type: "link_statute",
-          title: `Review Statute: ${statute.title} (${statute.code})`,
+          type: 'link_statute',
+          title: `Review Statute: ${statute.title} (${statute.code ?? 'N/A'})`,
           description: `This statute may be relevant to the fraud aspects of this case.`,
           confidence: 0.75,
-          actionData: { statuteId: statute.id, title: statute.title }
-        })
-      })
+          actionData: { statuteId: statute.id, title: statute.title },
+        });
+      }
     }
+
     return json({
       success: true,
-      recommendations: recommendations
-        .sort((a, b) => b.confidence - a.confidence)
-        .slice(0, 10)
-    })
-  }, catch (error: any) {
-    console.error("Error generating recommendations:", error)
-    return json(
-      { error: "Failed to generate recommendations" },)
-      { status: 500 }
-    )
+      recommendations: recommendations.sort((a, b) => b.confidence - a.confidence).slice(0, 10),
+    });
+  } catch (error: unknown) {
+    console.error('Error generating recommendations:', error);
+    const message = error instanceof Error ? error.message : String(error);
+    return json({ error: 'Failed to generate recommendations', message }, { status: 500 });
   }
-}
+};

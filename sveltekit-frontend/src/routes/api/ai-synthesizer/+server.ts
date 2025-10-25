@@ -33,6 +33,17 @@ type CacheModule = {
 	stats?: CacheStats;
 };
 
+// Define TestResult interface
+interface TestResult {
+  query: string;
+  success: boolean;
+  processingTime: number;
+  confidence?: number;
+  sourcesUsed?: unknown[];
+  expectedSources?: string[];
+  error?: string;
+}
+
 // Stream update/result shapes returned by aiOrchestrator.processStream
 type ProcessResult = SynthResult;
 type StreamStage = { type: 'stage'; stage: string; detail?: string };

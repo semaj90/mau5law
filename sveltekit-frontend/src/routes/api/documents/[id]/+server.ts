@@ -10,26 +10,12 @@ export async function GET({ params }: RequestEvent): Promise<any> {
   try {
     const documentId = params.id
     if (!documentId) {
-      return json({
-          success: false,
-          error: "Document ID is required"
-        },)
-        { status: 400 },
-      )
+      return json({ success: false, error: 'Document ID is required' }, { status: 400 });
     }
     // Fetch from real database (no fallback to mock data)
-    const document = await db
-      .select()
-      .from(documentMetadata)
-      .where(eq(documentMetadata.id, documentId)
-      .limit(1)
+    const document = await db.select().from(documentMetadata).where(eq(documentMetadata.id, documentId)).limit(1);
     if (document.length === 0) {
-      return json({
-          success: false,
-          error: "Document not found"
-        },)
-        { status: 404 },
-      )
+      return json({ success: false, error: 'Document not found' }, { status: 404 });
     }
     return json({
       success: true,
@@ -37,12 +23,7 @@ export async function GET({ params }: RequestEvent): Promise<any> {
     })
   } catch (error: any) {
     console.error("Error fetching document:", error)
-    return json({
-        success: false,
-        error: "Failed to fetch document"
-      },)
-      { status: 500 },
-    )
+    return json({ success: false, error: 'Failed to fetch document' }, { status: 500 });
   }
 }
 // PUT /api/documents/[id] - Update a document
@@ -51,12 +32,7 @@ export async function PUT({ params, request }: RequestEvent): Promise<any> {
     const documentId = params.id
     const body = await request.json()
     if (!documentId) {
-      return json({
-          success: false,;
-          error: "Document ID is required"
-        },)
-        { status: 400 },
-      )
+      return json({ success: false, error: 'Document ID is required' }, { status: 400 });
     }
     const { title, content, documentType, status, citations, tags, metadata } =
       body
@@ -75,15 +51,10 @@ export async function PUT({ params, request }: RequestEvent): Promise<any> {
     const updatedDocument = await db
       .update(documentMetadata)
       .set(updates)
-      .where(eq(documentMetadata.id, documentId)
-      .returning()
+      .where(eq(documentMetadata.id, documentId))
+      .returning();
     if (updatedDocument.length === 0) {
-      return json({
-          success: false,
-          error: "Document not found"
-        },)
-        { status: 404 },
-      )
+      return json({ success: false, error: 'Document not found' }, { status: 404 });
     }
     return json({
       success: true,
@@ -91,12 +62,7 @@ export async function PUT({ params, request }: RequestEvent): Promise<any> {
     })
   } catch (error: any) {
     console.error("Error updating document:", error)
-    return json({
-        success: false,
-        error: "Failed to update document"
-      },)
-      { status: 500 },
-    )
+    return json({ success: false, error: 'Failed to update document' }, { status: 500 });
   }
 }
 // DELETE /api/documents/[id] - Delete a document
@@ -104,25 +70,12 @@ export async function DELETE({ params }: RequestEvent): Promise<any> {
   try {
     const documentId = params.id
     if (!documentId) {
-      return json({
-          success: false,
-          error: "Document ID is required"
-        },)
-        { status: 400 },
-      )
+      return json({ success: false, error: 'Document ID is required' }, { status: 400 });
     }
     // Delete from real database (no mock fallback)
-    const deletedDocument = await db
-      .delete(documentMetadata)
-      .where(eq(documentMetadata.id, documentId)
-      .returning()
+    const deletedDocument = await db.delete(documentMetadata).where(eq(documentMetadata.id, documentId)).returning();
     if (deletedDocument.length === 0) {
-      return json({
-          success: false,
-          error: "Document not found"
-        },)
-        { status: 404 },
-      )
+      return json({ success: false, error: 'Document not found' }, { status: 404 });
     }
     return json({
       success: true,
@@ -130,11 +83,6 @@ export async function DELETE({ params }: RequestEvent): Promise<any> {
     })
   } catch (error: any) {
     console.error("Error deleting document:", error)
-    return json({
-        success: false,
-        error: "Failed to delete document"
-      },)
-      { status: 500 },
-    )
+    return json({ success: false, error: 'Failed to delete document' }, { status: 500 });
   }
 }

@@ -21,7 +21,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
   private titleMesh?: THREE.Mesh;
   private headerMesh?: THREE.Mesh;
   private footerMesh?: THREE.Mesh;
-  private closeButtonMesh?: THREE.Mesh;
+  private closeButtonMesh?: THREE.Group; // Changed from THREE.Mesh to THREE.Group
   private contentContainer: THREE.Group;
   private glitchEffect?: THREE.Group;
   private options: YoRHaModal3DOptions;
@@ -235,7 +235,7 @@ export class YoRHaModal3D extends YoRHa3DComponent {
         });
       },
     };
-    this.closeButtonMesh = buttonGroup as any;
+    this.closeButtonMesh = buttonGroup; // Removed 'as any'
     this.add(buttonGroup);
   }
   private createFooter(): void {
@@ -273,7 +273,8 @@ export class YoRHaModal3D extends YoRHa3DComponent {
     }
     this.add(this.glitchEffect);
     // Add glitch animation
-    this.addCustomAnimation('glitch', deltaTime => {
+    this.addCustomAnimation('glitch', _deltaTime => {
+      // Marked deltaTime as unused
       if (!this.glitchEffect) return;
       this.glitchEffect.children.forEach((line, index) => {
         const time = Date.now() * 0.001;
@@ -285,7 +286,8 @@ export class YoRHaModal3D extends YoRHa3DComponent {
       });
     });
   }
-  private static getVariantStyle(variant: string, size: string): Partial<YoRHaStyle> {
+  private static getVariantStyle(variant: string, _size: string): Partial<YoRHaStyle> {
+    // Marked size as unused
     const variantStyles = {
       default: {
         backgroundColor: YORHA_COLORS.primary.beige,

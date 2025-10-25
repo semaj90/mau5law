@@ -70,7 +70,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Save file
     const filename = `${Date.now()}-${file.name}`
     const filePath = join(config.uploadDir, filename)
-    await writeFile(filePath, new Uint8Array(buffer)
+  await writeFile(filePath, new Uint8Array(buffer));
     // Extract text content
     const extractedText = await extractText(file)
     console.log(`📁 Created document: ${filename}`)
