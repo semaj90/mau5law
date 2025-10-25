@@ -1,7 +1,7 @@
 <script lang="ts">
   // Replace local dialog import with Bits UI Dialog and keep lucide + svelte types
-  import { onMount } from 'svelte';
-  import { Dialog } from 'bits-ui';
+	import { onMount } from 'svelte';
+	import { Dialog } from 'bits-ui'; // Changed from import * as Dialog from 'bits-ui';
   import { X } from 'lucide-svelte';
   import type { Snippet } from 'svelte';
 

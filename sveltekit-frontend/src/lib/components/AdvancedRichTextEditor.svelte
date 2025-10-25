@@ -65,21 +65,6 @@
     caseId?: string;
   } = $props();
 
-  // typed editor and elements
-  let editor: InstanceType<typeof TiptapEditor> | null = $state(null);
-  let editorElement: HTMLElement | null;
-  let isFullscreen = $state(false);
-  let errorMessage = $state('');
-  let currentZoom = $state(100);
-  let showGrid = $state(false);
-  let showRuler = $state(true);
-  let wordCount = $state(0);
-  let characterCount = $state(0);
-
-  // Auto-save timeout typed to be compatible with browser/node
-  let autoSaveTimeout: ReturnType<typeof setTimeout> | null = null;
-
-  // Editor state stores
   // define editor state shape for TypeScript
   type EditorState = {
     canUndo: boolean;
@@ -119,59 +104,24 @@
     isQuote: false,
   };
 
+  // typed editor and elements
+  let editor: InstanceType<typeof TiptapEditor> | null = $state(null);
+  let editorElement: HTMLElement | null;
+  let isFullscreen = $state(false);
+  let errorMessage = $state('');
+  let currentZoom = $state(100);
+  let showGrid = $state(false);
+  let showRuler = $state(true);
+  let wordCount = $state(0);
+  let characterCount = $state(0);
+
   // local plain object used in template for property access
   let state: EditorState = $state(defaultEditorState);
 
-  // Color palettes for quick access
-  const colorPalettes = {
-    text: [
-      "#000000",
-      "#374151",
-      "#6b7280",
-      "#ef4444",
-      "#f97316",
-      "#eab308",
-      "#22c55e",
-      "#3b82f6",
-      "#8b5cf6",
-      "#ec4899",
-    ],
-    highlight: [
-      "transparent",
-      "#fef3c7",
-      "#dcfce7",
-      "#dbeafe",
-      "#e0e7ff",
-      "#f3e8ff",
-      "#fce7f3",
-      "#fed7d7",
-      "#f0f9ff",
-    ],
-    legal: [
-      "#1e40af",
-      "#7c2d12",
-      "#991b1b",
-      "#365314",
-      "#581c87",
-      "#831843",
-      "#92400e",
-      "#166534",
-    ],
-  };
-  // Font options
-  const fontFamilies = [
-    "Inter",
-    "Times New Roman",
-    "Arial",
-    "Helvetica",
-    "Georgia",
-    "Verdana",
-    "Courier New",
-    "Roboto",
-    "Open Sans",
-    "Lato",
-    "Merriweather",
-  ];
+  // Auto-save timeout typed to be compatible with browser/node
+  let autoSaveTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  // Editor state stores
   // Auto-save functionality
   onMount(() => {
     const draft = loadDraft(reportId, caseId);
@@ -511,7 +461,8 @@
 
 <ErrorBoundary>
   <div
-    class="mx-auto px-4 max-w-7xl min-h-[500px] border border-gray-300 rounded-lg overflow-hidden bg-white"
+    class="mx-auto px-4 max-w-7xl min-h-[500px] rounded-lg overflow-hidden"
+    style="background: var(--nier-bg-primary); border: 4px solid var(--nier-border);"
     class:fixed={isFullscreen}
     class:inset-0={isFullscreen}
     class:z-50={isFullscreen}
@@ -850,6 +801,59 @@
         <span class="font-medium text-gray-800">{characterCount}</span>
       </div>
       <div class="flex-grow"></div>
+      {#if errorMessage}
+        <div class="text-red-500 text-xs">{errorMessage}</div>
+      {/if}
+      {#if autosave}
+        <div class="text-xs text-gray-500">Auto-save enabled</div>
+      {/if}
+    </div>
+    <!-- Ruler (if enabled) -->
+    {#if showRuler}
+      <div
+        class="h-6 w-full bg-gray-100 border-b border-gray-200 flex items-center relative overflow-hidden bg-[repeating-linear-gradient(90deg,transparent,transparent_10px,#e5e7eb_10px,#e5e7eb_11px)]"
+      >
+        {#each Array(20) as _, i}
+          <div
+            class="absolute h-full border-l border-gray-400 flex flex-col justify-end items-center"
+            style="left: {i * 50}px"
+          >
+            {#if i % 2 === 0}
+              <span class="text-xs text-gray-600 -mb-1">{i}</span>
+            {/if}
+          </div>
+        {/each}
+      </div>
+    {/if}
+    <!-- Editor Container -->
+    <div
+      class="flex flex-col flex-1 overflow-auto min-h-[400px]"
+      class:bg-[linear-gradient(to_right,#f3f4f6_1px,transparent_1px),linear-gradient(to_bottom,#f3f4f6_1px,transparent_1px)]={showGrid}
+      class:bg-size-[20px_20px]={showGrid}
+    >
+      <div bind:this={editorElement} class="flex-grow p-6 min-h-full"></div>
+    </div>
+  </div>
+  <!-- All styles have been moved to UnoCSS classes in the markup. -->
+</ErrorBoundary>
+          {:else}
+            <Eye size="18" />
+          {/if}
+        </button>
+      </div>
+    </div>
+    <!-- Secondary Toolbar for Advanced Features -->
+    <div
+      class="flex items-center justify-between gap-2 p-2 border-b border-gray-200 bg-gray-50 text-sm text-gray-600"
+    >
+      <div class="flex items-center gap-1">
+        Words: <span class="font-medium text-gray-800">{wordCount}</span> | Characters:
+        <span class="font-medium text-gray-800">{characterCount}</span>
+      </div>
+      <div class="flex-grow"></div>
+      {#if errorMessage}
+        <div class="text-red-500 text-xs">{errorMessage}</div>
+      {/if}
       {#if autosave}
         <div class="text-xs text-gray-500">Auto-save enabled</div>
       {/if}

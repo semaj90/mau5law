@@ -3,12 +3,8 @@ import { json } from '@sveltejs/kit'
 // GPU Orchestration API Routes for Legal AI Platform
 // Integrates with Go GPU Orchestrator Service (Port 8231)
 import type {
-	GPUStatus,
-	GPUMetrics,
 	GPUTask,
-	GPUResult,
-	ServiceRegistry,
-	WorkerStatus
+	ServiceRegistry
 } from '$lib/types/gpu-services'
 // GPU Orchestrator Configuration
 const GPU_ORCHESTRATOR_BASE = 'http://localhost:8231/api'
@@ -54,6 +50,10 @@ export const GET: RequestHandler = async ({ url }) => {
         return await getCudaRuntime();
       case 'series':
         return await getCudaSeries();
+      default:
+        return await getGPUOverview();
+    }
+  } catch (error: unknown) {
       default:
         return await getGPUOverview();
     }

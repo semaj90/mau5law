@@ -1,6 +1,6 @@
 import { json } from "@sveltejs/kit"
 import { db } from "$lib/server/db/index"
-import { caseActivities, cases, evidence, statutes } from "$lib/server/db/index"
+import { caseActivities, cases, evidence, statutes } from "$lib/server/db/schema" // Changed import path
 import { eq, sql, ilike } from "drizzle-orm"
 import { QdrantClient } from "@qdrant/js-client-rest"
 import type { RequestHandler } from './$types';

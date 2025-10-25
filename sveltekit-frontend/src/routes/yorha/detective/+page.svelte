@@ -203,7 +203,7 @@
         </button>
         <button
           class="flex items-center gap-2 rounded-lg border border-sky-500/40 bg-sky-500/10 px-4 py-2 text-sm text-sky-100 hover:bg-sky-500/20"
-          on:click={() => selectSection('command-center')}
+          onclick={() => selectSection('command-center')}
         >
           <RefreshCw class="h-4 w-4" />
           Refresh
@@ -314,7 +314,7 @@
                     </p>
                     <button
                       class="mt-2 text-xs text-amber-300 hover:underline"
-                      on:click={() => goto(`/cases/${caseItem.id}`)}
+                      onclick={() => goto(`/cases/${caseItem.id}`)}
                     >
                       View case
                     </button>

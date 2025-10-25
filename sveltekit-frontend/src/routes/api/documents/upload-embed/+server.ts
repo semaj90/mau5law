@@ -4,11 +4,25 @@ import { join } from 'path'
 import { existsSync } from 'fs'
 import crypto from 'node:crypto'
 import type { RequestHandler } from './$types.js'
+
+// Function to determine the correct Ollama endpoint based on environment
+function getOllamaEndpoint(): string {
+// Check for an environment variable that indicates a Dockerized environment.
+// This variable should be set in your docker-compose.yml or .env file
+// if the SvelteKit app is running inside a Docker container.
+  if (process.env.DOCKER_ENV === 'true') {
+    // When running inside Docker, access host services via host.docker.internal
+    return 'http://host.docker.internal:11434';
+  }
+  // Default to localhost for host environment or if DOCKER_ENV is not set
+  return 'http://localhost:11434';
+}
+
 // Document Upload + Embedding Pipeline API
 // Integrates with your existing LangChain+Ollama+pgvector infrastructure
 const config = {
-  ollamaBaseUrl: 'http://localhost:11434',
-  embeddingModel: 'nomic-embed-text', // 384 dimensions
+  ollamaBaseUrl: getOllamaEndpoint(), // Use the dynamically determined Ollama endpoint
+  embeddingModel: 'embeddinggemma:latest', // 384 dimensions
   chunkSize: 1000,
   chunkOverlap: 200,
   uploadDir: './uploads/documents',
@@ -18,62 +32,62 @@ const config = {
     'text/plain',
     'text/markdown',
     'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-  ]
-}
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  ],
+};
 // Text extraction utilities
 async function extractText(file: File): Promise<string> {
-  const mimeType = file.type
+  const mimeType = file.type;
   if (mimeType === 'text/plain' || mimeType === 'text/markdown') {
-    return await file.text()
+    return await file.text();
   }
   if (mimeType === 'application/pdf') {
     // In production, use a PDF library like pdf-parse
     // For now, return placeholder
-    return `[PDF Content] ${file.name} - Size: ${file.size} bytes`
+    return `[PDF Content] ${file.name} - Size: ${file.size} bytes`;
   }
   if (mimeType.includes('word')) {
     // In production, use mammoth.js for Word docs
-    return `[Word Document] ${file.name} - Size: ${file.size} bytes`
+    return `[Word Document] ${file.name} - Size: ${file.size} bytes`;
   }
-  throw new Error(`Unsupported file type: ${mimeType}`)
+  throw new Error(`Unsupported file type: ${mimeType}`);
 }
 // POST handler for document upload and embedding
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const formData = await request.formData()
-    const file = formData.get('file') as File
-    const caseId = formData.get('caseId') as string
-    const evidenceId = formData.get('evidenceId') as string
-    const title = formData.get('title') as string || file.name
-    const userId = formData.get('userId') as string
+    const formData = await request.formData();
+    const file = formData.get('file') as File;
+    const caseId = formData.get('caseId') as string;
+    const evidenceId = formData.get('evidenceId') as string;
+    const title = (formData.get('title') as string) || file.name;
+    const userId = formData.get('userId') as string;
     // Validation
     if (!file) {
-      throw error(400, 'No file provided')
+      throw error(400, 'No file provided');
     }
     if (!caseId || !userId) {
-      throw error(400, 'Missing required fields: caseId, userId')
+      throw error(400, 'Missing required fields: caseId, userId');
     }
     if (file.size > config.maxFileSize) {
-      throw error(400, `File too large. Max size: ${config.maxFileSize / (1024 * 1024)}MB`)
+      throw error(400, `File too large. Max size: ${config.maxFileSize / (1024 * 1024)}MB`);
     }
     if (!config.allowedTypes.includes(file.type)) {
-      throw error(400, `Unsupported file type: ${file.type}`)
+      throw error(400, `Unsupported file type: ${file.type}`);
     }
     // Create upload directory if it doesn't exist
     if (!existsSync(config.uploadDir)) {
-      await mkdir(config.uploadDir, { recursive: true })
+      await mkdir(config.uploadDir, { recursive: true });
     }
     // Generate file hash for integrity
-    const buffer = await file.arrayBuffer()
-    const hash = crypto.createHash('sha256').update(new Uint8Array(buffer)).digest('hex')
+    const buffer = await file.arrayBuffer();
+    const hash = crypto.createHash('sha256').update(new Uint8Array(buffer)).digest('hex');
     // Save file
-    const filename = `${Date.now()}-${file.name}`
-    const filePath = join(config.uploadDir, filename)
-  await writeFile(filePath, new Uint8Array(buffer));
+    const filename = `${Date.now()}-${file.name}`;
+    const filePath = join(config.uploadDir, filename);
+    await writeFile(filePath, new Uint8Array(buffer));
     // Extract text content
-    const extractedText = await extractText(file)
-    console.log(`📁 Created document: ${filename}`)
+    const extractedText = await extractText(file);
+    console.log(`📁 Created document: ${filename}`);
     return json({
       success: true,
       document: {
@@ -82,18 +96,22 @@ export const POST: RequestHandler = async ({ request }) => {
         extractedText: extractedText.substring(0, 500) + '...', // Preview
         fileSize: file.size,
         mimeType: file.type,
-        hash
+        hash,
+        caseId, // Added caseId
+        evidenceId, // Added evidenceId
+        title, // Added title
+        userId, // Added userId
       },
-      message: 'Document uploaded successfully'
-    })
-  } catch (err: any) {
-    console.error('❌ Upload error:', err)
+      message: 'Document uploaded successfully',
+    });
+  } catch (err: unknown) {
+    console.error('❌ Upload error:', err);
     if (err instanceof Error) {
-      throw error(500, `Upload failed: ${err.message}`)
+      throw error(500, `Upload failed: ${err.message}`);
     }
-    throw error(500, 'Unknown upload error')
+    throw error(500, 'Unknown upload error');
   }
-}
+};
 // GET handler for health check
 export const GET: RequestHandler = async () => {
   try {
@@ -103,21 +121,24 @@ export const GET: RequestHandler = async () => {
         model: config.embeddingModel,
         chunkSize: config.chunkSize,
         uploadDir: config.uploadDir,
-        maxFileSize: `${config.maxFileSize / (1024 * 1024)}MB`
+        maxFileSize: `${config.maxFileSize / (1024 * 1024)}MB`,
       },
       ollama: {
         baseUrl: config.ollamaBaseUrl,
-        connected: true
-      }
-    })
-  } catch (err: any) {
-    return json({
-      status: 'unhealthy',
-      error: err instanceof Error ? err.message: 'Unknown error',
-      config: {
-        model: config.embeddingModel,
-        ollamaBaseUrl: config.ollamaBaseUrl
-      }
-    }, { status: 500 })
+        connected: true,
+      },
+    });
+  } catch (err: unknown) {
+    return json(
+      {
+        status: 'unhealthy',
+        error: err instanceof Error ? err.message : 'Unknown error',
+        config: {
+          model: config.embeddingModel,
+          ollamaBaseUrl: config.ollamaBaseUrl,
+        },
+      },
+      { status: 500 }
+    );
   }
 }

@@ -80,7 +80,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Validate input
     if (!query && !factPattern) {
       return json(
-        { success: false, error: 'Either query or fact pattern is required' },)
+        { success: false, error: 'Either query or fact pattern is required' },
         { status: 400 }
       )
     }
@@ -116,10 +116,10 @@ export const POST: RequestHandler = async ({ request }) => {
         }
       }
     })
-  }, catch (error) {
+  } catch (error) {
     console.error('Precedent search error:', error)
     return json(
-      { success: false, error: 'Precedent search failed', results: null },)
+      { success: false, error: 'Precedent search failed', results: null },
       { status: 500 }
     )
   }
@@ -131,16 +131,13 @@ async function performPrecedentSearch(request: PrecedentSearchRequest) {
   let mockMatches = generateMockPrecedents(query || factPattern, request)
   // Apply filters
   if (jurisdiction) {
-    mockMatches = mockMatches.filter(item => item.includes(jurisdiction.toLowerCase()
-    )
+    mockMatches = mockMatches.filter(item => item.includes(jurisdiction.toLowerCase()))
   }
   if (courtLevel) {
-    mockMatches = mockMatches.filter(item => item.includes(courtLevel.toLowerCase()
-    )
+    mockMatches = mockMatches.filter(item => item.includes(courtLevel.toLowerCase()))
   }
   if (practiceArea) {
-    mockMatches = mockMatches.filter(item => item.includes(practiceArea.toLowerCase()
-      )
+    mockMatches = mockMatches.filter(item => item.includes(practiceArea.toLowerCase()))
     )
   }
   // Apply sorting
@@ -149,7 +146,7 @@ async function performPrecedentSearch(request: PrecedentSearchRequest) {
       mockMatches.sort((a, b) => b.similarityScore - a.similarityScore)
       break
     case 'date':
-      mockMatches.sort((a, b) => new Date(b.dateDecided).getTime() - new Date(a.dateDecided).getTime()
+      mockMatches.sort((a, b) => new Date(b.dateDecided).getTime() - new Date(a.dateDecided).getTime())
       break
     case 'citations':
       mockMatches.sort((a, b) => b.citationCount - a.citationCount)
@@ -245,8 +242,8 @@ async function generateLegalReasoningChain(matches: PrecedentMatch[]): Promise<L
   }
 }
 async function analyzeApplicability(matches: PrecedentMatch[], request: PrecedentSearchRequest) {
-  const bindingCount = matches.filter(item => item.length)
-  const persuasiveCount = matches.filter(item => item.length)
+  const bindingCount = matches.filter(item => item.precedentialValue === 'BINDING').length
+  const persuasiveCount = matches.filter(item => item.precedentialValue === 'PERSUASIVE').length
   const avgSimilarity = matches.reduce((sum, m) => sum + m.similarityScore, 0) / matches.length
   const recentCount = matches.filter(m => new Date(m.dateDecided) > new Date('2020-01-01')).length
   return {
@@ -281,9 +278,9 @@ async function generateStrategicRecommendations(matches: PrecedentMatch[], reaso
     factualSupportScore: Math.round(matches.reduce((sum, m) => sum + m.factualSimilarity, 0) / matches.length * 100),
     legalReasoningScore: Math.round(reasoningChain.overallCoherence * 100),
     strengths: [
-      bindingMatches.length > 0 ? 'Strong binding precedent support' : null
-      strongMatches.length > 3 ? 'Multiple high-similarity precedents' : null
-      reasoningChain.overallCoherence > 0.8 ? 'Coherent legal reasoning chain' : null
+      bindingMatches.length > 0 ? 'Strong binding precedent support' : null,
+      strongMatches.length > 3 ? 'Multiple high-similarity precedents' : null,
+      reasoningChain.overallCoherence > 0.8 ? 'Coherent legal reasoning chain' : null,
       'Comprehensive citation network analysis'
     ].filter(Boolean),
     vulnerabilities: [

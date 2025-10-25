@@ -6,6 +6,18 @@ import { REDIS_URL, REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } from '$env/static/p
 
 let redisInstance: RedisClient | null = null;
 
+// Module-level helper to centralize NOAUTH handling and message extraction
+interface RedisGlobalFlag {
+  __redisNoAuthWarned?: boolean;
+}
+
+const getMessage = (err: unknown): string => {
+  if (err && typeof err === 'object' && 'message' in err && typeof (err as any).message === 'string') {
+    return (err as any).message as string;
+  }
+  return String(err);
+};
+
 /**
  * Creates and returns a singleton Redis client instance.
  * It prioritizes a full REDIS_URL environment variable,
@@ -41,21 +53,35 @@ export function createRedisInstance(options?: RedisConnectionOptions): RedisClie
     redisInstance = new Redis(finalOptions);
   }
 
-  // Attach event listeners for logging and monitoring
-  redisInstance.on('error', (err) => {
-    console.error('Redis connection error:', err);
-    // Implement more sophisticated error handling here, e.g., Sentry, health checks
-  });
+  // Attach event listeners for logging and monitoring using a non-null local reference.
+  const inst = redisInstance as RedisClient;
 
-  redisInstance.on('connect', () => {
+  const handleRedisError = (err: unknown) => {
+    const msg = getMessage(err);
+    if (msg.includes('NOAUTH')) {
+      const g = globalThis as unknown as RedisGlobalFlag;
+      if (!g.__redisNoAuthWarned) {
+        console.warn(
+          '[redis] NOAUTH Authentication required — continuing with limited capabilities.\n' +
+            'Set REDIS_URL to include credentials (redis://:password@host:port) or set REDIS_PASSWORD in your environment.'
+        );
+        g.__redisNoAuthWarned = true;
+      }
+      return;
+    }
+    console.error('Redis connection error:', err);
+  };
+
+  // attach handlers defensively (some client shims may not implement `on` the same way)
+  (inst as unknown as { on?: (...a: any[]) => void }).on?.('error', handleRedisError);
+  (inst as unknown as { on?: (...a: any[]) => void }).on?.('connect', () => {
     console.log('Redis client connected successfully.');
   });
-
-  redisInstance.on('ready', () => {
+  (inst as unknown as { on?: (...a: any[]) => void }).on?.('ready', () => {
     console.log('Redis client is ready and accepting commands.');
   });
 
-  return redisInstance;
+  return inst;
 }
 
 // Provide a default export for modules that import the helper as default
@@ -67,18 +93,36 @@ export default createRedisInstance;
  */
 export function createRedisConnection(options?: Partial<RedisConnectionOptions>): RedisClient {
   // Merge with defaults from environment
-  const finalOptions: RedisConnectionOptions = { ...{
-    host: REDIS_HOST || 'localhost',
-    port: parseInt(REDIS_PORT || '6379', 10),
-    password: REDIS_PASSWORD || 'redis',
-    connectTimeout: 5000,
-    retryDelayOnFailover: 100,
-    maxRetriesPerRequest: 3,
-    lazyConnect: false,
-  }, ...(options || {}) } as RedisConnectionOptions;
+  const finalOptions: RedisConnectionOptions = {
+    ...{
+      host: REDIS_HOST || 'localhost',
+      port: parseInt(REDIS_PORT || '6379', 10),
+      password: REDIS_PASSWORD || 'redis',
+      connectTimeout: 5000,
+      retryDelayOnFailover: 100,
+      maxRetriesPerRequest: 3,
+      lazyConnect: false,
+    },
+    ...(options || {}),
+  } as RedisConnectionOptions;
 
-  if (REDIS_URL) {
-    return new Redis(REDIS_URL, finalOptions);
-  }
-  return new Redis(finalOptions);
+  const conn = REDIS_URL ? new Redis(REDIS_URL, finalOptions) : new Redis(finalOptions);
+  // Attach the same NOAUTH-aware handler for non-singleton connections (pub/sub, dedicated clients)
+  const c = conn as unknown as { on?: (...args: any[]) => void };
+  c.on?.('error', (err: unknown) => {
+    const msg = getMessage(err);
+    if (msg.includes('NOAUTH')) {
+      const g = globalThis as unknown as RedisGlobalFlag;
+      if (!g.__redisNoAuthWarned) {
+        console.warn(
+          '[redis] NOAUTH Authentication required on new connection — set REDIS_URL or REDIS_PASSWORD to enable auth.'
+        );
+        g.__redisNoAuthWarned = true;
+      }
+      return;
+    }
+    console.error('Redis connection error:', err);
+  });
+
+  return conn as unknown as RedisClient;
 }

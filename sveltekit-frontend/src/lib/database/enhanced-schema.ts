@@ -593,8 +593,6 @@ export type NewEvidenceBoardItem = typeof evidenceBoardItems.$inferInsert;
 
 export type EvidenceBoardConnection = typeof evidenceBoardConnections.$inferSelect;
 export type NewEvidenceBoardConnection = typeof evidenceBoardConnections.$inferInsert;
-  }),
-}));
 
 // CONSOLIDATED type exports (single block; placed after all table declarations)
 // Note: AIProcessingJob / NewAIProcessingJob were removed because `aiProcessingJobs` is not defined here.

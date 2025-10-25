@@ -41,7 +41,7 @@ litellm_settings:
   drop_params: true
   success_callback: []
   failure_callback: []
-  cache: true
+  cache: false
   cache_params:
     type: redis
     host: localhost
