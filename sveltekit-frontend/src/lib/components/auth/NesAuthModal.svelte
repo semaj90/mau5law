@@ -5,77 +5,101 @@
     open?: boolean;
     title?: string;
     onClose?: () => void;
-    onSubmit?: (e: { email: string; password: string }) => void;
+    onSubmit?: (payload: { email: string; password: string }) => void;
+    form?: any;
   }
+
+  // Svelte 5 runes - props via $props()
   let {
-    open = false,
+    open = $bindable(false),
     title = 'Sign in',
-    onClose = () => {}, // Corrected: added empty function body
-    onSubmit = () => {}, // Corrected: added empty function body
+    onClose = () => {},
+    onSubmit = () => {},
+    form = null
   }: Props = $props();
+
+  // component state
   let email = $state('');
   let password = $state('');
-  function submit(e?: Event) {
-    if (e) e.preventDefault();
-    if (email && password) {
-      onSubmit({ email, password });
-      // Clear form after submission
+  let error = $state<string | null>(null);
+  let submitting = $state(false);
+
+  function close() {
+    open = false;
+    onClose?.();
+  }
+
+  async function submit(e?: Event) {
+    e?.preventDefault();
+    error = null;
+
+    if (!email || !password) {
+      error = 'Please provide email and password.';
+      return;
+    }
+
+    try {
+      submitting = true;
+      // call parent callback (if provided)
+      await onSubmit({ email, password });
+      // close modal on successful submit
       email = '';
       password = '';
+      close();
+    } catch (err) {
+      error = err instanceof Error ? err.message : 'Submission failed';
+    } finally {
+      submitting = false;
     }
   }
 </script>
 
 {#if open}
-  <div
-    class="fixed inset-0 z-50 grid place-items-center"
-    style="background: var(--modal-bg);"
-    role="dialog"
-    aria-modal="true"
-    tabindex="0"
-    onclick={e => {
-      if (e.target === e.currentTarget) onClose();
-    }}
-    onkeydown={e => {
-      if (e.key === 'Escape') onClose();
-    }}
-  >
-    >
-    <form
-      class="w-[28rem] rounded-md border border-neutral-700 bg-neutral-900 p-4 text-neutral-100 shadow-xl"
-      role="document"
-      onsubmit={submit}
-      onclick={e => e.stopPropagation()}
-      onkeydown={e => {
-        if (e.key === 'Escape') onClose();
-      }}
-      autocomplete="on"
-    >
+  <div class="fixed inset-0 z-50 grid place-items-center" role="dialog" aria-modal="true" aria-label={title}>
+    <div class="fixed inset-0 bg-black/50" onclick={close} />
+    <form class="relative z-10 w-full max-w-md rounded bg-neutral-900 p-6 text-neutral-100" onsubmit={submit}>
       <div class="mb-3 text-lg font-semibold">{title}</div>
+
+      {#if error}
+        <div class="mb-3 text-sm text-red-400">{error}</div>
+      {/if}
+
       <div class="space-y-3">
-        <input
-          type="email"
-          placeholder="Email"
-          class="w-full rounded border border-neutral-700 bg-neutral-800 p-2"
-          bind:value={email}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          class="w-full rounded border border-neutral-700 bg-neutral-800 p-2"
-          bind:value={password}
-        />
+        <label class="block text-sm">Email
+          <input
+            type="email"
+            required
+            bind:value={email}
+            class="w-full rounded border border-neutral-700 bg-neutral-800 p-2 mt-1"
+            placeholder="you@example.com"
+            autofocus
+          />
+        </label>
+
+        <label class="block text-sm">Password
+          <input
+            type="password"
+            required
+            bind:value={password}
+            class="w-full rounded border border-neutral-700 bg-neutral-800 p-2 mt-1"
+            placeholder="••••••••"
+          />
+        </label>
       </div>
+
       <div class="mt-4 flex justify-end gap-2">
-        <button class="rounded bg-neutral-700 px-3 py-1" type="button" onclick={onClose}>Cancel</button>
-        <button class="rounded bg-emerald-600 px-3 py-1" type="submit">Sign in</button>
+        <button type="button" class="rounded bg-neutral-700 px-3 py-1" onclick={close}>Cancel</button>
+        <button type="submit" class="rounded bg-emerald-600 px-3 py-1" disabled={submitting}>
+          {#if submitting}Signing in...{:else}Sign in{/if}
+        </button>
       </div>
     </form>
   </div>
 {/if}
 
 <style>
+  /* Minimal modal styles; keep project-wide theming elsewhere */
   :global(body) {
-    --modal-bg: rgba(0, 0, 0, 0.5);
+    --modal-bg: rgba(0,0,0,0.5);
   }
 </style>

@@ -45,7 +45,6 @@ services:
       - "5173:5173"
     depends_on:
       - analytics-bridge
-version: '3.8'
 
 x-phaseh-bridge-build: &phaseh-bridge-build
   context: .

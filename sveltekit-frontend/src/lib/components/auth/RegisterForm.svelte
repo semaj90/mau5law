@@ -34,7 +34,7 @@
       confirmPassword: z.string(),
       role: z.enum(['prosecutor', 'investigator', 'analyst', 'admin']),
       department: z.string().min(2, 'Department is required'),
-      jurisdiction z.string().min(2, 'Jurisdiction is required'),
+      jurisdiction: z.string().min(2, 'Jurisdiction is required'),
       badgeNumber: z.string().optional(),
       agreeToTerms: z.boolean().refine(val => val === true, { message: 'You must agree to the terms' }),
       agreeToPrivacy: z.boolean().refine(val => val === true, { message: 'You must agree to privacy policy' }),

@@ -19,13 +19,7 @@
     statusFilter = 'all',
     sortBy = 'createdAt',
     sortOrder = 'desc'
-   }: { cases = [],
-    filteredCases = [],
-    searchQuery = '',
-    statusFilter = 'all',
-    sortBy = 'createdAt',
-    sortOrder = 'desc'
-  : any } = $props();
+  } = $props<Props>();
   // Simple Case Filters Component - TODO: Enhance with full functionality
   //
   // 🚀 ENHANCEMENT ROADMAP (See: /ENHANCED_FEATURES_TODO.md)

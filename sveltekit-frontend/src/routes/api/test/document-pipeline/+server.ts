@@ -1,56 +1,60 @@
-import { json } from '@sveltejs/kit'
-import type { RequestHandler } from './$types.js'
-import { LegalAIApiClient } from '$lib/services/api-client'
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { LegalAIApiClient } from '$lib/services/api-client';
 interface PipelineTestResult {
-  step: string
-  status: 'success' | 'error' | 'skipped'
-  message: string
-  data?: any
-  responseTime?: number
-  timestamp: string
+  step: string;
+  status: 'success' | 'error' | 'skipped';
+  message: string;
+  data?: unknown;
+  responseTime?: number;
+  timestamp: string;
 }
 interface DocumentPipelineTestResponse {
-  testId: string
-  status: 'completed' | 'partial' | 'failed'
-  timestamp: string
+  testId: string;
+  status: 'completed' | 'partial' | 'failed';
+  timestamp: string;
   summary: {
-    totalSteps: number
-    successfulSteps: number
-    failedSteps: number
-    skippedSteps: number
-  }
-  steps: PipelineTestResult[]
-  overallMessage: string
+    totalSteps: number;
+    successfulSteps: number;
+    failedSteps: number;
+    skippedSteps: number;
+  };
+  steps: PipelineTestResult[];
+  overallMessage: string;
 }
-async function testStep(stepName: string, testFn: () => Promise<any>): Promise<PipelineTestResult> {
-  const startTime = Date.now()
-  const timestamp = new Date().toISOString()
+async function testStep(stepName: string, testFn: () => Promise<unknown>): Promise<PipelineTestResult> {
+  const startTime = Date.now();
+  const timestamp = new Date().toISOString();
   try {
-    console.log(`🧪 Testing: ${stepName}...`)
-    const result = await testFn()
-    const responseTime = Date.now() - startTime
-    console.log(`✅ ${stepName} - Success (${responseTime}ms)`)
+    console.log(`🧪 Testing: ${stepName}...`);
+    const result = await testFn();
+    const responseTime = Date.now() - startTime;
+    console.log(`✅ ${stepName} - Success (${responseTime}ms)`);
     return {
       step: stepName,
       status: 'success',
       message: `${stepName} completed successfully`,
       data: result,
       responseTime,
-      timestamp
-    }
-  } catch (error: any) {
-    const responseTime = Date.now() - startTime
-    console.error(`❌ ${stepName} - Failed:`, error)
+      timestamp,
+    };
+  } catch (error: unknown) {
+    const responseTime = Date.now() - startTime;
+    const errMsg = error instanceof Error ? error.message : String(error);
+    console.error(`❌ ${stepName} - Failed:`, errMsg);
     return {
       step: stepName,
       status: 'error',
-      message: `${stepName} failed: ${error.message}`,
+      message: `${stepName} failed: ${errMsg}`,
       responseTime,
-      timestamp
-    }
+      timestamp,
+    };
   }
 }
-export const GET: RequestHandler = async () => {
+export const GET: RequestHandler = async event => {
+  // Use event.fetch when available, fallback to global fetch to avoid typing issues
+  const fetcher = event?.fetch ?? globalThis.fetch;
+
   const testId = `pipeline-test-${Date.now()}`;
   const startTime = Date.now();
   console.log(`🚀 Starting end-to-end document processing pipeline test (${testId})`);
@@ -70,7 +74,7 @@ export const GET: RequestHandler = async () => {
       if (mockModeFlag) {
         return { ocr: { status: 'mock-operational' } };
       }
-      const resp = await fetch('/api/health/ocr', { method: 'GET', headers: { Accept: 'application/json' } });
+      const resp = await fetcher('/api/health/ocr', { method: 'GET', headers: { Accept: 'application/json' } });
       if (!resp.ok) throw new Error(`OCR health endpoint returned ${resp.status}`);
       return await resp.json();
     })
@@ -78,7 +82,7 @@ export const GET: RequestHandler = async () => {
   // Step 3: Test Database Connection (via API)
   testResults.push(
     await testStep('Database Health Check', async () => {
-      const response = await fetch('/api/database/health', {
+      const response = await fetcher('/api/database/health', {
         method: 'GET',
         headers: { Accept: 'application/json' },
       });
@@ -91,7 +95,7 @@ export const GET: RequestHandler = async () => {
   // Step 4: Test Aggregated Health Endpoint
   testResults.push(
     await testStep('Aggregated Health Check', async () => {
-      const response = await fetch('/api/health/all', {
+      const response = await fetcher('/api/health/all', {
         method: 'GET',
         headers: { Accept: 'application/json' },
       });
@@ -109,7 +113,7 @@ export const GET: RequestHandler = async () => {
   // Step 5: Test OCR-Specific Health Endpoint
   testResults.push(
     await testStep('OCR-Specific Health Check', async () => {
-      const response = await fetch('/api/health/ocr', {
+      const response = await fetcher('/api/health/ocr', {
         method: 'GET',
         headers: { Accept: 'application/json' },
       });
@@ -142,7 +146,7 @@ export const GET: RequestHandler = async () => {
         }
         const form = new FormData();
         form.append('file', testFile, 'test-document.txt');
-        const procResp = await fetch('/api/ocr/process', { method: 'POST', body: form });
+        const procResp = await fetcher('/api/ocr/process', { method: 'POST', body: form });
         if (!procResp.ok) {
           throw new Error(`OCR processing endpoint returned ${procResp.status}`);
         }
@@ -162,10 +166,7 @@ export const GET: RequestHandler = async () => {
     if (ocrTestResult?.status === 'success') {
       testResults.push(
         await testStep('Evidence Creation with OCR', async () => {
-          const testDocument = new Blob(['This is a test evidence document for the legal AI system.'], {
-            type: 'text/plain',
-          });
-          const testFile = new File([testDocument], 'test-evidence.txt', { type: 'text/plain' });
+          // removed unused Blob creation - simulation only
           // This would create evidence with OCR processing
           // Note: This requires a valid caseId and would actually insert into database
           // For testing, we'll simulate the workflow
@@ -199,7 +200,7 @@ export const GET: RequestHandler = async () => {
   testResults.push(
     await testStep('Database Schema Compatibility', async () => {
       // Test that evidence table has OCR fields
-      const response = await fetch('/api/database/health', {
+      const response = await fetcher('/api/database/health', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'initialize' }),
@@ -230,7 +231,7 @@ export const GET: RequestHandler = async () => {
   }
   const totalTestTime = Date.now() - startTime;
   console.log(`🏁 Pipeline test completed in ${totalTestTime}ms - Status: ${overallStatus}`);
-  const response: DocumentPipelineTestResponse = {
+  const responseObj: DocumentPipelineTestResponse = {
     testId,
     status: overallStatus,
     timestamp: new Date().toISOString(),
@@ -244,7 +245,7 @@ export const GET: RequestHandler = async () => {
     overallMessage,
   };
   const httpStatus = overallStatus === 'completed' ? 200 : overallStatus === 'partial' ? 206 : 500;
-  return json(response, {
+  return json(responseObj, {
     status: httpStatus,
     headers: {
       'Content-Type': 'application/json',
@@ -256,17 +257,24 @@ export const GET: RequestHandler = async () => {
   });
 };
 // Support POST for running specific test scenarios
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async event => {
+  // use same safe fetcher pattern and read request from event
+  const fetcher = event?.fetch ?? globalThis.fetch;
+  const request = event?.request;
   try {
-    const { scenario, mockMode = false } = await request.json();
+    const body = (await request!.json()) as { scenario?: string; mockMode?: boolean } | unknown;
+    const { scenario, mockMode = false } =
+      body && typeof body === 'object'
+        ? (body as { scenario?: string; mockMode?: boolean })
+        : { scenario: undefined, mockMode: false };
+
     if (scenario === 'ocr-only') {
       // Test only OCR-related functionality
       const testResults: PipelineTestResult[] = [];
-      const apiClient = new LegalAIApiClient();
       testResults.push(
         await testStep('OCR Health Check', async () => {
           if (mockMode) return { ocr: { status: 'mock-operational' } };
-          const resp = await fetch('/api/health/ocr', { method: 'GET', headers: { Accept: 'application/json' } });
+          const resp = await fetcher('/api/health/ocr', { method: 'GET', headers: { Accept: 'application/json' } });
           if (!resp.ok) throw new Error(`OCR health endpoint returned ${resp.status}`);
           return await resp.json();
         })
@@ -277,7 +285,7 @@ export const POST: RequestHandler = async ({ request }) => {
           const testDoc = new Blob(['Test OCR content'], { type: 'text/plain' });
           const form = new FormData();
           form.append('file', testDoc, 'test.txt');
-          const resp = await fetch('/api/ocr/process', { method: 'POST', body: form });
+          const resp = await fetcher('/api/ocr/process', { method: 'POST', body: form });
           if (!resp.ok) throw new Error(`OCR processing endpoint returned ${resp.status}`);
           return await resp.json();
         })
@@ -293,13 +301,13 @@ export const POST: RequestHandler = async ({ request }) => {
       const testResults: PipelineTestResult[] = [];
       testResults.push(
         await testStep('Aggregated Health', async () => {
-          const response = await fetch('/api/health/all');
+          const response = await fetcher('/api/health/all');
           return await response.json();
         })
       );
       testResults.push(
         await testStep('OCR Health', async () => {
-          const response = await fetch('/api/health/ocr');
+          const response = await fetcher('/api/health/ocr');
           return await response.json();
         })
       );
@@ -309,25 +317,20 @@ export const POST: RequestHandler = async ({ request }) => {
         timestamp: new Date().toISOString(),
       });
     }
-    // Default to full test - duplicate the logic since GET doesn't use event params
+    // Default to full test - return placeholder (keeps endpoint usable while avoiding unused vars)
     const testId = `pipeline-test-${Date.now()}`;
-    const startTime = Date.now();
-    console.log(`🚀 Starting end-to-end document processing pipeline test (${testId})`);
-    const apiClient = new LegalAIApiClient();
-    const testResults: PipelineTestResult[] = [];
-    // This would be the same logic as in GET, truncated for brevity
-    // For now, return a simple success response
     return json({
       scenario: 'full-test',
       testId,
       message: 'Full test logic would be executed here',
       timestamp: new Date().toISOString(),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
     return json(
       {
         error: 'Test execution failed',
-        message: error?.message || String(error),
+        message,
         availableScenarios: ['ocr-only', 'health-only'],
       },
       { status: 500 }

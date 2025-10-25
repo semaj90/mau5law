@@ -3,7 +3,7 @@ echo Starting Legal AI Complete System
 echo ===================================
 
 REM Set environment variables
-set DATABASE_URL=postgres://legal_admin:123456@localhost:5433/legal_ai_db?sslmode=disable
+set DATABASE_URL=postgres://legal_admin:123456@localhost:5434/legal_ai_db?sslmode=disable
 set OLLAMA_URL=http://localhost:11434
 set CUDA_WORKER_URL=http://localhost:8096
 set REDIS_PASSWORD=redis

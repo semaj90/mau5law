@@ -836,12 +836,6 @@
   </div>
   <!-- All styles have been moved to UnoCSS classes in the markup. -->
 </ErrorBoundary>
-          {:else}
-            <Eye size="18" />
-          {/if}
-        </button>
-      </div>
-    </div>
     <!-- Secondary Toolbar for Advanced Features -->
     <div
       class="flex items-center justify-between gap-2 p-2 border-b border-gray-200 bg-gray-50 text-sm text-gray-600"

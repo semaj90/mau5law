@@ -82,12 +82,14 @@ https://svelte.dev/e/js_parse_error -->
   		}
   	]);
   	// Real-time status checking
-  let statusCheckInterval = $state<numberconst checkProviderStatus  | null>(null); const data = async (provider: LLMProvider): Promise<LLMStatus> => {
+  let statusCheckInterval = $state<number | null>(null);
+  
+  const checkProviderStatus = async (provider: LLMProvider): Promise<LLMStatus> => {
   		try {
   			const response = await fetch(`${provider.endpoint}/health`, {
   				method: 'GET',
   				timeout: 5000,
-  			}));
+  			});
   			return response.ok ? 'online' : 'offline';
   		} catch {
   			return 'offline';
@@ -98,7 +100,7 @@ https://svelte.dev/e/js_parse_error -->
   		for (let i = 0; i < currentProviders.length; i++) {
   			const newStatus = await checkProviderStatus(currentProviders[i]);
   			if (currentProviders[i].status !== newStatus) {
-  				currentProviders[i].status = newStatu;
+  				currentProviders[i].status = newStatus;
   				ondispatch?.({ provider: currentProviders[i], status: newStatus });
   			}
   		}
@@ -119,7 +121,7 @@ https://svelte.dev/e/js_parse_error -->
   		states: { selectedLabel, open, selected },
   		helpers: { isSelected }
   	} = createSelect<LLMProvider>({
-  		forceVisible: true
+  		forceVisible: true,
   		positioning: {
   			placement: 'bottom',
   			fitViewport: true,

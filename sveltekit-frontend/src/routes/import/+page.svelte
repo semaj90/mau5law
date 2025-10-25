@@ -44,10 +44,10 @@
   let fileInput: HTMLInputElement = $state();
   // Supported file types
   const supportedTypes = [
-    { value: 'all', label: 'Complete Export (All Data)', icon Database },
-    { value: 'cases', label: 'Cases Only', icon FileText },
-    { value: 'evidence', label: 'Evidence Only', icon FileText },
-    { value: 'participants', label: 'Participants Only', icon Users },
+    { value: 'all', label: 'Complete Export (All Data)' icon: Database },
+    { value: 'cases', label: 'Cases Only' icon: FileText },
+    { value: 'evidence', label: 'Evidence Only' icon: FileText },
+    { value: 'participants', label: 'Participants Only' icon: Users },
   ];
   // Example data formats
   const exampleFormats = {

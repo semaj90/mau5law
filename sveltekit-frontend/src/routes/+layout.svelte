@@ -2,9 +2,12 @@
 <script lang="ts">
   // Import UnoCSS globally to avoid FOUC and component-level overhead
   import 'uno.css';
+  import Header from '$lib/components/Header.svelte';
 </script>
 
-<div class="min-h-screen bg-gray-900 text-white">
+<Header />
+
+<div class="min-h-screen bg-gray-50 text-gray-900">
   <main class="container mx-auto p-4">
     <slot />
   </main>

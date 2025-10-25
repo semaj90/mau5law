@@ -180,7 +180,7 @@
 
 <style>
   .select-wrapper {
-    position relative;
+    position: relative;
   }
   :global(.bits-select-content) {
     animation: select-content-show 200ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -198,7 +198,7 @@
   :global(.nier-bits-select) {
     background: linear-gradient(135deg, var(--color-nier-bg-primary) 0%, var(--color-nier-bg-secondary) 100%);
     border: 2px solid var(--color-nier-border-secondary);
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   :global(.nier-bits-select:focus) {
     border-color: var(--color-nier-border-primary);
