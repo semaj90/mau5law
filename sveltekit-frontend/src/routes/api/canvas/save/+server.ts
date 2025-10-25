@@ -65,7 +65,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     return json({ error: "Failed to load canvas state" }, { status: 500 })
   }
 }
-export const DELETE: RequestHandler = async ({ request, locals }) => {
+export const DELETE: RequestHandler = asysnc ({ request, locals }) => {
   try {
     const { canvasId } = await request.json()
     if (!canvasId) {

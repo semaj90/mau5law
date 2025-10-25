@@ -23,7 +23,7 @@ import type { RequestHandler } from './$types.js'
 import { json } from "@sveltejs/kit"
 
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-}
+
 export interface GoMicroserviceConfig {
   baseUrl: string
   timeout: number
@@ -60,7 +60,7 @@ class GoMicroserviceClient {
     this.retries = config.retries
   }
   private async makeRequest(
-    endpoint: string,;
+    endpoint: string,
     method: string = "GET",
     body?: unknown
   ): Promise<any> {
@@ -75,7 +75,7 @@ class GoMicroserviceClient {
             "Content-Type": "application/json",
             Accept: "application/json"
           },
-          body: body ? JSON.stringify(body) : undefined,;
+          body: body ? JSON.stringify(body) : undefined,
           signal: controller.signal
         })
         clearTimeout(timeoutId)

@@ -8,7 +8,7 @@ import { spawn } from 'child_process'
 import { existsSync } from 'fs'
 import { readFile, writeFile } from 'fs/promises'
 import path from 'path'
-}
+
 export interface DeploymentConfig {
   enforceGemma3Legal: boolean
   enableFlashAttention: boolean
@@ -18,14 +18,14 @@ export interface DeploymentConfig {
   errorProcessorPort: number
   models: {
     primary: 'gemma3-legal'
-    embedding: 'nomic-embed-text',
+    embedding: 'nomic-embed-text'
     blocked: string[]
   }
 }
 export interface DeploymentStatus {
-  orchestrator: 'running' | 'stopped' | 'error',
+  orchestrator: 'running' | 'stopped' | 'error'
   errorProcessor: 'running' | 'stopped' | 'error'
-  flashAttention: 'enabled' | 'disabled' | 'error',
+  flashAttention: 'enabled' | 'disabled' | 'error'
   mcp: 'connected' | 'disconnected' | 'error'
   models: {
     gemma3Legal: 'available' | 'missing' | 'loading'
@@ -54,24 +54,24 @@ export const POST: RequestHandler = async ({ request }) => {
       default:
         return error(400, 'Invalid action. Use deploy, start, stop, or status.')
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('❌ GPU orchestration deployment error:', err)
-    return error(500, `Deployment failed: ${err.message}`)
+    return error(500, `Deployment failed: ${(err as Error).message}`)
   }
 }
 export const GET: RequestHandler = async () => {
   try {
     const status = await getOrchestrationStatus()
     return json(status)
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('❌ Failed to get orchestration status:', err)
-    return error(500, `Status check failed: ${err.message}`)
+    return error(500, `Status check failed: ${(err as Error).message}`)
   }
 }
 /*
  * Deploy the complete GPU-accelerated orchestration system
  */
-async function deployOrchestrationSystem(config?: Partial<DeploymentConfig>): Promise<any> {
+async function deployOrchestrationSystem(config?: Partial<DeploymentConfig>): Promise<unknown> {
   const deploymentConfig: DeploymentConfig = {
     enforceGemma3Legal: true,
     enableFlashAttention: true,
@@ -108,11 +108,11 @@ async function deployOrchestrationSystem(config?: Partial<DeploymentConfig>): Pr
       status,
       timestamp: new Date().toISOString()
     })
-  } catch (deployError) {
+  } catch (deployError: unknown) {
     console.error('❌ Deployment failed:', deployError)
     return json({
       success: false,
-      error: deployError.message,
+      error: (deployError as Error).message,
       timestamp: new Date().toISOString()
     }, { status: 500 })
   }
@@ -120,7 +120,7 @@ async function deployOrchestrationSystem(config?: Partial<DeploymentConfig>): Pr
 /*
  * Validate that only gemma3-legal and nomic-embed models are available
  */
-async function validateModelConstraints(config: DeploymentConfig): Promise<any> {
+async function validateModelConstraints(config: DeploymentConfig): Promise<unknown> {
   console.log('🔍 Validating model constraints...')
   try {
     // Check Ollama models
@@ -129,10 +129,10 @@ async function validateModelConstraints(config: DeploymentConfig): Promise<any> 
       throw new Error('Ollama service not available')
     }
     const models = await ollamaResponse.json()
-    const modelNames = models.models?.map((m: any) => m.name) || []
+    const modelNames = models.models?.map((m: { name: string }) => m.name) || []
     // Check for allowed models
-    const hasGemma3Legal = modelNames.some((name: string) => name.includes('gemma3-legal')
-    const hasNomicEmbed = modelNames.some((name: string) => name.includes('nomic-embed')
+    const hasGemma3Legal = modelNames.some((name: string) => name.includes('gemma3-legal'))
+    const hasNomicEmbed = modelNames.some((name: string) => name.includes('nomic-embed'))
     if (!hasGemma3Legal) {
       throw new Error('gemma3-legal model not found. Please install: ollama pull gemma3-legal')
     }
@@ -150,14 +150,14 @@ async function validateModelConstraints(config: DeploymentConfig): Promise<any> 
       console.warn('Consider removing blocked models for optimal performance')
     }
     console.log('✅ Model constraints validated')
-  } catch (validationError) {
-    throw new Error(`Model validation failed: ${validationError.message}`)
+  } catch (validationError: unknown) {
+    throw new Error(`Model validation failed: ${(validationError as Error).message}`)
   }
 }
 /*
  * Initialize the NodeJS orchestrator with model enforcement
  */
-async function initializeNodeJSOrchestrator(config: DeploymentConfig): Promise<any> {
+async function initializeNodeJSOrchestrator(config: DeploymentConfig): Promise<unknown> {
   console.log('🏗️ Initializing NodeJS orchestrator...')
   // Check if orchestrator service file exists
   const orchestratorPath = path.resolve(process.cwd(), 'src/lib/services/nodejs-orchestrator.ts')
@@ -170,7 +170,7 @@ async function initializeNodeJSOrchestrator(config: DeploymentConfig): Promise<a
 /*
  * Start the GPU error processor service
  */
-async function startErrorProcessorService(config: DeploymentConfig): Promise<any> {
+async function startErrorProcessorService(config: DeploymentConfig): Promise<unknown> {
   console.log('🔧 Starting GPU error processor service...')
   try {
     // Check if FlashAttention service is available
@@ -180,14 +180,14 @@ async function startErrorProcessorService(config: DeploymentConfig): Promise<any
     } else {
       console.log('⚠️ GPU service not responding, will start embedded')
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.log('⚠️ Starting embedded GPU error processor')
   }
 }
 /*
  * Configure MCP integration with model constraints
  */
-async function configureMCPIntegration(config: DeploymentConfig): Promise<any> {
+async function configureMCPIntegration(config: DeploymentConfig): Promise<unknown> {
   console.log('🔗 Configuring MCP integration...')
   try {
     const mcpConfigPath = path.resolve(process.cwd(), '.vscode/mcp.json')
@@ -196,14 +196,14 @@ async function configureMCPIntegration(config: DeploymentConfig): Promise<any> {
     } else {
       throw new Error('MCP configuration file not found')
     }
-  } catch (mcpError) {
-    throw new Error(`MCP configuration failed: ${mcpError.message}`)
+  } catch (mcpError: unknown) {
+    throw new Error(`MCP configuration failed: ${(mcpError as Error).message}`)
   }
 }
 /*
  * Verify FlashAttention GPU processing capabilities
  */
-async function verifyFlashAttentionGPU(): Promise<any> {
+async function verifyFlashAttentionGPU(): Promise<unknown> {
   console.log('⚡ Verifying FlashAttention GPU processing...')
   try {
     // Test FlashAttention functionality
@@ -214,14 +214,14 @@ async function verifyFlashAttentionGPU(): Promise<any> {
     } else {
       console.warn('⚠️ FlashAttention GPU test failed, CPU fallback available')
     }
-  } catch (error: any) {
-    console.warn('⚠️ FlashAttention verification failed:', error.message)
+  } catch (error: unknown) {
+    console.warn('⚠️ FlashAttention verification failed:', (error as Error).message)
   }
 }
 /*
  * Update the deployment report with current status
  */
-async function updateDeploymentReport(config: DeploymentConfig): Promise<any> {
+async function updateDeploymentReport(config: DeploymentConfig): Promise<unknown> {
   console.log('📝 Updating deployment report...')
   const reportPath = path.resolve(process.cwd(), '.vscode/gpu-mcp-orchestra-report.json')
   const report = {
@@ -251,16 +251,16 @@ async function updateDeploymentReport(config: DeploymentConfig): Promise<any> {
     }
   }
   try {
-    await writeFile(reportPath, JSON.stringify(report, null, 2)
+    await writeFile(reportPath, JSON.stringify(report, null, 2))
     console.log('✅ Deployment report updated')
-  } catch (error: any) {
-    console.warn('⚠️ Failed to update deployment report:', error.message)
+  } catch (error: unknown) {
+    console.warn('⚠️ Failed to update deployment report:', (error as Error).message)
   }
 }
 /*
  * Start the orchestration system services
  */
-async function startOrchestrationSystem(): Promise<any> {
+async function startOrchestrationSystem(): Promise<unknown> {
   console.log('🚀 Starting orchestration system...')
   try {
     // Check Go services
@@ -280,7 +280,7 @@ async function startOrchestrationSystem(): Promise<any> {
           status: response.ok ? 'running' : 'error',
           available: true
         })
-      } catch (error: any) {
+      } catch (error: unknown) {
         serviceStatus.push({
           name: service.name,
           port: service.port,
@@ -296,11 +296,11 @@ async function startOrchestrationSystem(): Promise<any> {
       services: serviceStatus,
       timestamp: new Date().toISOString(),
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Failed to start orchestration system:', error)
     return json({
       success: false,
-      error: error.message,
+      error: (error as Error).message,
       timestamp: new Date().toISOString()
     }, { status: 500 })
   }
@@ -308,7 +308,7 @@ async function startOrchestrationSystem(): Promise<any> {
 /*
  * Stop the orchestration system
  */
-async function stopOrchestrationSystem(): Promise<any> {
+async function stopOrchestrationSystem(): Promise<unknown> {
   console.log('🛑 Stopping orchestration system...')
   return json({
     success: true,
@@ -376,7 +376,7 @@ async function getOrchestrationStatus(): Promise<DeploymentStatus> {
     const modelsResponse = await fetch('http://localhost:11434/api/tags')
     if (modelsResponse.ok) {
       const models = await modelsResponse.json()
-      const modelNames = models.models?.map((m: any) => m.name) || []
+      const modelNames = models.models?.map((m: { name: string }) => m.name) || []
       status.models.gemma3Legal = modelNames.some((name: string) =>
         name.includes('gemma3-legal')) ? 'available' : 'missing'
       status.models.nomicEmbed = modelNames.some((name: string) =>
@@ -390,23 +390,10 @@ async function getOrchestrationStatus(): Promise<DeploymentStatus> {
 /*
  * Deploy complete system with auto-start
  */
-export const deployComplete = async (): Promise<any> => {
+export const deployComplete = async (): Promise<unknown> => {
   console.log('🎯 Deploying complete GPU orchestration system...')
   const deploymentSteps = [
-    { name: 'Model Validation', action: () => validateModelConstraints({,
-      enforceGemma3Legal,: true
-      enableFlashAttention,: true
-      gpuOptimization,: true
-      mcpIntegration,: true
-      orchestratorPort,: 8094,
-      errorProcessorPort,: 8095,
-      models,: {
-        primary: 'gemma3-legal',
-        embedding: 'nomic-embed-text',
-        blocked: ['gemma3:2b', 'gemma3:8b', 'gemma3:27b', 'gemma2*']
-      }
-    },) },
-    { name: 'Orchestrator Init', action: () => initializeNodeJSOrchestrator({,
+    { name: 'Model Validation', action: () => validateModelConstraints({
       enforceGemma3Legal: true,
       enableFlashAttention: true,
       gpuOptimization: true,
@@ -419,7 +406,7 @@ export const deployComplete = async (): Promise<any> => {
         blocked: ['gemma3:2b', 'gemma3:8b', 'gemma3:27b', 'gemma2*']
       }
     }) },
-    { name: 'Error Processor', action,: () => startErrorProcessorService({,
+    { name: 'Orchestrator Init', action: () => initializeNodeJSOrchestrator({
       enforceGemma3Legal: true,
       enableFlashAttention: true,
       gpuOptimization: true,
@@ -432,7 +419,7 @@ export const deployComplete = async (): Promise<any> => {
         blocked: ['gemma3:2b', 'gemma3:8b', 'gemma3:27b', 'gemma2*']
       }
     }) },
-    { name: 'MCP Integration', action,: () => configureMCPIntegration({,
+    { name: 'Error Processor', action: () => startErrorProcessorService({
       enforceGemma3Legal: true,
       enableFlashAttention: true,
       gpuOptimization: true,
@@ -445,7 +432,20 @@ export const deployComplete = async (): Promise<any> => {
         blocked: ['gemma3:2b', 'gemma3:8b', 'gemma3:27b', 'gemma2*']
       }
     }) },
-    { name: 'FlashAttention GPU', action,: verifyFlashAttentionGPU }
+    { name: 'MCP Integration', action: () => configureMCPIntegration({
+      enforceGemma3Legal: true,
+      enableFlashAttention: true,
+      gpuOptimization: true,
+      mcpIntegration: true,
+      orchestratorPort: 8094,
+      errorProcessorPort: 8095,
+      models: {
+        primary: 'gemma3-legal',
+        embedding: 'nomic-embed-text',
+        blocked: ['gemma3:2b', 'gemma3:8b', 'gemma3:27b', 'gemma2*']
+      }
+    }) },
+    { name: 'FlashAttention GPU', action: verifyFlashAttentionGPU }
   ]
   const results = []
   for (const step of deploymentSteps) {
@@ -454,16 +454,16 @@ export const deployComplete = async (): Promise<any> => {
       await step.action()
       results.push({ step: step.name, status: 'success' })
       console.log(`✅ ${step.name} completed`)
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(`❌ ${step.name} failed:`, error)
       results.push({
         step: step.name,
         status: 'error',
-        error: error.message
+        error: (error as Error).message
       })
     }
   }
-  const successCount = results.filter(item => item.length)
+  const successCount = results.filter(item => item.status === 'success').length
   const totalSteps = results.length
   return {
     success: successCount === totalSteps,

@@ -57,15 +57,15 @@ interface CitationNetwork {
     clusters: string[]
   }
 }
-interface LegalReasoningChain {
-  steps: Array<any>
-  overallCoherence: number
-  logicalGaps: string[]
-  alternativeTheories: string[]
-}
-export const POST: RequestHandler = async ({ request }) => {
-  try {
-    const searchRequest: PrecedentSearchRequest = await request.json()
+interface LegalReasoningStep {
+  stepNumber: number;
+  legalPrinciple: string;
+  supportingCases: string[];
+  factualBasis: string;
+  logicalConnection: string;
+  strengthScore: number;
+  vulnerabilities: string[];
+  counterarguments: string[];
     const {
       query,
       factPattern,
@@ -128,17 +128,18 @@ async function performPrecedentSearch(request: PrecedentSearchRequest) {
   const { query, factPattern, jurisdiction, courtLevel, practiceArea, maxResults, sortBy } = request
   // In production, this would perform vector similarity search against legal database
   // For now, generate comprehensive mock results based on request parameters
-  let mockMatches = generateMockPrecedents(query || factPattern, request)
+  let mockMatches = generateMockPrecedents(query || factPattern || '', request);
   // Apply filters
   if (jurisdiction) {
-    mockMatches = mockMatches.filter(item => item.includes(jurisdiction.toLowerCase()))
+    mockMatches = mockMatches.filter(item => item.jurisdiction?.toLowerCase().includes(jurisdiction.toLowerCase()));
   }
   if (courtLevel) {
-    mockMatches = mockMatches.filter(item => item.includes(courtLevel.toLowerCase()))
+    mockMatches = mockMatches.filter(item => item.court?.toLowerCase().includes(courtLevel.toLowerCase()));
   }
   if (practiceArea) {
-    mockMatches = mockMatches.filter(item => item.includes(practiceArea.toLowerCase()))
-    )
+    mockMatches = mockMatches.filter(item =>
+      item.practiceAreas?.some(pa => pa.toLowerCase().includes(practiceArea.toLowerCase()))
+    );
   }
   // Apply sorting
   switch (sortBy) {
@@ -176,9 +177,9 @@ async function buildCitationNetworks(matches: PrecedentMatch[]): Promise<Citatio
     citationGraph: {
       depth: Math.min(6, Math.floor(match.citationCount / 20)),
       breadth: Math.min(15, Math.floor(match.citationCount / 10)),
-      clusters: generateMockClusters(match.practiceAreas)
-    }
-  })
+      clusters: generateMockClusters(match.practiceAreas),
+    },
+  }));
 }
 async function generateLegalReasoningChain(matches: PrecedentMatch[]): Promise<LegalReasoningChain> {
   // Generate legal reasoning steps based on precedent matches
@@ -191,7 +192,7 @@ async function generateLegalReasoningChain(matches: PrecedentMatch[]): Promise<L
       logicalConnection: 'Core legal doctrine establishes framework for case evaluation',
       strengthScore: 0.92,
       vulnerabilities: ['Potential jurisdictional variations', 'Evolving legal standards'],
-      counterarguments: ['Alternative interpretations of foundational principles']
+      counterarguments: ['Alternative interpretations of foundational principles'],
     },
     {
       stepNumber: 2,
@@ -201,17 +202,17 @@ async function generateLegalReasoningChain(matches: PrecedentMatch[]): Promise<L
       logicalConnection: 'Analogous facts justify similar legal treatment',
       strengthScore: 0.84,
       vulnerabilities: ['Distinguishing factual elements', 'Context-specific variations'],
-      counterarguments: ['Material differences in factual scenarios']
+      counterarguments: ['Material differences in factual scenarios'],
     },
     {
       stepNumber: 3,
       legalPrinciple: 'Precedential Hierarchy Application',
-      supportingCases: matches.filter(item => item.map)(m => m.id),
+      supportingCases: matches.filter(item => item.precedentialValue === 'BINDING').map(m => m.id),
       factualBasis: 'Binding precedent requires consistent legal treatment',
       logicalConnection: 'Hierarchical precedent system mandates adherence to higher court rulings',
       strengthScore: 0.96,
       vulnerabilities: ['Narrow holding interpretations', 'Jurisdictional limitations'],
-      counterarguments: ['Precedent distinguishability arguments']
+      counterarguments: ['Precedent distinguishability arguments'],
     },
     {
       stepNumber: 4,
@@ -221,9 +222,9 @@ async function generateLegalReasoningChain(matches: PrecedentMatch[]): Promise<L
       logicalConnection: 'Policy coherence enhances predictability and fairness',
       strengthScore: 0.78,
       vulnerabilities: ['Competing policy considerations', 'Changed circumstances'],
-      counterarguments: ['Alternative policy frameworks']
-    }
-  ]
+      counterarguments: ['Alternative policy frameworks'],
+    },
+  ];
   const overallCoherence = steps.reduce((sum, step) => sum + step.strengthScore, 0) / steps.length
   const logicalGaps = [
     'Potential inconsistency between steps 2 and 3',

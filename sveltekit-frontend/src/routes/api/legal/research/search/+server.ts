@@ -60,22 +60,19 @@ export const POST: RequestHandler = async ({ request }) => {
     })
   } catch (error) {
     console.error('Legal research search error:', error)
-    return json(
-      { success: false, error: 'Search failed', results: [], total: 0 },)
-      { status: 500 }
-    )
+    return json({ success: false, error: 'Search failed', results: [], total: 0 }, { status: 500 });
   }
 }
 async function performSemanticSearch(
   query: string,
-  filters: any,
+  filters: Record<string, unknown>,
   sort: string,
   page: number,
-  limit: number,
+  limit: number
 ) {
-  const startTime = Date.now()
+  const startTime = Date.now();
   // Generate embedding for the query
-  const queryEmbedding = await generateQueryEmbedding(query)
+  const queryEmbedding = await generateQueryEmbedding(query);
   // Build the vector similarity query
   let sql = `
     SELECT
@@ -85,82 +82,82 @@ async function performSemanticSearch(
     FROM legal_documents ld
     LEFT JOIN LATERAL unnest(ld.keywords) as kw(keyword) ON true
     WHERE ld.embedding IS NOT NULL
-  `
-  const params: any[] = [JSON.stringify(queryEmbedding)]
-  let paramIndex = 2
+  `;
+  const params: (string | number | number[])[] = [JSON.stringify(queryEmbedding)];
+  let paramIndex = 2;
   // Apply filters
   if (filters.jurisdiction) {
-    sql += ` AND ld.jurisdiction = $${paramIndex}`
-    params.push(filters.jurisdiction)
-    paramIndex++
+    sql += ` AND ld.jurisdiction = $${paramIndex}`;
+    params.push(filters.jurisdiction as string);
+    paramIndex++;
   }
   if (filters.court) {
-    sql += ` AND ld.court = $${paramIndex}`
-    params.push(filters.court)
-    paramIndex++
+    sql += ` AND ld.court = $${paramIndex}`;
+    params.push(filters.court as string);
+    paramIndex++;
   }
   if (filters.documentType) {
-    sql += ` AND ld.document_type = $${paramIndex}`
-    params.push(filters.documentType)
-    paramIndex++
+    sql += ` AND ld.document_type = $${paramIndex}`;
+    params.push(filters.documentType as string);
+    paramIndex++;
   }
   if (filters.precedentialValue) {
-    sql += ` AND ld.precedential_value = $${paramIndex}`
-    params.push(filters.precedentialValue)
-    paramIndex++
+    sql += ` AND ld.precedential_value = $${paramIndex}`;
+    params.push(filters.precedentialValue as string);
+    paramIndex++;
   }
   // Group by for aggregation
-  sql += ` GROUP BY ld.id, ld.embedding`
+  sql += ` GROUP BY ld.id, ld.embedding`;
   // Apply sorting
   switch (sort) {
     case 'relevance':
-      sql += ` ORDER BY relevance_score DESC`
-      break
+      sql += ` ORDER BY relevance_score DESC`;
+      break;
     case 'date':
-      sql += ` ORDER BY ld.date_decided DESC`
-      break
+      sql += ` ORDER BY ld.date_decided DESC`;
+      break;
     case 'citations':
       sql += ` ORDER BY (
         SELECT COUNT(*) FROM citations c WHERE c.document_id = ld.id
-      ) DESC`
-      break
+      ) DESC`;
+      break;
     case 'court':
-      sql += ` ORDER BY ld.court, relevance_score DESC`
-      break
+      sql += ` ORDER BY ld.court, relevance_score DESC`;
+      break;
     default:
-      sql += ` ORDER BY relevance_score DESC`
+      sql += ` ORDER BY relevance_score DESC`;
   }
   // Apply pagination
-  sql += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`
-  params.push(limit, (page - 1) * limit)
+  sql += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+  params.push(limit, (page - 1) * limit);
   try {
     // Mock database query for demo - in production, use actual database connection
-    const mockResults = generateMockSemanticResults(query, filters, page, limit)
-    const relatedTopics = generateRelatedTopics(query)
-    const processingTime = Date.now() - startTime
+    const mockResults = generateMockSemanticResults(query, filters, page, limit);
+    const relatedTopics = generateRelatedTopics(query);
+    const processingTime = Date.now() - startTime;
     return {
       documents: mockResults.documents,
       total: mockResults.total,
       relatedTopics,
-      processingTime
-    }
+      processingTime,
+    };
   } catch (error) {
-    console.error('Database query error:', error)
-    throw error
+    console.error('Database query error:', error);
+    throw error;
   }
 }
 async function performKeywordSearch(
   query: string,
   mode: 'boolean' | 'phrase',
-  filters: any,
+  filters: Record<string, unknown>,
   sort: string,
-  page: number,;
+  page: number,
   limit: number
 ) {
-  const startTime = Date.now()
-  let sql: string
-  const params: any[] = []
-  let paramIndex = 1
+  const startTime = Date.now();
+  let sql = ''; // Initialize sql
+  const params: (string | number)[] = [];
+  let paramIndex = 1;
   if (mode === 'phrase') {
     // Exact phrase search using full-text search
     sql = `
@@ -171,11 +168,11 @@ async function performKeywordSearch(
         array_agg(DISTINCT kw.keyword) FILTER (WHERE kw.keyword IS NOT NULL) as key_topics
       FROM legal_documents ld
       LEFT JOIN LATERAL unnest(ld.keywords) as kw(keyword) ON true
-      WHERE to_tsvector('english', coalesce(ld.content, ld.full_text, '')
+      WHERE to_tsvector('english', coalesce(ld.content, ld.full_text, ''))
             @@ phraseto_tsquery('english', $1)
-    `
-    params.push(query)
-    paramIndex++
+    `;
+    params.push(query);
+    paramIndex++;
   } else {
     // Boolean search
     sql = `
@@ -186,61 +183,61 @@ async function performKeywordSearch(
         array_agg(DISTINCT kw.keyword) FILTER (WHERE kw.keyword IS NOT NULL) as key_topics
       FROM legal_documents ld
       LEFT JOIN LATERAL unnest(ld.keywords) as kw(keyword) ON true
-      WHERE to_tsvector('english', coalesce(ld.content, ld.full_text, '')
+      WHERE to_tsvector('english', coalesce(ld.content, ld.full_text, ''))
             @@ to_tsquery('english', $1)
-    `
-    params.push(query.replace(/\s+/g, ' & '),; // Convert to boolean query
-    paramIndex++
+    `;
+    params.push(query.replace(/\s+/g, ' & ')); // Convert to boolean query
+    paramIndex++;
   }
   // Apply filters (same as semantic search)
   if (filters.jurisdiction) {
-    sql += ` AND ld.jurisdiction = $${paramIndex}`
-    params.push(filters.jurisdiction)
-    paramIndex++
+    sql += ` AND ld.jurisdiction = $${paramIndex}`;
+    params.push(filters.jurisdiction as string);
+    paramIndex++;
   }
   if (filters.court) {
-    sql += ` AND ld.court = $${paramIndex}`
-    params.push(filters.court)
-    paramIndex++
+    sql += ` AND ld.court = $${paramIndex}`;
+    params.push(filters.court as string);
+    paramIndex++;
   }
   if (filters.documentType) {
-    sql += ` AND ld.document_type = $${paramIndex}`
-    params.push(filters.documentType)
-    paramIndex++
+    sql += ` AND ld.document_type = $${paramIndex}`;
+    params.push(filters.documentType as string);
+    paramIndex++;
   }
   if (filters.precedentialValue) {
-    sql += ` AND ld.precedential_value = $${paramIndex}`
-    params.push(filters.precedentialValue)
-    paramIndex++
+    sql += ` AND ld.precedential_value = $${paramIndex}`;
+    params.push(filters.precedentialValue as string);
+    paramIndex++;
   }
-  sql += ` GROUP BY ld.id`
+  sql += ` GROUP BY ld.id`;
   // Apply sorting
   switch (sort) {
     case 'relevance':
-      sql += ` ORDER BY relevance_score DESC`
-      break
+      sql += ` ORDER BY relevance_score DESC`;
+      break;
     case 'date':
-      sql += ` ORDER BY ld.date_decided DESC`
-      break
+      sql += ` ORDER BY ld.date_decided DESC`;
+      break;
     default:
-      sql += ` ORDER BY relevance_score DESC`
+      sql += ` ORDER BY relevance_score DESC`;
   }
-  sql += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`
-  params.push(limit, (page - 1) * limit)
+  sql += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+  params.push(limit, (page - 1) * limit);
   try {
     // Mock implementation for demo
-    const mockResults = generateMockKeywordResults(query, mode, filters, page, limit)
-    const relatedTopics = generateRelatedTopics(query)
-    const processingTime = Date.now() - startTime
+    const mockResults = generateMockKeywordResults(query, mode, filters, page, limit);
+    const relatedTopics = generateRelatedTopics(query);
+    const processingTime = Date.now() - startTime;
     return {
       documents: mockResults.documents,
       total: mockResults.total,
       relatedTopics,
-      processingTime
-    }
+      processingTime,
+    };
   } catch (error) {
-    console.error('Keyword search error:', error)
-    throw error
+    console.error('Keyword search error:', error);
+    throw error;
   }
 }
 async function generateQueryEmbedding(query: string): Promise<number[]> {
@@ -264,7 +261,7 @@ async function generateQueryEmbedding(query: string): Promise<number[]> {
   // Fallback: return mock embedding
   return Array.from({ length: 768 }, () => Math.random() - 0.5)
 }
-function generateMockSemanticResults(query: string, filters: any, page: number, limit: number) {
+function generateMockSemanticResults(query: string, filters: Record<string, unknown>, page: number, limit: number) {
   const allResults: LegalDocument[] = [
     {
       id: '1',
@@ -280,7 +277,7 @@ function generateMockSemanticResults(query: string, filters: any, page: number, 
       keyTopics: [query.split(' ')[0], 'Constitutional Law', 'Supreme Court'],
       relevanceScore: 0.95,
       citedBy: 156,
-      url: `/legal/documents/supreme-court-${query.toLowerCase().replace(/\s+/g, '-')}`
+      url: `/legal/documents/supreme-court-${query.toLowerCase().replace(/\s+/g, '-')}`,
     },
     {
       id: '2',
@@ -296,7 +293,7 @@ function generateMockSemanticResults(query: string, filters: any, page: number, 
       keyTopics: [query.split(' ')[0], 'Federal Law', 'Regulations'],
       relevanceScore: 0.89,
       citedBy: 89,
-      url: `/legal/documents/federal-statute-${query.toLowerCase().replace(/\s+/g, '-')}`
+      url: `/legal/documents/federal-statute-${query.toLowerCase().replace(/\s+/g, '-')}`,
     },
     {
       id: '3',
@@ -312,37 +309,43 @@ function generateMockSemanticResults(query: string, filters: any, page: number, 
       keyTopics: [query.split(' ')[0], 'Circuit Court', 'Appeals'],
       relevanceScore: 0.82,
       citedBy: 43,
-      url: `/legal/documents/circuit-court-${query.toLowerCase().replace(/\s+/g, '-')}`
-    }
-  ]
+      url: `/legal/documents/circuit-court-${query.toLowerCase().replace(/\s+/g, '-')}`,
+    },
+  ];
   // Apply filters
-  let filteredResults = allResults
+  let filteredResults = allResults;
   if (filters.jurisdiction) {
-    filteredResults = filteredResults.filter(r => r.jurisdiction === filters.jurisdiction)
+    filteredResults = filteredResults.filter(r => r.jurisdiction === filters.jurisdiction);
   }
   if (filters.documentType) {
-    filteredResults = filteredResults.filter(r => r.documentType === filters.documentType)
+    filteredResults = filteredResults.filter(r => r.documentType === filters.documentType);
   }
   if (filters.precedentialValue) {
-    filteredResults = filteredResults.filter(r => r.precedentialValue === filters.precedentialValue)
+    filteredResults = filteredResults.filter(r => r.precedentialValue === filters.precedentialValue);
   }
   // Pagination
-  const startIndex = (page - 1) * limit
-  const endIndex = startIndex + limit
-  const paginatedResults = filteredResults.slice(startIndex, endIndex)
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + limit;
+  const paginatedResults = filteredResults.slice(startIndex, endIndex);
   return {
     documents: paginatedResults,
     total: filteredResults.length,
-  }
+  };
 }
-function generateMockKeywordResults(query: string, mode: string, filters: any, page: number, limit: number) {
+function generateMockKeywordResults(
+  query: string,
+  mode: string,
+  filters: Record<string, unknown>,
+  page: number,
+  limit: number
+) {
   // Similar to semantic results but with different relevance scoring
-  const results = generateMockSemanticResults(query, filters, page, limit)
+  const results = generateMockSemanticResults(query, filters, page, limit);
   // Adjust relevance scores for keyword matching
   results.documents.forEach(doc => {
-    doc.relevanceScore = Math.max(0.6, doc.relevanceScore - 0.1)
-  })
-  return results
+    doc.relevanceScore = Math.max(0.6, doc.relevanceScore - 0.1);
+  });
+  return results;
 }
 function generateRelatedTopics(query: string): string[] {
   const baseTopics = [

@@ -54,10 +54,10 @@ const caseManagementServices = {
     const response = await fetch('/api/v1/mcp/call', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         tool: 'cases.loadCase',
-        args: { caseId }
-      })
+        args: { caseId },
+      }),
     });
     if (!response.ok) {
       throw new Error(`Failed to load case: ${response.statusText}`);
@@ -69,15 +69,15 @@ const caseManagementServices = {
     const response = await fetch('/api/v1/mcp/call', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         tool: 'cases.createCase',
         args: {
           caseData: {
             ...event.caseData,
-            userId: context.userId
-          }
-        }
-      })
+            userId: context.userId,
+          },
+        },
+      }),
     });
     if (!response.ok) {
       throw new Error(`Failed to create case: ${response.statusText}`);
@@ -89,13 +89,13 @@ const caseManagementServices = {
     const response = await fetch('/api/v1/mcp/call', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         tool: 'cases.updateCase',
         args: {
           caseId: event.caseId,
-          updates: event.updates
-        }
-      })
+          updates: event.updates,
+        },
+      }),
     });
     if (!response.ok) {
       throw new Error(`Failed to update case: ${response.statusText}`);
@@ -107,13 +107,13 @@ const caseManagementServices = {
     const response = await fetch('/api/v1/mcp/call', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         tool: 'cases.addEvidence',
         args: {
           caseId: event.caseId,
-          evidence: event.evidence
-        }
-      })
+          evidence: event.evidence,
+        },
+      }),
     });
     if (!response.ok) {
       throw new Error(`Failed to add evidence: ${response.statusText}`);
@@ -125,14 +125,14 @@ const caseManagementServices = {
     const response = await fetch('/api/v1/mcp/call', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         tool: 'cases.searchCases',
         args: {
           query: event.query || context.searchQuery,
           userId: context.userId,
-          filters: context.filters
-        }
-      })
+          filters: context.filters,
+        },
+      }),
     });
     if (!response.ok) {
       throw new Error(`Failed to search cases: ${response.statusText}`);
@@ -144,17 +144,17 @@ const caseManagementServices = {
     const response = await fetch('/api/v1/mcp/call', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
+      body: JSON.stringify({
         tool: 'cases.getUserCases',
         args: {
           userId: event.userId || context.userId,
           options: {
             limit: context.pagination.limit,
             offset: (context.pagination.page - 1) * context.pagination.limit,
-            status: context.filters.status
-          }
-        }
-      })
+            status: context.filters.status,
+          },
+        },
+      }),
     });
     if (!response.ok) {
       throw new Error(`Failed to load user cases: ${response.statusText}`);
@@ -172,16 +172,16 @@ export const caseManagementMachine = createMachine({
     evidence: [],
     searchQuery: '',
     searchResults: [],
-    filters: { [key,: strin,g]: any },
+    filters: {},
     selectedCaseId: null,
     isLoading: false,
     error: null,
     pagination: {
       page: 1,
       limit: 20,
-      totalCount: 0
+      totalCount: 0,
     },
-    userId: '' // Will be set when machine is spawned
+    userId: '', // Will be set when machine is spawned
   } as CaseManagementContext,
   states: {
     idle: {
@@ -195,29 +195,29 @@ export const caseManagementMachine = createMachine({
         SET_FILTERS: {
           target: 'idle',
           actions: assign({
-            filters: ({ context, event }) => ({ ...context.filters, ...event.filters })
-          })
+            filters: ({ context, event }) => ({ ...context.filters, ...event.filters }),
+          }),
         },
         SET_PAGE: {
           target: 'loadingUserCases',
           actions: assign({
             pagination: ({ context, event }) => ({
               ...context.pagination,
-              page: event.page
-            })
-          })
+              page: event.page,
+            }),
+          }),
         },
         SELECT_CASE: {
           target: 'idle',
           actions: assign({
-            selectedCaseId: ({ event }) => event.caseId
-          })
+            selectedCaseId: ({ event }) => event.caseId,
+          }),
         },
         CLEAR_ERROR: {
           target: 'idle',
-          actions: assign({ error: null })
-        }
-      }
+          actions: assign({ error: null }),
+        },
+      },
     },
     loadingCase: {
       entry: assign({ isLoading: true, error: null }),
@@ -229,17 +229,17 @@ export const caseManagementMachine = createMachine({
           actions: assign({
             currentCase: ({ event }) => event.output.result,
             selectedCaseId: ({ event }) => event.output.result?.id || null,
-            isLoading: false
-          })
+            isLoading: false,
+          }),
         },
         onError: {
           target: 'idle',
           actions: assign({
             error: ({ event }) => (event.error as Error)?.message || 'Failed to load case',
-            isLoading: false
-          })
-        }
-      }
+            isLoading: false,
+          }),
+        },
+      },
     },
     creatingCase: {
       entry: assign({ isLoading: true, error: null }),
@@ -252,25 +252,25 @@ export const caseManagementMachine = createMachine({
             guard: ({ event }) => event.output.success,
             actions: assign({
               isLoading: false,
-              selectedCaseId: ({ event }) => event.output.caseId
-            })
+              selectedCaseId: ({ event }) => event.output.caseId,
+            }),
           },
           {
             target: 'idle',
             actions: assign({
               error: ({ event }) => event.output.error || 'Failed to create case',
-              isLoading: false
-            })
-          }
+              isLoading: false,
+            }),
+          },
         ],
         onError: {
           target: 'idle',
           actions: assign({
             error: ({ event }) => (event.error as Error)?.message || 'Failed to create case',
-            isLoading: false
-          })
-        }
-      }
+            isLoading: false,
+          }),
+        },
+      },
     },
     updatingCase: {
       entry: assign({ isLoading: true, error: null }),
@@ -281,24 +281,24 @@ export const caseManagementMachine = createMachine({
           {
             target: 'loadingCase',
             guard: ({ event }) => event.output.success,
-            actions: assign({ isLoading: false })
+            actions: assign({ isLoading: false }),
           },
           {
             target: 'idle',
             actions: assign({
               error: ({ event }) => event.output.error || 'Failed to update case',
-              isLoading: false
-            })
-          }
+              isLoading: false,
+            }),
+          },
         ],
         onError: {
           target: 'idle',
           actions: assign({
             error: ({ event }) => (event.error as Error)?.message || 'Failed to update case',
-            isLoading: false
-          })
-        }
-      }
+            isLoading: false,
+          }),
+        },
+      },
     },
     addingEvidence: {
       entry: assign({ isLoading: true, error: null }),
@@ -309,30 +309,30 @@ export const caseManagementMachine = createMachine({
           {
             target: 'loadingCase',
             guard: ({ event }) => event.output.success,
-            actions: assign({ isLoading: false })
+            actions: assign({ isLoading: false }),
           },
           {
             target: 'idle',
             actions: assign({
               error: ({ event }) => event.output.error || 'Failed to add evidence',
-              isLoading: false
-            })
-          }
+              isLoading: false,
+            }),
+          },
         ],
         onError: {
           target: 'idle',
           actions: assign({
             error: ({ event }) => (event.error as Error)?.message || 'Failed to add evidence',
-            isLoading: false
-          })
-        }
-      }
+            isLoading: false,
+          }),
+        },
+      },
     },
     searchingCases: {
       entry: assign({
         isLoading: true,
         error: null,
-        searchQuery: ({ event }) => event.query || ''
+        searchQuery: ({ event }) => event.query || '',
       }),
       invoke: {
         src: 'searchCases',
@@ -343,20 +343,20 @@ export const caseManagementMachine = createMachine({
             searchResults: ({ event }) => event.output.cases || [],
             pagination: ({ context, event }) => ({
               ...context.pagination,
-              totalCount: event.output.totalCount || 0
+              totalCount: event.output.totalCount || 0,
             }),
-            isLoading: false
-          })
+            isLoading: false,
+          }),
         },
         onError: {
           target: 'idle',
           actions: assign({
             error: ({ event }) => (event.error as Error)?.message || 'Search failed',
             searchResults: [],
-            isLoading: false
-          })
-        }
-      }
+            isLoading: false,
+          }),
+        },
+      },
     },
     loadingUserCases: {
       entry: assign({ isLoading: true, error: null }),
@@ -369,31 +369,31 @@ export const caseManagementMachine = createMachine({
             cases: ({ event }) => event.output.cases || [],
             pagination: ({ context, event }) => ({
               ...context.pagination,
-              totalCount: event.output.totalCount || 0
+              totalCount: event.output.totalCount || 0,
             }),
-            isLoading: false
-          })
+            isLoading: false,
+          }),
         },
         onError: {
           target: 'idle',
           actions: assign({
             error: ({ event }) => (event.error as Error)?.message || 'Failed to load cases',
             cases: [],
-            isLoading: false
-          })
-        }
-      }
+            isLoading: false,
+          }),
+        },
+      },
     },
     error: {
       on: {
         RETRY: 'idle',
         CLEAR_ERROR: {
           target: 'idle',
-          actions: assign({ error: null })
-        }
-      }
-    }
-  }
+          actions: assign({ error: null }),
+        },
+      },
+    },
+  },
 }).provide({
   actors: {
     loadCase: fromPromise(caseManagementServices.loadCase),
@@ -401,8 +401,8 @@ export const caseManagementMachine = createMachine({
     updateCase: fromPromise(caseManagementServices.updateCase),
     addEvidence: fromPromise(caseManagementServices.addEvidence),
     searchCases: fromPromise(caseManagementServices.searchCases),
-    loadUserCases: fromPromise(caseManagementServices.loadUserCases)
-  }
+    loadUserCases: fromPromise(caseManagementServices.loadUserCases),
+  },
 });
 // Export types
 export type CaseManagementState = StateFrom<typeof caseManagementMachine>;

@@ -17,22 +17,39 @@ https://svelte.dev/e/js_parse_error -->
   import { fade, scale } from 'svelte/transition';
   import { cubicInOut } from 'svelte/easing';
 
-  // Exported props (simpler, explicit, typed)
-  export let open: boolean = false;
-  export let size: 'sm' | 'md' | 'lg' | 'xl' | 'fullscreen' = 'md';
-  export let title: any = null;
-  export let content: any = null;
-  export let footer: any = null;
-  export let variant: 'default' | 'legal' | 'evidence' | 'case' | 'nes' = 'default';
-  export let glassmorphism: boolean = false;
-  export let pixelated: boolean = false;
-  export let webgpuEffects: boolean = true;
-  export let collaboration: { enabled?: boolean; users?: any[]; sessionId?: string } = {};
-  export let legalContext: any = null;
-  export let onOpenChange: ((o: boolean) => void) | undefined;
-  export let onClose: (() => void) | undefined;
-  // renamed prop to avoid TS reserved-word error in svelte-preprocess
-  export let className: string = '';
+  interface DialogProps {
+    open?: boolean;
+    size?: 'sm' | 'md' | 'lg' | 'xl' | 'fullscreen';
+    title?: any;
+    content?: any;
+    footer?: any;
+    variant?: 'default' | 'legal' | 'evidence' | 'case' | 'nes';
+    glassmorphism?: boolean;
+    pixelated?: boolean;
+    webgpuEffects?: boolean;
+    collaboration?: { enabled?: boolean; users?: any[]; sessionId?: string };
+    legalContext?: any;
+    onOpenChange?: (o: boolean) => void;
+    onClose?: () => void;
+    className?: string;
+  }
+
+  let {
+    open = false,
+    size = 'md',
+    title = null,
+    content = null,
+    footer = null,
+    variant = 'default',
+    glassmorphism = false,
+    pixelated = false,
+    webgpuEffects = true,
+    collaboration = {},
+    legalContext = null,
+    onOpenChange = undefined,
+    onClose = undefined,
+    className = ''
+  }: DialogProps = $props();
 
   // Minimal WebGPU state (graceful fallback)
   let canvas: HTMLCanvasElement | null = null;
