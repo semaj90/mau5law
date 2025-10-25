@@ -398,7 +398,9 @@
       "Bash(../caddy.exe validate:*)",
       "Bash(while read pid)",
       "Bash(REDIS_PASSWORD=\"redis\" timeout 30 npx vite:*)",
-      "Bash(REDIS_PASSWORD=\"redis\" npx vite dev:*)"
+      "Bash(REDIS_PASSWORD=\"redis\" npx vite dev:*)",
+      "Bash(DATABASE_URL=\"postgresql://legal_admin:123456@localhost:5432/legal_ai_db\" npm run dev:*)",
+      "Bash(wmic process where name=\"node.exe\" delete)"
     ],
     "deny": [],
     "ask": []

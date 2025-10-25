@@ -26,8 +26,10 @@
     description,
     errorMessage,
     class: className = '',
-    ...restProp
+    ...restProps
   }: Props = $props();
+  // --- NEW: cast restProps to a permissive object to avoid strict handler types causing TS errors
+  const inputProps = restProps as Record<string, any>;
   const baseClasses = "legal-ai-input w-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
   const variantClasses = {
     default: "bg-slate-800/60 border border-slate-600/50 focus:border-amber-500 focus:ring-amber-500/20",
@@ -44,7 +46,7 @@
     : success
     ? "border-green-500 focus:border-green-500 focus:ring-green-500/20"
     : "";
-  let computedClasses = $derived(cn(
+  const computedClasses = cn(
     baseClasses,
     variantClasses[variant],
     sizeClasses[inputSize],
@@ -52,9 +54,9 @@
     leftIcon && "pl-10",
     rightIcon && "pr-10",
     className
-  ));
+  );
   // Generate unique IDs for accessibility
-  const inputId = `input-${Math.random.toString-substr(2, 9)}`;
+  const inputId = `input-${Math.random().toString(36).substr(2, 9)}`;
   const descriptionId = description ? `${inputId}-description` : undefined;
   const errorId = errorMessage ? `${inputId}-error` : undefined;
 </script>
@@ -76,7 +78,7 @@
       class={computedClasses}
       aria-describedby={cn(descriptionId, errorId)}
       aria-invalid={error}
-      {...restProps}
+      {...inputProps}
     />
     {#if rightIcon}
       <div class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
@@ -119,9 +121,6 @@
   :global(.legal-ai-input) {
     font-family: var(--legal-ai-font-family-sans);
     color: var(--legal-ai-text-primary);
-  }
-  :global($1) {
-    color: var(--legal-ai-text-muted);
   }
   :global(.legal-ai-input:focus) {
     box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);

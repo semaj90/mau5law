@@ -7,11 +7,10 @@ import { json } from '@sveltejs/kit';
  */
 import {
   gpuServiceIntegration,
-  GPUServiceUtils,
   type GPUProcessingTask,
   type GPUServiceStatus,
 } from '$lib/services/gpu-service-integration';
-import { llvmWasmBridge, initializeLLVMIntegration, type LLVMWASMBridge } from '$lib/wasm/llvm-wasm-bridge';
+import { llvmWasmBridge, initializeLLVMIntegration } from '$lib/wasm/llvm-wasm-bridge';
 import { flashAttention2Service, gpuErrorProcessor, type GPUErrorContext } from '$lib/services/flashattention2-rtx3060';
 
 // -----------------------------------------------------------------------------
@@ -358,7 +357,7 @@ async function getPerformanceMetrics(): Promise<Record<string, unknown>> {
     const gpuPerformance = (gpuStatusRec['performance'] ?? {}) as Record<string, unknown>;
 
     // safe performance.now() accessor (Node/Electron/browser compatibility)
-    const perfGlobal = (globalThis as unknown) as { performance?: { now?: () => number } };
+    const perfGlobal = globalThis as unknown as { performance?: { now?: () => number } };
     const nowVal =
       typeof perfGlobal?.performance?.now === 'function' ? Number(perfGlobal.performance.now()) : Number(Date.now());
 
@@ -496,7 +495,8 @@ async function handleLegalAnalysis(body: LegalAnalysisBody): Promise<Response> {
     ]);
 
     // Narrow settled values into typed locals to avoid `any`
-    const gpuVal = gpuResult.status === 'fulfilled' ? (gpuResult.value as GPULegalAnalysis) : undefined;
+    // Cast via `unknown` first to acknowledge intentional shape adaptation
+    const gpuVal = gpuResult.status === 'fulfilled' ? (gpuResult.value as unknown as GPULegalAnalysis) : undefined;
     const wasmVal = wasmResult.status === 'fulfilled' ? (wasmResult.value as WASMLegalAnalysis) : undefined;
 
     const response: {
@@ -665,78 +665,105 @@ async function handleWASMCompilation(body: WASMCompilationBody): Promise<Respons
   }
 }
 
+// Add a small typed shape for individual integration test outcomes
+type TestResult = {
+  success?: boolean;
+  details?: string;
+  [k: string]: unknown;
+};
+
 async function handleIntegrationTest(body: IntegrationTestBody): Promise<Response> {
-  const { testType = 'comprehensive' } = body;
+  const { testType = 'comprehensive' } = body ?? {};
   try {
-    const results: { testType: string; timestamp: string; tests: Record<string, unknown> } = {
+    const results: { testType: string; timestamp: string; tests: Record<string, TestResult> } = {
       testType,
       timestamp: new Date().toISOString(),
       tests: {},
     };
-    try {
-      const gpuTest = await GPUServiceUtils.testIntegration();
-      (results.tests as Record<string, unknown>).gpuService = gpuTest;
-    } catch (err: unknown) {
-      (results.tests as Record<string, unknown>).gpuService = {
-        success: false,
-        details: err instanceof Error ? err.message : String(err),
-      };
+
+    // GPU service check
+    const gpuStatusRaw = await gpuServiceIntegration.getStatus().catch((e: unknown) => {
+      return { initialized: false, available: false, error: getErrorMessage(e) } as Record<string, unknown>;
+    });
+    const gpuStatusRec = gpuStatusRaw as Record<string, unknown>;
+    const gpuInitialized = Boolean(gpuStatusRec?.initialized);
+    const gpuAvailable = Boolean(gpuStatusRec?.available);
+    const gpuTest: TestResult = {
+      success: gpuInitialized,
+      details: `initialized=${gpuInitialized}, available=${gpuAvailable}${gpuStatusRec?.error ? `, error=${String(gpuStatusRec.error)}` : ''}`,
+    };
+
+    // If embeddings supported, attempt a lightweight embedding call
+    const maybeGenerateEmbeddings = gpuServiceIntegration as unknown as {
+      generateEmbeddings?: (texts: string[]) => Promise<Float32Array[]>;
+    };
+    if (typeof maybeGenerateEmbeddings.generateEmbeddings === 'function') {
+      try {
+        await maybeGenerateEmbeddings.generateEmbeddings(['integration test']);
+        gpuTest.details += '; embeddings=ok';
+        gpuTest.success = true;
+      } catch (embedErr: unknown) {
+        gpuTest.details += `; embeddings_error=${getErrorMessage(embedErr)}`;
+        gpuTest.success = false;
+      }
     }
+    results.tests.gpuService = gpuTest;
+
+    // WASM bridge test
     try {
-      const testText = 'This is a sample legal document for testing purposes.';
-      const wasmTest = await llvmWasmBridge.processLegalText(testText, {
-        extractCitations: true,
-      });
-      const processedMs = Number(
-        safeNumber((wasmTest as unknown as Record<string, unknown>)?.processingTime, 0)
-      ).toFixed(2);
-      (results.tests as Record<string, unknown>).wasmBridge = {
+      const testText = 'Integration test input: validate llvm-wasm bridge processing and citation extraction.';
+      const wasmRes = (await Promise.resolve(
+        // force into a Promise in case implementation is sync
+        llvmWasmBridge.processLegalText(testText, { extractCitations: true })
+      )) as unknown as Record<string, unknown>;
+      const processedMs = Number(safeNumber(wasmRes?.processingTime, 0)).toFixed(2);
+      const processedLen = String(wasmRes?.processedText ?? testText).length;
+      results.tests.wasmBridge = {
         success: true,
-        details: `Processed ${testText.length} characters in ${processedMs}ms`,
+        details: `Processed ${processedLen} characters in ${processedMs}ms`,
       };
-    } catch (err: unknown) {
-      (results.tests as Record<string, unknown>).wasmBridge = {
+    } catch (wasmErr: unknown) {
+      results.tests.wasmBridge = {
         success: false,
-        details: err instanceof Error ? err.message : String(err),
+        details: getErrorMessage(wasmErr),
       };
     }
+
+    // FlashAttention test
     try {
-      const flashStatus = await flashAttention2Service.getStatus();
-      (results.tests as Record<string, unknown>).flashAttention = {
-        success: flashStatus?.initialized ?? false,
-        details: `GPU enabled: ${flashStatus?.gpuEnabled}, Memory optimization: ${flashStatus?.memoryOptimization}`,
+      const flashStatus = (await Promise.resolve(flashAttention2Service.getStatus())) as FlashAttentionStatus | null;
+      results.tests.flashAttention = {
+        success: Boolean(flashStatus?.initialized),
+        details: `GPU enabled: ${String(flashStatus?.gpuEnabled ?? 'unknown')}, Memory optimization: ${String(
+          flashStatus?.memoryOptimization ?? 'unknown'
+        )}`,
       };
-    } catch (err: unknown) {
-      (results.tests as Record<string, unknown>).flashAttention = {
+    } catch (flashErr: unknown) {
+      results.tests.flashAttention = {
         success: false,
-        details: err instanceof Error ? err.message : String(err),
+        details: getErrorMessage(flashErr),
       };
     }
 
-    // Evaluate results without using `any`
-    const testResults = Object.values(results.tests || {});
-    const successfulTests = testResults.filter((t): t is Record<string, unknown> =>
-      Boolean((t as Record<string, unknown>)?.success)
-    ).length;
-
+    // Summarize results
+    const testResults = Object.values(results.tests ?? {}) as TestResult[];
+    const successfulTests = testResults.reduce((count, t) => count + (t?.success ? 1 : 0), 0);
     (results as Record<string, unknown>).overall = {
       success: successfulTests === testResults.length,
       successRate: testResults.length ? successfulTests / testResults.length : 0,
       summary: `${successfulTests}/${testResults.length} tests passed`,
     };
+
     return json(results);
   } catch (err: unknown) {
     return json(
       {
         success: false,
         error: 'Integration test failed',
-        details: err instanceof Error ? err.message : String(err),
+        details: getErrorMessage(err),
         timestamp: new Date().toISOString(),
       },
       { status: 500 }
-    );
-  }
-}
     );
   }
 }

@@ -13,7 +13,6 @@ https://svelte.dev/e/js_parse_error -->
   import MasonryGrid from "$lib/components/ui/MasonryGrid.svelte";
   import EvidenceCardComponent from "$lib/components/evidence/EvidenceCard.svelte";
   import { Button as BitsButton } from 'bits-ui';
-  import * as Dialog from '$lib/components/ui/dialog';
   // Icons
   import { invalidateAll } from "$app/navigation";
   import {
@@ -325,6 +324,73 @@ https://svelte.dev/e/js_parse_error -->
       e.preventDefault();
       toggleFullscreen();
     }
+  }
+
+  // Added imports for focus management
+  import { tick } from 'svelte';
+
+  // Modal refs for focus management
+  let evidenceModalRef: HTMLDivElement | null = null;
+  let evidenceModalContentRef: HTMLDivElement | null = null;
+  let settingsModalRef: HTMLDivElement | null = null;
+  let settingsModalContentRef: HTMLDivElement | null = null;
+
+  // Unified close helpers
+  function closeEvidenceModal() {
+    showEvidenceModal = false;
+    selectedEvidence = null;
+  }
+
+  function closeSettingsModal() {
+    showSettingsModal = false;
+  }
+
+  // Keyboard handlers for overlay and content
+  function handleOverlayKeydown(e: KeyboardEvent, closeFn: () => void) {
+    const key = e.key;
+    if (key === 'Escape') {
+      e.stopPropagation();
+      closeFn();
+    }
+    // support keyboard activation parity with click (Enter / Space)
+    if (key === 'Enter' || key === ' ') {
+      e.preventDefault();
+      closeFn();
+    }
+  }
+
+  function handleContentKeydown(e: KeyboardEvent) {
+    // Allow Escape to bubble/close the dialog and prevent accidental activation
+    if (e.key === 'Escape') {
+      e.stopPropagation();
+      closeEvidenceModal();
+      closeSettingsModal();
+    }
+  }
+
+  // Focus management when modals open
+  $: if (showEvidenceModal) {
+    // wait for DOM, then move focus into the modal content (best for screen readers)
+    (async () => {
+      await tick();
+      // prefer focusing content or the close button if present
+      if (evidenceModalContentRef) {
+        evidenceModalContentRef.focus();
+      } else if (evidenceModalRef) {
+        evidenceModalRef.focus();
+      }
+    })();
+  }
+
+  $: if (showSettingsModal) {
+    (async () => {
+      await tick();
+      if (settingsModalContentRef) {
+        settingsModalContentRef.focus();
+      } else if (settingsModalRef) {
+        settingsModalRef.focus();
+      }
+    })();
   }
 </script>
 
@@ -732,43 +798,80 @@ https://svelte.dev/e/js_parse_error -->
   </div>
 </div>
 
-<!-- Modals -->
-<Dialog.Root bind:open={showEvidenceModal}>
-  {#if showEvidenceModal}
-    <Dialog.Overlay />
-    <Dialog.Content>
+<!-- Modals: replaced bits-ui Dialog usage with simple local modal markup -->
+{#if showEvidenceModal}
+  <!-- Overlay: presentation-only; keep it tabbable for programmatic focus but not as the dialog itself -->
+  <div
+    class="modal-overlay"
+    role="presentation"
+    aria-hidden="false"
+    aria-label="Evidence form overlay"
+    tabindex="-1"
+    bind:this={evidenceModalRef}
+    on:click={() => closeEvidenceModal()}
+    on:keydown={(e) => handleOverlayKeydown(e, closeEvidenceModal)}
+  >
+    <!-- Modal content: proper dialog role and negative tabindex for programmatic focus -->
+    <div
+      class="modal-content"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Evidence form"
+      tabindex="-1"
+      bind:this={evidenceModalContentRef}
+      on:click|stopPropagation
+      on:keydown={handleContentKeydown}
+    >
+      <button type="button" class="modal-close" aria-label="Close evidence modal" on:click={() => closeEvidenceModal()}>✕</button>
       <EvidenceForm
         data={evidenceFormData}
         evidence={selectedEvidence}
         success={() => {
-          showEvidenceModal = false;
-          selectedEvidence = null;
+          closeEvidenceModal();
         }}
         error={(e: CustomEvent) => {
           console.error('Evidence form error:', e.detail);
           alert('Error saving evidence');
         }}
         cancel={() => {
-          showEvidenceModal = false;
-          selectedEvidence = null;
+          closeEvidenceModal();
         }}
       />
-    </Dialog.Content>
-  {/if}
-</Dialog.Root>
+    </div>
+  </div>
+{/if}
 
-<Dialog.Root bind:open={showSettingsModal}>
-  {#if showSettingsModal}
-    <Dialog.Overlay />
-    <Dialog.Content>
-      <Dialog.Title>Report Settings</Dialog.Title>
+{#if showSettingsModal}
+  <!-- Overlay: presentation-only -->
+  <div
+    class="modal-overlay"
+    role="presentation"
+    aria-hidden="false"
+    aria-label="Settings overlay"
+    tabindex="-1"
+    bind:this={settingsModalRef}
+    on:click={() => closeSettingsModal()}
+    on:keydown={(e) => handleOverlayKeydown(e, closeSettingsModal)}
+  >
+    <!-- Modal content: dialog role and programmatic focus via tabindex="-1" -->
+    <div
+      class="modal-content"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Report settings"
+      tabindex="-1"
+      bind:this={settingsModalContentRef}
+      on:click|stopPropagation
+      on:keydown={handleContentKeydown}
+    >
+      <button type="button" class="modal-close" aria-label="Close settings" on:click={() => closeSettingsModal()}>✕</button>
       <div class="settings-form">
+        <h3>Report Settings</h3>
         <p>Settings panel - TODO: Implement settings form</p>
       </div>
-      <Dialog.Close />
-    </Dialog.Content>
-  {/if}
-</Dialog.Root>
+    </div>
+  </div>
+{/if}
 
 <style>
   .report-editor {
@@ -821,121 +924,19 @@ https://svelte.dev/e/js_parse_error -->
     flex: 1;
     max-width: 30rem;
     padding: 0.5rem 0.75rem;
-    border: 1px solid transparent;
-    background: none;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #111827;
+    border: 1px solid #e2e8f0;
     border-radius: 0.375rem;
-    transition: border-color 0.15s ease;
+    font-size: 0.95rem;
+    background: transparent;
+    color: inherit;
   }
 
-  .report-title-input:focus {
-    outline: none;
-    border-color: #3b82f6;
-    background: #ffffff;
-  }
+  /* basic editor layout finishing rules */
+  .editor-content { display: flex; height: 100%; }
+  .editor-main { flex: 1; display: flex; flex-direction: column; }
+  .editor-header { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 1rem; }
+  .evidence-panel { width: 320px; border-left: 1px solid #e6e6e6; padding: 0.75rem; overflow: auto; }
 
-  .editor-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .layout-toggle,
-  .fullscreen-toggle,
-  .settings-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.25rem;
-    height: 2.25rem;
-    border: none;
-    background: none;
-    color: #6b7280;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-
-  .layout-toggle:hover,
-  .fullscreen-toggle:hover,
-  .settings-btn:hover {
-    background: #f3f4f6;
-    color: #3b82f6;
-  }
-
-  .editor-wrapper {
-    flex: 1;
-    overflow: hidden;
-    padding: 1rem;
-  }
-
-  .evidence-panel {
-    width: 20rem;
-    background: #f8fafc;
-    border-left: 1px solid #e2e8f0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .panel-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem;
-    border-bottom: 1px solid #e2e8f0;
-  }
-
-  .panel-header h3 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #374151;
-  }
-
-  .evidence-grid-panel {
-    flex: 1;
-    overflow-y: auto;
-    padding: 1rem;
-  }
-
-  /* Layout variations */
-  .layout-single .evidence-panel {
-    display: none;
-  }
-
-  .layout-dual .editor-sidebar {
-    width: 16rem !important;
-  }
-
-  .layout-masonry .evidence-section {
-    padding: 0.5rem;
-  }
-
-  /* Modal content */
-  .settings-form {
-    padding: 1rem;
-    text-align: center;
-    color: #6b7280;
-  }
-
-  /* Responsive design */
-  @media (max-width: 1024px) {
-    .editor-sidebar {
-      width: 16rem !important;
-    }
-    .evidence-panel {
-      width: 16rem;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .layout-dual .evidence-panel {
-      display: none;
-    }
-    .editor-sidebar {
-      width: 14rem !important;
-    }
-  }
 </style>
+
+<!-- Ensure file ends with a newline -->

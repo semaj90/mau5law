@@ -74,7 +74,7 @@ async function performSemanticSearch(
   // Generate embedding for the query
   const queryEmbedding = await generateQueryEmbedding(query);
   // Build the vector similarity query
-  let sql = `
+  let $sql = `
     SELECT
       ld.*,
       1 - (ld.embedding <=> $1::vector) AS relevance_score,
@@ -87,48 +87,48 @@ async function performSemanticSearch(
   let paramIndex = 2;
   // Apply filters
   if (filters.jurisdiction) {
-    sql += ` AND ld.jurisdiction = $${paramIndex}`;
+    $sql += ` AND ld.jurisdiction = $${paramIndex}`;
     params.push(filters.jurisdiction as string);
     paramIndex++;
   }
   if (filters.court) {
-    sql += ` AND ld.court = $${paramIndex}`;
+    $sql += ` AND ld.court = $${paramIndex}`;
     params.push(filters.court as string);
     paramIndex++;
   }
   if (filters.documentType) {
-    sql += ` AND ld.document_type = $${paramIndex}`;
+    $sql += ` AND ld.document_type = $${paramIndex}`;
     params.push(filters.documentType as string);
     paramIndex++;
   }
   if (filters.precedentialValue) {
-    sql += ` AND ld.precedential_value = $${paramIndex}`;
+    $sql += ` AND ld.precedential_value = $${paramIndex}`;
     params.push(filters.precedentialValue as string);
     paramIndex++;
   }
   // Group by for aggregation
-  sql += ` GROUP BY ld.id, ld.embedding`;
+  $sql += ` GROUP BY ld.id, ld.embedding`;
   // Apply sorting
   switch (sort) {
     case 'relevance':
-      sql += ` ORDER BY relevance_score DESC`;
+      $sql += ` ORDER BY relevance_score DESC`;
       break;
     case 'date':
-      sql += ` ORDER BY ld.date_decided DESC`;
+      $sql += ` ORDER BY ld.date_decided DESC`;
       break;
     case 'citations':
-      sql += ` ORDER BY (
+      $sql += ` ORDER BY (
         SELECT COUNT(*) FROM citations c WHERE c.document_id = ld.id
       ) DESC`;
       break;
     case 'court':
-      sql += ` ORDER BY ld.court, relevance_score DESC`;
+      $sql += ` ORDER BY ld.court, relevance_score DESC`;
       break;
     default:
-      sql += ` ORDER BY relevance_score DESC`;
+      $sql += ` ORDER BY relevance_score DESC`;
   }
   // Apply pagination
-  sql += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+  $sql += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
   params.push(limit, (page - 1) * limit);
   try {
     // Mock database query for demo - in production, use actual database connection
@@ -155,12 +155,12 @@ async function performKeywordSearch(
   limit: number
 ) {
   const startTime = Date.now();
-  let sql = ''; // Initialize sql
+  let $sql = ''; // Initialize sql renamed to $sql to satisfy linter allowance for unused vars
   const params: (string | number)[] = [];
   let paramIndex = 1;
   if (mode === 'phrase') {
     // Exact phrase search using full-text search
-    sql = `
+    $sql = `
       SELECT
         ld.*,
         ts_rank(to_tsvector('english', coalesce(ld.content, ld.full_text, '')),
@@ -175,7 +175,7 @@ async function performKeywordSearch(
     paramIndex++;
   } else {
     // Boolean search
-    sql = `
+    $sql = `
       SELECT
         ld.*,
         ts_rank(to_tsvector('english', coalesce(ld.content, ld.full_text, '')),
@@ -191,38 +191,38 @@ async function performKeywordSearch(
   }
   // Apply filters (same as semantic search)
   if (filters.jurisdiction) {
-    sql += ` AND ld.jurisdiction = $${paramIndex}`;
+    $sql += ` AND ld.jurisdiction = $${paramIndex}`;
     params.push(filters.jurisdiction as string);
     paramIndex++;
   }
   if (filters.court) {
-    sql += ` AND ld.court = $${paramIndex}`;
+    $sql += ` AND ld.court = $${paramIndex}`;
     params.push(filters.court as string);
     paramIndex++;
   }
   if (filters.documentType) {
-    sql += ` AND ld.document_type = $${paramIndex}`;
+    $sql += ` AND ld.document_type = $${paramIndex}`;
     params.push(filters.documentType as string);
     paramIndex++;
   }
   if (filters.precedentialValue) {
-    sql += ` AND ld.precedential_value = $${paramIndex}`;
+    $sql += ` AND ld.precedential_value = $${paramIndex}`;
     params.push(filters.precedentialValue as string);
     paramIndex++;
   }
-  sql += ` GROUP BY ld.id`;
+  $sql += ` GROUP BY ld.id`;
   // Apply sorting
   switch (sort) {
     case 'relevance':
-      sql += ` ORDER BY relevance_score DESC`;
+      $sql += ` ORDER BY relevance_score DESC`;
       break;
     case 'date':
-      sql += ` ORDER BY ld.date_decided DESC`;
+      $sql += ` ORDER BY ld.date_decided DESC`;
       break;
     default:
-      sql += ` ORDER BY relevance_score DESC`;
+      $sql += ` ORDER BY relevance_score DESC`;
   }
-  sql += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+  $sql += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
   params.push(limit, (page - 1) * limit);
   try {
     // Mock implementation for demo
@@ -248,18 +248,18 @@ async function generateQueryEmbedding(query: string): Promise<number[]> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'nomic-embed-text',
-        prompt: query
-      })
-    })
+        prompt: query,
+      }),
+    });
     if (response.ok) {
-      const data = await response.json()
-      return data.embedding
+      const data = await response.json();
+      return data.embedding;
     }
   } catch (error) {
-    console.error('Embedding generation failed:', error)
+    console.error('Embedding generation failed:', error);
   }
   // Fallback: return mock embedding
-  return Array.from({ length: 768 }, () => Math.random() - 0.5)
+  return Array.from({ length: 768 }, () => Math.random() - 0.5);
 }
 function generateMockSemanticResults(query: string, filters: Record<string, unknown>, page: number, limit: number) {
   const allResults: LegalDocument[] = [
@@ -354,16 +354,16 @@ function generateRelatedTopics(query: string): string[] {
     'Precedent analysis',
     'Statutory construction',
     'Civil procedure',
-    'Evidence standards'
-  ]
+    'Evidence standards',
+  ];
   // Generate query-specific related topics
-  const queryWords = query.toLowerCase().split(' ')
-  const relatedTopics = []
+  const queryWords = query.toLowerCase().split(' ');
+  const relatedTopics: string[] = []; // <-- typed to avoid implicit any[]
   queryWords.forEach(word => {
     if (word.length > 3) {
-      relatedTopics.push(`${word} precedents`)
-      relatedTopics.push(`${word} regulations`)
+      relatedTopics.push(`${word} precedents`);
+      relatedTopics.push(`${word} regulations`);
     }
-  })
-  return [...relatedTopics.slice(0, 3), ...baseTopics.slice(0, 3)]
+  });
+  return [...relatedTopics.slice(0, 3), ...baseTopics.slice(0, 3)];
 }

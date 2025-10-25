@@ -1,27 +1,62 @@
-import { json } from "@sveltejs/kit"
-import { cases, evidence, users } from "$lib/server/db/schema-postgres"
-import { eq } from "drizzle-orm"
-import { db } from "$lib/server/db/index"
-import type { RequestHandler } from './$types.js'
+import type { RequestEvent } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
+import { cases, evidence, users } from '$lib/server/db/schema-postgres';
+import { eq } from 'drizzle-orm';
+import { db } from '$lib/server/db/index';
+import { getUser } from '$lib/server/auth'; // use getUser (getUserId does not exist)
 
-export const GET: RequestHandler = async ({ url, locals }) => {
-  const userId = getUserId(locals)
-  if (!userId) {
-    return json({ error: "Not authenticated" }, { status: 401 })
+// replace previous getUserIdFromLocals implementation with a small type-safe helper
+function isRecord(obj: unknown): obj is Record<string, unknown> {
+  return typeof obj === 'object' && obj !== null;
+}
+
+function extractUserId(u: unknown): string | number | null {
+  if (!u) return null;
+  if (typeof u === 'string' || typeof u === 'number') return u;
+  if (isRecord(u)) {
+    const maybe = (obj: Record<string, unknown>, key: string) => {
+      const v = obj[key];
+      return typeof v === 'string' || typeof v === 'number' ? v : undefined;
+    };
+    return maybe(u, 'id') ?? maybe(u, 'userId') ?? maybe(u, 'sub') ?? null;
   }
-  const hash = url.searchParams.get("hash")
+  return null;
+}
+
+// new helper to avoid `any` in catch blocks
+function extractErrorMessage(err: unknown): string {
+  if (!err) return 'Unknown error';
+  if (err instanceof Error) return err.message;
+  try {
+    return String(err);
+  } catch {
+    return 'Unknown error';
+  }
+}
+
+// NOTE: avoid explicit RequestHandler annotation to sidestep strict event generic mismatches.
+// Minimal typing on params keeps TS happy and ensures all code paths return a Response via json()
+
+export const GET = async (event: RequestEvent) => {
+  const { url } = event;
+  // call getUser with the full event (correct type) and extract id safely
+  const u = await getUser(event);
+  const userId = extractUserId(u);
+  if (!userId) {
+    return json({ error: 'Not authenticated' }, { status: 401 });
+  }
+  const hash = url.searchParams.get('hash');
   if (!hash) {
-    return json({ error: "Hash parameter required" }, { status: 400 })
+    return json({ error: 'Hash parameter required' }, { status: 400 });
   }
   // Validate hash format (SHA256 should be 64 hex characters)
   if (!/^[a-f0-9]{64}$/i.test(hash)) {
-    return json()
+    return json(
       {
-        error:
-          "Invalid hash format. Expected 64-character hexadecimal string (SHA256)"
+        error: 'Invalid hash format. Expected 64-character hexadecimal string (SHA256)',
       },
-      { status: 400 },
-    )
+      { status: 400 }
+    );
   }
   try {
     // Search for evidence with matching hash
@@ -40,88 +75,117 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         uploadedBy: evidence.uploadedBy,
         caseName: cases.name,
         caseNumber: cases.caseNumber,
-        uploaderName: users.name
+        uploaderName: users.name,
       })
       .from(evidence)
-      .leftJoin(cases, eq(evidence.caseId, cases.id)
-      .leftJoin(users, eq(evidence.uploadedBy, users.id)
-      .where(eq(evidence.hash, hash.toLowerCase())
-    if (evidenceResults.length === 0) {
-      return json({
-        found: false,
-        message: "No evidence found with the specified hash",
-        hash
-      })
+      .leftJoin(cases, eq(evidence.caseId, cases.id))
+      .leftJoin(users, eq(evidence.uploadedBy, users.id))
+      .where(eq(evidence.hash, hash.toLowerCase()));
+    if (!evidenceResults || evidenceResults.length === 0) {
+      return json(
+        {
+          found: false,
+          message: 'No evidence found with the specified hash',
+          hash,
+        },
+        { status: 200 }
+      );
     }
     return json({
       found: true,
       message: `Found ${evidenceResults.length} evidence item(s) matching the hash`,
       hash,
-      evidence: evidenceResults
-    })
-  } catch (error: any) {
-    console.error("Error searching evidence by hash:", error)
-    return json({
-        error: "Failed to search evidence by hash",
-        details: error instanceof Error ? error.message: "Unknown error"
-      },)
-      { status: 500 },
-    )
+      evidence: evidenceResults,
+    });
+  } catch (err: unknown) {
+    console.error('Error searching evidence by hash:', extractErrorMessage(err));
+    return json(
+      {
+        error: 'Failed to search evidence by hash',
+        details: extractErrorMessage(err),
+      },
+      { status: 500 }
+    );
   }
-}
-export const POST: RequestHandler = async ({ request, locals }) => {
-  const userId = getUserId(locals)
+};
+
+export const POST = async (event: RequestEvent) => {
+  const { request } = event;
+  // call getUser with the full event (correct type) and extract id safely
+  const u = await getUser(event);
+  const userId = extractUserId(u);
   if (!userId) {
-    return json({ error: "Not authenticated" }, { status: 401 })
+    return json({ error: 'Not authenticated' }, { status: 401 });
   }
-  const { hash, evidenceId } = await request.json()
-  if (!hash || !evidenceId) {
-    return json({ error: "Hash and evidenceId required" }, { status: 400 })
+  const body = await request.json().catch(() => null);
+  const { hash, evidenceId } = (body ?? {}) as { hash?: unknown; evidenceId?: unknown };
+
+  // Validate types for incoming fields
+  if (typeof hash !== 'string' || !['string', 'number'].includes(typeof evidenceId)) {
+    return json(
+      { error: 'Invalid request shape. `hash` must be a string and `evidenceId` must be string or number.' },
+      { status: 400 }
+    );
   }
+
   // Validate hash format
   if (!/^[a-f0-9]{64}$/i.test(hash)) {
-    return json()
+    return json(
       {
-        error:
-          "Invalid hash format. Expected 64-character hexadecimal string (SHA256)"
+        error: 'Invalid hash format. Expected 64-character hexadecimal string (SHA256)',
       },
-      { status: 400 },
-    )
+      { status: 400 }
+    );
   }
+
   try {
-    // Get the evidence item
-    const evidenceItem = await db
+    // Normalize evidenceId for query (if numeric string -> number)
+    const normalizedEvidenceId =
+      typeof evidenceId === 'string' && /^\d+$/.test(evidenceId) ? Number(evidenceId) : (evidenceId as number | string);
+
+    // Typed shape for the single evidence row we read
+    type EvidenceRow = {
+      hash?: string;
+      fileName?: string;
+      uploadedAt?: string;
+      fileSize?: number;
+    };
+
+    const evidenceRows = (await db
       .select()
       .from(evidence)
-      .where(eq(evidence.id, evidenceId)
-      .limit(1)
-    if (evidenceItem.length === 0) {
-      return json({ error: "Evidence not found" }, { status: 404 })
+      .where(eq(evidence.id, normalizedEvidenceId))
+      .limit(1)) as EvidenceRow[];
+
+    if (!evidenceRows || evidenceRows.length === 0) {
+      return json({ error: 'Evidence not found' }, { status: 404 });
     }
-    const item = evidenceItem[0]
-    const providedHash = hash.toLowerCase()
-    const storedHash = (item as { hash?: any; fileName?: any; uploadedAt?: any; fileSize?: any }).hash?.toLowerCase()
+    const item = evidenceRows[0];
+
+    const providedHash = hash.toLowerCase();
+    const storedHash = item.hash?.toLowerCase();
     // Compare hashes
-    const isMatch = storedHash === providedHash
+    const isMatch = storedHash === providedHash;
     return json({
-      evidenceId,
-      fileName: (item as { hash?: any; fileName?: any; uploadedAt?: any; fileSize?: any }).fileName,
+      evidenceId: normalizedEvidenceId,
+      fileName: item.fileName,
       providedHash,
       storedHash,
       isMatch,
       message: isMatch
-        ? "Hash verification successful - file integrity confirmed"
-        : "Hash verification failed - file may have been modified or corrupted",
-      uploadedAt: (item as { hash?: any; fileName?: any; uploadedAt?: any; fileSize?: any }).uploadedAt,
-      fileSize: (item as { hash?: any; fileName?: any; uploadedAt?: any; fileSize?: any }).fileSize
-    })
-  } catch (error: any) {
-    console.error("Error verifying evidence hash:", error)
-    return json({
-        error: "Failed to verify evidence hash",
-        details: error instanceof Error ? error.message: "Unknown error"
-      },)
-      { status: 500 },
-    )
+        ? 'Hash verification successful - file integrity confirmed'
+        : 'Hash verification failed - file may have been modified or corrupted',
+      uploadedAt: item.uploadedAt,
+      fileSize: item.fileSize,
+    });
+  } catch (err: unknown) {
+    console.error('Error verifying evidence hash:', extractErrorMessage(err));
+    return json(
+      {
+        error: 'Failed to verify evidence hash',
+        details: extractErrorMessage(err),
+      },
+      { status: 500 }
+    );
   }
-}
+};

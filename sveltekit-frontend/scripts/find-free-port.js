@@ -8,13 +8,15 @@ import net from 'net';
  * @param {number} maxTries - Maximum number of ports to try
  * @returns {Promise<number>} - Available port number
  */
-export async function findFreePort(startPort = 5173, maxTries = 10) {
-  for (let port = startPort; port < startPort + maxTries; port++) {
+export async function findFreePort(startPort = 5173, maxTries = 50) {
+  // Defensive clamp so callers can't request an absurdly large scan
+  const tries = Math.min(Math.max(1, Number(maxTries) || 50), 1000);
+  for (let port = startPort; port < startPort + tries; port++) {
     if (await isPortAvailable(port)) {
       return port;
     }
   }
-  throw new Error(`No available ports found in range ${startPort}-${startPort + maxTries - 1}`);
+  throw new Error(`No available ports found in range ${startPort}-${startPort + tries - 1}`);
 }
 
 /**

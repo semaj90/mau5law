@@ -1057,3 +1057,707 @@ Before deploying Bits UI components:
 - **Svelte 5 Migration**: https://bits-ui.com/docs/migration
 - **WCAG Contrast Checker**: https://webaim.org/resources/contrastchecker/
 - **UnoCSS Dark Mode**: https://unocss.dev/presets/uno#dark-mode
+
+## Comprehensive Type Definitions
+
+### Three Core Type Definition Endpoints
+
+The legal AI platform has **complete type definitions** for all API operations, organized into three comprehensive endpoints:
+
+#### 1️⃣ Endpoint 1: Database Response Types
+**Location**: `src/lib/types/database.ts`
+
+Solves: Components querying `db.query()` don't know response types
+
+**Core Types**:
+```typescript
+// Entity types
+User, Case, CaseMetadata, Evidence, EvidenceAnalysis, EvidenceMetadata, Document, ChatMessage, AnalysisResult
+
+// Query response wrappers
+QueryResult<T>           // Single item response
+ListQueryResult<T>       // List with pagination
+CreateQueryResult<T>     // Create response
+UpdateQueryResult<T>     // Update response
+DeleteQueryResult        // Delete response
+VectorSearchQueryResult  // Vector search results
+BatchQueryResult<T>      // Batch operations
+
+// Domain-specific shortcuts
+CaseQueryResult, CaseListResult
+EvidenceQueryResult, EvidenceListResult
+UserQueryResult, UserListResult
+ChatMessageQueryResult, ChatMessageListResult
+DocumentQueryResult, DocumentListResult
+```
+
+**Usage Pattern**:
+```typescript
+import type { ListQueryResult, Case } from '$lib/types';
+
+async function loadCases() {
+  const response = await fetch('/api/cases');
+  const result: ListQueryResult<Case> = await response.json();
+  // ✅ TypeScript knows result.data is Case[], result.pagination exists
+}
+```
+
+#### 2️⃣ Endpoint 2: Admin API Response Types
+**Location**: `src/lib/types/admin.ts`
+
+Solves: Admin endpoints return unknown response structures
+
+**Core Types**:
+```typescript
+// Health & Status
+AdminHealthResponse, AdminStatusResponse, SystemMetrics, ServiceHealth
+
+// System Details
+CPUMetrics, MemoryMetrics, DiskMetrics, NetworkMetrics
+
+// Service Status
+DatabaseStatus, CacheStatus, MessageQueueStatus, VectorStoreStatus
+
+// Configuration
+AdminConfiguration, DatabaseConfig, CacheConfig, GPUConfig
+
+// Audit & Actions
+AuditLogResponse, AuditLog
+AdminActionResponse, DatabaseMaintenanceResponse, CacheClearResponse, ServiceRestartResponse
+```
+
+**Usage Pattern**:
+```typescript
+import type { AdminStatusResponse } from '$lib/types';
+
+async function checkSystem() {
+  const response = await fetch('/api/admin/status');
+  const status: AdminStatusResponse = await response.json();
+  // ✅ Access: status.metrics.cpu.usage, status.services.database.status
+}
+```
+
+#### 3️⃣ Endpoint 3: Worker/Cluster State Types
+**Location**: `src/lib/types/cluster.ts`
+
+Solves: Background workers and file uploads have unknown state
+
+**Core Types**:
+```typescript
+// Cluster & Workers
+ClusterStatusResponse, ClusterMetadata, Worker, WorkerMetrics, WorkerPool
+
+// Worker Health
+BackgroundWorkerStatus, WorkerHealthCheckResponse
+
+// Job Queue
+BackgroundJob, JobQueueStats, JobStatusResponse, JobBatchResponse
+
+// File Upload & Processing
+FileUploadJob, FileUploadInfo, FileProcessingStage, FileUploadResponse, FileProcessingProgress
+
+// Specific Workers
+OCRWorkerStatus, OCRJob
+EmbeddingWorkerStatus, EmbeddingJob
+AutotagWorkerStatus, AutotagJob
+
+// Events & Commands
+ClusterEvent, ClusterEventStreamResponse
+ClusterCommandResponse, ClusterRestartResponse, WorkerScaleResponse
+```
+
+**Usage Pattern**:
+```typescript
+import type { WorkerHealthCheckResponse, FileUploadResponse } from '$lib/types';
+
+// Monitor workers
+async function checkWorkers() {
+  const health: WorkerHealthCheckResponse = await fetch('/api/health/workers').then(r => r.json());
+  health.workers.forEach(w => console.log(`${w.workerName}: ${w.status}`));
+}
+
+// Upload file
+async function uploadFile(file: File) {
+  const upload: FileUploadResponse = await fetch('/api/files/upload', {
+    method: 'POST',
+    body: new FormData().append('file', file)
+  }).then(r => r.json());
+  // ✅ Know exact structure of upload.file, upload.uploadJob, upload.processingJobs
+}
+```
+
+### Type Definitions Documentation
+
+- **Full Guide**: `TYPE_DEFINITIONS_GUIDE.md` - Comprehensive examples for all three endpoints
+- **Quick Reference**: `TYPE_DEFINITIONS_CHEATSHEET.md` - Patterns and imports quick copy
+- **Central Export**: `src/lib/types/index.ts` - All types re-exported from one location
+
+### When to Use Each Type
+
+| Type | Use When | Example |
+|------|----------|---------|
+| **Database Types** | Querying database, displaying entities | Showing case details, user info, evidence |
+| **Admin Types** | System monitoring, admin dashboard | CPU usage, service health, metrics display |
+| **Cluster Types** | Monitoring workers, tracking uploads, jobs | Worker status, file upload progress, job queue |
+
+### Benefits of Type System
+
+✅ **Compile-time Safety**: Errors caught before runtime
+✅ **Full IDE Support**: Autocomplete, jump to definition, refactoring
+✅ **Self-documenting**: Types serve as inline documentation
+✅ **Consistency**: Standardized responses across all APIs
+✅ **Easy Refactoring**: Change types once, update everywhere
+✅ **Type Inference**: Components automatically know result shapes
+
+### Quick Start
+
+```typescript
+// Import what you need
+import type {
+  // Database
+  ListQueryResult, Case, Evidence,
+  // Admin
+  AdminStatusResponse, SystemMetrics,
+  // Workers
+  FileUploadResponse, WorkerHealthCheckResponse
+} from '$lib/types';
+
+// Use in component
+async function loadData() {
+  const cases: ListQueryResult<Case> = await fetch('/api/cases').then(r => r.json());
+  const admin: AdminStatusResponse = await fetch('/api/admin/status').then(r => r.json());
+  const upload: FileUploadResponse = await uploadFile(file);
+  // ✅ Full type safety and autocomplete
+}
+```
+
+### Type Implementation Patterns
+
+#### Pattern 1: Safe Data Access
+```typescript
+import type { ListQueryResult, Case } from '$lib/types';
+
+const result: ListQueryResult<Case> = await fetchCases();
+
+// ✅ CORRECT - Always check success before accessing data
+if (result.success && result.data) {
+  result.data.forEach(c => {
+    console.log(c.title); // TypeScript knows this is string
+    console.log(c.metadata?.jurisdiction); // Knows about optional metadata
+  });
+}
+
+// ❌ WRONG - No type safety if you don't check
+// result.data.forEach(...) // TypeScript error if result.success is false
+```
+
+#### Pattern 2: Error Handling with Types
+```typescript
+import type { QueryResult, Case } from '$lib/types';
+
+async function getCaseById(id: string): Promise<Case | null> {
+  const result: QueryResult<Case> = await fetch(`/api/cases/${id}`).then(r => r.json());
+
+  // ✅ CORRECT - Type-safe error handling
+  if (!result.success) {
+    console.error('Failed to fetch case:', result.error);
+    return null;
+  }
+
+  return result.data ?? null;
+}
+```
+
+#### Pattern 3: Metadata Access for Legal Domains
+```typescript
+import type { Evidence, EvidenceMetadata } from '$lib/types';
+
+function processEvidence(evidence: Evidence) {
+  // ✅ CORRECT - Type-safe metadata access
+  const metadata: EvidenceMetadata | null = evidence.metadata;
+
+  if (metadata?.processingStatus === 'completed') {
+    const text = metadata.ocrResult;
+    const hash = metadata.fileHash;
+    // All types inferred correctly
+  }
+
+  // Chain of custody access
+  evidence.chainOfCustody?.forEach(record => {
+    console.log(`${record.handler} - ${record.action} at ${record.location}`);
+  });
+}
+```
+
+#### Pattern 4: Admin Monitoring
+```typescript
+import type { AdminStatusResponse, ServiceHealth } from '$lib/types';
+
+async function monitorServices(): Promise<void> {
+  const status: AdminStatusResponse = await fetch('/api/admin/status').then(r => r.json());
+
+  if (!status.success) {
+    console.error('Admin check failed:', status.error);
+    return;
+  }
+
+  // ✅ CORRECT - Type inference on nested objects
+  const dbHealth: ServiceHealth = status.services.database;
+  const cacheHealth: ServiceHealth = status.services.cache;
+
+  if (dbHealth.status === 'unhealthy') {
+    console.error('Database unavailable:', dbHealth.error);
+  }
+
+  // Metrics access
+  console.log(`CPU: ${status.metrics.cpu.usage}%`);
+  console.log(`Memory: ${status.metrics.memory.percentage}%`);
+}
+```
+
+#### Pattern 5: Worker Health Monitoring
+```typescript
+import type { WorkerHealthCheckResponse, BackgroundWorkerStatus } from '$lib/types';
+
+async function checkAllWorkers(): Promise<boolean> {
+  const health: WorkerHealthCheckResponse = await fetch('/api/health/workers').then(r => r.json());
+
+  if (!health.success) {
+    return false;
+  }
+
+  // ✅ CORRECT - Type-safe worker iteration
+  const allHealthy = health.workers.every((worker: BackgroundWorkerStatus) => {
+    return worker.status === 'online' && worker.healthy;
+  });
+
+  // Get summaries with type safety
+  console.log(`Online: ${health.summary?.online}`);
+  console.log(`Offline: ${health.summary?.offline}`);
+
+  return allHealthy;
+}
+```
+
+#### Pattern 6: File Upload with Progress Tracking
+```typescript
+import type { FileUploadResponse, FileProcessingProgress } from '$lib/types';
+
+async function uploadAndTrack(file: File): Promise<void> {
+  // Initial upload
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const upload: FileUploadResponse = await fetch('/api/files/upload', {
+    method: 'POST',
+    body: formData
+  }).then(r => r.json());
+
+  if (!upload.success) {
+    console.error('Upload failed:', upload.error);
+    return;
+  }
+
+  const fileId = upload.file.fileId;
+  console.log(`Uploaded: ${upload.file.fileName} (${upload.file.fileSize}MB)`);
+
+  // Monitor processing with real-time updates
+  const eventSource = new EventSource(`/api/files/${fileId}/progress`);
+
+  eventSource.onmessage = (event) => {
+    const progress: FileProcessingProgress = JSON.parse(event.data);
+
+    console.log(`Progress: ${progress.overallProgress}%`);
+    console.log(`Current Stage: ${progress.currentStage}`);
+
+    progress.stages.forEach(stage => {
+      console.log(`  ${stage.stageName}: ${stage.progress}% (${stage.status})`);
+    });
+
+    if (progress.overallProgress === 100) {
+      eventSource.close();
+    }
+  };
+}
+```
+
+#### Pattern 7: Batch Operations
+```typescript
+import type { BatchQueryResult, Case } from '$lib/types';
+
+async function deleteCasesBatch(ids: string[]): Promise<void> {
+  const result: BatchQueryResult<Case> = await fetch('/api/cases/batch/delete', {
+    method: 'POST',
+    body: JSON.stringify({ ids })
+  }).then(r => r.json());
+
+  if (!result.success) {
+    console.error('Batch operation failed:', result.error);
+    return;
+  }
+
+  // ✅ CORRECT - Type-safe batch result iteration
+  result.results.forEach(item => {
+    if (item.success) {
+      console.log(`✅ Deleted case ${item.id}`);
+    } else {
+      console.error(`❌ Failed to delete ${item.id}: ${item.error}`);
+    }
+  });
+
+  console.log(`Summary: ${result.successCount}/${result.results.length} successful`);
+}
+```
+
+#### Pattern 8: Vector Search
+```typescript
+import type { VectorSearchQueryResult } from '$lib/types';
+
+async function searchDocuments(query: string, embedding: number[]): Promise<void> {
+  const results: VectorSearchQueryResult = await fetch('/api/search/semantic', {
+    method: 'POST',
+    body: JSON.stringify({ query, embedding })
+  }).then(r => r.json());
+
+  if (!results.success) {
+    console.error('Search failed:', results.error);
+    return;
+  }
+
+  // ✅ CORRECT - Type-safe result processing
+  if (results.results) {
+    results.results.forEach(result => {
+      console.log(`${result.title}`);
+      console.log(`Similarity: ${(result.similarity * 100).toFixed(1)}%`);
+      console.log(`Excerpt: ${result.content.substring(0, 100)}...`);
+
+      if (result.metadata) {
+        console.log(`Metadata:`, result.metadata);
+      }
+    });
+  }
+
+  console.log(`Total Results: ${results.totalResults}`);
+}
+```
+
+### Copilot Guidance for Type Generation
+
+When generating new API endpoints, Copilot should:
+
+1. **Always return typed responses** using the wrapper types:
+   ```typescript
+   // ✅ CORRECT endpoint pattern
+   export const GET: RequestHandler = async () => {
+     try {
+       const data = await db.select().from(cases).limit(20);
+       return json<ListQueryResult<Case>>({
+         success: true,
+         data: data,
+         pagination: { page: 1, pageSize: 20, total: 100, pages: 5, hasMore: true },
+         timestamp: new Date().toISOString()
+       });
+     } catch (error) {
+       return json<ListQueryResult<Case>>({
+         success: false,
+         error: error instanceof Error ? error.message : 'Unknown error',
+         timestamp: new Date().toISOString()
+       }, { status: 500 });
+     }
+   };
+   ```
+
+2. **Include error cases** in response typing:
+   ```typescript
+   // ✅ CORRECT - Both success and error cases typed
+   async function processCase(id: string): Promise<QueryResult<Case>> {
+     try {
+       const result = await db.select().from(cases).where(eq(cases.id, id)).limit(1);
+       return {
+         success: !!result[0],
+         data: result[0],
+         timestamp: new Date().toISOString()
+       };
+     } catch (error) {
+       return {
+         success: false,
+         error: error instanceof Error ? error.message : 'Unknown error',
+         timestamp: new Date().toISOString()
+       };
+     }
+   }
+   ```
+
+3. **Use domain-specific types** when available:
+   ```typescript
+   // ✅ CORRECT - Use CaseQueryResult instead of QueryResult<Case>
+   async function fetchCase(id: string): Promise<CaseQueryResult> {
+     // Implementation
+   }
+
+   // Less clear, but equivalent:
+   async function fetchCase(id: string): Promise<QueryResult<Case>> {
+     // Implementation
+   }
+   ```
+
+4. **Provide metadata context** for complex entities:
+   ```typescript
+   // ✅ CORRECT - Include all available metadata
+   const evidence: Evidence = {
+     id: evidenceId,
+     caseId: caseId,
+     title: 'Contract',
+     evidenceType: 'document',
+     aiAnalysis: {
+       documentType: 'contract',
+       extractedEntities: ['John Doe', 'Jane Smith'],
+       keyTerms: ['termination', 'breach', 'liability'],
+       sentiment: -0.3,
+       confidence: 0.95
+     },
+     metadata: {
+       fileHash: 'sha256:abc123...',
+       fileSize: 2048,
+       processingStatus: 'completed',
+       ocrResult: 'extracted text...'
+     },
+     // ... other fields
+   };
+   ```
+
+### Common Type Patterns for Svelte Components
+
+```svelte
+<script lang="ts">
+  import type {
+    ListQueryResult, Case,
+    AdminStatusResponse,
+    WorkerHealthCheckResponse
+  } from '$lib/types';
+
+  // ✅ CORRECT - Type component data loading
+  let cases: ListQueryResult<Case> | null = null;
+  let adminStatus: AdminStatusResponse | null = null;
+  let workerHealth: WorkerHealthCheckResponse | null = null;
+
+  let isLoading = $state(false);
+  let error = $state<string | null>(null);
+
+  async function loadData() {
+    isLoading = true;
+    error = null;
+
+    try {
+      const casesResp = await fetch('/api/cases');
+      cases = await casesResp.json();
+
+      if (!cases.success) {
+        error = cases.error ?? 'Failed to load cases';
+      }
+    } catch (err) {
+      error = err instanceof Error ? err.message : 'Unknown error';
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  // ✅ CORRECT - Derived computed value
+  let caseCount = $derived(cases?.data?.length ?? 0);
+  let hasError = $derived(!!error || (cases && !cases.success));
+</script>
+
+{#if isLoading}
+  <p>Loading...</p>
+{:else if error}
+  <p class="error">{error}</p>
+{:else if cases?.success && cases.data}
+  <ul>
+    {#each cases.data as legalCase}
+      <li>{legalCase.title}</li>
+    {/each}
+  </ul>
+
+  {#if cases.pagination}
+    <p>Page {cases.pagination.page} of {cases.pagination.pages}</p>
+  {/if}
+{:else}
+  <p>No data available</p>
+{/if}
+```
+
+### Type Coverage Checklist
+
+When reviewing code, ensure:
+
+- [ ] All API responses use typed wrappers (`QueryResult<T>`, `ListQueryResult<T>`, etc.)
+- [ ] Components check `success` before accessing `data`
+- [ ] Error messages are handled from `error` property
+- [ ] Pagination info is accessed safely when present
+- [ ] Optional fields use `?` operator (`metadata?.field`)
+- [ ] Worker health includes all status fields
+- [ ] File uploads track processing stages
+- [ ] Batch operations iterate over `results` array
+- [ ] Vector search results include similarity scores
+- [ ] Admin metrics have proper unit context (%, MB, ms, etc.)
+
+### Files to Reference
+
+- **Type Definitions**: `src/lib/types/index.ts` (main export hub)
+  - `src/lib/types/database.ts` (195+ database types)
+  - `src/lib/types/admin.ts` (70+ admin types)
+  - `src/lib/types/cluster.ts` (65+ worker/cluster types)
+- **Documentation**:
+  - `TYPE_DEFINITIONS_GUIDE.md` (comprehensive guide)
+  - `TYPE_DEFINITIONS_CHEATSHEET.md` (quick reference)
+  - `DATABASE_ACCESS_PATTERNS.md` (API-only patterns)
+
+## ⚠️ CRITICAL: Database Access Patterns
+
+### 🚨 RULE: API-Route Access Only (Never in SSR)
+
+**All database imports MUST happen inside endpoint handlers (`+server.ts`), NOT during `load()` or SSR module load.**
+
+### ✅ CORRECT Pattern
+
+```typescript
+// src/routes/api/cases/+server.ts
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import type { ListQueryResult, Case } from '$lib/types';
+import { db } from '$lib/server/db';
+import { cases } from '$lib/server/db/schema';
+
+export const GET: RequestHandler = async ({ url }) => {
+  try {
+    // Database access ONLY here in handler
+    const data = await db.select().from(cases).limit(20);
+
+    const result: ListQueryResult<Case> = {
+      success: true,
+      data,
+      timestamp: new Date().toISOString()
+    };
+
+    return json(result);
+  } catch (error) {
+    return json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      timestamp: new Date().toISOString()
+    } as ListQueryResult<Case>, { status: 500 });
+  }
+};
+```
+
+### ❌ WRONG Patterns (DO NOT DO)
+
+```typescript
+// ❌ WRONG: Database in +page.server.ts load()
+export async function load() {
+  const data = await db.select().from(cases);
+  return { data };
+}
+
+// ❌ WRONG: Database in +layout.server.ts
+export async function load() {
+  const config = await db.select().from(config);
+  return { config };
+}
+
+// ❌ WRONG: Database at module level
+import { db } from '$lib/server/db';
+export const config = await db.select()...  // Loads on import!
+```
+
+### Why This Matters
+
+- ✅ Prevents Vite module graph pollution
+- ✅ Isolates database from SSR rendering
+- ✅ Prevents build-time connection issues
+- ✅ Lazy loads DB connections only when needed
+- ✅ Proper error handling and HTTP status codes
+- ✅ Full type safety with API response types
+
+### Component Pattern (Frontend)
+
+```svelte
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import type { ListQueryResult, Case } from '$lib/types';
+
+  let cases: ListQueryResult<Case> | null = null;
+
+  onMount(async () => {
+    // Call API endpoint from component
+    const response = await fetch('/api/cases?page=1');
+    cases = await response.json();
+  });
+</script>
+
+{#if cases?.success && cases.data}
+  {#each cases.data as c}
+    <div>{c.title}</div>
+  {/each}
+{/if}
+```
+
+### File Upload with Database Pattern
+
+```typescript
+// src/routes/api/files/upload/+server.ts
+export const POST: RequestHandler = async ({ request }) => {
+  try {
+    const formData = await request.formData();
+    const file = formData.get('file') as File;
+    const caseId = formData.get('caseId') as string;
+
+    // Upload to MinIO
+    const buffer = await file.arrayBuffer();
+    const objectName = `${caseId}/${crypto.randomUUID()}/${file.name}`;
+    await minioClient.putObject('legal-evidence', objectName, Buffer.from(buffer));
+
+    // Save to database
+    const result = await db.insert(evidence).values({
+      caseId,
+      title: file.name,
+      evidenceType: 'document'
+    }).returning();
+
+    // Queue embedding job
+    await publishToQueue('legal_ai.embedding.document', {
+      evidenceId: result[0].id,
+      content: file.name
+    });
+
+    return json({
+      success: true,
+      evidenceId: result[0].id
+    } as FileUploadResponse);
+  } catch (error) {
+    return json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    } as FileUploadResponse, { status: 500 });
+  }
+};
+```
+
+### Migration Checklist
+
+- [ ] All `+page.server.ts` files have NO database imports
+- [ ] All `+layout.server.ts` files have NO database imports
+- [ ] All database access is in `+server.ts` endpoint handlers
+- [ ] All endpoints return typed responses
+- [ ] All endpoints include error handling with try-catch
+- [ ] All endpoints return appropriate HTTP status codes (200, 201, 400, 500)
+- [ ] All responses include timestamp
+- [ ] Input validation happens on server side
+
+### Key Rules
+
+1. **Location Rule**: Database access ONLY in `src/routes/api/**/*.ts` (+server.ts files)
+2. **Type Rule**: All responses must use type definitions from `$lib/types`
+3. **Error Rule**: All database operations in try-catch blocks
+4. **Response Rule**: Always return JSON with `{ success, data/error, timestamp }`
+5. **Isolation Rule**: No database imports in module scope or shared utilities
