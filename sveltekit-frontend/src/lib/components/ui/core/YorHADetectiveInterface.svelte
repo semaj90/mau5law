@@ -1,7 +1,7 @@
 <!-- YoRHa Detective Interface - Enhanced-Bits Gaming UI -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { fade, fly, typewriter } from 'svelte/transition';
+  import { fade, fly } from 'svelte/transition';
   import { browser } from '$app/environment';
   import { Card, CardContent, Button, Input } from '$lib/components/ui/enhanced-bits';
   interface ChatMessage {
@@ -353,7 +353,7 @@
               </div>
               <div class="message-content">
                 {#if message.isTyping}
-                  <span in:typewriter={{ speed: 50 }}>{message.content}</span>
+                  <span >{message.content}</span>
                 {:else}
                   {message.content}
                 {/if}
@@ -374,7 +374,7 @@
           <div class="input-container">
             <span class="input-prompt">🕵️</span>
             <Input
-              bind:value={currentInput}
+              value={currentInput} on:input={(e) => currentInput = (e.target as HTMLInputElement).value}
               placeholder="Ask 9S about your investigation..."
               class="chat-input"
               onkeypress={handleKeyPress}
@@ -403,7 +403,7 @@
     background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
     border-right: 2px solid #555555;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
   }
   .sidebar-header {
     padding: 1.5rem 1rem;
@@ -508,7 +508,7 @@
   .main-content {
     flex: 1;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     overflow: hidden;
   }
   .main-header {
@@ -583,7 +583,7 @@
     border: 2px solid #00ff41;
     border-radius: 8px;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
   }
   .chat-header {
@@ -640,7 +640,7 @@
   .chat-body {
     flex: 1;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     padding: 1.5rem;
   }
   .system-header {
