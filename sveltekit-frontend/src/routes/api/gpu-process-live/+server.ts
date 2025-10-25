@@ -1,127 +1,183 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types.js'
 
-// ======================================================================
-// LIVE GPU ERROR PROCESSING ENDPOINT
-// Direct processing of live TypeScript errors with GPU acceleration
-// ======================================================================
+// New: strongly-typed config and process structures
+type GPULiveProcessStatus = 'running' | 'completed' | 'stopped' | 'failed';
+
+type GPULiveProcessConfig = {
+  jobName?: string;
+  targetFiles?: string[];
+  maxErrorsToProcess?: number;
+  [key: string]: unknown; // allow flexible config values without using `any`
+};
+
+interface GPULiveProcess {
+  id: string;
+  status: GPULiveProcessStatus;
+  config: GPULiveProcessConfig;
+  startTime: Date;
+  progress: number; // 0..100
+  endTime?: Date;
+  // additional metadata may be added here
+}
+
 // Mock GPU processing service
 class GPULiveProcessor {
-  private processes = new Map<string, any>()
-  async startProcess(config: any) {
-    const processId = `proc_${Date.now()}`
-    const process = {
+  // use concrete process type instead of any
+  private processes = new Map<string, GPULiveProcess>();
+
+  async startProcess(config: GPULiveProcessConfig): Promise<GPULiveProcess> {
+    const processId = `proc_${Date.now()}`;
+    const process: GPULiveProcess = {
       id: processId,
       status: 'running',
       config,
       startTime: new Date(),
-      progress: 0
-    }
-    this.processes.set(processId, process)
+      progress: 0,
+    };
+    this.processes.set(processId, process);
     // Simulate processing progress
-    this.simulateProgress(processId)
-    return process
+    this.simulateProgress(processId);
+    return process;
   }
+
   private simulateProgress(processId: string) {
     const interval = setInterval(() => {
-      const process = this.processes.get(processId)
+      const process = this.processes.get(processId);
       if (!process) {
-        clearInterval(interval)
-        return
+        clearInterval(interval);
+        return;
       }
-      process.progress += Math.random() * 10
+      process.progress += Math.random() * 10;
       if (process.progress >= 100) {
-        process.progress = 100
-        process.status = 'completed'
-        clearInterval(interval)
+        process.progress = 100;
+        process.status = 'completed';
+        process.endTime = new Date();
+        clearInterval(interval);
       }
-    }, 1000)
+      // update map entry
+      this.processes.set(processId, process);
+    }, 1000) as ReturnType<typeof setInterval>;
   }
-  getProcess(processId: string) {
-    return this.processes.get(processId)
+
+  getProcess(processId: string): GPULiveProcess | undefined {
+    return this.processes.get(processId);
   }
-  getAllProcesses() {
-    return Array.from(this.processes.values()
+
+  getAllProcesses(): GPULiveProcess[] {
+    return Array.from(this.processes.values());
   }
-  stopProcess(processId: string) {
-    const process = this.processes.get(processId)
+
+  stopProcess(processId: string): boolean {
+    const process = this.processes.get(processId);
     if (process) {
-      process.status = 'stopped'
-      return true
+      process.status = 'stopped';
+      process.endTime = new Date();
+      this.processes.set(processId, process);
+      return true;
     }
-    return false
+    return false;
   }
 }
-const gpuProcessor = new GPULiveProcessor()
+
+const gpuProcessor = new GPULiveProcessor();
+
 async function getLiveTypeScriptErrors(): Promise<string> {
   // Mock implementation - in production would run actual TypeScript check
-  return "Mock TypeScript errors output"
+  return 'Mock TypeScript errors output';
 }
+
 // POST - Start new GPU processing
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const { action, data } = await request.json()
+    // safely type the parsed body
+    const body = (await request.json()) as { action?: string; data?: unknown };
+    const action = body.action ?? '';
+    const data = body.data;
+
     switch (action) {
-      case 'start':
-        const process = await gpuProcessor.startProcess(data)
+      case 'start': {
+        // cast to GPULiveProcessConfig; validation can be added if needed
+        const config = (data as GPULiveProcessConfig) ?? {};
+        const process = await gpuProcessor.startProcess(config);
         return json({
           success: true,
-          process
-        })
-      case 'stop':
-        const stopped = gpuProcessor.stopProcess(data.processId)
+          process,
+        });
+      }
+      case 'stop': {
+        const payload = (data as { processId?: string } | undefined) ?? {};
+        const stopped = Boolean(payload.processId && gpuProcessor.stopProcess(payload.processId));
         return json({
           success: stopped,
           message: stopped ? 'Process stopped' : 'Process not found',
-        })
-      case 'errors':
-        const errors = await getLiveTypeScriptErrors()
+        });
+      }
+      case 'errors': {
+        const errors = await getLiveTypeScriptErrors();
         return json({
           success: true,
-          errors
-        })
-      default:
-        return json({,
-          success: false,
-          error: 'Invalid action'
-        }, { status: 400 })
+          errors,
+        });
+      }
+      default: {
+        return json(
+          {
+            success: false,
+            error: 'Invalid action',
+          },
+          { status: 400 }
+        );
+      }
     }
-  } catch (error: any) {
-    console.error('GPU Live Processing error:', error)
-    return json({
-      success: false,
-      error: error instanceof Error ? error.message: 'Unknown error'
-    }, { status: 500 })
+  } catch (error: unknown) {
+    console.error('GPU Live Processing error:', error);
+    const message = error instanceof Error ? error.message : String(error);
+    return json(
+      {
+        success: false,
+        error: message,
+      },
+      { status: 500 }
+    );
   }
-}
+};
+
 // GET - Get process status
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const processId = url.searchParams.get('processId')
+    const processId = url.searchParams.get('processId');
     if (processId) {
-      const process = gpuProcessor.getProcess(processId)
+      const process = gpuProcessor.getProcess(processId);
       if (!process) {
-        return json({
-          success: false,
-          error: 'Process not found'
-        }, { status: 404 })
+        return json(
+          {
+            success: false,
+            error: 'Process not found',
+          },
+          { status: 404 }
+        );
       }
       return json({
         success: true,
-        process
-      })
+        process,
+      });
     } else {
-      const processes = gpuProcessor.getAllProcesses()
+      const processes = gpuProcessor.getAllProcesses();
       return json({
         success: true,
-        processes
-      })
+        processes,
+      });
     }
-  } catch (error: any) {
-    console.error('GPU Live Processing GET error:', error)
-    return json({
-      success: false,
-      error: error instanceof Error ? error.message: 'Unknown error'
-    }, { status: 500 })
+  } catch (error: unknown) {
+    console.error('GPU Live Processing GET error:', error);
+    const message = error instanceof Error ? error.message : String(error);
+    return json(
+      {
+        success: false,
+        error: message,
+      },
+      { status: 500 }
+    );
   }
-}
+};

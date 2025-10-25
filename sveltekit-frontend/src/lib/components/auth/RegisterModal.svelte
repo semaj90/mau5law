@@ -1,7 +1,6 @@
 <script lang="ts">
   // Replace local dialog import with Bits UI Dialog and keep lucide + svelte types
-	import { onMount } from 'svelte';
-	import { Dialog } from 'bits-ui'; // Changed from import * as Dialog from 'bits-ui';
+	import * as Dialog from 'bits-ui'; // Use namespace import so Dialog.Root / Dialog.Portal etc. are available
   import { X } from 'lucide-svelte';
   import type { Snippet } from 'svelte';
 
@@ -158,4 +157,5 @@
 
 		</Dialog.Content>
 	</Dialog.Portal>
+</Dialog.Root>
 </Dialog.Root>

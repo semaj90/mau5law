@@ -8,7 +8,10 @@ import { db } from '$lib/server/db/drizzle-client'; // Assuming db is imported f
 import { eq } from 'drizzle-orm'; // Assuming eq is imported from drizzle-orm
 
 // Instantiate the DocumentUpdateLoop service
-const documentUpdateLoop = new DocumentUpdateLoop();
+const documentUpdateLoop = new DocumentUpdateLoop() as DocumentUpdateLoop & {
+  queueDocumentUpdate: (documentId: string, content: string) => Promise<void>;
+  getQueueStatus: () => Promise<{ processing: boolean; queued: number }>;
+};
 
 // Define a type for batch operation results
 type BatchResultItem = {

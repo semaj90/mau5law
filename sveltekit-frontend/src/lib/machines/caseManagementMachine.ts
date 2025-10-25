@@ -163,7 +163,7 @@ const caseManagementServices = {
   }
 }
 // XState Machine Definition
-export const caseManagementMachine = createMachine({
+export const caseManagementMachine = createMachine<CaseManagementContext, CaseManagementEvent>({
   id: 'caseManagement',
   initial: 'idle',
   context: {
@@ -182,7 +182,7 @@ export const caseManagementMachine = createMachine({
       totalCount: 0,
     },
     userId: '', // Will be set when machine is spawned
-  } as CaseManagementContext,
+  },
   states: {
     idle: {
       on: {

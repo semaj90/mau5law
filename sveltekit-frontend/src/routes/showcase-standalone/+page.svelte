@@ -71,9 +71,9 @@
     user: { name: 'James', email: 'james@example.com' },
     stats: { totalCases: 12, openCases: 5, closedCases: 7, evidenceCount: 142 },
     recentActivity: [
-      { action 'Uploaded Evidence', details: 'witness_statement_01.pdf', time: '2m ago' },
-      { action 'Updated Case', details: 'State v. Anderson', time: '1h ago' },
-      { action 'Generated Report', details: 'Initial Analysis', time: '3h ago' },
+      { action: 'Uploaded Evidence', details: 'witness_statement_01.pdf', time: '2m ago' },
+      { action: 'Updated Case', details: 'State v. Anderson', time: '1h ago' },
+      { action: 'Generated Report', details: 'Initial Analysis', time: '3h ago' },
     ],
   });
   // Vector search integration (updated parsing to typed results)
@@ -244,22 +244,22 @@
       {@render StatusCard({
         title: 'Svelte 5 Runes',
         status: 'active',
-        description 'Using $state and $props',
+        description: 'Using $state and $props',
       })}
       {@render StatusCard({
         title: 'Bits UI',
         status: 'active',
-        description 'Headless components integrated',
+        description: 'Headless components integrated',
       })}
       {@render StatusCard({
         title: 'Vector Search',
         status: 'active',
-        description 'Qdrant + PostgreSQL ready',
+        description: 'Qdrant + PostgreSQL ready',
       })}
       {@render StatusCard({
         title: 'UnoCSS',
         status: 'active',
-        description 'Utility classes configured',
+        description: 'Utility classes configured',
       })}
     </div>
   </section>
@@ -269,9 +269,9 @@
   <div data-variant="interactive" class="nes-container">
     <div class="p-4 text-center">
       <div
-        class="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center {status === 'active'
+        class={ "w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center " + (status === 'active'
           ? 'bg-green-500/20'
-          : 'bg-red-500/20'}"
+          : 'bg-red-500/20') }
       >
         {#if status === 'active'}
           <ShieldCheck class="w-6 h-6 text-green-400" />
@@ -282,9 +282,9 @@
       <h3 class="font-semibold text-nier-white">{title}</h3>
       <p class="text-sm text-nier-text-muted mt-1">{description}</p>
       <span
-        class="inline-block mt-2 px-2 py-1 text-xs rounded {status === 'active'
+        class={ "inline-block mt-2 px-2 py-1 text-xs rounded " + (status === 'active'
           ? 'bg-green-500/20 text-green-400'
-          : 'bg-red-500/20 text-red-400'}"
+          : 'bg-red-500/20 text-red-400') }
       >
         {status.toUpperCase()}
       </span>
@@ -299,7 +299,7 @@
         <h2 class="text-xl font-bold text-nier-accent">⚖️ DEEDS</h2>
       </div>
       <nav class="space-y-2">
-        {#each [{ icon LayoutDashboard, label: 'Dashboard' }, { icon FileText, label: 'Cases' }, { icon Scale, label: 'Evidence' }, { icon Users, label: 'Users' }] as item}
+        {#each [{ icon: LayoutDashboard, label: 'Dashboard' }, { icon: FileText, label: 'Cases' }, { icon: Scale, label: 'Evidence' }, { icon: Users, label: 'Users' }] as item}
           {@const IconComponent = (item as any).icon}
           <a href="/showcase" class="flex items-center gap-3 p-2 rounded hover:bg-nier-surface-light text-nier-text">
             <!-- render dynamic icon with direct component tag -->
@@ -315,7 +315,7 @@
         Welcome back, {layoutData.user.name}
       </h1>
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        {#each [{ title: 'Total Cases', value: layoutData.stats.totalCases, icon FileText }, { title: 'Open Cases', value: layoutData.stats.openCases, icon FileText }, { title: 'Closed Cases', value: layoutData.stats.closedCases, icon FileText }, { title: 'Evidence Items', value: layoutData.stats.evidenceCount, icon Scale }] as stat}
+        {#each [{ title: 'Total Cases', value: layoutData.stats.totalCases, icon: FileText }, { title: 'Open Cases', value: layoutData.stats.openCases, icon: FileText }, { title: 'Closed Cases', value: layoutData.stats.closedCases, icon: FileText }, { title: 'Evidence Items', value: layoutData.stats.evidenceCount, icon: Scale }] as stat}
           {@const StatIcon = (stat as any).icon}
           <div class="nes-container">
             <div class="p-4">

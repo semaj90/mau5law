@@ -25,6 +25,54 @@
   let searchType = $state<'hybrid' | 'vector' | 'fuzzy'>('hybrid');
   let systemStatus = $state<any>(null);
   let useLocalStorage = $state(false); // Fallback mode
+  let documents = $state<any[]>([]);
+  let loadingDocuments = $state(false);
+  let deletingId = $state<string | null>(null);
+  let activeTab = $state<'upload' | 'documents' | 'search'>('upload');
+
+  // Load documents on mount
+  async function loadDocuments() {
+    loadingDocuments = true;
+    try {
+      const res = await fetch('/api/rag/documents?limit=50');
+      const data = await res.json();
+      if (data.success) {
+        documents = data.documents || [];
+      } else {
+        documents = [];
+        console.error('Failed to load documents:', data.error);
+      }
+    } catch (error) {
+      console.error('Failed to load documents:', error);
+      documents = [];
+    } finally {
+      loadingDocuments = false;
+    }
+  }
+
+  // Delete a document
+  async function deleteDocument(id: string) {
+    if (!confirm('Are you sure you want to delete this document? This action cannot be undone.')) {
+      return;
+    }
+
+    deletingId = id;
+    try {
+      const res = await fetch(`/api/rag/documents/${id}`, { method: 'DELETE' });
+      const data = await res.json();
+
+      if (data.success) {
+        documents = documents.filter(d => d.id !== id);
+        alert('Document deleted successfully');
+      } else {
+        alert(`Failed to delete document: ${data.error}`);
+      }
+    } catch (error) {
+      alert(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      deletingId = null;
+    }
+  }
 
   // Check system status on mount
   async function checkStatus() {
@@ -128,6 +176,7 @@
   // Initialize
   $effect(() => {
     checkStatus();
+    loadDocuments();
   });
 </script>
 
@@ -150,13 +199,48 @@
             <span class="is-primary">{systemStatus.documentsCount} Docs</span>
           </div>
         {/if}
+        {#if documents.length > 0}
+          <div class="nes-badge">
+            <span class="is-success">{documents.length} Loaded</span>
+          </div>
+        {/if}
       </div>
     {/if}
+
+    <!-- Tab Navigation -->
+    <div style="margin-top: 1.5rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+      <button
+        class="nes-btn"
+        class:is-primary={activeTab === 'upload'}
+        onclick={() => activeTab = 'upload'}
+        style="background: {activeTab === 'upload' ? '#4a9eff' : '#1a1d20'}; border: 2px solid #d4af37;"
+      >
+        📤 Upload
+      </button>
+      <button
+        class="nes-btn"
+        class:is-primary={activeTab === 'documents'}
+        onclick={() => activeTab = 'documents'}
+        style="background: {activeTab === 'documents' ? '#4a9eff' : '#1a1d20'}; border: 2px solid #d4af37;"
+      >
+        📚 Documents ({documents.length})
+      </button>
+      <button
+        class="nes-btn"
+        class:is-primary={activeTab === 'search'}
+        onclick={() => activeTab = 'search'}
+        style="background: {activeTab === 'search' ? '#4a9eff' : '#1a1d20'}; border: 2px solid #d4af37;"
+      >
+        🔍 Search
+      </button>
+    </div>
   </div>
 
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-    <!-- Upload Section -->
-    <div class="nes-container is-dark" style="background: #1a1d20;">
+  <!-- Upload Tab -->
+  {#if activeTab === 'upload'}
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+      <!-- Upload Section -->
+      <div class="nes-container is-dark" style="background: #1a1d20;">
       <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem;">
         <Upload size={20} style="color: #d4af37;" />
         <h2 class="nes-text is-primary" style="font-size: 1.25rem; margin: 0;">UPLOAD DOCUMENT</h2>
@@ -306,67 +390,241 @@
         {searching ? '🔍 SEARCHING...' : '🔎 SEARCH'}
       </Button>
     </div>
-  </div>
+    </div>
+  {/if}
 
-  <!-- Search Results -->
-  {#if searchResults.length > 0}
-    <div class="nes-container is-dark" style="margin-top: 2rem; background: #1a1d20;">
-      <h3 class="nes-text is-primary" style="font-size: 1.25rem; margin-bottom: 1rem;">
-        📊 SEARCH RESULTS ({searchResults.length})
-      </h3>
+  <!-- Documents Tab -->
+  {#if activeTab === 'documents'}
+    <div class="nes-container is-dark" style="background: #1a1d20; padding: 1.5rem;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem;">
+        <FileText size={20} style="color: #d4af37;" />
+        <h2 class="nes-text is-primary" style="font-size: 1.5rem; margin: 0;">UPLOADED DOCUMENTS</h2>
+      </div>
 
-      <div style="display: flex; flex-direction column; gap: 1rem;">
-        {#each searchResults as result, index}
-          <div class="nes-container" style="background: #0f1214; padding: 1rem;">
-            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+      {#if loadingDocuments}
+        <p class="nes-text is-primary" style="text-align: center;">⏳ Loading documents...</p>
+      {:else if documents.length === 0}
+        <div style="padding: 2rem; text-align: center;">
+          <p style="color: #d4af37; font-size: 0.875rem;">No documents uploaded yet. Start by uploading a file in the Upload tab!</p>
+        </div>
+      {:else}
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem;">
+          {#each documents as doc (doc.id)}
+            <div class="nes-container" style="background: #0f1214; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem;">
+              <!-- Document Header -->
+              <div style="display: flex; justify-content: space-between; align-items: start; gap: 1rem;">
+                <div style="flex: 1;">
+                  <h3 style="color: #d4af37; margin: 0 0 0.5rem 0; word-break: break-word;">
+                    📄 {doc.filename}
+                  </h3>
+                  <p style="color: #9ca3af; font-size: 0.75rem; margin: 0;">
+                    {new Date(doc.createdAt).toLocaleDateString()} · {doc.chunks} chunks
+                  </p>
+                </div>
+                <div class="nes-badge">
+                  <span class="is-success">{doc.fileSize > 0 ? (doc.fileSize / 1024).toFixed(1) : 0}KB</span>
+                </div>
+              </div>
+
+              <!-- Status and Tags -->
               <div>
-                <h4 style="color: #d4af37; margin: 0 0 0.25rem 0;">
-                  {index + 1}. {result.filename}
-                </h4>
-                {#if result.tags && result.tags.length > 0}
-                  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
-                    {#each result.tags as tag}
+                {#if doc.tags && doc.tags.length > 0}
+                  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
+                    {#each doc.tags.slice(0, 3) as tag}
                       <span class="nes-badge">
                         <span class="is-warning">{tag}</span>
                       </span>
                     {/each}
+                    {#if doc.tags.length > 3}
+                      <span class="nes-badge">
+                        <span class="is-disabled">+{doc.tags.length - 3}</span>
+                      </span>
+                    {/if}
                   </div>
                 {/if}
-              </div>
-              <div style="text-align: right;">
                 <div class="nes-badge">
-                  <span class="is-success">{Math.round((result.score || result.matchScore || 0) * 100)}%</span>
+                  <span class="is-primary">{doc.status || 'completed'}</span>
                 </div>
-                {#if result.searchType}
-                  <p style="color: #9ca3af; font-size: 0.75rem; margin: 0.25rem 0 0 0;">
-                    {result.searchType}
+              </div>
+
+              <!-- Document Summary -->
+              <div style="background: #1a1d20; padding: 0.75rem; border: 1px solid #4a5568; flex: 1;">
+                <p style="color: #d4af37; font-size: 0.75rem; margin: 0; line-height: 1.4; max-height: 3.5em; overflow: hidden; text-overflow: ellipsis;">
+                  {doc.summary}
+                </p>
+              </div>
+
+              <!-- Action Buttons -->
+              <div style="display: flex; gap: 0.5rem;">
+                <button
+                  class="nes-btn is-primary"
+                  style="flex: 1; font-size: 0.75rem; padding: 0.5rem;"
+                  onclick={() => {
+                    const url = `/api/rag/documents/${doc.id}`;
+                    fetch(url).then(r => r.json()).then(data => {
+                      console.log('Document details:', data);
+                      alert(`Document: ${data.document.filename}\nChunks: ${data.chunks.length}\nStatus: ${data.document.status}`);
+                    });
+                  }}
+                >
+                  View
+                </button>
+                <button
+                  class="nes-btn is-error"
+                  disabled={deletingId === doc.id}
+                  style="flex: 1; font-size: 0.75rem; padding: 0.5rem;"
+                  onclick={() => deleteDocument(doc.id)}
+                >
+                  {deletingId === doc.id ? '⏳' : '🗑️'} Delete
+                </button>
+              </div>
+            </div>
+          {/each}
+        </div>
+      {/if}
+    </div>
+  {/if}
+
+  <!-- Search Tab -->
+  {#if activeTab === 'search'}
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+      <!-- Search Section -->
+      <div class="nes-container is-dark" style="background: #1a1d20;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem;">
+          <Search size={20} style="color: #d4af37;" />
+          <h2 class="nes-text is-primary" style="font-size: 1.25rem; margin: 0;">SEARCH KNOWLEDGE BASE</h2>
+        </div>
+
+        <!-- Search Query -->
+        <div class="nes-field" style="margin-bottom: 1rem;">
+          <label for="search-input-tab" style="color: #d4af37; margin-bottom: 0.5rem; display: block;"> Search Query </label>
+          <input
+            id="search-input-tab"
+            type="text"
+            class="nes-input is-dark"
+            placeholder="What are you looking for?"
+            bind:value={searchQuery}
+            onkeydown={e => e.key === 'Enter' && searchDocuments()}
+            style="width: 100%;"
+          />
+        </div>
+
+        <!-- Search Tags Filter -->
+        <div class="nes-field" style="margin-bottom: 1rem;">
+          <label for="search-tags-input-tab" style="color: #d4af37; margin-bottom: 0.5rem; display: block;">
+            <Tag size={16} style="display: inline; vertical-align: middle;" />
+            Filter by Tags
+          </label>
+          <input
+            id="search-tags-input-tab"
+            type="text"
+            class="nes-input is-dark"
+            placeholder="contract, evidence"
+            bind:value={searchTags}
+            style="width: 100%;"
+          />
+        </div>
+
+        <!-- Search Type -->
+        <div style="margin-bottom: 1.5rem;">
+          <label style="color: #d4af37; margin-bottom: 0.5rem; display: block;">
+            <Database size={16} style="display: inline; vertical-align: middle;" />
+            Search Type
+          </label>
+          <div style="display: flex; gap: 0.5rem;">
+            <label class="nes-radio" style="color: #d4af37;">
+              <input type="radio" name="search-type-tab" bind:group={searchType} value="hybrid" />
+              <span>Hybrid</span>
+            </label>
+            <label class="nes-radio" style="color: #d4af37;">
+              <input type="radio" name="search-type-tab" bind:group={searchType} value="vector" />
+              <span>Vector</span>
+            </label>
+            <label class="nes-radio" style="color: #d4af37;">
+              <input type="radio" name="search-type-tab" bind:group={searchType} value="fuzzy" />
+              <span>Fuzzy</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Search Button -->
+        <Button
+          onclick={searchDocuments}
+          disabled={!searchQuery.trim() || searching}
+          class="nes-btn is-primary"
+          style="width: 100%;"
+        >
+          {searching ? '🔍 SEARCHING...' : '🔎 SEARCH'}
+        </Button>
+      </div>
+
+      <!-- Search Status -->
+      <div class="nes-container is-dark" style="background: #1a1d20;">
+        <h3 class="nes-text is-primary" style="margin-top: 0;">📊 SEARCH STATUS</h3>
+        {#if searching}
+          <p style="color: #d4af37;">🔍 Searching knowledge base...</p>
+        {:else if searchResults.length > 0}
+          <p style="color: #4ade80; margin: 0;">✓ Found {searchResults.length} results</p>
+        {:else if searchQuery}
+          <p style="color: #ef4444; margin: 0;">✗ No results found</p>
+        {:else}
+          <p style="color: #9ca3af; margin: 0;">Enter a search query to begin</p>
+        {/if}
+      </div>
+
+      <!-- Search Results Full Width -->
+      {#if searchResults.length > 0}
+        <div class="nes-container is-dark" style="margin-top: 2rem; background: #1a1d20; grid-column: 1 / -1;">
+          <h3 class="nes-text is-primary" style="font-size: 1.25rem; margin-bottom: 1rem;">
+            📊 SEARCH RESULTS ({searchResults.length})
+          </h3>
+
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {#each searchResults as result, index}
+              <div class="nes-container" style="background: #0f1214; padding: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                  <div>
+                    <h4 style="color: #d4af37; margin: 0 0 0.25rem 0;">
+                      {index + 1}. {result.filename}
+                    </h4>
+                    {#if result.tags && result.tags.length > 0}
+                      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem;">
+                        {#each result.tags as tag}
+                          <span class="nes-badge">
+                            <span class="is-warning">{tag}</span>
+                          </span>
+                        {/each}
+                      </div>
+                    {/if}
+                  </div>
+                  <div style="text-align: right;">
+                    <div class="nes-badge">
+                      <span class="is-success">{Math.round((result.score || result.matchScore || 0) * 100)}%</span>
+                    </div>
+                    {#if result.searchType}
+                      <p style="color: #9ca3af; font-size: 0.75rem; margin: 0.25rem 0 0 0;">
+                        {result.searchType}
+                      </p>
+                    {/if}
+                  </div>
+                </div>
+
+                {#if result.content}
+                  <p style="color: #d4af37; font-size: 0.875rem; margin: 0.5rem 0 0 0; line-height: 1.5;">
+                    {result.content.slice(0, 200)}...
+                  </p>
+                {/if}
+
+                {#if result.createdAt}
+                  <p style="color: #6b7280; font-size: 0.75rem; margin: 0.5rem 0 0 0;">
+                    📅 {new Date(result.createdAt).toLocaleDateString()}
                   </p>
                 {/if}
               </div>
-            </div>
-
-            {#if result.content}
-              <p style="color: #d4af37; font-size: 0.875rem; margin: 0.5rem 0 0 0; line-height: 1.5;">
-                {result.content.slice(0, 200)}...
-              </p>
-            {/if}
-
-            {#if result.createdAt}
-              <p style="color: #6b7280; font-size: 0.75rem; margin: 0.5rem 0 0 0;">
-                📅 {new Date(result.createdAt).toLocaleDateString()}
-              </p>
-            {/if}
+            {/each}
           </div>
-        {/each}
-      </div>
-    </div>
-  {:else if searching}
-    <div class="nes-container is-dark" style="margin-top: 2rem; text-align: center; background: #1a1d20;">
-      <p class="nes-text is-primary">🔍 Searching...</p>
-    </div>
-  {:else if searchQuery}
-    <div class="nes-container is-dark" style="margin-top: 2rem; text-align: center; background: #1a1d20;">
-      <p class="nes-text is-disabled">No results found</p>
+        </div>
+      {/if}
     </div>
   {/if}
 </div>

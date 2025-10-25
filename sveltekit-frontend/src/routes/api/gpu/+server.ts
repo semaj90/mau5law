@@ -54,10 +54,6 @@ export const GET: RequestHandler = async ({ url }) => {
         return await getGPUOverview();
     }
   } catch (error: unknown) {
-      default:
-        return await getGPUOverview();
-    }
-  } catch (error: unknown) {
     // Changed from any to unknown
     console.error('GPU API error:', error);
     return json(
@@ -98,6 +94,32 @@ export const POST: RequestHandler = async ({ request, url }) => {
     );
   }
 };
+
+// PUT /api/gpu - Update GPU resources
+export const PUT: RequestHandler = async ({ request, url }) => {
+  const action = url.searchParams.get('action');
+  try {
+    const body = await request.json();
+    switch (action) {
+      case 'update-service':
+        return await updateService(body);
+      case 'update-worker-config':
+        return await updateWorkerConfig(body);
+      default:
+        return json({ error: 'Invalid PUT action' }, { status: 400 });
+    }
+  } catch (error: unknown) {
+    console.error('GPU resource update error:', error);
+    return json(
+      {
+        error: 'Resource update failed',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    );
+  }
+};
+
 // GPU Status Information
 async function getGPUStatus(): Promise<Response> {
   const response = await gpuServiceRequest('/gpu/status');
@@ -295,6 +317,36 @@ async function routeRequest(routeData: Record<string, unknown>): Promise<Respons
   const result = await response.json();
   return json(result);
 }
+
+// Update Service Configuration
+async function updateService(serviceData: Partial<ServiceRegistry> & { name?: string }): Promise<Response> {
+  if (!serviceData.name) {
+    return json({ error: 'Service name is required for update' }, { status: 400 });
+  }
+  const response = await gpuServiceRequest(`/services/update/${serviceData.name}`, {
+    method: 'PUT',
+    body: JSON.stringify(serviceData),
+  });
+  const result = await response.json();
+  return json(result);
+}
+
+// Update Worker Configuration
+async function updateWorkerConfig(configData: {
+  workerId: string;
+  config: Record<string, unknown>;
+}): Promise<Response> {
+  if (!configData.workerId || !configData.config) {
+    return json({ error: 'workerId and config are required' }, { status: 400 });
+  }
+  const response = await gpuServiceRequest(`/gpu/workers/${configData.workerId}/config`, {
+    method: 'PUT',
+    body: JSON.stringify(configData.config),
+  });
+  const result = await response.json();
+  return json(result);
+}
+
 // DELETE /api/gpu - Administrative operations (optional)
 export const DELETE: RequestHandler = async ({ url }) => {
   const action = url.searchParams.get('action');

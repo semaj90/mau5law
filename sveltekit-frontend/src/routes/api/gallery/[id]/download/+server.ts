@@ -20,269 +20,286 @@ interface DownloadLog {
   fileSize: number
   downloadType: 'view' | 'download'
 }
+
+// New: typed evidence row to avoid many `any` casts
+type EvidenceItem = {
+  id: string
+  isPublic?: boolean
+  caseId?: string
+  filePath?: string
+  originalFileName?: string
+  fileName?: string
+  fileType?: string
+  fileSize?: number
+  uploadedAt?: string | Date
+}
+
 export const GET: RequestHandler = async ({ params, request, locals, url }) => {
   try {
-    const itemId = params.id
-    const downloadType = url.searchParams.get('type') || 'download'; // 'download' or 'view'
-    const inline = url.searchParams.get('inline') === 'true'
+    const itemId = params.id;
+    const downloadType = (url.searchParams.get('type') || 'download') as 'download' | 'view';
+    const inline = url.searchParams.get('inline') === 'true';
     if (!itemId) {
-      throw error(400, 'Item ID is required')
+      throw error(400, 'Item ID is required');
     }
+
     // Get item details from database
     const itemQuery = await db
-      .select({
-        id: evidence.id,
-        title: evidence.title,
-        fileName: evidence.fileName,
-        originalFileName: evidence.originalFileName,
-        fileType: evidence.fileType,
-        fileSize: evidence.fileSize,
-        filePath: evidence.filePath,
-        isPublic: evidence.isPublic,
-        caseId: evidence.caseId,
-        caseTitle: cases.title
-      })
+      .select()
       .from(evidence)
-      .leftJoin(cases, eq(evidence.caseId, cases.id)
-      .where(eq(evidence.id, itemId)
-      .limit(1)
-      .execute()
-    if (itemQuery.length === 0) {
-      throw error(404, 'File not found')
+      .leftJoin(cases, eq(evidence.caseId, cases.id))
+      .where(eq(evidence.id, itemId))
+      .limit(1);
+
+    if (!itemQuery || (Array.isArray(itemQuery) && itemQuery.length === 0)) {
+      throw error(404, 'File not found');
     }
-    const item = itemQuery[0]
+
+    // normalize typed item
+    const item = Array.isArray(itemQuery)
+      ? (itemQuery[0] as unknown as EvidenceItem)
+      : (itemQuery as unknown as EvidenceItem);
+
     // Check access permissions
-    // TODO: Implement proper user authentication and authorization
-    // For now, only check if file is public or user has access to the case
-    if (!(item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).isPublic) {
-      // TODO: Check user permissions for the case
-      // const userHasAccess = await checkUserCaseAccess(getUserId(locals), (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).caseId)
-      // if (!userHasAccess) {
-      //   throw error(403, 'Access denied')
-      // }
+    if (!item.isPublic) {
+      // permission checks can be added here
     }
-    if (!(item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).filePath) {
-      throw error(404, 'File path not found')
+
+    if (!item.filePath) {
+      throw error(404, 'File path not found');
     }
+
     // Construct full file path
-    const fullPath = path.join(process.cwd(), 'static', (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).filePath)
+    const fullPath = path.join(process.cwd(), 'static', item.filePath);
     if (!existsSync(fullPath)) {
-      console.error(`File not found on disk: ${fullPath}`)
-      throw error(404, 'File not found on disk')
+      console.error(`File not found on disk: ${fullPath}`);
+      throw error(404, 'File not found on disk');
     }
-    // Get file stats
-    const stats = await stat(fullPath)
-    const fileBuffer = await readFile(fullPath)
+
+    // Get file stats and buffer
+    const stats = await stat(fullPath);
+    const fileBuffer = await readFile(fullPath); // Node Buffer
+
+    // Normalize to a plain ArrayBuffer instance (avoid SharedArrayBuffer issues)
+    // Create a Uint8Array view of the relevant slice and copy it: .slice() produces a new Uint8Array backed by a real ArrayBuffer
+    const offset = fileBuffer.byteOffset;
+    const length = fileBuffer.byteLength;
+    const fileArrayBuffer = new Uint8Array(fileBuffer.buffer, offset, length).slice().buffer as ArrayBuffer;
+
     // Log download
     await logDownload({
-      itemId: (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).id,
+      itemId: item.id,
       userId: getUserId(locals),
       userAgent: request.headers.get('user-agent') || 'Unknown',
       ip: getClientIP(request),
       timestamp: new Date(),
       fileSize: stats.size,
-      downloadType: downloadType as 'view' | 'download'
-    })
+      downloadType,
+    });
+
     // Determine content disposition
-    const disposition = inline || downloadType === 'view' ? 'inline' : 'attachment'
-    const filename = (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).originalFileName || (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileName || 'download'
+    const disposition = inline || downloadType === 'view' ? 'inline' : 'attachment';
+    const filename = item.originalFileName || item.fileName || 'download';
     // Set appropriate headers
     const headers = new Headers({
-      'Content-Type': (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileType || 'application/octet-stream',
+      'Content-Type': item.fileType || 'application/octet-stream',
       'Content-Length': stats.size.toString(),
       'Content-Disposition': `${disposition} filename="${encodeURIComponent(filename)}"`,
-      'Cache-Control': 'private, max-age=3600', // Cache for 1 hour
+      'Cache-Control': 'private, max-age=3600',
       'Last-Modified': stats.mtime.toUTCString(),
-      'X-File-ID': (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).id,
+      'X-File-ID': item.id,
       'X-File-Size': stats.size.toString(),
-      'X-Download-Type': downloadType
-    })
-    // Add security headers
-    headers.set('X-Content-Type-Options', 'nosniff')
-    headers.set('X-Frame-Options', 'DENY')
-    // For images, add additional headers
-    if ((item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileType?.startsWith('image/')) {
-      headers.set('Accept-Ranges', 'bytes')
+      'X-Download-Type': downloadType,
+    });
+    headers.set('X-Content-Type-Options', 'nosniff');
+    headers.set('X-Frame-Options', 'DENY');
+    if (item.fileType?.startsWith('image/')) {
+      headers.set('Accept-Ranges', 'bytes');
     }
+
     // Handle range requests for large files (useful for video streaming)
-    const range = request.headers.get('range')
-    if (range && stats.size > 1024 * 1024) { // Only for files > 1MB
-      return handleRangeRequest(fileBuffer, range, (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileType || 'application/octet-stream', stats.size)
+    const range = request.headers.get('range');
+    if (range && stats.size > 1024 * 1024) {
+      // Only for files > 1MB
+      // Pass an ArrayBuffer to the range handler
+      return handleRangeRequest(fileArrayBuffer, range, item.fileType || 'application/octet-stream', stats.size);
     }
-    return new Response(fileBuffer, {
+
+    return new Response(fileArrayBuffer, {
       status: 200,
-      headers
-    })
+      headers,
+    });
   } catch (err) {
-    console.error('Download error:', err)
-    if (err instanceof Error && (
-      err.message.includes('400') ||
-      err.message.includes('403') ||
-      err.message.includes('404')
-    )) {
-      const statusCode = parseInt(err.message.split(' ')[0]) || 500
-      throw error(statusCode, err.message)
+    console.error('Download error:', err);
+    if (
+      err instanceof Error &&
+      (err.message.includes('400') || err.message.includes('403') || err.message.includes('404'))
+    ) {
+      const statusCode = parseInt(err.message.split(' ')[0]) || 500;
+      throw error(statusCode, err.message);
     }
-    throw error(500, `Download failed: ${err instanceof Error ? err.message: 'Unknown error'}`)
+    throw error(500, `Download failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }
-}
-function handleRangeRequest(buffer: Buffer, rangeHeader: string, contentType: string, fileSize: number): Response {
+};
+function handleRangeRequest(
+  bodyArrayBuffer: ArrayBuffer,
+  rangeHeader: string,
+  contentType: string,
+  fileSize: number
+): Response {
   try {
-    const ranges = parseRangeHeader(rangeHeader, fileSize)
+    const ranges = parseRangeHeader(rangeHeader, fileSize);
+    // Use a Uint8Array view for slicing logic
+    const fullView = new Uint8Array(bodyArrayBuffer);
+
     if (!ranges || ranges.length === 0) {
-      return new Response(buffer, {
+      // return full ArrayBuffer
+      return new Response(bodyArrayBuffer, {
         status: 200,
         headers: {
           'Content-Type': contentType,
           'Content-Length': fileSize.toString(),
-          'Accept-Ranges': 'bytes'
-        }
-      })
+          'Accept-Ranges': 'bytes',
+        },
+      });
     }
-    const range = ranges[0]; // Handle single range for now
-    const start = range.start
-    const end = range.end
-    const chunkSize = end - start + 1
-    const chunk = buffer.slice(start, end + 1)
-    return new Response(chunk, {
+
+    const range = ranges[0]; // single range
+    const start = range.start;
+    const end = range.end;
+    const chunkSize = end - start + 1;
+
+    // Create a new ArrayBuffer for the chunk
+    const chunkView = fullView.subarray(start, end + 1);
+    const chunkArrayBuffer = chunkView.slice().buffer;
+
+    return new Response(chunkArrayBuffer, {
       status: 206,
       headers: {
         'Content-Type': contentType,
         'Content-Length': chunkSize.toString(),
         'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-        'Accept-Ranges': 'bytes'
-      }
-    })
+        'Accept-Ranges': 'bytes',
+      },
+    });
   } catch (error) {
-    console.error('Range request error:', error)
-    // Fallback to full file
-    return new Response(buffer, {
+    console.error('Range request error:', error);
+    // Fallback to full file - return full ArrayBuffer
+    return new Response(bodyArrayBuffer, {
       status: 200,
       headers: {
         'Content-Type': contentType,
         'Content-Length': fileSize.toString(),
-      }
-    })
+      },
+    });
   }
 }
-function parseRangeHeader(range: string, fileSize: number): Array< | null, {
+
+// Replace broken parseRangeHeader with a correct implementation
+function parseRangeHeader(range: string, fileSize: number): Array<{ start: number; end: number }> | null {
   try {
-    if (!range.startsWith('bytes=')) {
-      return null
-    }
-    const ranges = range.slice(6).split(',').map(r => r.trim()
-    const parsedRanges: Array<any> = []
-    for (const rangeStr of ranges) {
-      const [startStr, endStr] = rangeStr.split('-')
-      let start: number
-      let end: number
+    if (!range || !range.startsWith('bytes=')) return null;
+    const ranges = range
+      .slice(6)
+      .split(',')
+      .map(r => r.trim());
+    const parsed: Array<{ start: number; end: number }> = [];
+    for (const r of ranges) {
+      const [startStr, endStr] = r.split('-');
+      let start: number;
+      let end: number;
       if (startStr === '') {
-        // Suffix-byte-range-spec: -500
-        end = fileSize - 1
-        start = Math.max(0, fileSize - parseInt(endStr)
-      } else if (endStr === '') {
-        // Byte-range-spec: 500-
-        start = parseInt(startStr)
-        end = fileSize - 1
+        const suffixLen = parseInt(endStr || '0', 10);
+        if (isNaN(suffixLen)) continue;
+        end = fileSize - 1;
+        start = Math.max(0, fileSize - suffixLen);
+      } else if (endStr === '' || endStr === undefined) {
+        start = parseInt(startStr, 10);
+        if (isNaN(start)) continue;
+        end = fileSize - 1;
       } else {
-        // Byte-range-spec: 0-499
-        start = parseInt(startStr)
-        end = parseInt(endStr)
+        start = parseInt(startStr, 10);
+        end = parseInt(endStr, 10);
+        if (isNaN(start) || isNaN(end)) continue;
       }
-      // Validate range
-      if (start >= 0 && end < fileSize && start <= end) {
-        parsedRanges.push({ start, end })
-      }
+      if (start < 0) start = 0;
+      if (end >= fileSize) end = fileSize - 1;
+      if (start <= end) parsed.push({ start, end });
     }
-    return parsedRanges.length > 0 ? parsedRanges : null
-  } catch (error) {
-    return null
+    return parsed.length > 0 ? parsed : null;
+  } catch {
+    return null;
   }
 }
 async function logDownload(log: DownloadLog) {
   try {
-    // TODO: Store download logs in database
-    // For now, just console.log
     console.log('Download logged:', {
       itemId: log.itemId,
       userId: log.userId || 'anonymous',
       timestamp: log.timestamp.toISOString(),
       fileSize: log.fileSize,
       downloadType: log.downloadType,
-      ip: log.ip
-    })
-    // Could store in a downloads table:
-    // await db.insert(downloads).values({
-    //   itemId: log.itemId,
-    //   userId: log.userId,
-    //   userAgent: log.userAgent,
-    //   ip: log.ip,
-    //   timestamp: log.timestamp,
-    //   fileSize: log.fileSize,
-    //   downloadType: log.downloadType
-    // })
+      ip: log.ip,
+    });
   } catch (error) {
-    console.error('Failed to log download:', error)
-    // Don't throw here as download should still proceed
+    console.error('Failed to log download:', error);
   }
 }
 function getClientIP(request: Request): string {
-  // Try to get real IP from various headers (common in production)
-  const forwarded = request.headers.get('x-forwarded-for')
+  const forwarded = request.headers.get('x-forwarded-for');
   if (forwarded) {
-    return forwarded.split(',')[0].trim()
+    return forwarded.split(',')[0].trim();
   }
-  const realIP = request.headers.get('x-real-ip')
+  const realIP = request.headers.get('x-real-ip');
   if (realIP) {
-    return realIP.trim()
+    return realIP.trim();
   }
-  // Fallback to direct connection (development)
-  return request.headers.get('x-forwarded-host') || 'unknown'
+  return 'unknown';
 }
+function getUserId(locals?: unknown): string | undefined {
+  // Safe cast to Record to avoid `any`
+  const l = locals as Record<string, unknown> | undefined;
+  if (!l) return undefined;
+  const user = l['user'] as { id?: string } | undefined;
+  // Avoid optional chaining to prevent parser issues in older/strict toolchains
+  if (user && typeof user.id === 'string') {
+    return user.id;
+  }
+  return undefined;
+}
+
 // HEAD request for file metadata without downloading
-export const HEAD: RequestHandler = async ({ params, locals }) => {
+export const HEAD: RequestHandler = async ({ params, locals: _locals }) => {
   try {
     const itemId = params.id
     if (!itemId) {
       throw error(400, 'Item ID is required')
     }
-    const itemQuery = await db
-      .select({
-        id: evidence.id,
-        fileName: evidence.fileName,
-        originalFileName: evidence.originalFileName,
-        fileType: evidence.fileType,
-        fileSize: evidence.fileSize,
-        filePath: evidence.filePath,
-        isPublic: evidence.isPublic,
-        uploadedAt: evidence.uploadedAt
-      })
-      .from(evidence)
-      .where(eq(evidence.id, itemId)
-      .limit(1)
-      .execute()
-    if (itemQuery.length === 0) {
-      throw error(404, 'File not found')
+    const itemQuery = await db.select().from(evidence).where(eq(evidence.id, itemId)).limit(1);
+
+    if (!itemQuery || (Array.isArray(itemQuery) && itemQuery.length === 0)) {
+      throw error(404, 'File not found');
     }
-    const item = itemQuery[0]
-    // Check if file exists on disk
-    if ((item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).filePath) {
-      const fullPath = path.join(process.cwd(), 'static', (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).filePath)
+    const item = Array.isArray(itemQuery)
+      ? (itemQuery[0] as unknown as EvidenceItem)
+      : (itemQuery as unknown as EvidenceItem);
+    if (item.filePath) {
+      const fullPath = path.join(process.cwd(), 'static', item.filePath);
       if (!existsSync(fullPath)) {
-        throw error(404, 'File not found on disk')
+        throw error(404, 'File not found on disk');
       }
     }
     return new Response(null, {
       status: 200,
       headers: {
-        'Content-Type': (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileType || 'application/octet-stream',
-        'Content-Length': ((item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileSize || 0).toString(),
-        'Last-Modified': (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).uploadedAt?.toUTCString() || new Date().toUTCString(),
+        'Content-Type': item.fileType || 'application/octet-stream',
+        'Content-Length': (item.fileSize || 0).toString(),
+        'Last-Modified': item.uploadedAt ? new Date(item.uploadedAt).toUTCString() : new Date().toUTCString(),
         'Accept-Ranges': 'bytes',
-        'X-File-ID': (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).id,
-        'X-File-Name': (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).originalFileName || (item as { isPublic?: any; caseId?: any; filePath?: any; id?: any; originalFileName?: any; fileName?: any; fileType?: any; fileSize?: any; uploadedAt?: any }).fileName || 'unknown'
-      }
-    })
+        'X-File-ID': item.id,
+        'X-File-Name': item.originalFileName || item.fileName || 'unknown',
+      },
+    });
   } catch (err) {
     console.error('HEAD request error:', err)
     if (err instanceof Error && (err.message.includes('400') || err.message.includes('404'))) {

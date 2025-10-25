@@ -2,14 +2,21 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { Search, Users, Plus, Eye, Edit, Filter, Grid, List, Trash2, AlertCircle, UserPlus } from 'lucide-svelte';
-  // Corrected imports for Bits UI components to use default exports from their specific paths
-  import Button from '$lib/components/ui/button/Button.svelte';
-  import Card from '$lib/components/ui/card/Card.svelte';
-  import Input from '$lib/components/ui/input/Input.svelte';
-  import Label from '$lib/components/ui/label/Label.svelte';
-  import Select from '$lib/components/ui/select/Select.svelte';
-  import Dialog from '$lib/components/ui/dialog/Dialog.svelte';
-  import Textarea from '$lib/components/ui/textarea/Textarea.svelte';
+  import Card from '$lib/components/ui/Card.svelte';
+  import Input from '$lib/components/ui/Input.svelte';
+
+  // Use namespace imports with runtime fallback to handle files that may not export a default
+  import * as SelectModule from '$lib/components/ui/Select.svelte';
+  const Select = (SelectModule as any).default ?? (SelectModule as any).Select ?? SelectModule;
+
+  import * as TextareaModule from '$lib/components/ui/Textarea.svelte';
+  const Textarea = (TextareaModule as any).default ?? (TextareaModule as any).Textarea ?? TextareaModule;
+
+  // Add Dialog import (runtime-safe fallback)
+  import * as DialogModule from 'bits-ui';
+  const Dialog = (DialogModule as any).default ?? (DialogModule as any).Dialog ?? DialogModule;
+
+  // Error handling: toast is used for user-facing notifications (success/error) per platform standards
   import { toast } from 'svelte-sonner';
   import { cn } from '$lib/utils.js';
 
@@ -338,19 +345,18 @@
       </p>
     </div>
     <div class="flex flex-wrap gap-2 items-center">
-      <Button
+      <button
+        type="button"
         class="bits-btn {showFilters ? 'bg-blue-50 border-blue-300' : ''}"
-        variant="ghost"
-        size="sm"
         onclick={() => (showFilters = !showFilters)}
+        aria-pressed={showFilters}
       >
         <Filter class="w-4 h-4 mr-2" />
         Filters
-      </Button>
-      <Button
+      </button>
+      <button
+        type="button"
         class="bits-btn"
-        variant="ghost"
-        size="sm"
         onclick={() => (viewMode = viewMode === 'grid' ? 'list' : 'grid')}
       >
         {#if viewMode === 'grid'}
@@ -358,13 +364,15 @@
         {:else}
           <Grid class="w-4 h-4" />
         {/if}
-      </Button>
-      <Button class="bits-btn"
+      </button>
+      <button
+        type="button"
+        class="bits-btn"
         onclick={() => (showCreateDialog = true)}
       >
         <Plus class="w-4 h-4 mr-2" />
         Add Person
-      </Button>
+      </button>
     </div>
   </div>
 
@@ -372,12 +380,12 @@
   <div class="mb-6">
     <div class="relative">
       <Search class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-      <!--
-        The following Input component might be causing a type error related to Svelte 5 component typing.
-        If this error persists, please verify the internal type definition of '$lib/components/ui/input/Input.svelte'
-        to ensure it's correctly defined for Svelte 5 (e.g., using $props() and proper SvelteComponent typing).
-      -->
-      <Input bind:value={searchQuery} placeholder="Search by name, alias, or notes..." class="pl-10 w-full" />
+      <Input
+        value={searchQuery}
+        oninput={(e: Event) => (searchQuery = (e.target as HTMLInputElement).value)}
+        placeholder="Search by name, alias, or notes..."
+        class="pl-10 w-full"
+      />
     </div>
   </div>
 
@@ -386,17 +394,8 @@
     <Card class="mb-6 p-4">
       <div class="grid md:grid-cols-3 gap-4">
         <div>
-          <!--
-            The following Label component might be causing a type error related to Svelte 5 component typing.
-            If this error persists, please verify the internal type definition of '$lib/components/ui/label/Label.svelte'
-            to ensure it's correctly defined for Svelte 5.
-          -->
-          <Label for="status-filter">Status</Label>
-          <!--
-            The following Select component might be causing a type error related to Svelte 5 component typing.
-            If this error persists, please verify the internal type definition of '$lib/components/ui/select/Select.svelte'
-            to ensure it's correctly defined for Svelte 5.
-          -->
+          <!-- replaced Label component with native label element -->
+          <label for="status-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
           <Select
             options={[
               { value: 'all', label: 'All Statuses' },
@@ -412,7 +411,8 @@
           />
         </div>
         <div>
-          <Label for="priority-filter">Priority</Label>
+          <!-- replaced Label component with native label element -->
+          <label for="priority-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Priority</label>
           <Select
             options={[
               { value: 'all', label: 'All Priorities' },
@@ -427,7 +427,8 @@
           />
         </div>
         <div>
-          <Label for="threat-filter">Threat Level</Label>
+          <!-- replaced Label component with native label element -->
+          <label for="threat-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Threat Level</label>
           <Select
             options={[
               { value: 'all', label: 'All Threat Levels' },
@@ -469,12 +470,14 @@
         {searchQuery ? 'Try adjusting your search criteria' : 'Add persons to get started'}
       </p>
       {#if !searchQuery}
-        <Button class="bits-btn"
+        <button
+          type="button"
+          class="bits-btn"
           onclick={() => (showCreateDialog = true)}
         >
           <Plus class="w-4 h-4 mr-2" />
           Add First Person
-        </Button>
+        </button>
       {/if}
     </div>
   {:else if viewMode === 'grid'}
@@ -517,14 +520,14 @@
           </div>
 
           <div class="flex gap-2">
-            <Button size="sm" class="flex-1 bits-btn" onclick={() => editPoi(poi)}>
+            <button type="button" class="flex-1 bits-btn" onclick={() => editPoi(poi)}>
               <Edit class="w-3 h-3 mr-1" />
               Edit
-            </Button>
-            <Button variant="ghost" size="sm" class="flex-1 bits-btn" onclick={() => deletePoi(poi)}>
+            </button>
+            <button type="button" class="flex-1 bits-btn" onclick={() => deletePoi(poi)}>
               <Trash2 class="w-3 h-3 mr-1" />
               Delete
-            </Button>
+            </button>
           </div>
         </Card>
       {/each}
@@ -549,14 +552,14 @@
               </div>
             </div>
             <div class="flex gap-2">
-              <Button class="bits-btn" size="sm" onclick={() => editPoi(poi)}>
+              <button type="button" class="bits-btn px-2 py-1 text-sm" onclick={() => editPoi(poi)}>
                 <Edit class="w-3 h-3 mr-1" />
                 Edit
-              </Button>
-              <Button class="bits-btn" variant="ghost" size="sm" onclick={() => deletePoi(poi)}>
+              </button>
+              <button type="button" class="bits-btn" onclick={() => deletePoi(poi)}>
                 <Trash2 class="w-3 h-3 mr-1" />
                 Delete
-              </Button>
+              </button>
             </div>
           </div>
         </div>
@@ -572,11 +575,19 @@
     <form onsubmit={(e) => { e.preventDefault(); createPoi(); }} class="space-y-4">
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <Label for="name">Name *</Label>
-          <Input id="name" bind:value={formData.name} placeholder="Full name" required />
+          <!-- replaced Label component with native label element -->
+          <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name *</label>
+          <Input
+            id="name"
+            value={formData.name}
+            oninput={(e: Event) => (formData.name = (e.target as HTMLInputElement).value)}
+            placeholder="Full name"
+            required
+          />
         </div>
         <div>
-          <Label for="status">Status</Label>
+          <!-- replaced Label component with native label element -->
+          <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
           <Select
             options={[
               { value: 'person_of_interest', label: 'Person of Interest' },
@@ -593,7 +604,8 @@
 
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <Label for="priority">Priority</Label>
+          <!-- replaced Label component with native label element -->
+          <label for="priority" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Priority</label>
           <Select
             options={[
               { value: 'low', label: 'Low' },
@@ -606,7 +618,8 @@
           />
         </div>
         <div>
-          <Label for="threatLevel">Threat Level</Label>
+          <!-- replaced Label component with native label element -->
+          <label for="threatLevel" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Threat Level</label>
           <Select
             options={[
               { value: 'low', label: 'Low' },
@@ -621,7 +634,8 @@
       </div>
 
       <div>
-        <Label for="notes">Notes</Label>
+        <!-- replaced Label component with native label element -->
+        <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notes</label>
         <Textarea
           id="notes"
           bind:value={formData.notes}
@@ -631,11 +645,10 @@
       </div>
 
       <div class="flex justify-end gap-2">
-        <Button type="button" variant="ghost"
-          onclick={() => (showCreateDialog = false)}>Cancel</Button>
-        <Button type="submit" disabled={isSubmitting || !formData.name.trim()}>
+        <button type="button" class="bits-btn" onclick={() => (showCreateDialog = false)}>Cancel</button>
+        <button type="submit" class="bits-btn" disabled={isSubmitting || !formData.name.trim()}>
           {isSubmitting ? 'Creating...' : 'Create POI'}
-        </Button>
+        </button>
       </div>
     </form>
   </div>
@@ -648,11 +661,19 @@
     <form onsubmit={(e) => { e.preventDefault(); updatePoi(); }} class="space-y-4">
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <Label for="edit-name">Name *</Label>
-          <Input id="edit-name" bind:value={formData.name} placeholder="Full name" required />
+          <!-- replaced Label component with native label element -->
+          <label for="edit-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name *</label>
+          <Input
+            id="edit-name"
+            value={formData.name}
+            oninput={(e: Event) => (formData.name = (e.target as HTMLInputElement).value)}
+            placeholder="Full name"
+            required
+          />
         </div>
         <div>
-          <Label for="edit-status">Status</Label>
+          <!-- replaced Label component with native label element -->
+          <label for="edit-status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
           <Select
             options={[
               { value: 'person_of_interest', label: 'Person of Interest' },
@@ -669,7 +690,8 @@
 
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <Label for="edit-priority">Priority</Label>
+          <!-- replaced Label component with native label element -->
+          <label for="edit-priority" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Priority</label>
           <Select
             options={[
               { value: 'low', label: 'Low' },
@@ -682,7 +704,8 @@
           />
         </div>
         <div>
-          <Label for="edit-threatLevel">Threat Level</Label>
+          <!-- replaced Label component with native label element -->
+          <label for="edit-threatLevel" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Threat Level</label>
           <Select
             options={[
               { value: 'low', label: 'Low' },
@@ -697,7 +720,8 @@
       </div>
 
       <div>
-        <Label for="edit-notes">Notes</Label>
+        <!-- replaced Label component with native label element -->
+        <label for="edit-notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notes</label>
         <Textarea
           id="edit-notes"
           bind:value={formData.notes}
@@ -707,11 +731,10 @@
       </div>
 
       <div class="flex justify-end gap-2">
-        <Button type="button" variant="ghost"
-          onclick={() => (showEditDialog = false)}>Cancel</Button>
-        <Button type="submit" disabled={isSubmitting || !formData.name.trim()}>
+        <button type="button" class="bits-btn" onclick={() => (showEditDialog = false)}>Cancel</button>
+        <button type="submit" class="bits-btn" disabled={isSubmitting || !formData.name.trim()}>
           {isSubmitting ? 'Updating...' : 'Update POI'}
-        </Button>
+        </button>
       </div>
     </form>
   </div>

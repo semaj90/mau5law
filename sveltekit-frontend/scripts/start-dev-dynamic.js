@@ -5,7 +5,8 @@ import { findFreePort } from './find-free-port.js';
 import chalk from 'chalk';
 
 const PREFERRED_PORT = parseInt(process.env.PORT) || 5173;
-const MAX_PORT_TRIES = 10;
+// Allow callers to override search depth via env (useful in CI or port-constrained hosts)
+const MAX_PORT_TRIES = parseInt(process.env.MAX_PORT_TRIES) || 50;
 
 async function startDevServer() {
   console.log(chalk.cyan('\n🔍 Checking for available port...\n'));
@@ -23,7 +24,8 @@ async function startDevServer() {
       '\n'
     );
 
-    const availablePort = await findFreePort(PREFERRED_PORT, MAX_PORT_TRIES);
+  // Pass MAX_PORT_TRIES through to the finder (it will clamp defensively)
+  const availablePort = await findFreePort(PREFERRED_PORT, MAX_PORT_TRIES);
 
     if (availablePort !== PREFERRED_PORT) {
       console.log(chalk.yellow(`⚠️  Port ${PREFERRED_PORT} is in use`));
@@ -42,6 +44,7 @@ async function startDevServer() {
         FORCE_COLOR: '1',
         REDIS_PASSWORD: effectiveRedisPassword,
         DEV_BYPASS_AUTH: process.env.DEV_BYPASS_AUTH,
+          DATABASE_URL: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@127.0.0.1:5432/legal_ai_db',
       },
     });
 
@@ -62,6 +65,7 @@ async function startDevServer() {
           VITE_PORT: availablePort.toString(),
           REDIS_PASSWORD: effectiveRedisPassword,
           DEV_BYPASS_AUTH: process.env.DEV_BYPASS_AUTH,
+          DATABASE_URL: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@127.0.0.1:5432/legal_ai_db',
         },
       }
     );

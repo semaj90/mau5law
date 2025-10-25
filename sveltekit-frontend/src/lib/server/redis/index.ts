@@ -1,8 +1,6 @@
 import Redis from 'ioredis';
 import type { RedisClient, RedisConnectionOptions } from '$lib/types/redis';
-// Assuming these environment variables are defined in your .env file
-// and loaded by SvelteKit's $env/static/private module.
-import { REDIS_URL, REDIS_HOST, REDIS_PORT, REDIS_PASSWORD } from '$env/static/private';
+import { REDIS_URL } from '$env/static/private';
 
 let redisInstance: RedisClient | null = null;
 
@@ -12,11 +10,18 @@ interface RedisGlobalFlag {
 }
 
 const getMessage = (err: unknown): string => {
-  if (err && typeof err === 'object' && 'message' in err && typeof (err as any).message === 'string') {
-    return (err as any).message as string;
+  if (err && typeof err === 'object' && 'message' in err && typeof (err as { message: unknown }).message === 'string') {
+    return (err as { message: string }).message;
   }
   return String(err);
 };
+
+// --- Added helper: safe type-guard for objects exposing an `on` method ---
+function hasOnMethod(obj: unknown): obj is { on: (event: string, handler: (...args: unknown[]) => void) => void } {
+  if (typeof obj !== 'object' || obj === null) return false;
+  const rec = obj as Record<string, unknown>;
+  return typeof rec.on === 'function';
+}
 
 /**
  * Creates and returns a singleton Redis client instance.
@@ -32,9 +37,9 @@ export function createRedisInstance(options?: RedisConnectionOptions): RedisClie
   }
 
   const defaultOptions: RedisConnectionOptions = {
-    host: REDIS_HOST || 'localhost',
-    port: parseInt(REDIS_PORT || '6379', 10),
-    password: REDIS_PASSWORD || 'redis', // Default password as per Docker setup
+    host: 'localhost',
+    port: 6379,
+    password: 'redis', // Default password as per Docker setup
     connectTimeout: 5000,
     retryDelayOnFailover: 100,
     maxRetriesPerRequest: 3,
@@ -45,16 +50,11 @@ export function createRedisInstance(options?: RedisConnectionOptions): RedisClie
   // Note: If REDIS_URL is used, host/port/password from options might be ignored by ioredis.
   const finalOptions = { ...defaultOptions, ...options };
 
-  if (REDIS_URL) {
-    // Connect using the full URL if provided
-    redisInstance = new Redis(REDIS_URL, finalOptions);
-  } else {
-    // Connect using individual host, port, password
-    redisInstance = new Redis(finalOptions);
-  }
-
-  // Attach event listeners for logging and monitoring using a non-null local reference.
-  const inst = redisInstance as RedisClient;
+  // Guard REDIS_URL to avoid empty-string causing constructor confusion
+  const redisUrl = typeof REDIS_URL === 'string' && REDIS_URL.length > 0 ? REDIS_URL : undefined;
+  const inst: RedisClient = redisUrl
+    ? (new Redis(redisUrl) as unknown as RedisClient)
+    : (new Redis(finalOptions) as unknown as RedisClient);
 
   const handleRedisError = (err: unknown) => {
     const msg = getMessage(err);
@@ -72,15 +72,18 @@ export function createRedisInstance(options?: RedisConnectionOptions): RedisClie
     console.error('Redis connection error:', err);
   };
 
-  // attach handlers defensively (some client shims may not implement `on` the same way)
-  (inst as unknown as { on?: (...a: any[]) => void }).on?.('error', handleRedisError);
-  (inst as unknown as { on?: (...a: any[]) => void }).on?.('connect', () => {
-    console.log('Redis client connected successfully.');
-  });
-  (inst as unknown as { on?: (...a: any[]) => void }).on?.('ready', () => {
-    console.log('Redis client is ready and accepting commands.');
-  });
+  // attach handlers (guarded to avoid "possibly undefined" issues)
+  if (hasOnMethod(inst)) {
+    inst.on('error', handleRedisError);
+    inst.on('connect', () => {
+      console.log('Redis client connected successfully.');
+    });
+    inst.on('ready', () => {
+      console.log('Redis client is ready and accepting commands.');
+    });
+  }
 
+  redisInstance = inst;
   return inst;
 }
 
@@ -92,12 +95,11 @@ export default createRedisInstance;
  * which must use a dedicated connection.
  */
 export function createRedisConnection(options?: Partial<RedisConnectionOptions>): RedisClient {
-  // Merge with defaults from environment
   const finalOptions: RedisConnectionOptions = {
     ...{
-      host: REDIS_HOST || 'localhost',
-      port: parseInt(REDIS_PORT || '6379', 10),
-      password: REDIS_PASSWORD || 'redis',
+      host: 'localhost',
+      port: 6379,
+      password: 'redis',
       connectTimeout: 5000,
       retryDelayOnFailover: 100,
       maxRetriesPerRequest: 3,
@@ -106,23 +108,32 @@ export function createRedisConnection(options?: Partial<RedisConnectionOptions>)
     ...(options || {}),
   } as RedisConnectionOptions;
 
-  const conn = REDIS_URL ? new Redis(REDIS_URL, finalOptions) : new Redis(finalOptions);
-  // Attach the same NOAUTH-aware handler for non-singleton connections (pub/sub, dedicated clients)
-  const c = conn as unknown as { on?: (...args: any[]) => void };
-  c.on?.('error', (err: unknown) => {
-    const msg = getMessage(err);
-    if (msg.includes('NOAUTH')) {
-      const g = globalThis as unknown as RedisGlobalFlag;
-      if (!g.__redisNoAuthWarned) {
-        console.warn(
-          '[redis] NOAUTH Authentication required on new connection — set REDIS_URL or REDIS_PASSWORD to enable auth.'
-        );
-        g.__redisNoAuthWarned = true;
-      }
-      return;
-    }
-    console.error('Redis connection error:', err);
-  });
+  // Use single-argument form when REDIS_URL exists
+  const redisUrl2 = typeof REDIS_URL === 'string' && REDIS_URL.length > 0 ? REDIS_URL : undefined;
+  const conn: RedisClient = redisUrl2
+    ? (new Redis(redisUrl2) as unknown as RedisClient)
+    : (new Redis(finalOptions) as unknown as RedisClient);
 
-  return conn as unknown as RedisClient;
+  // Attach NOAUTH-aware handler with runtime guard
+  if (hasOnMethod(conn)) {
+    conn.on('error', (err: unknown) => {
+      const msg = getMessage(err);
+      if (msg.includes('NOAUTH')) {
+        const g = globalThis as unknown as { __redisNoAuthWarned?: boolean };
+        if (!g.__redisNoAuthWarned) {
+          console.warn(
+            '[redis] NOAUTH Authentication required on new connection — set REDIS_URL or REDIS_PASSWORD to enable auth.'
+          );
+          g.__redisNoAuthWarned = true;
+        }
+        return;
+      }
+      console.error('Redis connection error:', err);
+    });
+  }
+
+  return conn;
 }
+
+// ensure file ends with a newline
+

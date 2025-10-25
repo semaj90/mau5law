@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [UnoCSS(), sveltekit()],
   server: {
     port: 5173,
-    strictPort: true,
+    strictPort: false,
     host: '0.0.0.0',
   },
   preview: {
@@ -31,7 +31,7 @@ export default defineConfig({
     exclude: ['@webgpu/types'],
   },
   define: {
-    'process.env.NODE_ENV': '"production"',
-    'process.env.DATABASE_URL': '"postgresql://legal_admin:123456@localhost:5434/legal_ai_db"',
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+    'process.env.DATABASE_URL': JSON.stringify(process.env.DATABASE_URL || 'postgresql://legal_admin:123456@127.0.0.1:5432/legal_ai_db'),
   },
 });

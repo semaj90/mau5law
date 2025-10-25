@@ -4,9 +4,8 @@
  */
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { redis } from '$lib/server/redis';
+import createRedisConnection, { redis } from '$lib/server/redis';
 import amqp from 'amqplib';
-import { createRedisConnection } from '$lib/server/redis';
 
 interface WorkerStatus {
   name: string;
@@ -16,7 +15,8 @@ interface WorkerStatus {
   queueDepth?: number;
   processedJobs?: number;
   uptime?: number;
-  details?: Record<string, unknown>;
+  // allow either structured details or plain message strings
+  details?: Record<string, unknown> | string;
 }
 
 export const GET: RequestHandler = async ({ url }) => {

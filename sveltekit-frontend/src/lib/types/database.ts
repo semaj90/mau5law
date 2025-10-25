@@ -1,113 +1,264 @@
-import type { User } from './user.js';
-import type { InferInsertModel, InferSelectModel } from 'drizzle-orm/table';
-import {
-  cases,
-  criminals,
-  evidence,
-  users,
-  legal_documents,
-  documentChunks,
-  userAiQueries,
-  autoTags,
-} from '$lib/server/db/schema-postgres';
-// Database model types (inferred from schema)
-export type DatabaseCase = InferSelectModel<typeof cases>;
-export type NewCase = InferInsertModel<typeof cases>;
-export type Criminal = InferSelectModel<typeof criminals>;
-export type NewCriminal = InferInsertModel<typeof criminals>;
-export type DatabaseEvidence = InferSelectModel<typeof evidence>;
-export type NewEvidence = InferInsertModel<typeof evidence>;
-export type DatabaseUser = InferSelectModel<typeof users>;
-export type NewUser = InferInsertModel<typeof users>;
-export type DbLegalDocument = InferSelectModel<typeof legal_documents>;
-export type NewDbLegalDocument = InferInsertModel<typeof legal_documents>;
-export type DbDocumentChunk = InferSelectModel<typeof documentChunks>;
-export type NewDbDocumentChunk = InferInsertModel<typeof documentChunks>;
-export type DbUserAiQuery = InferSelectModel<typeof userAiQueries>;
-export type NewDbUserAiQuery = InferInsertModel<typeof userAiQueries>;
-export type DbAutoTag = InferSelectModel<typeof autoTags>;
-export type NewDbAutoTag = InferInsertModel<typeof autoTags>;
-// Define Profile and Session types manually since they may not be in the schema
-export interface Profile {
-  id: string;
-  userId: string;
-  firstName: string;
-  lastName: string;
-  title?: string;
-  department?: string;
-  phone?: string;
-  officeAddress?: string;
-  avatar?: string;
-  bio?: string;
-  specializations: string[];
-  createdAt: Date;
-  updatedAt: Date;
+/**
+ * Database API response types
+ * Comprehensive types for all db.query() operations and responses
+ */
+
+// ============================================================================
+// HEALTH CHECK TYPES
+// ============================================================================
+
+export interface DatabaseHealthResponse {
+  healthy: boolean;
+  database: string;
+  version: string;
+  timestamp: string;
+  message: string;
 }
-export interface NewProfile extends Omit<Profile, 'id' | 'createdAt' | 'updatedAt'> {
-  id?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-export interface Session {
-  id: string;
-  userId: string;
-  expiresAt: Date;
-  createdAt: Date;
-}
-export interface NewSession extends Omit<Session, 'createdAt'> {
-  createdAt?: Date;
-}
-// Extended user types for better type safety
-export interface UserProfile {
-  firstName?: string;
-  lastName?: string;
-  avatarUrl?: string;
-  role: string;
-  isActive: boolean;
-  emailVerified?: Date | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
-// Type for the user object returned by Auth.js session
-export interface SessionUser {
-  id: string;
-  name?: string | null;
-  email?: string | null;
-  image?: string | null;
-  role?: string | null;
-  profile?: UserProfile;
-}
-// Complete user session interface
-export interface UserSession {
-  user: SessionUser | null;
-  expires: Date | null;
-}
-// Role-based type safety
-export type UserRole = 'prosecutor' | 'detective' | 'admin' | 'analyst' | 'viewer';
-// Case status types for better type safety
-export type CaseStatus = 'open' | 'closed' | 'pending' | 'archived' | 'under_review';
-// Evidence types for better categorization
-export type EvidenceType = 'document' | 'image' | 'video' | 'audio' | 'physical' | 'digital' | 'testimony';
-// Priority levels
-export type Priority = 'low' | 'medium' | 'high' | 'urgent';
-// Case with related data
-export interface CaseWithRelations extends DatabaseCase {
-  criminal?: Criminal;
-  evidence?: DatabaseEvidence[];
-  assignedTo?: User;
-  documents?: unknown[];
-}
-// User with profile
-export interface UserWithProfile {
+
+export type { DatabaseHealthResponse as HealthCheck };
+
+// ============================================================================
+// CORE ENTITY TYPES
+// ============================================================================
+
+export interface User {
   id: string;
   email: string;
-  name: string;
-  profile?: Profile;
+  name: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  role: string;
+  isActive: boolean;
+  avatarUrl: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 }
-// Evidence with metadata (using intersection to avoid conflicts)
-export interface EvidenceWithMetadata extends Omit<DatabaseEvidence, 'uploadedBy'> {
-  uploadedBy?: UserWithProfile; // Replace string ID with full User object
-  uploadedById?: string; // Keep the original ID for reference
-  case?: DatabaseCase;
-  additionalTags?: string[]; // Additional tags beyond the required base tags
+
+export interface Case {
+  id: string;
+  title: string;
+  description: string | null;
+  createdBy: string;
+  createdAt: Date;
+  updatedAt: Date;
+  status: string;
+  metadata: CaseMetadata | null;
+}
+
+export interface CaseMetadata {
+  jurisdiction?: string;
+  parties?: Array<{ role: string; name: string; type: string }>;
+  courtLevel?: 'district' | 'appellate' | 'supreme';
+  caseNumber?: string;
+  datesFiled?: string[];
+  notes?: string;
+  [key: string]: unknown;
+}
+
+export interface Evidence {
+  id: string;
+  caseId: string;
+  title: string;
+  description: string | null;
+  evidenceType: string;
+  subType: string | null;
+  summary: string | null;
+  aiSummary: string | null;
+  aiAnalysis: EvidenceAnalysis | null;
+  tags: string[] | null;
+  chainOfCustody: ChainOfCustodyRecord[] | null;
+  uploadedBy: string;
+  isAdmissible: boolean;
+  confidentialityLevel: string | null;
+  collectedAt: Date | null;
+  location: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  embedding: number[] | null;
+  metadata: EvidenceMetadata | null;
+}
+
+export interface EvidenceAnalysis {
+  documentType?: string;
+  classification?: string;
+  extractedEntities?: string[];
+  keyTerms?: string[];
+  sentiment?: number;
+  confidence?: number;
+  [key: string]: unknown;
+}
+
+export interface EvidenceMetadata {
+  fileHash?: string;
+  fileSize?: number;
+  mimeType?: string;
+  sourceSystem?: string;
+  processingStatus?: 'pending' | 'processing' | 'completed' | 'failed';
+  ocrResult?: string | null;
+  vectorSearchScore?: number;
+  [key: string]: unknown;
+}
+
+export interface ChainOfCustodyRecord {
+  timestamp: string;
+  handler: string;
+  action: string;
+  location?: string;
+  notes?: string;
+}
+
+export interface Document {
+  id: string;
+  userId: string;
+  content: string | null;
+  embedding: number[] | null;
+  createdAt: Date;
+}
+
+export interface ChatMessage {
+  id: string;
+  userId: string;
+  content: string;
+  timestamp: Date;
+  sessionId: string;
+  messageType: 'user' | 'assistant' | 'system';
+  metadata: ChatMessageMetadata | null;
+}
+
+export interface ChatMessageMetadata {
+  intent?: string;
+  confidence?: number;
+  topics?: string[];
+  sentiment?: number;
+  [key: string]: unknown;
+}
+
+export interface AnalysisResult {
+  analysisId: string;
+  evidenceId: string;
+  results: Record<string, unknown>;
+  analysisTypes: string[];
+  confidence: number;
+  processingTime: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// ============================================================================
+// DATABASE QUERY RESPONSE TYPES
+// ============================================================================
+
+export interface QueryResult<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  timestamp: string;
+}
+
+export interface ListQueryResult<T> {
+  success: boolean;
+  data?: T[];
+  pagination?: PaginationInfo;
+  error?: string;
+  timestamp: string;
+}
+
+export interface PaginationInfo {
+  page: number;
+  pageSize: number;
+  total: number;
+  pages: number;
+  hasMore: boolean;
+}
+
+export interface CreateQueryResult<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  timestamp: string;
+}
+
+export interface UpdateQueryResult<T> {
+  success: boolean;
+  data?: T;
+  updated: boolean;
+  error?: string;
+  timestamp: string;
+}
+
+export interface DeleteQueryResult {
+  success: boolean;
+  deleted: boolean;
+  error?: string;
+  timestamp: string;
+}
+
+// ============================================================================
+// SPECIFIC DOMAIN QUERY RESULTS
+// ============================================================================
+
+export interface CaseQueryResult extends QueryResult<Case> {}
+export interface CaseListResult extends ListQueryResult<Case> {}
+
+export interface EvidenceQueryResult extends QueryResult<Evidence> {}
+export interface EvidenceListResult extends ListQueryResult<Evidence> {}
+
+export interface UserQueryResult extends QueryResult<User> {}
+export interface UserListResult extends ListQueryResult<User> {}
+
+export interface ChatMessageQueryResult extends QueryResult<ChatMessage> {}
+export interface ChatMessageListResult extends ListQueryResult<ChatMessage> {}
+
+export interface DocumentQueryResult extends QueryResult<Document> {}
+export interface DocumentListResult extends ListQueryResult<Document> {}
+
+export interface AnalysisResultQueryResult extends QueryResult<AnalysisResult> {}
+export interface AnalysisResultListResult extends ListQueryResult<AnalysisResult> {}
+
+// ============================================================================
+// VECTOR SEARCH TYPES
+// ============================================================================
+
+export interface VectorSearchResult {
+  id: string;
+  title: string;
+  content: string;
+  similarity: number;
+  embedding?: number[];
+  metadata?: Record<string, unknown>;
+}
+
+export interface VectorSearchQueryResult {
+  success: boolean;
+  results?: VectorSearchResult[];
+  query: string;
+  queryEmbedding?: number[];
+  totalResults: number;
+  error?: string;
+  timestamp: string;
+}
+
+// ============================================================================
+// BATCH OPERATION TYPES
+// ============================================================================
+
+export interface BatchQueryResult<T> {
+  success: boolean;
+  results: Array<{ id: string; success: boolean; data?: T; error?: string }>;
+  successCount: number;
+  failureCount: number;
+  error?: string;
+  timestamp: string;
+}
+
+export interface Transaction {
+  id: string;
+  status: 'pending' | 'committed' | 'rolled_back';
+  operations: Array<{
+    type: 'insert' | 'update' | 'delete';
+    table: string;
+    data: Record<string, unknown>;
+  }>;
+  createdAt: Date;
+  completedAt?: Date;
 }
