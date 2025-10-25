@@ -12,7 +12,7 @@
     isTyping?: boolean;
   }
   interface SidebarItem {
-    icon string;
+    icon: string;
     label: string;
     count?: number;
     active?: boolean;
@@ -47,14 +47,14 @@
   let isTestMode = $state(false);
   // Sidebar navigation items
   let sidebarItems: SidebarItem[] = $state([
-    { icon '🏠', label: 'COMMAND CENTER', active: true },
-    { icon '📋', label: 'ACTIVE CASES', count: 3 },
-    { icon '📚', label: 'EVIDENCE LIBRARY' },
-    { icon '👥', label: 'PERSONS OF INTEREST' },
-    { icon '🔍', label: 'ANALYSIS CENTER' },
-    { icon '🌐', label: 'GLOBAL SEARCH' },
-    { icon '💻', label: 'TERMINAL', active: false },
-    { icon '⚙️', label: 'SYSTEM CONFIGURATION' },
+    { icon: '🏠', label: 'COMMAND CENTER', active: true },
+    { icon: '📋', label: 'ACTIVE CASES', count: 3 },
+    { icon: '📚', label: 'EVIDENCE LIBRARY' },
+    { icon: '👥', label: 'PERSONS OF INTEREST' },
+    { icon: '🔍', label: 'ANALYSIS CENTER' },
+    { icon: '🌐', label: 'GLOBAL SEARCH' },
+    { icon: '💻', label: 'TERMINAL', active: false },
+    { icon: '⚙️', label: 'SYSTEM CONFIGURATION' },
   ]);
   let messagesContainer: HTMLElement;
   // Update time periodically
@@ -266,7 +266,7 @@
           class="nav-item"
           class:active={item.active}
           onclick={() => selectSidebarItem(index)}
-          transitionfade={{ delay: index * 50 }}
+          transition:fade={{ delay: index * 50 }}
         >
           <span class="nav-icon">{item.icon}</span>
           <span class="nav-label">{item.label}</span>
@@ -343,7 +343,7 @@
             <div
               class="message {message.sender}"
               class:typing={message.isTyping}
-              transitionfly={{ y: 20, duration 300 }}
+              transition:fly={{ y: 20, duration: 300 }}
             >
               <div class="message-header">
                 <span class="message-sender">
@@ -420,18 +420,18 @@
     color: #00ff41;
   }
   .logo-text {
-    flex: 1,
+    flex: 1;
   }
   .logo-title {
     font-size: 1.125rem;
     font-weight: bold;
     color: #ffffff;
-    line-height: 1,
+    line-height: 1;
   }
   .logo-subtitle {
     font-size: 0.75rem;
     color: #cccccc;
-    line-height: 1,
+    line-height: 1;
   }
   .sidebar-toggle {
     background: transparent;
@@ -445,7 +445,7 @@
     color: #999999;
   }
   .sidebar-nav {
-    flex: 1,
+    flex: 1;
     padding: 1rem 0;
   }
   .nav-item {
@@ -460,7 +460,7 @@
     font-family: inherit;
     font-size: 0.75rem;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: 0.2s ease;
     border-left: 3px solid transparent;
   }
   .nav-item:hover {
@@ -506,7 +506,7 @@
   }
   /* Main Content Styles */
   .main-content {
-    flex: 1,
+    flex: 1;
     display: flex;
     flex-direction column;
     overflow: hidden;
@@ -564,7 +564,7 @@
     font-family: inherit;
     font-size: 0.75rem;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: 0.2s ease;
   }
   .search-btn:hover,
   .auth-btn:hover {
@@ -577,7 +577,7 @@
   }
   /* Chat Interface Styles */
   .chat-interface {
-    flex: 1,
+    flex: 1;
     margin: 2rem;
     background: rgba(0, 0, 0, 0.8);
     border: 2px solid #00ff41;
@@ -620,7 +620,7 @@
     font-family: inherit;
     font-size: 0.75rem;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: 0.2s ease;
   }
   .control-btn:hover,
   .control-btn.active {
@@ -638,7 +638,7 @@
     border-radius: 2px;
   }
   .chat-body {
-    flex: 1,
+    flex: 1;
     display: flex;
     flex-direction column;
     padding: 1.5rem;
@@ -739,7 +739,7 @@
     font-size: 1.125rem;
   }
   .chat-input {
-    flex: 1,
+    flex: 1;
     background: rgba(0, 0, 0, 0.5);
     border: 1px solid #555555;
     color: #ffffff;
@@ -754,7 +754,7 @@
     font-family: inherit;
     font-weight: bold;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: 0.2s ease;
   }
   .send-btn:hover:not(:disabled) {
     background: #00cc34;
@@ -768,7 +768,7 @@
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
       opacity: 0.7,
