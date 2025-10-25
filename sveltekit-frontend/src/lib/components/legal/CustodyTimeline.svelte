@@ -9,7 +9,8 @@ Displays the chronological chain of custody events with detailed audit trail
   interface Props {
     events: Array;
     signature?: string;
-  }>;
+  }
+  let { events = [], signature } = $props<Props>();
   function getEventIcon(eventType: string) {
     switch (eventType) {
       case 'intake':

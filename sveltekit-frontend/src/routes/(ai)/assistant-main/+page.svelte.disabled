@@ -385,7 +385,7 @@
     a.click();
     URL.revokeObjectURL(url);
   }
-  function useSuggestion(suggestion string) {
+  function useSuggestion(suggestion: string) {
     currentMessage = suggestion;
     sendMessage();
   }

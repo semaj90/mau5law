@@ -1,0 +1,185 @@
+<script lang="ts">
+  import { X } from 'lucide-svelte';
+  import Button from '$lib/components/ui/button/Button.svelte';
+  import PoiImageUpload from './PoiImageUpload.svelte';
+
+  interface Props {
+    open?: boolean;
+  }
+
+  let { open = false }: Props = $props();
+  let isOpen = $state(false);
+
+  let formData = $state({
+    name: '',
+    alias: '',
+    dateOfBirth: '',
+    address: '',
+    status: 'Person of Interest',
+  });
+
+  let tempPoiId = $state('');
+  let loading = $state(false);
+  let message = $state('');
+  let messageType = $state<'success' | 'error'>('success');
+
+  async function handleSubmit() {
+    try {
+      loading = true;
+      message = '';
+
+      // Generate temporary ID for image upload (would use real ID from backend)
+      tempPoiId = `poi-${Date.now()}`;
+
+      // In a real implementation, you would send to API here
+      console.log('Submitting POI:', { ...formData, id: tempPoiId });
+
+      message = 'POI created successfully. Now upload a photo if desired.';
+      messageType = 'success';
+
+      // Reset form
+      formData = {
+        name: '',
+        alias: '',
+        dateOfBirth: '',
+        address: '',
+        status: 'Person of Interest',
+      };
+    } catch (error) {
+      message = 'Failed to create POI';
+      messageType = 'error';
+    } finally {
+      loading = false;
+    }
+  }
+
+  function closeModal() {
+    isOpen = false;
+  }
+</script>
+
+<!-- Modal Trigger Button -->
+<slot name="trigger">
+  <Button
+    onclick={() => (isOpen = true)}
+    class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+  >
+    + Add Person
+  </Button>
+</slot>
+
+<!-- Modal Overlay & Content -->
+{#if isOpen}
+  <div class="fixed inset-0 z-40 bg-black/50" onclick={() => (isOpen = false)} />
+  <div class="fixed left-1/2 top-1/2 z-50 w-full max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white shadow-lg p-6 max-h-[90vh] overflow-y-auto">
+    <!-- Close Button -->
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-bold text-gray-900">Add Person of Interest</h2>
+      <button
+        onclick={closeModal}
+        class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+      >
+        <X class="w-5 h-5 text-gray-500" />
+      </button>
+    </div>
+
+    {#if message}
+      <div
+        class="mb-6 p-4 rounded-lg text-sm {messageType === 'success' ? 'bg-green-50 border border-green-200 text-green-700' : 'bg-red-50 border border-red-200 text-red-700'}"
+      >
+        {message}
+      </div>
+    {/if}
+
+    <!-- Form -->
+    <form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }} class="space-y-6">
+      <!-- Name -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+        <input
+          type="text"
+          bind:value={formData.name}
+          required
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="John Smith"
+        />
+      </div>
+
+      <!-- Alias -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Alias / Nickname</label>
+        <input
+          type="text"
+          bind:value={formData.alias}
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="JS, Johnny, etc."
+        />
+      </div>
+
+      <!-- Date of Birth -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
+        <input
+          type="date"
+          bind:value={formData.dateOfBirth}
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        />
+      </div>
+
+      <!-- Address -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+        <textarea
+          bind:value={formData.address}
+          rows={3}
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="123 Main St, City, State ZIP"
+        />
+      </div>
+
+      <!-- Status -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+        <select
+          bind:value={formData.status}
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        >
+          <option value="Person of Interest">Person of Interest</option>
+          <option value="Witness">Witness</option>
+          <option value="Suspect">Suspect</option>
+          <option value="Victim">Victim</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <!-- Image Upload (shows after POI is created) -->
+      {#if tempPoiId}
+        <div class="border-t pt-6">
+          <PoiImageUpload
+            poiId={tempPoiId}
+            poiName={formData.name}
+          />
+        </div>
+      {/if}
+
+      <!-- Action Buttons -->
+      <div class="flex gap-4 pt-6 border-t">
+        <Button
+          type="submit"
+          disabled={loading || !formData.name}
+          class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+        >
+          {loading ? 'Creating...' : 'Create POI'}
+        </Button>
+        <Button
+          type="button"
+          onclick={closeModal}
+          disabled={loading}
+          class="flex-1 px-4 py-2 bg-gray-300 text-gray-900 rounded-lg hover:bg-gray-400 disabled:opacity-50"
+        >
+          Close
+        </Button>
+      </div>
+    </form>
+  </div>
+{/if}

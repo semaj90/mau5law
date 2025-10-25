@@ -18,8 +18,24 @@ interface RegisterRequest {
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
-    // Parse and validate request
-    const data = (await request.json()) as RegisterRequest;
+    // Parse request body - handle both JSON and form data
+    let data: RegisterRequest;
+    const contentType = request.headers.get('content-type');
+
+    if (contentType?.includes('application/json')) {
+      data = (await request.json()) as RegisterRequest;
+    } else if (contentType?.includes('application/x-www-form-urlencoded')) {
+      const formData = await request.formData();
+      data = {
+        email: formData.get('email') as string,
+        password: formData.get('password') as string,
+        firstName: formData.get('firstName') as string | undefined,
+        lastName: formData.get('lastName') as string | undefined,
+        displayName: formData.get('displayName') as string | undefined,
+      };
+    } else {
+      throw new Error('Invalid content type');
+    }
 
     if (!data.email || !data.password) {
       return json(

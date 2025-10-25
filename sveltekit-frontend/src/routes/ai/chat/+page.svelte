@@ -56,7 +56,7 @@
   };
 
   type UserActivity = {
-    action string;
+    action: string;
     description?: string;
     details?: string;
     timestamp?: string | number | Date;

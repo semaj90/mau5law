@@ -20,32 +20,22 @@
   function closeModal() {
     isModalOpen = false;
   }
-  // Dynamic classes based on props
-  let buttonClasses = $derived(() => {
+
+  // compute classes synchronously
+  function getButtonClasses() {
     let classes = 'nes-btn';
     switch (variant) {
-      case 'warning':
-        classes += ' is-warning';
-        break;
-      case 'success':
-        classes += ' is-success';
-        break;
-      case 'error':
-        classes += ' is-error';
-        break;
-      default:
-        classes += ' is-primary';
+      case 'warning': classes += ' is-warning'; break;
+      case 'success': classes += ' is-success'; break;
+      case 'error': classes += ' is-error'; break;
+      default: classes += ' is-primary';
     }
     switch (size) {
-      case 'small':
-        classes += ' nes-btn-small';
-        break;
-      case 'large':
-        classes += ' nes-btn-large';
-        break;
+      case 'small': classes += ' nes-btn-small'; break;
+      case 'large': classes += ' nes-btn-large'; break;
     }
-    return classe;
-  });
+    return classes;
+  }
 </script>
 
 <svelte:head>
@@ -53,11 +43,14 @@
   <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet" />
 </svelte:head>
-<button type="button" class={buttonClasses} onclick={openModal}>
+
+<button type="button" class={getButtonClasses()} onclick={openModal} aria-haspopup="dialog" aria-expanded={isModalOpen}>
   {#if icon}{icon}
   {/if}{text}
 </button>
-<NesAuthModal bind:isOpen={isModalOpen} {form} close={closeModal} />
+
+<!-- bind the modal's "open" prop and pass onClose handler -->
+<NesAuthModal bind:open={isModalOpen} {form} onClose={closeModal} />
 
 <style>
   /* Custom button size classes */
@@ -71,12 +64,22 @@
   }
   /* Button hover effects */
   :global(.nes-btn) {
-    transition transform 0.1s ease;
+    transition: transform 0.1s ease;
   }
-  :global($1) {
+  :global(.nes-btn:hover) {
     transform: scale(1.02);
   }
-  :global($1) {
+  :global(.nes-btn:active) {
+    transform: scale(0.98);
+  }
+</style>
+  :global(.nes-btn) {
+    transition: transform 0.1s ease;
+  }
+  :global(.nes-btn:hover) {
+    transform: scale(1.02);
+  }
+  :global(.nes-btn:active) {
     transform: scale(0.98);
   }
 </style>
