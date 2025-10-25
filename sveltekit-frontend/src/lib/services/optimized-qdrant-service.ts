@@ -13,22 +13,25 @@ import { eq, sql, inArray, desc } from 'drizzle-orm';
 interface QdrantPoint {
   id: string | number;
   vector: number[];
-  payload?: { [key: string]: any }
+  payload?: { [key: string]: any };
+}
 
 interface QdrantScoredPoint {
   id: string | number;
-  version: number,
-  score: number,
-  payload?: { [key: string]: any }
+  version: number;
+  score: number;
+  payload?: { [key: string]: any };
   vector?: number[];
+}
 
 interface QdrantSearchParams {
   vector: number[];
-  limit: number,
-  score_threshold?: number,
-  with_payload?: boolean,
-  with_vector?: boolean,
-  filter?: { [key: string]: any }
+  limit: number;
+  score_threshold?: number;
+  with_payload?: boolean;
+  with_vector?: boolean;
+  filter?: { [key: string]: any };
+}
 
 // Corrected dimensions for nomic-embed-text (768, not 384)
 const NOMIC_EMBED_DIMENSIONS = 768;
@@ -36,44 +39,41 @@ const BATCH_SIZE = 50;
 const MAX_MEMORY_USAGE = 32 * 1024 * 1024; // 32MB memory limit
 
 export interface QdrantConfig {
-  url?: string,
-  apiKey?: string,
-  timeout?: number,
-  collectionName?: string,
-  enableBatching?: boolean,
-  enableSOMClustering?: boolean,
-  enableNESCache?: boolean,
-  memoryLimit?: number,
-
-
+  url?: string;
+  apiKey?: string;
+  timeout?: number;
+  collectionName?: string;
+  enableBatching?: boolean;
+  enableSOMClustering?: boolean;
+  enableNESCache?: boolean;
+  memoryLimit?: number;
 }
 
 export interface VectorSearchResult {
-  id: string,
-  score: number,
-  payload: { [key: string]: any }
+  id: string;
+  score: number;
+  payload: { [key: string]: any };
   document?: {
-    id: string,
-  title: string,
-  content: string,
-  type: 'evidence' | 'case' | 'legal_document';
-  }
+    id: string;
+    title: string;
+    content: string;
+    type: 'evidence' | 'case' | 'legal_document';
+  };
 }
 
 export interface SearchStats {
-  totalResults: number,
-  searchTimeMs: number,
-  cacheHit: boolean,
-  somClusterUsed?: string,
-  memoryUsage: number,
-
+  totalResults: number;
+  searchTimeMs: number;
+  cacheHit: boolean;
+  somClusterUsed?: string;
+  memoryUsage: number;
 }
 
 export class OptimizedQdrantService {
   private client: InstanceType<typeof QdrantClient>;
   private config: Required<QdrantConfig>;
   private somCluster?: any; // LegalDocumentSOM - commenting out missing type
-  private nesCache?: NESCacheOrchestrator,
+  private nesCache?: NESCacheOrchestrator;
   private searchCache = new Map<string, { results: VectorSearchResult[], timestamp: number, stats: SearchStats }>();
   private batchQueue: Array<any> = [];
   private memoryUsage = 0;
