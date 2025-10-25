@@ -133,7 +133,7 @@
           score: typeof r.score === 'number' ? r.score : (typeof r.similarity === 'number' ? r.similarity : 0),
           metadata: {
             date: r.createdAt ?? r.date,
-            jurisdiction r.jurisdiction,
+            jurisdiction: r.jurisdiction,
             status: r.status,
             confidentiality: r.confidentialityLevel,
             caseId: r.caseId,

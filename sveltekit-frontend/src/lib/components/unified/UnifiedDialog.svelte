@@ -27,7 +27,7 @@ https://svelte.dev/e/js_parse_error -->
   export let glassmorphism: boolean = false;
   export let pixelated: boolean = false;
   export let webgpuEffects: boolean = true;
-  export let collaboration { enabled?: boolean; users?: any[]; sessionId?: string } = {};
+  export let collaboration: { enabled?: boolean; users?: any[]; sessionId?: string } = {};
   export let legalContext: any = null;
   export let onOpenChange: ((o: boolean) => void) | undefined;
   export let onClose: (() => void) | undefined;
