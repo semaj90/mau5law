@@ -5,8 +5,8 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { redis } from '$lib/server/redis';
-import { db } from '$lib/server/db/unified-client';
 import amqp from 'amqplib';
+import { createRedisConnection } from '$lib/server/redis';
 
 interface WorkerStatus {
   name: string;
@@ -16,7 +16,7 @@ interface WorkerStatus {
   queueDepth?: number;
   processedJobs?: number;
   uptime?: number;
-  details?: any;
+  details?: Record<string, unknown>;
 }
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -195,10 +195,14 @@ async function checkEmbeddingWorker(): Promise<WorkerStatus> {
  * Check Autotag Worker health
  */
 async function checkAutotagWorker(): Promise<WorkerStatus> {
+  let autotagRedisClient;
   try {
+    // Use a dedicated connection for this check
+    autotagRedisClient = createRedisConnection();
+
     // Check Redis for autotag worker heartbeat
-    const heartbeat = await redis.get('worker:autotag:heartbeat');
-    const stats = await redis.get('worker:autotag:stats');
+    const heartbeat = await autotagRedisClient.get('worker:autotag:heartbeat');
+    const stats = await autotagRedisClient.get('worker:autotag:stats');
 
     if (!heartbeat) {
       return {
@@ -235,5 +239,13 @@ async function checkAutotagWorker(): Promise<WorkerStatus> {
       healthy: false,
       details: 'Optional worker - ' + (error instanceof Error ? error.message : String(error)),
     };
+  } finally {
+    if (autotagRedisClient) {
+      try {
+        await autotagRedisClient.quit();
+      } catch (quitError) {
+        console.error('[Autotag Worker Health] Error quitting Redis client:', quitError);
+      }
+    }
   }
 }

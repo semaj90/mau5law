@@ -48,7 +48,7 @@
     glitchEffect = false,
     theme = 'dark',
     actionsSnippet
-  }: TableProps = $props();
+  } = $props();
   let selectedRows = $state<Set<string | number>>(new Set());
   let sortColumn = $state<string | null>(null);
   let sortDirection = $state<'asc' | 'desc'>('asc');
@@ -109,16 +109,16 @@
       selectedRows = new Set(paginatedData.map(row => row.id));
     }
   }
-  function formatCellValue(_value: unknown, column: TableColumn) {
+  function formatCellValue(value: unknown, column: TableColumn) {
     switch (column.type) {
       case 'date':
-        return new Date(value).toLocaleDateString();
+        return new Date(String(value)).toLocaleDateString();
       case 'number':
-        return typeof value === 'number' ? value.toLocaleString() : valu;
+        return typeof value === 'number' ? value.toLocaleString() : String(value);
       case 'status':
-        return valu;
+        return String(value);
       default:
-        return valu;
+        return String(value);
     }
   }
   function getCellClass(column: TableColumn) {
@@ -126,8 +126,8 @@
     const alignClass = column.align ? `text-${column.align}` : '';
     return `${baseClass} ${alignClass}`.trim();
   }
-  function getStatusClass(_value: string) {
-    const statusClasses = {
+  function getStatusClass(value: string) {
+    const statusClasses: Record<string, string> = {
       'active': 'yorha-status-active',
       'inactive': 'yorha-status-inactive',
       'pending': 'yorha-status-pending',
@@ -139,8 +139,8 @@
       'failed': 'yorha-status-failed',
       'online': 'yorha-status-online',
       'offline': 'yorha-status-offline'
-    }
-    return statusClasses[value?.toLowerCase()] || 'yorha-status-default';
+    };
+    return statusClasses[String(value).toLowerCase()] || 'yorha-status-default';
   }
 </script>
 
@@ -313,16 +313,16 @@
   }
   .yorha-table-container::before {
     content: '';
-    position absolute;
-    top: 0,
+    position: absolute;
+    top: 0;
     left: 0;
-    right: 0,
+    right: 0;
     height: 2px;
     background: linear-gradient(90deg, transparent, #ffbf00, transparent);
-    animation scanline 3s linear infinite;
+    animation: scanline 3s linear infinite;
   }
   .yorha-glitch-effect {
-    animation glitch 0.3s infinite;
+    animation: glitch 0.3s infinite;
   }
   @keyframes glitch {
     0%,
@@ -375,8 +375,8 @@
   }
   .yorha-table {
     /* @apply w-full text-amber-400 font-mono text-sm; */
-    border-collapse: separat;
-    border-spacing: 0,
+    border-collapse: separate;
+    border-spacing: 0;
   }
   .yorha-table-striped .yorha-row-even {
     /* @apply bg-gray-900; */
@@ -508,10 +508,10 @@
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.5,
+      opacity: 0.5;
     }
   }
 </style>

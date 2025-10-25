@@ -399,7 +399,7 @@
           <button
             type="button"
             class="rounded border border-slate-600 px-4 py-2 text-sm text-slate-200 hover:border-slate-400"
-            on:click={cancelNewCase}
+            onclick={cancelNewCase}
           >
             Cancel
           </button>
