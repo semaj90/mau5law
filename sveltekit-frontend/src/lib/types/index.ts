@@ -176,3 +176,10 @@ export type {
   ClusterRestartResponse,
   WorkerScaleResponse,
 } from './cluster';
+
+export * from './search';
+export * from './api';
+// Add other type exports here as your project grows, e.g.,
+// export * from './database';
+// export * from './admin';
+// export * from './cluster';

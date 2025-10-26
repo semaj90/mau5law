@@ -2,7 +2,6 @@
  * Pure Legal AI Logic Layer
  * No rendering concerns - only business logic
  */
-}
 export interface LegalDocument {
   id: string;
   title: string;

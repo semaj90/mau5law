@@ -5,6 +5,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { enhance } from '$app/forms';
+  import DemoLoginButton from '$lib/components/auth/DemoLoginButton.svelte';
   interface Props {
     data?: unknown;
     form?: unknown;
@@ -123,6 +124,11 @@
           {/if}
         </button>
       </form>
+      <!-- Demo Login Component -->
+      <div class="mt-6">
+        <DemoLoginButton variant="secondary" size="md" showLabel={true} />
+      </div>
+
       <!-- Alternative Login Methods -->
       <div class="mt-6 text-center">
         <p class="text-sm text-gray-400">Demo mode enabled</p>

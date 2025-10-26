@@ -15,12 +15,26 @@
 
   const { data } = $props();
 
-  // Use an `unknown` form payload from server; Superforms client adapter validates on submit
-  // Cast incoming server form to `any` to avoid strict type incompatibilities on the client.
-  const { form, enhance, submitting } = superForm(data?.form as any, {
-    // Cast the schema to ZodTypeAny to satisfy the adapter's expected type and avoid SafeParse type mismatch
-    validators: zod(DocumentUploadSchema as unknown as ZodTypeAny),
-    SPA: true
+  // Superforms client is client-only and will throw if run during SSR when nested objects are present.
+  // Create safe defaults and initialize the client-side superForm inside onMount.
+  let form = $state<Record<string, any>>({});
+  let enhance = $state<any>(undefined);
+  let submitting = $state(false);
+
+  import { onMount } from 'svelte';
+
+  onMount(() => {
+    const sf = superForm(data?.form as any, {
+      // Cast the schema to ZodTypeAny to satisfy the adapter's expected type and avoid SafeParse type mismatch
+      validators: zod(DocumentUploadSchema as unknown as ZodTypeAny),
+      SPA: true,
+      // Allow nested data structures (required when server form contains objects/arrays)
+      dataType: 'json'
+    });
+
+    form = sf.form;
+    enhance = sf.enhance;
+    submitting = sf.submitting;
   });
 
   // State using Svelte 5 runes

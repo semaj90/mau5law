@@ -340,7 +340,7 @@
     border: none;
     color: var(--console-fg, white);
     cursor: pointer;
-    transition background 0.2s;
+    transition: background 0.2s;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
@@ -397,7 +397,7 @@
     color: var(--console-fg, white);
     border-radius: 6px;
     cursor: pointer;
-    transition all 0.2s;
+    transition: all 0.2s;
   }
 
   .user-btn:hover {
@@ -414,7 +414,7 @@
     color: white;
     border-radius: 6px;
     cursor: pointer;
-    transition all 0.2s;
+    transition: all 0.2s;
     font-size: 0.9rem;
   }
 
@@ -435,7 +435,7 @@
     background: none;
     border-radius: 6px;
     cursor: pointer;
-    transition all 0.2s;
+    transition: all 0.2s;
     font-weight: 500;
   }
 

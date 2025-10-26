@@ -19,7 +19,7 @@
     "files.autoSave": "onFocusChange",
     "eslint.run": "onSave",
     "chat.mcp.discovery.enabled": {
-      "claude-desktop": true
+      "claude-desktop": true,
     },
     "chat.useChatSessionsForCloudButton": false,
     "github.copilot.nextEditSuggestions.enabled": true,

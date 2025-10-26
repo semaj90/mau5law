@@ -139,6 +139,8 @@ export default defineConfig(({ mode }) => {
     define: {
       'process.env.NODE_ENV': '"development"',
       'process.env.DATABASE_URL': '"postgresql://legal_admin:123456@localhost:5432/legal_ai_db"',
+      'process.env.DEV_BYPASS_AUTH': JSON.stringify(process.env.DEV_BYPASS_AUTH || 'false'),
+      'import.meta.env.VITE_DEV_BYPASS_AUTH': JSON.stringify(process.env.DEV_BYPASS_AUTH || 'false'),
     },
     clearScreen: false,
     resolve: {

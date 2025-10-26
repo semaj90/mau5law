@@ -42,7 +42,7 @@
   type NavigationItem = {
     name: string;
     href: string;
-    icon any;
+    icon: any;
     current: boolean;
     badge?: string;
   };

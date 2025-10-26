@@ -1,8 +1,26 @@
 /// <reference types="vite/client" />
-import { json, error } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { z } from 'zod';
 import { db } from '$lib/server/db';
+import { getOllamaEndpoint } from '$lib/server/ollama-utils'; // Import the new utility
+// Use concrete type exports from the search types file
+import type { VectorSearchQueryResult, SearchResult } from '$lib/types/search';
+
+// Local endpoint-only response types (keeps this handler self-contained)
+type ErrorResponse = {
+  success: false;
+  error: { message: string; details?: unknown };
+  timestamp: string;
+};
+
+type HealthCheckResponse = {
+  success: true;
+  status: 'healthy' | 'unhealthy';
+  pgvector?: string;
+  ollama?: string;
+  timestamp: string;
+};
 
 // ===== VECTOR SEARCH SCHEMA =====
 const VectorSearchSchema = z.object({
@@ -12,32 +30,9 @@ const VectorSearchSchema = z.object({
   filters: z.record(z.string(), z.unknown()).optional(),
 });
 
-type VectorSearchRequest = z.infer<typeof VectorSearchSchema>;
-
-interface SearchResult {
-  id: string;
-  title: string;
-  content: string;
-  similarity: number;
-  metadata?: Record<string, unknown>;
-  source?: string;
-}
-
-interface SearchResponse {
-  results: SearchResult[];
-  query: string;
-  topK: number;
-  responseTime: number;
-  timestamp: string;
-  metadata?: {
-    modelUsed?: string;
-    indexType?: string;
-  };
-}
-
 // ===== VECTOR EMBEDDING SERVICE =====
 async function getQueryEmbedding(query: string): Promise<number[]> {
-  const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
+  const ollamaUrl = getOllamaEndpoint(); // Use the utility function
   const model = 'embeddinggemma:latest';
 
   try {
@@ -64,21 +59,11 @@ async function getQueryEmbedding(query: string): Promise<number[]> {
 }
 
 // ===== PGVECTOR SEARCH =====
-async function searchWithPgvector(
-  embedding: number[],
-  topK: number,
-  threshold: number
-): Promise<SearchResult[]> {
+async function searchWithPgvector(embedding: number[], topK: number, threshold: number): Promise<SearchResult[]> {
   try {
     // Use raw SQL for pgvector similarity search
     // The <=> operator computes cosine distance (smaller = more similar)
-    const results = await db.execute<{
-      id: string;
-      title: string;
-      content: string;
-      similarity: number;
-      metadata: string;
-    }>(
+    const resultsRaw = await db.execute(
       `
       SELECT
         id,
@@ -92,13 +77,22 @@ async function searchWithPgvector(
       LIMIT $3
     `,
       [
-        JSON.stringify(embedding), // Convert to JSON string for pgvector
+        JSON.stringify(embedding), // convert to a representation acceptable to the query placeholder
         threshold,
         topK,
       ]
     );
 
-    return results.map((row) => ({
+    // cast and type rows so `row` isn't implicit any
+    const rows = resultsRaw as Array<{
+      id: string;
+      title: string;
+      content: string;
+      similarity: number;
+      metadata: string | null;
+    }>;
+
+    return rows.map(row => ({
       id: row.id,
       title: row.title,
       content: row.content,
@@ -116,23 +110,16 @@ export const POST: RequestHandler = async ({ request }) => {
   const startTime = Date.now();
 
   try {
-    // Parse and validate request
     const body = await request.json();
     const searchParams = VectorSearchSchema.parse(body);
 
-    // Generate embedding for query
     const embedding = await getQueryEmbedding(searchParams.query);
-
-    // Search pgvector
-    const results = await searchWithPgvector(
-      embedding,
-      searchParams.topK,
-      searchParams.threshold
-    );
+    const results = await searchWithPgvector(embedding, searchParams.topK, searchParams.threshold);
 
     const responseTime = Date.now() - startTime;
 
-    const response: SearchResponse = {
+    const response: VectorSearchQueryResult = {
+      success: true,
       results,
       query: searchParams.query,
       topK: searchParams.topK,
@@ -147,35 +134,55 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(response);
   } catch (err) {
     console.error('Search error:', err);
+    const timestamp = new Date().toISOString();
 
     if (err instanceof z.ZodError) {
-      return error(400, {
-        message: 'Invalid request parameters',
-        errors: err.flatten().fieldErrors,
-      });
+      const errorResponse: ErrorResponse = {
+        success: false,
+        error: {
+          message: 'Invalid request parameters',
+          details: err.flatten().fieldErrors,
+        },
+        timestamp,
+      };
+      return json(errorResponse, { status: 400 });
     }
 
-    return error(500, {
-      message: err instanceof Error ? err.message : 'Search failed',
-    });
+    const errorResponse: ErrorResponse = {
+      success: false,
+      error: {
+        message: err instanceof Error ? err.message : 'Search failed',
+      },
+      timestamp,
+    };
+    return json(errorResponse, { status: 500 });
   }
 };
 
 // ===== OPTIONAL: GET ENDPOINT FOR HEALTH CHECK =====
 export const GET: RequestHandler = async () => {
+  const timestamp = new Date().toISOString();
   try {
     // Check if pgvector is available
-    await db.execute('SELECT 1 WHERE \'[1,2,3]\'::vector IS NOT NULL');
+    await db.execute("SELECT 1 WHERE '[1,2,3]'::vector IS NOT NULL");
 
-    return json({
+    const healthResponse: HealthCheckResponse = {
+      success: true,
       status: 'healthy',
       pgvector: 'available',
       ollama: 'connected',
-    });
+      timestamp,
+    };
+    return json(healthResponse);
   } catch (err) {
-    return error(503, {
-      message: 'Search service unavailable',
-      error: err instanceof Error ? err.message : 'Unknown error',
-    });
+    const errorResponse: ErrorResponse = {
+      success: false,
+      error: {
+        message: 'Search service unavailable',
+        details: err instanceof Error ? err.message : 'Unknown error',
+      },
+      timestamp,
+    };
+    return json(errorResponse, { status: 503 });
   }
 };

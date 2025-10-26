@@ -2,9 +2,9 @@
 import { Queue, Worker, Job, QueueEvents } from "bullmq";
 import Redis from "ioredis";
 // Mock imports for missing modules
-const aiPipeline = { process: async (content: string) => ({ processed: true }) }
-const ollamaService = { analyze: async (content: string) => ({ analysis: 'completed' }) }
-const multiLayerCache = { invalidate: async (pattern: string) => ({ invalidated: true }) }
+const aiPipeline = { process: async (content: string) => ({ processed: true }) };
+const ollamaService = { analyze: async (content: string) => ({ analysis: 'completed' }) };
+const multiLayerCache = { invalidate: async (pattern: string) => ({ invalidated: true }) };
 import { db } from "$lib/server/db";
 import { eq } from 'drizzle-orm';
 import { documentEmbeddings } from "$lib/server/db/schema-unified";
@@ -383,8 +383,8 @@ export class BullMQService {
       }
     } catch (error: any) {
       return {
-        success: false;
-        error: error instanceof Error ? error.message: 'Unknown error',
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
         processingTime: Date.now() - startTime
       }
     }
@@ -422,8 +422,8 @@ export class BullMQService {
       }
     } catch (error: any) {
       return {
-        success: false;
-        error: error instanceof Error ? error.message: 'Unknown error',
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
         processingTime: Date.now() - startTime
       }
     }
@@ -437,8 +437,8 @@ export class BullMQService {
     try {
       await job.updateProgress(50);
       // Invalidate cache entries
-      // const invalidatedCount = await multiLayerCache.invalidate(pattern, { userId, type )}); // Missing service
-      const invalidatedCount =, 0; // Placeholder
+      // const invalidatedCount = await multiLayerCache.invalidate(pattern, { userId, type }); // Missing service
+      const invalidatedCount = 0; // Placeholder
       await job.updateProgress(100);
       return {
         success: true,
@@ -447,8 +447,8 @@ export class BullMQService {
       }
     } catch (error: any) {
       return {
-        success: false;
-        error: error instanceof Error ? error.message: 'Unknown error',
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
         processingTime: Date.now() - startTime
       }
     }

@@ -2,13 +2,13 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler, RequestEvent } from './$types';
 import { z } from 'zod';
 import { db } from '$lib/server/db/client';
-import { sql } from 'drizzle-orm';
+import { sql, type QueryResult } from 'drizzle-orm'; // Add QueryResult import
 import { createMachine, createActor, fromPromise, assign, type ActorRefFrom } from 'xstate';
 
 // --- Configuration ---
-import { OLLAMA_BASE_URL, EMBEDDING_MODEL } from '$env/static/private';
+import { OLLAMA_BASE_URL } from '$env/static/private';
 import { redis } from '$lib/server/redis-client';
-import { generateEmbedding, summarizeText } from '$lib/server/ollama-client';
+import { generateEmbedding, summarizeText, EMBEDDING_MODEL } from '$lib/server/ollama-client';
 import { extractKeywords } from '$lib/server/langextract/google-langextract';
 import { qdrantClient } from '$lib/server/qdrant-client';
 import { enhancedVectorSearchService } from '$lib/server/vector-search-service'; // Assuming this path
@@ -16,6 +16,10 @@ import { enhancedVectorSearchService } from '$lib/server/vector-search-service';
 // --- Constants ---
 const CACHE_TTL = 60 * 5; // 5 minutes
 const TOP_K_KEY = 'search:top-queries';
+
+// New constants for embedding model preference
+const PRIMARY_EMBEDDING_MODEL_NAME = 'embeddinggemma:latest';
+const FALLBACK_EMBEDDING_MODEL_NAME = 'nomic-embed-text';
 
 // --- Types ---
 type SearchResultItem = {
@@ -60,8 +64,10 @@ type SearchStatusResponse = {
   timestamp: string;
   services: {
     ollama: {
-      status: 'ready' | 'missing_model' | 'unavailable' | 'unknown';
-      model: string;
+      status: 'ready' | 'ready_fallback' | 'missing_model' | 'unavailable' | 'unknown'; // Added 'ready_fallback'
+      primaryModel: string; // Added
+      fallbackModel: string; // Added
+      activeModel: string | null; // Added
       availableModels: string[];
     };
     vectorSearch: {
@@ -103,24 +109,31 @@ type SearchError = {
 };
 
 // --- Zod Schemas ---
-const SearchRequestSchema = z.object({
-  query: z.string().min(1).optional(),
-  embedding: z.array(z.number()).optional(), // Allow direct embedding input
-  options: z.object({
-    limit: z.number().int().min(1).max(50).optional().default(10),
-    threshold: z.number().min(0).max(1).optional().default(0.6),
-    entityTypes: z.array(z.enum(['evidence', 'case'])).optional().default(['evidence']),
-    hybridSearch: z.boolean().optional().default(true),
-    weightPg: z.number().min(0).max(2).optional().default(1),
-    weightQdrant: z.number().min(0).max(2).optional().default(1),
-    includeMetadata: z.boolean().optional().default(false),
-    tags: z.array(z.string()).optional(), // Added for context in options
-    summarized: z.string().optional(), // Added for context in options
-  }).optional(),
-}).refine(data => data.query || data.embedding, {
-  message: "Either 'query' or 'embedding' must be provided",
-  path: ['query', 'embedding'],
-});
+const SearchRequestSchema = z
+  .object({
+    query: z.string().min(1).optional(),
+    embedding: z.array(z.number()).optional(), // Allow direct embedding input
+    options: z
+      .object({
+        limit: z.number().int().min(1).max(50).optional().default(10),
+        threshold: z.number().min(0).max(1).optional().default(0.6),
+        entityTypes: z
+          .array(z.enum(['evidence', 'case']))
+          .optional()
+          .default(['evidence']),
+        hybridSearch: z.boolean().optional().default(true),
+        weightPg: z.number().min(0).max(2).optional().default(1),
+        weightQdrant: z.number().min(0).max(2).optional().default(1),
+        includeMetadata: z.boolean().optional().default(false),
+        tags: z.array(z.string()).optional(), // Added for context in options
+        summarized: z.string().optional(), // Added for context in options
+      })
+      .optional(),
+  })
+  .refine(data => data.query || data.embedding, {
+    message: "Either 'query' or 'embedding' must be provided",
+    path: ['query', 'embedding'],
+  });
 
 type SearchRequest = z.infer<typeof SearchRequestSchema>;
 
@@ -148,9 +161,13 @@ type SearchMachineEvents =
   | { type: 'CACHED' }
   | { type: 'ERROR'; error: { message: string; code: string; stage: string; details?: unknown } };
 
-const searchMachine = createMachine({
+const searchMachine = createMachine<SearchMachineContext, SearchMachineEvents>({
   id: 'search',
-  context: ({ input }: { input: { query: string; options: SearchMachineContext['options']; embedding?: number[] } }) => ({
+  context: ({
+    input,
+  }: {
+    input: { query: string; options: SearchMachineContext['options']; embedding?: number[] };
+  }) => ({
     query: input.query,
     embedding: input.embedding || [],
     pgResults: [],
@@ -164,7 +181,8 @@ const searchMachine = createMachine({
   states: {
     checkingCache: {
       invoke: {
-        src: fromPromise(async ({ context }) => {
+        src: fromPromise(async ({ input: context }) => {
+          // Fix: Use input: context
           if (context.query) {
             const cached = await redis.get(`search:cache:${context.query}`);
             if (cached) {
@@ -209,7 +227,8 @@ const searchMachine = createMachine({
     },
     generatingEmbedding: {
       invoke: {
-        src: fromPromise(async ({ context }) => {
+        src: fromPromise(async ({ input: context }) => {
+          // Fix: Use input: context
           if (context.embedding && context.embedding.length > 0) {
             return context.embedding; // Use provided embedding
           }
@@ -238,13 +257,14 @@ const searchMachine = createMachine({
     },
     performingVectorSearch: {
       invoke: {
-        src: fromPromise(async ({ context }) => {
+        src: fromPromise(async ({ input: context }) => {
+          // Fix: Use input: context
           const { embedding, options } = context;
           const { limit, threshold, hybridSearch, weightPg, weightQdrant } = options;
 
           const pgResults: SearchResultItem[] = [];
           try {
-            const res = await db.execute(sql`
+            const res: QueryResult<Array<Record<string, unknown>>> = await db.execute(sql` // Fix: Explicitly type res
               SELECT id::text, title, content, 1 - (embedding <=> ${embedding}) AS similarity
               FROM documents
               WHERE embedding IS NOT NULL
@@ -265,10 +285,14 @@ const searchMachine = createMachine({
             console.warn('⚠️ PG search failed:', (err as Error).message);
           }
 
-          let qResults: SearchResultItem[] = [];
+          const qResults: SearchResultItem[] = []; // Fix: Change let to const
           if (hybridSearch) {
             try {
-              const qres = await qdrantClient.search('documents', { vector: embedding, limit: limit, with_payload: true });
+              const qres = await qdrantClient.search('documents', {
+                vector: embedding,
+                limit: limit,
+                with_payload: true,
+              });
               type QHit = { id: string | number; score?: number; payload?: Record<string, unknown> };
               for (const h of (qres.result ?? []) as QHit[]) {
                 qResults.push({
@@ -305,21 +329,22 @@ const searchMachine = createMachine({
       },
     },
     normalizingAndMerging: {
-      entry: assign(({ context }) => {
+      entry: assign(({ context }: { context: SearchMachineContext }) => {
+        // Fix: Explicitly type context
         const { pgResults, qResults, options } = context;
         const { limit, weightPg, weightQdrant, threshold } = options;
 
         const normalize = (items: SearchResultItem[]) => {
           if (!items.length) return items;
-          const vals = items.map((i) => i.similarity);
+          const vals = items.map(i => i.similarity);
           const min = Math.min(...vals);
           const max = Math.max(...vals);
           const range = max - min || 1;
-          return items.map((i) => ({ ...i, similarity: (i.similarity - min) / range }));
+          return items.map(i => ({ ...i, similarity: (i.similarity - min) / range }));
         };
 
-        const pgN = normalize(pgResults).map((i) => ({ ...i, similarity: i.similarity * (weightPg ?? 1) }));
-        const qN = normalize(qResults).map((i) => ({ ...i, similarity: i.similarity * (weightQdrant ?? 1) }));
+        const pgN = normalize(pgResults).map(i => ({ ...i, similarity: i.similarity * (weightPg ?? 1) }));
+        const qN = normalize(qResults).map(i => ({ ...i, similarity: i.similarity * (weightQdrant ?? 1) }));
 
         const mergedMap = new Map<string, VectorResult>();
         for (const it of [...pgN, ...qN]) {
@@ -339,9 +364,10 @@ const searchMachine = createMachine({
     },
     summarizingAndTagging: {
       invoke: {
-        src: fromPromise(async ({ context }) => {
+        src: fromPromise(async ({ input: context }) => {
+          // Fix: Use input: context
           const combinedText = context.finalResults
-            .map(r => r.content ?? r.title ?? '')
+            .map((r: VectorResult) => r.content ?? r.title ?? '') // Fix: Explicitly type r
             .filter(Boolean)
             .join('\n\n');
 
@@ -378,7 +404,8 @@ const searchMachine = createMachine({
     },
     cachingResults: {
       invoke: {
-        src: fromPromise(async ({ context }) => {
+        src: fromPromise(async ({ input: context }) => {
+          // Fix: Use input: context
           if (context.query && context.finalResults.length > 0) {
             await redis.setex(
               `search:cache:${context.query}`,
@@ -463,8 +490,8 @@ export const POST: RequestHandler = async ({ request }: RequestEvent) => {
 
     actor.send({ type: 'START_SEARCH' });
 
-    const timeoutPromise = new Promise<void>(
-      (_, reject) => setTimeout(() => reject(new Error('Search operation timed out')), 30000)
+    const timeoutPromise = new Promise<void>((_, reject) =>
+      setTimeout(() => reject(new Error('Search operation timed out')), 30000)
     );
 
     await Promise.race([
@@ -583,6 +610,7 @@ export const GET: RequestHandler = async ({ request, url }: RequestEvent) => {
 
     let ollamaStatus: SearchStatusResponse['services']['ollama']['status'] = 'unknown';
     let ollamaModels: string[] = [];
+    let activeOllamaModel: string | null = null; // Track the active model
 
     try {
       const ollamaResponse = await fetch(`${OLLAMA_BASE_URL}/api/tags`);
@@ -593,7 +621,16 @@ export const GET: RequestHandler = async ({ request, url }: RequestEvent) => {
               .map((m: { name?: string } | string) => (typeof m === 'string' ? m : m?.name))
               .filter(Boolean) as string[])
           : [];
-        ollamaStatus = ollamaModels.includes(EMBEDDING_MODEL) ? 'ready' : 'missing_model';
+
+        if (ollamaModels.includes(PRIMARY_EMBEDDING_MODEL_NAME)) {
+          ollamaStatus = 'ready';
+          activeOllamaModel = PRIMARY_EMBEDDING_MODEL_NAME;
+        } else if (ollamaModels.includes(FALLBACK_EMBEDDING_MODEL_NAME)) {
+          ollamaStatus = 'ready_fallback';
+          activeOllamaModel = FALLBACK_EMBEDDING_MODEL_NAME;
+        } else {
+          ollamaStatus = 'missing_model';
+        }
       } else {
         ollamaStatus = 'unavailable';
       }
@@ -606,4 +643,62 @@ export const GET: RequestHandler = async ({ request, url }: RequestEvent) => {
 
     const topQueries = await redis.zrevrange(TOP_K_KEY, 0, 9, 'WITHSCORES');
     const topQueriesFormatted: Array<{ query: string; count: number }> = [];
-    if
+    if (topQueries.length) {
+      for (let i = 0; i < topQueries.length; i += 2) {
+        topQueriesFormatted.push({ query: topQueries[i], count: Number(topQueries[i + 1]) });
+      }
+    }
+
+    return json({
+      success: true,
+      timestamp: new Date().toISOString(),
+      status: {
+        ollama: {
+          status: ollamaStatus,
+          primaryModel: PRIMARY_EMBEDDING_MODEL_NAME, // Report primary model
+          fallbackModel: FALLBACK_EMBEDDING_MODEL_NAME, // Report fallback model
+          activeModel: activeOllamaModel, // Report the active model
+          availableModels: ollamaModels,
+        },
+        vectorSearch: {
+          status: vectorHealth.status,
+          details: vectorHealth.details,
+          stats: {
+            totalDocuments: vectorStats.totalDocuments,
+            indexedDocuments: vectorStats.indexedDocuments,
+            averageVectorDimensions: vectorStats.averageVectorDimensions,
+          },
+        },
+        redis: {
+          status: (await redis.ping()) ? 'connected' : 'unavailable',
+          topQueries: topQueriesFormatted,
+          recentErrors: 0, // Placeholder, implement Redis error tracking if needed
+        },
+      },
+      capabilities: {
+        textToVector: true,
+        vectorSimilarity: true,
+        fuzzySearch: true,
+        hybridSearch: true,
+        caching: true,
+        errorLogging: true,
+        maxEmbeddingDimensions: 1536, // Update based on actual max dimensions
+        supportedEntityTypes: ['evidence', 'case'],
+      },
+      requestId,
+    } as SearchStatusResponse);
+  } catch (error) {
+    console.error(`❌ [${requestId}] Status check error:`, error);
+
+    return json(
+      {
+        success: false,
+        timestamp: new Date().toISOString(),
+        error: 'Internal server error during status check',
+        code: 'INTERNAL_ERROR',
+        details: error instanceof Error ? error.stack : String(error),
+      },
+      { status: 500 }
+    );
+  }
+};
