@@ -436,11 +436,11 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     background: #1a1a1a;
     border-right: 2px solid #495057;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.75rem;
     padding: 1rem;
     overflow-y: auto;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     position fixed;
     left: 0,
     top: 0;
@@ -514,7 +514,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   .stat-label {
     display: block;
     font-size: 0.7rem;
-    opacity: 0.8,
+    opacity: 0.8;
   }
   /* Quick Actions */
   .quick-actions {
@@ -536,9 +536,9 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   .section .title {
     cursor: pointer;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     align-items: center;
-    margin: 0,
+    margin: 0;
     padding: 0.5rem;
     user-select: none;
   }
@@ -558,7 +558,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     border: 1px solid transparent;
     border-radius: 4px;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .item:hover {
     border-color: #007bff;
@@ -574,7 +574,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     flex: 1;
     font-weight: bold;
     font-size: 0.85rem;
-    line-height: 1.2,
+    line-height: 1.2;
   }
   .item-meta {
     display: flex;
@@ -605,7 +605,7 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
   /* Mini text */
   .mini-text {
     font-size: 0.7rem !important;
-    line-height: 1.2,
+    line-height: 1.2;
   }
   /* Empty states */
   .empty-state {
@@ -655,3 +655,4 @@ Enhanced with session management, persistent storage, and drizzle-orm integratio
     }
   }
 </style>
+

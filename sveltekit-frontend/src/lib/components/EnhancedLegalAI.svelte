@@ -589,7 +589,7 @@
 <style>
   /* UnoCSS will handle most styling, but we can add custom styles here if needed */
   .animate-spin {
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   @keyframes spin {
     from {

@@ -166,8 +166,7 @@
     showSuggestions = value.length > 0 || isFocused;
     selectedIndex = -1;
     dispatch('input', { value });
-    // Add search terms animation
-    if (value.length > 2) {
+    // Add search terms animation: if (value.length > 2) {
       searchTerms = value.split(' ').filter(term => term.length > 2);
     } else {
       searchTerms = [];
@@ -457,15 +456,15 @@
         0 0 100px rgba(0, 255, 65, 0.2);
     }
   }
-  /* Typing cursor animation */
+  /* Typing cursor animation: */
   @keyframes cursor-blink {
     0%,
     50% {
-      opacity: 1,
+      opacity: 1;
     }
     51%,
     100% {
-      opacity: 0,
+      opacity: 0;
     }
   }
   input::placeholder {
@@ -476,3 +475,4 @@
     transform: scale(1.01);
   }
 </style>
+

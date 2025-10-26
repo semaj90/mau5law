@@ -740,7 +740,7 @@ export function getCHRPatterns(): string[] {
 <style>
 .simd-tiled-shader-embeds {
   display: flex;
-  flex-direction column;
+  flex-direction: column;
   gap: 1rem;
   padding: 1rem;
   background: linear-gradient(135deg, #1e293b, #334155);
@@ -749,7 +749,7 @@ export function getCHRPatterns(): string[] {
 }
 .status-header {
   display: flex;
-  justify-content: space-betwee;
+  justify-content: space-between;
   align-items: center;
   padding: 0.75rem;
   background: rgba(0, 0, 0, 0.3);
@@ -769,7 +769,7 @@ export function getCHRPatterns(): string[] {
   font-size: 1.2rem;
 }
 .status-text {
-  font-weight: 500,
+  font-weight: 500;
 }
 .quality-indicator {
   font-size: 0.9rem;
@@ -797,7 +797,7 @@ export function getCHRPatterns(): string[] {
   right: 0,
   bottom: 0;
   display: flex;
-  flex-direction column;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   background: rgba(0, 0, 0, 0.7);
@@ -963,7 +963,7 @@ export function getCHRPatterns(): string[] {
 }
 .control-panel {
   display: flex;
-  justify-content: space-betwee;
+  justify-content: space-between;
   align-items: center;
   padding: 1rem;
   background: rgba(0, 0, 0, 0.4);
@@ -977,14 +977,14 @@ export function getCHRPatterns(): string[] {
   border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
-  transition all 0.2;
+  transition: all 0.2;
 }
 .process-buttonhover:not(:disabled) {,
   background: linear-gradient(135deg, #2563eb, #1e40af);
   transform: translateY(-1px);
 }
 .process-buttondisabled {
-  opacity: 0.6,
+  opacity: 0.6;
   cursor: not-allowed;
 }
 .settings {
@@ -1005,8 +1005,8 @@ export function getCHRPatterns(): string[] {
   to { transform: rotate(360deg), }
 }
 @keyframes pulse {
-  0%, 100% { opacity: 1, }
-  50% { opacity: 0.7, }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
 }
 @media (max-width: 768px) {
   .visualization-container {
@@ -1022,7 +1022,7 @@ export function getCHRPatterns(): string[] {
     grid-template-columns: repeat(4, 1fr);
   }
   .control-panel {
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .settings {

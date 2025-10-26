@@ -636,7 +636,7 @@ Displays all media: evidence, generated images, documents, uploads
   }
   .header-content {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     gap: 2rem;
   }
@@ -668,7 +668,7 @@ Displays all media: evidence, generated images, documents, uploads
   }
   .control-group {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .view-modes {
@@ -683,7 +683,7 @@ Displays all media: evidence, generated images, documents, uploads
   }
   .loading-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 1rem;
   }
@@ -714,7 +714,7 @@ Displays all media: evidence, generated images, documents, uploads
   }
   .gallery-item {
     overflow: hidden;
-    transition transform 0.2s ease;
+    transition: transform 0.2s ease;
   }
   .gallery-item:hover {
     transform: translateY(-4px);
@@ -736,7 +736,7 @@ Displays all media: evidence, generated images, documents, uploads
     width: 100%;
     height: 100%;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     background: #f0f0f0;
@@ -761,15 +761,15 @@ Displays all media: evidence, generated images, documents, uploads
     bottom: 0;
     background: rgba(0, 0, 0, 0.7);
     display: flex;
-    flex-direction column;
-    justify-content: space-betwee;
+    flex-direction: column;
+    justify-content: space-betweenn;
     padding: 1rem;
-    opacity: 0,
-    transition opacity 0.3s ease;
+    opacity: 0;
+    transition: opacity 0.3s ease;
     color: white;
   }
   .gallery-item:hover .item-overlay {
-    opacity: 1,
+    opacity: 1;
   }
   .overlay-info {
     flex: 1,
@@ -780,7 +780,7 @@ Displays all media: evidence, generated images, documents, uploads
   }
   .item-case {
     font-size: 0.8rem;
-    opacity: 0.8,
+    opacity: 0.8;
     margin: 0;
   }
   .overlay-actions {
@@ -845,7 +845,7 @@ Displays all media: evidence, generated images, documents, uploads
   }
   .modal-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 1rem;
@@ -876,12 +876,12 @@ Displays all media: evidence, generated images, documents, uploads
   }
   .upload-options {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .option-group {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .detail-content {
@@ -940,7 +940,7 @@ Displays all media: evidence, generated images, documents, uploads
   }
   @media (max-width: 768px) {
     .header-content {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-start;
     }
     .gallery-stats {
@@ -954,7 +954,8 @@ Displays all media: evidence, generated images, documents, uploads
       max-width: calc(100vw - 1rem);
     }
     .detail-actions {
-      flex-direction column;
+      flex-direction: column;
     }
   }
 </style>
+

@@ -339,7 +339,7 @@
 
   .agentic-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
@@ -347,7 +347,7 @@
   }
 
   .agentic-title {
-    margin: 0,
+    margin: 0;
     color: var(--nier-accent-cool, #00ccff);
     font-size: 1.8rem;
   }
@@ -365,7 +365,7 @@
     color: var(--nier-accent-cool, #00ccff);
     border-radius: 0.5rem;
     cursor: pointer;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
 
   .refresh-btn:hover:not(:disabled) {
@@ -375,7 +375,7 @@
   }
 
   .refresh-btn:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
 
@@ -387,7 +387,7 @@
     border-radius: 0.5rem;
     margin-bottom: 1rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
   }
 
@@ -420,7 +420,7 @@
 
   .status-item {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     padding: 0.5rem;
     background: var(--nier-bg-tertiary, #2a2a2a);
     border-radius: 0.25rem;
@@ -461,7 +461,7 @@
     padding: 2rem;
     text-align: center;
     cursor: pointer;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     margin-bottom: 1rem;
   }
 
@@ -509,7 +509,7 @@
     border-radius: 0.5rem;
     font-weight: bold;
     cursor: pointer;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
 
   .upload-btn:hover:not(:disabled),
@@ -520,7 +520,7 @@
 
   .upload-btn:disabled,
   .query-btn:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
 
@@ -565,7 +565,7 @@
 
   .fix-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     margin-bottom: 0.5rem;
     font-size: 0.9rem;
   }
@@ -577,7 +577,7 @@
 
   .fix-content {
     margin-bottom: 0.5rem;
-    line-height: 1.6,
+    line-height: 1.6;
   }
 
   .fix-similar {
@@ -626,7 +626,7 @@
 
   .error-text {
     margin-bottom: 0.5rem;
-    line-height: 1.5,
+    line-height: 1.5;
   }
 
   .error-screenshot {
@@ -659,7 +659,7 @@
     }
 
     .agentic-header {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
       align-items: stretch;
     }
@@ -669,12 +669,14 @@
     }
 
     .query-input-group {
-      flex-direction column;
+      flex-direction: column;
     }
 
     .error-header {
-      flex-direction column;
+      flex-direction: column;
       gap: 0.5rem;
     }
   }
 </style>
+
+

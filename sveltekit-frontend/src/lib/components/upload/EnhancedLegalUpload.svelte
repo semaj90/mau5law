@@ -703,7 +703,7 @@
   }
   .upload-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
     flex-wrap: wrap;
@@ -717,7 +717,7 @@
   /* Custom nes.css enhancements for file upload */
   .file-upload-area {
     cursor: pointer;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     min-height: 200px;
     display: flex;
     align-items: center;
@@ -743,7 +743,7 @@
   /* File preview with retro styling */
   .file-preview {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .file-info {
@@ -781,7 +781,7 @@
   .file-size {
     font-size: 0.6rem;
     margin-bottom: 0.5rem;
-    opacity: 0.8,
+    opacity: 0.8;
   }
   .remove-file {
     font-size: 0.6rem;
@@ -810,14 +810,14 @@
   /* Upload prompt styling */
   .upload-prompt {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 1rem;
     padding: 2rem;
   }
   .upload-icon {
     font-size: 3rem;
-    opacity: 0.7,
+    opacity: 0.7;
   }
   .upload-text {
     text-align: center;
@@ -830,7 +830,7 @@
   /* Dialog styling */
   .dialog-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 1rem;
@@ -865,7 +865,7 @@
     border: 2px solid transparent;
     border-top: 2px solid currentColor;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     display: inline-block;
   }
   /* Responsive design */
@@ -878,12 +878,13 @@
       grid-template-columns: 1fr;
     }
     .upload-header {
-      flex-direction column;
+      flex-direction: column;
       text-align: center;
     }
     .file-info {
-      flex-direction column;
+      flex-direction: column;
       text-align: center;
     }
   }
 </style>
+

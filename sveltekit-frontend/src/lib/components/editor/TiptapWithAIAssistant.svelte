@@ -546,16 +546,17 @@ await initializeEditor();
     overflow-y: auto;
   }
   .inline-suggestion {
-    animation slideInUp 0.2s ease-out;
+    animation: slideInUp 0.2s ease-out;
   }
   @keyframes slideInUp {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translateY(10px);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translateY(0);
     }
   }
 </style>
+

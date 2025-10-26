@@ -202,21 +202,21 @@ Tests the demo RAG functionality with a working interface
 <style>
   .demo-chat {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     height: 100%;
     max-height: 80vh;
     padding: 1rem;
   }
   .chat-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
     border-bottom: 2px solid #495057;
   }
   .chat-header h3 {
-    margin: 0,
+    margin: 0;
   }
   .sample-queries {
     margin-bottom: 1rem;
@@ -239,12 +239,12 @@ Tests the demo RAG functionality with a working interface
     overflow-y: auto;
     margin-bottom: 1rem;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .message {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
   }
   .message-user {
     align-items: flex-end;
@@ -254,7 +254,7 @@ Tests the demo RAG functionality with a working interface
   }
   .message-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 0.5rem;
     font-size: 0.9em;
@@ -296,7 +296,7 @@ Tests the demo RAG functionality with a working interface
   }
   .source-item {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
     margin-bottom: 0.75rem;
     padding: 0.5rem;
@@ -340,33 +340,33 @@ Tests the demo RAG functionality with a working interface
     gap: 0.25rem;
     margin-bottom: 0.5rem;
   }
-  .loading-animation span {
-    animation pulse 1.5s ease-in-out infinite;
+  .loading-animation: span {
+    animation: pulse 1.5s ease-in-out infinite;
     font-size: 1.2em;
     color: #00ff00;
   }
-  .loading-animation span:nth-child(1) {
+  .loading-animation: span:nth-child(1) {
     animation-delay: 0s;
   }
-  .loading-animation span:nth-child(2) {
+  .loading-animation: span:nth-child(2) {
     animation-delay: 0.3s;
   }
-  .loading-animation span:nth-child(3) {
+  .loading-animation: span:nth-child(3) {
     animation-delay: 0.6s;
   }
   @keyframes pulse {
     0%,
     100% {
-      opacity: 0.4,
+      opacity: 0.4;
     }
     50% {
-      opacity: 1,
+      opacity: 1;
     }
   }
   .empty-chat {
     text-align: center;
     padding: 3rem 2rem;
-    opacity: 0.7,
+    opacity: 0.7;
   }
   .chat-input {
     display: flex;
@@ -383,14 +383,15 @@ Tests the demo RAG functionality with a working interface
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .query-buttons {
-      flex-direction column;
+      flex-direction: column;
     }
     .message-content {
       max-width: 95%;
     }
     .chat-input {
-      flex-direction column;
+      flex-direction: column;
       align-items: stretch;
     }
   }
 </style>
+

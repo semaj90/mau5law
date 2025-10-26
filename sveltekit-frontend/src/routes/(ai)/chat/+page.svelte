@@ -316,7 +316,7 @@
   }
   .status-bar {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     gap: 1rem;
     margin-top: 1rem;
@@ -397,7 +397,7 @@
     font-size: 0.875rem;
   }
   .footer-info ul {
-    margin: 0,
+    margin: 0;
   }
   .footer-info li {
     color: #ffffff;
@@ -436,14 +436,14 @@
       max-width: 85%;
     }
     .button-row {
-      flex-direction column;
+      flex-direction: column;
     }
     .button-row button {
       width: 100%;
       min-width: auto;
     }
     .status-bar {
-      flex-direction column;
+      flex-direction: column;
       gap: 0.5rem;
     }
   }
@@ -451,11 +451,13 @@
   @keyframes blink {
     0%,
     50% {
-      opacity: 1,
+      opacity: 1;
     }
     51%,
     100% {
-      opacity: 0,
+      opacity: 0;
     }
   }
 </style>
+
+

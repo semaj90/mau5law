@@ -131,7 +131,7 @@ Content-Type: application/json
     font-family: 'Press Start 2P', cursive;
     background-color: #212529;
     color: #f8f9fa;
-    line-height: 1.6,
+    line-height: 1.6;
   }
   .container {
     max-width: 1200px;
@@ -179,7 +179,7 @@ Content-Type: application/json
     background-color: #000;
   }
   .code-block pre {
-    margin: 0,
+    margin: 0;
     color: #00ff00;
     font-size: 10px;
     line-height: 1.4;
@@ -233,3 +233,4 @@ Content-Type: application/json
     margin-bottom: 5px;
   }
 </style>
+

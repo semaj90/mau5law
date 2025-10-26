@@ -372,14 +372,14 @@ https://svelte.dev/e/js_parse_error -->
   }
   .orchestrator-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 2px solid #007bff;
   }
   .orchestrator-header h2 {
-    margin: 0,
+    margin: 0;
     color: #333;
     font-size: 1.8rem;
   }
@@ -417,7 +417,7 @@ https://svelte.dev/e/js_parse_error -->
   .metric-card h3 {
     margin: 0 0 0.5rem 0;
     font-size: 0.9rem;
-    opacity: 0.9,
+    opacity: 0.9;
   }
   .metric-value {
     font-size: 2rem;
@@ -426,7 +426,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .metric-label {
     font-size: 0.8rem;
-    opacity: 0.8,
+    opacity: 0.8;
   }
   .control-panel {
     margin-bottom: 2rem;
@@ -442,14 +442,14 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.9rem;
-    font-weight: 500,
-    transition all 0.2s ease;
+    font-weight: 500;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
   .btn:disabled {
-    opacity: 0.6,
+    opacity: 0.6;
     cursor: not-allowed;
   }
   /* Combine selectors so styles apply to both .btn-primary and the actual markup .nes-btn.is-primary */
@@ -542,7 +542,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     border-bottom: 3px solid transparent;
     font-size: 0.9rem;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .tab:hover {
     background: #f8f9fa;
@@ -550,25 +550,25 @@ https://svelte.dev/e/js_parse_error -->
   .tab.active {
     border-bottom-color: #007bff;
     color: #007bff;
-    font-weight: 600,
+    font-weight: 600;
   }
   .tab-content {
     min-height: 400px;
   }
   .document-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .document-item {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     padding: 1rem;
     border: 1px solid #ddd;
     border-radius: 8px;
     background: white;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .document-item:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -617,7 +617,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 2px solid #f3f3f3;
     border-top: 2px solid #ffc107;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   @keyframes spin {
     0% {
@@ -630,7 +630,7 @@ https://svelte.dev/e/js_parse_error -->
   .result-summary {
     color: #28a745;
     font-size: 0.9rem;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   .error-message {
     color: #dc3545;
@@ -674,7 +674,7 @@ https://svelte.dev/e/js_parse_error -->
       padding: 1rem;
     }
     .orchestrator-header {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
       align-items: flex-start;
     }
@@ -682,10 +682,10 @@ https://svelte.dev/e/js_parse_error -->
       flex-wrap: wrap;
     }
     .control-group {
-      flex-direction column;
+      flex-direction: column;
     }
     .form-row {
-      flex-direction column;
+      flex-direction: column;
       align-items: stretch;
     }
     .tabs {
@@ -693,7 +693,7 @@ https://svelte.dev/e/js_parse_error -->
       flex-wrap: nowrap;
     }
     .document-item {
-      flex-direction column;
+      flex-direction: column;
       align-items: stretch;
       gap: 1rem;
     }
@@ -706,9 +706,11 @@ https://svelte.dev/e/js_parse_error -->
       flex-wrap: nowrap;
     }
     .document-item {
-      flex-direction column;
+      flex-direction: column;
       align-items: stretch;
       gap: 1rem;
     }
   }
 </style>
+
+

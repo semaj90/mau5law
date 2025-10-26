@@ -41,8 +41,7 @@
   // Auto-close functionality
   $effect(() => {
     if (!persistent && duration > 0) {
-      // Progress bar animation
-      if (showProgress) {
+      // Progress bar animation: if (showProgress) {
         const progressStep = 100 / (duration / 100);
         progressInterval = setInterval(() => {
           progress = Math.max(0, progress - progressStep);
@@ -158,7 +157,7 @@
   .progress-fill {
     height: 100%;
     background: var(--yorha-secondary, #ffd700);
-    transition width 0.1s linear;
+    transition: width 0.1s linear;
     box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
   }
   /* Content Layout */
@@ -177,7 +176,7 @@
     align-items: center;
     justify-content: center;
     font-size: 16px;
-    font-weight: 700,
+    font-weight: 700;
     color: var(--yorha-secondary, #ffd700);
     border: 1px solid currentColor;
     background: var(--yorha-bg-primary, #0a0a0a);
@@ -188,7 +187,7 @@
   }
   .notification-title {
     font-size: 12px;
-    font-weight: 700,
+    font-weight: 700;
     color: var(--yorha-secondary, #ffd700);
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -214,7 +213,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .notification-close:hover {
     border-color: var(--yorha-danger, #ff0041);
@@ -258,7 +257,7 @@
   }
   .yorha-.system .notification-icon {
     color: var(--yorha-secondary, #ffd700);
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   /* System Status Indicator */
   .system-indicator {
@@ -272,17 +271,17 @@
     width: 100%;
     height: 100%;
     background: var(--yorha-secondary, #ffd700);
-    animation systemPulse 1.5s infinite;
+    animation: systemPulse 1.5s infinite;
   }
   /* Animations */
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1,
+      opacity: 1;
       transform: scale(1);
     }
     50% {
-      opacity: 0.7,
+      opacity: 0.7;
       transform: scale(1.1);
     }
   }
@@ -318,3 +317,4 @@
     }
   }
 </style>
+

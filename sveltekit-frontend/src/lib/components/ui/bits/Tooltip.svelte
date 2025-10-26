@@ -19,7 +19,7 @@
     side = 'top',
     align = 'center',
     delayDuration = 400,
-    animation = 'fade',
+    animation: = 'fade',
     arrow = true,
     children,
     ...props
@@ -124,3 +124,4 @@ box-shadow: {}
     transform-origin: var(--bits-tooltip-content-transform-origin);
   }
 </style>
+

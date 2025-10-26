@@ -376,7 +376,7 @@
         font-size: 0.875rem;
     }
     .status-indicator {
-        font-weight: 500,
+        font-weight: 500;
     }
     .status-indicator.online {
         color: #059669;
@@ -398,18 +398,18 @@
     }
     .step {
         display: flex;
-        flex-direction column;
+        flex-direction: column;
         align-items: center;
         gap: 0.5rem;
-        opacity: 0.5,
-        transition opacity 0.3;
+        opacity: 0.5;
+        transition: opacity 0.3;
     }
     .step.active {
-        opacity: 1,
+        opacity: 1;
         color: #3b82f6;
     }
     .step.completed {
-        opacity: 1,
+        opacity: 1;
         color: #059669;
     }
     .step-number {
@@ -462,7 +462,7 @@
         border-radius: 0.5rem;
         text-align: center;
         cursor: pointer;
-        transition border-color 0.2;
+        transition: border-color 0.2;
     }
     .file-input-label: hover {
         border-color: #3b82f6;
@@ -489,10 +489,10 @@
         padding: 1rem 2rem;
         border-radius: 0.5rem;
         font-size: 1.1rem;
-        font-weight: 600,
+        font-weight: 600;
         cursor: pointer;
         width: 100%;
-        transition background 0.2;
+        transition: background 0.2;
     }
     .process-btn:hover:not(:disabled) {,
         background: #2563eb;
@@ -514,7 +514,7 @@
     .progress-fill {
         height: 100%;
         background: #3b82f6;
-        transition width 0.3;
+        transition: width 0.3;
     }
     .progress-text {
         margin-top: 0.5rem;
@@ -539,17 +539,17 @@
     .metric,
     .detail {
         display: flex;
-        justify-content: space-betwee;
+        justify-content: space-betweenn;
         padding: 0.75rem;
         background: #f8fafc;
         border-radius: 0.5rem;
     }
     .label {
-        font-weight: 500,
+        font-weight: 500;
         color: #6b7280;
     }
     .value {
-        font-weight: 600,
+        font-weight: 600;
         color: #111827;
     }
     .entity-tags,
@@ -567,7 +567,7 @@
         padding: 0.25rem 0.75rem;
         border-radius: 1rem;
         font-size: 0.875rem;
-        font-weight: 500,
+        font-weight: 500;
     }
     .concept-tag.small {
         font-size: 0.75rem;
@@ -598,7 +598,7 @@
         margin-bottom: 0.5rem;
     }
     .case-title {
-        font-weight: 600,
+        font-weight: 600;
         color: #111827;
         margin-bottom: 0.25rem;
     }
@@ -614,20 +614,20 @@
         border: 1px solid #e5e7eb;
         border-radius: 0.75rem;
         padding: 1.5rem;
-        transition box-shadow 0.2;
+        transition: box-shadow 0.2;
     }
     .recommendation-card:hover {
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     .recommendation-header {
         display: flex;
-        justify-content: space-betwee;
+        justify-content: space-betweenn;
         align-items: flex-start;
         margin-bottom: 0.75rem;
     }
     .recommendation-title {
         color: #111827;
-        margin: 0,
+        margin: 0;
     }
     .recommendation-type {
         background: #f3f4f6;
@@ -641,7 +641,7 @@
     .recommendation-description {
         color: #6b7280;
         margin-bottom: 1rem;
-        line-height: 1.6,
+        line-height: 1.6;
     }
     .recommendation-details {
         display: grid;
@@ -659,10 +659,10 @@
     .secondary-btn {
         padding: 1rem 2rem;
         border-radius: 0.5rem;
-        font-weight: 600,
+        font-weight: 600;
         cursor: pointer;
         border: none;
-        transition all 0.2;
+        transition: all 0.2;
     }
     .primary-btn {
         background: #059669;
@@ -695,3 +695,5 @@
         }
     }
 </style>
+
+

@@ -451,8 +451,7 @@
             <div>
               <strong class={theme === 'gaming' ? 'text-green-400' : ''}> Hover Home Icon </strong>
               <span class={theme === 'gaming' ? 'text-green-400/70' : 'text-[var(--enhanced-bits-text-muted)]'}>
-                Sidebar snaps open with smooth animation
-              </span>
+                Sidebar snaps open with smooth animation: </span>
             </div>
             <div>
               <strong class={theme === 'gaming' ? 'text-green-400' : ''}> Auto-collapse: </strong>
@@ -482,13 +481,13 @@
 <style>
   /* Ensure content shifts smoothly when sidebar expands */
   main {
-    transition margin-left 0.3s ease-out;
+    transition: margin-left 0.3s ease-out;
   }
   /* Smooth theme transitions */
   * {
-    transition
-      background-color 0.2s ease,
+    transition: background-color 0.2s ease,
       color 0.2s ease,
       border-color 0.2s ease;
   }
 </style>
+

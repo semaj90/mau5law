@@ -89,7 +89,7 @@ let layout = $derived(mobile.matches ? 'mobile' : 'desktop');`}</code
 <style>
   .custom-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     width: 100%;
   }
@@ -153,9 +153,11 @@ let layout = $derived(mobile.matches ? 'mobile' : 'desktop');`}</code
     text-decoration none;
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
-    transition background-color 0.2;
+    transition: background-color 0.2;
   }
   nav a:hover {
     background: #dbeaf;
   }
 </style>
+
+

@@ -340,7 +340,7 @@
 
   .results-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     margin-bottom: 1.5rem;
     padding-bottom: 0.5rem;
@@ -422,7 +422,7 @@
 
   .result-footer {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     border-top: 1px solid rgba(0, 204, 255, 0.2);
     padding-top: 0.75rem;
@@ -467,3 +467,5 @@
     }
   }
 </style>
+
+

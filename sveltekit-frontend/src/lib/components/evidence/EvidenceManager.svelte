@@ -492,7 +492,7 @@ fileInput?.click()}
   .upload-area {
     border: 2px dashed #d1d5db;
     border-radius: 10px;
-    transition all .25;
+    transition: all .25;
     cursor: pointer;
     background:
       radial-gradient(circle at 30% 25%, rgba(59 130 246 / 0.08), transparent 60%),
@@ -527,13 +527,13 @@ fileInput?.click()}
         transparent 0%,
         rgba(255 255 255 / 0.4) 40%,
         transparent 70%);
-    opacity: 0,
+    opacity: 0;
     transform: translateX(-30%);
-    transition opacity .6s, transform .6;
+    transition: opacity .6s, transform .6;
     pointer-events:none;
   }
   .stat-item:hover::after {
-    opacity:1,
+    opacity: 1;
     transform: translateX(15%);
   }
   .similarity-score {
@@ -542,7 +542,7 @@ fileInput?.click()}
   }
   .evidence-file-item,
   .search-result-item {
-    transition transform .18s ease, box-shadow .25s ease, background .25;
+    transition: transform .18s ease, box-shadow .25s ease, background .25;
     background:
       linear-gradient(180deg, #ffffff, #f8fafc);
     border: 1px solid #e2e8f0;
@@ -589,7 +589,7 @@ fileInput?.click()}
         transparent 6px 12px
       );
     mix-blend-mode: overlay;
-    opacity:0.25,
+    opacity: 0.25;
   }
   .error-box::after {
     background:
@@ -599,16 +599,16 @@ fileInput?.click()}
         transparent);
     width: 60px;
     transform:translateX(-120%) skewX(-12deg);
-    animation sweep 4.2s linear infinite;
+    animation: sweep 4.2s linear infinite;
   }
   .error-icon {
     font-size:1.35rem;
-    line-height: 1,
+    line-height: 1;
     filter: drop-shadow(0 0 4px rgba(239 68 68 / 0.6));
-    animation pulseErr 1.9s ease-in-out infinite;
+    animation: pulseErr 1.9s ease-in-out infinite;
   }
   .error-title {
-    font-weight: 600,
+    font-weight: 600;
     color:#991b1b;
     letter-spacing:.5px;
     text-shadow:0 0 4px rgba(239 68 68 / 0.35);
@@ -636,7 +636,7 @@ fileInput?.click()}
       0 2px 6px -2px rgba(190 18 60 / 0.55),
       inset 0 0 0 1px #fff;
     text-shadow: 0 0 4px rgba(254 226 226 / .75);
-    transition transform .18s, box-shadow .25s, background .25;
+    transition: transform .18s, box-shadow .25s, background .25;
     will-change: transform;
     cursor: pointer;
   }
@@ -673,15 +673,15 @@ fileInput?.click()}
       );
     mix-blend-mode: multiply;
     opacity:.35;
-    animation scanMove 9s linear infinite;
+    animation: scanMove 9s linear infinite;
     pointer-events:none;
   }
   .flicker {
-    animation flicker 4.5s linear infinite;
+    animation: flicker 4.5s linear infinite;
   }
   @keyframes pulseErr {
-    0%,100% { transform: scale(1); opacity:1, }
-    50% { transform: scale(1.08); opacity:.85, }
+    0%,100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.08); opacity: .85; }
   }
   @keyframes sweep {
     0% { transform:translateX(-120%) skewX(-12deg), }
@@ -694,9 +694,9 @@ fileInput?.click()}
     100% { transform: translateY(0), }
   }
   @keyframes flicker {
-    0%, 97%, 100% { opacity:1, }
-    98% { opacity:.55, }
-    99% { opacity:.85, }
+    0%, 97%, 100% { opacity: 1; }
+    98% { opacity: .55; }
+    99% { opacity: .85; }
   }
   @media (prefers-reduced-motion reduce) {
     .error-box:: after

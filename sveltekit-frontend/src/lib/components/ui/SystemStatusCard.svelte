@@ -32,7 +32,7 @@ https://svelte.dev/e/js_parse_error -->
   .header {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	justify-content: space-betweenn;
 	gap: 0.75rem;
   }
   .title {
@@ -95,3 +95,4 @@ https://svelte.dev/e/js_parse_error -->
   {/if}
   {@render children?.()}
 </div>
+

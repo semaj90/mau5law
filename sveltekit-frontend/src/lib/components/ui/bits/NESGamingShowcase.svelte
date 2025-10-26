@@ -237,13 +237,13 @@
   }
   .showcase-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 2rem;
   }
   .showcase-title {
     font-size: 1.25rem;
-    margin: 0,
+    margin: 0;
     color: theme('colors.nes.yellow');
     text-shadow: 2px 2px 0px theme('colors.nes.black');
     letter-spacing: 0.05em;
@@ -260,12 +260,12 @@
   }
   .stat-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
   }
   .stat-label {
     font-size: 0.5rem;
-    opacity: 0.8,
+    opacity: 0.8;
   }
   .stat-value {
     font-size: 0.75rem;
@@ -286,7 +286,7 @@
   }
   .feature-content {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-top: 1rem;
   }
@@ -327,13 +327,13 @@
   }
   .modal-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1.5rem;
   }
   .feature-details,
   .system-info {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .feature-header {
@@ -348,7 +348,7 @@
   .feature-stats,
   .system-stats {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
     padding: 1rem;
     border: 2px solid currentColor;
@@ -356,7 +356,7 @@
   }
   .stat-row {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     font-size: 0.625rem;
   }
   .modal-actions {
@@ -380,31 +380,31 @@
   @keyframes status-blink {
     0%,
     50% {
-      opacity: 1,
+      opacity: 1;
     }
     51%,
     100% {
-      opacity: 0.6,
+      opacity: 0.6;
     }
   }
   @keyframes status-pulse {
     0%,
     100% {
-      opacity: 1,
+      opacity: 1;
       transform: scale(1);
     }
     50% {
-      opacity: 0.7,
+      opacity: 0.7;
       transform: scale(1.05);
     }
   }
   @keyframes status-urgent {
     0%,
     100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.3,
+      opacity: 0.3;
     }
   }
   /* Responsive Design */
@@ -413,7 +413,7 @@
       padding: 1rem;
     }
     .showcase-header {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
       text-align: center;
     }
@@ -430,7 +430,7 @@
       grid-template-columns: repeat(2, 1fr);
     }
     .modal-actions {
-      flex-direction column;
+      flex-direction: column;
     }
   }
   @media (max-width: 480px) {
@@ -438,8 +438,10 @@
       grid-template-columns: 1fr;
     }
     .header-controls {
-      flex-direction column;
+      flex-direction: column;
       width: 100%;
     }
   }
 </style>
+
+

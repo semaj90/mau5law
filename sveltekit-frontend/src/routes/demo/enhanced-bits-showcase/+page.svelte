@@ -342,12 +342,12 @@
   }
   .header-content {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
   }
   .title-section h1 {
     font-size: 2.5rem;
-    font-weight: 800,
+    font-weight: 800;
     margin: 0 0 0.5rem 0;
     background: linear-gradient(45deg, #4a90e2, #8e44ad);
     background-clip: text;
@@ -357,7 +357,7 @@
   .demo-subtitle {
     font-size: 1.125rem;
     color: var(--color-text-secondary, #6b7280);
-    margin: 0,
+    margin: 0;
   }
   .header-controls {
     display: flex;
@@ -386,8 +386,8 @@
     color: var(--color-text-secondary, #6b7280);
     cursor: pointer;
     border-radius: 0.5rem;
-    font-weight: 500,
-    transition all 0.2s ease;
+    font-weight: 500;
+    transition: all 0.2s ease;
     white-space: nowrap;
   }
   .tab-trigger:hover {
@@ -404,7 +404,7 @@
   }
   .demo-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 2rem;
   }
   .demo-card {
@@ -423,7 +423,7 @@
     padding: 1.5rem;
     border: 2px solid var(--color-border, #e5e7eb);
     border-radius: 0.5rem;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .feature-item:hover {
     border-color: var(--color-primary, #4a90e2);
@@ -433,12 +433,12 @@
   .feature-item h3 {
     margin: 0 0 0.5rem 0;
     font-size: 1.125rem;
-    font-weight: 600,
+    font-weight: 600;
   }
   .feature-item p {
-    margin: 0,
+    margin: 0;
     color: var(--color-text-secondary, #6b7280);
-    line-height: 1.5,
+    line-height: 1.5;
   }
   /* Button Demo */
   .button-grid {
@@ -458,7 +458,7 @@
   }
   .interactive-card {
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .interactive-card:hover {
     transform: translateY(-4px);
@@ -487,7 +487,7 @@
   }
   .nes-stat-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
     font-size: 0.75rem;
   }
@@ -512,7 +512,7 @@
   }
   .status-indicators {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .status-item {
@@ -538,13 +538,13 @@
   /* Integration Demo */
   .integration-examples {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 2rem;
   }
   .example-section h4 {
     margin: 0 0 1rem 0;
     font-size: 1.125rem;
-    font-weight: 600,
+    font-weight: 600;
   }
   .mixed-layout {
     max-width: 600px;
@@ -561,7 +561,7 @@
   .modal-demo-content,
   .yorha-modal-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .modal-stats,
@@ -582,7 +582,7 @@
       padding: 1rem;
     }
     .header-content {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
       text-align: center;
     }
@@ -605,7 +605,9 @@
       grid-template-columns: 1fr;
     }
     .operation-buttons {
-      flex-direction column;
+      flex-direction: column;
     }
   }
 </style>
+
+

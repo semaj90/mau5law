@@ -295,8 +295,9 @@
 /* Reduced motion support */ {}
   @media (prefers-reduced-motion reduce) {
     :global(.bits-ui-accessibility-wrapper *) {
-      transition none !important;
+      transition: none !important;
       animation: none !important;
     }
   }
 </style>
+

@@ -448,7 +448,7 @@ d;
       0 0 20px rgba(59, 130, 246, 0.3);
     background: rgba(255, 255, 255, 0.1);
     pointer-events: none;
-    animation highlight-pulse 2s infinite;
+    animation: highlight-pulse 2s infinite;
     z-index: 10001,
 }
   @keyframes highlight-pulse {
@@ -474,20 +474,20 @@ d;
     max-width: 400px;
     min-width: 320px;
     z-index: 10002,
-    animation tooltip-appear 0.3s ease-out;
+    animation: tooltip-appear 0.3s ease-out;
 }
   @keyframes tooltip-appear {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translate(-50%, -50%) scale(0.9);
 }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translate(-50%, -50%) scale(1);
 }}
   .tooltip-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 1rem 1rem 0;
 }
@@ -530,14 +530,14 @@ d;
 }
   .tooltip-title {
     font-size: 1.125rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #111827;
     margin: 0 0 0.5rem 0;
-    line-height: 1.4,
+    line-height: 1.4;
 }
   .tooltip-description {
     color: #6b7280;
-    line-height: 1.5,
+    line-height: 1.5;
     margin: 0 0 1rem 0;
 }
   .tooltip-extended-content {
@@ -572,16 +572,16 @@ d;
   .progress-fill {
     height: 100%;
     background: #3b82f6;
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
 }
   .progress-text {
     font-size: 0.75rem;
     color: #6b7280;
-    font-weight: 500,
+    font-weight: 500;
 }
   .tooltip-navigation {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 1rem;
     border-top: 1px solid #e5e7eb;
@@ -611,10 +611,10 @@ d;
     align-items: center;
     justify-content: center;
     font-size: 0.75rem;
-    font-weight: 500,
+    font-weight: 500;
     color: #6b7280;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
 }
   .step-dot: hover {
     border-color: #3b82f6;
@@ -631,7 +631,7 @@ d;
     color: white;
 }
   .dot-number {
-    line-height: 1,
+    line-height: 1;
 }
   /* Dark mode */
   @media (prefers-color-scheme: dark) {
@@ -669,15 +669,16 @@ d;
       margin: 1rem;
 }
     .tooltip-navigation {
-      flex-direction column;
+      flex-direction: column;
       gap: 0.75rem;
 }
     .nav-left,
     .nav-right {
       width: 100%;
-      justify-content: space-betwee;
+      justify-content: space-betweenn;
 }
     .nav-center {
       order: -1;
 }}
 </style>
+

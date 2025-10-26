@@ -629,7 +629,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
   }
   .prose :global(p) {
     margin-bottom: 1rem;
-    line-height: 1.6,
+    line-height: 1.6;
   }
   .prose :global(ul) {
     margin-bottom: 1rem;
@@ -639,3 +639,4 @@ https://svelte.dev/e/const_tag_invalid_placement -->
     margin-bottom: 0.5rem;
   }
 </style>
+

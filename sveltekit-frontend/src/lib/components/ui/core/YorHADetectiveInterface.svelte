@@ -497,7 +497,7 @@
   }
   .status-item {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     font-size: 0.625rem;
     color: #999999;
     margin-bottom: 0.25rem;
@@ -514,7 +514,7 @@
   }
   .main-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     padding: 1rem 2rem;
     background: rgba(0, 0, 0, 0.8);
@@ -589,7 +589,7 @@
   }
   .chat-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     padding: 1rem 1.5rem;
     background: rgba(0, 255, 65, 0.1);
@@ -709,7 +709,7 @@
   }
   .message-content {
     color: #ffffff;
-    line-height: 1.5,
+    line-height: 1.5;
   }
   .user-status {
     background: rgba(255, 255, 255, 0.05);
@@ -772,7 +772,7 @@
       opacity: 1;
     }
     50% {
-      opacity: 0.7,
+      opacity: 0.7;
     }
   }
   /* Scrollbar Styles */
@@ -790,3 +790,5 @@
     background: #00ff41;
   }
 </style>
+
+

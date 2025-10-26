@@ -556,11 +556,11 @@ https://svelte.dev/e/expected_token -->
   @keyframes pulse {
     0%,
     100% {
-      opacity: 0.1,
+      opacity: 0.1;
       transform: scale(1);
     }
     50% {
-      opacity: 0.3,
+      opacity: 0.3;
       transform: scale(1.05);
     }
   }
@@ -596,7 +596,7 @@ https://svelte.dev/e/expected_token -->
   }
   .technical-info li {
     margin: 5px 0;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   /* PS1 Style Enhancements */
   .ps1-scene {
@@ -662,3 +662,4 @@ https://svelte.dev/e/expected_token -->
     }
   }
 </style>
+

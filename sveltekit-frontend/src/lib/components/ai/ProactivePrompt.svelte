@@ -36,7 +36,7 @@
 </script>
   <!-- Header -->
   <div class="space-y-4">
-    <!-- AI Avatar with pulse animation -->
+    <!-- AI Avatar with pulse animation: -->
     <div class="space-y-4">
       <div class="space-y-4">
         <div class="space-y-4">
@@ -91,11 +91,11 @@
   @keyframes slide-in-from-bottom {
     from {
       transform: translateY(100%);
-      opacity: 0,
+      opacity: 0;
     }
     to {
       transform: translateY(0);
-      opacity: 1,
+      opacity: 1;
     }
   }
   .animate-in {
@@ -108,3 +108,4 @@
     animation-duration 300m;
   }
 </style>
+

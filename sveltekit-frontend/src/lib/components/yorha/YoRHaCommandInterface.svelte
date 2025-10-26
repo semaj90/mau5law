@@ -117,8 +117,8 @@ https://svelte.dev/e/js_parse_error -->
         rotation { x: 0, y: 0, z: 0 },
         scale: 1.0,
         color: '#00ff88',
-        opacity: 0.8,
-        animation 'rotate', // Changed semicolon to comma
+        opacity: 0.8;
+        animation: 'rotate', // Changed semicolon to comma
       },
       {
         id: 'data-streams',
@@ -127,8 +127,8 @@ https://svelte.dev/e/js_parse_error -->
         rotation { x: 0, y: 0, z: 0 },
         scale: 1.0,
         color: '#3b82f6',
-        opacity: 0.6,
-        animation 'flow', // Changed semicolon to comma
+        opacity: 0.6;
+        animation: 'flow', // Changed semicolon to comma
       },
       {
         id: 'neural-nodes',
@@ -137,8 +137,8 @@ https://svelte.dev/e/js_parse_error -->
         rotation { x: 0, y: 0, z: 0 },
         scale: 1.0,
         color: '#8b5cf6',
-        opacity: 0.9,
-        animation 'pulse', // Changed semicolon to comma
+        opacity: 0.9;
+        animation: 'pulse', // Changed semicolon to comma
       },
     ];
     holographicData.set(initialData);
@@ -230,9 +230,9 @@ https://svelte.dev/e/js_parse_error -->
       currentData.map(item => ({
         ...item,
         rotation {
-          x: item.rotation.x + (item.animation === 'rotate' ? 0.01 : 0),
-          y: item.rotation.y + (item.animation === 'rotate' ? 0.02 : 0),
-          z: item.rotation.z + (item.animation === 'rotate' ? 0.005 : 0),
+          x: item.rotation.x + (item.animation: === 'rotate' ? 0.01 : 0),
+          y: item.rotation.y + (item.animation: === 'rotate' ? 0.02 : 0),
+          z: item.rotation.z + (item.animation: === 'rotate' ? 0.005 : 0),
         },
       }))
     );
@@ -540,7 +540,7 @@ https://svelte.dev/e/js_parse_error -->
     bottom: 0;
     background: linear-gradient(transparent 50%, rgba(0, 255, 136, 0.03) 50%);
     background-size: 100% 2px;
-    animation scanline-scroll 0.1s linear infinite;
+    animation: scanline-scroll 0.1s linear infinite;
     pointer-events: none;
     z-index: 1,
   }
@@ -553,7 +553,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   .glitch-effect {
-    animation glitch 0.2s ease-in-out;
+    animation: glitch 0.2s ease-in-out;
   }
   @keyframes glitch {
     0% {
@@ -590,24 +590,24 @@ https://svelte.dev/e/js_parse_error -->
   .hologram-text {
     color: #00ff88;
     text-shadow: 0 0 10px currentColor;
-    animation hologram-flicker 2s ease-in-out infinite alternate;
+    animation: hologram-flicker 2s ease-in-out infinite alternate;
   }
   @keyframes hologram-flicker {
     0% {
-      opacity: 0.8,
+      opacity: 0.8;
     }
     50% {
-      opacity: 1,
+      opacity: 1;
     }
     100% {
-      opacity: 0.9,
+      opacity: 0.9;
     }
   }
   .module-panel {
     background: rgba(0, 20, 40, 0.8);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(0, 255, 136, 0.3);
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .module-panel:hover {
     border-color: #00ff88;
@@ -634,17 +634,17 @@ https://svelte.dev/e/js_parse_error -->
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    animation status-pulse 2s ease-in-out infinite;
+    animation: status-pulse 2s ease-in-out infinite;
   }
   @keyframes status-pulse {
     0% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.5,
+      opacity: 0.5;
     }
     100% {
-      opacity: 1,
+      opacity: 1;
     }
   }
   .data-stream {
@@ -653,20 +653,21 @@ https://svelte.dev/e/js_parse_error -->
     width: 2px;
     height: 100px;
     background: linear-gradient(to bottom, transparent, #00ff88, transparent);
-    animation data-flow 3s linear infinite;
+    animation: data-flow 3s linear infinite;
   }
   @keyframes data-flow {
     0% {
       transform: translateY(-100%);
-      opacity: 0,
+      opacity: 0;
     }
     50% {
-      opacity: 1,
+      opacity: 1;
     }
     100% {
       transform: translateY(100vh);
-      opacity: 0,
+      opacity: 0;
     }
   }
   /* Unused CSS classes removed - using Tailwind/UnoCSS classes in template instead */
 </style>
+

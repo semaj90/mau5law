@@ -219,7 +219,7 @@
     width: 320px;
     z-index: 20;
     pointer-events: none;
-    transition transform 0.3s ease;
+    transition: transform 0.3s ease;
     transform: translateX(-100%);
   }
   .sidebar-container.open {
@@ -243,7 +243,7 @@
     border-right: 1px solid var(--border-light);
     box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     overflow: hidden;
   }
   .header-actions {
@@ -289,7 +289,7 @@
     border: none;
     color: var(--text-muted);
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .tab-trigger:hover {
     background: var(--bg-tertiary);
@@ -304,12 +304,12 @@
     flex: 1,
     overflow: hidden;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
   }
   .tabs-container {
     flex: 1,
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     overflow: hidden;
   }
   .tags-section {
@@ -324,3 +324,4 @@
     }
   }
 </style>
+

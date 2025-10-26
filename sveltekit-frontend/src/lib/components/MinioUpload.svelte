@@ -45,11 +45,12 @@
 <style>
   .minio-upload {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 8px;
     max-width: 480px;
   }
   button[disabled] {
-    opacity: 0.6,
+    opacity: 0.6;
   }
 </style>
+

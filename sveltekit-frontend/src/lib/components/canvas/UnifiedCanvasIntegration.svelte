@@ -266,7 +266,7 @@
 <style>
   .unified-canvas-integration {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     height: 100vh;
     background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
     color: #00ff88;
@@ -275,7 +275,7 @@
   }
   .canvas-mode-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 1rem 2rem;
     background: rgba(0, 255, 136, 0.1);
@@ -304,7 +304,7 @@
     color: #00ff88;
     padding: 0.5rem 1rem;
     cursor: pointer;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     font-family: 'Courier New', monospace;
     font-size: 0.8rem;
     font-weight: bold;
@@ -325,7 +325,7 @@
   .yorha-canvas-section {
     flex: 1,
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     min-width: 0,
   }
   .evidence-canvas-section.full-width,
@@ -338,7 +338,7 @@
   }
   .canvas-status-bar {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 0.5rem 2rem;
     background: rgba(0, 0, 0, 0.8);
@@ -351,7 +351,7 @@
   }
   .sync-status.syncing {
     color: #ffaa00;
-    animation pulse 1s ease-in-out infinite;
+    animation: pulse 1s ease-in-out infinite;
   }
   .export-btn {
     background: transparent;
@@ -361,19 +361,19 @@
     cursor: pointer;
     font-family: 'Courier New', monospace;
     font-size: 0.7rem;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .export-btn:hover {
     background: rgba(0, 255, 136, 0.1);
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1, }
-    50% { opacity: 0.5, }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
   }
   /* Responsive design */
   @media (max-width: 768px) {
     .canvas-mode-header {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
     }
     .mode-controls {
@@ -382,7 +382,7 @@
       flex-wrap: wrap;
     }
     .canvas-container.split-view {
-      flex-direction column;
+      flex-direction: column;
     }
     .canvas-container.split-view .evidence-canvas-section {
       border-right: none;
@@ -390,3 +390,4 @@
     }
   }
 </style>
+

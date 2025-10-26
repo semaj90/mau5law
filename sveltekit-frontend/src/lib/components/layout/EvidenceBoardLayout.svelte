@@ -262,7 +262,7 @@ e; left: -9999px; top: -9999px; visibility: hidden;"
   .evidence-item {
     padding: 1rem;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     background: white;
     border: 2px solid #ccc;
     border-radius: 0.5rem;
@@ -281,3 +281,4 @@ e; left: -9999px; top: -9999px; visibility: hidden;"
     background: #fffbf0;
   }
 </style>
+

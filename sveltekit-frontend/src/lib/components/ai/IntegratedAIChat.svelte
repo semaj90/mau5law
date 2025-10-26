@@ -575,7 +575,7 @@
 <style>
   .integrated-ai-chat {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
     border: 2px solid rgba(250, 204, 21, 0.3);
     border-radius: 8px;
@@ -608,7 +608,7 @@
 
   .message-bubble {
     max-width: 85%;
-    animation slideIn 0.3s ease-out;
+    animation: slideIn 0.3s ease-out;
   }
 
   .user-message {
@@ -629,16 +629,16 @@
   }
 
   .loading-pulse {
-    animation pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 
   @keyframes slideIn {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translateY(10px);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translateY(0);
     }
   }
@@ -646,10 +646,10 @@
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.3,
+      opacity: 0.3;
     }
   }
 
@@ -665,3 +665,4 @@
     border-width: 0,
   }
 </style>
+

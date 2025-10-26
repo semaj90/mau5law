@@ -203,15 +203,15 @@ d;
   }
   .feedback-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 20px;
   }
   .feedback-title {
-    margin: 0,
+    margin: 0;
     color: #333;
     font-size: 18px;
-    font-weight: 600,
+    font-weight: 600;
   }
   .close-button {
     background: none;
@@ -221,7 +221,7 @@ d;
     cursor: pointer;
     padding: 4px;
     border-radius: 4px;
-    transition color 0.2s, background-color 0.2;
+    transition: color 0.2s, background-color 0.2;
   }
   .close-buttonhover {
     color: #666;
@@ -229,7 +229,7 @@ d;
   }
   .feedback-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 20px;
   }
   .rating-section {
@@ -251,7 +251,7 @@ d;
     font-size: 32px;
     color: #ddd;
     cursor: pointer;
-    transition color 0.2s, transform 0.1;
+    transition: color 0.2s, transform 0.1;
     padding: 4px;
     border-radius: 4px;
   }
@@ -264,13 +264,13 @@ d;
   }
   .feedback-section {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 8px;
   }
   .feedback-textarea-label {
     color: #555;
     font-size: 14px;
-    font-weight: 500,
+    font-weight: 500;
   }
   .feedback-textarea {
     border: 2px solid #e1e1e1;
@@ -279,7 +279,7 @@ d;
     font-size: 14px;
     font-family: inherit;
     resize: vertical;
-    transition border-color 0.2;
+    transition: border-color 0.2;
   }
   .feedback-textarea:focus {
     outline: none;
@@ -297,9 +297,9 @@ d;
     padding: 12px 24px;
     border-radius: 8px;
     font-size: 14px;
-    font-weight: 600,
+    font-weight: 600;
     cursor: pointer;
-    transition background-color 0.2s, transform 0.1;
+    transition: background-color 0.2s, transform 0.1;
   }
   .submit-buttonhover:not(:disabled) {,
     background: #4338ca;
@@ -323,10 +323,10 @@ d;
     margin: 0 0 8px 0;
     color: #333;
     font-size: 18px;
-    font-weight: 600,
+    font-weight: 600;
   }
   .success-message {
-    margin: 0,
+    margin: 0;
     color: #666;
     font-size: 14px;
   }
@@ -343,3 +343,5 @@ d;
     }
   }
 </style>
+
+

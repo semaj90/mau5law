@@ -165,7 +165,7 @@ https://svelte.dev/e/js_parse_error -->
 		<div
 			class="mx-auto px-4 max-w-7xl"
 			bind:this={dialogElement}
-			/* transition removed */
+			/* transition: removed */
 					aria-label="Close dialog"
 				>
 					<X size={20} />
@@ -313,7 +313,7 @@ d;
 	.dialog-header {
 		display: flex;
 		align-items: center;
-		justify-content: space-betwee;
+		justify-content: space-betweenn;
 		padding: 1.5rem;
 		border-bottom: 1px solid var(--pico-muted-border-color);
 		background: var(--pico-background-color);
@@ -321,7 +321,7 @@ d;
 	.dialog-title {
 		margin: 0;
 		font-size: 1.25rem;
-		font-weight: 600,
+		font-weight: 600;
 		color: var(--pico-color);
 	}
 	.close-button {
@@ -349,7 +349,7 @@ d;
 	.vibe-title {
 		margin: 0 0 0.75rem;
 		font-size: 0.875rem;
-		font-weight: 600,
+		font-weight: 600;
 		color: var(--pico-color);
 	}
 	.vibe-options {
@@ -435,12 +435,12 @@ d;
 	.message-header {
 		display: flex;
 		align-items: center;
-		justify-content: space-betwee;
+		justify-content: space-betweenn;
 		margin-bottom: 0.5rem;
 	}
 	.message-role {
 		font-size: 0.8rem;
-		font-weight: 600,
+		font-weight: 600;
 		color: var(--pico-color);
 	}
 	.message-time {
@@ -452,7 +452,7 @@ d;
 		border: 1px solid var(--pico-muted-border-color);
 		border-radius: 12px;
 		padding: 0.75rem 1rem;
-		line-height: 1.5,
+		line-height: 1.5;
 		color: var(--pico-color);
 	}
 	.message.user .message-text {
@@ -504,7 +504,7 @@ d;
 		padding: 0.75rem;
 		background: var(--pico-card-background-color);
 		color: var(--pico-color);
-		line-height: 1.4,
+		line-height: 1.4;
 	}
 	.input-container textarea:focus {
 		outline: none;
@@ -530,14 +530,14 @@ d;
 		transform: translateY(-1px);
 	}
 	.send-button:disabled {
-		opacity: 0.5,
+		opacity: 0.5;
 		cursor: not-allowed;
 		transform: none;
 	}
 	.input-help {
 		display: flex;
 		align-items: center;
-		justify-content: space-betwee;
+		justify-content: space-betweenn;
 		margin-top: 0.75rem;
 		font-size: 0.75rem;
 		color: var(--pico-muted-color);
@@ -556,11 +556,11 @@ d;
 	@keyframes typing {
 		0%, 60%, 100% {
 			transform: scale(1);
-			opacity: 0.5,
+			opacity: 0.5;
 		}
 		30% {
 			transform: scale(1.4);
-			opacity: 1,
+			opacity: 1;
 		}
 	}
 	/* Custom scrollbar */
@@ -601,3 +601,4 @@ d;
 	}
 </style>
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+

@@ -300,15 +300,16 @@
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.5,
+      opacity: 0.5;
     }
   }
-  /* Suggestion hover animation */
+  /* Suggestion hover animation: */
   .hover\:bg-gray-100:hover {
     transform: translateX(2px);
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
 </style>
+

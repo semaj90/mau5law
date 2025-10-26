@@ -458,7 +458,7 @@ Features: Case management, evidence upload, AI chat, vector search
   }
   /* Enhanced hover effects for elemental awareness */
   :global(*:hover) {
-    transition all 0.1s ease;
+    transition: all 0.1s ease;
   }
   /* WebGPU acceleration indicators */
   :global(.gpu-accelerated) {
@@ -472,3 +472,4 @@ Features: Case management, evidence upload, AI chat, vector search
     font-size: 12px;
   }
 </style>
+

@@ -335,6 +335,6 @@ Analyze All Evidence
 		}
 	}
 	.status-indicator-active {
-		animation pulse-green 2s ease-in-out infinite;
+		animation: pulse-green 2s ease-in-out infinite;
 	}
 </style>

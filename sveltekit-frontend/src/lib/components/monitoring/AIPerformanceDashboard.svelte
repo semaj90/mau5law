@@ -433,7 +433,7 @@
   }
   .dashboard-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
@@ -447,7 +447,7 @@
   .header-title h2 {
     margin: 0;
     font-size: 1.5rem;
-    font-weight: 700,
+    font-weight: 700;
     color: #1e293b;
   }
   .header-controls {
@@ -461,8 +461,8 @@
     background: white;
     cursor: pointer;
     font-size: 0.875rem;
-    font-weight: 500,
-    transition all 0.2;
+    font-weight: 500;
+    transition: all 0.2;
   }
   .control-btn:hover {
     background: #f3f4f6;
@@ -495,16 +495,16 @@
   .card-header h3 {
     margin: 0;
     font-size: 1.125rem;
-    font-weight: 600,
+    font-weight: 600;
   }
   .card-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.75rem;
   }
   .metric-row, .backend-row {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 0.5rem 0;
     border-bottom: 1px solid #f1f5f9;
@@ -517,7 +517,7 @@
     color: #64748b;
   }
   .metric-value {
-    font-weight: 600,
+    font-weight: 600;
     color: #1e293b;
   }
   .metric-value.error {
@@ -538,7 +538,7 @@
     padding: 0.125rem 0.375rem;
     border-radius: 4px;
     font-size: 0.75rem;
-    font-weight: 500,
+    font-weight: 500;
   }
   .backend-metrics {
     display: flex;
@@ -555,7 +555,7 @@
   }
   .history-chart {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
     max-height: 200px;
     overflow-y: auto;
@@ -569,12 +569,12 @@
   .point-time {
     min-width: 40px;
     color: #64748b;
-    font-weight: 500,
+    font-weight: 500;
   }
   .point-metrics {
     flex: 1,
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
   }
   .metric-bar {
@@ -587,7 +587,7 @@
     font-size: 0.625rem;
     color: #64748b;
     text-transform: uppercase;
-    font-weight: 600,
+    font-weight: 600;
   }
   .bar {
     flex: 1,
@@ -598,7 +598,7 @@
   }
   .bar-fill {
     height: 100%;
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .bar-fill.requests {
     background: #3b82f6;
@@ -609,7 +609,7 @@
   .bar-value {
     min-width: 20px;
     text-align: right;
-    font-weight: 500,
+    font-weight: 500;
   }
   .no-data {
     text-align: center;
@@ -626,7 +626,7 @@
   .backend-details h3 {
     margin: 0 0 1rem 0;
     font-size: 1.25rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #1e293b;
   }
   .backend-tabs {
@@ -643,7 +643,7 @@
   }
   .backend-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 0.75rem;
@@ -652,7 +652,7 @@
   .backend-header h4 {
     margin: 0;
     font-size: 1rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #1e293b;
   }
   .status-badge {
@@ -670,7 +670,7 @@
   }
   .info-item {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
   }
   .info-label {
@@ -682,7 +682,7 @@
   }
   .info-value {
     font-size: 0.875rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #1e293b;
   }
   /* Color utilities */
@@ -702,7 +702,7 @@
       grid-template-columns: 1fr;
     }
     .dashboard-header {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
       align-items: flex-start;
     }
@@ -711,3 +711,4 @@
     }
   }
 </style>
+

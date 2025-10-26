@@ -188,13 +188,13 @@
     flex-wrap: wrap;
     gap: 1rem;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     margin-bottom: 1rem;
   }
   .panel-header h2 {
     font-size: 1.6rem;
     color: #111827;
-    margin: 0,
+    margin: 0;
   }
   .controls {
     display: flex;
@@ -236,7 +236,7 @@
     border: 0,
     cursor: pointer;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 0.6rem 0.9rem;
     font-weight: 600;
@@ -255,11 +255,11 @@
   }
   .chevron {
     font-size: 0.9rem;
-    opacity: 0.7,
+    opacity: 0.7;
   }
   .route-list {
     list-style: none;
-    margin: 0,
+    margin: 0;
     padding: 0.35rem 0.75rem 0.75rem;
     display: grid;
     gap: 0.4rem;
@@ -275,10 +275,9 @@
     border-radius: 0.4rem;
     text-decoration none;
     font-size: 0.8rem;
-    line-height: 1.1,
+    line-height: 1.1;
     color: #1f2937;
-    transition
-      background 0.12s,
+    transition: background 0.12s,
       border-color 0.12s;
   }
   .route-item a:hover {
@@ -293,7 +292,7 @@
     font-size: 0.7rem;
   }
   .label {
-    font-weight: 500,
+    font-weight: 500;
   }
   .badge {
     background: #2563eb;
@@ -321,3 +320,4 @@
     }
   }
 </style>
+

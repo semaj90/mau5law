@@ -698,7 +698,7 @@
 
 	:global(.highlighted) {
 		box-shadow: 0 0 0 2px rgb(251 191 36 / 0.75), 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-		animation pulse-highlight 2s ease-in-out;
+		animation: pulse-highlight 2s ease-in-out;
 	}
 	:global(.selected) {
 		box-shadow: 0 0 0 2px hsl(var(--primary) / 0.75);
@@ -714,3 +714,4 @@
 		}
 	}
 </style>
+

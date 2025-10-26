@@ -455,7 +455,7 @@
     border-radius: 20px;
     position relative;
     cursor: pointer;
-    transition background 0.2;
+    transition: background 0.2;
   }
   .toggle:checked {
     background: #3b82f6;
@@ -469,9 +469,10 @@
     border-radius: 50%;
     top: 1px;
     left: 1px;
-    transition transform 0.2;
+    transition: transform 0.2;
   }
   .toggle:checked::before {
     transform: translateX(20px);
   }
 </style>
+

@@ -608,11 +608,11 @@ restoreSession();
     align-items: center;
     justify-content: center;
     z-index: 1000,
-    animation fadeIn 0.3s ease;
+    animation: fadeIn 0.3s ease;
   }
   @keyframes fadeIn {
-    from { opacity: 0, }
-    to { opacity: 1, }
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
   .n64-drop-zone {
     border: 4px solid #FFD700;
@@ -620,7 +620,7 @@ restoreSession();
     padding: 2rem;
     text-align: center;
     cursor: pointer;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     min-height: 220px;
     display: flex;
     align-items: center;
@@ -662,12 +662,12 @@ restoreSession();
   }
   .n64-drop-zone.uploading {
     cursor: not-allowed;
-    opacity: 0.8,
-    animation pulse 2s infinite;
+    opacity: 0.8;
+    animation: pulse 2s infinite;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 0.8, }
-    50% { opacity: 1, }
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
   }
   /* Theme-specific styles */
   .theme-nes {
@@ -688,12 +688,12 @@ restoreSession();
   }
   .n64-upload-prompt {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 1.5rem;
   }
   .n64-upload-icon {
-    animation float 3s ease-in-out infinite;
+    animation: float 3s ease-in-out infinite;
   }
   @keyframes float {
     0%, 100% { transform: translateY(0px), }
@@ -720,7 +720,7 @@ restoreSession();
   .n64-file-list {
     width: 100%;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .n64-file-item {
@@ -731,7 +731,7 @@ restoreSession();
     background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
     border: 2px solid #FFD700;
     text-align: left;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     position relative;
     box-shadow:
       inset 0 0 10px rgba(255, 215, 0, 0.1),
@@ -750,7 +750,7 @@ restoreSession();
   .n64-file-.status-uploading {
     border-color: #4090FF;
     background: linear-gradient(135deg, #1a1a2e 0%, #0a0a1a 100%);
-    animation processingGlow 1.5s ease-in-out infinite alternate;
+    animation: processingGlow 1.5s ease-in-out infinite alternate;
   }
   .n64-file-.status-completed {
     border-color: #40FF40;
@@ -788,11 +788,11 @@ restoreSession();
   }
   .n64-retry-countdown {
     color: #FFA500;
-    animation blink 1s infinite;
+    animation: blink 1s infinite;
   }
   @keyframes blink {
-    0%, 50% { opacity: 1, }
-    51%, 100% { opacity: 0.3, }
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.3; }
   }
   .n64-file-actions {
     display: flex;
@@ -807,7 +807,7 @@ restoreSession();
     font-family: 'Courier New', monospace;
     font-weight: bold;
     font-size: 0.8rem;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     box-shadow:
       inset 1px 1px 0 rgba(255, 255, 255, 0.3),
       inset -1px -1px 0 rgba(0, 0, 0, 0.3);
@@ -876,7 +876,7 @@ restoreSession();
   }
   .n64-metric-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 0.75rem;
     background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
@@ -926,7 +926,7 @@ restoreSession();
     font-family: 'Courier New', monospace;
     font-weight: bold;
     cursor: pointer;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     font-size: 0.9rem;
     letter-spacing: 0.5px;
     box-shadow:
@@ -943,7 +943,7 @@ restoreSession();
       0 6px 12px rgba(0, 0, 0, 0.7);
   }
   .n64-upload-buttondisabled {
-    opacity: 0.6,
+    opacity: 0.6;
     cursor: not-allowed;
     transform: none;
   }
@@ -955,7 +955,7 @@ restoreSession();
     font-family: 'Courier New', monospace;
     font-weight: bold;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     font-size: 0.8rem;
     letter-spacing: 0.5px;
     box-shadow:
@@ -1012,7 +1012,7 @@ restoreSession();
       grid-template-columns: 1fr 1fr;
     }
     .n64-upload-actions {
-      flex-direction column;
+      flex-direction: column;
     }
     .n64-file-item {
       padding: 0.75rem;

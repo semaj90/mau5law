@@ -276,9 +276,9 @@
 <style>
   /* Ensure smooth theme transitions */
   :global(*) {
-    transition
-      background-color 0.2s ease,
+    transition: background-color 0.2s ease,
       color 0.2s ease,
       border-color 0.2s ease;
   }
 </style>
+

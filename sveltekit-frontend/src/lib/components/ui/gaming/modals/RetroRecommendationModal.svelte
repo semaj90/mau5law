@@ -345,7 +345,7 @@ d;
     border-radius: 8px;
     overflow: hidden;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
   }
   /* Console-specific styling */
   .retro-modal.nes {
@@ -392,7 +392,7 @@ d;
     padding: 1rem;
     border-bottom: 2px solid;
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     background: rgba(0, 0, 0, 0.2);
   }
@@ -409,11 +409,11 @@ d;
     font-size: 2rem;
     cursor: pointer;
     padding: 0;
-    line-height: 1,
-    transition opacity 0.2;
+    line-height: 1;
+    transition: opacity 0.2;
   }
   .close-buttonhover {
-    opacity: 0.7,
+    opacity: 0.7;
   }
   .modal-content {
     flex: 1;
@@ -431,7 +431,7 @@ d;
   }
   .recommendations-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .recommendation-item {
@@ -442,7 +442,7 @@ d;
     border: 2px solid;
     border-radius: 8px;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
     position relative;
   }
   .recommendation-item:hover {
@@ -463,7 +463,7 @@ d;
   }
   .rec-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 0.5rem;
     font-size: 0.8rem;
@@ -478,14 +478,14 @@ d;
     margin: 0;
     font-size: 0.9rem;
     opacity: 0.9;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   .action-indicator {
     font-size: 1.5rem;
     font-weight: bold;
     min-width: 2rem;
     text-align: center;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .modal-footer {
     padding: 1rem;
@@ -494,9 +494,9 @@ d;
   }
   .controls-hint {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     font-size: 0.8rem;
-    opacity: 0.7,
+    opacity: 0.7;
   }
   /* Animation classes */
   .recommendation-item {
@@ -504,11 +504,11 @@ d;
   }
   @keyframes slideIn {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translateX(-20px);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translateX(0);
     }
   }
@@ -524,3 +524,5 @@ d;
     border-radius: 4px;
   }
 </style>
+
+

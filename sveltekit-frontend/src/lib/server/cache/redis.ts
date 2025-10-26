@@ -40,22 +40,42 @@ class CacheService {
     try {
       const mod = await import('ioredis');
       const Redis = (mod as any).default ?? mod;
-      this.redisClient = new Redis(url);
+      this.redisClient = new Redis(url, {
+        // Improve connection reliability for HMR and SSR
+        enableReadyCheck: false,
+        enableOfflineQueue: true,
+        maxRetriesPerRequest: 3,
+        retryStrategy: (times: number) => {
+          const delay = Math.min(times * 50, 2000);
+          return delay;
+        },
+      });
+
       // Wire basic error handling
       this.redisClient.on?.('error', (err: any) => {
         console.warn('Redis connection error, falling back to memory cache:', err?.message || err);
         this.useRedis = false;
       });
 
-      // Some clients require explicit connect
+      this.redisClient.on?.('ready', () => {
+        console.log('📝 Redis cache connected and ready');
+        this.useRedis = true;
+      });
+
+      // Some clients require explicit connect (lazy connection on first use)
       if (typeof this.redisClient.connect === 'function') {
-        await this.redisClient.connect().catch(() => {});
+        await this.redisClient.connect().catch((err: any) => {
+          console.warn('Redis lazy connect failed:', err?.message || err);
+          this.useRedis = false;
+        });
       } else if (typeof this.redisClient.ping === 'function') {
-        await this.redisClient.ping().catch(() => {});
+        await this.redisClient.ping().catch((err: any) => {
+          console.warn('Redis ping failed:', err?.message || err);
+          this.useRedis = false;
+        });
       }
 
       this.useRedis = true;
-      console.log('📝 Redis cache connected');
     } catch (error: any) {
       console.warn('Redis not available, using memory cache:', error?.message || error);
       this.useRedis = false;
@@ -67,6 +87,12 @@ class CacheService {
     try {
       if (this.useRedis && this.redisClient) {
         const rc = this.redisClient;
+        // Check if client is closed due to HMR or connection issues
+        if (typeof rc.status === 'string' && (rc.status === 'close' || rc.status === 'closing')) {
+          console.warn('Redis client closed, falling back to memory');
+          this.useRedis = false;
+          return this.getFromMemory<T>(key);
+        }
         // rc.get may return string | Buffer | Uint8Array depending on client/config
         const result: string | Buffer | Uint8Array | null = await rc.get(key);
         if (!result) return null;
@@ -74,6 +100,12 @@ class CacheService {
       }
       return this.getFromMemory<T>(key);
     } catch (e: any) {
+      // Handle ClientClosedError and connection issues gracefully
+      if (e?.message?.includes('ClientClosed') || e?.message?.includes('ECONNREFUSED')) {
+        console.warn('Redis error, falling back to memory:', e?.message || e);
+        this.useRedis = false;
+        return this.getFromMemory<T>(key);
+      }
       console.warn('Cache get error:', e?.message || e);
       return null;
     }
@@ -290,6 +322,11 @@ class CacheService {
     memoryCache.set(key, { data: value, timestamp: Date.now(), ttl: ttlMs });
   }
 
+  // Alias for backward compatibility
+  private setToMemory<T>(key: string, value: T, ttlMs: number): void {
+    this.setInMemory(key, value, ttlMs);
+  }
+
   private hashString(str: string): string {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -396,6 +433,91 @@ class CacheService {
       } catch {
         return raw as unknown as T;
       }
+    }
+  }
+
+  // --- Redis Operations for Search Analytics ---
+
+  /**
+   * Increment a sorted set member score (for top-k tracking)
+   */
+  async zincrby(key: string, increment: number, member: string): Promise<number | null> {
+    try {
+      if (this.useRedis && this.redisClient?.zincrby) {
+        return await this.redisClient.zincrby(key, increment, member);
+      }
+      // Fallback: track in memory
+      const memKey = `${key}:${member}`;
+      const current = (this.getFromMemory<number>(memKey) as number) || 0;
+      const updated = current + increment;
+      this.setToMemory(memKey, updated, 3600);
+      return updated;
+    } catch (e) {
+      console.warn('Cache zincrby error:', e?.message || e);
+      return null;
+    }
+  }
+
+  /**
+   * Get range from sorted set in reverse order with scores
+   */
+  async zrevrange(key: string, start: number, stop: number, withScores?: string): Promise<string[]> {
+    try {
+      if (this.useRedis && this.redisClient?.zrevrange) {
+        if (withScores === 'WITHSCORES') {
+          return await this.redisClient.zrevrange(key, start, stop, 'WITHSCORES');
+        }
+        return await this.redisClient.zrevrange(key, start, stop);
+      }
+      // Fallback: return empty
+      return [];
+    } catch (e) {
+      console.warn('Cache zrevrange error:', e?.message || e);
+      return [];
+    }
+  }
+
+  /**
+   * Push item to list
+   */
+  async lpush(key: string, ...values: string[]): Promise<number | null> {
+    try {
+      if (this.useRedis && this.redisClient?.lpush) {
+        return await this.redisClient.lpush(key, ...values);
+      }
+      return null;
+    } catch (e) {
+      console.warn('Cache lpush error:', e?.message || e);
+      return null;
+    }
+  }
+
+  /**
+   * Trim list to range
+   */
+  async ltrim(key: string, start: number, stop: number): Promise<void> {
+    try {
+      if (this.useRedis && this.redisClient?.ltrim) {
+        await this.redisClient.ltrim(key, start, stop);
+      }
+    } catch (e) {
+      console.warn('Cache ltrim error:', e?.message || e);
+    }
+  }
+
+  /**
+   * Ping Redis to check connection
+   */
+  async ping(): Promise<boolean> {
+    try {
+      if (this.useRedis && this.redisClient?.ping) {
+        const result = await this.redisClient.ping();
+        return result === 'PONG' || result === true;
+      }
+      return false;
+    } catch (e) {
+      console.warn('Cache ping error:', e?.message || e);
+      return false;
     }
   }
 }

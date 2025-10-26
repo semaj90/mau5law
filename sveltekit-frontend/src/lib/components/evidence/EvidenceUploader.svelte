@@ -100,7 +100,7 @@ export default ;
 	user-select: none;
   }
   .uploader.disabled {
-	opacity: 0.6,
+	opacity: 0.6;
 	cursor: not-allowed;
   }
   .files {
@@ -109,7 +109,7 @@ export default ;
   }
   .file {
 	display: flex;
-	justify-content: space-betwee;
+	justify-content: space-betweenn;
 	align-items: center;
 	padding: 0.25rem 0;
 	border-bottom: 1px solid #f0f0f0;
@@ -166,3 +166,4 @@ export default ;
 	{/each}
   </div>
 {/if}
+

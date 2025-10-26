@@ -59,7 +59,7 @@
 <style>
   .auth-layout {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     height: 100vh;
     background: var(--console-bg, #0f0f23);
     color: var(--console-fg, white);
@@ -68,7 +68,7 @@
   .main-content {
     flex: 1;
     margin-left: 0,
-    transition margin-left 0.3s ease;
+    transition: margin-left 0.3s ease;
     overflow-y: auto;
     background: var(--console-gradient-main, linear-gradient(135deg, #0f0f23, #1a1a2e));
   }
@@ -119,3 +119,5 @@
     background: var(--console-primary-light, #00cc00);
   }
 </style>
+
+

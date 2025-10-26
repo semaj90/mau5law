@@ -490,7 +490,7 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     max-height: var(--dialog-max-height);
     width: 100%;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     overflow: hidden;
     position relative;
 /* 3D transformations */ transform-style: preserve-3d;
@@ -529,57 +529,57 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
   @keyframes dialogZoomIn {
     0% {
       transform: scale(0.8) rotateY(-15deg) rotateX(15deg);
-      opacity: 0,
+      opacity: 0;
     }
     100% {
       transform: scale(1) rotateY(0deg) rotateX(0deg);
-      opacity: 1,
+      opacity: 1;
     }
   }
   @keyframes dialogSlideUp {
     0% {
       transform: translateY(50px) rotateX(10deg);
-      opacity: 0,
+      opacity: 0;
     }
     100% {
       transform: translateY(0) rotateX(0deg);
-      opacity: 1,
+      opacity: 1;
     }
   }
   @keyframes dialogSlideDown {
     0% {
       transform: translateY(-50px) rotateX(-10deg);
-      opacity: 0,
+      opacity: 0;
     }
     100% {
       transform: translateY(0) rotateX(0deg);
-      opacity: 1,
+      opacity: 1;
     }
   }
   @keyframes dialogFadeIn {
     0% {
-      opacity: 0,
+      opacity: 0;
       transform: scale(0.95);
     }
     100% {
-      opacity: 1,
+      opacity: 1;
       transform: scale(1);
     }
   }
   @keyframes dialogPortal {
     0% {
       transform: scale(0.3) rotateY(90deg) rotateX(45deg);
-      opacity: 0,
+      opacity: 0;
       filter: blur(10px);
     }
     50% {
       transform: scale(1.1) rotateY(45deg) rotateX(22deg);
-      opacity: 0.7,
+      opacity: 0.7;
       filter: blur(2px);
     }
     100% {
       transform: scale(1) rotateY(0deg) rotateX(0deg);
-      opacity: 1,
+      opacity: 1;
       filter: blur(0px);
     }
   }
@@ -588,13 +588,13 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     gap: 16px;
     background: rgba(255, 255, 255, 0.05);
   }
   .dialog-title {
     font-size: 1.5em;
-    font-weight: 700,
+    font-weight: 700;
     margin: 0;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -614,7 +614,7 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     padding: 8px;
     color: #ffffff;
     cursor: pointer;
-    transition all 200ms cubic-bezier(0.23, 1, 0.32, 1);
+    transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -652,7 +652,7 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 20px;
@@ -691,8 +691,8 @@ background: radial-gradient(circle at 30% 20%, var(--fog-color, #404040) 0%, tra
     animation: pulse 2s ease-in-out infinite;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1, }
-    50% { opacity: 0.6, }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
   }
 /* Lighting overlay */ .lighting-overlay {
     position absolute;
@@ -750,15 +750,15 @@ background: linear-gradient( 45deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 
   @keyframes floatParticles {
     0%, 100% {
       transform: translateY(0px) translateX(0px) scale(1);
-      opacity: 0.6,
+      opacity: 0.6;
     }
     33% {
       transform: translateY(-20px) translateX(10px) scale(1.2);
-      opacity: 1,
+      opacity: 1;
     }
     66% {
       transform: translateY(10px) translateX(-5px) scale(0.8);
-      opacity: 0.4,
+      opacity: 0.4;
     }
   }
 /* Material type variations */ .n64-dialog.pbr {
@@ -876,3 +876,4 @@ background: radial-gradient( ellipse at center, transparent 0%, var(--fog-color,
     }
   }
 </style>
+

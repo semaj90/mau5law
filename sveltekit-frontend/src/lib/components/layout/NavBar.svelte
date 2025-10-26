@@ -2,6 +2,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
+  import { toastStore } from '$lib/stores/toast';
   import { applyConsolePalette, CONSOLE_PALETTES, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
 
   interface User {
@@ -27,6 +28,15 @@
   let isAuthenticated = $derived(!!user);
   let currentRoute = $derived($page.url.pathname);
   let isAdmin = $derived(user?.role === 'admin');
+  // Signed-in badge lifecycle
+  let showSignInBadge = $state(false);
+  $effect(() => {
+    if (isAuthenticated && user) {
+      showSignInBadge = true;
+      const t = setTimeout(() => (showSignInBadge = false), 4000);
+      return () => clearTimeout(t);
+    }
+  });
 
   // Theme switching logic
   function switchTheme(theme: ConsolePaletteName) {
@@ -55,9 +65,22 @@
     goto(path);
   }
 
-  function handleLogout() {
-    // Logout logic would go here
-    goto('/login');
+  async function handleLogout() {
+    try {
+      // Call the logout endpoint to invalidate session
+      const response = await fetch('/logout', { method: 'POST' });
+      if (response.ok) {
+        toastStore.success('👋 Signed out successfully!');
+        // Wait for toast to be visible, then redirect
+        setTimeout(() => goto('/'), 500);
+      } else {
+        toastStore.error('❌ Logout failed');
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+      toastStore.error('❌ Logout failed');
+      goto('/');
+    }
   }
 </script>
 
@@ -133,6 +156,33 @@
 
       <!-- User Menu -->
       {#if isAuthenticated && user}
+        {#if showSignInBadge}
+          <span class="signin-badge" aria-live="polite">Signed in</span>
+        {/if}
+        <details class="profile-dropdown">
+          <summary class="profile-trigger" aria-haspopup="menu">
+            <span class="user-avatar" aria-hidden="true">{user.avatar ? '' : '👤'}</span>
+            {#if user.avatar}
+              <img class="user-avatar-img" src={user.avatar} alt="Profile" />
+            {/if}
+            <span class="user-name">{user.name ?? user.email}</span>
+          </summary>
+          <div class="profile-menu" role="menu">
+            <div class="profile-header">
+              <div class="profile-row">
+                <span class="profile-name">{user.name ?? 'User'}</span>
+                {#if user.role}
+                  <span class="profile-role">{user.role}</span>
+                {/if}
+              </div>
+              <div class="profile-email">{user.email}</div>
+            </div>
+            <button class="profile-item" role="menuitem" onclick={() => goto('/profile')}>Profile</button>
+            <button class="profile-item" role="menuitem" onclick={() => goto('/settings')}>Settings</button>
+            <div class="profile-separator" aria-hidden="true"></div>
+            <button class="profile-item profile-logout" role="menuitem" onclick={handleLogout}>Sign out</button>
+          </div>
+        </details>
         <div class="user-menu">
           <button class="user-btn" onclick={() => goto('/profile')}>
             <span class="user-avatar">👤</span>
@@ -165,7 +215,7 @@
   .nav-container {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     padding: 0.75rem 1rem;
     max-width: 1400px;
     margin: 0 auto;
@@ -208,7 +258,7 @@
     width: 100%;
     background: var(--console-fg, white);
     margin: 2px 0;
-    transition 0.3s;
+    transition: 0.3s;
     transform-origin: center;
   }
 
@@ -285,6 +335,15 @@
     align-items: center;
     gap: 1rem;
   }
+  .signin-badge {
+    background: #10b981;
+    color: #0b2e1f;
+    border: 1px solid #059669;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
 
   .theme-selector {
     position: relative;
@@ -344,7 +403,7 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  .theme-optionhover {
+  .theme-option:hover {
     background: rgba(255, 255, 255, 0.1);
   }
 
@@ -362,7 +421,7 @@
 
   .theme-info {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: flex-start;
     flex: 1;
   }
@@ -386,6 +445,43 @@
     align-items: center;
     gap: 0.5rem;
   }
+  .profile-dropdown { position: relative; }
+  .profile-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--console-primary, #00aa00);
+    color: var(--console-fg, white);
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.2s;
+    list-style: none;
+  }
+  .profile-trigger:hover { background: rgba(255, 255, 255, 0.2); }
+  .user-avatar {
+    width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;
+    background: rgba(255, 255, 255, 0.12); border-radius: 50%; font-size: 0.9rem;
+  }
+  .user-avatar-img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,255,255,0.2); }
+  .profile-menu {
+    position: absolute; top: calc(100% + 0.5rem); right: 0; min-width: 240px;
+    background: var(--console-bg, #0f0f23); border: 2px solid var(--console-primary, #00aa00);
+    border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); padding: 0.5rem; z-index: 1000;
+  }
+  .profile-header { padding: 0.25rem 0.5rem 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.12); margin-bottom: 0.25rem; }
+  .profile-row { display: flex; align-items: center; justify-content: space-betweennn; }
+  .profile-name { font-weight: 600; }
+  .profile-role { font-size: 0.75rem; opacity: 0.7; }
+  .profile-email { font-size: 0.8rem; opacity: 0.7; }
+  .profile-item {
+    display: block; width: 100%; text-align: left; background: none; color: var(--console-fg, white);
+    border: none; padding: 0.5rem 0.5rem; border-radius: 6px; cursor: pointer;
+  }
+  .profile-item:hover { background: rgba(255, 255, 255, 0.08); }
+  .profile-logout { color: #ffb4b4; }
+  .profile-separator { height: 1px; background: rgba(255,255,255,0.12); margin: 0.25rem 0; }
 
   .user-btn {
     display: flex;
@@ -469,3 +565,5 @@
     }
   }
 </style>
+
+

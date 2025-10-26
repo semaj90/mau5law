@@ -343,12 +343,12 @@ https://svelte.dev/e/bindable_invalid_location -->
   }
   .analysis-wrapper {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
   }
   /* Error state */
   .analysis-error {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100%;
@@ -366,7 +366,7 @@ https://svelte.dev/e/bindable_invalid_location -->
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 6px;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .retry-buttonhover {
     background: rgba(0, 0, 0, 0.2);
@@ -374,7 +374,7 @@ https://svelte.dev/e/bindable_invalid_location -->
   /* Progress state */
   .analysis-progress {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     justify-content: center;
     height: 100%;
     padding: 48px 32px;
@@ -391,7 +391,7 @@ https://svelte.dev/e/bindable_invalid_location -->
   .progress-header h3 {
     margin: 0;
     font-size: 24px;
-    font-weight: 600,
+    font-weight: 600;
   }
   .progress-bar {
     width: 100%;
@@ -403,21 +403,21 @@ https://svelte.dev/e/bindable_invalid_location -->
   }
   .progress-fill {
     height: 100%;
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
     border-radius: 4px;
   }
   .progress-info {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 32px;
     font-size: 14px;
   }
   .progress-step {
-    font-weight: 500,
+    font-weight: 500;
   }
   .progress-percent {
-    font-weight: 600,
+    font-weight: 600;
   }
   .analysis-meta {
     display: flex;
@@ -450,16 +450,16 @@ https://svelte.dev/e/bindable_invalid_location -->
     font-size: 24px;
   }
   .results-header h3 {
-    margin: 0,
+    margin: 0;
     flex: 1;
     font-size: 18px;
-    font-weight: 600,
+    font-weight: 600;
   }
   .confidence-badge {
     padding: 4px 12px;
     border-radius: 12px;
     font-size: 12px;
-    font-weight: 600,
+    font-weight: 600;
     color: white;
   }
   .results-body {
@@ -475,12 +475,12 @@ https://svelte.dev/e/bindable_invalid_location -->
   .results-body h4 {
     margin: 0 0 12px 0;
     font-size: 16px;
-    font-weight: 600,
+    font-weight: 600;
     color: rgba(0, 0, 0, 0.8);
   }
   .results-body p {
     margin: 0;
-    line-height: 1.6,
+    line-height: 1.6;
     color: rgba(0, 0, 0, 0.7);
   }
   .results-body ul {
@@ -489,7 +489,7 @@ https://svelte.dev/e/bindable_invalid_location -->
   }
   .results-body li {
     margin-bottom: 8px;
-    line-height: 1.5,
+    line-height: 1.5;
     color: rgba(0, 0, 0, 0.7);
   }
   .analysis-metadata {
@@ -504,12 +504,12 @@ https://svelte.dev/e/bindable_invalid_location -->
   }
   .meta-cell {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 4px;
   }
   .meta-label {
     font-size: 12px;
-    font-weight: 600,
+    font-weight: 600;
     color: rgba(0, 0, 0, 0.5);
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -522,7 +522,7 @@ https://svelte.dev/e/bindable_invalid_location -->
   /* AI Placeholder */
   .ai-placeholder-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 24px;
@@ -548,7 +548,7 @@ https://svelte.dev/e/bindable_invalid_location -->
     position absolute;
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
-    animation brain-wave 2s infinite;
+    animation: brain-wave 2s infinite;
   }
   .wave-1 {
     width: 80px;
@@ -577,11 +577,11 @@ https://svelte.dev/e/bindable_invalid_location -->
   .placeholder-text h3 {
     margin: 0 0 8px 0;
     font-size: 20px;
-    font-weight: 600,
+    font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
   }
   .placeholder-text p {
-    margin: 0,
+    margin: 0;
     color: rgba(255, 255, 255, 0.7);
     font-size: 14px;
   }
@@ -589,11 +589,11 @@ https://svelte.dev/e/bindable_invalid_location -->
   @keyframes brain-wave {
     0% {
       transform: scale(1);
-      opacity: 1,
+      opacity: 1;
     }
     100% {
       transform: scale(1.3);
-      opacity: 0,
+      opacity: 0;
     }
   }
   /* Responsive design */
@@ -612,7 +612,7 @@ https://svelte.dev/e/bindable_invalid_location -->
       grid-template-columns: 1fr;
     }
     .analysis-meta {
-      flex-direction column;
+      flex-direction: column;
       gap: 12px;
     }
   }
@@ -620,10 +620,12 @@ https://svelte.dev/e/bindable_invalid_location -->
   @media (prefers-reduced-motion reduce) {
     .progress-fill,
     .wave {
-      animation none;
+      animation: none;
     }
     .brain-waves {
       display: none;
     }
   }
 </style>
+
+

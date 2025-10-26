@@ -290,7 +290,7 @@
     border-radius: 4px;
     font-size: 1rem;
     cursor: pointer;
-    transition background-color 0.2;
+    transition: background-color 0.2s;
   }
   .process-btn:hover:not(:disabled) {,
     background: #0052a3;
@@ -330,7 +330,7 @@
     font-size: 1rem;
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    transition transform 0.2;
+    transition: transform 0.2;
   }
   .chat-toggle:hover {
     transform: translateY(-2px);
@@ -348,11 +348,11 @@
     box-shadow: 0 10px 40px rgba(0,0,0,0.3);
     z-index: 1001;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
   }
   .chat-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 1rem;
     border-bottom: 1px solid #e0e0e0;
@@ -373,7 +373,7 @@
     overflow-y: auto;
     padding: 1rem;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .message {
@@ -439,3 +439,4 @@
     user-select: none;
   }
 </style>
+

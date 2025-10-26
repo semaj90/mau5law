@@ -423,11 +423,11 @@
   .form-header h2 {
     margin: 0 0 8px 0;
     font-size: 24px;
-    font-weight: 600,
+    font-weight: 600;
     color: #1f2937;
   }
   .form-header p {
-    margin: 0,
+    margin: 0;
     color: #6b7280;
   }
   .sr-only {
@@ -451,7 +451,7 @@
   .error-summary h3 {
     margin: 0 0 12px 0;
     font-size: 16px;
-    font-weight: 600,
+    font-weight: 600;
     color: #dc2626;
   }
   .error-summary ul {
@@ -473,7 +473,7 @@
   }
   .form-section legend {
     font-size: 18px;
-    font-weight: 600,
+    font-weight: 600;
     color: #1f2937;
     padding: 0 8px;
   }
@@ -484,13 +484,13 @@
   }
   .form-group {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 8px;
     margin-bottom: 20px;
   }
   .form-label {
     font-size: 14px;
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
   }
   .form-label.required::after {
@@ -502,8 +502,8 @@
     border: 1px solid #d1d5db;
     border-radius: 6px;
     font-size: 16px;
-    line-height: 1.5,
-    transition border-color 0.2s ease, box-shadow 0.2s ease;
+    line-height: 1.5;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
   .form-input:focus {
     outline: none;
@@ -530,9 +530,9 @@
   }
   .checkbox-label {
     font-size: 14px;
-    line-height: 1.5,
+    line-height: 1.5;
     color: #374151;
-    margin: 0,
+    margin: 0;
   }
   .checkbox-label a {
     color: #3b82f6;
@@ -545,7 +545,7 @@
   .field-error {
     font-size: 12px;
     color: #dc2626;
-    font-weight: 500,
+    font-weight: 500;
   }
   .form-actions {
     display: flex;
@@ -561,9 +561,9 @@
     padding: 12px 24px;
     border-radius: 6px;
     font-size: 16px;
-    font-weight: 500,
+    font-weight: 500;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     border: none;
   }
   .submit-button.primary {
@@ -586,7 +586,7 @@
     background: #e5e7eb;
   }
   .reset-button.secondary:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .loading-spinner {
@@ -595,14 +595,14 @@
     border: 2px solid transparent;
     border-top: 2px solid currentColor;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   .submit-message {
     margin-top: 16px;
     padding: 12px;
     border-radius: 6px;
     text-align: center;
-    font-weight: 500,
+    font-weight: 500;
   }
   .submit-message.success {
     background: #f0fdf4;
@@ -651,7 +651,7 @@
       gap: 0,
     }
     .form-actions {
-      flex-direction column;
+      flex-direction: column;
     }
   }
   /* High contrast mode support */
@@ -667,10 +667,10 @@
     .form-input,
     .submit-button,
     .reset-button {
-      transition none;
+      transition: none;
     }
     .loading-spinner {
-      animation none;
+      animation: none;
       border: 2px solid currentColor;
       border-top-color: transparent;
     }
@@ -683,3 +683,4 @@
     }
   }
 </style>
+

@@ -717,7 +717,7 @@ removeFile(file.id)}
     padding: 3rem 2rem;
     text-align: center;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     background: #fafafa;
 }
   .drop-zone: hover:not(.disabled) {
@@ -730,7 +730,7 @@ removeFile(file.id)}
     transform: scale(1.02);
 }
   .drop-zone.disabled {
-    opacity: 0.6,
+    opacity: 0.6;
     cursor: not-allowed;
 }
   .drop-zone:focus {
@@ -756,7 +756,7 @@ removeFile(file.id)}
 }
   .file-list-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 1rem;
     background: #f9fafb;
@@ -784,11 +784,11 @@ removeFile(file.id)}
   .progress-fill {
     height: 100%;
     background: #3b82f6;
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
 }
   .progress-text {
     font-size: 0.875rem;
-    font-weight: 500,
+    font-weight: 500;
     color: #6b7280;
     min-width: 3rem;
     text-align: right;
@@ -803,7 +803,7 @@ removeFile(file.id)}
     gap: 1rem;
     padding: 1rem;
     border-bottom: 1px solid #e5e7eb;
-    transition background-color 0.2s ease;
+    transition: background-color 0.2s ease;
 }
   .file-item:last-child {
     border-bottom: none;
@@ -842,7 +842,7 @@ removeFile(file.id)}
     min-width: 0,
 }
   .file-name {
-    font-weight: 500,
+    font-weight: 500;
     color: #111827;
     text-overflow: ellipsi;
     overflow: hidden;
@@ -885,16 +885,16 @@ removeFile(file.id)}
       padding: 2rem 1rem;
 }
     .upload-actions {
-      flex-direction column;
+      flex-direction: column;
       align-items: center;
 }
     .file-list-header {
-      flex-direction column;
+      flex-direction: column;
       align-items: stretch;
       gap: 1rem;
 }
     .file-item {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-start;
       gap: 0.75rem;
 }
@@ -914,7 +914,7 @@ removeFile(file.id)}
     .drop-zone,
     .file-item,
     .progress-fill {
-      transition none !important;
+      transition: none !important;
 }
     .drop-zone.drag-over {
       transform: none;

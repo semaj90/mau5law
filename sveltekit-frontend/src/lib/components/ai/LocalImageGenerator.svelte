@@ -518,7 +518,7 @@ Production-ready with native Windows support
   }
   .generator-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     margin-bottom: 1rem;
   }
@@ -532,17 +532,17 @@ Production-ready with native Windows support
   }
   .generation-controls {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .input-group {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .template-section {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .template-buttons {
@@ -561,7 +561,7 @@ Production-ready with native Windows support
   }
   .select-group {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
     flex: 1;
     min-width: 150px;
@@ -571,7 +571,7 @@ Production-ready with native Windows support
   }
   .advanced-controls {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
     padding: 1rem;
   }
@@ -582,14 +582,14 @@ Production-ready with native Windows support
   }
   .param-group {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
     flex: 1;
     min-width: 100px;
   }
   .generate-section {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
     align-items: center;
   }
@@ -610,7 +610,7 @@ Production-ready with native Windows support
     border: 2px solid transparent;
     border-top: 2px solid currentColor;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin-right: 0.5rem;
   }
   @keyframes spin {
@@ -623,7 +623,7 @@ Production-ready with native Windows support
   }
   .image-result {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .generated-image {
@@ -647,7 +647,7 @@ Production-ready with native Windows support
   }
   .history-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     margin-bottom: 1rem;
   }
@@ -658,7 +658,7 @@ Production-ready with native Windows support
   }
   .history-item {
     cursor: pointer;
-    transition transform 0.2s ease;
+    transition: transform 0.2s ease;
   }
   .history-item:hover {
     transform: translateY(-2px);
@@ -675,12 +675,12 @@ Production-ready with native Windows support
   .history-prompt {
     font-size: 0.75rem;
     font-weight: bold;
-    margin: 0,
+    margin: 0;
   }
   .history-meta {
     font-size: 0.7rem;
     color: #666;
-    margin: 0,
+    margin: 0;
   }
   .modal-overlay {
     position fixed;
@@ -703,7 +703,7 @@ Production-ready with native Windows support
   }
   .modal-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     margin-bottom: 1rem;
   }
@@ -729,7 +729,7 @@ Production-ready with native Windows support
   @media (max-width: 768px) {
     .selection-row,
     .parameter-row {
-      flex-direction column;
+      flex-direction: column;
     }
     .history-grid {
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -740,3 +740,5 @@ Production-ready with native Windows support
     }
   }
 </style>
+
+

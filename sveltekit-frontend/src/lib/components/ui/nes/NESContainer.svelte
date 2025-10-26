@@ -247,7 +247,7 @@ background-size: {}
   .nes-container__header {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     padding: 8px 12px;
     background: linear-gradient(90deg, var(--console-secondary, #0084ff), var(--console-primary, #e52521));
     border-bottom: 2px solid var(--console-primary, #e52521);
@@ -283,7 +283,7 @@ background-size: {}
     display: flex;
     align-items: center;
     justify-content: center;
-    transition all 0.1s ease;
+    transition: all 0.1s ease;
   }
   .nes-container__control:hover {
     background: var(--console-primary, #e52521);
@@ -422,7 +422,7 @@ rgba(0, 255, 0, 0.02) 4px {}
   }
 /* Animation for minimize/maximize */ {}
   .nes-container {
-    transition height 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: height 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 /* Responsive Design */ {}
   @media (max-width: 768px) {
@@ -457,7 +457,9 @@ rgba(0, 255, 0, 0.02) 4px {}
   @media (prefers-reduced-motion reduce) {
 .nes-container, {}
     .nes-container__control {
-      transition none;
+      transition: none;
     }
   }
 </style>
+
+

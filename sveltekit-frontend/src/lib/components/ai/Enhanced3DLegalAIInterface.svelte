@@ -87,7 +87,7 @@ if (!browser) return;
     await initializeWebGL();
     // Initialize service integrations with progress tracking
     await initializeServicesWithProgress();
-    // Start animation loop
+    // Start animation: loop
     startAnimationLoop();
     // Initialize idle detection if enabled
     if (enableIdleProcessing) {
@@ -664,12 +664,12 @@ if (!browser) return;
   }
   .status-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 16px;
   }
   .status-header h3 {
-    margin: 0,
+    margin: 0;
     color: #00d4aa;
     font-size: 14px;
     text-transform: uppercase;
@@ -689,7 +689,7 @@ if (!browser) return;
     height: 8px;
     border-radius: 50%;
     background: #888;
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   .status-indicator.active .pulse {
     background: #00d4aa;
@@ -732,7 +732,7 @@ if (!browser) return;
     height: 100%;
     background: linear-gradient(90deg, #00d4aa, #00ff88);
     border-radius: 2px;
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .progress-text {
     font-size: 10px;
@@ -748,7 +748,7 @@ if (!browser) return;
   }
   .metric {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 4px 8px;
     background: rgba(0, 0, 0, 0.5);
@@ -820,7 +820,7 @@ if (!browser) return;
     height: 100%;
     background: #00d4aa;
     border-radius: 2px;
-    transition width 0.1s linear;
+    transition: width 0.1s linear;
   }
   .chunk-status {
     color: #888;
@@ -834,19 +834,19 @@ if (!browser) return;
     border-radius: 8px;
     padding: 16px;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     height: 400px;
   }
   .chat-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 16px;
     padding-bottom: 8px;
     border-bottom: 1px solid #333;
   }
   .chat-header h3 {
-    margin: 0,
+    margin: 0;
     color: #00d4aa;
     font-size: 14px;
     text-transform: uppercase;
@@ -857,14 +857,14 @@ if (!browser) return;
   }
   .ai-status.processing {
     color: #ff9800;
-    animation pulse 1s infinite;
+    animation: pulse 1s infinite;
   }
   .chat-messages {
     flex: 1;
     overflow-y: auto;
     margin-bottom: 16px;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 8px;
   }
   .message {
@@ -898,7 +898,7 @@ if (!browser) return;
   }
   .message-content {
     margin-bottom: 4px;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   .message-time {
     font-size: 10px;
@@ -934,7 +934,7 @@ if (!browser) return;
     font-size: 13px;
     font-weight: bold;
     cursor: pointer;
-    transition background 0.2;
+    transition: background 0.2;
   }
   .chat-input buttonhover:not(:disabled) {,
     background: #00ff88;
@@ -1025,9 +1025,9 @@ if (!browser) return;
     background: #d4af37;
   }
   @keyframes pulse {
-    0% { opacity: 0.5, }
-    50% { opacity: 1, }
-    100% { opacity: 0.5, }
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
   }
   @media (max-width: 1200px) {
     .enhanced-3d-legal-ai-interface {
@@ -1057,3 +1057,5 @@ if (!browser) return;
     }
   }
 </style>
+
+

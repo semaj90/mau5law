@@ -1339,7 +1339,7 @@
     border-radius: 6px;
     font-size: 12px;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     min-width: 40px;
     height: 36px;
     display: flex;
@@ -1367,12 +1367,12 @@
   }
   .sidebar-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 20px;
   }
   .sidebar-header h3 {
-    margin: 0,
+    margin: 0;
     color: #4a90e2;
   }
   .close-btn {
@@ -1387,7 +1387,7 @@
   }
   .evidence-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 10px;
   }
   .evidence-item {
@@ -1398,7 +1398,7 @@
     background: rgba(255, 255, 255, 0.05);
     border-radius: 6px;
     cursor: grab;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     border: 1px solid transparent;
   }
   .evidence-item:hover {
@@ -1458,13 +1458,13 @@
   }
   .panel-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 15px 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
   .panel-header h3 {
-    margin: 0,
+    margin: 0;
     color: #4a90e2;
     font-size: 16px;
   }
@@ -1517,7 +1517,7 @@
     text-align: left;
     cursor: pointer;
     font-size: 14px;
-    transition background 0.2s ease;
+    transition: background 0.2s ease;
   }
   .context-actionhover {
     background: rgba(255, 255, 255, 0.1);
@@ -1555,7 +1555,7 @@
   }
   .suggestion-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: flex-start;
     gap: 10px;
     padding: 10px;
@@ -1566,7 +1566,7 @@
   .suggestion-text {
     flex: 1;
     font-size: 12px;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   .apply-btn {
     background: rgba(74, 144, 226, 0.6);
@@ -1585,3 +1585,5 @@
     margin-left: 300px;
   }
 </style>
+
+

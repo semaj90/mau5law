@@ -182,19 +182,19 @@
   }
   @keyframes overlay-show {
     from {
-      opacity: 0,
+      opacity: 0;
     }
     to {
-      opacity: 1,
+      opacity: 1;
     }
   }
   @keyframes content-show {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translate(-50%, -48%) scale(0.96);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translate(-50%, -50%) scale(1);
     }
   }
@@ -292,3 +292,4 @@
     }
   }
 </style>
+

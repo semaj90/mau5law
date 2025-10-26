@@ -295,7 +295,7 @@
     padding: 0.75rem;
     border-radius: 4px;
     font-size: 0.9rem;
-    transition all 0.2s;
+    transition: all 0.2s;
   }
 
   .quick-buttonhover:not(:disabled) {
@@ -305,7 +305,7 @@
   }
 
   .quick-buttondisabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
 
@@ -323,7 +323,7 @@
     overflow-y: auto;
     padding: 1rem 0;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
 
@@ -388,16 +388,16 @@
 
   .typing-indicator {
     color: var(--text-primary, #00ff00);
-    animation pulse 1.5s infinite;
+    animation: pulse 1.5s infinite;
   }
 
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.5,
+      opacity: 0.5;
     }
   }
 
@@ -439,7 +439,7 @@
     padding: 0.75rem 1.5rem;
     border-radius: 4px;
     font-weight: bold;
-    transition all 0.2s;
+    transition: all 0.2s;
   }
 
   .send-buttonhover:not(:disabled) {
@@ -448,7 +448,7 @@
   }
 
   .send-buttondisabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
 
@@ -472,7 +472,7 @@
     background: var(--surface-secondary, #111111);
     border: 1px solid rgba(0, 204, 255, 0.3);
     text-align: center;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
 
   .capability-card:hover {
@@ -495,7 +495,7 @@
   .capability-card p {
     color: var(--text-secondary, #888888);
     font-size: 0.9rem;
-    line-height: 1.4,
+    line-height: 1.4;
   }
 
   @media (max-width: 768px) {
@@ -516,3 +516,4 @@
     }
   }
 </style>
+

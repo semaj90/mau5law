@@ -558,11 +558,11 @@ if (browser) {
   .header h1 {
     margin: 0 0 1rem 0;
     font-size: 2rem;
-    font-weight: 700,
+    font-weight: 700;
   }
   .header p {
     margin: 0.5rem 0;
-    opacity: 0.9,
+    opacity: 0.9;
   }
   .test-controls {
     margin: 2rem 0;
@@ -580,7 +580,7 @@ if (browser) {
     cursor: pointer;
     font-weight: 600;
     font-size: 1rem;
-    transition all 0.2;
+    transition: all 0.2;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   .test-buttonhover:not(:disabled) {,
@@ -616,7 +616,7 @@ if (browser) {
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #3b82f6, #1d4ed8);
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
     border-radius: 0.375rem;
   }
   .progress-percent {
@@ -637,7 +637,7 @@ if (browser) {
     border-radius: 1rem;
     padding: 1.5rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    transition all 0.2;
+    transition: all 0.2;
   }
   .result-card:hover {
     transform: translateY(-4px);
@@ -647,16 +647,16 @@ if (browser) {
   .result-card h3 {
     margin: 0 0 1rem 0;
     font-size: 1.25rem;
-    font-weight: 700,
+    font-weight: 700;
     color: #1f2937;
   }
   .status-success {
     color: #059669;
-    font-weight: 600,
+    font-weight: 600;
   }
   .status-error {
     color: #dc2626;
-    font-weight: 600,
+    font-weight: 600;
   }
   .performance-metric {
     margin: 0.5rem 0;
@@ -664,7 +664,7 @@ if (browser) {
   }
   .performance-highlight {
     font-size: 1.1rem;
-    font-weight: 700,
+    font-weight: 700;
   }
   .performance-note {
     font-size: 0.8rem;
@@ -684,11 +684,11 @@ if (browser) {
     margin: 0 0 1rem 0;
     color: #1e40af;
     font-size: 1.5rem;
-    font-weight: 700,
+    font-weight: 700;
   }
   .recommendation-text {
     font-size: 1.1rem;
-    line-height: 1.6,
+    line-height: 1.6;
     color: #1f2937;
   }
   .log-container {
@@ -736,7 +736,7 @@ if (browser) {
   }
   .info-value {
     font-size: 1.1rem;
-    font-weight: 700,
+    font-weight: 700;
     color: #1f2937;
     margin-top: 0.25rem;
   }
@@ -745,7 +745,7 @@ if (browser) {
       font-size: 1.5rem;
     }
     .test-controls {
-      flex-direction column;
+      flex-direction: column;
       align-items: center;
     }
     .results-grid {
@@ -756,3 +756,4 @@ if (browser) {
     }
   }
 </style>
+

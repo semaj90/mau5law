@@ -232,7 +232,7 @@
 
 <style>
   .animate-bounce {
-    animation bounce 1s infinite;
+    animation: bounce 1s infinite;
   }
   @keyframes bounce {
     0%,
@@ -246,3 +246,4 @@
     }
   }
 </style>
+

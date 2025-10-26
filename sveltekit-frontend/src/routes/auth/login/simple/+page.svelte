@@ -248,10 +248,10 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 1.875rem;
   }
   .font-bold {
-    font-weight: 700,
+    font-weight: 700;
   }
   .font-semibold {
-    font-weight: 600,
+    font-weight: 600;
   }
   .text-center {
     text-align: center;
@@ -312,3 +312,4 @@ https://svelte.dev/e/js_parse_error -->
     border-color: #fbbf24;
   }
 </style>
+

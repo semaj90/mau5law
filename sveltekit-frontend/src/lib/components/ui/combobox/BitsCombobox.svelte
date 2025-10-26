@@ -260,9 +260,10 @@
 
 <style>
   :global(.legal-combobox-container input) {
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   :global(.legal-combobox-container input:focus) {
     box-shadow: 0 0 0 1px rgb(var(--yorha-primary) / 0.5);
   }
 </style>
+

@@ -206,11 +206,11 @@
   }
   @keyframes select-content-show {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: scale(0.96) translateY(-2px);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: scale(1) translateY(0);
     }
   }
@@ -218,7 +218,7 @@
   :global(.nier-bits-select) {
     background: linear-gradient(135deg, var(--color-nier-bg-primary) 0%, var(--color-nier-bg-secondary) 100%);
     border: 2px solid var(--color-nier-border-secondary);
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   :global(.nier-bits-select:focus) {
     border-color: var(--color-nier-border-primary);
@@ -244,11 +244,11 @@ box-shadow: {}
     height: 60%;
     background: var(--color-nier-accent-cool);
     border-radius: 2px;
-    opacity: 0,
-    transition opacity 0.2s ease;
+    opacity: 0;
+    transition: opacity 0.2s ease;
   }
   :global([data-evidence-category] .bits-select-item[data-highlighted]::before) {
-    opacity: 1,
+    opacity: 1;
   }
 /* Case type specific styling */ {}
   :global([data-case-type] .bits-select-content) {
@@ -258,7 +258,7 @@ radial-gradient(circle at 20% 80%, rgba(58, 55, 47, 0.05) 0%, transparent 50%), 
   }
 /* AI recommendations styling */ {}
   :global([data-ai-recommendations] .bits-select-item) {
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   :global($1) {
     background: linear-gradient(90deg, rgba(16, 185, 129, 0.1) 0%, transparent 100%);
@@ -279,3 +279,4 @@ radial-gradient(circle at 20% 80%, rgba(58, 55, 47, 0.05) 0%, transparent 50%), 
     }
   }
 </style>
+

@@ -36,7 +36,7 @@ https://svelte.dev/e/js_parse_error -->
   // XState machine for idle detection and self-prompting
   const { state: idleState, send: sendIdleEvent } = useMachine(idleDetectionMachine);
   // Event dispatcher
-  // Camera and animation state
+  // Camera and animation: state
   let camera = {
     position ;
 { x: 0, y: 0, z: 50 },
@@ -44,13 +44,13 @@ https://svelte.dev/e/js_parse_error -->
     fov: 45,
     target: { x: 0, y: 0, z: 0 }
   }
-  let animation = {
+  let animation: = {
     time: 0,
     phase: 0,
     speed: 1.0,
     enabled: true,
   }
-  // Progress animation state
+  // Progress animation: state
   let progressAnimation = {
     value: 0,
     target: 0,
@@ -89,7 +89,7 @@ https://svelte.dev/e/js_parse_error -->
         format: presentationFormat,
         alphaMode: 'premultiplied',
       });
-      // Initialize progress animation segments
+      // Initialize progress animation: segments
       initializeProgressSegments();
       console.log('✅ WebGPU initialized successfully');
       // Start idle detection for self-prompting
@@ -217,8 +217,7 @@ https://svelte.dev/e/js_parse_error -->
       if (!mounted) return;
       const deltaTime = (currentTime - lastTime) / 1000;
       lastTime = currentTime
-      // Update animation
-      if (animation.enabled) {
+      // Update animation: if (animation.enabled) {
         animation.time += deltaTime * animation.speed;
         animation.phase = (animation.time % (2 * Math.PI));
         // Rotate camera around the graph
@@ -226,8 +225,7 @@ https://svelte.dev/e/js_parse_error -->
         camera.position.x = Math.cos(camera.rotation.y) * 50;
         camera.position.z = Math.sin(camera.rotation.y) * 50;
       }
-      // Update progress animation
-      updateProgressAnimation(deltaTime);
+      // Update progress animation: updateProgressAnimation(deltaTime);
       // Update streaming stats
       if (streamingActive) {
         const streamingStats = neo4j3DEngine.getStreamingStats();
@@ -248,11 +246,9 @@ https://svelte.dev/e/js_parse_error -->
     animationFrame = requestAnimationFrame(render);
   }
   /**
-   * Update progress animation
-   */
+   * Update progress animation: */
   function updateProgressAnimation(deltaTime: number) {
-    // Smooth progress animation
-    const diff = progressAnimation.target - progressAnimation.value;
+    // Smooth progress animation: const diff = progressAnimation.target - progressAnimation.value;
     progressAnimation.value += diff * progressAnimation.speed;
     // Update progress variable for UI
     progress = progressAnimation.value;
@@ -533,12 +529,12 @@ mounted = true;
     background: var(--segment-color, #0ea5e9);
     width: var(--segment-width, 8.33%);
     left: calc(var(--segment-start, 0) * 1%);
-    opacity: 0,
-    transition opacity 0.2s ease;
+    opacity: 0;
+    transition: opacity 0.2s ease;
   }
   .progress-segment.active {
-    opacity: 0.6,
-    animation pulse 0.5s ease-in-out;
+    opacity: 0.6;
+    animation: pulse 0.5s ease-in-out;
   }
   .progress-fill {
     position absolute;
@@ -547,22 +543,22 @@ mounted = true;
     height: 100%;
     background: linear-gradient(90deg, #0ea5e9, #06b6d4);
     border-radius: 4px;
-    transition width 0.3s ease-out;
+    transition: width 0.3s ease-out;
   }
   .yorha-theme .progress-fill {
     background: linear-gradient(90deg, #00ff00, #00cc00);
   }
   .progress-info {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     color: white;
     font-size: 12px;
   }
   .streaming-indicator {
     color: #00ff00;
-    font-weight: 600,
-    animation blink 1s infinite;
+    font-weight: 600;
+    animation: blink 1s infinite;
   }
   /* Stats Overlay */
   .stats-overlay {
@@ -580,16 +576,16 @@ mounted = true;
   }
   .stat {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     color: white;
     font-size: 12px;
   }
   .stat-label {
-    opacity: 0.7,
+    opacity: 0.7;
   }
   .stat-value {
-    font-weight: 600,
+    font-weight: 600;
     color: #0ea5e9;
   }
   .yorha-theme .stat-value {
@@ -612,7 +608,7 @@ mounted = true;
     color: white;
     font-size: 16px;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     backdrop-filter: blur(8px);
   }
   .control-buttonhover {
@@ -623,7 +619,7 @@ mounted = true;
   .control-button.streaming {
     border-color: #00ff00;
     color: #00ff00;
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   /* Error Display */
   .error-container {
@@ -647,7 +643,7 @@ mounted = true;
   .error-message {
     font-size: 14px;
     margin-bottom: 16px;
-    opacity: 0.9,
+    opacity: 0.9;
   }
   .retry-button {
     background: white;
@@ -655,22 +651,22 @@ mounted = true;
     border: none;
     padding: 8px 16px;
     border-radius: 4px;
-    font-weight: 600,
+    font-weight: 600;
     cursor: pointer;
-    transition opacity 0.2s ease;
+    transition: opacity 0.2s ease;
   }
   .retry-buttondisabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   /* Animations */
   @keyframes pulse {
-    0%, 100% { opacity: 0.6, }
-    50% { opacity: 1, }
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
   }
   @keyframes blink {
-    0%, 50% { opacity: 1, }
-    51%, 100% { opacity: 0.3, }
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.3; }
   }
   /* Responsive */
   @media (max-width: 768px) {

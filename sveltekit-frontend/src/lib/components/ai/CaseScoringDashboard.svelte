@@ -697,7 +697,7 @@
   }
   .dashboard-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: flex-start;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
@@ -705,9 +705,9 @@
   }
   .dashboard-title {
     font-size: 2rem;
-    font-weight: 700,
+    font-weight: 700;
     color: #1e293b;
-    margin: 0,
+    margin: 0;
   }
   .dashboard-subtitle {
     color: #64748b;
@@ -734,7 +734,7 @@
   }
   .demo-toggle span {
     color: #1e40af;
-    font-weight: 500,
+    font-weight: 500;
   }
   .controls-section {
     margin-bottom: 2rem;
@@ -758,12 +758,12 @@
   }
   .filter-group {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .filter-group label {
     font-size: 0.875rem;
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
   }
   .filter-select {
@@ -782,14 +782,14 @@
     border: 1px solid #e2e8f0;
     border-radius: 0.5rem;
     overflow: hidden;
-    transition box-shadow 0.2s;
+    transition: box-shadow 0.2s;
   }
   .case-score-card:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   .case-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: flex-start;
     gap: 1rem;
   }
@@ -806,7 +806,7 @@
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     font-size: 0.75rem;
-    font-weight: 600,
+    font-weight: 600;
     border: 1px solid;
   }
   .score-badge {
@@ -814,7 +814,7 @@
     background: #f1f5f9;
     border-radius: 0.25rem;
     font-size: 0.875rem;
-    font-weight: 700,
+    font-weight: 700;
   }
   .case-description {
     margin: 0.5rem 0 0 0;
@@ -864,12 +864,12 @@
   }
   .factor-item {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     padding: 0.25rem 0;
     font-size: 0.75rem;
   }
   .factor-category {
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
   }
   .factor-impact {
@@ -893,7 +893,7 @@
     border: 2px solid #e2e8f0;
     border-top: 2px solid #3b82f6;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
   @keyframes spin {
@@ -932,12 +932,12 @@
   }
   .modal-title {
     font-size: 1.5rem;
-    font-weight: 600,
+    font-weight: 600;
     margin: 0 0 0.5rem 0;
   }
   .modal-description {
     color: #64748b;
-    margin: 0,
+    margin: 0;
   }
   .modal-close {
     position absolute;
@@ -966,7 +966,7 @@
   }
   .score-details-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 2rem;
   }
   .score-overview {
@@ -983,7 +983,7 @@
   }
   .large-score {
     font-size: 4rem;
-    font-weight: 700,
+    font-weight: 700;
   }
   .score-metadata p {
     margin: 0.25rem 0;
@@ -1020,11 +1020,11 @@
   .factor-fill {
     height: 100%;
     background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
-    transition width 0.3s;
+    transition: width 0.3s;
   }
   .factor-percentage {
     font-size: 0.75rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #374151;
   }
   .factor-description {
@@ -1035,7 +1035,7 @@
   .factor-confidence {
     font-size: 0.75rem;
     color: #6b7280;
-    margin: 0,
+    margin: 0;
   }
   .recommendations-list {
     list-style: none;
@@ -1072,18 +1072,18 @@
   }
   @media (max-width: 768px) {
     .dashboard-header {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
     }
     .filters-row {
-      flex-direction column;
+      flex-direction: column;
       align-items: stretch;
     }
     .cases-grid {
       grid-template-columns: 1fr;
     }
     .score-display {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
     }
     .factors-grid {
@@ -1091,3 +1091,5 @@
     }
   }
 </style>
+
+

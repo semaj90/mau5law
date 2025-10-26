@@ -121,6 +121,7 @@
 
 <style>
   .usage-fill {
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
 </style>
+

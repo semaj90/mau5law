@@ -664,7 +664,7 @@
 
   .status-item-custom {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 1rem;
   }
@@ -1016,3 +1016,4 @@
     }
   }
 </style>
+

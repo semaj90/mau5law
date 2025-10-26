@@ -120,6 +120,7 @@ https://svelte.dev/e/props_duplicate -->
     color: #fef3c7;
   }
   .star-button:disabled {
-    opacity: 0.7,
+    opacity: 0.7;
   }
 </style>
+

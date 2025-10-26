@@ -1221,13 +1221,13 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
   .ssr-card {
     /* Ensure consistent card heights in flexbox layout */
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     min-height: 280px;
     max-height: 400px;
     overflow: hidden;
     /* Enhanced border and shadow for better visual hierarchy */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .ssr-card:hover {
     transform: translateY(-2px);
@@ -1277,9 +1277,10 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
   }
   /* Service cluster enhancements for API display */
   .service-cluster {
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     min-height: 340px;
     max-height: 500px;
     /* Improved visual hierarchy and spacing */
   }
 </style>
+

@@ -377,7 +377,7 @@
   }
   .controls-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     padding: 1rem;
     background: #1a1a1a;
@@ -617,4 +617,6 @@
     }
   }
 </style>
+
+
 

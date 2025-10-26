@@ -35,7 +35,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     position relative;
     outline: none;
-    transition all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
   }
   .checkbox-input:checked {
     background-color: #007bff;
@@ -62,3 +62,4 @@ https://svelte.dev/e/js_parse_error -->
     color: #333;
   }
 </style>
+

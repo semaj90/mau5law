@@ -582,12 +582,12 @@
   }
   .endpoint-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 15px;
   }
   .endpoint-header h3 {
-    margin: 0,
+    margin: 0;
     color: #3cbcfc;
     font-size: 14px;
   }
@@ -614,7 +614,7 @@
   }
   .metric {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     font-size: 12px;
   }
   .label {
@@ -633,3 +633,5 @@
     color: #f83800;
   }
 </style>
+
+

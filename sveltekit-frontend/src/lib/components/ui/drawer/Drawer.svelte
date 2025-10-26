@@ -107,7 +107,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     padding: 20px;
     position fixed; /* Crucial for drawer behavior */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transition transform 0.3s ease-out; /* Animation for sliding in/out */
+    transition: transform 0.3s ease-out; /* Animation for sliding in/out */
     overflow-y: auto; /* Allow content to scroll */
   }
 
@@ -193,13 +193,13 @@ https://svelte.dev/e/render_tag_invalid_expression -->
 
   .drawer-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: flex-start;
     margin-bottom: 20px;
   }
   .drawer-title {
     font-size: 1.25rem;
-    font-weight: 600,
+    font-weight: 600;
     margin: 0;
   }
   .drawer-description {
@@ -217,3 +217,5 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     background: #f5f5f5;
   }
 </style>
+
+

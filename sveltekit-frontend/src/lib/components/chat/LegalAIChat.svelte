@@ -578,6 +578,6 @@ https://svelte.dev/e/js_parse_error -->
     max-width: none;
   }
   .prose strong {
-    font-weight: 600,
+    font-weight: 600;
   }
 </style>

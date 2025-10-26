@@ -724,7 +724,7 @@
       align-items: center;
     }
     .control-group label {
-      font-weight: 500,
+      font-weight: 500;
       color: #374151;
     }
     .control-group select {
@@ -739,7 +739,7 @@
       border-radius: 4px;
       background: white;
       cursor: pointer;
-      transition all 0.2;
+      transition: all 0.2;
     }
     .control-group buttonhover {
       background: #f3f4f6;
@@ -778,7 +778,7 @@
     border: 4px solid #e5e7eb;
     border-top: 4px solid #3b82f6;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
   @keyframes spin {
@@ -801,7 +801,7 @@
   .hierarchy-summary h4 {
     margin: 0 0 1rem 0;
     color: #059669;
-    font-weight: 600,
+    font-weight: 600;
   }
   .summary-stats {
     display: grid;
@@ -810,17 +810,18 @@
   }
   .stat {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     padding: 0.5rem;
     background: #f9fafb;
     border-radius: 4px;
   }
   .stat .label {
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
   }
   .stat .value {
     color: #059669;
-    font-weight: 600,
+    font-weight: 600;
   }
 </style>
+

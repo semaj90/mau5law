@@ -462,14 +462,14 @@
   }
   /* Smooth transitions for drag and drop */
   .evidence-card {
-    transition transform 0.1s ease;
+    transition: transform 0.1s ease;
   }
   .evidence-card:hover {
     transform: translateY(-2px);
   }
   /* Connection line animations */
   svg line {
-    animation dash 2s linear infinite;
+    animation: dash 2s linear infinite;
   }
   @keyframes dash {
     to {
@@ -477,3 +477,4 @@
     }
   }
 </style>
+

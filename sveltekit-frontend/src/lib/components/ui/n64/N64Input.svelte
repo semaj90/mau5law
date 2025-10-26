@@ -284,11 +284,11 @@ if (spatialAudio && typeof window !== 'undefined') {
     padding: 12px 16px;
     font-family: 'Press Start 2P', monospace;
     font-size: 12px;
-    line-height: 1.4,
+    line-height: 1.4;
     background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%);
     color: #e0e0e0;
     border: 2px solid #505050;
-    transition all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     /* N64-style 3D depth */
     transform: perspective(1000px) rotateX(2deg) translateZ(0);
     box-shadow:
@@ -475,9 +475,9 @@ if (spatialAudio && typeof window !== 'undefined') {
     bottom: -4px;
     border: 2px solid #ffd700;
     border-radius: 4px;
-    opacity: 0,
+    opacity: 0;
     transform: scale(0.9);
-    transition all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     pointer-events: none;
     z-index: 5;
     box-shadow:
@@ -485,7 +485,7 @@ if (spatialAudio && typeof window !== 'undefined') {
       inset 0 0 10px rgba(255, 215, 0, 0.2);
   }
   .n64-focus-indicator.visible {
-    opacity: 1,
+    opacity: 1;
     transform: scale(1);
   }
   /* State variations */
@@ -502,7 +502,7 @@ if (spatialAudio && typeof window !== 'undefined') {
     transform: perspective(1000px) rotateX(1deg) translateZ(1px);
   }
   .n64-input:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
     transform: perspective(1000px) rotateX(3deg) translateZ(-1px);
   }
@@ -530,7 +530,7 @@ if (spatialAudio && typeof window !== 'undefined') {
   .reduced-motion .aa-layer,
   .reduced-motion .fog-layer {
     animation: none !important;
-    transition none !important;
+    transition: none !important;
   }
   /* Lighting effects */
   .lighting-enabled .n64-input {
@@ -565,3 +565,4 @@ if (spatialAudio && typeof window !== 'undefined') {
     color: #ffffff;
   }
 </style>
+

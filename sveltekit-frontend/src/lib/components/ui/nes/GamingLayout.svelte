@@ -147,7 +147,7 @@ min-height: 100vh;
 	.main-container {
 display: flex;
 min-height: 100vh;
-		transition padding-top 0.3s ease;
+		transition: padding-top 0.3s ease;
 	}
 	.main-container.hud-offset {
 		padding-top: 120px; /* Adjust based on HUD height */
@@ -161,7 +161,7 @@ left: 0,
 		background: var(--yorha-bg-secondary, #1a1a1a);
 		border-right: 3px solid var(--yorha-secondary, #ffd700);
 box-shadow: 3px 0 0 0 var(--yorha-secondary, #ffd700), 6px 0 20px rgba(0, 0, 0, 0.8);
-		transition all 0.2s ease;
+		transition: all 0.2s ease;
 		z-index: 900;
 overflow-y: auto }
 	.sidebar.collapsed {
@@ -169,7 +169,7 @@ overflow-y: auto }
 	}
 	.sidebar-header {
 display: flex;
-align-items: center justify-content: space-betwee;
+align-items: center justify-content: space-betweenn;
 		padding: 20px;
 		border-bottom: 2px solid var(--yorha-secondary, #ffd700);
 		margin-top: 120px; /* Offset for HUD */,
@@ -197,7 +197,7 @@ overflow: hidden;
 	.app-name {
 		font-family: var(--yorha-font-secondary, 'Orbitron', monospace);
 		font-size: 14px;
-		font-weight: 700,
+		font-weight: 700;
 		color: var(--yorha-secondary, #ffd700);
 text-transform: uppercase;
     letter-spacing: 2px;
@@ -215,7 +215,7 @@ display: flex; align-items: center; justify-content: center; width: 32px;
 		border: 2px solid var(--yorha-text-muted, #808080);
 		border-radius: 0,
 		color: var(--yorha-text-secondary, #b0b0b0);
-cursor: pointer; transition all 0.2s ease;
+cursor: pointer; transition: all 0.2s ease;
 		font-size: 12px;
 	}
 	.collapse-buttonhover {
@@ -236,7 +236,7 @@ e; display: flex; align-items: center; gap: 12px;
 		color: var(--yorha-text-secondary, #b0b0b0);
 text-decoration none; border-radius: 0,
 		border: 2px solid transparent;
-		transition all 0.2s ease;
+		transition: all 0.2s ease;
 overflow: hidden;
 n; font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
 text-transform: uppercase;
@@ -280,7 +280,7 @@ box-shadow: 0 0 0 1px var(--yorha-bg-secondary, #1a1a1a), 0 0 8px rgba(255, 215,
 	}
 	.system-status {
 display: flex;
-flex-direction column gap: 8px;
+flex-direction: column gap: 8px;
 	}
 	.status-item {
 display: flex;
@@ -307,7 +307,7 @@ box-shadow: 0 0 0 1px var(--yorha-bg-secondary, #1a1a1a), 0 0 8px rgba(0, 255, 6
 		flex: 1;
 		margin-left: 280px;
 		padding: 24px;
-		transition margin-left 0.2s ease;
+		transition: margin-left 0.2s ease;
 		background: var(--yorha-bg-primary, #0a0a0a);
 		min-height: 100vh;
 		border-left: 1px solid var(--yorha-text-muted, #808080);
@@ -322,26 +322,26 @@ top: 0,
 		right: 0,
 		height: 1px;
 		background: linear-gradient(90deg, transparent 0%, var(--yorha-secondary, #ffd700) 50%, transparent 100%);
-		opacity: 0.8,
+		opacity: 0.8;
 		animation: scan-horizontal 6s ease-in-out infinite;
 pointer-events: none z-index: 1100,
 	}
 /* Animations */ @keyframes pulse {
 		0%, 100% {
-			opacity: 1,
+			opacity: 1;
 		}
 		50% {
-			opacity: 0.5,
+			opacity: 0.5;
 		}
 	}
 	@keyframes scan-horizontal {
 		0%, 100% {
 			transform: translateX(-100%);
-			opacity: 0,
+			opacity: 0;
 		}
 		50% {
 			transform: translateX(100vw);
-			opacity: 0.6,
+			opacity: 0.6;
 		}
 	}
 /* Responsive Design */ @media (max-width: 1024px) {
@@ -377,3 +377,5 @@ pointer-events: none z-index: 1100,
 		}
 /* Mobile sidebar toggle would need JavaScript implementation */ }
 </style>
+
+

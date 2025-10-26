@@ -61,9 +61,9 @@
   .nes-card-container {
     position relative;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     font-family: 'Press Start 2P', cursiv;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
 /* Base NES Card Styling */ {}
   .nes-card {
@@ -143,19 +143,19 @@
     margin: 0 0 0.5rem 0;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    line-height: 1.3,
+    line-height: 1.3;
   }
   .nes-card-subtitle {
     font-size: 0.625rem;
-    margin: 0,
+    margin: 0;
     opacity: 0.8;
-    line-height: 1.4,
+    line-height: 1.4;
   }
 /* Content Styles */ {}
   .nes-card-content {
     flex: 1;
     font-size: 0.75rem;
-    line-height: 1.5,
+    line-height: 1.5;
   }
 /* Size Adjustments */ {}
   .p-3 .nes-card-title {
@@ -208,3 +208,4 @@
     }
   }
 </style>
+

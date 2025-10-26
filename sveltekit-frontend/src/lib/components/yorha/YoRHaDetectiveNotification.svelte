@@ -66,7 +66,7 @@ d;
     font-weight: bold;
     font-size: 0.875rem;
     z-index: 1050,
-    animation slideInRight 0.3s ease-in-out;
+    animation: slideInRight 0.3s ease-in-out;
     backdrop-filter: blur(8px);
   }
   .notification-content {
@@ -80,7 +80,7 @@ d;
   }
   .notification-message {
     flex: 1;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   .notification-success {
     background-color: rgba(16, 185, 129, 0.1);
@@ -105,11 +105,11 @@ d;
   @keyframes slideInRight {
     from {
       transform: translateX(100%);
-      opacity: 0,
+      opacity: 0;
     }
     to {
       transform: translateX(0);
-      opacity: 1,
+      opacity: 1;
     }
   }
   /* Responsive */
@@ -123,12 +123,13 @@ d;
     @keyframes slideInRight {
       from {
         transform: translateY(100%);
-        opacity: 0,
+        opacity: 0;
       }
       to {
         transform: translateY(0);
-        opacity: 1,
+        opacity: 1;
       }
     }
   }
 </style>
+

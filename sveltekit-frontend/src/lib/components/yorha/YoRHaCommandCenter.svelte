@@ -143,7 +143,7 @@
       return () => clearInterval(animationInterval);
     } catch (error) {
       componentError = error instanceof Error ? error : new Error('Animation initialization failed');
-      console.error('YoRHaCommandCenter animation error:', error);
+      console.error('YoRHaCommandCenter animation: error:', error);
     }
   });
 
@@ -550,7 +550,7 @@
   }
   .metric-card {
     backdrop-filter: blur(10px);
-    transition all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .metric-card:hover {
     transform: translateY(-2px);
@@ -559,11 +559,11 @@
   .action-card {
     backdrop-filter: blur(10px);
     cursor: pointer;
-    transition all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .activity-item {
     backdrop-filter: blur(10px);
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .activity-item:hover {
     transform: translateX(4px);
@@ -584,31 +584,31 @@
     }
   }
   .animate-pulse {
-    animation pulse-glow 2s infinite;
+    animation: pulse-glow 2s infinite;
   }
   /* Modal styling */
   .modal-backdrop {
     backdrop-filter: blur(10px);
-    animation fadeIn 0.2s ease-in-out;
+    animation: fadeIn 0.2s ease-in-out;
   }
   .modal-content {
-    animation slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   @keyframes fadeIn {
     from {
-      opacity: 0,
+      opacity: 0;
     }
     to {
-      opacity: 1,
+      opacity: 1;
     }
   }
   @keyframes slideIn {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translateY(-20px) scale(0.95);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translateY(0) scale(1);
     }
   }
@@ -629,3 +629,4 @@
     }
   }
 </style>
+

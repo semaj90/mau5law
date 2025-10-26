@@ -379,7 +379,7 @@
   .form-group label {
     display: block;
     margin-bottom: 0.5rem;
-    font-weight: 600,
+    font-weight: 600;
     color: var(--text-primary);
   }
   .form-input,
@@ -392,7 +392,7 @@
     background: var(--bg-primary);
     color: var(--text-primary);
     font-family: inherit;
-    transition border-color 0.2s;
+    transition: border-color 0.2s;
   }
   .form-input:focus,
   .form-select:focus,
@@ -410,7 +410,7 @@
     padding: 2rem;
     text-align: center;
     cursor: pointer;
-    transition all 0.2s;
+    transition: all 0.2s;
     background: var(--bg-primary);
   }
   .file-upload-area:hover,
@@ -424,20 +424,20 @@
   }
   .upload-prompt {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 1rem;
   }
   .upload-icon {
     font-size: 3rem;
-    opacity: 0.6,
+    opacity: 0.6;
   }
   .upload-text {
     color: var(--text-secondary);
   }
   .upload-hint {
     font-size: 0.875rem;
-    opacity: 0.8,
+    opacity: 0.8;
   }
   .file-preview {
     display: flex;
@@ -505,7 +505,7 @@
   .progress-fill {
     height: 100%;
     background: var(--accent-primary);
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .progress-text {
     margin-top: 0.5rem;
@@ -523,15 +523,15 @@
     color: white;
     border: none;
     border-radius: 6px;
-    font-weight: 600,
+    font-weight: 600;
     cursor: pointer;
-    transition background-color 0.2s;
+    transition: background-color 0.2s;
   }
   .submit-buttonhover:not(:disabled) {
     background: var(--accent-primary-dark);
   }
   .submit-buttondisabled {
-    opacity: 0.6,
+    opacity: 0.6;
     cursor: not-allowed;
   }
   .error-message {
@@ -553,3 +553,4 @@
     border-color: var(--error-color);
   }
 </style>
+

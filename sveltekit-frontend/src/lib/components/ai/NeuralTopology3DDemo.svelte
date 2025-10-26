@@ -260,7 +260,7 @@ https://svelte.dev/e/js_parse_error -->
       [`step_${step + 1}`]: {
         processingTime: Math.round(processingTime),
         prediction !!predicted3D,
-        animation animations.some((a: any) => a.step === step + 1),
+        animation: animations.some((a: any) => a.step === step + 1),
         searchResults: assetSearchResults.length,
         chrRomHit: !!chrRomPattern
       }
@@ -390,7 +390,7 @@ https://svelte.dev/e/js_parse_error -->
     <h2>🧠 Neural Topology 3D Prediction System</h2>
     <p class="demo-subtitle">
       Complete integration of Transformer + Autoencoder + CNN + RNN topologies<br>
-      with predictive 3D asset search, animation pre-rendering, and CHR-ROM caching
+      with predictive 3D asset search, animation: pre-rendering, and CHR-ROM caching
     </p>
   </div>
   <!-- Neural Topology Status Grid -->
@@ -560,7 +560,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .demo-header h2 {
     font-size: 2.5rem;
-    font-weight: 800,
+    font-weight: 800;
     background: linear-gradient(135deg, #3b82f6, #8b5cf6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -570,7 +570,7 @@ https://svelte.dev/e/js_parse_error -->
   .demo-subtitle {
     color: #64748b;
     font-size: 1rem;
-    line-height: 1.5,
+    line-height: 1.5;
   }
   .topology-status-grid {
     display: grid;
@@ -583,7 +583,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 8px;
     padding: 20px;
     border-left: 4px solid #e5e7eb;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .topology-card.active {
     border-left-color: #10b981;
@@ -617,9 +617,9 @@ https://svelte.dev/e/js_parse_error -->
     padding: 12px 24px;
     border: none;
     border-radius: 8px;
-    font-weight: 600,
+    font-weight: 600;
     cursor: pointer;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .demo-btn.primary {
     background: linear-gradient(135deg, #3b82f6, #1d4ed8);
@@ -635,7 +635,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .demo-progress h3 {
     margin-bottom: 10px;
-    font-weight: 600,
+    font-weight: 600;
   }
   .progress-bar {
     width: 300px;
@@ -649,7 +649,7 @@ https://svelte.dev/e/js_parse_error -->
     height: 100%;
     background: linear-gradient(90deg, #3b82f6, #10b981);
     border-radius: 4px;
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .metrics-dashboard {
     display: grid;
@@ -668,11 +668,11 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.9rem;
     color: #6b7280;
     margin-bottom: 8px;
-    font-weight: 500,
+    font-weight: 500;
   }
   .metric-value {
     font-size: 2rem;
-    font-weight: 800,
+    font-weight: 800;
     color: #1f2937;
     margin-bottom: 5px;
   }
@@ -704,16 +704,16 @@ https://svelte.dev/e/js_parse_error -->
   }
   .prediction-details {
     color: #059669;
-    font-weight: 500,
+    font-weight: 500;
   }
   .animation-type {
     color: #7c3aed;
-    font-weight: 500,
+    font-weight: 500;
   }
   .compressed {
     color: #059669;
     font-size: 0.8rem;
-    font-weight: 600,
+    font-weight: 600;
   }
   .performance-summary {
     margin-top: 30px;
@@ -724,7 +724,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .performance-summary h3 {
     margin-bottom: 20px;
-    font-weight: 600,
+    font-weight: 600;
   }
   .summary-grid {
     display: grid;
@@ -753,7 +753,7 @@ https://svelte.dev/e/js_parse_error -->
     .metrics-dashboard {
       grid-template-columns: repeat(2, 1fr);
     }
-    .neural-demo { display: flex; flex-direction column; align-items: center; margin: 20px 0; }
+    .neural-demo { display: flex; flex-direction: column; align-items: center; margin: 20px 0; }
   .neural-canvas { border-radius: 8px; box-shadow: 0 6px 18px rgba(15,23,42,0.06); background: #0b1220; }
   .fallback { text-align: center; color: #334155; }
   .placeholder { display: inline-block; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(2,6,23,0.06); margin-top: 12px; }
@@ -782,5 +782,6 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
+
 
 

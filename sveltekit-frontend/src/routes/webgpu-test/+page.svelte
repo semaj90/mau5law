@@ -269,7 +269,7 @@
     border: none;
     padding: 0.75rem 1.5rem;
     border-radius: 8px;
-    font-weight: 500,
+    font-weight: 500;
     cursor: pointer;
     margin-bottom: 1.5rem;
   }
@@ -345,7 +345,7 @@
   }
   .stat-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 0.75rem;
     background: #f9fafb;
@@ -356,7 +356,9 @@
     font-size: 0.9rem;
   }
   .value {
-    font-weight: 600,
+    font-weight: 600;
     color: #1f2937;
   }
 </style>
+
+

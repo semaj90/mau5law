@@ -237,12 +237,13 @@
   }
   /* Theme weight bar animations */
   .bg-orange-500 {
-    transition width 0.8s ease-in-out;
+    transition: width 0.8s ease-in-out;
   }
   /* Entity card hover effects */
   .bg-purple-50:hover {
     background-color: rgba(139, 92, 246, 0.15);
     transform: translateY(-1px);
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
 </style>
+

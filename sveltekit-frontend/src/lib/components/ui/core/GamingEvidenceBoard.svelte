@@ -237,7 +237,7 @@
   /* Header Styles */
   .board-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 1rem 2rem;
     background: rgba(0, 0, 0, 0.8);
@@ -245,7 +245,7 @@
   }
   .title-section {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
   }
   .board-title {
     font-size: 1.5rem;
@@ -292,7 +292,7 @@
   }
   .case-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 0.5rem;
     margin: 0.25rem 0;
@@ -330,7 +330,7 @@
     font-family: inherit;
     font-size: 0.75rem;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .control-btn:hover {
     border-color: #00ff41;
@@ -339,7 +339,7 @@
   /* Toolbar Styles */
   .toolbar {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 0.75rem 2rem;
     background: rgba(0, 0, 0, 0.6);
@@ -359,7 +359,7 @@
     font-family: inherit;
     font-size: 0.75rem;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .zoom-btn:hover, .action-btn: hover {
     border-color: #00ff41;
@@ -391,7 +391,7 @@
       linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
     background-size: 20px 20px;
-    opacity: 0.3,
+    opacity: 0.3;
   }
   .connection-canvas {
     position absolute;
@@ -408,7 +408,7 @@
     border: 3px solid #555555;
     border-radius: 8px;
     cursor: pointer;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     z-index: 2,
   }
   .evidence-item:hover {
@@ -453,7 +453,7 @@
     font-weight: bold;
     color: #ffffff;
     margin-bottom: 0.5rem;
-    line-height: 1.2,
+    line-height: 1.2;
   }
   .evidence-description {
     font-size: 0.625rem;
@@ -463,7 +463,7 @@
   }
   .connection-info {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
   }
   .connection-count {
@@ -520,3 +520,5 @@
     }
   }
 </style>
+
+

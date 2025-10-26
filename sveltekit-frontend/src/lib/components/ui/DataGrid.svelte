@@ -267,7 +267,7 @@ https://svelte.dev/e/js_parse_error -->
   .grid-toolbar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     padding: 1rem 1.5rem;
     border-bottom: 1px solid rgb(243 244 246);
     background-color: rgb(249 250 251);
@@ -293,7 +293,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 0.5rem;
     font-size: 0.875rem;
     background-color: white;
-    transition border-color 0.15s;
+    transition: border-color 0.15s;
   }
   .search-input:focus {
     outline: none;
@@ -313,9 +313,9 @@ https://svelte.dev/e/js_parse_error -->
     border: 1px solid rgb(209 213 219);
     border-radius: 0.5rem;
     font-size: 0.875rem;
-    font-weight: 500,
+    font-weight: 500;
     color: rgb(55 65 81);
-    transition all 0.15s;
+    transition: all 0.15s;
   }
   .filter-buttonhover {
     background-color: rgb(249 250 251);
@@ -348,13 +348,13 @@ https://svelte.dev/e/js_parse_error -->
   .header-cell {
     padding: 0;
     text-align: left;
-    font-weight: 600,
+    font-weight: 600;
     color: rgb(55 65 81);
   }
   .header-button {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     width: 100%;
     padding: 0.75rem 1rem;
     background: none;
@@ -363,7 +363,7 @@ https://svelte.dev/e/js_parse_error -->
     font-weight: inherit;
     color: inherit;
     cursor: pointer;
-    transition background-color 0.15s;
+    transition: background-color 0.15s;
   }
   .header-buttonhover:not(:disabled) {
     background-color: rgb(243 244 246);
@@ -372,7 +372,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: default;
   }
   .header-text {
-    font-weight: 600,
+    font-weight: 600;
     color: rgb(55 65 81);
   }
   .sort-icons {
@@ -385,7 +385,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .data-row {
     border-bottom: 1px solid rgb(243 244 246);
-    transition background-color 0.15;
+    transition: background-color 0.15;
   }
   .data-row:hover {
     background-color: rgb(249 250 251);
@@ -414,7 +414,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .cell-content {
     color: rgb(55 65 81);
-    line-height: 1.5,
+    line-height: 1.5;
   }
   .checkbox-input {
     width: 1rem;
@@ -435,7 +435,7 @@ https://svelte.dev/e/js_parse_error -->
   .loading-content,
   .empty-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 1rem;
     color: rgb(107 114 128);
@@ -450,11 +450,11 @@ https://svelte.dev/e/js_parse_error -->
   }
   .loading-text,
   .empty-text {
-    font-weight: 500,
+    font-weight: 500;
   }
   .empty-icon {
     font-size: 2rem;
-    opacity: 0.5,
+    opacity: 0.5;
   }
   @keyframes spin {
     to {
@@ -464,7 +464,7 @@ https://svelte.dev/e/js_parse_error -->
   /* Responsive design */
   @media (max-width: 768px) {
     .grid-toolbar {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
       align-items: stretch;
     }
@@ -480,3 +480,4 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </style>
+

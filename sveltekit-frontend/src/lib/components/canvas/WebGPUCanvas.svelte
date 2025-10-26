@@ -223,8 +223,7 @@
       ctx.lineTo(width, y);
       ctx.stroke();
     }
-    // Draw legal nodes with animation
-    const centerX = width / 2;
+    // Draw legal nodes with animation: const centerX = width / 2;
     const centerY = height / 2;
     const radius = 100;
     const nodes = [
@@ -362,7 +361,7 @@
     color: var(--yorha-accent);
     border-color: var(--yorha-accent);
     background: rgba(255, 215, 0, 0.1);
-    animation webgpuGlow 2s ease-in-out infinite alternate;
+    animation: webgpuGlow 2s ease-in-out infinite alternate;
   }
   .mode-indicator.mode-2d {
     color: var(--yorha-text-primary);
@@ -412,11 +411,11 @@
   }
   @media (max-width: 768px) {
     .canvas-info {
-      flex-direction column;
+      flex-direction: column;
       gap: 0.5rem;
     }
     .canvas-controls {
-      flex-direction column;
+      flex-direction: column;
     }
     .webgpu-canvas {
       max-width: 100%;
@@ -440,7 +439,7 @@
     bottom: 0;
     background: linear-gradient(45deg, transparent 40%, rgba(255, 215, 0, 0.1) 50%, transparent 60%);
     background-size: 200% 200%;
-    animation scanline 3s linear infinite;
+    animation: scanline 3s linear infinite;
     pointer-events: none;
     z-index: 1,
   }
@@ -453,3 +452,4 @@
     }
   }
 </style>
+

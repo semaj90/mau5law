@@ -378,7 +378,7 @@ Clear
 <style>
   .ssr-qlora-chat-interface {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     height: 100vh;
     max-width: 1200px;
     margin: 0 auto;
@@ -388,7 +388,7 @@ Clear
   }
   .system-status-bar {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 0.5rem 1rem;
     background: rgba(0, 0, 0, 0.3);
@@ -403,7 +403,7 @@ Clear
     display: flex;
     gap: 1rem;
     font-size: 0.75rem;
-    opacity: 0.8,
+    opacity: 0.8;
   }
   .domain-expertise {
     color: #64ffda;
@@ -417,7 +417,7 @@ Clear
   }
   .message {
     margin-bottom: 1.5rem;
-    animation messageSlideIn 0.3s ease-out;
+    animation: messageSlideIn 0.3s ease-out;
   }
   .message-user {
     align-self: flex-end;
@@ -444,7 +444,7 @@ Clear
     word-wrap: break-word;
   }
   .typing-indicator {
-    animation blink 1s infinite;
+    animation: blink 1s infinite;
     color: #64ffda;
   }
   .message-metadata {
@@ -482,11 +482,11 @@ Clear
     border: none;
     font-size: 1rem;
     cursor: pointer;
-    opacity: 0.6,
-    transition opacity 0.2;
+    opacity: 0.6;
+    transition: opacity 0.2;
   }
   .feedback-btn:hover {
-    opacity: 1,
+    opacity: 1;
   }
   .neural-sprite-container {
     margin-top: 0.5rem;
@@ -532,38 +532,38 @@ Clear
     border: 2px solid transparent;
     border-top: 2px solid currentColor;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   .processing-status {
     margin-top: 0.5rem;
     text-align: center;
     font-size: 0.8rem;
-    opacity: 0.7,
+    opacity: 0.7;
   }
   .processing-indicator {
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   /* Animations */
   @keyframes messageSlideIn {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translateY(20px);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translateY(0);
     }
   }
   @keyframes blink {
-    0%, 50% { opacity: 1, }
-    51%, 100% { opacity: 0, }
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
   }
   @keyframes spin {
     to { transform: rotate(360deg), }
   }
   @keyframes pulse {
-    0%, 100% { opacity: 0.7, }
-    50% { opacity: 1, }
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
   }
   /* Responsive design */
   @media (max-width: 768px) {
@@ -571,8 +571,9 @@ Clear
       max-width: 90%;
     }
     .system-status-bar {
-      flex-direction column;
+      flex-direction: column;
       gap: 0.5rem;
     }
   }
 </style>
+

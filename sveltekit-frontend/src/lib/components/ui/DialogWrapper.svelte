@@ -105,8 +105,7 @@
     justify-content: center;
     color: var(--nier-text-muted, #94a3b8);
     cursor: pointer;
-    transition
-      background-color 0.15s ease,
+    transition: background-color 0.15s ease,
       color 0.15s ease; /* transition-color */
   }
 
@@ -115,3 +114,4 @@
     color: var(--nier-white, #ffffff);
   }
 </style>
+

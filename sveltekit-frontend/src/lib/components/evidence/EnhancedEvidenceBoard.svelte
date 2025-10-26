@@ -1153,7 +1153,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
 
 <style>
   .animate-spin {
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   @keyframes spin {
     from {
@@ -1208,9 +1208,8 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       0 0 52px 10px rgb(var(--accent-d) / 0.22),
       inset 0 0 0 1px rgba(255 255 255 / 0.12),
       inset 0 0 6px 2px rgb(var(--accent-b) / 0.25);
-    animation canvasGlow 3.4s ease-in-out infinite alternate;
-    transition
-      box-shadow 350ms ease,
+    animation: canvasGlow 3.4s ease-in-out infinite alternate;
+    transition: box-shadow 350ms ease,
       border-color 350ms ease,
       transform 400ms;
     will-change: box-shadow, transform;
@@ -1237,8 +1236,8 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       radial-gradient(circle at 25% 18%, rgba(var(--accent-b) / 0.18), transparent 65%),
       radial-gradient(circle at 80% 70%, rgba(var(--accent-c) / 0.18), transparent 70%);
     mix-blend-mode: overlay;
-    opacity: 0.55,
-    animation scanDrift 9s linear infinite;
+    opacity: 0.55;
+    animation: scanDrift 9s linear infinite;
   }
   /* NES-style pixel grid & edge glow */
   :global(.retro-glow) .evidence-canvas-container::after {
@@ -1247,8 +1246,8 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       repeating-linear-gradient(45deg, rgba(255 255 255 / 0.05) 0 2px, rgba(0 0 0 / 0.05) 2px 4px);
     filter: brightness(1.05) saturate(1.15);
     mix-blend-mode: soft-light;
-    opacity: 0.75,
-    animation hueShift 12s ease-in-out infinite;
+    opacity: 0.75;
+    animation: hueShift 12s ease-in-out infinite;
   }
   /* Depth pop for N64 'cartridge slot' vibe when combined with .n64-depth parent */
   :global(.retro-glow .n64-depth) .evidence-canvas-container {
@@ -1265,8 +1264,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
   /* YoRHa highlight pulse when drag active (parent toggles .yorha-glow) */
   :global(.yorha-glow) .evidence-canvas-container {
     outline: 2px solid rgba(var(--accent-c) / 0.8);
-    animation
-      canvasGlow 2.1s ease-in-out infinite alternate,
+    animation: canvasGlow 2.1s ease-in-out infinite alternate,
       pulseRing 1.8s ease-in-out infinite;
   }
   /* Reduce intensity in retro terminal mode */
@@ -1276,7 +1274,7 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
       0 0 0 1px rgba(0 255 120 / 0.4),
       0 0 12px 2px rgba(0 255 120 / 0.25),
       inset 0 0 8px rgba(0 255 120 / 0.2);
-    animation none;
+    animation: none;
     filter: contrast(1.05) saturate(0.85);
   }
   /* Accessibility: respect reduced motion */
@@ -1284,21 +1282,21 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     :global(.retro-glow) .evidence-canvas-container,
     :global(.retro-glow) .evidence-canvas-container::before,
     :global(.retro-glow) .evidence-canvas-container::after {
-      animation none !important;
+      animation: none !important;
     }
   }
   @keyframes scanDrift {
     0% {
       transform: translateY(0);
-      opacity: 0.55,
+      opacity: 0.55;
     }
     50% {
       transform: translateY(-6px);
-      opacity: 0.42,
+      opacity: 0.42;
     }
     100% {
       transform: translateY(0);
-      opacity: 0.55,
+      opacity: 0.55;
     }
   }
   @keyframes hueShift {
@@ -1333,3 +1331,4 @@ Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration
     }
   }
 </style>
+

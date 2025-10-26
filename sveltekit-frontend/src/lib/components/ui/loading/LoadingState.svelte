@@ -169,14 +169,14 @@
   .animation-delay-150 {
     animation-delay: 150m;
   }
-/* Custom YoRHa pulse animation */ {}
+/* Custom YoRHa pulse animation: */ {}
   @keyframes yorha-pulse {
 0%, {}
     100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.3,
+      opacity: 0.3;
     }
   }
   .animate-pulse {
@@ -202,3 +202,4 @@
     animation-delay: 500ms;
   }
 </style>
+

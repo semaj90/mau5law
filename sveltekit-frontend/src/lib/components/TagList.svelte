@@ -243,21 +243,21 @@
       border-radius: 9999px;
       font-size: 0.875rem;
       border: 1px solid #bfdbfe; /* Corrected hex code */
-      transition all 0.2s ease-in-out; /* Added unit and easing for transition */
+      transition: all 0.2s ease-in-out; /* Added unit and easing for transition: */
     }
     .tag:hover {
       background-color: #bfdbfe; /* Corrected hex code */
     }
   }
   .tag-text {
-    font-weight: 500,
+    font-weight: 500;
   }
   .tag-remove {
     margin-left: 0.25rem;
     padding: 0.125rem;
     border-radius: 9999px;
     color: #2563eb;
-    transition all 0.15;
+    transition: all 0.15;
     border: none;
     background: none;
     cursor: pointer;
@@ -308,7 +308,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    transition all 0.15;
+    transition: all 0.15;
     border: none;
     background: none;
     cursor: pointer;
@@ -330,7 +330,7 @@
     color: #2563eb;
     border: 1px dashed #93c5fd;
     border-radius: 0.375rem;
-    transition all 0.15;
+    transition: all 0.15;
     background: none;
     cursor: pointer;
   }
@@ -353,3 +353,4 @@
     border-color: #e5e7eb;
   }
 </style>
+

@@ -254,12 +254,12 @@
   }
   .embedding-form {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1.5rem;
   }
   .form-group {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .form-group label {
@@ -284,7 +284,7 @@
   .result-details {
     margin-top: 1rem;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .result-details code {
@@ -295,7 +295,7 @@
   }
   .recent-embeddings {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .embedding-item {
@@ -309,7 +309,7 @@
   }
   .embedding-meta {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     font-size: 0.8rem;
   }
   .inline-icon {
@@ -344,3 +344,5 @@
     border-color: #ce372b;
   }
 </style>
+
+

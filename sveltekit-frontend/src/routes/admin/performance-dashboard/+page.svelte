@@ -282,7 +282,7 @@
   .text-green-300 {
     text-shadow: 0 0 3px currentColor;
   }
-  /* Subtle pulse animation for critical alerts */
+  /* Subtle pulse animation: for critical alerts */
   .text-red-500 {
     animation: pulse 2s infinite;
   }
@@ -296,3 +296,4 @@
     }
   }
 </style>
+

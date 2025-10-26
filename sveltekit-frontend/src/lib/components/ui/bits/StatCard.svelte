@@ -41,7 +41,7 @@
     padding: 20px;
     text-align: center;
     box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.1));
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     position relative;
     overflow: hidden;
   }
@@ -64,10 +64,10 @@
     margin-bottom: 12px;
   }
   .stat-value {
-    font-weight: 700,
+    font-weight: 700;
     color: var(--text-primary, #111827);
     margin-bottom: 4px;
-    line-height: 1.1,
+    line-height: 1.1;
   }
   .stat-value.text-lg {
     font-size: 1.125rem;
@@ -97,3 +97,4 @@
     }
   }
 </style>
+

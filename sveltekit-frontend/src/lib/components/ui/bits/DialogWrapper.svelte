@@ -105,7 +105,7 @@
 
   .modal-title {
     font-size: 1.25rem;
-    font-weight: 700,
+    font-weight: 700;
     color: var(--nier-accent, #9f7aea);
     margin-bottom: 0.5rem;
   }
@@ -129,11 +129,10 @@
     justify-content: center;
     color: var(--nier-text-muted, rgba(255, 255, 255, 0.7));
     cursor: pointer;
-    transition
-      background-color 0.15s ease,
+    transition: background-color 0.15s ease,
       color 0.15s ease;
     font-size: 1rem;
-    line-height: 1,
+    line-height: 1;
   }
 
   .modal-close:hover {
@@ -148,3 +147,4 @@
     outline-offset: 2px;
   }
 </style>
+

@@ -226,7 +226,7 @@
   .thinking-style-control {
     position relative;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.75rem;
   }
   .toggle-container {
@@ -251,7 +251,7 @@
     border: 2px solid transparent;
     border-top: 2px solid currentColor;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   @keyframes spin {
     0% {
@@ -293,16 +293,16 @@
     margin-bottom: 0.5rem;
     color: inherit;
     opacity: 0.9;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   .feature-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.125rem;
   }
   .feature {
     font-size: 0.75rem;
-    opacity: 0.8,
+    opacity: 0.8;
   }
   .config-panel {
     background: var(--color-ui-surface);
@@ -319,12 +319,12 @@
   }
   .setting-group {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .setting-label {
     font-size: 0.875rem;
-    font-weight: 500,
+    font-weight: 500;
     color: var(--color-ui-text);
   }
   .setting-select {
@@ -343,7 +343,7 @@
   }
   .checkbox-group {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
   }
   .checkbox-label {
     display: flex;
@@ -387,12 +387,12 @@
   .premium-text strong {
     display: block;
     margin-bottom: 0.25rem;
-    font-weight: 600,
+    font-weight: 600;
   }
   .premium-text p {
     margin: 0;
     font-size: 0.875rem;
-    opacity: 0.9,
+    opacity: 0.9;
   }
   .nier-border-glow {
     position relative;
@@ -408,6 +408,7 @@
       linear-gradient(#fff 0 0) content-box,
       linear-gradient(#fff 0 0);
     mask-composite: exclud;
-    opacity: 0.6,
+    opacity: 0.6;
   }
 </style>
+

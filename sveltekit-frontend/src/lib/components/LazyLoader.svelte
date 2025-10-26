@@ -175,13 +175,13 @@ https://svelte.dev/e/bindable_invalid_location -->
       rgba(255, 255, 255, 0.1) 75%
     );
     background-size: 200% 100%;
-    animation loading-shimmer 2s infinite;
+    animation: loading-shimmer 2s infinite;
     border-radius: 4px;
     min-height: 200px;
   }
   .placeholder-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 12px;
     color: rgba(255, 255, 255, 0.7);
@@ -193,7 +193,7 @@ https://svelte.dev/e/bindable_invalid_location -->
     border: 3px solid rgba(255, 255, 255, 0.2);
     border-top: 3px solid rgba(255, 255, 255, 0.8);
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   .loading-text {
     margin: 0;
@@ -208,7 +208,7 @@ https://svelte.dev/e/bindable_invalid_location -->
   /* Error styles */
   .lazy-loader-error {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 12px;
     padding: 24px;
@@ -233,7 +233,7 @@ https://svelte.dev/e/bindable_invalid_location -->
     color: #ffffff;
     cursor: pointer;
     font-size: 12px;
-    transition background 0.2s ease;
+    transition: background 0.2s ease;
   }
   .retry-buttonhover {
     background: rgba(255, 255, 255, 0.2);
@@ -297,10 +297,10 @@ https://svelte.dev/e/bindable_invalid_location -->
   /* Reduced motion */
   @media (prefers-reduced-motion reduce) {
     .loading-spinner {
-      animation none;
+      animation: none;
     }
     .lazy-loader-placeholder {
-      animation none;
+      animation: none;
     }
   }
 </style>

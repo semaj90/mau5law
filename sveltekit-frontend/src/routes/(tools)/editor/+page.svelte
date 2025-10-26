@@ -153,7 +153,7 @@ https://svelte.dev/e/expected_token -->
   }
   .header-content {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 16px;
   }
@@ -194,9 +194,9 @@ https://svelte.dev/e/expected_token -->
     color: var(--yorha-text-primary, #e0e0e0);
     border-radius: 4px;
     font-size: 0.85rem;
-    font-weight: 500,
+    font-weight: 500;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -208,7 +208,7 @@ https://svelte.dev/e/expected_token -->
     box-shadow: 0 4px 12px rgba(60, 188, 252, 0.3);
   }
   .action-btn:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .save-btn:not(:disabled) {,
@@ -308,7 +308,7 @@ https://svelte.dev/e/expected_token -->
       padding: 16px 12px;
     }
     .header-content {
-      flex-direction column;
+      flex-direction: column;
       gap: 16px;
       align-items: stretch;
     }
@@ -319,7 +319,7 @@ https://svelte.dev/e/expected_token -->
       justify-content: center;
     }
     .document-title-section {
-      flex-direction column;
+      flex-direction: column;
       align-items: stretch;
       gap: 8px;
     }
@@ -348,6 +348,8 @@ https://svelte.dev/e/expected_token -->
     }
   }
   .action-btn:hover {
-    animation glow-pulse 2s ease-in-out infinite;
+    animation: glow-pulse 2s ease-in-out infinite;
   }
 </style>
+
+

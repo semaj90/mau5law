@@ -7,7 +7,7 @@
 
 import { Lucia } from 'lucia';
 import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
-import { Argon2id } from 'oslo/password';
+import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import type { RequestEvent } from '@sveltejs/kit';
 import type { Session, User } from 'lucia';
@@ -79,7 +79,8 @@ declare module 'lucia' {
  * Integrates with Lucia v3, Drizzle ORM, PostgreSQL, and XState v5
  */
 export class AuthService {
-  private argon2id = new Argon2id();
+  // Use bcryptjs for password hashing (consistent with login form implementation)
+  private readonly bcryptRounds = 12;
 
   /**
    * Register a new user with validation and error handling
@@ -111,7 +112,7 @@ export class AuthService {
         throw new RegistrationError('Password must be at least 8 characters long', ERROR_CODES.WEAK_PASSWORD);
       }
 
-      const passwordHash = await this.argon2id.hash(data.password);
+      const passwordHash = await bcrypt.hash(data.password, this.bcryptRounds);
       const [newUser] = await db
         .insert(users)
         .values({
@@ -161,8 +162,8 @@ export class AuthService {
         });
       }
 
-      // Verify password
-      const validPassword = await this.argon2id.verify(user.hashedPassword, password);
+      // Verify password using bcryptjs
+      const validPassword = await bcrypt.compare(password, user.hashedPassword);
       if (!validPassword) {
         throw new LoginError('Invalid email or password', ERROR_CODES.INVALID_CREDENTIALS, { email });
       }

@@ -460,15 +460,15 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
 <style>
   /* Enhanced chat styling */
   :global(.chat-message) {
-    animation fadeIn 0.3s ease-in-out;
+    animation: fadeIn 0.3s ease-in-out;
   }
   @keyframes fadeIn {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translateY(10px);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translateY(0);
     }
   }
@@ -478,10 +478,11 @@ Features: Self-prompting, elemental awareness (YOLO), enhanced RAG, local LLM
   }
   /* Self-prompting suggestion animations */
   :global(.suggestion-button) {
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   :global(.suggestion-buttonhover) {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 </style>
+

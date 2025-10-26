@@ -318,7 +318,7 @@
   :global(.yorha-textarea) {
     background: #ffffff;
     border: 2px solid #e5e5e5;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     font-family: 'JetBrains Mono', monospace;
   }
   :global(.yorha-textarea:focus) {
@@ -337,7 +337,7 @@
     width: 100%;
     height: 2px;
     background: linear-gradient(90deg, transparent, #ffbf00, transparent);
-    animation shimmer 2s infinite;
+    animation: shimmer 2s infinite;
   }
   :global(.yorha-error) {
     border-left: 4px solid #ef4444;
@@ -359,3 +359,4 @@
     }
   }
 </style>
+

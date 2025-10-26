@@ -243,7 +243,7 @@
     .sidebar {
       flex-direction: row;
       align-items: center;
-      justify-content: space-between;
+      justify-content: space-betweennn;
       padding: 1rem 1.5rem;
       gap: 1rem;
     }
@@ -259,3 +259,5 @@
     }
   }
 </style>
+
+

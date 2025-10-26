@@ -354,7 +354,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   }
   .dashboard-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 30px;
     border-bottom: 2px solid #00d800;
@@ -386,7 +386,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     border: 2px solid;
     border-radius: 10px;
     padding: 20px;
-    transition transform 0.2;
+    transition: transform 0.2;
   }
   .metric-card:hover {
     transform: translateY(-5px);
@@ -416,7 +416,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     font-size: 3em;
     font-weight: bold;
     color: #00d800;
-    line-height: 1,
+    line-height: 1;
   }
   .metric-label {
     color: #3cbcfc;
@@ -425,7 +425,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   }
   .sub-metrics {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 5px;
     font-size: 0.9em;
     color: #cccccc;
@@ -447,7 +447,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #00d800, #3cbcfc);
-    transition width 1s ease;
+    transition: width 1s ease;
   }
   .status-text {
     font-size: 1.1em;
@@ -518,7 +518,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   }
   .alert-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     padding: 10px;
     border-radius: 5px;
     margin-bottom: 10px;
@@ -552,7 +552,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     font-family: 'Courier New', monospace;
     font-weight: bold;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .control-btn:hover {
     background: #3cbcfc;
@@ -567,3 +567,5 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
     }
   }
 </style>
+
+

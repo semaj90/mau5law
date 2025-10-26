@@ -95,7 +95,7 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     cursor: pointer;
-    transition all 0.1s ease;
+    transition: all 0.1s ease;
     user-select: none;
 /* Base NES styling */ {}
     background: theme('colors.nes.white');
@@ -113,7 +113,7 @@
     box-shadow: 2px 2px 0px 0px theme('colors.nes.black');
   }
   .nes-btn.is-disabled {
-    opacity: 0.6,
+    opacity: 0.6;
     cursor: not-allowed;
     transform: none !important;
     box-shadow: 4px 4px 0px 0px theme('colors.nes.gray') !important;
@@ -176,7 +176,8 @@
     min-height: 48px;
   }
   @keyframes nes-blink {
-    0%, 50% { opacity: 1, }
-    51%, 100% { opacity: 0, }
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
   }
 </style>
+

@@ -241,7 +241,7 @@
   <!-- Floating Action Button -->
   <button
     onclick={() => (showAIAssistant = true)}
-    class="fixed bottom-6 right-6 w-14 h-14 bg-nier-gradient-digital rounded-full flex items-center justify-center shadow-lg hover: shadow-xl transform hover:scale-110 nier-transition animate-digital-glow"
+    class="fixed bottom-6 right-6 w-14 h-14 bg-nier-gradient-digital rounded-full flex items-center justify-center shadow-lg hover: shadow-xl transform hover:scale-110 nier-transition: animate-digital-glow"
     aria-label="Open AI Assistant"
   >
     <span class="text-2xl">🤖</span>
@@ -253,15 +253,16 @@
   /* Page-specific animations */
   @keyframes fade-in {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translateY(20px);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translateY(0);
     }
   }
   .animate-fade-in {
-    animation fade-in 0.6s ease-out forward;
+    animation: fade-in 0.6s ease-out forward;
   }
 </style>
+

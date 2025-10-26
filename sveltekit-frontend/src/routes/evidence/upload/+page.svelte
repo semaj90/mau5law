@@ -248,7 +248,7 @@
                 </div>
               {/if}
               <div>
-                <p style="font-weight:600,margin:0">{selectedFile.name}</p>
+                <p style="font-weight: 600;margin:0">{selectedFile.name}</p>
                 <p style="color:#6b7280;margin:0;font-size:0.9rem;">
                   {formatFileSize(selectedFile.size)} • {selectedFile.type}
                 </p>
@@ -346,3 +346,4 @@
     </div>
   </form>
 </div>
+

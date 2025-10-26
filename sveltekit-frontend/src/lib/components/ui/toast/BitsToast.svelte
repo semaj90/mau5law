@@ -93,10 +93,11 @@
   }
   :global(.toast-close) {
     color: rgb(var(--yorha-text-secondary));
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   :global($1) {
     color: rgb(var(--yorha-text-primary));
     background-color: rgb(var(--yorha-bg-tertiary) / 0.5);
   }
 </style>
+

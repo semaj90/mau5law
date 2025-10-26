@@ -298,7 +298,7 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Chat container -->
     <div
       class="chat-container"
-      /* transition removed */}
+      /* transition: removed */}
     >
       <!-- Header -->
       <div class="chat-header">
@@ -381,7 +381,7 @@ https://svelte.dev/e/js_parse_error -->
             class:user={message.role === "user"}
             class:assistant={message.role === "assistant"}
             class:error={message.isError}
-            /* transition removed */}
+            /* transition: removed */}
           >
             <div class="message-avatar">
               {#if message.role === "user"}
@@ -509,7 +509,7 @@ https://svelte.dev/e/js_parse_error -->
   .error-boundary h2 {
     margin: 0 0 0.5rem 0;
     font-size: 1.25rem;
-    font-weight: 600,
+    font-weight: 600;
   }
   .error-boundary p {
     margin: 0 0 0.5rem 0;
@@ -552,7 +552,7 @@ https://svelte.dev/e/js_parse_error -->
     max-width: 600px;
     max-height: 80vh;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     overflow: hidden;
   }
   .chat-header {
@@ -562,7 +562,7 @@ https://svelte.dev/e/js_parse_error -->
     color: white;
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
   }
   .header-content {
     display: flex;
@@ -586,7 +586,7 @@ https://svelte.dev/e/js_parse_error -->
   .chat-header h2 {
     margin: 0;
     font-size: 1.125rem;
-    font-weight: 600,
+    font-weight: 600;
   }
   .mode-section {
     position relative;
@@ -602,7 +602,7 @@ https://svelte.dev/e/js_parse_error -->
     gap: 0.5rem;
     font-size: 0.875rem;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .mode-buttonhover {
     background: rgba(255, 255, 255, 0.2);
@@ -628,7 +628,7 @@ https://svelte.dev/e/js_parse_error -->
     align-items: center;
     gap: 0.75rem;
     cursor: pointer;
-    transition background 0.2;
+    transition: background 0.2;
     color: #374151;
   }
   .mode-optionhover {
@@ -640,7 +640,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .mode-info {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: flex-start;
   }
   .mode-name {
@@ -662,7 +662,7 @@ https://svelte.dev/e/js_parse_error -->
     padding: 0.5rem;
     border-radius: 6px;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -671,7 +671,7 @@ https://svelte.dev/e/js_parse_error -->
     background: rgba(255, 255, 255, 0.2);
   }
   .header-actiondisabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .messages-container {
@@ -679,7 +679,7 @@ https://svelte.dev/e/js_parse_error -->
     overflow-y: auto;
     padding: 1rem;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .message {
@@ -744,7 +744,7 @@ https://svelte.dev/e/js_parse_error -->
     height: 6px;
     background: #9ca3af;
     border-radius: 50%;
-    animation typing 1.4s infinite;
+    animation: typing 1.4s infinite;
   }
   .typing-dots span:nth-child(2) {
     animation-delay: 0.2,
@@ -768,7 +768,7 @@ https://svelte.dev/e/js_parse_error -->
   .suggestions h4 {
     margin: 0 0 0.5rem 0;
     font-size: 0.875rem;
-    font-weight: 600,
+    font-weight: 600;
     opacity: 0.9;
   }
   .suggestions ul {
@@ -778,7 +778,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .suggestions li {
     margin-bottom: 0.25rem;
-    opacity: 0.9,
+    opacity: 0.9;
   }
   .actions {
     margin-top: 0.75rem;
@@ -794,7 +794,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 6px;
     font-size: 0.75rem;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .message.assistant .action-button {
     background: #e5e7eb;
@@ -811,9 +811,9 @@ https://svelte.dev/e/js_parse_error -->
     margin-top: 0.5rem;
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
     font-size: 0.75rem;
-    opacity: 0.7,
+    opacity: 0.7;
   }
   .context-indicator {
     display: flex;
@@ -840,11 +840,11 @@ https://svelte.dev/e/js_parse_error -->
     padding: 1rem;
     border-radius: 8px;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 0.5rem;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
     color: #374151;
   }
   .quick-actionhover {
@@ -853,7 +853,7 @@ https://svelte.dev/e/js_parse_error -->
     transform: translateY(-1px);
   }
   .quick-actiondisabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
     transform: none;
   }
@@ -874,12 +874,12 @@ https://svelte.dev/e/js_parse_error -->
     padding: 0.75rem;
     font-family: inherit;
     font-size: 0.875rem;
-    line-height: 1.5,
+    line-height: 1.5;
     resize: none;
     min-height: 44px;
     max-height: 120px;
     background: white;
-    transition border-color 0.2;
+    transition: border-color 0.2;
   }
   .message-input:focus {
     outline: none;
@@ -897,7 +897,7 @@ https://svelte.dev/e/js_parse_error -->
     padding: 0.75rem;
     border-radius: 8px;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -917,7 +917,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 2px solid transparent;
     border-top: 2px solid currentColor;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   @keyframes typing {
     0%,
@@ -946,7 +946,7 @@ https://svelte.dev/e/js_parse_error -->
       padding: 1rem;
     }
     .header-content {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-start;
       gap: 0.75rem;
     }

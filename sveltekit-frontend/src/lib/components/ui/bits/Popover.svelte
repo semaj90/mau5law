@@ -19,7 +19,7 @@
     size = 'md',
     side = 'bottom',
     align = 'center',
-    animation = 'fade',
+    animation: = 'fade',
     arrow = true,
     modal = false,
     closeOnOutsideClick = true,
@@ -153,3 +153,4 @@ box-shadow: {}
     }
   }
 </style>
+

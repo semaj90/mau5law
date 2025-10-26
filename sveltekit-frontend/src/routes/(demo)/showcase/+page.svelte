@@ -249,7 +249,7 @@
 
   .demo-card-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     gap: 1rem;
   }
@@ -284,7 +284,7 @@
 
   .demo-meta {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     gap: 1rem;
   }
@@ -353,3 +353,5 @@
     }
   }
 </style>
+
+

@@ -134,7 +134,7 @@ https://svelte.dev/e/expected_token -->
             <span class="text-sm font-medium text-gray-300 group-hover:text-white whitespace-nowrap">
               {action.label}
             </span>
-            <!-- Gaming-style border animation -->
+            <!-- Gaming-style border animation: -->
             <div class="absolute inset-0 rounded-2xl border border-transparent group-hover:border-gray-400/30
                         bg-gradient-to-r from-transparent via-gray-400/10 to-transparent opacity-0 ;
                         group-hover:opacity-100 transition-opacity duration-300"></div>

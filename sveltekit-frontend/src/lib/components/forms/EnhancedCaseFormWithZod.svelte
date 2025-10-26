@@ -82,8 +82,7 @@ https://svelte.dev/e/js_parse_error -->
   let lastSaved = $state<Date | null>(null);
   let isAutoSaving = $state<boolean>(false);
 
-  // interval/timeouts for progress animation
-  let progressInterval: ReturnType<typeof setInterval> | null = null;
+  // interval/timeouts for progress animation: let progressInterval: ReturnType<typeof setInterval> | null = null;
   let progressTimeout: ReturnType<typeof setTimeout> | null = null;
 
   // debounce handle for validation
@@ -100,7 +99,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   });
 
-  // progress animation watcher (runes-mode compliant)
+  // progress animation: watcher (runes-mode compliant)
   $effect(() => {
     if (isSubmitting) {
       progress = 5;
@@ -626,4 +625,5 @@ https://svelte.dev/e/js_parse_error -->
 <style lang="postcss">
   /*$$__STYLE_CONTENT__$$*/
 </style>
+
 

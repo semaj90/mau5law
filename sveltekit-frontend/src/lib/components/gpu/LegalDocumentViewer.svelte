@@ -1369,7 +1369,7 @@ const success = await initializeGPU();
   }
   @media (prefers-reduced-motion reduce) {
     .animate-pulse {
-      animation none !important;
+      animation: none !important;
     }
   }
 </style>

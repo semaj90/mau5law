@@ -442,14 +442,14 @@
 <style>
   .contextual-detective-board {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     height: 100vh;
     background: #f8fafc;
     font-family: system-ui, -apple-system, sans-serif;
   }
   .board-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 1rem 2rem;
     background: white;
@@ -472,7 +472,7 @@
   }
   .metric {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 0.25rem;
   }
@@ -495,18 +495,18 @@
   .metric.collaboration-active .value { color: #059669, }
   .metric.typing-indicator .value {
     color: #059669;
-    animation pulse 1.5s ease-in-out infinite;
+    animation: pulse 1.5s ease-in-out infinite;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1, }
-    50% { opacity: 0.5, }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
   }
   .analysis-area {
     flex: 1,
     padding: 2rem;
     overflow-y: auto;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 2rem;
   }
   .input-section {
@@ -517,7 +517,7 @@
   }
   .input-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1rem;
   }
@@ -530,10 +530,10 @@
     padding: 0.25rem 0.75rem;
     border-radius: 1rem;
     font-size: 0.75rem;
-    font-weight: 500,
+    font-weight: 500;
     color: #64748b;
     background: #f1f5f9;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .typing-indicator.active {
     color: #059669;
@@ -545,7 +545,7 @@
     border: 1px solid #d1d5db;
     border-radius: 0.375rem;
     font-size: 1rem;
-    line-height: 1.5,
+    line-height: 1.5;
     resize: vertical;
     font-family: inherit;
   }
@@ -563,9 +563,9 @@
     padding: 0.5rem 1rem;
     border: none;
     border-radius: 0.375rem;
-    font-weight: 500,
+    font-weight: 500;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .input-actions buttonfirst-child {
     background: #3b82f6;
@@ -609,7 +609,7 @@
     border-radius: 1rem;
     font-size: 0.875rem;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .prompt-buttonhover {
     background: #0ea5e9;
@@ -649,7 +649,7 @@
     font-weight: 600;
     text-transform: uppercase;
     font-size: 0.75rem;
-    opacity: 0.9,
+    opacity: 0.9;
   }
   .node-label {
     display: block;
@@ -674,3 +674,4 @@
     color: #4b5563;
   }
 </style>
+

@@ -477,7 +477,7 @@
     background: linear-gradient(120deg, rgba(59, 130, 246, 0.2) 0%, rgba(16, 185, 129, 0.2) 100%);
     padding: 2px 4px;
     border-radius: 3px;
-    font-weight: 600,
+    font-weight: 600;
     color: var(--color-nier-text-primary);
   }
   /* Semantic entity styling enhancements */
@@ -488,7 +488,7 @@
     margin-bottom: 1rem;
   }
   :global(.semantic-entity-tag) {
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     cursor: pointer;
   }
   :global(.semantic-entity-tag:hover) {
@@ -510,15 +510,15 @@
   @keyframes processing-pulse {
     0%,
     100% {
-      opacity: 0.8,
+      opacity: 0.8;
     }
     50% {
-      opacity: 1,
+      opacity: 1;
     }
   }
   /* Vector result item enhancements */
   :global(.vector-result-item) {
-    transition all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position relative;
     overflow: hidden;
   }
@@ -530,7 +530,7 @@
     width: 100%;
     height: 2px;
     background: linear-gradient(90deg, transparent, var(--color-ai-status-online), transparent);
-    transition left 0.5s ease;
+    transition: left 0.5s ease;
   }
   :global(.vector-result-item:hover::after) {
     left: 100%;
@@ -563,3 +563,4 @@
     color: var(--color-nier-text-primary);
   }
 </style>
+

@@ -492,7 +492,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     max-height: 85vh;
     overflow: hidden;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
   }
   .modal-header {
     margin-bottom: 1.5rem;
@@ -546,12 +546,12 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     color: #fff;
     font-size: 0.9rem;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .timer-btn.active {
     background: rgba(244, 67, 54, 0.2);
     border-color: rgba(244, 67, 54, 0.4);
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   .timer-status {
     padding: 0.5rem 1rem;
@@ -569,7 +569,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     overflow: hidden;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .work-item: hover
   .work-item.active {
@@ -597,7 +597,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     margin: 0 0 0.5rem 0;
     color: rgba(255, 255, 255, 0.9);
     font-size: 1rem;
-    font-weight: 500,
+    font-weight: 500;
   }
   .work-meta {
     display: flex;
@@ -608,7 +608,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .work-stats-column {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: flex-end;
     gap: 0.5rem;
     min-width: 120px;
@@ -627,7 +627,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .progress-fill {
     height: 100%;
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .progress-text {
     font-size: 0.75rem;
@@ -636,7 +636,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .status-time {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: flex-end;
     gap: 0.25rem;
   }
@@ -690,7 +690,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .activities-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .activity-item {
@@ -740,10 +740,10 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     border-radius: 6px;
     font-size: 0.8rem;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .action-btn:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .action-btn.primary {
@@ -768,12 +768,12 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .action-btn:hover:not(:disabled) {,
     transform: translateY(-1px);
-    opacity: 0.9,
+    opacity: 0.9;
   }
   .loading-state,
   .empty-state {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 3rem;
@@ -786,21 +786,21 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     border: 3px solid rgba(255, 255, 255, 0.2);
     border-top: 3px solid rgba(138, 43, 226, 0.8);
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin-bottom: 1rem;
   }
   .empty-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
-    opacity: 0.5,
+    opacity: 0.5;
   }
   @keyframes spin {
     0% { transform: rotate(0deg), }
     100% { transform: rotate(360deg), }
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1, }
-    50% { opacity: 0.7, }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
   }
   /* Scrollbar styling */
   .work-list::-webkit-scrollbar {
@@ -817,3 +817,4 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     background: rgba(138, 43, 226, 0.7);
   }
 </style>
+

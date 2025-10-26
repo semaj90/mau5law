@@ -343,7 +343,7 @@
   .yorha-terminal-page {
     min-height: 100vh;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     background: transparent;
   }
   /* Page Header */
@@ -383,14 +383,14 @@
     border-radius: 8px;
     box-shadow: 0 0 20px rgba(255, 191, 0, 0.3);
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     overflow: hidden;
   }
   /* Terminal Header */
   .yorha-terminal-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     padding: 0.5rem 1rem;
     background: rgba(250, 180, 50, 0.95);
     color: #000;
@@ -401,7 +401,7 @@
     gap: 0.5rem;
     font-family: monospace;
     font-size: 0.875rem;
-    font-weight: 700,
+    font-weight: 700;
   }
   .yorha-terminal-controls {
     display: flex;
@@ -413,7 +413,7 @@
     border-radius: 4px;
     background: transparent;
     cursor: pointer;
-    transition background-color 0.15s ease;
+    transition: background-color 0.15s ease;
   }
   .yorha-terminal-control:hover {
     background: rgba(0, 0, 0, 0.12);
@@ -459,7 +459,7 @@
   .yorha-terminal-spinner {
     display: inline-block;
     transform-origin: center;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin-right: 0.5rem;
   }
   /* Terminal Input */
@@ -480,7 +480,7 @@
     gap: 0.5rem;
   }
   .yorha-terminal-input {
-    flex: 1,
+    flex: 1;
     padding: 0.5rem;
     background: transparent;
     color: #f6d38b;
@@ -502,7 +502,7 @@
   }
   .yorha-command-reference h3 {
     font-size: 1.125rem;
-    font-weight: 700,
+    font-weight: 700;
     color: #fbbf24;
     margin-bottom: 0.75rem;
   }
@@ -529,7 +529,7 @@
     .yorha-header-title h1 {
       font-size: 1.5rem;
       display: flex;
-      flex-direction column;
+      flex-direction: column;
       align-items: center;
     }
     .yorha-terminal-output {
@@ -544,4 +544,6 @@
     }
   }
 </style>
+
+
 

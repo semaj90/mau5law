@@ -241,7 +241,7 @@
 <style>
   .loading-container, .error-container {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
@@ -254,7 +254,7 @@
     border: 3px solid #f3f4f6;
     border-top: 3px solid #3b82f6;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   @keyframes spin {
     0% { transform: rotate(0deg), }
@@ -271,7 +271,7 @@
     border-radius: 0.375rem;
     text-decoration none;
     cursor: pointer;
-    font-weight: 500,
+    font-weight: 500;
   }
   .error-container buttonhover, .back-link:hover {
     background: #2563eb;
@@ -289,7 +289,7 @@
   .case-header {
     grid-area: header;
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 1.5rem 2rem;
     background: white;
@@ -300,12 +300,12 @@
     margin: 0 0 0.5rem 0;
     font-size: 1.75rem;
     color: #1e293b;
-    font-weight: 700,
+    font-weight: 700;
   }
   .case-description {
     margin: 0 0 1rem 0;
     color: #64748b;
-    line-height: 1.5,
+    line-height: 1.5;
   }
   .case-meta {
     display: flex;
@@ -329,7 +329,7 @@
   }
   .connection-status {
     color: #059669;
-    font-weight: 500,
+    font-weight: 500;
   }
   .case-actions {
     display: flex;
@@ -341,7 +341,7 @@
     font-weight: 500;
     text-decoration none;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .case-actions button {
     background: #f3f4f6;
@@ -374,7 +374,7 @@
     margin: 0 0 1.5rem 0;
     font-size: 1.125rem;
     color: #1e293b;
-    font-weight: 600,
+    font-weight: 600;
   }
   .analytics-section {
     margin-bottom: 2rem;
@@ -383,13 +383,13 @@
     margin: 0 0 1rem 0;
     font-size: 1rem;
     color: #374151;
-    font-weight: 600,
+    font-weight: 600;
   }
   .analytics-section h5 {
     margin: 1rem 0 0.5rem 0;
     font-size: 0.875rem;
     color: #4b5563;
-    font-weight: 600,
+    font-weight: 600;
   }
   .analytics-grid {
     display: grid;
@@ -398,7 +398,7 @@
   }
   .metric {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     text-align: center;
     padding: 0.75rem;
@@ -407,7 +407,7 @@
   }
   .metric .value {
     font-size: 1.25rem;
-    font-weight: 700,
+    font-weight: 700;
     color: #1e293b;
   }
   .metric .label {
@@ -421,7 +421,7 @@
   .value.engagement-medium { color: #d97706, }
   .value.engagement-low { color: #64748b, }
   .recent-prompts ul {
-    margin: 0,
+    margin: 0;
     padding: 0;
     list-style: none;
   }
@@ -432,7 +432,7 @@
     margin-bottom: 0.5rem;
     font-size: 0.875rem;
     color: #475569;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   /* Mobile responsive */
   @media (max-width: 1024px) {

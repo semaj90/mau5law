@@ -233,7 +233,7 @@ https://svelte.dev/e/js_parse_error -->
     box-shadow: 0 0 6px currentColor;
   }
   .network-indicator {
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   .system-id {
     background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
@@ -246,7 +246,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   @media (max-width: 768px) {
     .yorha-status-bar {
-      flex-direction column;
+      flex-direction: column;
       gap: 8px;
       padding: 12px 16px;
     }
@@ -263,13 +263,14 @@ https://svelte.dev/e/js_parse_error -->
   @keyframes pulse-critical {
     0%,
     100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.5,
+      opacity: 0.5;
     }
   }
   .status-dot.bg-red-400 {
-    animation pulse-critical 1s infinite;
+    animation: pulse-critical 1s infinite;
   }
 </style>
+

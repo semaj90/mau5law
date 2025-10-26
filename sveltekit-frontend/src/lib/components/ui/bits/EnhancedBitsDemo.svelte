@@ -470,11 +470,11 @@
   }
   @keyframes demo-section-enter {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translateY(20px);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translateY(0);
     }
   }
@@ -502,13 +502,13 @@
     background-size: 20px 20px;
     border: 2px dashed var(--color-nier-border-secondary);
     border-radius: 8px;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   :global(.yorha-drop-zone:hover) {
     border-color: var(--color-nier-border-primary);
     background-color: var(--color-nier-bg-tertiary);
   }
-  /* Processing animation */
+  /* Processing animation: */
   :global(.processing-bar) {
     height: 4px;
     background: var(--color-nier-bg-tertiary);
@@ -518,6 +518,7 @@
   :global(.processing-indicator) {
     height: 100%;
     background: linear-gradient(90deg, var(--color-ai-status-online), var(--color-ai-status-processing));
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
 </style>
+

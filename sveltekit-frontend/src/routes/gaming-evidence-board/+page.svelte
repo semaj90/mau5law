@@ -48,7 +48,7 @@
   .loading-logo {
     font-size: 4rem;
     margin-bottom: 1rem;
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   .loading-content h1 {
     font-size: 2rem;
@@ -73,16 +73,16 @@
     height: 100%;
     background: #00ff41;
     border-radius: 3px;
-    animation loading-progress 1.5s ease-in-out;
+    animation: loading-progress 1.5s ease-in-out;
     box-shadow: 0 0 10px #00ff41;
   }
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.5,
+      opacity: 0.5;
     }
   }
   @keyframes loading-progress {
@@ -94,3 +94,4 @@
     }
   }
 </style>
+

@@ -108,7 +108,7 @@
   <!-- Regular Enhanced-Bits + NES.css UI (90% of app) -->
   <svelte:component
     this={CardComponent}
-    class={`enhanced-bits-nier-bits-card legal-case-priority-${priority} gaming-transition gaming-hover nes-container`}
+    class={`enhanced-bits-nier-bits-card legal-case-priority-${priority} gaming-transition: gaming-hover nes-container`}
   >
     <!-- Replaced CardHeader/CardTitle with semantic wrappers to avoid missing named exports -->
     <div class="card-header">
@@ -210,7 +210,7 @@
   .card-title {
     margin: 0;
     font-size: 1rem;
-    font-weight: 600,
+    font-weight: 600;
   }
   .card-content {
     padding: 1rem;
@@ -227,3 +227,4 @@
     border-left-style: solid;
   }
 </style>
+

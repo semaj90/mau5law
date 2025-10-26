@@ -109,17 +109,18 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   .legal-input-container input {
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .legal-input-container input:focus {
     box-shadow: 0 0 0 1px rgb(var(--yorha-primary) / 0.5);
   }
   .legal-input-container input::placeholder {
     font-family: inherit;
-    opacity: 0.7,
+    opacity: 0.7;
   }
 /* Required asterisk styling */ {}
   .required::after {
     content: '';
   }
 </style>
+

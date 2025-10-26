@@ -45,8 +45,7 @@ https://svelte.dev/e/js_parse_error -->
       'Helvetica Neue',
       Arial;
     font-size: 0.95rem;
-    transition
-      box-shadow 0.12s ease,
+    transition: box-shadow 0.12s ease,
       transform 0.06s ease;
     box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.08);
   }
@@ -58,7 +57,8 @@ https://svelte.dev/e/js_parse_error -->
     border-color: #2b6cb0;
   }
   .n64-textfield[disabled] {
-    opacity: 0.6,
+    opacity: 0.6;
     cursor: not-allowed;
   }
 </style>
+

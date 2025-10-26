@@ -256,7 +256,7 @@ https://svelte.dev/e/js_parse_error -->
 <style>
   .drop-zone {
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .drop-zone:hover {
     border-color: #3b82f6;
@@ -269,16 +269,17 @@ https://svelte.dev/e/js_parse_error -->
     background-color: #f9fafb;
   }
   .completion-status {
-    animation slideInUp 0.3s ease-out;
+    animation: slideInUp 0.3s ease-out;
   }
   @keyframes slideInUp {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translateY(10px);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translateY(0);
     }
   }
 </style>
+

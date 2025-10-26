@@ -124,7 +124,7 @@
 
   .page-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennnn;
     align-items: center;
     margin-bottom: 2rem;
   }
@@ -132,7 +132,7 @@
   .page-header h1 {
     font-size: 2rem;
     color: #ffd700;
-    margin: 0,
+    margin: 0;
   }
 
   .btn-primary,
@@ -148,7 +148,7 @@
   .btn-primary {
     background: #ffd700;
     color: #000;
-    font-weight: 600,
+    font-weight: 600;
   }
 
   .btn-primary:hover {
@@ -218,13 +218,13 @@
 
   .case-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennnn;
     align-items: start;
     margin-bottom: 1rem;
   }
 
   .case-header h3 {
-    margin: 0,
+    margin: 0;
     color: #fff;
     font-size: 1.25rem;
   }
@@ -260,7 +260,7 @@
   .case-description {
     color: #aaa;
     margin: 0 0 1rem 0;
-    line-height: 1.5,
+    line-height: 1.5;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -280,12 +280,12 @@
 
   .priority-critical {
     color: #f44336;
-    font-weight: 600,
+    font-weight: 600;
   }
 
   .priority-high {
     color: #ff9800;
-    font-weight: 600,
+    font-weight: 600;
   }
 
   .priority-medium {
@@ -310,10 +310,13 @@
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.8,
+      opacity: 0.8;
     }
   }
 </style>
+
+
+

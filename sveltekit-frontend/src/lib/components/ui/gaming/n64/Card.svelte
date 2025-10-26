@@ -382,7 +382,7 @@
     padding: var(--card-padding);
     position relative;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     overflow: hidden;
 /* 3D transformations */ transform: var(--transform-3d);
     transform-origin: center center;
@@ -391,7 +391,7 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
 /* Advanced shadows and lighting */ box-shadow: var(--material-shadow);
-    transition all 300ms cubic-bezier(0.23, 1, 0.32, 1);
+    transition: all 300ms cubic-bezier(0.23, 1, 0.32, 1);
 /* Remove default styles */ -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -425,7 +425,7 @@
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     margin-top: 16px;
     font-size: 0.9em;
-    opacity: 0.8,
+    opacity: 0.8;
   }
 /* Loading overlay */ .loading-overlay {
     position absolute;
@@ -435,7 +435,7 @@
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 16px;
@@ -474,8 +474,8 @@
     animation: pulse 2s ease-in-out infinite;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1, }
-    50% { opacity: 0.6, }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
   }
 /* Lighting overlay */ .lighting-overlay {
     position absolute;
@@ -524,7 +524,7 @@ background: linear-gradient( to bottom, rgba(0, 0, 0, 0.4) 0%, transparent 100% 
     pointer-events: none;
     z-index: -1;
     filter: blur(8px);
-    opacity: 0.6,
+    opacity: 0.6;
   }
 /* Material type variations */ .n64-card.pbr {
     background-blend-mode: overlay, normal;
@@ -543,7 +543,7 @@ background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 40%
     background: linear-gradient(145deg, #4a5568 0%, #2d3748 50%, #1a202c 100%);
     color: #a0aec0;
     cursor: not-allowed;
-    opacity: 0.6,
+    opacity: 0.6;
     transform: perspective(1000px) scale(0.95);
 box-shadow: 0 4px 0 #1a202c, inset 0 1px 0 rgba(255,255,255,0.05), 0 6px 12px rgba(0,0,0,0.2);
   }
@@ -589,7 +589,7 @@ background: radial-gradient( ellipse at center bottom, var(--fog-color, #404040)
 /* Mobile optimizations */ @media (max-width: 480px) {
     .n64-card {
       transform: scale(var(--dynamic-scale, 1));
-      transition transform 150ms ease;
+      transition: transform 150ms ease;
     }
 .lighting-overlay, .reflection-overlay, .atmosphere-overlay, .depth-shadow {
       display: none;
@@ -601,7 +601,7 @@ background: radial-gradient( ellipse at center bottom, var(--fog-color, #404040)
 /* Reduced motion support */ @media (prefers-reduced-motion reduce) {
     .n64-card {
       transform: none !important;
-      transition box-shadow 150ms ease, opacity 150ms ease;
+      transition: box-shadow 150ms ease, opacity 150ms ease;
     }
     .n64-spinner {
       animation: none;

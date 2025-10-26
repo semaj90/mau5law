@@ -262,7 +262,7 @@
     height: 73px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     padding: 1rem 1.5rem;
     z-index: 40;
     background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.2));
@@ -366,7 +366,7 @@
   :global(.yorha-nav-header) {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     padding: 1.5rem;
     border-bottom: 1px solid rgba(245, 158, 11, 0.3);
   }
@@ -477,3 +477,4 @@
     }
   }
 </style>
+

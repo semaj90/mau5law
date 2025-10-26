@@ -69,7 +69,7 @@
     background: var(--bg-primary);
     border: 1px solid var(--border-light);
     border-radius: 8px;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     min-height: 40px;
   }
   .search-input-container:hover {
@@ -110,7 +110,7 @@
     cursor: pointer;
     color: var(--text-muted);
     border-radius: 4px;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .clear-buttonhover {
     color: var(--text-primary);
@@ -120,3 +120,4 @@
     transform: scale(0.95);
   }
 </style>
+

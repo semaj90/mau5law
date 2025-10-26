@@ -543,7 +543,7 @@
     margin-bottom: 1rem;
   }
   .nes-field {
-    margin: 0,
+    margin: 0;
   }
   .nes-field label {
     font-family: 'Press Start 2P', monospace;
@@ -583,7 +583,7 @@
   }
   /* Animation for canvas */
   .canvas-wrapper {
-    animation borderGlow 4s ease-in-out infinite alternate;
+    animation: borderGlow 4s ease-in-out infinite alternate;
   }
   @keyframes borderGlow {
     from {
@@ -596,7 +596,7 @@
   /* Responsive design */
   @media (max-width: 768px) {
     .controls-panel {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-start;
     }
     .evidence-canvas {
@@ -608,3 +608,4 @@
     }
   }
 </style>
+

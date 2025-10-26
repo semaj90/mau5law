@@ -36,16 +36,16 @@
   .editor-card-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     padding: 16px 20px;
     border-bottom: 1px solid var(--border, #e5e7eb);
     background: var(--surface-secondary, #f8f9fa);
   }
   .editor-card-header h3 {
     font-size: 16px;
-    font-weight: 600,
+    font-weight: 600;
     color: var(--text-primary, #111827);
-    margin: 0,
+    margin: 0;
   }
   .editor-card-content {
     padding: 20px;
@@ -54,7 +54,7 @@
     background: var(--warning, #f59e0b);
     color: white;
     font-size: 12px;
-    font-weight: 500,
+    font-weight: 500;
     padding: 4px 8px;
     border-radius: var(--radius-sm, 4px);
     text-transform: uppercase;
@@ -69,3 +69,5 @@
     }
   }
 </style>
+
+

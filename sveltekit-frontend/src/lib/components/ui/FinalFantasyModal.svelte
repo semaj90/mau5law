@@ -196,10 +196,10 @@ calc(100% - 12px) 100%, {}
   @keyframes ff-shimmer {
 0%, {}
     100% {
-      opacity: 0.8,
+      opacity: 0.8;
     }
     50% {
-      opacity: 1,
+      opacity: 1;
     }
   }
   .ff-corner-classic::after {
@@ -210,3 +210,4 @@ calc(100% - 12px) 100%, {}
     animation: ff-shimmer 3s ease-in-out infinite;
   }
 </style>
+

@@ -204,8 +204,7 @@
   }
   :global(.legal-command-item) {
     color: var(--yorha-text-primary, inherit);
-    transition
-      background-color 150ms ease,
+    transition: background-color 150ms ease,
       color 150ms ease;
   }
   :global(.legal-command-item:hover) {
@@ -216,3 +215,4 @@
     color: var(--yorha-text-accent, #ffffff);
   }
 </style>
+

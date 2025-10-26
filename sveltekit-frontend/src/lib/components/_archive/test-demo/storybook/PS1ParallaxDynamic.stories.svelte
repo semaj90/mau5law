@@ -521,7 +521,7 @@ https://svelte.dev/e/expected_token -->
       linear-gradient(rgba(0, 255, 136, 0.1) 1px, transparent 1px),
       linear-gradient(90deg, rgba(0, 255, 136, 0.1) 1px, transparent 1px);
     background-size: 20px 20px;
-    opacity: 0.3,
+    opacity: 0.3;
   }
   .bg-elements {
     position: relative;
@@ -745,17 +745,17 @@ https://svelte.dev/e/expected_token -->
   }
   .info-panel li {
     margin: 5px 0;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   /* Animations */
   @keyframes pulse {
     0%,
     100% {
-      opacity: 0.3,
+      opacity: 0.3;
       transform: scale(1);
     }
     50% {
-      opacity: 1,
+      opacity: 1;
       transform: scale(1.2);
     }
   }
@@ -779,24 +779,24 @@ https://svelte.dev/e/expected_token -->
   @keyframes scan {
     0% {
       transform: translateX(-10px);
-      opacity: 0,
+      opacity: 0;
     }
     50% {
-      opacity: 1,
+      opacity: 1;
     }
     100% {
       transform: translateX(70px);
-      opacity: 0,
+      opacity: 0;
     }
   }
   @keyframes blink {
     0%,
     50% {
-      opacity: 1,
+      opacity: 1;
     }
     51%,
     100% {
-      opacity: 0.3,
+      opacity: 0.3;
     }
   }
   /* PS1 Effects */
@@ -851,3 +851,4 @@ https://svelte.dev/e/expected_token -->
     }
   }
 </style>
+

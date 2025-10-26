@@ -212,15 +212,15 @@ export const POST: RequestHandler = async (event) => {
 
     // Create document record in database
     const newDocument = await db.insert(documents).values({
-      id: documentId,
+      uuid: documentId,
+      caseId: 0, // Default case ID when none is provided
       filename: file.name,
-      title: file.name.replace(/\.[^.]+$/, ''), // Remove extension
-      sourceUri: `minio://${EVIDENCE_BUCKET}/${storagePath}`,
-      mimeType: file.type,
+      originalName: file.name,
+      contentType: file.type,
       fileSize: file.size,
+      minioPath: `minio://${EVIDENCE_BUCKET}/${storagePath}`,
       extractedText: extractedText,
       processingStatus: 'processing',
-      uploadedBy: user.id,
       metadata: {
         tags: tags ? tags.split(',').map(t => t.trim()) : [],
         uploadedAt: new Date().toISOString(),

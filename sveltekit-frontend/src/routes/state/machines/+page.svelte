@@ -228,7 +228,7 @@ https://svelte.dev/e/expected_token -->
   .stat-number {
     display: block;
     font-size: 2rem;
-    font-weight: 700,
+    font-weight: 700;
     color: #1f2937;
   }
   .stat-label {
@@ -247,7 +247,7 @@ https://svelte.dev/e/expected_token -->
     border: 4px solid #f3f4f6;
     border-top: 4px solid #3b82f6;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
   @keyframes spin {
@@ -262,7 +262,7 @@ https://svelte.dev/e/expected_token -->
   .machine-card {
     border: 1px solid #e2e8f0;
     border-radius: 12px;
-    transition box-shadow 0.2;
+    transition: box-shadow 0.2;
   }
   .machine-card:hover {
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
@@ -276,7 +276,7 @@ https://svelte.dev/e/expected_token -->
   .machine-id {
     font-size: 0.875rem;
     color: #6b7280;
-    margin: 0,
+    margin: 0;
   }
   .status-badge {
     padding: 0.25rem 0.75rem;
@@ -291,13 +291,13 @@ https://svelte.dev/e/expected_token -->
   }
   .detail-row {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 0.5rem 0;
     border-bottom: 1px solid #f1f5f9;
   }
   .label {
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
   }
   .value {
@@ -309,7 +309,7 @@ https://svelte.dev/e/expected_token -->
     padding: 0.25rem 0.75rem;
     border-radius: 6px;
     font-size: 0.875rem;
-    font-weight: 500,
+    font-weight: 500;
   }
   .transitions {
     margin-top: 1rem;

@@ -118,7 +118,7 @@
       }
     }
 
-    // Show thinking animation while LLM loads
+    // Show thinking animation: while LLM loads
     if (enableThinking) {
       await showThinkingAnimation();
     }
@@ -409,7 +409,7 @@
 <style>
   .typewriter-container {
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-    line-height: 1.6,
+    line-height: 1.6;
     position relative;
   }
 
@@ -421,29 +421,29 @@
   .typewriter-cursor {
     color: #00ff00;
     font-weight: bold;
-    transition opacity 0.1s;
+    transition: opacity 0.1s;
   }
 
   .typewriter-cursor.visible {
-    opacity: 1,
+    opacity: 1;
   }
 
   .typewriter-cursor.hidden {
-    opacity: 0,
+    opacity: 0;
   }
 
   .typewriter-cursor.blinking {
-    animation blink 1.06s infinite;
+    animation: blink 1.06s infinite;
   }
 
   @keyframes blink {
     0%,
     50% {
-      opacity: 1,
+      opacity: 1;
     }
     51%,
     100% {
-      opacity: 0,
+      opacity: 0;
     }
   }
 
@@ -458,7 +458,7 @@
 
   .thinking-indicator {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 0.5rem;
   }
@@ -494,7 +494,7 @@
   .progress-bar {
     height: 100%;
     background: linear-gradient(90deg, #00ff00, #00ff88);
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
 
   /* Activity Replay Styles */
@@ -552,7 +552,7 @@
   }
 
   .typewriter-controls buttondisabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
 
@@ -594,8 +594,9 @@
     }
 
     .speed-controls {
-      flex-direction column;
+      flex-direction: column;
       gap: 0.5rem;
     }
   }
 </style>
+

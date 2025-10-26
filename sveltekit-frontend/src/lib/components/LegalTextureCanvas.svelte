@@ -456,7 +456,7 @@
   .legal-texture-canvas .texture-canvas {
     display: block;
     cursor: grab;
-    transition filter 0.2s ease;
+    transition: filter 0.2s ease;
   }
   .texture-canvas:active {
     cursor: grabbing;
@@ -488,7 +488,7 @@
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     color: white;
@@ -500,7 +500,7 @@
     border: 4px solid #333;
     border-top: 4px solid #fff;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin-top: 10px;
   }
   @keyframes spin {
@@ -516,7 +516,7 @@
     top: 10px;
     right: 10px;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 5px;
     z-index: 100,
   }
@@ -528,7 +528,7 @@
     border-radius: 3px;
     cursor: pointer;
     font-size: 11px;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .controls-overlay buttonhover {
     background: rgba(0, 0, 0, 0.9);
@@ -539,3 +539,4 @@
     border-color: #0f0;
   }
 </style>
+

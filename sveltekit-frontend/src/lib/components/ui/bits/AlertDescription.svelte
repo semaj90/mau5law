@@ -34,7 +34,7 @@ Description content for alerts with NES styling
 <style>
   .bits-alert-description {
     font-family: 'Courier New', monospace;
-    line-height: 1.6,
+    line-height: 1.6;
   }
 /* Legal AI specific styling */ {}
   .bits-alert-description {
@@ -50,7 +50,7 @@ Description content for alerts with NES styling
     margin: 0.25rem 0;
   }
   .bits-alert-description strong {
-    font-weight: 700,
+    font-weight: 700;
     color: inherit;
   }
   .bits-alert-description code {
@@ -61,3 +61,4 @@ Description content for alerts with NES styling
     font-size: 0.875em;
   }
 </style>
+

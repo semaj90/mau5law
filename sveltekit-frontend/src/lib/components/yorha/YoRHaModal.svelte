@@ -213,7 +213,7 @@ e; background: var(--yorha-bg-secondary, #1a1a1a);
     color: var(--yorha-text-primary, #e0e0e0);
     max-height: calc(100vh - 2rem);
 display: flex;
-flex-direction column overflow: hidden;
+flex-direction: column overflow: hidden;
 box-shadow: 0 0 0 1px var(--yorha-bg-primary, #0a0a0a), 0 20px 80px rgba(0, 0, 0, 0.9);
   }
 /* Modal Types */ .yorha-modal.system {
@@ -232,7 +232,7 @@ box-shadow: 0 0 0 1px var(--yorha-secondary, #ffd700), 0 0 30px rgba(255, 215, 0
     padding: 16px 20px;
 display: flex;
 align-items: flex-start;
-    justify-content: space-betwee;
+    justify-content: space-between;
 position relative;
 }
   .header-content {
@@ -267,11 +267,11 @@ width: 12px;
     width: 100%;
     height: 100%;
     background: var(--yorha-secondary, #ffd700);
-    animation systemPulse 1.5s infinite;
+    animation: systemPulse 1.5s infinite;
   }
   .status-text {
     font-size: 10px;
-    font-weight: 600,
+    font-weight: 600;
     color: var(--yorha-secondary, #ffd700);
 text-transform: uppercase; letter-spacing: 1px;
   }
@@ -280,7 +280,7 @@ text-transform: uppercase; letter-spacing: 1px;
     height: 32px;
 background: transparent; border: 2px solid var(--yorha-text-muted, #808080);
     color: var(--yorha-text-muted, #808080);
-cursor: pointer; display: flex; align-items: center; justify-content: center; transition all 0.2s ease;
+cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;
     flex-shrink: 0,
   }
   .modal-close:hover {
@@ -291,7 +291,7 @@ cursor: pointer; display: flex; align-items: center; justify-content: center; tr
   }
   .close-icon {
     font-size: 14px;
-    font-weight: 700,
+    font-weight: 700;
   }
 /* Content */ .modal-content {
     padding: 20px;
@@ -328,7 +328,7 @@ align-items: center gap: 8px;
 font-family: inherit font-size: 12px;
     font-weight: 600;
 text-transform: uppercase; letter-spacing: 1px;
-cursor: pointer; transition all 0.2s ease;
+cursor: pointer; transition: all 0.2s ease;
   }
   .modal-buttonhover {
     transform: translateY(-1px);
@@ -371,7 +371,7 @@ pointer-events: none overflow: hidden;
 position absolute;
 inset: 0,
 background: linear-gradient( 45deg, transparent 49%, rgba(255, 215, 0, 0.1) 50%, transparent 51% );
-    animation scanlines 2s linear infinite;
+    animation: scanlines 2s linear infinite;
   }
 /* Animations */ @keyframes systemPulse {
 0%, 100% {
@@ -400,7 +400,7 @@ background: linear-gradient( 45deg, transparent 49%, rgba(255, 215, 0, 0.1) 50%,
     }
     .modal-header {
       padding: 12px 16px;
-flex-direction column align-items: flex-start;
+flex-direction: column align-items: flex-start;
       gap: 8px;
     }
     .system-status {
@@ -419,7 +419,7 @@ flex-direction column align-items: flex-start;
       padding: 12px 16px;
     }
     .modal-actions {
-flex-direction column }
+flex-direction: column }
     .modal-button {
 justify-content: center }
   }

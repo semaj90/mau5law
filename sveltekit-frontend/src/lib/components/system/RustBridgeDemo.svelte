@@ -271,14 +271,14 @@
   }
   .demo-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 2px solid #333;
   }
   .demo-header h2 {
-    margin: 0,
+    margin: 0;
     color: #f39c12;
   }
   .status-indicator {
@@ -341,7 +341,7 @@
   .info-item,
   .benchmark-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     padding: 0.5rem;
     background: #2a2a2a;
     border-radius: 0.25rem;
@@ -354,7 +354,7 @@
   .gpu-list,
   .services-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .gpu-item,
@@ -363,7 +363,7 @@
     background: #2a2a2a;
     border-radius: 0.25rem;
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
   }
   .service-status.running {
@@ -418,7 +418,7 @@
     border-radius: 0.25rem;
     font-weight: bold;
     cursor: pointer;
-    transition background 0.2;
+    transition: background 0.2;
   }
   buttonhover:not(:disabled) {,
     background: #e67e22;
@@ -434,3 +434,5 @@
     color: #f39c12;
   }
 </style>
+
+

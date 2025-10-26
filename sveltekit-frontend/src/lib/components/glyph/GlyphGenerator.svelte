@@ -438,7 +438,7 @@
           </div>
         </div>
         <div class="mt-3 p-2 bg-blue-50 rounded text-xs text-blue-700">
-          💡 Neural Sprite uses AI-powered compression to optimize tensor storage and generate predictive animation frames.
+          💡 Neural Sprite uses AI-powered compression to optimize tensor storage and generate predictive animation: frames.
         </div>
       {/if}
     </div>

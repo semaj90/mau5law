@@ -445,7 +445,7 @@
   .yorha-status-pending,
   .yorha-status-processing {
     /* @apply bg-yellow-600 text-yellow-100 border-yellow-400; */
-    animation pulse 1.5s infinite;
+    animation: pulse 1.5s infinite;
   }
   .yorha-status-warning {
     /* @apply bg-orange-600 text-orange-100 border-orange-400; */
@@ -476,7 +476,7 @@
   }
   .yorha-spinner {
     /* @apply w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full; */
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   .yorha-empty-state {
     /* @apply flex flex-col items-center gap-3 text-amber-400; */
@@ -515,3 +515,4 @@
     }
   }
 </style>
+

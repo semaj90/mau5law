@@ -181,7 +181,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
   }
   .chart-wrapper {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     width: 100%;
   }
   .chart-content {
@@ -191,7 +191,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
   /* Mock chart styles (replace with your actual chart styling) */
   .mock-chart {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -205,7 +205,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
   }
   .chart-data-info {
     font-size: 12px;
-    opacity: 0.8,
+    opacity: 0.8;
   }
   /* Placeholder styles */
   .chart-placeholder-content {
@@ -223,7 +223,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
     background: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
     margin-bottom: 20px;
-    animation placeholder-pulse 2s infinite;
+    animation: placeholder-pulse 2s infinite;
   }
   /* Line chart placeholder */
   .placeholder-line-chart {
@@ -239,17 +239,17 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
     stroke: rgba(255, 255, 255, 0.3);
     stroke-width: 2;
     stroke-dasharray: 5, 5;
-    animation dash-move 2s linear infinite;
+    animation: dash-move 2s linear infinite;
   }
   .placeholder-point {
     fill: rgba(255, 255, 255, 0.4);
-    animation point-pulse 2s infinite;
+    animation: point-pulse 2s infinite;
   }
   /* Bar chart placeholder */
   .placeholder-bar-chart {
     display: flex;
     align-items: end;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     height: 120px;
     gap: 8px;
   }
@@ -257,7 +257,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
     flex: 1,
     background: rgba(255, 255, 255, 0.2);
     border-radius: 2px 2px 0 0;
-    animation bar-grow 1.5s ease-out infinite;
+    animation: bar-grow 1.5s ease-out infinite;
   }
   /* Pie chart placeholder */
   .placeholder-pie-chart {
@@ -270,7 +270,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
     border-radius: 50%;
     position relative;
     overflow: hidden;
-    animation pie-rotate 3s linear infinite;
+    animation: pie-rotate 3s linear infinite;
   }
   .pie-slice {
     position absolute;
@@ -301,7 +301,7 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
   .generic-bars {
     display: flex;
     align-items: end;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     height: 100%;
     gap: 12px;
   }
@@ -309,12 +309,12 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
     flex: 1,
     background: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
-    animation bar-pulse 2s ease-in-out infinite;
+    animation: bar-pulse 2s ease-in-out infinite;
   }
   /* Error state */
   .chart-error {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100%;
@@ -326,24 +326,24 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
   }
   /* Animations */
   @keyframes placeholder-pulse {
-    0%, 100% { opacity: 0.3, }
-    50% { opacity: 0.6, }
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
   }
   @keyframes dash-move {
     0% { stroke-dashoffset: 0, }
     100% { stroke-dashoffset: -10, }
   }
   @keyframes point-pulse {
-    0%, 100% { opacity: 0.4, }
-    50% { opacity: 0.8, }
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; }
   }
   @keyframes bar-grow {
     0%, 100% { transform: scaleY(0.8), }
     50% { transform: scaleY(1), }
   }
   @keyframes bar-pulse {
-    0%, 100% { opacity: 0.2, }
-    50% { opacity: 0.4, }
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.4; }
   }
   @keyframes pie-rotate {
     0% { transform: rotate(0deg), }
@@ -370,10 +370,11 @@ https://svelte.dev/e/block_invalid_continuation_placement -->
     .placeholder-bar,
     .placeholder-pie,
     .generic-bar {
-      animation none;
+      animation: none;
     }
     .placeholder-title {
-      animation placeholder-pulse 4s infinite;
+      animation: placeholder-pulse 4s infinite;
     }
   }
 </style>
+

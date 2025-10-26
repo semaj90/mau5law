@@ -126,8 +126,7 @@
     border-radius: 8px;
     font-size: 1rem;
     background: #fff;
-    transition
-      border-color 0.2s ease,
+    transition: border-color 0.2s ease,
       box-shadow 0.2s ease;
   }
   .search-input:focus {
@@ -155,7 +154,7 @@
     border: 1px solid #ddd;
     border-radius: 6px;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .filter-toggle:hover {
     background: #f8f9fa;
@@ -173,12 +172,12 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .filter-group {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .filter-group label {
@@ -225,7 +224,7 @@
     color: #666;
     cursor: pointer;
     font-size: 0.875rem;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .clear-buttonhover {
     background: #f8f9fa;
@@ -235,11 +234,11 @@
   /* Responsive design */
   @media (max-width: 768px) {
     .searchbar-container {
-      flex-direction column;
+      flex-direction: column;
       align-items: stretch;
     }
     .date-range {
-      flex-direction column;
+      flex-direction: column;
       align-items: stretch;
     }
     .date-separator {
@@ -247,3 +246,4 @@
     }
   }
 </style>
+

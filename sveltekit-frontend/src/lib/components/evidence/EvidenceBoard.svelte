@@ -821,7 +821,7 @@ https://svelte.dev/e/js_parse_error -->
 <style>
   .evidence-board {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     height: 100%;
     background: #f8fafc;
   }
@@ -831,7 +831,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .board-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     padding: 1rem 1.5rem;
     background: white;
@@ -844,7 +844,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .board-title {
     font-size: 1.5rem;
-    font-weight: 700,
+    font-weight: 700;
     margin: 0;
     display: flex;
     align-items: center;
@@ -856,7 +856,7 @@ https://svelte.dev/e/js_parse_error -->
     padding: 0.25rem 0.5rem;
     border-radius: 0.375rem;
     font-size: 0.75rem;
-    font-weight: 600,
+    font-weight: 600;
   }
   .evidence-stats {
     display: flex;
@@ -866,14 +866,14 @@ https://svelte.dev/e/js_parse_error -->
   .stat {
     font-size: 0.875rem;
     color: #64748b;
-    font-weight: 500,
+    font-weight: 500;
   }
   .detective-mode .stat {
     color: #cbd5e1;
   }
   .stat.suspicious {
     color: #f59e0b;
-    font-weight: 600,
+    font-weight: 600;
   }
   .header-controls {
     display: flex;
@@ -895,8 +895,7 @@ https://svelte.dev/e/js_parse_error -->
     display: flex;
     align-items: center;
     color: #64748b;
-    transition
-      color 0.2s ease,
+    transition: color 0.2s ease,
       background 0.2s ease;
   }
   /* Provide a minimal non-empty hover rule to fix empty ruleset error */
@@ -919,8 +918,8 @@ https://svelte.dev/e/js_parse_error -->
     background: white;
     border-radius: 0.5rem;
     cursor: pointer;
-    font-weight: 500,
-    transition all 0.2s ease;
+    font-weight: 500;
+    transition: all 0.2s ease;
   }
   .detective-toggle:hover {
     border-color: #3b82f6;
@@ -941,14 +940,14 @@ https://svelte.dev/e/js_parse_error -->
     border: none;
     border-radius: 0.5rem;
     cursor: pointer;
-    font-weight: 500,
-    transition background 0.2s;
+    font-weight: 500;
+    transition: background 0.2s;
   }
   .analyze-btn:hover:not(:disabled) {
     background: #2563eb;
   }
   .analyze-btn:disabled {
-    opacity: 0.6,
+    opacity: 0.6;
     cursor: not-allowed;
   }
   .filter-toggle {
@@ -958,7 +957,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 0.5rem;
     cursor: pointer;
     color: #64748b;
-    transition all 0.2s;
+    transition: all 0.2s;
   }
   /* Replaced empty ruleset with a minimal non-empty hover style to avoid "Do not use empty rulesets" error */
   .filter-toggle:hover {
@@ -984,12 +983,12 @@ https://svelte.dev/e/js_parse_error -->
   }
   .filter-group {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
   }
   .filter-group label {
     font-size: 0.875rem;
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
   }
   .detective-mode .filter-group label {
@@ -1022,11 +1021,11 @@ https://svelte.dev/e/js_parse_error -->
   }
   .insights-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     padding: 0.75rem 1rem;
     background: rgba(239, 68, 68, 0.12);
-    font-weight: 600,
+    font-weight: 600;
   }
   .insights-content {
     padding: 1rem;
@@ -1067,7 +1066,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 0.75rem;
     padding: 1rem;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     position relative;
   }
   .evidence-card:hover {
@@ -1102,7 +1101,7 @@ https://svelte.dev/e/js_parse_error -->
     min-width: 0,
   }
   .evidence-title {
-    font-weight: 600,
+    font-weight: 600;
     margin: 0 0 0.25rem 0;
     white-space: nowrap;
     overflow: hidden;
@@ -1118,7 +1117,7 @@ https://svelte.dev/e/js_parse_error -->
   .evidence-description {
     color: #4b5563;
     font-size: 0.875rem;
-    line-height: 1.5,
+    line-height: 1.5;
     margin: 0 0 0.75rem 0;
   }
   .preview-image {
@@ -1147,7 +1146,7 @@ https://svelte.dev/e/js_parse_error -->
     padding: 0.25rem 0.5rem;
     border-radius: 0.375rem;
     font-size: 0.75rem;
-    font-weight: 500,
+    font-weight: 500;
   }
   .suspicious-badge {
     background: #fef3c7;
@@ -1159,13 +1158,13 @@ https://svelte.dev/e/js_parse_error -->
   }
   .card-footer {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     font-size: 0.75rem;
     color: #64748b;
   }
   .evidence-timeline {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
     position relative;
     padding-left: 2rem;
@@ -1242,7 +1241,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-top: 2px solid white;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   @keyframes spin {
     from {
@@ -1255,23 +1254,25 @@ https://svelte.dev/e/js_parse_error -->
   /* Responsive design */
   @media (max-width: 768px) {
     .board-header {
-      flex-direction column;
+      flex-direction: column;
       align-items: stretch;
       gap: 1rem;
     }
     .header-controls {
-      justify-content: space-between;
+      justify-content: space-betweennn;
     }
     .filters-panel {
-      flex-direction column;
+      flex-direction: column;
       align-items: stretch;
     }
     .evidence-grid {
       grid-template-columns: 1fr;
     }
     .checkbox-group {
-      flex-direction column;
+      flex-direction: column;
       gap: 0.5rem;
     }
   }
 </style>
+
+

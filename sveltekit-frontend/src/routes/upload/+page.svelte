@@ -189,7 +189,7 @@
   }
   .page-header h1 {
     font-size: 2.5rem;
-    font-weight: 700,
+    font-weight: 700;
     color: var(--text-primary);
     margin-bottom: 0.5rem;
   }
@@ -216,7 +216,7 @@
   }
   .info-sidebar {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1.5rem;
   }
   .info-card {
@@ -244,7 +244,7 @@
   }
   .card-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1rem;
   }
@@ -261,7 +261,7 @@
   }
   .recent-uploads {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.75rem;
   }
   .upload-item {
@@ -275,7 +275,7 @@
   }
   .upload-icon {
     font-size: 1.25rem;
-    opacity: 0.7,
+    opacity: 0.7;
   }
   .upload-details {
     flex: 1;
@@ -331,9 +331,10 @@
     font-size: 1rem;
   }
   .help-card p {
-    margin: 0,
+    margin: 0;
     color: var(--text-secondary);
     font-size: 0.875rem;
-    line-height: 1.5,
+    line-height: 1.5;
   }
 </style>
+

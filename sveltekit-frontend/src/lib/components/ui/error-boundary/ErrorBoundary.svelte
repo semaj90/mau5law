@@ -190,9 +190,10 @@
   details summary::before {
     content: '▶';
     margin-right: 0.5rem;
-    transition transform 0.2s ease;
+    transition: transform 0.2s ease;
   }
   details[open] summary::before {
     transform: rotate(90deg);
   }
 </style>
+

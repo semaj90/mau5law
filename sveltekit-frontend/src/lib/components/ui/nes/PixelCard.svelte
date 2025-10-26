@@ -229,7 +229,7 @@
   .pixel-card {
     position relative;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     background: #1a1a2e;
     color: var(--console-foreground, #fcfcfc);
     font-family: 'Courier New', monospace;
@@ -237,7 +237,7 @@
 box-shadow: {}
 inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
       4px 4px 0 rgba(0, 0, 0, 0.5);
-    transition all 0.15s ease;
+    transition: all 0.15s ease;
 /* Pixel perfect rendering */ {}
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edge;
@@ -319,7 +319,7 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
 /* Header */ {}
   .pixel-card__header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: flex-start;
     padding: 12px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -327,13 +327,13 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
   }
   .pixel-card__title-section {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 4px;
     flex: 1,
   }
   .pixel-card__icon {
     font-size: 1.5em;
-    line-height: 1,
+    line-height: 1;
   }
   .pixel-card__title {
     margin: 0;
@@ -375,19 +375,19 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
     padding: 12px;
     flex: 1,
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 12px;
   }
   .pixel-card__description {
     margin: 0;
     font-size: 0.85em;
-    line-height: 1.4,
+    line-height: 1.4;
     opacity: 0.9;
   }
 /* Stats */ {}
   .pixel-card__stats {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 6px;
     padding: 8px;
     background: rgba(0, 0, 0, 0.3);
@@ -395,12 +395,12 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
   }
   .pixel-card__stat {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     font-size: 0.8em;
   }
   .pixel-card__stat-label {
-    opacity: 0.8,
+    opacity: 0.8;
   }
   .pixel-card__stat-value {
     font-weight: bold;
@@ -452,16 +452,16 @@ var(--console-primary, #e52521) calc((var(--pixel-offset) + 2) * 1px) {}
     z-index: -1;
   }
   .pixel-card--hovered .pixel-card__glow {
-    opacity: 0.5,
+    opacity: 0.5;
     animation: pulse-glow 1s ease-in-out infinite alternate;
   }
   @keyframes pulse-glow {
     0% {
-      opacity: 0.3,
+      opacity: 0.3;
       transform: scale(1);
     }
     100% {
-      opacity: 0.6,
+      opacity: 0.6;
       transform: scale(1.05);
     }
   }
@@ -543,7 +543,9 @@ var(--console-primary, #e52521) calc((var(--pixel-offset) + 2) * 1px) {}
 .pixel-card__glow, {}
     .legendary-shimmer {
       animation: none;
-      transition none;
+      transition: none;
     }
   }
 </style>
+
+

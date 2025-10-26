@@ -393,20 +393,20 @@ await loadDocuments();
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
   .stat-card {
-    transition transform 0.2s ease;
+    transition: transform 0.2s ease;
   }
   .stat-card:hover {
     transform: translateY(-2px);
   }
   .result-card {
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .result-card:hover {
     transform: translateX(4px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   .document-card {
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .document-card:hover {
     border-color: #3b82f6;

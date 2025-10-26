@@ -326,7 +326,7 @@ https://svelte.dev/e/js_parse_error -->
   border-radius: 0.5rem;
   font-size: 0.875rem;
   background: #ffffff;
-  transition border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .search-input:focus {
   outline: none;
@@ -346,7 +346,7 @@ https://svelte.dev/e/js_parse_error -->
   color: #6b7280;
   border-radius: 0.25rem;
   cursor: pointer;
-  transition color 0.15s ease;
+  transition: color 0.15s ease;
 }
 .clear-buttonhover {
   color: #374151;
@@ -375,7 +375,7 @@ https://svelte.dev/e/js_parse_error -->
   background: none;
   text-align: left;
   cursor: pointer;
-  transition background-color 0.15s ease;
+  transition: background-color 0.15s ease;
   border-bottom: 1px solid #f1f5f9;
 }
 .search-result-item: hover
@@ -406,7 +406,7 @@ https://svelte.dev/e/js_parse_error -->
   align-items: center;
   justify-content: center;
   font-size: 0.75rem;
-  font-weight: 600,
+  font-weight: 600;
   color: white;
   border-radius: 0.25rem;
 }
@@ -419,7 +419,7 @@ https://svelte.dev/e/js_parse_error -->
   min-width: 0,
 }
 .result-title {
-  font-weight: 500,
+  font-weight: 500;
   color: #111827;
   margin-bottom: 0.25rem;
   word-break: break-word;
@@ -445,7 +445,7 @@ https://svelte.dev/e/js_parse_error -->
 .result-meta {
   flex-shrink: 0,
   display: flex;
-  flex-direction column;
+  flex-direction: column;
   align-items: flex-end;
   gap: 0.25rem;
   font-size: 0.75rem;
@@ -453,11 +453,11 @@ https://svelte.dev/e/js_parse_error -->
 }
 .result-type {
   text-transform: capitaliz;
-  font-weight: 500,
+  font-weight: 500;
 }
 .no-results {
   display: flex;
-  flex-direction column;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 2rem;
@@ -466,21 +466,21 @@ https://svelte.dev/e/js_parse_error -->
 }
 .no-results p {
   margin: 0.5rem 0 0.25rem;
-  font-weight: 500,
+  font-weight: 500;
 }
 .no-results small {
   font-size: 0.75rem;
-  opacity: 0.8,
+  opacity: 0.8;
 }
 .search-filters {
   margin-top: 1rem;
   display: flex;
-  flex-direction column;
+  flex-direction: column;
   gap: 1rem;
 }
 .filter-group {
   display: flex;
-  flex-direction column;
+  flex-direction: column;
   gap: 0.5rem;
 }
 .filter-label {
@@ -488,7 +488,7 @@ https://svelte.dev/e/js_parse_error -->
   align-items: center;
   gap: 0.375rem;
   font-size: 0.875rem;
-  font-weight: 500,
+  font-weight: 500;
   color: #374151;
 }
 .filter-options {
@@ -504,7 +504,7 @@ https://svelte.dev/e/js_parse_error -->
   border-radius: 1rem;
   font-size: 0.875rem;
   cursor: pointer;
-  transition all 0.15s ease;
+  transition: all 0.15s ease;
 }
 .filter-chip: hover {
   border-color: #3b82f6;
@@ -538,7 +538,7 @@ https://svelte.dev/e/js_parse_error -->
 }
 .active-filters-label {
   font-size: 0.875rem;
-  font-weight: 500,
+  font-weight: 500;
   color: #374151;
 }
 .active-filter {
@@ -550,7 +550,7 @@ https://svelte.dev/e/js_parse_error -->
   color: white;
   border-radius: 0.375rem;
   font-size: 0.75rem;
-  font-weight: 500,
+  font-weight: 500;
 }
 .active-filter button {
   display: flex;
@@ -561,7 +561,7 @@ https://svelte.dev/e/js_parse_error -->
   border-radius: 50%;
   padding: 0.125rem;
   cursor: pointer;
-  transition background-color 0.15s ease;
+  transition: background-color 0.15s ease;
 }
 .active-filter buttonhover {
   background: rgba(255, 255, 255, 0.5);
@@ -574,7 +574,7 @@ https://svelte.dev/e/js_parse_error -->
   border-radius: 0.375rem;
   font-size: 0.75rem;
   cursor: pointer;
-  transition all 0.15s ease;
+  transition: all 0.15s ease;
 }
 .clear-all-filters: hover {
   border-color: #ef4444;

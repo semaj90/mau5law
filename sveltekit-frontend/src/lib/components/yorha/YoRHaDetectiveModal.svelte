@@ -72,7 +72,7 @@ d;
     justify-content: center;
     padding: 1rem;
     z-index: 1000,
-    animation fadeIn 0.2s ease-in-out;
+    animation: fadeIn 0.2s ease-in-out;
   }
   .modal-panel {
     background-color: #F7F6F2;
@@ -82,11 +82,11 @@ d;
     max-width: 32rem;
     max-height: 90vh;
     overflow: hidden;
-    animation slideIn 0.2s ease-in-out;
+    animation: slideIn 0.2s ease-in-out;
   }
   .modal-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 1.5rem;
     border-bottom: 1px solid #D1CFC7;
@@ -95,7 +95,7 @@ d;
     font-size: 1.5rem;
     font-weight: bold;
     color: #3D3D3D;
-    margin: 0,
+    margin: 0;
   }
   .modal-close {
     background: none;
@@ -104,8 +104,8 @@ d;
     color: #666;
     cursor: pointer;
     padding: 0.25rem;
-    line-height: 1,
-    transition color 0.2s ease;
+    line-height: 1;
+    transition: color 0.2s ease;
   }
   .modal-close:hover {
     color: #3D3D3D;
@@ -117,20 +117,20 @@ d;
   }
   @keyframes fadeIn {
     from {
-      opacity: 0,
+      opacity: 0;
     }
     to {
-      opacity: 1,
+      opacity: 1;
     }
   }
   @keyframes slideIn {
     from {
       transform: scale(0.9);
-      opacity: 0,
+      opacity: 0;
     }
     to {
       transform: scale(1);
-      opacity: 1,
+      opacity: 1;
     }
   }
 /* Responsive */ @media (max-width: 640px) {
@@ -143,3 +143,4 @@ d;
     }
   }
 </style>
+

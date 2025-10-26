@@ -30,7 +30,7 @@
 </script>
 
 <div class="panel">
-  <div style="display:flex; justify-content:space-between; align-items:center;">
+  <div style="display:flex; justify-content: space-betweennn; align-items:center;">
     <strong>GPU Diagnostics</strong>
     <button onclick={() => (expanded = !expanded)}>{expanded ? 'Hide' : 'Show'}</button>
   </div>
@@ -142,7 +142,7 @@
   }
   th {
     background: #222;
-    font-weight: 600,
+    font-weight: 600;
   }
   .ok {
     color: #5fbf5f;
@@ -176,3 +176,5 @@
     font-size: 10px;
   }
 </style>
+
+

@@ -107,7 +107,7 @@
     padding: 1rem;
     border-bottom: 1px solid var(--border-color);
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
   }
   .breakpoint-indicator {
@@ -188,3 +188,5 @@
     --content-bg: #111827;
   }
 </style>
+
+

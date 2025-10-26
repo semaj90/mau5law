@@ -833,7 +833,7 @@
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 1rem;
@@ -861,7 +861,7 @@
   }
   .stat-item {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     align-items: center;
   }
   .label {
@@ -891,7 +891,7 @@
     }
   }
   .nes-progress-bar.indeterminate {
-    animation indeterminate 1.5s linear infinite;
+    animation: indeterminate 1.5s linear infinite;
   }
   /* Responsive adjustments */
   @media (max-width: 768px) {
@@ -913,3 +913,4 @@
     }
   }
 </style>
+

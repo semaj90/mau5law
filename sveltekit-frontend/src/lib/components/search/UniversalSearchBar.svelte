@@ -490,7 +490,7 @@
     border: 3px solid #000;
     box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.3);
     background: linear-gradient(145deg, #f0f0f0, #e6e6e6);
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   :global(.nes-search-bar .search-bar-wrapper:focus-within) {
     box-shadow: 8px 8px 0px rgba(0, 100, 200, 0.4), 6px 6px 0px rgba(0, 0, 0, 0.3);
@@ -515,7 +515,7 @@
     font-weight: bold;
     font-size: 12px;
     text-transform: uppercase;
-    transition all 0.15s ease;
+    transition: all 0.15s ease;
   }
   :global($1) {
     transform: translateY(-2px);
@@ -542,7 +542,7 @@
   /* NES-style Result Items */
   :global(.nes-search-bar .search-dropdown button) {
     font-family: 'Courier New', monospace;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   :global($1) {
     background: linear-gradient(135deg, #e3f2fd, #bbdefb) !important;
@@ -577,7 +577,7 @@
   /* NES-style Clear/Action Buttons */
   :global(.nes-search-bar .p-2) {
     border-radius: 0,
-    transition all 0.15s ease;
+    transition: all 0.15s ease;
   }
   :global($1) {
     background: linear-gradient(135deg, #ffecb3, #fff3c4) !important;
@@ -618,7 +618,7 @@
     overflow: hidden;
   }
   .category-chip {
-    transition all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
   }
   .category-chip:hover {
     transform: translateY(-1px);

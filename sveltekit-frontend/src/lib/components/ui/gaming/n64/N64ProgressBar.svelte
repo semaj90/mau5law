@@ -174,7 +174,7 @@
       var(--shadow-color) 50%,
       var(--fill-color) 100%
     );
-    transition width 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+    transition: width 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
     min-width: 0,
   }
   .progress-fill.animated {
@@ -209,7 +209,7 @@
     height: 100%;
     border-right: 1px solid rgba(0,0,0,0.2);
     opacity: 0.3;
-    transition opacity 0.2s ease;
+    transition: opacity 0.2s ease;
   }
   .segment:last-child {
     border-right: none;
@@ -285,7 +285,7 @@
     width: 8px;
     height: 8px;
     background: var(--fill-color);
-    opacity: 0.6,
+    opacity: 0.6;
   }
   .corner-tl {
     top: -4px;
@@ -327,17 +327,17 @@
     100% { background-position 00% 0, }
   }
   @keyframes shine {
-    0% { transform: translateX(-100%); opacity: 0, }
-    50% { opacity: 1, }
-    100% { transform: translateX(100%); opacity: 0, }
+    0% { transform: translateX(-100%); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateX(100%); opacity: 0; }
   }
   @keyframes sparkle {
     0%, 100% {
-      opacity: 0,
+      opacity: 0;
       transform: scale(0);
     }
     50% {
-      opacity: 1,
+      opacity: 1;
       transform: scale(1);
     }
   }
@@ -381,7 +381,8 @@
       animation: none;
     }
     .progress-fill {
-      transition width 0.2s ease;
+      transition: width 0.2s ease;
     }
   }
 </style>
+

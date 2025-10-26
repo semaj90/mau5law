@@ -131,7 +131,7 @@
     display: flex;
     align-items: center;
     margin: 0.5rem 0;
-    font-weight: 500,
+    font-weight: 500;
   }
   .indicator {
     margin-right: 0.5rem;
@@ -161,3 +161,4 @@
     border-bottom: 3px solid #007bff;
   }
 </style>
+

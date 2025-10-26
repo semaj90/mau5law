@@ -261,7 +261,7 @@ align-self: center }
     padding: 12px 16px;
 display: flex;
 align-items: flex-start;
-    justify-content: space-betwee;
+    justify-content: space-between;
   }
   .header-left {
 display: flex;
@@ -294,7 +294,7 @@ text-transform: uppercase; letter-spacing: 1px;
   .dialog-message {
     color: var(--yorha-text-primary, #e0e0e0);
     font-size: 12px;
-    line-height: 1.4,
+    line-height: 1.4;
     margin: 0;
   }
   .dialog-close {
@@ -303,7 +303,7 @@ text-transform: uppercase; letter-spacing: 1px;
 background: transparent; border: 1px solid var(--yorha-text-muted, #808080);
     color: var(--yorha-text-muted, #808080);
 cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     flex-shrink: 0,
   }
   .dialog-close:hover {
@@ -317,11 +317,11 @@ cursor: pointer; display: flex; align-items: center; justify-content: center; fo
 overflow-y: auto }
   .prompt-input-group {
 display: flex;
-flex-direction column gap: 8px;
+flex-direction: column gap: 8px;
   }
   .prompt-label {
     font-size: 12px;
-    font-weight: 600,
+    font-weight: 600;
     color: var(--yorha-text-secondary, #b0b0b0);
 text-transform: uppercase; letter-spacing: 1px;
   }
@@ -332,7 +332,7 @@ text-transform: uppercase; letter-spacing: 1px;
     color: var(--yorha-text-primary, #e0e0e0);
 font-family: inherit font-size: 14px;
     padding: 8px 12px;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .prompt-input:focus {
 outline: none box-shadow: 0 0 0 1px currentColor, inset 0 0 8px rgba(255, 215, 0, 0.1);
@@ -354,7 +354,7 @@ background: transparent; border: 1px solid var(--yorha-text-muted, #808080);
 font-family: inherit; font-size: 11px;
     font-weight: 600;
 text-transform: uppercase; letter-spacing: 1px;
-cursor: pointer; transition all 0.2s ease;
+cursor: pointer; transition: all 0.2s ease;
     min-width: 80px;
 justify-content: center, }
   .dialog-buttonhover {
@@ -378,20 +378,20 @@ background: currentColor color: var(--yorha-bg-primary, #0a0a0a);
     left: -100%;
     width: 100%;
     height: 2px;
-    opacity: 0.8,
-    animation scan 3s ease-in-out infinite;
+    opacity: 0.8;
+    animation: scan 3s ease-in-out infinite;
   }
   @keyframes scan {
     0% {
       left: -100%;
-      opacity: 0,
+      opacity: 0;
     }
     50% {
-      opacity: 0.8,
+      opacity: 0.8;
     }
     100% {
       left: 100%;
-      opacity: 0,
+      opacity: 0;
     }
   }
 /* Responsive Design */ @media (max-width: 768px) {
@@ -407,7 +407,7 @@ max-width: none }
     }
     .dialog-actions {
       padding: 10px 12px;
-flex-direction column }
+flex-direction: column }
     .dialog-button {
 min-width: auto }
     .dialog-top {

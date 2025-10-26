@@ -585,11 +585,11 @@ const saved = localStorage.getItem('ai-search-history');
     background: linear-gradient(45deg, #fbbf24, #fbbf24, transparent, transparent, #fbbf24);
     clip-path: polygon(0 0, calc(100% - 25px) 0, 100% 25px, 100% 100%, 25px 100%, 0 calc(100% - 25px));
     z-index: -1;
-    animation borderFlow 4s ease-in-out infinite;
+    animation: borderFlow 4s ease-in-out infinite;
   }
   .nier-input {
     clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .nier-input:focus {
     box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
@@ -625,7 +625,7 @@ const saved = localStorage.getItem('ai-search-history');
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition left 0.5;
+    transition: left 0.5;
   }
   .nier-search-btn:hover::before {
     left: 100%;
@@ -641,7 +641,7 @@ const saved = localStorage.getItem('ai-search-history');
     width: 2px;
     height: 100%;
     background: transparent;
-    transition background 0.3s ease;
+    transition: background 0.3s ease;
   }
   .nier-result-item:hover::before {
     background: linear-gradient(to bottom, #fbbf24, #f59e0b);
@@ -679,7 +679,7 @@ const saved = localStorage.getItem('ai-search-history');
   }
   .nier-suggestion-card {
     clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .nier-suggestion-card:hover {
     transform: translateY(-2px);
@@ -711,27 +711,27 @@ const saved = localStorage.getItem('ai-search-history');
   @keyframes borderFlow {
     0%, 100% {
       background: linear-gradient(45deg, #fbbf24, transparent, transparent, #fbbf24);
-      opacity: 0.8,
+      opacity: 0.8;
     }
     25% {
       background: linear-gradient(135deg, transparent, #fbbf24, transparent, transparent);
-      opacity: 1,
+      opacity: 1;
     }
     50% {
       background: linear-gradient(225deg, transparent, transparent, #fbbf24, transparent);
-      opacity: 0.8,
+      opacity: 0.8;
     }
     75% {
       background: linear-gradient(315deg, transparent, transparent, transparent, #fbbf24);
-      opacity: 1,
+      opacity: 1;
     }
   }
   @keyframes glowPulse {
-    0%, 100% { opacity: 0.6, }
-    50% { opacity: 1, }
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
   }
   .nier-spinner {
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   @keyframes spin {
     from { transform: rotate(0deg), }

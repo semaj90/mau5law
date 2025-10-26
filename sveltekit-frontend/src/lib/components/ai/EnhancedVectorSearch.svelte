@@ -865,17 +865,17 @@ Reset Filters
 <style>
   .enhanced-vector-search {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1.5rem;
   }
   .search-header {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .search-input-container {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   @media (min-width: 1024px) {
@@ -922,7 +922,7 @@ Reset Filters
   }
   .search-history {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   @media (min-width: 640px) {
@@ -967,16 +967,16 @@ Reset Filters
   }
   .filter-group {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .filter-label {
     font-size: 0.875rem;
-    font-weight: 500,
+    font-weight: 500;
   }
   .checkbox-group {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
   }
   .similarity-slider {
@@ -984,22 +984,22 @@ Reset Filters
   }
   .search-results {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .results-header {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.75rem;
   }
   .results-meta {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
   }
   .results-title {
     font-size: 1.25rem;
-    font-weight: 600,
+    font-weight: 600;
   }
   .results-stats {
     font-size: 0.875rem;
@@ -1007,7 +1007,7 @@ Reset Filters
   }
   .quick-stats {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   @media (min-width: 640px) {
@@ -1018,7 +1018,7 @@ Reset Filters
   }
   .stats-label {
     font-size: 0.875rem;
-    font-weight: 500,
+    font-weight: 500;
   }
   .stats-badges {
     display: flex;
@@ -1027,25 +1027,25 @@ Reset Filters
   }
   .results-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.75rem;
   }
   .result-item {
     cursor: pointer;
-    transition box-shadow 0.2;
+    transition: box-shadow 0.2;
   }
   .result-item:hover {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   }
   .result-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.75rem;
   }
   .result-header {
     display: flex;
     align-items: flex-start;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
   }
   .result-title-section {
     flex: 1;
@@ -1072,7 +1072,7 @@ Reset Filters
   }
   .result-metrics {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
     text-align: right;
   }
@@ -1086,11 +1086,11 @@ Reset Filters
     color: var(--muted-foreground);
   }
   .metric-value {
-    font-weight: 500,
+    font-weight: 500;
   }
   .result-snippet {
     font-size: 0.875rem;
-    line-height: 1.625,
+    line-height: 1.625;
   }
   .result-tags {
     display: flex;
@@ -1113,7 +1113,7 @@ Reset Filters
   .no-results-content {
     text-align: center;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .no-results-icon {
@@ -1122,19 +1122,19 @@ Reset Filters
   }
   .no-results-title {
     font-size: 1.125rem;
-    font-weight: 500,
+    font-weight: 500;
   }
   .no-results-description {
     color: var(--muted-foreground);
   }
   .analytics-tabs {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .analytics-overview {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .analytics-grid {
@@ -1167,7 +1167,7 @@ Reset Filters
   }
   .metric-info {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
   }
   .metric-label {
@@ -1176,16 +1176,16 @@ Reset Filters
   }
   .metric-value {
     font-size: 1.25rem;
-    font-weight: 600,
+    font-weight: 600;
   }
   .performance-metrics {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .performance-bars {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.75rem;
   }
   .performance-item {
@@ -1208,13 +1208,13 @@ Reset Filters
   }
   .top-queries-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .query-item {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     padding: 0.5rem;
     border-radius: 0.375rem;
     border: 1px solid var(--border);
@@ -1229,3 +1229,4 @@ Reset Filters
     color: var(--muted-foreground);
   }
 </style>
+

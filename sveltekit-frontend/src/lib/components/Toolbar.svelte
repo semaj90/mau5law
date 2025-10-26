@@ -312,7 +312,7 @@
     border: none;
     cursor: pointer;
     border-radius: 4px;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     color: var(--text-primary);
   }
   .tool-button hover
@@ -331,7 +331,7 @@
 	.format-button disabled
 	.align-button disabled
 	.action-buttondisabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .color-input {
@@ -340,7 +340,7 @@
   }
   .color-input input[type='color'] {
     position absolute;
-    opacity: 0,
+    opacity: 0;
     width: 100%;
     height: 100%;
     cursor: pointer;
@@ -386,7 +386,7 @@
     color: var(--text-primary);
     min-width: 45px;
     text-align: center;
-    font-weight: 500,
+    font-weight: 500;
   }
   .toolbar-separator {
     width: 1px;
@@ -409,3 +409,4 @@
     }
   }
 </style>
+

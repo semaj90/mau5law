@@ -64,7 +64,7 @@
   .public-layout {
     min-height: 100vh;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     background: var(--console-gradient-main, linear-gradient(135deg, #0f0f23, #1a1a2e));
     color: var(--console-fg, white);
   }
@@ -94,7 +94,7 @@
     padding: 0 2rem;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     gap: 2rem;
   }
 
@@ -110,7 +110,7 @@
 
   .footer-text {
     font-size: 1.1rem;
-    font-weight: 600,
+    font-weight: 600;
     color: var(--console-primary, #00aa00);
     font-family: monospace;
   }
@@ -130,7 +130,7 @@
   }
 
   .footer-info p {
-    margin: 0,
+    margin: 0;
     color: rgba(255, 255, 255, 0.8);
     font-size: 0.9rem;
   }
@@ -171,7 +171,7 @@
     }
 
     .footer-content {
-      flex-direction column;
+      flex-direction: column;
       text-align: center;
       gap: 1rem;
     }
@@ -181,3 +181,6 @@
     }
   }
 </style>
+
+
+

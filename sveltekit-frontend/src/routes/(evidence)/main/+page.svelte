@@ -112,7 +112,7 @@
     border: 1px solid #444;
     border-radius: 8px;
     padding: 2rem;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
 
   .action-card:hover {
@@ -173,7 +173,7 @@
     padding: 0.5rem 1rem;
     border: 1px solid #ffd700;
     border-radius: 4px;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
 
   .action-link:hover {
@@ -181,3 +181,4 @@
     color: #1a1a1a;
   }
 </style>
+

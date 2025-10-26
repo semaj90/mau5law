@@ -186,7 +186,7 @@ https://svelte.dev/e/js_parse_error -->
     <div
       class="ai-assistant-container"
       style="width: {containerWidth}px; height: {containerHeight}px;"
-      /* transition removed */}
+      /* transition: removed */}
       onclick={(e) => e.stopPropagation()}>
       <!-- Header -->
       <header class="assistant-header">
@@ -256,7 +256,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <!-- Context Panel -->
       {#if contextExpanded}
-        <div class="context-panel" /* transition removed */}>
+        <div class="context-panel" /* transition: removed */}>
           <div class="context-header">
             <h3>Active Context</h3>
             <button onclick={() => (contextExpanded = false)}>✕</button>
@@ -282,7 +282,7 @@ https://svelte.dev/e/js_parse_error -->
             {#each chatMessages as message (message.id)}
               <div
                 class="message {message.role}"
-                /* transition removed */}>
+                /* transition: removed */}>
                 <div class="message-avatar">
                   {message.role === 'user' ? '👤' : '🤖'}
                 </div>
@@ -434,7 +434,7 @@ d;
     border: 3px solid #ffd700;
     border-radius: 12px;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     overflow: hidden;
     box-shadow:
       0 0 0 3px #1a1a1a,
@@ -449,7 +449,7 @@ d;
     color: #000;
     padding: 1rem 1.5rem;
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     border-bottom: 2px solid #ffd700;
   }
@@ -463,16 +463,16 @@ d;
   }
   .assistant-title {
     font-size: 1.25rem;
-    font-weight: 700,
+    font-weight: 700;
     margin: 0;
     text-transform: uppercase;
     letter-spacing: 1px;
   }
   .assistant-subtitle {
     font-size: 0.75rem;
-    margin: 0,
+    margin: 0;
     opacity: 0.8;
-    font-weight: 600,
+    font-weight: 600;
   }
   .header-controls {
     display: flex;
@@ -490,9 +490,9 @@ d;
     color: #000;
     font-family: inherit;
     font-size: 0.8rem;
-    font-weight: 600,
+    font-weight: 600;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     text-transform: uppercase;
   }
   .mode-btn: hover
@@ -508,7 +508,7 @@ d;
     cursor: pointer;
     font-size: 1rem;
     font-weight: bold;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .close-btn:hover {
     background: transparent;
@@ -536,7 +536,7 @@ d;
     color: #e0e0e0;
     font-family: inherit;
     font-size: 1rem;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .search-input:focus {
     outline: none;
@@ -551,7 +551,7 @@ d;
     font-size: 1.2rem;
     border-radius: 8px;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .search-btn:hover:not(:disabled) {,
     background: transparent;
@@ -559,7 +559,7 @@ d;
     transform: translateY(-1px);
   }
   .search-btn:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .context-controls {
@@ -577,7 +577,7 @@ d;
     cursor: pointer;
     font-family: inherit;
     font-size: 0.9rem;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .context-toggle:hover {
     background: #ffd700;
@@ -594,7 +594,7 @@ d;
     letter-spacing: 1px;
   }
   .rag-status.processing {
-    animation pulse 1.5s infinite;
+    animation: pulse 1.5s infinite;
   }
   /* Context Panel */
   .context-panel {
@@ -604,12 +604,12 @@ d;
   }
   .context-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
   }
   .context-header h3 {
-    margin: 0,
+    margin: 0;
     color: #ffd700;
     font-size: 1rem;
   }
@@ -640,7 +640,7 @@ d;
     flex: 1,
     overflow: hidden;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
   }
   /* Chat Mode */
   .chat-container {
@@ -648,7 +648,7 @@ d;
     overflow-y: auto;
     padding: 1rem;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .message {
@@ -680,7 +680,7 @@ d;
   }
   .message-time {
     font-size: 0.7rem;
-    opacity: 0.7,
+    opacity: 0.7;
   }
   .typing-indicator {
     display: flex;
@@ -691,7 +691,7 @@ d;
     height: 6px;
     background: #ffd700;
     border-radius: 50%;
-    animation typing 1.4s infinite ease-in-out;
+    animation: typing 1.4s infinite ease-in-out;
   }
   .typing-indicator span:nth-child(2) {
     animation-delay: 0.2,
@@ -704,16 +704,16 @@ d;
     flex: 1,
     padding: 1rem;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
   }
   .evidence-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
   }
   .evidence-header h2 {
-    margin: 0,
+    margin: 0;
     color: #ffd700;
   }
   .evidence-controls {
@@ -729,7 +729,7 @@ d;
     cursor: pointer;
     font-family: inherit;
     font-size: 0.9rem;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .evidence-controls buttonhover {
     background: #ffd700;
@@ -747,7 +747,7 @@ d;
     border: 1px solid #333;
     border-radius: 8px;
     padding: 1rem;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .evidence-item: hover {
     border-color: #ffd700;
@@ -755,12 +755,12 @@ d;
   }
   .evidence-item .evidence-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
   }
   .evidence-item h3 {
-    margin: 0,
+    margin: 0;
     color: #ffd700;
     font-size: 0.9rem;
   }
@@ -830,7 +830,7 @@ d;
   }
   .analysis-sections {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1.5rem;
   }
   .analysis-section {
@@ -846,7 +846,7 @@ d;
     padding-bottom: 0.5rem;
   }
   .analysis-content {
-    line-height: 1.6,
+    line-height: 1.6;
   }
   .evidence-analysis {
     margin-bottom: 0.5rem;
@@ -860,7 +860,7 @@ d;
     border-top: 1px solid #333;
     padding: 1rem 1.5rem;
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
   }
   .footer-info {
@@ -893,7 +893,7 @@ d;
     cursor: pointer;
     font-family: inherit;
     font-size: 0.8rem;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .footer-controls button hover {
     border-color: #ffd700;
@@ -913,10 +913,10 @@ d;
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.5,
+      opacity: 0.5;
     }
   }
   /* Responsive Design */

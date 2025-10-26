@@ -206,7 +206,7 @@
   :global(.action-card) {
     background: var(--surface-secondary, #111111);
     border: 1px solid var(--border-primary, #00ff00);
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
 
   /* make hover selector global so Svelte knows it's used on a child component */
@@ -223,7 +223,7 @@
 
   .action-footer {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
   }
 
@@ -234,7 +234,7 @@
     padding: 0.5rem 1rem;
     border-radius: 4px;
     font-weight: bold;
-    transition all 0.2s;
+    transition: all 0.2s;
   }
 
   /* make button hover global as well to avoid similar unused-selector warnings */
@@ -310,3 +310,5 @@
     }
   }
 </style>
+
+

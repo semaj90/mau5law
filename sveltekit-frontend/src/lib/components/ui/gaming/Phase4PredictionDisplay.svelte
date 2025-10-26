@@ -264,7 +264,7 @@
   }
   .header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1.5rem;
     border-bottom: 2px solid currentColor;
@@ -287,13 +287,13 @@
     cursor: pointer;
     border-radius: 4px;
     font-size: 1.2rem;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .refresh-btn:hover:not(:disabled) {,
     transform: scale(1.1);
   }
   .refresh-btn:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .loading-container, .error-container, .empty-state {
@@ -351,7 +351,7 @@
   .label {
     display: block;
     font-size: 0.75rem;
-    opacity: 0.8,
+    opacity: 0.8;
   }
   .prediction-details {
     flex: 1;
@@ -375,7 +375,7 @@
   }
   .meter-fill {
     height: 100%;
-    transition width 1s ease-in-out;
+    transition: width 1s ease-in-out;
     border-radius: 6px;
   }
   .confidence-label {
@@ -419,7 +419,7 @@
   }
   .factor-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 0.5rem;
   }
@@ -441,22 +441,22 @@
   .factor-description {
     margin: 0.5rem 0;
     font-size: 0.9rem;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   .factor-stats {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     font-size: 0.8rem;
-    opacity: 0.8,
+    opacity: 0.8;
   }
   .cases-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .case-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: flex-start;
     margin-bottom: 0.5rem;
   }
@@ -489,7 +489,7 @@
   .case-stats {
     margin-bottom: 0.5rem;
     font-size: 0.8rem;
-    opacity: 0.8,
+    opacity: 0.8;
   }
   .key-lessons {
     font-size: 0.8rem;
@@ -522,13 +522,13 @@
   }
   .empty-state {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 1rem;
   }
   .empty-icon {
     font-size: 3rem;
-    opacity: 0.5,
+    opacity: 0.5;
   }
   .analyze-btn, .retry-btn {
     margin-top: 1rem;
@@ -543,16 +543,18 @@
   /* Responsive design */
   @media (max-width: 768px) {
     .main-prediction {
-      flex-direction column;
+      flex-direction: column;
       text-align: center;
     }
     .factors-grid {
       grid-template-columns: 1fr;
     }
     .factor-header {
-      flex-direction column;
+      flex-direction: column;
       gap: 0.5rem;
       align-items: flex-start;
     }
   }
 </style>
+
+

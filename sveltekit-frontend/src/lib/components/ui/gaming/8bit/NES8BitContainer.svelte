@@ -207,7 +207,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
   :global(.nes-8bit-container.is-centered .container-content) {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
   }
@@ -246,7 +246,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
-    transition transform 50ms ease-out;
+    transition: transform 50ms ease-out;
   }
   :global(.nes-8bit-container[role='button']:hover) {
     transform: scale(1.01);
@@ -256,7 +256,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     transform: scale(0.99);
   }
   :global(.nes-8bit-container.disabled) {
-    opacity: 0.6,
+    opacity: 0.6;
     cursor: not-allowed;
     pointer-events: none;
   }
@@ -333,7 +333,7 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
   }
   :global(.nes-8bit-container p) {
     margin: 0.5rem 0;
-    line-height: 1.6,
+    line-height: 1.6;
   }
 /* List styling */ {}
 :global(.nes-8bit-container ul), {}
@@ -343,7 +343,7 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
   }
   :global(.nes-8bit-container li) {
     margin: 0.25rem 0;
-    line-height: 1.4,
+    line-height: 1.4;
   }
 /* Code blocks */ {}
   :global(.nes-8bit-container code) {
@@ -395,3 +395,4 @@ inset 0 0 0 1px rgba(255, 255, 255, 0.1), {}
     }
   }
 </style>
+

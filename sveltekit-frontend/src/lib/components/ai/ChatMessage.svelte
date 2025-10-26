@@ -192,7 +192,7 @@ https://svelte.dev/e/js_parse_error -->
     font-style: italic;
   }
   :global(.message-content h1, .message-content h2, .message-content h3) {
-    font-weight: 600,
+    font-weight: 600;
     margin: 0.75rem 0 0.5rem 0;
   }
   :global(.message-content h1) {
@@ -205,3 +205,4 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 1em;
   }
 </style>
+

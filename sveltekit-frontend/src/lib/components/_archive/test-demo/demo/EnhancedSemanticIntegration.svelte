@@ -664,10 +664,10 @@ await initializeWebGPU();
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.5,
+      opacity: 0.5;
     }
   }
   /* Custom scrollbar */
@@ -689,3 +689,4 @@ await initializeWebGPU();
     background: rgba(139, 92, 246, 0.8);
   }
 </style>
+

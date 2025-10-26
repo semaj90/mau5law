@@ -100,7 +100,7 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
-    transition left 0.5;
+    transition: left 0.5;
   }
   .yorha-badge:hover::before {
     left: 100%;
@@ -112,10 +112,10 @@
   @keyframes badge-pulse {
 0%, {}
     100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.7,
+      opacity: 0.7;
     }
   }
 /* Priority indicators */ {}
@@ -129,3 +129,4 @@
     box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.3);
   }
 </style>
+

@@ -503,7 +503,7 @@
     padding: 3rem 2rem;
     text-align: center;
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     cursor: pointer;
     margin-bottom: 2rem;
   }
@@ -553,7 +553,7 @@
     margin-bottom: 0.25rem;
   }
   .info-value {
-    font-weight: 600,
+    font-weight: 600;
     color: #1f2937;
   }
   .info-value.enabled {
@@ -570,7 +570,7 @@
     border-radius: 8px;
     font-size: 1rem;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -589,12 +589,12 @@
   }
   .stats-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1rem;
   }
   .stats-header h4 {
-    margin: 0,
+    margin: 0;
     color: white;
   }
   .clear-button {
@@ -646,7 +646,7 @@
     overflow: hidden;
   }
   .file-list h4 {
-    margin: 0,
+    margin: 0;
     padding: 1rem 1.5rem;
     background: #f8fafc;
     color: #1f2937;
@@ -654,7 +654,7 @@
   }
   .file-item {
     border-bottom: 1px solid #e5e7eb;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .file-item:hover {
     background: #f9fafb;
@@ -681,7 +681,7 @@
     min-width: 0,
   }
   .file-name {
-    font-weight: 600,
+    font-weight: 600;
     color: #1f2937;
     word-break: break-word;
   }
@@ -695,11 +695,11 @@
     border: none;
     cursor: pointer;
     font-size: 1rem;
-    opacity: 0.7,
-    transition opacity 0.2s ease;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
   }
   .remove-buttonhover {
-    opacity: 1,
+    opacity: 1;
   }
   .progress-bar {
     width: 100%;
@@ -711,14 +711,14 @@
   }
   .progress-fill {
     height: 100%;
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .file-status {
     margin: 0.5rem 0;
     font-size: 0.9rem;
   }
   .status-text {
-    font-weight: 500,
+    font-weight: 500;
   }
   .file-tags {
     display: flex;
@@ -732,7 +732,7 @@
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     font-size: 0.75rem;
-    font-weight: 500,
+    font-weight: 500;
   }
   .ai-analysis {
     margin-top: 0.75rem;
@@ -752,18 +752,20 @@
       padding: 2rem 1rem;
     }
     .upload-info {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
     }
     .stats-grid {
       grid-template-columns: repeat(2, 1fr);
     }
     .file-header {
-      flex-direction column;
+      flex-direction: column;
       gap: 0.5rem;
     }
     .file-tags {
-      flex-direction column;
+      flex-direction: column;
     }
   }
 </style>
+
+

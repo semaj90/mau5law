@@ -240,14 +240,14 @@
     position relative;
     z-index: 1,
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     min-height: 200px;
     max-height: 85vh;
   }
   .modal-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     padding: 1.5rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
@@ -257,7 +257,7 @@
     font-weight: bold;
     color: #fff;
     text-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
-    margin: 0,
+    margin: 0;
     flex: 1;
     text-align: center;
   }
@@ -270,14 +270,14 @@
   .modal-footer {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     padding: 1rem 1.5rem;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
   }
   .card-corner {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 30px;
@@ -291,12 +291,12 @@
   }
   .suit {
     font-size: 1.2rem;
-    line-height: 1,
+    line-height: 1;
   }
   .rank {
     font-size: 0.9rem;
     font-weight: bold;
-    line-height: 1,
+    line-height: 1;
   }
   .modal-close {
     position absolute;
@@ -313,7 +313,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
     z-index: 2,
   }
   .modal-close:hover {
@@ -327,9 +327,9 @@
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 8px;
     color: #fff;
-    font-weight: 500,
+    font-weight: 500;
     cursor: pointer;
-    transition all 0.3;
+    transition: all 0.3;
   }
   .close-buttonhover {
     background: linear-gradient(135deg, rgba(138, 43, 226, 0.5), rgba(30, 144, 255, 0.5));
@@ -352,3 +352,4 @@
     background: linear-gradient(180deg, rgba(138, 43, 226, 0.7), rgba(30, 144, 255, 0.7));
   }
 </style>
+

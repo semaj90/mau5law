@@ -447,7 +447,7 @@ if (!canvas) return;
     position relative;
     background: var(--yorha-black, #454138);
     border: none;
-    margin: 0,
+    margin: 0;
     padding: 0;
   }
   .spa-canvas-container.fullscreen {

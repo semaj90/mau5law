@@ -124,8 +124,7 @@ https://svelte.dev/e/expected_token -->
     function animate() {
       textureDemo.rotation += rotationSpeed;
       if (textureDemo.rotation &gt;= 360) textureDemo.rotation = 0;
-      // Subtle zoom and offset animation
-      textureDemo.zoom = 1 + Math.sin(Date.now() * 0.001) * 0.2;
+      // Subtle zoom and offset animation: textureDemo.zoom = 1 + Math.sin(Date.now() * 0.001) * 0.2;
       textureDemo.offsetX = Math.cos(Date.now() * 0.0015) * 20;
       textureDemo.offsetY = Math.sin(Date.now() * 0.0012) * 15;
       animationFrame = requestAnimationFrame(animate);
@@ -215,7 +214,7 @@ https://svelte.dev/e/expected_token -->
     flex-direction: column;
     gap: 6px;
     color: var(--ps1-text);
-    font-weight: 600,
+    font-weight: 600;
   }
   .toggle-controls {
     display: flex;
@@ -388,7 +387,7 @@ https://svelte.dev/e/expected_token -->
   }
   .metric {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     padding: 6px 0;
     border-bottom: 1px solid var(--ps1-border);
     font-family: var(--ps1-mono);
@@ -399,7 +398,7 @@ https://svelte.dev/e/expected_token -->
   }
   .metric span:last-child {
     color: var(--ps1-text);
-    font-weight: 600,
+    font-weight: 600;
   }
   .metric .warning {
     color: var(--ps1-accent-2);
@@ -415,7 +414,7 @@ https://svelte.dev/e/expected_token -->
   .technique-description p {
     color: var(--ps1-text);
     margin: 0 0 12px 0;
-    line-height: 1.5,
+    line-height: 1.5;
   }
   .technique-description ul {
     margin: 0;
@@ -460,3 +459,4 @@ https://svelte.dev/e/expected_token -->
     }
   }
 &lt;/style&gt;
+

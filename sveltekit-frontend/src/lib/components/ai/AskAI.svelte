@@ -694,20 +694,20 @@
       sans-serif;
 }
   .message {
-    animation slideInFromBottom 0.3s ease-in-out;
+    animation: slideInFromBottom 0.3s ease-in-out;
     transform: translateY(0);
 }
   @keyframes slideInFromBottom {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translateY(8px);
 }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translateY(0);
 }}
   .user-message {
-    opacity: 0.9,
+    opacity: 0.9;
 }
   .ai-message {
     background-color: rgb(249 250 251);
@@ -729,15 +729,15 @@
 }
   .statute-reference {
     display: inline-block;
-    font-weight: 500,
+    font-weight: 500;
   }
   .blinking-cursor {
     display: inline-block;
     width: 1ch;
-    animation blink 1s steps(1) infinite;
+    animation: blink 1s steps(1) infinite;
   }
   @keyframes blink {
-    0%, 100% { opacity: 1, }
-    50% { opacity: 0, }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
   }
 </style>

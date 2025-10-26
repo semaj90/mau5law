@@ -454,7 +454,7 @@
 <style>
   .ollama-chat-interface {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     height: 100vh;
     max-width: 64rem;
     margin-left: auto;
@@ -486,4 +486,5 @@
     background-color: #9ca3af;
   }
 </style>
+
 

@@ -171,7 +171,7 @@
   }
   .footer-section {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .footer-title {
@@ -191,7 +191,7 @@
   .footer-description {
     font-size: 0.5rem;
     color: var(--nier-text-secondary, #94a3b8);
-    line-height: 1.3,
+    line-height: 1.3;
     margin: 0;
   }
   /* Gaming Badges */
@@ -206,7 +206,7 @@
   /* Footer Navigation */
   .footer-nav {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   :global(.footer-link) {
@@ -225,7 +225,7 @@
   /* Status Indicators */
   .status-indicators {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.75rem;
   }
   .status-item {
@@ -248,7 +248,7 @@
   /* Resource Links */
   .resource-links {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .resource-link {
@@ -270,7 +270,7 @@
   .footer-bottom {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     gap: 0.5rem;
     padding-top: 0.5rem;
@@ -293,7 +293,7 @@
   /* Minimal Footer */
   .minimal-footer {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     flex-wrap: wrap;
     gap: 0.5rem;
@@ -317,7 +317,7 @@
   }
   .demo-info {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
     align-items: center;
   }
@@ -340,18 +340,18 @@
       gap: 1.5rem;
     }
     .footer-bottom {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-start;
     }
     .tech-stack {
       align-self: stretch;
     }
     .minimal-footer {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-start;
     }
     .demo-actions {
-      flex-direction column;
+      flex-direction: column;
       width: 100%;
     }
   }
@@ -381,3 +381,5 @@
     }
   }
 </style>
+
+

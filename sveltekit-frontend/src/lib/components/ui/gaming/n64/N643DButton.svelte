@@ -300,7 +300,7 @@
                      rotate(var(--angle))
                      translateY(calc(-1 * var(--distance)))
                      scale(0);
-          opacity: 0,
+          opacity: 0;
         }
       }
     `;
@@ -369,7 +369,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 /* Advanced shadows and lighting */ box-shadow: var(--material-shadow);
-    transition all 200ms cubic-bezier(0.23, 1, 0.32, 1);
+    transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
 /* Remove default button styles */ -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -432,7 +432,7 @@ background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, transparent 40%
     background: linear-gradient(145deg, #6c757d 0%, #495057 50%, #343a40 100%);
     color: #adb5bd;
     cursor: not-allowed;
-    opacity: 0.7,
+    opacity: 0.7;
     transform: perspective(1000px) scale(0.98);
 box-shadow: 0 2px 0 #343a40, inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 8px rgba(0,0,0,0.2);
   }
@@ -534,7 +534,7 @@ background: radial-gradient( ellipse at center bottom, var(--fog-color, #404040)
 /* Reduced motion support */ @media (prefers-reduced-motion reduce) {
     :global(.n64-3d-button) {
       transform: none !important;
-      transition opacity 150ms ease;
+      transition: opacity 150ms ease;
     }
     .n64-spinner {
       animation: none;

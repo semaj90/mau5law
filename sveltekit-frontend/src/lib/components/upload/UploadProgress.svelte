@@ -142,6 +142,7 @@
     background: var(--accent, #0ea5a4);
     height: 100%;
     width: 0%;
-    transition width 300ms ease;
+    transition: width 300ms ease;
   }
 </style>
+

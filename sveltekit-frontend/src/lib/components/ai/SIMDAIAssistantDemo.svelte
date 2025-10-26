@@ -527,17 +527,17 @@ processingLogs = []} variant="ghost" size="sm">
     image-rendering: crisp-edge;
     font-family: 'Courier New', monospace;
   }
-  /* Processing animation */
+  /* Processing animation: */
   @keyframes processing-pulse {
-    0%, 100% { opacity: 1, }
-    50% { opacity: 0.7, }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
   }
   .processing {
-    animation processing-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    animation: processing-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
   /* Live component animations */
   .live-component {
-    transition all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
   }
   .live-component:hover {
     transform: scale(1.02);

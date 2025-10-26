@@ -496,10 +496,10 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     align-items: center;
     justify-content: center;
     font-size: 0.875rem;
-    font-weight: 700,
+    font-weight: 700;
   }
   .progress-fill {
-    transition width 0.5s ease-in-out;
+    transition: width 0.5s ease-in-out;
   }
   .loading-spinner {
     width: 2rem;
@@ -507,13 +507,13 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     border: 2px solid #fbbf24;
     border-top-color: transparent;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   .accordion-trigger[data-accordion-trigger] {
     background-color: rgba(255, 255, 255, 0.03);
   }
   .accordion-content {
-    animation slideDown 0.3s ease-out;
+    animation: slideDown 0.3s ease-out;
   }
   @keyframes slideDown {
     from {
@@ -522,7 +522,7 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     }
     to {
       height: auto;
-      opacity: 1,
+      opacity: 1;
     }
   }
   @keyframes spin {
@@ -540,3 +540,4 @@ https://svelte.dev/e/store_invalid_scoped_subscription -->
     font-family: 'Courier New', monospace;
   }
 </style>
+

@@ -446,7 +446,7 @@ if (browser) {
 <style>
 /* Custom styles for enhanced appearance */ {}
   :global(.chat-message-content) {
-    line-height: 1.6,
+    line-height: 1.6;
   }
   :global(.chat-message-content p) {
     margin-bottom: 0.5rem;
@@ -469,6 +469,7 @@ if (browser) {
     border-left: 4px solid currentColor;
     padding-left: 1rem;
     margin: 0.5rem 0;
-    opacity: 0.8,
+    opacity: 0.8;
   }
 </style>
+

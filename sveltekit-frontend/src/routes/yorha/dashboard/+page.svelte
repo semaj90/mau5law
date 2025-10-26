@@ -545,7 +545,7 @@
   flex-direction: column;
   gap: 1.5rem;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-betweenn;
 }
 @media (min-width: 768px) {
   .yorha-header-content { flex-direction: row; }
@@ -657,7 +657,7 @@
   gap: 1rem;
   border-radius: 0.5rem;
 }
-.yorha-metric-header { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.yorha-metric-header { display: flex; align-items: center; justify-content: space-betweenn; gap: 0.75rem; }
 .yorha-metric-header h3 { font-weight: 700; letter-spacing: 0.03em; font-size: 1.125rem; margin: 0; }
 .yorha-metric-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; text-align: center; }
 .yorha-stat-value { display: block; font-size: 1.25rem; font-weight: 700; }

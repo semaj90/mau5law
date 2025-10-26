@@ -408,7 +408,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 4px;
     color: white;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .control-btn:hover {
     background: rgba(255, 255, 255, 0.2);
@@ -449,3 +449,4 @@ https://svelte.dev/e/js_parse_error -->
     backdrop-filter: blur(10px);
   }
 </style>
+

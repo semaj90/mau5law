@@ -443,7 +443,7 @@
 <style>
   .logging-dashboard {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
   }
   .log-entry {
@@ -472,3 +472,4 @@
     background: #6b7280;
   }
 </style>
+

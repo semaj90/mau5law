@@ -213,7 +213,7 @@ https://svelte.dev/e/js_parse_error -->
 {/if}
 <style>
   .gpu-progress-container {
-    transition opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
   @keyframes gpu-shimmer {
     0% {
@@ -228,11 +228,11 @@ https://svelte.dev/e/js_parse_error -->
   }
 /* Custom animations for GPU activity */ @keyframes gpu-pulse {
     0%, 100% {
-      opacity: 0.3,
+      opacity: 0.3;
       transform: scale(0.95);
     }
     50% {
-      opacity: 1,
+      opacity: 1;
       transform: scale(1.05);
     }
   }

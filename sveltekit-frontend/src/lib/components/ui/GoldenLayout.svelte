@@ -126,7 +126,7 @@ https://svelte.dev/e/js_parse_error -->
     display: flex;
     height: 100%;
     min-height: 0,
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     gap: 0; /* We handle gap with margins for better control */
 }
   .main-content {
@@ -135,7 +135,7 @@ https://svelte.dev/e/js_parse_error -->
     overflow: hidden;
     background: var(--pico-card-background-color, #ffffff);
     border-radius: 0.5rem;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
 }
   .sidebar {
     position relative;
@@ -143,7 +143,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 1px solid var(--pico-border-color, #e2e8f0);
     border-radius: 0.5rem;
     overflow: hidden;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     min-width: 0,
 }
   .sidebar.collapsed {
@@ -172,7 +172,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     font-size: 0.75rem;
     font-weight: bold;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     z-index: 10,
 }
   .sidebar-toggle:hover {
@@ -196,7 +196,7 @@ https://svelte.dev/e/js_parse_error -->
 }
 /* Responsive design */ @media (max-width: 768px) {
     .golden-layout {
-      flex-direction column;
+      flex-direction: column;
 }
     .sidebar {
       order: 2;

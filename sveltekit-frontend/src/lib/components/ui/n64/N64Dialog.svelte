@@ -337,7 +337,7 @@ if (spatialAudio && typeof window !== 'undefined') {
       console.warn('N64Dialog: Spatial sound playback failed:', error);
     }
   }
-  // Animation transition functions
+  // Animation transition: functions
   function getTransitionFunction(node: Element) {
     if (reducedMotion) {
       return fade(node, { duration 0 });
@@ -347,19 +347,19 @@ if (spatialAudio && typeof window !== 'undefined') {
         return fly(node, {
           duration animationDuration;
           y: -50,
-          opacity: 0,
+          opacity: 0;
         });
       case 'scale':
         return scale(node, {
           duration animationDuration;
           start: 0.8,
-          opacity: 0,
+          opacity: 0;
         });
       case 'slide':
         return fly(node, {
           duration animationDuration;
           x: -100,
-          opacity: 0,
+          opacity: 0;
         });
       default:
         return fade(node, { ;
@@ -642,7 +642,7 @@ background: radial-gradient( ellipse at bottom center, rgba(0, 0, 0, 0.3) 0%, rg
     font-size: 12px;
     color: #b0b0b0;
     margin: 0;
-    line-height: 1.6,
+    line-height: 1.6;
   }
 /* Dialog body */ .n64-dialog-body {
     position relative;
@@ -667,7 +667,7 @@ background: radial-gradient( ellipse at bottom center, rgba(0, 0, 0, 0.3) 0%, rg
     display: flex;
     align-items: center;
     justify-content: center;
-    transition all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     transform: perspective(100px) rotateX(2deg);
 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.1);
   }
@@ -702,7 +702,7 @@ background: radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.15) 0%, tr
     display: none;
   }
   .quality-medium .internal-fog-layer {
-    opacity: 0.7,
+    opacity: 0.7;
   }
   .quality-ultra {
     filter: contrast(1.1) brightness(1.05);
@@ -734,7 +734,7 @@ background: radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.15) 0%, tr
   }
 /* Reduced motion */ .reduced-motion .n64-dialog, .reduced-motion .fog-layer, .reduced-motion .internal-fog-layer, .reduced-motion .n64-dialog-close {
     animation: none !important;
-    transition none !important;
+    transition: none !important;
     transform: none !important;
   }
 /* Animations */ @keyframes fog-drift-1 {
@@ -756,8 +756,9 @@ background: radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.15) 0%, tr
     100% { transform: translateX(0px) translateY(-3px), }
   }
   @keyframes internal-fog-drift {
-    0% { opacity: 0.7, transform: translateY(0px), }
-    50% { opacity: 1, transform: translateY(-2px), }
-    100% { opacity: 0.7, transform: translateY(0px), }
+    0% { opacity: 0.7; transform: translateY(0px), }
+    50% { opacity: 1; transform: translateY(-2px), }
+    100% { opacity: 0.7; transform: translateY(0px), }
   }
 </style>
+

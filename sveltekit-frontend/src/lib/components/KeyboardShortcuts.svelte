@@ -241,7 +241,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 
 <style>
   :global(.floating-actions) {
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   :global($1) {
     transform: scale(1.05);
@@ -252,3 +252,4 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       0 1px 2px rgba(0, 0, 0, 0.24);
   }
 </style>
+

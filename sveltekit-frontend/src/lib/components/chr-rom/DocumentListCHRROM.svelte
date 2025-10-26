@@ -297,7 +297,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .metric {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     padding: 0.5rem;
     background: white;
     border-radius: 4px;
@@ -308,7 +308,7 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.875rem;
   }
   .metric .value {
-    font-weight: 600,
+    font-weight: 600;
     color: #374151;
   }
   .metric .value.excellent {
@@ -349,7 +349,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 8px;
     padding: 1rem;
     cursor: pointer;
-    transition all 0.15s ease;
+    transition: all 0.15s ease;
   }
   .document-card:hover {
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
@@ -369,9 +369,9 @@ https://svelte.dev/e/js_parse_error -->
   .document-title h3 {
     margin: 0;
     font-size: 1rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #111827;
-    line-height: 1.25,
+    line-height: 1.25;
   }
   .status-indicator {
     margin-left: auto;
@@ -391,7 +391,7 @@ https://svelte.dev/e/js_parse_error -->
   .risk-gauge .label {
     font-size: 0.75rem;
     color: #6b7280;
-    font-weight: 500,
+    font-weight: 500;
   }
   /* Hover Details (Advanced Patterns) */
   .hover-details {
@@ -411,7 +411,7 @@ https://svelte.dev/e/js_parse_error -->
   .similarity-graph .label {
     font-size: 0.75rem;
     color: #6b7280;
-    font-weight: 500,
+    font-weight: 500;
   }
   /* Debug Info */
   .debug-info {
@@ -446,9 +446,11 @@ https://svelte.dev/e/js_parse_error -->
       grid-template-columns: 1fr;
     }
     .hover-details {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-start;
       gap: 0.5rem;
     }
   }
 </style>
+
+

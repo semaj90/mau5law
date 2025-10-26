@@ -54,7 +54,7 @@
       body {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         font-size: 14px;
-        line-height: 1.6,
+        line-height: 1.6;
         color: #374151;
         background: #ffffff;
   }
@@ -98,7 +98,7 @@
   }
       th {
         background: #F9FAFB;
-        font-weight: 600,
+        font-weight: 600;
   }
     `,
     placeholder,
@@ -554,7 +554,7 @@
     padding: 0.2em 0.5em;
     border-radius: 12px;
     font-size: 0.8em;
-    font-weight: 500,
+    font-weight: 500;
   }
   :global(.evidence-description) {
     margin: 0.5em 0;
@@ -567,3 +567,4 @@
     --tox-collection-toolbar-button-hover-background: #4b5563;
   }
 </style>
+

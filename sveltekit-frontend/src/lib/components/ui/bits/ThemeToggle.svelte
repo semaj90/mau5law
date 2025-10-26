@@ -234,8 +234,7 @@
   }
   /* Smooth theme transitions */
   :global(html) {
-    transition
-      background-color 0.3s ease,
+    transition: background-color 0.3s ease,
       color 0.3s ease;
   }
   :global(html.dark) {
@@ -250,3 +249,4 @@
     outline-offset: 2px;
   }
 </style>
+

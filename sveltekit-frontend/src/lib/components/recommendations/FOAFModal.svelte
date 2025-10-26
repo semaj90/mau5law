@@ -73,7 +73,7 @@ if (open && personId && !foafData) {
   <div  class="fixed inset-0 z-50 bg-black/50" transitifade={{ duration 150 }}>
     <div
       class="fixed left-1/2 top-1/2 z-50 max-h-[85vh] w-[90vw] max-w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-xl border bg-white p-6 shadow-lg"
-      /* transition removed */}
+      /* transition: removed */}
     >
       <!-- Header -->
       <div class="flex items-center justify-between mb-4">
@@ -162,7 +162,7 @@ if (open && personId && !foafData) {
 <style>
   /* Additional Tailwind-compatible styles for enhanced UX */
   .animate-spin {
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   @keyframes spin {
     from { transform: rotate(0deg), }

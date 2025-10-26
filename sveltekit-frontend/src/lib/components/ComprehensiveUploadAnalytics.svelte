@@ -579,12 +579,12 @@
   }
   .upload-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
   }
   .upload-header h2 {
-    margin: 0,
+    margin: 0;
     color: #2563eb;
   }
   .user-insights-badge {
@@ -639,7 +639,7 @@
   }
   .prompt-content {
     margin: 0 0 1rem 0;
-    line-height: 1.5,
+    line-height: 1.5;
   }
   .prompt-actions {
     display: flex;
@@ -655,7 +655,7 @@
     border-radius: 0.75rem;
     padding: 2rem;
     text-align: center;
-    transition all 0.2;
+    transition: all 0.2;
     margin-bottom: 2rem;
   }
   .file-drop-zone.drag-over {
@@ -668,7 +668,7 @@
   }
   .drop-zone-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 1rem;
   }
@@ -685,7 +685,7 @@
   }
   .file-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 0.75rem;
     background: white;
@@ -695,11 +695,11 @@
   }
   .file-info {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
   }
   .file-name {
-    font-weight: 500,
+    font-weight: 500;
   }
   .file-size, .file-type {
     font-size: 0.75rem;
@@ -719,7 +719,7 @@
   }
   .progress-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
   }
@@ -733,7 +733,7 @@
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #3b82f6, #10b981);
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .pipeline-status {
     display: flex;
@@ -811,7 +811,7 @@
   }
   .insights-summary {
     margin-bottom: 1rem;
-    line-height: 1.5,
+    line-height: 1.5;
   }
   .entity-tag, .tag {
     display: inline-block;
@@ -831,7 +831,7 @@
   .analytics-dashboard summary {
     padding: 1rem;
     cursor: pointer;
-    font-weight: 500,
+    font-weight: 500;
   }
   .analytics-content {
     padding: 1rem;
@@ -851,7 +851,7 @@
   }
   .behavior-pattern {
     text-transform: capitaliz;
-    font-weight: 500,
+    font-weight: 500;
     color: #3b82f6;
   }
   .recommendations-list {
@@ -866,8 +866,8 @@
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     cursor: pointer;
-    font-weight: 500,
-    transition background 0.2;
+    font-weight: 500;
+    transition: background 0.2;
   }
   .btn-primary:hover {
     background: #2563eb;
@@ -879,8 +879,8 @@
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     cursor: pointer;
-    font-weight: 500,
-    transition background 0.2;
+    font-weight: 500;
+    transition: background 0.2;
   }
   .btn-secondary:hover {
     background: #4b5563;
@@ -918,7 +918,7 @@
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     cursor: pointer;
-    font-weight: 500,
+    font-weight: 500;
   }
   .btn-reset {
     background: #6b7280;
@@ -927,7 +927,7 @@
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     cursor: pointer;
-    font-weight: 500,
+    font-weight: 500;
   }
   .btn-select-files {
     background: #3b82f6;
@@ -973,16 +973,16 @@
       padding: 1rem;
     }
     .upload-header {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
       align-items: flex-start;
     }
     .results-summary {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
     }
     .file-actions, .final-actions, .error-actions {
-      flex-direction column;
+      flex-direction: column;
     }
     .analytics-content {
       grid-template-columns: 1fr;

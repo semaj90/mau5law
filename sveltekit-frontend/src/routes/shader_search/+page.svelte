@@ -525,7 +525,7 @@ if (!browser) return;
     padding: 0.75rem 1.5rem;
     border-radius: 8px;
     cursor: pointer;
-    font-weight: 500,
+    font-weight: 500;
   }
   .search-buttondisabled {
     background: #9ca3af;
@@ -539,11 +539,11 @@ if (!browser) return;
   }
   .filter-group {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .filter-group label {
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
   }
   .filter-group select {
@@ -604,7 +604,7 @@ if (!browser) return;
   }
   .results-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 2rem;
   }
@@ -631,7 +631,7 @@ if (!browser) return;
     border: 4px solid #f3f4f6;
     border-top: 4px solid #2563eb;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
   @keyframes spin {
@@ -657,7 +657,7 @@ if (!browser) return;
     border-radius: 8px;
     padding: 1.5rem;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .shader-card: hover {
     border-color: #2563eb;
@@ -666,12 +666,12 @@ if (!browser) return;
   }
   .shader-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1rem;
   }
   .shader-header h3 {
-    margin: 0,
+    margin: 0;
     color: #1f2937;
   }
   .shader-badges {
@@ -689,7 +689,7 @@ if (!browser) return;
     padding: 0.25rem 0.75rem;
     border-radius: 15px;
     font-size: 0.75rem;
-    font-weight: 600,
+    font-weight: 600;
   }
   .platform-badge.webgpu {
     background: #10b981;
@@ -698,7 +698,7 @@ if (!browser) return;
   .platform-badge.webgl {
     background: #f59e0b;
     color: white;
-    font-weight: 500,
+    font-weight: 500;
   }
   .shader-meta {
     display: grid;
@@ -735,7 +735,7 @@ if (!browser) return;
     overflow: hidden;
   }
   .shader-preview pre {
-    margin: 0,
+    margin: 0;
     color: #d1d5db;
     font-size: 0.8rem;
     white-space: pre-wrap;
@@ -761,17 +761,17 @@ if (!browser) return;
     max-height: 90vh;
     overflow: hidden;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
   }
   .modal-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 1.5rem;
     border-bottom: 1px solid #e5e7eb;
   }
   .modal-header h2 {
-    margin: 0,
+    margin: 0;
   }
   .close-button {
     background: none;
@@ -799,7 +799,7 @@ if (!browser) return;
   }
   .code-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1rem;
   }
@@ -818,7 +818,7 @@ if (!browser) return;
     overflow-x: auto;
   }
   .code-container pre {
-    margin: 0,
+    margin: 0;
     color: #d1d5db;
     font-size: 0.9rem;
     white-space: pre-wrap;
@@ -829,3 +829,5 @@ if (!browser) return;
     gap: 0.5rem;
   }
 </style>
+
+

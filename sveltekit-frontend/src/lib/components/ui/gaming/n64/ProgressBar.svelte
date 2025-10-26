@@ -383,13 +383,13 @@
   .n64-progress-container {
     font-family: 'Rajdhani', 'Arial', sans-serif;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 8px;
     width: 100%;
   }
   .progress-label {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     color: #ffffff;
     font-weight: 600;
@@ -400,12 +400,12 @@
   }
   .progress-value {
     font-family: 'Courier New', monospace;
-    opacity: 0.9,
+    opacity: 0.9;
   }
   .progress-description {
     color: rgba(255, 255, 255, 0.7);
     font-size: calc(var(--progress-font-size) * 0.85);
-    line-height: 1.4,
+    line-height: 1.4;
   }
   .n64-progress {
     /* Base N64 progress styling */
@@ -420,7 +420,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    transition all 300ms cubic-bezier(0.23, 1, 0.32, 1);
+    transition: all 300ms cubic-bezier(0.23, 1, 0.32, 1);
     /* Remove default styles */
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -445,13 +445,13 @@
     height: 100%;
     background: var(--bar-bg);
     border-radius: var(--progress-border-radius);
-    transition width var(--animation-duration, 500)ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: width var(--animation-duration, 500)ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
     overflow: hidden;
     /* Enhanced 3D styling */
     box-shadow: var(--bar-shadow);
     transform-style: preserve-3d;
   }
-  /* Indeterminate animation */
+  /* Indeterminate animation: */
   .n64-progress.indeterminate .progress-bar {
     width: 30% !important;
     animation: indeterminateProgress 2s ease-in-out infinite;
@@ -483,7 +483,7 @@
       rgba(255, 255, 255, 0.1) 8px
     );
     animation: textureStream 1s linear infinite;
-    opacity: 0.6,
+    opacity: 0.6;
   }
   @keyframes textureStream {
     0% { transform: translateX(-16px), }
@@ -521,7 +521,7 @@
     );
     border-radius: 2px;
     pointer-events: none;
-    opacity: 0.7,
+    opacity: 0.7;
   }
   /* Progress glow effect */
   .progress-glow {
@@ -555,16 +555,16 @@
       transparent 100%
     );
     animation: waveProgress 2s ease-in-out infinite;
-    opacity: 0.6,
+    opacity: 0.6;
   }
   @keyframes waveProgress {
     0%, 100% {
       transform: translateX(-100%);
-      opacity: 0,
+      opacity: 0;
     }
     50% {
       transform: translateX(0%);
-      opacity: 0.6,
+      opacity: 0.6;
     }
   }
   /* Progress particles */
@@ -601,15 +601,15 @@
   @keyframes floatProgressParticles {
     0% {
       transform: translateY(0px) scale(0);
-      opacity: 0,
+      opacity: 0;
     }
     50% {
       transform: translateY(-8px) scale(1);
-      opacity: 1,
+      opacity: 1;
     }
     100% {
       transform: translateY(-16px) scale(0);
-      opacity: 0,
+      opacity: 0;
     }
   }
   /* Track fog effect */
@@ -654,7 +654,7 @@
     font-size: var(--progress-font-size);
     text-align: right;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-    opacity: 0.9,
+    opacity: 0.9;
   }
   /* State variations */
   .n64-progress.complete {
@@ -672,7 +672,7 @@
     }
   }
   .n64-progress.disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     filter: grayscale(0.8);
   }
   .n64-progress.disabled .progress-bar {
@@ -727,7 +727,7 @@
       transform: none !important;
     }
     .progress-bar {
-      transition width 150ms ease;
+      transition: width 150ms ease;
     }
     .texture-stream,
     .wave-effect,
@@ -791,3 +791,4 @@
     }
   }
 </style>
+

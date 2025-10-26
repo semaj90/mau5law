@@ -559,7 +559,7 @@
     text-decoration: none;
     cursor: pointer;
     transition: background 0.15s, color 0.15s;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     font-size: 11px;
   }
   .nav-item:hover {
@@ -590,7 +590,7 @@
   }
   .persons-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 15px 20px;
     border-bottom: 1px solid #3a3a3a;
@@ -624,7 +624,7 @@
   /* Search toolbar */
   .search-toolbar {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 12px 20px;
     background: #242424;
@@ -738,7 +738,7 @@
   }
   .detail-row {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     margin-bottom: 6px;
     font-size: 11px;
   }
@@ -860,7 +860,7 @@
   }
   .dialog-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     align-items: center;
     gap: 8px;
     margin-bottom: 8px;
@@ -931,3 +931,4 @@
     margin-top: 12px;
   }
 </style>
+

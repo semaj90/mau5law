@@ -231,7 +231,7 @@
 <style>
   .integrated-rag-upload {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 2rem;
     max-width: 800px;
     margin: 0 auto;
@@ -256,7 +256,7 @@
     padding: 3rem 2rem;
     text-align: center;
     cursor: pointer;
-    transition all 0.3s;
+    transition: all 0.3s;
     background: white;
   }
 
@@ -267,12 +267,12 @@
 
   .drop-zone.uploading {
     cursor: not-allowed;
-    opacity: 0.7,
+    opacity: 0.7;
   }
 
   .drop-zone-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 0.5rem;
   }
@@ -292,14 +292,14 @@
     height: 8px;
     background: #007bff;
     border-radius: 4px;
-    transition width 0.3s;
+    transition: width 0.3s;
   }
 
   .progress-indicator span {
     display: block;
     text-align: center;
     margin-top: 0.5rem;
-    font-weight: 600,
+    font-weight: 600;
   }
 
   .result-section {
@@ -337,7 +337,7 @@
   }
 
   .similarity {
-    font-weight: 600,
+    font-weight: 600;
     color: #007bff;
   }
 
@@ -361,11 +361,11 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-weight: 600,
+    font-weight: 600;
   }
 
   .search-input-group buttondisabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
 
@@ -394,7 +394,7 @@
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     font-size: 0.875rem;
-    font-weight: 600,
+    font-weight: 600;
   }
 
   .source {
@@ -403,8 +403,9 @@
   }
 
   .result-content {
-    margin: 0,
+    margin: 0;
     color: #333;
-    line-height: 1.6,
+    line-height: 1.6;
   }
 </style>
+

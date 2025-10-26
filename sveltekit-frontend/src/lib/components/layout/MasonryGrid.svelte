@@ -168,11 +168,11 @@ https://svelte.dev/e/js_parse_error -->
     cursor: grabbing;
 }
   :global(.masonry-item.drag-shadow) {
-    opacity: 0.5,
+    opacity: 0.5;
     transform: scale(0.95);
   }
   :global(.masonry-item.drag-ghost) {
-    opacity: 0.3,
+    opacity: 0.3;
     transform: rotate(5deg);
   }
   /* Loading state */
@@ -186,16 +186,16 @@ https://svelte.dev/e/js_parse_error -->
 }
   /* Animation for new items */
   :global(.masonry-item.newly-added) {
-    animation slideInUp 0.3s ease-out;
+    animation: slideInUp 0.3s ease-out;
   }
   @keyframes slideInUp {
     from {
       transform: translateY(20px);
-      opacity: 0,
+      opacity: 0;
 }
     to {
       transform: translateY(0);
-      opacity: 1,
+      opacity: 1;
 }}
   /* Hover effects */
   :global($1) {

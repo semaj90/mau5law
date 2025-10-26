@@ -513,15 +513,15 @@ try {
 <style>
   /* Custom animations for processing indicators */
   @keyframes pulse-processing {
-    0%, 100% { opacity: 1, }
-    50% { opacity: 0.5, }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
   }
   .processing-indicator {
-    animation pulse-processing 2s infinite;
+    animation: pulse-processing 2s infinite;
   }
   /* Smooth transitions for dynamic content */
   .transition-all {
-    transition all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
   }
   /* Custom scrollbar for better UX */
   .overflow-y-auto::-webkit-scrollbar {

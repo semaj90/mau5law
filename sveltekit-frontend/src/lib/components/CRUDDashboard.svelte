@@ -574,13 +574,13 @@
   }
   .title-section h1 {
     font-size: 2rem;
-    font-weight: 700,
+    font-weight: 700;
     margin: 0 0 0.5rem 0;
     color: #1f2937;
   }
   .title-section p {
     color: #6b7280;
-    margin: 0,
+    margin: 0;
   }
   .refresh-btn {
     display: flex;
@@ -597,12 +597,12 @@
       grid-template-columns: 1fr;
     }
     .header-content {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
       align-items: flex-start;
     }
     .section-actions {
-      flex-direction column;
+      flex-direction: column;
       align-items: stretch;
       gap: 0.5rem;
     }
@@ -614,3 +614,4 @@
     }
   }
 </style>
+

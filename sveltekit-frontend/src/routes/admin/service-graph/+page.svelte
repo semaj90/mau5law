@@ -241,7 +241,7 @@
           {#each getFilteredServices() as service (service.id)}
             <button
               onclick={() => selectService(service)}
-              class={`w-full text-left p-3 rounded border-2 transition ${
+              class={`w-full text-left p-3 rounded border-2 transition: ${
                 selectedService?.id === service.id
                   ? 'border-blue-500 bg-gray-700'
                   : 'border-gray-700 hover:border-gray-600'
@@ -394,4 +394,5 @@
     background-color: #111827;
   }
 </style>
+
 

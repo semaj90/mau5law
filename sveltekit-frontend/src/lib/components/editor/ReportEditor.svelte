@@ -737,7 +737,7 @@ https://svelte.dev/e/js_parse_error -->
     </main>
     <!-- Evidence Panel (for dual layout) -->
     {#if $report.settings.layout === 'dual'}
-      <!-- transition removed -->
+      <!-- transition: removed -->
       <aside
         class="evidence-panel"
       >
@@ -888,7 +888,7 @@ https://svelte.dev/e/js_parse_error -->
 
   .editor-toolbar {
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     padding: 1rem;
     border-bottom: 1px solid #e2e8f0;
     background: #ffffff;
@@ -934,9 +934,10 @@ https://svelte.dev/e/js_parse_error -->
   /* basic editor layout finishing rules */
   .editor-content { display: flex; height: 100%; }
   .editor-main { flex: 1; display: flex; flex-direction: column; }
-  .editor-header { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 1rem; }
+  .editor-header { display: flex; align-items: center; justify-content: space-betweennn; padding: 0.5rem 1rem; }
   .evidence-panel { width: 320px; border-left: 1px solid #e6e6e6; padding: 0.75rem; overflow: auto; }
 
 </style>
 
 <!-- Ensure file ends with a newline -->
+

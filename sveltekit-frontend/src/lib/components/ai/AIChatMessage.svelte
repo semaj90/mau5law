@@ -251,7 +251,7 @@
   }
   .message-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 12px;
     font-size: 0.875rem;
@@ -260,7 +260,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-weight: 600,
+    font-weight: 600;
     color: var(--text-primary, #1e293b);
   }
   .chat-message.user .message-role {
@@ -301,7 +301,7 @@
     border-radius: 4px;
     color: var(--text-muted, #94a3b8);
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .action-btn:hover {
     background: var(--bg-hover, rgba(0, 0, 0, 0.05));
@@ -315,7 +315,7 @@
     color: white;
   }
   .message-content {
-    line-height: 1.6,
+    line-height: 1.6;
   }
   .content-text {
     margin-bottom: 12px;
@@ -339,7 +339,7 @@
     font-size: 0.875rem;
     color: var(--text-secondary, #64748b);
     cursor: pointer;
-    transition color 0.2s ease;
+    transition: color 0.2s ease;
   }
   .sources-toggle:hover,
   .metadata-toggle:hover {
@@ -347,7 +347,7 @@
   }
   .sources-toggle svg,
   .metadata-toggle svg {
-    transition transform 0.2s ease;
+    transition: transform 0.2s ease;
   }
   .sources-toggle svg.rotated,
   .metadata-toggle svg.rotated {
@@ -367,17 +367,17 @@
   }
   .source-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 4px;
-    font-weight: 500,
+    font-weight: 500;
   }
   .source-title {
     color: var(--text-primary, #1e293b);
   }
   .source-score {
     color: var(--text-accent, #3b82f6);
-    font-weight: 600,
+    font-weight: 600;
   }
   .source-type {
     font-size: 0.75rem;
@@ -389,7 +389,7 @@
   .source-content {
     color: var(--text-secondary, #64748b);
     font-size: 0.8125rem;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   .metadata-content {
     margin-top: 8px;
@@ -400,7 +400,7 @@
   }
   .metadata-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 4px 8px;
     background: var(--bg-secondary, #f8fafc);
@@ -408,11 +408,11 @@
   }
   .metadata-item .label {
     color: var(--text-secondary, #64748b);
-    font-weight: 500,
+    font-weight: 500;
   }
   .metadata-item .value {
     color: var(--text-primary, #1e293b);
-    font-weight: 600,
+    font-weight: 600;
   }
   .metadata-item .value.cache {
     color: var(--text-info, #0369a1);
@@ -445,3 +445,5 @@
     }
   }
 </style>
+
+

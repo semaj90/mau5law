@@ -359,7 +359,7 @@
                      rotate(var(--angle))
                      translateY(calc(-1 * var(--distance)))
                      scale(0);
-          opacity: 0,
+          opacity: 0;
         }
       }
     `;
@@ -483,7 +483,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    transition all var(--animation-duration) cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all var(--animation-duration) cubic-bezier(0.34, 1.56, 0.64, 1);
     /* Remove default styles */
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -516,9 +516,9 @@
     /* 3D knob styling */
     box-shadow: var(--knob-shadow);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    /* Smooth mechanical animation */
+    /* Smooth mechanical animation: */
     transform: var(--knob-transform);
-    transition transform var(--animation-duration) cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transition: transform var(--animation-duration) cubic-bezier(0.68, -0.55, 0.265, 1.55);
     /* Performance optimization */
     will-change: transform;
     transform-style: preserve-3d;
@@ -549,7 +549,7 @@
     background: linear-gradient(45deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
     border-radius: 50%;
     pointer-events: none;
-    opacity: 0.7,
+    opacity: 0.7;
   }
   /* Knob loading indicator */
   .knob-loading {
@@ -616,7 +616,7 @@
   /* Switch content styling */
   .switch-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 4px;
     flex: 1,
   }
@@ -632,7 +632,7 @@
   .switch-description {
     color: rgba(255, 255, 255, 0.7);
     font-size: calc(var(--switch-font-size) * 0.85);
-    line-height: 1.4,
+    line-height: 1.4;
   }
   /* State variations */
   .n64-switch.focused {
@@ -650,7 +650,7 @@
     background: var(--track-bg);
   }
   .n64-switch.disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
     filter: grayscale(0.8);
   }
@@ -698,7 +698,7 @@
   }
   /* Spring physics animation: for enabled switches */
   .n64-switch:not(.disabled).animating .switch-knob {
-    transition transform var(--animation-duration) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform var(--animation-duration) cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
   /* Mobile optimizations */
   @media (max-width: 480px) {
@@ -716,10 +716,10 @@
   @media (prefers-reduced-motion reduce) {
     .n64-switch {
       transform: none !important;
-      transition opacity 150ms ease;
+      transition: opacity 150ms ease;
     }
     .switch-knob {
-      transition transform 150ms ease;
+      transition: transform 150ms ease;
     }
     .toggle-glow {
       animation: none;
@@ -773,3 +773,4 @@
     }
   }
 </style>
+

@@ -166,7 +166,7 @@
   :global(.gpu-dashboard) {
     font-family: system-ui, sans-serif;
     font-size: 13px;
-    line-height: 1.3,
+    line-height: 1.3;
   }
   .grid {
     display: grid;
@@ -184,7 +184,7 @@
     font-size: 0.9rem;
     letter-spacing: 0.5px;
     text-transform: uppercase;
-    font-weight: 600,
+    font-weight: 600;
     color: #ccc;
   }
   .metrics table {
@@ -199,7 +199,7 @@
   }
   .metrics th {
     color: #888;
-    font-weight: 500,
+    font-weight: 500;
   }
   .log {
     max-height: 240px;
@@ -209,7 +209,7 @@
   }
   .event {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     padding: 2px 4px;
     border-bottom: 1px solid #2a2c30;
   }
@@ -217,7 +217,7 @@
     border-bottom: none;
   }
   .event-type {
-    font-weight: 600,
+    font-weight: 600;
   }
   .controls button {
     background: #2d2f33;
@@ -232,3 +232,5 @@
     background: #35383d;
   }
 </style>
+
+

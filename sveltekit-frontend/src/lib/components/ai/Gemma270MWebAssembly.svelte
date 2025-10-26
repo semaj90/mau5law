@@ -509,20 +509,20 @@ await initializeWebAssembly();
     max-width: 800px;
   }
   .metric {
-    transition transform 0.2s ease;
+    transition: transform 0.2s ease;
   }
   .metric:hover {
     transform: translateY(-2px);
   }
   .action-btn {
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .action-btn:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   .action-btn:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
     transform: none;
   }
@@ -530,7 +530,7 @@ await initializeWebAssembly();
     font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   }
   .animate-spin {
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   @keyframes spin {
     from {
@@ -541,3 +541,4 @@ await initializeWebAssembly();
     }
   }
 </style>
+

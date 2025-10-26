@@ -226,15 +226,15 @@ Visual progress indicator for the Evidence Chain of Custody workflow
 
 <style>
   .workflow-progress {
-    animation fadeInUp 0.5s ease-out;
+    animation: fadeInUp 0.5s ease-out;
   }
   @keyframes fadeInUp {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translateY(20px);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translateY(0);
     }
   }
@@ -245,3 +245,4 @@ Visual progress indicator for the Evidence Chain of Custody workflow
     transition-timing-function ease-in-out;
   }
 </style>
+

@@ -267,7 +267,7 @@ https://svelte.dev/e/attribute_duplicate -->
 }
   .header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 12px 16px;
     border-bottom: 1px solid #e5e7eb;
@@ -280,7 +280,7 @@ https://svelte.dev/e/attribute_duplicate -->
 }
   .title-section h3 {
     margin: 0;
-    font-weight: 600,
+    font-weight: 600;
     color: #111827;
 }
   .case-badge {
@@ -329,7 +329,7 @@ https://svelte.dev/e/attribute_duplicate -->
 }
   .content {
     white-space: pre-wrap;
-    line-height: 1.5,
+    line-height: 1.5;
 }
   .references {
     margin-top: 12px;
@@ -339,7 +339,7 @@ https://svelte.dev/e/attribute_duplicate -->
   .references h4 {
     margin: 0 0 8px 0;
     font-size: 0.875rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #374151;
 }
   .reference {
@@ -361,7 +361,7 @@ https://svelte.dev/e/attribute_duplicate -->
     border-color: #d1d5db;
 }
   .ref-title {
-    font-weight: 500,
+    font-weight: 500;
     color: #111827;
 }
   .ref-citation {
@@ -399,7 +399,7 @@ https://svelte.dev/e/attribute_duplicate -->
     background: #2563eb;
 }
   .submit-btn:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
 }
   .settings-panel {
@@ -415,14 +415,14 @@ https://svelte.dev/e/attribute_duplicate -->
 }
   .settings-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 16px;
     border-bottom: 1px solid #e5e7eb;
 }
   .settings-header h4 {
     margin: 0;
-    font-weight: 600,
+    font-weight: 600;
     color: #111827;
 }
   .close-btn {
@@ -442,7 +442,7 @@ https://svelte.dev/e/attribute_duplicate -->
     display: block;
     margin-bottom: 4px;
     font-size: 0.875rem;
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
 }
   .setting select,
@@ -470,11 +470,11 @@ https://svelte.dev/e/attribute_duplicate -->
     border-bottom: 1px solid #e5e7eb;
 }
   .modal-header h4 {
-    margin: 0,
+    margin: 0;
     display: flex;
     align-items: center;
     gap: 8px;
-    font-weight: 600,
+    font-weight: 600;
     color: #111827;
 }
   .modal-body {
@@ -499,7 +499,7 @@ https://svelte.dev/e/attribute_duplicate -->
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-weight: 500,
+    font-weight: 500;
     transition: background 0.2;
 }
   .btn-primary:hover {
@@ -512,7 +512,7 @@ https://svelte.dev/e/attribute_duplicate -->
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-weight: 500,
+    font-weight: 500;
     transition: background 0.2;
 }
   .btn-secondary:hover {
@@ -537,3 +537,4 @@ https://svelte.dev/e/attribute_duplicate -->
 }
 </style>
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+

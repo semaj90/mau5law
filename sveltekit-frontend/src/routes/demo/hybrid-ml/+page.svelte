@@ -339,7 +339,7 @@
   }
 
   .justify-between {
-    justify-content: space-between;
+    justify-content: space-betweennn;
   }
 
   .gap-2 {
@@ -418,3 +418,5 @@
     width: 6rem;
   }
 </style>
+
+

@@ -371,14 +371,14 @@ https://svelte.dev/e/js_parse_error -->
   }
   .dashboard-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 2px solid #3b82f6;
   }
   .header-title h2 {
-    margin: 0,
+    margin: 0;
     color: #e2e8f0;
     font-size: 1.8rem;
   }
@@ -437,7 +437,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .performance-grade {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 2rem;
     border-radius: 12px;
@@ -468,7 +468,7 @@ https://svelte.dev/e/js_parse_error -->
     color: #e2e8f0;
   }
   .grade-info p {
-    margin: 0,
+    margin: 0;
     color: #94a3b8;
   }
   .system-health {
@@ -493,7 +493,7 @@ https://svelte.dev/e/js_parse_error -->
     padding: 1.5rem;
     border-radius: 12px;
     border: 1px solid #334155;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .metric-card:hover {
     transform: translateY(-2px);
@@ -510,7 +510,7 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 1.5rem;
   }
   .metric-header h3 {
-    margin: 0,
+    margin: 0;
     color: #e2e8f0;
     font-size: 1rem;
   }
@@ -549,7 +549,7 @@ https://svelte.dev/e/js_parse_error -->
     height: 100%;
     background: linear-gradient(90deg, #3b82f6, #10b981);
     border-radius: 3px;
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .service-status {
     background: linear-gradient(145deg, #1e293b, #0f172a);
@@ -576,7 +576,7 @@ https://svelte.dev/e/js_parse_error -->
     background: rgba(255, 255, 255, 0.05);
     border-radius: 8px;
     border: 1px solid transparent;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .service-item:hover {
     border-color: #3b82f6;
@@ -693,12 +693,12 @@ https://svelte.dev/e/js_parse_error -->
       padding: 1rem;
     }
     .dashboard-header {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
       align-items: stretch;
     }
     .performance-grade {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
       text-align: center;
     }
@@ -710,3 +710,5 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </style>
+
+

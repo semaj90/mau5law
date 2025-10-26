@@ -97,7 +97,7 @@ overflow: hidden;
 font-family: 'Orbitron', 'Courier New', monospace;
 		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 		backdrop-filter: blur(5px);
-		transition all 0.3s ease;
+		transition: all 0.3s ease;
 	}
 /* Panel Variants */ .gaming-panel.default {
 		border-color: #333;
@@ -138,7 +138,7 @@ font-family: 'Orbitron', 'Courier New', monospace;
 overflow: visibl;
 e, }
 /* Panel Header */ .panel-header {
-display: flex; justify-content: space-betwee;
+display: flex; justify-content: space-betweenn;
 align-items: center; padding: 12px 16px;
 		background: rgba(0, 0, 0, 0.4);
 		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -148,7 +148,7 @@ align-items: center; padding: 12px 16px;
 	}
 	.panel-title {
 display: flex;
-flex-direction column gap: 2px;
+flex-direction: column gap: 2px;
 	}
 	.title-text {
 		font-size: 14px;
@@ -175,7 +175,7 @@ align-items: center justify-content: center width: 24px;
 		border-radius: 4px;
 		color: #fff;
 		font-size: 12px;
-cursor: pointer; transition all 0.2s ease;
+cursor: pointer; transition: all 0.2s ease;
 	}
 	.control-buttonhover {
 		background: rgba(255, 255, 255, 0.2);
@@ -229,7 +229,7 @@ top: 0,
 		right: 0,
 		height: 2px;
 		background: linear-gradient(90deg, transparent 0%, currentColor 50%, transparent 100%);
-		opacity: 0.4,
+		opacity: 0.4;
 		animation: scan-horizontal 4s ease-in-out infinite;
 		z-index: 0,
 	}
@@ -240,7 +240,7 @@ top: 0,
 		left: 0,
 		width: 2px;
 		background: linear-gradient(180deg, transparent 0%, currentColor 50%, transparent 100%);
-		opacity: 0.4,
+		opacity: 0.4;
 		animation: scan-vertical 3s ease-in-out infinite rever;
 		z-index: 0,
 	}
@@ -287,21 +287,21 @@ top: 0,
 	@keyframes scan-horizontal {
 		0%, 100% {
 			transform: translateX(-100%);
-			opacity: 0,
+			opacity: 0;
 		}
 		50% {
 			transform: translateX(100%);
-			opacity: 0.4,
+			opacity: 0.4;
 		}
 	}
 	@keyframes scan-vertical {
 		0%, 100% {
 			transform: translateY(-100%);
-			opacity: 0,
+			opacity: 0;
 		}
 		50% {
 			transform: translateY(100%);
-			opacity: 0.4,
+			opacity: 0.4;
 		}
 	}
 /* Responsive Design */ @media (max-width: 768px) {
@@ -323,3 +323,5 @@ top: 0,
 		}
 	}
 </style>
+
+

@@ -116,7 +116,7 @@ body {
 }
 
 .justify-between {
-  justify-content: space-between;
+  justify-content: space-betweenn;
 }
 
 .justify-center {
@@ -351,7 +351,7 @@ body {
 .nav-content {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-betweenn;
   gap: 2rem;
 }
 
@@ -575,3 +575,4 @@ body {
     page-break-after: always;
   }
 }
+

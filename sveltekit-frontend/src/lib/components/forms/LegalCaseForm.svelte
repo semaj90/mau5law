@@ -411,7 +411,7 @@
   }
   .form-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     margin-bottom: 2rem;
     flex-wrap: wrap;
@@ -419,7 +419,7 @@
   }
   .form-title {
     font-size: 1.5rem;
-    font-weight: 600,
+    font-weight: 600;
     color: var(--legal-ai-text-primary, #f1f5f9);
   }
   .form-progress {
@@ -437,12 +437,12 @@
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #f59e0b, #d97706);
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .progress-text {
     font-size: 0.875rem;
     color: var(--legal-ai-text-secondary, #94a3b8);
-    font-weight: 500,
+    font-weight: 500;
   }
   .form-tabs {
     margin-bottom: 2rem;
@@ -457,14 +457,14 @@
   }
   .form-field {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
   }
   .form-field.full-width {
     grid-column: 1 / -1;
   }
   .field-label {
     font-size: 0.875rem;
-    font-weight: 600,
+    font-weight: 600;
     color: var(--legal-ai-text-primary, #f1f5f9);
     margin-bottom: 0.5rem;
   }
@@ -476,7 +476,7 @@
     color: var(--legal-ai-text-primary, #f1f5f9);
     font-family: inherit;
     font-size: 0.875rem;
-    transition border-color 0.2s ease;
+    transition: border-color 0.2s ease;
     resize: vertical;
   }
   .form-textarea:focus {
@@ -494,7 +494,7 @@
   }
   .review-title {
     font-size: 1.25rem;
-    font-weight: 600,
+    font-weight: 600;
     color: var(--legal-ai-text-primary, #f1f5f9);
     margin-bottom: 1.5rem;
   }
@@ -506,7 +506,7 @@
   }
   .review-item {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
     padding: 1rem;
     background: var(--legal-ai-surface-secondary, #1e293b);
@@ -520,7 +520,7 @@
   .review-item span {
     font-size: 0.9rem;
     color: var(--legal-ai-text-primary, #f1f5f9);
-    font-weight: 500,
+    font-weight: 500;
   }
   .review-description {
     margin-bottom: 1.5rem;
@@ -537,14 +537,14 @@
   }
   .review-description p {
     color: var(--legal-ai-text-primary, #f1f5f9);
-    line-height: 1.5,
+    line-height: 1.5;
     margin: 0;
   }
   .validation-status {
     padding: 1rem;
     border-radius: 0.5rem;
     text-align: center;
-    font-weight: 500,
+    font-weight: 500;
   }
   .status-valid {
     background: rgba(34, 197, 94, 0.1);
@@ -569,7 +569,7 @@
   }
   @media (max-width: 640px) {
     .form-header {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-start;
     }
     .form-grid {
@@ -586,3 +586,5 @@
     }
   }
 </style>
+
+

@@ -706,23 +706,23 @@
     background: hsl(var(--muted-foreground));
     border-radius: 3px;
   }
-  /* Message animation */
+  /* Message animation: */
   .flex.items-start {
-    animation slideIn 0.3s ease-out;
+    animation: slideIn 0.3s ease-out;
   }
   @keyframes slideIn {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translateY(10px);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translateY(0);
     }
   }
-  /* Processing indicator animation */
+  /* Processing indicator animation: */
   .animate-spin {
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   @keyframes spin {
     from {
@@ -733,3 +733,4 @@
     }
   }
 </style>
+

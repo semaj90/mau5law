@@ -37,8 +37,7 @@
   			const now = new Date());
   			currentTime = now.toLocaleTimeString();
   		}, 1000);
-  		// Glow effect animation
-  		const glowInterval = setInterval(() => {
+  		// Glow effect animation: const glowInterval = setInterval(() => {
   			glowEffect = !glowEffect;
   		}, 2000);
   		return () => {
@@ -123,7 +122,7 @@ d;
 	}
 	.hud-top-bar {
 		display: flex;
-		justify-content: space-betwee;
+		justify-content: space-betweenn;
 		align-items: center;
 		padding: 12px 24px;
 		background: var(--yorha-bg-primary, #0a0a0a);
@@ -144,7 +143,7 @@ d;
 		border-radius: 0,
 		border: 2px solid var(--yorha-secondary, #ffd700);
 		box-shadow: 0 0 0 2px var(--yorha-bg-secondary, #1a1a1a);
-		transition all 0.2s ease;
+		transition: all 0.2s ease;
 		text-transform: uppercase;
 		letter-spacing: 1px;
 	}
@@ -156,13 +155,13 @@ d;
 	}
 	.level-text {
 		font-size: 12px;
-		font-weight: 600,
+		font-weight: 600;
 		color: var(--yorha-bg-primary, #0a0a0a);
 		margin-right: 4px;
 	}
 	.level-number {
 		font-size: 18px;
-		font-weight: 700,
+		font-weight: 700;
 		color: var(--yorha-bg-primary, #0a0a0a);
 	}
 	.experience-bar {
@@ -181,7 +180,7 @@ d;
 		height: 100%;
 		background: linear-gradient(90deg, var(--yorha-accent, #00ff41), var(--yorha-secondary, #ffd700));
 		border-radius: 0,
-		transition width 0.5s ease;
+		transition: width 0.5s ease;
 		box-shadow:
 			inset 0 0 10px rgba(0, 255, 65, 0.3),
 			0 0 5px rgba(255, 215, 0, 0.5);
@@ -281,7 +280,7 @@ d;
 		background: var(--yorha-bg-secondary, #1a1a1a);
 		border: 2px solid var(--yorha-text-muted, #808080);
 		border-radius: 0,
-		transition all 0.2s ease;
+		transition: all 0.2s ease;
 	}
 	.stat-item:hover {
 		background: var(--yorha-bg-tertiary, #2a2a2a);
@@ -313,16 +312,16 @@ d;
 	}
 	@keyframes pulse {
 		0%, 100% {
-			opacity: 1,
+			opacity: 1;
 		}
 		50% {
-			opacity: 0.5,
+			opacity: 0.5;
 		}
 	}
 	/* Responsive Design */
 	@media (max-width: 768px) {
 		.hud-top-bar {
-			flex-direction column;
+			flex-direction: column;
 			gap: 12px;
 			padding: 16px;
 		}
@@ -335,3 +334,5 @@ d;
 		}
 	}
 </style>
+
+

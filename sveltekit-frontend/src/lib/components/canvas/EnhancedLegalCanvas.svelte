@@ -450,7 +450,7 @@
     flex-wrap: wrap;
   }
   .nes-field {
-    margin: 0,
+    margin: 0;
   }
   .nes-field label {
     font-family: 'Press Start 2P', monospace;
@@ -503,7 +503,7 @@
   }
 /* Animation for canvas updates */ {}
   .canvas-wrapper {
-    animation subtleGlow 3s ease-in-out infinite alternate;
+    animation: subtleGlow 3s ease-in-out infinite alternate;
   }
   @keyframes subtleGlow {
     from {
@@ -516,7 +516,7 @@
 /* Responsive design */ {}
   @media (max-width: 768px) {
     .canvas-controls {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-start;
     }
     .legal-canvas {
@@ -525,3 +525,4 @@
     }
   }
 </style>
+

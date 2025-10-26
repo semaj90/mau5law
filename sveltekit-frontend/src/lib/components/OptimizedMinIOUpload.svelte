@@ -42,6 +42,7 @@
 </div>
 
 <style>
-	.optimized-minio-upload { display: flex; flex-direction column; gap: 0.5rem; }
+	.optimized-minio-upload { display: flex; flex-direction: column; gap: 0.5rem; }
 	button[disabled] { opacity: 0.6; cursor: not-allowed; }
 </style>
+

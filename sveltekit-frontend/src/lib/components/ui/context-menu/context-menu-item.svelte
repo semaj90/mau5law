@@ -43,7 +43,7 @@
     border-radius: 0.25rem;
     background: transparent;
     cursor: pointer;
-    transition background-color 0.15s;
+    transition: background-color 0.15s;
     text-align: left;
   }
   .context-menu-item:hover:not(.disabled) {
@@ -54,7 +54,8 @@
     outline-offset: -2px;
   }
   .context-menu-item.disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
 </style>
+
