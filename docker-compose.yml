@@ -89,7 +89,8 @@ services:
       - REDIS_URL=redis://redis:6379
       - REDIS_PASSWORD=redis
       - OLLAMA_URL=http://host.docker.internal:11434
-      - MINIO_ENDPOINT=minio:9000
+      # Use localhost so URLs embedded in the browser client resolve correctly outside Docker
+      - MINIO_ENDPOINT=http://localhost:9000
       - MINIO_ACCESS_KEY=minio
       - MINIO_SECRET_KEY=minio123
       - MINIO_USE_SSL=false

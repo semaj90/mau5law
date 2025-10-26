@@ -11,269 +11,265 @@ Usage:
 <CudaSearch bind:results {onSearchComplete} />
 -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits';
-interface SearchResult {
-  id: string;
-  title: string;
-  content: string;
-  score: number;
-  metadata: {
-    document_type: string;
-    jurisdiction string;
-    date: string;
-    legal_domain: string;
+  import { Button, Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits';
+  import { createEventDispatcher, onMount } from 'svelte';
+
+  interface SearchResult {
+    id: string;
+    title: string;
+    content: string;
+    score: number;
+    metadata: {
+      document_type: string;
+      jurisdiction: string;
+      date: string;
+      legal_domain: string;
+    };
+    performance: {
+      gpu_accelerated: boolean;
+      search_time_ms: number;
+      gpu_utilization: number;
+    };
   }
-  performance: {
-    gpu_accelerated: boolean;
+
+  interface CudaCapabilities {
+    gpu_model: string;
+    vram_gb: number;
+    cuda_cores: number;
+    simd_enabled: boolean;
+    instruction_set: string;
+  }
+
+  // Props (standard Svelte exports)
+  export let placeholder: string = 'Search legal documents...';
+  export let maxResults: number = 10;
+  export let enableGpuAcceleration: boolean = true;
+  export let enableSIMD: boolean = true;
+  export let legalDomain: string = 'general';
+  export let searchType: 'semantic' | 'keyword' | 'hybrid' = 'semantic';
+  export let results: SearchResult[] = [];
+  export let onSearchComplete: ((r: SearchResult[]) => void) | undefined;
+
+  const dispatch = createEventDispatcher();
+
+  // State
+  let query = '';
+  let isSearching = false;
+  let searchTime = 0;
+  let cudaCapabilities: CudaCapabilities | null = null;
+  let errorMessage = '';
+  let gpuMetrics = {
+    utilization: 0,
+    memory_usage: 0,
+    temperature: 0,
+    active_streams: 0,
+  };
+
+  // Performance tracking
+  type Perf = {
+    timestamp: number;
     search_time_ms: number;
-    gpu_utilization number;
-  }
-}
-interface CudaCapabilities {
-  gpu_model: string;
-  vram_gb: number;
-  cuda_cores: number;
-  simd_enabled: boolean;
-  instruction_set: string;
-}
-// Props
-interface Props {
-  placeholder?: string;
-  maxResults?: number;
-  enableGpuAcceleration?: boolean;
-  enableSIMD?: boolean;
-  legalDomain?: string;
-  searchType?: 'semantic' | 'keyword' | 'hybrid';
-  results?: SearchResult[];
-  onSearchComplete?: (results: SearchResult[]) => void;
-}
-let {
-  placeholder = "Search legal documents...",
-  maxResults = 10,
-  enableGpuAcceleration = true,
-  enableSIMD = true,
-  legalDomain = 'general',
-  searchType = 'semantic',
-  results = $bindable([]),
-  onSearchComplete
-}: Props = $props();
-// State using Svelte 5 runes
-let query = $state('');
-let isSearching = $state(false);
-let searchTime = $state(0);
-let cudaCapabilities = $state<CudaCapabilities | null>(null);
-let errorMessage = $state('');
-let gpuMetrics = $state({
-  utilization 0,
-  memory_usage: 0,
-  temperature: 0,
-  active_streams: 0,
-});
-// Performance tracking
-let performanceHistory = $state<Array<{
-  timestamp: number;
-  search_time_ms: number;
-  gpu_utilization number;
-  query_length: number;
-  results_count: number;
-}>([]);
-// Load CUDA capabilities on mount
-$effect(() => {
-    (async () => {
-try {
-    // removed unused response assignment
-    if (response.ok) {
-      const data = await response.json();
-      cudaCapabilities = {
-        gpu_model: data.cuda_indexing_capabilities?.rtx_3060_ti_specs?.gpu_model || 'RTX 3060 Ti',
-        vram_gb: data.cuda_indexing_capabilities?.rtx_3060_ti_specs?.vram_gb || 8,
-        cuda_cores: data.cuda_indexing_capabilities?.rtx_3060_ti_specs?.cuda_cores || 4864,
-        simd_enabled: data.simd_capabilities?.avx2_enabled || false,
-        instruction_set: data.simd_capabilities?.instruction_set || 'AVX2'
+    gpu_utilization: number;
+    query_length: number;
+    results_count: number;
+  };
+
+  let performanceHistory: Perf[] = [];
+
+  // Load CUDA capabilities on mount
+  onMount(async () => {
+    try {
+      const response = await fetch('/api/ai/cuda-capabilities');
+      if (response.ok) {
+        const data = await response.json();
+        cudaCapabilities = {
+          gpu_model: data.cuda_indexing_capabilities?.rtx_3060_ti_specs?.gpu_model || 'RTX 3060 Ti',
+          vram_gb: data.cuda_indexing_capabilities?.rtx_3060_ti_specs?.vram_gb || 8,
+          cuda_cores: data.cuda_indexing_capabilities?.rtx_3060_ti_specs?.cuda_cores || 4864,
+          simd_enabled: data.simd_capabilities?.avx2_enabled || false,
+          instruction_set: data.simd_capabilities?.instruction_set || 'AVX2',
+        };
       }
+    } catch (error) {
+      console.error('Failed to load CUDA capabilities:', error);
     }
-  } catch (error) {
-    console.error('Failed to load CUDA capabilities:', error);
-  }
-    })();
   });
-// Perform CUDA-accelerated search
-async function performSearch() {
-  if (!query.trim()) return;
-  isSearching = true;
-  errorMessage = '';
-  const startTime = Date.now();
-  try {
-    // Step 1: Generate embedding for the query
-    const embeddingResponse = await fetch('/api/ai/embedding', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
-        text: query;
-        model: 'embeddinggemma:latest',
-      })
-    });
-    if (!embeddingResponse.ok) {
-      throw new Error('Failed to generate query embedding');
-    }
-    const embeddingData = await embeddingResponse.json();
-    const queryVector = embeddingData.embedding;
-    // Step 2: Perform GPU-accelerated search
-    let searchResults: SearchResult[] = [];
-    if (enableGpuAcceleration && searchType === 'semantic') {
-      // Use CUDA indexing for semantic search
-      const cudaSearchResponse = await fetch('/api/ai/cuda-indexing', {
-        method: 'PATCH',
+
+  // Perform CUDA-accelerated search
+  async function performSearch() {
+    if (!query.trim()) return;
+    isSearching = true;
+    errorMessage = '';
+    const startTime = Date.now();
+
+    try {
+      // 1) Generate embedding for the query
+      const embeddingResponse = await fetch('/api/ai/embedding', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          query_vector: queryVector;
-          k: maxResults
-          index_type: 'hnsw',
-          config: {
-            legal_domain: legalDomain
-            use_simd: enableSIMD
-          }
-        })
+        body: JSON.stringify({ text: query, model: 'embeddinggemma:latest' }),
       });
-      if (cudaSearchResponse.ok) {
-        const cudaResults = await cudaSearchResponse.json();
-        // Map CUDA results to our interface
-        searchResults = (cudaResults.neighbors || []).map((neighbor: any, index: number) => ({,
-          id: `cuda_result_${index}`,
-          title: `Legal Document ${index + 1}`,
-          content: 'Document content would be loaded from database...',
-          score: cudaResults.distances?.[0]?.[index] || 0.5,
-          metadata: {
-            document_type: 'contract',
-            jurisdiction 'federal',
-            date: new Date().toISOString.split('T')[0],
-            legal_domain: legalDomai;
-          },
-          performance: {
-            gpu_accelerated: true
-            search_time_ms: cudaResults.stats?.search_time_ms || 0,
-            gpu_utilization cudaResults.stats?.gpu_utilization || 0
-          }
-        }));
-        // Update GPU metrics
-        if (cudaResults.stats) {
-          gpuMetrics = {
-            utilization cudaResults.stats.gpu_utilization || 0,
-            memory_usage: cudaResults.stats.memory_usage_mb || 0,
-            temperature: 65, // Simulated
-            active_streams: 1,
+      if (!embeddingResponse.ok) throw new Error('Failed to generate query embedding');
+      const embeddingData = await embeddingResponse.json();
+      const queryVector = embeddingData.embedding;
+
+      // 2) Try GPU-accelerated search (semantic only)
+      let searchResults: SearchResult[] = [];
+      if (enableGpuAcceleration && searchType === 'semantic') {
+        const cudaSearchResponse = await fetch('/api/ai/cuda-indexing', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query_vector: queryVector,
+            k: maxResults,
+            index_type: 'hnsw',
+            config: { legal_domain: legalDomain, use_simd: enableSIMD },
+          }),
+        });
+
+        if (cudaSearchResponse.ok) {
+          const cudaResults = await cudaSearchResponse.json();
+          const neighbors = Array.isArray(cudaResults.neighbors) ? cudaResults.neighbors : [];
+          const distances = Array.isArray(cudaResults.distances) ? cudaResults.distances[0] ?? [] : [];
+
+          searchResults = neighbors.map((neighbor: any, index: number) => {
+            const score = distances[index] ?? 0.5;
+            return {
+              id: neighbor.id || `cuda_result_${index}`,
+              title: neighbor.payload?.title || `Legal Document ${index + 1}`,
+              content: neighbor.payload?.content || 'Document content would be loaded from database...',
+              score,
+              metadata: {
+                document_type: neighbor.payload?.document_type || 'contract',
+                jurisdiction: neighbor.payload?.jurisdiction || 'federal',
+                date: neighbor.payload?.date || new Date().toISOString().split('T')[0],
+                legal_domain: neighbor.payload?.legal_domain || legalDomain,
+              },
+              performance: {
+                gpu_accelerated: true,
+                search_time_ms: cudaResults.stats?.search_time_ms ?? 0,
+                gpu_utilization: cudaResults.stats?.gpu_utilization ?? 0,
+              },
+            } as SearchResult;
+          });
+
+          if (cudaResults.stats) {
+            gpuMetrics = {
+              utilization: cudaResults.stats.gpu_utilization ?? 0,
+              memory_usage: cudaResults.stats.memory_usage_mb ?? 0,
+              temperature: cudaResults.stats.temperature_c ?? 65,
+              active_streams: cudaResults.stats.active_streams ?? 1,
+            };
           }
         }
       }
-    }
-    // Fallback: Use enhanced legal search
-    if (searchResults.length === 0) {
-      const fallbackResponse = await fetch('/api/ai/enhanced-legal-search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          query: query;
-          limit: maxResults
-          legal_domain: legalDomain
-          search_type: searchType
-          use_embeddings: true,
-        })
-      });
-      if (fallbackResponse.ok) {
-        const fallbackData = await fallbackResponse.json();
-        searchResults = (fallbackData.results || []).map((result: any, index: number) => ({,
-          id: result.id || `fallback_${index}`,
-          title: result.title || `Document ${index + 1}`,
-          content: result.content || result.summary || 'No content available',
-          score: result.score || 0.5,
-          metadata: {
-            document_type: result.document_type || 'unknown',
-            jurisdiction result.jurisdiction || 'unknown',
-            date: result.date || new Date().toISOString.split('T')[0],
-            legal_domain: result.legal_domain || legalDomai;
-          },
-          performance: {
-            gpu_accelerated: false
-            search_time_ms: fallbackData.search_time_ms || 0,
-            gpu_utilization 0
-          }
-        }));
+
+      // 3) Fallback to enhanced legal search if nothing from GPU or CPU-only searches requested
+      if (searchResults.length === 0) {
+        const fallbackResponse = await fetch('/api/ai/enhanced-legal-search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query,
+            limit: maxResults,
+            legal_domain: legalDomain,
+            search_type: searchType,
+            use_embeddings: true,
+          }),
+        });
+
+        if (fallbackResponse.ok) {
+          const fallbackData = await fallbackResponse.json();
+          const items = Array.isArray(fallbackData.results) ? fallbackData.results : [];
+          searchResults = items.map((result: any, index: number) => ({
+            id: result.id || `fallback_${index}`,
+            title: result.title || `Document ${index + 1}`,
+            content: result.content || result.summary || 'No content available',
+            score: result.score ?? 0.5,
+            metadata: {
+              document_type: result.document_type || 'unknown',
+              jurisdiction: result.jurisdiction || 'unknown',
+              date: result.date || new Date().toISOString().split('T')[0],
+              legal_domain: result.legal_domain || legalDomain,
+            },
+            performance: {
+              gpu_accelerated: false,
+              search_time_ms: fallbackData.search_time_ms ?? 0,
+              gpu_utilization: 0,
+            },
+          } as SearchResult));
+        }
       }
+
+      // 4) Finalize timings / history / results
+      const totalSearchTime = Date.now() - startTime;
+      searchTime = totalSearchTime;
+
+      performanceHistory.push({
+        timestamp: Date.now(),
+        search_time_ms: totalSearchTime,
+        gpu_utilization: gpuMetrics.utilization,
+        query_length: query.length,
+        results_count: searchResults.length,
+      });
+      if (performanceHistory.length > 10) performanceHistory = performanceHistory.slice(-10);
+
+      results = searchResults;
+
+      // callbacks / events
+      if (onSearchComplete) onSearchComplete(searchResults);
+      dispatch('searchComplete', { query, results: searchResults, searchTime: totalSearchTime, gpuAccelerated: enableGpuAcceleration });
+    } catch (error) {
+      console.error('Search failed:', error);
+      errorMessage = error instanceof Error ? error.message : 'Search failed';
+      results = [];
+    } finally {
+      isSearching = false;
     }
-    const totalSearchTime = Date.now() - startTime;
-    searchTime = totalSearchTim;
-    // Update performance history
-    performanceHistory.push({
-      timestamp: Date.now(),
-      search_time_ms: totalSearchTime
-      gpu_utilization gpuMetrics.utilization,
-      query_length: query.length,
-      results_count: searchResults.length;
-    });
-    // Keep only last 10 searches
-    if (performanceHistory.length > 10) {
-      performanceHistory = performanceHistory.slice(-10);
+  }
+
+  // Handle form submission
+  function handleSubmit(event: Event) {
+    event.preventDefault();
+    performSearch();
+  }
+
+  // Debounce / input handling
+  let searchTimeout: ReturnType<typeof setTimeout>;
+  function handleQueryChange() {
+    clearTimeout(searchTimeout);
+    if (query.trim()) {
+      searchTimeout = setTimeout(performSearch, 500);
     }
-    results = searchResult;
-    // Notify parent component
-    if (onSearchComplete) {
-      onSearchComplete(searchResults);
+  }
+
+  // Reactive effect for query changes (Svelte 5 runes $effect assumed)
+  $effect(() => {
+    if (query) handleQueryChange();
+  });
+
+  // Utility fixes
+  function formatMetric(value: number, unit: string): string {
+    return `${value.toFixed(unit === '%' ? 1 : 0)}${unit}`;
+  }
+
+  function getSearchTypeColor(type: string): string {
+    switch (type) {
+      case 'semantic': return 'bg-blue-100 text-blue-800';
+      case 'keyword': return 'bg-green-100 text-green-800';
+      case 'hybrid': return 'bg-purple-100 text-purple-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
-    ondispatch?.({
-      query,
-      results: searchResults
-      searchTime: totalSearchTime
-      gpuAccelerated: enableGpuAcceleratio;
-    });
-  } catch (error) {
-    console.error('Search failed:', error);
-    errorMessage = error instanceof Error ? error.message: 'Search failed';
-    results = [];
-  } finally {
-    isSearching = false;
   }
-}
-// Handle form submission
-function handleSubmit(_event: Event) {
-  event.preventDefault();
-  performSearch();
-}
-// Handle input changes with debounced search
-let searchTimeout: NodeJS.Timeout;
-function handleQueryChange() {
-  clearTimeout(searchTimeout);
-  if (query.trim()) {
-    searchTimeout = setTimeout(performSearch, 500); // 500ms debounce
+  function getDocumentTypeColor(type: string): string {
+    switch (type) {
+      case 'contract': return 'bg-orange-100 text-orange-800';
+      case 'agreement': return 'bg-blue-100 text-blue-800';
+      case 'lease': return 'bg-green-100 text-green-800';
+      case 'deed': return 'bg-purple-100 text-purple-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
   }
-}
-// Reactive effect for query changes
-$effect(() => {
-  if (query) {
-    handleQueryChange();
-  }
-});
-// Format performance metrics
-function formatMetric(_value: number, unit: string): string {
-  return `${value.toFixed(1)}${unit}`;
-}
-function getSearchTypeColor(type: string): string {
-  switch (type) {
-    case 'semantic': return 'bg-blue-100 text-blue-800';
-    case 'keyword': return 'bg-green-100 text-green-800';
-    case 'hybrid': return 'bg-purple-100 text-purple-800';
-    default: return 'bg-gray-100 text-gray-800';
-  }
-}
-function getDocumentTypeColor(type: string): string {
-  switch (type) {
-    case 'contract': return 'bg-orange-100 text-orange-800';
-    case 'agreement': return 'bg-blue-100 text-blue-800';
-    case 'lease': return 'bg-green-100 text-green-800';
-    case 'deed': return 'bg-purple-100 text-purple-800';
-    default: return 'bg-gray-100 text-gray-800';
-  }
-}
 </script>
 
 <div class="cuda-search-container">
@@ -325,27 +321,19 @@ function getDocumentTypeColor(type: string): string {
         </div>
         <!-- Search Options -->
         <div class="flex flex-wrap gap-2">
-          <span class="{getSearchTypeColor(searchType)} px-2 py-1 rounded text-sm font-medium">
-            {searchType.charAt.toUpperCase() + searchType.slice(1)} Search
+          <span class={getSearchTypeColor(searchType) + ' px-2 py-1 rounded text-sm font-medium'}>
+            {searchType.charAt(0).toUpperCase() + searchType.slice(1)} Search
           </span>
           {#if enableGpuAcceleration}
             <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-medium"> 🚀 GPU Accelerated </span>
           {/if}
           {#if enableSIMD && cudaCapabilities?.simd_enabled}
-            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm font-medium">
-              ⚡ {cudaCapabilities.instruction_set} SIMD
-            </span>
+            <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm font-medium">⚡ {cudaCapabilities.instruction_set} SIMD</span>
           {/if}
-          <span class="bg-secondary text-secondary-foreground px-2 py-1 rounded text-sm font-medium">
-            Domain: {legalDomain}
-          </span>
+          <span class="bg-secondary text-secondary-foreground px-2 py-1 rounded text-sm font-medium">Domain: {legalDomain}</span>
         </div>
         <Button type="submit" disabled={isSearching || !query.trim()} class="w-full">
-          {#if isSearching}
-            🔄 Searching...
-          {:else}
-            🚀 Search Legal Documents
-          {/if}
+          {#if isSearching}🔄 Searching...{:else}🚀 Search Legal Documents{/if}
         </Button>
       </form>
       <!-- Error Message -->
@@ -414,11 +402,7 @@ function getDocumentTypeColor(type: string): string {
                     {result.title}
                   </h3>
                   <div class="flex flex-wrap gap-2 mb-2">
-                    <span
-                      class="{getDocumentTypeColor(
-                        result.metadata.document_type
-                      )} px-2 py-1 rounded text-sm font-medium"
-                    >
+                    <span class={getDocumentTypeColor(result.metadata.document_type) + ' px-2 py-1 rounded text-sm font-medium'}>
                       {result.metadata.document_type}
                     </span>
                     <span class="bg-secondary text-secondary-foreground px-2 py-1 rounded text-sm font-medium">
@@ -468,12 +452,17 @@ function getDocumentTypeColor(type: string): string {
 </div>
 
 <style>
+  /* Consolidated layout + compatibility styles */
   .cuda-search-container {
-    /* @apply max-w-4xl mx-auto; */
+    max-width: 64rem; /* approx Tailwind max-w-4xl */
+    margin: 0 auto;
+    padding: 0 1rem;
   }
+
   .line-clamp-3 {
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 3; /* vendor-prefixed */
+    line-clamp: 3;         /* standard property for broader compatibility */
     -webkit-box-orient: vertical;
     overflow: hidden;
   }

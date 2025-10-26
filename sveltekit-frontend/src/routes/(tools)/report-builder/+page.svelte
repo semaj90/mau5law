@@ -1,8 +1,12 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import type { PageData } from './$types';
+
+  let { data }: { data: PageData } = $props();
+
   // Load ReportEditor dynamically to avoid TS "no default export" error
   // Make EditorComponent reactive using Svelte 5 runes ($state) so updates are reflected in the UI
   let EditorComponent: any = $state<any>(null);
+
   async function loadEditor() {
     try {
       // Cast the dynamic import to any to avoid TypeScript errors about .default / named exports
@@ -13,6 +17,11 @@
       console.error('Failed to load ReportEditor:', e);
     }
   }
+
+  // Use Svelte 5 $effect instead of onMount
+  $effect(() => {
+    loadEditor();
+  });
   // Use FabricCanvas as CanvasEditor alternative
   import FabricCanvas from '$lib/components/canvas/FabricCanvas.svelte';
   import type { Report, CanvasState } from '$lib/data/types';
@@ -79,11 +88,11 @@
     // Safely access caseId from data, falling back to default
     caseId = data?.caseId ?? 'demo-case-123';
   });
-  // Load demo data once on mount
-  onMount(() => {
-    void loadDemoData();
-    // load the editor component (concurrent with demo data)
-    void loadEditor();
+  // Load demo data once using $effect (Svelte 5 runes)
+  $effect(() => {
+    if (caseId) {
+      loadDemoData();
+    }
   });
   async function loadDemoData() {
     try {

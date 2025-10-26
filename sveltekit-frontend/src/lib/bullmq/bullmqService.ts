@@ -478,7 +478,7 @@ export class BullMQService {
   /**
    * Get all queue statistics
    */
-  async getAllQueueStats(): Promise<Record<string, any> {
+  async getAllQueueStats(): Promise<Record<string, any>> {
     const stats: { [key: string]: any } = {}
     for (const queueName of Object.values(BullMQService.QUEUES)) {
       try {

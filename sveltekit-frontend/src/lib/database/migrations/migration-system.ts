@@ -46,7 +46,7 @@ export class DatabaseMigrator {
   private migrationsPath: string;
   constructor(
     connectionString: string,
-    migrationsPath: string = './src/lib/database/migrations';
+    migrationsPath: string = './src/lib/database/migrations'
   ) {
     this.sql = postgres(connectionString);
     this.db = drizzle(this.sql);
@@ -90,7 +90,7 @@ export class DatabaseMigrator {
     try {
       const files = await fs.readdir(this.migrationsPath);
       const migrationFiles = files
-        .filter(file => file.endsWith('.sql') || file.endsWith('.ts') || file.endsWith('.js')
+        .filter(file => file.endsWith('.sql') || file.endsWith('.ts') || file.endsWith('.js'))
         .sort();
       const migrations: Migration[] = [];
       for (const file of migrationFiles) {
@@ -164,8 +164,8 @@ export class DatabaseMigrator {
       const result = await this.db
         .select({ version: migrations.version })
         .from(migrations)
-        .where(eq(migrations.success, true)
-        .orderBy(asc(migrations.version);
+        .where(eq(migrations.success, true))
+        .orderBy(asc(migrations.version));
       return result.map(row => row.version);
     } catch (error) {
       console.error('❌ Failed to get applied migrations:', error);
@@ -190,7 +190,7 @@ export class DatabaseMigrator {
       const existingMigration = await this.db
         .select()
         .from(migrations)
-        .where(eq(migrations.version, migration.version)
+        .where(eq(migrations.version, migration.version))
         .limit(1);
       if (existingMigration.length > 0) {
         if (existingMigration[0].checksum !== checksum) {
@@ -318,8 +318,8 @@ export class DatabaseMigrator {
       const lastMigration = await this.db
         .select()
         .from(migrations)
-        .where(eq(migrations.success, true)
-        .orderBy(desc(migrations.executed_at)
+        .where(eq(migrations.success, true))
+        .orderBy(desc(migrations.executed_at))
         .limit(1);
       if (lastMigration.length === 0) {
         console.log('ℹ️  No migrations to rollback');
@@ -381,8 +381,8 @@ export class DatabaseMigrator {
       const lastMigrationResult = await this.db
         .select({ version: migrations.version, executed_at: migrations.executed_at })
         .from(migrations)
-        .where(eq(migrations.success, true)
-        .orderBy(desc(migrations.executed_at)
+        .where(eq(migrations.success, true))
+        .orderBy(desc(migrations.executed_at))
         .limit(1);
       const pendingCount = allMigrations.length - appliedVersions.length;
       const lastMigration = lastMigrationResult.length > 0 ? lastMigrationResult[0].version: null;
@@ -390,7 +390,7 @@ export class DatabaseMigrator {
       const failedMigrations = await this.db
         .select()
         .from(migrations)
-        .where(eq(migrations.success, false);
+        .where(eq(migrations.success, false));
       return {
         appliedMigrations: appliedVersions.length,
         pendingMigrations: pendingCount,
@@ -446,8 +446,8 @@ export class DatabaseMigrator {
       const appliedMigrations = await this.db
         .select()
         .from(migrations)
-        .where(eq(migrations.success, true)
-        .orderBy(asc(migrations.version);
+        .where(eq(migrations.success, true))
+        .orderBy(asc(migrations.version));
       // Check for checksum mismatches
       for (const applied of appliedMigrations) {
         const migration = allMigrations.find(m => m.version === applied.version);

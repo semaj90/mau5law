@@ -203,26 +203,25 @@
             <a
               href={item.href}
               class={cn(
-                'group flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md transition-all duration-200',
+                'group flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 whitespace-nowrap',
                 item.current
                   ? 'bg-harvard-crimson text-white shadow-nier-glow'
                   : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light'
               )}
               onclick={closeSidebar}
+              title={item.name}
             >
-              <div class="flex items-center">
-                <IconComponent
-                  class={cn(
-                    'mr-3 h-5 w-5 flex-shrink-0',
-                    item.current ? 'text-white' : 'text-muted-foreground group-hover:text-foreground'
-                  )}
-                />
-                {item.name}
-              </div>
+              <IconComponent
+                class={cn(
+                  'h-5 w-5 flex-shrink-0',
+                  item.current ? 'text-white' : 'text-muted-foreground group-hover:text-foreground'
+                )}
+              />
+              <span class="flex-1 min-w-0 truncate">{item.name}</span>
               {#if item.badge}
                 <span
                   class={cn(
-                    'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium',
+                    'inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium flex-shrink-0',
                     item.current ? 'bg-white/20 text-white' : 'bg-harvard-crimson text-white'
                   )}
                 >
@@ -230,7 +229,7 @@
                 </span>
               {/if}
               {#if item.current}
-                <ChevronRight class="h-4 w-4 text-white" />
+                <ChevronRight class="h-4 w-4 text-white flex-shrink-0" />
               {/if}
             </a>
           {/each}
@@ -244,20 +243,21 @@
               <a
                 href={item.href}
                 class={cn(
-                  'group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200',
+                  'group flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition-all duration-200',
                   item.current
                     ? 'bg-harvard-crimson text-white shadow-nier-glow'
                     : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light'
                 )}
                 onclick={closeSidebar}
+                title={item.name}
               >
                 <IconComponent
                   class={cn(
-                    'mr-3 h-5 w-5 flex-shrink-0',
+                    'h-5 w-5 flex-shrink-0',
                     item.current ? 'text-white' : 'text-muted-foreground group-hover:text-foreground'
                   )}
                 />
-                {item.name}
+                <span class="flex-1 min-w-0 truncate">{item.name}</span>
               </a>
             {/each}
           </div>
@@ -272,26 +272,25 @@
                 <a
                   href={item.href}
                   class={cn(
-                    'group flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md transition-all duration-200',
+                    'group flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition-all duration-200',
                     item.current
                       ? 'bg-console-error text-white shadow-nier-glow'
                       : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light border border-console-error/20'
                   )}
                   onclick={closeSidebar}
+                  title={item.name}
                 >
-                  <div class="flex items-center">
-                    <IconComponent
-                      class={cn(
-                        'mr-3 h-5 w-5 flex-shrink-0',
-                        item.current ? 'text-white' : 'text-console-error group-hover:text-foreground'
-                      )}
-                    />
-                    {item.name}
-                  </div>
+                  <IconComponent
+                    class={cn(
+                      'h-5 w-5 flex-shrink-0',
+                      item.current ? 'text-white' : 'text-console-error group-hover:text-foreground'
+                    )}
+                  />
+                  <span class="flex-1 min-w-0 truncate">{item.name}</span>
                   {#if item.badge}
                     <span
                       class={cn(
-                        'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium',
+                        'inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium flex-shrink-0',
                         item.current ? 'bg-white/20 text-white' : 'bg-console-error text-white'
                       )}
                     >
@@ -313,20 +312,21 @@
               <a
                 href={item.href}
                 class={cn(
-                  'group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200',
+                  'group flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-md transition-all duration-200',
                   item.current
                     ? 'bg-console-primary text-console-bg shadow-nier-glow'
                     : 'text-muted-foreground hover:text-foreground hover:bg-nier-surface-light'
                 )}
                 onclick={closeSidebar}
+                title={item.name}
               >
                 <IconComponent
                   class={cn(
-                    'mr-3 h-5 w-5 flex-shrink-0',
+                    'h-5 w-5 flex-shrink-0',
                     item.current ? 'text-console-bg' : 'text-muted-foreground group-hover:text-foreground'
                   )}
                 />
-                {item.name}
+                <span class="flex-1 min-w-0 truncate">{item.name}</span>
               </a>
             {/each}
           </div>

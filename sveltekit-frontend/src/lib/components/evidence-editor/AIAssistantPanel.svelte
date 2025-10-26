@@ -1,16 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { Badge } from '$lib/components/ui/badge';
-  import Button from '$lib/components/ui/enhanced-bits';
-  import {
-    Input
-  } from '$lib/components/ui/enhanced-bits';
-  import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-  } from '$lib/components/ui/enhanced-bits';
   import { Search, Bot, Sparkles, FileText, Users, Clock, Tags } from 'lucide-svelte';
   import { onMount } from "svelte";
   import Fuse from 'fuse.js';
@@ -18,23 +8,32 @@
     selectedNode?: unknown;
     caseId?: string;
     evidenceList?: unknown[];
+    ondispatch?: (payload: any) => void;
   }
   let {
     selectedNode = null,
     caseId = '',
-    evidenceList = []
+    evidenceList = [],
+    ondispatch = undefined
   }: Props = $props();
   let isProcessing = $state(false);
   let processingStatus = $state('');
   let searchQuery = $state('');
   let searchResults = $state<any[]>([]);
-  let fuse = $state<Fuse<any>(null) | null >(null);
+  let fuse = $state<Fuse<any> | null>(null);
   let aiInsights = $state({
     connections: [],
     similarEvidence: [],
     timeline: [],
     suggestedActions: [],
   });
+
+  // safe alias for template usage to avoid 'unknown' property errors
+  let selectedNodeAny: any = null;
+  $effect(() => {
+    selectedNodeAny = selectedNode as any;
+  });
+
   // Initialize search index when evidence list changes
   $effect(() => {
     if (evidenceList.length > 0) {
@@ -59,7 +58,7 @@
     searchResults = [];
   }
   async function analyzeWithAI() {
-    if (!selectedNode || isProcessing) return;
+    if (!selectedNodeAny || isProcessing) return;
     isProcessing = true;
     processingStatus = 'Analyzing with AI...';
     try {
@@ -68,28 +67,28 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           caseId,
-          evidence: selectedNode
-          analysisType: 'comprehensive',
+          evidence: selectedNodeAny,
+          analysisType: 'comprehensive'
         })
       });
-      if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
-        const analysis = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
-        // Update the selected node with AI tags
-        if (selectedNode) {
-          selectedNode.aiTags = analysis.tag;
-          selectedNode.aiSummary = analysis.summary;
+      if (response.ok) {
+        const analysis = await response.json();
+        // Update the selected node with AI tags (use alias)
+        if (selectedNodeAny) {
+          selectedNodeAny.aiTags = analysis.tags ?? analysis.tag;
+          selectedNodeAny.aiSummary = analysis.summary;
         }
         // Update insights
         aiInsights = {
           connections: analysis.connections || [],
           similarEvidence: analysis.similarEvidence || [],
           timeline: analysis.timeline || [],
-          suggestedActions: analysis.suggestedActions || [];
-        }
+          suggestedActions: analysis.suggestedActions || []
+        };
         ondispatch?.(analysis);
         processingStatus = 'Analysis complete!';
       } else {
-        throw new Error(`Analysis failed: ${(response as { ok?: unknown; json?: unknown; statusText?: unknown }).statusText}`);
+        throw new Error(`Analysis failed: ${response.statusText}`);
       }
     } catch (error) {
       console.error('AI analysis error:', error);
@@ -109,16 +108,16 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           caseId,
-          evidenceId: selectedNode?.id,
-          context: evidenceList;
+          evidenceId: selectedNodeAny?.id,
+          context: evidenceList
         })
       });
-      if ((response as { ok?: unknown; json?: unknown; statusText?: unknown }).ok) {
-        const insights = await (response as { ok?: unknown; json?: unknown; statusText?: unknown }).json();
-        aiInsights = insight;
+      if (response.ok) {
+        const insights = await response.json();
+        aiInsights = insights;
         processingStatus = 'Insights generated!';
       } else {
-        throw new Error(`Insight generation failed: ${(response as { ok?: unknown; json?: unknown; statusText?: unknown }).statusText}`);
+        throw new Error(`Insight generation failed: ${response.statusText}`);
       }
     } catch (error) {
       console.error('Insight generation error:', error);
@@ -131,7 +130,7 @@
   function selectEvidence(item: unknown) {
     ondispatch?.({ id: (item as { id?: unknown }).id });
   }
-  function selectConnection(connection unknown) {
+  function selectConnection(connection: unknown) {
     ondispatch?.({ connection });
   }
 </script>
@@ -147,6 +146,7 @@
       </div>
     {/if}
   </div>
+
   <!-- Search Section -->
   <div class="nes-container">
     <div class="yorha-panel-header">
@@ -157,16 +157,21 @@
     </div>
     <div class="yorha-panel-content space-y-4">
       <div class="flex gap-2">
-        <Input;
-          bind:value={searchQuery}
+        <!-- use native input to avoid non-bindable prop errors -->
+        <input
+          value={searchQuery}
+          oninput={(e) => searchQuery = (e.target as HTMLInputElement).value}
           placeholder="Search evidence by name, tags, or description..."
-          class="flex-1"
+          class="flex-1 px-3 py-2 rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm"
         />
         {#if searchQuery}
-          <Button class="bits-btn" onclick={clearSearch} variant="ghost" size="sm">
-Clear
+          <!-- native button instead of custom Button component -->
+          <button class="bits-btn px-3 py-2 rounded text-sm bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800" onclick={clearSearch} disabled={isProcessing}>
+            Clear
+          </button>
         {/if}
       </div>
+
       {#if searchResults.length > 0}
         <div class="space-y-2">
           <p class="text-sm text-gray-600 dark:text-gray-300">
@@ -181,31 +186,33 @@ Clear
                 <div class="flex justify-between items-start">
                   <div class="flex-1">
                     <p class="font-medium text-gray-900 dark:text-white">
-                      {(result as { name?: unknown; title?: unknown; description?: unknown; tags?: unknown; score?: unknown }).name || (result as { name?: unknown; title?: unknown; description?: unknown; tags?: unknown; score?: unknown }).title || 'Unknown'}
+                      {(result as any).name || (result as any).title || 'Unknown'}
                     </p>
-                    {#if (result as { name?: unknown; title?: unknown; description?: unknown; tags?: unknown; score?: unknown }).description}
+                    {#if (result as any).description}
                       <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
-                        {(result as { name?: unknown; title?: unknown; description?: unknown; tags?: unknown; score?: unknown }).description}
+                        {(result as any).description}
                       </p>
                     {/if}
-                    {#if (result as { name?: unknown; title?: unknown; description?: unknown; tags?: unknown; score?: unknown }).tags && (result as { name?: unknown; title?: unknown; description?: unknown; tags?: unknown; score?: unknown }).tags.length > 0}
+                    {#if (result as any).tags && (result as any).tags.length > 0}
                       <div class="flex flex-wrap gap-1 mt-2">
-                        {#each (result as { name?: unknown; title?: unknown; description?: unknown; tags?: unknown; score?: unknown }).tags.slice(0, 3) as tag}
+                        {#each (result as any).tags.slice(0, 3) as tag}
                           <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{tag}</span>
                         {/each}
                       </div>
                     {/if}
                   </div>
-                  {#if (result as { name?: unknown; title?: unknown; description?: unknown; tags?: unknown; score?: unknown }).score !== undefined}
-                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{Math.round.score) * 100)}% match</span>
+                  {#if (result as any).score !== undefined}
+                    <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{Math.round(((result as any).score ?? 0) * 100)}% match</span>
                   {/if}
                 </div>
+              </button>
             {/each}
           </div>
         </div>
       {/if}
     </div>
   </div>
+
   <!-- Selected Evidence Analysis -->
   {#if selectedNode}
     <div class="nes-container">
@@ -218,42 +225,47 @@ Clear
       <div class="yorha-panel-content space-y-4">
         <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
           <p class="font-medium text-gray-900 dark:text-white">
-            {selectedNode.name || selectedNode.title || 'Selected Evidence'}
+            {selectedNodeAny?.name || selectedNodeAny?.title || 'Selected Evidence'}
           </p>
-          {#if selectedNode.description}
+          {#if selectedNodeAny?.description}
             <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">
-              {selectedNode.description}
+              {selectedNodeAny?.description}
             </p>
           {/if}
         </div>
         <div class="flex gap-2">
-          <Button onclick={analyzeWithAI} disabled={isProcessing} class="flex-1 bits-btn bits-btn">
-<Sparkles class="w-4 h-4 mr-2" />
+          <!-- native button in place of custom Button -->
+          <button onclick={analyzeWithAI} disabled={isProcessing} class="flex-1 bits-btn px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60">
+            <Sparkles class="w-4 h-4 mr-2 inline-block" />
             {isProcessing ? 'Analyzing...' : 'Analyze with AI'}
-          <Button class="bits-btn" onclick={generateInsights} disabled={isProcessing} variant="ghost">
-Generate Insights
+          </button>
+          <button class="bits-btn px-3 py-2 rounded border border-gray-200 dark:border-gray-700 bg-transparent" onclick={generateInsights} disabled={isProcessing}>
+            Generate Insights
+          </button>
         </div>
+
         <!-- AI Analysis Results -->
-        {#if selectedNode.aiTags}
+        {#if selectedNodeAny?.aiTags}
           <div class="space-y-3 p-4 border border-gray-200 dark:border-gray-600 rounded-md">
             <h4 class="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
               <Bot class="w-4 h-4" />
               AI Analysis Results
             </h4>
-            {#if selectedNode.aiSummary}
+            {#if selectedNodeAny?.aiSummary}
               <div>
                 <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Summary:</p>
                 <p class="text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 p-3 rounded">
-                  {selectedNode.aiSummary}
+                  {selectedNodeAny?.aiSummary}
                 </p>
               </div>
             {/if}
-            {#if selectedNode.aiTags.tags && selectedNode.aiTags.tags.length > 0}
+            {#if selectedNodeAny?.aiTags?.tags && selectedNodeAny.aiTags.tags.length > 0}
               <div>
                 <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">AI Tags:</p>
                 <div class="flex flex-wrap gap-2">
-                  {#each selectedNode.aiTags.tags as tag}
-                    <Badge variant="secondary">
+                  {#each selectedNodeAny.aiTags.tags as tag}
+                    <!-- removed variant prop to satisfy Badge typing; fallback to simple span if Badge signature differs -->
+                    <Badge>
                       <Tags class="w-3 h-3 mr-1" />
                       {tag}
                     </Badge>
@@ -271,6 +283,7 @@ Generate Insights
       </div>
     </div>
   {/if}
+
   <!-- AI Insights -->
   {#if aiInsights.connections.length > 0 || aiInsights.similarEvidence.length > 0 || aiInsights.suggestedActions.length > 0}
     <div class="nes-container">
@@ -299,6 +312,7 @@ Generate Insights
                   <p class="text-sm text-gray-600 dark:text-gray-300">
                     {connection.description}
                   </p>
+                </button>
               {/each}
             </div>
           </div>
@@ -349,6 +363,7 @@ Generate Insights
       </div>
     </div>
   {/if}
+
   <!-- Empty State -->
   {#if !selectedNode}
     <div class="text-center py-12 text-gray-500 dark:text-gray-400">
@@ -358,6 +373,7 @@ Generate Insights
     </div>
   {/if}
 </div>
+
 <style>
   .line-clamp-2 {
     display: -webkit-box;

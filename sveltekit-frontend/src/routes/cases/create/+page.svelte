@@ -5,7 +5,8 @@
   let title = $state('');
   let caseNumber = $state('');
   let description = $state('');
-  let status = $state<'active' | 'pending' | 'closed'>('active');
+  // Align with server schema (maps 'active' -> 'open') and prefer canonical values on client
+  let status = $state<'open' | 'pending' | 'closed'>('open');
   let loading = $state(false);
   let error = $state<string | null>(null);
 
@@ -77,7 +78,7 @@
       <div class="form-field">
         <label for="status">Status</label>
         <select id="status" bind:value={status} disabled={loading}>
-          <option value="active">Active</option>
+          <option value="open">Open</option>
           <option value="pending">Pending</option>
           <option value="closed">Closed</option>
         </select>

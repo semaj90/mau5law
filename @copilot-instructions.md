@@ -1,5 +1,313 @@
 # Copilot Development Instructions
 
+## 🎨 Svelte 5 Patterns & Best Practices
+
+### Core Svelte 5 Runes (Auto-imported - Never manually import)
+
+**State Management with `$state()`**:
+```svelte
+<script lang="ts">
+  // ✅ CORRECT - Svelte 5 state
+  let count = $state(0);
+  let user = $state({ name: '', email: '' });
+  let items = $state<string[]>([]);
+
+  // ❌ WRONG - Old Svelte 4 syntax (don't use)
+  // export let count = 0;
+  // $: doubled = count * 2;
+</script>
+```
+
+**Derived Values with `$derived()`**:
+```svelte
+<script lang="ts">
+  let count = $state(0);
+
+  // ✅ CORRECT - Use $derived for computed values
+  let doubled = $derived(count * 2);
+  let isHigh = $derived(count > 10);
+  let message = $derived(count > 5 ? 'high' : 'low');
+
+  // ❌ WRONG - Old reactive statements
+  // $: doubled = count * 2;
+</script>
+```
+
+**Side Effects with `$effect()`**:
+```svelte
+<script lang="ts">
+  let count = $state(0);
+
+  // ✅ CORRECT - Use $effect for side effects
+  $effect(() => {
+    console.log('Count changed:', count);
+  });
+
+  // ✅ CORRECT - Effect with cleanup
+  $effect(() => {
+    const interval = setInterval(() => count++, 1000);
+    return () => clearInterval(interval);
+  });
+
+  // ❌ WRONG - Old reactive statements
+  // $: console.log(count);
+  // $: if (count > 10) alert("too big!");
+</script>
+```
+
+**Component Props with `$props()`**:
+```svelte
+<script lang="ts">
+  // ✅ CORRECT - Svelte 5 destructured props
+  let {
+    value = $bindable(""),
+    readonly = false,
+    placeholder = "Enter text...",
+    onchange
+  }: {
+    value?: string;
+    readonly?: boolean;
+    placeholder?: string;
+    onchange?: (val: string) => void;
+  } = $props();
+
+  // ❌ WRONG - Old Svelte 4 syntax
+  // export let value: string;
+  // export let readonly = false;
+</script>
+
+<input
+  bind:value={value}
+  {placeholder}
+  {readonly}
+  oninput={(e) => onchange?.((e.target as HTMLInputElement).value)}
+/>
+```
+
+### Snippets Instead of Slots
+
+```svelte
+<!-- ❌ OLD Svelte 4 - Don't use -->
+<script>
+  export let header;
+  export let footer;
+</script>
+
+<div class="card">
+  <slot name="header" />
+  <slot />
+  <slot name="footer" />
+</div>
+
+<!-- ✅ NEW Svelte 5 - Use snippets -->
+<script lang="ts">
+  import type { Snippet } from 'svelte';
+
+  let {
+    header,
+    children,
+    footer
+  }: {
+    header?: Snippet;
+    children?: Snippet;
+    footer?: Snippet;
+  } = $props();
+</script>
+
+<div class="card">
+  {#if header}
+    {@render header()}
+  {/if}
+  {#if children}
+    {@render children()}
+  {/if}
+  {#if footer}
+    {@render footer()}
+  {/if}
+</div>
+```
+
+### Component Imports
+
+```typescript
+// ❌ WRONG - Named imports for default exports
+import { Button } from '$lib/components/ui/Button.svelte';
+import { Card, CardContent } from '$lib/components/ui/card';
+
+// ✅ CORRECT - Default import for components
+import Button from '$lib/components/ui/Button.svelte';
+import { Card, CardContent } from '$lib/components/ui/card'; // OK if re-exported
+```
+
+### Event Handlers
+
+```svelte
+<script lang="ts">
+  let count = $state(0);
+
+  function handleClick() {
+    count++;
+  }
+</script>
+
+<!-- ✅ PREFERRED - Use native event handlers (onclick, oninput, etc.) -->
+<button onclick={handleClick}>
+  Count: {count}
+</button>
+
+<input oninput={(e) => handleValue((e.target as HTMLInputElement).value)} />
+
+<!-- ⚠️ WORKS BUT LESS PREFERRED - on: directive still works -->
+<button on:click={handleClick}>Also works</button>
+```
+
+### Common Svelte 5 Patterns
+
+**Form Component with Validation**:
+```svelte
+<script lang="ts">
+  let {
+    formData = $bindable({ email: '', password: '' }),
+    onSubmit,
+    children
+  }: {
+    formData?: { email: string; password: string };
+    onSubmit?: (data: typeof formData) => void;
+    children?: Snippet;
+  } = $props();
+
+  // ✅ Use $derived for computed validation state
+  let isValid = $derived(
+    formData.email.includes('@') &&
+    formData.password.length >= 8
+  );
+
+  // ✅ Use $state for error messages
+  let errorMessage = $state('');
+
+  // ✅ Use $effect for validation side effects
+  $effect(() => {
+    if (!isValid && formData.email) {
+      errorMessage = 'Please check your inputs';
+    } else {
+      errorMessage = '';
+    }
+  });
+
+  function handleSubmit(e: SubmitEvent) {
+    e.preventDefault();
+    if (isValid) {
+      onSubmit?.(formData);
+    }
+  }
+</script>
+
+<form onsubmit={handleSubmit}>
+  <input
+    type="email"
+    bind:value={formData.email}
+    placeholder="Email"
+  />
+  <input
+    type="password"
+    bind:value={formData.password}
+    placeholder="Password"
+  />
+  {#if errorMessage}
+    <p class="error">{errorMessage}</p>
+  {/if}
+  {#if children}
+    {@render children()}
+  {/if}
+  <button type="submit" disabled={!isValid}>
+    Submit
+  </button>
+</form>
+```
+
+### Dashboard Case Grid Pattern (Real Example)
+
+```svelte
+<script lang="ts">
+  import type { PageData } from './$types';
+
+  // Use $props() instead of export let
+  let { data }: { data: PageData } = $props();
+
+  // Use $derived() for computed data
+  const recentCases = $derived(data.recentCases || []);
+
+  const statusColors: Record<string, { bg: string; text: string; label: string }> = {
+    open: { bg: '#4caf50', text: '#fff', label: '🟢 Open' },
+    investigating: { bg: '#ff9800', text: '#fff', label: '🔍 Investigating' },
+    pending: { bg: '#ffd700', text: '#000', label: '⏳ Pending' },
+    closed: { bg: '#666', text: '#fff', label: '✅ Closed' }
+  };
+</script>
+
+<div class="cases-grid-container">
+  {#each recentCases as caseItem (caseItem.id)}
+    <a href="/cases/{caseItem.id}" class="case-card-wrapper">
+      <div
+        class="case-status-badge"
+        style="background-color: {statusColors[caseItem.status]?.bg}"
+      >
+        <span style="color: {statusColors[caseItem.status]?.text}">
+          {statusColors[caseItem.status]?.label || caseItem.status}
+        </span>
+      </div>
+      <h3 class="case-card-title">{caseItem.title}</h3>
+      <p class="case-card-type">⚖️ {caseItem.caseType}</p>
+      <p class="case-card-updated">🕒 {caseItem.lastUpdated}</p>
+    </a>
+  {/each}
+</div>
+
+<style>
+  .cases-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .case-card-wrapper {
+    border: 4px solid #1e293b;
+    background: #1e293b;
+    padding: 1.25rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .case-card-wrapper:hover {
+    border-color: #d4af37;
+    transform: translateY(-3px);
+    box-shadow: 0 0 0 2px #d4af37, 0 4px 12px rgba(212, 175, 55, 0.3);
+  }
+
+  .case-card-title {
+    font-family: 'Press Start 2P', 'Courier New', monospace;
+    font-size: 14px;
+    color: #d4af37;
+    margin: 0.5rem 0;
+  }
+</style>
+```
+
+### Migration Checklist: Svelte 4 → Svelte 5
+
+- [ ] Replace all `export let` with `$props()`
+- [ ] Replace all `$:` reactive statements with `$derived()` or `$effect()`
+- [ ] Replace all `<slot>` with `{#snippet}`
+- [ ] Change named component imports to default imports
+- [ ] Replace `on:event` with `onevent` handlers (both work, but prefer onevent)
+- [ ] Remove any manual imports of `$state`, `$derived`, `$effect`, `$props`
+- [ ] Update component type definitions to use Snippet type
+- [ ] Run `npm run check` to verify all types are correct
+
+---
+
 ## 🚀 Quick Start - Using Docker Environments with npm run dev:quic
 
 ### Development Server with Full Docker Environment Setup

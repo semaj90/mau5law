@@ -56,7 +56,7 @@
 
 {#if open}
   <div class="fixed inset-0 z-50 grid place-items-center" role="dialog" aria-modal="true" aria-label={title}>
-    <div class="fixed inset-0 bg-black/50" onclick={close} />
+  <div class="fixed inset-0 bg-black/50" onclick={close}></div>
     <form class="relative z-10 w-full max-w-md rounded bg-neutral-900 p-6 text-neutral-100" onsubmit={submit}>
       <div class="mb-3 text-lg font-semibold">{title}</div>
 

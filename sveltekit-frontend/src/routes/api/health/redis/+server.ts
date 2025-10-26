@@ -1,33 +1,62 @@
 import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
+import { createRedisConnection } from '$lib/server/redis';
 
 export const GET: RequestHandler = async () => {
+  // Helper: safely extract a message string from unknown error values
+  function extractMessage(e: unknown): string {
+    if (typeof e === 'string') return e;
+    if (typeof e === 'object' && e !== null) {
+      const maybe = (e as Record<string, unknown>)['message'];
+      if (typeof maybe === 'string') return maybe;
+    }
+    try {
+      return String(e);
+    } catch {
+      return 'Unknown error';
+    }
+  }
+
   try {
     // Attempt to load Redis client with fallback
-    let redis: any = null;
     let isAvailable = false;
 
+    // Use a short-lived connection for health checks to avoid errors when the
+    // global/shared client has been closed or is in a bad state.
+    let client: ReturnType<typeof createRedisConnection> | null = null;
     try {
-      const redisModule = await import('$lib/server/redis');
-      redis = redisModule.redis || redisModule.default;
+      client = createRedisConnection();
 
-      // Ensure connection before ping
-      if (redis && typeof redis.connect === 'function') {
-        const status = redis.status;
-        if (status === 'end' || status === 'close') {
-          console.log('[Redis Health] Reconnecting closed Redis client...');
-          await redis.connect();
-        }
+      // If the client exposes connect, ensure it's open before ping
+      if (client && typeof client.connect === 'function' && !client.isOpen) {
+        await client.connect();
       }
 
-      // Simple ping test
-      if (redis && typeof redis.ping === 'function') {
-        await redis.ping();
+      // Ping using the short-lived client
+      if (client && typeof client.ping === 'function') {
+        await client.ping();
         isAvailable = true;
       }
-    } catch (redisError) {
-      console.warn('[Redis Health] Redis unavailable:', redisError);
+    } catch (redisError: unknown) {
+      // Improve diagnostics for common problems like missing auth or aborted clients
+      const msg = extractMessage(redisError);
+      console.warn('[Redis Health] Redis unavailable:', msg);
+
+      // If the error indicates NOAUTH or AUTH problems, include a helpful hint
+      if (msg.includes('NOAUTH') || msg.includes('ERR AUTH') || msg.includes('AUTH')) {
+        console.warn(
+          '[Redis Health] Auth mismatch: check REDIS_URL/REDIS_PASSWORD and whether Redis requires a password.'
+        );
+      }
+
       isAvailable = false;
+    } finally {
+      // Quit the short-lived client if possible to avoid leaking connections
+      try {
+        if (client && typeof client.quit === 'function') await client.quit();
+      } catch {
+        /* ignore */
+      }
     }
 
     if (isAvailable) {
@@ -49,12 +78,13 @@ export const GET: RequestHandler = async () => {
         { status: 503 }
       );
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMsg = extractMessage(error);
     return json(
       {
         status: 'error',
         service: 'redis',
-        error: error.message || 'Health check failed',
+        error: errorMsg || 'Health check failed',
         timestamp: new Date().toISOString(),
       },
       { status: 500 }

@@ -839,7 +839,7 @@
 
   .action-link {
     color: #ffd700;
-    text-decoration none;
+    text-decoration: none;
     padding: 0.5rem 1rem;
     border: 1px solid #ffd700;
     border-radius: 6px;

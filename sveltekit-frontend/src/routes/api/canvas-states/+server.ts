@@ -2,9 +2,21 @@ import { canvasLayouts } from '$lib/server/db/schema-canvas';
 import type { RequestEvent } from '@sveltejs/kit';
 import { json } from '@sveltejs/kit';
 import { db } from '$lib/server/db/index';
-import type { RequestHandler } from './$types.js';
+import { eq, and, like, desc, sql } from 'drizzle-orm';
+import { getUserId } from '$lib/server/auth/utils';
 
-export async function GET({ url, locals }: RequestEvent): Promise<any> {
+// Small helper to safely format unknown errors for logging
+function formatError(e: unknown): string {
+  // Prefer Error message when available, otherwise stringify
+  if (e instanceof Error) return e.stack ?? e.message;
+  try {
+    return JSON.stringify(e);
+  } catch {
+    return String(e);
+  }
+}
+
+export async function GET({ url, locals }: RequestEvent): Promise<Response> {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
@@ -29,7 +41,7 @@ export async function GET({ url, locals }: RequestEvent): Promise<any> {
       return json(canvasState);
     } else {
       // Build filters
-      const filters: any[] = [];
+      const filters: unknown[] = [];
       // Add case filter
       if (caseId) {
         filters.push(eq(canvasLayouts.caseId, caseId));
@@ -74,12 +86,13 @@ export async function GET({ url, locals }: RequestEvent): Promise<any> {
         },
       });
     }
-  } catch (error: any) {
-    console.error('Error fetching canvas states:', error);
+  } catch (error: unknown) {
+    console.error('Error fetching canvas states:', formatError(error));
     return json({ error: 'Failed to fetch canvas states' }, { status: 500 });
   }
 }
-export async function POST({ request, locals }: RequestEvent): Promise<any> {
+
+export async function POST({ request, locals }: RequestEvent): Promise<Response> {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
@@ -87,27 +100,28 @@ export async function POST({ request, locals }: RequestEvent): Promise<any> {
     if (!db) {
       return json({ error: 'Database not available' }, { status: 500 });
     }
-    const data = await request.json();
+    const data = (await request.json()) as Record<string, unknown>;
     // Validate required fields
     if (!data.name || !data.layoutData) {
       return json({ error: 'Name and layout data are required' }, { status: 400 });
     }
     const canvasStateData = {
-      caseId: data.caseId || null,
-      name: data.name.trim(),
+      caseId: (data.caseId as string) || null,
+      name: (data.name as string).trim(),
       layoutData: data.layoutData,
-      description: data.description || null,
-      isDefault: data.isDefault || false,
+      description: (data.description as string) || null,
+      isDefault: (data.isDefault as boolean) || false,
       createdBy: getUserId(locals),
     };
     const [newCanvasState] = await db.insert(canvasLayouts).values(canvasStateData).returning();
     return json(newCanvasState, { status: 201 });
-  } catch (error: any) {
-    console.error('Error creating canvas state:', error);
+  } catch (error: unknown) {
+    console.error('Error creating canvas state:', formatError(error));
     return json({ error: 'Failed to create canvas state' }, { status: 500 });
   }
 }
-export async function PUT({ request, locals }: RequestEvent): Promise<any> {
+
+export async function PUT({ request, locals }: RequestEvent): Promise<Response> {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
@@ -115,20 +129,24 @@ export async function PUT({ request, locals }: RequestEvent): Promise<any> {
     if (!db) {
       return json({ error: 'Database not available' }, { status: 500 });
     }
-    const data = await request.json();
+    const data = (await request.json()) as Record<string, unknown>;
     if (!data.id) {
       return json({ error: 'Canvas state ID is required' }, { status: 400 });
     }
     // Check if canvas state exists
-    const existingCanvasState = await db.select().from(canvasLayouts).where(eq(canvasLayouts.id, data.id)).limit(1);
+    const existingCanvasState = await db
+      .select()
+      .from(canvasLayouts)
+      .where(eq(canvasLayouts.id, data.id as string))
+      .limit(1);
     if (!existingCanvasState.length) {
       return json({ error: 'Canvas state not found' }, { status: 404 });
     }
-    const updateData: { [key: string]: any } = {
+    const updateData: Record<string, unknown> = {
       updatedAt: new Date(),
     };
     // Only update provided fields
-    if (data.name !== undefined) updateData.name = data.name.trim();
+    if (data.name !== undefined) updateData.name = (data.name as string).trim();
     if (data.layoutData !== undefined) updateData.layoutData = data.layoutData;
     if (data.description !== undefined) updateData.description = data.description;
     if (data.isDefault !== undefined) updateData.isDefault = data.isDefault;
@@ -138,12 +156,13 @@ export async function PUT({ request, locals }: RequestEvent): Promise<any> {
       .where(eq(canvasLayouts.id, data.id))
       .returning();
     return json(updatedCanvasState);
-  } catch (error: any) {
-    console.error('Error updating canvas state:', error);
+  } catch (error: unknown) {
+    console.error('Error updating canvas state:', formatError(error));
     return json({ error: 'Failed to update canvas state' }, { status: 500 });
   }
 }
-export async function DELETE({ url, locals }: RequestEvent): Promise<any> {
+
+export async function DELETE({ url, locals }: RequestEvent): Promise<Response> {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
@@ -163,13 +182,14 @@ export async function DELETE({ url, locals }: RequestEvent): Promise<any> {
     // Delete the canvas state
     const [deletedCanvasState] = await db.delete(canvasLayouts).where(eq(canvasLayouts.id, canvasId)).returning();
     return json({ success: true, deletedCanvasState });
-  } catch (error: any) {
-    console.error('Error deleting canvas state:', error);
+  } catch (error: unknown) {
+    console.error('Error deleting canvas state:', formatError(error));
     return json({ error: 'Failed to delete canvas state' }, { status: 500 });
   }
 }
+
 // PATCH endpoint for partial updates
-export async function PATCH({ request, url, locals }: RequestEvent): Promise<any> {
+export async function PATCH({ request, url, locals }: RequestEvent): Promise<Response> {
   try {
     if (!locals.user) {
       return json({ error: 'Not authenticated' }, { status: 401 });
@@ -181,13 +201,13 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<any
     if (!canvasId) {
       return json({ error: 'Canvas state ID is required' }, { status: 400 });
     }
-    const data = await request.json();
+    const data = (await request.json()) as Record<string, unknown>;
     // Check if canvas state exists
     const existingCanvasState = await db.select().from(canvasLayouts).where(eq(canvasLayouts.id, canvasId)).limit(1);
     if (!existingCanvasState.length) {
       return json({ error: 'Canvas state not found' }, { status: 404 });
     }
-    const updateData: { [key: string]: any } = {
+    const updateData: Record<string, unknown> = {
       updatedAt: new Date(),
     };
     // Handle specific patch operations
@@ -206,7 +226,7 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<any
       // Regular field updates
       Object.keys(data).forEach(key => {
         if (key !== 'operation') {
-          updateData[key] = data[key];
+          (updateData as Record<string, unknown>)[key] = data[key];
         }
       });
     }
@@ -216,8 +236,8 @@ export async function PATCH({ request, url, locals }: RequestEvent): Promise<any
       .where(eq(canvasLayouts.id, canvasId))
       .returning();
     return json(updatedCanvasState);
-  } catch (error: any) {
-    console.error('Error patching canvas state:', error);
+  } catch (error: unknown) {
+    console.error('Error patching canvas state:', formatError(error));
     return json({ error: 'Failed to update canvas state' }, { status: 500 });
   }
 }

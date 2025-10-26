@@ -54,7 +54,7 @@ https://svelte.dev/e/js_parse_error -->
 <div class="progress-indicator bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
   <!-- Progress bar -->
   <div class="w-full bg-gray-200 dark:bg-gray-700 h-1">
-    <div class="h-1 bg-blue-600 transition-all duration-500 ease-out" style="width: {progressPercentage}%" />
+  <div class="h-1 bg-blue-600 transition-all duration-500 ease-out" style="width: {progressPercentage}%"></div>
   </div>
   <!-- Steps navigation -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">

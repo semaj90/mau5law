@@ -5,6 +5,17 @@ import Redis from 'ioredis';
 import createRedisAdapter from '$lib/server/adapters/redis-adapter';
 import type { RedisCacheService } from '$lib/types/external-services';
 import { initBackends } from '$lib/server/init/backends';
+
+// Initialize service discovery on server startup
+import { initializeServer } from '$lib/server/init';
+(async () => {
+  try {
+    await initializeServer();
+  } catch (error) {
+    console.error('[hooks.server.ts] Failed to initialize services:', error);
+    // Don't exit - allow server to continue with fallback configurations
+  }
+})();
 // Avoid static import of lucia/sveltekit integration at top-level to prevent
 // module resolution errors during Vite SSR/hot reload. We'll lazy-import when needed.
 
@@ -49,8 +60,23 @@ function initRedis() {
   try {
     const host = process.env.REDIS_HOST || 'localhost';
     const port = parseInt(process.env.REDIS_PORT || '6379', 10);
-    const password = process.env.REDIS_PASSWORD || 'redis';
-    _redis = new Redis({ host, port, password });
+    const password = process.env.REDIS_PASSWORD;
+    const redisConfig: any = { host, port };
+    // Only add password if explicitly set
+    if (password) {
+      redisConfig.password = password;
+    }
+    _redis = new Redis(redisConfig);
+
+    // Suppress expected AUTH errors in dev mode
+    _redis.on('error', (err: any) => {
+      const errMsg = err?.message || String(err);
+      // Silently ignore AUTH/NOAUTH errors (expected in dev without password configured)
+      if (!errMsg.includes('AUTH') && !errMsg.includes('NOAUTH')) {
+        console.warn('[hooks.server] Redis error:', errMsg);
+      }
+    });
+
     // Create the typed adapter for consumers to use instead of raw Redis client
     try {
       _redisAdapter = createRedisAdapter(_redis);

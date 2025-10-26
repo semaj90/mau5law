@@ -1,44 +1,61 @@
+import { json } from '@sveltejs/kit';
+import { db } from '$lib/server/db/index';
+import { eq, and } from 'drizzle-orm';
+import type { RequestHandler } from './$types.js';
+import { cases, evidence, reports } from '$lib/server/db/schema-postgres'; // adjust path if needed
+import { getUserId } from '$lib/server/auth/utils'; // adjust path (or import from lucia helper) if needed
 
-import { json } from "@sveltejs/kit"
-import { db } from "$lib/server/db/index"
-import { eq, and } from "drizzle-orm"
-import type { RequestHandler } from './$types.js'
-export const POST: RequestHandler = async ({ params, request, locals }) => {
-  if (!locals.user) {
-    return json({ error: "Unauthorized" }, { status: 401 })
+/** Small helper to safely format unknown errors for logging */
+function formatError(e: unknown): string {
+  // Prefer Error message when available, otherwise stringify
+  if (e instanceof Error) return e.stack ?? e.message;
+  try {
+    return JSON.stringify(e);
+  } catch {
+    return String(e);
   }
-  const { id: caseId } = params
-  const { reportType = "case_summary", includeEvidence = true } =
-    await request.json()
+}
+
+export const POST: RequestHandler = async ({ params, request, locals }) => {
+  // Auth check
+  if (!locals.user) {
+    return json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const { caseId } = params;
+  const body = await request.json().catch(() => ({}));
+  const reportType: string = body.reportType ?? 'case_summary';
+  const includeEvidence: boolean = body.includeEvidence ?? true;
+
   try {
     // Verify case ownership and fetch data
     const caseData = await db
       .select()
       .from(cases)
-      .where(and(eq(cases.id, caseId), eq(cases.createdBy, getUserId(locals)))
-      .limit(1)
-    if (!caseData.length) {
-      return json(
-        { error: "Case not found or access denied" },)
-        { status: 404 }
-      )
+      .where(and(eq(cases.id, caseId), eq(cases.createdBy, getUserId(locals))))
+      .limit(1);
+
+    if (!caseData || caseData.length === 0) {
+      return json({ error: 'Case not found or access denied' }, { status: 404 });
     }
-    const caseRecord = caseData[0]
+    const caseRecord = caseData[0];
+
     // Fetch related evidence if requested
-    let evidenceData: any[] = []
+    let evidenceData: Array<Record<string, unknown>> = [];
     if (includeEvidence) {
-      evidenceData = await db
-        .select()
-        .from(evidence)
-        .where(eq(evidence.caseId, caseId)
+      evidenceData = (await db.select().from(evidence).where(eq(evidence.caseId, caseId))) as Array<
+        Record<string, unknown>
+      >;
     }
+
     // Generate report content
     const reportContent = {
       case: caseRecord,
       evidence: evidenceData,
       generatedAt: new Date().toISOString(),
-      generatedBy: getUserId(locals)
-    }
+      generatedBy: getUserId(locals),
+    };
+
     // Create report record
     const newReport = await db
       .insert(reports)
@@ -47,30 +64,32 @@ export const POST: RequestHandler = async ({ params, request, locals }) => {
         content: JSON.stringify(reportContent),
         caseId: caseRecord.id,
         reportType,
-        status: "completed",
-        createdBy: getUserId(locals)
+        status: 'completed',
+        createdBy: getUserId(locals),
       })
-      .returning()
-    return json({
-      success: true,
-      report: newReport[0]
-    })
-  }, catch (error: any) {
-    console.error("Report generation failed:", error)
-    return json({ error: "Report generation failed" }, { status: 500 })
+      .returning();
+
+    return json({ success: true, report: newReport[0] });
+  } catch (error: unknown) {
+    console.error('Report generation failed:', formatError(error));
+    return json({ error: 'Report generation failed' }, { status: 500 });
   }
-}
-export const GET: RequestHandler = async ({ params, locals }) => {
+};
+
+export const GET: RequestHandler = async ({ params: _params, locals }) => {
   if (!locals.user) {
-    return json({ error: "Unauthorized" }, { status: 401 })
+    return json({ error: 'Unauthorized' }, { status: 401 });
   }
+
   try {
     const userReports = await db
       .select()
       .from(reports)
-      .where(eq(reports.createdBy, getUserId(locals))
-    return json({ reports: userReports })
-  } catch (error: any) {
-    return json({ error: "Failed to fetch reports" }, { status: 500 })
+      .where(eq(reports.createdBy, getUserId(locals)));
+
+    return json({ reports: userReports });
+  } catch (error: unknown) {
+    console.error('Failed to fetch reports:', formatError(error));
+    return json({ error: 'Failed to fetch reports' }, { status: 500 });
   }
-}
+};

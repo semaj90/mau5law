@@ -406,7 +406,7 @@
         // Extract POI timeline data from semantic analysis
         poiTimelineData =
           ragAnalysisResults?.persons?.map(
-            (person RagPerson): POI => ({
+            (person: RagPerson): POI => ({
               id: person.id,
               name: person.name,
               type: person.type || 'person',

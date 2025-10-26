@@ -109,7 +109,7 @@
     <!-- Center section Main Navigation (if authenticated) -->
     {#if isAuthenticated}
       <div class="nav-center">
-        <a href="/dashboard" class="nav-link" class:active={currentRoute === '/dashboard'}> 🏠 Dashboard </a>
+  <a href="/ai/dashboard" class="nav-link" class:active={currentRoute === '/ai/dashboard'}> 🏠 Dashboard </a>
         <a href="/cases" class="nav-link" class:active={currentRoute.startsWith('/cases')}> ⚖️ Cases </a>
         <a href="/ai" class="nav-link" class:active={currentRoute.startsWith('/ai')}> 🤖 AI Assistant </a>
         {#if isAdmin}

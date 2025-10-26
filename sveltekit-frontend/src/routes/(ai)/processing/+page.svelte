@@ -19,7 +19,7 @@
   let completedJobs = $state([]);
   let systemMetrics = $state({
     nesMemory: { usedRAM: 0, totalRAM: 2048, usedCHR: 0, totalCHR: 8192 },
-    gpuUtilization 0,
+    gpuUtilization: 0,
     vectorProcessingRate: 0,
     glyphCacheHitRate: 0,
     bankSwitchingFreq: 0,
@@ -84,12 +84,12 @@
           usedCHR: Math.min(8192, systemMetrics.nesMemory.usedCHR + (Math.random() - 0.5) * 100),
           totalCHR: 8192
         },
-        gpuUtilization Math.max(0, Math.min(100, systemMetrics.gpuUtilization + (Math.random() - 0.5) * 10)),
+        gpuUtilization: Math.max(0, Math.min(100, systemMetrics.gpuUtilization + (Math.random() - 0.5) * 10)),
         vectorProcessingRate: Math.max(0, systemMetrics.vectorProcessingRate + (Math.random() - 0.5) * 500),
         glyphCacheHitRate: glyphStats.cacheHitRate * 100,
-        bankSwitchingFreq: nesGPUMetrics.activeBankMappings ? Object.keys(errors).length: 0,
+        bankSwitchingFreq: nesGPUMetrics?.activeBankMappings ? Object.keys(nesGPUMetrics.activeBankMappings).length : 0,
         chrRomPatterns: nesGPUMetrics.textureCacheSize
-      }
+      };
       performanceStats = {
         totalDocumentsProcessed: performanceStats.totalDocumentsProcessed + Math.floor(Math.random() * 3),
         averageProcessingTime: glyphStats.averageRenderTime,
@@ -227,7 +227,7 @@
   }
   function formatTimeAgo(timestamp: string) {
     const date = new Date(timestamp);
-    const now = new Date()),
+    const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
     if (diffMins < 60) return `${diffMins}m ago`;
@@ -511,7 +511,6 @@
             type="text"
             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             placeholder="contract_2024_001"
-            ;
             bind:value={newJobForm.documentId}
             required
           />
@@ -520,8 +519,7 @@
           <label for="analysisType" class="block text-sm font-medium text-gray-700 mb-1"> Analysis Type </label>
           <select
             id="analysisType"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus: outline-none focus:ring-blue-500 focus:border-blue-500"
-            ;
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             bind:value={newJobForm.analysisType}
           >
             <option value="semantic">Semantic Analysis</option>
@@ -535,8 +533,7 @@
           <label for="priority" class="block text-sm font-medium text-gray-700 mb-1"> Priority </label>
           <select
             id="priority"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus: outline-none focus:ring-blue-500 focus:border-blue-500"
-            ;
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             bind:value={newJobForm.priority}
           >
             <option value="low">Low Priority</option>
@@ -548,8 +545,7 @@
           <input
             id="useGPU"
             type="checkbox"
-            class="h-4 w-4 text-blue-600 focus: ring-blue-500 border-gray-300 rounded"
-            ;
+            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             bind:checked={newJobForm.useGPU}
           />
           <label for="useGPU" class="ml-2 block text-sm text-gray-900"> Use GPU Acceleration (NES-GPU Bridge) </label>
@@ -581,3 +577,4 @@
     </div>
   </div>
 </HeadlessDialog>;
+

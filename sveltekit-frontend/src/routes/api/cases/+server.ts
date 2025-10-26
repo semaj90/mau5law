@@ -21,17 +21,37 @@ async function getRedisClient(): Promise<LocalRedisClient | null> {
     try {
       // Resolve runtime Redis config: prefer metaEnv (Vite), fall back to process.env
       const resolvedRedisUrl = metaEnv.REDIS_URL || process.env.REDIS_URL || 'redis://127.0.0.1:6379';
-      const resolvedRedisPassword = metaEnv.REDIS_PASSWORD || process.env.REDIS_PASSWORD || undefined;
+      const resolvedRedisPassword = metaEnv.REDIS_PASSWORD || process.env.REDIS_PASSWORD;
       console.log('DEBUG: Resolved Redis URL:', resolvedRedisUrl);
       console.log('DEBUG: Redis password present?', !!resolvedRedisPassword);
       // 'redis' namespace may not have precise typings for createClient in our environment;
-      // cast to any to avoid TS 'possibly undefined' invocation error while preserving runtime behavior.
-      const redisNs: any = redis;
-      redisClient = redisNs.createClient({
+      // treat it as unknown and do a runtime check for createClient to keep TypeScript strictness.
+      const redisNs = redis as unknown;
+      if (typeof (redisNs as any)?.createClient !== 'function') {
+        throw new Error('redis.createClient is not available in this environment');
+      }
+      // Safe to call createClient now that we've checked its existence
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const clientConfig: any = {
         url: resolvedRedisUrl,
-        password: resolvedRedisPassword,
         socket: { connectTimeout: 5000 },
-      });
+      };
+      // Only add password if it's explicitly set (avoid sending undefined)
+      if (resolvedRedisPassword) {
+        clientConfig.password = resolvedRedisPassword;
+      }
+      redisClient = (redisNs as any).createClient(clientConfig);
+
+      // Suppress auth warnings during connection
+      const errorHandler = (err: any) => {
+        const errMsg = err?.message || String(err);
+        // Only warn about critical errors, not auth errors (expected in dev without password)
+        if (!errMsg.includes('AUTH') && !errMsg.includes('NOAUTH')) {
+          console.warn('Redis error:', errMsg);
+        }
+      };
+      redisClient.on?.('error', errorHandler);
+
       await redisClient.connect();
     } catch (e) {
       console.warn('⚠️ Redis not available, continuing without stream worker integration');
@@ -80,7 +100,11 @@ const createCaseSchema = z.object({
   title: z.string().min(1, 'Case title is required').max(500, 'Case title too long'),
   description: z.string().optional(),
   priority: z.enum(['low', 'medium', 'high', 'critical']).default('medium'),
-  status: z.enum(['open', 'investigating', 'pending', 'closed', 'archived']).default('open'),
+  // Accept legacy/client 'active' and map to canonical 'open'
+  status: z.preprocess(
+    val => (val === 'active' ? 'open' : val),
+    z.enum(['open', 'investigating', 'pending', 'closed', 'archived']).default('open')
+  ),
   // Accept either a string or Date and produce a Date | undefined
   incidentDate: z.preprocess(val => {
     if (typeof val === 'string' && val.length > 0) return new Date(val);
@@ -101,12 +125,13 @@ const createCaseSchema = z.object({
 // as Zod's .default() guarantees their presence at runtime.
 type CreateCaseValidatedData = Omit<z.infer<typeof createCaseSchema>, 'priority' | 'status'> & {
   priority: 'low' | 'medium' | 'high' | 'critical';
-  status: 'open' | 'investigating' | 'pending' | 'closed' | 'archived';
+  status: 'open' | 'investigating' | 'pending' | 'closed' | 'archived' | 'active';
 };
 
 const searchCasesSchema = z.object({
   query: z.string().optional(),
-  status: z.array(z.string()).optional(),
+  // Validate filter arrays; accept 'active' from clients but normalize later
+  status: z.array(z.enum(['open', 'investigating', 'pending', 'closed', 'archived', 'active'])).optional(),
   priority: z.array(z.string()).optional(),
   assignedTo: z.string().optional(),
   // Accept string or Date for range boundaries
@@ -160,11 +185,14 @@ export const GET: RequestHandler = async event => {
     // Validate search parameters
     try {
       const validatedParams = searchCasesSchema.parse(searchParams);
+      // Normalize any 'active' statuses to canonical 'open'
+      const normalizedStatus = validatedParams.status?.map(s => (s === 'active' ? 'open' : s));
       // Calculate offset from page
       const offset = (validatedParams.page - 1) * validatedParams.limit;
       // Perform case search
       const { cases: caseResults, total } = await CaseOperations.search({
         ...validatedParams,
+        status: normalizedStatus ?? validatedParams.status,
         offset,
       });
       // Create pagination info

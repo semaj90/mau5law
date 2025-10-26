@@ -50,7 +50,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   let systemData = $state<SystemMetrics>({
     cpu_usage: 45,
     memory_usage: 62,
-    gpu_utilization 78,
+    gpu_utilization: 78,
     network_latency: 23,
     active_processes: 12,
     security_level: 'HIGH',
@@ -89,7 +89,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       systemData = {
         ...systemData,
         cpu_usage: Math.max(20, Math.min(90, systemData.cpu_usage + (Math.random() - 0.5) * 10)),
-        gpu_utilization Math.max(30, Math.min(95, systemData.gpu_utilization + (Math.random() - 0.5) * 8)),
+        gpu_utilization: Math.max(30, Math.min(95, systemData.gpu_utilization + (Math.random() - 0.5) * 8)),
         memory_usage: Math.max(40, Math.min(85, systemData.memory_usage + (Math.random() - 0.5) * 6)),
         network_latency: Math.max(10, Math.min(100, systemData.network_latency + (Math.random() - 0.5) * 5)),
         neural_activity: Math.max(60, Math.min(100, systemData.neural_activity + (Math.random() - 0.5) * 4)),

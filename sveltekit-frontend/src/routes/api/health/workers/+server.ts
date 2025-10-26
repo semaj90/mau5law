@@ -4,7 +4,8 @@
  */
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import redis, { createRedisConnection } from '$lib/server/redis';
+import { createRedisConnection } from '$lib/server/redis';
+import type { RedisClientType } from 'redis';
 import amqp from 'amqplib';
 
 interface WorkerStatus {
@@ -17,6 +18,81 @@ interface WorkerStatus {
   uptime?: number;
   // allow either structured details or plain message strings
   details?: Record<string, unknown> | string;
+}
+
+type ConnectableRedisClient = RedisClientType & {
+  connect?: () => Promise<void>;
+};
+
+function getErrorMessage(err: unknown): string {
+  if (!err) return String(err);
+  if (err instanceof Error) return err.message;
+  if (typeof err === 'object' && 'message' in err && typeof (err as { message: unknown }).message === 'string') {
+    return (err as { message: string }).message;
+  }
+  return String(err);
+}
+
+async function ensureRedisConnection(client: ConnectableRedisClient, label: string): Promise<boolean> {
+  if (!client) return false;
+  if (client.isOpen) return true;
+
+  if (typeof client.connect !== 'function') {
+    console.warn(`[${label}] Redis client missing connect() method; assuming ready`);
+    return true;
+  }
+
+  try {
+    await client.connect();
+    return true;
+  } catch (err) {
+    console.warn(`[${label}] Redis connect failed: ${getErrorMessage(err)}`);
+    return false;
+  }
+}
+
+async function safeQuit(client: ConnectableRedisClient | null, label: string): Promise<void> {
+  if (!client) return;
+
+  try {
+    await client.quit();
+  } catch (err) {
+    console.debug(`[${label}] Redis quit skipped: ${getErrorMessage(err)}`);
+  }
+}
+
+async function fetchWorkerRedisState(
+  label: string,
+  keys: { heartbeat: string; stats: string }
+): Promise<{ ok: true; heartbeat: string | null; stats: string | null } | { ok: false; reason: string }> {
+  const client = createRedisConnection() as ConnectableRedisClient;
+
+  const ready = await ensureRedisConnection(client, label);
+  if (!ready) {
+    await safeQuit(client, label);
+    return { ok: false, reason: 'Redis unavailable' };
+  }
+
+  try {
+    const [heartbeat, stats] = await Promise.all([client.get(keys.heartbeat), client.get(keys.stats)]);
+    return { ok: true, heartbeat, stats };
+  } catch (err) {
+    const message = getErrorMessage(err);
+    console.warn(`[${label}] Redis read failed: ${message}`);
+    return { ok: false, reason: message };
+  } finally {
+    await safeQuit(client, label);
+  }
+}
+
+function safeParseJson(value: string | null): Record<string, any> {
+  if (!value) return {};
+  try {
+    const parsed = JSON.parse(value);
+    return typeof parsed === 'object' && parsed !== null ? (parsed as Record<string, any>) : {};
+  } catch {
+    return {};
+  }
 }
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -76,9 +152,21 @@ export const GET: RequestHandler = async ({ url }) => {
  */
 async function checkOCRWorker(): Promise<WorkerStatus> {
   try {
-    // Check Redis for OCR worker heartbeat
-    const heartbeat = await redis.get('worker:ocr:heartbeat');
-    const stats = await redis.get('worker:ocr:stats');
+    const redisState = await fetchWorkerRedisState('OCR Worker', {
+      heartbeat: 'worker:ocr:heartbeat',
+      stats: 'worker:ocr:stats',
+    });
+
+    if (!redisState.ok) {
+      return {
+        name: 'OCR Worker',
+        status: 'offline',
+        healthy: false,
+        details: redisState.reason || 'Redis unavailable for OCR worker check',
+      };
+    }
+
+    const { heartbeat, stats } = redisState;
 
     if (!heartbeat) {
       return {
@@ -93,7 +181,7 @@ async function checkOCRWorker(): Promise<WorkerStatus> {
     const timeSinceHeartbeat = Date.now() - lastHeartbeat.getTime();
     const isHealthy = timeSinceHeartbeat < 60000; // 60 seconds threshold
 
-    const parsedStats = stats ? JSON.parse(stats) : {};
+    const parsedStats = safeParseJson(stats);
 
     return {
       name: 'OCR Worker',
@@ -109,7 +197,7 @@ async function checkOCRWorker(): Promise<WorkerStatus> {
       },
     };
   } catch (error) {
-    console.error('[OCR Worker Health] Check failed:', error);
+    console.warn('[OCR Worker Health] Check failed:', getErrorMessage(error));
     return {
       name: 'OCR Worker',
       status: 'offline',
@@ -146,8 +234,22 @@ async function checkEmbeddingWorker(): Promise<WorkerStatus> {
     await connection.close();
 
     // Check Redis for embedding worker heartbeat
-    const heartbeat = await redis.get('worker:embedding:heartbeat');
-    const stats = await redis.get('worker:embedding:stats');
+    const redisState = await fetchWorkerRedisState('Embedding Worker', {
+      heartbeat: 'worker:embedding:heartbeat',
+      stats: 'worker:embedding:stats',
+    });
+
+    if (!redisState.ok) {
+      return {
+        name: 'Embedding Worker',
+        status: 'offline',
+        healthy: false,
+        queueDepth: totalQueueDepth,
+        details: `Redis unavailable - ${redisState.reason}`,
+      };
+    }
+
+    const { heartbeat, stats } = redisState;
 
     if (!heartbeat) {
       return {
@@ -163,7 +265,7 @@ async function checkEmbeddingWorker(): Promise<WorkerStatus> {
     const timeSinceHeartbeat = Date.now() - lastHeartbeat.getTime();
     const isHealthy = timeSinceHeartbeat < 60000;
 
-    const parsedStats = stats ? JSON.parse(stats) : {};
+    const parsedStats = safeParseJson(stats);
 
     return {
       name: 'Embedding Worker',
@@ -195,10 +297,20 @@ async function checkEmbeddingWorker(): Promise<WorkerStatus> {
  * Check Autotag Worker health
  */
 async function checkAutotagWorker(): Promise<WorkerStatus> {
-  let autotagRedisClient;
+  let autotagRedisClient: ConnectableRedisClient | null = null;
   try {
     // Use a dedicated connection for this check
-    autotagRedisClient = createRedisConnection();
+    autotagRedisClient = createRedisConnection() as ConnectableRedisClient;
+
+    const ready = await ensureRedisConnection(autotagRedisClient, 'Autotag Worker');
+    if (!ready) {
+      return {
+        name: 'Autotag Worker',
+        status: 'offline',
+        healthy: false,
+        details: 'Redis unavailable for autotag worker',
+      };
+    }
 
     // Check Redis for autotag worker heartbeat
     const heartbeat = await autotagRedisClient.get('worker:autotag:heartbeat');
@@ -217,7 +329,7 @@ async function checkAutotagWorker(): Promise<WorkerStatus> {
     const timeSinceHeartbeat = Date.now() - lastHeartbeat.getTime();
     const isHealthy = timeSinceHeartbeat < 60000;
 
-    const parsedStats = stats ? JSON.parse(stats) : {};
+    const parsedStats = safeParseJson(stats);
 
     return {
       name: 'Autotag Worker',
@@ -240,12 +352,6 @@ async function checkAutotagWorker(): Promise<WorkerStatus> {
       details: 'Optional worker - ' + (error instanceof Error ? error.message : String(error)),
     };
   } finally {
-    if (autotagRedisClient) {
-      try {
-        await autotagRedisClient.quit();
-      } catch (quitError) {
-        console.error('[Autotag Worker Health] Error quitting Redis client:', quitError);
-      }
-    }
+    await safeQuit(autotagRedisClient ?? null, 'Autotag Worker');
   }
 }

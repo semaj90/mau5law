@@ -47,7 +47,7 @@
 	let systemStatus = $state({
 		rabbitMQ: { connected: false, health: 'unknown' },
 		postgreSQL: { connected: false, vectorCount: 0 },
-		gpu: { available: false, utilization 0, model: 'RTX 3060 Ti' },
+		gpu: { available: false, utilization: 0, model: 'RTX 3060 Ti' },
 		processingStats: { totalFiles: 0, processed: 0, queued: 0 }
 	});
 	let findModal = $state({ show: false, query: '', results: [] as any[], loading: false, error: '', suggestions: [] as any[] });

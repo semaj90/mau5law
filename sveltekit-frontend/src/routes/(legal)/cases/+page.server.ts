@@ -65,7 +65,8 @@ export const load = (async ({ locals, fetch }) => {
 
     if (response.ok) {
       const data = await response.json();
-      cases = data.data?.cases || [];
+      // API returns { cases: [...], pagination: {...} }
+      cases = data.cases || [];
     } else if (response.status === 401 && devBypass) {
       // Auth error in dev mode - still allow page to load
       console.warn('🔓 DEV_BYPASS_AUTH: API returned 401, but continuing in dev mode');

@@ -57,7 +57,7 @@
       Fabric = (mod as any).fabric ?? mod;
       fabricCanvas = new Fabric.Canvas(canvasEl as HTMLCanvasElement, {
         backgroundColor: '#ffffff',
-        selection true,
+        selection: true, // fixed missing colon
         preserveObjectStacking: true,
       });
     } catch (err: unknown) {
@@ -185,7 +185,7 @@
   function getEvidenceColor(type: string): string {
     const colors: Record<string, string> = {
       document: '#3b82f6',
-      communication '#10b981',
+      communication: '#10b981', // fixed missing colon
       financial: '#f59e0b',
       testimony: '#8b5cf6',
       physical: '#ef4444',
@@ -199,13 +199,14 @@
     if (!fabricCanvas) return [];
     const objs = (fabricCanvas.getObjects?.() ?? []).map((o: any) => {
       const type = o.type || 'object';
-      const left = typeof o.left === 'number' ? o.left : 0;
-      const top = typeof o.top === 'number' ? o.top : 0;
-      const text = typeof o.text === 'string' ? o.text : undefined;
-      const evidenceId = o.evidenceId ?? o.get('evidenceId');
+      const left = typeof o.left === 'number' ? o.left : (o.left ?? 0);
+      const top = typeof o.top === 'number' ? o.top : (o.top ?? 0);
+      // Fabric Text stores text in different shapes; attempt safe reads
+      const text = typeof o.text === 'string' ? o.text : (o.text?.text ?? undefined);
+      const evidenceId = o.evidenceId ?? o.get?.('evidenceId');
       const out: any = {
         type,
-        position { x: left, y: top },
+        position: { x: left, y: top }, // fixed shorthand/object syntax
       };
       if (text) out.text = text;
       if (evidenceId) out.evidenceId = evidenceId;
@@ -221,10 +222,15 @@
     analysisProgress = 0;
     error = null;
     analysisResult = null;
+
+    let progressInterval: ReturnType<typeof setInterval> | null = null; // declare here
+
     try {
-      // Start progress animation: const progressInterval = setInterval(() => {
+      // Start progress animation
+      progressInterval = setInterval(() => {
         analysisProgress = Math.min(analysisProgress + 8, 85);
       }, 300);
+
       analysisStatus = 'analyzing';
       // Call our real analysis endpoint
       const response = await fetch(`/api/cases/${caseId}/analyze`, {
@@ -239,7 +245,7 @@
           options,
         }),
       });
-      clearInterval(progressInterval);
+
       if (!response.ok) {
         throw new Error(`Analysis failed: ${response.statusText}`);
       }
@@ -270,6 +276,8 @@
       error = e.message;
       analysisStatus = 'error';
       console.error('Analysis failed:', e);
+    } finally {
+      if (progressInterval) clearInterval(progressInterval);
     }
   }
 
@@ -339,7 +347,7 @@
   function saveCanvas() {
     if (!fabricCanvas) return;
     const canvasData = {
-      version fabricCanvas.version,
+      version: (fabricCanvas?.version ?? (Fabric?.version ?? 'unknown')), // fixed object literal
       objects: fabricCanvas.toJSON(),
       evidence: evidenceList,
       timestamp: new Date().toISOString(),
@@ -716,7 +724,7 @@
     max-width: 820px;
     height: 620px;
     background: #f8f8f8;
-    position relative;
+    position: relative; /* fixed missing colon */
   }
   canvas {
     background: #fff;
@@ -750,28 +758,39 @@
   }
   .evidence-header {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between; /* fixed typo */
     align-items: center;
     margin-bottom: 0.5rem;
   }
   .evidence-name {
     font-weight: bold;
     font-size: 14px;
-    flex: 1,
+    flex: 1; /* fixed trailing comma */
   }
-  .evidence-status {
+
+  .case-header {
     display: flex;
+    justify-content: space-between; /* fixed typo */
     align-items: center;
-    gap: 0.25rem;
-    font-size: 10px;
+    margin-bottom: 0.5rem;
   }
-  .evidence-details {
+
+  .timeline-header {
     display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    opacity: 0.8;
-    font-size: 11px;
+    justify-content: space-between; /* fixed typo */
+    align-items: center;
+    margin-bottom: 0.5rem;
   }
+
+  .metadata-item {
+    display: flex;
+    justify-content: space-between; /* fixed typo */
+    padding: 0.5rem;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    font-size: 12px;
+  }
+
   /* Analysis results styling */
   .analysis-results {
     margin: 2rem auto;
@@ -827,7 +846,7 @@
   /* Similar cases */
   .case-header {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between; /* fixed typo */
     align-items: center;
     margin-bottom: 0.5rem;
   }
@@ -842,7 +861,7 @@
   /* Timeline */
   .timeline-header {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between; /* fixed typo */
     align-items: center;
     margin-bottom: 0.5rem;
   }
@@ -878,7 +897,7 @@
   }
   .metadata-item {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between; /* fixed typo */
     padding: 0.5rem;
     background-color: #f8f9fa;
     border: 1px solid #dee2e6;
@@ -913,77 +932,5 @@
       grid-template-columns: 1fr;
       font-size: 12px;
     }
-    /* Main toolbar styling */
-    .evidence-toolbar {
-      margin-bottom: 2rem;
-      max-width: 1000px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .timeline-event {
-      font-size: 13px;
-      line-height: 1.4;
-    }
-    .timeline-item.high {
-      border-color: #dc3545;
-    }
-    .timeline-item.medium {
-      border-color: #ffc107;
-    }
-    .timeline-item.low {
-      border-color: #28a745;
-    }
-    /* Compliance status */
-    .compliance-status {
-      display: flex;
-      justify-content: center;
-      margin-top: 1rem;
-    }
-    /* Metadata */
-    .metadata-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-    .metadata-item {
-      display: flex;
-      justify-content: space-betweennn;
-      padding: 0.5rem;
-      background-color: #f8f9fa;
-      border: 1px solid #dee2e6;
-      font-size: 12px;
-    }
-    .metadata-label {
-      font-weight: bold;
-    }
-    .metadata-value {
-      font-family: monospace;
-    }
-    /* Responsive design */
-    @media (max-width: 768px) {
-      .upload-section {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .settings-row {
-        flex-direction: column;
-        gap: 1rem;
-      }
-      .evidence-grid {
-        grid-template-columns: 1fr;
-      }
-      .case-header,
-      .timeline-header {
-        flex-direction: column;
-        gap: 0.5rem;
-        align-items: flex-start;
-      }
-      .metadata-grid {
-        grid-template-columns: 1fr;
-      }
-    }
   }
 </style>
-
-

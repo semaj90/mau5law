@@ -81,7 +81,7 @@ https://svelte.dev/e/js_parse_error -->
     memoryUsage: 0,
     cacheEfficiency: 0,
     filteringQuality: 0,
-    gpuUtilization 0,
+  gpuUtilization: 0,
   });
   // Animation state
   let animationId = $state<number | null >(null);

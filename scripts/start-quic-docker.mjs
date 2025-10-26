@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { spawn } from 'child_process';
+import net from 'net';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import process from 'process';
@@ -49,7 +50,81 @@ async function startDockerDev() {
         });
 
         // Wait for Docker check
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        console.log('🧱 Bringing up core containers (redis, minio, postgres, rabbitmq, qdrant)...');
+        // Prefer `docker compose`; fallback to `docker-compose` if needed
+        const composeCmd = process.platform === 'win32' ? 'docker' : 'docker';
+        const composeArgs = ['compose', 'up', '-d', 'redis', 'minio', 'postgres', 'rabbitmq', 'qdrant'];
+        const compose = spawn(composeCmd, composeArgs, { stdio: 'pipe', cwd: projectRoot, shell: true });
+        childProcesses.add(compose);
+        compose.stdout.on('data', (d) => console.log(`🐳 compose: ${d.toString().trim()}`));
+        compose.stderr.on('data', (d) => console.log(`🐳 compose: ${d.toString().trim()}`));
+        // Give containers a few seconds to initialize
+        await new Promise(resolve => setTimeout(resolve, 2500));
+
+        // Lightweight health probes (non-fatal)
+        const waitForHttp = async (url, name, timeoutMs = 20000, intervalMs = 1000) => {
+            const start = Date.now();
+            while (Date.now() - start < timeoutMs) {
+                try {
+                    const ctrl = new AbortController();
+                    const t = setTimeout(() => ctrl.abort(), 2000);
+                    const res = await fetch(url, { method: 'GET', signal: ctrl.signal });
+                    clearTimeout(t);
+                    if (res.ok || (res.status >= 200 && res.status < 500)) {
+                        console.log(`✅ ${name} healthy at ${url}`);
+                        return true;
+                    }
+                } catch {}
+                await new Promise(r => setTimeout(r, intervalMs));
+            }
+            console.warn(`⚠️ ${name} not verified at ${url} within ${timeoutMs}ms (continuing)`);
+            return false;
+        };
+
+        const waitForTcp = async (host, port, name, timeoutMs = 20000, intervalMs = 1000) => {
+            const start = Date.now();
+            while (Date.now() - start < timeoutMs) {
+                const ok = await new Promise(resolve => {
+                    const socket = net.connect({ host, port }, () => {
+                        socket.end();
+                        resolve(true);
+                    });
+                    socket.on('error', () => {
+                        resolve(false);
+                    });
+                    setTimeout(() => {
+                        try { socket.destroy(); } catch {}
+                        resolve(false);
+                    }, 1500);
+                });
+                if (ok) {
+                    console.log(`✅ ${name} listening on ${host}:${port}`);
+                    return true;
+                }
+                await new Promise(r => setTimeout(r, intervalMs));
+            }
+            console.warn(`⚠️ ${name} not reachable on ${host}:${port} within ${timeoutMs}ms (continuing)`);
+            return false;
+        };
+
+        console.log('🩺 Verifying core services...');
+        await Promise.all([
+            waitForTcp('127.0.0.1', parseInt(process.env.REDIS_PORT || '6379', 10), 'Redis'),
+            waitForHttp('http://localhost:9000/minio/health/live', 'MinIO'),
+            waitForTcp('127.0.0.1', 5434, 'PostgreSQL'),
+            waitForHttp('http://localhost:15672', 'RabbitMQ Mgmt'),
+            waitForHttp('http://localhost:6333/health', 'Qdrant'),
+        ]);
+
+        // Optional Ollama probe
+        if (process.env.OLLAMA_URL || process.env.OLLAMA_HOST) {
+            const base = process.env.OLLAMA_URL || `http://${process.env.OLLAMA_HOST}`;
+            await waitForHttp(`${base.replace(/\/$/, '')}/`, 'Ollama');
+        } else {
+            await waitForHttp('http://localhost:11434/', 'Ollama');
+        }
 
         console.log('🧠 Starting MCP Context7 Server...');
 
@@ -88,9 +163,9 @@ async function startDockerDev() {
             env: {
                 ...process.env,
                 // Redis configuration (Docker)
-                REDIS_PASSWORD: 'redis',
-                REDIS_HOST: 'localhost',
-                REDIS_PORT: '6379',
+                REDIS_PASSWORD: process.env.REDIS_PASSWORD || 'redis',
+                REDIS_HOST: process.env.REDIS_HOST || 'localhost',
+                REDIS_PORT: process.env.REDIS_PORT || '6379',
                 // MinIO configuration (Docker)
                 MINIO_ENDPOINT: 'localhost:9000',
                 MINIO_ACCESS_KEY: 'minio',
@@ -98,7 +173,7 @@ async function startDockerDev() {
                 MINIO_BUCKET_NAME: 'legal-documents',
                 MINIO_USE_SSL: 'false',
                 // PostgreSQL configuration (Docker)
-                DATABASE_URL: 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
+                DATABASE_URL: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db',
                 // Development settings
                 NODE_ENV: 'development',
                 VITE_NODE_ENV: 'development'

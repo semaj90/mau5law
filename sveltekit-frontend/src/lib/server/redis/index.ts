@@ -3,6 +3,8 @@ import type { RedisClient, RedisConnectionOptions } from '$lib/types/redis';
 import { REDIS_URL } from '$env/static/private';
 
 let redisInstance: RedisClient | null = null;
+const env = process.env ?? {};
+const REDIS_PASSWORD = env.REDIS_PASSWORD ?? '';
 
 // Module-level helper to centralize NOAUTH handling and message extraction
 interface RedisGlobalFlag {
@@ -39,7 +41,7 @@ export function createRedisInstance(options?: RedisConnectionOptions): RedisClie
   const defaultOptions: RedisConnectionOptions = {
     host: 'localhost',
     port: 6379,
-    password: 'redis', // Default password as per Docker setup
+    password: REDIS_PASSWORD || undefined,
     connectTimeout: 5000,
     retryDelayOnFailover: 100,
     maxRetriesPerRequest: 3,
@@ -99,7 +101,7 @@ export function createRedisConnection(options?: Partial<RedisConnectionOptions>)
     ...{
       host: 'localhost',
       port: 6379,
-      password: 'redis',
+      password: REDIS_PASSWORD || undefined,
       connectTimeout: 5000,
       retryDelayOnFailover: 100,
       maxRetriesPerRequest: 3,
