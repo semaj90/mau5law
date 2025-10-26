@@ -45,18 +45,26 @@ export async function ensureRedisInstance(): Promise<Redis> {
 		redisConnectionAttempts++;
 
 		const redisUrl = process.env.REDIS_URL || VECTOR_CONFIG.DOCKER_SERVICES.REDIS_URL;
-		const redisPassword = process.env.REDIS_PASSWORD || 'redis';
+		const redisPassword = process.env.REDIS_PASSWORD;
 
-		redisInstance = new Redis(redisUrl, {
-			password: redisPassword,
-			retryStrategy: (times) => {
+		const redisConfig: any = {
+			retryStrategy: (times: number) => {
 				if (times > 3) return null; // Stop retrying
 				return Math.min(times * 50, 2000); // Exponential backoff
 			},
 			maxRetriesPerRequest: 3,
-			enableReadyCheck: true,
-			lazyConnect: false
-		});
+		};
+
+		// Only add password if explicitly set
+		if (redisPassword) {
+			redisConfig.password = redisPassword;
+		}
+
+		// Add remaining config options
+		redisConfig.enableReadyCheck = true;
+		redisConfig.lazyConnect = false;
+
+		redisInstance = new Redis(redisUrl, redisConfig);
 
 		// Wait for ready state
 		await new Promise<void>((resolve, reject) => {

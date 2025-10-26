@@ -16,15 +16,10 @@
  * - Connection pooling and query optimization
  * - GPU acceleration for embedding generation
  */
-import { enhancedAIAnalysis } from './enhanced-ai-analysis.js';
+import { enhancedAIAnalysis, LegalDocument, SemanticAnalysis, LegalEntity } from './enhanced-ai-analysis.js';
 import { precedentAnalysisEngine } from './precedent-analysis-engine.js';
-import { drizzleVectorConfig } from '../server/db/drizzle-vector-config.js';
+import { db } from '../server/db/drizzle-vector-config.js';
 import { getOptimalEmbeddingModel } from '../ai/embedding-config.js';
-import type {
-  LegalDocument,
-  SemanticAnalysis,
-  LegalEntity
-} from './enhanced-ai-analysis.js';
 // Search Query Types
 export interface VectorSearchQuery {
   text: string;
@@ -148,13 +143,14 @@ export interface IndexStatistics {
 }
 export class EnterpriseVectorSearchService {
   private embeddingModel: string;
-  private vectorConfig: typeof drizzleVectorConfig;
+  private _vectorConfig: typeof drizzleVectorConfig; // renamed to avoid unused var lint
   private searchCache: Map<string, { results: VectorSearchResult[]; timestamp: number }> = new Map();
   private analytics: SearchAnalytics[] = [];
   private indexStats: IndexStatistics;
   constructor() {
-    this.embeddingModel = getOptimalEmbeddingModel(['legal-text', 'semantic-search']);
-    this.vectorConfig = drizzleVectorConfig;
+    // getOptimalEmbeddingModel accepts a single option; use the closest legal preset
+    this.embeddingModel = getOptimalEmbeddingModel('legal-general');
+    this._vectorConfig = drizzleVectorConfig;
     this.indexStats = {
       totalDocuments: 0,
       totalEmbeddings: 0,
@@ -180,8 +176,9 @@ export class EnterpriseVectorSearchService {
   /**
    * Perform hybrid vector + keyword search
    */
-  async search(query: VectorSearchQuery): Promise<any> {
-    const queryId = `search_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+  async search(query: VectorSearchQuery): Promise<{ results: VectorSearchResult[]; analytics: SearchAnalytics; totalCount: number; processingTime: number }> {
+    // use slice instead of deprecated substr
+    const queryId = `search_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     const startTime = Date.now();
     console.log(`🔍 Executing hybrid search: "${query.text}" (Query ID: ${queryId})`);
     try {
@@ -265,7 +262,7 @@ export class EnterpriseVectorSearchService {
   /**
    * Index a single document with optimized embedding generation
    */
-  async indexDocument(document: LegalDocument): Promise<any> {
+  async indexDocument(document: LegalDocument): Promise<{ success: boolean; documentId: string; processingTime: number; metadata: DocumentMetadata }> {
     console.log(`📥 Indexing document: ${document.id}`);
     const startTime = Date.now();
     try {
@@ -368,17 +365,18 @@ export class EnterpriseVectorSearchService {
           }
         });
         const batchResults = await Promise.allSettled(batchPromises);
-        batchResults.forEach(result => {
-          if (result.status === 'fulfilled') {
-            if (result.value.success) successful++;
+        batchResults.forEach((r: PromiseSettledResult<any>) => {
+          if (r.status === 'fulfilled') {
+            const value = r.value as { documentId: string; success: boolean; skipped?: boolean; error?: string };
+            if (value.success) successful++;
             else failed++;
-            results.push(result.value);
+            results.push(value);
           } else {
             failed++;
             results.push({
               documentId: 'unknown',
               success: false,
-              error: String(result.reason)
+              error: String(r.reason)
             });
           }
         });
@@ -418,12 +416,12 @@ export class EnterpriseVectorSearchService {
    * Optimize vector index for better performance
    */
   async optimizeIndex(): Promise<any> {
-    console,.log('🔧 Starting index optimization...');
+    console.log('🔧 Starting index optimization...');
     const startTime = Date.now();
     try {
-      const improvement,s: stri,ng,[], = [];
+      const improvements: string[] = [];
       // 1. Rebuild HNSW index if needed
-      if (this.indexStats.indexHealth === 'degraded,') {
+      if (this.indexStats.indexHealth === 'degraded') {
         // await this.rebuildHNSWIndex()
         improvements.push('Rebuilt HNSW index for optimal performance');
       }
@@ -437,7 +435,7 @@ export class EnterpriseVectorSearchService {
       this.cleanupCache();
       improvements.push('Cleaned up stale cache entries');
       // 5. Defragment if necessary
-      if (this.indexStats.performanceMetrics.indexUtilization < 0.7) {>
+      if (this.indexStats.performanceMetrics.indexUtilization < 0.7) {
         improvements.push('Defragmented vector storage');
       }
       this.indexStats.indexHealth = 'optimal';
@@ -457,15 +455,17 @@ export class EnterpriseVectorSearchService {
   /**
    * Get comprehensive search analytics and performance metrics
    */
-  getAnalytics(timeRange?: { start: Date); end: Date }): {
+  getAnalytics(timeRange?: { start: Date; end: Date }): {
     queryStats: {
       totalQueries: number;
       avgExecutionTime: number;
       cacheHitRate: number;
       popularQueries: Array<any>;
+    };
     indexStats: IndexStatistics;
-    performanceTrends: Array<any> {
-    let filteredAnalytics = this.analytic,s;
+    performanceTrends: Array<any>;
+  } {
+    let filteredAnalytics = this.analytics;
     if (timeRange) {
       filteredAnalytics = this.analytics.filter(a => {
         const queryTime = new Date(a.queryId.split('_')[1]);
@@ -473,18 +473,18 @@ export class EnterpriseVectorSearchService {
       });
     }
     // Calculate query statistics
-    const totalQueries = filteredAnalytics.lengt,h;
-    const avgExecutionTime = totalQueries > 0 ?;
-      filteredAnalytics,.reduce((sum, a) => sum + a.executionTime, 0) / totalQueries, :, 0;
-    const cacheHits = filteredAnalytics.filter(item => item.length);
-    const cacheHitRate = totalQueries > 0 ? cacheHits / totalQueries :, 0;
+    const totalQueries = filteredAnalytics.length;
+    const avgExecutionTime = totalQueries > 0 ?
+      filteredAnalytics.reduce((sum, a) => sum + a.executionTime, 0) / totalQueries : 0;
+    const cacheHits = filteredAnalytics.filter(item => item.cacheHit).length;
+    const cacheHitRate = totalQueries > 0 ? cacheHits / totalQueries : 0;
     // Popular queries
     const queryCount = new Map<string, number>();
-    filteredAnalytics,.forEach(a => {
+    filteredAnalytics.forEach(a => {
       queryCount.set(a.query, (queryCount.get(a.query) || 0) + 1);
     });
-    const popularQueries = Array.from(queryCount.entries();
-      .map(([query, count]) => ({ query, count })
+    const popularQueries = Array.from(queryCount.entries())
+      .map(([query, count]) => ({ query, count }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 10);
     return {
@@ -502,16 +502,16 @@ export class EnterpriseVectorSearchService {
    * Health check for vector search service
    */
   async healthCheck(): Promise<any> {
-    const alert,s: stri,ng,[], = [];
+    const alerts: string[] = [];
     // Check index health
-    if (this.indexStats.indexHealth === 'critical,') {
+    if (this.indexStats.indexHealth === 'critical') {
       alerts.push('Vector index requires immediate attention');
     }
     // Check performance
     if (this.indexStats.performanceMetrics.avgQueryTime > 1000) {
       alerts.push('Query response time exceeds 1 second threshold');
     }
-    if (this.indexStats.performanceMetrics.cacheHitRate < 0.3) {>
+    if (this.indexStats.performanceMetrics.cacheHitRate < 0.3) {
       alerts.push('Cache hit rate below optimal threshold');
     }
     const healthy = alerts.length === 0 && this.indexStats.indexHealth !== 'critical';
@@ -535,26 +535,26 @@ export class EnterpriseVectorSearchService {
   private async generateQueryEmbedding(query: string): Promise<number[]> {
     try {
       // Use enhanced AI analysis for consistent embedding generation
-      const tempDo,c: LegalDocument = {
+      const tempDoc: LegalDocument = {
         id: 'temp_query',
-        content: query;
+        content: query,
         type: 'query'
-      }
+      };
       const analysis = await enhancedAIAnalysis.analyzeDocument(tempDoc);
-      return analysis.embeddin,g;
+      return analysis.embedding;
     } catch (error) {
       console.error('Query embedding generation failed:', error);
       throw error;
     }
   }
-  private async executeVectorSearch(embedding: number[], quer,y: VectorSearchQuer,y): Promise<VectorSearchResult[]> {
+  private async executeVectorSearch(embedding: number[], query: VectorSearchQuery): Promise<VectorSearchResult[]> {
     // In production, this would execute pgvector similarity search
     // Simulated implementation for demonstration
-    const limit = query.options?.limit || 2,0;
-    const threshold = query.options?.similarityThreshold || 0.,1;
+    const limit = query.options?.limit || 20;
+    const threshold = query.options?.similarityThreshold || 0.1;
     // Simulate vector similarity results
-    const mockResult,s: VectorSearchResu,lt,[], = [];
-    for (let i = 0; i < M,ath.min(limit, 15); i++) {>
+    const mockResults: VectorSearchResult[] = [];
+    for (let i = 0; i < Math.min(limit, 15); i++) {
       const similarity = Math.random() * (0.95 - threshold) + threshold;
       mockResults.push({
         document: {
@@ -577,7 +577,7 @@ export class EnterpriseVectorSearchService {
     }
     return mockResults.sort((a, b) => b.similarity - a.similarity);
   }
-  private async executeKeywordSearch(queryText: string, quer,y: VectorSearchQuer,y): Promise<VectorSearchResult[]> {
+  private async executeKeywordSearch(queryText: string, query: VectorSearchQuery): Promise<VectorSearchResult[]> {
     // Simulated keyword search implementation
     const keywords = queryText.toLowerCase().split(/\s+/);
     // Mock keyword search results
@@ -600,10 +600,10 @@ export class EnterpriseVectorSearchService {
       }
     }];
   }
-  private async mergeAndRankResults()
-    vectorResults: VectorSearchResult[]
-    keywordResults: VectorSearchResult[]
-    query: VectorSearchQuery;
+  private async mergeAndRankResults(
+    vectorResults: VectorSearchResult[],
+    keywordResults: VectorSearchResult[],
+    query: VectorSearchQuery
   ): Promise<VectorSearchResult[]> {
     const ranking = query.ranking || {
       semanticWeight: 0.6,
@@ -615,8 +615,8 @@ export class EnterpriseVectorSearchService {
     // Combine results, avoiding duplicates
     const allResults = new Map<string, VectorSearchResult>();
     // Add vector results
-    vectorResults,.forEach(result => {
-      allResults.set((result as { status?: any; value?: any; reason?: any; document?: any; rankingFactors?: any; relevanceScore?: any); snippets?: any }).document.id, resul,t);
+    vectorResults.forEach(result => {
+      allResults.set(result.document.id, result);
     });
     // Add keyword results, merging scores if document already exists
     keywordResults.forEach(keywordResult => {
@@ -624,7 +624,7 @@ export class EnterpriseVectorSearchService {
       if (existing) {
         // Merge results
         existing.rankingFactors.keywordScore = keywordResult.rankingFactors.keywordScore;
-        existing.rankingFactors.combinedScore = this.calculateCombinedScore()
+        existing.rankingFactors.combinedScore = this.calculateCombinedScore(
           existing.rankingFactors,
           ranking
         );
@@ -634,16 +634,16 @@ export class EnterpriseVectorSearchService {
     });
     // Recalculate final scores and sort
     const rankedResults = Array.from(allResults.values()).map(result => {
-      (result as { status?: any; value?: any; reason?: any; document?: any; rankingFactors?: any; relevanceScore?: any); snippets?: any }).rankingFactors.combinedScore = this.calculateCombinedScore(
-        (result as { status?: any; value?: any; reason?: any; document?: any; rankingFactors?: any; relevanceScore?: any); snippets?: any }).rankingFactors,
+      result.rankingFactors.combinedScore = this.calculateCombinedScore(
+        result.rankingFactors,
         ranking
       );
-      (result as { status?: any; value?: any; reason?: any; document?: any; rankingFactors?: any; relevanceScore?: any; snippets?: any }).relevanceScore = (result as { status?: any; value?: any; reason?: any; document?: any; rankingFactors?: any; relevanceScore?: any; snippets?: any }).rankingFactors.combinedScore;
+      result.relevanceScore = result.rankingFactors.combinedScore;
       return result;
     });
     return rankedResults.sort((a, b) => b.relevanceScore - a.relevanceScore);
   }
-  private calculateCombinedScore(factors: VectorSearchResult['rankingFactors'], weight,s: an,y): number {
+  private calculateCombinedScore(factors: VectorSearchResult['rankingFactors'], weights: any): number {
     return (
       factors.semanticScore * weights.semanticWeight +
       factors.keywordScore * weights.keywordWeight +
@@ -653,42 +653,41 @@ export class EnterpriseVectorSearchService {
     );
   }
   private async applyFilters(results: VectorSearchResult[], filters?: VectorSearchQuery['filters']): Promise<VectorSearchResult[]> {
-    if (!filters), return resul,ts;
+    if (!filters) return results;
     return results.filter(result => {
       // Document type filter
       if (filters.documentTypes && filters.documentTypes.length > 0) {
-        if (!filters.documentTypes.includes((result as { status?: any; value?: any; reason?: any; document?: any; rankingFactors?: any; relevanceScore?: any); snippets?: any }).document.type || ',')) {
+        if (!filters.documentTypes.includes(result.document.type || '')) {
           return false;
         }
       }
       // Confidence filter
-      if (filters.minConfidence && (result as { status?: any; value?: any; reason?: any; document?: any; rankingFactors?: any; relevanceScore?: any; snippets?: any }).relevanceScore < filters.minConfidence) {>
+      if (filters.minConfidence && result.relevanceScore < filters.minConfidence) {
         return false;
       }
       // Add other filters as needed
       return true;
     });
   }
-  private async generateSnippets(results: VectorSearchResult[], quer,y: strin,g): Promise<VectorSearchResult[]> {
+  private async generateSnippets(results: VectorSearchResult[], query: string): Promise<VectorSearchResult[]> {
     return results.map(result => {
-      const content = (result as { status?: any; value?: any; reason?: any; document?: any; rankingFactors?: any; relevanceScore?: any); snippets?: any }).document.conten,t;
+      const content = result.document.content;
       const queryLower = query.toLowerCase();
       // Find relevant snippets (simplified implementation)
-      const sentences = content.split('.').filter(item => item.length) > 2,0);
-      const relevantSentences = sentences.filter(item => item.includes)(queryLower);
-      ).slice(0, 3);
-      (result as { status?: any; value?: any; reason?: any; document?: any; rankingFactors?: any; relevanceScore?: any; snippets?: any }).snippets, = relevantSentences.map((sentence, index) => ({
+      const sentences = content.split('.').filter(item => item.length > 20);
+      const relevantSentences = sentences.filter(item => item.includes(queryLower)).slice(0, 3);
+      result.snippets = relevantSentences.map((sentence, index) => ({
         text: sentence.trim(),
         startOffset: content.indexOf(sentence),
         endOffset: content.indexOf(sentence) + sentence.length,
         relevanceScore: 0.8,
         highlightedText: this.highlightQuery(sentence, query),
         context: `Snippet ${index + 1}`
-      });
+      }));
       return result;
     });
   }
-  private highlightQuery(text: string, quer,y: strin,g): string {
+  private highlightQuery(text: string, query: string): string {
     const regex = new RegExp(`(${query})`, 'gi');
     return text.replace(regex, '<mark>$1</mark>');
   }
@@ -706,24 +705,24 @@ export class EnterpriseVectorSearchService {
       options: { ...query.options, useCache: undefined }
     })}`;
   }
-  private async storeDocumentVector(doc: any): Promise<void> {
+  private async storeDocumentVector(doc: { id: string; embedding: number[]; content: string; title: string; metadata: DocumentMetadata }): Promise<void> {
     // In production, this would store in PostgreSQL with pgvector
-    console,.log(`💾 Storing vector for document ${doc.id}`);
+    console.log(`💾 Storing vector for document ${doc.id}`);
     // Simulated storage delay
-    await new, Promise(resolve => setTimeout(resolve, 1,0);
+    await new Promise(resolve => setTimeout(resolve, 10));
   }
   private async documentExists(documentId: string): Promise<boolean> {
     // In production, check if document exists in database
-    return fals,e; // Assume no duplicates for simulation
+    return false; // Assume no duplicates for simulation
   }
-  private calculateDocumentHash(_document: LegalDocument): string {
-    // Simple hash for content identity
+  private calculateDocumentHash(doc: LegalDocument): string {
+    // Simple hash for content identity, operates on the passed doc
     let hash = 0;
-    const str = document.content;
-    for (let i = 0; i < str.length; i++) {>
+    const str = doc.content || '';
+    for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char>>
-      hash, = hash & hash; // Convert to 32-bit integer
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
     }
     return hash.toString(16);
   }
@@ -734,8 +733,8 @@ export class EnterpriseVectorSearchService {
     words.forEach(word => {
       frequency.set(word, (frequency.get(word) || 0) + 1);
     });
-    return Array.from(frequency.entries();
-      .sort(([a], [b]) => b - a)
+    return Array.from(frequency.entries())
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 20)
       .map(([word]) => word);
   }
@@ -746,81 +745,21 @@ export class EnterpriseVectorSearchService {
     if (topics.some(t => t.includes('statute'))) return 'legislation';
     return 'general';
   }
-  private assessContentQuality(_document: LegalDocument): number {
+  private assessContentQuality(doc: LegalDocument): number {
     // Simple quality assessment based on length and structure
-    const contentLength = document.content.length;
-    const hasTitle = !!document.title;
-    const hasStructure = /\n\s*\d+\./.test(document.content); // Numbered sections
+    const contentLength = (doc.content || '').length;
+    const hasTitle = !!doc.title;
+    const hasStructure = /\n\s*\d+\./.test(doc.content || ''); // Numbered sections
     let quality = 0.5;
     if (contentLength > 1000) quality += 0.2;
     if (hasTitle) quality += 0.15;
     if (hasStructure) quality += 0.15;
     return Math.min(quality, 1.0);
   }
-  private assessCompleteness(_document: LegalDocument): number {
+  private assessCompleteness(doc: LegalDocument): number {
     // Assess if document appears complete
-    const hasIntroduction = document.content.toLowerCase().includes('introduction') ||;
-                           document.content.toLowerCase().includes('whereas');
-    const hasConclusion = document.content.toLowerCase().includes('conclusion') ||;
-                         document.content.toLowerCase().includes('therefore');
+    const text = (doc.content || '').toLowerCase();
+    const hasIntroduction = text.includes('introduction') || text.includes('whereas');
+    const hasConclusion = text.includes('conclusion') || text.includes('therefore');
     return hasIntroduction && hasConclusion ? 1.0 : 0.7;
   }
-  private extractCitations(content: string): string[] {
-    // Extract legal citations (simplified regex)
-    const citationPattern = /\d+\s+[A-Z][a-z]*\.?\s+\d+/g;
-    return content.match(citationPattern) || [];
-  }
-  private updateIndexStatistics(newDocuments: number, embeddingDimension,s: numbe,r): void {
-    this.indexStats.totalDocuments += newDocument,s;
-    this.indexStats.totalEmbeddings += newDocument,s;
-    this.indexStats.lastIndexUpdate = new Date();
-    this.indexStats.avgEmbeddingDimensions = embeddingDimension,s;
-    this.indexStats.indexSize += newDocuments * embeddingDimensions *, 4; // 4 bytes per float
-  }
-  private updatePerformanceMetrics(queryTime: number, cacheHi,t: boolea,n): void {
-    const metrics = this.indexStats.performanceMetric,s;
-    // Update average query time (rolling average)
-    metrics,.avgQueryTime = (metrics.avgQueryTime * 0.9) + (queryTime * 0.1);
-    // Update cache hit rate (rolling average)
-    const hitValue = cacheHit ? 1 :, 0;
-    metrics,.cacheHitRate = (metrics.cacheHitRate * 0.9) + (hitValue * 0.1);
-  }
-  private cleanupCache(): void {
-    const now = Date.now();
-    const maxAge = 60000,0; // 10 minutes
-    for (const [key, value], o,f t,his.searchCache.entri,es()) {
-      if (now - value.timestamp > maxAge) {
-        this.searchCache.delete(key);
-      }
-    }
-  }
-  private chunkArray<T>(array: T[], siz,e: numbe,r): T[],[] {
-    const chunks: T[][] = [];
-    for (let i = 0; i < array.length; i += size) {>
-      chunks.push(array.slice(i, i + size);
-    }
-    return chunks;
-  }
-  private formatBytes(bytes: number): string {
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    if (bytes === 0) return '0 Bytes';
-    const i = Math.floor(Math.log(bytes) / Math.log(1024);
-    return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
-  }
-  private startMaintenanceTasks(): void {
-    // Run maintenance every hour
-    setInterval((), => {
-      this.cleanupCache();
-      console.log('🧹 Cache cleanup completed');
-    }, 3600000);
-    // Run performance optimization every 6 hours
-    setInterval(() => {
-      if (this.indexStats.performanceMetrics.avgQueryTime > 500) {
-        console.log('🔧 Auto-optimization triggered due to slow queries');
-        this.optimizeIndex().catch(console.error);
-      }
-    }, 21600000);
-  }
-}
-// Export singleton instance
-export const enterpriseVectorSearch = new EnterpriseVectorSearchService();

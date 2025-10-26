@@ -67,7 +67,7 @@
 
   .main-content {
     flex: 1;
-    margin-left: 0,
+    margin-left: 0;
     transition: margin-left 0.3s ease;
     overflow-y: auto;
     background: var(--console-gradient-main, linear-gradient(135deg, #0f0f23, #1a1a2e));
@@ -83,10 +83,10 @@
     margin: 0 auto;
     min-height: 100%;
   }
-/* Responsive design */ {}
+/* Responsive design */
   @media (max-width: 1024px) {
     .main-content.sidebar-open {
-      margin-left: 0,
+      margin-left: 0;
     }
   }
 
@@ -95,13 +95,13 @@
       padding: 1rem;
     }
   }
-/* Gaming theme integration */ {}
+/* Gaming theme integration */
   :global(body) {
     font-family: var(--console-font, 'Inter', sans-serif);
     background: var(--console-bg, #0f0f23);
     color: var(--console-fg, white);
   }
-/* Scrollbar styling */ {}
+/* Scrollbar styling */
   .main-content::-webkit-scrollbar {
     width: 8px;
   }

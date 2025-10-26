@@ -54,7 +54,7 @@
   let webgpuAccelerator = $state<any>(null);
   let processingMetrics = $state({
     tokensPerSecond: 0,
-    gpuUtilization 0,
+    gpuUtilization: 0,
     memoryUsage: 0,
   });
   // Dialog state for analysis panel

@@ -39,10 +39,16 @@ class EvidenceWebSocketServer {
 
   constructor() {
     this.wss = new WebSocketServer({ port: WS_PORT });
-    this.redis = createClient({
+    const redisConfig: any = {
       url: 'redis://localhost:6379',
-      password: process.env.REDIS_PASSWORD || 'redis'
-    });
+    };
+
+    // Only add password if explicitly set
+    if (process.env.REDIS_PASSWORD) {
+      redisConfig.password = process.env.REDIS_PASSWORD;
+    }
+
+    this.redis = createClient(redisConfig);
 
     this.setupRedis();
     this.setupWebSocket();

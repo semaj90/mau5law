@@ -66,7 +66,7 @@ export function loadServiceEnvironment(): ServiceEnvironment {
 		// Redis
 		redisConfig: {
 			url: process.env.REDIS_URL || 'redis://localhost:6379/0',
-			password: process.env.REDIS_PASSWORD || 'redis',
+			password: process.env.REDIS_PASSWORD || undefined,
 			host: process.env.REDIS_HOST || 'localhost',
 			port: parseInt(process.env.REDIS_PORT || '6379', 10),
 			db: 0,

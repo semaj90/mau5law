@@ -91,7 +91,7 @@ https://svelte.dev/e/js_parse_error -->
     fps: 0,
     frameTime: 0,
     shaderCompileTime: 0,
-    gpuUtilization 0,
+  gpuUtilization: 0,
     aaQuality: 0,
     pixelThroughput: 0,
     cacheEfficiency: 0,

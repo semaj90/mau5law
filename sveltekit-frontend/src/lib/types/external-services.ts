@@ -21,6 +21,22 @@ export interface IOllamaChatService {
   chat(messages: { role: 'user' | 'system' | 'assistant'; content: string }[]): Promise<string>;
 }
 
+// Low-level text completion/inference request/response for Ollama or llama.cpp compatible endpoints.
+// These power simple prompt -> text flows used by analysis utilities.
+export type LlamaInferenceRequest = {
+  prompt: string;
+  model: string;
+  maxTokens?: number;
+  temperature?: number;
+  systemPrompt?: string;
+};
+
+export type LlamaInferenceResponse = { text: string };
+
+export interface OllamaInferenceService {
+  infer(request: LlamaInferenceRequest): Promise<LlamaInferenceResponse>;
+}
+
 // Legacy "I*" interfaces were present here and conflicted with canonical
 // interface definitions further down in this file. Replace them with small
 // compatibility aliases mapping to the canonical types to avoid duplicate

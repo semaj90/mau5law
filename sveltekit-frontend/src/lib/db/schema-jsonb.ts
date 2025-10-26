@@ -146,7 +146,7 @@ export const aiSummarizedDocuments = pgTable('ai_summarized_documents', {
   entities: jsonb('entities').default(sql`'[]'::jsonb`).notNull(),
   citations: jsonb('citations').default(sql`'[]'::jsonb`).notNull(),
   summaryData: jsonb('summary_data').default(sql`'{
-    "executive_summary": null
+    "executive_summary": null,
     "key_findings": [],
     "legal_issues": [],
     "recommendations": [],
@@ -156,7 +156,7 @@ export const aiSummarizedDocuments = pgTable('ai_summarized_documents', {
       "mitigation": []
     },
     "confidence_score": 0,
-    "processing_metrics": { [key: string]: any }
+    "processing_metrics": {}
   }'::jsonb`).notNull(),
   // Processing fields
   status: documentStatusEnum('status').default('pending'),
@@ -191,7 +191,7 @@ export const aiSummarizedDocuments = pgTable('ai_summarized_documents', {
   confidenceIdx: index('idx_summary_confidence').on(sql`(summary_data->>'confidence_score')`),
   findingsIdx: index('idx_summary_findings').using('gin', sql`(summary_data->'key_findings')`),
   issuesIdx: index('idx_summary_issues').using('gin', sql`(summary_data->'legal_issues')`)
-});
+}));
 // Vector embeddings table
 export const documentEmbeddings = pgTable('document_embeddings', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -206,7 +206,7 @@ export const documentEmbeddings = pgTable('document_embeddings', {
   documentIdx: index('idx_embeddings_document').on(table.documentId),
   uniqueChunk: uniqueIndex('unique_document_chunk').on(table.documentId, table.chunkIndex),
   // Note: IVFFlat index for vector similarity search would be added via migration
-});
+}));
 // Summarization jobs queue
 export const summarizationJobs = pgTable('summarization_jobs', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -215,7 +215,7 @@ export const summarizationJobs = pgTable('summarization_jobs', {
     "style": "executive",
     "max_length": 500,
     "temperature": 0.2,
-    "include_citations": true
+    "include_citations": true,
     "focus_areas": [],
     "language": "en"
   }'::jsonb`).notNull(),
@@ -231,23 +231,23 @@ export const summarizationJobs = pgTable('summarization_jobs', {
   lockedBy: varchar('locked_by', { length: 100 }),
   lockedAt: timestamp('locked_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow();
-}, (table: any) => ({,
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
+}, (table: any) => ({
   statusPriorityIdx: index('idx_jobs_status_priority').on(table.status, table.priority, table.scheduledAt),
   documentIdx: index('idx_jobs_document').on(table.documentId),
   lockedIdx: index('idx_jobs_locked').on(table.lockedBy, table.lockedAt)
-});
+}));
 // User preferences
 export const userPreferences = pgTable('user_preferences', {
   userId: uuid('user_id').primaryKey(),
   preferences: jsonb('preferences').default(sql`'{
     "default_style": "executive",
     "max_summary_length": 500,
-    "include_citations": true
-    "auto_summarize": false
+    "include_citations": true,
+    "auto_summarize": false,
     "notification_settings": {
-      "email": true
-      "push": false
+      "email": true,
+      "push": false,
       "webhook_url": null
     },
     "api_limits": {
@@ -270,7 +270,7 @@ export const schema = {
   documentEmbeddings,
   summarizationJobs,
   userPreferences
-}
+};
 // Type exports for use in application
 export type AISummarizedDocument = typeof aiSummarizedDocuments.$inferSelect;
 export type NewAISummarizedDocument = typeof aiSummarizedDocuments.$inferInsert;

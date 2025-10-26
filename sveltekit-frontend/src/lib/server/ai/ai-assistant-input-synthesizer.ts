@@ -10,12 +10,18 @@ import type { EmbeddingItem, SearchResult } from '$lib/types/sharedTypes'; // Im
 import { parallelVectorSearch, cosineSimilarity } from '$lib/utils/fastSearch'; // Import fast search utilities
 
 // Initialize Redis and Qdrant clients
-const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
-  password: process.env.REDIS_PASSWORD || 'redis',
+const redisConfig: any = {
   lazyConnect: true,
   maxRetriesPerRequest: 3,
   enableOfflineQueue: false
-});
+};
+
+// Only add password if explicitly set (avoid AUTH on passwordless Redis)
+if (process.env.REDIS_PASSWORD) {
+  redisConfig.password = process.env.REDIS_PASSWORD;
+}
+
+const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', redisConfig);
 const qdrant = new createClient({ url: process.env.QDRANT_URL || 'http://localhost:6333' });
 
 // Simple metrics stub for missing metrics dependency

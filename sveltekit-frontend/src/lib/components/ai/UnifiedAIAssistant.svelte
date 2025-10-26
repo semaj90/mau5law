@@ -29,7 +29,7 @@
     tokensPerSecond: 0,
     contextLength: 0,
     memoryUsage: 0,
-    gpuUtilization 0,
+  gpuUtilization: 0,
   });
   let assistantConfig = $state({
     model: 'gemma3-legal',

@@ -139,7 +139,7 @@
             <button type="submit" class="space-y-4" disabled={isUpdating}>
               {isUpdating ? 'Updating...' : 'Save Changes'}
             </button>
-            <a href="/dashboard" class="space-y-4"> Cancel </a>
+            <a href="/ai/dashboard" class="space-y-4"> Cancel </a>
           </div>
         </form>
       </div>

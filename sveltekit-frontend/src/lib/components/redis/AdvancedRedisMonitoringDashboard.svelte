@@ -13,7 +13,7 @@ Enhanced with live metrics, GPU integration, and SIMD parser statistics
   const liveMetrics = writable({
     timestamp: Date.now(),
     redis: { hit_rate: 0, memory_usage: 0, connections: 0 },
-    gpu: { utilization 0, memory_used: 0, temperature: 0 },
+  gpu: { utilization: 0, memory_used: 0, temperature: 0 },
     simd: { cache_hit_rate: 0, parse_performance: 0, backends_active: 0 },
     mcp: { workers_active: 0, requests_per_second: 0, avg_response_time: 0 },
     endpoints: { optimized: 78, total: 90, performance_gain: 0 }

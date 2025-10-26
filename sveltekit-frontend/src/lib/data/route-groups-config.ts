@@ -449,9 +449,9 @@ export const legacyRouteMapping: Record<string, string> = {
   // Core functionality preserved
   '/login': '/auth/login',
   '/register': '/auth/register',
-  '/profile': '/profile',
+  // '/profile': '/profile', // REMOVED: Self-referential mapping causes infinite redirect loop
   // '/reports': '/reports', // REMOVED: Self-referential mapping causes infinite redirect loop
-  '/settings': '/settings',
+  // '/settings': '/settings', // REMOVED: Self-referential mapping causes infinite redirect loop
   // Demo and development routes preserved
   // '/cuda-streaming': '/cuda-streaming', // Removed duplicate of earlier mapping to avoid duplicate key warning
   '/shader-cache': '/shader-cache',

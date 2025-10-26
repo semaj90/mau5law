@@ -24,7 +24,7 @@ export const documentVectors = pgTable("document_vectors", {
 }, (table: any) => ({
   embeddingIdx: index("document_vectors_embedding_idx").using("ivfflat", table.embedding.op("vector_cosine_ops")),
   documentIdx: index("document_vectors_document_idx").on(table.documentId)
-});
+}));
 // Case summary vectors for case-level search
 export const caseSummaryVectors = pgTable("case_summary_vectors", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -35,7 +35,7 @@ export const caseSummaryVectors = pgTable("case_summary_vectors", {
   lastUpdated: timestamp("last_updated").defaultNow().notNull()
 }, (table: any) => ({
   embeddingIdx: index("case_summary_vectors_embedding_idx").using("ivfflat", table.embedding.op("vector_cosine_ops"))
-});
+}));
 // Evidence vectors for evidence search
 export const evidenceVectors = pgTable("evidence_vectors", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -43,13 +43,13 @@ export const evidenceVectors = pgTable("evidence_vectors", {
   chunkIndex: integer("chunk_index").notNull(),
   content: text("content").notNull(),
   embedding: vector("embedding", { dimensions: 384 }).notNull(),
-  analysisType: text("analysis_type"), // summary, entities, sentiment, classification;
+  analysisType: text("analysis_type"), // summary, entities, sentiment, classification
   metadata: jsonb("metadata"),
   createdAt: timestamp("created_at").defaultNow().notNull()
 }, (table: any) => ({
   embeddingIdx: index("evidence_vectors_embedding_idx").using("ivfflat", table.embedding.op("vector_cosine_ops")),
   evidenceIdx: index("evidence_vectors_evidence_idx").on(table.evidenceId)
-});
+}));
 // User query vectors for search history and recommendations
 export const queryVectors = pgTable("query_vectors", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -62,7 +62,7 @@ export const queryVectors = pgTable("query_vectors", {
 }, (table: any) => ({
   embeddingIdx: index("query_vectors_embedding_idx").using("ivfflat", table.embedding.op("vector_cosine_ops")),
   userIdx: index("query_vectors_user_idx").on(table.userId)
-});
+}));
 // Knowledge graph nodes for recommendation system
 export const knowledgeNodes = pgTable("knowledge_nodes", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -76,7 +76,7 @@ export const knowledgeNodes = pgTable("knowledge_nodes", {
 }, (table: any) => ({
   embeddingIdx: index("knowledge_nodes_embedding_idx").using("ivfflat", table.embedding.op("vector_cosine_ops")),
   nodeTypeIdx: index("knowledge_nodes_type_idx").on(table.nodeType)
-});
+}));
 // Knowledge graph edges for relationships
 export const knowledgeEdges = pgTable("knowledge_edges", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -90,19 +90,19 @@ export const knowledgeEdges = pgTable("knowledge_edges", {
   sourceIdx: index("knowledge_edges_source_idx").on(table.sourceId),
   targetIdx: index("knowledge_edges_target_idx").on(table.targetId),
   relationshipIdx: index("knowledge_edges_relationship_idx").on(table.relationship)
-});
+}));
 // Cached recommendations for users
 export const recommendationCache = pgTable("recommendation_cache", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id").references(() => users.id).notNull(),
   recommendationType: text("recommendation_type").notNull(), // case, evidence, document
-  recommendations: jsonb("recommendations").notNull(), // Array of recommended items;
+  recommendations: jsonb("recommendations").notNull(), // Array of recommended items
   score: real("score").default(0),
   expiresAt: timestamp("expires_at").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull()
 }, (table: any) => ({
   userTypeIdx: index("recommendation_cache_user_type_idx").on(table.userId, table.recommendationType)
-});
+}));
 // Import required types from main schema
 import { documents, cases, evidence, users } from '../schema';
 // Helper functions for vector operations
@@ -116,7 +116,7 @@ export const vectorOperations = {
   // Hybrid search combining vector and keyword search
   hybridSearch: (vectorScore: any, textScore: any, vectorWeight: number = 0.7) =>
     sql`(${vectorScore} * ${vectorWeight} + ${textScore} * ${1 - vectorWeight})`
-}
+};
 // Export types
 export type DocumentVector = typeof documentVectors.$inferSelect;
 export type NewDocumentVector = typeof documentVectors.$inferInsert;

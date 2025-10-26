@@ -64,7 +64,7 @@
           </svg>
           Profile Settings
         </a>
-        <a href="/dashboard" class="dropdown-item">
+  <a href="/ai/dashboard" class="dropdown-item">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M1 3h14v2H1V3ZM1 7h14v2H1V7ZM1 11h14v2H1v-2Z" fill="currentColor" />
           </svg>

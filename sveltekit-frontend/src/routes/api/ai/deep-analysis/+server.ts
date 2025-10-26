@@ -13,212 +13,224 @@
  * - Cache hits: ~2ms response time
  * - Fresh queries: Background processing for complex requests
  *
- * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
- */
-import type { RequestHandler } from './$types.js'
-/*
- * Deep Legal Analysis API Endpoint
+ * Applied by Redis Mass Optimizer - Nintendo-Level AI Performanceeep Legal Analysis API Endpoint
  * Provides comprehensive legal text analysis using LegalBERT and enhanced processing
  */
-import { analyzeLegalText } from "$lib/services/comprehensive-database-orchestrator"
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-}
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { analyzeLegalText } from '$lib/services/comprehensive-database-orchestrator';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import { getOllamaEndpoint } from '$lib/utils/ollama'; // Import the centralized utility
+
 export interface DeepAnalysisRequest {
-  text: string
-  userRole?: string
-  caseId?: string
+  text: string;
+  userRole?: string;
+  caseId?: string;
   options?: {
-    includeEntities?: boolean
-    includeConcepts?: boolean
-    includeSentiment?: boolean
-    includeComplexity?: boolean
-    includeRecommendations?: boolean
-  }
+    includeEntities?: boolean;
+    includeConcepts?: boolean;
+    includeSentiment?: boolean;
+    includeComplexity?: boolean;
+    includeRecommendations?: boolean;
+  };
 }
-const originalPOSTHandler: RequestHandler = async ({ request }) => {
-  const startTime = Date.now()
+
+// Add: small endpoint helper that prefers docker service name then fallbacks
+// REMOVED: getOllamaEndpoint function definition moved to src/lib/utils/ollama.ts
+
+const OLLAMA_API_URL = getOllamaEndpoint(); // Use the imported function
+const FASTAPI_LEGALBERT_URL = process.env.FASTAPI_LEGALBERT_URL ?? 'http://localhost:8099';
+
+// Replace any with explicit lightweight types
+type EmbedderFn = (input: string) => Promise<unknown>;
+
+// Define a type for the dynamically imported langextract module
+interface LangExtractModule {
+  extractEntities: (text: string) => Promise<Array<Record<string, unknown>>>;
+}
+
+let embedder: EmbedderFn | null = null;
+async function getEmbedder(): Promise<EmbedderFn | null> {
+  if (embedder) return embedder;
   try {
-    const body: DeepAnalysisRequest = await request.json()
-    const { text, userRole, caseId, options = {} } = body
-    if (!text?.trim()) {
-      return json({ error: 'Text is required for analysis' }, { status: 400 })
+    // minimal type guard for dynamic import
+    type TransformersModule = { pipeline?: (...args: unknown[]) => Promise<unknown> | unknown };
+    const mod = (await import('@xenova/transformers')) as unknown as TransformersModule;
+    if (typeof mod?.pipeline === 'function') {
+      // pipeline can return various shapes; cast to our function signature
+      const p = await mod.pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
+      if (typeof p === 'function') {
+        embedder = p as unknown as EmbedderFn;
+        return embedder;
+      }
     }
-    // Default options
+  } catch (e) {
+    console.warn('Transformers embedder not available:', (e as Error).message);
+  }
+  return null;
+}
+
+const originalPOSTHandler: RequestHandler = async ({ request }) => {
+  const startTime = Date.now();
+
+  try {
+    const body = (await request.json()) as DeepAnalysisRequest;
+    const { text, userRole = 'guest', caseId, options = {} } = body ?? {};
+
+    if (!text || !text.trim()) {
+      return json({ error: 'Text is required for analysis' }, { status: 400 });
+    }
+
     const analysisOptions = {
       includeEntities: true,
       includeConcepts: true,
       includeSentiment: true,
       includeComplexity: true,
       includeRecommendations: true,
-      ...options
+      ...options,
+    };
+
+    // 1) Try local LegalBERT (FastAPI ONNX)
+    try {
+      const resp = await fetch(`${FASTAPI_LEGALBERT_URL}/analyze`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, options: analysisOptions }),
+      });
+      if (resp.ok) {
+        const result = await resp.json();
+        return json({
+          source: 'legalbert-onnx',
+          ...result,
+          metadata: {
+            processingTime: Date.now() - startTime,
+            engine: 'legalbert-onnx',
+            role: userRole,
+            caseId,
+          },
+        });
+      }
+    } catch (e) {
+      // fallback to Ollama - continue flow
+      console.warn('LegalBERT ONNX call failed, falling back to Ollama:', (e as Error).message);
     }
-    // Perform deep legal analysis
-    const analysis = await analyzeLegalText(text, analysisOptions)
-    // Generate role-specific recommendations
-    const recommendations = generateRoleSpecificRecommendations(analysis, userRole, text)
-    // Extract key points
-    const keyPoints = extractKeyPoints(analysis, text)
-    // Calculate overall analysis confidence
-    const confidence = calculateAnalysisConfidence(analysis)
-    // Generate next steps
-    const nextSteps = generateNextSteps(analysis, userRole, caseId)
+
+    // 2) Ollama (Gemma3) fallback
+    let ollamaOutput = 'No output from Ollama';
+    try {
+      const ollamaResp = await fetch(`${OLLAMA_API_URL}/api/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'gemma3:270m',
+          prompt: `Analyze the following legal text comprehensively:\n\n${text}`,
+          stream: false,
+        }),
+      });
+      if (ollamaResp.ok) {
+        const ollamaData = await ollamaResp.json();
+        // handle common response shapes safely
+        ollamaOutput = ollamaData.response ?? ollamaData.output ?? JSON.stringify(ollamaData);
+      } else {
+        ollamaOutput = `Ollama responded with status ${ollamaResp.status}`;
+      }
+    } catch (e) {
+      ollamaOutput = `Ollama request failed: ${(e as Error).message}`;
+    }
+
+    // 3) LangExtract tagging (dynamic import, safe fallback)
+    let entities: Array<Record<string, unknown>> = [];
+    try {
+      const le = (await import('$lib/server/langextract.js')) as unknown as LangExtractModule;
+      // safe-call if extractEntities exists
+      if (le && typeof le.extractEntities === 'function') {
+        // (lib may return any shape) treat result as unknown[] and normalize
+        const raw = await le.extractEntities(text);
+        if (Array.isArray(raw)) entities = raw as Array<Record<string, unknown>>;
+      }
+    } catch (e) {
+      console.warn('LangExtract not available or failed:', (e as Error).message);
+      entities = [];
+    }
+
+    // 4) Embeddings via transformers pipeline (best-effort)
+    let embedding: number[] | null = null;
+    try {
+      const emb = await getEmbedder();
+      if (emb) {
+        const embResp = await emb(text);
+        // normalize common pipeline outputs defensively
+        const maybe = embResp as unknown;
+        // try known shapes without assuming types
+        if (Array.isArray((maybe as any)?.data?.[0])) {
+          embedding = (maybe as any).data[0].slice(0, 384) as number[];
+        } else if (Array.isArray((maybe as any)?.[0])) {
+          embedding = (maybe as any)[0].slice(0, 384) as number[];
+        }
+      }
+    } catch (e) {
+      console.warn('Embedding generation failed:', (e as Error).message);
+      embedding = null;
+    }
+
+    // 5) Optional orchestration postprocess (comprehensive service)
+    type AnalysisResult = {
+      confidence?: number;
+      entities?: unknown[];
+      summary?: string;
+      concepts?: unknown;
+      sentiment?: unknown;
+      [k: string]: unknown;
+    } | null;
+
+    let analysis: AnalysisResult = null;
+    try {
+      analysis = (await analyzeLegalText(text, analysisOptions)) as AnalysisResult;
+    } catch (e) {
+      console.warn('analyzeLegalText failed or not available:', (e as Error).message);
+      analysis = null;
+    }
+
+    // Build unified response
+    // compute confidence explicitly (avoid redundant nullish coalescing)
+    const confidence =
+      typeof analysis?.confidence === 'number'
+        ? analysis!.confidence
+        : Array.isArray(analysis?.entities) && (analysis!.entities as unknown[]).length > 0
+          ? 0.6
+          : 0.5;
+
     const result = {
-      ...analysis,
-      recommendations,
-      keyPoints,
-      nextSteps,
+      source: analysis ? 'orchestrator' : 'ollama-fallback',
+      summary: analysis?.summary ?? ollamaOutput,
+      entities: analysis?.entities ?? entities,
+      concepts: (analysis?.concepts ?? analysisOptions.includeConcepts) ? [] : undefined,
+      sentiment: analysis?.sentiment ?? undefined,
+      embedding,
+      analysis,
       metadata: {
         processingTime: Date.now() - startTime,
-        textLength: text.length,
-        userRole,
+        engine: analysis ? 'orchestrator+legalbert/ollama' : 'ollama',
+        role: userRole,
         caseId,
         analysisOptions,
-        confidence
-      }
-    }
-    return json(result)
-  } catch (error: any) {
-    console.error('Deep analysis API error:', error)
-    return json()
+        confidence,
+      },
+    };
+
+    return json(result);
+  } catch (error: unknown) {
+    console.error('Deep analysis API error:', error);
+    return json(
       {
         error: 'Analysis failed',
-        message,: error.message,
-        processingTime,: Date.now() - startTime;
+        message: error instanceof Error ? error.message : 'Unknown error',
+        processingTime: Date.now() - startTime,
       },
       { status: 500 }
-    )
+    );
   }
-}
-function generateRoleSpecificRecommendations(
-  analysis: any,
-  userRole?: string,
-  text?: string
-): string[] {
-  const recommendations = []
-  switch (userRole) {
-    case 'prosecutor':
-      if (analysis.entities?.some((e: any) => e.type === 'LEGAL_CONCEPT')) {
-        recommendations.push('Consider gathering evidence related to identified legal concepts')
-      }
-      if (analysis.complexity?.legalComplexity > 0.7) {
-        recommendations.push('This complex matter may require expert witnesses')
-      }
-      recommendations.push('Document all legal research and case precedents')
-      recommendations.push('Prepare for potential defense arguments')
-      break
-    case 'defense':
-      recommendations.push('Review all prosecution evidence critically')
-      if (analysis.entities?.some((e: any) => e.type === 'STATUTE')) {
-        recommendations.push('Research constitutional challenges to cited statutes')
-      }
-      recommendations.push('Identify potential mitigating factors')
-      break
-    case 'judge':
-      recommendations.push('Ensure all parties have adequate time for preparation')
-      if (analysis.complexity?.legalComplexity > 0.8) {
-        recommendations.push('Consider scheduling additional time for oral arguments')
-      }
-      recommendations.push('Review jurisdictional precedents')
-      break;
-    default:
-      recommendations.push('Consult with qualified legal counsel')
-      recommendations.push('Gather all relevant documentation')
-      recommendations.push('Research applicable laws and regulations')
-  }
-  // Add general recommendations based on analysis
-  if (analysis.entities?.length > 5) {
-    recommendations.push(
-      'This matter involves multiple legal entities - create a comprehensive case map'
-    )
-  }
-  if (analysis.sentiment?.classification === 'negative') {
-    recommendations.push(
-      'The tone suggests potential conflict - consider mediation or settlement options'
-    )
-  }
-  return recommendations
-}
-function extractKeyPoints(analysis: any, text: string): string[] {
-  const keyPoints = []
-  // From summary
-  if (analysis.summary?.keyPoints) {
-    keyPoints.push(...analysis.summary.keyPoints)
-  }
-  // From entities
-  if (analysis.entities?.length > 0) {
-    const importantEntities = analysis.entities
-      .filter((e: any) => e.confidence > 0.8)
-      .slice(0, 3)
-      .map((e: any) => `Key legal concept: ${e.text}`)
-    keyPoints.push(...importantEntities)
-  }
-  // From concepts
-  if (analysis.concepts?.length > 0) {
-    const topConcepts = analysis.concepts
-      .filter((c: any) => c.relevance > 0.8)
-      .slice(0, 2)
-      .map((c: any) => `Important legal area: ${c.concept}`)
-    keyPoints.push(...topConcepts)
-  }
-  // From complexity
-  if (analysis.complexity?.legalComplexity > 0.7) {
-    keyPoints.push('High legal complexity detected - requires careful analysis')
-  }
-  return keyPoints.slice(0, 5); // Limit to top 5 key points
-}
-function calculateAnalysisConfidence(analysis: any): number {
-  let confidence = 0.5
-  // Boost from entities
-  if (analysis.entities?.length > 0) {
-    const avgEntityConfidence =
-      analysis.entities.reduce((sum: number, e: any) => sum + e.confidence, 0) /
-      analysis.entities.length
-    confidence += avgEntityConfidence * 0.3
-  }
-  // Boost from concepts
-  if (analysis.concepts?.length > 0) {
-    const avgConceptRelevance =
-      analysis.concepts.reduce((sum: number, c: any) => sum + c.relevance, 0) /
-      analysis.concepts.length
-    confidence += avgConceptRelevance * 0.2
-  }
-  // Boost from sentiment confidence
-  if (analysis.sentiment?.confidence) {
-    confidence += analysis.sentiment.confidence * 0.1
-  }
-  return Math.min(confidence, 1.0)
-}
-function generateNextSteps(analysis: any, userRole?: string, caseId?: string): string[] {
-  const steps = []
-  if (caseId) {
-    steps.push(`Document this analysis in Case ${caseId}`)
-  }
-  // Based on analysis results
-  if (analysis.entities?.some((e: any) => e.type === 'CASE_CITATION')) {
-    steps.push('Research cited cases for precedential value')
-  }
-  if (analysis.entities?.some((e: any) => e.type === 'STATUTE')) {
-    steps.push('Verify current status of referenced statutes')
-  }
-  if (analysis.complexity?.legalComplexity > 0.6) {
-    steps.push('Consider consulting subject matter experts')
-  }
-  // Role-specific steps
-  switch (userRole) {
-    case 'prosecutor':
-      steps.push('Prepare charging documents if warranted')
-      steps.push('Coordinate with law enforcement for additional evidence')
-      break
-    case 'defense':
-      steps.push('Interview client about identified legal issues')
-      steps.push('Research potential defenses and mitigating factors')
-      break
-    case 'paralegal':
-      steps.push('Prepare research memo for supervising attorney')
-      steps.push('Organize supporting documents and exhibits')
-      break
-  }
-  steps.push('Schedule follow-up review of legal developments')
-  return steps
-}
-export const POST = redisOptimized.aiAnalysis(originalPOSTHandler);
+};
+
+// ensure the wrapped handler satisfies SvelteKit's RequestHandler type
+export const POST = redisOptimized.aiAnalysis(originalPOSTHandler) as RequestHandler;

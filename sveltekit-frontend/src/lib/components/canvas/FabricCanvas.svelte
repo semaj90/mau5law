@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import Button from '$lib/components/ui/Button.svelte';
   import * as Card from '$lib/components/ui/card';
   import {
@@ -86,15 +86,20 @@
     return mod.fabric ?? mod.default ?? mod;
   }
 
-  $effect(() => {
+  // Initialize Fabric.js only on the client (onMount). This prevents any
+  // top-level DOM access during SSR and keeps the component SSR-safe.
+  onMount(() => {
+    let mounted = true;
+
     (async () => {
       try {
         const fabric = await getFabric();
-        fabricCanvas = new fabric.Canvas(canvasElement, {
+        if (!mounted) return;
+        fabricCanvas = new fabric.Canvas(canvasElement as HTMLCanvasElement, {
           width,
           height,
           backgroundColor: '#f8fafc',
-          selection !readOnly,
+          selection: !readOnly,
         });
         if (gridEnabled) {
           drawGrid(fabric);
@@ -106,6 +111,22 @@
         console.error('Failed to initialize Fabric canvas:', error);
       }
     })();
+
+    return () => {
+      mounted = false;
+    };
+  });
+
+  // Dispose fabric instance on destroy to avoid leaking WebGL/Canvas resources
+  onDestroy(() => {
+    try {
+      if (fabricCanvas && typeof fabricCanvas.dispose === 'function') {
+        (fabricCanvas as any).dispose();
+      }
+    } catch (err) {
+      // ignore disposal errors
+    }
+    fabricCanvas = null;
   });
 
   function drawGrid(fabric: any) {
@@ -448,11 +469,8 @@
 
   function exportCanvas() {
     if (!fabricCanvas) return;
-    const dataURL = fabricCanvas.toDataURL({
-      format: 'png',
-      quality: 1,
-      multiplier: 2,
-    });
+    if (typeof document === 'undefined') return; // SSR-safe guard
+    const dataURL = fabricCanvas.toDataURL({ format: 'png', quality: 1, multiplier: 2 });
     const link = document.createElement('a');
     link.download = `case-${caseId || 'canvas'}-${Date.now()}.png`;
     link.href = dataURL;

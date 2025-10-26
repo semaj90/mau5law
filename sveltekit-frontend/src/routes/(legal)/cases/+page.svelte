@@ -21,7 +21,8 @@
 
       if (response.ok) {
         const data = await response.json();
-        cases = data.data?.cases || [];
+        // API returns { cases: [...], pagination: {...} }
+        cases = data.cases || [];
         error = null;
       } else {
         const errorData = await response.json().catch(() => ({ error: 'Failed to load cases' }));
@@ -124,7 +125,7 @@
 
   .page-header {
     display: flex;
-    justify-content: space-betweennnn;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
   }
@@ -218,7 +219,7 @@
 
   .case-header {
     display: flex;
-    justify-content: space-betweennnn;
+    justify-content: space-between;
     align-items: start;
     margin-bottom: 1rem;
   }

@@ -256,7 +256,7 @@ export class PredictivePrefetcher {
       },
       {
         name: "Case Creation Workflow",
-        sequence: ["/dashboard", "/cases/new", "/evidence/upload", "/review"],
+  sequence: ["/ai/dashboard", "/cases/new", "/evidence/upload", "/review"],
         triggerConditions: {
           userRole: "detective",
           recentAction: "investigation_complete",

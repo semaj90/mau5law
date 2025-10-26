@@ -38,7 +38,7 @@
     totalProcessingTime: 0,
     averageSpeed: 0,
     cacheHitRate: 0,
-    workerUtilization 0,
+  workerUtilization: 0,
     simdPerformance: 0,
   });
 

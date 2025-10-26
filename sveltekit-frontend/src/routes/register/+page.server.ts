@@ -8,7 +8,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types.js';
 export const load: PageServerLoad = async ({ locals }) => {
   if (locals.user) {
-    throw redirect(303, '/dashboard');
+  throw redirect(303, '/(ai)/dashboard');
   }
   const form = await superValidate(zod(registerSchema), {
     id: 'register',

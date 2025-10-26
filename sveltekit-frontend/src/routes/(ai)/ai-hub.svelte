@@ -11,7 +11,7 @@
   const aiStats = {
     modelsActive: 5,
     inferencesPerHour: 1247,
-    gpuUtilization 78,
+    gpuUtilization: 78,
     averageResponseTime: 0.85,
   };
 

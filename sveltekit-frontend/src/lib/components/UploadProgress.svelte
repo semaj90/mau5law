@@ -49,7 +49,7 @@ https://svelte.dev/e/js_parse_error -->
     uploadSpeed: 0,
     processingTime: 0,
     memoryUsage: 0,
-    gpuUtilization 0,
+  gpuUtilization: 0,
   });
   $effect(() => {
     initializeWebSocket();

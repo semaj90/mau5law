@@ -132,7 +132,7 @@ https://svelte.dev/e/js_parse_error -->
         </div>
         <h3 class="space-y-4">Case Analytics</h3>
         <p class="space-y-4">View insights and patterns across your cases</p>
-        <a href="/dashboard" class="space-y-4"> View Dashboard </a>
+  <a href="/ai/dashboard" class="space-y-4"> View Dashboard </a>
       </div>
     </div>
   </div>

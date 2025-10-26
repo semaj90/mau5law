@@ -102,7 +102,7 @@
         class="fixed inset-0 z-40"
         onclick={closeDropdown}
         role="presentation"
-      />
+      ></div>
     {/if}
   </div>
 {/if}

@@ -7,9 +7,11 @@
  * - Object fetching with metadata
  * - Batch operations for multiple objects
  * - Content type detection and validation
+ * - Dynamic service discovery support
  */
 import { S3Client, GetObjectCommand, ListObjectsV2Command, PutObjectCommand } from "@aws-sdk/client-s3";
 import { Readable } from "stream";
+import { getServiceDiscovery, COMMON_SERVICES } from '$lib/server/helpers/service-discovery';
 
 // Define a type for the S3 client configuration specific to MinIO
 interface MinioS3ClientConfig {
@@ -22,20 +24,71 @@ interface MinioS3ClientConfig {
   forcePathStyle: boolean;
 }
 
+// Cache for discovered Minio endpoint
+let cachedMinioEndpoint: string | null = null;
+
+/**
+ * Get MinIO endpoint with dynamic discovery support
+ * Priority:
+ * 1. Environment variable (MINIO_ENDPOINT)
+ * 2. Docker service discovery (if enabled)
+ * 3. Hardcoded default (http://localhost:9000)
+ */
+async function getMinioEndpoint(): Promise<string> {
+  // Return cached endpoint if available
+  if (cachedMinioEndpoint) {
+    return cachedMinioEndpoint;
+  }
+
+  try {
+    // Try service discovery first
+    const discovery = getServiceDiscovery();
+    const result = await discovery.getServiceUrl('minio', COMMON_SERVICES.minio);
+    cachedMinioEndpoint = result.url;
+    console.debug(`[Minio] Endpoint: ${result.url} (source: ${result.source})`);
+    return cachedMinioEndpoint;
+  } catch (error) {
+    // Fallback to env var or default
+    const endpoint = process.env.MINIO_ENDPOINT || "http://localhost:9000";
+    cachedMinioEndpoint = endpoint;
+    console.debug(`[Minio] Using fallback endpoint: ${endpoint}`);
+    return endpoint;
+  }
+}
+
 /**
  * Helper function to get the S3Client instance, encapsulating configuration logic.
- * Handles local MinIO endpoints and ensures robust environment variable usage.
+ * Handles local MinIO endpoints with service discovery support.
  */
-export function getMinioS3Client(): S3Client {
-  const endpoint = process.env.MINIO_ENDPOINT || "http://localhost:9000";
+export async function getMinioS3Client(): Promise<S3Client> {
+  const endpoint = await getMinioEndpoint();
   const region = process.env.MINIO_REGION || "us-east-1";
   const accessKeyId = process.env.MINIO_KEY || "minioadmin";
   const secretAccessKey = process.env.MINIO_SECRET || "minioadmin";
-  return new S3Client({ endpoint, region, credentials: { accessKeyId, secretAccessKey }, forcePathStyle: true });
+
+  return new S3Client({
+    endpoint,
+    region,
+    credentials: { accessKeyId, secretAccessKey },
+    forcePathStyle: true
+  });
 }
 
-// S3 client for ingestion pipeline (separate from main MinIO service)
-export const S3 = getMinioS3Client();
+// Lazy-initialized S3 client (initialized on first use)
+let S3Client_: S3Client | null = null;
+
+/**
+ * Get or initialize the S3 client singleton
+ */
+async function getS3Client(): Promise<S3Client> {
+  if (!S3Client_) {
+    S3Client_ = await getMinioS3Client();
+  }
+  return S3Client_;
+}
+
+// Export for backward compatibility (but now async)
+export const S3 = getS3Client();
 
 /**
  * Convert stream to buffer for processing
@@ -64,7 +117,8 @@ export function parseMinioUrl(url: string): { bucket: string; key: string } {
 export async function fetchMinioObject(url: string) {
   const { bucket, key } = parseMinioUrl(url);
   try {
-    const res = await S3.send(new GetObjectCommand({ Bucket: bucket, Key: key }));
+    const client = await getS3Client();
+    const res = await client.send(new GetObjectCommand({ Bucket: bucket, Key: key }));
     const buffer = await streamToBuffer(res.Body as Readable);
     return { buffer, contentType: res.ContentType, metadata: res.Metadata, size: res.ContentLength };
   } catch (error) {
@@ -74,6 +128,7 @@ export async function fetchMinioObject(url: string) {
 
 export async function uploadMinioObject(bucket: string, key: string, file: File, userId: string) {
 	const buffer = Buffer.from(await file.arrayBuffer());
-	await S3.send(new PutObjectCommand({ Bucket: bucket, Key: `${userId}/${key}`, Body: buffer, ContentType: file.type }));
+	const client = await getS3Client();
+	await client.send(new PutObjectCommand({ Bucket: bucket, Key: `${userId}/${key}`, Body: buffer, ContentType: file.type }));
 	return `minio://${bucket}/${userId}/${key}`;
 }

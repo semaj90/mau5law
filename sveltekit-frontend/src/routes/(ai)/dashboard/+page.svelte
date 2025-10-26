@@ -6,14 +6,44 @@
 
   let { data }: { data: PageData } = $props();
 
-  const aiStats = $state({
+  const stats = $derived(data.stats || {
+    activeCases: 12,
     activeChats: 3,
     ragQueries: 47,
     documentsAnalyzed: 234,
     citationsFound: 89,
     casesProcessed: 12,
-    assistantSessions: 8
+    assistantSessions: 8,
+    evidenceUploaded: 156,
+    tasksCompleted: 89,
+    recentActivity: 24
   });
+
+  const recentCases = $derived(data.recentCases || []);
+
+  const aiStats = $state({
+    activeChats: stats.activeChats,
+    ragQueries: stats.ragQueries,
+    documentsAnalyzed: stats.documentsAnalyzed,
+    citationsFound: stats.citationsFound,
+    casesProcessed: stats.casesProcessed,
+    assistantSessions: stats.assistantSessions
+  });
+
+  const statusColors: Record<string, { bg: string; text: string; label: string }> = {
+    open: { bg: '#4caf50', text: '#fff', label: '🟢 Open' },
+    investigating: { bg: '#ff9800', text: '#fff', label: '🔍 Investigating' },
+    pending: { bg: '#ffd700', text: '#000', label: '⏳ Pending' },
+    closed: { bg: '#666', text: '#fff', label: '✅ Closed' },
+    archived: { bg: '#999', text: '#fff', label: '📦 Archived' }
+  };
+
+  const priorityColors: Record<string, string> = {
+    Critical: '#ff1744',
+    High: '#ff9800',
+    Medium: '#ffd700',
+    Low: '#4caf50'
+  };
 
   const aiServices = [
     {
@@ -221,6 +251,12 @@
     <div class="stats-grid">
       <Card class="stat-card">
         <CardContent>
+          <div class="stat-value">{stats.activeCases || 0}</div>
+          <div class="stat-label">Active Cases</div>
+        </CardContent>
+      </Card>
+      <Card class="stat-card">
+        <CardContent>
           <div class="stat-value">{aiStats.activeChats}</div>
           <div class="stat-label">Active Chats</div>
         </CardContent>
@@ -237,14 +273,55 @@
           <div class="stat-label">Documents Analyzed</div>
         </CardContent>
       </Card>
-      <Card class="stat-card">
-        <CardContent>
-          <div class="stat-value">{aiStats.citationsFound}</div>
-          <div class="stat-label">Citations Found</div>
-        </CardContent>
-      </Card>
     </div>
   </section>
+
+  <!-- Recent Cases Section -->
+  {#if recentCases.length > 0}
+    <section class="cases-section">
+      <div class="cases-header-container">
+        <div>
+          <h2 class="cases-section-title">Recent Cases</h2>
+          <p class="cases-section-subtitle">Active cases with latest updates.</p>
+        </div>
+        <a href="/cases" class="nes-btn is-primary view-all-cases-btn">View All Cases →</a>
+      </div>
+
+      <div class="cases-grid-container">
+        {#each recentCases as caseItem (caseItem.id)}
+          <a href="/cases/{caseItem.id}" class="nes-container is-dark case-card-wrapper">
+            <div class="case-card-inner">
+              <!-- Case Status Badge -->
+              <div class="case-status-badge" style="background-color: {statusColors[caseItem.status]?.bg}">
+                <span style="color: {statusColors[caseItem.status]?.text}" class="status-label">
+                  {statusColors[caseItem.status]?.label || caseItem.status}
+                </span>
+              </div>
+
+              <!-- Priority Badge -->
+              <div class="case-priority-badge" style="background-color: {priorityColors[caseItem.priority]}">
+                <span class="priority-label">{caseItem.priority}</span>
+              </div>
+
+              <!-- Case Title -->
+              <h3 class="case-card-title">{caseItem.title || 'Untitled Case'}</h3>
+
+              <!-- Case Type -->
+              <p class="case-card-type">⚖️ {caseItem.caseType || 'Legal Matter'}</p>
+
+              <!-- Last Updated -->
+              <p class="case-card-updated">🕒 {caseItem.lastUpdated || 'Recently updated'}</p>
+
+              <!-- Hover Indicator -->
+              <div class="case-card-hover-indicator">
+                <span class="arrow-icon">→</span>
+              </div>
+            </div>
+          </a>
+        {/each}
+      </div>
+    </section>
+  {/if}
 
   <section class="services-section">
     <header class="section-header">
@@ -551,6 +628,161 @@
     text-transform: capitalize;
   }
 
+  .cases-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .cases-header-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .cases-section-title {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #d4af37;
+    font-family: 'Press Start 2P', 'Courier New', monospace;
+  }
+
+  .cases-section-subtitle {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .view-all-cases-btn {
+    padding: 0.75rem 1.5rem !important;
+    font-weight: bold !important;
+    white-space: nowrap;
+    min-width: 150px;
+  }
+
+  .cases-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+    width: 100%;
+  }
+
+  .case-card-wrapper {
+    display: flex;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    border: 4px solid #1e293b !important;
+    background: #1e293b !important;
+    padding: 1.25rem !important;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .case-card-wrapper:hover {
+    border-color: #d4af37 !important;
+    background: #0f172a !important;
+    transform: translateY(-3px);
+    box-shadow:
+      0 0 0 2px #d4af37,
+      0 4px 12px rgba(212, 175, 55, 0.3);
+  }
+
+  .case-card-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+
+  .case-status-badge {
+    display: inline-block;
+    width: fit-content;
+    padding: 0.25rem 0.75rem;
+    border: 2px solid currentColor;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .status-label {
+    display: block;
+  }
+
+  .case-priority-badge {
+    display: inline-block;
+    width: fit-content;
+    padding: 0.25rem 0.75rem;
+    border: 2px solid currentColor;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .priority-label {
+    display: block;
+  }
+
+  .case-card-title {
+    margin: 0.5rem 0 0 0;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fff;
+    line-height: 1.3;
+    word-break: break-word;
+    font-family: 'Press Start 2P', 'Courier New', monospace;
+  }
+
+  .case-card-type {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #888;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .case-card-updated {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .case-card-hover-indicator {
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 2px dashed #444;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    min-height: 1.5rem;
+  }
+
+  .arrow-icon {
+    font-size: 1.5rem;
+    color: #d4af37;
+    font-weight: bold;
+    transition: transform 0.2s ease;
+  }
+
+  .case-card-wrapper:hover .arrow-icon {
+    transform: translateX(4px);
+  }
+
   @media (max-width: 768px) {
     .ai-dashboard {
       padding: 1.5rem;
@@ -558,6 +790,29 @@
 
     .services-grid {
       grid-template-columns: 1fr;
+    }
+
+    .cases-grid-container {
+      grid-template-columns: 1fr;
+    }
+
+    .cases-header-container {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .cases-section-title {
+      font-size: 1.25rem;
+    }
+
+    .view-all-cases-btn {
+      width: 100%;
+      min-width: unset;
+    }
+
+    .case-card-title {
+      font-size: 0.9rem;
     }
   }
 </style>

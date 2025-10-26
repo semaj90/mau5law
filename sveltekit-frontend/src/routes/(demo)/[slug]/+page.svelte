@@ -193,10 +193,10 @@
         </div>
       </div>
     {:else if currentComponent}
-        <div class="demo-wrapper">
-          <!-- Svelte 5: components are dynamic by default in runes mode -->
-          <svelte:component this={currentComponent} data={data ?? {}} />
-        </div>
+      <div class="demo-wrapper">
+        <!-- render dynamic component in Svelte 5 runes-compatible way -->
+        <svelte:component this={currentComponent} {data} />
+      </div>
     {:else}
       <div class="demo-placeholder">
         <h2>Demo Under Construction</h2>

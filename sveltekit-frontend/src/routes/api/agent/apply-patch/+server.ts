@@ -219,7 +219,7 @@ function generateSampleDiff(): string {
   return `--- a/src/lib/components/Navigation.svelte
 +++ b/src/lib/components/Navigation.svelte
 @@ -15,6 +15,9 @@
- 		<a href="/dashboard" class="nav-link">Dashboard</a>
+    <a href="/ai/dashboard" class="nav-link">Dashboard</a>
  		<a href="/cases" class="nav-link">Cases</a>
  		<a href="/documents" class="nav-link">Documents</a>
 +		{#if $user}

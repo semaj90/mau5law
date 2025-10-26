@@ -3,7 +3,7 @@
  * Clean separation of logic, presentation, and accessibility concerns
  * Complements the decoupled architecture pattern
  */
-import { writable, type Writable } from 'svelte/store';
+ // removed unused imports
 // Action parameter types
 export interface AccessibleClickParams {
   handler: (_event: Event) => void;
@@ -45,13 +45,13 @@ export function accessibleClick(
   params: AccessibleClickParams
 ): { update: (params: AccessibleClickParams) => void; destroy: () => void } {
   let currentParams = params;
-  function handleInteraction(_event: Event) {
+  function handleInteraction(event: Event) {
     if (currentParams.disabled) return;
     if (currentParams.preventDefault) event.preventDefault();
     if (currentParams.stopPropagation) event.stopPropagation();
     currentParams.handler(event);
   }
-  function handleKeyboard(_event: KeyboardEvent) {
+  function handleKeyboard(event: KeyboardEvent) {
     if (currentParams.disabled) return;
     // Enter or Space key activation
     if (event.key === 'Enter' || event.key === ' ') {
@@ -124,6 +124,8 @@ export function focusManagement(
   }
   function trapFocus(_event: KeyboardEvent) {
     if (!currentParams.trapFocus) return;
+    // event is explicitly provided by listener
+    const event = _event;
     if (event.key !== 'Tab') return;
     focusableElements = getFocusableElements();
     if (focusableElements.length === 0) return;
@@ -144,6 +146,7 @@ export function focusManagement(
     }
   }
   function handleEscape(_event: KeyboardEvent) {
+    const event = _event;
     if (event.key === 'Escape' && currentParams.restoreFocus && previouslyFocused) {
       previouslyFocused.focus();
     }
@@ -195,10 +198,10 @@ export function focusManagement(
   setupFocus();
   // Event listeners
   if (currentParams.trapFocus) {
-    element.addEventListener('keydown', trapFocus);
+    element.addEventListener('keydown', trapFocus, /* capture */ false);
   }
   if (currentParams.restoreFocus) {
-    element.addEventListener('keydown', handleEscape);
+    element.addEventListener('keydown', handleEscape, /* capture */ false);
   }
   return {
     update(newParams: FocusManagementParams) {
@@ -206,8 +209,8 @@ export function focusManagement(
       setupFocus();
     },
     destroy() {
-      element.removeEventListener('keydown', trapFocus);
-      element.removeEventListener('keydown', handleEscape);
+      element.removeEventListener('keydown', trapFocus, false);
+      element.removeEventListener('keydown', handleEscape, false);
       // Restore focus on destroy
       if (currentParams.restoreFocus && previouslyFocused) {
         previouslyFocused.focus();
@@ -281,7 +284,7 @@ export function keyboardNavigation(
   params: KeyboardNavigationParams
 ): { update: (params: KeyboardNavigationParams) => void; destroy: () => void } {
   let currentParams = params;
-  function handleKeydown(_event: KeyboardEvent) {
+  function handleKeydown(event: KeyboardEvent) {
     const handler = currentParams.keys[event.key];
     if (handler) {
       if (currentParams.preventDefault) {
@@ -291,17 +294,17 @@ export function keyboardNavigation(
     }
   }
   // Event listener
-  element.addEventListener('keydown', handleKeydown, currentParams.capture);
+  element.addEventListener('keydown', handleKeydown, Boolean(currentParams.capture));
   return {
     update(newParams: KeyboardNavigationParams) {
       // Remove old listener
-      element.removeEventListener('keydown', handleKeydown, currentParams.capture);
+      element.removeEventListener('keydown', handleKeydown, Boolean(currentParams.capture));
       // Update params and add new listener
       currentParams = newParams;
-      element.addEventListener('keydown', handleKeydown, currentParams.capture);
+      element.addEventListener('keydown', handleKeydown, Boolean(currentParams.capture));
     },
     destroy() {
-      element.removeEventListener('keydown', handleKeydown, currentParams.capture);
+      element.removeEventListener('keydown', handleKeydown, Boolean(currentParams.capture));
     },
   };
 }
@@ -363,7 +366,7 @@ export function liveRegion(
  */ export const a11yUtils = {
   // Generate unique IDs for ARIA relationships
   generateId: (prefix: string = 'a11y'): string => {
-    return `${prefix}-${Math.random().toString(36).substr(2, 9)}`;
+    return `${prefix}-${Math.random().toString(36).slice(2, 11)}`;
   },
   // Check if element is visible to screen readers
   isAccessible: (element: HTMLElement): boolean => {
@@ -472,7 +475,7 @@ export function liveRegion(
     options: {
       isOpen: boolean;
       onToggle: () => void;
-      onSelect: (_value: any) => void;
+      onSelect: (_value: unknown) => void;
     }
   ) => {
     const listboxId = a11yUtils.generateId('listbox');
@@ -483,16 +486,22 @@ export function liveRegion(
     });
     const keyboardAction = keyboardNavigation(element, {
       keys: {
-        'Enter': options.onToggle,
-        ' ': options.onToggle,
-        'ArrowDown': e => {
+        // handlers don't use the event object — keep them parameterless to avoid unused-param lint errors
+        'Enter': () => {
+          options.onToggle();
+        },
+        ' ': () => {
+          options.onToggle();
+        },
+        'ArrowDown': (e: KeyboardEvent) => {
           e.preventDefault();
           // Focus next option logic here
         },
-        'ArrowUp': e => {
+        'ArrowUp': (e: KeyboardEvent) => {
           e.preventDefault();
           // Focus previous option logic here
         },
+        // Escape also doesn't use the event object
         'Escape': () => {
           if (options.isOpen) options.onToggle();
         },

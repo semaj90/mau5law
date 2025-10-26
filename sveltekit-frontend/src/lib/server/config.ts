@@ -191,7 +191,7 @@ export const REDIS_CONFIG = {
 	url: process.env.REDIS_URL || 'redis://localhost:6379',
 	host: process.env.REDIS_HOST || 'localhost',
 	port: parseInt(process.env.REDIS_PORT || '6379'),
-	password: process.env.REDIS_PASSWORD || 'redis',
+	password: process.env.REDIS_PASSWORD || undefined,
 	db: parseInt(process.env.REDIS_DB || '0'),
 	keyPrefix: 'legal-ai:',
 	// TTL settings for different cache types

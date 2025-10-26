@@ -73,7 +73,7 @@ let wsConnection = $state<WebSocket | null>(null);
 // GPU metrics for real-time monitoring
 let gpuMetrics = $state({
 	vram_usage: 0,
-	gpu_utilization 0,
+  gpu_utilization: 0,
 	loaded_engines: 0,
 	active_streams: 0,
 	mps_enabled: false

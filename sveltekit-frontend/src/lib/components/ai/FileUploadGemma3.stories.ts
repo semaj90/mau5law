@@ -38,7 +38,7 @@ const meta = {
       },
     },
   },
-} satisfies Meta<FileUploadGemma3>;
+} satisfies Meta<typeof FileUploadGemma3>; // <-- fixed: use typeof component
 export default meta;
 type Story = StoryObj<typeof meta>;
 // Default file upload interface
