@@ -110,7 +110,7 @@ export const caseWorkflowMachine = createMachine({
         src: fromPromise(async ({ input: context }) => {
           const { case_data, user_id } = context;
           // Create case through orchestrator
-          const result = await orchestrator.makeRequest({
+          const result = await orchestrator.handle({
             type: 'process',
             payload: {
               action: 'create_case',
@@ -183,7 +183,7 @@ export const caseWorkflowMachine = createMachine({
           }
           const { file, metadata } = event as { type: 'UPLOAD_DOCUMENT'; file: File; metadata?: Metadata };
           // Upload through orchestrator
-          const result = await orchestrator.makeRequest({
+          const result = await orchestrator.handle({
             type: 'process',
             payload: {
               action: 'upload_document',
@@ -245,7 +245,7 @@ export const caseWorkflowMachine = createMachine({
           // })
           // Auto-analyze if enabled
           if (context.settings.auto_analyze) {
-            return await orchestrator.makeRequest({
+            return await orchestrator.handle({
               type: 'analyze',
               payload: {
                 action: 'analyze_document',
@@ -303,7 +303,7 @@ export const caseWorkflowMachine = createMachine({
             throw new Error('Case ID not found for analysis');
           }
           // Comprehensive case analysis
-          const analysis = await orchestrator.makeRequest({
+          const analysis = await orchestrator.handle({
             type: 'analyze',
             payload: {
               action: 'comprehensive_analysis',
@@ -389,7 +389,7 @@ export const caseWorkflowMachine = createMachine({
           if (!case_id) {
             throw new Error('Case ID not found for executing recommendation');
           }
-          const result = await orchestrator.makeRequest({
+          const result = await orchestrator.handle({
             type: 'process',
             payload: {
               action: 'execute_recommendation',
@@ -437,7 +437,7 @@ export const caseWorkflowMachine = createMachine({
           if (!case_id) {
             throw new Error('Case ID not found for AI assistance');
           }
-          const assistance = await orchestrator.makeRequest({
+          const assistance = await orchestrator.handle({
             type: 'chat',
             payload: {
               message: query,

@@ -15,6 +15,7 @@ import { json, type RequestHandler } from '@sveltejs/kit';
 import { auth } from '$lib/server/auth';
 import { db } from '$lib/server/db';
 import { documents, documentChunks } from '$lib/server/db/enhanced-embedding-schema';
+import { eq } from 'drizzle-orm';
 import { Client as MinioClient } from 'minio';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -211,29 +212,42 @@ export const POST: RequestHandler = async (event) => {
     const extractedText = ocrText || `Document: ${file.name}`;
 
     // Create document record in database
-    const newDocument = await db.insert(documents).values({
-      uuid: documentId,
-      caseId: 0, // Default case ID when none is provided
-      filename: file.name,
-      originalName: file.name,
-      contentType: file.type,
-      fileSize: file.size,
-      minioPath: `minio://${EVIDENCE_BUCKET}/${storagePath}`,
-      extractedText: extractedText,
-      processingStatus: 'processing',
-      metadata: {
-        tags: tags ? tags.split(',').map(t => t.trim()) : [],
-        uploadedAt: new Date().toISOString(),
-        hasOCR: ocrText.length > 0,
-        ocrProcessed: true
-      }
-    }).returning();
+    const tagList = tags ? tags.split(',').map(t => t.trim()).filter(Boolean) : [];
 
-    if (!newDocument || newDocument.length === 0) {
+    const insertedDocs = await db
+      .insert(documents)
+      .values({
+        // id is defaultRandom()
+        title: file.name,
+        filename: file.name,
+        sourceUri: `minio://${EVIDENCE_BUCKET}/${storagePath}`,
+        mimeType: file.type,
+        fileSize: Number(file.size),
+        extractedText: extractedText,
+        processingStatus: 'processing',
+        caseId: null,
+        uploadedBy: user.id,
+        metadata: {
+          tags: tagList,
+          uploadedAt: new Date().toISOString(),
+          hasOCR: ocrText.length > 0,
+          ocrProcessed: true
+        }
+      })
+      .returning({
+        id: documents.id,
+        filename: documents.filename,
+        title: documents.title,
+        fileSize: documents.fileSize,
+        mimeType: documents.mimeType,
+        createdAt: documents.createdAt
+      });
+
+    if (!insertedDocs || insertedDocs.length === 0) {
       throw new Error('Failed to create document record');
     }
 
-    const doc = newDocument[0];
+    const doc = insertedDocs[0];
 
     // Split text into chunks
     const textChunks = splitIntoChunks(extractedText, 1000, 200);
@@ -244,22 +258,25 @@ export const POST: RequestHandler = async (event) => {
       const chunkText = textChunks[i];
       const embedding = await generateEmbedding(chunkText);
 
-      const chunk = await db.insert(documentChunks).values({
-        id: uuidv4(),
-        documentId: doc.id,
-        chunkIndex: i,
-        level: 0,
-        text: chunkText,
-        tokens: Math.ceil(chunkText.length / 4), // Rough token estimate
-        embedding: embedding,
-        embeddingModel: 'embeddinggemma:latest',
-        confidence: ocrText.length > 0 ? 0.95 : 1.0,
-        metadata: {
-          hasOCR: ocrText.length > 0,
-          startChar: textChunks.slice(0, i).join('').length,
-          endChar: textChunks.slice(0, i + 1).join('').length
-        }
-      }).returning();
+      const chunk = await db
+        .insert(documentChunks)
+        .values({
+          // id defaultRandom()
+          documentId: doc.id,
+          chunkIndex: i,
+          level: 0,
+          text: chunkText,
+          tokens: Math.ceil(chunkText.length / 4),
+          embedding: embedding, // vector(384)
+          embeddingModel: 'embeddinggemma:latest',
+          confidence: ocrText.length > 0 ? 0.95 : 1.0,
+          metadata: {
+            hasOCR: ocrText.length > 0,
+            startChar: textChunks.slice(0, i).join('').length,
+            endChar: textChunks.slice(0, i + 1).join('').length
+          }
+        })
+        .returning({ id: documentChunks.id });
 
       if (chunk && chunk.length > 0) {
         createdChunks.push(chunk[0]);
@@ -267,10 +284,10 @@ export const POST: RequestHandler = async (event) => {
     }
 
     // Update document status to completed
-    await db.update(documents).set({
-      processingStatus: 'completed',
-      processedAt: new Date()
-    }).where({ id: doc.id });
+    await db
+      .update(documents)
+      .set({ processingStatus: 'completed', processedAt: new Date() })
+      .where(eq(documents.id, doc.id));
 
     return json({
       success: true,
@@ -281,7 +298,7 @@ export const POST: RequestHandler = async (event) => {
         title: doc.title,
         fileSize: doc.fileSize,
         mimeType: doc.mimeType,
-        uploadedAt: doc.createdAt?.toISOString(),
+        uploadedAt: doc.createdAt ? new Date(doc.createdAt as unknown as string).toISOString() : undefined,
         processingStatus: 'completed',
         chunks: createdChunks.length,
         hasOCR: ocrText.length > 0,
