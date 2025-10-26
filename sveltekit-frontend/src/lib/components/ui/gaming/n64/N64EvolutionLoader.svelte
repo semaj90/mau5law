@@ -125,8 +125,7 @@
         currentStageIndex++;
         stage = stages[currentStageIndex];
         evolutionProgress = 0;
-        // Gradual progress for smooth transition
-        const progressInterval = setInterval(() => {
+        // Gradual progress for smooth transition: const progressInterval = setInterval(() => {
           evolutionProgress += 2;
           if (evolutionProgress >= 100) {
             clearInterval(progressInterval);
@@ -477,7 +476,7 @@
 <style>
   .n64-evolution-container {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 1rem;
     padding: 1rem;
@@ -510,7 +509,7 @@
   .progress-bar {
     height: 100%;
     background: linear-gradient(90deg, #FFD700, #FF6B35);
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .controls {
     display: flex;
@@ -523,7 +522,7 @@
     border: 1px solid #666;
     font-family: 'Courier New', monospace;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .control-btn:hover {
     background: #444;
@@ -555,7 +554,7 @@
       flex-wrap: wrap;
     }
     .feature-toggles {
-      flex-direction column;
+      flex-direction: column;
       gap: 0.5rem;
     }
   }

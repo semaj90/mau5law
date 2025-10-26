@@ -149,12 +149,12 @@ d;
     background: rgba(0, 0, 0, var(--nav-translucency));
     border-bottom: 2px solid var(--nes-primary);
     transform: translateY(calc(var(--scroll-offset) * -0.02px));
-    transition all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .nav-main {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     padding: 1rem 2rem;
     min-height: 60px;
   }
@@ -172,7 +172,7 @@ d;
     text-decoration none;
     padding: 0.5rem 1rem;
     border: 2px solid transparent;
-    transition all 0.2;
+    transition: all 0.2;
     position relative;
   }
   .nav-links a: hover {
@@ -195,7 +195,7 @@ d;
       var(--nes-success),
       transparent
     );
-    animation shimmer 2s infinite;
+    animation: shimmer 2s infinite;
   }
   .recent-cases-bar {
     background: linear-gradient(90deg,
@@ -238,7 +238,7 @@ d;
     color: var(--nes-white);
     text-decoration none;
     white-space: nowrap;
-    transition all 0.2;
+    transition: all 0.2;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
   .case-pill:hover {
@@ -253,7 +253,7 @@ d;
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   .case-title {
     max-width: 150px;
@@ -278,15 +278,15 @@ d;
       rgba(255, 255, 255, 0.05)
     );
     border-radius: 16px;
-    animation shimmer 1.5s infinite;
+    animation: shimmer 1.5s infinite;
   }
   @keyframes shimmer {
     0% { transform: translateX(-100%), }
     100% { transform: translateX(100%), }
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1, }
-    50% { opacity: 0.5, }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
   }
   /* NES-style scrollbar */
   .cases-container::-webkit-scrollbar {
@@ -300,3 +300,4 @@ d;
     border-radius: 2px;
   }
 </style>
+

@@ -77,7 +77,7 @@
 </div>
 
 <style>
-  /* Custom animation for smoother spinning */
+  /* Custom animation: for smoother spinning */
   @keyframes spin {
     from {
       transform: rotate(0deg);
@@ -87,6 +87,7 @@
     }
   }
   .animate-spin {
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
 </style>
+

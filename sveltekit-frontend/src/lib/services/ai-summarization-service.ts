@@ -4,20 +4,14 @@
  */
 import { ollamaCudaService } from './ollama-cuda-service.js';
 import { db } from "$lib/server/db/index";
-import { evidence, embeddingCache, cases } from "$lib/server/db/schema";
-import { eq, sql, and, isNotNull, desc } from "drizzle-orm";
-import type { AiAnalysisResult } from "$lib/schemas/file-upload";
-import { createHash } from "crypto";
-import { SystemMessage, HumanMessage } from "@langchain/core/messages";
-}
+import { evidence, cases } from '$lib/server/db/schema';
+import { eq, sql, and, desc } from 'drizzle-orm';
+import type { AiAnalysisResult } from '$lib/schemas/file-upload';
+import { createHash } from 'crypto';
+
 export interface SummarizationOptions {
   maxLength?: number;
-  style?:
-    | "bullet_points"
-    | "paragraph"
-    | "executive_summary"
-    | "technical"
-    | "legal";
+  style?: 'bullet_points' | 'paragraph' | 'executive_summary' | 'technical' | 'legal';
   includeKeywords?: boolean;
   includeEntities?: boolean;
   includeSentiment?: boolean;
@@ -26,7 +20,7 @@ export interface SummarizationOptions {
   confidenceThreshold?: number;
   useCache?: boolean;
 }
-}
+
 export interface DocumentChunk {
   id: string;
   content: string;
@@ -36,17 +30,24 @@ export interface DocumentChunk {
   embedding?: number[];
   importance?: number;
 }
+
+export interface LegalEntity {
+  name: string;
+  type: 'person' | 'organization' | 'location' | 'other';
+  confidence: number;
+  mentions: number;
 }
+
 export interface SummarizationResult {
   summary: string;
   keyPoints: string[];
-  entities: Array<any>;
+  entities: LegalEntity[];
   keywords: string[];
   categories: string[];
   sentiment?: {
     score: number;
-  label: "positive" | "negative" | "neutral";
-  }
+    label: 'positive' | 'negative' | 'neutral';
+  };
   confidence: number;
   processingTime: number;
   model: string;
@@ -55,13 +56,46 @@ export interface SummarizationResult {
   wordCount: number;
   readingTime: number; // in minutes
 }
+
+export type BatchSummarizationItem =
+  | {
+      documentId: string;
+      success: true;
+      result: SummarizationResult;
+    }
+  | {
+      documentId: string;
+      success: false;
+      error: string;
+    };
+
 export interface BatchSummarizationResult {
-  results: Array<any>;
+  results: BatchSummarizationItem[];
   totalProcessed: number;
   totalSuccess: number;
   totalFailures: number;
   processingTime: number;
 }
+
+export interface CaseSummaryStats {
+  totalEvidence: number;
+  processedEvidence: number;
+  avgConfidence: number;
+  mostCommonCategories: string[];
+  totalWordCount: number;
+  avgReadingTime: number;
+}
+
+interface ParsedAIResponse {
+  summary: string;
+  keyPoints: string[];
+  entities: LegalEntity[];
+  keywords: string[];
+  categories: string[];
+  sentiment?: { score: number; label: 'positive' | 'negative' | 'neutral' };
+  confidence: number;
+}
+
 class AISummarizationService {
   private static instance: AISummarizationService;
   private maxChunkSize = 4000; // Maximum characters per chunk
@@ -77,24 +111,21 @@ class AISummarizationService {
   /**
    * Summarize a document with comprehensive analysis
    */
-  public async summarizeDocument()
-    content: string;
-    options: SummarizationOptions = {}
-  ): Promise<SummarizationResult>, {
+  public async summarizeDocument(content: string, options: SummarizationOptions = {}): Promise<SummarizationResult> {
     const startTime = Date.now();
     try {
       // Set defaults
       const opts: Required<SummarizationOptions> = {
         maxLength: options.maxLength || 500,
-        style: options.style || "paragraph",
+        style: options.style || 'paragraph',
         includeKeywords: options.includeKeywords ?? true,
         includeEntities: options.includeEntities ?? true,
         includeSentiment: options.includeSentiment ?? false,
         includeCategories: options.includeCategories ?? true,
-        language: options.language || "en",
+        language: options.language || 'en',
         confidenceThreshold: options.confidenceThreshold || 0.7,
-        useCache: options.useCache ?? true
-      }
+        useCache: options.useCache ?? true,
+      };
       // Check cache first
       const cacheKey = this.generateCacheKey(content, opts);
       if (opts.useCache && this.cache.has(cacheKey)) {
@@ -104,26 +135,24 @@ class AISummarizationService {
       const wordCount = this.countWords(content);
       const readingTime = Math.ceil(wordCount / 200); // Assuming 200 WPM reading speed
       // Split content into manageable chunks
-      const chunks = await this.chunkDocument(content);
+      const chunks = this.chunkDocument(content);
       // Generate embeddings for chunks
       const chunksWithEmbeddings = await this.generateChunkEmbeddings(chunks);
       // Optimize Ollama for legal analysis
-      await ollamaCudaService.optimizeForUseCase("legal-analysis)");
+      await ollamaCudaService.optimizeForUseCase('legal-analysis');
       // Generate comprehensive summary
-      const summaryPrompt = this.buildSummaryPrompt(
-        content.substring(0, 8000),
-        opts
-      );
+      const summaryPrompt = this.buildSummaryPrompt(content.substring(0, 8000), opts);
       const summaryResponse = await ollamaCudaService.chatCompletion(
         [
-          new SystemMessage(),
-            "You are a legal AI assistant specializing in document analysis and summarization."
-         ), ),
-          new HumanMessage(summaryPrompt)
+          {
+            role: 'system',
+            content: 'You are a legal AI assistant specializing in document analysis and summarization.',
+          },
+          { role: 'user', content: summaryPrompt },
         ],
         {
           temperature: 0.3,
-          maxTokens,: 2000
+          maxTokens: 2000,
         }
       );
       // Parse AI response
@@ -137,36 +166,34 @@ class AISummarizationService {
         entities: analysis.entities,
         keywords: analysis.keywords,
         categories: analysis.categories,
-        sentiment: opts.includeSentiment ? analysis.sentiment: undefined,
+        sentiment: opts.includeSentiment ? analysis.sentiment : undefined,
         confidence: analysis.confidence,
         processingTime: Date.now() - startTime,
         model: ollamaCudaService.currentModel,
-        chunks: chunksWithEmbeddings;
+        chunks: chunksWithEmbeddings,
         embedding: documentEmbedding,
         wordCount,
-        readingTime
-      }
+        readingTime,
+      };
       // Cache result
       if (opts.useCache) {
         this.cache.set(cacheKey, result);
       }
       return result;
-    } catch (error: any) {
-      console.error("Document summarization failed:", error);
-      throw new Error()
-        `Summarization failed: ${error instanceof Error ? error.message: "Unknown error"}`
-      );
+    } catch (error: unknown) {
+      console.error('Document summarization failed:', error);
+      throw new Error(`Summarization failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
   /**
    * Batch summarize multiple documents
    */
-  public async batchSummarize()
-    documents: Array<,>;
+  public async batchSummarize(
+    documents: Array<{ id: string; content: string }>,
     options: SummarizationOptions = {}
-  ): Promise<BatchSummarizationResult>, {
+  ): Promise<BatchSummarizationResult> {
     const startTime = Date.now();
-    const results: BatchSummarizationResult["results"] = [];
+    const results: BatchSummarizationResult['results'] = [];
     let totalSuccess = 0;
     let totalFailures = 0;
     for (const doc of documents) {
@@ -174,20 +201,20 @@ class AISummarizationService {
         const result = await this.summarizeDocument(doc.content, {
           ...options,
           useCache: true, // Enable caching for batch operations
-        )});
+        });
         results.push({
           documentId: doc.id,
           success: true,
-          result
+          result,
         });
         totalSuccess++;
         // Brief pause to prevent overwhelming the AI service
-        await new Promise((resolve) => setTimeout(resolve, 100);
-      } catch (error: any) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      } catch (error: unknown) {
         results.push({
           documentId: doc.id,
-          success: false;
-          error: error instanceof Error ? error.message: "Unknown error"
+          success: false,
+          error: error instanceof Error ? error.message : 'Unknown error',
         });
         totalFailures++;
       }
@@ -197,35 +224,24 @@ class AISummarizationService {
       totalProcessed: documents.length,
       totalSuccess,
       totalFailures,
-      processingTime: Date.now() - startTime
-    }
+      processingTime: Date.now() - startTime,
+    };
   }
   /**
    * Summarize evidence from database
    */
-  public async summarizeEvidence()
-    evidenceId: string
-    options: SummarizationOptions = {}
-  ): Promise<SummarizationResult> {
+  public async summarizeEvidence(evidenceId: string, options: SummarizationOptions = {}): Promise<SummarizationResult> {
     try {
       // Get evidence from database
-      const evidenceRecord = await d,b;
-        .select()
-        .from(evidence)
-        .where(eq(evidence.id, evidenceId)
-        .limit(1);
-      if (evidenceRecord,.length ===, 0) {
-        throw new Error("Evidence not found");
+      const evidenceRecord = await db.select().from(evidence).where(eq(evidence.id, evidenceId)).limit(1);
+      if (evidenceRecord.length === 0) {
+        throw new Error('Evidence not found');
       }
       const record = evidenceRecord[0];
       // Extract content based on file type
-      let content = "";
-      if ()
-        record.aiAnalysis &&
-        typeof record.aiAnalysis === "object" &&
-        "ocrText" in record.aiAnalysis;
-      ) {
-        content = record.aiAnalysis.ocrText as string;
+      let content = '';
+      if (record.aiAnalysis && typeof record.aiAnalysis === 'object' && 'ocrText' in record.aiAnalysis) {
+        content = (record.aiAnalysis as { ocrText: string }).ocrText;
       } else if (record.summary) {
         content = record.summary;
       } else if (record.description) {
@@ -234,35 +250,36 @@ class AISummarizationService {
         content = `${record.title}\n\nFile: ${record.fileName}\nType: ${record.mimeType}`;
       }
       if (!content.trim()) {
-        throw new Error("No extractable content from evidence");
+        throw new Error('No extractable content from evidence');
       }
       // Perform summarization
       const result = await this.summarizeDocument(content, options);
+
+      const analysisResult: AiAnalysisResult = {
+        ...(typeof record.aiAnalysis === 'object' && record.aiAnalysis ? record.aiAnalysis : {}),
+        summary: result.summary,
+        keyPoints: result.keyPoints,
+        entities: result.entities,
+        keywords: result.keywords,
+        categories: result.categories,
+        confidence: result.confidence,
+        processingTime: result.processingTime,
+        model: result.model,
+        updatedAt: new Date().toISOString(),
+      };
+
       // Update evidence record with AI summary
       await db
-        .update(evidence);
+        .update(evidence)
         .set({
-          aiSummary: (result as { summary?: any; keyPoints?: any; entities?: any; keywords?: any; categories?: any; confidence?: any; processingTime?: any); embedding?: any }).summary,
-          aiAnalysis,: {
-            ...(typeof record.aiAnalysis === "object" &&)
-            record.aiAnalysis !== null
-              ? record.aiAnalysis: { [key,: strin,g]: any, }),
-            summary: (result as { summary?: any; keyPoints?: any; entities?: any; keywords?: any; categories?: any; confidence?: any; processingTime?: any; embedding?: any }).summary,
-            keyPoints,: (result as { summary?: any; keyPoints?: any; entities?: any; keywords?: any; categories?: any; confidence?: any; processingTime?: any; embedding?: any }).keyPoints,
-            entities,: (result as { summary?: any; keyPoints?: any; entities?: any; keywords?: any; categories?: any; confidence?: any; processingTime?: any; embedding?: any }).entities,
-            keywords,: (result as { summary?: any; keyPoints?: any; entities?: any; keywords?: any; categories?: any; confidence?: any; processingTime?: any; embedding?: any }).keywords,
-            categories,: (result as { summary?: any; keyPoints?: any; entities?: any; keywords?: any; categories?: any; confidence?: any; processingTime?: any; embedding?: any }).categories,
-            confidence,: (result as { summary?: any; keyPoints?: any; entities?: any; keywords?: any; categories?: any; confidence?: any; processingTime?: any; embedding?: any }).confidence,
-            processingTime,: (result as { summary?: any; keyPoints?: any; entities?: any; keywords?: any; categories?: any; confidence?: any; processingTime?: any; embedding?: any }).processingTime,
-            model,: result?.model || "unknown" // @ts-ignore - Model property access,
-            updatedAt: new Date().toISOString()
-          },
-          contentEmbedding: (result as { summary?: any; keyPoints?: any; entities?: any; keywords?: any; categories?: any; confidence?: any; processingTime?: any; embedding?: any }).embedding,
-          updatedAt,: new Date()
+          aiSummary: result.summary,
+          aiAnalysis: analysisResult,
+          contentEmbedding: result.embedding,
+          updatedAt: new Date(),
         })
-        .where(eq(evidence.id, evidenceId);
+        .where(eq(evidence.id, evidenceId));
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(`Failed to summarize evidence ${evidenceId}:`, error);
       throw error;
     }
@@ -270,34 +287,27 @@ class AISummarizationService {
   /**
    * Generate case summary from all evidence
    */
-  public async summarizeCase()
-    caseId: string
-    options: SummarizationOptions = {}
-  ): Promise<SummarizationResult> {
+  public async summarizeCase(caseId: string, options: SummarizationOptions = {}): Promise<SummarizationResult> {
     try {
       // Get case and all its evidence
-      const caseRecord = await d,b;
-        .select()
-        .from(cases)
-        .where(eq(cases.id, caseId)
-        .limit(1);
-      if (caseRecord,.length ===, 0) {
-        throw new Error("Case not found");
+      const caseRecord = await db.select().from(cases).where(eq(cases.id, caseId)).limit(1);
+      if (caseRecord.length === 0) {
+        throw new Error('Case not found');
       }
       const caseData = caseRecord[0];
       // Get all evidence for this case
-      const evidenceRecords = await db;
+      const evidenceRecords = await db
         .select()
         .from(evidence)
-        .where(eq(evidence.caseId, caseId)
-        .orderBy(desc(evidence.createdAt);
+        .where(eq(evidence.caseId, caseId))
+        .orderBy(desc(evidence.createdAt));
       // Combine all content
       let combinedContent = `Case: ${caseData.title}\n`;
       combinedContent += `Description: ${caseData.description}\n`;
       combinedContent += `Category: ${caseData.category}\n`;
       combinedContent += `Priority: ${caseData.priority}\n\n`;
       combinedContent += `Evidence Summary:\n`;
-      evidenceRecords.forEach((ev, index) => {
+      evidenceRecords.forEach((ev: (typeof evidenceRecords)[number], index: number) => {
         combinedContent += `${index + 1}. ${ev.title}\n`;
         if (ev.aiSummary) {
           combinedContent += `   Summary: ${ev.aiSummary}\n`;
@@ -310,20 +320,20 @@ class AISummarizationService {
       // Perform comprehensive case summarization
       const result = await this.summarizeDocument(combinedContent, {
         ...options,
-        style: "executive_summary",
+        style: 'executive_summary',
         maxLength: 800,
-      )});
+      });
       // Update case record with AI summary
       await db
-        .update(cases);
+        .update(cases)
         .set({
-          aiSummary: (result as { summary?: any; keyPoints?: any; entities?: any; keywords?: any; categories?: any; confidence?: any; processingTime?: any); embedding?: any }).summary,
-          contentEmbedding,: (result as { summary?: any; keyPoints?: any; entities?: any; keywords?: any; categories?: any; confidence?: any; processingTime?: any; embedding?: any }).embedding,
-          updatedAt,: new Date()
+          aiSummary: result.summary,
+          contentEmbedding: result.embedding,
+          updatedAt: new Date(),
         })
-        .where(eq(cases.id, caseId);
+        .where(eq(cases.id, caseId));
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(`Failed to summarize case ${caseId}:`, error);
       throw error;
     }
@@ -331,93 +341,105 @@ class AISummarizationService {
   /**
    * Find similar documents using embeddings
    */
-  public async findSimilarDocuments()
-    documentId: string
+  public async findSimilarDocuments(
+    documentId: string,
     threshold: number = 0.8,
-    limit,: number = 10
-  ): Promise<>;
-    Array<a>n>>y>> {
+    limit: number = 10
+  ): Promise<
+    Array<{
+      documentId: string;
+      similarity: number;
+      title: string;
+      type: string | null;
+      summary: string | null | undefined;
+    }>
+  > {
     try {
       // Get document embedding
-      const doc = await d,b;
-        .select()
+      const doc = await db
+        .select({ contentEmbedding: sql<number[]>`content_embedding` })
         .from(evidence)
-        .where(eq(evidence.id, documentId)
+        .where(eq(evidence.id, documentId))
         .limit(1);
-      if (doc,.length === 0 || !doc[0].contentEmbeddin,g) {
-        throw new Error("Document not found or no embedding available");
+      if (doc.length === 0 || !doc[0].contentEmbedding) {
+        throw new Error('Document not found or no embedding available');
       }
       const queryEmbedding = doc[0].contentEmbedding;
       // Find similar documents using cosine similarity
-      const similarDocs = await db;
+      const similarDocs = await db
         .select({
           id: evidence.id,
           title: evidence.title,
           evidenceType: evidence.evidenceType,
           aiSummary: evidence.aiSummary,
-          similarity: sql<number>`1 - (${evidence.contentEmbedding} <=> ${queryEmbedding)})`
+          similarity: sql<number>`1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)})`,
         })
         .from(evidence)
-        .where()
-          and()
-            isNotNull(evidence.contentEmbedding),
-            sql`,1 - (,${evidence.contentEmbedding} <=>, ${queryEmbedding}), > ${threshold}`
+        .where(
+          and(
+            sql`content_embedding IS NOT NULL`,
+            sql`1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)}) > ${threshold}`
           )
         )
-        .orderBy()
-          sql`,1 - (,${evidence.contentEmbedding} <=>, ${queryEmbedding}) DESC`
-        )
+        .orderBy(sql`1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)}) DESC`)
         .limit(limit);
-      return similarDocs.map((doc) => ({
-        documentId: doc.id,
-        similarity: doc.similarity,
-        title: doc.title,
-        type: doc.evidenceType,
-        summary: doc.aiSummary || undefined
-      });
-    } catch (error: any) {
-      console.error("Failed to find similar documents:", error);
+      return similarDocs.map(
+        (doc: {
+          id: string;
+          title: string;
+          evidenceType: string | null;
+          aiSummary: string | null;
+          similarity: number;
+        }) => ({
+          documentId: doc.id,
+          similarity: doc.similarity,
+          title: doc.title,
+          type: doc.evidenceType,
+          summary: doc.aiSummary || undefined,
+        })
+      );
+    } catch (error: unknown) {
+      console.error('Failed to find similar documents:', error);
       throw error;
     }
   }
   /**
    * Generate summary statistics for a case
    */
-  public async getCaseSummaryStats(caseId: string): Promise<any> {
+  public async getCaseSummaryStats(caseId: string): Promise<CaseSummaryStats> {
     try {
-      const evidenceRecords = await db;
-        .select()
-        .from(evidence)
-        .where(eq(evidence.caseId, caseId);
+      const evidenceRecords = await db.select().from(evidence).where(eq(evidence.caseId, caseId));
       const totalEvidence = evidenceRecords.length;
       const processedEvidence = evidenceRecords.filter(
-        (e: any) => e.aiAnalysis && Object.keys(e.aiAnalysis).length > 0
+        (e: (typeof evidenceRecords)[number]) =>
+          e.aiAnalysis && typeof e.aiAnalysis === 'object' && Object.keys(e.aiAnalysis).length > 0
       ).length;
       // Calculate average confidence
-      const confidenceScores = evidenceRecords;
-        .map((e: any) => (e.aiAnalysis as any)?.confidence)
-        .filter((c) => typeof c === "number");
-      const avgConfidence =;
+      const confidenceScores = evidenceRecords
+        .map((e: (typeof evidenceRecords)[number]) => (e.aiAnalysis as AiAnalysisResult)?.confidence)
+        .filter((c: number | undefined): c is number => typeof c === 'number');
+      const avgConfidence =
         confidenceScores.length > 0
-          ? confidenceScores.reduce((sum, c) => sum + c, 0) /
-            confidenceScores.length: 0;
+          ? confidenceScores.reduce((sum: number, c: number) => sum + c, 0) / confidenceScores.length
+          : 0;
       // Get most common categories
-      const allCategories = evidenceRecords;
-        .flatMap((e: any) => (e.aiAnalysis as any)?.categories || [])
-        .filter((c) => typeof c === "string");
-      const categoryCount = allCategories.reduce((acc, cat) => {
+      const allCategories = evidenceRecords
+        .flatMap((e: (typeof evidenceRecords)[number]) => (e.aiAnalysis as AiAnalysisResult)?.categories || [])
+        .filter((c: string): c is string => typeof c === 'string');
+      const categoryCount = allCategories.reduce(
+        (acc: Record<string, number>, cat: string) => {
           acc[cat] = (acc[cat] || 0) + 1;
           return acc;
         },
         {} as Record<string, number>
       );
-      const mostCommonCategories = Object.entries(categoryCount);
-        .sort(([, a], [, b]) => b - a)
+      const mostCommonCategories = Object.entries(categoryCount)
+        .sort(([, a], [, b]) => (b as number) - (a as number))
         .slice(0, 5)
         .map(([cat]) => cat);
       // Estimate word counts and reading time
-      const totalWordCount = evidenceRecords.reduce((sum, e) => {
-        const content = e.aiSummary || e.description || "";
+      const totalWordCount = evidenceRecords.reduce((sum: number, e: (typeof evidenceRecords)[number]) => {
+        const content = e.aiSummary || e.description || '';
         return sum + this.countWords(content);
       }, 0);
       const avgReadingTime = Math.ceil(totalWordCount / 200);
@@ -427,44 +449,35 @@ class AISummarizationService {
         avgConfidence,
         mostCommonCategories,
         totalWordCount,
-        avgReadingTime
-      }
-    } catch (error: any) {
-      console.error("Failed to get case summary stats:", error);
+        avgReadingTime,
+      };
+    } catch (error: unknown) {
+      console.error('Failed to get case summary stats:', error);
       throw error;
     }
   }
   // Private helper methods
   private chunkDocument(content: string): DocumentChunk[] {
     const chunks: DocumentChunk[] = [];
-    const sentences = content;
-      .split(/[.!?]+/)
-      .filter((s) => s.trim().length > 0);
-    let currentChunk = "";
+    const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 0);
+    let currentChunk = '';
     let startIndex = 0;
     let chunkId = 0;
     for (const sentence of sentences) {
       const trimmedSentence = sentence.trim();
       if (!trimmedSentence) continue;
-      const potentialChunk =;
-        currentChunk + (currentChunk ? ". " : "") + trimmedSentence;
-      if ()
-        potentialChunk.length > this.maxChunkSize &&
-        currentChunk.length > 0;
-      ) {
+      const potentialChunk = currentChunk + (currentChunk ? '. ' : '') + trimmedSentence;
+      if (potentialChunk.length > this.maxChunkSize && currentChunk.length > 0) {
         // Save current chunk
         chunks.push({
           id: `chunk_${chunkId++}`,
-          content: currentChunk
+          content: currentChunk,
           startIndex,
           endIndex: startIndex + currentChunk.length,
-          tokenCount: this.estimateTokenCount(currentChunk)
+          tokenCount: this.estimateTokenCount(currentChunk),
         });
         // Start new chunk with overlap
-        const overlapText = this.getOverlapText(
-          currentChunk,
-          this.chunkOverlap
-        );
+        const overlapText = this.getOverlapText(currentChunk, this.chunkOverlap);
         currentChunk = overlapText + trimmedSentence;
         startIndex = startIndex + currentChunk.length - overlapText.length;
       } else {
@@ -474,33 +487,26 @@ class AISummarizationService {
     // Add final chunk
     if (currentChunk.trim()) {
       chunks.push({
-        id: `,chunk_${chunkId}`,
-        content: currentChunk
+        id: `chunk_${chunkId}`,
+        content: currentChunk,
         startIndex,
         endIndex: startIndex + currentChunk.length,
-        tokenCount: this.estimateTokenCount(currentChunk)
+        tokenCount: this.estimateTokenCount(currentChunk),
       });
     }
     return chunks;
   }
-  private async generateChunkEmbeddings()
-    chunks: DocumentChunk[];
-  ): Promise<DocumentChunk[]> {
+  private async generateChunkEmbeddings(chunks: DocumentChunk[]): Promise<DocumentChunk[]> {
     const chunksWithEmbeddings: DocumentChunk[] = [];
     for (const chunk of chunks) {
       try {
-        const embedding = await ollamaCudaService.generateEmbedding(
-          chunk.content
-       ) );
+        const embedding = await ollamaCudaService.generateEmbedding(chunk.content);
         chunksWithEmbeddings.push({
           ...chunk,
-          embedding
+          embedding,
         });
-      } catch (error: any) {
-        console.warn()
-          `,Failed to generate embedding for, chun,k ${ch,unk,.id}:`,
-          error
-        );
+      } catch (error: unknown) {
+        console.warn(`Failed to generate embedding for chunk ${chunk.id}:`, error);
         chunksWithEmbeddings.push(chunk);
       }
     }
@@ -511,27 +517,24 @@ class AISummarizationService {
       // Use first 4000 characters for document-level embedding
       const truncatedContent = content.substring(0, 4000);
       return await ollamaCudaService.generateEmbedding(truncatedContent);
-    } catch (error: any) {
-      console.error("Failed to generate document embedding:", error);
+    } catch (error: unknown) {
+      console.error('Failed to generate document embedding:', error);
       throw error;
     }
   }
-  private buildSummaryPrompt()
-    content: string;
-    options: Required<SummarizationOptions>;
-  ): string {
-    let prompt = `,Analyze and summarize the following legal document. `;
+  private buildSummaryPrompt(content: string, options: Required<SummarizationOptions>): string {
+    let prompt = `Analyze and summarize the following legal document. `;
     switch (options.style) {
-      case "bullet_points":
+      case 'bullet_points':
         prompt += `Provide a summary in bullet point format. `;
         break;
-      case "executive_summary":
-        prompt += `Provide an executive summary suitable for, legal, professionals. `;
+      case 'executive_summary':
+        prompt += `Provide an executive summary suitable for legal professionals. `;
         break;
-      case "technical":
-        prompt += `,Provide, a technical analysis wit,h detail,ed insights. `;
+      case 'technical':
+        prompt += `Provide a technical analysis with detailed insights. `;
         break;
-      case "legal":
+      case 'legal':
         prompt += `Provide a legal analysis focusing on legal implications and precedents. `;
         break;
       default:
@@ -539,71 +542,61 @@ class AISummarizationService {
     }
     prompt += `Maximum length: ${options.maxLength} words.\n\n`;
     const requestedAnalysis = [];
-    if (options.includeKeywords)
-      requestedAnalysis.push("key terms and keywords");
-    if (options.includeEntities)
-      requestedAnalysis.push()
-        "important entities (people, organizations, locations)"
-      );
-    if (options.includeCategories)
-      requestedAnalysis.push("legal categories and classifications");
-    if (options.includeSentiment) requestedAnalysis.push("sentiment analysis");
+    if (options.includeKeywords) requestedAnalysis.push('key terms and keywords');
+    if (options.includeEntities) requestedAnalysis.push('important entities (people, organizations, locations)');
+    if (options.includeCategories) requestedAnalysis.push('legal categories and classifications');
+    if (options.includeSentiment) requestedAnalysis.push('sentiment analysis');
     if (requestedAnalysis.length > 0) {
-      prompt += `Additionally, identify,: ${requestedAnalysis.join(", ")}.\n\n`;
+      prompt += `Additionally, identify: ${requestedAnalysis.join(', ')}.\n\n`;
     }
     prompt += `Document content:\n${content}\n\n`;
-    prompt += `Provide your response as a, JSON object with, th,e following structure:;
+    prompt += `Provide your response as a JSON object with the following structure:
 {
-  "summary",: "Your summary here",
-  "keyPoints",: ["key point 1", "key point 2"],
-  "entities",: [{"name": "Entity Name", "type": "person|organization|location|other", "confidence": 0.9, "mentions": 3}],
-  "keywords",: ["keyword1", "keyword2"],
-  "categories",: ["category1", "category2"],
-  $,{options.includeSentiment ? '"sentiment": {"score": 0.5, "label": "neutral"},' : ""},
-  "confidence",: 0.85
+  "summary": "Your summary here",
+  "keyPoints": ["key point 1", "key point 2"],
+  "entities": [{"name": "Entity Name", "type": "person|organization|location|other", "confidence": 0.9, "mentions": 3}],
+  "keywords": ["keyword1", "keyword2"],
+  "categories": ["category1", "category2"],
+  ${options.includeSentiment ? '"sentiment": {"score": 0.5, "label": "neutral"},' : ''}
+  "confidence": 0.85
 }`;
     return prompt;
   }
-  private parseAIResponse(response: string): any {
+  private parseAIResponse(response: string): ParsedAIResponse {
     try {
       // Try to parse as JSON
-      const jsonMatch = (response as { match?: any; substring?: any }).match(/\{[\s\S]*\}/);
+      const jsonMatch = response.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
+        return JSON.parse(jsonMatch[0]) as ParsedAIResponse;
       }
       // Fallback parsing
       return {
-        summary: (response as { match?: any; substring?: any }).substring(0, 500),
+        summary: response.substring(0, 500),
         keyPoints: [],
         entities: [],
         keywords: [],
         categories: [],
-        confidence: 0.5
-      }
-    } catch (error: any) {
-      console.warn("Failed to parse AI response:", error);
+        confidence: 0.5,
+      };
+    } catch (error: unknown) {
+      console.warn('Failed to parse AI response:', error);
       return {
-        summary: (response as { match?: any; substring?: any }).substring(0, 500),
+        summary: response.substring(0, 500),
         keyPoints: [],
         entities: [],
         keywords: [],
         categories: [],
-        confidence: 0.5
-      }
+        confidence: 0.5,
+      };
     }
   }
-  private generateCacheKey()
-    content: string;
-    options: Required<SummarizationOptions>;
-  ): string {
-    const contentHash = createHash("md5").update(content).digest("hex");
-    const optionsHash = createHash("md5");
-      .update(JSON.stringify(options)
-      .digest("hex");
-    return `,summary_${contentHash}_${optionsHash}`;
+  private generateCacheKey(content: string, options: Required<SummarizationOptions>): string {
+    const contentHash = createHash('md5').update(content).digest('hex');
+    const optionsHash = createHash('md5').update(JSON.stringify(options)).digest('hex');
+    return `summary_${contentHash}_${optionsHash}`;
   }
   private countWords(text: string): number {
-    return text;
+    return text
       .trim()
       .split(/\s+/)
       .filter((word: string) => word.length > 0).length;
@@ -613,7 +606,7 @@ class AISummarizationService {
     return Math.ceil(text.length / 4);
   }
   private getOverlapText(text: string, overlapLength: number): string {
-    if (text.length <= overlapLength) return text;>
+    if (text.length <= overlapLength) return text;
     // Try to find a sentence boundary for clean overlap
     const lastPart = text.substring(text.length - overlapLength);
     const sentenceMatch = lastPart.match(/[.!?]\s+(.*)$/);
@@ -634,8 +627,8 @@ class AISummarizationService {
   public getCacheStats(): { size: number; keys: string[] } {
     return {
       size: this.cache.size,
-      keys: Array.from(this.cache.keys())
-    }
+      keys: Array.from(this.cache.keys()),
+    };
   }
 }
 // Export singleton instance

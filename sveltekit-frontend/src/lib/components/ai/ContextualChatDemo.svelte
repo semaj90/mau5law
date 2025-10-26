@@ -411,7 +411,7 @@
 <style>
   .contextual-chat-demo {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     height: 100%;
     max-height: 800px;
     border: 1px solid var(--border, #e5e7eb);
@@ -429,7 +429,7 @@
   .demo-header h2 {
     margin: 0 0 0.5rem 0;
     font-size: 1.25rem;
-    font-weight: 600,
+    font-weight: 600;
   }
 
   .session-info {
@@ -449,7 +449,7 @@
   /* Chat Panel */
   .chat-panel {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     border-right: 1px solid var(--border, #e5e7eb);
   }
 
@@ -478,7 +478,7 @@
   .message-content {
     padding: 0.75rem 1rem;
     border-radius: 8px;
-    line-height: 1.5,
+    line-height: 1.5;
   }
 
   .user-message .message-content {
@@ -541,13 +541,13 @@
   }
 
   textarea:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
 
   .input-controls {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     margin-top: 0.75rem;
   }
@@ -571,8 +571,8 @@
     background: var(--background, #ffffff);
     cursor: pointer;
     font-size: 0.875rem;
-    font-weight: 500,
-    transition all 0.2s;
+    font-weight: 500;
+    transition: all 0.2s;
   }
 
   buttonhover:not(:disabled) {
@@ -580,14 +580,14 @@
   }
 
   buttondisabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
 
   /* State Panel */
   .state-panel {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
     padding: 1rem;
     overflow-y: auto;
@@ -610,7 +610,7 @@
   .stats-card h3 {
     margin: 0 0 1rem 0;
     font-size: 1rem;
-    font-weight: 600,
+    font-weight: 600;
   }
 
   .state-display {
@@ -619,7 +619,7 @@
 
   .state-name {
     font-size: 1.5rem;
-    font-weight: 700,
+    font-weight: 700;
     color: var(--primary, #3b82f6);
     margin-bottom: 0.5rem;
   }
@@ -660,19 +660,19 @@
 
   .predictions-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.75rem;
   }
 
   .prediction-item {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
   }
 
   .prediction-action {
     font-size: 0.875rem;
-    font-weight: 500,
+    font-weight: 500;
   }
 
   .prediction-confidence {
@@ -690,18 +690,18 @@
   .prediction-fill {
     height: 100%;
     background: var(--primary, #3b82f6);
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
 
   .entities-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
 
   .entity-item {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     padding: 0.5rem;
     background: var(--muted, #f9fafb);
@@ -710,7 +710,7 @@
   }
 
   .entity-type {
-    font-weight: 600,
+    font-weight: 600;
     color: var(--primary, #3b82f6);
   }
 
@@ -736,7 +736,9 @@
 
   .stat-value {
     font-size: 1.25rem;
-    font-weight: 700,
+    font-weight: 700;
     color: var(--foreground, #111827);
   }
 </style>
+
+

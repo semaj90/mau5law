@@ -424,13 +424,13 @@
   }
   .header-content {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     max-width: 1400px;
     margin: 0 auto;
   }
   .header-content h1 {
-    margin: 0,
+    margin: 0;
     color: var(--enhanced-bits-primary);
     font-size: 1.75rem;
     font-weight: bold;
@@ -472,7 +472,7 @@ d;
     font-size: 2.5rem;
     font-weight: bold;
     color: var(--enhanced-bits-primary);
-    line-height: 1,
+    line-height: 1;
   }
   .stat-detail {
     font-size: 0.875rem;
@@ -481,14 +481,14 @@ d;
   }
   .stat-detail.high-risk {
     color: var(--enhanced-bits-error);
-    font-weight: 600,
+    font-weight: 600;
   }
   .recent-activity {
     margin-bottom: 2rem;
   }
   .activity-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.75rem;
   }
   .activity-item {
@@ -513,12 +513,12 @@ d;
   }
   .section-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1.5rem;
   }
   .section-header h2 {
-    margin: 0,
+    margin: 0;
     color: var(--enhanced-bits-primary);
   }
   .poi-grid {
@@ -550,7 +550,7 @@ d;
   }
   @media (max-width: 768px) {
     .header-content {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
     }
     .header-actions {
@@ -575,3 +575,5 @@ c;
     }
   }
 </style>
+
+

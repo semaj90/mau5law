@@ -187,7 +187,7 @@
   .report-toolbar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     background: #ffffff;
     border-bottom: 1px solid #e2e8f0;
     padding: 0.5rem 1rem;
@@ -209,7 +209,7 @@
     font-size: 0.875rem;
     color: #374151;
     cursor: pointer;
-    transition all 0.15s ease;
+    transition: all 0.15s ease;
   }
   .menu-trigger:hover {
     background: #f3f4f6;
@@ -239,7 +239,7 @@
     font-size: 0.875rem;
     color: #374151;
     cursor: pointer;
-    transition background-color 0.15s ease;
+    transition: background-color 0.15s ease;
   }
   .dropdown-item:hover {
     background: #f3f4f6;
@@ -253,7 +253,7 @@
     margin-left: auto;
     font-size: 0.75rem;
     color: #6b7280;
-    opacity: 0.7,
+    opacity: 0.7;
   }
   .quick-actions {
     display: flex;
@@ -271,7 +271,7 @@
     border-radius: 0.25rem;
     color: #6b7280;
     cursor: pointer;
-    transition all 0.15s ease;
+    transition: all 0.15s ease;
   }
   .action-buttonhover {
     background: #f3f4f6;
@@ -294,13 +294,15 @@
     color: #6b7280;
   }
   .word-count {
-    font-weight: 500,
+    font-weight: 500;
   }
   .unsaved-indicator {
     color: #ef4444;
-    font-weight: 500,
+    font-weight: 500;
   }
   .saved-indicator {
     color: #10b981;
   }
 </style>
+
+

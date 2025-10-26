@@ -274,7 +274,7 @@
   /* Responsive design */
   @media (max-width: 600px) {
     .search-input-group {
-      flex-direction column;
+      flex-direction: column;
     }
     .search-input {
       min-width: 100%;
@@ -283,11 +283,11 @@
       width: 100%;
     }
     .search-config {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-start;
     }
     .result-header {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-start;
     }
   }
@@ -297,21 +297,22 @@
   }
   .nes-btn.is-disabled {
     cursor: not-allowed;
-    opacity: 0.6,
+    opacity: 0.6;
   }
   .nes-container.is-rounded {
     border-radius: 8px;
   }
   /* Animation for loading state */
   .search-buttondisabled {
-    animation pulse 1.5s ease-in-out infinite alternate;
+    animation: pulse 1.5s ease-in-out infinite alternate;
   }
   @keyframes pulse {
     from {
-      opacity: 0.6,
+      opacity: 0.6;
     }
     to {
-      opacity: 1,
+      opacity: 1;
     }
   }
 </style>
+

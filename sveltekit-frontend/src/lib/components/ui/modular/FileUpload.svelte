@@ -314,15 +314,16 @@ https://svelte.dev/e/js_parse_error -->
     background-color: rgba(0, 0, 0, 0.8);
     color: rgb(212, 175, 55);
   }
-  /* Drag over animation */
+  /* Drag over animation: */
   .file-upload-container.drag-over {
     transform: scale(1.02);
   }
   /* File preview animations */
   .file-preview {
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .file-preview:hover {
     transform: scale(1.05);
   }
 </style>
+

@@ -802,7 +802,7 @@ https://svelte.dev/e/js_parse_error -->
 
   .header-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     gap: 1rem;
   }
@@ -819,7 +819,7 @@ https://svelte.dev/e/js_parse_error -->
   .vault-subtitle {
     font-size: 0.7rem;
     color: #8b7547;
-    margin: 0,
+    margin: 0;
   }
 
   .header-actions {
@@ -873,7 +873,7 @@ https://svelte.dev/e/js_parse_error -->
 
   .bulk-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
   }
 
@@ -890,7 +890,7 @@ https://svelte.dev/e/js_parse_error -->
   /* Files Header */
   .files-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     padding: 0.75rem 1rem;
     margin-bottom: 1rem;
@@ -913,8 +913,7 @@ https://svelte.dev/e/js_parse_error -->
   .file-card {
     background: #1a1d20 !important;
     border: 2px solid #3a3d40 !important;
-    transition
-      border-color 0.2s,
+    transition: border-color 0.2s,
       transform 0.2s;
   }
 
@@ -925,13 +924,13 @@ https://svelte.dev/e/js_parse_error -->
 
   .file-card-header {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.75rem;
   }
 
   .file-selection {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
   }
 
@@ -1005,7 +1004,7 @@ https://svelte.dev/e/js_parse_error -->
   /* File Info */
   .file-info {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
 
@@ -1019,7 +1018,7 @@ https://svelte.dev/e/js_parse_error -->
 
   .file-meta {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
   }
 
@@ -1031,7 +1030,7 @@ https://svelte.dev/e/js_parse_error -->
   .file-description {
     font-size: 0.6rem;
     color: #999;
-    line-height: 1.4,
+    line-height: 1.4;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -1042,7 +1041,7 @@ https://svelte.dev/e/js_parse_error -->
   /* List View */
   .files-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.75rem;
   }
 
@@ -1087,7 +1086,7 @@ https://svelte.dev/e/js_parse_error -->
   /* Drop Zone */
   .drop-zone {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 3rem 2rem;
@@ -1095,7 +1094,7 @@ https://svelte.dev/e/js_parse_error -->
     background: #1a1d20 !important;
     text-align: center;
     cursor: pointer;
-    transition all 0.3s;
+    transition: all 0.3s;
   }
 
   .drop-zone:hover,
@@ -1121,7 +1120,7 @@ https://svelte.dev/e/js_parse_error -->
   .loading-state,
   .error-state {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 3rem 2rem;
@@ -1135,7 +1134,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 4px solid #3a3d40;
     border-top-color: #d4af37;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
 
   .error-icon {
@@ -1156,7 +1155,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   .animate-spin {
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
 
   /* Modal */
@@ -1185,7 +1184,7 @@ https://svelte.dev/e/js_parse_error -->
 
   .modal-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
     margin-bottom: 1.5rem;
   }
@@ -1208,13 +1207,13 @@ https://svelte.dev/e/js_parse_error -->
 
   .upload-progress {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
 
   .progress-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     font-size: 0.7rem;
   }
 
@@ -1231,7 +1230,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 2px solid #3a3d40;
     border-top-color: #92cc41;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
 
   /* Utilities */
@@ -1285,3 +1284,5 @@ https://svelte.dev/e/js_parse_error -->
     background-color: #d4af37;
   }
 </style>
+
+

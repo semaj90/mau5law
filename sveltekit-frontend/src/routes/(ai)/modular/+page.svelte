@@ -239,8 +239,7 @@ https://svelte.dev/e/js_parse_error -->
     font-family: 'Inter', system-ui, sans-serif;
   }
   .status-card {
-    transition
-      transform 0.2s ease,
+    transition: transform 0.2s ease,
       box-shadow 0.2s ease;
   }
   .status-card:hover {
@@ -256,3 +255,4 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 0.5rem;
   }
 </style>
+

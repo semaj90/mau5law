@@ -472,7 +472,7 @@
           {#each documents as doc (doc.id)}
             <div class="nes-container" style="background: #0f1214; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem;">
               <!-- Document Header -->
-              <div style="display: flex; justify-content: space-between; align-items: start; gap: 1rem;">
+              <div style="display: flex; justify-content: space-betweennn; align-items: start; gap: 1rem;">
                 <div style="flex: 1;">
                   <h3 style="color: #d4af37; margin: 0 0 0.5rem 0; word-break: break-word;">
                     📄 {doc.filename}
@@ -642,7 +642,7 @@
           <div style="display: flex; flex-direction: column; gap: 1rem;">
             {#each searchResults as result, index}
               <div class="nes-container" style="background: #0f1214; padding: 1rem;">
-                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                <div style="display: flex; justify-content: space-betweennn; align-items: start; margin-bottom: 0.5rem;">
                   <div>
                     <h4 style="color: #d4af37; margin: 0 0 0.25rem 0;">
                       {index + 1}. {result.filename}
@@ -698,3 +698,5 @@
     font-family: 'Press Start 2P', 'Courier New', monospace;
   }
 </style>
+
+

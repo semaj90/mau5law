@@ -264,7 +264,7 @@
     margin: 1rem 0;
   }
   .loading-dot {
-    animation blink 1.5s infinite;
+    animation: blink 1.5s infinite;
     margin: 0 0.2rem;
   }
   .loading-dot:nth-child(2) {
@@ -276,11 +276,11 @@
   @keyframes blink {
     0%,
     50% {
-      opacity: 1,
+      opacity: 1;
     }
     51%,
     100% {
-      opacity: 0.3,
+      opacity: 0.3;
     }
   }
   .loading-stats {
@@ -314,8 +314,9 @@
   }
   /* Ensure full-screen coverage */
   :global(body) {
-    margin: 0,
+    margin: 0;
     padding: 0;
     overflow: hidden;
   }
 </style>
+

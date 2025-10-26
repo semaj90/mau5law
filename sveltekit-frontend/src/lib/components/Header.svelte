@@ -2,8 +2,8 @@
   import Button from '$lib/components/ui/button/Button.svelte';
   import LoginModal from '$lib/components/auth/LoginModal.svelte';
   import RegisterModal from '$lib/components/auth/RegisterModal.svelte';
-  import { userStore, clearUserSession } from '$lib/stores/user';
-  import { User, LogOut } from 'lucide-svelte';
+  import UserProfileDropdown from '$lib/components/auth/UserProfileDropdown.svelte';
+  import { userStore } from '$lib/stores/user';
 
   let showLoginModal = $state(false);
   let showRegisterModal = $state(false);
@@ -17,16 +17,6 @@
     showRegisterModal = false;
     showLoginModal = true;
   }
-
-  async function handleLogout() {
-    try {
-      await fetch('/api/auth/logout', { method: 'POST' });
-      clearUserSession();
-      window.location.href = '/';
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-  }
 </script>
 
 <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
@@ -38,30 +28,8 @@
 
     <nav class="flex items-center gap-3">
       {#if $userStore}
-        <!-- Authenticated User Menu -->
-        <div class="flex items-center gap-4">
-          <div class="flex items-center gap-2">
-            <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-indigo-600 rounded-full flex items-center justify-center">
-              <User class="w-4 h-4 text-white" />
-            </div>
-            <span class="text-sm font-medium text-slate-700">
-              {$userStore.user.firstName || $userStore.user.email}
-            </span>
-          </div>
-          <a
-            href="/profile"
-            class="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded transition"
-          >
-            Profile
-          </a>
-          <Button
-            onclick={handleLogout}
-            class="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
-          >
-            <LogOut class="w-4 h-4" />
-            Logout
-          </Button>
-        </div>
+        <!-- Authenticated User Menu with Dropdown -->
+        <UserProfileDropdown />
       {:else}
         <!-- Unauthenticated User Menu -->
         <Button

@@ -254,7 +254,7 @@ https://svelte.dev/e/js_parse_error -->
     } finally {
       loadingDocument = false;
   }}
-  // Custom animation function for dialog
+  // Custom animation: function for dialog
   function flyAndScale(
     node: Element;
     params: { duration?: number; y?: number; start?: number } = ) {
@@ -567,7 +567,7 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.875rem;
     border: 1px solid #d1d5db;
     border-radius: 0.25rem;
-    transition background-color 0.2;
+    transition: background-color 0.2;
   }
   .toolbar-btn:hover {
     background-color: #f9fafb;
@@ -585,3 +585,4 @@ https://svelte.dev/e/js_parse_error -->
     background-color: #dbeaf;
   }
 </style>
+

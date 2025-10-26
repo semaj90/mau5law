@@ -120,7 +120,7 @@
     color: #3cbcfc;
     text-decoration none;
     font-weight: bold;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     text-align: center;
   }
   .quick-link:hover {
@@ -132,7 +132,7 @@
   .quick-link.external::after {
     content: "↗";
     margin-left: 8px;
-    opacity: 0.7,
+    opacity: 0.7;
   }
   @media (max-width: 768px) {
     .admin-header {

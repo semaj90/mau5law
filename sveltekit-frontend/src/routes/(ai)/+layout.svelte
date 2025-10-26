@@ -289,7 +289,7 @@
     max-width: 1400px;
     margin: 0 auto;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     gap: 2rem;
   }
@@ -369,3 +369,5 @@
     box-shadow: 0 0 12px rgba(0, 255, 204, 0.7);
   }
 </style>
+
+

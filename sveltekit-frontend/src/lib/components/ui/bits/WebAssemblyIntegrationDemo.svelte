@@ -442,7 +442,7 @@ console.log('🔧 WebAssembly Integration Demo initialized');
       0 8px 32px -8px rgba(0, 0, 0, 0.25),
       0 0 0 1px rgba(148, 163, 184, 0.05),
       inset 0 1px 0 rgba(248, 250, 252, 0.05);
-    transition all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .yorha-card:hover {
     transform: translateY(-2px);
@@ -453,3 +453,4 @@ console.log('🔧 WebAssembly Integration Demo initialized');
     border-color: rgba(251, 191, 36, 0.2);
   }
 </style>
+

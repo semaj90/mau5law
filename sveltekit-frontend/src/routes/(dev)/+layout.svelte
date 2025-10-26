@@ -93,7 +93,7 @@
 
   @media (max-width: 768px) {
     .dev-content {
-      flex-direction column;
+      flex-direction: column;
     }
 
     .dev-sidebar {
@@ -104,3 +104,4 @@
     }
   }
 </style>
+

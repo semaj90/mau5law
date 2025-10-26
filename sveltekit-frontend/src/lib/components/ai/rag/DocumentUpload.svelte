@@ -369,7 +369,7 @@
     padding: 3rem 2rem;
     text-align: center;
     cursor: pointer;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     background: var(--yorha-bg-primary);
     margin-bottom: 1rem;
   }
@@ -388,36 +388,36 @@
 
   .drop-zone-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 1rem;
   }
 
   .drop-zone-icon {
     font-size: 3rem;
-    opacity: 0.5,
+    opacity: 0.5;
   }
 
   .drop-zone-text h3 {
-    margin: 0,
+    margin: 0;
     color: var(--yorha-text-primary);
-    font-weight: 600,
+    font-weight: 600;
   }
 
   .drop-zone-text p {
-    margin: 0,
+    margin: 0;
     color: var(--yorha-text-muted);
     font-size: 0.9rem;
   }
 
   .files-preview {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
   }
 
   .files-preview h4 {
-    margin: 0,
+    margin: 0;
     color: var(--yorha-text-primary);
   }
 
@@ -428,7 +428,7 @@
 
   .file-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.75rem;
     margin-bottom: 1rem;
   }
@@ -436,7 +436,7 @@
   .file-item {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     padding: 1rem;
     background: var(--yorha-bg-secondary);
     border: 1px solid var(--yorha-border);
@@ -448,7 +448,7 @@
   }
 
   .file-name {
-    font-weight: 600,
+    font-weight: 600;
     color: var(--yorha-text-primary);
     margin-bottom: 0.25rem;
   }
@@ -478,7 +478,7 @@
   .progress-fill {
     height: 100%;
     background: var(--yorha-accent);
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
 
   .progress-text {
@@ -496,7 +496,7 @@
     padding: 0.5rem;
     border-radius: 4px;
     font-size: 1rem;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
 
   .remove-file:hover {
@@ -504,13 +504,13 @@
   }
 
   .remove-file:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
 
   .error-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
     margin-bottom: 1rem;
   }
@@ -539,7 +539,7 @@
 
   .upload-spinner {
     display: inline-block;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
 
   @keyframes spin {
@@ -566,7 +566,7 @@
 
   .results-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.75rem;
   }
 
@@ -577,7 +577,7 @@
   }
 
   .result-file {
-    font-weight: 600,
+    font-weight: 600;
     color: var(--yorha-text-primary);
     margin-bottom: 0.5rem;
   }
@@ -595,7 +595,7 @@
     }
 
     .file-item {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-start;
       gap: 0.75rem;
     }
@@ -605,12 +605,14 @@
     }
 
     .action-buttons {
-      flex-direction column;
+      flex-direction: column;
     }
 
     .result-details {
-      flex-direction column;
+      flex-direction: column;
       gap: 0.25rem;
     }
   }
 </style>
+
+

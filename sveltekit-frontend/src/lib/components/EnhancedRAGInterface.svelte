@@ -174,7 +174,7 @@
   }
   .result-row {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     gap: 12px;
   }
   .result-main h4 {
@@ -187,3 +187,4 @@
     border-radius: 6px;
   }
 </style>
+

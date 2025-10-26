@@ -442,7 +442,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     max-height: 85vh;
     overflow: hidden;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
   }
   .modal-header {
     margin-bottom: 1.5rem;
@@ -463,7 +463,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     color: rgba(255, 255, 255, 0.8);
     font-size: 0.85rem;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
     text-align: left;
   }
   .type-btn:hover {
@@ -497,9 +497,9 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     border: 1px solid rgba(138, 43, 226, 0.6);
     border-radius: 8px;
     color: #fff;
-    font-weight: 500,
+    font-weight: 500;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
     white-space: nowrap;
   }
   .analyze-btn:hover:not(:disabled) {,
@@ -507,7 +507,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     transform: translateY(-1px);
   }
   .analyze-btn:disabled {
-    opacity: 0.6,
+    opacity: 0.6;
     cursor: not-allowed;
   }
   .ai-thinking {
@@ -525,10 +525,10 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .thinking-icon {
     font-size: 2rem;
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   .thinking-header h3 {
-    margin: 0,
+    margin: 0;
     flex: 1;
     color: rgba(255, 255, 255, 0.9);
   }
@@ -538,7 +538,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-top: 2px solid rgba(138, 43, 226, 0.8);
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   .thinking-message {
     font-size: 1rem;
@@ -548,7 +548,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .processing-steps {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .processing-step {
@@ -570,11 +570,11 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   .reasoning-header {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     margin-bottom: 0.75rem;
   }
   .reasoning-header h3 {
-    margin: 0,
+    margin: 0;
     color: rgba(255, 255, 255, 0.9);
     font-size: 1.1rem;
   }
@@ -586,9 +586,9 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     font-weight: bold;
   }
   .reasoning-text {
-    margin: 0,
+    margin: 0;
     color: rgba(255, 255, 255, 0.8);
-    line-height: 1.5,
+    line-height: 1.5;
   }
   .recommendations-section,
   .actions-section,
@@ -604,7 +604,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .recommendations-grid {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .recommendation-card {
@@ -612,7 +612,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     padding: 1rem;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .recommendation-card:hover {
     background: rgba(255, 255, 255, 0.05);
@@ -634,17 +634,17 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     margin: 0 0 0.5rem 0;
     color: rgba(255, 255, 255, 0.9);
     font-size: 1rem;
-    font-weight: 500,
+    font-weight: 500;
   }
   .rec-description {
-    margin: 0,
+    margin: 0;
     color: rgba(255, 255, 255, 0.7);
     font-size: 0.9rem;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   .rec-stats {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .confidence-meter,
@@ -706,7 +706,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .actions-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .action-card {
@@ -717,7 +717,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .action-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     margin-bottom: 0.75rem;
   }
   .action-info {
@@ -728,17 +728,17 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     margin: 0 0 0.5rem 0;
     color: rgba(255, 255, 255, 0.9);
     font-size: 1rem;
-    font-weight: 500,
+    font-weight: 500;
   }
   .action-description {
-    margin: 0,
+    margin: 0;
     color: rgba(255, 255, 255, 0.7);
     font-size: 0.9rem;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   .action-meta {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
     align-items: flex-end;
   }
@@ -780,14 +780,14 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     color: #fff;
     font-size: 0.85rem;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .execute-btn:hover:not(:disabled) {,
     background: rgba(76, 175, 80, 0.3);
     transform: translateY(-1px);
   }
   .execute-btn:disabled {
-    opacity: 0.6,
+    opacity: 0.6;
     cursor: not-allowed;
   }
   .topics-tags {
@@ -803,7 +803,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     color: rgba(255, 255, 255, 0.8);
     font-size: 0.8rem;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .topic-tag:hover {
     background: rgba(138, 43, 226, 0.2);
@@ -811,7 +811,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   }
   .empty-state {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 3rem;
@@ -821,7 +821,7 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   .empty-icon {
     font-size: 4rem;
     margin-bottom: 1rem;
-    opacity: 0.5,
+    opacity: 0.5;
   }
   .empty-state h3 {
     margin: 0 0 0.5rem 0;
@@ -830,15 +830,15 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
   .empty-state p {
     margin: 0;
     max-width: 400px;
-    line-height: 1.5,
+    line-height: 1.5;
   }
   @keyframes spin {
     0% { transform: rotate(0deg), }
     100% { transform: rotate(360deg), }
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1, }
-    50% { opacity: 0.7, }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
   }
   /* Scrollbar styling */
   .ai-results::-webkit-scrollbar {
@@ -855,3 +855,5 @@ d; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; pad
     background: rgba(138, 43, 226, 0.7);
   }
 </style>
+
+

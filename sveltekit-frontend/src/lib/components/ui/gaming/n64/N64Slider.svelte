@@ -315,7 +315,7 @@ mounted = true;
 			blur(calc(var(--pixel-drift, 0) * 0.5px))
 			saturate(var(--color-bleed, 1))
 			contrast(1.1);
-		transition transform 0.1s ease;
+		transition: transform 0.1s ease;
 	}
 	.n64-slider-label {
 		display: block;
@@ -407,7 +407,7 @@ mounted = true;
 			2px 2px 6px var(--n64-shadow),
 			inset 1px 1px 2px var(--n64-highlight);
 		cursor: pointer;
-		transition all 0.1s ease;
+		transition: all 0.1s ease;
 		/* N64 controller button styling */
 		position relative;
 		z-index: 2,
@@ -430,7 +430,7 @@ mounted = true;
 		left: 0;
 		width: 100%;
 		height: 100%;
-		opacity: 0,
+		opacity: 0;
 		cursor: pointer;
 		margin: 0;
 		z-index: 3,
@@ -480,7 +480,7 @@ mounted = true;
 	}
 	/* Disabled state */
 	.n64-slider.disabled {
-		opacity: 0.6,
+		opacity: 0.6;
 		filter: grayscale(0.8) blur(0.5px);
 	}
 	.n64-slider.disabled .n64-slider-thumb {
@@ -514,13 +514,13 @@ mounted = true;
 	@media (prefers-reduced-motion reduce) {
 		.n64-slider {
 			transform: none;
-			transition none;
+			transition: none;
 		}
 		.n64-slider-fill {
 			animation: none;
 		}
 		.n64-slider-thumb {
-			transition none;
+			transition: none;
 		}
 	}
 	/* Mobile optimizations */

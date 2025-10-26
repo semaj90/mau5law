@@ -333,7 +333,7 @@ await loadSystemCapabilities();
   }
   .demo-header p {
     color: #6b7280;
-    margin: 0,
+    margin: 0;
   }
   .system-status {
     background: #f9fafb;
@@ -384,11 +384,11 @@ await loadSystemCapabilities();
   }
   .control-group label, .config-row label {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .control-group label span, .config-row label span {
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
   }
   select, input[type="number"], input[type="text"] {
@@ -402,7 +402,7 @@ await loadSystemCapabilities();
   }
   .text-samples label {
     display: block;
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
     margin-bottom: 0.5rem;
   }
@@ -416,9 +416,9 @@ await loadSystemCapabilities();
     border: none;
     border-radius: 0.5rem;
     padding: 0.75rem 1.5rem;
-    font-weight: 600,
+    font-weight: 600;
     cursor: pointer;
-    transition background-color 0.2;
+    transition: background-color 0.2;
   }
   .run-demo-btn:hover:not(:disabled) {,
     background: #1d4ed8;
@@ -466,20 +466,20 @@ await loadSystemCapabilities();
   }
   .stat {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     padding: 0.5rem 0;
     border-bottom: 1px solid #f3f4f6;
   }
   .stat.speedup.positive .value {
     color: #10b981;
-    font-weight: 600,
+    font-weight: 600;
   }
   .stat .label {
     color: #6b7280;
-    font-weight: 500,
+    font-weight: 500;
   }
   .stat .value {
-    font-weight: 600,
+    font-weight: 600;
     color: #374151;
   }
   .summary {
@@ -507,7 +507,7 @@ await loadSystemCapabilities();
     border-bottom: 1px solid #f3f4f6;
   }
   .similarity-score {
-    font-weight: 600,
+    font-weight: 600;
     color: #2563eb;
     min-width: 60px;
   }
@@ -518,7 +518,7 @@ await loadSystemCapabilities();
     padding: 1rem;
     overflow-x: auto;
     font-size: 0.75rem;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   @media (max-width: 768px) {
     .webgpu-cache-demo {
@@ -535,3 +535,4 @@ await loadSystemCapabilities();
     }
   }
 </style>
+

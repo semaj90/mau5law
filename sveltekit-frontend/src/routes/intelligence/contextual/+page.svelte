@@ -617,7 +617,7 @@
   }
   .header-content {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: flex-start;
     gap: 2rem;
   }
@@ -627,7 +627,7 @@
     font-size: 2.25rem;
     font-weight: bold;
     color: #1e293b;
-    margin: 0,
+    margin: 0;
   }
   .dashboard-subtitle {
     margin: 0.5rem 0 0 0;
@@ -641,7 +641,7 @@
   }
   .stat-item {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 0.25rem;
   }
@@ -665,7 +665,7 @@
     gap: 1.5rem;
   }
   .metric-card {
-    transition transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
   .metric-card:hover {
     transform: translateY(-2px);
@@ -673,15 +673,15 @@
   }
   .metric-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1rem;
   }
   .metric-name {
     font-size: 0.875rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #374151;
-    margin: 0,
+    margin: 0;
   }
   .metric-trend {
     padding: 0.25rem;
@@ -707,7 +707,7 @@
   }
   .metric-footer {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-top: 1rem;
   }
@@ -726,7 +726,7 @@
     border-radius: 0.375rem;
     font-size: 1rem;
     resize: vertical;
-    transition border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
   .analysis-textarea:focus {
     outline: none;
@@ -751,7 +751,7 @@
     padding: 1rem;
     border-bottom: 1px solid #e5e7eb;
     cursor: pointer;
-    transition background-color 0.2s ease;
+    transition: background-color 0.2s ease;
   }
   .insight-item:hover {
     background-color: #f9fafb;
@@ -785,7 +785,7 @@
   }
   .insight-title {
     display: block;
-    font-weight: 600,
+    font-weight: 600;
     color: #1e293b;
     margin-bottom: 0.25rem;
   }
@@ -812,7 +812,7 @@
   }
   .tasks-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .task-item {
@@ -839,7 +839,7 @@
   .status-pending { color: #d97706, }
   .task-name {
     flex: 1;
-    font-weight: 500,
+    font-weight: 500;
     color: #1e293b;
   }
   .task-eta {
@@ -860,19 +860,19 @@
     height: 0.5rem;
     background: #3b82f6;
     border-radius: 50%;
-    animation pulse 1.5s ease-in-out infinite;
+    animation: pulse 1.5s ease-in-out infinite;
   }
   .upload-section {
     margin-bottom: 2rem;
   }
   .upload-interface {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .upload-progress {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .progress-item {
@@ -927,13 +927,13 @@
   }
   .insight-description-full {
     font-size: 1rem;
-    line-height: 1.6,
+    line-height: 1.6;
     color: #4b5563;
     margin-bottom: 1.5rem;
   }
   .sources-title {
     font-size: 0.875rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #374151;
     margin: 0 0 0.5rem 0;
   }
@@ -952,7 +952,7 @@
       padding: 1rem;
     }
     .header-content {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
     }
     .content-grid {
@@ -963,7 +963,8 @@
     }
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1, }
-    50% { opacity: 0.5, }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
   }
 </style>
+

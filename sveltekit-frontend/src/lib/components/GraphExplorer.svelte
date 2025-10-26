@@ -461,7 +461,7 @@ https://svelte.dev/e/js_parse_error -->
   .controls {
     grid-area: control;
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 1rem;
     background: white;
@@ -492,7 +492,7 @@ https://svelte.dev/e/js_parse_error -->
     color: white;
     border: none;
     border-radius: 6px;
-    font-weight: 600,
+    font-weight: 600;
     cursor: pointer;
   }
   .search-btn:disabled {
@@ -522,7 +522,7 @@ https://svelte.dev/e/js_parse_error -->
   .main-content {
     grid-area: mai;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
     overflow: auto;
   }
@@ -617,7 +617,7 @@ https://svelte.dev/e/js_parse_error -->
   .stat-group p {
     margin: 0.25rem 0;
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
   }
   .chat-panel {
     grid-area: chat;
@@ -630,7 +630,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .chat-messages {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.75rem;
     margin-top: 1rem;
   }
@@ -653,7 +653,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .message-meta {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     margin-bottom: 0.5rem;
     font-size: 11px;
     color: #6c757d;
@@ -674,7 +674,7 @@ https://svelte.dev/e/js_parse_error -->
     color: white;
     border-radius: 2px;
     font-size: 10px;
-    font-weight: 500,
+    font-weight: 500;
   }
   h3 {
     margin: 0 0 1rem 0;
@@ -687,3 +687,4 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 14px;
   }
 </style>
+

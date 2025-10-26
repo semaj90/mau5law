@@ -758,7 +758,7 @@
   }
   .drafting-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: flex-start;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
@@ -766,9 +766,9 @@
   }
   .drafting-title {
     font-size: 2rem;
-    font-weight: 700,
+    font-weight: 700;
     color: #1e293b;
-    margin: 0,
+    margin: 0;
   }
   .drafting-subtitle {
     color: #64748b;
@@ -798,11 +798,11 @@
     margin: 0 0 1rem 0;
     color: #374151;
     font-size: 1rem;
-    font-weight: 600,
+    font-weight: 600;
   }
   .document-types-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.75rem;
   }
   .document-type-option {
@@ -813,7 +813,7 @@
     border: 1px solid #e5e7eb;
     border-radius: 0.375rem;
     background: white;
-    transition all 0.2s;
+    transition: all 0.2s;
   }
   .document-type-card:hover {
     border-color: #3b82f6;
@@ -837,13 +837,13 @@
     margin: 0 0 0.25rem 0;
     color: #374151;
     font-size: 0.875rem;
-    font-weight: 600,
+    font-weight: 600;
   }
   .type-category {
     padding: 0.125rem 0.375rem;
     border-radius: 0.25rem;
     font-size: 0.625rem;
-    font-weight: 600,
+    font-weight: 600;
     border: 1px solid;
     text-transform: uppercase;
   }
@@ -851,11 +851,11 @@
     margin: 0.5rem 0;
     font-size: 0.75rem;
     color: #64748b;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   .type-metadata {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     font-size: 0.75rem;
   }
@@ -887,23 +887,23 @@
   }
   .template-stats {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     font-size: 0.625rem;
     color: #9ca3af;
   }
   .config-form {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .form-group {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .form-group label {
     font-size: 0.75rem;
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
   }
   .form-input,
@@ -941,7 +941,7 @@
   .stat-value {
     display: block;
     font-size: 1rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #374151;
   }
   .last-modified {
@@ -950,7 +950,7 @@
   }
   .suggestions-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
     max-height: 300px;
     overflow-y: auto;
@@ -973,7 +973,7 @@
   .suggestion-type {
     flex: 1;
     font-size: 0.75rem;
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
     text-transform: capitalize;
   }
@@ -985,7 +985,7 @@
     margin: 0 0 0.5rem 0;
     font-size: 0.75rem;
     color: #374151;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   .suggestion-reasoning {
     margin: 0 0 0.75rem 0;
@@ -999,7 +999,7 @@
   }
   .quick-actions {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .drafting-main {
@@ -1041,12 +1041,12 @@
   }
   .document-editor {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     height: 70vh;
   }
   .editor-toolbar {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     padding: 1rem 1.5rem;
     border-bottom: 1px solid #e2e8f0;
@@ -1056,7 +1056,7 @@
     border: none;
     background: transparent;
     font-size: 1.25rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #374151;
     padding: 0.5rem;
     border-radius: 0.375rem;
@@ -1086,7 +1086,7 @@
     resize: none;
     font-family: 'Georgia', serif;
     font-size: 1rem;
-    line-height: 1.6,
+    line-height: 1.6;
     color: #374151;
     background: transparent;
   }
@@ -1124,7 +1124,7 @@
   }
   .draft-card {
     border: 1px solid #e2e8f0;
-    transition box-shadow 0.2s;
+    transition: box-shadow 0.2s;
   }
   .draft-card:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -1135,7 +1135,7 @@
   }
   .draft-stats {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     margin-bottom: 0.75rem;
   }
@@ -1165,7 +1165,7 @@
   .draft-preview {
     font-size: 0.75rem;
     color: #64748b;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   .draft-actions {
     display: flex;
@@ -1203,7 +1203,7 @@
   .preview-body {
     font-family: 'Georgia', serif;
     font-size: 1rem;
-    line-height: 1.6,
+    line-height: 1.6;
     color: #374151;
   }
   .preview-body p {
@@ -1250,11 +1250,11 @@
   }
   @media (max-width: 768px) {
     .drafting-header {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
     }
     .toolbar-right {
-      flex-direction column;
+      flex-direction: column;
       gap: 0.5rem;
     }
     .title-input {
@@ -1265,3 +1265,5 @@
     }
   }
 </style>
+
+

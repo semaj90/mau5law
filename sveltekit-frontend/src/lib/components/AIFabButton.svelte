@@ -75,7 +75,7 @@
     align-items: center;
     justify-content: center;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    transition all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1000,
     color: white;
     overflow: hidden;
@@ -89,7 +89,7 @@
     transform: translateY(-1px) scale(1.02);
   }
   .ai-fab-button.generating {
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   .fab-icon {
     position relative;
@@ -105,12 +105,12 @@
     width: 200%;
     height: 200%;
     background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
-    opacity: 0,
-    transition opacity 0.3s ease;
+    opacity: 0;
+    transition: opacity 0.3s ease;
     pointer-events: none;
   }
   .ai-fab-buttonhover .fab-glow {
-    opacity: 1,
+    opacity: 1;
   }
   @keyframes spin {
     0% {
@@ -145,3 +145,4 @@
     }
   }
 </style>
+

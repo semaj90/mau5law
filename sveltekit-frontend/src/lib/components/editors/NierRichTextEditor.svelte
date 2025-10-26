@@ -485,7 +485,7 @@ https://svelte.dev/e/attribute_duplicate -->
 			transparent 100%
 		);
 		background-size: 100% 4px;
-		animation scanlines 2s linear infinite;
+		animation: scanlines 2s linear infinite;
 		pointer-events: none;
 	}
 	@keyframes scanlines {
@@ -494,7 +494,7 @@ https://svelte.dev/e/attribute_duplicate -->
 	}
 	/* Glitch Effect */
 	.glitch-effect {
-		animation glitch 0.1s ease-in-out;
+		animation: glitch 0.1s ease-in-out;
 	}
 	@keyframes glitch {
 		0% { transform: translateX(0), }
@@ -545,7 +545,7 @@ d;
 		font-size: 12px;
 		font-weight: bold;
 		z-index: 9999,
-		animation fadeInOut 2s ease-in-out;
+		animation: fadeInOut 2s ease-in-out;
 	}
 	:global(.save-success) {
 		background: rgba(0, 255, 0, 0.2);
@@ -560,7 +560,7 @@ d;
 		box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
 	}
 	@keyframes fadeInOut {
-		0%, 100% { opacity: 0, transform: translateY(-10px), }
-		10%, 90% { opacity: 1, transform: translateY(0), }
+		0%, 100% { opacity: 0; transform: translateY(-10px), }
+		10%, 90% { opacity: 1; transform: translateY(0), }
 	}
 </style>

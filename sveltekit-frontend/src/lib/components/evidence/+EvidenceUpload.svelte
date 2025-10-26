@@ -84,7 +84,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     padding: 2rem;
     text-align: center;
     border-radius: 8px;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .upload-zone.active {
     border-color: #007bff;
@@ -92,7 +92,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   }
   .upload-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 1rem;
   }
@@ -110,6 +110,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   .progress {
     height: 4px;
     background-color: #007bff;
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
 </style>
+

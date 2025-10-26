@@ -1007,7 +1007,7 @@
     padding: 2rem;
     text-align: center;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     background: #f9fafb;
     min-height: 200px;
     display: flex;
@@ -1030,16 +1030,16 @@
   }
   .drop-zone.uploading {
     cursor: not-allowed;
-    opacity: 0.7,
+    opacity: 0.7;
   }
   .upload-prompt {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 1rem;
   }
   .upload-icon {
-    transition transform 0.2s ease;
+    transition: transform 0.2s ease;
   }
   .drop-zone:hover .upload-iconnot(.uploading) {
     transform: scale(1.1);
@@ -1047,13 +1047,13 @@
   .upload-text h3 {
     margin: 0;
     font-size: 1.125rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #374151;
   }
   .file-list {
     width: 100%;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.75rem;
   }
   .file-item {
@@ -1077,7 +1077,7 @@
     border-radius: 4px;
     cursor: pointer;
     font-size: 0.75rem;
-    line-height: 1,
+    line-height: 1;
   }
   .action-btn:hover {
     background: #e5e7eb;
@@ -1098,7 +1098,7 @@
     height: 100%;
     background: #3b82f6;
     border-radius: 2px;
-    transition transform 0.2s linear;
+    transition: transform 0.2s linear;
   }
   .sr-only {
     position absolute;
@@ -1120,7 +1120,7 @@
     min-width: 0,
   }
   .file-name {
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
     word-break: break-word;
   }
@@ -1151,7 +1151,7 @@
     height: 100%;
     background: #3b82f6;
     border-radius: 4px;
-    transition transform 0.3s ease;
+    transition: transform 0.3s ease;
   }
   .progress-text {
     display: flex;
@@ -1266,15 +1266,15 @@
     color: white;
     border: none;
     border-radius: 8px;
-    font-weight: 500,
+    font-weight: 500;
     cursor: pointer;
-    transition background-color 0.2;
+    transition: background-color 0.2;
   }
   .upload-buttonhover:not(:disabled) {
     background: #2563eb;
   }
   .upload-buttondisabled {
-    opacity: 0.6,
+    opacity: 0.6;
     cursor: not-allowed;
   }
   .clear-button {
@@ -1283,9 +1283,9 @@
     color: #374151;
     border: 1px solid #d1d5db;
     border-radius: 8px;
-    font-weight: 500,
+    font-weight: 500;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .clear-buttonhover {
     background: #e5e7eb;
@@ -1329,7 +1329,7 @@
   }
   .metric-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 0.5rem;
     background: rgba(255, 255, 255, 0.7);
@@ -1339,7 +1339,7 @@
   .metric-label {
     font-size: 0.75rem;
     color: #0369a1;
-    font-weight: 500,
+    font-weight: 500;
   }
   .metric-value {
     font-size: 0.8rem;
@@ -1356,20 +1356,20 @@
   .gpu-indicator {
     font-size: 0.75rem;
     color: #15803d;
-    font-weight: 600,
+    font-weight: 600;
   }
   /* Animation for performance metrics */
   .performance-metrics {
-    animation slideInUp 0.3s ease-out;
+    animation: slideInUp 0.3s ease-out;
   }
   @keyframes slideInUp {
     from {
       transform: translateY(20px);
-      opacity: 0,
+      opacity: 0;
     }
     to {
       transform: translateY(0);
-      opacity: 1,
+      opacity: 1;
     }
   }
   /* Responsive adjustments for metrics */
@@ -1378,7 +1378,7 @@
       grid-template-columns: 1fr 1fr;
     }
     .metric-item {
-      flex-direction column;
+      flex-direction: column;
       gap: 0.25rem;
     }
     .metric-label,
@@ -1388,3 +1388,4 @@
   }
   /* removed duplicated JS block accidentally appended during migration */
 </style>
+

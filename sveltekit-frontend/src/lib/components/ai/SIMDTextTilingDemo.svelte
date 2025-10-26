@@ -524,18 +524,18 @@ processingLogs = []} variant="ghost" size="sm">
   }
   /* Enhance tile visualizations */
   .grid > div {
-    transition transform 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out;
   }
   .grid > div:hover {
     transform: scale(1.05);
   }
-  /* Processing animation */
+  /* Processing animation: */
   @keyframes processing-pulse {
-    0%, 100% { opacity: 1, }
-    50% { opacity: 0.7, }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
   }
   .processing {
-    animation processing-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    animation: processing-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
   /* Log terminal styling */
   .bg-black {

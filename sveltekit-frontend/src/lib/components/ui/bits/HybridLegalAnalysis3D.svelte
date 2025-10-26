@@ -659,7 +659,7 @@ enable3DVisualization = !enable3DVisualization}
     padding: 1rem;
     overflow: hidden;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
   }
   .analysis-header {
     margin-bottom: 1rem;
@@ -709,7 +709,7 @@ enable3DVisualization = !enable3DVisualization}
   }
   .document-result {
     background: rgba(212, 197, 169, 0.1);
-    transition transform 0.2s ease;
+    transition: transform 0.2s ease;
   }
   .document-result:hover {
     transform: scale(1.02);

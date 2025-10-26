@@ -197,7 +197,7 @@ https://svelte.dev/e/js_parse_error -->
 	{#if $open}
 		<div
 			class="z-50 min-w-[320px] rounded-md border border-yorha-border bg-yorha-bg-primary p-1 shadow-lg focus:outline-none"
-			/* transition removed */}
+			/* transition: removed */}
 		>
 			{#each $providers as provider (provider.id)}
 				<div
@@ -262,12 +262,12 @@ https://svelte.dev/e/js_parse_error -->
 	.llm-provider-selector {
 /* @apply relative; */
 	}
-	/* Scan line animation for cyberpunk theme */
+	/* Scan line animation: for cyberpunk theme */
 	@keyframes scan {
 		0% { transform: translateX(-100%), }
 		100% { transform: translateX(100%), }
 	}
 	.animate-scan {
-		animation scan 2s linear infinite;
+		animation: scan 2s linear infinite;
 	}
 </style>

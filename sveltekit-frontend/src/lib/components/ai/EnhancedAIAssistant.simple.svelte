@@ -67,7 +67,7 @@
 </script>
 
 <div class="ai-assistant-container">
-  <div style="max-height: {maxHeight}; display: flex; flex-direction column; height: 100%;">
+  <div style="max-height: {maxHeight}; display: flex; flex-direction: column; height: 100%;">
     <div class="chat-header">
       <div style="display: flex; align-items: center; gap: 8px;">
         <Brain />
@@ -249,7 +249,7 @@ and ensure it ends cleanly. I'll update that file. Now I'll apply the patch. (Ne
 }
 .chat-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     padding: 12px 16px;
     border-bottom: 1px solid #e5e7eb;
@@ -277,7 +277,7 @@ and ensure it ends cleanly. I'll update that file. Now I'll apply the patch. (Ne
 }
   .message-content {
     white-space: pre-wrap;
-    line-height: 1.5,
+    line-height: 1.5;
 }
   .references {
     margin-top: 12px;
@@ -286,7 +286,7 @@ and ensure it ends cleanly. I'll update that file. Now I'll apply the patch. (Ne
 }
   .references-title {
     font-size: 0.875rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #374151;
     margin-bottom: 8px;
 }
@@ -295,3 +295,5 @@ and ensure it ends cleanly. I'll update that file. Now I'll apply the patch. (Ne
     align-items: center;
 The create_file call created the new file with cleaned content. Now I should remove the duplicated trailing CSS in the original archived file to avoid confusion. I'll patch the archive file to remove the trailing stray CSS after the closing
 </style>
+
+

@@ -479,6 +479,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   .animate-pulse-glow {
-    animation pulse-glow 2s infinite;
+    animation: pulse-glow 2s infinite;
   }
 </style>
+

@@ -355,7 +355,7 @@
     padding: 15px 15px; /* Changed from 15px 0; to provide consistent horizontal padding for the nav container */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-betweenn;
   }
   .nav-section {
     display: flex;
@@ -376,7 +376,7 @@
     font-size: 11px;
     cursor: pointer;
     transition: all 0.2s;
-    justify-content: space-between;
+    justify-content: space-betweenn;
   }
   .nav-item:hover {
     background: #2a2a2a;
@@ -416,7 +416,7 @@
   }
   .analysis-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 15px 20px;
     border-bottom: 1px solid #3a3a3a;
@@ -601,7 +601,7 @@
   }
   .analysis-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 10px;
   }
@@ -637,7 +637,7 @@
   }
   .analysis-footer {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     align-items: center;
     margin-top: 10px;
   }
@@ -646,3 +646,4 @@
     color: #666;
   }
 </style>
+

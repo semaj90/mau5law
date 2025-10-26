@@ -1,279 +1,174 @@
-// Redis cache imports - using local interfaces to avoid missing module errors
+// Lightweight embedding utilities with safe fallbacks and strict typing
+import { createHash } from 'crypto';
+
 export interface CacheInterface {
   getCachedEmbedding: (_key: string) => Promise<number[] | null>;
   cacheEmbedding: (_key: string, embedding: number[], ttl?: number) => Promise<void>;
 }
-// Mock cache implementation
+
+// Minimal in-memory/cache shim; apps should replace with Redis-backed implementation
 const cache: CacheInterface = {
   getCachedEmbedding: async (_key: string) => null,
-  cacheEmbedding: async (_key: string, embedding: number[], ttl?: number) => {}
-}
+  cacheEmbedding: async (_key: string, _embedding: number[], _ttl?: number) => {},
+};
+
 const getCachedEmbedding = cache.getCachedEmbedding;
 const cacheEmbedding = cache.cacheEmbedding;
-// Simplified AI embedding service - Production ready
-// Supports OpenAI embeddings with Redis/memory caching
-// Use process.env for server-side environment variables
-// Target embedding dimension (match database schema). Defaults to 384.
+
+// Target embedding dimension (defaults to 384)
 const TARGET_DIM: number = (() => {
-  const v = parseInt(process.env.EMBEDDING_DIMENSIONS || '384', 10);
+  const v = Number.parseInt(process.env.EMBEDDING_DIMENSIONS || '384', 10);
   return Number.isFinite(v) && v > 0 ? v : 384;
 })();
-function ensureDim(
-  vec: number[] | Float32Array | null | undefined,
-  target = TARGET_DIM;
-): number[] {
-  if (!vec || (!Array.isArray(vec as any) && !(vec instanceof Float32Array))
-    return [];
-  const arr = Array.isArray(vec as any)
-    ? (vec as any as number[])
-    : Array.from(vec as Float32Array);
+
+function ensureDim(vec: number[] | Float32Array | null | undefined, target: number = TARGET_DIM): number[] {
+  if (!vec) return Array(target).fill(0);
+  const arr = Array.isArray(vec) ? (vec as number[]) : Array.from(vec as Float32Array);
   if (arr.length === target) return arr;
   if (arr.length > target) return arr.slice(0, target);
-  return arr.concat(Array(target - arr.length).fill(0);
+  return arr.concat(Array(target - arr.length).fill(0));
 }
-export interface EmbeddingOptions {
-  model?: "openai" | "local";
+
+export type EmbeddingOptions = {
+  model?: 'openai' | 'local' | 'nomic';
   cache?: boolean;
+  ttl?: number;
   maxTokens?: number;
-}
-export async function generateEmbedding(
-  text: string;
-  options: EmbeddingOptions = {}
-): Promise<number[] | null> {
-  const { model = "local", cache = true, maxTokens = 8000 } = options;
-  if (!text || text.trim().length === 0) {
-    return null;
-  }
-  // Truncate text if too long
-  const truncatedText =
-    text.length > maxTokens ? text.substring(0, maxTokens) : text;
-  // Generate cache key for both lookup and storage
-  const cacheKey = `${model}:${truncatedText.substring(0, 100)}`;
-  // Check cache first
+};
+
+// Generate a single embedding using preferred providers with graceful fallbacks
+export async function generateEmbedding(text: string, options: EmbeddingOptions = {}): Promise<number[] | null> {
+  const { model = 'local', cache = true, ttl = 60 * 60, maxTokens = 8000 } = options;
+  if (!text || !text.trim()) return null;
+  const truncated = text.length > maxTokens ? text.slice(0, maxTokens) : text;
+  const cacheKey = `${model}:${createHash('sha1').update(truncated.slice(0, 200)).digest('hex')}`;
+
   if (cache) {
-    const cachedEmbedding = await getCachedEmbedding(cacheKey);
-    if (cachedEmbedding) {
-      return cachedEmbedding;
-    }
+    const cached = await getCachedEmbedding(cacheKey);
+    if (cached) return ensureDim(cached);
   }
+
   try {
-    let embedding: number[] = [];
-    if (model === "openai") {
-      embedding = await generateOpenAIEmbedding(truncatedText);
-    } else {
-      // Prefer CPU/Xenova for local embeddings; fallback to Ollama if CPU path fails;
-      try {
-        embedding = await generateCpuEmbedding(truncatedText);
-      } catch (cpuErr) {
-        console.warn(
-          "CPU embedding failed, falling back to Ollama:",
-          (cpuErr as Error)?.message || cpuErr
-        );
-        embedding = await generateNomicEmbedding(truncatedText);
+    let embedding: number[] | null = null;
+
+    if (model === 'openai') {
+      embedding = await generateOpenAIEmbedding(truncated).catch(e => {
+        console.warn('OpenAI embedding failed, falling back to local models:', e?.message ?? e);
+        return null;
+      });
+    }
+
+    // For 'local' model or as a fallback for 'openai'
+    if (!embedding) {
+      // Try Ollama models first: embeddinggemma -> nomic
+      embedding = await generateOllamaEmbedding(truncated, 'embeddinggemma:latest').catch(e => {
+        console.warn('Ollama embeddinggemma:latest failed, falling back to nomic-embed-text:', e?.message ?? e);
+        return null;
+      });
+
+      if (!embedding) {
+        embedding = await generateOllamaEmbedding(truncated, 'nomic-embed-text').catch(e => {
+          console.warn('Ollama nomic-embed-text failed, falling back to CPU embedding:', e?.message ?? e);
+          return null;
+        });
+      }
+
+      // Fallback to CPU embedding if Ollama fails
+      if (!embedding) {
+        embedding = await generateCpuEmbedding(truncated).catch(e => {
+          console.error('All local embedding providers failed:', e?.message ?? e);
+          return null;
+        });
       }
     }
-    // Normalize to target dimension for pgvector compatibility
-    embedding = ensureDim(embedding, TARGET_DIM);
-    // Cache the result
-    if (cache) {
-      await cacheEmbedding(cacheKey, embedding);
-    }
-    return embedding;
-  } catch (error: any) {
-    console.error("Embedding generation failed:", error);
+
+    if (!embedding) return null;
+    const normalized = ensureDim(embedding);
+    if (cache) await cacheEmbedding(cacheKey, normalized, ttl);
+    return normalized;
+  } catch (err) {
+    console.error('generateEmbedding error:', err);
     return null;
   }
 }
-// OpenAI embedding generation
+
+// OpenAI single embedding
 async function generateOpenAIEmbedding(text: string): Promise<number[]> {
   const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    throw new Error('OpenAI API key not configured');
-  }
-  const response = await fetch('https://api.openai.com/v1/embeddings', {
+  if (!apiKey) throw new Error('OPENAI_API_KEY not set');
+  const body = { input: text, model: 'text-embedding-3-small' };
+  const res = await fetch('https://api.openai.com/v1/embeddings', {
     method: 'POST',
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({,
-      input: text;
-      model: 'text-embedding-3-small', // 1536 dimensions, fast and cost-effective
-    })
+    headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
   });
-  if (!(response as { ok?: any; json?: any; statusText?: any; status?: any }).ok) {
-    const errorData = await (response as { ok?: any; json?: any; statusText?: any; status?: any }).json().catch(() => ({ error: 'Unknown error' });
-    throw new Error(`OpenAI API error: ${(response as { ok?: any; json?: any; statusText?: any; status?: any }).statusText} - ${JSON.stringify(errorData)}`);
+  if (!res.ok) {
+    const errBody = await res.text().catch(() => '');
+    throw new Error(`OpenAI error ${res.status}: ${errBody}`);
   }
-  const data = await (response as { ok?: any; json?: any; statusText?: any; status?: any }).json();
-  return ensureDim((data as { data?: any; embedding?: any; embeddings?: any }).data[0].embedding, TARGET_DIM);
+  const data = await res.json();
+  // supports OpenAI's { data: [ { embedding } ] }
+  const emb = Array.isArray(data?.data) ? data.data[0]?.embedding : data?.embedding;
+  if (!Array.isArray(emb)) throw new Error('Invalid OpenAI embedding response');
+  return emb as number[];
 }
-// Nomic Embed via Ollama
-async function generateNomicEmbedding(text: string): Promise<number[]> {
-  const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434'
-  try {
-    const response = await fetch(`${ollamaUrl}/api/embeddings`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({,
-        model: 'nomic-embed-text',
-        prompt: text, // Ollama embeddings expect 'prompt'
-      })
-    });
-    if (!(response as { ok?: any; json?: any; statusText?: any; status?: any }).ok) {
-      throw new Error(`Ollama API error: ${(response as { ok?: any; json?: any; statusText?: any; status?: any }).status} ${(response as { ok?: any; json?: any; statusText?: any; status?: any }).statusText}`);
-    }
-    const data = await (response as { ok?: any; json?: any; statusText?: any; status?: any }).json();
-    // Support { embedding }, { embeddings }, and OpenAI-like { data: [{ embedding }] }
-    if (Array.isArray(data?.embedding)) return ensureDim((data as { data?: any; embedding?: any; embeddings?: any }).embedding, TARGET_DIM);
-    if (Array.isArray(data?.embeddings)) {
-      // Could be array of numbers or array of arrays depending on provider
-      if (Array.isArray((data as { data?: any; embedding?: any; embeddings?: any }).embeddings[0])
-        return ensureDim((data as { data?: any; embedding?: any; embeddings?: any }).embeddings[0] as number[], TARGET_DIM);
-      return ensureDim((data as { data?: any; embedding?: any; embeddings?: any }).embeddings as number[], TARGET_DIM);
-    }
-    if (Array.isArray(data?.data) && Array.isArray((data as { data?: any; embedding?: any; embeddings?: any }).data[0]?.embedding)) {
-      return ensureDim((data as { data?: any; embedding?: any; embeddings?: any }).data[0].embedding, TARGET_DIM);
-    }
-    return [];
-  } catch (error: any) {
-    console.error('Nomic embedding generation failed:', error);
-    throw error;
+
+// Ollama single embedding
+async function generateOllamaEmbedding(text: string, model: string): Promise<number[]> {
+  const url = process.env.OLLAMA_URL || 'http://localhost:11434';
+  const res = await fetch(`${url}/api/embeddings`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: model, prompt: text }),
+  });
+  if (!res.ok) {
+    const body = await res.text().catch(() => '');
+    throw new Error(`Ollama error ${res.status} with model ${model}: ${body}`);
   }
+  const data = await res.json();
+  if (Array.isArray(data?.embedding)) return data.embedding as number[];
+  if (Array.isArray(data?.embeddings))
+    return Array.isArray(data.embeddings[0]) ? (data.embeddings[0] as number[]) : (data.embeddings as number[]);
+  if (Array.isArray(data?.data) && Array.isArray(data.data[0]?.embedding)) return data.data[0].embedding as number[];
+  throw new Error(`Invalid Ollama embedding response for model ${model}`);
 }
-// CPU/Xenova embedding generation
+
+// CPU embedding using xenova transformers (optional)
 async function generateCpuEmbedding(text: string): Promise<number[]> {
-  // Dynamic import to avoid bundling issues if transformers isn't installed in some environments
-  const mod = await import('@xenova/transformers');
-  const pipeline = (mod as any).pipeline || (mod as any).default?.pipeline;
-  if (!pipeline) throw new Error('@xenova/transformers pipeline not available');
-  const extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
-  const result = await extractor(text, { pooling: 'mean', normalize: true });
-  const arr = Array.from((result as { data?: any }).data as Float32Array);
-  return ensureDim(arr, TARGET_DIM);
+  try {
+    const mod = await import('@xenova/transformers');
+    const pipeline = (mod as any).pipeline ?? (mod as any).default?.pipeline;
+    if (!pipeline) throw new Error('xenova pipeline unavailable');
+    const extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
+    const result = await extractor(text, { pooling: 'mean', normalize: true });
+    const arr = Array.isArray((result as any).data) ? Array.from((result as any).data) : Array.from(result as any);
+    return arr as number[];
+  } catch (err) {
+    throw err;
+  }
 }
-// Batch embedding generation for efficiency
+
+// Batch helpers
 export async function generateBatchEmbeddings(
-  texts: string[];
+  texts: string[],
   options: EmbeddingOptions = {}
 ): Promise<(number[] | null)[]> {
-  const { model = 'openai' } = options;
-  // Filter out empty texts
-  const validTexts = texts.filter((text) => text && text.trim().length > 0);
-  if (validTexts.length === 0) {
-    return texts.map(() => null);
-  }
-  try {
-    if (model === 'openai' && validTexts.length > 1) {
-      return await generateOpenAIBatchEmbeddings(validTexts);
-    } else if (model === 'local' && validTexts.length > 1) {
-      // Prefer CPU pipeline for batch as well (process sequentially to limit memory)
-      const out: (number[] | null)[] = [];
-      for (const t of validTexts) {
-        try {
-          const e = await generateCpuEmbedding(t);
-          out.push(ensureDim(e, TARGET_DIM);
-        } catch (e: any) {
-          // fallback to Ollama per-text
-          try {
-            const nomic = await generateNomicEmbedding(t);
-            out.push(ensureDim(nomic, TARGET_DIM);
-          } catch {
-            out.push(null);
-          }
-        }
-      }
-      return out;
-    }
-  } catch (error: any) {
-    console.warn('Batch embedding failed, falling back to individual generation:', error);
-  }
-  // Fall back to individual generation
-  const results: (number[] | null)[] = [];
-  for (const text of texts) {
-    const embedding = await generateEmbedding(text, options);
-    results.push(embedding);
-  }
-  return results;
-}
-// OpenAI batch embedding generation
-async function generateOpenAIBatchEmbeddings(texts: string[]): Promise<(number[] | null)[]> {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    throw new Error('OpenAI API key not configured');
-  }
-  const response = await fetch('https://api.openai.com/v1/embeddings', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({,
-      input: texts;
-      model: 'text-embedding-3-small'
-    })
-  });
-  if (!(response as { ok?: any; json?: any; statusText?: any; status?: any }).ok) {
-    throw new Error(`OpenAI API error: ${(response as { ok?: any; json?: any; statusText?: any; status?: any }).statusText}`);
-  }
-  const data = await (response as { ok?: any; json?: any; statusText?: any; status?: any }).json();
-  return (data as { data?: any; embedding?: any; embeddings?: any }).data.map((item: any) => ensureDim((item as { embedding?: any }).embedding, TARGET_DIM);
-}
-// Nomic batch embedding generation
-async function generateNomicBatchEmbeddings(
-  texts: string[];
-): Promise<(number[] | null)[]> {
-  const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434'
-  // Note: Ollama doesn't support batch embeddings, so we process individually
-  // but we can do them in parallel
-  const promises = texts.map(async (text) => {
+  const { model = 'local' } = options;
+  const out: (number[] | null)[] = [];
+  for (const t of texts) {
     try {
-      const response = await fetch(`${ollamaUrl}/api/embeddings`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({,
-          model: "nomic-embed-text",
-          prompt: text
-        })
-      });
-      if (!(response as { ok?: any; json?: any; statusText?: any; status?: any }).ok) {
-        throw new Error(
-          `Ollama API error: ${(response as { ok?: any; json?: any; statusText?: any; status?: any }).status} ${(response as { ok?: any; json?: any; statusText?: any; status?: any }).statusText}`
-        );
-      }
-      const data = await (response as { ok?: any; json?: any; statusText?: any; status?: any }).json();
-      if (Array.isArray(data?.embedding)) return (data as { data?: any; embedding?: any; embeddings?: any }).embedding;
-      if (Array.isArray(data?.embeddings)) {
-        if (Array.isArray((data as { data?: any; embedding?: any; embeddings?: any }).embeddings[0])
-          return (data as { data?: any; embedding?: any; embeddings?: any }).embeddings[0] as number[];
-        return (data as { data?: any; embedding?: any; embeddings?: any }).embeddings as number[];
-      }
-      if (Array.isArray(data?.data) && Array.isArray((data as { data?: any; embedding?: any; embeddings?: any }).data[0]?.embedding)) {
-        return (data as { data?: any; embedding?: any; embeddings?: any }).data[0].embedding;
-      }
-      return null;
-    } catch (error: any) {
-      console.error(
-        "Nomic embedding generation failed for text:",
-        text.substring(0, 50),
-        error
-      );
-      return null;
+      const emb = await generateEmbedding(t, options);
+      out.push(emb);
+    } catch (e) {
+      out.push(null);
     }
-  });
-  return Promise.all(promises);
+  }
+  return out;
 }
-// Export object for easier importing and better organization
+
 export const embeddings = {
   generate: generateEmbedding,
   generateBatch: generateBatchEmbeddings,
-}
-// For backward compatibility
-export const embedAndSearch = {
-  generateEmbedding,
-  generateBatchEmbeddings
-}
+};
+
+export default embeddings;

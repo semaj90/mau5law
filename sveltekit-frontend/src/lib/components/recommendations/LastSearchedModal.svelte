@@ -339,7 +339,7 @@
     max-height: 80vh;
     overflow: hidden;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
   }
   .modal-header {
     margin-bottom: 1.5rem;
@@ -396,7 +396,7 @@
     color: #fff;
     font-size: 0.8rem;
     cursor: pointer;
-    transition all 0.2s; /* fixed unit */
+    transition: all 0.2s; /* fixed unit */
   }
   .suggestion-pill:hover {
     background: rgba(138, 43, 226, 0.3);
@@ -413,7 +413,7 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     overflow: hidden;
-    transition all 0.2s; /* fixed unit */
+    transition: all 0.2s; /* fixed unit */
   }
   .search-item:hover {
     background: rgba(255, 255, 255, 0.05);
@@ -440,7 +440,7 @@
     margin: 0 0 0.5rem 0;
     color: rgba(255, 255, 255, 0.9);
     font-size: 1rem;
-    font-weight: 500,
+    font-weight: 500;
   }
   .search-meta {
     display: flex;
@@ -456,7 +456,7 @@
   }
   .search-stats {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: flex-end;
     gap: 0.5rem;
   }
@@ -511,7 +511,7 @@
     border-radius: 6px;
     font-size: 0.8rem;
     cursor: pointer;
-    transition all 0.2s; /* fixed unit */
+    transition: all 0.2s; /* fixed unit */
   }
   .action-btn.primary {
     background: rgba(138, 43, 226, 0.2);
@@ -540,7 +540,7 @@
   .loading-state,
   .empty-state {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 3rem;
@@ -553,13 +553,13 @@
     border: 3px solid rgba(255, 255, 255, 0.2);
     border-top: 3px solid rgba(138, 43, 226, 0.8);
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin-bottom: 1rem;
   }
   .empty-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
-    opacity: 0.5,
+    opacity: 0.5;
   }
   @keyframes spin {
     0% {
@@ -584,3 +584,4 @@
     background: rgba(138, 43, 226, 0.7);
   }
 </style>
+

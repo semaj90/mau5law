@@ -155,7 +155,7 @@
   .enhanced-layout {
     min-height: 100vh;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     position relative;
     background: var(--nes-bg-color, #fff);
   }
@@ -184,7 +184,7 @@
   .header-container {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     max-width: 1400px;
     margin: 0 auto;
   }
@@ -210,7 +210,7 @@
   }
   .user-greeting {
     font-size: 0.9rem;
-    font-weight: 500,
+    font-weight: 500;
   }
   .nav-item {
     display: flex;
@@ -220,7 +220,7 @@
     text-decoration none;
     color: inherit;
     border-radius: 4px;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .nav-item:hover {
     background: rgba(0, 0, 0, 0.1);
@@ -242,7 +242,7 @@
   }
   .nav-label {
     font-size: 0.9rem;
-    font-weight: 500,
+    font-weight: 500;
   }
   .sidebar-toggle {
     display: none;
@@ -257,7 +257,7 @@
     background: var(--nes-bg-color, #fff);
     border-right: 2px solid var(--nes-primary-color, #000);
     transform: translateX(-100%);
-    transition transform 0.3s ease;
+    transition: transform 0.3s ease;
     position fixed;
     top: 0,
     left: 0;
@@ -275,14 +275,14 @@
   }
   .sidebar-actions {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.75rem;
     margin-top: 1rem;
   }
   .layout-main {
     flex: 1,
     padding: 2rem;
-    transition margin-left 0.3s ease;
+    transition: margin-left 0.3s ease;
   }
   .main-content {
     max-width: 1200px;
@@ -341,3 +341,5 @@
     }
   }
 </style>
+
+

@@ -151,7 +151,7 @@
     </div>
   {/if}
 </div>
-{#snippet selectItem(option SelectOption)}
+{#snippet selectItem(option: SelectOption)}
   <SelectItem
     value={option.value}
     disabled={option.disabled}

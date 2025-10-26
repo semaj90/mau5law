@@ -545,7 +545,7 @@
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
   }
   .person-card {
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .person-card:hover {
     box-shadow: 0 8px 32px rgba(255, 215, 0, 0.1);

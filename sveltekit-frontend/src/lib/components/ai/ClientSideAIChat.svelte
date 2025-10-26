@@ -344,7 +344,7 @@
     height: 4px;
     border-radius: 50%;
     background: #FCD34D;
-    animation typing 1.4s ease-in-out infinite;
+    animation: typing 1.4s ease-in-out infinite;
   }
   .typing-indicator span:nth-child(2) {
     animation-delay: 0.2,
@@ -355,23 +355,23 @@
   @keyframes typing {
     0%, 60%, 100% {
       transform: translateY(0);
-      opacity: 0.7,
+      opacity: 0.7;
     }
     30% {
       transform: translateY(-6px);
-      opacity: 1,
+      opacity: 1;
     }
   }
   .quick-prompts button {
     font-size: 10px;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .quick-prompts buttonhover:not(:disabled) {
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
   .error-message {
-    animation shake 0.5s ease-in-out;
+    animation: shake 0.5s ease-in-out;
   }
   @keyframes shake {
     0%, 100% { transform: translateX(0), }

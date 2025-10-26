@@ -517,7 +517,7 @@ d;
     border-radius: 12px;
     border: 2px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .recommendation-container.floating {
     position fixed;
@@ -585,14 +585,14 @@ d;
     background: transparent;
     border: none;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .container-trigger:hover {
     background: rgba(255, 255, 255, 0.05);
   }
   .trigger-content {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     color: white;
   }
@@ -606,7 +606,7 @@ d;
   }
   .trigger-title {
     font-size: 1.1rem;
-    font-weight: 600,
+    font-weight: 600;
   }
   .trigger-right {
     display: flex;
@@ -618,10 +618,10 @@ d;
     padding: 0.25rem 0.5rem;
     border-radius: 12px;
     font-size: 0.9rem;
-    font-weight: 600,
+    font-weight: 600;
   }
   .trigger-arrow {
-    transition transform 0.2;
+    transition: transform 0.2;
     font-size: 0.8rem;
   }
   .trigger-arrow.rotated {
@@ -637,7 +637,7 @@ d;
   .enhanced-badge {
     background: linear-gradient(135deg, #3B82F6, #8B5CF6);
     color: white;
-    font-weight: 600,
+    font-weight: 600;
     animation: pulse 2s infinite;
   }
   .loading-badge {
@@ -663,7 +663,7 @@ d;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .recommendation-card:hover {
     background: rgba(255, 255, 255, 0.08);
@@ -689,7 +689,7 @@ d;
     align-items: center;
     gap: 0.5rem;
     color: white;
-    font-weight: 600,
+    font-weight: 600;
   }
   .type-icon {
     font-size: 1.2rem;
@@ -722,7 +722,7 @@ d;
   }
   .rec-confidence {
     font-size: 0.8rem;
-    opacity: 0.7,
+    opacity: 0.7;
   }
   .more-indicator {
     color: rgba(255, 255, 255, 0.6);
@@ -740,8 +740,8 @@ d;
     border: none;
     cursor: pointer;
     font-size: 0.9rem;
-    font-weight: 500,
-    transition all 0.2;
+    font-weight: 500;
+    transition: all 0.2;
   }
   .view-all-btn {
     background: rgba(59, 130, 246, 0.8);
@@ -788,8 +788,8 @@ d;
     justify-content: center;
     gap: 0.5rem;
     font-size: 1rem;
-    font-weight: 500,
-    transition all 0.2;
+    font-weight: 500;
+    transition: all 0.2;
   }
   .view-all-recommendations:hover {
     background: rgba(255, 255, 255, 0.05);
@@ -798,7 +798,7 @@ d;
     font-size: 1.2rem;
   }
   .view-all-count {
-    opacity: 0.7,
+    opacity: 0.7;
   }
   /* Reinforcement Learning Feedback Styles */
   .feedback-controls {
@@ -814,7 +814,7 @@ d;
     cursor: pointer;
     font-size: 0.9rem;
     border-radius: 4px;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     opacity: 0.6;
     min-width: 28px;
     height: 28px;
@@ -823,7 +823,7 @@ d;
     justify-content: center;
   }
   .feedback-btn:hover:not(.feedback-disabled) {,
-    opacity: 1,
+    opacity: 1;
     background: rgba(255, 255, 255, 0.1);
     transform: scale(1.1);
   }
@@ -832,7 +832,7 @@ d;
   }
   .feedback-positive-selected {
     color: #10B981;
-    opacity: 1,
+    opacity: 1;
     background: rgba(16, 185, 129, 0.2);
     box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
   }
@@ -841,12 +841,12 @@ d;
   }
   .feedback-negative-selected {
     color: #EF4444;
-    opacity: 1,
+    opacity: 1;
     background: rgba(239, 68, 68, 0.2);
     box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
   }
   .feedback-disabled {
-    opacity: 0.3,
+    opacity: 0.3;
     cursor: not-allowed;
     transform: none !important;
   }
@@ -883,3 +883,5 @@ d;
     }
   }
 </style>
+
+

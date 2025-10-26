@@ -231,7 +231,7 @@
   .poi-card {
     position relative;
     margin-bottom: 1rem;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .poi-card: hover {
     box-shadow: var(--enhanced-bits-shadow-lg);
@@ -247,7 +247,7 @@
   }
   .poi-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: flex-start;
     gap: 1rem;
   }
@@ -274,7 +274,7 @@
   }
   .poi-details {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .risk-section {
@@ -400,7 +400,7 @@
   }
   .poi-compact {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
   }
   .compact-info {
@@ -418,7 +418,7 @@
   }
   .warrant-count {
     color: var(--enhanced-bits-error);
-    font-weight: 600,
+    font-weight: 600;
   }
   .last-updated {
     color: var(--enhanced-bits-textMuted);
@@ -429,10 +429,12 @@
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.7,
+      opacity: 0.7;
     }
   }
 </style>
+
+

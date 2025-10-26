@@ -435,7 +435,7 @@ https://svelte.dev/e/expected_token -->
   .progress-fill {
     height: 100%;
     background: #3b82f6;
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .demo-content {
     display: grid;
@@ -477,17 +477,17 @@ https://svelte.dev/e/expected_token -->
   }
   .metric {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 4px;
   }
   .metric-label {
     font-size: 12px;
     color: #6b7280;
-    font-weight: 500,
+    font-weight: 500;
   }
   .metric-value {
     font-size: 18px;
-    font-weight: 700,
+    font-weight: 700;
     color: #1f2937;
   }
   .processing-panel,
@@ -505,13 +505,13 @@ https://svelte.dev/e/expected_token -->
     padding: 10px 20px;
     border: none;
     border-radius: 8px;
-    font-weight: 500,
+    font-weight: 500;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     font-size: 14px;
   }
   .btn:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .btn-primary {
@@ -591,7 +591,7 @@ https://svelte.dev/e/expected_token -->
     padding: 2px 6px;
     border-radius: 3px;
     font-size: 11px;
-    font-weight: 500,
+    font-weight: 500;
   }
   .entity-confidence,
   .citation-court {
@@ -615,7 +615,7 @@ https://svelte.dev/e/expected_token -->
   }
   .log-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 15px;
   }
@@ -631,7 +631,7 @@ https://svelte.dev/e/expected_token -->
   .log-entry {
     color: #d1d5db;
     font-size: 12px;
-    line-height: 1.4,
+    line-height: 1.4;
     padding: 2px 0;
   }
   .log-empty {
@@ -648,7 +648,8 @@ https://svelte.dev/e/expected_token -->
     }
     .processing-controls,
     .bulk-controls {
-      flex-direction column;
+      flex-direction: column;
     }
   }
 </style>
+

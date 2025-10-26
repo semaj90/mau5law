@@ -1,0 +1,11 @@
+import { redirect } from '@sveltejs/kit';
+import type { LayoutServerLoad } from './$types';
+
+export const load: LayoutServerLoad = async ({ locals }) => {
+  // Return user and session data to all pages
+  // This data is available in the layout as data.user and data.session
+  return {
+    user: locals.user,
+    session: locals.session
+  };
+};

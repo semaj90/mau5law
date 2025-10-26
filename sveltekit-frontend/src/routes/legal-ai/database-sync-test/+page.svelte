@@ -388,7 +388,7 @@
     margin: 0 auto;
     padding: 2rem;
     font-family: system-ui, sans-serif;
-    line-height: 1.6,
+    line-height: 1.6;
   }
   header {
     text-align: center;
@@ -426,7 +426,7 @@
     background: white;
     border: 1px solid #ddd;
     border-radius: 6px;
-    transition border-color 0.2;
+    transition: border-color 0.2;
   }
   .status-card.online {
     border-color: #28a745;
@@ -471,7 +471,7 @@
     border-radius: 4px;
     background: white;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .session-item: hover {
     border-color: #0066cc;
@@ -490,7 +490,7 @@
   }
   .doc-meta {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-top: 0.5rem;
     font-size: 0.9rem;
@@ -535,7 +535,7 @@
     border-radius: 6px;
     font-size: 1rem;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -562,7 +562,7 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   }
   .test-btn:disabled {
-    opacity: 0.6,
+    opacity: 0.6;
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
@@ -583,7 +583,7 @@
     border: 3px solid #f3f3f3;
     border-top: 3px solid #0066cc;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   .progress-bar {
     flex: 1,
@@ -595,7 +595,7 @@
   .progress-fill {
     height: 100%;
     background: #0066cc;
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   @keyframes spin {
     0% { transform: rotate(0deg), }
@@ -617,14 +617,14 @@
   }
   .result-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 0.75rem;
     background: #f8f9fa;
     border-radius: 4px;
   }
   .result-item label {
-    font-weight: 600,
+    font-weight: 600;
     color: #555;
   }
   .result-item code {
@@ -636,7 +636,7 @@
   }
   .cache-status.hit {
     color: #28a745;
-    font-weight: 600,
+    font-weight: 600;
   }
   .result-content {
     margin-top: 2rem;
@@ -696,7 +696,7 @@
       grid-template-columns: 1fr;
     }
     .test-actions {
-      flex-direction column;
+      flex-direction: column;
     }
     .test-btn {
       width: 100%;
@@ -704,3 +704,4 @@
     }
   }
 </style>
+

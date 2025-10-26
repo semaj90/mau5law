@@ -186,7 +186,7 @@ https://svelte.dev/e/expected_token -->
     flex-direction: column;
     gap: 6px;
     color: var(--ps1-text);
-    font-weight: 600,
+    font-weight: 600;
   }
   .button-row {
     display: flex;
@@ -331,7 +331,7 @@ https://svelte.dev/e/expected_token -->
   }
   .metric {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     padding: 6px 0;
     border-bottom: 1px solid var(--ps1-border);
     font-family: var(--ps1-mono);
@@ -342,7 +342,7 @@ https://svelte.dev/e/expected_token -->
   }
   .metric span:last-child {
     color: var(--ps1-text);
-    font-weight: 600,
+    font-weight: 600;
   }
   .metric .warning {
     color: var(--ps1-accent-2);
@@ -395,3 +395,4 @@ https://svelte.dev/e/expected_token -->
     }
   }
 &lt;/style&gt;
+

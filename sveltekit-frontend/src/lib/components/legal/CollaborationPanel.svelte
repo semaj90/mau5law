@@ -456,7 +456,7 @@ Real-time collaboration interface for multiple investigators working on evidence
     max-height: 100vh;
     overflow-y: auto;
   }
-  /* Typing indicator animation */
+  /* Typing indicator animation: */
   .typing-indicator {
     display: inline-flex;
     align-items: center;
@@ -468,7 +468,7 @@ Real-time collaboration interface for multiple investigators working on evidence
     height: 4px;
     border-radius: 50%;
     background-color: #9CA3AF;
-    animation typing 1.4s infinite;
+    animation: typing 1.4s infinite;
     margin: 0 1px;
   }
   .typing-indicator span:nth-child(2) {
@@ -480,11 +480,11 @@ Real-time collaboration interface for multiple investigators working on evidence
   @keyframes typing {
     0%, 60%, 100% {
       transform: translateY(0);
-      opacity: 0.4,
+      opacity: 0.4;
     }
     30% {
       transform: translateY(-8px);
-      opacity: 1,
+      opacity: 1;
     }
   }
   /* Custom scrollbar for chat */

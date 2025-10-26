@@ -154,7 +154,7 @@ https://svelte.dev/e/expected_token -->
   }
   .metric {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     padding: 4px;
     background: rgba(0, 255, 65, 0.1);
@@ -188,7 +188,7 @@ https://svelte.dev/e/expected_token -->
     box-shadow: 0 0 25px rgba(0, 255, 65, 0.3);
   }
   .animate-slide-in {
-    animation slideInRight 0.6s ease-out;
+    animation: slideInRight 0.6s ease-out;
   }
   @keyframes slideInRight {
     from {
@@ -207,7 +207,7 @@ https://svelte.dev/e/expected_token -->
   }
   .feature {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 4px;
   }
@@ -256,3 +256,4 @@ https://svelte.dev/e/expected_token -->
     }
   }
 </style>
+

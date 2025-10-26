@@ -573,7 +573,7 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
 
   /* WebGPU acceleration indicators */
   .animate-spin {
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
 
   @keyframes spin {
@@ -599,3 +599,4 @@ IN WITNESS WHEREOF, the parties have executed this MOU as of the date first writ
     color: rgb(37, 99, 235);
   }
 </style>
+

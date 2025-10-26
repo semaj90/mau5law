@@ -95,7 +95,7 @@
     border: 1px solid var(--enhanced-border);
     border-radius: 8px;
     padding: 1.5rem;
-    transition all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position relative;
     overflow: hidden;
   }
@@ -113,12 +113,12 @@
     right: 0,
     height: 2px;
     background: linear-gradient(90deg, var(--enhanced-accent), var(--enhanced-accent-secondary));
-    opacity: 0,
-    transition opacity 0.3s ease;
+    opacity: 0;
+    transition: opacity 0.3s ease;
   }
 
   .yorha-harvard-card:hover:before {
-    opacity: 1,
+    opacity: 1;
   }
 
   .yorha-harvard-card--gaming {
@@ -171,7 +171,7 @@ var(--enhanced-accent) {}
     height: 30px;
     background: linear-gradient(45deg, var(--enhanced-accent), var(--enhanced-accent-secondary));
     clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-    opacity: 0.3,
+    opacity: 0.3;
   }
 
   .gaming-header-accent {
@@ -233,7 +233,7 @@ var(--enhanced-accent) 100% {}
   .card-title {
     color: var(--enhanced-accent);
     font-size: 1.25rem;
-    font-weight: 700,
+    font-weight: 700;
     margin: 0 0 0.5rem 0;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -253,13 +253,13 @@ var(--enhanced-accent) 100% {}
   .card-subtitle {
     color: var(--enhanced-text-secondary);
     font-size: 0.9rem;
-    margin: 0,
+    margin: 0;
     opacity: 0.8;
   }
 
   .card-content {
     color: var(--enhanced-text-primary);
-    line-height: 1.6,
+    line-height: 1.6;
   }
 
   .yorha-harvard-card--terminal .card-content {
@@ -277,7 +277,7 @@ var(--enhanced-accent) 100% {}
     border-top: 1px solid var(--enhanced-border);
     font-size: 0.8rem;
     color: var(--enhanced-accent-secondary);
-    font-weight: 600,
+    font-weight: 600;
   }
 
   .harvard-shield {
@@ -341,7 +341,7 @@ var(--enhanced-accent-secondary), {}
 var(--enhanced-accent) {}
     );
     z-index: -1;
-    opacity: 0.2,
+    opacity: 0.2;
   }
 
   .harvard-glow {
@@ -354,11 +354,11 @@ var(--enhanced-accent) {}
 
   @keyframes pulse-glow {
     from {
-      opacity: 0.6,
+      opacity: 0.6;
       filter: brightness(1);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       filter: brightness(1.2);
     }
   }
@@ -385,3 +385,4 @@ var(--enhanced-accent) {}
     background: linear-gradient(135deg, rgba(106, 106, 106, 0.1) 0%, rgba(196, 30, 58, 0.1) 100%);
   }
 </style>
+

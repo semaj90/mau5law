@@ -113,7 +113,7 @@
     padding: 2rem;
     text-decoration none;
     color: inherit;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     position relative;
     overflow: hidden;
   }
@@ -125,7 +125,7 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
-    transition left 0.5;
+    transition: left 0.5;
   }
   .action-card:hover::before {
     left: 100%;
@@ -141,8 +141,9 @@
     font-size: 1.2rem;
   }
   .action-card p {
-    margin: 0,
+    margin: 0;
     color: #b0b0b0;
-    line-height: 1.5,
+    line-height: 1.5;
   }
 </style>
+

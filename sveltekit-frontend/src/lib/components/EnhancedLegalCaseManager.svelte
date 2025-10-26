@@ -675,6 +675,6 @@ https://svelte.dev/e/js_parse_error -->
     /* Smooth transitions for all interactive elements */
     .legal-case-manager button,
     .legal-case-manager input {
-        transition all 0.2s ease-in-out;
+        transition: all 0.2s ease-in-out;
     }
 </style>

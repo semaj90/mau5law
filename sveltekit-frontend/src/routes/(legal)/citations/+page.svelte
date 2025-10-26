@@ -202,7 +202,7 @@
     border: 3px solid rgba(0, 255, 0, 0.3);
     border-top: 3px solid var(--text-primary, #00ff00);
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
 
@@ -218,7 +218,7 @@
   .empty-icon {
     font-size: 4rem;
     margin-bottom: 1rem;
-    opacity: 0.5,
+    opacity: 0.5;
   }
 
   .citations-grid {
@@ -230,7 +230,7 @@
   .citation-card {
     background: var(--surface-secondary, #111111);
     border: 1px solid var(--border-primary, #00ff00);
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
 
   .citation-card:hover {
@@ -281,7 +281,7 @@
 
   .citation-footer {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     border-top: 1px solid rgba(0, 255, 0, 0.2);
     padding-top: 0.75rem;
@@ -312,3 +312,5 @@
     }
   }
 </style>
+
+

@@ -233,7 +233,7 @@ https://svelte.dev/e/props_duplicate -->
   }
   .chat-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     padding: 12px 16px;
     border-bottom: 1px solid #e5e7eb;
@@ -261,7 +261,7 @@ https://svelte.dev/e/props_duplicate -->
   }
   .message-content {
     white-space: pre-wrap;
-    line-height: 1.5,
+    line-height: 1.5;
   }
   .references {
     margin-top: 12px;
@@ -270,7 +270,7 @@ https://svelte.dev/e/props_duplicate -->
   }
   .references-title {
     font-size: 0.875rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #374151;
     margin-bottom: 8px;
   }
@@ -294,7 +294,7 @@ https://svelte.dev/e/props_duplicate -->
     border-color: #d1d5db;
   }
   .reference-title {
-    font-weight: 500,
+    font-weight: 500;
     color: #111827;
   }
   .reference-citation {
@@ -334,7 +334,7 @@ https://svelte.dev/e/props_duplicate -->
     background: #2563eb;
   }
   .chat-submit-btn:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .btn-icon {
@@ -363,13 +363,13 @@ https://svelte.dev/e/props_duplicate -->
   }
   .settings-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     padding: 16px;
     border-bottom: 1px solid #e5e7eb;
   }
   .settings-title {
-    font-weight: 600,
+    font-weight: 600;
     color: #111827;
   }
   .btn-close {
@@ -389,7 +389,7 @@ https://svelte.dev/e/props_duplicate -->
     display: block;
     margin-bottom: 4px;
     font-size: 0.875rem;
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
   }
   .setting-group select,
@@ -430,7 +430,7 @@ https://svelte.dev/e/props_duplicate -->
     display: flex;
     align-items: center;
     gap: 8px;
-    font-weight: 600,
+    font-weight: 600;
     color: #111827;
   }
   .dialog-body {
@@ -455,7 +455,7 @@ https://svelte.dev/e/props_duplicate -->
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-weight: 500,
+    font-weight: 500;
   }
   .btn-primary:hover {
     background: #2563eb;
@@ -467,7 +467,7 @@ https://svelte.dev/e/props_duplicate -->
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-weight: 500,
+    font-weight: 500;
   }
   .btn-secondary:hover {
     background: #4b5563;
@@ -490,3 +490,5 @@ https://svelte.dev/e/props_duplicate -->
     background: #e5e7eb;
   }
 </style>
+
+

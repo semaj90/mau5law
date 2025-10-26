@@ -306,7 +306,7 @@
   }
   .nes-loading-container {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 100%;
@@ -324,7 +324,7 @@
   }
   .nes-error-container {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 100%;
@@ -359,13 +359,13 @@
   }
   @keyframes nes-blink {
     0% {
-      opacity: 0.6,
+      opacity: 0.6;
     }
     50% {
-      opacity: 1,
+      opacity: 1;
     }
     100% {
-      opacity: 0.6,
+      opacity: 0.6;
     }
   }
   @keyframes nes-spin {
@@ -377,3 +377,4 @@
     }
   }
 </style>
+

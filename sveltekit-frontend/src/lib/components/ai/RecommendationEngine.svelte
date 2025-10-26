@@ -629,7 +629,7 @@
   }
   .engine-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: flex-start;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
@@ -637,9 +637,9 @@
   }
   .engine-title {
     font-size: 2rem;
-    font-weight: 700,
+    font-weight: 700;
     color: #1e293b;
-    margin: 0,
+    margin: 0;
   }
   .engine-subtitle {
     color: #64748b;
@@ -663,17 +663,17 @@
   .context-controls,
   .filter-controls {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .control-group {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .control-group label {
     font-size: 0.875rem;
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
   }
   .control-select,
@@ -712,14 +712,14 @@
     border: 1px solid #e2e8f0;
     border-radius: 0.5rem;
     overflow: hidden;
-    transition box-shadow 0.2;
+    transition: box-shadow 0.2;
   }
   .recommendation-card:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   .recommendation-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: flex-start;
     gap: 1rem;
   }
@@ -746,23 +746,23 @@
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     font-size: 0.75rem;
-    font-weight: 600,
+    font-weight: 600;
     border: 1px solid;
     text-transform: capitaliz;
   }
   .recommendation-metrics {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: flex-end;
     gap: 0.25rem;
   }
   .priority-indicator {
     font-size: 0.75rem;
-    font-weight: 700,
+    font-weight: 700;
   }
   .confidence-score {
     font-size: 1.125rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #374151;
   }
   .recommendation-description {
@@ -771,7 +771,7 @@
   }
   .stat-grid {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.75rem;
     margin-bottom: 1rem;
   }
@@ -794,14 +794,14 @@
   }
   .stat-fill {
     height: 100%;
-    transition width 0.3;
+    transition: width 0.3;
   }
   .stat-fill.impact { background: #10b981, }
   .stat-fill.effort { background: #f59e0b, }
   .stat-fill.risk { background: #ef4444, }
   .stat-value {
     font-size: 0.75rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #374151;
     min-width: 40px;
     text-align: right;
@@ -841,7 +841,7 @@
     align-items: center;
     justify-content: center;
     font-size: 0.625rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #374151;
   }
   .step-more {
@@ -852,7 +852,7 @@
   }
   .completion-estimate {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-top: 0.75rem;
     padding-top: 0.75rem;
@@ -864,7 +864,7 @@
   }
   .estimate-value {
     font-size: 0.75rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #374151;
   }
   .recommendation-tags {
@@ -905,7 +905,7 @@
     border: 2px solid #e2e8f0;
     border-top: 2px solid #3b82f6;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
   .loading-detail {
@@ -923,7 +923,7 @@
   }
   .recommendation-details-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 2rem;
   }
   .recommendation-overview {
@@ -939,7 +939,7 @@
   }
   .overview-metric {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
     text-align: center;
   }
@@ -947,11 +947,11 @@
     font-size: 0.75rem;
     color: #64748b;
     text-transform: uppercase;
-    font-weight: 500,
+    font-weight: 500;
   }
   .overview-value {
     font-size: 1rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #374151;
   }
   .rationale-section h4 {
@@ -959,9 +959,9 @@
     color: #374151;
   }
   .rationale-section p {
-    margin: 0,
+    margin: 0;
     color: #64748b;
-    line-height: 1.6,
+    line-height: 1.6;
   }
   .detailed-steps-list {
     list-style: none;
@@ -1009,7 +1009,7 @@
   }
   .resource-status {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-top: 0.5rem;
   }
@@ -1017,12 +1017,12 @@
   .availability-limited { color: #f59e0b, }
   .availability-unavailable { color: #ef4444, }
   .resource-cost {
-    font-weight: 600,
+    font-weight: 600;
     color: #374151;
   }
   .risks-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .risk-item {
@@ -1033,12 +1033,12 @@
   }
   .risk-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 0.5rem;
   }
   .risk-description {
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
   }
   .risk-score {
@@ -1052,7 +1052,7 @@
   }
   .alternatives-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1.5rem;
   }
   .alternative-item {
@@ -1121,7 +1121,7 @@
   }
   @media (max-width: 768px) {
     .engine-header {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
     }
     .controls-section {
@@ -1138,3 +1138,4 @@
     }
   }
 </style>
+

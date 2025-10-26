@@ -807,7 +807,7 @@
 <style>
   .gpu-chat-container {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     height: 100vh;
     background: linear-gradient(135deg, #1a1f2e 0%, #0f1419 100%);
     color: #e0e0e0;
@@ -828,14 +828,14 @@
   }
   .header-content {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     max-width: 1400px;
     margin: 0 auto;
   }
   .title {
     font-size: 1.5rem;
-    font-weight: 600,
+    font-weight: 600;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -882,7 +882,7 @@
     height: 8px;
     border-radius: 50%;
     background: #ff4444;
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   .connection-status.connected .status-dot {
     background: #44ff44;
@@ -909,7 +909,7 @@
     color: #000;
     border-radius: 0.25rem;
     font-size: 0.75rem;
-    font-weight: 600,
+    font-weight: 600;
   }
   .room-status {
     display: flex;
@@ -942,7 +942,7 @@
     padding: 0.25rem 0.75rem;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 0.5rem;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .toggle:hover {
     background: rgba(255, 255, 255, 0.1);
@@ -958,7 +958,7 @@
     padding: 0.25rem 0.75rem;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 0.5rem;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .file-upload:hover {
     background: rgba(255, 255, 255, 0.1);
@@ -973,9 +973,9 @@
     border: none;
     border-radius: 0.5rem;
     color: #000;
-    font-weight: 600,
+    font-weight: 600;
     cursor: pointer;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .leave-room-btn {
     background: linear-gradient(135deg, #ff4444 0%, #ff8844 100%);
@@ -994,7 +994,7 @@
   }
   .message {
     margin-bottom: 1.5rem;
-    animation slideIn 0.3s ease-out;
+    animation: slideIn 0.3s ease-out;
   }
   .message.user {
     margin-left: auto;
@@ -1006,11 +1006,11 @@
   }
   .message-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
     font-size: 0.875rem;
-    opacity: 0.7,
+    opacity: 0.7;
   }
   .message-content {
     background: rgba(255, 255, 255, 0.05);
@@ -1038,7 +1038,7 @@
     gap: 0.75rem;
     margin-top: 0.5rem;
     font-size: 0.75rem;
-    opacity: 0.6,
+    opacity: 0.6;
   }
   .metadata-item {
     padding: 0.25rem 0.5rem;
@@ -1064,7 +1064,7 @@
     height: 8px;
     background: #00ff88;
     border-radius: 50%;
-    animation typing 1.4s infinite;
+    animation: typing 1.4s infinite;
   }
   .typing-indicator span:nth-child(2) {
     animation-delay: 0.2,
@@ -1081,7 +1081,7 @@
     background: rgba(255, 136, 0, 0.1);
     border-radius: 0.5rem;
     margin-top: 1rem;
-    animation pulse 1s infinite;
+    animation: pulse 1s infinite;
   }
   /* Batch Items */
   .batch-items {
@@ -1112,9 +1112,9 @@
     border: none;
     border-radius: 0.5rem;
     color: #000;
-    font-weight: 600,
+    font-weight: 600;
     cursor: pointer;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   /* Uploaded Files */
   .uploaded-files {
@@ -1158,7 +1158,7 @@
     color: #e0e0e0;
     font-size: 1rem;
     resize: none;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .message-input:focus {
     outline: none;
@@ -1168,7 +1168,7 @@
   }
   .input-actions {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .send-button,
@@ -1181,7 +1181,7 @@
     font-weight: 600;
     font-size: 1rem;
     cursor: pointer;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -1196,27 +1196,27 @@
     box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
   }
   .send-buttondisabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   /* Animations */
   @keyframes slideIn {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translateY(10px);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translateY(0);
     }
   }
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.5,
+      opacity: 0.5;
     }
   }
   @keyframes typing {
@@ -1224,11 +1224,11 @@
     60%,
     100% {
       transform: translateY(0);
-      opacity: 0.5,
+      opacity: 0.5;
     }
     30% {
       transform: translateY(-10px);
-      opacity: 1,
+      opacity: 1;
     }
   }
   /* Scrollbar Styling */
@@ -1247,3 +1247,4 @@
     background: linear-gradient(135deg, #00ff88 20%, #00ccff 80%);
   }
 </style>
+

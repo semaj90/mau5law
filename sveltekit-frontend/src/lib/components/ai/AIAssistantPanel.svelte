@@ -415,7 +415,7 @@
     background-color: rgba(234, 179, 8, 0.08); /* yellow-500/10 */
     color: #b45309; /* yellow-600 */
     border-color: rgba(234, 179, 8, 0.12);
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   .acceleration-toggle.error {
     /* @apply bg-red-500/10 text-red-600 border-red-500/20; */
@@ -434,7 +434,7 @@
     align-items: center;
     gap: 0.5rem;
     font-size: 0.875rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #16a34a;
     cursor: pointer;
   }
@@ -453,7 +453,7 @@
   .metric {
     /* @apply flex justify-between p-1.5 bg-green-50 rounded border border-green-200; */
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     padding: 0.375rem;
     background-color: #ecfdf5; /* green-50 */
     border-radius: 0.375rem;
@@ -466,7 +466,7 @@
   }
   .metric-value {
     /* @apply font-medium text-green-700; */
-    font-weight: 600,
+    font-weight: 600;
     color: #166534; /* green-700 */
   }
   .recommendation-list {
@@ -483,7 +483,7 @@
   .rec-type {
     /* @apply text-xs font-medium text-blue-600 capitaliz; */
     font-size: 0.75rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #1d4ed8; /* blue-600 */
     text-transform: capitalize;
   }
@@ -507,7 +507,7 @@
     align-items: center;
     gap: 0.5rem;
     font-size: 0.875rem;
-    font-weight: 600,
+    font-weight: 600;
     color: inherit;
     cursor: pointer;
   }
@@ -529,7 +529,7 @@
   .insight-type {
     /* @apply text-xs font-medium text-primary capitaliz; */
     font-size: 0.75rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #0ea5a4; /* primary-ish */
     text-transform: capitalize;
   }
@@ -551,13 +551,15 @@
 
   @keyframes pulse {
     0% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.6,
+      opacity: 0.6;
     }
     100% {
-      opacity: 1,
+      opacity: 1;
     }
   }
 </style>
+
+

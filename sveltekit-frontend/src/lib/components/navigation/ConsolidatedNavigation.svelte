@@ -105,7 +105,7 @@
     border-right: 1px solid var(--border-primary, #333333);
     height: 100vh;
     width: 64px;
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
     overflow: hidden;
   }
 
@@ -129,7 +129,7 @@
     cursor: pointer;
     padding: 0.5rem;
     border-radius: 4px;
-    transition background 0.2s;
+    transition: background 0.2s;
   }
 
   .nav-toggle:hover {
@@ -186,7 +186,7 @@
 
   .group-routes {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 2px;
   }
 
@@ -197,7 +197,7 @@
     padding: 0.75rem 1rem;
     color: var(--text-primary, #ffffff);
     text-decoration none;
-    transition all 0.2s;
+    transition: all 0.2s;
     border-left: 3px solid transparent;
   }
 
@@ -274,3 +274,4 @@
     }
   }
 </style>
+

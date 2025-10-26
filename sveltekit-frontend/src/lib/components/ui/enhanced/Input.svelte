@@ -74,7 +74,7 @@ https://svelte.dev/e/js_parse_error -->
   /* Enhanced Input with NieR styling */
   .yorha-input {
     /* Base styles from UnoCSS shortcuts */
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .yorha-input:focus {
     box-shadow: 0 0 0 1px var(--color-nier-border-primary);
@@ -95,3 +95,4 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </style>
+

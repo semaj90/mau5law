@@ -443,7 +443,7 @@
   }
   .brief-title {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: flex-start;
     gap: 2rem;
   }
@@ -456,7 +456,7 @@
     font-size: 2rem;
   }
   .title-text h2 {
-    margin: 0,
+    margin: 0;
     color: var(--enhanced-bits-foreground);
     font-size: 1.5rem;
   }
@@ -486,7 +486,7 @@
   }
   .word-count-display {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: flex-end;
     gap: 0.25rem;
   }
@@ -506,7 +506,7 @@
   }
   .word-fill {
     height: 100%;
-    transition width 300ms ease;
+    transition: width 300ms ease;
     border-radius: 2px;
   }
   .word-fill.normal { background: var(--enhanced-bits-success), }
@@ -524,7 +524,7 @@
   }
   .detail-item {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
   }
   .detail-label {
@@ -534,7 +534,7 @@
   }
   .detail-value {
     color: var(--enhanced-bits-foreground);
-    font-weight: 500,
+    font-weight: 500;
   }
   .due-date {
     color: var(--enhanced-bits-warning);
@@ -555,17 +555,17 @@
   }
   .nav-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1rem;
   }
   .nav-header h3 {
-    margin: 0,
+    margin: 0;
     color: var(--enhanced-bits-foreground);
   }
   .section-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .section-item {
@@ -576,7 +576,7 @@
     border: 1px solid var(--enhanced-bits-border);
     border-radius: 6px;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     text-align: left;
     color: var(--enhanced-bits-foreground);
     font-family: inherit;
@@ -600,7 +600,7 @@
   }
   .section-title {
     flex: 1;
-    font-weight: 500,
+    font-weight: 500;
   }
   .section-status {
     font-size: 0.75rem;
@@ -617,18 +617,18 @@
     border-radius: 8px;
     padding: 1.5rem;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
   }
   .editor-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--enhanced-bits-border);
   }
   .section-info h3 {
-    margin: 0,
+    margin: 0;
     color: var(--enhanced-bits-foreground);
   }
   .section-type {
@@ -657,7 +657,7 @@
     color: var(--enhanced-bits-foreground);
     font-family: 'Georgia', serif;
     font-size: 1rem;
-    line-height: 1.6,
+    line-height: 1.6;
     resize: vertical;
   }
   .content-textarea:focus {
@@ -686,7 +686,7 @@
     padding: 0.5rem 0;
     border-bottom: 1px solid rgba(157, 74, 221, 0.2);
     font-size: 0.875rem;
-    line-height: 1.4,
+    line-height: 1.4;
     color: var(--enhanced-bits-foreground);
   }
   .section-citations {
@@ -695,17 +695,17 @@
   }
   .citations-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1rem;
   }
   .citations-header h4 {
-    margin: 0,
+    margin: 0;
     color: var(--enhanced-bits-foreground);
   }
   .citations-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .citation-item {
@@ -760,12 +760,12 @@
   }
   .panel-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1.5rem;
   }
   .panel-header h3 {
-    margin: 0,
+    margin: 0;
     color: var(--enhanced-bits-foreground);
   }
   .section-citations-group {
@@ -789,7 +789,7 @@
   .citation-full {
     font-size: 0.875rem;
     color: var(--enhanced-bits-foreground);
-    line-height: 1.4,
+    line-height: 1.4;
   }
   .citation-meta {
     font-size: 0.75rem;
@@ -798,7 +798,7 @@
   }
   .no-section-selected {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100%;
@@ -814,7 +814,7 @@
     color: var(--enhanced-bits-foreground);
   }
   .no-section-selected p {
-    margin: 0,
+    margin: 0;
   }
   @media (max-width: 1200px) {
     .editor-layout {
@@ -831,7 +831,7 @@ d;
   }
   @media (max-width: 768px) {
     .brief-title {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
     }
     .editor-layout {
@@ -852,3 +852,5 @@ d;
     }
   }
 </style>
+
+

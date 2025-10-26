@@ -74,12 +74,11 @@ https://svelte.dev/e/js_parse_error -->
   let animationFrame: number;
   let isHovered = $state(false);
   let isPressed = $state(false);
-  // Legal AI confidence animation
-  const confidence = spring(legalContext?.confidence || 0, {
+  // Legal AI confidence animation: const confidence = spring(legalContext?.confidence || 0, {
     stiffness: 0.3,
     damping: 0.8,
   });
-  // Memory-efficient animation state (NES constraints: 2KB)
+  // Memory-efficient animation: state (NES constraints: 2KB)
   let animationState = $state({
     glowPhase: 0,
     pulseIntensity: 0,
@@ -164,8 +163,7 @@ https://svelte.dev/e/js_parse_error -->
     gl.enableVertexAttribArray(texCoordLocation);
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 16, 0);
     gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 16, 8);
-    // Store uniforms for animation
-    uniformLocations.confidence = gl.getUniformLocation(program, 'u_confidence');
+    // Store uniforms for animation: uniformLocations.confidence = gl.getUniformLocation(program, 'u_confidence');
     uniformLocations.time = gl.getUniformLocation(program, 'u_time');
     uniformLocations.glow = gl.getUniformLocation(program, 'u_glow');
   }
@@ -202,7 +200,7 @@ https://svelte.dev/e/js_parse_error -->
       if (!gl || !canvas || !program) return;
       const deltaTime = currentTime - animationState.lastFrame; // Corrected typo from lastFram
       animationState.lastFrame = currentTime; // Corrected typo from currentTim
-      // Update animation state (memory efficient)
+      // Update animation: state (memory efficient)
       animationState.glowPhase += deltaTime * 0.001;
       animationState.pulseIntensity = isHovered ? 1.0 : 0.3;
       // Render WebGL effect
@@ -282,7 +280,7 @@ https://svelte.dev/e/js_parse_error -->
   let confidenceColor = $derived($confidence > 0.8 ? 'text-green-500' :
     $confidence > 0.5 ? 'text-yellow-500' : 'text-red-500');
 </script>
-<!-- Button with GPU animation overlay -->
+<!-- Button with GPU animation: overlay -->
 <div class="relative inline-block">
   <!-- WebGL Canvas for GPU effects -->
   {#if gpuEffects}
@@ -357,7 +355,7 @@ https://svelte.dev/e/js_parse_error -->
   .rounded-inherit {
     border-radius: inherit;
   }
-/* GPU animation performance optimizations */ canvas {
+/* GPU animation: performance optimizations */ canvas {
     will-change: transform;
     transform: translateZ(0);
   }

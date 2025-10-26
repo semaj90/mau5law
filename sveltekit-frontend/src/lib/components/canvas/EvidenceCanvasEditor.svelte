@@ -664,7 +664,7 @@
     toast.className = `toast toast-${type}`;
     toast.textContent = message;
     toast.style.cssText =
-      'position fixed; top: 20px; right: 20px; padding: 1rem; border-radius: 0.5rem; z-index: 10000, animation slideIn 0.3s ease;';
+      'position fixed; top: 20px; right: 20px; padding: 1rem; border-radius: 0.5rem; z-index: 10000, animation: slideIn 0.3s ease;';
 
     if (type === 'success') toast.style.background = '#10b981';
     if (type === 'error') toast.style.background = '#ef4444';
@@ -924,7 +924,7 @@
 <style>
   .evidence-canvas-editor {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     height: 100%;
     width: 100%;
     background: #f5f5f5;
@@ -971,7 +971,7 @@
     inset: 0,
     background: rgba(255, 255, 255, 0.9);
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 100,
@@ -983,7 +983,7 @@
     border: 4px solid #e5e5e5;
     border-top-color: #3b82f6;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
 
   @keyframes spin {
@@ -1003,7 +1003,7 @@
   .evidence-panel h3 {
     margin: 0 0 1rem;
     font-size: 0.9rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #333;
   }
 
@@ -1014,7 +1014,7 @@
 
   .evidence-item {
     cursor: pointer;
-    transition all 0.2s;
+    transition: all 0.2s;
   }
 
   .evidence-item:hover {
@@ -1051,7 +1051,7 @@
 
   .zoom-level {
     font-size: 0.85rem;
-    font-weight: 600,
+    font-weight: 600;
   }
 
   .save-time {
@@ -1062,7 +1062,7 @@
 
   .export-menu {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
     padding: 0.5rem;
   }
@@ -1099,7 +1099,7 @@
 
   .collaboration-status {
     margin-top: 1rem;
-    font-weight: 600,
+    font-weight: 600;
   }
 
   .active {
@@ -1107,3 +1107,4 @@
     color: white !important;
   }
 </style>
+

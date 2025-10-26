@@ -296,7 +296,7 @@ https: //svelte.dev/e/js_parse_error -->
     border-bottom: 2px solid var(--yorha-secondary, #ffd700);
     display: flex;
     align-items: flex-start;
-    justify-content: space-betwee;
+    justify-content: space-between;
     padding: 16px 20px;
   }
   .form-title {
@@ -332,22 +332,22 @@ https: //svelte.dev/e/js_parse_error -->
   .status-indicator.processing {
     color: var(--yorha-warning, #ffaa00);
     background: rgba(255, 170, 0, 0.1);
-    animation pulse 1.5s infinite;
+    animation: pulse 1.5s infinite;
   }
   .form-body {
     padding: 20px;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 20px;
   }
   .form-field {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 8px;
   }
   .field-label {
     font-size: 12px;
-    font-weight: 600,
+    font-weight: 600;
     color: var(--yorha-text-secondary, #b0b0b0);
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -357,7 +357,7 @@ https: //svelte.dev/e/js_parse_error -->
   }
   .required-indicator {
     color: var(--yorha-danger, #ff0041);
-    font-weight: 700,
+    font-weight: 700;
   }
   .field-input-wrapper {
     position relative;
@@ -372,7 +372,7 @@ https: //svelte.dev/e/js_parse_error -->
     font-family: inherit;
     font-size: 14px;
     padding: 12px 16px;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     border-radius: 0,
   }
   .field-input: focus
@@ -403,7 +403,7 @@ https: //svelte.dev/e/js_parse_error -->
     height: 2px;
     background: var(--yorha-secondary, #ffd700);
     transform: scaleX(0);
-    transition transform 0.2s ease;
+    transition: transform 0.2s ease;
     transform-origin: center;
   }
   .field-input:focus + .field-border,
@@ -428,7 +428,7 @@ https: //svelte.dev/e/js_parse_error -->
     border: 2px solid var(--yorha-text-muted, #808080);
     background: var(--yorha-bg-primary, #0a0a0a);
     position relative;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .field-checkbox:checked + .checkbox-indicator {
     border-color: var(--yorha-secondary, #ffd700);
@@ -447,7 +447,7 @@ https: //svelte.dev/e/js_parse_error -->
   /* Radio Styling */
   .radio-group {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 12px;
   }
   .radio-wrapper {
@@ -467,7 +467,7 @@ https: //svelte.dev/e/js_parse_error -->
     background: var(--yorha-bg-primary, #0a0a0a);
     border-radius: 50%;
     position relative;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .field-radio:checked + .radio-indicator {
     border-color: var(--yorha-secondary, #ffd700);
@@ -518,7 +518,7 @@ https: //svelte.dev/e/js_parse_error -->
     gap: 8px;
     color: var(--yorha-danger, #ff0041);
     font-size: 12px;
-    font-weight: 500,
+    font-weight: 500;
   }
   .error-icon {
     font-size: 14px;
@@ -529,7 +529,7 @@ https: //svelte.dev/e/js_parse_error -->
     border-top: 2px solid var(--yorha-text-muted, #808080);
     padding: 16px 20px;
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
   }
   .form-actions {
@@ -550,7 +550,7 @@ https: //svelte.dev/e/js_parse_error -->
     text-transform: uppercase;
     letter-spacing: 1px;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .form-buttonhover:not(:disabled) {,
     transform: translateY(-1px);
@@ -573,12 +573,12 @@ https: //svelte.dev/e/js_parse_error -->
     color: var(--yorha-text-primary, #e0e0e0);
   }
   .form-buttondisabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
     transform: none !important;
   }
   .button-spinner {
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   .form-hints {
     display: flex;
@@ -588,12 +588,12 @@ https: //svelte.dev/e/js_parse_error -->
   }
   .hint-key {
     color: var(--yorha-secondary, #ffd700);
-    font-weight: 600,
+    font-weight: 600;
   }
   /* Animations */
   @keyframes pulse {
-    0%, 100% { opacity: 1, }
-    50% { opacity: 0.6, }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
   }
   @keyframes spin {
     from { transform: rotate(0deg), }
@@ -602,7 +602,7 @@ https: //svelte.dev/e/js_parse_error -->
   /* Responsive Design */
   @media (max-width: 768px) {
     .form-header {
-      flex-direction column;
+      flex-direction: column;
       gap: 8px;
       align-items: flex-start;
     }
@@ -610,7 +610,7 @@ https: //svelte.dev/e/js_parse_error -->
       padding: 16px;
     }
     .form-footer {
-      flex-direction column;
+      flex-direction: column;
       gap: 12px;
       align-items: stretch;
     }
@@ -626,3 +626,4 @@ https: //svelte.dev/e/js_parse_error -->
     }
   }
 </style>
+

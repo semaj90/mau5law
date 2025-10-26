@@ -505,7 +505,7 @@
     font-family: 'Inter', sans-serif;
   }
   .service-card {
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .service-card:hover {
     border-color: rgba(59, 130, 246, 0.5);
@@ -530,3 +530,4 @@
     border-color: var(--gpu-cache-border-secondary, #4b5563);
   }
 </style>
+

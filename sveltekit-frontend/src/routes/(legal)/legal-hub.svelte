@@ -343,7 +343,7 @@
 
   .activity-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     margin-bottom: 0.5rem;
   }
@@ -371,7 +371,7 @@
 
   .activity-details {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     font-size: 0.9rem;
     color: #a1a1aa;
@@ -403,3 +403,5 @@
     }
   }
 </style>
+
+

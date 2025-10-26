@@ -464,7 +464,7 @@
     box-shadow: 0 6px 30px rgba(16, 24, 40, 0.06);
     overflow: hidden;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 12px;
     padding: 16px;
   }
@@ -485,10 +485,10 @@
     background: linear-gradient(135deg, #f6f9ff, #eef7ff);
     position relative;
     flex-shrink: 0,
-    transition transform 200ms ease;
+    transition: transform 200ms ease;
   }
   .assistant-avatar.pulsing {
-    animation pulse 1.6s infinite;
+    animation: pulse 1.6s infinite;
   }
   @keyframes pulse {
     0% {
@@ -514,7 +514,7 @@
     background: #cbd5e1;
     border: 2px solid #fff;
     box-shadow: 0 1px 3px rgba(2, 6, 23, 0.08);
-    transition background 150ms ease;
+    transition: background 150ms ease;
   }
   .status-dot.active {
     background: #34d399; /* green */
@@ -540,7 +540,7 @@
   }
   .progress-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     font-weight: 600;
     font-size: 13px;
     margin-bottom: 8px;
@@ -555,7 +555,7 @@
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #60a5fa, #7c3aed);
-    transition width 280ms ease;
+    transition: width 280ms ease;
   }
   /* RAG context */
   .rag-context {
@@ -571,7 +571,7 @@
   .context-item {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     padding: 8px;
     border-radius: 8px;
     background: linear-gradient(180deg, #ffffff, #fbfdff);
@@ -582,7 +582,7 @@
     font-size: 12px;
     color: #475569;
     text-transform: uppercase;
-    font-weight: 700,
+    font-weight: 700;
     opacity: 0.85;
     margin-right: 12px;
   }
@@ -605,7 +605,7 @@
     overflow-y: auto;
     padding: 12px;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 10px;
   }
   .message {
@@ -638,7 +638,7 @@
   }
   .message-content {
     font-size: 14px;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   .message-time {
     font-size: 11px;
@@ -664,8 +664,8 @@
     height: 8px;
     background: #94a3b8;
     border-radius: 50%;
-    opacity: 0.8,
-    animation blink 1s infinite;
+    opacity: 0.8;
+    animation: blink 1s infinite;
   }
   .typing-dots span:nth-child(2) {
     animation-delay: 0.12s;
@@ -676,15 +676,15 @@
   @keyframes blink {
     0% {
       transform: translateY(0);
-      opacity: 0.35,
+      opacity: 0.35;
     }
     50% {
       transform: translateY(-6px);
-      opacity: 1,
+      opacity: 1;
     }
     100% {
       transform: translateY(0);
-      opacity: 0.35,
+      opacity: 0.35;
     }
   }
   /* Workflow interface */
@@ -692,7 +692,7 @@
     border-top: 1px dashed rgba(16, 24, 40, 0.04);
     padding-top: 12px;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 10px;
   }
   .workflow-header {
@@ -726,7 +726,7 @@
   .workflow-actions {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     gap: 12px;
   }
   .workflow-btn.primary {
@@ -735,7 +735,7 @@
     color: white;
     padding: 8px 12px;
     border-radius: 8px;
-    font-weight: 700,
+    font-weight: 700;
     cursor: pointer;
   }
   .workflow-hint {
@@ -747,7 +747,7 @@
     border-top: 1px dashed rgba(16, 24, 40, 0.04);
     padding-top: 10px;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 8px;
   }
   .input-wrapper {
@@ -777,7 +777,7 @@
     place-items: center;
   }
   .send-buttondisabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .quick-actions {
@@ -806,3 +806,5 @@
     }
   }
 </style>
+
+

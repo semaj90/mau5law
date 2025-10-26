@@ -384,9 +384,9 @@ https://svelte.dev/e/js_parse_error -->
   }
   .page-header h1 {
     font-size: 2.5rem;
-    font-weight: 700,
+    font-weight: 700;
     color: #1f2937;
-    margin: 0,
+    margin: 0;
   }
   .subtitle {
     color: #6b7280;
@@ -395,7 +395,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .status-bar {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
@@ -424,7 +424,7 @@ https://svelte.dev/e/js_parse_error -->
     background: transparent;
     border-radius: 0.25rem;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -436,14 +436,14 @@ https://svelte.dev/e/js_parse_error -->
   .tab.active {
     background: white;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    font-weight: 600,
+    font-weight: 600;
   }
   .tab:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .loading-spinner {
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   @keyframes spin {
     from { transform: rotate(0deg), }
@@ -467,7 +467,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .option-group {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .checkbox-group {
@@ -475,7 +475,7 @@ https://svelte.dev/e/js_parse_error -->
     align-items: center;
   }
   .option-group label {
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
   }
   .option-group select,
@@ -498,9 +498,9 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 0.5rem;
     font-family: 'Consolas', 'Monaco', monospace;
     font-size: 0.9rem;
-    line-height: 1.5,
+    line-height: 1.5;
     resize: vertical;
-    transition border-color 0.2;
+    transition: border-color 0.2;
   }
   #document-input:focus {
     outline: none;
@@ -514,9 +514,9 @@ https://svelte.dev/e/js_parse_error -->
   .btn {
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
-    font-weight: 500,
+    font-weight: 500;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
     border: none;
     text-decoration none;
     display: inline-flex;
@@ -543,7 +543,7 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 1.1rem;
   }
   .btn:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .processing-status {
@@ -557,27 +557,27 @@ https://svelte.dev/e/js_parse_error -->
     padding: 0.75rem;
     margin: 0.5rem 0;
     border-radius: 0.25rem;
-    transition all 0.3;
+    transition: all 0.3;
   }
   .step.current {
     background: #dbeaf;
     border-left: 4px solid #3b82f6;
-    animation pulse 1s infinite;
+    animation: pulse 1s infinite;
   }
   .step.completed {
     background: #f0fdf4;
     border-left: 4px solid #10b981;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1, }
-    50% { opacity: 0.8, }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
   }
   .summary-result {
     height: 100%;
   }
   .result-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 1rem;
@@ -624,7 +624,7 @@ https://svelte.dev/e/js_parse_error -->
     padding: 0.25rem 0.75rem;
     border-radius: 1rem;
     font-size: 0.8rem;
-    font-weight: 500,
+    font-weight: 500;
   }
   .error-panel,
   .empty-state {
@@ -664,18 +664,18 @@ https://svelte.dev/e/js_parse_error -->
       padding: 1rem;
     }
     .status-bar {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-start;
     }
     .stats {
-      flex-direction column;
+      flex-direction: column;
       gap: 0.5rem;
     }
     .options-grid {
       grid-template-columns: 1fr;
     }
     .result-header {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-start;
       gap: 1rem;
     }
@@ -684,3 +684,4 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </style>
+

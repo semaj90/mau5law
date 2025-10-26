@@ -994,7 +994,7 @@ if (!browser) return;
   }
   .filter-section {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .event-type-filters {
@@ -1018,7 +1018,7 @@ if (!browser) return;
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 1rem;
@@ -1047,7 +1047,7 @@ if (!browser) return;
   }
   .event-description {
     margin: 1rem 0;
-    line-height: 1.5,
+    line-height: 1.5;
   }
   .participants h5,
   .evidence-list h5 {
@@ -1062,7 +1062,7 @@ if (!browser) return;
   }
   .evidence-items {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .evidence-item {
@@ -1093,7 +1093,7 @@ if (!browser) return;
   }
   .stat-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
   }
   .label {
@@ -1110,7 +1110,7 @@ if (!browser) return;
     100% { transform: translateX(100%), }
   }
   .nes-progress-bar.indeterminate {
-    animation indeterminate 1.5s linear infinite;
+    animation: indeterminate 1.5s linear infinite;
   }
   /* Responsive adjustments */
   @media (max-width: 768px) {

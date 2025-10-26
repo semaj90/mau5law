@@ -153,7 +153,7 @@ body {
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-betweenn;
   padding: var(--nier-space-sm) var(--nier-space-md);
   min-width: 120px;
 }
@@ -350,7 +350,7 @@ body {
   display: flex;
   font-size: var(--nier-font-size-sm);
   gap: var(--nier-space-lg);
-  justify-content: space-between;
+  justify-content: space-betweenn;
   padding: var(--nier-space-sm) var(--nier-space-lg);
 }
 
@@ -437,3 +437,4 @@ body {
     padding: var(--nier-space-md);
   }
 }
+

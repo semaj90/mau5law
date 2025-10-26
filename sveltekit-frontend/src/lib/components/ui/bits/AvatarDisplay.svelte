@@ -39,7 +39,7 @@
     border: 1px solid var(--border, #e5e7eb);
   }
   .avatar-display.layout-vertical {
-    flex-direction column;
+    flex-direction: column;
     text-align: center;
   }
   .avatar-content {
@@ -50,7 +50,7 @@
   }
   .title-icon {
     font-size: 18px;
-    font-weight: 600,
+    font-weight: 600;
     color: var(--text-primary, #111827);
     margin: 0 0 8px 0;
     display: flex;
@@ -60,13 +60,14 @@
   .avatar-info p {
     color: var(--text-secondary, #6b7280);
     font-size: 14px;
-    line-height: 1.5,
+    line-height: 1.5;
     margin: 0;
   }
   @media (max-width: 768px) {
     .avatar-display {
-      flex-direction column;
+      flex-direction: column;
       text-align: center;
     }
   }
 </style>
+

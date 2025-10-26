@@ -469,7 +469,7 @@
   }
   .evidence-title {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: flex-start;
     gap: 2rem;
   }
@@ -482,7 +482,7 @@
     font-size: 2rem;
   }
   .title-text h2 {
-    margin: 0,
+    margin: 0;
     color: var(--enhanced-bits-foreground);
     font-size: 1.5rem;
   }
@@ -541,13 +541,13 @@
     margin-bottom: 0.5rem;
   }
   .upload-text p {
-    margin: 0,
+    margin: 0;
     color: var(--enhanced-bits-muted-foreground);
     font-size: 0.875rem;
   }
   .controls-section {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 2rem;
     gap: 1rem;
@@ -613,7 +613,7 @@
   }
   .evidence-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1.5rem;
   }
   .evidence-item {
@@ -621,7 +621,7 @@
     border: 2px solid var(--enhanced-bits-border);
     border-radius: 8px;
     padding: 1.5rem;
-    transition all 300ms ease;
+    transition: all 300ms ease;
   }
   .evidence-item:hover {
     transform: translateY(-2px);
@@ -705,7 +705,7 @@
   }
   .detail-item {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
   }
   .detail-label {
@@ -737,13 +737,13 @@
   }
   .evidence-metrics {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
     min-width: 200px;
   }
   .relevance-score {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .relevance-label {
@@ -758,7 +758,7 @@
   }
   .relevance-fill {
     height: 100%;
-    transition width 300ms ease;
+    transition: width 300ms ease;
     border-radius: 4px;
   }
   .relevance-value {
@@ -792,7 +792,7 @@
   }
   .metadata-item {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
   }
   .metadata-key {
@@ -823,15 +823,15 @@
   }
   @media (max-width: 768px) {
     .evidence-title {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
     }
     .controls-section {
-      flex-direction column;
+      flex-direction: column;
       align-items: stretch;
     }
     .search-controls {
-      flex-direction column;
+      flex-direction: column;
     }
     .evidence-search {
       min-width: auto;
@@ -848,3 +848,5 @@
     }
   }
 </style>
+
+

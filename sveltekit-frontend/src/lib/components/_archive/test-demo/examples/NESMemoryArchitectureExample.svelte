@@ -431,7 +431,7 @@
   }
   .document-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 12px;
   }
@@ -464,7 +464,7 @@
   }
   .bank-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 8px;
   }
@@ -480,7 +480,7 @@
   }
   .stat-row {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     font-size: 12px;
     margin: 4px 0;
   }
@@ -516,7 +516,7 @@
   }
   .detail-row {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     margin: 4px 0;
   }
   .warming-result {
@@ -532,7 +532,7 @@
   }
   .stat {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     font-size: 12px;
     padding: 4px 0;
     border-bottom: 1px solid #ccc;
@@ -567,7 +567,8 @@
     font-weight: bold;
   }
   @keyframes nes-blink {
-    0%, 50% { opacity: 1, }
-    51%, 100% { opacity: 0.6, }
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.6; }
   }
 </style>
+

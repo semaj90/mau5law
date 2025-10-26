@@ -920,7 +920,7 @@ if (!browser) return;
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 1rem;
@@ -976,7 +976,7 @@ if (!browser) return;
   }
   .stat-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
   }
   .label {
@@ -997,7 +997,7 @@ if (!browser) return;
     }
   }
   .nes-progress-bar.indeterminate {
-    animation indeterminate 1.5s linear infinite;
+    animation: indeterminate 1.5s linear infinite;
   }
   /* Responsive adjustments */
   @media (max-width: 768px) {
@@ -1014,3 +1014,4 @@ if (!browser) return;
     }
   }
 </style>
+

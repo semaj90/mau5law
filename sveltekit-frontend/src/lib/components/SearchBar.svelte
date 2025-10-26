@@ -235,7 +235,7 @@
     border: 1px solid var(--border-light);
     border-radius: 6px;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     color: var(--text-muted);
   }
   .filter-buttonhover {
@@ -255,14 +255,14 @@
     border: 1px solid var(--border-light);
     border-radius: 8px;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .filter-group label,
   .filter-group .filter-label {
     display: block;
     font-size: 0.875rem;
-    font-weight: 600,
+    font-weight: 600;
     color: var(--text-primary);
     margin-bottom: 0.5rem;
   }
@@ -280,7 +280,7 @@
     cursor: pointer;
   }
   .filter-checkbox input {
-    margin: 0,
+    margin: 0;
   }
   .date-range {
     display: flex;
@@ -308,7 +308,7 @@
     color: var(--text-muted);
     cursor: pointer;
     font-size: 0.875rem;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .clear-filters-btn:hover {
     background: var(--bg-tertiary);
@@ -318,19 +318,20 @@
   /* Responsive */
   @media (max-width: 768px) {
     .search-controls {
-      flex-direction column;
+      flex-direction: column;
       align-items: stretch;
     }
     .sort-select {
       min-width: auto;
     }
     .filter-options {
-      flex-direction column;
+      flex-direction: column;
       gap: 0.5rem;
     }
     .date-range {
-      flex-direction column;
+      flex-direction: column;
       align-items: stretch;
     }
   }
 </style>
+

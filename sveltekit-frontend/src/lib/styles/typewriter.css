@@ -50,7 +50,7 @@
   animation: cursor-blink 1s infinite;
 }
 
-/* Typewriter text animation */
+/* Typewriter text animation: */
 .ai-typewriter .text {
   display: inline-block;
   overflow: hidden;

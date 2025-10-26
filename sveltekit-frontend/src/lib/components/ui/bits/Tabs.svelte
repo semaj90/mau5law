@@ -28,7 +28,7 @@
     orientation = 'horizontal',
     items = [],
     value = $bindable(),
-    animation = 'fade',
+    animation: = 'fade',
     activateOnFocus = true,
     loop = true,
     children,
@@ -190,7 +190,7 @@
 <style>
 /* Gaming theme animations */ {}
   :global([data-bits-tabs-trigger][data-theme='gaming']) {
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   :global([data-bits-tabs-trigger][data-theme='gaming']:hover) {
     text-shadow: 0 0 8px currentColor;
@@ -221,14 +221,14 @@ box-shadow: {}
     gap: 1rem;
   }
   :global([data-orientation='vertical'] [data-bits-tabs-list]) {
-    flex-direction column;
+    flex-direction: column;
     width: 200px;
     min-width: 200px;
   }
   :global([data-orientation='vertical'] [data-bits-tabs-content]) {
     flex: 1,
   }
-/* Underline variant animation */ {}
+/* Underline variant animation: */ {}
   :global([data-variant='underline'] [data-bits-tabs-trigger]) {
     position relative;
   }
@@ -251,3 +251,4 @@ box-shadow: {}
     }
   }
 </style>
+

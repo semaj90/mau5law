@@ -436,7 +436,7 @@
 <style>
   .enhanced-contextual-chat {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     height: 100vh;
     max-height: 900px;
     background: #212529;
@@ -452,7 +452,7 @@
 
   .header-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     margin-bottom: 1rem;
   }
@@ -494,7 +494,7 @@
 
   .conversation-panel {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     border-right: 4px solid #d4af37;
   }
 
@@ -541,7 +541,7 @@
 
   .form-controls {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     margin-top: 0.75rem;
   }
@@ -560,7 +560,7 @@
   .accordion-trigger {
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     padding: 0.75rem 1rem !important;
     cursor: pointer;
@@ -575,7 +575,7 @@
   .entities-list,
   .state-history {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.75rem;
   }
 
@@ -585,7 +585,7 @@
 
   .prediction-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     margin-bottom: 0.5rem;
   }
 
@@ -615,12 +615,12 @@
   .confidence-fill {
     height: 100%;
     background: linear-gradient(90deg, #d4af37, #4ade80);
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
 
   .entity-item {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     text-align: left;
     width: 100%;
   }
@@ -671,7 +671,7 @@
 
   .detail-row {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     padding: 0.5rem 0;
     border-bottom: 1px solid #444;
   }
@@ -691,4 +691,6 @@
     z-index: 100,
   }
 </style>
+
+
 

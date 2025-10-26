@@ -457,7 +457,7 @@ https://svelte.dev/e/attribute_invalid_name -->
 		</header>
 		{#if !minimized}
 			{#if settingsOpen}
-				<div class="border-b border-yorha-border bg-yorha-bg-primary p-4" /* transition removed */}>
+				<div class="border-b border-yorha-border bg-yorha-bg-primary p-4" /* transition: removed */}>
 					<div class="space-y-3">
 						<div>
 							<label class="block text-xs text-yorha-text-secondary mb-1" for="model">Model</label>
@@ -579,17 +579,17 @@ https://svelte.dev/e/attribute_invalid_name -->
 	@keyframes float {
 		0%, 100% {
 			transform: translateY(0) rotate(0deg);
-			opacity: 0,
+			opacity: 0;
 		}
 		10% {
-			opacity: 1,
+			opacity: 1;
 		}
 		90% {
-			opacity: 1,
+			opacity: 1;
 		}
 		100% {
 			transform: translateY(-100%) rotate(360deg);
-			opacity: 0,
+			opacity: 0;
 		}
 	}
 	@keyframes scan {
@@ -601,9 +601,9 @@ https://svelte.dev/e/attribute_invalid_name -->
 		}
 	}
 	.animate-float {
-		animation float linear infinite;
+		animation: float linear infinite;
 	}
 	.animate-scan {
-		animation scan 3s linear infinite;
+		animation: scan 3s linear infinite;
 	}
 </style>

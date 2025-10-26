@@ -79,7 +79,7 @@
   }
   .file-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 0.25rem 0;
     border-bottom: 1px solid rgba(0, 0, 0, 0.04);
@@ -113,3 +113,5 @@
     margin-top: 0.4rem;
   }
 </style>
+
+

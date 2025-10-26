@@ -132,16 +132,16 @@
   }
   .card-title {
     font-size: var(--text-lg);
-    font-weight: 600,
+    font-weight: 600;
     color: var(--yorha-text-primary);
     text-transform: uppercase;
     letter-spacing: 0.025em;
-    margin: 0,
+    margin: 0;
   }
   .card-subtitle {
     font-size: var(--text-sm);
     color: var(--yorha-text-muted);
-    margin: 0,
+    margin: 0;
   }
   .card-content {
     flex: 1,

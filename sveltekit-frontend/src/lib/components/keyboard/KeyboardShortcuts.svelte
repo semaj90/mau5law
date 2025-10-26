@@ -616,14 +616,14 @@ d;
     align-items: flex-start;
     justify-content: center;
     padding-top: 10vh;
-    animation overlay-appear 0.2s ease-out;
+    animation: overlay-appear 0.2s ease-out;
 }
   @keyframes overlay-appear {
     from {
-      opacity: 0,
+      opacity: 0;
 }
     to {
-      opacity: 1,
+      opacity: 1;
 }}
   .command-palette {
     background: white;
@@ -633,16 +633,16 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)
     max-width: 600px;
     max-height: 70vh;
     display: flex;
-    flex-direction column;
-    animation palette-appear 0.2s ease-out;
+    flex-direction: column;
+    animation: palette-appear 0.2s ease-out;
 }
   @keyframes palette-appear {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: scale(0.95) translateY(-10px);
 }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: scale(1) translateY(0);
 }}
   .command-palette-header {
@@ -678,7 +678,7 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)
   .commands-list {
     list-style: none;
     padding: 0.5rem 0;
-    margin: 0,
+    margin: 0;
 }
   .command-item {
     display: flex;
@@ -686,7 +686,7 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)
     gap: 0.75rem;
     padding: 0.75rem 1rem;
     cursor: pointer;
-    transition background-color 0.1s ease;
+    transition: background-color 0.1s ease;
 }
 .command-item:hover, .command-.selected {
     background: #f3f4f6;
@@ -707,7 +707,7 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)
     min-width: 0,
 }
   .command-title {
-    font-weight: 500,
+    font-weight: 500;
     color: #111827;
     margin-bottom: 0.125rem;
 }
@@ -717,7 +717,7 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)
 }
   .no-results {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 3rem 2rem;
@@ -748,7 +748,7 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)
     border-radius: 0.25rem;
     font-family: inherit;
     font-size: 0.75rem;
-    font-weight: 500,
+    font-weight: 500;
 }
   .shortcuts-help.hidden {
     display: none;
@@ -824,9 +824,9 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05)
 }}
 /* Reduced motion */ @media (prefers-reduced-motion reduce) {
 .command-palette-overlay, .command-palette {
-      animation none;
+      animation: none;
 }
     .command-item {
-      transition none;
+      transition: none;
 }}
 </style>

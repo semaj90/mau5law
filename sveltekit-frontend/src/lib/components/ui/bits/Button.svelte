@@ -143,7 +143,7 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(var(--color-nier-accent-warm-rgba), 0.18), transparent);
-    transition left 0.5s ease;
+    transition: left 0.5s ease;
   }
 
   .yorha-button-primary:hover::before {
@@ -162,3 +162,4 @@
     image-rendering: crisp-edge;
   }
 </style>
+

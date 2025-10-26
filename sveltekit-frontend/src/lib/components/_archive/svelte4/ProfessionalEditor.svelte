@@ -313,17 +313,17 @@ https://svelte.dev/e/js_parse_error -->
     border: none;
   }
   .professional-editor.focus-mode .dimmed {
-    opacity: 0.3,
+    opacity: 0.3;
     transition: opacity 0.3s ease;
   }
   .professional-editor.focus-mode .dimmed:hover {
-    opacity: 1,
+    opacity: 1;
   }
   /* Header */
   .editor-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     padding: 1rem;
     background: #faf8f3;
     border-bottom: 1px solid #ada895;
@@ -338,7 +338,7 @@ https://svelte.dev/e/js_parse_error -->
     border: none;
     background: transparent;
     font-size: 1.125rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #3a372f;
     max-width: 400px;
   }
@@ -407,19 +407,19 @@ https://svelte.dev/e/js_parse_error -->
   /* Professional typography */
   .editor-content h1 {
     font-size: 2.25rem;
-    font-weight: 700,
+    font-weight: 700;
     margin: 2rem 0 1rem 0;
     color: #3a372f;
   }
   .editor-content h2 {
     font-size: 1.875rem;
-    font-weight: 600,
+    font-weight: 600;
     margin: 1.5rem 0 0.75rem 0;
     color: #75726a;
   }
   .editor-content h3 {
     font-size: 1.5rem;
-    font-weight: 600,
+    font-weight: 600;
     margin: 1.25rem 0 0.5rem 0;
   }
   .editor-content p {
@@ -445,7 +445,7 @@ https://svelte.dev/e/js_parse_error -->
   .status-bar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     padding: 0.75rem 1rem;
     background: #faf8f3;
     border-top: 1px solid #ada895;
@@ -499,7 +499,7 @@ https://svelte.dev/e/js_parse_error -->
   .shortcut-item {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     padding: 0.5rem 0;
     border-bottom: 1px solid rgba(173, 168, 149, 0.3);
   }
@@ -556,3 +556,5 @@ https://svelte.dev/e/js_parse_error -->
       transform 0.3s ease;
   }
 </style>
+
+

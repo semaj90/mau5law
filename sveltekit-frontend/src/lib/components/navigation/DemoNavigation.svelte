@@ -179,16 +179,16 @@
   }
   @keyframes slideIn {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translateY(-10px);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translateY(0);
     }
   }
   .animate-slideIn {
-    animation slideIn 0.3s ease-out;
+    animation: slideIn 0.3s ease-out;
   }
   /* Remove native button chrome for the full-screen backdrop while keeping utility classes' background */
   .backdrop-btn {

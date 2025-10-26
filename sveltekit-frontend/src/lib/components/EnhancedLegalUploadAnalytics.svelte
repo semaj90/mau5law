@@ -1028,7 +1028,7 @@
     border-radius: 0.75rem;
     padding: 3rem;
     text-align: center;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     background: rgba(16, 16, 16, 0.5);
   }
   .file-drop-zone.drag-over {
@@ -1046,13 +1046,13 @@
   }
   .drop-zone-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 1.5rem;
   }
   .upload-icon {
     font-size: 4rem;
-    opacity: 0.7,
+    opacity: 0.7;
   }
   .file-constraints {
     display: flex;
@@ -1062,7 +1062,7 @@
   }
   .files-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
@@ -1084,14 +1084,14 @@
   }
   .yorha-file-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 1rem;
     background: rgba(24, 24, 24, 0.7);
     border: 1px solid #404040;
     border-radius: 0.5rem;
     margin-bottom: 0.5rem;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .yorha-file-item:hover {
     background: rgba(32, 32, 32, 0.8);
@@ -1101,7 +1101,7 @@
     flex: 1,
   }
   .file-name {
-    font-weight: 500,
+    font-weight: 500;
     color: #e8e8e8;
     margin-bottom: 0.25rem;
   }
@@ -1113,7 +1113,7 @@
   }
   .ai-confidence {
     color: #51cf66;
-    font-weight: 500,
+    font-weight: 500;
   }
   .ai-preview {
     display: flex;
@@ -1122,7 +1122,7 @@
   }
   .privilege-warning {
     color: #ff6b6b;
-    font-weight: 500,
+    font-weight: 500;
   }
   .entity-count {
     color: #339af0;
@@ -1145,11 +1145,11 @@
   }
   .setting-item {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .setting-item label {
-    font-weight: 500,
+    font-weight: 500;
     color: #e8e8e8;
     font-size: 0.875rem;
   }
@@ -1163,7 +1163,7 @@
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #ffd700, #51cf66);
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
     border-radius: 0.375rem;
   }
   .yorha-pipeline {
@@ -1174,14 +1174,14 @@
   }
   .pipeline-stage {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 0.5rem;
     padding: 1rem;
     background: rgba(24, 24, 24, 0.7);
     border: 1px solid #404040;
     border-radius: 0.5rem;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .pipeline-stage.active {
     border-color: #ffd700;
@@ -1202,7 +1202,7 @@
   .stage-progress {
     font-size: 0.75rem;
     color: #ffd700;
-    font-weight: 500,
+    font-weight: 500;
   }
   .processing-insights {
     background: rgba(16, 16, 16, 0.8);
@@ -1269,12 +1269,12 @@
   }
   .result-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
   }
   .result-filename {
-    font-weight: 500,
+    font-weight: 500;
     color: #e8e8e8;
   }
   .result-document-id {
@@ -1284,11 +1284,11 @@
   }
   .status-success {
     color: #51cf66;
-    font-weight: 500,
+    font-weight: 500;
   }
   .status-error {
     color: #ff6b6b;
-    font-weight: 500,
+    font-weight: 500;
   }
   .yorha-insights {
     background: rgba(16, 16, 16, 0.8);
@@ -1306,7 +1306,7 @@
   }
   .insights-summary {
     margin-bottom: 1rem;
-    line-height: 1.5,
+    line-height: 1.5;
     color: #e8e8e8;
   }
   .entities {
@@ -1365,11 +1365,11 @@
   .confidence-fill {
     height: 100%;
     background: linear-gradient(90deg, #ff6b6b, #ffd700, #51cf66);
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .confidence-value {
     font-size: 0.875rem;
-    font-weight: 500,
+    font-weight: 500;
     color: #ffd700;
   }
   .yorha-error {
@@ -1395,13 +1395,13 @@
   }
   .prompt-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
   }
   .prompt-category {
     font-size: 0.75rem;
-    font-weight: 500,
+    font-weight: 500;
     color: #ffd700;
   }
   .prompt-confidence {
@@ -1410,7 +1410,7 @@
   }
   .prompt-content {
     margin-bottom: 1rem;
-    line-height: 1.5,
+    line-height: 1.5;
     color: #e8e8e8;
   }
   .prompt-actions {
@@ -1438,7 +1438,7 @@
   }
   .behavior-pattern {
     text-transform: capitaliz;
-    font-weight: 500,
+    font-weight: 500;
     color: #339af0;
     font-size: 1.125rem;
   }
@@ -1494,18 +1494,18 @@
       padding: 1rem;
     }
     .files-header {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
       align-items: flex-start;
     }
     .legal-insights-summary {
-      flex-direction column;
+      flex-direction: column;
       gap: 0.5rem;
     }
     .file-actions,
     .final-actions,
     .error-actions {
-      flex-direction column;
+      flex-direction: column;
     }
     .summary-stats {
       grid-template-columns: 1fr;

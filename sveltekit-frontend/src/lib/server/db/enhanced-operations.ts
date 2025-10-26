@@ -34,7 +34,7 @@ export class DbCaseOperations {
     }
 
     if (status && status.length > 0) {
-      conditions.push(sql`${cases.status} IN ${status}`);
+      conditions.push(sql`${cases.status}::text IN ${status}`);
     }
 
     if (priority && priority.length > 0) {
@@ -42,7 +42,7 @@ export class DbCaseOperations {
     }
 
     if (assignedTo) {
-      conditions.push(eq(cases.leadProsecutor, assignedTo));
+      conditions.push(eq(cases.assignedAttorney, assignedTo));
     }
 
     // Build final query
@@ -57,7 +57,7 @@ export class DbCaseOperations {
         status: cases.status,
         priority: cases.priority,
         caseNumber: cases.caseNumber,
-        leadProsecutor: cases.leadProsecutor,
+        assignedAttorney: cases.assignedAttorney,
         createdAt: cases.createdAt,
         updatedAt: cases.updatedAt,
       })

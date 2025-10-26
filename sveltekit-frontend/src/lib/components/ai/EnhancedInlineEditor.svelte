@@ -384,9 +384,9 @@
     background: var(--console-bg, white);
     color: var(--console-fg, #1f2937);
     font-size: 14px;
-    line-height: 1.5,
+    line-height: 1.5;
     outline: none;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .editor-content:focus {
     border-color: var(--console-primary, #3b82f6);
@@ -411,27 +411,27 @@
   .suggestions-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     padding: 8px 12px;
     background: var(--console-primary, #3b82f6);
     color: var(--console-bg, white);
     font-size: 12px;
-    font-weight: 600,
+    font-weight: 600;
   }
   .suggestions-title {
     flex: 1,
   }
   .processing-indicator {
     color: var(--console-accent-1, #fbbf24);
-    animation pulse 1s infinite;
+    animation: pulse 1s infinite;
   }
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.5,
+      opacity: 0.5;
     }
   }
   .suggestions-list {
@@ -446,7 +446,7 @@
     background: transparent;
     text-align: left;
     cursor: pointer;
-    transition background-color 0.15s ease;
+    transition: background-color 0.15s ease;
     border-bottom: 1px solid var(--console-accent-0, #e5e7eb);
   }
   .suggestion-item:hover {
@@ -461,7 +461,7 @@
   .suggestion-text {
     display: block;
     font-size: 14px;
-    font-weight: 500,
+    font-weight: 500;
     color: var(--console-fg, #1f2937);
     margin-bottom: 2px;
   }
@@ -483,7 +483,7 @@
     color: var(--console-accent-1, #6b7280);
   }
   .confidence {
-    font-weight: 600,
+    font-weight: 600;
     color: var(--console-success, #059669);
   }
   .reasoning {
@@ -521,3 +521,5 @@
     image-rendering: pixelated;
   }
 </style>
+
+

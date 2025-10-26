@@ -57,8 +57,10 @@ d;
 	}
 	.modal-header {
 		display: flex;
-		justify-content: space-betwee;
+		justify-content: space-betweenn;
 		align-items: center;
 		margin-bottom: 1rem;
 	}
 </style>
+
+

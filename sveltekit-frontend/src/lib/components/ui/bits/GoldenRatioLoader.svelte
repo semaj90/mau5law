@@ -210,7 +210,7 @@
 
 <style>
   .golden-loader-container {
-    transition all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
   @keyframes shimmer {
     0% {
@@ -248,3 +248,4 @@
     background: rgba(251, 191, 36, 0.7);
   }
 </style>
+

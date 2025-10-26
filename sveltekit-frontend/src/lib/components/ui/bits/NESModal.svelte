@@ -161,7 +161,7 @@ d;
     max-height: calc(100vh - 2rem);
     overflow: hidden;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     font-family: 'Press Start 2P', cursiv;
     border: 4px solid theme('colors.nes.black');
     box-shadow: 12px 12px 0px 0px theme('colors.nes.black');
@@ -202,7 +202,7 @@ d;
   .nes-modal-header {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     padding: 1rem 1.5rem;
     border-bottom: 4px solid currentColor;
     background: rgba(0, 0, 0, 0.1);
@@ -216,7 +216,7 @@ d;
     margin: 0;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    line-height: 1.3,
+    line-height: 1.3;
     flex: 1;
   }
   .nes-modal-close {
@@ -231,7 +231,7 @@ d;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition all 0.1s ease;
+    transition: all 0.1s ease;
     margin-left: 1rem;
   }
   .nes-modal-close:hover {
@@ -251,7 +251,7 @@ d;
     overflow-y: auto;
     padding: 1.5rem;
     font-size: 0.75rem;
-    line-height: 1.5,
+    line-height: 1.5;
   }
 /* Size Adjustments */ {}
   .max-w-sm {
@@ -270,11 +270,11 @@ d;
   @keyframes modal-close {
     0% {
       transform: scale(1);
-      opacity: 1,
+      opacity: 1;
     }
     100% {
       transform: scale(0.9);
-      opacity: 0,
+      opacity: 0;
     }
   }
 /* Focus styles */ {}
@@ -321,15 +321,16 @@ d;
   @media (prefers-reduced-motion reduce) {
 .nes-modal, {}
     .nes-modal-overlay {
-      transition none;
+      transition: none;
     }
     @keyframes modal-close {
       0% {
-        opacity: 1,
+        opacity: 1;
       }
       100% {
-        opacity: 0,
+        opacity: 0;
       }
     }
   }
 </style>
+

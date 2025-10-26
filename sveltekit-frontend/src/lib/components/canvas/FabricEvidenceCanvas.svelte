@@ -289,7 +289,7 @@
       selectable: false
       evented: false
       excludeFromExport: true,
-      opacity: 0.8,
+      opacity: 0.8;
     });
     const dropText = new fabric.Text('Drop Evidence Here', {
       left: width / 2,
@@ -1021,7 +1021,7 @@
     top: 10px;
     left: 10px;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 10px;
     z-index: 10,
   }
@@ -1041,15 +1041,15 @@
     border-radius: 4px;
     cursor: pointer;
     font-size: 12px;
-    font-weight: 500,
-    transition background-color 0.2s;
+    font-weight: 500;
+    transition: background-color 0.2s;
   }
   .control-btn:hover {
     background: #2563eb;
   }
   .status-info {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 2px;
     background: rgba(0, 0, 0, 0.8);
     color: white;
@@ -1071,7 +1071,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 16px;
     background: rgba(255, 255, 255, 0.95);
@@ -1085,7 +1085,7 @@
     border: 3px solid #e5e7eb;
     border-top: 3px solid #3b82f6;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   @keyframes spin {
     0% {
@@ -1096,8 +1096,9 @@
     }
   }
   .canvas-loading p {
-    margin: 0,
+    margin: 0;
     color: #6b7280;
     font-size: 14px;
   }
 </style>
+

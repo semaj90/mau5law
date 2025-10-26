@@ -46,10 +46,11 @@ var(--color-nier-border-primary) 10%, {}
 var(--color-nier-border-primary) 90%, {}
 transparent 100% {}
     );
-    opacity: 0,
-    transition opacity 0.3s ease;
+    opacity: 0;
+    transition: opacity 0.3s ease;
   }
   .yorha-card:hover::before {
-    opacity: 0.3,
+    opacity: 0.3;
   }
 </style>
+

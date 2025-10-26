@@ -493,7 +493,7 @@
   }
   /* Responsive animations */
   .animate-spin {
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   @keyframes spin {
     from {
@@ -519,3 +519,4 @@
     background: #a8a8a8;
   }
 </style>
+

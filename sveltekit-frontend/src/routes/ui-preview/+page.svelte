@@ -656,7 +656,7 @@
   .stat-label {
     display: block;
     font-size: 0.8rem;
-    opacity: 0.8,
+    opacity: 0.8;
   }
   /* Formatting Demo Styles */
   .formatting-demos {
@@ -722,7 +722,7 @@
   }
   .case-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 0.25rem;
   }
@@ -767,4 +767,5 @@
     margin: 0.25rem 0;
   }
 </style>
+
 

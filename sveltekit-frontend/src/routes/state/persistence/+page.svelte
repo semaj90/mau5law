@@ -337,7 +337,7 @@ https://svelte.dev/e/expected_token -->
     color: #9ca3af;
   }
   .breadcrumb-current {
-    font-weight: 500,
+    font-weight: 500;
   }
   .page-header h1 {
     font-size: 2.5rem;
@@ -363,7 +363,7 @@ https://svelte.dev/e/expected_token -->
   .stat-number {
     display: block;
     font-size: 2rem;
-    font-weight: 700,
+    font-weight: 700;
     color: #1f2937;
   }
   .stat-label {
@@ -382,7 +382,7 @@ https://svelte.dev/e/expected_token -->
     border: 4px solid #f3f4f6;
     border-top: 4px solid #3b82f6;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
   @keyframes spin {
@@ -415,7 +415,7 @@ https://svelte.dev/e/expected_token -->
   }
   .states-container {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .state-card {
@@ -424,7 +424,7 @@ https://svelte.dev/e/expected_token -->
     border-radius: 12px;
     padding: 1.5rem;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .state-card:hover {
     border-color: #d1d5db;
@@ -436,7 +436,7 @@ https://svelte.dev/e/expected_token -->
   }
   .state-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 1rem;
   }
@@ -447,9 +447,9 @@ https://svelte.dev/e/expected_token -->
   }
   .state-title {
     font-size: 1.125rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #1f2937;
-    margin: 0,
+    margin: 0;
   }
   .state-badge {
     padding: 0.25rem 0.75rem;
@@ -461,18 +461,18 @@ https://svelte.dev/e/expected_token -->
   }
   .state-meta {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: flex-end;
     gap: 0.25rem;
     font-size: 0.875rem;
     color: #6b7280;
   }
   .state-size {
-    font-weight: 500,
+    font-weight: 500;
   }
   .state-details {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
     margin-bottom: 1rem;
     padding: 1rem;
@@ -481,11 +481,11 @@ https://svelte.dev/e/expected_token -->
   }
   .detail-row {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
   }
   .detail-label {
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
     font-size: 0.875rem;
   }
@@ -529,7 +529,7 @@ https://svelte.dev/e/expected_token -->
     margin-bottom: 2rem;
   }
   .context-viewer h4 {
-    font-weight: 600,
+    font-weight: 600;
     color: #374151;
     margin-bottom: 0.75rem;
   }
@@ -545,7 +545,7 @@ https://svelte.dev/e/expected_token -->
     overflow-y: auto;
   }
   .metadata-viewer h4 {
-    font-weight: 600,
+    font-weight: 600;
     color: #374151;
     margin-bottom: 0.75rem;
   }
@@ -556,14 +556,14 @@ https://svelte.dev/e/expected_token -->
   }
   .metadata-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 0.5rem;
     background: #f8fafc;
     border-radius: 6px;
   }
   .metadata-label {
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
     font-size: 0.875rem;
   }
@@ -585,13 +585,13 @@ https://svelte.dev/e/expected_token -->
       padding: 1rem;
     }
     .state-header {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-start;
       gap: 1rem;
     }
     .state-actions {
       width: 100%;
-      justify-content: space-betwee;
+      justify-content: space-between;
     }
     .stats-grid {
       grid-template-columns: repeat(2, 1fr);

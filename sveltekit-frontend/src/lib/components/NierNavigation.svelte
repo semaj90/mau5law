@@ -82,7 +82,7 @@
   .yorha-nav-container {
     align-items: center;
     display: flex;
-    justify-content: space-between; /* fixed typo */
+    justify-content: space-betweenn; /* fixed typo */
     max-width: 1400px;
     margin: 0 auto;
     padding: 16px 24px;
@@ -106,7 +106,7 @@
   }
   .yorha-brand-info {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 2px;
   }
   .yorha-brand-text {
@@ -116,7 +116,7 @@
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
-    line-height: 1,
+    line-height: 1;
   }
   .yorha-brand-version {
     color: var(--yorha-text-muted, #808080);
@@ -143,7 +143,7 @@
     text-transform: uppercase;
     padding: 12px 16px;
     border: 2px solid transparent;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     overflow: hidden;
   }
   .yorha-nav-link:hover {
@@ -178,7 +178,7 @@
   .yorha-toolbar-btn {
     position relative;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 2px;
@@ -187,7 +187,7 @@
     border: 2px solid var(--yorha-text-muted, #808080);
     color: var(--yorha-text-secondary, #b0b0b0);
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     min-width: 60px;
     height: 60px;
   }
@@ -199,7 +199,7 @@
   }
   .btn-icon {
     font-size: 18px;
-    line-height: 1,
+    line-height: 1;
   }
   .btn-label {
     font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
@@ -207,7 +207,7 @@
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
-    line-height: 1,
+    line-height: 1;
   }
   /* Responsive Design */
   @media (max-width: 768px) {
@@ -233,3 +233,4 @@
     }
   }
 </style>
+

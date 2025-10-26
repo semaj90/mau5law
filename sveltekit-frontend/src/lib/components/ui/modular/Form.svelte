@@ -123,7 +123,7 @@ https://svelte.dev/e/js_parse_error -->
 /* Legal form styling */ {}
   :global(.legal-form label) {
     color: rgb(29, 78, 216);
-    font-weight: 600,
+    font-weight: 600;
   }
 :global(.legal-form input[required] + label::after), {}
 :global(.legal-form textarea[required] + label::after), {}
@@ -132,3 +132,4 @@ https://svelte.dev/e/js_parse_error -->
     color: rgb(239, 68, 68);
   }
 </style>
+

@@ -1077,7 +1077,7 @@ https://svelte.dev/e/js_parse_error -->
   .toolbar-btn {
     padding: 0.5rem;
     border-radius: 0.375rem;
-    transition background-color 0.2;
+    transition: background-color 0.2;
     border: none;
     background: transparent;
     cursor: pointer;
@@ -1091,7 +1091,7 @@ https://svelte.dev/e/js_parse_error -->
     background-color: #f3f4f6;
   }
   .toolbar-btn:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .toolbar-btn.active {
@@ -1143,7 +1143,7 @@ https://svelte.dev/e/js_parse_error -->
     background-color: #f3f4f6;
   }
   .evidence-item {
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .evidence-item:hover {
     transform: translateY(-1px);
@@ -1155,3 +1155,4 @@ https://svelte.dev/e/js_parse_error -->
     background-size: 20px 20px;
   }
 </style>
+

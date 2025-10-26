@@ -2,9 +2,11 @@
   import { Dialog } from 'bits-ui';
   import Button from '$lib/components/ui/button/Button.svelte';
   import { X } from 'lucide-svelte';
+  import { goto } from '$app/navigation';
   import { superForm } from 'sveltekit-superforms';
   import { zod } from 'sveltekit-superforms/adapters';
   import { loginSchema } from '$lib/schemas/auth';
+  import { toastStore } from '$lib/stores/toast';
 
   interface Props {
     onlogin?: () => void;
@@ -19,8 +21,13 @@
       validators: zod(loginSchema),
       onUpdate({ form: f }) {
         if (f.valid) {
+          toastStore.success('✅ Signed in successfully!');
           onlogin?.();
           open = false;
+          // Redirect to dashboard after successful login
+          setTimeout(() => {
+            goto('/dashboard').catch(err => console.error('Navigation error:', err));
+          }, 500);
         }
       },
     }
@@ -54,8 +61,9 @@
 
       <form class="space-y-4" method="POST" action="/api/auth/login" use:enhance>
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
+          <label for="email" class="block text-sm font-medium text-slate-700 mb-1">Email</label>
           <input
+            id="email"
             type="email"
             name="email"
             bind:value={$form.email}
@@ -68,8 +76,9 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
+          <label for="password" class="block text-sm font-medium text-slate-700 mb-1">Password</label>
           <input
+            id="password"
             type="password"
             name="password"
             bind:value={$form.password}

@@ -196,7 +196,7 @@
 ></div>
             <div
               class="nier-modal"
-              /* transition removed */}
+              /* transition: removed */}
             >
               <h2 class="text-2xl font-display nier-heading mb-4">
                 System Alert
@@ -388,7 +388,7 @@
   /* @unocss-include */
   /* Add any component-specific styles here */
   :global(body) {
-    transition background-color 0.5s ease;
+    transition: background-color 0.5s ease;
   }
   :global(.dark) {
     color-scheme: dark;

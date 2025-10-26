@@ -34,7 +34,7 @@
 <div class="toast-container">
   {#each $toasts as t (t.id)}
     <div class="toast {t.level}">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div style="display:flex;justify-content: space-betweenn;align-items:center;">
         <div>
           {#if t.title}<div class="title">{t.title}</div>{/if}
           <div class="msg">{t.message}</div>
@@ -46,4 +46,5 @@
     </div>
   {/each}
 </div>
+
 

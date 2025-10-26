@@ -636,7 +636,7 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
 <style>
   .webgpu-processor {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
     padding: 1rem;
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
@@ -646,11 +646,11 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
   }
   .controls {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .controls h3 {
-    margin: 0,
+    margin: 0;
     color: #00ff88;
     font-family: 'Courier New', monospace;
   }
@@ -667,7 +667,7 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
     background: rgba(255, 255, 255, 0.05);
     border-radius: 8px;
     border: 1px solid #333;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .status-.active {
     border-color: #00ff88;
@@ -692,7 +692,7 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
   }
   .metric {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     padding: 0.5rem;
     background: rgba(255, 255, 255, 0.03);
     border-radius: 4px;
@@ -717,7 +717,7 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
     height: 100%;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 1rem;
@@ -729,7 +729,7 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
     border: 3px solid #333;
     border-top: 3px solid #00ff88;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   @keyframes spin {
     0% {
@@ -754,3 +754,5 @@ console.log('🚀 Initializing WebGPU + Three.js + Service Worker system...');
     }
   }
 </style>
+
+

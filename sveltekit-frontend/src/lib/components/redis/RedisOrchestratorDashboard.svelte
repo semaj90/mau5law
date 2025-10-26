@@ -270,7 +270,7 @@
   }
   .dashboard-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 30px;
     padding: 20px;
@@ -303,7 +303,7 @@
     font-family: inherit;
     font-weight: bold;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .nes-buttonhover {
     background: #74d3fc;
@@ -344,7 +344,7 @@
   }
   .stat-row {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     margin-bottom: 8px;
     font-size: 12px;
   }
@@ -364,7 +364,7 @@
   }
   .progress-fill {
     height: 100%;
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .mini-chart {
     display: flex;
@@ -376,7 +376,7 @@
   .chart-bar {
     width: 4px;
     min-height: 4px;
-    transition height 0.3s ease;
+    transition: height 0.3s ease;
   }
   .task-queue-panel,
   .processing-times-panel {
@@ -401,7 +401,7 @@
   }
   .task-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     padding: 10px;
     margin-bottom: 5px;
     background: #2a2a4;
@@ -468,7 +468,7 @@
   }
   .processing-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 8px;
     margin-bottom: 2px;
@@ -498,10 +498,11 @@
   .loading-message {
     color: #3cbcfc;
     font-weight: bold;
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1, }
-    50% { opacity: 0.5, }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
   }
 </style>
+

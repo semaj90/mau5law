@@ -199,7 +199,7 @@
 		height: 32px;
 		padding: 0;
 		font-size: 16px;
-		line-height: 1,
+		line-height: 1;
 		border: 2px solid #dc3545;
 	}
 	.loading-indicator {
@@ -260,9 +260,9 @@
 		text-align: left;
 		border: none;
 		border-bottom: 1px solid #dee2e6;
-		margin: 0,
+		margin: 0;
 		cursor: pointer;
-		transition background-color 0.2;
+		transition: background-color 0.2;
 	}
 	.result-item:hover {
 		background: #e9ecef;
@@ -329,3 +329,4 @@ d;
 		}
 	}
 </style>
+

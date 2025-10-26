@@ -71,7 +71,7 @@
 
   @media (max-width: 768px) {
     .admin-content {
-      flex-direction column;
+      flex-direction: column;
     }
 
     .admin-sidebar {
@@ -82,3 +82,4 @@
     }
   }
 </style>
+

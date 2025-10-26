@@ -330,7 +330,7 @@
     border: 2px dashed #555;
     border-radius: 8px;
     cursor: pointer;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .file-input-label:hover {
     border-color: #00ff41;
@@ -354,7 +354,7 @@
   }
   .file-details {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .file-name {
@@ -446,3 +446,4 @@
     font-size: 0.85rem;
   }
 </style>
+

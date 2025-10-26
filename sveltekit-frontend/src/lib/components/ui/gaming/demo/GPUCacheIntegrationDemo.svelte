@@ -239,7 +239,7 @@
     color: var(--gpu-cache-text-primary);
     font-family: monospace;
     border-radius: 4px;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .era-button.active {
     background: var(--gpu-cache-accent-primary);
@@ -286,7 +286,7 @@
   .memory-bank-fill {
     height: 100%;
     background: var(--gpu-cache-accent-primary);
-    transition width 0.5s ease;
+    transition: width 0.5s ease;
   }
   .metrics-grid {
     display: grid;
@@ -320,7 +320,7 @@
   .metric-bar-fill {
     height: 100%;
     background: linear-gradient(90deg, var(--gpu-cache-accent-secondary), var(--gpu-cache-accent-primary));
-    transition width 0.5s ease;
+    transition: width 0.5s ease;
   }
   .state-machine-diagram {
     display: flex;
@@ -335,7 +335,7 @@
     font-family: monospace;
     font-size: 0.75rem;
     color: var(--gpu-cache-text-secondary);
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .state-node.active {
     background: var(--gpu-cache-accent-primary);
@@ -345,10 +345,10 @@
   }
   @keyframes pulse {
     from {
-      opacity: 0.8,
+      opacity: 0.8;
     }
     to {
-      opacity: 1,
+      opacity: 1;
     }
   }
   /* Cache status indicator using global classes */
@@ -392,7 +392,7 @@
     font-weight: bold;
     border-radius: 8px;
     box-shadow: var(--gpu-glow-secondary);
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     position relative;
     overflow: hidden;
   }
@@ -420,3 +420,4 @@
     }
   }
 </style>
+

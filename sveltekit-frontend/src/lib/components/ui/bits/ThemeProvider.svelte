@@ -180,7 +180,7 @@
     --enhanced-bits-error: #e53e3;
     --enhanced-bits-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 /* Transition properties */ {}
-    --enhanced-bits-transition all 0.2s ease-in-out;
+    --enhanced-bits-transition: all 0.2s ease-in-out;
   }
   :global(.dark) {
 /* Dark theme colors */ {}
@@ -231,6 +231,7 @@ color var(--enhanced-bits-transition), {}
   }
 /* Disable transitions on theme change if requested */ {}
   :global(.disable-transitions *) {
-    transition none !important;
+    transition: none !important;
   }
 </style>
+

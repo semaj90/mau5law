@@ -356,8 +356,7 @@ try {
     // 1. Calculate the bounding box of the selected nodes
     // 2. Animate the camera to frame them optimally
     // 3. Adjust zoom level for best viewing
-    // Simplified animation
-    renderState.update(state => ({
+    // Simplified animation: renderState.update(state => ({
       ...state,
       cameraPosition [0, 0, 8], // Move closer;
       zoom: 1.2 // Slight zoom i;
@@ -626,7 +625,7 @@ try {
     right: 0,
     bottom: 0;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     background: rgba(0, 0, 0, 0.8);
@@ -639,7 +638,7 @@ try {
     border: 3px solid rgba(255, 255, 255, 0.1);
     border-top: 3px solid #60a5fa;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin-bottom: 16px;
   }
   @keyframes spin {
@@ -687,7 +686,7 @@ try {
   }
   .stat {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     min-width: 80px;
     margin-bottom: 2px;
   }
@@ -695,7 +694,7 @@ try {
     margin-bottom: 0,
   }
   .label {
-    opacity: 0.8,
+    opacity: 0.8;
   }
   .value {
     font-weight: bold;
@@ -719,7 +718,7 @@ try {
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .controls-panel button hover
   .controls-panel select:hover {
@@ -757,7 +756,7 @@ try {
       font-size: 10px;
     }
     .controls-panel {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-end;
     }
     .controls-panel button,
@@ -767,3 +766,4 @@ try {
     }
   }
 </style>
+

@@ -330,7 +330,7 @@
   }
   .mcp-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     margin-bottom: 24px;
     border-bottom: 1px solid rgba(229, 231, 235, 0.06);
@@ -338,7 +338,7 @@
   }
   .mcp-title {
     font-size: 1.25rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #f3f4f6;
   }
   .connection-status {
@@ -407,12 +407,12 @@
     border-radius: 6px;
     padding: 8px 14px;
     color: white;
-    font-weight: 600,
+    font-weight: 600;
     cursor: pointer;
-    transition transform 0.12s ease;
+    transition: transform 0.12s ease;
   }
   .execute-buttondisabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .execute-buttonhover:not(:disabled) {
@@ -430,7 +430,7 @@
   }
   .result-meta {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     font-size: 0.8rem;
     color: #9ca3af;
     margin-bottom: 8px;
@@ -444,3 +444,5 @@
     color: #fca5a5;
   }
 </style>
+
+

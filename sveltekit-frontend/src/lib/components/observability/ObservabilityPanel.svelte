@@ -271,14 +271,14 @@ await loadState();
   }
   .panel-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1rem;
     border-bottom: 1px solid var(--border-color, #333);
     padding-bottom: 0.5rem;
   }
   .panel-header h3 {
-    margin: 0,
+    margin: 0;
     color: var(--text-primary, #fff);
     font-size: 1.1rem;
   }
@@ -355,7 +355,7 @@ await loadState();
   .progress-bar {
     height: 100%;
     background: currentColor;
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .details-section {
     background: var(--bg-primary, #000);
@@ -376,7 +376,7 @@ await loadState();
   }
   .baseline-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     padding: 0.25rem 0;
   }
   .baseline-item .label {
@@ -397,12 +397,12 @@ await loadState();
   }
   .alerts-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 0.5rem;
   }
   .alerts-header h4 {
-    margin: 0,
+    margin: 0;
     color: var(--text-primary, #fff);
     font-size: 0.9rem;
   }
@@ -488,8 +488,10 @@ await loadState();
       grid-template-columns: 1fr;
     }
     .metadata {
-      flex-direction column;
+      flex-direction: column;
       gap: 0.25rem;
     }
   }
 </style>
+
+

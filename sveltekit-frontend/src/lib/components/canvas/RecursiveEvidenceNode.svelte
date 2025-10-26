@@ -338,7 +338,7 @@
   .evidence-node {
     margin: 8px 0;
     border-radius: 8px;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .evidence-card {
     background: #ffffff;
@@ -346,7 +346,7 @@
     border-radius: 8px;
     padding: 16px;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
   .evidence-card:hover {
@@ -356,7 +356,7 @@
   }
   .evidence-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 12px;
   }
@@ -373,7 +373,7 @@
     color: #6b7280;
     padding: 4px;
     border-radius: 4px;
-    transition background-color 0.2;
+    transition: background-color 0.2;
   }
   .expand-toggle:hover {
     background-color: #f3f4f6;
@@ -381,7 +381,7 @@
   .evidence-id {
     margin: 0;
     font-size: 16px;
-    font-weight: 600,
+    font-weight: 600;
     color: #1f2937;
   }
   .header-right {
@@ -394,7 +394,7 @@
     font-size: 12px;
     padding: 4px 8px;
     border-radius: 12px;
-    font-weight: 500,
+    font-weight: 500;
   }
   .chain-integrity-high {
     background: #d1fae5;
@@ -431,18 +431,18 @@
   }
   .metadata-row {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
   }
   .metadata-row .label {
-    font-weight: 500,
+    font-weight: 500;
     color: #6b7280;
     font-size: 12px;
   }
   .metadata-row .value {
     color: #374151;
     font-size: 12px;
-    font-weight: 600,
+    font-weight: 600;
   }
   .detail-toggle {
     background: none;
@@ -460,7 +460,7 @@
   .legal-implications h5 {
     margin: 0 0 8px 0;
     font-size: 13px;
-    font-weight: 600,
+    font-weight: 600;
     color: #374151;
   }
   .implications-list {
@@ -477,7 +477,7 @@
     padding: 4px 8px;
     border-radius: 12px;
     font-size: 10px;
-    font-weight: 500,
+    font-weight: 500;
   }
   .more-implications {
     background: #6b7280;
@@ -485,7 +485,7 @@
     padding: 4px 8px;
     border-radius: 12px;
     font-size: 10px;
-    font-weight: 500,
+    font-weight: 500;
   }
   .critical-implications {
     display: flex;
@@ -513,7 +513,7 @@
     background: none;
     border: none;
     cursor: pointer;
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
     font-size: 13px;
     padding: 0,
@@ -541,7 +541,7 @@
     margin-bottom: 4px;
   }
   .officer {
-    font-weight: 500,
+    font-weight: 500;
     color: #1f2937;
   }
   .action {
@@ -565,7 +565,7 @@
   .relationships-section h5 {
     margin: 0 0 8px 0;
     font-size: 13px;
-    font-weight: 600,
+    font-weight: 600;
     color: #374151;
   }
   .relationship-item {
@@ -583,12 +583,12 @@
   }
   .relationship-info {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 2px;
   }
   .relationship-type {
     font-size: 12px;
-    font-weight: 500,
+    font-weight: 500;
     color: #1f2937;
     text-transform: capitaliz;
   }
@@ -673,3 +673,5 @@
     border-color: #f59e0b;
   }
 </style>
+
+

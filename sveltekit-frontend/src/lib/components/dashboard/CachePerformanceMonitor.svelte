@@ -46,7 +46,7 @@
   }
   .metric {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     padding: 0.25rem;
     background: white;
     border-radius: 2px;
@@ -64,3 +64,4 @@
     margin-top: 1rem;
   }
 </style>
+

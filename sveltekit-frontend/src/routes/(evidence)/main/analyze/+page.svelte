@@ -248,7 +248,7 @@
         'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.75rem 1.25rem; border-radius: 6px; z-index: 10000; font-size: 0.9rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 400px;';
       document.body.appendChild(notice);
       setTimeout(() => {
-        notice.style.transition = 'opacity 0.3s';
+        notice.style.transition: = 'opacity 0.3s';
         notice.style.opacity = '0';
         setTimeout(() => notice.remove(), 300);
       }, 4000);
@@ -581,3 +581,4 @@
     </div>
   {/if}
 </div>
+

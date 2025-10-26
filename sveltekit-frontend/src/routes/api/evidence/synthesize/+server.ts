@@ -5,6 +5,8 @@ import { eq, and, inArray } from 'drizzle-orm';
 import { createClient, type RedisClientType } from 'redis';
 import { randomUUID } from 'crypto';
 import { createActor, createMachine, fromPromise, assign, type ActorRefFrom, type SnapshotFrom } from 'xstate'; // Added SnapshotFrom
+import { REDIS_URL } from '$env/static/private';
+import { getOllamaEndpoint } from '$lib/server/endpoints';
 
 // Import proper schemas - adjust paths based on your actual schema location
 import { cases, evidence } from '$lib/server/db/schema';
@@ -68,14 +70,41 @@ interface EmbeddingOptions {
   legalDomain?: boolean;
 }
 
-// AI service for embeddings - use Ollama integration
-const OLLAMA_BASE_URL = import.meta.env.VITE_OLLAMA_BASE_URL || 'http://localhost:11434';
+// New interface for the synthesized evidence object
+interface SynthesizedEvidence {
+  summary: string;
+  analysis: string;
+  recommendations: string[];
+  methodology: string;
+  sourceCount: number;
+  correlations: Array<{ type: string; description: string; items: string[] }>;
+  timeline: {
+    events: Array<{
+      date: Date | string;
+      evidenceId: string;
+      title: string;
+      type: string;
+      location?: string | null;
+    }>;
+    timespan: {
+      start: Date | string;
+      end: Date | string;
+    };
+    gaps: Array<{ start: string; end: string; days: number }>;
+  } | null;
+  patterns: Array<{
+    type: string;
+    description: string;
+    data: Array<{ type?: string; tag?: string; count: number }>;
+  }>;
+}
 
+// AI service for embeddings - use Ollama integration
 const aiService = {
   generateEmbedding: async (text: string, options?: EmbeddingOptions): Promise<number[]> => {
     try {
       const model = options?.model || 'embeddinggemma:latest';
-      const response = await fetch(`${OLLAMA_BASE_URL}/api/embeddings`, {
+      const response = await fetch(`${getOllamaEndpoint()}/api/embeddings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ model, prompt: text }),
@@ -154,7 +183,7 @@ export interface SynthesisRequest {
 }
 
 export interface SynthesisResult {
-  synthesizedEvidence: any;
+  synthesizedEvidence: SynthesizedEvidence;
   embedding: number[];
   ragScore: number;
   confidence: number;
@@ -163,13 +192,13 @@ export interface SynthesisResult {
 
 // New: XState types for synthesis machine
 type SynthesisContext = {
-  request: SynthesisRequest;
+  request: SynthesisRequest & { userId: string };
   evidenceItems: EvidenceItem[];
   synthesisResult: SynthesisResult | null;
   synthesizedEvidenceRecord: EvidenceItem | null;
   error: { message: string; code: string; details?: string; stage?: string } | null;
   cachedAt: string | null;
-  userId: string; // Added userId to context
+  userId: string;
 };
 
 type SynthesisEvents = { type: 'START_SYNTHESIS' };
@@ -182,7 +211,7 @@ async function initRedis(): Promise<void> {
   if (!redisClient) {
     try {
       redisClient = createClient({
-        url: import.meta.env.REDIS_URL || 'redis://localhost:6379',
+        url: REDIS_URL || 'redis://localhost:6379',
       }) as RedisClientType;
       await redisClient.connect();
     } catch (error: unknown) {
@@ -212,9 +241,14 @@ async function publishSynthesisUpdate(type: string, data: Record<string, unknown
 
 // XState v5 Synthesis Machine
 const synthesisMachine = createMachine({
+  types: {} as {
+    context: SynthesisContext;
+    events: SynthesisEvents;
+    input: SynthesisRequest & { userId: string };
+  },
   id: 'evidenceSynthesis',
   initial: 'idle',
-  context: ({ input }: { input: SynthesisRequest & { userId: string } }) => ({
+  context: ({ input }) => ({
     // Input now includes userId
     request: input,
     evidenceItems: [],
@@ -230,7 +264,8 @@ const synthesisMachine = createMachine({
     },
     checkingCache: {
       invoke: {
-        src: fromPromise(async ({ context }) => {
+        input: ({ context }) => context,
+        src: fromPromise(async ({ input: context }) => {
           const cacheKey = `synthesis:cache:${context.request.caseId}:${context.request.synthesisType}:${context.request.evidenceIds.sort().join(',')}`;
           const cached = await redisClient?.get(cacheKey);
           return cached ? JSON.parse(cached) : null;
@@ -284,7 +319,8 @@ const synthesisMachine = createMachine({
     },
     verifyingCaseAccess: {
       invoke: {
-        src: fromPromise(async ({ context }) => {
+        input: ({ context }) => context,
+        src: fromPromise(async ({ input: context }) => {
           // userId is now in context
           const caseRecord = await db
             .select()
@@ -311,7 +347,8 @@ const synthesisMachine = createMachine({
     },
     fetchingEvidence: {
       invoke: {
-        src: fromPromise(async ({ context }) => {
+        input: ({ context }) => context,
+        src: fromPromise(async ({ input: context }) => {
           const evidenceItems = (await db
             .select()
             .from(evidence)
@@ -342,7 +379,8 @@ const synthesisMachine = createMachine({
     },
     performingAISynthesis: {
       invoke: {
-        src: fromPromise(async ({ context }) => {
+        input: ({ context }) => context,
+        src: fromPromise(async ({ input: context }) => {
           // userId is now in context
           return await synthesizeEvidence(
             context.evidenceItems,
@@ -370,7 +408,8 @@ const synthesisMachine = createMachine({
     },
     persistingSynthesis: {
       invoke: {
-        src: fromPromise(async ({ context }) => {
+        input: ({ context }) => context,
+        src: fromPromise(async ({ input: context }) => {
           // userId is now in context
           if (!context.synthesisResult) throw new Error('Synthesis result missing');
 
@@ -429,7 +468,8 @@ const synthesisMachine = createMachine({
     },
     indexingRAG: {
       invoke: {
-        src: fromPromise(async ({ context }) => {
+        input: ({ context }) => context,
+        src: fromPromise(async ({ input: context }) => {
           if (!context.synthesizedEvidenceRecord || !context.synthesisResult)
             throw new Error('Missing data for RAG indexing');
           await addToEnhancedRAG(
@@ -455,7 +495,8 @@ const synthesisMachine = createMachine({
     },
     publishingUpdate: {
       invoke: {
-        src: fromPromise(async ({ context }) => {
+        input: ({ context }) => context,
+        src: fromPromise(async ({ input: context }) => {
           // userId is now in context
           if (!context.synthesizedEvidenceRecord) throw new Error('Missing synthesized evidence record for publishing');
           await publishSynthesisUpdate(
@@ -487,7 +528,8 @@ const synthesisMachine = createMachine({
     },
     cachingResults: {
       invoke: {
-        src: fromPromise(async ({ context }) => {
+        input: ({ context }) => context,
+        src: fromPromise(async ({ input: context }) => {
           if (context.synthesizedEvidenceRecord && context.synthesisResult) {
             const cacheKey = `synthesis:cache:${context.request.caseId}:${context.request.synthesisType}:${context.request.evidenceIds.sort().join(',')}`;
             const cacheObj = {
@@ -787,7 +829,7 @@ function identifyCorrelations(evidenceItems: EvidenceItem[]): Array<{
     });
   }
 
-  const taggedItems = evidenceItems.filter(item => item.tags?.length > 0);
+  const taggedItems = evidenceItems.filter(item => item.tags && item.tags.length > 0);
   if (taggedItems.length > 1) {
     correlations.push({
       type: 'thematic',

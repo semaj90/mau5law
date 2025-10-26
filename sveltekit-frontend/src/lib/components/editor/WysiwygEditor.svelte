@@ -84,7 +84,7 @@ await initializeEditor();
             body {
               font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
               font-size: 14px;
-              line-height: 1.6,
+              line-height: 1.6;
               color: #374151;
               max-width: 800px;
               margin: 0 auto;
@@ -363,7 +363,7 @@ editing
 }
   .editor-toolbar {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 0.5rem 1rem;
     background: #f9fafb;
@@ -379,7 +379,7 @@ editing
     background: white;
     border: 1px solid #d1d5db;
     border-radius: 0.25rem;
-    transition background-color 0.2;
+    transition: background-color 0.2;
     cursor: pointer;
 }
   .toolbar-btn:hover {
@@ -420,7 +420,7 @@ d;
 }
 .dialog-title {
     font-size: 1.25rem;
-    font-weight: 600,
+    font-weight: 600;
     padding: 1.5rem;
     padding-bottom: 0,
 }
@@ -433,7 +433,7 @@ d;
     right: 1rem;
     color: #6b7280;
     font-size: 1.5rem;
-    line-height: 1,
+    line-height: 1;
     cursor: pointer;
     background: none;
     border: none;
@@ -480,13 +480,13 @@ d;
     padding: 0.75rem;
     margin-bottom: 0.75rem;
     cursor: pointer;
-    transition background-color 0.2;
+    transition: background-color 0.2;
 }
   .citation-item:hover {
     background: #f9fafb;
 }
   .citation-title {
-    font-weight: 600,
+    font-weight: 600;
     color: #111827;
 }
   .citation-text {
@@ -502,8 +502,8 @@ d;
   .btn {
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
-    font-weight: 500,
-    transition background-color 0.2;
+    font-weight: 500;
+    transition: background-color 0.2;
     cursor: pointer;
     border: none;
 }
@@ -526,10 +526,12 @@ d;
     font-size: 0.875rem;
 }
   .btn:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
 }
   .btn:disabled:hover {
     background: inherit;
 }
 </style>
+
+

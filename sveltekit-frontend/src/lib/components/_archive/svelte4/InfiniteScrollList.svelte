@@ -212,7 +212,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .empty-icon {
     margin-bottom: 1rem;
-    opacity: 0.5,
+    opacity: 0.5;
   }
   .empty-text {
     margin: 0;
@@ -263,14 +263,14 @@ https://svelte.dev/e/js_parse_error -->
   .item-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     gap: 0.5rem;
     margin-bottom: 0.25rem;
   }
   .item-title {
     margin: 0;
     font-size: 0.875rem;
-    font-weight: 600,
+    font-weight: 600;
     color: var(--bits-color, #111827);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -286,7 +286,7 @@ https://svelte.dev/e/js_parse_error -->
     margin: 0 0 0.5rem;
     font-size: 0.8rem;
     color: var(--bits-muted, #6b7280);
-    line-height: 1.4,
+    line-height: 1.4;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -401,7 +401,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .empty-icon {
     margin-bottom: 1rem;
-    opacity: 0.5,
+    opacity: 0.5;
   }
   .empty-text {
     margin: 0;
@@ -452,14 +452,14 @@ https://svelte.dev/e/js_parse_error -->
   .item-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     gap: 0.5rem;
     margin-bottom: 0.25rem;
   }
   .item-title {
     margin: 0;
     font-size: 0.875rem;
-    font-weight: 600,
+    font-weight: 600;
     color: var(--bits-color, #111827);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -475,7 +475,7 @@ https://svelte.dev/e/js_parse_error -->
     margin: 0 0 0.5rem;
     font-size: 0.8rem;
     color: var(--bits-muted, #6b7280);
-    line-height: 1.4,
+    line-height: 1.4;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -550,3 +550,5 @@ https://svelte.dev/e/js_parse_error -->
     background: var(--bits-primary, #2563eb);
   }
 </style>
+
+

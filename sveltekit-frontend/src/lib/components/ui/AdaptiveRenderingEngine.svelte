@@ -521,7 +521,7 @@
     top: 4px;
     right: 4px;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 2px;
     pointer-events: none;
   }
@@ -572,10 +572,10 @@
   @keyframes pixel-flicker {
     0%,
     100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.98,
+      opacity: 0.98;
     }
   }
   @keyframes smooth-glow {
@@ -596,3 +596,4 @@
     }
   }
 </style>
+

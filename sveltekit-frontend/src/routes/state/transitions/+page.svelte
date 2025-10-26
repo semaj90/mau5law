@@ -15,7 +15,7 @@ https://svelte.dev/e/expected_token -->
   let currentState = $state('');
   let loading = $state(true);
   let selectedTransition = $state(null);
-  // Mock transition data - replace with actual XState introspection
+  // Mock transition: data - replace with actual XState introspection
   let mockTransitions = {
     'auth-machine': {
       currentState: 'authenticated',
@@ -123,7 +123,7 @@ https://svelte.dev/e/expected_token -->
     if (ms < 1000) return `${ms}ms`;
     return `${(ms / 1000).toFixed(1)}s`;
   }
-  function getTransitionColor(transition unknown) {
+  function getTransitionColor(transition: unknown) {
     const age = Date.now() - new Date(transition.timestamp).getTime();
     if (age < 30000) return 'border-green-200 bg-green-50';
     if (age < 300000) return 'border-blue-200 bg-blue-50';
@@ -295,7 +295,7 @@ https://svelte.dev/e/expected_token -->
     color: #9ca3af;
   }
   .breadcrumb-current {
-    font-weight: 500,
+    font-weight: 500;
   }
   .page-header h1 {
     font-size: 2.5rem;
@@ -313,7 +313,7 @@ https://svelte.dev/e/expected_token -->
     gap: 1rem;
   }
   .state-label {
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
   }
   .current-state {
@@ -349,7 +349,7 @@ https://svelte.dev/e/expected_token -->
     border: 4px solid #f3f4f6;
     border-top: 4px solid #3b82f6;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin: 0 auto 1rem;
   }
   @keyframes spin {
@@ -372,13 +372,13 @@ https://svelte.dev/e/expected_token -->
   }
   .timeline-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
   }
   .timeline-header h2 {
     color: #1f2937;
-    margin: 0,
+    margin: 0;
   }
   .timeline-stats {
     font-size: 0.875rem;
@@ -386,7 +386,7 @@ https://svelte.dev/e/expected_token -->
   }
   .timeline-container {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .transition-card {
@@ -394,7 +394,7 @@ https://svelte.dev/e/expected_token -->
     border-radius: 12px;
     padding: 1.5rem;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .transition-card:hover {
     transform: translateY(-1px);
@@ -406,7 +406,7 @@ https://svelte.dev/e/expected_token -->
   }
   .transition-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
   }
   .transition-flow {
@@ -429,7 +429,7 @@ https://svelte.dev/e/expected_token -->
   }
   .transition-arrow {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 0.25rem;
   }
@@ -451,7 +451,7 @@ https://svelte.dev/e/expected_token -->
     color: #6b7280;
   }
   .duration {
-    font-weight: 500,
+    font-weight: 500;
     color: #059669;
   }
   .transition-details {
@@ -465,7 +465,7 @@ https://svelte.dev/e/expected_token -->
     gap: 1.5rem;
   }
   .detail-section h4 {
-    font-weight: 600,
+    font-weight: 600;
     color: #374151;
     margin-bottom: 0.75rem;
     font-size: 0.875rem;
@@ -479,12 +479,12 @@ https://svelte.dev/e/expected_token -->
     border-radius: 6px;
     font-size: 0.75rem;
     overflow-x: auto;
-    margin: 0,
+    margin: 0;
   }
   .guards-list,
   .actions-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .guard-badge {
@@ -524,7 +524,7 @@ https://svelte.dev/e/expected_token -->
   .control-note {
     font-size: 0.875rem;
     color: #6b7280;
-    margin: 0,
+    margin: 0;
   }
   @media (max-width: 768px) {
     .page-container {
@@ -534,16 +534,16 @@ https://svelte.dev/e/expected_token -->
       grid-template-columns: 1fr;
     }
     .transition-header {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-start;
       gap: 1rem;
     }
     .machine-selector {
-      flex-direction column;
+      flex-direction: column;
       align-items: stretch;
     }
     .control-buttons {
-      flex-direction column;
+      flex-direction: column;
     }
   }
 </style>

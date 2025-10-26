@@ -190,7 +190,7 @@
     color: var(--n64-secondary) !important;
   }
   :global(.citation-save-btn.disabled) {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .collection-selector {
@@ -208,7 +208,7 @@
   }
   .collection-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     margin-bottom: 0.75rem;
     padding-bottom: 0.5rem;
@@ -218,7 +218,7 @@
     color: var(--nier-text-primary);
     font-family: 'Press Start 2P', cursive;
     font-size: 0.625rem;
-    margin: 0,
+    margin: 0;
   }
   .close-btn {
     background: none;
@@ -227,28 +227,28 @@
     cursor: pointer;
     font-size: 0.875rem;
     padding: 0.25rem;
-    line-height: 1,
+    line-height: 1;
   }
   .close-btn:hover {
     color: var(--n64-error);
   }
   .collection-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
     max-height: 200px;
     overflow-y: auto;
   }
   .collection-item {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     padding: 0.5rem;
     background: rgba(15, 15, 35, 0.5);
     border: 1px solid rgba(74, 144, 226, 0.3);
     border-radius: 4px;
     cursor: pointer;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     text-align: left;
   }
   .collection-item:hover {
@@ -276,3 +276,5 @@
     }
   }
 </style>
+
+

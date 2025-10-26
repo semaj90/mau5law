@@ -389,7 +389,7 @@ if (spatialAudio && typeof window !== 'undefined') {
 /* N64-style 3D depth transformation */ transform: perspective(1000px) rotateX(var(--rotation-x, 0deg)) rotateY(var(--rotation-y, 0deg)) translateZ(var(--translate-z, 0px));
     transform-origin: center center;
     transform-style: preserve-3d;
-    transition all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 box-shadow: 0 var(--depth-z, 15px) calc(var(--depth-z, 15px) * 2) rgba(0, 0, 0, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.1), inset 0 -2px 4px rgba(0, 0, 0, 0.2);
   }
 /* Material variations */ .material-basic .n64-card {
@@ -512,13 +512,13 @@ transform: translateY(5px) rotateX(90deg) translateZ(calc(var(--depth-z, 15px) *
     font-size: 10px;
     color: #b0b0b0;
     margin: 0;
-    line-height: 1.4,
+    line-height: 1.4;
   }
 /* Card content */ .n64-card-content {
     position relative;
     z-index: 2;
     font-size: 12px;
-    line-height: 1.6,
+    line-height: 1.6;
   }
 /* Parallax layers */ .parallax-indicators {
     position absolute;
@@ -546,15 +546,15 @@ transform: translateY(5px) rotateX(90deg) translateZ(calc(var(--depth-z, 15px) *
     bottom: -4px;
     border: 3px solid #00ff41;
     border-radius: 6px;
-    opacity: 0,
+    opacity: 0;
     transform: scale(0.95);
-    transition all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     pointer-events: none;
     z-index: 10;
 box-shadow: 0 0 15px rgba(0, 255, 65, 0.5), inset 0 0 15px rgba(0, 255, 65, 0.2);
   }
   .selection-indicator.visible {
-    opacity: 1,
+    opacity: 1;
     transform: scale(1);
   }
 /* State variations */ .n64-card.hoverable:hover {
@@ -613,7 +613,7 @@ background: radial-gradient(ellipse at 25% 25%, rgba(255, 255, 255, 0.15) 0%, tr
   }
 /* Reduced motion */ .reduced-motion .n64-card, .reduced-motion .selection-indicator, .reduced-motion .texture-filter-layer, .reduced-motion .aa-layer, .reduced-motion .fog-layer {
     animation: none !important;
-    transition none !important;
+    transition: none !important;
     transform: none !important;
   }
 /* Interactive states */ .n64-card.clickable {

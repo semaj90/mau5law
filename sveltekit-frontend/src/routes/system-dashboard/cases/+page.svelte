@@ -82,7 +82,7 @@
     margin: 0 auto;
     padding: 1rem;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1.5rem;
   }
   .header {
@@ -112,7 +112,7 @@
     background: rgba(26, 26, 46, 0.6) !important;
     border: 2px solid var(--n64-primary) !important;
     padding: 1rem;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .case-card:hover {
     transform: translateY(-2px);
@@ -121,7 +121,7 @@
   }
   .case-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 1rem;
   }
@@ -130,12 +130,12 @@
     font-family: 'Press Start 2P', cursiv;
     font-size: 0.875rem;
     margin: 0;
-    line-height: 1.4,
+    line-height: 1.4;
     flex: 1;
   }
   .case-stats {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
     margin-bottom: 1rem;
     padding: 0.75rem;
@@ -159,7 +159,7 @@
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #4a90e2, #7ed321);
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .case-actions {
     display: flex;
@@ -171,3 +171,4 @@
     }
   }
 </style>
+

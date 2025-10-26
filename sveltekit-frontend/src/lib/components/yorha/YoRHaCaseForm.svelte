@@ -615,7 +615,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   }
   /* Multi-step progress indicators */
   .step-circle {
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .step-circle.active {
     background-color: var(--yorha-accent-warm);
@@ -635,25 +635,25 @@ https://svelte.dev/e/rune_missing_parentheses -->
   }
   .step-line {
     background: linear-gradient(90deg, var(--yorha-accent-warm) 0%, rgba(212, 175, 55, 0.3) 100%);
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   /* Form animations */
   .form-step {
-    animation fadeInUp 0.4s ease-out;
+    animation: fadeInUp 0.4s ease-out;
   }
   @keyframes fadeInUp {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translateY(20px);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translateY(0);
     }
   }
   /* Enhanced form inputs */
   .form-input {
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     position relative;
   }
   .form-input:focus {
@@ -668,7 +668,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   .prev-btn,
   .submit-btn {
     position relative;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     overflow: hidden;
   }
   .next-btn:hover,
@@ -689,7 +689,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transition left 0.5;
+    transition: left 0.5;
   }
   .next-btn:hover::before,
   .submit-btn:hover::before {
@@ -698,7 +698,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   /* Progress animations */
   .progress-bar,
   .step-progress {
-    animation slideIn 0.3s ease-out;
+    animation: slideIn 0.3s ease-out;
   }
   @keyframes slideIn {
     from {
@@ -707,12 +707,12 @@ https://svelte.dev/e/rune_missing_parentheses -->
     }
     to {
       width: 100%;
-      opacity: 1,
+      opacity: 1;
     }
   }
   /* AI Processing indicator */
   .ai-processing-indicator {
-    animation pulseGlow 2s infinite;
+    animation: pulseGlow 2s infinite;
   }
   @keyframes pulseGlow {
     0%,
@@ -725,10 +725,10 @@ https://svelte.dev/e/rune_missing_parentheses -->
   }
   /* Review section styling */
   .review-section {
-    animation fadeIn 0.5s ease-out;
+    animation: fadeIn 0.5s ease-out;
   }
   .review-item {
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .review-item:hover {
     background-color: rgba(212, 175, 55, 0.05);
@@ -736,7 +736,7 @@ https://svelte.dev/e/rune_missing_parentheses -->
   }
   /* Loading spinner */
   .spinner {
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   @keyframes spin {
     from {
@@ -748,10 +748,10 @@ https://svelte.dev/e/rune_missing_parentheses -->
   }
   @keyframes fadeIn {
     from {
-      opacity: 0,
+      opacity: 0;
     }
     to {
-      opacity: 1,
+      opacity: 1;
     }
   }
   /* Debug panel */
@@ -764,16 +764,16 @@ https://svelte.dev/e/rune_missing_parentheses -->
   }
   /* State indicators */
   .form-state-indicator {
-    animation slideInRight 0.3s ease-out;
+    animation: slideInRight 0.3s ease-out;
   }
   @keyframes slideInRight {
     from {
       transform: translateX(20px);
-      opacity: 0,
+      opacity: 0;
     }
     to {
       transform: translateX(0);
-      opacity: 1,
+      opacity: 1;
     }
   }
   /* Responsive design */
@@ -784,17 +784,17 @@ https://svelte.dev/e/rune_missing_parentheses -->
     }
     .step-navigation,
     .final-actions {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
     }
     .step-indicator {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-start;
       gap: 1rem;
     }
     .step-progress {
       width: 100%;
-      justify-content: space-betwee;
+      justify-content: space-between;
     }
     .step-line {
       width: 100%;
@@ -813,3 +813,4 @@ https://svelte.dev/e/rune_missing_parentheses -->
     }
   }
 </style>
+

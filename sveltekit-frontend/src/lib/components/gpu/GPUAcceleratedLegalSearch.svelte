@@ -333,7 +333,7 @@ await checkGPUStatus();
 		font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 	}
 	.result-card {
-		transition all 0.2s ease;
+		transition: all 0.2s ease;
 	}
 	.result-card:hover {
 		transform: translateY(-1px);
@@ -342,7 +342,7 @@ await checkGPUStatus();
 		outline: none;
 	}
 	.animate-spin {
-		animation spin 1s linear infinite;
+		animation: spin 1s linear infinite;
 	}
 	@keyframes spin {
 		from { transform: rotate(0deg), }

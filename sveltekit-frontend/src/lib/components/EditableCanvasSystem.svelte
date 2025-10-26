@@ -300,7 +300,7 @@ mounted = true;
   .toolbar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     padding: 0.75rem 1rem;
     background: hsl(220 15% 98%);
     border-bottom: 1px solid hsl(220 13% 91%);
@@ -314,7 +314,7 @@ mounted = true;
   .node-counter {
     font-size: 0.875rem;
     color: hsl(220 9% 46%);
-    font-weight: 500,
+    font-weight: 500;
   }
   .canvas-workspace {
     display: grid;
@@ -335,31 +335,31 @@ mounted = true;
     overflow-y: auto;
   }
   .evidence-panel h3 {
-    margin: 0,
+    margin: 0;
     padding: 1rem;
     font-size: 0.9rem;
-    font-weight: 600,
+    font-weight: 600;
     color: hsl(220 9% 46%);
     border-bottom: 1px solid hsl(220 13% 91%);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweenn;
   }
   .count {
-    font-weight: 400,
+    font-weight: 400;
     opacity: 0.7;
   }
   .evidence-item {
     padding: 0.75rem 1rem;
     border-bottom: 1px solid hsl(220 13% 96%);
-    transition background-color 0.2s ease;
+    transition: background-color 0.2s ease;
   }
   .evidence-item:hover {
     background: hsl(220 13% 97%);
   }
   .filename {
     display: block;
-    font-weight: 500,
+    font-weight: 500;
     color: hsl(220 20% 14%);
     margin-bottom: 0.25rem;
   }
@@ -377,13 +377,13 @@ mounted = true;
   }
   .hint {
     font-size: 0.875rem;
-    opacity: 0.8,
+    opacity: 0.8;
   }
   .status {
     display: inline-flex;
     align-items: center;
     font-size: 0.875rem;
-    font-weight: 500,
+    font-weight: 500;
     color: hsl(0 84% 60%);
   }
   .status::before {
@@ -407,9 +407,9 @@ mounted = true;
     background: white;
     color: hsl(220 20% 14%);
     font-size: 0.875rem;
-    font-weight: 500,
+    font-weight: 500;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   buttonhover:not(:disabled) {
     background: hsl(220 13% 98%);
@@ -419,7 +419,7 @@ mounted = true;
     background: hsl(220 13% 95%);
   }
   buttondisabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   @media (max-width: 768px) {

@@ -1074,7 +1074,7 @@ https://svelte.dev/e/js_parse_error -->
 
   .header-section {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--bits-border, #e5e7eb);
@@ -1082,7 +1082,7 @@ https://svelte.dev/e/js_parse_error -->
 
   .header-section h2 {
     font-size: 1.5rem;
-    font-weight: 700,
+    font-weight: 700;
     margin: 0;
   }
 
@@ -1113,7 +1113,7 @@ https://svelte.dev/e/js_parse_error -->
     gap: 0.5rem;
     padding: 0.5rem 1rem;
     border-radius: 0.375rem;
-    font-weight: 500,
+    font-weight: 500;
     cursor: pointer;
     transition: background-color 0.2s ease;
     background-color: var(--bits-primary, #2563eb);
@@ -1147,7 +1147,7 @@ https://svelte.dev/e/js_parse_error -->
 
   .file-info-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     padding: 1rem;
     background-color: var(--bits-secondary-background, #f8fafc);
@@ -1202,7 +1202,7 @@ https://svelte.dev/e/js_parse_error -->
 
   .quality-percentage {
     font-size: 0.875rem;
-    font-weight: 500,
+    font-weight: 500;
   }
 
   .loading-overlay {
@@ -1339,7 +1339,7 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.875rem;
     cursor: pointer;
     padding: 0 0.25rem;
-    line-height: 1,
+    line-height: 1;
   }
 
   .remove-tag-button:hover, .remove-entity-button:hover, .remove-action-button:hover {
@@ -1354,14 +1354,14 @@ https://svelte.dev/e/js_parse_error -->
 
   .entity-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     margin-bottom: 0.5rem;
   }
 
   .confidence-score {
     font-size: 0.75rem;
-    font-weight: 500,
+    font-weight: 500;
   }
 
   .text-green-600 { color: #22c55e; }
@@ -1405,12 +1405,12 @@ https://svelte.dev/e/js_parse_error -->
 
   .empty-state-icon {
     font-size: 3rem;
-    opacity: 0.6,
+    opacity: 0.6;
   }
 
   .empty-state-title {
     font-size: 1.5rem;
-    font-weight: 600,
+    font-weight: 600;
     color: var(--bits-color, #111827);
   }
 
@@ -1419,3 +1419,4 @@ https://svelte.dev/e/js_parse_error -->
     max-width: 300px;
   }
 </style>
+

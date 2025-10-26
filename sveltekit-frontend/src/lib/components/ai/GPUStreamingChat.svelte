@@ -264,7 +264,7 @@
 <style>
   .gpu-streaming-chat {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     height: 100vh;
     max-height: 800px;
     background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
@@ -299,7 +299,7 @@
   .messages-wrapper {
     flex: 1,
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .message {
@@ -330,7 +330,7 @@
     gap: 0.5rem;
     margin-bottom: 0.5rem;
     font-size: 0.875rem;
-    opacity: 0.7,
+    opacity: 0.7;
   }
   .role-icon {
     display: inline-flex;
@@ -344,12 +344,12 @@
     word-wrap: break-word;
   }
   .cursor {
-    animation blink 1s infinite;
+    animation: blink 1s infinite;
     color: #22c55;
   }
   @keyframes blink {
-    0%, 50% { opacity: 1, }
-    51%, 100% { opacity: 0, }
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
   }
   .embedding-indicator {
     position absolute;
@@ -359,7 +359,7 @@
     align-items: center;
     gap: 0.25rem;
     font-size: 0.75rem;
-    opacity: 0.5,
+    opacity: 0.5;
   }
   .similar-docs {
     width: 300px;
@@ -389,7 +389,7 @@
     flex: 1;
     font-size: 0.75rem;
     opacity: 0.8;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   .input-area {
     padding: 1rem;
@@ -416,12 +416,12 @@
     background: rgba(255, 255, 255, 0.08);
   }
   .chat-input:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .button-group {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .btn {
@@ -430,7 +430,7 @@
     border-radius: 6px;
     font-size: 0.875rem;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -444,7 +444,7 @@
     background: #2563eb;
   }
   .btn-send:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .btn-stop {
@@ -476,3 +476,4 @@
     background: rgba(255, 255, 255, 0.3);
   }
 </style>
+

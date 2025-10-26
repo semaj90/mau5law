@@ -432,7 +432,7 @@ https://svelte.dev/e/js_parse_error -->
     /* emulate ring-2 ring-yellow-400 ring-opacity-50 + bg-yellow-400 bg-opacity-10 */
     outline: 2px solid rgba(245, 158, 11, 0.5); /* yellow-400 at 50% */
     background-color: rgba(245, 158, 11, 0.1); /* yellow-400 at 10% */
-    animation pulse 2s ease-in-out infinite;
+    animation: pulse 2s ease-in-out infinite;
   }
 
   :global(.ai-enhanced) {
@@ -442,8 +442,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   :global(.lod-demo) {
-    transition
-      transform 0.3s ease,
+    transition: transform 0.3s ease,
       opacity 0.3s ease;
   }
 
@@ -475,10 +474,11 @@ https://svelte.dev/e/js_parse_error -->
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.7,
+      opacity: 0.7;
     }
   }
 </style>
+

@@ -229,7 +229,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 8px;
     background: var(--yorha-bg-secondary, #1a1a1a);
     cursor: pointer;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     overflow: hidden;
   }
   .drag-drop-zone:hover:not(.disabled) {
@@ -244,7 +244,7 @@ https://svelte.dev/e/js_parse_error -->
     animation: pulse-glow 1s ease-in-out infinite alternate;
   }
   .drag-drop-zone.disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
     filter: grayscale(100%);
   }
@@ -281,7 +281,7 @@ https://svelte.dev/e/js_parse_error -->
   /* Default Content */
   .drop-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 32px 16px;
@@ -291,7 +291,7 @@ https://svelte.dev/e/js_parse_error -->
   .upload-icon {
     color: var(--nes-blue, #3cbcfc);
     margin-bottom: 16px;
-    transition color 0.3s ease;
+    transition: color 0.3s ease;
   }
   .upload-title {
     font-size: 20px;
@@ -321,7 +321,7 @@ https://svelte.dev/e/js_parse_error -->
   /* Processing State */
   .processing-state {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 16px;
   }
@@ -362,7 +362,7 @@ https://svelte.dev/e/js_parse_error -->
     background: var(--yorha-bg-tertiary, #2a2a2a);
     border-radius: 6px;
     margin-bottom: 8px;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .file-item:hover {
     background: var(--yorha-bg-primary, #0a0a0a);
@@ -375,13 +375,13 @@ https://svelte.dev/e/js_parse_error -->
   .file-info {
     flex: 1,
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 2px;
   }
   .file-name {
     font-size: 14px;
     color: var(--yorha-text-primary, #e0e0e0);
-    font-weight: 500,
+    font-weight: 500;
   }
   .file-size {
     font-size: 12px;
@@ -394,7 +394,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer;
     padding: 4px;
     border-radius: 4px;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .remove-file:hover {
     background: rgba(248, 56, 0, 0.1);
@@ -441,7 +441,7 @@ https://svelte.dev/e/js_parse_error -->
       padding: 24px 16px;
     }
     .upload-specs {
-      flex-direction column;
+      flex-direction: column;
       gap: 8px;
     }
   }

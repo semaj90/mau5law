@@ -596,8 +596,7 @@
     }
   }
   /**
-   * Transition to new quality tier with smooth animation
-   */
+   * Transition to new quality tier with smooth animation: */
   async function transitionToQuality(newQuality: typeof adaptiveQuality, direction 'upgrade' | 'downgrade'): Promise<void> {
     console.log(`🎮 Quality ${direction}: ${adaptiveQuality} → ${newQuality}`);
     // Update predictive engine with quality change
@@ -607,7 +606,7 @@
       performance_score: calculatePerformanceScore(performanceMetrics.fps),
       cache_hit_rate: performanceMetrics.cacheHitRate
     });
-    // Smooth transition adjust particles gradually
+    // Smooth transition: adjust particles gradually
     const oldTier = qualityTiers[adaptiveQuality];
     const newTier = qualityTiers[newQuality];
     // Update quality state
@@ -716,7 +715,7 @@
               stroke-dasharray={`${2 * Math.PI * 25}`}
               stroke-dashoffset={`${2 * Math.PI * 25 * (1 - (document.progress || 0))}`}
               transform="rotate(-90 30 30)"
-              style="transition stroke-dashoffset 0.5s ease;"
+              style="transition: stroke-dashoffset 0.5s ease;"
             />
           </svg>
           <div class="progress-text">{Math.round((document.progress || 0) * 100)}%</div>
@@ -850,7 +849,7 @@
     width: 100%;
     height: 100%;
     transform-style: preserve-3d;
-    transition all 0.1s ease-out;
+    transition: all 0.1s ease-out;
   }
   .document-core {
     position absolute;
@@ -922,7 +921,7 @@
     left: 1rem;
     right: 1rem;
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     flex-wrap: wrap;
     gap: 1rem;
     z-index: 200;
@@ -941,7 +940,7 @@
   }
   .adaptive-quality-indicator {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 0.25rem;
     min-width: 120px;
@@ -954,7 +953,7 @@
     display: flex;
     gap: 0.5rem;
     font-size: 0.7rem;
-    opacity: 0.9,
+    opacity: 0.9;
   }
   .quality-metrics span {
     padding: 0.1rem 0.3rem;
@@ -979,7 +978,7 @@
     color: #00ff00;
     padding: 0.5rem;
     border-radius: 4px;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   /* Animations */
   @keyframes float {
@@ -1010,15 +1009,15 @@
   }
   @keyframes flow {
     0% {
-      opacity: 0.3,
+      opacity: 0.3;
       transform: scaleX(0);
     }
     50% {
-      opacity: 1,
+      opacity: 1;
       transform: scaleX(1);
     }
     100% {
-      opacity: 0.3,
+      opacity: 0.3;
       transform: scaleX(0);
     }
   }
@@ -1038,7 +1037,7 @@
       font-size: 1rem;
     }
     .ui-overlay {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-start;
     }
     .adaptive-quality-indicator {
@@ -1050,3 +1049,5 @@
     }
   }
 </style>
+
+

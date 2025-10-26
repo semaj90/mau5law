@@ -197,7 +197,7 @@
   :global(.nier-button) {
     position relative;
     overflow: hidden;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
 
   :global(.nier-buttonhover) {
@@ -242,3 +242,4 @@
     padding: 0.5rem 0;
   }
 </style>
+

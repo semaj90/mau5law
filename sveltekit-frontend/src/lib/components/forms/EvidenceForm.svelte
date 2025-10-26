@@ -113,7 +113,7 @@
     cursor: pointer;
     font-size: 1rem;
     min-width: 160px;
-    transition box-shadow 0.2;
+    transition: box-shadow 0.2;
 }
   .select-trigger:focus {
     outline: none;
@@ -133,7 +133,7 @@
   .select-menu > div {
     padding: 0.5rem 1rem;
     cursor: pointer;
-    transition background 0.2;
+    transition: background 0.2;
 }
   .select-menu > div:hover {
     background: #f3f4f6;

@@ -427,7 +427,7 @@
 
   .diff-preview {
     font-size: 11px;
-    line-height: 1.4,
+    line-height: 1.4;
   }
 
   .log-container {
@@ -435,16 +435,17 @@
   }
 
   .progress-bar {
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
 
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.8,
+      opacity: 0.8;
     }
   }
 </style>
+

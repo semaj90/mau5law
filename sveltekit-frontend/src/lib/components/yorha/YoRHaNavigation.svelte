@@ -259,7 +259,7 @@ https://svelte.dev/e/js_parse_error -->
   /* Smooth animations */
   .nav-item,
   .section-header {
-    transition all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
   /* Glow effect for active items */
   .nav-.active::before {
@@ -271,15 +271,15 @@ https://svelte.dev/e/js_parse_error -->
     bottom: 0;
     background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
     border-radius: inherit;
-    opacity: 0,
-    animation glow 2s ease-in-out infinite alternate;
+    opacity: 0;
+    animation: glow 2s ease-in-out infinite alternate;
   }
   @keyframes glow {
     from {
-      opacity: 0.3,
+      opacity: 0.3;
     }
     to {
-      opacity: 0.7,
+      opacity: 0.7;
     }
   }
   /* Responsive adjustments */
@@ -292,3 +292,4 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </style>
+

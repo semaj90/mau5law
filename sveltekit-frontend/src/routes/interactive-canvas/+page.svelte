@@ -253,7 +253,7 @@ https://svelte.dev/e/js_parse_error -->
   /* @unocss-include */
 	.canvas-layout {
 		display: flex;
-		flex-direction column;
+		flex-direction: column;
 		height: 100vh;
 		width: 100vw;
 		overflow: hidden;
@@ -291,11 +291,11 @@ https://svelte.dev/e/js_parse_error -->
 		right: 20px;
 		z-index: 5;
 		max-width: 400px;
-		opacity: 0.9,
-		transition opacity 0.3s ease;
+		opacity: 0.9;
+		transition: opacity 0.3s ease;
 }
 	.upload-zone:hover {
-		opacity: 1,
+		opacity: 1;
 }
 	/* Upload Progress Styles */
 	.upload-progress-container {
@@ -323,7 +323,7 @@ https://svelte.dev/e/js_parse_error -->
 }
 	.upload-info {
 		display: flex;
-		justify-content: space-betwee;
+		justify-content: space-betweenn;
 		align-items: center;
 		margin-bottom: 6px;
 }
@@ -347,7 +347,7 @@ https://svelte.dev/e/js_parse_error -->
 	.progress-fill {
 		height: 100%;
 		background: linear-gradient(90deg, #3b82f6, #10b981);
-		transition width 0.3s ease;
+		transition: width 0.3s ease;
 		border-radius: 3px;
 }
 	.upload-status {
@@ -382,7 +382,7 @@ https://svelte.dev/e/js_parse_error -->
 }
 	.completed-item {
 		display: flex;
-		flex-direction column;
+		flex-direction: column;
 		gap: 8px;
 		margin-bottom: 12px;
 		padding-bottom: 12px;
@@ -401,7 +401,7 @@ https://svelte.dev/e/js_parse_error -->
 }
 	.hash-label {
 		color: var(--text-muted);
-		font-weight: 500,
+		font-weight: 500;
 }
 	.hash-value {
 		font-family: monospace;
@@ -418,7 +418,7 @@ https://svelte.dev/e/js_parse_error -->
 		border-radius: 4px;
 		font-size: 11px;
 		cursor: pointer;
-		transition background 0.2s ease;
+		transition: background 0.2s ease;
 }
 	.verify-btn:hover {
 		background: #2563eb;
@@ -429,3 +429,4 @@ https://svelte.dev/e/js_parse_error -->
 			margin-left: 0,
 }}
 </style>
+

@@ -394,7 +394,7 @@ https://svelte.dev/e/js_parse_error -->
     color: #9ca3af;
     max-width: 600px;
     margin: 0 auto;
-    line-height: 1.6,
+    line-height: 1.6;
   }
   .system-status {
     margin-bottom: 3rem;
@@ -417,7 +417,7 @@ https://svelte.dev/e/js_parse_error -->
     display: flex;
     align-items: center;
     gap: 1rem;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
   .status-card:hover {
@@ -463,12 +463,12 @@ https://svelte.dev/e/js_parse_error -->
   }
   .control-group {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .control-group label {
     font-size: 0.875rem;
-    font-weight: 500,
+    font-weight: 500;
     color: #d1d5db;
   }
   .control-group select,
@@ -492,9 +492,9 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 8px;
     padding: 0.75rem 1.5rem;
     color: white;
-    font-weight: 500,
+    font-weight: 500;
     cursor: pointer;
-    transition all 0.2s;
+    transition: all 0.2s;
     font-size: 0.875rem;
   }
   .clear-logs-button {
@@ -589,7 +589,7 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 8px;
     padding: 1.5rem;
     text-align: center;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
   .feature-card:hover {
@@ -609,6 +609,7 @@ https://svelte.dev/e/js_parse_error -->
   .feature-description {
     font-size: 0.875rem;
     color: #9ca3af;
-    line-height: 1.5,
+    line-height: 1.5;
   }
 </style>
+

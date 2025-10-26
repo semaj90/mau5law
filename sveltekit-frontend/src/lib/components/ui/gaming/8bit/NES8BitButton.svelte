@@ -206,7 +206,7 @@
       2px 2px 0px #000000,
       0px 0px 0px 2px var(--button-color);
     transform: var(--press-transform);
-    transition transform 50ms ease-out;
+    transition: transform 50ms ease-out;
     /* Remove default button styles */
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -328,7 +328,7 @@
     box-shadow:
       inset 0 0 0 1px rgba(255, 255, 255, 0.1),
       2px 2px 0px #000000;
-    /* Retro bounce animation */
+    /* Retro bounce animation: */
     :global(.nes-8bit-button.retro-bounce) {
       animation: retroBounce 0.3s ease-in-out;
     }
@@ -341,7 +341,7 @@
         transform: translateY(-2px) scale(1.02);
       }
     }
-    /* Glitch transition effect */
+    /* Glitch transition: effect */
     :global(.nes-8bit-button.glitch-transition) {
       animation: glitchTransition 0.2s ease-in-out;
     }
@@ -388,3 +388,4 @@
     }
   }
 </style>
+

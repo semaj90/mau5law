@@ -39,8 +39,7 @@
     terminalRef?.addEventListener('click', () => {
       inputRef?.focus();
     });
-    // Cursor blink animation
-    const interval = setInterval(() => {
+    // Cursor blink animation: const interval = setInterval(() => {
       cursor = !cursor;
     }, 500);
     // Auto-focus on mount
@@ -307,11 +306,11 @@
     border: 3px solid var(--yorha-secondary, #ffd700);
     font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
     font-size: 14px;
-    line-height: 1.4,
+    line-height: 1.4;
     color: var(--yorha-text-primary, #e0e0e0);
     height: 600px;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     overflow: hidden;
     box-shadow:
       0 0 0 3px var(--yorha-bg-secondary, #1a1a1a),
@@ -322,7 +321,7 @@
     border-bottom: 2px solid var(--yorha-secondary, #ffd700);
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
     padding: 8px 16px;
     min-height: 40px;
   }
@@ -351,7 +350,7 @@
     background: var(--yorha-accent, #00ff41);
   }
   .terminal-title {
-    font-weight: 700,
+    font-weight: 700;
     color: var(--yorha-secondary, #ffd700);
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -395,7 +394,7 @@
     min-height: 20px;
   }
   .terminal-line pre {
-    margin: 0,
+    margin: 0;
     padding: 0;
     font-family: inherit;
     font-size: inherit;
@@ -429,15 +428,15 @@
   .cursor {
     color: var(--yorha-accent, #00ff41);
     font-weight: bold;
-    animation blink 1s infinite;
+    animation: blink 1s infinite;
   }
   .cursor.blink {
-    opacity: 1,
+    opacity: 1;
   }
   .processing-indicator {
     color: var(--yorha-warning, #ffaa00);
     font-size: 12px;
-    animation pulse 1.5s infinite;
+    animation: pulse 1.5s infinite;
   }
   .terminal-line.processing .prompt-text {
     color: var(--yorha-warning, #ffaa00);
@@ -445,20 +444,20 @@
   @keyframes blink {
     0%,
     50% {
-      opacity: 1,
+      opacity: 1;
     }
     51%,
     100% {
-      opacity: 0,
+      opacity: 0;
     }
   }
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.5,
+      opacity: 0.5;
     }
   }
   /* Responsive Design */
@@ -478,3 +477,4 @@
     }
   }
 </style>
+

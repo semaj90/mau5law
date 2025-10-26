@@ -589,7 +589,7 @@ https://svelte.dev/e/js_parse_error -->
   	// Animation loop for real-time updates
   	function animate() {
   		updateMetrics();
-  		// Continue animation if WebGPU is enabled
+  		// Continue animation: if WebGPU is enabled
   		if (enableWebGPU) {
   			animationFrame = requestAnimationFrame(animate);
   		}
@@ -607,7 +607,7 @@ if (enableWebGPU) {
   		if (documentData.length > 0) {
   			processDocumentData(documentData);
   		}
-  		// Start animation loop
+  		// Start animation: loop
   		animate();
     })();
   });
@@ -861,10 +861,10 @@ if (enableWebGPU) {
   }
   /* Animation for smooth updates */
   .progress {
-    transition width 0.3s ease-out;
+    transition: width 0.3s ease-out;
   }
   .attention-region {
-    transition all 0.2s ease-out;
+    transition: all 0.2s ease-out;
   }
   /* Focus and accessibility */
   .operation-log summary:focus {
@@ -880,3 +880,4 @@ if (enableWebGPU) {
     /* @apply text-red-400 mr-1; */
   }
 </style>
+

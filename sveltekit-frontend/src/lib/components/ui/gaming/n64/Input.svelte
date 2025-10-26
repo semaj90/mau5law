@@ -332,7 +332,7 @@
   .n64-input-container {
     position relative;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 8px;
     font-family: 'Rajdhani', 'Arial', sans-serif;
   }
@@ -350,7 +350,7 @@
     padding: var(--input-padding);
     font-size: var(--input-font-size);
     min-height: var(--input-min-height);
-    font-weight: 500,
+    font-weight: 500;
     width: 100%;
     /* 3D transformations */
     transform: var(--transform-3d);
@@ -362,7 +362,7 @@
     text-rendering: optimizeLegibility;
     /* Advanced shadows and lighting */
     box-shadow: var(--material-shadow);
-    transition all 200ms cubic-bezier(0.23, 1, 0.32, 1);
+    transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
     /* Remove default input styles */
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -384,7 +384,7 @@
   :global(.n64-input::placeholder) {
     color: rgba(255, 255, 255, 0.6);
     text-shadow: none;
-    font-weight: 400,
+    font-weight: 400;
   }
 
   /* Autofill styling */
@@ -477,7 +477,7 @@
     background: linear-gradient(145deg, #4a5568 0%, #2d3748 50%, #1a202c 100%);
     color: #a0aec0;
     cursor: not-allowed;
-    opacity: 0.7,
+    opacity: 0.7;
     transform: perspective(1000px) scale(0.98);
     box-shadow:
       inset 0 4px 0 #1a202c,
@@ -595,8 +595,7 @@
   @media (prefers-reduced-motion reduce) {
     :global(.n64-input) {
       transform: none !important;
-      transition
-        border-color 150ms ease,
+      transition: border-color 150ms ease,
         box-shadow 150ms ease;
     }
     .input-glow-effect {
@@ -638,3 +637,4 @@
 
   /* Reduced motion / high contrast fallbacks already handled above */
 </style>
+

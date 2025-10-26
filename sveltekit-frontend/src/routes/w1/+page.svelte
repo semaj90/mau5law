@@ -454,7 +454,7 @@
   .platform-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-betweenn;
     padding: 1rem 2rem;
     background: rgba(15, 23, 42, 0.8);
     backdrop-filter: blur(10px);
@@ -463,7 +463,7 @@
   .header-left h1 {
     margin: 0;
     font-size: 1.5rem;
-    font-weight: 700,
+    font-weight: 700;
     color: #10b981;
   }
   .timestamp {
@@ -482,7 +482,7 @@
     border-radius: 0.5rem;
     color: #cbd5e1;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     font-size: 0.875rem;
   }
   .nav-item:hover,
@@ -500,7 +500,7 @@
     font-size: 1.5rem;
   }
   .user-name {
-    font-weight: 600,
+    font-weight: 600;
     color: #e2e8f0;
   }
   .user-role {
@@ -532,7 +532,7 @@
   }
   .stat-value {
     font-size: 1.875rem;
-    font-weight: 700,
+    font-weight: 700;
     color: #10b981;
     margin-bottom: 0.25rem;
   }
@@ -565,7 +565,7 @@
   }
   .case-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 0.5rem;
   }
@@ -577,7 +577,7 @@
     padding: 0.125rem 0.5rem;
     border-radius: 0.25rem;
     font-size: 0.75rem;
-    font-weight: 600,
+    font-weight: 600;
   }
   .priority-urgent {
     background: #dc2626;
@@ -621,7 +621,7 @@
     padding: 0.125rem 0.5rem;
     border-radius: 0.25rem;
     font-size: 0.75rem;
-    font-weight: 600,
+    font-weight: 600;
   }
   .status-active {
     background: #10b981;
@@ -654,7 +654,7 @@
   }
   .metric-value {
     display: block;
-    font-weight: 600,
+    font-weight: 600;
     color: #10b981;
   }
   .case-actions {
@@ -667,9 +667,9 @@
     border: none;
     border-radius: 0.5rem;
     font-size: 0.875rem;
-    font-weight: 600,
+    font-weight: 600;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     flex: 1,
   }
   .btn-primary {
@@ -700,13 +700,13 @@
   }
   .workflow-step {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     padding: 1rem;
     border-radius: 1rem;
     background: rgba(30, 41, 59, 0.3);
     border: 2px solid #334155;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .workflow-step.active {
     border-color: #10b981;
@@ -722,7 +722,7 @@
   }
   .step-label {
     font-size: 0.75rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #94a3b8;
   }
   .current-question {
@@ -778,10 +778,10 @@
     justify-content: center;
     border-radius: 50%;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .ai-avatar.pulsing {
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   .ai-brain {
     font-size: 1.5rem;
@@ -795,20 +795,20 @@
     border-radius: 50%;
     background: #10b981;
     border: 2px solid rgba(15, 23, 42, 0.95);
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .status-indicator.active {
     background: #f59e0b;
-    animation blink 1s infinite;
+    animation: blink 1s infinite;
   }
   .ai-info h3 {
-    margin: 0,
+    margin: 0;
     color: #e2e8f0;
     font-size: 1rem;
-    font-weight: 600,
+    font-weight: 600;
   }
   .ai-status {
-    margin: 0,
+    margin: 0;
     color: #94a3b8;
     font-size: 0.75rem;
   }
@@ -824,10 +824,10 @@
   .prompt-text {
     color: #e2e8f0;
     font-size: 0.875rem;
-    line-height: 1.5,
+    line-height: 1.5;
   }
   .cursor {
-    animation blink 1s infinite;
+    animation: blink 1s infinite;
     font-weight: bold;
     color: #10b981;
   }
@@ -869,7 +869,7 @@
     font-size: 0.875rem;
   }
   .insight-content p {
-    margin: 0,
+    margin: 0;
     color: #94a3b8;
     font-size: 0.75rem;
   }
@@ -896,16 +896,16 @@
   @keyframes blink {
     0%,
     50% {
-      opacity: 1,
+      opacity: 1;
     }
     51%,
     100% {
-      opacity: 0,
+      opacity: 0;
     }
   }
   @media (max-width: 768px) {
     .platform-header {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
     }
     .main-nav {
@@ -927,3 +927,5 @@
     }
   }
 </style>
+
+

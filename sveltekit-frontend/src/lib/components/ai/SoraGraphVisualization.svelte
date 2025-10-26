@@ -622,7 +622,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .path-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     margin-bottom: 4px;
     color: #87ceeb;
   }
@@ -712,3 +712,5 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </style>
+
+

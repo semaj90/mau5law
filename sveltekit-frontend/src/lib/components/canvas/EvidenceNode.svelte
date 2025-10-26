@@ -289,7 +289,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .node-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 8px 12px;
     background: #f8fafc;
@@ -300,7 +300,7 @@ https://svelte.dev/e/js_parse_error -->
     flex: 1,
   }
   .title-text {
-    font-weight: 600,
+    font-weight: 600;
     color: #374151;
     font-size: 14px;
   }
@@ -314,7 +314,7 @@ https://svelte.dev/e/js_parse_error -->
     background: transparent;
     border-radius: 4px;
     cursor: pointer;
-    transition background-color 0.2;
+    transition: background-color 0.2;
   }
   .control-buttonhover {
     background: #e2e8f0;
@@ -371,3 +371,5 @@ https://svelte.dev/e/js_parse_error -->
     cursor: grabbing;
   }
 </style>
+
+

@@ -202,22 +202,22 @@
 
   .status-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     margin-bottom: 1rem;
   }
 
   .header-left {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
   }
 
   .status-title {
     font-size: 1.125rem;
-    font-weight: 600,
+    font-weight: 600;
     color: var(--text-primary, #212529);
-    margin: 0,
+    margin: 0;
   }
 
   .last-update {
@@ -236,8 +236,8 @@
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.875rem;
-    font-weight: 500,
-    transition background-color 0.2s;
+    font-weight: 500;
+    transition: background-color 0.2s;
   }
 
   .refresh-buttonhover:not(:disabled) {
@@ -245,12 +245,12 @@
   }
 
   .refresh-buttondisabled {
-    opacity: 0.6,
+    opacity: 0.6;
     cursor: not-allowed;
   }
 
   .refresh-button.spinning :global(svg) {
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
 
   @keyframes spin {
@@ -265,7 +265,7 @@
     padding: 1rem;
     border-radius: 6px;
     margin-bottom: 1.5rem;
-    font-weight: 500,
+    font-weight: 500;
   }
 
   .overall-status.healthy {
@@ -288,7 +288,7 @@
 
   .service-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
 
@@ -307,7 +307,7 @@
   }
 
   .service-name {
-    font-weight: 600,
+    font-weight: 600;
     color: var(--text-primary, #212529);
     font-size: 0.875rem;
   }
@@ -324,7 +324,7 @@
     color: #856404;
     border-radius: 4px;
     font-size: 0.75rem;
-    font-weight: 500,
+    font-weight: 500;
   }
 
   .offline-queue {
@@ -353,3 +353,5 @@
     cursor: pointer;
   }
 </style>
+
+

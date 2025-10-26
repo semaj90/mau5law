@@ -427,7 +427,7 @@
     bottom: 0;
     background: rgba(0, 0, 0, 0.7);
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 1000,
@@ -439,7 +439,7 @@
     text-align: center;
   }
   .form-container {
-    transition opacity 0.3s ease;
+    transition: opacity 0.3s ease;
   }
   .form-container.loading {
     opacity: 0.3;
@@ -468,3 +468,4 @@
     }
   }
 </style>
+

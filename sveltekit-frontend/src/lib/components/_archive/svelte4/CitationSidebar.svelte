@@ -230,14 +230,14 @@ https://svelte.dev/e/js_parse_error -->
   }
   .sidebar-title {
     font-size: 18px;
-    font-weight: 600,
+    font-weight: 600;
     color: #1f2937;
     margin: 0 0 4px 0;
   }
   .sidebar-subtitle {
     font-size: 14px;
     color: #6b7280;
-    margin: 0,
+    margin: 0;
   }
   .search-section {
     padding: 16px 24px;
@@ -283,26 +283,26 @@ https://svelte.dev/e/js_parse_error -->
   }
   .citation-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: flex-start;
     margin-bottom: 12px;
   }
   .citation-title {
     font-size: 14px;
-    font-weight: 600,
+    font-weight: 600;
     color: #1f2937;
-    margin: 0,
+    margin: 0;
     flex: 1;
     padding-right: 8px;
   }
   .citation-actions {
     display: flex;
     gap: 4px;
-    opacity: 0,
+    opacity: 0;
     transition: opacity 0.2s ease;
   }
   :global(.citation-card:hover .citation-actions) {
-    opacity: 1,
+    opacity: 1;
   }
   :global(.favorite-btn.favorited) {
     color: #f59e0b !important;
@@ -316,7 +316,7 @@ https://svelte.dev/e/js_parse_error -->
   .citation-text {
     font-size: 13px;
     color: #374151;
-    line-height: 1.5,
+    line-height: 1.5;
     margin: 0 0 8px 0;
   }
   .citation-source {
@@ -377,11 +377,11 @@ https://svelte.dev/e/js_parse_error -->
   .drag-text {
     font-size: 12px;
     color: #64748b;
-    font-weight: 500,
+    font-weight: 500;
   }
   .citation-meta {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     font-size: 11px;
     color: #9ca3af;
@@ -408,6 +408,8 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 12px;
     color: #9ca3af;
     margin: 0 0 16px 0;
-    line-height: 1.4,
+    line-height: 1.4;
   }
 </style>
+
+

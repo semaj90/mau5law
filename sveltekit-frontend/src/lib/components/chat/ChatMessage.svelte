@@ -118,12 +118,12 @@
   .message-header {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     margin-bottom: 0.25rem;
   }
   .sender-name {
     font-size: 0.75rem;
-    font-weight: 600,
+    font-weight: 600;
     color: var(--muted-foreground, #64748b);
   }
   .timestamp {
@@ -217,3 +217,5 @@
     }
   }
 </style>
+
+

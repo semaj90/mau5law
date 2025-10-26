@@ -190,7 +190,7 @@
     border-bottom: 2px solid var(--console-primary, #00aa00);
     padding: 2rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     gap: 2rem;
   }
@@ -397,3 +397,5 @@
     }
   }
 </style>
+
+

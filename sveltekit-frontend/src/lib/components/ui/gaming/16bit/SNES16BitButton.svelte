@@ -154,7 +154,7 @@
       inset 0 1px 0px rgba(255, 255, 255, 0.4),
       inset 0 -1px 0px rgba(0, 0, 0, 0.2);
     transform: var(--mode7-transform, none);
-    transition all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -290,7 +290,7 @@
   @media (prefers-reduced-motion reduce) {
     :global(.snes-16bit-button) {
       animation: none;
-      transition opacity 150ms ease;
+      transition: opacity 150ms ease;
     }
     :global(.snes-16bit-button.plasma) {
       animation: none;
@@ -318,3 +318,4 @@
     }
   }
 </style>
+

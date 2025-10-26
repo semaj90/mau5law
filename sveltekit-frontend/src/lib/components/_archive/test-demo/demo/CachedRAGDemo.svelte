@@ -319,7 +319,7 @@
   .input-group label {
     display: block;
     margin-bottom: 5px;
-    font-weight: 600,
+    font-weight: 600;
     color: #4a5568;
   }
   .input-group textarea {
@@ -332,7 +332,7 @@
   }
   .sample-queries p {
     margin-bottom: 10px;
-    font-weight: 600,
+    font-weight: 600;
     color: #4a5568;
   }
   .query-buttons {
@@ -354,7 +354,7 @@
     background: #cbd5e0;
   }
   .sample-btn:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .actions {
@@ -369,7 +369,7 @@
     padding: 12px 20px;
     border-radius: 6px;
     cursor: pointer;
-    font-weight: 600,
+    font-weight: 600;
     transition: background-color 0.2;
   }
   .primary-btn:hover:not(:disabled) {,
@@ -389,7 +389,7 @@
   }
   .primary-btn: disabled
   .secondary-btn:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .error {
@@ -431,23 +431,23 @@
   }
   .stat {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     padding: 8px 12px;
     background: white;
     border-radius: 4px;
     border: 1px solid #c6f6d5;
   }
   .stat .label {
-    font-weight: 600,
+    font-weight: 600;
     color: #2f855a;
   }
   .stat .value.hit {
     color: #38a169;
-    font-weight: 600,
+    font-weight: 600;
   }
   .stat .value.miss {
     color: #e53e3;
-    font-weight: 600,
+    font-weight: 600;
   }
   .query-results h4 {
     color: #2d3748;
@@ -466,13 +466,13 @@
   }
   .result-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 10px;
   }
   .result-header h5 {
     color: #2d3748;
-    margin: 0,
+    margin: 0;
   }
   .score {
     background: #e2e8f0;
@@ -505,7 +505,7 @@
     background: white;
     padding: 15px;
     border-radius: 4px;
-    line-height: 1.6,
+    line-height: 1.6;
     color: #2d3748;
   }
   .metrics-section {
@@ -540,12 +540,14 @@
   }
   .metric-stats > div {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     padding: 4px 0;
     border-bottom: 1px solid #f1f5f9;
   }
   .hit-rate {
-    font-weight: 600,
+    font-weight: 600;
     color: #38a169;
   }
 </style>
+
+

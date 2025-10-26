@@ -181,6 +181,29 @@ export const GET: RequestHandler = async event => {
           : null,
       };
     } catch (error: unknown) {
+      if (
+        error instanceof Error &&
+        (error.message.includes('relation "cases"') || error.message.includes('Failed query'))
+      ) {
+        console.warn('[Cases API] Cases table unavailable – returning fallback payload.', error);
+        return {
+          cases: [],
+          pagination: createPagination(searchParams.page || 1, searchParams.limit || 50, 0),
+          search: searchParams.query
+            ? {
+                term: searchParams.query,
+                resultsCount: 0,
+                vectorSearchUsed: searchParams.useVectorSearch ?? false,
+                degradedMode: true,
+              }
+            : null,
+          metadata: {
+            degraded: true,
+            message: 'Cases data temporarily unavailable',
+            timestamp: new Date().toISOString(),
+          },
+        };
+      }
       if (error instanceof z.ZodError) {
         const message = error.errors.map(e => e.message).join('; ');
         throw CommonErrors.ValidationFailed('search parameters', message || 'Invalid parameters');

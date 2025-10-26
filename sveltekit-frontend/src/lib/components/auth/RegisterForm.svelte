@@ -655,7 +655,7 @@
     font-family: 'Courier New', monospace;
     font-weight: bold;
     padding: 12px 24px;
-    transition all 0.1s ease;
+    transition: all 0.1s ease;
     text-transform: uppercase;
   }
   :global(.nes-legal-register-form .nes-btn:hover:not(:disabled)) {
@@ -668,7 +668,7 @@
   }
   /* disabled button state */
   :global(.nes-legal-register-form .nes-btn:disabled) {
-    opacity: 0.6,
+    opacity: 0.6;
     cursor: not-allowed;
   }
   /* Legal priority styling for submit button */
@@ -721,7 +721,7 @@
     font-family: 'Courier New', monospace;
   }
   :global(.nes-legal-register-form .gpu-validation.processing) {
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   :global(.nes-legal-register-form .gpu-validation.success) {
     border-color: #16a34a;
@@ -745,3 +745,4 @@
     text-overflow: ellipsis;
   }
 </style>
+

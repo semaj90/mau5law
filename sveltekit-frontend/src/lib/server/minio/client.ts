@@ -28,8 +28,9 @@ try {
 const MINIO_ENDPOINT = _host;
 const MINIO_PORT = _port;
 const MINIO_USE_SSL = _useSSL;
-const MINIO_ACCESS_KEY = env.MINIO_ACCESS_KEY || 'minioadmin';
-const MINIO_SECRET_KEY = env.MINIO_SECRET_KEY || 'minioadmin';
+// Fallback to MINIO_ROOT_USER/MINIO_ROOT_PASSWORD when access/secret not provided
+const MINIO_ACCESS_KEY = env.MINIO_ACCESS_KEY || env.MINIO_ROOT_USER || 'minioadmin';
+const MINIO_SECRET_KEY = env.MINIO_SECRET_KEY || env.MINIO_ROOT_PASSWORD || 'minioadmin';
 
 export const minio = new MinioClient({
   endPoint: MINIO_ENDPOINT,
@@ -93,3 +94,4 @@ export async function putObject(
     }
   }
 }
+

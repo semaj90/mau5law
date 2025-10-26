@@ -192,7 +192,7 @@
     max-width: 1400px;
     margin: 0 auto;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     gap: 2rem;
   }
@@ -264,3 +264,5 @@
     background: var(--nier-accent-cool, #87ceeb);
   }
 </style>
+
+

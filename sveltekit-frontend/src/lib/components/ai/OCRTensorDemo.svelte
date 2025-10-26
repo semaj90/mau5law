@@ -370,7 +370,7 @@ try {
     border-radius: 2rem;
     background: #f3f4f6;
     color: #6b7280;
-    font-weight: 500,
+    font-weight: 500;
   }
   .status-bar.initialized {
     background: #d1fae5;
@@ -379,7 +379,7 @@ try {
   .status-bar.processing {
     background: #fef3c7;
     color: #92400;
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   .status-dot {
     width: 8px;
@@ -431,12 +431,12 @@ try {
     padding: 0.75rem 1.5rem;
     border: none;
     border-radius: 0.5rem;
-    font-weight: 500,
+    font-weight: 500;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .action-buttons buttondisabled {
-    opacity: 0.6,
+    opacity: 0.6;
     cursor: not-allowed;
   }
   .action-buttons buttonfirst-child {
@@ -455,7 +455,7 @@ try {
   .metric,
   .stat {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
   }
   .metric label,
@@ -466,7 +466,7 @@ try {
   .metric span,
   .stat span {
     font-size: 1.25rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #1f2937;
   }
   .hits {
@@ -480,7 +480,7 @@ try {
   }
   .results-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .result-card {
@@ -495,12 +495,12 @@ try {
   }
   .result-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 0.75rem;
   }
   .result-index {
-    font-weight: 600,
+    font-weight: 600;
     color: #1f2937;
   }
   .cache-indicator {
@@ -545,10 +545,11 @@ try {
   }
   @keyframes pulse {
     0%, 100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.5,
+      opacity: 0.5;
     }
   }
 </style>
+

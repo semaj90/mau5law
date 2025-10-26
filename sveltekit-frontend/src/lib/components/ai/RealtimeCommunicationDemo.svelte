@@ -545,7 +545,7 @@ Run Performance Test
   .connection-item,
   .message-item,
   .stream-item {
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .connection-item: hover
   .message-item: hover
@@ -567,7 +567,7 @@ Run Performance Test
     border-radius: 3px;
   }
   .metric-item {
-    transition transform 0.2s ease;
+    transition: transform 0.2s ease;
   }
   .metric-item:hover {
     transform: translateY(-2px);

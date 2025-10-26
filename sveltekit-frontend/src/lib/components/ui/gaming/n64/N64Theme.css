@@ -40,7 +40,7 @@
     min-width: var(--n64-toast-min-width);
     box-shadow: var(--n64-shadow);
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     font-family: var(--n64-font-family);
     font-size: var(--n64-font-size);
@@ -86,7 +86,7 @@
     outline: none;
 }
 
-/* Dismiss animation (add .dismiss class when removing) */
+/* Dismiss animation: (add .dismiss class when removing) */
 .n64-toast.dismiss {
     animation: n64-toast-out 160ms cubic-bezier(.3,0,.1,1) forwards;
 }
@@ -145,3 +145,4 @@
         border-radius: calc(var(--n64-radius) * 0.9);
     }
 }
+

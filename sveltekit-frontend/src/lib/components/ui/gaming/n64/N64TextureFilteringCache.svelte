@@ -465,7 +465,7 @@ if (preloadTextures) {
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edge;
     image-rendering: crisp-edge;
-    transition all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: 2px solid rgba(74, 144, 226, 0.3);
   }
   /* Quality-based styling */
@@ -507,7 +507,7 @@ if (preloadTextures) {
   }
   .cache-info {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1px;
   }
   .cache-type {
@@ -537,7 +537,7 @@ if (preloadTextures) {
   }
   .metric {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 2px;
   }
@@ -577,7 +577,7 @@ if (preloadTextures) {
   }
   .n64-spinner {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 12px;
     color: #4a90e2;
@@ -603,7 +603,7 @@ if (preloadTextures) {
     position absolute;
     inset: 0;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 8px;
@@ -630,7 +630,7 @@ if (preloadTextures) {
     font-size: 10px;
     font-weight: bold;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .retry-buttonhover {
     background: rgba(255, 255, 255, 0.3);
@@ -741,3 +741,4 @@ if (preloadTextures) {
     }
   }
 </style>
+

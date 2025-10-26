@@ -20,7 +20,7 @@
     background: #e5e7eb;
     border-radius: 9999px;
     position relative;
-    transition background 0.2;
+    transition: background 0.2;
     display: inline-block;
   }
   .track.on {
@@ -35,9 +35,10 @@
     height: 18px;
     background: white;
     border-radius: 9999px;
-    transition transform 0.2;
+    transition: transform 0.2;
   }
   .track.onafter {
     transform: translateX(18px);
   }
 </style>
+

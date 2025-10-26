@@ -34,8 +34,7 @@
     rippleX = event.clientX - rect.left;
     rippleY = event.clientY - rect.top;
     showRipple = true;
-    // Reset ripple after animation
-    setTimeout(() => {
+    // Reset ripple after animation: setTimeout(() => {
       showRipple = false;
     }, 600);
     // Call handlers
@@ -141,7 +140,7 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
     user-select: none;
     touch-action manipulatio;
@@ -235,14 +234,14 @@ inset 0 -1px 0 rgba(0, 0, 0, 0.4), {}
       0 2px 4px rgba(0, 0, 0, 0.3);
   }
   .n64-button--disabled {
-    opacity: 0.6,
+    opacity: 0.6;
     cursor: not-allowed;
     transform: none !important;
     filter: grayscale(50%);
   }
   .n64-button--loading {
     pointer-events: none;
-    opacity: 0.8,
+    opacity: 0.8;
   }
 /* Content */ {}
   .n64-button__content {
@@ -290,7 +289,7 @@ inset 0 -1px 0 rgba(0, 0, 0, 0.4), {}
   @keyframes n64-ripple {
     to {
       transform: translate(-50%, -50%) scale(4);
-      opacity: 0,
+      opacity: 0;
     }
   }
 /* Pressed Overlay */ {}
@@ -320,11 +319,11 @@ transform 0.15s ease, {}
     inset: 1px;
     background: inherit;
     border-radius: inherit;
-    opacity: 0,
-    transition opacity 0.15s ease;
+    opacity: 0;
+    transition: opacity 0.15s ease;
   }
   .n64-buttonhover::before {
-    opacity: 0.1,
+    opacity: 0.1;
     background: radial-gradient(circle at center, rgba(255, 255, 255, 0.3), transparent);
   }
 /* Console theme integration */ {}
@@ -355,7 +354,8 @@ transform 0.15s ease, {}
 .n64-button__spinner, {}
     .n64-button__ripple {
       animation: none;
-      transition none;
+      transition: none;
     }
   }
 </style>
+

@@ -10,27 +10,111 @@ import {
   simdMetrics,
   readBodyFastWithMetrics
 } from '$lib/simd/simd-json-integration.js'
+
+// Type definitions for non-standard browser APIs
+interface PerformanceWithMemory extends Performance {
+  memory?: {
+    usedJSHeapSize: number;
+    totalJSHeapSize: number;
+    jsHeapSizeLimit: number;
+  };
+}
+
+interface NavigatorWithUAData extends Navigator {
+  userAgentData?: {
+    platform: string;
+  };
+}
+
+// Type definitions for benchmark results
+type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
+
+interface BenchmarkResult {
+  standard: {
+    totalTime: number;
+    avgTime: number;
+    parsesPerSecond: number;
+  };
+  simd: {
+    totalTime: number;
+    avgTime: number;
+    parsesPerSecond: number;
+  };
+  speedup: number;
+  payloadBytes: number;
+}
+
+interface LoadTestResult {
+  totalRequests: number;
+  successfulRequests: number;
+  failedRequests: number;
+  avgResponseTime: number;
+  maxResponseTime: number;
+  minResponseTime: number;
+  responseTimes: number[];
+  throughput: number;
+  payloadSize: string;
+  testDuration: number;
+  concurrency: number;
+}
+
+interface StressTestPhase {
+  concurrency: number;
+  avgResponseTime: number;
+  successRate: number;
+  throughput: number;
+}
+
+interface StressTestResult {
+  maxConcurrency: number;
+  breakingPoint: number;
+  totalRequests: number;
+  phases: StressTestPhase[];
+}
+
+interface ConcurrentParsingResult {
+  totalRequests: number;
+  successfulRequests: number;
+  responseTimes: number[];
+  avgTime: number;
+  throughput: number;
+  successRate: number;
+}
+
+interface SpikeTestResult {
+  baseline: ConcurrentParsingResult;
+  spike: ConcurrentParsingResult;
+  recovery: ConcurrentParsingResult;
+  spikeImpact: {
+    responseTimeDegradation: number;
+    throughputImpact: number;
+    recoveryTime: number;
+  };
+}
+
 // GET: Run various benchmark scenarios
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const scenario = url.searchParams.get('scenario') || 'standard'
-    const iterations = parseInt(url.searchParams.get('iterations') || '1000')
-    const size = url.searchParams.get('size') || 'medium'
-    const startTime = performance.now()
+    const scenario = url.searchParams.get('scenario') || 'standard';
+    const iterations = parseInt(url.searchParams.get('iterations') || '1000');
+    const $size = url.searchParams.get('size') || 'medium'; // renamed and will be referenced
+    const startTime = performance.now();
+
     switch (scenario) {
-      case 'standard':
+      case 'standard': {
         // Standard benchmark with default test data
-        const standardBench = await benchmarkJSONParsing(iterations)
+        const standardBench = await benchmarkJSONParsing(iterations);
         return json({
           success: true,
           scenario: 'standard',
           data: {
             ...standardBench,
             iterations,
-            totalTestTime: performance.now() - startTime
-          }
-        })
-      case 'legal_document':
+            totalTestTime: performance.now() - startTime,
+          },
+        });
+      }
+      case 'legal_document': {
         // Benchmark with legal document-like payload
         const legalDoc = {
           documentId: 'doc-' + Date.now(),
@@ -43,8 +127,8 @@ export const GET: RequestHandler = async ({ url }) => {
               type: i % 5 === 0 ? 'termination' : 'standard',
               text: 'Legal clause text content here '.repeat(20),
               entities: ['date', 'party', 'amount', 'jurisdiction'],
-              riskLevel: Math.random() > 0.7 ? 'high' : 'low'
-            })
+              riskLevel: Math.random() > 0.7 ? 'high' : 'low',
+            })),
           },
           analysis: {
             sentiment: Math.random(),
@@ -52,42 +136,43 @@ export const GET: RequestHandler = async ({ url }) => {
             entities: Array.from({ length: 50 }, (_, i) => ({
               text: `Entity ${i}`,
               type: ['person', 'organization', 'date', 'money'][i % 4],
-              confidence: Math.random()
+              confidence: Math.random(),
             })),
             embeddings: Array.from({ length: 768 }, () => Math.random()),
             similarCases: Array.from({ length: 20 }, (_, i) => ({
               id: `case-${i}`,
               similarity: Math.random(),
-              title: `Similar Case ${i}`
-            })
-          }
-        }
-        const legalBenchmark = await benchmarkCustomPayload(legalDoc, iterations)
+              title: `Similar Case ${i}`,
+            })),
+          },
+        };
+        // ...existing code that builds legalDoc.analysis...
+        const legalBenchmark = await benchmarkCustomPayload(legalDoc, iterations);
         return json({
           success: true,
           scenario: 'legal_document',
           data: {
             ...legalBenchmark,
             payloadSize: `${Math.round(JSON.stringify(legalDoc).length / 1024)}KB`,
-            iterations
-          }
-        })
-      case 'vector_operations':
+            iterations,
+            requestedSize: $size,
+          },
+        });
+      }
+      case 'vector_operations': {
         // Benchmark with vector/tensor data
         const vectorData = {
           operation: 'similarity_compute',
           queryVector: Array.from({ length: 1536 }, () => Math.random()),
-          candidateVectors: Array.from({ length: 1000 }, () =>
-            Array.from({ length: 1536 }, () => Math.random()
-          ),
-          metadata,: {
+          candidateVectors: Array.from({ length: 1000 }, () => Array.from({ length: 1536 }, () => Math.random())),
+          metadata: {
             algorithm: 'cosine',
             threshold: 0.8,
-            timestamp: Date.now()
+            timestamp: Date.now(),
           },
-          results,: Array.from({ length: 1000 }, () => Math.random()
-        }
-        const vectorBenchmark = await benchmarkCustomPayload(vectorData, iterations)
+          results: Array.from({ length: 1000 }, () => Math.random()),
+        };
+        const vectorBenchmark = await benchmarkCustomPayload(vectorData, iterations);
         return json({
           success: true,
           scenario: 'vector_operations',
@@ -96,10 +181,12 @@ export const GET: RequestHandler = async ({ url }) => {
             payloadSize: `${Math.round(JSON.stringify(vectorData).length / 1024)}KB`,
             vectorDimensions: 1536,
             vectorCount: 1000,
-            iterations
-          }
-        })
-      case 'rabbitmq_message':
+            iterations,
+            requestedSize: $size,
+          },
+        });
+      }
+      case 'rabbitmq_message': {
         // Benchmark with RabbitMQ message payload
         const rabbitMessage = {
           jobId: 'job-' + Date.now(),
@@ -112,39 +199,39 @@ export const GET: RequestHandler = async ({ url }) => {
               metadata: {
                 source: 'legal_database',
                 confidence: Math.random(),
-                processed: false
-              }
+                processed: false,
+              },
             })),
             processingPipeline: [
               'document-analysis',
               'entity-extraction',
               'wasm_vector_operations',
               'similarity_compute',
-              'legal-classification'
+              'legal-classification',
             ],
-            batchVectors: Array.from({ length: 100 }, () =>
-              Array.from({ length: 768 }, () => Math.random()
-            )
+            batchVectors: Array.from({ length: 100 }, () => Array.from({ length: 768 }, () => Math.random())),
           },
           metadata: {
             userId: 'user-123',
             timestamp: Date.now(),
             source: 'api_endpoint',
             priority: 'high',
-            expectedDuration: 30000
-          }
-        }
-        const rabbitBenchmark = await benchmarkCustomPayload(rabbitMessage, iterations)
+            expectedDuration: 30000,
+          },
+        };
+        const rabbitBenchmark = await benchmarkCustomPayload(rabbitMessage, iterations);
         return json({
           success: true,
           scenario: 'rabbitmq_message',
           data: {
             ...rabbitBenchmark,
             payloadSize: `${Math.round(JSON.stringify(rabbitMessage).length / 1024)}KB`,
-            iterations
-          }
-        })
-      case 'cache_operations':
+            iterations,
+            requestedSize: $size,
+          },
+        });
+      }
+      case 'cache_operations': {
         // Benchmark with cache entry payload
         const cacheEntries = Array.from({ length: 100 }, (_, i) => ({
           key: `cache-key-${i}`,
@@ -154,18 +241,18 @@ export const GET: RequestHandler = async ({ url }) => {
               created: Date.now(),
               hits: Math.floor(Math.random() * 100),
               lastAccess: Date.now(),
-              source: 'vector_computation'
+              source: 'vector_computation',
             },
             similarityResults: Array.from({ length: 50 }, () => ({
               id: `result-${Math.random()}`,
               score: Math.random(),
-              metadata: { type: 'legal_doc' }
-            })
+              metadata: { type: 'legal_doc' },
+            })),
           },
           ttl: 30 * 60 * 1000,
-          tags: ['legal', 'embeddings', 'cached', 'wasm_processed']
-        })
-        const cacheBenchmark = await benchmarkCustomPayload({ entries: cacheEntries }, iterations)
+          tags: ['legal', 'embeddings', 'cached', 'wasm_processed'],
+        }));
+        const cacheBenchmark = await benchmarkCustomPayload({ entries: cacheEntries }, iterations);
         return json({
           success: true,
           scenario: 'cache_operations',
@@ -173,177 +260,222 @@ export const GET: RequestHandler = async ({ url }) => {
             ...cacheBenchmark,
             payloadSize: `${Math.round(JSON.stringify({ entries: cacheEntries }).length / 1024)}KB`,
             entriesCount: cacheEntries.length,
-            iterations
-          }
-        })
-      case 'comparison':
+            iterations,
+            requestedSize: $size,
+          },
+        });
+      }
+      case 'comparison': {
         // Run all scenarios for comparison
-        const scenarios = ['legal_document', 'vector_operations', 'rabbitmq_message', 'cache_operations']
-        const comparisonResults: any = {}
+        type BenchmarkResult = { data?: unknown; speedup?: number; [k: string]: unknown };
+        const scenarios = ['legal_document', 'vector_operations', 'rabbitmq_message', 'cache_operations'];
+        const comparisonResults: Record<string, BenchmarkResult | null> = {};
         for (const testScenario of scenarios) {
-          const response = await fetch(`/api/benchmark/simd-json?scenario=${testScenario}&iterations=${Math.min(iterations, 500)}`)
-          const result = await (response as { json?: any }).json()
-          comparisonResults[testScenario] = (result as { data?: any; speedup?: any }).data
+          const response = await fetch(
+            `/api/benchmark/simd-json?scenario=${testScenario}&iterations=${Math.min(iterations, 500)}`
+          );
+          const result = (await response.json()) as BenchmarkResult;
+          comparisonResults[testScenario] = result ?? null;
         }
+        const avgSpeedup =
+          Object.values(comparisonResults).reduce((sum, result) => sum + (result?.speedup ?? 1), 0) / scenarios.length;
         return json({
           success: true,
           scenario: 'comparison',
           data: {
-            scenarios: comparisonResults,;
+            scenarios: comparisonResults,
             summary: {
               totalTests: scenarios.length,
-              avgSpeedup: Object.values(comparisonResults).reduce((sum: number, result: any) =>
-                sum + ((result as { data?: any; speedup?: any }).speedup || 1), 0) / scenarios.length,
-              totalTestTime: performance.now() - startTime
-            }
-          }
-        })
-      case 'system_info':
+              avgSpeedup,
+              totalTestTime: performance.now() - startTime,
+            },
+          },
+        });
+      }
+      case 'system_info': {
         // Return system and SIMD status information
-        const simdStatus = getSIMDStatus()
-        const stats = simdMetrics.getStats()
+        const simdStatus = getSIMDStatus();
+        const stats = simdMetrics.getStats();
+        const perfMemory =
+          typeof performance !== 'undefined' ? (performance as PerformanceWithMemory).memory : undefined;
         return json({
           success: true,
           scenario: 'system_info',
           data: {
             simd: simdStatus,
             metrics: stats,
+            requestedSize: $size,
             system: {
-              platform: typeof navigator !== 'undefined' ? navigator.platform: 'server',
+              platform:
+                typeof navigator !== 'undefined'
+                  ? // prefer userAgentData platform if available, fall back to navigator.platform
+                    (navigator as NavigatorWithUAData).userAgentData?.platform || navigator.platform
+                  : 'server',
               userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'node',
               hardwareConcurrency: typeof navigator !== 'undefined' ? navigator.hardwareConcurrency : 'unknown',
-              memory: typeof performance !== 'undefined' && (performance as any).memory ? {,
-                used: Math.round((performance as any).memory.usedJSHeapSize / 1024 / 1024),
-                total: Math.round((performance as any).memory.totalJSHeapSize / 1024 / 1024),
-                limit: Math.round((performance as any).memory.jsHeapSizeLimit / 1024 / 1024)
-              } : null
-            }
-          }
-        })
-      default:
-        return json({,
-          success: false,
-          error: `Unknown benchmark scenario: ${scenario}`,
-          availableScenarios: [
-            'standard', 'legal_document', 'vector_operations',
-            'rabbitmq_message', 'cache_operations', 'comparison', 'system_info'
-          ]
-        }, { status: 400 })
-    }
-  } catch (error: any) {
-    console.error('❌ SIMD JSON Benchmark Error:', error)
-    return json({
-      success: false,
-      error: {
-        message: error.message || 'Benchmark failed',
-        timestamp: new Date().toISOString()
+              memory: perfMemory
+                ? {
+                    used: Math.round(perfMemory.usedJSHeapSize / 1024 / 1024),
+                    total: Math.round(perfMemory.totalJSHeapSize / 1024 / 1024),
+                    limit: Math.round(perfMemory.jsHeapSizeLimit / 1024 / 1024),
+                  }
+                : null,
+            },
+          },
+        });
       }
-    }, { status: 500 })
+      default: {
+        return json(
+          {
+            success: false,
+            error: `Unknown benchmark scenario: ${scenario}`,
+            availableScenarios: [
+              'standard',
+              'legal_document',
+              'vector_operations',
+              'rabbitmq_message',
+              'cache_operations',
+              'comparison',
+              'system_info',
+            ],
+          },
+          { status: 400 }
+        );
+      }
+    }
+  } catch (error: unknown) {
+    console.error('❌ SIMD JSON Benchmark Error:', error);
+    const message = error instanceof Error ? error.message : 'Benchmark failed';
+    return json(
+      {
+        success: false,
+        error: {
+          message,
+          timestamp: new Date().toISOString(),
+        },
+      },
+      { status: 500 }
+    );
   }
-}
+};
 // POST: Load testing with configurable parameters
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = await readBodyFastWithMetrics(request)
+    const body = await readBodyFastWithMetrics(request);
     const {
       testType = 'load',
       duration = 10000, // 10 seconds
       concurrency = 10,
       payloadSize = 'medium',
-      scenario = 'mixed'
-    } = body
-    const startTime = performance.now()
+      scenario = 'mixed',
+    } = body;
+    const startTime = performance.now();
     switch (testType) {
-      case 'load':
+      case 'load': {
         // Run sustained load test
-        const loadResults = await runLoadTest(duration, concurrency, payloadSize, scenario)
+        const loadResults = await runLoadTest(duration, concurrency, payloadSize, scenario);
         return json({
           success: true,
           testType: 'load',
           data: {
             ...loadResults,
             configuration: { duration, concurrency, payloadSize, scenario },
-            totalTestTime: performance.now() - startTime
-          }
-        })
-      case 'stress':
+            totalTestTime: performance.now() - startTime,
+          },
+        });
+      }
+      case 'stress': {
         // Gradually increase load until failure
-        const stressResults = await runStressTest(duration, payloadSize)
+        const stressResults = await runStressTest(duration, payloadSize);
         return json({
           success: true,
           testType: 'stress',
           data: {
             ...stressResults,
             configuration: { duration, payloadSize },
-            totalTestTime: performance.now() - startTime
-          }
-        })
-      case 'spike':
+            totalTestTime: performance.now() - startTime,
+          },
+        });
+      }
+      case 'spike': {
         // Sudden traffic spikes
-        const spikeResults = await runSpikeTest(concurrency * 5, payloadSize)
+        const spikeResults = await runSpikeTest(concurrency * 5, payloadSize);
         return json({
           success: true,
           testType: 'spike',
           data: {
             ...spikeResults,
             configuration: { peakConcurrency: concurrency * 5, payloadSize },
-            totalTestTime: performance.now() - startTime
-          }
-        })
-      default:
-        return json({,
-          success: false,
-          error: `Unknown test type: ${testType}`,
-          availableTypes: ['load', 'stress', 'spike']
-        }, { status: 400 })
-    }
-  } catch (error: any) {
-    console.error('❌ SIMD JSON Load Test Error:', error)
-    return json({
-      success: false,
-      error: {
-        message: error.message || 'Load test failed',
-        timestamp: new Date().toISOString()
+            totalTestTime: performance.now() - startTime,
+          },
+        });
       }
-    }, { status: 500 })
+      default:
+        return json(
+          {
+            success: false,
+            error: `Unknown test type: ${testType}`,
+            availableTypes: ['load', 'stress', 'spike'],
+          },
+          { status: 400 }
+        );
+    }
+  } catch (error: unknown) {
+    console.error('❌ SIMD JSON Load Test Error:', error);
+    const message = error instanceof Error ? error.message : 'Load test failed';
+    return json(
+      {
+        success: false,
+        error: {
+          message,
+          timestamp: new Date().toISOString(),
+        },
+      },
+      { status: 500 }
+    );
   }
-}
+};
 /**
  * Benchmark custom payload
  */
-async function benchmarkCustomPayload(payload: any, iterations: number): Promise<any> {
-  const testData = JSON.stringify(payload)
+async function benchmarkCustomPayload(payload: JsonValue, iterations: number): Promise<BenchmarkResult> {
+  const testData = JSON.stringify(payload);
   // Standard JSON.parse benchmark
-  const standardStart = performance.now()
+  const standardStart = performance.now();
   for (let i = 0; i < iterations; i++) {
-    JSON.parse(testData)
+    JSON.parse(testData);
   }
-  const standardTime = performance.now() - standardStart
+  const standardTime = performance.now() - standardStart;
   // SIMD JSON benchmark (simulated for now)
-  const simdStart = performance.now()
+  const simdStart = performance.now();
   for (let i = 0; i < iterations; i++) {
     JSON.parse(testData); // TODO: Replace with actual SIMD when available
   }
-  const simdTime = performance.now() - simdStart
+  const simdTime = performance.now() - simdStart;
   return {
     standard: {
       totalTime: standardTime,
       avgTime: standardTime / iterations,
-      parsesPerSecond: (iterations / standardTime) * 1000
+      parsesPerSecond: (iterations / standardTime) * 1000,
     },
     simd: {
       totalTime: simdTime,
       avgTime: simdTime / iterations,
-      parsesPerSecond: (iterations / simdTime) * 1000
+      parsesPerSecond: (iterations / simdTime) * 1000,
     },
     speedup: simdTime > 0 ? standardTime / simdTime : 1,
-    payloadBytes: testData.length
-  }
+    payloadBytes: testData.length,
+  };
 }
 /**
  * Run load test
  */
-async function runLoadTest(duration: number, concurrency: number, payloadSize: string, scenario: string): Promise<any> {
+async function runLoadTest(
+  duration: number,
+  concurrency: number,
+  payloadSize: string,
+  scenario: string
+): Promise<LoadTestResult> {
   const results = {
     totalRequests: 0,
     successfulRequests: 0,
@@ -352,90 +484,91 @@ async function runLoadTest(duration: number, concurrency: number, payloadSize: s
     maxResponseTime: 0,
     minResponseTime: Infinity,
     responseTimes: [] as number[],
-    throughput: 0
-  }
-  const endTime = Date.now() + duration
-  const workers: Promise<void>[] = []
+    throughput: 0,
+  };
+  const endTime = Date.now() + duration;
+  const workers: Promise<void>[] = [];
   // Generate test payload based on size
-  const payload = generateTestPayload(payloadSize, scenario)
-  const testData = JSON.stringify(payload)
+  const payload = generateTestPayload(payloadSize, scenario);
+  const testData = JSON.stringify(payload);
   // Spawn concurrent workers
   for (let i = 0; i < concurrency; i++) {
     const worker = (async () => {
       while (Date.now() < endTime) {
-        const start = performance.now()
+        const start = performance.now();
         try {
           JSON.parse(testData); // Simulate parsing operation
-          const responseTime = performance.now() - start
-          results.totalRequests++
-          results.successfulRequests++
-          results.responseTimes.push(responseTime)
-          results.maxResponseTime = Math.max(results.maxResponseTime, responseTime)
-          results.minResponseTime = Math.min(results.minResponseTime, responseTime)
+          const responseTime = performance.now() - start;
+          results.totalRequests++;
+          results.successfulRequests++;
+          results.responseTimes.push(responseTime);
+          results.maxResponseTime = Math.max(results.maxResponseTime, responseTime);
+          results.minResponseTime = Math.min(results.minResponseTime, responseTime);
         } catch (error) {
-          results.failedRequests++
+          results.failedRequests++;
         }
         // Small delay to prevent overwhelming
-        await new Promise(resolve => setTimeout(resolve, 1)
+        await new Promise(resolve => setTimeout(resolve, 1));
       }
-    })()
-    workers.push(worker)
+    })();
+    workers.push(worker);
   }
-  await Promise.all(workers)
+  await Promise.all(workers);
   // Calculate final metrics
-  results.avgResponseTime = results.responseTimes.reduce((a, b) => a + b, 0) / results.responseTimes.length || 0
+  results.avgResponseTime = results.responseTimes.reduce((a, b) => a + b, 0) / results.responseTimes.length || 0;
   results.throughput = (results.successfulRequests / duration) * 1000; // requests per second
   return {
     ...results,
     payloadSize: `${Math.round(testData.length / 1024)}KB`,
     testDuration: duration,
-    concurrency
-  }
+    concurrency,
+  };
 }
 /**
  * Run stress test
  */
-async function runStressTest(maxDuration: number, payloadSize: string): Promise<any> {
+async function runStressTest(maxDuration: number, payloadSize: string): Promise<StressTestResult> {
   const results = {
     maxConcurrency: 0,
     breakingPoint: 0,
     totalRequests: 0,
-    phases: [] as any[]
-  }
-  const payload = generateTestPayload(payloadSize, 'mixed')
-  const testData = JSON.stringify(payload)
-  let concurrency = 1
-  let phaseStartTime = Date.now()
+    phases: [] as StressTestPhase[],
+  };
+  const payload = generateTestPayload(payloadSize, 'mixed');
+  const testData = JSON.stringify(payload);
+  let concurrency = 1;
+  const phaseStartTime = Date.now();
   while (Date.now() - phaseStartTime < maxDuration) {
-    const phaseResults = await runConcurrentParsing(testData, concurrency, 1000)
+    const phaseResults = await runConcurrentParsing(testData, concurrency, 1000);
     results.phases.push({
       concurrency,
       avgResponseTime: phaseResults.avgTime,
       successRate: phaseResults.successRate,
-      throughput: phaseResults.throughput
-    })
-    if (phaseResults.successRate < 0.95) { // 95% success threshold
-      results.breakingPoint = concurrency
-      break
+      throughput: phaseResults.throughput,
+    });
+    if (phaseResults.successRate < 0.95) {
+      // 95% success threshold
+      results.breakingPoint = concurrency;
+      break;
     }
-    results.maxConcurrency = concurrency
-    results.totalRequests += phaseResults.totalRequests
+    results.maxConcurrency = concurrency;
+    results.totalRequests += phaseResults.totalRequests;
     concurrency = Math.min(concurrency * 2, 100); // Cap at 100
   }
-  return results
+  return results;
 }
 /**
  * Run spike test
  */
-async function runSpikeTest(peakConcurrency: number, payloadSize: string): Promise<any> {
-  const payload = generateTestPayload(payloadSize, 'mixed')
-  const testData = JSON.stringify(payload)
+async function runSpikeTest(peakConcurrency: number, payloadSize: string): Promise<SpikeTestResult> {
+  const payload = generateTestPayload(payloadSize, 'mixed');
+  const testData = JSON.stringify(payload);
   // Normal load baseline
-  const baselineResults = await runConcurrentParsing(testData, 5, 1000)
+  const baselineResults = await runConcurrentParsing(testData, 5, 1000);
   // Spike load
-  const spikeResults = await runConcurrentParsing(testData, peakConcurrency, 1000)
+  const spikeResults = await runConcurrentParsing(testData, peakConcurrency, 1000);
   // Recovery phase
-  const recoveryResults = await runConcurrentParsing(testData, 5, 1000)
+  const recoveryResults = await runConcurrentParsing(testData, 5, 1000);
   return {
     baseline: baselineResults,
     spike: spikeResults,
@@ -443,72 +576,78 @@ async function runSpikeTest(peakConcurrency: number, payloadSize: string): Promi
     spikeImpact: {
       responseTimeDegradation: spikeResults.avgTime / baselineResults.avgTime,
       throughputImpact: spikeResults.throughput / baselineResults.throughput,
-      recoveryTime: recoveryResults.avgTime / baselineResults.avgTime
-    }
-  }
+      recoveryTime: recoveryResults.avgTime / baselineResults.avgTime,
+    },
+  };
 }
 /**
  * Run concurrent parsing test
  */
-async function runConcurrentParsing(testData: string, concurrency: number, iterations: number): Promise<any> {
+async function runConcurrentParsing(
+  testData: string,
+  concurrency: number,
+  iterations: number
+): Promise<ConcurrentParsingResult> {
   const results = {
     totalRequests: iterations * concurrency,
     successfulRequests: 0,
     responseTimes: [] as number[],
     avgTime: 0,
     throughput: 0,
-    successRate: 0
-  }
-  const startTime = performance.now()
-  const workers: Promise<void>[] = []
+    successRate: 0,
+  };
+  const startTime = performance.now();
+  const workers: Promise<void>[] = [];
   for (let i = 0; i < concurrency; i++) {
     const worker = (async () => {
       for (let j = 0; j < iterations; j++) {
-        const parseStart = performance.now()
+        const parseStart = performance.now();
         try {
-          JSON.parse(testData)
-          const parseTime = performance.now() - parseStart
-          results.responseTimes.push(parseTime)
-          results.successfulRequests++
+          JSON.parse(testData);
+          const parseTime = performance.now() - parseStart;
+          results.responseTimes.push(parseTime);
+          results.successfulRequests++;
         } catch (error) {
           // Failed parse
         }
       }
-    })()
-    workers.push(worker)
+    })();
+    workers.push(worker);
   }
-  await Promise.all(workers)
-  const totalTime = performance.now() - startTime
-  results.avgTime = results.responseTimes.reduce((a, b) => a + b, 0) / results.responseTimes.length || 0
-  results.throughput = (results.successfulRequests / totalTime) * 1000
-  results.successRate = results.successfulRequests / results.totalRequests
-  return results
+  await Promise.all(workers);
+  const totalTime = performance.now() - startTime;
+  results.avgTime = results.responseTimes.reduce((a, b) => a + b, 0) / results.responseTimes.length || 0;
+  results.throughput = (results.successfulRequests / totalTime) * 1000;
+  results.successRate = results.successfulRequests / results.totalRequests;
+  return results;
 }
 /**
  * Generate test payload based on size and scenario
  */
-function generateTestPayload(size: string, scenario: string): any {
-  const sizeMultiplier = {
-    small: 1,
-    medium: 10,
-    large: 100,
-    xlarge: 1000
-  }[size] || 10
-  const baseItems = 10 * sizeMultiplier
-  const vectorDim = scenario === 'vector_operations' ? 768 : 128
+function generateTestPayload(size: string, scenario: string): JsonValue {
+  const sizeMultiplier =
+    {
+      small: 1,
+      medium: 10,
+      large: 100,
+      xlarge: 1000,
+    }[size] || 10;
+  const baseItems = 10 * sizeMultiplier;
+  const vectorDim = scenario === 'vector_operations' ? 768 : 128;
   return {
     scenario,
     timestamp: Date.now(),
     items: Array.from({ length: baseItems }, (_, i) => ({
       id: `item-${i}`,
-      data: scenario === 'vector_operations'
-        ? Array.from({ length: vectorDim }, () => Math.random()
-        : `Sample data item ${i} with content`.repeat(size === 'large' ? 100 : 10),
-      metadata,: {
+      data:
+        scenario === 'vector_operations'
+          ? Array.from({ length: vectorDim }, () => Math.random())
+          : `Sample data item ${i} with content`.repeat(size === 'large' ? 100 : 10),
+      metadata: {
         created: Date.now(),
         processed: Math.random() > 0.5,
-        confidence: Math.random()
-      }
-    })
-  }
+        confidence: Math.random(),
+      },
+    })),
+  };
 }

@@ -245,7 +245,7 @@ d;
     bottom: 0;
     z-index: 1000,
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
     border: 2px solid #00ff88;
     border-radius: 0; /* YoRHa sharp edges */
@@ -255,7 +255,7 @@ d;
   }
   .canvas-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
     background: rgba(0, 255, 136, 0.1);
@@ -276,7 +276,7 @@ d;
     width: 40px;
     height: 40px;
     cursor: pointer;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -291,7 +291,7 @@ d;
   .canvas-toolbar {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
     padding: 1rem;
     background: rgba(0, 0, 0, 0.8);
     border-bottom: 1px solid #00ff88;
@@ -302,7 +302,7 @@ d;
   .color-section,
   .size-section {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
     align-items: center;
   }
@@ -310,7 +310,7 @@ d;
   .color-section h3,
   .size-section h3 {
     font-size: 0.8rem;
-    margin: 0,
+    margin: 0;
     color: #00ff88;
     text-shadow: 0 0 5px #00ff88;
   }
@@ -324,7 +324,7 @@ d;
     color: #00ff88;
     padding: 0.5rem;
     cursor: pointer;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     font-size: 1.2rem;
     width: 40px;
     height: 40px;
@@ -352,7 +352,7 @@ d;
     height: 30px;
     border: 2px solid #333;
     cursor: pointer;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .color-btn: hover {
     border-color: #00ff88;
@@ -412,7 +412,7 @@ d;
   }
   .canvas-info {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
   }
   .info-item {
@@ -423,7 +423,7 @@ d;
   /* Responsive design */
   @media (max-width: 768px) {
     .canvas-toolbar {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
     }
     .tool-section,
@@ -443,6 +443,7 @@ d;
     100% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.3), }
   }
   .yorha-canvas-board:hover {
-    animation yorha-glow 2s ease-in-out infinite;
+    animation: yorha-glow 2s ease-in-out infinite;
   }
 </style>
+

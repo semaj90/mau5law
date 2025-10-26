@@ -357,32 +357,32 @@ dismissAll()}
   /* Animations for notification entrance/exit */
   @keyframes notification-enter {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translateY(-1rem) scale(0.95);
 }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translateY(0) scale(1);
 }}
   @keyframes notification-exit {
     from {
-      opacity: 1,
+      opacity: 1;
       transform: translateY(0) scale(1);
 }
     to {
-      opacity: 0,
+      opacity: 0;
       transform: translateY(-1rem) scale(0.95);
 }}
   .notification-item {
-    animation notification-enter 0.3s ease-out;
+    animation: notification-enter 0.3s ease-out;
 }
   /* Reduce motion for accessibility */
   @media (prefers-reduced-motion reduce) {
     .notification-item {
-      animation none;
+      animation: none;
 }
     .transition-all {
-      transition none !important;
+      transition: none !important;
 }}
   /* High contrast mode support */
   @media (prefers-contrast: high) {

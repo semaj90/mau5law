@@ -108,8 +108,7 @@
     display: grid;
     grid-template-columns: repeat(var(--columns), 1fr);
     gap: var(--gap);
-    transition
-      grid-template-columns var(--expand-duration) var(--easing),
+    transition: grid-template-columns var(--expand-duration) var(--easing),
       background-color var(--expand-duration) var(--easing),
       box-shadow var(--expand-duration) var(--easing);
     outline: none;
@@ -129,8 +128,7 @@
   }
   /* Grid items (opt-in with .grid-item class) */
   .expand-grid :global(.grid-item) {
-    transition
-      transform var(--expand-duration) var(--easing),
+    transition: transform var(--expand-duration) var(--easing),
       box-shadow var(--expand-duration) var(--easing);
     border-radius: 0.375rem;
     overflow: hidden;
@@ -161,3 +159,4 @@
     }
   }
 </style>
+

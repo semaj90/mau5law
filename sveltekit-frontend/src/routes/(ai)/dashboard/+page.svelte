@@ -2,6 +2,9 @@
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { Badge } from '$lib/components/ui/badge';
   import { Button } from '$lib/components/ui/core';
+  import type { PageData } from './$types';
+
+  let { data }: { data: PageData } = $props();
 
   const aiStats = $state({
     activeChats: 3,
@@ -150,9 +153,33 @@
 
 <div class="ai-dashboard">
   <div class="dashboard-header">
-    <h1>🤖 AI Dashboard</h1>
+    <div class="header-top">
+      <h1>🤖 AI Dashboard</h1>
+      {#if data.user?.name}
+        <div class="user-greeting">
+          <span class="user-name">{data.user.name}</span>
+          <span class="user-role">{data.user.role}</span>
+        </div>
+      {/if}
+    </div>
     <p class="subtitle">Comprehensive AI-powered legal intelligence platform.</p>
   </div>
+
+  <!-- User Profile Card -->
+  <section class="user-profile-section">
+    <Card class="user-card">
+      <CardContent class="user-card-content">
+        <div class="user-avatar">
+          <div class="avatar-circle">{data.user?.name?.charAt(0).toUpperCase() || data.user?.email?.charAt(0).toUpperCase()}</div>
+        </div>
+        <div class="user-info">
+          <p class="user-status">Welcome back,</p>
+          <h2 class="user-display-name">{data.user?.name || data.user?.email}</h2>
+          <p class="user-role-info">{data.user?.role} • {data.user?.email}</p>
+        </div>
+      </CardContent>
+    </Card>
+  </section>
 
   <section class="status-section">
     <Card class="status-card">
@@ -278,9 +305,94 @@
     min-height: 100%;
   }
 
+  .header-top {
+    display: flex;
+    justify-content: space-betweennn;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .user-profile-section {
+    display: flex;
+  }
+
+  :global(.user-card) {
+    width: 100%;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border: 1px solid rgba(102, 126, 234, 0.2);
+  }
+
+  :global(.user-card-content) {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .user-avatar {
+    flex-shrink: 0;
+  }
+
+  .avatar-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .user-info {
+    flex: 1;
+  }
+
+  .user-status {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .user-display-name {
+    margin: 0.25rem 0 0.5rem;
+    font-size: 1.3rem;
+    color: var(--text-primary);
+  }
+
+  .user-role-info {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
   .dashboard-header h1 {
     font-size: 2rem;
     margin: 0;
+  }
+
+  .user-greeting {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+    text-align: right;
+  }
+
+  .user-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .user-role {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: capitalize;
   }
 
   .subtitle {
@@ -399,7 +511,7 @@
 
   .service-meta {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     font-size: 0.85rem;
   }
@@ -449,3 +561,5 @@
     }
   }
 </style>
+
+

@@ -239,7 +239,7 @@
     color: var(--console-fg, white);
     border-radius: 6px;
     cursor: pointer;
-    transition all 0.2s;
+    transition: all 0.2s;
     font-family: inherit;
   }
 
@@ -262,7 +262,7 @@
 
   .user-info {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: flex-start;
     gap: 0.25rem;
   }
@@ -270,18 +270,18 @@
   .user-name {
     font-size: 0.9rem;
     font-weight: 500;
-    line-height: 1,
+    line-height: 1;
   }
 
   .user-role {
     font-size: 0.75rem;
     opacity: 0.7;
-    line-height: 1,
+    line-height: 1;
   }
 
   .dropdown-arrow {
     font-size: 0.75rem;
-    transition transform 0.2s;
+    transition: transform 0.2s;
   }
 
   .dropdown-arrow.open {
@@ -300,16 +300,16 @@
     max-width: 400px;
     z-index: 1000;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    animation slideDown 0.2s ease;
+    animation: slideDown 0.2s ease;
   }
 
   @keyframes slideDown {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translateY(-8px);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translateY(0);
     }
   }
@@ -339,25 +339,25 @@
   .header-info {
     flex: 1,
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
   }
 
   .header-name {
     font-size: 1rem;
-    font-weight: 600,
+    font-weight: 600;
     color: var(--console-fg, white);
   }
 
   .header-email {
     font-size: 0.85rem;
-    opacity: 0.8,
+    opacity: 0.8;
     color: var(--console-fg, white);
   }
 
   .header-role {
     font-size: 0.75rem;
-    opacity: 0.7,
+    opacity: 0.7;
     color: var(--console-fg, white);
     display: flex;
     align-items: center;
@@ -376,7 +376,7 @@
 
   .console-indicator {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 0.25rem;
   }
@@ -393,16 +393,16 @@
     height: 8px;
     background: var(--console-primary, #00aa00);
     border-radius: 50%;
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
 
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.5,
+      opacity: 0.5;
     }
   }
 
@@ -425,7 +425,7 @@
     padding: 0.5rem 1rem;
     margin: 0;
     font-size: 0.8rem;
-    font-weight: 600,
+    font-weight: 600;
     color: rgba(255, 255, 255, 0.8);
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -437,7 +437,7 @@
 
   .nav-list {
     list-style: none;
-    margin: 0,
+    margin: 0;
     padding: 0;
   }
 
@@ -452,7 +452,7 @@
     color: var(--console-fg, white);
     text-align: left;
     cursor: pointer;
-    transition all 0.2s;
+    transition: all 0.2s;
     border-left: 3px solid transparent;
     font-family: inherit;
   }
@@ -471,7 +471,7 @@
   .item-content {
     flex: 1,
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
     align-items: flex-start;
   }
@@ -479,23 +479,23 @@
   .item-name {
     font-size: 0.9rem;
     font-weight: 500;
-    line-height: 1,
+    line-height: 1;
   }
 
   .item-desc {
     font-size: 0.75rem;
     opacity: 0.7;
-    line-height: 1,
+    line-height: 1;
   }
 
   .item-arrow {
     font-size: 0.8rem;
-    opacity: 0.5,
-    transition opacity 0.2s;
+    opacity: 0.5;
+    transition: opacity 0.2s;
   }
 
   .nav-item:hover .item-arrow {
-    opacity: 1,
+    opacity: 1;
   }
 
   .admin-section {
@@ -527,7 +527,7 @@
     color: var(--console-error, #ff5555);
     text-align: left;
     cursor: pointer;
-    transition all 0.2s;
+    transition: all 0.2s;
     font-family: inherit;
   }
 
@@ -544,7 +544,7 @@
   .logout-content {
     flex: 1,
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
     align-items: flex-start;
   }
@@ -552,13 +552,13 @@
   .logout-text {
     font-size: 0.9rem;
     font-weight: 500;
-    line-height: 1,
+    line-height: 1;
   }
 
   .logout-desc {
     font-size: 0.75rem;
     opacity: 0.7;
-    line-height: 1,
+    line-height: 1;
   }
 
   .logout-indicator {
@@ -587,3 +587,4 @@
     }
   }
 </style>
+

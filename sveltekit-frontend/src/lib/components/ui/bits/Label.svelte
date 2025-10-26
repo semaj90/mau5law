@@ -69,9 +69,10 @@ NES-styled label with legal AI theming
     width: 0;
     height: 2px;
     background: linear-gradient(45deg, #00ff9f, #00b4ff);
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .bits-label:hover::before {
     width: 100%;
   }
 </style>
+

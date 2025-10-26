@@ -564,7 +564,7 @@
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #4caf50, #8bc34a);
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .stage-info {
     margin-top: 10px;
@@ -662,3 +662,4 @@
     color: #666;
   }
 </style>
+

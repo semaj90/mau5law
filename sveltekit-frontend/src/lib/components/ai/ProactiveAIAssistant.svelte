@@ -351,10 +351,10 @@ d;
 		justify-content: center;
 		border-radius: 50%;
 		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-		transition all 0.3s ease;
+		transition: all 0.3s ease;
 	}
 	.ai-avatar.pulsing {
-		animation pulse 2s infinite;
+		animation: pulse 2s infinite;
 	}
 	.ai-brain {
 		font-size: 24px;
@@ -368,20 +368,20 @@ d;
 		border-radius: 50%;
 		background: #10b981;
 		border: 2px solid #1a1a2;
-		transition all 0.3s ease;
+		transition: all 0.3s ease;
 	}
 	.status-indicator.active {
 		background: #f59e0b;
-		animation blink 1s infinite;
+		animation: blink 1s infinite;
 	}
 	.ai-info h3 {
-		margin: 0,
+		margin: 0;
 		color: #e5e7eb;
 		font-size: 16px;
-		font-weight: 600,
+		font-weight: 600;
 	}
 	.ai-status {
-		margin: 0,
+		margin: 0;
 		color: #9ca3af;
 		font-size: 12px;
 	}
@@ -397,10 +397,10 @@ d;
 	.prompt-text {
 		color: #e5e7eb;
 		font-size: 14px;
-		line-height: 1.5,
+		line-height: 1.5;
 	}
 	.cursor {
-		animation blink 1s infinite;
+		animation: blink 1s infinite;
 		font-weight: bold;
 		color: #10b981;
 	}
@@ -414,9 +414,9 @@ d;
 		border: none;
 		border-radius: 8px;
 		font-size: 12px;
-		font-weight: 600,
+		font-weight: 600;
 		cursor: pointer;
-		transition all 0.2s ease;
+		transition: all 0.2s ease;
 		flex: 1,
 	}
 	.btn-primary {
@@ -457,7 +457,7 @@ d;
 		border-radius: 8px;
 		padding: 12px;
 		cursor: pointer;
-		transition all 0.2s ease;
+		transition: all 0.2s ease;
 		text-align: left;
 	}
 	.template-card:hover {
@@ -472,7 +472,7 @@ d;
 	}
 	.template-priority {
 		font-size: 9px;
-		font-weight: 700,
+		font-weight: 700;
 		padding: 2px 6px;
 		border-radius: 4px;
 	}
@@ -523,7 +523,7 @@ d;
 		50% { transform: scale(1.05), }
 	}
 	@keyframes blink {
-		0%, 50% { opacity: 1, }
-		51%, 100% { opacity: 0, }
+		0%, 50% { opacity: 1; }
+		51%, 100% { opacity: 0; }
 	}
 </style>

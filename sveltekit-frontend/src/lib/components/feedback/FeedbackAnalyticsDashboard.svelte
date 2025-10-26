@@ -219,7 +219,7 @@ https://svelte.dev/e/component_invalid_directive -->
   {:else}
     <main class="dashboard-main">
       <!-- Overview Cards -->
-      <section class="overview-section" /* transition removed */}>
+      <section class="overview-section" /* transition: removed */}>
         <div class="overview-cards">
           <!-- Total Ratings -->
           <div class="metric-nier-bits-card">
@@ -288,7 +288,7 @@ https://svelte.dev/e/component_invalid_directive -->
         </div>
       </section>
       <!-- Rating Breakdown -->
-      <section class="breakdown-section" /* transition removed */}>
+      <section class="breakdown-section" /* transition: removed */}>
         <h2 class="section-title">Rating Breakdown by Category</h2>
         <div class="breakdown-grid">
           {#each dashboardData.breakdown || [] as category}
@@ -333,7 +333,7 @@ https://svelte.dev/e/component_invalid_directive -->
         </div>
       </section>
       <!-- Insights and Recommendations -->
-      <section class="insights-section" /* transition removed */}>
+      <section class="insights-section" /* transition: removed */}>
         <div class="insights-grid">
           <!-- AI Insights -->
           <div class="insights-nier-bits-card">
@@ -394,7 +394,7 @@ https://svelte.dev/e/component_invalid_directive -->
       </section>
       <!-- Top Issues -->
       {#if dashboardData.topIssues?.length}
-        <section class="issues-section" /* transition removed */}>
+        <section class="issues-section" /* transition: removed */}>
           <h2 class="section-title">
             <AlertCircle class="w-5 h-5 text-red-600" />
             Top Issues Reported
@@ -445,7 +445,7 @@ https://svelte.dev/e/component_invalid_directive -->
   }
   .header-content {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
@@ -480,7 +480,7 @@ https://svelte.dev/e/component_invalid_directive -->
     border-radius: 6px;
     font-weight: 500;
     font-size: 0.875rem;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .refresh-button {
     background: #3b82f6;
@@ -523,7 +523,7 @@ https://svelte.dev/e/component_invalid_directive -->
   }
   .loading-state {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 4rem;
@@ -535,7 +535,7 @@ https://svelte.dev/e/component_invalid_directive -->
     border: 3px solid #e5e7eb;
     border-top: 3px solid #3b82f6;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin-bottom: 1rem;
   }
   @keyframes spin {
@@ -543,7 +543,7 @@ https://svelte.dev/e/component_invalid_directive -->
   }
   .dashboard-main {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 2rem;
   }
   .overview-section {
@@ -576,7 +576,7 @@ https://svelte.dev/e/component_invalid_directive -->
   .metric-label {
     font-size: 0.875rem;
     color: #6b7280;
-    font-weight: 500,
+    font-weight: 500;
   }
   .metric-value {
     font-size: 2rem;
@@ -612,7 +612,7 @@ https://svelte.dev/e/component_invalid_directive -->
   .progress-fill {
     height: 100%;
     background: linear-gradient(90deg, #10b981 0%, #059669 100%);
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .section-title {
     display: flex;
@@ -642,12 +642,12 @@ https://svelte.dev/e/component_invalid_directive -->
   }
   .breakdown-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1rem;
   }
   .breakdown-title {
-    font-weight: 600,
+    font-weight: 600;
     color: #1f2937;
   }
   .breakdown-count {
@@ -656,13 +656,13 @@ https://svelte.dev/e/component_invalid_directive -->
   }
   .breakdown-metrics {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1rem;
   }
   .breakdown-rating {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
   }
   .rating-value {
@@ -679,11 +679,11 @@ https://svelte.dev/e/component_invalid_directive -->
     align-items: center;
     gap: 0.25rem;
     font-size: 0.875rem;
-    font-weight: 500,
+    font-weight: 500;
   }
   .rating-distribution {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .rating-bar {
@@ -705,7 +705,7 @@ https://svelte.dev/e/component_invalid_directive -->
   }
   .bar-fill {
     height: 100%;
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .bar-fill.rating-5 { background: #10b981, }
   .bar-fill.rating-4 { background: #84cc16, }
@@ -730,7 +730,7 @@ https://svelte.dev/e/component_invalid_directive -->
   }
   .insights-list, .recommendations-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .insight-item, .recommendation-item {
@@ -741,12 +741,12 @@ https://svelte.dev/e/component_invalid_directive -->
   }
   .insight-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 0.5rem;
   }
   .insight-title {
-    font-weight: 600,
+    font-weight: 600;
     color: #1f2937;
   }
   .insight-confidence {
@@ -794,7 +794,7 @@ https://svelte.dev/e/component_invalid_directive -->
     flex: 1,
   }
   .recommendation-title {
-    font-weight: 600,
+    font-weight: 600;
     color: #1f2937;
     margin-bottom: 0.5rem;
   }
@@ -812,7 +812,7 @@ https://svelte.dev/e/component_invalid_directive -->
   }
   .issues-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .issue-item {
@@ -839,7 +839,7 @@ https://svelte.dev/e/component_invalid_directive -->
     flex: 1,
   }
   .issue-title {
-    font-weight: 600,
+    font-weight: 600;
     color: #1f2937;
     margin-bottom: 0.5rem;
   }
@@ -854,7 +854,7 @@ https://svelte.dev/e/component_invalid_directive -->
   }
   .issue-count {
     color: #dc2626;
-    font-weight: 500,
+    font-weight: 500;
   }
   .issue-impact {
     color: #ea580c;
@@ -873,7 +873,7 @@ https://svelte.dev/e/component_invalid_directive -->
       padding: 1rem;
     }
     .header-content {
-      flex-direction column;
+      flex-direction: column;
       align-items: stretch;
     }
     .overview-cards {
@@ -887,3 +887,4 @@ https://svelte.dev/e/component_invalid_directive -->
     }
   }
 </style>
+

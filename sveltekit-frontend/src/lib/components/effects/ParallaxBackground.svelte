@@ -22,7 +22,7 @@
       depth: 0,
       speed: 0.1,
       pattern: 'dots',
-      opacity: 0.1,
+      opacity: 0.1;
       offsetY: 0,
     },
     {
@@ -30,7 +30,7 @@
       depth: 1,
       speed: 0.3,
       pattern: 'grid',
-      opacity: 0.15,
+      opacity: 0.15;
       offsetY: 0,
     },
     {
@@ -38,7 +38,7 @@
       depth: 2,
       speed: 0.5,
       pattern: 'circuit',
-      opacity: 0.2,
+      opacity: 0.2;
       offsetY: 0,
     },
     {
@@ -46,7 +46,7 @@
       depth: 3,
       speed: 0.7,
       pattern: 'hexagon',
-      opacity: 0.25,
+      opacity: 0.25;
       offsetY: 0,
     }
   ];
@@ -63,7 +63,7 @@
       });
     }
     window.addEventListener('scroll', handleScroll, { passive: true });
-    // Smooth scroll animation loop
+    // Smooth scroll animation: loop
     const animateScroll = () => {
       rafId = requestAnimationFrame(animateScroll);
     }
@@ -219,13 +219,13 @@ d;
     text-align: center;
     color: rgba(255, 255, 255, 0.7);
     font-size: 0.875rem;
-    transition opacity 0.3s ease;
+    transition: opacity 0.3s ease;
     z-index: 101;
     pointer-events: none;
   }
   .scroll-arrow {
     font-size: 1.5rem;
-    animation bounce 2s infinite;
+    animation: bounce 2s infinite;
     margin-bottom: 0.5rem;
   }
   @keyframes bounce {

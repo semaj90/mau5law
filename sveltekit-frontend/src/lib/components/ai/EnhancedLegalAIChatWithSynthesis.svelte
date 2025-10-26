@@ -1164,7 +1164,7 @@ if (browser) {
     bind:this={chatContainer}
     class="flex-1 overflow-y-auto space-y-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border">
     {#each $messages as message (message.id)}
-      <div class="message-bubble {message.role}" /* transition removed */}>
+      <div class="message-bubble {message.role}" /* transition: removed */}>
         <div class="flex items-start gap-3">
           <!-- Message Icon -->
           <div
@@ -1374,20 +1374,20 @@ copyToClipboard(message.content)}>
     border: 1px solid rgb(55 65 81);
   }
   /* ==================== TYPEWRITER EFFECT ANIMATIONS ==================== */
-  /* Typewriter cursor animation */
+  /* Typewriter cursor animation: */
   :global(.typewriter-cursor) {
     display: inline-block;
     color: #3B82F6;
-    animation blink 1.2s infinite;
+    animation: blink 1.2s infinite;
     font-weight: bold;
     margin-left: 2px;
   }
   @keyframes blink {
     0%, 50% {
-      opacity: 1,
+      opacity: 1;
     }
     51%, 100% {
-      opacity: 0,
+      opacity: 0;
     }
   }
   /* Streaming message container */
@@ -1395,34 +1395,34 @@ copyToClipboard(message.content)}>
     position relative;
     overflow: hidden;
   }
-  /* Character reveal animation */
+  /* Character reveal animation: */
   .streaming-character {
-    opacity: 0,
-    animation characterReveal 0.1s ease-in forward;
+    opacity: 0;
+    animation: characterReveal 0.1s ease-in forward;
   }
   @keyframes characterReveal {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translateY(10px);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translateY(0);
     }
   }
   /* Chunk streaming effect */
   .streaming-chunk {
     display: inline-block;
-    opacity: 0,
-    animation chunkFadeIn 0.3s ease-out forward;
+    opacity: 0;
+    animation: chunkFadeIn 0.3s ease-out forward;
   }
   @keyframes chunkFadeIn {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translateX(5px);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translateX(0);
     }
   }
@@ -1441,15 +1441,15 @@ copyToClipboard(message.content)}>
     height: 4px;
     background: currentColor;
     border-radius: 50%;
-    animation pulse 1.5s infinite;
+    animation: pulse 1.5s infinite;
   }
   @keyframes pulse {
     0%, 100% {
-      opacity: 0.4,
+      opacity: 0.4;
       transform: scale(1);
     }
     50% {
-      opacity: 1,
+      opacity: 1;
       transform: scale(1.2);
     }
   }
@@ -1473,7 +1473,7 @@ copyToClipboard(message.content)}>
     width: 20px;
     border-radius: 50%;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   input[type="range"]::-webkit-slider-thumb:hover {
     background: #2563EB;
@@ -1492,7 +1492,7 @@ copyToClipboard(message.content)}>
     border-radius: 50%;
     border: none;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   input[type="range"]::-moz-range-thumb:hover {
     background: #2563EB;
@@ -1500,15 +1500,15 @@ copyToClipboard(message.content)}>
   }
   /* Enhanced message animations */
   .message-bubble {
-    animation messageSlideIn 0.3s ease-out;
+    animation: messageSlideIn 0.3s ease-out;
   }
   @keyframes messageSlideIn {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translateY(20px);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translateY(0);
     }
   }
@@ -1522,7 +1522,7 @@ copyToClipboard(message.content)}>
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    animation streamingPulse 2s infinite;
+    animation: streamingPulse 2s infinite;
   }
   @keyframes streamingPulse {
     0%, 100% {

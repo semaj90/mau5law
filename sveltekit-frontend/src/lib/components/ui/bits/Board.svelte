@@ -336,9 +336,9 @@ linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px), {}
   }
 /* Smooth transitions for zoom */ {}
   div[style*="transform: scale"] {,
-    transition transform 0.2s ease-out;
+    transition: transform 0.2s ease-out;
   }
-/* Connection lines animation */ {}
+/* Connection lines animation: */ {}
   svg path {
     animation: dash 5s linear infinite;
   }

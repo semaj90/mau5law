@@ -478,7 +478,7 @@ https://svelte.dev/e/effect_invalid_placement -->
 <style>
   .enhanced-ai-assistant {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     background: white;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
@@ -488,7 +488,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   }
   .ai-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 1rem;
     background: #f9fafb;
@@ -499,7 +499,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     align-items: center;
     gap: 0.5rem;
     font-weight: 600;
-    flex-direction column;
+    flex-direction: column;
     align-items: flex-start;
   }
   .ai-title > span:first-of-type {
@@ -520,7 +520,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     margin-top: 0.25rem;
   }
   .current-backend {
-    font-weight: 500,
+    font-weight: 500;
   }
   .ai-actions {
     display: flex;
@@ -532,14 +532,14 @@ https://svelte.dev/e/effect_invalid_placement -->
     background: transparent;
     border-radius: 6px;
     cursor: pointer;
-    transition background-color 0.2;
+    transition: background-color 0.2;
     border: 1px solid #d1d5db;
   }
   .action-btn:hover:not(:disabled) {,
     background: #f3f4f6;
   }
   .action-btn:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .settings-panel {
@@ -553,7 +553,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   .setting-group label {
     display: block;
     font-size: 0.875rem;
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
     margin-bottom: 0.5rem;
   }
@@ -564,7 +564,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   }
   .backend-btn {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     padding: 0.5rem;
     border: 1px solid #d1d5db;
@@ -572,7 +572,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     background: white;
     cursor: pointer;
     font-size: 0.75rem;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .backend-btn:hover {
     background: #f3f4f6;
@@ -582,7 +582,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     background: #eff6ff;
   }
   .backend-btn.unavailable {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .latency {
@@ -598,7 +598,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     padding: 1rem;
     background: white;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .welcome-message {
@@ -625,7 +625,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   }
   .message {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
     max-width: 85%;
   }
@@ -646,7 +646,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    font-weight: 500,
+    font-weight: 500;
   }
   .backend-tag, .processing-time {
     padding: 0.125rem 0.375rem;
@@ -723,7 +723,7 @@ https://svelte.dev/e/effect_invalid_placement -->
   }
   .search-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 0.75rem 1rem;
     border-bottom: 1px solid #e5e7eb;
@@ -731,13 +731,13 @@ https://svelte.dev/e/effect_invalid_placement -->
   .search-header h4 {
     margin: 0;
     font-size: 0.875rem;
-    font-weight: 600,
+    font-weight: 600;
   }
   .search-result {
     padding: 0.75rem 1rem;
     border-bottom: 1px solid #e5e7eb;
     cursor: pointer;
-    transition background 0.2;
+    transition: background 0.2;
   }
   .search-result:hover {
     background: #f3f4f6;
@@ -761,7 +761,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     border-top: 1px solid #e5e7eb;
     background: #f9fafb;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .input-controls {
@@ -774,7 +774,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     border-radius: 6px;
     background: white;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .voice-btn:hover, .search-btn:hover {
     background: #f3f4f6;
@@ -782,11 +782,11 @@ https://svelte.dev/e/effect_invalid_placement -->
   .voice-btn.listening {
     background: #fee2e2;
     border-color: #fca5a5;
-    animation pulse 1s infinite;
+    animation: pulse 1s infinite;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1, }
-    50% { opacity: 0.7, }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
   }
   .input-wrapper {
     display: flex;
@@ -801,7 +801,7 @@ https://svelte.dev/e/effect_invalid_placement -->
     min-height: 2.5rem;
     font-family: inherit;
     font-size: 0.875rem;
-    line-height: 1.5,
+    line-height: 1.5;
   }
   .input-wrapper textarea:focus {
     outline: none;
@@ -815,13 +815,13 @@ https://svelte.dev/e/effect_invalid_placement -->
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .submit-btn:hover:not(:disabled) {,
     background: #2563eb;
   }
   .submit-btn:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   /* Modal styles */
@@ -853,7 +853,7 @@ d;
     gap: 0.5rem;
     padding: 1rem;
     border-bottom: 1px solid #e5e7eb;
-    font-weight: 600,
+    font-weight: 600;
   }
   .modal-body {
     padding: 1rem;
@@ -869,7 +869,7 @@ d;
     margin: 0;
     font-family: monospace;
     font-size: 0.875rem;
-    line-height: 1.5,
+    line-height: 1.5;
   }
   .modal-actions {
     display: flex;
@@ -884,7 +884,7 @@ d;
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.875rem;
-    transition background-color 0.2;
+    transition: background-color 0.2;
   }
   .btn-primary:hover {
     background: #2563eb;
@@ -897,7 +897,7 @@ d;
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.875rem;
-    transition background-color 0.2;
+    transition: background-color 0.2;
   }
   .btn-secondary:hover {
     background: #e5e7eb;
@@ -916,7 +916,7 @@ d;
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.875rem;
-    transition background-color 0.2;
+    transition: background-color 0.2;
   }
   .btn-close:hover {
     background: #e5e7eb;
@@ -942,3 +942,4 @@ d;
     }
   }
 </style>
+

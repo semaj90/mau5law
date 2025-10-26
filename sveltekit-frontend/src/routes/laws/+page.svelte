@@ -124,7 +124,7 @@
         <button
           onclick={performSearch}
           disabled={isSearching || !searchQuery.trim()}
-          class="inline-flex items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground py-2 px-3 hover:opacity-90 transition disabled:opacity-50"
+          class="inline-flex items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground py-2 px-3 hover:opacity-90 transition: disabled:opacity-50"
         >
           {#if isSearching}
             Loading...
@@ -226,3 +226,4 @@
     </div>
   {/if}
 </div>
+

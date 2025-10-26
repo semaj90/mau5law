@@ -517,6 +517,7 @@ https://svelte.dev/e/js_parse_error -->
   input[type='number']::-webkit-outer-spin-button,
   input[type='number']::-webkit-inner-spin-button {
     appearance: none;
-    margin: 0,
+    margin: 0;
   }
 </style>
+

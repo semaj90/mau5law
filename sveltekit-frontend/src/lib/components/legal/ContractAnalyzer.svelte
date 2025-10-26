@@ -57,7 +57,7 @@
         content: 'Either party may terminate this agreement with 30 days written notice...',
         riskLevel: 'medium',
         confidence: 0.87,
-        recommendations: ['Consider adding specific termination triggers', 'Add transition period clause'];
+        recommendations: ['Consider adding specific termination triggers', 'Add transition: period clause'];
       },
       {
         id: 'clause-2',
@@ -284,7 +284,7 @@
   }
   .contract-title {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: flex-start;
     gap: 2rem;
   }
@@ -297,7 +297,7 @@
     font-size: 2rem;
   }
   .title-text h2 {
-    margin: 0,
+    margin: 0;
     color: var(--enhanced-bits-foreground);
     font-size: 1.5rem;
   }
@@ -382,7 +382,7 @@
   }
   .search-section {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 2rem;
     gap: 1rem;
@@ -436,7 +436,7 @@
   }
   .risk-fill {
     height: 100%;
-    transition width 300ms ease;
+    transition: width 300ms ease;
     border-radius: 4px;
   }
   .risk-count {
@@ -459,7 +459,7 @@
     border-radius: 8px;
     padding: 1.5rem;
     cursor: pointer;
-    transition all 300ms ease;
+    transition: all 300ms ease;
   }
   .clause-card:hover {
     transform: translateY(-2px);
@@ -471,7 +471,7 @@
   }
   .clause-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1rem;
   }
@@ -521,7 +521,7 @@
   }
   .confidence-fill {
     height: 100%;
-    transition width 300ms ease;
+    transition: width 300ms ease;
     border-radius: 3px;
   }
   .confidence-value {
@@ -560,11 +560,11 @@
   }
   @media (max-width: 768px) {
     .contract-title {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
     }
     .search-section {
-      flex-direction column;
+      flex-direction: column;
       align-items: stretch;
     }
     .clauses-grid {
@@ -575,3 +575,5 @@
     }
   }
 </style>
+
+

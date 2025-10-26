@@ -253,8 +253,7 @@
     for (const char of uniqueChars) {
       await cacheCharacterTexture(char);
     }
-    // Start typing animation
-    const charactersPerFrame = Math.max(1, Math.floor(speed / 60)); // 60 FPS
+    // Start typing animation: const charactersPerFrame = Math.max(1, Math.floor(speed / 60)); // 60 FPS
     const frameDelay = 1000 / 60; // 16.67ms per frame
     typewriterInterval = setInterval(() => {
       if (currentIndex >= text.length) {
@@ -357,7 +356,7 @@
   .nes-typewriter-container {
     font-family: 'Courier New', 'Press Start 2P', monospace;
     font-size: 16px;
-    line-height: 1.5,
+    line-height: 1.5;
     color: #212529;
     background: transparent;
     padding: 8px;
@@ -394,7 +393,7 @@
   }
   /* Emphasis effect for special characters */
   .nes-typewriter-text :global(.nes-text-emphasis) {
-    animation emphasize 0.3s ease-out;
+    animation: emphasize 0.3s ease-out;
   }
   @keyframes emphasize {
     0% {
@@ -415,19 +414,19 @@
     color: currentColor;
   }
   .nes-typewriter-cursor.visible {
-    opacity: 1,
+    opacity: 1;
   }
   .nes-typewriter-cursor.blinking {
-    animation blink 1s infinite;
+    animation: blink 1s infinite;
   }
   @keyframes blink {
     0%,
     50% {
-      opacity: 1,
+      opacity: 1;
     }
     51%,
     100% {
-      opacity: 0,
+      opacity: 0;
     }
   }
   /* Pixel-perfect rendering for retro look */
@@ -464,11 +463,12 @@
   /* Reduced motion support */
   @media (prefers-reduced-motion reduce) {
     .nes-typewriter-cursor {
-      animation none;
-      opacity: 1,
+      animation: none;
+      opacity: 1;
     }
     .nes-typewriter-text :global(.nes-text-emphasis) {
-      animation none;
+      animation: none;
     }
   }
 </style>
+

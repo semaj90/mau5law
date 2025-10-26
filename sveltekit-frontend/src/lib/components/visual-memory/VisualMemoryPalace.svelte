@@ -339,7 +339,7 @@
   }
   .room-selector {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .room-btn {
@@ -352,7 +352,7 @@
     border-radius: 8px;
     color: rgba(255, 255, 255, 0.8);
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .room-btn:hover {
     background: rgba(255, 255, 255, 0.1);
@@ -374,7 +374,7 @@
   }
   .room-capacity {
     font-size: 0.75rem;
-    opacity: 0.7,
+    opacity: 0.7;
   }
   .palace-viewport {
     position relative;
@@ -409,7 +409,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .control-btn:hover {
     background: rgba(138, 43, 226, 0.3);
@@ -428,7 +428,7 @@
   }
   .info-stat {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     padding: 0.5rem 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     font-size: 0.85rem;
@@ -440,3 +440,4 @@
     font-family: 'Courier New', monospace;
   }
 </style>
+

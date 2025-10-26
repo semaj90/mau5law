@@ -267,7 +267,7 @@ Automatically handles server upload with localStorage fallback
   .storage-fill {
     height: 100%;
     background-color: #3b82f6;
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .storage-fill.warning {
     background-color: #f59e0b;
@@ -285,7 +285,7 @@ Automatically handles server upload with localStorage fallback
     padding: 2rem;
     text-align: center;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     background-color: #f9fafb;
   }
   .drop-zone:hover {
@@ -316,7 +316,7 @@ Automatically handles server upload with localStorage fallback
   }
   .fallback-notice {
     color: #f59e0b;
-    font-weight: 500,
+    font-weight: 500;
   }
   .upload-progress {
     display: flex;
@@ -329,7 +329,7 @@ Automatically handles server upload with localStorage fallback
     border: 2px solid #e5e7eb;
     border-top: 2px solid #3b82f6;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   @keyframes spin {
     0% { transform: rotate(0deg), }
@@ -349,7 +349,7 @@ Automatically handles server upload with localStorage fallback
   .progress-fill {
     height: 100%;
     background-color: #10b981;
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .error-message {
     margin-top: 1rem;
@@ -367,14 +367,14 @@ Automatically handles server upload with localStorage fallback
   }
   .results-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 1rem;
     background-color: #f9fafb;
     border-bottom: 1px solid #e5e7eb;
   }
   .results-header h4 {
-    margin: 0,
+    margin: 0;
     color: #374151;
   }
   .clear-btn {
@@ -416,7 +416,7 @@ Automatically handles server upload with localStorage fallback
     flex: 1,
   }
   .result-name {
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
   }
   .result-meta {
@@ -431,14 +431,14 @@ Automatically handles server upload with localStorage fallback
     background-color: #e0e7ff;
     color: #3730a3;
     border-radius: 12px;
-    font-weight: 500,
+    font-weight: 500;
   }
   .fallback-badge {
     padding: 0.125rem 0.375rem;
     background-color: #fef3c7;
     color: #92f400;
     border-radius: 12px;
-    font-weight: 500,
+    font-weight: 500;
   }
   .file-size {
     color: #6b7280;

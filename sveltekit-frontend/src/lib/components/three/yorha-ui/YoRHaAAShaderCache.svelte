@@ -778,7 +778,7 @@ if (preloadShaders) {
     display: block;
     border: 1px solid rgba(186, 175, 137, 0.5);
     image-rendering: pixelated;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   /* AA Quality Classes */
   .standard-aa {
@@ -794,7 +794,7 @@ if (preloadShaders) {
   }
   /* Canvas States */
   .yorha-aa-canvas.compiling {
-    opacity: 0.7,
+    opacity: 0.7;
     filter: blur(1px);
   }
   .yorha-aa-canvas.error {
@@ -852,12 +852,12 @@ if (preloadShaders) {
   }
   .metrics-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1px;
   }
   .metric-row {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
   }
   .metric-label {
@@ -876,7 +876,7 @@ if (preloadShaders) {
   }
   .metric-value.poor {
     color: #ff6600;
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   .metric-value.aa-quality {
     color: #ff00ff;
@@ -896,7 +896,7 @@ if (preloadShaders) {
   }
   .compilation-spinner {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 8px;
     color: #baa989;
@@ -910,7 +910,7 @@ if (preloadShaders) {
     position absolute;
     border: 2px solid transparent;
     border-radius: 50%;
-    animation spin 2s linear infinite;
+    animation: spin 2s linear infinite;
   }
   .ring-1 {
     width: 50px;
@@ -939,18 +939,18 @@ if (preloadShaders) {
     font-size: 10px;
     font-weight: bold;
     letter-spacing: 1px;
-    animation pulse 2s ease-in-out infinite;
+    animation: pulse 2s ease-in-out infinite;
   }
   .compilation-details {
     font-size: 8px;
-    opacity: 0.7,
+    opacity: 0.7;
   }
   /* Error Overlay */
   .error-overlay {
     position absolute;
     inset: 0,
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 6px;
@@ -972,7 +972,7 @@ if (preloadShaders) {
   .error-message {
     font-size: 9px;
     max-width: 200px;
-    line-height: 1.3,
+    line-height: 1.3;
     opacity: 0.9;
   }
   .error-actions {
@@ -989,7 +989,7 @@ if (preloadShaders) {
     font-size: 8px;
     font-weight: bold;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .retry-button hover
   .hotreload-buttonhover {
@@ -1025,12 +1025,12 @@ if (preloadShaders) {
   }
   .debug-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1px;
   }
   .debug-content div {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
   }
   .debug-content strong {
     color: #ffff00;
@@ -1054,7 +1054,7 @@ if (preloadShaders) {
     font-size: 8px;
     font-weight: bold;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .hotreload-trigger:hover {
     background: #ff6400;
@@ -1082,11 +1082,11 @@ if (preloadShaders) {
   }
   @keyframes pulse {
     0%, 100% {
-      opacity: 1,
+      opacity: 1;
       transform: scale(1);
     }
     50% {
-      opacity: 0.7,
+      opacity: 0.7;
       transform: scale(1.02);
     }
   }
@@ -1104,7 +1104,7 @@ c;
       gap: 4px;
     }
     .metric-row {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-start;
       min-width: 50px;
     }
@@ -1130,15 +1130,17 @@ c;
   /* Reduced Motion */
   @media (prefers-reduced-motion reduce) {
     .spinner-rings div {
-      animation none;
+      animation: none;
       border: 2px solid currentColor;
     }
     .compilation-text {
-      animation none;
+      animation: none;
     }
     .metric-value.poor {
-      animation none;
+      animation: none;
       color: #ff0000;
     }
   }
 </style>
+
+

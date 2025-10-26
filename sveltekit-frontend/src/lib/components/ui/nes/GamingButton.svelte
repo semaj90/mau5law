@@ -93,7 +93,7 @@
 		text-transform: uppercase;
 		letter-spacing: 2px;
 		cursor: pointer;
-		transition all 0.2s ease;
+		transition: all 0.2s ease;
 		overflow: hidden;
 		user-select: none;
 		outline: none;
@@ -181,7 +181,7 @@ box-shadow: 0 0 0 2px var(--yorha-warning, #ffaa00), 0 0 20px rgba(255, 170, 0, 
 		transform: translateY(-1px);
 	}
 /* States */ .gaming-buttondisabled {
-		opacity: 0.4,
+		opacity: 0.4;
 		cursor: not-allowed;
 		transform: none !important;
 		box-shadow: none !important;
@@ -202,10 +202,10 @@ box-shadow: 0 0 0 2px var(--yorha-warning, #ffaa00), 0 0 20px rgba(255, 170, 0, 
 		display: flex;
 		align-items: center;
 		gap: 8px;
-		transition opacity 0.2s ease;
+		transition: opacity 0.2s ease;
 	}
 	.button-content.loading {
-		opacity: 0.7,
+		opacity: 0.7;
 	}
 /* Loading Spinner */ .loading-spinner {
 		position absolute;
@@ -224,7 +224,7 @@ box-shadow: 0 0 0 2px var(--yorha-warning, #ffaa00), 0 0 20px rgba(255, 170, 0, 
 		width: 100%;
 		height: 100%;
 		background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
-		transition left 0.5s ease;
+		transition: left 0.5s ease;
 		z-index: 1,
 	}
 	.gaming-buttonhover:not(:disabled) .button-overlay {
@@ -237,7 +237,7 @@ box-shadow: 0 0 0 2px var(--yorha-warning, #ffaa00), 0 0 20px rgba(255, 170, 0, 
 		right: 0,
 		height: 1px;
 		background: linear-gradient(90deg, transparent 0%, currentColor 50%, transparent 100%);
-		opacity: 0.6,
+		opacity: 0.6;
 		animation: scan 3s ease-in-out infinite;
 		z-index: 1,
 	}
@@ -256,11 +256,11 @@ box-shadow: 0 0 40px currentColor, 0 0 60px currentColor, inset 0 1px 0 rgba(255
 	@keyframes scan {
 		0%, 100% {
 			transform: translateX(-100%);
-			opacity: 0,
+			opacity: 0;
 		}
 		50% {
 			transform: translateX(0%);
-			opacity: 0.6,
+			opacity: 0.6;
 		}
 	}
 /* Focus styles for accessibility */ .gaming-buttonfocus-visible {

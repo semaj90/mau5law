@@ -285,7 +285,7 @@ fileInput.click()}
 				{/if}
 				<!-- OCR Results Preview -->
 				{#if $ocrResult && showPreview}
-					<div class="bg-yorha-bg-secondary rounded-md p-4 border border-yorha-border" /* transition removed */}>
+					<div class="bg-yorha-bg-secondary rounded-md p-4 border border-yorha-border" /* transition: removed */}>
 						<div class="flex items-center justify-between mb-2">
 							<h4 class="font-medium text-yorha-text-primary">Extraction Results</h4>
 							<Badge class="bg-yorha-success text-yorha-bg-primary">
@@ -364,7 +364,7 @@ fileInput.click()}
 							{/if}
 							<!-- Smart Suggestions -->
 							{#if activeSuggestions[field.name] && activeSuggestions[field.name].length > 0}
-								<div class="space-y-1" /* transition removed */}>
+								<div class="space-y-1" /* transition: removed */}>
 									<p class="text-xs text-yorha-text-secondary">Suggestions:</p>
 									<div class="flex flex-wrap gap-1">
 										{#each activeSuggestions[field.name] as suggestion}

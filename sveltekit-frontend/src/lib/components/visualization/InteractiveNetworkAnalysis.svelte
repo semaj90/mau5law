@@ -135,7 +135,7 @@ if (!browser) return;
     left: 10px;
     z-index: 100,
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 10px;
     background: rgba(0, 0, 0, 0.8);
     padding: 15px;
@@ -146,7 +146,7 @@ if (!browser) return;
   }
   .analysis-controls, .view-controls, .action-controls {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 8px;
   }
   .analysis-controls label, .view-controls label {
@@ -169,7 +169,7 @@ if (!browser) return;
     cursor: pointer;
   }
   .view-controls input[type="checkbox"] {
-    margin: 0,
+    margin: 0;
   }
   .action-controls {
     flex-direction row;
@@ -183,7 +183,7 @@ if (!browser) return;
     border-radius: 4px;
     font-size: 12px;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .btn-control:hover {
     background: rgba(255, 255, 255, 0.2);
@@ -214,7 +214,7 @@ if (!browser) return;
   }
   .metric {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     font-size: 12px;
   }
   .metric label {
@@ -246,7 +246,7 @@ if (!browser) return;
   .details-content p {
     margin: 5px 0;
     font-size: 14px;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   .connected-nodes {
     margin-top: 10px;
@@ -293,7 +293,7 @@ if (!browser) return;
     bottom: 0;
     background: rgba(0, 0, 0, 0.9);
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 200,
@@ -305,7 +305,7 @@ if (!browser) return;
     border: 3px solid rgba(255, 255, 255, 0.3);
     border-top: 3px solid #4a90e2;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin-bottom: 15px;
   }
   @keyframes spin {
@@ -317,12 +317,12 @@ if (!browser) return;
     height: 100%;
   }
   :global(.network-container .link) {
-    transition opacity 0.2s ease;
+    transition: opacity 0.2s ease;
   }
   :global(.network-container .node) {
-    transition opacity 0.2s ease;
+    transition: opacity 0.2s ease;
   }
   :global(.network-container .label) {
-    transition opacity 0.2s ease;
+    transition: opacity 0.2s ease;
   }
 </style>

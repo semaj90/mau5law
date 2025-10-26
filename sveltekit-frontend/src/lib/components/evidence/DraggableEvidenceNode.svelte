@@ -305,7 +305,7 @@
 <style>
   .evidence-node {
 /* @apply absolute cursor-pointer select-none; */
-    transition transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
   .evidence-node:hover {
     transform: scale(1.02);
@@ -315,7 +315,7 @@
   }
   .evidence-node.highlighted {
 /* @apply ring-2 ring-yellow-400 ring-opacity-75; */
-    animation pulse-glow 1.5s ease-in-out infinite;
+    animation: pulse-glow 1.5s ease-in-out infinite;
   }
   .evidence-node.dragging {
 /* @apply z-50 rotate-2 scale-105; */

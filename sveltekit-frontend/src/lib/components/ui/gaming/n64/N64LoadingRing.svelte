@@ -206,7 +206,7 @@
     stroke-linecap: round;
     stroke-dasharray: 283; /* 2 * π * 45 */
     stroke-dashoffset: calc(283 - (283 * var(--percentage) / 100));
-    transition stroke-dashoffset 0.5s ease;
+    transition: stroke-dashoffset 0.5s ease;
     filter: drop-shadow(0 0 2px var(--glow));
   }
   .percentage-text {
@@ -262,11 +262,11 @@
   @keyframes pulse-segment {
     0%,
     100% {
-      opacity: 0.4,
+      opacity: 0.4;
       transform: translateX(-50%) rotate(var(--rotation)) scale(1);
     }
     50% {
-      opacity: 1,
+      opacity: 1;
       transform: translateX(-50%) rotate(var(--rotation)) scale(1.1);
     }
   }
@@ -284,25 +284,25 @@
   @keyframes crystal-shine {
     0%,
     100% {
-      opacity: 0.8,
+      opacity: 0.8;
       transform: scale(1);
     }
     50% {
-      opacity: 1,
+      opacity: 1;
       transform: scale(1.2);
     }
   }
   @keyframes sparkle-twinkle {
     0%,
     100% {
-      opacity: 0,
+      opacity: 0;
     }
     25%,
     75% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.5,
+      opacity: 0.5;
     }
   }
   /* Reduced motion support */
@@ -319,3 +319,4 @@
     }
   }
 </style>
+

@@ -31,6 +31,36 @@ This is a sophisticated legal AI platform with microservices architecture featur
   - Caddy:443 (HTTPS/QUIC), :80 (HTTP)
   - QUIC Server:4433/udp, :4434/udp, :8095 (HTTP fallback)
 
+## Docker Service Endpoints (Use These Envs Everywhere)
+
+Always code endpoints to respect Docker service names first, with localhost fallbacks for dev without Compose. Prefer process.env and central helpers over literals.
+
+- PostgreSQL
+  - `DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db`
+  - Admin URL if needed: `ADMIN_DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres`
+- Redis
+  - `REDIS_URL=redis://:redis@redis:6379/0`
+  - Or split: `REDIS_HOST=redis`, `REDIS_PORT=6379`, `REDIS_PASSWORD=redis`
+- Qdrant
+  - `QDRANT_URL=http://qdrant:6333`
+- Ollama
+  - `OLLAMA_URL=http://ollama:11434`
+- MinIO
+  - `MINIO_ENDPOINT=minio:9000`, `MINIO_ACCESS_KEY=minioadmin`, `MINIO_SECRET_KEY=minioadmin`
+- Neo4j
+  - `NEO4J_URI=bolt://neo4j:7687`, `NEO4J_USER=neo4j`, `NEO4J_PASSWORD=password`
+
+Guidelines
+- Centralize service endpoints in small utility functions (e.g., `getOllamaEndpoint()` or db client factory) and import them across routes/services.
+- Never hardcode `http://localhost` in server code; use envs and fallbacks like `process.env.OLLAMA_URL || 'http://localhost:11434'` only at the edge.
+- When inserting records via Drizzle, prefer schema defaults (e.g., `defaultRandom()` on UUIDs). If you hit legacy schemas (e.g., `documents.uuid NOT NULL`), handle with a raw SQL fallback that sets `uuid = gen_random_uuid()`.
+- For WebSocket URLs, derive from `request.url` or `location` with protocol switch `ws/wss`.
+
+Code patterns
+- Database client: use `$lib/server/db/client` which picks up `DATABASE_URL` and supports production pooling.
+- Redis cache: use `$lib/server/cache/redis` or `$lib/server/optimize/query-cache` which respect `REDIS_*` envs.
+- Vector search: use the unified `enhancedVectorSearchService` which reads `PGVECTOR_URL`/`QDRANT_URL`.
+
 ### Route Discovery Patternits adapter)
 ```typescript
 // src/routes/all-routes/+page.server.ts - Service discovery

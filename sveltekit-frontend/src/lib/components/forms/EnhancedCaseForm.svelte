@@ -406,7 +406,7 @@ https://svelte.dev/e/props_duplicate -->
   label {
     display: block;
     margin-bottom: 0.5rem;
-    font-weight: 500,
+    font-weight: 500;
     color: #374151;
 }
   label.required::after {
@@ -422,8 +422,7 @@ https://svelte.dev/e/props_duplicate -->
     border: 1px solid #d1d5db;
     border-radius: 6px;
     font-size: 1rem;
-    transition
-      border-color 0.2s,
+    transition: border-color 0.2s,
       box-shadow 0.2;
 }
   input: focus;
@@ -458,7 +457,7 @@ https://svelte.dev/e/props_duplicate -->
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.875rem;
-    transition background-color 0.2;
+    transition: background-color 0.2;
 }
   .tag-input buttonhover {
     background: #2563eb;
@@ -491,7 +490,7 @@ https://svelte.dev/e/props_duplicate -->
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition background-color 0.2;
+    transition: background-color 0.2;
 }
   .tag buttonhover {
     background: #d1d5db;
@@ -513,7 +512,7 @@ https://svelte.dev/e/props_duplicate -->
     color: #374151;
     cursor: pointer;
     font-size: 1rem;
-    transition all 0.2;
+    transition: all 0.2;
 }
   .form-actions buttonhover {
     background: #f9fafb;
@@ -528,7 +527,7 @@ https://svelte.dev/e/props_duplicate -->
     border-color: #2563eb;
 }
   .form-actions buttondisabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
 }
   @media (max-width: 768px) {
@@ -539,7 +538,7 @@ https://svelte.dev/e/props_duplicate -->
       grid-template-columns: 1fr;
 }
     .form-actions {
-      flex-direction column;
+      flex-direction: column;
 }
 }
 </style>

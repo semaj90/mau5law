@@ -622,8 +622,7 @@
     padding: 2rem;
     text-align: center;
     cursor: pointer;
-    transition
-      border-color 0.2s,
+    transition: border-color 0.2s,
       background 0.2s;
     background: #f9fafb;
   }
@@ -643,7 +642,7 @@
   }
   .drop-zone-title {
     font-size: 1.125rem;
-    font-weight: 600,
+    font-weight: 600;
   }
   .drop-zone-description {
     font-size: 0.875rem;
@@ -658,7 +657,7 @@
     margin-bottom: 0.75rem;
   }
   .file-item {
-    transition box-shadow 0.2s;
+    transition: box-shadow 0.2s;
   }
   .file-item:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -710,7 +709,7 @@
   }
   .file-actions {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: flex-end;
     gap: 0.5rem;
   }
@@ -730,7 +729,7 @@
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .dialog-actions {
@@ -740,3 +739,4 @@
     margin-top: 1.5rem;
   }
 </style>
+

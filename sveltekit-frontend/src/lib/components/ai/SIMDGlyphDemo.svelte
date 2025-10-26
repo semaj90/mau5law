@@ -382,14 +382,14 @@ generateSIMDGlyph(demoPrompts[0])}
   /* Improve image hover effects */
   img:hover {
     transform: scale(1.02);
-    transition transform 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out;
   }
-  /* Add loading animation */
+  /* Add loading animation: */
   @keyframes pulse {
-    0%, 100% { opacity: 1, }
-    50% { opacity: 0.7, }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
   }
   .generating {
-    animation pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 </style>

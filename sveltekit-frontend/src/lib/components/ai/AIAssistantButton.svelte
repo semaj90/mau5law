@@ -303,26 +303,27 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(var(--yorha-accent-gold-rgb), 0.2), transparent);
-    transition left 0.5s ease;
+    transition: left 0.5s ease;
   }
   .ai-assistant-btn:hover::before {
     left: 100%;
   }
-  /* Pulse animation for processing state */
+  /* Pulse animation: for processing state */
   @keyframes ai-pulse {
     0%,
     100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.5,
+      opacity: 0.5;
     }
   }
   .ai-assistant-btn[data-status='processing'] {
-    animation ai-pulse 2s infinite;
+    animation: ai-pulse 2s infinite;
   }
   /* Glowing effect for floating button */
   .ai-assistant-btn.fixed:hover {
     box-shadow: 0 0 30px rgba(var(--yorha-accent-gold-rgb), 0.3);
   }
 </style>
+

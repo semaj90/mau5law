@@ -264,7 +264,7 @@ THREE.Vector3): THREE.Object3D {
         material = new THREE.MeshLambertMaterial({
           color: 0x2196F3,
           transparent: true,
-          opacity: 0.8,
+          opacity: 0.8;
         });
         break;
       case 'video':
@@ -313,7 +313,7 @@ THREE.Vector3): THREE.Object3D {
     const material = new THREE.MeshLambertMaterial({
       color: getEvidenceColor(evidence),
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.8;
     });
     const mesh = new THREE.Mesh(geometry, material);
     mesh.castShadow = true;
@@ -376,7 +376,7 @@ THREE.Vector3): THREE.Object3D {
     const material = new THREE.LineBasicMaterial({
       color: 0x4CAF50,
       transparent: true,
-      opacity: 0.6,
+      opacity: 0.6;
     });
     return new THREE.Line(geometry, material);
   }
@@ -461,8 +461,7 @@ THREE.Vector3): THREE.Object3D {
         // Focus camera on selected evidence
         const targetPosition = node.position.clone();
         targetPosition.z += 5;
-        // Smooth camera transition
-        const startPosition = camera.position.clone();
+        // Smooth camera transition: const startPosition = camera.position.clone();
         const duration = 1000;
         const startTime = Date.now();
         function animateCamera() {
@@ -496,7 +495,7 @@ THREE.Vector3): THREE.Object3D {
       // Animate evidence nodes
       evidenceNodes.forEach((node, evidenceId) => {
         node.rotation.y += 0.005;
-        // Pulse animation for selected evidence
+        // Pulse animation: for selected evidence
         if (selectedEvidence?.id === evidenceId) {
           const scale = 1 + Math.sin(Date.now() * 0.003) * 0.1;
           node.scale.setScalar(scale);
@@ -638,7 +637,7 @@ e; width: {width}px; height: {height}px;"
     border-radius: 4px;
     font-size: 12px;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .btn-control:hover {
     background: rgba(255, 255, 255, 0.2);
@@ -664,7 +663,7 @@ e; width: {width}px; height: {height}px;"
     bottom: 0;
     background: rgba(0, 0, 0, 0.9);
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 200,
@@ -676,7 +675,7 @@ e; width: {width}px; height: {height}px;"
     border: 3px solid rgba(255, 255, 255, 0.3);
     border-top: 3px solid #4a90e2;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin-bottom: 15px;
   }
   @keyframes spin {
@@ -708,7 +707,7 @@ e; width: {width}px; height: {height}px;"
   .evidence-panel p {
     margin: 5px 0;
     font-size: 14px;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   .evidence-actions {
     margin-top: 15px;
@@ -723,7 +722,7 @@ e; width: {width}px; height: {height}px;"
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
-    transition background 0.2s ease;
+    transition: background 0.2s ease;
   }
   .btn-primary:hover {
     background: #357abd;
@@ -737,3 +736,4 @@ e; width: {width}px; height: {height}px;"
     pointer-events: none !important;
   }
 </style>
+

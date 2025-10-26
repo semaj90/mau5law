@@ -242,21 +242,21 @@ https://svelte.dev/e/js_parse_error -->
   }
   :global(.ProseMirror h1) {
     font-size: 1.875rem;
-    font-weight: 700,
+    font-weight: 700;
     margin: 1rem 0 0.5rem 0;
-    line-height: 1.2,
+    line-height: 1.2;
   }
   :global(.ProseMirror h2) {
     font-size: 1.5rem;
-    font-weight: 600,
+    font-weight: 600;
     margin: 1rem 0 0.5rem 0;
-    line-height: 1.3,
+    line-height: 1.3;
   }
   :global(.ProseMirror h3) {
     font-size: 1.25rem;
-    font-weight: 600,
+    font-weight: 600;
     margin: 0.75rem 0 0.5rem 0;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   :global(.ProseMirror ul, .ProseMirror ol) {
     margin: 0.5rem 0;
@@ -266,9 +266,10 @@ https://svelte.dev/e/js_parse_error -->
     margin: 0.25rem 0;
   }
   :global(.ProseMirror strong) {
-    font-weight: 600,
+    font-weight: 600;
   }
   :global(.ProseMirror em) {
     font-style: italic;
   }
 </style>
+

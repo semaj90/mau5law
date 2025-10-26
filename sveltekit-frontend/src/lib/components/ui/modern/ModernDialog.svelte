@@ -124,7 +124,7 @@ d;
     max-height: calc(100vh - var(--golden-xl));
     overflow: hidden;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     animation: contentShow 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   .dialog-header {
@@ -134,17 +134,17 @@ d;
   }
   .dialog-title {
     font-size: var(--text-xl);
-    font-weight: 600,
+    font-weight: 600;
     color: var(--yorha-text-primary);
     text-transform: uppercase;
     letter-spacing: 0.025em;
-    margin: 0,
+    margin: 0;
   }
   .dialog-description {
     color: var(--yorha-text-secondary);
     font-size: var(--text-sm);
     margin: 0;
-    line-height: 1.5,
+    line-height: 1.5;
   }
   .dialog-close {
     display: flex;
@@ -157,7 +157,7 @@ d;
     background: transparent;
     border: 1px solid var(--yorha-border-primary);
     cursor: pointer;
-    transition all 200ms ease;
+    transition: all 200ms ease;
   }
   .dialog-close:hover {
     color: var(--yorha-text-primary);
@@ -180,19 +180,19 @@ d;
   }
 /* Animations */ @keyframes overlayShow {
     from {
-      opacity: 0,
+      opacity: 0;
     }
     to {
-      opacity: 1,
+      opacity: 1;
     }
   }
   @keyframes contentShow {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translate(-50%, -48%) scale(0.96);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translate(-50%, -50%) scale(1);
     }
   }
@@ -216,3 +216,4 @@ d;
     max-height: none;
   }
 </style>
+

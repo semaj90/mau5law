@@ -100,7 +100,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   function animate() {
     animationId = requestAnimationFrame(animate);
-    // Light weight drift animation - guard undefined meshes
+    // Light weight drift animation: - guard undefined meshes
     Object.values(nodeMeshes).forEach(m => {
       if (!m) return; // skip undefined entries
       m.rotation.y += 0.005;
@@ -172,3 +172,4 @@ https://svelte.dev/e/js_parse_error -->
     font-family: system-ui, sans-serif;
   }
 </style>
+

@@ -373,7 +373,7 @@
 
   .stat {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     gap: 1rem;
   }
 
@@ -419,7 +419,7 @@
 
   .result-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: start;
     gap: 1rem;
     margin-bottom: 0.5rem;
@@ -475,3 +475,5 @@
     opacity: 0.7;
   }
 </style>
+
+

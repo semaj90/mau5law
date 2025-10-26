@@ -220,7 +220,7 @@
     background: none;
     cursor: pointer;
     user-select: none;
-    transition all 0.1s ease;
+    transition: all 0.1s ease;
     font-family: 'Courier New', monospace;
     font-weight: bold;
     text-transform: uppercase;
@@ -235,14 +235,14 @@
     background: var(--n64-color);
     border: 4px solid #333;
     border-radius: 50%;
-    transition all 0.1s ease;
+    transition: all 0.1s ease;
     overflow: hidden;
   }
   .n64-button__content {
     position relative;
     z-index: 2,
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 100%;
@@ -308,7 +308,7 @@
   }
 /* Disabled state */ {}
   .n64-button--disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;
   }
@@ -359,11 +359,11 @@ box-shadow: {}
   }
   @keyframes priority-pulse {
     0% {
-      opacity: 1,
+      opacity: 1;
       transform: scale(1);
     }
     100% {
-      opacity: 0,
+      opacity: 0;
       transform: scale(1.2);
     }
   }
@@ -422,7 +422,7 @@ box-shadow: {}
   @media (prefers-reduced-motion reduce) {
 .n64-button, {}
     .n64-button__surface {
-      transition none;
+      transition: none;
     }
     .n64-button--glowing .n64-button__surface {
       animation: none;
@@ -449,3 +449,4 @@ box-shadow: {}
     }
   }
 </style>
+

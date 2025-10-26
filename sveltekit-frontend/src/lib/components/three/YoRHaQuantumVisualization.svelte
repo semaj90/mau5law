@@ -351,7 +351,7 @@ await initializeQuantumVisualization();
   }
   .controls-row {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-top: 0.5rem;
   }
@@ -375,7 +375,7 @@ await initializeQuantumVisualization();
     border-radius: 4px;
     font-size: 0.8rem;
     cursor: pointer;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .quantum-btn:hover {
     background: rgba(255, 255, 255, 0.2);
@@ -404,7 +404,7 @@ await initializeQuantumVisualization();
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     color: #fff;
@@ -415,7 +415,7 @@ await initializeQuantumVisualization();
     border: 4px solid rgba(255, 255, 255, 0.1);
     border-left: 4px solid #00ff41;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin-bottom: 1rem;
   }
   @keyframes spin {
@@ -442,7 +442,7 @@ await initializeQuantumVisualization();
   .metric-item {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     margin-bottom: 0.5rem;
     font-size: 0.8rem;
     gap: 0.5rem;
@@ -460,7 +460,7 @@ await initializeQuantumVisualization();
   }
   .metric-fill {
     height: 100%;
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
     border-radius: 4px;
   }
   .metric-fill.quantum { background: linear-gradient(90deg, #00bfff, #1e90ff), }
@@ -488,7 +488,7 @@ await initializeQuantumVisualization();
   /* Responsive design */
   @media (max-width: 768px) {
     .controls-row {
-      flex-direction column;
+      flex-direction: column;
       gap: 0.5rem;
       align-items: stretch;
     }
@@ -500,3 +500,4 @@ await initializeQuantumVisualization();
     }
   }
 </style>
+

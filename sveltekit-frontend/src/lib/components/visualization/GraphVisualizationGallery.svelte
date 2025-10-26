@@ -404,7 +404,7 @@ generateVisualizationsForAllAlgorithms()}
   }
   .gallery-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
     flex-wrap: wrap;
@@ -443,7 +443,7 @@ generateVisualizationsForAllAlgorithms()}
     border: 2px solid #4a90e2;
     border-radius: 8px;
     overflow: hidden;
-    transition transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   .gallery-item:hover {
     transform: translateY(-4px);
@@ -470,7 +470,7 @@ generateVisualizationsForAllAlgorithms()}
     width: 100%;
     height: 200px;
     object-fit: cover;
-    transition transform 0.3s ease;
+    transition: transform 0.3s ease;
   }
   .item-preview:hover .preview-image {
     transform: scale(1.05);
@@ -484,7 +484,7 @@ generateVisualizationsForAllAlgorithms()}
     color: white;
     padding: 1rem;
     transform: translateY(100%);
-    transition transform 0.3s ease;
+    transition: transform 0.3s ease;
   }
   .item-preview:hover .item-overlay {
     transform: translateY(0);
@@ -502,12 +502,12 @@ generateVisualizationsForAllAlgorithms()}
   .item-controls {
     padding: 1rem;
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
   }
   .item-metrics {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
     font-size: 0.8rem;
   }
@@ -572,7 +572,7 @@ d;
   }
   .metadata-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 0.5rem;
     background: #2a2e33;
@@ -581,7 +581,7 @@ d;
   /* Responsive Design */
   @media (max-width: 768px) {
     .gallery-header {
-      flex-direction column;
+      flex-direction: column;
       align-items: stretch;
     }
     .header-controls {
@@ -600,10 +600,10 @@ d;
   }
   /* Animation for generation */
   @keyframes pulse {
-    0%, 100% { opacity: 0.8, }
-    50% { opacity: 1, }
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
   }
   .gallery-item:has(.generate-btn:disabled) {,
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
 </style>

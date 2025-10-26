@@ -15,5 +15,6 @@
 </button>
 
 <style>
-  button[disabled] { opacity: 0.6, cursor: not-allowed; }
+  button[disabled] { opacity: 0.6; cursor: not-allowed; }
 </style>
+

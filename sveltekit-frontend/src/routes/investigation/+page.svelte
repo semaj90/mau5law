@@ -526,7 +526,7 @@
 <style>
   .investigation-workspace {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     height: 100vh;
     background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
     color: #00ff88;
@@ -539,7 +539,7 @@
   }
   .header-content {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
   }
   .case-info h1 {
@@ -554,7 +554,7 @@
     gap: 0.5rem;
   }
   .case-title {
-    font-weight: 600,
+    font-weight: 600;
     color: #FFD700;
   }
   .workspace-actions {
@@ -574,7 +574,7 @@
     height: 2rem;
     border: 1px solid #666;
     border-radius: 4px;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .status-.active {
     background: rgba(0, 255, 136, 0.2);
@@ -591,7 +591,7 @@
   }
   .tab-trigger {
     color: #cccccc;
-    transition color 0.3s ease;
+    transition: color 0.3s ease;
   }
   .tab-trigger: hover
   .tab-trigger[data-state="active"] {
@@ -617,7 +617,7 @@
   }
   .evidence-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .evidence-item {
@@ -628,7 +628,7 @@
   }
   .evidence-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 0.5rem;
   }
@@ -654,13 +654,13 @@
   .confidence-fill {
     height: 100%;
     background: linear-gradient(to right, #ff4444, #ffaa00, #00ff88);
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .evidence-analysis {
     font-size: 0.8rem;
     color: #cccccc;
     margin: 0.5rem 0;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   .evidence-tags {
     display: flex;
@@ -673,11 +673,11 @@
   }
   .chat-container {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
   }
   .chat-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     height: 100%;
   }
   .messages-container {
@@ -712,11 +712,11 @@
   }
   .message-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 0.5rem;
     font-size: 0.8rem;
-    opacity: 0.7,
+    opacity: 0.7;
   }
   .message-role {
     display: flex;
@@ -729,7 +729,7 @@
     font-size: 0.7rem;
   }
   .message-content {
-    line-height: 1.5,
+    line-height: 1.5;
   }
   .thinking-indicator {
     display: flex;
@@ -740,7 +740,7 @@
     height: 6px;
     background: #FFD700;
     border-radius: 50%;
-    animation thinking 1.5s ease-in-out infinite;
+    animation: thinking 1.5s ease-in-out infinite;
   }
   .thinking-indicator span:nth-child(2) {
     animation-delay: 0.3,
@@ -750,11 +750,11 @@
   }
   @keyframes thinking {
     0%, 80%, 100% {
-      opacity: 0.3,
+      opacity: 0.3;
       transform: scale(0.8);
     }
     40% {
-      opacity: 1,
+      opacity: 1;
       transform: scale(1);
     }
   }
@@ -767,7 +767,7 @@
   }
   .citations-container {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     height: 100%;
   }
   .add-citation {
@@ -778,7 +778,7 @@
   }
   .citation-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 0.75rem;
     border: 1px solid rgba(0, 255, 136, 0.3);
@@ -792,12 +792,12 @@
   }
   .empty-state {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 200px;
     text-align: center;
-    opacity: 0.6,
+    opacity: 0.6;
   }
   /* Responsive */
   @media (max-width: 1024px) {
@@ -813,7 +813,7 @@
       padding: 0.5rem 1rem;
     }
     .header-content {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
       align-items: flex-start;
     }
@@ -822,3 +822,4 @@
     }
   }
 </style>
+

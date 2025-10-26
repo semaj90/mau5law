@@ -36,15 +36,15 @@
   }
   .profile-header h1 {
     font-size: 32px;
-    font-weight: 700,
+    font-weight: 700;
     color: var(--text-primary, #111827);
     margin-bottom: 8px;
-    line-height: 1.2,
+    line-height: 1.2;
   }
   .profile-header p {
     color: var(--text-secondary, #6b7280);
     font-size: 16px;
-    line-height: 1.5,
+    line-height: 1.5;
   }
   @media (max-width: 768px) {
     .profile-header h1 {
@@ -55,3 +55,4 @@
     }
   }
 </style>
+

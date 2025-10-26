@@ -481,7 +481,7 @@ https://svelte.dev/e/js_parse_error -->
     font-family: "Courier New", monospace;
   }
   :global(.message-content h1, .message-content h2, .message-content h3) {
-    font-weight: 600,
+    font-weight: 600;
     margin: 1rem 0 0.5rem 0;
   }
   :global(.message-content h1) {

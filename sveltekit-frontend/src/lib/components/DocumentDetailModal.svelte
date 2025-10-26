@@ -340,7 +340,7 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Modal Content -->
     <div
       class="bg-white rounded-lg shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden"
-      /* transition removed */}
+      /* transition: removed */}
     >
       <!-- Header -->
       <div class="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">

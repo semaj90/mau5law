@@ -1,9 +1,9 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { createHash } from 'crypto';
+import { createHash, randomUUID } from 'crypto';
 import { db, legal_documents } from '$lib/server/db';
 import { documents, documentChunks } from '$lib/server/db/enhanced-embedding-schema';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { ensureBucket, putObject } from '$lib/server/minio/client';
 import { createClient, type RedisClientType } from 'redis';
 
@@ -387,17 +387,23 @@ export const POST: RequestHandler = async ({ request }) => {
     // Store main document (using Drizzle)
     let documentId: string;
     try {
+      const minioPath = storedUri ?? (minioSuccess ? `minio://legal-documents/${minioObject}` : `hash:${contentHash}`);
+      // Provide a safe default system user for uploadedBy when unauthenticated
+      const systemUser = process.env.SYSTEM_USER_ID ?? '00000000-0000-0000-0000-000000000000';
+
       const [newDocument] = await db
         .insert(documents)
         .values({
-          title: file.name.replace(/\.[^/.]+$/, ''), // Remove file extension for title
+          // let DB generate `id` via defaultRandom(); don't force uuid field name
+          title: file.name, // optional human-friendly title
           filename: file.name,
-          sourceUri: storedUri ?? (minioSuccess ? `minio://legal-documents/${minioObject}` : `hash:${contentHash}`),
-          mimeType: file.type,
-          fileSize: file.size,
+          sourceUri: minioPath,
+          mimeType: file.type || null,
+          fileSize: Number(file.size || 0),
           extractedText: content,
           processingStatus: 'completed',
-          uploadedBy: '00000000-0000-0000-0000-000000000000', // Default system user
+          caseId: null, // no case linked by default
+          uploadedBy: systemUser,
           metadata: {
             chunksCount: chunks.length,
             uploadedAt: new Date().toISOString(),
@@ -405,7 +411,6 @@ export const POST: RequestHandler = async ({ request }) => {
             tags,
             contentHash,
           },
-          processedAt: new Date(),
         })
         .returning({ id: documents.id });
 
@@ -416,6 +421,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // Postgres error code 42703 = undefined_column
       // Narrow the unknown error safely
       const errCode = getErrorCode(insertErr);
+      const errMsg = insertErr instanceof Error ? insertErr.message : String(insertErr);
 
       if (errCode === '42703') {
         const message = insertErr && insertErr instanceof Error ? insertErr.message : String(insertErr);
@@ -455,8 +461,34 @@ export const POST: RequestHandler = async ({ request }) => {
 
         documentId = newDoc.id as string;
       } else {
-        // rethrow for outer catch handler
-        throw insertErr;
+        // Some environments have a legacy 'documents' table with a NOT NULL uuid column.
+        // Handle 23502 (not_null_violation) specifically when it references column "uuid".
+        if (errCode === '23502' && /column\s+"uuid"/i.test(errMsg)) {
+          try {
+            const raw = await db.execute(sql`INSERT INTO documents
+              (uuid, title, filename, source_uri, mime_type, file_size, extracted_text, processing_status, uploaded_by, metadata)
+              VALUES (gen_random_uuid(), ${file.name.replace(/\.[^/.]+$/, '')}, ${file.name},
+                      ${storedUri ?? (minioSuccess ? `minio://legal-documents/${minioObject}` : `hash:${contentHash}`)},
+                      ${file.type}, ${file.size}, ${content}, 'completed', ${'00000000-0000-0000-0000-000000000000'},
+                      ${JSON.stringify({
+                        chunksCount: chunks.length,
+                        uploadedAt: new Date().toISOString(),
+                        extractionMethod: 'text_extraction',
+                        tags,
+                        contentHash,
+                      })}
+              ) RETURNING id`);
+            // Drizzle execute returns driver-specific shape; read first row id
+            const row = (raw as any)?.rows?.[0] ?? (Array.isArray(raw) ? raw[0] : null);
+            documentId = row?.id ?? row?.ID ?? row?.Id ?? crypto.randomUUID();
+          } catch (rawErr) {
+            // rethrow to outer catch if raw insert fails
+            throw rawErr;
+          }
+        } else {
+          // rethrow for outer catch handler
+          throw insertErr;
+        }
       }
     }
 

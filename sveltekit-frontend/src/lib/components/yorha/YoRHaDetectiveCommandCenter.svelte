@@ -461,7 +461,7 @@ d;
   .header-content {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
     max-width: 100%;
     margin: 0 auto;
     padding: 1rem 1.5rem;
@@ -470,11 +470,11 @@ d;
   .command-center-title {
     font-size: 1.5rem;
     font-weight: bold;
-    margin: 0,
+    margin: 0;
   }
   .timestamp {
     font-size: 0.875rem;
-    margin: 0,
+    margin: 0;
     opacity: 0.8;
   }
   .header-actions {
@@ -493,7 +493,7 @@ d;
     font-weight: bold;
     color: var(--yorha-dark);
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     border-radius: 0,
   }
   .header-btn:hover {
@@ -527,7 +527,7 @@ y;
   }
   .sidebar-nav {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .sidebar-link {
@@ -542,7 +542,7 @@ y;
     background: none;
     color: var(--yorha-dark);
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     border-radius: 0,
   }
   .sidebar-link:hover {
@@ -560,7 +560,7 @@ y;
   }
   .dashboard-content {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1.5rem;
   }
   .metrics-grid {
@@ -573,7 +573,7 @@ y;
     border: 1px solid var(--yorha-sand-dark);
     border-radius: 0,
     padding: 1rem;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .metric-card:hover {
     transform: translateY(-2px);
@@ -582,14 +582,14 @@ y;
   .metric-header {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
     margin-bottom: 0.5rem;
   }
   .metric-label {
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    opacity: 0.8,
+    opacity: 0.8;
   }
   .metric-icon {
     font-size: 1.5rem;
@@ -618,7 +618,7 @@ y;
   }
   .cases-list {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .case-item {
@@ -626,7 +626,7 @@ y;
     border-radius: 0,
     padding: 1rem;
     background-color: white;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .case-item:hover {
     transform: translateX(4px);
@@ -634,7 +634,7 @@ y;
   .case-header {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
     margin-bottom: 0.5rem;
   }
   .case-id {
@@ -655,23 +655,23 @@ y;
   }
   .case-meta {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     font-size: 0.75rem;
-    opacity: 0.8,
+    opacity: 0.8;
   }
   .health-metrics {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .health-metric {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.5rem;
   }
   .health-label {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     font-size: 0.875rem;
   }
@@ -690,7 +690,7 @@ y;
   .health-fill {
     height: 100%;
     border-radius: 0,
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .health-fill.normal {
     background-color: #10b981;
@@ -710,7 +710,7 @@ y;
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 50%;
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   .network-indicator.excellent {
     background-color: #10b981;
@@ -723,14 +723,14 @@ y;
   }
   .network-label {
     font-size: 0.75rem;
-    opacity: 0.8,
+    opacity: 0.8;
   }
   @keyframes pulse {
     0%, 100% {
-      opacity: 1,
+      opacity: 1;
     }
     50% {
-      opacity: 0.5,
+      opacity: 0.5;
     }
   }
   /* Responsive adjustments */
@@ -750,7 +750,7 @@ c;
     border-color: #2E8B57 !important;
     font-weight: bold !important;
     box-shadow: 0 0 10px rgba(46, 139, 87, 0.3) !important;
-    animation ai-pulse 2s infinite;
+    animation: ai-pulse 2s infinite;
   }
   .header-btn.ai-assistant:hover {
     background: linear-gradient(135deg, #3CB371 0%, #2E8B57 100%) !important;
@@ -782,15 +782,15 @@ c;
   .ai-status-indicator.active {
     background: #2E8B57;
     box-shadow: 0 0 8px #2E8B57;
-    animation ai-blink 1.5s infinite;
+    animation: ai-blink 1.5s infinite;
   }
   .ai-status-text {
     font-weight: bold;
     color: #3D3D3D;
   }
   @keyframes ai-blink {
-    0%, 100% { opacity: 1, }
-    50% { opacity: 0.3, }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
   }
   .ai-capabilities {
     display: grid;
@@ -846,7 +846,7 @@ c;
   }
   @media (max-width: 768px) {
     .header-content {
-      flex-direction column;
+      flex-direction: column;
       gap: 1rem;
     }
     .main-content {
@@ -857,3 +857,4 @@ c;
     }
   }
 </style>
+

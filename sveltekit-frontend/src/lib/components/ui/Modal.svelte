@@ -119,20 +119,20 @@
     max-height: 90vh;
     overflow: hidden;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
   }
   .modal-header {
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
     padding: 1.5rem;
     border-bottom: 1px solid #e5e7eb;
   }
   .modal-title {
     font-size: 1.25rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #111827;
-    margin: 0,
+    margin: 0;
   }
   .modal-close {
     background: none;
@@ -140,7 +140,7 @@
     cursor: pointer;
     padding: 0.5rem;
     color: #6b7280;
-    transition color 0.15;
+    transition: color 0.15;
   }
   .modal-close:hover {
     color: #374151;
@@ -158,3 +158,4 @@
     gap: 0.5rem;
   }
 </style>
+

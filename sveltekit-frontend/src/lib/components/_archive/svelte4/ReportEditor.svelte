@@ -491,7 +491,7 @@ https://svelte.dev/e/props_duplicate -->
   .report-title-input {
     flex: 1;
     font-size: 20px;
-    font-weight: 600,
+    font-weight: 600;
     border: none;
     background: transparent;
     outline: none;
@@ -542,7 +542,7 @@ https://svelte.dev/e/props_duplicate -->
     background: #2563eb;
 }
   .btn-primary:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
 }
   .btn-secondary {
@@ -591,7 +591,7 @@ https://svelte.dev/e/props_duplicate -->
     overflow-y: auto;
     font-family: "Georgia", serif;
     font-size: 16px;
-    line-height: 1.6,
+    line-height: 1.6;
     outline: none;
     background: white;
 }
@@ -626,7 +626,7 @@ https://svelte.dev/e/props_duplicate -->
 }
   .sidebar-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 16px;
     border-bottom: 1px solid #e2e8f0;
@@ -681,7 +681,7 @@ https://svelte.dev/e/props_duplicate -->
 }
   .panel-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     padding: 12px 16px;
     border-bottom: 1px solid #e2e8f0;
@@ -734,7 +734,7 @@ https://svelte.dev/e/props_duplicate -->
     color: #6b7280;
     cursor: pointer;
     font-size: 14px;
-    line-height: 1,
+    line-height: 1;
 }
   .loading {
     text-align: center;
@@ -743,3 +743,4 @@ https://svelte.dev/e/props_duplicate -->
 }
 </style>
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->
+

@@ -670,12 +670,12 @@
   }
   .stats {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.25rem;
   }
   .stat {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     font-size: 0.8rem;
     color: rgba(255, 255, 255, 0.7);
   }
@@ -694,7 +694,7 @@
     color: #fff;
     font-size: 0.8rem;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .control-btn:hover {
     background: rgba(138, 43, 226, 0.4);
@@ -710,7 +710,7 @@
     margin-bottom: 1.5rem;
   }
   .detail-header h2 {
-    margin: 0,
+    margin: 0;
     flex: 1;
   }
   .node-type {
@@ -739,7 +739,7 @@
   .confidence-fill {
     height: 100%;
     background: linear-gradient(90deg, #8a2be2, #4b0082);
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .priority-value {
     color: #8a2be2;
@@ -773,3 +773,5 @@
     font-size: 0.8rem;
   }
 </style>
+
+

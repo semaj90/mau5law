@@ -372,7 +372,7 @@ https://svelte.dev/e/script_duplicate -->
   }
   .search-form {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 1rem;
   }
   .form-row {
@@ -382,9 +382,9 @@ https://svelte.dev/e/script_duplicate -->
   }
   .form-row label {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     flex: 1;
-    font-weight: 500,
+    font-weight: 500;
     color: #333;
   }
   .query-input {
@@ -410,9 +410,9 @@ https://svelte.dev/e/script_duplicate -->
     padding: 0.75rem 1.5rem;
     border: none;
     border-radius: 4px;
-    font-weight: 500,
+    font-weight: 500;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .search-button {
     background: #007bff;
@@ -444,7 +444,7 @@ https://svelte.dev/e/script_duplicate -->
   }
   .confidence {
     margin-top: 0.5rem;
-    font-weight: 500,
+    font-weight: 500;
     color: #007bff;
   }
   .search-metadata {
@@ -478,12 +478,12 @@ https://svelte.dev/e/script_duplicate -->
   }
   .doc-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 0.5rem;
   }
   .doc-header h4 {
-    margin: 0,
+    margin: 0;
     color: #333;
   }
   .relevance-score {
@@ -492,7 +492,7 @@ https://svelte.dev/e/script_duplicate -->
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     font-size: 0.8rem;
-    font-weight: 500,
+    font-weight: 500;
   }
   .doc-summary {
     color: #666;
@@ -528,3 +528,4 @@ https://svelte.dev/e/script_duplicate -->
     color: #333;
   }
 </style>
+

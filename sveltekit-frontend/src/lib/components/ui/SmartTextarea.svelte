@@ -162,11 +162,10 @@ d; left: {commandMenuPosition.x}px; top: {commandMenuPosition.y}px; z-index: 100
     padding: 0.75rem;
     font-family: inherit;
     font-size: 0.875rem;
-    line-height: 1.5,
+    line-height: 1.5;
     background: var(--pico-card-background-color, #ffffff);
     color: var(--pico-color, #111827);
-    transition
-      border-color 0.15s ease,
+    transition: border-color 0.15s ease,
       box-shadow 0.15s ease;
   }
   .smart-textarea:focus {
@@ -175,7 +174,7 @@ d; left: {commandMenuPosition.x}px; top: {commandMenuPosition.y}px; z-index: 100
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   }
   .smart-textarea:disabled {
-    opacity: 0.6,
+    opacity: 0.6;
     cursor: not-allowed;
     background: var(--pico-card-sectioning-background-color, #f8fafc);
   }
@@ -196,10 +195,11 @@ d; left: {commandMenuPosition.x}px; top: {commandMenuPosition.y}px; z-index: 100
     right: 0;
     font-size: 0.75rem;
     color: var(--pico-muted-color, #6b7280);
-    opacity: 0,
-    transition opacity 0.15s ease;
+    opacity: 0;
+    transition: opacity 0.15s ease;
   }
   .smart-textarea-container:hover::after {
-    opacity: 1,
+    opacity: 1;
   }
 </style>
+

@@ -827,7 +827,7 @@ await loadCaseEvidence();
 <style>
   .case-evidence-organizer {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     height: 100vh;
     background: #f8fafc;
     font-family:
@@ -842,15 +842,15 @@ await loadCaseEvidence();
   }
   .header-content {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1rem;
   }
   .header-content h1 {
-    margin: 0,
+    margin: 0;
     color: #1e293b;
     font-size: 1.75rem;
-    font-weight: 700,
+    font-weight: 700;
   }
   .case-info {
     display: flex;
@@ -861,7 +861,7 @@ await loadCaseEvidence();
   }
   .collaboration-status {
     color: #059669;
-    font-weight: 500,
+    font-weight: 500;
   }
   .mode-selector {
     display: flex;
@@ -877,7 +877,7 @@ await loadCaseEvidence();
     border: 1px solid #e2e8f0;
     border-radius: 0.5rem;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .mode-buttonhover {
     background: #e2e8f0;
@@ -899,7 +899,7 @@ await loadCaseEvidence();
     border-bottom: 1px solid #e2e8f0;
     padding: 1rem 2rem;
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
@@ -910,13 +910,13 @@ await loadCaseEvidence();
   }
   .metric {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     text-align: center;
   }
   .metric-value {
     font-size: 1.5rem;
-    font-weight: 700,
+    font-weight: 700;
     color: #1e293b;
   }
   .metric-label {
@@ -969,7 +969,7 @@ await loadCaseEvidence();
   .progress-fill {
     height: 100%;
     background: #3b82f6;
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .spinner {
     width: 2rem;
@@ -977,7 +977,7 @@ await loadCaseEvidence();
     border: 3px solid #f3f4f6;
     border-top: 3px solid #3b82f6;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin: 1rem auto;
   }
   @keyframes spin {
@@ -999,7 +999,7 @@ await loadCaseEvidence();
     border-radius: 0.5rem;
     padding: 1rem;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .evidence-card:hover {
     border-color: #3b82f6;
@@ -1011,14 +1011,14 @@ await loadCaseEvidence();
   }
   .evidence-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: flex-start;
     margin-bottom: 0.5rem;
   }
   .evidence-header h4 {
     margin: 0;
     font-size: 1rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #1e293b;
   }
   .priority-badge {
@@ -1048,11 +1048,11 @@ await loadCaseEvidence();
     margin: 0 0 0.75rem 0;
     color: #64748b;
     font-size: 0.875rem;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   .evidence-meta {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     font-size: 0.75rem;
     color: #6b7280;
@@ -1061,12 +1061,12 @@ await loadCaseEvidence();
     background: #f1f5f9;
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
-    font-weight: 500,
+    font-weight: 500;
   }
   /* Category organization styles */
   .category-organization {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 2rem;
   }
   .category-group {
@@ -1077,22 +1077,22 @@ await loadCaseEvidence();
   }
   .category-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 0.75rem;
     border-bottom: 1px solid #e5e7eb;
   }
   .category-header h3 {
-    margin: 0,
+    margin: 0;
     color: #1e293b;
     font-size: 1.25rem;
-    font-weight: 600,
+    font-weight: 600;
   }
   .category-count {
     color: #64748b;
     font-size: 0.875rem;
-    font-weight: 500,
+    font-weight: 500;
   }
   .evidence-grid {
     display: grid;
@@ -1102,7 +1102,7 @@ await loadCaseEvidence();
   /* Timeline organization styles */
   .timeline-organization {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 2rem;
   }
   .timeline-period {
@@ -1113,7 +1113,7 @@ await loadCaseEvidence();
   }
   .period-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 0.75rem;
@@ -1127,7 +1127,7 @@ await loadCaseEvidence();
     border-radius: 0.375rem;
     margin-bottom: 0.75rem;
     cursor: pointer;
-    transition all 0.2;
+    transition: all 0.2;
   }
   .timeline-item:hover {
     border-color: #3b82f6;
@@ -1146,7 +1146,7 @@ await loadCaseEvidence();
   .timeline-content h4 {
     margin: 0 0 0.5rem 0;
     font-size: 1rem;
-    font-weight: 600,
+    font-weight: 600;
     color: #1e293b;
   }
   .timeline-meta {
@@ -1159,7 +1159,7 @@ await loadCaseEvidence();
   /* Clusters organization styles */
   .clusters-organization {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 2rem;
   }
   .cluster-group {
@@ -1171,7 +1171,7 @@ await loadCaseEvidence();
   }
   .cluster-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 0.75rem;
   }
@@ -1198,7 +1198,7 @@ await loadCaseEvidence();
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     font-size: 0.75rem;
-    font-weight: 500,
+    font-weight: 500;
   }
   .cluster-evidence {
     display: grid;
@@ -1215,7 +1215,7 @@ await loadCaseEvidence();
   /* Chain of custody styles */
   .custody-organization {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 2rem;
   }
   .custody-chain {
@@ -1226,7 +1226,7 @@ await loadCaseEvidence();
   }
   .chain-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 1rem;
     padding-bottom: 0.75rem;
@@ -1236,7 +1236,7 @@ await loadCaseEvidence();
     padding: 0.25rem 0.75rem;
     border-radius: 1rem;
     font-size: 0.75rem;
-    font-weight: 500,
+    font-weight: 500;
   }
   .completeness-0 {
     background: #fef2f2;
@@ -1288,12 +1288,14 @@ await loadCaseEvidence();
   }
   .custody-entry {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     padding: 0.25rem 0;
     font-size: 0.75rem;
     color: #6b7280;
   }
   .custody-action {
-    font-weight: 500,
+    font-weight: 500;
   }
 </style>
+
+

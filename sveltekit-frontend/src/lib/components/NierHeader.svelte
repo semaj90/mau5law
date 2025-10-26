@@ -160,20 +160,20 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     align-items: center;
     gap: 0.75rem;
     padding: 0.5rem 1rem;
-    font-weight: 600,
+    font-weight: 600;
     color: var(--harvard-crimson);
     background: transparent;
     border: none;
     cursor: pointer;
     border-radius: 6px;
-    transition background 0.2s ease;
+    transition: background 0.2s ease;
   }
   .brand-buttonhover {
     background: var(--bg-tertiary);
   }
   .brand-text {
     font-size: 1.1rem;
-    font-weight: 700,
+    font-weight: 700;
   }
   .main-nav {
     display: flex;
@@ -191,7 +191,7 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     border: none;
     cursor: pointer;
     border-radius: 6px;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .nav-buttonhover {
     color: var(--text-primary);
@@ -223,7 +223,7 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     border: none;
     cursor: pointer;
     border-radius: 6px;
-    transition background 0.2s ease;
+    transition: background 0.2s ease;
     color: var(--text-primary);
   }
   .user-buttonhover {
@@ -250,7 +250,7 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     font-size: 0.875rem;
   }
   .user-name {
-    font-weight: 500,
+    font-weight: 500;
     color: var(--text-primary);
   }
   .user-menu {
@@ -276,7 +276,7 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     border: none;
     cursor: pointer;
     border-radius: 4px;
-    transition background 0.2s ease;
+    transition: background 0.2s ease;
     color: var(--text-primary);
     text-align: left;
   }
@@ -295,7 +295,7 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     color: var(--harvard-crimson);
     border-radius: 6px;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .sign-in-buttonhover {
     background: var(--harvard-crimson);
@@ -339,3 +339,4 @@ import type {User} from '$lib/types'; import type {User} from '$lib/types/user';
     }
   }
 </style>
+

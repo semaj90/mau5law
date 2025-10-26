@@ -39,7 +39,7 @@
   .form-field {
     margin-bottom: 1rem;
     display: flex;
-    flex-direction column;
+    flex-direction: column;
   }
   .error {
     color: red;
@@ -56,3 +56,4 @@
     cursor: pointer;
   }
 </style>
+

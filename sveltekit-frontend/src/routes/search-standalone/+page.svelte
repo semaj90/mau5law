@@ -208,7 +208,7 @@
     font-size: 10px;
     color: #6c757d;
     margin: 0;
-    line-height: 1.6,
+    line-height: 1.6;
   }
   .search-main {
     max-width: 1200px;
@@ -241,21 +241,21 @@
   }
   .result-card {
     background: white;
-    transition transform 0.2s ease;
+    transition: transform 0.2s ease;
   }
   .result-card:hover {
     transform: translateY(-2px);
   }
   .result-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: flex-start;
     margin-bottom: 12px;
   }
   .result-title {
     font-size: 12px;
     color: #212529;
-    margin: 0,
+    margin: 0;
     flex: 1;
   }
   .similarity-badge {
@@ -268,7 +268,7 @@
   }
   .result-content {
     font-size: 9px;
-    line-height: 1.5,
+    line-height: 1.5;
     color: #6c757d;
     margin-bottom: 16px;
   }
@@ -308,7 +308,7 @@
   }
   .modal-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     margin-bottom: 20px;
     padding-bottom: 16px;
@@ -320,14 +320,14 @@
     gap: 12px;
     font-size: 14px;
     color: #212529;
-    margin: 0,
+    margin: 0;
   }
   .close-btn {
     width: 40px;
     height: 40px;
     padding: 0;
     font-size: 16px;
-    line-height: 1,
+    line-height: 1;
   }
   .modal-content h4 {
     font-size: 10px;
@@ -336,7 +336,7 @@
   }
   .content-text {
     font-size: 9px;
-    line-height: 1.6,
+    line-height: 1.6;
     color: #212529;
     background: #f8f9fa;
     padding: 16px;
@@ -372,7 +372,7 @@
   }
   .footer-content {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-betweenn;
     align-items: center;
     background: rgba(255, 255, 255, 0.9);
   }
@@ -382,7 +382,7 @@
     gap: 8px;
     font-size: 8px;
     color: #6c757d;
-    margin: 0,
+    margin: 0;
   }
   .footer-stats {
     display: flex;
@@ -410,7 +410,7 @@
       grid-template-columns: 1fr;
     }
     .footer-content {
-      flex-direction column;
+      flex-direction: column;
       gap: 12px;
     }
     .document-viewer {
@@ -422,13 +422,13 @@
   }
   @media (max-width: 480px) {
     .result-actions {
-      flex-direction column;
+      flex-direction: column;
     }
     .action-btn {
       width: 100%;
     }
     .modal-header {
-      flex-direction column;
+      flex-direction: column;
       gap: 12px;
     }
     .close-btn {
@@ -436,3 +436,5 @@
     }
   }
 </style>
+
+

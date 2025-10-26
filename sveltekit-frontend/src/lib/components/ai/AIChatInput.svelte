@@ -170,8 +170,7 @@
     background: var(--bg-primary, #ffffff);
     border: 1px solid var(--border-color, #e2e8f0);
     border-radius: 8px;
-    transition
-      border-color 0.2s ease,
+    transition: border-color 0.2s ease,
       box-shadow 0.2s ease;
   }
   .input-container:focus-within {
@@ -189,7 +188,7 @@
     resize: none;
     font-family: inherit;
     font-size: 0.875rem;
-    line-height: 1.5,
+    line-height: 1.5;
     color: var(--text-primary, #1e293b);
     overflow-y: auto;
     scrollbar-width: thin;
@@ -223,7 +222,7 @@
   }
   .character-count.at-limit {
     color: var(--text-error, #dc2626);
-    font-weight: 600,
+    font-weight: 600;
   }
   .send-button {
     display: flex;
@@ -236,7 +235,7 @@
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .send-buttonhover:not(:disabled) {
     background: var(--bg-hover, #e2e8f0);
@@ -250,7 +249,7 @@
     background: var(--accent-hover, #2563eb);
   }
   .send-buttondisabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .input-hint {
@@ -322,3 +321,4 @@
     }
   }
 </style>
+

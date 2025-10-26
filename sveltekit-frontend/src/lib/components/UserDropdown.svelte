@@ -111,7 +111,7 @@
     padding: 8px 12px;
     border-radius: 8px;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
     color: var(--text-primary, #374151);
   }
   .user-trigger:hover {
@@ -126,7 +126,7 @@
     white-space: nowrap;
   }
   .dropdown-arrow {
-    transition transform 0.2s ease;
+    transition: transform 0.2s ease;
   }
   .dropdown-arrow.rotated {
     transform: rotate(180deg);
@@ -143,15 +143,15 @@
     min-width: 280px;
     max-width: 320px;
     z-index: 50,
-    animation slideDown 0.2s ease;
+    animation: slideDown 0.2s ease;
   }
   @keyframes slideDown {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translateY(-8px);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translateY(0);
     }
   }
@@ -187,13 +187,13 @@
   .dropdown-section h4 {
     margin: 0 0 12px 0;
     font-size: 14px;
-    font-weight: 600,
+    font-weight: 600;
     color: var(--text-secondary, #6b7280);
   }
   .dropdown-divider {
     height: 1px;
     background: var(--border-color, #e5e7eb);
-    margin: 0,
+    margin: 0;
   }
   .dropdown-actions {
     padding: 12px 8px;
@@ -210,9 +210,9 @@
     text-decoration none;
     border-radius: 8px;
     font-size: 14px;
-    font-weight: 500,
+    font-weight: 500;
     cursor: pointer;
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
   .dropdown-item:hover {
     background: var(--bg-secondary, #f3f4f6);
@@ -239,3 +239,4 @@
     }
   }
 </style>
+

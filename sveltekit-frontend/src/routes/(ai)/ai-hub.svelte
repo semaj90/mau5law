@@ -213,7 +213,7 @@
   .service-card {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
 
   .service-card:hover {
@@ -239,8 +239,8 @@
     border: none;
     padding: 0.75rem;
     border-radius: 0.5rem;
-    font-weight: 600,
-    transition all 0.3s ease;
+    font-weight: 600;
+    transition: all 0.3s ease;
   }
 
   .service-buttonhover {
@@ -265,14 +265,14 @@
   }
 
   .activity-type {
-    font-weight: 600,
+    font-weight: 600;
     color: #00d4aa;
     margin-bottom: 0.5rem;
   }
 
   .activity-details {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     font-size: 0.9rem;
     color: #a1a1aa;
@@ -283,7 +283,7 @@
   .pages,
   .similarity {
     color: #00d4aa;
-    font-weight: 600,
+    font-weight: 600;
   }
 
   @media (max-width: 768px) {
@@ -300,9 +300,11 @@
     }
 
     .activity-details {
-      flex-direction column;
+      flex-direction: column;
       align-items: flex-start;
       gap: 0.5rem;
     }
   }
 </style>
+
+

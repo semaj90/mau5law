@@ -210,7 +210,7 @@
   }
   .dashboard-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
   }
@@ -228,8 +228,8 @@
     border: none;
     border-radius: 0.375rem;
     cursor: pointer;
-    font-weight: 500,
-    transition all 0.2;
+    font-weight: 500;
+    transition: all 0.2;
   }
   .btn-primary {
     background: var(--primary-color);
@@ -302,7 +302,7 @@
   .progress-fill {
     height: 100%;
     background: var(--primary-color);
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .chart-section {
     background: white;
@@ -322,7 +322,7 @@
   }
   .endpoint-item {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
     padding: 0.75rem;
     background: var(--background-light);
@@ -331,7 +331,7 @@
   }
   .endpoint-path {
     font-family: monospace;
-    font-weight: 500,
+    font-weight: 500;
   }
   .endpoint-stats {
     display: flex;
@@ -349,7 +349,7 @@
   .peak-hour-bar {
     flex: 1,
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     height: 100%;
   }
@@ -449,3 +449,4 @@
     color: #6b7280;
   }
 </style>
+

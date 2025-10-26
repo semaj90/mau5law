@@ -547,7 +547,7 @@
       rgba(0, 0, 0, 0.02) 4px
     );
     mix-blend-mode: multiply;
-    opacity: 0.6,
+    opacity: 0.6;
   }
   /* Loading overlay */
   .canvas-loading {
@@ -558,7 +558,7 @@
     bottom: 0;
     background: rgba(0, 0, 0, 0.8);
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 16px;
@@ -597,11 +597,11 @@
     font-size: 11px;
     border-radius: 4px;
     z-index: 20;
-    line-height: 1.4,
+    line-height: 1.4;
   }
   /* Disabled state */
   .n64-canvas-container.disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     filter: grayscale(0.8);
     pointer-events: none;
   }

@@ -219,7 +219,7 @@
     padding: 2rem;
     text-align: center;
     cursor: pointer;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     background: var(--background-alt, #f8f9fa);
   }
   .upload-zone:hover {
@@ -267,20 +267,20 @@
   }
   .upload-progress {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     gap: 1rem;
   }
   .upload-spinner {
     font-size: 2rem;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
   @keyframes spin {
     from { transform: rotate(0deg), }
     to { transform: rotate(360deg), }
   }
   .upload-message {
-    font-weight: 500,
+    font-weight: 500;
     color: var(--text-primary, #333);
   }
   .progress-bar {
@@ -294,7 +294,7 @@
   .progress-fill {
     height: 100%;
     background: var(--primary, #007bff);
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .file-preview {
     margin-top: 1rem;
@@ -324,7 +324,7 @@
     flex: 1,
   }
   .file-name {
-    font-weight: 500,
+    font-weight: 500;
     color: var(--text-primary, #333);
   }
   .file-meta {

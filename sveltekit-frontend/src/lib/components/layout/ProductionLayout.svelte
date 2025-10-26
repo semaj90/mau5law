@@ -618,9 +618,9 @@
   :global(.yorha-production-layout *::-webkit-scrollbar-thumb:hover) {
     background: linear-gradient(180deg, rgba(245, 158, 11, 0.8), rgba(217, 119, 6, 0.8));
   }
-  /* Professional animation effects */
+  /* Professional animation: effects */
   :global(.professional-glow) {
-    animation professional-glow 3s ease-in-out infinite;
+    animation: professional-glow 3s ease-in-out infinite;
   }
   @keyframes professional-glow {
     0%,
@@ -648,11 +648,11 @@
   }
   /* Professional smooth transitions */
   :global(*) {
-    transition
-      color 0.3s ease,
+    transition: color 0.3s ease,
       background-color 0.3s ease,
       border-color 0.3s ease,
       transform 0.3s ease,
       box-shadow 0.3s ease;
   }
 </style>
+

@@ -63,7 +63,7 @@
 d;
     z-index: 9999,
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 12px;
     pointer-events: none;
   }
@@ -82,12 +82,12 @@ d;
   .notification-group-bottom-right {
     bottom: 20px;
     right: 20px;
-    flex-direction column-rever;
+    flex-direction: column-rever;
   }
   .notification-group-bottom-left {
     bottom: 20px;
     left: 20px;
-    flex-direction column-rever;
+    flex-direction: column-rever;
   }
   .notification-group-center {
     top: 50%;
@@ -111,3 +111,4 @@ d;
     }
   }
 </style>
+

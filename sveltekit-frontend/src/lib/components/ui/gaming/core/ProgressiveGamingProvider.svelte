@@ -282,7 +282,7 @@ https://svelte.dev/e/js_parse_error -->
     -webkit-font-smoothing: var(--font-smoothing);
     -moz-osx-font-smoothing: var(--font-smoothing);
     /* Transitions */
-    transition all var(--transition-speed) ease;
+    transition: all var(--transition-speed) ease;
   }
   /* Era-specific provider styles */
   .progressive-gaming-provider.era-8bit {
@@ -378,16 +378,16 @@ https://svelte.dev/e/js_parse_error -->
   }
   @keyframes fadeInOut {
     0% {
-      opacity: 0,
+      opacity: 0;
     }
     20% {
-      opacity: 1,
+      opacity: 1;
     }
     80% {
-      opacity: 1,
+      opacity: 1;
     }
     100% {
-      opacity: 0,
+      opacity: 0;
     }
   }
   @keyframes transitionSpin {
@@ -429,7 +429,7 @@ https://svelte.dev/e/js_parse_error -->
   .debug-item {
     font-size: 11px;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
   }
   .debug-item strong {
     color: var(--yorha-text-accent, #ffd700);
@@ -437,7 +437,7 @@ https://svelte.dev/e/js_parse_error -->
   .debug-controls {
     display: flex;
     gap: 0.5rem;
-    justify-content: space-between;
+    justify-content: space-betweennn;
   }
   .debug-controls button {
     padding: 4px 8px;
@@ -459,7 +459,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .progressive-gaming-provider.transitioning .gaming-content {
     filter: blur(1px);
-    opacity: 0.8,
+    opacity: 0.8;
   }
   /* Responsive adjustments */
   @media (max-width: 768px) {
@@ -482,11 +482,11 @@ https://svelte.dev/e/js_parse_error -->
     .transition-overlay,
     .transition-spinner {
       animation: none !important;
-      transition none !important;
+      transition: none !important;
     }
     .progressive-gaming-provider.transitioning .gaming-content {
       filter: none;
-      opacity: 1,
+      opacity: 1;
     }
   }
   /* High contrast mode */
@@ -500,3 +500,5 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </style>
+
+

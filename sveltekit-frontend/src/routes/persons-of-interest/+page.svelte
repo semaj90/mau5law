@@ -480,7 +480,7 @@
   }
   .case-info {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-betweennn;
     align-items: center;
     margin-top: 0.5rem;
   }
@@ -834,7 +834,7 @@
   }
   /* .attribute-bars {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 0.75rem;
   } */
   .attribute-row {
@@ -925,3 +925,5 @@
 
   /* ...existing styles... */
 </style>
+
+

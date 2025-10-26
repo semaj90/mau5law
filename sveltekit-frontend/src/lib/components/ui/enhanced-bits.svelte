@@ -36,7 +36,8 @@
   /* disabled state: cover both attribute and pseudo-class usages */
   .bits-btn[disabled],
   .bits-btn:disabled {
-    opacity: 0.5,
+    opacity: 0.5;
     cursor: not-allowed;
   }
 </style>
+

@@ -33,7 +33,7 @@
   let isVisible = $state(false);
   let animationDelay = $state(0);
   $effect(() => {
-    // Intersection observer for animation triggers
+    // Intersection observer for animation: triggers
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach(entry => {
@@ -215,7 +215,7 @@
     border-bottom: 2px solid var(--yorha-secondary, #ffd700);
     display: flex;
     align-items: center;
-    justify-content: space-betwee;
+    justify-content: space-between;
     padding: 12px 16px;
   }
   .chart-title {
@@ -224,7 +224,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 2px;
-    margin: 0,
+    margin: 0;
   }
   .chart-indicators {
     display: flex;
@@ -246,7 +246,7 @@
     width: 6px;
     height: 6px;
     background: currentColor;
-    animation pulse 2s infinite;
+    animation: pulse 2s infinite;
   }
   .chart-container {
     position relative;
@@ -267,7 +267,7 @@
     right: 0;
     height: 1px;
     background: var(--yorha-text-muted, #808080);
-    opacity: 0.3,
+    opacity: 0.3;
   }
   .grid-labels {
     position absolute;
@@ -293,7 +293,7 @@
   .bar-container {
     flex: 1,
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     height: 100%;
     justify-content: end;
@@ -304,11 +304,11 @@
     max-width: 40px;
     border: 2px solid currentColor;
     background: currentColor;
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
     transform-origin: bottom;
   }
   .bar.animated {
-    animation barGrow 0.8s ease-out;
+    animation: barGrow 0.8s ease-out;
   }
   .bar:hover {
     transform: scaleY(1.05);
@@ -320,7 +320,7 @@
     left: 50%;
     transform: translateX(-50%);
     font-size: 10px;
-    font-weight: 600,
+    font-weight: 600;
     color: var(--yorha-text-primary, #e0e0e0);
   }
   .bar-glow {
@@ -330,7 +330,7 @@
     right: -2px;
     bottom: -2px;
     background: currentColor;
-    opacity: 0.3,
+    opacity: 0.3;
     filter: blur(4px);
   }
   .bar-label {
@@ -350,18 +350,18 @@ s
   /* Progress Chart */
   .progress-chart {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 16px;
     padding: 16px;
   }
   .progress-item {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 8px;
   }
   .progress-header {
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
   }
   .progress-label {
@@ -372,7 +372,7 @@ s
   }
   .progress-value {
     font-size: 12px;
-    font-weight: 700,
+    font-weight: 700;
     color: var(--yorha-secondary, #ffd700);
   }
   .progress-bar {
@@ -385,10 +385,10 @@ s
   .progress-fill {
     height: 100%;
     position relative;
-    transition width 0.3s ease;
+    transition: width 0.3s ease;
   }
   .progress-fill.animated {
-    animation progressFill 1s ease-out;
+    animation: progressFill 1s ease-out;
   }
   .progress-glow {
     position absolute;
@@ -401,7 +401,7 @@ s
   /* Status Chart */
   .status-chart {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 12px;
     padding: 16px;
   }
@@ -412,10 +412,10 @@ s
     padding: 12px;
     background: var(--yorha-bg-primary, #0a0a0a);
     border: 1px solid var(--yorha-text-muted, #808080);
-    transition all 0.3s ease;
+    transition: all 0.3s ease;
   }
   .status-.animated {
-    animation slideIn 0.6s ease-out;
+    animation: slideIn 0.6s ease-out;
   }
   .status-item:hover {
     border-color: var(--yorha-secondary, #ffd700);
@@ -431,13 +431,13 @@ s
     position absolute;
     inset: -4px;
     background: currentColor;
-    opacity: 0.3,
-    animation pulse 2s infinite;
+    opacity: 0.3;
+    animation: pulse 2s infinite;
   }
   .status-content {
     flex: 1,
     display: flex;
-    justify-content: space-betwee;
+    justify-content: space-between;
     align-items: center;
   }
   .status-label {
@@ -448,12 +448,12 @@ s
   }
   .status-value {
     font-size: 14px;
-    font-weight: 700,
+    font-weight: 700;
     color: var(--yorha-secondary, #ffd700);
   }
   .status-badge {
     font-size: 8px;
-    font-weight: 700,
+    font-weight: 700;
     padding: 2px 8px;
     border: 1px solid currentColor;
     text-transform: uppercase;
@@ -484,7 +484,7 @@ s
     transform: translate(-50%, -50%);
   }
   .timeline-.animated {
-    animation fadeInUp 0.8s ease-out;
+    animation: fadeInUp 0.8s ease-out;
   }
   .timeline-node {
     width: 16px;
@@ -496,8 +496,8 @@ s
     position absolute;
     inset: -4px;
     background: currentColor;
-    opacity: 0.3,
-    animation pulse 2s infinite;
+    opacity: 0.3;
+    animation: pulse 2s infinite;
   }
   .timeline-label {
     font-size: 10px;
@@ -519,19 +519,19 @@ s
   }
   .stat {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     gap: 2px;
   }
   .stat-label {
     font-size: 8px;
-    font-weight: 600,
+    font-weight: 600;
     color: var(--yorha-text-muted, #808080);
     text-transform: uppercase;
     letter-spacing: 1px;
   }
   .stat-value {
     font-size: 12px;
-    font-weight: 700,
+    font-weight: 700;
     color: var(--yorha-secondary, #ffd700);
   }
   /* Animations */
@@ -546,26 +546,26 @@ s
   @keyframes slideIn {
     from {
       transform: translateX(-20px);
-      opacity: 0,
+      opacity: 0;
     }
     to {
       transform: translateX(0);
-      opacity: 1,
+      opacity: 1;
     }
   }
   @keyframes fadeInUp {
     from {
       transform: translate(-50%, -50%) translateY(10px);
-      opacity: 0,
+      opacity: 0;
     }
     to {
       transform: translate(-50%, -50%) translateY(0);
-      opacity: 1,
+      opacity: 1;
     }
   }
   @keyframes pulse {
-    0%, 100% { opacity: 0.3, }
-    50% { opacity: 0.1, }
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.1; }
   }
   /* Responsive Design */
   @media (max-width: 768px) {

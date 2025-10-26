@@ -445,6 +445,7 @@ https://svelte.dev/e/const_tag_invalid_placement -->
 
 <style>
   .criminal-profile {
-    transition all 0.2s ease;
+    transition: all 0.2s ease;
   }
 </style>
+

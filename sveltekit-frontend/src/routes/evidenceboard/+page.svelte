@@ -147,15 +147,15 @@
     box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
   }
   .animate-fade-in {
-    animation fadeInSlide 0.5s ease-out;
+    animation: fadeInSlide 0.5s ease-out;
   }
   @keyframes fadeInSlide {
     from {
-      opacity: 0,
+      opacity: 0;
       transform: translateX(100%);
     }
     to {
-      opacity: 1,
+      opacity: 1;
       transform: translateX(0);
     }
   }
@@ -167,7 +167,7 @@
   }
   .stat {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     padding: 8px;
     background: rgba(0, 255, 65, 0.1);
@@ -188,7 +188,7 @@
   }
   .loading-screen {
     display: flex;
-    flex-direction column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
@@ -201,7 +201,7 @@
     border: 4px solid #e5e5e5;
     border-top: 4px solid #3b82f6;
     border-radius: 50%;
-    animation spin 1s linear infinite;
+    animation: spin 1s linear infinite;
     margin-bottom: 16px;
   }
   @keyframes spin {
@@ -222,3 +222,4 @@
     font-size: 13px;
   }
 </style>
+
