@@ -993,3 +993,22 @@ export interface LegalDocument {
 }
 // Export User type for components (type-only for isolatedModules)
 export type { User } from './user.js';
+
+// New file: src/lib/types/api.ts
+
+export interface ErrorResponse {
+  success: false;
+  error: {
+    message: string;
+    details?: any; // Can be ZodError details, or a simple string
+  };
+  timestamp: string;
+}
+
+export interface HealthCheckResponse {
+  success: true;
+  status: 'healthy' | 'unhealthy';
+  pgvector: 'available' | 'unavailable';
+  ollama: 'connected' | 'disconnected';
+  timestamp: string;
+}

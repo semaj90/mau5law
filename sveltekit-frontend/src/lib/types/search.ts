@@ -1,20 +1,20 @@
 /**
- * Enhanced Search and Document Types with backward compatibility
+ * Search and Vector Types
+ * Core types for pgvector search, embeddings, and retrieval
+ * Search result from pgvector semantic search
  */
-}
 export interface SearchResult {
   id: string;
   title: string;
-  content?: string;
-  summary?: string;
-  excerpt?: string;
-  score: number;
-  rank?: number;
-  document?: unknown; // Backward compatibility
-  metadata?: { [key: string]: any }
-  type?: string;
+  content: string;
+  similarity: number;
+  metadata?: Record<string, unknown>;
 }
-export interface SummaryResult {
+
+/**
+ * Summary response from RAG system
+ */
+export interface SummaryResponse {
   summary: string;
   keyPoints: string[];
   metadata: {
@@ -22,11 +22,11 @@ export interface SummaryResult {
     processingTime: number;
     lambda: number;
     sentenceCount?: number; // Added for MMR compatibility
-  }
+  };
   sources?: string[]; // Added for enhanced functionality
 }
 export interface SummaryRequest {
-  documents: any[];
+  documents: LegalDocument[];
   maxSentences?: number;
   lambda?: number;
   type?: string;
@@ -36,7 +36,7 @@ export interface LegalDocument {
   title: string;
   content: string;
   type?: string;
-  metadata?: { [key: string]: any }
+  metadata?: Record<string, unknown>;
 }
 export interface SystemStatus {
   database: boolean;
@@ -55,17 +55,17 @@ export interface SystemStatus {
 }
 export interface TestResults {
   query: string;
-  results: any[];
+  results: SearchResult[];
   timestamp: Date;
   performance: {
     duration: number;
     documentsSearched: number;
-  }
+  };
   error?: unknown;
 }
 export interface TensorOperation {
   type: string;
-  data: any;
+  data: unknown;
   shape?: number[];
 }
 export interface MetricData {
@@ -86,7 +86,7 @@ export interface GPUChatMessage {
     processingTime?: number;
     gpuUsed?: boolean;
     tokenCount?: number;
-  }
+  };
 }
 export interface GPUProcessingStatus {
   gpuAvailable: boolean;
@@ -95,7 +95,7 @@ export interface GPUProcessingStatus {
     total: number;
     used: number;
     free: number;
-  }
+  };
   activeJobs: number;
   queueLength: number;
 }
@@ -106,5 +106,18 @@ export interface StreamingResponse {
   metadata?: {
     tokensGenerated?: number;
     processingTimeMs?: number;
-  }
+  };
+}
+
+export interface VectorSearchQueryResult {
+  success: true;
+  results: SearchResult[];
+  query: string;
+  topK: number;
+  responseTime: number;
+  timestamp: string;
+  metadata?: {
+    modelUsed?: string;
+    indexType?: string;
+  };
 }
