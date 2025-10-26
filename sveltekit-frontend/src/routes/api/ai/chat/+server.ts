@@ -1,76 +1,76 @@
-/**
- * Chat API endpoint
- * - Routes requests through llmOrchestratorBridge
- * - Falls back to direct Ollama when orchestrator fails
- * - Returns OpenAI-compatible chat completion response
- */
-import type { RequestHandler } from '@sveltejs/kit';
 import { json } from '@sveltejs/kit';
-import { llmOrchestratorBridge } from '$lib/server/ai/llm-orchestrator-bridge.js';
-import type { LLMBridgeRequest } from '$lib/server/ai/llm-orchestrator-bridge.js';
-import { dev } from '$app/environment';
-import { ollamaConfig } from '$lib/services/ollama-config-service.js';
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from './$types';
+import { chat as ollamaChat, type ChatMessage } from '$lib/server/ai/ollama-client';
+import { db } from '$lib/server/db';
+import { cases } from '$lib/server/db/schema-postgres';
+import { eq } from 'drizzle-orm';
 
-// Simple token estimation (rough approximation: 1 token ≈ 4 characters)
-// Ollama provides accurate token counts in its responses
-function estimateTokens(text: string): number {
-  return Math.ceil(text.length / 4);
-}
+type IncomingMessage = { role: 'system' | 'user' | 'assistant'; content: string };
 
-interface OrchestratorResult {
-  success?: boolean;
-  error?: string;
-  orchestratorUsed?: string;
-  response?: string;
-  modelUsed?: string;
-  requestId?: string;
-  confidence?: number;
-  executionMetrics?: Record<string, unknown> | undefined;
-}
+export const POST: RequestHandler = async ({ request }) => {
+	try {
+		const body = await request.json().catch(() => ({}));
+		const caseId: string | undefined = body.caseId;
+		const model: string | undefined = body.model;
+		const messages: IncomingMessage[] = Array.isArray(body.messages) ? body.messages : [];
 
-// New typed incoming request payload
-type ChatMessage = { role: string; content: string };
-interface ChatRequestPayload {
-  messages: ChatMessage[];
-  model?: string;
-  temperature?: number;
-  stream?: boolean;
-  max_tokens?: number;
-}
+		if (!messages.length) {
+			return json({ success: false, error: 'messages array required' }, { status: 400 });
+		}
 
-// Helper to extract an error message from unknown
-function extractErrorMessage(err: unknown): string {
-  if (err instanceof Error) return err.message;
-  try {
-    return String(err);
-  } catch {
-    return 'Unknown error';
-  }
-}
+		// simple validation of messages
+		if (!messages.every((m) => m && typeof m.role === 'string' && typeof m.content === 'string')) {
+			return json({ success: false, error: "Each message must have 'role' and 'content' strings" }, { status: 400 });
+		}
 
-// --- Begin added: latency simulation helpers ---
-function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+		// optionally fetch case context
+		let contextPrefix = '';
+		if (caseId) {
+			try {
+				const found = await db
+					.select({
+						id: cases.id,
+						title: cases.title,
+						status: cases.status,
+						priority: cases.priority,
+						caseNumber: cases.caseNumber
+					})
+					.from(cases)
+					.where(eq(cases.id, caseId))
+					.limit(1);
+				if (found && found.length > 0) {
+					const c = found[0];
+					contextPrefix = `Case Context\n- Title: ${c.title}\n- Status: ${c.status}\n- Priority: ${c.priority}\n- Case #: ${c.caseNumber || 'N/A'}\n`;
+				}
+			} catch (e) {
+				// keep chat functional even if DB is unavailable
+				contextPrefix = '';
+			}
+		}
 
-/**
- * Resolve simulated latency (ms) from:
- * 1) URL query param: ?simulate_latency_ms=500
- * 2) Request header: x-simulate-latency-ms: 500
- * 3) ENV var: SIMULATE_LATENCY_MS
- * Returns 0 when not configured or invalid.
- */
-function resolveSimulatedLatency(event: Parameters<RequestHandler>[0]): number {
-  try {
-    // prefer URL param
-    const urlMs = event?.url?.searchParams?.get?.('simulate_latency_ms');
-    if (urlMs) {
-      const parsed = Math.max(0, Math.min(30000, Number.parseInt(urlMs, 10) || 0));
-      if (parsed > 0) return parsed;
-    }
+		// system message to instruct the model
+		const sys: ChatMessage = {
+			role: 'system',
+			content:
+				'You are YoRHa Legal AI. Provide concise, accurate legal assistance. When a case context is provided, ground your answers in it.'
+		};
 
-    // then header
+		// augment only user messages with context to avoid duplicating assistant/system messages
+		const userAugmented = contextPrefix
+			? messages.map((m) => (m.role === 'user' ? { ...m, content: `${contextPrefix}\n${m.content}` } : m))
+			: messages;
+
+		// call Ollama chat client
+		const response = await ollamaChat([sys, ...userAugmented], { model: model || 'gemma3-legal:latest' });
+		const reply = response?.choices?.[0]?.message?.content ?? '';
+
+		return json({ success: true, reply, model: model || 'gemma3-legal:latest' });
+	} catch (err) {
+		const message = err instanceof Error ? err.message : String(err);
+		console.error('[AI Chat] Error:', message);
+		return json({ success: false, error: message }, { status: 500 });
+	}
+};
     const headerMs = event?.request?.headers?.get?.('x-simulate-latency-ms');
     if (headerMs) {
       const parsed = Math.max(0, Math.min(30000, Number.parseInt(headerMs, 10) || 0));

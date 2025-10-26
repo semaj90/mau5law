@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { createHash, randomUUID } from 'crypto';
+import { createHash } from 'crypto';
 import { db, legal_documents } from '$lib/server/db';
 import { documents, documentChunks } from '$lib/server/db/enhanced-embedding-schema';
 import { eq, sql } from 'drizzle-orm';
@@ -463,32 +463,8 @@ export const POST: RequestHandler = async ({ request }) => {
       } else {
         // Some environments have a legacy 'documents' table with a NOT NULL uuid column.
         // Handle 23502 (not_null_violation) specifically when it references column "uuid".
-        if (errCode === '23502' && /column\s+"uuid"/i.test(errMsg)) {
-          try {
-            const raw = await db.execute(sql`INSERT INTO documents
-              (uuid, title, filename, source_uri, mime_type, file_size, extracted_text, processing_status, uploaded_by, metadata)
-              VALUES (gen_random_uuid(), ${file.name.replace(/\.[^/.]+$/, '')}, ${file.name},
-                      ${storedUri ?? (minioSuccess ? `minio://legal-documents/${minioObject}` : `hash:${contentHash}`)},
-                      ${file.type}, ${file.size}, ${content}, 'completed', ${'00000000-0000-0000-0000-000000000000'},
-                      ${JSON.stringify({
-                        chunksCount: chunks.length,
-                        uploadedAt: new Date().toISOString(),
-                        extractionMethod: 'text_extraction',
-                        tags,
-                        contentHash,
-                      })}
-              ) RETURNING id`);
-            // Drizzle execute returns driver-specific shape; read first row id
-            const row = (raw as any)?.rows?.[0] ?? (Array.isArray(raw) ? raw[0] : null);
-            documentId = row?.id ?? row?.ID ?? row?.Id ?? crypto.randomUUID();
-          } catch (rawErr) {
-            // rethrow to outer catch if raw insert fails
-            throw rawErr;
-          }
-        } else {
-          // rethrow for outer catch handler
-          throw insertErr;
-        }
+        // If not a recognized schema mismatch, rethrow to outer handler
+        throw insertErr;
       }
     }
 
