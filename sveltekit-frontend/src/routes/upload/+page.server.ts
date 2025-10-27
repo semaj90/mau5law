@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /// <reference types="vite/client" />
 import type { PageServerLoad } from './$types.js';
 import { fail } from '@sveltejs/kit';
@@ -67,7 +68,7 @@ const getRedisClient = async () => {
     const IORedis = (maybe as { default?: IORedisConstructor }).default ?? (maybe as IORedisConstructor);
 
     // Create a concrete client instance and attach safe event handlers
-    const clientInstance = new IORedis(REDIS_URL);
+    const clientInstance = redis;
     // ioredis may emit 'error' events like ReplyError NOAUTH which, if unhandled,
     // will crash or propagate. Handle them here and degrade gracefully.
     clientInstance.on?.('error', (e: unknown) => {

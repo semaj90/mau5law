@@ -1,7 +1,4 @@
-import { redis, ensureRedisReady } from '$lib/server/redis-client';
-// Tell the linter to ignore the 'no-unused-vars' rule for the next line
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { Redis as IORedisType } from 'ioredis';
+import { redis } from '$lib/server/redis-client';
 
 declare global {
   interface GlobalThis {
@@ -11,16 +8,34 @@ declare global {
 
 export type RedisCreateOptions = string | { url?: string; password?: string };
 
+// Define a more specific interface for the shimmed client's return type
+export interface ShimmedRedisClient {
+  connect: () => Promise<void>;
+  disconnect: () => Promise<void>;
+  quit: () => Promise<void>;
+  get: (k: string) => Promise<string | null>;
+  set: (k: string, v: string) => Promise<unknown>;
+  setex: (k: string, ttl: number, v: string) => Promise<unknown>;
+  del: (k: string) => Promise<number>;
+  publish: (ch: string, msg: string) => Promise<number>;
+  // The subscribe/psubscribe methods have complex overloads, keeping Promise<unknown> for simplicity in the shim interface
+  subscribe: (...args: (string | ((channel: string, message: string) => void))[]) => Promise<unknown>;
+  psubscribe: (...args: (string | ((pattern: string, channel: string, message: string) => void))[]) => Promise<unknown>;
+  on: (ev: string, fn: (...a: unknown[]) => void) => void; // Changed return type to void
+  ping: (message?: string) => Promise<string>;
+  _raw: typeof redis; // Expose the raw ioredis client type
+}
+
 // Minimal compatibility shim: expose a createClient function that returns an ioredis client
 // This lets existing code that imports from 'redis' continue to work while we standardize on ioredis.
-export async function redis {
-  const url = typeof opts === 'string' ? opts : (opts?.url ?? process.env.REDIS_URL ?? 'redis://127.0.0.1:6379');
-  const password = typeof opts === 'string' ? undefined : (opts?.password ?? process.env.REDIS_PASSWORD);
-  const { default: IORedis } = await import('ioredis');
+export function createClient(opts?: RedisCreateOptions): ShimmedRedisClient { // Specify return type here
+  // The 'url' and 'password' variables are not used here as the shim directly uses the pre-configured 'redis' instance.
 
   // Minimal typed surface for the shim to avoid `any` usage
+  // This RedisLike interface should reflect the methods *used from the underlying `redis` instance*
+  // ioredis client has a comprehensive 'on' method.
   type RedisLike = {
-    on?: (ev: string, fn: (...args: unknown[]) => void) => void;
+    on: (event: string, listener: (...args: any[]) => void) => void; // ioredis 'on' method
     connect?: () => Promise<void>;
     disconnect?: () => Promise<void>;
     quit?: () => Promise<void>;
@@ -31,12 +46,10 @@ export async function redis {
     psubscribe?: (...patterns: string[]) => Promise<unknown>;
     publish?: (ch: string, msg: string) => Promise<number>;
     ping?: (message?: string) => Promise<string>;
-    // event handlers for subscriber variants (single 'on' entry)
   };
 
-  // Use a single argument to the constructor: either the url string or an options object { url, password }
-  const clientInstance = password ? redis;
-  const client = clientInstance as unknown as RedisLike;
+  const clientInstance = redis; // use the centralized ioredis instance
+  const client: RedisLike = clientInstance as RedisLike; // Explicit cast here, assuming ioredis client matches RedisLike
 
   const getErrorMessage = (err: unknown): string => {
     if (
@@ -51,7 +64,7 @@ export async function redis {
   };
 
   // Attach minimal NOAUTH graceful handling
-  client.on?.('error', (err: unknown) => {
+  client.on('error', (err: unknown) => { // No ?. needed here as 'on' is guaranteed by RedisLike
     if (getErrorMessage(err).includes('NOAUTH')) {
       if (!globalThis.__redisNoAuthWarned) {
         console.warn(
@@ -87,17 +100,17 @@ export async function redis {
      *  - subscribe(...channels) -> returns number of subscriptions (or truthy)
      *  - subscribe(channel, callback) -> creates a dedicated subscriber and invokes callback on 'message'
      */
-    subscribe: async (...args: unknown[]) => {
+    subscribe: async (...args: (string | ((channel: string, message: string) => void))[]) => {
       const last = args[args.length - 1];
       if (typeof last === 'function') {
         const cb = last as (channel: string, message: string) => void;
         const channels = args.slice(0, -1).map(c => String(c)) as string[];
-        const subInstance = password ? redis;
-        const sub = subInstance as unknown as RedisLike;
+        const subInstance = redis;
+        const sub: RedisLike = subInstance as RedisLike; // Explicit cast here
         if (channels.length > 0 && typeof sub.subscribe === 'function') {
           await sub.subscribe(...channels);
         }
-        sub.on?.('message', (channel: unknown, message: unknown) => cb(String(channel), String(message)));
+        sub.on('message', (channel: unknown, message: unknown) => cb(String(channel), String(message))); // No ?.
         return sub;
       } else {
         const channels = args.map(c => String(c)) as string[];
@@ -110,17 +123,17 @@ export async function redis {
     /**
      * psubscribe supports the same callback-or-patterns behavior as subscribe
      */
-    psubscribe: async (...args: unknown[]) => {
+    psubscribe: async (...args: (string | ((pattern: string, channel: string, message: string) => void))[]) => {
       const last = args[args.length - 1];
       if (typeof last === 'function') {
         const cb = last as (pattern: string, channel: string, message: string) => void;
         const patterns = args.slice(0, -1).map(p => String(p)) as string[];
-        const subInstance = password ? redis;
-        const sub = subInstance as unknown as RedisLike;
+        const subInstance = redis;
+        const sub: RedisLike = subInstance as RedisLike; // Explicit cast here
         if (patterns.length > 0 && typeof sub.psubscribe === 'function') {
           await sub.psubscribe(...patterns);
         }
-        sub.on?.('pmessage', (_pattern: unknown, channel: unknown, message: unknown) =>
+        sub.on('pmessage', (_pattern: unknown, channel: unknown, message: unknown) => // No ?.
           cb(String(_pattern), String(channel), String(message))
         );
         return sub;
@@ -133,12 +146,21 @@ export async function redis {
       }
     },
     on: (ev: string, fn: (...a: unknown[]) => void) => {
-      if (typeof client.on === 'function') return client.on(ev, fn);
+      client.on(ev, fn); // Simplified, assuming RedisLike guarantees 'on'
     },
     ping: async (message?: string) =>
       typeof client.ping === 'function' ? client.ping(message) : Promise.resolve('PONG'),
     // expose raw client if needed
     _raw: clientInstance,
-  } as unknown;
+  };
 }
+
+// Provide the old-style default export for modules that expect `import redis from 'redis'`
+
+// Compatibility wrapper: async factory named `redis` to match some consumers.
+export async function redis(opts?: string | { url?: string; password?: string }) {
+  // Delegate to createClient; keep return shape compatible with older code.
+  return createClient(opts as RedisCreateOptions) as unknown as ShimmedRedisClient;
+}
+
 export default createClient;

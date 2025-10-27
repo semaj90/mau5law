@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 import IORedis from 'ioredis';
 import { env } from '$env/dynamic/private';
 import { EventEmitter } from 'events'; // Import EventEmitter for event handling
@@ -10,7 +11,7 @@ export class RedisCache {
   constructor() {
     const redisUrl = env.REDIS_URL || 'redis://localhost:6379';
     // Cast the IORedis instance to SimpleRedis to align with the interface
-    this.client = new IORedis(redisUrl) as unknown as SimpleRedis;
+    this.client = redis as unknown as SimpleRedis;
 
     // Explicitly cast the client to EventEmitter to access the 'on' method,
     // as the inferred type might be a custom stub without it.

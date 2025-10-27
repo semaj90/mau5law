@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 import { json, error, type RequestHandler } from '@sveltejs/kit';
 import { caseTimeline } from '$lib/server/db/schemas/cases-schema';
 import db from '$lib/server/db/unified-client';
@@ -25,7 +26,7 @@ const UpdateTimelineEventSchema = z.object({
     .optional(),
   location: z.string().optional(),
   participants: z.array(z.string()).optional(),
-  evidenceIds: z.array(z.string().uuid()).optional(),
+  evidenceIds: z.array(cuidSchema).optional(),
   notes: z.string().optional(),
   importance: z.enum(['low', 'medium', 'high', 'critical']).optional(),
   isPublic: z.boolean().optional(),

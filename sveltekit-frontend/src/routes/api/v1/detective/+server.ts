@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 /**
  * Detective Mode API Routes
  *
@@ -18,7 +19,7 @@ const DetectiveAnalysisSchema = z.object({
     'timeline_gap',
     'risk_assessment',
   ]),
-  evidenceIds: z.array(z.string().uuid()).optional(),
+  evidenceIds: z.array(cuidSchema).optional(),
   options: z
     .object({
       confidenceThreshold: z.number().min(0).max(1).default(0.7),

@@ -211,7 +211,7 @@
         evidence: Array.from({ length: 100 }, (_, i) => ({
           id: i,
           type: 'document',
-          description `Evidence item ${i} with detailed legal content and metadata`,
+          description: `Evidence item ${i} with detailed legal content and metadata`, // Fixed syntax here
         })),
       },
     };

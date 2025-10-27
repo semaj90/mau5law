@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // Redis caching service for embeddings, shader modules, and search results
 import { gzipSync, gunzipSync } from 'zlib';
 import { Buffer } from 'buffer';
@@ -40,7 +41,7 @@ class CacheService {
     try {
       const mod = await import('ioredis');
       const Redis = (mod as any).default ?? mod;
-      this.redisClient = new Redis(url);
+      this.redisClient = redis;
       // Wire basic error handling
       this.redisClient.on?.('error', (err: any) => {
         console.warn('Redis connection error, falling back to memory cache:', err?.message || err);

@@ -1,7 +1,7 @@
 import type { PageServerLoad, Actions } from './$types.js';
 import { fail, redirect } from '@sveltejs/kit';
 import { auth } from '$lib/server/auth';
-import { Argon2id } from 'oslo/password';
+import bcrypt from 'bcryptjs';
 import { db } from '$lib/server/db/drizzle';
 import { users } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
@@ -42,8 +42,7 @@ export const actions: Actions = {
       const user = existingUser[0];
 
       // Verify password
-      const argon2id = new Argon2id();
-      const validPassword = await argon2id.verify(user.hashedPassword, password);
+      const validPassword = await bcrypt.compare(password, user.hashedPassword);
 
       if (!validPassword) {
         return fail(400, { error: 'Invalid email or password' });
@@ -66,7 +65,7 @@ export const actions: Actions = {
       console.log('✅ Production login successful for:', email);
 
       // Redirect to dashboard
-      throw redirect(302, '/yorha/dashboard');
+      throw redirect(302, '/ai/dashboard');
 
     } catch (error: any) {
       // Handle redirect properly - don't treat it as an error

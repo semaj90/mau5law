@@ -1,406 +1,318 @@
 /**
  * Conversation Service for Legal AI Chat
- * Handles conversation management with Redis persistence and database storage
+ * Provides lightweight in-memory storage with optional Redis persistence.
  */
 import { randomUUID } from 'crypto';
 import { logger } from '../production-logger.js';
-// Use the Redis client from the server database directory
 import { getRedisClient } from '$lib/server/database/redis-client';
+
+export interface ConversationContext {
+  [key: string]: unknown;
 }
+
 export interface Conversation {
   id: string;
   userId: string;
   title: string;
   caseId?: string;
-  context?: { [key: string]: any }
+  context?: ConversationContext;
   createdAt: Date;
   updatedAt: Date;
   isArchived?: boolean;
 }
-}
+
 export interface ChatMessage {
   id: string;
   conversationId: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
-  metadata?: { [key: string]: any }
+  metadata?: Record<string, unknown>;
   createdAt: Date;
 }
-}
+
 export interface CreateConversationData {
   userId: string;
   title: string;
   caseId?: string;
-  context?: { [key: string]: any }
+  context?: ConversationContext;
 }
-}
+
 export interface AddMessageData {
   conversationId: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
-  metadata?: { [key: string]: any }
+  metadata?: Record<string, unknown>;
 }
+
+type RedisClient = Record<string, unknown>;
+
 class ConversationService {
   private conversations = new Map<string, Conversation>();
   private messages = new Map<string, ChatMessage[]>();
-  private readonly REDIS_PREFIX = 'conversation:';
-  private readonly REDIS_MESSAGES_PREFIX = 'messages:';
-  constructor() {
-    // Initialize Redis error handling
-    this.setupRedisErrorHandling();
-  }
-  private setupRedisErrorHandling() {
-    // Redis error handling will be managed by the Redis client itself
-    logger.info('Redis error handling setup for conversation service', {
-      service: 'conversation-service',
-      component: 'redis'
-    });
-  }  /**
-   * Get Redis key for conversation
-   */
-  private getConversationKey(conversationId: string): string {
-    return `${this.REDIS_PREFIX}${conversationId}`;
-  }
-  /**
-   * Get Redis key for conversation messages
-   */
-  private getMessagesKey(conversationId: string): string {
-    return `${this.REDIS_MESSAGES_PREFIX}${conversationId}`;
-  }
-  /**
-   * Save conversation to Redis
-   */
-  private async saveConversationToRedis(conversation: Conversation): Promise<void> {
-    try {
-      const redis = await getRedisClient();
-      if (redis) {
-        await redis.setex()
-          this.getConversationKey(conversation.id),
-          3600 * 24 * 7, // 7 days TTL
-          JSON.stringify({
-            ...conversation,
-            createdAt: conversation.createdAt.toISOString(),
-            updatedAt: conversation.updatedAt.toISOString()
-          })
-        );
-        logger.debug('Conversation saved to Redis', {
-          conversationId: conversation.id,
-          userId: conversation.userId
-        });
-      }
-    } catch (error) {
-      logger.error('Failed to save conversation to Redis')
-        error instanceof Error ? error : new Error('Unknown error'),
-        {
-          conversationId: conversation.id,
-          service: 'conversation-service'
-        }
-      );
-    }
-  }  /**
-   * Save messages to Redis
-   */
-  private async saveMessagesToRedis(conversationId: string, messages: ChatMessage[]): Promise<void> {
-    try {
-      const redis = await getRedisClient();
-      if (redis) {
-        const serializedMessages = messages.map(msg => ({
-          ...msg,
-          createdAt: msg.createdAt.toISOString()
-        });
-        await redis.setex()
-          this.getMessagesKey(conversationId),
-          3600 * 24 * 7, // 7 days TTL
-          JSON.stringify(serializedMessages)
-        );
-        logger.debug('Messages saved to Redis', {
-          conversationId,
-          messageCount: messages.length
-        });
-      }
-    } catch (error) {
-      logger.error('Failed to save messages to Redis')
-        error instanceof Error ? error : new Error('Unknown error'),
-        {
-          conversationId,
-          service: 'conversation-service'
-        }
-      );
-    }
-  }
-  /**
-   * Load conversation from Redis
-   */
-  private async loadConversationFromRedis(conversationId: string): Promise<Conversation | null> {
-    try {
-      const redis = await getRedisClient();
-      if (!redis) return null;
-      const data = await redis.get(this.getConversationKey(conversationId);
-      if (!data) return null;
-      const parsed = JSON.parse(data);
-      return {
-        ...parsed,
-        createdAt: new Date(parsed.createdAt),
-        updatedAt: new Date(parsed.updatedAt)
-      }
-    } catch (error) {
-      logger.error('Failed to load conversation from Redis')
-        error instanceof Error ? error : new Error('Unknown error'),
-        {
-          conversationId,
-          service: 'conversation-service'
-        }
-      );
-      return null;
-    }
-  }
-  /**
-   * Load messages from Redis
-   */
-  private async loadMessagesFromRedis(conversationId: string): Promise<ChatMessage[]> {
-    try {
-      const redis = await getRedisClient();
-      if (!redis) return [];
-      const data = await redis.get(this.getMessagesKey(conversationId);
-      if (!data) return [];
-      const parsed = JSON.parse(data);
-      return parsed.map((msg: any) => ({
-        ...msg,
-        createdAt: new Date(msg.createdAt)
-      });
-    } catch (error) {
-      logger.error('Failed to load messages from Redis')
-        error instanceof Error ? error : new Error('Unknown error'),
-        {
-          conversationId,
-          service: 'conversation-service'
-        }
-      );
-      return [];
-    }
-  }
-  /**
-   * Create a new conversation
-   */
+  private readonly conversationPrefix = 'conversation:';
+  private readonly messagesPrefix = 'messages:';
+  private readonly ttlSeconds = 60 * 60 * 24 * 7; // 7 days
+
+  /** Create a new conversation */
   async create(data: CreateConversationData): Promise<Conversation> {
+    const now = new Date();
     const conversation: Conversation = {
       id: randomUUID(),
       userId: data.userId,
       title: data.title,
       caseId: data.caseId,
-      context: data.context || {},
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      isArchived: false
-    }
-    // Store in memory cache
+      context: data.context,
+      createdAt: now,
+      updatedAt: now,
+      isArchived: false,
+    };
+
     this.conversations.set(conversation.id, conversation);
     this.messages.set(conversation.id, []);
-    // Save to Redis for persistence
+
     await this.saveConversationToRedis(conversation);
-    logger.info('Conversation created', {
-      conversationId: conversation.id,
-      userId: data.userId,
-      title: data.title
-    });
     return conversation;
   }
-  /**
-   * Get conversation by ID
-   */
-  async getById(conversationId: string): Promise<Conversation | null> {
-    const conversation = this.conversations.get(conversationId);
-    return conversation || null;
-  }
-  /**
-   * Add a message to a conversation
-   */
+
+  /** Add a chat message to a conversation */
   async addMessage(data: AddMessageData): Promise<ChatMessage> {
+    let conversation = this.conversations.get(data.conversationId);
+    if (!conversation) {
+      conversation = await this.loadConversationFromRedis(data.conversationId);
+      if (conversation) {
+        this.conversations.set(conversation.id, conversation);
+      }
+    }
+    if (!conversation) throw new Error(`Conversation ${data.conversationId} not found`);
+
     const message: ChatMessage = {
       id: randomUUID(),
       conversationId: data.conversationId,
       role: data.role,
       content: data.content,
-      metadata: data.metadata || {},
-      createdAt: new Date()
+      metadata: data.metadata,
+      createdAt: new Date(),
+    };
+
+    let msgs = this.messages.get(data.conversationId);
+    if (!msgs || msgs.length === 0) {
+      msgs = await this.loadMessagesFromRedis(data.conversationId);
     }
-    // Get or create message array for conversation
-    let conversationMessages = this.messages.get(data.conversationId);
-    if (!conversationMessages) {
-      conversationMessages = [];
-      this.messages.set(data.conversationId, conversationMessages);
-    }
-    // Add message
-    conversationMessages.push(message);
-    // Update conversation timestamp
-    const conversation = this.conversations.get(data.conversationId);
-    if (conversation) {
-      conversation.updatedAt = new Date();
-      // Save updated conversation to Redis
-      await this.saveConversationToRedis(conversation);
-    }
-    // Save updated messages to Redis
-    await this.saveMessagesToRedis(data.conversationId, conversationMessages);
-    logger.info('Message added to conversation', {
-      messageId: message.id,
-      conversationId: data.conversationId,
-      role: data.role,
-      contentLength: data.content.length
-    });
+    msgs = msgs ?? [];
+    msgs.push(message);
+    this.messages.set(data.conversationId, msgs);
+
+    conversation.updatedAt = new Date();
+    await Promise.allSettled([
+      this.saveConversationToRedis(conversation),
+      this.saveMessagesToRedis(data.conversationId, msgs),
+    ]);
+
     return message;
   }
-  /**
-   * Get messages for a conversation
-   */
-  async getMessages(conversationId: string): Promise<ChatMessage[]> {
-    return this.messages.get(conversationId) || [];
-  }
-  /**
-   * Get conversations for a user
-   */
-  async getByUserId(userId: string): Promise<Conversation[]> {
-    const userConversations: Conversation[] = [];
-    for (const conversation of Array.from(this.conversations.values())) {
-      if (conversation.userId === userId) {
-        userConversations.push(conversation);
-      }
-    }
-    // Sort by most recent first
-    return userConversations.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime();
-  }
-  /**
-   * Update conversation title
-   */
-  async updateTitle(conversationId: string, title: string): Promise<boolean> {
-    const conversation = this.conversations.get(conversationId);
-    if (!conversation) {
-      return false;
-    }
-    conversation.title = title;
-    conversation.updatedAt = new Date();
-    logger.info('Conversation title updated', {
-      conversationId,
-      newTitle: title
-    });
-    return true;
-  }
-  /**
-   * Delete a conversation and all its messages
-   */
-  async delete(conversationId: string): Promise<boolean> {
-    const conversation = this.conversations.get(conversationId);
-    if (!conversation) {
-      return false;
-    }
-    this.conversations.delete(conversationId);
-    this.messages.delete(conversationId);
-    logger.info('Conversation deleted', {
-      conversationId,
-      userId: conversation.userId
-    });
-    return true;
-  }
-  /**
-   * Get conversation statistics
-   */
-  async getStats(): Promise<any> {
-    const totalConversations = this.conversations.size;
-    let totalMessages = 0;
-    for (const messages of Array.from(this.messages.values())) {
-      totalMessages += messages.length;
-    }
-    const averageMessagesPerConversation = totalConversations > 0;
-      ? Math.round(totalMessages / totalConversations * 100) / 100
-      : 0;
-    return {
-      totalConversations,
-      totalMessages,
-      averageMessagesPerConversation
-    }
-  }
-  // API compatibility methods (used by the API endpoints)
-  /**
-   * Get user conversations (alias for getByUserId)
-   */
-  async getUserConversations(userId: string, limit: number = 50): Promise<Conversation[]> {
+
+  /** Get conversations for a user (limited) */
+  async getUserConversations(userId: string, limit = 50): Promise<Conversation[]> {
     const conversations = await this.getByUserId(userId);
     return conversations.slice(0, limit);
   }
-  /**
-   * Create conversation (alias for create)
-   */
-  async createConversation(data: CreateConversationData): Promise<Conversation> {
-    const conversation = await this.create(data);
-    // Save to Redis for persistence
-    await this.saveConversationToRedis(conversation);
-    return conversation;
-  }
-  /**
-   * Get conversation with messages
-   */
-  async getConversationWithMessages(conversationId: string): Promise<any> {
-    // Try to get from memory first
-    let conversation = await this.getById(conversationId);
-    let messages = await this.getMessages(conversationId);
-    // If not in memory, try Redis
+
+  /** Retrieve a conversation with its messages */
+  async getConversationWithMessages(
+    conversationId: string
+  ): Promise<{ conversation: Conversation | null; messages: ChatMessage[] }> {
+    let conversation = this.conversations.get(conversationId) ?? null;
+    let messages = this.messages.get(conversationId) ?? [];
+
     if (!conversation) {
       conversation = await this.loadConversationFromRedis(conversationId);
       if (conversation) {
         this.conversations.set(conversationId, conversation);
       }
     }
+
     if (messages.length === 0) {
       messages = await this.loadMessagesFromRedis(conversationId);
       if (messages.length > 0) {
         this.messages.set(conversationId, messages);
       }
     }
-    return {
-      conversation,
-      messages
-    }
+
+    return { conversation, messages };
   }
-  /**
-   * Convert messages to chat format
-   */
-  convertTochatMessages(messages: ChatMessage[]): Array< {>;
+
+  /** Convert messages to chat-friendly format */
+  convertTochatMessages(messages: ChatMessage[]): Array<{ role: ChatMessage['role']; content: string }> {
     return messages.map(msg => ({
       role: msg.role,
-      content: msg.content
-    });
+      content: msg.content,
+    }));
   }
-  /**
-   * Update conversation title (alias for updateTitle)
-   */
-  async updateConversationTitle(conversationId,: string, titl,e: strin,g): Promise<boolean> {
-    const success = await this.updateTitle(conversationId, title);
-    if (success) {
-      // Update in Redis
-      const conversation = this.conversations.get(conversationId);
-      if (conversation) {
-        await this.saveConversationToRedis(conversation);
-      }
-    }
-    return succes,s;
-  }
-  /**
-   * Archive conversation (soft delete)
-   */
-  async archiveConversation(conversationId,: string): Promise<boolean> {
+
+  /** Update the title of a conversation */
+  async updateConversationTitle(conversationId: string, title: string): Promise<boolean> {
     const conversation = this.conversations.get(conversationId);
-    if (!conversation) {
-      return false;
+    if (!conversation) return false;
+
+    conversation.title = title;
+    conversation.updatedAt = new Date();
+    await this.saveConversationToRedis(conversation);
+    return true;
+  }
+
+  /** Archive a conversation */
+  async archiveConversation(conversationId: string): Promise<boolean> {
+    const conversation = this.conversations.get(conversationId);
+    if (!conversation) return false;
+
+    conversation.isArchived = true;
+    conversation.updatedAt = new Date();
+    await this.saveConversationToRedis(conversation);
+    return true;
+  }
+
+  /** Simple statistics about stored conversations */
+  async getStats(): Promise<{ totalConversations: number; totalMessages: number; averageMessagesPerConversation: number }> {
+    const totalConversations = this.conversations.size;
+    const totalMessages = Array.from(this.messages.values()).reduce((sum, list) => sum + list.length, 0);
+    const averageMessagesPerConversation =
+      totalConversations > 0 ? Math.round((totalMessages / totalConversations) * 100) / 100 : 0;
+
+    return { totalConversations, totalMessages, averageMessagesPerConversation };
+  }
+
+  /** Internal helper: list conversations by user */
+  private async getByUserId(userId: string): Promise<Conversation[]> {
+    const inMemory = Array.from(this.conversations.values()).filter(c => c.userId === userId && !c.isArchived);
+    if (inMemory.length > 0) return inMemory.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+
+    // fallback: attempt to scan redis keys (best-effort)
+    try {
+      const redis = await this.getRedisClient();
+      if (!redis) return [];
+      const scanFn = (redis as { scan?: (cursor: string, ...args: unknown[]) => Promise<[string, string[]]> }).scan;
+      if (!scanFn) return [];
+
+      let cursor = '0';
+      const matches: Conversation[] = [];
+      do {
+        const [nextCursor, keys] = await scanFn.call(redis, cursor, 'MATCH', `${this.conversationPrefix}*`, 'COUNT', 50);
+        cursor = nextCursor;
+        for (const key of keys) {
+          const conv = await this.loadConversationFromRedis(key.replace(this.conversationPrefix, ''));
+          if (conv && conv.userId === userId && !conv.isArchived) {
+            matches.push(conv);
+          }
+        }
+      } while (cursor !== '0');
+
+      matches.forEach(conv => this.conversations.set(conv.id, conv));
+      return matches.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+    } catch (err) {
+      logger.warn('Failed to scan Redis for conversations', err);
+      return [];
     }
-    conversation,.isArchived = tru,e;
-    conversation,.updatedAt = new Date();
-    // Update in Redis
-    await thi,s.saveConversationToRedis(conversatio,n);
-    logger,.info('Conversation archived', {
-      conversationId,
-      userId: conversation.userId,
+  }
+
+  /** Persistence helpers */
+  private async saveConversationToRedis(conversation: Conversation): Promise<void> {
+    const client = await this.getRedisClient();
+    if (!client) return;
+    const payload = JSON.stringify({
+      ...conversation,
+      createdAt: conversation.createdAt.toISOString(),
+      updatedAt: conversation.updatedAt.toISOString(),
     });
-    return tru,e;
+    await this.setWithTTL(client, this.conversationKey(conversation.id), payload);
+  }
+
+  private async saveMessagesToRedis(conversationId: string, messages: ChatMessage[]): Promise<void> {
+    const client = await this.getRedisClient();
+    if (!client) return;
+    const payload = JSON.stringify(
+      messages.map(msg => ({
+        ...msg,
+        createdAt: msg.createdAt.toISOString(),
+      }))
+    );
+    await this.setWithTTL(client, this.messagesKey(conversationId), payload);
+  }
+
+  private async loadConversationFromRedis(conversationId: string): Promise<Conversation | null> {
+    const client = await this.getRedisClient();
+    if (!client) return null;
+    const getFn = (client as { get?: (key: string) => Promise<string | null> }).get;
+    if (!getFn) return null;
+
+    try {
+      const raw = await getFn.call(client, this.conversationKey(conversationId));
+      if (!raw) return null;
+      const parsed = JSON.parse(raw) as Omit<Conversation, 'createdAt' | 'updatedAt'> & {
+        createdAt: string;
+        updatedAt: string;
+      };
+      return {
+        ...parsed,
+        createdAt: new Date(parsed.createdAt),
+        updatedAt: new Date(parsed.updatedAt),
+      };
+    } catch (err) {
+      logger.warn('Failed to load conversation from Redis', err);
+      return null;
+    }
+  }
+
+  private async loadMessagesFromRedis(conversationId: string): Promise<ChatMessage[]> {
+    const client = await this.getRedisClient();
+    if (!client) return [];
+    const getFn = (client as { get?: (key: string) => Promise<string | null> }).get;
+    if (!getFn) return [];
+
+    try {
+      const raw = await getFn.call(client, this.messagesKey(conversationId));
+      if (!raw) return [];
+      const parsed = JSON.parse(raw) as Array<Omit<ChatMessage, 'createdAt'> & { createdAt: string }>;
+      return parsed.map(msg => ({
+        ...msg,
+        createdAt: new Date(msg.createdAt),
+      }));
+    } catch (err) {
+      logger.warn('Failed to load messages from Redis', err);
+      return [];
+    }
+  }
+
+  private conversationKey(id: string): string {
+    return `${this.conversationPrefix}${id}`;
+  }
+
+  private messagesKey(id: string): string {
+    return `${this.messagesPrefix}${id}`;
+  }
+
+  private async getRedisClient(): Promise<RedisClient | null> {
+    try {
+      const client = await getRedisClient();
+      return client as unknown as RedisClient | null;
+    } catch (err) {
+      logger.warn('Redis client unavailable for conversation service', err);
+      return null;
+    }
+  }
+
+  private async setWithTTL(client: RedisClient, key: string, value: string): Promise<void> {
+    const setex = (client as { setex?: (key: string, ttl: number, value: string) => Promise<unknown> }).setex;
+    if (typeof setex === 'function') {
+      await setex.call(client, key, this.ttlSeconds, value);
+      return;
+    }
+
+    const set = (client as { set?: (...args: unknown[]) => Promise<unknown> }).set;
+    if (typeof set === 'function') {
+      await set.call(client, key, value, 'EX', this.ttlSeconds);
+    }
   }
 }
-// Export singleton instance
+
 export const conversationService = new ConversationService();
+export default conversationService;

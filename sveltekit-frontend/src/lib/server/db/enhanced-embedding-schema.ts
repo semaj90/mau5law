@@ -238,9 +238,9 @@ export const vectorOperations = {
   // Parse pgvector to number array
   fromVector: (vec: string): number[] =>
     vec
-      .replace(/[\[\]]/g, '')
+      .replace(/[[]]/g, '')
       .split(',')
-      .map((n) => parseFloat(n.trim())),
+      .map(n => parseFloat(n.trim())),
   // Calculate cosine similarity
   cosineSimilarity: (a: number[], b: number[]): number => {
     const dotProduct = a.reduce((sum, val, i) => sum + val * b[i], 0);
@@ -251,6 +251,6 @@ export const vectorOperations = {
   // Normalize vector
   normalize: (vec: number[]): number[] => {
     const magnitude = Math.sqrt(vec.reduce((sum, val) => sum + val * val, 0));
-    return magnitude > 0 ? vec.map((val) => val / magnitude) : vec;
-  }
+    return magnitude > 0 ? vec.map(val => val / magnitude) : vec;
+  },
 };

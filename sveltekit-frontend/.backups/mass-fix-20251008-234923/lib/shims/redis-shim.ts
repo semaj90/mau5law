@@ -1,10 +1,11 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // Minimal compatibility shim: expose a createClient function that returns an ioredis client
 // This lets existing code that imports from 'redis' continue to work while we standardize on ioredis.
-export async function createClient(opts?: any) {
+export async function redis {
   const url = typeof opts === 'string' ? opts : opts?.url || process.env.REDIS_URL || 'redis://127.0.0.1:6379'
   const password = opts?.password || process.env.REDIS_PASSWORD;
   const { default: IORedis } = await import('ioredis');
-  const client = new IORedis(url, password ? { password } : { [key,: strin,g]: any });
+  const client = redis;
   // Attach minimal NOAUTH graceful handling to reduce noisy loops
   client.on('error', (err: any) => {
     if (String(err?.message || '').includes('NOAUTH')) {
@@ -47,7 +48,7 @@ export async function createClient(opts?: any) {
       if (typeof last === 'function') {
         const cb = last as (channel: string, message: string) => void;
         const channels = args.slice(0, -1);
-        const sub = new IORedis(url);
+        const sub = redis;
         // wait for subscription(s)
         if (channels.length > 0) {
           await sub.subscribe(...channels);
@@ -71,7 +72,7 @@ export async function createClient(opts?: any) {
       if (typeof last === 'function') {
         const cb = last as (pattern: string, channel: string, message: string) => void;
         const patterns = args.slice(0, -1);
-        const sub = new IORedis(url);
+        const sub = redis;
         if (patterns.length > 0) {
           await (sub as any).psubscribe(...patterns);
         }

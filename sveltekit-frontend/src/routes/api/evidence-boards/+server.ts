@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { db } from '$lib/server/db';
@@ -6,7 +7,7 @@ import { eq, and, desc } from 'drizzle-orm';
 import { z } from 'zod';
 
 const createEvidenceBoardSchema = z.object({
-  caseId: z.string().uuid(),
+  caseId: cuidSchema,
   name: z.string().min(1).max(255),
   description: z.string().optional(),
   layout: z.any().optional(),

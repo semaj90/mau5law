@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * 🚀 MinIO S3-Compatible Object Storage Utilities
  *
@@ -72,7 +73,7 @@ const createClient = (): S3Client => {
   });
 };
 
-const client = createClient();
+const client = redis;
 
 // ──────────────────────────────────────────────
 // 🧩 Helpers

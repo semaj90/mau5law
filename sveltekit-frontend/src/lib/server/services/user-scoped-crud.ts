@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 /**
  * User-Scoped CRUD Service
  * Provides database operations scoped to authenticated users
@@ -165,7 +166,7 @@ export class CasesCRUDService {
 
 // Create/Update Evidence schemas (exported for route validation)
 export const CreateEvidenceSchema = z.object({
-  caseId: z.string().uuid(),
+  caseId: cuidSchema,
   title: z.string().min(1).max(255),
   evidenceType: z.string().min(1),
   description: z.string().optional(),
@@ -182,7 +183,7 @@ export const CreateEvidenceSchema = z.object({
   confidentialityLevel: z.string().optional(),
 });
 export const UpdateEvidenceSchema = CreateEvidenceSchema.partial().extend({
-  id: z.string().uuid(),
+  id: cuidSchema,
 });
 export type CreateEvidenceData = z.infer<typeof CreateEvidenceSchema>;
 export type UpdateEvidenceData = z.infer<typeof UpdateEvidenceSchema>;

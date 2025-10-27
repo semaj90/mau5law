@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * Redis cache service wrapper — prefers centralized createRedisInstance factory when available.
  */
@@ -24,7 +25,7 @@ if (!client) {
   // lazy import ioredis to avoid top-level dependency issues in some environments
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const IORedis = require('ioredis');
-  client = new IORedis(env.REDIS_URL || 'redis://localhost:6379');
+  client = redis;
 }
 
 export const RedisCacheService: IRedisCacheService = {

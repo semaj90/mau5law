@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { db } from '$lib/server/db';
@@ -6,7 +7,7 @@ import { eq, and } from 'drizzle-orm';
 import { z } from 'zod';
 
 const createCasePoiRelationSchema = z.object({
-  poiId: z.string().uuid(),
+  poiId: cuidSchema,
   relationshipType: z.enum(['suspect', 'witness', 'victim', 'informant', 'other']),
   role: z.string().optional(),
   involvementLevel: z.enum(['primary', 'secondary', 'peripheral', 'unknown']).default('unknown'),

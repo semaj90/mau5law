@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 import Redis from 'ioredis';
 import { getRedisConfig, createServiceConfig, KEY_PATTERNS, LUA_SCRIPTS } from '$lib/config/redis-config';
 import { createRedisInstance } from '$lib/server/redis';
@@ -16,7 +17,7 @@ function getClient(): Redis {
   try {
     singleton.client = createRedisInstance();
   } catch {
-    singleton.client = new Redis(config as any);
+    singleton.client = redis;
   }
   singleton.client.on('error', (e: any) => {
     console.error('[redisRateLimit] Redis error:', e.message);

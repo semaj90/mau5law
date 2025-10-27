@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * redis-streams.ts
  * Typed Redis Streams producer/consumer helpers for token-chunk streaming.
@@ -123,7 +124,7 @@ export async function consumeTokenStream(
 
   // Use a dedicated connection for blocking XREAD so we don't block the shared client
   // Create a new Redis instance using the shared connection options and ensure lazyConnect
-  const reader = new Redis({ ...redisConnection, lazyConnect: true }) as unknown as RedisType;
+  const reader = redis as unknown as RedisType;
   try {
     while (Date.now() - start < stopAfterMs) {
       // Use the reader's call/sendCommand API directly

@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 // Client-safe schema definitions
 // These mirror server schemas but are safe for browser import
 import { z } from 'zod';
@@ -6,7 +7,7 @@ export const evidenceSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().min(1, 'Description is required'),
   tags: z.array(z.string()).optional(),
-  caseId: z.string().uuid().optional(),
+  caseId: cuidSchema.optional(),
   fileUrl: z.string().url().optional(),
   metadata: z.record(z.unknown()).optional(),
 });

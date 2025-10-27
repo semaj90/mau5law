@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // scripts/redis-inspect-fix.js (ES module)
 // Usage:
 //   node scripts/redis-inspect-fix.js --pattern "myapp:*"        # dry-run (default)
@@ -58,7 +59,7 @@ function tryHeuristics(raw) {
 
 async function main() {
   const url = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
-  const client = createClient({ url });
+  const client = redis;
   client.on('error', (err) => console.error('Redis error', err && err.message ? err.message : err));
   await client.connect();
 

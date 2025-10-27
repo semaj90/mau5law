@@ -1,37 +1,38 @@
 export function isWebGPUAvailable(): boolean {
   try {
     // Feature-detect in browsers
-    if (typeof navigator !== 'undefined' && 'gpu' in navigator) return true
-    return false
+    if (typeof navigator !== 'undefined' && 'gpu' in navigator) return true;
+    return false;
   } catch (e) {
-    return false
+    return false;
   }
 }
 
 export async function initWebGPU(canvas: HTMLCanvasElement | null) {
   if (!canvas || !isWebGPUAvailable()) {
-    return { mode: 'canvas', canvas }
+    return { mode: 'canvas', canvas };
   }
   // Placeholder: real WGSL shader + pipeline setup should go here when ready
-  return { mode: 'webgpu', canvas }
+  return { mode: 'webgpu', canvas };
 }
 
-export interface GraphNode { id: string; label?: string }
-export interface GraphEdge { from: string; to: string; relation?: string }
-
-export function renderFallbackCanvas(canvas: HTMLCanvasElement | null, nodes: GraphNode[] = [], edges: GraphEdge[] = []) {
-  if (!canvas) return
-  const ctx = canvas.getContext('2d')
-  if (!ctx) return
-  ctx.clearRect(0, 0, canvas.width, canvas.height)
-  ctx.fillStyle = '#fff'
-  ctx.fillRect(0, 0, canvas.width, canvas.height)
-  ctx.fillStyle = '#111'
-  ctx.font = '12px sans-serif'
-  ctx.fillText(`Nodes: ${nodes.length} Edges: ${edges.length}`, 10, 20)
+export function renderFallbackCanvas(
+  canvas: HTMLCanvasElement | null,
+  nodes: GraphNode[] = [],
+  edges: GraphEdge[] = []
+) {
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#111';
+  ctx.font = '12px sans-serif';
+  ctx.fillText(`Nodes: ${nodes.length} Edges: ${edges.length}`, 10, 20);
 }
 
-export default { isWebGPUAvailable, initWebGPU, renderFallbackCanvas }
+export default { isWebGPUAvailable, initWebGPU, renderFallbackCanvas };
 /**
  * WebGPU Evidence Graph Visualizer Bridge
  *
@@ -66,10 +67,7 @@ export interface GraphData {
 }
 
 // --- Minimal local GPU types to avoid 'any' casts ---
-type GPUCanvasFormat =
-  | 'bgra8unorm'
-  | 'rgba8unorm'
-  | 'rgba16float';
+type GPUCanvasFormat = 'bgra8unorm' | 'rgba8unorm' | 'rgba16float';
 
 interface GPUWithCanvasFormat extends GPU {
   getPreferredCanvasFormat(): GPUCanvasFormat;
@@ -134,7 +132,7 @@ class EvidenceGraphVisualizer {
     if (this.isWebGPU) {
       this.renderWebGPU(data);
     } else {
-      this.renderCanvas2D(data as { nodes: Required<GraphNode>[], edges: GraphEdge[] });
+      this.renderCanvas2D(data as { nodes: Required<GraphNode>[]; edges: GraphEdge[] });
     }
   }
 
@@ -148,7 +146,7 @@ class EvidenceGraphVisualizer {
     console.log('[WebGPU] Rendering graph:', data);
   }
 
-  private renderCanvas2D(data: { nodes: Required<GraphNode>[], edges: GraphEdge[] }): void {
+  private renderCanvas2D(data: { nodes: Required<GraphNode>[]; edges: GraphEdge[] }): void {
     const ctx = this.context as CanvasRenderingContext2D;
     ctx.clearRect(0, 0, this.canvas!.width, this.canvas!.height);
 
@@ -183,45 +181,49 @@ class EvidenceGraphVisualizer {
   }
 
   private simulateLayout(nodes: Required<GraphNode>[]): void {
-      if (!this.canvas) return;
-      const { width, height } = this.canvas;
-      nodes.forEach(node => {
-          if (node.x === undefined) node.x = Math.random() * width;
-          if (node.y === undefined) node.y = Math.random() * height;
-          if (node.vx === undefined) node.vx = 0;
-          if (node.vy === undefined) node.vy = 0;
+    if (!this.canvas) return;
+    const { width, height } = this.canvas;
+    nodes.forEach(node => {
+      if (node.x === undefined) node.x = Math.random() * width;
+      if (node.y === undefined) node.y = Math.random() * height;
+      if (node.vx === undefined) node.vx = 0;
+      if (node.vy === undefined) node.vy = 0;
 
-          // Repulsion from other nodes
-          nodes.forEach(other => {
-              if (node === other) return;
-              const dx = other.x - node.x;
-              const dy = other.y - node.y;
-              const distance = Math.sqrt(dx * dx + dy * dy);
-              if (distance < 100) {
-                  node.vx -= dx / distance * 2;
-                  node.vy -= dy / distance * 2;
-              }
-          });
-
-          // Attraction to center
-          node.vx += (width / 2 - node.x) * 0.001;
-          node.vy += (height / 2 - node.y) * 0.001;
-
-          node.x += node.vx *= 0.95;
-          node.y += node.vy *= 0.95;
-
-          // Bounds
-          node.x = Math.max(10, Math.min(width - 10, node.x));
-          node.y = Math.max(10, Math.min(height - 10, node.y));
+      // Repulsion from other nodes
+      nodes.forEach(other => {
+        if (node === other) return;
+        const dx = other.x - node.x;
+        const dy = other.y - node.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < 100) {
+          node.vx -= (dx / distance) * 2;
+          node.vy -= (dy / distance) * 2;
+        }
       });
+
+      // Attraction to center
+      node.vx += (width / 2 - node.x) * 0.001;
+      node.vy += (height / 2 - node.y) * 0.001;
+
+      node.x += node.vx *= 0.95;
+      node.y += node.vy *= 0.95;
+
+      // Bounds
+      node.x = Math.max(10, Math.min(width - 10, node.x));
+      node.y = Math.max(10, Math.min(height - 10, node.y));
+    });
   }
 
   private getNodeColor(type: GraphNode['type']): string {
     switch (type) {
-      case 'Evidence': return 'rgba(59, 130, 246, 0.8)'; // .bg-blue-500
-      case 'Entity': return 'rgba(239, 68, 68, 0.8)';   // .bg-red-500
-      case 'Case': return 'rgba(34, 197, 94, 0.8)';     // .bg-green-500
-      default: return 'rgba(107, 114, 128, 0.8)'; // .bg-gray-500
+      case 'Evidence':
+        return 'rgba(59, 130, 246, 0.8)'; // .bg-blue-500
+      case 'Entity':
+        return 'rgba(239, 68, 68, 0.8)'; // .bg-red-500
+      case 'Case':
+        return 'rgba(34, 197, 94, 0.8)'; // .bg-green-500
+      default:
+        return 'rgba(107, 114, 128, 0.8)'; // .bg-gray-500
     }
   }
 }

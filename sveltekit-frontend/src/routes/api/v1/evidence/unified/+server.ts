@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { z } from 'zod';
@@ -8,7 +9,7 @@ import { z } from 'zod';
 type EvidenceItem = { id: string; filename: string };
 
 const ReqSchema = z.object({
-  evidenceIds: z.array(z.string().uuid()).min(1),
+  evidenceIds: z.array(cuidSchema).min(1),
   analysisScope: z
     .object({ vectorSimilarity: z.boolean().optional().default(true) })
     .optional()

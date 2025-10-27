@@ -1,3 +1,18 @@
+import type { Case, Evidence } from './database'; // Assuming these types are defined in database.ts
+
+// Define specific interfaces for node data
+export interface Person {
+  id: string;
+  name: string;
+  // Add other relevant person properties here
+}
+
+export interface CanvasConnectionData {
+  id: string;
+  label?: string;
+  // Add other relevant connection data properties here if different from CanvasConnection
+}
+
 // Canvas types for interactive features
 export interface CanvasNode {
   id: string;
@@ -6,7 +21,7 @@ export interface CanvasNode {
   width: number;
   height: number;
   type: 'case' | 'evidence' | 'person' | 'connection';
-  data: any;
+  data: Case | Evidence | Person | CanvasConnectionData; // More specific type
 }
 export interface CanvasConnection {
   id: string;
@@ -27,5 +42,5 @@ export interface InteractiveCanvasState {
   animation?: string;
   frame?: number;
   fabricJSON?: string;
-  metadata?: { [key: string]: any };
+  metadata?: { [key: string]: unknown }; // Changed from any to unknown
 }

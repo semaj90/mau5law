@@ -5,7 +5,8 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 // Re-export the `sql` helper for other modules (single export)
 export { sql } from 'drizzle-orm';
 
-const connectionString = process.env.DATABASE_URL ?? 'postgres://localhost:5432/deeds_dev';
+const connectionString =
+  process.env.DATABASE_URL ?? 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
 
 // create a single pool for server runtime
 export const pool = new Pool({

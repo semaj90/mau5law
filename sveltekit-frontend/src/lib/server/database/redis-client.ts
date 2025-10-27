@@ -3,9 +3,8 @@
  * Provides connection management for Redis caching and orchestration
  */
 import Redis from 'ioredis';
-import { env } from '$env/dynamic/private';
 import dotenv from 'dotenv';
-import { createRedisInstance } from '$lib/server/redis';
+import createRedisConnection from '$lib/server/redis'; // Fix: createRedisConnection is the default export
 dotenv.config();
 
 export interface RedisConfig {
@@ -18,12 +17,11 @@ export interface RedisConfig {
   lazyConnect: boolean;
 }
 // Use REDIS_URL if provided, otherwise fallback to individual config
-const redisUrl = env.REDIS_URL || 'redis://localhost:6379';
 // Default Redis configuration
 const defaultConfig: RedisConfig = {
-  host: env.REDIS_HOST || 'localhost',
-  port: parseInt(env.REDIS_PORT || '6379'),
-  password: env.REDIS_PASSWORD,
+  host: process.env.REDIS_HOST || 'localhost',
+  port: parseInt(process.env.REDIS_PORT || '6379'),
+  password: process.env.REDIS_PASSWORD,
   db: 0,
   retryDelayOnFailover: 100,
   maxRetriesPerRequest: 3,
@@ -47,7 +45,7 @@ interface MinimalRedisClient {
 // Use the minimal interface for runtime instances
 type IORedisClient = MinimalRedisClient;
 
-let redis: IORedisClient | null = null;
+let redis: IORedisClient | null = null; // This is the module's managed shared instance
 let isConnected = false;
 
 /**
@@ -57,7 +55,7 @@ export async function getRedisClient(): Promise<IORedisClient | null> {
   if (redis && isConnected) return redis;
   try {
     // Delegate creation to centralized helper which manages URL/password and options
-    const instance = createRedisInstance();
+    const instance = createRedisConnection(); // Use the imported factory function
     // attach minimal-typed event handlers
     instance.on('connect', () => {
       isConnected = true;
@@ -74,7 +72,7 @@ export async function getRedisClient(): Promise<IORedisClient | null> {
 
     // test ping - returns 'PONG' on success
     await (instance as unknown as { ping?: () => Promise<string> }).ping?.();
-    redis = instance as unknown as IORedisClient;
+    redis = instance as unknown as IORedisClient; // Assign to the module's shared instance
     return redis;
   } catch (error) {
     console.warn('🔴 Failed to connect to Redis via createRedisInstance():', error);
@@ -121,7 +119,9 @@ export function createRedisClient(customConfig: Partial<RedisConfig> = {}): IORe
   // For custom clients we can still construct a new ioredis instance, but
   // prefer delegating to createRedisInstance when no custom config is needed.
   if (Object.keys(customConfig).length === 0) {
-    return createRedisInstance() as unknown as IORedisClient;
+    // If no custom config, return the module's managed 'redis' instance (if available)
+    // or create a new one with default config.
+    return redis || (createRedisConnection() as unknown as IORedisClient);
   }
   const config = { ...defaultConfig, ...customConfig };
   const client = new Redis({
@@ -167,5 +167,6 @@ export async function checkRedisHealth(): Promise<{
 }
 
 // Export a single redisClient reference and the helper functions
-export { redis as redisClient };
-export { getRedisClient, createRedisClient, checkRedisHealth, isRedisConnected, closeRedisConnection };
+// Provide a typed alias to the shared redis instance from the central module so callers can
+// continue importing `redisClient` from this helper while we still rely on the central factory.
+export const redisClient = redis; // Export the module's managed shared instance

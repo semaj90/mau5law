@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Evidence Search API - Smart search with AI suggestions
  * POST /api/v1/evidence/search/similar - Find similar evidence using vector similarity
@@ -12,7 +13,7 @@ const EMBEDDING_MODEL = 'embeddinggemma:latest'; // Available in our Ollama inst
 // Request schemas
 const SimilarSearchSchema = z.object({
   query: z.string().min(1),
-  evidenceId: z.string().uuid().optional(),
+  evidenceId: cuidSchema.optional(),
   limit: z.number().min(1).max(20).default(5),
   threshold: z.number().min(0).max(1).default(0.7),
 });

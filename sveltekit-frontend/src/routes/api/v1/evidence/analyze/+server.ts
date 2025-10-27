@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Evidence AI Analysis API Routes - Connects with Ollama and CUDA services
  * POST /api/v1/evidence/analyze - Analyze evidence with AI
@@ -14,13 +15,13 @@ const LEGAL_MODEL_GPU = 'gemma3-legal:latest'; // Primary model with GPU
 const LEGAL_MODEL_FALLBACK = 'gemma3:270m'; // Fallback for no GPU
 // Request schemas
 const AnalyzeEvidenceSchema = z.object({
-  evidenceId: z.string().uuid(),
+  evidenceId: cuidSchema,
   filename: z.string(),
   content: z.string().optional(),
   type: z.enum(['document', 'image', 'video', 'audio', 'other']),
 });
 const SimilarEvidenceSchema = z.object({
-  evidenceId: z.string().uuid(),
+  evidenceId: cuidSchema,
   embedding: z.array(z.number()).optional(),
   content: z.string().optional(),
   limit: z.number().min(1).max(20).default(5),

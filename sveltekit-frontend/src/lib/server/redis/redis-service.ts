@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // Use our compatibility shim that wraps ioredis under a node-redis-like surface
 import createClient from '$lib/shims/redis-shim';
 
@@ -59,15 +60,15 @@ class RedisService {
 
     try {
       // create primary client
-      this.client = createClient(config) as unknown as RedisClientLike;
+      this.client = redis as unknown as RedisClientLike;
 
       // duplicate if supported (ioredis) otherwise create new clients
       if (this.client && typeof this.client.duplicate === 'function') {
         this.publisher = this.client.duplicate();
         this.subscriber = this.client.duplicate();
       } else {
-        this.publisher = createClient(config) as unknown as RedisClientLike;
-        this.subscriber = createClient(config) as unknown as RedisClientLike;
+        this.publisher = redis as unknown as RedisClientLike;
+        this.subscriber = redis as unknown as RedisClientLike;
       }
 
       // attach error handlers before connecting

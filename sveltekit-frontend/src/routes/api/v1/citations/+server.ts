@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 /**
  * Legal Citations API Routes
  *
@@ -192,7 +193,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     const CitationItem = z
       .object({
         id: z.string(),
-        caseId: z.string().uuid(),
+        caseId: cuidSchema,
         citationType: z.string(),
         title: z.string().optional(),
         citation: z.string().optional(),
@@ -269,7 +270,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const CitationItem = z
       .object({
         id: z.string(),
-        caseId: z.string().uuid(),
+        caseId: cuidSchema,
         citationType: z.string(),
       })
       .passthrough();

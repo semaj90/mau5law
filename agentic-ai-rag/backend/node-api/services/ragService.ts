@@ -1,7 +1,8 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 import Redis from 'ioredis';
 import { callAgentFunction } from './agenticFunctions';
 
-const redis = new Redis();
+const redis = redis;
 
 export async function queryTopK(query: string) {
   const cached = await redis.get(`topk:${query}`);

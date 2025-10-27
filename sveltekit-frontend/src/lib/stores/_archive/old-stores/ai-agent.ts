@@ -1,13 +1,60 @@
 import type { ChatMessage } from "$lib/types/api";
 import crypto from "crypto";
-import stream from "stream";
-import { writable, derived } from "svelte/store";
+import { writable } from 'svelte/store';
 import { realAIService } from "$lib/services/real-ai-service";
+
+// Add minimal type definitions to avoid repeated `any` casts
+type Nullable<T> = T | null | undefined;
+
+interface StreamingData {
+  content?: string;
+  done?: boolean;
+  sources?: SimilarDocument[];
+  citations?: CitationSource[];
+  model?: string;
+  confidence?: number;
+  executionTime?: number;
+  fromCache?: boolean;
+  [key: string]: unknown;
+}
+
+interface RealAIChatResponse {
+  response?: string;
+  // other fields that may be returned by realAIService chat
+  [key: string]: unknown;
+}
+
+interface SearchOptions {
+  limit?: number;
+  threshold?: number;
+}
+
+interface IndexResult {
+  success: boolean;
+  error?: string;
+  [key: string]: unknown;
+}
+
+interface HealthCheckResult {
+  overall?: boolean;
+  models?: Array<{ name: string }>;
+  [key: string]: unknown;
+}
+
+interface RealAIService {
+  connect?: (model?: string) => Promise<{ success: boolean; model?: string; availableModels?: string[]; [k: string]: unknown }>;
+  sendMessage?: (opts: { message: string; sessionId: string; context?: Record<string, unknown>; options?: Record<string, unknown> }) => Promise<RealAIChatResponse>;
+  searchSimilarDocuments?: (query: string, opts?: SearchOptions) => Promise<SimilarDocument[]>;
+  indexDocument?: (doc: { title: string; content: string; metadata?: Record<string, unknown> }) => Promise<IndexResult>;
+  switchModel?: (model: string) => Promise<{ success: boolean; error?: string }>;
+  healthCheck?: () => Promise<HealthCheckResult>;
+  // ...other optional methods...
+}
+
 // ======================================================================
 // ENHANCED AI AGENT STORE WITH PRODUCTION FEATURES
 // Integrates with local LLMs, vector search, and real-time capabilities
 // ======================================================================
-}
 export interface AIAgentState {
   // Connection & Health
   isConnected: boolean;
@@ -46,9 +93,9 @@ export interface AIAgentState {
 }
 export interface ProcessingJob {
   id: string;
-  type: "chat" | "summarize" | "analyze" | "embed" | "search";
-  status: "pending" | "processing" | "completed" | "failed";
-  input: any;
+  type: 'chat' | 'summarize' | 'analyze' | 'embed' | 'search';
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  input: unknown;
   output?: unknown;
   startTime: Date;
   endTime?: Date;
@@ -59,8 +106,12 @@ export interface SimilarDocument {
   id: string;
   title: string;
   content: string;
+  // legacy field kept
   similarity: number;
-  metadata: { [key: string]: any }
+  // support expected VectorSearchResult shape (score/type) to avoid assignability errors
+  score?: number;
+  type?: string;
+  metadata: Record<string, unknown>;
 }
 export interface CitationSource {
   id: string;
@@ -68,11 +119,11 @@ export interface CitationSource {
   url?: string;
   content: string;
   relevance: number;
-  type: "document" | "case" | "statute" | "evidence";
+  type: 'document' | 'case' | 'statute' | 'evidence';
 }
 export interface AIError {
   id: string;
-  type: "connection" | "processing" | "timeout" | "model" | "rate_limit";
+  type: 'connection' | 'processing' | 'timeout' | 'model' | 'rate_limit';
   message: string;
   timestamp: Date;
   context?: unknown;
@@ -81,26 +132,26 @@ export interface AIError {
 }
 // Main AI Agent Store
 const createAIAgentStore = () => {
-  const { subscribe, set, update } = writable<AIAgentState>({
+  const { subscribe, update } = writable<AIAgentState>({
     isConnected: false,
     isProcessing: false,
-    systemHealth: "healthy",
+    systemHealth: 'healthy',
     lastHeartbeat: null,
     currentConversation: [],
     conversationHistory: [],
     activeSessionId: null,
-    currentModel: "gemma3-legal",
-    availableModels: ["gemma3-legal", "mistral-7b", "llama3.1-8b"],
+    currentModel: 'gemma3-legal',
+    availableModels: ['gemma3-legal', 'mistral-7b', 'llama3.1-8b'],
     processingQueue: [],
     completedJobs: [],
     vectorStore: {
       isIndexed: false,
       documentCount: 0,
-      lastIndexUpdate: null
+      lastIndexUpdate: null,
     },
     similarDocuments: [],
     citationSources: [],
-    streamingResponse: "",
+    streamingResponse: '',
     isStreaming: false,
     typingIndicator: false,
     errors: [],
@@ -108,52 +159,53 @@ const createAIAgentStore = () => {
     responseTimeMs: 0,
     averageResponseTime: 0,
     totalRequests: 0,
-    successRate: 100
+    successRate: 100,
   });
   return {
     subscribe,
     // Connection Management
     async connect(modelName?: string) {
-      update((state) => ({ ...state, isProcessing: true });
+      update(state => ({ ...state, isProcessing: true }));
       try {
         // Use real AI service for connection
-        const connectionResult = await realAIService.connect(modelName || "gemma3-legal");
+        const connectionResult = await realAIService.connect?.(modelName || 'gemma3-legal');
         if (!connectionResult.success) {
-          throw new Error(connectionResult.error || "Connection failed");
+          throw new Error(connectionResult.error || 'Connection failed');
         }
-        update((state) => ({
+        update(state => ({
           ...state,
           isConnected: true,
           isProcessing: false,
-          currentModel: connectionResult?.model || "unknown" // @ts-ignore - Model property access,
-          availableModels: connectionResult.availableModels,
+          currentModel: connectionResult.model || 'unknown',
+          availableModels: connectionResult.availableModels || [],
           lastHeartbeat: new Date(),
-          systemHealth: "healthy"
-        });
+          systemHealth: 'healthy',
+        }));
         // Start heartbeat
         this.startHeartbeat();
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const msg = error instanceof Error ? error.message : String(error);
         this.addError({
-          type: "connection",
-          message: (error as Error).message,
-          retryable: true
+          type: 'connection',
+          message: msg,
+          retryable: true,
         });
-        update((state) => ({
+        update(state => ({
           ...state,
           isConnected: false,
           isProcessing: false,
-          systemHealth: "critical",
-        });
+          systemHealth: 'critical',
+        }));
       }
     },
     disconnect() {
-      update((state) => ({
+      update(state => ({
         ...state,
         isConnected: false,
-        systemHealth: "degraded",
+        systemHealth: 'degraded',
         currentConversation: [],
-        activeSessionId: null
-      });
+        activeSessionId: null,
+      }));
     },
     // Chat Functions
     async sendMessage(message: string, context?: unknown) {
@@ -164,367 +216,374 @@ const createAIAgentStore = () => {
       const userMessage: ChatMessage = {
         id: crypto.randomUUID(),
         content: message,
-        role: "user",
-        timestamp: new Date()
-      }
-      update((state) => ({
+        role: 'user',
+        timestamp: new Date(),
+      };
+      update(state => ({
         ...state,
         currentConversation: [...state.currentConversation, userMessage],
         activeSessionId: sessionId,
         isProcessing: true,
         typingIndicator: true,
-      });
+      }));
       // Add processing job
       const job: ProcessingJob = {
         id: jobId,
-        type: "chat",
-        status: "pending",
+        type: 'chat',
+        status: 'pending',
         input: { message, context, sessionId },
         startTime: new Date(),
-        retryCount: 0
-      }
-      update((state) => ({
+        retryCount: 0,
+      };
+      update(state => ({
         ...state,
-        processingQueue: [...state.processingQueue, job]
-      });
+        processingQueue: [...state.processingQueue, job],
+      }));
       try {
         // Use real AI service for chat
-        const chatResponse = await realAIService.sendMessage({
+        const service = realAIService as unknown as RealAIService;
+        const chatResponse = await service.sendMessage?.({
           message,
           sessionId,
           context: {
             conversationHistory: [],
-            ...context
+            ...((context as Record<string, unknown>) || {}),
           },
           options: {
             stream: true,
             useRAG: true,
-          }
+          },
         });
-        // Complete the chat response
-        this.completeStreamingResponse(chatResponse.response, chatResponse, jobId);
+
+        // Complete the chat response (handle non-streamed immediate response)
+        if (chatResponse?.response) {
+          this.completeStreamingResponse(
+            chatResponse.response as string,
+            chatResponse as unknown as StreamingData,
+            jobId
+          );
+        }
         const responseTime = Date.now() - startTime;
-        update((state) => ({
+        update(state => ({
           ...state,
           responseTimeMs: responseTime,
           averageResponseTime:
-            (state.averageResponseTime * state.totalRequests + responseTime) /
-            (state.totalRequests + 1),
+            (state.averageResponseTime * state.totalRequests + responseTime) / (state.totalRequests + 1),
           totalRequests: state.totalRequests + 1,
           isProcessing: false,
           typingIndicator: false,
-        });
-      } catch (error: any) {
+        }));
+      } catch (error: unknown) {
+        const msg = error instanceof Error ? error.message : String(error);
         this.addError({
-          type: "processing",
-          message: (error as Error).message,
+          type: 'processing',
+          message: msg,
           context: { jobId, message: message.substring(0, 100) },
-          retryable: true
+          retryable: true,
         });
-        update((state) => ({
+        update(state => ({
           ...state,
           isProcessing: false,
           typingIndicator: false,
           successRate:
             state.totalRequests > 0
-              ? (((state.totalRequests * state.successRate) / 100 - 1) /
-                  state.totalRequests) *
-                100
-              : 0
-        });
-        this.failJob(jobId, (error as Error).message);
+              ? (((state.totalRequests * state.successRate) / 100 - 1) / state.totalRequests) * 100
+              : 0,
+        }));
+        this.failJob(jobId, msg);
       }
     },
     // Streaming Response Handler
-    async handleStreamingResponse(stream: ReadableStream, jobId: string) {
+    async handleStreamingResponse(stream: ReadableStream<Uint8Array>, jobId: string) {
       const reader = stream.getReader();
       const decoder = new TextDecoder();
-      let assistantMessage = "";
-      update((state) => ({
+      let assistantMessage = '';
+      update(state => ({
         ...state,
         isStreaming: true,
-        streamingResponse: "",
-      });
+        streamingResponse: '',
+      }));
       try {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
+        let done = false;
+        while (!done) {
+          const result = await reader.read();
+          done = !!result.done;
+          const value = result.value;
+          if (!value) {
+            if (done) break;
+            continue;
+          }
+
           const chunk = decoder.decode(value, { stream: true });
-          // removed unused lines assignment
+          // split chunk into lines (SSE-style) and iterate
+          const lines = chunk
+            .split(/\r?\n/)
+            .map(l => l.trim())
+            .filter(Boolean);
           for (const line of lines) {
-            if (line.startsWith("data: ")) {
+            if (!line) continue;
+            if (line.startsWith('data: ')) {
               try {
-                const data = JSON.parse(line.slice(6);
-                if ((data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).content) {
-                  assistantMessage += (data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).content;
-                  update((state) => ({
+                const parsed: unknown = JSON.parse(line.slice(6));
+                const data = parsed as StreamingData;
+                const content = data.content;
+                if (content) {
+                  assistantMessage += content;
+                  update(state => ({
                     ...state,
-                    streamingResponse: assistantMessage
-                  });
+                    streamingResponse: assistantMessage,
+                  }));
                 }
-                if ((data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).done) {
+                if (data.done) {
                   this.completeStreamingResponse(assistantMessage, data, jobId);
                   return;
                 }
-              } catch (e: any) {
-                console.warn("Failed to parse streaming data:", line);
+              } catch (e: unknown) {
+                const errMsg = e instanceof Error ? e.message : String(e);
+                console.warn('Failed to parse streaming data:', line, errMsg);
               }
             }
           }
         }
       } finally {
-        reader.releaseLock();
-        update((state) => ({
+        try {
+          reader.releaseLock();
+        } catch (releaseError: unknown) {
+          // non-fatal: log for diagnostics
+          console.warn('reader.releaseLock failed:', releaseError);
+        }
+        update(state => ({
           ...state,
           isStreaming: false,
-          streamingResponse: "",
-        });
+          streamingResponse: '',
+        }));
       }
     },
-    completeStreamingResponse(content: string, data: any, jobId: string) {
+
+    completeStreamingResponse(content: string, data: StreamingData, jobId: string) {
       const assistantMessage: ChatMessage = {
         id: crypto.randomUUID(),
         content,
-        role: "assistant",
+        role: 'assistant',
         timestamp: new Date(),
-        sources: (data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).sources || [],
+        sources: data?.sources || [],
         metadata: {
-          model: data?.model || "unknown" // @ts-ignore - Model property access,
-          confidence: (data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).confidence,
-          executionTime: (data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).executionTime,
-          fromCache: (data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).fromCache || false
-        }
-      }
-      update((state) => ({
+          model: data?.model || 'unknown',
+          confidence: data?.confidence,
+          executionTime: data?.executionTime,
+          fromCache: data?.fromCache || false,
+        },
+      };
+      update(state => ({
         ...state,
         currentConversation: [...state.currentConversation, assistantMessage],
-        similarDocuments: (data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).sources || [],
-        citationSources: (data as { content?: any; done?: any; sources?: any; confidence?: any; executionTime?: any; fromCache?: any; citations?: any }).citations || []
-      });
+        similarDocuments: data?.sources || [],
+        citationSources: data?.citations || [],
+      }));
       this.completeJob(jobId, { message: assistantMessage });
     },
     // RAG Functions
     async searchSimilarDocuments(query: string, limit = 5) {
       try {
-        // Use real AI service for document search
-        const documents = await realAIService.searchSimilarDocuments(query, {
-          limit,
-          threshold: 0.7
-        });
-        update((state) => ({
+        const service = realAIService as unknown as RealAIService;
+        const documents =
+          (await service.searchSimilarDocuments?.(query, {
+            limit,
+            threshold: 0.7,
+          })) ?? [];
+        update(state => ({
           ...state,
-          similarDocuments: documents
-        });
+          similarDocuments: documents,
+        }));
         return documents;
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const msg = error instanceof Error ? error.message : String(error);
         this.addError({
-          type: "processing",
-          message: `Search failed: ${(error as Error).message}`,
-          retryable: true
+          type: 'processing',
+          message: `Search failed: ${msg}`,
+          retryable: true,
         });
         return [];
       }
     },
-    async indexDocument(_document: {
-      title: string;
-      content: string;
-      metadata?: unknown;
-    }) {
+
+    async indexDocument(document: { title: string; content: string; metadata?: unknown }) {
       try {
-        // Use real AI service for document indexing
-        const result = await realAIService.indexDocument({
-          title: document.title,
-          content: document.content,
-          metadata: document.metadata as { [key: string]: any }
-        });
-        if (!(result as { success?: any; error?: any }).success) {
-          throw new Error((result as { success?: any; error?: any }).error || "Indexing failed");
+        const service = realAIService as unknown as RealAIService;
+        const result =
+          (await service.indexDocument?.({
+            title: document.title,
+            content: document.content,
+            metadata: document.metadata as Record<string, unknown> | undefined,
+          })) ?? ({ success: false, error: 'index method not available' } as IndexResult);
+
+        if (!result.success) {
+          throw new Error(result.error || 'Indexing failed');
         }
-        update((state) => ({
+        update(state => ({
           ...state,
           vectorStore: {
             ...state.vectorStore,
             documentCount: state.vectorStore.documentCount + 1,
             lastIndexUpdate: new Date(),
-            isIndexed: true
-          }
-        });
-        return { success: true }
-      } catch (error: any) {
+            isIndexed: true,
+          },
+        }));
+        return { success: true };
+      } catch (error: unknown) {
+        const msg = error instanceof Error ? error.message : String(error);
         this.addError({
-          type: "processing",
-          message: `Indexing failed: ${(error as Error).message}`,
-          retryable: true
+          type: 'processing',
+          message: `Indexing failed: ${msg}`,
+          retryable: true,
         });
         throw error;
       }
     },
     // Model Management
     async switchModel(modelName: string) {
-      update((state) => ({ ...state, isProcessing: true });
+      update(state => ({ ...state, isProcessing: true }));
       try {
         // Use real AI service for model switching
-        const result = await realAIService.switchModel(modelName);
-        if (!(result as { success?: any; error?: any }).success) {
-          throw new Error((result as { success?: any; error?: any }).error || "Model switch failed");
+        const result = await (realAIService as unknown as RealAIService).switchModel?.(modelName);
+        if (!result?.success) {
+          throw new Error(result?.error || 'Model switch failed');
         }
-        update((state) => ({
+        update(state => ({
           ...state,
           currentModel: modelName,
           isProcessing: false,
           currentConversation: [], // Clear conversation on model switch
-        });
+        }));
       } catch (error: any) {
+        const msg = error instanceof Error ? error.message : String(error);
         this.addError({
-          type: "model",
-          message: (error as Error).message,
-          retryable: true
+          type: 'model',
+          message: msg,
+          retryable: true,
         });
-        update((state) => ({ ...state, isProcessing: false });
+        update(state => ({ ...state, isProcessing: false }));
       }
     },
     // Conversation Management
     clearConversation() {
-      update((state) => ({
+      update(state => ({
         ...state,
         currentConversation: [],
         activeSessionId: null,
-        streamingResponse: "",
+        streamingResponse: '',
         similarDocuments: [],
-        citationSources: []
-      });
+        citationSources: [],
+      }));
     },
     saveConversation() {
-      update((state) => ({
+      update(state => ({
         ...state,
-        conversationHistory: [
-          ...state.conversationHistory,
-          [...state.currentConversation]
-        ],
+        conversationHistory: [...state.conversationHistory, [...state.currentConversation]],
         currentConversation: [],
-        activeSessionId: null
-      });
+        activeSessionId: null,
+      }));
     },
-    loadConversation(_index: number) {
-      update((state) => {
+    loadConversation(index: number) {
+      update(state => {
         if (index >= 0 && index < state.conversationHistory.length) {
           return {
             ...state,
             currentConversation: [...state.conversationHistory[index]],
-            activeSessionId: crypto.randomUUID()
-          }
+            activeSessionId: crypto.randomUUID(),
+          };
         }
         return state;
       });
     },
     // Error Handling
-    addError(error: Omit<AIError, "id" | "timestamp" | "resolved">) {
+    addError(error: Omit<AIError, 'id' | 'timestamp' | 'resolved'>) {
       const newError: AIError = {
         id: crypto.randomUUID(),
         timestamp: new Date(),
         resolved: false,
-        ...error
-      }
-      update((state) => ({
+        ...error,
+      };
+      update(state => ({
         ...state,
         errors: [...state.errors, newError],
-        systemHealth:
-          state.systemHealth === "healthy" ? "degraded" : state.systemHealth
-      });
+        systemHealth: state.systemHealth === 'healthy' ? 'degraded' : state.systemHealth,
+      }));
     },
     resolveError(errorId: string) {
-      update((state) => ({
+      update(state => ({
         ...state,
-        errors: state.errors.map((error) =>
-          error.id === errorId ? { ...error, resolved: true } : error
-        )
-      });
+        errors: state.errors.map(error => (error.id === errorId ? { ...error, resolved: true } : error)),
+      }));
     },
     clearErrors() {
-      update((state) => ({
+      update(state => ({
         ...state,
         errors: [],
-        systemHealth: state.isConnected ? "healthy" : "degraded"
-      });
+        systemHealth: state.isConnected ? 'healthy' : 'degraded',
+      }));
     },
     // Job Management
-    completeJob(jobId: string, result: any) {
-      update((state) => {
-        const job = state.processingQueue.find((j) => j.id === jobId);
+    completeJob(jobId: string, result: unknown) {
+      update(state => {
+        const job = state.processingQueue.find(j => j.id === jobId);
         if (!job) return state;
         const completedJob: ProcessingJob = {
           ...job,
-          status: "completed",
+          status: 'completed',
           output: result,
           endTime: new Date(),
-        }
+        };
         return {
           ...state,
-          processingQueue: state.processingQueue.filter((j) => j.id !== jobId),
-          completedJobs: [...state.completedJobs, completedJob]
-        }
+          processingQueue: state.processingQueue.filter(j => j.id !== jobId),
+          completedJobs: [...state.completedJobs, completedJob],
+        };
       });
     },
     failJob(jobId: string, error: string) {
-      update((state) => {
-        const job = state.processingQueue.find((j) => j.id === jobId);
+      update(state => {
+        const job = state.processingQueue.find(j => j.id === jobId);
         if (!job) return state;
         const failedJob: ProcessingJob = {
           ...job,
-          status: "failed",
+          status: 'failed',
           error,
-          endTime: new Date()
-        }
+          endTime: new Date(),
+        };
         return {
           ...state,
-          processingQueue: state.processingQueue.filter((j) => j.id !== jobId),
-          completedJobs: [...state.completedJobs, failedJob]
-        }
+          processingQueue: state.processingQueue.filter(j => j.id !== jobId),
+          completedJobs: [...state.completedJobs, failedJob],
+        };
       });
     },
     // Health Monitoring
     startHeartbeat() {
       const interval = setInterval(async () => {
         try {
-          // Use real AI service for health checks
-          const health = await realAIService.healthCheck();
-          update((state) => ({
+          const service = realAIService as unknown as RealAIService;
+          const health = (await service.healthCheck?.()) as Nullable<HealthCheckResult>;
+          update(state => ({
             ...state,
             lastHeartbeat: new Date(),
-            systemHealth: health.overall ? "healthy" : "critical",
-            availableModels: health.models.map(m => m.name),
-            isConnected: health.overall
-          });
-        } catch (error: any) {
-          update((state) => ({
+            systemHealth: (health as HealthCheckResult)?.overall ? 'healthy' : 'critical',
+            availableModels: ((health as HealthCheckResult)?.models || []).map((m: { name: string }) => m.name),
+            isConnected: !!(health as HealthCheckResult)?.overall,
+          }));
+        } catch (error: unknown) {
+          update(state => ({
             ...state,
-            systemHealth: "critical",
-            isConnected: false
-          });
+            systemHealth: 'critical',
+            isConnected: false,
+          }));
         }
       }, 30000); // Every 30 seconds
       // Store interval ID for cleanup
       return interval;
-    }
-  }
-}
+    },
+  };
+};
 // Export the store
 export const aiAgentStore = createAIAgentStore();
-// Derived stores for easy component access (fixed corruption)
-export const isAIConnected = derived(aiAgentStore, (state) => state.isConnected);
-export const currentConversation = derived(aiAgentStore, (state) => state.currentConversation);
-export const isProcessing = derived(aiAgentStore, (state) => state.isProcessing);
-export const streamingResponse = derived(aiAgentStore, (state) => state.streamingResponse);
-export const similarDocuments = derived(aiAgentStore, (state) => state.similarDocuments);
-export const aiErrors = derived(aiAgentStore, (state) => state.errors.filter((e: any) => !e.resolved);
-export const systemHealth = derived(aiAgentStore, (state) => state.systemHealth);
-export const performanceMetrics = derived(aiAgentStore, (state) => ({
-  responseTime: state.responseTimeMs,
-  averageResponseTime: state.averageResponseTime,
-  totalRequests: state.totalRequests,
-  successRate: state.successRate
-});
-// Auto-connect on store initialization
-if (typeof window !== "undefined") {
-  aiAgentStore.connect().catch(console.error);
-}
+// Derived stores for easy component access (fixed

@@ -1,3 +1,5 @@
+import { cuidSchema } from '$lib/server/z-schemas';
+import { redis } from '$lib/server/redis-client';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -21,7 +23,7 @@ import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 import type { RequestHandler } from './$types.js'
 const querySchema = z.object({
   query: z.string().min(1).max(5000),
-  caseId: z.string().uuid().optional(),
+  caseId: cuidSchema.optional(),
   options: z.object({
     model: z.string().optional(),
     temperature: z.number().min(0).max(2).optional(),

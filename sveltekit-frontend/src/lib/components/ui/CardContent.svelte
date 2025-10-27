@@ -6,15 +6,10 @@
     children?: Snippet;
   }
 
-  let {
-    class: className = '',
-    children
-  }: Props = $props();
-
-  let classes = $derived(`card-content-ssr ${className}`.trim());
+  let { class: className = '', children }: Props = $props();
 </script>
 
-<div class={classes}>
+<div class={`card-content-ssr ${className}`.trim()}>
   {#if children}
     {@render children()}
   {/if}

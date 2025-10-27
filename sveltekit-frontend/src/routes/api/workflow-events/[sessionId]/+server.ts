@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * Server-Sent Events (SSE) Endpoint for Real-Time Workflow Updates
  *
@@ -56,7 +57,7 @@ export const GET = async (event: RequestEvent) => {
   }
 
   // Create Redis subscriber for this session and cast to our pub/sub interface
-  const redis = new IORedis(REDIS_URL) as unknown as RedisPubSub;
+  const redis = redis as unknown as RedisPubSub;
   const channel = `workflow:session:${sessionId}`;
 
   // helper to safely stringify unknown errors for logging (avoid `any`)

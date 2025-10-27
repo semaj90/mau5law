@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 import LRU from "lru-cache";
 import * as crypto from "crypto";
 // Fix LRUCache import for CommonJS compatibility
@@ -62,7 +63,7 @@ class CachingLayer {
       this.redis = null; // Disable Redis for now
       if (false) {
         // Placeholder for actual Redis initialization
-        // this.redis = new Redis({...})
+        // this.redis = redis
         // Add event handlers here when implementing
       }
     } catch (error: any) {

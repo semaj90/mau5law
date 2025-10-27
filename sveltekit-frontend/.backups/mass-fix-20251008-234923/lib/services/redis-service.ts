@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // Redis pub/sub service for real-time updates
 import { createClient } from '$lib/shims/redis-shim';
 }
@@ -24,9 +25,9 @@ class RedisService {
     }
     try {
       // Main client for operations
-  this.client = await createClient(config.url ? { url: config.url } : config);
-  this.publisher = await createClient(config.url ? { url: config.url } : config);
-  this.subscriber = await createClient(config.url ? { url: config.url } : config);
+  this.client = await redis;
+  this.publisher = await redis;
+  this.subscriber = await redis;
       // Setup error handlers
       this.client.on('error', this.handleError.bind(this),;
       this.publisher.on('error', this.handleError.bind(this),;

@@ -18,14 +18,20 @@ class MarkovPredictorWithRedis {
   private cacheEnabled: boolean;
   constructor() {
     // Initialize Redis connection with password support
-    const redisPassword = env.REDIS_PASSWORD || 'redis';
-    const redisUrl = env.REDIS_URL || `redis://:${redisPassword}@localhost:6379`
-    this.redis = new Redis(redisUrl, {
+    const redisPassword = env.REDIS_PASSWORD;
+    const redisUrl = env.REDIS_URL || 'redis://localhost:6379';
+    const redisConfig: any = {
       retryDelayOnFailover: 100,
       maxRetriesPerRequest: 3,
-      lazyConnect: true
-      password: redisPassword
-    });
+      lazyConnect: true,
+    };
+
+    // Only add password if explicitly set
+    if (redisPassword) {
+      redisConfig.password = redisPassword;
+    }
+
+    this.redis = new Redis(redisUrl, redisConfig);
     this.cacheEnabled = true;
     // Test Redis connection
     this.redis.ping().catch(() => {

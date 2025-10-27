@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * gRPC Protobuf Pipeline for Gemma Embeddings
  * High-performance streaming embeddings with PostgreSQL JSONB optimization
@@ -142,7 +143,7 @@ class GRPCGemmaEmbeddingClient {
     // Use the shared poolShim instead of creating a new pg Pool. This is conservative and reversible.
     this.db = poolShim;
     // construct Redis using the imported Redis class
-    this.redis = new Redis((config.redisConfig ?? undefined) as RedisOptions | string | undefined);
+    this.redis = redis;
     this.circuitBreaker = new CircuitBreaker({
       failureThreshold: 5,
       recoveryTimeout: 30000,

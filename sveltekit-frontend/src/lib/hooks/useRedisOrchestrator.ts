@@ -1,328 +1,362 @@
 /**
- * Redis Orchestrator Svelte Hooks
- * Provides easy-to-use hooks for Redis-optimized AI operations in Svelte components
+ * Svelte-side helpers for interacting with the Redis orchestrator.
+ * These utilities expose a stable and well-typed interface that mirrors the intent of the
+ * original (but syntactically corrupted) implementation.
  */
-import { onMount, onDestroy } from 'svelte';
+import { onDestroy, onMount } from 'svelte';
 import { get } from 'svelte/store';
-import { redisOrchestratorClient,
+import {
+  redisOrchestratorClient,
   redisStats,
   isRedisHealthy,
   queuedTasks,
   type RedisOptimizationResult,
-  type QueuedTask
- } from '$lib/stores/unified';
-/**
- * Hook for Redis-optimized AI queries
- */
+  type QueuedTask,
+} from '$lib/stores/unified';
+
+type QueryContext = {
+  endpoint?: string;
+  caseId?: string;
+  userId?: string;
+  useOrchestrator?: boolean;
+};
+
+type ComponentCacheConfig = {
+  autoCache?: boolean;
+};
+
 export function useRedisAI() {
-  let isProcessing = $state(false);
-  let lastResult: RedisOptimizationResult | null = $state(null);
-  let error: string | null = $state(null);
-  const query = async (
-    query: string,
-    context: {
-      endpoint?: string;
-      caseId?: string;
-      userId?: string;
-      useOrchestrator?: boolean;
-    } = {}
-  ): Promise<RedisOptimizationResult> => {
+  let isProcessing = false;
+  let lastResult: RedisOptimizationResult | null = null;
+  let error: string | null = null;
+
+  async function query(queryText: string, context: QueryContext = {}): Promise<RedisOptimizationResult> {
     isProcessing = true;
     error = null;
     try {
-      const result = await redisOrchestratorClient.processQuery(query, context);
+      const result = await redisOrchestratorClient.processQuery(queryText, context);
       lastResult = result;
       return result;
     } catch (err) {
-      error = err instanceof Error ? err.message: 'Unknown error';
+      error = err instanceof Error ? err.message : 'Unknown error';
       throw err;
     } finally {
       isProcessing = false;
     }
   }
-  const queueTask = async (
+
+  async function queueTask(
     taskType: 'complex_legal' | 'document_analysis' | 'case_synthesis' | 'risk_assessment',
-    query: string,
-    metadata: any = {},
-    priority = 100;
-  ): Promise<string>, => {
+    queryText: string,
+    metadata: Record<string, unknown> = {},
+    priority = 100,
+  ): Promise<string> {
     isProcessing = true;
     error = null;
     try {
-      const taskId = await redisOrchestratorClient.queueTask(taskType, query, metadata, priority);
-      return taskId;
+      return await redisOrchestratorClient.queueTask(taskType, queryText, metadata, priority);
     } catch (err) {
-      error = err instanceof Error ? err.message: 'Unknown error';
+      error = err instanceof Error ? err.message : 'Unknown error';
       throw err;
     } finally {
       isProcessing = false;
     }
   }
-  const getTaskResult = async (taskId: string) => {
-    return await redisOrchestratorClient.getTaskResult(taskId);
+
+  function getTaskResult(taskId: string) {
+    return redisOrchestratorClient.getTaskResult(taskId);
   }
+
   return {
-    get isProcessing() { return isProcessing, },
-    get lastResult() { return lastResult, },
-    get error() { return error, },
+    get isProcessing() {
+      return isProcessing;
+    },
+    get lastResult() {
+      return lastResult;
+    },
+    get error() {
+      return error;
+    },
     query,
     queueTask,
     getTaskResult,
-    clearError: () => { error = null, }
-  }
+    clearError() {
+      error = null;
+    },
+  };
 }
-/**
- * Hook for Redis system monitoring
- */
+
 export function useRedisMonitoring() {
-  let healthData: any = $state(null);
-  let isLoading = $state(false);
-  const refresh = async () => {
+  let healthData: unknown = null;
+  let isLoading = false;
+
+  async function refresh(): Promise<void> {
     isLoading = true;
     try {
       healthData = await redisOrchestratorClient.getSystemHealth();
-    } catch (error) {
-      console.error('Failed to refresh Redis health:', error);
+    } catch (err) {
+      console.error('Failed to refresh Redis health:', err);
     } finally {
       isLoading = false;
     }
   }
-  const clearCache = async (confirm = false) => {
+
+  async function clearCache(confirm = false) {
     if (!confirm) {
       throw new Error('Cache clear requires confirmation');
     }
-    return await redisOrchestratorClient.clearCache(true);
+    return redisOrchestratorClient.clearCache(true);
   }
+
   onMount(() => {
-    refresh();
+    void refresh();
   });
+
   return {
-    get healthData() { return healthData, },
-    get isLoading() { return isLoading, },
-    get stats() { return get(redisStats), },
-    get isHealthy() { return get(isRedisHealthy), },
+    get healthData() {
+      return healthData;
+    },
+    get isLoading() {
+      return isLoading;
+    },
+    get stats() {
+      return get(redisStats);
+    },
+    get isHealthy() {
+      return get(isRedisHealthy);
+    },
     refresh,
-    clearCache
-  }
+    clearCache,
+  };
 }
-/**
- * Hook for managing queued tasks
- */
-export function useRedisTaskQueue() {
-  let tasks: Map<string, QueuedTask> = $state(new Map();
-  let isPolling = $state(false);
-  // Subscribe to task updates
-  const unsubscribe = queuedTasks.subscribe(value => {
-    tasks = value;
+
+export function useRedisTaskQueue(defaultPollInterval = 5000) {
+  let tasks: Map<string, QueuedTask> = new Map();
+  let isPolling = false;
+  let pollHandle: ReturnType<typeof setInterval> | null = null;
+  let unsubscribe: (() => void) | undefined;
+
+  function subscribeToTasks() {
+    unsubscribe = queuedTasks.subscribe((value) => {
+      tasks = value;
+    });
+  }
+
+  async function pollOnce() {
+    try {
+      if (typeof redisOrchestratorClient.refreshQueuedTasks === 'function') {
+        await redisOrchestratorClient.refreshQueuedTasks();
+      }
+    } catch (err) {
+      console.warn('Failed to refresh queued tasks:', err);
+    }
+  }
+
+  function startPolling(intervalMs = defaultPollInterval) {
+    if (isPolling) return;
+    isPolling = true;
+    pollHandle = setInterval(() => {
+      void pollOnce();
+    }, Math.max(intervalMs, 1000));
+  }
+
+  function stopPolling() {
+    if (pollHandle) {
+      clearInterval(pollHandle);
+      pollHandle = null;
+    }
+    isPolling = false;
+  }
+
+  onMount(() => {
+    subscribeToTasks();
   });
-  const getTask = (taskId: string): QueuedTask | undefined => {
+
+  onDestroy(() => {
+    stopPolling();
+    unsubscribe?.();
+  });
+
+  function getTask(taskId: string): QueuedTask | undefined {
     return tasks.get(taskId);
   }
-  const getAllTasks = (): QueuedTask[] => {
-    return Array.from(tasks.values()).sort((a, b) =>
-      new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
+
+  function getAllTasks(): QueuedTask[] {
+    return Array.from(tasks.values()).sort(
+      (a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime(),
     );
   }
-  const getTasksByStatus = (status: QueuedTask['status']): QueuedTask[] => {
-    return getAllTasks().filter(task => task.status === status);
+
+  function getTasksByStatus(status: QueuedTask['status']): QueuedTask[] {
+    return getAllTasks().filter((task) => task.status === status);
   }
-  const removeTask = (taskId: string) => {
-    queuedTasks.update(tasks => {
-      tasks.delete(taskId);
-      return tasks;
-    });
+
+  function getTasksForUser(userId: string): QueuedTask[] {
+    return getAllTasks().filter((task) => task.userId === userId);
   }
-  const clearCompletedTasks = () => {
-    queuedTasks.update(tasks => {
-      for (const [taskId, task] of tasks.entries()) {
-        if (task.status === 'completed' || task.status === 'failed') {
-          tasks.delete(taskId);
-        }
-      }
-      return tasks;
-    });
-  }
-  onDestroy(() => {
-    unsubscribe();
-  });
+
   return {
-    get tasks() { return tasks, },
-    get isPolling() { return isPolling, },
+    get tasks() {
+      return tasks;
+    },
+    get isPolling() {
+      return isPolling;
+    },
+    startPolling,
+    stopPolling,
+    pollOnce,
     getTask,
     getAllTasks,
     getTasksByStatus,
-    removeTask,
-    clearCompletedTasks
-  }
+    getTasksForUser,
+  };
 }
-/**
- * Hook for auto-initializing Redis orchestrator
- */
-export function useRedisInit(_options: { pollInterval?: number; autoStart?: boolean } = {}) {
-  let isInitialized = $state(false);
-  let initError: string | null = $state(null);
-  const initialize = async () => {
-    try {
-      await redisOrchestratorClient.initialize(options.pollInterval || 5000);
-      isInitialized = true;
-      initError = null;
-    } catch (error) {
-      initError = error instanceof Error ? error.message: 'Initialization failed';
-      console.error('Redis orchestrator initialization failed:', error);
-    }
-  }
-  onMount(async () => {
-    if (options.autoStart !== false) {
-      await initialize();
-    }
-  });
-  onDestroy(() => {
-    redisOrchestratorClient.destroy();
-  });
-  return {
-    get isInitialized() { return isInitialized, },
-    get initError() { return initError, },
-    initialize
-  }
-}
-/**
- * Hook for Redis-aware component state
- */
-export function useRedisComponent(
-  componentName: string,
-  config: {
-    cacheStrategy?: 'aggressive' | 'conservative' | 'minimal';
-    memoryBank?: 'INTERNAL_RAM' | 'CHR_ROM' | 'PRG_ROM' | 'SAVE_RAM';
-    autoCache?: boolean;
-  } = {}
-) {
-  let componentCache: Map<string, any> = $state(new Map();
-  let lastQuery: string | null = $state(null);
-  let cacheHits = $state(0);
-  let cacheMisses = $state(0);
-  const queryWithCache = async (query: string, context: any = {}) => {
-    const cacheKey = `${componentName}:${JSON.stringify({ query, ...context })}`;
-    // Check local component cache first
+
+export function useRedisComponentCache(componentName: string, config: ComponentCacheConfig = {}) {
+  const componentCache = new Map<string, unknown>();
+  let lastQuery: string | null = null;
+  let cacheHits = 0;
+  let cacheMisses = 0;
+
+  async function queryWithCache(queryText: string, context: Record<string, unknown> = {}) {
+    const cacheKey = `${componentName}:${JSON.stringify({ queryText, ...context })}`;
     if (config.autoCache !== false && componentCache.has(cacheKey)) {
-      cacheHits++;
+      cacheHits += 1;
       return componentCache.get(cacheKey);
     }
-    // Use Redis orchestrator
-    const result = await redisOrchestratorClient.processQuery(query, {
+
+    const result = await redisOrchestratorClient.processQuery(queryText, {
       endpoint: componentName,
-      ...context
+      ...context,
     });
-    // Cache result locally
-    if (config.autoCache !== false && (result as { cached?: any }).cached) {
+
+    const resultWithCacheFlag = result as { cached?: unknown };
+    if (config.autoCache !== false && resultWithCacheFlag.cached) {
       componentCache.set(cacheKey, result);
-      // Limit cache size
       if (componentCache.size > 50) {
-        const firstKey = componentCache.keys().next().value;
+        const [firstKey] = componentCache.keys();
         componentCache.delete(firstKey);
       }
     }
-    if ((result as { cached?: any }).cached) {
-      cacheHits++;
+
+    if (resultWithCacheFlag.cached) {
+      cacheHits += 1;
     } else {
-      cacheMisses++;
+      cacheMisses += 1;
     }
-    lastQuery = query;
+
+    lastQuery = queryText;
     return result;
   }
-  const clearComponentCache = () => {
+
+  function clearComponentCache() {
     componentCache.clear();
     cacheHits = 0;
     cacheMisses = 0;
   }
-  const getCacheStats = () => ({
-    size: componentCache.size,
-    hits: cacheHits,
-    misses: cacheMisses,
-    hitRate: cacheHits + cacheMisses > 0 ? (cacheHits / (cacheHits + cacheMisses)) * 100 : 0,
-  });
-  return {
-    get lastQuery() { return lastQuery, },
-    get cacheStats() { return getCacheStats(), },
-    queryWithCache,
-    clearComponentCache
+
+  function getCacheStats() {
+    const total = cacheHits + cacheMisses;
+    return {
+      size: componentCache.size,
+      hits: cacheHits,
+      misses: cacheMisses,
+      hitRate: total > 0 ? (cacheHits / total) * 100 : 0,
+    };
   }
+
+  return {
+    get lastQuery() {
+      return lastQuery;
+    },
+    get cacheStats() {
+      return getCacheStats();
+    },
+    queryWithCache,
+    clearComponentCache,
+  };
 }
-/**
- * Hook for Redis-optimized form submissions
- */
+
 export function useRedisForm() {
-  let isSubmitting = $state(false);
-  let submitError: string | null = $state(null);
-  let lastSubmission: any = $state(null);
-  const submitForm = async (
-    formData: any,
+  let isSubmitting = false;
+  let submitError: string | null = null;
+  let lastSubmission: unknown = null;
+
+  async function submitForm(
+    formData: Record<string, unknown>,
     endpoint: string,
-    options: {
-      useCache?: boolean;
-      priority?: number;
-      queueIfComplex?: boolean;
-    } = {}
-  ) => {
+    options: { useCache?: boolean; priority?: number; queueIfComplex?: boolean } = {},
+  ) {
     isSubmitting = true;
     submitError = null;
+
     try {
-      // Extract query from form data
-      const query = extractQueryFromForm(formData);
-      if (options.queueIfComplex && isComplexQuery(query)) {
-        // Queue complex form submissions
+      const queryText = extractQueryFromForm(formData);
+      if (options.queueIfComplex && isComplexQuery(queryText)) {
         const taskId = await redisOrchestratorClient.queueTask(
           'complex_legal',
-          query)
+          queryText,
           { formData, endpoint },
-          options.priority || 150
+          options.priority ?? 150,
         );
         lastSubmission = {
-          type: 'queued',
+          type: 'queued' as const,
           taskId,
-          estimatedTime: '30-45 seconds'
-        }
+          estimatedTime: '30-45 seconds',
+        };
       } else {
-        // Process immediately with Redis optimization
-        const result = await redisOrchestratorClient.processQuery(query, {
+        const result = await redisOrchestratorClient.processQuery(queryText, {
           endpoint,
-          useOrchestrator: options.useCache !== false
+          useOrchestrator: options.useCache !== false,
         });
         lastSubmission = {
-          type: 'immediate',
-          result
-        }
+          type: 'immediate' as const,
+          result,
+        };
       }
       return lastSubmission;
-    } catch (error) {
-      submitError = error instanceof Error ? error.message: 'Submission failed';
-      throw error;
+    } catch (err) {
+      submitError = err instanceof Error ? err.message : 'Submission failed';
+      throw err;
     } finally {
       isSubmitting = false;
     }
   }
+
   return {
-    get isSubmitting() { return isSubmitting, },
-    get submitError() { return submitError, },
-    get lastSubmission() { return lastSubmission, },
+    get isSubmitting() {
+      return isSubmitting;
+    },
+    get submitError() {
+      return submitError;
+    },
+    get lastSubmission() {
+      return lastSubmission;
+    },
     submitForm,
-    clearError: () => { submitError = null, }
-  }
+    clearError() {
+      submitError = null;
+    },
+  };
 }
-// Helper functions
-function extractQueryFromForm(formData: any): string {
-  // Try to extract meaningful query from form data
-  const queryFields = ['query', 'message', 'content', 'text', 'description', 'analysis'];
-  for (const field of queryFields) {
-    if (formData[field] && typeof formData[field] === 'string') {
-      return formData[field];
+
+function extractQueryFromForm(formData: Record<string, unknown>): string {
+  const candidateFields = ['query', 'message', 'content', 'text', 'description', 'analysis'];
+  for (const field of candidateFields) {
+    const value = formData[field];
+    if (typeof value === 'string' && value.trim().length > 0) {
+      return value;
     }
   }
-  // Fallback: stringify first 500 chars of form data
-  return JSON.stringify(formData).substring(0, 500);
+  return JSON.stringify(formData).slice(0, 500);
 }
+
 function isComplexQuery(query: string): boolean {
-  return query.length > 500 ||
-         query.includes('analyze') ||
-         query.includes('comprehensive') ||
-         query.includes('detailed');
+  const lowered = query.toLowerCase();
+  return (
+    query.length > 500 ||
+    lowered.includes('analyze') ||
+    lowered.includes('comprehensive') ||
+    lowered.includes('detailed')
+  );
 }

@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Persons of Interest API Routes with Lucia v3 Authentication
  * GET /api/v1/persons-of-interest - List user's persons of interest (with pagination)
@@ -19,8 +20,8 @@ const PersonsOfInterestQuerySchema = z.object({
 // Local create schema and service (minimal to unblock compilation)
 const CreatePersonOfInterestSchema = z.object({
   name: z.string().min(1),
-  caseId: z.string().uuid().optional(),
-  caseIds: z.array(z.string().uuid()).optional(),
+  caseId: cuidSchema.optional(),
+  caseIds: z.array(cuidSchema).optional(),
   aliases: z.array(z.string()).optional(),
   relationship: z.string().optional(),
   threatLevel: z.enum(['low', 'medium', 'high', 'critical']).optional(),

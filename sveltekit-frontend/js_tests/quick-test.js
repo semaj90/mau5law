@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 #!/usr/bin/env node
 
 // Quick connectivity test for real-time system prerequisites
@@ -10,7 +11,7 @@ async function quickTest() {
   // Test Redis
   console.log('Testing Redis connection...');
   try {
-    const redis = createClient({ url: 'redis://localhost:6379' });
+    const redis = redis;
     await redis.connect();
     await redis.ping();
     console.log('✅ Redis: Connected successfully');

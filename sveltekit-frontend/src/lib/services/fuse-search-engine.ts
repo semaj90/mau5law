@@ -1,469 +1,556 @@
 import Fuse from 'fuse.js';
 import * as lokiStorage from './loki-client-storage.js';
 import * as orchestrator from './unified-legal-orchestrator.js';
+
+// Local lightweight Fuse result/options types to avoid depending on non-exported namespace members
+type TFuseOptions<T> = Record<string, unknown>;
+type TFuseResult<T> = {
+		item: T;
+		score?: number;
+		matches?: unknown[];
+		// some Fuse builds expose a refIndex-like field
+		refIndex?: number;
+	};
+
 // Enhanced Fuse.js search engine for legal AI platform
 // Provides instant client-side fuzzy search with intelligent ranking
 
 export interface SearchableItem {
-  id: string;
-  title: string;
-  content?: string;
-  description?: string;
-  metadata?: any;
-  type: 'case' | 'document' | 'evidence' | 'chat' | 'precedent';
-  tags?: string[];
-  created_at?: string;
-  updated_at?: string;
+	id: string;
+	title: string;
+	content?: string;
+	description?: string;
+	metadata?: Record<string, unknown>;
+	type: 'case' | 'document' | 'evidence' | 'chat' | 'precedent';
+	tags?: string[];
+	created_at?: string;
+	updated_at?: string;
 }
 export interface SearchOptions {
-  collections?: string[];
-  includeScore?: boolean;
-  limit?: number;
-  threshold?: number;
-  sortBy?: 'relevance' | 'date' | 'importance';
-  filters?: {
-    type?: string[];
-    dateRange?: { start: string; end: string }
-    tags?: string[];
-    caseId?: string;
-  }
+	collections?: string[];
+	includeScore?: boolean;
+	limit?: number;
+	threshold?: number;
+	sortBy?: 'relevance' | 'date' | 'importance';
+	filters?: {
+		type?: string[];
+		dateRange?: { start: string; end: string }
+		tags?: string[];
+		caseId?: string;
+	}
 }
 export interface SearchResult {
-  item: SearchableItem;
-  score: number;
-  matches?: any[];
-  highlights?: string[];
-  _fuseIndex?: number;
+	item: SearchableItem;
+	score: number;
+	matches?: unknown[];
+	highlights?: string[];
+	_fuseIndex?: number;
+	_collection?: string;
+	_source?: 'fuzzy' | 'semantic' | 'hybrid';
 }
+
+// Add new helper interfaces to replace 'any' return types
+export interface ExportedIndex {
+	collection?: string;
+	data: SearchableItem[];
+	lastUpdate: number | null;
+}
+export interface SearchStats {
+	indices_count: number;
+	total_searchable_items: number;
+	recent_searches: string[];
+	last_index_updates: Record<string, number | undefined>;
+}
+
+// New: runtime options for the engine
+export interface FuseSearchEngineOptions {
+	collections?: string[];
+	updateIntervalMs?: number;
+	autoInit?: boolean; // whether to build indices on construction (defaults true)
+	debug?: boolean;
+}
+
+// Lightweight semantic result type returned by orchestrator / vector service
+interface SemanticSearchResult {
+	id: string;
+	similarity?: number; // similarity in [0..1], higher = more similar
+	item?: SearchableItem;
+	_id?: string;
+	[item: string]: unknown;
+}
+
+// Enhanced search engine class
 export class FuseSearchEngine {
-  private fuseInstances = new Map<string, Fuse<SearchableItem>();
-  private searchableData = new Map<string, SearchableItem[]>();
-  private lastIndexUpdate = new Map<string, number>();
-  private searchHistory: string[] = [];
-  // Fuse.js configuration optimized for legal content
-  private fuseOptions: Fuse.IFuseOptions<SearchableItem> = {
-    // Which fields to search
-    keys: [
-      {
-        name: 'title',
-        weight: 0.4
-      },
-      {
-        name: 'content',
-        weight: 0.3
-      },
-      {
-        name: 'description',
-        weight: 0.2
-      },
-      {
-        name: 'tags',
-        weight: 0.1
-      }
-    ],
-    // Search parameters
-    threshold: 0.3,          // 0.0 = perfect match, 1.0 = match anything;
-    distance: 100,           // Maximum distance between search term and match
-    minMatchCharLength: 2,   // Minimum character length for partial matches
-    includeScore: true,      // Include relevance scores
-    includeMatches: true,    // Include match information
-    shouldSort: true,        // Sort results by relevance
-    // Advanced options
-    ignoreLocation: true,    // Ignore where in the string the match occurs
-    findAllMatches: true,    // Find all matches, not just the first
-    useExtendedSearch: true  // Enable extended search syntax
-  }
-  constructor() {
-    this.initializeSearchIndices();
-  }
-  // Initialize search indices for all collections
-  async initializeSearchIndices(): Promise<void> {
-    try {
-      const collections = ['cases', 'documents', 'evidence', 'chat_messages'];
-      for (const collection of collections) {
-        await this.buildSearchIndex(collection);
-      }
-      console.log('🔍 Fuse search indices initialized');
-    } catch (error) {
-      console.error('Failed to initialize search indices:', error);
-    }
-  }
-  // Build search index for a specific collection
-  async buildSearchIndex(collection: string): Promise<void> {
-    try {
-      const data = await this.loadSearchableData(collection);
-      if ((data as { length?: any }).length === 0) {
-        console.log(`No data found for collection: ${collection}`);
-        return;
-      }
-      // Create Fuse instance for this collection
-      const fuse = new Fuse(data, this.fuseOptions);
-      this.fuseInstances.set(collection, fuse);
-      this.searchableData.set(collection, data);
-      this.lastIndexUpdate.set(collection, Date.now();
-      console.log(`📚 Built search index for ${collection}: ${(data as { length?: any }).length} items`);
-    } catch (error) {
-      console.error(`Failed to build search index for ${collection}:`, error);
-    }
-  }
-  // Load searchable data from Loki storage
-  private async loadSearchableData(collection: string): Promise<SearchableItem[]> {
-    const lokiCollection = lokiStorage.getCollection(collection);
-    if (!lokiCollection) return [];
-    const rawData = lokiCollection.find();
-    return rawData.map(item => ({
-      id: (item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any); status?: any }).id || (item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any }).$loki?.toString(),
-      title: (item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any }).title || (item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any }).name || `${collection} ${(item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any }).id}`,
-      content: (item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any }).content || (item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any }).message || (item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any }).description,
-      description: (item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any }).summary || (item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any }).excerpt,
-      metadata: (item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any }).metadata || {},
-      type: this.inferItemType(collection, item),
-      tags: (item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any }).tags || this.extractTags(item),
-      created_at: (item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any }).created_at || (item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any })._created,
-      updated_at: (item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any }).updated_at || (item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any })._updated
-    });
-  }
-  // Perform multi-collection search
-  async search(query: string, option,s: SearchOptions = {}): Promise<SearchResult[]> {
-    const {
-      collections = ['cases', 'documents', 'evidence'],
-      includeScore = true,
-      limit = 20,
-      threshold = 0.3,
-      sortBy = 'relevance',
-      filters
-    } = option;,s;
-    // Track search query
-    this.addToSearchHistory(query);
-    // Check if indices need updating
-    await thi,s.updateIndicesIfNeeded(collection,s);
-    // Search across all specified collections
-    const allResult,s: SearchResu,lt,[], = [];
-    for (const collection, o,f collections) {
-      const fuse = this.fuseInstances.get(collection);
-      if (!fuse) continue;
-      // Update threshold for this search
-      fuse.setOptions({ ...this.fuseOptions, threshold });
-      // Perform search
-      const results = fuse.search(query);
-      // Transform results
-      const transformedResults = results.map(result => ({
-        item: (result as { item?: any; score?: any; matches?: any; refIndex?: any; id?: any); similarity?: any }).item,
-        score: (result as { item?: any; score?: any; matches?: any; refIndex?: any; id?: any; similarity?: any }).score || 0,
-        matches: (result as { item?: any; score?: any; matches?: any; refIndex?: any; id?: any; similarity?: any }).matches || [],
-        highlights: this.generateHighlights((result as { item?: any; score?: any; matches?: any; refIndex?: any; id?: an,y); similarity?: any, }).matches ||, []),
-        _fuseIndex: (result as { item?: any; score?: any; matches?: any; refIndex?: any; id?: any; similarity?: any }).refIndex,
-        _collection: collection
-      });
-      allResults.push(...transformedResults);
-    }
-    // Apply filters
-    let filteredResults = this.applyFilters(allResults, filters);
-    // Sort results
-    filteredResults = this.sortResults(filteredResults, sortBy);
-    // Limit results
-    return filteredResults.slice(0, limit);
-  }
-  // Advanced search with extended syntax
-  async advancedSearch(query: string, option,s: SearchOptions = {}): Promise<SearchResult[]> {
-    // Parse advanced search syntax
-    const parsedQuery = this.parseAdvancedQuery(query);
-    // Perform search with parsed query
-    return await this.search(parsedQuery.query, {
-      ...options,
-      filters: {
-        ...options.filters,
-        ...parsedQuery.filters
-      }
-    )});
-  }
-  // Semantic search using embeddings (hybrid approach)
-  async semanticSearch(query: string, option,s: SearchOptions = {}): Promise<SearchResult[]> {
-    try {
-      // Get vector search results from server
-      const vectorResults = await orchestrator.processRequest({
-        type: 'search',
-        payload: {
-          query,
-          type: 'semantic',
-          limit: options.limit || 20
-        }
-      )});
-      // Get fuzzy search results from local data
-      const fuseResults = await this.search(query, {
-        ...options,
-        limit: Math.ceil((options.limit || 20) / 2),
-      });
-      // Combine and rank results
-      return this.combineSemanticAndFuzzyResults(vectorResults.results || [], fuseResults);
-    } catch (error) {
-      console.error('Semantic search failed, falling back to fuzzy search:', error);
-      return await this.search(query, options);
-    }
-  }
-  // Get search suggestions based on input
-  async getSearchSuggestions(input: string, limit = 5): Promise<string[]> {
-    if (input,.length <, 2) retur,n, []>
-    const suggestions = new Set<string>();
-    // Get suggestions from search history
-    const historySuggestions = this.searchHistory;
-      .filter(item => item.includes)(input.toLowerCase())
-      .slice(0, 3);
-    historySuggestions.forEach(s => suggestions.add(s);
-    // Get suggestions from indexed content
-    const contentSuggestions = await this.getContentBasedSuggestions(input, limit - suggestions.size);
-    contentSuggestions.forEach(s => suggestions.add(s);
-    return Array.from(suggestions).slice(0, limit);
-  }
-  // Get related search terms
-  async getRelatedTerms(query: string, limit = 5): Promise<string[]> {
-    const searchResults = await this.search(query, { limit: 10, )});
-    const terms = new Set<string>();
-    // Extract terms from search results
-    for (const result of searchResults) {
-      const extractedTerms = this.extractTermsFromContent(
-        (result as { item?: any; score?: any; matches?: any; refIndex?: any; id?: any); similarity?: any }).item.title + ' ' + ((result as { item?: any; score?: any; matches?: any; refIndex?: any; id?: any; similarity?: any }).item.content || '')
-      );
-      extractedTerms.forEach(term => {
-        if (term.toLowerCase() !== query.toLowerCase() && term.length > 3) {
-          terms.add(term);
-        }
-      });
-    }
-    return Array.from(terms).slice(0, limit);
-  }
-  // Real-time search with debouncing
-  async realTimeSearch(query: string, option,s: SearchOptions = {}): Promise<SearchResult[]> {
-    // Debounce mechanism would be implemented in the calling component
-    // This provides instant results as user types
-    if (query,.length <, 2) retur,n, []>
-    return await this.search(query, {
-      ...options,
-      limit: 8, // Fewer results for real-time;
-      threshold: 0.4, // More forgiving threshold
-    )});
-  }
-  // Export search index for debugging
-  exportSearchIndex(collection?: string): any {
-    if (collection) {
-      return {
-        collection,
-        data: this.searchableData.get(collection) || [],
-        lastUpdate: this.lastIndexUpdate.get(collection)
-      }
-    }
-    const exports: any = {}
-    for (const [coll, data] of this.searchableData) {
-      exports[coll] = {
-        data,
-        lastUpdate: this.lastIndexUpdate.get(coll)
-      }
-    }
-    return exports;
-  }
-  // Get search statistics
-  getSearchStats(): any {
-    return {
-      indices_count: this.fuseInstances.size,
-      total_searchable_items: Array.from(this.searchableData.values()
-        .reduce((sum, data) => sum + (data as { length?: any }).length, 0),
-      recent_searches: this.searchHistory.slice(-10),
-      last_index_updates: Object.fromEntries(this.lastIndexUpdate),
-    }
-  }
-  // Helper methods
-  private async updateIndicesIfNeeded(collections: string[]): Promise<void> {
-    const updateThreshold = 5 * 60 * 100,0; // 5 minutes
-    const now = Date.now();
-    for (const collection, o,f collections) {
-      const lastUpdate = this.lastIndexUpdate.get(collection) || 0;
-      if (now - lastUpdate > updateThreshold) {
-        await this.buildSearchIndex(collection);
-      }
-    }
-  }
-  private inferItemType(collection: string, ite,m: an,y): SearchableItem['type,'] {
-    switch (collection) {
-      case 'cases': return 'case';
-      case 'documents': return 'document';
-      case 'evidence': return 'evidence';
-      case 'chat_messages': return 'chat';
-      default: return 'document';
-    }
-  }
-  private extractTags(item: any): string[] {
-    const tags: string[] = [];
-    // Extract tags from various fields
-    if ((item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any }).category) tags.push((item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any); status?: any }).category);
-    if ((item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any }).type) tags.push((item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any); status?: any }).type);
-    if ((item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any }).priority) tags.push((item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any); status?: any }).priority);
-    if ((item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any }).status) tags.push((item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any); status?: any }).status);
-    return tags;
-  }
-  private addToSearchHistory(query: string): void {
-    if (query,.length <, 2) retu,rn>
-    // Remove if already exists
-    const index = this.searchHistory.indexOf(query);
-    if (index > -1) {
-      this.searchHistory.splice(index, 1);
-    }
-    // Add to front
-    this.searchHistory.unshift(query);
-    // Limit history size
-    if (this.searchHistory.length > 50) {
-      this.searchHistory = this.searchHistory.slice(0, 50);
-    }
-  }
-  private generateHighlights(matches: any[]): string[] {
-    const highlights: string[] = [];
-    for (const match of matches) {
-      if (match.indices && match.value) {
-        let highlighted = match.value;
-        // Apply highlighting (simple version)
-        for (const [start, end] of match.indices.reverse()) {
-          highlighted = highlighted.slice(0, start) +
-            `<mark>${highlighted.slice(start, end + 1)}</mark>` +
-            highlighted.slice(end + 1);
-        }
-        highlights.push(highlighted);
-      }
-    }
-    return highlights;
-  }
-  private applyFilters(results: SearchResult[], filters?: SearchOptions['filters']): SearchResult[] {
-    if (!filters) return results;
-    return results.filter(item => item.item).type)) {
-        return false;
-      }
-      // Date range filter
-      if (filters.dateRange && (result as { item?: any; score?: any; matches?: any; refIndex?: any; id?: any; similarity?: any }).item.created_at) {
-        const itemDate = new Date((result as { item?: any; score?: any; matches?: any; refIndex?: any; id?: any); similarity?: any }).item.created_a,t);
-        const startDate = new Date(filters.dateRange.start);
-        const endDate = new Date(filters.dateRange.end);
-        if (itemDate < startDate || itemDate > endDate) {
-          return false;
-        }
-      }
-      // Tags filter
-      if (filters.tags && filters.tags.length > 0) {
-        const itemTags = (result as { item?: any; score?: any; matches?: any; refIndex?: any; id?: any; similarity?: any }).item.tags || [];
-        const hasMatchingTag = filters.tags.some(tag =>;
-          itemTags.some(itemTag => itemTag.toLowerCase() === tag.toLowerCase()
-        );
-        if (!hasMatchingTag) {
-          return false;
-        }
-      }
-      // Case ID filter
-      if (filters.caseId && (result as { item?: any; score?: any; matches?: any; refIndex?: any; id?: any; similarity?: any }).item.metadata?.case_id !== filters.caseId) {
-        return false;
-      }
-      return true;
-    });
-  }
-  private sortResults(results: SearchResult[], sortB,y: strin,g): SearchResult,[] {
-    switch (sortBy) {
-      case 'date':
-        return results.sort((a, b) => {
-          const dateA = new Date(a.item.updated_at || a.item.created_at || 0);
-          const dateB = new Date(b.item.updated_at || b.item.created_at || 0);
-          return dateB.getTime() - dateA.getTime();
-        });
-      case 'importance':
-        // Custom importance scoring based on type and metadata
-        return results.sort((a, b) => {
-          const scoreA = this.calculateImportanceScore(a.item);
-          const scoreB = this.calculateImportanceScore(b.item);
-          return scoreB - scoreA;
-        });
-      case 'relevance':
-      default:
-        return results.sort((a, b) => a.score - b.score); // Lower score = more relevant
-    }
-  }
-  private calculateImportanceScore(item: SearchableItem): number {
-    let score = 0;
-    // Type importance
-    const typeScores = { case: 10, evidence: 8, document: 6, chat: 4, precedent: 9 }
-    score += typeScores[(item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any }).type] || 5;
-    // Recent items are more important
-    if ((item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any }).updated_at) {
-      const daysSinceUpdate = (Date.now() - new Date((item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any); status?: any }).updated_at).getTime()) / (1000 * 60 * 60 * 24);
-      score += Math.max(0, 5 - daysSinceUpdate);
-    }
-    // Priority from metadata
-    if ((item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any }).metadata?.priority) {
-      const priorityScores = { high: 5, medium: 3, low: 1 }
-      score += priorityScores[(item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any }).metadata.priority as keyof typeof priorityScores] || 0;
-    }
-    return score;
-  }
-  private parseAdvancedQuery(query: string): { query: string; filters: any } {
-    // Parse advanced search syntax like: "contract law type:case priority:high"
-    const filters: any = {}
-    let cleanQuery = query;
-    // Extract type filter
-    const typeMatch = query.match(/type:(\w+)/);
-    if (typeMatch) {
-      filters.type = [typeMatch[1]];
-      cleanQuery = cleanQuery.replace(/type:\w+/g, '').trim();
-    }
-    // Extract other filters as needed
-    // ... implement more advanced parsing
-    return { query: cleanQuery, filters }
-  }
-  private async getContentBasedSuggestions(input: string, limi,t: numbe,r): Promise<string[]> {
-    const suggestion,s: stri,ng,[], = [];
-    // Simple implementation: find terms that start with input
-    for (const [collection, data], o,f t,his.searchable,Data) {
-      for (const item of data) {
-        const words = ((item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any }).title + ' ' + ((item as { id?: any; title?: any; name?: any; content?: any; message?: any; description?: any; summary?: any; excerpt?: any; metadata?: any; tags?: any; created_at?: any; _created?: any; updated_at?: any; _updated?: any; category?: any; type?: any; priority?: any; status?: any }).content || '')).toLowerCase().split(/\s+/);
-        for (const word of words) {
-          if (word.startsWith(input.toLowerCase()) && word.length > input.length) {
-            suggestions.push(word);
-            if (suggestions.length >= limit) break;
-          }
-        }
-        if (suggestions.length >= limit) break;
-      }
-      if (suggestions.length >= limit) break;
-    }
-    return [...new Set(suggestions)];
-  }
-  private extractTermsFromContent(content: string): string[] {
-    // Extract meaningful terms from content
-    return content;
-      .toLowerCase()
-      .match(/\b\w{4}\b/g) || [];
-  }
-  private combineSemanticAndFuzzyResults(semanticResults: any[], fuzzyResult,s: SearchResult[]): SearchResult,[] {
-    const combined = new Map<string, SearchResult>();
-    // Add semantic results
-    for (const result of semanticResults) {
-      combined.set((result as { item?: any; score?: any; matches?: any; refIndex?: any; id?: any); similarity?: any }).id, {
-        item: result;
-        score: 1 - ((result as { item?: any; score?: any; matches?: any; refIndex?: any; id?: any; similarity?: any }).similarity || 0), // Convert similarity to distance score
-        matches: [],
-        highlights: [],
-        _source: 'semantic'
-      } as SearchResult);
-    }
-    // Add fuzzy results, boosting score if also in semantic results
-    for (const result of fuzzyResults) {
-      const existing = combined.get((result as { item?: any; score?: any; matches?: any; refIndex?: any; id?: any); similarity?: any }).item.i,d);
-      if (existing) {
-        // Boost score for items found in both searches
-        existing.score = existing.score * 0.7; // Lower score = better relevance
-        existing._source = 'hybrid';
-      } else {
-        combined.set((result as { item?: any; score?: any; matches?: any; refIndex?: any; id?: any); similarity?: any }).item.id, {
-          ...result,
-          _source: 'fuzzy'
-        } as SearchResult);
-      }
-    }
-    return Array.from(combined.values()).sort((a, b) => a.score - b.score);
-  }
+	private fuseInstances = new Map<string, Fuse<SearchableItem>>();
+	private searchableData = new Map<string, SearchableItem[]>();
+	private lastIndexUpdate = new Map<string, number>();
+	private searchHistory: string[] = [];
+	private collections: string[];
+	private updateThresholdMs: number;
+	private debug: boolean;
+
+	// Use a loose type for options to avoid incorrect namespace references
+	private fuseOptions: TFuseOptions<SearchableItem> = {
+		// Which fields to search
+		keys: [
+			{ name: 'title', weight: 0.4 },
+			{ name: 'content', weight: 0.3 },
+			{ name: 'description', weight: 0.2 },
+			{ name: 'tags', weight: 0.1 },
+		],
+		// Search parameters
+		threshold: 0.3, // 0.0 = perfect match, 1.0 = match anything;
+		distance: 100,
+		minMatchCharLength: 2,
+		includeScore: true,
+		includeMatches: true,
+		shouldSort: true,
+		// Advanced options
+		ignoreLocation: true,
+		findAllMatches: true,
+		useExtendedSearch: true,
+	};
+	constructor(opts: FuseSearchEngineOptions = {}) {
+		this.collections = opts.collections ?? ['cases', 'documents', 'evidence', 'chat_messages'];
+		this.updateThresholdMs = opts.updateIntervalMs ?? 5 * 60 * 1000; // 5 minutes default
+		this.debug = !!opts.debug;
+
+		// Start initialization in background unless explicitly disabled
+		if (opts.autoInit !== false) {
+			// background init - catch to avoid unhandled promise
+			this.initializeSearchIndices().catch((err) => this.logger('error', 'initializeSearchIndices failed', err));
+		}
+	}
+
+	// Simple logger - controlled by debug flag (always logs warnings/errors)
+	private logger(level: 'debug' | 'info' | 'warn' | 'error', ...args: unknown[]) {
+		if (level === 'debug' && !this.debug) return;
+		// eslint-disable-next-line no-console
+		(console as any)[level]?.('[FuseSearchEngine]', ...args);
+	}
+
+	// Initialize search indices for all collections
+	async initializeSearchIndices(): Promise<void> {
+		try {
+			for (const collection of this.collections) {
+				await this.buildSearchIndex(collection);
+			}
+			this.logger('info', '🔍 Fuse search indices initialized');
+		} catch (error) {
+			this.logger('error', 'Failed to initialize search indices:', error);
+		}
+	}
+
+	// Add: refresh single collection index on demand
+	async refreshIndex(collection: string): Promise<void> {
+		try {
+			await this.buildSearchIndex(collection);
+			this.logger('info', `Refreshed search index for ${collection}`);
+		} catch (err) {
+			this.logger('warn', `Failed to refresh index ${collection}:`, err);
+		}
+	}
+
+	// Build search index for a specific collection
+	async buildSearchIndex(collection: string): Promise<void> {
+		try {
+			const data = await this.loadSearchableData(collection);
+			if (!data || data.length === 0) {
+				console.log(`No data found for collection: ${collection}`);
+				return;
+			}
+			// Create Fuse instance for this collection
+			const fuse = new Fuse(data, this.fuseOptions);
+			this.fuseInstances.set(collection, fuse);
+			this.searchableData.set(collection, data);
+			this.lastIndexUpdate.set(collection, Date.now());
+			console.log(`📚 Built search index for ${collection}: ${data.length} items`);
+		} catch (error) {
+			console.error(`Failed to build search index for ${collection}:`, error);
+		}
+	}
+	// safe access helper: different loki wrappers may export different functions
+	private safeGetCollection(name: string): unknown | null {
+		if (typeof (lokiStorage as unknown as Record<string, unknown>).getCollection === 'function') {
+			// @ts-ignore - dynamic runtime wrapper
+			return (lokiStorage as any).getCollection(name);
+		}
+		if (typeof (lokiStorage as unknown as Record<string, unknown>).get === 'function') {
+			// @ts-ignore - dynamic runtime wrapper
+			return (lokiStorage as any).get(name);
+		}
+		// last resort: keyed export
+		return (lokiStorage as unknown as Record<string, unknown>)[name] ?? null;
+	}
+	// Load searchable data from Loki storage
+	private async loadSearchableData(collection: string): Promise<SearchableItem[]> {
+		const lokiCollection = this.safeGetCollection(collection);
+		// guard
+		if (!lokiCollection || typeof (lokiCollection as any).find !== 'function') return [];
+		// call find (Loki wrappers may return array)
+		const rawData = (lokiCollection as any).find() as unknown[];
+		return rawData.map((item: unknown) => {
+			const rec = (item as Record<string, unknown> | null) ?? {};
+			const id = String(rec['id'] ?? (rec['$loki'] ? String(rec['$loki']) : ''));
+			const title = String(rec['title'] ?? rec['name'] ?? `${collection}-${id}`);
+			return {
+				id,
+				title,
+				content: String(rec['content'] ?? rec['message'] ?? rec['description'] ?? ''),
+				description: String(rec['summary'] ?? rec['excerpt'] ?? ''),
+				metadata: (rec['metadata'] as Record<string, unknown>) ?? {},
+				type: this.inferItemType(collection, rec),
+				tags: Array.isArray(rec['tags']) ? (rec['tags'] as unknown[]).map(String) : this.extractTags(rec),
+				created_at: (rec['created_at'] ?? rec['_created']) as string | undefined,
+				updated_at: (rec['updated_at'] ?? rec['_updated']) as string | undefined,
+			} as SearchableItem;
+		});
+	}
+	// Perform multi-collection search
+	async search(query: string, options: SearchOptions = {}): Promise<SearchResult[]> {
+		const {
+			collections = ['cases', 'documents', 'evidence'],
+			// includeScore is available on options but not used internally; keep interface but don't destructure unused vars
+			limit = 20,
+			threshold = 0.3,
+			sortBy = 'relevance',
+			filters,
+		} = options;
+
+		if (!query || query.trim().length === 0) return [];
+
+		// Track search query
+		this.addToSearchHistory(query);
+
+		// Check if indices need updating
+		await this.updateIndicesIfNeeded(collections);
+
+		// Search across all specified collections
+		const allResults: SearchResult[] = [];
+
+		for (const collection of collections) {
+			const fuse = this.fuseInstances.get(collection);
+			const dataForCollection = this.searchableData.get(collection) ?? [];
+			if (!fuse && dataForCollection.length === 0) continue;
+
+			// If requested threshold differs, create a temporary Fuse instance for this search.
+			const baseThreshold = (this.fuseOptions['threshold'] as number) ?? 0.3;
+			const fuseForSearch =
+				threshold === baseThreshold
+					? (fuse ?? new Fuse(dataForCollection, (this.fuseOptions as unknown) as TFuseOptions<SearchableItem>))
+					: new Fuse(dataForCollection, { ...(this.fuseOptions as object), threshold } as TFuseOptions<SearchableItem>);
+
+			// Perform search (single-argument API) and apply limit manually
+			const rawResults = (fuseForSearch.search(query) as TFuseResult<SearchableItem>[]) ?? [];
+			const limited = (options.limit ? rawResults.slice(0, options.limit) : rawResults).map(r => {
+				const item = r.item as SearchableItem;
+				const score = typeof r.score === 'number' ? r.score : 1;
+				const matches = (r.matches as unknown[]) ?? [];
+				const highlights = this.generateHighlights(matches);
+				const refIndex = (r as unknown as Record<string, unknown>)['refIndex'] as number | undefined;
+				return {
+					item,
+					score,
+					matches,
+					highlights,
+					_fuseIndex: typeof refIndex === 'number' ? refIndex : undefined,
+					_collection: collection,
+					_source: 'fuzzy' as const,
+				} as SearchResult;
+			});
+			allResults.push(...limited);
+		}
+
+		// Apply filters
+		let filtered = this.applyFilters(allResults, filters);
+		// Sort results
+		filtered = this.sortResults(filtered, sortBy);
+		// Limit results
+		return filtered.slice(0, limit);
+	}
+	// Advanced search with extended syntax
+	async advancedSearch(query: string, options: SearchOptions = {}): Promise<SearchResult[]> {
+		// Parse advanced search syntax
+		const parsed = this.parseAdvancedQuery(query);
+		const mergedOptions: SearchOptions = {
+			...options,
+			filters: { ...(options.filters ?? {}), ...(parsed.filters ?? {}) },
+		};
+		// Perform search with parsed query
+		return this.search(parsed.query, mergedOptions);
+	}
+	// Semantic search using embeddings (hybrid approach)
+	async semanticSearch(query: string, options: SearchOptions = {}): Promise<SearchResult[]> {
+		try {
+			let vectorResults: SemanticSearchResult[] = [];
+			// prefer orchestrator helper if present, typed defensively
+			if (typeof (orchestrator as unknown as Record<string, unknown>)?.processRequest === 'function') {
+				const resp = await (orchestrator as unknown as { processRequest: (arg: unknown) => Promise<unknown> }).processRequest({
+					type: 'search',
+					payload: { query, type: 'semantic', limit: options.limit ?? 20 },
+				});
+				vectorResults = (resp as Record<string, unknown>)?.['results'] as SemanticSearchResult[] ?? [];
+			}
+			// Get fuzzy search results from local data (half allocation to fuzzy)
+			const fuseResults = await this.search(query, { ...options, limit: Math.ceil((options.limit ?? 20) / 2) });
+			// Combine and rank results
+			return this.combineSemanticAndFuzzyResults(vectorResults, fuseResults);
+		} catch (err) {
+			this.logger('warn', 'Semantic search failed, falling back to fuzzy search:', err);
+			return this.search(query, options);
+		}
+	}
+	// Get search suggestions based on input
+	async getSearchSuggestions(input: string, limit = 5): Promise<string[]> {
+		if (!input || input.length < 2) return [];
+		const suggestions = new Set<string>();
+		// Get suggestions from search history
+		const historySuggestions = this.searchHistory
+			.filter(h => h.toLowerCase().includes(input.toLowerCase()))
+			.slice(0, 3);
+		historySuggestions.forEach(s => suggestions.add(s));
+		// Get suggestions from indexed content
+		const contentSuggestions = await this.getContentBasedSuggestions(input, limit - suggestions.size);
+		contentSuggestions.forEach(s => suggestions.add(s));
+		return Array.from(suggestions).slice(0, limit);
+	}
+	// Get related search terms
+	async getRelatedTerms(query: string, limit = 5): Promise<string[]> {
+		const searchResults = await this.search(query, { limit: 10 });
+		const terms = new Set<string>();
+		// Extract terms from search results
+		for (const res of searchResults) {
+			const text = `${res.item.title} ${res.item.content ?? ''}`;
+			const extracted = this.extractTermsFromContent(text);
+			for (const t of extracted) {
+				if (t.toLowerCase() !== query.toLowerCase() && t.length > 3) terms.add(t);
+				if (terms.size >= limit) break;
+			}
+			if (terms.size >= limit) break;
+		}
+		return Array.from(terms).slice(0, limit);
+	}
+	// Real-time search with debouncing
+	async realTimeSearch(query: string, options: SearchOptions = {}): Promise<SearchResult[]> {
+		if (!query || query.length < 2) return [];
+		return this.search(query, { ...options, limit: 8, threshold: 0.4 });
+	}
+	// Export search index for debugging
+	exportSearchIndex(collection?: string): ExportedIndex | Record<string, ExportedIndex> {
+		if (collection) {
+			return {
+				collection,
+				data: this.searchableData.get(collection) ?? [],
+				lastUpdate: this.lastIndexUpdate.get(collection) ?? null,
+			};
+		}
+		const exports: Record<string, ExportedIndex> = {};
+		for (const [coll, data] of this.searchableData) {
+			exports[coll] = { data, lastUpdate: this.lastIndexUpdate.get(coll) ?? null };
+		}
+		return exports;
+	}
+	// Get search statistics
+	getSearchStats(): SearchStats {
+		const totalItems = Array.from(this.searchableData.values()).reduce((sum, d) => sum + (d?.length ?? 0), 0);
+		return {
+			indices_count: this.fuseInstances.size,
+			total_searchable_items: totalItems,
+			recent_searches: this.searchHistory.slice(-10),
+			last_index_updates: Object.fromEntries(this.lastIndexUpdate) as Record<string, number | undefined>,
+		};
+	}
+	// Helper methods
+	private async updateIndicesIfNeeded(collections: string[]): Promise<void> {
+		const now = Date.now();
+		for (const collection of collections) {
+			const last = this.lastIndexUpdate.get(collection) ?? 0;
+			if (now - last > this.updateThresholdMs) {
+				await this.buildSearchIndex(collection);
+			}
+		}
+	}
+	private inferItemType(collection: string, _item: unknown): SearchableItem['type'] {
+		switch (collection) {
+			case 'cases':
+				return 'case';
+			case 'documents':
+				return 'document';
+			case 'evidence':
+				return 'evidence';
+			case 'chat_messages':
+				return 'chat';
+			default:
+				return 'document';
+		}
+	}
+	private extractTags(item: unknown): string[] {
+		const tags: string[] = [];
+		if (!item || typeof item !== 'object') return tags;
+		const rec = item as Record<string, unknown>;
+		if (rec['category']) tags.push(String(rec['category']));
+		if (rec['type']) tags.push(String(rec['type']));
+		if (rec['priority']) tags.push(String(rec['priority']));
+		if (rec['status']) tags.push(String(rec['status']));
+		const rawTags = rec['tags'];
+		if (Array.isArray(rawTags)) tags.push(...(rawTags as unknown[]).map(String));
+		return Array.from(new Set(tags));
+	}
+	private addToSearchHistory(query: string): void {
+		if (!query || query.length < 2) return;
+		const idx = this.searchHistory.indexOf(query);
+		if (idx > -1) this.searchHistory.splice(idx, 1);
+		this.searchHistory.unshift(query);
+		if (this.searchHistory.length > 50) this.searchHistory = this.searchHistory.slice(0, 50);
+	}
+	private generateHighlights(matches: unknown[] = []): string[] {
+		const highlights: string[] = [];
+		for (const match of matches) {
+			const m = match as Record<string, unknown>;
+			const value = (m['value'] as string) ?? (m['text'] as string) ?? '';
+			const indices = m['indices'] as Array<[number, number]> | undefined;
+			if (!indices || !Array.isArray(indices) || !value) continue;
+			let highlighted = value;
+			for (const [start, end] of [...indices].reverse()) {
+				highlighted =
+					highlighted.slice(0, start) +
+					`<mark>${highlighted.slice(start, end + 1)}</mark>` +
+					highlighted.slice(end + 1);
+			}
+			highlights.push(highlighted);
+		}
+		return highlights;
+	}
+	private applyFilters(results: SearchResult[], filters?: SearchOptions['filters']): SearchResult[] {
+		if (!filters) return results;
+		return results.filter(res => {
+			if (!res?.item) return false;
+			// Type filter
+			if (filters.type && filters.type.length > 0 && !filters.type.includes(res.item.type)) return false;
+			// Date range filter
+			if (filters.dateRange && res.item.created_at) {
+				const itemDate = new Date(res.item.created_at).getTime();
+				const start = new Date(filters.dateRange.start).getTime();
+				const end = new Date(filters.dateRange.end).getTime();
+				if (itemDate < start || itemDate > end) return false;
+			}
+			// Tags filter
+			if (filters.tags && filters.tags.length > 0) {
+				const itemTags = (res.item.tags ?? []).map((t: string) => t.toLowerCase());
+				const has = filters.tags.some(t => itemTags.includes(t.toLowerCase()));
+				if (!has) return false;
+			}
+			// Case ID filter
+			if (filters.caseId && res.item.metadata?.case_id && res.item.metadata.case_id !== filters.caseId) return false;
+			return true;
+		});
+	}
+	private sortResults(results: SearchResult[], sortBy: 'relevance' | 'date' | 'importance'): SearchResult[] {
+		switch (sortBy) {
+			case 'date':
+				return results.sort((a, b) => {
+					const dateA = new Date(a.item.updated_at ?? a.item.created_at ?? 0).getTime();
+					const dateB = new Date(b.item.updated_at ?? b.item.created_at ?? 0).getTime();
+					return dateB - dateA;
+				});
+			case 'importance':
+				return results.sort((a, b) => this.calculateImportanceScore(b.item) - this.calculateImportanceScore(a.item));
+			case 'relevance':
+			default:
+				return results.sort((a, b) => (a.score ?? 1) - (b.score ?? 1));
+		}
+	}
+	private calculateImportanceScore(item: SearchableItem): number {
+		let score = 0;
+		const typeScores: Record<string, number> = { case: 10, evidence: 8, document: 6, chat: 4, precedent: 9 };
+		score += typeScores[item.type] ?? 5;
+		if (item.tags?.includes('important')) score += 5;
+		if (item.metadata?.priority === 'high') score += 3;
+		return score;
+	}
+	// Parse advanced search syntax (fielded search, operators)
+	private parseAdvancedQuery(query: string): { query: string; filters?: Record<string, unknown> } {
+		// trivial parser: split by spaces, colon for fielded search
+		const tokens = query.split(/\s+/).filter(t => t.length > 0);
+		const filters: Record<string, unknown> = {};
+		let q = '';
+		for (const token of tokens) {
+			if (token.includes(':')) {
+				const [key, value] = token.split(':', 2).map(t => t.trim());
+				if (key && value) {
+					filters[key] = value;
+					continue;
+				}
+			}
+			q += (q.length > 0 ? ' ' : '') + token;
+		}
+		return { query: q.trim(), filters: Object.keys(filters).length > 0 ? filters : undefined };
+	}
+	// Extract terms from content for related terms suggestion
+	private extractTermsFromContent(content: string): string[] {
+		if (!content) return [];
+		// naive extraction: split by non-word chars, filter short/stop words
+		const words = content.split(/\W+/).filter(w => w.length > 3 && !this.isStopWord(w));
+		return Array.from(new Set(words.map(w => w.toLowerCase())));
+	}
+	// Replace original implementation with a safe, simple lookup against STOP_WORDS
+	private isStopWord(word: string): boolean {
+		if (!word) return false;
+		return STOP_WORDS.has(String(word).toLowerCase());
+	}
+	private combineSemanticAndFuzzyResults(semanticResults: SemanticSearchResult[], fuzzyResults: SearchResult[]): SearchResult[] {
+		const combined = new Map<string, SearchResult>();
+		// add semantic results first
+		for (const res of semanticResults) {
+			const id = String(res.id ?? res._id ?? '');
+			if (!id) continue;
+			const score = typeof res.similarity === 'number' ? 1 - Number(res.similarity) : 1;
+			combined.set(id, {
+				item: (res.item as SearchableItem) ?? ({ id, title: String(res._id ?? id) } as SearchableItem),
+				score,
+				matches: [],
+				highlights: [],
+				_source: 'semantic',
+			} as SearchResult);
+		}
+		// add fuzzy results and merge
+		for (const fr of fuzzyResults) {
+			const id = fr.item?.id;
+			if (!id) continue;
+			const existing = combined.get(id);
+			if (existing) {
+				// prefer the lower score (Fuse score: lower is better) and mark hybrid
+				existing.score = Math.min(existing.score ?? 1, (fr.score ?? 1) * 0.7);
+				existing._source = 'hybrid';
+			} else {
+				combined.set(id, { ...fr, _source: 'fuzzy' });
+			}
+		}
+		// sort by score ascending (lower = better relevance in Fuse convention)
+		return Array.from(combined.values()).sort((a, b) => (a.score ?? 1) - (b.score ?? 1));
+	}
 }
-// Singleton instance
-export const fuseSearchEngine = new FuseSearchEngine();
+
+// Add a single, precomputed stop-words set to avoid parse errors from unescaped apostrophes
+const STOP_WORDS = new Set<string>(
+	[
+		"a","about","above","after","again","against","all","am","an","and","any","are","aren't",
+		"as","at","be","because","been","before","being","below","between","both","but","by",
+		"can","can't","cannot","could","couldn't","did","didn't","do","does","doesn't","doing",
+		"don't","down","during","each","few","for","from","further","had","hadn't","has","hasn't",
+		"have","haven't","he","he'd","he's","her","here","here's","hers","herself","him","himself",
+		"is","isn't","it","it's","its","itself","just","ll","m","ma","me","might","mightn't",
+		"more","most","must","mustn't","my","myself","need","needn't","no","nor","not","now",
+		"o","of","off","on","once","only","or","other","ought","our","ours","ourselves","out",
+		"over","own","re","s","same","shan't","she","she'd","she's","should","should've","so",
+		"t","than","that","that's","the","their","theirs","them","themselves","then","there",
+		"there's","these","they","they'd","they're","they've","this","those","through","to","too",
+		"under","until","up","ve","very","was","wasn't","we","we'd","we're","we've","were",
+		"weren't","what","what's","when","where","where's","which","while","who","who's","whom",
+		"why","will","with","won't","would","wouldn't","yet","you","you'd","you're","you've",
+		"your","yours","yourself","yourselves"
+	].map(s => s.toLowerCase())
+);
+
+// Singleton instance - production code can import this; set autoInit true for background build
+export const fuseSearchEngine = new FuseSearchEngine({ autoInit: true, debug: false });

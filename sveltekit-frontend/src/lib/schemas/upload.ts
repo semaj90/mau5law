@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 import { z } from "zod";
 // Allowed file types for evidence upload
 const ALLOWED_MIME_TYPES = [
@@ -57,7 +58,7 @@ export const batchUploadSchema = z.object({
 // Search upload schema for finding existing uploads
 export const searchUploadSchema = z.object({
   query: z.string().optional(),
-  caseId: z.string().uuid().optional(),
+  caseId: cuidSchema.optional(),
   type: z.enum(['document', 'image', 'video', 'audio', 'physical', 'digital']).optional(),
   dateFrom: z.date().optional(),
   dateTo: z.date().optional(),

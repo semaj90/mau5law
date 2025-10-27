@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 import { createClient } from 'redis';
 import type { RedisClientType } from 'redis';
 
@@ -240,7 +241,7 @@ export class CacheLayerManager {
     }
     try {
       const url = process.env.REDIS_URL ?? 'redis://localhost:6379';
-      const client = createClient({ url }) as RedisClientType;
+      const client = redis as RedisClientType;
       // client.connect may throw; propagate as null on failure
       await client.connect();
       return client;

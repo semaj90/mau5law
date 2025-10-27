@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 import { z } from "zod";
 /**
  * File Upload Schemas with Zod Validation
@@ -90,7 +91,7 @@ export const fileUploadSchema = z.object({
     .refine((file) => typeof file === 'object' && 'type' in (file as any) ? allowedMimeTypes.includes((file as any).type) : true, { message: 'File type not supported' }),
   title: z.string().max(200).optional(),
   description: z.string().max(2000).optional(),
-  caseId: z.string().uuid().optional(),
+  caseId: cuidSchema.optional(),
   evidenceType: evidenceTypeEnum.optional().default('documents'),
   fileType: fileTypeEnum.optional().default('document'),
   tags: z.array(z.string().min(1)).max(20, 'Cannot have more than 20 tags').default([]),
@@ -122,7 +123,7 @@ export const multipleFileUploadSchema = z.object({
       const totalSize = files.reduce((sum: number, file: any) => sum + ((file && typeof file.size === 'number') ? file.size: 0), 0);
       return totalSize <= 500 * 1024 * 1024; // 500MB total limit
     }, { message: 'Total file size cannot exceed 500MB' }),
-  caseId: z.string().uuid().optional(),
+  caseId: cuidSchema.optional(),
   enableAiAnalysis: z.boolean().default(true)
 });
 // Case creation with file upload schema
@@ -167,7 +168,7 @@ export const caseWithFilesSchema = z.object({
 // File search schema
 export const fileSearchSchema = z.object({
   query: z.string().max(200, 'Search query cannot exceed 200 characters').optional(),
-  caseId: z.string().uuid().optional(),
+  caseId: cuidSchema.optional(),
   fileType: fileTypeEnum.optional(),
   evidenceType: evidenceTypeEnum.optional(),
   confidentialityLevel: confidentialityLevelEnum.optional(),

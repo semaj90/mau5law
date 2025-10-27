@@ -1,10 +1,11 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // Legal AI Orchestrator - Enhanced for existing Redis/worker architecture
 const Redis = require('ioredis');
 const crypto = require('crypto');
 
 class LegalModelOrchestrator {
   constructor() {
-    this.redis = new Redis(process.env.REDIS_URL || 'redis://redis:6379');
+    this.redis = redis;
     this.models = new Map();
     this.initialized = false;
 

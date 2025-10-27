@@ -28,7 +28,7 @@ https://svelte.dev/e/js_parse_error -->
   const metrics = writable<SystemMetrics>({
     cpu_usage: 45.2,
     memory_usage: 67.8,
-    gpu_utilization 89.3,
+    gpu_utilization: 89.3,
     network_latency: 12,
     active_processes: 847,
     security_level: 'MAXIMUM',
@@ -49,7 +49,7 @@ https://svelte.dev/e/js_parse_error -->
       name: 'LEGAL AI CORE',
       status: 'ACTIVE',
       power: 96.8,
-      description 'Advanced Legal Document Analysis',
+      description: 'Advanced Legal Document Analysis',
       icon 'gavel',
       color: '#00ff88', // Changed semicolon to comma
     },
@@ -59,7 +59,7 @@ https://svelte.dev/e/js_parse_error -->
       status: 'STANDBY',
       power: 78.2,
       description 'Digital Evidence Processing Unit',
-      icon 'search',
+      icon: 'search',
       color: '#ff6b35', // Changed semicolon to comma
     },
     {
@@ -113,32 +113,32 @@ https://svelte.dev/e/js_parse_error -->
       {
         id: 'central-core',
         type: 'sphere',
-        position { x: 0, y: 0, z: 0 }, // Removed semicolon
+        position: { x: 0, y: 0, z: 0 },
         rotation { x: 0, y: 0, z: 0 },
         scale: 1.0,
         color: '#00ff88',
-        opacity: 0.8;
-        animation: 'rotate', // Changed semicolon to comma
+        opacity: 0.8,
+        animation: 'rotate',
       },
       {
         id: 'data-streams',
         type: 'lines',
-        position { x: 0, y: 0, z: 0 }, // Removed semicolon
+        position: { x: 0, y: 0, z: 0 },
         rotation { x: 0, y: 0, z: 0 },
         scale: 1.0,
         color: '#3b82f6',
-        opacity: 0.6;
-        animation: 'flow', // Changed semicolon to comma
+        opacity: 0.6,
+        animation: 'flow',
       },
       {
         id: 'neural-nodes',
         type: 'points',
-        position { x: 0, y: 0, z: 0 }, // Removed semicolon
+        position: { x: 0, y: 0, z: 0 },
         rotation { x: 0, y: 0, z: 0 },
         scale: 1.0,
         color: '#8b5cf6',
-        opacity: 0.9;
-        animation: 'pulse', // Changed semicolon to comma
+        opacity: 0.9,
+        animation: 'pulse',
       },
     ];
     holographicData.set(initialData);
@@ -149,7 +149,7 @@ https://svelte.dev/e/js_parse_error -->
         ...current,
         cpu_usage: 40 + Math.random() * 20,
         memory_usage: 60 + Math.random() * 15,
-        gpu_utilization 85 + Math.random() * 10,
+        gpu_utilization: 85 + Math.random() * 10,
         network_latency: 8 + Math.random() * 8,
         neural_activity: 90 + Math.random() * 8,
       }));
@@ -174,7 +174,7 @@ https://svelte.dev/e/js_parse_error -->
     if (!glContext) return;
     // Vertex shader for holographic effects
     const vertexShaderSource = `
-      attribute vec4 positio;
+      attribute vec4 position;
       attribute vec3 normal;
       uniform mat4 modelViewMatrix;
       uniform mat4 projectionMatrix;
@@ -185,9 +185,9 @@ https://svelte.dev/e/js_parse_error -->
         vec4 pos = positio;
         pos.y += sin(pos.x * 2.0 + time * 3.0) * 0.1;
         pos.x += cos(pos.z * 1.5 + time * 2.0) * 0.05;
-        gl_Position = projectionMatrix * modelViewMatrix * pos; // Changed 'po' to 'pos'
+        gl_Position = projectionMatrix * modelViewMatrix * pos;
         vNormal = normal;
-        vGlow = abs(sin(time * 4.0 + position.x)) * 0.5 + 0.5;
+        vGlow = abs(sin(time * 4.0 + pos.x)) * 0.5 + 0.5;
       }
     `;
     // Fragment shader for cyber effects
@@ -229,10 +229,10 @@ https://svelte.dev/e/js_parse_error -->
     holographicData.update(currentData =>
       currentData.map(item => ({
         ...item,
-        rotation {
-          x: item.rotation.x + (item.animation: === 'rotate' ? 0.01 : 0),
-          y: item.rotation.y + (item.animation: === 'rotate' ? 0.02 : 0),
-          z: item.rotation.z + (item.animation: === 'rotate' ? 0.005 : 0),
+        rotation: {
+          x: item.rotation.x + (item.animation === 'rotate' ? 0.01 : 0),
+          y: item.rotation.y + (item.animation === 'rotate' ? 0.02 : 0),
+          z: item.rotation.z + (item.animation === 'rotate' ? 0.005 : 0),
         },
       }))
     );
@@ -530,19 +530,19 @@ https://svelte.dev/e/js_parse_error -->
   .yorha-container {
     font-family: 'Courier New', 'Monaco', monospace;
     overflow: hidden;
-    position relative;
+    position: relative;
   }
   .scanlines {
-    position absolute;
+    position: absolute;
     top: 0,
-    left: 0;
+    left: 0,
     right: 0,
-    bottom: 0;
+    bottom: 0,
     background: linear-gradient(transparent 50%, rgba(0, 255, 136, 0.03) 50%);
     background-size: 100% 2px;
     animation: scanline-scroll 0.1s linear infinite;
     pointer-events: none;
-    z-index: 1,
+    z-index: 1;
   }
   @keyframes scanline-scroll {
     0% {
@@ -649,7 +649,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   .data-stream {
     /* Changed selector from .holographic-canv.data-stream to .data-stream */
-    position absolute;
+    position: absolute;
     width: 2px;
     height: 100px;
     background: linear-gradient(to bottom, transparent, #00ff88, transparent);

@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * Redis Cache with Hit/Miss Metrics
  * Tracks cache performance for optimization insights
@@ -57,7 +58,7 @@ export class RedisMetricsCache {
     if (this.isConnected) return;
 
     try {
-      this.client = createClient({ url: this.url });
+      this.client = redis;
 
       this.client.on('error', (err) => {
         console.error('Redis connection error:', err);

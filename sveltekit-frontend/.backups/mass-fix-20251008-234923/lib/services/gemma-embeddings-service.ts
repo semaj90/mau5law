@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * Gemma Embeddings Service with PostgreSQL pgvector Integration
  * High-performance embedding generation and vector indexing
@@ -13,8 +14,8 @@ const OLLAMA_ENDPOINT = env.OLLAMA_ENDPOINT || 'http://localhost:11434'
 const GEMMA_EMBEDDING_MODEL = env.GEMMA_EMBEDDING_MODEL || 'embeddinggemma:latest';
 const EMBEDDING_DIMENSIONS = 512; // Gemma embeddings standard dimension (512-dim GPU-accelerated)
 // Redis clients
-const gemmaRedis = new Redis(createServiceConfig('GEMMA_EMBEDDINGS'));
-const pgvectorRedis = new Redis(createServiceConfig('PGVECTOR_CACHE'));
+const gemmaRedis = redis;
+const pgvectorRedis = redis;
 export interface EmbeddingRequest {
   text: string;
   model?: string;

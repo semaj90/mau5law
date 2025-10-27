@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 /**
  * Batch Document Ingestion Pipeline
  * Connects RAG document upload → vector embeddings → pgvector storage
@@ -26,7 +27,7 @@ const BatchIngestRequestSchema = z.object({
   documents: z
     .array(
       z.object({
-        id: z.string().uuid().optional(),
+        id: cuidSchema.optional(),
         filename: z.string(),
         content: z.string().min(10, 'Content too short'),
         metadata: z.record(z.unknown()).optional(),
@@ -35,8 +36,8 @@ const BatchIngestRequestSchema = z.object({
     )
     .min(1, 'At least 1 document required')
     .max(100, 'Max 100 documents per batch'),
-  caseId: z.string().uuid().optional(),
-  uploadedBy: z.string().uuid().default('00000000-0000-0000-0000-000000000000'),
+  caseId: cuidSchema.optional(),
+  uploadedBy: cuidSchema.default('00000000-0000-0000-0000-000000000000'),
   chunkSize: z.number().int().min(100).max(5000).default(1000),
   chunkOverlap: z.number().int().min(0).max(500).default(200),
 });

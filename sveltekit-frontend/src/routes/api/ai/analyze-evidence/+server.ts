@@ -1,3 +1,5 @@
+import { cuidSchema } from '$lib/server/z-schemas';
+import { redis } from '$lib/server/redis-client';
 /**
  * 🎮 REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied
  *
@@ -25,7 +27,7 @@ import { db } from '$lib/server/db';
 import { eq } from 'drizzle-orm';
 
 const analysisSchema = z.object({
-  evidenceId: z.string().uuid(),
+  evidenceId: cuidSchema,
   content: z.string().min(1).max(10000).optional(),
   forceReanalyze: z.boolean().optional(),
 });

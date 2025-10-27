@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 import Redis from 'ioredis';
 import { formatErrorResponse } from './errors';
 
@@ -5,7 +6,7 @@ let _redis: Redis | null = null;
 try {
   const host = process.env.REDIS_HOST || 'localhost';
   const port = parseInt(process.env.REDIS_PORT || '6379', 10);
-  _redis = new Redis({ host, port });
+  _redis = redis;
 } catch (e) {
   _redis = null;
 }

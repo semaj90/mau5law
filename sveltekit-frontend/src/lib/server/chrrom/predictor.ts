@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // Lightweight Markov-chain predictor for next-action precomputation (RNN-inspired)
 // Learns P(next|prev) from short user interaction sequences
 // Enhanced with Redis caching for persistence and performance
@@ -31,7 +32,7 @@ class MarkovPredictorWithRedis {
       redisConfig.password = redisPassword;
     }
 
-    this.redis = new Redis(redisUrl, redisConfig);
+    this.redis = redis;
     this.cacheEnabled = true;
     // Test Redis connection
     this.redis.ping().catch(() => {

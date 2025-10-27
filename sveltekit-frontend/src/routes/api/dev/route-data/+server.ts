@@ -3,6 +3,8 @@ import { exec } from 'child_process'
 import { promisify } from 'util'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import type { RouteDataInput, RouteConfig, FileRoute, EnhancedAnalyticsResult } from '$lib/types/route-analytics';
+
 const execAsync = promisify(exec)
 export async function GET() {
   try {
@@ -45,75 +47,77 @@ export async function GET() {
     );
   }
 }
-function generateEnhancedAnalytics(routeData: any) {
-  const configRoutes = routeData.data?.configRoutes || []
-  const fileRoutes = routeData.data?.fileRoutes || []
+function generateEnhancedAnalytics(routeData: RouteDataInput): EnhancedAnalyticsResult {
+  const configRoutes: RouteConfig[] = (routeData.data?.configRoutes || []) as RouteConfig[];
+  const fileRoutes: FileRoute[] = (routeData.data?.fileRoutes || []) as FileRoute[];
   // Status breakdown
-  const statusBreakdown: Record<string, number> = {}
-  configRoutes.forEach((route: any) => {
-    statusBreakdown[route.status] = (statusBreakdown[route.status] || 0) + 1
-  })
+  const statusBreakdown: Record<string, number> = {};
+  configRoutes.forEach((route: RouteConfig) => {
+    statusBreakdown[route.status] = (statusBreakdown[route.status] || 0) + 1;
+  });
   // Category breakdown
-  const categoryBreakdown: Record<string, number> = {}
-  configRoutes.forEach((route: any) => {
-    categoryBreakdown[route.category] = (categoryBreakdown[route.category] || 0) + 1
-  })
+  const categoryBreakdown: Record<string, number> = {};
+  configRoutes.forEach((route: RouteConfig) => {
+    categoryBreakdown[route.category] = (categoryBreakdown[route.category] || 0) + 1;
+  });
   // Tag usage analysis
-  const tagUsage: Record<string, number> = {}
-  configRoutes.forEach((route: any) => {
+  const tagUsage: Record<string, number> = {};
+  configRoutes.forEach((route: RouteConfig) => {
     if (route.tags) {
       route.tags.forEach((tag: string) => {
-        tagUsage[tag] = (tagUsage[tag] || 0) + 1
-      })
+        tagUsage[tag] = (tagUsage[tag] || 0) + 1;
+      });
     }
-  })
+  });
   // Complexity metrics
-  const dynamicRoutes = fileRoutes.filter((route: any) =>
-    route.path?.includes('[') || route.path?.includes('(')
-  ).length
-  const apiRoutes = fileRoutes.filter((route: any) =>
-    route.path?.includes('/api/') || route.path?.endsWith('+server.ts')
-  ).length
-  const staticPages = fileRoutes.filter((route: any) =>
-    route.path?.endsWith('+page.svelte')
-  ).length
+  const dynamicRoutes = fileRoutes.filter(
+    (route: FileRoute) => route.path?.includes('[') || route.path?.includes('(')
+  ).length;
+  const apiRoutes = fileRoutes.filter(
+    (route: FileRoute) => route.path?.includes('/api/') || route.path?.endsWith('+server.ts')
+  ).length;
+  const staticPages = fileRoutes.filter((route: FileRoute) => route.path?.endsWith('+page.svelte')).length;
   // Calculate deepest nesting level
   const deepestNesting = Math.max(
-    ...fileRoutes.map((route: any) =>
-      (route.path?.split('/') || []).length - 1
-    ),
+    ...fileRoutes.map((route: FileRoute) => (route.path?.split('/') || []).length - 1),
     0
-  )
+  );
   // Generate recommendations
-  const recommendations: string[] = []
+  const recommendations: string[] = [];
   // Check for potential issues
-  const deprecatedCount = statusBreakdown['deprecated'] || 0
+  const deprecatedCount = statusBreakdown['deprecated'] || 0;
   if (deprecatedCount > 0) {
-    recommendations.push(`Consider migrating ${deprecatedCount} deprecated route${deprecatedCount > 1 ? 's' : ''}`)
+    recommendations.push(`Consider migrating ${deprecatedCount} deprecated route${deprecatedCount > 1 ? 's' : ''}`);
   }
-  const experimentalCount = statusBreakdown['experimental'] || 0
+  const experimentalCount = statusBreakdown['experimental'] || 0;
   if (experimentalCount > 5) {
-    recommendations.push(`High number of experimental routes (${experimentalCount}) - consider stabilizing or removing unused ones`)
+    recommendations.push(
+      `High number of experimental routes (${experimentalCount}) - consider stabilizing or removing unused ones`
+    );
   }
   if (deepestNesting > 6) {
-    recommendations.push(`Deep route nesting detected (${deepestNesting} levels) - consider flattening structure for better performance`)
+    recommendations.push(
+      `Deep route nesting detected (${deepestNesting} levels) - consider flattening structure for better performance`
+    );
   }
-  const totalRoutes = configRoutes.length
+  const totalRoutes = configRoutes.length;
   if (totalRoutes > 100) {
-    recommendations.push('Large number of routes - consider implementing route grouping and lazy loading')
+    recommendations.push('Large number of routes - consider implementing route grouping and lazy loading');
   }
   // Check for missing configurations
-  const missingConfig = routeData.counts?.issues?.filesMissingConfig || 0
+  const missingConfig = routeData.counts?.issues?.filesMissingConfig || 0;
   if (missingConfig > 0) {
-    recommendations.push(`${missingConfig} file route${missingConfig > 1 ? 's' : ''} missing configuration - add to routes-config.ts for better organization`)
+    recommendations.push(
+      `${missingConfig} file route${missingConfig > 1 ? 's' : ''} missing configuration - add to routes-config.ts for better organization`
+    );
   }
-  const missingFiles = routeData.counts?.issues?.configMissingFiles || 0
+  const missingFiles = routeData.counts?.issues?.configMissingFiles || 0;
   if (missingFiles > 0) {
-    recommendations.push(`${missingFiles} configured route${missingFiles > 1 ? 's' : ''} missing implementation files`)
+    recommendations.push(`${missingFiles} configured route${missingFiles > 1 ? 's' : ''} missing implementation files`);
   }
   // Performance recommendations
   if (apiRoutes > 20) {
-    recommendations.push('Consider implementing API route caching and rate limiting for better performance')
+    recommendations.push('Consider implementing API route caching and rate limiting for better performance');
   }
   return {
     statusBreakdown,
@@ -128,6 +132,6 @@ function generateEnhancedAnalytics(routeData: any) {
       totalFileRoutes: fileRoutes.length,
     },
     recommendations,
-    lastUpdated: new Date().toISOString()
-  }
+    lastUpdated: new Date().toISOString(),
+  };
 }

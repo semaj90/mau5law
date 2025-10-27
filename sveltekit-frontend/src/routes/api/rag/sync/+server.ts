@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 import type { RequestHandler } from '@sveltejs/kit'
 import { json } from '@sveltejs/kit'
 import { ollamaClient } from '$lib/server/ollama-client'
@@ -19,7 +20,7 @@ if (REDIS_URL) {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const Redis = require('redis')
     // create raw client and connect before assigning to typed variable
-    const raw = Redis.createClient({ url: REDIS_URL })
+    const raw = Redis.redis
     raw.connect().catch(() => {})
     // cast to RedisLike shape for later use
     redisClient = raw as unknown as RedisLike

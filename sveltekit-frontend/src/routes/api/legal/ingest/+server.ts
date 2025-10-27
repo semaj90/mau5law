@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 import { json, error } from '@sveltejs/kit';
 import pdf from 'pdf-parse';
 import crypto from 'node:crypto';
@@ -187,7 +188,7 @@ async function getRedisClient(): Promise<RedisClientType | null> {
 
   try {
     // Use the createClient parameter type to avoid ad-hoc `any` casts
-    redisClient = createClient(baseOptions as Parameters<typeof createClient>[0]);
+    redisClient = redis;
 
     // Helpful telemetry for production debugging
     redisClient.on('error', (err: unknown) => {

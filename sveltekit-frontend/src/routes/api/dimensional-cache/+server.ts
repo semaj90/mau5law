@@ -1,4 +1,5 @@
 import type { RequestHandler } from './$types.js'
+import { json } from '@sveltejs/kit';
 /*
  * Dimensional Cache API
  * Multi-dimensional array caching with LRU eviction
@@ -43,13 +44,15 @@ export const POST: RequestHandler = async ({ request, url }) => {
         return json({
           success: true,
           found: !!cached,
-          data: cached ? {,
-            embeddings: Array.from(cached.embeddings.slice(0, 10)), // First 10 for demo
-            attentionWeights: cached.attentionWeights ? Array.from(cached.attentionWeights.slice(0, 16)) : null
-            metadata: cached.metadata,
-          } : null
+          data: cached
+            ? {
+                embeddings: Array.from(cached.embeddings.slice(0, 10)), // First 10 for demo
+                attentionWeights: cached.attentionWeights ? Array.from(cached.attentionWeights.slice(0, 16)) : null,
+                metadata: cached.metadata,
+              }
+            : null,
           timestamp: Date.now(),
-        })
+        });
       }
       case 'clear': {
         const { pattern } = body
@@ -61,10 +64,13 @@ export const POST: RequestHandler = async ({ request, url }) => {
         })
       }
       default:
-        return json({,
-          success: false,
-          error: `Unknown action: ${action}`
-        }, { status: 400 })
+        return json(
+          {
+            success: false,
+            error: `Unknown action: ${action}`,
+          },
+          { status: 400 }
+        );
     }
   } catch (error: any) {
     return json({

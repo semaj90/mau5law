@@ -1,9 +1,10 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { z } from 'zod';
 
 // Connection mapping request schema (defaults applied)
 const ConnectionMappingSchema = z.object({
-  caseId: z.string().uuid().optional(),
+  caseId: cuidSchema.optional(),
   focusTypes: z.array(z.string()).optional(),
   connectionStrength: z.number().min(0).max(1).default(0.5),
   maxDepth: z.number().min(1).max(5).default(3),

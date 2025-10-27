@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 import Redis from 'ioredis';
 import type { RedisClient, RedisConnectionOptions } from '$lib/types/redis';
 import { REDIS_URL } from '$env/static/private';
@@ -55,8 +56,8 @@ export function createRedisInstance(options?: RedisConnectionOptions): RedisClie
   // Guard REDIS_URL to avoid empty-string causing constructor confusion
   const redisUrl = typeof REDIS_URL === 'string' && REDIS_URL.length > 0 ? REDIS_URL : undefined;
   const inst: RedisClient = redisUrl
-    ? (new Redis(redisUrl) as unknown as RedisClient)
-    : (new Redis(finalOptions) as unknown as RedisClient);
+    ? (redis
+    : (redis;
 
   const handleRedisError = (err: unknown) => {
     const msg = getMessage(err);
@@ -113,8 +114,8 @@ export function createRedisConnection(options?: Partial<RedisConnectionOptions>)
   // Use single-argument form when REDIS_URL exists
   const redisUrl2 = typeof REDIS_URL === 'string' && REDIS_URL.length > 0 ? REDIS_URL : undefined;
   const conn: RedisClient = redisUrl2
-    ? (new Redis(redisUrl2) as unknown as RedisClient)
-    : (new Redis(finalOptions) as unknown as RedisClient);
+    ? (redis
+    : (redis;
 
   // Attach NOAUTH-aware handler with runtime guard
   if (hasOnMethod(conn)) {

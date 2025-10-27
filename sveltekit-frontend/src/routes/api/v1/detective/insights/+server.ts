@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Detective Mode Insights API Route
  * GET /api/v1/detective/insights - Get AI-generated insights for case
@@ -8,7 +9,7 @@ import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user
 import { z } from 'zod';
 // Query schema
 const InsightsQuerySchema = z.object({
-  caseId: z.string().uuid(),
+  caseId: cuidSchema,
   insightType: z.enum(['summary', 'patterns', 'risks', 'recommendations', 'all']).default('all'),
   depth: z.enum(['quick', 'detailed', 'comprehensive']).default('detailed'),
 });

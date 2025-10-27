@@ -1,7 +1,8 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 import type { RequestHandler } from '@sveltejs/kit';
 import { json } from '@sveltejs/kit';
 import { createClient } from 'redis';
-const redis = createClient({ url: process.env.REDIS_URL || 'redis://127.0.0.1:6379' });
+const redis = redis;
 redis.connect().catch(() => {
   /* ignore for dev */
 });

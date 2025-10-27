@@ -75,7 +75,7 @@ $effect(() => {
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock';
-      notice.style.cssText = 'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+  notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Set mock system status
@@ -190,7 +190,7 @@ $effect(() => {
       // Show fallback notice
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock';
-      notice.style.cssText = 'position fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+  notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Generate mock AI assistant response
@@ -288,7 +288,7 @@ $effect(() => {
       if (ragResponse.ok) {
         ragAnalysisResults = await ragResponse.json();
         // Extract POI timeline data from semantic analysis
-        poiTimelineData = ragAnalysisResults.persons?.map((person any) => ({ // Explicitly type person
+  poiTimelineData = ragAnalysisResults.persons?.map((person: any) => ({ // Explicitly type person
           id: person.id,
           name: person.name,
           type: person.type || 'person',
@@ -395,25 +395,25 @@ $effect(() => {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
           <button
             class="bits-btn justify-start px-3 py-2 rounded-md text-sm"
-            onclick={() => handleQuickQuery('Explain contract formation requirements')}
+            on:click={() => handleQuickQuery('Explain contract formation requirements')}
             disabled={isStreaming}
             aria-label="Explain contract formation requirements"
           >Contract Law</button>
           <button
             class="bits-btn justify-start px-3 py-2 rounded-md text-sm"
-            onclick={() => handleQuickQuery('What is the chain of custody for evidence?')}
+            on:click={() => handleQuickQuery('What is the chain of custody for evidence?')}
             disabled={isStreaming}
             aria-label="What is the chain of custody for evidence?"
           >Evidence Rules</button>
           <button
             class="bits-btn justify-start px-3 py-2 rounded-md text-sm"
-            onclick={() => handleQuickQuery('Explain liability limitations in contracts')}
+            on:click={() => handleQuickQuery('Explain liability limitations in contracts')}
             disabled={isStreaming}
             aria-label="Explain liability limitations in contracts"
           >Liability</button>
           <button
             class="bits-btn justify-start px-3 py-2 rounded-md text-sm"
-            onclick={() => handleQuickQuery('What are the elements of negligence?')}
+            on:click={() => handleQuickQuery('What are the elements of negligence?')}
             disabled={isStreaming}
             aria-label="What are the elements of negligence?"
           >Tort Law</button>
@@ -428,12 +428,16 @@ $effect(() => {
         <Card class="flex flex-col h-[70vh] nes-container">
           <CardHeader>
             <div class="flex justify-between items-center">
-              <span class="px-2 py-1 rounded text-xs font-medium {isStreaming ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}">
+              <!-- FIX: use cn() to combine static classes + conditional classes instead of embedding expression inside class string -->
+              <span class={cn(
+                "px-2 py-1 rounded text-xs font-medium",
+                isStreaming ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"
+              )}>
                 {isStreaming ? 'Streaming...' : 'Ready'}
               </span>
               <button
                 class="bits-btn bits-nes-btn px-3 py-1 rounded-md text-sm"
-                onclick={clearChat}
+                on:click={clearChat}
                 disabled={isStreaming}
                 aria-label="Clear chat"
               >Clear</button>
@@ -484,12 +488,12 @@ $effect(() => {
             <div class="flex gap-2">
               <input
                 bind:value={currentMessage}
-                onkeydown={handleKeydown}
+                on:keydown={handleKeydown}
                 class="flex-1 p-2 border rounded-md"
                 placeholder="Ask a legal question..."
               />
               <button
-                onclick={sendMessage}
+                on:click={sendMessage}
                 disabled={!currentMessage.trim() || isStreaming}
                 class="px-6 bits-btn rounded-md"
                 aria-label="Send message"
@@ -515,7 +519,7 @@ $effect(() => {
                 Persons of Interest Timeline
               </CardTitle>
               <button
-                onclick={() => showTimeline = false}
+                on:click={() => showTimeline = false}
                 class="nes-btn bits-btn px-2 py-1 rounded-md"
                 aria-label="Close timeline"
               >
@@ -537,7 +541,7 @@ $effect(() => {
                       </div>
                     </div>
                     <button
-                      onclick={() => selectPOI(poi)}
+                      on:click={() => selectPOI(poi)}
                       class="nes-btn bits-btn px-2 py-1 rounded-md"
                       aria-label={`View details for ${poi.name}`}
                     >View Details</button>
@@ -604,7 +608,6 @@ $effect(() => {
                   <div class="flex-1">
                     <div class="font-medium">{activity.action}</div>
                     <div class="text-sm text-gray-600">
-                      <!-- fixed broken expression and safely access description/details -->
                       {activity.description ?? activity.details ?? ''}
                     </div>
                   </div>
@@ -680,7 +683,7 @@ $effect(() => {
             </CardHeader>
             <CardContent class="space-y-3">
               <button
-                onclick={checkSystemStatus}
+                on:click={checkSystemStatus}
                 class="w-full justify-start bits-btn px-3 py-2 rounded-md text-sm"
                 aria-label="Refresh system status"
               >
@@ -692,7 +695,7 @@ $effect(() => {
 
               <button
                 class="bits-btn w-full justify-start px-3 py-2 rounded-md text-sm"
-                onclick={() => window.open('/api/v1/cluster/health', '_blank')}
+                on:click={() => window.open('/api/v1/cluster/health', '_blank')}
                 aria-label="Open health report in new tab"
               >
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -703,7 +706,7 @@ $effect(() => {
 
               <button
                 class="w-full justify-start bits-btn px-3 py-2 rounded-md text-sm"
-                onclick={analyzePersonsOfInterest}
+                on:click={analyzePersonsOfInterest}
                 disabled={timelineLoading}
                 aria-label="Analyze evidence"
               >
@@ -721,7 +724,7 @@ $effect(() => {
               </button>
 
               <button
-                onclick={generateUserActivityTimeline}
+                on:click={generateUserActivityTimeline}
                 disabled={activityLoading}
                 class="w-full justify-start bits-btn px-3 py-2 rounded-md text-sm"
                 aria-label="Generate user activity timeline"
@@ -771,9 +774,10 @@ $effect(() => {
     </div>
   </div>
 </div>
+
 <!-- POI Details Modal -->
 {#if selectedPOI}
-  <Dialog bind:open={showPOIDialog} legal={true} size="lg" onopenChange={(open: boolean) => { if (!open) closePOIDetails() }}>
+  <Dialog bind:open={showPOIDialog} size="lg" on:openChange={(e) => { if (!e?.detail) closePOIDetails(); }}>
     <!-- Modal Header -->
     <div class="flex justify-between items-start mb-6">
       <div>
@@ -797,7 +801,7 @@ $effect(() => {
       <div>
         <button
           class="px-2 py-1 rounded-md text-sm"
-          onclick={closePOIDetails}
+          on:click={closePOIDetails}
           aria-label="Close dialog"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -890,12 +894,12 @@ $effect(() => {
     <!-- Modal Footer -->
     <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
       <button
-        onclick={closePOIDetails}
+        on:click={closePOIDetails}
         class="bits-btn px-3 py-2 rounded-md"
         aria-label="Close person of interest details"
       >Close</button>
       <button
-        onclick={() => {
+        on:click={() => {
           handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`);
           closePOIDetails();
         }}
@@ -903,28 +907,6 @@ $effect(() => {
         class="nes-btn is-primary bits-btn px-3 py-2 rounded-md"
         aria-label="Ask AI about this person"
       >Ask AI About This Person</button>
-    </div>
-  </Dialog>
-{/if}
-      <Button
-        variant="secondary"
-        onclick={closePOIDetails}
-        class="bits-btn"
-        ariaLabel="Close person of interest details"
-      >
-        Close
-      </Button>
-      <Button
-        onclick={() => {
-          handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`);
-          closePOIDetails();
-        }}
-        disabled={isStreaming}
-        class="nes-btn is-primary bits-btn"
-        ariaLabel="Ask AI about this person"
-      >
-        Ask AI About This Person
-      </Button>
     </div>
   </Dialog>
 {/if}
