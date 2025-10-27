@@ -50,53 +50,53 @@ https://svelte.dev/e/js_parse_error -->
       status: 'ACTIVE',
       power: 96.8,
       description: 'Advanced Legal Document Analysis',
-      icon 'gavel',
-      color: '#00ff88', // Changed semicolon to comma
+      icon: 'gavel',
+      color: '#00ff88',
     },
     {
       id: 'evidence-processor',
       name: 'EVIDENCE ANALYSIS',
       status: 'STANDBY',
       power: 78.2,
-      description 'Digital Evidence Processing Unit',
+      description: 'Digital Evidence Processing Unit',
       icon: 'search',
-      color: '#ff6b35', // Changed semicolon to comma
+      color: '#ff6b35',
     },
     {
       id: 'neural-network',
       name: 'NEURAL MATRIX',
       status: 'ACTIVE',
       power: 94.1,
-      description 'Machine Learning Core System',
-      icon 'brain',
-      color: '#3b82f6', // Changed semicolon to comma
+      description: 'Machine Learning Core System',
+      icon: 'brain',
+      color: '#3b82f6',
     },
     {
       id: 'quantum-db',
       name: 'QUANTUM DATABASE',
       status: 'ACTIVE',
       power: 89.7,
-      description 'High-Speed Data Storage Matrix',
-      icon 'database',
-      color: '#8b5cf6', // Changed semicolon to comma
+      description: 'High-Speed Data Storage Matrix',
+      icon: 'database',
+      color: '#8b5cf6',
     },
     {
       id: 'security-grid',
       name: 'SECURITY GRID',
       status: 'MAXIMUM',
       power: 99.2,
-      description 'Perimeter Defense System',
-      icon 'shield',
-      color: '#ef4444', // Changed semicolon to comma
+      description: 'Perimeter Defense System',
+      icon: 'shield',
+      color: '#ef4444',
     },
     {
       id: 'comms-array',
       name: 'COMMUNICATIONS',
       status: 'ACTIVE',
       power: 87.4,
-      description 'Multi-Protocol Communication Hub',
-      icon 'radio',
-      color: '#06b6d4', // Changed semicolon to comma
+      description: 'Multi-Protocol Communication Hub',
+      icon: 'radio',
+      color: '#06b6d4',
     },
   ];
   $effect(() => {
@@ -114,7 +114,7 @@ https://svelte.dev/e/js_parse_error -->
         id: 'central-core',
         type: 'sphere',
         position: { x: 0, y: 0, z: 0 },
-        rotation { x: 0, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: 0 },
         scale: 1.0,
         color: '#00ff88',
         opacity: 0.8,
@@ -124,7 +124,7 @@ https://svelte.dev/e/js_parse_error -->
         id: 'data-streams',
         type: 'lines',
         position: { x: 0, y: 0, z: 0 },
-        rotation { x: 0, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: 0 },
         scale: 1.0,
         color: '#3b82f6',
         opacity: 0.6,
@@ -134,7 +134,7 @@ https://svelte.dev/e/js_parse_error -->
         id: 'neural-nodes',
         type: 'points',
         position: { x: 0, y: 0, z: 0 },
-        rotation { x: 0, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: 0 },
         scale: 1.0,
         color: '#8b5cf6',
         opacity: 0.9,
@@ -182,7 +182,7 @@ https://svelte.dev/e/js_parse_error -->
       varying vec3 vNormal;
       varying float vGlow;
       void main() {
-        vec4 pos = positio;
+        vec4 pos = position;
         pos.y += sin(pos.x * 2.0 + time * 3.0) * 0.1;
         pos.x += cos(pos.z * 1.5 + time * 2.0) * 0.05;
         gl_Position = projectionMatrix * modelViewMatrix * pos;
@@ -534,10 +534,10 @@ https://svelte.dev/e/js_parse_error -->
   }
   .scanlines {
     position: absolute;
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: linear-gradient(transparent 50%, rgba(0, 255, 136, 0.03) 50%);
     background-size: 100% 2px;
     animation: scanline-scroll 0.1s linear infinite;

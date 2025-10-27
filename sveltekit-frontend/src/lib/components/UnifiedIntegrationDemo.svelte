@@ -10,200 +10,213 @@
     CardTitle,
     CardContent
   } from '$lib/components/ui/enhanced-bits';
+
   // System status and results
-  const systemHealth = writable(null);
-  const activeOperations = writable([]);
-  const results = writable([]);
-  const metrics = writable([]);
-  let isLoading = $state(false);
-  let selectedOperation = $state('processDocument');
-  let testInput = $state('');
-  let errorMessage = $state('');
-  // Demo data for different operations
-  const demoInputs = {
+  const systemHealth = writable<any | null>(null);
+  const activeOperations = writable<any[]>([]);
+  const results = writable<any[]>([]);
+  const metrics = writable<any>({ metrics: [], count: 0, latstMetric: null });
+
+  let isLoading: boolean = false;
+  let selectedOperation: string = 'processDocument';
+  let testInput: string = '';
+  let errorMessage: string = '';
+
+  // Helper to generate a simple RGBA canvas payload
+  function generateCanvasRGBA(width = 8, height = 8) {
+    const len = width * height * 4;
+    const pixels = Array.from({ length: len }, (_, i) => {
+      const piexel = Math.floor(i / 4);
+      const component = i % 4;
+      if (component === 3) return 255; // alpha
+      return pixel % 256;
+    });
+    return { pixels, format: 'RGBA', width, height };
+  }
+
+  // Demo data for different operations (valid JS objects / strings)
+  const demoInputs: Record<string, string> = {
     processDocument: `LEGAL CONTRACT AGREEMENT
-  This Service Agreement is entered into between Company A and Company B.
-  TERMS AND CONDITIONS:
-  1. Service Period: 12 months from execution
-  2. Payment Terms: Net 30 days
-  3. Deliverables: As specified in Schedule A
-  4. Termination Either party may terminate with 60 days notice
-  Both parties acknowledge they have read and agree to these terms.`,
+This Service Agreement is entered into between Company A and Company B.
+TERMS AND CONDITIONS:
+1. Service Period: 12 months from execution
+2. Payment Terms: Net 30 days
+3. Deliverables: As specified in Schedule A
+4. Termination Either party may terminate with 60 days notice
+Both parties acknowledge they have read and agree to these terms.`,
     performInference: JSON.stringify([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]),
-    processCanvas: JSON.stringify(fill)-map((_, i) => {
-        const pixel = Math.floor(i / 4);
-        const component = i % 4;
-        if (component === 3) return 255; // Alpha
-        return (pixel % 256); // RGB pattern
-      }),
-      format: 'RGBA',
-    }),
-    matmul: JSON.stringify({,
+    processCanvas: JSON.stringify(generateCanvasRGBA(16, 8)),
+    matmul: JSON.stringify({
       a: [1, 2, 3, 4, 5, 6],
       b: [7, 8, 9, 10, 11, 12],
       m: 2,
       n: 3,
-      k: 3,
+      k: 3
     }),
-    attention JSON.stringify(fill)-map(() => Math.random()),
-      key: Array(64).fill.map(() => Math.random()),
-      value: Array(64).fill.map(() => Math.random()),
+    attention: JSON.stringify({
+      key: Array.from({ length: 64 }, () => Math.random()),
+      value: Array.from({ length: 64 }, () => Math.random()),
       seq_len: 8,
-      dim: 8,
+      dim: 8
     })
-  }
-  $effect(() => {
+  };
+
+  // keep the test input in sync with selectedOperation
+  $: testInput = demoInputs[selectedOperation] ?? testInput;
+
+  onMount(() => {
     updateSystemHealth();
     updateMetrics();
-    testInput = demoInputs[selectedOperation];
-    // Auto-refresh system status
     const interval = setInterval(() => {
       updateSystemHealth();
       updateMetrics();
     }, 5000);
     return () => clearInterval(interval);
   });
+
   async function updateSystemHealth() {
     try {
-      // removed unused response assignment
-      const data = await (response as { json?: unknown }).json();
-      if ((data as { success?: unknown; data?: unknown }).success) {
-        systemHealth.set(data));
-      }
-    } catch (error) {
-      console.error('Failed to fetch system health:', error);
+      const resp = await fetch('/api/health/status');
+      const data = await resp.json();
+      // prefer .data when endpoints return wrapper, otherwise set whole payload
+      if (data?.success) systemHealth.set(data.data ?? data);
+      else systemHealth.set(data ?? null);
+    } catch (err) {
+      console.error('Failed to fetch system health:', err);
+      systemHealth.set(null);
     }
   }
+
   async function updateMetrics() {
     try {
-      // removed unused response assignment
-      const data = await (response as { json?: unknown }).json();
-      if ((data as { success?: unknown; data?: unknown }).success) {
-        metrics.set(data));
-      }
-    } catch (error) {
-      console.error('Failed to fetch metrics:', error);
+      const resp = await fetch('/api/admin/status');
+      const data = await resp.json();
+      if (data?.success) metrics.set(data.data ?? data);
+      else metrics.set(data ?? { metrics: [], count: 0, latestMetric: null });
+    } catch (err) {
+      console.error('Failed to fetch metrics:', err);
     }
   }
+
   async function executeOperation() {
-    if (!testInput.trim()) return;
+    if (!testInput || !testInput.trim()) return;
     isLoading = true;
     errorMessage = '';
     try {
-      let requestData;
+      let requestData: any = null;
       switch (selectedOperation) {
         case 'processDocument':
           requestData = {
-            operation 'processDocument',
+            operation: 'processDocument',
             data: {
-              document: testInput
-              analysisType: 'comprehensive',
+              document: testInput,
+              analysisType: 'comprehensive'
             },
             options: {
               priority: 'HIGH',
-              maxTokens: 1024,
+              maxTokens: 1024
             }
-          }
+          };
           break;
         case 'performInference':
           requestData = {
-            operation 'performInference',
+            operation: 'performInference',
             data: {
-              input: JSON.parse(testInput);
+              input: JSON.parse(testInput)
             },
             options: {
               priority: 'HIGH',
-              modelType: 'transformer',
+              modelType: 'transformer'
             }
-          }
+          };
           break;
-        case 'processCanvas':
+        case 'processCanvas': {
           const canvasData = JSON.parse(testInput);
           requestData = {
-            operation 'processCanvas',
-            data: {
-              canvasState: canvasData
-            },
-            options: {
-              priority: 'NORMAL',
-              targetBitDepth: 24,
-            }
-          }
+            operation: 'processCanvas',
+            data: { canvasState: canvasData },
+            options: { priority: 'NORMAL', targetBitDepth: 24 }
+          };
           break;
-        case 'matmul':
+        }
+        case 'matmul': {
           const matrixData = JSON.parse(testInput);
-          requestData = {
-            operation 'matmul',
-            data: matrixData;
-            options: {
-              priority: 'HIGH',
-            }
-          }
+          requestData = { operation: 'matmul', data: matrixData, options: { priority: 'HIGH' } };
           break;
-        case 'attention':
+        }
+        case 'attention': {
           const attentionData = JSON.parse(testInput);
-          requestData = {
-            operation 'attention',
-            data: attentionData;
-            options: {
-              priority: 'HIGH',
-            }
-          }
+          requestData = { operation: 'attention', data: attentionData, options: { priority: 'HIGH' } };
           break;
+        }
+        default:
+          throw new Error('Unsupported operation');
       }
+
       const response = await fetch('/api/v1/orchestrator', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestData);
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestData)
       });
-      const result = await (response as { json?: unknown }).json();
-      if ((result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).success) {
-        results.update(prev => [
-          {
+      const result = await response.json();
+
+      if (result?.success) {
+        results.update((prev) => {
+          const newEntry = {
             id: Date.now(),
-            operation selectedOperation;
+            operation: selectedOperation,
             timestamp: new Date(),
-            data: (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).data,
-            metadata: (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata,
-            processingTime: (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).totalProcessingTime
-          },
-          ...prev.slice(0, 9) // Keep last 10 results
-        ]);
+            data: result.data,
+            metadata: result.metadata,
+            processingTime: result.totalProcessingTime ?? result.processingTime ?? 0
+          };
+          return [newEntry, ...prev].slice(0, 10);
+        });
       } else {
-        errorMessage = (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).error || 'Operation failed';
+        errorMessage = result?.error ?? 'Operation failed';
       }
-    } catch (error) {
-      errorMessage = `Error: ${error.message}`;
-      console.error('Operation failed:', error);
+    } catch (err: any) {
+      errorMessage = `Error: ${err?.message ?? String(err)}`;
+      console.error('Operation failed:', err);
     } finally {
       isLoading = false;
       updateSystemHealth();
       updateMetrics();
     }
   }
+
   function onOperationChange() {
-    testInput = demoInputs[selectedOperation];
+    testInput = demoInputs[selectedOperation] ?? '';
     errorMessage = '';
   }
-  function getHealthColor(status) {
+
+  function getHealthColor(status: string) {
     switch (status) {
-      case 'healthy': return 'text-green-600';
-      case 'degraded': return 'text-yellow-600';
-      case 'critical': return 'text-red-600';
-      default: return 'text-gray-600';
+      case 'healthy':
+        return 'text-green-600';
+      case 'degraded':
+        return 'text-yellow-600';
+      case 'critical':
+        return 'text-red-600';
+      default:
+        return 'text-gray-600';
     }
   }
-  function getServiceColor(status) {
+
+  function getServiceColor(status: string) {
     switch (status) {
-      case 'online': return 'text-green-600';
-      case 'degraded': return 'text-yellow-600';
-      case 'offline': return 'text-red-600';
-      default: return 'text-gray-600';
+      case 'online':
+        return 'text-green-600';
+      case 'degraded':
+        return 'text-yellow-600';
+      case 'offline':
+        return 'text-red-600';
+      default:
+        return 'text-gray-600';
     }
   }
 </script>
+
 <div class="unified-integration-demo p-6 max-w-7xl mx-auto">
   <div class="mb-8">
     <h1 class="text-3xl font-bold text-gray-900 mb-2">
@@ -224,7 +237,7 @@
           <div class="space-y-3">
             <div class="flex justify-between items-center">
               <span class="text-sm font-medium">Overall Status:</span>
-              <span class="text-sm font-semibold {getHealthColor($systemHealth.overall)}">
+              <span class={`text-sm font-semibold ${getHealthColor($systemHealth.overall)}`}>
                 {$systemHealth.overall.toUpperCase()}
               </span>
             </div>
@@ -234,7 +247,7 @@
                 {#each Object.entries($systemHealth.services) as [service, status]}
                   <div class="flex justify-between items-center text-xs">
                     <span class="capitalize">{service}:</span>
-                    <span class="{getServiceColor(status)}">{status}</span>
+                    <span class={getServiceColor(status)}>{status}</span>
                   </div>
                 {/each}
               </div>
@@ -269,8 +282,11 @@
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2" for="-operation-type-">
               Operation Type
-            </label><select id="-operation-type-";
-              bind:value={selectedOperation} onchange={onOperationChange}
+            </label>
+            <select
+              id="-operation-type-"
+              bind:value={selectedOperation}
+              on:change={onOperationChange}
               class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="processDocument">Legal Document Processing</option>
@@ -280,17 +296,21 @@
               <option value="attention">Attention Mechanism</option>
             </select>
           </div>
+
           <!-- Input Data -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2" for="-input-data-">
               Input Data
-            </label><textarea id="-input-data-";
+            </label>
+            <textarea
+              id="-input-data-"
               bind:value={testInput}
               rows="8"
               class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm"
-              placeholder="Enter test (data as { success?: unknown; data?: unknown })..."
-></textarea>
+              placeholder="Enter test data (example shapes: success + data)"
+            ></textarea>
           </div>
+
           <!-- Error Display -->
           {#if errorMessage}
             <div class="bg-red-50 border border-red-200 rounded-md p-3">
@@ -299,7 +319,7 @@
           {/if}
           <!-- Execute Button -->
           <Button
-            onclick={executeOperation}
+            on:click={executeOperation}
             disabled={isLoading || !testInput.trim()}
             class="w-full bits-btn bits-btn"
           >
@@ -329,42 +349,42 @@
       <div class="yorha-panel-content">
         <div class="space-y-4 max-h-96 overflow-y-auto">
           {#if $results.length > 0}
-            {#each $results as result ((result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).id)}
+            {#each $results as result (result.id)}
               <div class="border border-gray-200 rounded-lg p-4">
                 <div class="flex justify-between items-start mb-2">
                   <div>
                     <h4 class="font-medium text-gray-900 capitalize">
-                      {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).operation.replace(/([A-Z])/g, ' $1').trim()}
+                      {result.operation.replace(/([A-Z])/g, ' $1').trim()}
                     </h4>
                     <p class="text-xs text-gray-500">
-                      {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).timestamp.toLocaleTimeString()}
+                      {result.timestamp.toLocaleTimeString()}
                     </p>
                   </div>
                   <div class="text-right">
                     <p class="text-xs text-gray-600">
-                      {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).processingTime}ms
+                      {result.processingTime}ms
                     </p>
-                    {#if (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata?.servicesUsed}
+                    {#if result.metadata?.servicesUsed}
                       <p class="text-xs text-blue-600">
-                        {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata.servicesUsed.join(', ')}
+                        {result.metadata.servicesUsed.join(', ')}
                       </p>
                     {/if}
                   </div>
                 </div>
                 <div class="bg-gray-50 rounded p-2 text-xs font-mono">
-                  {#if (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).data?.success !== undefined}
-                    <p class="text-{(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).data.success ? 'green' : 'red'}-600 mb-1">
-                      Status: {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).data.success ? 'Success' : 'Failed'}
+                  {#if result.data?.success !== undefined}
+                    <p class={result.data.success ? 'text-green-600 mb-1' : 'text-red-600 mb-1'}>
+                      Status: {result.data.success ? 'Success' : 'Failed'}
                     </p>
                   {/if}
-                  {#if (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata?.performance}
-                    <p>Latency: {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata.performance.latency}ms</p>
-                    <p>Throughput: {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata.performance.throughput.toFixed(2)}/s</p>
-                    <p>Resource Usage: {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata.performance.resourceUsage.toFixed(2)}</p>
+                  {#if result.metadata?.performance}
+                    <p>Latency: {result.metadata.performance.latency}ms</p>
+                    <p>Throughput: {result.metadata.performance.throughput.toFixed(2)}/s</p>
+                    <p>Resource Usage: {result.metadata.performance.resourceUsage.toFixed(2)}</p>
                   {/if}
-                  {#if (result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata?.fallbacksTriggered?.length > 0}
+                  {#if result.metadata?.fallbacksTriggered?.length > 0}
                     <p class="text-yellow-600">
-                      Fallbacks: {(result as { success?: unknown; data?: unknown; metadata?: unknown; totalProcessingTime?: unknown; error?: unknown; id?: unknown; operation?: unknown; timestamp?: unknown; processingTime?: unknown }).metadata.fallbacksTriggered.join(' → ')}
+                      Fallbacks: {result.metadata.fallbacksTriggered.join(' → ')}
                     </p>
                   {/if}
                 </div>
@@ -423,13 +443,14 @@
           </div>
         {:else}
           <div class="text-center text-gray-500 py-8">
-            No metrics available yet. Execute some operations to see performance (data as { success?: unknown; data?: unknown }).
+            No metrics available yet. Execute some operations to see performance.
           </div>
         {/if}
       </div>
     </div>
   </div>
 </div>
+
 <style>
   .unified-integration-demo {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
