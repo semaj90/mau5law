@@ -35,11 +35,11 @@
   // Cast the imported loki object to the expected interface
   const typedLoki = loki as ExpectedLokiService;
 
-  // Svelte store values using $derived
-  let sidebarOpen = $derived($sidebarStore?.open || isHovered || isPinned);
-  let evidenceItems = $derived($lokiStore?.evidence ?? []);
-  let notesItems = $derived($lokiStore?.notes ?? []);
-  let canvasStates = $derived($lokiStore?.canvasStates ?? []);
+  // Fix: use $derived as a function that accepts a callback
+  let sidebarOpen = $derived(() => ($sidebarStore?.open ?? false) || isHovered || isPinned);
+  let evidenceItems = $derived(() => $lokiStore?.evidence ?? []);
+  let notesItems = $derived(() => $lokiStore?.notes ?? []);
+  let canvasStates = $derived(() => $lokiStore?.canvasStates ?? []);
 
   // Create Fuse instance when relevant items change
   $effect(() => {
@@ -52,7 +52,7 @@
     }
   });
 
-  // Compute search results reactively
+  // Compute search results reactively (use callback form)
   let searchResults = $derived(() => {
     if (searchQuery && fuse) {
       return fuse.search(searchQuery).map(r => r.item);
@@ -63,18 +63,17 @@
   });
 
   $effect(() => {
-    typedLoki.init(); // Use typedLoki
+    typedLoki.init();
     refreshData();
   });
 
   function refreshData() {
     if (activeTab === 'evidence') {
-      typedLoki.evidence.refreshStore(); // Use typedLoki
+      typedLoki.evidence.refreshStore();
     } else if (activeTab === 'notes') {
-      typedLoki.notes.refreshStore(); // Use typedLoki
+      typedLoki.notes.refreshStore();
     } else {
-      // canvas states could be refreshed here if needed
-      typedLoki.canvasStates.refreshStore(); // Use typedLoki
+      typedLoki.canvasStates.refreshStore();
     }
   }
 
@@ -88,15 +87,16 @@
 
   function togglePin() {
     isPinned = !isPinned;
-    sidebarStore.update(state => ({ ...state, open: isPinned }));
+    // annotate state param to avoid implicit any
+    sidebarStore.update((state: any) => ({ ...state, open: isPinned }));
   }
 
-  function handleSearch(_event: CustomEvent) {
-    searchQuery = _e(vent as CustomEvent).detail.query;
+  // Fix malformed handler: use the event parameter correctly
+  function handleSearch(event: CustomEvent) {
+    searchQuery = (event as CustomEvent).detail?.query ?? '';
   }
 
   function handleItemClick(item: unknown) {
-    // Forward or handle item click
     console.log('Item clicked:', item);
   }
 
@@ -108,7 +108,7 @@
 </script>
 
 <div
-  class="yorha-3d-panel nes-legal-container"
+  class="yorha-3d-panel nes-legal-container sidebar-container"
   class:open={sidebarOpen}
   bind:this={sidebarElement}
   role="complementary"
@@ -122,13 +122,13 @@
   {#if sidebarOpen}
     <div
       class="yorha-3d-panel-inner neural-sprite-active"
-      transitionslide={{ duration 300, easing: quintOut, axis: 'x' }}
+      transition:slide={{ duration: 300, easing: quintOut, axis: 'x' }}
     >
       <div class="nes-legal-header yorha-3d-button">
         <h3 class="nes-legal-title">CONTENT LIBRARY</h3>
-        <div class="nes-header-actions">
+        <div class="nes-header-actions header-actions">
           <button
-            class={`nes-legal-priority-medium yorha-3d-button ${isPinned ? 'nes-legal-priority-high' : ''}`}
+            class={`nes-legal-priority-medium yorha-3d-button pin-button ${isPinned ? 'pinned' : ''}`}
             onclick={togglePin}
             aria-label={isPinned ? 'Unpin sidebar' : 'Pin sidebar'}
             type="button"
@@ -137,7 +137,7 @@
           </button>
           {#if !isPinned}
             <button
-              class="nes-legal-priority-low yorha-3d-button"
+              class="nes-legal-priority-low yorha-3d-button close-button"
               onclick={() => (isHovered = false)}
               aria-label="Close sidebar"
               type="button"
@@ -147,13 +147,13 @@
           {/if}
         </div>
       </div>
-      <div class="nes-search-section neural-sprite-loading">
+      <div class="nes-search-section neural-sprite-loading search-section">
         <SearchBar placeholder={`Search ${activeTab}...`} value={searchQuery} onsearch={handleSearch} />
       </div>
-      <div class="nes-tabs-container yorha-3d-panel">
-        <div class="nes-tab-list">
+      <div class="nes-tabs-container yorha-3d-panel tabs-container">
+        <div class="nes-tab-list tab-list">
           <button
-            class="nes-tab-trigger nes-legal-priority-medium"
+            class="nes-tab-trigger nes-legal-priority-medium tab-trigger"
             class:active={activeTab === 'evidence'}
             onclick={() => handleTabChange('evidence')}
             type="button"
@@ -161,7 +161,7 @@
             <Folder size={16} /> EVIDENCE
           </button>
           <button
-            class="nes-tab-trigger nes-legal-priority-medium"
+            class="nes-tab-trigger nes-legal-priority-medium tab-trigger"
             class:active={activeTab === 'notes'}
             onclick={() => handleTabChange('notes')}
             type="button"
@@ -169,7 +169,7 @@
             <FileText size={16} /> NOTES
           </button>
           <button
-            class="nes-tab-trigger nes-legal-priority-medium"
+            class="nes-tab-trigger nes-legal-priority-medium tab-trigger"
             class:active={activeTab === 'canvas'}
             onclick={() => handleTabChange('canvas')}
             type="button"
@@ -177,7 +177,7 @@
             <Tag size={16} /> CANVAS
           </button>
         </div>
-        <div class="nes-tab-content neural-sprite-active">
+        <div class="nes-tab-content neural-sprite-active tab-content">
           {#if activeTab === 'evidence'}
             <InfiniteScrollList
               items={searchResults}
@@ -202,7 +202,7 @@
           {/if}
         </div>
       </div>
-      <div class="nes-tags-section nes-legal-priority-low">
+      <div class="nes-tags-section nes-legal-priority-low tags-section">
         <TagList />
       </div>
     </div>
@@ -212,9 +212,9 @@
 <style>
   /* @unocss-include */
   .sidebar-container {
-    position fixed;
+    position: fixed;
     top: 60px; /* Header height */
-    left: 0,
+    left: 0;
     bottom: 0;
     width: 320px;
     z-index: 20;
@@ -227,14 +227,14 @@
     pointer-events: all;
   }
   .hover-trigger {
-    position absolute;
-    top: 0,
+    position: absolute;
+    top: 0;
     left: 0;
     width: 20px;
     height: 100%;
     background: transparent;
     pointer-events: all;
-    z-index: 1,
+    z-index: 1;
   }
   .sidebar-content {
     width: 100%;
@@ -280,7 +280,7 @@
     background: var(--bg-primary);
   }
   .tab-trigger {
-    flex: 1,
+    flex: 1;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -301,13 +301,13 @@
     border-bottom: 2px solid var(--harvard-crimson);
   }
   .tab-content {
-    flex: 1,
+    flex: 1;
     overflow: hidden;
     display: flex;
     flex-direction: column;
   }
   .tabs-container {
-    flex: 1,
+    flex: 1;
     display: flex;
     flex-direction: column;
     overflow: hidden;

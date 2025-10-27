@@ -67,7 +67,12 @@ async function getRedisClient(): Promise<RedisClientType | null> {
       // Suppress auth warnings during connection
       const errorHandler = (err: unknown) => {
         let errMsg = '';
-        if (err && typeof err === 'object' && 'message' in err && typeof (err as { message: unknown }).message === 'string') {
+        if (
+          err &&
+          typeof err === 'object' &&
+          'message' in err &&
+          typeof (err as { message: unknown }).message === 'string'
+        ) {
           errMsg = (err as { message: string }).message;
         } else {
           errMsg = String(err);
@@ -265,11 +270,14 @@ export const GET: RequestHandler = async event => {
       }
 
       // Detect database-level failures (e.g., missing table / relation or failed query)
-      if (error instanceof Error && (error.message.includes('relation "cases"') || error.message.includes('Failed query'))) {
+      if (
+        error instanceof Error &&
+        (error.message.includes('relation "cases"') || error.message.includes('Failed query'))
+      ) {
         // Prefer a CommonErrors helper if provided by the project; otherwise fall back to a generic Error.
         // Avoid 'any' by casting through unknown and typing the expected function shape.
         type ServiceErrorFn = (msg: string) => Error;
-        const commonErrorsNs = (CommonErrors as unknown) as Record<string, unknown>;
+        const commonErrorsNs = CommonErrors as unknown as Record<string, unknown>;
         const serviceErrorFn =
           (commonErrorsNs.ServiceUnavailable as unknown as ServiceErrorFn) ||
           (commonErrorsNs.ServiceDegraded as unknown as ServiceErrorFn) ||

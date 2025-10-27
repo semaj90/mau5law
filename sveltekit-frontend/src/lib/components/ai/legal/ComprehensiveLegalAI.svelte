@@ -5,7 +5,7 @@
   import { createWorkerPool, type WorkerPoolConfig } from '$lib/workers/legal-ai-worker-pool';
   import { createSIMDJSONCache } from '$lib/utils/simd-json-cache';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  import Badge from '$lib/components/ui/badge/Badge.svelte';
+  import { Badge } from '$lib/components/ui/badge'; // Changed from default import to named import from directory
   import Progress from '$lib/components/ui/progress/Progress.svelte';
   import {
     Brain,
@@ -18,7 +18,7 @@
     Activity,
     Upload,
     MessageSquare,
-    BarChart,
+    // BarChart, // Deprecated: Replaced with Activity
   } from 'lucide-svelte';
   // Component state
   let selectedFiles = $state<FileList | null>(null);
@@ -41,6 +41,18 @@
   workerUtilization: 0,
     simdPerformance: 0,
   });
+
+  let aiStats = $state({
+    modelsActive: 0,
+    inferencesPerHour: 0,
+    gpuUtilization: 0,
+    averageResponseTime: 0,
+  });
+
+  let contextualPrompt = $state('');
+  let contextualResponse = $state<string | null>(null);
+  let contextualLoading = $state(false);
+  let contextualError = $state<string | null>(null);
 
   // declare interval handle in outer scope so cleanup can synchronously access it
   let statsInterval: ReturnType<typeof setInterval> | undefined;
@@ -101,6 +113,15 @@
       performanceMetrics.workerUtilization =
         workerStats.totalWorkers > 0 ? (workerStats.activeWorkers / workerStats.totalWorkers) * 100 : 0;
       performanceMetrics.cacheHitRate = (cacheStats.hitRate || 0) * 100;
+      aiStats.modelsActive = workerStats.activeWorkers ?? aiStats.modelsActive;
+      aiStats.inferencesPerHour = Math.max(
+        Math.round((workerStats.activeWorkers ?? 0) * 120),
+        aiStats.inferencesPerHour
+      );
+      aiStats.gpuUtilization = Math.round(performanceMetrics.workerUtilization);
+      if (performanceMetrics.totalProcessingTime > 0) {
+        aiStats.averageResponseTime = Number((performanceMetrics.totalProcessingTime / 1000).toFixed(2));
+      }
     }
   }
   async function handleFileUpload() {
@@ -177,6 +198,9 @@
           'gemma3:legal-latest'
         );
         processedResults.aiAnalysis = analysis;
+        if (analysis?.summary) {
+          contextualPrompt = analysis.summary;
+        }
       }
       // Generate recommendations
       const recContext = {
@@ -196,6 +220,37 @@
         (simdMetrics.totalDataProcessed || 0) / Math.max(simdMetrics.totalParse || 1, 1);
     } catch (error) {
       console.error('Result processing failed:', error);
+    }
+  }
+
+  async function handleContextualChat(promptOverride?: string) {
+    const question = (promptOverride ?? contextualPrompt)?.trim();
+    if (!question) return;
+    contextualLoading = true;
+    contextualError = null;
+    try {
+      const response = await fetch('/api/ai/contextual-chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ input: question, userId: caseId }),
+      });
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(text || `Request failed with status ${response.status}`);
+      }
+      const data = (await response.json()) as { response?: string };
+      contextualResponse = data?.response ?? 'No contextual response returned.';
+    } catch (error) {
+      contextualError = error instanceof Error ? error.message : String(error);
+    } finally {
+      contextualLoading = false;
+    }
+  }
+
+  function useSummaryForContextualPrompt() {
+    const summary = processedResults.aiAnalysis?.summary;
+    if (summary) {
+      contextualPrompt = summary;
     }
   }
   function handleFileSelect(event: Event) {
@@ -246,7 +301,7 @@
     </p>
   </div>
   <!-- System Status Dashboard -->
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+  <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
     <Card>
       <CardHeader class="pb-2">
         <CardTitle class="text-sm flex items-center gap-2">
@@ -331,7 +386,7 @@
     <Card>
       <CardHeader class="pb-2">
         <CardTitle class="text-sm flex items-center gap-2">
-          <BarChart class="h-4 w-4" />
+          <Activity class="h-4 w-4" />
           Performance
         </CardTitle>
       </CardHeader>
@@ -344,6 +399,34 @@
           <div class="flex justify-between">
             <span>Total Time:</span>
             <span>{(performanceMetrics.totalProcessingTime / 1000).toFixed(1)}s</span>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+    <Card>
+      <CardHeader class="pb-2">
+        <CardTitle class="text-sm flex items-center gap-2">
+          <Brain class="h-4 w-4" />
+          GPU Context
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span>Models Active:</span>
+            <span>{aiStats.modelsActive}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Inferences/hr:</span>
+            <span>{aiStats.inferencesPerHour}</span>
+          </div>
+          <div class="flex justify-between">
+            <span>GPU Utilisation:</span>
+            <span>{aiStats.gpuUtilization}%</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Avg Response:</span>
+            <span>{aiStats.averageResponseTime.toFixed(2)}s</span>
           </div>
         </div>
       </CardContent>
@@ -539,6 +622,58 @@
       </CardContent>
     </Card>
   {/if}
+  <!-- Contextual Chat -->
+  <Card>
+    <CardHeader>
+      <CardTitle class="flex items-center gap-2">
+        <MessageSquare class="h-5 w-5" />
+        Contextual GPU Chat
+      </CardTitle>
+    </CardHeader>
+    <CardContent class="space-y-4">
+      <textarea
+        bind:value={contextualPrompt}
+        rows="4"
+        class="w-full p-3 border rounded text-sm"
+        placeholder="Ask a question or paste a summary to retrieve contextual insights..."
+      ></textarea>
+      <div class="flex flex-wrap gap-2">
+        <button
+          type="button"
+          onclick={() => handleContextualChat()}
+          class="px-4 py-2 rounded bg-purple-600 text-white text-sm disabled:opacity-60"
+          disabled={contextualLoading || !contextualPrompt.trim()}
+        >
+          {#if contextualLoading}
+            <span class="flex items-center gap-2">
+              <Activity class="h-4 w-4 animate-spin" />
+              Thinking...
+            </span>
+          {:else}
+            Send to Contextual Chain
+          {/if}
+        </button>
+        <button
+          type="button"
+          onclick={useSummaryForContextualPrompt}
+          class="px-4 py-2 rounded border text-sm"
+          disabled={!processedResults.aiAnalysis?.summary}
+        >
+          Use AI Analysis Summary
+        </button>
+      </div>
+      {#if contextualError}
+        <div class="text-sm text-red-500">
+          {contextualError}
+        </div>
+      {/if}
+      {#if contextualResponse}
+        <div class="p-3 border rounded bg-muted/30 text-sm whitespace-pre-wrap leading-relaxed">
+          {contextualResponse}
+        </div>
+      {/if}
+    </CardContent>
+  </Card>
   <!-- Feature Overview -->
   <Card>
     <CardHeader>

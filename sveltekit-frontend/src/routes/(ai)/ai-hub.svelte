@@ -2,10 +2,11 @@
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
   import { Button } from '$lib/components/ui/core';
   import { routeGroups, getRouteGroupByTheme } from '$lib/data/route-groups-config';
+  import type { RouteDefinition as RGRouteDefinition } from '$lib/data/route-groups-config';
 
   // Get AI route group
   const aiGroup = getRouteGroupByTheme('cyberpunk');
-  const aiRoutes = aiGroup?.routes || [];
+  const aiRoutes: RGRouteDefinition[] = (aiGroup?.routes as RGRouteDefinition[] ) || [];
 
   // AI system statistics (mock data)
   const aiStats = {
@@ -77,33 +78,29 @@
     </Card>
   </div>
 
-  <!-- AI Services Grid -->
-  <div class="services-section">
-    <h2>🚀 AI Services</h2>
-    <div class="services-grid">
-      {#each aiRoutes as route}
-        <Card class="service-card">
-          <CardHeader>
-            <CardTitle>
-              <span class="service-icon">{route.icon}</span>
-              {route.name}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p class="service-description">{route.description || 'Advanced AI-powered legal tool'}</p>
-            <Button
-              href={route.href}
-              class="service-button"
-              data-umami-event="ai-service-navigate"
-              data-umami-event-service={route.name}
-            >
-              Launch Service
-            </Button>
-          </CardContent>
-        </Card>
-      {/each}
+  <!-- AI Services Section -->
+  {#if aiRoutes.length > 0}
+    <div class="services-section">
+      <h2>🚀 AI Services & Tools</h2>
+      <div class="services-grid">
+        {#each aiRoutes as route}
+          <Card class="service-card">
+            <CardHeader>
+              <CardTitle>
+                <span class="service-icon">{route.icon ?? '🧠'}</span> {route.title ?? (route.path ?? 'Untitled')}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p class="service-description">{route.description ?? ''}</p>
+              <Button href={route.path ?? '#'} class="service-button">
+                Explore {route.title ?? 'Service'}
+              </Button>
+            </CardContent>
+          </Card>
+        {/each}
+      </div>
     </div>
-  </div>
+  {/if}
 
   <!-- Recent AI Activities -->
   <div class="activities-section">
@@ -177,7 +174,7 @@
     margin-bottom: 3rem;
   }
 
-  .stat-card {
+  :global(.stat-card) {
     background: rgba(0, 212, 170, 0.1);
     border: 1px solid rgba(0, 212, 170, 0.3);
   }
@@ -210,13 +207,13 @@
     gap: 1.5rem;
   }
 
-  .service-card {
+  :global(.service-card) {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
   }
 
-  .service-card:hover {
+  :global(.service-card:hover) {
     background: rgba(0, 212, 170, 0.1);
     border-color: rgba(0, 212, 170, 0.3);
     transform: translateY(-2px);
@@ -232,7 +229,7 @@
     margin-bottom: 1rem;
   }
 
-  .service-button {
+  :global(.service-button) {
     width: 100%;
     background: #00d4aa;
     color: #000;
@@ -243,7 +240,7 @@
     transition: all 0.3s ease;
   }
 
-  .service-buttonhover {
+  :global(.service-button:hover) {
     background: #00b89a;
     transform: translateY(-1px);
   }
@@ -259,7 +256,7 @@
     gap: 1rem;
   }
 
-  .activity-card {
+  :global(.activity-card) {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
@@ -272,7 +269,7 @@
 
   .activity-details {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     align-items: center;
     font-size: 0.9rem;
     color: #a1a1aa;
@@ -298,6 +295,14 @@
     .services-grid {
       grid-template-columns: 1fr;
     }
+
+    .activity-details {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+  }
+</style>
 
     .activity-details {
       flex-direction: column;

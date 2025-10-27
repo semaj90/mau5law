@@ -1,19 +1,38 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  let diagram = $state(`graph TD\n    A[src/routes/interactive-canvas/+page.svelte] --> B[+Header.svelte]\n    A --> C[+Sidebar.svelte]\n    A --> D[Main Content Area]\n    D --> E[+FileUploadSection.svelte]\n    D --> F[+AutomateUploadSection.svelte]\n    D --> G[+AddNotesSection.svelte]\n    E --> H[+Dropdown.svelte]\n    E --> I[+Checkbox.svelte]\n    F --> H\n    F --> I\n    G --> H\n    G --> I\n    B --> J[+SearchInput.svelte]`);
-  let svg = $state('');
-  let container: HTMLElement = $state();
-  $effect(() => {
-    (async () => {
-try {
-      const { default: mermaid } = await import('mermaid');
-      mermaid.initialize({ startOnLoad: false
-    })();
-  });
+  let diagram = $state(
+    `graph TD
+    A[src/routes/interactive-canvas/+page.svelte] --> B[+Header.svelte]
+    A --> C[+Sidebar.svelte]
+    A --> D[Main Content Area]
+    D --> E[+FileUploadSection.svelte]
+    D --> F[+AutomateUploadSection.svelte]
+    D --> G[+AddNotesSection.svelte]
+    E --> H[+Dropdown.svelte]
+    E --> I[+Checkbox.svelte]
+    F --> H
+    F --> I
+    G --> H
+    G --> I
+    B --> J[+SearchInput.svelte]`
+  );
+  let svg = $state<string>('');
+  let container = $state<HTMLElement | null>(null);
+
+  // Render the mermaid diagram when the container is mounted / diagram changes
+  $effect(async () => {
+    if (!container) return; // wait until element is mounted
+    try {
+      const mod = (await import('mermaid')) as any;
+      const mermaid = mod?.default ?? mod;
+      mermaid.initialize({ startOnLoad: false });
       const { svg: renderedSvg } = await mermaid.render('ui-diagram', diagram);
       svg = renderedSvg;
-    } catch (err) {/* JSX syntax converted to Svelte */}
+    } catch (err) {
+      // keep this minimal but useful for debugging
+      // eslint-disable-next-line no-console
+      console.error('UIDiagram render error:', err);
+    }
   });
 </script>
 

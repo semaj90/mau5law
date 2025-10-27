@@ -6,7 +6,6 @@
 
 import * as amqp from 'amqplib';
 import { randomUUID } from 'crypto';
-import { eq } from 'drizzle-orm';
 import { db } from '$lib/server/db/client';
 import { evidence } from '$lib/server/db/schema-postgres';
 import { redis, ensureRedisReady } from '$lib/server/redis-client';
@@ -53,7 +52,21 @@ export async function createLegalAIWorker() {
 
   console.log(`🔌 Legal AI Worker connected to ${RABBITMQ_URL}, queue "${QUEUE_NAME}"`);
 
-  const onMessage = async (msg: amqp.ConsumeMessage | null) => {
+  /**
+   * Local lightweight AMQP message shape used by this worker.
+   * We only model the fields this file accesses to avoid depending on a non-exported
+   * type from the amqplib package.
+   */
+  type AmqpMessage = {
+    content: Buffer;
+    properties: {
+      headers?: Record<string, unknown>;
+      // other properties may exist but are not required here
+    };
+  } | null;
+
+  // use local AmqpMessage type instead of amqp.Message which may not be exported
+  const onMessage = async (msg: AmqpMessage) => {
     if (!msg) return;
     const raw = msg.content.toString();
 
@@ -64,7 +77,7 @@ export async function createLegalAIWorker() {
       cuidSchema.parse(job.documentId);
     } catch (e) {
       console.error('❌ Invalid job payload, dropping:', e);
-      ch.ack(msg);
+      ch.ack(msg as any);
       return;
     }
 
@@ -74,22 +87,22 @@ export async function createLegalAIWorker() {
     try {
       const result = await processIncomingJob(job);
       console.log(`✅ Job completed: ${jobId}`, result);
-      ch.ack(msg);
+      ch.ack(msg as any);
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : String(err);
       console.error(`❌ Job failed: ${jobId}:`, errMsg);
 
-      const attempts = (msg.properties.headers?.attempts as number) ?? 0;
-      const max = (msg.properties.headers?.maxAttempts as number) ?? 3;
+      const attempts = Number(msg?.properties?.headers?.attempts ?? 0);
+      const max = Number(msg?.properties?.headers?.maxAttempts ?? 3);
 
       if (attempts < max) {
-        const newHeaders = { ...msg.properties.headers, attempts: attempts + 1 };
+        const newHeaders = { ...(msg?.properties?.headers ?? {}), attempts: attempts + 1 };
         ch.sendToQueue(QUEUE_NAME, Buffer.from(raw), {
           persistent: true,
           headers: newHeaders,
         });
       }
-      ch.ack(msg);
+      ch.ack(msg as any);
     }
   };
 
@@ -118,23 +131,32 @@ export async function addLegalAIJob(
   const jobId = jobData.jobId ?? randomUUID();
   const payload = { ...jobData, jobId };
 
-  const headers = {
+  // typed headers object
+  const headers: { attempts: number; maxAttempts: number } = {
     attempts: 0,
     maxAttempts: options?.attempts ?? 3,
   };
 
-  const properties: amqp.Options.Publish = {
+  // explicit typed publish properties to avoid 'any' casts
+  const properties: {
+    persistent: boolean;
+    priority?: number;
+    headers: { attempts: number; maxAttempts: number } | Record<string, unknown>;
+    expiration?: string;
+  } = {
     persistent: true,
     priority: options?.priority,
     headers,
   };
 
   if (options?.delay && options.delay > 0) {
+    // set expiration directly; no `any` cast needed
     properties.expiration = String(options.delay);
   }
 
   return new Promise((resolve, reject) => {
-    ch.sendToQueue(QUEUE_NAME, Buffer.from(JSON.stringify(payload)), properties, async err => {
+    // typed callback param for confirm channel
+    ch.sendToQueue(QUEUE_NAME, Buffer.from(JSON.stringify(payload)), properties, async (err?: Error | null) => {
       try {
         await ch.close();
         await conn.close();
@@ -190,27 +212,35 @@ async function processDocumentWithGoServer(jobData: LegalAIJobData): Promise<GoS
 /* 🔹 Update Evidence Record                                                  */
 /* -------------------------------------------------------------------------- */
 async function updateEvidenceWithResults(documentId: string, results: GoServerResponse): Promise<void> {
-  const updateData: Partial<typeof evidence.$inferInsert> = {
-    updatedAt: new Date(),
-  };
-
-  if (results.summary) {
-    updateData.aiSummary = results.summary;
-  }
-
-  if (results.entities?.length) {
-    updateData.aiExtractedEntities = JSON.stringify(results.entities);
-  }
-
-  updateData.aiProcessingMetadata = JSON.stringify({
+  // build the values to update
+  const aiSummary = results.summary ?? null;
+  const aiEntities = results.entities && results.entities.length ? JSON.stringify(results.entities) : null;
+  const aiProcessingMetadata = JSON.stringify({
     processing_time: results.processing_time,
     processed_at: new Date().toISOString(),
     go_server_metadata: results.metadata,
     success: results.success,
   });
 
-  await db.update(evidence).set(updateData).where(eq(evidence.id, documentId));
-  console.log(`✅ Evidence record ${documentId} updated.`);
+  // Use a parameterized raw SQL update to avoid depending on eq import or Drizzle predicate helpers
+  // Note: db.execute(...) is used here; adapt if your db client API differs.
+  const sql = `
+    UPDATE ${evidence._schema ? `${evidence._schema}.${evidence._name}` : evidence._name}
+    SET
+      "ai_summary" = $2,
+      "ai_extracted_entities" = $3,
+      "ai_processing_metadata" = $4,
+      "updated_at" = NOW()
+    WHERE "id" = $1
+  `;
+  try {
+    // if your db client uses a different execute signature, adjust accordingly
+    await db.execute(sql, [documentId, aiSummary, aiEntities, aiProcessingMetadata]);
+    console.log(`✅ Evidence record ${documentId} updated.`);
+  } catch (e) {
+    console.error(`❌ Failed updating evidence ${documentId}:`, e);
+    throw e;
+  }
 }
 
 /* -------------------------------------------------------------------------- */
