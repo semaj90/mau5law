@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * Redis Connection Test Endpoint
  * Simple endpoint to test and debug Redis connectivity
@@ -97,7 +98,7 @@ export const GET: RequestHandler = async ({ url }) => {
       enableOfflineQueue: false, // Disable offline queue for immediate connection feedback
     };
 
-    redis = new Redis(redisOptions);
+    redis = redis;
 
     // Wait for Redis to be ready or timeout
     await waitForRedisReady(redis, REDIS_CONNECT_TIMEOUT);

@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Detective Mode Pattern Detection API Route
  * POST /api/v1/detective/patterns - Detect suspicious patterns in case data
@@ -9,8 +10,8 @@ import { z } from 'zod';
 
 // Pattern detection request schema
 const PatternDetectionSchema = z.object({
-  caseId: z.string().uuid(),
-  evidenceIds: z.array(z.string().uuid()).optional(),
+  caseId: cuidSchema,
+  evidenceIds: z.array(cuidSchema).optional(),
   patternTypes: z
     .array(z.enum(['temporal', 'location', 'behavior', 'communication', 'financial', 'digital']))
     .optional(),

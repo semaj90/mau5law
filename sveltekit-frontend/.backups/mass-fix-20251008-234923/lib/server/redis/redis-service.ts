@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // Use our compatibility shim that wraps ioredis under a node-redis-like surface
 import createClient from '$lib/shims/redis-shim';
 // Redis pub/sub service for real-time updates
@@ -26,9 +27,9 @@ class RedisService {
     }
     try {
       // Main client for operations
-      this.client = createClient(config);
-      this.publisher = createClient(config);
-      this.subscriber = createClient(config);
+      this.client = redis;
+      this.publisher = redis;
+      this.subscriber = redis;
       // Setup error handlers
       this.client.on('error', this.handleError.bind(this),;
       this.publisher.on('error', this.handleError.bind(this),;

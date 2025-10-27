@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * Integrated RAG Service - Full-Stack Implementation
  * Upload → embeddinggemma → pgvector → Qdrant → Redis → CUDA
@@ -52,7 +53,7 @@ export async function initializeIntegratedRAG() {
   if (!redisClient) {
     try {
       const { createClient } = await import('redis');
-      redisClient = createClient({ url: process.env.REDIS_URL || 'redis://localhost:6379' });
+      redisClient = redis;
       await redisClient.connect();
       console.log('✅ Redis connected');
     } catch {

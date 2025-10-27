@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 import { createClient } from 'redis';
 
 // Add a module augmentation so consumers that try to import
@@ -8,7 +9,7 @@ declare module 'redis' {
   export type RedisClientType = ReturnType<typeof import('redis').createClient>;
 }
 
-// Provide an explicit local alias for the runtime client type returned by createClient()
+// Provide an explicit local alias for the runtime client type returned by redis
 // This avoids depending on a named export like `RedisClientType` from the "redis" module,
 // which can be missing in some redis package versions or type setups.
 export type RedisClientType = ReturnType<typeof createClient>;
@@ -37,7 +38,7 @@ export async function getRedisClient(): Promise<RedisClient> {
   }
 
   try {
-    client = createClient({ url });
+    client = redis;
     client.on('error', err => {
       // log but don't throw — callers can fallback
       console.error('[redis-client] client error', err);

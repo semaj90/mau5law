@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // Enhanced SvelteKit API routes for legal AI integration
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
@@ -5,7 +6,7 @@ import { lucia } from '$lib/auth/lucia';
 import Redis from 'ioredis';
 
 // Redis client for coordination with MCP server
-const redis = new Redis(process.env.REDIS_URL || 'redis://redis:6379');
+const redis = redis;
 
 // MCP server endpoint
 const MCP_ENDPOINT = process.env.MCP_ENDPOINT || 'http://orchestrator:3000';

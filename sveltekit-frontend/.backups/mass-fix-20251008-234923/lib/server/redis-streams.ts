@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * redis-streams.ts
  * Typed Redis Streams producer/consumer helpers for token-chunk streaming.
@@ -14,7 +15,7 @@ let client: RedisType | null = null;
 const maybeGlobal = (globalThis as unknown as Record<string, unknown>).__REDIS;
 client = (maybeGlobal as unknown as RedisType) || null;
 if (!client) {
-  client = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
+  client = redis;
 }
 
 export type TokenEntry = { id: string; seq: number; chunk: string; meta: Record<string, unknown> };

@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 import type { RequestHandler } from './$types.js';
 export const GET: RequestHandler = async () => {
   const health = {
@@ -12,7 +13,7 @@ export const GET: RequestHandler = async () => {
       check: async () => {
         try {
           const { createClient } = await import('redis');
-          const client = createClient({ url: 'redis://localhost:6379' });
+          const client = redis;
           await client.connect();
           await client.ping();
           await client.quit();

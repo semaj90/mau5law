@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 import type { RequestHandler } from './$types.js'
 import { json } from '@sveltejs/kit';
 /*
@@ -373,7 +374,7 @@ async function checkSystemHealth(): Promise<Record<string, unknown>> {
   // Check Redis
   try {
     if (typeof createClient === 'function') {
-      const redisClient = createClient({ url: import.meta.env.REDIS_URL || 'redis://localhost:6379' });
+      const redisClient = redis;
       await redisClient.connect();
       await redisClient.ping();
       await redisClient.disconnect();

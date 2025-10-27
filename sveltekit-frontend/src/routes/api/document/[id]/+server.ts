@@ -1,4 +1,5 @@
 import type { RequestHandler } from './$types.js'
+import { json, error as kitError } from '@sveltejs/kit';
 /*
  * Document Detail API - Complete Server-Side Integration
  * Combines Postgres+pgvector, Neo4j, and GPU acceleration for comprehensive document analysis
@@ -12,18 +13,14 @@ import type { VectorSearchResult } from '$lib/server/db/enhanced-vector-operatio
 export const GET: RequestHandler = async ({ params, url }) => {
   const docId = params.id
   if (!docId) {
-    throw error(400, 'Document ID is required')
+    throw kitError(400, 'Document ID is required');
   }
   try {
     console.log(`[API] Fetching document details for: ${docId}`)
     // 1. Fetch core document data from PostgreSQL
-    const [document] = await enhanced_db
-      .select()
-      .from(legal_documents)
-      .where(eq(legal_documents.id, docId)
-      .limit(1)
+    const [document] = await enhanced_db.select().from(legal_documents).where(eq(legal_documents.id, docId)).limit(1);
     if (!document) {
-      throw error(404, `Document not found: ${docId}`)
+      throw kitError(404, `Document not found: ${docId}`);
     }
     // 2. Get document embedding for vector similarity search
     const embedding = document.content_embedding
@@ -46,7 +43,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
           ORDER BY content_embedding <-> ${embedding}::vector
           LIMIT 10
         `)
-        relatedDocuments = similarDocs.map((doc: any) => ({,
+        relatedDocuments = similarDocs.map((doc: any) => ({
           id: doc.id,
           content: doc.content?.substring(0, 500) + '...',
           title: doc.title,
@@ -56,8 +53,8 @@ export const GET: RequestHandler = async ({ params, url }) => {
             source: 'pgvector_similarity',
             vector_search: true,
             similarity_distance: doc.similarity_distance,
-          }
-        })
+          },
+        }));
       } catch (vectorError) {
         console.warn('[API] Vector similarity search failed:', vectorError)
         // Continue without vector results
@@ -71,13 +68,13 @@ export const GET: RequestHandler = async ({ params, url }) => {
           title: cases.title,
           status: cases.status,
           priority: cases.priority,
-          created_at: cases.created_at
+          created_at: cases.created_at,
         })
         .from(cases)
-        .leftJoin(evidence, eq(evidence.case_id, cases.id)
-        .where(eq(evidence.document_id, docId)
-        .orderBy(desc(cases.created_at)
-        .limit(5)
+        .leftJoin(evidence, eq(evidence.case_id, cases.id))
+        .where(eq(evidence.document_id, docId))
+        .orderBy(desc(cases.created_at))
+        .limit(5);
       caseAssociations = associatedCases
     } catch (caseError) {
       console.warn('[API] Case association lookup failed:', caseError)
@@ -131,30 +128,30 @@ export const GET: RequestHandler = async ({ params, url }) => {
     // 7. GPU acceleration integration for advanced analysis (optional)
     let gpuAnalysis = null
     const includeGPUAnalysis = url.searchParams.get('gpu') === 'true'
-    if (includeGPUAnalysis && document.content) {
-      try {
-        const gpuResponse = await fetch('http://localhost:5173/api/gpu/flash-attention', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            text: document.content.substring(0, 2000), // First 2000 chars
-            context: relatedDocuments.map(d => d.title).slice(0, 3),
-            analysisType: 'legal'
-          })
-        })
-        if (gpuResponse.ok) {
-          const gpuData = await gpuResponse.json()
-          gpuAnalysis = {
-            confidence: gpuData.confidence,
-            legalAnalysis: gpuData.result?.legalAnalysis,
-            processingTime: gpuData.processingTime,
-            rtx_3060_ti: true
-          }
-        }
-      } catch (gpuError) {
-        console.warn('[API] GPU analysis failed:', gpuError)
+  if (includeGPUAnalysis && document.content) {
+    try {
+      const gpuResponse = await fetch('http://localhost:5173/api/gpu/flash-attention', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: document.content.substring(0, 2000), // First 2000 chars
+          context: relatedDocuments.map(d => d.title).slice(0, 3),
+          analysisType: 'legal',
+        }),
+      });
+      if (gpuResponse.ok) {
+        const gpuData = await gpuResponse.json();
+        gpuAnalysis = {
+          confidence: gpuData.confidence,
+          legalAnalysis: gpuData.result?.legalAnalysis,
+          processingTime: gpuData.processingTime,
+          rtx_3060_ti: true,
+        };
       }
+    } catch (gpuError) {
+      console.warn('[API] GPU analysis failed:', gpuError);
     }
+  }
     // 8. Comprehensive response
     const response = {
       success: true,
@@ -186,7 +183,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
     return json(response)
   } catch (err: any) {
     console.error('[API] Document fetch failed:', err)
-    throw error(500, `Failed to fetch document: ${err instanceof Error ? err.message: 'Unknown error'}`)
+    throw kitError(500, `Failed to fetch document: ${err instanceof Error ? err.message : 'Unknown error'}`);
   }
 }
 // Optional: Support for partial updates or specific data requests

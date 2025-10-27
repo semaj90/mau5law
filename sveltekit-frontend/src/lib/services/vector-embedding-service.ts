@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /// <reference types="vite/client" />
 import Redis, { RedisOptions } from 'ioredis';
 import type { OCRResult } from '../types/ocr';
@@ -73,7 +74,7 @@ export class EnhancedVectorEmbeddingService {
         password: redisPassword,
         db: 0
       };
-      this.redis = new Redis(redisOptions);
+      this.redis = redis;
     void this.initializeService();
   }
 

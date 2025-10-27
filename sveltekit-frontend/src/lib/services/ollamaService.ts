@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 import { env } from '$env/dynamic/public';
 
 // NOTE: ioredis is server-side only. Lazy-load on demand and skip in browser.
@@ -10,7 +11,7 @@ async function getRedisClient(): Promise<any | null> {
 	try {
 		const mod = await import('ioredis');
 		const Redis = mod.default ?? mod;
-		redisClient = new Redis(env.PUBLIC_REDIS_URL || 'redis://localhost:6379');
+		redisClient = redis;
 		return redisClient;
 	} catch (err) {
 		// If dynamic import fails, treat as unavailable (no caching).

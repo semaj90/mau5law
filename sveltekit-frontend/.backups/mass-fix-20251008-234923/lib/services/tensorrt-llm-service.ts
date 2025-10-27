@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * TensorRT-LLM Service with Ollama Fallback
  * High-performance inference service for legal AI
@@ -19,8 +20,8 @@ const RTX_3060_CONFIG = {
   mixed_precision: 'fp16_fp32_adaptive'
 }
 // Redis clients
-const tensorrtRedis = new Redis(createServiceConfig('TENSORRT_LLM'));
-const cacheRedis = new Redis(createServiceConfig('MAIN_CACHE'));
+const tensorrtRedis = redis;
+const cacheRedis = redis;
 export interface InferenceRequest {
   prompt: string;
   model?: string;

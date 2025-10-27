@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Reports API Routes with Lucia v3 Authentication
  * GET /api/v1/reports - List user's reports (with pagination)
@@ -11,7 +12,7 @@ import count, { desc, eq } from 'drizzle-orm';
 import { getUserId } from '$lib/server/auth/utils';
 // Minimal local schema/types to unblock TS; mirrors schema-postgres reports table
 const CreateReportSchema = z.object({
-  caseId: z.string().uuid(),
+  caseId: cuidSchema,
   title: z.string().min(1),
   content: z.string().optional(),
   reportType: z.string().optional(),
@@ -80,7 +81,7 @@ class ReportsCRUDService {
 const ReportsQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(100).default(20),
-  caseId: z.string().uuid().optional(),
+  caseId: cuidSchema.optional(),
   status: z.enum(['draft', 'review', 'approved', 'published']).optional(),
   reportType: z.enum(['analysis', 'summary', 'investigation', 'final']).optional(),
 });

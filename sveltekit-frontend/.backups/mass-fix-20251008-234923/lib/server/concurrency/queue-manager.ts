@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 /**
  * Concurrent Operation Queue Manager for Legal AI Platform
  * Handles background processing with proper concurrency control
@@ -9,7 +10,7 @@ import { randomUUID } from 'crypto';
 import { z } from 'zod';
 // Zod schemas for type safety with Superforms
 export const QueueJobSchema = z.object({
-  id: z.string().uuid(),
+  id: cuidSchema,
   type: z.enum([
     'evidence_analysis',
     'document_processing',
@@ -30,7 +31,7 @@ export const QueueJobSchema = z.object({
   maxRetries: z.number().default(3),
   createdAt: z.date().default(() => new Date()),
   scheduledFor: z.date().optional(),
-  dependencies: z.array(z.string().uuid()).default([]),
+  dependencies: z.array(cuidSchema).default([]),
   metadata: z.record(z.any()).default({})
 });
 export type QueueJob = z.infer<typeof QueueJobSchema>;

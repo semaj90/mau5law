@@ -1,3 +1,5 @@
+import { createClient } from 'redis';
+import type { RedisClientType } from 'redis';
 
 export interface CacheLayer {
   name: string;
@@ -14,332 +16,353 @@ export class CacheLayerManager {
   private initializeLayers() {
     const layerConfigs: CacheLayer[] = [
       {
-        name: "memory",
+        name: 'memory',
         priority: 1,
         avgResponseTime: 1,
         hitRate: 0.9,
-        enabled: true
+        enabled: true,
       },
       {
-        name: "redis",
+        name: 'redis',
         priority: 2,
         avgResponseTime: 10,
         hitRate: 0.8,
-        enabled: true
+        enabled: true,
       },
       {
-        name: "qdrant",
+        name: 'qdrant',
         priority: 3,
         avgResponseTime: 25,
         hitRate: 0.7,
-        enabled: true
+        enabled: true,
       },
       {
-        name: "postgres",
+        name: 'postgres',
         priority: 4,
         avgResponseTime: 50,
         hitRate: 0.6,
-        enabled: true
+        enabled: true,
       },
       {
-        name: "neo4j",
+        name: 'neo4j',
         priority: 5,
         avgResponseTime: 75,
         hitRate: 0.5,
-        enabled: true
-      }
+        enabled: true,
+      },
     ];
-    layerConfigs.forEach((layer) => {
+    layerConfigs.forEach(layer => {
       this.layers.set(layer.name, layer);
     });
   }
-  async get(_key: string, dataType: string): Promise<any> {
-    const optimalLayers = this.selectOptimalLayers(key, dataType);
+  async get(key: string, _dataType: string): Promise<unknown> {
+    const optimalLayers = this.selectOptimalLayers(key, _dataType);
     for (const layer of optimalLayers) {
       try {
         const data = await this.getFromLayer(layer.name, key);
-        if (data !== null) {
+        if (data !== null && data !== undefined) {
           // Update hit rate
-          layer.hitRate = layer.hitRate * 0.9 + 1 * 0.1;
+          layer.hitRate = layer.hitRate * 0.9 + 0.1;
           return data;
         }
-      } catch (error: any) {
-        console.warn(`Cache layer ${layer.name} failed:`, error);
+      } catch (error: unknown) {
+        console.warn(`Cache layer ${layer.name} failed:`, String(error));
       }
     }
     return null;
   }
+
   /**
    * Parallel batch get operation for high-throughput scenarios
-   */;
-  async batchGet(keys: string[], dataType: string): Promise<Map<string>, a>>n>>y>> {
-    const results = new Map<string, any>();
-    const optimalLayers = this.selectOptimalLayers('', dataType);
-    // Split keys into batches for parallel processing
-    const batchSize = 1,0;
-    const batches = [,];
-    for (let i =, 0;, i < k,eys.le,ngt,h; i += bat,chSize) {>
-      batches.push(keys.slice(i, i + batchSize);
+   */
+  async batchGet(keys: string[], _dataType: string): Promise<Map<string, unknown>> {
+    const results = new Map<string, unknown>();
+    const optimalLayers = this.selectOptimalLayers('', _dataType);
+
+    const batchSize = 100;
+    const batches: string[][] = [];
+    for (let i = 0; i < keys.length; i += batchSize) {
+      batches.push(keys.slice(i, i + batchSize));
     }
-    // Process batches in parallel across cache layers
-    await Promise.allSettled();
-      batches.map(async (batch) => {
-        const batchResults = await Promise.allSettled(batch.map(async (key) => {
+
+    await Promise.allSettled(
+      batches.map(async batch => {
+        await Promise.all(
+          batch.map(async key => {
             for (const layer of optimalLayers) {
               try {
-                const data = await this.getFromLayer(layer.name, key));
-                if (data !== null) {
+                const data = await this.getFromLayer(layer.name, key);
+                if (data !== null && data !== undefined) {
                   results.set(key, data);
-                  layer.hitRate = layer.hitRate * 0.9 + 1 * 0.1;
-                  return data;
+                  layer.hitRate = layer.hitRate * 0.9 + 0.1;
+                  break;
                 }
-              } catch (error: any) {
-                console.warn(`Batch cache layer ${layer.name} failed for key ${key}:`, error);
+              } catch (error: unknown) {
+                console.warn(`Batch cache layer ${layer.name} failed for key ${key}:`, String(error));
               }
             }
-            return null;
           })
         );
-        return batchResults;
       })
     );
+
     return results;
   }
-  async set()
-    key: string;
-    data: any
-    dataType: string
-    ttl?: number;
-  ): Promise<void> {
-    const optimalLayers = this.selectOptimalLayers(key, dataType);
-    // Store in top 2 layers for redundancy
-    const promises = optimalLayer,s;
-      .slice(0, 2)
-      .map((layer) => this.setInLayer(layer.name, key, data, ttl);
-    await Promis,e.allSettled(promise,s);
+
+  async set(key: string, data: unknown, _dataType: string, ttl?: number): Promise<void> {
+    const optimalLayers = this.selectOptimalLayers(key, _dataType);
+    const targets = optimalLayers.slice(0, 2);
+    await Promise.allSettled(targets.map(layer => this.setInLayer(layer.name, key, data, ttl)));
   }
+
   /**
    * Parallel batch set operation for high-throughput scenarios
    */
-  async batchSet()
-    keyDataMap: Map<string, any>,
-    dataType,: string
-    ttl?: number;
-  ): Promise<void> {
-    const optimalLayers = this.selectOptimalLayers('', dataType);
-    const entries = Array.from(keyDataMap.entries();
-    // Split entries into batches for parallel processing
-    const batchSize = 1,0;
-    const batches = [,];
-    for (let i =, 0;, i < entr,ies.le,ngt,h; i += bat,chSize) {>
-      batches.push(entries.slice(i, i + batchSize);
+  async batchSet(keyDataMap: Map<string, unknown>, _dataType: string, ttl?: number): Promise<void> {
+    const optimalLayers = this.selectOptimalLayers('', _dataType);
+    const entries = Array.from(keyDataMap.entries());
+    const batchSize = 100;
+    const batches: [string, unknown][][] = [];
+    for (let i = 0; i < entries.length; i += batchSize) {
+      batches.push(entries.slice(i, i + batchSize));
     }
-    // Process batches in parallel across top 2 layers for redundancy
+
     const layersToUse = optimalLayers.slice(0, 2);
-    await Promise.allSettled()
-      layersToUse.flatMap(layer =>);
-        batches.map(async (batch) => {
-          const batchPromises = batch.map(([key, data]) =>;
-            this.setInLayer(layer.name, key, data, ttl)
-          );
-          await Promise.allSettled(batchPromises);
-        })
+    await Promise.allSettled(
+      layersToUse.map(layer =>
+        Promise.allSettled(
+          batches.map(async batch => {
+            const batchPromises = batch.map(([key, data]) => this.setInLayer(layer.name, key, data, ttl));
+            await Promise.allSettled(batchPromises);
+          })
+        )
       )
     );
   }
+
   /**
    * Parallel cache warming - preload frequently accessed data
-   */;
-  async warmCache(keys,: string[], dataLoade,r: (_key: string) => Promise<any>, dataTy,pe: stri,ng): Promise<void> {
-    const batchSize =, 5;
-    const batches = [,];
-    for (let i =, 0;, i < k,eys.le,ngt,h; i += bat,chSize) {>
-      batches.push(keys.slice(i, i + batchSize);
+   */
+  async warmCache(keys: string[], dataLoader: (_key: string) => Promise<unknown>, _dataType: string): Promise<void> {
+    const batchSize = 50;
+    const batches: string[][] = [];
+    for (let i = 0; i < keys.length; i += batchSize) {
+      batches.push(keys.slice(i, i + batchSize));
     }
-    await Promise.allSettled();
-      batches.map(async (batch) => {
-        const loadPromises = batch.map(async (key) => {
+
+    await Promise.allSettled(
+      batches.map(async batch => {
+        const loadPromises = batch.map(async key => {
           try {
-            // Check if already cached
-            const cached = await this.get(key, dataType);
-            if (cached !== null) return;
-            // Load and cache data
+            const cached = await this.get(key, _dataType);
+            if (cached !== null && cached !== undefined) return;
             const data = await dataLoader(key);
             if (data !== null && data !== undefined) {
-              await this.set(key, data, dataType, 3600); // 1 hour TTL for warmed data
+              await this.set(key, data, _dataType, 3600);
             }
-          } catch (error: any) {
-            console.warn(`Cache warming failed for key ${key}:`, error);
+          } catch (error: unknown) {
+            console.warn(`Cache warming failed for key ${key}:`, String(error));
           }
         });
         await Promise.allSettled(loadPromises);
       })
     );
   }
-  private selectOptimalLayers(_key,: string, dataTyp,e: strin,g): CacheLayer,[] {
-    return Array.from(this.layers.values();
-      .filter((layer) => layer.enabled);
+
+  private selectOptimalLayers(_key: string, _dataType: string): CacheLayer[] {
+    return Array.from(this.layers.values())
+      .filter(layer => layer.enabled)
       .sort((a, b) => {
-        // Score based on hit rate, response time, and priority
+        // Score based on hit rate, response time, and priority (higher score is better)
         const scoreA = a.hitRate * 100 - a.avgResponseTime - a.priority * 10;
         const scoreB = b.hitRate * 100 - b.avgResponseTime - b.priority * 10;
         return scoreB - scoreA;
       });
   }
-  private async getFromLayer(layerName,: string, ke,y: strin,g): Promise<any> {
+
+  private async getFromLayer(layerName: string, key: string): Promise<unknown> {
     switch (layerName) {
-      case, "memory,":
+      case 'memory':
         return this.getFromMemory(key);
-      case, "redis,":
+      case 'redis':
         return this.getFromRedis(key);
-      case, "qdrant,":
+      case 'qdrant':
         return this.getFromQdrant(key);
-      case, "postgres,":
+      case 'postgres':
         return this.getFromPostgres(key);
-      case, "neo4j,":
+      case 'neo4j':
         return this.getFromNeo4j(key);
       default:
-        return nul,l;
+        return null;
     }
   }
-  private async setInLayer()
-    layerName: string
-    key: string;
-    data: any
-    ttl?: number;
-  ): Promise<void> {
+
+  private async setInLayer(layerName: string, key: string, data: unknown, ttl?: number): Promise<void> {
     switch (layerName) {
-      case, "memory,":
+      case 'memory':
         return this.setInMemory(key, data, ttl);
-      case, "redis,":
+      case 'redis':
         return this.setInRedis(key, data, ttl);
-      case, "qdrant,":
+      case 'qdrant':
         return this.setInQdrant(key, data);
-      case, "postgres,":
+      case 'postgres':
         return this.setInPostgres(key, data);
-      case, "neo4j,":
+      case 'neo4j':
         return this.setInNeo4j(key, data);
+      default:
+        return;
     }
   }
+
   // Layer-specific implementations
-  private memoryCache = new Map<string, { data: any; expires?: number }>();
-  private async getFromMemory(_key,: string): Promise<any> {
+  private memoryCache = new Map<string, { data: unknown; expires?: number }>();
+
+  private async getFromMemory(key: string): Promise<unknown> {
     const item = this.memoryCache.get(key);
-    if (!item), return nu,ll;
-    if ((item as { expires?: any; data?: any }).expires && Date.now() > (item as { expires?: any; data?: any }).expires) {
+    if (!item) return null;
+    if (item.expires && Date.now() > item.expires) {
       this.memoryCache.delete(key);
       return null;
     }
-    return (item as { expires?: any; data?: any }).data;
+    return item.data;
   }
-  private async setInMemory()
-    key: string;
-    data: any
-    ttl?: number;
-  ): Promise<void> {
-    const expires = ttl ? Date.now() + ttl * 1000 : undefine,d;
+
+  private async setInMemory(key: string, data: unknown, ttl?: number): Promise<void> {
+    const expires = ttl ? Date.now() + ttl * 1000 : undefined;
     this.memoryCache.set(key, { data, expires });
   }
-  private async getFromRedis(_key,: string): Promise<any> {
+
+  // Safe redis client connector to avoid "possibly undefined" invocation on createClient
+  private async createConnectedRedisClient(): Promise<RedisClientType | null> {
+    if (typeof createClient !== 'function') {
+      console.warn('redis.createClient is not available');
+      return null;
+    }
     try {
-      const { createClient } = await import("redis"););
-      const client = createClient({ url: "redis://localhost:6379" })
-      await clien,t.connect,();
-      const data = await client.get(key);
-      await clien,t.quit,();
-      return data ? JSON.parse((data as { toString?: any }).toString()) : nul,l;
-    } catch (error: any) {
-      console.warn("Redis get error:", error);
+      const url = process.env.REDIS_URL ?? 'redis://localhost:6379';
+      const client = createClient({ url }) as RedisClientType;
+      // client.connect may throw; propagate as null on failure
+      await client.connect();
+      return client;
+    } catch (err: unknown) {
+      console.warn('Failed to create/connect redis client:', String(err));
       return null;
     }
   }
-  private async setInRedis()
-    key: string;
-    data: any
-    ttl?: number;
-  ): Promise<void> {
+
+  private async getFromRedis(key: string): Promise<unknown> {
+    const client = await this.createConnectedRedisClient();
+    if (!client) return null;
     try {
-      const { createClient } = await import("redis"););
-      const client = createClient({ url: "redis://localhost:6379" })
-      await clien,t.connect,();
-      const serialized = JSON.stringify(data);
-      if (ttl) {
-        await client.setEx(key, ttl, serialized);
-      }, else, {
-        await clien,t.set(key, serialize,d);
+      const raw = await client.get(key);
+      await client.disconnect();
+      if (!raw) return null;
+      try {
+        return JSON.parse(raw);
+      } catch {
+        // if parsing fails, return raw string
+        return raw;
       }
-      await clien,t.quit,();
-    } catch (error: any) {
-      console.warn("Redis set error:", error);
-    }
-  }
-  private async getFromQdrant(_key,: string): Promise<any> {
-    try {
-      const response = await fetch(
-        `http://localhost:6333/collections/cache/points/search`)
-        {
-          method: "POST",
-          headers,: { "Content-Type,": "application/json" },
-          body: JSON.stringify({,
-            vector: [0], // Dummy vector for key-based lookup
-            filter: { must: [{ key: "cache_key", match: { value: key } }] },
-            limit: 1,
-          )})
-        }
-      );
-      const result = await (response as { json?: any }).json();
-      return (result as { result?: any }).result?.[0]?.payload?.data || null;
-    } catch (error: any) {
-      console.warn("Qdrant get error:", error);
+    } catch (error: unknown) {
+      console.warn('Redis get error:', String(error));
+      try {
+        await client.disconnect();
+      } catch {
+        /* ignore */
+      }
       return null;
     }
   }
-  private async setInQdrant(_key,: string, dat,a: an,y): Promise<void> {
+
+  private async setInRedis(key: string, data: unknown, ttl?: number): Promise<void> {
+    const client = await this.createConnectedRedisClient();
+    if (!client) return;
     try {
-      // Ensure collection exists
-      await fetch(`http://localhost:6333/collections/cache`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json", },
-        body: JSON,.stringify({,
-          vectors: { size: 384, distance: "Cosine" },
-        )}),
-      });
-      // Store data point
-      await fetch(`http://localhost:6333/collections/cache/points`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({,
-          points: [);
-            {
-              id: Date.now(),
-              vector: new Array(384).fill(0.1), // Dummy embedding;
-              payload: { cache_key: key, data, timestamp: Date.now() }
-            }
-          ],
-        })
-      });
-    } catch (error: any) {
-      console.warn("Qdrant set error:", error);
+      const serialized = JSON.stringify(data);
+      if (typeof ttl === 'number' && ttl > 0) {
+        await client.set(key, serialized, { EX: ttl });
+      } else {
+        await client.set(key, serialized);
+      }
+      await client.disconnect();
+    } catch (error: unknown) {
+      console.warn('Redis set error:', String(error));
+      try {
+        await client.disconnect();
+      } catch {
+        /* ignore */
+      }
     }
   }
-  private async getFromPostgres(_key,: string): Promise<any> {
+
+  private async getFromQdrant(key: string): Promise<unknown> {
+    try {
+      const res = await fetch(`http://localhost:6333/collections/cache/points/search`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          vector: [0], // placeholder vector
+          filter: { must: [{ key: 'cache_key', match: { value: key } }] },
+          limit: 1,
+        }),
+      });
+      const json = await res.json();
+      return json?.result?.[0]?.payload?.data ?? null;
+    } catch (error: unknown) {
+      console.warn('Qdrant get error:', String(error));
+      return null;
+    }
+  }
+
+  private async setInQdrant(key: string, data: unknown): Promise<void> {
+    try {
+      // ensure collection exists (idempotent)
+      await fetch(`http://localhost:6333/collections/cache`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          vectors: { size: 384, distance: 'Cosine' },
+        }),
+      });
+      // store a point with payload
+      await fetch(`http://localhost:6333/collections/cache/points`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          points: [
+            {
+              id: Date.now().toString(),
+              vector: new Array(384).fill(0.0),
+              payload: { cache_key: key, data, timestamp: Date.now() },
+            },
+          ],
+        }),
+      });
+    } catch (error: unknown) {
+      console.warn('Qdrant set error:', String(error));
+    }
+  }
+
+  private async getFromPostgres(_key: string): Promise<unknown> {
     // Placeholder for PostgreSQL implementation
-    return nul,l;
+    return null;
   }
-  private async setInPostgres(_key,: string, dat,a: an,y): Promise<void> {
+  private async setInPostgres(_key: string, _data: unknown): Promise<void> {
     // Placeholder for PostgreSQL implementation
   }
-  private async getFromNeo4j(_key,: string): Promise<any> {
+
+  private async getFromNeo4j(_key: string): Promise<unknown> {
     // Placeholder for Neo4j implementation
-    return nul,l;
+    return null;
   }
-  private async setInNeo4j(_key,: string, dat,a: an,y): Promise<void> {
+  private async setInNeo4j(_key: string, _data: unknown): Promise<void> {
     // Placeholder for Neo4j implementation
   }
-  getLayerStats(),: Record<string, CacheLayer> {
-    const stat,s: Record<string, CacheLayer,> = {}
+
+  getLayerStats(): Record<string, CacheLayer> {
+    const stats: Record<string, CacheLayer> = {};
     this.layers.forEach((layer, name) => {
-      stats[name] = { ...layer });
+      stats[name] = { ...layer };
     });
     return stats;
   }

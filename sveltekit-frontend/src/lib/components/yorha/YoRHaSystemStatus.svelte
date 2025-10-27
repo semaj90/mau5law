@@ -4,9 +4,8 @@ https://svelte.dev/e/js_parse_error -->
 <!-- YoRHa System Status Bar Component -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import type { SystemStatus } from "$lib/types/global";
-  import type { Props } from "$lib/types/global";
   import { onMount, onDestroy } from 'svelte';
+
   // Props
   let {
     systemLoad,
@@ -32,19 +31,30 @@ https://svelte.dev/e/js_parse_error -->
     return 'excellent';
   });
   // Real-time updates
-  let updateInterval = $state({}) {
+  let updateInterval: ReturnType<typeof setInterval> | null = null;
+
+  onMount(() => {
     updateInterval = setInterval(() => {
-      currentTime = new Date());
+      currentTime = new Date();
       uptime += 1;
       // Simulate minor fluctuations
       cpuTemp = Math.max(65, Math.min(85, cpuTemp + (Math.random() - 0.5) * 2));
       diskUsage = Math.max(40, Math.min(60, diskUsage + (Math.random() - 0.5) * 1));
       activeConnections = Math.max(8, Math.min(20, activeConnections + Math.floor((Math.random() - 0.5) * 3)));
     }, 1000);
+
+    return () => {
+      if (updateInterval) clearInterval(updateInterval);
+    };
   });
+
   onDestroy(() => {
-    if (updateInterval) clearInterval(updateInterval);
+    if (updateInterval) {
+      clearInterval(updateInterval);
+      updateInterval = null;
+    }
   });
+
   function getStatusColor(status: string): string {
     switch (status) {
       case 'critical': return 'text-red-400';
@@ -55,7 +65,7 @@ https://svelte.dev/e/js_parse_error -->
       case 'excellent': return 'text-green-400';
     }
   }
-  function getProgressBarColor(_value: number): string {
+  function getProgressBarColor(value: number): string {
     if (value > 85) return 'bg-red-500';
     if (value > 70) return 'bg-yellow-500';
     return 'bg-green-500';
@@ -64,11 +74,11 @@ https://svelte.dev/e/js_parse_error -->
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    return `${hours.toString.padStart(2, '0')}:${minutes.toString.padStart(2, '0')}:${secs.toString.padStart(2, '0')}`;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }
   function formatTime(date: Date): string {
     return date.toLocaleTimeString('en-US', {
-      hour12: false
+      hour12: false,
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',

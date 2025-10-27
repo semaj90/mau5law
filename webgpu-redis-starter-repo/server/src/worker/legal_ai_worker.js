@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // Enhanced legal AI worker - integrates with existing MCP orchestrator
 const { parentPort } = require('worker_threads');
 const Redis = require('ioredis');
@@ -9,7 +10,7 @@ const jobProto = require('../proto/job_pb');
 const legalJobProto = require('../proto/legal_job_pb');
 
 // Redis connection
-const redis = new Redis(process.env.REDIS_URL || 'redis://redis:6379');
+const redis = redis;
 
 // Import AI capabilities
 const LegalModelOrchestrator = require('../ai/legal_orchestrator');

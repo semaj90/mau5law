@@ -1,3 +1,5 @@
+import { cuidSchema } from '$lib/server/z-schemas';
+import { redis } from '$lib/server/redis-client';
 import type { RequestHandler } from './$types';
 /*
  * JSONB Legal API Endpoints
@@ -156,7 +158,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
       query: z.string().min(1).optional(),
       documentTypes: z.array(z.string()).optional(),
       jurisdiction: z.string().optional(),
-      caseId: z.string().uuid().optional(),
+      caseId: cuidSchema.optional(),
       dateRange: z
         .object({
           start: z.string().datetime(),
@@ -169,16 +171,16 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
     });
 
     const ConceptAnalysisSchema = z.object({
-      documentIds: z.array(z.string().uuid()).min(1).max(100),
+      documentIds: z.array(cuidSchema).min(1).max(100),
     });
 
     const SimilarCasesSchema = z.object({
-      caseId: z.string().uuid(),
+      caseId: cuidSchema,
       threshold: z.number().min(0).max(1).default(0.8),
     });
 
     const CitationNetworkSchema = z.object({
-      documentId: z.string().uuid(),
+      documentId: cuidSchema,
       depth: z.number().int().min(1).max(5).default(2),
     });
 
@@ -237,7 +239,7 @@ export const POST: RequestHandler = async ({ request, url }: RequestEvent) => {
       }
       case 'evidence': {
         const schema = z.object({
-          caseId: z.string().uuid(),
+          caseId: cuidSchema,
           title: z.string(),
           description: z.string().optional(),
           metadata: z.record(z.any()).optional(),
@@ -532,7 +534,7 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
     });
     if (operation === 'cases' && action === 'timeline') {
       const CaseTimelineEventSchema = z.object({
-        caseId: z.string().uuid(),
+        caseId: cuidSchema,
         event: z.object({
           date: z.string().datetime(),
           event: z.string(),
@@ -561,7 +563,7 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
       });
     } else if (operation === 'evidence' && action === 'custody') {
       const EvidenceCustodyTransferSchema = z.object({
-        evidenceId: z.string().uuid(),
+        evidenceId: cuidSchema,
         transfer: z.object({
           timestamp: z.string().datetime(),
           custodian: z.string(),
@@ -592,7 +594,7 @@ export const PUT: RequestHandler = async ({ request, url }: RequestEvent) => {
       });
     } else if (operation === 'evidence' && action === 'verify') {
       const EvidenceVerifySchema = z.object({
-        evidenceId: z.string().uuid(),
+        evidenceId: cuidSchema,
       });
       type EvidenceVerifyRequest = z.infer<typeof EvidenceVerifySchema>;
       const { evidenceId }: EvidenceVerifyRequest = EvidenceVerifySchema.parse(requestBody);

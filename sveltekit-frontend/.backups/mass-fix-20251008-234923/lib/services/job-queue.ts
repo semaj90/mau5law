@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 import { Queue, Worker, Job, type JobsOptions } from "bullmq";
 import Redis from "ioredis";
 // Job types for the legal document processing pipeline
@@ -46,7 +47,7 @@ export class LegalAIJobQueue {
   private queues: Map<string, Queue>;
   private workers: Map<string, Worker>;
   constructor() {
-    this.redis = new Redis(redisConfig);
+    this.redis = redis;
     this.queues = new Map();
     this.workers = new Map();
     this.initializeQueues();

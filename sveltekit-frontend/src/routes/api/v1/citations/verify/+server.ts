@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Citation Verification API Route
  * POST /api/v1/citations/verify - Verify citation validity and accuracy
@@ -59,7 +60,7 @@ type VerificationResult = {
 
 // Verification request schema - define a typed base schema then refine it (avoids `any` casts)
 const VerificationRequestBase = z.object({
-  citationId: z.string().uuid().optional(),
+  citationId: cuidSchema.optional(),
   citationText: z.string().optional(),
   verificationLevel: z.enum(['basic', 'comprehensive', 'deep']).default('basic'),
   autoUpdate: z.boolean().default(false),

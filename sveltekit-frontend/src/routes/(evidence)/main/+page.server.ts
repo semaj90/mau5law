@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 import { evidence } from '$lib/server/db/schema-unified';
 import { error, fail } from '@sveltejs/kit';
 import { helpers } from '$lib/server/db';
@@ -9,7 +10,7 @@ import { URL } from 'url';
 // Schema for validating evidence form data
 const evidenceSchema = z.object({
   id: z.string().optional(),
-  caseId: z.string().uuid(),
+  caseId: cuidSchema,
   title: z.string().min(1, 'Title is required'),
   description: z.string().optional(),
   type: z.enum(['document', 'image', 'video', 'audio', 'other']),

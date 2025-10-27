@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // WebSocket Server for Live Evidence Processing Updates
 // Broadcasts XState workflow updates to connected clients with Redis caching
 
@@ -48,7 +49,7 @@ class EvidenceWebSocketServer {
       redisConfig.password = process.env.REDIS_PASSWORD;
     }
 
-    this.redis = createClient(redisConfig);
+    this.redis = redis;
 
     this.setupRedis();
     this.setupWebSocket();

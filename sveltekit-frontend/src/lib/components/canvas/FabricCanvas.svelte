@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
-  import Button from '$lib/components/ui/Button.svelte';
+  // Button component removed here to avoid Svelte 5 constructor/instance typing issues in this file.
   import * as Card from '$lib/components/ui/card';
   import {
     Upload,
@@ -14,6 +14,7 @@
     Download,
     Image as ImageIcon,
     FileText,
+    X, // Added for close button in dialog
   } from 'lucide-svelte';
 
   interface Props {
@@ -47,6 +48,7 @@
   let selectedObject = $state<any>(null);
   let canvasObjects = $state<any[]>([]);
   let zoomLevel = $state(1);
+  let showDeleteConfirmModal = $state(false); // State for delete confirmation modal
 
   // Evidence management
   interface EvidenceItem {
@@ -62,7 +64,7 @@
 
   let evidenceItems = $state<EvidenceItem[]>([]);
   let minioStatus = $state<'checking' | 'connected' | 'disconnected'>('checking');
-  let uploadProgress = $state(new Map<string, number>());
+  let uploadProgress = $state(new Map<string, { progress: number; fileName?: string }>()); // changed to store object
 
   // Derived state (kept concise - author used $derived runes)
   let evidenceCount = $derived(evidenceItems.length);
@@ -197,18 +199,24 @@
   }
 
   async function loadCanvasData() {
-    if (!caseId) return;
+    const safeCaseId = (caseId || '').toString().trim();
+    if (!safeCaseId) {
+      // No caseId: keep canvas empty (demo mode) and avoid calling the API with empty params
+      evidenceItems = [];
+      return;
+    }
     isLoading = true;
     try {
-      const response = await fetch(`/api/v1/evidence/${caseId}`);
+      // Use the by-case endpoint which returns a paginated shape { data, page, limit, total }
+      const response = await fetch(`/api/v1/evidence/by-case/${encodeURIComponent(safeCaseId)}`);
       if (!response.ok) {
         evidenceItems = [];
         return;
       }
-      const evidence = await response.json();
-      evidenceItems = Array.isArray(evidence) ? evidence : [];
+      const payload = await response.json();
+      // Normalize: accept either an array or the { data } shape
+      evidenceItems = Array.isArray(payload) ? payload : payload?.data ?? [];
       for (const item of evidenceItems) {
-        // don't await all serially in case there are many; but to keep ordering, await here
         // awaiting ensures images are added before next step; adjust if parallel desired
         // graceful handling inside addEvidenceToCanvas
         // eslint-disable-next-line no-await-in-loop
@@ -320,10 +328,12 @@
   }
 
   async function uploadEvidence(file: File) {
-    const fileId = `${Date.now()}-${Math.random().toString(36).substring(2)}`;
+    const progressKey = `${Date.now()}-${Math.random().toString(36).substring(2)}`;
     try {
       isLoading = true;
-      uploadProgress.set(fileId, 0);
+      // store both fileName and progress so UI can show which file is uploading
+      uploadProgress.set(progressKey, { progress: 0, fileName: file.name });
+
       const formData = new FormData();
       formData.append('file', file);
       formData.append('caseId', caseId || 'demo-case');
@@ -361,13 +371,14 @@
       };
       evidenceItems = [...evidenceItems, evidence];
       await addEvidenceToCanvas(evidence);
-      uploadProgress.set(fileId, 100);
+      // mark upload complete (keep fileName)
+      uploadProgress.set(progressKey, { progress: 100, fileName: file.name });
     } catch (error) {
       console.error('Failed to upload evidence:', error);
-      uploadProgress.delete(fileId);
+      uploadProgress.delete(progressKey);
     } finally {
       isLoading = false;
-      setTimeout(() => uploadProgress.delete(fileId), 2000);
+      setTimeout(() => uploadProgress.delete(progressKey), 2000);
     }
   }
 
@@ -399,6 +410,11 @@
 
   function deleteSelected() {
     if (!fabricCanvas || !selectedObject) return;
+    showDeleteConfirmModal = true; // Open confirmation modal
+  }
+
+  function confirmDelete() {
+    if (!fabricCanvas || !selectedObject) return;
     const evidenceId = selectedObject.evidenceId;
     fabricCanvas.remove(selectedObject);
     fabricCanvas.renderAll();
@@ -408,6 +424,7 @@
     }
     selectedObject = null;
     updateCanvasObjects();
+    showDeleteConfirmModal = false; // Close modal after deletion
   }
 
   function zoomIn() {
@@ -493,9 +510,9 @@
         <div class="flex items-center gap-3 text-sm text-gray-600">
           <!-- MinIO Status Indicator -->
           <div class="flex items-center gap-1">
-            <div class="w-2 h-2 rounded-full {minioStatusColor}"></div>
-            <span class="text-xs">{minioStatusText}</span>
-          </div>
+            <div class={"w-2 h-2 rounded-full " + minioStatusColor}></div>
+             <span class="text-xs">{minioStatusText}</span>
+           </div>
           <span>Zoom: {zoomPercentage}%</span>
         </div>
       </div>
@@ -504,82 +521,43 @@
       <div class="flex flex-wrap gap-2">
         <!-- File Upload -->
         {#if !readOnly}
-          <label class="cursor-pointer">
+          <label class="cursor-pointer inline-flex items-center gap-2">
             <input
               type="file"
               multiple
               accept="image/*,.pdf,.doc,.docx,.txt"
               class="hidden"
               onchange={handleFileUpload}
+              aria-label="Upload evidence files"
               disabled={isLoading}
             />
-            <Button class="bits-btn" variant="ghost" disabled={isLoading}>
-              <Upload class="h-4 w-4 mr-2" />
-              Upload Evidence
-            </Button>
+            <!-- Replaced project Button component with native button to avoid type/constructor issues -->
+            <button class="bits-btn" type="button" disabled={isLoading} aria-disabled={isLoading}>
+              Upload
+            </button>
           </label>
+
+          {#if hasUploadProgress}
+            <div class="absolute top-4 right-4 space-y-2">
+              {#each Array.from(uploadProgress.entries()) as [_fileId, entry]}
+                <div class="bg-white rounded-lg shadow-lg p-3 min-w-48">
+                  <div class="flex items-center justify-between text-sm mb-1">
+                    <span class="text-gray-600">{entry.fileName ?? 'Uploading...'}</span>
+                    <span class="text-blue-600">{entry.progress}%</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div
+                      class="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                      style="width: {entry.progress}%"
+                    ></div>
+                  </div>
+                </div>
+              {/each}
+            </div>
+          {/if}
         {/if}
-        <!-- Add Annotation -->
-        {#if !readOnly}
-          <Button class="bits-btn" variant="ghost" onclick={addAnnotation}>
-            <FileText class="h-4 w-4 mr-2" />
-            Add Note
-          </Button>
-        {/if}
-        <!-- Zoom Controls -->
-        <Button class="bits-btn" variant="ghost" onclick={zoomIn}>
-          <ZoomIn class="h-4 w-4" />
-        </Button>
-        <Button class="bits-btn" variant="ghost" onclick={zoomOut}>
-          <ZoomOut class="h-4 w-4" />
-        </Button>
-        {#if hasSelectedObject && !readOnly}
-          <Button class="bits-btn" variant="destructive" onclick={deleteSelected}>
-            <Trash2 class="h-4 w-4 mr-2" />
-            Delete
-          </Button>
-        {/if}
-        <!-- Save & Export -->
-        {#if !readOnly}
-          <Button class="bits-btn" variant="default" onclick={saveCanvas}>
-            <Save class="h-4 w-4 mr-2" />
-            Save
-          </Button>
-        {/if}
-        <Button class="bits-btn" variant="ghost" onclick={exportCanvas}>
-          <Download class="h-4 w-4 mr-2" />
-          Export
-        </Button>
       </div>
     </div>
-  </div>
-  <!-- Canvas -->
-  <div class="canvas-wrapper relative border border-gray-200 rounded-lg overflow-hidden">
-    <canvas bind:this={canvasElement} class="block"></canvas>
-    {#if isLoading}
-      <div class="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center">
-        <div class="text-center">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-          <p class="text-sm text-gray-600">Loading...</p>
-        </div>
-      </div>
-    {/if}
-    <!-- Upload Progress Indicators -->
-    {#if hasUploadProgress}
-      <div class="absolute top-4 right-4 space-y-2">
-        {#each Array.from(uploadProgress.entries()) as [fileId, progress]}
-          <div class="bg-white rounded-lg shadow-lg p-3 min-w-48">
-            <div class="flex items-center justify-between text-sm mb-1">
-              <span class="text-gray-600">Uploading...</span>
-              <span class="text-blue-600">{progress}%</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-2">
-              <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: {progress}%"></div>
-            </div>
-          </div>
-        {/each}
-      </div>
-    {/if}
   </div>
   <!-- Object Properties Panel -->
   {#if selectedObject}
@@ -627,5 +605,39 @@
   .canvas-wrapper {
     display: inline-block;
     background: white;
+  }
+
+  /* Custom styles for modal (replaces Bits UI Dialog) */
+  .dialog-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99;
+  }
+
+  .dialog-content {
+    min-width: 300px;
+    max-width: 90vw;
+    padding: 1.5rem;
+    font-family: 'Press Start 2P', 'Courier New', monospace;
+    font-size: 12px;
+    color: var(--nier-accent-gold);
+    background: var(--nier-bg-primary);
+    border: 4px solid var(--nier-border);
+    border-radius: 0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    position: relative;
+  }
+
+  .dialog-content .title {
+    position: absolute;
+    top: -1.5rem;
+    left: 0.5rem;
+    background: var(--nier-bg-primary);
+    padding: 0 0.5rem;
+    font-size: 1rem;
+    color: var(--nier-accent-gold);
   }
 </style>

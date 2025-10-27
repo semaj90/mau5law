@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // ops/ranker/ranker.ts
 // Minimal Express server that accepts query text, checks Redis cache for top-k,
 // falls back to embedding via Triton and a simple similarity placeholder.
@@ -12,7 +13,7 @@ app.use(express.json());
 const REDIS_URL = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
 const TRITON_URL = process.env.TRITON_URL || 'http://localhost:8000/v2/models/legal_embedding/infer';
 
-const redis = new Redis(REDIS_URL);
+const redis = redis;
 
 function simpleHash(s: string) {
   let h = 2166136261 >>> 0;

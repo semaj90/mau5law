@@ -1,9 +1,10 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 
 import { z } from "zod";
 ;
 export const evidenceSchema = z.object({
-  id: z.string().uuid(),
-  caseId: z.string().uuid(),
+  id: cuidSchema,
+  caseId: cuidSchema,
   order: z.number().int().optional(),
   jsonData: z.object({,
     title: z.string().min(1),
@@ -14,7 +15,7 @@ export const evidenceSchema = z.object({
   })
 });
 export const caseSchema = z.object({
-  id: z.string().uuid(),
+  id: cuidSchema,
   title: z.string().min(1),
   description: z.string().optional(),
   status: z.string().optional()

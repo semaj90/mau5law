@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Evidence Connections API Routes
  * POST /api/v1/evidence/connections - Create evidence connections
@@ -37,8 +38,8 @@ function getErrorMessage(err: unknown): string {
 
 // Evidence connection schema
 const EvidenceConnectionSchema = z.object({
-  evidenceId1: z.string().uuid(),
-  evidenceId2: z.string().uuid(),
+  evidenceId1: cuidSchema,
+  evidenceId2: cuidSchema,
   connectionType: z.enum(['related', 'contradicts', 'supports', 'sequence', 'location', 'person', 'time']),
   strength: z.number().min(0).max(1).default(0.5),
   notes: z.string().optional(),
@@ -46,8 +47,8 @@ const EvidenceConnectionSchema = z.object({
 });
 // Query schema for GET requests
 const ConnectionsQuerySchema = z.object({
-  evidenceId: z.string().uuid().optional(),
-  caseId: z.string().uuid().optional(),
+  evidenceId: cuidSchema.optional(),
+  caseId: cuidSchema.optional(),
   connectionType: z.string().optional(),
   minStrength: z.coerce.number().min(0).max(1).default(0),
 });

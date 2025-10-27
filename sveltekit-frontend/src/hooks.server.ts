@@ -1,10 +1,11 @@
 import type { Handle } from '@sveltejs/kit';
 import postgres from 'postgres';
 import { drizzle } from 'drizzle-orm/postgres-js';
-import Redis from 'ioredis';
+import type { Redis as RedisInstance } from 'ioredis';
 import createRedisAdapter from '$lib/server/adapters/redis-adapter';
 import type { RedisCacheService } from '$lib/types/external-services';
 import { initBackends } from '$lib/server/init/backends';
+import { ensureRedisReady, redis as sharedRedis } from '$lib/server/redis-client';
 
 // Initialize service discovery on server startup
 import { initializeServer } from '$lib/server/init';
@@ -26,7 +27,7 @@ type PgConnection = PostgresClient | null;
 type DrizzleDB = ReturnType<typeof drizzle> | null;
 let _pgConnection: PgConnection = null;
 let _db: DrizzleDB = null;
-let _redis: Redis | null = null;
+let _redis: RedisInstance | null = null;
 let _redisAdapter: RedisCacheService | null = null;
 
 function initPostgres() {
@@ -58,30 +59,19 @@ function initPostgres() {
 function initRedis() {
   if (_redis) return _redis;
   try {
-    const host = process.env.REDIS_HOST || 'localhost';
-    const port = parseInt(process.env.REDIS_PORT || '6379', 10);
-    const password = process.env.REDIS_PASSWORD;
-    const redisConfig: any = { host, port };
-    // Only add password if explicitly set
-    if (password) {
-      redisConfig.password = password;
-    }
-    _redis = new Redis(redisConfig);
-
-    // Suppress expected AUTH errors in dev mode
-    _redis.on('error', (err: any) => {
-      const errMsg = err?.message || String(err);
-      // Silently ignore AUTH/NOAUTH errors (expected in dev without password configured)
+    _redis = sharedRedis;
+    _redis.on('error', (err: unknown) => {
+      const errMsg = err instanceof Error ? err.message : String(err);
       if (!errMsg.includes('AUTH') && !errMsg.includes('NOAUTH')) {
         console.warn('[hooks.server] Redis error:', errMsg);
       }
     });
 
-    // Create the typed adapter for consumers to use instead of raw Redis client
+    void ensureRedisReady();
+
     try {
       _redisAdapter = createRedisAdapter(_redis);
     } catch (e) {
-      // adapter creation failed - leave adapter null and allow consumers to fallback
       _redisAdapter = null;
       console.warn('[hooks.server] Redis adapter creation failed:', e);
     }

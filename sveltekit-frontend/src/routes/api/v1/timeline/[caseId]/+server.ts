@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Case Timeline API Routes
  * GET /api/v1/timeline/[caseId] - Get case timeline
@@ -65,7 +66,7 @@ const CreateTimelineEventSchema = z.object({
   eventDate: z.string().datetime(),
   location: z.string().optional(),
   participants: z.array(z.string()).optional(),
-  evidenceIds: z.array(z.string().uuid()).optional(),
+  evidenceIds: z.array(cuidSchema).optional(),
   notes: z.string().optional(),
   importance: z.enum(['low', 'medium', 'high', 'critical']).default('medium'),
   isPublic: z.boolean().default(false),

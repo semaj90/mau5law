@@ -116,11 +116,11 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
           user_id: 'yorha-user-001',
           case_id: `case-${Date.now()}`,
           context: {
-            jurisdiction 'Global',
+            jurisdiction: 'Global',
             practice_area: ['AI Law', 'Tech Ethics', 'Data Privacy'],
             case_type: 'Investigation',
             priority_level: 8,
-            security_classification 'HIGH',
+            security_classification: 'HIGH',
           },
         }),
       });

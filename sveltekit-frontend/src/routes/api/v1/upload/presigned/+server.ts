@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 import { json } from '@sveltejs/kit';
 import { z } from 'zod';
 import { Client } from 'minio';
@@ -9,7 +10,7 @@ import type { RequestHandler } from './$types.js';
 const presignedRequestSchema = z.object({
   filename: z.string().min(1).max(255),
   contentType: z.string().min(1).max(100),
-  caseId: z.string().uuid(),
+  caseId: cuidSchema,
 });
 // Initialize MinIO client
 const minioClient = new Client({

@@ -6,7 +6,8 @@
 
   let { data }: { data: PageData } = $props();
 
-  const stats = $derived(data.stats || {
+  // Use $derived correctly: pass a function deriving from reactive inputs
+  const stats = $derived(() => data.stats ?? {
     activeCases: 12,
     activeChats: 3,
     ragQueries: 47,
@@ -19,16 +20,16 @@
     recentActivity: 24
   });
 
-  const recentCases = $derived(data.recentCases || []);
+  const recentCases = $derived(() => data.recentCases ?? []);
 
-  const aiStats = $state({
-    activeChats: stats.activeChats,
-    ragQueries: stats.ragQueries,
-    documentsAnalyzed: stats.documentsAnalyzed,
-    citationsFound: stats.citationsFound,
-    casesProcessed: stats.casesProcessed,
-    assistantSessions: stats.assistantSessions
-  });
+  const aiStats = $derived(() => ({
+    activeChats: stats.activeChats ?? 0,
+    ragQueries: stats.ragQueries ?? 0,
+    documentsAnalyzed: stats.documentsAnalyzed ?? 0,
+    citationsFound: stats.citationsFound ?? 0,
+    casesProcessed: stats.casesProcessed ?? 0,
+    assistantSessions: stats.assistantSessions ?? 0
+  }));
 
   const statusColors: Record<string, { bg: string; text: string; label: string }> = {
     open: { bg: '#4caf50', text: '#fff', label: '🟢 Open' },
@@ -384,7 +385,7 @@
 
   .header-top {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     align-items: center;
     gap: 2rem;
   }
@@ -588,7 +589,7 @@
 
   .service-meta {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     align-items: center;
     font-size: 0.85rem;
   }
@@ -816,5 +817,4 @@
     }
   }
 </style>
-
 

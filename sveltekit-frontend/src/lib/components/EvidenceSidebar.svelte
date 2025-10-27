@@ -90,8 +90,8 @@
     id: string;
     title: string;
     type: 'case_law' | 'statute' | 'regulation' | 'precedent';
-    jurisdiction string;
-    citation string;
+    jurisdiction: string;
+    citation: string;
     relevance: number;
     summary?: string;
     caseId?: string;
@@ -101,7 +101,7 @@
     id: string;
     type: 'case_created' | 'evidence_added' | 'report_generated' | 'analysis_completed';
     title: string;
-    description string;
+    description: string;
     entityId: string;
     entityType: 'case' | 'evidence' | 'report' | 'citation';
     timestamp: Date;
@@ -110,22 +110,22 @@
   // Derived values
   let user = $derived(currentUser);
   let authenticated = $derived(isAuthenticated);
-  let role = $derived(currentUser?.role);
+  let role = $derived(() => currentUser?.role);
   // Filtered and sorted items
   let filteredItems = $derived(() => {
     let items: Array<any> = [];
     switch (selectedCategory) {
       case 'cases':
-        items = userCase;
+        items = userCases;
         break;
       case 'evidence':
         items = userEvidence;
         break;
       case 'reports':
-        items = userReport;
+        items = userReports;
         break;
       case 'citations':
-        items = userCitation;
+        items = userCitations;
         break;
       default:
         items = [
@@ -139,9 +139,9 @@
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       items = items.filter(item =>
-        item.title?.toLowerCase().includes(query) ||
-        item.description?.toLowerCase().includes(query) ||
-        item.tags?.some((tag: string) => tag.toLowerCase().includes(query))
+        (item.title || '').toLowerCase().includes(query) ||
+        (item.description || '').toLowerCase().includes(query) ||
+        (item.tags || []).some((tag: string) => tag.toLowerCase().includes(query))
       );
     }
     // Apply sorting
@@ -149,24 +149,24 @@
       let comparison = 0;
       switch (sortBy) {
         case 'name':
-          comparison = a.title.localeCompare(b.title);
+          comparison = (a.title || '').localeCompare(b.title || '');
           break;
         case 'date':
           comparison = new Date(a.updatedAt || a.createdAt).getTime() -
                       new Date(b.updatedAt || b.createdAt).getTime();
           break;
-        case 'priority':
-          const priorityOrder = { low: 1, medium: 2, high: 3, critical: 4 }
-          comparison = (priorityOrder[a.priority as keyof typeof priorityOrder] || 0) -
-                      (priorityOrder[b.priority as keyof typeof priorityOrder] || 0);
+        case 'priority': {
+          const priorityOrder: Record<string, number> = { low: 1, medium: 2, high: 3, critical: 4 };
+          comparison = (priorityOrder[a.priority as string] || 0) - (priorityOrder[b.priority as string] || 0);
           break;
+        }
         case 'status':
-          comparison = a.status?.localeCompare(b.status) || 0;
+          comparison = (a.status || '').toString().localeCompare((b.status || '').toString()) || 0;
           break;
       }
-      return sortOrder === 'desc' ? -comparison : compariso;
+      return sortOrder === 'desc' ? -comparison : comparison;
     });
-    return item;
+    return items;
   });
   // Utility functions
   function formatTimestamp(date: Date): string {
@@ -193,19 +193,19 @@
     return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
   }
   function getItemIcon(type: string) {
-    const icons = {
-      case: Folder
-      evidence: FileText
-      report: MessageSquare
-      citation Archive
-      document: FileText
-      photo: Eye
-      video: Eye
-      audio: Eye;
-      physical: Paperclip;
-      digital: FileText;
-    }
-    return icons[type as keyof typeof icons] || FileText;
+    const icons: Record<string, any> = {
+      case: Folder,
+      evidence: FileText,
+      report: MessageSquare,
+      citation: Archive,
+      document: FileText,
+      photo: Eye,
+      video: Eye,
+      audio: Eye,
+      physical: Paperclip,
+      digital: FileText,
+    };
+    return icons[type] || FileText;
   }
   function getStatusColor(status: string): string {
     const colors = {
@@ -290,24 +290,24 @@
     }
   }
   function navigateToItem(item: any) {
-    const routes = {
+    const routes: Record<string, string> = {
       case: `/cases/${item.id}`,
       evidence: `/evidence/${item.id}`,
       report: `/reports/${item.id}`,
-      citation `/citations/${item.id}`
-    }
+      citation: `/citations/${item.id}`
+    };
     const route = routes[item._type as keyof typeof routes];
     if (route) {
       goto(route);
     }
   }
   function createNewItem(type: string) {
-    const routes = {
+    const routes: Record<string, string> = {
       case: '/cases/new',
       evidence: '/evidence/new',
       report: '/reports/new',
-      citation '/citations/new',
-    }
+      citation: '/citations/new',
+    };
     const route = routes[type as keyof typeof routes];
     if (route) {
       goto(route);
@@ -340,23 +340,26 @@
         <Folder class="w-5 h-5 text-blue-600" />
         <h2 class="font-semibold text-gray-900">Evidence Hub</h2>
       </div>
-      <Button
-        variant="ghost"
-        size="sm"
-        onclick={() => collapsed = true}
-        class="p-1"
-      >
-        <ChevronRight class="w-4 h-4" />
-      </Button>
+      <!-- Wrap Button to hold layout classes (avoid passing class prop to Button component) -->
+      <div class="p-1">
+        <Button
+          variant="ghost"
+          size="sm"
+          onclick={() => collapsed = true}
+        >
+          <ChevronRight class="w-4 h-4" />
+        </Button>
+      </div>
     {:else}
-      <Button
-        variant="ghost"
-        size="sm"
-        onclick={() => collapsed = false}
-        class="p-1 mx-auto"
-      >
-        <ChevronDown class="w-4 h-4" />
-      </Button>
+      <div class="p-1 mx-auto">
+        <Button
+          variant="ghost"
+          size="sm"
+          onclick={() => collapsed = false}
+        >
+          <ChevronDown class="w-4 h-4" />
+        </Button>
+      </div>
     {/if}
   </div>
   {#if !collapsed}
@@ -389,7 +392,7 @@
         />
       </div>
       <!-- Category Filter -->
-      <select;
+      <select
         bind:value={selectedCategory}
         class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       >
@@ -401,7 +404,7 @@
       </select>
       <!-- Sort Options -->
       <div class="flex gap-2">
-        <select;
+        <select
           bind:value={sortBy}
           class="flex-1 px-3 py-1 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
@@ -410,37 +413,41 @@
           <option value="priority">Priority</option>
           <option value="status">Status</option>
         </select>
-        <Button
-          variant="ghost"
-          size="sm"
-          onclick={() => sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'}
-          class="px-2"
-        >
-          <SortAsc class="w-3 h-3" class:rotate-180={sortOrder === 'desc'} />
-        </Button>
+        <!-- Wrap sort button; apply rotation to a span wrapper instead of icon via directive -->
+        <div class="px-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onclick={() => sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'}
+          >
+            <span class={sortOrder === 'desc' ? 'rotate-180 inline-block' : 'inline-block'}>
+              <SortAsc class="w-3 h-3" />
+            </span>
+          </Button>
+        </div>
       </div>
       <!-- Quick Actions -->
       <div class="flex gap-1">
-        <Button
-          variant="ghost"
-          size="sm"
-          onclick={() => createNewItem('case')}
-          title="New Case"
-          class="flex-1 text-xs"
-        >
-          <Plus class="w-3 h-3 mr-1" />
-          Case
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onclick={() => createNewItem('evidence')}
-          title="New Evidence"
-          class="flex-1 text-xs"
-        >
-          <Plus class="w-3 h-3 mr-1" />
-          Evidence
-        </Button>
+        <div class="flex-1 text-xs" title="New Case">
+          <Button
+            variant="ghost"
+            size="sm"
+            onclick={() => createNewItem('case')}
+          >
+            <Plus class="w-3 h-3 mr-1" />
+            Case
+          </Button>
+        </div>
+        <div class="flex-1 text-xs" title="New Evidence">
+          <Button
+            variant="ghost"
+            size="sm"
+            onclick={() => createNewItem('evidence')}
+          >
+            <Plus class="w-3 h-3 mr-1" />
+            Evidence
+          </Button>
+        </div>
       </div>
     </div>
     <!-- Content Area -->
@@ -454,14 +461,15 @@
         <div class="p-4 text-center">
           <AlertCircle class="w-6 h-6 text-red-500 mx-auto mb-2" />
           <p class="text-sm text-red-600">{error}</p>
-          <Button
-            variant="ghost"
-            size="sm"
-            onclick={loadUserData}
-            class="mt-2 text-xs"
-          >
-            Retry
-          </Button>
+          <div class="mt-2 text-xs">
+            <Button
+              variant="ghost"
+              size="sm"
+              onclick={loadUserData}
+            >
+              Retry
+            </Button>
+          </div>
         </div>
       {:else}
         <!-- Recent Activity -->
@@ -560,14 +568,15 @@
                 <FileText class="w-8 h-8 text-gray-300 mx-auto mb-2" />
                 <p class="text-sm text-gray-500">No items found</p>
                 {#if searchQuery}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onclick={() => searchQuery = ''}
-                    class="mt-2 text-xs"
-                  >
-                    Clear search
-                  </Button>
+                  <div class="mt-2 text-xs">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onclick={() => searchQuery = ''}
+                    >
+                      Clear search
+                    </Button>
+                  </div>
                 {/if}
               </div>
             {/if}
@@ -577,24 +586,31 @@
     </div>
     <!-- Footer Actions -->
     <div class="p-4 border-t border-gray-200 space-y-2">
-      <Button
-        variant="outline"
-        size="sm"
-        onclick={() => goto('/ai-assistant')}
-        class="w-full justify-start text-xs"
-      >
-        <Brain class="w-4 h-4 mr-2" />
-        AI Assistant
-      </Button>
-      <Button
-        variant="ghost"
-        size="sm"
-        onclick={() => goto('/settings')}
-        class="w-full justify-start text-xs"
-      >
-        <Settings class="w-4 h-4 mr-2" />
-        Settings
-      </Button>
+      <div class="w-full">
+        <!-- keep empty: visual classes moved to wrapper below if needed -->
+        <div class="flex items-center">
+          <Button
+            variant="outline"
+            size="sm"
+            onclick={() => goto('/ai-assistant')}
+          >
+            <Brain class="w-4 h-4 mr-2" />
+            AI Assistant
+          </Button>
+        </div>
+      </div>
+      <div class="w-full">
+        <div class="flex items-center">
+          <Button
+            variant="ghost"
+            size="sm"
+            onclick={() => goto('/settings')}
+          >
+            <Settings class="w-4 h-4 mr-2" />
+            Settings
+          </Button>
+        </div>
+      </div>
     </div>
   {/if}
 </div>
@@ -620,4 +636,6 @@
   .evidence-sidebar ::-webkit-scrollbar-thumb:hover {
     background: #94a3b8;
   }
+  /* ensure inline-block wrapper rotation behaves smoothly */
+  .rotate-180.inline-block { display: inline-block; transform: rotate(180deg); }
 </style>

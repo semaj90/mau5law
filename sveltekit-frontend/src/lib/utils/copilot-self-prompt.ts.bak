@@ -242,7 +242,7 @@ export async function copilotSelfPrompt(
 }
 /**
  * Enhanced semantic search with caching and relevance scoring
- */;
+ */
 async function performSemanticSearch(prompt: string, context: any): Promise<any[]> {
   try {
     // Quick health check with timeout to avoid hanging
@@ -254,12 +254,12 @@ async function performSemanticSearch(prompt: string, context: any): Promise<any[
         headers: { 'Content-Type': 'application/json' },
         signal: controller.signal,
         body: JSON.stringify({,
-          query: prompt
+          query: prompt,
           context: context.projectPath || process.cwd(),
           limit: 20,
           threshold: 0.7,
-          includeCode: true
-          includeDocs: true
+          includeCode: true,
+          includeDocs: true,
         })
       });
       clearTimeout(timeoutId);
@@ -283,7 +283,7 @@ async function performSemanticSearch(prompt: string, context: any): Promise<any[
 }
 /**
  * Access memory MCP servers for context and history
- */;
+ */
 export async function accessMemoryMCP(prompt: string, context: any): Promise<any[]> {
   try {
     // Quick timeout to avoid hanging
@@ -296,9 +296,9 @@ export async function accessMemoryMCP(prompt: string, context: any): Promise<any
         signal: controller.signal,
         body: JSON.stringify({,
           query: prompt;
-          context: context
-          includeGraph: true
-          includeHistory: true
+          context: context,
+          includeGraph: true,
+          includeHistory: true,
         })
       });
       clearTimeout(timeoutId);
@@ -322,7 +322,7 @@ export async function accessMemoryMCP(prompt: string, context: any): Promise<any
 }
 /**
  * Orchestrate multi-agent analysis with AutoGen and CrewAI
- */;
+ */
 async function orchestrateMultiAgentAnalysis(prompt: string, context: any): Promise<any[]> {
   const results: any[] = [];
   try {
@@ -360,10 +360,10 @@ async function orchestrateMultiAgentAnalysis(prompt: string, context: any): Prom
  * Synthesize all results using advanced LLM coordination
  */
 async function synthesizeAllResults(
-  prompt: string
-  contextResults: any[]
-  memoryResults: any[]
-  agentResults: any[]
+  prompt: string,
+  contextResults: any[],
+  memoryResults: any[],
+  agentResults: any[],
   engineeringAnalysis: any;
 ): Promise<string> {
   const synthesisPrompt = `
@@ -392,7 +392,7 @@ Format your response as a structured analysis with clear sections and actionable
       type: 'analyze',
       providerId: 'ollama',
       model: 'gemma3-legal',
-      prompt: synthesisPrompt
+      prompt: synthesisPrompt,
       timestamp: Date.now(),
       priority: 'high',
       temperature: 0.2,
@@ -413,9 +413,9 @@ Format your response as a structured analysis with clear sections and actionable
  * Generate fallback summary if synthesis fails
  */
 function generateBasicSummary(
-  prompt: string
-  contextResults: any[]
-  memoryResults: any[]
+  prompt: string,
+  contextResults: any[],
+  memoryResults: any[],
   agentResults: any[];
 ): string {
   return `
@@ -443,7 +443,7 @@ ${prompt}
  */
 async function generateNextActions(
   prompt: string;
-  synthesis: string
+  synthesis: string,
   engineeringAnalysis: any;
 ): Promise<NextAction[]> {
   const actions: NextAction[] = [];
@@ -481,7 +481,7 @@ async function generateNextActions(
  * Generate recommendations based on analysis
  */
 async function generateRecommendations(
-  engineeringAnalysis: any
+  engineeringAnalysis: any,
   context: any;
 ): Promise<Recommendation[]> {
   const recommendations: Recommendation[] = [];
@@ -568,19 +568,19 @@ async function createExecutionPlan(
   }, 0);
   return {
     phases,
-    totalEstimatedTime: parallelTime
-    parallelizable: parallelTime < totalTime
-    criticalPath: phases.filter((p) => !p.canRunInParallel).map((p) => p.id)
+    totalEstimatedTime: parallelTime,
+    parallelizable: parallelTime < totalTime,
+    criticalPath: phases.filter((p) => !p.canRunInParallel).map((p) => p.id),
   }
 }
 /**
  * Generate self-prompt for Copilot
  */
 function generateCopilotSelfPrompt(
-  originalPrompt: string
-  synthesis: string
+  originalPrompt: string,
+  synthesis: string,
   nextActions: NextAction[];
-  recommendations: Recommendation[]
+  recommendations: Recommendation[],
   outputFormat: string;
 ): string {
   const formatInstruction =
@@ -667,8 +667,8 @@ function inferActionType(action: string): NextAction['type'] {
   return 'code';
 }
 function calculateConfidence(
-  contextResults: any[]
-  agentResults: any[]
+  contextResults: any[],
+  agentResults: any[],
   engineeringAnalysis: any;
 ): number {
   let confidence = 0.5; // Base confidence
@@ -678,8 +678,8 @@ function calculateConfidence(
   return Math.min(confidence, 1.0);
 }
 function extractSources(
-  contextResults: any[]
-  memoryResults: any[]
+  contextResults: any[],
+  memoryResults: any[],
   agentResults: any[];
 ): string[] {
   const sources = new Set<string>();
@@ -764,7 +764,7 @@ export class RLRankingDatastore {
     }
   }
   async updateUserFeedback(
-    summaryId: string
+    summaryId: string,
     feedback: 'positive' | 'negative' | 'neutral';
   ): Promise<void> {
     if (!this.redisClient) return;

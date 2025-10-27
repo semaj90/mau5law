@@ -8,15 +8,10 @@
  * - Ollama: Embedding generation
  */
 
-import { createClient } from 'redis';
-import { REDIS_URL } from '$env/static/private';
 import crypto from 'crypto';
+import { ensureRedisReady, redis } from '$lib/server/redis-client';
 
-const redisClient = createClient({
-  url: REDIS_URL,
-});
-
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
+const redisClient = redis;
 
 // Cache configuration
 const SEARCH_CACHE_PREFIX = 'search:pgvector:';
@@ -24,37 +19,12 @@ const EMBEDDING_CACHE_PREFIX = 'embedding:';
 const STATS_KEY = 'search:cache:stats';
 const DEFAULT_TTL = 3600; // 1 hour
 
-/**
- * Search result interface for caching
- */
-export interface CachedSearchResult {
-  query: string;
-  results: Array<{
-    id: string;
-    title: string;
-    content?: string;
-    similarity: number;
-  }>;
-  stats: {
-    totalResults: number;
-    processingTimeMs: number;
-  };
-  timestamp: number;
-  ttl: number;
-}
-
 export async function connectRedis(): Promise<void> {
-  if (!redisClient.isOpen) {
-    await redisClient.connect();
-    console.log('Connected to Redis');
-  }
+  await ensureRedisReady();
 }
 
 export async function disconnectRedis(): Promise<void> {
-  if (redisClient.isOpen) {
-    await redisClient.disconnect();
-    console.log('Disconnected from Redis');
-  }
+  // Shared Redis connection stays alive for the app lifecycle.
 }
 
 /**
@@ -90,16 +60,12 @@ export function generateEmbeddingCacheKey(text: string): string {
 
 /**
  * Sets a value in Redis cache.
- * @param {string} key The cache key.
- * @param {string} value The value to store.
- * @param {number} [ttl] Time to live in seconds.
- * @returns {Promise<void>}
  */
 export async function setCache(key: string, value: string, ttl?: number): Promise<void> {
   try {
-    await connectRedis();
-    if (ttl) {
-      await redisClient.setEx(key, ttl, value);
+    await ensureRedisReady();
+    if (typeof ttl === 'number') {
+      await redisClient.set(key, value, 'EX', ttl);
     } else {
       await redisClient.set(key, value);
     }
@@ -110,12 +76,10 @@ export async function setCache(key: string, value: string, ttl?: number): Promis
 
 /**
  * Gets a value from Redis cache.
- * @param {string} key The cache key.
- * @returns {Promise<string | null>} The cached value or null if not found.
  */
 export async function getCache(key: string): Promise<string | null> {
   try {
-    await connectRedis();
+    await ensureRedisReady();
     return await redisClient.get(key);
   } catch (error) {
     console.error('Redis getCache error:', error);
@@ -125,70 +89,87 @@ export async function getCache(key: string): Promise<string | null> {
 
 /**
  * Deletes a value from Redis cache.
- * @param {string} key The cache key.
- * @returns {Promise<number>} The number of keys deleted.
  */
-export async function deleteCache(key: string): Promise<number> {
+export async function deleteCache(key: string): Promise<boolean> {
   try {
-    await connectRedis();
-    return await redisClient.del(key);
+    await ensureRedisReady();
+    return (await redisClient.del(key)) > 0;
   } catch (error) {
     console.error('Redis deleteCache error:', error);
-    return 0;
-  }
-}
-
-/**
- * Cache search results (not embeddings)
- * Results contain: id, title, similarity score only
- */
-export async function cacheSearchResults(
-  query: string,
-  results: CachedSearchResult,
-  ttl: number = DEFAULT_TTL
-): Promise<boolean> {
-  try {
-    const key = generateSearchCacheKey(query, {
-      limit: results.stats.totalResults,
-      threshold: 0.5, // Default
-    });
-    await setCache(key, JSON.stringify(results), ttl);
-    return true;
-  } catch (error) {
-    console.error('Error caching search results:', error);
     return false;
   }
 }
 
 /**
- * Get cached search results
+ * Sets cache only if key does not exist.
  */
-export async function getCachedSearchResults(
-  query: string,
-  options?: {
-    limit?: number;
-    threshold?: number;
-    filters?: Record<string, unknown>;
-  }
-): Promise<CachedSearchResult | null> {
+export async function setCacheIfNotExists(key: string, value: string, ttl?: number): Promise<boolean> {
   try {
-    const key = generateSearchCacheKey(query, options);
-    const cached = await getCache(key);
-    if (cached) {
-      await recordCacheHit(true);
-      return JSON.parse(cached) as CachedSearchResult;
+    await ensureRedisReady();
+    if (typeof ttl === 'number') {
+      const result = await redisClient.set(key, value, 'EX', ttl, 'NX');
+      return result === 'OK';
     }
-    await recordCacheHit(false);
-    return null;
+    const result = await redisClient.set(key, value, 'NX');
+    return result === 'OK';
   } catch (error) {
-    console.error('Error getting cached search results:', error);
+    console.error('Redis setCacheIfNotExists error:', error);
+    return false;
+  }
+}
+
+/**
+ * Get multiple cache entries at once.
+ */
+export async function getMultipleCache(keys: string[]): Promise<(string | null)[]> {
+  if (!keys.length) return [];
+  try {
+    await ensureRedisReady();
+    return (await redisClient.mget(keys)) ?? [];
+  } catch (error) {
+    console.error('Redis getMultipleCache error:', error);
+    return keys.map(() => null);
+  }
+}
+
+/**
+ * Cache search results with metadata.
+ */
+export async function cacheSearchResult(
+  key: string,
+  data: CachedSearchResult,
+  ttl: number = DEFAULT_TTL
+): Promise<boolean> {
+  try {
+    await setCache(key, JSON.stringify(data), ttl);
+    await recordCacheHit(false);
+    return true;
+  } catch (error) {
+    console.error('Error caching search result:', error);
+    return false;
+  }
+}
+
+/**
+ * Retrieve cached search result.
+ */
+export async function getCachedSearchResult(key: string): Promise<CachedSearchResult | null> {
+  try {
+    const cached = await getCache(key);
+    if (!cached) {
+      await recordCacheHit(false);
+      return null;
+    }
+    await recordCacheHit(true);
+    return JSON.parse(cached) as CachedSearchResult;
+  } catch (error) {
+    console.error('Error getting cached search result:', error);
     return null;
   }
 }
 
 /**
- * Cache an embedding result
- * Store only when repeatedly accessed
+ * Cache embedding vector.
  */
 export async function cacheEmbedding(
   text: string,
@@ -206,7 +187,7 @@ export async function cacheEmbedding(
 }
 
 /**
- * Get cached embedding
+ * Get cached embedding.
  */
 export async function getCachedEmbedding(text: string): Promise<number[] | null> {
   try {
@@ -224,7 +205,7 @@ export async function getCachedEmbedding(text: string): Promise<number[] | null>
  */
 async function recordCacheHit(hit: boolean): Promise<void> {
   try {
-    await connectRedis();
+    await ensureRedisReady();
     const key = hit ? `${STATS_KEY}:hits` : `${STATS_KEY}:misses`;
     await redisClient.incr(key);
   } catch (error) {
@@ -241,9 +222,10 @@ export async function getCacheStats(): Promise<{
   hitRate: number;
 }> {
   try {
-    await connectRedis();
-    const hits = parseInt((await redisClient.get(`${STATS_KEY}:hits`)) ?? '0');
-    const misses = parseInt((await redisClient.get(`${STATS_KEY}:misses`)) ?? '0');
+    await ensureRedisReady();
+    const [hitsValue, missesValue] = await redisClient.mget(`${STATS_KEY}:hits`, `${STATS_KEY}:misses`);
+    const hits = parseInt(hitsValue ?? '0', 10);
+    const misses = parseInt(missesValue ?? '0', 10);
     const total = hits + misses;
 
     return {
@@ -262,9 +244,9 @@ export async function getCacheStats(): Promise<{
  */
 export async function clearSearchCache(): Promise<number> {
   try {
-    await connectRedis();
+    await ensureRedisReady();
     const keys = await redisClient.keys(`${SEARCH_CACHE_PREFIX}*`);
-    if (keys.length === 0) return 0;
+    if (!keys.length) return 0;
     return await redisClient.del(keys);
   } catch (error) {
     console.error('Error clearing search cache:', error);
@@ -277,9 +259,9 @@ export async function clearSearchCache(): Promise<number> {
  */
 export async function clearEmbeddingCache(): Promise<number> {
   try {
-    await connectRedis();
+    await ensureRedisReady();
     const keys = await redisClient.keys(`${EMBEDDING_CACHE_PREFIX}*`);
-    if (keys.length === 0) return 0;
+    if (!keys.length) return 0;
     return await redisClient.del(keys);
   } catch (error) {
     console.error('Error clearing embedding cache:', error);
@@ -296,7 +278,7 @@ export async function getRedisHealth(): Promise<{
   memory?: { used: string; total: string };
 }> {
   try {
-    await connectRedis();
+    await ensureRedisReady();
     const start = Date.now();
     await redisClient.ping();
     const ping = Date.now() - start;
@@ -317,4 +299,23 @@ export async function getRedisHealth(): Promise<{
     console.error('Error checking Redis health:', error);
     return { healthy: false };
   }
+}
+
+/**
+ * Search result interface for caching
+ */
+export interface CachedSearchResult {
+  query: string;
+  results: Array<{
+    id: string;
+    title: string;
+    content?: string;
+    similarity: number;
+  }>;
+  stats: {
+    totalResults: number;
+    processingTimeMs: number;
+  };
+  timestamp: number;
+  ttl: number;
 }

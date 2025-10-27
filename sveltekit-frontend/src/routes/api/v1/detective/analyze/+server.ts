@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Detective Mode Analysis API Routes
  * POST /api/v1/detective/analyze - Run detective analysis
@@ -11,7 +12,7 @@ import { CasesCRUDService, EvidenceCRUDService } from '$lib/server/services/user
 import { z } from 'zod';
 // Detective analysis request schemas
 const DetectiveAnalysisSchema = z.object({
-  caseId: z.string().uuid(),
+  caseId: cuidSchema,
   analysisType: z.enum(['full', 'timeline', 'connections', 'patterns', 'anomalies']).default('full'),
   depth: z.enum(['surface', 'deep', 'comprehensive']).default('deep'),
   focusAreas: z.array(z.enum(['people', 'locations', 'times', 'evidence', 'motives', 'opportunities'])).optional(),
@@ -25,13 +26,13 @@ const DetectiveAnalysisSchema = z.object({
 });
 // renamed to $... to mark intentionally unused (satisfies allowed-unused-vars rule)
 const $PatternDetectionSchema = z.object({
-  caseId: z.string().uuid(),
-  evidenceIds: z.array(z.string().uuid()).optional(),
+  caseId: cuidSchema,
+  evidenceIds: z.array(cuidSchema).optional(),
   patternTypes: z.array(z.enum(['temporal', 'location', 'behavior', 'communication', 'financial'])).optional(),
   sensitivity: z.number().min(0).max(1).default(0.7),
 });
 const $ConnectionMappingSchema = z.object({
-  caseId: z.string().uuid(),
+  caseId: cuidSchema,
   entityTypes: z.array(z.enum(['people', 'evidence', 'locations', 'events'])).optional(),
   connectionStrength: z.number().min(0).max(1).default(0.5),
   maxDepth: z.number().min(1).max(5).default(3),
@@ -147,7 +148,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       return error(400, makeHttpErrorPayload({ message: 'Case ID is required', code: 'MISSING_CASE_ID' }));
     }
     // Validate case ID format
-    const validatedCaseId = z.string().uuid().parse(caseId);
+    const validatedCaseId = cuidSchema.parse(caseId);
     // Create service instance
     const casesService = new CasesCRUDService(getUserId(locals));
     // Verify case exists and user has access

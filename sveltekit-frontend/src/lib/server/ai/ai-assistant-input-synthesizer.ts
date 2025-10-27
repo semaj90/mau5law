@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // lib/server/ai/ai-assistant-input-synthesizer.ts
 // Comprehensive AI Assistant Input Synthesizer integrating all enhanced components
 import { logger } from './logger.js';
@@ -21,8 +22,8 @@ if (process.env.REDIS_PASSWORD) {
   redisConfig.password = process.env.REDIS_PASSWORD;
 }
 
-const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', redisConfig);
-const qdrant = new createClient({ url: process.env.QDRANT_URL || 'http://localhost:6333' });
+const redis = redis;
+const qdrant = new redis;
 
 // Simple metrics stub for missing metrics dependency
 const metrics = {

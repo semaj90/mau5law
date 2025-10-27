@@ -1,6 +1,7 @@
 // Updated PostgreSQL schema based on database introspection
 // This schema matches the actual database structure (drizzle/schema.ts)
-import { relations, eq, and, or, sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
+import { relations } from 'drizzle-orm/relations';
 import {
   boolean,
   integer,
@@ -1392,8 +1393,8 @@ export const userAiQueriesRelations = relations(userAiQueries, ({ one }) => ({
 }));
 // === DATABASE CONNECTION & HELPERS ===
 // Export commonly used query helpers for consistency
-// Note: 'not' is not exported from 'drizzle-orm' in this environment, so omit it here.
-export const helpers = { eq, and, or, sql };
+// Keep helpers minimal here to avoid importing unavailable symbols in this environment.
+export const helpers = { sql };
 
 // Export all tables for easy access
 // Note: do not re-export tables collectively to avoid redeclaration conflicts

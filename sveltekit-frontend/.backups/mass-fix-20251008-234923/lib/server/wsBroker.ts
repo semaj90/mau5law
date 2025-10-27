@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // src/lib/server/wsBroker.ts
 import WebSocket from 'ws';
 import { Redis } from 'ioredis';
@@ -11,9 +12,9 @@ export async function initializeWsBroker(): Promise<void> {
   try {
     const redisUrl = import.meta.env.REDIS_URL || 'redis://localhost:6379'
     // Publisher redis connection
-    redis = new Redis(redisUrl);
+    redis = redis;
     // Subscriber redis connection (separate connection required for pub/sub)
-    subscriber = new Redis(redisUrl);
+    subscriber = redis;
     // ioredis connects automatically, no need to call connect()
     // Subscribe to progress messages channel (defensive: older clients may not implement subscribe/on)
     if (typeof (subscriber as any)?.subscribe === 'function') {

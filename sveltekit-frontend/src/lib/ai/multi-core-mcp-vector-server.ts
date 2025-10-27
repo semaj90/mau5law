@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * Multi-Core MCP Vector Server with SIMD JSON Parsing
  * Ultra-high performance vector index builder for legal AI
@@ -188,7 +189,7 @@ export class MultiCoreMCPVectorServer {
     // Initialize postgres.js connection
     this.sql = postgres(config.postgresConfig);
     // Initialize client-side Redis (Upstash)
-    this.redis = new Redis(config.redisConfig);
+    this.redis = redis;
     // Initialize LangChain PGVector store if embeddings provided
     if (config.langchainEmbeddings) {
       this.initializeLangChainVectorStore(config.langchainEmbeddings, config.postgresConfig);

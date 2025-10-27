@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { db } from '$lib/server/db';
@@ -6,8 +7,8 @@ import { eq, and } from 'drizzle-orm';
 import { z } from 'zod';
 
 const createBoardItemSchema = z.object({
-  evidenceId: z.string().uuid().optional(),
-  poiId: z.string().uuid().optional(),
+  evidenceId: cuidSchema.optional(),
+  poiId: cuidSchema.optional(),
   itemType: z.enum(['evidence', 'poi', 'note', 'connection', 'image']),
   position: z.object({
     x: z.number(),

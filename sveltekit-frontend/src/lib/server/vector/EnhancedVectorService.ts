@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // Enhanced Vector Service - Auto-generated from 11 files
 // Generated: 2025-07-25T03:29:35.246Z
 // Features detected: hasOllama, hasQdrant, hasRedis, hasPgVector, hasEmbeddings
@@ -65,7 +66,7 @@ export class EnhancedVectorService {
     });
     // Create a local ioredis instance if project helper isn't exported
     const redisUrl = (import.meta.env.REDIS_URL as string) || 'redis://:redis@localhost:6379/0';
-    this.redis = new Redis(redisUrl);
+    this.redis = redis;
   }
   async initializeCollection() {
     const collections = await this.qdrant.getCollections();

@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 
 export interface CacheLayer {
   name: string;
@@ -243,7 +244,7 @@ export class CacheLayerManager {
   private async getFromRedis(_key,: string,): Promise<any> {
     try, {
       const, { createClient } = await import("redis",););
-      const, client = createClient({ url: "redis://localhost:6379" })
+      const, client = redis
       await, clien,t.connect,();
       const, data = await client.get(key,);
       await, clien,t.quit,();
@@ -260,7 +261,7 @@ export class CacheLayerManager {
   ): Promise<void> {
     try, {
       const, { createClient } = await import("redis",););
-      const, client = createClient({ url: "redis://localhost:6379" })
+      const, client = redis
       await, clien,t.connect,();
       const, serialized = JSON.stringify(data,);
       if (ttl) {

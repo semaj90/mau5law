@@ -1,128 +1,128 @@
+import { json, error as kitError } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { eq, inArray, desc } from 'drizzle-orm';
+import { db } from '$lib/server/db/index';
+import { cases, evidence } from '$lib/server/db/schema-postgres';
 
-import { cases, evidence } from "$lib/server/db/schema-postgres"
-import { json } from "@sveltejs/kit"
-import { db } from "$lib/server/db/index"
-import type { RequestHandler } from './$types.js'
+type BulkHashRequest = {
+  hashes?: string[];
+  evidenceIds?: string[];
+};
+
 export const POST: RequestHandler = async ({ request, locals }) => {
-  const userId = getUserId(locals)
+  const userId = getUserId(locals);
   if (!userId) {
-    return json({ error: "Not authenticated" }, { status: 401 })
+    throw kitError(401, 'Not authenticated');
   }
-  const { hashes, evidenceIds } = await request.json()
-  if (!hashes && !evidenceIds) {
-    return json(
-      { error: "Either hashes or evidenceIds array required" },)
-      { status: 400 },
-    )
+
+  const body = (await request.json()) as BulkHashRequest;
+  const hashes = Array.isArray(body.hashes) ? body.hashes : [];
+  const evidenceIds = Array.isArray(body.evidenceIds) ? body.evidenceIds : [];
+
+  if (hashes.length === 0 && evidenceIds.length === 0) {
+    throw kitError(400, 'Either hashes or evidenceIds array required');
   }
-  try {
-    let results: any[] = []
-    if (hashes && Array.isArray(hashes)) {
-      // Bulk hash search
-      const hashResults = await db
-        .select({
-          id: evidence.id,
-          title: evidence.title,
-          fileName: evidence.fileName,
-          hash: evidence.hash,
-          fileSize: evidence.fileSize,
-          uploadedAt: evidence.uploadedAt,
-          caseName: cases.name,
-          caseNumber: cases.caseNumber
-        })
-        .from(evidence)
-        .leftJoin(cases, eq(evidence.caseId, cases.id)
-        .where(inArray(evidence.hash, hashes)
-      results = hashes.map((hash) => {
-        const found = hashResults.filter((item) => (item as { hash?: any; id?: any; fileName?: any; uploadedAt?: any }).hash === hash)
-        return {
-          hash,
-          found: found.length > 0,
-          evidence: found
-        }
+
+  const results: Array<Record<string, unknown>> = [];
+
+  if (hashes.length > 0) {
+    const hashResults = await db
+      .select({
+        id: evidence.id,
+        title: evidence.title,
+        fileName: evidence.fileName,
+        hash: evidence.hash,
+        fileSize: evidence.fileSize,
+        uploadedAt: evidence.uploadedAt,
+        caseName: cases.name,
+        caseNumber: cases.caseNumber,
       })
-    }
-    if (evidenceIds && Array.isArray(evidenceIds)) {
-      // Bulk hash verification for specific evidence
-      const evidenceItems = await db
-        .select()
-        .from(evidence)
-        .where(inArray(evidence.id, evidenceIds)
-      const verificationResults = evidenceItems.map((item) => ({
-        evidenceId: (item as { hash?: any; id?: any; fileName?: any; uploadedAt?: any }).id,
-        fileName: (item as { hash?: any; id?: any; fileName?: any; uploadedAt?: any }).fileName,
-        storedHash: (item as { hash?: any; id?: any; fileName?: any; uploadedAt?: any }).hash,
-        hasHash: !!(item as { hash?: any; id?: any; fileName?: any; uploadedAt?: any }).hash,
-        uploadedAt: (item as { hash?: any; id?: any; fileName?: any; uploadedAt?: any }).uploadedAt
-      })
-      results = verificationResults
-    }
-    // Calculate summary statistics
-    const stats = {
-      totalProcessed: results.length,
-      verified: results.filter((r) => r.found || r.hasHash).length,
-      missing: results.filter((r) => !r.found && !r.hasHash).length,
-      processedAt: new Date().toISOString()
-    }
-    return json({
-      success: true,
-      results,
-      stats,
-      message: `Processed ${results.length} item(s) for bulk hash operations`
-    })
-  } catch (error: any) {
-    console.error("Bulk hash operation failed:", error)
-    return json({
-        error: "Bulk operation failed",
-        details: error instanceof Error ? error.message: "Unknown error"
-      },)
-      { status: 500 },
-    )
+      .from(evidence)
+      .leftJoin(cases, eq(evidence.caseId, cases.id))
+      .where(inArray(evidence.hash, hashes));
+
+    hashes.forEach((hash) => {
+      const relatedEvidence = hashResults.filter((item) => item.hash === hash);
+      results.push({
+        hash,
+        found: relatedEvidence.length > 0,
+        evidence: relatedEvidence,
+      });
+    });
   }
-}
-// GET endpoint for bulk status checking
-export const GET: RequestHandler = async ({ url, locals }) => {
-  const userId = getUserId(locals)
-  if (!userId) {
-    return json({ error: "Not authenticated" }, { status: 401 })
-  }
-  try {
-    // Get recent hash verification statistics
-    const recentEvidence = await db
+
+  if (evidenceIds.length > 0) {
+    const evidenceItems = await db
       .select({
         id: evidence.id,
         fileName: evidence.fileName,
         hash: evidence.hash,
-        uploadedAt: evidence.uploadedAt
+        uploadedAt: evidence.uploadedAt,
       })
       .from(evidence)
-      .orderBy(evidence.uploadedAt)
-      .limit(100)
-    const stats = {
-      totalEvidence: recentEvidence.length,
-      withHashes: recentEvidence.filter((e: any) => e.hash).length,
-      withoutHashes: recentEvidence.filter((e: any) => !e.hash).length,
-      hashCoverage:
-        recentEvidence.length > 0
-          ? (
-              (recentEvidence.filter((e: any) => e.hash).length /
-                recentEvidence.length) *
-              100
-            ).toFixed(1)
-          : "0",
-      lastUpdated: new Date().toISOString()
-    }
-    return json({
-      stats,
-      recentEvidence: recentEvidence.slice(0, 10), // Return 10 most recent
-    })
-  } catch (error: any) {
-    console.error("Failed to get bulk hash status:", error)
-    return json({
-        error: "Failed to get hash status",
-        details: error instanceof Error ? error.message: "Unknown error"
-      },)
-      { status: 500 },
-    )
+      .where(inArray(evidence.id, evidenceIds));
+
+    evidenceItems.forEach((item) => {
+      results.push({
+        evidenceId: item.id,
+        fileName: item.fileName,
+        storedHash: item.hash,
+        hasHash: Boolean(item.hash),
+        uploadedAt: item.uploadedAt,
+      });
+    });
   }
+
+  const stats = {
+    totalProcessed: results.length,
+    verified: results.filter((entry) => Boolean((entry as { found?: boolean; hasHash?: boolean }).found ?? entry.hasHash)).length,
+    missing: results.filter((entry) => !((entry as { found?: boolean; hasHash?: boolean }).found ?? entry.hasHash)).length,
+    processedAt: new Date().toISOString(),
+  };
+
+  return json({
+    success: true,
+    results,
+    stats,
+    message: `Processed ${results.length} item(s) for bulk hash operations`,
+  });
+};
+
+export const GET: RequestHandler = async ({ locals }) => {
+  const userId = getUserId(locals);
+  if (!userId) {
+    throw kitError(401, 'Not authenticated');
+  }
+
+  const recentEvidence = await db
+    .select({
+      id: evidence.id,
+      fileName: evidence.fileName,
+      hash: evidence.hash,
+      uploadedAt: evidence.uploadedAt,
+    })
+    .from(evidence)
+    .orderBy(desc(evidence.uploadedAt))
+    .limit(100);
+
+  const withHashes = recentEvidence.filter((item) => Boolean(item.hash));
+  const withoutHashes = recentEvidence.filter((item) => !item.hash);
+
+  const stats = {
+    totalEvidence: recentEvidence.length,
+    withHashes: withHashes.length,
+    withoutHashes: withoutHashes.length,
+    hashCoverage:
+      recentEvidence.length === 0 ? '0.0' : ((withHashes.length / recentEvidence.length) * 100).toFixed(1),
+    lastUpdated: new Date().toISOString(),
+  };
+
+  return json({
+    stats,
+    recentEvidence: recentEvidence.slice(0, 10),
+  });
+};
+
+function getUserId(locals: App.Locals): string | null {
+  return locals?.user?.id ?? null;
 }

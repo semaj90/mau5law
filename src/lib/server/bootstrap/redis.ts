@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * Redis Connection and Pub/Sub Utilities for SvelteKit
  *
@@ -68,8 +69,8 @@ export function createRedisInstance(config?: RedisOptions): IORedis {
   }
 
   const redis = redisUrl
-    ? new IORedis(redisUrl, mergedConfig)
-    : new IORedis(mergedConfig);
+    ? redis
+    : redis;
 
   let authErrorLogged = false;
 

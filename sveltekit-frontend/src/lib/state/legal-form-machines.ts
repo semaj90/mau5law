@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 // Legal AI Form State Machines with XState
 // Advanced state management for legal document processing workflows
 import {
@@ -54,7 +55,7 @@ export const CaseCreationSchema = z.object({
   caseNumber: z.string().optional(),
   priority: z.enum(['low', 'medium', 'high', 'urgent']).default('medium'),
   status: z.enum(['active', 'pending', 'closed', 'archived']).default('active'),
-  assignedTo: z.string().uuid().optional(),
+  assignedTo: cuidSchema.optional(),
   jurisdiction: z.enum(['federal', 'state', 'local', 'international']).optional(),
   tags: z.array(z.string()).default([]),
   estimatedDuration: z.number().min(1).max(365).optional(),
@@ -82,7 +83,7 @@ export const SearchQuerySchema = z.object({
   cacheResults: z.boolean().default(true),
 });
 export const AIAnalysisSchema = z.object({
-  documentId: z.string().uuid(),
+  documentId: cuidSchema,
   analysisType: z.enum(['summary', 'entities', 'risk', 'recommendations', 'precedents', 'compliance']),
   options: z
     .object({

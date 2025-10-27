@@ -1,21 +1,39 @@
 import { z } from 'zod';
 import { withApiHandler, parseRequestBody, createPagination, CommonErrors } from '$lib/server/api/response';
 import { DbCaseOperations as CaseOperations } from '$lib/server/db/enhanced-operations';
-import * as redis from 'redis'; // Change to namespace import
-import type { RedisClientType } from 'redis'; // Keep type import separate
-import type { RequestHandler } from './$types.js';
+import { redis as sharedRedis } from '$lib/server/redis-client';
+import type { RequestHandler } from './$types';
 import { resolveUser, getMetaEnv, isDevBypassEnabled } from '$lib/server/auth/utils';
+import type { RedisClientType } from 'redis';
+
+const CASE_PRIORITY_VALUES = ['low', 'medium', 'high', 'critical'] as const;
+const CASE_STATUS_VALUES = ['open', 'investigating', 'pending', 'closed', 'archived'] as const;
+
+type CasePriority = (typeof CASE_PRIORITY_VALUES)[number];
+type CaseStatus = (typeof CASE_STATUS_VALUES)[number];
+
+const CASE_STATUS_ALIASES: Record<string, CaseStatus> = {
+  active: 'open',
+};
+
+function normalizeCaseStatus(value: unknown): CaseStatus | undefined {
+  if (typeof value !== 'string') return undefined;
+  const canonical = value.trim().toLowerCase();
+  if (!canonical) return undefined;
+  if ((CASE_STATUS_VALUES as readonly string[]).includes(canonical)) {
+    return canonical as CaseStatus;
+  }
+  return CASE_STATUS_ALIASES[canonical];
+}
 
 // Get typed environment access
 const metaEnv = getMetaEnv();
 
-// Redis client for worker communication
-// Use an inferred client type to avoid relying on package-exported type names
-type LocalRedisClient = RedisClientType; // Use RedisClientType directly
-
-let redisClient: LocalRedisClient | null = null;
+// Redis client for worker communication (local wrapper over shared client)
+let redisClient: RedisClientType | null = null;
 let redisUnavailable = false;
-async function getRedisClient(): Promise<LocalRedisClient | null> {
+
+async function getRedisClient(): Promise<RedisClientType | null> {
   if (redisUnavailable) return null;
   if (!redisClient) {
     try {
@@ -24,15 +42,17 @@ async function getRedisClient(): Promise<LocalRedisClient | null> {
       const resolvedRedisPassword = metaEnv.REDIS_PASSWORD || process.env.REDIS_PASSWORD;
       console.log('DEBUG: Resolved Redis URL:', resolvedRedisUrl);
       console.log('DEBUG: Redis password present?', !!resolvedRedisPassword);
-      // 'redis' namespace may not have precise typings for createClient in our environment;
+
+      // 'sharedRedis' may not have precise typings for createClient in our environment;
       // treat it as unknown and do a runtime check for createClient to keep TypeScript strictness.
-      const redisNs = redis as unknown;
-      if (typeof (redisNs as any)?.createClient !== 'function') {
+      const redisNs = sharedRedis as unknown;
+      const maybeCreateClient = (redisNs as { createClient?: (...args: unknown[]) => unknown }).createClient;
+      if (typeof maybeCreateClient !== 'function') {
         throw new Error('redis.createClient is not available in this environment');
       }
+
       // Safe to call createClient now that we've checked its existence
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const clientConfig: any = {
+      const clientConfig: Record<string, unknown> = {
         url: resolvedRedisUrl,
         socket: { connectTimeout: 5000 },
       };
@@ -40,11 +60,18 @@ async function getRedisClient(): Promise<LocalRedisClient | null> {
       if (resolvedRedisPassword) {
         clientConfig.password = resolvedRedisPassword;
       }
-      redisClient = (redisNs as any).createClient(clientConfig);
+
+      // Create client and assert it's a RedisClientType at runtime
+      redisClient = (maybeCreateClient as (cfg?: unknown) => RedisClientType)(clientConfig);
 
       // Suppress auth warnings during connection
-      const errorHandler = (err: any) => {
-        const errMsg = err?.message || String(err);
+      const errorHandler = (err: unknown) => {
+        let errMsg = '';
+        if (err && typeof err === 'object' && 'message' in err && typeof (err as { message: unknown }).message === 'string') {
+          errMsg = (err as { message: string }).message;
+        } else {
+          errMsg = String(err);
+        }
         // Only warn about critical errors, not auth errors (expected in dev without password)
         if (!errMsg.includes('AUTH') && !errMsg.includes('NOAUTH')) {
           console.warn('Redis error:', errMsg);
@@ -99,12 +126,14 @@ async function triggerWorkerProcessing(
 const createCaseSchema = z.object({
   title: z.string().min(1, 'Case title is required').max(500, 'Case title too long'),
   description: z.string().optional(),
-  priority: z.enum(['low', 'medium', 'high', 'critical']).default('medium'),
-  // Accept legacy/client 'active' and map to canonical 'open'
-  status: z.preprocess(
-    val => (val === 'active' ? 'open' : val),
-    z.enum(['open', 'investigating', 'pending', 'closed', 'archived']).default('open')
-  ),
+  priority: z.enum(CASE_PRIORITY_VALUES).default('medium'),
+  // Accept legacy/client statuses and map to canonical forms
+  status: z.preprocess(val => {
+    if (val === undefined || val === null) return undefined;
+    if (typeof val === 'string' && val.trim() === '') return undefined;
+    const normalized = normalizeCaseStatus(val);
+    return normalized ?? val;
+  }, z.enum(CASE_STATUS_VALUES).default('open')),
   // Accept either a string or Date and produce a Date | undefined
   incidentDate: z.preprocess(val => {
     if (typeof val === 'string' && val.length > 0) return new Date(val);
@@ -124,14 +153,23 @@ const createCaseSchema = z.object({
 // This ensures 'priority' and 'status' are non-optional for downstream use,
 // as Zod's .default() guarantees their presence at runtime.
 type CreateCaseValidatedData = Omit<z.infer<typeof createCaseSchema>, 'priority' | 'status'> & {
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  status: 'open' | 'investigating' | 'pending' | 'closed' | 'archived' | 'active';
+  priority: CasePriority;
+  status: CaseStatus;
 };
 
 const searchCasesSchema = z.object({
   query: z.string().optional(),
-  // Validate filter arrays; accept 'active' from clients but normalize later
-  status: z.array(z.enum(['open', 'investigating', 'pending', 'closed', 'archived', 'active'])).optional(),
+  // Validate filter arrays; accept legacy aliases but normalize to canonical values
+  status: z
+    .array(
+      z.preprocess(val => {
+        if (val === undefined || val === null) return val;
+        if (typeof val === 'string' && val.trim() === '') return undefined;
+        const normalized = normalizeCaseStatus(val);
+        return normalized ?? val;
+      }, z.enum(CASE_STATUS_VALUES))
+    )
+    .optional(),
   priority: z.array(z.string()).optional(),
   assignedTo: z.string().optional(),
   // Accept string or Date for range boundaries
@@ -185,16 +223,27 @@ export const GET: RequestHandler = async event => {
     // Validate search parameters
     try {
       const validatedParams = searchCasesSchema.parse(searchParams);
-      // Normalize any 'active' statuses to canonical 'open'
-      const normalizedStatus = validatedParams.status?.map(s => (s === 'active' ? 'open' : s));
       // Calculate offset from page
       const offset = (validatedParams.page - 1) * validatedParams.limit;
-      // Perform case search
+
+      // Ensure dateRange matches the exact shape expected by CaseOperations.search:
+      // the search API requires both start and end when dateRange is provided.
+      let dateRangeForSearch: { start: Date; end: Date } | undefined = undefined;
+      if (validatedParams.dateRange && validatedParams.dateRange.start && validatedParams.dateRange.end) {
+        dateRangeForSearch = {
+          start: validatedParams.dateRange.start,
+          end: validatedParams.dateRange.end,
+        };
+      }
+
+      // Perform case search (override dateRange with the normalized shape)
       const { cases: caseResults, total } = await CaseOperations.search({
         ...validatedParams,
-        status: normalizedStatus ?? validatedParams.status,
+        // override possibly-partial dateRange with normalized version (or undefined)
+        dateRange: dateRangeForSearch,
         offset,
       });
+
       // Create pagination info
       const pagination = createPagination(validatedParams.page, validatedParams.limit, total);
       return {
@@ -209,33 +258,30 @@ export const GET: RequestHandler = async event => {
           : null,
       };
     } catch (error: unknown) {
-      if (
-        error instanceof Error &&
-        (error.message.includes('relation "cases"') || error.message.includes('Failed query'))
-      ) {
-        console.warn('[Cases API] Cases table unavailable – returning fallback payload.', error);
-        return {
-          cases: [],
-          pagination: createPagination(searchParams.page || 1, searchParams.limit || 50, 0),
-          search: searchParams.query
-            ? {
-                term: searchParams.query,
-                resultsCount: 0,
-                vectorSearchUsed: searchParams.useVectorSearch ?? false,
-                degradedMode: true,
-              }
-            : null,
-          metadata: {
-            degraded: true,
-            message: 'Cases data temporarily unavailable',
-            timestamp: new Date().toISOString(),
-          },
-        };
-      }
+      // First, handle validation errors from Zod
       if (error instanceof z.ZodError) {
         const message = error.errors.map(e => e.message).join('; ');
         throw CommonErrors.ValidationFailed('search parameters', message || 'Invalid parameters');
       }
+
+      // Detect database-level failures (e.g., missing table / relation or failed query)
+      if (error instanceof Error && (error.message.includes('relation "cases"') || error.message.includes('Failed query'))) {
+        // Prefer a CommonErrors helper if provided by the project; otherwise fall back to a generic Error.
+        // Avoid 'any' by casting through unknown and typing the expected function shape.
+        type ServiceErrorFn = (msg: string) => Error;
+        const commonErrorsNs = (CommonErrors as unknown) as Record<string, unknown>;
+        const serviceErrorFn =
+          (commonErrorsNs.ServiceUnavailable as unknown as ServiceErrorFn) ||
+          (commonErrorsNs.ServiceDegraded as unknown as ServiceErrorFn) ||
+          (commonErrorsNs.InternalServerError as unknown as ServiceErrorFn) ||
+          null;
+        if (typeof serviceErrorFn === 'function') {
+          throw serviceErrorFn('Cases data temporarily unavailable');
+        }
+        throw new Error('Cases data temporarily unavailable');
+      }
+
+      // Re-throw anything else to be handled by outer middleware
       throw error;
     }
   }, event);
@@ -251,13 +297,29 @@ export const POST: RequestHandler = async event => {
     // Cast the parsed data to the refined type, as Zod's default() ensures these are present at runtime.
     const validatedCaseData: CreateCaseValidatedData = caseData as CreateCaseValidatedData;
     try {
-      // Create case using enhanced operations
-      const newCase = await CaseOperations.create({
-        ...validatedCaseData,
-        // incidentDate is already a Date | undefined due to schema preprocessing
-        incidentDate: validatedCaseData.incidentDate,
+      // --- Added: derive the exact payload type expected by CaseOperations.create
+      type CreateCasePayload = Parameters<typeof CaseOperations.create>[0];
+
+      // Runtime guard to make TS narrow the type and to fail-fast if something unexpected happened.
+      if (!validatedCaseData.title || validatedCaseData.title.trim() === '') {
+        throw CommonErrors.ValidationFailed('case', 'Case title is required');
+      }
+
+      // Build explicit, well-typed payload to satisfy CaseOperations.create parameter expectations.
+      const createPayload: CreateCasePayload = {
+        title: validatedCaseData.title,
+        description: validatedCaseData.description ?? null,
+        priority: validatedCaseData.priority,
+        status: validatedCaseData.status,
+        incidentDate: validatedCaseData.incidentDate ?? undefined,
+        location: validatedCaseData.location ?? null,
+        jurisdiction: validatedCaseData.jurisdiction ?? null,
+        caseType: validatedCaseData.caseType ?? 'civil',
         createdBy: user.id,
-      });
+      };
+
+      // Create case using enhanced operations (pass the correctly typed payload)
+      const newCase = await CaseOperations.create(createPayload);
 
       console.log(`✅ Case created successfully: ID=${newCase.id}, Number=${newCase.caseNumber}, User=${user.id}`);
 
@@ -346,3 +408,4 @@ export const OPTIONS: RequestHandler = async () => {
 
 // Note: Using '*' for 'Access-Control-Allow-Origin' is only safe in development.
 // Replace 'https://your-frontend-domain.com' with your actual production domain.
+

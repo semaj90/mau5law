@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Evidence API Routes with Lucia v3 Authentication
  * GET /api/v1/evidence - List user's evidence (with pagination)
@@ -15,7 +16,7 @@ import { z } from 'zod';
 const EvidenceQuerySchema = z.object({
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(100).default(20),
-  caseId: z.string().uuid().optional(),
+  caseId: cuidSchema.optional(),
   evidenceType: z.string().optional(),
   isPublic: z.coerce.boolean().optional(),
 });

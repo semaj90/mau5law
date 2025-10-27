@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 #!/usr/bin/env node
 
 // Comprehensive Real-time System Test Script
@@ -50,7 +51,7 @@ class RealTimeSystemTester {
     console.log('🔄 Testing Redis connection...');
 
     try {
-      this.redisClient = createClient({ url: REDIS_URL });
+      this.redisClient = redis;
       await this.redisClient.connect();
 
       // Test basic Redis operations

@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Legal Strategy Recommendation Engine
  * AI-powered case strategy analysis and recommendations
@@ -9,8 +10,8 @@ const OLLAMA_BASE_URL = 'http://localhost:11434';
 const LEGAL_MODEL = 'gemma3-legal:latest';
 // Request schemas
 const StrategyAnalysisSchema = z.object({
-  caseId: z.string().uuid(),
-  evidenceIds: z.array(z.string().uuid()),
+  caseId: cuidSchema,
+  evidenceIds: z.array(cuidSchema),
   caseType: z.enum(['civil', 'criminal', 'corporate', 'regulatory', 'intellectual_property']),
   clientGoals: z.array(z.string()),
   opposingStrategy: z.string().optional(),
@@ -31,7 +32,7 @@ const PrecedentSearchSchema = z.object({
   courtLevel: z.enum(['trial', 'appellate', 'supreme', 'all']).default('all'),
 });
 const RiskAssessmentSchema = z.object({
-  caseId: z.string().uuid(),
+  caseId: cuidSchema,
   scenarios: z.array(
     z.object({
       name: z.string(),

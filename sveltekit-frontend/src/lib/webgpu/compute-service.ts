@@ -1,12 +1,19 @@
-// @ts-nocheck - Complex experimental service with external dependencies
-/**
- * WebGPU Compute Service - Unified interface for WebGPU operations
- * Provides a service layer for the unified-legal-orchestrator
- */
+// /**
+//  * WebGPU Compute Service - Unified interface for WebGPU operations
+//  * Provides a service layer for the unified-legal-orchestrator
+//  */
 import type { LegalAIRequest } from '../services/unified-legal-orchestrator.js';
+
+// Define a specific type for the data returned by the compute service
+export interface WebGPUComputeData {
+  message: string;
+  requestType: string;
+  timestamp: string;
+}
+
 export interface WebGPUComputeResult {
   success: boolean;
-  data?: any;
+  data?: WebGPUComputeData; // Changed from any to WebGPUComputeData
   error?: string;
   performance?: {
     executionTime: number;
@@ -20,17 +27,17 @@ class WebGPUComputeService {
     // Initialize WebGPU if available
     this.initialized = true;
   }
-  async processRequest(request: any): Promise<WebGPUComputeResult> {
+  async processRequest(request: LegalAIRequest): Promise<WebGPUComputeResult> {
     await this.initialize();
     const startTime = performance.now();
     try {
       // For now, return a stub implementation
       // This can be expanded to use the existing WebGPU AI engine
-      const result = {
+      const result: WebGPUComputeResult = {
         success: true,
         data: {
           message: 'WebGPU compute request processed',
-          requestType: request.type,
+          requestType: request.type, // Accessing request.type, assuming LegalAIRequest has a 'type' property
           timestamp: new Date().toISOString(),
         },
         performance: {
@@ -53,7 +60,8 @@ class WebGPUComputeService {
       return false;
     }
     try {
-      const adapter = await (navigator as any).gpu?.requestAdapter();
+      // Refined type assertion for navigator.gpu
+      const adapter = await (navigator as Navigator & { gpu: GPU }).gpu?.requestAdapter();
       return !!adapter;
     } catch {
       return false;

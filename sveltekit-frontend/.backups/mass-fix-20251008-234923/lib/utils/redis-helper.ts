@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /// <reference types="vite/client" />
 import Redis from 'ioredis';
 import { getRedisConfig, getRedisUrl, HEALTH_CHECK_CONFIG } from '$lib/config/redis-config';
@@ -15,7 +16,7 @@ export function createRedisConnection(options?: Partial<RedisOptions>): Redis {
     ...config,
     ...options
   }
-  const client = new Redis(finalConfig);
+  const client = redis;
   // Enhanced error handling and logging
   client.on('connect', () => {
     console.log('✅ Redis connected successfully', {

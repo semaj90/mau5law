@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // Lightweight shims to reduce noisy type errors during fast checks.
 // These intentionally use `any` to be non-invasive and temporary.
 declare module 'drizzle-orm' {
@@ -65,7 +66,7 @@ declare module 'redis' {
     status?: string;
     info?(section?: string): Promise<string>;
   }
-  export function createClient(...opts: any[]): Redis;
+  export function redis: Redis;
   const client: Redis;
   export default client;
 }

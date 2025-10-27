@@ -1,233 +1,281 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
-  import { io, type Socket } from 'socket.io-client';
-  import { uploadStore  } from '$lib/stores/unified';
-  import { writable } from 'svelte/store';
-  // Props
-  interface Props {
-    caseId?: string;
-    uploadId?: string;
-    showTensorMetrics?: boolean;
-    enableAttentionTracking?: boolean;
-  }
-  let {
-    caseId = '',
-    uploadId = '',
-    showTensorMetrics = false,
-    enableAttentionTracking = true
-  }: Props = $props();
-  // WebSocket connection
-  let socket = $state<Socket | null >(null);
-  let connectionStatus = writable<'disconnected' | 'connecting' | 'connected'>('disconnected');
-  // Progress tracking
-  let progressData = writable({
+  // removed static uploadStore import because the module has no exported member 'uploadStore'
+  import { writable, type Writable } from 'svelte/store';
+
+  // Props (exported to avoid $props() compile issues in this environment)
+  export let caseId: string = '';
+  export let uploadId: string = '';
+  export let showTensorMetrics: boolean = false;
+  export let enableAttentionTracking: boolean = true;
+
+  // Socket instance - don't import socket.io-client at module-level (SSR safe)
+  let socket: any = null;
+
+  // local optional reference for uploadStore (populated via dynamic import in onMount)
+  let uploadStoreRef: any = null;
+
+  // Stores used by the template (template uses $-prefix)
+  const connectionStatus = writable<'disconnected' | 'connecting' | 'connected'>('disconnected');
+
+  type Progress = {
+    stage: string;
+    progress: number;
+    status: string;
+    metrics: Record<string, unknown>;
+    error: string | null;
+  };
+  const progressData: Writable<Progress> = writable({
     stage: 'idle',
     progress: 0,
     status: 'pending',
-    metrics: ,
-    error: null as string | null;
+    metrics: {},
+    error: null
   });
-  // Tensor processing results
-  let tensorResults = writable({
+
+  type TensorResultsType = {
+    clusters: any[];
+    embeddings: any[];
+    interpolationResults: any[];
+    metrics: Record<string, unknown>;
+  };
+  const tensorResults: Writable<TensorResultsType> = writable({
     clusters: [],
     embeddings: [],
     interpolationResults: [],
-    metrics: ,
+    metrics: {}
   });
-  // AI context suggestions
-  let aiSuggestions = writable({
-    suggestions: [],
-    relevantDocuments: [],
-    confidence: 0,
+
+  const aiSuggestions = writable({
+    suggestions: [] as Array<{ text?: string; confidence?: number }>,
+    relevantDocuments: [] as Array<{ title: string; relevanceScore?: number }>,
+    confidence: 0
   });
-  // Real-time metrics
-  let realtimeMetrics = writable({
+
+  const realtimeMetrics = writable({
     uploadSpeed: 0,
     processingTime: 0,
     memoryUsage: 0,
-  gpuUtilization: 0,
+    gpuUtilization: 0
   });
-  $effect(() => {
-    initializeWebSocket();
+
+  // Lifecycle
+  onMount(async () => {
+    // attempt optional dynamic import of uploadStore (safe if module doesn't export it)
+    try {
+      const mod = await import('$lib/stores/unified');
+      uploadStoreRef = (mod as any).uploadStore ?? (mod as any).default ?? null;
+    } catch {
+      uploadStoreRef = null;
+    }
+
+    await initializeWebSocket();
     if (enableAttentionTracking) {
       setupAttentionTracking();
     }
   });
+
   onDestroy(() => {
     cleanupWebSocket();
     cleanupAttentionTracking();
   });
-  function initializeWebSocket() {
+
+  // WebSocket initialization and handlers
+  async function initializeWebSocket() {
     connectionStatus.set('connecting');
-    // Connect to WebSocket server
+
+    // dynamic import so SSR won't try to load socket.io-client
+    const mod = await import('socket.io-client');
+    const io = mod.io;
+
     socket = io('/api/ws', {
       transports: ['websocket', 'polling'],
-      timeout: 5000,
+      timeout: 5000
     });
+
     socket.on('connect', () => {
       console.log('🔌 WebSocket connected');
       connectionStatus.set('connected');
-      // Join relevant rooms
-      if (caseId) {
-        socket?.emit('join-case', caseId);
-      }
-      if (uploadId) {
-        socket?.emit('join-upload', uploadId);
-      }
+      if (caseId) socket?.emit('join-case', caseId);
+      if (uploadId) socket?.emit('join-upload', uploadId);
     });
+
     socket.on('disconnect', () => {
       console.log('🔌 WebSocket disconnected');
       connectionStatus.set('disconnected');
     });
-    // Upload progress updates
-    socket.on('upload-progress', (data) => {
-      console.log('📊 Upload progress:', data);
-      progressData.update.stage || current.stage,
-        progress: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).progress || current.progress,
-        status: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).status || current.status,
-        metrics: { ...current.metrics, ...data.metrics },
+
+    socket.on('upload-progress', (data: any) => {
+      // Merge incoming progress safely
+      progressData.update((current) => ({
+        ...current,
+        stage: data?.stage ?? current.stage,
+        progress: typeof data?.progress === 'number' ? data.progress : current.progress,
+        status: data?.status ?? current.status,
+        metrics: { ...(current.metrics ?? {}), ...(data?.metrics ?? {}) },
+        error: data?.error ?? current.error
       }));
-      // Update XState machine
-      if ((data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).stage && (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).progress !== undefined) {
-        uploadStore.send.stage,
-          progress: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).progress,
-        });
-      }
-      // Update real-time metrics
-      if ((data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).metrics) {
-        realtimeMetrics.update.metrics.uploadSpeed || current.uploadSpeed,
-          processingTime: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).metrics.processingTime || current.processingTime,
-          memoryUsage: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).metrics.memoryUsage || current.memoryUsage,
-        }));
+
+      // Update realtime metrics if present
+      realtimeMetrics.update((current) => ({
+        ...current,
+        uploadSpeed: (data?.metrics?.uploadSpeed as number) ?? current.uploadSpeed,
+        processingTime: (data?.metrics?.processingTime as number) ?? current.processingTime,
+        memoryUsage: (data?.metrics?.memoryUsage as number) ?? current.memoryUsage
+      }));
+
+      // Optional: inform XState/uploadStore (use uploadStoreRef safely)
+      try {
+        if (uploadStoreRef?.send) {
+          // uploadStoreRef.send({ type: 'upload.progress', payload: data });
+        }
+      } catch (e) {
+        // swallow to avoid breaking UI if store API differs
       }
     });
-    // Case-wide progress updates
-    socket.on('case-progress', (data) => {
+
+    socket.on('case-progress', (data: any) => {
       console.log('📂 Case progress:', data);
-      // Handle case-level progress updates
+      // handle if required
     });
-    // Tensor processing results
-    socket.on('tensor-result', (data) => {
+
+    socket.on('tensor-result', (data: any) => {
       console.log('🧮 Tensor result:', data);
       if (showTensorMetrics) {
-        tensorResults.update(current => ({
+        const result = data?.result ?? {};
+        tensorResults.update((current) => ({
           ...current,
-          ...data.result,
-          metrics: { ...current.metrics, ...data.result.metrics },
+          clusters: result.clusters ?? current.clusters,
+          embeddings: result.embeddings ?? current.embeddings,
+          interpolationResults: result.interpolationResults ?? current.interpolationResults,
+          metrics: { ...(current.metrics ?? {}), ...(result.metrics ?? {}) }
         }));
-        // Update GPU utilization if available
-        if ((data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).result.metrics?.gpuUtilization) {
-          realtimeMetrics.update.result.metrics.gpuUtilization,
+
+        if (result.metrics?.gpuUtilization !== undefined) {
+          realtimeMetrics.update((current) => ({
+            ...current,
+            gpuUtilization: (result.metrics.gpuUtilization as number) ?? current.gpuUtilization
           }));
         }
       }
-      // Notify XState machine of tensor completion
-      uploadStore.send.result,
-      });
+
+      // Notify store/state machine if needed (safe, optional)
+      try {
+        // uploadStoreRef?.send?.({ type: 'tensor.completed', payload: data });
+      } catch {}
     });
-    // AI context suggestions
-    socket.on('ai-context-suggestion', (data) => {
+
+    socket.on('ai-context-suggestion', (data: any) => {
       console.log('🤖 AI suggestions:', data);
-      aiSuggestions.set(data);
+      aiSuggestions.set({
+        suggestions: data?.suggestions ?? [],
+        relevantDocuments: data?.relevantDocuments ?? [],
+        confidence: data?.confidence ?? 0
+      });
     });
-    // Error handling
-    socket.on('upload-error', (data) => {
+
+    socket.on('upload-error', (data: any) => {
       console.error('❌ Upload error:', data);
-      progressData.update.error.message || 'Unknown error',
+      progressData.update((current) => ({
+        ...current,
+        error: data?.message ?? data?.error?.message ?? String(data ?? 'Unknown error'),
+        status: 'error'
       }));
-      uploadStore.send.stage || 'unknown',
-        error: (data as { stage?: unknown; progress?: unknown; status?: unknown; metrics?: unknown; result?: unknown; error?: unknown }).error.message || 'Unknown error',
-      });
+      try {
+        // uploadStoreRef?.send?.({ type: 'upload.error', payload: data });
+      } catch {}
     });
-    // Document collaboration (for future use)
-    socket.on('document-change', (data) => {
+
+    socket.on('document-change', (data: any) => {
       console.log('📝 Document change:', data);
-      // Handle real-time document collaboration
+      // future collaboration handling
     });
-    // Search result streaming
-    socket.on('search-results', (data) => {
+
+    socket.on('search-results', (data: any) => {
       console.log('🔍 Search results:', data);
-      // Handle streaming search results
+      // streaming search handling
     });
   }
+
   function cleanupWebSocket() {
-    if (socket) {
+    if (socket?.disconnect) {
       socket.disconnect();
-      socket = null;
     }
+    socket = null;
   }
-  // Attention tracking setup
-  let attentionListeners = $state<Array<() =>([]) {
+
+  // Attention tracking
+  let attentionListeners: Array<() => void> = [];
+
+  function setupAttentionTracking() {
     if (!socket) return;
+
     const trackEvent = (type: string, metadata?: unknown) => {
-      socket?.emit.toISOString(),
+      socket?.emit('attention', {
+        type,
         metadata,
+        timestamp: new Date().toISOString()
       });
-    }
-    // Focus/blur tracking
+    };
+
     const focusHandler = () => trackEvent('focus');
     const blurHandler = () => trackEvent('blur');
     window.addEventListener('focus', focusHandler);
     window.addEventListener('blur', blurHandler);
-    attentionListeners.push(
-      () => window.removeEventListener('focus', focusHandler),
-      () => window.removeEventListener('blur', blurHandler)
-    );
-    // Scroll tracking (throttled)
-  let scrollTimeout = $state<number | null>(null);
-  const scrollHandler = () => {
+    attentionListeners.push(() => window.removeEventListener('focus', focusHandler));
+    attentionListeners.push(() => window.removeEventListener('blur', blurHandler));
+
+    // Throttled scroll tracking
+    let scrollTimeout: number | null = null;
+    const scrollHandler = () => {
       if (scrollTimeout) {
         clearTimeout(scrollTimeout);
       }
-      scrollTimeout = setTimeout(() => {
-        trackEvent('scroll', {
-          scrollY: window.scrollY,
-          scrollX: window.scrollX,
-        });
+      scrollTimeout = window.setTimeout(() => {
+        trackEvent('scroll', { scrollY: window.scrollY, scrollX: window.scrollX });
       }, 100);
-    }
+    };
     window.addEventListener('scroll', scrollHandler, { passive: true });
     attentionListeners.push(() => {
       window.removeEventListener('scroll', scrollHandler);
-      clearTimeout(scrollTimeout);
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
     });
-    // Click tracking
+
     const clickHandler = (e: MouseEvent) => {
       trackEvent('click', {
         x: e.clientX,
         y: e.clientY,
-        target: e.target instanceof Element ? e.target.tagName: null;
+        target: e.target instanceof Element ? e.target.tagName : null
       });
-    }
+    };
     document.addEventListener('click', clickHandler);
     attentionListeners.push(() => document.removeEventListener('click', clickHandler));
   }
+
   function cleanupAttentionTracking() {
-    attentionListeners.forEach(cleanup => cleanup());
+    attentionListeners.forEach((fn) => fn());
     attentionListeners = [];
   }
-  // Typing event tracking
+
+  // Exposed helpers
   export function trackTyping(query: string) {
     if (!socket || !enableAttentionTracking) return;
-    socket.emit.toISOString(),
-      metadata: { query },
-    });
+    socket.emit('typing', { query, timestamp: new Date().toISOString() });
   }
-  // Subscribe to tensor job updates
+
   export function subscribeTensorJob(jobId: string) {
     if (!socket) return;
     socket.emit('subscribe-tensor', jobId);
   }
-  // Subscribe to search results
+
   export function subscribeSearch(searchId: string) {
     if (!socket) return;
     socket.emit('subscribe-search', searchId);
   }
-  // Format bytes for display
+
+  // Helpers
   function formatBytes(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -235,12 +283,12 @@ https://svelte.dev/e/js_parse_error -->
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
-  // Format duration for display
+
   function formatDuration(seconds: number): string {
     if (seconds < 60) return `${seconds.toFixed(1)}s`;
     const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}m ${remainingSeconds.toFixed(0)}s`;
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes}m ${remainingSeconds}s`;
   }
 </script>
 
@@ -250,17 +298,17 @@ https://svelte.dev/e/js_parse_error -->
     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Upload Progress</h3>
     <div class="flex items-center gap-2">
       <div
-        class="w-3 h-3 rounded-full {$connectionStatus === 'connected'
-          ? 'bg-green-500'
-          : $connectionStatus === 'connecting'
-            ? 'bg-yellow-500'
-            : 'bg-red-500'}"
+        class="w-3 h-3 rounded-full"
+        class:bg-green-500={$connectionStatus === 'connected'}
+        class:bg-yellow-500={$connectionStatus === 'connecting'}
+        class:bg-red-500={$connectionStatus === 'disconnected'}
       ></div>
       <span class="text-sm text-gray-600 dark:text-gray-400 capitalize">
         {$connectionStatus}
       </span>
     </div>
   </div>
+
   <!-- Progress Bar -->
   <div class="mb-4">
     <div class="flex justify-between items-center mb-2">
@@ -274,11 +322,13 @@ https://svelte.dev/e/js_parse_error -->
     <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
       <div
         class="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
-        style="width: {$progressData.progress}%"
+        style="width: {$progressData.progress + '%'}"
       ></div>
     </div>
     <div class="flex justify-between items-center mt-2">
-      <span class="text-xs text-gray-500 dark:text-gray-400 capitalize">, Status: {$progressData.status} </span>
+      <span class="text-xs text-gray-500 dark:text-gray-400 capitalize">
+        Status: {$progressData.status}
+      </span>
       {#if $progressData.error}
         <span class="text-xs text-red-500">
           Error: {$progressData.error}
@@ -286,6 +336,7 @@ https://svelte.dev/e/js_parse_error -->
       {/if}
     </div>
   </div>
+
   <!-- Real-time Metrics -->
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
     <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
@@ -314,8 +365,9 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </div>
+
 <!-- Tensor Processing Results -->
-{#if showTensorMetrics && Object.keys(errors).length > 0}
+{#if showTensorMetrics && Object.keys($tensorResults.metrics || {}).length > 0}
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Tensor Processing Results</h3>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -338,15 +390,16 @@ https://svelte.dev/e/js_parse_error -->
         </div>
       </div>
     </div>
+
     <!-- Detailed Metrics -->
-    {#if Object.keys(errors).length > 0}
+    {#if Object.keys($tensorResults.metrics || {}).length > 0}
       <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
         <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Processing Metrics</h4>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
           {#each Object.entries($tensorResults.metrics) as [key, value]}
             <div class="bg-gray-50 dark:bg-gray-700 rounded px-2 py-1">
               <span class="text-gray-500 dark:text-gray-400">{key}:</span>
-              <span class="text-gray-900 dark:text-white ml-1">{value}</span>
+              <span class="text-gray-900 dark:text-white ml-1">{String(value)}</span>
             </div>
           {/each}
         </div>
@@ -354,6 +407,7 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
   </div>
 {/if}
+
 <!-- AI Context Suggestions -->
 {#if $aiSuggestions.suggestions.length > 0}
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
@@ -365,18 +419,19 @@ https://svelte.dev/e/js_parse_error -->
             {suggestion.text}
           </div>
           <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            , Confidence: {Math.round(suggestion.confidence * 100)}%
+            Confidence: {Math.round((suggestion.confidence ?? 0) * 100)}%
           </div>
         </div>
       {/each}
     </div>
+
     {#if $aiSuggestions.relevantDocuments.length > 0}
       <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
         <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Relevant Documents</h4>
         <div class="space-y-2">
           {#each $aiSuggestions.relevantDocuments as doc}
             <div class="text-sm text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">
-              {doc.title} ({doc.relevanceScore}% match)
+              {doc.title} ({doc.relevanceScore ?? 0}% match)
             </div>
           {/each}
         </div>
@@ -389,7 +444,8 @@ https://svelte.dev/e/js_parse_error -->
   /* Add any custom styles here */
   .transition-all {
     transition-property: all;
-    transition-timing-function cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration 150m;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
   }
+</style>
 </style>

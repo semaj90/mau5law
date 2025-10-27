@@ -1,13 +1,10 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import Button from '$lib/components/ui/Button.svelte';
-  import NesCard from '$lib/components/ui/nes-card.svelte';
   import { Badge } from '$lib/components/ui/badge';
   // Icons
   import {
-    Settings,
     Users,
     Activity,
     Database,
@@ -19,7 +16,6 @@
     CheckCircle,
     AlertTriangle,
     RefreshCw,
-    Eye,
     Zap,
     Server,
     Network,
@@ -106,7 +102,7 @@
             id: 1,
             type: 'case_created',
             user: 'john.doe@law.com',
-            description 'Created new case: Smith v. Johnson',
+            description: 'Created new case: Smith v. Johnson',
             timestamp: new Date(Date.now() - 300000).toISOString(),
             status: 'success',
           },
@@ -114,7 +110,7 @@
             id: 2,
             type: 'ai_analysis',
             user: 'jane.smith@law.com',
-            description 'Completed AI analysis on contract dispute',
+            description: 'Completed AI analysis on contract dispute',
             timestamp: new Date(Date.now() - 900000).toISOString(),
             status: 'success',
           },
@@ -122,7 +118,7 @@
             id: 3,
             type: 'user_login',
             user: 'admin@legal-ai.com',
-            description 'Administrator login from 192.168.1.100',
+            description: 'Administrator login from 192.168.1.100',
             timestamp: new Date(Date.now() - 1800000).toISOString(),
             status: 'info',
           },
@@ -135,9 +131,6 @@
   async function refreshData() {
     await Promise.all([loadSystemStats(), loadSystemHealth(), loadRecentActivity()]);
     lastUpdated = new Date();
-  }
-  function getHealthIcon(isHealthy: boolean) {
-    return isHealthy ? CheckCircle : AlertTriangle;
   }
   function getHealthColor(isHealthy: boolean) {
     return isHealthy ? 'text-green-600' : 'text-red-600';
@@ -181,7 +174,7 @@
         Updated {formatTimeAgo(lastUpdated.toISOString())}
       </Badge>
       <Button variant="ghost" onclick={refreshData} disabled={isLoading} class="gap-2">
-        <RefreshCw class="w-4 h-4 {isLoading ? 'animate-spin' : ''}" />
+        <RefreshCw class={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
         Refresh
       </Button>
     </div>
@@ -279,7 +272,14 @@
         <div>Real-time status of core system components</div>
       </div>
       <div class="space-y-4">
-        {#each [{ key: 'database', label: 'PostgreSQL Database', icon Database }, { key: 'redis', label: 'Redis Cache', icon HardDrive }, { key: 'aiService', label: 'AI Service', icon Cpu }, { key: 'vectorSearch', label: 'Vector Search', icon Network }, { key: 'fileSystem', label: 'File System', icon HardDrive }, { key: 'gpu', label: 'GPU Acceleration', icon Zap }] as service}
+        {#each [
+          { key: 'database', label: 'PostgreSQL Database', icon: Database },
+          { key: 'redis', label: 'Redis Cache', icon: HardDrive },
+          { key: 'aiService', label: 'AI Service', icon: Cpu },
+          { key: 'vectorSearch', label: 'Vector Search', icon: Network },
+          { key: 'fileSystem', label: 'File System', icon: HardDrive },
+          { key: 'gpu', label: 'GPU Acceleration', icon: Zap }
+        ] as service}
           <div class="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
             <div class="flex items-center gap-3">
               <service.icon class="w-4 h-4 nes-text is-disabled" />
@@ -288,10 +288,10 @@
             <div class="flex items-center gap-2">
               {#if systemHealth[service.key]}
                 <Badge class="bg-green-100 text-green-800">Healthy</Badge>
-                <CheckCircle class="{getHealthColor(systemHealth[service.key])} w-4 h-4" />
+                <CheckCircle class={`w-4 h-4 ${getHealthColor(systemHealth[service.key])}`} />
               {:else}
                 <Badge class="bg-red-100 text-red-800">Down</Badge>
-                <AlertTriangle class="{getHealthColor(systemHealth[service.key])} w-4 h-4" />
+                <AlertTriangle class={`w-4 h-4 ${getHealthColor(systemHealth[service.key])}`} />
               {/if}
             </div>
           </div>
@@ -338,4 +338,3 @@
     </div>
   </div>
 </div>
-;

@@ -339,9 +339,9 @@
 
       <!-- File Drop Zone -->
       <div
-        on:dragover={handleDragOver}
-        on:dragleave={handleDragLeave}
-        on:drop={handleDrop}
+        ondragover={handleDragOver}
+        ondragleave={handleDragLeave}
+        ondrop={handleDrop}
         class={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${dragOver ? 'border-gold-400 bg-gold-400 bg-opacity-10' : 'border-slate-600'}`}
       >
         {#if uploadQueue.length === 0}
@@ -352,7 +352,7 @@
             <input
               type="file"
               multiple
-              on:change={handleFileChange}
+              onchange={handleFileChange}
               disabled={isUploading}
               class="hidden"
             />
@@ -378,7 +378,7 @@
                   {:else}
                     <button
                       type="button"
-                      on:click={() => removeFile(index)}
+                      onclick={() => removeFile(index)}
                       disabled={isUploading}
                       class="hover:text-red-400 transition-colors"
                     >
@@ -396,7 +396,7 @@
       <div class="flex gap-4 pt-4">
         <button
           type="button"
-          on:click={handleUpload}
+          onclick={handleUpload}
           disabled={isUploading || uploadQueue.length === 0}
           class="flex-1 bg-gold-400 text-black font-bold py-2 px-4 rounded hover:bg-gold-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
@@ -404,7 +404,7 @@
         </button>
         <button
           type="button"
-          on:click={handleReset}
+          onclick={handleReset}
           disabled={isUploading}
           class="flex-1 bg-slate-700 text-white font-bold py-2 px-4 rounded hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
@@ -413,7 +413,7 @@
         {#if caseId}
           <button
             type="button"
-            on:click={goToCase}
+            onclick={goToCase}
             disabled={isUploading}
             class="flex-1 bg-slate-700 text-gold-400 font-bold py-2 px-4 rounded hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >

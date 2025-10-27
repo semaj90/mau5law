@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 
 /**
  * Stateless API Coordinator for Phase 13
@@ -199,7 +200,7 @@ export class StatelessAPICoordinator {
     try {
       switch (node.type) {
         case "REDIS":
-          // In production: const redis = new Redis(node.endpoint)
+          // In production: const redis = redis
           const redisConnection = {
             endpoint: node.endpoint,
             connected: true

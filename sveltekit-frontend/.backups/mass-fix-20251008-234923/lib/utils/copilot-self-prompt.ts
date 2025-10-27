@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /// <reference types="vite/client" />
 import crypto from "crypto";
 /**
@@ -620,7 +621,7 @@ export class CopilotSelfPrompt {
       openAIApiKey: 'N/A',
       // baseURL property removed for local LLM compatibility
     });
-    // this.redisClient = Redis.createClient()
+    // this.redisClient = Redis.redis
   }
   async getSemanticContext(query: string, todoList: string[] = []) {
     // Check Redis cache first

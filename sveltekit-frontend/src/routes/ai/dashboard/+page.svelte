@@ -82,7 +82,7 @@
 </script>
 
 <div class="ai-dashboard-container">
-	<header class="header">
+	<header class="header flex flex-col">
 		<h1 class="title">AI Dashboard</h1>
 		<p class="subtitle">Cluster overview · quick actions · service health</p>
 	</header>
@@ -126,7 +126,7 @@
 
 					<div class="actions">
 						<Button onclick={checkSystemStatus} disabled={loading} aria-busy={loading}>
-							{#if loading}Checking...{#else}Run Health Check{/if}
+							{loading ? 'Checking...' : 'Run Health Check'}
 						</Button>
 						<Button variant="secondary" onclick={openAssistant}>Open Assistant</Button>
 						<Button variant="ghost" onclick={handleUpload}>Upload Document</Button>
@@ -159,7 +159,7 @@
 					<CardTitle>Health Matrix</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<table class="health-table" role="table" aria-label="Service health matrix">
+					<table class="health-table" aria-label="Service health matrix">
 						<thead>
 							<tr><th>Service</th><th>Status</th></tr>
 						</thead>
@@ -200,33 +200,142 @@
 </div>
 
 <style>
-	.ai-dashboard-container{padding:1rem;max-width:1200px;margin:0 auto}
-	.header{display:flex;flex-directioncolumn;gap:.25rem;margin-bottom:1rem}
-	.title{font-size:1.25rem;margin:0}
-	.subtitle{color:var(--muted,#6b7280);font-size:.95rem;margin:0}
+	.ai-dashboard-container {
+		padding: 1rem;
+		max-width: 1200px;
+		margin: 0 auto;
+	}
 
-	.grid{display:grid;grid-template-columns:1fr 360px;gap:1rem;align-items:start}
-	.mt{margin-top:1rem}
+	.header {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		margin-bottom: 1rem;
+	}
 
-	.status-list{margin:0.75rem 0}
-	.status-row{display:flex;gap:0.75rem;flex-wrap:wrap}
-	.status-item{min-width:160px}
-	.label{font-size:.85rem;color:var(--muted,#6b7280);margin-bottom:.25rem}
-	.pill{display:inline-block;padding:.25rem .6rem;border-radius:999px;font-size:.85rem;font-weight:600}
-	.pill.on{background:#ecfdf5;color:#065f46}
-	.pill.off{background:#fff7f7;color:#7f1d1d}
+	.title {
+		font-size: 1.25rem;
+		margin: 0;
+	}
 
-	.actions{display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap}
-	.muted{color:var(--muted,#6b7280);font-size:.95rem}
-	.error{margin-top:.5rem;color:#9b2c2c;background:#fff5f5;padding:.5rem;border-radius:6px}
+	.subtitle {
+		color: var(--muted, #6b7280);
+		font-size: 0.95rem;
+		margin: 0;
+	}
 
-	.health-table{width:100%;border-collapse:collapse}
-	.health-table th{text-align:left;padding:.5rem 0;color:var(--muted,#6b7280);font-size:.85rem}
-	.health-table td{padding:.5rem 0}
+	.grid {
+		display: grid;
+		grid-template-columns: 1fr 360px;
+		gap: 1rem;
+		align-items: start;
+	}
 
-	.toasts{positionfixed;right:1rem;top:1rem;display:flex;flex-directioncolumn;gap:.5rem;z-index:9999}
-	.toast{padding:.5rem .75rem;border-radius:6px;color:white;box-shadow:0 2px 6px rgba(0,0,0,.08);font-size:.92rem}
-	.toast.info{background:#2b6cb0}
-	.toast.success{background:#2f855a}
-	.toast.error{background:#c53030}
+	.mt {
+		margin-top: 1rem;
+	}
+
+	.status-list {
+		margin: 0.75rem 0;
+	}
+
+	.status-row {
+		display: flex;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+	}
+
+	.status-item {
+		min-width: 160px;
+	}
+
+	.label {
+		font-size: 0.85rem;
+		color: var(--muted, #6b7280);
+		margin-bottom: 0.25rem;
+	}
+
+	.pill {
+		display: inline-block;
+		padding: 0.25rem 0.6rem;
+		border-radius: 999px;
+		font-size: 0.85rem;
+		font-weight: 600;
+	}
+
+	.pill.on {
+		background: #ecfdf5;
+		color: #065f46;
+	}
+
+	.pill.off {
+		background: #fff7f7;
+		color: #7f1d1d;
+	}
+
+	.actions {
+		display: flex;
+		gap: 0.5rem;
+		margin-top: 0.75rem;
+		flex-wrap: wrap;
+	}
+
+	.muted {
+		color: var(--muted, #6b7280);
+		font-size: 0.95rem;
+	}
+
+	.error {
+		margin-top: 0.5rem;
+		color: #9b2c2c;
+		background: #fff5f5;
+		padding: 0.5rem;
+		border-radius: 6px;
+	}
+
+	.health-table {
+		width: 100%;
+		border-collapse: collapse;
+	}
+
+	.health-table th {
+		text-align: left;
+		padding: 0.5rem 0;
+		color: var(--muted, #6b7280);
+		font-size: 0.85rem;
+	}
+
+	.health-table td {
+		padding: 0.5rem 0;
+	}
+
+	.toasts {
+		position: fixed;
+		right: 1rem;
+		top: 1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		z-index: 9999;
+	}
+
+	.toast {
+		padding: 0.5rem 0.75rem;
+		border-radius: 6px;
+		color: white;
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+		font-size: 0.92rem;
+	}
+
+	.toast.info {
+		background: #2b6cb0;
+	}
+
+	.toast.success {
+		background: #2f855a;
+	}
+
+	.toast.error {
+		background: #c53030;
+	}
 </style>

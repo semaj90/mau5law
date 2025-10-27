@@ -203,12 +203,9 @@ export class YoRHaAPIClient {
       enableSSE: config.enableSSE ?? true,
       ...config,
     };
-    if (this.config.enableWebSocket) {
-      this.initWebSocket();
-    }
-    if (this.config.enableSSE) {
-      this.initServerSentEvents();
-    }
+    // Do not initialize WebSocket or SSE during SSR (module import time).
+    // Initialization must happen in a browser context (e.g., onMount in Svelte)
+    // Call `initWebSocket()` or `initServerSentEvents()` explicitly from the client.
   }
   // ---- Layout + Data Source Lifecycle -------------------------------------------------
   /**
@@ -480,9 +477,9 @@ export class YoRHaAPIClient {
   }
   // WebSocket Integration with QUIC fallback
   private initWebSocket(): void {
-    // Check if we're in browser environment
+    // Ensure this is called from a browser environment only.
     if (typeof window === 'undefined' || typeof WebSocket === 'undefined') {
-      console.warn('WebSocket not available in SSR environment');
+      console.warn('WebSocket not available in SSR environment; call initWebSocket() from client-side code');
       return;
     }
     const wsUrl = this.config.baseURL.replace(/^https?/, 'wss') + '/ws';
@@ -535,24 +532,33 @@ export class YoRHaAPIClient {
   }
   // SSE Integration
   private initServerSentEvents(): void {
+    if (typeof window === 'undefined' || typeof EventSource === 'undefined') {
+      console.warn('SSE not available in SSR environment; call initServerSentEvents() from client-side code');
+      return;
+    }
+
     const eventUrl = this.config.baseURL.replace(/^https?/, 'http') + '/events';
-    this.eventSource = new EventSource(eventUrl);
+    try {
+      this.eventSource = new EventSource(eventUrl);
 
-    this.eventSource.onmessage = event => {
-      try {
-        const msg = JSON.parse(event.data);
-        this.notifySubscribers(msg.type, msg.data);
-      } catch (e) {
-        console.error('Invalid SSE message', e);
-      }
-    };
+      this.eventSource.onmessage = event => {
+        try {
+          const msg = JSON.parse(event.data);
+          this.notifySubscribers(msg.type, msg.data);
+        } catch (e) {
+          console.error('Invalid SSE message', e);
+        }
+      };
 
-    this.eventSource.onerror = error => {
-      console.error('SSE error', error);
-      this.eventSource?.close();
-      // Attempt to reconnect on error
-      setTimeout(() => this.initServerSentEvents(), 1000);
-    };
+      this.eventSource.onerror = error => {
+        console.error('SSE error', error);
+        this.eventSource?.close();
+        // Attempt to reconnect on error
+        setTimeout(() => this.initServerSentEvents(), 1000);
+      };
+    } catch (err) {
+      console.warn('Failed to initialize SSE', err);
+    }
   }
   // Cleanup
   close(): void {
@@ -609,4 +615,12 @@ export class YoRHaAPIClient {
   }
 }
 
-export const yorhaAPI = new YoRHaAPIClient();
+/**
+ * Helper: create a client instance. Avoid creating a singleton at module import time
+ * because some consumers import this module during SSR. Create and initialize
+ * the real-time transports from client-side code (e.g., onMount).
+ */
+export function createYoRHaClient(config: Partial<YoRHaAPIConfig> = {}) {
+  return new YoRHaAPIClient(config);
+}
+

@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * Centralized Redis Client for Legal AI Platform
  * Follows the integration guide pattern with enhanced error handling
@@ -19,7 +20,7 @@ function buildRedisOptions() {
 // ioredis supports (url) or (options). We pass url via options for consistency.
 const redisOptions = buildRedisOptions();
 (redisOptions as any).url = url; // modern ioredis supports url in options
-export const redis = new Redis(redisOptions as any);
+export const redis = redis;
 export const REDIS_CONNECTION = redis;
 redis.on('connect', () => {
   console.log('[redis] ✅ Connected successfully');
@@ -50,7 +51,7 @@ redis.on('close', () => {
 export const createRedisInstance = () => {
   const opts = buildRedisOptions();
   (opts as any).url = url;
-  return new Redis(opts as any);
+  return redis;
 }
 // Thin interface describing only commands we actually use broadly
 export interface RedisBasicCommands {

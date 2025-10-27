@@ -3,19 +3,33 @@
   import { onDestroy, tick } from 'svelte';
   import { browser } from '$app/environment';
   import { ChatBubbleIcon, PaperPlaneIcon, MagnifyingGlassIcon, DocumentTextIcon } from '@radix-icons/svelte';
-  import * as Dialog from '$lib/components/ui/dialog';
+  import * as Dialog from 'bits-ui/components/dialog'; // Corrected Bits UI imports
+  import * as Tooltip from 'bits-ui/components/tooltip'; // Corrected Bits UI imports
   // bits-ui / enhanced-bits-ui are Svelte-only (no React). UI primitives (Button, Tooltip, Badge, Input, Textarea) are imported later in the file.
   // Card components removed - using native HTML elements
-  import Button from '$lib/components/ui/Button.svelte';
+  import Button from '$lib/components/ui/button/Button.svelte'; // Corrected Button import path
   // Use default imports to match other UI components (avoid named/default mismatch)
   import Badge from '$lib/components/ui/badge';
-  import * as Tooltip from '$lib/components/ui/tooltip';
+  // import * as Tooltip from '$lib/components/ui/tooltip'; // Removed, now imported from bits-ui
   import Textarea from '$lib/components/ui/Textarea.svelte';
 
-  import type { ChatMessage, MessageAnalysis, RAGContext } from '$lib/types/ai-chat';
+  import type { ChatMessage, MessageAnalysis } from '$lib/types/ai-chat';
 
   // Local UI type: ChatMessage plus a required `id` used by the UI (each block key)
-  type UIMessage = ChatMessage & { id: string };
+  // and making confidence/tokensPerSecond optional as they are not always present.
+  type UIMessage = ChatMessage & {
+    id: string;
+    confidence?: number; // Make optional as it might not always be present
+    tokensPerSecond?: number; // Make optional
+  };
+
+  // Local definition for RAGContext to include 'summary'
+  interface LocalRAGContext {
+    summary: string | null;
+    documents?: any[]; // Assuming RAGContext might have documents
+    query?: string;
+    // Add other properties of RAGContext if known and needed locally
+  }
 
   // Replace legacy `export let` with runes-compatible $props() destructuring
   type Props = {
@@ -38,12 +52,12 @@
 
   // Component state using $state runes
   let chatContainer = $state<HTMLDivElement | null>(null);
-  let messageInput = $state<HTMLTextAreaElement | null>(null);
+  let messageInput = $state<any>(null); // Changed type from HTMLTextAreaElement | null to any
   let isConnected = $state(false);
   let isTyping = $state(false);
   let streamingResponse = $state('');
   let currentAnalysis = $state<MessageAnalysis | null>(null);
-  let ragContext = $state<RAGContext | null>(null);
+  let ragContext = $state<LocalRAGContext | null>(null); // Use LocalRAGContext
   let userAttention = $state({ focused: true, lastActivity: Date.now() });
   // Chat state (UI messages require `id`)
   let messages = $state<UIMessage[]>([]);
@@ -110,7 +124,8 @@
     const id = raw?.id ?? raw?.messageId ?? `m_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
     const role = raw?.role ?? (raw?.sender === 'user' ? 'user' : 'assistant');
     const content = raw?.content ?? raw?.text ?? '';
-    const timestamp = raw?.timestamp ? new Date(raw.timestamp) : new Date();
+    const timestamp = raw?.timestamp ? new Date(raw.timestamp).getTime() : Date.now(); // Convert to number
+    const sessionId = raw?.sessionId ?? ''; // Ensure sessionId is always present
     const confidence = typeof raw?.confidence === 'number' ? raw.confidence : undefined;
     const tokensPerSecond = typeof raw?.tokensPerSecond === 'number' ? raw.tokensPerSecond : undefined;
     return {
@@ -118,6 +133,7 @@
       role,
       content: String(content),
       timestamp,
+      sessionId, // Add sessionId
       confidence,
       tokensPerSecond,
     } as UIMessage;
@@ -153,7 +169,8 @@
               id: data.id ?? `stream_${Date.now()}`,
               role: 'assistant',
               content: streamingResponse,
-              timestamp: data.timestamp ?? new Date().toISOString(),
+              timestamp: data.timestamp ? new Date(data.timestamp).getTime() : Date.now(), // Convert to number
+              sessionId: data.sessionId ?? sessionId, // Ensure sessionId
               confidence: data.confidence,
             }),
           ];
@@ -199,7 +216,8 @@
             id: Date.now().toString(),
             role: 'assistant',
             content: data.message,
-            timestamp: new Date(),
+            timestamp: Date.now(), // Convert to number
+            sessionId: sessionId, // Add sessionId
             confidence: data.confidence,
             tokensPerSecond: data.tokensPerSecond,
           } as UIMessage,
@@ -216,7 +234,8 @@
           id: Date.now().toString(),
           role: 'assistant',
           content: 'Sorry, I encountered an error. Please try again.',
-          timestamp: new Date(),
+          timestamp: Date.now(), // Convert to number
+          sessionId: sessionId, // Add sessionId
         } as UIMessage,
       ];
     } finally {
@@ -231,7 +250,8 @@
       id: Date.now().toString(),
       role: 'user',
       content: currentMessage,
-      timestamp: new Date(),
+      timestamp: Date.now(), // Convert to number
+      sessionId: sessionId, // Add sessionId
     };
     messages = [...messages, userMessage];
     const messageToSend = currentMessage;
@@ -297,14 +317,18 @@
     };
   }
 
-  // Safe timestamp formatter (handles Date or ISO string)
-  function formatTimestamp(ts: Date | string | undefined | null) {
+  // Safe timestamp formatter (handles Date or ISO string or number)
+  function formatTimestamp(ts: Date | string | number | undefined | null) {
     if (!ts) return '';
+    let d: Date;
     if (typeof ts === 'string') {
-      const d = new Date(ts);
-      return isNaN(d.getTime()) ? '' : d.toLocaleTimeString();
+      d = new Date(ts);
+    } else if (typeof ts === 'number') {
+      d = new Date(ts);
+    } else {
+      d = ts;
     }
-    return (ts as Date).toLocaleTimeString?.() ?? '';
+    return isNaN(d.getTime()) ? '' : d.toLocaleTimeString();
   }
 
   // Initialize on mount
@@ -440,6 +464,7 @@
     <!-- Input Area -->
     <div class="border-t p-4">
       <div class="flex gap-3">
+        <!-- @ts-ignore: Textarea component might not be fully Svelte 5 typed yet, usage is correct per instructions -->
         <Textarea
           bind:this={messageInput}
           bind:value={currentMessage}

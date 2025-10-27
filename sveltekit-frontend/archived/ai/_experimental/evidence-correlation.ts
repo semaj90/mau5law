@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Advanced Evidence Correlation Engine
  * Sophisticated analysis of evidence relationships and patterns
@@ -10,7 +11,7 @@ type EvidenceItemType = EvidenceItem.EvidenceItem;
 
 // Correlation analysis schemas
 const CorrelationAnalysisSchema = z.object({
-  evidenceIds: z.array(z.string().uuid()),
+  evidenceIds: z.array(cuidSchema),
   analysisType: z.enum(['temporal', 'semantic', 'entity', 'causal', 'comprehensive']).default('comprehensive'),
   confidenceThreshold: z.number().min(0).max(1).default(0.6),
   includeWeakCorrelations: z.boolean().default(false),
@@ -22,7 +23,7 @@ const CorrelationAnalysisSchema = z.object({
     .optional(),
 });
 const PatternDetectionSchema = z.object({
-  evidenceIds: z.array(z.string().uuid()),
+  evidenceIds: z.array(cuidSchema),
   patternTypes: z.array(z.enum(['sequence', 'cluster', 'anomaly', 'trend', 'cycle'])),
   sensitivity: z.enum(['low', 'medium', 'high']).default('medium'),
   includeMetadata: z.boolean().default(true),

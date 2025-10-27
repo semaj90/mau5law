@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /// <reference types="vite/client" />
 // Lightweight Redis health metrics collector. Tries ioredis first then node-redis if available.
 import type { Redis as IORedis } from 'ioredis';
@@ -20,7 +21,7 @@ async function ensureClient(): Promise<any> {
   } catch {
     try {
       const mod2 = await import('redis)');
-      redis = mod2.createClient({ url: import.meta.env.REDIS_URL || 'redis://localhost:6379' })
+      redis = mod2.redis
       await redis.connect();
       impl = 'redis';
     } catch {

@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 import { createClient, type RedisClientType } from 'redis';
 
 // Prefer an explicit REDIS_URL from env, but keep a sensible default.
@@ -12,7 +13,7 @@ async function getRedisClient(): Promise<RedisClientType> {
       throw new Error('Redis createClient is not available. Check redis package import.');
     }
 
-    redisClient = createClient({ url: REDIS_URL });
+    redisClient = redis;
 
     // Provide an explicit type for the error parameter to avoid implicit 'any'
     redisClient.on('error', (err: unknown) => console.error('Redis Client Error', err));

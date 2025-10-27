@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 // Streaming ingestion pipeline with MinIO for legal document processing
 // Supports: PDF → Text extraction → Chunking → Embedding → pgvector storage
 import * as Minio from 'minio';
@@ -52,7 +53,7 @@ export class StreamingIngestionPipeline {
 
   constructor(minioConfig: Minio.ClientOptions, redisUrl: string, embeddingServiceUrl: string) {
     this.minioClient = new Minio.Client(minioConfig);
-    this.redis = new Redis(redisUrl);
+    this.redis = redis;
     this.embeddingService = new EmbeddingService(embeddingServiceUrl);
     this.textExtractor = new TextExtractor();
     this.chunker = new DocumentChunker();

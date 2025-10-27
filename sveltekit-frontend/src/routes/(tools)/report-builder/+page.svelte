@@ -1,8 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
 
-  let { data }: { data: PageData } = $props();
-
   // Load ReportEditor dynamically to avoid TS "no default export" error
   // Make EditorComponent reactive using Svelte 5 runes ($state) so updates are reflected in the UI
   let EditorComponent: any = $state<any>(null);
@@ -63,12 +61,6 @@
     text: string;
     [key: string]: any;
   };
-
-  // Define the type for the data prop received from the page load function
-  interface PageData {
-    caseId?: string; // caseId might be optional or undefined if not provided by the loader
-    user?: any; // Assuming 'user' might also be part of the data
-  }
 
   let currentReport: Report | null = $state(null);
   let currentCanvasState: CanvasState | null = $state(null);

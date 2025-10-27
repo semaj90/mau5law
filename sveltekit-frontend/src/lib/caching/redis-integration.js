@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * Redis Integration Module
  * Provides unified Redis caching functionality for the legal AI platform
@@ -38,7 +39,7 @@ export class RedisIntegration {
    */
   async init() {
     try {
-      this.client = await createClient(this.options.connectionUrl);
+      this.client = await redis;
       await this.client.connect();
       this.isConnected = true;
       console.log(' Redis connected successfully');

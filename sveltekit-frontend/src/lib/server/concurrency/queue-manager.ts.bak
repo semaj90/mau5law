@@ -66,14 +66,14 @@ export class QueueManager {
   }
   /**
    * Register a job processor
-   */;
+   */
   registerProcessor(type: QueueJob['type'], processor: JobProcessor): void {
     this.processors.set(type, processor);
     console.log(`📝 Registered processor for ${type}`);
   }
   /**
    * Add a job to the queue with Zod validation
-   */;
+   */
   async enqueue(jobData: Partial<QueueJob>): Promise<string> {
     try {
       // Validate with Zod schema
@@ -100,7 +100,7 @@ export class QueueManager {
   }
   /**
    * Start the queue processor
-   */;
+   */
   start(): void {
     if (this.isRunning) return;
     this.isRunning = true;
@@ -111,7 +111,7 @@ export class QueueManager {
   }
   /**
    * Stop the queue processor
-   */;
+   */
   stop(): void {
     if (!this.isRunning) return;
     this.isRunning = false;
@@ -123,7 +123,7 @@ export class QueueManager {
   }
   /**
    * Process the queue
-   */;
+   */
   private async processQueue(): Promise<void> {
     if (this.processingJobs.size >= this.maxConcurrentJobs) {
       return;
@@ -146,13 +146,13 @@ export class QueueManager {
   }
   /**
    * Check if job dependencies are met
-   */;
+   */
   private areJobDependenciesMet(job: QueueJob): boolean {
     return job.dependencies.every(depId => this.completedJobs.has(depId);
   }
   /**
    * Process a single job
-   */;
+   */
   private async processJob(job: QueueJob): Promise<void> {
     const startTime = Date.now();
     console.log(`⚙️ Processing ${job.type} job ${job.id}`);
@@ -206,7 +206,7 @@ export class QueueManager {
   }
   /**
    * Evidence Analysis Processor (with AI integration)
-   */;
+   */
   private async processEvidenceAnalysis(job: QueueJob): Promise<any> {
     const { evidenceId, analysisType = 'comprehensive' } = job.payload;
     console.log(`🔍 Analyzing evidence ${evidenceId} (type: ${analysisType})`);
@@ -222,7 +222,7 @@ export class QueueManager {
   }
   /**
    * Document Processing Processor (with OCR and text extraction)
-   */;
+   */
   private async processDocumentProcessing(job: QueueJob): Promise<any> {
     const { documentId, operations = ['ocr', 'extract', 'classify'] } = job.payload;
     console.log(`📄 Processing document ${documentId} (operations: ${operations.join(', ')})`);
@@ -238,7 +238,7 @@ export class QueueManager {
   }
   /**
    * Case Synthesis Processor (with LLM integration)
-   */;
+   */
   private async processCaseSynthesis(job: QueueJob): Promise<any> {
     const { caseId, evidenceIds = [] } = job.payload;
     console.log(`⚖️ Synthesizing case ${caseId} with ${evidenceIds.length} evidence items`);
@@ -254,7 +254,7 @@ export class QueueManager {
   }
   /**
    * Chain of Custody Update Processor (critical legal operation)
-   */;
+   */
   private async processChainOfCustodyUpdate(job: QueueJob): Promise<any> {
     const { evidenceId, custodyEvent } = job.payload;
     console.log(`🔗 Updating chain of custody for evidence ${evidenceId}`);
@@ -263,13 +263,13 @@ export class QueueManager {
     return {
       evidenceId,
       custodyEvent,
-      integrityVerified: true
-      updatedAt: new Date()
+      integrityVerified: true,
+      updatedAt: new Date(),
     }
   }
   /**
    * Vector Index Rebuild Processor (high-performance operation)
-   */;
+   */
   private async processVectorIndexRebuild(job: QueueJob): Promise<any> {
     const { indexName, vectorCount = 0 } = job.payload;
     console.log(`🔍 Rebuilding vector index ${indexName} (${vectorCount} vectors)`);
@@ -284,7 +284,7 @@ export class QueueManager {
   }
   /**
    * Get queue statistics (Zod validated)
-   */;
+   */
   getStats(): QueueStats {
     const stats = {
       pending: this.pendingJobs.size,
@@ -299,7 +299,7 @@ export class QueueManager {
   }
   /**
    * Calculate average processing time
-   */;
+   */
   private calculateAverageProcessingTime(): number {
     const completedJobs = Array.from(this.completedJobs.values();
     if (completedJobs.length === 0) return 0;
@@ -310,7 +310,7 @@ export class QueueManager {
   }
   /**
    * Get job status
-   */;
+   */
   getJobStatus(jobId: string): 'pending' | 'processing' | 'completed' | 'failed' | 'not_found' {
     if (this.pendingJobs.has(jobId)) return 'pending';
     if (this.processingJobs.has(jobId)) return 'processing';
@@ -320,7 +320,7 @@ export class QueueManager {
   }
   /**
    * Get job result
-   */;
+   */
   getJobResult(jobId: string): any {
     const completed = this.completedJobs.get(jobId);
     if (completed) return completed.result;
@@ -330,7 +330,7 @@ export class QueueManager {
   }
   /**
    * Health check and cleanup
-   */;
+   */
   async healthCheck(): Promise<any> {
     const stats = this.getStats();
     const issues: string[] = [];

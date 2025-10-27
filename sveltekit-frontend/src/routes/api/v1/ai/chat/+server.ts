@@ -1,6 +1,7 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { ensureError } from '$lib/utils/ensure-error';
+import { getOllamaEndpoint } from '$lib/server/ollama';
 
 // Unified AI Chat Endpoint - Consolidates all chat variants
 // Supports multiple models, streaming, and backends
@@ -79,7 +80,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
     // Set defaults
     const {
       messages,
-      model = 'gemma:legal',
+      model = 'gemma3-legal:latest',
       temperature = 0.7,
       maxTokens = 1000,
       stream = false,
@@ -289,34 +290,46 @@ async function executeOllamaChat(
   maxTokens: number,
   systemPrompt?: string
 ): Promise<ChatInferenceResult> {
-  const ollamaEndpoint = process.env.OLLAMA_URL || 'http://localhost:11434';
+  // getOllamaEndpoint() centralizes docker/service-name vs host fallbacks.
+  // Use its return value directly to avoid hardcoded localhost URLs here.
+  const ollamaEndpoint = await getOllamaEndpoint();
 
-  // Build chat context
-  let prompt = '';
+  if (!ollamaEndpoint) {
+    throw new Error('Unable to resolve Ollama endpoint');
+  }
+
+  // Build chat payload for Ollama's chat endpoint
+  const formattedMessages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [];
+
   if (systemPrompt) {
-    prompt += `System: ${systemPrompt}\n\n`;
+    formattedMessages.push({ role: 'system', content: systemPrompt });
   }
 
   for (const msg of messages) {
-    prompt += `${msg.role === 'user' ? 'User' : 'Assistant'}: ${msg.content}\n\n`;
+    const role: 'system' | 'user' | 'assistant' =
+      msg.role === 'system' ? 'system' : msg.role === 'assistant' ? 'assistant' : 'user';
+    formattedMessages.push({ role, content: msg.content });
   }
-  prompt += 'Assistant: ';
+
+  // Map model identifiers to Ollama model names. Default to gemma3-legal:latest
+  const ollamaModel =
+    model === 'gemma3-legal:latest' || model.startsWith('gemma3-legal') ? 'gemma3-legal:latest' : model;
 
   const ollamaRequest = {
-    model: model === 'gemma:legal' ? 'gemma3:latest' : model.replace('gemma-270m-', 'gemma:'),
-    prompt,
+    model: ollamaModel,
+    messages: formattedMessages,
+    stream: false,
     options: {
       temperature,
       num_predict: maxTokens,
     },
-    stream: false,
   };
 
-  const response = await fetch(`${ollamaEndpoint}/api/generate`, {
+  const response = await fetch(`${ollamaEndpoint}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(ollamaRequest),
-    signal: AbortSignal.timeout(60000), // 60 second timeout
+    signal: AbortSignal.timeout(60000),
   });
 
   if (!response.ok) {
@@ -324,20 +337,25 @@ async function executeOllamaChat(
   }
 
   // Narrow the shape of the response rather than using `any`
-  type OllamaResponse = {
+  type OllamaChatResponse = {
+    message?: { role?: string; content?: string };
     response?: string;
     model?: string;
     eval_count?: number;
     prompt_eval_count?: number;
   };
 
-  const result = (await response.json()) as unknown as OllamaResponse;
+  const result = (await response.json()) as unknown as OllamaChatResponse;
 
   const evalCount = typeof result.eval_count === 'number' ? result.eval_count : undefined;
   const promptEval = typeof result.prompt_eval_count === 'number' ? result.prompt_eval_count : 0;
+  const textContent =
+    (result.message && typeof result.message === 'object' ? result.message.content : undefined) ??
+    result.response ??
+    'No response generated';
 
   return {
-    text: result.response || 'No response generated',
+    text: textContent,
     model: result.model || model,
     backend: 'ollama',
     tokens: evalCount,

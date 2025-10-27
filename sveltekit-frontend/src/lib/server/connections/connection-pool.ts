@@ -1,3 +1,4 @@
+import { redis, ensureRedisReady } from '$lib/server/redis-client';
 /**
  * Centralized Connection Pool for QUIC/HTTP3 Concurrent Requests
  *
@@ -64,7 +65,7 @@ export async function ensureRedisInstance(): Promise<Redis> {
 		redisConfig.enableReadyCheck = true;
 		redisConfig.lazyConnect = false;
 
-		redisInstance = new Redis(redisUrl, redisConfig);
+		redisInstance = redis;
 
 		// Wait for ready state
 		await new Promise<void>((resolve, reject) => {

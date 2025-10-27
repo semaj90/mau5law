@@ -1,3 +1,4 @@
+import { cuidSchema } from '$lib/server/z-schemas';
 /*
  * Individual Evidence AI Analysis API Route
  * POST /api/v1/evidence/[id]/analyze - Analyze specific evidence with AI
@@ -22,8 +23,8 @@ const AnalysisRequestSchema = z.object({
     .optional(),
   context: z
     .object({
-      caseId: z.string().uuid().optional(),
-      relatedEvidence: z.array(z.string().uuid()).optional(),
+      caseId: cuidSchema.optional(),
+      relatedEvidence: z.array(cuidSchema).optional(),
       legalContext: z.string().optional(),
     })
     .optional(),
