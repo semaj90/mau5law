@@ -87,8 +87,25 @@
 </script>
 
 {#if open && document}
-  <!-- Modal Overlay -->
-  <div class="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" onclick={closeModal}></div>
+  <!-- Modal Overlay (accessible) -->
+  <!-- Replace non-interactive clickable div with role & keyboard handlers -->
+  <div
+    class="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+    role="button"
+    tabindex="0"
+    aria-label="Close modal"
+    on:click={closeModal}
+    on:keydown={(e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        closeModal();
+      }
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeModal();
+      }
+    }}
+  ></div>
 
   <!-- Modal Content -->
   <div class="fixed left-1/2 top-1/2 z-50 w-full max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white shadow-2xl overflow-hidden">
@@ -158,10 +175,11 @@
               <p class="text-xs font-semibold text-gray-500 uppercase mb-1">Confidence</p>
               <div class="flex items-center gap-2">
                 <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <!-- Explicitly close the inner div (no self-closing tag) -->
                   <div
                     class="h-full bg-green-500 rounded-full"
                     style="width: {document.metadata.confidence * 100}%"
-                  />
+                  ></div>
                 </div>
                 <span class="text-sm font-medium text-gray-900">{Math.round(document.metadata.confidence * 100)}%</span>
               </div>

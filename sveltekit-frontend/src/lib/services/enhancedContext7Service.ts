@@ -3,19 +3,20 @@ import type { LegalEntities } from './legalRAGEngine.js';
  * Enhanced Context7 Service with Legal AI Integration
  * Connects to Context7 MCP Server and provides legal-specific functionality
  */
-}
+
 export interface LegalAnalysisResult {
   riskLevel: 'Low' | 'Medium' | 'High';
   riskScore: number;
   keyFindings: string[];
   complianceStatus: {
     gdpr: 'Compliant' | 'Under Review' | 'Not Applicable';
-  contractLaw: 'Requires Review' | 'N/A';
-  liability: 'High Priority Review Needed' | 'Standard Processing';
-  }
+    contractLaw: 'Requires Review' | 'N/A';
+    liability: 'High Priority Review Needed' | 'Standard Processing';
+  };
   recommendedActions: string[];
   integrationNotes: string[];
 }
+
 export interface ComplianceReport {
   framework: string;
   evidenceCount: number;
@@ -25,7 +26,7 @@ export interface ComplianceReport {
   riskLevel: 'Low' | 'Medium' | 'High';
   remediationRequired: boolean;
 }
-}
+
 export interface LegalPrecedent {
   case: string;
   relevance: string;
@@ -33,300 +34,413 @@ export interface LegalPrecedent {
   jurisdiction: string;
   summary: string;
 }
+
 export class EnhancedContext7Service {
   private mcpEndpoint: string;
   private apiKey?: string;
-  constructor(mcpEndpoint = 'http://localhost:40000/mcp', apiKey?: string) {
-    this.mcpEndpoint = mcpEndpoint;
-    this.apiKey = apiKey;
+
+  constructor(mcpEndpoint?: string, apiKey?: string) {
+    // prefer explicit constructor arg, then env vars (docker service names), then fallback
+    this.mcpEndpoint =
+      mcpEndpoint ||
+      (typeof process !== 'undefined' && (process.env.CONTEXT7_URL || process.env.CONTEXT7_MCP_URL)) ||
+      'http://localhost:8777';
+    this.apiKey = apiKey || (typeof process !== 'undefined' ? process.env.CONTEXT7_API_KEY : undefined);
   }
+
   /**
    * Analyze legal document using Context7 MCP server
    */
-  async analyzeLegalDocument()
-    content: string
+  async analyzeLegalDocument(
+    content: string,
     caseType: 'contract' | 'litigation' | 'compliance',
-    jurisdiction = 'federal';
-  ): Promise<LegalAnalysisResult>, {
+    jurisdiction = 'federal'
+  ): Promise<LegalAnalysisResult> {
     try {
       const response = await this.callMCPTool('analyze-legal-document', {
         content,
         caseType,
-        jurisdiction
-      )});
+        jurisdiction,
+      });
       return this.parseLegalAnalysis(response);
-    } catch (error: any) {
-      console.error('Context7 legal document analysis failed:', error);
-      throw new Error(`Legal document analysis failed: ${error.message}`);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error('Context7 legal document analysis failed:', msg);
+      throw new Error(`Legal document analysis failed: ${msg}`);
     }
   }
+
   /**
    * Generate compliance report using Context7 MCP
    */
-  async generateComplianceReport()
-    evidence: string[];
-    regulations: string[]
-    framework = 'General';
+  async generateComplianceReport(
+    evidence: string[],
+    regulations: string[],
+    framework = 'General'
   ): Promise<ComplianceReport> {
     try {
       const response = await this.callMCPTool('generate-compliance-report', {
         evidence,
         regulations,
-        framework
-      )});
+        framework,
+      });
       return this.parseComplianceReport(response, framework);
-    } catch (error: any) {
-      console.error('Context7 compliance report generation failed:', error);
-      throw new Error(`Compliance report generation failed: ${error.message}`);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error('Context7 compliance report generation failed:', msg);
+      throw new Error(`Compliance report generation failed: ${msg}`);
     }
   }
+
   /**
    * Suggest legal precedents using Context7 MCP
    */
-  async suggestLegalPrecedents()
-    query: string
+  async suggestLegalPrecedents(
+    query: string,
     jurisdiction = 'federal',
-    caseType = 'general';
+    caseType = 'general'
   ): Promise<LegalPrecedent[]> {
     try {
       const response = await this.callMCPTool('suggest-legal-precedents', {
         query,
         jurisdiction,
-        caseType
-      )});
+        caseType,
+      });
       return this.parseLegalPrecedents(response);
-    } catch (error: any) {
-      console.error('Context7 legal precedent suggestion failed:', error);
-      throw new Error(`Legal precedent suggestion failed: ${error.message}`);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error('Context7 legal precedent suggestion failed:', msg);
+      throw new Error(`Legal precedent suggestion failed: ${msg}`);
     }
   }
+
   /**
    * Extract legal entities using Context7 MCP
    */
-  async extractLegalEntities()
-    content: string
-    entityTypes = ['parties', 'dates', 'monetary', 'clauses'];
+  async extractLegalEntities(
+    content: string,
+    entityTypes = ['parties', 'dates', 'monetary', 'clauses']
   ): Promise<LegalEntities> {
     try {
       const response = await this.callMCPTool('extract-legal-entities', {
         content,
-        entityTypes
-      )});
+        entityTypes,
+      });
       return this.parseLegalEntities(response);
-    } catch (error: any) {
-      console.error('Context7 legal entity extraction failed:', error);
-      throw new Error(`Legal entity extraction failed: ${error.message}`);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error('Context7 legal entity extraction failed:', msg);
+      throw new Error(`Legal entity extraction failed: ${msg}`);
     }
   }
+
   /**
    * Analyze technology stack for legal AI context
    */
-  async analyzeStack(component,: string, context = 'legal-ai'): Promise<string> {
+  async analyzeStack(component: string, context = 'legal-ai'): Promise<string> {
     try {
-      const response = await this.callMCPTool('analyze-stack', {
-        component,
-        context
-      )});
-      return (response, as, { te,xt?: a,ny }).text || response;
-    } catch (error: any) {
-      console.error('Context7 stack analysis failed:', error);
-      throw new Error(`Stack analysis failed: ${error.message}`);
+      const response = await this.callMCPTool('analyze-stack', { component, context });
+      return (response && ((response as Record<string, unknown>).text ?? response)) as string;
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error('Context7 stack analysis failed:', msg);
+      throw new Error(`Stack analysis failed: ${msg}`);
     }
   }
+
   /**
    * Generate best practices for legal AI development
    */
-  async generateBestPractices(area,: string): Promise<string> {
+  async generateBestPractices(area: string): Promise<string> {
     try {
-      const response = await this.callMCPTool('generate-best-practices', {
-        area
-      )});
-      return (response, as, { te,xt?: a,ny }).text || response;
-    } catch (error: any) {
-      console.error('Context7 best practices generation failed:', error);
-      throw new Error(`Best practices generation failed: ${error.message}`);
+      const response = await this.callMCPTool('generate-best-practices', { area });
+      return (response && ((response as Record<string, unknown>).text ?? response)) as string;
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error('Context7 best practices generation failed:', msg);
+      throw new Error(`Best practices generation failed: ${msg}`);
     }
   }
+
   /**
    * Suggest integration patterns for new legal AI features
    */
-  async suggestIntegration(feature,: string, requirements?: string): Promise<string> {
+  async suggestIntegration(feature: string, requirements?: string): Promise<string> {
     try {
-      const response = await this.callMCPTool('suggest-integration', {
-        feature,
-        requirements
-      )});
-      return (response, as, { te,xt?: a,ny }).text || response;
-    } catch (error: any) {
-      console.error('Context7 integration suggestion failed:', error);
-      throw new Error(`Integration suggestion failed: ${error.message}`);
+      const response = await this.callMCPTool('suggest-integration', { feature, requirements });
+      return (response && ((response as Record<string, unknown>).text ?? response)) as string;
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error('Context7 integration suggestion failed:', msg);
+      throw new Error(`Integration suggestion failed: ${msg}`);
     }
   }
+
   /**
    * Enhanced legal orchestration using existing copilotOrchestrator patterns
    */
-  async orchestrateLegalAnalysis()
-    prompt: string;
+  async orchestrateLegalAnalysis(
+    prompt: string,
     options: {
       useSemanticSearch?: boolean;
       useMemory?: boolean;
       useMultiAgent?: boolean;
       legalDomain?: string;
       jurisdiction?: string;
-      complianceFramework?: string);
+      complianceFramework?: string;
     } = {}
-  ): Promise<any> {
+  ): Promise<unknown> {
     try {
-      // This would integrate with your existing copilotOrchestrator
-      // from the CLAUDE.md self-prompting system
+      const analysis = await this.analyzeLegalDocument(prompt, 'contract', options.jurisdiction ?? 'federal');
+      const precedentMatches = await this.suggestLegalPrecedents(prompt, options.jurisdiction ?? 'federal');
       const orchestrationResult = {
-        analysis: await this.analyzeLegalDocument(prompt, 'contract)'),
+        analysis,
         complianceScore: 85,
         riskAssessment: { level: 'Medium', score: 60 },
-        precedentMatches: await this.suggestLegalPrecedents(prompt, options.jurisdiction)
-      }
-      return orchestrationResul,t;
-    } catch (error: any) {
-      console.error('Legal orchestration failed:', error);
-      throw new Error(`Legal orchestration failed: ${error.message}`);
+        precedentMatches,
+      };
+      return orchestrationResult;
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error('Legal orchestration failed:', msg);
+      throw new Error(`Legal orchestration failed: ${msg}`);
     }
   }
+
   /**
-   * Call Context7 MCP server tool
+   * Call Context7 MCP server tool using HTTP POST.
+   * Falls back to simulation if remote call fails.
    */
-  private async callMCPTool(toolName,: string, arg,s: { [k,ey: str,ing]: an,y }): Promise<any> {
+  private async callMCPTool(toolName: string, args?: Record<string, unknown>): Promise<unknown> {
+    const endpoint = this.getMcpEndpoint();
+    const url = `${endpoint.replace(/\/$/, '')}/tools/${encodeURIComponent(toolName)}`;
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (this.apiKey) headers['Authorization'] = `Bearer ${this.apiKey}`;
+
+    // timeout helper
+    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timeoutMs = 10000; // 10s timeout
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    if (controller) {
+      timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    }
+
     try {
-      // This is a placeholder - actual implementation would depend on your MCP client setup
-      // For now, we'll simulate the MCP call by directly using the logic from our enhanced server
-      const mockMCPResponse = await this.simulateMCPCall(toolName, args);
-      return mockMCPRespons,e;
-    } catch (error: any) {
-      console.error(`MCP tool call failed: ${toolName}`, error);
-      throw error;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(args ?? {}),
+        signal: controller?.signal,
+      });
+
+      if (!res.ok) {
+        const bodyText = await res.text().catch(() => `<no body>`);
+        throw new Error(`Context7 MCP error ${res.status}: ${bodyText}`);
+      }
+
+      const contentType = res.headers.get('content-type') ?? '';
+      if (contentType.includes('application/json')) {
+        return await res.json();
+      }
+      return await res.text();
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.warn(`Context7 remote call failed for "${toolName}", falling back to local simulate. Error:`, message);
+      // forward typed args to simulation helper(s)
+      return await this.simulateMCPCall(toolName, args ?? {});
+    } finally {
+      if (timeoutId) clearTimeout(timeoutId);
     }
   }
-  /**
-   * Simulate MCP call for development/testing
-   * In production, this would be replaced with actual MCP client calls
-   */
-  private async simulateMCPCall(toolName,: string, arg,s: an,y): Promise<any> {
-    // This simulates the enhanced MCP server responses
-    switch (toolName) {
-      case, 'analyze-legal-document,':
-        return this.simulateLegalDocumentAnalysis(args);
-      case, 'generate-compliance-report,':
-        return this.simulateComplianceReport(args);
-      case, 'suggest-legal-precedents,':
-        return this.simulateLegalPrecedents(args);
-      case, 'extract-legal-entities,':
-        return this.simulateLegalEntities(args);
-      default:
-        throw, new Error(`Unknown MCP tool: ${toolName}`);
-    }
+
+  // small helper to centralize endpoint resolution (used by constructor & tests)
+  private getMcpEndpoint(): string {
+    return (
+      this.mcpEndpoint ||
+      (typeof process !== 'undefined' && (process.env.CONTEXT7_URL || process.env.CONTEXT7_MCP_URL)) ||
+      'http://localhost:8777'
+    );
   }
+
   /**
    * Parse legal analysis response from MCP server
    */
-  private parseLegalAnalysis(response,: any): LegalAnalysisResult {
-    // Extract structured data from MCP server markdown response
-    const text = (response as { text?: any }).text || response;
+  private parseLegalAnalysis(response: unknown): LegalAnalysisResult {
+    const text =
+      typeof response === 'string'
+        ? response
+        : response && typeof (response as Record<string, unknown>).text === 'string'
+          ? ((response as Record<string, unknown>).text as string)
+          : '';
+    const riskScoreParsed = parseInt(this.extractValue(text, 'Risk Score', '60'), 10);
+    const riskScore = Number.isNaN(riskScoreParsed) ? 60 : riskScoreParsed;
+    const riskLevelRaw = this.extractValue(text, 'Overall Risk Level', 'Medium');
+    const riskLevel = ['Low', 'Medium', 'High'].includes(riskLevelRaw)
+      ? (riskLevelRaw as 'Low' | 'Medium' | 'High')
+      : 'Medium';
+
+    const normalizeCompliance = (val: string, fallback: string) => {
+      if (!val) return fallback;
+      return val;
+    };
+
     return {
-      riskLevel: this.extractValue(text, 'Risk Level', 'Medium') as any,
-      riskScore: parseInt(this.extractValue(text, 'Risk Score', '60')),
+      riskLevel,
+      riskScore,
       keyFindings: this.extractList(text, 'Key Findings'),
       complianceStatus: {
-        gdpr: this.extractValue(text, 'GDPR Compliance', 'Not Applicable') as any,
-        contractLaw: this.extractValue(text, 'Contract Law', 'N/A') as any,
-        liability: this.extractValue(text, 'Liability Assessment', 'Standard Processing') as any
+        gdpr: normalizeCompliance(this.extractValue(text, 'GDPR Compliance', 'Not Applicable'), 'Not Applicable') as
+          | 'Compliant'
+          | 'Under Review'
+          | 'Not Applicable',
+        contractLaw: normalizeCompliance(this.extractValue(text, 'Contract Law', 'N/A'), 'N/A') as
+          | 'Requires Review'
+          | 'N/A',
+        liability: normalizeCompliance(
+          this.extractValue(text, 'Liability Assessment', 'Standard Processing'),
+          'Standard Processing'
+        ) as 'High Priority Review Needed' | 'Standard Processing',
       },
       recommendedActions: this.extractList(text, 'Recommended Actions'),
-      integrationNotes: this.extractList(text, 'Integration Notes')
-    }
+      integrationNotes: this.extractList(text, 'Integration Notes'),
+    };
   }
+
   /**
    * Parse compliance report response
    */
-  private parseComplianceReport(response,: any, framewor,k: strin,g): ComplianceReport {
-    const text = (response as { text?: any }).text || response;
-    const score = parseInt(this.extractValue(text, 'Compliance Score', '75');
+  private parseComplianceReport(response: unknown, framework: string): ComplianceReport {
+    const text =
+      typeof response === 'string'
+        ? response
+        : response && typeof (response as Record<string, unknown>).text === 'string'
+          ? ((response as Record<string, unknown>).text as string)
+          : '';
+    const score = parseInt(this.extractValue(text, 'Compliance Score', '75'), 10) || 75;
     return {
       framework,
-      evidenceCount: parseInt(this.extractValue(text, 'Evidence Items', '0')),
-      regulationCount: parseInt(this.extractValue(text, 'Regulations', '0')),
+      evidenceCount: parseInt(this.extractValue(text, 'Evidence Items Analyzed', '0'), 10) || 0,
+      regulationCount: parseInt(this.extractValue(text, 'Applicable Regulations', '0'), 10) || 0,
       complianceScore: score,
       status: score > 80 ? 'Compliant' : score > 60 ? 'Partially Compliant' : 'Non-Compliant',
       riskLevel: score > 80 ? 'Low' : score > 60 ? 'Medium' : 'High',
-      remediationRequired: score < 80>
-    }
+      remediationRequired: score < 80,
+    };
   }
+
   /**
    * Parse legal precedents response
    */
-  private parseLegalPrecedents(response,: any): LegalPrecedent[,] {
-    const text = (response as { text?: any }).text || response;
-    // Extract precedent information from markdown format
-    const precedentSections = text.split('###').slice(1);
-    return precedentSections.map((section: any) => {
-      // removed unused lines assignment
-      const title = lines[0]?.trim() || 'Unknown Case');
+  private parseLegalPrecedents(response: unknown): LegalPrecedent[] {
+    const text =
+      typeof response === 'string'
+        ? response
+        : response && typeof (response as Record<string, unknown>).text === 'string'
+          ? ((response as Record<string, unknown>).text as string)
+          : '';
+    if (!text) return [];
+    const sections = text.split('###').slice(1);
+    return sections.map(section => {
+      const lines = section
+        .split('\n')
+        .map(l => l.trim())
+        .filter(Boolean);
+      const title = lines[0] ?? 'Unknown Case';
+      const relevance = this.extractValue(section, 'Relevance Score', '0%');
+      const jurisdiction = this.extractValue(section, 'Jurisdiction', 'federal');
+      const year = this.extractValue(section, 'Year', '') || (jurisdiction === 'federal' ? '2023' : '2023');
       return {
         case: title.replace(/\([^)]*\)/, '').trim(),
-        relevance: this.extractValue(section, 'Relevance Score', '0%'),
-        year: this.extractValue(section, 'year', '2023'),
-        jurisdiction: this.extractValue(section, 'Jurisdiction', 'federal'),
-        summary: this.extractValue(section, 'Summary', 'No summary available')
-      });
+        relevance,
+        year,
+        jurisdiction,
+        summary: this.extractValue(section, 'Summary', 'No summary available'),
+      };
     });
   }
+
   /**
    * Parse legal entities response
    */
-  private parseLegalEntities(response,: any): LegalEntities {
-    const text = (response as { text?: any }).text || response;
+  private parseLegalEntities(response: unknown): LegalEntities {
+    const text =
+      typeof response === 'string'
+        ? response
+        : response && typeof (response as Record<string, unknown>).text === 'string'
+          ? ((response as Record<string, unknown>).text as string)
+          : '';
     return {
       parties: this.extractEntityList(text, 'Parties'),
       dates: this.extractEntityList(text, 'Dates'),
       monetary: this.extractEntityList(text, 'Monetary Amounts'),
       clauses: this.extractEntityList(text, 'Legal Clauses'),
       jurisdictions: this.extractEntityList(text, 'Jurisdictions'),
-      caseTypes: this.extractEntityList(text, 'Case Types')
-    }
+      caseTypes: this.extractEntityList(text, 'Case Types'),
+    } as LegalEntities;
   }
+
   /**
-   * Helper method to extract values from markdown text
+   * Helper method to extract values from markdown-like text
    */
-  private extractValue(text,: string, ke,y: string, defaultVal,ue: stri,ng): string {
-    const regex = new RegExp(`\\*\\*${key}\\*\\*:?\\s*([^\\n]*)`);
+  private extractValue(text: string, key: string, defaultValue = ''): string {
+    if (!text) return defaultValue;
+    const regex = new RegExp(`\\*?\\*?${this.escapeRegex(key)}\\*?\\*?[:\\s-]*([^\\n]*)`, 'i');
     const match = text.match(regex);
     return match?.[1]?.trim() || defaultValue;
   }
+
   /**
-   * Helper method to extract lists from markdown text
+   * Helper method to extract lists from markdown-like sections
    */
-  private extractList(text,: string, sectionNam,e: strin,g): string,[] {
-    const sectionRegex = new RegExp(`## ${sectionName}([\\s\\S]*?)(?=##|$)`);
+  private extractList(text: string, sectionName: string): string[] {
+    if (!text) return [];
+    const sectionRegex = new RegExp(`##?\\s*${this.escapeRegex(sectionName)}([\\s\\S]*?)(?=##?\\s|$)`, 'i');
     const sectionMatch = text.match(sectionRegex);
     if (!sectionMatch) return [];
-    const listItems = sectionMatch[1].match(/^-\s*(.*)$/gm) || [];
-    return listItems.map((item: any) => (item as { replace?: any; includes?: any }).replace(/^-\s*/, '').trim();
+    const listItems = sectionMatch[1].match(/^-+\\s*(.*)$/gm) || sectionMatch[1].match(/^\\s*-\\s*(.*)$/gm) || [];
+    if (!listItems.length) {
+      // Also try numbered lists or simple lines
+      const lines = sectionMatch[1]
+        .split('\\n')
+        .map(l => l.trim())
+        .filter(l => l);
+      return lines.map(l =>
+        l
+          .replace(/^\\d+[\\.\\)]\\s*/, '')
+          .replace(/^\\-\\s*/, '')
+          .trim()
+      );
+    }
+    return listItems.map((item: string) =>
+      item
+        .replace(/^-+\\s*/, '')
+        .replace(/^\\s*-\\s*/, '')
+        .trim()
+    );
   }
+
   /**
-   * Helper method to extract entity lists
+   * Helper to extract simple entity lists under headings
    */
-  private extractEntityList(text,: string, entityTyp,e: strin,g): string,[] {
-    const sectionRegex = new RegExp(`### ${entityType}[\\s\\S]*?(?=###|##|$)`);
+  private extractEntityList(text: string, entityType: string): string[] {
+    if (!text) return [];
+    const sectionRegex = new RegExp(`###?\\s*${this.escapeRegex(entityType)}([\\s\\S]*?)(?=###?\\s|$)`, 'i');
     const sectionMatch = text.match(sectionRegex);
     if (!sectionMatch) return [];
-    const listItems = sectionMatch[0].match(/^-\s*(.*)$/gm) || [];
-    return listItems;
-      .map((item: any) => (item as { replace?: any; includes?: any }).replace(/^-\s*/, '').trim()
-      .filter((item: any) => item && !(item as { replace?: any; includes?: any }).includes('No ') && !(item as { replace?: any; includes?: any }).includes('identified');
+    const listItems = sectionMatch[1].match(/^-+\\s*(.*)$/gm) || [];
+    return listItems.map((i: string) => i.replace(/^-+\\s*/, '').trim());
   }
+
+  private escapeRegex(s: string): string {
+    return s.replace(/[-\\/\\^$*+?.()|[\\]{}]/g, '\\\\$&');
+  }
+
   /**
-   * Simulation methods for development (remove in production)
+   * Simulation methods for development (remove/replace in production)
    */
-  private simulateLegalDocumentAnalysis(args,: any), {
-    const hasLiability = args.content.toLowerCase().includes('liability');
+  private simulateLegalDocumentAnalysis(args: Record<string, unknown>): unknown {
+    const content = String(args?.content ?? '');
+    const hasLiability = content.toLowerCase().includes('liability');
     const riskScore = hasLiability ? 85 : 35;
     return {
       text: `# Legal Document Analysis
@@ -341,31 +455,37 @@ ${hasLiability ? '- Liability clauses present' : '- Standard contract language'}
 - **Contract Law**: Requires Review
 - **Liability Assessment**: ${hasLiability ? 'High Priority Review Needed' : 'Standard Processing'}
 ## Recommended Actions
-1. Legal review recommended
-2. Compliance verification needed
-3. Document stakeholder review`
-    }
+- Legal review recommended
+- Compliance verification needed
+## Integration Notes
+- Integrate with evidence pipeline`,
+    };
   }
-  private simulateComplianceReport(args,: any), {
-    const score = Math.min(90, args.evidence.length * 10);
+
+  private simulateComplianceReport(args: Record<string, unknown>): unknown {
+    const evidence = Array.isArray(args?.evidence) ? (args.evidence as unknown[]) : [];
+    const regulations = Array.isArray(args?.regulations) ? (args.regulations as unknown[]) : [];
+    const score = Math.min(100, evidence.length * 10 + 50);
     return {
       text: `# Compliance Report
 ## Executive Summary
-- **Evidence Items Analyzed**: ${args.evidence.length}
-- **Applicable Regulations**: ${args.regulations.length}
-- **Compliance Score**: ${score}%`
-    }
+- **Evidence Items Analyzed**: ${evidence.length}
+- **Applicable Regulations**: ${regulations.length}
+- **Compliance Score**: ${score}`,
+    };
   }
-  private simulateLegalPrecedents(args,: any), {
+
+  private simulateLegalPrecedents(_: Record<string, unknown>): unknown {
     return {
       text: `# Legal Precedent Analysis
 ### Sample v. Case (2023)
 - **Relevance Score**: 85%
 - **Jurisdiction**: federal
-- **Summary**: Relevant legal precedent for contract disputes`
-    }
+- **Summary**: Relevant legal precedent for contract disputes`,
+    };
   }
-  private simulateLegalEntities(args,: any), {
+
+  private simulateLegalEntities(_: Record<string, unknown>): unknown {
     return {
       text: `# Legal Entity Extraction
 ### Parties (2)
@@ -376,7 +496,14 @@ ${hasLiability ? '- Liability clauses present' : '- Standard contract language'}
 ### Monetary Amounts (1)
 - $50,000
 ### Legal Clauses (1)
-- Section 3.1`
-    }
+- Section 3.1`,
+    };
+  }
+
+  // add small helper for safe coercion if needed elsewhere
+  private toSafeString(value: unknown, fallback = ''): string {
+    if (typeof value === 'string') return value;
+    if (typeof value === 'number') return String(value);
+    return fallback;
   }
 }

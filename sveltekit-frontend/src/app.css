@@ -2,7 +2,9 @@
 @import './lib/styles/theme-vars.css';
 
 /* ✅ LOCAL FONT LOADING - No Network Dependency */
-@import '/fonts/fonts.css';
+@import '/fonts/inter.css';
+@import '/fonts/jetbrains-mono.css';
+@import '/fonts/press-start-2p.css';
 
 /* NES.css Framework for Retro Gaming UI */
 @import 'nes.css/css/nes.min.css';
@@ -14,6 +16,8 @@
 @import './lib/styles/golden-ratio-utilities.css';
 
 /* YoRHa-specific global styles */
+@import './lib/styles/yorha-global.css';
+
 @layer base {
   :root {
     --yorha-gold: #ffd700;
@@ -27,7 +31,10 @@
     font-family: 'JetBrains Mono', 'Press Start 2P', monospace;
     background: var(--yorha-dark);
     color: white;
-    @apply antialiased; /* Apply Tailwind CSS utility for text anti-aliasing */
+
+    /* Replaced Tailwind @apply antialiased with cross-browser font smoothing */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   /* UnoCSS compatibility helpers */
@@ -63,7 +70,11 @@
 
 /* (theme-vars already imported at top) */
 
-/* Tailwind CSS imports */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Removed Tailwind directives:
+   - @tailwind base;
+   - @tailwind components;
+   - @tailwind utilities;
+   This project uses UnoCSS. Import UnoCSS once in your root layout (e.g. src/routes/+layout.svelte)
+   via: import 'uno.css';
+*/
+

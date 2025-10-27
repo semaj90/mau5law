@@ -6,6 +6,20 @@
 
   let { data }: { data: PageData } = $props();
 
+  // safe helpers to avoid accessing .name on a type that may not include it
+  function getUserName(user: any): string {
+    if (!user) return '';
+    // prefer name, fallback to email, else empty
+    return (user.name as string) ?? (user.email as string) ?? '';
+  }
+
+  function getUserInitial(user: any): string {
+    const name = getUserName(user);
+    if (name && name.length > 0) return name.charAt(0).toUpperCase();
+    if (user?.email && typeof user.email === 'string') return user.email.charAt(0).toUpperCase();
+    return '?';
+  }
+
   // Use $derived correctly: pass a function deriving from reactive inputs
   const stats = $derived(() => data.stats ?? {
     activeCases: 12,
@@ -186,9 +200,9 @@
   <div class="dashboard-header">
     <div class="header-top">
       <h1>🤖 AI Dashboard</h1>
-      {#if data.user?.name}
+      {#if getUserName(data.user)}
         <div class="user-greeting">
-          <span class="user-name">{data.user.name}</span>
+          <span class="user-name">{getUserName(data.user)}</span>
           <span class="user-role">{data.user.role}</span>
         </div>
       {/if}
@@ -201,11 +215,11 @@
     <Card class="user-card">
       <CardContent class="user-card-content">
         <div class="user-avatar">
-          <div class="avatar-circle">{data.user?.name?.charAt(0).toUpperCase() || data.user?.email?.charAt(0).toUpperCase()}</div>
+          <div class="avatar-circle">{getUserInitial(data.user)}</div>
         </div>
         <div class="user-info">
           <p class="user-status">Welcome back,</p>
-          <h2 class="user-display-name">{data.user?.name || data.user?.email}</h2>
+          <h2 class="user-display-name">{getUserName(data.user) || data.user?.email}</h2>
           <p class="user-role-info">{data.user?.role} • {data.user?.email}</p>
         </div>
       </CardContent>

@@ -236,7 +236,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
           path: route.path,
           name: route.path.replace(/\//g, ' → '),
           type: 'configured',
-          icon route.icon || '📄',
+          icon: route.icon || '📄',
           description: route.description,
           category: categorizeRoute(route.path),
         });
@@ -250,7 +250,7 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
           name: route.replace(/\//g, ' → '),
           type: 'file-based',
           icon: '🔗',
-          description `Auto-discovered route`,
+          description: 'Auto-discovered route',
           category: categorizeRoute(route),
         });
       });

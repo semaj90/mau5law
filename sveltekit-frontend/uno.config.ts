@@ -1,233 +1,9 @@
 // @ts-nocheck
-import {
-  defineConfig,
-  presetUno,
-  presetAttributify,
-  presetIcons,
-  presetTypography,
-  transformerDirectives,
-  transformerVariantGroup,
-  transformerCompileClass,
-} from 'unocss';
+import { defineConfig, presetUno, presetAttributify, presetTypography, transformerDirectives, transformerVariantGroup, transformerCompileClass } from 'unocss';
+import presetIcons from '@unocss/preset-icons';
 import extractorSvelte from '@unocss/extractor-svelte';
-import {
-  defineConfig,
-  presetAttributify,
-  presetUno,
-  presetWebFonts,
-  transformerDirectives,
-  transformerVariantGroup,
-} from 'unocss';
 import { presetForms } from '@unocss/preset-forms';
 import { presetRadix } from 'unocss-preset-radix';
-import { presetIcons } from 'unocss';
-
-export default defineConfig({
-  presets: [
-    presetUno(),
-    presetAttributify(),
-    presetIcons(),
-    presetWebFonts({
-      provider: 'google',
-      fonts: {
-        sans: 'Inter:400,500,600,700',
-        mono: 'Fira Code:400,500,600,700',
-        pixel: 'Press Start 2P', // Font inspired by nes.css
-      },
-    }),
-    presetForms(),
-    presetRadix({
-      palette: ['mauve', 'blue', 'green', 'red', 'yellow'],
-      aliases: {
-        primary: 'blue',
-        accent: 'green',
-        danger: 'red',
-        warning: 'yellow',
-      },
-    }),
-  ],
-  transformers: [transformerDirectives(), transformerVariantGroup()],
-  theme: {
-    extend: {
-      colors: {
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
-        primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
-        },
-        secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
-        },
-        destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
-        },
-        muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
-        },
-        accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
-        },
-        popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
-        },
-        card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
-        },
-      },
-      borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
-      },
-      keyframes: {
-        // Custom animations for glow effects
-        'glow': {
-          '0%, 100%': { opacity: '1', filter: 'drop-shadow(0 0 5px rgba(59, 130, 246, 0.7))' },
-          '50%': { opacity: '0.8', filter: 'drop-shadow(0 0 15px rgba(59, 130, 246, 1))' },
-        },
-        'matrix-rain': {
-          '0%': { transform: 'translateY(-100%)', opacity: '0' },
-          '100%': { transform: 'translateY(100%)', opacity: '1' },
-        },
-        // Animations for bits-ui components (fade, zoom, slide)
-        'fade-in': {
-          from: { opacity: '0' },
-          to: { opacity: '1' },
-        },
-        'fade-out': {
-          from: { opacity: '1' },
-          to: { opacity: '0' },
-        },
-        'zoom-in': {
-          from: { transform: 'scale(0.95)' },
-          to: { transform: 'scale(1)' },
-        },
-        'zoom-out': {
-          from: { transform: 'scale(1)' },
-          to: { transform: 'scale(0.95)' },
-        },
-        'slide-in-from-top': {
-          from: { transform: 'translateY(-8px)' },
-          to: { transform: 'translateY(0)' },
-        },
-        'slide-in-from-bottom': {
-          from: { transform: 'translateY(8px)' },
-          to: { transform: 'translateY(0)' },
-        },
-        'slide-in-from-left': {
-          from: { transform: 'translateX(-8px)' },
-          to: { transform: 'translateX(0)' },
-        },
-        'slide-in-from-right': {
-          from: { transform: 'translateX(8px)' },
-          to: { transform: 'translateX(0)' },
-        },
-        'slide-out-to-top': {
-          from: { transform: 'translateY(0)' },
-          to: { transform: 'translateY(-8px)' },
-        },
-        'slide-out-to-bottom': {
-          from: { transform: 'translateY(0)' },
-          to: { transform: 'translateY(8px)' },
-        },
-        'slide-out-to-left': {
-          from: { transform: 'translateX(0)' },
-          to: { transform: 'translateX(-8px)' },
-        },
-        'slide-out-to-right': {
-          from: { transform: 'translateX(0)' },
-          to: { transform: 'translateX(8px)' },
-        },
-        // Specific dialog animations
-        'slide-out-to-left-1/2': {
-          from: { transform: 'translateX(-50%)' },
-          to: { transform: 'translateX(-100%)' },
-        },
-        'slide-out-to-top-[48%]': {
-          from: { transform: 'translateY(-50%)' },
-          to: { transform: 'translateY(-48%)' },
-        },
-        'slide-in-from-left-1/2': {
-          from: { transform: 'translateX(-100%)' },
-          to: { transform: 'translateX(-50%)' },
-        },
-        'slide-in-from-top-[48%]': {
-          from: { transform: 'translateY(-48%)' },
-          to: { transform: 'translateY(-50%)' },
-        },
-      },
-      animation: {
-        'glow': 'glow 2s ease-in-out infinite',
-        'matrix-rain': 'matrix-rain 1s linear infinite',
-        // bits-ui animations
-        'fade-in': 'fade-in 150ms ease-out',
-        'fade-out': 'fade-out 150ms ease-in',
-        'zoom-in': 'zoom-in 150ms ease-out',
-        'zoom-out': 'zoom-out 150ms ease-in',
-        'slide-in-from-top-2': 'slide-in-from-top 150ms ease-out',
-        'slide-in-from-bottom-2': 'slide-in-from-bottom 150ms ease-out',
-        'slide-in-from-left-2': 'slide-in-from-left 150ms ease-out',
-        'slide-in-from-right-2': 'slide-in-from-right 150ms ease-out',
-        'slide-out-to-top-2': 'slide-out-to-top 150ms ease-in',
-        'slide-out-to-bottom-2': 'slide-out-to-bottom 150ms ease-in',
-        'slide-out-to-left-2': 'slide-out-to-left 150ms ease-in',
-        'slide-out-to-right-2': 'slide-out-to-right 150ms ease-in',
-        // Dialog specific
-        'slide-out-to-left-1/2': 'slide-out-to-left-1/2 150ms ease-in',
-        'slide-out-to-top-[48%]': 'slide-out-to-top-[48%] 150ms ease-in',
-        'slide-in-from-left-1/2': 'slide-in-from-left-1/2 150ms ease-out',
-        'slide-in-from-top-[48%]': 'slide-in-from-top-[48%] 150ms ease-out',
-      },
-    },
-  },
-  rules: [
-    // Custom rules for shadow-glow
-    ['shadow-glow', { 'box-shadow': '0 0 10px rgba(59, 130, 246, 0.5)' }],
-  ],
-  shortcuts: {
-    // Custom effects
-    'effect-glow': 'animate-glow',
-    'effect-matrix': 'animate-matrix-rain',
-    'cuda-active': 'animate-glow',
-    'wasm-active': 'animate-glow',
-    'intel-gpu-active': 'animate-glow',
-    'input-gaming': 'focus:shadow-glow',
-
-    // Form shortcuts
-    'form-input': 'px-3 py-2 rounded-md border border-gray-300 bg-white focus:(outline-none ring-2 ring-blue-500)',
-    'form-label': 'block text-sm font-medium text-gray-700',
-    'form-select': 'form-input pr-8',
-    'form-textarea': 'form-input resize-none',
-    'form-checkbox': 'h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500',
-
-    // bits-ui component shortcuts
-    'bits-tooltip-content':
-      'fade-in-0 zoom-in-95 data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 animate-in',
-    'bits-dialog-overlay':
-      'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=open]:animate-in data-[state=closed]:animate-out',
-    'bits-select-content':
-      'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=open]:animate-in data-[state=closed]:animate-out',
-    'bits-dropdown-content':
-      'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=open]:animate-in data-[state=closed]:animate-out',
-    'bits-context-content':
-      'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=open]:animate-in data-[state=closed]:animate-out',
-    'bits-dialog-content':
-      'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] data-[state=open]:animate-in data-[state=closed]:animate-out',
-    'nier-bits-dialog':
-      'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] data-[state=open]:animate-in data-[state=closed]:animate-out',
-  },
-});
-
 
 export default defineConfig({
   presets: [
@@ -235,11 +11,11 @@ export default defineConfig({
     presetAttributify(),
     presetIcons({
       scale: 1.2,
-      cdn: 'https://esm.sh/',
+      // Use local @iconify-json packages — ensure these are installed
       collections: {
-        lucide: () => import('@iconify-json/lucide/icons.json').then(i => i.default).catch(() => ({})),
-        tabler: () => import('@iconify-json/tabler/icons.json').then(i => i.default).catch(() => ({})),
-        heroicons: () => import('@iconify-json/heroicons/icons.json').then(i => i.default).catch(() => ({})),
+        lucide: () => import('@iconify-json/lucide/icons.json').then(i => i.default),
+        tabler: () => import('@iconify-json/tabler/icons.json').then(i => i.default),
+        heroicons: () => import('@iconify-json/heroicons/icons.json').then(i => i.default),
       },
       autoInstall: true,
     }),
@@ -260,8 +36,17 @@ export default defineConfig({
         },
       },
     }),
-    // ✅ DISABLED: Local fonts are loaded via app.css instead
-    // presetWebFonts() - Removed to prevent timeout issues
+    // presetWebFonts removed — fonts will be self-hosted via /public/fonts and src/app.css
+    presetForms(),
+    presetRadix({
+      palette: ['mauve', 'blue', 'green', 'red', 'yellow'],
+      aliases: {
+        primary: 'blue',
+        accent: 'green',
+        danger: 'red',
+        warning: 'yellow',
+      },
+    }),
   ],
   transformers: [
     transformerDirectives(),
@@ -430,6 +215,7 @@ export default defineConfig({
       mono: ['JetBrains Mono', 'Roboto Mono', 'SF Mono', 'Monaco', 'Consolas', 'monospace'],
       gothic: ['MS Gothic', 'MS UI Gothic', 'monospace'],
       nes: ['Press Start 2P', 'monospace'],
+      pixel: ['Press Start 2P', 'monospace'],
       nier: ['IBM Plex Sans', 'sans-serif'],
       legal: ['Inter', 'sans-serif'],
     },
@@ -451,7 +237,7 @@ export default defineConfig({
       'bounce-subtle': 'bounce 2s ease-in-out infinite',
       'fade-in': 'fadeIn 0.5s ease-in-out',
       'slide-up': 'slideUp 0.3s ease-out',
-      glow: 'glow 2s ease-in-out infinite alternate',
+      glow: 'glow 2s ease-in-out infinite',
       'matrix-rain': 'matrixRain 3s linear infinite',
       'nes-blink': 'nesBlink 1s step-end infinite',
       processing: 'processing 2s linear infinite',
@@ -1354,3 +1140,219 @@ export default defineConfig({
     'border-nes-white',
   ],
 });
+    'border-nes-blue',
+    'border-nes-purple',
+    'border-nes-pink',
+    'border-nes-gray',
+    'border-nes-black',
+    'border-nes-white',
+  ],
+});
+    'btn-warning',
+    'btn-info',
+    'btn-nier',
+    'btn-crimson',
+    'btn-gold',
+    'btn-xs',
+    'btn-sm',
+    'btn-md',
+    'btn-lg',
+    'btn-xl',
+    'btn-loading',
+    'nier-btn',
+
+    // Card and Panel Components
+    'bg-card',
+    'text-card-foreground',
+    'border-card',
+    'shadow-card',
+    'bg-muted',
+    'text-muted-foreground',
+    'bg-popover',
+    'text-popover-foreground',
+    'border-popover',
+    'bg-background',
+    'text-foreground',
+    'border-border',
+    'border-input',
+    'bg-input',
+    'bg-primary',
+    'text-primary-foreground',
+    'bg-secondary',
+    'text-secondary-foreground',
+    'bg-accent',
+    'text-accent-foreground',
+    'ring-ring',
+    'text-destructive',
+    'border-destructive',
+    'bg-destructive',
+    'text-destructive-foreground',
+
+    // Dialog and Modal States
+    'data-[state=open]:animate-in',
+    'data-[state=closed]:animate-out',
+    'data-[state=closed]:fade-out-0',
+    'data-[state=open]:fade-in-0',
+    'data-[state=closed]:zoom-out-95',
+    'data-[state=open]:zoom-in-95',
+    'data-[side=bottom]:slide-in-from-top-2',
+    'data-[side=left]:slide-in-from-right-2',
+    'data-[side=right]:slide-in-from-left-2',
+    'data-[side=top]:slide-in-from-bottom-2',
+
+    // Dropdown and Context Menu States
+    'data-[highlighted]:bg-accent',
+    'data-[highlighted]:text-accent-foreground',
+    'data-[disabled]:pointer-events-none',
+    'data-[disabled]:opacity-50',
+
+    // Select Component States
+    'data-[placeholder]:text-muted-foreground',
+    'data-[state=open]:border-ring',
+    'focus:border-ring',
+    'focus:ring-2',
+    'focus:ring-ring',
+    'focus:ring-offset-2',
+
+    // Tooltip and Hover States
+    'hover:bg-accent',
+    'hover:text-accent-foreground',
+    'hover:border-accent',
+    'focus-visible:outline-none',
+    'focus-visible:ring-2',
+    'focus-visible:ring-ring',
+    'focus-visible:ring-offset-2',
+
+    // Accessibility and Screen Reader
+    'sr-only',
+    'not-sr-only',
+    'focus:not-sr-only',
+
+    // Grid and Layout
+    'grid-cols-1',
+    'grid-cols-2',
+    'grid-cols-3',
+    'grid-cols-4',
+    'grid-cols-5',
+    'grid-cols-6',
+    'grid-cols-12',
+    'md:grid-cols-2',
+    'md:grid-cols-3',
+    'md:grid-cols-4',
+    'lg:grid-cols-3',
+    'lg:grid-cols-4',
+    'lg:grid-cols-5',
+    'xl:grid-cols-4',
+    'xl:grid-cols-5',
+    'xl:grid-cols-6',
+
+    // Responsive Design
+    'sm:text-sm',
+    'md:text-base',
+    'lg:text-lg',
+    'xl:text-xl',
+    'sm:p-4',
+    'md:p-6',
+    'lg:p-8',
+    'xl:p-10',
+    'sm:m-2',
+    'md:m-4',
+    'lg:m-6',
+    'xl:m-8',
+
+    // Dark Mode Support
+    'dark:bg-card',
+    'dark:text-card-foreground',
+    'dark:border-card',
+    'dark:bg-background',
+    'dark:text-foreground',
+    'dark:border-border',
+    'dark:bg-muted',
+    'dark:text-muted-foreground',
+    'dark:bg-accent',
+    'dark:text-accent-foreground',
+    'dark:bg-destructive',
+    'dark:text-destructive-foreground',
+    'dark:ring-ring',
+
+    // Vector Intelligence Components
+    'vector-search-container',
+    'vector-result-card',
+    'vector-confidence-indicator',
+    'vector-metadata-panel',
+    'recommendation-confidence-high',
+    'recommendation-confidence-medium',
+    'recommendation-confidence-low',
+    'semantic-highlight',
+    'entity-tag',
+    'relationship-connector',
+    'theme-weight-indicator',
+
+    // Enhanced NES Gaming Components
+    'nes-button',
+    'nes-button-primary',
+    'nes-button-success',
+    'nes-button-warning',
+    'nes-button-danger',
+    'nes-card',
+    'nes-card-dark',
+    'nes-input',
+    'nes-input-dark',
+    'nes-panel',
+    'nes-panel-header',
+    'nes-panel-content',
+    'nes-badge',
+    'nes-badge-success',
+    'nes-badge-warning',
+    'nes-badge-info',
+    'nes-container',
+    'nes-container-dark',
+    'nes-modal',
+    'nes-modal-overlay',
+    'nes-select',
+    'nes-checkbox',
+    'nes-radio',
+    'nes-blink',
+    'nes-pulse',
+    'nes-bounce',
+    'nes-grid',
+    'nes-flex',
+    'enhanced-nes-button',
+    'enhanced-nes-card',
+    'enhanced-nes-input',
+    'enhanced-nes-modal',
+
+    // NES Color Classes
+    'bg-nes-red',
+    'bg-nes-orange',
+    'bg-nes-yellow',
+    'bg-nes-green',
+    'bg-nes-blue',
+    'bg-nes-purple',
+    'bg-nes-pink',
+    'bg-nes-gray',
+    'bg-nes-black',
+    'bg-nes-white',
+    'text-nes-red',
+    'text-nes-orange',
+    'text-nes-yellow',
+    'text-nes-green',
+    'text-nes-blue',
+    'text-nes-purple',
+    'text-nes-pink',
+    'text-nes-gray',
+    'text-nes-black',
+    'text-nes-white',
+    'border-nes-red',
+    'border-nes-orange',
+    'border-nes-yellow',
+    'border-nes-green',
+    'border-nes-blue',
+    'border-nes-purple',
+    'border-nes-pink',
+    'border-nes-gray',
+    'border-nes-black',
+    'border-nes-white',
+});
+
+
