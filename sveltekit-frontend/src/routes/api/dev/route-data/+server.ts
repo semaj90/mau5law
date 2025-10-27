@@ -7,42 +7,42 @@ const execAsync = promisify(exec)
 export async function GET() {
   try {
     // Get the SvelteKit frontend directory
-    const __dirname = path.dirname(fileURLToPath(import.meta.url)
-    const frontendRoot = path.resolve(__dirname, '../../../../../..')
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+    const frontendRoot = path.resolve(__dirname, '../../../../../..');
     // Execute the route export script with analytics from the frontend directory
-    const command = 'node scripts/export-routes-map.mjs --analytics --format=json'
+    const command = 'node scripts/export-routes-map.mjs --analytics --format=json';
     const { stdout, stderr } = await execAsync(command, {
       cwd: frontendRoot,
       maxBuffer: 1024 * 1024 * 2, // 2MB buffer for large route data
-    })
+    });
     if (stderr) {
-      console.warn('Route export script warnings:', stderr)
+      console.warn('Route export script warnings:', stderr);
     }
     // Parse the JSON output
-    let routeData
+    let routeData;
     try {
-      routeData = JSON.parse(stdout)
+      routeData = JSON.parse(stdout);
     } catch (parseError) {
-      console.error('Failed to parse route data JSON:', parseError)
-      console.log('Raw output:', stdout)
-      throw new Error('Invalid JSON response from route export script')
+      console.error('Failed to parse route data JSON:', parseError);
+      console.log('Raw output:', stdout);
+      throw new Error('Invalid JSON response from route export script');
     }
     // Enhance with additional analytics
-    const analytics = generateEnhancedAnalytics(routeData)
+    const analytics = generateEnhancedAnalytics(routeData);
     return json({
       ...routeData,
-      analytics
-    })
+      analytics,
+    });
   } catch (error) {
     console.error('Failed to generate route data:', error)
-    return json()
+    return json(
       {
         error: 'Failed to load route data',
-        message,: error instanceof Error ? error.message: 'Unknown error',
-        timestamp,: new Date().toISOString()
+        message: error instanceof Error ? error.message : 'Unknown error',
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
-    )
+    );
   }
 }
 function generateEnhancedAnalytics(routeData: any) {

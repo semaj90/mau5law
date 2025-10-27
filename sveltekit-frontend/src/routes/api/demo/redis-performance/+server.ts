@@ -18,8 +18,7 @@ interface PerformanceResult {
 // Simulate expensive operations like vector search, legal analysis, etc.
 async function expensiveVectorSearch(query: string): Promise<any> {
   // Simulate heavy computation (vector similarity, AI processing)
-  await new Promise((resolve) => setTimeout(resolve, 1200),; // 1.2s delay
-  await new Promise((resolve) => setTimeout(resolve, 1200)); // 1.2s delay
+  await new Promise(resolve => setTimeout(resolve, 1200)); // 1.2s delay
   return {
     query,
     results: [
@@ -28,27 +27,27 @@ async function expensiveVectorSearch(query: string): Promise<any> {
         title: 'Employment Contract Analysis - Remote Work Clauses',
         similarity: 0.94,
         content: 'This landmark case establishes precedent for remote work provisions...',
-        citations: ['Smith v. TechCorp, 123 F.3d 456 (2024)']
+        citations: ['Smith v. TechCorp, 123 F.3d 456 (2024)'],
       },
       {
         id: 'doc_002',
         title: 'Department of Labor Guidelines - Remote Work Rights',
         similarity: 0.87,
         content: 'Federal guidelines outline minimum standards for remote work agreements...',
-        citations: ['DOL Regulation 29 CFR 785.12']
-      }
+        citations: ['DOL Regulation 29 CFR 785.12'],
+      },
     ],
     metadata: {
       searchTime: '1200ms',
       totalResults: 2,
       model: 'legal-nomic-embed',
       embedding: new Array(768).fill(0).map(() => Math.random()), // Mock 768-dim vector
-    }
-  }
+    },
+  };
 }
 async function expensiveLegalAnalysis(_document: string): Promise<any> {
   // Simulate complex legal analysis (NLP, entity extraction, risk assessment)
-  await new Promise((resolve) => setTimeout(resolve, 800),; // 800ms delay
+  await new Promise(resolve => setTimeout(resolve, 800)); // 800ms delay
   return {
     document: _document.substring(0, 100) + '...',
     analysis: {
@@ -60,11 +59,11 @@ async function expensiveLegalAnalysis(_document: string): Promise<any> {
       recommendations: [
         'Review remote work policy compliance',
         'Verify termination clause enforceability',
-        'Update compensation structure documentation'
-      ]
+        'Update compensation structure documentation',
+      ],
     },
-    processingTime: '800ms'
-  }
+    processingTime: '800ms',
+  };
 }
 export const POST: RequestHandler = async ({ request }) => {
   const startTime = performance.now()

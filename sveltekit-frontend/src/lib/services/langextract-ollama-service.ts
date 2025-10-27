@@ -14,26 +14,40 @@ export interface LangExtract {
 // Mock implementation that falls back to Ollama direct API
 const langextract: LangExtract = {
   async extract(options) {
-    const response = await fetch(`${options.model_url}/api/generate`, {
+    const url = `${options.model_url.replace(/\/+$/, '')}/api/generate`;
+    const body = {
+      model: options.model_id,
+      prompt: `${options.prompt_description}\n\nText to extract from:\n${options.text_or_documents}`,
+      stream: false,
+    };
+    const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({,
-        model: options.model_id,
-        prompt: `${options.prompt_description}\n\nText to extract from:\n${options.text_or_documents}`,
-        stream: false
-      })
+      body: JSON.stringify(body),
     });
     if (!response.ok) {
       throw new Error(`Ollama API error: ${response.status} ${response.statusText}`);
     }
-    const data = await response.json() as { response?: unknown; [k: string]: unknown }
-    return {
-      extracted_data: data.response ?? data,
-      confidence: 0.8,
-      processing_time: 1000
+
+    // Safely parse JSON into unknown, then narrow to the typed shape
+    let raw: unknown;
+    try {
+      raw = await response.json();
+    } catch {
+      raw = {};
     }
-  }
-}
+    const data = (raw ?? {}) as OllamaGenerateResponse;
+
+    // prefer known keys, avoid any
+    const extracted = data.response ?? data.extracted ?? data;
+
+    return {
+      extracted_data: extracted,
+      confidence: 0.8,
+      processing_time: 1000,
+    };
+  },
+};
 // Domain types
 export type DocumentType = 'contract' | 'case_law' | 'statute' | 'evidence' | 'motion' | 'brief';
 export type ExtractionType = 'entities' | 'summary' | 'key_terms' | 'obligations' | 'risks' | 'dates';
@@ -52,10 +66,28 @@ export interface LegalExtractionResult {
   document_type: DocumentType;
   extraction_type: ExtractionType;
 }
+// Add a small helper to resolve the Ollama endpoint from envs (docker-first, fallback to local)
+export function getOllamaEndpoint(): string {
+  // Prefer Docker service name via env, then Vite-style env, then a sensible default
+  if (typeof process !== 'undefined' && process.env?.OLLAMA_URL) return process.env.OLLAMA_URL;
+
+  // Safe, typed access to import.meta.env without using `any`
+  if (typeof import.meta !== 'undefined' && 'env' in import.meta) {
+    // import.meta.env shape can vary; use a narrow typed access
+    const meta = import.meta as { env?: Record<string, string | undefined> };
+    const env = meta.env ?? {};
+    // common names used in Vite setups
+    const viteOllama = env.VITE_OLLAMA_URL ?? env.PUBLIC_OLLAMA_URL;
+    if (typeof viteOllama === 'string' && viteOllama.length > 0) return viteOllama;
+  }
+
+  return 'http://ollama:11434';
+}
 export class LangExtractOllamaService {
   private ollamaUrl: string;
   private defaultModel: string;
-  constructor(ollamaUrl = 'http://localhost:11434', defaultModel = 'gemma2:2b') {
+  // Use getOllamaEndpoint() instead of a hardcoded localhost URL
+  constructor(ollamaUrl = getOllamaEndpoint(), defaultModel = 'gemma2:2b') {
     this.ollamaUrl = ollamaUrl;
     this.defaultModel = defaultModel;
   }
@@ -70,16 +102,14 @@ export class LangExtractOllamaService {
         prompt_description: prompt,
         examples,
         model_id: request?.model || this.defaultModel,
-        model_url: this.ollamaUrl
+        model_url: this.ollamaUrl,
       });
       const extracted = ((): unknown => {
-        type ExtractResponse = { extracted_data?: unknown }
+        type ExtractResponse = { extracted_data?: unknown };
         const isExtractResponse = (x: unknown): x is ExtractResponse => {
           return typeof x === 'object' && x !== null && 'extracted_data' in x;
-        }
-        return isExtractResponse(result) && result.extracted_data !== undefined
-          ? result.extracted_data
-          : result;
+        };
+        return isExtractResponse(result) && result.extracted_data !== undefined ? result.extracted_data : result;
       })();
       return {
         extracted_data: extracted,
@@ -87,8 +117,8 @@ export class LangExtractOllamaService {
         processing_time: Date.now() - startTime,
         model_used: request?.model || this.defaultModel,
         document_type: request.documentType,
-        extraction_type: request.extractionType
-      }
+        extraction_type: request.extractionType,
+      };
     } catch (error) {
       console.error('LangExtract processing error:', error);
       throw new Error(`LangExtract processing failed: ${String(error)}`);
@@ -100,7 +130,7 @@ export class LangExtractOllamaService {
       text,
       documentType: 'contract',
       extractionType: 'obligations',
-      model
+      model,
     });
   }
   // Extract case law citations and holdings
@@ -109,16 +139,20 @@ export class LangExtractOllamaService {
       text,
       documentType: 'case_law',
       extractionType: 'entities',
-      model
+      model,
     });
   }
   // Extract key dates from legal documents
-  async extractLegalDates(text: string, documentType: DocumentType = 'contract', model?: string): Promise<LegalExtractionResult> {
+  async extractLegalDates(
+    text: string,
+    documentType: DocumentType = 'contract',
+    model?: string
+  ): Promise<LegalExtractionResult> {
     return this.extractLegalEntities({
       text,
       documentType,
       extractionType: 'dates',
-      model
+      model,
     });
   }
   // Generate legal document summary
@@ -127,16 +161,20 @@ export class LangExtractOllamaService {
       text,
       documentType,
       extractionType: 'summary',
-      model
+      model,
     });
   }
   // Extract risk factors from legal documents
-  async extractRiskFactors(text: string, documentType: DocumentType = 'contract', model?: string): Promise<LegalExtractionResult> {
+  async extractRiskFactors(
+    text: string,
+    documentType: DocumentType = 'contract',
+    model?: string
+  ): Promise<LegalExtractionResult> {
     return this.extractLegalEntities({
       text,
       documentType,
       extractionType: 'risks',
-      model
+      model,
     });
   }
   // Batch process multiple documents
@@ -154,7 +192,7 @@ export class LangExtractOllamaService {
           processing_time: 0,
           model_used: request?.model || this.defaultModel,
           document_type: request.documentType,
-          extraction_type: request.extractionType
+          extraction_type: request.extractionType,
         });
       }
     }
@@ -165,19 +203,21 @@ export class LangExtractOllamaService {
     const basePrompts: Record<DocumentType, Record<ExtractionType, string>> = {
       contract: {
         entities: 'Extract all legal entities, parties, dates, monetary amounts, and key terms from this contract.',
-        summary: 'Provide a comprehensive summary of this contract including parties, key obligations, terms, and conditions.',
+        summary:
+          'Provide a comprehensive summary of this contract including parties, key obligations, terms, and conditions.',
         key_terms: 'Extract all key terms, definitions, and important clauses from this contract.',
         obligations: 'Extract all obligations, duties, and responsibilities for each party in this contract.',
         risks: 'Identify potential risks, liabilities, and problematic clauses in this contract.',
-        dates: 'Extract all dates, deadlines, and time-sensitive provisions from this contract.'
+        dates: 'Extract all dates, deadlines, and time-sensitive provisions from this contract.',
       },
       case_law: {
-        entities: 'Extract case citations, court names, judges, parties, legal issues, and holdings from this case law.',
+        entities:
+          'Extract case citations, court names, judges, parties, legal issues, and holdings from this case law.',
         summary: 'Summarize this case including the facts, legal issues, holding, and reasoning.',
         key_terms: 'Extract key legal terms, precedents, and doctrines from this case.',
         obligations: 'Extract any legal obligations or duties established by this case.',
         risks: 'Identify legal risks and potential precedential impacts of this case.',
-        dates: 'Extract all relevant dates from this case including filing dates, hearing dates, and decision dates.'
+        dates: 'Extract all relevant dates from this case including filing dates, hearing dates, and decision dates.',
       },
       statute: {
         entities: 'Extract statutory sections, definitions, penalties, and requirements from this statute.',
@@ -185,7 +225,7 @@ export class LangExtractOllamaService {
         key_terms: 'Extract definitions, key terms, and important statutory provisions.',
         obligations: 'Extract all legal obligations, duties, and compliance requirements from this statute.',
         risks: 'Identify potential penalties, violations, and compliance risks under this statute.',
-        dates: 'Extract effective dates, deadlines, and time-sensitive provisions from this statute.'
+        dates: 'Extract effective dates, deadlines, and time-sensitive provisions from this statute.',
       },
       evidence: {
         entities: 'Extract all relevant facts, names, dates, locations, and evidence markers from this document.',
@@ -193,7 +233,7 @@ export class LangExtractOllamaService {
         key_terms: 'Extract key facts, technical terms, and important details from this evidence.',
         obligations: 'Extract any procedural requirements or evidentiary standards from this document.',
         risks: 'Identify potential admissibility issues or evidentiary problems.',
-        dates: 'Extract all timestamps, event dates, and chronological information from this evidence.'
+        dates: 'Extract all timestamps, event dates, and chronological information from this evidence.',
       },
       motion: {
         entities: 'Extract parties, legal standards, arguments, and relief sought from this motion.',
@@ -201,7 +241,7 @@ export class LangExtractOllamaService {
         key_terms: 'Extract legal standards, procedural requirements, and key arguments.',
         obligations: 'Extract any procedural obligations or requirements mentioned in this motion.',
         risks: 'Identify potential weaknesses or counterarguments to this motion.',
-        dates: 'Extract filing deadlines, hearing dates, and time-sensitive requirements.'
+        dates: 'Extract filing deadlines, hearing dates, and time-sensitive requirements.',
       },
       brief: {
         entities: 'Extract legal arguments, citations, facts, and legal standards from this brief.',
@@ -209,10 +249,13 @@ export class LangExtractOllamaService {
         key_terms: 'Extract key legal arguments, precedents, and persuasive points.',
         obligations: 'Extract any legal obligations or standards discussed in this brief.',
         risks: 'Identify potential weaknesses in the legal arguments presented.',
-        dates: 'Extract all relevant dates and deadlines mentioned in this brief.'
-      }
-    }
-    return basePrompts[request.documentType][request.extractionType] || 'Extract relevant legal information from this document.';
+        dates: 'Extract all relevant dates and deadlines mentioned in this brief.',
+      },
+    };
+    return (
+      basePrompts[request.documentType][request.extractionType] ||
+      'Extract relevant legal information from this document.'
+    );
   }
   // Get examples for better extraction accuracy
   private getLegalExamples(documentType: string, extractionType: string): Array<unknown> {
@@ -224,9 +267,9 @@ export class LangExtractOllamaService {
           output: {
             parties: ['ABC Corp. (Delaware corporation)', 'XYZ LLC (California limited liability company)'],
             dates: ['January 15, 2024'],
-            entity_types: ['Delaware corporation', 'California limited liability company']
-          }
-        }
+            entity_types: ['Delaware corporation', 'California limited liability company'],
+          },
+        },
       ],
       case_law_entities: [
         {
@@ -237,11 +280,11 @@ export class LangExtractOllamaService {
             citation: '123 F.3d 456 (9th Cir. 2023)',
             court: '9th Circuit Court of Appeals',
             year: '2023',
-            holding: 'contracts must be interpreted in favor of the non-drafting party'
-          }
-        }
-      ]
-    }
+            holding: 'contracts must be interpreted in favor of the non-drafting party',
+          },
+        },
+      ],
+    };
     const key = `${documentType}_${extractionType}`;
     return examples[key] || [];
   }
@@ -254,12 +297,12 @@ export class LangExtractOllamaService {
       if (typeof x !== 'object' || x === null) return false;
       const rec = x as Record<string, unknown>;
       return Array.isArray(rec.entities);
-    }
+    };
     const hasDatesArray = (x: unknown): x is { dates: unknown[] } => {
       if (typeof x !== 'object' || x === null) return false;
       const rec = x as Record<string, unknown>;
       return Array.isArray(rec.dates);
-    }
+    };
     if (request.extractionType === 'entities' && hasEntitiesArray(asObj)) {
       const count = asObj.entities.length;
       confidence += Math.min(count * 0.1, 0.3);
@@ -279,8 +322,9 @@ export class LangExtractOllamaService {
   // Check if Ollama service is available
   async isOllamaAvailable(): Promise<boolean> {
     try {
-      // removed unused response assignment
-      return response.ok;
+      const url = `${this.ollamaUrl.replace(/\/+$/, '')}/api/models`;
+      const resp = await fetch(url, { method: 'GET' });
+      return resp.ok;
     } catch {
       return false;
     }
@@ -288,10 +332,46 @@ export class LangExtractOllamaService {
   // List available models
   async listAvailableModels(): Promise<string[]> {
     try {
-      // removed unused response assignment
-      if (!response.ok) return [];
-      const data = (await response.json()) as { models?: Array<{ name: string }> }
-      return data.models?.map((m) => m.name) ?? [];
+      const url = `${this.ollamaUrl.replace(/\/+$/, '')}/api/models`;
+      const resp = await fetch(url, { method: 'GET' });
+      if (!resp.ok) return [];
+      const json = await resp.json().catch(() => null);
+      if (!json) return [];
+
+      // Ollama may return either { models: [{ name }...] } or an array
+      if (Array.isArray(json)) {
+        // array of model objects or strings - narrow safely without `any`
+        const arr = json as unknown[];
+        const names = arr
+          .map(m => {
+            if (typeof m === 'string') return m;
+            if (typeof m === 'object' && m !== null) {
+              const rec = m as Record<string, unknown>;
+              const name = rec.name;
+              if (typeof name === 'string' && name.length > 0) return name;
+            }
+            return undefined;
+          })
+          .filter((v): v is string => typeof v === 'string' && v.length > 0);
+        return names;
+      }
+
+      if (json.models && Array.isArray(json.models)) {
+        const arr = json.models as unknown[];
+        const names = arr
+          .map(m => {
+            if (typeof m === 'string') return m;
+            if (typeof m === 'object' && m !== null) {
+              const rec = m as Record<string, unknown>;
+              const name = rec.name;
+              if (typeof name === 'string' && name.length > 0) return name;
+            }
+            return undefined;
+          })
+          .filter((v): v is string => typeof v === 'string' && v.length > 0);
+        return names;
+      }
+      return [];
     } catch {
       return [];
     }
@@ -301,10 +381,10 @@ export class LangExtractOllamaService {
     try {
       const models = await this.listAvailableModels();
       if (models.includes(modelName)) return true;
-      const response = await fetch(`${this.ollamaUrl}/api/pull`, {
+      const response = await fetch(`${this.ollamaUrl.replace(/\/+$/, '')}/api/pull`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: modelName })
+        body: JSON.stringify({ name: modelName }),
       });
       return response.ok;
     } catch {
@@ -314,3 +394,10 @@ export class LangExtractOllamaService {
 }
 // Export singleton instance
 export const langExtractService = new LangExtractOllamaService();
+
+// Add a typed shape for the Ollama generate response
+type OllamaGenerateResponse = {
+  extracted?: unknown; // some Ollama setups may return 'extracted' or similar keys
+  response?: unknown; // common fallback used earlier
+  [k: string]: unknown;
+};

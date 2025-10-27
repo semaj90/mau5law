@@ -3,14 +3,11 @@
   import { onMount } from 'svelte';
   import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
   import { glyphShaderCacheBridge } from '$lib/cache/glyph-shader-cache-bridge';
-  import HeadlessDialog from '$lib/headless/HeadlessDialog.svelte';
   import LoadingButton from '$lib/headless/LoadingButton.svelte';
-  import OptimisticList from '$lib/headless/OptimisticList.svelte';
-  import FormField from '$lib/headless/FormField.svelte';
   // Icons
   import {
     Brain, Cpu, Database, Zap, Monitor, Activity, Clock,
-    BarChart3, CheckCircle, AlertTriangle, Settings, Play,
+    BarChart, CheckCircle, AlertTriangle, Settings, Play,
     Square, RefreshCw, Eye, Layers, Network, HardDrive
   } from 'lucide-svelte';
   // Svelte 5 runes for reactive state
@@ -368,26 +365,24 @@
         </h3>
       </div>
       <div class="p-6">
-        <OptimisticList items={processingQueue}>
-          {#snippet children({ item: job, optimistic })}
-            <div class="p-3 border border-gray-200 rounded-lg mb-3 {optimistic ? 'opacity-50' : ''}">
-              <div class="flex items-center justify-between mb-2">
-                <span class="font-medium text-sm">{job.documentId}</span>
-                <span class="px-2 py-1 rounded-full text-xs font-medium {getPriorityColor(job.priority)}">
-                  {job.priority}
-                </span>
-              </div>
-              <div class="text-xs text-gray-500">
-                {job.analysisType} · {job.useGPU ? `Bank ${job.bankId}` : 'CPU'} · {formatTimeAgo(job.createdAt)}
-              </div>
-              <div class="flex justify-end mt-2">
-                <button onclick={() => cancelJob(job.id)} class="text-xs text-red-600 hover:text-red-800">
-                  Cancel
-                </button>
-              </div>
+        {#each processingQueue as job (job.id)}
+          <div class="p-3 border border-gray-200 rounded-lg mb-3">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-medium text-sm">{job.documentId}</span>
+              <span class="px-2 py-1 rounded-full text-xs font-medium {getPriorityColor(job.priority)}">
+                {job.priority}
+              </span>
             </div>
-          {/snippet}
-        </OptimisticList>
+            <div class="text-xs text-gray-500">
+              {job.analysisType} · {job.useGPU ? `Bank ${job.bankId}` : 'CPU'} · {formatTimeAgo(job.createdAt)}
+            </div>
+            <div class="flex justify-end mt-2">
+              <button onclick={() => cancelJob(job.id)} class="text-xs text-red-600 hover:text-red-800">
+                Cancel
+              </button>
+            </div>
+          </div>
+        {/each}
         {#if processingQueue.length === 0}
           <div class="text-center py-8 text-gray-500">
             <Clock class="w-8 h-8 mx-auto mb-2 opacity-50" />
@@ -401,6 +396,11 @@
       <div class="px-6 py-4 border-b border-gray-200">
         <h3 class="text-lg font-medium text-gray-900 flex items-center gap-2">
           <Activity class="w-5 h-5" />
+          Processing ({activeJobs.length})
+        </h3>
+      </div>
+      <div class="p-6">
+        {#each activeJobs as job}
           Processing ({activeJobs.length})
         </h3>
       </div>
