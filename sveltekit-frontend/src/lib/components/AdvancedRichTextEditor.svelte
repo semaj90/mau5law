@@ -834,7 +834,6 @@
       <div bind:this={editorElement} class="flex-grow p-6 min-h-full"></div>
     </div>
   </div>
-  <!-- All styles have been moved to UnoCSS classes in the markup. -->
 </ErrorBoundary>
     <!-- Secondary Toolbar for Advanced Features -->
     <div

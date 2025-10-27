@@ -1,12 +1,12 @@
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
   import { caseFormSchema } from '$lib/schemas/forms';
-  import { z } from 'zod';
+  import { z, type ZodTypeAny, type ZodObject } from 'zod';
   // infer a concrete TS type from the Zod schema to avoid namespace collisions
   type CaseFormType = z.infer<typeof caseFormSchema>;
-  import { getAuthContext  } from '$lib/stores/unified';
   import { superForm, type SuperValidated } from 'sveltekit-superforms';
   import { zodClient } from 'sveltekit-superforms/adapters';
+  // ensure adapter gets a concrete ZodObject type to satisfy its type signature
+  const typedCaseFormSchema = caseFormSchema as unknown as ZodObject<Record<string, ZodTypeAny>>;
 
   interface Props {
     initialData?: SuperValidated<CaseFormType> | Partial<CaseFormType>;
@@ -19,8 +19,6 @@
   // Provide a valid default for initialData
   let { initialData = undefined, isEditing = false, formApi = $bindable(), onsuccess, onerror }: Props = $props();
 
-  const auth = getAuthContext();
-
   // Available users for assignment (would come from API)
   let availableUsers = $state([
     { id: '1', name: 'John Smith', role: 'prosecutor' },
@@ -30,10 +28,11 @@
 
   // Initialize superForm (fixed commas & signatures)
   const { form, errors, constraints, enhance, submitting, delayed, message } = superForm(initialData as any, {
-    validators: zodClient(caseFormSchema),
+    // provide a typed ZodObject to the adapter to satisfy TypeScript
+    validators: zodClient(typedCaseFormSchema),
     resetForm: false,
     invalidateAll: false,
-    onSubmit: ({ cancel }) => {
+    onSubmit: () => {
       // You can add custom validation here
       console.log('Form submitted with data:', $form);
     },
@@ -89,202 +88,218 @@
 </script>
 
 <div class="space-y-4">
-  <div>
-    <div>
-      <h2>
-        {isEditing ? 'Edit Case' : 'Create New Case'}
-      </h2>
-      <p>
-        {isEditing ? 'Update case information and settings' : 'Enter case details to begin investigation'}
-      </p>
-    </div>
-    {#if !isEditing}
-      <button type="button" onclick={generateCaseNumber} class="space-y-4"> Generate Case # </button>
-    {/if}
-  </div>
+	<div>
+		<div>
+			<h2>
+				{isEditing ? 'Edit Case' : 'Create New Case'}
+			</h2>
+			<p>
+				{isEditing ? 'Update case information and settings' : 'Enter case details to begin investigation'}
+			</p>
+		</div>
+		{#if !isEditing}
+			<!-- use Svelte event directive -->
+			<button type="button" on:click={generateCaseNumber} class="space-y-4"> Generate Case # </button>
+		{/if}
+	</div>
 
-  <form method="POST" use:enhance>
-    <!-- Case Number and Title -->
-    <div>
-      <div>
-        <label for="caseNumber"> Case Number * </label>
-        <input
-          type="text"
-          id="caseNumber"
-          name="caseNumber"
-          bind:value={$form.caseNumber}
-          placeholder="e.g., CAS-2024-123456"
-          aria-invalid={$errors.caseNumber ? 'true' : 'false'}
-          aria-describedby={$errors.caseNumber ? 'caseNumber-error' : undefined}
-          {...$constraints.caseNumber}
-        />
-        {#if $errors.caseNumber}
-          <p id="caseNumber-error">{$errors.caseNumber}</p>
-        {/if}
-      </div>
-      <div>
-        <label for="priority"> Priority * </label>
-        <select id="priority" name="priority" bind:value={$form.priority} {...$constraints.priority}>
-          <option value="">Select priority</option>
-          <option value="low">Low Priority</option>
-          <option value="medium">Medium Priority</option>
-          <option value="high">High Priority</option>
-        </select>
-        {#if $errors.priority}
-          <p id="priority-error" aria-live="polite">{$errors.priority}</p>
-        {/if}
-      </div>
-    </div>
-    <!-- Title -->
-    <div>
-      <label for="title"> Case Title * </label>
-      <input
-        type="text"
-        id="title"
-        name="title"
-        bind:value={$form.title}
-        placeholder="e.g., State vs. Johnson - Financial Fraud Investigation"
-        aria-invalid={$errors.title ? 'true' : 'false'}
-        aria-describedby={$errors.title ? 'title-error' : undefined}
-        {...$constraints.title}
-      />
-      {#if $errors.title}
-        <p id="title-error">{$errors.title}</p>
-      {/if}
-    </div>
-    <!-- Description -->
-    <div>
-      <label for="description"> Case Description </label>
-      <textarea
-        id="description"
-        name="description"
-        rows="4"
-        bind:value={$form.description}
-        placeholder="Provide a detailed description of the case..."
-        aria-invalid={$errors.description ? 'true' : 'false'}
-        aria-describedby={$errors.description ? 'description-error' : undefined}
-        {...$constraints.description}
-      ></textarea>
-      {#if $errors.description}
-        <p id="description-error">{$errors.description}</p>
-      {/if}
-    </div>
-    <!-- Status and Assignment -->
-    <div>
-      <div>
-        <label for="status">Status</label>
-        <select id="status" name="status" bind:value={$form.status} {...$constraints.status}>
-          <option value="draft">Draft</option>
-          <option value="active">Active Investigation</option>
-          <option value="pending">Pending Review</option>
-          <option value="closed">Closed</option>
-        </select>
-      </div>
-      <div>
-        <label for="assignedTo">Assigned To</label>
-        <select id="assignedTo" name="assignedTo" bind:value={$form.assignedTo} {...$constraints.assignedTo}>
-          <option value="">Unassigned</option>
-          {#each availableUsers as user}
-            <option value={user.id}>{user.name} ({user.role})</option>
-          {/each}
-        </select>
-      </div>
-    </div>
-    <!-- Due Date -->
-    <div>
-      <label for="dueDate">Due Date</label>
-      <input
-        type="datetime-local"
-        id="dueDate"
-        name="dueDate"
-        bind:value={$form.dueDate}
-        aria-invalid={$errors.dueDate ? 'true' : 'false'}
-        aria-describedby={$errors.dueDate ? 'dueDate-error' : undefined}
-        {...$constraints.dueDate}
-      />
-      {#if $errors.dueDate}
-        <p id="dueDate-error">{$errors.dueDate}</p>
-      {/if}
-    </div>
-    <!-- Tags -->
-    <div>
-      <label for="tagInput">Tags</label>
-      <div>
-        {#each $form.tags || [] as tag}
-          <span>
-            {tag}
-            <button type="button" onclick={() => removeTag(tag)}> × </button>
-          </span>
-        {/each}
-      </div>
-      <div>
-        <input
-          type="text"
-          id="tagInput"
-          bind:value={tagInput}
-          onkeydown={handleTagKeydown}
-          placeholder="Add a tag..."
-          aria-label="Add tag"
-        />
-        <button type="button" onclick={addTag}> Add Tag </button>
-      </div>
-      {#if $errors.tags}
-        <p id="tags-error">{$errors.tags}</p>
-      {/if}
-    </div>
-    <!-- Checkboxes -->
-    <div>
-      <label>
-        <input type="checkbox" bind:checked={$form.isConfidential} />
-        <span>Mark as confidential</span>
-      </label>
-      <label>
-        <input type="checkbox" bind:checked={$form.notifyAssignee} />
-        <span>Notify assignee via email</span>
-      </label>
-    </div>
-    <!-- Submit Buttons -->
-    <div>
-      <button
-        type="button"
-        onclick={() => {
-          /* Cancelled by user */
-        }}
-        disabled={$submitting}
-      >
-        Cancel
-      </button>
-      <button type="submit" disabled={$submitting}>
-        {#if $submitting}
-          <span class="inline-flex items-center gap-2">
-            <span class="spinner" aria-hidden="true"></span>
-            <span>{isEditing ? 'Updating...' : 'Creating...'}</span>
-          </span>
-        {:else}
-          <span>{isEditing ? 'Update Case' : 'Create Case'}</span>
-        {/if}
-      </button>
-    </div>
-    <!-- Server Messages -->
-    {#if $message}
-      <div>
-        {$message.text}
-      </div>
-    {/if}
-    <!-- Loading Indicator -->
-    {#if $delayed}
-      <div>Processing your request...</div>
-    {/if}
-  </form>
+	<form method="POST" use:enhance>
+		<!-- Case Number and Title -->
+		<div>
+			<div>
+				<label for="caseNumber"> Case Number * </label>
+				<input
+					type="text"
+					id="caseNumber"
+					name="caseNumber"
+					bind:value={$form.caseNumber}
+					placeholder="e.g., CAS-2024-123456"
+					aria-invalid={$errors.caseNumber ? 'true' : 'false'}
+					aria-describedby={$errors.caseNumber ? 'caseNumber-error' : undefined}
+					class="legal-input"
+					{...$constraints.caseNumber}
+				/>
+				{#if $errors.caseNumber}
+					<p id="caseNumber-error">{$errors.caseNumber}</p>
+				{/if}
+			</div>
+			<div>
+				<label for="priority"> Priority * </label>
+				<select id="priority" name="priority" bind:value={$form.priority} class="legal-input" {...$constraints.priority}>
+					<option value="">Select priority</option>
+					<option value="low">Low Priority</option>
+					<option value="medium">Medium Priority</option>
+					<option value="high">High Priority</option>
+				</select>
+				{#if $errors.priority}
+					<p id="priority-error" aria-live="polite">{$errors.priority}</p>
+				{/if}
+			</div>
+		</div>
+
+		<!-- Title -->
+		<div>
+			<label for="title"> Case Title * </label>
+			<input
+				type="text"
+				id="title"
+				name="title"
+				bind:value={$form.title}
+				placeholder="e.g., State vs. Johnson - Financial Fraud Investigation"
+				aria-invalid={$errors.title ? 'true' : 'false'}
+				aria-describedby={$errors.title ? 'title-error' : undefined}
+				class="legal-input"
+				{...$constraints.title}
+			/>
+			{#if $errors.title}
+				<p id="title-error">{$errors.title}</p>
+			{/if}
+		</div>
+
+		<!-- Description -->
+		<div>
+			<label for="description"> Case Description </label>
+			<textarea
+				id="description"
+				name="description"
+				rows="4"
+				bind:value={$form.description}
+				placeholder="Provide a detailed description of the case..."
+				aria-invalid={$errors.description ? 'true' : 'false'}
+				aria-describedby={$errors.description ? 'description-error' : undefined}
+				class="legal-input"
+				{...$constraints.description}
+			></textarea>
+			{#if $errors.description}
+				<p id="description-error">{$errors.description}</p>
+			{/if}
+		</div>
+
+		<!-- Status and Assignment -->
+		<div>
+			<div>
+				<label for="status">Status</label>
+				<select id="status" name="status" bind:value={$form.status} class="legal-input" {...$constraints.status}>
+					<option value="draft">Draft</option>
+					<option value="active">Active Investigation</option>
+					<option value="pending">Pending Review</option>
+					<option value="closed">Closed</option>
+				</select>
+			</div>
+			<div>
+				<label for="assignedTo">Assigned To</label>
+				<select id="assignedTo" name="assignedTo" bind:value={$form.assignedTo} class="legal-input" {...$constraints.assignedTo}>
+					<option value="">Unassigned</option>
+					{#each availableUsers as user}
+						<option value={user.id}>{user.name} ({user.role})</option>
+					{/each}
+				</select>
+			</div>
+		</div>
+
+		<!-- Due Date -->
+		<div>
+			<label for="dueDate">Due Date</label>
+			<input
+				type="datetime-local"
+				id="dueDate"
+				name="dueDate"
+				bind:value={$form.dueDate}
+				aria-invalid={$errors.dueDate ? 'true' : 'false'}
+				aria-describedby={$errors.dueDate ? 'dueDate-error' : undefined}
+				class="legal-input"
+				{...$constraints.dueDate}
+			/>
+			{#if $errors.dueDate}
+				<p id="dueDate-error">{$errors.dueDate}</p>
+			{/if}
+		</div>
+
+		<!-- Tags -->
+		<div>
+			<label for="tagInput">Tags</label>
+			<div>
+				{#each $form.tags || [] as tag}
+					<span>
+						{tag}
+						<!-- use Svelte event directive -->
+						<button type="button" on:click={() => removeTag(tag)}> × </button>
+					</span>
+				{/each}
+			</div>
+			<div>
+				<input
+					type="text"
+					id="tagInput"
+					bind:value={tagInput}
+					on:keydown={handleTagKeydown}
+					placeholder="Add a tag..."
+					aria-label="Add tag"
+					class="legal-input"
+				/>
+				<!-- use Svelte event directive -->
+				<button type="button" on:click={addTag}> Add Tag </button>
+			</div>
+			{#if $errors.tags}
+				<p id="tags-error">{$errors.tags}</p>
+			{/if}
+		</div>
+
+		<!-- Checkboxes -->
+		<div>
+			<label>
+				<input type="checkbox" bind:checked={$form.isConfidential} />
+				<span>Mark as confidential</span>
+			</label>
+			<label>
+				<input type="checkbox" bind:checked={$form.notifyAssignee} />
+				<span>Notify assignee via email</span>
+			</label>
+		</div>
+
+		<!-- Submit Buttons -->
+		<div>
+			<button
+				type="button"
+				on:click={() => history.back()}
+				disabled={$submitting}
+			>
+				Cancel
+			</button>
+			<button type="submit" disabled={$submitting}>
+				{#if $submitting}
+					<span class="inline-flex items-center gap-2">
+						<span class="spinner" aria-hidden="true"></span>
+						<span>{isEditing ? 'Updating...' : 'Creating...'}</span>
+					</span>
+				{:else}
+					<span>{isEditing ? 'Update Case' : 'Create Case'}</span>
+				{/if}
+			</button>
+		</div>
+
+		<!-- Server Messages -->
+		{#if $message}
+			<div>
+				{$message.text}
+			</div>
+		{/if}
+
+		<!-- Loading Indicator -->
+		{#if $delayed}
+			<div>Processing your request...</div>
+		{/if}
+	</form>
 </div>
 
 <style>
-  /* @unocss-include */
-  /* Custom validation styles */
-  .legal-input:invalid {
-    border-color: #ef4444;
-  }
-  .legal-input:valid {
-    border-color: #10b981;
-  }
+	/* @unocss-include */
+	/* Custom validation styles */
+	.legal-input:invalid {
+		border-color: #ef4444;
+	}
+	.legal-input:valid {
+		border-color: #10b981;
+	}
 </style>
+

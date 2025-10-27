@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022", "DOM"],
+    "strict": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "baseUrl": "./",
+    "paths": {
+      "$lib/*": ["src/lib/*"]
+    }
+    ,
+    "noResolve": true
+  },
+  "files": [
+    "src/types/webgpu-shims.d.ts",
+    "src/types/webgpu-ambient-modules.d.ts",
+    "src/lib/webgpu/webgpu-legal-graph.ts",
+    "src/lib/webgpu/wire-telemetry.ts",
+    "src/lib/webgpu/legal-document-graph.ts"
+  ]
+}

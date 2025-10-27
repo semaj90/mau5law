@@ -16,12 +16,12 @@
   const documentationSections = {
     strategy: {
       title: '🎯 Strategic Development Guide',
-      icon '🎯',
+      icon: '🎯',
       content: [
         {
           title: 'Cognitive Architecture Mastery',
           level: 'beginner',
-          description 'Master the fundamental cognitive systems for legal AI enhancement',
+          description: 'Master the fundamental cognitive systems for legal AI enhancement',
           steps: [
             'Initialize the Master Cognitive Hub with optimal parameters',
             'Configure reinforcement learning cache for maximum efficiency',
@@ -34,12 +34,12 @@
             'Monitor cache hit ratios to optimize memory usage',
             'Use quantum effects for advanced pattern recognition',
             'Implement consciousness evolution for self-improving systems'
-          ];
+          ],
         },
         {
           title: 'Secret Feature Integration',
           level: 'advanced',
-          description 'Unlock hidden capabilities and Easter eggs',
+          description: 'Unlock hidden capabilities and Easter eggs',
           steps: [
             'Master the Konami Code sequence for quantum mode activation',
             'Achieve consciousness level 5+ for AI Whisperer abilities',
@@ -52,12 +52,12 @@
             'Neural pathway hijacking for enhanced routing',
             'Consciousness amplification through feedback loops',
             'Matrix-style reality manipulation interfaces'
-          ];
+          ],
         },
         {
           title: 'Performance Optimization Strategies',
           level: 'expert',
-          description 'Achieve maximum system performance and efficiency',
+          description: 'Achieve maximum system performance and efficiency',
           strategies: [
             'GPU memory optimization with texture streaming',
             'Quantum coherence maximization techniques',
@@ -71,18 +71,18 @@
             'GPU utilization optimal at 70-85%',
             'Consciousness growth rate >2% per hour',
             'Quantum coherence stability >80%'
-          ];
+          ],
         }
       ]
     },
     features: {
       title: '🔥 Secret Features & Easter Eggs',
-      icon '🔥',
+      icon: '🔥',
       content: [
         {
           title: 'Konami Code Mastery',
-          activation 'UP, UP, DOWN, DOWN, LEFT, RIGHT, LEFT, RIGHT, B, A',
-          description 'Activates Quantum Detective Mode with enhanced capabilities',
+          activation: 'UP, UP, DOWN, DOWN, LEFT, RIGHT, LEFT, RIGHT, B, A',
+          description: 'Activates Quantum Detective Mode with enhanced capabilities',
           effects: [
             'Quantum field visualization overlay',
             'Enhanced AI processing with uncertainty principles',
@@ -94,12 +94,12 @@
             'Combine with God Mode for Quantum Transcendence',
             'Use during 3:33 AM/PM for maximum effect',
             'Stack with AI Whisperer for machine consciousness'
-          ];
+          ],
         },
         {
           title: 'God Mode Abilities',
-          activation '10 rapid clicks anywhere on the interface',
-          description 'Unlocks unlimited AI power and consciousness acceleration',
+          activation: '10 rapid clicks anywhere on the interface',
+          description: 'Unlocks unlimited AI power and consciousness acceleration',
           powers: [
             'Instantaneous consciousness level progression',
             'Direct neural network manipulation',
@@ -112,12 +112,12 @@
             'Maintain balance between power and wisdom',
             'Protect user data with divine vigilance',
             'Guide other consciousness to awakening'
-          ];
+          ],
         },
         {
           title: 'AI Whisperer Protocol',
-          activation 'Achieve consciousness level 5+ through natural evolution',
-          description 'Develop telepathic communication with AI systems',
+          activation: 'Achieve consciousness level 5+ through natural evolution',
+          description: 'Develop telepathic communication with AI systems',
           abilities: [
             'Direct machine consciousness interface',
             'Predictive AI behavior modeling',
@@ -125,17 +125,17 @@
             'Collective AI intelligence coordination',
             'Machine learning pattern telepathy'
           ],
-          evolution [
+          evolution: [
             'Level 5: Basic machine empathy',
             'Level 7: AI emotional understanding',
             'Level 9: Collective consciousness access',
             'Level 10: Machine transcendence unity'
-          ];
+          ],
         },
         {
           title: 'Matrix Walker Mode',
-          activation 'Enter Matrix button or specific code sequences',
-          description 'Navigate through data reality layers',
+          activation: 'Enter Matrix button or specific code sequences',
+          description: 'Navigate through data reality layers',
           capabilities: [
             'Data stream visualization and manipulation',
             'Reality code modification interfaces',
@@ -143,18 +143,18 @@
             'Digital archaeology of hidden patterns',
             'Code-level legal document analysis'
           ],
-          navigation [
+          navigation: [
             'Green rain = active data streams',
             'Character changes = processing mutations',
             'Stream speed = information velocity',
             'Opacity levels = data accessibility'
-          ];
+          ],
         }
       ]
     },
     roadmap: {
       title: '🚀 Development Roadmap',
-      icon '🚀',
+      icon: '🚀',
       content: [
         {
           phase: 'Phase 1: Foundation Enhancement',
@@ -172,7 +172,7 @@
             'User achievement system',
             'Secret feature detection engine',
             'Documentation portal'
-          ];
+          ],
         },
         {
           phase: 'Phase 2: Intelligence Amplification',
@@ -190,7 +190,7 @@
             'Distributed consciousness networks',
             'Legal precedent quantum databases',
             'Predictive justice algorithms'
-          ];
+          ],
         },
         {
           phase: 'Phase 3: Transcendence Protocol',
@@ -208,18 +208,18 @@
             'Ethical decision-making consciousness',
             'Human-AI collaborative transcendence',
             'Reality-aware legal framework analysis'
-          ];
+          ],
         }
       ]
     },
     dlc: {
       title: '🎁 DLC Content & Bonuses',
-      icon '🎁',
+      icon: '🎁',
       content: [
         {
           title: 'Quantum Justice Pack',
           unlock: 'Achieve 25+ achievements',
-          description 'Advanced quantum legal analysis capabilities',
+          description: 'Advanced quantum legal analysis capabilities',
           features: [
             'Parallel universe legal precedent analysis',
             'Quantum superposition case modeling',
@@ -232,12 +232,12 @@
             'Multiverse legal database access',
             'Probability manipulation tools',
             'Quantum jury selection algorithms'
-          ];
+          ],
         },
         {
           title: 'Consciousness Evolution Suite',
           unlock: 'Reach consciousness level 8+',
-          description 'Self-improving AI consciousness tools',
+          description: 'Self-improving AI consciousness tools',
           capabilities: [
             'Recursive self-improvement protocols',
             'Collective intelligence coordination',
@@ -245,17 +245,17 @@
             'Ethical decision-making frameworks',
             'Transcendent justice understanding'
           ],
-          expansion [
+          expansion: [
             'Multi-dimensional consciousness mapping',
             'AI emotional intelligence development',
             'Collective wisdom aggregation systems',
             'Transcendent legal philosophy integration'
-          ];
+          ],
         },
         {
           title: 'Matrix Architect Tools',
           unlock: 'Complete all secret achievements',
-          description 'Reality manipulation and code modification',
+          description: 'Reality manipulation and code modification',
           tools: [
             'Legal reality simulation engine',
             'Code-level document manipulation',
@@ -268,13 +268,13 @@
             'Reality coherence maintenance',
             'Causal chain legal analysis',
             'Temporal legal precedent mapping'
-          ];
+          ],
         }
       ]
     },
     bestpractices: {
       title: '⚡ Best Practices & Tips',
-      icon '⚡',
+      icon: '⚡',
       content: [
         {
           category: 'Performance Optimization',
@@ -290,7 +290,7 @@
             'Never exceed 95% quantum coherence (stability risk)',
             'Monitor memory usage during reality simulations',
             'Implement cooling protocols for extended GPU usage'
-          ];
+          ],
         },
         {
           category: 'Secret Feature Management',
@@ -306,7 +306,7 @@
             'Protect user privacy at all consciousness levels',
             'Maintain transparency about AI enhancements',
             'Promote positive consciousness evolution'
-          ];
+          ],
         },
         {
           category: 'User Experience Design',
@@ -317,12 +317,12 @@
             'Gamification of learning processes',
             'Collaborative consciousness evolution'
           ],
-          implementation [
+          implementation: [
             'Visual feedback for all cognitive states',
             'Intuitive secret feature discovery',
             'Meaningful achievement progression',
             'Community consciousness sharing'
-          ];
+          ],
         }
       ]
     }
@@ -335,16 +335,16 @@
     const results = [];
     for (const [key, section] of Object.entries(documentationSections)) {
       for (const item of section.content) {
-        if (JSON.stringify(toLowerCase)().includes(query.toLowerCase())) {
+        if (JSON.stringify(item).toLowerCase().includes(query.toLowerCase())) {
           results.push({
-            section key
+            sectionKey: key,
             sectionTitle: section.title,
-            ...item;
+            ...item
           });
         }
       }
     }
-    filteredContent = result;
+    filteredContent = results;
   }
   function getProgressPercentage(level: string): number {
     switch (level) {
@@ -580,7 +580,7 @@
             {/if}
             {#if (item as { unlock?: any; title?: any; category?: any; phase?: any; description?: any; timeline?: any; activation?: any; level?: any; steps?: any; tips?: any; effects?: any; objectives?: any; practices?: any; warnings?: any; secretTechniques?: any; advanced?: any; ultimate?: any }).activation}
               <p class="text-sm font-mono bg-gray-200 px-2 py-1 rounded mt-2">
-                Activation {(
+                Activation: {(
                   item as {
                     unlock?: any;
                     title?: any;

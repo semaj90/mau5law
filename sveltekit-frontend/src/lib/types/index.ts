@@ -1,3 +1,17 @@
+// src/lib/types/index.ts
+export interface CanvasState {
+  id: string;
+  fabricJSON?: unknown;
+  metadata?: Record<string, unknown>;
+}
+
+export type MultiDimArray = {
+  shape: number[];
+  data: Float32Array | number[];
+  layout?: string;
+  cacheKey?: string;
+  timestamp?: number;
+};
 /**
  * Central type export hub for all API response types
  *

@@ -4,7 +4,6 @@
    * For homepage integration with QUIC/HTTP fallback
    */
   import { Search, Loader2, Sparkles, Zap } from 'lucide-svelte';
-  import Button from '$lib/components/ui/Button.svelte';
 
   let query = $state('');
   let results = $state<any[]>([]);
@@ -88,13 +87,20 @@
         class="search-input"
         disabled={isLoading}
       />
-      <Button onclick={performSearch} disabled={isLoading || !query.trim()} variant="ghost" class="search-button">
+
+      <!-- Replaced custom Button with a native button to avoid component typing issues -->
+      <button
+        onclick={performSearch}
+        disabled={isLoading || !query.trim()}
+        class="search-button inline-flex items-center gap-2 px-3 py-1 rounded text-sm bg-transparent"
+        aria-label="Search"
+      >
         {#if isLoading}
           <Loader2 class="w-4 h-4 animate-spin" />
         {:else}
           Search
         {/if}
-      </Button>
+      </button>
     </div>
 
     {#if error}
@@ -161,7 +167,7 @@
 
   .search-header {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     align-items: center;
   }
 
@@ -195,11 +201,11 @@
     width: 1.25rem;
     height: 1.25rem;
     color: rgba(6, 182, 212, 0.6);
-    flex-shrink: 0,
+    flex-shrink: 0;
   }
 
   .search-input {
-    flex: 1,
+    flex: 1;
     background: transparent;
     border: none;
     outline: none;
@@ -218,7 +224,8 @@
   }
 
   .search-button {
-    flex-shrink: 0,
+    flex-shrink: 0;
+    /* keep existing spacing/styling for the native button */
   }
 
   .error-message {
@@ -263,7 +270,7 @@
 
   .result-header {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
   }

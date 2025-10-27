@@ -348,32 +348,92 @@ export abstract class YoRHa3DComponent extends THREE.Group {
         scanColor: { value: new THREE.Color(YORHA_COLORS.accent.gold) },
       },
       vertexShader: `
-        varying vec3 vPosition;
-        void main() {
-          vPosition = position;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-      `,
+			varying vec3 vPosition;
+			void main() {
+				vPosition = position;
+				gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+			}
+		`,
       fragmentShader: `
-        uniform float time;
-        uniform float scanSpeed;
-        uniform float scanWidth;
-        uniform vec3 baseColor;
-        uniform vec3 scanColor;
-        varying vec3 vPosition;
-        void main() {
-          float scan = sin(vPosition.x * 10.0 + time * scanSpeed) * 0.5 + 0.5;
-          float scanMask = smoothstep(0.0, scanWidth, scan) * smoothstep(1.0, 1.0 - scanWidth, scan);
-          vec3 color = mix(baseColor, scanColor, scanMask);
-          gl_FragColor = vec4(color, 1.0);
-        }
-      `,
+			uniform float time;
+			uniform float scanSpeed;
+			uniform float scanWidth;
+			uniform vec3 baseColor;
+			uniform vec3 scanColor;
+			varying vec3 vPosition;
+			void main() {
+				float scan = sin(vPosition.x * 10.0 + time * scanSpeed) * 0.5 + 0.5;
+				float scanMask = smoothstep(0.0, scanWidth, scan) * smoothstep(1.0, 1.0 - scanWidth, scan);
+				vec3 color = mix(baseColor, scanColor, scanMask);
+				gl_FragColor = vec4(color, 1.0);
+			}
+		`,
     });
     borderMesh.material = scanMaterial;
-    // Add to animation system
-    this.addCustomAnimation('borderScan', deltaTime => {
-      (scanMaterial.uniforms.time as any).value += deltaTime;
+    // Add to animation system - use typed uniform access
+    const uniforms = scanMaterial.uniforms as unknown as UniformsMap;
+    this.addCustomAnimation('borderScan', (deltaTime: number) => {
+      (uniforms.time as NumericUniform).value += deltaTime;
     });
+  }
+  protected createScanAnimation(animation: YoRHaAnimation): void {
+    // Add scan line effect
+    const scanMaterial = new THREE.ShaderMaterial({
+      uniforms: {
+        time: { value: 0 },
+        scanColor: { value: new THREE.Color(YORHA_COLORS.accent.gold) },
+        baseColor: { value: new THREE.Color(this.style.backgroundColor ?? YORHA_COLORS.primary.beige) },
+      },
+      vertexShader: `
+			varying vec2 vUv;
+			void main() {
+				vUv = uv;
+				gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+			}
+		`,
+      fragmentShader: `
+			uniform float time;
+			uniform vec3 scanColor;
+			uniform vec3 baseColor;
+			varying vec2 vUv;
+			void main() {
+				float scan = sin(vUv.y * 20.0 + time * 5.0) * 0.5 + 0.5;
+				vec3 color = mix(baseColor, scanColor, scan * 0.3);
+				gl_FragColor = vec4(color, 1.0);
+			}
+		`,
+    });
+    this.mesh.material = scanMaterial;
+    // typed uniform access
+    const uniforms = scanMaterial.uniforms as unknown as UniformsMap;
+    this.addCustomAnimation('scan', (deltaTime: number) => {
+      (uniforms.time as NumericUniform).value += deltaTime;
+    });
+  }
+
+  protected createGlitchAnimation(_animation: YoRHaAnimation): void {
+    let glitchTime = 0;
+    const glitchAnimation = (deltaTime: number) => {
+      // accumulate time and only occasionally trigger a glitch; use glitchTime so it's not unused
+      glitchTime += deltaTime;
+      const threshold = 0.2; // seconds between possible glitch checks
+      if (glitchTime > threshold && Math.random() < 0.02) {
+        glitchTime = 0;
+        // Random position offset
+        this.mesh.position.x += (Math.random() - 0.5) * 0.02;
+        this.mesh.position.y += (Math.random() - 0.5) * 0.02;
+        // Random scale jitter
+        const scaleJitter = 1 + (Math.random() - 0.5) * 0.01;
+        this.mesh.scale.setScalar(scaleJitter);
+        // Reset after short time
+        setTimeout(() => {
+          this.mesh.position.x = 0;
+          this.mesh.position.y = 0;
+          this.mesh.scale.setScalar(1);
+        }, 50);
+      }
+    };
+    this.addCustomAnimation('glitch', glitchAnimation);
   }
   protected applyStyle(): void {
     // Apply transform
@@ -501,16 +561,20 @@ export abstract class YoRHa3DComponent extends THREE.Group {
       `,
     });
     this.mesh.material = scanMaterial;
-    this.addCustomAnimation('scan', deltaTime => {
-      (scanMaterial.uniforms.time as any).value += deltaTime;
+    // typed uniform access
+    const uniforms = scanMaterial.uniforms as unknown as UniformsMap;
+    this.addCustomAnimation('scan', (deltaTime: number) => {
+      (uniforms.time as NumericUniform).value += deltaTime;
     });
   }
-  protected createGlitchAnimation(animation: YoRHaAnimation): void {
+  protected createGlitchAnimation(_animation: YoRHaAnimation): void {
     let glitchTime = 0;
     const glitchAnimation = (deltaTime: number) => {
+      // accumulate time and only occasionally trigger a glitch; use glitchTime so it's not unused
       glitchTime += deltaTime;
-      if (Math.random() < 0.02) {
-        // 2% chance per frame
+      const threshold = 0.2; // seconds between possible glitch checks
+      if (glitchTime > threshold && Math.random() < 0.02) {
+        glitchTime = 0;
         // Random position offset
         this.mesh.position.x += (Math.random() - 0.5) * 0.02;
         this.mesh.position.y += (Math.random() - 0.5) * 0.02;
@@ -661,3 +725,8 @@ export abstract class YoRHa3DComponent extends THREE.Group {
     return Promise.resolve();
   }
 }
+
+// Add strict uniform types to avoid `any`
+type NumericUniform = { value: number };
+type ColorUniform = { value: THREE.Color };
+type UniformsMap = { [key: string]: NumericUniform | ColorUniform };

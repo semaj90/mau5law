@@ -4,105 +4,143 @@
     evidence = null,
     data = null
   }: Props = $props();
+
   import { invalidateAll } from "$app/navigation";
   import { superForm } from "sveltekit-superforms";
-  // Corrected UI component import paths
-  import Textarea from "$lib/components/ui/Textarea.svelte";
-  import Button from "$lib/components/ui/button";
-  import {
-    Input
-  } from '$lib/components/ui/enhanced-bits';
-  import Label from "$lib/components/ui/label/Label.svelte";
-  import type { Evidence } from "$lib/types/api";
-  import * as Select from 'bits-ui';
-  // Bindable props already defined above; redundant redeclarations removed
-  // Melt UI builder for the Select component with proper typing
-  // Melt UI component creation removed - replace with bits-ui declarative components
+
+  // cast server data to any to avoid 'unknown' access errors
+  const serverData = data as any;
+  const initialValues = evidence || serverData?.form || {};
+
   const { form, enhance, errors, submitting } = superForm(
-    evidence || data.form,
+    initialValues,
     {
       onUpdated: async ({ form }) => {
         if (form.valid) {
           await invalidateAll();
-          // ondispatch removed;
-  }
-      },
-  }
+        }
+      }
+    }
   );
+
+  // helper to update a field in the form store
+  function updateField(key: string, value: any) {
+    form.update((f: any) => ({ ...(f ?? {}), [key]: value }));
+  }
 </script>
+
 <form method="POST" use:enhance class="space-y-4">
   {#if evidence}
-    <input type="hidden" name="id" bind:value={$form.id} />
+    <input type="hidden" name="id" value={$form.id} />
   {/if}
-  {#if data?.form?.message}
-    <div class="space-y-4">{data.form.message}</div>
+
+  {#if serverData?.form?.message}
+    <div class="space-y-4">{serverData.form.message}</div>
   {/if}
+
   <div>
-    <Label for_="title">Title</Label>
-    <Input id="title" name="title" bind:value={$form.title} required />
-    {#if $errors.title}<span class="space-y-4">{$errors.title}</span
-      >{/if}
+    <!-- replaced Label component with native label -->
+    <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
+    <!-- use native input and update form via helper -->
+    <input
+      id="title"
+      name="title"
+      class="mt-1 block w-full rounded-md border px-3 py-2"
+      value={$form?.title ?? ''}
+      oninput={(e: Event) => updateField('title', (e.target as HTMLInputElement).value)}
+      required
+    />
+    {#if $errors.title}
+      <span class="text-sm text-red-600">{$errors.title}</span>
+    {/if}
   </div>
+
   <div>
-    <Label for_="description">Description</Label>
-    <Textarea id="description" name="description" bind:value={$form.description}></Textarea>
+    <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+    <textarea
+      id="description"
+      name="description"
+      class="mt-1 block w-full rounded-md border px-3 py-2"
+      rows="5"
+      oninput={(e: Event) => updateField('description', (e.target as HTMLTextAreaElement).value)}
+    >{$form?.description ?? ''}</textarea>
   </div>
+
   <div>
-    <Label>Type</Label>
-    <button
+    <label for="type" class="block text-sm font-medium text-gray-700">Type</label>
+    <select
+      id="type"
+      name="type"
+      class="select-trigger mt-1 block w-full rounded-md border px-3 py-2"
       aria-label="Select evidence type"
-      class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+      value={$form?.type ?? ''}
+      onchange={(e: Event) => updateField('type', (e.target as HTMLSelectElement).value)}
     >
-      <span>{$selectedLabel || "Select a type"}</span>
-    </button>
-    <div  class="absolute z-50 bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-      <div use:melt={$option({ value: 'Document' })}>
-        Document
-      </div>
-      <div use:melt={$option({ value: 'Image' })}>Image</div>
-      <div use:melt={$option({ value: 'Video' })}>Video</div>
-      <div use:melt={$option({ value: 'Audio' })}>Audio</div>
-      <div use:melt={$option({ value: 'Other' })}>Other</div>
-    </div>
-    <input type="hidden" name="type" bind:value={$form.type} />
-    {#if $errors.type}<span class="space-y-4">{$errors.type}</span
-      >{/if}
+      <option value="">Select a type</option>
+      <option value="Document">Document</option>
+      <option value="Image">Image</option>
+      <option value="Video">Video</option>
+      <option value="Audio">Audio</option>
+      <option value="Other">Other</option>
+    </select>
+
+    {#if $errors.type}
+      <span class="text-sm text-red-600">{$errors.type}</span>
+    {/if}
   </div>
+
   <div>
-    <Label for_="url">URL</Label>
-    <Input
+    <label for="url" class="block text-sm font-medium text-gray-700">URL</label>
+    <input
       id="url"
       name="url"
-      bind:value={$form.url}
+      class="mt-1 block w-full rounded-md border px-3 py-2"
+      value={$form?.url ?? ''}
       placeholder="https://example.com/evidence"
+      oninput={(e: Event) => updateField('url', (e.target as HTMLInputElement).value)}
     />
-    {#if $errors.url}<span class="space-y-4">{$errors.url}</span>{/if}
+    {#if $errors.url}
+      <span class="text-sm text-red-600">{$errors.url}</span>
+    {/if}
   </div>
+
   <div>
-    <Label for_="tags">Tags (comma-separated)</Label>
-    <Input id="tags" name="tags" bind:value={$form.tags} placeholder="tag1, tag2, tag3" />
-    {#if $errors.tags}<span class="space-y-4">{$errors.tags}</span
-      >{/if}
+    <label for="tags" class="block text-sm font-medium text-gray-700">Tags (comma-separated)</label>
+    <input
+      id="tags"
+      name="tags"
+      class="mt-1 block w-full rounded-md border px-3 py-2"
+      value={$form?.tags ?? ''}
+      placeholder="tag1, tag2, tag3"
+      oninput={(e: Event) => updateField('tags', (e.target as HTMLInputElement).value)}
+    />
+    {#if $errors.tags}
+      <span class="text-sm text-red-600">{$errors.tags}</span>
+    {/if}
   </div>
+
   <div class="space-y-4">
-    <Button class="bits-btn" type="button" variant="ghost" onclick={() =>
-// ondispatch removed}
-      >Cancel</Button
-    >
-    <Button class="bits-btn" type="submit" disabled={$submitting}>
+    <button class="bits-btn" type="button" onclick={() => { /* Cancel no-op for now */ }}>
+      Cancel
+    </button>
+
+    <button class="bits-btn" type="submit" disabled={$submitting}>
       {#if $submitting}
         Saving...
       {:else}
         {evidence ? "Save Changes" : "Create Evidence"}
       {/if}
+    </button>
   </div>
 </form>
+
 <style>
   /* @unocss-include */
   form {
     max-width: 500px;
     margin: 0 auto;
-}
+  }
+
   .select-trigger {
     display: inline-flex;
     align-items: center;
@@ -113,29 +151,13 @@
     cursor: pointer;
     font-size: 1rem;
     min-width: 160px;
-    transition: box-shadow 0.2;
-}
+    transition: box-shadow 0.2s;
+  }
+
   .select-trigger:focus {
     outline: none;
     box-shadow: 0 0 0 2px #6366f1;
-}
-  .select-menu {
-    position absolute;
-    z-index: 50,
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-    margin-top: 0.5rem;
-    min-width: 160px;
-    padding: 0.5rem 0;
-}
-  .select-menu > div {
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    transition: background 0.2;
-}
-  .select-menu > div:hover {
-    background: #f3f4f6;
-}
+  }
+
+  /* Removed .select-menu rules (unused) to fix Svelte unused CSS warnings */
 </style>

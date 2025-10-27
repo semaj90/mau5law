@@ -161,7 +161,7 @@ https://svelte.dev/e/js_parse_error -->
         bind:this={inputElement}
         id={name}
         {name}
-        bind:value
+        bind:value={value}
         {placeholder}
         {required}
         {disabled}
@@ -173,10 +173,12 @@ https://svelte.dev/e/js_parse_error -->
         class="container mx-auto px-4"
         class:textarea-error={showErrorState}
         class:textarea-success={showSuccessState}
-        class:textarea-disabled={disabled} oninput={handleInput} onchange={handleChange}
-        onfocus={handleFocus}
-        onblur={handleBlur}
-        aria-describedby="{name}-help {name}-error"
+        class:textarea-disabled={disabled}
+        on:input={handleInput}
+        on:change={handleChange}
+        on:focus={handleFocus}
+        on:blur={handleBlur}
+        aria-describedby={`${name}-help ${name}-error`}
         aria-invalid={showErrorState}
       ></textarea>
     {:else}
@@ -185,7 +187,7 @@ https://svelte.dev/e/js_parse_error -->
         type={inputType}
         id={name}
         {name}
-        bind:value
+        bind:value={value}
         {placeholder}
         {required}
         {disabled}
@@ -201,10 +203,12 @@ https://svelte.dev/e/js_parse_error -->
         class:input-error={showErrorState}
         class:input-success={showSuccessState}
         class:input-disabled={disabled}
-        class:pr-12={type === "password" && showPasswordToggle} oninput={handleInput} onchange={handleChange}
-        onfocus={handleFocus}
-        onblur={handleBlur}
-        aria-describedby="{name}-help {name}-error"
+        class:pr-12={type === "password" && showPasswordToggle}
+        on:input={handleInput}
+        on:change={handleChange}
+        on:focus={handleFocus}
+        on:blur={handleBlur}
+        aria-describedby={`${name}-help ${name}-error`}
         aria-invalid={showErrorState}
       />
       <!-- Password Toggle Button -->
@@ -212,7 +216,7 @@ https://svelte.dev/e/js_parse_error -->
         <button
           type="button"
           class="container mx-auto px-4"
-          onclick={() => togglePasswordVisibility()}
+          on:click={togglePasswordVisibility}
           aria-label={showPassword ? "Hide password" : "Show password"}
           tabindex={-1}
         >
@@ -223,11 +227,10 @@ https://svelte.dev/e/js_parse_error -->
           {/if}
         </button>
       {/if}
+
       <!-- Validation Icons -->
       {#if showValidation}
-        <div
-          class="container mx-auto px-4"
-        >
+        <div class="container mx-auto px-4">
           {#if showErrorState}
             <AlertCircle class="container mx-auto px-4" />
           {:else if showSuccessState}
@@ -235,14 +238,16 @@ https://svelte.dev/e/js_parse_error -->
           {/if}
         </div>
       {/if}
+    {/if}
   </div>
+
   <!-- Help Text and Validation Messages -->
   <div class="container mx-auto px-4">
-    <span class="container mx-auto px-4" id="{name}-help">
+    <span class="container mx-auto px-4" id={`${name}-help`}>
       {#if showErrorState}
         <span
           class="container mx-auto px-4"
-          id="{name}-error"
+          id={`${name}-error`}
           role="alert"
         >
           <AlertCircle class="container mx-auto px-4" />
@@ -268,6 +273,7 @@ https://svelte.dev/e/js_parse_error -->
       </span>
     {/if}
   </div>
+
   <!-- All Error Messages (for screen readers) -->
   {#if showValidation && errors.length > 1}
     <ul class="container mx-auto px-4" role="alert">
@@ -279,6 +285,7 @@ https://svelte.dev/e/js_parse_error -->
       {/each}
     </ul>
   {/if}
+
   <!-- All Warning Messages -->
   {#if showValidation && warnings.length > 0 && !hasErrors}
     <ul class="container mx-auto px-4">
@@ -297,11 +304,11 @@ https://svelte.dev/e/js_parse_error -->
   .input-disabled {
     opacity: 0.6;
     cursor: not-allowed;
-}
+  }
   .input-error,
   .textarea-error {
     border-color: #ef4444;
-}
+  }
   .input-error:focus,
   .textarea-error:focus {
     border-color: #ef4444;
@@ -309,7 +316,7 @@ https://svelte.dev/e/js_parse_error -->
   .input-success,
   .textarea-success {
     border-color: #10b981;
-}
+  }
   .input-success:focus,
   .textarea-success:focus {
     border-color: #10b981;

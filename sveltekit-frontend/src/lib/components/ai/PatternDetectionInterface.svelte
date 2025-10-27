@@ -7,7 +7,7 @@
   import { onMount } from 'svelte';
   // Card components removed - using native HTML elements
   import * as Dialog from '$lib/components/ui/dialog';
-  import Button from '$lib/components/ui/enhanced-bits';
+
   // Pattern detection state
   let patterns = $state<DetectedPattern[]>([]);
   let selectedPattern = $state<DetectedPattern | null>(null);
@@ -19,19 +19,20 @@
   let confidenceThreshold = $state(70);
   let timeRange = $state<'1d' | '7d' | '30d' | '90d' | 'all'>('30d');
   let selectedDataSources = $state<string[]>(['evidence', 'communications', 'financial']);
+
   interface DetectedPattern {
     id: string;
     type: 'temporal' | 'behavioral' | 'financial' | 'communication' | 'location';
     title: string;
-    description string;
+    description: string;
     confidence: number;
     significance: number;
     frequency: number;
     timeframe: {
       start: string;
       end: string;
-      duration string;
-    }
+      duration: string;
+    };
     entities: PatternEntity[];
     evidence: string[];
     correlations: PatternCorrelation[];
@@ -49,7 +50,7 @@
     patternId: string;
     strength: number;
     type: 'temporal' | 'causal' | 'associative';
-    description string;
+    description: string;
   }
   interface AnalysisResult {
     timestamp: string;
@@ -59,9 +60,11 @@
     insights: string[];
     recommendations: string[];
   }
+
   $effect(() => {
     loadExistingPatterns();
   });
+
   async function loadExistingPatterns() {
     try {
       const response = await fetch('/api/ai/pattern-detection', {
@@ -70,36 +73,37 @@
           'Content-Type': 'application/json'
         }
       });
-      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
-        const data = await (response as { ok?: any; json?: any; statusText?: any }).json();
-        patterns = (data as { patterns?: any }).patterns || [];
+      if (response.ok) {
+        const data = await response.json();
+        patterns = data.patterns || [];
       }
     } catch (error) {
       console.error('Error loading patterns:', error);
     }
   }
+
   async function runPatternAnalysis() {
     isAnalyzing = true;
     try {
       const analysisRequest = {
-        dataSources: selectedDataSources
-        timeRange,
+        dataSources: selectedDataSources,
+        timeRange: timeRange,
         confidenceThreshold: confidenceThreshold / 100,
         patternTypes: patternTypeFilter === 'all' ? undefined : [patternTypeFilter]
-      }
+      };
       const response = await fetch('/api/ai/pattern-detection', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(analysisRequest);
+        body: JSON.stringify(analysisRequest)
       });
-      if ((response as { ok?: any; json?: any; statusText?: any }).ok) {
-        const result = await (response as { ok?: any; json?: any; statusText?: any }).json();
-        analysisResults = (result as { analysis?: any; patterns?: any }).analysi;
-        patterns = (result as { analysis?: any; patterns?: any }).patterns || [];
+      if (response.ok) {
+        const result = await response.json();
+        analysisResults = result.analysis ?? null;
+        patterns = result.patterns || [];
       } else {
-        throw new Error(`Analysis failed: ${(response as { ok?: any; json?: any; statusText?: any }).statusText}`);
+        throw new Error(`Analysis failed: ${response.statusText}`);
       }
     } catch (error) {
       console.error('Error running pattern analysis:', error);
@@ -107,6 +111,7 @@
       isAnalyzing = false;
     }
   }
+
   function getPatternTypeIcon(type: string): string {
     switch (type) {
       case 'temporal': return '⏰';
@@ -136,25 +141,28 @@
       default: return 'text-gray-600';
     }
   }
+
   let filteredPatterns = $derived(() => {
-    let filtered = pattern;
+    let filtered = patterns.slice();
     // Apply type filter
     if (patternTypeFilter !== 'all') {
-      filtered = filtered.filter(pattern => pattern.type === patternTypeFilter);
+      filtered = filtered.filter(p => p.type === patternTypeFilter);
     }
     // Apply confidence threshold
-    filtered = filtered.filter(pattern => pattern.confidence >= confidenceThreshold);
+    filtered = filtered.filter(p => p.confidence >= confidenceThreshold);
     // Sort by significance (highest first)
     filtered.sort((a, b) => b.significance - a.significance);
     return filtered;
   });
+
   function openPatternDetails(pattern: DetectedPattern) {
     selectedPattern = pattern;
     showPatternDetails = true;
   }
-  function formatDuration(duration string): string {
-    // Convert duration string to human readable format
-    const match = duration.match(/(\d+) => [dhm])/);
+
+  function formatDuration(duration: string): string {
+    // Convert duration string to human readable format (expects like "3d" or "12h" or "30m")
+    const match = duration.match(/(\d+)([dhm])/);
     if (match) {
       const value = match[1];
       const unit = match[2];
@@ -164,12 +172,14 @@
         case 'm': return `${value} minute${value !== '1' ? 's' : ''}`;
       }
     }
-    return duratio;
+    return duration;
   }
 </script>
+
 <svelte:head>
   <title>Pattern Detection - Legal AI Platform</title>
 </svelte:head>
+
 <div class="pattern-detection-interface">
   <header class="detection-header">
     <div class="header-content">
@@ -177,11 +187,12 @@
       <p class="detection-subtitle">AI-powered pattern recognition and behavioral analysis</p>
     </div>
     <div class="header-actions">
-      <button class="nes-btn" onclick={disabled}>
+      <button class="nes-btn" onclick={runPatternAnalysis} disabled={isAnalyzing}>
         {isAnalyzing ? 'Analyzing...' : 'Run Analysis'}
       </button>
     </div>
   </header>
+
   <!-- Analysis Controls -->
   <section class="controls-section">
     <div class="controls-grid">
@@ -236,6 +247,7 @@
       </div>
     </div>
   </section>
+
   <!-- Analysis Results Summary -->
   {#if analysisResults}
     <section class="results-summary">
@@ -275,6 +287,7 @@
       </div>
     </section>
   {/if}
+
   <!-- Patterns Grid -->
   <main class="patterns-grid">
     {#if isAnalyzing}
@@ -289,30 +302,28 @@
         <p>Try adjusting your filters or running a new analysis.</p>
       </div>
     {:else}
-      {#each filteredPatterns as pattern}
-        <div.Root class="pattern-nier-bits-card">
-          <CardHeader>
-            <div class="pattern-header">
-              <div class="pattern-title-section">
-                <div class="pattern-icon">{getPatternTypeIcon(pattern.type)}</div>
-                <div>
-                  <h4 class="pattern-title font-semibold">{pattern.title}</h4>
-                  <span class="pattern-type-badge {getPatternTypeColor(pattern.type)}">
-                    {pattern.type}
-                  </span>
-                </div>
-              </div>
-              <div class="pattern-metrics-header">
-                <span class="confidence-score">{pattern.confidence}%</span>
-                <span class="risk-level {getRiskLevelColor(pattern.riskLevel)}">
-                  {pattern.riskLevel}
+      {#each filteredPatterns as pattern (pattern.id)}
+        <article class="pattern-card" aria-labelledby={"pattern-"+pattern.id}>
+          <header class="pattern-header">
+            <div class="pattern-title-section">
+              <div class="pattern-icon">{getPatternTypeIcon(pattern.type)}</div>
+              <div>
+                <h4 id={"pattern-"+pattern.id} class="pattern-title font-semibold">{pattern.title}</h4>
+                <span class="pattern-type-badge {getPatternTypeColor(pattern.type)}">
+                  {pattern.type}
                 </span>
               </div>
             </div>
-            <div.Description class="pattern-description">
-              {pattern.description}
-            </div.Description>
-          </CardHeader>
+            <div class="pattern-metrics-header">
+              <span class="confidence-score">{pattern.confidence}%</span>
+              <span class="risk-level {getRiskLevelColor(pattern.riskLevel)}">
+                {pattern.riskLevel}
+              </span>
+            </div>
+          </header>
+
+          <p class="pattern-description">{pattern.description}</p>
+
           <div class="card-content">
             <div class="pattern-stats">
               <div class="stat">
@@ -331,6 +342,7 @@
                 <span class="stat-value">{formatDuration(pattern.timeframe.duration)}</span>
               </div>
             </div>
+
             <div class="pattern-entities">
               <h4>Key Entities:</h4>
               <div class="entities-list">
@@ -344,6 +356,7 @@
                 {/if}
               </div>
             </div>
+
             {#if pattern.correlations.length > 0}
               <div class="pattern-correlations">
                 <h4>Correlations:</h4>
@@ -353,137 +366,142 @@
               </div>
             {/if}
           </div>
-          <div.Footer>
-            <div class="nier-bits-card-actions">
-              <button class="nes-btn" variant="ghost" size="sm" onclick={() => openPatternDetails(pattern)}>
-                View Details
-              </button>
-              <button class="nes-btn" size="sm">
-                Investigate
-              </button>
-            </div>
-          </div.Footer>
-        </div>
+
+          <footer class="card-actions">
+            <button class="nes-btn ghost sm" onclick={() => openPatternDetails(pattern)}>
+              View Details
+            </button>
+            <button class="nes-btn sm">
+              Investigate
+            </button>
+          </footer>
+        </article>
       {/each}
     {/if}
   </main>
 </div>
+
 <!-- Pattern Details Dialog -->
 <Dialog.Root bind:open={showPatternDetails}>
-  <Dialog.Content class="pattern-details-dialog">
-    {#if selectedPattern}
-      <Dialog.Title>Pattern Analysis: {selectedPattern.title}</Dialog.Title>
-      <Dialog.Description>
-        Detailed breakdown of detected pattern and correlations
-      </Dialog.Description>
-      <div class="pattern-details-content">
-        <!-- Pattern Overview -->
-        <section class="pattern-overview">
-          <div class="overview-metrics">
-            <div class="overview-metric">
-              <span class="overview-label">Type</span>
-              <span class="overview-value">
-                {getPatternTypeIcon(selectedPattern.type)} {selectedPattern.type}
-              </span>
-            </div>
-            <div class="overview-metric">
-              <span class="overview-label">Confidence</span>
-              <span class="overview-value">{selectedPattern.confidence}%</span>
-            </div>
-            <div class="overview-metric">
-              <span class="overview-label">Risk Level</span>
-              <span class="overview-value {getRiskLevelColor(selectedPattern.riskLevel)}">
-                {selectedPattern.riskLevel}
-              </span>
-            </div>
-            <div class="overview-metric">
-              <span class="overview-label">Frequency</span>
-              <span class="overview-value">{selectedPattern.frequency} times</span>
-            </div>
-          </div>
-          <div class="timeframe-info">
-            <h4>Timeframe</h4>
-            <p>
-              <strong>Start:</strong> {new Date(selectedPattern.timeframe.start).toLocaleString()}
-            </p>
-            <p>
-              <strong>End:</strong> {new Date(selectedPattern.timeframe.end).toLocaleString()}
-            </p>
-            <p>
-              <strong>Duration</strong> {formatDuration(selectedPattern.timeframe.duration)}
-            </p>
-          </div>
-        </section>
-        <!-- Entities -->
-        <section class="entities-section">
-          <h3>Involved Entities</h3>
-          <div class="entities-grid">
-            {#each selectedPattern.entities as entity}
-              <div class="entity-nier-bits-card">
-                <h4>{entity.name}</h4>
-                <p class="entity-type">{entity.type}</p>
-                <p class="entity-role">{entity.role}</p>
-                <div class="involvement-meter">
-                  <div class="involvement-fill" style="width: {entity.involvement}%"></div>
-                </div>
-                <span class="involvement-percentage">{entity.involvement}% involvement</span>
-              </div>
-            {/each}
-          </div>
-        </section>
-        <!-- Correlations -->
-        {#if selectedPattern.correlations.length > 0}
-          <section class="correlations-section">
-            <h3>Pattern Correlations</h3>
-            <div class="correlations-list">
-              {#each selectedPattern.correlations as correlation}
-                <div class="correlation-item">
-                  <div class="correlation-header">
-                    <span class="correlation-type">{correlation.type}</span>
-                    <span class="correlation-strength">{(correlation.strength * 100).toFixed(0)}% strength</span>
+  <!-- Use Portal + conditional pattern required by Bits UI v1 / Svelte 5 runes -->
+  <Dialog.Portal forceMount>
+    {#if showPatternDetails}
+      <Dialog.Overlay />
+      <Dialog.Content>
+        <div class="pattern-details-dialog">
+          {#if selectedPattern}
+            <Dialog.Title>Pattern Analysis: {selectedPattern.title}</Dialog.Title>
+            <Dialog.Description>
+              Detailed breakdown of detected pattern and correlations
+            </Dialog.Description>
+            <div class="pattern-details-content">
+              <!-- Pattern Overview -->
+              <section class="pattern-overview">
+                <div class="overview-metrics">
+                  <div class="overview-metric">
+                    <span class="overview-label">Type</span>
+                    <span class="overview-value">
+                      {getPatternTypeIcon(selectedPattern.type)} {selectedPattern.type}
+                    </span>
                   </div>
-                  <p class="correlation-description">{correlation.description}</p>
+                  <div class="overview-metric">
+                    <span class="overview-label">Confidence</span>
+                    <span class="overview-value">{selectedPattern.confidence}%</span>
+                  </div>
+                  <div class="overview-metric">
+                    <span class="overview-label">Risk Level</span>
+                    <span class="overview-value {getRiskLevelColor(selectedPattern.riskLevel)}">
+                      {selectedPattern.riskLevel}
+                    </span>
+                  </div>
+                  <div class="overview-metric">
+                    <span class="overview-label">Frequency</span>
+                    <span class="overview-value">{selectedPattern.frequency} times</span>
+                  </div>
                 </div>
-              {/each}
-            </div>
-          </section>
-        {/if}
-        <!-- Recommendations -->
-        {#if selectedPattern.recommendations.length > 0}
-          <section class="recommendations-section">
-            <h3>Recommendations</h3>
-            <ul class="recommendations-list">
-              {#each selectedPattern.recommendations as recommendation}
-                <li class="recommendation-item">{recommendation}</li>
-              {/each}
-            </ul>
-          </section>
-        {/if}
-        <!-- Evidence -->
-        {#if selectedPattern.evidence.length > 0}
-          <section class="evidence-section">
-            <h3>Supporting Evidence</h3>
-            <div class="evidence-list">
-              {#each selectedPattern.evidence as evidenceId}
-                <div class="evidence-item">
-                  Evidence ID: {evidenceId}
+                <div class="timeframe-info">
+                  <h4>Timeframe</h4>
+                  <p>
+                    <strong>Start:</strong> {new Date(selectedPattern.timeframe.start).toLocaleString()}
+                  </p>
+                  <p>
+                    <strong>End:</strong> {new Date(selectedPattern.timeframe.end).toLocaleString()}
+                  </p>
+                  <p>
+                    <strong>Duration</strong> {formatDuration(selectedPattern.timeframe.duration)}
+                  </p>
                 </div>
-              {/each}
+              </section>
+
+              <!-- Entities -->
+              <section class="entities-section">
+                <h3>Involved Entities</h3>
+                <div class="entities-grid">
+                  {#each selectedPattern.entities as entity}
+                    <div class="entity-nier-bits-card">
+                      <h4>{entity.name}</h4>
+                      <p class="entity-type">{entity.type}</p>
+                      <p class="entity-role">{entity.role}</p>
+                      <div class="involvement-meter">
+                        <div class="involvement-fill" style="width: {entity.involvement}%"></div>
+                      </div>
+                      <span class="involvement-percentage">{entity.involvement}% involvement</span>
+                    </div>
+                  {/each}
+                </div>
+              </section>
+
+              <!-- Correlations -->
+              {#if selectedPattern.correlations.length > 0}
+                <section class="correlations-section">
+                  <h3>Pattern Correlations</h3>
+                  <div class="correlations-list">
+                    {#each selectedPattern.correlations as correlation}
+                      <div class="correlation-item">
+                        <div class="correlation-header">
+                          <span class="correlation-type">{correlation.type}</span>
+                          <span class="correlation-strength">{(correlation.strength * 100).toFixed(0)}% strength</span>
+                        </div>
+                        <p class="correlation-description">{correlation.description}</p>
+                      </div>
+                    {/each}
+                  </div>
+                </section>
+              {/if}
+
+              <!-- Recommendations -->
+              {#if selectedPattern.recommendations.length > 0}
+                <section class="recommendations-section">
+                  <h3>Recommendations</h3>
+                  <ul class="recommendations-list">
+                    {#each selectedPattern.recommendations as recommendation}
+                      <li class="recommendation-item">{recommendation}</li>
+                    {/each}
+                  </ul>
+                </section>
+              {/if}
+
+              <!-- Evidence -->
+              {#if selectedPattern.evidence.length > 0}
+                <section class="evidence-section">
+                  <h3>Supporting Evidence</h3>
+                  <div class="evidence-list">
+                    {#each selectedPattern.evidence as evidenceId}
+                      <div class="evidence-item">
+                        Evidence ID: {evidenceId}
+                      </div>
+                    {/each}
+                  </div>
+                </section>
+              {/if}
             </div>
-          </section>
-        {/if}
-      </div>
-      <div class="dialog-actions">
-        <button class="nes-btn" variant="ghost" onclick={() => showPatternDetails = false}>
-          Close
-        </button>
-        <button class="nes-btn">
-          Start Investigation
-        </button>
-      </div>
+          {/if}
+        </div>
+      </Dialog.Content>
     {/if}
-  </Dialog.Content>
+  </Dialog.Portal>
 </Dialog.Root>
+
 <style>
   .pattern-detection-interface {
     max-width: 1400px;
@@ -493,7 +511,7 @@
   }
   .detection-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
@@ -585,7 +603,7 @@
   }
   .insights-list {
     list-style: none;
-    padding: 0,
+    padding: 0;
     margin: 0;
   }
   .insights-list li {
@@ -605,14 +623,15 @@
     border: 1px solid #e2e8f0;
     border-radius: 0.5rem;
     overflow: hidden;
-    transition: box-shadow 0.2;
+    transition: box-shadow 0.2s;
+    padding: 1rem;
   }
   .pattern-card:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   .pattern-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: flex-start;
     gap: 1rem;
   }
@@ -673,7 +692,7 @@
     min-width: 80px;
   }
   .stat-bar {
-    flex: 1,
+    flex: 1;
     height: 0.5rem;
     background: #e2e8f0;
     border-radius: 0.25rem;
@@ -682,7 +701,7 @@
   .stat-fill {
     height: 100%;
     background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
-    transition: width 0.3;
+    transition: width 0.3s;
   }
   .stat-value {
     font-size: 0.75rem;
@@ -747,7 +766,7 @@
     margin-top: 0.5rem;
   }
   @keyframes spin {
-    to { transform: rotate(360deg), }
+    to { transform: rotate(360deg); }
   }
   /* Dialog Styles */
   .pattern-details-dialog {
@@ -830,7 +849,7 @@
   .involvement-fill {
     height: 100%;
     background: #3b82f6;
-    transition: width 0.3;
+    transition: width 0.3s;
   }
   .involvement-percentage {
     font-size: 0.75rem;
@@ -850,7 +869,7 @@
   }
   .correlation-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
   }
@@ -871,7 +890,7 @@
   }
   .recommendations-list {
     list-style: none;
-    padding: 0,
+    padding: 0;
     margin: 0;
   }
   .recommendation-item {
@@ -924,6 +943,8 @@
     .entities-grid {
       grid-template-columns: 1fr;
     }
+  }
+</style>
   }
 </style>
 
