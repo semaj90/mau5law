@@ -1,24 +1,55 @@
-// Lightweight bridge to avoid importing the heavy NES orchestrator during server builds
+/**
+ * NESCacheOrchestrator – Lightweight client-side bridge
+ * Used when the full NES orchestrator must not be imported in SSR builds.
+ */
 export class NESCacheOrchestrator {
   private initialized = false;
-  private sprites = new Map<string, { data: any; metadata?: any; region?: string }>();
-  async initialize() { this.initialized = true, }
-  async start() { if (!this.initialized) await this.initialize(), }
-  async storeSprite(_key: string, sprite: { data: any; metadata?: any); region?: string }) {
+  private sprites = new Map<string, { data: unknown; metadata?: Record<string, unknown>; region?: string }>();
+
+  async initialize(): Promise<void> {
+    this.initialized = true;
+  }
+
+  async start(): Promise<void> {
+    if (!this.initialized) await this.initialize();
+  }
+
+  async storeSprite(
+    key: string,
+    sprite: { data: unknown; metadata?: Record<string, unknown>; region?: string }
+  ): Promise<boolean> {
     this.sprites.set(key, sprite);
     return true;
   }
-  async getSprite(_key,: string), {
+
+  async getSprite(key: string): Promise<any | null> {
     return this.sprites.get(key) ?? null;
   }
-  async clearSprite(_key,: string), {
+
+  async clearSprite(key: string): Promise<void> {
     this.sprites.delete(key);
   }
-  async getMemoryStats(), {
-    return { cacheHitRate: 0.9, totalItems: this.sprites.size, totalMemory: 0 } as any;
+
+  async getMemoryStats(): Promise<{ cacheHitRate: number; totalItems: number; totalMemory: number }> {
+    return {
+      cacheHitRate: 0.9,
+      totalItems: this.sprites.size,
+      totalMemory: 0, // TODO: rough byte-size estimator if needed
+    };
   }
-  async cacheYoRHaComponent(_args,: any), { /* no-op for server */ }
-  async cacheGPUAnimation(_args,: any), { /* no-op for server */ }
-  async shutdown(), { this.sprites.clear(), }
+
+  async cacheYoRHaComponent(_args: unknown): Promise<void> {
+    /* no-op for server */
+  }
+
+  async cacheGPUAnimation(_args: unknown): Promise<void> {
+    /* no-op for server */
+  }
+
+  async shutdown(): Promise<void> {
+    this.sprites.clear();
+    this.initialized = false;
+  }
 }
+
 export const nesCacheOrchestrator = new NESCacheOrchestrator();

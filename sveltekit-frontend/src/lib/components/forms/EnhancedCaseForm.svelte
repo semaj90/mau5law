@@ -1,52 +1,56 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than onc;
-https://svelte.dev/e/props_duplicate -->
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than once -->
 <!-- Enhanced Case Form with proper schema mapping -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { notifications  } from '$lib/stores/unified";
-  import type { User } from "$lib/types/user";
-  import type { Case } from "$lib/types/index";
+  import { notifications } from '$lib/stores/unified';
+  import type { User } from '$lib/types/user';
+  import type { Case } from '$lib/types/index';
+  import { createEventDispatcher } from 'svelte';
+
+  const dispatch = createEventDispatcher();
+
   let {
     case_ = undefined,
     user = undefined
   }: {
-    case_?: Case | undefined,
-    user?: User | undefined
+    case_?: Case | undefined;
+    user?: User | undefined;
   } = $props();
+
   // Form data matching the database schema
   let formData = $state({
     title: case_?.title || "",
-    description case_?.description || "",
+    description: case_?.description || "",
     caseNumber: case_?.caseNumber || "",
     name: case_?.name || "",
     incidentDate: case_?.incidentDate
       ? new Date(case_.incidentDate).toISOString().split("T")[0]
       : "",
-    location case_?.location || "",
+    location: case_?.location || "",
     priority: case_?.priority || "medium",
     status: case_?.status || "open",
     category: case_?.category || "",
-    dangerScore: case_?.dangerScore || 0,
-    estimatedValue: case_?.estimatedValue || "",
-    jurisdiction case_?.jurisdiction || "",
+    dangerScore: case_?.dangerScore ?? 0,
+    estimatedValue: case_?.estimatedValue ?? "",
+    jurisdiction: case_?.jurisdiction || "",
     leadProsecutor: case_?.leadProsecutor || user?.id || "",
     assignedTeam: case_?.assignedTeam || [],
     tags: case_?.tags || [],
     metadata: case_?.metadata || {}
   });
+
   let loading = $state(false);
   let errors = $state<Record<string, string>>({});
+
   // Form validation
   function validateForm() {
     errors = {};
-    if (!formData.title.trim()) {
+    if (!formData.title || !formData.title.trim()) {
       errors.title = "Title is required";
     }
-    if (!formData.caseNumber.trim()) {
+    if (!formData.caseNumber || !formData.caseNumber.trim()) {
       errors.caseNumber = "Case number is required";
     }
-    if (formData.dangerScore < 0 || formData.dangerScore > 10) {
+    if (typeof formData.dangerScore === "number" && (formData.dangerScore < 0 || formData.dangerScore > 10)) {
       errors.dangerScore = "Danger score must be between 0 and 10";
     }
     if (formData.estimatedValue && isNaN(Number(formData.estimatedValue))) {
@@ -54,129 +58,133 @@ https://svelte.dev/e/props_duplicate -->
     }
     return Object.keys(errors).length === 0;
   }
+
   // Handle form submission
   async function handleSubmit() {
     if (!validateForm()) {
       notifications.add({
         type: "error",
         title: "Validation Error",
-        message: "Please fix the form errors before submitting.",
+        message: "Please fix the form errors before submitting."
       });
       return;
-  }
+    }
+
     loading = true;
     try {
       // Prepare data for API - match schema exactly
       const apiData = {
         title: formData.title.trim(),
-        description formData.description.trim(),
+        description: (formData.description || "").trim(),
         caseNumber: formData.caseNumber.trim(),
-        name: formData.name.trim() || formData.title.trim(), // Use title as fallback
+        name: (formData.name || formData.title).trim(),
         incidentDate: formData.incidentDate || null,
-        location formData.location.trim(),
+        location: (formData.location || "").trim(),
         priority: formData.priority,
         status: formData.status,
-        category: formData.category.trim(),
+        category: (formData.category || "").trim(),
         dangerScore: Number(formData.dangerScore),
-        estimatedValue: formData.estimatedValue
-          ? Number(formData.estimatedValue)
-          : null
-        jurisdiction formData.jurisdiction.trim(),
-        leadProsecutor: formData.leadProsecutor || user.id,
+        estimatedValue: formData.estimatedValue ? Number(formData.estimatedValue) : null,
+        jurisdiction: (formData.jurisdiction || "").trim(),
+        leadProsecutor: formData.leadProsecutor || user?.id || "",
         assignedTeam: formData.assignedTeam,
         tags: formData.tags,
         metadata: {
           ...formData.metadata,
-          formVersion "2.0",
-          lastModified: new Date().toISOString(),
-        },
-      }
+          formVersion: "2.0",
+          lastModified: new Date().toISOString()
+        }
+      };
+
       // Defensive: always check for valid API data before fetch
       if (!apiData.title || !apiData.caseNumber) {
         throw new Error("Missing required fields");
-  }
+      }
+
       const url = case_ ? `/api/cases/${case_.id}` : "/api/cases";
       const method = case_ ? "PUT" : "POST";
       const response = await fetch(url, {
         method,
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify(apiData),
+        body: JSON.stringify(apiData)
       });
-      // Defensive: handle non-JSON error responses
-      let savedCa;
+
+      let savedCase;
       try {
         savedCase = await response.json();
       } catch (e) {
         throw new Error("Server returned invalid response");
-  }
+      }
+
       if (!response.ok) {
         throw new Error(savedCase?.error || "Failed to save case");
-  }
+      }
+
       notifications.add({
         type: "success",
         title: case_ ? "Case Updated" : "Case Created",
-        message: `Case "${savedCase.title}" has been ${case_ ? "updated" : "created"} successfully.`,
+        message: `Case "${savedCase.title}" has been ${case_ ? "updated" : "created"} successfully.`
       });
+
       dispatch(case_ ? "updated" : "created", savedCase);
-    } catch (error) {
-      console.error("Error saving caseItem:", error);
+    } catch (err) {
+      console.error("Error saving caseItem:", err);
       notifications.add({
         type: "error",
         title: "Save Error",
-        message:
-          error instanceof Error
-            ? error.message: "Failed to save case. Please try again.",
+        message: err instanceof Error ? err.message : "Failed to save case. Please try again."
       });
     } finally {
       loading = false;
+    }
   }
-  }
+
   // Handle tag management
   function addTag() {
-    const tagInput = document.getElementById("new-tag") as HTMLInputElement;
+    const tagInput = document.getElementById("new-tag") as HTMLInputElement | null;
     const newTag = tagInput?.value.trim();
     if (newTag && !formData.tags.includes(newTag)) {
       formData.tags = [...formData.tags, newTag];
-      tagInput.value = "";
-  }
+      if (tagInput) tagInput.value = "";
+    }
   }
   function removeTag(tag: string) {
     formData.tags = formData.tags.filter((t) => t !== tag);
   }
+
   // Handle team assignment
   function addTeamMember() {
-    const memberInput = document.getElementById(
-      "new-member"
-    ) as HTMLInputElement;
+    const memberInput = document.getElementById("new-member") as HTMLInputElement | null;
     const newMember = memberInput?.value.trim();
     if (newMember && !formData.assignedTeam.includes(newMember)) {
       formData.assignedTeam = [...formData.assignedTeam, newMember];
-      memberInput.value = "";
-  }
+      if (memberInput) memberInput.value = "";
+    }
   }
   function removeTeamMember(member: string) {
     formData.assignedTeam = formData.assignedTeam.filter((m) => m !== member);
   }
 </script>
-<form onsubmit={(e) => { e.preventDefault(); handleSubmit(), }} class="container mx-auto px-4">
+
+<form on:submit|preventDefault={handleSubmit} class="enhanced-case-form container mx-auto px-4">
   <div class="container mx-auto px-4">
     <!-- Basic Information -->
     <section class="container mx-auto px-4">
       <h3>Basic Information</h3>
       <div class="container mx-auto px-4">
-        <label for="title" class="container mx-auto px-4">Case Title</label>
+        <label for="title" class="container mx-auto px-4 required">Case Title</label>
         <input
           id="title"
           type="text"
           bind:value={formData.title}
           placeholder="Enter case title"
-          class:error={errors.title}
+          class:error={!!errors.title}
           required
         />
         {#if errors.title}
-          <span class="container mx-auto px-4">{errors.title}</span>
+          <span class="container mx-auto px-4 field-error">{errors.title}</span>
         {/if}
       </div>
       <div class="container mx-auto px-4">
@@ -317,19 +325,16 @@ https://svelte.dev/e/props_duplicate -->
             id="new-member"
             type="text"
             placeholder="Add team member ID"
-            keydown={(e) =>
-              e.key === "Enter" && (e.preventDefault(), addTeamMember())}
+            on:keydown={(e) => e.key === "Enter" && (e.preventDefault(), addTeamMember())}
           />
-          <button type="button" onclick={() => addTeamMember()}>Add</button>
+          <button type="button" on:click={() => addTeamMember()}>Add</button>
         </div>
         {#if formData.assignedTeam.length > 0}
           <div class="container mx-auto px-4">
             {#each formData.assignedTeam as member}
-              <span class="container mx-auto px-4">
+              <span class="container mx-auto px-4 tag">
                 {member}
-                <button type="button" onclick={() => removeTeamMember(member)}
-                  >×</button
-                >
+                <button type="button" on:click={() => removeTeamMember(member)}>×</button>
               </span>
             {/each}
           </div>
@@ -338,22 +343,21 @@ https://svelte.dev/e/props_duplicate -->
       <!-- Tags -->
       <div class="container mx-auto px-4">
         <label for="new-tag">Tags</label>
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto px-4 tag-input">
           <input
             id="new-tag"
             type="text"
             placeholder="Add tag"
-            keydown={(e) =>
-              e.key === "Enter" && (e.preventDefault(), addTag())}
+            on:keydown={(e) => e.key === "Enter" && (e.preventDefault(), addTag())}
           />
-          <button type="button" onclick={() => addTag()}>Add</button>
+          <button type="button" on:click={() => addTag()}>Add</button>
         </div>
         {#if formData.tags.length > 0}
-          <div class="container mx-auto px-4">
+          <div class="container mx-auto px-4 tags-list">
             {#each formData.tags as tag}
-              <span class="container mx-auto px-4">
+              <span class="container mx-auto px-4 tag">
                 {tag}
-                <button type="button" onclick={() => removeTag(tag)}>×</button>
+                <button type="button" on:click={() => removeTag(tag)}>×</button>
               </span>
             {/each}
           </div>
@@ -361,10 +365,11 @@ https://svelte.dev/e/props_duplicate -->
       </div>
     </section>
   </div>
+
   <!-- Form Actions -->
-  <div class="container mx-auto px-4">
-    <button type="button" onclick={() => // ondispatch removed}> Cancel </button>
-    <button type="submit" disabled={loading} class="container mx-auto px-4">
+  <div class="form-actions container mx-auto px-4">
+    <button type="button" on:click={() => dispatch('cancel')}>Cancel</button>
+    <button type="submit" disabled={loading} class="primary">
       {#if loading}
         Saving...
       {:else}
@@ -373,6 +378,7 @@ https://svelte.dev/e/props_duplicate -->
     </button>
   </div>
 </form>
+
 <style>
   /* @unocss-include */
   .enhanced-case-form {
@@ -382,38 +388,38 @@ https://svelte.dev/e/props_duplicate -->
     border-radius: 8px;
     padding: 2rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
+  }
   .form-grid {
     display: grid;
     gap: 2rem;
-}
-.form-section h3 {
+  }
+  .form-section h3 {
     margin: 0 0 1rem 0;
     color: #374151;
     font-size: 1.1rem;
     font-weight: 600;
     border-bottom: 1px solid #e5e7eb;
     padding-bottom: 0.5rem;
-}
+  }
   .field-group {
     margin-bottom: 1.5rem;
-}
+  }
   .field-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
-}
+  }
   label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
     color: #374151;
-}
+  }
   label.required::after {
-    content: "*",
+    content: "*";
     color: #ef4444;
     margin-left: 0.25rem;
-}
+  }
   input,
   select,
   textarea {
@@ -422,33 +428,32 @@ https://svelte.dev/e/props_duplicate -->
     border: 1px solid #d1d5db;
     border-radius: 6px;
     font-size: 1rem;
-    transition: border-color 0.2s,
-      box-shadow 0.2;
-}
-  input: focus;
-  select: focus;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  input:focus,
+  select:focus,
   textarea:focus {
     outline: none;
     border-color: #3b82f6;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
+  }
   input.error {
     border-color: #ef4444;
-}
+  }
   .field-error {
     display: block;
     margin-top: 0.25rem;
     font-size: 0.875rem;
     color: #ef4444;
-}
+  }
   .tag-input {
     display: flex;
     gap: 0.5rem;
     margin-bottom: 0.5rem;
-}
+  }
   .tag-input input {
-    flex: 1,
-}
+    flex: 1;
+  }
   .tag-input button {
     padding: 0.75rem 1rem;
     background: #3b82f6;
@@ -457,16 +462,16 @@ https://svelte.dev/e/props_duplicate -->
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.875rem;
-    transition: background-color 0.2;
-}
-  .tag-input buttonhover {
+    transition: background-color 0.2s;
+  }
+  .tag-input button:hover {
     background: #2563eb;
-}
+  }
   .tags-list {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-}
+  }
   .tag {
     display: inline-flex;
     align-items: center;
@@ -476,26 +481,26 @@ https://svelte.dev/e/props_duplicate -->
     border-radius: 9999px;
     font-size: 0.875rem;
     color: #374151;
-}
+  }
   .tag button {
     background: none;
     border: none;
     cursor: pointer;
     font-size: 1rem;
     color: #6b7280;
-    padding: 0,
+    padding: 0;
     width: 1rem;
     height: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: background-color 0.2;
-}
-  .tag buttonhover {
+    transition: background-color 0.2s;
+  }
+  .tag button:hover {
     background: #d1d5db;
     color: #374151;
-}
+  }
   .form-actions {
     display: flex;
     justify-content: flex-end;
@@ -503,7 +508,7 @@ https://svelte.dev/e/props_duplicate -->
     margin-top: 2rem;
     padding-top: 1.5rem;
     border-top: 1px solid #e5e7eb;
-}
+  }
   .form-actions button {
     padding: 0.75rem 1.5rem;
     border: 1px solid #d1d5db;
@@ -512,34 +517,34 @@ https://svelte.dev/e/props_duplicate -->
     color: #374151;
     cursor: pointer;
     font-size: 1rem;
-    transition: all 0.2;
-}
-  .form-actions buttonhover {
+    transition: all 0.2s;
+  }
+  .form-actions button:hover {
     background: #f9fafb;
-}
+  }
   .form-actions button.primary {
     background: #3b82f6;
     color: white;
     border-color: #3b82f6;
-}
+  }
   .form-actions button.primary:hover {
     background: #2563eb;
     border-color: #2563eb;
-}
-  .form-actions buttondisabled {
+  }
+  .form-actions button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-}
+  }
   @media (max-width: 768px) {
     .enhanced-case-form {
       padding: 1rem;
-}
+    }
     .field-row {
       grid-template-columns: 1fr;
-}
+    }
     .form-actions {
       flex-direction: column;
-}
-}
+    }
+  }
 </style>
 <!-- TODO: migrate export lets to $props(); CommonProps assumed. -->

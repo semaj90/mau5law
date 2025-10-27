@@ -140,6 +140,10 @@ Project Root (deeds-web-app)
     │   └── health/+server.ts        ← NEW
     ├── src/lib/types/search.ts      ← Restored
     ├── src/lib/server/redis-cache.ts    ← Enhanced
+    ├── Telemetry
+    │   ├── API: src/routes/api/telemetry/submit/+server.ts - receives telemetry POSTs and LPUSHes into Redis `telemetry:events`
+    │   ├── Client: src/lib/services/system-monitor-client.ts - browser batching client that posts snapshots (uses latency-logger)
+    │   └── Consumer: scripts/telemetry-consumer.mjs - demo consumer that reads `telemetry:events` and updates Redis ZSET / Neo4j
     └── src/lib/services/pgvector-search-wrapper.ts ← NEW
 ```
 

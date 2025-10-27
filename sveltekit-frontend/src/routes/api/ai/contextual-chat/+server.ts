@@ -1,6 +1,9 @@
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import type { RequestHandler } from './$types.js';
 import { invokeContextualChain } from '$lib/server/ai/contextual-gpu-chain';
+import { getTopAdapter, recordAdapterUsage } from '$lib/server/adapter-ranking';
+import { createRedisClient } from '$lib/server/redis-client';
+import { getNeo4jDriver } from '$lib/server/neo4j-client';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   const body = await request.json();
@@ -9,8 +12,27 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     throw error(400, 'input is required');
   }
 
-  const userId = (body?.userId as string | undefined) ?? locals.user?.id;
-  const response = await invokeContextualChain(input, userId);
-  return json({ response });
-};
+  // Defensive: try to pick an adapter but continue if unavailable
+  const redis = createRedisClient();
+  const neo4j = getNeo4jDriver();
+  let adapterId = 'default';
+  let adapterScore = 0;
+  try {
+    const top = await getTopAdapter(redis);
+    if (top) {
+      adapterId = top.id;
+      adapterScore = top.score ?? 0;
+    }
+  } catch (e) {
+    console.warn('adapter selection failed, continuing with default adapter', e);
+  }
 
+  const maybeLocals = locals as { user?: { id?: string } } | undefined;
+  const userId = (body?.userId as string | undefined) ?? maybeLocals?.user?.id;
+  const response = await invokeContextualChain(input, userId);
+
+  // Best-effort: record usage asynchronously
+  recordAdapterUsage(neo4j, String(userId ?? 'anonymous'), adapterId, adapterScore).catch(() => undefined);
+
+  return json({ response, adapter: adapterId });
+};

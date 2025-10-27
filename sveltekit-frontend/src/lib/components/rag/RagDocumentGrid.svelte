@@ -4,13 +4,14 @@
   import DocumentCard from './DocumentCard.svelte';
   import DocumentModal from './DocumentModal.svelte';
 
+  // Changed: make embeddingModel required (string) to match other components' expectations
   interface Document {
     id: string;
     filename: string;
     fileSize: number;
     mimeType: string;
     summary: string;
-    embeddingModel?: string;
+    embeddingModel: string; // was optional, now required
     uploadedAt: string;
     chunks?: number;
     status?: string;
@@ -44,12 +45,18 @@
     );
   });
 
+  // Keep $state types but ensure documents are normalized when loaded
   async function loadDocuments() {
     try {
       loading = true;
       const response = await fetch('/api/rag/documents');
       if (response.ok) {
-        documents = await response.json();
+        // Normalize embeddingModel to a string for every document so child components receive the required field.
+        const raw = await response.json();
+        documents = (raw as any[]).map((d) => ({
+          ...d,
+          embeddingModel: d.embeddingModel ?? '', // ensure non-undefined string
+        })) as Document[];
         message = `Loaded ${documents.length} documents`;
         messageType = 'success';
       } else {

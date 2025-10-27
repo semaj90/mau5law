@@ -82,7 +82,8 @@ https://svelte.dev/e/js_parse_error -->
   let lastSaved = $state<Date | null>(null);
   let isAutoSaving = $state<boolean>(false);
 
-  // interval/timeouts for progress animation: let progressInterval: ReturnType<typeof setInterval> | null = null;
+  // interval/timeouts for progress animation
+  let progressInterval: ReturnType<typeof setInterval> | null = null;
   let progressTimeout: ReturnType<typeof setTimeout> | null = null;
 
   // debounce handle for validation
@@ -131,12 +132,13 @@ https://svelte.dev/e/js_parse_error -->
     { value: 'medium', label: 'Medium Priority', color: 'text-yellow-600' },
     { value: 'high', label: 'High Priority', color: 'text-red-600' },
   ];
-  // Status options
+
+  // Status options (fixed: added missing ':' for description)
   const statusOptions = [
-    { value: 'draft', label: 'Draft', description 'Case is being prepared' },
-    { value: 'active', label: 'Active', description 'Case is under investigation' },
-    { value: 'pending', label: 'Pending', description 'Awaiting review or action' },
-    { value: 'closed', label: 'Closed', description 'Case is completed' },
+    { value: 'draft', label: 'Draft', description: 'Case is being prepared' },
+    { value: 'active', label: 'Active', description: 'Case is under investigation' },
+    { value: 'pending', label: 'Pending', description: 'Awaiting review or action' },
+    { value: 'closed', label: 'Closed', description: 'Case is completed' },
   ];
   // Auto-save indicator
   // let lastSaved = $state<Date | null>(null);

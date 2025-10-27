@@ -1,7 +1,8 @@
 import { json } from '@sveltejs/kit';
 import { caseActivities } from '$lib/server/db/schema-postgres';
 import db from '$lib/server/db/index';
-import { eq, sql, desc, or as orExpr } from 'drizzle-orm';
+import { sql, desc } from 'drizzle-orm';
+import { eq, or as orExpr } from 'drizzle-orm/expressions';
 import type { RequestHandler } from './$types.js';
 import { getUserId } from '$lib/server/auth/utils';
 export const GET: RequestHandler = async ({ locals, url }) => {
@@ -51,7 +52,6 @@ export const GET: RequestHandler = async ({ locals, url }) => {
           sql`${caseActivities.title} ILIKE ${`%${search}%`}`,
           sql`${caseActivities.description} ILIKE ${`%${search}%`}`,
         ])
-      );
     }
     // Determine the column for sorting
     const orderColumn =

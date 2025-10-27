@@ -137,7 +137,8 @@
     ([$promptInput, $isLoading]) => $promptInput.trim().length > 0 && !$isLoading
   );
 
-  function showNotification(title: string, description string) {
+  // Fixed: add missing colon and explicit return type
+  function showNotification(title: string, description: string): void {
     const id = Date.now();
     notifications.update(n => [...n, { id, title, description }]);
     // remove after timeout (run outside update callback for safety)
@@ -326,13 +327,13 @@
     box-shadow: 0 0 0 3px rgba(255, 191, 0, 0.1);
   }
   :global(.yorha-response) {
-    position relative;
+    position: relative;
     overflow: hidden;
   }
   :global(.yorha-response::after) {
     content: '';
-    position absolute;
-    top: 0,
+    position: absolute;
+    top: 0;
     left: -100%;
     width: 100%;
     height: 2px;
