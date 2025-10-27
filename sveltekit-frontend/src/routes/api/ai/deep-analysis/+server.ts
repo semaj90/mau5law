@@ -49,6 +49,12 @@ interface LangExtractModule {
   extractEntities: (text: string) => Promise<Array<Record<string, unknown>>>;
 }
 
+// Define a type for the expected output from the embedding pipeline
+interface EmbeddingOutput {
+  data?: number[][]; // Common shape: { data: [[...embedding]] }
+  [index: number]: number[]; // Alternative shape: [[...embedding]]
+}
+
 let embedder: EmbedderFn | null = null;
 async function getEmbedder(): Promise<EmbedderFn | null> {
   if (embedder) return embedder;
@@ -161,11 +167,20 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
         const embResp = await emb(text);
         // normalize common pipeline outputs defensively
         const maybe = embResp as unknown;
-        // try known shapes without assuming types
-        if (Array.isArray((maybe as any)?.data?.[0])) {
-          embedding = (maybe as any).data[0].slice(0, 384) as number[];
-        } else if (Array.isArray((maybe as any)?.[0])) {
-          embedding = (maybe as any)[0].slice(0, 384) as number[];
+
+        // Type guard for the { data: [[...]] } shape
+        if (
+          typeof maybe === 'object' &&
+          maybe !== null &&
+          'data' in maybe &&
+          Array.isArray((maybe as EmbeddingOutput).data) &&
+          Array.isArray((maybe as EmbeddingOutput).data?.[0])
+        ) {
+          embedding = (maybe as EmbeddingOutput).data![0].slice(0, 384);
+        }
+        // Type guard for the [[...]] shape
+        else if (Array.isArray(maybe) && Array.isArray((maybe as EmbeddingOutput)[0])) {
+          embedding = (maybe as EmbeddingOutput)[0].slice(0, 384);
         }
       }
     } catch (e) {

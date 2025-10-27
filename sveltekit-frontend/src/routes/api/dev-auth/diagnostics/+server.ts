@@ -7,14 +7,20 @@ export const GET: RequestHandler = async () => {
     // Probe a minimal user select and session join manually to surface any join SQL issues
     let userCount = 0; let sessionCount = 0; let sample: any = null; let joinOk = true; let joinError: string | undefined
     try {
-      const usersResult = await db.select({ id: users.id }).from(users).limit(1)
-      userCount = usersResult.length
-      sample = usersResult[0] || null
-    } catch (e: any) { joinOk = false; joinError = 'users select failed: ' + e.message, }
+      const usersResult = await db.select({ id: users.id }).from(users).limit(1);
+      userCount = usersResult.length;
+      sample = usersResult[0] || null;
+    } catch (e: any) {
+      joinOk = false;
+      joinError = 'users select failed: ' + (e instanceof Error ? e.message : String(e));
+    }
     try {
-      const sessionsResult = await db.select({ id: sessions.id }).from(sessions).limit(1)
-      sessionCount = sessionsResult.length
-    } catch (e: any) { joinOk = false; joinError = (joinError || '') + ' | sessions select failed: ' + e.message, }
+      const sessionsResult = await db.select({ id: sessions.id }).from(sessions).limit(1);
+      sessionCount = sessionsResult.length;
+    } catch (e: any) {
+      joinOk = false;
+      joinError = (joinError || '') + ' | sessions select failed: ' + (e instanceof Error ? e.message : String(e));
+    }
     return json({
       ok: true,
       users: { count: userCount, sample },
