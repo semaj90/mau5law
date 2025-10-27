@@ -9,98 +9,92 @@
  * - Reinforcement learning data collection
  */
 
-// Import polyfills for older browsers
-if (typeof globalThis === 'undefined') {
-    globalThis = self;
-}
-
 class RTXGPUWorker {
-    constructor() {
-        this.isInitialized = false;
-        this.tensorServiceUrl = 'http://localhost:50051';
-        this.webgpuDevice = null;
-        this.computePipelines = new Map();
-        this.memoryPool = new Map();
-        this.performanceMetrics = {
-            totalProcessed: 0,
-            averageLatency: 0,
-            cacheHitRate: 0,
-            gpuUtilization: 0
-        };
+  constructor() {
+    this.isInitialized = false;
+    this.tensorServiceUrl = 'http://localhost:50051';
+    this.webgpuDevice = null;
+    this.computePipelines = new Map();
+    this.memoryPool = new Map();
+    this.performanceMetrics = {
+      totalProcessed: 0,
+      averageLatency: 0,
+      cacheHitRate: 0,
+      gpuUtilization: 0,
+    };
 
-        // Neural Sprite Autoencoder instance
-        this.autoencoder = null;
+    // Neural Sprite Autoencoder instance
+    this.autoencoder = null;
 
-        this.init();
+    this.init();
+  }
+
+  async init() {
+    console.log('=� RTX GPU Worker initializing...');
+
+    try {
+      // Safe feature detection for WebGPU in the current global environment.
+      // Do NOT attempt to assign to `globalThis` (read-only in many environments).
+      if (typeof navigator !== 'undefined' && navigator.gpu) {
+        await this.initWebGPU();
+      }
+
+      // Initialize Neural Sprite Autoencoder
+      this.initAutoencoder();
+
+      this.isInitialized = true;
+      console.log(' RTX GPU Worker initialized successfully');
+
+      // Send ready signal to main thread
+      self.postMessage({
+        type: 'GPU_WORKER_READY',
+        capabilities: {
+          webgpu: !!this.webgpuDevice,
+          autoencoder: !!this.autoencoder,
+          tensorService: true,
+          rtxOptimized: true,
+        },
+      });
+    } catch (error) {
+      console.error('L GPU Worker initialization failed:', error);
+      self.postMessage({
+        type: 'GPU_WORKER_ERROR',
+        error: error.message,
+      });
     }
+  }
 
-    async init() {
-        console.log('=� RTX GPU Worker initializing...');
+  async initWebGPU() {
+    try {
+      const adapter = await navigator.gpu.requestAdapter({
+        powerPreference: 'high-performance', // Prefer RTX 3060 Ti
+      });
 
-        try {
-            // Initialize WebGPU if available
-            if (globalThis.navigator && globalThis.navigator.gpu) {
-                await this.initWebGPU();
-            }
+      if (!adapter) {
+        throw new Error('WebGPU adapter not available');
+      }
 
-            // Initialize Neural Sprite Autoencoder
-            this.initAutoencoder();
+      this.webgpuDevice = await adapter.requestDevice({
+        requiredLimits: {
+          maxComputeWorkgroupSizeX: 256,
+          maxComputeWorkgroupSizeY: 256,
+          maxComputeWorkgroupSizeZ: 64,
+          maxStorageBufferBindingSize: 1073741824, // 1GB
+        },
+      });
 
-            this.isInitialized = true;
-            console.log(' RTX GPU Worker initialized successfully');
+      console.log(' WebGPU device initialized:', adapter);
 
-            // Send ready signal to main thread
-            self.postMessage({
-                type: 'GPU_WORKER_READY',
-                capabilities: {
-                    webgpu: !!this.webgpuDevice,
-                    autoencoder: !!this.autoencoder,
-                    tensorService: true,
-                    rtxOptimized: true
-                }
-            });
-
-        } catch (error) {
-            console.error('L GPU Worker initialization failed:', error);
-            self.postMessage({
-                type: 'GPU_WORKER_ERROR',
-                error: error.message
-            });
-        }
+      // Create compute pipelines for common operations
+      await this.createComputePipelines();
+    } catch (error) {
+      console.warn('� WebGPU initialization failed:', error);
     }
+  }
 
-    async initWebGPU() {
-        try {
-            const adapter = await navigator.gpu.requestAdapter({
-                powerPreference: 'high-performance' // Prefer RTX 3060 Ti
-            });
-
-            if (!adapter) {
-                throw new Error('WebGPU adapter not available');
-            }
-
-            this.webgpuDevice = await adapter.requestDevice({
-                requiredLimits: {
-                    maxComputeWorkgroupSizeX: 256,
-                    maxComputeWorkgroupSizeY: 256,
-                    maxComputeWorkgroupSizeZ: 64,
-                    maxStorageBufferBindingSize: 1073741824, // 1GB
-                }
-            });
-
-            console.log(' WebGPU device initialized:', adapter);
-
-            // Create compute pipelines for common operations
-            await this.createComputePipelines();
-
-        } catch (error) {
-            console.warn('� WebGPU initialization failed:', error);
-        }
-    }
-
-    async createComputePipelines() {
-        // Tensor quantization compute shader
-        const quantizationShader = `
+  async createComputePipelines() {
+    // Tensor quantization compute shader
+    const quantizationShader = `
             @compute @workgroup_size(256)
             fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
                 let index = global_id.x;
@@ -113,8 +107,8 @@ class RTXGPUWorker {
             }
         `;
 
-        // Vector similarity compute shader
-        const similarityShader = `
+    // Vector similarity compute shader
+    const similarityShader = `
             @compute @workgroup_size(256)
             fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
                 let index = global_id.x;
@@ -137,421 +131,429 @@ class RTXGPUWorker {
             }
         `;
 
-        try {
-            // Create quantization pipeline
-            this.computePipelines.set('quantization', await this.webgpuDevice.createComputePipeline({
-                layout: 'auto',
-                compute: {
-                    module: this.webgpuDevice.createShaderModule({ code: quantizationShader }),
-                    entryPoint: 'main'
-                }
-            }));
+    try {
+      // Create quantization pipeline
+      this.computePipelines.set(
+        'quantization',
+        await this.webgpuDevice.createComputePipeline({
+          layout: 'auto',
+          compute: {
+            module: this.webgpuDevice.createShaderModule({ code: quantizationShader }),
+            entryPoint: 'main',
+          },
+        })
+      );
 
-            // Create similarity pipeline
-            this.computePipelines.set('similarity', await this.webgpuDevice.createComputePipeline({
-                layout: 'auto',
-                compute: {
-                    module: this.webgpuDevice.createShaderModule({ code: similarityShader }),
-                    entryPoint: 'main'
-                }
-            }));
+      // Create similarity pipeline
+      this.computePipelines.set(
+        'similarity',
+        await this.webgpuDevice.createComputePipeline({
+          layout: 'auto',
+          compute: {
+            module: this.webgpuDevice.createShaderModule({ code: similarityShader }),
+            entryPoint: 'main',
+          },
+        })
+      );
 
-            console.log(' GPU compute pipelines created');
-        } catch (error) {
-            console.error('L Failed to create compute pipelines:', error);
-        }
+      console.log(' GPU compute pipelines created');
+    } catch (error) {
+      console.error('L Failed to create compute pipelines:', error);
     }
+  }
 
-    initAutoencoder() {
-        // Simple Neural Sprite Autoencoder implementation
-        this.autoencoder = {
-            latentSize: 16,
+  initAutoencoder() {
+    // Simple Neural Sprite Autoencoder implementation
+    this.autoencoder = {
+      latentSize: 16,
 
-            encode: function(input) {
-                if (!Array.isArray(input) || input.length === 0) {
-                    return new Array(this.latentSize).fill(0);
-                }
-
-                const chunkSize = Math.max(1, Math.floor(input.length / this.latentSize));
-                const latent = new Array(this.latentSize).fill(0);
-                const counts = new Array(this.latentSize).fill(0);
-
-                for (let i = 0; i < input.length; i++) {
-                    const idx = Math.min(Math.floor(i / chunkSize), this.latentSize - 1);
-                    latent[idx] += input[i];
-                    counts[idx] += 1;
-                }
-
-                for (let i = 0; i < this.latentSize; i++) {
-                    latent[i] = counts[i] > 0 ? latent[i] / counts[i] : 0;
-                }
-
-                return latent;
-            },
-
-            decode: function(latent, outputLength) {
-                if (!Array.isArray(latent) || outputLength <= 0) {
-                    return [];
-                }
-
-                if (latent.length === 0) {
-                    return new Array(outputLength).fill(0);
-                }
-
-                const output = new Array(outputLength);
-                for (let i = 0; i < outputLength; i++) {
-                    const t = (i / outputLength) * latent.length;
-                    const li = Math.min(latent.length - 1, Math.floor(t));
-                    output[i] = latent[li];
-                }
-
-                return output;
-            }
-        };
-
-        console.log(' Neural Sprite Autoencoder initialized');
-    }
-
-    async processGPUTask(taskData) {
-        const startTime = performance.now();
-
-        try {
-            switch (taskData.type) {
-                case 'TENSOR_ENCODE':
-                    return await this.processTensorEncode(taskData);
-
-                case 'TENSOR_SIMILARITY':
-                    return await this.processTensorSimilarity(taskData);
-
-                case 'SPRITE_AUTOENCODER':
-                    return await this.processSpriteAutoencoder(taskData);
-
-                case 'SHADER_COMPILATION':
-                    return await this.processShaderCompilation(taskData);
-
-                case 'NEURAL_PREDICTION':
-                    return await this.processNeuralPrediction(taskData);
-
-                default:
-                    throw new Error(`Unknown task type: ${taskData.type}`);
-            }
-        } catch (error) {
-            console.error('L GPU task processing failed:', error);
-            return {
-                success: false,
-                error: error.message,
-                processingTime: performance.now() - startTime
-            };
-        } finally {
-            // Update performance metrics
-            this.updatePerformanceMetrics(performance.now() - startTime);
-        }
-    }
-
-    async processTensorEncode(taskData) {
-        const { data, options = {} } = taskData;
-
-        // Encode using autoencoder
-        const encoded = this.autoencoder.encode(data);
-
-        // Quantize if WebGPU available and requested
-        let quantized = encoded;
-        if (this.webgpuDevice && options.quantize) {
-            quantized = await this.quantizeOnGPU(encoded);
+      encode: function (input) {
+        if (!Array.isArray(input) || input.length === 0) {
+          return new Array(this.latentSize).fill(0);
         }
 
-        return {
-            success: true,
-            encoded: quantized,
-            originalSize: data.length,
-            encodedSize: quantized.length,
-            compressionRatio: data.length / quantized.length,
-            webgpuUsed: !!this.webgpuDevice && options.quantize
-        };
-    }
+        const chunkSize = Math.max(1, Math.floor(input.length / this.latentSize));
+        const latent = new Array(this.latentSize).fill(0);
+        const counts = new Array(this.latentSize).fill(0);
 
-    async processTensorSimilarity(taskData) {
-        const { queryVector, databaseVectors, threshold = 0.7 } = taskData;
-
-        if (!this.webgpuDevice) {
-            // CPU fallback
-            return this.computeSimilarityCPU(queryVector, databaseVectors, threshold);
+        for (let i = 0; i < input.length; i++) {
+          const idx = Math.min(Math.floor(i / chunkSize), this.latentSize - 1);
+          latent[idx] += input[i];
+          counts[idx] += 1;
         }
 
-        // GPU-accelerated similarity computation
-        return await this.computeSimilarityGPU(queryVector, databaseVectors, threshold);
-    }
-
-    async processSpriteAutoencoder(taskData) {
-        const { operation, data, options = {} } = taskData;
-
-        switch (operation) {
-            case 'encode':
-                return {
-                    success: true,
-                    result: this.autoencoder.encode(data),
-                    latentSize: this.autoencoder.latentSize
-                };
-
-            case 'decode':
-                return {
-                    success: true,
-                    result: this.autoencoder.decode(data, options.outputLength || data.length * 4),
-                    outputLength: options.outputLength
-                };
-
-            case 'reconstruct': {
-                const encoded = this.autoencoder.encode(data);
-                const decoded = this.autoencoder.decode(encoded, options.outputLength || data.length);
-                return {
-                    success: true,
-                    result: decoded,
-                    latent: encoded,
-                    fidelity: this.calculateFidelity(data, decoded)
-                };
-            }
-
-            default:
-                throw new Error(`Unknown autoencoder operation: ${operation}`);
-        }
-    }
-
-    async processShaderCompilation(taskData) {
-        const { shaderSource, target = 'webgpu' } = taskData;
-
-        // For WebGPU shaders
-        if (target === 'webgpu' && this.webgpuDevice) {
-            try {
-                const shaderModule = this.webgpuDevice.createShaderModule({
-                    code: shaderSource
-                });
-
-                return {
-                    success: true,
-                    compiled: true,
-                    shaderModule: shaderModule,
-                    target: 'webgpu',
-                    compilationTime: performance.now()
-                };
-            } catch (error) {
-                return {
-                    success: false,
-                    error: error.message,
-                    compilationLog: error.stack
-                };
-            }
+        for (let i = 0; i < this.latentSize; i++) {
+          latent[i] = counts[i] > 0 ? latent[i] / counts[i] : 0;
         }
 
-        return {
-            success: false,
-            error: 'Shader compilation not supported for target: ' + target
-        };
-    }
+        return latent;
+      },
 
-    async processNeuralPrediction(taskData) {
-      const { contextData, predictionType = 'next_action' } = taskData;
+      decode: function (latent, outputLength) {
+        if (!Array.isArray(latent) || outputLength <= 0) {
+          return [];
+        }
 
-      // This is a mock implementation of a simple neural network for demonstration.
-      // In a real application, you would use a library like TensorFlow.js or ONNX Runtime Web.
-      // The weights and biases would be pre-trained.
-      const mockModel = {
-        // Simulate a simple 2-layer MLP for 'next_action' prediction
-        next_action: {
-          weights1: [
-            [0.1, -0.2, 0.3],
-            [0.4, 0.5, -0.6],
-          ], // Input features -> hidden layer
-          biases1: [0.1, 0.2, 0.3],
-          weights2: [
-            [0.7, -0.8],
-            [-0.9, 1.0],
-            [1.1, -1.2],
-          ], // Hidden layer -> output classes
-          biases2: [0.1, -0.1],
-          classes: ['render_frame', 'update_buffer'],
-        },
-        // Simulate a simple linear regression for resource usage
-        resource_usage: {
-          weights: [0.8, 1.2], // e.g., for avg_latency, total_processed
-          bias: 50, // base usage
-        },
+        if (latent.length === 0) {
+          return new Array(outputLength).fill(0);
+        }
+
+        const output = new Array(outputLength);
+        for (let i = 0; i < outputLength; i++) {
+          const t = (i / outputLength) * latent.length;
+          const li = Math.min(latent.length - 1, Math.floor(t));
+          output[i] = latent[li];
+        }
+
+        return output;
+      },
+    };
+
+    console.log(' Neural Sprite Autoencoder initialized');
+  }
+
+  async processGPUTask(taskData) {
+    const startTime = performance.now();
+
+    try {
+      switch (taskData.type) {
+        case 'TENSOR_ENCODE':
+          return await this.processTensorEncode(taskData);
+
+        case 'TENSOR_SIMILARITY':
+          return await this.processTensorSimilarity(taskData);
+
+        case 'SPRITE_AUTOENCODER':
+          return await this.processSpriteAutoencoder(taskData);
+
+        case 'SHADER_COMPILATION':
+          return await this.processShaderCompilation(taskData);
+
+        case 'NEURAL_PREDICTION':
+          return await this.processNeuralPrediction(taskData);
+
+        default:
+          throw new Error(`Unknown task type: ${taskData.type}`);
+      }
+    } catch (error) {
+      console.error('L GPU task processing failed:', error);
+      return {
+        success: false,
+        error: error.message,
+        processingTime: performance.now() - startTime,
       };
+    } finally {
+      // Update performance metrics
+      this.updatePerformanceMetrics(performance.now() - startTime);
+    }
+  }
 
-      let predictions = [];
-      let confidence = 0.0;
+  async processTensorEncode(taskData) {
+    const { data, options = {} } = taskData;
 
+    // Encode using autoencoder
+    const encoded = this.autoencoder.encode(data);
+
+    // Quantize if WebGPU available and requested
+    let quantized = encoded;
+    if (this.webgpuDevice && options.quantize) {
+      quantized = await this.quantizeOnGPU(encoded);
+    }
+
+    return {
+      success: true,
+      encoded: quantized,
+      originalSize: data.length,
+      encodedSize: quantized.length,
+      compressionRatio: data.length / quantized.length,
+      webgpuUsed: !!this.webgpuDevice && options.quantize,
+    };
+  }
+
+  async processTensorSimilarity(taskData) {
+    const { queryVector, databaseVectors, threshold = 0.7 } = taskData;
+
+    if (!this.webgpuDevice) {
+      // CPU fallback
+      return this.computeSimilarityCPU(queryVector, databaseVectors, threshold);
+    }
+
+    // GPU-accelerated similarity computation
+    return await this.computeSimilarityGPU(queryVector, databaseVectors, threshold);
+  }
+
+  async processSpriteAutoencoder(taskData) {
+    const { operation, data, options = {} } = taskData;
+
+    switch (operation) {
+      case 'encode':
+        return {
+          success: true,
+          result: this.autoencoder.encode(data),
+          latentSize: this.autoencoder.latentSize,
+        };
+
+      case 'decode':
+        return {
+          success: true,
+          result: this.autoencoder.decode(data, options.outputLength || data.length * 4),
+          outputLength: options.outputLength,
+        };
+
+      case 'reconstruct': {
+        const encoded = this.autoencoder.encode(data);
+        const decoded = this.autoencoder.decode(encoded, options.outputLength || data.length);
+        return {
+          success: true,
+          result: decoded,
+          latent: encoded,
+          fidelity: this.calculateFidelity(data, decoded),
+        };
+      }
+
+      default:
+        throw new Error(`Unknown autoencoder operation: ${operation}`);
+    }
+  }
+
+  async processShaderCompilation(taskData) {
+    const { shaderSource, target = 'webgpu' } = taskData;
+
+    // For WebGPU shaders
+    if (target === 'webgpu' && this.webgpuDevice) {
       try {
-        if (predictionType === 'next_action') {
-          if (!contextData || !Array.isArray(contextData) || contextData.length < 2) {
-            throw new Error('Invalid contextData for next_action prediction. Expected array of at least 2 numbers.');
-          }
-          const model = mockModel.next_action;
-          const input = contextData.slice(0, 2); // Use first 2 features
-
-          // Simple forward pass simulation
-          // Hidden layer (ReLU activation)
-          const hidden = model.weights1[0].map((_, i) => {
-            const sum = input[0] * model.weights1[0][i] + input[1] * model.weights1[1][i] + model.biases1[i];
-            return Math.max(0, sum); // ReLU
-          });
-
-          // Output layer
-          let output = model.weights2[0].map((_, i) => {
-            const sum =
-              hidden[0] * model.weights2[0][i] +
-              hidden[1] * model.weights2[1][i] +
-              hidden[2] * model.weights2[2][i] +
-              model.biases2[i];
-            return sum;
-          });
-
-          // Softmax for probabilities
-          const maxLogit = Math.max(...output);
-          const exps = output.map(o => Math.exp(o - maxLogit));
-          const sumExps = exps.reduce((a, b) => a + b, 0);
-          const probabilities = exps.map(e => e / sumExps);
-
-          confidence = Math.max(...probabilities);
-          predictions = model.classes
-            .map((className, i) => ({
-              action: className,
-              probability: probabilities[i],
-            }))
-            .sort((a, b) => b.probability - a.probability);
-        } else if (predictionType === 'resource_usage') {
-          if (!contextData || !Array.isArray(contextData) || contextData.length < 2) {
-            throw new Error('Invalid contextData for resource_usage prediction. Expected array of at least 2 numbers.');
-          }
-          const model = mockModel.resource_usage;
-          const input = contextData.slice(0, 2);
-          const prediction = input[0] * model.weights[0] + input[1] * model.weights[1] + model.bias;
-          predictions.push({ usage_mb: prediction });
-          confidence = 0.85; // Fixed confidence for this mock
-        } else {
-          // Fallback for unknown prediction types
-          predictions.push({ action: 'idle', probability: 0.9 });
-          confidence = 0.9;
-        }
+        const shaderModule = this.webgpuDevice.createShaderModule({
+          code: shaderSource,
+        });
 
         return {
           success: true,
-          predictions,
-          predictionType,
-          confidence,
-          contextUsed: !!contextData,
+          compiled: true,
+          shaderModule: shaderModule,
+          target: 'webgpu',
+          compilationTime: performance.now(),
         };
       } catch (error) {
-        console.error(`Neural prediction failed for type "${predictionType}":`, error);
         return {
           success: false,
           error: error.message,
-          predictionType,
+          compilationLog: error.stack,
         };
       }
     }
 
-    async quantizeOnGPU(data) {
-        if (!this.computePipelines.has('quantization')) {
-            return data; // Fallback to original data
+    return {
+      success: false,
+      error: 'Shader compilation not supported for target: ' + target,
+    };
+  }
+
+  async processNeuralPrediction(taskData) {
+    const { contextData, predictionType = 'next_action' } = taskData;
+
+    // This is a mock implementation of a simple neural network for demonstration.
+    // In a real application, you would use a library like TensorFlow.js or ONNX Runtime Web.
+    // The weights and biases would be pre-trained.
+    const mockModel = {
+      // Simulate a simple 2-layer MLP for 'next_action' prediction
+      next_action: {
+        weights1: [
+          [0.1, -0.2, 0.3],
+          [0.4, 0.5, -0.6],
+        ], // Input features -> hidden layer
+        biases1: [0.1, 0.2, 0.3],
+        weights2: [
+          [0.7, -0.8],
+          [-0.9, 1.0],
+          [1.1, -1.2],
+        ], // Hidden layer -> output classes
+        biases2: [0.1, -0.1],
+        classes: ['render_frame', 'update_buffer'],
+      },
+      // Simulate a simple linear regression for resource usage
+      resource_usage: {
+        weights: [0.8, 1.2], // e.g., for avg_latency, total_processed
+        bias: 50, // base usage
+      },
+    };
+
+    let predictions = [];
+    let confidence = 0.0;
+
+    try {
+      if (predictionType === 'next_action') {
+        if (!contextData || !Array.isArray(contextData) || contextData.length < 2) {
+          throw new Error('Invalid contextData for next_action prediction. Expected array of at least 2 numbers.');
         }
+        const model = mockModel.next_action;
+        const input = contextData.slice(0, 2); // Use first 2 features
 
-        const pipeline = this.computePipelines.get('quantization');
-
-        // Create buffers
-        const inputBuffer = this.webgpuDevice.createBuffer({
-            size: data.length * 4, // Float32 = 4 bytes
-            usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
+        // Simple forward pass simulation
+        // Hidden layer (ReLU activation)
+        const hidden = model.weights1[0].map((_, i) => {
+          const sum = input[0] * model.weights1[0][i] + input[1] * model.weights1[1][i] + model.biases1[i];
+          return Math.max(0, sum); // ReLU
         });
 
-        const outputBuffer = this.webgpuDevice.createBuffer({
-            size: data.length * 4,
-            usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+        // Output layer
+        let output = model.weights2[0].map((_, i) => {
+          const sum =
+            hidden[0] * model.weights2[0][i] +
+            hidden[1] * model.weights2[1][i] +
+            hidden[2] * model.weights2[2][i] +
+            model.biases2[i];
+          return sum;
         });
 
-        // Write data
-        this.webgpuDevice.queue.writeBuffer(inputBuffer, 0, new Float32Array(data));
+        // Softmax for probabilities
+        const maxLogit = Math.max(...output);
+        const exps = output.map(o => Math.exp(o - maxLogit));
+        const sumExps = exps.reduce((a, b) => a + b, 0);
+        const probabilities = exps.map(e => e / sumExps);
 
-        // Create bind group
-        const bindGroup = this.webgpuDevice.createBindGroup({
-            layout: pipeline.getBindGroupLayout(0),
-            entries: [
-                { binding: 0, resource: { buffer: inputBuffer } },
-                { binding: 1, resource: { buffer: outputBuffer } }
-            ]
-        });
-
-        // Dispatch compute
-        const commandEncoder = this.webgpuDevice.createCommandEncoder();
-        const pass = commandEncoder.beginComputePass();
-        pass.setPipeline(pipeline);
-        pass.setBindGroup(0, bindGroup);
-        pass.dispatchWorkgroups(Math.ceil(data.length / 256));
-        pass.end();
-
-        this.webgpuDevice.queue.submit([commandEncoder.finish()]);
-
-        // Read result (simplified - would need proper buffer mapping)
-        return data.map(v => Math.round(v * 127) / 127); // Simulated quantization
-    }
-
-    computeSimilarityCPU(queryVector, databaseVectors, threshold) {
-        const similarities = [];
-
-        for (let i = 0; i < databaseVectors.length; i++) {
-            const similarity = this.cosineSimilarity(queryVector, databaseVectors[i]);
-            if (similarity >= threshold) {
-                similarities.push({ index: i, similarity });
-            }
+        confidence = Math.max(...probabilities);
+        predictions = model.classes
+          .map((className, i) => ({
+            action: className,
+            probability: probabilities[i],
+          }))
+          .sort((a, b) => b.probability - a.probability);
+      } else if (predictionType === 'resource_usage') {
+        if (!contextData || !Array.isArray(contextData) || contextData.length < 2) {
+          throw new Error('Invalid contextData for resource_usage prediction. Expected array of at least 2 numbers.');
         }
+        const model = mockModel.resource_usage;
+        const input = contextData.slice(0, 2);
+        const prediction = input[0] * model.weights[0] + input[1] * model.weights[1] + model.bias;
+        predictions.push({ usage_mb: prediction });
+        confidence = 0.85; // Fixed confidence for this mock
+      } else {
+        // Fallback for unknown prediction types
+        predictions.push({ action: 'idle', probability: 0.9 });
+        confidence = 0.9;
+      }
 
-        return {
-            success: true,
-            similarities: similarities.sort((a, b) => b.similarity - a.similarity),
-            method: 'cpu',
-            threshold
-        };
+      return {
+        success: true,
+        predictions,
+        predictionType,
+        confidence,
+        contextUsed: !!contextData,
+      };
+    } catch (error) {
+      console.error(`Neural prediction failed for type "${predictionType}":`, error);
+      return {
+        success: false,
+        error: error.message,
+        predictionType,
+      };
+    }
+  }
+
+  async quantizeOnGPU(data) {
+    if (!this.computePipelines.has('quantization')) {
+      return data; // Fallback to original data
     }
 
-    cosineSimilarity(a, b) {
-        let dot = 0, normA = 0, normB = 0;
-        for (let i = 0; i < a.length; i++) {
-            dot += a[i] * b[i];
-            normA += a[i] * a[i];
-            normB += b[i] * b[i];
-        }
-        return dot / (Math.sqrt(normA) * Math.sqrt(normB) + 1e-8);
+    const pipeline = this.computePipelines.get('quantization');
+
+    // Create buffers
+    const inputBuffer = this.webgpuDevice.createBuffer({
+      size: data.length * 4, // Float32 = 4 bytes
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+    });
+
+    const outputBuffer = this.webgpuDevice.createBuffer({
+      size: data.length * 4,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+    });
+
+    // Write data
+    this.webgpuDevice.queue.writeBuffer(inputBuffer, 0, new Float32Array(data));
+
+    // Create bind group
+    const bindGroup = this.webgpuDevice.createBindGroup({
+      layout: pipeline.getBindGroupLayout(0),
+      entries: [
+        { binding: 0, resource: { buffer: inputBuffer } },
+        { binding: 1, resource: { buffer: outputBuffer } },
+      ],
+    });
+
+    // Dispatch compute
+    const commandEncoder = this.webgpuDevice.createCommandEncoder();
+    const pass = commandEncoder.beginComputePass();
+    pass.setPipeline(pipeline);
+    pass.setBindGroup(0, bindGroup);
+    pass.dispatchWorkgroups(Math.ceil(data.length / 256));
+    pass.end();
+
+    this.webgpuDevice.queue.submit([commandEncoder.finish()]);
+
+    // Read result (simplified - would need proper buffer mapping)
+    return data.map(v => Math.round(v * 127) / 127); // Simulated quantization
+  }
+
+  computeSimilarityCPU(queryVector, databaseVectors, threshold) {
+    const similarities = [];
+
+    for (let i = 0; i < databaseVectors.length; i++) {
+      const similarity = this.cosineSimilarity(queryVector, databaseVectors[i]);
+      if (similarity >= threshold) {
+        similarities.push({ index: i, similarity });
+      }
     }
 
-    calculateFidelity(original, reconstructed) {
-        if (original.length !== reconstructed.length) return 0;
+    return {
+      success: true,
+      similarities: similarities.sort((a, b) => b.similarity - a.similarity),
+      method: 'cpu',
+      threshold,
+    };
+  }
 
-        let mse = 0;
-        for (let i = 0; i < original.length; i++) {
-            const diff = original[i] - reconstructed[i];
-            mse += diff * diff;
-        }
+  cosineSimilarity(a, b) {
+    let dot = 0,
+      normA = 0,
+      normB = 0;
+    for (let i = 0; i < a.length; i++) {
+      dot += a[i] * b[i];
+      normA += a[i] * a[i];
+      normB += b[i] * b[i];
+    }
+    return dot / (Math.sqrt(normA) * Math.sqrt(normB) + 1e-8);
+  }
 
-        mse /= original.length;
-        return 1 / (1 + mse); // Higher is better
+  calculateFidelity(original, reconstructed) {
+    if (original.length !== reconstructed.length) return 0;
+
+    let mse = 0;
+    for (let i = 0; i < original.length; i++) {
+      const diff = original[i] - reconstructed[i];
+      mse += diff * diff;
     }
 
-    updatePerformanceMetrics(processingTime) {
-        this.performanceMetrics.totalProcessed++;
-        this.performanceMetrics.averageLatency =
-            (this.performanceMetrics.averageLatency * (this.performanceMetrics.totalProcessed - 1) + processingTime) /
-            this.performanceMetrics.totalProcessed;
-    }
+    mse /= original.length;
+    return 1 / (1 + mse); // Higher is better
+  }
 
-    getStatus() {
-        return {
-            initialized: this.isInitialized,
-            webgpuAvailable: !!this.webgpuDevice,
-            autoencoderAvailable: !!this.autoencoder,
-            computePipelines: Array.from(this.computePipelines.keys()),
-            performanceMetrics: this.performanceMetrics,
-            timestamp: Date.now()
-        };
-    }
+  updatePerformanceMetrics(processingTime) {
+    this.performanceMetrics.totalProcessed++;
+    this.performanceMetrics.averageLatency =
+      (this.performanceMetrics.averageLatency * (this.performanceMetrics.totalProcessed - 1) + processingTime) /
+      this.performanceMetrics.totalProcessed;
+  }
+
+  getStatus() {
+    return {
+      initialized: this.isInitialized,
+      webgpuAvailable: !!this.webgpuDevice,
+      autoencoderAvailable: !!this.autoencoder,
+      computePipelines: Array.from(this.computePipelines.keys()),
+      performanceMetrics: this.performanceMetrics,
+      timestamp: Date.now(),
+    };
+  }
 }
 
 // Initialize worker

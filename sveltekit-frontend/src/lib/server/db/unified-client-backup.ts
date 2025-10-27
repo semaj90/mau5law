@@ -15,8 +15,7 @@ import { sql } from 'drizzle-orm';
 import {
   getDrizzleDb,
   getPostgresJsClient,
-  getDatabaseConfig,
-  getConnectionString
+  // removed getDatabaseConfig/getConnectionString which are not exported
 } from './connection-manager.js';
 // Import unified schema
 import * as schema from './schema-unified.js';
@@ -49,8 +48,8 @@ let qdrantClient: QdrantClient | undefined;
 if (process.env.QDRANT_URL) {
   qdrantClient = new QdrantClient({
     url: process.env.QDRANT_URL,
-    apiKey: process.env.QDRANT_API_KEY
-  });
+    apiKey: process.env.QDRANT_API_KEY,
+  } as any);
 }
 // ============================================================================
 // DATABASE INITIALIZATION
@@ -91,28 +90,31 @@ async function initialize(): Promise<void> {
 async function ensureQdrantCollection(
   collectionName: string,
   vectorSize: number = 384,
-  distance: 'Cosine' | 'Dot' | 'Euclidean' = 'Cosine';
+  distance: 'Cosine' | 'Dot' | 'Euclidean' = 'Cosine'
 ): Promise<void> {
   if (!qdrantClient) return;
   try {
-    const collections = await qdrantClient.getCollections();
-    const exists = collections.collections.some((c) => c.name === collectionName);
+    // tolerate differences in client API by using any
+    const collections = await ((qdrantClient as any).getCollections?.() ?? (qdrantClient as any).collections?.());
+    const exists = Array.isArray(collections?.collections)
+      ? collections.collections.some((c: any) => c.name === collectionName)
+      : false;
     if (!exists) {
-      await qdrantClient.createCollection(collectionName, {
+      await (qdrantClient as any).createCollection?.(collectionName, {
         vectors: {
           size: vectorSize,
-          distance
+          distance,
         },
         optimizers_config: {
           default_segment_number: 2,
           memmap_threshold: 20000,
-          indexing_threshold: 20000
+          indexing_threshold: 20000,
         },
         hnsw_config: {
           m: 16,
           ef_construct: 64,
-          full_scan_threshold: 10000
-        }
+          full_scan_threshold: 10000,
+        },
       });
       console.log(`✅ Created Qdrant collection: ${collectionName}`);
     }
@@ -121,6 +123,7 @@ async function ensureQdrantCollection(
     throw error;
   }
 }
+
 async function hybridVectorSearch(
   queryEmbedding: number[],
   options: VectorSearchOptions = {}
@@ -132,17 +135,19 @@ async function hybridVectorSearch(
     threshold = 0.7,
     filter = {},
     usePostgreSQL = true,
-    useQdrant = true
+    useQdrant = true,
   } = options;
   const results: HybridSearchResult['results'] = [];
   let postgresqlTime: number | undefined;
   let qdrantTime: number | undefined;
+
   // PostgreSQL vector search
   if (usePostgreSQL) {
     const pgStart = Date.now();
     try {
       const postgres = await getPostgresJsClient();
-      const pgResults = await postgres`
+      // use any to avoid strict typing issues with template tag
+      const pgResults = await (postgres as any)`
         SELECT *,
                (1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)}::vector)) as similarity
         FROM document_metadata
@@ -153,52 +158,59 @@ async function hybridVectorSearch(
         LIMIT ${limit}
       `;
       postgresqlTime = Date.now() - pgStart;
-      for (const row of pgResults) {
+      for (const row of pgResults as any[]) {
         results.push({
           id: row.id,
           score: row.similarity,
-          document: row as DocumentMetadata;
-          source: 'postgresql'
+          document: row as DocumentMetadata,
+          source: 'postgresql',
         });
       }
     } catch (error) {
       console.error('PostgreSQL vector search error:', error);
     }
   }
+
   // Qdrant vector search
   if (useQdrant && qdrantClient) {
     const qdrantStart = Date.now();
     try {
-      const qdrantResults = await qdrantClient.search(collection, {
+      const qdrantResults = await (qdrantClient as any).search(collection, {
         vector: queryEmbedding,
         limit,
         score_threshold: threshold,
         with_payload: true,
-        filter: Object.keys(filter).length > 0 ? {,
-          must: Object.entries(filter).map(([key, value]) => ({
-            key,
-            match: { value }
-          }))
-        } : undefined
+        filter:
+          Object.keys(filter).length > 0
+            ? {
+                must: Object.entries(filter).map(([key, value]) => ({
+                  key,
+                  match: { value },
+                })),
+              }
+            : undefined,
       });
+
       qdrantTime = Date.now() - qdrantStart;
-      // Get corresponding PostgreSQL records
-      const qdrantIds = qdrantResults.map((r) => r.id.toString());
+
+      // Get corresponding PostgreSQL records (use drizzle db)
+      const qdrantIds: string[] = (qdrantResults || []).map((r: any) => String(r.id));
       if (qdrantIds.length > 0) {
-        // removed unused db assignment
+        const db = await getDrizzleDb();
         const pgDocuments = await db
           .select()
           .from(schema.documentMetadata)
           .where(sql`${schema.documentMetadata.id} = ANY(${qdrantIds})`);
-        const docMap = new Map(pgDocuments.map((doc) => [doc.id, doc]);
-        for (const result of qdrantResults) {
-          const document = docMap.get((result as { id?: any; score?: any }).id.toString());
+        const docMap = new Map((pgDocuments as any[]).map((doc: any) => [String(doc.id), doc]));
+        for (const result of qdrantResults as any[]) {
+          const idStr = String(result.id);
+          const document = docMap.get(idStr);
           if (document) {
             results.push({
-              id: (result as { id?: any; score?: any }).id.toString()),
-              score,: (result as { id?: any; score?: any }).score,
+              id: idStr,
+              score: result.score,
               document,
-              source,: 'qdrant'
+              source: 'qdrant',
             });
           }
         }
@@ -207,72 +219,83 @@ async function hybridVectorSearch(
       console.error('Qdrant vector search error:', error);
     }
   }
-  // Deduplicate and sort results
-  const uniqueResults = new Map();
-  for (const result of results) {
-    const existing = uniqueResults.get((result as { id?: any; score?: any }).id);
-    if (!existing || (result as { id?: any; score?: any }).score > existing.score) {
-      uniqueResults.set((result as { id?: any; score?: any }).id, result);
+
+  // Deduplicate and sort results (keep best score per id)
+  const uniqueResults = new Map<string, any>();
+  for (const r of results) {
+    const id = String(r.id);
+    const existing = uniqueResults.get(id);
+    if (!existing || (r.score ?? 0) > (existing.score ?? 0)) {
+      uniqueResults.set(id, r);
     }
   }
-  const finalResults = Array.from(uniqueResults.values()
-    .sort((a, b) => b.score - a.score)
+
+  const finalResults = Array.from(uniqueResults.values())
+    .sort((a: any, b: any) => (b.score ?? 0) - (a.score ?? 0))
     .slice(0, limit);
+
   return {
-    results: finalResults;
+    results: finalResults,
     performance: {
       postgresqlTime,
       qdrantTime,
-      totalTime: Date.now() - startTime
-    }
-  }
+      totalTime: Date.now() - startTime,
+    },
+  };
 }
 // ============================================================================
 // HEALTH CHECKS
 // ============================================================================
 async function healthCheck(): Promise<any> {
-  const health = {
+  const health: {
+    postgresql: boolean;
+    qdrant: boolean;
+    pgvector: boolean;
+    overallHealth: boolean;
+  } = {
     postgresql: false,
-    qdrant: false;
+    qdrant: false,
     pgvector: false,
     overallHealth: false,
-  }
+  };
+
   try {
-    // Test PostgreSQL
-    // removed unused db assignment
+    const db = await getDrizzleDb();
     await db.execute(sql`SELECT 1`);
     health.postgresql = true;
-    // Test pgvector
+
     try {
       await db.execute(sql`SELECT '[1,2,3]'::vector`);
       health.pgvector = true;
     } catch (error) {
       console.warn('pgvector not available');
     }
-    // Test Qdrant
+
     if (qdrantClient) {
       try {
-        await qdrantClient.getCollections();
+        await ((qdrantClient as any).getCollections?.() ?? (qdrantClient as any).collections?.());
         health.qdrant = true;
       } catch (error) {
         console.warn('Qdrant not available');
       }
     } else {
-      health.qdrant = true; // No Qdrant configured, consider healthy
+      health.qdrant = true; // treat as healthy when not configured
     }
+
     health.overallHealth = health.postgresql;
   } catch (error) {
     console.error('Health check failed:', error);
   }
+
   return health;
 }
 // ============================================================================
 // EXPORTS - Unified Interface
 // ============================================================================
 // Main exports - uses centralized connection manager
-export // removed unused db assignment
 export const postgres = () => getPostgresJsClient();
 export const qdrant = () => qdrantClient;
+
 // Unified operations
 export const unifiedDb = {
   // Core database access
@@ -285,13 +308,12 @@ export const unifiedDb = {
   // Vector operations
   vectorSearch: hybridVectorSearch,
   ensureCollection: ensureQdrantCollection,
-}
+};
+
 // Re-export schema for convenience
 export * from './schema-unified.js';
+
 // Re-export types
-export type {
-  VectorSearchOptions,
-  HybridSearchResult,
-  DocumentMetadata
-}
+export type { VectorSearchOptions, HybridSearchResult, DocumentMetadata };
+
 export default unifiedDb;

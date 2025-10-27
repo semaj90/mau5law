@@ -53,6 +53,14 @@ interface Props {
 	enableRealTimeUpdates?: boolean;
 	showPerformanceMetrics?: boolean;
 	onsearch?: (data: { query: string; results: RAGResult[]; performance: PerformanceMetrics | null; timestamp: number }) => void;
+
+	// allow common HTML/global attributes forwarded to component usage
+	class?: string;
+	id?: string;
+	style?: string;
+
+	// optional: permit other forwarded attributes (uncomment if you want permissive forwarding)
+	// [key: string]: any;
 }
 let {
 	placeholder = "Ask a legal question or search documents...",
@@ -92,7 +100,7 @@ async function checkServiceHealth() {
 	try {
 		const response = await fetch('/api/ai/rl-rag', {
 			method: 'GET',
-			signal: AbortSignal.timeout(5000);
+			signal: AbortSignal.timeout(5000)
 		});
 		if (response.ok) {
 			const health = await response.json();
@@ -102,16 +110,16 @@ async function checkServiceHealth() {
 				knowledge_graph_8099: health.services?.knowledge_graph_8099 || false,
 				gpu_memory_manager_8107: health.services?.gpu_memory_manager_8107 || false,
 				overall_health: health.status === 'ready'
-			}
+			};
 			// Update GPU metrics if available
 			if (health.gpu_status) {
 				gpuMetrics = {
 					vram_usage: health.gpu_status.used_vram_mb || 0,
-					gpu_utilization health.gpu_status.utilization_percent || 0,
+					gpu_utilization: health.gpu_status.utilization_percent || 0,
 					loaded_engines: health.gpu_status.loaded_engines || 0,
 					active_streams: 0,
 					mps_enabled: health.gpu_status.mps_enabled || false
-				}
+				};
 			}
 		} else {
 			throw new Error(`Health check failed: ${response.status}`);
@@ -119,12 +127,12 @@ async function checkServiceHealth() {
 	} catch (err) {
 		console.error('Service health check failed:', err);
 		serviceStatus = {
-			cuda_service_8097: false
-			legal_extraction_8098: false
-			knowledge_graph_8099: false
-			gpu_memory_manager_8107: false
+			cuda_service_8097: false,
+			legal_extraction_8098: false,
+			knowledge_graph_8099: false,
+			gpu_memory_manager_8107: false,
 			overall_health: false
-		}
+		};
 	}
 }
 // Setup WebSocket for real-time GPU monitoring
@@ -144,20 +152,20 @@ async function performFullStackSearch() {
 		const response = await fetch('/api/ai/rl-rag', {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json',
+				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({,
+			body: JSON.stringify({
 				query: query.trim(),
-				max_results: maxResults
-				use_gpu: true
-				performance_monitoring: showPerformanceMetrics
+				max_results: maxResults,
+				use_gpu: true,
+				performance_monitoring: showPerformanceMetrics,
 				legal_filter: {
-					category: legalDomain;
-					jurisdiction 'federal',
-					confidence_threshold: 0.7,
+					category: legalDomain,
+					jurisdiction: 'federal',
+					confidence_threshold: 0.7
 				}
 			}),
-			signal: AbortSignal.timeout(30000) // 30s timeout for complex operation;
+			signal: AbortSignal.timeout(30000) // 30s timeout for complex operation
 		});
 		if (!response.ok) {
 			throw new Error(`Search failed: ${response.status} ${response.statusText}`);
@@ -173,11 +181,11 @@ async function performFullStackSearch() {
 			query,
 			results,
 			performance,
-			timestamp: Date.now();
+			timestamp: Date.now()
 		});
 	} catch (err) {
 		console.error('Full-stack search failed:', err);
-		errorMessage = err instanceof Error ? err.message: 'Search failed. Please try again.';
+		errorMessage = err instanceof Error ? err.message : 'Search failed. Please try again.';
 		// Try client-side fallback if available
 		await tryClientSideFallback();
 	} finally {
@@ -205,13 +213,13 @@ async function tryClientSideFallback() {
 		console.error('Client-side fallback failed:', err);
 	}
 }
-// Handle form submission
-function handleSubmit(_event: Event) {
+// Handle form submission (use provided event, not global)
+function handleSubmit(event: Event) {
 	event.preventDefault();
 	performFullStackSearch();
 }
-// Format performance metrics
-function formatMetric(_value: number, unit: string): string {
+// Format performance metrics - fixed parameter name
+function formatMetric(value: number, unit: string): string {
 	return `${value.toFixed(1)}${unit}`;
 }
 function formatTime(ms: number): string {
@@ -237,7 +245,7 @@ function getCategoryColor(category: string): string {
 	}
 }
 // Reactive search with debouncing
-let searchTimeout: NodeJS.Timeout;
+let searchTimeout: ReturnType<typeof setTimeout>;
 $effect(() => {
 	clearTimeout(searchTimeout);
 	if (query.trim() && query.length > 3) {
@@ -335,11 +343,14 @@ $effect(() => {
         </div>
       </form>
       {#if errorMessage}
-        <Alert class="mt-4 bg-red-900 border-red-600">
-          <AlertDescription class="text-red-200">
-            {errorMessage}
-          </AlertDescription>
-        </Alert>
+        <!-- Wrap Alert in a styled div to avoid passing unknown 'class' prop to the Alert component -->
+        <div class="mt-4 bg-red-900 border-red-600 rounded">
+          <Alert>
+            <AlertDescription class="text-red-200">
+              {errorMessage}
+            </AlertDescription>
+          </Alert>
+        </div>
       {/if}
     </CardContent>
   </Card>
@@ -377,6 +388,7 @@ $effect(() => {
               <div class="text-sm text-yorha-text-muted">RL Ranking</div>
             </div>
           {/if}
+
           {#if gpuMetrics.vram_usage > 0}
             <div class="text-center">
               <div class="text-2xl font-bold text-orange-400 font-mono">
@@ -479,20 +491,23 @@ $effect(() => {
     /* Additional component-specific styles */
     font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
   }
-  /* Custom scrollbar for result content */
-  .full-stack-legal-ai :global($1) {
+
+  /* Replaced invalid :global($1) selectors with standard scrollbar pseudo-elements */
+  .full-stack-legal-ai ::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
   }
-  .full-stack-legal-ai :global($1) {
+  .full-stack-legal-ai ::-webkit-scrollbar-track {
     background: rgb(var(--muted));
   }
-  .full-stack-legal-ai :global($1) {
+  .full-stack-legal-ai ::-webkit-scrollbar-thumb {
     background: rgb(var(--border));
     border-radius: 3px;
   }
-  .full-stack-legal-ai :global($1) {
+  .full-stack-legal-ai ::-webkit-scrollbar-thumb:hover {
     background: rgb(var(--primary));
   }
+
   /* Animation for search indicator */
   @keyframes pulse-glow {
     0%,

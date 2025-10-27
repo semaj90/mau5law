@@ -4,48 +4,53 @@
  */
 // Type declarations for browser environment
 declare global {
-  interface Navigator {
-    gpu?: {
-      requestAdapter(): Promise<GPUAdapter | null>;
-    }
+  // Relaxed typing to avoid collisions with other lib/dom declarations
+  // Minimal WebGPU types used by this module (avoid `any`)
+  interface GPU {
+    requestAdapter(): Promise<GPUAdapter | null>;
   }
-  interface GPUAdapter {}
+  interface GPUAdapter {
+    // keep minimal surface — expand if you call adapter.* properties later
+  }
+  interface Navigator {
+    gpu?: GPU | undefined;
+  }
 }
 // Environment detection - fallback for environments without SvelteKit
 const browser = typeof window !== 'undefined';
-}
+
 export interface IntegrationStatus {
   webassembly: {
     available: boolean;
     simdSupport: boolean;
     runtimeConnected: boolean;
-  }
+  };
   sveltekit: {
     version: string;
     svelte5Patterns: boolean;
     ssrReady: boolean;
-  }
+  };
   database: {
     drizzleOrm: boolean;
     pgvectorSupport: boolean;
     postgresqlReady: boolean;
-  }
+  };
   ui: {
     enhancedBitsComponents: boolean;
     unoCSS: boolean;
     nesCSS: boolean;
     gamingTheme: boolean;
-  }
+  };
   webgpu: {
     available: boolean;
     dawnBackend: boolean;
     unifiedRuntime: boolean;
-  }
+  };
   cache: {
     chrRomCache: boolean;
     redisConnected: boolean;
     wasmCache: boolean;
-  }
+  };
 }
 export async function checkIntegrationStatus(): Promise<IntegrationStatus> {
   const status: IntegrationStatus = {
@@ -79,8 +84,8 @@ export async function checkIntegrationStatus(): Promise<IntegrationStatus> {
       chrRomCache: true,
       redisConnected: false,
       wasmCache: true,
-    }
-  }
+    },
+  };
   if (!browser) return status;
   try {
     // Check WebAssembly support
@@ -117,20 +122,21 @@ export async function checkIntegrationStatus(): Promise<IntegrationStatus> {
         console.warn('WebGPU adapter request failed:', e);
       }
     }
-    // Check database connection (simplified - would need actual endpoint check)
+    // Check database + cache by attempting a health endpoint fetch (safe client-side probe)
     try {
-      // In a real scenario, this would ping a health check endpoint
-      // removed unused response assignment
-      status.database.postgresqlReady = response.ok;
+      const resp = await fetch('/api/health/status').catch(() => null);
+      if (resp?.ok) {
+        const body = await resp.json().catch(() => null);
+        // Prefer structured fields if available, fall back to resp.ok
+        status.database.postgresqlReady =
+          !!(body?.services?.database?.status === 'ok' || body?.database?.postgresqlReady) || resp.ok;
+        status.cache.redisConnected =
+          !!(body?.services?.cache?.status === 'ok' || body?.cache?.redisConnected) || resp.ok;
+      } else {
+        // endpoint not reachable from client; leave defaults (false)
+      }
     } catch (e) {
-      // Database connection not available in client-only check
-    }
-    // Check cache connection
-    try {
-      // removed unused response assignment
-      status.cache.redisConnected = response.ok;
-    } catch (e) {
-      // Cache connection not available
+      // ignore: client can't reach health endpoint
     }
   } catch (error) {
     console.error('Integration status check failed:', error);
@@ -140,7 +146,7 @@ export async function checkIntegrationStatus(): Promise<IntegrationStatus> {
 export function formatStatusReport(status: IntegrationStatus): string {
   const sections = [
     '🔧 WebAssembly Client Integration Status',
-    '=' .repeat(50),
+    '='.repeat(50),
     '',
     '📦 WebAssembly:',
     `  ✅ Available: ${status.webassembly.available}`,
@@ -171,7 +177,7 @@ export function formatStatusReport(status: IntegrationStatus): string {
     '💾 Caching:',
     `  ✅ CHR-ROM Cache: ${status.cache.chrRomCache}`,
     `  🔴 Redis Connected: ${status.cache.redisConnected}`,
-    `  📦 WASM Cache: ${status.cache.wasmCache}`
+    `  📦 WASM Cache: ${status.cache.wasmCache}`,
   ];
   return sections.join('\n');
 }

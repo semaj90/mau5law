@@ -22,6 +22,9 @@ import type { RequestHandler } from './$types';
 
 import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
 import { getOllamaEndpoint } from '$lib/server/endpoints';
+import { redis } from '$lib/server/redis';
+import { CONFIG } from '$lib/config/env.server';
+
 // Enhanced summarization endpoint now supports: streaming, multi-layer caching (Memory + Redis + client IndexedDB hint), structured summaries.
 // Cache strategy: hash(text + salient options) => LRU/TTL memory; write-through to Redis if available; emit clientCacheHint for IndexedDB persistence.
 // Enhanced summarization endpoint wrapping Gemma3 (general LLM) with steering prompts + fallbacks
@@ -495,6 +498,49 @@ const originalDELETEHandler: RequestHandler = async ({ params, url }) => {
     return json({ success: false, error: 'Failed to delete cache entry' }, { status: 500 });
   }
 };
+
+// POST body: { fileId: string, type?: 'brief'|'detailed'|'bullet', model?: string }
+export const POST: RequestHandler = async ({ request }) => {
+	try {
+		const body = await request.json().catch(() => ({}));
+		const fileId = body.fileId ?? body.fileName ?? 'unknown';
+		const type = body.type ?? 'detailed';
+		const model = body.model ?? 'gemma3-legal:latest';
+
+		const cacheKey = `summary:${fileId}:${type}:${model}`;
+		const cached = await redis.get(cacheKey);
+		if (cached) {
+			return new Response(JSON.stringify({ success: true, summary: cached, cached: true }), {
+				headers: { 'Content-Type': 'application/json' }
+			});
+		}
+
+		// Build prompt with safe guidance for legal summaries
+		const prompt = `Summarize the legal document (id: ${fileId}) in a ${type} format focusing on statutory obligations, procedures, compliance clauses, and next steps. Provide clear headings and key points.`;
+
+		// Call local Ollama/Gemma endpoint — adjust path to your Ollama API if different
+		const ollamaUrl = CONFIG.OLLAMA_URL || process.env.OLLAMA_URL || 'http://ollama:11434';
+		const res = await fetch(`${ollamaUrl}/api/generate`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ model, prompt })
+		});
+
+		const data = await res.json().catch(() => ({}));
+		const text = (data?.response as string) ?? (data?.summary as string) ?? `Fallback: Could not generate summary for ${fileId}.`;
+
+		// Cache for 30 minutes
+		await redis.set(cacheKey, text, { EX: 1800 });
+
+		return new Response(JSON.stringify({ success: true, summary: text, provider: 'ollama', model }), {
+			headers: { 'Content-Type': 'application/json' }
+		});
+	} catch (err) {
+		console.error('Summarization error:', err);
+		return new Response(JSON.stringify({ success: false, error: 'Summarization failed' }), { status: 500 });
+	}
+};
+
 export const GET = redisOptimized.aiAnalysis(originalGETHandler)
 export const POST = redisOptimized.aiAnalysis(originalPOSTHandler)
 export const DELETE = redisOptimized.aiAnalysis(originalDELETEHandler);

@@ -5,14 +5,13 @@
   import { glyphShaderCacheBridge } from '$lib/cache/glyph-shader-cache-bridge';
   import LoadingButton from '$lib/headless/LoadingButton.svelte';
   import FormField from '$lib/headless/FormField.svelte'; // Add this import
-  import * as Dialog from 'bits-ui'; // Add this import for Bits UI Dialog
   // Icons
   import {
     Brain, Cpu, Database, Zap, Monitor, Activity, Clock,
     BarChart, CheckCircle, AlertTriangle, Settings, Play,
     Square, RefreshCw, Eye, Layers, Network, HardDrive
   } from 'lucide-svelte';
-  import { fade, fly } from 'svelte/transition'; // Add this import
+  import { fade, fly } from 'svelte/transition'; // keep transitions (apply to elements)
   // Svelte 5 runes for reactive state
   let processingQueue = $state([]);
   let activeJobs = $state([]);
@@ -263,14 +262,14 @@
       </div>
       <div class="flex items-center gap-3">
         <button
-          onclick={() => (realTimeStats = !realTimeStats)}
+          on:click={() => (realTimeStats = !realTimeStats)}
           class="flex items-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
         >
           <Monitor class="w-4 h-4" />
           Real-time: {realTimeStats ? 'ON' : 'OFF'}
         </button>
         <button
-          onclick={() => (showJobDialog = true)}
+          on:click={() => (showJobDialog = true)}
           class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm text-sm font-medium hover:bg-blue-700"
         >
           <Play class="w-4 h-4" />
@@ -380,7 +379,7 @@
               {job.analysisType} · {job.useGPU ? `Bank ${job.bankId}` : 'CPU'} · {formatTimeAgo(job.createdAt)}
             </div>
             <div class="flex justify-end mt-2">
-              <button onclick={() => cancelJob(job.id)} class="text-xs text-red-600 hover:text-red-800">
+              <button on:click={() => cancelJob(job.id)} class="text-xs text-red-600 hover:text-red-800">
                 Cancel
               </button>
             </div>
@@ -494,99 +493,111 @@
   </div>
 </div>
 <!-- New Job Dialog -->
-<Dialog.Root bind:open={showJobDialog}>
-  <Dialog.Portal forceMount>
-    {#if showJobDialog}
-      <Dialog.Overlay
-        transition:fade={{ duration: 200 }}
-        class="fixed inset-0 bg-black bg-opacity-50"
-      />
-      <Dialog.Content
-        transition:fly={{ y: 10, duration: 200 }}
-        class="bg-white rounded-lg shadow-xl max-w-md w-full p-6"
-      >
-        <div class="flex items-center justify-between mb-4">
-          <Dialog.Title class="text-xl font-semibold text-gray-900">New Processing Job</Dialog.Title>
-          <Dialog.Close class="text-gray-400 hover:text-gray-600">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </Dialog.Close>
+{#if showJobDialog}
+  <!-- Overlay -->
+  <div
+    class="fixed inset-0 z-40 flex items-center justify-center"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div
+      class="absolute inset-0 bg-black bg-opacity-50"
+      transition:fade={{ duration: 200 }}
+      on:click={() => (showJobDialog = false)}
+    ></div>
+
+    <!-- Modal content -->
+    <div
+      class="relative z-50 bg-white rounded-lg shadow-xl max-w-md w-full p-6"
+      transition:fly={{ y: 10, duration: 200 }}
+    >
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-xl font-semibold text-gray-900">New Processing Job</h3>
+        <button
+          type="button"
+          aria-label="Close"
+          class="text-gray-400 hover:text-gray-600"
+          on:click={() => (showJobDialog = false)}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <form on:submit|preventDefault={submitProcessingJob} class="space-y-4">
+        <FormField name="documentId" errors={newJobForm.errors.documentId}>
+          <label for="documentId" class="block text-sm font-medium text-gray-700 mb-1"> Document ID </label>
+          <input
+            id="documentId"
+            name="documentId"
+            type="text"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            placeholder="contract_2024_001"
+            bind:value={newJobForm.documentId}
+            required
+          />
+        </FormField>
+        <div>
+          <label for="analysisType" class="block text-sm font-medium text-gray-700 mb-1"> Analysis Type </label>
+          <select
+            id="analysisType"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            bind:value={newJobForm.analysisType}
+          >
+            <option value="semantic">Semantic Analysis</option>
+            <option value="entity_extraction">Entity Extraction</option>
+            <option value="precedent_matching">Precedent Matching</option>
+            <option value="risk_assessment">Risk Assessment</option>
+            <option value="compliance_check">Compliance Check</option>
+          </select>
         </div>
-        <form onsubmit={submitProcessingJob} class="space-y-4">
-          <FormField name="documentId" errors={newJobForm.errors.documentId}>
-            <label for="documentId" class="block text-sm font-medium text-gray-700 mb-1"> Document ID </label>
-            <input
-              id="documentId"
-              name="documentId"
-              type="text"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              placeholder="contract_2024_001"
-              bind:value={newJobForm.documentId}
-              required
-            />
-          </FormField>
-          <div>
-            <label for="analysisType" class="block text-sm font-medium text-gray-700 mb-1"> Analysis Type </label>
-            <select
-              id="analysisType"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              bind:value={newJobForm.analysisType}
-            >
-              <option value="semantic">Semantic Analysis</option>
-              <option value="entity_extraction">Entity Extraction</option>
-              <option value="precedent_matching">Precedent Matching</option>
-              <option value="risk_assessment">Risk Assessment</option>
-              <option value="compliance_check">Compliance Check</option>
-            </select>
-          </div>
-          <div>
-            <label for="priority" class="block text-sm font-medium text-gray-700 mb-1"> Priority </label>
-            <select
-              id="priority"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              bind:value={newJobForm.priority}
-            >
-              <option value="low">Low Priority</option>
-              <option value="normal">Normal Priority</option>
-              <option value="high">High Priority</option>
-            </select>
-          </div>
-          <div class="flex items-center">
-            <input
-              id="useGPU"
-              type="checkbox"
-              class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              bind:checked={newJobForm.useGPU}
-            />
-            <label for="useGPU" class="ml-2 block text-sm text-gray-900"> Use GPU Acceleration (NES-GPU Bridge) </label>
-          </div>
-          {#if newJobForm.errors.general}
-            <div class="text-red-600 text-sm">{newJobForm.errors.general[0]}</div>
-          {/if}
-          <div class="flex justify-end gap-3 pt-4">
-            <button
-              type="button"
-              onclick={() => (showJobDialog = false)}
-              class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Cancel
-            </button>
-            <LoadingButton
-              type="submit"
-              loading={isProcessing}
-              class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              {#if isProcessing}
-                Creating Job...
-              {:else}
-                Create Job
-              {/if}
-            </LoadingButton>
-          </div>
-        </form>
-      </Dialog.Content>
-    {/if}
-  </Dialog.Portal>
-</Dialog.Root>
+        <div>
+          <label for="priority" class="block text-sm font-medium text-gray-700 mb-1"> Priority </label>
+          <select
+            id="priority"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            bind:value={newJobForm.priority}
+          >
+            <option value="low">Low Priority</option>
+            <option value="normal">Normal Priority</option>
+            <option value="high">High Priority</option>
+          </select>
+        </div>
+        <div class="flex items-center">
+          <input
+            id="useGPU"
+            type="checkbox"
+            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            bind:checked={newJobForm.useGPU}
+          />
+          <label for="useGPU" class="ml-2 block text-sm text-gray-900"> Use GPU Acceleration (NES-GPU Bridge) </label>
+        </div>
+        {#if newJobForm.errors.general}
+          <div class="text-red-600 text-sm">{newJobForm.errors.general[0]}</div>
+        {/if}
+        <div class="flex justify-end gap-3 pt-4">
+          <button
+            type="button"
+            on:click={() => (showJobDialog = false)}
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Cancel
+          </button>
+          <LoadingButton
+            type="submit"
+            loading={isProcessing}
+            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            {#if isProcessing}
+              Creating Job...
+            {:else}
+              Create Job
+            {/if}
+          </LoadingButton>
+        </div>
+      </form>
+    </div>
+  </div>
+{/if}
 

@@ -44,17 +44,23 @@ export function euclideanDistance(a: Vector, b: Vector): number {
  * Returns array sorted by descending score (best first).
  */
 export function topKNearest<T extends string | number | symbol = string>(
-  query: Vector;
-  items: { id: T; embedding: Vector }[],
-  k = 5;
+  query: Vector,
+  // allow optional / nullable embedding to model missing data without using `any`
+  items: Array<{ id: T; embedding?: Vector | null }>,
+  k = 5
 ): { id: T; score: number }[] {
-  if (!Array.isArray(query)) return [];
+  // guard: invalid query vector
+  if (!Array.isArray(query) || query.length === 0) return [];
+
   const results = items.map(item => {
-	const score = cosineSimilarity(query, (item as { embedding?: any; id?: any }).embedding);
-	return { id: (item as { embedding?: any; id?: any }).id, score }
+    // guard: skip items without a valid numeric embedding
+    const emb = item.embedding;
+    const validEmb = Array.isArray(emb) && emb.length === query.length;
+    const score = validEmb ? cosineSimilarity(query, emb as Vector) : -Infinity;
+    return { id: item.id, score };
   });
   results.sort((a, b) => b.score - a.score);
-  return results.slice(0, Math.max(0, Math.min(k, results.length));
+  return results.slice(0, Math.max(0, Math.min(k, results.length)));
 }
 export default {
   dot,

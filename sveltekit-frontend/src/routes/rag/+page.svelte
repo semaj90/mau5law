@@ -1,7 +1,7 @@
 <script lang="ts">
   import { superForm } from 'sveltekit-superforms/client';
   import { zod } from 'sveltekit-superforms/adapters';
-  import type { ZodTypeAny } from 'zod';
+  import type { ZodTypeAny, ZodObject, ZodRawShape } from 'zod'; // <-- added ZodObject & ZodRawShape
   import { DocumentUploadSchema } from './schema';
   import { Search, Upload, Tag, FileText, Database } from 'lucide-svelte';
   import Button from '$lib/components/ui/button/Button.svelte';
@@ -25,8 +25,8 @@
 
   onMount(() => {
     const sf = superForm(data?.form as any, {
-      // Cast the schema to ZodTypeAny to satisfy the adapter's expected type and avoid SafeParse type mismatch
-      validators: zod(DocumentUploadSchema as unknown as ZodTypeAny),
+      // Cast the schema to a ZodObject to satisfy the adapter's expected type
+      validators: zod(DocumentUploadSchema as unknown as ZodObject<ZodRawShape>),
       SPA: true,
       // Allow nested data structures (required when server form contains objects/arrays)
       dataType: 'json'
@@ -34,7 +34,14 @@
 
     form = sf.form;
     enhance = sf.enhance;
-    submitting = sf.submitting;
+    // subscribe to the readable store instead of assigning it directly
+    const unsub = sf.submitting.subscribe((v) => {
+      submitting = v;
+    });
+    // cleanup when component unmounts
+    return () => {
+      unsub();
+    };
   });
 
   // State using Svelte 5 runes
@@ -48,7 +55,6 @@
   let searchResults = $state<any[]>([]);
   let searchType = $state<'hybrid' | 'vector' | 'fuzzy'>('hybrid');
   let systemStatus = $state<any>(null);
-  let useLocalStorage = $state(false); // Fallback mode
   let documents = $state<any[]>([]);
   let loadingDocuments = $state(false);
   let deletingId = $state<string | null>(null);
@@ -227,14 +233,14 @@
   </button>
 </form>
 
-{#if data?.result}
-  {#if data.result.message}
+{#if (data as any)?.result}
+  {#if (data as any).result.message}
     <div class="mt-4 bg-green-50 p-3 rounded border text-green-700">
-      ✅ {data.result.message}
+      ✅ {(data as any).result.message}
     </div>
   {:else}
     <div class="mt-4 bg-red-50 p-3 rounded border text-red-700">
-      ❌ {data.result.error}
+      ❌ {(data as any).result.error}
     </div>
   {/if}
 {/if}

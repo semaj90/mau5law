@@ -4,7 +4,9 @@
   // Svelte 5 runes are auto-imported
   import { afterNavigate, goto } from '$app/navigation';
   import { onMount } from 'svelte';
-  import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
+    import * as yorhaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
+  // If you have centralized API clients, prefer:
+  // import yorhaAPI from '$lib/api/YoRHaAPIClient';
   import {
     Home,
     Terminal,
@@ -85,6 +87,23 @@
   description: 'Enhanced AI conversation',
     },
   ];
+  // --- Added: runtime-safe fetch helper to avoid TS error when module shape differs ---
+  async function fetchYoRhaStatus(): Promise<any> {
+    const api = yorhaAPI as any;
+    try {
+      if (typeof api.getSystemStatus === 'function') return await api.getSystemStatus();
+      if (api?.default && typeof api.default.getSystemStatus === 'function') return await api.default.getSystemStatus();
+      if (api?.YoRHaAPIClient && typeof api.YoRHaAPIClient.getSystemStatus === 'function') return await api.YoRHaAPIClient.getSystemStatus();
+      // Fallback: fetch from a known endpoint (adjust route if your backend exposes a different one)
+      const resp = await fetch('/api/yorha/status');
+      if (resp.ok) return await resp.json();
+      return null;
+    } catch (err) {
+      throw err;
+    }
+  }
+  // --- end added helper ---
+
   onMount(() => {
     // initialize currentPath (guard for SSR) and subscribe to navigation events
     if (typeof window !== 'undefined') {
@@ -102,19 +121,21 @@
     // fetch YoRHa system status (fire-and-forget)
     (async () => {
       try {
-        const status = await yorhaAPI.getSystemStatus();
+        // Use the runtime-safe helper and ensure status is read safely (no leftover diff markers)
+        const status = await fetchYoRhaStatus();
+        const s = status ?? {}; // guard if helper returned null
+
         const services = (() => {
-          const s = status as any;
-          if (Array.isArray(s?.services)) return s.services.length;
-          if (typeof s?.serviceCount === 'number') return s.serviceCount;
-          if (typeof s?.servicesCount === 'number') return s.servicesCount;
+          if (Array.isArray((s as any)?.services)) return (s as any).services.length;
+          if (typeof (s as any)?.serviceCount === 'number') return (s as any).serviceCount;
+          if (typeof (s as any)?.servicesCount === 'number') return (s as any).servicesCount;
           return 0;
         })();
 
         systemStatus = {
-          connected: true,
+          connected: !!status,
           services,
-          errors: 0,
+          errors: (s as any)?.errors ?? 0,
         };
       } catch (error) {
         console.warn('YoRHa API not available:', error);

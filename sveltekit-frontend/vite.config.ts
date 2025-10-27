@@ -21,6 +21,7 @@ export default defineConfig(({ mode }) => {
   }
 
   return {
+    assetsInclude: ['**/*.woff2'], // Added for font assets
     plugins: [
       UnoCSS() as any,
       sveltekit() as any,
