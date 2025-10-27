@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
+<!-- @migration-task Error while migrating Svelte code: Unexpected token;
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
@@ -56,14 +56,15 @@ https://svelte.dev/e/js_parse_error -->
   <title>Dashboard - Prosecutor Case Management System</title>
   <meta name="description" content="Advanced legal case management with AI-powered document analysis" />
 </svelte:head>
+
 <!-- Hero Section -->
-<section class="space-y-4">
+<section class="space-y-4 hero-section">
   <div class="space-y-4">
     <div class="space-y-4">
       <h1 class="space-y-4">
         <Typewriter text={heroText} speed={100} />
       </h1>
-      <p class="space-y-4">
+      <p class="space-y-4 line-clamp-3">
         Harness the power of AI to analyze evidence, build stronger cases, and streamline your prosecution workflow
       </p>
       <div class="space-y-4">
@@ -73,6 +74,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </section>
+
 <!-- Quick Actions Section -->
 <section class="space-y-4">
   <div class="space-y-4">
@@ -137,6 +139,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </div>
 </section>
+
 <!-- Recent Cases Section -->
 {#if recentCases && recentCases.length > 0}
   <section class="space-y-4">
@@ -149,7 +152,7 @@ https://svelte.dev/e/js_parse_error -->
               <h3 class="space-y-4">{caseItem.title}</h3>
               <span class="space-y-4">{caseItem.status || 'Active'}</span>
             </div>
-            <p class="space-y-4">{caseItem.description || 'No description available'}</p>
+            <p class="space-y-4 line-clamp-3">{caseItem.description || 'No description available'}</p>
             <div class="space-y-4">
               <span>Case #{caseItem.id}</span>
               <span>{new Date(caseItem.createdAt).toLocaleDateString()}</span>
@@ -164,6 +167,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   </section>
 {/if}
+
 <!-- Features Section -->
 <section class="space-y-4">
   <div class="space-y-4">

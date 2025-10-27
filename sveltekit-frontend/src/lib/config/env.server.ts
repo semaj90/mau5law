@@ -44,7 +44,8 @@ export const CONFIG = {
   MINIO_URL: env.MINIO_URL ?? `http://${host}:9000`,
   MINIO_ACCESS_KEY: env.MINIO_ACCESS_KEY ?? 'minioadmin',
   MINIO_SECRET_KEY: env.MINIO_SECRET_KEY ?? 'minioadmin',
-  MINIO_BUCKET: env.MINIO_BUCKET ?? 'deeds-storage',
+  // Prefer purpose-specific env var first (keeps backward compatibility)
+  MINIO_BUCKET: env.MINIO_BUCKET_LEGAL_DOCUMENTS ?? env.MINIO_BUCKET ?? env.VITE_MINIO_BUCKET ?? 'deeds-storage',
 
   // Feature Flags
   OCR_MODE: env.OCR_MODE ?? 'hybrid', // 'tesseract', 'paddle', 'hybrid'

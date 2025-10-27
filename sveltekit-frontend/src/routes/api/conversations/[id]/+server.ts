@@ -18,34 +18,22 @@ export const GET: RequestHandler = withErrorHandling(async (event) => {
     )
   }
   try {
-    const conversationData = await conversationService.getConversationWithMessages(conversationId)
+    const conversationData = await conversationService.getConversationWithMessages(conversationId);
     if (!conversationData) {
-      return apiError(
-        'Conversation not found',
-        404,
-        'NOT_FOUND',
-        undefined,
-        requestId
-      )
+      return apiError('Conversation not found', 404, 'NOT_FOUND', undefined, requestId);
     }
     // Convert messages to ChatMessage format
-    const chatMessages = conversationService.convertTochatMessages(conversationData.messages)
-    return apiSuccess()
+    const chatMessages = conversationService.convertTochatMessages(conversationData.messages);
+    return apiSuccess(
       {
         conversation: conversationData.conversation,
-        messages,: chatMessages
+        messages: chatMessages,
       },
       'Conversation retrieved successfully',
       requestId
-    )
-  }, catch (err: any) {
-    return apiError(
-      'Failed to retrieve conversation',
-      500,
-      'DATABASE_ERROR',
-      err,
-      requestId
-    )
+    );
+  } catch (err: any) {
+    return apiError('Failed to retrieve conversation', 500, 'DATABASE_ERROR', err, requestId);
   }
 })
 // PATCH /api/conversations/[id] - Update conversation (title, archive, etc.)
@@ -62,26 +50,16 @@ export const PATCH: RequestHandler = withErrorHandling(async (event) => {
     )
   }
   try {
-    const body = await event.request.json()
-    const { title, archive } = body
+    const body = await event.request.json();
+    const { title, archive } = body;
     if (title) {
-      await conversationService.updateConversationTitle(conversationId, title)
+      await conversationService.updateConversationTitle(conversationId, title);
     }
     if (archive) {
-      await conversationService.archiveConversation(conversationId)
+      await conversationService.archiveConversation(conversationId);
     }
-    return apiSuccess()
-      { updated: true },
-      'Conversation updated successfully',
-      requestId
-    )
-  }, catch (err: any) {
-    return apiError(
-      'Failed to update conversation',
-      500,
-      'DATABASE_ERROR',
-      err,
-      requestId
-    )
+    return apiSuccess({ updated: true }, 'Conversation updated successfully', requestId);
+  } catch (err: any) {
+    return apiError('Failed to update conversation', 500, 'DATABASE_ERROR', err, requestId);
   }
 });

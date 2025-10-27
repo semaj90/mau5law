@@ -24,6 +24,7 @@ declare module '$env/dynamic/private' {
     MINIO_URL?: string;
     MINIO_ACCESS_KEY?: string;
     MINIO_SECRET_KEY?: string;
+    MINIO_BUCKET_LEGAL_DOCUMENTS?: string;
     JWT_SECRET?: string;
     OPENAI_API_KEY?: string;
     ANTHROPIC_API_KEY?: string;
@@ -102,6 +103,7 @@ export interface EnhancedEnv {
   MINIO_ACCESS_KEY: string;
   MINIO_SECRET_KEY: string;
   MINIO_BUCKET: string;
+  MINIO_BUCKET_LEGAL_DOCUMENTS?: string;
   // Security
   JWT_SECRET: string;
   ENCRYPTION_KEY: string;
@@ -119,26 +121,26 @@ export interface EnhancedEnv {
 // Environment helper functions
 export const envHelper = {
   // Get environment variable with fallback
-  get: (_key: string, defaultValue: string = ''): string => {
+  get: (key: string, defaultValue: string = ''): string => {
     if (typeof process !== 'undefined' && process.env) {
       return process.env[key] || defaultValue;
     }
     return defaultValue;
   },
   // Get boolean environment variable
-  getBool: (_key: string, defaultValue: boolean = false): boolean => {
+  getBool: (key: string, defaultValue: boolean = false): boolean => {
     const value = envHelper.get(key);
     if (!value) return defaultValue;
     return value.toLowerCase() === 'true' || value === '1';
   },
   // Get number environment variable
-  getNumber: (_key: string, defaultValue: number = 0): number => {
+  getNumber: (key: string, defaultValue: number = 0): number => {
     const value = envHelper.get(key);
     const parsed = parseInt(value, 10);
     return isNaN(parsed) ? defaultValue : parsed;
   },
   // Get required environment variable (throws if missing)
-  getRequired: (_key: string): string => {
+  getRequired: (key: string): string => {
     const value = envHelper.get(key);
     if (!value) {
       throw new Error(`Required environment variable ${key} is not set`);

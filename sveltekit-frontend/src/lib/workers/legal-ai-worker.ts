@@ -5,6 +5,7 @@
  */
 
 import * as amqp from 'amqplib';
+import type { ConsumeMessage } from 'amqplib';
 import { randomUUID } from 'crypto';
 import { db } from '$lib/server/db/client';
 import { evidence } from '$lib/server/db/schema-postgres';
@@ -54,16 +55,9 @@ export async function createLegalAIWorker() {
 
   /**
    * Local lightweight AMQP message shape used by this worker.
-   * We only model the fields this file accesses to avoid depending on a non-exported
-   * type from the amqplib package.
+   * Use the amqplib ConsumeMessage type so ack/send can be typed correctly.
    */
-  type AmqpMessage = {
-    content: Buffer;
-    properties: {
-      headers?: Record<string, unknown>;
-      // other properties may exist but are not required here
-    };
-  } | null;
+  type AmqpMessage = ConsumeMessage | null;
 
   // use local AmqpMessage type instead of amqp.Message which may not be exported
   const onMessage = async (msg: AmqpMessage) => {
@@ -77,17 +71,18 @@ export async function createLegalAIWorker() {
       cuidSchema.parse(job.documentId);
     } catch (e) {
       console.error('❌ Invalid job payload, dropping:', e);
-      ch.ack(msg as any);
+      ch.ack(msg);
       return;
     }
 
-    const jobId = job.jobId ?? randomUUID();
+    // ensure jobId is declared in the outer scope for both try and catch branches
+    const jobId: string = job.jobId ?? randomUUID();
     console.log(`🔄 Processing job: ${jobId}`);
 
     try {
       const result = await processIncomingJob(job);
       console.log(`✅ Job completed: ${jobId}`, result);
-      ch.ack(msg as any);
+      ch.ack(msg);
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : String(err);
       console.error(`❌ Job failed: ${jobId}:`, errMsg);
@@ -102,7 +97,7 @@ export async function createLegalAIWorker() {
           headers: newHeaders,
         });
       }
-      ch.ack(msg as any);
+      ch.ack(msg);
     }
   };
 
@@ -235,7 +230,13 @@ async function updateEvidenceWithResults(documentId: string, results: GoServerRe
   `;
   try {
     // if your db client uses a different execute signature, adjust accordingly
-    await db.execute(sql, [documentId, aiSummary, aiEntities, aiProcessingMetadata]);
+    // Some db client typings expose execute(sql: string) only; narrow with an intermediate cast
+    await (db as unknown as { execute: (sql: string, params?: unknown[]) => Promise<unknown> }).execute(sql, [
+      documentId,
+      aiSummary,
+      aiEntities,
+      aiProcessingMetadata,
+    ]);
     console.log(`✅ Evidence record ${documentId} updated.`);
   } catch (e) {
     console.error(`❌ Failed updating evidence ${documentId}:`, e);

@@ -7,17 +7,11 @@ import type { RequestHandler } from './$types.js'
 export const GET: RequestHandler = async ({ params }) => {
   try {
     const caseId = params.caseId
-    const pois = await db
-      .select()
-      .from(personsOfInterest)
-      .where(eq(personsOfInterest.caseId, caseId)
+    const pois = await db.select().from(personsOfInterest).where(eq(personsOfInterest.caseId, caseId));
     return json(pois)
   } catch (error: any) {
     console.error("Error fetching POIs:", error)
-    return json(
-      { error: "Failed to fetch persons of interest" },)
-      { status: 500 }
-    )
+    return json({ error: 'Failed to fetch persons of interest' }, { status: 500 });
   }
 }
 export const POST: RequestHandler = async ({ request, params }) => {
@@ -29,28 +23,25 @@ export const POST: RequestHandler = async ({ request, params }) => {
       .insert(personsOfInterest)
       .values({
         caseId,
-        name: data.name || "New Person of Interest",
+        name: data.name || 'New Person of Interest',
         aliases: data.aliases || [],
-        profileData: data.profileData || {,
-          who: "",
-          what: "",
-          why: "",
-          how: ""
+        profileData: data.profileData || {
+          who: '',
+          what: '',
+          why: '',
+          how: '',
         },
         position: data.position || {},
         relationship: data.relationship,
-        threatLevel: data.threatLevel || "low",
-        status: data.status || "active",
+        threatLevel: data.threatLevel || 'low',
+        status: data.status || 'active',
         tags: data.tags || [],
-        createdBy: data.createdBy || "system", // TODO: Get from session
+        createdBy: data.createdBy || 'system', // TODO: Get from session
       })
-      .returning()
+      .returning();
     return json(poi, { status: 201 })
   } catch (error: any) {
     console.error("Error creating POI:", error)
-    return json(
-      { error: "Failed to create person of interest" },)
-      { status: 500 }
-    )
+    return json({ error: 'Failed to create person of interest' }, { status: 500 });
   }
 }
