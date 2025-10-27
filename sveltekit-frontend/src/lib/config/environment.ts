@@ -148,10 +148,10 @@ export const ENV_CONFIG: EnvironmentConfig = {
     return getOllamaConfig().port;
   },
   get REDIS_URL() {
-    return process.env.REDIS_URL || 'redis://localhost:6379'
+    return process.env.REDIS_URL || 'redis://localhost:6379';
   },
   get DATABASE_URL() {
-    return process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db'
+    return process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db';
   },
   get IS_DEVELOPMENT() {
     return process.env.NODE_ENV === 'development';
@@ -163,9 +163,14 @@ export const ENV_CONFIG: EnvironmentConfig = {
     return typeof process !== 'undefined' && process.versions?.node;
   },
   minioEndpoint: import.meta.env.VITE_MINIO_ENDPOINT || 'http://localhost:9000',
-  minioAccessKey: import.meta.env.VITE_MINIO_ACCESS_KEY || 'minio',
+  minioAccessKey: import.meta.env.VITE_MINIO_ACCESS_KEY || import.meta.env.VITE_MINIO_ACCESS_KEY || 'minio',
   minioSecretKey: import.meta.env.VITE_MINIO_SECRET_KEY || 'minio123',
-  minioBucket: import.meta.env.VITE_MINIO_BUCKET || 'legal-documents',
+  // Support both new purpose-specific envs and legacy MINIO_BUCKET
+  minioBucket:
+    import.meta.env.VITE_MINIO_BUCKET ||
+    process.env.MINIO_BUCKET_LEGAL_DOCUMENTS ||
+    process.env.MINIO_BUCKET ||
+    'legal-documents',
   mcpServerUrl: import.meta.env.VITE_MCP_SERVER_URL || 'http://localhost:8777', // Updated to 8777 as per instructions
-}
+};
 export default ENV_CONFIG;

@@ -4,7 +4,6 @@ import { DbCaseOperations as CaseOperations } from '$lib/server/db/enhanced-oper
 import { redis as sharedRedis } from '$lib/server/redis-client';
 import type { RequestHandler } from './$types';
 import { resolveUser, getMetaEnv, isDevBypassEnabled } from '$lib/server/auth/utils';
-import type { RedisClientType } from 'redis';
 
 const CASE_PRIORITY_VALUES = ['low', 'medium', 'high', 'critical'] as const;
 const CASE_STATUS_VALUES = ['open', 'investigating', 'pending', 'closed', 'archived'] as const;
@@ -30,10 +29,10 @@ function normalizeCaseStatus(value: unknown): CaseStatus | undefined {
 const metaEnv = getMetaEnv();
 
 // Redis client for worker communication (local wrapper over shared client)
-let redisClient: RedisClientType | null = null;
+let redisClient: ReturnType<typeof sharedRedis.createClient> | null = null;
 let redisUnavailable = false;
 
-async function getRedisClient(): Promise<RedisClientType | null> {
+async function getRedisClient(): Promise<ReturnType<typeof sharedRedis.createClient> | null> {
   if (redisUnavailable) return null;
   if (!redisClient) {
     try {
@@ -61,8 +60,8 @@ async function getRedisClient(): Promise<RedisClientType | null> {
         clientConfig.password = resolvedRedisPassword;
       }
 
-      // Create client and assert it's a RedisClientType at runtime
-      redisClient = (maybeCreateClient as (cfg?: unknown) => RedisClientType)(clientConfig);
+      // Create client and assert it's the same shape as sharedRedis.createClient at runtime
+      redisClient = (maybeCreateClient as (cfg?: unknown) => ReturnType<typeof sharedRedis.createClient>)(clientConfig);
 
       // Suppress auth warnings during connection
       const errorHandler = (err: unknown) => {
@@ -98,9 +97,9 @@ async function getRedisClient(): Promise<RedisClientType | null> {
 async function triggerWorkerProcessing(
   caseId: string,
   options: { priority: string; caseType: string; userId: string; trigger: string; metadata?: Record<string, unknown> }
-): Promise<void> {
+): Promise<boolean> {
   const redis = await getRedisClient();
-  if (!redis) return; // silently skip if unavailable in dev
+  if (!redis) return false; // silently skip if unavailable in dev
   const correlationId = `case-${caseId}-${Date.now()}`;
   // Create Redis stream event for worker
   const eventData: Record<string, string> = {
@@ -123,9 +122,27 @@ async function triggerWorkerProcessing(
   };
   // Add to Redis stream for worker consumption
   const streamName = 'autotag:requests';
-  // Call xAdd with properly typed client & payload
-  await redis.xAdd(streamName, '*', eventData);
-  console.log(`📡 Worker event sent: ${streamName} -> ${correlationId}`);
+
+  // Define minimal interface describing the xAdd method we expect
+  type RedisStreamClient = {
+    xAdd: (stream: string, id: string, message: Record<string, string>) => Promise<string>;
+  };
+
+  // Narrow the client safely (avoid 'any') and verify method exists at runtime
+  const streamClient = redis as unknown as RedisStreamClient;
+  if (typeof streamClient.xAdd !== 'function') {
+    console.warn('⚠️ Redis client does not expose xAdd; skipping worker enqueue');
+    return false;
+  }
+
+  try {
+    await streamClient.xAdd(streamName, '*', eventData);
+    console.log(`📡 Worker event sent: ${streamName} -> ${correlationId}`);
+    return true;
+  } catch (e) {
+    console.warn(`⚠️ Failed to enqueue worker event for case ${caseId}:`, e);
+    return false;
+  }
 }
 // Enhanced case schemas with comprehensive validation
 const createCaseSchema = z.object({
@@ -322,7 +339,7 @@ export const POST: RequestHandler = async event => {
         incidentDate: validatedCaseData.incidentDate ?? undefined,
         location: validatedCaseData.location ?? null,
         jurisdiction: validatedCaseData.jurisdiction ?? null,
-        caseType: validatedCaseData.caseType ?? 'civil',
+        // caseType removed here because CaseOperations.create does not accept it in its parameter type.
         createdBy: user.id,
       };
 
@@ -332,8 +349,9 @@ export const POST: RequestHandler = async event => {
       console.log(`✅ Case created successfully: ID=${newCase.id}, Number=${newCase.caseNumber}, User=${user.id}`);
 
       // Trigger PostgreSQL-first worker for auto-tagging and processing
+      let workerTriggered = false;
       try {
-        await triggerWorkerProcessing(newCase.id, {
+        workerTriggered = await triggerWorkerProcessing(newCase.id, {
           priority: validatedCaseData.priority, // No 'as string' needed, type is correct
           caseType: validatedCaseData.caseType || 'civil', // No 'as string' needed, type is correct
           userId: user.id,
@@ -349,17 +367,23 @@ export const POST: RequestHandler = async event => {
             // Removed duplicate incidentDate property
           },
         });
-        console.log(`🚀 Worker processing triggered for case: ${newCase.id}`);
+        if (workerTriggered) {
+          console.log(`🚀 Worker processing triggered for case: ${newCase.id}`);
+        } else {
+          console.warn(`⚠️ Worker not triggered (Redis unavailable or enqueue failed) for case: ${newCase.id}`);
+        }
       } catch (workerError: unknown) {
-        // Corrected: Added type for workerError
-        console.warn(`⚠️ Worker trigger failed for case ${newCase.id}:`, workerError);
-        // Don't fail the case creation if worker trigger fails
+        // This catch is unlikely to be hit now because triggerWorkerProcessing returns false on internal failure,
+        // but keep it defensively to avoid bubbling unexpected exceptions.
+        console.warn(`⚠️ Worker trigger threw for case ${newCase.id}:`, workerError);
+        workerTriggered = false;
       }
+
       return {
         case: newCase,
         message: `Case ${newCase.caseNumber} created successfully`,
         metadata: {
-          workerTriggered: true,
+          workerTriggered,
           timestamp: new Date().toISOString(),
         },
       };
@@ -382,7 +406,8 @@ export const PUT: RequestHandler = async event => {
       throw CommonErrors.BadRequest('Case ID is required');
     }
     // Parse and validate update data
-    const updateSchema = createCaseSchema.partial().omit({ status: true });
+    // use const assertion to satisfy TS/zod typings for .omit
+    const updateSchema = createCaseSchema.partial().omit({ status: true } as const);
     const updates = await parseRequestBody(request, updateSchema);
     try {
       const updatedCase = await CaseOperations.update(caseId, updates, user.id);
