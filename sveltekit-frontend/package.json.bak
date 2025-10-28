@@ -1,0 +1,917 @@
+{
+	"name": "yorha-legal-ai-frontend",
+	"version": "1.0.0",
+	"description": "YoRHa-styled legal AI frontend with Gemma3 integration",
+	"type": "module",
+	"scripts": {
+		"dev": "cross-env DEV_BYPASS_AUTH=true REDIS_URL=redis://localhost:6380 REDIS_PASSWORD= node scripts/start-dev-dynamic.js",
+		"dev:static": "concurrently -n \"Redis,Vite\" -c \"red,cyan\" \"node scripts/start-redis.js\" \"vite dev --host 0.0.0.0\"",
+		"dev:solo": "vite dev --host 0.0.0.0 --strictPort",
+		"ingest:file": "node scripts/ingest-file.js",
+		"test:minio:redis": "node scripts/test-minio-redis.js",
+		"dev:port": "node scripts/start-dev-dynamic.js",
+		"dev:gpu": "cross-env NODE_OPTIONS=--max-old-space-size=3072 ENABLE_GPU=true RTX_3060_OPTIMIZATION=true CONTEXT7_MULTICORE=true OLLAMA_GPU_LAYERS=30 vite dev",
+		"dev:gpu:quic": "cross-env NODE_OPTIONS=--max-old-space-size=3072 ENABLE_GPU=true RTX_3060_OPTIMIZATION=true CONTEXT7_MULTICORE=true OLLAMA_GPU_LAYERS=30 vite dev --port 5174 --strictPort --host 127.0.0.1",
+		"dev:gpu:8g": "cross-env NODE_OPTIONS=\"--max-old-space-size=8192\" ENABLE_GPU=true RTX_3060_OPTIMIZATION=true CONTEXT7_MULTICORE=true OLLAMA_GPU_LAYERS=30 vite dev",
+		"dev:8g": "cross-env NODE_OPTIONS=\"--max-old-space-size=8192\" vite dev",
+		"dev:auto": "node scripts/start-dev-with-ollama.mjs",
+		"dev:auto:quic": "node scripts/start-dev-with-ollama.mjs --quic",
+		"dev:quic": "cross-env DEV_BYPASS_AUTH=true REDIS_URL=redis://localhost:6380 REDIS_PASSWORD= node scripts/start-full-stack.js",
+		"dev:quic:docker": "cross-env DOCKER_ENV=true $(cat env.docker | xargs) npm run dev:quic",
+		"dev:quic:old": "node scripts/start-dev-realtime-full.js",
+		"dev:quic:legacy": "node scripts/start-dev-quic-working.js",
+		"dev:quic:concurrent": "concurrently -n \"Caddy-QUIC,Vite\" -c \"blue,cyan\" \"npm run caddy:start && echo '🌐 QUIC: http://localhost:5178/agent-demo'\" \"npx vite dev --host 0.0.0.0\"",
+		"dev:quic:enhanced": "npx zx scripts/start-quic-enhanced.mjs",
+		"dev:quic:local": "cross-env QUIC_ENABLED=true ENABLE_GPU=true RTX_3060_OPTIMIZATION=true CONTEXT7_MULTICORE=true OLLAMA_GPU_LAYERS=30 vite dev --port 5173 --strictPort --host 127.0.0.1",
+		"dev:quic:5173": "cross-env PORT=5173 npx zx scripts/dev-quic-port.mjs",
+		"dev:quic:5174": "cross-env PORT=5174 npx zx scripts/dev-quic-port.mjs",
+		"dev:quic:5175": "cross-env PORT=5175 npx zx scripts/dev-quic-port.mjs",
+		"dev:quic:5176": "cross-env PORT=5176 npx zx scripts/dev-quic-port.mjs",
+		"dev:quic:5177": "cross-env PORT=5177 npx zx scripts/dev-quic-port.mjs",
+		"dev:quic:5178": "cross-env PORT=5178 npx zx scripts/dev-quic-port.mjs",
+		"dev:quic:5179": "cross-env PORT=5179 npx zx scripts/dev-quic-port.mjs",
+		"dev:quic:dynamic": "npx zx scripts/start-quic-dynamic-docker.mjs",
+		"dev:quic:win": "scripts\\start-quic-enhanced.bat",
+		"dev:quic:simple": "vite dev --port 5174 --strictPort --host 127.0.0.1",
+		"dev:docker": "cross-env HOST=0.0.0.0 PORT=5174 REDIS_URL=redis://redis:6379 DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db OLLAMA_URL=http://ollama:11434 vite dev --host 0.0.0.0 --port 5174",
+		"docker:dev": "docker-compose -f docker-compose.dev.yml up --build",
+		"docker:dev:detached": "docker-compose -f docker-compose.dev.yml up -d --build",
+		"docker:stop": "docker-compose -f docker-compose.dev.yml down",
+		"docker:logs": "docker-compose -f docker-compose.dev.yml logs -f",
+		"docker:agent-demo": "echo 'Agent Demo available at: http://localhost:5178/agent-demo'",
+		"caddy:start": "docker-compose -f docker-compose.caddy-only.yml up -d",
+		"caddy:stop": "docker-compose -f docker-compose.caddy-only.yml down",
+		"caddy:logs": "docker-compose -f docker-compose.caddy-only.yml logs -f caddy",
+		"dev:quic:full": "concurrently -n \"Caddy-QUIC,Vite-Dev\" -c \"blue,cyan\" \"npm run caddy:start && echo '🌐 QUIC Proxy: http://localhost:5178/agent-demo'\" \"cross-env REDIS_PASSWORD=redis QUIC_ENABLED=true vite dev --host 0.0.0.0 --port 5176\"",
+		"dev:debug": "cross-env DEBUG=vite:*,kit:* vite dev",
+		"dev:debug:vite": "cross-env DEBUG=vite:* vite dev",
+		"dev:debug:kit": "cross-env DEBUG=kit:* vite dev",
+		"dev:debug:verbose": "cross-env DEBUG=vite:*,kit:*,sveltekit:* VITE_LOG_LEVEL=info vite dev --logLevel info",
+		"dev:debug:win": "set DEBUG=vite:*,kit:* && vite dev",
+		"dev:debug:routing": "cross-env DEBUG=kit:router,kit:adapter vite dev",
+		"dev:full": "npm run dev:full:concurrent",
+		"dev:full:redis-gpu": "node scripts/start-dev-full-gpu-aware.js",
+		"dev:full:legacy": "node scripts/enhanced-system-startup.mjs",
+		"dev:full:enhanced": "node scripts/start-dev-full-enhanced.js",
+		"dev:full:concurrent": "concurrently -n \"PostgreSQL,Ollama-GPU,RTX-Services,GPU-Monitor,NES-Pipeline,AI-Orchestrator,Frontend\" -c \"blue,yellow,cyan,magenta,green,red,white\" \"node scripts/start-postgres.js\" \"node scripts/start-ollama-gpu.js\" \"npx zx scripts/rtx-enhanced-system-startup.mjs\" \"npm run gpu:monitor\" \"npm run nes:pipeline\" \"npm run orchestrator:health:watch\" \"npm run dev:gpu\"",
+		"dev:full:basic": "concurrently -n \"PostgreSQL,Services\" -c \"blue,cyan\" \"node scripts/start-postgres.js\" \"node scripts/start-unified-services.js\"",
+		"dev:full:sequential": "node scripts/start-postgres.js && node scripts/start-unified-services.js",
+		"dev:coordinated": "node scripts/start-coordinated-full-stack.mjs",
+		"dev:unified": "node scripts/start-unified-services.js",
+		"dev:full:rtx": "npx zx scripts/rtx-enhanced-system-startup.mjs",
+		"dev:full:quic": "start-full-quic.bat",
+		"dev:full:quic:lowmem": "cross-env NODE_OPTIONS=\"--max-old-space-size=2048\" npm run dev:full:quic",
+		"dev:full:lowmem": "cross-env NODE_OPTIONS=\"--max-old-space-size=3072\" npm run dev:full",
+		"dev:full:8g": "cross-env NODE_OPTIONS=\"--max-old-space-size=8192\" npm run dev:full",
+		"dev:full:monitor": "concurrently -n \"Frontend,GPU,Health,NES-Textures\" -c \"cyan,magenta,green,yellow\" \"npm run dev:gpu\" \"npm run gpu:monitor\" \"npm run health:watch\" \"npm run nes:pipeline\"",
+		"nes:pipeline": "node scripts/nes-pipeline-simple.mjs",
+		"nes:diagnostics": "node scripts/nintendo-memory-diagnostics.mjs",
+		"nes:chr-rom:status": "curl -s http://localhost:8097/api/chr-rom/status | jq || curl -s http://localhost:8097/api/chr-rom/status",
+		"nes:texture:stream": "curl -s -X POST http://localhost:8097/api/texture/stream -H 'Content-Type: application/json' -d '{\"documentId\":\"test-doc\",\"targetLOD\":1,\"priority\":\"normal\"}' | jq || curl -s -X POST http://localhost:8097/api/texture/stream -H 'Content-Type: application/json' -d '{\"documentId\":\"test-doc\",\"targetLOD\":1,\"priority\":\"normal\"}'",
+		"nes:lod:calculate": "curl -s -X POST http://localhost:8097/api/lod/calculate -H 'Content-Type: application/json' -d '{\"distance\":250,\"zoomLevel\":1,\"readingMode\":\"active\",\"documentImportance\":\"high\"}' | jq || curl -s -X POST http://localhost:8097/api/lod/calculate -H 'Content-Type: application/json' -d '{\"distance\":250,\"zoomLevel\":1,\"readingMode\":\"active\",\"documentImportance\":\"high\"}'",
+		"nes:health": "curl -s http://localhost:8097/api/health | jq || curl -s http://localhost:8097/api/health",
+		"nes:test:full": "npm run nes:health && npm run nes:chr-rom:status && npm run nes:lod:calculate && npm run nes:texture:stream",
+		"nes:demo:page": "echo 'Navigate to: http://localhost:5173/demo/nes-texture-streaming'",
+		"dev:full:legacy:alt": "node scripts/dev-full-working.mjs",
+		"dev:full:original": "node scripts/start-full-stack-37-services.mjs",
+		"dev:rtx": "node scripts/rtx-enhanced-system-startup.mjs",
+		"dev:full:logs": "node scripts/enhanced-system-startup.mjs && tail -f logs/vite-errors.log",
+		"dev:simple": "node scripts/start-dev-simple.mjs",
+		"dev:full:with-smoke": "node scripts/run-dev-with-smoke.mjs",
+		"dev:frontend:with-smoke": "node scripts/run-frontend-and-smoke.mjs",
+		"smoke": "tsx scripts/smoke.ts",
+		"worker:ingest": "tsx src/workers/ingestion-worker.ts",
+		"worker:embeddings": "tsx src/lib/workers/queue-worker.ts",
+		"dev:dual": "concurrently --restart-tries 3 --restart-after 4000 -n FRONTEND,PROXY \"vite dev\" \"cd .. && node start-port-5180.cjs\"",
+		"dev:proxy": "cd .. && node start-port-5180.cjs",
+		"start:dual": "concurrently --restart-tries 3 --restart-after 4000 -n FRONTEND,PROXY \"vite dev\" \"cd .. && node start-port-5180.cjs\"",
+		"start:env": "cd .. && node start-dual-ports-with-env.cjs",
+		"dev:complete": "node scripts/start-dev-complete.mjs",
+		"dev:legal-ai-full": "node scripts/start-full-legal-ai-stack.mjs",
+		"services:tier1": "node scripts/start-tier1-services.mjs",
+		"services:all": "npm run dev:full",
+		"services:health": "curl -s http://localhost:5173/api/v1/health/cuda",
+		"cuda:test": "curl -X POST http://localhost:8096/cuda/compute -H 'Content-Type: application/json' -d '{\"query\":\"test RTX processing\",\"metadata\":{\"test\":true}}'",
+		"rtx:health": "curl -s http://localhost:8096/health",
+		"rtx:stats": "curl -s http://localhost:8096/cuda/stats",
+		"rtx:gateway": "curl -s http://localhost:8230/health",
+		"rtx:upload": "curl -s http://localhost:8093/health",
+		"rtx:test-all": "npm run rtx:health && npm run rtx:gateway && npm run rtx:upload",
+		"gpu-wasm:test": "node scripts/test-gpu-wasm-integration.mjs",
+		"gpu:monitor": "node scripts/gpu-monitor.mjs",
+		"gpu:accelerated": "cross-env CUDA_VISIBLE_DEVICES=0 ENABLE_GPU=true RTX_3060_OPTIMIZATION=true npm run dev",
+		"health:watch": "powershell -NoProfile -Command \"while($true) { Write-Host ('Health Check: ' + (Get-Date).ToString('HH:mm:ss')); try { $r = Invoke-RestMethod -Uri http://localhost:5181/api/health -TimeoutSec 3; Write-Host 'OK' -ForegroundColor Green } catch { Write-Host 'ERROR' -ForegroundColor Red }; Start-Sleep 10 }\"",
+		"platform:start": "cd .. && .\\LEGAL.AI.bat",
+		"platform:dev": "concurrently -n \"Legal-AI,Frontend-GPU,Monitor\" -c \"cyan,magenta,green\" \"cd .. && node scripts/start-legal-ai-platform.mjs\" \"npm run dev:gpu\" \"npm run gpu:monitor\"",
+		"legal-ai:complete": "cd .. && npm run platform:start && npm run dev:full",
+		"microservices:health": "curl -s http://localhost:8081/health && curl -s http://localhost:8093/health && curl -s http://localhost:8084/health",
+		"stack:verify": "node scripts/verify-complete-stack.mjs",
+		"gpu-wasm:verify": "curl -X POST http://localhost:5173/api/gpu-wasm-integration -H 'Content-Type: application/json' -d '{\"action\":\"status\"}'",
+		"start": "npm run dev:full",
+		"start:rtx": "npm run dev:rtx",
+		"start:coordinated": "node scripts/start-coordinated-full-stack.mjs",
+		"coordinator:start": "node scripts/start-coordinated-full-stack.mjs",
+		"coordinator:status": "curl -s http://localhost:5173/api/v1/coordinator?action=status",
+		"coordinator:health": "curl -s http://localhost:5173/api/v1/coordinator?action=health",
+		"coordinator:check": "node scripts/check-coordinated-system.mjs",
+		"orchestrator:docker:up": "docker-compose -f ../docker-compose.legal-ai.yml up -d",
+		"orchestrator:docker:down": "docker-compose -f ../docker-compose.legal-ai.yml down",
+		"orchestrator:docker:logs": "docker-compose -f ../docker-compose.legal-ai.yml logs -f",
+		"orchestrator:docker:restart": "docker-compose -f ../docker-compose.legal-ai.yml restart",
+		"orchestrator:health": "node ../scripts/orchestrator-health-check.mjs",
+		"orchestrator:health:watch": "powershell -NoProfile -Command \"while($true) { Write-Host ('🎮 AI Orchestrator Health: ' + (Get-Date).ToString('HH:mm:ss')); try { node ../scripts/orchestrator-health-check.mjs } catch { Write-Host '❌ Health check failed' -ForegroundColor Red }; Start-Sleep 15 }\"",
+		"orchestrator:start": "npm run orchestrator:docker:up && timeout /t 30 && npm run orchestrator:health",
+		"orchestrator:stop": "npm run orchestrator:docker:down",
+		"orchestrator:dev": "concurrently -n \"Docker-Services,Health-Monitor,Frontend\" -c \"blue,green,cyan\" \"npm run orchestrator:docker:up\" \"npm run orchestrator:health:watch\" \"npm run dev:gpu\"",
+		"orchestrator:existing": "concurrently -n \"Health-Monitor,Frontend\" -c \"green,cyan\" \"npm run orchestrator:health:existing\" \"npm run dev:gpu\"",
+		"orchestrator:health:existing": "powershell -NoProfile -Command \"while($true) { Write-Host ('🎮 Existing Services Health: ' + (Get-Date).ToString('HH:mm:ss')); try { curl -s http://localhost:5173/api/orchestrator/existing } catch { Write-Host '❌ Health check failed' -ForegroundColor Red }; Start-Sleep 10 }\"",
+		"start:complete": "npm run dev:complete",
+		"remote:start": "node scripts/keyboard-remote-server.mjs",
+		"remote:server": "node scripts/keyboard-remote-server.mjs 8085",
+		"redis:start": "scripts\\start-redis-with-config.bat",
+		"redis:stop": "redis-cli shutdown",
+		"redis:health": "node scripts/test-redis-connection.js",
+		"redis:test": "node scripts/test-redis-connection.js",
+		"redis:info": "redis-cli info",
+		"redis:monitor": "redis-cli monitor",
+		"redis:config": "redis-cli config get \"*\"",
+		"redis:setup": "node -e \"import('$lib/utils/redis-helper.js').then(m => m.setupRedisFromConfig())\"",
+		"db:seed": "npx tsx src/lib/server/db/seed.ts",
+		"db:migrate": "drizzle-kit migrate",
+		"db:push": "drizzle-kit push",
+		"db:studio": "drizzle-kit studio",
+		"db:generate": "drizzle-kit generate",
+		"dev:full-legacy": "node scripts/dev-full-wrapper.mjs",
+		"dev:enhanced": "cross-env VITE_CONFIG_FILE=vite.config.enhanced.js VITE_FORCE_OPTIMIZE=false npm run dev",
+		"dev:ultra": "concurrently -n \\"Frontend,Go-API,Redis,Ollama,Monitor\\" -c \\"cyan,green,red,magenta,yellow\\" \\"npm run dev\\" \\"npm run go:service\\" \\"npm run redis:start\\" \\"npm run ollama:start\\" \\"npm run monitor:lite\\"",
+		"dev:windows": "powershell -ExecutionPolicy Bypass -File scripts/start-dev-windows.ps1",
+		"dev:debug:enhanced": "cross-env DEBUG=vite:*,kit:*,sveltekit:* VITE_LOG_LEVEL=info vite dev --config vite.config.enhanced.js --logLevel info",
+		"dev:with-gen": "npx zx scripts/dev-db-gen.mjs",
+		"logs:vite": "tail -f logs/vite-errors.log",
+		"logs:system": "tail -f logs/system-startup.log",
+		"logs:all": "concurrently \"tail -f logs/vite-errors.log\" \"tail -f logs/system-startup.log\"",
+		"logs:maintain": "node scripts/log-maintenance.mjs",
+		"health:check": "curl -s http://localhost:5173/api/vite-health | jq",
+		"ready": "node scripts/is-ready.mjs",
+		"ready:wait": "node scripts/is-ready.mjs --wait 120 --interval 5",
+		"ci:ready": "node scripts/is-ready.mjs --wait 60 --interval 5 --json",
+		"logs:maintain:loop": "node scripts/log-maintenance-loop.mjs",
+		"test": "vitest",
+		"test:run": "vitest run",
+		"test:watch": "vitest watch",
+		"test:coverage": "vitest run --coverage",
+		"test:integration": "vitest run --reporter=verbose src/tests/integration/",
+		"test:unit": "vitest run --reporter=verbose src/lib/**/*.test.ts",
+		"test:e2e": "playwright test",
+		"test:smoke": "playwright test test-app.spec.js --config=playwright.smoke.config.js --project=chromium",
+		"test:smoke:ci": "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 playwright test test-app.spec.js --config=playwright.smoke.config.js --project=chromium --reporter=line",
+		"probe:gpu-wasm": "node scripts/probe-gpu-wasm.mjs",
+		"test:ci": "vitest run --coverage --reporter=junit --outputFile=test-results.xml",
+		"test:integration:watch": "vitest --config vitest.config.integration.ts",
+		"test:integration:coverage": "vitest run --config vitest.config.integration.ts --coverage",
+		"test:all": "npm run test:unit && npm run test:integration",
+		"test:performance": "vitest run src/**/*performance*.test.ts",
+		"test:xstate": "vitest run src/lib/machines/__tests__/",
+		"test:xstate:watch": "vitest src/lib/machines/__tests__/",
+		"test:quick": "vitest run --bail 1 --reporter=dot",
+		"test:ready": "node tests/is-ready.test.mjs",
+		"health:all": "node scripts/health-check-all.mjs",
+		"health:full": "node scripts/health-check-all.mjs",
+		"services:status": "curl -s http://localhost:5173/api/vite-health && curl -s http://localhost:8084/api/health",
+		"build": "npm run build:wasm && vite build",
+		"build:with-proto": "npm run build:wasm && npm run proto:generate && npm run flatbuf:generate && vite build",
+		"build:8g": "npm run build:wasm && cross-env NODE_OPTIONS=\"--max-old-space-size=8192\" vite build",
+		"build:prod": "npm run check:all && npm run test:quick && npm run build:wasm && vite build",
+		"build:wasm": "npx asc src/wasm/vector-operations.ts -o static/wasm/vector-ops.wasm -O3 --runtime minimal --bindings esm --exportRuntime --enable simd",
+		"build:wasm:debug": "npx asc src/wasm/vector-operations.ts -o static/wasm/vector-ops-debug.wasm --sourceMap --debug --bindings esm",
+		"proto:generate": "npx pbjs -t static-module -w es6 -o src/proto/legal_api_pb.js proto/legal_api.proto && npx pbts -o src/proto/legal_api_pb.d.ts src/proto/legal_api_pb.js",
+		"proto:generate:json": "npx pbjs -t json proto/legal_api.proto > src/proto/legal_api.json",
+		"proto:watch": "nodemon --watch proto --ext proto --exec npm run proto:generate",
+		"flatbuf:generate": "npx flatc --ts -o src/flatbuf schemas/legal_data.fbs",
+		"flatbuf:watch": "nodemon --watch schemas --ext fbs --exec npm run flatbuf:generate",
+		"proto:test": "node scripts/test-protobuf-integration.mjs",
+		"convert:async": "node scripts/convert-to-nes-bits-async.mjs",
+		"convert:chunked": "node scripts/convert-to-nes-bits-async.mjs --chunked",
+		"check:async": "npm run check:ultra-fast && node scripts/convert-to-nes-bits-async.mjs --memory-efficient",
+		"preview": "vite preview",
+		"check": "npm run check:typescript",
+		"check:heavy": "cross-env NODE_OPTIONS=\"--max-old-space-size=8192\" tsc --noEmit",
+		"check:svelte": "svelte-check --tsconfig ./tsconfig.frontend.json --threshold warning",
+		"check:typescript": "tsc --noEmit",
+		"check:typescript:filtered": "tsc --project ./tsconfig.check.json --noEmit",
+		"check:svelte:filtered": "svelte-check --tsconfig ./tsconfig.check.json --threshold warning",
+		"test:8g": "cross-env NODE_OPTIONS=\"--max-old-space-size=8192\" vitest run",
+		"test:ui": "vitest --ui",
+		"test:integration:ui": "vitest --ui --config vitest.config.integration.ts",
+		"test:routes": "vitest run src/lib/tests/integration/route-health.test.ts",
+		"test:all-routes": "node scripts/test-all-routes.mjs",
+		"test:routes:core": "node scripts/test-all-routes.mjs --category=core",
+		"test:routes:ai": "node scripts/test-all-routes.mjs --category=ai",
+		"test:routes:evidence": "node scripts/test-all-routes.mjs --category=evidence",
+		"test:routes:legal": "node scripts/test-all-routes.mjs --category=legal",
+		"test:routes:tools": "node scripts/test-all-routes.mjs --category=tools",
+		"test:routes:system": "node scripts/test-all-routes.mjs --category=system",
+		"test:routes:demo": "node scripts/test-all-routes.mjs --category=demo",
+		"test:routes:verbose": "node scripts/test-all-routes.mjs --verbose",
+		"test:routes:report": "node scripts/test-all-routes.mjs --output=file",
+		"test:routes:simple": "node scripts/test-routes-simple.mjs",
+		"test:routes:simple:core": "node scripts/test-routes-simple.mjs --category=core",
+		"test:routes:simple:ai": "node scripts/test-routes-simple.mjs --category=ai",
+		"test:routes:simple:evidence": "node scripts/test-routes-simple.mjs --category=evidence",
+		"test:routes:simple:legal": "node scripts/test-routes-simple.mjs --category=legal",
+		"test:routes:simple:demo": "node scripts/test-routes-simple.mjs --category=demo",
+		"test:routes:simple:system": "node scripts/test-routes-simple.mjs --category=system",
+		"test:routes:simple:verbose": "node scripts/test-routes-simple.mjs --verbose",
+		"test:server": "node scripts/test-server.mjs",
+		"test:ssr": "vitest run src/lib/tests/integration/ssr-session-integrity.test.ts",
+		"test:hydration": "vitest run src/lib/tests/integration/ui-hydration.test.ts",
+		"test:revalidation": "vitest run src/lib/tests/integration/interval-revalidation.test.ts",
+		"check:auto-solve": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check-autosolve.ps1",
+		"check:direct": "echo ✅ npm run check works - debugger disabled",
+		"check:full": "cross-env NODE_OPTIONS=\"\" NODE_INSPECT=\"\" tsc --noEmit --skipLibCheck --project tsconfig.frontend.json",
+		"check:ultra-fast": "cross-env NODE_OPTIONS=\"\" NODE_INSPECT=\"\" tsc --noEmit --skipLibCheck --incremental -p tsconfig.check.json && echo ✅ Ultra-fast check completed",
+		"fix:types": "node scripts/fix-sveltekit-types.js",
+		"check:frontend": "npm run check:typescript:frontend",
+		"check:frontend:full": "npm run check:typescript:frontend && npm run check:svelte:frontend",
+		"check:typescript:frontend": "cross-env NODE_OPTIONS=\"\" NODE_INSPECT=\"\" tsc --noEmit --skipLibCheck --project tsconfig.check.json",
+		"check:svelte:frontend": "cross-env NODE_OPTIONS=\"\" NODE_INSPECT=\"\" svelte-check --tsconfig ./tsconfig.frontend.json --threshold error --fail-on-warnings false",
+		"check:svelte:enhanced": "node ./scripts/run-svelte-check-enhanced-bits.mjs",
+		"check:errors:count": "cross-env NODE_OPTIONS=\"\" NODE_INSPECT=\"\" tsc --noEmit --skipLibCheck --project tsconfig.frontend.json | grep -c \"error TS\" || echo \"0\"",
+		"cleanup:tmp": "node scripts/tmp-cleaner.mjs",
+		"check:all": "concurrently -n \"TS,Svelte\" -c \"blue,orange\" \"npm run check:typescript\" \"npm run check:svelte\"",
+		"check:all:autosolve": "npm-run-all -s check:all auto:solve",
+		"check:autosolve": "cross-env NODE_OPTIONS=\"--max-old-space-size=3072\" NODE_INSPECT=\"\" npm-run-all -s check auto:solve",
+		"check:gpu:autosolve": "npm run check:ultra-fast && npm run auto:solve:gpu && npm run check:ultra-fast",
+		"check:post": "npm run check && node scripts/post-check.cjs",
+		"check:post:verbose": "npm run check && VERBOSE_POST_CHECK=true node scripts/post-check.cjs",
+		"check:post:force": "npm run check && node scripts/post-check.cjs --force-autosolve",
+		"post:check": "node scripts/post-check.cjs",
+		"check:integration": "powershell -ExecutionPolicy Bypass -File install-and-check.ps1",
+		"check:all:fast": "concurrently -n \"TS,Svelte\" -c \"blue,orange\" \"npm run check:ultra-fast\" \"npm run check:svelte:fast\"",
+		"check:fast": "npm run check:typescript",
+		"check:svelte:machine": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --output machine",
+		"check:svelte:machine:8g": "cross-env NODE_OPTIONS=--max-old-space-size=8192 svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --output machine",
+		"svelte:check:log": "powershell -NoLogo -NoProfile -Command \"npm run check:svelte:machine:8g *>&1 | Tee-Object -FilePath ../svelte-check.log\"",
+		"svelte:check:log:fast": "powershell -NoLogo -NoProfile -Command \"npm run check:svelte:fast *>&1 | Tee-Object -FilePath ../svelte-check.log\"",
+		"svelte:errors:top100": "node ../scripts/analyze-svelte-errors.mjs ../svelte-check.log 100",
+		"check:svelte:fast": "svelte-check --tsconfig ./tsconfig.json --threshold error --fail-on-warnings false",
+		"svelte:check:json:frontend": "svelte-check --tsconfig ./tsconfig.frontend.json --output json --threshold error --fail-on-warnings false",
+		"check:watch": "concurrently -n \"TS-Watch,Svelte-Watch\" \"tsc --noEmit --skipLibCheck --watch\" \"svelte-check --tsconfig ./tsconfig.json --watch\"",
+		"check:errors": "node scripts/check-errors.mjs",
+		"check:suggest": "node scripts/error-suggestions.mjs",
+		"auto:solve": "cross-env NODE_OPTIONS=\"--max-old-space-size=30720\" REDIS_PASSWORD=redis node scripts/unified-agentic-autosolve.mjs full",
+		"auto:solve:100k": "cross-env NODE_OPTIONS=\"--max-old-space-size=30720\" REDIS_PASSWORD=redis OLLAMA_URL=http://localhost:11434 node scripts/unified-agentic-autosolve.mjs full",
+		"solve:complete": "cross-env NODE_OPTIONS=\"--max-old-space-size=30720\" REDIS_PASSWORD=redis OLLAMA_URL=http://localhost:11434 node scripts/iterative-error-solver.mjs",
+		"build:knowledge": "cross-env NODE_OPTIONS=\"--max-old-space-size=30720\" REDIS_PASSWORD=redis OLLAMA_URL=http://localhost:11434 node scripts/comprehensive-knowledge-indexer.mjs",
+		"validate:svelte5": "node scripts/validate-svelte5-compliance.mjs",
+		"lint": "npm run lint:check && npm run lint:svelte && npm run format:check",
+		"lint:parallel": "concurrently -n \"ESLint,Svelte,Format\" -c \"yellow,blue,green\" \"npm run lint:check\" \"npm run lint:svelte\" \"npm run format:check\"",
+		"lint:check": "eslint . --max-warnings 0",
+		"lint:svelte": "svelte-check --threshold error",
+		}
+				"lint:svelte": "svelte-check --threshold error"
+	},
+	"devDependencies": {
+				"@sveltejs/enhanced-img": "^0.8.2",
+				"@sveltejs/kit": "^2.43.5",
+				"@sveltejs/vite-plugin-svelte": "^6.2.1",
+				"@testing-library/jest-dom": "^6.8.0",
+				"@testing-library/svelte": "^5.2.8",
+				"@types/amqplib": "^0.10.7",
+				"@types/bun": "^1.2.22",
+				"@types/dom-webcodecs": "^0.1.16",
+				"@types/fabric": "^5.3.10",
+				"@types/fluent-ffmpeg": "^2.1.24",
+				"@types/ioredis": "^4.28.10",
+				"@types/lokijs": "^1.5.14",
+				"@types/mdx": "^2.0.13",
+				"@types/minio": "^7.1.0",
+				"@types/node": "^20.19.18",
+				"@types/pdf-parse": "^1.1.5",
+				"@types/pg": "^8.15.5",
+				"@types/redis": "^4.0.10",
+				"@types/sharp": "^0.32.0",
+				"@types/socket.io": "^3.0.1",
+				"@types/tesseract.js": "^2.0.0",
+				"@types/three": "^0.179.0",
+				"@types/uuid": "^10.0.0",
+				"@types/ws": "^8.18.1",
+				"@types/xml2js": "^0.4.14",
+				"@typescript-eslint/eslint-plugin": "^6.21.0",
+				"@typescript-eslint/parser": "^6.21.0",
+				"@unocss/extractor-svelte": "^66.5.2",
+				"@unocss/preset-attributify": "^66.4.2",
+				"@unocss/preset-icons": "^66.5.1",
+				"@unocss/preset-typography": "^66.5.1",
+				"@unocss/preset-uno": "^66.5.2",
+				"@unocss/preset-web-fonts": "^66.5.1",
+				"@unocss/preset-wind": "^66.5.1",
+				"@unocss/reset": "^66.4.2",
+				"@unocss/svelte-scoped": "^66.5.1",
+				"@unocss/transformer-directives": "^66.4.2",
+				"@unocss/transformer-variant-group": "^66.4.2",
+				"@unocss/vite": "^66.4.2",
+				"@vitest/browser": "3.2.4",
+				"@vitest/coverage-v8": "^3.2.4",
+				"@vitest/ui": "^2.1.9",
+				"@webgpu/types": "^0.1.65",
+				"assemblyscript": "^0.28.6",
+				"boxen": "^7.1.1",
+				"chalk": "^5.5.0",
+				"concurrently": "^9.2.0",
+				"cross-env": "^10.0.0",
+				"drizzle-kit": "^0.31.5",
+				"drizzle-orm": "^0.44.6",
+				"eslint": "^8.57.1",
+				"eslint-config-prettier": "^9.1.0",
+				"eslint-plugin-markdown": "^5.1.0",
+				"eslint-plugin-storybook": "^9.1.3",
+				"fluent-ffmpeg": "^2.1.3",
+				"glob": "^11.0.3",
+				"inquirer": "^12.9.3",
+				"jscodeshift": "^17.3.0",
+				"jsdom": "^25.0.1",
+				"lokijs": "^1.5.12",
+				"mode-watcher": "^1.1.0",
+				"msw": "^2.11.2",
+				"mysql2": "^3.14.3",
+				"nanospinner": "^1.2.2",
+				"npm-run-all": "^4.1.5",
+				"ora": "^8.2.0",
+				"p-limit": "^5.0.0",
+				"p-retry": "^6.2.0",
+				"pathe": "^2.0.3",
+				"playwright": "^1.55.0",
+				"prettier": "^3.1.1",
+				"prettier-plugin-svelte": "^3.4.0",
+				"protobufjs": "^7.5.4",
+				"rimraf": "^5.0.10",
+				"storybook": "^9.1.3",
+				"svelte": "^5.39.2",
+				"svelte-check": "^4.3.1",
+				"svelte-eslint-parser": "^1.3.2",
+				"svelte-preprocess": "^6.0.3",
+				"ts-morph": "^27.0.2",
+				"tslib": "^2.6.2",
+				"tsx": "^4.20.5",
+				"typescript": "^5.9.2",
+				"unocss": "^66.5.2",
+				"vite": "^6.3.5",
+				"vite-plugin-node-polyfills": "^0.24.0",
+				"vitest": "^3.2.4",
+				"ws": "^8.18.3"
+			},
+			"dependencies": {
+				"@ai-sdk/openai": "^1.3.23",
+				"@ark/schema": "^0.46.0",
+				"@ark/util": "^0.46.0",
+				"@google/generative-ai": "^0.24.1",
+				"@grpc/grpc-js": "^1.13.4",
+				"@grpc/proto-loader": "^0.8.0",
+				"@huggingface/transformers": "^3.7.5",
+				"@iconify-json/heroicons": "^1.2.2",
+				"@internationalized/date": "^3.9.0",
+				"@langchain/community": "^0.3.50",
+				"@langchain/core": "^0.3.78",
+				"@langchain/ollama": "^0.2.3",
+				"@langchain/openai": "^0.6.3",
+				"@langchain/textsplitters": "^0.1.0",
+				"@lucia-auth/adapter-drizzle": "^1.1.0",
+				"@modelcontextprotocol/sdk": "^1.20.0",
+				"@msgpack/msgpack": "^3.1.2",
+				"@node-rs/argon2": "^2.0.2",
+				"@paralleldrive/cuid2": "^2.2.2",
+				"@protobuf-ts/plugin": "^2.11.1",
+				"@qdrant/js-client-rest": "^1.15.1",
+				"@tauri-apps/api": "^2.7.0",
+				"@tensorflow-models/toxicity": "^1.2.2",
+				"@tensorflow-models/universal-sentence-encoder": "^1.3.3",
+				"@tensorflow/tfjs": "^4.22.0",
+				"@tensorflow/tfjs-converter": "^4.22.0",
+				"@tensorflow/tfjs-core": "^4.22.0",
+				"@tensorflow/tfjs-node": "^4.22.0",
+				"@tiptap/core": "^3.0.7",
+				"@tiptap/extension-collaboration": "^3.0.7",
+				"@tiptap/extension-focus": "^3.0.7",
+				"@tiptap/extension-image": "^3.0.7",
+				"@tiptap/extension-link": "^3.0.7",
+				"@tiptap/extension-placeholder": "^3.0.7",
+				"@tiptap/extension-text-align": "^3.0.7",
+				"@tiptap/starter-kit": "^3.0.7",
+				"@types/bcryptjs": "^2.4.6",
+				"@types/jsonwebtoken": "^9.0.10",
+				"@types/lodash-es": "^4.17.12",
+				"@types/pdfkit": "^0.17.2",
+				"@types/socket.io": "^3.0.1",
+				"@unocss/postcss": "^66.4.2",
+				"@useverk/drizzle-pgvector": "^1.0.11",
+				"@xenova/transformers": "^2.17.2",
+				"@xstate/svelte": "^5.0.0",
+				"amqplib": "^0.10.9",
+				"arktype": "^2.1.20",
+				"axios": "^1.11.0",
+				"bcrypt": "^6.0.0",
+				"bcryptjs": "^3.0.2",
+				"bits-ui": "^2.9.6",
+				"busboy": "^1.6.0",
+				"camelcase": "^8.0.0",
+				"cbor": "^10.0.11",
+				"class-variance-authority": "^0.7.1",
+				"clsx": "^2.1.1",
+				"cssnano": "^7.1.0",
+				"date-fns": "^4.1.0",
+				"dexie": "^4.2.0",
+				"dotenv": "^16.4.5",
+				"drizzle-zod": "^0.8.3",
+				"eslint-plugin-svelte": "^3.12.3",
+				"express": "^5.1.0",
+				"fabric": "^5.5.2",
+				"flatbuffers": "^25.2.10",
+				"fuse.js": "^7.1.0",
+				"gl-matrix": "^3.4.3",
+				"google-protobuf": "^4.0.0",
+				"happy-dom": "^20.0.5",
+				"idb-keyval": "^6.2.2",
+				"ioredis": "^5.8.0",
+				"jsonwebtoken": "^9.0.2",
+				"langchain": "^0.3.31",
+				"langextract": "^1.2.0",
+				"lfu-cache": "^0.1.0",
+				"lodash-es": "^4.17.21",
+				"lucia": "^3.2.2",
+				"lucide-svelte": "^0.474.0",
+				"marked": "^16.1.1",
+				"minio": "^8.0.5",
+				"multer": "^2.0.2",
+				"neo4j-driver": "^5.28.1",
+				"nes.css": "^2.2.1",
+				"node-addon-api": "^8.5.0",
+				"node-fetch": "^3.3.2",
+				"onnxruntime-web": "^1.22.0",
+				"oslo": "^1.2.1",
+				"pako": "^2.1.0",
+				"pdf-parse": "^1.1.1",
+				"pdf2pic": "^3.2.0",
+				"pdfjs-dist": "^5.4.54",
+				"pdfkit": "^0.17.1",
+				"pg": "^8.16.3",
+				"pgvector": "^0.1.8",
+				"pm2": "^6.0.8",
+				"postcss-preset-env": "^10.2.4",
+				"postgres": "^3.4.7",
+				"protobufjs-cli": "^1.1.3",
+				"protoc-gen-js": "^3.21.4-4",
+				"protoc-gen-ts": "^0.8.7",
+				"puppeteer": "^24.20.0",
+				"qdrant-client": "^0.0.1",
+				"rxdb": "^8.2.0",
+				"rxjs": "^7.8.2",
+				"sharp": "^0.34.3",
+				"socket.io": "^4.8.1",
+				"socket.io-client": "^4.8.1",
+				"sonic-boom": "^4.2.0",
+				"svelte-dnd-action": "^0.9.64",
+				"svelte-sonner": "^1.0.5",
+				"sveltekit-superforms": "^2.17.0",
+				"tesseract.js": "^6.0.1",
+				"three": "^0.169.0",
+				"validator": "^13.15.15",
+				"vite-plugin-mkcert": "^1.17.8",
+				"xml2js": "^0.6.2",
+				"xss": "^1.0.15",
+				"xstate": "^5.20.1",
+				"zod": "^3.25.76",
+				"zx": "^8.8.1"
+			},
+			"overrides": {
+				"cookie": "^0.7.0",
+				"esbuild": "^0.25.10"
+			}
+
+		"@sveltejs/kit": "^2.43.5",
+
+		"@sveltejs/vite-plugin-svelte": "^6.2.1",
+
+		"@testing-library/jest-dom": "^6.8.0",
+
+		"@testing-library/svelte": "^5.2.8",
+
+		"@types/amqplib": "^0.10.7",
+
+		"@types/bun": "^1.2.22",
+
+		"@types/dom-webcodecs": "^0.1.16",
+
+		"@types/fabric": "^5.3.10",
+
+		"@types/fluent-ffmpeg": "^2.1.24",
+
+		"@types/ioredis": "^4.28.10",
+
+		"@types/lokijs": "^1.5.14",
+
+		"@types/mdx": "^2.0.13",
+
+		"@types/minio": "^7.1.0",
+
+		"@types/node": "^20.19.18",
+
+		"@types/pdf-parse": "^1.1.5",
+
+		"@types/pg": "^8.15.5",
+
+		"@types/redis": "^4.0.10",
+
+		"@types/sharp": "^0.32.0",
+
+		"@types/socket.io": "^3.0.1",
+
+		"@types/tesseract.js": "^2.0.0",
+
+		"@types/three": "^0.179.0",
+
+		"@types/uuid": "^10.0.0",
+
+		"@types/ws": "^8.18.1",
+
+		"@types/xml2js": "^0.4.14",
+
+		"@typescript-eslint/eslint-plugin": "^6.21.0",
+
+		"@typescript-eslint/parser": "^6.21.0",
+
+		"@unocss/extractor-svelte": "^66.5.2",
+
+		"@unocss/preset-attributify": "^66.4.2",
+
+		"@unocss/preset-icons": "^66.5.1",
+
+		"@unocss/preset-typography": "^66.5.1",
+
+		"@unocss/preset-uno": "^66.5.2",
+
+		"@unocss/preset-web-fonts": "^66.5.1",
+
+		"@unocss/preset-wind": "^66.5.1",
+
+		"@unocss/reset": "^66.4.2",
+
+		"@unocss/svelte-scoped": "^66.5.1",
+
+		"@unocss/transformer-directives": "^66.4.2",
+
+		"@unocss/transformer-variant-group": "^66.4.2",
+
+		"@unocss/vite": "^66.4.2",
+
+		"@vitest/browser": "3.2.4",
+
+		"@vitest/coverage-v8": "^3.2.4",
+
+		"@vitest/ui": "^2.1.9",
+
+		"@webgpu/types": "^0.1.65",
+
+		"assemblyscript": "^0.28.6",
+
+		"boxen": "^7.1.1",
+
+		"chalk": "^5.5.0",
+
+		"concurrently": "^9.2.0",
+
+		"cross-env": "^10.0.0",
+
+		"drizzle-kit": "^0.31.5",
+
+		"drizzle-orm": "^0.44.6",
+
+		"eslint": "^8.57.1",
+
+		"eslint-config-prettier": "^9.1.0",
+
+		"eslint-plugin-markdown": "^5.1.0",
+
+		"eslint-plugin-storybook": "^9.1.3",
+
+		"fluent-ffmpeg": "^2.1.3",
+
+		"glob": "^11.0.3",
+
+		"inquirer": "^12.9.3",
+
+		"jscodeshift": "^17.3.0",
+
+		"jsdom": "^25.0.1",
+
+		"lokijs": "^1.5.12",
+
+		"mode-watcher": "^1.1.0",
+
+		"msw": "^2.11.2",
+
+		"mysql2": "^3.14.3",
+
+		"nanospinner": "^1.2.2",
+
+		"npm-run-all": "^4.1.5",
+
+		"ora": "^8.2.0",
+
+		"p-limit": "^5.0.0",
+
+		"p-retry": "^6.2.0",
+
+		"pathe": "^2.0.3",
+
+		"playwright": "^1.55.0",
+
+		"prettier": "^3.1.1",
+
+		"prettier-plugin-svelte": "^3.4.0",
+
+		"protobufjs": "^7.5.4",
+
+		"rimraf": "^5.0.10",
+
+		"storybook": "^9.1.3",
+
+		"svelte": "^5.39.2",
+
+		"svelte-check": "^4.3.1",
+
+		"svelte-eslint-parser": "^1.3.2",
+
+		"svelte-preprocess": "^6.0.3",
+
+		"ts-morph": "^27.0.2",
+
+		"tslib": "^2.6.2",
+
+		"tsx": "^4.20.5",
+
+		"typescript": "^5.9.2",
+
+		"unocss": "^66.5.2",
+
+		"vite": "^6.3.5",
+
+		"vite-plugin-node-polyfills": "^0.24.0",
+
+		"vitest": "^3.2.4",
+
+		"ws": "^8.18.3"
+
+	},
+
+	"dependencies": {
+
+		"@ai-sdk/openai": "^1.3.23",
+
+		"@ark/schema": "^0.46.0",
+
+		"@ark/util": "^0.46.0",
+
+		"@google/generative-ai": "^0.24.1",
+
+		"@grpc/grpc-js": "^1.13.4",
+
+		"@grpc/proto-loader": "^0.8.0",
+
+		"@huggingface/transformers": "^3.7.5",
+		"@iconify-json/heroicons": "^1.2.2",
+		"@internationalized/date": "^3.9.0",
+
+		"@langchain/community": "^0.3.50",
+
+		"@langchain/core": "^0.3.78",
+
+		"@langchain/ollama": "^0.2.3",
+
+		"@langchain/openai": "^0.6.3",
+
+		"@langchain/textsplitters": "^0.1.0",
+
+		"@lucia-auth/adapter-drizzle": "^1.1.0",
+
+		"@modelcontextprotocol/sdk": "^1.20.0",
+
+		"@msgpack/msgpack": "^3.1.2",
+
+		"@node-rs/argon2": "^2.0.2",
+
+		"@paralleldrive/cuid2": "^2.2.2",
+
+		"@protobuf-ts/plugin": "^2.11.1",
+
+		"@qdrant/js-client-rest": "^1.15.1",
+
+		"@tauri-apps/api": "^2.7.0",
+
+		"@tensorflow-models/toxicity": "^1.2.2",
+
+		"@tensorflow-models/universal-sentence-encoder": "^1.3.3",
+
+		"@tensorflow/tfjs": "^4.22.0",
+
+		"@tensorflow/tfjs-converter": "^4.22.0",
+
+		"@tensorflow/tfjs-core": "^4.22.0",
+
+		"@tensorflow/tfjs-node": "^4.22.0",
+
+		"@tiptap/core": "^3.0.7",
+
+		"@tiptap/extension-collaboration": "^3.0.7",
+
+		"@tiptap/extension-focus": "^3.0.7",
+
+		"@tiptap/extension-image": "^3.0.7",
+
+		"@tiptap/extension-link": "^3.0.7",
+
+		"@tiptap/extension-placeholder": "^3.0.7",
+
+		"@tiptap/extension-text-align": "^3.0.7",
+
+		"@tiptap/starter-kit": "^3.0.7",
+
+		"@types/bcryptjs": "^2.4.6",
+
+		"@types/jsonwebtoken": "^9.0.10",
+
+		"@types/lodash-es": "^4.17.12",
+
+		"@types/pdfkit": "^0.17.2",
+
+		"@types/socket.io": "^3.0.1",
+
+		"@unocss/postcss": "^66.4.2",
+
+		"@useverk/drizzle-pgvector": "^1.0.11",
+
+		"@xenova/transformers": "^2.17.2",
+
+		"@xstate/svelte": "^5.0.0",
+
+		"amqplib": "^0.10.9",
+
+		"arktype": "^2.1.20",
+
+		"axios": "^1.11.0",
+
+		"bcrypt": "^6.0.0",
+
+		"bcryptjs": "^3.0.2",
+
+		"bits-ui": "^2.9.6",
+
+		"busboy": "^1.6.0",
+
+		"camelcase": "^8.0.0",
+
+		"cbor": "^10.0.11",
+
+		"class-variance-authority": "^0.7.1",
+
+		"clsx": "^2.1.1",
+
+		"cssnano": "^7.1.0",
+
+		"date-fns": "^4.1.0",
+
+		"dexie": "^4.2.0",
+
+		"dotenv": "^16.4.5",
+
+		"drizzle-zod": "^0.8.3",
+
+		"eslint-plugin-svelte": "^3.12.3",
+
+		"express": "^5.1.0",
+
+		"fabric": "^5.5.2",
+
+		"flatbuffers": "^25.2.10",
+
+		"fuse.js": "^7.1.0",
+
+		"gl-matrix": "^3.4.3",
+
+		"google-protobuf": "^4.0.0",
+
+		"happy-dom": "^20.0.5",
+
+		"idb-keyval": "^6.2.2",
+
+		"ioredis": "^5.8.0",
+
+		"jsonwebtoken": "^9.0.2",
+
+		"langchain": "^0.3.31",
+
+		"langextract": "^1.2.0",
+
+		"lfu-cache": "^0.1.0",
+
+		"lodash-es": "^4.17.21",
+
+		"lucia": "^3.2.2",
+
+		"lucide-svelte": "^0.474.0",
+
+		"marked": "^16.1.1",
+
+		"minio": "^8.0.5",
+
+		"multer": "^2.0.2",
+
+		"neo4j-driver": "^5.28.1",
+
+		"nes.css": "^2.2.1",
+
+		"node-addon-api": "^8.5.0",
+
+		"node-fetch": "^3.3.2",
+
+		"onnxruntime-web": "^1.22.0",
+
+		"oslo": "^1.2.1",
+
+		"pako": "^2.1.0",
+
+		"pdf-parse": "^1.1.1",
+
+		"pdf2pic": "^3.2.0",
+
+		"pdfjs-dist": "^5.4.54",
+
+		"pdfkit": "^0.17.1",
+
+		"pg": "^8.16.3",
+
+		"pgvector": "^0.1.8",
+
+		"pm2": "^6.0.8",
+
+		"postcss-preset-env": "^10.2.4",
+
+		"postgres": "^3.4.7",
+
+		"protobufjs-cli": "^1.1.3",
+
+		"protoc-gen-js": "^3.21.4-4",
+
+		"protoc-gen-ts": "^0.8.7",
+
+		"puppeteer": "^24.20.0",
+
+		"qdrant-client": "^0.0.1",
+
+		"rxdb": "^8.2.0",
+
+		"rxjs": "^7.8.2",
+
+		"sharp": "^0.34.3",
+
+		"socket.io": "^4.8.1",
+
+		"socket.io-client": "^4.8.1",
+
+		"sonic-boom": "^4.2.0",
+
+		"svelte-dnd-action": "^0.9.64",
+
+		"svelte-sonner": "^1.0.5",
+
+		"sveltekit-superforms": "^2.17.0",
+
+		"tesseract.js": "^6.0.1",
+
+		"three": "^0.169.0",
+
+		"validator": "^13.15.15",
+
+		"vite-plugin-mkcert": "^1.17.8",
+
+		"xml2js": "^0.6.2",
+
+		"xss": "^1.0.15",
+
+		"xstate": "^5.20.1",
+
+		"zod": "^3.25.76",
+
+		"zx": "^8.8.1"
+
+	},
+
+	"overrides": {
+
+		"cookie": "^0.7.0",
+
+		"esbuild": "^0.25.10"
+
+	}
+
+}

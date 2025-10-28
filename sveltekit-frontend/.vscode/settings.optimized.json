@@ -131,12 +131,8 @@
   "terminal.integrated.fastScrollSensitivity": 5,
   "terminal.integrated.scrollback": 50000,
   "terminal.integrated.renderer": "canvas",
-
-  // Extension Performance
   "extensions.autoUpdate": true,
   "extensions.autoCheckUpdates": true,
-
-  // Context7 MCP Integration Readiness
   "mcp.servers": {},
   "mcp.logging.level": "info",
   "context7.multicore.enabled": true,

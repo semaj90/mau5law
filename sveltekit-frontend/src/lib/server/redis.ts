@@ -1,124 +1,89 @@
-import type { Redis as RedisInstance } from 'ioredis';
-import {
-  createRedisClient,
-  ensureRedisReady,
-  redis as sharedRedis,
-  resolveRedisConfig,
-  type RedisClientOptions,
-} from '$lib/server/redis-client';
+import { createClient } from 'redis';
+import type { RedisClientType } from 'redis';
+import { CONFIG } from '$lib/config/env.server';
 
-interface RedisWithStatus extends RedisInstance {
-  status?: string;
-}
+const REDIS_URL = CONFIG.REDIS_URL;
+const REDIS_PASSWORD = CONFIG.REDIS_PASSWORD;
 
-type RedisShutdown = () => Promise<void>;
+let instance: RedisClientType | null = null;
 
-type RedisErrorLike = { message?: string } | Error | unknown;
-
-function extractErrorMessage(err: RedisErrorLike): string {
-  if (!err) return String(err);
-  if (typeof err === 'string') return err;
-  if (err instanceof Error && typeof err.message === 'string') return err.message;
-  if (typeof err === 'object' && err !== null && 'message' in err && typeof (err as { message?: unknown }).message === 'string') {
-    return (err as { message?: string }).message ?? 'Unknown error';
-  }
+function buildUrlWithPassword(url: string, password?: string) {
+  // if password is provided and not already in the URL, inject it
+  if (!password) return url;
   try {
-    return JSON.stringify(err);
+    const u = new URL(url);
+    if (!u.username && !u.password) {
+      u.username = '';
+      u.password = password;
+      return u.toString();
+    }
+    return url;
   } catch {
-    return 'Unknown error';
+    // fallback: naive replace (shouldn't normally happen)
+    if (url.startsWith('redis://')) {
+      return `redis://:${encodeURIComponent(password)}@${url.slice('redis://'.length)}`;
+    }
+    return url;
   }
 }
 
-function attachRedisLogging(client: RedisInstance): void {
-  client.on('error', (error: Error) => {
-    const message = extractErrorMessage(error);
-    if (message.includes('NOAUTH')) {
-      console.warn('[redis] authentication required. Provide REDIS_URL or REDIS_PASSWORD.');
-      return;
-    }
-    console.error('[redis] error', message);
+function createClientInstance(): RedisClientType {
+  if (instance) return instance;
+  const url = buildUrlWithPassword(REDIS_URL, REDIS_PASSWORD);
+  const client = createClient({ url });
+  // attach lightweight logging for dev
+  client.on('error', (err: Error) => console.error('[redis] error', err && err.message));
+  client.on('connect', () => console.log('[redis] connected'));
+  // attempt to connect but don't fail creation
+  client.connect().catch(err => {
+    console.warn('[redis] connect failed (will retry on use)', err && err.message);
   });
-
-  client.on('connect', () => {
-    const host = client.options?.host ?? client.options?.path ?? 'redis';
-    console.log(`[redis] connected (${host})`);
-  });
-}
-
-async function connectIfNeeded(client: RedisWithStatus): Promise<void> {
-  if (client.status === 'ready') return;
-  try {
-    if (typeof client.connect === 'function') {
-      await client.connect();
-    }
-  } catch (err) {
-    console.warn('[redis] connect failed (will retry on use)', extractErrorMessage(err));
-  }
-}
-
-function primeClient(options?: RedisClientOptions): RedisInstance {
-  const instance = createRedisClient(options);
-  attachRedisLogging(instance);
-  void connectIfNeeded(instance as RedisWithStatus);
+  instance = client;
   return instance;
 }
 
-export const redis = sharedRedis;
+export const redis = createClientInstance();
 
 export async function getFromCache(key: string): Promise<string | null> {
   try {
-    await ensureRedisReady();
+    // ensure connected (node-redis will handle reconnection internally)
+    if (!redis.isOpen) await redis.connect();
     return await redis.get(key);
   } catch (err) {
-    console.warn('[redis] get error', extractErrorMessage(err));
+    console.warn('[redis] get error', (err as Error).message);
     return null;
   }
 }
 
 export async function setCache(key: string, value: string, ttl?: number): Promise<boolean> {
   try {
-    await ensureRedisReady();
+    if (!redis.isOpen) await redis.connect();
     if (typeof ttl === 'number') {
-      await redis.set(key, value, 'EX', ttl);
+      await redis.set(key, value, { EX: ttl });
     } else {
       await redis.set(key, value);
     }
     return true;
   } catch (err) {
-    console.warn('[redis] set error', extractErrorMessage(err));
+    console.warn('[redis] set error', (err as Error).message);
     return false;
   }
 }
 
-export type RedisBasicCommands = RedisInstance;
-
 export function createRedisClientSet() {
-  const base = resolveRedisConfig();
-  const primary = primeClient({ url: base.url, password: base.password });
-  const subscriber = primeClient({ url: base.url, password: base.password });
-  const publisher = primeClient({ url: base.url, password: base.password });
+  const url = buildUrlWithPassword(REDIS_URL, REDIS_PASSWORD);
+  const primary = createClient({ url });
+  const subscriber = createClient({ url });
+  const publisher = createClient({ url });
 
-  const shutdown: RedisShutdown = async () => {
-    const clients = [primary, subscriber, publisher];
-    await Promise.all(
-      clients.map(async (client) => {
-        try {
-          await client.quit();
-        } catch (err) {
-          client.disconnect();
-          console.warn('[redis] quit failed during closeAll', extractErrorMessage(err));
-        }
-      })
-    );
-  };
+  // attach simple error logging
+  for (const c of [primary, subscriber, publisher]) {
+    c.on('error', (err: Error) => console.error('[redis] client error', err && err.message));
+    // attempt background connect
+    c.connect().catch(() => undefined);
+  }
 
-  return { primary, subscriber, publisher, closeAll: shutdown };
+  return { primary, subscriber, publisher };
 }
 
 export default redis;
-
-export function createRedisConnection(options?: RedisClientOptions): RedisInstance {
-  const base = resolveRedisConfig();
-  const finalOptions = options ?? { url: base.url, password: base.password };
-  return primeClient(finalOptions);
-}

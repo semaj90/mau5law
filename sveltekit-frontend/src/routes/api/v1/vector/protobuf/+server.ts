@@ -1,10 +1,11 @@
 import { error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import * as protobuf from 'protobufjs';
 
 // Protocol Buffer Implementation for High-Performance Vector Search
 // This endpoint handles binary protocol buffer data for optimal performance
 
-export const POST: RequestHandler = async ({ request, url }) => {
+export const POST: RequestHandler = async ({ request }) => {
   try {
     const contentType = request.headers.get('content-type');
 
@@ -13,9 +14,67 @@ export const POST: RequestHandler = async ({ request, url }) => {
       throw error(400, 'Expected protocol buffer content type');
     }
 
-    // Read binary protocol buffer data
-    const binaryData = await request.arrayBuffer();
-    const buffer = new Uint8Array(binaryData);
+    // Protect against OOM: enforce a max request size (100 MB)
+    const MAX_BYTES = 100 * 1024 * 1024; // 100 MB
+
+    // If content-length header exists, early-reject large requests
+    const contentLengthHeader = request.headers.get('content-length');
+    if (contentLengthHeader) {
+      const len = Number(contentLengthHeader);
+      if (!Number.isNaN(len) && len > MAX_BYTES) {
+        return new Response(JSON.stringify({ error: 'Payload too large' }), {
+          status: 413,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
+    // Stream-read the request body and enforce the size limit while building a Uint8Array
+    const reader = (request as unknown as { body?: ReadableStream<Uint8Array> }).body?.getReader?.();
+    let buffer: Uint8Array;
+    if (reader) {
+      // Streaming body available (Node/Edge runtimes)
+      const chunks: Uint8Array[] = [];
+      let received = 0;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        if (value) {
+          received += value.byteLength;
+          if (received > MAX_BYTES) {
+            // Close reader if possible and return 413
+            try {
+              await reader.cancel();
+            } catch (e) {
+              console.warn('Failed to cancel reader after size limit', e);
+            }
+            return new Response(JSON.stringify({ error: 'Payload too large' }), {
+              status: 413,
+              headers: { 'Content-Type': 'application/json' },
+            });
+          }
+          chunks.push(new Uint8Array(value));
+        }
+      }
+      // Concatenate chunks
+      const total = received;
+      buffer = new Uint8Array(total);
+      let offset = 0;
+      for (const c of chunks) {
+        buffer.set(c, offset);
+        offset += c.length;
+      }
+    } else {
+      // Fallback: no streaming reader, use arrayBuffer but still check size
+      const ab = await request.arrayBuffer();
+      if (ab.byteLength > MAX_BYTES) {
+        return new Response(JSON.stringify({ error: 'Payload too large' }), {
+          status: 413,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      buffer = new Uint8Array(ab);
+    }
 
     // Parse protocol buffer request
     // Note: In production, use a proper protobuf library like protobufjs
@@ -84,13 +143,14 @@ export const POST: RequestHandler = async ({ request, url }) => {
     const responseBuffer = await serializeVectorSearchResponse(response);
 
     // Return binary protocol buffer response
+    // use byteLength (ArrayBuffer) instead of .length
     return new Response(responseBuffer, {
       status: 200,
       headers: {
         'Content-Type': 'application/x-protobuf',
-        'Content-Length': responseBuffer.length.toString(),
+        'Content-Length': String(responseBuffer.byteLength),
         'X-Processing-Time': `${Math.round(processingTime)}ms`,
-        'X-Total-Results': searchResults.total.toString(),
+        'X-Total-Results': String(searchResults.total),
         'X-Data-Source': searchResults.dataSource || 'postgresql',
       },
     });
@@ -100,8 +160,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
     // Return error in protocol buffer format
     const errorResponse = await serializeErrorResponse({
       code: 'SEARCH_ERROR',
-      message: err.message || 'Vector search failed',
-      details: process.env.NODE_ENV === 'development' ? err.stack : undefined,
+      // err may be unknown; guard access to message
+      message: err instanceof Error ? err.message : String(err),
+      details: process.env.NODE_ENV === 'development' && err instanceof Error ? err.stack : undefined,
     });
 
     return new Response(errorResponse, {
@@ -113,16 +174,147 @@ export const POST: RequestHandler = async ({ request, url }) => {
   }
 };
 
-// Mock implementations - Replace with actual protobuf parsing/serialization
-async function parseVectorSearchRequest(buffer: Uint8Array): Promise<any> {
-  // In production, use protobufjs or similar library
-  // This is a mock implementation
+// Add: typed request shape returned by the protobuf parser
+type SearchRequest = {
+  query?: string | number[] | { length?: number } | null;
+  text?: string | null;
+  params?: {
+    limit?: number;
+    min_similarity?: number;
+    algorithm?: string;
+    include_embeddings?: boolean;
+  };
+  filters?: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
+};
+
+// Runtime .proto definition (minimal, extend as needed)
+const proto = `
+syntax = "proto3";
+package vector;
+
+message Params {
+  int32 limit = 1;
+  double min_similarity = 2;
+  string algorithm = 3;
+  bool include_embeddings = 4;
+}
+
+message SearchRequest {
+  oneof q {
+    string text = 1;
+    bytes query_vector = 2;
+  }
+  Params params = 10;
+  map<string, string> filters = 11;
+  map<string, string> metadata = 12;
+}
+
+message Document {
+  string title = 1;
+  string content_preview = 2;
+  string type = 3;
+  int64 created_at = 4;
+  string case_id = 5;
+  string jurisdiction = 6;
+  repeated string legal_categories = 7;
+}
+
+message ResultSnippet {
+  string text = 1;
+  int32 page_number = 2;
+  double relevance_score = 3;
+}
+
+message SearchResult {
+  string id = 1;
+  Document document = 2;
+  double similarity_score = 3;
+  repeated ResultSnippet snippets = 4;
+}
+
+message SearchResponse {
+  repeated SearchResult results = 1;
+  int32 total = 2;
+  bool from_cache = 3;
+  string data_source = 4;
+  double avg_similarity = 5;
+}
+
+message ErrorResponse {
+  string code = 1;
+  string message = 2;
+  string details = 3;
+}
+`;
+
+// Build types at runtime
+const root = protobuf.parse(proto).root;
+const SearchRequestType = root.lookupType('vector.SearchRequest');
+const SearchResponseType = root.lookupType('vector.SearchResponse');
+const ErrorResponseType = root.lookupType('vector.ErrorResponse');
+
+// Replace previous mock parseVectorSearchRequest with protobuf decoder
+async function parseVectorSearchRequest(buffer: Uint8Array): Promise<SearchRequest> {
   try {
-    // For now, assume the buffer contains JSON fallback
-    const text = new TextDecoder().decode(buffer);
-    return JSON.parse(text);
+    const msg = SearchRequestType.decode(buffer);
+    // ask protobufjs to return bytes as Uint8Array
+    const obj = SearchRequestType.toObject(msg, { longs: String, enums: String, bytes: Uint8Array, defaults: true });
+
+    // Strongly-typed shape coming from the proto to avoid `any`
+    type ProtoParams = {
+      limit?: number | null;
+      min_similarity?: number | null;
+      algorithm?: string | null;
+      include_embeddings?: boolean | null;
+    };
+
+    type ProtoObj = {
+      text?: string | null;
+      query_vector?: Uint8Array | number[] | null;
+      params?: ProtoParams | null;
+      filters?: Record<string, string> | null;
+      metadata?: Record<string, string> | null;
+    };
+
+    const proto = obj as unknown as ProtoObj;
+
+    // Normalize query: prefer text, otherwise convert query_vector to number[]
+    let query: SearchRequest['query'] = null;
+    if (typeof proto.text === 'string' && proto.text.length > 0) {
+      query = proto.text;
+    } else if (proto.query_vector) {
+      if (proto.query_vector instanceof Uint8Array) {
+        query = Array.from(proto.query_vector);
+      } else if (Array.isArray(proto.query_vector)) {
+        // already number[] (protobufjs sometimes returns numbers)
+        query = proto.query_vector.map(n => Number(n));
+      } else {
+        // defensive fallback: try to treat as array-like
+        try {
+          const arrLike = proto.query_vector as unknown as { length?: number; [n: number]: number };
+          const out: number[] = [];
+          for (let i = 0; i < (arrLike.length ?? 0); i++) {
+            out.push(Number(arrLike[i]) || 0);
+          }
+          query = out;
+        } catch {
+          query = null;
+        }
+      }
+    } else {
+      query = null;
+    }
+
+    return {
+      query,
+      text: typeof proto.text === 'string' ? proto.text : null,
+      params: proto.params ?? undefined,
+      filters: proto.filters ?? undefined,
+      metadata: proto.metadata ?? undefined,
+    };
   } catch {
-    // Return minimal valid request structure
+    // fallback typed object if decode fails
     return {
       query: null,
       text: 'mock search query',
@@ -140,26 +332,140 @@ async function parseVectorSearchRequest(buffer: Uint8Array): Promise<any> {
   }
 }
 
-async function serializeVectorSearchResponse(response: any): Promise<ArrayBuffer> {
-  // In production, use protobufjs to serialize to binary format
-  // This returns JSON as binary for development
-  const jsonString = JSON.stringify(response);
-  return new TextEncoder().encode(jsonString).buffer;
+// Replace serializeVectorSearchResponse to emit protobuf binary
+async function serializeVectorSearchResponse(response: unknown): Promise<ArrayBuffer> {
+  // Define a strict shape for the fields we read from the arbitrary response
+  type ResponseMetadata = {
+    total_results?: number;
+    data_source?: string;
+    quality?: { avg_similarity?: number } | Record<string, unknown> | unknown;
+  };
+
+  type RespShape = {
+    results?: unknown[];
+    metadata?: ResponseMetadata | Record<string, unknown> | unknown;
+    fromCache?: unknown;
+    dataSource?: unknown;
+    avgSimilarity?: unknown;
+    total?: unknown;
+  };
+
+  const resp = response as RespShape;
+
+  // Build proto-shaped object with safe type checks (no `any`)
+  const protoResp = {
+    results: Array.isArray(resp.results)
+      ? resp.results.map((r: unknown) => {
+          const rr = r as Record<string, unknown>;
+          const doc = rr.document as Record<string, unknown> | undefined;
+          return {
+            id: typeof rr.id === 'string' ? rr.id : String(rr.id ?? ''),
+            document: {
+              title: typeof doc?.title === 'string' ? doc!.title : '',
+              content_preview: typeof doc?.content_preview === 'string' ? doc!.content_preview : '',
+              type: typeof doc?.type === 'string' ? doc!.type : '',
+              created_at:
+                typeof doc?.created_at === 'number'
+                  ? String(doc!.created_at)
+                  : typeof doc?.created_at === 'string'
+                    ? doc!.created_at
+                    : '0',
+              case_id: typeof doc?.case_id === 'string' ? doc!.case_id : '',
+              jurisdiction: typeof doc?.jurisdiction === 'string' ? doc!.jurisdiction : '',
+              legal_categories: Array.isArray(doc?.legal_categories) ? (doc!.legal_categories as string[]) : [],
+            },
+            similarity_score: typeof rr.similarity_score === 'number' ? rr.similarity_score : 0.0,
+            snippets: Array.isArray(rr.snippets)
+              ? rr.snippets.map((s: unknown) => {
+                  const ss = s as Record<string, unknown>;
+                  return {
+                    text: typeof ss.text === 'string' ? ss.text : '',
+                    page_number: typeof ss.page_number === 'number' ? ss.page_number : 0,
+                    relevance_score: typeof ss.relevance_score === 'number' ? ss.relevance_score : 0.0,
+                  };
+                })
+              : [],
+          };
+        })
+      : [],
+    total: (() => {
+      // check metadata.total_results first (preferred), then fall back to resp.total
+      if (resp.metadata && typeof resp.metadata === 'object') {
+        const md = resp.metadata as ResponseMetadata;
+        if (typeof md.total_results === 'number') return md.total_results;
+      }
+      if (typeof resp.total === 'number') return resp.total;
+      return 0;
+    })(),
+    from_cache: !!resp.fromCache,
+    data_source:
+      typeof resp.dataSource === 'string'
+        ? resp.dataSource
+        : resp.metadata && typeof resp.metadata === 'object' && (resp.metadata as ResponseMetadata).data_source
+          ? String((resp.metadata as ResponseMetadata).data_source)
+          : 'mock',
+    avg_similarity: (() => {
+      if (typeof resp.avgSimilarity === 'number') return resp.avgSimilarity;
+      if (resp.metadata && typeof resp.metadata === 'object') {
+        const md = resp.metadata as ResponseMetadata;
+        const quality = md.quality;
+        if (
+          quality &&
+          typeof quality === 'object' &&
+          typeof (quality as { avg_similarity?: unknown }).avg_similarity === 'number'
+        ) {
+          return (quality as { avg_similarity?: number }).avg_similarity ?? 0.0;
+        }
+      }
+      return 0.0;
+    })(),
+  };
+
+  const err = SearchResponseType.verify(protoResp);
+  if (err) throw new Error(`Invalid SearchResponse payload: ${err}`);
+
+  // Use protobuf.Message<unknown> instead of `{}` to avoid the `{}` anti-pattern
+  const message = SearchResponseType.create(protoResp as unknown as protobuf.Message<unknown>);
+  const encoded = SearchResponseType.encode(message).finish(); // Uint8Array
+
+  // Create a fresh ArrayBuffer and copy the encoded bytes into it to avoid SharedArrayBuffer typing issues
+  const out = new ArrayBuffer(encoded.byteLength);
+  new Uint8Array(out).set(encoded);
+  return out;
 }
 
-async function serializeErrorResponse(error: any): Promise<ArrayBuffer> {
-  const errorJson = JSON.stringify({
-    error: {
-      code: error.code,
-      message: error.message,
-      details: error.details,
-    },
-  });
-  return new TextEncoder().encode(errorJson).buffer;
+// Replace serializeErrorResponse to use protobuf error message
+async function serializeErrorResponse(error: unknown): Promise<ArrayBuffer> {
+  const maybe = error as { code?: string; message?: string; details?: unknown } | undefined;
+  const payload = {
+    code: maybe?.code ?? 'UNKNOWN_ERROR',
+    message: maybe?.message ?? String(error),
+    details:
+      typeof maybe?.details === 'string'
+        ? maybe!.details
+        : typeof maybe?.details === 'object'
+          ? JSON.stringify(maybe!.details)
+          : undefined,
+  };
+
+  const err = ErrorResponseType.verify(payload);
+  if (err) {
+    // fallback to JSON binary if protobuf verification fails
+    const errorJson = JSON.stringify({
+      error: { code: payload.code, message: payload.message, details: payload.details },
+    });
+    return new TextEncoder().encode(errorJson).buffer;
+  }
+  const message = ErrorResponseType.create(payload);
+  const encoded = ErrorResponseType.encode(message).finish(); // Uint8Array
+
+  const out = new ArrayBuffer(encoded.byteLength);
+  new Uint8Array(out).set(encoded);
+  return out;
 }
 
 // Vector search execution
-async function executeVectorSearch(searchParams: any) {
+async function executeVectorSearch(searchParams: SearchRequest & { params?: { limit?: number } }) {
   // Mock implementation - replace with actual vector search
   const mockResults = [
     {
@@ -192,11 +498,22 @@ async function executeVectorSearch(searchParams: any) {
   ];
 
   // Simulate processing time based on query complexity
-  const processingDelay = searchParams.query?.length * 2 || 100;
+  const sp = searchParams ?? {};
+  const qlen =
+    typeof sp.query === 'string'
+      ? sp.query.length
+      : Array.isArray(sp.query)
+        ? sp.query.length
+        : sp.query && typeof (sp.query as { length?: number }).length === 'number'
+          ? (sp.query as { length?: number }).length
+          : 0;
+  const processingDelay = qlen * 2 || 100;
   await new Promise(resolve => setTimeout(resolve, processingDelay));
 
+  const limit = sp.params?.limit ?? 10;
+
   return {
-    results: mockResults.slice(0, searchParams.params.limit),
+    results: mockResults.slice(0, limit),
     total: mockResults.length,
     fromCache: Math.random() > 0.7, // 30% cache hit rate
     dataSource: 'mock',
@@ -216,17 +533,20 @@ async function executeVectorSearch(searchParams: any) {
 }
 
 // Utility functions
-function calculateQueryClarity(query: any): number {
+function calculateQueryClarity(query: unknown): number {
   // Mock implementation - analyze query structure and terminology
   if (!query) return 0.5;
   const complexity = typeof query === 'string' ? query.split(' ').length : 10;
   return Math.min(0.95, 0.3 + complexity * 0.05);
 }
 
-function calculateResultDiversity(results: any[]): number {
+function calculateResultDiversity(results: unknown[]): number {
   // Mock implementation - measure diversity of result types
-  if (!results?.length) return 0.0;
-  const uniqueTypes = new Set(results.map(r => r.document?.type));
+  if (!Array.isArray(results) || results.length === 0) return 0.0;
+  type ResultItem = { document?: { type?: string } };
+  const uniqueTypes = new Set(
+    (results as ResultItem[]).map(r => r.document?.type).filter((t): t is string => typeof t === 'string')
+  );
   return Math.min(1.0, uniqueTypes.size / results.length);
 }
 
@@ -234,7 +554,7 @@ function generateQueryId(): string {
   return `query_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
 
-function hashQuery(query: any): string {
+function hashQuery(query: unknown): string {
   // Simple hash implementation for query caching
   const queryString = typeof query === 'string' ? query : JSON.stringify(query);
   let hash = 0;
@@ -246,7 +566,11 @@ function hashQuery(query: any): string {
   return Math.abs(hash).toString(16);
 }
 
-function assessQueryComplexity(query: any): any {
+function assessQueryComplexity(query: unknown): {
+  complexity_score: number;
+  complexity_level: string;
+  complexity_factors: string[];
+} {
   const queryString = typeof query === 'string' ? query : JSON.stringify(query);
   const wordCount = queryString.split(/\s+/).length;
 
@@ -286,8 +610,8 @@ function assessQueryComplexity(query: any): any {
   };
 }
 
-function generateRecommendations(results: any[]): any[] {
-  if (!results?.length) return [];
+function generateRecommendations(results: unknown[]): unknown[] {
+  if (!Array.isArray(results) || results.length === 0) return [];
 
   return [
     {

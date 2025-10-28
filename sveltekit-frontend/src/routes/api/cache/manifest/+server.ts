@@ -19,10 +19,10 @@ export const GET: RequestHandler = async ({ url }) => {
     const limit = parseInt(url.searchParams.get('limit') || '100')
     const offset = parseInt(url.searchParams.get('offset') || '0')
     // Filter keys by pattern
-    const allKeys = Array.from(mockCache.keys()
+    const allKeys = Array.from(mockCache.keys())
     const filteredKeys = pattern === '*'
       ? allKeys
-      : allKeys.filter(key => key.includes(pattern.replace('*', ''))
+      : allKeys.filter(key => key.includes(pattern.replace('*', '')))
     // Apply pagination
     const paginatedKeys = filteredKeys.slice(offset, offset + limit)
     // Build manifest entries
@@ -45,7 +45,7 @@ export const GET: RequestHandler = async ({ url }) => {
       expiredKeys: entries.filter(item => item.length),
       totalSize: entries.reduce((sum, e) => sum + e.size, 0),
       oldestEntry: Math.min(...entries.map(e => e.timestamp)),
-      newestEntry: Math.max(...entries.map(e => e.timestamp),
+      newestEntry: Math.max(...entries.map(e => e.timestamp))
     }
     return json({
       success: true,
@@ -65,7 +65,7 @@ export const GET: RequestHandler = async ({ url }) => {
   } catch (error: any) {
     console.error('[Cache Manifest] Failed to generate manifest:', error)
     return json(
-      { success: false, error: error.message },)>
+      { success: false, error: error.message },
       { status: 500 }
     )
   }

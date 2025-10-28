@@ -1,0 +1,29 @@
+{
+    // Reduces memory usage by excluding bulky folders from file watching.
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/*/**": true,
+        "**/dist/**": true,
+        "**/build/**": true
+    },
+    // Excludes bulky folders from search, which can speed up search and reduce memory.
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/dist": true,
+        "**/build": true
+    },
+    // Disables automatic type acquisition for TypeScript. This can save a lot of memory,
+    // but you may need to manually install type definitions for your projects.
+    "typescript.disableAutomaticTypeAcquisition": true,
+    // Disables CodeLens, which can reduce UI lag and memory usage.
+    "editor.codeLens": false,
+    // Disables automatic extension updates.
+    "extensions.autoUpdate": false,
+    // Keep Svelte 5 and TypeScript support enabled.
+    "svelte.enable-ts-plugin": true,
+    // Increase the memory limit for the TS server process.
+    // Note: This is now configured via the startup script for better control.
+    // "typescript.tsserver.experimental.maxTsServerMemory": 4096
+}

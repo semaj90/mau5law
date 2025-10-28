@@ -1,13 +1,13 @@
 import { json } from "@sveltejs/kit"
-import { loki  } from '$lib/stores/unified"
+import { loki  } from '$lib/stores/unified'
 import type { RequestHandler } from './$types.js'
 export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     const { canvasState, reportId } = await request.json()
     if (!canvasState || !reportId) {
       return json(
-        { error: "Canvas state and report ID are required" },)
-        { status: 400 },
+        { error: "Canvas state and report ID are required" },
+        { status: 400 }
       )
     }
     // Validate canvas state structure
@@ -27,7 +27,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       success: true,
       canvasState: enhancedCanvasState
     })
-  }, catch (error: any) {
+  } catch (error: any) {
     console.error("Canvas save error:", error)
     return json({ error: "Failed to save canvas state" }, { status: 500 })
   }
@@ -38,8 +38,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const reportId = url.searchParams.get("reportId")
     if (!canvasId && !reportId) {
       return json(
-        { error: "Canvas ID or Report ID is required" },)
-        { status: 400 },
+        { error: "Canvas ID or Report ID is required" },
+        { status: 400 }
       )
     }
     let canvasState
@@ -60,12 +60,12 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       return json({ error: "Canvas state not found" }, { status: 404 })
     }
     return json({ canvasState })
-  }, catch (error: any) {
+  } catch (error: any) {
     console.error("Canvas load error:", error)
     return json({ error: "Failed to load canvas state" }, { status: 500 })
   }
 }
-export const DELETE: RequestHandler = asysnc ({ request, locals }) => {
+export const DELETE: RequestHandler = async ({ request, locals }) => {
   try {
     const { canvasId } = await request.json()
     if (!canvasId) {

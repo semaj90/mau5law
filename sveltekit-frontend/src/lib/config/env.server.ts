@@ -1,17 +1,13 @@
 /**
  * Environment Configuration with Docker Desktop Auto-Mapping
  * Automatically detects Docker environment and maps container URLs
- *
- * Note: Uses process.env directly for worker compatibility (no $env imports)
  */
-
-// Use process.env directly for compatibility with workers (no SvelteKit $env)
-const env = process.env;
+import { env } from '$env/dynamic/private';
 
 // Detect if running in Docker environment
 const isDocker = env.DOCKER_ENV === 'true' ||
-                 env.HOSTNAME?.includes('docker') ||
-                 env.DOCKER_CONTAINER === 'true';
+                 process.env.HOSTNAME?.includes('docker') ||
+                 process.env.DOCKER_CONTAINER === 'true';
 
 // Use host.docker.internal for Docker Desktop, localhost for bare metal
 const host = isDocker ? 'host.docker.internal' : 'localhost';
@@ -24,8 +20,8 @@ export const CONFIG = {
 
   // Vector & Search Services
   QDRANT_URL: env.QDRANT_URL ?? `http://${host}:6333`,
-  REDIS_URL: env.REDIS_URL ?? `redis://${host}:6379`, // Using port 6379 for production Redis
-  REDIS_PASSWORD: env.REDIS_PASSWORD ?? '', // Empty string means no auth required locally
+  REDIS_URL: env.REDIS_URL ?? `redis://${host}:6380`, // Using port 6380 for test Redis
+  REDIS_PASSWORD: env.REDIS_PASSWORD ?? '', // No password for test Redis
 
   // Graph Database
   NEO4J_URL: env.NEO4J_URL ?? `bolt://${host}:7687`,
@@ -44,8 +40,7 @@ export const CONFIG = {
   MINIO_URL: env.MINIO_URL ?? `http://${host}:9000`,
   MINIO_ACCESS_KEY: env.MINIO_ACCESS_KEY ?? 'minioadmin',
   MINIO_SECRET_KEY: env.MINIO_SECRET_KEY ?? 'minioadmin',
-  // Prefer purpose-specific env var first (keeps backward compatibility)
-  MINIO_BUCKET: env.MINIO_BUCKET_LEGAL_DOCUMENTS ?? env.MINIO_BUCKET ?? env.VITE_MINIO_BUCKET ?? 'deeds-storage',
+  MINIO_BUCKET: env.MINIO_BUCKET ?? 'deeds-storage',
 
   // Feature Flags
   OCR_MODE: env.OCR_MODE ?? 'hybrid', // 'tesseract', 'paddle', 'hybrid'
@@ -81,10 +76,6 @@ export const CONFIG = {
   // Logging
   LOG_LEVEL: env.LOG_LEVEL ?? 'info',
   ENABLE_STRUCTURED_LOGGING: env.ENABLE_STRUCTURED_LOGGING === 'true',
-
-  // Redis embedding caching
-  ENABLE_EMBEDDING_REDIS: (env.VITE_ENABLE_EMBEDDING_REDIS || 'true') === 'true',
-  CACHE_EMBEDDING_TTL_SEC: Number(env.VITE_CACHE_EMBEDDING_TTL_SEC ?? 3600),
 } as const;
 
 // Type-safe configuration

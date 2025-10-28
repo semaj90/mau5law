@@ -58,14 +58,13 @@
 
 {#if open}
   <!-- Overlay: click or keyboard to close -->
-  <div
+  <button
+    type="button"
     class="fixed inset-0 bg-black/80 z-50"
-    role="button"
-    tabindex="0"
-    onclick={closeModal}
-    onkeydown={handleOverlayKeydown}
+    on:click={closeModal}
+    on:keydown={handleOverlayKeydown}
     aria-label="Close dialog"
-  ></div>
+  ></button>
 
   <!-- Modal content -->
   <div
@@ -73,14 +72,14 @@
     role="dialog"
     aria-modal="true"
     tabindex="-1"
-    onclick={(e) => e.stopPropagation()}
+    on:click={(e) => e.stopPropagation()}
   >
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-xl font-bold text-slate-900">Create Account</h2>
       <button
         type="button"
         class="p-1 hover:bg-slate-100 rounded"
-        onclick={closeModal}
+        on:click={closeModal}
         aria-label="Close"
       >
         <X class="w-5 h-5" />

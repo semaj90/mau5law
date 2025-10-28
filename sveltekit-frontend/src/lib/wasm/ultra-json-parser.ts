@@ -1,16 +1,16 @@
-// @ts-nocheck - Complex experimental service with external dependencies
 /**
- * Ultra JSON Parser - Client-side SIMD JSON Acceleration
+ * Ultra JSON Parser - Client-side SIMD JSON Acceleration* Integrates with server-side SIMD body parser for complete pipeline optimizationComplex experimental service with external dependencies
  * Integrates with server-side SIMD body parser for complete pipeline optimization
+ * Complex experimental service with external dependencies
  * Optimized for legal AI document processing and RTX 3060 Ti WebGPU acceleration
  */
 import { browser } from '$app/environment';
-import { nesGPUBridge } from '../gpu/nes-gpu-memory-bridge.js';
-import { createWasmGpuService } from './gpu-wasm-init.js';
-import { wasmClusteringService } from './clustering-wasm.js';
+import { nesGPUBridge } from '../gpu/nes-gpu-memory-bridge';
 import type { LegalDocument } from '../memory/nes-memory-architecture.js';
+import { wasmClusteringService } from './clustering-wasm.js';
+import { createWasmGpuService } from './gpu-wasm-init.js';
 // Browser SIMD detection and capabilities
-interface BrowserSIMDCapabilities {
+export interface BrowserSIMDCapabilities {
   wasmSIMD: boolean;
   webgpuCompute: boolean;
   sharedArrayBuffer: boolean;
@@ -43,10 +43,55 @@ export interface UltraJSONMetrics {
   operationsPerSecond: number;
   memoryEfficiency: number;
 }
+
+// ---------- MOVED/ADDED: lightweight local type definitions (placed before class) ----------
+interface WasmGpuService {
+  service?: unknown;
+  initialize?: () => Promise<void>;
+}
+
+interface ParseOptions {
+  enableSIMD?: boolean;
+  enableGPU?: boolean;
+  cacheKey?: string;
+  [k: string]: unknown;
+}
+
+interface StringifyOptions {
+  enableSIMD?: boolean;
+  enableGPU?: boolean;
+  enableCompression?: boolean;
+  space?: number | string;
+  [k: string]: unknown;
+}
+
+interface DocWithMetadata {
+  metadata?: {
+    vectorEmbedding?: number[] | null;
+    [k: string]: unknown;
+  } | null;
+  [k: string]: unknown;
+}
+
+// ---------- ADDED: minimal WebGPU types to avoid `any` casts ----------
+interface GPUAdapter {
+  // minimal shape used here; expand if more fields are required
+  name?: string;
+  // Keep as unknown for adapter-specific methods not needed in this file
+  [k: string]: unknown;
+}
+
+interface GPU {
+  requestAdapter?: (options?: unknown) => Promise<GPUAdapter | null>;
+}
+// ---------- END ADDED ----------
+
+// ---------- END MOVED/ADDED ----------
+
 export class UltraJSONParser {
   private capabilities: BrowserSIMDCapabilities;
   private config: UltraJSONConfig;
-  private wasmGpuService: any;
+  private wasmGpuService: WasmGpuService | null = null;
   private performanceCache = new Map<string, UltraJSONMetrics>();
   private isInitialized = false;
   constructor(config: Partial<UltraJSONConfig> = {}) {
@@ -62,8 +107,8 @@ export class UltraJSONParser {
       entityExtractionMode: true,
       citationPatternMatching: true,
       bulkProcessingMode: false,
-      ...config
-    }
+      ...config,
+    };
     this.capabilities = {
       wasmSIMD: false,
       webgpuCompute: false,
@@ -71,9 +116,10 @@ export class UltraJSONParser {
       atomics: false,
       bigInt64Array: false,
       supportLevel: 'none',
-    }
+    };
     if (browser) {
-      this.initialize();
+      // call async initializer without awaiting in ctor; explicit void to acknowledge the promise
+      void this.initialize();
     }
   }
   /**
@@ -83,24 +129,31 @@ export class UltraJSONParser {
     console.log('🚀 Initializing Ultra JSON Parser with SIMD acceleration...');
     // Detect browser capabilities
     await this.detectCapabilities();
-    // Initialize WebGPU service if available
+    // Initialize WebGPU service if available and enabled
     if (this.capabilities.webgpuCompute && this.config.enableWebGPUAcceleration) {
-      this.wasmGpuService = createWasmGpuService({
-        documentProcessingMode: this.config.legalDocumentOptimization,
-        vectorSearchOptimization: true,
-        embeddingCacheSize: 512,
-      });
+      try {
+        // createWasmGpuService is async — await it so wasmGpuService contains an initialized device/entity
+        this.wasmGpuService = await createWasmGpuService({
+          documentProcessingMode: this.config.legalDocumentOptimization,
+          vectorSearchOptimization: true,
+          embeddingCacheSize: 512,
+        });
+      } catch (err) {
+        console.warn('Failed to initialize Wasm GPU service:', err);
+        this.wasmGpuService = { service: null };
+      }
     }
+
     // Initialize clustering WASM
     if (this.capabilities.wasmSIMD && this.config.enableClusteringWASM) {
       await wasmClusteringService.initializeWasm();
     }
     this.isInitialized = true;
-    console.log(' Ultra JSON Parser initialized:', {
+    console.log('Ultra JSON Parser initialized:', {
       supportLevel: this.capabilities.supportLevel,
       webgpu: this.capabilities.webgpuCompute,
       simd: this.capabilities.wasmSIMD,
-      config: this.config
+      config: this.config,
     });
   }
   /**
@@ -128,10 +181,33 @@ export class UltraJSONParser {
     try {
       // Test SIMD instruction compilation
       const wasmCode = new Uint8Array([
-        0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, // WASM header
-        0x01, 0x05, 0x01, 0x60, 0x00, 0x01, 0x7b,       // Type section: () -> v128
-        0x03, 0x02, 0x01, 0x00,                         // Function section
-        0x0a, 0x07, 0x01, 0x05, 0x00, 0xfd, 0x0f, 0x0b   // Code section: v128.const
+        0x00,
+        0x61,
+        0x73,
+        0x6d,
+        0x01,
+        0x00,
+        0x00,
+        0x00, // WASM header
+        0x01,
+        0x05,
+        0x01,
+        0x60,
+        0x00,
+        0x01,
+        0x7b, // Type section: () -> v128
+        0x03,
+        0x02,
+        0x01,
+        0x00, // Function section
+        0x0a,
+        0x07,
+        0x01,
+        0x05,
+        0x00,
+        0xfd,
+        0x0f,
+        0x0b, // Code section: v128.const
       ]);
       const module = await WebAssembly.compile(wasmCode);
       return !!module;
@@ -145,7 +221,9 @@ export class UltraJSONParser {
   private async checkWebGPUSupport(): Promise<boolean> {
     if (!('gpu' in navigator)) return false;
     try {
-      const adapter = await (navigator as any).gpu.requestAdapter();
+      // Use a typed navigator shape to avoid `any`
+      const nav = navigator as unknown as Navigator & { gpu?: GPU };
+      const adapter = await (nav.gpu?.requestAdapter?.() ?? null);
       return !!adapter;
     } catch {
       return false;
@@ -155,8 +233,12 @@ export class UltraJSONParser {
    * Calculate overall support level
    */
   private calculateSupportLevel(): BrowserSIMDCapabilities['supportLevel'] {
-    if (this.capabilities.webgpuCompute && this.capabilities.wasmSIMD &&;
-        this.capabilities.sharedArrayBuffer && this.capabilities.atomics) {
+    if (
+      this.capabilities.webgpuCompute &&
+      this.capabilities.wasmSIMD &&
+      this.capabilities.sharedArrayBuffer &&
+      this.capabilities.atomics
+    ) {
       return 'optimal';
     }
     if (this.capabilities.wasmSIMD && this.capabilities.webgpuCompute) {
@@ -170,24 +252,22 @@ export class UltraJSONParser {
   /**
    * Ultra-fast JSON parsing with SIMD acceleration
    */
-  async fastParse<T = any>(jsonString: string, options: {
-    enableSIMD?: boolean;
-    enableGPU?: boolean;
-    cacheKey?: string;
-  } = {}): Promise<T> {
+  async fastParse<T = unknown>(jsonString: string, options: ParseOptions = {}): Promise<T> {
     const startTime = performance.now();
-    const opts = {
+    const opts: ParseOptions = {
       enableSIMD: this.config.enableBrowserSIMD,
       enableGPU: this.config.enableWebGPUAcceleration,
-      ...options
-    }
+      ...options,
+    };
     try {
       let result: T;
-      // Check performance cache first
+      // Check performance cache first (cache stores metrics)
       if (opts.cacheKey && this.performanceCache.has(opts.cacheKey)) {
         const cached = this.performanceCache.get(opts.cacheKey)!;
-        console.log(`� Using cached parse result for ${opts.cacheKey}`);
-        return JSON.parse(jsonString); // Still need to parse, but we know the metrics
+        // use cached var (was unused) to provide diagnostic info
+        console.log(`Using cached parse metrics for ${opts.cacheKey}:`, cached);
+        // we still need to actually parse the payload (metrics only cached)
+        return JSON.parse(jsonString) as T;
       }
       // Select parsing strategy based on capabilities and data size
       const strategy = this.selectParsingStrategy(jsonString.length, opts);
@@ -205,7 +285,7 @@ export class UltraJSONParser {
           result = await this.nativeOptimizedParse<T>(jsonString);
           break;
         default:
-          result = JSON.parse(jsonString);
+          result = JSON.parse(jsonString) as T;
       }
       // Record performance metrics
       const parseTime = performance.now() - startTime;
@@ -215,24 +295,26 @@ export class UltraJSONParser {
         compressionRatio: 1.0, // Would calculate actual compression
         simdSpeedup: strategy.includes('simd') ? 2.5 : 1.0,
         webgpuAcceleration: strategy.includes('webgpu') ? 3.0 : 1.0,
-        throughputMBps: (jsonString.length / 1024 / 1024) / (parseTime / 1000),
+        throughputMBps: jsonString.length / 1024 / 1024 / (parseTime / 1000),
         operationsPerSecond: 1000 / parseTime,
-        memoryEfficiency: 0.85 // Would calculate actual memory efficiency
-      }
+        memoryEfficiency: 0.85, // Would calculate actual memory efficiency
+      };
       if (opts.cacheKey) {
         this.performanceCache.set(opts.cacheKey, metrics);
       }
-      console.log(`🚀 Ultra JSON Parse (${strategy}): ${parseTime.toFixed(2)}ms, ${metrics.throughputMBps.toFixed(0)} MB/s`);
+      console.log(
+        `🚀 Ultra JSON Parse (${strategy}): ${parseTime.toFixed(2)}ms, ${metrics.throughputMBps.toFixed(0)} MB/s`
+      );
       return result;
     } catch (error) {
       console.warn('Ultra JSON parse failed, falling back to native JSON.parse: ', error);
-      return JSON.parse(jsonString);
+      return JSON.parse(jsonString) as T;
     }
   }
   /**
    * Select optimal parsing strategy based on data and capabilities
    */
-  private selectParsingStrategy(dataSize: number, options: any): string {
+  private selectParsingStrategy(dataSize: number, options: ParseOptions): string {
     // Small data (< 1KB) - use native JSON for minimal overhead
     if (dataSize < 1024) {
       return 'native';
@@ -269,33 +351,29 @@ export class UltraJSONParser {
    * WebGPU compute shader parsing for very large JSON
    */
   private async webgpuComputeParse<T>(jsonString: string): Promise<T> {
-    console.log('� Using WebGPU compute parsing...');
+    console.log('Using WebGPU compute parsing...');
     if (this.wasmGpuService && this.wasmGpuService.service) {
       // Use WebGPU for parallel processing of large JSON structures
-      // This would involve uploading JSON data to GPU buffers and using compute shaders
-      // For now, use optimized native parsing with GPU assistance for post-processing
       const parsed = JSON.parse(jsonString);
-      // If it's an array of embeddings, use GPU for similarity calculations
-      if (Array.isArray(parsed) && parsed.length > 100 && parsed[0]?.embedding) {
-        console.log('<� Using GPU for embedding post-processing...');
-        // Would process embeddings on GPU here
+      if (Array.isArray(parsed) && parsed.length > 100 && (parsed[0] as any)?.embedding) {
+        console.log('Using GPU for embedding post-processing...');
+        // GPU processing placeholder
       }
-      return parsed;
+      return parsed as T;
     }
-    return JSON.parse(jsonString);
+    return JSON.parse(jsonString) as T;
   }
+
   /**
    * NES bridge parsing with FlatBuffer optimization
    */
   private async nesBridgeParse<T>(jsonString: string): Promise<T> {
-    console.log('<� Using NES bridge parsing...');
+    console.log('Using NES bridge parsing...');
     if (this.config.enableNESBridge) {
       try {
-        // Parse to intermediate object
         const obj = JSON.parse(jsonString);
-        // If it looks like a legal document, use FlatBuffer optimization
         if (this.isLegalDocument(obj)) {
-          const document: LegalDocument = obj;
+          const document = obj as LegalDocument;
           const flatBuffer = await nesGPUBridge.createFlatBufferFromDocument(document);
           const optimizedDoc = nesGPUBridge.parseFlatBufferToDocument(flatBuffer);
           return optimizedDoc as T;
@@ -304,7 +382,7 @@ export class UltraJSONParser {
         console.warn('NES bridge parsing failed:', error);
       }
     }
-    return JSON.parse(jsonString);
+    return JSON.parse(jsonString) as T;
   }
   /**
    * Optimized native parsing with legal document preprocessing
@@ -325,19 +403,19 @@ export class UltraJSONParser {
     // Extract common legal patterns before full parsing
     const patterns = {
       citations: /"\d+\s+[UF]\.\d*d?\s+\d+"/g,
-      statutes: /"\d+\s+U\.S\.C\.\s+�?\s*\d+"/g,
+      statutes: /"\d+\s+U\.S\.C\.\s*\d+"/g,
       courts: /"(?:Supreme Court|District Court|Circuit Court)"/g,
-      dates: /"\d{4}-\d{2}-\d{2}"/g
-    }
-    let optimizedJson = jsonString;
+      dates: /"\d{4}-\d{2}-\d{2}"/g,
+    };
+    const optimizedJson = jsonString;
     // Pre-index legal entities for faster parsing
     for (const [type, pattern] of Object.entries(patterns)) {
       const matches = jsonString.match(pattern);
       if (matches) {
-        console.log(`<� Found ${matches.length} ${type} in document`);
+        console.log(`Found ${matches.length} ${type} in document`);
       }
     }
-    return JSON.parse(optimizedJson);
+    return JSON.parse(optimizedJson) as T;
   }
   /**
    * Preprocess legal JSON for optimization
@@ -345,44 +423,47 @@ export class UltraJSONParser {
   private preprocessLegalJSON(jsonString: string): string {
     // Normalize legal citations and statutes for faster parsing
     let processed = jsonString;
-    // Normalize citation formats
-    processed = processed.replace(
-      /(\d+)\s+F\.\s*(\d+)d\s+(\d+)/g,
-      '$1 F.$2d $3'
-    );
-    // Normalize statute formats
-    processed = processed.replace(
-      /(\d+)\s+U\.S\.C\.\s*�?\s*(\d+)/g,
-      '$1 U.S.C. � $2'
-    );
+    // Normalize citation formats (example)
+    processed = processed.replace(/(\d+)\s+F\.\s*(\d+)d\s+(\d+)/g, '$1 F.$2d $3');
+    // Normalize statute formats (removed stray/unprintable char handling)
+    processed = processed.replace(/(\d+)\s+U\.S\.C\.\s*(\d+)/g, '$1 U.S.C. $2');
     return processed;
   }
   /**
    * Check if object is a legal document
    */
-  private isLegalDocument(obj: any): obj is LegalDocument {
-    return obj &&
-           typeof obj.id === 'string' &&
-           typeof obj.type === 'string' &&
-           ['contract', 'evidence', 'brief', 'citation', 'precedent'].includes(obj.type) &&
-           obj.metadata;
+  private isLegalDocument(obj: unknown): obj is LegalDocument {
+    // Guard: must be non-null object
+    if (!obj || typeof obj !== 'object') return false;
+
+    // Use a safe record type instead of `any`
+    const o = obj as Record<string, unknown>;
+
+    // Validate id
+    const idOk = typeof o['id'] === 'string';
+
+    // Validate type and restrict to known document types
+    const typeVal = o['type'];
+    const allowedTypes = ['contract', 'evidence', 'brief', 'citation', 'precedent'];
+    const typeOk = typeof typeVal === 'string' && allowedTypes.includes(typeVal);
+
+    // Validate metadata is present and is an object (could be further refined)
+    const metadataVal = o['metadata'];
+    const metadataOk = metadataVal !== undefined && metadataVal !== null && typeof metadataVal === 'object';
+
+    return !!idOk && !!typeOk && !!metadataOk;
   }
   /**
    * Ultra-fast JSON stringification with SIMD acceleration
    */
-  async fastStringify(obj: any, options: {
-    enableSIMD?: boolean;
-    enableGPU?: boolean;
-    enableCompression?: boolean;
-    space?: number;
-  } = {}): Promise<string> {
+  async fastStringify(obj: unknown, options: StringifyOptions = {}): Promise<string> {
     const startTime = performance.now();
-    const opts = {
+    const opts: StringifyOptions = {
       enableSIMD: this.config.enableBrowserSIMD,
       enableGPU: this.config.enableWebGPUAcceleration,
       enableCompression: false,
-      ...options
-    }
+      ...options,
+    };
     try {
       let result: string;
       // Select strategy based on object size and type
@@ -412,7 +493,7 @@ export class UltraJSONParser {
   /**
    * Select optimal stringification strategy
    */
-  private selectStringifyStrategy(objectSize: number, options: any): string {
+  private selectStringifyStrategy(objectSize: number, options: StringifyOptions): string {
     if (objectSize > 100000 && this.capabilities.webgpuCompute && options.enableGPU) {
       return 'webgpu-compute';
     }
@@ -427,28 +508,25 @@ export class UltraJSONParser {
   /**
    * WASM SIMD stringification
    */
-  private async wasmSIMDStringify(obj: any, options: any): Promise<string> {
+  private async wasmSIMDStringify(obj: unknown, options: StringifyOptions): Promise<string> {
     console.log('⚡ Using WASM SIMD stringification...');
-    // Would use compiled WASM module for SIMD string operations
     return JSON.stringify(obj, null, options.space);
   }
   /**
    * WebGPU compute stringification
    */
-  private async webgpuComputeStringify(obj: any, options: any): Promise<string> {
-    console.log('� Using WebGPU compute stringification...');
-    // Would use GPU compute shaders for parallel stringification
+  private async webgpuComputeStringify(obj: unknown, options: StringifyOptions): Promise<string> {
+    console.log('Using WebGPU compute stringification...');
     return JSON.stringify(obj, null, options.space);
   }
   /**
    * NES bridge stringification with FlatBuffer
    */
-  private async nesBridgeStringify(obj: any, options: any): Promise<string> {
+  private async nesBridgeStringify(obj: unknown, options: StringifyOptions): Promise<string> {
     console.log('<� Using NES bridge stringification...');
     if (this.isLegalDocument(obj)) {
-      // Use FlatBuffer for optimized binary representation
-      const flatBuffer = await nesGPUBridge.createFlatBufferFromDocument(obj);
-      // Convert back to JSON with optimizations applied
+      const document = obj as LegalDocument;
+      const flatBuffer = await nesGPUBridge.createFlatBufferFromDocument(document);
       const optimized = nesGPUBridge.parseFlatBufferToDocument(flatBuffer);
       return JSON.stringify(optimized, null, options.space);
     }
@@ -457,32 +535,39 @@ export class UltraJSONParser {
   /**
    * Estimate object size for strategy selection
    */
-  private estimateObjectSize(obj: any): number {
-    // Rough estimation - would use more sophisticated method in production
-    return JSON.stringify(obj).length;
+  private estimateObjectSize(obj: unknown): number {
+    // safe stringify of unknown
+    try {
+      return JSON.stringify(obj).length;
+    } catch {
+      return 0;
+    }
   }
   /**
    * Bulk process multiple JSON documents
    */
-  async bulkProcess<T>(documents: string[], options: {
-    enableParallel?: boolean;
-    batchSize?: number;
-    enableClustering?: boolean;
-  } = {}): Promise<T[]> {
-    console.log(`= Bulk processing ${documents.length} documents...`);
+  async bulkProcess<T>(
+    documents: string[],
+    options: {
+      enableParallel?: boolean;
+      batchSize?: number;
+      enableClustering?: boolean;
+    } = {}
+  ): Promise<T[]> {
+    console.log(`Bulk processing ${documents.length} documents...`);
     const opts = {
       enableParallel: this.capabilities.sharedArrayBuffer,
       batchSize: 50,
       enableClustering: this.config.enableClusteringWASM,
-      ...options
-    }
+      ...options,
+    };
     const results: T[] = [];
     const batchSize = opts.batchSize;
     for (let i = 0; i < documents.length; i += batchSize) {
       const batch = documents.slice(i, i + batchSize);
       if (opts.enableParallel && this.capabilities.sharedArrayBuffer) {
         // Process batch in parallel
-        const batchPromises = batch.map(doc => this.fastParse<T>(doc);
+        const batchPromises = batch.map(doc => this.fastParse<T>(doc));
         const batchResults = await Promise.all(batchPromises);
         results.push(...batchResults);
       } else {
@@ -492,32 +577,29 @@ export class UltraJSONParser {
           results.push(result);
         }
       }
-      console.log(`🚀 Processed batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(documents.length / batchSize)}`);
+      console.log(`Processed batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(documents.length / batchSize)}`);
     }
     // Optional clustering analysis
     if (opts.enableClustering && results.length > 10) {
-      await this.performClusteringAnalysis(results);
+      await this.performClusteringAnalysis(results as unknown as DocWithMetadata[]);
     }
-    console.log(` Bulk processing complete: ${results.length} documents processed`);
+    console.log(`Bulk processing complete: ${results.length} documents processed`);
     return results;
   }
   /**
    * Perform clustering analysis on processed documents
    */
-  private async performClusteringAnalysis(documents: any[]): Promise<void> {
+  private async performClusteringAnalysis(documents: DocWithMetadata[]): Promise<void> {
     try {
-      // Extract embeddings if available
-      const embeddings = documents
-        .map(doc => doc.metadata?.vectorEmbedding)
-        .filter(Boolean);
+      const embeddings = documents.map(d => d.metadata?.vectorEmbedding).filter(Boolean) as number[][];
       if (embeddings.length > 10) {
-        console.log('>� Performing clustering analysis...');
+        console.log('Performing clustering analysis...');
         const clusters = await wasmClusteringService.performKMeansClustering(
           embeddings,
-          Math.min(5, Math.floor(embeddings.length / 10)),
+          Math.min(5, Math.max(1, Math.floor(embeddings.length / 10))),
           { maxIterations: 50 }
         );
-        console.log(`🚀 Found ${clusters.centroids.length} clusters in ${embeddings.length} documents`);
+        console.log(`Found ${clusters.centroids.length} clusters in ${embeddings.length} documents`);
       }
     } catch (error) {
       console.warn('Clustering analysis failed:', error);
@@ -533,9 +615,9 @@ export class UltraJSONParser {
     totalOperations: number;
     recommendedSettings: Partial<UltraJSONConfig>;
   } {
-    const cachedMetrics = Array.from(this.performanceCache.values();
-    const avgParseTime = cachedMetrics.length > 0
-      ? cachedMetrics.reduce((sum, m) => sum + m.parseTime, 0) / cachedMetrics.length: 0;
+    const cachedMetrics = Array.from(this.performanceCache.values());
+    const avgParseTime =
+      cachedMetrics.length > 0 ? cachedMetrics.reduce((sum, m) => sum + m.parseTime, 0) / cachedMetrics.length : 0;
     return {
       capabilities: this.capabilities,
       cacheSize: this.performanceCache.size,
@@ -544,30 +626,27 @@ export class UltraJSONParser {
       recommendedSettings: {
         enableBrowserSIMD: this.capabilities.wasmSIMD,
         enableWebGPUAcceleration: this.capabilities.webgpuCompute,
-        bulkProcessingMode: this.capabilities.supportLevel === 'optimal'
-      }
-    }
+        bulkProcessingMode: this.capabilities.supportLevel === 'optimal',
+      },
+    };
   }
   /**
    * Clear performance cache
    */
   clearCache(): void {
     this.performanceCache.clear();
-    console.log('>� Ultra JSON Parser cache cleared');
+    console.log('Ultra JSON Parser cache cleared');
   }
 }
+
 // Create singleton instance
 export const ultraJSONParser = new UltraJSONParser({
   legalDocumentOptimization: true,
   entityExtractionMode: true,
   citationPatternMatching: true,
 });
-// Convenience functions
-export const fastParse = <T = any>(jsonString: string) =>
-  ultraJSONParser.fastParse<T>(jsonString);
-export const fastStringify = (obj: any, space?: number) =>
-  ultraJSONParser.fastStringify(obj, { space });
-export const bulkParse = <T = any>(documents: string[]) =>
-  ultraJSONParser.bulkProcess<T>(documents);
-// Export types for external use
-export type { UltraJSONConfig, UltraJSONMetrics, BrowserSIMDCapabilities }
+
+// Convenience functions (canonical, typed exports)
+export const fastParse = <T = unknown>(jsonString: string) => ultraJSONParser.fastParse<T>(jsonString);
+export const fastStringify = (obj: unknown, space?: number) => ultraJSONParser.fastStringify(obj, { space });
+export const bulkParse = <T = unknown>(documents: string[]) => ultraJSONParser.bulkProcess<T>(documents);

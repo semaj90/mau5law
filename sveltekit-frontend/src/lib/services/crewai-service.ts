@@ -1,4 +1,3 @@
-
 /**
  * CrewAI Multi-Agent Service
  * Handles role-based agent crews for specialized legal workflows
@@ -11,7 +10,7 @@ import type {
   AITask,
   AIResponse
 } from "$lib/types/ai-worker.js";
-}
+
 export interface CrewAIAgent {
   id: string;
   role: string;
@@ -20,15 +19,16 @@ export interface CrewAIAgent {
   tools: string[];
   llmConfig: {
     model: string;
-  temperature: number;
-  maxTokens: number;
-  apiBase?: string;
-  }
+    temperature: number;
+    maxTokens: number;
+    apiBase?: string;
+  };
   maxExecution: number;
   memory: boolean;
   verbose: boolean;
   allowDelegation: boolean;
 }
+
 export interface CrewAITask {
   id: string;
   description: string;
@@ -38,7 +38,7 @@ export interface CrewAITask {
   context?: string[];
   dependencies?: string[];
 }
-}
+
 export interface CrewAICrew {
   id: string;
   name: string;
@@ -50,7 +50,7 @@ export interface CrewAICrew {
   verbose: boolean;
   memoryEnabled: boolean;
 }
-}
+
 export interface CrewExecution {
   id: string;
   crewId: string;
@@ -61,27 +61,31 @@ export interface CrewExecution {
   finalOutput?: string;
   metrics: {
     totalTime: number;
-  tasksCompleted: number;
-  agentInteractions: number;
-  tokensUsed: number;
-  }
+    tasksCompleted: number;
+    agentInteractions: number;
+    tokensUsed: number;
+  };
 }
+
 export interface CrewTaskResult {
   taskId: string;
   agentId: string;
   output: string;
   executionTime: number;
   status: "completed" | "failed" | "delegated";
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: any };
 }
+
 export class CrewAIService {
   private baseUrl: string;
   private apiKey?: string;
-  private defaultTimeout: number = 60000;
-  constructor(baseUrl: string = "http://localhost:8002", apiKey?: string) {
+  private defaultTimeout = 60000;
+
+  constructor(baseUrl = "http://localhost:8002", apiKey?: string) {
     this.baseUrl = baseUrl;
     this.apiKey = apiKey;
   }
+
   /**
    * Create a specialized legal investigation crew
    */
@@ -101,7 +105,7 @@ export class CrewAIService {
           "case_documentation"
         ],
         llmConfig: {
-          model: "gemma3-legal",
+          model: "gemma3-legal:latest",
           temperature: 0.1,
           maxTokens: 1536,
           apiBase: "http://localhost:11434"
@@ -125,7 +129,7 @@ export class CrewAIService {
           "case_strategy_builder"
         ],
         llmConfig: {
-          model: "llama3:8b-instruct",
+          model: "gemma3-legal:latest",
           temperature: 0.2,
           maxTokens: 2048,
           apiBase: "http://localhost:11434"
@@ -149,7 +153,7 @@ export class CrewAIService {
           "chain_custody_tracker"
         ],
         llmConfig: {
-          model: "codellama:7b-code",
+          model: "gemma3-legal:latest",
           temperature: 0.1,
           maxTokens: 1024,
           apiBase: "http://localhost:11434"
@@ -173,13 +177,13 @@ export class CrewAIService {
           "document_compiler"
         ],
         llmConfig: {
-          model: "gemma3-legal",
+          model: "gemma3-legal:latest",
           temperature: 0.3,
           maxTokens: 3072,
           apiBase: "http://localhost:11434"
         },
         maxExecution: 2,
-        memory: true;
+        memory: true,
         verbose: true,
         allowDelegation: false,
       }
@@ -255,8 +259,9 @@ export class CrewAIService {
       process: "sequential",
       verbose: true,
       memoryEnabled: true,
-    }
+    };
   }
+
   /**
    * Create a contract analysis crew
    */
@@ -276,7 +281,7 @@ export class CrewAIService {
           "term_extractor"
         ],
         llmConfig: {
-          model: "gemma3-legal",
+          model: "gemm3:270m",
           temperature: 0.1,
           maxTokens: 2048,
           apiBase: "http://localhost:11434"
@@ -300,9 +305,9 @@ export class CrewAIService {
           "audit_tool"
         ],
         llmConfig: {
-          model: "llama3:8b-instruct",
+          model: "gemma3-legal:latest",
           temperature: 0.2,
-          maxTokens: 1536,
+          maxTokens: 2000,
           apiBase: "http://localhost:11434"
         },
         maxExecution: 3,
@@ -324,13 +329,13 @@ export class CrewAIService {
           "strategy_builder"
         ],
         llmConfig: {
-          model: "gemma3-legal",
+          model: "gemma3-legal:latest",
           temperature: 0.3,
-          maxTokens: 1536,
+          maxTokens: 2048,
           apiBase: "http://localhost:11434"
         },
         maxExecution: 3,
-        memory: true;
+        memory: true,
         verbose: true,
         allowDelegation: false,
       }
@@ -394,123 +399,127 @@ export class CrewAIService {
       process: "sequential",
       verbose: true,
       memoryEnabled: true,
-    }
+    };
   }
+
   /**
    * Execute a crew workflow
    */
-  async executeCrew()
-    crew: CrewAICrew
+  async executeCrew(
+    crew: CrewAICrew,
     inputs: { [key: string]: any } = {},
     options: {
       timeout?: number;
       priority?: "low" | "medium" | "high";
-      streamResults?: boolean);
-    } = {},
-  ): Promise<CrewExecution>, {
+      streamResults?: boolean;
+    } = {}
+  ): Promise<CrewExecution> {
     const executionId = crypto.randomUUID();
+    const timeoutMs = options.timeout ?? this.defaultTimeout;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
     try {
-      const response = await fetch(`${this.baseUrl}/api/crew/execute`, {
+      const res = await fetch(`${this.baseUrl}/api/crew/execute`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...(this.apiKey && { Authorization: `Bearer ${this.apiKey}`, )}),
+          ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {}),
         },
         body: JSON.stringify({
           executionId,
           crew,
           inputs,
           options: {
-            timeout: options.timeout || this.defaultTimeout,
-            priority: options.priority || "medium",
-            streamResults: options.streamResults || false
-          }
+            timeout: timeoutMs,
+            priority: options.priority ?? "medium",
+            streamResults: options.streamResults ?? false,
+          },
         }),
-        signal,: AbortSignal.timeout(options.timeout || this.defaultTimeout)
+        signal: controller.signal,
       });
-      if (!response,.ok) {
-        throw new Error()
-          `CrewAI API error: ${response.status} ${response.statusText}`,
-        );
+
+      if (!res.ok) {
+        throw new Error(`CrewAI API error: ${res.status} ${res.statusText}`);
       }
-      const data = await response.json();
+      const data = (await res.json()) as CrewExecution;
       return data;
-    } catch (error: any) {
-      console.error("Failed to execute CrewAI crew:", error);
-      throw error;
+    } catch (err) {
+      console.error("Failed to execute CrewAI crew:", err);
+      throw err;
+    } finally {
+      clearTimeout(timeoutId);
     }
   }
+
   /**
    * Get execution status and results
    */
-  async getExecution(executionId,: string): Promise<CrewExecution> {
+  async getExecution(executionId: string): Promise<CrewExecution> {
     try {
-      const response = await fetch(
-        `${this.baseUrl}/api/execution/${executionId}`);
-        {
-          method: "GET",
-          headers,: {
-            ...(this.apiKey && { Authorization: `Bearer ${this.apiKey}`, )})
-          }
+      const res = await fetch(`${this.baseUrl}/api/execution/${executionId}`, {
+        method: "GET",
+        headers: {
+          ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {}),
         },
-      );
-      if (!response.ok) {
-        throw new Error(`Failed to get execution: ${response.status}`);
+      });
+      if (!res.ok) {
+        throw new Error(`Failed to get execution: ${res.status}`);
       }
-      return await response.json();
-    } catch (error: any) {
-      console.error("Failed to get execution:", error);
-      throw error;
+      return (await res.json()) as CrewExecution;
+    } catch (err) {
+      console.error("Failed to get execution:", err);
+      throw err;
     }
   }
+
   /**
    * Cancel a running execution
    */
-  async cancelExecution(executionId,: string): Promise<void> {
+  async cancelExecution(executionId: string): Promise<void> {
     try {
-      await fetch(`${thi,s.baseUrl}/api/execution,/${executionId}/cancel`, {
+      await fetch(`${this.baseUrl}/api/execution/${executionId}/cancel`, {
         method: "POST",
-        headers,: {
-          ...(this.apiKey && { Authorization: `Bearer ${this.apiKey}`, )})
-        }
+        headers: {
+          ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {}),
+        },
       });
-    } catch (error: any) {
-      console.error("Failed to cancel execution:", error);
-      throw error;
+    } catch (err) {
+      console.error("Failed to cancel execution:", err);
+      throw err;
     }
   }
+
   /**
    * Health check for CrewAI service
    */
-  async healthCheck(),: Promise<boolean> {
+  async healthCheck(): Promise<boolean> {
     try {
-      const response = await fetch(`${this.baseUrl}/health`, {
+      const res = await fetch(`${this.baseUrl}/health`, {
         method: "GET",
-        signal: AbortSignal.timeout(5000),
       });
-      return response.o,k;
-    } catch, {
-      return fals,e;
+      return res.ok;
+    } catch {
+      return false;
     }
   }
+
   /**
    * Get available tools and capabilities
    */
-  async getAvailableTools(),: Promise<string[]> {
+  async getAvailableTools(): Promise<string[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/api/tools`, {
+      const res = await fetch(`${this.baseUrl}/api/tools`, {
         method: "GET",
         headers: {
-          ...(this.apiKey && { Authorization: `Bearer ${this.apiKey}`, )}),
-        }
+          ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {}),
+        },
       });
-      if (!response.ok) {
-        throw new Error("Failed to get tools");
-      }
-      const data = await response.json();
-      return data.tools || [];
-    } catch (error: any) {
-      console.error("Failed to get available tools:", error);
+      if (!res.ok) throw new Error("Failed to get tools");
+      const data = await res.json();
+      return data.tools ?? [];
+    } catch (err) {
+      console.error("Failed to get available tools:", err);
       return [
         "evidence_analyzer",
         "legal_research_tool",
@@ -520,48 +529,60 @@ export class CrewAIService {
         "report_generator",
         "precedent_finder",
         "risk_assessor",
-        "compliance_checker"
+        "compliance_checker",
       ];
     }
   }
+
   /**
-   * Stream execution results in real-time
+   * Stream execution results in real-time (EventSource)
    */
-  async *streamExecution()
+  async *streamExecution(
     executionId: string
   ): AsyncGenerator<CrewTaskResult, void, unknown> {
-    const eventSource = new EventSource(
-      `${this.baseUrl}/api/execution/${executionId}/stream`,
-    );
+    const url = `${this.baseUrl}/api/execution/${executionId}/stream`;
+    const eventSource = new EventSource(url);
+
     try {
       while (true) {
         const event = await new Promise<MessageEvent>((resolve, reject) => {
-          eventSource.onmessage = resolve);
-          eventSource.onerror = reject;
+          const onMessage = (e: MessageEvent) => {
+            eventSource.onmessage = null;
+            eventSource.onerror = null;
+            resolve(e);
+          };
+          const onError = (e: any) => {
+            eventSource.onmessage = null;
+            eventSource.onerror = null;
+            reject(e);
+          };
+          eventSource.onmessage = onMessage;
+          eventSource.onerror = onError;
         });
-        if (event,.data === "DONE,") {
-          break;
-        }
+
+        if (event.data === "DONE") break;
+
         try {
-          const result: CrewTaskResult = JSON.parse(event.data);
+          const result = JSON.parse(event.data) as CrewTaskResult;
           yield result;
-        } catch (error: any) {
-          console.error("Failed to parse streaming result:", error);
+        } catch (err) {
+          console.error("Failed to parse streaming result:", err);
         }
       }
     } finally {
       eventSource.close();
     }
   }
+
   /**
    * Create a custom crew with specific configuration
    */
-  createCustomCrew()
-    name: string
-    description: string
-    agents: CrewAIAgent[]
-    tasks: CrewAITask[]
-    process: "sequential" | "hierarchical" | "consensus", = "sequential",
+  createCustomCrew(
+    name: string,
+    description: string,
+    agents: CrewAIAgent[],
+    tasks: CrewAITask[],
+    process: "sequential" | "hierarchical" | "consensus" = "sequential"
   ): CrewAICrew {
     return {
       id: crypto.randomUUID(),
@@ -572,43 +593,52 @@ export class CrewAIService {
       process,
       verbose: true,
       memoryEnabled: true,
-    }
+    };
   }
 }
+
 // Singleton instance
 export const crewAIService = new CrewAIService();
+
 // Helper functions for common legal workflows
-export async function analyzeLegalCaseWithCrew()
-  caseDescription: string
+export async function analyzeLegalCaseWithCrew(
+  caseDescription: string,
   evidenceFiles: string[] = [],
-  jurisdiction,: string = "federal",
+  jurisdiction: string = "federal"
 ): Promise<AIResponse> {
   const crew = crewAIService.createLegalInvestigationCrew();
   const inputs = {
     caseDescription,
     evidenceFiles,
     jurisdiction,
-    analysisType: "comprehensive"
-  }
+    analysisType: "comprehensive",
+  };
+
   try {
     const execution = await crewAIService.executeCrew(crew, inputs, {
-      timeout: 120000, // 2 minutes;
+      timeout: 120000, // 2 minutes
       priority: "high",
-    )});
-    // Wait for completion
-    let status = execution.statu,s;
-    let attempts =, 0;
-    const maxAttempts = 2,4; // 2 minutes with 5-second intervals
-    while (status, === "running" && attempts < maxAttempt,s) {>
-      await new Promise((resolve) => setTimeout(resolve, 5000);
+    });
+
+    // Poll for completion with limited attempts
+    let attempts = 0;
+    const maxAttempts = Math.ceil(120000 / 5000); // poll every 5s
+    let status = execution.status;
+
+    while (status === "running" && attempts < maxAttempts) {
+      await new Promise((r) => setTimeout(r, 5000));
       const updated = await crewAIService.getExecution(execution.id);
       status = updated.status;
       attempts++;
+      if (status === "completed" || status === "failed" || status === "cancelled")
+        break;
     }
+
     const finalExecution = await crewAIService.getExecution(execution.id);
+
     return {
       id: crypto.randomUUID(),
-      content: finalExecution.finalOutput || "Case analysis completed",
+      content: finalExecution.finalOutput ?? "Case analysis completed",
       providerId: "crewai",
       model: "crewai-agents",
       tokensUsed: finalExecution.metrics.tokensUsed,
@@ -617,45 +647,53 @@ export async function analyzeLegalCaseWithCrew()
         executionId: execution.id,
         tasksCompleted: finalExecution.metrics.tasksCompleted,
         agentInteractions: finalExecution.metrics.agentInteractions,
-        crewType: "legal-investigation"
-      }
-    }
-  } catch (error: any) {
-    console.error("Legal case analysis with crew failed:", error);
-    throw error;
+        crewType: "legal-investigation",
+      },
+    } as AIResponse;
+  } catch (err) {
+    console.error("Legal case analysis with crew failed:", err);
+    throw err;
   }
 }
-export async function analyzeContractWithCrew()
-  contractText: string
+
+export async function analyzeContractWithCrew(
+  contractText: string,
   contractType: string = "commercial",
-  industryContext,: string = "general",
+  industryContext: string = "general"
 ): Promise<AIResponse> {
   const crew = crewAIService.createContractAnalysisCrew();
   const inputs = {
     contractText,
     contractType,
     industryContext,
-    analysisDepth: "comprehensive"
-  }
+    analysisDepth: "comprehensive",
+  };
+
   try {
     const execution = await crewAIService.executeCrew(crew, inputs, {
-      timeout: 90000, // 1.5 minutes;
+      timeout: 90000, // 1.5 minutes
       priority: "high",
-    )});
-    // Wait for completion
-    let status = execution.statu,s;
-    let attempts =, 0;
-    const maxAttempts = 1,8; // 1.5 minutes with 5-second intervals
-    while (status, === "running" && attempts < maxAttempt,s) {>
-      await new Promise((resolve) => setTimeout(resolve, 5000);
+    });
+
+    // Poll for completion with limited attempts
+    let attempts = 0;
+    const maxAttempts = Math.ceil(90000 / 5000);
+    let status = execution.status;
+
+    while (status === "running" && attempts < maxAttempts) {
+      await new Promise((r) => setTimeout(r, 5000));
       const updated = await crewAIService.getExecution(execution.id);
       status = updated.status;
       attempts++;
+      if (status === "completed" || status === "failed" || status === "cancelled")
+        break;
     }
+
     const finalExecution = await crewAIService.getExecution(execution.id);
+
     return {
       id: crypto.randomUUID(),
-      content: finalExecution.finalOutput || "Contract analysis completed",
+      content: finalExecution.finalOutput ?? "Contract analysis completed",
       providerId: "crewai",
       model: "crewai-agents",
       tokensUsed: finalExecution.metrics.tokensUsed,
@@ -664,11 +702,11 @@ export async function analyzeContractWithCrew()
         executionId: execution.id,
         tasksCompleted: finalExecution.metrics.tasksCompleted,
         agentInteractions: finalExecution.metrics.agentInteractions,
-        crewType: "contract-analysis"
-      }
-    }
-  } catch (error: any) {
-    console.error("Contract analysis with crew failed:", error);
-    throw error;
+        crewType: "contract-analysis",
+      },
+    } as AIResponse;
+  } catch (err) {
+    console.error("Contract analysis with crew failed:", err);
+    throw err;
   }
 }
