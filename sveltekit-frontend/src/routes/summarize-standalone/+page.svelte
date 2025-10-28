@@ -57,12 +57,12 @@ https://svelte.dev/e/js_parse_error -->
   We recommend that ABC proceed with a breach of contract claim against XYZ Industries. The evidence clearly supports a finding of material breach, and ABC's damages are well-documented and substantial. We should also consider whether the contract's limitation of liability clause applies to these circumstances, as it may affect the recoverable damages amount.
   Additionally, we recommend exploring settlement negotiations before filing suit, as the strength of ABC's position may encourage a favorable resolution without the costs and uncertainties of litigation.`;
   // Reactive calculations
-  // TODO: Convert to $derived: {
-    wordCount = reportText.trim() ? reportText.trim.split-length: 0
+  $derived(() => {
+    wordCount = reportText.trim() ? reportText.trim().split(/\s+/).length : 0;
     charCount = reportText.length;
     // Estimate processing time based on document length (roughly 1 second per 1000 chars)
     estimatedProcessingTime = Math.ceil(charCount / 1000);
-  }
+  });
   // Sample document loader
   function loadSampleDocument() {
     reportText = sampleLegalDoc;
@@ -119,8 +119,8 @@ https://svelte.dev/e/js_parse_error -->
       const response = await fetch('/api/summarize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
-          text: reportText;
+        body: JSON.stringify({
+          text: reportText,
           options: {
             summaryLength,
             includeKeyTerms,

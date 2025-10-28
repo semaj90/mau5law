@@ -6,7 +6,7 @@ Enhanced-bits UI integration with real-time progress and quality metrics
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { Alert, Button, Card, CardContent, CardHeader, CardTitle, Label } from '$lib/components/ui/enhanced-bits';
+  import Alert, { Button, Card, CardContent, CardHeader, CardTitle, Label } from '$lib/components/ui/enhanced-bits';
   interface SummarizationRequest {
     document_id: string;
     title: string;

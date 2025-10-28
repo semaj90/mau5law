@@ -3,30 +3,32 @@
   Enhanced-Bits orchestrated components with Svelte 5 runes
 -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { goto } from '$app/navigation';
-  // Enhanced-Bits orchestrated components
-  import {
-    Button,
-    Card,
-    Input,
-    Badge
-  } from '$lib/components/ui/enhanced-bits';
-  import {
-    OrchestratedCard,
-    OrchestratedButton,
-    type VectorSearchResult as SearchResult,
-    getConfidenceClass
-  } from '$lib/components/ui/orchestrated';
-  import * as Tabs from '$lib/components/ui/tabs';
-  // Icons
-  import {
-    Search, Sparkles, Filter, Zap, FileText,
-    Brain, Target, Clock, TrendingUp, Eye,
-    ChevronRight, Lightbulb, Database, Settings,
-    BookOpen, Scale, AlertCircle, CheckCircle
-  } from 'lucide-svelte';
+  // Enhanced-Bits orchestrated components (Badge is a default export in this module)
+  import Badge, { Button, Input } from '$lib/components/ui/enhanced-bits';
+  import { OrchestratedCard, OrchestratedButton } from '$lib/components/ui/orchestrated';
+  // NOTE: lucide-svelte named exports caused type/import issues in this project;
+  // use a small inline icon map (emoji placeholders) to avoid breaking the build.
+  const ICON = {
+    brain: '🧠',
+    sparkles: '✨',
+    settings: '⚙️',
+    search: '🔍',
+    zap: '⚡',
+    target: '🎯',
+    filter: '🔎',
+    fileText: '📄',
+    bookOpen: '📖',
+    scale: '⚖️',
+    lightbulb: '💡',
+    database: '🗄️',
+    alert: '⚠️',
+    clock: '🕒',
+    check: '✅',
+    eye: '👁️',
+    chevronRight: '➡️',
+    trendingUp: '📈'
+  };
+
   // Enhanced types using orchestrated components
   interface VectorSearchResult {
     id: string;
@@ -56,6 +58,7 @@
     }
     suggestions?: string[];
   }
+
   // Svelte 5 runes for reactive state
   let query = $state('');
   let loading = $state(false);
@@ -64,8 +67,9 @@
   let suggestions = $state<string[]>([]);
   let error = $state<string | null>(null);
   let searchMode = $state<'semantic' | 'keyword' | 'hybrid'>('semantic');
-  let selectedTypes = $state<Set<string>('')>(new Set());
+  let selectedTypes = $state<Set<string>>(new Set());
   let similarityThreshold = $state(0.7);
+
   // Search suggestions for different legal domains
   const searchSuggestions = [
     'Contract breach and damages analysis',
@@ -77,14 +81,16 @@
     'Criminal defense evidence evaluation',
     'Tax law regulatory compliance'
   ];
-  // Document type filters
+
+  // documentTypes now carry direct icon components
   const documentTypes = [
-    { value: 'evidence', label: 'Evidence', icon FileText, color: 'bg-blue-500' },
-    { value: 'case_note', label: 'Case Notes', icon BookOpen, color: 'bg-green-500' },
-    { value: 'contract', label: 'Contracts', icon Scale, color: 'bg-purple-500' },
-    { value: 'brief', label: 'Briefs', icon Target, color: 'bg-orange-500' },
-    { value: 'precedent', label: 'Precedents', icon Lightbulb, color: 'bg-yellow-500' }
+    { value: 'evidence', label: 'Evidence', iconEmoji: ICON.fileText, color: 'bg-blue-500' },
+    { value: 'case_note', label: 'Case Notes', iconEmoji: ICON.bookOpen, color: 'bg-green-500' },
+    { value: 'contract', label: 'Contracts', iconEmoji: ICON.scale, color: 'bg-purple-500' },
+    { value: 'brief', label: 'Briefs', iconEmoji: ICON.target, color: 'bg-orange-500' },
+    { value: 'precedent', label: 'Precedents', iconEmoji: ICON.lightbulb, color: 'bg-yellow-500' }
   ];
+
   // Perform vector search
   async function performSearch() {
     if (!query.trim()) return;
@@ -95,51 +101,54 @@
     try {
       const requestBody = {
         query: query.trim(),
-        mode: searchMode;
+        mode: searchMode,
         filters: {
           document_types: Array.from(selectedTypes),
-          similarity_threshold: similarityThreshold;
-          limit: 20,
+          similarity_threshold: similarityThreshold,
+          limit: 20
         },
         options: {
-          include_highlights: true
-          include_metadata: true
+          include_highlights: true,
+          include_metadata: true,
           boost_recent: true
         }
-      }
+      };
       console.log('Vector search request:', requestBody);
       const response = await fetch('/api/unified/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody);
+        body: JSON.stringify(requestBody)
       });
-      if (!(response as { ok?: unknown; statusText?: unknown; json?: unknown }).ok) {
-        throw new Error(`Search failed: ${(response as { ok?: unknown; statusText?: unknown; json?: unknown }).statusText}`);
+      if (!response.ok) {
+        throw new Error(`Search failed: ${response.statusText || response.status}`);
       }
-      const data: SearchResponse = await (response as { ok?: unknown; statusText?: unknown; json?: unknown }).json();
-      if (!(data as { success?: unknown; results?: unknown; query_info?: unknown; suggestions?: unknown }).success) {
+      const data = await response.json() as SearchResponse;
+      if (!data.success) {
         throw new Error('Search request failed');
       }
-      results = (data as { success?: unknown; results?: unknown; query_info?: unknown; suggestions?: unknown }).result;
-      searchInfo = (data as { success?: unknown; results?: unknown; query_info?: unknown; suggestions?: unknown }).query_info;
-      suggestions = (data as { success?: unknown; results?: unknown; query_info?: unknown; suggestions?: unknown }).suggestions || [];
+      results = data.results || [];
+      searchInfo = data.query_info || null;
+      suggestions = data.suggestions || [];
       console.log('Vector search results:', data);
     } catch (err) {
       console.error('Search error:', err);
-      error = err instanceof Error ? err.message: 'Search failed',
+      error = err instanceof Error ? err.message : 'Search failed';
     } finally {
       loading = false;
     }
   }
-  function handleKeyPress(_event: KeyboardEvent) {
-    if (event.key === 'Enter') {
+
+  function handleKeyPress(e: KeyboardEvent) {
+    if (e.key === 'Enter') {
       performSearch();
     }
   }
-  function setSuggestionQuery(suggestion string) {
-    query = suggestio;
+
+  function setSuggestionQuery(suggestion: string) {
+    query = suggestion;
     performSearch();
   }
+
   function toggleDocumentType(type: string) {
     if (selectedTypes.has(type)) {
       selectedTypes.delete(type);
@@ -148,6 +157,7 @@
     }
     selectedTypes = new Set(selectedTypes); // Trigger reactivity
   }
+
   function getSimilarityColor(score: number): string {
     if (score >= 0.9) return 'text-green-600 bg-green-100';
     if (score >= 0.7) return 'text-blue-600 bg-blue-100';
@@ -164,6 +174,7 @@
     if (ms < 1000) return `${ms}ms`;
     return `${(ms / 1000).toFixed(2)}s`;
   }
+
   // Initialize with example search on mount
   $effect(() => {
     // Auto-suggest based on existing RAG demo
@@ -172,277 +183,330 @@
     }
   });
 </script>
+
 <svelte:head>
   <title>Vector Search - Legal AI Dashboard</title>
 </svelte:head>
+
 <div class="space-y-6">
   <!-- Header -->
   <div class="flex items-center justify-between">
     <div>
       <h1 class="text-3xl font-bold text-nier-text-primary flex items-center gap-3">
-        <Brain class="w-8 h-8 text-nier-accent-warm" />
+-        <Brain class="w-8 h-8 text-nier-accent-warm" />
++        <span class="w-8 h-8 text-nier-accent-warm inline-flex items-center justify-center text-2xl">{ICON.brain}</span>
         Vector Search
       </h1>
       <p class="text-nier-text-muted mt-1">AI-powered semantic search across legal documents</p>
     </div>
     <div class="flex items-center gap-2">
       <Badge variant="ghost" class="text-nier-accent-warm border-nier-accent-warm">
-        <Sparkles class="w-3 h-3 mr-1" />
+-        <Sparkles class="w-3 h-3 mr-1" />
++        <span class="mr-1">{ICON.sparkles}</span>
         pgvector + AI
       </Badge>
-      <Button class="bits-btn" variant="ghost" size="sm">
-<Settings class="w-4 h-4 mr-2" />
+-      <Button class="bits-btn" variant="ghost" size="sm" on:click={() => {/* open settings */}}>
+-        <Settings class="w-4 h-4 mr-2" />
++      <Button class="bits-btn" variant="ghost" size="sm" onclick={() => {/* open settings */}}>
++        <span class="w-4 h-4 mr-2 inline-block">{ICON.settings}</span>
         Settings
+      </Button>
     </div>
   </div>
+
   <!-- Search Interface - Enhanced-Bits orchestrated -->
   <OrchestratedCard.Analysis>
-    <div.Content class="p-6 nes-container">
+    <div class="p-6 nes-container">
       <div class="space-y-4">
         <!-- Search Input -->
         <div class="relative">
-          <Search class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-nier-text-muted" />
+-          <Search class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-nier-text-muted" />
++          <span class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-nier-text-muted">{ICON.search}</span>
+          <!-- use value + oninput instead of bind:value if Input isn't bindable -->
           <Input
-            bind:value={query}
-            onkeypress={handleKeyPress}
+            value={query}
+-            on:input={(e) => (query = (e.target as HTMLInputElement).value)}
+-            on:keydown={handleKeyPress}
++            oninput={(e) => (query = (e.target as HTMLInputElement).value)}
++            onkeydown={handleKeyPress}
             placeholder="Describe your legal research question in natural language..."
             class="pl-12 pr-4 py-3 text-lg border-2 border-nier-border-muted focus:border-nier-accent-warm"
             disabled={loading}
           />
-          <OrchestratedButton.SearchSimilar
-            onclick={performSearch}
-            disabled={loading || !query.trim()}
-            class="absolute right-2 top-1/2 transform -translate-y-1/2 gap-2"
-          >
-            {#if loading}
-              <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
-              Searching...
-            {:else}
-              <Zap class="w-4 h-4" />
-              Search
-            {/if}
-          </OrchestratedButton.SearchSimilar>
-        </div>
-        <!-- Search Mode Tabs -->
-        <Tabs.Root bind:value={searchMode} class="w-full">
-          <Tabs.List class="grid w-full grid-cols-3">
-            <Tabs.Trigger value="semantic" class="gap-2">
-              <Brain class="w-4 h-4" />
-              Semantic
-            </Tabs.Trigger>
-            <Tabs.Trigger value="keyword" class="gap-2">
-              <Target class="w-4 h-4" />
-              Keyword
-            </Tabs.Trigger>
-            <Tabs.Trigger value="hybrid" class="gap-2">
-              <Sparkles class="w-4 h-4" />
-              Hybrid
-            </Tabs.Trigger>
-          </Tabs.List>
-        </Tabs.Root>
-        <!-- Filters -->
-        <div class="flex flex-wrap gap-4 items-center">
-          <div class="flex items-center gap-2">
-            <Filter class="w-4 h-4 text-nier-text-muted" />
-            <span class="text-sm text-nier-text-muted">Document Types:</span>
-          </div>
-          {#each documentTypes as docType}
-            <button
-              onclick={() => toggleDocumentType(docType.value)}
-              class="flex items-center gap-2 px-3 py-1 rounded-full border transition-all
-                     {selectedTypes.has(docType.value)
-                       ? 'border-nier-accent-warm bg-nier-accent-warm text-nier-bg-primary'
-                       : 'border-nier-border-muted hover:border-nier-accent-warm'}"
-            >
-              {@render docType.icon({ class: "w-3 h-3" })}
-              <span class="text-xs">{docType.label}</span>
-          {/each}
-          <div class="ml-auto flex items-center gap-2">
-            <span class="text-xs text-nier-text-muted">Similarity:</span>
-            <input
-              type="range";
-              bind:value={similarityThreshold}
-              min="0.1"
-              max="1"
-              step="0.1"
-              class="w-20"
-            />
-            <span class="text-xs font-mono">{similarityThreshold}</span>
-          </div>
-        </div>
-      </div>
-    </div.Content>
-  </OrchestratedCard.Analysis>
-  <!-- Search Results -->
-  {#if searchInfo}
-    <OrchestratedCard.Evidence>
-      <div.Header class="nes-container">
-        <div class="flex items-center justify-between">
-          <div.Title class="flex items-center gap-2 nes-container">
-            <Database class="w-5 h-5" />
-            Search Results ({results.length})
-          </div.Title>
-          <div class="flex items-center gap-4 text-sm text-nier-text-muted">
-            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{formatSearchTime(searchInfo.search_time_ms)}</span>
-            <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{searchInfo.embedding_model}</span>
-          </div>
-        </div>
-        <div.Description class="nes-container">
-          Query: "{searchInfo.processed_query}" • Total: {searchInfo.total_results} matches
-        </div.Description>
-      </div.Header>
-      <div.Content class="space-y-4 nes-container">
-        {#if loading}
-          <div class="text-center py-8">
-            <div class="animate-spin w-8 h-8 border-4 border-nier-accent-warm border-t-transparent rounded-full mx-auto"></div>
-            <p class="mt-2 text-nier-text-muted">Searching vector space...</p>
-          </div>
-        {:else if error}
-          <div class="text-center py-8">
-            <AlertCircle class="w-8 h-8 text-red-500 mx-auto mb-2" />
-            <p class="text-red-600">{error}</p>
-            <Button onclick={performSearch} variant="ghost" size="sm" class="mt-2 bits-btn">
-Retry Search
-          </div>
-        {:else if results.length === 0}
-          <div class="text-center py-8">
-            <Search class="w-8 h-8 text-nier-text-muted mx-auto mb-2" />
-            <p class="text-nier-text-muted">No matching documents found</p>
-            <p class="text-sm text-nier-text-muted mt-1">Try adjusting your query or filters</p>
-          </div>
-        {:else}
-          {#each results as result, i}
-            <div class="border border-nier-border-muted rounded-lg p-4 hover:bg-nier-bg-tertiary transition-colors">
-              <div class="flex items-start justify-between mb-3">
-                <div class="flex items-center gap-3">
-                  <div class="w-8 h-8 bg-nier-accent-warm/10 rounded-lg flex items-center justify-center text-nier-accent-warm font-bold text-sm">
-                    {i + 1}
-                  </div>
-                  <div>
-                    <h3 class="font-medium text-nier-text-primary hover:text-nier-accent-warm cursor-pointer">
-                      {(result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).title || `Document ${(result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).document_id.slice(0, 8)}`}
-                    </h3>
-                    <div class="flex items-center gap-2 mt-1">
-                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).document_type.replace('_', ' ')}</span>
-                      {#if (result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).case_id}
-                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Case: {(result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).case_id.slice(0, 8)}</span>
-                      {/if}
-                      {#if (result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).metadata.file_type}
-                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{(result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).metadata.file_type.toUpperCase()}</span>
-                      {/if}
-                    </div>
-                  </div>
-                </div>
-                <div class="flex items-center gap-2">
-                  <Badge class="text-xs {getSimilarityColor((result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).similarity_score)}">
-                    {getSimilarityLabel((result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).similarity_score)}
-                  </Badge>
-                  <span class="text-xs font-mono text-nier-text-muted">
-                    {((result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).similarity_score * 100).toFixed(1)}%
-                  </span>
-                </div>
-              </div>
-              <p class="text-sm text-nier-text-secondary leading-relaxed mb-3">
-                {(result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).content_preview}
-              </p>
-              {#if (result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).highlights && (result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).highlights.length > 0}
-                <div class="mb-3">
-                  <h4 class="text-xs font-medium text-nier-text-muted mb-2">Key Highlights:</h4>
-                  <div class="flex flex-wrap gap-1">
-                    {#each (result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).highlights.slice(0, 3) as highlight}
-                      <span class="text-xs px-2 py-1 bg-nier-accent-warm/10 text-nier-accent-warm rounded">
-                        {highlight}
-                      </span>
-                    {/each}
-                  </div>
-                </div>
-              {/if}
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-4 text-xs text-nier-text-muted">
-                  {#if (result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).metadata.upload_date}
-                    <div class="flex items-center gap-1">
-                      <Clock class="w-3 h-3" />
-                      {new Date((result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).metadata.upload_date).toLocaleDateString()}
-                    </div>
-                  {/if}
-                  {#if (result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).metadata.confidence}
-                    <div class="flex items-center gap-1">
-                      <CheckCircle class="w-3 h-3" />
-                      {((result as { title?: unknown; document_id?: unknown; document_type?: unknown; case_id?: unknown; metadata?: unknown; similarity_score?: unknown; content_preview?: unknown; highlights?: unknown }).metadata.confidence * 100).toFixed(1)}% confidence
-                    </div>
-                  {/if}
-                </div>
-                <div class="flex items-center gap-2">
-                  <Button class="bits-btn" variant="ghost" size="sm">
-<Eye class="w-4 h-4 mr-1" />
-                    View
-                  <Button class="bits-btn" variant="ghost" size="sm">
-<ChevronRight class="w-4 h-4" />
-                </div>
-              </div>
-            </div>
-          {/each}
-        {/if}
-      </div.Content>
-    </OrchestratedCard.Evidence>
-  {/if}
-  <!-- Search Suggestions -->
-  <div.Root class="nes-container">
-    <div.Header class="nes-container">
-      <div.Title class="flex items-center gap-2 nes-container">
-        <Lightbulb class="w-5 h-5" />
-        Search Suggestions
-      </div.Title>
-      <div.Description class="nes-container">
-        Try these common legal research queries
-      </div.Description>
-    </div.Header>
-    <div.Content class="nes-container">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {#each searchSuggestions as suggestion}
-          <button
-            onclick={() => setSuggestionQuery(suggestion)}
-            class="text-left p-3 text-sm bg-nier-bg-tertiary hover:bg-nier-accent-warm/10
-                   rounded-lg transition-colors border border-transparent hover:border-nier-accent-warm/20"
-            disabled={loading}
-          >
-            <div class="flex items-center justify-between">
-              <span>{suggestion}</span>
-              <ChevronRight class="w-4 h-4 text-nier-text-muted" />
-            </div>
-        {/each}
-      </div>
-    </div.Content>
-  </div.Root>
-  <!-- Performance Metrics -->
-  {#if searchInfo}
-    <div.Root class="nes-container">
-      <div.Header class="nes-container">
-        <div.Title class="flex items-center gap-2 nes-container">
-          <TrendingUp class="w-5 h-5" />
-          Search Performance
-        </div.Title>
-      </div.Header>
-      <div.Content class="nes-container">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
-          <div>
-            <div class="text-nier-text-muted">Query Processing</div>
-            <div class="font-medium">{formatSearchTime(searchInfo.search_time_ms)}</div>
-          </div>
-          <div>
-            <div class="text-nier-text-muted">Results Found</div>
-            <div class="font-medium">{searchInfo.total_results}</div>
-          </div>
-          <div>
-            <div class="text-nier-text-muted">Embedding Model</div>
-            <div class="font-medium">{searchInfo.embedding_model}</div>
-          </div>
-          <div>
-            <div class="text-nier-text-muted">Search Mode</div>
-            <div class="font-medium capitalize">{searchMode}</div>
-          </div>
-        </div>
-      </div.Content>
-    </div.Root>
-  {/if}
-</div>;
+-          <OrchestratedButton.SearchSimilar
+-            on:click={performSearch}
++          <OrchestratedButton.SearchSimilar
++            onclick={performSearch}
+             disabled={loading || !query.trim()}
+             class="absolute right-2 top-1/2 transform -translate-y-1/2 gap-2"
+           >
+             {#if loading}
+               <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+               Searching...
+             {:else}
+-              <Zap class="w-4 h-4" />
++              <span class="w-4 h-4">{ICON.zap}</span>
+               Search
+             {/if}
+           </OrchestratedButton.SearchSimilar>
+         </div>
+
+         <!-- Search Mode Tabs -->
+         <!-- simple inline tab buttons to avoid external Tabs API mismatch -->
+         <div class="grid w-full grid-cols-3 gap-2">
+-          <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'semantic' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')} on:click={() => (searchMode = 'semantic')}>
+-            <Brain class="w-4 h-4 inline-block mr-1" /> Semantic
++          <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'semantic' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')} onclick={() => (searchMode = 'semantic')}>
++            <span class="inline-block mr-1">{ICON.brain}</span> Semantic
+           </button>
+-          <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'keyword' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')} on:click={() => (searchMode = 'keyword')}>
+-            <Target class="w-4 h-4 inline-block mr-1" /> Keyword
++          <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'keyword' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')} onclick={() => (searchMode = 'keyword')}>
++            <span class="inline-block mr-1">{ICON.target}</span> Keyword
+           </button>
+-          <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'hybrid' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')} on:click={() => (searchMode = 'hybrid')}>
+-            <Sparkles class="w-4 h-4 inline-block mr-1" /> Hybrid
++          <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'hybrid' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')} onclick={() => (searchMode = 'hybrid')}>
++            <span class="inline-block mr-1">{ICON.sparkles}</span> Hybrid
+           </button>
+         </div>
+
+         <!-- Filters -->
+         <div class="flex flex-wrap gap-4 items-center">
+           <div class="flex items-center gap-2">
+-            <Filter class="w-4 h-4 text-nier-text-muted" />
++            <span class="w-4 h-4 text-nier-text-muted">{ICON.filter}</span>
+             <span class="text-sm text-nier-text-muted">Document Types:</span>
+           </div>
+
+           {#each documentTypes as docType}
+             <button
+-              onclick={() => toggleDocumentType(docType.value)}
++              onclick={() => toggleDocumentType(docType.value)}
+               class={
+                 "flex items-center gap-2 px-3 py-1 rounded-full border transition-all " +
+                 (selectedTypes.has(docType.value)
+                   ? 'border-nier-accent-warm bg-nier-accent-warm text-nier-bg-primary'
+                   : 'border-nier-border-muted hover:border-nier-accent-warm')
+               }
+             >
+               <!-- docType.icon is a component reference -->
+-              <svelte:component this={docType.icon} class="w-3 h-3" />
++              <span class="w-3 h-3">{docType.iconEmoji}</span>
+               <span class="text-xs">{docType.label}</span>
+             </button>
+           {/each}
+
+           <div class="ml-auto flex items-center gap-2">
+             <span class="text-xs text-nier-text-muted">Similarity:</span>
+             <input
+               type="range"
+               bind:value={similarityThreshold}
+               min="0.1"
+               max="1"
+               step="0.1"
+               class="w-20"
+             />
+             <span class="text-xs font-mono">{similarityThreshold}</span>
+           </div>
+         </div>
+       </div>
+     </div>
+   </OrchestratedCard.Analysis>
+
+   <!-- Search Results -->
+-  {#if searchInfo}
++  {#if searchInfo}
+     <OrchestratedCard.Evidence>
+       <div class="nes-container">
+         <div class="flex items-center justify-between">
+           <div class="flex items-center gap-2">
+-            <Database class="w-5 h-5" />
++            <span class="w-5 h-5">{ICON.database}</span>
+             <h2 class="text-lg font-medium">Search Results ({results.length})</h2>
+           </div>
+           <div class="flex items-center gap-4 text-sm text-nier-text-muted">
+             <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{formatSearchTime(searchInfo.search_time_ms)}</span>
+             <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{searchInfo.embedding_model}</span>
+           </div>
+         </div>
+         <p class="text-sm text-nier-text-muted mt-2">Query: "{searchInfo.processed_query}" • Total: {searchInfo.total_results} matches</p>
+       </div>
+
+       <div class="space-y-4 nes-container">
+         {#if loading}
+           <div class="text-center py-8">
+             <div class="animate-spin w-8 h-8 border-4 border-nier-accent-warm border-t-transparent rounded-full mx-auto"></div>
+             <p class="mt-2 text-nier-text-muted">Searching vector space...</p>
+           </div>
+         {:else if error}
+           <div class="text-center py-8">
+-            <AlertCircle class="w-8 h-8 text-red-500 mx-auto mb-2" />
++            <div class="w-8 h-8 text-red-500 mx-auto mb-2 text-2xl">{ICON.alert}</div>
+             <p class="text-red-600">{error}</p>
+-            <Button on:click={performSearch} variant="ghost" size="sm" class="mt-2 bits-btn">
++            <Button onclick={performSearch} variant="ghost" size="sm" class="mt-2 bits-btn">
+               Retry Search
+             </Button>
+           </div>
+         {:else if results.length === 0}
+           <div class="text-center py-8">
+-            <Search class="w-8 h-8 text-nier-text-muted mx-auto mb-2" />
++            <div class="w-8 h-8 text-nier-text-muted mx-auto mb-2 text-2xl">{ICON.search}</div>
+             <p class="text-nier-text-muted">No matching documents found</p>
+             <p class="text-sm text-nier-text-muted mt-1">Try adjusting your query or filters</p>
+           </div>
+         {:else}
+           {#each results as result, i}
+             <div class="border border-nier-border-muted rounded-lg p-4 hover:bg-nier-bg-tertiary transition-colors">
+               <div class="flex items-start justify-between mb-3">
+                 <div class="flex items-center gap-3">
+                   <div class="w-8 h-8 bg-nier-accent-warm/10 rounded-lg flex items-center justify-center text-nier-accent-warm font-bold text-sm">
+                     {i + 1}
+                   </div>
+                   <div>
+                     <h3 class="font-medium text-nier-text-primary hover:text-nier-accent-warm cursor-pointer">
+                       {result.title || `Document ${result.document_id.slice(0, 8)}`}
+                     </h3>
+                     <div class="flex items-center gap-2 mt-1">
+                       <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result.document_type.replace('_', ' ')}</span>
+                       {#if result.case_id}
+                         <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Case: {result.case_id.slice(0, 8)}</span>
+                       {/if}
+                       {#if result.metadata?.file_type}
+                         <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result.metadata.file_type.toUpperCase()}</span>
+                       {/if}
+                     </div>
+                   </div>
+                 </div>
+
+                 <div class="flex items-center gap-2">
+                   <Badge class={"text-xs " + getSimilarityColor(result.similarity_score)}>
+                     {getSimilarityLabel(result.similarity_score)}
+                   </Badge>
+                   <span class="text-xs font-mono text-nier-text-muted">
+                     {(result.similarity_score * 100).toFixed(1)}%
+                   </span>
+                 </div>
+               </div>
+
+               <p class="text-sm text-nier-text-secondary leading-relaxed mb-3">
+                 {result.content_preview}
+               </p>
+
+               {#if result.highlights && result.highlights.length > 0}
+                 <div class="mb-3">
+                   <h4 class="text-xs font-medium text-nier-text-muted mb-2">Key Highlights:</h4>
+                   <div class="flex flex-wrap gap-1">
+                     {#each result.highlights.slice(0, 3) as highlight}
+                       <span class="text-xs px-2 py-1 bg-nier-accent-warm/10 text-nier-accent-warm rounded">
+                         {highlight}
+                       </span>
+                     {/each}
+                   </div>
+                 </div>
+               {/if}
+
+               <div class="flex items-center justify-between">
+                 <div class="flex items-center gap-4 text-xs text-nier-text-muted">
+-                  {#if result.metadata?.upload_date}
+-                    <div class="flex items-center gap-1">
+-                      <Clock class="w-3 h-3" />
+-                      {new Date(result.metadata.upload_date).toLocaleDateString()}
+-                    </div>
+-                  {/if}
++                  {#if result.metadata?.upload_date}
++                    <div class="flex items-center gap-1">
++                      <span class="w-3 h-3">{ICON.clock}</span>
++                      {new Date(result.metadata.upload_date).toLocaleDateString()}
++                    </div>
++                  {/if}
+                   {#if typeof result.metadata?.confidence === 'number'}
+                     <div class="flex items-center gap-1">
+-                      <CheckCircle class="w-3 h-3" />
++                      <span class="w-3 h-3">{ICON.check}</span>
+                       {(result.metadata.confidence * 100).toFixed(1)}% confidence
+                     </div>
+                   {/if}
+                 </div>
+
+                 <div class="flex items-center gap-2">
+                   <Button class="bits-btn" variant="ghost" size="sm">
+-                    <Eye class="w-4 h-4 mr-1" />
++                    <span class="w-4 h-4 mr-1">{ICON.eye}</span>
+                     View
+                   </Button>
+                   <Button class="bits-btn" variant="ghost" size="sm">
+-                    <ChevronRight class="w-4 h-4" />
++                    <span class="w-4 h-4">{ICON.chevronRight}</span>
+                   </Button>
+                 </div>
+               </div>
+             </div>
+           {/each}
+         {/if}
+       </div>
+     </OrchestratedCard.Evidence>
+   {/if}
+
+   <!-- Search Suggestions -->
+   <section class="nes-container">
+     <div class="flex items-center gap-2">
+-      <Lightbulb class="w-5 h-5" />
++      <span class="w-5 h-5">{ICON.lightbulb}</span>
+       <h3 class="text-lg font-medium">Search Suggestions</h3>
+     </div>
+     <p class="text-sm text-nier-text-muted mt-1">Try these common legal research queries</p>
+
+     <div class="nes-container mt-3">
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+         {#each searchSuggestions as suggestion}
+           <button
+-            on:click={() => setSuggestionQuery(suggestion)}
++            onclick={() => setSuggestionQuery(suggestion)}
+             class="text-left p-3 text-sm bg-nier-bg-tertiary hover:bg-nier-accent-warm/10 rounded-lg transition-colors border border-transparent hover:border-nier-accent-warm/20"
+             disabled={loading}
+           >
+             <div class="flex items-center justify-between">
+               <span>{suggestion}</span>
+-              <ChevronRight class="w-4 h-4 text-nier-text-muted" />
++              <span class="w-4 h-4 text-nier-text-muted">{ICON.chevronRight}</span>
+             </div>
+           </button>
+         {/each}
+       </div>
+     </div>
+   </section>
+
+   <!-- Performance Metrics -->
+-  {#if searchInfo}
++  {#if searchInfo}
+     <section class="nes-container">
+       <div class="flex items-center gap-2">
+-        <TrendingUp class="w-5 h-5" />
++        <span class="w-5 h-5">{ICON.trendingUp}</span>
+         <h3 class="text-lg font-medium">Search Performance</h3>
+       </div>
+       <div class="nes-container mt-3">
+         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+           <div>
+             <div class="text-nier-text-muted">Query Processing</div>
+             <div class="font-medium">{formatSearchTime(searchInfo.search_time_ms)}</div>
+           </div>
+           <div>
+             <div class="text-nier-text-muted">Results Found</div>
+             <div class="font-medium">{searchInfo.total_results}</div>
+           </div>
+           <div>
+             <div class="text-nier-text-muted">Embedding Model</div>
+             <div class="font-medium">{searchInfo.embedding_model}</div>
+           </div>
+           <div>
+             <div class="text-nier-text-muted">Search Mode</div>
+             <div class="font-medium capitalize">{searchMode}</div>
+           </div>
+         </div>
+       </div>
+     </section>
+   {/if}
+ </div>

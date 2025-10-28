@@ -1,19 +1,30 @@
-import type { RequestHandler } from './$types.js'
-/*
- * SvelteKit 2 API Route: SOM Training
- * POST /api/clustering/som/train
- */
-import { json } from "@sveltejs/kit"
-import { LegalDocumentSOM } from "$lib/services/som-clustering"
-import { createRedisInstance } from '$lib/server/redis'
-import { legalDocuments } from '$lib/server/db/schema-postgres'
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
+import createRedisInstance from '$lib/server/redis';
 
-// Optional amqp for message queue integration
-// Centralized Redis instance
-const redis = createRedisInstance()
+// Minimal typed shape for the redis client we need here (avoid `any`)
+type RedisClientLike = {
+  // rpush may be sync or async depending on client lib; accept both
+  rpush?: (key: string, ...values: string[]) => Promise<number> | number;
+};
+
+// Create instance and cast via unknown to RedisClientLike (no `any`)
+const redisInstance = createRedisInstance();
+const redis = redisInstance as unknown as RedisClientLike;
+
 export const POST: RequestHandler = async ({ request }) => {
-  const body = await request.json().catch(() => ({})
-  // placeholder: enqueue training job
-  await (redis as any).rpush('som:train:queue', JSON.stringify(body)
-  return json({ ok: true })
-}
+  const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
+
+  try {
+    if (typeof redis.rpush === 'function') {
+      // Normalize to a Promise in case rpush is synchronous
+      await Promise.resolve(redis.rpush('som:train:queue', JSON.stringify(body)));
+    } else {
+      console.warn('Redis client does not expose rpush; skipping enqueue.');
+    }
+  } catch (err) {
+    console.warn('Failed to enqueue SOM training job:', err);
+  }
+
+  return json({ ok: true });
+};
