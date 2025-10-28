@@ -24,7 +24,6 @@
   });
   import {
     Activity,
-    AlertTriangle,
     BarChart3,
     Command,
     FileSearch,
@@ -63,7 +62,8 @@
     evidenceInsights?: Array<{ id: string; label: string; summary: string }>;
   }
 
-  const sections: Array<{ id: SectionId; label: string; description: string; icon: typeof Command }> = [
+  // relax icon typing to avoid issues when module is declared as untyped
+  const sections: Array<{ id: SectionId; label: string; description: string; icon: any }> = [
     {
       id: 'command-center',
       label: 'Command Center',

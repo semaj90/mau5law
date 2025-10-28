@@ -2,7 +2,7 @@
  * K-means Clustering Worker Thread
  * Offloads CPU-intensive clustering operations from main thread
  */
-import { parentPort, workerData } from "worker_threads";
+import { parentPort } from 'worker_threads';
 // Worker thread for k-means clustering
 class KMeansWorker {
   constructor() {
@@ -38,20 +38,15 @@ class KMeansWorker {
   async performClustering(data, k, dimensions) {
     const startTime = Date.now();
     // Initialize centroids using k-means++ algorithm
-    const centroids = this.initializeCentroidsKMeansPlusPlus(
-      data,
-      k,
-      dimensions
-    );
+    const centroids = this.initializeCentroidsKMeansPlusPlus(data, k, dimensions);
     let hasConverged = false;
     let iteration = 0;
     const clusters = Array.from({ length: k }, () => []);
-    let previousCentroids = centroids.map((c) => [...c]);
     // Send progress updates to main thread
     const sendProgress = (iteration, converged) => {
       if (parentPort) {
         parentPort.postMessage({
-          type: "progress",
+          type: 'progress',
           iteration,
           converged,
           timestamp: Date.now(),
@@ -61,7 +56,10 @@ class KMeansWorker {
     while (!hasConverged && iteration < this.maxIterations) {
       hasConverged = true;
       // Clear previous assignments
-      clusters.forEach((cluster) => (cluster.length = 0),;
+      // clear each cluster's array length
+      clusters.forEach(cluster => {
+        cluster.length = 0;
+      });
       // Assign points to nearest centroid (parallelizable operation)
       for (let i = 0; i < data.length; i++) {
         const point = data[i];
@@ -70,10 +68,7 @@ class KMeansWorker {
         let bestCluster = 0;
         // Find nearest centroid
         for (let j = 0; j < centroids.length; j++) {
-          const distance = this.euclideanDistance(
-            point.embedding,
-            centroids[j]
-          );
+          const distance = this.euclideanDistance(point.embedding, centroids[j]);
           if (distance < minDistance) {
             minDistance = distance;
             bestCluster = j;
@@ -103,10 +98,7 @@ class KMeansWorker {
           newCentroid[j] /= clusterSize;
         }
         // Check convergence
-        const centroidMovement = this.euclideanDistance(
-          centroids[i],
-          newCentroid
-        );
+        const centroidMovement = this.euclideanDistance(centroids[i], newCentroid);
         if (centroidMovement > this.convergenceThreshold) {
           hasConverged = false;
         }
@@ -120,17 +112,12 @@ class KMeansWorker {
     }
     const processingTime = Date.now() - startTime;
     // Calculate cluster metrics
-    const clusterMetrics = this.calculateClusterMetrics(
-      data,
-      clusters,
-      centroids,
-      processingTime
-    );
+    const clusterMetrics = this.calculateClusterMetrics(data, clusters, centroids, processingTime);
     return {
-      type: "result",
-      clusters: clusterMetrics
-      iterations: iteration
-      converged: hasConverged
+      type: 'result',
+      clusters: clusterMetrics,
+      iterations: iteration,
+      converged: hasConverged,
       processingTime,
       timestamp: Date.now(),
     };
@@ -140,21 +127,17 @@ class KMeansWorker {
    */
   initializeCentroidsKMeansPlusPlus(data, k, dimensions) {
     const centroids = [];
-    const validData = data.filter(
-      (d) => d.embedding && d.embedding.length === dimensions
-    );
+    const validData = data.filter(d => d.embedding && d.embedding.length === dimensions);
     if (validData.length === 0) {
       // Fallback to random initialization
-      return Array.from({ length: k }, () =>
-        Array.from({ length: dimensions }, () => Math.random() - 0.5)
-      );
+      return Array.from({ length: k }, () => Array.from({ length: dimensions }, () => Math.random() - 0.5));
     }
     // First centroid: random point
     const firstPoint = validData[Math.floor(Math.random() * validData.length)];
     centroids.push([...firstPoint.embedding]);
     // Subsequent centroids: choose based on distance from existing centroids
     for (let i = 1; i < k; i++) {
-      const distances = validData.map((point) => {
+      const distances = validData.map(point => {
         let minDist = Infinity;
         for (const centroid of centroids) {
           const dist = this.euclideanDistance(point.embedding, centroid);
@@ -180,25 +163,20 @@ class KMeansWorker {
    */
   calculateClusterMetrics(data, clusters, centroids, processingTime) {
     return clusters.map((cluster, i) => {
-      const clusterData = cluster.map((index) => data[index]);
+      const clusterData = cluster.map(index => data[index]);
       const cohesion = this.calculateCohesion(clusterData, centroids[i]);
-      const silhouette = this.calculateSilhouetteScore(
-        clusterData,
-        clusters,
-        centroids,
-        i
-      );
+      const silhouette = this.calculateSilhouetteScore(clusterData, clusters, centroids, i);
       const memoryUsage = this.estimateClusterMemoryUsage(clusterData);
       return {
         id: `cluster_${i}`,
-        centroid: centroids[i]
+        centroid: centroids[i],
         size: cluster.length,
         cohesion,
         silhouette,
         separability: this.calculateSeparability(centroids, i),
         memoryUsage,
-        processingTime: processingTime / clusters.length,
-        dataIndices: cluster
+        processingTime: processingTime / Math.max(1, clusters.length),
+        dataIndices: cluster,
       };
     });
   }
@@ -231,10 +209,7 @@ class KMeansWorker {
       let b = Infinity;
       for (let i = 0; i < centroids.length; i++) {
         if (i === clusterIndex) continue;
-        const avgDistToCluster = this.euclideanDistance(
-          point.embedding,
-          centroids[i]
-        );
+        const avgDistToCluster = this.euclideanDistance(point.embedding, centroids[i]);
         b = Math.min(b, avgDistToCluster);
       }
       // Silhouette coefficient
@@ -248,10 +223,7 @@ class KMeansWorker {
     let minDistance = Infinity;
     for (let i = 0; i < centroids.length; i++) {
       if (i !== clusterIndex) {
-        const distance = this.euclideanDistance(
-          centroids[clusterIndex],
-          centroids[i]
-        );
+        const distance = this.euclideanDistance(centroids[clusterIndex], centroids[i]);
         minDistance = Math.min(minDistance, distance);
       }
     }

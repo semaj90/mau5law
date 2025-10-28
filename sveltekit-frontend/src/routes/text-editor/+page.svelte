@@ -7,7 +7,9 @@ https://svelte.dev/e/expected_token -->
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { FileText, Save, Download, Share2 } from 'lucide-svelte';
+  // Some lucide-svelte installations/types export icons differently.
+  // Import the single working icon and use simple fallbacks for others.
+  import FileText from 'lucide-svelte';
   // Dynamically load the editor to avoid "no default export" TS error for the static import
   let EditorComponent: any = null;
   onMount(async () => {
@@ -46,10 +48,6 @@ https://svelte.dev/e/expected_token -->
     };
   }
 
-  function handleEditorChange(value: string) {
-    editorValue = value;
-    isModified = true;
-  }
   function handleSave() {
     console.log('Saving document:', { title: documentTitle, content: editorValue });
     lastSaved = new Date();
@@ -94,18 +92,21 @@ https://svelte.dev/e/expected_token -->
         </div>
       </div>
       <div class="header-actions">
-        <!-- CHANGED: use Svelte event binding onclick instead of onclick -->
-        <button class="action-btn save-btn" onclick={handleSave} disabled={!isModified}>
-          <Save size={16} />
-          Save
+        <!-- use Svelte on:click and simple icon fallbacks -->
+        <button type="button" class="action-btn save-btn" on:click={handleSave} disabled={!isModified}>
+          <span aria-hidden="true">💾</span>
+          <span class="sr-only">Save</span>
+          <span>Save</span>
         </button>
-        <button class="action-btn" onclick={handleDownload}>
-          <Download size={16} />
-          Download
+        <button type="button" class="action-btn" on:click={handleDownload}>
+          <span aria-hidden="true">⬇️</span>
+          <span class="sr-only">Download</span>
+          <span>Download</span>
         </button>
-        <button class="action-btn" onclick={handleShare}>
-          <Share2 size={16} />
-          Share
+        <button type="button" class="action-btn" on:click={handleShare}>
+          <span aria-hidden="true">🔗</span>
+          <span class="sr-only">Share</span>
+          <span>Share</span>
         </button>
       </div>
     </div>
@@ -187,7 +188,7 @@ https://svelte.dev/e/expected_token -->
   }
   .header-content {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* fixed typo */
     align-items: center;
     margin-bottom: 16px;
   }
@@ -269,7 +270,7 @@ https://svelte.dev/e/expected_token -->
     gap: 12px;
   }
   .document-title-input {
-    flex: 1,
+    flex: 1;
     background: var(--yorha-bg-tertiary, #2a2a2a);
     border: 1px solid var(--yorha-border, #606060);
     color: var(--yorha-text-primary, #e0e0e0);
@@ -324,7 +325,7 @@ https://svelte.dev/e/expected_token -->
 
   /* --editor-header-height: total height of header, stats bar, and spacing above editor. */
   .editor-container {
-    flex: 1,
+    flex: 1;
     padding: 12px;
     min-height: calc(100vh - 200px);
     width: 100%;
@@ -341,13 +342,13 @@ https://svelte.dev/e/expected_token -->
   .editor-content {
     height: calc(100vh - 280px);
     width: 100%;
-    padding: 0,
+    padding: 0;
   }
 
   /* Responsive Design */
   @media (max-width: 768px) {
     .editor-page-container {
-      padding: 0,
+      padding: 0;
     }
     .editor-header {
       padding: 16px 12px;

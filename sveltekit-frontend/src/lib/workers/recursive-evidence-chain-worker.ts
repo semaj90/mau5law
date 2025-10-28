@@ -42,6 +42,26 @@ interface RelatedEvidence {
   strength: number;
   metadata: Record<string, unknown>; // changed from `any` to safer type
 }
+
+// New minimal response types for external APIs
+type EvidenceData = {
+  id?: string;
+  collectedAt?: string | number;
+  uploadedAt?: string | number;
+  createdAt?: string | number;
+  location?: string;
+  evidenceType?: string;
+  [key: string]: unknown;
+};
+
+type CorrelationResult = {
+  evidenceA?: string;
+  evidenceB?: string;
+  correlationType?: string;
+  strength?: number;
+  [key: string]: unknown;
+};
+
 // Main Recursive Evidence Chain Processor
 export class RecursiveEvidenceChainProcessor {
   // exported to avoid "defined but never used" lint error
@@ -123,15 +143,16 @@ export class RecursiveEvidenceChainProcessor {
           analysisTimestamp: new Date().toISOString(),
         },
       };
-    } catch (error: any) {
-      console.error(`Error processing evidence ${rootEvidenceId}:`, error);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error(`Error processing evidence ${rootEvidenceId}:`, msg);
       return {
         evidenceId: rootEvidenceId,
         depth: currentDepth,
         chainOfCustody: [],
         children: [],
         relationships: [],
-        legalImplications: [`error_processing: ${error?.message ?? String(error)}`],
+        legalImplications: [`error_processing: ${msg}`],
         confidence: 0.0,
         metadata: {
           processingTime: performance.now() - startTime,
@@ -142,16 +163,18 @@ export class RecursiveEvidenceChainProcessor {
     }
   }
 
-  private async fetchEvidenceData(evidenceId: string): Promise<any> {
+  private async fetchEvidenceData(evidenceId: string): Promise<EvidenceData> {
     try {
       const response = await fetch(`${this.apiBaseUrl}/evidence/${encodeURIComponent(evidenceId)}`);
       if (!response.ok) {
         throw new Error(`Failed to fetch evidence data: ${response.status} ${response.statusText}`);
       }
-      return await response.json();
-    } catch (error: any) {
-      console.warn(`Could not fetch evidence data for ${evidenceId}:`, error);
-      return { id: evidenceId, error: error?.message ?? String(error) };
+      // keep as unknown shape but typed as EvidenceData
+      return (await response.json()) as EvidenceData;
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.warn(`Could not fetch evidence data for ${evidenceId}:`, msg);
+      return { id: evidenceId, error: msg } as EvidenceData;
     }
   }
 
@@ -163,8 +186,9 @@ export class RecursiveEvidenceChainProcessor {
       }
       const data = await response.json();
       return data.chainOfCustody || [];
-    } catch (error) {
-      console.warn(`Could not fetch chain of custody for ${evidenceId}:`, error);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.warn(`Could not fetch chain of custody for ${evidenceId}:`, msg);
       return [];
     }
   }
@@ -184,17 +208,38 @@ export class RecursiveEvidenceChainProcessor {
       if (!response.ok) {
         return [];
       }
-      const correlationResults = await response.json();
+      const correlationResults = (await response.json()) as { correlations?: unknown };
+
+      const correlations = Array.isArray(correlationResults.correlations)
+        ? (correlationResults.correlations as unknown[])
+        : [];
+
       return (
-        correlationResults.correlations?.map((corr: any) => ({
-          evidenceId: corr.evidenceB === evidenceId ? corr.evidenceA : corr.evidenceB,
-          relationshipType: corr.correlationType,
-          strength: typeof corr.strength === 'number' ? corr.strength : 0,
-          metadata: corr,
-        })) || []
+        correlations
+          .map((c): RelatedEvidence | null => {
+            const corr = c as CorrelationResult;
+            const a = typeof corr.evidenceA === 'string' ? corr.evidenceA : undefined;
+            const b = typeof corr.evidenceB === 'string' ? corr.evidenceB : undefined;
+            const corrType = typeof corr.correlationType === 'string' ? corr.correlationType : 'unknown';
+            const strength = typeof corr.strength === 'number' ? corr.strength : 0;
+            const otherMetadata: Record<string, unknown> = { ...(corr as Record<string, unknown>) };
+
+            // if we can't resolve partner id, skip
+            const partnerId = b === evidenceId ? a : b === undefined ? a : b;
+            if (!partnerId) return null;
+
+            return {
+              evidenceId: partnerId,
+              relationshipType: corrType,
+              strength,
+              metadata: otherMetadata,
+            };
+          })
+          .filter((r): r is RelatedEvidence => r !== null) || []
       );
-    } catch (error) {
-      console.warn(`Could not find related evidence for ${evidenceId}:`, error);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.warn(`Could not find related evidence for ${evidenceId}:`, msg);
       return [];
     }
   }

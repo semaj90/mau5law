@@ -71,14 +71,14 @@ export const GET: RequestHandler = async ({ url }) => {
       timestamp: new Date().toISOString()
     })
   } catch (error: any) {
-    return json()
+    return json(
       {
         success: false,
-        error,: error.message,
-        timestamp,: new Date().toISOString()
+        error: error?.message ?? String(error),
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
-    )
+    );
   }
 }
 // POST /api/context7/docs - Fetch or search documentation
@@ -93,22 +93,23 @@ export const POST: RequestHandler = async ({ request }) => {
       case 'list':
         return await listDocumentation()
       default:
-        return json({,
+        return json(
+          {
             success: false,
-            error: `Unknown action: ${req.action}`
-          },)
+            error: `Unknown action: ${req.action}`,
+          },
           { status: 400 }
-        )
+        );
     }
-  }, catch (error: any) {
-    return json()
+  } catch (error: any) {
+    return json(
       {
         success: false,
-        error,: error.message,
-        timestamp,: new Date().toISOString()
+        error: error?.message ?? String(error),
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
-    )
+    );
   }
 }
 // Fetch documentation from Context7 MCP server
@@ -171,12 +172,13 @@ async function fetchDocumentation(req: DocFetchRequest): Promise<Response> {
 async function searchDocumentation(req: DocFetchRequest): Promise<Response> {
   try {
     if (!req.query) {
-      return json({
+      return json(
+        {
           success: false,
-          error: 'Query parameter is required for search'
-        },)
+          error: 'Query parameter is required for search',
+        },
         { status: 400 }
-      )
+      );
     }
     let searchEndpoint = `${GO_RAG_QUERY_SERVER}/api/rag/search`
     // Use Enhanced RAG service if requested

@@ -1,16 +1,20 @@
 // SIMD128 Vector Operations for Legal AI
 // Optimized vector preprocessing for WebGPU pipeline
-}
+
 export interface SIMDVectorProcessor {
   normalizeVectors(vectors: Float32Array, dimensions: number): Float32Array;
   computeDotProducts(vectorA: Float32Array, vectorB: Float32Array): number;
   vectorMagnitude(vector: Float32Array): number;
-  preprocessForWebGPU(embeddings: Float32Array[], targetDimensions: number): {
+  preprocessForWebGPU(
+    embeddings: Float32Array[],
+    targetDimensions: number
+  ): {
     normalizedVectors: Float32Array;
     magnitudes: Float32Array;
     metadata: VectorMetadata;
-  }
+  };
 }
+
 export interface VectorMetadata {
   vectorCount: number;
   dimensions: number;
@@ -18,21 +22,23 @@ export interface VectorMetadata {
   processingTime: number;
   simdSupported: boolean;
 }
+
 class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
-  private simdSupported: boolean;
+  protected simdSupported: boolean;
+
   constructor() {
     this.simdSupported = this.checkSIMDSupport();
   }
-  private checkSIMDSupport(): boolean {
+
+  // Make this public so external helpers can call it
+  public checkSIMDSupport(): boolean {
     try {
       // Check if SIMD128 is available
-      if (typeof WebAssembly !== 'undefined' && WebAssembly.validate) {
+      if (typeof WebAssembly !== 'undefined' && typeof WebAssembly.validate === 'function') {
         // Simple WASM module to test SIMD support
         const wasmBinary = new Uint8Array([
-          0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00,
-          0x01, 0x04, 0x01, 0x60, 0x00, 0x00,
-          0x03, 0x02, 0x01, 0x00,
-          0x0a, 0x04, 0x01, 0x02, 0x00, 0x0b
+          0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, 0x01, 0x04, 0x01, 0x60, 0x00, 0x00, 0x03, 0x02, 0x01, 0x00,
+          0x0a, 0x04, 0x01, 0x02, 0x00, 0x0b,
         ]);
         return WebAssembly.validate(wasmBinary);
       }
@@ -41,29 +47,25 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
       return false;
     }
   }
+
   normalizeVectors(vectors: Float32Array, dimensions: number): Float32Array {
-    const startTime = performance.now();
-    const vectorCount = vectors.length / dimensions;
-    const normalizedVectors = new Float32Array(vectors.length);
+    const vectorCount = Math.floor(vectors.length / dimensions);
     if (this.simdSupported && dimensions >= 4) {
       return this.normalizeVectorsSIMD(vectors, dimensions, vectorCount);
     } else {
       return this.normalizeVectorsScalar(vectors, dimensions, vectorCount);
     }
   }
-  private normalizeVectorsSIMD(
-    vectors: Float32Array;
-    dimensions: number,
-    vectorCount: number;
-  ): Float32Array {
+
+  private normalizeVectorsSIMD(vectors: Float32Array, dimensions: number, vectorCount: number): Float32Array {
     const normalizedVectors = new Float32Array(vectors.length);
     for (let i = 0; i < vectorCount; i++) {
       const offset = i * dimensions;
       const magnitude = this.vectorMagnitudeSIMD(vectors, offset, dimensions);
       if (magnitude > 0) {
-        // Process in SIMD128 chunks (4 floats at a time)
         let j = 0;
-        for (j <= dimensions - 4; j += 4) {
+        // SIMD-sized chunks (4 floats at a time)
+        for (; j <= dimensions - 4; j += 4) {
           const idx = offset + j;
           normalizedVectors[idx] = vectors[idx] / magnitude;
           normalizedVectors[idx + 1] = vectors[idx + 1] / magnitude;
@@ -71,7 +73,7 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
           normalizedVectors[idx + 3] = vectors[idx + 3] / magnitude;
         }
         // Handle remaining elements
-        for (j < dimensions; j++) {
+        for (; j < dimensions; j++) {
           const idx = offset + j;
           normalizedVectors[idx] = vectors[idx] / magnitude;
         }
@@ -79,15 +81,12 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
     }
     return normalizedVectors;
   }
-  private normalizeVectorsScalar(
-    vectors: Float32Array;
-    dimensions: number,
-    vectorCount: number;
-  ): Float32Array {
+
+  private normalizeVectorsScalar(vectors: Float32Array, dimensions: number, vectorCount: number): Float32Array {
     const normalizedVectors = new Float32Array(vectors.length);
     for (let i = 0; i < vectorCount; i++) {
       const offset = i * dimensions;
-      const magnitude = this.vectorMagnitude(vectors.slice(offset, offset + dimensions);
+      const magnitude = this.vectorMagnitude(vectors.slice(offset, offset + dimensions));
       if (magnitude > 0) {
         for (let j = 0; j < dimensions; j++) {
           normalizedVectors[offset + j] = vectors[offset + j] / magnitude;
@@ -96,24 +95,27 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
     }
     return normalizedVectors;
   }
+
   private vectorMagnitudeSIMD(vectors: Float32Array, offset: number, dimensions: number): number {
     let sumSquares = 0;
-    // Process in SIMD128 chunks
     let i = 0;
-    for (i <= dimensions - 4; i += 4) {
+    // SIMD-sized chunk accumulation
+    for (; i <= dimensions - 4; i += 4) {
       const idx = offset + i;
-      sumSquares += vectors[idx] * vectors[idx] +
-                   vectors[idx + 1] * vectors[idx + 1] +
-                   vectors[idx + 2] * vectors[idx + 2] +
-                   vectors[idx + 3] * vectors[idx + 3];
+      sumSquares +=
+        vectors[idx] * vectors[idx] +
+        vectors[idx + 1] * vectors[idx + 1] +
+        vectors[idx + 2] * vectors[idx + 2] +
+        vectors[idx + 3] * vectors[idx + 3];
     }
-    // Handle remaining elements
-    for (i < dimensions; i++) {
+    // Remainder
+    for (; i < dimensions; i++) {
       const val = vectors[offset + i];
       sumSquares += val * val;
     }
     return Math.sqrt(sumSquares);
   }
+
   vectorMagnitude(vector: Float32Array): number {
     if (this.simdSupported && vector.length >= 4) {
       return this.vectorMagnitudeSIMD(vector, 0, vector.length);
@@ -124,6 +126,7 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
     }
     return Math.sqrt(sumSquares);
   }
+
   computeDotProducts(vectorA: Float32Array, vectorB: Float32Array): number {
     if (vectorA.length !== vectorB.length) {
       throw new Error('Vector dimensions must match');
@@ -137,78 +140,90 @@ class SIMDVectorProcessorImpl implements SIMDVectorProcessor {
     }
     return dotProduct;
   }
+
   private computeDotProductsSIMD(vectorA: Float32Array, vectorB: Float32Array): number {
     let dotProduct = 0;
     const length = vectorA.length;
-    // Process in SIMD128 chunks
     let i = 0;
-    for (i <= length - 4; i += 4) {
-      dotProduct += vectorA[i] * vectorB[i] +
-                   vectorA[i + 1] * vectorB[i + 1] +
-                   vectorA[i + 2] * vectorB[i + 2] +
-                   vectorA[i + 3] * vectorB[i + 3];
+    for (; i <= length - 4; i += 4) {
+      dotProduct +=
+        vectorA[i] * vectorB[i] +
+        vectorA[i + 1] * vectorB[i + 1] +
+        vectorA[i + 2] * vectorB[i + 2] +
+        vectorA[i + 3] * vectorB[i + 3];
     }
-    // Handle remaining elements
-    for (i < length; i++) {
+    for (; i < length; i++) {
       dotProduct += vectorA[i] * vectorB[i];
     }
     return dotProduct;
   }
+
   preprocessForWebGPU(
     embeddings: Float32Array[],
-    targetDimensions: number;
+    targetDimensions: number
   ): {
     normalizedVectors: Float32Array;
     magnitudes: Float32Array;
     metadata: VectorMetadata;
   } {
-    const startTime = performance.now();
+    const startTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
     if (embeddings.length === 0) {
       throw new Error('No embeddings provided');
     }
     const vectorCount = embeddings.length;
-    const dimensions = embeddings[0].length;
-    // Validate all embeddings have same dimensions
-    for (let i = 1; i < embeddings.length; i++) {
-      if (embeddings[i].length !== dimensions) {
-        throw new Error(`Embedding ${i} has different dimensions: ${embeddings[i].length} vs ${dimensions}`);
-      }
+    const origDimensions = embeddings[0].length;
+
+    // Ensure targetDimensions is reasonable; fall back to original if invalid
+    if (!Number.isInteger(targetDimensions) || targetDimensions <= 0) {
+      targetDimensions = origDimensions;
     }
-    // Flatten embeddings into single array for SIMD processing
-    const flattenedVectors = new Float32Array(vectorCount * dimensions);
+
+    // Flatten embeddings into single array sized by targetDimensions.
+    // Pad with zeros or truncate as needed so all vectors are targetDimensions long.
+    const flattenedVectors = new Float32Array(vectorCount * targetDimensions);
     for (let i = 0; i < vectorCount; i++) {
-      flattenedVectors.set(embeddings[i], i * dimensions);
+      const emb = embeddings[i];
+      const len = Math.min(emb.length, targetDimensions);
+      // copy available values
+      flattenedVectors.set(emb.subarray(0, len), i * targetDimensions);
+      // remaining slots (if any) are left as 0 (padding)
     }
-    // Normalize vectors using SIMD
-    const normalizedVectors = this.normalizeVectors(flattenedVectors, dimensions);
-    // Compute magnitudes for reference
+
+    // Normalize vectors using SIMD or scalar fallback (now using targetDimensions)
+    const normalizedVectors = this.normalizeVectors(flattenedVectors, targetDimensions);
+
+    // Compute magnitudes for reference using the adjusted (padded/truncated) vectors
     const magnitudes = new Float32Array(vectorCount);
     for (let i = 0; i < vectorCount; i++) {
-      const offset = i * dimensions;
-      magnitudes[i] = this.vectorMagnitude(flattenedVectors.slice(offset, offset + dimensions);
+      const offset = i * targetDimensions;
+      // vectorMagnitude expects a Float32Array of the slice range
+      magnitudes[i] = this.vectorMagnitude(flattenedVectors.slice(offset, offset + targetDimensions));
     }
-    const processingTime = performance.now() - startTime;
+
+    const processingTime = (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime;
     const metadata: VectorMetadata = {
       vectorCount,
-      dimensions,
+      dimensions: targetDimensions,
       isNormalized: true,
       processingTime,
-      simdSupported: this.simdSupported
-    }
+      simdSupported: this.simdSupported,
+    };
+
     return {
       normalizedVectors,
       magnitudes,
-      metadata
-    }
+      metadata,
+    };
   }
 }
+
 // Legal AI specific vector operations
 export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
   // Legal document similarity with domain-specific weights
   computeLegalSimilarity(
     queryEmbedding: Float32Array,
     documentEmbeddings: Float32Array[],
-    legalDomainWeights?: Float32Array;
+    legalDomainWeights?: Float32Array
   ): Array<{ index: number; similarity: number; confidence: number }> {
     const results: Array<{ index: number; similarity: number; confidence: number }> = [];
     for (let i = 0; i < documentEmbeddings.length; i++) {
@@ -220,11 +235,7 @@ export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
       let similarity = dotProduct / (queryMagnitude * docMagnitude);
       // Apply legal domain weights if provided
       if (legalDomainWeights && legalDomainWeights.length === queryEmbedding.length) {
-        const weightedDotProduct = this.computeWeightedDotProduct(
-          queryEmbedding,
-          docEmbedding,
-          legalDomainWeights
-        );
+        const weightedDotProduct = this.computeWeightedDotProduct(queryEmbedding, docEmbedding, legalDomainWeights);
         similarity = weightedDotProduct / (queryMagnitude * docMagnitude);
       }
       // Confidence based on similarity strength and vector quality
@@ -234,23 +245,19 @@ export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
     // Sort by similarity descending
     return results.sort((a, b) => b.similarity - a.similarity);
   }
-  private computeWeightedDotProduct(
-    vectorA: Float32Array,
-    vectorB: Float32Array,
-    weights: Float32Array;
-  ): number {
+
+  private computeWeightedDotProduct(vectorA: Float32Array, vectorB: Float32Array, weights: Float32Array): number {
     let weightedDotProduct = 0;
     if (this.simdSupported && vectorA.length >= 4) {
-      // SIMD version for weighted dot product
       let i = 0;
-      for (i <= vectorA.length - 4; i += 4) {
+      for (; i <= vectorA.length - 4; i += 4) {
         weightedDotProduct +=
-          (vectorA[i] * vectorB[i] * weights[i]) +
-          (vectorA[i + 1] * vectorB[i + 1] * weights[i + 1]) +
-          (vectorA[i + 2] * vectorB[i + 2] * weights[i + 2]) +
-          (vectorA[i + 3] * vectorB[i + 3] * weights[i + 3]);
+          vectorA[i] * vectorB[i] * weights[i] +
+          vectorA[i + 1] * vectorB[i + 1] * weights[i + 1] +
+          vectorA[i + 2] * vectorB[i + 2] * weights[i + 2] +
+          vectorA[i + 3] * vectorB[i + 3] * weights[i + 3];
       }
-      for (i < vectorA.length; i++) {
+      for (; i < vectorA.length; i++) {
         weightedDotProduct += vectorA[i] * vectorB[i] * weights[i];
       }
     } else {
@@ -260,21 +267,19 @@ export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
     }
     return weightedDotProduct;
   }
-  private calculateConfidence(
-    similarity: number,
-    queryMagnitude: number,
-    docMagnitude: number;
-  ): number {
+
+  private calculateConfidence(similarity: number, queryMagnitude: number, docMagnitude: number): number {
     // Confidence based on similarity strength and vector quality
     const similarityStrength = Math.abs(similarity);
     const magnitudeQuality = Math.min(queryMagnitude, docMagnitude) / Math.max(queryMagnitude, docMagnitude);
     return similarityStrength * magnitudeQuality;
   }
+
   // Prepare embeddings for WebGPU with legal domain optimizations
   prepareForLegalWebGPU(
     caseEmbeddings: Float32Array[],
     evidenceEmbeddings: Float32Array[],
-    legalDomainWeights?: Float32Array;
+    _legalDomainWeights?: Float32Array
   ): {
     caseData: Float32Array;
     evidenceData: Float32Array;
@@ -284,14 +289,14 @@ export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
       dimensions: number;
       totalVectors: number;
       processingTime: number;
-    }
+    };
   } {
-    const startTime = performance.now();
+    const startTime = typeof performance !== 'undefined' ? performance.now() : Date.now();
     // Process case embeddings
     const casePreprocessed = this.preprocessForWebGPU(caseEmbeddings, caseEmbeddings[0].length);
     // Process evidence embeddings
     const evidencePreprocessed = this.preprocessForWebGPU(evidenceEmbeddings, evidenceEmbeddings[0].length);
-    const processingTime = performance.now() - startTime;
+    const processingTime = (typeof performance !== 'undefined' ? performance.now() : Date.now()) - startTime;
     return {
       caseData: casePreprocessed.normalizedVectors,
       evidenceData: evidencePreprocessed.normalizedVectors,
@@ -300,17 +305,20 @@ export class LegalEmbeddingProcessor extends SIMDVectorProcessorImpl {
         evidenceCount: evidenceEmbeddings.length,
         dimensions: caseEmbeddings[0].length,
         totalVectors: caseEmbeddings.length + evidenceEmbeddings.length,
-        processingTime
-      }
-    }
+        processingTime,
+      },
+    };
   }
 }
+
 // Singleton instance for the application
 export const simdVectorProcessor = new LegalEmbeddingProcessor();
+
 // Export utility functions
 export function createLegalEmbeddingProcessor(): LegalEmbeddingProcessor {
   return new LegalEmbeddingProcessor();
 }
+
 export function checkSIMDSupport(): boolean {
   return new SIMDVectorProcessorImpl().checkSIMDSupport();
 }

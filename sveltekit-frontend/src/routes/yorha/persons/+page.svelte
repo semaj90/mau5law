@@ -6,7 +6,19 @@
   import Button from '$lib/components/ui/Button.svelte';
   import Input from '$lib/components/ui/Input.svelte';
   import Badge from '$lib/components/ui/Badge.svelte';
-  import { Search, Plus, Eye, Edit, Trash2, AlertTriangle, Shield } from 'lucide-svelte';
+  import * as Lucide from 'lucide-svelte';
+  function resolveIcon(name: string) {
+    const ns = Lucide as any;
+    // try exact name, then lowercase, then default export (some builds), then undefined
+    return ns[name] ?? ns[name.toLowerCase()] ?? ns.default?.[name] ?? ns.default ?? undefined;
+  }
+  const Search = resolveIcon('Search');
+  const Plus = resolveIcon('Plus');
+  const Eye = resolveIcon('Eye');
+  const Edit = resolveIcon('Edit');
+  const Trash2 = resolveIcon('Trash2');
+  const AlertTriangle = resolveIcon('AlertTriangle');
+  const Shield = resolveIcon('Shield');
   // Persons of Interest data
   let persons = $state([
     {

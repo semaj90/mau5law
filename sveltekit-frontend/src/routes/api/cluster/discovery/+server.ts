@@ -85,9 +85,9 @@ export const POST: RequestHandler = async ({ request, url }) => {
         const { service } = body
         if (!service || !service.name || !service.port) {
           return json({
-            success: false,
-            error: 'Service name and port are required'
-          }, { status: 400 })
+            status: 'error',
+            message: 'No discovery results'
+          })
         }
         const registered = await registerService(service)
         return json({
@@ -151,7 +151,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
         })
       }
       default:
-        return json({,
+        return json({
           success: false,
           error: `Unknown action: ${action}`,
           availableActions: ['register', 'deregister', 'health-check', 'failover', 'update-config', 'discover']

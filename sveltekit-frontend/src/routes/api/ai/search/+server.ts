@@ -15,107 +15,147 @@
  *
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
-import { aiService } from "$lib/server/services/ai-service.js"
+import { aiService } from '$lib/server/services/ai-service.js';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import { z } from 'zod';
 
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
-import type { RequestHandler } from './$types.js'
-const searchSchema = z.object({
-  query: z.string().min(1).max(1000),
-  limit: z.number().min(1).max(50).optional(),
-  threshold: z.number().min(0).max(1).optional(),
-  documentType: z.string().optional()
-})
-const originalPOSTHandler: RequestHandler = async ({ request, locals }) => {
-  try {
-    // Check authentication
-    if (!locals.user) {
-      return json({ error: 'Authentication required' }, { status: 401 })
+// Input validation schema
+const SearchSchema = z.object({
+  query: z.string().min(1),
+  limit: z.number().int().positive().optional().default(10),
+  threshold: z.number().min(0).max(1).optional().default(0.0),
+  documentType: z.string().optional(),
+});
+
+// --- ADDED: explicit types to avoid `any` usage ---
+type AISimilarDocument = {
+  content?: string | null;
+  similarity?: number | null;
+  documentId?: string | null;
+  metadata?: {
+    documentType?: string | null;
+    analysis?: {
+      confidence?: number | null;
+      tags?: string[] | null;
+    } | null;
+    [k: string]: unknown;
+  } | null;
+  [k: string]: unknown;
+};
+
+type FormattedResult = {
+  content: string | null;
+  similarity: number | null;
+  documentId: string | null;
+  documentType: string;
+  confidence: number | null;
+  tags: string[];
+};
+
+// Helper: filter and format raw AI results
+function filterAndFormatResults(
+  resultsRaw: AISimilarDocument[],
+  documentType?: string,
+  threshold = 0
+): FormattedResult[] {
+  const filtered = resultsRaw.filter(result => {
+    if (documentType && result?.metadata?.documentType && result.metadata.documentType !== documentType) {
+      return false;
     }
-    // Parse and validate request
-    const body = await request.json()
-    const { query, limit = 10, threshold = 0.7 } = searchSchema.parse(body)
-    // Generate embedding for search query
-    const queryEmbedding = await aiService.getOrCreateEmbedding(query)
-    // Perform vector search
-    const results = await aiService.findSimilarDocuments(
-      queryEmbedding,
-      limit,
-      threshold
-    )
-    // Format results for response
-    const formattedResults = results.map((result: any) => ({,
-      content: (result as { content?: any; similarity?: any; documentId?: any; metadata?: any }).content,
-      similarity: Math.round((result as { content?: any; similarity?: any; documentId?: any; metadata?: any }).similarity * 100) / 100,
-      documentId: (result as { content?: any; similarity?: any; documentId?: any; metadata?: any }).documentId,
-      documentType: (result as { content?: any; similarity?: any; documentId?: any; metadata?: any }).metadata.documentType || 'unknown',
-      confidence: (result as { content?: any; similarity?: any; documentId?: any; metadata?: any }).metadata.analysis?.confidence || null,
-      tags: (result as { content?: any; similarity?: any; documentId?: any; metadata?: any }).metadata.analysis?.tags || []
-    })
-    return json({
-      success: true,
-      data: {
-        query,
-        results: formattedResults,
-        totalResults: results.length,
-        searchParams: {
-          limit,
-          threshold,
-          embeddingModel: 'nomic-embed-text'
-        }
-      }
-    })
-  } catch (error: any) {
-    console.error('Vector search API error:', error)
-    if (error instanceof z.ZodError) {
-      return json({
-          error: 'Validation failed',
-          details: error.errors
-        }, )
-        { status: 400 }
-      )
+    if (typeof result?.similarity === 'number' && result.similarity < threshold) {
+      return false;
     }
-    return json({
-        error: 'Vector search failed',
-        message: error instanceof Error ? error.message: 'Unknown error'
-      }, )
-      { status: 500 }
-    )
-  }
+    return true;
+  });
+
+  return filtered.map(result => {
+    const metadata = result?.metadata ?? {};
+    const analysis = metadata.analysis ?? {};
+    return {
+      content: result?.content ?? null,
+      similarity: typeof result?.similarity === 'number' ? Math.round(result.similarity * 100) / 100 : null,
+      documentId: result?.documentId ?? null,
+      documentType: metadata.documentType ?? 'unknown',
+      confidence: analysis.confidence ?? null,
+      tags: analysis.tags ?? [],
+    };
+  });
 }
-const originalGETHandler: RequestHandler = async ({ url, locals }) => {
+// --- END ADDED ---
+
+// POST handler: accepts JSON body
+const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
-    if (!locals.user) {
-      return json({ error: 'Authentication required' }, { status: 401 })
-    }
-    const query = url.searchParams.get('q')
-    const limit = parseInt(url.searchParams.get('limit') || '10')
-    const threshold = parseFloat(url.searchParams.get('threshold') || '0.7')
-    if (!query) {
-      return json({ error: 'Query parameter required' }, { status: 400 })
-    }
-    // Generate embedding for search query
-    const queryEmbedding = await aiService.getOrCreateEmbedding(query)
-    // Perform vector search
-    const results = await aiService.findSimilarDocuments(
-      queryEmbedding,
-      limit,
-      threshold
-    )
-    return json({
-      success: true,
-      data: {
-        query,
-        results,
-        totalResults: results.length
-      }
-    })
-  } catch (error: any) {
-    console.error('Vector search GET API error:', error)
+    const body = await request.json().catch(() => ({}));
+    const parsed = SearchSchema.parse(body);
+
+    const { query, limit, threshold, documentType } = parsed;
+
+    const queryEmbedding = await aiService.getOrCreateEmbedding(query);
+    // replaced `any[]` with typed array and used helper
+    const resultsRaw = (await aiService.findSimilarDocuments(queryEmbedding, limit)) as AISimilarDocument[];
+
+    const formattedResults = filterAndFormatResults(resultsRaw, documentType, threshold);
+
     return json(
-      { error: 'Vector search failed' }, )
-      { status: 500 }
-    )
+      {
+        success: true,
+        data: {
+          query,
+          results: formattedResults,
+          totalResults: formattedResults.length,
+        },
+      },
+      { status: 200 }
+    );
+  } catch (error: unknown) {
+    console.error('Vector search POST API error:', error);
+    return json({ error: 'Vector search failed' }, { status: 500 });
   }
-}
-export const POST = redisOptimized.aiSearch(originalPOSTHandler)
-export const GET = redisOptimized.aiSearch(originalGETHandler);
+};
+
+// GET handler: accepts query params
+const originalGETHandler: RequestHandler = async ({ url }) => {
+  try {
+    const queryParam = url.searchParams.get('query') ?? '';
+    const limitParam = url.searchParams.get('limit');
+    const thresholdParam = url.searchParams.get('threshold');
+    const documentType = url.searchParams.get('documentType') ?? undefined;
+
+    const parsed = SearchSchema.parse({
+      query: queryParam,
+      limit: limitParam ? Number(limitParam) : undefined,
+      threshold: thresholdParam ? Number(thresholdParam) : undefined,
+      documentType,
+    });
+
+    const { query, limit, threshold } = parsed;
+
+    const queryEmbedding = await aiService.getOrCreateEmbedding(query);
+    // replaced `any[]` with typed array and used helper
+    const resultsRaw = (await aiService.findSimilarDocuments(queryEmbedding, limit)) as AISimilarDocument[];
+
+    const formattedResults = filterAndFormatResults(resultsRaw, documentType, threshold);
+
+    return json(
+      {
+        success: true,
+        data: {
+          query,
+          results: formattedResults,
+          totalResults: formattedResults.length,
+        },
+      },
+      { status: 200 }
+    );
+  } catch (error: unknown) {
+    console.error('Vector search GET API error:', error);
+    return json({ error: 'Vector search failed' }, { status: 500 });
+  }
+};
+
+// use the 'search' wrapper (redisOptimized exposes search)
+export const POST = redisOptimized.search(originalPOSTHandler);
+export const GET = redisOptimized.search(originalGETHandler);

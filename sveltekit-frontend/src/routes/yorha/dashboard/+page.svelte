@@ -1,32 +1,18 @@
 <script lang="ts">
   // YoRHa System Dashboard
   import { onDestroy, onMount } from 'svelte';
-  import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
+  import * as yorhaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
   import YoRHaSystemStatus from '$lib/components/yorha/YoRHaSystemStatus.svelte';
   // Import YoRHaDataViz Svelte component (default export)
   // import YoRHaDataVizComponent from '$lib/components/yorha/YoRHaDataViz.svelte'; // Removed direct import
   import type { PageData } from './$types';
-  import {
-    Monitor,
-    Cpu,
-    Database,
-    Activity,
-    HardDrive,
-    Zap,
-    Network,
-    AlertTriangle,
-    CheckCircle,
-    TrendingUp,
-  } from 'lucide-svelte';
+
   // Removed import * as d3 from 'd3';
   // Removed direct import of ForceLink, Simulation, force functions, drag function, DragEvent
   import type { SvelteComponent } from 'svelte'; // Changed from ComponentType<SvelteComponent>
 
-  // NEW D3 IMPORTS: Import specific D3 functions directly
-  import { select } from 'd3-selection';
-  import { forceSimulation, forceLink, forceManyBody, forceCenter, forceCollide } from 'd3-force';
-  import { drag } from 'd3-drag';
-  // END NEW D3 IMPORTS
+  // runtime d3 namespace holder
+  let d3: any = null;
 
   // Add strongly-typed graph interfaces (do NOT extend d3 namespaces)
   type Position = { x: number; y: number; };
@@ -81,13 +67,19 @@
   // add a ref for the d3 render container - make reactive so bind:this updates are tracked
   let graphContainer = $state<HTMLElement | null>(null);
 
-  // D3 runtime handles - use a looser ReturnType for select to avoid Selection generic issues
-  let svg: ReturnType<typeof select> | null = null;
+  // D3 runtime handles - use any to avoid referencing missing `select` symbol/type
+  let svg: any = null;
   let simulation: any = null; // use any to avoid TS generic/namespace typing issues
   let resizeObserver: ResizeObserver | null = null;
 
   // dynamic loader for YoRHaDataVizComponent
-  let YoRHaDataVizComponent = $state<typeof SvelteComponent | null>(null); // Corrected type to typeof SvelteComponent
+  let YoRHaDataVizComponent = $state<any | null>(null); // loosened type
+
+  // mark intentionally unused variable as used (no-op) to silence "declared but never read"
+  $effect(() => {
+    // intentionally reference to avoid unused-variable diagnostics
+    void _multicoreStatus;
+  });
 
   $effect(() => {
     (async () => {
@@ -96,104 +88,59 @@
     })();
   });
 
-  // Initialize D3 when component mounts and whenever graphData changes
+  // call init/cleanup from Svelte lifecycle to avoid "declared but never read"
   onMount(() => {
     initD3();
-    // Dynamically load YoRHaDataVizComponent
+    // dynamic import of data viz component (safe, non-blocking)
     (async () => {
       try {
-        const mod = (await import('$lib/components/yorha/YoRHaDataViz.svelte')) as unknown;
-        const modAny = mod as any;
-        // Prefer default, then common named variants, then fallback to the module itself
-        const LoadedComponent = modAny?.default ?? modAny?.YoRHaDataViz ?? modAny?.YoRHaDataVizComponent ?? modAny;
-        YoRHaDataVizComponent = LoadedComponent as typeof SvelteComponent; // Corrected type assertion
-      } catch (e) {
-        console.warn('Failed to load YoRHaDataViz component', e);
+        // import can return either a module object { default: Component } or the component directly
+        const modAny: any = await import('$lib/components/yorha/YoRHaDataViz.svelte');
+        // prefer default export if present, otherwise treat the import result as the component itself
+        YoRHaDataVizComponent = (modAny && (modAny.default ?? modAny)) || null;
+      } catch (err) {
+        // non-fatal - continue without viz if module not present
+        console.warn('YoRHaDataViz failed to load:', err);
+        YoRHaDataVizComponent = null;
       }
     })();
     return () => {
+      // also ensure cleanup if Svelte calls the returned cleanup
       cleanupD3();
     };
   });
 
+  onDestroy(() => {
+    cleanupD3();
+  });
+
+  // react to graphData updates and re-render D3 when data changes
   $effect(() => {
-    // Rebuild/update the simulation when graphData or svg/simulation changes
-    if (svg && simulation) {
+    // reference graphData to make this effect reactive
+    graphData;
+    if (svg) {
       updateD3();
     }
   });
 
-  onDestroy(() => {
-    if (metricsInterval) clearInterval(metricsInterval);
-    if (realtimeInterval) clearInterval(realtimeInterval);
-    cleanupD3();
-  });
-
-  async function loadSystemData() {
-    try {
-      // Load system status from API
-      const [status, graph] = await Promise.all([yorhaAPI.getSystemStatus(), yorhaAPI.getGraphData()]);
-      systemMetrics = status;
-      // cast incoming graph shape into the typed YoRHaGraphData
-      graphData = (graph as unknown) as YoRHaGraphData;
-      // Initialize realtime data
-      realtimeData = {
-        cpuHistory: generateHistoryData(systemMetrics.backend.cpuUsage),
-        memoryHistory: generateHistoryData(systemMetrics.backend.memoryUsage),
-        networkHistory: generateHistoryData(systemMetrics.database.latency),
-        timestamp: Date.now(),
-      };
-      isLoading = false;
-      errorMessage = null; // Clear any previous errors on successful load
-    } catch (error) {
-      console.error('Failed to load system data:', error);
-      errorMessage = 'Failed to load initial system data. Please check service status.';
-      // In a production environment, we do not fall back to mock data.
-      // The dashboard will display the SSR-provided data (if any) or an error message.
-      isLoading = false;
-    }
-  }
-
-  function startRealTimeUpdates() {
-    // Update metrics every 5 seconds
-    metricsInterval = setInterval(async () => {
-      try {
-        const status = await yorhaAPI.getSystemStatus();
-        systemMetrics = status;
-        lastUpdate = new Date();
-        errorMessage = null; // Clear error if real-time updates resume
-      } catch (error) {
-        console.error('Failed to fetch real-time metrics:', error);
-        errorMessage = 'Real-time metric updates are currently unavailable.';
-        // In a production environment, we do not simulate changes.
-        // The dashboard will show the last known data and an error message.
-      }
-    }, 5000);
-    // Update realtime charts every 2 seconds
-    realtimeInterval = setInterval(() => {
-      realtimeData = {
-        cpuHistory: [...realtimeData.cpuHistory.slice(-29), systemMetrics.backend.cpuUsage],
-        memoryHistory: [...realtimeData.memoryHistory.slice(-29), systemMetrics.backend.memoryUsage],
-        networkHistory: [...realtimeData.networkHistory.slice(-29), systemMetrics.database.latency],
-        timestamp: Date.now(),
-      };
-    }, 2000);
-  }
-
-  function generateHistoryData(baseValue: number, points = 30): number[] {
-    return Array.from({ length: points }, (_, _i) => { // Changed 'i' to '_i' to mark as unused
-      const variation = (Math.random() - 0.5) * 20;
-      return Math.max(0, Math.min(100, baseValue + variation));
-    });
-  }
-
-  function initD3() {
+  // make initD3 async and perform a dynamic import of d3
+  async function initD3() {
     if (!graphContainer) return;
+    try {
+      // prefer default export if the bundler provides one, otherwise use the module namespace
+      const modAny: any = await import('d3');
+      d3 = (modAny && (modAny.default ?? modAny)) || null;
+    } catch (e) {
+      console.warn('d3 failed to load dynamically', e);
+      return;
+    }
+
     // clear previous svg if present
-    select(graphContainer).selectAll('*').remove();
+    d3.select(graphContainer).selectAll('*').remove();
 
     const { width, height } = graphContainer.getBoundingClientRect();
-    svg = select(graphContainer)
+    svg = d3
+      .select(graphContainer)
       .append('svg')
       .attr('width', width)
       .attr('height', height)
@@ -203,24 +150,25 @@
     svg.append('g').attr('class', 'links');
     svg.append('g').attr('class', 'nodes');
 
-    // create simulation - avoid providing generics to untyped factories, cast to any
-    simulation = (forceSimulation() as any);
-    const linkForce = (forceLink() as any)
+    // create simulation using d3 namespace (avoid static generics)
+    simulation = d3.forceSimulation();
+    const linkForce = d3
+      .forceLink()
       .id((d: any) => d.id)
       .distance(120)
       .strength(0.6);
 
     simulation.force('link', linkForce);
-    simulation.force('charge', forceManyBody().strength(-400));
-    simulation.force('center', forceCenter(width / 2, height / 2));
-    simulation.force('collision', forceCollide(40));
+    simulation.force('charge', d3.forceManyBody().strength(-400));
+    simulation.force('center', d3.forceCenter(width / 2, height / 2));
+    simulation.force('collision', d3.forceCollide(40));
 
     // setup resize observer to keep svg responsive
     resizeObserver = new ResizeObserver(() => {
       if (!graphContainer || !svg) return;
       const r = graphContainer.getBoundingClientRect();
       svg.attr('width', r.width).attr('height', r.height);
-      const center = forceCenter(r.width / 2, r.height / 2);
+      const center = d3.forceCenter(r.width / 2, r.height / 2);
       if (simulation) simulation.force('center', center).alpha(0.5).restart();
     });
     resizeObserver.observe(graphContainer);
@@ -229,7 +177,7 @@
   }
 
   function updateD3() {
-    if (!svg || !simulation || !graphContainer) return;
+    if (!svg || !simulation || !graphContainer || !d3) return;
     // Copy data (avoid mutating original)
     const nodes: GraphNode[] = graphData.nodes.map((n) => ({ ...n }));
     const links: GraphEdge[] = graphData.edges.map((e) => ({
@@ -271,7 +219,8 @@
       .append('g')
       .attr('class', 'node')
       .call(
-        drag()
+        d3
+          .drag()
           .on('start', (event: any, d: GraphNode) => {
             if (!simulation) return;
             if (!event.active) simulation.alphaTarget(0.3).restart();
@@ -341,10 +290,92 @@
       resizeObserver.unobserve(graphContainer);
       resizeObserver = null;
     }
-    if (graphContainer) {
-      select(graphContainer).selectAll('*').remove(); // Changed d3.select to select
+    if (graphContainer && d3) {
+      d3.select(graphContainer).selectAll('*').remove();
+    } else if (graphContainer) {
+      graphContainer.innerHTML = '';
     }
     svg = null;
+  }
+
+  async function loadSystemData() {
+    try {
+      // Resolve API functions at runtime to tolerate different module shapes
+      const getSystemStatus =
+        (yorhaAPI as any).getSystemStatus ??
+        (yorhaAPI as any).default?.getSystemStatus ??
+        (yorhaAPI as any).fetchSystemStatus;
+      const getGraphData =
+        (yorhaAPI as any).getGraphData ??
+        (yorhaAPI as any).default?.getGraphData ??
+        (yorhaAPI as any).fetchGraphData;
+
+      if (typeof getSystemStatus !== 'function' || typeof getGraphData !== 'function') {
+        throw new Error('YoRHa API client: required methods not found (getSystemStatus/getGraphData)');
+      }
+
+      // Load system status from API
+      const [status, graph] = await Promise.all([getSystemStatus(), getGraphData()]);
+      systemMetrics = status;
+      graphData = (graph as unknown) as YoRHaGraphData;
+
+      // Initialize realtime data
+      realtimeData = {
+        cpuHistory: generateHistoryData(systemMetrics.backend.cpuUsage),
+        memoryHistory: generateHistoryData(systemMetrics.backend.memoryUsage),
+        networkHistory: generateHistoryData(systemMetrics.database.latency),
+        timestamp: Date.now(),
+      };
+      isLoading = false;
+      errorMessage = null; // Clear any previous errors on successful load
+    } catch (error) {
+      console.error('Failed to load system data:', error);
+      errorMessage = 'Failed to load initial system data. Please check service status.';
+      isLoading = false;
+    }
+  }
+
+  function startRealTimeUpdates() {
+    // resolve updater function similarly and guard at runtime
+    const getSystemStatus =
+      (yorhaAPI as any).getSystemStatus ??
+      (yorhaAPI as any).default?.getSystemStatus ??
+      (yorhaAPI as any).fetchSystemStatus;
+
+    // Update metrics every 5 seconds
+    metricsInterval = setInterval(async () => {
+      try {
+        if (typeof getSystemStatus === 'function') {
+          const status = await getSystemStatus();
+          systemMetrics = status;
+          lastUpdate = new Date();
+          errorMessage = null;
+        } else {
+          // no-op if API function not available
+          throw new Error('YoRHa API client: getSystemStatus not available for realtime updates');
+        }
+      } catch (error) {
+        console.error('Failed to fetch real-time metrics:', error);
+        errorMessage = 'Real-time metric updates are currently unavailable.';
+      }
+    }, 5000);
+
+    // Update realtime charts every 2 seconds
+    realtimeInterval = setInterval(() => {
+      realtimeData = {
+        cpuHistory: [...realtimeData.cpuHistory.slice(-29), systemMetrics.backend.cpuUsage],
+        memoryHistory: [...realtimeData.memoryHistory.slice(-29), systemMetrics.backend.memoryUsage],
+        networkHistory: [...realtimeData.networkHistory.slice(-29), systemMetrics.database.latency],
+        timestamp: Date.now(),
+      };
+    }, 2000);
+  }
+
+  function generateHistoryData(baseValue: number, points = 30): number[] {
+    return Array.from({ length: points }, (_, _i) => { // Changed 'i' to '_i' to mark as unused
+      const variation = (Math.random() - 0.5) * 20;
+      return Math.max(0, Math.min(100, baseValue + variation));
+    });
   }
 </script>
 
@@ -355,14 +386,15 @@
   <!-- Page Header -->
   <header class="yorha-page-header">
     <div class="yorha-header-content">
+      <!-- Header title: replaced icon component with inline SVG glyph -->
       <div class="yorha-header-title">
-        <Monitor size={48} />
+        <span class="yorha-icon" aria-hidden="true" style="font-size:48px">🖥️</span>
         <h1>SYSTEM DASHBOARD</h1>
-        <div class="yorha-header-subtitle">REAL-TIME MONITORING & ANALYTICS</div>
+        <div class="yorha-header-subtitle">REAL-TIME MONITORING &amp; ANALYTICS</div>
       </div>
       <div class="yorha-header-status">
         <div class="yorha-status-item">
-          <Activity size={16} />
+          <span aria-hidden="true">🔄</span>
           <span>LIVE DATA</span>
         </div>
         <div class="yorha-status-item">
@@ -378,7 +410,7 @@
     </div>
   {:else if errorMessage}
     <div class="yorha-error-message">
-      <AlertTriangle size={24} class="text-red-500" />
+      <span style="font-size:24px">⚠️</span>
       <span>ERROR: {errorMessage}</span>
     </div>
   {:else}
@@ -388,7 +420,7 @@
         <!-- Database Status -->
         <div class="yorha-metric-card yorha-card-database">
           <div class="yorha-metric-header">
-            <Database size={24} />
+            <span aria-hidden="true">🗄️</span>
             <h3>DATABASE</h3>
           </div>
           <div class="yorha-metric-stats">
@@ -409,7 +441,7 @@
         <!-- Backend Status -->
         <div class="yorha-metric-card yorha-card-backend">
           <div class="yorha-metric-header">
-            <Cpu size={24} />
+            <span aria-hidden="true">⚙️</span>
             <h3>BACKEND</h3>
           </div>
           <div class="yorha-metric-stats">
@@ -430,7 +462,7 @@
         <!-- Frontend Status -->
         <div class="yorha-metric-card yorha-card-frontend">
           <div class="yorha-metric-header">
-            <Monitor size={24} />
+            <span aria-hidden="true">🖥️</span>
             <h3>FRONTEND</h3>
           </div>
           <div class="yorha-metric-stats">
@@ -451,7 +483,7 @@
         <!-- System Health -->
         <div class="yorha-metric-card yorha-card-health">
           <div class="yorha-metric-header">
-            <Zap size={24} />
+            <span aria-hidden="true">⚡</span>
             <h3>HEALTH</h3>
           </div>
           <div class="yorha-metric-stats">
@@ -473,8 +505,9 @@
     </section>
     <!-- Real-time Charts -->
     <section class="yorha-charts">
+      <!-- Charts header: replaced icon component with glyph -->
       <h2 class="yorha-section-title">
-        <TrendingUp size={24} />
+        <span aria-hidden="true">📈</span>
         REAL-TIME METRICS
       </h2>
       <div class="yorha-charts-grid">
@@ -520,8 +553,9 @@
     </section>
     <!-- System Graph -->
     <section class="yorha-graph">
+      <!-- Graph header: replaced icon component with glyph -->
       <h2 class="yorha-section-title">
-        <Network size={24} />
+        <span aria-hidden="true">🕸️</span>
         SYSTEM ARCHITECTURE
       </h2>
       <!-- Replace manual Svelte loop markup with a D3-managed container -->

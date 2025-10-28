@@ -1,15 +1,17 @@
-
 /**
  * XState Machine for AI Summary Reading and Analysis
  * Handles evidence reports, document summaries, and synthesis workflows
  */
-import { createMachine, assign, fromPromise } from "xstate";
-}
+import { createMachine, assign } from '$lib/shims/xstate';
+// Local minimal types to avoid hard dependency on external xstate type packages during edit/CI
+type DoneInvokeEvent<T> = { output: T };
+type AnyEventObject = Record<string, unknown>;
+
 export interface AISummaryContext {
   // Document/Evidence data
   documentId: string | null;
   caseId: string | null;
-  documentType: "evidence" | "report" | "contract" | "case_law" | "general";
+  documentType: 'evidence' | 'report' | 'contract' | 'case_law' | 'general';
   // Summary data
   originalContent: string;
   summary: string | null;
@@ -24,9 +26,9 @@ export interface AISummaryContext {
     processingTime: number;
   } | null;
   ragOutput: {
-    relevantDocs: any[];
+    relevantDocs: RelevantDoc[];
     contextSummary: string;
-    searchMetrics: any;
+    searchMetrics: SearchMetrics | null;
   } | null;
   userActivity: {
     recentQueries: string[];
@@ -40,11 +42,11 @@ export interface AISummaryContext {
     userActivityComplete: boolean;
     fusejsComplete: boolean;
     finalSynthesisComplete: boolean;
-  }
+  };
   // Reading state
   currentSection: number;
   sections: SummarySection[];
-  readingSpeed: number; // WPM,
+  readingSpeed: number; // WPM
   estimatedReadTime: number; // minutes
   // Analysis state
   analysisResults: AnalysisResult[];
@@ -56,41 +58,26 @@ export interface AISummaryContext {
   progress: number; // 0-100
   // User preferences
   voiceEnabled: boolean;
-  highlightMode: "key_points" | "entities" | "legal_terms" | "none";
-  readingMode: "sequential" | "insight_focused" | "summary_only";
+  highlightMode: 'key_points' | 'entities' | 'legal_terms' | 'none';
+  readingMode: 'sequential' | 'insight_focused' | 'summary_only';
 }
 export interface SummarySection {
   id: string;
   title: string;
   content: string;
-  type:
-    | "executive_summary"
-    | "key_findings"
-    | "evidence_analysis"
-    | "recommendations"
-    | "legal_implications";
-  importance: "critical" | "high" | "medium" | "low";
+  type: 'executive_summary' | 'key_findings' | 'evidence_analysis' | 'recommendations' | 'legal_implications';
+  importance: 'critical' | 'high' | 'medium' | 'low';
   entities: Entity[];
   wordCount: number;
 }
 export interface Entity {
   text: string;
-  type:
-    | "person"
-    | "organization"
-    | "location"
-    | "date"
-    | "legal_term"
-    | "evidence_id";
+  type: 'person' | 'organization' | 'location' | 'date' | 'legal_term' | 'evidence_id';
   confidence: number;
   context?: string;
 }
 export interface AnalysisResult {
-  type:
-    | "relevance"
-    | "credibility"
-    | "legal_significance"
-    | "evidence_strength";
+  type: 'relevance' | 'credibility' | 'legal_significance' | 'evidence_strength';
   score: number;
   explanation: string;
   recommendations: string[];
@@ -103,31 +90,65 @@ export interface SynthesisData {
   legalImplications: string[];
   nextSteps: string[];
 }
+
+// --- NEW: typed helper interfaces to replace `any` usages ---
+export interface RelevantDoc {
+  id?: string;
+  title?: string;
+  snippet?: string;
+  score?: number;
+}
+export interface SearchMetrics {
+  totalResults?: number;
+  timeMs?: number;
+  query?: string;
+}
+
+interface LoadDocumentResult {
+  content: string;
+  type: AISummaryContext['documentType'];
+}
+interface GenerateSummaryResult {
+  summary: string;
+  sections: SummarySection[];
+  insights?: string[];
+  confidence?: number;
+  wordCount?: number;
+}
+interface AnalyzeDocumentResult {
+  results: AnalysisResult[];
+}
+interface SynthesizeResult {
+  synthesis: SynthesisData;
+}
+
+// (Reading progress handled by the readingProgress service below)
+
 export type AISummaryEvent =
-  | { type: "LOAD_DOCUMENT"; documentId: string; caseId?: string }
+  | { type: 'LOAD_DOCUMENT'; documentId: string; caseId?: string }
   | {
-      type: "GENERATE_SUMMARY";
+      type: 'GENERATE_SUMMARY';
       content: string;
-      documentType: AISummaryContext["documentType"];
+      documentType: AISummaryContext['documentType'];
     }
-  | { type: "START_READING" }
-  | { type: "PAUSE_READING" }
-  | { type: "RESUME_READING" }
-  | { type: "STOP_READING" }
-  | { type: "NEXT_SECTION" }
-  | { type: "PREVIOUS_SECTION" }
-  | { type: "JUMP_TO_SECTION"; sectionIndex: number }
-  | { type: "ANALYZE_DOCUMENT" }
-  | { type: "SYNTHESIZE_INSIGHTS" }
-  | { type: "UPDATE_PROGRESS"; progress: number }
-  | { type: "UPDATE_PREFERENCES"; preferences: Partial<AISummaryContext> }
-  | { type: "RETRY" }
-  | { type: "RESET" }
+  | { type: 'START_READING' }
+  | { type: 'PAUSE_READING' }
+  | { type: 'RESUME_READING' }
+  | { type: 'STOP_READING' }
+  | { type: 'NEXT_SECTION' }
+  | { type: 'PREVIOUS_SECTION' }
+  | { type: 'JUMP_TO_SECTION'; sectionIndex: number }
+  | { type: 'ANALYZE_DOCUMENT' }
+  | { type: 'SYNTHESIZE_INSIGHTS' }
+  | { type: 'UPDATE_PROGRESS'; progress: number }
+  | { type: 'UPDATE_PREFERENCES'; preferences: Partial<AISummaryContext> }
+  | { type: 'RETRY' }
+  | { type: 'RESET' };
 const initialContext: AISummaryContext = {
   documentId: null,
   caseId: null,
-  documentType: "general",
-  originalContent: "",
+  documentType: 'general',
+  originalContent: '',
   summary: null,
   keyInsights: [],
   confidence: 0,
@@ -151,470 +172,367 @@ const initialContext: AISummaryContext = {
   synthesisData: null,
   error: null,
   loading: false,
-  isPlaying: false;
+  isPlaying: false,
   progress: 0,
   voiceEnabled: false,
-  highlightMode: "key_points",
-  readingMode: "sequential"
-}
-export const aiSummaryMachine = createMachine({
-  types: { [key,: strin,g]: any } as {
-    context: AISummaryContext;
-    events: AISummaryEvent;
-  },
-  id: "aiSummaryMachine",
-  initial: "idle",
-  context: initialContext,
-  states: {
+  highlightMode: 'key_points',
+  readingMode: 'sequential',
+};
+
+// Small helper to safely extract error messages without using `any`
+const extractErrorMessage = (event: AnyEventObject): string => {
+  const obj = event as unknown as Record<string, unknown>;
+  if (obj.data instanceof Error) return obj.data.message;
+  if (obj.error instanceof Error) return obj.error.message;
+  if (typeof obj.data === 'string') return String(obj.data);
+  if (typeof obj.error === 'string') return String(obj.error);
+  return 'An error occurred';
+};
+
+export const aiSummaryMachine = createMachine<AISummaryContext, AISummaryEvent>(
+  {
+    id: 'aiSummaryMachine',
+    initial: 'idle',
+    context: initialContext,
+    states: {
       idle: {
         on: {
           LOAD_DOCUMENT: {
-            target: "loading",
+            target: 'loading',
             actions: assign({
-              documentId: ({
-                event
-              }: {
-                event: Extract<AISummaryEvent, { type: "LOAD_DOCUMENT" }>;
-              }) => event.documentId,
-              caseId: ({
-                event
-              }: {
-                event: Extract<AISummaryEvent, { type: "LOAD_DOCUMENT" }>;
-              }) => event.caseId || null,
-              loading: true,
-              error: null,
-            })
+              documentId: (_: AISummaryContext, event: Extract<AISummaryEvent, { type: 'LOAD_DOCUMENT' }>) =>
+                event.documentId,
+              caseId: (_: AISummaryContext, event: Extract<AISummaryEvent, { type: 'LOAD_DOCUMENT' }>) =>
+                event.caseId ?? null,
+              loading: () => true,
+              error: () => null,
+            }),
           },
           GENERATE_SUMMARY: {
-            target: "generating",
+            target: 'generating',
             actions: assign({
-              originalContent: ({
-                event
-              }: {
-                event: Extract<AISummaryEvent, { type: "GENERATE_SUMMARY" }>;
-              }) => event.content,
-              documentType: ({
-                event
-              }: {
-                event: Extract<AISummaryEvent, { type: "GENERATE_SUMMARY" }>;
-              }) => event.documentType,
-              loading: true,
-              error: null,
-            })
+              originalContent: (_: AISummaryContext, event: Extract<AISummaryEvent, { type: 'GENERATE_SUMMARY' }>) =>
+                event.content,
+              documentType: (_: AISummaryContext, event: Extract<AISummaryEvent, { type: 'GENERATE_SUMMARY' }>) =>
+                event.documentType,
+              loading: () => true,
+              error: () => null,
+            }),
           },
           UPDATE_PREFERENCES: {
-            actions: assign(({
-                context,
-                event
-              }: {
-                context: AISummaryContext;
-                event: Extract<AISummaryEvent, { type: "UPDATE_PREFERENCES" }>;
-              }) => ({
-                ...context,
-                ...event.preferences
-              }),
-            )
-          }
-        }
+            actions: assign((_: AISummaryContext, event: Extract<AISummaryEvent, { type: 'UPDATE_PREFERENCES' }>) => ({
+              ..._,
+              ...(event.preferences || {}),
+            })),
+          },
+        },
       },
       loading: {
         invoke: {
-          src: "loadDocument",
+          src: 'loadDocument',
           onDone: {
-            target: "loaded",
+            target: 'loaded',
             actions: assign({
-              originalContent: ({ event }) => event.output.content,
-              documentType: ({ event }) => event.output.type,
-              loading: false
-            })
+              originalContent: (_: AISummaryContext, event: DoneInvokeEvent<LoadDocumentResult>) =>
+                event.output.content,
+              documentType: (_: AISummaryContext, event: DoneInvokeEvent<LoadDocumentResult>) => event.output.type,
+              loading: () => false,
+            }),
           },
           onError: {
-            target: "error",
+            target: 'error',
             actions: assign({
-              error: ({ event }) =>
-                (event.error as Error)?.message || "Failed to load document",
-              loading: false
-            })
-          }
+              error: (_: AISummaryContext, event: AnyEventObject) => extractErrorMessage(event),
+              loading: () => false,
+            }),
+          },
         },
         on: {
-          RESET: "idle"
-        }
+          RESET: 'idle',
+        },
       },
       generating: {
         invoke: {
-          src: "generateSummary",
+          src: 'generateSummary',
           onDone: {
-            target: "ready",
+            target: 'ready',
             actions: assign({
-              summary: ({ event }) => event.output.summary,
-              sections: ({ event }) => event.output.sections,
-              keyInsights: ({ event }) => event.output.insights,
-              confidence: ({ event }) => event.output.confidence,
-              estimatedReadTime: ({ event, context }) =>
-                Math.ceil(event.output.wordCount / context.readingSpeed),
-              loading: false
-            })
+              summary: (_: AISummaryContext, event: DoneInvokeEvent<GenerateSummaryResult>) => event.output.summary,
+              sections: (_: AISummaryContext, event: DoneInvokeEvent<GenerateSummaryResult>) => event.output.sections,
+              keyInsights: (_: AISummaryContext, event: DoneInvokeEvent<GenerateSummaryResult>) =>
+                event.output.insights ?? [],
+              confidence: (_: AISummaryContext, event: DoneInvokeEvent<GenerateSummaryResult>) =>
+                event.output.confidence ?? 0,
+              estimatedReadTime: (context: AISummaryContext, event: DoneInvokeEvent<GenerateSummaryResult>) =>
+                Math.ceil((event.output.wordCount ?? 0) / context.readingSpeed),
+              loading: () => false,
+            }),
           },
           onError: {
-            target: "error",
+            target: 'error',
             actions: assign({
-              error: ({ event }) =>
-                (event.error as Error)?.message || "Failed to generate summary",
-              loading: false
-            })
-          }
+              error: (_: AISummaryContext, event: AnyEventObject) => extractErrorMessage(event),
+              loading: () => false,
+            }),
+          },
         },
         on: {
-          RESET: "idle"
-        }
+          RESET: 'idle',
+        },
       },
       loaded: {
         on: {
           GENERATE_SUMMARY: {
-            target: "generating",
+            target: 'generating',
             actions: assign({
-              loading: true,
-              error: null,
-            })
+              loading: () => true,
+              error: () => null,
+            }),
           },
-          RESET: "idle"
-        }
+          RESET: 'idle',
+        },
       },
       ready: {
-        initial: "paused",
+        initial: 'paused',
         states: {
           paused: {
             on: {
-              START_READING: "reading",
+              START_READING: 'reading',
               ANALYZE_DOCUMENT: {
-                target: "#aiSummaryMachine.analyzing",
-                actions: assign({ loading: true })
+                target: '#aiSummaryMachine.analyzing',
+                actions: assign({ loading: () => true }),
               },
               SYNTHESIZE_INSIGHTS: {
-                target: "#aiSummaryMachine.synthesizing",
-                actions: assign({ loading: true })
-              }
-            }
+                target: '#aiSummaryMachine.synthesizing',
+                actions: assign({ loading: () => true }),
+              },
+            },
           },
           reading: {
-            initial: "playing",
-            entry: assign({ isPlaying: true }),
-            exit: assign({ isPlaying: false }),
+            initial: 'playing',
+            entry: assign({ isPlaying: () => true }),
+            exit: assign({ isPlaying: () => false }),
             states: {
               playing: {
                 invoke: {
-                  src: "readingProgress",
-                  id: "readingProgress"
+                  src: 'readingProgress',
+                  id: 'readingProgress',
                 },
                 on: {
-                  PAUSE_READING: "paused_mid_read",
+                  PAUSE_READING: 'paused_mid_read',
                   UPDATE_PROGRESS: {
                     actions: assign({
-                      progress: ({ event }) => event.progress
-                    })
-                  }
-                }
+                      progress: (_: AISummaryContext, event: Extract<AISummaryEvent, { type: 'UPDATE_PROGRESS' }>) =>
+                        event.progress,
+                    }),
+                  },
+                },
               },
               paused_mid_read: {
                 on: {
-                  RESUME_READING: "playing",
-                  STOP_READING: "#aiSummaryMachine.ready.paused"
-                }
-              }
+                  RESUME_READING: 'playing',
+                  STOP_READING: '#aiSummaryMachine.ready.paused',
+                },
+              },
             },
             on: {
               NEXT_SECTION: {
-                actions: assign({
-                  currentSection: ({ context }) =>
-                    Math.min(
-                      context.currentSection + 1,
-                      context.sections.length - 1,
-                    ),
-                  progress: ({ context }) =>
-                    ((context.currentSection + 1) / context.sections.length) *
-                    100
-                })
+                actions: assign((context: AISummaryContext) => {
+                  const next = Math.min(context.currentSection + 1, Math.max(context.sections.length - 1, 0));
+                  const denom = Math.max(context.sections.length, 1);
+                  return {
+                    currentSection: next,
+                    progress: (next / denom) * 100,
+                  };
+                }),
               },
               PREVIOUS_SECTION: {
-                actions: assign({
-                  currentSection: ({ context }) =>
-                    Math.max(context.currentSection - 1, 0),
-                  progress: ({ context }) =>
-                    (context.currentSection / context.sections.length) * 100
-                })
+                actions: assign((context: AISummaryContext) => {
+                  const prev = Math.max(context.currentSection - 1, 0);
+                  const denom = Math.max(context.sections.length, 1);
+                  return {
+                    currentSection: prev,
+                    progress: (prev / denom) * 100,
+                  };
+                }),
               },
               JUMP_TO_SECTION: {
-                actions: assign({
-                  currentSection: ({ event }) => event.sectionIndex,
-                  progress: ({ event, context }) =>
-                    (event.sectionIndex / context.sections.length) * 100
-                })
+                actions: assign(
+                  (context: AISummaryContext, event: Extract<AISummaryEvent, { type: 'JUMP_TO_SECTION' }>) => {
+                    const idx = event.sectionIndex;
+                    const safeIdx = Math.max(0, Math.min(idx, Math.max(context.sections.length - 1, 0)));
+                    const denom = Math.max(context.sections.length, 1);
+                    return {
+                      currentSection: safeIdx,
+                      progress: (safeIdx / denom) * 100,
+                    };
+                  }
+                ),
               },
-              STOP_READING: "paused"
-            }
-          }
+              STOP_READING: 'paused',
+            },
+          },
         },
         on: {
           UPDATE_PREFERENCES: {
-            actions: assign(({ context, event }) => ({
-              ...context,
-              ...event.preferences
-            }))
+            actions: assign(
+              (_context: AISummaryContext, event: Extract<AISummaryEvent, { type: 'UPDATE_PREFERENCES' }>) => ({
+                ..._context,
+                ...(event.preferences || {}),
+              })
+            ),
           },
-          RESET: "#aiSummaryMachine.idle"
-        }
+          RESET: '#aiSummaryMachine.idle',
+        },
       },
       analyzing: {
         invoke: {
-          src: "analyzeDocument",
+          src: 'analyzeDocument',
           onDone: {
-            target: "ready",
+            target: 'ready',
             actions: assign({
-              analysisResults: ({ event }) => event.output.results,
-              loading: false
-            })
+              analysisResults: (_: AISummaryContext, event: DoneInvokeEvent<AnalyzeDocumentResult>) =>
+                event.output.results ?? [],
+              loading: () => false,
+            }),
           },
           onError: {
-            target: "error",
+            target: 'error',
             actions: assign({
-              error: ({ event }) => (event.error as Error)?.message || "Analysis failed",
-              loading: false
-            })
-          }
-        }
+              error: (_: AISummaryContext, event: AnyEventObject) => extractErrorMessage(event),
+              loading: () => false,
+            }),
+          },
+        },
       },
       synthesizing: {
         invoke: {
-          src: "synthesizeInsights",
+          src: 'synthesizeInsights',
           onDone: {
-            target: "ready",
+            target: 'ready',
             actions: assign({
-              synthesisData: ({ event }) => event.output.synthesis,
-              loading: false
-            })
+              synthesisData: (_: AISummaryContext, event: DoneInvokeEvent<SynthesizeResult>) =>
+                event.output.synthesis ?? null,
+              loading: () => false,
+            }),
           },
           onError: {
-            target: "error",
+            target: 'error',
             actions: assign({
-              error: ({ event }) => (event.error as Error)?.message || "Synthesis failed",
-              loading: false
-            })
-          }
-        }
+              error: (_: AISummaryContext, event: AnyEventObject) => extractErrorMessage(event),
+              loading: () => false,
+            }),
+          },
+        },
       },
       error: {
         on: {
           RETRY: {
-            target: "idle",
+            target: 'idle',
             actions: assign({
-              error: null,
-              loading: false,
-            })
+              error: () => null,
+              loading: () => false,
+            }),
           },
-          RESET: "idle"
-        }
-      }
-    }
+          RESET: 'idle',
+        },
+      },
+    },
   },
   {
-    actors: {
-      loadDocument: fromPromise(async ({ input }: { input: AISummaryContext }) => {
-        // Mock implementation - would call actual API
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            resolve({
-              content: `Evidence Report #${input.documentId}\n\nThis is a comprehensive analysis of the evidence collected in case ${input.caseId}. The findings indicate significant legal implications that require careful consideration...`,
-              type: "evidence" as const
-            });
-          }, 1000);
-        });
-      }),
-      generateSummary: fromPromise(async ({ input }: { input: AISummaryContext }) => {
-        // Mock implementation - would call RAG/AI service
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            const sections: SummarySection[] = [
-              {
-                id: "exec-summary",
-                title: "Executive Summary",
-                content:
-                  "This evidence report provides a comprehensive analysis of digital forensics findings in the case. Key evidence points to significant security violations and potential criminal activity.",
-                type: "executive_summary",
-                importance: "critical",
-                entities: [
-                  {
-                    text: "digital forensics",
-                    type: "legal_term",
-                    confidence: 0.95
-                  },
-                  {
-                    text: "security violations",
-                    type: "legal_term",
-                    confidence: 0.92
-                  }
-                ],
-                wordCount: 120
-              },
-              {
-                id: "key-findings",
-                title: "Key Findings",
-                content:
-                  "Analysis of the digital evidence reveals unauthorized access attempts, data exfiltration, and potential insider threats. Timeline analysis shows coordinated activities over a 6-month period.",
-                type: "key_findings",
-                importance: "critical",
-                entities: [
-                  {
-                    text: "unauthorized access",
-                    type: "legal_term",
-                    confidence: 0.98
-                  },
-                  {
-                    text: "data exfiltration",
-                    type: "legal_term",
-                    confidence: 0.96
-                  },
-                  { text: "6-month period", type: "date", confidence: 0.89 }
-                ],
-                wordCount: 180
-              },
-              {
-                id: "legal-implications",
-                title: "Legal Implications",
-                content:
-                  "The evidence supports charges under the Computer Fraud and Abuse Act (CFAA) and state data protection laws. Recommended prosecution strategy includes focusing on the financial impact and systematic nature of the violations.",
-                type: "legal_implications",
-                importance: "high",
-                entities: [
-                  {
-                    text: "Computer Fraud and Abuse Act",
-                    type: "legal_term",
-                    confidence: 0.99
-                  },
-                  {
-                    text: "data protection laws",
-                    type: "legal_term",
-                    confidence: 0.94
-                  }
-                ],
-                wordCount: 150
-              }
-            ];
-            resolve({
-              summary:
-                "Comprehensive evidence analysis revealing systematic security violations with strong legal basis for prosecution under federal cybercrime statutes.",
-              sections,
-              insights: [
-                "Strong digital forensics evidence chain",
-                "Clear CFAA violation patterns",
-                "Financial impact quantifiable",
-                "Insider threat indicators present"
-              ],
-              confidence: 0.92,
-              wordCount: sections.reduce(
-                (total, section) => total + section.wordCount,
-                0,
-              )
-            });
-          }, 2000);
-        });
-      }),
-      analyzeDocument: fromPromise(async ({ input }: { input: AISummaryContext }) => {
-        // Mock implementation - would call analysis service
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            resolve({
-              results: [
-                {
-                  type: "relevance" as const,
-                  score: 0.94,
-                  explanation:
-                    "Highly relevant to the case with direct evidence of alleged violations",
-                  recommendations: [
-                    "Prioritize in evidence presentation",
-                    "Prepare expert testimony"
-                  ]
-                },
-                {
-                  type: "credibility" as const,
-                  score: 0.89,
-                  explanation:
-                    "Strong chain of custody and forensic methodology",
-                  recommendations: [
-                    "Verify forensic tool calibration",
-                    "Document examiner credentials"
-                  ]
-                });
-                {
-                  type: "legal_significance" as const,
-                  score,: 0.96,
-                  explanation,:
-                    "Critical evidence for establishing intent and systematic violations",
-                  recommendations,: [
-                    "Central to prosecution strategy",
-                    "Prepare for technical challenges"
-                  ]
-                }
-              ]
-            });
-          }, 1500);
-        });
-      }),
-      synthesizeInsights: fromPromise(async ({ input }: { input: AISummaryContext }) => {
-        // Mock implementation - would call synthesis service
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            resolve({
-              synthesis: {
-                mainThemes: [
-                  "Systematic security violations over extended period",
-                  "Clear evidence of unauthorized access and data theft",
-                  "Strong basis for federal cybercrime prosecution"
-                ],
-                contradictions: [
-                  "Timeline discrepancies require clarification",
-                  "Access log gaps during maintenance windows"
-                ],
-                supportingEvidence: [
-                  "Digital forensics findings",
-                  "Network traffic analysis",
-                  "System log correlations",
-                  "Financial impact assessment"
-                ],
-                gaps: [
-                  "Need additional witness testimony on intent",
-                  "Require expert analysis of technical methods",
-                  "Missing financial records for full impact assessment"
-                ],
-                legalImplications: [
-                  "Strong CFAA violation case",
-                  "Potential RICO implications if organized",
-                  "Civil remedies available alongside criminal charges"
-                ],
-                nextSteps: [
-                  "Prepare technical expert testimony",
-                  "Conduct additional financial analysis",
-                  "Coordinate with cybercrime prosecutors",
-                  "Prepare jury-friendly technical explanations"
-                ]
-              }
-            });
-          }, 2000);
-        });
-      }),
-      readingProgress,: fromPromise(async ({ input }: { input: AISummaryContext }) => {
-        return new Promise((resolve) => {
-          const interval = setInterval(() => {
-            // Simulate reading progress - resolve after a timeout
-            resolve({ progress: 100 });
-          }, 1000);
-          setTimeout(() => {
+    services: {
+      // loadDocument -> use API endpoint GET /api/documents/:id (keeps previous behavior)
+      loadDocument: async (context: AISummaryContext, event: unknown): Promise<LoadDocumentResult> => {
+        // Basic API call; adapt path/headers to your backend auth/CORS as needed
+        // Safely extract documentId from the incoming event without using `any`
+        const evt = (event as Record<string, unknown> | null) ?? null;
+        const eventId =
+          evt && typeof evt['documentId'] !== 'undefined' && evt['documentId'] != null
+            ? String(evt['documentId'])
+            : null;
+        const id = eventId ?? context.documentId ?? null;
+        if (!id) return { content: '', type: context.documentType };
+
+        const res = await fetch(`/api/documents/${encodeURIComponent(String(id))}`);
+        if (!res.ok) {
+          const txt = await res.text().catch(() => 'failed to fetch');
+          throw new Error(`Failed to load document: ${txt}`);
+        }
+        const payload = await res.json().catch(() => ({ content: '' }));
+        return {
+          content: (payload?.content as string) ?? (payload?.text as string) ?? '',
+          type: (payload?.type as AISummaryContext['documentType']) ?? context.documentType,
+        };
+      },
+
+      generateSummary: async (context: AISummaryContext): Promise<GenerateSummaryResult> => {
+        // Minimal placeholder summary generator — replace with actual LLM/endpoint call
+        const text = context.originalContent ?? '';
+        const words = text.trim().split(/\s+/).filter(Boolean).length;
+        const sections: SummarySection[] = [
+          {
+            id: 'sec_0',
+            title: 'Executive summary',
+            content: text.slice(0, 800),
+            type: 'executive_summary',
+            importance: 'high',
+            entities: [],
+            wordCount: Math.max(0, Math.min(words, 200)),
+          },
+        ];
+        return {
+          summary: text.slice(0, 400) || '',
+          sections,
+          insights: [],
+          confidence: 0.5,
+          wordCount: words,
+        };
+      },
+
+      // mark unused context param with a leading underscore to satisfy lint rules
+      analyzeDocument: async (_context: AISummaryContext): Promise<AnalyzeDocumentResult> => {
+        // Lightweight analysis stub
+        return {
+          results: [
+            {
+              type: 'relevance',
+              score: 0.5,
+              explanation: 'Placeholder analysis - integrate real analyzer.',
+              recommendations: [],
+            },
+          ],
+        };
+      },
+
+      // mark unused context param with a leading underscore to satisfy lint rules
+      synthesizeInsights: async (_context: AISummaryContext): Promise<SynthesizeResult> => {
+        // Minimal synthesis stub — replace with server-side LLM/RAG combination
+        return {
+          synthesis: {
+            mainThemes: [],
+            contradictions: [],
+            supportingEvidence: [],
+            gaps: [],
+            legalImplications: [],
+            nextSteps: [],
+          },
+        };
+      },
+
+      // readingProgress is an invoked callback-style service that periodically sends UPDATE_PROGRESS
+      // type the `send` callback to accept AISummaryEvent instead of `any`
+      readingProgress: (context: AISummaryContext) => (send: (evt: AISummaryEvent) => void) => {
+        let progress = Math.max(0, Math.min(100, Math.floor(context.progress ?? 0)));
+        const step = Math.max(1, Math.floor((100 - progress) / 20));
+        const interval = setInterval(() => {
+          progress = Math.min(100, progress + step);
+          send({ type: 'UPDATE_PROGRESS', progress });
+          if (progress >= 100) {
             clearInterval(interval);
-            resolve({ progress: 100 });
-          }, 5000);
-        });
-      })
-    }
-  },
+          }
+        }, 1000);
+        return () => clearInterval(interval);
+      },
+    },
+  }
 );
-export default aiSummaryMachine;

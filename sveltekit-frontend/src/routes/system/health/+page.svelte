@@ -1,12 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   	import { onMount, onDestroy } from 'svelte';
   	import { writable } from 'svelte/store';
   	import { coordinatorStatus, masterServiceCoordinator } from '$lib/services/master-service-coordinator.js';
-  	import { errorResolutionEngine } from '$lib/services/error-resolution-engine.js';
+  	import { ErrorResolutionEngine } from '$lib/services/error-resolution-engine.js';
   	import type { ServiceStatus } from '$lib/services/master-service-coordinator.js';
   	interface ServiceHealth {
   		name: string;
@@ -40,15 +37,13 @@ https://svelte.dev/e/js_parse_error -->
   	const healthData = writable<HealthData | null>(null);
   	const loading = writable(true);
   	const error = writable<string | null>(null);
-  	let refreshInterval: number;
+  	let refreshInterval: any;
   let autoRefresh = $state(true);
   let refreshRate = $state(5000); // 5 seconds
   let selectedTier = $state('all');
   let showOnlyIssues = $state(false);
   	// Real-time data from master coordinator
   	let systemStatus = $derived($coordinatorStatus);
-  	let errorStats = $derived(errorResolutionEngine.recoveryStats);
-  	let systemMetrics = $derived(errorResolutionEngine.systemMetrics);
   	const fetchHealth = async () => {
   		try {
   			loading.set(true);
@@ -79,23 +74,23 @@ https://svelte.dev/e/js_parse_error -->
   	const mergeHealthData = (legacy: unknown, coordinator: unknown): HealthData => {
   		const now = Date.now();
   		// Use coordinator data if available, fallback to legacy
-  		if (coordinator?.success && coordinator.data) {
-  			const data = coordinator.data;
+  		if ((coordinator as any)?.success && (coordinator as any).data) {
+  			const data = (coordinator as any).data;
   			return {
-  				timestamp: now
+  				timestamp: now,
   				overall_status: mapHealthStatus(data.systemHealth),
   				health_percentage: Math.round((data.healthyServices / data.totalServices) * 100),
   				services_online: data.healthyServices,
   				services_total: data.totalServices,
   				cuda: {
   					service_available: data.performance?.cudaUtilization > 0,
-  					worker_available: true
+  					worker_available: true,
   					gpu_ready: data.performance?.cudaUtilization > 0,
   					response_time: data.performance?.avgResponseTime || null
   				},
   				services: mapServicesToHealthFormat(systemStatus.services),
   				summary: {
-  					critical_services: systemStatus.errors.filter(item => item.map)(e => e.description),
+  					critical_services: systemStatus.errors.map(e => e.description),
   					degraded_services: Array.from(systemStatus.services.entries())
   						.filter(([_, status]) => status.status === 'degraded')
   						.map(([id, _]) => {
@@ -109,20 +104,20 @@ https://svelte.dev/e/js_parse_error -->
   							return service?.displayName || id;
   						})
   				},
-  				recommendations: generateRecommendations();
+  				recommendations: generateRecommendations()
   			}
   		}
   		// Fallback to legacy data format
-  		return legacy || {
-  			timestamp: now
+  		return (legacy as HealthData) || {
+  			timestamp: now,
   			overall_status: 'critical',
   			health_percentage: 0,
   			services_online: 0,
   			services_total: 38,
   			cuda: {
-  				service_available: false
-  				worker_available: false
-  				gpu_ready: false
+  				service_available: false,
+  				worker_available: false,
+  				gpu_ready: false,
   				response_time: null
   			},
   			services: [],
@@ -131,7 +126,7 @@ https://svelte.dev/e/js_parse_error -->
   				degraded_services: [],
   				offline_services: []
   			},
-  			recommendations: ['Start the Master Service Coordinator'];
+  			recommendations: ['Start the Master Service Coordinator']
   		}
   	}
   	const mapHealthStatus = (health: string): 'healthy' | 'degraded' | 'critical' => {
@@ -162,7 +157,7 @@ https://svelte.dev/e/js_parse_error -->
   					critical: service?.critical,
   					cudaAccelerated: service?.cudaAccelerated,
   					errorCount: status.errorCount,
-  					uptime: status.uptime;
+  					uptime: status.uptime
   				}
   			}
   		});
@@ -190,7 +185,7 @@ https://svelte.dev/e/js_parse_error -->
   		if (systemStatus.metrics.avgResponseTime > 5000) {
   			recommendations.push('npm run coordinator:optimize - Optimize service performance');
   		}
-  		return recommendation;
+  		return recommendations;
   	}
   	const getStatusColor = (status: string) => {
   		switch (status) {
@@ -233,9 +228,9 @@ https://svelte.dev/e/js_parse_error -->
   			const response = await fetch('/api/v1/coordinator', {
   				method: 'POST',
   				headers: { 'Content-Type': 'application/json' },
-  				body: JSON.stringify({,
-  					action 'restart_service',
-  					target: serviceId;
+  				body: JSON.stringify({
+  					action: 'restart_service',
+  					target: serviceId
   				})
   			});
   			if (response.ok) {
@@ -251,7 +246,7 @@ https://svelte.dev/e/js_parse_error -->
   			const response = await fetch('/api/v1/coordinator', {
   				method: 'POST',
   				headers: { 'Content-Type': 'application/json' },
-  				body: JSON.stringify({ action 'start_all' })
+  				body: JSON.stringify({ action: 'start_all' })
   			});
   			if (response.ok) {
   				console.log('Starting all services...');
@@ -266,7 +261,7 @@ https://svelte.dev/e/js_parse_error -->
   			const response = await fetch('/api/v1/coordinator', {
   				method: 'POST',
   				headers: { 'Content-Type': 'application/json' },
-  				body: JSON.stringify({ action 'force_health_check' })
+  				body: JSON.stringify({ action: 'force_health_check' })
   			});
   			if (response.ok) {
   				console.log('Forced health check initiated');
@@ -294,10 +289,13 @@ https://svelte.dev/e/js_parse_error -->
   		: Array.from(systemStatus.services.entries()).filter(([id]) => {
   			const service = masterServiceCoordinator.services.find(s => s.id === id);
   			return service?.tier === parseInt(selectedTier);
-  		});
+  		}));
   	let filteredServices = $derived(showOnlyIssues
   		? tierServices.filter(([_, status]) => status.status !== 'healthy')
   		: tierServices);
+
+	let displayServices = $derived(mapServicesToHealthFormat(new Map(filteredServices)));
+
   	$effect(() => {
   		fetchHealth();
   		if (autoRefresh) {
@@ -425,7 +423,7 @@ https://svelte.dev/e/js_parse_error -->
         <span>🏗️</span> All Services
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {#each $healthData.services as service}
+        {#each displayServices as service}
           <div class={`p-4 rounded-lg border-2 ${getStatusColor(service.status)}`}>
             <div class="flex items-center justify-between mb-2">
               <h3 class="font-semibold capitalize">{service.name.replace('-', ' ')}</h3>
@@ -437,11 +435,11 @@ https://svelte.dev/e/js_parse_error -->
                 <p><span class="font-medium">Response:</span> {formatResponseTime(service.responseTime)}</p>
               {/if}
               <p class="text-xs opacity-75">Last check: {formatTimestamp(service.lastCheck)}</p>
-              {#if ser(vice as CustomEvent).details && typeof ser(vice as CustomEvent).details === 'object'}
+              {#if service.details && typeof service.details === 'object'}
                 <details class="mt-2">
                   <summary class="cursor-pointer text-xs opacity-75">Details</summary>
                   <pre class="text-xs mt-1 opacity-60 overflow-x-auto">{JSON.stringify(
-                      ser(vice as CustomEvent).details,
+                      service.details,
                       null,
                       2
                     )}</pre>

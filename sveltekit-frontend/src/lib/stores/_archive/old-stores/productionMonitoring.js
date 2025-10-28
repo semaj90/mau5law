@@ -14,11 +14,11 @@ export const performanceMetrics = writable({
     ollama: { status: 'unknown', responseTime: 0, gpuUsage: 0 },
     context7: { status: 'unknown', responseTime: 0, cacheHits: 0 },
     enhancedRag: { status: 'unknown', responseTime: 0, simdOps: 0 },
-    sveltekit: { status: 'unknown', responseTime: 0, requests: 0 }
+    sveltekit: { status: 'unknown', responseTime: 0, requests: 0 },
   },
   optimization: {
     eventLoop: {
-      enabled: true
+      enabled: true,
       priority: 'high',
       batchSize: 100,
       processingRate: 0,
@@ -27,7 +27,7 @@ export const performanceMetrics = writable({
     caching: {
       l1: { size: 0, hits: 0, misses: 0, efficiency: 0 },
       l2: { size: 0, hits: 0, misses: 0, efficiency: 0 },
-      total: { hits: 0, misses: 0, efficiency: 0 }
+      total: { hits: 0, misses: 0, efficiency: 0 },
     },
     interrupts: {
       total: 0,
@@ -42,7 +42,7 @@ export const performanceMetrics = writable({
       processing_time: 0,
     },
     simd: {
-      enabled: true
+      enabled: true,
       operations: 0,
       speedup: 0,
       efficiency: 0,
@@ -52,15 +52,15 @@ export const performanceMetrics = writable({
       avg_time: 0,
       index_usage: 0,
       optimization_level: 0,
-    }
+    },
   },
   autoSolve: {
-    enabled: true
+    enabled: true,
     requests: 0,
     successful: 0,
     errors_fixed: 0,
     success_rate: 0,
-  }
+  },
 });
 // Real-time update interval
 let updateInterval;
@@ -89,7 +89,7 @@ async function updateMetrics() {
     ...current,
     ...metrics,
     timestamp: Date.now(),
-  }),;
+  }));
 }
 // Fetch metrics from various sources
 async function fetchMetrics() {
@@ -97,33 +97,31 @@ async function fetchMetrics() {
     fetchSystemMetrics(),
     fetchServiceMetrics(),
     fetchOptimizationMetrics(),
-    fetchAutoSolveMetrics()
+    fetchAutoSolveMetrics(),
   ]);
   return {
-    system: results[0].status === 'fulfilled' ? results[0].value: { [key,: strin,g]: any },
-    services: results[1].status === 'fulfilled' ? results[1].value : { [key,: strin,g]: any },
-    optimization: results[2].status === 'fulfilled' ? results[2].value : { [key,: strin,g]: any },
-    autoSolve: results[3].status === 'fulfilled' ? results[3].value : { [key,: strin,g]: any }
+    system: results[0].status === 'fulfilled' ? results[0].value : {},
+    services: results[1].status === 'fulfilled' ? results[1].value : {},
+    optimization: results[2].status === 'fulfilled' ? results[2].value : {},
+    autoSolve: results[3].status === 'fulfilled' ? results[3].value : {},
   };
 }
 // System performance metrics
 async function fetchSystemMetrics() {
   try {
-    // removed unused response assignment
-    const data = await response.json();
-    return {
-      cpu: data.cpu || 0,
-      memory: data.memory || 0,
-      eventLoopLag: data.eventLoopLag || 0,
-      uptime: data.uptime || 0,
-    };
+    // If you have a real endpoint, replace the simulated section below with a fetch call.
+    // Example:
+    // const res = await fetch('http://localhost:9000/system/metrics');
+    // if (res.ok) return await res.json();
+    // Fallback to simulated data for now:
+    throw new Error('no-system-endpoint');
   } catch (error) {
-    console.warn('System metrics unavailable:', error);
+    console.warn('System metrics unavailable, returning simulated values:', error.message);
     return {
-      cpu: Math.random() * 30 + 10, // Simulate for demo
-      memory: Math.random() * 40 + 20,
-      eventLoopLag: Math.random() * 5,
-      uptime: Date.now() / 1000,
+      cpu: Math.round(Math.random() * 30 + 10),
+      memory: Math.round(Math.random() * 40 + 20),
+      eventLoopLag: +(Math.random() * 5).toFixed(2),
+      uptime: Math.floor(Date.now() / 1000),
     };
   }
 }
@@ -134,7 +132,7 @@ async function fetchServiceMetrics() {
     ollama: { port: 11434, path: '/api/version' },
     context7: { port: 4000, path: '/health' },
     context7MultiCore: { port: 4100, path: '/health' },
-    enhancedRag: { port: 8094, path: '/health' }
+    enhancedRag: { port: 8094, path: '/health' },
   };
   const results = {};
   for (const [name, config] of Object.entries(services)) {
@@ -142,7 +140,6 @@ async function fetchServiceMetrics() {
       const start = performance.now();
       const response = await fetch(`http://localhost:${config.port}${config.path}`, {
         method: 'GET',
-        timeout: 3000,
       });
       const responseTime = performance.now() - start;
       results[name] = {
@@ -151,11 +148,12 @@ async function fetchServiceMetrics() {
         lastCheck: Date.now(),
       };
     } catch (error) {
+      // offline / unreachable -> simulated offline entry
       results[name] = {
         status: 'offline',
         responseTime: 0,
         lastCheck: Date.now(),
-        error: error.message,
+        error: error?.message || String(error),
       };
     }
   }
@@ -164,75 +162,88 @@ async function fetchServiceMetrics() {
 // Optimization metrics
 async function fetchOptimizationMetrics() {
   try {
-    // removed unused response assignment
-    const data = await response.json();
-    return data;
+    // If you have a real endpoint, replace the simulated section below with a fetch call.
+    // const res = await fetch('http://localhost:9000/optimization');
+    // if (res.ok) return await res.json();
+    throw new Error('no-optimization-endpoint');
   } catch (error) {
     // Simulate optimization metrics for demo
+    const l1 = {
+      size: Math.round(Math.random() * 1024 * 1024),
+      hits: Math.round(Math.random() * 10000),
+      misses: Math.round(Math.random() * 1000),
+      efficiency: +(85 + Math.random() * 10).toFixed(2),
+    };
+    const l2 = {
+      size: Math.round(Math.random() * 100 * 1024 * 1024),
+      hits: Math.round(Math.random() * 5000),
+      misses: Math.round(Math.random() * 500),
+      efficiency: +(78 + Math.random() * 15).toFixed(2),
+    };
+    const totalHits = l1.hits + l2.hits;
+    const totalMisses = l1.misses + l2.misses;
+    const totalEfficiency =
+      totalHits + totalMisses > 0 ? +((totalHits / (totalHits + totalMisses)) * 100).toFixed(2) : 0;
     return {
       eventLoop: {
-        enabled: true
+        enabled: true,
         priority: 'high',
         batchSize: 100,
-        processingRate: Math.random() * 1000 + 500,
+        processingRate: Math.round(Math.random() * 1000 + 500),
         lagThreshold: 10,
-        currentLag: Math.random() * 3,
+        currentLag: +(Math.random() * 3).toFixed(2),
       },
       caching: {
-        l1: {
-          size: Math.random() * 1024 * 1024,
-          hits: Math.random() * 10000,
-          misses: Math.random() * 1000,
-          efficiency: 85 + Math.random() * 10,
+        l1,
+        l2,
+        total: {
+          hits: totalHits,
+          misses: totalMisses,
+          efficiency: totalEfficiency,
         },
-        l2: {
-          size: Math.random() * 100 * 1024 * 1024,
-          hits: Math.random() * 5000,
-          misses: Math.random() * 500,
-          efficiency: 78 + Math.random() * 15,
-        }
       },
       interrupts: {
-        total: Math.random() * 100,
-        handled: Math.random() * 95,
-        recovery: Math.random() * 90,
-        success_rate: 94 + Math.random() * 5,
+        total: Math.round(Math.random() * 100),
+        handled: Math.round(Math.random() * 95),
+        recovery: +(Math.random() * 90).toFixed(2),
+        success_rate: +(94 + Math.random() * 5).toFixed(2),
       },
       patterns: {
         compiled: 24,
-        matches: Math.random() * 1000,
-        confidence: 0.89 + Math.random() * 0.1,
-        processing_time: Math.random() * 50 + 10,
+        matches: Math.round(Math.random() * 1000),
+        confidence: +(0.89 + Math.random() * 0.1).toFixed(3),
+        processing_time: +(Math.random() * 50 + 10).toFixed(2),
       },
       simd: {
-        enabled: true
-        operations: Math.random() * 50000,
-        speedup: 3.2 + Math.random() * 1.8,
-        efficiency: 92 + Math.random() * 7,
+        enabled: true,
+        operations: Math.round(Math.random() * 50000),
+        speedup: +(3.2 + Math.random() * 1.8).toFixed(2),
+        efficiency: +(92 + Math.random() * 7).toFixed(2),
       },
       jsonb: {
-        queries: Math.random() * 10000,
-        avg_time: Math.random() * 20 + 5,
-        index_usage: 88 + Math.random() * 10,
-        optimization_level: 95 + Math.random() * 4,
-      }
+        queries: Math.round(Math.random() * 10000),
+        avg_time: +(Math.random() * 20 + 5).toFixed(2),
+        index_usage: +(88 + Math.random() * 10).toFixed(2),
+        optimization_level: +(95 + Math.random() * 4).toFixed(2),
+      },
     };
   }
 }
 // AutoSolve metrics
 async function fetchAutoSolveMetrics() {
   try {
-    // removed unused response assignment
-    const data = await response.json();
-    return data;
+    // If you have a real endpoint, replace the simulated section below with a fetch call.
+    // const res = await fetch('http://localhost:9000/autosolve');
+    // if (res.ok) return await res.json();
+    throw new Error('no-autosolve-endpoint');
   } catch (error) {
     return {
-      enabled: true
-      requests: Math.random() * 100,
-      successful: Math.random() * 90,
-      errors_fixed: Math.random() * 50,
-      success_rate: 88 + Math.random() * 10,
-      last_run: Date.now() - Math.random() * 300000,
+      enabled: true,
+      requests: Math.round(Math.random() * 100),
+      successful: Math.round(Math.random() * 90),
+      errors_fixed: Math.round(Math.random() * 50),
+      success_rate: +(88 + Math.random() * 10).toFixed(2),
+      last_run: Date.now() - Math.round(Math.random() * 300000),
     };
   }
 }
@@ -247,7 +258,7 @@ export const performanceScore = derived(performanceMetrics, $metrics => {
 function calculateSystemScore(system) {
   const cpuScore = Math.max(0, 100 - system.cpu);
   const memoryScore = Math.max(0, 100 - system.memory);
-  const lagScore = Math.max(0, 100 - (system.eventLoopLag * 10),;
+  const lagScore = Math.max(0, 100 - system.eventLoopLag * 10);
   return (cpuScore + memoryScore + lagScore) / 3;
 }
 function calculateOptimizationScore(optimization) {
@@ -259,7 +270,9 @@ function calculateOptimizationScore(optimization) {
 }
 function calculateServiceScore(services) {
   if (!services) return 0;
-  const serviceScores = Object.values(services).map(service => {
+  const vals = Object.values(services);
+  if (vals.length === 0) return 0;
+  const serviceScores = vals.map(service => {
     if (service.status === 'healthy') return 100;
     if (service.status === 'unhealthy') return 50;
     return 0;
@@ -268,8 +281,8 @@ function calculateServiceScore(services) {
 }
 // Export monitoring functions
 export const monitoring = {
-  start: startMonitoring
-  stop: stopMonitoring
+  start: startMonitoring,
+  stop: stopMonitoring,
   getMetrics: () => performanceMetrics,
   getScore: () => performanceScore,
 };

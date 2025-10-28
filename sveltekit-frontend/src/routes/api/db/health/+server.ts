@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types.js';
+import type { RequestHandler } from './$types';
 /*
  * Database Health Check API Endpoint
  * GET /api/db/health - Check database connectivity and pgvector extension

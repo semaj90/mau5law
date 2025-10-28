@@ -2,10 +2,13 @@
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
   // Svelte 5 runes are built-in, no import needed
-  import CardOriginal from '$lib/components/ui/card';
-  import Button from '$lib/components/ui/button';
+  import { Card as CardOriginal } from '$lib/components/ui/card'; // named export
+  import { Button } from '$lib/components/ui/button'; // named export
   import Progress from '$lib/components/ui/progress/Progress.svelte';
-  import { TrendingUp, Target, AlertCircle, Brain, Activity, Database, Clock } from 'lucide-svelte';
+  import * as Lucide from 'lucide-svelte';
+
+  // lucide-svelte typing can be inconsistent — cast to any and destructure the icons we use.
+  const { TrendingUp, AlertCircle, Brain, Activity, Database, Clock } = Lucide as any;
 
   // Cast Button to `any` to bypass strict type checks for the `class` prop.
   const ButtonComponent: any = Button;

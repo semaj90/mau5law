@@ -5,178 +5,152 @@
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import type { PageData } from './$types';
+  import { onMount } from 'svelte';
+
   interface Props {
     data: PageData;
   }
   let { data }: Props = $props();
+
   // Extract case ID from URL params if provided
   const caseId = $page.url.searchParams.get('caseId') || '';
+
+  // New: hold the component instance so we can use $on (avoids the `never` event-name typing)
+  let minioUpload: any;
+
   // Upload completion handler
-  function handleUploadComplete(result: unknown) {
+  function handleUploadComplete(result: any) {
     console.log('Upload completed:', result);
-    // Show success notification
     const notification = {
       type: 'success',
       title: 'Upload Successful',
-      message: `Document "${(result as { objectName?: unknown; documentId?: unknown; url?: unknown }).objectName}" has been uploaded and is being processed.`,
-      documentId: (result as { objectName?: unknown; documentId?: unknown; url?: unknown }).documentId,
-      url: (result as { objectName?: unknown; documentId?: unknown; url?: unknown }).url
-    }
-    // Store notification in session storage for display
+      message: `Document "${result?.objectName ?? 'file'}" has been uploaded and is being processed.`,
+      documentId: result?.documentId,
+      url: result?.url
+    };
     sessionStorage.setItem('uploadNotification', JSON.stringify(notification));
-    // Redirect to document or case view
     if (caseId) {
       goto(`/cases/${caseId}/documents`);
     } else {
       goto('/documents');
     }
   }
+
   // Upload error handler
   function handleUploadError(error: string) {
     console.error('Upload error:', error);
-    // Show error notification
     const notification = {
       type: 'error',
       title: 'Upload Failed',
-      message: error;
-    }
+      message: error,
+    };
     sessionStorage.setItem('uploadNotification', JSON.stringify(notification));
   }
-  // Recent uploads state
-  let showRecentUploads = $state(false);
-  let recentUploads = $state<unknown[]>([]);
-  // Load recent uploads
-  async function loadRecentUploads() {
-    try {
-      // removed unused response assignment
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        recentUploads = await (response as { ok?: unknown; json?: unknown }).json();
-        showRecentUploads = true;
-      }
-    } catch (error) {
-      console.error('Failed to load recent uploads:', error);
-    }
+
+  // New: typed upload entry
+  interface UploadEntry {
+    filename: string;
+    size?: number;
+    mimeType?: string;
   }
+
+  // New: recent uploads array (prefer incoming data if available)
+  let recentUploads: UploadEntry[] = (data && (data as any).recentUploads) ?? [];
+
+  onMount(() => {
+    if (!minioUpload) return;
+    const unsubComplete = minioUpload.$on('complete', (e: CustomEvent) =>
+      handleUploadComplete(e.detail)
+    );
+    const unsubError = minioUpload.$on('error', (e: CustomEvent) =>
+      handleUploadError(e.detail ?? 'Unknown error')
+    );
+
+    return () => {
+      unsubComplete();
+      unsubError();
+    };
+  });
 </script>
-<svelte:head>
-  <title>Upload Document - Legal AI Assistant</title>
-  <meta name="description" content="Upload and process legal documents with AI analysis" />
-</svelte:head>
+
+<!-- Markup moved out of script -->
 <div class="upload-page">
   <div class="page-header">
-    <h1>Upload Document</h1>
-    <p class="page-description">
-      Upload legal documents for AI-powered analysis, text extraction, and vector search indexing.
-    </p>
+    <h1>Upload Documents</h1>
+    <p class="page-description">Upload files to MinIO. Documents will be processed and indexed for search.</p>
   </div>
+
   <div class="upload-container">
-    <!-- Main Upload Form -->
     <div class="upload-section">
+      <div class="card-header">
+        <h2>Upload</h2>
+        <button class="text-button">Need Help?</button>
+      </div>
+
+      <!-- MinIOUpload emits custom events with detail payload -->
       <MinIOUpload
-        {data}
-        {caseId}
-        uploadcomplete={handleUploadComplete}
-        uploaderror={handleUploadError}
+        caseId={caseId}
+        bind:this={minioUpload}
       />
-    </div>
-    <!-- Sidebar with Information -->
-    <div class="info-sidebar">
-      <div class="info-nier-bits-card">
-        <h3>📄 Supported Formats</h3>
-        <ul>
-          <li>PDF Documents</li>
-          <li>Microsoft Word (.doc, .docx)</li>
-          <li>Plain Text Files</li>
-          <li>Images (JPEG, PNG, TIFF)</li>
-        </ul>
-      </div>
-      <div class="info-nier-bits-card">
-        <h3>🤖 AI Processing</h3>
-        <p>Uploaded documents are automatically processed with:</p>
-        <ul>
-          <li>Text extraction and OCR</li>
-          <li>Vector embeddings generation</li>
-          <li>Semantic search indexing</li>
-          <li>Entity recognition</li>
-          <li>Document classification</li>
-        </ul>
-      </div>
-      <div class="info-nier-bits-card">
-        <h3>🔒 Security</h3>
-        <ul>
-          <li>End-to-end encryption</li>
-          <li>Secure MinIO storage</li>
-          <li>Access control by case</li>
-          <li>Audit trail logging</li>
-        </ul>
-      </div>
-      <!-- Recent Uploads -->
-      <div class="info-nier-bits-card">
-        <div class="nier-bits-yorha-panel-header">
-          <h3>📋 Recent Uploads</h3>
-          <button
-            type="button"
-            onclick={loadRecentUploads}
-            class="text-button"
-          >
-            {showRecentUploads ? 'Refresh' : 'Show'}
-          </button>
-        </div>
-        {#if showRecentUploads}
-          {#if recentUploads.length > 0}
-            <div class="recent-uploads">
-              {#each recentUploads.slice(0, 5) as upload}
-                <div class="upload-item">
-                  <div class="upload-icon">📄</div>
-                  <div class="upload-details">
-                    <div class="upload-name">{upload.filename}</div>
-                    <div class="upload-meta">
-                      {upload.documentType} • {upload.caseId}
-                    </div>
-                  </div>
-                  <div class="upload-status">
-                    {#if upload.processingStatus === 'completed'}
-                      ✅
-                    {:else if upload.processingStatus === 'processing'}
-                      ⏳
-                    {:else if upload.processingStatus === 'failed'}
-                      ❌
-                    {:else}
-                      📤
-                    {/if}
-                  </div>
+
+      <div class="recent-uploads">
+        {#if recentUploads.length === 0}
+          <p class="no-uploads">No recent uploads.</p>
+        {:else}
+          {#each recentUploads as item (item.filename)}
+            <div class="upload-item">
+              <span class="upload-icon">📁</span>
+              <div class="upload-details">
+                <div class="upload-name">{item.filename}</div>
+                <div class="upload-meta">
+                  {#if item.size}{(item.size / 1024).toFixed(1)} KB{/if}
+                  {#if item.mimeType} · {item.mimeType}{/if}
                 </div>
-              {/each}
+              </div>
+              <div class="upload-status">Uploaded</div>
             </div>
-          {:else}
-            <p class="no-uploads">No recent uploads found</p>
-          {/if}
+          {/each}
+        {/if}
       </div>
     </div>
-  </div>
-  <!-- Help Section -->
-  <div class="help-section">
-    <h2>Need Help?</h2>
-    <div class="help-grid">
-      <div class="help-nier-bits-card">
-        <h4>🚀 Quick Start</h4>
-        <p>Select your case ID, choose your document type, and drag & drop your file to get started.</p>
+
+    <aside class="info-sidebar">
+      <div class="info-card">
+        <h3>Quick Tips</h3>
+        <!-- Added to satisfy .info-card p selector -->
+        <p>Use these tips to ensure uploads are associated correctly and processed promptly.</p>
+        <ul>
+          <li>Choose the correct case ID to associate documents.</li>
+          <li>Supported formats: PDF, DOCX, PNG, JPG.</li>
+          <li>Large files may take longer to process.</li>
+        </ul>
       </div>
-      <div class="help-nier-bits-card">
-        <h4>📊 Processing Status</h4>
-        <p>Track your document processing status and get notified when AI analysis is complete.</p>
+
+      <div class="help-section">
+        <h2>Need Help?</h2>
+        <div class="help-grid">
+          <div class="help-card">
+            <h4>🚀 Quick Start</h4>
+            <p>Select your case ID, choose your document type, and drag & drop your file to get started.</p>
+          </div>
+          <div class="help-card">
+            <h4>📊 Processing Status</h4>
+            <p>Track your document processing status and get notified when AI analysis is complete.</p>
+          </div>
+          <div class="help-card">
+            <h4>🔍 Search Integration</h4>
+            <p>Uploaded documents are automatically indexed for semantic search and similarity matching.</p>
+          </div>
+          <div class="help-card">
+            <h4>💼 Case Management</h4>
+            <p>Documents are organized by case ID for easy management and cross-referencing.</p>
+          </div>
+        </div>
       </div>
-      <div class="help-nier-bits-card">
-        <h4>🔍 Search Integration</h4>
-        <p>Uploaded documents are automatically indexed for semantic search and similarity matching.</p>
-      </div>
-      <div class="help-nier-bits-card">
-        <h4>💼 Case Management</h4>
-        <p>Documents are organized by case ID for easy management and cross-referencing.</p>
-      </div>
-    </div>
+    </aside>
   </div>
 </div>
+
 <style>
   .upload-page {
     max-width: 1400px;
@@ -230,6 +204,10 @@
     color: var(--text-primary);
     font-size: 1.125rem;
   }
+  .info-card p {
+    margin: 0 0 1rem 0;
+    color: var(--text-secondary);
+  }
   .info-card ul {
     margin: 0;
     padding-left: 1.25rem;
@@ -238,13 +216,9 @@
   .info-card li {
     margin-bottom: 0.5rem;
   }
-  .info-card p {
-    margin: 0 0 1rem 0;
-    color: var(--text-secondary);
-  }
   .card-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
   }
@@ -254,9 +228,9 @@
     color: var(--accent-primary);
     cursor: pointer;
     font-size: 0.875rem;
-    text-decoration underli;
+    text-decoration: underline;
   }
-  .text-buttonhover {
+  .text-button:hover {
     color: var(--accent-primary-dark);
   }
   .recent-uploads {
@@ -279,7 +253,7 @@
   }
   .upload-details {
     flex: 1;
-    min-width: 0,
+    min-width: 0;
   }
   .upload-name {
     font-weight: 500;
@@ -287,7 +261,7 @@
     color: var(--text-primary);
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsi;
+    text-overflow: ellipsis;
   }
   .upload-meta {
     font-size: 0.75rem;

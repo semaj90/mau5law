@@ -1,5 +1,12 @@
 // Complete system status and error tracker
 // #memory #create_entities #get-library-docs
+// helper: centralized Ollama endpoint resolution
+function getOllamaEndpoint() {
+  // prefer explicit env (docker-compose/service) first, then Docker service name fallback
+  // avoid hardcoded localhost in this helper; use env at the edge if localhost is required
+  return process.env.OLLAMA_URL || 'http://ollama:11435';
+}
+
 export class SystemStatusTracker {
   constructor() {
     this.services = new Map();
@@ -24,10 +31,11 @@ export class SystemStatusTracker {
       port: 6333,
       health_endpoint: "http://localhost:6333/health",
     });
-    this.services.set("ollama", {
-      status: "pending",
+    this.services.set('ollama', {
+      status: 'pending',
       port: 11434,
-      health_endpoint: "http://localhost:11434/api/version",
+      // use centralized helper instead of hardcoded URL
+      health_endpoint: `${getOllamaEndpoint()}/api/version`,
     });
     this.services.set("frontend", {
       status: "pending",
@@ -46,28 +54,31 @@ export class SystemStatusTracker {
   }
   async checkServiceHealth() {
     const results = {};
+    // reference the service object to avoid "assigned but never used" linter error
     for (const [name, service] of this.services) {
       try {
+        // capture configured endpoint for reporting/debugging
+        const configuredEndpoint = service?.health_endpoint;
         // Service-specific health checks
         switch (name) {
-          case "postgres":
-            results[name] = await this.checkPostgres();
+          case 'postgres':
+            results[name] = { ...(await this.checkPostgres()), configuredEndpoint };
             break;
-          case "redis":
-            results[name] = await this.checkRedis();
+          case 'redis':
+            results[name] = { ...(await this.checkRedis()), configuredEndpoint };
             break;
-          case "qdrant":
-            results[name] = await this.checkQdrant();
+          case 'qdrant':
+            results[name] = { ...(await this.checkQdrant()), configuredEndpoint };
             break;
-          case "ollama":
-            results[name] = await this.checkOllama();
+          case 'ollama':
+            results[name] = { ...(await this.checkOllama()), configuredEndpoint };
             break;
-          case "frontend":
-            results[name] = await this.checkFrontend();
+          case 'frontend':
+            results[name] = { ...(await this.checkFrontend()), configuredEndpoint };
             break;
         }
       } catch (error) {
-        results[name] = { status: "error", error: error.message };
+        results[name] = { status: 'error', error: error.message, configuredEndpoint: service?.health_endpoint };
       }
     }
     return results;
@@ -87,9 +98,10 @@ export class SystemStatusTracker {
   }
   async checkOllama() {
     return {
-      status: "healthy",
-      models: ["gemma2:27b"],
-      endpoint: "http://localhost:11434",
+      status: 'healthy',
+      models: ['gemma3-legal:latest'],
+      // use helper instead of hardcoded localhost
+      endpoint: getOllamaEndpoint(),
     };
   }
   async checkFrontend() {
@@ -144,7 +156,7 @@ const systemTracker = new SystemStatusTracker();
 console.log("🚀 Legal AI System - All Files Created & Ready");
 console.log("===============================================");
 const report = systemTracker.generateSystemReport();
-console.log("System Status:", JSON.stringify(report, null, 2),;
-console.log("\nNext Steps:");
-systemTracker.getNextSteps().forEach((step) => console.log(step),;
+console.log('System Status:', JSON.stringify(report, null, 2));
+console.log('\nNext Steps:');
+systemTracker.getNextSteps().forEach(step => console.log(step));
 export default systemTracker;

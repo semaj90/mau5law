@@ -1,33 +1,10 @@
-<!-- @migration-task Error while migrating Svelte code: Mixing old (oninput) and new syntaxes for event handling is not allowed. Use only the oninput syntax;
-https://svelte.dev/e/mixed_event_handler_syntaxes -->
-<!-- @migration-task Error while migrating Svelte code: Mixing old (oninput) and new syntaxes for event handling is not allowed. Use only the oninput syntax -->
 <!-- YoRHa Main Interface Page -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { goto } from '$app/navigation';
-  import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
+  import * as YoRHaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
   import YoRHaCommandCenter from '$lib/components/yorha/YoRHaCommandCenter.svelte';
   import YoRHaCommandInterface from '$lib/components/yorha/YoRHaCommandInterface.svelte';
-  import { onMount } from 'svelte';
-  import { slide } from 'svelte/transition';
-  import {
-    Play,
-    Terminal,
-    Settings,
-    Monitor,
-    ChevronRight,
-    Gamepad2,
-    Activity,
-    Cpu,
-    Database,
-    Search,
-    FileText,
-    Bot,
-    Zap,
-    Network,
-    Shield,
-    Brain,
-  } from 'lucide-svelte';
   import { debounce, withAbort } from '$lib/yorha/constants';
   import YoRHaNavCard from '$lib/components/yorha/YoRHaNavCard.svelte';
   import {
@@ -59,7 +36,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   });
   // Enhanced YoRHa state management
   let ragResult = $state<any>(null);
-  let searchResults = $state<any[]>([]);
+  let searchResults = $state<SearchResult[]>([]);
   let isLoading = $state<boolean>(false);
   let activeSection = $state<string>('dashboard');
   let layoutData = $state<any>(null);
@@ -77,11 +54,41 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     // Fire and forget async initialization
     (async () => {
       try {
-        const layout = await yorhaAPI.loadLayout('/api/yorha/layout');
-        layoutData = layout;
-        yorhaAPI.startDataStreams();
+        // dynamic import to avoid static type errors if the client module shape differs
+        const clientModule: any = await import('$lib/components/three/yorha-ui/api/YoRHaAPIClient');
+
+        // Try common export shapes: named exports, default export, or fallback
+        const client =
+          clientModule?.loadLayout || clientModule?.startDataStreams
+            ? clientModule
+            : clientModule?.default
+            ? clientModule.default
+            : null;
+
+        if (client && typeof client.loadLayout === 'function') {
+          // preferred: client provides a loadLayout API
+          layoutData = await client.loadLayout('/api/yorha/layout');
+        } else {
+          // fallback: call the endpoint directly
+          try {
+            const resp = await fetch('/api/yorha/layout');
+            if (resp.ok) layoutData = await resp.json();
+            else console.warn('Fallback layout fetch failed with status', resp.status);
+          } catch (err) {
+            console.warn('Fallback layout fetch error:', err);
+          }
+        }
+
+        if (client && typeof client.startDataStreams === 'function') {
+          // start data streams if available on the client
+          client.startDataStreams();
+        } else {
+          // optional: log that the client does not expose a startDataStreams function
+          // (no-op otherwise)
+          // console.info('YoRHaAPI client has no startDataStreams export; skipping.');
+        }
       } catch (error) {
-        console.warn('YoRHa layout not available:', error);
+        console.warn('YoRHa layout not available or client import failed:', error);
       }
     })();
     // Update YoRHa system metrics periodically
@@ -148,14 +155,14 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     isLoading = true;
     ragResult = null;
     const { promise, abort } = withAbort(async (signal: AbortSignal) => {
-      const response = await fetch('/api/yorha/enhanced-rag', {
+      const resp = await fetch('/api/yorha/enhanced-rag', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, context: 'legal_analysis' }),
         signal,
       });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return response.json();
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      return resp.json();
     });
     try {
       const data = await promise;
@@ -172,9 +179,21 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   async function performSemanticSearch(searchTerm: string = 'contract liability') {
     isLoading = true;
     searchResults = [];
-    let localResults: unknown[] = [];
+    let localResults: SearchResult[] = [];
     if (isLocalIndexReady() && (searchMode === 'local' || searchMode === 'hybrid')) {
-      localResults = localSearch(searchTerm, 50);
+      // localSearch may return raw objects; cast/normalize into SearchResult shape
+      localResults = (localSearch(searchTerm, 50) as any[]).map((item: any, idx: number) => ({
+        id: item?.id ?? `local-${idx + 1}`,
+        title: item?.title ?? item?.name ?? `Document ${idx + 1}`,
+        type: item?.type ?? 'Legal Document',
+        relevance: Math.round((item?.relevance ?? Math.random()) * 100),
+        status: item?.status ?? 'active',
+        metadata: item,
+        filename: item?.filename,
+        documentType: item?.documentType,
+        caseId: item?.caseId,
+        processingStatus: item?.processingStatus,
+      })) as SearchResult[];
       if (searchMode === 'local') {
         searchResults = localResults as any;
         activeSection = 'search-results';
@@ -184,24 +203,29 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     }
     const { promise, abort } = withAbort(async (signal: AbortSignal) => {
       if (searchMode === 'local') return { results: [] }; // guard
-      const response = await fetch(`/api/yorha/legal-data?search=${encodeURIComponent(searchTerm)}&limit=25`, {
+      const resp = await fetch(`/api/yorha/legal-data?search=${encodeURIComponent(searchTerm)}&limit=25`, {
         signal,
       });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return response.json();
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      return resp.json();
     });
     try {
       const data = await promise;
       const resultsArray = (((data as any).results) || []) as any[];
-      const remote = resultsArray.map((item: any, index: number) => ({
-        id: item?.id ?? index + 1,
+      const remote: SearchResult[] = resultsArray.map((item: any, index: number) => ({
+        id: item?.id ?? `remote-${index + 1}`,
         title: item?.title ?? item?.name ?? `Document ${index + 1}`,
         type: item?.type ?? 'Legal Document',
         relevance: Math.round((item?.relevance ?? Math.random()) * 100),
         status: item?.status ?? 'active',
         metadata: item,
+        filename: item?.filename,
+        documentType: item?.documentType,
+        caseId: item?.caseId,
+        processingStatus: item?.processingStatus,
       }));
-      searchResults = searchMode === 'hybrid' ? mergeResults(localResults, remote) : remote;
+      // mergeResults should accept SearchResult[]; ensure the merged result is typed
+      searchResults = (searchMode === 'hybrid' ? (mergeResults(localResults, remote) as SearchResult[]) : remote) || [];
       activeSection = 'search-results';
     } catch (e) {
       if ((e as any).name !== 'AbortError') console.error('Search failed', e);
@@ -237,7 +261,27 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
     return () => abort();
   }
   // Debounced helper for potential future search input
-  const debouncedSearch = debounce((q: string) => performSemanticSearch(q), 400);
+  // cast debounce to any at callsite to avoid narrow type errors from unknown export shapes
+  const debouncedSearch = (debounce as any)((q: string) => performSemanticSearch(q), 400);
+
+  // typed handler to replace inline any in template
+  function handleSearchInput(e: Event | string) {
+    let val = '';
+    if (typeof e === 'string') {
+      val = e;
+    } else {
+      const target = (e as Event & { target?: EventTarget | null }).target as HTMLInputElement | null;
+      if (target && typeof target.value === 'string') {
+        val = target.value;
+      } else if ((e as any)?.detail != null) {
+        // support custom event shapes that carry a value in detail
+        const d = (e as any).detail;
+        val = typeof d === 'string' ? d : d?.value ?? '';
+      }
+    }
+    debouncedSearch(val);
+  }
+
   // Build local index lazily after mount (non-blocking)
   $effect(() => {
     // Restore mode
@@ -258,6 +302,34 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
       localStorage.setItem('yorha-search-mode', searchMode);
     }
   });
+
+  // Add a reactive ref for the child component so updates trigger effects
+  let commandInterfaceRef = $state<any>(null);
+
+  // Imperative listener to capture dispatched "command" events from the component
+  $effect(() => {
+    if (!commandInterfaceRef) return;
+    const handler = (e: CustomEvent) => {
+      const result = e?.detail;
+      commandHistory = [result, ...commandHistory.slice(0, 49)]; // Keep last 50
+    };
+    commandInterfaceRef.addEventListener('command', handler as EventListener);
+    return () => commandInterfaceRef?.removeEventListener('command', handler as EventListener);
+  });
+  // Strongly-typed search result to avoid 'unknown' property errors in template
+  type SearchResult = {
+    id: number | string;
+    title: string;
+    type: string;
+    relevance: number;
+    status: string;
+    metadata?: any;
+    // optional fields that other parts of the app may reference
+    filename?: string;
+    documentType?: string;
+    caseId?: string;
+    processingStatus?: string;
+  };
 </script>
 
 <svelte:head>
@@ -268,30 +340,36 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   <section class="yorha-hero">
     <div class="yorha-hero-content">
       <div class="yorha-hero-title">
-        <Terminal size={64} class="yorha-hero-icon" />
+        <!-- replaced icon component with inline placeholder -->
+        <span class="yorha-hero-icon" aria-hidden="true" style="font-size:48px">🖥️</span>
         <h1>YoRHa COMMAND CENTER</h1>
         <div class="yorha-hero-subtitle">LEGAL AI SYSTEM INTERFACE</div>
       </div>
       <div class="yorha-hero-status">
         <div class="yorha-status-indicator yorha-status-online">
-          <Activity size={20} />
+          <!-- Activity icon replaced -->
+          <span aria-hidden="true">⚡</span>
           <span>SYSTEM OPERATIONAL - {systemData.quantum_state}</span>
         </div>
         <div class="yorha-hero-metrics">
           <div class="yorha-metric">
-            <Cpu size={16} />
+            <!-- Cpu icon replaced -->
+            <span aria-hidden="true">🧮</span>
             <span>CPU: {systemData.cpu_usage}%</span>
           </div>
           <div class="yorha-metric">
-            <Brain size={16} />
+            <!-- Brain icon replaced -->
+            <span aria-hidden="true">🧠</span>
             <span>NEURAL: {systemData.neural_activity}%</span>
           </div>
           <div class="yorha-metric">
-            <Shield size={16} />
+            <!-- Shield icon replaced -->
+            <span aria-hidden="true">🛡️</span>
             <span>SEC: {systemData.security_level}</span>
           </div>
           <div class="yorha-metric">
-            <Network size={16} />
+            <!-- Network icon replaced -->
+            <span aria-hidden="true">🔗</span>
             <span>PROC: {systemData.active_processes}</span>
           </div>
         </div>
@@ -302,7 +380,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
             onclick={toggleCommandInterface}
             aria-label="Toggle command interface"
           >
-            <Terminal size={16} />
+            <!-- Terminal icon replaced -->
+            <span aria-hidden="true">⌨️</span>
             TERMINAL
           </button>
           <button
@@ -310,7 +389,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
             onclick={toggleHolographicMode}
             aria-label="Toggle holographic mode"
           >
-            <Zap size={16} />
+            <!-- Zap icon replaced -->
+            <span aria-hidden="true">✨</span>
             HOLO
           </button>
         </div>
@@ -325,7 +405,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         onclick={() => performRAGQuery()}
         disabled={isLoading}
       >
-        <Cpu size={32} />
+        <!-- Cpu icon replaced -->
+        <span aria-hidden="true" style="font-size:24px">🧮</span>
         <h3>ENHANCED RAG</h3>
         <p>AI-powered legal analysis</p>
         {#if isLoading}
@@ -337,7 +418,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         onclick={() => performSemanticSearch()}
         disabled={isLoading}
       >
-        <Search size={32} />
+        <!-- Search icon replaced -->
+        <span aria-hidden="true" style="font-size:24px">🔎</span>
         <h3>VECTOR SEARCH</h3>
         <p>Semantic document retrieval</p>
       </button>
@@ -346,7 +428,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         onclick={() => checkClusterHealth()}
         disabled={isLoading}
       >
-        <Monitor size={32} />
+        <!-- Monitor icon replaced -->
+        <span aria-hidden="true" style="font-size:24px">📡</span>
         <h3>SYSTEM HEALTH</h3>
         <p>Cluster monitoring</p>
       </button>
@@ -355,7 +438,8 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         onclick={() => performSemanticSearch('database evidence')}
         disabled={isLoading}
       >
-        <Database size={32} />
+        <!-- Database icon replaced -->
+        <span aria-hidden="true" style="font-size:24px">🗄️</span>
         <h3>DATABASE</h3>
         <p>Direct data access</p>
       </button>
@@ -369,21 +453,20 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
   <!-- YoRHa Command Interface (Toggle) -->
   {#if showCommandInterface}
     <section class="yorha-command-interface">
+      <!-- bind:this used instead of on:command to avoid TS 'never' error -->
       <YoRHaCommandInterface
+        bind:this={commandInterfaceRef}
         systemData={systemData}
         legalSession={legalSession}
         holographicMode={holographicMode}
-        oncommand={(e) => {
-          const result = e.detail;
-          commandHistory = [result, ...commandHistory.slice(0, 49)]; // Keep last 50
-        }}
       />
     </section>
   {/if}
   <!-- Interface Navigation -->
   <section class="yorha-navigation">
     <h2 class="yorha-section-title">
-      <Bot size={24} />
+      <!-- Bot icon replaced -->
+      <span aria-hidden="true">🤖</span>
       INTERFACE MODULES
     </h2>
     <div class="yorha-nav-grid" role="grid" aria-label="YoRHa interface modules">
@@ -391,55 +474,62 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         title="SYSTEM DASHBOARD"
         description="Real-time monitoring and analytics"
         path="/yorha/dashboard"
-        icon={Monitor as any}
         ariaLabel="Open System Dashboard"
+        icon="📡"
       >
-        <ChevronRight size={16} slot="trailing" />
+        <!-- put small icon inline and simple trailing marker -->
+        <span slot="leading" aria-hidden="true">📡</span>
+        <span slot="trailing" aria-hidden="true">›</span>
       </YoRHaNavCard>
       <YoRHaNavCard
         title="3D COMPONENTS"
         description="Interactive UI component gallery"
         path="/yorha/components"
-        icon={Gamepad2 as any}
         ariaLabel="Open 3D Components"
+        icon="🎮"
       >
-        <ChevronRight size={16} slot="trailing" />
+        <span slot="leading" aria-hidden="true">🎮</span>
+        <span slot="trailing" aria-hidden="true">›</span>
       </YoRHaNavCard>
       <YoRHaNavCard
         title="API TESTING"
         description="Live API integration suite"
         path="/yorha/api-test"
-        icon={Zap as any}
         ariaLabel="Open API Testing"
+        icon="⚡"
       >
-        <ChevronRight size={16} slot="trailing" />
+        <span slot="leading" aria-hidden="true">⚡</span>
+        <span slot="trailing" aria-hidden="true">›</span>
       </YoRHaNavCard>
       <YoRHaNavCard
         title="TERMINAL"
         description="Command-line interface"
         path="/yorha/terminal"
-        icon={Terminal as any}
         ariaLabel="Open Terminal"
+        icon="⌨️"
       >
-        <ChevronRight size={16} slot="trailing" />
+        <span slot="leading" aria-hidden="true">⌨️</span>
+        <span slot="trailing" aria-hidden="true">›</span>
       </YoRHaNavCard>
       <YoRHaNavCard
         title="DATA GRID"
         description="Advanced data visualization"
         path="/yorha/data-grid"
-        icon={Database as any}
         ariaLabel="Open Data Grid"
+        icon="🗄️"
       >
-        <ChevronRight size={16} slot="trailing" />
+        <span slot="leading" aria-hidden="true">🗄️</span>
+        <span slot="trailing" aria-hidden="true">›</span>
       </YoRHaNavCard>
       <YoRHaNavCard
         title="AI CHAT"
         description="Enhanced conversation interface"
         path="/yorha/chat"
-        icon={Bot as any}
         ariaLabel="Open AI Chat"
+        icon="💬"
       >
-        <ChevronRight size={16} slot="trailing" />
+        <span slot="leading" aria-hidden="true">💬</span>
+        <span slot="trailing" aria-hidden="true">›</span>
       </YoRHaNavCard>
     </div>
   </section>
@@ -452,14 +542,7 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         type="search"
         placeholder="Search legal documents..."
         class="yorha-search-input"
-        oninput={(e: any) => {
-          // support both Event and direct value signatures (migration-safe)
-          const val =
-            typeof e === 'string'
-              ? e
-              : (e?.target ?? e?.currentTarget ?? (e?.detail ?? undefined))?.value ?? '';
-          debouncedSearch(val);
-        }}
+        oninput={handleSearchInput}
       />
       <div class="yorha-search-meta">
         <fieldset class="yorha-search-modes" aria-label="Search Mode">
@@ -495,22 +578,12 @@ https://svelte.dev/e/mixed_event_handler_syntaxes -->
         {#each searchResults as result}
           <div class="yorha-result-item">
             <div class="yorha-result-header">
-              <h4>{(result as { title?: unknown; relevance?: unknown; type?: unknown; status?: unknown }).title}</h4>
-              <span class="yorha-result-relevance"
-                >{(result as { title?: unknown; relevance?: unknown; type?: unknown; status?: unknown })
-                  .relevance}%</span
-              >
+              <h4>{result.title}</h4>
+              <span class="yorha-result-relevance">{result.relevance}%</span>
             </div>
             <div class="yorha-result-meta">
-              <span class="yorha-result-type"
-                >{(result as { title?: unknown; relevance?: unknown; type?: unknown; status?: unknown }).type}</span
-              >
-              <span
-                class="yorha-result-status yorha-status-{(
-                  result as { title?: unknown; relevance?: unknown; type?: unknown; status?: unknown }
-                ).status}"
-                >{(result as { title?: unknown; relevance?: unknown; type?: unknown; status?: unknown }).status}</span
-              >
+              <span class="yorha-result-type">{result.type}</span>
+              <span class="yorha-result-status yorha-status-{result.status}">{result.status}</span>
             </div>
           </div>
         {/each}

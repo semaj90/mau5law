@@ -33,10 +33,23 @@ class ParallaxDynamic {
 			transformsPerSecond: 0,
 		};
 		this.callbacks = {
-			onUpdate: null
-			onPerformanceChange: null
-			onDeviceOrientationChange: null
-		};
+      onUpdate: null,
+      onPerformanceChange: null,
+      onDeviceOrientationChange: null,
+    };
+    // store bound handlers so removeEventListener works
+    this._boundHandlers = {
+      mousemove: this.handleMouseMove.bind(this),
+      touchmove: this.handleTouchMove.bind(this),
+      touchstart: this.handleTouchStart.bind(this),
+      touchend: this.handleTouchEnd.bind(this),
+      deviceorientation: this.handleGyroscope.bind(this),
+      pointermove: this.handlePointerMove.bind(this),
+      pointerdown: this.handlePointerDown.bind(this),
+      pointerup: this.handlePointerUp.bind(this),
+      resize: this.handleResize.bind(this),
+      visibilitychange: this.handleVisibilityChange.bind(this),
+    };
 		this.animationId = null;
 		this.startTime = performance.now();
 		this.init();
@@ -146,12 +159,12 @@ class ParallaxDynamic {
 		`;
 		const shaderModule = this.webgpuDevice.createShaderModule({ code: shaderCode });
 		this.transformPipeline = this.webgpuDevice.createComputePipeline({
-			layout: 'auto',
-			compute: {
-				module: shaderModule
-				entryPoint: 'main',
-			}
-		});
+      layout: 'auto',
+      compute: {
+        module: shaderModule,
+        entryPoint: 'main',
+      },
+    });
 	}
 	autoDetectPerformanceMode() {
 		if (this.config.performanceMode !== 'auto') return;
@@ -197,23 +210,23 @@ class ParallaxDynamic {
 	}
 	setupEventListeners() {
 		// Mouse events
-		window.addEventListener('mousemove', this.handleMouseMove.bind(this),;
-		// Touch events for mobile
-		window.addEventListener('touchmove', this.handleTouchMove.bind(this), { passive: false });
-		window.addEventListener('touchstart', this.handleTouchStart.bind(this),;
-		window.addEventListener('touchend', this.handleTouchEnd.bind(this),;
-		// Gyroscope events
-		if (this.isGyroscopeAvailable) {
-			window.addEventListener('deviceorientation', this.handleGyroscope.bind(this),;
-		}
+		window.addEventListener('mousemove', this._boundHandlers.mousemove);
+    // Touch events for mobile
+    window.addEventListener('touchmove', this._boundHandlers.touchmove, { passive: false });
+    window.addEventListener('touchstart', this._boundHandlers.touchstart);
+    window.addEventListener('touchend', this._boundHandlers.touchend);
+    // Gyroscope events
+    if (this.isGyroscopeAvailable) {
+      window.addEventListener('deviceorientation', this._boundHandlers.deviceorientation);
+    }
 		// Pointer events
-		window.addEventListener('pointermove', this.handlePointerMove.bind(this),;
-		window.addEventListener('pointerdown', this.handlePointerDown.bind(this),;
-		window.addEventListener('pointerup', this.handlePointerUp.bind(this),;
+		window.addEventListener('pointermove', this._boundHandlers.pointermove);
+    window.addEventListener('pointerdown', this._boundHandlers.pointerdown);
+    window.addEventListener('pointerup', this._boundHandlers.pointerup);
 		// Performance monitoring
-		window.addEventListener('resize', this.handleResize.bind(this),;
-		// Page visibility for performance optimization
-		document.addEventListener('visibilitychange', this.handleVisibilityChange.bind(this),;
+		window.addEventListener('resize', this._boundHandlers.resize);
+    // Page visibility for performance optimization
+    document.addEventListener('visibilitychange', this._boundHandlers.visibilitychange);
 	}
 	handleMouseMove(event) {
 		if (this.isMobile && this.isGyroscopeAvailable) return;
@@ -231,10 +244,10 @@ class ParallaxDynamic {
 		this.input.y = (touch.clientY - centerY) * this.config.pointerSensitivity;
 		event.preventDefault();
 	}
-	handleTouchStart(event) {
+	handleTouchStart(_event) {
 		this.pointer.pressed = true;
 	}
-	handleTouchEnd(event) {
+	handleTouchEnd(_event) {
 		this.pointer.pressed = false;
 	}
 	handleGyroscope(event) {
@@ -258,10 +271,10 @@ class ParallaxDynamic {
 		this.pointer.x = (event.clientX - centerX) * this.config.pointerSensitivity;
 		this.pointer.y = (event.clientY - centerY) * this.config.pointerSensitivity;
 	}
-	handlePointerDown(event) {
+	handlePointerDown(_event) {
 		this.pointer.pressed = true;
 	}
-	handlePointerUp(event) {
+	handlePointerUp(_event) {
 		this.pointer.pressed = false;
 	}
 	handleResize() {
@@ -277,16 +290,16 @@ class ParallaxDynamic {
 	}
 	addLayer(element, options = {}) {
 		const layer = {
-			id: options.id || `layer-${this.layers.length}`,
-			element: typeof element === 'string' ? document.querySelector(element) : element
-			depth: options.depth || 0.1,
-			currentOffset: { x: 0, y: 0 },
-			targetOffset: { x: 0, y: 0 },
-			smoothing: options.smoothing || this.config.smoothing,
-			enabled: options.enabled !== false,
-			transformStyle: options.transformStyle || '3d', // '2d' or '3d'
-			...options
-		};
+      id: options.id || `layer-${this.layers.length}`,
+      element: typeof element === 'string' ? document.querySelector(element) : element,
+      depth: options.depth || 0.1,
+      currentOffset: { x: 0, y: 0 },
+      targetOffset: { x: 0, y: 0 },
+      smoothing: options.smoothing || this.config.smoothing,
+      enabled: options.enabled !== false,
+      transformStyle: options.transformStyle || '3d', // '2d' or '3d'
+      ...options,
+    };
 		if (!layer.element) {
 			console.warn(`ParallaxDynamic: Element not found for layer ${layer.id}`);
 			return null;
@@ -303,101 +316,102 @@ class ParallaxDynamic {
 		}
 	}
 	async updateWebGPUTransforms() {
-		if (!this.webgpuDevice || !this.transformPipeline || this.layers.length === 0) return false;
-		// Prepare data buffers
-		const layerData = new Float32Array(this.layers.length * 8);
-		const transformData = new Float32Array(this.layers.length * 8);
-		this.layers.forEach((layer, i) => {
-			const offset = i * 8;
-			layerData[offset + 0] = layer.depth;
-			layerData[offset + 1] = this.input.x;
-			layerData[offset + 2] = this.input.y;
-			layerData[offset + 3] = layer.smoothing;
-			layerData[offset + 4] = layer.currentOffset.x;
-			layerData[offset + 5] = layer.currentOffset.y;
-			layerData[offset + 6] = layer.targetOffset.x;
-			layerData[offset + 7] = layer.targetOffset.y;
-		});
-		// Create buffers
-		const layerBuffer = this.webgpuDevice.createBuffer({
-			size: layerData.byteLength,
-			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
-			mappedAtCreation: true
-		});
-		new Float32Array(layerBuffer.getMappedRange()).set(layerData);
-		layerBuffer.unmap();
-		const transformBuffer = this.webgpuDevice.createBuffer({
-			size: transformData.byteLength,
-			usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
-			mappedAtCreation: true
-		});
-		new Float32Array(transformBuffer.getMappedRange()).set(transformData);
-		transformBuffer.unmap();
-		// Parameters buffer
-		const currentTime = (performance.now() - this.startTime) / 1000;
-		const paramsData = new Float32Array([
-			currentTime,
-			this.performance.frameTime / 1000,
-			this.config.maxOffset,
-			this.config.enableAutoRotate ? this.config.autoRotateSpeed: 0
-		]);
-		const paramsBuffer = this.webgpuDevice.createBuffer({
-			size: paramsData.byteLength,
-			usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-			mappedAtCreation: true
-		});
-		new Float32Array(paramsBuffer.getMappedRange()).set(paramsData);
-		paramsBuffer.unmap();
-		// Execute compute shader
-		const bindGroup = this.webgpuDevice.createBindGroup({
-			layout: this.transformPipeline.getBindGroupLayout(0),
-			entries: [
-				{ binding: 0, resource: { buffer: layerBuffer } },
-				{ binding: 1, resource: { buffer: transformBuffer } },
-				{ binding: 2, resource: { buffer: paramsBuffer } }
-			]
-		});
-		const commandEncoder = this.webgpuDevice.createCommandEncoder();
-		const computePass = commandEncoder.beginComputePass();
-		computePass.setPipeline(this.transformPipeline);
-		computePass.setBindGroup(0, bindGroup);
-		computePass.dispatchWorkgroups(Math.ceil(this.layers.length / 64),;
-		computePass.end();
-		this.webgpuDevice.queue.submit([commandEncoder.finish()]);
-		// Read back results
-		const readBuffer = this.webgpuDevice.createBuffer({
-			size: transformData.byteLength,
-			usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
-		});
-		const copyEncoder = this.webgpuDevice.createCommandEncoder();
-		copyEncoder.copyBufferToBuffer(transformBuffer, 0, readBuffer, 0, transformData.byteLength);
-		this.webgpuDevice.queue.submit([copyEncoder.finish()]);
-		await readBuffer.mapAsync(GPUMapMode.READ);
-		const resultData = new Float32Array(readBuffer.getMappedRange(),;
-		// Apply transforms to DOM elements
-		this.layers.forEach((layer, i) => {
-			if (!layer.enabled || !layer.element) return;
-			const offset = i * 8;
-			const transform = {
-				translateX: resultData[offset + 0],
-				translateY: resultData[offset + 1],
-				translateZ: resultData[offset + 2],
-				rotateX: resultData[offset + 3],
-				rotateY: resultData[offset + 4],
-				rotateZ: resultData[offset + 5],
-				scaleX: resultData[offset + 6],
-				scaleY: resultData[offset + 7],
-			};
-			this.applyTransformToElement(layer, transform);
-		});
-		readBuffer.unmap();
-		// Cleanup
-		layerBuffer.destroy();
-		transformBuffer.destroy();
-		paramsBuffer.destroy();
-		readBuffer.destroy();
-		return true;
-	}
+    if (!this.webgpuDevice || !this.transformPipeline || this.layers.length === 0) return false;
+    // Prepare data buffers
+    const layerData = new Float32Array(this.layers.length * 8);
+    const transformData = new Float32Array(this.layers.length * 8);
+    this.layers.forEach((layer, i) => {
+      const offset = i * 8;
+      layerData[offset + 0] = layer.depth;
+      layerData[offset + 1] = this.input.x;
+      layerData[offset + 2] = this.input.y;
+      layerData[offset + 3] = layer.smoothing;
+      layerData[offset + 4] = layer.currentOffset.x;
+      layerData[offset + 5] = layer.currentOffset.y;
+      layerData[offset + 6] = layer.targetOffset.x;
+      layerData[offset + 7] = layer.targetOffset.y;
+    });
+    // Create buffers
+    const layerBuffer = this.webgpuDevice.createBuffer({
+      size: layerData.byteLength,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
+      mappedAtCreation: true,
+    });
+    new Float32Array(layerBuffer.getMappedRange()).set(layerData);
+    layerBuffer.unmap();
+    const transformBuffer = this.webgpuDevice.createBuffer({
+      size: transformData.byteLength,
+      usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC,
+      mappedAtCreation: true,
+    });
+    new Float32Array(transformBuffer.getMappedRange()).set(transformData);
+    transformBuffer.unmap();
+    // Parameters buffer
+    const currentTime = (performance.now() - this.startTime) / 1000;
+    const paramsData = new Float32Array([
+      currentTime,
+      this.performance.frameTime / 1000,
+      this.config.maxOffset,
+      this.config.enableAutoRotate ? this.config.autoRotateSpeed : 0,
+    ]);
+    const paramsBuffer = this.webgpuDevice.createBuffer({
+      size: paramsData.byteLength,
+      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      mappedAtCreation: true,
+    });
+    new Float32Array(paramsBuffer.getMappedRange()).set(paramsData);
+    paramsBuffer.unmap();
+    // Execute compute shader
+    const bindGroup = this.webgpuDevice.createBindGroup({
+      layout: this.transformPipeline.getBindGroupLayout(0),
+      entries: [
+        { binding: 0, resource: { buffer: layerBuffer } },
+        { binding: 1, resource: { buffer: transformBuffer } },
+        { binding: 2, resource: { buffer: paramsBuffer } },
+      ],
+    });
+    const commandEncoder = this.webgpuDevice.createCommandEncoder();
+    const computePass = commandEncoder.beginComputePass();
+    computePass.setPipeline(this.transformPipeline);
+    computePass.setBindGroup(0, bindGroup);
+    // dispatchWorkgroups expects a single numeric arg (workgroup count) here
+    computePass.dispatchWorkgroups(Math.ceil(this.layers.length / 64));
+    computePass.end();
+    this.webgpuDevice.queue.submit([commandEncoder.finish()]);
+    // Read back results
+    const readBuffer = this.webgpuDevice.createBuffer({
+      size: transformData.byteLength,
+      usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+    });
+    const copyEncoder = this.webgpuDevice.createCommandEncoder();
+    copyEncoder.copyBufferToBuffer(transformBuffer, 0, readBuffer, 0, transformData.byteLength);
+    this.webgpuDevice.queue.submit([copyEncoder.finish()]);
+    await readBuffer.mapAsync(GPUMapMode.READ);
+    const resultData = new Float32Array(readBuffer.getMappedRange());
+    // Apply transforms to DOM elements
+    this.layers.forEach((layer, i) => {
+      if (!layer.enabled || !layer.element) return;
+      const offset = i * 8;
+      const transform = {
+        translateX: resultData[offset + 0],
+        translateY: resultData[offset + 1],
+        translateZ: resultData[offset + 2],
+        rotateX: resultData[offset + 3],
+        rotateY: resultData[offset + 4],
+        rotateZ: resultData[offset + 5],
+        scaleX: resultData[offset + 6],
+        scaleY: resultData[offset + 7],
+      };
+      this.applyTransformToElement(layer, transform);
+    });
+    readBuffer.unmap();
+    // Cleanup
+    layerBuffer.destroy();
+    transformBuffer.destroy();
+    paramsBuffer.destroy();
+    readBuffer.destroy();
+    return true;
+  }
 	updateCPUTransforms() {
 		const currentTime = (performance.now() - this.startTime) / 1000;
 		let inputX = this.input.x;
@@ -408,8 +422,8 @@ class ParallaxDynamic {
 			inputY += Math.cos(currentTime * this.config.autoRotateSpeed * 0.7) * 15;
 		}
 		// Clamp to maximum offset
-		inputX = Math.max(-this.config.maxOffset, Math.min(this.config.maxOffset, inputX),;
-		inputY = Math.max(-this.config.maxOffset, Math.min(this.config.maxOffset, inputY),;
+		inputX = Math.max(-this.config.maxOffset, Math.min(this.config.maxOffset, inputX));
+    inputY = Math.max(-this.config.maxOffset, Math.min(this.config.maxOffset, inputY));
 		this.layers.forEach(layer => {
 			if (!layer.enabled || !layer.element) return;
 			// Calculate target offsets
@@ -543,26 +557,29 @@ class ParallaxDynamic {
 		});
 	}
 	destroy() {
-		this.stop();
-		// Remove event listeners
-		window.removeEventListener('mousemove', this.handleMouseMove);
-		window.removeEventListener('touchmove', this.handleTouchMove);
-		window.removeEventListener('touchstart', this.handleTouchStart);
-		window.removeEventListener('touchend', this.handleTouchEnd);
-		window.removeEventListener('deviceorientation', this.handleGyroscope);
-		window.removeEventListener('pointermove', this.handlePointerMove);
-		window.removeEventListener('pointerdown', this.handlePointerDown);
-		window.removeEventListener('pointerup', this.handlePointerUp);
-		window.removeEventListener('resize', this.handleResize);
-		document.removeEventListener('visibilitychange', this.handleVisibilityChange);
-		// Clean up WebGPU resources
-		if (this.webgpuDevice) {
-			this.webgpuDevice.destroy();
-		}
-		this.layers = [];
-		this.callbacks = {};
-		console.log('🧹 ParallaxDynamic destroyed');
-	}
+    this.stop();
+    // Remove event listeners using the same bound references
+    window.removeEventListener('mousemove', this._boundHandlers.mousemove);
+    window.removeEventListener('touchmove', this._boundHandlers.touchmove);
+    window.removeEventListener('touchstart', this._boundHandlers.touchstart);
+    window.removeEventListener('touchend', this._boundHandlers.touchend);
+    window.removeEventListener('deviceorientation', this._boundHandlers.deviceorientation);
+    window.removeEventListener('pointermove', this._boundHandlers.pointermove);
+    window.removeEventListener('pointerdown', this._boundHandlers.pointerdown);
+    window.removeEventListener('pointerup', this._boundHandlers.pointerup);
+    window.removeEventListener('resize', this._boundHandlers.resize);
+    document.removeEventListener('visibilitychange', this._boundHandlers.visibilitychange);
+    // Clean up WebGPU resources
+    if (this.webgpuDevice) {
+      // device.destroy may not exist on all implementations; guard defensively
+      if (typeof this.webgpuDevice.destroy === 'function') {
+        this.webgpuDevice.destroy();
+      }
+    }
+    this.layers = [];
+    this.callbacks = {};
+    console.log('🧹 ParallaxDynamic destroyed');
+  }
 	// Static utility methods
 	static async requestGyroscopePermission() {
 		if (!('DeviceOrientationEvent' in window)) {

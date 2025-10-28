@@ -6,47 +6,68 @@
   // Svelte 5 runes
   let systemStatus = $state({});
   let authStatus = $state<any>(null);
-  let testResults = $state({});
+  type TestResult = {
+    success?: boolean;
+    error?: string;
+    data?: unknown;
+    status?: number;
+    timestamp?: string | number | Date | undefined;
+  };
+  // typed testResults to avoid unknown/indexing issues
+  let testResults = $state<Record<string, TestResult>>({});
   let isRunning = $state(false);
+
+  // helper to safely format unknown timestamps (prevents TS Date overload issues)
+  function formatTimestamp(ts: unknown): string {
+    try {
+      if (!ts) return '';
+      // Accept ISO string, number, or Date
+      const d = typeof ts === 'string' || typeof ts === 'number' ? new Date(ts as any) : ts instanceof Date ? ts : new Date(String(ts));
+      if (isNaN(d.getTime())) return '';
+      return d.toLocaleString();
+    } catch {
+      return '';
+    }
+  }
   type TestConfig = {
     name: string;
     endpoint: string;
     method?: 'GET' | 'POST';
     body?: unknown;
-    description string;
+    description: string;
   };
   const tests: TestConfig[] = [
     {
       name: 'Authentication Debug',
       endpoint: '/api/auth/debug',
-      description 'Check authentication status and development flags',
+      description: 'Check authentication status and development flags',
     },
     {
       name: 'Development Auth Creation',
       endpoint: '/api/dev-auth?seed=true',
-      description 'Create development session with sample data',
+      description: 'Create development session with sample data',
     },
     {
       name: 'Enhanced RAG Health',
       endpoint: 'http://localhost:8094/health',
-      description 'Go microservice health check',
+      description: 'Go microservice health check',
     },
     {
       name: 'Upload Service Health',
       endpoint: 'http://localhost:8093/health',
-      description 'File upload service health',
+      description: 'File upload service health',
     },
     {
       name: 'Ollama API',
       endpoint: 'http://localhost:11434/api/tags',
-      description 'AI model availability',
+      description: 'AI model availability',
     },
     {
       name: 'SSE Chat API',
       endpoint: '/api/ai/chat-sse',
       method: 'POST',
       body: { message: 'Test SSE streaming', model: 'gemma3-legal:latest' },
-      description 'Server-Sent Events streaming test',
+      description: 'Server-Sent Events streaming test',
     }
   ];
   async function runTest(test: TestConfig) {
@@ -134,44 +155,47 @@
   title="SYSTEM STATUS MONITOR"
   caseInfo="DEVELOPMENT ENVIRONMENT HEALTH CHECK"
   demoMode={true}
-  {rightPanel}
 >
-  {#snippet rightPanel()}
-    <!-- Authentication Status Panel -->
-    <div class="nes-container is-rounded evidence-panel mb-4">
-      <h3 class="nes-text is-primary mb-3">🔐 Authentication Status</h3>
-      {#if authStatus}
-        <div class="space-y-2">
-          <EvidenceCard
-            title="Auth Status"
-            description={authStatus.hasUser ? 'Authenticated' : 'Not Authenticated'}
-            status={authStatus.hasUser ? 'active' : 'pending'}
-            type="auth"
-            connections={1}
-          />
-          {#if authStatus.user}
-            <div class="text-xs text-gray-600 p-2 nes-container is-rounded bg-blue-50">
-              User ID: {authStatus.user.id.substring(0, 8)}...
-            </div>
-          {/if}
-        </div>
-      {:else}
-        <p class="nes-text text-xs">Loading authentication status...</p>
-      {/if}
-    </div>
-    <!-- Quick Actions Panel -->
-    <div class="nes-container is-rounded evidence-panel">
-      <h3 class="nes-text is-warning mb-3">🚀 Quick Actions</h3>
-      <div class="space-y-2">
-        <button class="nes-btn is-primary w-full text-xs" onclick={runAllTests} disabled={isRunning}>
-          {isRunning ? '⏳ Running...' : '🔄 Run All Tests'}
-        </button>
-        <button class="nes-btn is-success w-full text-xs" onclick={createDevSession}> 🔑 Create Dev Session </button>
-        <button class="nes-btn is-normal w-full text-xs" onclick={checkAuthStatus}> 👤 Check Auth Status </button>
-        <button class="nes-btn is-error w-full text-xs" onclick={clearSession}> 🚪 Clear Session </button>
-      </div>
-    </div>
-  {/snippet}
+  <svelte:fragment slot="rightPanel">
+     <!-- Authentication Status Panel -->
+     <div class="nes-container is-rounded evidence-panel mb-4">
+       <h3 class="nes-text is-primary mb-3">🔐 Authentication Status</h3>
+       {#if authStatus}
+         <div class="space-y-2">
+           <EvidenceCard
+             title="Auth Status"
+             description={authStatus.hasUser ? 'Authenticated' : 'Not Authenticated'}
+             status={authStatus.hasUser ? 'active' : 'pending'}
+             type="auth"
+             connections={1}
+           >
+             {#snippet children()}
+               <!-- intentionally empty children to satisfy EvidenceCard typing -->
+             {/snippet}
+           </EvidenceCard>
+           {#if authStatus.user}
+             <div class="text-xs text-gray-600 p-2 nes-container is-rounded bg-blue-50">
+               User ID: {authStatus.user.id.substring(0, 8)}...
+             </div>
+           {/if}
+         </div>
+       {:else}
+         <p class="nes-text text-xs">Loading authentication status...</p>
+       {/if}
+     </div>
+     <!-- Quick Actions Panel -->
+     <div class="nes-container is-rounded evidence-panel">
+       <h3 class="nes-text is-warning mb-3">🚀 Quick Actions</h3>
+       <div class="space-y-2">
+         <button class="nes-btn is-primary w-full text-xs" onclick={runAllTests} disabled={isRunning}>
+           {isRunning ? '⏳ Running...' : '🔄 Run All Tests'}
+         </button>
+         <button class="nes-btn is-success w-full text-xs" onclick={createDevSession}> 🔑 Create Dev Session </button>
+         <button class="nes-btn is-normal w-full text-xs" onclick={checkAuthStatus}> 👤 Check Auth Status </button>
+         <button class="nes-btn is-error w-full text-xs" onclick={clearSession}> 🚪 Clear Session </button>
+       </div>
+     </div>
+  </svelte:fragment>
   <!-- Main System Tests Content -->
   <main class="space-y-6">
     <!-- System Tests Grid -->
@@ -218,11 +242,7 @@
                       <p class="text-xs text-green-700">✅ Response received</p>
                     </div>
                   {/if}
-                  <p class="text-xs text-gray-500">
-                    {new Date(
-                      (result as { success?: unknown; error?: unknown; data?: unknown; timestamp?: unknown }).timestamp
-                    ).toLocaleString()}
-                  </p>
+                  <p class="text-xs text-gray-500">{formatTimestamp(result?.timestamp)}</p>
                 </div>
               {:else}
                 <p class="nes-text text-xs">⏳ Waiting for test...</p>
@@ -310,4 +330,4 @@
     </div>
   </main>
 </EvidenceBoardLayout>
-;
+

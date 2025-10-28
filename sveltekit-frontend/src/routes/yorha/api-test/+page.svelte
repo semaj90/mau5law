@@ -4,7 +4,9 @@
 
 <script lang="ts">
   import { onDestroy } from 'svelte';
-  import {
+  // Replace named imports that caused TS errors with a namespace import
+  import * as Lucide from 'lucide-svelte';
+  const {
     Activity,
     AlertTriangle,
     CheckCircle,
@@ -16,7 +18,7 @@
     Search,
     Server,
     TestTube
-  } from 'lucide-svelte';
+  } = Lucide as any;
 
   type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
@@ -24,8 +26,8 @@
     id: string;
     name: string;
     description: string;
-    // lucide-svelte icons are component constructors; keep the type permissive
-    icon: typeof TestTube | typeof Server | typeof Cpu | typeof Search | typeof Activity;
+    // make icon permissive to avoid type errors from icon imports
+    icon: any;
     method: HttpMethod;
     url: string;
     category: 'system' | 'ai' | 'data' | 'infrastructure' | 'messaging';

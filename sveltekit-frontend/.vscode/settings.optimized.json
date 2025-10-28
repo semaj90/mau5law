@@ -1,7 +1,4 @@
 {
-  // ========================================
-  // GPU-ACCELERATED VS CODE CONFIGURATION
-  // ========================================
 
   // GPU Rendering & Hardware Acceleration
   "window.titleBarStyle": "custom",

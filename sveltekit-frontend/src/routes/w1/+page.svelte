@@ -1,8 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
   import { fly, fade } from 'svelte/transition';
-  import { cubicOut } from 'svelte/easing';
   // Mock user data (as if signed in)
   const mockUser = {
     id: '550e8400-e29b-41d4-a716-446655440000',
@@ -58,12 +56,12 @@
     },
   ]);
   const prosecutionWorkflow = [
-    { step: 'what', question 'What happened? Tell me about the incident.', icon '🔍' },
-    { step: 'who', question 'Who was involved? Identify all parties.', icon '👥' },
-    { step: 'when', question 'When did this occur? Timeline details.', icon '⏰' },
-    { step: 'where', question 'Where did it happen? Location specifics.', icon '📍' },
-    { step: 'why', question "Why did this happen? What's the motive?", icon '💭' },
-    { step: 'how', question 'How was it carried out? Method of operation.', icon '⚙️' },
+    { step: 'what', question: 'What happened? Tell me about the incident.', icon: '🔍' },
+    { step: 'who', question: 'Who was involved? Identify all parties.', icon: '👥' },
+    { step: 'when', question: 'When did this occur? Timeline details.', icon: '⏰' },
+    { step: 'where', question: 'Where did it happen? Location specifics.', icon: '📍' },
+    { step: 'why', question: "Why did this happen? What's the motive?", icon: '💭' },
+    { step: 'how', question: 'How was it carried out? Method of operation.', icon: '⚙️' },
   ];
   let workflowAnswers = $state({
     what: '',
@@ -209,7 +207,7 @@
   <!-- Main Content -->
   <main class="platform-content">
     {#if activeView === 'dashboard'}
-      <div class="dashboard" transitionfade={{ duration 300 }}>
+      <div class="dashboard" transition:fade={{ duration: 300 }}>
         <div class="stats-grid">
           <div class="stat-nier-bits-card">
             <div class="stat-icon">📂</div>
@@ -269,7 +267,7 @@
         </div>
       </div>
     {:else if activeView === 'cases'}
-      <div class="cases-view" transitionfade={{ duration 300 }}>
+      <div class="cases-view" transition:fade={{ duration: 300 }}>
         <h2>📂 Case Management</h2>
         <div class="cases-grid">
           {#each cases as cse}
@@ -304,7 +302,7 @@
         </div>
       </div>
     {:else if activeView === 'detective'}
-      <div class="detective-mode" transitionfade={{ duration 300 }}>
+      <div class="detective-mode" transition:fade={{ duration: 300 }}>
         <h2>🧠 Detective Mode - "Who, What, Why, How"</h2>
         <div class="workflow-progress">
           {#each prosecutionWorkflow as step, index}
@@ -346,7 +344,7 @@
         {/if}
       </div>
     {:else}
-      <div class="feature-view" transitionfade={{ duration 300 }}>
+      <div class="feature-view" transition:fade={{ duration: 300 }}>
         <h2>🚧 {activeView.charAt(0).toUpperCase() + activeView.slice(1)} Feature</h2>
         <p>This feature is fully implemented in the platform. Click around to explore!</p>
         <div class="feature-grid">
@@ -415,7 +413,7 @@
       </div>
     {/if}
     {#if showQuickInput}
-      <div class="quick-input-panel" transitionfly={{ y: 20, duration 300 }}>
+      <div class="quick-input-panel" transition:fly={{ y: 20, duration: 300 }}>
         <textarea
           bind:value={quickInput}
           placeholder="Describe what happened... (e.g., 'Urgent fraud case with missing financial records and uncooperative witness')"
@@ -454,7 +452,7 @@
   .platform-header {
     display: flex;
     align-items: center;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     padding: 1rem 2rem;
     background: rgba(15, 23, 42, 0.8);
     backdrop-filter: blur(10px);
@@ -565,7 +563,7 @@
   }
   .case-header {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
   }
@@ -670,7 +668,7 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    flex: 1,
+    flex: 1;
   }
   .btn-primary {
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
@@ -751,7 +749,7 @@
     box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
   }
   .ai-assistant-panel {
-    position fixed;
+    position: fixed;
     bottom: 2rem;
     right: 2rem;
     width: 400px;
@@ -761,7 +759,7 @@
     padding: 1.5rem;
     backdrop-filter: blur(20px);
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    z-index: 1000,
+    z-index: 1000;
   }
   .ai-header {
     display: flex;
@@ -770,7 +768,7 @@
     margin-bottom: 1rem;
   }
   .ai-avatar {
-    position relative;
+    position: relative;
     width: 48px;
     height: 48px;
     display: flex;
@@ -787,7 +785,7 @@
     font-size: 1.5rem;
   }
   .status-indicator {
-    position absolute;
+    position: absolute;
     bottom: 2px;
     right: 2px;
     width: 12px;
@@ -919,7 +917,7 @@
       grid-template-columns: 1fr;
     }
     .ai-assistant-panel {
-      position relative;
+      position: relative;
       width: 100%;
       bottom: auto;
       right: auto;

@@ -46,10 +46,13 @@ export const POST: RequestHandler = async ({ request }) => {
     const body: AIRecommendationRequest = await request.json()
     const { context, query, type } = body
     if (!context || !type) {
-      return json({
-        success: false,
-        error: 'Missing required fields: context, type'
-      }, { status: 400 })
+        return json(
+          {
+            success: false,
+            error: 'No input',
+          },
+          { status: 400 }
+        );
     }
     // Generate cache key based on request
     const cacheKey = `ai-recommendation-${type}-${JSON.stringify(context).slice(0, 50)}`
@@ -79,10 +82,13 @@ export const POST: RequestHandler = async ({ request }) => {
         aiResponse = await generatePrecedentDiscovery(context, query)
         break
       default:
-        return json({,
-          success: false,;
-          error: 'Invalid recommendation type'
-        }, { status: 400 })
+        return json(
+          {
+            success: false,
+            error: 'Invalid recommendation type',
+          },
+          { status: 400 }
+        );
     }
     // Cache the AI response
     await multiLayerCache.set(cacheKey, aiResponse, 900, 180); // 15min TTL, high priority

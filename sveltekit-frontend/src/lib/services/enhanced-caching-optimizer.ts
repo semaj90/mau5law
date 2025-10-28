@@ -6,7 +6,74 @@
  * with real integration logic as needed.
  */
 import { EventEmitter } from 'events';
-import { createClient, type RedisClientType } from 'redis';
+import { createClient } from 'redis';
+// Use the concrete return type from createClient instead of RedisClientType (some redis versions don't export RedisClientType)
+
+// Minimal RequestBatcher implementation (simple concurrency control + batch-size adjusters)
+class RequestBatcher {
+  private batchSize: number;
+  private maxConcurrency: number;
+
+  constructor(opts: { batchSize?: number; maxConcurrency?: number } = {}) {
+    this.batchSize = Math.max(1, Math.floor(opts.batchSize ?? 50));
+    this.maxConcurrency = Math.max(1, Math.floor(opts.maxConcurrency ?? 10));
+  }
+
+  // Execute an array of async tasks (task generators) in parallel batches honoring maxConcurrency.
+  async executeBatch<R = unknown>(tasks: Array<() => Promise<R>>): Promise<{ successful: number; total: number }> {
+    const total = tasks.length;
+    let successful = 0;
+
+    // run tasks in slices of batchSize, but each slice respects maxConcurrency
+    const runSlice = async (slice: Array<() => Promise<R>>) => {
+      type Tracked = { p: Promise<void>; settled: boolean };
+      let runners: Tracked[] = [];
+
+      for (const task of slice) {
+        // create a tracked promise so we can tell when it settled without using `any`
+        const tracked: Tracked = { settled: false, p: Promise.resolve() };
+        tracked.p = (async () => {
+          try {
+            await task();
+            successful += 1;
+          } catch {
+            // swallow failures intentionally (count only successes)
+          }
+        })().finally(() => {
+          tracked.settled = true;
+        });
+
+        runners.push(tracked);
+
+        // If we exceed maxConcurrency, wait for one to finish
+        if (runners.length >= this.maxConcurrency) {
+          // wait for the first settled in the pool
+          await Promise.race(runners.map(r => r.p)).catch(() => {});
+          // remove settled promises from the pool
+          runners = runners.filter(r => !r.settled);
+        }
+      }
+
+      // wait for any remaining runners
+      await Promise.all(runners.map(r => r.p));
+    };
+
+    // slice tasks into groups of batchSize
+    for (let i = 0; i < tasks.length; i += this.batchSize) {
+      const slice = tasks.slice(i, i + this.batchSize);
+      await runSlice(slice);
+    }
+
+    return { successful, total };
+  }
+
+  increaseBatchSize() {
+    this.batchSize = Math.min(Math.floor(this.batchSize * 1.2) || 1, 500);
+  }
+  decreaseBatchSize() {
+    this.batchSize = Math.max(Math.floor(this.batchSize * 0.8) || 1, 1);
+  }
+}
 
 export interface CacheWarmerConfig {
   warmupSchedule: {
@@ -35,7 +102,8 @@ export interface CacheMetrics {
   averageLatency: number;
   gpuUtilization: number;
   memoryPressure: number;
-  topQueries: Array<any>;
+  // topQueries can be simple strings or richer objects with a query property
+  topQueries: Array<string | { query: string; score?: number }>;
   lastOptimized: Date;
   // internal counters for stable rate calculation
   totalRequests: number;
@@ -52,11 +120,13 @@ export interface TTLStrategy {
 }
 
 export class EnhancedCachingOptimizer extends EventEmitter {
-  private redis!: RedisClientType;
+  // use concrete return type of createClient to avoid missing RedisClientType symbol
+  private redis?: ReturnType<typeof createClient>;
+  private redisUrl?: string;
   private metrics: CacheMetrics;
   private ttlStrategies: Map<string, TTLStrategy>;
   private requestBatcher: RequestBatcher;
-  private warmupTimer: NodeJS.Timer | null;
+  private warmupTimer: ReturnType<typeof setInterval> | null;
   private config: CacheWarmerConfig;
 
   constructor(config: Partial<CacheWarmerConfig> = {}) {
@@ -68,25 +138,25 @@ export class EnhancedCachingOptimizer extends EventEmitter {
           'evidence correlation',
           'case timeline analysis',
           'document similarity',
-          'legal citation lookup'
+          'legal citation lookup',
         ],
         documentTypes: ['evidence', 'legal_brief', 'case_file', 'report', 'citation'],
         userPatterns: ['recent_documents', 'frequent_searches', 'active_cases'],
-        ...(config.warmupSchedule || {})
+        ...(config.warmupSchedule || {}),
       },
       priorities: {
         legal: 0.9,
         evidence: 0.8,
         reports: 0.6,
         searches: 0.7,
-        ...(config.priorities || {})
+        ...(config.priorities || {}),
       },
       performance: {
         batchSize: 50,
         maxConcurrency: 10,
         gpuUtilizationTarget: 0.85,
-        ...(config.performance || {})
-      }
+        ...(config.performance || {}),
+      },
     };
 
     this.metrics = this.initializeMetrics();
@@ -95,7 +165,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
     this.warmupTimer = null;
 
     // initialize async pieces (no await in constructor)
-    this.initializeRedis().catch((err) => {
+    this.initializeRedis().catch(err => {
       console.error('Failed to init redis in ctor:', err);
     });
     this.startCacheOptimization();
@@ -113,15 +183,16 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       lastOptimized: new Date(),
       totalRequests: 0,
       hits: 0,
-      misses: 0
+      misses: 0,
     };
   }
 
   private async initializeRedis() {
     try {
       const url = process.env.REDIS_URL || 'redis://localhost:6379';
+      this.redisUrl = url;
       this.redis = createClient({ url });
-      this.redis.on('error', (err) => {
+      this.redis.on('error', err => {
         console.error('❌ Redis Cache Optimizer Error:', err);
         this.emit('redis_error', err);
       });
@@ -138,11 +209,12 @@ export class EnhancedCachingOptimizer extends EventEmitter {
   }
 
   private async setupCacheEventListeners() {
-    const subscriber = this.redis.duplicate();
+    // create a dedicated subscriber client instead of using duplicate()
+    const subscriber = createClient({ url: this.redisUrl || process.env.REDIS_URL || 'redis://localhost:6379' });
     await subscriber.connect();
 
     // subscribe to simple channels; handlers parse JSON safely
-    await subscriber.subscribe('cache:hit', (message) => {
+    await subscriber.subscribe('cache:hit', (message: string) => {
       try {
         const payload = JSON.parse(message);
         this.handleCacheHit(payload);
@@ -151,7 +223,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       }
     });
 
-    await subscriber.subscribe('cache:miss', (message) => {
+    await subscriber.subscribe('cache:miss', (message: string) => {
       try {
         const payload = JSON.parse(message);
         this.handleCacheMiss(payload);
@@ -160,7 +232,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       }
     });
 
-    await subscriber.subscribe('gpu:utilization', (message) => {
+    await subscriber.subscribe('gpu:utilization', (message: string) => {
       try {
         const payload = JSON.parse(message);
         this.handleGPUUtilization(payload);
@@ -200,11 +272,11 @@ export class EnhancedCachingOptimizer extends EventEmitter {
 
   private async preloadQuery(query: string): Promise<void> {
     const cacheKey = `query:${this.hashQuery(query)}`;
-    const exists = await this.redis.exists(cacheKey);
+    const exists = await this.redisExists(cacheKey);
     if (!exists) {
       const result = await this.executeQueryForCache(query);
       const ttl = this.calculateOptimalTTL('search', query);
-      await this.redis.setEx(cacheKey, ttl, JSON.stringify(result));
+      await this.redisSetEx(cacheKey, ttl, JSON.stringify(result));
       console.log(`🔍 Pre-cached query: ${query} (TTL: ${ttl}s)`);
     }
   }
@@ -213,10 +285,10 @@ export class EnhancedCachingOptimizer extends EventEmitter {
     const recentDocs = await this.getRecentDocumentsByType(docType, Math.ceil(50 * priority));
     for (const doc of recentDocs) {
       const cacheKey = `doc:${doc.id}`;
-      const exists = await this.redis.exists(cacheKey);
+      const exists = await this.redisExists(cacheKey);
       if (!exists) {
         const ttl = this.calculateOptimalTTL(docType, doc.id);
-        await this.redis.setEx(cacheKey, ttl, JSON.stringify(doc));
+        await this.redisSetEx(cacheKey, ttl, JSON.stringify(doc));
       }
     }
     console.log(`📄 Pre-cached ${recentDocs.length} documents of type: ${docType}`);
@@ -234,7 +306,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
         accessFrequency: 1,
         lastAccessed: new Date(),
         computedTTL: baseTTL,
-        priority: this.inferPriority(type)
+        priority: this.inferPriority(type),
       });
       return baseTTL;
     }
@@ -258,7 +330,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       search: 1800,
       report: 7200,
       embedding: 86400,
-      default: 3600
+      default: 3600,
     };
     return baseTTLs[type] ?? baseTTLs.default;
   }
@@ -269,7 +341,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       evidence: 'high',
       search: 'medium',
       report: 'medium',
-      embedding: 'high'
+      embedding: 'high',
     };
     return priorityMap[type] ?? 'medium';
   }
@@ -279,7 +351,7 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       critical: 2.0,
       high: 1.5,
       medium: 1.0,
-      low: 0.7
+      low: 0.7,
     };
     return multipliers[priority];
   }
@@ -365,8 +437,8 @@ export class EnhancedCachingOptimizer extends EventEmitter {
       await this.cleanupStaleEntries();
       this.metrics.lastOptimized = new Date();
       console.log('✅ Cache optimization cycle completed');
-    } catch (error: any) {
-      console.error('❌ Cache optimization cycle failed:', error);
+    } catch (error: unknown) {
+      console.error('❌ Cache optimization cycle failed:', String(error));
       this.emit('optimization_error', error);
     }
   }
@@ -417,159 +489,320 @@ export class EnhancedCachingOptimizer extends EventEmitter {
     return (h >>> 0).toString(16);
   }
 
-	// replace simulated query executor with API call
-	private async executeQueryForCache(query: string): Promise<any> {
-		try {
-			const res = await fetch('/api/search/execute', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ query })
-			});
-			if (!res.ok) {
-				const text = await res.text();
-				throw new Error(`Search API error: ${text}`);
-			}
-			return await res.json();
-		} catch (err) {
-			console.warn('Query execution failed, returning fallback result', err);
-			// graceful fallback for resilience
-			return {
-				query,
-				results: [],
-				timestamp: Date.now(),
-				fromCache: false
-			};
-		}
-	}
+  // replace simulated query executor with API call
+  private async executeQueryForCache(
+    query: string
+  ): Promise<{ query: string; results: unknown[]; timestamp: number; fromCache: boolean }> {
+    try {
+      const res = await fetch('/api/search/execute', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query }),
+      });
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`Search API error: ${text}`);
+      }
+      // assume backend returns a JSON object with results
+      const payload = await res.json();
+      return {
+        query,
+        results: payload?.results ?? [],
+        timestamp: Date.now(),
+        fromCache: false,
+      };
+    } catch (err: unknown) {
+      console.warn('Query execution failed, returning fallback result', String(err));
+      // graceful fallback for resilience
+      return {
+        query,
+        results: [],
+        timestamp: Date.now(),
+        fromCache: false,
+      };
+    }
+  }
 
-	// call backend endpoint that returns recent documents by type
-	private async getRecentDocumentsByType(docType: string, limit: number): Promise<any[]> {
-		const effectiveLimit = Math.max(0, Math.min(limit, 50));
-		try {
-			const qs = new URLSearchParams({ type: docType, limit: String(effectiveLimit) });
-			const res = await fetch(`/api/documents/recent?${qs.toString()}`, {
-				method: 'GET',
-				headers: { 'Accept': 'application/json' }
-			});
-			if (!res.ok) {
-				const text = await res.text();
-				throw new Error(`Documents API error: ${text}`);
-			}
-			const payload = await res.json();
-			// Expect payload.items or payload.data (backend may vary) — handle both
-			return payload?.items ?? payload?.data ?? Array.isArray(payload) ? payload : [];
-		} catch (err) {
-			console.warn('Failed to fetch recent documents, falling back to simulated list', err);
-			// keep a minimal fallback so callers still work
-			return Array.from({ length: Math.min(effectiveLimit, 10) }, (_, i) => ({
-				id: `${docType}_${i}`,
-				type: docType,
-				content: `Sample ${docType} content ${i}`
-			}));
-		}
-	}
+  // call backend endpoint that returns recent documents by type
+  private async getRecentDocumentsByType(
+    docType: string,
+    limit: number
+  ): Promise<Array<{ id: string; type: string; content?: string }>> {
+    const effectiveLimit = Math.max(0, Math.min(limit, 50));
+    try {
+      const qs = new URLSearchParams({ type: docType, limit: String(effectiveLimit) });
+      const res = await fetch(`/api/documents/recent?${qs.toString()}`, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+      });
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`Documents API error: ${text}`);
+      }
+      const payload = await res.json();
+      // Expect payload.items or payload.data (backend may vary) — handle both
+      const data = payload?.items ?? payload?.data ?? (Array.isArray(payload) ? payload : []);
+      if (Array.isArray(data)) {
+        type DocRecord = Record<string, unknown>;
+        return data.map((d: DocRecord) => {
+          const rawId = d.id ?? d._id ?? d.name ?? 'unknown';
+          const id = typeof rawId === 'string' || typeof rawId === 'number' ? String(rawId) : 'unknown';
+          const contentCandidate = d.content ?? d.body ?? d.text;
+          const content = typeof contentCandidate === 'string' ? contentCandidate : undefined;
+          return {
+            id,
+            type: docType,
+            content,
+          };
+        });
+      }
+      return [];
+    } catch (err) {
+      console.warn('Failed to fetch recent documents, falling back to simulated list', String(err));
+      // keep a minimal fallback so callers still work
+      return Array.from({ length: Math.min(effectiveLimit, 10) }, (_, i) => ({
+        id: `${docType}_${i}`,
+        type: docType,
+        content: `Sample ${docType} content ${i}`,
+      }));
+    }
+  }
 
-	// call backend to warm user-patterns (server will do DB work)
-	private async preloadUserPattern(pattern: string): Promise<void> {
-		try {
-			await fetch('/api/cache/preload/user-pattern', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ pattern })
-			});
-			console.log(`👤 Requested preload for user pattern: ${pattern}`);
-		} catch (err) {
-			console.warn('Failed to request user-pattern preload', err);
-		}
-	}
+  // call backend to warm user-patterns (server will do DB work)
+  private async preloadUserPattern(pattern: string): Promise<void> {
+    try {
+      await fetch('/api/cache/preload/user-pattern', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pattern }),
+      });
+      console.log(`👤 Requested preload for user pattern: ${pattern}`);
+    } catch (err) {
+      console.warn('Failed to request user-pattern preload', String(err));
+    }
+  }
 
-	// ask server to schedule proactive load for a query (server should validate/rate-limit)
-	private async scheduleProactiveLoad(query: string): Promise<void> {
-		try {
-			await fetch('/api/cache/proactive-load', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ query })
-			});
-			console.log(`🔍 Proactive load requested for: ${query}`);
-		} catch (err) {
-			console.warn('Failed to schedule proactive load', err);
-		}
-	}
+  // ask server to schedule proactive load for a query (server should validate/rate-limit)
+  private async scheduleProactiveLoad(query: string): Promise<void> {
+    try {
+      await fetch('/api/cache/proactive-load', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query }),
+      });
+      console.log(`🔍 Proactive load requested for: ${query}`);
+    } catch (err) {
+      console.warn('Failed to schedule proactive load', String(err));
+    }
+  }
+
+  // -------------------------
+  // Minimal implementations for missing optimization methods
+  // -------------------------
+  private async analyzePerformance(): Promise<void> {
+    // Sample analysis: compute simple derived metrics and topQueries placeholder
+    try {
+      const total = Math.max(1, this.metrics.totalRequests);
+      this.metrics.hitRate = this.metrics.hits / total;
+      this.metrics.missRate = this.metrics.misses / total;
+      if (!this.metrics.topQueries || this.metrics.topQueries.length === 0) {
+        this.metrics.topQueries = this.config.warmupSchedule.commonQueries
+          .slice(0, 5)
+          .map(q => ({ query: q, score: 1 }));
+      }
+      this.emit('performance_analyzed', { ...this.metrics });
+    } catch (err: unknown) {
+      console.warn('analyzePerformance failed:', String(err));
+    }
+  }
+
+  private async optimizeTTLStrategies(): Promise<void> {
+    try {
+      const now = Date.now();
+      for (const [key, s] of this.ttlStrategies.entries()) {
+        // compute age in hours and use it (avoid unused var warning)
+        const ageHours = (now - s.lastAccessed.getTime()) / (1000 * 60 * 60);
+
+        if (s.accessFrequency > 5) {
+          // frequently accessed -> gently increase TTL (capped)
+          s.computedTTL = Math.min(Math.floor(s.computedTTL * 1.1), 86400);
+        } else if (ageHours > 72) {
+          // not accessed for > 72 hours -> reduce TTL to save memory
+          s.computedTTL = Math.max(Math.floor(s.computedTTL * 0.5), 300);
+        } else {
+          // small decay over time for mid-frequency items
+          s.computedTTL = Math.max(Math.floor(s.computedTTL * 0.98), 300);
+        }
+
+        // prune very old, low-priority strategies to keep the map compact
+        if (ageHours > 168 && s.priority === 'low') {
+          this.ttlStrategies.delete(key);
+          continue;
+        }
+
+        // update lastAccessed to now to avoid immediate repeated pruning
+        s.lastAccessed = new Date(now);
+      }
+
+      this.emit('ttls_optimized', { count: this.ttlStrategies.size });
+    } catch (err: unknown) {
+      console.warn('optimizeTTLStrategies failed:', String(err));
+    }
+  }
+
+  // Lightweight Redis helpers used in other methods (redisExists, redisSetEx)
+  private async redisExists(key: string): Promise<boolean> {
+    try {
+      if (!this.redis) return false;
+      const client = this.redis as unknown as RedisClientLike;
+      // Preferred: modern `exists` that returns number
+      if (typeof client.exists === 'function') {
+        const res = await client.exists(key);
+        const n = typeof res === 'string' ? Number(res) : Number(res ?? 0);
+        return n > 0;
+      }
+
+      // Fallback: send raw command if available
+      if (typeof client.sendCommand === 'function') {
+        const res = await client.sendCommand(['EXISTS', key]);
+        return Number(res ?? 0) > 0;
+      }
+
+      // Last resort: try GET and treat non-null as existence
+      if (typeof client.get === 'function') {
+        const val = await client.get(key);
+        return val != null;
+      }
+
+      return false;
+    } catch (err) {
+      console.warn('redisExists failed for', key, String(err));
+      return false;
+    }
+  }
+
+  private async redisSetEx(key: string, ttlSeconds: number, value: string): Promise<void> {
+    try {
+      if (!this.redis) return;
+      const client = this.redis as unknown as RedisClientLike;
+      // Try common variants in order of likely availability
+      if (typeof client.setEx === 'function') {
+        await client.setEx(key, ttlSeconds, value);
+        return;
+      }
+
+      if (typeof client.setex === 'function') {
+        await client.setex(key, ttlSeconds, value);
+        return;
+      }
+
+      // Try modern set with options object
+      if (typeof client.set === 'function') {
+        try {
+          // Some clients support: set(key, value, { EX: ttl })
+          await client.set(key, value, { EX: ttlSeconds });
+          return;
+        } catch {
+          // ignore and try alternate set signature
+        }
+        try {
+          // Some clients support: set(key, value, 'EX', ttl)
+          await client.set(key, value, 'EX', String(ttlSeconds));
+          return;
+        } catch {
+          // ignore and continue to next fallback
+        }
+      }
+
+      // Fallback to raw command
+      if (typeof client.sendCommand === 'function') {
+        await client.sendCommand(['SET', key, value, 'EX', String(ttlSeconds)]);
+        return;
+      }
+
+      console.warn('No compatible SET/SETEX variant found on redis client; key not set:', key);
+    } catch (err) {
+      console.warn('redisSetEx failed for', key, String(err));
+    }
+  }
+
+  // Implement predictive preloading based on current metrics/topQueries
+  private async predictivePreload(): Promise<void> {
+    try {
+      type TopQuery = string | { query: string; score?: number };
+      const candidates = (this.metrics.topQueries ?? [])
+        .slice(0, Math.max(1, Math.min(this.config.performance.batchSize, 100)))
+        .map((q: TopQuery) => {
+          if (typeof q === 'string') return q;
+          return q && typeof q === 'object' ? (q.query ?? '') : '';
+        })
+        .filter(Boolean);
+
+      if (candidates.length === 0) return;
+
+      const tasks = candidates.map(query => async () => {
+        try {
+          await this.preloadQuery(query);
+        } catch (err) {
+          console.warn('predictivePreload task failed for', query, String(err));
+        }
+      });
+
+      await this.requestBatcher.executeBatch(tasks);
+      this.emit('predictive_preload_completed', { count: candidates.length });
+    } catch (err: unknown) {
+      console.warn('predictivePreload failed:', String(err));
+    }
+  }
+
+  // Cleanup stale strategies and associated redis keys
+  private async cleanupStaleEntries(): Promise<void> {
+    try {
+      const now = Date.now();
+      const toRemove: string[] = [];
+
+      for (const [k, s] of this.ttlStrategies.entries()) {
+        const ageHours = (now - s.lastAccessed.getTime()) / (1000 * 60 * 60);
+        // Remove if extremely old or very low priority + moderately old
+        if (ageHours > 720 || (s.priority === 'low' && ageHours > 168)) {
+          toRemove.push(k);
+        }
+      }
+
+      if (toRemove.length === 0) return;
+
+      for (const k of toRemove) {
+        this.ttlStrategies.delete(k);
+        // best-effort delete of associated redis keys (document keys often stored as `doc:<id>`)
+        try {
+          const docKey = `doc:${k}`;
+          if (await this.redisExists(docKey)) {
+            if (this.redis) {
+              await this.redis.del(docKey);
+            }
+          }
+        } catch (err) {
+          // ignore individual failures
+        }
+      }
+
+      this.emit('stale_cleanup', { removed: toRemove.length });
+    } catch (err: unknown) {
+      console.warn('cleanupStaleEntries failed:', String(err));
+    }
+  }
 }
 
-/**
- * Request Batcher for GPU Optimization
- */
-class RequestBatcher {
-	private batchSize: number;
-	private maxConcurrency: number;
-	private processing = false;
-
-	constructor(config: { batchSize: number; maxConcurrency: number }) {
-		this.batchSize = config.batchSize;
-		this.maxConcurrency = config.maxConcurrency;
-	}
-
-	// concurrency-limited executor: workers pick next task until none left
-	private async runWithConcurrency(tasks: Array<() => Promise<any>>): Promise<Array<{ status: 'fulfilled' | 'rejected'; value?: any; reason?: any }>> {
-		const results: Array<any> = new Array(tasks.length);
-		let idx = 0;
-		const workers = Math.max(1, Math.min(this.maxConcurrency, tasks.length));
-
-		const worker = async () => {
-			while (true) {
-				const i = idx++;
-				if (i >= tasks.length) break;
-				try {
-					const value = await tasks[i]();
-					results[i] = { status: 'fulfilled', value };
-				} catch (reason) {
-					results[i] = { status: 'rejected', reason };
-				}
-			}
-		};
-
-		await Promise.all(Array.from({ length: workers }, () => worker()));
-		return results;
-	}
-
-	async executeBatch(tasks: Array<() => Promise<any>>): Promise<{ successful: number; total: number; errors: any[] }> {
-		if (this.processing) {
-			// avoid concurrent runs; caller can retry later
-			throw new Error('RequestBatcher is already processing a batch');
-		}
-		this.processing = true;
-
-		const results = {
-			successful: 0,
-			total: tasks.length,
-			errors: [] as any[]
-		};
-
-		try {
-			// process tasks in chunks of batchSize, each chunk respects maxConcurrency
-			for (let i = 0; i < tasks.length; i += this.batchSize) {
-				const chunk = tasks.slice(i, i + this.batchSize);
-				const settled = await this.runWithConcurrency(chunk);
-				for (const r of settled) {
-					if (r.status === 'fulfilled') results.successful += 1;
-					else results.errors.push(r.reason ?? r);
-				}
-			}
-		} finally {
-			this.processing = false;
-		}
-		return results;
-	}
-
-	increaseBatchSize(): void {
-		this.batchSize = Math.min(Math.floor(this.batchSize * 1.2), 100);
-		console.log(`📈 Increased batch size to ${this.batchSize}`);
-	}
-
-	decreaseBatchSize(): void {
-		this.batchSize = Math.max(Math.floor(this.batchSize * 0.8), 10);
-		console.log(`📉 Decreased batch size to ${this.batchSize}`);
-	}
-}
+// Add a small interface describing only the Redis client methods we rely on.
+type RedisClientLike = {
+  exists?: (key: string) => Promise<number | string> | number | string;
+  sendCommand?: (cmd: string[] | Array<string>) => Promise<unknown>;
+  get?: (key: string) => Promise<string | null>;
+  setEx?: (key: string, ttl: number, value: string) => Promise<unknown>;
+  setex?: (key: string, ttl: number, value: string) => Promise<unknown>;
+  // changed: avoid `any[]` — use `unknown[]` to be type-safe while keeping variadic support
+  set?: (key: string, value: string, ...rest: unknown[]) => Promise<unknown>;
+  del?: (key: string) => Promise<number | null>;
+  // allow other optional members without using `any`
+  [k: string]: unknown;
+};
