@@ -25,7 +25,7 @@ interface DatabaseUser {
 }
 import { db } from '$lib/server/db/drizzle';
 import { sessions, users } from '$lib/server/db/schema-postgres';
-import { eq, lte } from 'drizzle-orm';
+import { eq, sql } from '$lib/server/db/utils';
 
 // --- new/adjusted DB row types for safer casting (moved to top-level) ---
 type UserRow = {
@@ -219,7 +219,8 @@ export class FixedDrizzlePostgreSQLAdapter implements Adapter {
   }
   async deleteExpiredSessions(): Promise<void> {
     try {
-      await db.delete(sessions).where(lte(sessions.expires_at, new Date()));
+      // use sql helper to perform <= comparison (lte isn't exported from utils)
+      await db.delete(sessions).where(sql`${sessions.expires_at} <= ${new Date()}`);
     } catch (error) {
       console.error('[AUTH] Error deleting expired sessions:', error);
       throw error;

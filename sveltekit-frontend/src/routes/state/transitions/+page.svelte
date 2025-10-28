@@ -1,22 +1,16 @@
-<!-- @migration-task Error while migrating Svelte code: Expected token }
-https://svelte.dev/e/expected_token -->
-<!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-</script>
+  // Svelte 5 runes are auto-imported — do NOT import runes explicitly.
   // XState Transition Monitoring & Visualization
-  import { onMount } from 'svelte';
-  import { page } from '$app/stores';
-  import Button from '$lib/components/ui/nes-button.svelte';
-  import NesCard from '$lib/components/ui/nes-card.svelte';
+
   let mounted = $state(false);
-  let machineId = $state($page.url.searchParams.get('machine') || 'auth-machine');
-  let transitions = $state([]);
+  let machineId = $state('auth-machine'); // simplified default
+  let transitions = $state<any[]>([]);
   let currentState = $state('');
   let loading = $state(true);
-  let selectedTransition = $state(null);
-  // Mock transition: data - replace with actual XState introspection
-  let mockTransitions = {
+  let selectedTransition = $state<any | null>(null);
+
+  // Mock transition data (fixed syntax: colons, property names)
+  let mockTransitions: Record<string, any> = {
     'auth-machine': {
       currentState: 'authenticated',
       transitions: [
@@ -26,10 +20,10 @@ https://svelte.dev/e/expected_token -->
           from: 'authenticated',
           to: 'unauthenticated',
           timestamp: new Date().toISOString(),
-          duration 150,
+          duration: 150,
           context: { userId: 'user_123', sessionId: 'sess_456' },
           guards: ['isValidSession'],
-          actions: ['clearToken', 'redirectToLogin'];
+          actions: ['clearToken', 'redirectToLogin']
         },
         {
           id: 'refresh',
@@ -37,10 +31,10 @@ https://svelte.dev/e/expected_token -->
           from: 'authenticated',
           to: 'refreshing',
           timestamp: new Date(Date.now() - 30000).toISOString(),
-          duration 300,
+          duration: 300,
           context: { userId: 'user_123', tokenExp: 1642435200 },
           guards: ['tokenNearExpiry'],
-          actions: ['refreshAuthToken'];
+          actions: ['refreshAuthToken']
         },
         {
           id: 'profile',
@@ -48,10 +42,10 @@ https://svelte.dev/e/expected_token -->
           from: 'authenticated',
           to: 'authenticated.profile',
           timestamp: new Date(Date.now() - 60000).toISOString(),
-          duration 50,
+          duration: 50,
           context: { userId: 'user_123', route: '/profile' },
           guards: [],
-          actions: ['navigateToProfile', 'trackPageView'];
+          actions: ['navigateToProfile', 'trackPageView']
         }
       ]
     },
@@ -64,10 +58,10 @@ https://svelte.dev/e/expected_token -->
           from: 'reviewing',
           to: 'submitting',
           timestamp: new Date().toISOString(),
-          duration 500,
+          duration: 500,
           context: { caseId: 'case_789', reviewerId: 'user_123' },
           guards: ['allFieldsComplete', 'hasPermission'],
-          actions: ['validateCase', 'submitToDatabase', 'notifyStakeholders'];
+          actions: ['validateCase', 'submitToDatabase', 'notifyStakeholders']
         },
         {
           id: 'save-draft',
@@ -75,67 +69,76 @@ https://svelte.dev/e/expected_token -->
           from: 'reviewing',
           to: 'draft',
           timestamp: new Date(Date.now() - 45000).toISOString(),
-          duration 200,
+          duration: 200,
           context: { caseId: 'case_789', autosave: true },
           guards: [],
-          actions: ['saveToDraft', 'updateTimestamp'];
+          actions: ['saveToDraft', 'updateTimestamp']
         }
       ]
     }
-  }
+  };
+
   $effect(() => {
     mounted = true;
     loadTransitions();
   });
+
   $effect(() => {
     if (machineId) {
       loadTransitions();
     }
   });
+
   async function loadTransitions() {
     loading = true;
     try {
-      // In production const response = await fetch(`/api/state/machines/${machineId}/transitions`)
-      await new Promise(resolve => setTimeout(resolve, 800));
-      const machineData = mockTransitions[machineId] || { currentState: 'unknown', transitions: [] }
-      currentState = machineData.currentStat;
-      transitions = machineData.transition;
+      // production: fetch(`/api/state/machines/${machineId}/transitions`)
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      const machineData = mockTransitions[machineId] || { currentState: 'unknown', transitions: [] };
+      currentState = machineData.currentState;
+      transitions = machineData.transitions || [];
     } catch (error) {
       console.error('Failed to load transitions:', error);
+      transitions = [];
+      currentState = 'error';
     } finally {
       loading = false;
     }
   }
-  async function triggerTransition(_event: string) {
+
+  async function triggerTransition(eventName: string) {
     try {
-      // await fetch(`/api/state/machines/${machineId}/trigger`, {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ event })
-      // })
-      console.log('Triggering transition', event);
+      // production post to API to trigger event
+      console.log('Triggering transition', eventName);
+      // simulate update
       await loadTransitions();
     } catch (error) {
       console.error('Failed to trigger transition', error);
     }
   }
+
   function formatDuration(ms: number) {
     if (ms < 1000) return `${ms}ms`;
     return `${(ms / 1000).toFixed(1)}s`;
   }
-  function getTransitionColor(transition: unknown) {
-    const age = Date.now() - new Date(transition.timestamp).getTime();
+
+  function getTransitionColor(transition: any) {
+    const ts = transition?.timestamp ? new Date(transition.timestamp).getTime() : 0;
+    const age = Date.now() - ts;
     if (age < 30000) return 'border-green-200 bg-green-50';
     if (age < 300000) return 'border-blue-200 bg-blue-50';
     return 'border-gray-200 bg-gray-50';
   }
+
   function getStateColor(state: string) {
+    if (!state) return 'bg-gray-100 text-gray-800';
     if (state.includes('error')) return 'bg-red-100 text-red-800';
     if (state.includes('loading') || state.includes('submitting')) return 'bg-yellow-100 text-yellow-800';
     if (state.includes('authenticated') || state.includes('completed')) return 'bg-green-100 text-green-800';
     return 'bg-blue-100 text-blue-800';
   }
 </script>
+
 <svelte:head>
   <title>State Transitions - {machineId} - Legal AI Platform</title>
   <meta name="description" content="Monitor and visualize XState machine transitions" />
@@ -162,11 +165,12 @@ https://svelte.dev/e/expected_token -->
         <option value="rag-pipeline-machine">RAG Pipeline Machine</option>
         <option value="gpu-allocation-machine">GPU Allocation Machine</option>
       </select>
-      <button class="nes-btn" variant="ghost" onclick={loadTransitions}>
+      <button class="nes-btn ghost" onclick={loadTransitions}>
         Refresh
       </button>
     </div>
   </header>
+
   <main class="page-content">
     {#if loading}
       <div class="loading-state">
@@ -183,14 +187,17 @@ https://svelte.dev/e/expected_token -->
         <div class="timeline-header">
           <h2>📊 Transition History ({transitions.length})</h2>
           <div class="timeline-stats">
-            <span>Avg Duration {Math.round(transitions.reduce((sum, t) => sum + t.duration, 0) / transitions.length)}ms</span>
+            <span>Avg Duration {Math.round(transitions.reduce((sum, t) => sum + (t.duration || 0), 0) / transitions.length)}ms</span>
           </div>
         </div>
         <div class="timeline-container">
-          {#each transitions.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()) as transition, index}
-            <div class="transition-nier-bits-card {getTransitionColor(transition)} {selectedTransition?.id === transition.id ? 'selected' : ''}"
-                 role="button" tabindex="0"
-                onclick={() => selectedTransition = selectedTransition?.id === transition.id ? null : transition}>
+          {#each transitions.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()) as transition}
+            <button
+              type="button"
+              class="transition-card {getTransitionColor(transition)} {selectedTransition?.id === transition.id ? 'selected' : ''}"
+              aria-pressed={selectedTransition?.id === transition.id}
+              onclick={() => selectedTransition = selectedTransition?.id === transition.id ? null : transition}
+            >
               <div class="transition-header">
                 <div class="transition-flow">
                   <span class="state-from">{transition.from}</span>
@@ -201,7 +208,7 @@ https://svelte.dev/e/expected_token -->
                   <span class="state-to">{transition.to}</span>
                 </div>
                 <div class="transition-meta">
-                  <span class="duration">{formatDuration(transition.duration)}</span>
+                  <span class="duration">{formatDuration(transition.duration || 0)}</span>
                   <span class="timestamp">{new Date(transition.timestamp).toLocaleTimeString()}</span>
                 </div>
               </div>
@@ -213,20 +220,20 @@ https://svelte.dev/e/expected_token -->
                       <pre class="context-display">{JSON.stringify(transition.context, null, 2)}</pre>
                     </div>
                     <div class="detail-section">
-                      <h4>Guards ({transition.guards.length})</h4>
+                      <h4>Guards ({(transition.guards || []).length})</h4>
                       <div class="guards-list">
-                        {#each transition.guards as guard}
+                        {#each (transition.guards || []) as guard}
                           <span class="guard-badge">✓ {guard}</span>
                         {/each}
-                        {#if transition.guards.length === 0}
+                        {#if !(transition.guards || []).length}
                           <span class="no-guards">No guards</span>
                         {/if}
                       </div>
                     </div>
                     <div class="detail-section">
-                      <h4>Actions ({transition.actions.length})</h4>
+                      <h4>Actions ({(transition.actions || []).length})</h4>
                       <div class="actions-list">
-                        {#each transition.actions as action}
+                        {#each (transition.actions || []) as action}
                           <span class="action-badge">⚡ {action}</span>
                         {/each}
                       </div>
@@ -234,25 +241,26 @@ https://svelte.dev/e/expected_token -->
                   </div>
                 </div>
               {/if}
-            </div>
+            </button>
           {/each}
         </div>
       </div>
     {/if}
+
     <div class="transition-controls">
-      <div class="controls-nier-bits-card">
-        <divHeader>
-          <divTitle>Trigger Transitions</h3>
+      <div class="controls-card">
+        <div class="controls-header">
+          <h3 class="controls-title">Trigger Transitions</h3>
         </div>
-        <divContent>
+        <div class="controls-content">
           <div class="control-buttons">
             <button class="nes-btn" onclick={() => triggerTransition('LOGOUT')}>
               Trigger Logout
             </button>
-            <button class="nes-btn" variant="ghost" onclick={() => triggerTransition('REFRESH_TOKEN')}>
+            <button class="nes-btn ghost" onclick={() => triggerTransition('REFRESH_TOKEN')}>
               Refresh Token
             </button>
-            <button class="nes-btn" variant="ghost" onclick={() => triggerTransition('VIEW_PROFILE')}>
+            <button class="nes-btn ghost" onclick={() => triggerTransition('VIEW_PROFILE')}>
               View Profile
             </button>
           </div>
@@ -264,6 +272,7 @@ https://svelte.dev/e/expected_token -->
     </div>
   </main>
 </div>
+
 <style>
   .page-container {
     max-width: 1400px;
@@ -286,10 +295,10 @@ https://svelte.dev/e/expected_token -->
   }
   .breadcrumb-link {
     color: #3b82f6;
-    text-decoration none;
+    text-decoration: none;
   }
   .breadcrumb-link:hover {
-    text-decoration underli;
+    text-decoration: underline;
   }
   .breadcrumb-separator {
     color: #9ca3af;
@@ -353,8 +362,8 @@ https://svelte.dev/e/expected_token -->
     margin: 0 auto 1rem;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg), }
-    100% { transform: rotate(360deg), }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
   .empty-state {
     text-align: center;
@@ -389,7 +398,9 @@ https://svelte.dev/e/expected_token -->
     flex-direction: column;
     gap: 1rem;
   }
-  .transition-card {
+  /* alias for old class name used in markup migrations */
+  .transition-card,
+  .transition-nier-bits-card {
     border: 2px solid;
     border-radius: 12px;
     padding: 1.5rem;
@@ -424,7 +435,7 @@ https://svelte.dev/e/expected_token -->
     font-size: 0.875rem;
   }
   .state-to {
-    background: #dbeaf;
+    background: #dbeafe;
     color: #1d4ed8;
   }
   .transition-arrow {
@@ -497,7 +508,7 @@ https://svelte.dev/e/expected_token -->
   }
   .action-badge {
     background: #fef3c7;
-    color: #92400;
+    color: #92400e; /* fixed to valid 6-digit hex */
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     font-size: 0.75rem;
@@ -511,10 +522,16 @@ https://svelte.dev/e/expected_token -->
   .transition-controls {
     margin-top: 2rem;
   }
-  .controls-card {
+  /* alias for controls card */
+  .controls-card,
+  .controls-nier-bits-card {
     border: 1px solid #e2e8f0;
     border-radius: 12px;
+    padding: 1rem;
   }
+  .controls-header { margin-bottom: 0.5rem; }
+  .controls-title { margin: 0; font-size: 1.125rem; }
+  .controls-content { padding-top: 0.5rem; }
   .control-buttons {
     display: flex;
     gap: 1rem;
@@ -545,5 +562,23 @@ https://svelte.dev/e/expected_token -->
     .control-buttons {
       flex-direction: column;
     }
+  }
+
+  /* Ensure button elements keep the .transition-card visuals but remove user-agent appearance */
+  button.transition-card {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: transparent;
+    text-align: left; /* keep inner layout same as div */
+    width: 100%;
+    border: inherit; /* let .transition-card CSS control border */
+    cursor: pointer;
+  }
+
+  /* Visible focus style for keyboard users */
+  button.transition-card:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.18);
   }
 </style>

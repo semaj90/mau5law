@@ -1,3 +1,32 @@
+import Redis from 'ioredis';
+import CONFIG from '$lib/config/env.server';
+
+const redisUrl = CONFIG.REDIS_URL || process.env.REDIS_URL || 'redis://127.0.0.1:6379';
+
+export const redis = new Redis(redisUrl, {
+  maxRetriesPerRequest: null,
+  enableReadyCheck: true,
+  lazyConnect: false,
+});
+
+redis.on('connect', () => console.log('🔴 Redis connected:', redisUrl));
+redis.on('error', (err: unknown) => console.error('❌ Redis connection error:', err));
+
+export async function waitForRedis(timeout = 5000): Promise<boolean> {
+  const start = Date.now();
+  while (Date.now() - start < timeout) {
+    try {
+      const pong = await redis.ping();
+      if (pong === 'PONG') return true;
+    } catch (e) {
+      // ignore and retry
+    }
+    await new Promise(r => setTimeout(r, 200));
+  }
+  return false;
+}
+
+export default redis;
 // Redis caching service for embeddings, shader modules, and search results
 import { gzipSync, gunzipSync } from 'zlib';
 import { Buffer } from 'buffer';

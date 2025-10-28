@@ -1,8 +1,8 @@
-// @ts-nocheck
 // Production database query utilities with type safety
-import { eq, and, or, like, desc, asc, sql, SQL, count } from "drizzle-orm";
-import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
-}
+import { desc, asc, count } from 'drizzle-orm';
+// Use the project's wrapper for expressions so TypeScript doesn't need to resolve drizzle-orm/expressions here
+import { eq, and, or, like } from '$lib/server/db/utils';
+
 export interface QueryFilters {
   search?: string;
   status?: string;
@@ -16,143 +16,160 @@ export interface QueryFilters {
   limit?: number;
   offset?: number;
   sortBy?: string;
-  sortOrder?: "asc" | "desc";
+  sortOrder?: 'asc' | 'desc';
+  page?: number | string; // added to support page-based pagination
 }
 export interface PaginationParams {
   page: number;
   limit: number;
   offset: number;
 }
+
+// Minimal typed aliases to avoid any/SQL usage and satisfy lint rules
+type Condition = unknown;
+type TableLike = Record<string, unknown>;
+
+type QueryLike = {
+  where?: (clause: unknown) => QueryLike;
+  orderBy?: (clause: unknown) => QueryLike;
+  limit?: (n: number) => QueryLike;
+  offset?: (n: number) => QueryLike;
+  // avoid `any` here — accept unknown selector payload and return a QueryLike
+  select?: (s: unknown) => QueryLike;
+  // avoid any in execute result
+  execute: () => Promise<unknown>;
+};
+
 export class QueryBuilder {
-  static buildFilters(table: any, filters: QueryFilters): SQL[] {
-    const conditions: SQL[] = [];
+  static buildFilters(table: TableLike, filters: QueryFilters): Condition[] {
+    const conditions: Condition[] = [];
     // Search filters
     if (filters.search) {
-      const searchConditions: SQL[] = [];
-      if (table.title)
-        searchConditions.push(like(table.title, `%${filters.search}%`);
-      if (table.description)
-        searchConditions.push(like(table.description, `%${filters.search}%`);
-      if (table.name)
-        searchConditions.push(like(table.name, `%${filters.search}%`);
-      if (table.firstName)
-        searchConditions.push(like(table.firstName, `%${filters.search}%`);
-      if (table.lastName)
-        searchConditions.push(like(table.lastName, `%${filters.search}%`);
-      if (table.socialSecurityNumber)
-        searchConditions.push(
-          like(table.socialSecurityNumber, `%${filters.search}%`)
-        );
-      if (table.driversLicense)
-        searchConditions.push(
-          like(table.driversLicense, `%${filters.search}%`)
-        );
+      const searchConditions: Condition[] = [];
+      const t = table as TableLike;
+      if (t.title) searchConditions.push(like(t.title, `%${filters.search}%`));
+      if (t.description) searchConditions.push(like(t.description, `%${filters.search}%`));
+      if (t.name) searchConditions.push(like(t.name, `%${filters.search}%`));
+      if (t.firstName) searchConditions.push(like(t.firstName, `%${filters.search}%`));
+      if (t.lastName) searchConditions.push(like(t.lastName, `%${filters.search}%`));
+      if (t.socialSecurityNumber) searchConditions.push(like(t.socialSecurityNumber, `%${filters.search}%`));
+      if (t.driversLicense) searchConditions.push(like(t.driversLicense, `%${filters.search}%`));
       if (searchConditions.length > 0) {
-        conditions.push(or(...searchConditions);
+        // cast to the parameter tuple type expected by `or` without using `any`
+        const orArgs = searchConditions as unknown as Parameters<typeof or>;
+        conditions.push(or(...orArgs));
       }
     }
     // Status filters
-    if (filters.status && table.status) {
-      conditions.push(eq(table.status, filters.status);
+    if (filters.status && (table as TableLike).status) {
+      conditions.push(eq((table as TableLike).status, filters.status));
     }
     // Priority filters
-    if (filters.priority && table.priority) {
-      conditions.push(eq(table.priority, filters.priority);
+    if (filters.priority && (table as TableLike).priority) {
+      conditions.push(eq((table as TableLike).priority, filters.priority));
     }
     // Case ID filters
-    if (filters.caseId && table.caseId) {
-      conditions.push(eq(table.caseId, filters.caseId);
+    if (filters.caseId && (table as TableLike).caseId) {
+      conditions.push(eq((table as TableLike).caseId, filters.caseId));
     }
     // Evidence type filters
-    if (filters.evidenceType && table.evidenceType) {
-      conditions.push(eq(table.evidenceType, filters.evidenceType);
+    if (filters.evidenceType && (table as TableLike).evidenceType) {
+      conditions.push(eq((table as TableLike).evidenceType, filters.evidenceType));
     }
     // Activity type filters
-    if (filters.activityType && table.activityType) {
-      conditions.push(eq(table.activityType, filters.activityType);
+    if (filters.activityType && (table as TableLike).activityType) {
+      conditions.push(eq((table as TableLike).activityType, filters.activityType));
     }
     // Assignment filters
-    if (filters.assignedTo && table.assignedTo) {
-      conditions.push(eq(table.assignedTo, filters.assignedTo);
+    if (filters.assignedTo && (table as TableLike).assignedTo) {
+      conditions.push(eq((table as TableLike).assignedTo, filters.assignedTo));
     }
     // Threat level filters
-    if (filters.threatLevel && table.threatLevel) {
-      conditions.push(eq(table.threatLevel, filters.threatLevel);
+    if (filters.threatLevel && (table as TableLike).threatLevel) {
+      conditions.push(eq((table as TableLike).threatLevel, filters.threatLevel));
     }
     // User ID filters
-    if (filters.userId && table.userId) {
-      conditions.push(eq(table.userId, filters.userId);
+    if (filters.userId && (table as TableLike).userId) {
+      conditions.push(eq((table as TableLike).userId, filters.userId));
     }
     return conditions;
   }
-  static applyFilters(conditions: SQL[]): SQL | undefined {
-    return conditions.length > 0 ? and(...conditions) : undefined;
+
+  static applyFilters(conditions: Condition[]): Condition | undefined {
+    if (conditions.length === 0) return undefined;
+    const andArgs = conditions as unknown as Parameters<typeof and>;
+    return and(...andArgs);
   }
-  static applySorting(
-    table: any,
-    sortBy: string;
-    order: "asc" | "desc" = "desc";
-  ): SQL {
-    const column = table[sortBy];
+
+  static applySorting(table: TableLike, sortBy: string, order: 'asc' | 'desc' = 'desc'): unknown {
+    const column = (table as TableLike)[sortBy as string];
     if (!column) {
       // Default to updatedAt or createdAt
-      const defaultColumn = table.updatedAt || table.createdAt || table.id;
-      return order === "asc" ? asc(defaultColumn) : desc(defaultColumn);
+      const defaultColumn = (table as TableLike).updatedAt || (table as TableLike).createdAt || (table as TableLike).id;
+      return order === 'asc' ? asc(defaultColumn) : desc(defaultColumn);
     }
-    return order === "asc" ? asc(column) : desc(column);
+    return order === 'asc' ? asc(column) : desc(column);
   }
-  static getPaginationParams(
-    page?: string | null
-    limit?: string | null;
-  ): PaginationParams {
-    const pageNum = Math.max(1, parseInt(page || "1");
-    const limitNum = Math.min(100, Math.max(1, parseInt(limit || "20"));
+
+  static getPaginationParams(page?: number | string | null, limit?: number | string | null): PaginationParams {
+    const pageNum = Math.max(1, parseInt(String(page ?? '1')));
+    const limitNum = Math.min(100, Math.max(1, parseInt(String(limit ?? '20'))));
     const offset = (pageNum - 1) * limitNum;
-    return { page: pageNum, limit: limitNum, offset }
+    return { page: pageNum, limit: limitNum, offset };
   }
+
   static async executeQuery<T>(
-    baseQuery: any,
-    filters: QueryFilters;
-    table: any;
-  ): Promise<any> {
+    baseQuery: QueryLike,
+    filters: QueryFilters,
+    table: TableLike
+  ): Promise<{ data: T; total: number; pagination: PaginationParams }> {
     // Build filter conditions
     const conditions = this.buildFilters(table, filters);
     const whereClause = this.applyFilters(conditions);
     // Apply filters to query
-    let query = baseQuery;
-    if (whereClause) {
+    let query: QueryLike = baseQuery;
+    if (whereClause && query.where) {
       query = query.where(whereClause);
     }
     // Apply sorting
-    const sortBy = filters.sortBy || "updatedAt";
-    const sortOrder = filters.sortOrder || "desc";
-    query = query.orderBy(this.applySorting(table, sortBy, sortOrder);
+    const sortBy = filters.sortBy || 'updatedAt';
+    const sortOrder = filters.sortOrder || 'desc';
+    if (query.orderBy) query = query.orderBy(this.applySorting(table, sortBy, sortOrder));
     // Get pagination params
-    const pagination = this.getPaginationParams(
-      filters.limit?.toString()),
-      filters,.offset
-        ? (Math.floor(filters.offset / (filters.limit || 20)) + 1).toString())
-        : "1"
-    );
+    let pageParam: number | string | undefined;
+    if (filters.page != null) {
+      pageParam = filters.page;
+    } else if (typeof filters.offset === 'number' && typeof filters.limit === 'number') {
+      pageParam = (Math.floor(filters.offset / (filters.limit || 20)) + 1).toString();
+    } else {
+      pageParam = undefined;
+    }
+    const pagination = this.getPaginationParams(pageParam, filters.limit ?? undefined);
     // Apply pagination
-    query = query.limit(pagination.limit).offset(pagination.offset);
-    // Execute main query
-    const data = await query.execute();
-    // Get total count
-    let countQuery = baseQuery.select({ count: count() });
-    if (whereClause) {
+    if (query.limit) query = query.limit(pagination.limit);
+    if (query.offset) query = query.offset(pagination.offset);
+    // Execute main query (narrow result to T)
+    const data = (await query.execute()) as T;
+
+    // Get total count — avoid casting baseQuery to any by checking for select
+    let countQuery: QueryLike;
+    if (typeof baseQuery.select === 'function') {
+      // safe to call select when it's present
+      countQuery = baseQuery.select({ count: count() });
+    } else {
+      countQuery = baseQuery;
+    }
+
+    if (whereClause && countQuery.where) {
       countQuery = countQuery.where(whereClause);
     }
-    const [{ count: total }] = await countQuery.execute();
-    return { data, total, pagination }
+
+    // Narrow the count query result shape
+    const countResult = (await countQuery.execute()) as Array<{ count?: number } | Record<string, unknown> | undefined>;
+    const total = Array.isArray(countResult) && countResult.length > 0 ? (countResult[0]?.count ?? 0) : 0;
+    return { data, total, pagination };
   }
 }
 // Export helper functions
-export const {
-  buildFilters,
-  applyFilters,
-  applySorting,
-  getPaginationParams,
-  executeQuery
-} = QueryBuilder;
+export const { buildFilters, applyFilters, applySorting, getPaginationParams, executeQuery } = QueryBuilder;
 export default QueryBuilder;

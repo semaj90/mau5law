@@ -3,8 +3,9 @@
 
 import type { AIResponse, ChatMessage } from '$lib/types/evidence';
 
-const OLLAMA_BASE = process.env.OLLAMA_BASE_URL || 'http://localhost:11434';
-const TENSORRT_BASE = process.env.TENSORRT_BASE_URL || 'http://localhost:8001';
+// Replace broken TENSORRT_BASE assignment with a proper env fallback
+// (used by streamFromTensorRT)
+const TENSORRT_BASE = process.env.TENSORRT_BASE_URL || 'http://localhost:8000';
 const MODEL_NAME = process.env.AI_MODEL || 'gemma3-legal:latest';
 
 type StreamCallback = (token: string, fullText: string) => void | Promise<void>;
@@ -69,22 +70,20 @@ async function streamFromOllama(
 
   return new Promise((resolve, reject) => {
     // Use HTTP streaming endpoint (Ollama doesn't support WS for chat)
-    fetch(`${OLLAMA_BASE}/api/generate`, {
+    fetch(`${getOllamaEndpoint()}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: options?.model || MODEL_NAME,
-        prompt: options?.systemPrompt
-          ? `${options.systemPrompt}\n\nUser: ${prompt}`
-          : prompt,
+        prompt: options?.systemPrompt ? `${options.systemPrompt}\n\nUser: ${prompt}` : prompt,
         stream: true,
         options: {
           temperature: options?.temperature || 0.7,
-          num_predict: options?.maxTokens || 2048
-        }
-      })
+          num_predict: options?.maxTokens || 2048,
+        },
+      }),
     })
-      .then((response) => {
+      .then(response => {
         if (!response.ok) {
           throw new Error(`Ollama HTTP error: ${response.status}`);
         }
@@ -106,13 +105,13 @@ async function streamFromOllama(
               source: 'ollama',
               model: options?.model || MODEL_NAME,
               tokensUsed: tokensGenerated,
-              responseTimeMs: Date.now() - startTime
+              responseTimeMs: Date.now() - startTime,
             });
             return;
           }
 
           const chunk = decoder.decode(value, { stream: true });
-          const lines = chunk.split('\n').filter((line) => line.trim());
+          const lines = chunk.split('\n').filter(line => line.trim());
 
           for (const line of lines) {
             try {
@@ -159,11 +158,11 @@ async function streamFromTensorRT(
           name: 'input_text',
           shape: [1],
           datatype: 'BYTES',
-          data: [options?.systemPrompt ? `${options.systemPrompt}\n\n${prompt}` : prompt]
-        }
+          data: [options?.systemPrompt ? `${options.systemPrompt}\n\n${prompt}` : prompt],
+        },
       ],
-      outputs: [{ name: 'output_text' }]
-    } as TensorRTRequest)
+      outputs: [{ name: 'output_text' }],
+    } as TensorRTRequest),
   });
 
   if (!response.ok) {
@@ -179,7 +178,7 @@ async function streamFromTensorRT(
     const token = tokens[i] + (i < tokens.length - 1 ? ' ' : '');
     await onChunk(token, tokens.slice(0, i + 1).join(' ') + (i < tokens.length - 1 ? ' ' : ''));
     // Small delay to simulate streaming
-    await new Promise((resolve) => setTimeout(resolve, 50));
+    await new Promise(resolve => setTimeout(resolve, 50));
   }
 
   return {
@@ -187,15 +186,12 @@ async function streamFromTensorRT(
     source: 'tensorrt',
     model: 'legal-llm',
     tokensUsed: tokens.length,
-    responseTimeMs: Date.now() - startTime
+    responseTimeMs: Date.now() - startTime,
   };
 }
 
 // AI tool execution (for agentic workflows)
-export async function executeAITool(
-  toolName: string,
-  params: Record<string, unknown>
-): Promise<unknown> {
+export async function executeAITool(toolName: string, params: Record<string, unknown>): Promise<unknown> {
   console.log(`[AI] 🔧 Executing tool: ${toolName}`, params);
 
   switch (toolName) {
@@ -226,7 +222,7 @@ async function legalCitationLookup(citation: string): Promise<{ case: string; su
   // TODO: Integrate with legal database (CourtListener, Justia, etc.)
   return {
     case: citation,
-    summary: `Legal case summary for ${citation}`
+    summary: `Legal case summary for ${citation}`,
   };
 }
 
@@ -240,13 +236,13 @@ async function extractEntities(text: string): Promise<{ entities: string[] }> {
 
 // Generate embeddings for vector search
 export async function generateEmbedding(text: string): Promise<number[]> {
-  const response = await fetch(`${OLLAMA_BASE}/api/embeddings`, {
+  const response = await fetch(`${getOllamaEndpoint()}/api/embeddings`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model: 'nomic-embed-text',
-      prompt: text
-    })
+      prompt: text,
+    }),
   });
 
   if (!response.ok) {
@@ -264,20 +260,20 @@ export async function chatCompletion(
 ): Promise<AIResponse> {
   const startTime = Date.now();
 
-  const response = await fetch(`${OLLAMA_BASE}/api/chat`, {
+  const response = await fetch(`${getOllamaEndpoint()}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model: options?.model || MODEL_NAME,
-      messages: messages.map((msg) => ({
+      messages: messages.map(msg => ({
         role: msg.role,
-        content: msg.content
+        content: msg.content,
       })),
       stream: false,
       options: {
-        temperature: options?.temperature || 0.7
-      }
-    })
+        temperature: options?.temperature || 0.7,
+      },
+    }),
   });
 
   if (!response.ok) {
@@ -290,6 +286,22 @@ export async function chatCompletion(
     text: result.message.content,
     source: 'ollama',
     model: options?.model || MODEL_NAME,
-    responseTimeMs: Date.now() - startTime
+    responseTimeMs: Date.now() - startTime,
   };
+}
+
+// Replace the local helper with an exported centralized helper so other modules
+// can import getOllamaEndpoint() instead of hardcoding Ollama URLs.
+export function getOllamaEndpoint(): string {
+  // Preference order:
+  // 1. OLLAMA_URL (preferred)
+  // 2. OLLAMA_BASE_URL (legacy name)
+  // 3. Docker service host (when running in compose)
+  // 4. Localhost fallback for single-machine dev
+  return (
+    process.env.OLLAMA_URL ||
+    process.env.OLLAMA_BASE_URL ||
+    'http://ollama:11434' ||
+    'http://localhost:11434'
+  );
 }

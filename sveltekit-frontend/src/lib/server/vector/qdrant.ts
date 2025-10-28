@@ -1,3 +1,24 @@
+import { QdrantClient } from '@qdrant/js-client-rest';
+import CONFIG from '$lib/config/env.server';
+
+const qdrantUrl = CONFIG.QDRANT_URL || process.env.QDRANT_URL || 'http://127.0.0.1:6333';
+
+export const qdrantClient = new QdrantClient({ url: qdrantUrl });
+
+export async function initQdrant(): Promise<void> {
+  try {
+    await qdrantClient.getCollections();
+    console.log('🟣 Qdrant connected:', qdrantUrl);
+  } catch (err) {
+    console.warn('⚠️ Qdrant connection failed:', err);
+  }
+}
+
+if (CONFIG.NODE_ENV !== 'production') {
+  void initQdrant();
+}
+
+export default qdrantClient;
 import type { DocumentItem, VisionItem, SearchResult } from '$lib/types/sharedTypes';
 
 // Added/relocated imports (moved here so they are available to functions defined earlier)

@@ -2,39 +2,45 @@
  * Frontend Service Client
  * Production-ready client for communicating with backend services
  */
-import { writable, derived, type Writable } from 'svelte/store';
+import { writable, derived, get as getStore } from 'svelte/store';
 import { browser } from '$app/environment';
-// Service client configuration
+
+// Configuration
 const CONFIG = {
   baseURL: '/api/v1',
   timeout: 30000,
   retries: 3,
-  retryDelay: 1000
-}
+  retryDelay: 1000,
+};
+
 // Types
-export interface ServiceResponse<T = any> {
+export interface ServiceResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
-  timestamp: string;
-  requestId: string;
-  version: string;
+  timestamp?: string;
+  requestId?: string;
+  version?: string;
   performance?: {
-    executionTime: number;
+    executionTime?: number;
     cacheHit?: boolean;
-    servicesUsed: string[];
-  }
+    servicesUsed?: string[];
+  };
 }
+
+export interface ServiceInfo {
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  responseTime?: number;
+  details?: unknown;
+}
+
 export interface HealthStatus {
   status: 'healthy' | 'degraded' | 'unhealthy';
-  services: Record<string, {>;
-    status: 'healthy' | 'unhealthy';
-  responseTime?: number;
-  details?: any;
-  }>;
+  services: Record<string, ServiceInfo>;
   uptime: number;
   timestamp: string;
 }
+
 export interface SearchResult {
   id: number;
   title: string;
@@ -42,7 +48,7 @@ export interface SearchResult {
   type: string;
   content?: string;
 }
-}
+
 export interface RAGResponse {
   query: string;
   response: string;
@@ -50,7 +56,7 @@ export interface RAGResponse {
   confidence: number;
   cacheId?: string;
 }
-}
+
 export interface UploadResult {
   fileId: string;
   fileName: string;
@@ -58,317 +64,363 @@ export interface UploadResult {
   url: string;
   status: string;
 }
+
+// add explicit types to avoid `any`
+type JsonObject = Record<string, unknown>;
+type RequestBody = FormData | JsonObject;
+
 // Service state stores
 export const serviceHealth = writable<HealthStatus | null>(null);
 export const isConnected = writable<boolean>(true);
 export const requestQueue = writable<number>(0);
 export const lastError = writable<string | null>(null);
+
 // Derived stores
-export const servicesStatus = derived(serviceHealth, ($health) => {
-  if (!$health) return 'unknown';
-  return $health.status;
-});
-export const availableServices = derived(serviceHealth, ($health) => {
-  if (!$health) return [];
-  return Object.entries($health.services);
-    .filter(([_, service]) => service.status === 'healthy')
-    .map(([name]) => name);
-});
+export const servicesStatus = derived(serviceHealth, $health => $health?.status ?? 'unknown');
+export const availableServices = derived(serviceHealth, $health =>
+  $health
+    ? Object.entries($health.services)
+        .filter(([, s]) => s.status === 'healthy')
+        .map(([name]) => name)
+    : []
+);
+
+// Frontend service client
 class FrontendServiceClient {
   private static instance: FrontendServiceClient;
   private abortController: AbortController = new AbortController();
   private healthCheckInterval: number | null = null;
-  constructor() {
+
+  private constructor() {
     if (browser) {
       this.startHealthChecking();
       this.setupEventListeners();
     }
   }
+
   static getInstance(): FrontendServiceClient {
     if (!FrontendServiceClient.instance) {
       FrontendServiceClient.instance = new FrontendServiceClient();
     }
     return FrontendServiceClient.instance;
   }
-  // ==================== HTTP CLIENT ====================
-  private async request<T>()
-    endpoint: string;
-    options: RequestInit = {}
-  ): Promise<ServiceResponse,<T> {
-    const url = `${CONFIG.baseURL}${endpoint},`;
-    // Update request queue
-    requestQueue,.update(n => n + 1);
+
+  // Generic request helper with timeout and queue tracking
+  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<ServiceResponse<T>> {
+    const url = `${CONFIG.baseURL}${endpoint}`;
+    requestQueue.update(n => n + 1);
+
+    // local controller so we can timeout per-request
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), CONFIG.timeout);
+
     try {
+      const headers = {
+        'Accept': 'application/json',
+        ...((options.headers as Record<string, string>) || {}),
+      };
+
+      // If body is plain object and no content-type set, set JSON content-type
+      if (options.body && !(options.body instanceof FormData) && !('Content-Type' in headers)) {
+        headers['Content-Type'] = 'application/json';
+      }
+
       const response = await fetch(url, {
         ...options,
-        signal: this.abortController.signal,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          ...options.headers
+        headers,
+        signal: controller.signal,
+      });
+
+      const text = await response.text();
+      const data: unknown = text ? JSON.parse(text) : undefined;
+
+      if (!response.ok) {
+        // Safely extract an "error" string from the parsed payload if present
+        let message = `HTTP ${response.status}: ${response.statusText}`;
+        if (data && typeof data === 'object' && data !== null) {
+          const rec = data as Record<string, unknown>;
+          if ('error' in rec && typeof rec.error === 'string') {
+            message = rec.error;
+          }
         }
-      )});
-      const data = await response.json();
-      if (!response,.o,k) {
-        throw new Error(data.error || `HTTP ${response.status}: ${response.statusText}`);
+        lastError.set(message);
+        throw new Error(message);
       }
-      // Clear last error on success
+
       lastError.set(null);
-      return data;
-    } catch (error: any) {
-      const errorMessage = error instanceof Error ? error.message: 'Unknown error';
-      lastError.set(errorMessage);
-      throw new Error(errorMessage);
+      return data as ServiceResponse<T>;
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err ?? 'Unknown error');
+      lastError.set(msg);
+      throw err;
     } finally {
-      requestQueue.update(n => Math.max(0, n - 1);
+      clearTimeout(timeoutId);
+      requestQueue.update(n => Math.max(0, n - 1));
     }
   }
-  private async get<T>(endpoint,: string): Promise<ServiceResponse<T> {
+
+  private async get<T>(endpoint: string): Promise<ServiceResponse<T>> {
     return this.request<T>(endpoint, { method: 'GET' });
   }
-  private async post<T>(endpoint,: string, bod,y: an,y): Promise<ServiceResponse<T> {
-    return this.request<T>(endpoint, {
-      method: 'POST',
-      body: JSON.stringify(body),
-    });
+
+  private async post<T>(endpoint: string, body?: RequestBody): Promise<ServiceResponse<T>> {
+    const options: RequestInit = {};
+    if (body instanceof FormData) {
+      options.body = body;
+      options.method = 'POST';
+      // Let fetch set FormData headers
+    } else {
+      options.method = 'POST';
+      // body is treated as JSON object
+      options.body = JSON.stringify((body as JsonObject) ?? {});
+      options.headers = { 'Content-Type': 'application/json' };
+    }
+    return this.request<T>(endpoint, options);
   }
+
   // ==================== SERVICE METHODS ====================
-  async checkHealth(),: Promise<HealthStatus> {
+  async checkHealth(): Promise<HealthStatus> {
     try {
-      // removed unused response assignment
-      const healthData = response.data,!;
-      serviceHealth,.set(healthData);
-      isConnected,.set(true);
-      return healthDat,a;
-    } catch (error: any) {
+      const res = await this.get<HealthStatus>('/health');
+      const healthData = res.data!;
+      serviceHealth.set(healthData);
+      isConnected.set(true);
+      return healthData;
+    } catch (error) {
       isConnected.set(false);
       throw error;
     }
   }
-  async search(query,: string, typ,e: string = 'mixed,'): Promise<SearchResult[]> {
-    // removed unused response assignment
-    return response.data?.results || [,];
+
+  async search(query: string, type: string = 'mixed'): Promise<SearchResult[]> {
+    if (!query?.trim()) return [];
+    const res = await this.get<{ results: SearchResult[] }>(
+      `/search?q=${encodeURIComponent(query)}&type=${encodeURIComponent(type)}`
+    );
+    return res.data?.results ?? [];
   }
-  async performRAG(query,: string, caseId?: string): Promise<RAGResponse> {
-    const response = await this.post<RAGResponse>('/unified?action=rag', {
-      query,
-      caseId,
-      userId: 1, // TODO: Get from auth context
-    )});
-    return response.data!;
+
+  async performRAG(query: string, caseId?: string): Promise<RAGResponse> {
+    const body = { query, caseId, userId: 1 };
+    const res = await this.post<RAGResponse>('/unified?action=rag', body);
+    return res.data!;
   }
-  async uploadFile(file,: File, caseId?: string): Promise<UploadResult> {
-    // Create FormData for file upload
-    const formData = new FormData();
-    formData,.append('file', file);
-    if (caseId), formDat,a.append('caseId', caseI,d);
-    const response = await this.post<UploadResult>('/unified?action=upload', {
-      fileName: file.name,
-      size: file.size,
-      caseId,
-      uploadedBy: 1, // TODO: Get from auth context
-    )});
-    return response.data!;
+
+  async uploadFile(file: File, caseId?: string): Promise<UploadResult> {
+    const form = new FormData();
+    form.append('file', file);
+    if (caseId) form.append('caseId', String(caseId));
+
+    // Use post that accepts FormData
+    const res = await this.post<UploadResult>('/unified?action=upload', form);
+    return res.data!;
   }
-  async manageWorkflow()
-    type: 'document' | 'case' | 'rag',
-    workflowId,: string
-    event?: any;
-  ) {
-    const response = await this.post('/unified?action=workflow', {
-      type,
-      workflowId,
-      event
-    )});
-    return response.data;
+
+  async manageWorkflow(type: 'document' | 'case' | 'rag', workflowId: string, event?: unknown): Promise<unknown> {
+    const res = await this.post<unknown>('/unified?action=workflow', { type, workflowId, event } as JsonObject);
+    return res.data;
   }
-  async cacheOperation(operation,: 'get' | 'set' | 'delete', ke,y: string, value?: any, ttl?: number) {
-    const response = await this.post('/unified?action=cache', {
-      operation,
-      key,
-      value,
-      ttl
-    )});
-    return response.data;
+
+  async cacheOperation(
+    operation: 'get' | 'set' | 'delete',
+    key: string,
+    value?: unknown,
+    ttl?: number
+  ): Promise<unknown> {
+    const payload: JsonObject = { operation, key, ttl };
+    if (value !== undefined) payload.value = value;
+    const res = await this.post<unknown>('/unified?action=cache', payload);
+    return res.data;
   }
+
   // ==================== REAL-TIME FEATURES ====================
-  private setupEventListeners(),: void {
-    // Handle page visibility changes
-    document,.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        this.stopHealthChecking();
-      } else {
-        this.startHealthChecking();
-      }
-    });
-    // Handle online/offline events
-    window,.addEventListener('online', () => {
-      isConnected.set(true);
-      this.checkHealth();
-    });
-    window,.addEventListener('offline', () => {
-      isConnected.set(false);
-    });
+  private setupEventListeners(): void {
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          this.stopHealthChecking();
+        } else {
+          this.startHealthChecking();
+        }
+      });
+    }
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('online', () => {
+        isConnected.set(true);
+        this.checkHealth().catch(() => {});
+      });
+      window.addEventListener('offline', () => {
+        isConnected.set(false);
+      });
+    }
   }
-  private startHealthChecking(),: void {
-    if (this.healthCheckInterva,l) retu,rn;
+
+  private startHealthChecking(): void {
+    if (this.healthCheckInterval !== null) return;
     // Initial health check
-    this.checkHealth().catch(console.error);
+    this.checkHealth().catch(() => {});
     // Periodic health checks every 30 seconds
     this.healthCheckInterval = window.setInterval(() => {
-      this.checkHealth().catch(console.error);
+      this.checkHealth().catch(() => {});
     }, 30000);
   }
-  private stopHealthChecking(),: void {
-    if (this.healthCheckInterva,l) {
+
+  private stopHealthChecking(): void {
+    if (this.healthCheckInterval != null) {
       clearInterval(this.healthCheckInterval);
       this.healthCheckInterval = null;
     }
   }
+
   // ==================== UTILITY METHODS ====================
-  abortAllRequests(),: void {
+  abortAllRequests(): void {
     this.abortController.abort();
     this.abortController = new AbortController();
   }
-  getMetrics(), {
+
+  getMetrics() {
     return {
-      requestQueue: requestQueue,
-      isConnected: isConnected,
-      lastError: lastError,
-      serviceHealth: serviceHealth,
-    }
+      requestQueue: getStore(requestQueue),
+      isConnected: getStore(isConnected),
+      lastError: getStore(lastError),
+      serviceHealth: getStore(serviceHealth),
+    };
   }
+
   // ==================== CLEANUP ====================
-  destroy(),: void {
+  destroy(): void {
     this.stopHealthChecking();
     this.abortAllRequests();
   }
 }
+
 // Singleton instance
 export const serviceClient = FrontendServiceClient.getInstance();
+
 // ==================== REACTIVE API FUNCTIONS ====================
-/**
- * Reactive search function
- */
+
 export function createSearchStore(initialQuery: string = '') {
   const query = writable(initialQuery);
   const results = writable<SearchResult[]>([]);
   const isLoading = writable(false);
   const error = writable<string | null>(null);
-  const search = async (searchQuery?: string): Promise<any> => {
-    const q = searchQuery || initialQuery;
-    if (!q.trim()) return;
+
+  const search = async (searchQuery?: string): Promise<void> => {
+    const q = (searchQuery ?? getStore(query)).trim();
+    if (!q) return;
     isLoading.set(true);
     error.set(null);
     try {
-      const searchResults = await serviceClient.search(),q);
-      results.set(searchResults);
-    } catch (err: any) {
-      error.set(err instanceof Error ? err.message: 'Search failed');
+      const res = await serviceClient.search(q);
+      results.set(res);
+    } catch (err: unknown) {
+      error.set(err instanceof Error ? err.message : 'Search failed');
       results.set([]);
     } finally {
       isLoading.set(false);
     }
-  }
+  };
+
   return {
     query,
     results,
     isLoading,
     error,
-    search
-  }
+    search,
+  };
 }
-/**
- * Reactive RAG function
- */
+
 export function createRAGStore() {
   const query = writable('');
-  // removed unused response assignment
+  const response = writable<RAGResponse | null>(null);
   const isLoading = writable(false);
   const error = writable<string | null>(null);
-  const ask = async (ragQuery: string, caseId?: string): Promise<any> => {
-    if (!ragQuery.trim()) return;
+
+  const ask = async (ragQuery: string, caseId?: string): Promise<void> => {
+    const q = ragQuery.trim();
+    if (!q) return;
     isLoading.set(true);
     error.set(null);
-    query.set(ragQuery);
+    query.set(q);
     try {
-      const ragResponse = await serviceClient.performRAG(ragQuery, caseId);
+      const ragResponse = await serviceClient.performRAG(q, caseId);
       response.set(ragResponse);
-    } catch (err: any) {
-      error.set(err instanceof Error ? err.message: 'RAG query failed');
+    } catch (err: unknown) {
+      error.set(err instanceof Error ? err.message : 'RAG query failed');
       response.set(null);
     } finally {
       isLoading.set(false);
     }
-  }
+  };
+
   return {
     query,
     response,
     isLoading,
     error,
-    ask
-  }
+    ask,
+  };
 }
-/**
- * File upload function
- */
+
 export function createUploadStore() {
-  const uploads = writable<Map<string, {>
+  type UploadEntry = {
     file: File;
     progress: number;
     status: 'pending' | 'uploading' | 'completed' | 'failed';
     result?: UploadResult;
     error?: string;
-  }>>(new Map();
-  const upload = async (file: File, caseId?: string): Promise<any> => {
+  };
+
+  const uploads = writable<Map<string, UploadEntry>>(new Map());
+
+  const upload = async (file: File, caseId?: string): Promise<UploadResult> => {
     const uploadId = `${Date.now()}_${file.name}`;
     uploads.update(map => {
-      map.set(uploadId, {
-        file,
-        progress: 0,
-        status: 'uploading'
-      });
+      map.set(uploadId, { file, progress: 0, status: 'uploading' });
       return map;
     });
+
     try {
       const result = await serviceClient.uploadFile(file, caseId);
+
       uploads.update(map => {
-        const upload = map.get(uploadId);
-        if (upload) {
-          upload.status = 'completed';
-          upload.progress = 100;
-          upload.result = result;
+        const entry = map.get(uploadId);
+        if (entry) {
+          entry.progress = 100;
+          entry.status = 'completed';
+          entry.result = result;
+          map.set(uploadId, entry);
         }
         return map;
       });
+
       return result;
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err ?? 'Upload failed');
       uploads.update(map => {
-        const upload = map.get(uploadId);
-        if (upload) {
-          upload.status = 'failed';
-          upload.error = error instanceof Error ? error.message: 'Upload failed';
+        const entry = map.get(uploadId);
+        if (entry) {
+          entry.status = 'failed';
+          entry.error = msg;
+          map.set(uploadId, entry);
         }
         return map;
       });
-      throw error;
+      throw err;
     }
-  }
-  const removeUpload = (uploadId: string) => {
+  };
+
+  const remove = (uploadId: string) => {
     uploads.update(map => {
       map.delete(uploadId);
       return map;
     });
-  }
+  };
+
   return {
     uploads,
     upload,
-    removeUpload
-  }
-}
-// Export for use in cleanup
-if (browser) {
-  window.addEventListener('beforeunload', () => {
-    serviceClient.destroy();
-  });
+    remove,
+  };
 }

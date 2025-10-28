@@ -1,6 +1,7 @@
 
 // Fixed database query utilities with proper field mappings
-import { sql, eq, and, or, like, desc, asc } from 'drizzle-orm';
+import { sql, desc, asc } from 'drizzle-orm';
+import { eq, and, or, like } from '$lib/server/db/utils';
 import type { SQL } from 'drizzle-orm';
 import type { PgColumn } from 'drizzle-orm/pg-core';
 // Database field mapping utilities

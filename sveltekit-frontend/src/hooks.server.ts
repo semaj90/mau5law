@@ -28,7 +28,7 @@ type DrizzleDB = ReturnType<typeof drizzle> | null;
 let _pgConnection: PgConnection = null;
 let _db: DrizzleDB = null;
 let _redis: RedisInstance | null = null;
-let _redisAdapter: RedisCacheService | null = null;
+let $redisAdapter: RedisCacheService | null = null;
 
 function initPostgres() {
   if (_pgConnection) return _pgConnection;
@@ -70,9 +70,9 @@ function initRedis() {
     void ensureRedisReady();
 
     try {
-      _redisAdapter = createRedisAdapter(_redis);
+      $redisAdapter = createRedisAdapter(_redis);
     } catch (e) {
-      _redisAdapter = null;
+      $redisAdapter = null;
       console.warn('[hooks.server] Redis adapter creation failed:', e);
     }
   } catch (_e) {
@@ -91,26 +91,17 @@ initPostgres();
 // Note: Do NOT call initRedis() or initBackends() at module import time.
 // They will be invoked lazily inside ensureInitialized() to prevent dev-time failures.
 
-// Remove the previous AppLocals + `declare module '@sveltejs/kit'` augmentation and replace
-// it with a SvelteKit-friendly global `App` namespace augmentation.
-
+// Remove the old `declare global { namespace App { ... } }` block and use module augmentation instead.
+// Keep the file as a module so TypeScript applies the augmentation.
 export {}; // keep the file as a module
 
-declare global {
-  namespace App {
-    interface Locals {
-      db: DrizzleDB | null;
-      pg: PgConnection;
-      redis: RedisInstance | null;
-      user?: {
-        id: string;
-        email?: string | null;
-        firstName?: string | null;
-        lastName?: string | null;
-        role?: string;
-      } | null;
-      session?: { id: string; fresh?: boolean } | null;
-    }
+declare module '@sveltejs/kit' {
+  interface Locals {
+    // Avoid re-declaring `db`, `user`, or `session` here because other files may declare them
+    // with different modifiers. Only add properties that are safe to augment (don't conflict).
+    pg?: PgConnection;
+    redis?: RedisInstance | null;
+    // If you need to add other non-conflicting keys, add them here.
   }
 }
 
@@ -273,14 +264,36 @@ async function ensureInitialized() {
   }
 }
 
+// --- Replace the generic DatabaseUser.role:string with a narrow union and add a runtime guard ---
+type Role = 'user' | 'admin' | 'lead_prosecutor' | 'prosecutor' | 'paralegal' | 'investigator' | 'analyst' | 'viewer';
+
 interface DatabaseUser {
   id: string;
-  email: string;
+  email?: string;
   firstName?: string | null;
   lastName?: string | null;
-  role: string;
+  role: Role;
   isActive?: boolean;
   avatarUrl?: string | null;
+}
+
+const VALID_ROLES: Set<string> = new Set([
+  'user',
+  'admin',
+  'lead_prosecutor',
+  'prosecutor',
+  'paralegal',
+  'investigator',
+  'analyst',
+  'viewer',
+]);
+
+function normalizeRole(raw: unknown): Role {
+  if (typeof raw === 'string' && VALID_ROLES.has(raw)) {
+    return raw as Role;
+  }
+  // fallback to a safe default if the upstream value is unexpected
+  return 'viewer';
 }
 
 // REPLACEMENT: corrected handler (replaces the broken/duplicated tail of the file)
@@ -399,8 +412,8 @@ export const handle: Handle = async ({ event, resolve }) => {
     if (user) {
       const localUser: DatabaseUser = {
         id: String(user.id),
-        email: String(user.email),
-        role: String(user.role),
+        email: user.email ? String(user.email) : undefined,
+        role: normalizeRole((user as { role?: unknown }).role),
         firstName: user.firstName ?? null,
         lastName: user.lastName ?? null,
         isActive: typeof user.isActive === 'boolean' ? user.isActive : true,

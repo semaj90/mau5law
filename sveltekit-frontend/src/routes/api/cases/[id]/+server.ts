@@ -1,44 +1,53 @@
 import type { RequestHandler } from './$types';
-import { json } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';
 
-export const GET: RequestHandler = async ({ params }) => {
+// This file provides a compatibility shim so both /api/cases/[id] and
+// /api/cases/[caseId] continue to work. It proxies requests to the
+// canonical `[caseId]` handlers so we don't duplicate logic and avoid
+// route conflicts.
+
+async function proxyToCanonical(event: Parameters<RequestHandler>[0]): Promise<Response> {
+  const { params, request, fetch } = event as unknown as {
+    params: Record<string, string>;
+    request: Request;
+    fetch: typeof globalThis.fetch;
+  };
   const id = params.id;
-  try {
-    const { db } = await import('$lib/server/db/client');
-    const { cases } = await import('$lib/server/db/schema-postgres');
-    const [row] = await db.select().from(cases).where(cases.id.eq(id));
-    return json(row ?? null);
-  } catch (err) {
-    console.warn('Drizzle GET /api/cases/[id] failed', err);
-    return json(null, { status: 404 });
+  if (!id) throw error(400, 'Missing id');
+
+  const url = new URL(`/api/cases/${encodeURIComponent(id)}`, request.url).toString();
+
+  // Forward headers (except host) and method/body
+  const headers = new Headers();
+  request.headers.forEach((v, k) => {
+    if (k.toLowerCase() !== 'host') headers.set(k, v);
+  });
+
+  const init: RequestInit = { method: request.method, headers };
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
+    init.body = await request.arrayBuffer();
   }
+
+  // Use the server's fetch so requests stay internal and fast
+  const res = await fetch(url, init as RequestInit);
+  return res;
+}
+
+export const GET: RequestHandler = async event => {
+  const res = await proxyToCanonical(event);
+  const data = await res.json().catch(() => null);
+  return json(data, { status: res.status });
 };
 
-export const DELETE: RequestHandler = async ({ params }) => {
-  const id = params.id;
-  try {
-    const { db } = await import('$lib/server/db/client');
-    const { cases } = await import('$lib/server/db/schema-postgres');
-    await db.delete(cases).where(cases.id.eq(id));
-    return json({ success: true });
-  } catch (err) {
-    console.warn('Drizzle DELETE /api/cases/[id] failed', err);
-    return json({ error: 'delete failed' }, { status: 500 });
-  }
+export const DELETE: RequestHandler = async event => {
+  const res = await proxyToCanonical(event);
+  const data = await res.json().catch(() => ({ success: res.ok }));
+  return json(data, { status: res.status });
 };
 
-export const POST: RequestHandler = async ({ params, request }) => {
-  const id = params.id;
-  const body = await request.json();
-  // simple action router: analyze | report
-  if (body.action === 'analyze') {
-    // enqueue or trigger analysis here; keep minimal for now
-    // In production you'd push to RabbitMQ / background worker
-    return json({ status: 'analysis_enqueued', progress: 5 });
-  }
-  if (body.action === 'report') {
-    // trigger report generation (async) - return quick ack
-    return json({ status: 'report_generation_started' });
-  }
-  return json({ error: 'unknown action' }, { status: 400 });
+export const POST: RequestHandler = async event => {
+  const res = await proxyToCanonical(event);
+  const data = await res.json().catch(() => null);
+  return json(data, { status: res.status });
 };
+
