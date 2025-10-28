@@ -191,9 +191,10 @@ export type {
   WorkerScaleResponse,
 } from './cluster';
 
-export * from './search';
+// Replace wildcard re-export of './search' (causes duplicate top-level symbols)
+// and keep top-level re-exports from './api'.
 export * from './api';
-// Add other type exports here as your project grows, e.g.,
-// export * from './database';
-// export * from './admin';
-// export * from './cluster';
+
+// Export the search module as a namespaced export to avoid duplicate top-level exports
+// Usage elsewhere: import type { search } from '$lib/types'; or `import type { LegalDocument } from '$lib/types/search'`
+export * as search from './search';

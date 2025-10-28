@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@qdrant/js-client-rest": "^1.15.1",
     "cross-env": "^10.1.0"
   }
 }

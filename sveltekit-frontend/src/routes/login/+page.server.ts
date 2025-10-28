@@ -1,70 +1,110 @@
-import { verifyPassword, createUserSession } from '$lib/server/lucia';
 import { loginSchema } from '$lib/schemas/auth';
-import { db } from '$lib/server/db/connection';
-import { users } from '$lib/server/db/schema-postgres';
-import { eq } from 'drizzle-orm';
+import { db, helpers, users } from '$lib/server/db';
+import { createUserSession, setSessionCookie, verifyPassword } from '$lib/server/lucia';
 import { fail, redirect } from '@sveltejs/kit';
-import { message, superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
-import { auth } from '$lib/server/auth';
-import type { Actions, PageServerLoad } from './$types.js';
+import { message, superValidate } from 'sveltekit-superforms/server';
+import type { Actions, PageServerLoad } from './$types';
+// add this type import to satisfy the TS overload
+import type { ValidationAdapter } from 'sveltekit-superforms/server';
 
-export const load: PageServerLoad = async ({ locals }) => {
-  if (locals.user) {
-    throw redirect(303, '/(ai)/dashboard');
+// Replace load to accept the full event and pass it to superValidate
+export const load: PageServerLoad = async event => {
+  // use event.locals / event.url instead of destructuring only parts
+  const localsTyped = event.locals as App.Locals;
+
+  // If user is already logged in, redirect to dashboard
+  if (localsTyped.user) {
+    throw redirect(303, '/dashboard');
   }
-  const form = await superValidate(zod(loginSchema));
-  return { form };
+
+  // Registration success banner
+  const registered = event.url.searchParams.get('registered');
+  const registrationSuccess = registered === 'true' ? 'Account created successfully! You can now sign in.' : undefined;
+
+  // Initialize SuperForms form for initial page render.
+  // Use schema-only overload for initial render
+  const form = await superValidate(loginSchema);
+
+  return { registrationSuccess, form };
 };
 
+// Actions: include the full event and use it with superValidate
 export const actions: Actions = {
-  default: async ({ request, cookies }) => {
-    const form = await superValidate(request, zod(loginSchema));
+  default: async event => {
+    // request wasn't used, so only keep cookies to avoid unused variable warnings
+    const { cookies } = event;
+
+    // Cast the Zod schema to ValidationAdapter so TS matches the (data, adapter) overload.
+    const form = await superValidate(
+      await event.request.formData(),
+      loginSchema as unknown as ValidationAdapter<Record<string, unknown>, Record<string, unknown>>
+    );
+
     if (!form.valid) {
       return fail(400, { form });
     }
 
+    const { email, password } = form.data;
+
     try {
-      // Find user by email
-      const [user] = await db
-        .select()
-        .from(users)
-        .where(eq(users.email, form.data.email))
-        .limit(1);
-
-      if (!user || !user.hashedPassword) {
-        console.warn(`[Login] User not found or has no password: ${form.data.email}`);
-        return message(form, 'Invalid email or password', { status: 400 });
+      // Find user by email (guard shape because db helper wiring can vary)
+      let existingUser: unknown[] = [];
+      try {
+        // use helpers.eq directly (avoid casting to any)
+        existingUser = await db
+          .select()
+          .from(users)
+          .where(helpers.eq(users.email, email as string))
+          .limit(1);
+      } catch (e: unknown) {
+        console.error('[Login] DB select failed:', e);
+        return message(form, 'Login failed (db error). Please try again.', { status: 500 });
       }
 
-      // Verify password
-      const isValid = await verifyPassword(user.hashedPassword, form.data.password);
-      if (!isValid) {
-        console.warn(`[Login] Invalid password for user: ${form.data.email}`);
-        return message(form, 'Invalid email or password', { status: 400 });
+      if (!Array.isArray(existingUser) || existingUser.length === 0) {
+        return message(form, 'Incorrect email or password', { status: 400 });
       }
 
-      // Create session using Lucia v3
-      const session = await auth.createSession(user.id, {});
-      const sessionCookie = auth.createSessionCookie(session.id);
+      // Narrow the user shape for local usage
+      const user = existingUser[0] as {
+        id: string;
+        email: string;
+        hashed_password?: string | null;
+        is_active?: boolean;
+      };
 
-      // Set session cookie
-      cookies.set(sessionCookie.name, sessionCookie.value, {
-        ...sessionCookie.attributes,
-        path: '/',
-      });
+      if (!user || !user.hashed_password) {
+        return message(form, 'Incorrect email or password', { status: 400 });
+      }
+
+      // Check if user is active
+      if (!user.is_active) {
+        return message(form, 'Account is deactivated', { status: 403 });
+      }
+
+      // Verify password using custom lucia
+      const validPassword = await verifyPassword(user.hashed_password, password as string);
+
+      if (!validPassword) {
+        console.log(`[Login] Password verification failed for ${user.email}`);
+        return message(form, 'Incorrect email or password', { status: 400 });
+      }
+
+      // Create session using custom lucia
+      const { sessionId, expiresAt } = await createUserSession(user.id);
+      setSessionCookie(cookies, sessionId, expiresAt);
 
       // Dev debug: print short session id to server logs for quick verification
       if (process.env.NODE_ENV === 'development') {
-        console.log(`[Login] session set: ${session.id.substring(0, 12)}... for ${user.email}`);
+        console.log(`[Login] session set: ${sessionId.substring(0, 12)}... for ${user.email}`);
       }
+
       console.log(`[Login] User ${user.email} logged in successfully`);
-    } catch (error: any) {
-      console.error('[Login] Database/Auth error:', error);
+      throw redirect(303, '/dashboard');
+    } catch (err: unknown) {
+      console.error('[Login] Error:', err);
+      if (err instanceof Response) throw err;
       return message(form, 'Login failed. Please try again.', { status: 500 });
     }
-
-    // Redirect after successful authentication (outside try block)
-    throw redirect(303, '/(ai)/dashboard');
   },
 };

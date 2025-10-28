@@ -24,11 +24,11 @@
       "cwd": "${workspaceFolder}",
       "env": {
         "NODE_ENV": "development",
-        "NODE_OPTIONS": "--max-old-space-size=3072",
+        "NODE_OPTIONS": "--max-old-space-size=8092",
         "ENABLE_GPU": "true",
         "RTX_3060_OPTIMIZATION": "true",
         "CONTEXT7_MULTICORE": "true",
-        "OLLAMA_GPU_LAYERS": "30",
+        "OLLAMA_GPU_LAYERS": "25",
         "DEBUG": "vite:*,kit:*"
       },
       "console": "integratedTerminal",

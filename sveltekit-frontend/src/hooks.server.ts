@@ -87,22 +87,27 @@ initPostgres();
 initRedis();
 initBackends();
 
-// App.Locals augmentation so we can attach typed locals without `any`
-// module augmentation for SvelteKit's App namespace
-export {};
-declare global {
-  interface AppLocals {
-    db: DrizzleDB | null;
-    pg: PgConnection;
-    redis: Redis | null;
-    user?: { id: string; email?: string; role?: string } | null;
-    session?: { id: string; fresh?: boolean } | null;
-  }
-}
+// Remove the previous AppLocals + `declare module '@sveltejs/kit'` augmentation and replace
+// it with a SvelteKit-friendly global `App` namespace augmentation.
 
-// Add module augmentation using ES2015 module syntax
-declare module '@sveltejs/kit' {
-  interface Locals extends AppLocals {}
+export {}; // keep the file as a module
+
+declare global {
+  namespace App {
+    interface Locals {
+      db: DrizzleDB | null;
+      pg: PgConnection;
+      redis: RedisInstance | null;
+      user?: {
+        id: string;
+        email?: string | null;
+        firstName?: string | null;
+        lastName?: string | null;
+        role?: string;
+      } | null;
+      session?: { id: string; fresh?: boolean } | null;
+    }
+  }
 }
 
 // Minimal Lucia auth surface used by this file
@@ -254,16 +259,15 @@ interface DatabaseUser {
   role: string;
   isActive?: boolean;
   avatarUrl?: string | null;
-  name?: string | null;
 }
 
-const handle: Handle = async ({ event, resolve }) => {
+// REPLACEMENT: corrected handler (replaces the broken/duplicated tail of the file)
+export const handle: Handle = async ({ event, resolve }) => {
   // Ensure all systems are initialized
   try {
     await ensureInitialized();
   } catch (initError) {
     console.error('❌ [hooks.server] FATAL: Cannot initialize hooks:', initError);
-    // Allow request to proceed even if initialization fails
     event.locals.user = null;
     event.locals.session = null;
     return resolve(event);
@@ -272,7 +276,6 @@ const handle: Handle = async ({ event, resolve }) => {
   // Dev bypass helper: populate locals.user when DEV_BYPASS_AUTH=true
   try {
     if (process.env.DEV_BYPASS_AUTH === 'true') {
-      // lightweight dev stub user - must match shape used by app
       event.locals.user = {
         id: 'dev-user-1',
         email: 'dev@local.test',
@@ -282,28 +285,25 @@ const handle: Handle = async ({ event, resolve }) => {
       return resolve(event);
     }
   } catch (e) {
-    // ignore dev bypass errors and continue to normal flow
     console.warn('⚠️ [hooks.server] Dev bypass check failed:', e);
+    // continue to normal flow
   }
 
   const url = event.url;
   const pathname = url.pathname;
 
-  // Handle legacy route redirects (SvelteKit 2 compatible)
+  // Handle legacy route redirects
   if (legacyRouteMapping[pathname]) {
     const newRoute = legacyRouteMapping[pathname];
-    console.log(`🔄 Redirecting: ${pathname} → ${newRoute}`);
-
     const searchParams = url.searchParams.toString();
     const redirectUrl = searchParams ? `${newRoute}?${searchParams}` : newRoute;
-
     return new Response(null, {
       status: 301,
       headers: { location: redirectUrl },
     });
   }
 
-  // Attach db/redis singletons to event.locals for server endpoints (typed via App.Locals)
+  // Attach db/redis singletons to event.locals (typed via App.Locals)
   event.locals.db = _db;
   event.locals.pg = _pgConnection;
   event.locals.redis = _redis;
@@ -311,32 +311,28 @@ const handle: Handle = async ({ event, resolve }) => {
   // Production-ready auth handling with comprehensive error recovery
   try {
     if (!authEnabled || !lucia) {
-      // No auth available - set defaults and continue
       event.locals.user = null;
       event.locals.session = null;
       return resolve(event);
     }
 
     const sessionId = event.cookies.get(lucia.sessionCookieName);
-
     if (!sessionId) {
       event.locals.user = null;
       event.locals.session = null;
       return resolve(event);
     }
 
-    // Validate session with nested error handling
+    // Validate session
     let session: SessionShape | null = null;
     let user: DatabaseUser | null = null;
-
     try {
       const result = await lucia.validateSession(sessionId);
       session = result.session;
-      user = result.user;
+      user = result.user as DatabaseUser;
     } catch (validationError) {
       console.warn('⚠️ Session validation failed:', validationError);
-
-      // Clear invalid session
+      // Clear invalid session cookie
       try {
         const sessionCookie = lucia.createBlankSessionCookie();
         event.cookies.set(sessionCookie.name, sessionCookie.value, {
@@ -346,13 +342,12 @@ const handle: Handle = async ({ event, resolve }) => {
       } catch (cookieError) {
         console.error('❌ Failed to clear session cookie:', cookieError);
       }
-
       event.locals.user = null;
       event.locals.session = null;
       return resolve(event);
     }
 
-    // Update fresh session cookie
+    // Refresh fresh session cookie if required
     if (session?.fresh) {
       try {
         const sessionCookie = lucia.createSessionCookie(session.id);
@@ -365,7 +360,7 @@ const handle: Handle = async ({ event, resolve }) => {
       }
     }
 
-    // Clear expired session
+    // If session missing, clear cookie
     if (!session) {
       try {
         const sessionCookie = lucia.createBlankSessionCookie();
@@ -378,44 +373,44 @@ const handle: Handle = async ({ event, resolve }) => {
       }
     }
 
-    // Set user and session in locals
-    event.locals.user = user
-      ? {
-          id: user.id,
-          email: user.email,
-          role:
-            (user.role as
-              | 'admin'
-              | 'lead_prosecutor'
-              | 'prosecutor'
-              | 'paralegal'
-              | 'investigator'
-              | 'analyst'
-              | 'viewer'
-              | 'user') || 'user',
+    // Attach user to locals when present
+    if (user) {
+      const localUser: DatabaseUser = {
+        id: String(user.id),
+        email: String(user.email),
+        role: String(user.role),
+        firstName: user.firstName ?? null,
+        lastName: user.lastName ?? null,
+        isActive: typeof user.isActive === 'boolean' ? user.isActive : true,
+        avatarUrl: user.avatarUrl ?? null,
+      };
+
+      event.locals.user = localUser;
+      event.locals.session = session ?? null;
+
+      if (process.env.NODE_ENV !== 'production') {
+        try {
+          console.debug('[hooks.server] Authenticated user attached to locals:', {
+            id: localUser.id,
+            email: localUser.email,
+            role: localUser.role,
+          });
+        } catch (_) {
+          // swallow debug errors
         }
-      : null;
-    event.locals.session = session;
-  } catch (authError) {
-    try {
-      const { logStructuredError } = await import('$lib/server/logger');
-      await logStructuredError({
-        source: 'hooks.server',
-        level: 'error',
-        event: 'auth_system_error',
-        message: 'Auth system error, proceeding without authentication',
-        error: authError instanceof Error ? authError.message : String(authError),
-      });
-    } catch (logErr: unknown) {
-      console.error('[hooks.server] Failed to log auth error to logger:', logErr);
+      }
+
+      return resolve(event);
+    } else {
+      // No user found: ensure locals are null
+      event.locals.user = null;
+      event.locals.session = null;
+      return resolve(event);
     }
-    // Global auth error fallback - allow request to proceed
-    console.error('❌ Auth system error, proceeding without authentication:', authError);
+  } catch (authError) {
+    console.error('❌ [hooks.server] Auth handling failed:', authError);
     event.locals.user = null;
     event.locals.session = null;
+    return resolve(event);
   }
-
-  return resolve(event);
 };
-
-export { _db as db, _pgConnection as pgConnection, _redis as redis, _redisAdapter as redisAdapter, handle };
