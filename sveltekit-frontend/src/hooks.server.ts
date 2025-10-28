@@ -82,10 +82,14 @@ function initRedis() {
   return _redis;
 }
 
-// Initialize at module import so hooks can attach them quickly (best-effort)
+// Defer heavy initializations (Redis, backends) to the first request to avoid
+// connection attempts during module import which can crash the Vite dev server
+// when services like Redis are not available locally (ECONNREFUSED).
+// Keep Postgres light-weight init but avoid forcing external network calls here.
 initPostgres();
-initRedis();
-initBackends();
+
+// Note: Do NOT call initRedis() or initBackends() at module import time.
+// They will be invoked lazily inside ensureInitialized() to prevent dev-time failures.
 
 // Remove the previous AppLocals + `declare module '@sveltejs/kit'` augmentation and replace
 // it with a SvelteKit-friendly global `App` namespace augmentation.
@@ -236,10 +240,28 @@ async function ensureInitialized() {
       // may not be present during local dev; initialize it lazily on demand.
       await Promise.all([initializeAuth(), loadRouteConfig()]);
 
-      // Optionally initialize RabbitMQ at startup when explicitly requested
+      // Initialize Redis and other backends lazily to avoid dev-time failures
+      try {
+        // initRedis() will attach shared redis client but not force a blocking connect
+        // Consumers should call ensureRedisReady() when they need a ready connection.
+        initRedis();
+      } catch (e) {
+        console.warn('[hooks.server] initRedis() failed (ignored in dev):', e);
+      }
+
+      // initBackends may perform non-critical setup for optional services; run it lazily
       if (process.env.INIT_RABBITMQ_ON_START === 'true') {
         // This keeps the original lazy behaviour unless the env var is set.
         await initializeRabbitMQ();
+      }
+      try {
+        // attempt to initialize other backends; non-fatal
+        // initBackends is optional; call and ignore failures in dev
+        if (typeof initBackends === 'function') {
+          await initBackends();
+        }
+      } catch (e) {
+        console.warn('[hooks.server] initBackends() failed (ignored in dev):', e);
       }
 
       initialized = true;

@@ -1,108 +1,129 @@
 import { json } from "@sveltejs/kit"
 import { db } from "$lib/server/db/index"
+import { eq } from 'drizzle-orm';
 import type { RequestHandler } from './$types.js'
+
 // Case Canvas API - Save and load canvas data
-// Import with fallback for different schema files
-let schema: any = {}
+let schemaModule: any = {};
 try {
-  schema = await import("$lib/server/db/unified-schema.js")
-} catch (error: any) {
-  try {
-    schema = await import("$lib/server/db/schema-postgres.js")
-  } catch (error2) {
-    console.warn("No database schema available")
+	// try unified schema first, fallback to postgres schema
+	schemaModule = await import("$lib/server/db/unified-schema.js")
+} catch (err) {
+	try {
+    schemaModule = await import('$lib/server/db/schema-postgres.js');
+  } catch (err2) {
+    console.warn('No database schema available for canvas API');
   }
 }
-const { cases } = schema
+const cases = schemaModule?.cases ?? null;
+
 // GET - Get canvas data for a case
 export const GET: RequestHandler = async ({ params }) => {
-  try {
-    const caseId = params.caseId
+	try {
+    const caseId = params.caseId;
     if (!caseId) {
-      return json({ error: "Case ID is required" }, { status: 400 })
+      return json({ error: 'Case ID is required' }, { status: 400 });
     }
-    // Handle case where schema is not available
+
+    // If no DB schema available, return a safe mock
     if (!cases) {
-      console.warn("Cases table not available, returning mock data")
       return json({
-        canvasData: "{}",
+        canvasData: '{}',
         positions: [],
-        lastModified: new Date()
-      })
+        lastModified: new Date().toISOString(),
+      });
     }
-    // Get case with canvas data
-    const [caseData] = await db
+
+    // Query the case row
+    const rows = await db
       .select({
         canvasData: cases.canvasData,
-        updatedAt: cases.updatedAt
+        updatedAt: cases.updatedAt,
       })
       .from(cases)
-      .where(eq(cases.id, caseId)
+      .where(eq(cases.id, caseId));
+
+    const caseData = rows?.[0] ?? null;
     if (!caseData) {
-      return json({ error: "Case not found" }, { status: 404 })
+      return json({ error: 'Case not found' }, { status: 404 });
     }
+
+    const canvasData =
+      typeof caseData.canvasData === 'string' ? caseData.canvasData : JSON.stringify(caseData.canvasData ?? {});
+
     return json({
-      canvasData: caseData.canvasData || "{}",
-      lastModified: caseData.updatedAt
-    })
+      canvasData,
+      lastModified: caseData.updatedAt ? caseData.updatedAt.toISOString() : null,
+    });
   } catch (error: any) {
-    console.error("Error fetching canvas data:", error)
-    return json({ error: "Failed to fetch canvas data" }, { status: 500 })
+    console.error('Error fetching canvas data:', error);
+    return json({ error: 'Failed to fetch canvas data' }, { status: 500 });
   }
 }
+
 // POST - Save canvas data for a case
 export const POST: RequestHandler = async ({ request, params }) => {
-  try {
-    const caseId = params.caseId
+	try {
+    const caseId = params.caseId;
     if (!caseId) {
-      return json({ error: "Case ID is required" }, { status: 400 })
+      return json({ error: 'Case ID is required' }, { status: 400 });
     }
-    const { canvasData, positions } = await request.json()
+
+    const body = await request.json();
+    const canvasData = body?.canvasData;
+    const positions = body?.positions;
+
     if (!canvasData) {
-      return json({ error: "Canvas data is required" }, { status: 400 })
+      return json({ error: 'Canvas data is required' }, { status: 400 });
     }
-    // Handle case where schema is not available
+
+    // If no DB schema available, return a mock success
     if (!cases) {
-      console.warn("Cases table not available, returning mock response")
+      console.warn('Cases table not available, returning mock response');
       return json({
         success: true,
-        savedAt: new Date()
-      })
+        savedAt: new Date().toISOString(),
+      });
     }
-    // Update case with canvas data
-    const [updatedCase] = await db
+
+    // Ensure we store canvasData as a string
+    const canvasDataToStore = typeof canvasData === 'string' ? canvasData : JSON.stringify(canvasData);
+
+    const updatedRows = await db
       .update(cases)
       .set({
-        canvasData: JSON.stringify(canvasData),
-        updatedAt: new Date()
+        canvasData: canvasDataToStore,
+        updatedAt: new Date(),
       })
-      .where(eq(cases.id, caseId)
-      .returning()
+      .where(eq(cases.id, caseId))
+      .returning();
+
+    const updatedCase = updatedRows?.[0] ?? null;
     if (!updatedCase) {
-      return json({ error: "Case not found" }, { status: 404 })
+      return json({ error: 'Case not found' }, { status: 404 });
     }
-    // If positions are provided, update evidence positions
+
+    // Non-blocking positions handling (store in canvas or external evidence table as needed)
     if (positions && Array.isArray(positions)) {
-      try {
-        // Update evidence positions in parallel
-        const evidenceUpdatePromises = positions.map(async (pos: any) => {
+      Promise.all(
+        positions.map(async (pos: any) => {
+          // placeholder: update evidence position if evidence table exists
+          // keep silent on failures to avoid breaking the main save
           if (pos.evidenceId) {
-            // This would need an evidence table update
-            // For now, we'll store positions in the canvas data itself
+            // ...update evidence position if schema/table available...
           }
         })
-        await Promise.all(evidenceUpdatePromises)
-      } catch (positionError) {
-        console.warn("Failed to update evidence positions:", positionError)
-        // Don't fail the whole request for position updates
-      }
+      ).catch(positionError => {
+        console.warn('Failed to update evidence positions:', positionError);
+      });
     }
+
     return json({
       success: true,
-      savedAt: updatedCase.updatedAt
-    })
+      savedAt: updatedCase.updatedAt ? updatedCase.updatedAt.toISOString() : new Date().toISOString(),
+    });
   } catch (error: any) {
-    console.error("Error saving canvas data:", error)
-    return json({ error: "Failed to save canvas data" }, { status: 500 })
+    console.error('Error saving canvas data:', error);
+    return json({ error: 'Failed to save canvas data' }, { status: 500 });
   }
 }

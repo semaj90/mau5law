@@ -1,4 +1,3 @@
-
 /**
  * Compiler Feedback Loop Service
  * Implements the AI-driven development architecture with:
@@ -9,13 +8,17 @@
  * - Multi-agent patch generation
  */
 import { writable, type Writable } from 'svelte/store';
-import { copilotOrchestrator } from "$lib/utils/mcp-helpers";
+import { copilotOrchestrator } from '$lib/utils/mcp-helpers';
 import { EventEmitter } from 'events';
-// Mock type for missing interface
+
+// Adjusted RAG engine interface to match usage in this file
 export interface EnhancedRAGEngine {
-  search: (query: string) => Promise<any[]>;
-  index: (_document: any) => Promise<void>;
+  search?: (query: string) => Promise<any[]>;
+  index?: (_document: any) => Promise<void>;
+  createEmbedding?: (text: string) => Promise<number[] | Float32Array>;
+  performRAGQuery?: (opts: { query: string; maxResults?: number; minConfidence?: number }) => Promise<any[]>;
 }
+
 // Core types for compiler feedback system
 export interface CompilerLog {
   id: string;
@@ -29,10 +32,11 @@ export interface CompilerLog {
   stackTrace?: string[];
   metadata: {
     component: string;
-  phase: 'parsing' | 'type-checking' | 'emission' | 'bundling';
-  category: 'syntax' | 'type' | 'import' | 'runtime' | 'performance';
-  }
+    phase: 'parsing' | 'type-checking' | 'emission' | 'bundling';
+    category: 'syntax' | 'type' | 'import' | 'runtime' | 'performance';
+  };
 }
+
 export interface CompilerEvent {
   type: 'COMPILE_START' | 'IR_GENERATED' | 'ERROR_DETECTED' | 'PATCH_SUGGESTED' | 'COMPILE_COMPLETE';
   logs: CompilerLog[];
@@ -41,11 +45,12 @@ export interface CompilerEvent {
   patch?: PatchCandidate;
   performance: {
     compilationTime: number;
-  memoryUsage: number;
-  errorCount: number;
-  warningCount: number;
-  }
+    memoryUsage: number;
+    errorCount: number;
+    warningCount: number;
+  };
 }
+
 export interface PatchCandidate {
   id: string;
   confidence: number;
@@ -58,20 +63,22 @@ export interface PatchCandidate {
   attentionWeights: AttentionMatrix;
   testResults?: {
     passed: boolean;
-  coverage: number;
-  executionTime: number;
-  errors: string[];
-  }
+    coverage: number;
+    executionTime: number;
+    errors: string[];
+  };
 }
+
 export interface AttentionMatrix {
   weights: Float32Array;
   dimensions: [number, number];
   focusAreas: {
     file: string;
-  lines: [number, number];
-  confidence: number;
+    lines: [number, number];
+    confidence: number;
   }[];
 }
+
 export interface SOMCluster {
   id: string;
   centroid: Float32Array;
@@ -81,6 +88,7 @@ export interface SOMCluster {
   lastSeen: number;
   successfulPatches: PatchCandidate[];
 }
+
 /**
  * Self-Organizing Map for clustering compiler errors
  */
@@ -89,58 +97,68 @@ class SelfOrganizingMap {
   private learningRate = 0.1;
   private neighborhoodRadius = 2.0;
   private decayRate = 0.99;
+
   addVector(embedding: Float32Array, logId: string): string {
     // Find best matching cluster
     let bestCluster: SOMCluster | null = null;
     let minDistance = Infinity;
     for (const cluster of this.clusters.values()) {
       const distance = this.euclideanDistance(embedding, cluster.centroid);
-      if (distance < minDistance) {>
-        minDistance, = distance;
+      if (distance < minDistance) {
+        minDistance = distance;
         bestCluster = cluster;
       }
     }
+
     // Create new cluster if distance too large or no clusters exist
     if (!bestCluster || minDistance > 0.5) {
       const clusterId = `cluster_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      bestCluster = {
+      const centroid = new Float32Array(embedding.length);
+      centroid.set(embedding);
+      const newCluster: SOMCluster = {
         id: clusterId,
-        centroid: new Float32Array(embedding),
+        centroid,
         members: [logId],
         errorPattern: 'unknown',
         frequency: 1,
         lastSeen: Date.now(),
-        successfulPatches: []
-      }
-      this.clusters.set(clusterId, bestCluster);
+        successfulPatches: [],
+      };
+      this.clusters.set(clusterId, newCluster);
       return clusterId;
     }
+
     // Update existing cluster
     bestCluster.members.push(logId);
     bestCluster.frequency++;
     bestCluster.lastSeen = Date.now();
     // Update centroid with learning rate
-    for (let i = 0; i < embedding.length; i++) {>
-      bestCluster.centroid[i], += this.learningRate * (embedding[i] - bestCluster.centroid[i]);
+    for (let i = 0; i < embedding.length; i++) {
+      bestCluster.centroid[i] += this.learningRate * (embedding[i] - bestCluster.centroid[i]);
     }
     // Decay learning rate
     this.learningRate *= this.decayRate;
     return bestCluster.id;
   }
+
   private euclideanDistance(a: Float32Array, b: Float32Array): number {
     let sum = 0;
-    for (let i = 0; i < a.length; i++) {>
-      sum, += Math.pow(a[i] - b[i], 2);
+    for (let i = 0; i < a.length; i++) {
+      const d = a[i] - b[i];
+      sum += d * d;
     }
     return Math.sqrt(sum);
   }
+
   getCluster(id: string): SOMCluster | undefined {
     return this.clusters.get(id);
   }
+
   getClusters(): SOMCluster[] {
-    return Array.from(this.clusters.values();
+    return Array.from(this.clusters.values());
   }
 }
+
 /**
  * Main Compiler Feedback Loop Service
  */
@@ -150,20 +168,23 @@ export class CompilerFeedbackLoop {
   private isActive = false;
   private eventQueue: CompilerEvent[] = [];
   private processingQueue = false;
+
   // Reactive stores
   public events: Writable<CompilerEvent[]> = writable([]);
   public patches: Writable<PatchCandidate[]> = writable([]);
   public clusters: Writable<SOMCluster[]> = writable([]);
-  public performance: Writable<any> = writable({,
+  public performance: Writable<any> = writable({
     averageProcessingTime: 0,
     totalEvents: 0,
     successfulPatches: 0,
-    clusterCount: 0
+    clusterCount: 0,
   });
+
   constructor(ragEngine: EnhancedRAGEngine) {
     this.ragEngine = ragEngine;
     this.somClustering = new SelfOrganizingMap();
   }
+
   /**
    * Start monitoring compiler events
    */
@@ -171,10 +192,11 @@ export class CompilerFeedbackLoop {
     this.isActive = true;
     console.log('🚀 Compiler Feedback Loop started');
     // Start processing queue
-    this.processEventQueue();
+    void this.processEventQueue();
     // Mock real-time compiler events for demo
     this.simulateCompilerEvents();
   }
+
   /**
    * Stop monitoring
    */
@@ -182,21 +204,23 @@ export class CompilerFeedbackLoop {
     this.isActive = false;
     console.log('⏹️ Compiler Feedback Loop stopped');
   }
+
   /**
    * Process a compiler event through the full pipeline
    */
-  async processCompilerEvent(_event: CompilerEvent): Promise<void> {
+  async processCompilerEvent(event: CompilerEvent): Promise<void> {
     if (!this.isActive) return;
     const startTime = Date.now();
     try {
       // 1. Embed logs into vectors
-      if (event.logs.length > 0) {
+      if (event.logs && event.logs.length > 0) {
         event.vectors = await this.embedLogs(event.logs);
         // 2. Cluster via Self-Organizing Map
         for (const log of event.logs) {
           event.clusterId = this.somClustering.addVector(event.vectors, log.id);
         }
       }
+
       // 3. Enhanced RAG search for similar issues
       if (event.vectors && event.type === 'ERROR_DETECTED') {
         const suggestions = await this.findSimilarIssues(event.vectors, event.clusterId);
@@ -205,126 +229,158 @@ export class CompilerFeedbackLoop {
           event.patch = await this.generatePatch(event.logs, suggestions);
         }
       }
+
       // Update stores
-      this.events.update((events: any) => [...events.slice(-50), event]); // Keep last 50 events
+      this.events.update((prevEvents: CompilerEvent[]) => {
+        // compute how many existing items to keep so that after adding the new event length <= MAX_EVENTS
+        const keepCount = Math.max(0, prevEvents.length - (MAX_EVENTS - 1));
+        const next = [...prevEvents.slice(keepCount), event];
+        // defensive trim in case of unexpected sizes
+        return next.slice(-MAX_EVENTS);
+      });
+
+      // keep at most this many recent patches
+      const MAX_PATCHES = 20;
       if (event.patch) {
-        this.patches.update((patches: any) => [...patches.slice(-20), event.patch!]);
+        this.patches.update((prevPatches: PatchCandidate[]) => {
+          const keepCount = Math.max(0, prevPatches.length - (MAX_PATCHES - 1));
+          const next = [...prevPatches.slice(keepCount), event.patch!];
+          return next.slice(-MAX_PATCHES);
+        });
       }
-      this.clusters.set(this.somClustering.getClusters();
+
+      this.clusters.set(this.somClustering.getClusters());
+
       // Update performance metrics
       const processingTime = Date.now() - startTime;
       this.performance.update((perf: any) => ({
         ...perf,
-        averageProcessingTime: (perf.averageProcessingTime + processingTime) / 2,
-        totalEvents: perf.totalEvents + 1,
-        successfulPatches: event.patch ? perf.successfulPatches + 1 : perf.successfulPatches,
-        clusterCount: this.somClustering.getClusters().length
-      });
+        averageProcessingTime: perf.averageProcessingTime
+          ? (perf.averageProcessingTime + processingTime) / 2
+          : processingTime,
+        totalEvents: (perf.totalEvents || 0) + 1,
+        successfulPatches: (perf.successfulPatches || 0) + (event.patch ? 1 : 0),
+        clusterCount: this.somClustering.getClusters().length,
+      }));
     } catch (error: any) {
       console.error('❌ Error processing compiler event:', error);
     }
   }
+
   /**
    * Embed compiler logs into vector embeddings
    */
   private async embedLogs(logs: CompilerLog[]): Promise<Float32Array> {
-    // Combine all log messages and metadata into embedable text
-    const text = logs.map((log: any) => `${log.level}: ${log.message} in ${log.file}:${log.line || 0} [${log.metadata.phase}/${log.metadata.category}]`;
-    ).join(' ');
+    // Combine all log messages and metadata into embeddable text
+    const text = logs
+      .map(
+        log =>
+          `${log.level}: ${log.message} in ${log.file}:${log.line ?? 0} [${log.metadata.phase}/${log.metadata.category}]`
+      )
+      .join(' ');
     try {
-      // Use RAG engine's embedding capability
-      const embedding = await this.ragEngine.createEmbedding(text);
-      return new Float32Array(embedding);
+      if (typeof this.ragEngine.createEmbedding === 'function') {
+        const embedding = await this.ragEngine.createEmbedding(text);
+        return embedding instanceof Float32Array ? embedding : new Float32Array(embedding);
+      }
+      return this.createSimpleEmbedding(text);
     } catch (error: any) {
       console.warn('⚠️ Failed to create embedding, using fallback:', error);
       // Fallback: simple hash-based embedding
       return this.createSimpleEmbedding(text);
     }
   }
+
   /**
    * Fallback embedding using simple text features
    */
   private createSimpleEmbedding(text: string): Float32Array {
     const features = new Float32Array(384); // Standard embedding size
     // Simple feature extraction
-    const words = text.toLowerCase().split(/\s+/);
+    const words = text.toLowerCase().split(/\s+/).filter(Boolean);
     const wordCounts = new Map<string, number>();
-    words.forEach((word: any) => {
-      wordCounts.set(word, (wordCounts.get(word) || 0) + 1);
-    });
+    words.forEach(word => wordCounts.set(word, (wordCounts.get(word) || 0) + 1));
     // Map common error words to embedding dimensions
     const errorKeywords = ['error', 'warning', 'undefined', 'null', 'type', 'import', 'export', 'syntax'];
     errorKeywords.forEach((keyword, index) => {
-      if (index < features.length) {>
-        features[index], = (wordCounts.get(keyword) || 0) / words.length;
+      if (index < features.length) {
+        features[index] = (wordCounts.get(keyword) || 0) / Math.max(1, words.length);
       }
     });
     return features;
   }
+
   /**
    * Find similar issues using Enhanced RAG
    */
-  private async findSimilarIssues(vectors: Float32Array, clusterId?: string): Promise<any[]> {
+  private async findSimilarIssues(_vectors: Float32Array, clusterId?: string): Promise<any[]> {
     const cluster = clusterId ? this.somClustering.getCluster(clusterId) : null;
-    // Query RAG engine for similar compiler errors
-    const query = cluster;
+    const query = cluster
       ? `Compiler error pattern: ${cluster.errorPattern} with ${cluster.frequency} occurrences`
       : 'Compiler error requiring patch';
     try {
-      const results = await this.ragEngine.performRAGQuery({
-        query,
-        maxResults: 5,
-        minConfidence: 0.3,
-      )});
-      return results.map((result: any) => ({,
-        content: (result as { document?: any; finalScore?: any; content?: any; response?: any }).document.content,
-        relevance: (result as { document?: any; finalScore?: any; content?: any; response?: any }).finalScore,
-        source: ((result as { document?: any; finalScore?: any; content?: any; response?: any }).document.metadata as any)?.source || 'unknown'
-      });
+      if (typeof this.ragEngine.performRAGQuery === 'function') {
+        const results = await this.ragEngine.performRAGQuery({
+          query,
+          maxResults: 5,
+          minConfidence: 0.3,
+        });
+        return results.map((result: any) => {
+          const doc = result?.document ?? result;
+          return {
+            content: doc?.content ?? result?.content ?? '',
+            relevance: result?.finalScore ?? result?.score ?? 0,
+            source: (doc?.metadata && doc.metadata.source) || 'unknown',
+          };
+        });
+      }
+      // Fallback: empty results
+      return [];
     } catch (error: any) {
       console.warn('⚠️ RAG query failed:', error);
       return [];
     }
   }
+
   /**
    * Generate patch using multi-agent orchestration
    */
-  private async generatePatch(logs,: CompilerLog[], suggestion,s: any[,]): Promise<PatchCandidate> {
-    const prompt = `;
-Analyze these compiler errors and generate a patch:
-ERRORS:
-${logs.map((log: any) => `- }${log.level}: ${log.message} in ${log.file}:${log.line}`).join('\n')}
-SIMILAR ISSUES FOUND:
-${suggestions.map((s: any) => `- }${s.content.substring(0, 200)}...`).join('\n')}
-Generate a targeted patch with high confidence.
-`;
+  private async generatePatch(logs: CompilerLog[], suggestions: any[]): Promise<PatchCandidate> {
+    const prompt = [
+      'Analyze these compiler errors and generate a patch:',
+      'ERRORS:',
+      ...logs.map(log => `- ${log.level}: ${log.message} in ${log.file}:${log.line ?? 0}`),
+      'SIMILAR ISSUES FOUND:',
+      ...suggestions.map(s => `- ${String(s.content).slice(0, 200)}...`),
+      'Generate a targeted patch with high confidence.',
+    ].join('\n');
+
     try {
-      // Use existing MCP orchestration
       const result = await copilotOrchestrator(prompt, {
         useSemanticSearch: true,
         useMemory: true,
         useMultiAgent: true,
         synthesizeOutputs: true,
-      )});
-      // Extract patch information from result
-      const patchId = `patch_${Date.now()}_${Math.random().toString(36).substr(2, 9)},`;
+      });
+
+      const patchId = `patch_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       return {
         id: patchId,
-        confidence: Math.min(0.95, Math.random() * 0.4 + 0.6), // 60-95% confidence
+        confidence: Math.min(0.95, Math.random() * 0.4 + 0.6),
         diff: this.extractDiffFromResult(result),
-        description: this.extractDescriptionFromResult(result) || 'AI-generated patch for compiler errors',
-        affectedFiles: logs.map((log: any) => log.file).filter((file, index, arr) => arr.indexOf(file) === index),
+        description: this.extractDescriptionFromResult(result),
+        affectedFiles: Array.from(new Set(logs.map(log => log.file))),
         estimatedImpact: this.estimateImpact(logs),
         category: this.categorizePatch(logs),
         agentSource: 'hybrid',
         attentionWeights: this.generateAttentionWeights(logs),
         testResults: {
-          passed: Math.random() > 0.2, // 80% success rate
-          coverage: Math.random() * 40 + 60, // 60-100% coverage
-          executionTime: Math.random() * 100 + 50, // 50-150ms;
-          errors: []
-        }
-      }
+          passed: Math.random() > 0.2,
+          coverage: Math.random() * 40 + 60,
+          executionTime: Math.random() * 100 + 50,
+          errors: [],
+        },
+      };
     } catch (error: any) {
       console.error('❌ Failed to generate patch:', error);
       // Fallback patch
@@ -333,30 +389,32 @@ Generate a targeted patch with high confidence.
         confidence: 0.3,
         diff: '// Fallback patch - manual review required',
         description: 'Automatic patch generation failed, manual review needed',
-        affectedFiles: logs.map((log: any) => log.file),
+        affectedFiles: logs.map(log => log.file),
         estimatedImpact: 'low',
         category: 'fix',
         agentSource: 'local-llm',
-        attentionWeights: this.generateAttentionWeights(logs)
-      }
+        attentionWeights: this.generateAttentionWeights(logs),
+      };
     }
   }
-  private extractDiffFromResult(result,: any): string {
-    // Extract diff from orchestration result
-    const content = typeof result === 'string' ? result : (result as { document?: any; finalScore?: any; content?: any; response?: any }).content || (result as { document?: any; finalScore?: any; content?: any; response?: any }).response || '';
-    // Look for diff-like patterns
+
+  private extractDiffFromResult(result: any): string {
+    const content =
+      typeof result === 'string'
+        ? result
+        : (result?.content ?? result?.response ?? (typeof result === 'object' ? JSON.stringify(result) : ''));
     const diffMatch = content.match(/```(?:diff|typescript|javascript)\n([\s\S]*?)\n```/);
-    if (diffMatch) {
-      return diffMatch[1];
-    }
-    // Fallback to first code block
+    if (diffMatch) return diffMatch[1];
     const codeMatch = content.match(/```\n([\s\S]*?)\n```/);
-    return codeMatch ? codeMatch[1] : '// No diff generated'
+    return codeMatch ? codeMatch[1] : '// No diff generated';
   }
-  private extractDescriptionFromResult(result,: any): string {
-    const content = typeof result === 'string' ? result : (result as { document?: any; finalScore?: any; content?: any; response?: any }).content || (result as { document?: any; finalScore?: any; content?: any; response?: any }).response || '';
-    // removed unused lines assignment
-    // Find the first substantial line that's not code
+
+  private extractDescriptionFromResult(result: any): string {
+    const content =
+      typeof result === 'string'
+        ? result
+        : (result?.content ?? result?.response ?? (typeof result === 'object' ? JSON.stringify(result) : ''));
+    const lines = content.split('\n');
     for (const line of lines) {
       const trimmed = line.trim();
       if (trimmed.length > 10 && !trimmed.startsWith('```') && !trimmed.startsWith('//')) {
@@ -365,153 +423,165 @@ Generate a targeted patch with high confidence.
     }
     return 'AI-generated patch';
   }
-  private estimateImpact(logs,: CompilerLog[]): 'low' | 'medium' | 'high,' {
-    const errorCount = logs.filter((log: any) => log.level === 'error').length;
-    const fileCount = new Set(logs.map((log: any) => log.file)).size;
+
+  private estimateImpact(logs: CompilerLog[]): 'low' | 'medium' | 'high' {
+    const errorCount = logs.filter(log => log.level === 'error').length;
+    const fileCount = new Set(logs.map(log => log.file)).size;
     if (errorCount > 5 || fileCount > 3) return 'high';
     if (errorCount > 2 || fileCount > 1) return 'medium';
     return 'low';
   }
-  private categorizePatch(logs,: CompilerLog[]): 'fix' | 'optimization' | 'refactor' | 'enhancement,' {
-    const hasErrors = logs.some((log: any) => log.level === 'error');
-    const hasTypeIssues = logs.some((log: any) => log.metadata.category === 'type');
-    const hasPerformanceIssues = logs.some((log: any) => log.metadata.category === 'performance');
+
+  private categorizePatch(logs: CompilerLog[]): 'fix' | 'optimization' | 'refactor' | 'enhancement' {
+    const hasErrors = logs.some(log => log.level === 'error');
+    const hasTypeIssues = logs.some(log => log.metadata.category === 'type');
+    const hasPerformanceIssues = logs.some(log => log.metadata.category === 'performance');
     if (hasErrors) return 'fix';
     if (hasTypeIssues) return 'refactor';
     if (hasPerformanceIssues) return 'optimization';
     return 'enhancement';
   }
-  private generateAttentionWeights(logs,: CompilerLog[]): AttentionMatrix {
-    const dimensions: [number, number] = [logs.length, 50]; // 50 tokens per log
+
+  private generateAttentionWeights(logs: CompilerLog[]): AttentionMatrix {
+    const dimensions: [number, number] = [logs.length || 1, 50]; // 50 tokens per log
     const weights = new Float32Array(dimensions[0] * dimensions[1]);
-    // Generate attention pattern based on error severity and location
     logs.forEach((log, logIndex) => {
       const baseWeight = log.level === 'error' ? 0.8 : log.level === 'warning' ? 0.5 : 0.2;
-      for (let tokenIndex = 0; tokenIndex < dimensions[1]; tokenIndex++) {>
+      for (let tokenIndex = 0; tokenIndex < dimensions[1]; tokenIndex++) {
         const index = logIndex * dimensions[1] + tokenIndex;
-        // Peak attention around the error location
         const distanceFromCenter = Math.abs(tokenIndex - dimensions[1] / 2);
         const attentionValue = baseWeight * Math.exp(-distanceFromCenter / 10);
         weights[index] = attentionValue;
       }
     });
+    const focusAreas = logs.map(log => ({
+      file: log.file,
+      lines: [log.line ?? 1, (log.line ?? 1) + 5] as [number, number],
+      confidence: log.level === 'error' ? 0.9 : log.level === 'warning' ? 0.6 : 0.3,
+    }));
     return {
       weights,
       dimensions,
-      focusAreas: logs.map((log: any) => ({,
-        file: log.file,
-        lines: [log.line || 1, (log.line || 1) + 5],
-        confidence: log.level === 'error' ? 0.9 : log.level === 'warning' ? 0.6 : 0.3
-      }),
-    }
+      focusAreas,
+    };
   }
+
   /**
    * Process queued events
    */
-  private async processEventQueue(),: Promise<void> {
-    if (this.processingQueue || !this.isActiv,e) retu,rn;
-    this.processingQueue = tru,e;
-    while (this.eventQueue.length > 0 && this.isActiv,e) {
+  private async processEventQueue(): Promise<void> {
+    if (this.processingQueue || !this.isActive) return;
+    this.processingQueue = true;
+    while (this.eventQueue.length > 0 && this.isActive) {
       const event = this.eventQueue.shift();
       if (event) {
+        // eslint-disable-next-line no-await-in-loop
         await this.processCompilerEvent(event);
       }
       // Small delay to prevent blocking
-      await new Promise((resolve: any) => setTimeout(resolve, 10);
+      await new Promise(resolve => setTimeout(resolve, 10));
     }
     this.processingQueue = false;
   }
+
   /**
    * Simulate compiler events for demo purposes
    */
-  private simulateCompilerEvents(),: void {
-    if (!this.isActiv,e) retu,rn;
-    const mockEvent,s: Partial<CompilerEven,t>,[] = [
+  private simulateCompilerEvents(): void {
+    if (!this.isActive) return;
+    const mockEvents: Partial<CompilerEvent>[] = [
       {
         type: 'ERROR_DETECTED',
-        logs: [{,
-          id,: 'error_1',
-          timestamp,: Date.now(),
-          level,: 'error',
-          message,: 'Type \'string\' is not assignable to type \'number\'',
-          file,: 'src/components/Chart.svelte',
-          line,: 42,
-          code,: 'let value: number = "hello";',
-          metadata,: {
-            component: 'TypeScript',
-            phase: 'type-checking',
-            category: 'type'
-          }
-        }],
+        logs: [
+          {
+            id: 'error_1',
+            timestamp: Date.now(),
+            level: 'error',
+            message: "Type 'string' is not assignable to type 'number'",
+            file: 'src/components/Chart.svelte',
+            line: 42,
+            code: 'let value: number = "hello";',
+            metadata: {
+              component: 'TypeScript',
+              phase: 'type-checking',
+              category: 'type',
+            },
+          },
+        ],
         performance: {
           compilationTime: 1200,
           memoryUsage: 45.6,
           errorCount: 1,
-          warningCount: 0
-        }
+          warningCount: 0,
+        },
       },
       {
         type: 'ERROR_DETECTED',
-        logs: [{,
-          id,: 'error_2',
-          timestamp,: Date.now(),
-          level,: 'error',
-          message,: 'Cannot find module \'./missing-file\'',
-          file,: 'src/lib/utils.ts',
-          line,: 5,
-          code,: 'import { helper } from \'./missing-file\';',
-          metadata,: {
-            component: 'Module Resolver',
-            phase: 'bundling',
-            category: 'import'
-          }
-        },],
+        logs: [
+          {
+            id: 'error_2',
+            timestamp: Date.now(),
+            level: 'error',
+            message: "Cannot find module './missing-file'",
+            file: 'src/lib/utils.ts',
+            line: 5,
+            code: "import { helper } from './missing-file';",
+            metadata: {
+              component: 'Module Resolver',
+              phase: 'bundling',
+              category: 'import',
+            },
+          },
+        ],
         performance: {
           compilationTime: 800,
-          memoryUsage,: 52.1,
-          errorCount,: 1,
-          warningCount,: 2
-        }
-      }
+          memoryUsage: 52.1,
+          errorCount: 1,
+          warningCount: 2,
+        },
+      },
     ];
+
     let eventIndex = 0;
     const interval = setInterval(() => {
       if (!this.isActive) {
         clearInterval(interval);
         return;
       }
-      if (eventIndex < mockEvents.length) {>
-        const mockEvent = mockEvents[eventIndex];
-        this.eventQueue.push({
-          type: mockEvent.type!,
-          logs: mockEvent.logs!,
-          performance: mockEvent.performance!
-        });
-        eventIndex++;
-      } else {
-        // Reset for continuous demo
-        eventIndex = 0;
-      }
+      const mockEvent = mockEvents[eventIndex % mockEvents.length];
+      this.eventQueue.push({
+        type: mockEvent.type!,
+        logs: mockEvent.logs as CompilerLog[],
+        performance: mockEvent.performance as any,
+      } as CompilerEvent);
+      eventIndex++;
+      // kick the queue processor if not already running
+      void this.processEventQueue();
     }, 5000); // New event every 5 seconds
   }
+
   /**
    * Add external compiler event to queue
    */
-  addEvent(_event,: CompilerEvent): void {
+  addEvent(event: CompilerEvent): void {
     this.eventQueue.push(event);
+    // ensure processing starts
+    void this.processEventQueue();
   }
+
   /**
    * Get current system status
    */
-  getStatus(), {
+  getStatus() {
     return {
       isActive: this.isActive,
       queueLength: this.eventQueue.length,
       processing: this.processingQueue,
-      clusters: this.somClustering.getClusters().length
-    }
+      clusters: this.somClustering.getClusters().length,
+    };
   }
 }
+
 // Export helper function to create feedback loop
 export function createCompilerFeedbackLoop(ragEngine: EnhancedRAGEngine): CompilerFeedbackLoop {
   return new CompilerFeedbackLoop(ragEngine);

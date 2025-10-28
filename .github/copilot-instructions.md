@@ -2,7 +2,45 @@
      Some CI / editor tooling tries to parse &#123;#if&#125;, &#123;@render&#125;, :root { --var: &#35;abc } etc.
      To avoid spurious "Unknown tool or toolset" errors, treat the content as plain text.
      The rest of the file is unchanged documentation. -->
+— you’re on drizzle-orm@0.44.7, which means you’re using the new modular import system introduced after v0.30.
 
+So the error message you saw is 100% correct:
+👉 eq (and other operators like and, or, gt, etc.) are no longer exported from 'drizzle-orm' directly.
+
+✅ Correct Import for Drizzle ORM v0.44.7
+
+Use:
+
+import { eq } from 'drizzle-orm/expressions';
+
+💡 Example (Postgres + Drizzle)
+
+Here’s what a working query looks like in your SvelteKit + Drizzle setup:
+
+import { eq } from 'drizzle-orm/expressions';
+import { db } from '$lib/server/db/drizzle';
+import { users } from '$lib/server/db/schema';
+
+const result = await db
+  .select()
+  .from(users)
+  .where(eq(users.id, 'user_123'));
+
+🧩 If you also use operators like and, or, gt, lt:
+
+They come from the same path:
+
+import { eq, and, or, gt, lt, like } from 'drizzle-orm/expressions';
+
+🧱 Optional — Common Patterns for your project
+
+Since you’re using:
+
+Lucia v3
+
+Postgres with pgvector
+
+SvelteKit 2 / Drizzle ORM 0.44.7
 ```text
 # Legal AI Platform - AI Agent Instructions
 sveltekit-complete.txt

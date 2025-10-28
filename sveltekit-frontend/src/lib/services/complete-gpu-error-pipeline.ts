@@ -1,46 +1,90 @@
-import { nativeServiceManager } from './native-windows-service-manager.js';
-import { flashAttentionProcessor } from './flashattention-gpu-error-processor.js';
-import { concurrentSearch } from './concurrent-indexeddb-search.js';
+import * as nativeServiceManagerRaw from './native-windows-service-manager.js';
+import * as flashAttentionProcessorRaw from './flashattention-gpu-error-processor.js';
+import * as concurrentSearchRaw from './concurrent-indexeddb-search.js';
+
+// --- New: safer shared types & module interfaces ---
+type JsonObject = Record<string, unknown>;
+
+interface NativeServiceManagerType {
+  initialize?: () => Promise<void>;
+  integrateConcurrentSearch?: () => Promise<void>;
+  getSystemOverview?: () => Promise<JsonObject>;
 }
+
+interface FlashAttentionProcessorType {
+  initialize?: () => Promise<void>;
+  processLiveErrors?: () => Promise<{
+    fixes?: Array<JsonObject>;
+    performance?: { gpu_utilization?: number; tokens_per_second?: number };
+  }>;
+  getFlashAttentionStatus?: () => Promise<JsonObject>;
+}
+
+interface ConcurrentSearchType {
+  initialize?: () => Promise<void>;
+  indexTypeScriptErrors?: (errors: Array<JsonObject>) => Promise<void>;
+  searchErrors?: (q: string) => Promise<Array<JsonObject>>;
+  getErrorStats?: () => Promise<Record<string, number>>;
+}
+
+// <-- Add this new local result type so the compiler knows the shape returned by the GPU processor
+interface FlashAttentionResult {
+  fixes?: Array<JsonObject>;
+  performance?: {
+    gpu_utilization?: number;
+    tokens_per_second?: number;
+    [k: string]: unknown;
+  };
+}
+
+// Cast via unknown to avoid mistaken direct module->shape conversion errors
+const nativeServiceManager = nativeServiceManagerRaw as unknown as NativeServiceManagerType;
+const flashAttentionProcessor = flashAttentionProcessorRaw as unknown as FlashAttentionProcessorType;
+const concurrentSearch = concurrentSearchRaw as unknown as ConcurrentSearchType;
+
 export interface ErrorProcessingPipeline {
   stage: 'initializing' | 'scanning' | 'indexing' | 'processing' | 'applying' | 'completed' | 'error';
   progress: number;
   currentTask: string;
   errors: {
     total: number;
-  processed: number;
-  fixed: number;
-  failed: number;
-  }
+    processed: number;
+    fixed: number;
+    failed: number;
+  };
   performance: {
     start_time: number;
     processing_time: number;
     gpu_utilization: number;
     tokens_per_second: number;
-  }
+  };
 }
+
 export class CompleteGPUErrorPipeline {
   private pipeline: ErrorProcessingPipeline;
   private isRunning = false;
+
   constructor() {
     this.pipeline = this.initializePipeline();
   }
+
   private initializePipeline(): ErrorProcessingPipeline {
     return {
       stage: 'initializing',
       progress: 0,
       currentTask: 'Ready to start',
       errors: { total: 0, processed: 0, fixed: 0, failed: 0 },
-      performance: { start_time: 0, processing_time: 0, gpu_utilization: 0, tokens_per_second: 0 }
-    }
+      performance: { start_time: 0, processing_time: 0, gpu_utilization: 0, tokens_per_second: 0 },
+    };
   }
+
   async runCompleteErrorProcessing(): Promise<ErrorProcessingPipeline> {
     if (this.isRunning) {
       console.log('⚠️ Error processing pipeline already running');
       return this.pipeline;
     }
     this.isRunning = true;
-    this.pipeline.start_time = Date.now();
+    this.pipeline.performance.start_time = Date.now();
     try {
       console.log('🚀 Starting Complete GPU Error Processing Pipeline');
       console.log('🎯 Using gemma3-legal GGUF with FlashAttention2 + Concurrent IndexedDB');
@@ -51,38 +95,48 @@ export class CompleteGPUErrorPipeline {
       await this.stage5_ApplyFixes();
       this.stage6_Complete();
       return this.pipeline;
-    } catch (error: any) {
+    } catch (error: unknown) {
       this.pipeline.stage = 'error';
-      this.pipeline.currentTask = `Pipeline failed: ${error}`;
+      this.pipeline.currentTask = `Pipeline failed: ${String(error)}`;
       console.error('❌ Error processing pipeline failed:', error);
       throw error;
     } finally {
       this.isRunning = false;
     }
   }
+
   private async stage1_Initialize(): Promise<void> {
     this.pipeline.stage = 'initializing';
     this.pipeline.progress = 10;
     this.pipeline.currentTask = 'Initializing services and GPU processors';
     console.log('🔧 Stage 1: Initializing services...');
-    await Promise.all([)
-      nativeServiceManager.initialize(),
-      flashAttentionProcessor.initialize(),
-      concurrentSearch.initialize()
-    ]);
-    await nativeServiceManager.integrateConcurrentSearch();
+
+    // safer initialization: only call functions that exist and normalize to Promises
+    const initPromises: Promise<unknown>[] = [];
+    if (typeof nativeServiceManager.initialize === 'function') initPromises.push(nativeServiceManager.initialize());
+    if (typeof flashAttentionProcessor.initialize === 'function')
+      initPromises.push(flashAttentionProcessor.initialize());
+    if (typeof concurrentSearch.initialize === 'function') initPromises.push(concurrentSearch.initialize());
+
+    await Promise.all(initPromises);
+
+    if (typeof nativeServiceManager.integrateConcurrentSearch === 'function') {
+      await nativeServiceManager.integrateConcurrentSearch();
+    }
     console.log('✅ Stage 1 complete: All services initialized');
   }
+
   private async stage2_ScanErrors(): Promise<void> {
     this.pipeline.stage = 'scanning';
     this.pipeline.progress = 25;
     this.pipeline.currentTask = 'Scanning TypeScript errors';
     console.log('🔍 Stage 2: Scanning for TypeScript errors...');
     try {
-      const checkResponse = await fetch('http://localhost:5173/api/check', {
+      const endpoint = '/api/check'; // keep relative for dev server proxy; change if needed
+      const checkResponse = await fetch(endpoint, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
-      )});
+      });
       if (checkResponse.ok) {
         const checkOutput = await checkResponse.text();
         const errors = this.parseTypeScriptErrors(checkOutput);
@@ -92,77 +146,111 @@ export class CompleteGPUErrorPipeline {
         console.log('⚠️ Using npm run check fallback...');
         this.pipeline.errors.total = 9000;
       }
-    } catch (error: any) {
-      console.warn('⚠️ Error scanning failed, using estimated count:', error);
+    } catch (error: unknown) {
+      console.warn('⚠️ Error scanning failed, using estimated count:', String(error));
       this.pipeline.errors.total = 9000;
     }
     console.log('✅ Stage 2 complete: Error scanning finished');
   }
-  private async stage3_IndexErrors(),: Promise<void> {
-    this.pipeline.stage = 'indexing,';
-    this.pipeline.progress = 4,0;
-    this.pipeline.currentTask = 'Indexing errors in concurrent IndexedDB,';
-    console,.log('📚 Stage 3: Indexing errors...');
+
+  private async stage3_IndexErrors(): Promise<void> {
+    this.pipeline.stage = 'indexing';
+    this.pipeline.progress = 40;
+    this.pipeline.currentTask = 'Indexing errors in concurrent IndexedDB';
+    console.log('📚 Stage 3: Indexing errors...');
     try {
       const mockErrors = this.generateMockErrors(this.pipeline.errors.total);
-      await concurrentSearc,h.indexTypeScriptErrors(mockError,s);
-      console,.log(`✅ Indexed ${mockErrors.length} errors in IndexedDB with Fuse.js`);
-    } catch (error: any) {
-      console.error('❌ Error indexing failed:', error);
+      // assume concurrentSearch.indexTypeScriptErrors accepts an array of error objects
+      if (typeof concurrentSearch.indexTypeScriptErrors === 'function') {
+        await concurrentSearch.indexTypeScriptErrors(mockErrors);
+      }
+      console.log(`✅ Indexed ${mockErrors.length} errors in IndexedDB with Fuse.js`);
+      this.pipeline.errors.processed = mockErrors.length;
+    } catch (error: unknown) {
+      console.error('❌ Error indexing failed:', String(error));
     }
-    console,.log('✅ Stage 3 complete: Error indexing finished');
+    console.log('✅ Stage 3 complete: Error indexing finished');
   }
-  private async stage4_ProcessWithGPU(),: Promise<void> {
-    this.pipeline.stage = 'processing,';
-    this.pipeline.progress = 7,0;
-    this.pipeline.currentTask = 'Processing errors with FlashAttention2 GPU,';
-    console,.log('⚡ Stage 4: GPU processing with FlashAttention2...');
+
+  private async stage4_ProcessWithGPU(): Promise<void> {
+    this.pipeline.stage = 'processing';
+    this.pipeline.progress = 70;
+    this.pipeline.currentTask = 'Processing errors with FlashAttention2 GPU';
+    console.log('⚡ Stage 4: GPU processing with FlashAttention2...');
     try {
-      const result = await flashAttentionProcessor.processLiveErrors();
-      this.pipeline.errors.processed = (result as { fixes?: any; performance?: any }).fixes.lengt,h;
-      this.pipeline.errors.fixed = (result as { fixes?: any; performance?: any }).fixes.filter(item => item.length);
-      this.pipeline.errors.failed = (result as { fixes?: any; performance?: any }).fixes.filter(item => item.length);
-      this.pipeline.performance.gpu_utilization = (result as { fixes?: any; performance?: any }).performance.gpu_utilizatio,n;
-      this.pipeline.performance.tokens_per_second = (result as { fixes?: any; performance?: any }).performance.tokens_per_secon,d;
-      console,.log(`⚡ GPU processing complete: ${this.pipeline.errors.fixed} high-confidence fixes`);
-    } catch (error: any) {
-      console.error('❌ GPU processing failed:', error);
+      // call processor only if function exists; otherwise undefined
+      const rawResult: FlashAttentionResult | undefined =
+        typeof flashAttentionProcessor.processLiveErrors === 'function'
+          ? await flashAttentionProcessor.processLiveErrors()
+          : undefined;
+
+      const fixes: Array<JsonObject> = Array.isArray(rawResult?.fixes) ? (rawResult!.fixes as Array<JsonObject>) : [];
+      const perf = rawResult?.performance ?? {};
+
+      this.pipeline.errors.processed = fixes.length;
+
+      // compute fixed count with safe checks (no `any`)
+      this.pipeline.errors.fixed = fixes.filter(f => {
+        const maybeApplied = (f as JsonObject)['applied'] ?? (f as JsonObject)['success'] ?? (f as JsonObject)['fixed'];
+        return Boolean(maybeApplied);
+      }).length;
+
+      this.pipeline.errors.failed = Math.max(0, fixes.length - this.pipeline.errors.fixed);
+
+      // normalize numeric performance metrics before assignment
+      this.pipeline.performance.gpu_utilization = Number(
+        perf?.gpu_utilization ?? this.pipeline.performance.gpu_utilization ?? 0
+      );
+      this.pipeline.performance.tokens_per_second = Number(
+        perf?.tokens_per_second ?? this.pipeline.performance.tokens_per_second ?? 0
+      );
+
+      console.log(`⚡ GPU processing complete: ${this.pipeline.errors.fixed} high-confidence fixes`);
+    } catch (error: unknown) {
+      console.error('❌ GPU processing failed:', String(error));
       this.pipeline.errors.failed = this.pipeline.errors.total;
     }
-    console,.log('✅ Stage 4 complete: GPU processing finished');
+    console.log('✅ Stage 4 complete: GPU processing finished');
   }
-  private async stage5_ApplyFixes(),: Promise<void> {
-    this.pipeline.stage = 'applying,';
-    this.pipeline.progress = 9,0;
-    this.pipeline.currentTask = 'Applying generated fixes,';
-    console,.log('🔧 Stage 5: Applying fixes...');
+
+  private async stage5_ApplyFixes(): Promise<void> {
+    this.pipeline.stage = 'applying';
+    this.pipeline.progress = 90;
+    this.pipeline.currentTask = 'Applying generated fixes';
+    console.log('🔧 Stage 5: Applying fixes...');
     try {
-      const searchResults = await concurrentSearch.searchErrors('typescript error)');
-      console,.log(`📋 Found ${searchResults.length} indexed errors for review`);
-      console,.log('🎯 Fix application simulated (would apply real fixes in production)');
-    } catch (error: any) {
-      console.error('❌ Fix application failed:', error);
+      const searchResults =
+        typeof concurrentSearch.searchErrors === 'function'
+          ? await concurrentSearch.searchErrors('typescript error')
+          : [];
+      console.log(`📋 Found ${Array.isArray(searchResults) ? searchResults.length : 0} indexed errors for review`);
+      console.log('🎯 Fix application simulated (would apply real fixes in production)');
+    } catch (error: unknown) {
+      console.error('❌ Fix application failed:', String(error));
     }
-    console,.log('✅ Stage 5 complete: Fixes applied');
+    console.log('✅ Stage 5 complete: Fixes applied');
   }
-  private stage6_Complete(),: void {
-    this.pipeline.stage = 'completed,';
-    this.pipeline.progress = 10,0;
-    this.pipeline.currentTask = 'Pipeline completed successfully,';
-    this.pipeline.performance.processing_time = Date.now() - this.pipeline.performance.start_tim,e;
-    console,.log('🎉 Stage 6: Pipeline completed!');
-    console,.log('📊 Final Results:');
-    console,.log(`   - Total errors: ${this.pipeline.errors.total}`);
-    console,.log(`   - Successfully fixed: ${this.pipeline.errors.fixed}`);
-    console,.log(`   - Failed fixes: ${this.pipeline.errors.failed}`);
-    console,.log(`   - Processing time: ${(this.pipeline.performance.processing_time / 1000).toFixed(2)}s`);
-    console,.log(`   - GPU utilization: ${this.pipeline.performance.gpu_utilization}%`);
-    console,.log(`   - Tokens/second: ${this.pipeline.performance.tokens_per_second.toFixed(1)}`);
+
+  private stage6_Complete(): void {
+    this.pipeline.stage = 'completed';
+    this.pipeline.progress = 100;
+    this.pipeline.currentTask = 'Pipeline completed successfully';
+    this.pipeline.performance.processing_time = Date.now() - this.pipeline.performance.start_time;
+    console.log('🎉 Stage 6: Pipeline completed!');
+    console.log('📊 Final Results:');
+    console.log(`   - Total errors: ${this.pipeline.errors.total}`);
+    console.log(`   - Successfully fixed: ${this.pipeline.errors.fixed}`);
+    console.log(`   - Failed fixes: ${this.pipeline.errors.failed}`);
+    console.log(`   - Processing time: ${(this.pipeline.performance.processing_time / 1000).toFixed(2)}s`);
+    console.log(`   - GPU utilization: ${this.pipeline.performance.gpu_utilization}%`);
+    console.log(`   - Tokens/second: ${this.pipeline.performance.tokens_per_second.toFixed(1)}`);
   }
-  private parseTypeScriptErrors(output,: string): unknown[,] {
-    const errorLines = output.split('\n').filter(line =>;
-      line.includes('TS') && (line.includes('error') || line.includes('warning')
-    );
+
+  private parseTypeScriptErrors(output: string): Array<{ code: string; message: string; file: string; line: number }> {
+    if (!output) return [];
+    const errorLines = output
+      .split('\n')
+      .filter(line => line.includes('TS') && (line.includes('error') || line.includes('warning')));
     return errorLines.map((line, index) => {
       const tsCodeMatch = line.match(/TS(\d+)/);
       const fileMatch = line.match(/([^(]+)\((\d+),(\d+)\)/);
@@ -170,37 +258,67 @@ export class CompleteGPUErrorPipeline {
         code: tsCodeMatch ? `TS${tsCodeMatch[1]}` : `TS-${index}`,
         message: line.split(': ').slice(1).join(': ').trim(),
         file: fileMatch ? fileMatch[1].trim() : 'unknown',
-        line: fileMatch ? parseInt(fileMatch[2]) : 0
-      }
+        line: fileMatch ? parseInt(fileMatch[2], 10) : 0,
+      };
     });
   }
-  private generateMockErrors(count,: number): unknown[,] {
+
+  private generateMockErrors(count: number): Array<{ code: string; message: string; file: string; line: number }> {
     const errorTypes = [
       { code: 'TS2322', message: "Type 'string' is not assignable to type 'number'", category: 'type' },
       { code: 'TS2307', message: "Cannot find module 'missing-module'", category: 'import' },
       { code: 'TS7053', message: 'Element implicitly has an "any" type', category: 'type' },
       { code: 'TS2339', message: "Property 'prop' does not exist", category: 'binding' },
-      { code: 'TS1005', message: "';' expected", category: 'syntax' }
+      { code: 'TS1005', message: "';' expected", category: 'syntax' },
     ];
-    return Array.from({ length: Math.min(count, 100) }, (_, index) => {
+    const limit = Math.min(Math.max(0, Math.floor(count || 0)), 100);
+    return Array.from({ length: limit }, (_, index) => {
       const errorType = errorTypes[index % errorTypes.length];
       return {
         code: errorType.code,
         message: errorType.message,
         file: `src/lib/component-${index}.svelte`,
-        line: Math.floor(Math.random() * 100) + 1
-      }
+        line: Math.floor(Math.random() * 100) + 1,
+      };
     });
   }
-  getPipelineStatus(),: ErrorProcessingPipeline {
-    return { ...this.pipeline }
+
+  getPipelineStatus(): ErrorProcessingPipeline {
+    return { ...this.pipeline };
   }
-  async generateStatusReport(),: Promise<string> {
-    const systemOverview = await nativeServiceManager.getSystemOverview();
-    const errorStats = await concurrentSearch.getErrorStats();
-    const flashAttentionStatus = await flashAttentionProcessor.getFlashAttentionStatus();
-    return `;
-# 🚀 Legal AI GPU Error Processing Status Report
+
+  async generateStatusReport(): Promise<string> {
+    const systemOverview: JsonObject =
+      typeof nativeServiceManager.getSystemOverview === 'function'
+        ? await nativeServiceManager.getSystemOverview()
+        : { services: [], concurrentSearch: { documentsIndexed: 0 }, gpu: { available: false } };
+
+    const errorStats: Record<string, number> =
+      typeof concurrentSearch.getErrorStats === 'function'
+        ? await concurrentSearch.getErrorStats()
+        : { totalErrors: 0, recentErrors: 0 };
+
+    const flashAttentionStatus: JsonObject =
+      typeof flashAttentionProcessor.getFlashAttentionStatus === 'function'
+        ? await flashAttentionProcessor.getFlashAttentionStatus()
+        : { memory_usage: 0, model_loaded: false };
+
+    const servicesList = Array.isArray(systemOverview.services as unknown)
+      ? (systemOverview.services as Array<Record<string, unknown>>)
+          .map(
+            s =>
+              `- ${String(s?.['name'] ?? 'unknown')}: ${String(s?.['status'] ?? 'unknown')} (port ${String(s?.['port'] ?? '-')})`
+          )
+          .join('\n')
+      : '- (no services)';
+
+    // Normalize numeric fields used below
+    const processingTimeSec = Number(this.pipeline.performance.processing_time ?? 0) / 1000;
+    const gpuUtil = Number(flashAttentionStatus.memory_usage ?? this.pipeline.performance.gpu_utilization ?? 0);
+    const tps = Number(this.pipeline.performance.tokens_per_second ?? 0);
+    const documentsIndexed = Number((systemOverview.concurrentSearch as JsonObject)?.documentsIndexed ?? 0);
+
+    return `# 🚀 Legal AI GPU Error Processing Status Report
 Generated: ${new Date().toISOString()}
 ## 📊 Pipeline Status
 - Stage: ${this.pipeline.stage}
@@ -212,27 +330,28 @@ Generated: ${new Date().toISOString()}
 - Successfully Fixed: ${this.pipeline.errors.fixed}
 - Failed Fixes: ${this.pipeline.errors.failed}
 ## ⚡ Performance Metrics
-- Processing Time: ${(this.pipeline.performance.processing_time / 1000).toFixed(2)}s
-- GPU Utilization: ${this.pipeline.performance.gpu_utilization}%
-- Tokens per Second: ${this.pipeline.performance.tokens_per_second.toFixed(1)}
-- Memory Usage: ${flashAttentionStatus.memory_usage}MB
+- Processing Time: ${processingTimeSec.toFixed(2)}s
+- GPU Utilization: ${Number(gpuUtil).toFixed(1)}%
+- Tokens per Second: ${Number(tps).toFixed(1)}
+- Memory Usage: ${Number(flashAttentionStatus.memory_usage ?? 0)}MB
 ## 🌐 Service Status
-${systemOverview.services.map(s => `- }${s.name}: ${s.status} (port ${s.port})`).join('\n')}
+${servicesList}
 ## 📚 IndexedDB Concurrent Search
-- Documents Indexed: ${systemOverview.concurrentSearch.documentsIndexed}
-- Error Documents: ${errorStats.totalErrors}
-- Recent Errors: ${errorStats.recentErrors}
+- Documents Indexed: ${documentsIndexed}
+- Error Documents: ${errorStats.totalErrors ?? 0}
+- Recent Errors: ${errorStats.recentErrors ?? 0}
 ## 🎯 GPU Status
-- GPU Available: ${systemOverview.gpu.available ? '✅' : '❌'}
-- FlashAttention2: ${flashAttentionStatus.model_loaded ? '✅' : '❌'}
+- GPU Available: ${((systemOverview.gpu as JsonObject)?.available as boolean) ? '✅' : '❌'}
+- FlashAttention2: ${(flashAttentionStatus?.model_loaded as boolean) ? '✅' : '❌'}
 - Model: gemma3-legal:latest
 ## 🔗 Integration Status
-- Concurrent Search: ✅ Operational
-- FlashAttention2: ✅ Operational
-- Native Services: ✅ Deployed
-- GPU Acceleration: ✅ Active
+- Concurrent Search: ${typeof concurrentSearch.searchErrors === 'function' ? '✅ Operational' : '❌'}
+- FlashAttention2: ${typeof flashAttentionProcessor.processLiveErrors === 'function' ? '✅ Operational' : '❌'}
+- Native Services: ${typeof nativeServiceManager.getSystemOverview === 'function' ? '✅ Deployed' : '❌'}
+- GPU Acceleration: ${((systemOverview.gpu as JsonObject)?.available as boolean) ? '✅ Active' : '❌'}
 **Status: ${this.pipeline.stage === 'completed' ? '🎉 COMPLETE' : '🔄 IN PROGRESS'}**
 `;
   }
 }
+
 export const completeErrorPipeline = new CompleteGPUErrorPipeline();

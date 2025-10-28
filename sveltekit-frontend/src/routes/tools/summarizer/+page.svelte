@@ -1,10 +1,20 @@
 <script lang="ts">
-  import { LegalDocumentSummarizer } from '$lib/components/ai/LegalDocumentSummarizer.svelte';
+  import { onMount } from 'svelte';
+  import LegalDocumentSummarizer from '$lib/components/ai/LegalDocumentSummarizer.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits';
+  let summarizerRef: any;
   function handleSummaryGenerated(summary: any) {
     console.log('Summary generated:', summary);
     // Additional handling if needed
   }
+
+  onMount(() => {
+    if (summarizerRef?.$on) {
+      summarizerRef.$on('summaryGenerated', (e: CustomEvent) => {
+        handleSummaryGenerated(e.detail);
+      });
+    }
+  });
 </script>
 
 <svelte:head>
@@ -41,7 +51,7 @@
     </Card>
   </div>
   <!-- Main Summarizer Component -->
-  <LegalDocumentSummarizer on:summaryGenerated={handleSummaryGenerated} />
+  <LegalDocumentSummarizer bind:this={summarizerRef} />
   <!-- Usage Guide -->
   <div class="mt-8">
     <Card>
@@ -97,4 +107,3 @@
     </Card>
   </div>
 </div>
-;

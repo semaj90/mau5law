@@ -49,8 +49,17 @@ if ((Test-Path $Output) -and (-not $Force)) {
     exit 1
 }
 
-$psFilter = if ($IncludeStopped) { "-a" } else { "" }
-$containersJson = docker ps $psFilter --format '{{json .}}' | ForEach-Object { $_ } | ConvertFrom-Json -ErrorAction SilentlyContinue
+# Build docker ps arg list correctly (avoid passing empty string)
+$psArgsBase = @('ps')
+if ($IncludeStopped) { $psArgsBase += '-a' }
+
+# Get JSON-formatted list of containers
+$psArgsJson = @($psArgsBase + @('--format', '{{json .}}'))
+$containersJsonRaw = & docker @psArgsJson 2>$null
+$containersJson = @()
+if ($containersJsonRaw) {
+    $containersJson = $containersJsonRaw | ForEach-Object { $_ } | ConvertFrom-Json -ErrorAction SilentlyContinue
+}
 if (-not $containersJson) {
     Write-Host "No containers found." -ForegroundColor Yellow
     exit 0
@@ -150,7 +159,8 @@ function Inspect-ContainerToService($containerId) {
 }
 
 # Iterate running containers and collect service definitions
-$containerIds = docker ps $psFilter -q | ForEach-Object { $_ } | Where-Object { $_ -ne '' }
+$psArgsQ = @($psArgsBase + @('-q'))
+$containerIds = (& docker @psArgsQ) | ForEach-Object { $_ } | Where-Object { $_ -ne '' }
 foreach ($id in $containerIds) {
     $entry = Inspect-ContainerToService $id
     $name = $entry.name
@@ -206,7 +216,7 @@ $yaml += "version: '3.8'"
 $yaml += "services:"
 foreach ($k in $compose.services.Keys) {
     $svc = $compose.services[$k]
-    $yaml += "  $k:"
+    $yaml += "  ${k}:"
     if ($svc.image) { $yaml += "    image: $($svc.image)" }
     if ($svc.command) { $yaml += "    command: $($svc.command)" }
     if ($svc.entrypoint) { $yaml += "    entrypoint: $($svc.entrypoint)" }
@@ -225,13 +235,13 @@ foreach ($k in $compose.services.Keys) {
     if ($svc.restart) { $yaml += "    restart: $($svc.restart)" }
     if ($svc.labels) {
         $yaml += "    labels:"
-        foreach ($labelKey in $svc.labels.Keys) { $yaml += "      $labelKey: '$($svc.labels[$labelKey])'" }
+        foreach ($labelKey in $svc.labels.Keys) { $yaml += "      ${labelKey}: '$($svc.labels[$labelKey])'" }
     }
 }
 
 if ($namedVolumes.Keys.Count -gt 0) {
     $yaml += "volumes:"
-    foreach ($nv in $namedVolumes.Keys) { $yaml += "  $nv: {}" }
+    foreach ($nv in $namedVolumes.Keys) { $yaml += "  ${nv}: {}" }
 }
 
 $yaml -join "`n" | Out-File -FilePath $Output -Encoding utf8
