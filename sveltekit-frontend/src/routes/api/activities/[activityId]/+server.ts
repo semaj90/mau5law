@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import { caseActivities } from '$lib/server/db/schema-postgres';
 import db from '$lib/server/db/index';
-import { eq } from 'drizzle-orm';
+import { eq } from '$lib/server/db/utils';
 import type { RequestHandler } from './$types.js';
 export const GET: RequestHandler = async ({ params, locals }) => {
   try {

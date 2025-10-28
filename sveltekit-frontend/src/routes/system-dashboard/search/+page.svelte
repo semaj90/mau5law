@@ -193,22 +193,18 @@
   <div class="flex items-center justify-between">
     <div>
       <h1 class="text-3xl font-bold text-nier-text-primary flex items-center gap-3">
--        <Brain class="w-8 h-8 text-nier-accent-warm" />
-+        <span class="w-8 h-8 text-nier-accent-warm inline-flex items-center justify-center text-2xl">{ICON.brain}</span>
+        <span class="w-8 h-8 text-nier-accent-warm inline-flex items-center justify-center text-2xl">{ICON.brain}</span>
         Vector Search
       </h1>
       <p class="text-nier-text-muted mt-1">AI-powered semantic search across legal documents</p>
     </div>
     <div class="flex items-center gap-2">
       <Badge variant="ghost" class="text-nier-accent-warm border-nier-accent-warm">
--        <Sparkles class="w-3 h-3 mr-1" />
-+        <span class="mr-1">{ICON.sparkles}</span>
+        <span class="mr-1">{ICON.sparkles}</span>
         pgvector + AI
       </Badge>
--      <Button class="bits-btn" variant="ghost" size="sm" on:click={() => {/* open settings */}}>
--        <Settings class="w-4 h-4 mr-2" />
-+      <Button class="bits-btn" variant="ghost" size="sm" onclick={() => {/* open settings */}}>
-+        <span class="w-4 h-4 mr-2 inline-block">{ICON.settings}</span>
+      <Button class="bits-btn" variant="ghost" size="sm" onclick={() => {/* open settings */}}>
+        <span class="w-4 h-4 mr-2 inline-block">{ICON.settings}</span>
         Settings
       </Button>
     </div>
@@ -220,81 +216,65 @@
       <div class="space-y-4">
         <!-- Search Input -->
         <div class="relative">
--          <Search class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-nier-text-muted" />
-+          <span class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-nier-text-muted">{ICON.search}</span>
+          <span class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-nier-text-muted">{ICON.search}</span>
           <!-- use value + oninput instead of bind:value if Input isn't bindable -->
           <Input
             value={query}
--            on:input={(e) => (query = (e.target as HTMLInputElement).value)}
--            on:keydown={handleKeyPress}
-+            oninput={(e) => (query = (e.target as HTMLInputElement).value)}
-+            onkeydown={handleKeyPress}
+            oninput={(e) => (query = (e.target as HTMLInputElement).value)}
+            onkeydown={handleKeyPress}
             placeholder="Describe your legal research question in natural language..."
             class="pl-12 pr-4 py-3 text-lg border-2 border-nier-border-muted focus:border-nier-accent-warm"
             disabled={loading}
           />
--          <OrchestratedButton.SearchSimilar
--            on:click={performSearch}
-+          <OrchestratedButton.SearchSimilar
-+            onclick={performSearch}
-             disabled={loading || !query.trim()}
-             class="absolute right-2 top-1/2 transform -translate-y-1/2 gap-2"
-           >
-             {#if loading}
-               <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
-               Searching...
-             {:else}
--              <Zap class="w-4 h-4" />
-+              <span class="w-4 h-4">{ICON.zap}</span>
+          <OrchestratedButton.SearchSimilar
+            onclick={performSearch}
+            disabled={loading || !query.trim()}
+            class="absolute right-2 top-1/2 transform -translate-y-1/2 gap-2"
+          >
+            {#if loading}
+              <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+              Searching...
+            {:else}
+              <span class="w-4 h-4">{ICON.zap}</span>
                Search
-             {/if}
-           </OrchestratedButton.SearchSimilar>
+            {/if}
+          </OrchestratedButton.SearchSimilar>
          </div>
 
          <!-- Search Mode Tabs -->
          <!-- simple inline tab buttons to avoid external Tabs API mismatch -->
          <div class="grid w-full grid-cols-3 gap-2">
--          <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'semantic' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')} on:click={() => (searchMode = 'semantic')}>
--            <Brain class="w-4 h-4 inline-block mr-1" /> Semantic
-+          <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'semantic' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')} onclick={() => (searchMode = 'semantic')}>
-+            <span class="inline-block mr-1">{ICON.brain}</span> Semantic
-           </button>
--          <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'keyword' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')} on:click={() => (searchMode = 'keyword')}>
--            <Target class="w-4 h-4 inline-block mr-1" /> Keyword
-+          <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'keyword' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')} onclick={() => (searchMode = 'keyword')}>
-+            <span class="inline-block mr-1">{ICON.target}</span> Keyword
-           </button>
--          <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'hybrid' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')} on:click={() => (searchMode = 'hybrid')}>
--            <Sparkles class="w-4 h-4 inline-block mr-1" /> Hybrid
-+          <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'hybrid' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')} onclick={() => (searchMode = 'hybrid')}>
-+            <span class="inline-block mr-1">{ICON.sparkles}</span> Hybrid
-           </button>
-         </div>
+            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'semantic' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')} onclick={() => (searchMode = 'semantic')}>
+              <span class="inline-block mr-1">{ICON.brain}</span> Semantic
+            </button>
+            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'keyword' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')} onclick={() => (searchMode = 'keyword')}>
+              <span class="inline-block mr-1">{ICON.target}</span> Keyword
+            </button>
+            <button class={"gap-2 px-3 py-2 rounded " + (searchMode === 'hybrid' ? 'bg-nier-accent-warm text-white' : 'bg-transparent border')} onclick={() => (searchMode = 'hybrid')}>
+              <span class="inline-block mr-1">{ICON.sparkles}</span> Hybrid
+            </button>
+          </div>
 
          <!-- Filters -->
          <div class="flex flex-wrap gap-4 items-center">
            <div class="flex items-center gap-2">
--            <Filter class="w-4 h-4 text-nier-text-muted" />
-+            <span class="w-4 h-4 text-nier-text-muted">{ICON.filter}</span>
+              <span class="w-4 h-4 text-nier-text-muted">{ICON.filter}</span>
              <span class="text-sm text-nier-text-muted">Document Types:</span>
            </div>
 
            {#each documentTypes as docType}
              <button
--              onclick={() => toggleDocumentType(docType.value)}
-+              onclick={() => toggleDocumentType(docType.value)}
-               class={
-                 "flex items-center gap-2 px-3 py-1 rounded-full border transition-all " +
-                 (selectedTypes.has(docType.value)
-                   ? 'border-nier-accent-warm bg-nier-accent-warm text-nier-bg-primary'
-                   : 'border-nier-border-muted hover:border-nier-accent-warm')
-               }
-             >
-               <!-- docType.icon is a component reference -->
--              <svelte:component this={docType.icon} class="w-3 h-3" />
-+              <span class="w-3 h-3">{docType.iconEmoji}</span>
-               <span class="text-xs">{docType.label}</span>
-             </button>
+                onclick={() => toggleDocumentType(docType.value)}
+                class={
+                  "flex items-center gap-2 px-3 py-1 rounded-full border transition-all " +
+                  (selectedTypes.has(docType.value)
+                    ? 'border-nier-accent-warm bg-nier-accent-warm text-nier-bg-primary'
+                    : 'border-nier-border-muted hover:border-nier-accent-warm')
+                }
+              >
+                <span class="w-3 h-3">{docType.iconEmoji}</span>
+                <span class="text-xs">{docType.label}</span>
+              </button>
            {/each}
 
            <div class="ml-auto flex items-center gap-2">
@@ -315,14 +295,12 @@
    </OrchestratedCard.Analysis>
 
    <!-- Search Results -->
--  {#if searchInfo}
-+  {#if searchInfo}
+   {#if searchInfo}
      <OrchestratedCard.Evidence>
        <div class="nes-container">
          <div class="flex items-center justify-between">
            <div class="flex items-center gap-2">
--            <Database class="w-5 h-5" />
-+            <span class="w-5 h-5">{ICON.database}</span>
+             <span class="w-5 h-5">{ICON.database}</span>
              <h2 class="text-lg font-medium">Search Results ({results.length})</h2>
            </div>
            <div class="flex items-center gap-4 text-sm text-nier-text-muted">
@@ -330,7 +308,8 @@
              <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{searchInfo.embedding_model}</span>
            </div>
          </div>
-         <p class="text-sm text-nier-text-muted mt-2">Query: "{searchInfo.processed_query}" • Total: {searchInfo.total_results} matches</p>
+         <!-- changed <p> to <div> to avoid invalid nesting when template blocks render inside -->
+         <div class="text-sm text-nier-text-muted mt-1">Query: "{searchInfo.processed_query}" • Total: {searchInfo.total_results} matches</div>
        </div>
 
        <div class="space-y-4 nes-container">
@@ -341,18 +320,15 @@
            </div>
          {:else if error}
            <div class="text-center py-8">
--            <AlertCircle class="w-8 h-8 text-red-500 mx-auto mb-2" />
-+            <div class="w-8 h-8 text-red-500 mx-auto mb-2 text-2xl">{ICON.alert}</div>
+             <div class="w-8 h-8 text-red-500 mx-auto mb-2 text-2xl">{ICON.alert}</div>
              <p class="text-red-600">{error}</p>
--            <Button on:click={performSearch} variant="ghost" size="sm" class="mt-2 bits-btn">
-+            <Button onclick={performSearch} variant="ghost" size="sm" class="mt-2 bits-btn">
+             <Button onclick={performSearch} variant="ghost" size="sm" class="mt-2 bits-btn">
                Retry Search
              </Button>
            </div>
          {:else if results.length === 0}
            <div class="text-center py-8">
--            <Search class="w-8 h-8 text-nier-text-muted mx-auto mb-2" />
-+            <div class="w-8 h-8 text-nier-text-muted mx-auto mb-2 text-2xl">{ICON.search}</div>
+             <div class="w-8 h-8 text-nier-text-muted mx-auto mb-2 text-2xl">{ICON.search}</div>
              <p class="text-nier-text-muted">No matching documents found</p>
              <p class="text-sm text-nier-text-muted mt-1">Try adjusting your query or filters</p>
            </div>
@@ -409,22 +385,16 @@
 
                <div class="flex items-center justify-between">
                  <div class="flex items-center gap-4 text-xs text-nier-text-muted">
--                  {#if result.metadata?.upload_date}
--                    <div class="flex items-center gap-1">
--                      <Clock class="w-3 h-3" />
--                      {new Date(result.metadata.upload_date).toLocaleDateString()}
--                    </div>
--                  {/if}
-+                  {#if result.metadata?.upload_date}
-+                    <div class="flex items-center gap-1">
-+                      <span class="w-3 h-3">{ICON.clock}</span>
-+                      {new Date(result.metadata.upload_date).toLocaleDateString()}
-+                    </div>
-+                  {/if}
-                   {#if typeof result.metadata?.confidence === 'number'}
+                   {#if result.metadata?.upload_date}
                      <div class="flex items-center gap-1">
--                      <CheckCircle class="w-3 h-3" />
-+                      <span class="w-3 h-3">{ICON.check}</span>
+                       <span class="w-3 h-3">{ICON.clock}</span>
+                       {new Date(result.metadata.upload_date).toLocaleDateString()}
+                     </div>
+                   {/if}
+                   {#if typeof result.metadata?.confidence === 'number'}
+                     <!-- tightened spacing per selection -->
+                     <div class="flex items-center gap-1">
+                       <span class="w-3 h-3">{ICON.check}</span>
                        {(result.metadata.confidence * 100).toFixed(1)}% confidence
                      </div>
                    {/if}
@@ -432,13 +402,11 @@
 
                  <div class="flex items-center gap-2">
                    <Button class="bits-btn" variant="ghost" size="sm">
--                    <Eye class="w-4 h-4 mr-1" />
-+                    <span class="w-4 h-4 mr-1">{ICON.eye}</span>
+                     <span class="w-4 h-4 mr-1">{ICON.eye}</span>
                      View
                    </Button>
                    <Button class="bits-btn" variant="ghost" size="sm">
--                    <ChevronRight class="w-4 h-4" />
-+                    <span class="w-4 h-4">{ICON.chevronRight}</span>
+                     <span class="w-4 h-4">{ICON.chevronRight}</span>
                    </Button>
                  </div>
                </div>
@@ -452,8 +420,7 @@
    <!-- Search Suggestions -->
    <section class="nes-container">
      <div class="flex items-center gap-2">
--      <Lightbulb class="w-5 h-5" />
-+      <span class="w-5 h-5">{ICON.lightbulb}</span>
+       <span class="w-5 h-5">{ICON.lightbulb}</span>
        <h3 class="text-lg font-medium">Search Suggestions</h3>
      </div>
      <p class="text-sm text-nier-text-muted mt-1">Try these common legal research queries</p>
@@ -462,15 +429,13 @@
        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
          {#each searchSuggestions as suggestion}
            <button
--            on:click={() => setSuggestionQuery(suggestion)}
-+            onclick={() => setSuggestionQuery(suggestion)}
+            onclick={() => setSuggestionQuery(suggestion)}
              class="text-left p-3 text-sm bg-nier-bg-tertiary hover:bg-nier-accent-warm/10 rounded-lg transition-colors border border-transparent hover:border-nier-accent-warm/20"
              disabled={loading}
            >
              <div class="flex items-center justify-between">
                <span>{suggestion}</span>
--              <ChevronRight class="w-4 h-4 text-nier-text-muted" />
-+              <span class="w-4 h-4 text-nier-text-muted">{ICON.chevronRight}</span>
+               <span class="w-4 h-4 text-nier-text-muted">{ICON.chevronRight}</span>
              </div>
            </button>
          {/each}
@@ -479,12 +444,10 @@
    </section>
 
    <!-- Performance Metrics -->
--  {#if searchInfo}
-+  {#if searchInfo}
+   {#if searchInfo}
      <section class="nes-container">
        <div class="flex items-center gap-2">
--        <TrendingUp class="w-5 h-5" />
-+        <span class="w-5 h-5">{ICON.trendingUp}</span>
+         <span class="w-5 h-5">{ICON.trendingUp}</span>
          <h3 class="text-lg font-medium">Search Performance</h3>
        </div>
        <div class="nes-container mt-3">

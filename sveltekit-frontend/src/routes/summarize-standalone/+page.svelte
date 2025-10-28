@@ -11,9 +11,8 @@ https://svelte.dev/e/js_parse_error -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { enhance } from '$app/forms';
-  import type { ActionData } from './$types';
+  // Removed unused imports (onMount, enhance) and invalid type import ActionData
+
   // Component state
   let reportText = $state('');
   let summary = $state('');
@@ -56,8 +55,8 @@ https://svelte.dev/e/js_parse_error -->
   IV. CONCLUSION AND RECOMMENDATIONS
   We recommend that ABC proceed with a breach of contract claim against XYZ Industries. The evidence clearly supports a finding of material breach, and ABC's damages are well-documented and substantial. We should also consider whether the contract's limitation of liability clause applies to these circumstances, as it may affect the recoverable damages amount.
   Additionally, we recommend exploring settlement negotiations before filing suit, as the strength of ABC's position may encourage a favorable resolution without the costs and uncertainties of litigation.`;
-  // Reactive calculations
-  $derived(() => {
+  // Reactive calculations (use $effect in Svelte 5 runes)
+  $effect(() => {
     wordCount = reportText.trim() ? reportText.trim().split(/\s+/).length : 0;
     charCount = reportText.length;
     // Estimate processing time based on document length (roughly 1 second per 1000 chars)
@@ -78,9 +77,11 @@ https://svelte.dev/e/js_parse_error -->
     activeTab = 'input';
   }
   // Handle file upload
-  function handleFileUpload(_event: Event) {
-    const file = (event.target as HTMLInputElement).files?.[0];
+  function handleFileUpload(event: Event) {
+    const target = event.target as HTMLInputElement | null;
+    const file = target?.files?.[0];
     if (!file) return;
+
     if (file.size > 10 * 1024 * 1024) { // 10MB limit
       errorMessage = 'File size must be less than 10MB';
       return;
@@ -188,8 +189,8 @@ https://svelte.dev/e/js_parse_error -->
         <span>⏱️ Est. time: {estimatedProcessingTime}s</span>
       </div>
       <div class="actions">
-        <button class="btn nes-btn" onclick={loadSampleDocument}> Load Sample </button>
-        <button class="btn nes-btn" onclick={clearAll}> Clear All </button>
+        <button class="btn nes-btn btn-outline" onclick={loadSampleDocument}> Load Sample </button>
+        <button class="btn nes-btn btn-outline" onclick={clearAll}> Clear All </button>
       </div>
     </div>
   </header>
@@ -261,7 +262,7 @@ https://svelte.dev/e/js_parse_error -->
           ></textarea>
           <div class="input-footer">
             <button
-              class="btn nes-btn is-primary btn-large"
+              class="btn nes-btn btn-primary btn-large"
               onclick={handleSummarize}
               disabled={isLoading || !reportText.trim() || reportText.length < 100}
             >
@@ -293,7 +294,7 @@ https://svelte.dev/e/js_parse_error -->
             <div class="result-header">
               <h3>📋 Document Summary</h3>
               <div class="result-actions">
-                <button id="copy-btn" class="btn nes-btn" onclick={copySummary}> 📋 Copy Summary </button>
+                <button id="copy-btn" class="btn nes-btn btn-outline" onclick={copySummary}> 📋 Copy Summary </button>
               </div>
             </div>
             <div class="summary-content">
@@ -418,19 +419,19 @@ https://svelte.dev/e/js_parse_error -->
     margin-bottom: 1.5rem;
   }
   .tab {
-    flex: 1,
+    flex: 1;
     padding: 0.75rem 1rem;
     border: none;
     background: transparent;
     border-radius: 0.25rem;
     cursor: pointer;
-    transition: all 0.2;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
   }
-  .tab:hover:not(:disabled) {,
+  .tab:hover:not(:disabled) {
     background: rgba(59, 130, 246, 0.1);
   }
   .tab.active {
@@ -446,9 +447,10 @@ https://svelte.dev/e/js_parse_error -->
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from { transform: rotate(0deg), }
-    to { transform: rotate(360deg), }
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
   }
+
   .content-area {
     background: white;
     border-radius: 0.5rem;
@@ -456,12 +458,13 @@ https://svelte.dev/e/js_parse_error -->
     padding: 1.5rem;
     min-height: 600px;
   }
+
   .input-controls {
     margin-bottom: 1rem;
   }
   .options-grid {
     display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
     margin: 1rem 0;
   }
@@ -471,7 +474,7 @@ https://svelte.dev/e/js_parse_error -->
     gap: 0.5rem;
   }
   .checkbox-group {
-    flex-direction row;
+    flex-direction: row;
     align-items: center;
   }
   .option-group label {
@@ -489,7 +492,7 @@ https://svelte.dev/e/js_parse_error -->
     color: #6b7280;
   }
   .text-input-area {
-    position relative;
+    position: relative;
   }
   #document-input {
     width: 100%;
@@ -500,7 +503,7 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.9rem;
     line-height: 1.5;
     resize: vertical;
-    transition: border-color 0.2;
+    transition: border-color 0.2s ease;
   }
   #document-input:focus {
     outline: none;
@@ -516,9 +519,9 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 0.25rem;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2;
+    transition: all 0.2s ease;
     border: none;
-    text-decoration none;
+    text-decoration: none;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -527,7 +530,7 @@ https://svelte.dev/e/js_parse_error -->
     background: #3b82f6;
     color: white;
   }
-  .btn-primary:hover:not(:disabled) {,
+  .btn-primary:hover:not(:disabled) {
     background: #2563eb;
   }
   .btn-outline {
@@ -535,7 +538,7 @@ https://svelte.dev/e/js_parse_error -->
     border: 1px solid #d1d5db;
     color: #374151;
   }
-  .btn-outline:hover:not(:disabled) {,
+  .btn-outline:hover:not(:disabled) {
     background: #f9fafb;
   }
   .btn-large {
@@ -557,10 +560,10 @@ https://svelte.dev/e/js_parse_error -->
     padding: 0.75rem;
     margin: 0.5rem 0;
     border-radius: 0.25rem;
-    transition: all 0.3;
+    transition: all 0.3s ease;
   }
   .step.current {
-    background: #dbeaf;
+    background: #dbeafe;
     border-left: 4px solid #3b82f6;
     animation: pulse 1s infinite;
   }
@@ -595,14 +598,14 @@ https://svelte.dev/e/js_parse_error -->
     white-space: pre-wrap;
   }
   .metadata-panel {
-    background: #fefef;
+    background: #ffffff;
     padding: 1rem;
     border-radius: 0.5rem;
     border: 1px solid #e5e7eb;
   }
   .metadata-grid {
     display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
     margin: 1rem 0;
   }
@@ -647,7 +650,7 @@ https://svelte.dev/e/js_parse_error -->
     padding: 1.5rem;
   }
   .risk-analysis h3 {
-    color: #92400;
+    color: #92400c;
     margin-bottom: 1rem;
   }
   .analysis-content {

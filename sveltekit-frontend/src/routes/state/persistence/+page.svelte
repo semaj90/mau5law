@@ -3,18 +3,19 @@ https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-</script>
   // XState State Persistence Management
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import Button from '$lib/components/ui/nes-button.svelte';
   import NesCard from '$lib/components/ui/nes-card.svelte';
+
   let mounted = $state(false);
-  let persistedStates = $state([]);
+  let persistedStates = $state<any[]>([]);
   let loading = $state(true);
-  let selectedState = $state(null);
+  let selectedState = $state<any | null>(null);
   let restoring = $state(false);
-  // Mock persisted state data
+
+  // Mock persisted state data (fixed object literal syntax)
   let mockPersistedStates = [
     {
       id: 'auth_user_123_20240110_143022',
@@ -29,7 +30,7 @@ https://svelte.dev/e/expected_token -->
         lastActivity: '2024-01-10T14:30:22.000Z',
       },
       timestamp: '2024-01-10T14:30:22.000Z',
-      version '1.0.2',
+      version: '1.0.2',
       size: 1247,
       checksum: 'sha256:a1b2c3d4...',
     },
@@ -49,7 +50,7 @@ https://svelte.dev/e/expected_token -->
         notes: 'Awaiting additional documentation from plaintiff.',
       },
       timestamp: '2024-01-10T14:20:15.000Z',
-      version '2.1.0',
+      version: '2.1.0',
       size: 2891,
       checksum: 'sha256:e5f6g7h8...',
     },
@@ -68,30 +69,33 @@ https://svelte.dev/e/expected_token -->
         totalChunks: 342,
         processedChunks: 298,
         batchSize: 32,
-        modelVersion 'gemma-3-legal-v1.2'
+        modelVersion: 'gemma-3-legal-v1.2'
       },
       timestamp: '2024-01-10T14:10:30.000Z',
-      version '3.0.1',
+      version: '3.0.1',
       size: 5672,
       checksum: 'sha256:i9j0k1l2...',
     }
   ];
+
   $effect(() => {
     mounted = true;
     loadPersistedStates();
   });
+
   async function loadPersistedStates() {
     loading = true;
     try {
-      // In production const response = await fetch('/api/state/persistence')
+      // In production: const response = await fetch('/api/state/persistence')
       await new Promise(resolve => setTimeout(resolve, 1000));
-      persistedStates = mockPersistedState;
+      persistedStates = mockPersistedStates; // fixed identifier
     } catch (error) {
       console.error('Failed to load persisted states:', error);
     } finally {
       loading = false;
     }
   }
+
   async function restoreState(stateId: string) {
     restoring = true;
     try {
@@ -106,6 +110,7 @@ https://svelte.dev/e/expected_token -->
       restoring = false;
     }
   }
+
   async function deletePersistedState(stateId: string) {
     if (!confirm('Are you sure you want to delete this persisted state? This action cannot be undone.')) {
       return;
@@ -122,33 +127,38 @@ https://svelte.dev/e/expected_token -->
       alert('Failed to delete state');
     }
   }
+
   function formatBytes(bytes: number) {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k);
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
+
   function getStateColor(state: string) {
     if (state.includes('error')) return 'bg-red-100 text-red-800';
     if (state.includes('processing') || state.includes('reviewing')) return 'bg-yellow-100 text-yellow-800';
     if (state.includes('authenticated') || state.includes('completed')) return 'bg-green-100 text-green-800';
     return 'bg-blue-100 text-blue-800';
   }
+
   function getMachineDisplayName(machineId: string) {
-    const names = {
+    const names: Record<string, string> = {
       'auth-machine': 'Authentication',
       'case-management-machine': 'Case Management',
       'rag-pipeline-machine': 'RAG Pipeline',
       'gpu-allocation-machine': 'GPU Allocation'
-    }
+    };
     return names[machineId] || machineId;
   }
 </script>
+
 <svelte:head>
   <title>State Persistence Management - Legal AI Platform</title>
   <meta name="description" content="Manage XState persistence, restoration, and state hydration" />
 </svelte:head>
+
 <div class="page-container">
   <header class="page-header">
     <div class="header-content">
@@ -179,6 +189,7 @@ https://svelte.dev/e/expected_token -->
       </div>
     </div>
   </header>
+
   <main class="page-content">
     {#if loading}
       <div class="loading-state">
@@ -195,15 +206,25 @@ https://svelte.dev/e/expected_token -->
         <div class="states-list">
           <h2>📋 Persisted States ({persistedStates.length})</h2>
           <div class="filter-controls">
-            <button class="nes-btn" variant="ghost" onclick={loadPersistedStates}>
+            <button class="nes-btn ghost" onclick={loadPersistedStates}>
               🔄 Refresh
             </button>
           </div>
           <div class="states-container">
             {#each persistedStates.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()) as state}
-              <div class="state-nier-bits-card {selectedState?.id === state.id ? 'selected' : ''}"
-                   role="button" tabindex="0"
-                onclick={() => selectedState = selectedState?.id === state.id ? null : state}>
+              <div
+                class="state-card {selectedState?.id === state.id ? 'selected' : ''}"
+                role="button"
+                tabindex="0"
+                onclick={() => selectedState = selectedState?.id === state.id ? null : state}
+                onkeydown={(e) => {
+                  // Activate on Enter or Space for keyboard users
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    selectedState = selectedState?.id === state.id ? null : state;
+                  }
+                }}
+              >
                 <div class="state-header">
                   <div class="state-info">
                     <h3 class="state-title">{getMachineDisplayName(state.machineId)}</h3>
@@ -217,7 +238,7 @@ https://svelte.dev/e/expected_token -->
                 <div class="state-details">
                   <div class="detail-row">
                     <span class="detail-label">ID:</span>
-                    <code class="detail-value">{state.id}</code>
+                    <span class="detail-value"><code>{state.id}</code></span>
                   </div>
                   <div class="detail-row">
                     <span class="detail-label">User:</span>
@@ -229,25 +250,25 @@ https://svelte.dev/e/expected_token -->
                   </div>
                   <div class="detail-row">
                     <span class="detail-label">Checksum:</span>
-                    <code class="detail-value checksum">{state.checksum}</code>
+                    <span class="detail-value"><code class="checksum">{state.checksum}</code></span>
                   </div>
                 </div>
                 <div class="state-actions">
-                  <button class="nes-btn"
-                    size="sm"
+                  <button
+                    class="nes-btn"
                     onclick={(e) => {
                       e.stopPropagation();
-                      restoreState(state.id);
+                      void restoreState(state.id);
                     }}
                     disabled={restoring}
                   >
                     {restoring ? 'Restoring...' : '🔄 Restore'}
                   </button>
-                  <button class="nes-btn is-error"
-                    size="sm"
+                  <button
+                    class="nes-btn is-error"
                     onclick={(e) => {
                       e.stopPropagation();
-                      deletePersistedState(state.id);
+                      void deletePersistedState(state.id);
                     }}
                   >
                     🗑️ Delete
@@ -257,14 +278,15 @@ https://svelte.dev/e/expected_token -->
             {/each}
           </div>
         </div>
+
         {#if selectedState}
           <div class="state-inspector">
-            <div class="inspector-nier-bits-card">
-              <divHeader>
-                <divTitle>🔍 State Inspector</h3>
+            <div class="inspector-card">
+              <div class="inspector-header">
+                <h3>🔍 State Inspector</h3>
                 <p class="inspector-subtitle">{selectedState.id}</p>
               </div>
-              <divContent>
+              <div class="inspector-content">
                 <div class="context-viewer">
                   <h4>State Context</h4>
                   <pre class="context-display">{JSON.stringify(selectedState.context, null, 2)}</pre>
@@ -306,13 +328,35 @@ https://svelte.dev/e/expected_token -->
     {/if}
   </main>
 </div>
+
 <style>
-  .page-container {
-    max-width: 1600px;
-    margin: 0 auto;
-    padding: 2rem;
-  }
-  .page-header {
+/* Load local fonts from the static/ folder */
+@font-face {
+  font-family: "Inter";
+  src: url("@/sveltekit-frontend/static/fonts/Inter-Variable.woff2") format("woff2"),
+       url("@/sveltekit-frontend/static/fonts/Inter-Regular.woff") format("woff");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "SF Mono";
+  src: url("@/sveltekit-frontend/static/fonts/SFMono-Regular.woff2") format("woff2"),
+       url("@/sveltekit-frontend/static/fonts/SFMono-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* use the local Inter as the page font; fall back to system fonts */
+.page-container {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+.page-header {
     margin-bottom: 2rem;
   }
   .header-content {
@@ -328,10 +372,10 @@ https://svelte.dev/e/expected_token -->
   }
   .breadcrumb-link {
     color: #3b82f6;
-    text-decoration none;
+    text-decoration: none;
   }
   .breadcrumb-link:hover {
-    text-decoration underli;
+    text-decoration: underline;
   }
   .breadcrumb-separator {
     color: #9ca3af;
@@ -386,8 +430,8 @@ https://svelte.dev/e/expected_token -->
     margin: 0 auto 1rem;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg), }
-    100% { transform: rotate(360deg), }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
   .empty-state {
     text-align: center;
@@ -498,13 +542,13 @@ https://svelte.dev/e/expected_token -->
     background: #e5e7eb;
     padding: 0.125rem 0.375rem;
     border-radius: 4px;
-    font-family: 'SF Mono', 'Monaco', monospace;
+    font-family: "SF Mono", "SFMono-Regular", Menlo, Monaco, "Courier New", monospace;
     font-size: 0.75rem;
   }
   .checksum {
     max-width: 150px;
     overflow: hidden;
-    text-overflow: ellipsi;
+    text-overflow: ellipsis;
     white-space: nowrap;
   }
   .state-actions {
@@ -512,7 +556,7 @@ https://svelte.dev/e/expected_token -->
     gap: 0.75rem;
   }
   .state-inspector {
-    position sticky;
+    position: sticky;
     top: 2rem;
   }
   .inspector-card {
@@ -577,7 +621,7 @@ https://svelte.dev/e/expected_token -->
       grid-template-columns: 1fr;
     }
     .state-inspector {
-      position static;
+      position: static;
     }
   }
   @media (max-width: 768px) {

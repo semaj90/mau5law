@@ -1,145 +1,148 @@
 /**
- * Environment Configuration with Docker Desktop Auto-Mapping
- * Automatically detects Docker environment and maps container URLs
+ * 🌍 Environment Loader (Zod-Validated)
+ * Auto-maps Docker ⇄ Local URLs and validates critical fields.
  */
-import { env } from '$env/dynamic/private';
 
-// Detect if running in Docker environment
-const isDocker = env.DOCKER_ENV === 'true' ||
-                 process.env.HOSTNAME?.includes('docker') ||
-                 process.env.DOCKER_CONTAINER === 'true';
+// Use SvelteKit's runtime env when available; fall back to process.env for type-checking
+// and non-SvelteKit environments. Avoid importing the virtual `$env/*` module here
+// to keep this file type-checkable by plain `tsc` in CI or tooling.
+const env = (typeof process !== 'undefined' && process.env) as Record<string, string | undefined>;
+import { z } from 'zod';
 
-// Use host.docker.internal for Docker Desktop, localhost for bare metal
+const isDocker =
+  env.DOCKER_ENV === 'true' || process.env.DOCKER_CONTAINER === 'true' || process.env.HOSTNAME?.includes('docker');
+
 const host = isDocker ? 'host.docker.internal' : 'localhost';
 
-// Core AI + Vector services with Docker auto-mapping
-export const CONFIG = {
-  // AI Services
+/** 🔐 Zod schema for validation */
+const ConfigSchema = z.object({
+  NODE_ENV: z.string().default('development'),
+
+  POSTGRES_URL: z.string().url(),
+  POSTGRES_USER: z.string(),
+  POSTGRES_PASSWORD: z.string(),
+  POSTGRES_DB: z.string(),
+  POSTGRES_HOST: z.string(),
+  POSTGRES_PORT: z.coerce.number(),
+
+  REDIS_URL: z.string(),
+  REDIS_PASSWORD: z.string().optional(),
+
+  OLLAMA_URL: z.string().url(),
+  TRITON_URL: z.string().url(),
+
+  QDRANT_URL: z.string().url(),
+
+  NEO4J_URL: z.string(),
+  NEO4J_USER: z.string(),
+  NEO4J_PASSWORD: z.string(),
+
+  MINIO_URL: z.string().url(),
+  MINIO_ACCESS_KEY: z.string(),
+  MINIO_SECRET_KEY: z.string(),
+  MINIO_BUCKET: z.string(),
+
+  ENABLE_GPU: z.coerce.boolean().default(false),
+  ENABLE_CUDA: z.coerce.boolean().default(false),
+  ENABLE_WEBGPU: z.coerce.boolean().default(false),
+  ENABLE_SIMD_JSON: z.coerce.boolean().default(false),
+  RTX_3060_OPTIMIZATION: z.coerce.boolean().default(false),
+
+  OCR_MODE: z.enum(['tesseract', 'paddle', 'hybrid']).default('hybrid'),
+
+  DEV_QUIC_PORT: z.coerce.number().default(5173),
+  QUIC_ENABLED: z.coerce.boolean().default(false),
+  DEV_BYPASS_AUTH: z.coerce.boolean().default(false),
+
+  MEMORY_CACHE_TTL: z.coerce.number().default(3600),
+  VECTOR_CACHE_SIZE: z.coerce.number().default(10_000),
+
+  JWT_SECRET: z.string(),
+  API_KEY: z.string(),
+
+  LOG_LEVEL: z.string().default('info'),
+  ENABLE_STRUCTURED_LOGGING: z.coerce.boolean().default(false),
+  // Backward-compatible (legacy) aliases - optional
+  DATABASE_URL: z.string().url().optional(),
+  MINIO_ENDPOINT: z.string().url().optional(),
+  MINIO_REGION: z.string().optional(),
+});
+
+const parsed = ConfigSchema.safeParse({
+  NODE_ENV: env.NODE_ENV ?? 'development',
+
+  POSTGRES_URL: env.POSTGRES_URL ?? `postgres://postgres:postgres@${host}:5432/deeds`,
+  POSTGRES_USER: env.POSTGRES_USER ?? 'postgres',
+  POSTGRES_PASSWORD: env.POSTGRES_PASSWORD ?? 'postgres',
+  POSTGRES_DB: env.POSTGRES_DB ?? 'deeds',
+  POSTGRES_HOST: env.POSTGRES_HOST ?? host,
+  POSTGRES_PORT: env.POSTGRES_PORT ?? 5432,
+
+  REDIS_URL: env.REDIS_URL ?? `redis://${host}:6379`,
+  REDIS_PASSWORD: env.REDIS_PASSWORD,
+
   OLLAMA_URL: env.OLLAMA_URL ?? `http://${host}:11434`,
   TRITON_URL: env.TRITON_URL ?? `http://${host}:8001`,
-
-  // Vector & Search Services
   QDRANT_URL: env.QDRANT_URL ?? `http://${host}:6333`,
-  REDIS_URL: env.REDIS_URL ?? `redis://${host}:6380`, // Using port 6380 for test Redis
-  REDIS_PASSWORD: env.REDIS_PASSWORD ?? '', // No password for test Redis
 
-  // Graph Database
   NEO4J_URL: env.NEO4J_URL ?? `bolt://${host}:7687`,
   NEO4J_USER: env.NEO4J_USER ?? 'neo4j',
   NEO4J_PASSWORD: env.NEO4J_PASSWORD ?? 'password',
 
-  // Primary Database
-  POSTGRES_URL: env.POSTGRES_URL ?? `postgres://postgres:postgres@${host}:5432/deeds`,
-  POSTGRES_HOST: env.POSTGRES_HOST ?? host,
-  POSTGRES_PORT: Number(env.POSTGRES_PORT ?? 5432),
-  POSTGRES_DB: env.POSTGRES_DB ?? 'deeds',
-  POSTGRES_USER: env.POSTGRES_USER ?? 'postgres',
-  POSTGRES_PASSWORD: env.POSTGRES_PASSWORD ?? 'postgres',
-
-  // Object Storage
   MINIO_URL: env.MINIO_URL ?? `http://${host}:9000`,
   MINIO_ACCESS_KEY: env.MINIO_ACCESS_KEY ?? 'minioadmin',
   MINIO_SECRET_KEY: env.MINIO_SECRET_KEY ?? 'minioadmin',
   MINIO_BUCKET: env.MINIO_BUCKET ?? 'deeds-storage',
 
-  // Feature Flags
-  OCR_MODE: env.OCR_MODE ?? 'hybrid', // 'tesseract', 'paddle', 'hybrid'
-  WORKER_PERSIST_DB: env.WORKER_PERSIST_DB === 'true',
-  NEO4J_CREATE_SIMILARITY_LINKS: env.NEO4J_CREATE_SIMILARITY_LINKS === 'true',
-  NEO4J_INIT_ON_START: env.NEO4J_INIT_ON_START === 'true',
-  ENABLE_WEBGPU: env.ENABLE_WEBGPU === 'true',
-  ENABLE_CUDA: env.ENABLE_CUDA === 'true',
+  // Legacy aliases support (if provided via env)
+  DATABASE_URL: env.DATABASE_URL,
+  MINIO_ENDPOINT: env.MINIO_ENDPOINT,
+  MINIO_REGION: env.MINIO_REGION,
 
-  // QUIC Runtime
-  DEV_QUIC_PORT: Number(env.DEV_QUIC_PORT ?? 5173),
-  QUIC_ENABLED: env.QUIC_ENABLED === 'true',
+  ENABLE_GPU: env.ENABLE_GPU,
+  ENABLE_CUDA: env.ENABLE_CUDA,
+  ENABLE_WEBGPU: env.ENABLE_WEBGPU,
+  ENABLE_SIMD_JSON: env.ENABLE_SIMD_JSON,
+  RTX_3060_OPTIMIZATION: env.RTX_3060_OPTIMIZATION,
 
-  // Development
-  DEV_BYPASS_AUTH: env.DEV_BYPASS_AUTH === 'true',
-  NODE_ENV: env.NODE_ENV ?? 'development',
-
-  // Performance
-  ENABLE_GPU: env.ENABLE_GPU === 'true',
-  RTX_3060_OPTIMIZATION: env.RTX_3060_OPTIMIZATION === 'true',
-  CONTEXT7_MULTICORE: env.CONTEXT7_MULTICORE === 'true',
-  OLLAMA_GPU_LAYERS: Number(env.OLLAMA_GPU_LAYERS ?? 30),
-
-  // Memory & Cache
-  MEMORY_CACHE_TTL: Number(env.MEMORY_CACHE_TTL ?? 3600), // 1 hour
-  VECTOR_CACHE_SIZE: Number(env.VECTOR_CACHE_SIZE ?? 10000),
-  ENABLE_SIMD_JSON: env.ENABLE_SIMD_JSON === 'true',
-
-  // Security
-  JWT_SECRET: env.JWT_SECRET ?? 'your-secret-key',
-  API_KEY: env.API_KEY ?? 'your-api-key',
-
-  // Logging
-  LOG_LEVEL: env.LOG_LEVEL ?? 'info',
-  ENABLE_STRUCTURED_LOGGING: env.ENABLE_STRUCTURED_LOGGING === 'true',
-} as const;
-
-// Type-safe configuration
-export type Config = typeof CONFIG;
-
-// Helper function to get service health check URLs
-export const getHealthCheckUrls = () => ({
-  ollama: `${CONFIG.OLLAMA_URL}/api/tags`,
-  redis: `${CONFIG.REDIS_URL.replace('redis://', 'http://')}/ping`,
-  postgres: `postgres://${CONFIG.POSTGRES_USER}:${CONFIG.POSTGRES_PASSWORD}@${CONFIG.POSTGRES_HOST}:${CONFIG.POSTGRES_PORT}/${CONFIG.POSTGRES_DB}`,
-  neo4j: `${CONFIG.NEO4J_URL.replace('bolt://', 'http://')}/db/data/`,
-  minio: `${CONFIG.MINIO_URL}/minio/health/live`,
-  qdrant: `${CONFIG.QDRANT_URL}/collections`,
+  OCR_MODE: env.OCR_MODE,
+  DEV_QUIC_PORT: env.DEV_QUIC_PORT,
+  QUIC_ENABLED: env.QUIC_ENABLED,
+  DEV_BYPASS_AUTH: env.DEV_BYPASS_AUTH,
+  MEMORY_CACHE_TTL: env.MEMORY_CACHE_TTL,
+  VECTOR_CACHE_SIZE: env.VECTOR_CACHE_SIZE,
+  JWT_SECRET: env.JWT_SECRET ?? 'dev-secret',
+  API_KEY: env.API_KEY ?? 'dev-api-key',
+  LOG_LEVEL: env.LOG_LEVEL,
+  ENABLE_STRUCTURED_LOGGING: env.ENABLE_STRUCTURED_LOGGING,
 });
 
-// Docker detection helper
+if (!parsed.success) {
+  console.error('❌ CONFIG validation failed:', parsed.error.format());
+  throw new Error('Invalid environment configuration');
+}
+
+export const CONFIG = parsed.data;
+export type Config = typeof CONFIG;
+
+/** Convenience helpers */
 export const isDockerEnvironment = () => isDocker;
-
-// Service availability checker
-export const checkServiceAvailability = async () => {
-  const urls = getHealthCheckUrls();
-  const results: Record<string, boolean | string> = {};
-
-  // Helper for HTTP health checks
-  const checkHttpService = async (name: string, url: string) => {
-    try {
-      // Using AbortSignal.timeout for a 5-second timeout
-      const response = await fetch(url, { signal: AbortSignal.timeout(5000) });
-      results[name] = response.ok;
-    } catch (error: unknown) {
-      console.error(`Health check for ${name} failed:`, (error as Error).message);
-      results[name] = false;
-    }
-  };
-
-  // Perform checks for HTTP-based services
-  // Note: The Redis and Neo4j URLs are transformed to HTTP in getHealthCheckUrls.
-  // If these transformations don't point to actual HTTP health endpoints,
-  // these checks will likely fail. A more robust solution for these
-  // would involve specific client libraries (e.g., 'ioredis', 'neo4j-driver').
-  await Promise.all([
-    checkHttpService('ollama', urls.ollama),
-    checkHttpService('redis', urls.redis),
-    checkHttpService('neo4j', urls.neo4j),
-    checkHttpService('minio', urls.minio),
-    checkHttpService('qdrant', urls.qdrant),
-  ]);
-
-  // Special handling for PostgreSQL:
-  // The URL provided in getHealthCheckUrls is a connection string, not an HTTP endpoint.
-  // A direct HTTP fetch is not possible. A proper health check would require
-  // a PostgreSQL client to connect and run a simple query (e.g., SELECT 1).
-  results.postgres = 'requires_db_client_check';
-
-  return results;
-};
-
-// Environment info for debugging
 export const getEnvironmentInfo = () => ({
   isDocker,
   host,
   nodeEnv: CONFIG.NODE_ENV,
-  quicEnabled: CONFIG.QUIC_ENABLED,
   gpuEnabled: CONFIG.ENABLE_GPU,
   cudaEnabled: CONFIG.ENABLE_CUDA,
-  simdJsonEnabled: CONFIG.ENABLE_SIMD_JSON,
+  quicEnabled: CONFIG.QUIC_ENABLED,
 });
+
+// Provide backward-compatible alias helpers for legacy call sites.
+// These mirror old env names to the canonical keys in CONFIG.
+export const LEGACY = {
+  DATABASE_URL: CONFIG.DATABASE_URL ?? CONFIG.POSTGRES_URL,
+  POSTGRES_URL: CONFIG.POSTGRES_URL,
+  MINIO_ENDPOINT: CONFIG.MINIO_ENDPOINT ?? CONFIG.MINIO_URL,
+  MINIO_URL: CONFIG.MINIO_URL,
+  MINIO_REGION: CONFIG.MINIO_REGION ?? env.MINIO_REGION ?? undefined,
+};
+

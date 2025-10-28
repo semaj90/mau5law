@@ -1,6 +1,19 @@
+## 🤖 Copilot progress & todo (DB layer)
+
+Recent work (automated):
+ - Centralized Drizzle expression imports and helpers into `src/lib/server/db/utils.ts` (exports: eq, and, or, gt, lt, like, not, asc, desc, sql, db, adminDb, waitForDb, pgvectorCosineSql, genRandomUUID).
+ - Added high-level helpers in `src/lib/server/db/drizzle.ts`: `cachedQuery`, `hybridVectorSearch`, `storeEmbedding`, and `fetchDocumentFromMinIO`.
+ - Migrated a small sample of files to prefer `$lib/server/db/utils` imports (examples: `src/lib/server/db/query-utils.ts`, `src/routes/api/activities/+server.ts`).
+
+Next steps (recommended):
+1. Run TypeScript & Svelte checks (sveltekit-frontend): `npx tsc --noEmit --skipLibCheck` and `npx svelte-check` and capture the first 50 errors.
+2. Batch-migrate remaining files that import Drizzle expressions directly to `$lib/server/db/utils` in small passes (20–50 files), re-running type checks between passes.
+3. Tighten types in `src/lib/server/db/drizzle.ts` to remove `any`/`unknown` and drop file-scoped lint disables.
+4. Run runtime smoke tests (start dev server) to ensure lazy DB init and MinIO/Redis fallbacks don't crash at import time.
+
+If you want, I can continue the migration in small, verified batches and run the TypeScript checks after each pass — tell me to proceed and I'll start the first batch.
 <!-- NOTE: This file is documentation containing many Svelte examples and template markers.
-     Some CI / editor tooling tries to parse &#123;#if&#125;, &#123;@render&#125;, :root { --var: &#35;abc } etc.
-     To avoid spurious "Unknown tool or toolset" errors, treat the content as plain text.
+  known tool or toolset" errors, treat the content as plain text.
      The rest of the file is unchanged documentation. -->
 — you’re on drizzle-orm@0.44.7, which means you’re using the new modular import system introduced after v0.30.
 
@@ -398,6 +411,57 @@ redis-cli -p 6380 ping
     return result;
 # Neo4j browser
 curl http://localhost:7474
+
+# 🤖 Copilot Instructions: Legal AI DB Layer
+
+This section explains how GitHub Copilot or VS Code AI can assist you when editing the database layer.
+
+---
+
+## 💡 Primary Goals
+- Simplify repetitive Drizzle query patterns.
+- Help generate schema migrations and vector queries.
+- Autocomplete `db.select().from(schema.table).where(eq(...))` syntax.
+- Suggest helper utilities (cachedQuery, hybridVectorSearch, storeEmbedding).
+
+---
+
+## 🧩 Suggested Copilot Prompts
+### For queries
+> "Generate a Drizzle ORM query to get all documents for a user with Redis caching."
+
+### For schema
+> "Add a new 'legal_opinions' table with vector and AI summary support, similar to documents."
+
+### For AI integration
+> "Suggest a pgvector + Qdrant hybrid search query for finding related cases."
+
+### For migrations
+> "Generate a Drizzle migration to add 'confidence' and 'tokens' columns to the embeddings table."
+
+### For performance
+> "Add an index to the cases table on (userId, status)."
+
+---
+
+## 🧠 Context Aware Completions
+- **CONFIG** → sourced from `env.server.ts`
+- **Redis** → `$lib/server/cache/redis.ts`
+- **Qdrant** → `$lib/server/vector/qdrant.ts`
+- **MinIO** → `$lib/server/storage/minio.ts`
+- **Gemma Summarizer** → `$lib/server/ai/summarization.ts`
+- **Lucia Auth** → `$lib/server/auth/lucia.ts`
+
+These modules are already aligned with the stack and recognized in SvelteKit import aliases.
+
+---
+
+## ✅ Best Practices
+- Always define new fields in `schema.ts` **before** using them in TypeScript models.
+- Prefer `eq`, `and`, `or`, and `vectorCosineDistance` from `$lib/server/db/utils`.
+- For vector data: store embeddings in both Postgres + Qdrant for redundancy.
+- Cache query-heavy endpoints (like `/api/search`) using `cachedQuery`.
+- Run `npm run db:migrate` after schema changes to keep the database synced.
 ```
 # Qdrant collections
 curl http://localhost:6333/collections
@@ -428,8 +492,7 @@ curl http://localhost:6333/collections
     - Use Qdrant for advanced similarity (HNSW index, > 1M vectors)
     - Always cache results in Redis with 5-15 minute TTL
   async computeSimilarityMatrix(embeddings: Float32Array): Promise<Float32Array> {
-## Integration Pointser = `
-      @compute @workgroup_size(64)
+
 ### External Servicesarity(@builtin(global_invocation_id) id: vec3<u32>) {
 - **Ollama**: Local LLM inferencerity computation
   - URL: `http://localhost:11434` (host) or `http://localhost:11435` (docker)
@@ -497,6 +560,8 @@ curl http://localhost:7474
 ### Svelte 5 Runes - Complete Migration Guide
 # Qdrant collections
 **CRITICAL**: This project uses Svelte 5 with runes. All components MUST follow these patterns.
+
+
 ```
 #### Core Principles
 1. **Runes are auto-imported** - Never manually import `$state`, `$derived`, `$effect`, `$props`, or `$bindable`

@@ -31,6 +31,7 @@ export interface OrchestrationMetrics {
   performance: {
     totalTimeSeconds: number;
     workers: number;
+    filesProcessed: number;
     successRate: string;
   };
 }
@@ -42,7 +43,6 @@ export interface ServiceOrchestrationPlan {
     categories: string[];
     automationPotential: string;
     estimatedCompletion: string;
-
   };
   protocolRouting: Record<
     string,

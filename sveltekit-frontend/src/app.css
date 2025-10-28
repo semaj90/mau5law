@@ -2,9 +2,13 @@
 @import './lib/styles/theme-vars.css';
 
 /* ✅ LOCAL FONT LOADING - No Network Dependency */
-@import '/fonts/inter.css';
-@import '/fonts/jetbrains-mono.css';
-@import '/fonts/press-start-2p.css';
+/* Use project alias for static fonts in code imports to make paths explicit in editor tooling.
+  Note: These files live in static/fonts and are served at runtime from /fonts/*; keeping
+  browser-facing HTML and static css unchanged is safer. These imports are updated for
+  maintainability in source files that are bundled by Vite. */
+@import '@/sveltekit-frontend/static/fonts/inter.css';
+@import '@/sveltekit-frontend/static/fonts/jetbrains-mono.css';
+@import '@/sveltekit-frontend/static/fonts/press-start-2p.css';
 
 /* NES.css Framework for Retro Gaming UI */
 @import 'nes.css/css/nes.min.css';

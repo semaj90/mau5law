@@ -5,45 +5,13 @@
 =================================================================
 -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
-  // Updated to use melt-ui components
-  import Dialog from '$lib/components/ui/MeltDialog.svelte';
-  // TODO: Replace with melt-ui equivalent when available
-  // import { DropdownMenu } from 'bits-ui'
-  import { onMount, tick } from 'svelte';
-  import type { Case, Evidence, Report, CanvasState } from '$lib/data/types';
-  import type { ChatMessage } from '$lib/types/chat';
-  import { notifications  } from '$lib/stores/unified';
-  import { aiService } from '$lib/services/aiService';
-  // Import client-safe vector search - use API endpoints instead
-  // import { vectorService } from '$lib/server/vector/EnhancedVectorService'
-  import {
-    ArrowDown,
-    CornerDownLeft,
-    Trash2,
-    Bot,
-    User,
-    LayoutDashboard,
-    FileText,
-    Users,
-    Scale,
-    UploadCloud,
-    LifeBuoy,
-    Settings,
-    FileQuestion,
-    Sun,
-    Moon,
-    Search,
-    Bell,
-    MoreHorizontal,
-    PlusCircle,
-    BrainCircuit,
-    ShieldCheck,
-    BarChart3,
-  } from 'lucide-svelte';
+  // Using bits-ui + NES.css + UnoCSS; removed melt-ui & unused imports
+  import 'nes.css/css/nes.min.css';
+  import 'uno.css';
+  // removed invalid/unused lucide-svelte imports
+  import { notifications } from '$lib/stores/unified';
   // Import our enhanced UI components
   import Button from '$lib/components/ui/enhanced-bits';
-  import { Card } from '$lib/components/ui/enhanced-bits';
   import Input from '$lib/components/ui/Input.svelte';
   import Modal from '$lib/components/ui/Modal.svelte';
   // Resolve runtime constructor in case enhanced-bits exports an object/module
@@ -139,7 +107,8 @@
           loading={isSearching}
           disabled={!searchQuery.trim()}
         >
-          <Search class="w-5 h-5 mr-2" />
+          <!-- replaced <Search /> icon with emoji to avoid lucide import issues -->
+          <span class="mr-2">🔍</span>
           Search
         </Btn>
       </div>
@@ -274,9 +243,11 @@
           : 'bg-red-500/20') }
       >
         {#if status === 'active'}
-          <ShieldCheck class="w-6 h-6 text-green-400" />
+          <!-- replaced ShieldCheck component with emoji fallback -->
+          <span class="text-green-400">🛡️</span>
         {:else}
-          <FileQuestion class="w-6 h-6 text-red-400" />
+          <!-- replaced FileQuestion component with emoji fallback -->
+          <span class="text-red-400">❓</span>
         {/if}
       </div>
       <h3 class="font-semibold text-nier-white">{title}</h3>
@@ -299,12 +270,11 @@
         <h2 class="text-xl font-bold text-nier-accent">⚖️ DEEDS</h2>
       </div>
       <nav class="space-y-2">
-        {#each [{ icon: LayoutDashboard, label: 'Dashboard' }, { icon: FileText, label: 'Cases' }, { icon: Scale, label: 'Evidence' }, { icon: Users, label: 'Users' }] as item}
-          {@const IconComponent = (item as any).icon}
+        {#each [{ iconEmoji: '📊', label: 'Dashboard' }, { iconEmoji: '📄', label: 'Cases' }, { iconEmoji: '⚖️', label: 'Evidence' }, { iconEmoji: '👥', label: 'Users' }] as item}
           <a href="/showcase" class="flex items-center gap-3 p-2 rounded hover:bg-nier-surface-light text-nier-text">
-            <!-- render dynamic icon with direct component tag -->
-            <IconComponent class="w-5 h-5" />
-            {(item as any).label}
+            <!-- render emoji icon instead of dynamic Svelte component -->
+            <span class="w-5 h-5">{item.iconEmoji}</span>
+            {item.label}
           </a>
         {/each}
       </nav>
@@ -315,14 +285,13 @@
         Welcome back, {layoutData.user.name}
       </h1>
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        {#each [{ title: 'Total Cases', value: layoutData.stats.totalCases, icon: FileText }, { title: 'Open Cases', value: layoutData.stats.openCases, icon: FileText }, { title: 'Closed Cases', value: layoutData.stats.closedCases, icon: FileText }, { title: 'Evidence Items', value: layoutData.stats.evidenceCount, icon: Scale }] as stat}
-          {@const StatIcon = (stat as any).icon}
+        {#each [{ title: 'Total Cases', value: layoutData.stats.totalCases, iconEmoji: '📄' }, { title: 'Open Cases', value: layoutData.stats.openCases, iconEmoji: '📄' }, { title: 'Closed Cases', value: layoutData.stats.closedCases, iconEmoji: '📄' }, { title: 'Evidence Items', value: layoutData.stats.evidenceCount, iconEmoji: '⚖️' }] as stat}
           <div class="nes-container">
             <div class="p-4">
               <div class="flex justify-between items-center mb-2">
                 <h4 class="text-sm font-medium text-nier-text-muted">{stat.title}</h4>
-                <!-- changed: render dynamic icon safely -->
-                <StatIcon class="w-5 h-5 text-nier-accent" />
+                <!-- render emoji safely -->
+                <span class="w-5 h-5 text-nier-accent">{stat.iconEmoji}</span>
               </div>
               <p class="text-2xl font-bold text-nier-white">{stat.value}</p>
             </div>
@@ -394,4 +363,3 @@
     color: rgb(156 163 175);
   }
 </style>
-

@@ -1,20 +1,18 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected toke;
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code: Unexpected token -->
 <!-- Simple Upload Test Page -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // $state runtime rune is provided globally
   import SimpleFileUpload from '$lib/components/ai/SimpleFileUpload.svelte';
-  import { onMount } from 'svelte';
   let uploadResults = $state<unknown[]>([]);
   let searchQuery = $state('');
   let searchResults = $state<unknown[]>([]);
   let isSearching = $state(false);
+
   function handleUploadComplete(result: unknown) {
     console.log('Upload completed:', result);
     uploadResults = [...uploadResults, result];
   }
+
   async function performSearch() {
     if (!searchQuery.trim()) return;
     isSearching = true;
@@ -28,22 +26,20 @@ https://svelte.dev/e/js_parse_error -->
           limit: 5,
         }),
       });
-      if ((response as { ok?: unknown; json?: unknown; text?: unknown }).ok) {
-        const result = await (response as { ok?: unknown; json?: unknown; text?: unknown }).json();
-        searchResults =
-          (
-            result as {
-              results?: unknown;
-              filename?: unknown;
-              title?: unknown;
-              similarity?: unknown;
-              content?: unknown;
-              metadata?: unknown;
-            }
-          ).results || [];
-        console.log('Search results:', result);
+
+      if (response.ok) {
+        const json = await response.json();
+        // normalize possible shapes: { results: [...] } or [...] or single item
+        const results = Array.isArray(json?.results)
+          ? json.results
+          : Array.isArray(json)
+          ? json
+          : [];
+        searchResults = results as unknown[];
+        console.log('Search results:', json);
       } else {
-        console.error.text();
+        const text = await response.text();
+        console.error('Search failed:', response.status, text);
       }
     } catch (error) {
       console.error('Search error:', error);
@@ -61,7 +57,7 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Upload Section -->
   <div class="mb-8">
     <h2 class="text-xl font-semibold mb-4">File Upload & Processing</h2>
-    <SimpleFileUpload uploadcomplete={handleUploadComplete} />
+    <SimpleFileUpload on:uploadcomplete={(e) => handleUploadComplete(e.detail ?? e)} />
   </div>
   <!-- Search Section -->
   <div class="mb-8">
@@ -72,10 +68,10 @@ https://svelte.dev/e/js_parse_error -->
         bind:value={searchQuery}
         placeholder="Search uploaded documents..."
         class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        keydown={e => e.key === 'Enter' && performSearch()}
+        on:keydown={(e: KeyboardEvent) => e.key === 'Enter' && performSearch()}
       />
       <button
-        onclick={performSearch}
+        on:click={performSearch}
         disabled={isSearching}
         class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
       >
@@ -89,58 +85,25 @@ https://svelte.dev/e/js_parse_error -->
           <div class="border rounded-lg p-4">
             <div class="font-medium">
               {(
-                result as {
-                  results?: unknown;
-                  filename?: unknown;
-                  title?: unknown;
-                  similarity?: unknown;
-                  content?: unknown;
-                  metadata?: unknown;
-                }
-              ).filename ||
-                (
-                  result as {
-                    results?: unknown;
-                    filename?: unknown;
-                    title?: unknown;
-                    similarity?: unknown;
-                    content?: unknown;
-                    metadata?: unknown;
-                  }
-                ).title ||
-                'Unknown Document'}
+                (result as any).filename ||
+                (result as any).title ||
+                'Unknown Document'
+              )}
             </div>
-            {#if (result as { results?: unknown; filename?: unknown; title?: unknown; similarity?: unknown; content?: unknown; metadata?: unknown }).similarity}
+
+            {#if (result as any).similarity !== undefined}
               <div class="text-sm text-gray-600">
-                Similarity: {(
-                  (
-                    result as {
-                      results?: unknown;
-                      filename?: unknown;
-                      title?: unknown;
-                      similarity?: unknown;
-                      content?: unknown;
-                      metadata?: unknown;
-                    }
-                  ).similarity * 100
-                ).toFixed(1)}%
+                Similarity: {((Number((result as any).similarity) || 0) * 100).toFixed(1)}%
               </div>
             {/if}
+
             <div class="text-sm mt-2">
-              {(
-                result as {
-                  results?: unknown;
-                  filename?: unknown;
-                  title?: unknown;
-                  similarity?: unknown;
-                  content?: unknown;
-                  metadata?: unknown;
-                }
-              ).content}
+              {(result as any).content}
             </div>
-            {#if (result as { results?: unknown; filename?: unknown; title?: unknown; similarity?: unknown; content?: unknown; metadata?: unknown }).metadata}
+
+            {#if (result as any).metadata}
               <div class="text-xs text-gray-500 mt-2">
-                {JSON.stringify(metadata)}
+                {JSON.stringify((result as any).metadata)}
               </div>
             {/if}
           </div>
@@ -169,7 +132,7 @@ https://svelte.dev/e/js_parse_error -->
     <h3 class="font-medium mb-2">Quick API Tests</h3>
     <div class="flex gap-2 flex-wrap">
       <button
-        onclick={() =>
+        on:click={() =>
           fetch('/api/rag/status')
             .then(r => r.json())
             .then(console.log)}
@@ -178,7 +141,7 @@ https://svelte.dev/e/js_parse_error -->
         Test Status API
       </button>
       <button
-        onclick={() =>
+        on:click={() =>
           fetch('/api/ai/embeddings')
             .then(r => r.json())
             .then(console.log)}
