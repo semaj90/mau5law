@@ -1,12 +1,11 @@
 <script lang="ts">
   import IntegrationValidator from '$lib/components/validation/IntegrationValidator.svelte';
-  import { page } from '$app/state';
   let pageTitle = 'Integration Validation - Legal AI Platform';
 </script>
 <svelte:head>
   <title>{pageTitle}</title>
   <meta name="description" content="Comprehensive integration validation for the Legal AI Platform" />
-</svelte: head>
+</svelte:head>
 <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4">
   <div class="max-w-7xl mx-auto">
     <!-- Header -->

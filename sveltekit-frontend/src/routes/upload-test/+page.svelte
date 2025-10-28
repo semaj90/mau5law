@@ -2,91 +2,108 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import SimpleFileUpload from '$lib/components/ai/SimpleFileUpload.svelte';
-  import { onMount } from 'svelte';
   interface ServiceStatus { healthy: boolean; [key: string]: unknown }
   interface SystemStatus { services?: Record<string, ServiceStatus>; [key: string]: unknown }
   interface UploadResult { filename?: string; status?: string; documentId?: string; size?: number; embeddingGenerated?: boolean; error?: string; [key:string]: unknown }
-  let uploadResults: UploadResult[] = [];
-  let systemStatus: SystemStatus = {}
-  function handleUploadComplete(result: UploadResult) {
+
+  // make these Svelte 5 reactive state variables so assignments trigger updates
+  let uploadResults = $state<UploadResult[]>([]);
+  let systemStatus = $state<SystemStatus>({});
+
+  // helper to safely get entries for template iteration
+  function serviceEntries(): [string, ServiceStatus][] {
+    return systemStatus?.services ? Object.entries(systemStatus.services) as [string, ServiceStatus][] : [];
+  }
+
+  // Svelte emits a CustomEvent; the payload lives in event.detail
+  function handleUploadComplete(e: CustomEvent<UploadResult>) {
+    const result = e.detail;
     console.log('Upload completed:', result);
     uploadResults = [...uploadResults, result];
   }
+
+  // Robust polling with retries, timeout, backoff and cleanup
   $effect(() => {
-    (async () => {
-try {
-      // Production-ready REST status polling with retries, timeout, backoff, and background loop
-      const API_BASE = import.meta.env.VITE_API_BASE || '';
-      const MAX_RETRIES = 5;
-      const REQUEST_TIMEOUT_MS = 8000;
-      const POLL_INTERVAL_MS = 5000;
-  let pollActive = $state(true);
-      async function fetchStatus(attempt = 1) {
-        const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-        try {
-          const res = await fetch(`${API_BASE}/api/rag/status`, {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' },
-        signal: controller.signal,
-        cache: 'no-store'
-    })();
-  });
+    const API_BASE = import.meta.env.VITE_API_BASE || '';
+    const MAX_RETRIES = 5;
+    const REQUEST_TIMEOUT_MS = 8000;
+    const POLL_INTERVAL_MS = 5000;
+
+    let pollActive = true;
+    let currentController: AbortController | null = null;
+
+    async function fetchStatus(attempt = 1): Promise<Response | null> {
+      currentController = new AbortController();
+      const controller = currentController;
+      const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+      try {
+        const res = await fetch(`${API_BASE}/api/rag/status`, {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' },
+          signal: controller.signal,
+          cache: 'no-store'
+        });
         clearTimeout(timer);
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          const json = await res.json();
-          systemStatus = jso;
-          return re;
-        } catch (err) {
-          clearTimeout(timer);
-          if (attempt < MAX_RETRIES && pollActive) {
-        const backoff = Math.min(1000 * 2 ** (attempt - 1), 10000) + Math.random() * 250;
-        console.warn(`Status fetch failed (attempt ${attempt}):`, err);
-        await new Promise(r => setTimeout(r, backoff));
-        return fetchStatus(attempt + 1);
-          } else {
-        console.error('Giving up fetching system status:', err);
-          }
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        systemStatus = json as SystemStatus;
+        return res;
+      } catch (err) {
+        clearTimeout(timer);
+        if (attempt < MAX_RETRIES && pollActive) {
+          const backoff = Math.min(1000 * 2 ** (attempt - 1), 10000) + Math.random() * 250;
+          console.warn(`Status fetch failed (attempt ${attempt}):`, err);
+          await new Promise(r => setTimeout(r, backoff));
+          return fetchStatus(attempt + 1);
+        } else {
+          console.error('Giving up fetching system status:', err);
+          return null;
         }
       }
-      const first = await fetchStatus(); // initial immediate load
-      // Provide a Response object for existing code below (re-used json via systemStatus)
-      const response = new Response(JSON.stringify(systemStatus), {
-        status: first?.status || (systemStatus ? 200 : 500),
-        headers: { 'Content-Type': 'application/json' }
-      });
-      // Background polling loop
-      (async function poll() {
+    }
+
+    // start initial fetch and background poll
+    (async () => {
+      await fetchStatus(); // initial attempt, sets systemStatus on success
+
+      // background loop
+      (async function pollLoop() {
         while (pollActive) {
           await new Promise(r => setTimeout(r, POLL_INTERVAL_MS));
-          if (document.hidden) continue; // skip while tab hidden
+          if (document.hidden) continue;
           await fetchStatus(1);
         }
       })();
-      // Stop polling when leaving page
-      addEventListener('beforeunload', () => { pollActive = false, });
-      if ((response as { ok?: unknown; json?: unknown }).ok) {
-        systemStatus = await (response as { ok?: unknown; json?: unknown }).json();
-      }
-    } catch (error) {
-      console.error('Failed to fetch system status:', error);
-    }
+    })();
+
+    const onBeforeUnload = () => {
+      pollActive = false;
+      currentController?.abort();
+    };
+    addEventListener('beforeunload', onBeforeUnload);
+
+    // cleanup when effect re-runs / component unmounts
+    return () => {
+      pollActive = false;
+      currentController?.abort();
+      removeEventListener('beforeunload', onBeforeUnload);
+    };
   });
 </script>
 
-/// <reference types="vite/client"></reference>
 <svelte:head>
   <title>Enhanced File Upload Test - Legal AI System</title>
 </svelte:head>
 <div class="container mx-auto p-6">
   <h1 class="text-3xl font-bold mb-6">Enhanced File Upload Test</h1>
   <!-- System Status Display (fixed) -->
-  {#if systemStatus.services}
+  {#if serviceEntries().length > 0}
     <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-      {#each Object.entries(systemStatus.services as Record<string, ServiceStatus>) as [service, status]}
+      {#each serviceEntries() as [service, status]}
         <div class="text-center">
           <div class="font-medium capitalize">{service}</div>
-          <div class="text-sm {status.healthy ? 'text-green-600' : 'text-red-600'}">
+          <div class={status.healthy ? 'text-sm text-green-600' : 'text-sm text-red-600'}>
             {status.healthy ? '✓ Online' : '✗ Offline'}
           </div>
         </div>
@@ -98,7 +115,8 @@ try {
   <!-- Simple File Upload Component (UnoCSS attributify) -->
   <!-- Converted UnoCSS attributify props to class to satisfy TS HTMLProps -->
   <div class="mb-8 border border-gray-200 rounded-lg p-4">
-    <SimpleFileUpload onuploadcomplete={handleUploadComplete} />
+    <!-- fixed Svelte event binding -->
+    <SimpleFileUpload on:uploadcomplete={handleUploadComplete} />
   </div>
   <!-- Upload Results -->
   {#if uploadResults.length > 0}
@@ -152,16 +170,8 @@ try {
             {#if (result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).size}
               <p class="text-sm text-gray-600 mb-1">
                 Size: {(
-                  (
-                    result as {
-                      filename?: unknown;
-                      status?: unknown;
-                      documentId?: unknown;
-                      size?: unknown;
-                      embeddingGenerated?: unknown;
-                      error?: unknown;
-                    }
-                  ).size / 1024
+                  // ensure 'size' is numeric for the division to satisfy TypeScript
+                  (Number((result as { filename?: unknown; status?: unknown; documentId?: unknown; size?: unknown; embeddingGenerated?: unknown; error?: unknown }).size) / 1024)
                 ).toFixed(1)} KB
               </p>
             {/if}
@@ -204,4 +214,6 @@ try {
   Ensure the wrapping div uses: class="mx-auto p-6 max-w-1200px"
   Add 'max-w-1200px' to safelist in uno.config if using arbitrary values.
 -->
-;
+  Ensure the wrapping div uses: class="mx-auto p-6 max-w-1200px"
+  Add 'max-w-1200px' to safelist in uno.config if using arbitrary values.
+-->

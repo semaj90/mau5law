@@ -1,61 +1,6 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "noEmit": true,
-    "skipLibCheck": true,
-    "strict": false
-  },
-  "include": [
-    "src/routes/**",
-    "src/lib/**",
-    "src/**/*.svelte",
-    "src/**/*.ts",
-    "src/**/*.js"
-  ],
-  "exclude": [
-    "**/archived/**",
-    "**/examples/**",
-    "**/__tests__/**",
-    "**/*.test.ts",
-    "**/*.spec.ts",
-    "node_modules",
-    "dist",
-    "build",
-    ".svelte-kit",
-    "src/lib/server/**",
-    "src/lib/wasm/**",
-    "src/lib/webgpu/**",
-    "src/lib/gpu/**",
-    "src/workers/**"
-  ]
-}
-{
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "noEmit": true
-  },
-  "include": [
-    "src/routes/**",
-    "src/lib/**",
-    "src/components/**",
-    "src/**/*.svelte",
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "**/archived/**",
-    "**/examples/**",
-    "**/__tests__/**",
-    "**/*.test.ts",
-    "**/*.spec.ts",
-    "node_modules",
-    "dist",
-    "build",
-    ".svelte-kit"
-  ]
-}
-{
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
     "strict": false,
     "skipLibCheck": true,
     "noEmit": true
@@ -63,7 +8,8 @@
   "include": [
     "src/**/*.svelte",
     "src/**/*.ts",
-    "src/**/*.js"
+    "src/**/*.js",
+    "src/components/**"
   ],
   "exclude": [
     // Exclude backend/server code and heavy GPU/WASM during Svelte checks

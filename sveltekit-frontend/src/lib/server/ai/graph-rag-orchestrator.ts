@@ -1,17 +1,13 @@
 // src/lib/server/ai/graph-rag-orchestrator.ts
 
-import { QdrantClient } from '@qdrant/js-client-rest';
 import embed from '$lib/server/ai/embedder';
 import * as env from '$env/static/private';
 import { Pool } from 'pg';
 // replace fragile import-type with a stable import and derived Driver type
 import neo4j from 'neo4j-driver';
-
-// --- Optional fetch fallback ---
-if (typeof globalThis.fetch === 'undefined') {
-  const nodeFetch = await import('node-fetch');
-  (globalThis as any).fetch = nodeFetch.default;
-}
+import {
+  qdrant, // Import the actual qdrant client instance
+} from '$lib/server/services/qdrant-client';
 
 // --- Environment variables ---
 const NEO4J_URI = env.NEO4J_URI;
@@ -28,19 +24,23 @@ const DEFAULT_LIMIT = 10;
 const DEFAULT_EXPAND = 2;
 
 // --- Initialize Clients ---
-const QDRANT_URL =
-  process.env.QDRANT_URL ||
-  (process.env.QDRANT_HOST && process.env.QDRANT_PORT
-    ? `http://${process.env.QDRANT_HOST}:${process.env.QDRANT_PORT}`
-    : 'http://localhost:6333');
-const qdrant = new QdrantClient({ url: QDRANT_URL });
+// Qdrant URL and client are handled by the resilient qdrant-client module
 
 // typed neo4j driver alias (derived from runtime function)
 type Neo4jDriver = ReturnType<typeof neo4j.driver>;
 let neo4jDriver: Neo4jDriver | null = null;
 if (NEO4J_URI && NEO4J_USER && NEO4J_PASSWORD) {
   try {
-    neo4jDriver = neo4j.driver(NEO4J_URI, neo4j.auth.basic(NEO4J_USER, NEO4J_PASSWORD)) as Neo4jDriver;
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    // some neo4j-driver versions export auth helpers differently; cast to any to be robust
+    const driverFn: any = (neo4j as any).driver || neo4j.driver;
+    const authHelpers: any = (neo4j as any).auth || (neo4j as any).authToken || (neo4j as any);
+    const auth =
+      typeof authHelpers?.basic === 'function'
+        ? authHelpers.basic(NEO4J_USER, NEO4J_PASSWORD)
+        : (neo4j as any).auth?.basic?.(NEO4J_USER, NEO4J_PASSWORD);
+    neo4jDriver = driverFn(NEO4J_URI, auth) as Neo4jDriver;
+    /* eslint-enable @typescript-eslint/no-explicit-any */
   } catch (err) {
     console.warn('[graph-rag] neo4j driver initialization failed:', err);
     neo4jDriver = null;
@@ -176,9 +176,18 @@ async function qdrantSearch(collectionName: string, body: SearchRequestBody): Pr
   if (typeof qdrantClient.points?.search === 'function') {
     return qdrantClient.points.search({ collection_name: collectionName, ...body });
   }
-  if (typeof (qdrant as any).search === 'function') {
-    return (qdrant as any).search(collectionName, body);
+
+  // Fallback for older client shapes that might expose a top-level `search` method
+  // Use `unknown` -> typed shape cast to avoid `any`
+  const legacySearch = (
+    qdrant as unknown as {
+      search?: (collectionName: string, body: SearchRequestBody) => Promise<SearchHit[]>;
+    }
+  ).search;
+  if (typeof legacySearch === 'function') {
+    return legacySearch(collectionName, body);
   }
+
   throw new Error('search not supported by this Qdrant client shape');
 }
 
@@ -191,9 +200,7 @@ export async function initQdrantIndexes() {
     const exists = cols?.collections?.some((c: { name: string }) => c.name === COLLECTION);
     if (!exists) {
       const vectorSize = Number(process.env.EMBED_DIM || '1536');
-      await qdrantCreateCollection(COLLECTION, {
-        vectors: { size: vectorSize, distance: 'Cosine' },
-      });
+      await qdrantCreateCollection(COLLECTION, { vectors: { size: vectorSize, distance: 'Cosine' } });
       console.log(`✅ Created Qdrant collection: ${COLLECTION}`);
     }
 
@@ -233,7 +240,10 @@ function normalizeWeights(items: Array<{ id: string; weight?: number }>) {
   }));
 }
 
-async function queryPostgresGraph(query: string, pool: Pool): Promise<Array<{ id: string; weight: number; content: string }>> {
+async function queryPostgresGraph(
+  query: string,
+  pool: Pool
+): Promise<Array<{ id: string; weight: number; content: string }>> {
   try {
     const client = await pool.connect();
     const res = await client.query(
@@ -251,7 +261,7 @@ async function queryPostgresGraph(query: string, pool: Pool): Promise<Array<{ id
       relation: string | null;
     };
 
-    return (res.rows as PostgresEdgeRow[]).map((r) => ({
+    return (res.rows as PostgresEdgeRow[]).map(r => ({
       id: String(r.target_node_id ?? ''),
       weight: Number(r.weight ?? 0),
       content: r.relation ?? '',
@@ -345,7 +355,7 @@ export async function queryGraphRAG(opts: QueryOptions): Promise<RagResult[]> {
 
       // Neo4j record shim
       type Neo4jRecordShim = { get: (k: string) => unknown };
-      neighbors = (result.records as Neo4jRecordShim[]).map((rec) => ({
+      neighbors = (result.records as Neo4jRecordShim[]).map(rec => ({
         id: String(rec.get('id') ?? ''),
         weight: Number(rec.get('weight') ?? 0),
       }));
@@ -403,3 +413,4 @@ export async function queryGraphRAG(opts: QueryOptions): Promise<RagResult[]> {
   }
   return results;
 }
+

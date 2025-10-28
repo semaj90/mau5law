@@ -2,23 +2,26 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // $state runtime rune is provided globally via src/types/svelte-helpers.d.ts
-  import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
-  // Import types only to avoid 3D dependencies for now
+  import * as YoRHaClient from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
+  const yorhaAPI: any = (YoRHaClient as any).yorhaAPI ?? (YoRHaClient as any).default ?? YoRHaClient;
+
+  // Import types only (keep types import if they exist)
   import type {
     YoRHaButton3DOptions,
     YoRHaPanel3DOptions,
     YoRHaInput3DOptions,
     YoRHaModal3DOptions
   } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
-  import {
-    Gamepad2,
-    Monitor,
-    Settings,
-    Eye,
-    Code,
-    Layers
-  } from 'lucide-svelte';
-  import type { SvelteComponentTyped } from 'svelte'; // Use SvelteComponentTyped for constructor compatibility
+
+  // Use a minimal icon map instead of relying on lucide-svelte package exports
+  const IconMap: Record<string, string> = {
+    Gamepad2: '🎮',
+    Monitor: '🖥️',
+    Settings: '⚙️',
+    Eye: '👁️',
+    Code: '💻',
+    Layers: '🗂️'
+  };
 
   // Component instances and options
   let selectedComponent = $state('button');
@@ -69,26 +72,25 @@
   let yorhaUI = $state<any | null>(null);
   let canvasContainer = $state<HTMLElement | null>(null);
 
-  // Define a type for component types for better type safety
+  // Define a type for component types for better type safety (icon is now a key into IconMap)
   interface ComponentType {
     id: string;
     label: string;
-    // icon constructors (e.g. lucide-svelte) are compatible with this signature
-    icon: new (...args: any[]) => SvelteComponentTyped<any, any, any>;
+    icon: string; // changed from Svelte component constructor to string key
     description: string;
   }
 
   // Component variants and options
   const componentTypes: ComponentType[] = [
-    { id: 'button', label: 'Button 3D', icon: Gamepad2, description: '3D interactive buttons with hover effects' },
-    { id: 'panel', label: 'Panel 3D', icon: Monitor, description: 'Floating 3D panels with content areas' },
-    { id: 'input', label: 'Input 3D', icon: Code, description: 'Terminal-style 3D input fields' },
-    { id: 'modal', label: 'Modal 3D', icon: Layers, description: 'Holographic modal dialogs' }
+    { id: 'button', label: 'Button 3D', icon: 'Gamepad2', description: '3D interactive buttons with hover effects' },
+    { id: 'panel', label: 'Panel 3D', icon: 'Monitor', description: 'Floating 3D panels with content areas' },
+    { id: 'input', label: 'Input 3D', icon: 'Code', description: 'Terminal-style 3D input fields' },
+    { id: 'modal', label: 'Modal 3D', icon: 'Layers', description: 'Holographic modal dialogs' }
   ];
   const previewModes = [
-    { id: '3d', label: '3D View', icon: Eye },
-    { id: 'code', label: 'Code', icon: Code },
-    { id: 'config', label: 'Config', icon: Settings }
+    { id: '3d', label: '3D View', icon: 'Eye' },
+    { id: 'code', label: 'Code', icon: 'Code' },
+    { id: 'config', label: 'Config', icon: 'Settings' }
   ];
   $effect(() => {
     // Initialize 3D UI (placeholder for now)
@@ -256,7 +258,7 @@
   <header class="yorha-page-header">
     <div class="yorha-header-content">
       <div class="yorha-header-title">
-        <Gamepad2 size={48} />
+        <span class="yorha-icon-large" aria-hidden="true">{IconMap.Gamepad2}</span>
         <h1>3D COMPONENT GALLERY</h1>
         <div class="yorha-header-subtitle">INTERACTIVE YORHA UI ELEMENTS</div>
       </div>
@@ -268,7 +270,7 @@
       <!-- Component Selection -->
       <section class="yorha-control-section">
         <h3 class="yorha-control-title">
-          <Layers size={20} />
+          <span class="yorha-icon" aria-hidden="true">{IconMap.Layers}</span>
           COMPONENTS
         </h3>
         <div class="yorha-component-list">
@@ -279,8 +281,7 @@
     onclick={() => onComponentChange(component.id)}
     type="button"
   >
-    <!-- render icon (dynamic component syntax) -->
-    <component.icon size={18} />
+    <span class="yorha-icon" aria-hidden="true">{IconMap[component.icon]}</span>
     <div class="yorha-component-info">
       <span class="yorha-component-label">{component.label}</span>
       <span class="yorha-component-desc">{component.description}</span>
@@ -292,7 +293,7 @@
       <!-- Preview Mode -->
       <section class="yorha-control-section">
         <h3 class="yorha-control-title">
-          <Eye size={20} />
+          <span class="yorha-icon" aria-hidden="true">{IconMap.Eye}</span>
           VIEW MODE
         </h3>
         <div class="yorha-mode-buttons">
@@ -311,7 +312,7 @@
       {#if previewMode === 'config'}
         <section class="yorha-control-section">
           <h3 class="yorha-control-title">
-            <Settings size={20} />
+            <span class="yorha-icon" aria-hidden="true">{IconMap.Settings}</span>
             CONFIGURATION
           </h3>
           <div class="yorha-config-form">
@@ -714,4 +715,6 @@
       @apply w-full border-r-0 border-b;
     }
   }
+  .yorha-icon { display:inline-flex; width:1.1rem; height:1.1rem; align-items:center; justify-content:center; font-size:0.9rem; }
+  .yorha-icon-large { display:inline-flex; width:3rem; height:3rem; align-items:center; justify-content:center; font-size:2rem; margin-right:0.5rem; }
 </style>

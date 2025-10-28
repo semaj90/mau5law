@@ -1,5 +1,5 @@
 <script lang="ts">
-  import LegalDocumentSummarizer from '$lib/components/ai/LegalDocumentSummarizer.svelte';
+  import { LegalDocumentSummarizer } from '$lib/components/ai/LegalDocumentSummarizer.svelte';
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/enhanced-bits';
   function handleSummaryGenerated(summary: any) {
     console.log('Summary generated:', summary);
@@ -41,7 +41,7 @@
     </Card>
   </div>
   <!-- Main Summarizer Component -->
-  <LegalDocumentSummarizer onSummaryGenerated={handleSummaryGenerated} />
+  <LegalDocumentSummarizer on:summaryGenerated={handleSummaryGenerated} />
   <!-- Usage Guide -->
   <div class="mt-8">
     <Card>

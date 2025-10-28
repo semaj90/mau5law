@@ -7,19 +7,10 @@
     import * as yorhaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
   // If you have centralized API clients, prefer:
   // import yorhaAPI from '$lib/api/YoRHaAPIClient';
-  import {
-    Home,
-    Terminal,
-    Monitor,
-    Database,
-    Activity,
-    Cpu,
-    Search,
-    FileText,
-    Bot,
-    ChevronRight,
-    ChevronLeft,
-  } from 'lucide-svelte';
+
+  // Replaced named imports (which caused TS errors) with a proper top-level namespace import
+  import * as Icons from 'lucide-svelte';
+  const { Terminal, Monitor, Database, Cpu, Search, Bot, ChevronRight, ChevronLeft } = Icons as any;
 
   // Nav item type - keep icon permissive to avoid type issues with icon components
   interface NavItem {
@@ -283,7 +274,7 @@
     height: 73px;
     display: flex;
     align-items: center;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* fixed typo */
     padding: 1rem 1.5rem;
     z-index: 40;
     background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.2));
@@ -387,7 +378,7 @@
   :global(.yorha-nav-header) {
     display: flex;
     align-items: center;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* fixed typo */
     padding: 1.5rem;
     border-bottom: 1px solid rgba(245, 158, 11, 0.3);
   }
@@ -498,4 +489,3 @@
     }
   }
 </style>
-

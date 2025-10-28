@@ -43,7 +43,7 @@
  * - Security and audit logging
  * - Resource management and throttling
  */
-import { createMachine, assign, fromPromise } from 'xstate';
+import { createMachine, assign, fromPromise } from '$lib/shims/xstate';
 import { browser } from '$app/environment';
 import type * as amqplib from 'amqplib';
 

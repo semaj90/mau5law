@@ -6,7 +6,7 @@ Enhanced-bits UI integration with real-time progress and quality metrics
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { Button, Card, CardContent, CardHeader, CardTitle, Input, Label, Alert } from '$lib/components/ui/enhanced-bits';
+  import { Alert, Button, Card, CardContent, CardHeader, CardTitle, Label } from '$lib/components/ui/enhanced-bits';
   interface SummarizationRequest {
     document_id: string;
     title: string;
@@ -75,17 +75,17 @@ Enhanced-bits UI integration with real-time progress and quality metrics
   ];
   // Document type options
   const documentTypes = [
-    { value: 'contract', label: '📄 Contract', description 'Agreements, terms, obligations' },
-    { value: 'judgment', label: '⚖️ Court Judgment', description 'Court decisions, rulings' },
-    { value: 'brief', label: '📝 Legal Brief', description 'Arguments, case analysis' },
-    { value: 'statute', label: '📖 Statute/Law', description 'Legal codes, regulations' }
+    { value: 'contract', label: '📄 Contract', description: 'Agreements, terms, obligations' },
+    { value: 'judgment', label: '⚖️ Court Judgment', description: 'Court decisions, rulings' },
+    { value: 'brief', label: '📝 Legal Brief', description: 'Arguments, case analysis' },
+    { value: 'statute', label: '📖 Statute/Law', description: 'Legal codes, regulations' }
   ];
   // Summary type options
   const summaryTypes = [
-    { value: 'executive', label: '🎯 Executive Summary', description 'High-level overview for decision makers' },
-    { value: 'detailed', label: '📋 Detailed Analysis', description 'Comprehensive breakdown with context' },
-    { value: 'bullet_points', label: '📌 Key Points', description 'Structured bullet-point format' },
-    { value: 'legal_analysis', label: '⚖️ Legal Analysis', description 'Legal implications and precedents' }
+    { value: 'executive', label: '🎯 Executive Summary', description: 'High-level overview for decision makers' },
+    { value: 'detailed', label: '📋 Detailed Analysis', description: 'Comprehensive breakdown with context' },
+    { value: 'bullet_points', label: '📌 Key Points', description: 'Structured bullet-point format' },
+    { value: 'legal_analysis', label: '⚖️ Legal Analysis', description: 'Legal implications and precedents' }
   ];
   // Check service health on mount
   $effect(() => {
@@ -96,7 +96,7 @@ await checkServiceHealth();
   // Check if summarization service is available
   async function checkServiceHealth(): Promise<void> {
     try {
-      // removed unused response assignment
+      const response = await fetch(serviceUrl);
       if (response.ok) {
         const health = await response.json();
         serviceHealth = health.status === 'healthy' ? 'healthy' : 'degraded';
@@ -131,12 +131,12 @@ await checkServiceHealth();
       }, 500);
       const request: SummarizationRequest = {
         document_id: `doc_${Date.now()}`,
-        title: documentTitle
-        content: documentContent
-        document_type: documentType
-        summary_type: summaryType
-        max_length: maxLength;
-        focus: focusAreas;
+        title: documentTitle,
+        content: documentContent,
+        document_type: documentType,
+        summary_type: summaryType,
+        max_length: maxLength,
+        focus: focusAreas,
         metadata: {
           generated_at: new Date().toISOString(),
           user_agent: navigator.userAgent,
@@ -148,15 +148,15 @@ await checkServiceHealth();
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(request);
+        body: JSON.stringify(request)
       });
       clearInterval(progressInterval);
       processingProgress = 100;
       if (!response.ok) {
-        const errorData = await response.json.catch(() => ( ));
+        const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || `Summarization failed: ${response.status}`);
       }
-      const summaryResult = await response.json() as SummarizationRespon;
+      const summaryResult = await response.json() as SummarizationResponse;
       currentSummary = summaryResult;
       // Notify parent component
       if (onSummaryGenerated) {
@@ -200,6 +200,7 @@ await checkServiceHealth();
     }
   }
 </script>
+
 <div class="legal-summarizer container mx-auto p-6 max-w-6xl">
   <!-- Service Status -->
   <div class="mb-4">
@@ -239,11 +240,12 @@ await checkServiceHealth();
         <!-- Document Title -->
         <div class="space-y-2">
           <Label for="doc-title">Document Title</Label>
-          <Input
+          <input
             id="doc-title"
-            type="text";
+            type="text"
             bind:value={documentTitle}
             placeholder="e.g., Software License Agreement - ABC Corp"
+            class="w-full px-3 py-2 border border-input bg-background rounded-md"
           />
         </div>
         <!-- Document Type -->
@@ -278,13 +280,14 @@ await checkServiceHealth();
           </div>
           <div class="space-y-2">
             <Label for="max-length">Target Length (words)</Label>
-            <Input
+            <input
               id="max-length"
               type="number"
               bind:value={maxLength}
               min="100"
               max="2000"
               step="50"
+              class="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
             />
           </div>
         </div>
@@ -316,7 +319,7 @@ await checkServiceHealth();
             class="w-full px-3 py-2 border border-input bg-background rounded-md font-mono text-sm"
           ></textarea>
           <p class="text-xs text-muted-foreground">
-            {documentContent.length.toLocaleString()} characters, ~{Math.ceil.length)} words
+            {documentContent.length.toLocaleString()} characters, ~{Math.ceil(documentContent.length / 5)} words
           </p>
         </div>
         <!-- Generate Button -->

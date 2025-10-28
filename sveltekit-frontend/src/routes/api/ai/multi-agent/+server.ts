@@ -22,7 +22,6 @@ import type { LegalAnalysisRequest } from '$lib/ai/autogen-legal-agents'
 import type { RequestHandler } from './$types.js'
 // Multi-Agent AI Orchestration API
 // Unified endpoint for Autogen, CrewAI, and vLLM integration
-}
 export interface AutogenRequest {
   query: string
   caseId?: string
@@ -178,7 +177,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           results.autogen = await runAutogenAnalysis(requestData, sessionId)
           totalTokens += (results.autogen as any).processingTime || 0
           overallConfidence = (results.autogen as any).confidence || 0.7
-          allRecommendations.push(...((results.autogen as any).recommendations || [])
+          allRecommendations.push(...((results.autogen as any).recommendations || []))
           break
         case "crewai":
           results.crewai = await runCrewAIWorkflow(requestData, sessionId)
@@ -186,7 +185,7 @@ const originalPOSTHandler: RequestHandler = async ({ request }) => {
           overallConfidence =
             (results.crewai as WorkflowResult).results?.reduce((acc: number, r: any) => acc + r.confidence, 0) /
               ((results.crewai as WorkflowResult).results?.length || 1) || 0.7
-          allRecommendations.push(...((results.crewai as WorkflowResult).recommendations || [])
+          allRecommendations.push(...((results.crewai as WorkflowResult).recommendations || []))
           break
         case "vllm_only":
           results.vllm = await runVLLMAnalysis(requestData, sessionId)

@@ -4,6 +4,7 @@ import { DbCaseOperations as CaseOperations } from '$lib/server/db/enhanced-oper
 import { redis as sharedRedis } from '$lib/server/redis-client';
 import type { RequestHandler } from './$types';
 import { resolveUser, getMetaEnv, isDevBypassEnabled } from '$lib/server/auth/utils';
+import { json } from '@sveltejs/kit';
 
 const CASE_PRIORITY_VALUES = ['low', 'medium', 'high', 'critical'] as const;
 const CASE_STATUS_VALUES = ['open', 'investigating', 'pending', 'closed', 'archived'] as const;
@@ -441,4 +442,42 @@ export const OPTIONS: RequestHandler = async () => {
 
 // Note: Using '*' for 'Access-Control-Allow-Origin' is only safe in development.
 // Replace 'https://your-frontend-domain.com' with your actual production domain.
+
+/*
+  Try to use the project's Drizzle client & schema. If those are missing in some env,
+  the catch blocks return safe defaults so frontend continues to work.
+*/
+export const drizzleGET: RequestHandler = async () => {
+  try {
+    const { db } = await import('$lib/server/db/client');
+    const { cases } = await import('$lib/server/db/schema-postgres');
+    const rows = await db.select().from(cases).limit(100);
+    return json(rows);
+  } catch (err) {
+    console.warn('Drizzle GET /api/cases failed, returning empty list', err);
+    return json([]);
+  }
+};
+
+export const drizzlePOST: RequestHandler = async ({ request }) => {
+  try {
+    const payload = await request.json();
+    const { db } = await import('$lib/server/db/client');
+    const { cases } = await import('$lib/server/db/schema-postgres');
+    const insert = await db
+      .insert(cases)
+      .values({
+        title: payload.title ?? 'Untitled case',
+        status: payload.status ?? 'new',
+        progress: payload.progress ?? 0,
+        evidence_count: payload.evidenceCount ?? 0,
+        last_update: new Date(),
+      })
+      .returning();
+    return json(insert[0] ?? { success: true });
+  } catch (err) {
+    console.warn('Drizzle POST /api/cases failed', err);
+    return json({ error: 'failed to create case' }, { status: 500 });
+  }
+};
 

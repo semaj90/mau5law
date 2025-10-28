@@ -40,13 +40,13 @@ export const GET = (async (): Promise<any> => {
       }
     })
   } catch (error: any) {
-    return json()
+    return json(
       {
         status: "error",
-        error,: error instanceof Error ? error.message: "Unknown error",
-        timestamp,: new Date().toISOString()
+        error: error instanceof Error ? error.message: "Unknown error",
+        timestamp: new Date().toISOString()
       },
-      { status: 500 },
+      { status: 500 }
     )
   }
 })
@@ -61,8 +61,7 @@ export const POST = (async ({ request }): Promise<any> => {
           status: "error",
           error: "Ollama service not available",
           suggestion: "Please ensure Ollama is running: ollama serve"
-        },)
-        { status: 503 },
+        }, { status: 503 }
       )
     }
     const startTime = Date.now()
@@ -97,18 +96,15 @@ export const POST = (async ({ request }): Promise<any> => {
             generateError instanceof Error
               ? generateError.message: "Unknown generation error",
           suggestion: "Check if gemma3-legal model is imported: ollama list"
-        },)
-        { status: 500 },
+        }, { status: 500 }
       )
     }
-  }, catch (error: any) {
-    return json()
+  } catch (error: any) {
+    return json(
       {
         status: "error",
-        error,: error instanceof Error ? error.message: "Unknown error",
-        timestamp,: new Date().toISOString()
+        error: error instanceof Error ? error.message: "Unknown error",
+        timestamp: new Date().toISOString()
       },
-      { status: 500 },
+      { status: 500 }
     )
-  }
-});

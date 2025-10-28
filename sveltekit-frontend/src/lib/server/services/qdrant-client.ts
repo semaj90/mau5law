@@ -1,115 +1,295 @@
-import { QdrantClient } from '@qdrant/js-client-rest';
-export const qdrant = new QdrantClient({
-  url:
-    // prefer VITE_ prefix in Vite, fallback to legacy key, then localhost
-    (import.meta.env.VITE_QDRANT_URL as string) || (import.meta.env.QDRANT_URL as string) || 'http://localhost:6333',
-});
-export const EVIDENCE_COLLECTION_NAME = 'evidence_v1';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// Resilient Qdrant client: SDK-first dynamic import, HTTP fallback, API key support,
+// and Docker-friendly URL resolution. Export a small facade and bootstrap helpers.
 
-// Add configurable vector size + distance (env-driven, sensible defaults)
-const rawVectorSize =
-  (import.meta.env.VITE_QDRANT_VECTOR_SIZE as string) || (import.meta.env.QDRANT_VECTOR_SIZE as string) || '384'; // default to 384 if unspecified
-export const QDRANT_VECTOR_SIZE = Number.parseInt(rawVectorSize, 10) || 384;
+type SearchRequestBody = {
+  vector?: number[];
+  limit?: number;
+  with_payload?: boolean;
+  filter?: Record<string, unknown>;
+  [k: string]: unknown;
+};
 
-export const QDRANT_DISTANCE =
-  (import.meta.env.VITE_QDRANT_DISTANCE as string) || (import.meta.env.QDRANT_DISTANCE as string) || 'Cosine';
+type SearchHit = { id: string | number; score?: number; payload?: Record<string, unknown> };
+type CollectionsListResponse = { collections?: Array<{ name: string }> };
+type PayloadIndexBody = { field_name: string; field_schema?: string; wait?: boolean; [k: string]: unknown };
+type CreateCollectionBody = { vectors: { size: number; distance?: 'Cosine' | 'Dot' | 'Euclid' }; [k: string]: unknown };
 
-// log the chosen config for startup diagnostics
-if (typeof globalThis !== 'undefined') {
-  console.log(`[qdrant-client] using vector size=${QDRANT_VECTOR_SIZE}, distance=${QDRANT_DISTANCE}`);
-  if (QDRANT_VECTOR_SIZE <= 0) {
-    console.warn('[qdrant-client] QDRANT_VECTOR_SIZE parsed to <= 0, defaulting to 384');
-  }
+const DEFAULT_QDRANT = 'http://localhost:6333';
+
+function getQdrantUrl(): string {
+  if (process.env.QDRANT_URL) return process.env.QDRANT_URL;
+  if (process.env.QDRANT_HOST && process.env.QDRANT_PORT)
+    return `http://${process.env.QDRANT_HOST}:${process.env.QDRANT_PORT}`;
+  return DEFAULT_QDRANT;
 }
 
-/* Local minimal types that describe the shapes we call on different client versions */
-type QdrantCollection = { name: string };
-type CollectionsListResponse = { collections?: QdrantCollection[] };
+function getApiKeyHeader(): Record<string, string> {
+  const key = process.env.QDRANT_API_KEY || '';
+  return key ? { Authorization: `ApiKey ${key}` } : {};
+}
 
-type CollectionsApiLike = {
-  getCollections?: () => Promise<CollectionsListResponse>;
-  createCollection?: (body: {
-    collection_name: string;
-    vectors: { size: number; distance: string };
-  }) => Promise<unknown>;
-  createFieldIndex?: (
-    collectionName: string,
-    body: { field_name: string; field_type: string; wait?: boolean }
-  ) => Promise<unknown>;
-};
+type FetchFn = (input: RequestInfo, init?: RequestInit) => Promise<Response>;
 
-type QdrantClientLike = CollectionsApiLike & {
-  // some client versions expose helpers at top-level
-  getCollections?: () => Promise<CollectionsListResponse>;
-  createCollection?: (body: {
-    collection_name: string;
-    vectors: { size: number; distance: string };
-  }) => Promise<unknown>;
-  createFieldIndex?: (
-    collectionName: string,
-    body: { field_name: string; field_type: string; wait?: boolean }
-  ) => Promise<unknown>;
-};
-
-/**
- * Ensures the Qdrant collection exists and has a payload index for tags.
- * This is critical for efficient filtering and should be called on server startup.
- */
-export async function initializeQdrantCollection(): Promise<void> {
+async function ensureFetch(): Promise<FetchFn> {
+  if (typeof globalThis.fetch === 'function') return globalThis.fetch as unknown as FetchFn;
   try {
-    // adapt to client shape without using `any`
-    const client = qdrant as unknown as QdrantClientLike;
-
-    // fetch collections via whichever method exists
-    let collectionsResp: CollectionsListResponse | undefined = undefined;
-    if (typeof client.collectionsApi?.getCollections === 'function') {
-      collectionsResp = await client.collectionsApi.getCollections();
-    } else if (typeof client.getCollections === 'function') {
-      collectionsResp = await client.getCollections();
-    }
-
-    const collections: Array<{ name: string }> = collectionsResp?.collections ?? [];
-    const collectionExists = collections.some(c => c.name === EVIDENCE_COLLECTION_NAME);
-
-    if (!collectionExists) {
-      console.log(`Creating Qdrant collection: ${EVIDENCE_COLLECTION_NAME}`);
-
-      const createCollectionPayload = {
-        collection_name: EVIDENCE_COLLECTION_NAME,
-        // use env-driven vector size + distance
-        vectors: { size: QDRANT_VECTOR_SIZE, distance: QDRANT_DISTANCE },
-      };
-
-      if (typeof client.collectionsApi?.createCollection === 'function') {
-        await client.collectionsApi.createCollection(createCollectionPayload);
-      } else if (typeof client.createCollection === 'function') {
-        await client.createCollection(createCollectionPayload);
-      } else {
-        console.warn('Qdrant client does not expose a createCollection API; skipping createCollection.');
-      }
-
-      // Create payload index using the correct API if available; guard behind try/catch
-      try {
-        const indexPayload = { field_name: 'tags', field_type: 'keyword', wait: true };
-        if (typeof client.collectionsApi?.createFieldIndex === 'function') {
-          await client.collectionsApi.createFieldIndex(EVIDENCE_COLLECTION_NAME, indexPayload);
-        } else if (typeof client.createFieldIndex === 'function') {
-          await client.createFieldIndex(EVIDENCE_COLLECTION_NAME, indexPayload);
-        } else {
-          // if index API not present, log and continue
-          console.warn('Qdrant client does not expose a field-index creation API; skipping index creation.');
-        }
-      } catch (indexError: unknown) {
-        console.warn('Field index creation failed, continuing without index:', indexError);
-      }
-
-      console.log('Qdrant collection and payload index created successfully.');
-    } else {
-      // existing collection - nothing to do
-      console.log(`Qdrant collection already exists: ${EVIDENCE_COLLECTION_NAME}`);
-    }
-  } catch (error: unknown) {
-    const msg = error instanceof Error ? error.message : String(error);
-    console.error('Failed to initialize Qdrant:', msg);
+    const nf = await import('node-fetch');
+    const mod: any = nf;
+    return (mod.default || mod) as FetchFn;
+  } catch (e) {
+    throw new Error('fetch is not available and node-fetch cannot be loaded');
   }
 }
+
+interface SdkClientLike {
+  collections?: {
+    list?: () => Promise<CollectionsListResponse>;
+    create?: (name: string, body: CreateCollectionBody) => Promise<unknown>;
+    createPayloadIndex?: (name: string, body: PayloadIndexBody) => Promise<unknown>;
+    createFieldIndex?: (name: string, body: PayloadIndexBody) => Promise<unknown>;
+  };
+  points?: {
+    search?: (opts: Record<string, unknown>) => Promise<SearchHit[]>;
+    upsert?: (opts: Record<string, unknown>) => Promise<unknown>;
+    delete?: (opts: Record<string, unknown>) => Promise<unknown>;
+  };
+  createCollection?: (name: string, body: CreateCollectionBody) => Promise<unknown>;
+  getCollections?: () => Promise<CollectionsListResponse>;
+  createPayloadIndex?: (name: string, body: PayloadIndexBody) => Promise<unknown>;
+  createFieldIndex?: (name: string, body: PayloadIndexBody) => Promise<unknown>;
+  search?: (collectionName: string, body: SearchRequestBody) => Promise<SearchHit[]>;
+  upsert?: (collectionName: string, body: Record<string, unknown>) => Promise<unknown>;
+  delete?: (collectionName: string, body: Record<string, unknown>) => Promise<unknown>;
+}
+
+async function tryCreateSdkClient(): Promise<SdkClientLike | null> {
+  try {
+    const mod = await import('@qdrant/js-client-rest');
+    type Ctor = new (opts?: Record<string, unknown>) => unknown;
+    const maybe = mod as { QdrantClient?: Ctor; default?: Ctor } | any;
+    const ctor = maybe?.QdrantClient ?? maybe?.default ?? maybe;
+    if (typeof ctor === 'function') {
+      const url = getQdrantUrl();
+      const apiKey = process.env.QDRANT_API_KEY;
+      const opts: Record<string, unknown> = { url };
+      if (apiKey) opts.apiKey = apiKey;
+      return new ctor(opts) as unknown as SdkClientLike;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+async function httpRequest(path: string, method = 'GET', body?: unknown) {
+  const f = await ensureFetch();
+  const base = getQdrantUrl().replace(/\/$/, '');
+  const headers: Record<string, string> = { 'Content-Type': 'application/json', ...getApiKeyHeader() };
+  const url = path.startsWith('/') ? `${base}${path}` : `${base}/${path}`;
+  const init: RequestInit = { method, headers };
+  if (body !== undefined) init.body = JSON.stringify(body);
+  const res = await f(url, init);
+  if (!res.ok) {
+    const txt = await res.text().catch(() => '');
+    throw new Error(`Qdrant HTTP ${res.status} ${res.statusText}: ${txt}`);
+  }
+  if (res.status === 204) return null;
+  return res.json().catch(() => null);
+}
+
+async function httpGetCollections(): Promise<CollectionsListResponse> {
+  return (await httpRequest('/collections')) as CollectionsListResponse;
+}
+
+async function httpCreateCollection(name: string, body: CreateCollectionBody) {
+  return await httpRequest(`/collections/${encodeURIComponent(name)}`, 'PUT', body);
+}
+
+async function httpCreatePayloadIndex(collectionName: string, body: PayloadIndexBody) {
+  const base = getQdrantUrl().replace(/\/$/, '');
+  const tries = [
+    `${base}/collections/${encodeURIComponent(collectionName)}/payload/index`,
+    `${base}/collections/${encodeURIComponent(collectionName)}/index`,
+    `${base}/collections/${encodeURIComponent(collectionName)}/create_index`,
+    `${base}/collections/${encodeURIComponent(collectionName)}/payload-index`,
+  ];
+  const f = await ensureFetch();
+  for (const ep of tries) {
+    try {
+      const res = await f(ep, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getApiKeyHeader() },
+        body: JSON.stringify(body),
+      } as any);
+      if (res.ok) return await res.json();
+    } catch {
+      // try next
+    }
+  }
+  throw new Error('createPayloadIndex failed (all HTTP endpoints tried)');
+}
+
+async function httpSearch(collectionName: string, body: SearchRequestBody): Promise<SearchHit[]> {
+  return (await httpRequest(
+    `/collections/${encodeURIComponent(collectionName)}/points/search`,
+    'POST',
+    body
+  )) as SearchHit[];
+}
+
+async function httpUpsert(collectionName: string, points: Array<Record<string, unknown>>) {
+  return await httpRequest(`/collections/${encodeURIComponent(collectionName)}/points?wait=true`, 'PUT', { points });
+}
+
+async function httpDelete(collectionName: string, ids: (string | number)[]) {
+  return await httpRequest(`/collections/${encodeURIComponent(collectionName)}/points/delete`, 'POST', { points: ids });
+}
+
+const qdrant = {
+  async getCollections(): Promise<CollectionsListResponse> {
+    const sdk = await tryCreateSdkClient();
+    if (sdk) {
+      try {
+        if (sdk.collections?.list) return await sdk.collections.list();
+        if (typeof sdk.getCollections === 'function') return await sdk.getCollections();
+      } catch (e) {
+        console.warn('[Qdrant] SDK getCollections failed, falling back to HTTP', e);
+      }
+    }
+    return await httpGetCollections();
+  },
+
+  async createCollection(collectionName: string, body: CreateCollectionBody) {
+    const sdk = await tryCreateSdkClient();
+    if (sdk) {
+      try {
+        if (sdk.collections?.create) return await sdk.collections.create(collectionName, body);
+        if (typeof sdk.createCollection === 'function') return await sdk.createCollection(collectionName, body);
+      } catch (e) {
+        console.warn('[Qdrant] SDK createCollection failed, falling back to HTTP', e);
+      }
+    }
+    return await httpCreateCollection(collectionName, body);
+  },
+
+  async createPayloadIndex(collectionName: string, body: PayloadIndexBody) {
+    const sdk = await tryCreateSdkClient();
+    if (sdk) {
+      try {
+        if (sdk.collections?.createPayloadIndex) return await sdk.collections.createPayloadIndex(collectionName, body);
+        if (typeof sdk.createPayloadIndex === 'function') return await sdk.createPayloadIndex(collectionName, body);
+        if (sdk.collections?.createFieldIndex) return await sdk.collections.createFieldIndex(collectionName, body);
+        if (typeof sdk.createFieldIndex === 'function') return await sdk.createFieldIndex(collectionName, body);
+      } catch (e) {
+        console.warn('[Qdrant] SDK createPayloadIndex failed, falling back to HTTP', e);
+      }
+    }
+    return await httpCreatePayloadIndex(collectionName, body);
+  },
+
+  async search(collectionName: string, body: SearchRequestBody) {
+    const sdk = await tryCreateSdkClient();
+    if (sdk) {
+      try {
+        if (sdk.points?.search)
+          return await sdk.points.search({ collection_name: collectionName, ...body } as Record<string, unknown>);
+        if (typeof sdk.search === 'function') return await sdk.search(collectionName, body);
+      } catch (e) {
+        console.warn('[Qdrant] SDK search failed, falling back to HTTP', e);
+      }
+    }
+    return await httpSearch(collectionName, body);
+  },
+
+  async upsert(collectionName: string, points: Array<Record<string, unknown>>) {
+    const sdk = await tryCreateSdkClient();
+    if (sdk) {
+      try {
+        if (sdk.points?.upsert)
+          return await sdk.points.upsert({ collection_name: collectionName, points } as Record<string, unknown>);
+        if (typeof sdk.upsert === 'function')
+          return await sdk.upsert(collectionName, { points } as Record<string, unknown>);
+      } catch (e) {
+        console.warn('[Qdrant] SDK upsert failed, falling back to HTTP', e);
+      }
+    }
+    return await httpUpsert(collectionName, points);
+  },
+
+  async delete(collectionName: string, ids: (string | number)[]) {
+    const sdk = await tryCreateSdkClient();
+    if (sdk) {
+      try {
+        if (typeof sdk.delete === 'function')
+          return await sdk.delete(collectionName, { points: ids } as Record<string, unknown>);
+        if (sdk.points?.delete)
+          return await sdk.points.delete({ collection_name: collectionName, points: ids } as Record<string, unknown>);
+      } catch (e) {
+        console.warn('[Qdrant] SDK delete failed, falling back to HTTP', e);
+      }
+    }
+    return await httpDelete(collectionName, ids);
+  },
+};
+
+async function qdrantHealthCheck(): Promise<boolean> {
+  try {
+    const f = await ensureFetch();
+    const url = `${getQdrantUrl().replace(/\/$/, '')}/health`;
+    const res = await f(url, { method: 'GET', headers: getApiKeyHeader() } as any);
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function waitForQdrantReady(maxRetries = 15, delayMs = 2000): Promise<boolean> {
+  for (let i = 0; i < maxRetries; i++) {
+    if (await qdrantHealthCheck()) {
+      console.log(`🟢 Qdrant ready (attempt ${i + 1}/${maxRetries})`);
+      return true;
+    }
+    console.log(`⏳ Waiting for Qdrant... (${i + 1}/${maxRetries})`);
+    await new Promise(r => setTimeout(r, delayMs));
+  }
+  console.error('❌ Qdrant did not become ready in time.');
+  return false;
+}
+
+async function initQdrantIndexes(collectionName = process.env.QDRANT_COLLECTION || 'documents') {
+  try {
+    const cols = await qdrant.getCollections();
+    const exists = cols?.collections?.some((c: any) => c.name === collectionName);
+    if (!exists) {
+      const vectorSize = Number(process.env.EMBED_DIM || '1536');
+      await qdrant.createCollection(collectionName, { vectors: { size: vectorSize, distance: 'Cosine' } });
+      console.log(`✅ Created Qdrant collection: ${collectionName}`);
+    }
+
+    const pairs: Array<[string, string]> = [
+      ['type', 'keyword'],
+      ['title', 'text'],
+      ['tags', 'keyword'],
+    ];
+    for (const [field, schema] of pairs) {
+      try {
+        await qdrant.createPayloadIndex(collectionName, { field_name: field, field_schema: schema });
+      } catch (e) {
+        console.warn(`Failed to create payload index for field '${field}':`, e);
+      }
+    }
+    return { ok: true };
+  } catch (e) {
+    console.error('initQdrantIndexes failed:', e);
+    return { ok: false, error: String(e) };
+  }
+}
+
+async function bootstrapQdrant(collectionName?: string) {
+  const ready = await waitForQdrantReady();
+  if (!ready) throw new Error('Qdrant startup timeout');
+  return await initQdrantIndexes(collectionName || process.env.QDRANT_COLLECTION || 'documents');
+}
+
+export { qdrant, initQdrantIndexes, qdrantHealthCheck, waitForQdrantReady, bootstrapQdrant };

@@ -11,10 +11,9 @@ export const POST: RequestHandler = async ({ request }) => {
     const { prefix, since } = await request.json()
     if (!prefix || !since) {
       return json({
-        success: false,;
+        success: false,
         error: 'Prefix and since timestamp are required'
       }, { status: 400 })
-    }
     const now = Date.now()
     const entries: Array<any> = []
     // Get recent entries matching prefix

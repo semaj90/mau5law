@@ -37,24 +37,25 @@ class GraphWorker {
                 resolve();
             };
             request.onupgradeneeded = (event) => {
-                // removed unused db assignment
-                // Graph snapshots store
-                if (!db.objectStoreNames.contains('graph_snapshots')) {
-                    const snapshotStore = db.createObjectStore('graph_snapshots', { keyPath: 'id' });
-                    snapshotStore.createIndex('timestamp', 'timestamp', { unique: false });
-                    snapshotStore.createIndex('type', 'type', { unique: false });
-                }
-                // Query cache store
-                if (!db.objectStoreNames.contains('query_cache')) {
-                    const cacheStore = db.createObjectStore('query_cache', { keyPath: 'query_hash' });
-                    cacheStore.createIndex('timestamp', 'timestamp', { unique: false });
-                    cacheStore.createIndex('ttl', 'ttl', { unique: false });
-                }
-                // Telemetry store
-                if (!db.objectStoreNames.contains('telemetry')) {
-                    const telemetryStore = db.createObjectStore('telemetry', { keyPath: 'id' });
-                    telemetryStore.createIndex('timestamp', 'timestamp', { unique: false });
-                }
+              // use the actual db reference from event
+              const db = event.target.result;
+              // Graph snapshots store
+              if (!db.objectStoreNames.contains('graph_snapshots')) {
+                const snapshotStore = db.createObjectStore('graph_snapshots', { keyPath: 'id' });
+                snapshotStore.createIndex('timestamp', 'timestamp', { unique: false });
+                snapshotStore.createIndex('type', 'type', { unique: false });
+              }
+              // Query cache store
+              if (!db.objectStoreNames.contains('query_cache')) {
+                const cacheStore = db.createObjectStore('query_cache', { keyPath: 'query_hash' });
+                cacheStore.createIndex('timestamp', 'timestamp', { unique: false });
+                cacheStore.createIndex('ttl', 'ttl', { unique: false });
+              }
+              // Telemetry store
+              if (!db.objectStoreNames.contains('telemetry')) {
+                const telemetryStore = db.createObjectStore('telemetry', { keyPath: 'id' });
+                telemetryStore.createIndex('timestamp', 'timestamp', { unique: false });
+              }
             };
         });
     }
@@ -85,21 +86,17 @@ class GraphWorker {
         switch (type) {
             case 'nodes':
                 return {
-                    results: [
-                        { id: 'wasm_node_1', label: params.label || 'Case', properties: { source: 'wasm' } }
-                    ],
-                    count: 1,
-                    latency_ms: baseLatency
-                    source: 'wasm',
+                  results: [{ id: 'wasm_node_1', label: params.label || 'Case', properties: { source: 'wasm' } }],
+                  count: 1,
+                  latency_ms: baseLatency,
+                  source: 'wasm',
                 };
             case 'precedents':
                 return {
-                    precedents: [
-                        { id: 'wasm_prec_1', title: 'WASM Precedent', citation: 'WASM 123 (2025)' }
-                    ],
-                    total: 1,
-                    latency_ms: baseLatency
-                    source: 'wasm',
+                  precedents: [{ id: 'wasm_prec_1', title: 'WASM Precedent', citation: 'WASM 123 (2025)' }],
+                  total: 1,
+                  latency_ms: baseLatency,
+                  source: 'wasm',
                 };
             case 'cypher':
                 return {
@@ -136,11 +133,11 @@ class GraphWorker {
     async saveGraphSnapshot(data) {
         try {
             const snapshot = {
-                id: 'latest_snapshot',
-                timestamp: Date.now(),
-                data: data
-                type: 'full_graph',
-                size: JSON.stringify(data).length,
+              id: 'latest_snapshot',
+              timestamp: Date.now(),
+              data: data,
+              type: 'full_graph',
+              size: JSON.stringify(data).length,
             };
             const transaction = this.indexedDB.transaction(['graph_snapshots'], 'readwrite');
             const store = transaction.objectStore('graph_snapshots');
@@ -179,10 +176,10 @@ class GraphWorker {
     async setCachedQuery(queryHash, data, ttlMs = 300000) {
         try {
             const cacheEntry = {
-                query_hash: queryHash
-                data: data
-                timestamp: Date.now(),
-                ttl: Date.now() + ttlMs,
+              query_hash: queryHash,
+              data: data,
+              timestamp: Date.now(),
+              ttl: Date.now() + ttlMs,
             };
             const transaction = this.indexedDB.transaction(['query_cache'], 'readwrite');
             const store = transaction.objectStore('query_cache');
@@ -209,56 +206,56 @@ class GraphWorker {
             // Step 1: Return cached result immediately (IndexedDB)
             const cachedResult = await this.getCachedQuery(queryHash);
             if (cachedResult) {
-                const latency = performance.now() - startTime;
-                this.telemetry.latencies.push(latency);
-                this.postMessage({
-                    type: 'query_result',
-                    data: cachedResult
-                    source: 'indexeddb_cache',
-                    cache_hit: true
-                    latency_ms: latency
-                    query_hash: queryHash
-                });
-                // Continue with background refresh if stale
-                this.backgroundRefresh(query, params, queryHash);
-                return;
+              const latency = performance.now() - startTime;
+              this.telemetry.latencies.push(latency);
+              this.postMessage({
+                type: 'query_result',
+                data: cachedResult,
+                source: 'indexeddb_cache',
+                cache_hit: true,
+                latency_ms: latency,
+                query_hash: queryHash,
+              });
+              // Continue with background refresh if stale
+              this.backgroundRefresh(query, params, queryHash);
+              return;
             }
             // Step 2: WASM worker - instant good-enough results
             if (this.wasmModule) {
-                let wasmResult;
-                switch (query) {
-                    case 'MATCH (n:Case) RETURN n':
-                        wasmResult = this.wasmModule.queryNodes('Case');
-                        break;
-                    case 'MATCH (p:Precedent) RETURN p':
-                        wasmResult = this.wasmModule.queryPrecedents();
-                        break;
-                    default:
-                        wasmResult = this.wasmModule.executeCypher(query);
-                }
-                const wasmLatency = performance.now() - startTime;
-                this.telemetry.latencies.push(wasmLatency);
-                // Return WASM result immediately
-                this.postMessage({
-                    type: 'query_result',
-                    data: wasmResult
-                    source: 'wasm',
-                    cache_hit: false
-                    latency_ms: wasmLatency
-                    query_hash: queryHash
-                    is_provisional: true // Mark as provisional
-                });
-                // Cache WASM result for instant replay
-                await this.setCachedQuery(queryHash, wasmResult, 60000); // 1 minute TTL
+              let wasmResult;
+              switch (query) {
+                case 'MATCH (n:Case) RETURN n':
+                  wasmResult = this.wasmModule.queryNodes('Case');
+                  break;
+                case 'MATCH (p:Precedent) RETURN p':
+                  wasmResult = this.wasmModule.queryPrecedents();
+                  break;
+                default:
+                  wasmResult = this.wasmModule.executeCypher(query);
+              }
+              const wasmLatency = performance.now() - startTime;
+              this.telemetry.latencies.push(wasmLatency);
+              // Return WASM result immediately
+              this.postMessage({
+                type: 'query_result',
+                data: wasmResult,
+                source: 'wasm',
+                cache_hit: false,
+                latency_ms: wasmLatency,
+                query_hash: queryHash,
+                is_provisional: true, // Mark as provisional
+              });
+              // Cache WASM result for instant replay
+              await this.setCachedQuery(queryHash, wasmResult, 60000); // 1 minute TTL
             }
             // Step 3: Fetch authoritative result from Neo4j/Graph service
             this.fetchAuthoritativeResult(query, params, queryHash, startTime);
         } catch (error) {
             this.postMessage({
-                type: 'query_error',
-                error: error.message,
-                query: query
-                query_hash: queryHash
+              type: 'query_error',
+              error: error.message,
+              query: query,
+              query_hash: queryHash,
             });
         }
     }
@@ -279,13 +276,13 @@ class GraphWorker {
                 }
                 // Send authoritative result
                 this.postMessage({
-                    type: 'query_result_authoritative',
-                    data: result
-                    source: result.source || 'neo4j',
-                    cache_hit: false
-                    latency_ms: totalLatency
-                    query_hash: queryHash
-                    is_authoritative: true
+                  type: 'query_result_authoritative',
+                  data: result,
+                  source: result.source || 'neo4j',
+                  cache_hit: false,
+                  latency_ms: totalLatency,
+                  query_hash: queryHash,
+                  is_authoritative: true,
                 });
             }
         } catch (error) {
@@ -293,12 +290,12 @@ class GraphWorker {
             // Fallback to graph snapshot if available
             if (this.graphSnapshot) {
                 this.postMessage({
-                    type: 'query_result',
-                    data: this.graphSnapshot,
-                    source: 'snapshot_fallback',
-                    cache_hit: true
-                    query_hash: queryHash
-                    is_fallback: true
+                  type: 'query_result',
+                  data: this.graphSnapshot,
+                  source: 'snapshot_fallback',
+                  cache_hit: true,
+                  query_hash: queryHash,
+                  is_fallback: true,
                 });
             }
         }
@@ -306,14 +303,16 @@ class GraphWorker {
     async queryNeo4j(query, params) {
         try {
             const response = await fetch('http://localhost:7474/db/data/transaction/commit', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({,
-                    statements: [{
-                        statement: query
-                        parameters: params
-                    }]
-                })
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                statements: [
+                  {
+                    statement: query,
+                    parameters: params,
+                  },
+                ],
+              }),
             });
             if (response.ok) {
                 const data = await response.json();

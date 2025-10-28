@@ -1,11 +1,9 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import {
-    Search, Users, Plus, Eye, Edit, Filter, Grid, List,
-    MapPin, Calendar, AlertTriangle, Shield, UserCheck,
-    Star, Trash2, Download, Upload, RefreshCw, Settings
-  } from 'lucide-svelte';
+  // Replace lucide-svelte imports (problematic) with minimal imports
+  // { removed: Search, Users, Plus, Eye, Edit, Filter, Grid, List, MapPin, Calendar, AlertTriangle, Shield, UserCheck, Star, Trash2, Download, Upload, RefreshCw, Settings }
+  // You may still use cn from $lib/utils
   import { cn } from '$lib/utils';
   // Interfaces
   interface PersonOfInterest {
@@ -27,10 +25,10 @@
       criminalHistory?: string[];
       notes?: string;
       photo?: string;
-    }
+    };
     tags: string[];
     caseIds: string[];
-    position { x?: number; y?: number; z?: number }
+    position: { x?: number; y?: number; z?: number };
     createdBy?: string;
     createdAt: string;
     updatedAt: string;
@@ -46,7 +44,7 @@
   let sortOrder = $state<'asc' | 'desc'>('desc');
   let isLoading = $state(false);
   let showAddModal = $state(false);
-  // Mock data - replace with API calls
+  // Mock data - replace with API calls (fixed object literal syntax)
   let persons = $state<PersonOfInterest[]>([
     {
       id: '1',
@@ -58,10 +56,10 @@
       threatLevel: 'high',
       status: 'active',
       profileData: {
-        occupation 'Software Engineer',
+        occupation: 'Software Engineer',
         knownAssociates: ['Sarah Kim', 'David Rodriguez'],
-        lastKnownLocation 'Downtown Tech District',
-        physicalDescription '5\'10", Brown hair, Brown eyes, 180 lbs',
+        lastKnownLocation: 'Downtown Tech District',
+        physicalDescription: '5\'10", Brown hair, Brown eyes, 180 lbs',
         vehicleInfo: '2021 Tesla Model 3, License: 8XYZ123',
         contactInfo: 'marcus.chen@techcorp.com, (555) 012-3456',
         criminalHistory: ['Computer Fraud - 2019', 'Identity Theft - 2020'],
@@ -70,7 +68,7 @@
       },
       tags: ['cybercrime', 'fraud', 'high-tech'],
       caseIds: ['case-2024-001', 'case-2024-007'],
-      position { x: 37.7749, y: -122.4194 },
+      position: { x: 37.7749, y: -122.4194 },
       createdBy: 'detective-001',
       createdAt: '2024-12-20T10:30:00Z',
       updatedAt: '2024-12-21T15:45:00Z'
@@ -85,10 +83,10 @@
       threatLevel: 'low',
       status: 'active',
       profileData: {
-        occupation 'Financial Analyst',
+        occupation: 'Financial Analyst',
         knownAssociates: ['James Wilson', 'Maria Garcia'],
-        lastKnownLocation 'Financial District',
-        physicalDescription '5\'6", Black hair, Green eyes, 140 lbs',
+        lastKnownLocation: 'Financial District',
+        physicalDescription: '5\'6", Black hair, Green eyes, 140 lbs',
         vehicleInfo: '2020 Honda Civic, License: ABC789',
         contactInfo: 'i.santos@financegroup.com, (555) 987-6543',
         criminalHistory: [],
@@ -97,7 +95,7 @@
       },
       tags: ['finance', 'witness', 'cooperative'],
       caseIds: ['case-2024-003'],
-      position { x: 37.7849, y: -122.4094 },
+      position: { x: 37.7849, y: -122.4094 },
       createdBy: 'detective-002',
       createdAt: '2024-12-19T09:15:00Z',
       updatedAt: '2024-12-21T11:20:00Z'
@@ -112,10 +110,10 @@
       threatLevel: 'critical',
       status: 'active',
       profileData: {
-        occupation 'Unknown',
+        occupation: 'Unknown',
         knownAssociates: ['Alexei Petrov', 'Dmitri Volkov'],
-        lastKnownLocation 'Industrial Warehouse Complex',
-        physicalDescription '6\'2", Blonde hair, Blue eyes, 200 lbs, Scar on left cheek',
+        lastKnownLocation: 'Industrial Warehouse Complex',
+        physicalDescription: '6\'2", Blonde hair, Blue eyes, 200 lbs, Scar on left cheek',
         vehicleInfo: 'Multiple vehicles, frequently changes',
         contactInfo: 'Multiple burner phones',
         criminalHistory: ['Organized Crime - 2010', 'Arms Trafficking - 2015', 'Racketeering - 2018'],
@@ -124,38 +122,41 @@
       },
       tags: ['organized-crime', 'dangerous', 'armed'],
       caseIds: ['case-2024-001', 'case-2024-004', 'case-2024-008'],
-      position { x: 37.7649, y: -122.3894 },
+      position: { x: 37.7649, y: -122.3894 },
       createdBy: 'detective-001',
       createdAt: '2024-12-18T14:20:00Z',
       updatedAt: '2024-12-21T16:30:00Z'
     }
   ]);
-  // Computed properties
+  // Computed properties (fixed: use persons, shallow copy, correct return)
   let filteredPersons = $derived(() => {
-    let filtered = person;
+    let filtered = persons.slice();
+
     // Search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(person =>
-        person.name.toLowerCase().includes(query) ||
-        person.aliases.some(alias => alias.toLowerCase().includes(query)) ||
-        person.relationship.toLowerCase().includes(query) ||
-        person.profileData.occupation?.toLowerCase().includes(query) ||
-        person.tags.some(tag => tag.toLowerCase().includes(query))
+      filtered = filtered.filter(p =>
+        p.name.toLowerCase().includes(query) ||
+        p.aliases.some(alias => alias.toLowerCase().includes(query)) ||
+        p.relationship.toLowerCase().includes(query) ||
+        p.profileData.occupation?.toLowerCase().includes(query) ||
+        p.tags.some(tag => tag.toLowerCase().includes(query))
       );
     }
+
     // Threat level filter
     if (selectedThreatLevel) {
-      filtered = filtered.filter(person => person.threatLevel === selectedThreatLevel);
+      filtered = filtered.filter(p => p.threatLevel === selectedThreatLevel);
     }
     // Status filter
     if (selectedStatus) {
-      filtered = filtered.filter(person => person.status === selectedStatus);
+      filtered = filtered.filter(p => p.status === selectedStatus);
     }
     // Relationship filter
     if (selectedRelationship) {
-      filtered = filtered.filter(person => person.relationship === selectedRelationship);
+      filtered = filtered.filter(p => p.relationship === selectedRelationship);
     }
+
     // Sorting
     filtered.sort((a, b) => {
       let comparison = 0;
@@ -170,14 +171,25 @@
           comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
           break;
         case 'threat':
-          const threatOrder = { 'low': 1, 'medium': 2, 'high': 3, 'critical': 4 }
+          const threatOrder: Record<string, number> = { low: 1, medium: 2, high: 3, critical: 4 };
           comparison = threatOrder[a.threatLevel] - threatOrder[b.threatLevel];
           break;
       }
-      return sortOrder === 'asc' ? comparison : -compariso;
+      return sortOrder === 'asc' ? comparison : -comparison;
     });
+
     return filtered;
   });
+  // Helper: compute initials for avatar fallback
+  function initials(name: string) {
+    return (name || '')
+      .split(' ')
+      .filter(Boolean)
+      .map(n => n[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase();
+  }
   // Functions
   function getThreatLevelColor(level: string) {
     switch (level) {
@@ -205,8 +217,8 @@
   }
   function exportData() {
     const dataStr = JSON.stringify(filteredPersons, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    const exportFileDefaultName = `persons_of_interest_${new Date().toISOString.split('T')[0]}.json`;
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+    const exportFileDefaultName = `persons_of_interest_${new Date().toISOString().split('T')[0]}.json`;
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
@@ -229,7 +241,7 @@
         <!-- Title Section -->
         <div class="flex items-center gap-4">
           <div class="yorha-3d-button neural-sprite-active p-3">
-            <Users class="w-8 h-8 text-yellow-400" />
+            <span class="w-8 h-8 text-yellow-400 inline-block text-2xl">👥</span>
           </div>
           <div>
             <h1 class="text-3xl font-bold text-yellow-400 uppercase tracking-wider">
@@ -246,7 +258,7 @@
             class="nes-legal-priority-medium yorha-3d-button"
             onclick={() => showFilters = !showFilters}
           >
-            <Filter class="w-4 h-4 mr-2" />
+            <span class="w-4 h-4 mr-2 inline-block">⚙️</span>
             <span class="hidden sm:inline">FILTERS</span>
           </button>
           <select
@@ -261,14 +273,14 @@
             class="nes-legal-priority-medium yorha-3d-button"
             onclick={exportData}
           >
-            <Download class="w-4 h-4 mr-2" />
+            <span class="w-4 h-4 mr-2 inline-block">⬇️</span>
             <span class="hidden sm:inline">EXPORT</span>
           </button>
           <button
             class="nes-legal-priority-high yorha-3d-button"
             onclick={() => showAddModal = true}
           >
-            <Plus class="w-4 h-4 mr-2" />
+            <span class="w-4 h-4 mr-2 inline-block">➕</span>
             <span class="hidden sm:inline">ADD PERSON</span>
           </button>
         </div>
@@ -280,15 +292,15 @@
     <div class="p-6">
       <!-- Search Bar -->
       <div class="relative mb-4">
-        <Search class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-yellow-400" />
+        <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-yellow-400 text-lg">🔍</span>
         <input
           type="text"
           placeholder="Search persons, aliases, occupations, tags..."
-          class="w-full pl-12 pr-4 py-3 bg-gray-800 border-2 border-yellow-600 rounded-lg text-white placeholder-gray-400 focus: border-yellow-400 focus:outline-none";
+          class="w-full pl-12 pr-4 py-3 bg-gray-800 border-2 border-yellow-600 rounded-lg text-white placeholder-gray-400 focus:border-yellow-400 focus:outline-none"
           bind:value={searchQuery}
         />
         {#if isLoading}
-          <RefreshCw class="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-yellow-400 animate-spin" />
+          <span class="absolute right-4 top-1/2 transform -translate-y-1/2 text-yellow-400 animate-spin">🔄</span>
         {/if}
       </div>
       <!-- Advanced Filters -->
@@ -296,7 +308,8 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 pt-6 border-t border-yellow-600/30">
           <!-- Threat Level Filter -->
           <div>
-            <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase" for="threat-level">Threat Level</label><select id="threat-level";
+            <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase" for="threat-level">Threat Level</label>
+            <select id="threat-level"
               bind:value={selectedThreatLevel}
               class="w-full p-3 bg-gray-800 border border-yellow-600 rounded text-white"
             >
@@ -309,7 +322,8 @@
           </div>
           <!-- Status Filter -->
           <div>
-            <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase" for="status">Status</label><select id="status"
+            <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase" for="status">Status</label>
+            <select id="status"
               bind:value={selectedStatus}
               class="w-full p-3 bg-gray-800 border border-yellow-600 rounded text-white"
             >
@@ -321,7 +335,8 @@
           </div>
           <!-- Relationship Filter -->
           <div>
-            <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase" for="relationship">Relationship</label><select id="relationship";
+            <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase" for="relationship">Relationship</label>
+            <select id="relationship"
               bind:value={selectedRelationship}
               class="w-full p-3 bg-gray-800 border border-yellow-600 rounded text-white"
             >
@@ -334,9 +349,10 @@
           </div>
           <!-- Sort Options -->
           <div>
-            <label class="block text-yellow-400 text-sm font-bold mb-2 uppercase">Sort By</label>
+            <label for="sort-by" class="block text-yellow-400 text-sm font-bold mb-2 uppercase">Sort By</label>
             <div class="flex gap-2">
               <select
+                id="sort-by"
                 bind:value={sortBy}
                 class="flex-1 p-3 bg-gray-800 border border-yellow-600 rounded text-white text-sm"
               >
@@ -372,7 +388,7 @@
   <!-- Results Display -->
   {#if filteredPersons.length === 0}
     <div class="yorha-3d-panel text-center py-16">
-      <Users class="w-24 h-24 text-gray-500 mx-auto mb-6" />
+      <div class="w-24 h-24 text-gray-500 mx-auto mb-6 text-5xl">👥</div>
       <h3 class="text-xl font-bold text-gray-400 mb-4 uppercase">
         {searchQuery ? 'No Matching Persons Found' : 'No Persons Recorded'}
       </h3>
@@ -384,7 +400,7 @@
           class="nes-legal-priority-high yorha-3d-button"
           onclick={() => showAddModal = true}
         >
-          <Plus class="w-4 h-4 mr-2" />
+          <span class="w-4 h-4 mr-2 inline-block">➕</span>
           Add First Person
         </button>
       {/if}
@@ -403,7 +419,7 @@
                     <img src={person.profileData.photo} alt={person.name} class="w-full h-full object-cover" />
                   {:else}
                     <div class="w-full h-full flex items-center justify-center text-yellow-400 font-bold text-lg">
-                      {person.name.split.map-join('')}
+                      {initials(person.name)}
                     </div>
                   {/if}
                 </div>
@@ -432,23 +448,23 @@
               <div class="space-y-2 text-sm mb-4">
                 {#if person.profileData.occupation}
                   <div class="flex items-center gap-2 text-gray-300">
-                    <UserCheck class="w-4 h-4 text-yellow-400" />
+                    <span class="w-4 h-4 text-yellow-400 inline-block">✅</span>
                     {person.profileData.occupation}
                   </div>
                 {/if}
                 {#if person.profileData.lastKnownLocation}
                   <div class="flex items-center gap-2 text-gray-300">
-                    <MapPin class="w-4 h-4 text-yellow-400" />
+                    <span class="w-4 h-4 text-yellow-400 inline-block">📍</span>
                     {person.profileData.lastKnownLocation}
                   </div>
                 {/if}
                 <div class="flex items-center gap-2 text-gray-300">
-                  <Calendar class="w-4 h-4 text-yellow-400" />
+                  <span class="w-4 h-4 text-yellow-400 inline-block">📅</span>
                   Updated {new Date(person.updatedAt).toLocaleDateString()}
                 </div>
                 {#if person.threatLevel === 'critical' || person.threatLevel === 'high'}
                   <div class="flex items-center gap-2 text-red-400 bg-red-500/10 p-2 rounded">
-                    <AlertTriangle class="w-4 h-4" />
+                    <span class="w-4 h-4 inline-block">⚠️</span>
                     <span class="text-xs font-bold">CAUTION ADVISED</span>
                   </div>
                 {/if}
@@ -471,11 +487,11 @@
               <!-- Actions -->
               <div class="flex gap-2">
                 <button class="flex-1 nes-legal-priority-medium yorha-3d-button text-sm">
-                  <Eye class="w-3 h-3 mr-1" />
+                  <span class="inline-block mr-1">👁️</span>
                   VIEW
                 </button>
                 <button class="flex-1 nes-legal-priority-low yorha-3d-button text-sm">
-                  <Edit class="w-3 h-3 mr-1" />
+                  <span class="inline-block mr-1">✏️</span>
                   EDIT
                 </button>
               </div>
@@ -496,7 +512,7 @@
                       <img src={person.profileData.photo} alt={person.name} class="w-full h-full object-cover" />
                     {:else}
                       <div class="w-full h-full flex items-center justify-center text-yellow-400 font-bold">
-                        {person.name.split.map-join('')}
+                        {initials(person.name)}
                       </div>
                     {/if}
                   </div>
@@ -526,10 +542,10 @@
                 </div>
                 <div class="flex gap-2">
                   <button class="nes-legal-priority-medium yorha-3d-button text-sm">
-                    <Eye class="w-4 h-4" />
+                    <span>👁️</span>
                   </button>
                   <button class="nes-legal-priority-low yorha-3d-button text-sm">
-                    <Edit class="w-4 h-4" />
+                    <span>✏️</span>
                   </button>
                 </div>
               </div>
@@ -538,10 +554,11 @@
         </div>
       </div>
     {/if}
+  {/if}
 </div>
 <style>
   .yorha-detective-interface {
-/* @apply min-h-screen p-6; */
+    /* @apply min-h-screen p-6; */
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
   }
   .person-card {
@@ -562,8 +579,5 @@
   :global(.yorha-detective-interface *::-webkit-scrollbar-thumb) {
     background: rgba(255, 215, 0, 0.6);
     border-radius: 4px;
-  }
-  :global($1) {
-    background: rgba(255, 215, 0, 0.8);
   }
 </style>
