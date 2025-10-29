@@ -1,9 +1,10 @@
 import { logger } from './logger.js';
 import * as crypto from 'crypto';
-import { ENV_CONFIG } from '$lib/config/environment.js';
+// import { ENV_CONFIG } from '$lib/config/environment.js'; // removed - not used
 // lib/server/ai/legalbert-middleware.ts
 // LegalBERT middleware for specialized legal embeddings and analysis
 import { generateEmbedding } from './embeddings-simple.js';
+import { getOllamaUrl } from '$lib/server/services/docker-env';
 
 export interface LegalEmbeddingResult {
   embedding: number[];
@@ -110,11 +111,33 @@ async function withRetry<T>(fn: () => Promise<T>, retries: number = 3): Promise<
   throw new Error('Max retries exceeded');
 }
 
+// Replace any hardcoded Ollama URL usages with this robust helper.
+// It prefers OLLAMA_URL, then OLLAMA_HOST/OLLAMA_PORT, falls back to localhost.
+// prefer the shared docker-env helper which reads .env.local and process.env
+export function getOllamaEndpoint(): string {
+  try {
+    const url = getOllamaUrl();
+    if (url && url.trim().length > 0) return url;
+  } catch (e) {
+    // fallthrough to process.env fallback
+  }
+
+  // fallback to process.env variables for compatibility
+  if (process.env.OLLAMA_URL && process.env.OLLAMA_URL.trim().length > 0) {
+    return process.env.OLLAMA_URL;
+  }
+  const host = process.env.OLLAMA_HOST || 'localhost';
+  const port = process.env.OLLAMA_PORT || '11434';
+  const proto = process.env.OLLAMA_PROTO || 'http';
+  return `${proto}://${host}:${port}`;
+}
+
 const LEGALBERT_MODELS: Record<'local' | 'huggingface' | 'openai', ModelConfig> = {
   local: {
-    embedding: 'nomic-embed-text:latest',
+    embedding: 'embeddinggemma:latest',
     analysis: 'gemma3-legal:latest',
-    baseUrl: ENV_CONFIG?.OLLAMA_URL || 'http://localhost:11434',
+    // ensure the local model always uses the helper, not a hardcoded string
+    baseUrl: getOllamaEndpoint(),
   },
   huggingface: {
     embedding: 'nlpaueb/legal-bert-base-uncased',

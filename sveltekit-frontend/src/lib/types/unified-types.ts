@@ -1,10 +1,8 @@
-
 /**
  * Unified Types - Consolidates duplicate type exports across the application
  * Replaces scattered type definitions with single source of truth
  */
 // ===== OLLAMA & AI TYPES =====
-}
 export interface EmbeddingResponse {
   embedding: number[];
   model: string;
@@ -34,8 +32,9 @@ export interface OllamaModel {
     families?: string[];
     parameter_size: string;
     quantization_level: string;
-  }
+  };
   modified_at: string;
+  embeddingDimension?: number; // Added for clarity on embedding models, e.g., 384 for embeddinggemma
 }
 export interface OllamaHealthCheck {
   status: 'healthy' | 'unhealthy';
@@ -45,15 +44,14 @@ export interface OllamaHealthCheck {
   error?: string;
 }
 // ===== RAG SYSTEM TYPES =====
-}
 export interface RAGQuery {
   query: string;
   caseId?: string;
   filters?: {
     documentType?: string;
     jurisdiction?: string;
-    dateRange?: { start: Date; end: Date }
-  }
+    dateRange?: { start: Date; end: Date };
+  };
   limit?: number;
   threshold?: number;
 }
@@ -69,7 +67,8 @@ export interface RAGSource {
     jurisdiction?: string;
     confidence?: number;
     tags?: string[];
-  }
+    embeddingDimension?: number; // Added for clarity on embedding dimension in RAG sources
+  };
 }
 export interface RAGResult {
   source: RAGSource;
@@ -85,7 +84,6 @@ export interface RAGSearchResponse {
   model: string;
 }
 // ===== LEGAL DOMAIN TYPES =====
-}
 export interface LegalCase {
   id: string;
   title: string;
@@ -118,7 +116,8 @@ export interface Evidence {
     sentiment?: string;
     confidence?: number;
     tags?: string[];
-  }
+    embeddingDimension?: number; // Added for clarity on embedding dimension in evidence
+  };
   createdAt: Date;
   createdBy: string;
   chainOfCustody?: ChainOfCustodyEntry[];
@@ -149,6 +148,7 @@ export interface LegalDocument {
   confidenceScore?: number;
   createdAt: Date;
   processedAt?: Date;
+  embeddingDimension?: number; // Added for clarity on embedding dimension in legal documents
 }
 export interface LegalEntity {
   id: string;
@@ -157,7 +157,7 @@ export interface LegalEntity {
   startPos: number;
   endPos: number;
   confidence: number;
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: unknown };
 }
 export interface LegalClause {
   id: string;
@@ -169,7 +169,6 @@ export interface LegalClause {
   analysis?: string;
 }
 // ===== USER & AUTHENTICATION TYPES =====
-}
 export interface User {
   id: string;
   email: string;
@@ -196,11 +195,11 @@ export interface UserPreferences {
     email: boolean;
     push: boolean;
     sms: boolean;
-  }
+  };
   ui: {
     density: 'compact' | 'comfortable' | 'spacious';
     sidebarCollapsed: boolean;
-  }
+  };
 }
 export interface AuthSession {
   id: string;
@@ -213,8 +212,7 @@ export interface AuthSession {
   isActive: boolean;
 }
 // ===== API & RESPONSE TYPES =====
-}
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -222,7 +220,7 @@ export interface ApiResponse<T = any> {
   timestamp: string;
   requestId?: string;
 }
-export interface PaginatedResponse<T = any> {
+export interface PaginatedResponse<T = unknown> {
   data: T[];
   pagination: {
     page: number;
@@ -231,7 +229,7 @@ export interface PaginatedResponse<T = any> {
     pages: number;
     hasNext: boolean;
     hasPrev: boolean;
-  }
+  };
 }
 export interface ValidationError {
   field: string;
@@ -248,36 +246,34 @@ export interface ApiError {
   validationErrors?: ValidationError[];
 }
 // ===== SEARCH & FILTERING TYPES =====
-}
 export interface SearchOptions {
   query?: string;
-  filters?: { [key: string]: any }
+  filters?: { [key: string]: unknown };
   sort?: {
     field: string;
     direction: 'asc' | 'desc';
-  }
+  };
   pagination?: {
     page: number;
     limit: number;
-  }
+  };
 }
-export interface SearchResult<T = any> {
+export interface SearchResult<T = unknown> {
   item: T;
   score?: number;
   highlights?: string[];
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: unknown };
 }
-export interface SearchResponse<T = any> {
+export interface SearchResponse<T = unknown> {
   results: SearchResult<T>[];
   total: number;
   query: string;
-  filters?: { [key: string]: any }
+  filters?: { [key: string]: unknown };
   processingTime: number;
   suggestions?: string[];
 }
 // ===== CACHING & PERFORMANCE TYPES =====
-}
-export interface CacheEntry<T = any> {
+export interface CacheEntry<T = unknown> {
   key: string;
   value: T;
   metadata: {
@@ -287,7 +283,7 @@ export interface CacheEntry<T = any> {
     lastAccessed: Date;
     size: number;
     tags?: string[];
-  }
+  };
 }
 export interface CacheStats {
   totalEntries: number;
@@ -298,7 +294,6 @@ export interface CacheStats {
   averageAccessTime: number;
 }
 // ===== AI ANALYSIS TYPES =====
-}
 export interface AIAnalysisRequest {
   content: string;
   type: 'summary' | 'entities' | 'sentiment' | 'classification' | 'risk_assessment';
@@ -306,12 +301,12 @@ export interface AIAnalysisRequest {
     caseId?: string;
     documentType?: string;
     jurisdiction?: string;
-  }
+  };
   options?: {
     model?: string;
     temperature?: number;
     maxTokens?: number;
-  }
+  };
 }
 export interface AIAnalysisResponse {
   result: string | object;
@@ -324,20 +319,20 @@ export interface AIAnalysisResponse {
     sentiment?: {
       score: number;
       label: 'positive' | 'negative' | 'neutral';
-    }
+    };
     riskScore?: number;
     tags?: string[];
-  }
+    embeddingDimension?: number; // Added for clarity on embedding dimension in AI analysis response
+  };
 }
 // ===== XSTATE & WORKFLOW TYPES =====
-}
 export interface WorkflowContext {
   caseId?: string;
   userId: string;
   currentStep: string;
   progress: number;
   errors: string[];
-  data: { [key: string]: any }
+  data: { [key: string]: unknown };
   aiRecommendations?: string[];
   confidence?: number;
 }
@@ -348,13 +343,12 @@ export interface WorkflowEvent {
   userId: string;
 }
 // ===== MCP & INTEGRATION TYPES =====
-}
 export interface MCPRequest {
   tool: string;
-  parameters: { [key: string]: any }
-  context?: { [key: string]: any }
+  parameters: { [key: string]: unknown };
+  context?: { [key: string]: unknown };
 }
-export interface MCPResponse<T = any> {
+export interface MCPResponse<T = unknown> {
   success: boolean;
   result?: T;
   error?: string;
@@ -362,7 +356,7 @@ export interface MCPResponse<T = any> {
     processingTime: number;
     model?: string;
     tokens?: number;
-  }
+  };
 }
 export interface Context7Integration {
   stackAnalysis: boolean;
@@ -372,7 +366,6 @@ export interface Context7Integration {
   performanceOptimization: boolean;
 }
 // ===== FORM & VALIDATION TYPES =====
-}
 export interface FormField {
   name: string;
   type: 'text' | 'email' | 'password' | 'number' | 'date' | 'select' | 'textarea' | 'file';
@@ -385,15 +378,14 @@ export interface FormField {
     max?: number;
     minLength?: number;
     maxLength?: number;
-  }
+  };
   options?: { value: string; label: string }[];
 }
 export interface FormSchema {
   fields: FormField[];
-  validation?: { [key: string]: any }
+  validation?: { [key: string]: unknown };
 }
 // ===== COMPONENT PROPS TYPES =====
-}
 export interface BaseComponentProps {
   class?: string;
   id?: string;
@@ -414,18 +406,41 @@ export interface ButtonProps extends BaseComponentProps {
   type?: 'button' | 'submit' | 'reset';
 }
 // ===== TYPE GUARDS =====
-export function isEmbeddingResponse(obj: any): obj is EmbeddingResponse {
-  return obj && typeof obj === 'object' && Array.isArray(obj.embedding);
+export function isEmbeddingResponse(obj: unknown): obj is EmbeddingResponse {
+  return obj && typeof obj === 'object' && 'embedding' in obj && Array.isArray((obj as EmbeddingResponse).embedding);
 }
-export function isRAGResult(obj: any): obj is RAGResult {
-  return obj && typeof obj === 'object' && obj.source && typeof obj.score === 'number';
+export function isRAGResult(obj: unknown): obj is RAGResult {
+  return (
+    obj && typeof obj === 'object' && 'source' in obj && 'score' in obj && typeof (obj as RAGResult).score === 'number'
+  );
 }
-export function isApiError(obj: any): obj is ApiError {
-  return obj && typeof obj === 'object' && typeof obj.code === 'string' && typeof obj.message === 'string';
+export function isApiError(obj: unknown): obj is ApiError {
+  return (
+    obj &&
+    typeof obj === 'object' &&
+    'code' in obj &&
+    'message' in obj &&
+    typeof (obj as ApiError).code === 'string' &&
+    typeof (obj as ApiError).message === 'string'
+  );
 }
-export function isLegalCase(obj: any): obj is LegalCase {
-  return obj && typeof obj === 'object' && typeof obj.id === 'string' && typeof obj.title === 'string';
+export function isLegalCase(obj: unknown): obj is LegalCase {
+  return (
+    obj &&
+    typeof obj === 'object' &&
+    'id' in obj &&
+    'title' in obj &&
+    typeof (obj as LegalCase).id === 'string' &&
+    typeof (obj as LegalCase).title === 'string'
+  );
 }
-export function isUser(obj: any): obj is User {
-  return obj && typeof obj === 'object' && typeof obj.id === 'string' && typeof obj.email === 'string';
+export function isUser(obj: unknown): obj is User {
+  return (
+    obj &&
+    typeof obj === 'object' &&
+    'id' in obj &&
+    'email' in obj &&
+    typeof (obj as User).id === 'string' &&
+    typeof (obj as User).email === 'string'
+  );
 }

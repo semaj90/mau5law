@@ -41,7 +41,45 @@
 <svelte:head>
   <title>Reports - Legal Case Management</title>
 </svelte:head>
+<script lang="ts">
+  import { reports, activeReport, isSaving, saveReport, loadReports } from '$lib/stores/reports';
+  import { onMount } from 'svelte';
+
+  let title = '';
+  let content = '';
+  let hoverSaveTimeout: any;
+
+  onMount(async () => {
+    await loadReports();
+    const unsubscribe = activeReport.subscribe((r) => {
+      if (r) {
+        title = r.title ?? '';
+        content = r.content ?? '';
+      }
+    });
+  });
+
+  function handleHoverStart() {
+    clearTimeout(hoverSaveTimeout);
+    hoverSaveTimeout = setTimeout(async () => {
+      await saveReport({ title, content });
+    }, 800);
+  }
+  function handleHoverEnd() {
+    clearTimeout(hoverSaveTimeout);
+  }
+</script>
 <div class="space-y-4">
+  <div class="editor">
+    <h2>Quick Draft (hover to autosave)</h2>
+    <input bind:value={title} placeholder="Title" />
+    <div on:mouseenter={handleHoverStart} on:mouseleave={handleHoverEnd}>
+      <textarea bind:value={content} placeholder="Write your report here..." />
+    </div>
+    {#if $isSaving}
+      <p class="saving">Saving...</p>
+    {/if}
+  </div>
   <div class="space-y-4">
     <h1 class="space-y-4">Reports</h1>
     <a href="/report-builder" class="space-y-4">

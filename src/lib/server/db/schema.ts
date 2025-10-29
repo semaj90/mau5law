@@ -5,6 +5,7 @@
 
 import { pgTable, uuid, varchar, text, timestamp, boolean, integer, jsonb } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
+import { vector } from "drizzle-orm/pg-vector";
 
 /**
  * Evidence table with pgvector support
@@ -106,3 +107,22 @@ export type Evidence = typeof evidence.$inferSelect;
 export type NewEvidence = typeof evidence.$inferInsert;
 export type Case = typeof cases.$inferSelect;
 export type NewCase = typeof cases.$inferInsert;
+
+// 🧠 User Reports Table
+export const reports = pgTable('reports', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: text('user_id').notNull(),
+  title: text('title').notNull(),
+  content: text('content').notNull(),
+  summary: text('summary'),
+  tags: jsonb('tags').$type<string[]>().default(sql`'[]'::jsonb`),
+  autoKeywords: jsonb('auto_keywords').$type<string[]>().default(sql`'[]'::jsonb`),
+  embedding: vector('embedding', { dimensions: 1536 }),
+  sourceUri: text('source_uri'),
+  isFavorite: boolean('is_favorite').default(false),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
+export type Report = typeof reports.$inferSelect;
+export type NewReport = typeof reports.$inferInsert;

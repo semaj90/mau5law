@@ -79,6 +79,7 @@
     "@qdrant/js-client-rest": "^1.15.1",
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "axios": "^1.13.0",
+    "bits-ui": "^2.14.1",
     "drizzle-kit": "^0.31.5",
     "drizzle-orm": "^0.44.6",
     "fabric": "^6.7.1",
@@ -87,6 +88,7 @@
     "lucia": "^3.2.2",
     "minio": "^8.0.6",
     "neo4j-driver": "^5.28.2",
+    "nes.css": "^2.2.1",
     "node-fetch": "^3.3.2",
     "pg": "^8.16.3",
     "playwright": "^1.55.0",
@@ -94,7 +96,8 @@
     "protobufjs": "^7.5.4",
     "redis": "^5.8.3",
     "svelte": "^5.39.2",
-    "uuid": "^13.0.0"
+    "uuid": "^13.0.0",
+    "xstate": "^5.23.0"
   },
   "devDependencies": {
     "@julr/unocss-preset-forms": "^2.0.0",
@@ -113,7 +116,7 @@
     "glob": "^10.4.5",
     "svelte-check": "^4.3.2",
     "typescript": "^5.9.3",
-    "unocss": "^66.5.2",
+    "unocss": "^66.5.4",
     "vite": "^7.1.5",
     "zx": "^7.2.4"
   }

@@ -1,3 +1,34 @@
+// Canonical global declarations for the frontend. This file is intentionally
+// simple and includes only the ambient module declarations needed during
+// incremental migration. Keep this file included by tsconfig so tsc finds it.
+
+declare module '$env/dynamic/private' {
+  const env: Record<string, string | undefined>;
+  export { env };
+}
+
+// Provide a module for the evidence upload schema used across the frontend.
+// This avoids import errors while the schema is being migrated or re-exported.
+declare module '$lib/schemas/evidence-upload' {
+  export type VideoMetadata = {
+    width?: number;
+    height?: number;
+    duration?: number;
+    codec?: string;
+    sizeBytes?: number;
+  };
+}
+
+// Also support direct source path imports
+declare module 'src/lib/schemas/evidence-upload' {
+  export * from '$lib/schemas/evidence-upload';
+}
+
+// Minimal amqplib fallback typing for dynamic import sites
+declare module 'amqplib' {
+  const content: any;
+  export = content;
+}
 // Temporary module shims to satisfy tsc during incremental triage.
 // These are lightweight declarations mapping internal path aliases used by the app.
 declare module '$lib/server/redis';

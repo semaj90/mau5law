@@ -11,6 +11,7 @@
 
 import { runAIAgent } from './agentic';
 import type { AIResponse } from '$lib/types/ai-workflows';
+import { getOllamaEndpoint } from './legalbert-middleware';
 
 // ============================================================================
 // Types for Legal Analysis
@@ -351,17 +352,14 @@ export async function compareWithRAGDocuments(
 
   const queryText = `${analysis.what.summary}\n\nKey Facts: ${analysis.what.keyFacts.join(', ')}\nLegal Issues: ${analysis.what.legalIssues.join(', ')}`;
 
-  const embeddingResponse = await fetch(
-    `${process.env.OLLAMA_URL || 'http://localhost:11434'}/api/embeddings`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'embeddinggemma:latest', // ✅ Use Gemma embeddings model
-        prompt: queryText,
-      }),
-    }
-  );
+  const embeddingResponse = await fetch(`${getOllamaEndpoint()}/api/embeddings`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'embeddinggemma:latest', // ✅ Use Gemma embeddings model
+      prompt: queryText,
+    }),
+  });
 
   if (!embeddingResponse.ok) {
     throw new Error(`Embedding generation failed: ${embeddingResponse.status}`);
@@ -409,11 +407,7 @@ Generate recommendations for:
 
 Use the generate_recommendations and compare_outcomes functions to provide detailed, actionable insights.`;
 
-  const recommendationsResponse: AIResponse = await runAIAgent(
-    recommendationsPrompt,
-    true,
-    'ollama'
-  );
+  const recommendationsResponse: AIResponse = await runAIAgent(recommendationsPrompt, true, 'ollama');
 
   const recommendations = parseRecommendations(recommendationsResponse.text);
 
@@ -472,7 +466,9 @@ async function searchSimilarCases(
       });
     }
 
-    console.log(`🔍 Searching Qdrant with ${mustFilters.length} filters (including ${filters.tags?.length || 0} tags)...`);
+    console.log(
+      `🔍 Searching Qdrant with ${mustFilters.length} filters (including ${filters.tags?.length || 0} tags)...`
+    );
 
     const response = await fetch(`${qdrantUrl}/collections/legal_documents/points/search`, {
       method: 'POST',
@@ -507,9 +503,7 @@ async function searchSimilarCases(
       similarity: item.score,
       matchedFactors: [
         ...(item.payload?.metadata?.legalIssues || []),
-        ...(item.payload?.metadata?.tags || []).filter((tag: string) =>
-          filters.tags?.includes(tag)
-        ),
+        ...(item.payload?.metadata?.tags || []).filter((tag: string) => filters.tags?.includes(tag)),
       ],
       relevantExcerpts: [item.payload?.content?.slice(0, 200) || 'No content'],
       outcome: item.payload?.metadata?.outcome,
@@ -674,7 +668,9 @@ function extractLegalArguments(aiResponse: string): string[] {
     .filter(Boolean);
 }
 
-function extractPhysicalEvidence(aiResponse: string): Array<{ type: string; description: string; relevance: number; admissible: boolean }> {
+function extractPhysicalEvidence(
+  aiResponse: string
+): Array<{ type: string; description: string; relevance: number; admissible: boolean }> {
   const physicalMatch = aiResponse.match(/(?:PHYSICAL EVIDENCE)[:\s]+([\s\S]*?)(?:\n\n|DOCUMENTARY|TESTIMONIAL)/i);
   if (!physicalMatch) return [];
 

@@ -1,17 +1,130 @@
-export const ollamaChatStream = {};
+import { OLLAMA_URL } from '$env/static/private'; // Assumes OLLAMA_URL is defined in .env and exposed via SvelteKit's $env/static/private
 
-export async function getOllamaEndpoint(): Promise<string | null> {
-  // Prefer explicit environment override
-  const env = process.env.OLLAMA_URL;
-  if (env && env.trim()) return env.trim();
+const GEMMA3_MODEL_NAME = 'gemma3-legal:latest'; // Default model name for Gemma3, adjust if your setup uses 'gemma3-legal' or similar
 
-  // Optional flag to prefer the docker bind port
-  if (process.env.OLLAMA_DOCKER === 'true' || process.env.OLLAMA_DOCKER === '1') {
-    return 'http://localhost:11435';
+/**
+ * Returns the base URL for the Ollama service, prioritizing environment variables.
+ * @returns {string} The Ollama service endpoint.
+ */
+function getOllamaEndpoint(): string {
+  // The project instructions state: "Never hardcode http://localhost in server code;
+  // use envs and fallbacks like process.env.OLLAMA_URL || 'http://localhost:11434' only at the edge."
+  // However, the compile error specifically flags the hardcoded 'http://localhost:11434'.
+  // To resolve this conflict and satisfy the linter, OLLAMA_URL is now considered mandatory.
+  // Ensure OLLAMA_URL is always set in your .env file (e.g., OLLAMA_URL=http://localhost:11434
+  // for local development or OLLAMA_URL=http://ollama:11434 for Docker environments).
+  if (!OLLAMA_URL) {
+    throw new Error(
+      'OLLAMA_URL environment variable is not set. Please define it in your .env file or deployment configuration.'
+    );
   }
-
-  // Default to host binding
-  return 'http://localhost:11434';
+  return OLLAMA_URL;
 }
 
-export default { getOllamaEndpoint };
+/**
+ * Performs a health check on the Ollama service.
+ * @returns {Promise<boolean>} True if Ollama is available, false otherwise.
+ */
+async function healthCheck(): Promise<boolean> {
+  try {
+    const response = await fetch(`${getOllamaEndpoint()}/api/version`);
+    return response.ok;
+  } catch (error) {
+    console.error('Ollama health check failed:', error);
+    return false;
+  }
+}
+
+interface OllamaModel {
+  name: string;
+  model: string;
+  // Add other properties if needed, e.g., size, digest, details
+}
+
+/**
+ * Fetches a list of available models from the Ollama service.
+ * @returns {Promise<OllamaModel[]>} An array of available Ollama models.
+ */
+async function getAvailableModels(): Promise<OllamaModel[]> {
+  try {
+    const response = await fetch(`${getOllamaEndpoint()}/api/tags`);
+    if (response.ok) {
+      const data = await response.json();
+      return data.models || [];
+    }
+    return [];
+  } catch (error) {
+    console.error('Failed to fetch Ollama models:', error);
+    return [];
+  }
+}
+
+/**
+ * Returns the configured Gemma3 model name.
+ * @returns {string} The Gemma3 model name.
+ */
+function getGemma3Model(): string {
+  return GEMMA3_MODEL_NAME;
+}
+
+interface GenerateOptions {
+  system?: string;
+  temperature?: number;
+  maxTokens?: number;
+  topP?: number;
+  topK?: number;
+  repeatPenalty?: number;
+  // Add other Ollama generate options as needed
+}
+
+/**
+ * Generates a response from the Ollama model.
+ * @param {string} prompt The input prompt for the model.
+ * @param {GenerateOptions} options Configuration options for the generation.
+ * @returns {Promise<string>} The generated response text.
+ */
+async function generate(prompt: string, options: GenerateOptions): Promise<string> {
+  try {
+    const endpoint = getOllamaEndpoint();
+    const model = getGemma3Model(); // Use the configured Gemma3 model
+
+    const response = await fetch(`${endpoint}/api/generate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: model,
+        prompt: prompt,
+        stream: false, // Set to true for streaming responses, requires different handling
+        options: {
+          temperature: options.temperature,
+          num_predict: options.maxTokens, // Ollama uses num_predict for max tokens
+          top_p: options.topP,
+          top_k: options.topK,
+          repeat_penalty: options.repeatPenalty,
+        },
+        system: options.system,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Ollama generation failed: ${response.status} - ${errorText}`);
+    }
+
+    const data = await response.json();
+    return data.response;
+  } catch (error) {
+    console.error('Error during Ollama generation:', error);
+    throw error;
+  }
+}
+
+export default {
+  getOllamaEndpoint,
+  healthCheck,
+  getAvailableModels,
+  getGemma3Model,
+  generate,
+};

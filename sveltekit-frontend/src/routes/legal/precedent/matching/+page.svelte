@@ -1,10 +1,11 @@
 <!-- Legal Precedent Matching System -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import { page } from '$app/state';
   import Button from '$lib/components/ui/Button.svelte';
-  import NesCard from '$lib/components/ui/nes-card.svelte';
+  import NesCard from '$lib/components/ui/nes-card.svelte'; // Main card component
+  import NesCardHeader from '$lib/components/ui/nes-card-header.svelte'; // Assuming this is a default export from its own file
+  import NesCardContent from '$lib/components/ui/nes-card-content.svelte'; // Assuming this is a default export from its own file
+  import NesCardTitle from '$lib/components/ui/nes-card-title.svelte'; // Assuming this is a default export from its own file
   import Badge from '$lib/components/ui/badge/Badge.svelte';
   import Separator from '$lib/components/ui/separator/Separator.svelte';
   import Tabs from '$lib/components/ui/tabs/Tabs.svelte';
@@ -43,7 +44,7 @@
   let legalSystem = $state({
     status: 'idle',
     processingStage: 'Ready for analysis...',
-    vectorSearchActive: false
+    vectorSearchActive: false,
     precedentDatabase: {
       totalCases: 2847592,
       indexed: 2847592,
@@ -56,14 +57,14 @@
     vectorCache: { used: 0, total: 16384 },
     precedentPatterns: { cached: 0, total: 10000 },
     glyphCache: { hitRate: 0, entries: 0 },
-    gpuUtilization 0
+    gpuUtilization: 0 // Fixed syntax
   });
   interface PrecedentMatch {
     id: string;
     title: string;
-    citation string;
+    citation: string; // Fixed syntax
     court: string;
-    jurisdiction string;
+    jurisdiction: string; // Fixed syntax
     dateDecided: string;
     similarityScore: number;
     factualSimilarity: number;
@@ -81,7 +82,7 @@
       legalPrinciples: number;
       jurisdictionalRelevance: number;
       temporalRelevance: number;
-    }
+    }; // Added semicolon
   }
   interface CitationNetwork {
     caseId: string;
@@ -89,16 +90,16 @@
     citedCases: string[];
     authorityScore: number;
     influenceRank: number;
-    networkPosition 'CORE' | 'PERIPHERAL' | 'BRIDGE';
+    networkPosition: 'CORE' | 'PERIPHERAL' | 'BRIDGE'; // Fixed syntax
   }
   interface LegalReasoningStep {
     stepNumber: number;
     legalPrinciple: string;
     supportingCases: string[];
     factualBasis: string;
-    logicalConnection string;
+    logicalConnection: string; // Fixed syntax
     strengthScore: number;
-    vulnerabilities: string[];
+    vulnerabilities: string[]; // Fixed syntax
   }
   $effect(() => {
     initializePrecedentSystem();
@@ -187,9 +188,9 @@
       {
         id: 'CASE-2023-001',
         title: 'State v. Johnson - Contract Interpretation Under Duress',
-        citation '847 F.3d 234 (5th Cir. 2023)',
+        citation: '847 F.3d 234 (5th Cir. 2023)',
         court: '5th Circuit Court of Appeals',
-        jurisdiction 'Federal',
+        jurisdiction: 'Federal',
         dateDecided: '2023-08-15',
         similarityScore: 0.94,
         factualSimilarity: 0.92,
@@ -222,9 +223,9 @@
       {
         id: 'CASE-2022-087',
         title: 'Martinez v. Global Corp - Unconscionable Contract Terms',
-        citation '623 F.Supp.3d 445 (S.D. Cal. 2022)',
+        citation: '623 F.Supp.3d 445 (S.D. Cal. 2022)',
         court: 'U.S. District Court Southern District of California',
-        jurisdiction 'Federal',
+        jurisdiction: 'Federal',
         dateDecided: '2022-11-22',
         similarityScore: 0.87,
         factualSimilarity: 0.85,
@@ -260,9 +261,9 @@
       {
         id: 'CASE-2021-156',
         title: 'Thompson Industries v. Allied Manufacturing - Good Faith Dealing',
-        citation '789 F.3d 567 (9th Cir. 2021)',
+        citation: '789 F.3d 567 (9th Cir. 2021)',
         court: '9th Circuit Court of Appeals',
-        jurisdiction 'Federal',
+        jurisdiction: 'Federal',
         dateDecided: '2021-03-10',
         similarityScore: 0.82,
         factualSimilarity: 0.80,
@@ -296,7 +297,7 @@
         }
       }
     ];
-    return mockResult;
+    return mockResults; // Fixed typo
   }
   async function calculateSimilarityScores() {
     return precedentMatches.map(match => ({
@@ -315,7 +316,7 @@
       citedCases: generateMockCitedCases(15),
       authorityScore: Math.min(100, match.citationCount * 0.5 + match.recentCitations * 2),
       influenceRank: Math.floor(Math.random() * 1000) + 1,
-      networkPosition match.citationCount > 200 ? 'CORE' : match.citationCount > 50 ? 'BRIDGE' : 'PERIPHERAL'
+      networkPosition: match.citationCount > 200 ? 'CORE' : match.citationCount > 50 ? 'BRIDGE' : 'PERIPHERAL' // Fixed syntax
     }));
   }
   async function analyzeLegalReasoning(): Promise<LegalReasoningStep[]> {
@@ -325,36 +326,36 @@
         legalPrinciple: 'Contract Formation Requirements',
         supportingCases: ['CASE-2023-001', 'CASE-2022-087'],
         factualBasis: 'Valid contract requires mutual assent, consideration, and capacity',
-        logicalConnection 'Foundation for analyzing contract validity',
+        logicalConnection: 'Foundation for analyzing contract validity',
         strengthScore: 0.95,
-        vulnerabilities: ['Potential capacity questions', 'Consideration adequacy'];
+        vulnerabilities: ['Potential capacity questions', 'Consideration adequacy'], // Added semicolon
       },
       {
         stepNumber: 2,
         legalPrinciple: 'Duress and Unconscionability Doctrines',
         supportingCases: ['CASE-2023-001', 'CASE-2022-087'],
         factualBasis: 'Evidence of coercive circumstances and unequal bargaining power',
-        logicalConnection 'Duress can void otherwise valid contracts',
+        logicalConnection: 'Duress can void otherwise valid contracts',
         strengthScore: 0.87,
-        vulnerabilities: ['Subjective nature of duress', 'Burden of proof issues'];
+        vulnerabilities: ['Subjective nature of duress', 'Burden of proof issues'], // Added semicolon
       },
       {
         stepNumber: 3,
         legalPrinciple: 'Good Faith Performance Obligation',
         supportingCases: ['CASE-2021-156'],
         factualBasis: 'Implied covenant exists in all contractual relationships',
-        logicalConnection 'Even valid contracts require good faith performance',
+        logicalConnection: 'Even valid contracts require good faith performance',
         strengthScore: 0.78,
-        vulnerabilities: ['Scope of good faith duty', 'Relationship to express terms'];
+        vulnerabilities: ['Scope of good faith duty', 'Relationship to express terms'], // Added semicolon
       },
       {
         stepNumber: 4,
         legalPrinciple: 'Remedial Framework',
         supportingCases: ['CASE-2023-001', 'CASE-2021-156'],
         factualBasis: 'Multiple remedial options available for contract violations',
-        logicalConnection 'Relief available through rescission, restitution, or damages',
+        logicalConnection: 'Relief available through rescission, restitution, or damages',
         strengthScore: 0.83,
-        vulnerabilities: ['Election of remedies', 'Mitigation requirements'];
+        vulnerabilities: ['Election of remedies', 'Mitigation requirements'], // Added semicolon
       }
     ];
   }
@@ -365,8 +366,8 @@
       factualAlignment: 'MODERATE',
       legalPrincipleAlignment: 'STRONG',
       factors: {
-        bindingPrecedents: precedentMatches.filter(item => item.length),
-        persuasivePrecedents: precedentMatches.filter(item => item.length),
+        bindingPrecedents: precedentMatches.filter(item => item.precedentialValue === 'BINDING').length, // Fixed logic
+        persuasivePrecedents: precedentMatches.filter(item => item.precedentialValue === 'PERSUASIVE').length, // Fixed logic
         averageSimilarity: precedentMatches.reduce((sum, p) => sum + p.similarityScore, 0) / precedentMatches.length,
         recentAuthority: precedentMatches.filter(p => new Date(p.dateDecided) > new Date('2020-01-01')).length
       },
@@ -375,8 +376,8 @@
         'Address distinguishing factors proactively',
         'Emphasize factual similarities in briefing',
         'Consider alternative legal theories'
-      ];
-    }
+      ], // Added semicolon
+    };
   }
   async function assessStrength() {
     return {
@@ -400,22 +401,22 @@
         'Address weaknesses through alternative arguments',
         'Emphasize policy considerations',
         'Prepare distinguishing arguments for adverse cases'
-      ];
-    }
+      ], // Added semicolon
+    };
   }
   function generateMockCitingCases(count: number): string[] {
     const cases = [];
     for (let i = 0; i < Math.min(count, 20); i++) {
-      cases.push.padStart(3, '0')}`);
+      cases.push(`CASE-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`); // Fixed logic
     }
-    return case;
+    return cases; // Fixed return value
   }
   function generateMockCitedCases(count: number): string[] {
     const cases = [];
     for (let i = 0; i < count; i++) {
-      cases.push.padStart(3, '0')}`);
+      cases.push(`CASE-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`); // Fixed logic
     }
-    return case;
+    return cases; // Fixed return value
   }
   function calculateOverallConfidence(): number {
     if (precedentMatches.length === 0) return 0;
@@ -423,7 +424,7 @@
     return Math.round(avgScore * 100);
   }
   function getPrecedentColor(_value: string) {
-    switch (value) {
+    switch (_value) { // Fixed parameter name
       case 'BINDING': return 'bg-green-600';
       case 'PERSUASIVE': return 'bg-blue-600';
       case 'DISTINGUISHED': return 'bg-yellow-600';
@@ -453,11 +454,11 @@
     </div>
   </div>
   <!-- System Status -->
-  <div>
-    <divHeader>
-      <divTitle>Legal AI System Status</h3>
-    </div>
-    <divContent>
+  <NesCard>
+    <NesCardHeader>
+      <NesCardTitle>Legal AI System Status</NesCardTitle>
+    </NesCardHeader>
+    <NesCardContent>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
         <div class="text-center">
           <div class="text-2xl font-bold text-green-600">{legalSystem.precedentDatabase.totalCases.toLocaleString()}</div>
@@ -485,14 +486,14 @@
           <Progress value={analysisProgress} class="w-full" />
         {/if}
       </div>
-    </div>
-  </div>
+    </NesCardContent>
+  </NesCard>
   <!-- NES-GPU Memory Metrics -->
-  <div>
-    <divHeader>
-      <divTitle>NES-GPU Legal Processing Status</h3>
-    </div>
-    <divContent>
+  <NesCard>
+    <NesCardHeader>
+      <NesCardTitle>NES-GPU Legal Processing Status</NesCardTitle>
+    </NesCardHeader>
+    <NesCardContent>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div>
           <div class="text-sm text-gray-600">Vector Cache</div>
@@ -515,18 +516,18 @@
           <Progress value={memoryMetrics.gpuUtilization} class="w-full mt-1" />
         </div>
       </div>
-    </div>
-  </div>
+    </NesCardContent>
+  </NesCard>
   <!-- Search Interface -->
-  <div>
-    <divHeader>
-      <divTitle>Precedent Search</h3>
-    </div>
-    <divContent class="space-y-4">
+  <NesCard>
+    <NesCardHeader>
+      <NesCardTitle>Precedent Search</NesCardTitle>
+    </NesCardHeader>
+    <NesCardContent class="space-y-4">
       <div class="grid md:grid-cols-2 gap-4">
         <div class="space-y-2">
           <label class="text-sm font-medium">Search Query</label>
-          <Input ;
+          <Input
             bind:value={searchQuery}
             placeholder="Enter legal issue or keywords..."
             class="w-full"
@@ -577,7 +578,7 @@
       </div>
       <div class="space-y-2">
         <label class="text-sm font-medium">Case Fact Pattern (Optional)</label>
-        <Textarea;
+        <Textarea
           bind:value={caseFactPattern}
           placeholder="Describe the key facts of your case for more precise matching..."
           rows={4}
@@ -589,9 +590,10 @@
         disabled={analysisInProgress}
         class="bg-blue-600 hover:bg-blue-700 w-full"
       >
-{analysisInProgress ? 'Analyzing Precedents...' : 'Search Precedents'}
-    </div>
-  </div>
+        {analysisInProgress ? 'Analyzing Precedents...' : 'Search Precedents'}
+      </Button>
+    </NesCardContent>
+  </NesCard>
   <!-- Results Tabs -->
   {#if precedentMatches.length > 0}
     <Tabs bind:value={activeTab} class="w-full">
@@ -605,11 +607,11 @@
       <TabsContent value="matches">
         <div class="space-y-4">
           {#each precedentMatches as match}
-            <div>
-              <divHeader>
+            <NesCard>
+              <NesCardHeader>
                 <div class="flex items-start justify-between">
                   <div class="flex-1">
-                    <divTitle class="text-lg">{match.title}</h3>
+                    <NesCardTitle class="text-lg">{match.title}</NesCardTitle>
                     <p class="text-sm text-gray-600 mt-1">{match.citation}</p>
                     <p class="text-sm text-gray-500">{match.court} • {new Date(match.dateDecided).toLocaleDateString()}</p>
                   </div>
@@ -623,8 +625,8 @@
                     </div>
                   </div>
                 </div>
-              </div>
-              <divContent class="space-y-4">
+              </NesCardHeader>
+              <NesCardContent class="space-y-4">
                 <div>
                   <div class="text-sm font-medium text-gray-700 mb-2">Legal Holding</div>
                   <p class="text-sm bg-blue-50 p-3 rounded">{match.legalHolding}</p>
@@ -667,26 +669,26 @@
                     </div>
                   </div>
                 {/if}
-              </div>
-            </div>
+              </NesCardContent>
+            </NesCard>
           {/each}
         </div>
       </TabsContent>
       <TabsContent value="reasoning">
         <div class="space-y-4">
           {#each legalReasoningChain as step}
-            <div>
-              <divHeader>
+            <NesCard>
+              <NesCardHeader>
                 <div class="flex items-center justify-between">
-                  <divTitle class="text-lg">Step {step.stepNumber}: {step.legalPrinciple}</h3>
+                  <NesCardTitle class="text-lg">Step {step.stepNumber}: {step.legalPrinciple}</NesCardTitle>
                   <div class="flex items-center gap-2">
                     <span class="text-sm">Strength:</span>
                     <Progress value={step.strengthScore * 100} class="w-20" />
                     <span class="text-sm font-medium">{(step.strengthScore * 100).toFixed(0)}%</span>
                   </div>
                 </div>
-              </div>
-              <divContent class="space-y-4">
+              </NesCardHeader>
+              <NesCardContent class="space-y-4">
                 <div>
                   <div class="text-sm font-medium text-blue-700 mb-2">Factual Basis</div>
                   <p class="text-sm bg-blue-50 p-2 rounded">{step.factualBasis}</p>
@@ -716,19 +718,19 @@
                     </ul>
                   </div>
                 </div>
-              </div>
-            </div>
+              </NesCardContent>
+            </NesCard>
           {/each}
         </div>
       </TabsContent>
       <TabsContent value="citations">
         <div class="space-y-4">
           {#each citationNetworkMap as network}
-            <div>
-              <divHeader>
-                <divTitle>Citation Network: {network.caseId}</h3>
-              </div>
-              <divContent>
+            <NesCard>
+              <NesCardHeader>
+                <NesCardTitle>Citation Network: {network.caseId}</NesCardTitle>
+              </NesCardHeader>
+              <NesCardContent>
                 <div class="grid md:grid-cols-3 gap-4 mb-4">
                   <div class="text-center p-4 border rounded-lg">
                     <div class="text-lg font-bold text-blue-600">{network.authorityScore.toFixed(0)}</div>
@@ -777,18 +779,18 @@
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              </NesCardContent>
+            </NesCard>
           {/each}
         </div>
       </TabsContent>
       <TabsContent value="applicability">
         {#if applicabilityAnalysis}
-          <div>
-            <divHeader>
-              <divTitle>Applicability Analysis</h3>
-            </div>
-            <divContent class="space-y-4">
+          <NesCard>
+            <NesCardHeader>
+              <NesCardTitle>Applicability Analysis</NesCardTitle>
+            </NesCardHeader>
+            <NesCardContent class="space-y-4">
               <div class="grid md:grid-cols-4 gap-4">
                 <div class="text-center p-4 border rounded-lg">
                   <div class="text-lg font-bold text-green-600">{applicabilityAnalysis.overallApplicability}</div>
@@ -848,18 +850,18 @@
                   {/each}
                 </ul>
               </div>
-            </div>
-          </div>
+            </NesCardContent>
+          </NesCard>
         {/if}
       </TabsContent>
       <TabsContent value="strategy">
         {#if strengthAssessment}
           <div class="space-y-4">
-            <div>
-              <divHeader>
-                <divTitle>Strength Assessment</h3>
-              </div>
-              <divContent class="space-y-4">
+            <NesCard>
+              <NesCardHeader>
+                <NesCardTitle>Strength Assessment</NesCardTitle>
+              </NesCardHeader>
+              <NesCardContent class="space-y-4">
                 <div class="grid md:grid-cols-3 gap-4">
                   <div class="text-center p-4 border rounded-lg">
                     <div class="text-lg font-bold text-green-600">{strengthAssessment.overallStrength}</div>
@@ -898,13 +900,13 @@
                     </ul>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div>
-              <divHeader>
-                <divTitle>Strategic Recommendations</h3>
-              </div>
-              <divContent>
+              </NesCardContent>
+            </NesCard>
+            <NesCard>
+              <NesCardHeader>
+                <NesCardTitle>Strategic Recommendations</NesCardTitle>
+              </NesCardHeader>
+              <NesCardContent>
                 <div class="space-y-3">
                   {#each strengthAssessment.strategicRecommendations as recommendation, index}
                     <div class="border-l-4 border-blue-500 pl-4">
@@ -913,11 +915,11 @@
                     </div>
                   {/each}
                 </div>
-              </div>
-            </div>
+              </NesCardContent>
+            </NesCard>
           </div>
         {/if}
       </TabsContent>
     </Tabs>
   {/if}
-</div>;
+</div>

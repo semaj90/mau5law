@@ -3,9 +3,10 @@
   Enhanced-Bits orchestrated components with Svelte 5 runes
 -->
 <script lang="ts">
-  // Enhanced-Bits orchestrated components (Badge is a default export in this module)
-  import Badge, { Button, Input } from '$lib/components/ui/enhanced-bits';
-  import { OrchestratedCard, OrchestratedButton } from '$lib/components/ui/orchestrated';
+  // Enhanced-Bits orchestrated components — adjust imports to match module exports
+  import Badge from '$lib/components/ui/enhanced-bits/Badge.svelte';
+  import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
+  import Input from '$lib/components/ui/enhanced-bits/Input.svelte';
   // NOTE: lucide-svelte named exports caused type/import issues in this project;
   // use a small inline icon map (emoji placeholders) to avoid breaking the build.
   const ICON = {
@@ -144,6 +145,7 @@
     }
   }
 
+  // annotate event parameter type to avoid implicit any
   function setSuggestionQuery(suggestion: string) {
     query = suggestion;
     performSearch();
@@ -182,6 +184,17 @@
       query = 'Contract breach and liability analysis';
     }
   });
+
+  // Add handlers for result actions (placeholder implementations)
+  function viewResult(documentId: string) {
+    // TODO: replace with real view logic (navigate/open modal)
+    console.log('View document', documentId);
+  }
+
+  function openResultDetails(documentId: string) {
+    // TODO: replace with real details logic (navigate/open drawer)
+    console.log('Open details for', documentId);
+  }
 </script>
 
 <svelte:head>
@@ -199,47 +212,60 @@
       <p class="text-nier-text-muted mt-1">AI-powered semantic search across legal documents</p>
     </div>
     <div class="flex items-center gap-2">
-      <Badge variant="ghost" class="text-nier-accent-warm border-nier-accent-warm">
-        <span class="mr-1">{ICON.sparkles}</span>
-        pgvector + AI
-      </Badge>
-      <Button class="bits-btn" variant="ghost" size="sm" onclick={() => {/* open settings */}}>
-        <span class="w-4 h-4 mr-2 inline-block">{ICON.settings}</span>
-        Settings
-      </Button>
+      <!-- Wrap Badge so we don't pass `class` directly to the Badge component -->
+      <div class="text-nier-accent-warm border-nier-accent-warm">
+        <Badge variant="ghost">
+          <span class="mr-1">{ICON.sparkles}</span>
+          pgvector + AI
+        </Badge>
+      </div>
+
+      <!-- Wrap Button so we don't pass `class` directly to the Button component -->
+      <div class="bits-btn">
+        <Button variant="ghost" size="sm" onclick={() => {/* open settings */}}>
+          <span class="w-4 h-4 mr-2 inline-block">{ICON.settings}</span>
+          Settings
+        </Button>
+      </div>
     </div>
   </div>
 
   <!-- Search Interface - Enhanced-Bits orchestrated -->
-  <OrchestratedCard.Analysis>
+  <!-- replaced OrchestratedCard.Analysis with a plain wrapper to avoid namespace-component typing issues -->
+  <div class="orchestrated-card analysis">
     <div class="p-6 nes-container">
       <div class="space-y-4">
         <!-- Search Input -->
         <div class="relative">
           <span class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-nier-text-muted">{ICON.search}</span>
-          <!-- use value + oninput instead of bind:value if Input isn't bindable -->
+          <!-- annotate event type to avoid implicit any -->
           <Input
             value={query}
-            oninput={(e) => (query = (e.target as HTMLInputElement).value)}
+            oninput={(e: Event) => (query = (e.target as HTMLInputElement).value)}
             onkeydown={handleKeyPress}
             placeholder="Describe your legal research question in natural language..."
             class="pl-12 pr-4 py-3 text-lg border-2 border-nier-border-muted focus:border-nier-accent-warm"
             disabled={loading}
           />
-          <OrchestratedButton.SearchSimilar
-            onclick={performSearch}
-            disabled={loading || !query.trim()}
-            class="absolute right-2 top-1/2 transform -translate-y-1/2 gap-2"
-          >
-            {#if loading}
-              <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
-              Searching...
-            {:else}
-              <span class="w-4 h-4">{ICON.zap}</span>
-               Search
-            {/if}
-          </OrchestratedButton.SearchSimilar>
-         </div>
+
+          <!-- Position wrapper instead of putting class on Button -->
+          <div class="absolute right-2 top-1/2 transform -translate-y-1/2 gap-2">
+            <Button
+              variant="primary"
+              size="sm"
+              onclick={() => { void performSearch(); }}
+              disabled={loading || !query.trim()}
+            >
+               {#if loading}
+                 <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+                 Searching...
+               {:else}
+                 <span class="w-4 h-4">{ICON.zap}</span>
+                  Search
+               {/if}
+             </Button>
+           </div>
+        </div>
 
          <!-- Search Mode Tabs -->
          <!-- simple inline tab buttons to avoid external Tabs API mismatch -->
@@ -292,11 +318,12 @@
          </div>
        </div>
      </div>
-   </OrchestratedCard.Analysis>
+   </div>
 
    <!-- Search Results -->
    {#if searchInfo}
-     <OrchestratedCard.Evidence>
+     <!-- replaced OrchestratedCard.Evidence with a plain wrapper to avoid namespace-component typing issues -->
+     <div class="orchestrated-card evidence">
        <div class="nes-container">
          <div class="flex items-center justify-between">
            <div class="flex items-center gap-2">
@@ -322,9 +349,12 @@
            <div class="text-center py-8">
              <div class="w-8 h-8 text-red-500 mx-auto mb-2 text-2xl">{ICON.alert}</div>
              <p class="text-red-600">{error}</p>
-             <Button onclick={performSearch} variant="ghost" size="sm" class="mt-2 bits-btn">
-               Retry Search
-             </Button>
+             <!-- wrap retry Button so we don't give `class` to the Button component -->
+             <div class="mt-2 bits-btn">
+               <Button onclick={performSearch} variant="ghost" size="sm">
+                 Retry Search
+               </Button>
+             </div>
            </div>
          {:else if results.length === 0}
            <div class="text-center py-8">
@@ -357,9 +387,11 @@
                  </div>
 
                  <div class="flex items-center gap-2">
-                   <Badge class={"text-xs " + getSimilarityColor(result.similarity_score)}>
-                     {getSimilarityLabel(result.similarity_score)}
-                   </Badge>
+                   <div class={"text-xs " + getSimilarityColor(result.similarity_score)}>
+                     <Badge>
+                       {getSimilarityLabel(result.similarity_score)}
+                     </Badge>
+                   </div>
                    <span class="text-xs font-mono text-nier-text-muted">
                      {(result.similarity_score * 100).toFixed(1)}%
                    </span>
@@ -401,20 +433,27 @@
                  </div>
 
                  <div class="flex items-center gap-2">
-                   <Button class="bits-btn" variant="ghost" size="sm">
-                     <span class="w-4 h-4 mr-1">{ICON.eye}</span>
-                     View
-                   </Button>
-                   <Button class="bits-btn" variant="ghost" size="sm">
-                     <span class="w-4 h-4">{ICON.chevronRight}</span>
-                   </Button>
+                   <div class="bits-btn">
+                     <!-- added onclick -->
+                     <Button variant="ghost" size="sm" onclick={() => viewResult(result.document_id)}>
+                       <span class="w-4 h-4 mr-1">{ICON.eye}</span>
+                       View
+                     </Button>
+                   </div>
+
+                   <div class="bits-btn">
+                     <!-- added onclick -->
+                     <Button variant="ghost" size="sm" onclick={() => openResultDetails(result.document_id)}>
+                       <span class="w-4 h-4">{ICON.chevronRight}</span>
+                     </Button>
+                   </div>
                  </div>
                </div>
              </div>
            {/each}
          {/if}
        </div>
-     </OrchestratedCard.Evidence>
+     </div>
    {/if}
 
    <!-- Search Suggestions -->

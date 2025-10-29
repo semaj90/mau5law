@@ -27,7 +27,7 @@
  * AI CAPABILITIES:
  * - Enhanced RAG with Context7 integration
  * - Multi-model AI processing (Ollama cluster)
- * - Vector embeddings with nomic-embed-text (768d)
+ * - Vector embeddings with nomic-embed-text (384d)
  * - Legal document analysis with domain expertise
  * - Real-time semantic analysis and entity extraction
  *
@@ -43,13 +43,66 @@
  * - Security and audit logging
  * - Resource management and throttling
  */
-import { createMachine, assign, fromPromise } from '$lib/shims/xstate';
-import { browser } from '$app/environment';
-import type * as amqplib from 'amqplib';
+import { createMachine, assign, fromPromise } from '../shims/xstate';
+// runtime browser flag used during focused checks
+const browser = typeof window !== 'undefined';
 
-// Define a type for the Connection object returned by amqplib.connect
-// This uses Awaited to get the resolved type of the Promise returned by amqplib.connect
-type AmqplibConnection = Awaited<ReturnType<typeof amqplib.connect>>;
+// Replace the previous type that depended on a type-only import with a small runtime-safe interface
+type AmqplibConnection = {
+  // minimal methods used in this file
+  createChannel: () => Promise<Channel>; // Updated to return the new Channel type
+  close: () => Promise<void>;
+  on: (event: 'error' | 'close' | string, cb: (...args: unknown[]) => void) => void;
+};
+
+// Define the AmqplibModule interface for dynamic import typing
+interface AmqplibModule {
+  connect: (url: string) => Promise<AmqplibConnection>;
+  default?: {
+    connect: (url: string) => Promise<AmqplibConnection>;
+  };
+}
+
+// Define a minimal Channel type based on amqplib's Channel interface
+type Channel = {
+  assertExchange: (name: string, type: string, opts?: Record<string, unknown>) => Promise<void>;
+  publish: (exchange: string, routingKey: string, content: Uint8Array | ArrayBuffer | Buffer) => boolean;
+  close: () => Promise<void>;
+  assertQueue: (queue?: string, options?: Record<string, unknown>) => Promise<{ queue: string; messageCount: number; consumerCount: number }>;
+  bindQueue: (queue: string, source: string, pattern: string, args?: Record<string, unknown>) => Promise<void>;
+  consume: (queue: string, onMessage: (msg: ConsumeMessage | null) => void, options?: Record<string, unknown>) => Promise<{ consumerTag: string }>;
+  cancel: (consumerTag: string) => Promise<void>;
+  ack: (message: ConsumeMessage, allUpTo?: boolean) => void;
+  // Add other methods if they are used, e.g., deleteQueue
+  deleteQueue: (queue: string, options?: Record<string, unknown>) => Promise<{ messageCount: number }>;
+};
+
+// Define a minimal ConsumeMessage type based on amqplib's ConsumeMessage interface
+type ConsumeMessage = {
+  content: Buffer;
+  fields: {
+    deliveryTag: number;
+    redelivered: boolean;
+    exchange: string;
+    routingKey: string;
+  };
+  properties: {
+    contentType?: string;
+    contentEncoding?: string;
+    headers: Record<string, unknown>;
+    deliveryMode?: number;
+    priority?: number;
+    correlationId?: string;
+    replyTo?: string;
+    expiration?: string;
+    messageId?: string;
+    timestamp?: number;
+    type?: string;
+    userId?: string;
+    appId?: string;
+    clusterId?: string;
+  };
+};
 
 // --- Simplified/cleaned types (kept for compatibility) ---
 export interface ConversationEntry {
@@ -69,6 +122,9 @@ export interface DocumentType {
   metadata?: Record<string, unknown>;
 }
 export interface AIAssistantContext {
+  // allow extra keys so this type satisfies XState's AnyObject constraint
+  [key: string]: unknown;
+
   currentQuery: string;
   response: string;
   conversationHistory: ConversationEntry[];
@@ -380,11 +436,13 @@ class $WebWorkerPool {
   }
 }
 
-// lightweight RabbitMQ stub for XState integration
+// --- Replace previous RabbitMQService stub with a real server implementation ---
 class RabbitMQService {
-  private connection: AmqplibConnection | null = null; // In a real scenario, this would be an amqplib connection
-  private connectionUrl = 'amqp://localhost:5672'; // Default Docker Desktop URL
+  private connection: AmqplibConnection | null = null; // Changed from any
+  private connectionUrl = 'amqp://localhost:5672';
   private connectionPromise: Promise<boolean> | null = null;
+  // keep track of channels/consumers so we can close them on disconnect
+  private channels: Map<string, { channel: Channel; consumerTag?: string; queue?: string }> = new Map(); // Changed from any
 
   connect(config?: { url?: string }): Promise<boolean> {
     if (this.connection) return Promise.resolve(true);
@@ -402,34 +460,38 @@ class RabbitMQService {
       return false;
     }
 
-    let urlToUse = config?.url;
-    if (!urlToUse) {
-      try {
-        const { env } = await import('$env/dynamic/private');
-        urlToUse = env.RABBITMQ_URL;
-      } catch (e) {
-        /* server-only import, ignore client-side error */
+      let urlToUse = config?.url;
+      if (!urlToUse) {
+        try {
+          // dynamic private env (SvelteKit server-only). Use safe try/catch to avoid compile/runtime failures in some environments
+          // dynamic env module is provided by SvelteKit at runtime and may be missing in editor environments
+          const mod = await import('$env/dynamic/private').catch(() => undefined);
+          urlToUse = (mod?.env?.RABBITMQ_URL as string | undefined) || urlToUse;
+        } catch (e) {
+          // ignore - server-only import may fail in some contexts
+        }
       }
-    }
-
     this.connectionUrl = urlToUse || this.connectionUrl;
 
     try {
-      // Dynamically import amqplib for server-side use
-      const amqplib = await import('amqplib');
-      this.connection = await amqplib.connect(this.connectionUrl);
-      console.log(`[RabbitMQ] Connected to ${this.connectionUrl}`);
+      const amqplibMod = await import('amqplib');
+      // Support both ESM and CommonJS shapes without referencing `.default` directly in a typed way.
+      const connectFn = (amqplibMod as AmqplibModule).connect || (amqplibMod as AmqplibModule).default?.connect;
+      if (!connectFn) throw new Error('amqplib.connect not available');
 
-      this.connection.on('error', (err: Error) => {
-        console.error('[RabbitMQ] Connection error:', err.message);
-        this.connection = null;
+      this.connection = await connectFn(this.connectionUrl);
+
+      // attach basic handlers
+      this.connection.on?.('error', (err: Error) => {
+        console.error('[RabbitMQ] Connection error:', err?.message ?? String(err));
+        this._cleanupConnection();
       });
-
-      this.connection.on('close', () => {
+      this.connection.on?.('close', () => {
         console.log('[RabbitMQ] Connection closed.');
-        this.connection = null;
+        this._cleanupConnection();
       });
 
+      console.log(`[RabbitMQ] Connected to ${this.connectionUrl}`);
       return true;
     } catch (error) {
       console.error('[RabbitMQ] Failed to connect:', error);
@@ -438,32 +500,84 @@ class RabbitMQService {
     }
   }
 
+  private _cleanupConnection() {
+    this.connection = null;
+    // close stored channels if any (iterate values to avoid downlevelIteration issues)
+    for (const entry of Array.from(this.channels.values())) {
+      try {
+        entry.channel?.close?.();
+      } catch (e) {
+        console.warn('[RabbitMQ] Error closing channel during cleanup:', e); // Added error logging
+      }
+    }
+    this.channels.clear();
+  }
+
   isConnected(): boolean {
     return this.connection !== null;
   }
 
   async disconnect(): Promise<void> {
+    // close channels first (iterate values for compatibility)
+    for (const entry of Array.from(this.channels.values())) {
+      try {
+        if (entry.consumerTag && entry.channel?.cancel) {
+          await entry.channel.cancel(entry.consumerTag).catch((e: unknown) => console.warn('[RabbitMQ] Error cancelling consumer:', e)); // Added error logging
+        }
+        await entry.channel?.close?.().catch((e: unknown) => console.warn('[RabbitMQ] Error closing channel:', e)); // Added error logging
+      } catch (e) {
+        console.warn('[RabbitMQ] Error during channel disconnect cleanup:', e); // Added error logging
+      }
+    }
+    this.channels.clear();
+
     if (this.connection) {
-      await this.connection.close();
+      try {
+        await this.connection.close();
+        console.log('[RabbitMQ] Disconnected.');
+      } catch (e) {
+        console.warn('[RabbitMQ] Error while disconnecting:', e);
+      }
       this.connection = null;
-      console.log('[RabbitMQ] Disconnected.');
     }
   }
 
+  private async _ensureConnected(): Promise<boolean> {
+    if (this.isConnected()) return true;
+    return this.connect();
+  }
+
   private async publish(exchange: string, routingKey: string, payload: unknown): Promise<void> {
-    if (!this.isConnected() || !this.connection) {
+    if (browser) {
+      console.warn('[RabbitMQ] publish skipped in browser.');
+      return;
+    }
+
+    const ok = await this._ensureConnected();
+    if (!ok || !this.connection) {
       console.warn('[RabbitMQ] Not connected. Cannot publish message.');
       return;
     }
+
+    let channel: Channel | undefined; // Changed from any
     try {
-      const channel = await this.connection.createChannel();
+      channel = await this.connection.createChannel();
       await channel.assertExchange(exchange, 'topic', { durable: false });
-      // Buffer is a Node.js global, available on the server
-      channel.publish(exchange, routingKey, Buffer.from(JSON.stringify(payload)));
+
+      const json = JSON.stringify(payload);
+      const BufferGlobal = (globalThis as unknown as { Buffer?: { from: (s: string, enc?: string) => Uint8Array } }).Buffer;
+      const content: Uint8Array = typeof BufferGlobal !== 'undefined' ? BufferGlobal.from(json, 'utf8') : new TextEncoder().encode(json);
+
+      channel.publish(exchange, routingKey, content);
       await channel.close();
-      console.log(`[RabbitMQ] Publishing to exchange '${exchange}', routing key '${routingKey}'`, payload);
+      console.log(`[RabbitMQ] Published to exchange='${exchange}' routingKey='${routingKey}'`, payload);
     } catch (error) {
       console.error('[RabbitMQ] Failed to publish message:', error);
+      try {
+        await channel?.close?.();
+      } catch (e) {
+        console.warn('[RabbitMQ] Error closing channel after publish failure:', e); // Added error logging
+      }
     }
   }
 
@@ -471,20 +585,198 @@ class RabbitMQService {
     return this.publish('system_events', 'health.log', payload);
   }
 
-  // Stubbing out other subscription methods to match the previous interface
-  subscribeToSystemEvents(_cb: (msg: unknown) => void): void {
-    console.log('[RabbitMQ] Subscribing to system events (stubbed)');
+  notifyAIAnalysisCompleted(id: string, payload: unknown): Promise<void> {
+    return this.publish('ai_events', `analysis.completed.${id}`, payload);
   }
-  subscribeToCase(_caseId: string, _cb: (msg: unknown) => void): void {
-    console.log(`[RabbitMQ] Subscribing to case ${_caseId} events (stubbed)`);
+
+  // Fire-and-forget subscription helpers (signature preserved: returns void)
+  subscribeToSystemEvents(cb: (msg: unknown) => void): void {
+    if (browser) {
+      console.warn('[RabbitMQ] subscribeToSystemEvents is not available in the browser (no-op).');
+      return;
+    }
+    // create consumer in background
+    (async () => {
+      try {
+        const ok = await this._ensureConnected();
+        if (!ok || !this.connection) return;
+
+        const channel = await this.connection.createChannel();
+        await channel.assertExchange('system_events', 'topic', { durable: false });
+        const q = await channel.assertQueue('', { exclusive: true });
+        await channel.bindQueue(q.queue, 'system_events', '#');
+
+        const consumeResult = await channel.consume(
+          q.queue,
+          (msg: ConsumeMessage | null) => { // Changed from any
+            if (!msg) return;
+            let payload: unknown = null;
+            try {
+              const text = msg.content?.toString?.('utf8') ?? String(msg.content);
+              payload = JSON.parse(text);
+            } catch (e) { // Added error logging
+              console.warn('[RabbitMQ] Error parsing system event message content:', e);
+              try {
+                payload = msg.content?.toString?.('utf8') ?? null;
+              } catch (e2) { // Added error logging
+                console.warn('[RabbitMQ] Error converting system event message content to string:', e2);
+                payload = null;
+              }
+            }
+            try {
+              cb(payload);
+            } catch (err) {
+              console.error('[RabbitMQ] subscriber callback error:', err);
+            }
+            try {
+              channel.ack(msg);
+            } catch (e) {
+              console.warn('[RabbitMQ] Error acknowledging system event message:', e); // Added error logging
+            }
+          },
+          { noAck: false }
+        );
+
+        this.channels.set('system_events', { channel, consumerTag: consumeResult.consumerTag, queue: q.queue });
+        console.log('[RabbitMQ] Subscribed to system_events');
+      } catch (err) {
+        console.error('[RabbitMQ] subscribeToSystemEvents failed:', err);
+      }
+    })();
   }
-  subscribeToAIAnalysis(_cb: (msg: unknown) => void): void {
-    console.log('[RabbitMQ] Subscribing to AI analysis events (stubbed)');
+
+  subscribeToCase(caseId: string, cb: (msg: unknown) => void): void {
+    if (browser) {
+      console.warn('[RabbitMQ] subscribeToCase is not available in the browser (no-op).');
+      return;
+    }
+    (async () => {
+      try {
+        const ok = await this._ensureConnected();
+        if (!ok || !this.connection) return;
+
+        const channel = await this.connection.createChannel();
+        await channel.assertExchange('case_events', 'topic', { durable: false });
+        const q = await channel.assertQueue('', { exclusive: true });
+        // bind to the specific case routing key and to broader case.* to be flexible
+        await channel.bindQueue(q.queue, 'case_events', `case.${caseId}`);
+        await channel.bindQueue(q.queue, 'case_events', 'case.#');
+
+        const consumeResult = await channel.consume(
+          q.queue,
+          (msg: ConsumeMessage | null) => { // Changed from any
+            if (!msg) return;
+            let payload: unknown = null;
+            try {
+              const text = msg.content?.toString?.('utf8') ?? String(msg.content);
+              payload = JSON.parse(text);
+            } catch (e) { // Added error logging
+              console.warn('[RabbitMQ] Error parsing case event message content:', e);
+              try {
+                payload = msg.content?.toString?.('utf8') ?? null;
+              } catch (e2) { // Added error logging
+                console.warn('[RabbitMQ] Error converting case event message content to string:', e2);
+                payload = null;
+              }
+            }
+            try {
+              cb(payload);
+            } catch (err) {
+              console.error('[RabbitMQ] case subscriber callback error:', err);
+            }
+            try {
+              channel.ack(msg);
+            } catch (e) {
+              console.warn('[RabbitMQ] Error acknowledging case event message:', e); // Added error logging
+            }
+          },
+          { noAck: false }
+        );
+
+        this.channels.set(`case_${caseId}`, { channel, consumerTag: consumeResult.consumerTag, queue: q.queue });
+        console.log(`[RabbitMQ] Subscribed to case ${caseId}`);
+      } catch (err) {
+        console.error('[RabbitMQ] subscribeToCase failed:', err);
+      }
+    })();
   }
-  notifyAIAnalysisCompleted(_id: string, payload: unknown): Promise<void> {
-    return this.publish('ai_events', `analysis.completed.${_id}`, payload);
+
+  subscribeToAIAnalysis(cb: (msg: unknown) => void): void {
+    if (browser) {
+      console.warn('[RabbitMQ] subscribeToAIAnalysis is not available in the browser (no-op).');
+      return;
+    }
+    (async () => {
+      try {
+        const ok = await this._ensureConnected();
+        if (!ok || !this.connection) return;
+
+        const channel = await this.connection.createChannel();
+        await channel.assertExchange('ai_events', 'topic', { durable: false });
+        const q = await channel.assertQueue('', { exclusive: true });
+        await channel.bindQueue(q.queue, 'ai_events', 'analysis.#');
+
+        const consumeResult = await channel.consume(
+          q.queue,
+          (msg: ConsumeMessage | null) => { // Changed from any
+            if (!msg) return;
+            let payload: unknown = null;
+            try {
+              const text = msg.content?.toString?.('utf8') ?? String(msg.content);
+              payload = JSON.parse(text);
+            } catch (e) { // Added error logging
+              console.warn('[RabbitMQ] Error parsing AI analysis message content:', e);
+              try {
+                payload = msg.content?.toString?.('utf8') ?? null;
+              } catch (e2) { // Added error logging
+                console.warn('[RabbitMQ] Error converting AI analysis message content to string:', e2);
+                payload = null;
+              }
+            }
+            try {
+              cb(payload);
+            } catch (err) {
+              console.error('[RabbitMQ] ai analysis subscriber callback error:', err);
+            }
+            try {
+              channel.ack(msg);
+            } catch (e) {
+              console.warn('[RabbitMQ] Error acknowledging AI analysis message:', e); // Added error logging
+            }
+          },
+          { noAck: false }
+        );
+
+        this.channels.set('ai_events', { channel, consumerTag: consumeResult.consumerTag, queue: q.queue });
+        console.log('[RabbitMQ] Subscribed to ai_events analysis.*');
+      } catch (err) {
+        console.error('[RabbitMQ] subscribeToAIAnalysis failed:', err);
+      }
+    })();
+  }
+
+  // optional: allow programmatic unsubscribe if needed
+  async unsubscribe(key: string): Promise<void> {
+    const entry = this.channels.get(key);
+    if (!entry) return;
+    try {
+      if (entry.consumerTag && entry.channel?.cancel) {
+        await entry.channel.cancel(entry.consumerTag).catch(() => {});
+      }
+      if (entry.queue && entry.channel?.deleteQueue) {
+        // exclusive auto-delete queues will disappear on channel close; optional cleanup
+        // await entry.channel.deleteQueue(entry.queue).catch(()=>{});
+      }
+      await entry.channel?.close?.().catch(() => {});
+    } catch {
+      // ignore
+    } finally {
+      this.channels.delete(key);
+    }
   }
 }
+// --- end RabbitMQService replacement ---
+
 const rabbitmqService = new RabbitMQService();
 
 // --- Simplified machine that is syntactically correct and provides the same export name ---
@@ -501,7 +793,8 @@ export const aiAssistantMachine = createMachine({
     conversationHistory: [],
     sessionId: `session_${Date.now()}_${Math.random().toString(36).slice(2)}`,
     isProcessing: false,
-    model: 'gemma3-legal',
+    // use the embedding model by default for vector/embedding workflows
+    model: 'embeddinggemma:latest',
     temperature: 0.7,
     maxTokens: 2048,
     availableModels: [],
@@ -515,28 +808,36 @@ export const aiAssistantMachine = createMachine({
     initializing: {
       invoke: {
         id: 'init',
-        src: fromPromise(async () => {
-          // Initialize core pieces (best-effort)
-          const gpu = GPUProcessor.getInstance();
-          const gpuReady = await gpu.initialize().catch(() => false);
-          const cache = MultiLayerCache.getInstance();
-          const mem = MemoryManager.getInstance();
-          // return a small status object
-          return {
-            gpuReady,
-            cacheStats: cache.getCacheStats(),
-            memoryUsage: mem.getMemoryUsage(),
-          };
-        }),
+        src: fromPromise(
+          async (): Promise<{
+            gpuReady: boolean;
+            cacheStats: ReturnType<MultiLayerCache['getCacheStats']>;
+            memoryUsage: number;
+          }> => {
+            // Initialize core pieces (best-effort)
+            const gpu = GPUProcessor.getInstance();
+            const gpuReady = await gpu.initialize().catch(() => false);
+            const cache = MultiLayerCache.getInstance();
+            const mem = MemoryManager.getInstance();
+            // return a small status object
+            return {
+              gpuReady,
+              cacheStats: cache.getCacheStats(),
+              memoryUsage: mem.getMemoryUsage(),
+            };
+          }
+        ),
         onDone: {
           target: 'idle',
-          actions: assign({
-            gpuProcessingEnabled: ({ event }) => Boolean(event.output?.gpuReady),
-          }),
+          actions: assign<AIAssistantContext, { output?: { gpuReady?: boolean } }>((_ctx, event) => ({
+            gpuProcessingEnabled: Boolean(event.output?.gpuReady),
+          })),
         },
         onError: {
           target: 'idle',
-          actions: assign({ error: ({ event }) => ({ message: String(event.error) }) }),
+          actions: assign<AIAssistantContext, { error?: unknown }>((_ctx, event) => ({
+            error: { message: String(event.error) },
+          })),
         },
       },
     },
@@ -544,13 +845,13 @@ export const aiAssistantMachine = createMachine({
       on: {
         SEND_MESSAGE: {
           target: 'processing',
-          actions: assign({
-            currentQuery: ({ event }) => event.message,
-            isProcessing: () => true,
-          }),
+          actions: assign<AIAssistantContext, { message: string }>((_ctx, event) => ({
+            currentQuery: event.message,
+            isProcessing: true,
+          })),
         },
         CLEAR_CONVERSATION: {
-          actions: assign({ conversationHistory: () => [] }),
+          actions: assign(() => ({ conversationHistory: [] })),
         },
       },
     },
@@ -558,44 +859,42 @@ export const aiAssistantMachine = createMachine({
       invoke: {
         id: 'processQuery',
         input: ({ context }) => ({ currentQuery: context.currentQuery }),
-        src: fromPromise<ProcessQueryOutput>(async ({ input }) => {
+        src: fromPromise(async ({ input }: { input: { currentQuery: string } }): Promise<ProcessQueryOutput> => {
           // simple echo behavior for now; replace with real implementation later
           await new Promise(r => setTimeout(r, 10));
           return { response: `Echo: ${input.currentQuery}` };
         }),
         onDone: {
           target: 'idle',
-          actions: assign({
-            // Ensure response is always a string to avoid widened any/unknown
-            response: ({ event }) => String((event as { output?: ProcessQueryOutput }).output?.response ?? ''),
-            // Build a properly-typed ConversationEntry and cast the resulting array
-            conversationHistory: ({ context, event }) =>
-              [
-                ...context.conversationHistory,
-                {
-                  id: `assistant_${Date.now()}`,
-                  type: 'assistant' as const,
-                  content: String((event as { output?: ProcessQueryOutput }).output?.response ?? ''),
-                  timestamp: new Date(),
-                } as ConversationEntry,
-              ] as ConversationEntry[],
-            isProcessing: () => false,
-            currentQuery: () => '',
+          actions: assign<AIAssistantContext, { output?: ProcessQueryOutput }>((context, event) => {
+            const resp = String(event.output?.response ?? '');
+            const newEntry: ConversationEntry = {
+              id: `assistant_${Date.now()}`,
+              type: 'assistant',
+              content: resp,
+              timestamp: new Date(),
+            };
+            return {
+              response: resp,
+              conversationHistory: [...context.conversationHistory, newEntry],
+              isProcessing: false,
+              currentQuery: '',
+            };
           }),
         },
         onError: {
           target: 'error',
-          actions: assign({
-            error: ({ event }) => ({ message: String(event.error) }),
-            isProcessing: () => false,
-          }),
+          actions: assign<AIAssistantContext, { error?: unknown }>((_ctx, event) => ({
+            error: { message: String(event.error) },
+            isProcessing: false,
+          })),
         },
       },
     },
     error: {
       entry: 'logError',
       on: {
-        ERROR_RECOVER: { target: 'idle', actions: assign({ error: () => null }) },
+        ERROR_RECOVER: { target: 'idle', actions: assign(() => ({ error: null })) },
       },
     },
   },
@@ -618,8 +917,8 @@ export const aiAssistantMachine = createMachine({
  */
 export const aiAssistantProvider = {
   actions: {
-    clearError: assign({ error: () => null }),
-    logError: (ctx: Record<string, unknown>) => {
+    clearError: assign(() => ({ error: null })),
+    logError: (ctx: AIAssistantContext) => {
       if (ctx.error) {
         console.error('[aiAssistant] error', ctx.error);
         // best-effort RabbitMQ publish (swallow errors)
@@ -638,3 +937,5 @@ export const aiAssistantProvider = {
 };
 
 export default aiAssistantMachine;
+
+// Helper: resolve Ollama endpoint safely in server or browser.

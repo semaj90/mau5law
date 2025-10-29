@@ -16,44 +16,80 @@
  * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance
  */
 import { json } from '@sveltejs/kit'
-import { getCache, deleteCache, redisTTL, memoryStats } from '$lib/server/summarizeCache'
-import type { RequestHandler } from './$types.js'
+import { getCache, deleteCache, memoryStats } from '$lib/server/summarizeCache';
+import type { RequestHandler } from './$types.js';
 
-import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 // Introspection + invalidation route
 // GET /api/ai/summarize/cache/:key -> metadata & (optionally) summary
 // DELETE /api/ai/summarize/cache/:key -> invalidate
 // Query params: include=summary (include full summary text)
+type CacheEntry = {
+  redisTTL?: number;
+  ttlSeconds?: number;
+  ttlMs?: number;
+  ts: number;
+  structured?: unknown;
+  model?: string;
+  mode?: string;
+  type?: string;
+  perf?: unknown;
+  summary?: string;
+  // allow other optional fields
+  [k: string]: unknown;
+};
+
 const originalGETHandler: RequestHandler = async ({ params, url }) => {
-  const key = params.key
-  if (!key) return json({ success: false, error: 'Key required' }, { status: 400 })
-  const includeSummary = url.searchParams.get('include') === 'summary'
-  const cached = await getCache(key)
+  const key = params.key;
+  if (!key) return json({ success: false, error: 'Key required' }, { status: 400 });
+  const includeSummary = url.searchParams.get('include') === 'summary';
+  // Narrow cached's shape to avoid `any`
+  const cached = (await getCache(key)) as { entry?: CacheEntry; source?: string };
   if (!cached.entry) {
-    return json({ success: false, hit: false, key, message: 'Cache miss' }, { status: 404 })
+    return json({ success: false, hit: false, key, message: 'Cache miss' }, { status: 404 });
   }
-  const ttl = await redisTTL(key)
-  const now = Date.now()
-  const remainingMs = cached.entry.ttlMs - (now - cached.entry.ts)
+
+  const now = Date.now();
+
+  // Use the typed entry instead of casting to `any`
+  const entry = cached.entry;
+
+  // Compute remainingMs safely (entry.ttlMs may be undefined)
+  const remainingMsRaw = typeof entry.ttlMs === 'number' ? entry.ttlMs - (now - entry.ts) : null;
+  const remainingMs = remainingMsRaw !== null ? Math.max(0, remainingMsRaw) : null;
+
+  // Determine a Redis TTL in seconds when available
+  let ttl: number | null = null;
+  if (typeof entry.redisTTL === 'number') {
+    ttl = entry.redisTTL;
+  } else if (typeof entry.ttlSeconds === 'number') {
+    ttl = entry.ttlSeconds;
+  } else if (typeof entry.ttlMs === 'number') {
+    // convert remainingMs to seconds if ttlMs exists
+    ttl = Math.max(0, Math.round((entry.ttlMs - (now - entry.ts)) / 1000));
+  } else {
+    ttl = null;
+  }
+
   return json({
     success: true,
     hit: true,
     key,
     source: cached.source,
-    remainingMs: remainingMs < 0 ? 0 : remainingMs,
-    structured: !!cached.entry.structured,
-    model: cached.entry?.model || "unknown" // @ts-ignore - Model property access,
-    mode: cached.entry.mode,
-    type: cached.entry.type,
-    createdAt: new Date(cached.entry.ts).toISOString(),
-    ageMs: now - cached.entry.ts,
-    perf: cached.entry.perf,
+    remainingMs,
+    structured: !!entry.structured,
+    model: entry.model ?? 'unknown',
+    mode: entry.mode,
+    type: entry.type,
+    createdAt: new Date(entry.ts).toISOString(),
+    ageMs: now - entry.ts,
+    perf: entry.perf,
     redisTTL: ttl,
     memory: memoryStats(),
-    summary: includeSummary ? cached.entry.summary: undefined,
-    structuredPayload: includeSummary ? cached.entry.structured : undefined,
-  })
-}
+    summary: includeSummary ? entry.summary : undefined,
+    structuredPayload: includeSummary ? entry.structured : undefined,
+  });
+};
 const originalDELETEHandler: RequestHandler = async ({ params }) => {
   const key = params.key
   if (!key) return json({ success: false, error: 'Key required' }, { status: 400 })

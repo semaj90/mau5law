@@ -436,10 +436,10 @@ export class LLMOrchestratorBridge {
       const result: InferenceResult = await unifiedClientLLMOrchestrator.executeInference(clientRequest);
       const untyped = result as unknown as UntypedOrchestratorResult;
       // Ensure executionMetrics is indexable to avoid TS '{}' property errors
-      const execMetrics = (untyped.executionMetrics ?? {}) as Record<string, any>;
+      const execMetrics = (untyped.executionMetrics ?? {}) as UntypedOrchestratorResult['executionMetrics'];
       const modelUsed = String(untyped.modelUsed ?? '');
-      const totalLatency = (execMetrics.totalLatency as number) ?? 0;
-      const cacheHitRate = (execMetrics.cacheHitRate as number) ?? 0;
+      const totalLatency = execMetrics.totalLatency ?? 0;
+      const cacheHitRate = execMetrics.cacheHitRate ?? 0;
 
       return {
         success: !!untyped.success,
@@ -545,9 +545,7 @@ export class LLMOrchestratorBridge {
   }
 
   // Helper: map external model names to client orchestrator allowed union
-  private mapPreferredModelToClient(
-    model?: string
-  ): 'auto' | 'gemma270m' | 'legal-bert' | 'gemma-legal' {
+  private mapPreferredModelToClient(model?: string): 'auto' | 'gemma270m' | 'legal-bert' | 'gemma-legal' {
     if (!model || model === 'auto') return 'auto';
     switch (model) {
       case 'gemma270m':
@@ -627,8 +625,7 @@ export class LLMOrchestratorBridge {
     const currentAvg = this.performanceMetrics.averageLatency;
     const newLatency = result.executionMetrics?.totalLatency ?? 0;
     const totalReqs = this.performanceMetrics.totalRequests || 1;
-    this.performanceMetrics.averageLatency =
-      (currentAvg * (totalReqs - 1) + newLatency) / totalReqs;
+    this.performanceMetrics.averageLatency = (currentAvg * (totalReqs - 1) + newLatency) / totalReqs;
 
     // Update cache hit rate if available
     if (result.executionMetrics?.cacheHitRate !== undefined) {
@@ -642,8 +639,9 @@ export class LLMOrchestratorBridge {
       const health = await enhancedOrchestrator.health();
       logger.info('[LLM Bridge] Server orchestrator health:', health.status);
       return health.status === 'healthy';
-    } catch (error: any) {
-      logger.warn('[LLM Bridge] Server orchestrator not available:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      logger.warn('[LLM Bridge] Server orchestrator not available:', message);
       return false;
     }
   }
@@ -652,8 +650,9 @@ export class LLMOrchestratorBridge {
       const status = await unifiedClientLLMOrchestrator.getStatus();
       logger.info('[LLM Bridge] Client orchestrator models loaded:', status.modelsLoaded);
       return status.modelsLoaded > 0;
-    } catch (error: any) {
-      logger.warn('[LLM Bridge] Client orchestrator not available:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      logger.warn('[LLM Bridge] Client orchestrator not available:', message);
       return false;
     }
   }

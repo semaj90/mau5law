@@ -1,3 +1,40 @@
+declare module '$lib/shims/xstate' {
+  // Minimal re-exports used by machines to avoid pulling full xstate types
+  export function createMachine(...args: any[]): any;
+  export function assign(...args: any[]): any;
+  export function fromPromise(...args: any[]): any;
+  export type AnyEventObject = Record<string, any>;
+}
+
+declare module '$lib/schemas/evidence-upload' {
+  export type VideoMetadata = {
+    id?: string;
+    filename?: string;
+    duration?: number;
+    size?: number;
+    uploadedAt?: string;
+  };
+}
+
+declare module '../stores/auth.svelte.js' {
+  export type User = {
+    id?: string;
+    name?: string;
+    email?: string;
+    roles?: string[];
+  };
+  const user: User | null;
+  export default user;
+}
+
+declare module '$app/environment' {
+  export const browser: boolean;
+  export const dev: boolean;
+}
+
+declare module '$env/dynamic/private' {
+  export const env: Record<string, string>;
+}
 // Minimal ambient declarations to reduce noisy type errors during iterative fixes
 // Add more specific typings progressively as files are stabilized.
 declare module 'fabric';

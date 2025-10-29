@@ -1,11 +1,12 @@
 // Shared Legal AI metadata type used by tests and services
 // This is a flexible, backward-compatible shape that maps to the current PNGEmbedExtractor metadata
-}
+
 export interface LegalAIMetadataEntity {
   name: string;
   type: string;
   confidence: number;
 }
+
 export interface LegalAIClassifications {
   documentType?: string;
   jurisdiction?: string;
@@ -13,13 +14,15 @@ export interface LegalAIClassifications {
   confidentiality?: string;
   [key: string]: unknown;
 }
+
 export interface ProcessingStep {
   step: string;
   durationMs?: number; // legacy tests use durationMs
   duration_ms?: number; // new extractor uses duration_ms
   success: boolean;
-  metadata?: { [key: string]: any }
+  metadata?: { [key: string]: unknown };
 }
+
 export interface LegalAIMetadata {
   // Legacy/test fields
   processingId?: string;
@@ -36,18 +39,17 @@ export interface LegalAIMetadata {
   keyPhrases?: string[];
   processingChain: ProcessingStep[];
   semanticHash?: string; // legacy
-  embeddings?: { semantic_hash?: string; text_embedding?: number[] }
-  additionalData?: { [key: string]: any }
+  embeddings?: { semantic_hash?: string; text_embedding?: number[] };
+  additionalData?: { [key: string]: unknown };
   // Compatibility aliases for PNG extractor expectations
   evidence_id?: string; // mapped from processingId or provided directly
   analysis_results?: {
     confidence: number;
-    classifications: string[] | LegalAIClassifications[keyof LegalAIClassifications][];
-    entities:
-      | Array<
-      | LegalAIMetadataEntity[];
+    classifications: Array<string | keyof LegalAIClassifications>;
+    entities: LegalAIMetadataEntity[];
     risk_assessment: 'low' | 'medium' | 'high' | 'critical' | string;
     summary: string;
-  }
+  };
 }
-export type { LegalAIMetadata as DefaultLegalAIMetadata }
+
+export type DefaultLegalAIMetadata = LegalAIMetadata;
