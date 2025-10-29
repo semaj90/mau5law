@@ -145,7 +145,9 @@ export const agentShellServices = {
     try {
       // Use production service client with automatic protocol selection
       const response = await productionServiceClient.query(input, { userId, caseId });
-      return response.response || response.data?.response || 'No response';
+      // Some service responses use data.response; others return top-level response.
+      // Use safe access and fallback to an empty string to avoid type errors during migration.
+      return (response as any)?.response ?? (response as any)?.data?.response ?? 'No response';
     } catch (error: any) {
       console.error('Production agent call failed, falling back to legacy:', error);
       // Fallback to legacy service
@@ -185,11 +187,9 @@ export const agentShellServices = {
     } catch (error: any) {
       console.error('Production upload failed, falling back:', error);
       try {
-        return await goServiceClient.uploadFile({
-          file,
-          userId,
-          caseId,
-        });
+        // goServiceClient.uploadFile expects a File (or different signature). Pass the File directly
+        // and avoid creating an object typed as File.
+        return await goServiceClient.uploadFile(file, { userId, caseId } as any);
       } catch (fallbackError) {
         console.error('All upload services failed:', fallbackError);
         throw error;

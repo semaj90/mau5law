@@ -3,18 +3,19 @@ https://svelte.dev/e/expected_token -->
 <!-- @migration-task Error while migrating Svelte code: Expected token } -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-</script>
-  // XState Machine Registry & Management
   import { onMount } from 'svelte';
   import { page } from '$app/stores';
   import Button from '$lib/components/ui/nes-button.svelte';
   import NesCard from '$lib/components/ui/nes-card.svelte';
+
+  // component state (Svelte 5 runes)
   let mounted = $state(false);
   let machines = $state([]);
   let selectedMachine = $state(null);
   let loading = $state(true);
+
   // Mock machine registry data - replace with actual XState registry
-  let mockMachines = [
+  const mockMachines = [
     {
       id: 'auth-machine',
       name: 'Authentication State Machine',
@@ -52,23 +53,26 @@ https://svelte.dev/e/expected_token -->
       instances: 2,
     }
   ];
+
   $effect(() => {
     mounted = true;
     loadMachines();
   });
+
   async function loadMachines() {
     loading = true;
     try {
-      // In production const response = await fetch('/api/state/machines')
+      // In production: const response = await fetch('/api/state/machines')
       // For now, use mock data
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      machines = mockMachine;
+      await new Promise(resolve => setTimeout(resolve, 500));
+      machines = mockMachines; // fixed typo
     } catch (error) {
       console.error('Failed to load state machines:', error);
     } finally {
       loading = false;
     }
   }
+
   async function restartMachine(machineId: string) {
     try {
       // await fetch(`/api/state/machines/${machineId}/restart`, { method: 'POST' })
@@ -78,6 +82,7 @@ https://svelte.dev/e/expected_token -->
       console.error('Failed to restart machine:', error);
     }
   }
+
   async function stopMachine(machineId: string) {
     try {
       // await fetch(`/api/state/machines/${machineId}/stop`, { method: 'POST' })
@@ -87,6 +92,7 @@ https://svelte.dev/e/expected_token -->
       console.error('Failed to stop machine:', error);
     }
   }
+
   function getStatusColor(status: string) {
     switch (status) {
       case 'running': return 'bg-green-100 text-green-800';
@@ -105,16 +111,16 @@ https://svelte.dev/e/expected_token -->
     <h1>🔄 State Machine Registry</h1>
     <p>Monitor and manage XState machines across the legal AI platform</p>
     <div class="stats-grid">
-      <div class="stat-nier-bits-card">
+      <div class="stat-card">
         <span class="stat-number">{machines.length}</span>
         <span class="stat-label">Total Machines</span>
       </div>
-      <div class="stat-nier-bits-card">
-        <span class="stat-number">{machines.filter(item => item.length)}</span>
+      <div class="stat-card">
+        <span class="stat-number">{machines.filter(m => m.status === 'running').length}</span>
         <span class="stat-label">Running</span>
       </div>
-      <div class="stat-nier-bits-card">
-        <span class="stat-number">{machines.reduce((sum, m) => sum + m.instances, 0)}</span>
+      <div class="stat-card">
+        <span class="stat-number">{machines.reduce((sum, m) => sum + (m.instances || 0), 0)}</span>
         <span class="stat-label">Active Instances</span>
       </div>
     </div>
@@ -127,63 +133,55 @@ https://svelte.dev/e/expected_token -->
       </div>
     {:else}
       <div class="machines-grid">
-        {#each machines as machine}
-          <div class="machine-nier-bits-card">
-            <divHeader>
-              <div class="machine-header">
-                <divTitle>{machine.name}</h3>
-                <span class="status-badge {getStatusColor(machine.status)}">
-                  {machine.status}
-                </span>
-              </div>
-              <p class="machine-id">ID: {machine.id}</p>
+        {#each machines as machine (machine.id)}
+          <div class="machine-card">
+            <div class="machine-header">
+              <h3 class="machine-title">{machine.name}</h3>
+              <span class="status-badge {getStatusColor(machine.status)}">
+                {machine.status}
+              </span>
             </div>
-            <divContent>
-              <div class="machine-details">
-                <div class="detail-row">
-                  <span class="label">Current State:</span>
-                  <span class="value state-indicator">{machine.currentState}</span>
+            <p class="machine-id">ID: {machine.id}</p>
+
+            <div class="machine-details">
+              <div class="detail-row">
+                <span class="label">Current State:</span>
+                <span class="value state-indicator">{machine.currentState}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Instances:</span>
+                <span class="value">{machine.instances}</span>
+              </div>
+              <div class="detail-row">
+                <span class="label">Last Updated:</span>
+                <span class="value">{new Date(machine.lastUpdated).toLocaleTimeString()}</span>
+              </div>
+              <div class="transitions">
+                <span class="label">Available Transitions:</span>
+                <div class="transition-tags">
+                  {#each machine.transitions as transition}
+                    <span class="transition-tag">{transition}</span>
+                  {/each}
                 </div>
-                <div class="detail-row">
-                  <span class="label">Instances:</span>
-                  <span class="value">{machine.instances}</span>
-                </div>
-                <div class="detail-row">
-                  <span class="label">Last Updated:</span>
-                  <span class="value">{new Date(machine.lastUpdated).toLocaleTimeString()}</span>
-                </div>
-                <div class="transitions">
-                  <span class="label">Available Transitions:</span>
-                  <div class="transition-tags">
-                    {#each machine.transitions as transition}
-                      <span class="transition-tag">{transition}</span>
-                    {/each}
-                  </div>
-                </div>
-                <div class="machine-actions">
-                  <button class="nes-btn"
-                    variant="ghost"
-                    size="sm"
-                    onclick={() => (window.location.href = `/state/transitions?machine=${machine.id}`)}
+              </div>
+              <div class="machine-actions">
+                <button class="nes-btn"
+                  on:click={() => (window.location.href = `/state/transitions?machine=${machine.id}`)}
+                >
+                  View Transitions
+                </button>
+                <button class="nes-btn"
+                  on:click={() => restartMachine(machine.id)}
+                >
+                  Restart
+                </button>
+                {#if machine.status === 'running'}
+                  <button class="nes-btn is-error"
+                    on:click={() => stopMachine(machine.id)}
                   >
-                    View Transitions
+                    Stop
                   </button>
-                  <button class="nes-btn"
-                    variant="ghost"
-                    size="sm"
-                    onclick={() => restartMachine(machine.id)}
-                  >
-                    Restart
-                  </button>
-                  {#if machine.status === 'running'}
-                    <button class="nes-btn is-error"
-                      size="sm"
-                      onclick={() => stopMachine(machine.id)}
-                    >
-                      Stop
-                    </button>
-                  {/if}
-                </div>
+                {/if}
               </div>
             </div>
           </div>
@@ -251,8 +249,8 @@ https://svelte.dev/e/expected_token -->
     margin: 0 auto 1rem;
   }
   @keyframes spin {
-    0% { transform: rotate(0deg), }
-    100% { transform: rotate(360deg), }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
   .machines-grid {
     display: grid;
@@ -262,21 +260,23 @@ https://svelte.dev/e/expected_token -->
   .machine-card {
     border: 1px solid #e2e8f0;
     border-radius: 12px;
-    transition: box-shadow 0.2;
+    transition: box-shadow 0.2s ease;
+    padding: 1rem;
+    background: #ffffff;
   }
   .machine-card:hover {
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
   }
   .machine-header {
     display: flex;
-    justify-content: betwee;
+    justify-content: space-between;
     align-items: center;
     gap: 1rem;
   }
   .machine-id {
     font-size: 0.875rem;
     color: #6b7280;
-    margin: 0;
+    margin: 0.25rem 0 0;
   }
   .status-badge {
     padding: 0.25rem 0.75rem;
@@ -287,7 +287,7 @@ https://svelte.dev/e/expected_token -->
     letter-spacing: 0.05em;
   }
   .machine-details {
-    space-y: 1rem;
+    margin-top: 1rem;
   }
   .detail-row {
     display: flex;
@@ -304,7 +304,7 @@ https://svelte.dev/e/expected_token -->
     color: #6b7280;
   }
   .state-indicator {
-    background: #dbeaf;
+    background: #dbeafe; /* fixed invalid hex */
     color: #1d4ed8;
     padding: 0.25rem 0.75rem;
     border-radius: 6px;

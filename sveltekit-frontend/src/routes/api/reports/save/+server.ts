@@ -86,3 +86,95 @@ export const GET: RequestHandler = async ({ url }) => {
     );
   }
 };
+
+import type { RequestHandler } from '@sveltejs/kit';
+import { db } from '$lib/server/db/drizzle';
+import { reports } from '$lib/server/db/schema';
+import { CONFIG } from '$lib/config/env.server';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { QdrantClient } from '@qdrant/js-client-rest';
+import { eq } from '$lib/server/db/utils';
+import { embeddingFunction } from '$lib/server/ai/embedder'; // from LangChain.js
+
+export const POST: RequestHandler = async ({ request, locals }) => {
+  const user = locals.user;
+  if (!user) return new Response('Unauthorized', { status: 401 });
+
+  const body = await request.json();
+  const { id, title, content } = body;
+
+  try {
+    // 🧠 Step 1 — Generate embeddings and tags
+    const { embedding, keywords } = await embeddingFunction(content);
+
+    // 🧩 Step 2 — Upsert in Postgres
+    const existing = await db.select().from(reports).where(eq(reports.id, id)).execute();
+
+    let updatedReport;
+    if (existing.length) {
+      [updatedReport] = await db
+        .update(reports)
+        .set({
+          title,
+          content,
+          updatedAt: new Date(),
+          embedding,
+          autoKeywords: keywords,
+        })
+        .where(eq(reports.id, id))
+        .returning();
+    } else {
+      [updatedReport] = await db
+        .insert(reports)
+        .values({
+          userId: user.id,
+          title,
+          content,
+          embedding,
+          autoKeywords: keywords,
+        })
+        .returning();
+    }
+
+    // 🪣 Step 3 — Store full backup in MinIO
+    const minio = new S3Client({
+      endpoint: CONFIG.MINIO_URL,
+      region: CONFIG.MINIO_REGION ?? 'us-east-1', // Default region if not set
+      credentials: {
+        accessKeyId: CONFIG.MINIO_ACCESS_KEY,
+        secretAccessKey: CONFIG.MINIO_SECRET_KEY,
+      },
+      forcePathStyle: true,
+    });
+
+    await minio.send(
+      new PutObjectCommand({
+        Bucket: CONFIG.MINIO_BUCKET,
+        Key: `reports/${user.id}/${updatedReport.id}.json`,
+        Body: JSON.stringify(updatedReport),
+        ContentType: 'application/json',
+      })
+    );
+
+    // ⚡ Step 4 — Upsert embedding in Qdrant
+    const qdrant = new QdrantClient({ url: CONFIG.QDRANT_URL });
+    await qdrant.upsert('reports', {
+      points: [
+        {
+          id: updatedReport.id,
+          vector: embedding,
+          payload: {
+            userId: user.id,
+            title,
+            keywords,
+          },
+        },
+      ],
+    });
+
+    return new Response(JSON.stringify(updatedReport), { status: 200 });
+  } catch (err) {
+    console.error('Report save error:', err);
+    return new Response('Error saving report', { status: 500 });
+  }
+};

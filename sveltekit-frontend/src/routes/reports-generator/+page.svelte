@@ -35,7 +35,7 @@ await loadDemoData();
   					caseId,
   					criminalId: null,
   					title: 'Security Camera Footage',
-  					description 'CCTV footage from main entrance',
+  					description: 'CCTV footage from main entrance',
   					evidenceType: 'video',
   					fileType: 'video/mp4',
   					subType: null,
@@ -48,7 +48,7 @@ await loadDemoData();
   					chainOfCustody: [],
   					collectedAt: null,
   					collectedBy: null,
-  					location null,
+  					location: null,
   					labAnalysis: {},
   					aiAnalysis: {},
   					aiTags: [],
@@ -56,30 +56,30 @@ await loadDemoData();
   					summary: null,
   					isAdmissible: true,
   					confidentialityLevel: 'standard',
-  					canvasPosition ,
+  					canvasPosition: null,
   					uploadedBy: '1',
   					uploadedAt: new Date(),
-  					updatedAt: new Date();
+  					updatedAt: new Date(),
   				},
   				{
   					id: '2',
   					caseId,
-  					criminalId: null
+  					criminalId: null,
   					title: 'Witness Statement - John Doe',
-  					description 'Eyewitness account of the incident',
+  					description: 'Eyewitness account of the incident',
   					evidenceType: 'document',
   					fileType: 'application/pdf',
-  					subType: null
-  					fileUrl: null
+  					subType: null,
+  					fileUrl: null,
   					fileName: 'witness_statement.pdf',
-  					fileSize: null
+  					fileSize: null,
   					mimeType: 'application/pdf',
   					hash: 'def456ghi789',
   					tags: [],
   					chainOfCustody: [],
   					collectedAt: null,
   					collectedBy: null,
-  					location null,
+  					location: null,
   					labAnalysis: {},
   					aiAnalysis: {},
   					aiTags: [],
@@ -87,30 +87,30 @@ await loadDemoData();
   					summary: null,
   					isAdmissible: true,
   					confidentialityLevel: 'standard',
-  					canvasPosition ,
+  					canvasPosition: null,
   					uploadedBy: '1',
   					uploadedAt: new Date(),
-  					updatedAt: new Date();
+  					updatedAt: new Date(),
   				},
   				{
   					id: '3',
   					caseId,
-  					criminalId: null
+  					criminalId: null,
   					title: 'Physical Evidence - Weapon',
-  					description 'Photograph of recovered weapon',
+  					description: 'Photograph of recovered weapon',
   					evidenceType: 'photo',
   					fileType: 'image/jpeg',
-  					subType: null
-  					fileUrl: null
+  					subType: null,
+  					fileUrl: null,
   					fileName: 'weapon_photo.jpg',
-  					fileSize: null
+  					fileSize: null,
   					mimeType: 'image/jpeg',
   					hash: 'ghi789jkl012',
   					tags: [],
   					chainOfCustody: [],
   					collectedAt: null,
   					collectedBy: null,
-  					location null,
+  					location: null,
   					labAnalysis: {},
   					aiAnalysis: {},
   					aiTags: [],
@@ -118,16 +118,15 @@ await loadDemoData();
   					summary: null,
   					isAdmissible: true,
   					confidentialityLevel: 'standard',
-  					canvasPosition ,
+  					canvasPosition: null,
   					uploadedBy: '1',
   					uploadedAt: new Date(),
-  					updatedAt: new Date();
+  					updatedAt: new Date(),
   }
   			];
   		} catch (err) {
   			console.error('Failed to load demo data:', err);
   			error = 'Failed to load demo data';
-  		} finally {
   			isLoading = false;
   }}
   	async function handleReportSave(report: Report) {
@@ -140,7 +139,7 @@ await loadDemoData();
   }}
   	async function handleCanvasSave(canvasState: CanvasState) {
   		try {
-  			currentCanvasState = canvasStat;
+  			currentCanvasState = canvasState;
   			console.log('Canvas saved:', canvasState);
   		} catch (err) {
   			console.error('Failed to save canvas:', err);
@@ -155,12 +154,10 @@ await loadDemoData();
   		activeTab = 'canvas';
   }
 </script>
-
 <svelte:head>
   <title>Report Builder - Prosecutor's Case Management</title>
   <meta name="description" content="AI-powered report builder for legal case analysis" />
 </svelte:head>
-<div class="space-y-4">
   <!-- Header -->
   <header class="space-y-4">
     <div class="space-y-4">
@@ -275,6 +272,14 @@ await loadDemoData();
 </div>
 
 <style>
+  /* @unocss-include */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+</style>
   /* @unocss-include */
   .container {
     max-width: 1200px;

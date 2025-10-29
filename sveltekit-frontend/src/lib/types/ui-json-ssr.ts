@@ -9,7 +9,7 @@ export interface ButtonAnalyticsEvent {
   action: string;
   label: string;
   timestamp: number;
-  context?: any;
+  context?: Record<string, unknown>;
   variant?: string;
   size?: string;
 }

@@ -414,7 +414,13 @@ function authenticateAssign({
     lastActivity: new Date(),
     currentRoute: '/',
     securityLevel: 'standard',
-    permissions: getUserPermissions(event.user.role), // Use the helper function here
+    // Some User shapes use `role: string`, others use `roles?: string[]`.
+    // Pick a role defensively to avoid undefined access during migration.
+    permissions: getUserPermissions(
+      (event.user as any).role ??
+        (Array.isArray((event.user as any).roles) ? (event.user as any).roles[0] : undefined) ??
+        'viewer'
+    ), // Use the helper function here
     sessionHealth: {
       ...context.sessionHealth,
       isValid: false,

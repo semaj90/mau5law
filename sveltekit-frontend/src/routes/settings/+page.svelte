@@ -1,5 +1,6 @@
 <script lang="ts">
   // Minimal settings implementation - SSR friendly
+  export const prerender = true; // make this page explicitly prerenderable / SSR-friendly
 </script>
 
 <svelte:head>

@@ -14,7 +14,19 @@
  * @version 1.0.0
  */
 
-import Redis from 'ioredis';
+// Redis client surface: avoid `any`, use `unknown` for flexible signatures
+interface RedisClientLike {
+  get?: (key: string) => Promise<string | null>;
+  // flexible set signature (accepts variable args like node-redis / ioredis)
+  set?: (...args: unknown[]) => Promise<unknown>;
+  keys?: (pattern: string) => Promise<string[]>;
+  // del typically returns number of removed keys
+  del?: (...keys: string[]) => Promise<number>;
+  exists?: (key: string) => Promise<number>;
+  // optional helpers if present
+  expire?: (key: string, seconds: number) => Promise<number>;
+}
+
 import fetch from 'node-fetch';
 import { createHash } from 'crypto';
 
@@ -26,7 +38,7 @@ export interface GemmaEmbeddingConfig {
   model: string;
   dimensions: number;
   timeout: number;
-  redis: Redis;
+  redis: RedisClientLike;
   cacheTtl: number;
   batchSize: number;
 }
@@ -69,7 +81,7 @@ export interface BatchEmbeddingResponse {
  */
 export class GemmaEmbeddingService {
   private config: GemmaEmbeddingConfig;
-  private redis: Redis;
+  private redis: RedisClientLike;
   private readonly CACHE_PREFIX = 'embedding:gemma:';
   private readonly MODEL_NAME = 'embeddinggemma:latest';
 
@@ -143,6 +155,9 @@ export class GemmaEmbeddingService {
    */
   private async generateEmbedding(text: string): Promise<number[]> {
     try {
+      // implement fetch timeout via AbortController (typed-safe)
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), this.config.timeout);
       const response = await fetch(`${this.config.ollamaBaseUrl}/api/embeddings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -150,8 +165,8 @@ export class GemmaEmbeddingService {
           model: this.config.model,
           prompt: text
         }),
-        timeout: this.config.timeout
-      });
+        signal: controller.signal
+      }).finally(() => clearTimeout(timer));
 
       if (!response.ok) {
         throw new Error(
@@ -193,13 +208,10 @@ export class GemmaEmbeddingService {
     cacheKey: string
   ): Promise<Omit<EmbeddingResponse, 'cached' | 'processingTime'> | null> {
     try {
-      const cached = await this.redis.getBuffer(cacheKey);
-      if (!cached) {
-        return null;
-      }
-
-      // Decompress and deserialize
-      const data = JSON.parse(cached.toString('utf8'));
+      // prefer string-based get (compatible with major clients). fall back gracefully.
+      const cachedStr = this.redis.get ? await this.redis.get(cacheKey) : null;
+      if (!cachedStr) return null;
+      const data = JSON.parse(cachedStr);
 
       return {
         embedding: data.embedding,
@@ -228,11 +240,31 @@ export class GemmaEmbeddingService {
         timestamp: Date.now()
       };
 
-      await this.redis.setex(
-        cacheKey,
-        this.config.cacheTtl,
-        JSON.stringify(data)
-      );
+      // Use standard SET with EX when possible, otherwise fall back to basic set + expire
+      if (typeof this.redis.set === 'function') {
+        try {
+          // Common clients accept: set(key, value, 'EX', seconds)
+          await this.redis.set(cacheKey, JSON.stringify(data), 'EX', this.config.cacheTtl);
+        } catch {
+          // If above form fails, try a simpler set(key, value)
+          try {
+            await this.redis.set(cacheKey, JSON.stringify(data));
+          } catch (err) {
+            console.warn('Redis set attempts failed:', err);
+          }
+        }
+      } else {
+        // No set available on client - best-effort: try expire if key somehow exists
+        if (typeof this.redis.expire === 'function') {
+          try {
+            await this.redis.expire(cacheKey, this.config.cacheTtl);
+          } catch {
+            // ignore
+          }
+        } else {
+          console.warn('Redis client has no set/expire methods; skipping cache store');
+        }
+      }
     } catch (error) {
       console.error('Failed to cache embedding:', error);
       // Don't throw - allow processing to continue
@@ -244,7 +276,7 @@ export class GemmaEmbeddingService {
    */
   async isCached(text: string): Promise<boolean> {
     const cacheKey = this.generateCacheKey(text);
-    const exists = await this.redis.exists(cacheKey);
+    const exists = typeof this.redis.exists === 'function' ? await this.redis.exists(cacheKey) : 0;
     return exists > 0;
   }
 
@@ -257,7 +289,7 @@ export class GemmaEmbeddingService {
   }> {
     try {
       const pattern = `${this.CACHE_PREFIX}*`;
-      const keys = await this.redis.keys(pattern);
+      const keys = typeof this.redis.keys === 'function' ? await this.redis.keys(pattern) : [];
 
       let totalMemory = 0;
       if (keys.length > 0) {
@@ -281,10 +313,18 @@ export class GemmaEmbeddingService {
   async clearCache(): Promise<number> {
     try {
       const pattern = `${this.CACHE_PREFIX}*`;
-      const keys = await this.redis.keys(pattern);
-      if (keys.length === 0) return 0;
+      const keys = typeof this.redis.keys === 'function' ? await this.redis.keys(pattern) : [];
+      if (!keys || keys.length === 0) return 0;
 
-      await this.redis.del(...keys);
+      if (typeof this.redis.del === 'function') {
+        await this.redis.del(...keys);
+      } else if (typeof this.redis.expire === 'function') {
+        // If del is not available, expire each key as a fallback
+        await Promise.all(keys.map(k => this.redis.expire!(k, 1)));
+      } else {
+        console.warn('Redis client has no del/expire methods; skipping deletion of cache keys');
+        return 0;
+      }
       return keys.length;
     } catch (error) {
       console.error('Failed to clear cache:', error);
@@ -297,9 +337,11 @@ export class GemmaEmbeddingService {
    */
   async validateConnection(): Promise<boolean> {
     try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), this.config.timeout);
       const response = await fetch(`${this.config.ollamaBaseUrl}/api/tags`, {
-        timeout: this.config.timeout
-      });
+        signal: controller.signal
+      }).finally(() => clearTimeout(timer));
 
       if (!response.ok) {
         console.error('Ollama health check failed:', response.statusText);
@@ -341,6 +383,37 @@ export class GemmaEmbeddingService {
   }
 }
 
+// export helper so other modules call this instead of hardcoding endpoints
+export function getOllamaEndpoint(): string {
+	// Prefer explicit env vars (production/dev), then attempt docker host, then localhost for local dev.
+	const envUrl =
+		process.env.OLLAMA_URL ||
+		process.env.OLLAMA_BASE_URL ||
+		process.env.OLLAMA_HOST;
+	if (envUrl && typeof envUrl === 'string') return envUrl;
+
+	// Heuristics: if running inside a container, prefer the compose service name.
+	// Detect common Docker indicators (/.dockerenv presence is not always accessible in Node runtime,
+	// so check common env flags too). This is best-effort.
+	const inDocker =
+		!!process.env.IN_DOCKER ||
+		!!process.env.DOCKER ||
+		!!process.env.CONTAINER || // generic container indicator
+		(process.env.NODE_ENV === 'production' && !!process.env.CONTAINER);
+
+	if (inDocker) {
+		// Use the compose service hostname typically available inside other containers.
+		// Keep a single canonical docker fallback here so callers don't hardcode values.
+		return 'http://ollama:11434';
+	}
+
+	// Local development fallback
+	return 'http://localhost:11434';
+}
+
+// Stable constant export so other modules can import a single value (preferred).
+export const DEFAULT_OLLAMA_ENDPOINT = getOllamaEndpoint();
+
 /**
  * Factory function to create and initialize Gemma Embedding Service
  */
@@ -364,7 +437,7 @@ export async function createGemmaEmbeddingService(
  * Default configuration for Gemma Embedding Service
  */
 export const DEFAULT_GEMMA_CONFIG: Partial<GemmaEmbeddingConfig> = {
-  ollamaBaseUrl: 'http://localhost:11434',
+  ollamaBaseUrl: getOllamaEndpoint(),
   model: 'embeddinggemma:latest',
   dimensions: 384,  // embeddinggemma:latest outputs 384 dimensions
   timeout: 30000,

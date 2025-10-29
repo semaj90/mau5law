@@ -1,17 +1,9 @@
-<!--
-  Comprehensive System Status Page
-  Shows integration status of all components: GPU Cache, Gaming, PostgreSQL, APIs, etc.
--->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // 'onMount' is declared but its value is never read.
   // import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import GPUCacheIntegrationDemo from '$lib/components/ui/gaming/demo/GPUCacheIntegrationDemo.svelte';
-  // Module '"$lib/components/ui/button"' has no exported member 'Root'.
-  import { Root as Button } from '$lib/components/ui/Button.svelte';
-  // Module '"$lib/components/ui/badge"' has no exported member 'Root'. Did you mean to use 'import Root from "$lib/components/ui/badge"' instead?
-  import { Root as Badge } from '$lib/components/ui/Badge.svelte';
 
   // System status state
   let systemHealth = $state<any>(null);
@@ -19,13 +11,19 @@
   let isLoading = $state(true);
   let lastUpdated = $state<string>('');
   $effect(() => {
-    (async () => {
-      if (!browser) return;
+    if (!browser) return;
+
+    let intervalId: ReturnType<typeof setInterval>;
+
+    const init = async () => {
       await loadSystemStatus();
-      // Auto-refresh every 30 seconds
-      const interval = setInterval(loadSystemStatus, 30000);
-      return () => clearInterval(interval);
-    })();
+      intervalId = setInterval(loadSystemStatus, 30000);
+    };
+    init();
+
+    return () => {
+      clearInterval(intervalId);
+    };
   });
   async function loadSystemStatus() {
     try {
@@ -203,17 +201,18 @@
     }
   }
 
-  function getBadgeVariant(status: unknown): 'success' | 'warning' | 'destructive' | 'secondary' {
-    if (typeof status !== 'string') return 'secondary';
+  // Returns CSS classes for badges based on status
+  function getBadgeClasses(status: unknown): string {
+    if (typeof status !== 'string') return 'bg-yellow-500 text-black'; // warning as default
     switch (status) {
       case 'healthy':
-        return 'success';
+        return 'bg-green-500 text-white'; // success
       case 'degraded':
-        return 'warning';
+        return 'bg-yellow-500 text-black'; // warning
       case 'unhealthy':
-        return 'destructive';
+        return 'bg-red-500 text-white'; // destructive
       default:
-        return 'secondary';
+        return 'bg-yellow-500 text-black';
     }
   }
 
@@ -243,13 +242,13 @@
       <h1 class="text-4xl font-bold text-white">🎯 System Status</h1>
       <div class="flex items-center gap-4">
         <span class="text-gray-400">Last updated: {lastUpdated}</span>
-        <Button
+        <button
           onclick={loadSystemStatus}
           disabled={isLoading}
-          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg bits-btn bits-btn"
+          class="nes-btn is-primary"
         >
           {isLoading ? '🔄' : '🔃'} Refresh
-        </Button>
+        </button>
       </div>
     </div>
     {#if systemHealth?.overall}
@@ -262,9 +261,9 @@
             </p>
           </div>
           <div class="text-right">
-            <Badge variant={getBadgeVariant(systemHealth.overall.status)} class="text-lg px-4 py-2 mb-2">
+            <div class="inline-block text-lg px-4 py-2 mb-2 rounded-md font-bold {getBadgeClasses(systemHealth.overall.status)}">
               {systemHealth.overall.status.toUpperCase()}
-            </Badge>
+            </div>
             <div class="text-2xl font-mono text-white">
               {systemHealth.overall.healthScore}%
             </div>
@@ -331,12 +330,11 @@
                 <p class="text-xs text-gray-400">
                   {(service as Record<string, any>).host}:{(service as Record<string, any>).port}
                 </p>
-                <Badge
-                  variant={(service as Record<string, any>).status === 'healthy' ? 'success' : 'destructive'}
-                  class="text-xs"
+                <span
+                  class="text-xs px-2 py-1 rounded { (service as Record<string, any>).status === 'healthy' ? 'bg-green-500 text-white' : 'bg-red-500 text-white' }"
                 >
                   {(service as Record<string, any>).status}
-                </Badge>
+                </span>
               </div>
             {/each}
           </div>
@@ -360,12 +358,11 @@
                 <p class="text-xs text-gray-400">
                   {(service as Record<string, any>).host}:{(service as Record<string, any>).port}
                 </p>
-                <Badge
-                  variant={(service as Record<string, any>).status === 'healthy' ? 'success' : 'destructive'}
-                  class="text-xs"
+                <span
+                  class="text-xs px-2 py-1 rounded { (service as Record<string, any>).status === 'healthy' ? 'bg-green-500 text-white' : 'bg-red-500 text-white' }"
                 >
                   {(service as Record<string, any>).status}
-                </Badge>
+                </span>
               </div>
             {/each}
           </div>
@@ -397,15 +394,11 @@
                 {#if (service as Record<string, any>).vram}
                   <p class="text-xs text-gray-400">VRAM: {(service as Record<string, any>).vram}</p>
                 {/if}
-                <Badge
-                  variant={(service as Record<string, any>).status === 'healthy' ||
-                  (service as Record<string, any>).status === 'ready'
-                    ? 'success'
-                    : 'destructive'}
-                  class="text-xs"
+                <span
+                  class="text-xs px-2 py-1 rounded { (service as Record<string, any>).status === 'healthy' || (service as Record<string, any>).status === 'ready' ? 'bg-green-500 text-white' : 'bg-red-500 text-white' }"
                 >
                   {(service as Record<string, any>).status}
-                </Badge>
+                </span>
               </div>
             {/each}
           </div>
@@ -530,4 +523,3 @@
     border-color: var(--gpu-cache-border-secondary, #4b5563);
   }
 </style>
-

@@ -1,6 +1,8 @@
 import { cache } from '../cache/redis.js';
 // add centralized endpoint helper
 import { getOllamaEndpoint } from './endpoints.js';
+import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 
 const EMBEDDING_CONFIG = {
   // useLocal means use the local Ollama-like endpoint when available
@@ -281,6 +283,29 @@ export function cosineSimilarity(a: number[], b: number[]): number {
   const denom = Math.sqrt(normA) * Math.sqrt(normB);
   if (denom === 0) return 0;
   return dotProduct / denom;
+}
+
+const embeddings = new OpenAIEmbeddings({
+  modelName: 'text-embedding-3-small', // or local Ollama/Gemma endpoint
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+export async function embeddingFunction(text: string) {
+  const splitter = new RecursiveCharacterTextSplitter({ chunkSize: 1024, chunkOverlap: 128 });
+  const chunks = await splitter.splitText(text);
+  const vectors = await embeddings.embedDocuments(chunks);
+
+  // Flatten & reduce into single average vector (using the first chunk's embedding for simplicity)
+  const embedding = vectors[0];
+  const keywords = await extractKeywords(text);
+
+  return { embedding, keywords };
+}
+
+async function extractKeywords(text: string): Promise<string[]> {
+  // Simple heuristic — replace with LangChain LLMChain if needed
+  // Extracts words starting with an uppercase letter, at least 4 characters long
+  return Array.from(new Set(text.match(/\b[A-Z][a-zA-Z]{3,}\b/g)))?.slice(0, 10) ?? [];
 }
 
 export default {

@@ -1,14 +1,47 @@
 import crypto from "crypto";
+import { getOllamaEndpoint } from '$lib/server/ollama'; // Import getOllamaEndpoint
+
+// Define a basic chat message interface
+export interface ChatMessage {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+}
+
+// Define a basic interface for RAG context results, matching common vector search output
+export interface RAGDocumentResult {
+  id: string;
+  title: string;
+  summary: string;
+  relevanceScore: number;
+  // Add other relevant fields if needed from your vector search results
+  [key: string]: unknown; // Allow for additional metadata
+}
+
+// Define return types for specific methods
+export interface ConnectionResult {
+  success: boolean;
+  model: string;
+  availableModels: string[];
+  error?: string;
+}
+
+export interface ModelSwitchResult {
+  success: boolean;
+  error?: string;
+}
+
+export interface DocumentIndexResult {
+  success: boolean;
+  error?: string;
+}
 /**
  * Real AI Service - No Mocks
  * Integrates with Ollama + Enhanced RAG services + Vector Search
  */
-}
 export interface AIServiceOptions {
   ollamaUrl?: string;
   ragServiceUrl?: string;
   timeout?: number;
-}
 }
 export interface AIModelInfo {
   name: string;
@@ -16,21 +49,20 @@ export interface AIModelInfo {
   family: string;
   available: boolean;
 }
-}
 export interface ChatRequest {
   message: string;
   sessionId?: string;
   context?: {
-    conversationHistory?: any[];
-  caseId?: string;
-  evidenceId?: string;
-  }
+    conversationHistory?: ChatMessage[]; // Changed from any[]
+    caseId?: string;
+    evidenceId?: string;
+  };
   options?: {
     model?: string;
     temperature?: number;
     stream?: boolean;
     useRAG?: boolean;
-  }
+  };
 }
 export interface ChatResponse {
   response: string;
@@ -38,11 +70,11 @@ export interface ChatResponse {
   timestamp: string;
   performance: {
     duration: number;
-  tokens: number;
-  tokensPerSecond: number;
-  }
-  sources?: any[];
-  citations?: any[];
+    tokens: number;
+    tokensPerSecond: number;
+  };
+  sources?: RAGDocumentResult[]; // Changed from any[]
+  citations?: string[]; // Changed from any[]
   suggestions?: string[];
   confidence?: number;
   executionTime?: number;
@@ -57,13 +89,13 @@ export interface AIHealthStatus {
   models: AIModelInfo[];
 }
 export class RealAIService {
-  private ollamaUrl: string;
+  private ollamaUrl: Promise<string>; // Changed to Promise<string>
   private ragServiceUrl: string;
   private timeout: number;
   constructor(_options: AIServiceOptions = {}) {
-    this.ollamaUrl = options.ollamaUrl || import.meta.env.OLLAMA_URL || 'http://localhost:11434'
-    this.ragServiceUrl = options.ragServiceUrl || import.meta.env.RAG_SERVICE_URL || 'http://localhost:8094'
-    this.timeout = options.timeout || 30000;
+    this.ollamaUrl = Promise.resolve(_options.ollamaUrl || getOllamaEndpoint()); // Ensure it's a Promise
+    this.ragServiceUrl = _options.ragServiceUrl || import.meta.env.RAG_SERVICE_URL || 'http://localhost:8094';
+    this.timeout = _options.timeout || 30000;
   }
   /**
    * Check if AI services are healthy
@@ -76,42 +108,49 @@ export class RealAIService {
       vectorSearch: false,
       overall: false,
       timestamp,
-      models: [] as AIModelInfo[]
-    }
+      models: [] as AIModelInfo[],
+    };
     // Check Ollama
     try {
-      const response = await fetch(`${this.ollamaUrl}/api/tags`, {
-        signal: AbortSignal.timeout(5000)
+      const resolvedOllamaUrl = await this.ollamaUrl; // Await the promise here
+      const response = await fetch(`${resolvedOllamaUrl}/api/tags`, {
+        signal: AbortSignal.timeout(5000),
       });
       if (response.ok) {
         health.ollama = true;
         const data = await response.json();
-        health.models = (data.models || []).map((model: any) => ({,
-          name: model.name,
-          size: model.size || 'unknown',
-          family: model.details?.family || 'unknown',
-          available: true
-        });
+        health.models = (data.models || []).map(
+          (model: { name: string; size?: string; details?: { family?: string } }) => ({
+            // Explicitly type model
+            name: model.name,
+            size: model.size || 'unknown',
+            family: model.details?.family || 'unknown',
+            available: true,
+          })
+        );
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      // Changed from any
       console.warn('Ollama health check failed:', error);
     }
     // Check Enhanced RAG service
     try {
       const response = await fetch(`${this.ragServiceUrl}/health`, {
-        signal: AbortSignal.timeout(5000)
+        signal: AbortSignal.timeout(5000),
       });
       health.ragService = response.ok;
-    } catch (error: any) {
+    } catch (error: unknown) {
+      // Changed from any
       console.warn('RAG service health check failed:', error);
     }
     // Check Vector Search
     try {
       const response = await fetch('/api/ai/vector-search', {
-        signal: AbortSignal.timeout(5000)
+        signal: AbortSignal.timeout(5000),
       });
       health.vectorSearch = response.ok;
-    } catch (error: any) {
+    } catch (error: unknown) {
+      // Changed from any
       console.warn('Vector search health check failed:', error);
     }
     health.overall = health.ollama && health.ragService && health.vectorSearch;
@@ -120,7 +159,8 @@ export class RealAIService {
   /**
    * Connect to AI services and verify availability
    */
-  async connect(modelName: string = 'gemma3-legal'): Promise<any> {
+  async connect(modelName: string = 'gemma3-legal'): Promise<ConnectionResult> {
+    // Changed from any
     try {
       const health = await this.healthCheck();
       if (!health.overall) {
@@ -134,17 +174,18 @@ export class RealAIService {
       const availableModels = health.models.map(m => m.name);
       const actualModel = availableModels.includes(modelName) ? modelName : availableModels[0];
       return {
-        success: true;
+        success: true,
         model: actualModel,
-        availableModels
-      }
-    } catch (error: any) {
+        availableModels,
+      };
+    } catch (error: unknown) {
+      // Changed from any
       return {
         success: false,
         model: '',
         availableModels: [],
-        error: error instanceof Error ? error.message: 'Connection failed'
-      }
+        error: error instanceof Error ? error.message : 'Connection failed',
+      };
     }
   }
   /**
@@ -154,27 +195,28 @@ export class RealAIService {
     const startTime = Date.now();
     try {
       // If RAG is enabled, first do a vector search for context
-      let ragContext = null;
+      let ragContext: RAGDocumentResult[] | null = null; // Explicitly type ragContext
       if (request.options?.useRAG !== false) {
         try {
           const vectorResponse = await fetch('/api/ai/vector-search', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({,
+            body: JSON.stringify({
               query: request.message,
               options: {
                 maxResults: 5,
                 threshold: 0.7,
-                includeMetadata: true
-              }
-            )}),
-            signal: AbortSignal.timeout,(10000)
+                includeMetadata: true,
+              },
+            }),
+            signal: AbortSignal.timeout(10000),
           });
           if (vectorResponse.ok) {
             const vectorData = await vectorResponse.json();
-            ragContext = vectorData.results;
+            ragContext = vectorData.results as RAGDocumentResult[]; // Cast to RAGDocumentResult[]
           }
-        } catch (error: any) {
+        } catch (error: unknown) {
+          // Changed from any
           console.warn('Vector search failed, proceeding without RAG:', error);
         }
       }
@@ -182,31 +224,31 @@ export class RealAIService {
       const chatResponse = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           message: request.message,
-          model: request.options??.model || "unknown", // @ts-ignore - Model property access || 'gemma3-legal',
+          model: request.options?.model || 'unknown', // Removed @ts-expect-error
           temperature: request.options?.temperature || 0.7,
           stream: request.options?.stream || false,
           context: {
             ...request.context,
-            ragContext
-          }
-        )}),
-        signal: AbortSignal.timeout,(this.timeout)
+            ragContext,
+          },
+        }),
+        signal: AbortSignal.timeout(this.timeout),
       });
-      if (!chatResponse,.ok) {
+      if (!chatResponse.ok) {
         throw new Error(`Chat API error: ${chatResponse.status} ${chatResponse.statusText}`);
       }
       const chatData = await chatResponse.json();
       const duration = Date.now() - startTime;
       return {
         response: chatData.response,
-        model: chatData?.model || "unknown", // @ts-ignore - Model property access,
+        model: chatData?.model || 'unknown', // Removed @ts-expect-error
         timestamp: new Date().toISOString(),
         performance: {
           duration,
           tokens: chatData.performance?.tokens || this.estimateTokens(chatData.response),
-          tokensPerSecond: chatData.performance?.tokensPerSecond || 0
+          tokensPerSecond: chatData.performance?.tokensPerSecond || 0,
         },
         sources: ragContext || [],
         citations: chatData.relatedCases || [],
@@ -214,55 +256,59 @@ export class RealAIService {
         confidence: 0.85, // Default confidence
         executionTime: duration,
         fromCache: false,
-      }
-    } catch (error: any) {
-      throw new Error(`AI service error: ${error instanceof Error ? error.message: 'Unknown error'}`);
+      };
+    } catch (error: unknown) {
+      // Changed from any
+      throw new Error(`AI service error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
   /**
    * Switch to a different model
    */
-  async switchModel(modelName,: string): Promise<any> {
+  async switchModel(modelName: string): Promise<ModelSwitchResult> {
+    // Changed from any
     try {
       const health = await this.healthCheck();
       const availableModels = health.models.map(m => m.name);
-      if (!availableModels,.includes(modelName)) {
+      if (!availableModels.includes(modelName)) {
         throw new Error(`Model '${modelName}' not available. Available models: ${availableModels.join(', ')}`);
       }
       // Test the model with a simple request
       const testResponse = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({,
+        body: JSON.stringify({
           message: 'Test message',
           model: modelName,
           temperature: 0.1,
-        )}),
-        signal: AbortSignal.timeout,(10000)
+        }),
+        signal: AbortSignal.timeout(10000),
       });
       if (!testResponse.ok) {
         throw new Error(`Model switch test failed: ${testResponse.status}`);
       }
-      return { success: true }
-    } catch (error: any) {
+      return { success: true };
+    } catch (error: unknown) {
+      // Changed from any
       return {
-        success: false;
-        error: error instanceof Error ? error.message: 'Model switch failed'
-      }
+        success: false,
+        error: error instanceof Error ? error.message : 'Model switch failed',
+      };
     }
   }
   /**
    * Search for similar documents using vector search
    */
-  async searchSimilarDocuments()
-    query: string;
+  async searchSimilarDocuments(
+    query: string,
     options: {
       limit?: number;
       threshold?: number;
       collection?: string;
-      filter?: { [key,: strin,g]: any, });
+      filter?: { [key: string]: unknown }; // Changed from any
     } = {}
-  ): Promise<any[]> {
+  ): Promise<RAGDocumentResult[]> {
+    // Changed from any[]
     try {
       const response = await fetch('/api/ai/vector-search', {
         method: 'POST',
@@ -275,16 +321,17 @@ export class RealAIService {
             collection: options.collection || 'legal_documents',
             includeMetadata: true,
             filter: options.filter,
-          }
-        )}),
+          },
+        }),
         signal: AbortSignal.timeout(15000),
       });
-      if (!response,.o,k) {
+      if (!response.ok) {
         throw new Error(`Vector search error: ${response.status}`);
       }
       const data = await response.json();
-      return data.results || [];
-    } catch (error: any) {
+      return (data.results || []) as RAGDocumentResult[]; // Cast to RAGDocumentResult[]
+    } catch (error: unknown) {
+      // Changed from any
       console.error('Document search failed:', error);
       return [];
     }
@@ -292,37 +339,35 @@ export class RealAIService {
   /**
    * Index a document for vector search
    */
-  async indexDocument(_document,: {
+  async indexDocument(_document: {
     title: string;
     content: string;
-    metadata?: { [key,: strin,g]: any, });
-  }): Promise<any> {
+    metadata?: { [key: string]: unknown }; // Changed from any
+  }): Promise<DocumentIndexResult> {
+    // Changed from any
     try {
       // Use the real vector search service to store the document
-      const { vectorSearchService } = await import('./real-vector-search-service'););
+      const { vectorSearchService } = await import('./real-vector-search-service');
       const documentId = crypto.randomUUID();
-      const result = await vectorSearchService.storeDocument(
-        documentId,
-        document.content);
-        {
-          title: document.title,
-          type,: 'legal_document',
-          indexed_at,: new Date().toISOString(),
-          ...document.metadata
-        }
-      );
-      return { success: result }
-    } catch (error: any) {
+      const result = await vectorSearchService.storeDocument(documentId, _document.content, {
+        title: _document.title,
+        type: 'legal_document',
+        indexed_at: new Date().toISOString(),
+        ..._document.metadata,
+      });
+      return { success: result };
+    } catch (error: unknown) {
+      // Changed from any
       return {
-        success: false;
-        error: error instanceof Error ? error.message: 'Indexing failed'
-      }
+        success: false,
+        error: error instanceof Error ? error.message : 'Indexing failed',
+      };
     }
   }
   /**
    * Estimate token count for text
    */
-  private estimateTokens(text,: string): number {
+  private estimateTokens(text: string): number {
     // Rough estimation: ~4 characters per token for English
     return Math.ceil(text.length / 4);
   }

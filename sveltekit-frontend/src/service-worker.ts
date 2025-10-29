@@ -1,3 +1,4 @@
+/// <reference lib="webworker" />
 /**
  * Comprehensive Service Worker - Redis + WebGPU + SIMD Integration
  * Background processing for legal AI with distributed caching

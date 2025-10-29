@@ -141,4 +141,20 @@ export const chatEmbeddings = pgTable(
   }
 );
 
+// 🧠 User Reports Table
+export const reports = pgTable('reports', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: text('user_id').notNull(),
+  title: text('title').notNull(),
+  content: text('content').notNull(),
+  summary: text('summary'),
+  tags: jsonb('tags').$type<string[]>().default([]),
+  autoKeywords: jsonb('auto_keywords').$type<string[]>().default([]),
+  embedding: vector('embedding', { dimensions: 1536 }),
+  sourceUri: text('source_uri'), // Optional: link to MinIO object
+  isFavorite: boolean('is_favorite').default(false),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
 console.log('📝 Drizzle ORM schema defined');

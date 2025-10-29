@@ -13,22 +13,20 @@ export interface LegalDocumentUnified {
   jurisdiction?: string;
   court?: string;
   citation?: string;
-  metadata?: { [key: string]: any }
+  metadata?: Record<string, unknown>;
   createdAt?: Date;
   updatedAt?: Date;
 }
 export type LegalDocument = LegalDocumentUnified;
-export function isLegalDocument(_value: any): value is LegalDocumentUnified {
-  return (
-    value &&
-    typeof value === 'object' &&
-    typeof value.id === 'string' &&
-    typeof value.title === 'string'
-  );
+// tighten the guard: accept unknown and narrow safely
+export function isLegalDocument(value: unknown): value is LegalDocumentUnified {
+  if (!value || typeof value !== 'object') return false;
+  const v = value as Record<string, unknown>;
+  return typeof v.id === 'string' && typeof v.title === 'string';
 }
-export function mergeLegalDocuments<T extends Partial<LegalDocumentUnified>,(
-  base: LegalDocumentUnified;
-  patch: T;
+export function mergeLegalDocuments<T extends Partial<LegalDocumentUnified>>(
+  base: LegalDocumentUnified,
+  patch: T
 ): LegalDocumentUnified {
-  return { ...base, ...patch }
+  return { ...base, ...patch };
 }

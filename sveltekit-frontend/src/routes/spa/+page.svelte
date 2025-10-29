@@ -11,14 +11,18 @@
   // Let Vite resolve the $lib alias (avoids PostCSS ENOENT on @import)
   import '$lib/styles/hybrid-theme.css';
   // Sample legal data for demonstration
-  let legalData = {
+  const initialLegalData = {
     documents: [] as LegalDocument[],
     evidence: [] as EvidenceItem[],
     cases: [],
     chatMessages: [],
   };
-  let currentView: 'dashboard' | 'evidence' | 'documents' | 'chat' | 'cases' = 'dashboard';
-  let isLoading = true;
+
+  // reactive state for the data and flags
+  let legalData = $state<typeof initialLegalData>(initialLegalData);
+  let currentView = $state<'dashboard' | 'evidence' | 'documents' | 'chat' | 'cases'>('dashboard');
+  let isLoading = $state(true);
+
   $effect(() => {
     (async () => {
       // Simulate loading legal data
@@ -226,8 +230,8 @@
     {legalData}
     {currentView}
     fullscreen={true}
-    onnavigate={handleNavigation}
-    oninteract={handleInteraction}
+    on:navigate={handleNavigation}
+    on:interact={handleInteraction}
   />
   <!-- Debug info (remove in production) -->
   <div class="debug-info">
@@ -239,8 +243,8 @@
 
 <style>
   .loading-screen {
-    position fixed;
-    top: 0,
+    position: fixed;
+    top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
@@ -248,7 +252,7 @@
     align-items: center;
     justify-content: center;
     background: var(--yorha-black);
-    z-index: 2000,
+    z-index: 2000;
   }
   .loading-content {
     text-align: center;
@@ -268,10 +272,10 @@
     margin: 0 0.2rem;
   }
   .loading-dot:nth-child(2) {
-    animation-delay: 0.3,
+    animation-delay: 0.3s;
   }
   .loading-dot:nth-child(3) {
-    animation-delay: 0.6,
+    animation-delay: 0.6s;
   }
   @keyframes blink {
     0%,
@@ -291,7 +295,7 @@
     font-family: 'Courier New', monospace;
   }
   .debug-info {
-    position fixed;
+    position: fixed;
     top: 10px;
     right: 10px;
     background: rgba(0, 0, 0, 0.8);

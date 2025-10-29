@@ -1,7 +1,6 @@
 /**
  * TypeScript definitions for N64-Inspired Legal AI Integration
  */
-}
 export interface LegalDocument {
   id: string;
   title: string;
@@ -14,7 +13,7 @@ export interface LegalDocument {
     fileSize: number;
     confidenceLevel?: number;
     riskLevel?: 'low' | 'medium' | 'high' | 'critical';
-  }
+  };
   embeddings?: Float32Array;
   processed?: boolean;
 }
@@ -39,9 +38,9 @@ export interface ProcessingPipeline {
   cacheHits: number;
 }
 export interface CacheHierarchy {
-  l1: Map<string, any>; // Browser memory cache
-  l2: Map<string, any>; // CHR-ROM patterns
-  l3: Map<string, any>; // Palace cache
+  l1: Map<string, unknown>; // Browser memory cache
+  l2: Map<string, unknown>; // CHR-ROM patterns
+  l3: Map<string, unknown>; // Palace cache
   getTotalHits: () => number;
 }
 export interface N64VisualizationState {
@@ -54,14 +53,14 @@ export interface N64VisualizationState {
     memoryUsage: number;
     cacheHitRate: number;
     compressionRatio: number;
-  }
+  };
 }
 export interface EnhancedBitsComponent {
   name: string;
   type: 'Button' | 'Card' | 'Dialog' | 'Input' | 'Label' | 'Alert';
   nesStyled: boolean;
   svelte5Compatible: boolean;
-  properties: { [key: string]: any }
+  properties: Record<string, unknown>;
 }
 export interface SimdTileResult {
   tiles: Uint8Array[];
